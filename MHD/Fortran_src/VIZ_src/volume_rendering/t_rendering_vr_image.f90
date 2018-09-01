@@ -199,6 +199,9 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
+      call dealloc_pvr_local_subimage(pvr_proj%image)
+      call deallocate_pvr_ray_start(pvr_proj%start_pt)
+!
       call transfer_to_screen                                           &
      &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
      &    pvr_param%field, pvr_data%view, pvr_proj%projection_mat,      &

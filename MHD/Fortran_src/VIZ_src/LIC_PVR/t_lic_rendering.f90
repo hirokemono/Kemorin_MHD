@@ -216,8 +216,8 @@
         if(lic%pvr_data(i_lic)%view%iflag_rotate_snap .le. 0) then
         ist_rdr = lic%lic_images%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
-          call s_each_LIC_rendering(istep_pvr,                          &
-     &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
+          call s_each_LIC_rendering                                     &
+     &       (istep_pvr, femmesh%mesh, ele_mesh, jacs, nod_fld,         &
      &        lic%lic_fld(i_lic), lic%lic_images%file_param(ist_img),   &
      &        lic%pvr_param(i_lic), lic%pvr_data(i_lic),                &
      &        lic%lic_images%pvr_proj(ist_rdr),                         &

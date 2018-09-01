@@ -7,9 +7,8 @@
 !!     &          area_def, file_param, pvr_param, pvr_data,            &
 !!     &          pvr_proj, pvr_rgb)
 !!      subroutine each_PVR_rendering                                   &
-!!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
-!!     &          pvr_fld, file_param, pvr_param, pvr_data,             &
-!!     &          pvr_proj, pvr_rgb)
+!!     &         (istep_pvr, mesh, ele_mesh, jacs, nod_fld, pvr_fld,    &
+!!     &          file_param, pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !!      subroutine each_PVR_rendering_w_rot                             &
 !!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
 !!     &          pvr_fld, file_param, pvr_param, pvr_data,             &
@@ -155,9 +154,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine each_PVR_rendering                                     &
-     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,        &
-     &          pvr_fld, file_param, pvr_param, pvr_data,               &
-     &          pvr_proj, pvr_rgb)
+     &         (istep_pvr, mesh, ele_mesh, jacs, nod_fld, pvr_fld,      &
+     &          file_param, pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
@@ -165,7 +163,6 @@
       integer(kind = kint), intent(in) :: istep_pvr
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
@@ -191,16 +188,16 @@
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
 !
 !   Left eye
-          call streo_rendering_fixed_view                               &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+          call rendering_with_fixed_view                                &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
      &        pvr_param, file_param(1), pvr_proj(1),                    &
-     &        pvr_data, pvr_rgb(1))
+     &        pvr_data,  pvr_rgb(1))
           call store_left_eye_image                                     &
      &       (file_param(1)%irank_image_file, pvr_rgb(1))
 !
 !   right eye
-          call streo_rendering_fixed_view                               &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+          call rendering_with_fixed_view                                &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
      &        pvr_param, file_param(1), pvr_proj(2),                    &
      &        pvr_data, pvr_rgb(1))
           call add_left_eye_image                                       &
@@ -216,8 +213,8 @@
         else
 !
 !   Left eye
-          call streo_rendering_fixed_view                               &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+          call rendering_with_fixed_view                                &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
      &        pvr_param, file_param(1), pvr_proj(1),                    &
      &        pvr_data, pvr_rgb(1))
 !
@@ -230,8 +227,8 @@
           call start_elapsed_time(71)
 !
 !   right eye
-          call streo_rendering_fixed_view                               &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+          call rendering_with_fixed_view                                &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
      &        pvr_param, file_param(2), pvr_proj(2),                    &
      &        pvr_data, pvr_rgb(2))
 !

@@ -7,10 +7,6 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine streo_lic_rendering_fix_view(istep_pvr,              &
-!!     &          node, ele, surf, group, lic_p, pvr_param, file_param, &
-!!     &          pvr_proj, pvr_data, pvr_rgb)
-!!
 !!      subroutine lic_rendering_with_rotation(istep_pvr,               &
 !!     &          node, ele, surf, group, lic_p, pvr_param, file_param, &
 !!     &          pvr_proj, pvr_data, pvr_rgb)
@@ -59,53 +55,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine streo_lic_rendering_fix_view(istep_pvr,                &
-     &          node, ele, surf, group, lic_p, pvr_param, file_param,   &
-     &          pvr_proj, pvr_data, pvr_rgb)
-!
-      use cal_pvr_modelview_mat
-      use composite_pvr_images
-      use rendering_LIC_image
-      use write_LIC_image
-!
-      integer(kind = kint), intent(in) :: istep_pvr
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(mesh_groups), intent(in) :: group
-      type(lic_parameters), intent(in) :: lic_p
-      type(PVR_control_params), intent(in) :: pvr_param
-      type(pvr_output_parameter), intent(in) :: file_param
-!
-      type(pvr_projection_data), intent(inout) :: pvr_proj
-      type(PVR_image_generator), intent(inout) :: pvr_data
-      type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-!
-      call cal_pvr_modelview_matrix                                     &
-     &   (izero, pvr_param%outline, pvr_data%view, pvr_data%color)
-!
-      call dealloc_pvr_local_subimage(pvr_proj%image)
-      call deallocate_pvr_ray_start(pvr_proj%start_pt)
-!
-      call transfer_to_screen(node, ele, surf,                          &
-     &    group%surf_grp, group%surf_grp_geom,  pvr_param%field,        &
-     &    pvr_data%view,  pvr_proj%projection_mat, pvr_param%pixel,     &
-     &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
-      call set_subimages                                                &
-     &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%image)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
-      call rendering_image_4_lic(istep_pvr, file_param,                 &
-     &    node, ele, surf, lic_p, pvr_data%color, pvr_param%colorbar,   &
-     &    pvr_param%field, pvr_data%view, pvr_proj%screen,              &
-     &    pvr_proj%start_pt, pvr_proj%image, pvr_rgb)
-!
-      end subroutine streo_lic_rendering_fix_view
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine lic_rendering_with_rotation(istep_pvr,                 &
      &          node, ele, surf, group, lic_p, pvr_param, file_param,   &
      &          pvr_proj, pvr_data, pvr_rgb)
@@ -138,9 +87,6 @@
       do i_rot = ist_rot, ied_rot
         call cal_pvr_modelview_matrix                                   &
      &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color)
-!
-        call dealloc_pvr_local_subimage(pvr_proj%image)
-        call deallocate_pvr_ray_start(pvr_proj%start_pt)
 !
         call rendering_lic_at_once                                      &
      &     (istep_pvr, node, ele, surf, group, lic_p,                   &
@@ -192,18 +138,12 @@
      &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color)
 !
 !    Left eye
-        call dealloc_pvr_local_subimage(pvr_proj(1)%image)
-        call deallocate_pvr_ray_start(pvr_proj(1)%start_pt)
-!
         call rendering_lic_at_once(istep_pvr,                           &
      &      node, ele, surf, group, lic_p, pvr_param, file_param,       &
      &      pvr_proj(1), pvr_data, pvr_rgb)
         call store_left_eye_image(file_param%irank_image_file, pvr_rgb)
 !
 !    Right eye
-        call dealloc_pvr_local_subimage(pvr_proj(2)%image)
-        call deallocate_pvr_ray_start(pvr_proj(2)%start_pt)
-!
         call rendering_lic_at_once(istep_pvr,                           &
      &      node, ele, surf, group, lic_p, pvr_param, file_param,       &
      &      pvr_proj(2), pvr_data, pvr_rgb)

@@ -205,8 +205,8 @@
         if(pvr%pvr_data(i_pvr)%view%iflag_rotate_snap .le. 0) then
           ist_rdr = pvr%pvr_images%istack_pvr_render(i_pvr-1) + 1
           ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
-          call each_PVR_rendering(istep_pvr,                            &
-     &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
+          call each_PVR_rendering                                       &
+     &       (istep_pvr, femmesh%mesh, ele_mesh, jacs, nod_fld,         &
      &        pvr%pvr_fld(i_pvr), pvr%pvr_images%file_param(ist_img),   &
      &        pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                &
      &        pvr%pvr_images%pvr_proj(ist_rdr),                         &

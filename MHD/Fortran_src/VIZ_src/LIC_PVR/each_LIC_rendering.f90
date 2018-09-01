@@ -71,7 +71,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_each_LIC_rendering                                   &
-     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,        &
+     &         (istep_pvr, mesh, ele_mesh, jacs, nod_fld,               &
      &          lic_fld, file_param, pvr_param, pvr_data,               &
      &          pvr_proj, pvr_rgb)
 !
@@ -84,7 +84,6 @@
       integer(kind = kint), intent(in) :: istep_pvr
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
@@ -110,16 +109,16 @@
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
 !
 !   Left eye
-          call streo_lic_rendering_fix_view                             &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+          call lic_rendering_with_fixed_view                            &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_proj(1), pvr_data, pvr_rgb(1))
           call store_left_eye_image                                     &
      &      (file_param(1)%irank_image_file, pvr_rgb(1))
 !
 !   Right eye
-          call streo_lic_rendering_fix_view                             &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+          call lic_rendering_with_fixed_view                            &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_proj(2), pvr_data, pvr_rgb(1))
           call add_left_eye_image                                       &
@@ -135,8 +134,8 @@
         else
 !
 !   Left eye
-          call streo_lic_rendering_fix_view                             &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+          call lic_rendering_with_fixed_view                            &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_proj(1), pvr_data, pvr_rgb(1))
 !
@@ -149,8 +148,8 @@
           call start_elapsed_time(76)
 !
 !   Right eye
-          call streo_lic_rendering_fix_view                             &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+          call lic_rendering_with_fixed_view                            &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
      &        lic_fld%lic_param, pvr_param, file_param(2),              &
      &        pvr_proj(2), pvr_data, pvr_rgb(2))
 !
