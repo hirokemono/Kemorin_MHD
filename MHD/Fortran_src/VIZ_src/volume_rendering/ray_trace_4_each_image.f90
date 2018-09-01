@@ -51,7 +51,7 @@
 !
       type(pvr_projected_field), intent(in) :: field_pvr
       type(pvr_colormap_parameter), intent(in) :: color_param
-      type(pvr_projected_data), intent(in) :: pvr_screen
+      type(pvr_projected_position), intent(in) :: pvr_screen
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec(3)

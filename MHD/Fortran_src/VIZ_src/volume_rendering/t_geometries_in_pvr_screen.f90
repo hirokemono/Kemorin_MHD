@@ -41,7 +41,7 @@
 !
 !
 !>  Structure for start points of ray tracing
-      type pvr_projected_data
+      type pvr_projected_position
 !>    Total number of node in screen coordinate
         integer(kind = kint) :: nnod_screen = 0
 !>    Position in modelview coordinate and screen coordinate
@@ -57,7 +57,7 @@
         real(kind = kreal) :: axis_view(3,4)
 !>    Order of three axis in screen coordinate
         integer(kind = kint) :: axis_order(3)
-      end type pvr_projected_data
+      end type pvr_projected_position
 !
 !
 !>  Structure for field data on projected coordinate
@@ -129,7 +129,7 @@
 !
       type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf
-      type(pvr_projected_data), intent(inout) :: pvr_screen
+      type(pvr_projected_position), intent(inout) :: pvr_screen
 !
 !
       pvr_screen%nnod_screen = node%numnod
@@ -146,7 +146,7 @@
 !
       subroutine dealloc_projected_position(pvr_screen)
 !
-      type(pvr_projected_data), intent(inout) :: pvr_screen
+      type(pvr_projected_position), intent(inout) :: pvr_screen
 !
 !
       deallocate(pvr_screen%arccos_sf)

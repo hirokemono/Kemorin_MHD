@@ -42,7 +42,7 @@
 !
       real(kind = kreal), intent(in) :: modelview_mat(4,4)
       real(kind = kreal), intent(in) :: projection_mat(4,4)
-      type(pvr_projected_data), intent(inout) :: pvr_screen
+      type(pvr_projected_position), intent(inout) :: pvr_screen
 !
 !
       call cal_position_pvr_modelview(modelview_mat,                    &
@@ -68,7 +68,7 @@
       integer(kind = kint), intent(in) :: num_pixel
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
 !
-      type(pvr_projected_data), intent(in) :: pvr_screen
+      type(pvr_projected_position), intent(in) :: pvr_screen
 !
       real(kind = kreal), intent(inout)  :: rgba_gl(4,num_pixel)
 !

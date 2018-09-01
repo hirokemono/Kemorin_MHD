@@ -78,7 +78,7 @@
       type(pvr_projected_field), intent(in) :: field_pvr
       real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
-      type(pvr_projected_data), intent(inout) :: pvr_screen
+      type(pvr_projected_position), intent(inout) :: pvr_screen
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
@@ -137,7 +137,7 @@
       type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
-      type(pvr_projected_data), intent(in) :: pvr_screen
+      type(pvr_projected_position), intent(in) :: pvr_screen
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !

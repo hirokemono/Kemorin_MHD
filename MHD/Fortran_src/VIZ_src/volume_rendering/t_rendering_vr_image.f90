@@ -84,8 +84,8 @@
 !
 !>        Domain boundary information
         type(pvr_bounds_surf_ctl) :: bound
-!>        Data on screen oordinate
-        type(pvr_projected_data) :: screen
+!>        Data on screen coordinate
+        type(pvr_projected_position) :: screen
 !>        Start point structure for volume rendering
         type(pvr_ray_start_type) :: start_pt
 !>        Work area of  point structure for volume rendering

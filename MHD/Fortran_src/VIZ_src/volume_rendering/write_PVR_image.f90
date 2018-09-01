@@ -19,7 +19,7 @@
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(pvr_view_parameter), intent(in) :: view_param
-!!        type(pvr_projected_data), intent(in) :: pvr_screen
+!!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
@@ -76,7 +76,7 @@
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(pvr_view_parameter), intent(in) :: view_param
-      type(pvr_projected_data), intent(in) :: pvr_screen
+      type(pvr_projected_position), intent(in) :: pvr_screen
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_segmented_img), intent(inout) :: pvr_img
