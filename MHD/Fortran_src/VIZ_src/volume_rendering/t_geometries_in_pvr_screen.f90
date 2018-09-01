@@ -11,7 +11,6 @@
 !!        type(node_data), intent(in) :: node
 !!        type(surface_data), intent(in) :: surf
 !!      subroutine dealloc_projected_position(pvr_screen)
-!!      subroutine copy_projected_position(pvr_scr_org, pvr_screen)
 !!
 !!      subroutine allocate_nod_data_4_pvr                              &
 !!     &         (numnod, numele, num_sf_grp, field_pvr)
@@ -43,11 +42,6 @@
 !
 !>  Structure for start points of ray tracing
       type pvr_projected_data
-!>    Defined flag for viewpoint
-        integer(kind = kint) :: iflag_viewpoint = 0
-!>    Position of viewpoint
-        real(kind = kreal) :: viewpoint_vec(3) = (/zero,zero,zero/)
-!
 !>    Total number of node in screen coordinate
         integer(kind = kint) :: nnod_screen = 0
 !>    Position in modelview coordinate and screen coordinate
@@ -120,7 +114,6 @@
       end type pvr_pixel_position_type
 !
       private :: alloc_nod_data_4_pvr, alloc_iflag_pvr_used_ele
-      private :: alloc_nod_vector_4_pvr
       private :: alloc_iflag_pvr_boundaries
 !
 ! -----------------------------------------------------------------------
@@ -160,20 +153,6 @@
       deallocate(pvr_screen%x_nod_model)
 !
       end subroutine dealloc_projected_position
-!
-! -----------------------------------------------------------------------
-!
-      subroutine copy_projected_position(pvr_scr_org, pvr_screen)
-!
-      type(pvr_projected_data), intent(in) :: pvr_scr_org
-      type(pvr_projected_data), intent(inout) :: pvr_screen
-!
-!
-      pvr_screen%viewpoint_vec(:) = pvr_scr_org%viewpoint_vec(:)
-!      pvr_screen%x_nod_model(:,:) =  pvr_scr_org%x_nod_model(:,:)
-!      pvr_screen%arccos_sf(:) =      pvr_scr_org%arccos_sf(:)
-!
-      end subroutine copy_projected_position
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -258,16 +237,6 @@
       if(nele .gt. 0) fld%grad_ele = 0.0d0
 !
       end subroutine alloc_nod_data_4_pvr
-!
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_nod_vector_4_pvr(nnod, num_masking, fld)
-!
-      integer(kind = kint), intent(in) :: nnod, num_masking
-      type(pvr_projected_field), intent(inout) :: fld
-!
-!
-      end subroutine alloc_nod_vector_4_pvr
 !
 ! -----------------------------------------------------------------------
 !

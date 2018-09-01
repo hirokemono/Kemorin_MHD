@@ -7,9 +7,9 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
-!!      subroutine ray_trace_each_lic_image                             &
-!!     &         (node, ele, surf, lic_p, pvr_screen, field_pvr,        &
-!!     &          color_param, ray_vec, num_pvr_ray, id_pixel_check,    &
+!!      subroutine ray_trace_each_lic_image(node, ele, surf,            &
+!!     &          lic_p, pvr_screen, field_pvr, color_param,            &
+!!     &          viewpoint_vec, ray_vec, num_pvr_ray, id_pixel_check,  &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
 !!     &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
 !!       type(node_data), intent(in) :: node
@@ -47,9 +47,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine ray_trace_each_lic_image                               &
-     &         (node, ele, surf, lic_p, pvr_screen, field_pvr,          &
-     &          color_param, ray_vec, num_pvr_ray, id_pixel_check,      &
+      subroutine ray_trace_each_lic_image(node, ele, surf,              &
+     &          lic_p, pvr_screen, field_pvr, color_param,              &
+     &          viewpoint_vec, ray_vec, num_pvr_ray, id_pixel_check,    &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
 !
@@ -67,6 +67,7 @@
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_projected_data), intent(in) :: pvr_screen
 !
+      real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec(3)
       integer(kind = kint), intent(in) :: num_pvr_ray
       integer(kind = kint), intent(in)                                  &
@@ -110,16 +111,17 @@
 !        end if
 !
         rgba_tmp(1:4) = zero
-        call lic_ray_trace_each_pixel                                               &
-     &      (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,               &
-     &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,                        &
-     &       ele%interior_ele, node%xx, surf%vnorm_surf, surf%interior_surf,        &
-     &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,                          &
-     &       pvr_screen%viewpoint_vec, lic_p, field_pvr, color_param, ray_vec,      &
-     &       id_pixel_check(inum), isf_pvr_ray_start(1,inum),                       &
-     &       xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),                        &
-     &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),             &
-     &       k_size, k_ary, node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
+        call lic_ray_trace_each_pixel(node%numnod, ele%numele,          &
+     &      surf%numsurf, surf%nnod_4_surf, surf%ie_surf,               &
+     &      surf%isf_4_ele, surf%iele_4_surf, ele%interior_ele,         &
+     &      node%xx, surf%vnorm_surf, surf%interior_surf,               &
+     &      pvr_screen%arccos_sf, pvr_screen%x_nod_model,               &
+     &      viewpoint_vec, lic_p, field_pvr, color_param, ray_vec,      &
+     &      id_pixel_check(inum), isf_pvr_ray_start(1,inum),            &
+     &      xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),             &
+     &      xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),  &
+     &      k_size, k_ary, node%xyz_min_gl, node%xyz_max_gl,            &
+     &      iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
         sample_cnt = sample_cnt + icount_pvr_trace(inum)
       end do

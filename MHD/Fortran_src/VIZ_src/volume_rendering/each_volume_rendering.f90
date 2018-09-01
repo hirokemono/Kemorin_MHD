@@ -101,8 +101,8 @@
       end if
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
-      call check_pvr_parameters(pvr_param%outline,                      &
-     &    pvr_data%view, pvr_data%color, pvr_data%screen)
+      call check_pvr_parameters                                         &
+     &   (pvr_param%outline, pvr_data%view, pvr_data%color)
 !
       call set_pixel_on_pvr_screen(pvr_data%view, pvr_param%pixel)
 !

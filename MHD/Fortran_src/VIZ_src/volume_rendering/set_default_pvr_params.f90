@@ -4,12 +4,11 @@
 !        programmed by H.Matsui on May. 2009
 !
 !!      subroutine check_pvr_parameters                                 &
-!!     &         (outline, view_param, color_param, pvr_screen)
+!!     &         (outline, view_param, color_param)
 !!      subroutine set_default_pvr_data_params(outline, color_param)
 !!        type(pvr_domain_outline), intent(in) :: outline
 !!        type(pvr_view_parameter), intent(inout) :: view_param
 !!        type(pvr_colormap_parameter), intent(inout) :: color_param
-!!        type(pvr_projected_data), intent(inout) :: pvr_screen
 !
       module set_default_pvr_params
 !
@@ -31,7 +30,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_pvr_parameters                                   &
-     &         (outline, view_param, color_param, pvr_screen)
+     &         (outline, view_param, color_param)
 !
       use t_surf_grp_4_pvr_domain
       use t_geometries_in_pvr_screen
@@ -39,24 +38,23 @@
       type(pvr_domain_outline), intent(in) :: outline
       type(pvr_view_parameter), intent(inout) :: view_param
       type(pvr_colormap_parameter), intent(inout) :: color_param
-      type(pvr_projected_data), intent(inout) :: pvr_screen
 !
 !
-      if (pvr_screen%iflag_viewpoint .eq. 0) then
+      if(view_param%iflag_viewpoint .eq. 0) then
         call set_default_viewpoint_pvr(outline%center_g,                &
-     &      outline%xx_minmax_g, pvr_screen%viewpoint_vec)
+     &      outline%xx_minmax_g, view_param%viewpoint_vec)
       end if
 !
-      if (view_param%iflag_lookpoint .eq. 0) then
+      if(view_param%iflag_lookpoint .eq. 0) then
         call set_default_lookatpoint_pvr                                &
      &     (outline%center_g, view_param%lookat_vec)
       end if
 !
-      if (view_param%iflag_updir .eq. 0) then
+      if(view_param%iflag_updir .eq. 0) then
         call set_default_up_dir_pvr(view_param%up_direction_vec)
       end if
 !
-      if (color_param%iflag_pvr_lights .eq. 0) then
+      if(color_param%iflag_pvr_lights .eq. 0) then
         call set_default_light_pvr                                      &
      &     (outline%center_g, outline%xx_minmax_g, color_param)
       end if

@@ -147,8 +147,8 @@
 !
 !   set transfer matrix
 !
-        call s_set_pvr_modelview_matrix(pvr_ctl_type(i_pvr)%mat,        &
-     &      pvr_data(i_pvr)%view, pvr_data(i_pvr)%screen)
+        call s_set_pvr_modelview_matrix                                 &
+     &     (pvr_ctl_type(i_pvr)%mat, pvr_data(i_pvr)%view)
       end do
 !
       end subroutine s_set_pvr_controls

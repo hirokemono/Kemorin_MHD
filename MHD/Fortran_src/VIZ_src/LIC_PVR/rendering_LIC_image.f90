@@ -86,7 +86,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, file_param,                 &
      &    node, ele, surf, lic_p, pvr_data%color, pvr_param%colorbar,   &
-     &    pvr_param%field, pvr_data%screen, start_wk, image, pvr_rgb)
+     &    pvr_param%field, pvr_data%view, pvr_data%screen,              &
+     &    start_wk, image, pvr_rgb)
 !
       end subroutine lic_rendering_with_fixed_view
 !
@@ -126,7 +127,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, file_param,                 &
      &    node, ele, surf, lic_p, pvr_data%color, pvr_param%colorbar,   &
-     &    pvr_param%field, pvr_data%screen, start_pt, image, pvr_rgb)
+     &    pvr_param%field, pvr_data%view, pvr_data%screen,              &
+     &    start_pt, image, pvr_rgb)
 !
       end subroutine rendering_lic_at_once
 !

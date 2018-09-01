@@ -112,14 +112,15 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
       call s_set_pvr_ray_start_point(node, ele, surf,                   &
-     &    pvr_bound, pixel_xy, pvr_screen, pvr_start)
+     &    view_param, pvr_bound, pixel_xy, pvr_screen, pvr_start)
 !
       end subroutine transfer_to_screen
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_pvr_ray_start_point(node, ele, surf, pvr_bound,  &
+      subroutine s_set_pvr_ray_start_point                              &
+     &         (node, ele, surf, view_param, pvr_bound,                 &
      &          pixel_xy, pvr_screen, pvr_start)
 !
       use m_geometry_constants
@@ -133,6 +134,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
 !
+      type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
       type(pvr_projected_data), intent(in) :: pvr_screen
@@ -174,7 +176,7 @@
      &   pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                    &
      &   pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,                &
      &   pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,               &
-     &   pvr_bound%screen_norm, pvr_screen%viewpoint_vec, ray_vec,      &
+     &   pvr_bound%screen_norm, view_param%viewpoint_vec, ray_vec,      &
      &   pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,   &
      &   pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,           &
      &   pvr_start%xi_start_tmp, pvr_start%istack_pvr_ray_sf,           &

@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine rendering_image                                      &
-!!     &         (istep_pvr, file_param, node, ele, surf,               &
-!!     &          color_param, cbar_param, field_pvr, pvr_screen,       &
+!!     &         (istep_pvr, file_param, node, ele, surf, color_param,  &
+!!     &          cbar_param, field_pvr, view_param, pvr_screen,        &
 !!     &          pvr_start, pvr_img, pvr_rgb)
 !!        type(pvr_output_parameter), intent(in) :: file_param
 !!        type(node_data), intent(in) :: node
@@ -18,6 +18,7 @@
 !!        type(pvr_projected_field), intent(in) :: field_pvr
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
+!!        type(pvr_view_parameter), intent(in) :: view_param
 !!        type(pvr_projected_data), intent(in) :: pvr_screen
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -47,8 +48,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image                                        &
-     &         (istep_pvr, file_param, node, ele, surf,                 &
-     &          color_param, cbar_param, field_pvr, pvr_screen,         &
+     &         (istep_pvr, file_param, node, ele, surf, color_param,    &
+     &          cbar_param, field_pvr, view_param, pvr_screen,          &
      &          pvr_start, pvr_img, pvr_rgb)
 !
       use m_geometry_constants
@@ -74,6 +75,7 @@
       type(pvr_projected_field), intent(in) :: field_pvr
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
+      type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_projected_data), intent(in) :: pvr_screen
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
@@ -85,8 +87,9 @@
 !
       call start_elapsed_time(73)
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
-      call s_ray_trace_4_each_image(node, ele, surf,                    &
-     &    pvr_screen, field_pvr, color_param, ray_vec,                  &
+      call s_ray_trace_4_each_image                                     &
+     &   (node, ele, surf, pvr_screen, field_pvr,                       &
+     &    color_param, view_param%viewpoint_vec, ray_vec,               &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &

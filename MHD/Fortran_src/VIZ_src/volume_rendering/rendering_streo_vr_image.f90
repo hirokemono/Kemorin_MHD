@@ -82,12 +82,11 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
+      call cal_pvr_modelview_matrix                                     &
+     &   (izero, pvr_param%outline, pvr_data%view, pvr_data%color)
+!
       call dealloc_pvr_local_subimage(image)
       call deallocate_pvr_ray_start(start_pt)
-!
-      call cal_pvr_modelview_matrix                                     &
-     &   (izero, pvr_param%outline, pvr_data%view, pvr_data%color,      &
-     &    pvr_data%screen)
 !
       call transfer_to_screen                                           &
      &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
@@ -98,7 +97,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, file_param,                       &
      &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
-     &    pvr_param%field, pvr_data%screen, start_pt, image, pvr_rgb)
+     &    pvr_param%field, pvr_data%view, pvr_data%screen,              &
+     &    start_pt, image, pvr_rgb)
 !
       end subroutine streo_rendering_fixed_view
 !
@@ -134,12 +134,11 @@
       ist_rot = pvr_data%view%istart_rot
       ied_rot = pvr_data%view%iend_rot
       do i_rot = ist_rot, ied_rot
+        call cal_pvr_modelview_matrix                                   &
+     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color)
+!
         call dealloc_pvr_local_subimage(image)
         call deallocate_pvr_ray_start(start_pt)
-!
-        call cal_pvr_modelview_matrix                                   &
-     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
-     &      pvr_data%screen)
 !
         call rendering_at_once                                          &
      &     (istep_pvr, node, ele, surf, group, pvr_param, file_param,   &
@@ -186,14 +185,13 @@
       ist_rot = pvr_data%view%istart_rot
       ied_rot = pvr_data%view%iend_rot
       do i_rot = ist_rot, ied_rot
+        call cal_pvr_modelview_matrix                                   &
+     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color)
+!
+!    Left eye
         call dealloc_pvr_local_subimage(image)
         call deallocate_pvr_ray_start(start_pt)
 !
-        call cal_pvr_modelview_matrix                                   &
-     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
-     &      pvr_data%screen)
-!
-!    Left eye
         call rendering_at_once(istep_pvr,                               &
      &      node, ele, surf, group, pvr_param, file_param,              &
      &      start_pt, image, pvr_proj(1), pvr_data, pvr_rgb)

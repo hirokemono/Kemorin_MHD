@@ -8,11 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine cal_pvr_modelview_matrix                             &
-!!     &          (i_rot, outline, view_param, color_param, pvr_screen)
+!!     &          (i_rot, outline, view_param, color_param)
 !!        type(pvr_domain_outline), intent(in) :: outline
 !!        type(pvr_colormap_parameter), intent(inout) :: color_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
-!!        type(pvr_projected_data), intent(inout) :: pvr_screen
 !!@endverbatim
 !
       module cal_pvr_modelview_mat
@@ -40,7 +39,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_pvr_modelview_matrix                               &
-     &          (i_rot, outline, view_param, color_param, pvr_screen)
+     &          (i_rot, outline, view_param, color_param)
 !
       use t_surf_grp_4_pvr_domain
       use cal_inverse_small_matrix
@@ -50,7 +49,6 @@
       type(pvr_domain_outline), intent(in) :: outline
       type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_view_parameter), intent(inout) :: view_param
-      type(pvr_projected_data), intent(inout) :: pvr_screen
 !
       integer(kind = kint) :: i, ierr2
       integer(kind = kint) :: istack_l(0:1)
@@ -60,12 +58,10 @@
 !
         if(i_rot .eq. 0) then
           if (view_param%iflag_modelview_mat .eq. 0) then
-            call cal_modelview_mat_by_views                             &
-     &         (outline, pvr_screen, view_param)
+            call cal_modelview_mat_by_views(outline, view_param)
           end if
         else
-          call cal_pvr_rotate_mat_by_views                              &
-     &       (i_rot, outline, pvr_screen, view_param)
+          call cal_pvr_rotate_mat_by_views(i_rot, outline, view_param)
         end if
 !
         call cal_inverse_44_matrix(view_param%modelview_mat,            &
@@ -82,7 +78,7 @@
 !
         call cal_mat44_vec3_on_node(ione, ione, ione_stack(0),          &
      &      view_param%modelview_inv, posi_zero(1), vec_tmp(1))
-        pvr_screen%viewpoint_vec(1:3) = vec_tmp(1:3)
+        view_param%viewpoint_vec(1:3) = vec_tmp(1:3)
 !
         if (iflag_debug .gt. 0) then
           write(*,*) 'modelview_mat'
@@ -98,7 +94,7 @@
           write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
           write(*,*) 'scale_factor_pvr',                                &
      &              view_param%scale_factor_pvr(1:3)
-          write(*,*) 'viewpoint_vec', pvr_screen%viewpoint_vec(1:3)
+          write(*,*) 'viewpoint_vec', view_param%viewpoint_vec(1:3)
           write(*,*) 'viewpt_in_view',                                  &
      &              view_param%viewpt_in_viewer_pvr(1:3)
 !
@@ -113,15 +109,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_modelview_mat_by_views                             &
-     &         (outline, pvr_screen, view_param)
+      subroutine cal_modelview_mat_by_views(outline, view_param)
 !
       use t_surf_grp_4_pvr_domain
       use transform_mat_operations
       use cal_matrix_vector_smp
 !
       type(pvr_domain_outline), intent(in) :: outline
-      type(pvr_projected_data), intent(in) :: pvr_screen
       type(pvr_view_parameter), intent(inout) :: view_param
 !
       real(kind = kreal) :: rev_lookat(3)
@@ -147,7 +141,7 @@
         call Kemo_Rotate( view_param%modelview_mat,                     &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
       else
-        call set_rot_mat_from_viewpts(pvr_screen, view_param)
+        call set_rot_mat_from_viewpts(view_param)
       end if
 !
       call Kemo_Scale(view_param%modelview_mat,                         &
@@ -159,7 +153,7 @@
       rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       if (view_param%iflag_viewpt_in_view .eq. 0) then
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &    view_param%modelview_mat, pvr_screen%viewpoint_vec, rev_eye)
+     &    view_param%modelview_mat, view_param%viewpoint_vec, rev_eye)
         call Kemo_Translate(view_param%modelview_mat,                   &
      &      rev_eye)
         view_param%iflag_viewpt_in_view = 1
@@ -178,7 +172,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_pvr_rotate_mat_by_views                            &
-     &         (i_rot, outline, pvr_screen, view_param)
+     &         (i_rot, outline, view_param)
 !
       use t_surf_grp_4_pvr_domain
       use transform_mat_operations
@@ -186,7 +180,6 @@
 !
       integer(kind = kint), intent(in) :: i_rot
       type(pvr_domain_outline), intent(in) :: outline
-      type(pvr_projected_data), intent(in) :: pvr_screen
       type(pvr_view_parameter), intent(inout) :: view_param
 !
       integer(kind = kint) :: iaxis_rot
@@ -224,7 +217,7 @@
         call Kemo_Rotate(view_param%modelview_mat,                      &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
       else
-        call set_rot_mat_from_viewpts(pvr_screen, view_param)
+        call set_rot_mat_from_viewpts(view_param)
       end if
 !
       call Kemo_Scale(view_param%modelview_mat,                         &
@@ -238,7 +231,7 @@
       rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       if (view_param%iflag_viewpt_in_view .eq. 0) then
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &    view_param%modelview_mat, pvr_screen%viewpoint_vec, rev_eye)
+     &    view_param%modelview_mat, view_param%viewpoint_vec, rev_eye)
         call Kemo_Translate(view_param%modelview_mat, rev_eye)
         view_param%iflag_viewpt_in_view = 1
       else
@@ -255,12 +248,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rot_mat_from_viewpts(pvr_screen, view_param)
+      subroutine set_rot_mat_from_viewpts(view_param)
 !
       use mag_of_field_smp
       use cal_products_smp
 !
-      type(pvr_projected_data), intent(in) :: pvr_screen
       type(pvr_view_parameter), intent(inout) :: view_param
 !
       integer(kind = kint) :: i
@@ -269,7 +261,7 @@
 !
 !
       viewing_dir(1:3) = view_param%lookat_vec(1:3)                     &
-     &                  - pvr_screen%viewpoint_vec(1:3)
+     &                  - view_param%viewpoint_vec(1:3)
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
      &    viewing_dir(1), size(1) )
@@ -284,9 +276,9 @@
 !
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
-     &    pvr_screen%viewpoint_vec, size(1) )
+     &    view_param%viewpoint_vec, size(1) )
 !$omp end parallel
-      view_norm(1:3) = pvr_screen%viewpoint_vec(1:3) / size(1)
+      view_norm(1:3) = view_param%viewpoint_vec(1:3) / size(1)
 !
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &

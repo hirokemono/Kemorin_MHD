@@ -123,6 +123,11 @@
 !>    Vector for up-direction
         real(kind = kreal) :: up_direction_vec(3) = (/zero,zero,zero/)
 !
+!>    Defined flag for viewpoint
+        integer(kind = kint) :: iflag_viewpoint = 0
+!>    Position of viewpoint
+        real(kind = kreal) :: viewpoint_vec(3) = (/zero,zero,zero/)
+!
 !>    Defined flag for stereo view
         integer(kind = kint) :: iflag_stereo_pvr = 0
 !>    Flag to make an anaglyph

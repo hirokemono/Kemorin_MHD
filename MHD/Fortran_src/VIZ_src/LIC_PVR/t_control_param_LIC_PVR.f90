@@ -177,8 +177,8 @@
 !
 !   set transfer matrix
 !
-        call s_set_pvr_modelview_matrix (pvr_ctl_type(i_lic)%mat,       &
-     &      pvr_data(i_lic)%view, pvr_data(i_lic)%screen)
+        call s_set_pvr_modelview_matrix                                 &
+     &     (pvr_ctl_type(i_lic)%mat, pvr_data(i_lic)%view)
       end do
 !
       end subroutine s_set_lic_controls

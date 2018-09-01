@@ -131,8 +131,7 @@
 !
 !
       call cal_pvr_modelview_matrix                                     &
-     &   (izero, pvr_param%outline, pvr_data%view, pvr_data%color,      &
-     &    pvr_data%screen)
+     &   (izero, pvr_param%outline, pvr_data%view, pvr_data%color)
 !
       call transfer_to_screen                                           &
      &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
@@ -175,7 +174,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, file_param,                       &
      &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
-     &    pvr_param%field, pvr_data%screen, start_pt, image, pvr_rgb)
+     &    pvr_param%field, pvr_data%view, pvr_data%screen,              &
+     &    start_pt, image, pvr_rgb)
 !
       end subroutine rendering_with_fixed_view
 !
@@ -228,7 +228,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, file_param,                       &
      &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
-     &    pvr_param%field, pvr_data%screen, start_pt, image, pvr_rgb)
+     &    pvr_param%field, pvr_data%view, pvr_data%screen,              &
+     &    start_pt, image, pvr_rgb)
 !
       end subroutine rendering_at_once
 !
