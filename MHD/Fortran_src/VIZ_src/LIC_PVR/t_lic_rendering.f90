@@ -178,7 +178,7 @@
         ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
         call each_PVR_initialize                                        &
      &     (i_lic, femmesh%mesh, femmesh%group, ele_mesh,               &
-     &      lic%lic_fld(i_lic)%area_def, lic%pvr_param(i_lic),          &
+     &      lic%pvr_param(i_lic)%area_def, lic%pvr_param(i_lic),        &
      &      lic%pvr_data(i_lic), lic%lic_images%pvr_proj(ist_rdr),      &
      &      lic%lic_images%pvr_rgb(ist_img))
       end do

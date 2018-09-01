@@ -61,8 +61,6 @@
 !>        Number of volume rendering
         integer(kind = kint) :: num_pvr = 0
 !
-!>        Structure of PVR field parameters
-        type(PVR_field_params), allocatable :: pvr_fld(:)
 !>        Structure of PVR control parameters
         type(PVR_control_params), allocatable :: pvr_param(:)
 !>        Structure of PVR image generation
@@ -155,9 +153,8 @@
         call reset_pvr_view_parameteres(pvr%pvr_data(i_pvr)%view)
       end do
 !
-      call s_set_pvr_controls(femmesh%group, nod_fld,                   &
-     &    pvr%num_pvr, pvr_ctls%pvr_ctl_type,                           &
-     &    pvr%pvr_fld, pvr%pvr_param, pvr%pvr_data)
+      call s_set_pvr_controls(femmesh%group, nod_fld, pvr%num_pvr,      &
+     &    pvr_ctls%pvr_ctl_type, pvr%pvr_param, pvr%pvr_data)
 !
       do i_pvr = 1, pvr_ctls%num_pvr_ctl
         call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i_pvr))
@@ -168,7 +165,7 @@
         ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
         call each_PVR_initialize                                        &
      &     (i_pvr, femmesh%mesh, femmesh%group, ele_mesh,               &
-     &      pvr%pvr_fld(i_pvr)%area_def,  pvr%pvr_param(i_pvr),         &
+     &      pvr%pvr_param(i_pvr)%area_def,  pvr%pvr_param(i_pvr),       &
      &      pvr%pvr_data(i_pvr), pvr%pvr_images%pvr_proj(ist_rdr),      &
      &      pvr%pvr_images%pvr_rgb(ist_img))
       end do
@@ -206,8 +203,8 @@
         ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
         call each_PVR_rendering                                         &
      &     (istep_pvr, femmesh%mesh, ele_mesh, jacs, nod_fld,           &
-     &      pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr),                   &
-     &      pvr%pvr_data(i_pvr), pvr%pvr_images%pvr_proj(ist_rdr),      &
+     &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                  &
+     &      pvr%pvr_images%pvr_proj(ist_rdr),                           &
      &      pvr%pvr_images%pvr_rgb(ist_img))
       end do
       call end_elapsed_time(71)
@@ -234,8 +231,8 @@
           ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
           call each_PVR_rendering_w_rot(istep_pvr,                      &
      &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
-     &        pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr),                 &
-     &        pvr%pvr_data(i_pvr), pvr%pvr_images%pvr_proj(ist_rdr),    &
+     &        pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                &
+     &        pvr%pvr_images%pvr_proj(ist_rdr),                         &
      &        pvr%pvr_images%pvr_rgb(ist_img))
         end if
       end do
@@ -251,7 +248,6 @@
       type(volume_rendering_module), intent(inout) :: pvr
 !
 !
-      allocate(pvr%pvr_fld(pvr%num_pvr))
       allocate(pvr%pvr_param(pvr%num_pvr))
       allocate(pvr%pvr_data(pvr%num_pvr))
 !
@@ -268,10 +264,10 @@
 !
 !
       do i_pvr = 1, pvr%num_pvr
-        call dealloc_each_pvr_data(pvr%pvr_fld(i_pvr),                  &
-     &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr))
+        call dealloc_each_pvr_data                                      &
+     &     (pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr))
       end do
-      deallocate(pvr%pvr_fld, pvr%pvr_param, pvr%pvr_data)
+      deallocate(pvr%pvr_param, pvr%pvr_data)
 !
       call dealloc_istack_pvr_image_4_merge(pvr%pvr_images)
 !

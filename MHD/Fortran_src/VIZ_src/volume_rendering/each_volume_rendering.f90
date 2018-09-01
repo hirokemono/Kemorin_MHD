@@ -6,11 +6,11 @@
 !!      subroutine each_PVR_initialize(i_pvr, mesh, group, ele_mesh,    &
 !!     &          area_def, pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !!      subroutine each_PVR_rendering                                   &
-!!     &         (istep_pvr, mesh, ele_mesh, jacs, nod_fld, pvr_fld,    &
+!!     &         (istep_pvr, mesh, ele_mesh, jacs, nod_fld,             &
 !!     &          pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !!      subroutine each_PVR_rendering_w_rot                             &
 !!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
-!!     &          pvr_fld, pvr_param, pvr_data, pvr_proj, pvr_rgb)
+!!     &          pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -24,8 +24,7 @@
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(2)
-!!      subroutine dealloc_each_pvr_data(pvr_fld, pvr_param, pvr_data)
-!!        type(PVR_field_params), intent(inout) :: pvr_fld
+!!      subroutine dealloc_each_pvr_data(pvr_param, pvr_data)
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
 !
@@ -148,7 +147,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine each_PVR_rendering                                     &
-     &         (istep_pvr, mesh, ele_mesh, jacs, nod_fld, pvr_fld,      &
+     &         (istep_pvr, mesh, ele_mesh, jacs, nod_fld,               &
      &          pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -159,7 +158,6 @@
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
-      type(PVR_field_params), intent(in) :: pvr_fld
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
@@ -170,7 +168,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_each_pvr                                         &
      &   (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, nod_fld,        &
-     &    pvr_fld%field_def, pvr_param%field)
+     &    pvr_param%field_def, pvr_param%field)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
@@ -214,7 +212,7 @@
 !
       subroutine each_PVR_rendering_w_rot                               &
      &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,        &
-     &          pvr_fld, pvr_param, pvr_data, pvr_proj, pvr_rgb)
+     &          pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
 !
@@ -225,7 +223,6 @@
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
-      type(PVR_field_params), intent(in) :: pvr_fld
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
@@ -236,7 +233,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_each_pvr                                         &
      &   (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, nod_fld,        &
-     &    pvr_fld%field_def, pvr_param%field)
+     &    pvr_param%field_def, pvr_param%field)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
@@ -265,11 +262,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_each_pvr_data(pvr_fld, pvr_param, pvr_data)
+      subroutine dealloc_each_pvr_data(pvr_param, pvr_data)
 !
       use set_pvr_control
 !
-      type(PVR_field_params), intent(inout) :: pvr_fld
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
 !
@@ -277,7 +273,7 @@
       call deallocate_pixel_position_pvr(pvr_param%pixel)
 !
       call dealloc_nod_data_4_pvr(pvr_param%field)
-      call flush_each_pvr_control(pvr_fld, pvr_data, pvr_param)
+      call flush_each_pvr_control(pvr_data, pvr_param)
 !
       end subroutine dealloc_each_pvr_data
 !

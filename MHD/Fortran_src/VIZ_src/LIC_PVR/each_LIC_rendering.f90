@@ -27,7 +27,6 @@
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!      subroutine dealloc_each_lic_data(lic_fld, pvr_param, pvr_data)
-!!        type(PVR_field_params), intent(inout) :: pvr_fld
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
 !!@endverbatim

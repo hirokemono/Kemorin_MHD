@@ -47,16 +47,13 @@
 !
       implicit  none
 !
-!>      Structure of PVR field parameters
-      type PVR_field_params
-!>        Structure for field parameter for PVR
-        type(pvr_field_parameter) :: field_def
-!>        Structure for rendering area by element group
-        type(viz_area_parameter) :: area_def
-      end type PVR_field_params
-!
 !>      Structure of PVR control parameters
       type PVR_control_params
+!>        Structure for rendering area by element group
+        type(viz_area_parameter) :: area_def
+!>        Structure for field parameter for PVR
+        type(pvr_field_parameter) :: field_def
+!
 !>        Parameters for image pixels
         type(pvr_pixel_position_type) :: pixel
 !>        Structure for rough serch of subdomains

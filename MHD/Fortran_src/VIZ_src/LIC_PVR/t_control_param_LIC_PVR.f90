@@ -53,8 +53,6 @@
       type LIC_field_params
 !>        Structure for field parameter for PVR
         type(lic_parameters) :: lic_param
-!>        Structure for rendering area by element group
-        type(viz_area_parameter) :: area_def
       end type LIC_field_params
 !
       private :: read_control_lic_pvr
@@ -172,7 +170,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &
      &     (pvr_ctl_type(i_lic), group%ele_grp, group%surf_grp,         &
-     &      lic_fld(i_lic)%area_def, pvr_param(i_lic)%field,            &
+     &      pvr_param(i_lic)%area_def, pvr_param(i_lic)%field,          &
      &      pvr_data(i_lic)%color, pvr_param(i_lic)%colorbar)
 !
 !   set transfer matrix
@@ -208,7 +206,7 @@
       call dealloc_lic_masking_ranges(lic_fld%lic_param)
       call dealloc_lic_kernel(lic_fld%lic_param)
 !
-      call dealloc_pvr_element_group(lic_fld%area_def)
+      call dealloc_pvr_element_group(pvr_param%area_def)
       call dealloc_pvr_color_parameteres(pvr_data%color)
 !
       end subroutine flush_each_lic_control
