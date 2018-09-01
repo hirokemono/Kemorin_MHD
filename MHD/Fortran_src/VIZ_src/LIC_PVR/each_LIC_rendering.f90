@@ -7,14 +7,6 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine find_lic_surf_domain(num_pvr, mesh, group, ele_mesh, &
-!!     &          lic_fld, pvr_param, pvr_data)
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_groups), intent(in) :: group
-!!        type(element_geometry), intent(in) :: ele_mesh
-!!        type(LIC_field_params), intent(in) :: lic_fld(num_pvr)
-!!        type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
-!!        type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !!      subroutine s_each_LIC_rendering                                 &
 !!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
 !!     &          lic_fld, file_param, pvr_param, pvr_data, pvr_rgb)
@@ -73,39 +65,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine find_lic_surf_domain(num_pvr, mesh, group, ele_mesh,   &
-     &          lic_fld, pvr_param, pvr_data)
-!
-      use t_mesh_data
-      use t_rendering_vr_image
-      use find_selected_domain_bd
-      use find_pvr_surf_domain
-!
-      integer(kind = kint), intent(in) :: num_pvr
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
-      type(element_geometry), intent(in) :: ele_mesh
-      type(LIC_field_params), intent(in) :: lic_fld(num_pvr)
-!
-      type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
-      type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
-!
-      integer(kind = kint) :: i_pvr
-!
-!
-      call allocate_imark_4_surface(ele_mesh%surf%numsurf)
-      do i_pvr = 1, num_pvr
-        call find_each_pvr_surf_domain                                  &
-     &     (mesh%ele, ele_mesh%surf, group%ele_grp,                     &
-     &      lic_fld(i_pvr)%area_def, pvr_data(i_pvr)%bound,             &
-     &      pvr_param(i_pvr)%field)
-      end do
-      call deallocate_imark_4_surface
-!
-      end subroutine find_lic_surf_domain
 !
 !  ---------------------------------------------------------------------
 !

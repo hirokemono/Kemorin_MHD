@@ -125,6 +125,8 @@
       use t_control_data_pvr_misc
       use set_pvr_control
       use each_LIC_rendering
+      use find_selected_domain_bd
+      use find_pvr_surf_domain
 !
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
@@ -173,17 +175,20 @@
      &      lic%pvr_param(i_lic)%field)
       end do
 !
-      call find_lic_surf_domain                                         &
-     &   (lic%num_pvr, femmesh%mesh, femmesh%group, ele_mesh,           &
-     &    lic%lic_fld, lic%pvr_param, lic%pvr_data)
-!
+      call allocate_imark_4_surface(ele_mesh%surf%numsurf)
       do i_lic = 1, lic%num_pvr
+        call find_each_pvr_surf_domain                                  &
+     &     (femmesh%mesh%ele, ele_mesh%surf, femmesh%group%ele_grp,     &
+     &      lic%lic_fld(i_lic)%area_def, lic%pvr_data(i_lic)%bound,     &
+     &      lic%pvr_param(i_lic)%field)
+!
         ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
         call each_PVR_initialize(i_lic,                                 &
      &      femmesh%mesh, femmesh%group, ele_mesh,                      &
      &      lic%lic_images%file_param(ist_img), lic%pvr_param(i_lic),   &
      &      lic%pvr_data(i_lic), lic%lic_images%pvr_rgb(ist_img))
       end do
+      call deallocate_imark_4_surface
 !
 !      call check_surf_rng_pvr_domain(my_rank)
 !      call check_surf_norm_pvr_domain(my_rank)

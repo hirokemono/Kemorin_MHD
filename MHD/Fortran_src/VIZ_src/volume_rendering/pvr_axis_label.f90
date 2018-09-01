@@ -50,7 +50,7 @@
       call find_draw_axis_order                                         &
      &   (pvr_screen%axis_view, pvr_screen%axis_order)
       call overwte_position_pvr_screen(projection_mat,                  &
-     &      ithree, pvr_screen%axis_view)
+     &    ithree, pvr_screen%axis_view)
 !
      end subroutine axis_direction_in_screen
 !

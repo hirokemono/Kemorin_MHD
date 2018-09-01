@@ -122,6 +122,7 @@
       use t_control_data_pvr_misc
       use set_pvr_control
       use find_pvr_surf_domain
+      use find_selected_domain_bd
 !
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
@@ -164,17 +165,20 @@
         call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i_pvr))
       end do
 !
-      call s_find_pvr_surf_domain                                       &
-     &   (pvr%num_pvr, femmesh%mesh, femmesh%group, ele_mesh,           &
-     &    pvr%pvr_fld, pvr%pvr_param, pvr%pvr_data)
-!
+      call allocate_imark_4_surface(ele_mesh%surf%numsurf)
       do i_pvr = 1, pvr%num_pvr
+        call find_each_pvr_surf_domain                                  &
+     &     (femmesh%mesh%ele, ele_mesh%surf, femmesh%group%ele_grp,     &
+     &      pvr%pvr_fld(i_pvr)%area_def, pvr%pvr_data(i_pvr)%bound,     &
+     &      pvr%pvr_param(i_pvr)%field)
+!
         ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
         call each_PVR_initialize                                        &
      &     (i_pvr, femmesh%mesh, femmesh%group, ele_mesh,               &
      &      pvr%pvr_images%file_param(ist_img), pvr%pvr_param(i_pvr),   &
      &      pvr%pvr_data(i_pvr), pvr%pvr_images%pvr_rgb(ist_img))
       end do
+      call deallocate_imark_4_surface
 !
 !      call check_surf_rng_pvr_domain(my_rank)
 !      call check_surf_norm_pvr_domain(my_rank)
