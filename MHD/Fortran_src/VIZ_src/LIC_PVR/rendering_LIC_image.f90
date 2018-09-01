@@ -9,10 +9,10 @@
 !!@verbatim
 !!      subroutine lic_rendering_with_fixed_view(istep_pvr,             &
 !!     &          node, ele, surf, lic_p, pvr_param, file_param,        &
-!!     &          pvr_proj, start_pt, image, pvr_data, pvr_rgb)
+!!     &          pvr_proj, pvr_data, pvr_rgb)
 !!      subroutine rendering_lic_at_once(istep_pvr,                     &
 !!     &          node, ele, surf, group, lic_p, pvr_param, file_param, &
-!!     &          start_pt, image, pvr_proj, pvr_data, pvr_rgb)
+!!     &          pvr_proj, pvr_data, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -22,8 +22,6 @@
 !!        type(PVR_control_params), intent(in) :: pvr_param
 !!        type(pvr_output_parameter), intent(in) :: file_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
-!!        type(pvr_ray_start_type), intent(inout) :: start_pt
-!!        type(pvr_segmented_img), intent(inout)  :: image
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
@@ -59,7 +57,7 @@
 !
       subroutine lic_rendering_with_fixed_view(istep_pvr,               &
      &          node, ele, surf, lic_p, pvr_param, file_param,          &
-     &          pvr_proj, start_pt, image, pvr_data, pvr_rgb)
+     &          pvr_proj, pvr_data, pvr_rgb)
 !
       use composite_pvr_images
       use write_LIC_image
@@ -71,24 +69,22 @@
       type(lic_parameters), intent(in) :: lic_p
       type(PVR_control_params), intent(in) :: pvr_param
       type(pvr_output_parameter), intent(in) :: file_param
-      type(pvr_projection_data), intent(in) :: pvr_proj
 !
+      type(pvr_projection_data), intent(inout) :: pvr_proj
       type(PVR_image_generator), intent(inout) :: pvr_data
-      type(pvr_ray_start_type), intent(inout) :: start_pt
-      type(pvr_segmented_img), intent(inout)  :: image
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       type(pvr_ray_start_type) :: start_wk
 !
 !
       call copy_item_pvr_ray_start                                      &
-     &   (pvr_data%start_save, start_pt)
+     &   (pvr_proj%start_save, pvr_proj%start_pt)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, file_param,                 &
      &    node, ele, surf, lic_p, pvr_data%color, pvr_param%colorbar,   &
      &    pvr_param%field, pvr_data%view, pvr_proj%screen,              &
-     &    start_wk, image, pvr_rgb)
+     &    start_wk, pvr_proj%image, pvr_rgb)
 !
       end subroutine lic_rendering_with_fixed_view
 !
@@ -97,7 +93,7 @@
 !
       subroutine rendering_lic_at_once(istep_pvr,                       &
      &          node, ele, surf, group, lic_p, pvr_param, file_param,   &
-     &          start_pt, image, pvr_proj, pvr_data, pvr_rgb)
+     &          pvr_proj, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
@@ -114,22 +110,21 @@
 !
       type(pvr_projection_data), intent(inout) :: pvr_proj
       type(PVR_image_generator), intent(inout) :: pvr_data
-      type(pvr_ray_start_type), intent(inout) :: start_pt
-      type(pvr_segmented_img), intent(inout)  :: image
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      call transfer_to_screen                                           &
-     &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
-     &    pvr_param%field, pvr_data%view, pvr_proj%projection_mat,      &
-     &    pvr_param%pixel, pvr_proj%bound, pvr_proj%screen, start_pt)
-      call set_subimages(pvr_rgb%num_pixel_xy, start_pt, image)
+      call transfer_to_screen(node, ele, surf,                          &
+     &    group%surf_grp, group%surf_grp_geom,  pvr_param%field,        &
+     &    pvr_data%view, pvr_proj%projection_mat, pvr_param%pixel,      &
+     &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
+      call set_subimages                                                &
+     &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%image)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, file_param,                 &
      &    node, ele, surf, lic_p, pvr_data%color, pvr_param%colorbar,   &
      &    pvr_param%field, pvr_data%view, pvr_proj%screen,              &
-     &    start_pt, image, pvr_rgb)
+     &    pvr_proj%start_pt, pvr_proj%image, pvr_rgb)
 !
       end subroutine rendering_lic_at_once
 !

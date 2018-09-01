@@ -125,10 +125,7 @@
 !
 !
       do i_pvr = 1, pvr_images%num_pvr_rendering
-        call dealloc_pvr_surf_domain_item                               &
-     &     (pvr_images%pvr_proj(i_pvr)%bound)
-        call dealloc_projected_position                                 &
-     &     (pvr_images%pvr_proj(i_pvr)%screen)
+        call flush_rendering_4_fixed_view(pvr_images%pvr_proj(i_pvr))
       end do
       deallocate(pvr_images%pvr_proj)
 !

@@ -113,8 +113,7 @@
           call streo_lic_rendering_fix_view                             &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
-     &        pvr_data%start_pt, pvr_data%image, pvr_proj(1),           &
-     &        pvr_data, pvr_rgb(1))
+     &        pvr_proj(1), pvr_data, pvr_rgb(1))
           call store_left_eye_image                                     &
      &      (file_param(1)%irank_image_file, pvr_rgb(1))
 !
@@ -122,8 +121,7 @@
           call streo_lic_rendering_fix_view                             &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
-     &        pvr_data%start_pt, pvr_data%image, pvr_proj(2),           &
-     &        pvr_data, pvr_rgb(1))
+     &        pvr_proj(2), pvr_data, pvr_rgb(1))
           call add_left_eye_image                                       &
      &       (file_param(1)%irank_image_file, pvr_rgb(1))
 !
@@ -140,8 +138,7 @@
           call streo_lic_rendering_fix_view                             &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
-     &        pvr_data%start_pt, pvr_data%image, pvr_proj(1),           &
-     &        pvr_data, pvr_rgb(1))
+     &        pvr_proj(1), pvr_data, pvr_rgb(1))
 !
           call end_elapsed_time(76)
           call start_elapsed_time(77)
@@ -155,8 +152,7 @@
           call streo_lic_rendering_fix_view                             &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(2),              &
-     &        pvr_data%start_pt, pvr_data%image, pvr_proj(2),           &
-     &        pvr_data, pvr_rgb(2))
+     &        pvr_proj(2), pvr_data, pvr_rgb(2))
 !
           call end_elapsed_time(76)
           call start_elapsed_time(77)
@@ -170,7 +166,7 @@
         call lic_rendering_with_fixed_view                              &
      &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,              &
      &      lic_fld%lic_param, pvr_param, file_param(1), pvr_proj(1),   &
-     &      pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
+     &      pvr_data, pvr_rgb(1))
 !
         call end_elapsed_time(76)
         call start_elapsed_time(77)
@@ -230,26 +226,22 @@
           call anaglyph_lic_rendering_w_rot                             &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
-     &        pvr_data%start_pt, pvr_data%image, pvr_proj,              &
-     &        pvr_data, pvr_rgb(1))
+     &        pvr_proj, pvr_data, pvr_rgb(1))
         else
           call lic_rendering_with_rotation                              &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
-     &        pvr_data%start_pt, pvr_data%image, pvr_proj(1),           &
-     &        pvr_data, pvr_rgb(1))
+     &        pvr_proj(1), pvr_data, pvr_rgb(1))
           call lic_rendering_with_rotation                              &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(2),              &
-     &        pvr_data%start_pt, pvr_data%image, pvr_proj(2),           &
-     &        pvr_data, pvr_rgb(2))
+     &        pvr_proj(2), pvr_data, pvr_rgb(2))
         end if
       else
         call lic_rendering_with_rotation                                &
      &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,       &
      &      lic_fld%lic_param, pvr_param, file_param(1),                &
-     &      pvr_data%start_pt, pvr_data%image, pvr_proj(1),             &
-     &      pvr_data, pvr_rgb(1))
+     &      pvr_proj(1), pvr_data, pvr_rgb(1))
       end if
 !
       end subroutine s_each_LIC_rendering_w_rot
@@ -266,10 +258,6 @@
       type(PVR_image_generator), intent(inout) :: pvr_data
 !
 !
-      if(pvr_data%view%iflag_rotate_snap .eq. 0                         &
-     &    .and. pvr_data%view%iflag_stereo_pvr .eq. 0) then
-          call flush_rendering_4_fixed_view(pvr_data)
-      end if
       call deallocate_pixel_position_pvr(pvr_param%pixel)
 !
       call dealloc_nod_data_4_lic(pvr_param%field)
