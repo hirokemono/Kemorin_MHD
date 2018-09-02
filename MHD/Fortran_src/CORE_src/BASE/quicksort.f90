@@ -28,7 +28,7 @@
 !
       implicit none
 !
-      private :: swap, swap_real
+      private :: swap, swap_real, comp_coord
 !
 !-----------------------------------------------------------------------
 !
@@ -210,7 +210,7 @@
 !
       integer(kind = kint) function comp_coord(a,b)
 !
-      real(kind = kreal), intent(inout) :: a(3), b(3)
+      real(kind = kreal), intent(in) :: a(3), b(3)
       real(kind = kreal) :: w
       integer(kind = kint) :: i
 !

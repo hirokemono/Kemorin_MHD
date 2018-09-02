@@ -84,7 +84,8 @@
 !
 !
       do istep = time_U%init_d%i_time_step, time_U%finish_d%i_end_step
-        if(set_IO_step_flag(istep,time_U%ucd_step) .ne. izero) cycle
+        if(output_IO_flag(istep,time_U%ucd_step) .ne. izero) cycle
+        call set_IO_step_flag(istep,time_U%ucd_step)
 !
         call set_data_for_product(femmesh_FUTIL%mesh%node%numnod,       &
      &      time_U%ucd_step%istep_file, time_IO_FUTIL)

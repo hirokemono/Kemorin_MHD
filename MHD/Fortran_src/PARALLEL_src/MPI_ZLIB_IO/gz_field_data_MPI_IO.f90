@@ -227,7 +227,8 @@
         call gzip_infleat_once                                          &
      &     (ilen_gz, gzip_buf(1), kchara, textbuf_c, ilen_gzipped)
 !
-        ilength = read_each_field_name_buffer(textbuf_c, field_name)
+        call read_each_field_name_buffer                                &
+     &     (textbuf_c, field_name, ilength)
         ilength = ilength + 1
 !        do i = 1, kchara
 !          write(*,*) ilength, i, field_name(i:i),                      &

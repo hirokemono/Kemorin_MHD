@@ -37,8 +37,7 @@
 !!      function int8_and_vector_textline(int8_gl, num, real_dat)
 !!        character(len=num*25+17) :: int8_and_vector_textline
 !!
-!!      integer(kind = kint) function read_one_word_textline            &
-!!     &                            (textbuf, field_name)
+!!      subroutine read_one_word_textline(textbuf, field_name, len_txt)
 !!      subroutine read_integer_nolfline(textbuf, int_dat)
 !!      subroutine read_integer_textline(textbuf, int_dat)
 !!      subroutine read_int_stack_textline(textbuf, num, istack, ntot)
@@ -334,11 +333,11 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      integer(kind = kint) function read_one_word_textline              &
-     &                            (textbuf, field_name)
+      subroutine read_one_word_textline(textbuf, field_name, len_txt)
 !
       character(len=kchara), intent(in) :: textbuf
       character(len=kchara), intent(inout) :: field_name
+      integer(kind = kint), intent(inout) :: len_txt
 !
       integer(kind = kint) :: i
 !
@@ -348,9 +347,9 @@
      &    .or. iachar(textbuf(i:i)) .eq. 0) exit 
         field_name(i:i) = textbuf(i:i)
       end do
-      read_one_word_textline = i - 1
+      len_txt = i - 1
 !
-      end function read_one_word_textline
+      end subroutine read_one_word_textline
 !
 ! -------------------------------------------------------------------
 !

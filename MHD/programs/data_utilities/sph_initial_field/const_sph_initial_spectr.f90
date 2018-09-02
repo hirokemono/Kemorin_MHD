@@ -178,7 +178,8 @@
       if(MHD_step1%init_d%i_time_step .eq. -1) then
         rst_step%istep_file = MHD_step1%init_d%i_time_step
       else
-        iflag = set_IO_step_flag(MHD_step1%time_d%i_time_step,rst_step)
+        iflag = output_IO_flag(MHD_step1%time_d%i_time_step,rst_step)
+        call set_IO_step_flag(MHD_step1%time_d%i_time_step,rst_step)
       end if
       call output_sph_restart_control(fst_file_IO, MHD_step1%time_d,    &
      &    SPH_MHD%fld, rst_step, sph_fst_IO)

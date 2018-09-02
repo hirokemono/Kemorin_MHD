@@ -132,8 +132,10 @@
       call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)
       call set_sph_restart_num_to_IO(SPH_MHD%fld, sph_fst_IO)
 !
-      iflag = set_IO_step_flag(MHD_step%time_d%i_time_step,             &
-     &                         MHD_step%rst_step)
+      iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
+     &                       MHD_step%rst_step)
+      call set_IO_step_flag(MHD_step%time_d%i_time_step,                &
+     &                       MHD_step%rst_step)
       if(iflag .eq. 0) then
         call output_sph_restart_control(fst_file_IO, MHD_step%time_d,   &
      &     SPH_MHD%fld, MHD_step%rst_step, sph_fst_IO)

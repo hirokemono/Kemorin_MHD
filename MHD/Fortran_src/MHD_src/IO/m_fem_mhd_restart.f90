@@ -230,8 +230,9 @@
       type(field_IO), intent(inout) :: fem_fst_IO
 !
 !
-      if (set_IO_step_flag(i_step, rst_step) .ne. 0) return
+      if (output_IO_flag(i_step, rst_step) .ne. 0) return
 !
+      call set_IO_step_flag(i_step, rst_step)
       call sel_read_step_FEM_field_file(nprocs, my_rank,                &
      &    rst_step%istep_file, fst_file_IO, t_IO, fem_fst_IO)
 !

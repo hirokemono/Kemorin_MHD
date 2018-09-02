@@ -23,8 +23,8 @@
 !!     &         (textbuf, nprocs, istack_nod)
 !!      subroutine read_field_comp_buffer                               &
 !!     &         (textbuf, num_field, ncomp_field)
-!!      integer(kind = kint) function read_each_field_name_buffer       &
-!!     &                            (textbuf, field_name)
+!!      subroutine read_each_field_name_buffer                          &
+!!     &         (textbuf, field_name, len_text)
 !!      subroutine read_each_field_data_buffer(textbuf ncomp, vect)
 !!
 !!      subroutine write_arrays_for_stacks(file_id, num, istack)
@@ -269,11 +269,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      integer(kind = kint) function read_each_field_name_buffer         &
-     &                            (textbuf, field_name)
+      subroutine read_each_field_name_buffer                            &
+     &         (textbuf, field_name, len_text)
 !
       character(len=kchara), intent(in) :: textbuf
       character(len=kchara), intent(inout) :: field_name
+      integer(kind = kint), intent(inout) :: len_text
 !
       integer(kind = kint) :: i
 !
@@ -283,9 +284,9 @@
      &    .or. iachar(textbuf(i:i)) .eq. 0) exit 
         field_name(i:i) = textbuf(i:i)
       end do
-      read_each_field_name_buffer = i - 1
+      len_text = i - 1
 !
-      end function read_each_field_name_buffer
+      end subroutine read_each_field_name_buffer
 !
 ! -------------------------------------------------------------------
 !

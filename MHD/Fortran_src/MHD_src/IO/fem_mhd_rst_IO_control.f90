@@ -91,7 +91,8 @@
       type(field_IO), intent(inout) :: fem_fst_IO
 !
 !
-      if(set_IO_step_flag(flex_p%istep_max_dt,rst_step) .eq. 0) then
+      if(output_IO_flag(flex_p%istep_max_dt,rst_step) .eq. 0) then
+        call set_IO_step_flag(flex_p%istep_max_dt,rst_step)
         call output_MHD_restart_file                                    &
      &     (SGS_par, MHD_files, time_d, rst_step, mesh, iphys,          &
      &      FEM_SGS_wk, nod_fld, fem_fst_IO)

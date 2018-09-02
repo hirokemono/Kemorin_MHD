@@ -18,7 +18,7 @@
 !!      subroutine accum_output_flag(i_step, IO_step, i_flag)
 !!      integer(kind = kint) function output_IO_flag(i_step, IO_step)
 !!        type(IO_step_param), intent(in) :: IO_step
-!!      integer(kind = kint) function set_IO_step_flag(i_step, IO_step)
+!!      subroutine set_IO_step_flag(i_step, IO_step)
 !!        type(IO_step_param), intent(inout) :: IO_step
 !!
 !!      subroutine accum_flag_to_visualization(i_step, IO_step, visval)
@@ -31,7 +31,7 @@
 !!      integer(kind = kint) function output_flag(i_step, increment)
 !!      subroutine set_viz_file_step(istep_ref, i_step_viz, iviz, i_cnt)
 !!      subroutine set_viz_flex_file_step(time_d, IO_step, iviz)
-!!end@verbatim
+!!@endverbatim
 !!
       module  t_IO_step_parameter
 !
@@ -82,18 +82,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      integer(kind = kint) function set_IO_step_flag(i_step, IO_step)
+      subroutine set_IO_step_flag(i_step, IO_step)
 !
       integer (kind =kint), intent(in) :: i_step
       type(IO_step_param), intent(inout) :: IO_step
 !
 !
-      set_IO_step_flag = output_flag(i_step, IO_step%increment)
       if(IO_step%increment .gt. 0) then
          IO_step%istep_file = i_step / IO_step%increment
        end if
 !
-      end function set_IO_step_flag
+      end subroutine set_IO_step_flag
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -249,7 +249,9 @@
 !*
       call start_elapsed_time(4)
       call start_elapsed_time(10)
-      iflag = set_IO_step_flag(MHD_step%time_d%i_time_step,             &
+      iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
+     &                         MHD_step%rst_step)
+      call set_IO_step_flag(MHD_step%time_d%i_time_step,                &
      &                         MHD_step%rst_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &

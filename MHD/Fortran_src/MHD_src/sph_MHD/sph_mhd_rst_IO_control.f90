@@ -210,7 +210,8 @@
 !
 !
       if(sph_file_param%iflag_IO .eq. 0) return
-      if(set_IO_step_flag(i_step,ucd_step) .ne. 0) return
+      if(output_IO_flag(i_step,ucd_step) .ne. 0) return
+      call set_IO_step_flag(i_step,ucd_step)
 !
       call copy_time_step_size_data(time_d, sph_time_IO)
       call copy_rj_phys_name_to_IO                                      &
