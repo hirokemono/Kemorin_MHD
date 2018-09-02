@@ -11,18 +11,16 @@
 !!        integer(kind = kint), intent(in) :: num_pvr_ctl
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl(num_pvr_ctl)
 !!      subroutine s_set_pvr_controls(group, nod_fld,                   &
-!!     &          num_pvr, pvr_ctl_type, pvr_param, pvr_data)
+!!     &          num_pvr, pvr_ctl_type, pvr_param)
 !!        integer(kind = kint), intent(in) :: num_pvr
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_pvr)
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
-!!        type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !!
 !!      subroutine read_control_pvr_update                              &
 !!     &         (hd_pvr_ctl, fname_pvr_ctl, pvr_ctl_type)
-!!      subroutine flush_each_pvr_control(pvr_data, pvr_param)
-!!        type(PVR_control_params), intent(inout) :: pvr_data
+!!      subroutine flush_each_pvr_control(pvr_param)
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!      subroutine read_control_modelview(i_pvr, pvr_ctl_type)
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
@@ -96,7 +94,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_pvr_controls(group, nod_fld,                     &
-     &          num_pvr, pvr_ctl_type, pvr_param, pvr_data)
+     &          num_pvr, pvr_ctl_type, pvr_param)
 !
       use t_group_data
       use t_phys_data
@@ -113,7 +111,6 @@
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_pvr)
 !
       type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
-      type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !
       integer(kind = kint) :: i_pvr
       integer(kind = kint) :: icheck_ncomp(1)
@@ -121,9 +118,9 @@
 !
       do i_pvr = 1, num_pvr
         call set_control_pvr_movie                                      &
-     &     (pvr_ctl_type(i_pvr)%movie, pvr_data(i_pvr)%view)
+     &     (pvr_ctl_type(i_pvr)%movie, pvr_param(i_pvr)%view)
         call set_pvr_stereo_control                                     &
-     &     (pvr_ctl_type(i_pvr), pvr_data(i_pvr)%view)
+     &     (pvr_ctl_type(i_pvr), pvr_param(i_pvr)%view)
 !
         call check_pvr_field_control(pvr_ctl_type(i_pvr),               &
      &      nod_fld%num_phys, nod_fld%phys_name)
@@ -140,12 +137,12 @@
         call set_control_pvr                                            &
      &     (pvr_ctl_type(i_pvr), group%ele_grp, group%surf_grp,         &
      &      pvr_param(i_pvr)%area_def, pvr_param(i_pvr)%field,          &
-     &      pvr_data(i_pvr)%color, pvr_param(i_pvr)%colorbar)
+     &      pvr_param(i_pvr)%color, pvr_param(i_pvr)%colorbar)
 !
 !   set transfer matrix
 !
         call s_set_pvr_modelview_matrix                                 &
-     &     (pvr_ctl_type(i_pvr)%mat, pvr_data(i_pvr)%view)
+     &     (pvr_ctl_type(i_pvr)%mat, pvr_param(i_pvr)%view)
       end do
 !
       end subroutine s_set_pvr_controls
@@ -153,12 +150,11 @@
 !  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine flush_each_pvr_control(pvr_data, pvr_param)
+      subroutine flush_each_pvr_control(pvr_param)
 !
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
 !
-      type(PVR_image_generator), intent(inout) :: pvr_data
       type(PVR_control_params), intent(inout) :: pvr_param
 !
 !
@@ -171,7 +167,7 @@
       end if
 !
       call dealloc_pvr_element_group(pvr_param%area_def)
-      call dealloc_pvr_color_parameteres(pvr_data%color)
+      call dealloc_pvr_color_parameteres(pvr_param%color)
 !
       end subroutine flush_each_pvr_control
 !

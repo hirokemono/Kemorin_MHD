@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine lic_rendering_with_rotation                          &
-!!     &         (istep_pvr, node, ele, surf, group, lic_p, pvr_param,  &
-!!     &          pvr_proj, pvr_data, pvr_rgb)
+!!     &         (istep_pvr, node, ele, surf, group, lic_p,             &
+!!     &          pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine anaglyph_lic_rendering_w_rot                         &
-!!     &         (istep_pvr, node, ele, surf, group, lic_p, pvr_param,  &
-!!     &          pvr_proj, pvr_data, pvr_rgb)
+!!     &         (istep_pvr, node, ele, surf, group, lic_p,             &
+!!     &          pvr_param, pvr_proj, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -20,7 +20,6 @@
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(PVR_control_params), intent(in) :: pvr_param
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-!!        type(PVR_image_generator), intent(inout) :: pvr_data
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
@@ -55,8 +54,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine lic_rendering_with_rotation                            &
-     &         (istep_pvr, node, ele, surf, group, lic_p, pvr_param,    &
-     &          pvr_proj, pvr_data, pvr_rgb)
+     &         (istep_pvr, node, ele, surf, group, lic_p,               &
+     &          pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
@@ -71,24 +70,22 @@
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
       type(lic_parameters), intent(in) :: lic_p
-      type(PVR_control_params), intent(in) :: pvr_param
 !
+      type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj
-      type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       integer(kind = kint) :: i_rot, ist_rot, ied_rot
 !
 !
-      ist_rot = pvr_data%view%istart_rot
-      ied_rot = pvr_data%view%iend_rot
+      ist_rot = pvr_param%view%istart_rot
+      ied_rot = pvr_param%view%iend_rot
       do i_rot = ist_rot, ied_rot
         call cal_pvr_modelview_matrix                                   &
-     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color)
+     &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !
-        call rendering_lic_at_once                                      &
-     &     (istep_pvr, node, ele, surf, group, lic_p,                   &
-     &      pvr_param, pvr_proj, pvr_data, pvr_rgb)
+        call rendering_lic_at_once(istep_pvr, node, ele, surf, group,   &
+     &      lic_p, pvr_param, pvr_proj, pvr_rgb)
 !
         call end_elapsed_time(76)
         call start_elapsed_time(77)
@@ -103,8 +100,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine anaglyph_lic_rendering_w_rot                           &
-     &         (istep_pvr, node, ele, surf, group, lic_p, pvr_param,    &
-     &          pvr_proj, pvr_data, pvr_rgb)
+     &         (istep_pvr, node, ele, surf, group, lic_p,               &
+     &          pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use rendering_LIC_image
@@ -118,31 +115,28 @@
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
       type(lic_parameters), intent(in) :: lic_p
-      type(PVR_control_params), intent(in) :: pvr_param
 !
+      type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       integer(kind = kint) :: i_rot, ist_rot, ied_rot
 !
 !
-      ist_rot = pvr_data%view%istart_rot
-      ied_rot = pvr_data%view%iend_rot
+      ist_rot = pvr_param%view%istart_rot
+      ied_rot = pvr_param%view%iend_rot
       do i_rot = ist_rot, ied_rot
         call cal_pvr_modelview_matrix                                   &
-     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color)
+     &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !
 !    Left eye
-        call rendering_lic_at_once                                      &
-     &     (istep_pvr, node, ele, surf, group, lic_p, pvr_param,        &
-     &      pvr_proj(1), pvr_data, pvr_rgb)
+        call rendering_lic_at_once(istep_pvr, node, ele, surf, group,   &
+     &      lic_p, pvr_param, pvr_proj(1), pvr_rgb)
         call store_left_eye_image(pvr_rgb)
 !
 !    Right eye
-        call rendering_lic_at_once                                      &
-     &     (istep_pvr,  node, ele, surf, group, lic_p, pvr_param,       &
-     &      pvr_proj(2), pvr_data, pvr_rgb)
+        call rendering_lic_at_once(istep_pvr, node, ele, surf, group,   &
+     &      lic_p, pvr_param, pvr_proj(2), pvr_rgb)
         call add_left_eye_image(pvr_rgb)
 !
         call end_elapsed_time(76)

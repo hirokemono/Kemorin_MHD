@@ -16,9 +16,8 @@
 !!     &                        :: pvr_ctl_type(num_lic_ctl)
 !!        type(lic_parameter_ctl), intent(inout)                        &
 !!     &                        :: lic_ctl_type(num_lic_ctl)
-!!      subroutine s_set_lic_controls                                   &
-!!     &       (group, nod_fld, num_lic, pvr_ctl_type, lic_ctl_type,    &
-!!     &        lic_fld, pvr_param, pvr_data)
+!!      subroutine s_set_lic_controls(group, nod_fld, num_lic,          &
+!!     &           pvr_ctl_type, lic_ctl_type, lic_fld, pvr_param)
 !!        integer(kind = kint), intent(in) :: num_lic
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
@@ -26,11 +25,8 @@
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
 !!        type(LIC_field_params), intent(inout) :: lic_fld(num_lic)
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
-!!        type(PVR_image_generator), intent(inout) :: pvr_data(num_lic)
-!!      subroutine flush_each_lic_control(lic_fld, pvr_data, pvr_param)
+!!      subroutine flush_each_lic_control(lic_fld)
 !!        type(LIC_field_params), intent(inout) :: lic_fld
-!!        type(PVR_image_generator), intent(inout) :: pvr_data
-!!        type(PVR_control_params), intent(inout) :: pvr_param
 !!@endverbatim
 !
       module t_control_param_LIC_PVR
@@ -112,9 +108,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_lic_controls                                     &
-     &       (group, nod_fld, num_lic, pvr_ctl_type, lic_ctl_type,      &
-     &        lic_fld, pvr_param, pvr_data)
+      subroutine s_set_lic_controls(group, nod_fld, num_lic,            &
+     &           pvr_ctl_type, lic_ctl_type, lic_fld, pvr_param)
 !
       use m_error_IDs
       use t_phys_data
@@ -135,7 +130,6 @@
 !
       type(LIC_field_params), intent(inout) :: lic_fld(num_lic)
       type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
-      type(PVR_image_generator), intent(inout) :: pvr_data(num_lic)
 !
       integer(kind = kint) :: i_lic
 !
@@ -143,9 +137,9 @@
       do i_lic = 1, num_lic
         if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
         call set_control_pvr_movie                                      &
-     &     (pvr_ctl_type(i_lic)%movie, pvr_data(i_lic)%view)
+     &     (pvr_ctl_type(i_lic)%movie, pvr_param(i_lic)%view)
         call set_pvr_stereo_control                                     &
-     &     (pvr_ctl_type(i_lic), pvr_data(i_lic)%view)
+     &     (pvr_ctl_type(i_lic), pvr_param(i_lic)%view)
 !
         call set_control_lic_parameter                                  &
      &     (nod_fld%num_phys, nod_fld%phys_name,                        &
@@ -171,12 +165,12 @@
         call set_control_pvr                                            &
      &     (pvr_ctl_type(i_lic), group%ele_grp, group%surf_grp,         &
      &      pvr_param(i_lic)%area_def, pvr_param(i_lic)%field,          &
-     &      pvr_data(i_lic)%color, pvr_param(i_lic)%colorbar)
+     &      pvr_param(i_lic)%color, pvr_param(i_lic)%colorbar)
 !
 !   set transfer matrix
 !
         call s_set_pvr_modelview_matrix                                 &
-     &     (pvr_ctl_type(i_lic)%mat, pvr_data(i_lic)%view)
+     &     (pvr_ctl_type(i_lic)%mat, pvr_param(i_lic)%view)
       end do
 !
       end subroutine s_set_lic_controls
@@ -184,30 +178,17 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine flush_each_lic_control(lic_fld, pvr_data, pvr_param)
+      subroutine flush_each_lic_control(lic_fld)
 !
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
 !
       type(LIC_field_params), intent(inout) :: lic_fld
-      type(PVR_image_generator), intent(inout) :: pvr_data
-      type(PVR_control_params), intent(inout) :: pvr_param
 !
-!
-      if(pvr_param%field%num_sections .gt. 0) then
-        call dealloc_pvr_sections(pvr_param%field)
-      end if
-!
-      if(pvr_param%field%num_isosurf .gt. 0) then
-        call dealloc_pvr_isosurfaces(pvr_param%field)
-      end if
 !
       call dealloc_lic_noise_data(lic_fld%lic_param)
       call dealloc_lic_masking_ranges(lic_fld%lic_param)
       call dealloc_lic_kernel(lic_fld%lic_param)
-!
-      call dealloc_pvr_element_group(pvr_param%area_def)
-      call dealloc_pvr_color_parameteres(pvr_data%color)
 !
       end subroutine flush_each_lic_control
 !

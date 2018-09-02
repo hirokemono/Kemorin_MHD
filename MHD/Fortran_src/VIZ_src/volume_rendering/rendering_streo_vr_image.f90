@@ -9,17 +9,16 @@
 !!@verbatim
 !!      subroutine rendering_with_rotation                              &
 !!     &         (istep_pvr, node, ele, surf, group,                    &
-!!     &          pvr_param, pvr_proj, pvr_data, pvr_rgb)
+!!     &          pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine anaglyph_rendering_w_rotation                        &
 !!     &         (istep_pvr,  node, ele, surf, group,                   &
-!!     &          pvr_param, pvr_proj, pvr_data, pvr_rgb)
+!!     &          pvr_param, pvr_proj, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(mesh_groups), intent(in) :: group
-!!        type(PVR_control_params), intent(in) :: pvr_param
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-!!        type(PVR_image_generator), intent(inout) :: pvr_data
+!!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
@@ -54,7 +53,7 @@
 !
       subroutine rendering_with_rotation                                &
      &         (istep_pvr, node, ele, surf, group,                      &
-     &          pvr_param, pvr_proj, pvr_data, pvr_rgb)
+     &          pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
@@ -66,23 +65,22 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
-      type(PVR_control_params), intent(in) :: pvr_param
 !
+      type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj
-      type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       integer(kind = kint) :: i_rot, ist_rot, ied_rot
 !
 !
-      ist_rot = pvr_data%view%istart_rot
-      ied_rot = pvr_data%view%iend_rot
+      ist_rot = pvr_param%view%istart_rot
+      ied_rot = pvr_param%view%iend_rot
       do i_rot = ist_rot, ied_rot
         call cal_pvr_modelview_matrix                                   &
-     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color)
+     &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !
         call rendering_at_once(istep_pvr, node, ele, surf, group,       &
-     &      pvr_param, pvr_proj, pvr_data, pvr_rgb)
+     &      pvr_param, pvr_proj, pvr_rgb)
 !
         call end_elapsed_time(71)
         call start_elapsed_time(72)
@@ -98,7 +96,7 @@
 !
       subroutine anaglyph_rendering_w_rotation                          &
      &         (istep_pvr, node, ele, surf, group,                      &
-     &          pvr_param, pvr_proj, pvr_data, pvr_rgb)
+     &          pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
@@ -109,29 +107,28 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
-      type(PVR_control_params), intent(in) :: pvr_param
 !
+      type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       integer(kind = kint) :: i_rot, ist_rot, ied_rot
 !
 !
-      ist_rot = pvr_data%view%istart_rot
-      ied_rot = pvr_data%view%iend_rot
+      ist_rot = pvr_param%view%istart_rot
+      ied_rot = pvr_param%view%iend_rot
       do i_rot = ist_rot, ied_rot
         call cal_pvr_modelview_matrix                                   &
-     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color)
+     &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !
 !    Left eye
         call rendering_at_once(istep_pvr, node, ele, surf, group,       &
-     &      pvr_param, pvr_proj(1), pvr_data, pvr_rgb)
+     &      pvr_param, pvr_proj(1), pvr_rgb)
         call store_left_eye_image(pvr_rgb)
 !
 !    Right eye
         call rendering_at_once(istep_pvr, node, ele, surf, group,       &
-     &      pvr_param, pvr_proj(2), pvr_data, pvr_rgb)
+     &      pvr_param, pvr_proj(2), pvr_rgb)
         call add_left_eye_image(pvr_rgb)
 !
         call end_elapsed_time(71)
