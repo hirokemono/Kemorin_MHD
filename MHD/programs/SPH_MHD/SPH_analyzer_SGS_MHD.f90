@@ -251,13 +251,12 @@
       call start_elapsed_time(10)
       iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
      &                         MHD_step%rst_step)
-      call set_IO_step_flag(MHD_step%time_d%i_time_step,                &
-     &                         MHD_step%rst_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &     'output_sph_SGS_MHD_rst_control'
         call output_sph_SGS_MHD_rst_control                             &
-     &     (MHD_files, MHD_step%time_d, SPH_MHD%fld, MHD_step%rst_step, &
+     &     (MHD_step%time_d%i_time_step, MHD_files,                     &
+     &      MHD_step%time_d, SPH_MHD%fld, MHD_step%rst_step,            &
      &      SPH_SGS%SGS_par%i_step_sgs_coefs, SPH_SGS%SGS_par%model_p,  &
      &      SPH_SGS%dynamic, sph_fst_IO)
       end if
@@ -270,7 +269,8 @@
         MHD_step%rst_step%istep_file = MHD_step%finish_d%i_end_step
         iflag_finish = 1
         call output_sph_SGS_MHD_rst_control                             &
-     &     (MHD_files, MHD_step%time_d, SPH_MHD%fld, MHD_step%rst_step, &
+     &     (MHD_step%finish_d%i_end_step, MHD_files,                    &
+     &      MHD_step%time_d, SPH_MHD%fld, MHD_step%rst_step,            &
      &      SPH_SGS%SGS_par%i_step_sgs_coefs, SPH_SGS%SGS_par%model_p,  &
      &      SPH_SGS%dynamic, sph_fst_IO)
       end if

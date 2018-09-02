@@ -6,16 +6,16 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine read_alloc_SPH_Csim_file                             &
-!!     &         (Csim_file_IO, init_d, rst_step, i_step_sgs_coefs,     &
-!!     &          SGS_param, dynamic_SPH)
+!!     &         (i_step, Csim_file_IO, init_d, rst_step,               &
+!!     &          i_step_sgs_coefs, SGS_param, dynamic_SPH)
 !!        type(field_IO_params), intent(in) :: Csim_file_IO
 !!        type(time_data), intent(in) :: init_d
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!      subroutine init_SPH_Csim_file(dynamic_SPH)
-!!      subroutine write_SPH_Csim_file(i_step_sgs_coefs, Csim_file_IO,  &
-!!     &          rst_step, time_d, dynamic_SPH)
+!!      subroutine write_SPH_Csim_file(i_step, i_step_sgs_coefs,        &
+!!     &          Csim_file_IO, rst_step, time_d, dynamic_SPH)
 !!        type(field_IO_params), intent(in) :: Csim_file_IO
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        type(time_data), intent(in) :: time_d
@@ -45,13 +45,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_alloc_SPH_Csim_file                               &
-     &         (Csim_file_IO, init_d, rst_step, i_step_sgs_coefs,       &
-     &          SGS_param, dynamic_SPH)
+     &         (i_step, Csim_file_IO, init_d, rst_step,                 &
+     &          i_step_sgs_coefs, SGS_param, dynamic_SPH)
 !
       use t_ele_info_4_dynamic
       use field_IO_select
       use set_ini_sgs_model_coefs_IO
 !
+      integer(kind = kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: Csim_file_IO
       type(time_data), intent(in) :: init_d
       type(IO_step_param), intent(in) :: rst_step
@@ -59,19 +60,19 @@
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       integer(kind = kint), intent(inout) :: i_step_sgs_coefs
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ierr, istep_rst
 !
 !
+      istep_rst = set_IO_step(i_step, rst_step)
       ierr = check_step_FEM_field_file(my_rank,                         &
-     &      rst_step%istep_file, Csim_file_IO)
+     &                                 istep_rst, Csim_file_IO)
       if(ierr .gt. 0) then
         SGS_param%iflag_rst_sgs_coef_code = 0
         return
       end if
 !
-      call sel_read_alloc_step_FEM_file(nprocs, my_rank,                &
-     &    rst_step%istep_file, Csim_file_IO,                            &
-     &    Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
+      call sel_read_alloc_step_FEM_file(nprocs, my_rank, istep_rst,     &
+     &    Csim_file_IO, Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
 !
       call set_SPH_Csim_from_IO                                         &
      &   (Csim_time_S_IO, dynamic_SPH%Csim_S_IO,                        &
@@ -99,8 +100,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_SPH_Csim_file(i_step_sgs_coefs, Csim_file_IO,    &
-     &          rst_step, time_d, dynamic_SPH)
+      subroutine write_SPH_Csim_file(i_step, i_step_sgs_coefs,          &
+     &          Csim_file_IO, rst_step, time_d, dynamic_SPH)
 !
       use t_ele_info_4_dynamic
       use t_sph_filtering
@@ -108,6 +109,7 @@
       use cal_minmax_and_stacks
       use set_ini_sgs_model_coefs_IO
 !
+      integer(kind = kint), intent(in) :: i_step
       integer(kind = kint), intent(in) :: i_step_sgs_coefs
       type(field_IO_params), intent(in) :: Csim_file_IO
       type(IO_step_param), intent(in) :: rst_step
@@ -115,14 +117,15 @@
 !
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
+      integer(kind = kint) :: istep_rst
 !
+      istep_rst = set_IO_step(i_step, rst_step)
       call set_SPH_Csim_to_IO                                           &
      &   (i_step_sgs_coefs, time_d, dynamic_SPH%wk_sgs,                 &
      &    Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
 !
-      call sel_write_step_FEM_field_file(nprocs, my_rank,               &
-     &    rst_step%istep_file, Csim_file_IO,                            &
-     &    Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
+      call sel_write_step_FEM_field_file(nprocs, my_rank, istep_rst,    &
+     &    Csim_file_IO, Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
 !
       end subroutine write_SPH_Csim_file
 !

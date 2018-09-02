@@ -142,7 +142,7 @@
       type(IO_step_param), intent(inout) :: rst_step
       type(field_IO), intent(inout) :: sph_fst_IO
 !
-      integer(kind = kint) :: iflag
+      integer(kind = kint) :: i_step
 !
 !  Set initial velocity if velocity is exist
       call set_initial_velocity(sph_MHD_bc%sph_bc_U,                    &
@@ -176,13 +176,12 @@
 !
 !
       if(MHD_step1%init_d%i_time_step .eq. -1) then
-        rst_step%istep_file = MHD_step1%init_d%i_time_step
+        i_step = MHD_step1%init_d%i_time_step
       else
-        iflag = output_IO_flag(MHD_step1%time_d%i_time_step,rst_step)
-        call set_IO_step_flag(MHD_step1%time_d%i_time_step,rst_step)
+        i_step = MHD_step1%time_d%i_time_step
       end if
-      call output_sph_restart_control(fst_file_IO, MHD_step1%time_d,    &
-     &    SPH_MHD%fld, rst_step, sph_fst_IO)
+      call output_sph_restart_control(i_step, fst_file_IO,              &
+     &    MHD_step1%time_d, SPH_MHD%fld, rst_step, sph_fst_IO)
 !
       end subroutine sph_initial_spectrum
 !

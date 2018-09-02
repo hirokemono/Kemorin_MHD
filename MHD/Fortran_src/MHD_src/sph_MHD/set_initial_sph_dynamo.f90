@@ -109,8 +109,8 @@
       if (iflag_restart.ne.i_rst_by_file                                &
      &     .and. MHD_step%init_d%i_time_step.eq.0) then
         if(iflag_debug .gt. 0) write(*,*) 'output_sph_restart_control'
-        call output_sph_restart_control                                 &
-     &     (MHD_files%fst_file_IO, MHD_step%time_d, SPH_MHD%fld,        &
+        call output_sph_restart_control(MHD_step%init_d%i_time_step,    &
+     &      MHD_files%fst_file_IO, MHD_step%time_d, SPH_MHD%fld,        &
      &      MHD_step%rst_step, sph_fst_IO)
       end if
 !

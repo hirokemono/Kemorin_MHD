@@ -64,20 +64,20 @@
 !
 !       read first data
 !
-      call read_alloc_sph_spectr(time_d%i_time_step,                    &
+      call read_alloc_sph_spectr(time_d%i_time_step, MHD_step%ucd_step, &
      &    MHD_files%org_rj_file_IO, MHD_files%sph_file_IO,              &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld,                &
-     &    MHD_step%ucd_step, MHD_step%init_d)
+     &    MHD_step%init_d)
 !
       call copy_field_name_type(SPH_MHD%fld, ref_rj_fld)
       call copy_field_data_type(SPH_MHD%fld, ref_rj_fld)
 !
 !       read second data
 !
-      call read_alloc_sph_spectr                                        &
-     &   (time_d%i_time_step, MHD_files%org_rj_file_IO,                 &
+      call read_alloc_sph_spectr(time_d%i_time_step,                    &
+     &    MHD_step%ucd_step, MHD_files%org_rj_file_IO,                  &
      &    sph_file_param2, SPH_MHD%sph%sph_rj, SPH_MHD%ipol,            &
-     &    SPH_MHD%fld, MHD_step%ucd_step, MHD_step%init_d)
+     &    SPH_MHD%fld, MHD_step%init_d)
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
 !       Evaluate correlation in sphere

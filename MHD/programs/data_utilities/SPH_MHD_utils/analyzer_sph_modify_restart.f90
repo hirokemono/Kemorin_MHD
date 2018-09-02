@@ -121,7 +121,7 @@
      &    = fst_file_IO%iflag_format
       call read_alloc_sph_rst_4_snap(i_step,                            &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
-     &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, MHD_step%rst_step,    &
+     &    MHD_step%rst_step, SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld,    &
      &    MHD_step%init_d)
 !
 !*  ----------------Modify spectr data ... ----------
@@ -134,11 +134,10 @@
 !
       iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
      &                       MHD_step%rst_step)
-      call set_IO_step_flag(MHD_step%time_d%i_time_step,                &
-     &                       MHD_step%rst_step)
       if(iflag .eq. 0) then
-        call output_sph_restart_control(fst_file_IO, MHD_step%time_d,   &
-     &     SPH_MHD%fld, MHD_step%rst_step, sph_fst_IO)
+        call output_sph_restart_control(MHD_step%time_d%i_time_step,    &
+     &      fst_file_IO, MHD_step%time_d, SPH_MHD%fld,                  &
+     &      MHD_step%rst_step, sph_fst_IO)
       end if
 !*
 !*  -----------  lead energy data --------------

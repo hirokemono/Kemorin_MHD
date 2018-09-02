@@ -126,10 +126,10 @@
       type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
 !
-      call read_alloc_sph_spectr                                        &
-     &   (i_step, MHD_files%org_rj_file_IO, MHD_files%sph_file_IO,      &
+      call read_alloc_sph_spectr(i_step, MHD_step%ucd_step,             &
+     &    MHD_files%org_rj_file_IO, MHD_files%sph_file_IO,              &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld,                &
-     &    MHD_step%ucd_step, MHD_step%init_d)
+     &    MHD_step%init_d)
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
 !* ----  Update fields after time evolution ------------------------=

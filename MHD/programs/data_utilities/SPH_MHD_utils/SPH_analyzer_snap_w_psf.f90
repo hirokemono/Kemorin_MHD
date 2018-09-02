@@ -136,9 +136,9 @@
 !
 !
       call read_alloc_sph_rst_4_snap(i_step,                            &
-     &    MHD_files%org_rj_file_IO, MHD_files%fst_file_IO, SPH_MHD%sph, &
-     &    SPH_MHD%ipol, SPH_MHD%fld,                  &
-     &    MHD_step%rst_step, MHD_step%init_d)
+     &    MHD_files%org_rj_file_IO, MHD_files%fst_file_IO,              &
+     &    MHD_step%rst_step, SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld,    &
+     &    MHD_step%init_d)
 !
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !

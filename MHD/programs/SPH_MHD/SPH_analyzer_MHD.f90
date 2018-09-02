@@ -224,12 +224,11 @@
       call start_elapsed_time(10)
       iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
      &                         MHD_step%rst_step)
-      call set_IO_step_flag(MHD_step%time_d%i_time_step,                &
-     &                         MHD_step%rst_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
-        call output_sph_restart_control(MHD_files%fst_file_IO,          &
-     &     MHD_step%time_d, SPH_MHD%fld, MHD_step%rst_step, sph_fst_IO)
+        call output_sph_restart_control(MHD_step%time_d%i_time_step,    &
+     &      MHD_files%fst_file_IO, MHD_step%time_d, SPH_MHD%fld,        &
+     &      MHD_step%rst_step, sph_fst_IO)
       end if
 !
       total_time = MPI_WTIME() - total_start
@@ -239,8 +238,9 @@
      &   .and. total_max .gt. MHD_step%finish_d%elapsed_time) then
         MHD_step%rst_step%istep_file = MHD_step%finish_d%i_end_step
         iflag_finish = 1
-        call output_sph_restart_control(MHD_files%fst_file_IO,          &
-     &     MHD_step%time_d, SPH_MHD%fld, MHD_step%rst_step, sph_fst_IO)
+        call output_sph_restart_control(MHD_step%finish_d%i_end_step,   &
+     &      MHD_files%fst_file_IO, MHD_step%time_d, SPH_MHD%fld,        &
+     &      MHD_step%rst_step, sph_fst_IO)
       end if
       call end_elapsed_time(10)
 !

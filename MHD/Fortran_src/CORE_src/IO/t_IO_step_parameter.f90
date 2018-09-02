@@ -18,6 +18,8 @@
 !!      subroutine accum_output_flag(i_step, IO_step, i_flag)
 !!      integer(kind = kint) function output_IO_flag(i_step, IO_step)
 !!        type(IO_step_param), intent(in) :: IO_step
+!!      integer(kind = kint) function set_IO_step(i_step, IO_step)
+!!        type(IO_step_param), intent(inout) :: IO_step
 !!      subroutine set_IO_step_flag(i_step, IO_step)
 !!        type(IO_step_param), intent(inout) :: IO_step
 !!
@@ -79,6 +81,24 @@
       output_IO_flag = output_flag(i_step, IO_step%increment)
 !
       end function output_IO_flag
+!
+!-----------------------------------------------------------------------
+!
+      integer(kind = kint) function set_IO_step(i_step, IO_step)
+!
+      integer (kind =kint), intent(in) :: i_step
+      type(IO_step_param), intent(in) :: IO_step
+!
+!
+      if(IO_step%increment .eq. 0) then
+         set_IO_step = 0
+       else if(i_step .eq. -1) then
+         set_IO_step = -1
+       else
+         set_IO_step = i_step / IO_step%increment
+       end if
+!
+      end function set_IO_step
 !
 !-----------------------------------------------------------------------
 !

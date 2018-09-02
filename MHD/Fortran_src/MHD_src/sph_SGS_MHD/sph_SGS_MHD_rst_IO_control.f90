@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine output_sph_SGS_MHD_rst_control                       &
-!!     &         (MHD_files, time_d, rj_fld, rst_step,                  &
+!!     &         (i_step, MHD_files, time_d, rj_fld, rst_step,          &
 !!     &          i_step_sgs_coefs, SGS_param, dynamic_SPH, sph_fst_IO)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(time_data), intent(in) :: time_d
@@ -69,13 +69,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_sph_SGS_MHD_rst_control                         &
-     &         (MHD_files, time_d, rj_fld, rst_step,                    &
+     &         (i_step, MHD_files, time_d, rj_fld, rst_step,            &
      &          i_step_sgs_coefs, SGS_param, dynamic_SPH, sph_fst_IO)
 !
       use t_sph_filtering
       use set_sph_restart_IO
       use SPH_SGS_ini_model_coefs_IO
 !
+      integer(kind=kint), intent(in) :: i_step
       integer(kind=kint), intent(in) :: i_step_sgs_coefs
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(time_data), intent(in) :: time_d
@@ -87,13 +88,13 @@
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
-      call output_sph_restart_control                                   &
-     &   (MHD_files%fst_file_IO, time_d, rj_fld, rst_step, sph_fst_IO)
+      call output_sph_restart_control(i_step, MHD_files%fst_file_IO,    &
+     &    time_d, rj_fld, rst_step, sph_fst_IO)
 !
       if(SGS_param%iflag_dynamic .gt. 0) then
         call write_SPH_Csim_file                                        &
-     &     (i_step_sgs_coefs, MHD_files%Csim_file_IO,                   &
-     &     rst_step, time_d, dynamic_SPH)
+     &     (i_step, i_step_sgs_coefs, MHD_files%Csim_file_IO,           &
+     &      rst_step, time_d, dynamic_SPH)
       end if
 !
       end subroutine output_sph_SGS_MHD_rst_control
@@ -123,12 +124,12 @@
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
-     &   (i_step, rj_file_param, MHD_files%fst_file_IO, SPH_MHD%sph,    &
-     &    SPH_MHD%ipol, SPH_MHD%fld, rst_step, time_d)
+     &   (i_step, rj_file_param, MHD_files%fst_file_IO, rst_step,       &
+     &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, time_d)
 !
       if(SGS_param%iflag_dynamic .gt. 0) then
         call read_alloc_SPH_Csim_file                                   &
-     &     (MHD_files%Csim_file_IO, time_d, rst_step,                   &
+     &     (i_step, MHD_files%Csim_file_IO, time_d, rst_step,           &
      &      i_step_sgs_coefs, SGS_param, dynamic_SPH)
         if(iflag_debug .gt. 0) write(*,*) 'iflag_rst_sgs_coef_code',    &
      &                        SGS_param%iflag_rst_sgs_coef_code
@@ -166,13 +167,13 @@
 !
       if(SGS_par%model_p%iflag_dynamic .eq. 0) return
       if (iflag_restart .eq. i_rst_by_file) then
-        call read_alloc_SPH_Csim_file(MHD_files%Csim_file_IO,           &
-     &      MHD_step%init_d, MHD_step%rst_step,                         &
+        call read_alloc_SPH_Csim_file(MHD_step%init_d%i_time_step,      &
+     &      MHD_files%Csim_file_IO, MHD_step%init_d, MHD_step%rst_step, &
      &      SGS_par%i_step_sgs_coefs, SGS_par%model_p, dynamic_SPH)
       else
         SGS_par%model_p%iflag_rst_sgs_coef_code = 0
-        call write_SPH_Csim_file                                        &
-     &     (SGS_par%i_step_sgs_coefs, MHD_files%Csim_file_IO,           &
+        call write_SPH_Csim_file(MHD_step%init_d%i_time_step,           &
+     &      SGS_par%i_step_sgs_coefs, MHD_files%Csim_file_IO,           &
      &      MHD_step%rst_step, MHD_step%init_d, dynamic_SPH)
       end if
       if(iflag_debug .gt. 0) write(*,*) 'iflag_rst_sgs_coef_code',      &
