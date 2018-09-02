@@ -26,9 +26,9 @@
 !!      subroutine set_gl_rank_2d                                       &
 !!     &         (iner_r_flag, nproc, ndomain_2d, id_gl_rank)
 !!
-!!      integer(kind= kint) function set_rank_by_1b_sph_rank            &
+!!      integer(kind = kint) function set_rank_by_1b_sph_rank            &
 !!     &                  (iner_r_flag, ndomain_3d, ip_r, ip_t, ip_p)
-!!      integer(kind= kint) function set_rank_by_1b_rj_rank             &
+!!      integer(kind = kint) function set_rank_by_1b_rj_rank             &
 !!     &                  (iner_r_flag, ndomain_2d, ip_r, ip_j)
 !!
 !!      subroutine check_spheric_global_numnod(my_rank)
@@ -220,7 +220,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind= kint) function set_rank_by_1b_sph_rank              &
+      integer(kind = kint) function set_rank_by_1b_sph_rank              &
      &                  (iner_r_flag, ndomain_3d, ip_r, ip_t, ip_p)
 !
       integer(kind = kint), intent(in) :: iner_r_flag
@@ -242,7 +242,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind= kint) function set_rank_by_1b_rj_rank               &
+      integer(kind = kint) function set_rank_by_1b_rj_rank               &
      &                  (iner_r_flag, ndomain_2d, ip_r, ip_j)
 !
       integer(kind = kint), intent(in) :: iner_r_flag
