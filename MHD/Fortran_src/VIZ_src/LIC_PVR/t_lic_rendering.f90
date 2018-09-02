@@ -127,7 +127,7 @@
       integer(kind = kint) :: i_lic, ist_rdr, ist_img
 !
 !
-      if(lic%pvr%num_pvr .le. 0) then
+      if(lic_ctls%num_lic_ctl .le. 0) then
         lic%pvr%num_pvr = 0
         return
       end if
