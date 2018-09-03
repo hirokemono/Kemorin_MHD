@@ -188,13 +188,8 @@
 !
 !     ----
 !
-      if(MHD_step%flex_p%iflag_flexible_step .eq. iflag_flex_step) then
-        visval = viz_file_step_4_flex(MHD_step%time_d,                  &
-     &                                MHD_step%viz_step)
-      else
-        visval = viz_file_step_4_fix(MHD_step%flex_p%istep_max_dt,      &
-     &                               MHD_step%viz_step)
-      end if
+      call MHD_viz_routine_flag_and_step                                &
+     &   (MHD_step%flex_p, MHD_step%time_d, MHD_step%viz_step, visval)
 !
       end subroutine FEM_analyze_filtered
 !

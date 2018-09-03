@@ -61,8 +61,8 @@
       integer (kind =kint) :: visval
 !
 !
-      visval = ione
-      call accum_flag_to_visualization(i_step, fline_step, visval)
+      visval = output_IO_flag(i_step, fline_step)
+      call istep_file_w_fix_dt(i_step, fline_step)
       call set_field_data_4_VIZ                                         &
      &   (fline_step%istep_file, i_step, ucd_param, time_VIZ%time_d)
 !

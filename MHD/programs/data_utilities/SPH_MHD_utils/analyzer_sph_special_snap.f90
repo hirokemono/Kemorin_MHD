@@ -290,8 +290,7 @@
       integer(kind = kint) :: iflag
 !
 !
-      iflag = lead_field_data_flag(i_step, MHD_step)
-      if(iflag .eq. 0) then
+      if(lead_field_data_flag(i_step, MHD_step) .eq. 0) then
         call lead_fields_4_SPH_SGS_MHD(SPH_SGS1%SGS_par,                &
      &      r_2nd, MHD_prop, sph_MHD_bc, trans_p, sph_MHD_mat,          &
      &      trns_WK, dynamic_SPH, SPH_MHD)

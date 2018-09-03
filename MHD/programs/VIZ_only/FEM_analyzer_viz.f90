@@ -78,7 +78,8 @@
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
-      visval = viz_file_step_4_fix(i_step, viz_step)
+      visval = iflag_vizs_w_fix_step(i_step, viz_step)
+      call istep_viz_w_fix_dt(i_step, viz_step)
       call set_field_data_4_VIZ                                         &
      &   (visval, i_step, ucd_param, time_VIZ%time_d)
 !

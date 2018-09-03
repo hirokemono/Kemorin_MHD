@@ -144,7 +144,7 @@
      &   (time_STR%init_d%dt, spt_ctl%t_ctl, viz_step_STR)
       call copy_delta_t(time_STR%init_d, time_STR%time_d)
 !
-      call set_output_step_4_fixed_step(ione, time_STR%time_d%dt,       &
+      call output_step_4_fixed_step_ctl(ione, time_STR%time_d%dt,       &
      &    spt_ctl%t_ctl%i_step_check_ctl,                               &
      &    spt_ctl%t_ctl%delta_t_check_ctl, rms_step_STR)
 !
@@ -270,7 +270,7 @@
      &   (time_STR%init_d%dt, spt_ctl%t_ctl, viz_step_STR)
       call copy_delta_t(time_STR%init_d, time_STR%time_d)
 !
-      call set_output_step_4_fixed_step(ione, time_STR%time_d%dt,       &
+      call output_step_4_fixed_step_ctl(ione, time_STR%time_d%dt,       &
      &    spt_ctl%t_ctl%i_step_check_ctl,                               &
      &    spt_ctl%t_ctl%delta_t_check_ctl, rms_step_STR)
 !

@@ -65,8 +65,8 @@
       type(time_data), intent(inout) :: t_IO
 !
 !
-      call accum_output_flag_4_viz(i_step, viz_step, visval)
-      visval = visval * output_IO_flag(i_step, t_STR%ucd_step)
+      visval = iflag_vizs_w_fix_step(i_step, viz_step)                  &
+    &         * output_IO_flag(i_step, t_STR%ucd_step)
 !
       if(visval .eq. 0) then
 !

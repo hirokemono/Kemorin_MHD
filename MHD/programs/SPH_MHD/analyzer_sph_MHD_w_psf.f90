@@ -124,9 +124,8 @@
 !*  -----------  output field data --------------
 !*
         call start_elapsed_time(4)
-        iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,      &
-     &                               MHD_step1)
-        if(iflag .eq. 0) then
+        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1) &
+     &      .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
           call SPH_to_FEM_bridge_MHD(SPH_MHD1%sph, SPH_WK1%trns_WK,     &
      &        FEM_d1%geofem%mesh, FEM_d1%field)

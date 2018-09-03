@@ -135,18 +135,15 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_IO_data), intent(inout) :: MHD_IO
 !
-      integer(kind = kint) :: iflag
-!
 !
 !*  ----------   Count steps for visualization
 !*
-!*
-      visval = 1
-      visval = viz_file_step_4_fix(MHD_step%time_d%i_time_step,         &
+      visval = iflag_vizs_w_fix_step(MHD_step%time_d%i_time_step,       &
      &                             MHD_step%viz_step)
-      iflag = lead_field_data_flag(MHD_step%time_d%i_time_step,         &
-     &                             MHD_step)
-      if(iflag .ne. 0) return
+      call istep_viz_w_fix_dt(MHD_step%time_d%i_time_step,              &
+     &                             MHD_step%viz_step)
+      if(lead_field_data_flag(MHD_step%time_d%i_time_step,MHD_step)     &
+     &  .ne. 0) return
 !
 !*  ----------- Data communication  --------------
 !

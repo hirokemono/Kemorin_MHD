@@ -195,19 +195,19 @@
      &   (MHD_step%init_d%dt, tctl, MHD_step%viz_step)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
-      call set_output_step_4_fixed_step(ione, MHD_step%init_d%dt,       &
+      call output_step_4_fixed_step_ctl(ione, MHD_step%init_d%dt,       &
      &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl,                &
      &    MHD_step%rms_step)
 !
-      call set_output_step_4_fixed_step(izero, MHD_step%init_d%dt,      &
+      call output_step_4_fixed_step_ctl(izero, MHD_step%init_d%dt,      &
      &    tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,        &
      &    MHD_step%sgs_IO_step)
 !
-      call set_output_step_4_fixed_step(izero, MHD_step%init_d%dt,      &
+      call output_step_4_fixed_step_ctl(izero, MHD_step%init_d%dt,      &
      &    tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,            &
      &    MHD_step%point_step)
 !
-      call set_output_step_4_fixed_step(izero, MHD_step%init_d%dt,      &
+      call output_step_4_fixed_step_ctl(izero, MHD_step%init_d%dt,      &
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
      &    MHD_step%boundary_step)
 !
@@ -225,19 +225,19 @@
      &   (tctl, MHD_step%flex_p, MHD_step%init_d, MHD_step%finish_d,    &
      &    MHD_step%rst_step, MHD_step%ucd_step)
 !
-      call set_output_step_4_flex_step(ione, MHD_step%flex_p%dt_max,    &
+      call output_step_4_flex_step_ctl(ione, MHD_step%flex_p%dt_max,    &
      &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl,                &
      &    MHD_step%rms_step)
 !
-      call set_output_step_4_flex_step(izero, MHD_step%flex_p%dt_max,   &
+      call output_step_4_flex_step_ctl(izero, MHD_step%flex_p%dt_max,   &
      &    tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,        &
      &    MHD_step%sgs_IO_step)
 !
-      call set_output_step_4_flex_step(izero, MHD_step%flex_p%dt_max,   &
+      call output_step_4_flex_step_ctl(izero, MHD_step%flex_p%dt_max,   &
      &    tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,            &
      &    MHD_step%point_step)
 !
-      call set_output_step_4_flex_step(izero, MHD_step%flex_p%dt_max,   &
+      call output_step_4_flex_step_ctl(izero, MHD_step%flex_p%dt_max,   &
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
      &    MHD_step%boundary_step)
 !
@@ -275,10 +275,10 @@
       end if
 !
 !
-      call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
+      call output_step_4_flex_step_ctl(ione, flex_p%dt_max,             &
      &    tctl%i_step_rst_ctl, tctl%delta_t_rst_ctl, rst_step)
 !
-      call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
+      call output_step_4_flex_step_ctl(ione, flex_p%dt_max,             &
      &   tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step)
 !
       init_d%i_time_step =  istep_rst_start * rst_step%increment
