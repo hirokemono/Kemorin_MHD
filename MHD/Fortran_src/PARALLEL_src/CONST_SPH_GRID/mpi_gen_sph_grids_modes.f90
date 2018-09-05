@@ -161,7 +161,6 @@
 !
       use set_comm_table_rtp_rj
       use sph_file_MPI_IO_select
-      use copy_mesh_structures
 !
       type(sph_comm_tbl), intent(in) :: comm_rlm_mul(nprocs)
 !
@@ -180,8 +179,6 @@
      &    gen_sph%s3d_ranks, gen_sph%s3d_radius,                        &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
      &    sph_params, sph_rj, sph_rlm, sph_file_m, sph_lcx_m)
-      call copy_group_data(sph_file_m%sph_grp_IO%radial_rj_grp,         &
-     &    gen_sph%radial_rj_grp_lc)
 !
       call sel_mpi_write_spectr_rj_file(nprocs, my_rank, sph_file_m)
       call dealloc_rj_mode_IO(sph_file_m)
@@ -199,7 +196,6 @@
 !
       use set_comm_table_rtp_rj
       use sph_file_MPI_IO_select
-      use copy_mesh_structures
 !
       type(sph_comm_tbl), intent(in) :: comm_rtm_mul(nprocs)
 !
@@ -217,11 +213,6 @@
      &    gen_sph%med_layer_grp, gen_sph%s3d_ranks, gen_sph%s3d_radius, &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
      &    sph_params, sph_rtp, sph_rtm, sph_file_m, sph_lcx_m)
-!
-      call copy_group_data(sph_file_m%sph_grp_IO%radial_rtp_grp,        &
-     &    gen_sph%radial_rtp_grp_lc)
-      call copy_group_data(sph_file_m%sph_grp_IO%theta_rtp_grp,         &
-     &    gen_sph%theta_rtp_grp_lc)
 !
       call sel_mpi_write_geom_rtp_file(nprocs, my_rank, sph_file_m)
 !
