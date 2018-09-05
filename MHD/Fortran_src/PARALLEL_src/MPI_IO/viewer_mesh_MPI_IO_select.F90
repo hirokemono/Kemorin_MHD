@@ -50,7 +50,7 @@
       call add_ksm_extension(mesh_file%file_prefix, file_name)
 !
 #ifdef ZLIB_IO
-      if(mesh_file%iflag_format .eq. id_gzip_txt_file_fmt) then
+      if(mod(mesh_file%iflag_format,10) .eq. id_gzip_txt_file_fmt) then
         call gz_mpi_write_viewer_mesh_file                              &
      &     (file_name, mgd_v_mesh, mgd_view_prm)
         return
