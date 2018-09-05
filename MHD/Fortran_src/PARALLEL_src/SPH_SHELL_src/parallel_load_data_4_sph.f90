@@ -162,9 +162,8 @@
       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
-      call const_FEM_mesh_4_sph_mhd(FEM_mesh_flags,                     &
-     &    sph_params, sph_rtp, sph_rj,                                  &
-     &    gen_sph%radial_rtp_grp_lc, gen_sph%radial_rj_grp_lc,          &
+      call const_FEM_mesh_4_sph_mhd                                     &
+     &   (FEM_mesh_flags, sph_params, sph_rtp, sph_rj,                  &
      &    femmesh_s%mesh, femmesh_s%group, mesh_file, gen_sph)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, fem%mesh%nod_comm, mesh%node, mesh%ele,             &
