@@ -77,7 +77,7 @@
 !
       integer(kind = kint) :: ip_r, ip_t
 !
-      write(*,*) 'radial_rj_grp%grp_name', radial_rj_grp%grp_name
+!      write(*,*) 'radial_rj_grp%grp_name', radial_rj_grp%grp_name
 !
       stbl%nidx_local_fem(1:3) = sph_rtp%nidx_rtp(1:3)
       stbl%nidx_local_fem(3) =   sph_params%m_folding                   &

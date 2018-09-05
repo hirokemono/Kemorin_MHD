@@ -95,7 +95,8 @@
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
         call para_gen_sph_grids(sph_maker%sph_tmp, sph_maker%gen_sph)
-        call deallocate_gen_mesh_params(sph_maker%gen_sph)
+        call dealloc_gen_mesh_params(sph_maker%gen_sph)
+        call dealloc_gen_sph_fem_mesh_param(sph_maker%gen_sph)
       end if
       call calypso_mpi_barrier
 !
@@ -103,6 +104,7 @@
       call load_para_SPH_and_FEM_mesh(MHD_files%FEM_mesh_flags,         &
      &    sph, comms_sph, sph_grps, geofem, ele_mesh,                   &
      &    MHD_files%mesh_file_IO, sph_maker%gen_sph)
+      call dealloc_gen_sph_fem_mesh_param(sph_maker%gen_sph)
 !
       end subroutine select_make_SPH_mesh
 !

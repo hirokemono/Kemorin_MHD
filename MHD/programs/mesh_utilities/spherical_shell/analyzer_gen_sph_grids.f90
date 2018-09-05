@@ -20,6 +20,7 @@
 !
       use m_work_time
 !
+      use t_mesh_data
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_file_IO_parameter
@@ -89,21 +90,30 @@
 !
       use parallel_gen_sph_grids
       use mpi_gen_sph_grids_modes
+      use parallel_load_data_4_sph
+!
+      type(sph_comm_tables) :: comms_sph
+      type(sph_group_data) ::  sph_grps
+      type(mesh_data) :: geofem
+      type(element_geometry) :: ele_mesh
 !
 !  ========= Generate spherical harmonics table ========================
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_grids'
       call para_gen_sph_grids(sph_const, gen_sph_G)
+      call dealloc_gen_mesh_params(gen_sph_G)
+      call dealloc_gen_sph_fem_mesh_param(gen_sph_G)
 !
       call start_elapsed_time(4)
-      call mpi_gen_fem_mesh_for_sph(sph_files1%FEM_mesh_flags,          &
-     &    gen_sph_G, sph_const%sph_params, sph_const%sph_rj,            &
-     &    sph_const%sph_rtp, sph_files1%mesh_file_IO)
+      call load_para_SPH_and_FEM_mesh                                  &
+     &   (sph_files1%FEM_mesh_flags, sph_const, comms_sph, sph_grps,   &
+     &    geofem, ele_mesh, sph_files1%mesh_file_IO, gen_sph_G)
       call end_elapsed_time(4)
       call end_elapsed_time(1)
 !
-      call output_elapsed_times
+      call dealloc_gen_sph_fem_mesh_param(gen_sph_G)
 !
+      call output_elapsed_times
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !

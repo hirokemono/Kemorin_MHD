@@ -8,7 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine para_gen_sph_grids(sph, gen_sph)
-!!      subroutine deallocate_gen_mesh_params(gen_sph)
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!        type(sph_grids), intent(inout) :: sph
 !!@endverbatim
@@ -94,8 +93,8 @@
       call end_elapsed_time(2)
 !
       call start_elapsed_time(3)
-      call mpi_gen_sph_rj_modes(comm_rlm_mul,                           &
-     &    gen_sph, sph%sph_params, sph%sph_rlm, sph%sph_rj)
+      call mpi_gen_sph_rj_modes(comm_rlm_mul, sph%sph_params,           &
+     &    gen_sph, sph%sph_rlm, sph%sph_rj)
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
@@ -112,8 +111,8 @@
       call end_elapsed_time(2)
 !
       call start_elapsed_time(3)
-      call mpi_gen_sph_rtp_grids(comm_rtm_mul,                          &
-     &    gen_sph, sph%sph_params, sph%sph_rtp, sph%sph_rtm)
+      call mpi_gen_sph_rtp_grids(comm_rtm_mul, sph%sph_params,          &
+     &    gen_sph, sph%sph_rtp, sph%sph_rtm)
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
 !
@@ -124,29 +123,6 @@
       end subroutine para_gen_sph_grids
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine deallocate_gen_mesh_params(gen_sph)
-!
-      type(construct_spherical_grid), intent(inout) :: gen_sph
-!
-!
-      call dealloc_sph_ranks(gen_sph%s3d_ranks)
-      call dealloc_sph_1d_domain_id(gen_sph%s3d_ranks)
-!
-      call dealloc_sph_gl_parameter(gen_sph%sph_lcp)
-!
-      call dealloc_sph_1d_global_idx(gen_sph%sph_gl1d)
-      call dealloc_sph_1d_global_stack(gen_sph%stk_lc1d)
-!
-      call dealloc_radius_1d_gl(gen_sph%s3d_radius)
-!
-      call dealloc_layering_group(gen_sph%med_layer_grp)
-      call dealloc_layering_group(gen_sph%r_layer_grp)
-      call dealloc_layering_group(gen_sph%added_radial_grp)
-!
-      end subroutine deallocate_gen_mesh_params
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine bcast_comm_stacks_sph(ndomain_sph, comm_sph)

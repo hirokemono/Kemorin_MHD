@@ -65,6 +65,7 @@
      &          fem, ele_mesh, mesh_file, gen_sph)
 !
       use t_mesh_data
+      use copy_mesh_structures
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(sph_grids), intent(inout) :: sph
@@ -80,9 +81,15 @@
 !
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
 !
+      call copy_group_data                                              &
+     &   (sph_grps%radial_rtp_grp, gen_sph%radial_rtp_grp_lc)
+      call copy_group_data                                              &
+     &   (sph_grps%theta_rtp_grp, gen_sph%theta_rtp_grp_lc)
+      call copy_group_data                                              &
+     &   (sph_grps%radial_rj_grp, gen_sph%radial_rj_grp_lc)
+!
       call load_FEM_mesh_4_SPH(FEM_mesh_flags,                          &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
-     &    sph_grps%radial_rtp_grp, sph_grps%radial_rj_grp,              &
      &    fem, ele_mesh, mesh_file, gen_sph)
 !
       end subroutine load_para_SPH_and_FEM_mesh
@@ -104,8 +111,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine load_FEM_mesh_4_SPH(FEM_mesh_flags, sph_params,        &
-     &          sph_rtp, sph_rj, radial_rtp_grp, radial_rj_grp,         &
+      subroutine load_FEM_mesh_4_SPH                                    &
+     &         (FEM_mesh_flags, sph_params, sph_rtp, sph_rj,            &
      &          fem, ele_mesh, mesh_file, gen_sph)
 !
       use calypso_mpi
@@ -126,8 +133,6 @@
       type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(group_data), intent(in) :: radial_rtp_grp
-      type(group_data), intent(in) :: radial_rj_grp
 !
       type(mesh_data), intent(inout) ::   fem
       type(element_geometry), intent(inout) :: ele_mesh
@@ -158,7 +163,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
       call const_FEM_mesh_4_sph_mhd(FEM_mesh_flags,                     &
-     &    sph_params, sph_rtp, sph_rj, radial_rtp_grp, radial_rj_grp,   &
+     &    sph_params, sph_rtp, sph_rj,                                  &
+     &    gen_sph%radial_rtp_grp_lc, gen_sph%radial_rj_grp_lc,          &
      &    femmesh_s%mesh, femmesh_s%group, mesh_file, gen_sph)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, fem%mesh%nod_comm, mesh%node, mesh%ele,             &
