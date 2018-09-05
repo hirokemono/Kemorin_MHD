@@ -214,6 +214,9 @@
       type(sph_rtm_grid), intent(inout) :: sph_rtm
 !
 !
+      write(*,*) 'gen_sph%r_layer_grp', gen_sph%r_layer_grp%name
+      write(*,*) 'gen_sph%med_layer_grp', gen_sph%med_layer_grp%name
+!
       call alloc_rtp_1d_local_idx(sph_rtp, sph_lcx_m)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical grids for domain ',  my_rank
@@ -279,27 +282,6 @@
 !
       if(FEM_mesh_flags%iflag_access_FEM .eq. 0) return
 !
-      call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_s)
-!
-      call s_const_1d_ele_connect_4_sph                                 &
-     &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp,   &
-     &    gen_sph%s3d_ranks, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
-     &    stbl_s)
-      call set_rj_radial_grp(sph_params, sph_rj,                        &
-     &    gen_sph%added_radial_grp, radial_rj_grp_lc)
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &             'Construct FEM mesh for domain ', my_rank
-!
-      call copy_gl_2_local_rtp_param (my_rank, gen_sph%s3d_ranks,       &
-     &    gen_sph%sph_lcp, gen_sph%stk_lc1d, sph_rtp)
-      call s_const_FEM_mesh_for_sph                                     &
-     &   (my_rank, sph_rtp%nidx_rtp, gen_sph%s3d_radius%radius_1d_gl,   &
-     &    gauss_s, gen_sph%s3d_ranks, gen_sph%stk_lc1d,                 &
-     &    gen_sph%sph_gl1d, sph_params, sph_rtp, radial_rj_grp_lc,      &
-     &    femmesh%mesh, femmesh%group, ele_mesh, stbl_s)
-!
-! Increase sleeve size
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver                                   &
      &   (n_sym_tensor, femmesh%mesh%node%numnod)
@@ -307,6 +289,27 @@
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_nod_send_recv(femmesh%mesh)
 !
+      call copy_gl_2_local_rtp_param (my_rank, gen_sph%s3d_ranks,       &
+     &    gen_sph%sph_lcp, gen_sph%stk_lc1d, sph_rtp)
+      call set_rj_radial_grp(sph_params, sph_rj,                        &
+     &    gen_sph%added_radial_grp, radial_rj_grp_lc)
+!
+      call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_s)
+!
+      call s_const_1d_ele_connect_4_sph                                 &
+     &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp,   &
+     &    gen_sph%s3d_ranks, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
+     &    stbl_s)
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &             'Construct FEM mesh for domain ', my_rank
+      call s_const_FEM_mesh_for_sph                                     &
+     &   (my_rank, sph_rtp%nidx_rtp, gen_sph%s3d_radius%radius_1d_gl,   &
+     &    gauss_s, gen_sph%s3d_ranks, gen_sph%stk_lc1d,                 &
+     &    gen_sph%sph_gl1d, sph_params, sph_rtp, radial_rj_grp_lc,      &
+     &    femmesh%mesh, femmesh%group, ele_mesh, stbl_s)
+!
+! Increase sleeve size
       do i_level = 2, gen_sph%num_FEM_sleeve
         if(my_rank .gt. 0) write(*,*) 'extend sleeve:', i_level
         call para_sleeve_extension                                      &
@@ -329,6 +332,9 @@
         end if
       end if
 !
+      call dealloc_nnod_nele_sph_mesh(stbl_s)
+      call dealloc_gauss_colatitude(gauss_s)
+!
       if(iflag_debug.gt.0) write(*,*) 'iflag_output_SURF',              &
      &          FEM_mesh_flags%iflag_output_SURF
       if(FEM_mesh_flags%iflag_output_SURF .gt. 0) then
@@ -342,9 +348,6 @@
       call dealloc_groups_data(femmesh%group)
       call dealloc_mesh_type(femmesh%mesh)
       call deallocate_grp_type(radial_rj_grp_lc)
-!
-      call dealloc_nnod_nele_sph_mesh(stbl_s)
-      call dealloc_gauss_colatitude(gauss_s)
 !
       end subroutine mpi_gen_fem_mesh_for_sph
 !

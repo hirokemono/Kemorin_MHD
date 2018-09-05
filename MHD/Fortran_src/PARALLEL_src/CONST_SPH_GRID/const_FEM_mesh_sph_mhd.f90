@@ -85,11 +85,11 @@
       integer(kind = kint) :: i_level
 !
 !
-      call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_SF)
-!
-!
       call const_global_sph_FEM                                         &
      &   (sph_rtp, sph_rj, radial_rtp_grp, gen_sph)
+!
+      call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_SF)
+!
       call s_const_1d_ele_connect_4_sph                                 &
      &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp,   &
      &    gen_sph%s3d_ranks, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
