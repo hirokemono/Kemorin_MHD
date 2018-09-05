@@ -19,9 +19,7 @@
 	IBOutlet NSTableView * idOpacityTableView;
 	
 	IBOutlet id _OpacityTableView;
-      IBOutlet fillRectView* _fillRectView;
-	
-	
+    IBOutlet fillRectView* _fillRectView;
 	
 	CGFloat DataMaximum;
 	CGFloat DataMinimum;

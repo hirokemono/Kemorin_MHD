@@ -29,7 +29,7 @@
 	double value2, opacity2;
 	int isel = [idOpacityTableView selectedRow];
 	
-	if ([idOpacityTableView selectedRow] > 0 && isel > 0) {
+	if (isel > 0) {
 		value1 =   [[self.OpacityTableField objectAtIndex:isel-1] doubleValue];
 		opacity1 = [[self.OpacityTableOpacity objectAtIndex:isel-1] doubleValue];
 		value2 =   [[self.OpacityTableField objectAtIndex:isel] doubleValue];

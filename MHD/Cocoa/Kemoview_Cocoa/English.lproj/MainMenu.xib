@@ -2215,7 +2215,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="VFN-e1-GpJ">
                             <rect key="frame" x="0.0" y="0.0" width="232" height="686"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <view autoresizesSubviews="NO" id="3783">
                                     <rect key="frame" x="0.0" y="0.0" width="230" height="686"/>
@@ -4046,6 +4046,7 @@
                     </scroller>
                 </scrollView>
             </subviews>
+            <point key="canvasLocation" x="139" y="168.5"/>
         </customView>
         <drawer trailingOffset="15" id="2223">
             <size key="contentSize" width="212" height="400"/>

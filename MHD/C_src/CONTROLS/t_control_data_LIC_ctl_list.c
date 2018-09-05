@@ -180,7 +180,7 @@ int read_LIC_PVR_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
 	int num_array = 0;
 	
 	iflag = find_control_array_flag_c(buf, label, &num_array);
-	if(iflag == 0) return iflag;
+	if(iflag*num_array == 0) return iflag;
 	
 	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
