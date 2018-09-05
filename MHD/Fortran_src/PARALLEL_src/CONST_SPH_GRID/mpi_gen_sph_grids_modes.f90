@@ -314,7 +314,7 @@
       end do
 !
 ! Output mesh data
-      write(*,*) 'FEM_mesh_flags%iflag_access_FEM',                     &
+      if(iflag_debug.gt.0) write(*,*) 'iflag_access_FEM',               &
      &          FEM_mesh_flags%iflag_access_FEM
       if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then
         mesh_file%file_prefix = sph_file_head
@@ -329,7 +329,7 @@
         end if
       end if
 !
-      write(*,*) 'FEM_mesh_flags%iflag_output_SURF',                    &
+      if(iflag_debug.gt.0) write(*,*) 'iflag_output_SURF',              &
      &          FEM_mesh_flags%iflag_output_SURF
       if(FEM_mesh_flags%iflag_output_SURF .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_init_with_IO'
