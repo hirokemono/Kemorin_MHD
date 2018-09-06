@@ -10,33 +10,26 @@
 #include "t_control_real2_IO.h"
 #include "t_SGS_MHD_control_c.h"
 
-@interface Real2TableController : NSObject {
-    NSString *Title1;
-    NSString *Title2;
-    NSInteger  NumTableItem;
-    NSMutableArray *TableRealData1;
-    NSMutableArray *TableRealData2;
-    IBOutlet NSTableView * idReal2TableTableView;
-    
-    IBOutlet id _real2TableView;
+@interface Real2ControlTableview : NSObject {
+    NSMutableDictionary * real2ControlDictionary;
+    NSMutableArray * real2ControlArray;
+    NSTableView * real2TableView;
+    NSNumberFormatter * numberFormatter;
+    IBOutlet NSView *real2TableViewOutlet;
 }
-// @property (copy) NSMutableArray * TableRealData1;
-// @property (copy) NSMutableArray * TableRealData2;
-@property (assign) NSTableView * idReal2TableView;
-@property (copy) NSString * Title1;
-@property (copy) NSString * Title2;
+@property(strong) NSMutableDictionary * real2ControlDictionary;
+@property(strong) NSMutableArray * real2ControlArray;
+@property(strong) NSTableView * real2TableView;
 
-
+- (void)awakeFromNib;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView;
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn 
+            row:(NSInteger)rowIndex;
+- (IBAction) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn
+                       row:(int)pRowIndex :(id)sender;
+- (void)tableView:(NSTableView *)pTableViewObj setObjectValue:(id)pObject 
+   forTableColumn:(NSTableColumn *)pTableColumn row:(NSInteger)pRowIndex;
 - (IBAction)addAtSelectedRow:(id)pId;
 - (IBAction)deleteSelectedRow:(id)pId;
-
-- (int)numberOfRowsInTableView:(NSTableView *)pTableViewObj;
-
-- (void)tableView:(NSTableView *)pTableViewObj setObjectValue:(id)pObject forTableColumn
-                 :(NSTableColumn *)pTableColumn row:(int)pRowIndex;
-
-- (void)InitReal2Tables;
-- (void) SetReal2Tables;
-- (IBAction) UpdateReal2Tables:(id)pID;
 
 @end

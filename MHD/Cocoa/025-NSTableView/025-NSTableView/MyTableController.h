@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
-#import "MyDataObject.h"
 
 
 @interface MyTableController : NSObject {

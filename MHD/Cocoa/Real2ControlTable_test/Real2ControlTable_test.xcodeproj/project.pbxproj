@@ -7,28 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		18F1F225213FB6A2009F8F18 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F1F224213FB6A2009F8F18 /* AppDelegate.m */; };
-		18F1F227213FB6A2009F8F18 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18F1F226213FB6A2009F8F18 /* Assets.xcassets */; };
-		18F1F22A213FB6A2009F8F18 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F1F228213FB6A2009F8F18 /* MainMenu.xib */; };
-		18F1F22D213FB6A2009F8F18 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F1F22C213FB6A2009F8F18 /* main.m */; };
-		18F1F239213FB73B009F8F18 /* MyTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F1F238213FB73B009F8F18 /* MyTableController.m */; };
+		18AEB9C02140E6B600CA2309 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AEB9BF2140E6B600CA2309 /* AppDelegate.m */; };
+		18AEB9C22140E6B600CA2309 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18AEB9C12140E6B600CA2309 /* Assets.xcassets */; };
+		18AEB9C52140E6B600CA2309 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18AEB9C32140E6B600CA2309 /* MainMenu.xib */; };
+		18AEB9C82140E6B600CA2309 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AEB9C72140E6B600CA2309 /* main.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		18F1F220213FB6A2009F8F18 /* 025-NSTableView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "025-NSTableView.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		18F1F223213FB6A2009F8F18 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		18F1F224213FB6A2009F8F18 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		18F1F226213FB6A2009F8F18 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		18F1F229213FB6A2009F8F18 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		18F1F22B213FB6A2009F8F18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		18F1F22C213FB6A2009F8F18 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		18F1F22E213FB6A2009F8F18 /* _25_NSTableView.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = _25_NSTableView.entitlements; sourceTree = "<group>"; };
-		18F1F237213FB73B009F8F18 /* MyTableController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyTableController.h; sourceTree = "<group>"; };
-		18F1F238213FB73B009F8F18 /* MyTableController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyTableController.m; sourceTree = "<group>"; };
+		18AEB9BB2140E6B600CA2309 /* Real2ControlTable_test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Real2ControlTable_test.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		18AEB9BE2140E6B600CA2309 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		18AEB9BF2140E6B600CA2309 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		18AEB9C12140E6B600CA2309 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		18AEB9C42140E6B600CA2309 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		18AEB9C62140E6B600CA2309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		18AEB9C72140E6B600CA2309 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		18AEB9C92140E6B600CA2309 /* Real2ControlTable_test.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Real2ControlTable_test.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		18F1F21D213FB6A2009F8F18 /* Frameworks */ = {
+		18AEB9B82140E6B600CA2309 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -38,74 +35,72 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		18F1F217213FB6A2009F8F18 = {
+		18AEB9B22140E6B600CA2309 = {
 			isa = PBXGroup;
 			children = (
-				18F1F222213FB6A2009F8F18 /* 025-NSTableView */,
-				18F1F221213FB6A2009F8F18 /* Products */,
+				18AEB9BD2140E6B600CA2309 /* Real2ControlTable_test */,
+				18AEB9BC2140E6B600CA2309 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		18F1F221213FB6A2009F8F18 /* Products */ = {
+		18AEB9BC2140E6B600CA2309 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				18F1F220213FB6A2009F8F18 /* 025-NSTableView.app */,
+				18AEB9BB2140E6B600CA2309 /* Real2ControlTable_test.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		18F1F222213FB6A2009F8F18 /* 025-NSTableView */ = {
+		18AEB9BD2140E6B600CA2309 /* Real2ControlTable_test */ = {
 			isa = PBXGroup;
 			children = (
-				18F1F237213FB73B009F8F18 /* MyTableController.h */,
-				18F1F238213FB73B009F8F18 /* MyTableController.m */,
-				18F1F223213FB6A2009F8F18 /* AppDelegate.h */,
-				18F1F224213FB6A2009F8F18 /* AppDelegate.m */,
-				18F1F226213FB6A2009F8F18 /* Assets.xcassets */,
-				18F1F228213FB6A2009F8F18 /* MainMenu.xib */,
-				18F1F22B213FB6A2009F8F18 /* Info.plist */,
-				18F1F22C213FB6A2009F8F18 /* main.m */,
-				18F1F22E213FB6A2009F8F18 /* _25_NSTableView.entitlements */,
+				18AEB9BE2140E6B600CA2309 /* AppDelegate.h */,
+				18AEB9BF2140E6B600CA2309 /* AppDelegate.m */,
+				18AEB9C12140E6B600CA2309 /* Assets.xcassets */,
+				18AEB9C32140E6B600CA2309 /* MainMenu.xib */,
+				18AEB9C62140E6B600CA2309 /* Info.plist */,
+				18AEB9C72140E6B600CA2309 /* main.m */,
+				18AEB9C92140E6B600CA2309 /* Real2ControlTable_test.entitlements */,
 			);
-			path = "025-NSTableView";
+			path = Real2ControlTable_test;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		18F1F21F213FB6A2009F8F18 /* 025-NSTableView */ = {
+		18AEB9BA2140E6B600CA2309 /* Real2ControlTable_test */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 18F1F231213FB6A2009F8F18 /* Build configuration list for PBXNativeTarget "025-NSTableView" */;
+			buildConfigurationList = 18AEB9CC2140E6B600CA2309 /* Build configuration list for PBXNativeTarget "Real2ControlTable_test" */;
 			buildPhases = (
-				18F1F21C213FB6A2009F8F18 /* Sources */,
-				18F1F21D213FB6A2009F8F18 /* Frameworks */,
-				18F1F21E213FB6A2009F8F18 /* Resources */,
+				18AEB9B72140E6B600CA2309 /* Sources */,
+				18AEB9B82140E6B600CA2309 /* Frameworks */,
+				18AEB9B92140E6B600CA2309 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "025-NSTableView";
-			productName = "025-NSTableView";
-			productReference = 18F1F220213FB6A2009F8F18 /* 025-NSTableView.app */;
+			name = Real2ControlTable_test;
+			productName = Real2ControlTable_test;
+			productReference = 18AEB9BB2140E6B600CA2309 /* Real2ControlTable_test.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		18F1F218213FB6A2009F8F18 /* Project object */ = {
+		18AEB9B32140E6B600CA2309 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Hiroaki Matsui";
 				TargetAttributes = {
-					18F1F21F213FB6A2009F8F18 = {
+					18AEB9BA2140E6B600CA2309 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = 18F1F21B213FB6A2009F8F18 /* Build configuration list for PBXProject "025-NSTableView" */;
+			buildConfigurationList = 18AEB9B62140E6B600CA2309 /* Build configuration list for PBXProject "Real2ControlTable_test" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -113,46 +108,45 @@
 				en,
 				Base,
 			);
-			mainGroup = 18F1F217213FB6A2009F8F18;
-			productRefGroup = 18F1F221213FB6A2009F8F18 /* Products */;
+			mainGroup = 18AEB9B22140E6B600CA2309;
+			productRefGroup = 18AEB9BC2140E6B600CA2309 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				18F1F21F213FB6A2009F8F18 /* 025-NSTableView */,
+				18AEB9BA2140E6B600CA2309 /* Real2ControlTable_test */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		18F1F21E213FB6A2009F8F18 /* Resources */ = {
+		18AEB9B92140E6B600CA2309 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18F1F227213FB6A2009F8F18 /* Assets.xcassets in Resources */,
-				18F1F22A213FB6A2009F8F18 /* MainMenu.xib in Resources */,
+				18AEB9C22140E6B600CA2309 /* Assets.xcassets in Resources */,
+				18AEB9C52140E6B600CA2309 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		18F1F21C213FB6A2009F8F18 /* Sources */ = {
+		18AEB9B72140E6B600CA2309 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18F1F239213FB73B009F8F18 /* MyTableController.m in Sources */,
-				18F1F22D213FB6A2009F8F18 /* main.m in Sources */,
-				18F1F225213FB6A2009F8F18 /* AppDelegate.m in Sources */,
+				18AEB9C82140E6B600CA2309 /* main.m in Sources */,
+				18AEB9C02140E6B600CA2309 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		18F1F228213FB6A2009F8F18 /* MainMenu.xib */ = {
+		18AEB9C32140E6B600CA2309 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				18F1F229213FB6A2009F8F18 /* Base */,
+				18AEB9C42140E6B600CA2309 /* Base */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
@@ -160,7 +154,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		18F1F22F213FB6A2009F8F18 /* Debug */ = {
+		18AEB9CA2140E6B600CA2309 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -215,7 +209,7 @@
 			};
 			name = Debug;
 		};
-		18F1F230213FB6A2009F8F18 /* Release */ = {
+		18AEB9CB2140E6B600CA2309 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -263,30 +257,30 @@
 			};
 			name = Release;
 		};
-		18F1F232213FB6A2009F8F18 /* Debug */ = {
+		18AEB9CD2140E6B600CA2309 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "025-NSTableView/_25_NSTableView.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Real2ControlTable_test/Real2ControlTable_test.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "025-NSTableView/Info.plist";
+				INFOPLIST_FILE = Real2ControlTable_test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "University-of-California--Davis.-25-NSTableView";
+				PRODUCT_BUNDLE_IDENTIFIER = "University-of-California--Davis.Real2ControlTable-test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
-		18F1F233213FB6A2009F8F18 /* Release */ = {
+		18AEB9CE2140E6B600CA2309 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "025-NSTableView/_25_NSTableView.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Real2ControlTable_test/Real2ControlTable_test.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "025-NSTableView/Info.plist";
+				INFOPLIST_FILE = Real2ControlTable_test/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "University-of-California--Davis.-25-NSTableView";
+				PRODUCT_BUNDLE_IDENTIFIER = "University-of-California--Davis.Real2ControlTable-test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -294,25 +288,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		18F1F21B213FB6A2009F8F18 /* Build configuration list for PBXProject "025-NSTableView" */ = {
+		18AEB9B62140E6B600CA2309 /* Build configuration list for PBXProject "Real2ControlTable_test" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				18F1F22F213FB6A2009F8F18 /* Debug */,
-				18F1F230213FB6A2009F8F18 /* Release */,
+				18AEB9CA2140E6B600CA2309 /* Debug */,
+				18AEB9CB2140E6B600CA2309 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		18F1F231213FB6A2009F8F18 /* Build configuration list for PBXNativeTarget "025-NSTableView" */ = {
+		18AEB9CC2140E6B600CA2309 /* Build configuration list for PBXNativeTarget "Real2ControlTable_test" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				18F1F232213FB6A2009F8F18 /* Debug */,
-				18F1F233213FB6A2009F8F18 /* Release */,
+				18AEB9CD2140E6B600CA2309 /* Debug */,
+				18AEB9CE2140E6B600CA2309 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 18F1F218213FB6A2009F8F18 /* Project object */;
+	rootObject = 18AEB9B32140E6B600CA2309 /* Project object */;
 }

@@ -8,33 +8,43 @@
 
 #import "MyTableController.h"
 
+
 @implementation MyTableController
 @synthesize mutableDataArray;
 @synthesize mutableDictionary;
 @synthesize myTableView;
 
+NSString *_key1 = @"key1";
+NSString *_key2 = @"key2";
+NSString *_key3 = @"key3";
+NSString *_key4 = @"key4";
+NSString *_key5 = @"key5";
+NSString *_key6 = @"key6";
+NSString *_key7 = @"key7";
+
+
 -(void)createMutablearray
 {
-    mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"10001",@"key1",@"10002",@"key2",@"10003",@"key3",
-                          @"10004",@"key4",@"10005",@"key5",@"10006",@"key6",@"10007",@"key7", nil];
+    mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"10001",_key1,@"10002",_key2,@"10003",_key3,
+                          @"10004",_key4,@"10005",_key5,@"10006",_key6,@"10007",_key7, nil];
     
     self.mutableDataArray = [[NSMutableArray alloc]init];    
     [self.mutableDataArray addObject:mutableDictionary];
 
-    mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"20001",@"key1",@"20002",@"key2",@"20003",@"key3",
-            @"20004",@"key4",@"20005",@"key5",@"20006",@"key6",@"20007",@"key7", nil];
+    mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"20001",_key1,@"20002",_key2,@"20003",_key3,
+            @"20004",_key4,@"20005",_key5,@"20006",_key6,@"20007",_key7, nil];
     [self.mutableDataArray addObject:mutableDictionary];
-    mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"30001",@"key1",@"30002",@"key2",@"30003",@"key3",
-            @"30004",@"key4",@"30005",@"key5",@"30006",@"key6",@"30007",@"key7", nil];
+    mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"30001",_key1,@"30002",_key2,@"30003",_key3,
+            @"30004",_key4,@"30005",_key5,@"30006",_key6,@"30007",_key7, nil];
     [self.mutableDataArray addObject:mutableDictionary];
-    mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"40001",@"key1",@"40002",@"key2",@"40003",@"key3",
-            @"40004",@"key4",@"40005",@"key5",@"40006",@"key6",@"40007",@"key7", nil];
+    mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"40001",_key1,@"40002",_key2,@"40003",_key3,
+            @"40004",_key4,@"40005",_key5,@"40006",_key6,@"40007",_key7, nil];
     [self.mutableDataArray addObject:mutableDictionary];
-    mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"50001",@"key1",@"50002",@"key2",@"50003",@"key3",
-            @"50004",@"key4",@"50005",@"key5",@"50006",@"key6",@"50007",@"key7", nil];
+    mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"50001",_key1,@"50002",_key2,@"50003",_key3,
+            @"50004",_key4,@"50005",_key5,@"50006",_key6,@"50007",_key7, nil];
     [self.mutableDataArray addObject:mutableDictionary];
-    mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"60001",@"key1",@"60002",@"key2",@"60003",@"key3",
-            @"60004",@"key4",@"60005",@"key5",@"60006",@"key6",@"60007",@"key7", nil];
+    mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"60001",_key1,@"60002",_key2,@"60003",_key3,
+            @"60004",_key4,@"60005",_key5,@"60006",_key6,@"60007",_key7, nil];
     [self.mutableDataArray addObject:mutableDictionary];    
 }
 
@@ -123,8 +133,8 @@
     NSInteger isel = [self.myTableView selectedRow];
 
     if(isel > 0) {
-        mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"90001",@"key1",@"90002",@"key2",@"90003",@"key3",
-                             @"90004",@"key4",@"90005",@"key5",@"90006",@"key6",@"90007",@"key7", nil];
+        mutableDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"90001",_key1,@"90002",_key2,@"90003",_key3,
+                             @"90004",_key4,@"90005",_key5,@"90006",_key6,@"90007",_key7, nil];
         [self.mutableDataArray insertObject:self.mutableDictionary atIndex:isel];
     };
     [self.myTableView reloadData];
