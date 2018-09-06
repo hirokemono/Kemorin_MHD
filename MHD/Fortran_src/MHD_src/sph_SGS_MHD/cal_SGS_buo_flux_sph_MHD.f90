@@ -112,7 +112,7 @@
 !
 !$omp parallel
       if(fs_trns%i_reynolds_wk .gt. 0) then
-        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
+        call cal_dot_prod_w_coef_smp(sph_rtp%nnod_rtp, dminus,          &
      &      trns_f_SGS%fld_rtp(1,fg_trns%i_SGS_inertia),                &
      &      trns_b_MHD%fld_rtp(1,b_trns%i_velo),                        &
      &      trns_f_snap%fld_rtp(1,fs_trns%i_reynolds_wk))
