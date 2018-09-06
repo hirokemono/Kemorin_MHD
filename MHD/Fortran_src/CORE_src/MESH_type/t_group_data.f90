@@ -7,11 +7,9 @@
 !> @brief Structure of group data
 !
 !!@verbatim
-!!      subroutine allocate_grp_type(grp)
 !!      subroutine allocate_grp_type_num(grp)
 !!      subroutine allocate_grp_type_item(grp)
 !!      subroutine allocate_grp_type_smp(grp)
-!!      subroutine allocate_surf_grp_type(sf_grp)
 !!      subroutine allocate_sf_grp_type_num(sf_grp)
 !!      subroutine allocate_sf_grp_type_item(sf_grp)
 !!      subroutine allocate_sf_grp_type_smp(grp)
@@ -103,17 +101,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_grp_type(grp)
-!
-      type(group_data), intent(inout) :: grp
-!
-      call allocate_grp_type_num(grp)
-      call allocate_grp_type_item(grp)
-!
-      end subroutine allocate_grp_type
-!
-! ----------------------------------------------------------------------
-!
       subroutine allocate_grp_type_num(grp)
 !
       type(group_data), intent(inout) :: grp
@@ -153,17 +140,6 @@
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-!
-      subroutine allocate_surf_grp_type(sf_grp)
-!
-      type(surface_group_data), intent(inout) :: sf_grp
-!
-      call allocate_sf_grp_type_num(sf_grp)
-      call allocate_sf_grp_type_item(sf_grp)
-!
-      end subroutine allocate_surf_grp_type
-!
-!-----------------------------------------------------------------------
 !
       subroutine allocate_sf_grp_type_num(sf_grp)
 !

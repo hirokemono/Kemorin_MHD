@@ -294,14 +294,19 @@
 !
       ele_grp%num_grp =    new_elegrp%num_grp
       ele_grp%num_item = new_elegrp%num_item
-      call allocate_grp_type(ele_grp)
+      call allocate_grp_type_num(ele_grp)
 !
       ele_grp%grp_name(1:ele_grp%num_grp)                               &
      &        =    new_elegrp%grp_name(1:ele_grp%num_grp)
       ele_grp%istack_grp(0:ele_grp%num_grp)                             &
      &        =  new_elegrp%istack_grp(0:ele_grp%num_grp)
+!
+      call allocate_grp_type_item(ele_grp)
       ele_grp%item_grp(1:ele_grp%num_item)                              &
      &        = new_elegrp%item_grp(1:ele_grp%num_item)
+!
+      write(*,*) 'new_elegrp%num_item', new_elegrp%num_item
+      write(*,*) 'ele_grp%item_grp', ele_grp%item_grp
 !
       end subroutine ordering_each_added_egrp
 !
