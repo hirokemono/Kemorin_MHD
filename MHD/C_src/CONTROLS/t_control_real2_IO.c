@@ -352,7 +352,6 @@ void init_real2_clist(struct real2_clist *r2_clst){
     r2_clst->clist_name = (char *)calloc(32,sizeof(char));
     r2_clst->r1_name = (char *)calloc(32,sizeof(char));
     r2_clst->r2_name = (char *)calloc(32,sizeof(char));
-    
     return;
 };
 

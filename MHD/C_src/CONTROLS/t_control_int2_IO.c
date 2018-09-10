@@ -297,11 +297,19 @@ static void copy_to_int2_ctl_list(int num, int *iv1, int *iv2,
 
 void init_int2_clist(struct int2_clist *i2_clst){
     init_int2_ctl_list(&i2_clst->i2_item_head);
+    
+    i2_clst->clist_name = (char *)calloc(32,sizeof(char));
+    i2_clst->i1_name = (char *)calloc(32,sizeof(char));
+    i2_clst->i2_name = (char *)calloc(32,sizeof(char));
     return;
 };
 
 void clear_int2_clist(struct int2_clist *i2_clst){
     clear_int2_ctl_list(&i2_clst->i2_item_head);
+
+    free(i2_clst->clist_name);
+    free(i2_clst->i1_name);
+    free(i2_clst->i2_name);
     return;
 };
 int count_int2_clist(struct int2_clist *i2_clst){
@@ -310,6 +318,7 @@ int count_int2_clist(struct int2_clist *i2_clst){
 
 int read_int2_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct int2_clist *i2_clst){
+    sprintf(i2_clst->clist_name,"%s", label);
     return read_int2_ctl_list(fp, buf, label, &i2_clst->i2_item_head);
 };
 int write_int2_clist(FILE *fp, int level, const char *label, 

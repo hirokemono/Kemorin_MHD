@@ -8,7 +8,7 @@
 #import <Cocoa/Cocoa.h>
 #include "kemosrc_param_c.h"
 #include "t_control_real2_IO.h"
-#include "t_SGS_MHD_control_c.h"
+#include "load_MHD_control_c.h"
 
 @interface Real2ControlTableview : NSObject {
     NSMutableDictionary * real2ControlDictionary;
@@ -16,10 +16,19 @@
     NSTableView * real2TableView;
     NSNumberFormatter * numberFormatter;
     IBOutlet NSView *real2TableViewOutlet;
+    
+    NSString *key1;
+    NSString *key2;
+    
+    struct real2_clist * Real2CtlList;
 }
 @property(strong) NSMutableDictionary * real2ControlDictionary;
 @property(strong) NSMutableArray * real2ControlArray;
 @property(strong) NSTableView * real2TableView;
+@property(strong) NSString * key1;
+@property(strong) NSString * key2;
+
+-(void)linkToReal2clist;
 
 - (void)awakeFromNib;
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView;

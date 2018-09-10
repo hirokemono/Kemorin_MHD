@@ -86,6 +86,8 @@ void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 
     fline_c->seed_surface_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
 	init_int2_clist(fline_c->seed_surface_list);
+    sprintf(fline_c->seed_surface_list->i1_name, "Element_ID");
+    sprintf(fline_c->seed_surface_list->i2_name, "Surface_ID");
 	
 	return;
 };

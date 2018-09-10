@@ -302,9 +302,17 @@ static void set_from_chara2_ctl_list_at_c_tbl(char *ref_1, char *ref_2,
 
 void init_chara2_clist(struct chara2_clist *c2_clst){
 	init_chara2_ctl_list(&c2_clst->c2_item_head);
+
+    c2_clst->clist_name = (char *)calloc(32,sizeof(char));
+    c2_clst->c1_name = (char *)calloc(32,sizeof(char));
+    c2_clst->c2_name = (char *)calloc(32,sizeof(char));
 };
 void clear_chara2_clist(struct chara2_clist *c2_clst){
 	clear_chara2_ctl_list(&c2_clst->c2_item_head);
+    
+    free(c2_clst->clist_name);
+    free(c2_clst->c1_name);
+    free(c2_clst->c2_name);
 };
 int count_chara2_clist(struct chara2_clist *c2_clst){
 	 return count_chara2_ctl_list(&c2_clst->c2_item_head);
@@ -312,6 +320,7 @@ int count_chara2_clist(struct chara2_clist *c2_clst){
 
 int read_chara2_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                    struct chara2_clist *c2_clst){
+    sprintf(c2_clst->clist_name,"%s", label);
 	 return read_chara2_ctl_list(fp, buf, label, &c2_clst->c2_item_head);
 };
 int write_chara2_clist(FILE *fp, int level, const char *label, 

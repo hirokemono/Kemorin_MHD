@@ -7,7 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#include "load_MHD_control_c.h"
 
 int main(int argc, const char * argv[]) {
+    
     return NSApplicationMain(argc, argv);
 }

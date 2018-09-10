@@ -301,7 +301,6 @@ void init_real3_clist(struct real3_clist *r3_clst){
     r3_clst->r1_name = (char *)calloc(32,sizeof(char));
     r3_clst->r2_name = (char *)calloc(32,sizeof(char));
     r3_clst->r3_name = (char *)calloc(32,sizeof(char));
-    
     return;
 };
 

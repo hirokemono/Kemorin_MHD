@@ -32,6 +32,10 @@ struct chara2_ctl_list{
 
 struct chara2_clist{
 	struct chara2_ctl_list c2_item_head;
+
+    char *clist_name;
+    char *c1_name;
+    char *c2_name;
 };
 
 

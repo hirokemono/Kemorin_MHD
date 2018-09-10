@@ -174,6 +174,8 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	
     spctl_c->radius_list = (struct int_real_clist *) malloc(sizeof(struct int_real_clist));
 	init_int_real_clist(spctl_c->radius_list);
+    sprintf(spctl_c->radius_list->i1_name, "Radial_ID");
+    sprintf(spctl_c->radius_list->r1_name, "Radious");
     
     spctl_c->radial_grp_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist));
 	init_chara_int_clist(spctl_c->radial_grp_list);
@@ -207,6 +209,10 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
     spctl_c->med_layer_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
 	init_int2_clist(spctl_c->radial_layer_list);
 	init_int2_clist(spctl_c->med_layer_list);
+    sprintf(spctl_c->radial_layer_list->i1_name, "Start_ID");
+    sprintf(spctl_c->radial_layer_list->i2_name, "End_ID");
+    sprintf(spctl_c->med_layer_list->i1_name, "Start_ID");
+    sprintf(spctl_c->med_layer_list->i2_name, "End_ID");
 	
 	return;
 };

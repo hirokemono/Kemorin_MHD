@@ -316,9 +316,19 @@ static void set_from_chara3_ctl_list_at_c_tbl(char *ref_1, char *ref_2, char *re
 
 void init_chara3_clist(struct chara3_clist *c3_clst){
 	init_chara3_ctl_list(&c3_clst->c3_item_head);
+
+    c3_clst->clist_name = (char *)calloc(32,sizeof(char));
+    c3_clst->c1_name = (char *)calloc(32,sizeof(char));
+    c3_clst->c2_name = (char *)calloc(32,sizeof(char));
+    c3_clst->c3_name = (char *)calloc(32,sizeof(char));
 };
 void clear_chara3_clist(struct chara3_clist *c3_clst){
 	clear_chara3_ctl_list(&c3_clst->c3_item_head);
+
+    free(c3_clst->clist_name);
+    free(c3_clst->c1_name);
+    free(c3_clst->c2_name);
+    free(c3_clst->c3_name);
 };
 int count_chara3_clist(struct chara3_clist *c3_clst){
 	 return count_chara3_ctl_list(&c3_clst->c3_item_head);
@@ -326,6 +336,7 @@ int count_chara3_clist(struct chara3_clist *c3_clst){
 
 int read_chara3_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                    struct chara3_clist *c3_clst){
+    sprintf(c3_clst->clist_name,"%s", label);
 	 return read_chara3_ctl_list(fp, buf, label, &c3_clst->c3_item_head);
 };
 int write_chara3_clist(FILE *fp, int level, const char *label, 

@@ -32,6 +32,10 @@ struct int_real_ctl_list{
 
 struct int_real_clist{
 	struct int_real_ctl_list ir_item_head;
+
+    char *clist_name;
+    char *i1_name;
+    char *r1_name;
 };
 
 

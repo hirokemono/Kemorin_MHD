@@ -7,9 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#include "Real2ControlTableview.h"
+#include "t_SGS_MHD_control_c.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
-
 
 @end
 

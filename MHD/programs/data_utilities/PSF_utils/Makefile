@@ -15,7 +15,8 @@ TARGET_DRAW_MAP =  drmap_fem
 TARGET_LINE_ON_PSF =   section_from_psf
 TARGET_DBENCH_ON_PSF = psf_dynamobench
 
-TARGET_FIX_TEMP_PSF = psf_per_temp_2_temp
+TARGET_FIX_TEMP_PSF =      psf_per_temp_2_temp
+TARGET_FIX_SGS_MF_WK_PSF = psf_fix_reynolds_wk
 
 
 LIBS_PSF_UTIL = \
@@ -114,6 +115,10 @@ t_norms_4_psf.o \
 m_psf_results.o \
 fix_temperature_4_psf.o
 
+MOD_FIX_SGS_MF_WK_PSF = \
+psf_fix_reynods_work.o \
+m_psf_results.o
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -131,6 +136,7 @@ target_list:
 	@echo 'TARGET_LINE_ON_PSF =  $$(BUILDDIR)/$(TARGET_LINE_ON_PSF)'      >> $(MAKENAME)
 	@echo 'TARGET_DBENCH_ON_PSF = $$(BUILDDIR)/$(TARGET_DBENCH_ON_PSF)'   >> $(MAKENAME)
 	@echo 'TARGET_FIX_TEMP_PSF =  $$(BUILDDIR)/$(TARGET_FIX_TEMP_PSF)'    >> $(MAKENAME)
+	@echo 'TARGET_FIX_SGS_MF_WK_PSF =  $$(BUILDDIR)/$(TARGET_FIX_SGS_MF_WK_PSF)'    >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -141,7 +147,7 @@ target_task:
 	@echo utils_pg: \
 	'$$(TARGET_DRAW_CZ) $$(TARGET_DRAW_MAP) ' \
 	'$$(TARGET_DRAW_CX) $$(TARGET_DRAW_CY)  ' \
-	'$$(TARGET_FIX_TEMP_PSF)' >> $(MAKENAME)
+	'$$(TARGET_FIX_TEMP_PSF) $$(TARGET_FIX_SGS_MF_WK_PSF)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSF_AVES)': '$$(MOD_PSF_AVES)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
@@ -206,6 +212,13 @@ target_task:
 	'$$(MOD_FIX_TEMP_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_FIX_SGS_MF_WK_PSF)': '$$(MOD_FIX_SGS_MF_WK_PSF)' \
+	'$$(LIB_FILES_PSF_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_FIX_SGS_MF_WK_PSF)' \
+	'$$(MOD_FIX_SGS_MF_WK_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -238,6 +251,8 @@ mod_list:
 	@echo  $(MOD_DYNAMOBENCH_PSF)    >> $(MAKENAME)
 	@echo  MOD_FIX_TEMP_PSF =  \\    >> $(MAKENAME)
 	@echo  $(MOD_FIX_TEMP_PSF)       >> $(MAKENAME)
+	@echo  MOD_FIX_SGS_MF_WK_PSF =  \\    >> $(MAKENAME)
+	@echo  $(MOD_FIX_SGS_MF_WK_PSF)       >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 

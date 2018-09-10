@@ -34,6 +34,11 @@ struct chara3_ctl_list{
 
 struct chara3_clist{
 	struct chara3_ctl_list c3_item_head;
+
+    char *clist_name;
+    char *c1_name;
+    char *c2_name;
+    char *c3_name;
 };
 
 

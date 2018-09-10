@@ -298,11 +298,19 @@ static void copy_to_int_real_ctl_list(int num, int *iv1, double *v2,
 
 void init_int_real_clist(struct int_real_clist *ir_clst){
     init_int_real_ctl_list(&ir_clst->ir_item_head);
+    
+    ir_clst->clist_name = (char *)calloc(32,sizeof(char));
+    ir_clst->i1_name = (char *)calloc(32,sizeof(char));
+    ir_clst->r1_name = (char *)calloc(32,sizeof(char));
     return;
 };
 
 void clear_int_real_clist(struct int_real_clist *ir_clst){
     clear_int_real_ctl_list(&ir_clst->ir_item_head);
+    
+    free(ir_clst->clist_name);
+    free(ir_clst->i1_name);
+    free(ir_clst->r1_name);
     return;
 };
 int count_int_real_clist(struct int_real_clist *ir_clst){
@@ -311,6 +319,7 @@ int count_int_real_clist(struct int_real_clist *ir_clst){
 
 int read_int_real_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct int_real_clist *ir_clst){
+    sprintf(ir_clst->clist_name,"%s", label);
     return read_int_real_ctl_list(fp, buf, label, &ir_clst->ir_item_head);
 };
 int write_int_real_clist(FILE *fp, int level, const char *label, 

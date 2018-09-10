@@ -42,6 +42,8 @@ void alloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
     
     nmtr_ctl->node_4_monitor_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
     init_int2_clist(nmtr_ctl->node_4_monitor_list);
+    sprintf(nmtr_ctl->node_4_monitor_list->i1_name, "Index");
+    sprintf(nmtr_ctl->node_4_monitor_list->i2_name, "Node_ID");
     return;
 };
 

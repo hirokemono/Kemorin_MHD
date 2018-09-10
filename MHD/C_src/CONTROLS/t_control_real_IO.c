@@ -285,11 +285,17 @@ static void copy_to_real_ctl_list(int num, double *v1, struct real_ctl_list *hea
 
 void init_real_clist(struct real_clist *r_clst){
 	init_real_ctl_list(&r_clst->r_item_head);
+    
+    r_clst->clist_name = (char *)calloc(32,sizeof(char));
+    r_clst->r1_name = (char *)calloc(32,sizeof(char));
 	return;
 };
 
 void clear_real_clist(struct real_clist *r_clst){
     clear_real_ctl_list(&r_clst->r_item_head);
+
+    free(r_clst->clist_name);
+    free(r_clst->r1_name);
     return;
 };
 int count_real_clist(struct real_clist *r_clst){
@@ -298,6 +304,7 @@ int count_real_clist(struct real_clist *r_clst){
 
 int read_real_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct real_clist *r_clst){
+    sprintf(r_clst->clist_name,"%s", label);
     return read_real_ctl_list(fp, buf, label, &r_clst->r_item_head);
 };
 int write_real_clist(FILE *fp, int level, const char *label, 

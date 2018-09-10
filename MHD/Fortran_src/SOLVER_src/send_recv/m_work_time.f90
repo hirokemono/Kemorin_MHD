@@ -28,7 +28,7 @@
       implicit  none
 !
 !
-      integer(kind = kint) :: iflag_time_4_each_pe = 1
+      integer(kind = kint) :: iflag_time_4_each_pe = 0
 !
       integer(kind = kint), parameter :: id_timer_file = 13
       character(len=kchara), parameter                                  &

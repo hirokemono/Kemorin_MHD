@@ -77,6 +77,9 @@ void alloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
 	init_chara_clist(area_c->pvr_area_list);
     area_c->surf_enhanse_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
 	init_c2r_clist(area_c->surf_enhanse_ctl);
+    sprintf(area_c->surf_enhanse_ctl->c1_name, "Group_name");
+    sprintf(area_c->surf_enhanse_ctl->c2_name, "Direction");
+    sprintf(area_c->surf_enhanse_ctl->r1_name, "Opacity");
 	
 	return;
 };
