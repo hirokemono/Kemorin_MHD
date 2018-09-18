@@ -56,12 +56,12 @@
         integer(kind = kint) :: ied_rlm(2)
 !
 !>        SMP stack for spectr data @f$ f(r,l,m) @f$
-      integer(kind = kint), allocatable :: istack_inod_rlm_smp(:)
+        integer(kind = kint), allocatable :: istack_inod_rlm_smp(:)
 !
 !>        SMP stacks for indexing @f$ r@f$
-      integer(kind = kint), allocatable :: istack_rlm_kr_smp(:)
+        integer(kind = kint), allocatable :: istack_rlm_kr_smp(:)
 !>        SMP stacks for indexing @f$ j @f$
-      integer(kind = kint), allocatable :: istack_rlm_j_smp(:)
+        integer(kind = kint), allocatable :: istack_rlm_j_smp(:)
 !
 !>        global address for each direction @f$ f(r,l,m) @f$
         integer(kind = kint), allocatable :: idx_global_rlm(:,:)
