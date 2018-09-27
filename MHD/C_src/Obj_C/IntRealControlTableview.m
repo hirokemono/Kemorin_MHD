@@ -1,9 +1,9 @@
-//
+/*
 //  IntRealControlTableview.m
 //  
 //
 //  Created by Hiroaki Matsui on 2018/09/03.
-//
+*/
 
 #import <Foundation/Foundation.h>
 #include "IntRealControlTableview.h"
@@ -41,8 +41,8 @@
         set_from_int_real_clist_at_index(i, intRealCtlList, &i_out, &r_out);
         NSNumber *num1 = [[NSNumber alloc] initWithInt:i_out];    
         NSNumber *num2 = [[NSNumber alloc] initWithDouble:r_out];
-        NSString *data2 = [integerFormatter stringFromNumber:num1];
-        NSString *data1 = [numberFormatter stringFromNumber:num2];
+        NSString *data1 = [integerFormatter stringFromNumber:num1];
+        NSString *data2 = [numberFormatter stringFromNumber:num2];
         self.intRealControlDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:data1,self.key1,data2,self.key2, nil];
         [self.intRealControlArray addObject:self.intRealControlDictionary];
     };
@@ -68,7 +68,7 @@
     
     [self.intRealTableView setUsesAlternatingRowBackgroundColors:YES];
     [self.intRealTableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask];
-    [self.intRealTableView setGridColor:[NSColor redColor]];
+    [self.intRealTableView setGridColor:[NSColor grayColor]];
     [self.intRealTableView setRowHeight:23.0];
     [self.intRealTableView setDelegate:self];
     [self.intRealTableView setDataSource:self];
@@ -157,7 +157,7 @@
     if(isel >= count_int_real_clist(intRealCtlList)) return;
 
     set_from_int_real_clist_at_index((int) isel, intRealCtlList, &i_out, &r_out);
-    add_int_real_clist_before_c_tbl(i_out, r_out, intRealCtlList);
+    add_int_real_clist_before_c_tbl(i_out, r_out, i_out, r_out, intRealCtlList);
     
     set_from_int_real_clist_at_index((int) isel, intRealCtlList, &i_out, &r_out);
     NSNumber *num1 = [[NSNumber alloc] initWithInt:i_out];    

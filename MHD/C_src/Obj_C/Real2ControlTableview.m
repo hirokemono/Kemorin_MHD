@@ -1,9 +1,9 @@
-//
+/*
 //  Real2ControlTableview.m
 //  
 //
 //  Created by Hiroaki Matsui on 2018/09/03.
-//
+*/
 
 #import <Foundation/Foundation.h>
 #include "Real2ControlTableview.h"
@@ -65,7 +65,7 @@
     
     [self.real2TableView setUsesAlternatingRowBackgroundColors:YES];
     [self.real2TableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask];
-    [self.real2TableView setGridColor:[NSColor redColor]];
+    [self.real2TableView setGridColor:[NSColor grayColor]];
     [self.real2TableView setRowHeight:23.0];
     [self.real2TableView setDelegate:self];
     [self.real2TableView setDataSource:self];

@@ -76,7 +76,7 @@ void alloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
     area_c->pvr_area_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
 	init_chara_clist(area_c->pvr_area_list);
     area_c->surf_enhanse_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
-	init_c2r_clist(area_c->surf_enhanse_ctl);
+	init_chara2_real_clist(area_c->surf_enhanse_ctl);
     sprintf(area_c->surf_enhanse_ctl->c1_name, "Group_name");
     sprintf(area_c->surf_enhanse_ctl->c2_name, "Direction");
     sprintf(area_c->surf_enhanse_ctl->r1_name, "Opacity");
@@ -88,7 +88,7 @@ void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
 	
 	clear_chara_clist(area_c->pvr_area_list);
     free(area_c->pvr_area_list);
-	clear_c2r_clist(area_c->surf_enhanse_ctl);
+	clear_chara2_real_clist(area_c->surf_enhanse_ctl);
     free(area_c->surf_enhanse_ctl);
 	
 	return;
@@ -101,7 +101,7 @@ int read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		skip_comment_read_line(fp, buf);
 		
 		read_chara_clist(fp, buf, label_pvr_plot_area_ctl[0], area_c->pvr_area_list);
-		read_c2r_clist(fp, buf, label_pvr_plot_area_ctl[1], area_c->surf_enhanse_ctl);
+		read_chara2_real_clist(fp, buf, label_pvr_plot_area_ctl[1], area_c->surf_enhanse_ctl);
 	};
 	return 1;
 };
@@ -111,7 +111,7 @@ int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	level = write_chara_clist(fp, level, label_pvr_plot_area_ctl[ 0], area_c->pvr_area_list);
-	level = write_c2r_clist(fp, level, label_pvr_plot_area_ctl[ 1], area_c->surf_enhanse_ctl);
+	level = write_chara2_real_clist(fp, level, label_pvr_plot_area_ctl[ 1], area_c->surf_enhanse_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

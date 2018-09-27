@@ -1,0 +1,48 @@
+
+i: real or imaginary
+
+p1a(r,i,j,field): fld_rj,  2nd index: real or imaginary
+
+s2a(m)%data(l,r,i,f): fld_rlm
+p2a(m)%data(t,r,i,f): fld_rtm
+
+p3a(m,r,t,f) : fld_rtp
+p3b(m,r,t,f) : frc_rtp
+
+p4b: frc_rtm
+s4b: frc_rlm
+
+p1b: frc_rj(r,2,j,field)
+
+
+m   0   1   2   3   4   5   6   7   8   9
+l  
+0   1
+1   2   3
+2   4   5   6
+3   7   8   9  10
+4  11  12  13  14  15
+5  16  17  18  19  20  21
+6  22  23  24  25  26  27  28
+7  29  30  31  32  33  34  35  36
+8  37  38  39  40  41  42  43  44  45
+9  46  47  
+
+lm = 1 + m + l*(l+1) / 2
+
+Find_local_sph_mode_address
+
+
+lm0 = 1 + l(l+1)/2
+2*(lm0-1) = l*(l+1)
+
+
+23     14-23
+24     15-24
+25     16-25
+26     17-26
+27     18-27
+28     19-28
+29     20-29
+30     21-30
+31     22-31

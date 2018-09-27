@@ -7,7 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
+#include "SourcelistItem.h"
 
 @interface SourceListTest : NSObject
+{
+    IBOutlet NSView *sourcePlaceHolderView;
+    IBOutlet NSView *containerView;
+    IBOutlet NSOutlineView *sourceListOutlineView;
+}
+@property (assign) IBOutlet NSWindow *window;
+@property (atomic, retain) NSMutableArray *sourceListItems;
 
 @end

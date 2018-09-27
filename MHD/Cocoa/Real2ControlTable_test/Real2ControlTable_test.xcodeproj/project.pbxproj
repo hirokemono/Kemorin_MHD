@@ -10,6 +10,13 @@
 		1801EF2E21432EB500840B64 /* load_MHD_control_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1801EF2C21432EB500840B64 /* load_MHD_control_c.c */; };
 		1801EF312143A87500840B64 /* Real3ControlTableview.m in Sources */ = {isa = PBXBuildFile; fileRef = 1801EF2F2143A87500840B64 /* Real3ControlTableview.m */; };
 		1801EF34214562DB00840B64 /* IntRealControlTableview.m in Sources */ = {isa = PBXBuildFile; fileRef = 1801EF32214562DB00840B64 /* IntRealControlTableview.m */; };
+		1891AD0021513C55001092CC /* Int2ControlTableview.m in Sources */ = {isa = PBXBuildFile; fileRef = 1891ACFF21513C55001092CC /* Int2ControlTableview.m */; };
+		1891AD032154390E001092CC /* IntControlTableview.m in Sources */ = {isa = PBXBuildFile; fileRef = 1891AD012154390D001092CC /* IntControlTableview.m */; };
+		1891AD0621544109001092CC /* Chara2RealControlTableview.m in Sources */ = {isa = PBXBuildFile; fileRef = 1891AD0521544108001092CC /* Chara2RealControlTableview.m */; };
+		1891AD0921545F3B001092CC /* Chara2ControlTableview.m in Sources */ = {isa = PBXBuildFile; fileRef = 1891AD0821545F3A001092CC /* Chara2ControlTableview.m */; };
+		1891AD0C21546336001092CC /* CharaRealControlTableview.m in Sources */ = {isa = PBXBuildFile; fileRef = 1891AD0A21546336001092CC /* CharaRealControlTableview.m */; };
+		1891AD0F21546C56001092CC /* CharaControlTableview.m in Sources */ = {isa = PBXBuildFile; fileRef = 1891AD0E21546C55001092CC /* CharaControlTableview.m */; };
+		1891AD1221546F95001092CC /* CharaIntControlTableview.m in Sources */ = {isa = PBXBuildFile; fileRef = 1891AD1121546F95001092CC /* CharaIntControlTableview.m */; };
 		189FAD562141A837001529CB /* all_field_names_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 189FAC912141A837001529CB /* all_field_names_c.c */; };
 		189FAD572141A837001529CB /* control_elements_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 189FAC932141A837001529CB /* control_elements_IO_c.c */; };
 		189FAD582141A837001529CB /* m_direction_labels_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 189FAC952141A837001529CB /* m_direction_labels_c.c */; };
@@ -101,6 +108,7 @@
 		18AEB9C22140E6B600CA2309 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18AEB9C12140E6B600CA2309 /* Assets.xcassets */; };
 		18AEB9C52140E6B600CA2309 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18AEB9C32140E6B600CA2309 /* MainMenu.xib */; };
 		18AEB9C82140E6B600CA2309 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AEB9C72140E6B600CA2309 /* main.m */; };
+		18E3E8312159553C0022D1A4 /* FieldControlTableview.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E3E8302159553C0022D1A4 /* FieldControlTableview.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -110,6 +118,20 @@
 		1801EF302143A87500840B64 /* Real3ControlTableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Real3ControlTableview.h; path = ../../../C_src/Obj_C/Real3ControlTableview.h; sourceTree = "<group>"; };
 		1801EF32214562DB00840B64 /* IntRealControlTableview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IntRealControlTableview.m; path = ../../../C_src/Obj_C/IntRealControlTableview.m; sourceTree = "<group>"; };
 		1801EF33214562DB00840B64 /* IntRealControlTableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IntRealControlTableview.h; path = ../../../C_src/Obj_C/IntRealControlTableview.h; sourceTree = "<group>"; };
+		1891ACFE21513C54001092CC /* Int2ControlTableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Int2ControlTableview.h; path = ../../../C_src/Obj_C/Int2ControlTableview.h; sourceTree = "<group>"; };
+		1891ACFF21513C55001092CC /* Int2ControlTableview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Int2ControlTableview.m; path = ../../../C_src/Obj_C/Int2ControlTableview.m; sourceTree = "<group>"; };
+		1891AD012154390D001092CC /* IntControlTableview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IntControlTableview.m; path = ../../../C_src/Obj_C/IntControlTableview.m; sourceTree = "<group>"; };
+		1891AD022154390E001092CC /* IntControlTableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IntControlTableview.h; path = ../../../C_src/Obj_C/IntControlTableview.h; sourceTree = "<group>"; };
+		1891AD0421544108001092CC /* Chara2RealControlTableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Chara2RealControlTableview.h; path = ../../../C_src/Obj_C/Chara2RealControlTableview.h; sourceTree = "<group>"; };
+		1891AD0521544108001092CC /* Chara2RealControlTableview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Chara2RealControlTableview.m; path = ../../../C_src/Obj_C/Chara2RealControlTableview.m; sourceTree = "<group>"; };
+		1891AD0721545F3A001092CC /* Chara2ControlTableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Chara2ControlTableview.h; path = ../../../C_src/Obj_C/Chara2ControlTableview.h; sourceTree = "<group>"; };
+		1891AD0821545F3A001092CC /* Chara2ControlTableview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Chara2ControlTableview.m; path = ../../../C_src/Obj_C/Chara2ControlTableview.m; sourceTree = "<group>"; };
+		1891AD0A21546336001092CC /* CharaRealControlTableview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharaRealControlTableview.m; path = ../../../C_src/Obj_C/CharaRealControlTableview.m; sourceTree = "<group>"; };
+		1891AD0B21546336001092CC /* CharaRealControlTableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharaRealControlTableview.h; path = ../../../C_src/Obj_C/CharaRealControlTableview.h; sourceTree = "<group>"; };
+		1891AD0D21546C55001092CC /* CharaControlTableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharaControlTableview.h; path = ../../../C_src/Obj_C/CharaControlTableview.h; sourceTree = "<group>"; };
+		1891AD0E21546C55001092CC /* CharaControlTableview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharaControlTableview.m; path = ../../../C_src/Obj_C/CharaControlTableview.m; sourceTree = "<group>"; };
+		1891AD1021546F95001092CC /* CharaIntControlTableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharaIntControlTableview.h; path = ../../../C_src/Obj_C/CharaIntControlTableview.h; sourceTree = "<group>"; };
+		1891AD1121546F95001092CC /* CharaIntControlTableview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharaIntControlTableview.m; path = ../../../C_src/Obj_C/CharaIntControlTableview.m; sourceTree = "<group>"; };
 		189FAC912141A837001529CB /* all_field_names_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = all_field_names_c.c; sourceTree = "<group>"; };
 		189FAC922141A837001529CB /* all_field_names_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = all_field_names_c.h; sourceTree = "<group>"; };
 		189FAC932141A837001529CB /* control_elements_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = control_elements_IO_c.c; sourceTree = "<group>"; };
@@ -316,6 +338,8 @@
 		18AEB9C62140E6B600CA2309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		18AEB9C72140E6B600CA2309 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		18AEB9C92140E6B600CA2309 /* Real2ControlTable_test.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Real2ControlTable_test.entitlements; sourceTree = "<group>"; };
+		18E3E82F2159553B0022D1A4 /* FieldControlTableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FieldControlTableview.h; path = ../../../C_src/Obj_C/FieldControlTableview.h; sourceTree = "<group>"; };
+		18E3E8302159553C0022D1A4 /* FieldControlTableview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FieldControlTableview.m; path = ../../../C_src/Obj_C/FieldControlTableview.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -564,6 +588,22 @@
 		18AEB9BD2140E6B600CA2309 /* Real2ControlTable_test */ = {
 			isa = PBXGroup;
 			children = (
+				18E3E82F2159553B0022D1A4 /* FieldControlTableview.h */,
+				18E3E8302159553C0022D1A4 /* FieldControlTableview.m */,
+				1891AD1021546F95001092CC /* CharaIntControlTableview.h */,
+				1891AD1121546F95001092CC /* CharaIntControlTableview.m */,
+				1891AD0D21546C55001092CC /* CharaControlTableview.h */,
+				1891AD0E21546C55001092CC /* CharaControlTableview.m */,
+				1891AD0B21546336001092CC /* CharaRealControlTableview.h */,
+				1891AD0A21546336001092CC /* CharaRealControlTableview.m */,
+				1891AD0721545F3A001092CC /* Chara2ControlTableview.h */,
+				1891AD0821545F3A001092CC /* Chara2ControlTableview.m */,
+				1891AD0421544108001092CC /* Chara2RealControlTableview.h */,
+				1891AD0521544108001092CC /* Chara2RealControlTableview.m */,
+				1891AD022154390E001092CC /* IntControlTableview.h */,
+				1891AD012154390D001092CC /* IntControlTableview.m */,
+				1891ACFE21513C54001092CC /* Int2ControlTableview.h */,
+				1891ACFF21513C55001092CC /* Int2ControlTableview.m */,
 				1801EF33214562DB00840B64 /* IntRealControlTableview.h */,
 				1801EF32214562DB00840B64 /* IntRealControlTableview.m */,
 				189FADB92141A86A001529CB /* Real2ControlTableview.h */,
@@ -664,6 +704,7 @@
 				189FAD8E2141A837001529CB /* cal_surface_center_normal_c.c in Sources */,
 				189FAD5B2141A837001529CB /* t_control_chara2_real_IO.c in Sources */,
 				189FAD9D2141A837001529CB /* Makefile in Sources */,
+				1891AD0921545F3B001092CC /* Chara2ControlTableview.m in Sources */,
 				189FAD802141A837001529CB /* t_ctl_data_4_volume_spectr_list.c in Sources */,
 				1801EF2E21432EB500840B64 /* load_MHD_control_c.c in Sources */,
 				189FAD582141A837001529CB /* m_direction_labels_c.c in Sources */,
@@ -672,6 +713,7 @@
 				189FAD8A2141A837001529CB /* t_ctl_data_sph_filter_list.c in Sources */,
 				189FAD942141A837001529CB /* get_ysglbitmap.c in Sources */,
 				189FAD632141A837001529CB /* t_control_data_4_psf_c.c in Sources */,
+				1891AD0021513C55001092CC /* Int2ControlTableview.m in Sources */,
 				189FAD9E2141A837001529CB /* numbers_to_bin_c.c in Sources */,
 				189FADA02141A837001529CB /* quicksort_c.c in Sources */,
 				189FAD952141A837001529CB /* jacobian_trilinear_c.c in Sources */,
@@ -680,6 +722,8 @@
 				189FAD742141A837001529CB /* t_control_int_IO.c in Sources */,
 				189FAD5E2141A837001529CB /* t_control_chara_int_IO.c in Sources */,
 				189FAD6E2141A837001529CB /* t_control_data_pvr_isosurf_list.c in Sources */,
+				1891AD0C21546336001092CC /* CharaRealControlTableview.m in Sources */,
+				1891AD1221546F95001092CC /* CharaIntControlTableview.m in Sources */,
 				189FAD622141A837001529CB /* t_control_data_4_iso_c.c in Sources */,
 				189FAD6B2141A837001529CB /* t_control_data_LIC_pvr_c.c in Sources */,
 				189FAD912141A837001529CB /* coordinate_converter_c.c in Sources */,
@@ -698,6 +742,7 @@
 				189FAD8C2141A837001529CB /* t_ctl_data_zonal_means_c.c in Sources */,
 				189FAD612141A837001529CB /* t_control_data_4_fline_c.c in Sources */,
 				189FAD6A2141A837001529CB /* t_control_data_lic_masking_list.c in Sources */,
+				18E3E8312159553C0022D1A4 /* FieldControlTableview.m in Sources */,
 				189FADBB2141A86A001529CB /* Real2ControlTableview.m in Sources */,
 				189FAD8F2141A837001529CB /* check_psf_data_viewer_c.c in Sources */,
 				189FADAC2141A837001529CB /* set_normal_on_node_4_mesh.c in Sources */,
@@ -718,6 +763,7 @@
 				18AEB9C82140E6B600CA2309 /* main.m in Sources */,
 				189FAD642141A837001529CB /* t_control_data_4_pvr_c.c in Sources */,
 				189FAD682141A837001529CB /* t_control_data_LIC_c.c in Sources */,
+				1891AD0621544109001092CC /* Chara2RealControlTableview.m in Sources */,
 				189FAD7A2141A837001529CB /* t_ctl_data_4_fields_c.c in Sources */,
 				189FADAD2141A837001529CB /* set_psf_viewer.c in Sources */,
 				189FAD5A2141A837001529CB /* t_control_chara2_IO.c in Sources */,
@@ -744,8 +790,10 @@
 				189FAD6F2141A837001529CB /* t_control_data_pvr_section_list.c in Sources */,
 				189FAD982141A837001529CB /* m_color_table_c.c in Sources */,
 				1801EF34214562DB00840B64 /* IntRealControlTableview.m in Sources */,
+				1891AD032154390E001092CC /* IntControlTableview.m in Sources */,
 				189FADB32141A837001529CB /* take_normal_psf_c.c in Sources */,
 				189FADAA2141A837001529CB /* set_map_data_4_viewer_c.c in Sources */,
+				1891AD0F21546C56001092CC /* CharaControlTableview.m in Sources */,
 				189FAD792141A837001529CB /* t_ctl_data_4_FEM_mesh_c.c in Sources */,
 				189FADAF2141A837001529CB /* set_rgba_table_c.c in Sources */,
 			);

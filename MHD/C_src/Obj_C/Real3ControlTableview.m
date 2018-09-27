@@ -1,9 +1,9 @@
-//
+/*
 //  Real3ControlTableview.m
 //  
 //
 //  Created by Hiroaki Matsui on 2018/09/03.
-//
+*/
 
 #import <Foundation/Foundation.h>
 #include "Real3ControlTableview.h"
@@ -74,7 +74,7 @@
     
     [self.real3TableView setUsesAlternatingRowBackgroundColors:YES];
     [self.real3TableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask];
-    [self.real3TableView setGridColor:[NSColor blackColor]];
+    [self.real3TableView setGridColor:[NSColor grayColor]];
     [self.real3TableView setRowHeight:23.0];
     [self.real3TableView setDelegate:self];
     [self.real3TableView setDataSource:self];

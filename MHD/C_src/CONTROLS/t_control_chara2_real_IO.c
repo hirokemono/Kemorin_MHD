@@ -315,7 +315,7 @@ static void set_from_chara2_real_ctl_list_at_c_tbl(char *ref_1, char *ref_2,
 
 
 
-void init_c2r_clist(struct chara2_real_clist *c2r_clst){
+void init_chara2_real_clist(struct chara2_real_clist *c2r_clst){
 	init_c2r_ctl_list(&c2r_clst->c2r_item_head);
 
     c2r_clst->clist_name = (char *)calloc(32,sizeof(char));
@@ -323,7 +323,7 @@ void init_c2r_clist(struct chara2_real_clist *c2r_clst){
     c2r_clst->c2_name = (char *)calloc(32,sizeof(char));
     c2r_clst->r1_name = (char *)calloc(32,sizeof(char));
 };
-void clear_c2r_clist(struct chara2_real_clist *c2r_clst){
+void clear_chara2_real_clist(struct chara2_real_clist *c2r_clst){
 	clear_c2r_ctl_list(&c2r_clst->c2r_item_head);
 
     free(c2r_clst->clist_name);
@@ -331,16 +331,16 @@ void clear_c2r_clist(struct chara2_real_clist *c2r_clst){
     free(c2r_clst->c2_name);
     free(c2r_clst->r1_name);
 };
-int count_c2r_clist(struct chara2_real_clist *c2r_clst){
+int count_chara2_real_clist(struct chara2_real_clist *c2r_clst){
 	 return count_c2r_ctl_list(&c2r_clst->c2r_item_head);
 };
 
-int read_c2r_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
+int read_chara2_real_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                    struct chara2_real_clist *c2r_clst){
     sprintf(c2r_clst->clist_name,"%s", label);
 	 return read_c2r_ctl_list(fp, buf, label, &c2r_clst->c2r_item_head);
 };
-int write_c2r_clist(FILE *fp, int level, const char *label, 
+int write_chara2_real_clist(FILE *fp, int level, const char *label, 
                     struct chara2_real_clist *c2r_clst){
 	 return write_c2r_ctl_list(fp, level, label, &c2r_clst->c2r_item_head);
 };

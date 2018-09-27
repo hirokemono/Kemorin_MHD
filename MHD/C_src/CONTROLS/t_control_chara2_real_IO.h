@@ -55,13 +55,13 @@ void set_from_chara2_real_ctl_item_c(struct chara2_real_ctl_item *c2r_item,
 
 
 
-void init_c2r_clist(struct chara2_real_clist *c2r_clst);
-void clear_c2r_clist(struct chara2_real_clist *c2r_clst);
-int count_c2r_clist(struct chara2_real_clist *c2r_clst);
+void init_chara2_real_clist(struct chara2_real_clist *c2r_clst);
+void clear_chara2_real_clist(struct chara2_real_clist *c2r_clst);
+int count_chara2_real_clist(struct chara2_real_clist *c2r_clst);
 
-int read_c2r_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
+int read_chara2_real_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct chara2_real_clist *c2r_clst);
-int write_c2r_clist(FILE *fp, int level, const char *label, 
+int write_chara2_real_clist(FILE *fp, int level, const char *label, 
                        struct chara2_real_clist *c2r_clst);
 
 void append_chara2_real_clist(char *c1_in, char *c2_in, double r_in,
