@@ -10,14 +10,15 @@
 
 @implementation UnusedFieldControlTableview
 
-@synthesize FieldControlDictionary;
+@synthesize baseFieldDictionary;
+@synthesize forceFieldDictionary;
+@synthesize energyFieldDictionary;
+@synthesize sgsFieldDictionary;
+
 @synthesize FieldControlArray;
 @synthesize FieldTableView;
 
 @synthesize key1;
-@synthesize key2;
-@synthesize key3;
-@synthesize key4;
 @synthesize key0;
 
 -(void)linkToFieldclist:(struct all_field_ctl_c **) ref_all_fld_table
@@ -34,9 +35,6 @@
     self.FieldControlArray = [[NSMutableArray alloc]init];    
     
     self.key1 = [NSString stringWithCString:"Field_name" encoding:NSUTF8StringEncoding];    
-    self.key2 = [NSString stringWithCString:"Viz_flag" encoding:NSUTF8StringEncoding];    
-    self.key3 = [NSString stringWithCString:"Monitor" encoding:NSUTF8StringEncoding];    
-    self.key4 = [NSString stringWithCString:"Quadrature_field" encoding:NSUTF8StringEncoding];    
     self.key0 = [NSString stringWithCString:"ID" encoding:NSUTF8StringEncoding];    
 }
 
@@ -55,12 +53,36 @@
     
     [self.FieldControlArray removeAllObjects];
     c1_out = (char *)calloc(KCHARA_C, sizeof(char));
-    for(i=0;i<NUM_FIELD;i++){
+    for(i=2;i<50;i++){
         if(all_fld_tbl[i]->iflag_use == 0){
             NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
-            self.FieldControlDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:num0,self.key0, data1,self.key1, nil];
-            [self.FieldControlArray addObject:self.FieldControlDictionary];
+            self.baseFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:num0,self.key0, data1,self.key1, nil];
+            [self.FieldControlArray addObject:self.baseFieldDictionary];
+        };
+    };
+    for(i=50;i<100;i++){
+        if(all_fld_tbl[i]->iflag_use == 0){
+            NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
+            NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
+            self.forceFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:num0,self.key0, data1,self.key1, nil];
+            [self.FieldControlArray addObject:self.forceFieldDictionary];
+        };
+    };
+    for(i=100;i<170;i++){
+        if(all_fld_tbl[i]->iflag_use == 0){
+            NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
+            NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
+            self.energyFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:num0,self.key0, data1,self.key1, nil];
+            [self.FieldControlArray addObject:self.energyFieldDictionary];
+        };
+    };
+    for(i=170;i<NUM_FIELD;i++){
+        if(all_fld_tbl[i]->iflag_use == 0){
+            NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
+            NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
+            self.sgsFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:num0,self.key0, data1,self.key1, nil];
+            [self.FieldControlArray addObject:self.sgsFieldDictionary];
         };
     };
     free(c1_out);
@@ -160,13 +182,6 @@
      */
     
     [[self.FieldControlArray objectAtIndex:pRowIndex] setObject:pObject forKey:selectedKey];
-    
-    if([selectedKey isEqualToString:self.key2]){
-        all_fld_tbl[index]->iflag_viz = [pObject intValue];
-    }
-    if([selectedKey isEqualToString:self.key3]){
-        all_fld_tbl[index]->iflag_monitor = [pObject intValue];
-    }
     update_field_flag_wqflag_in_ctl(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
     
     //    NSLog(@"Mutablearray again  %@",[self.FieldControlArray objectAtIndex:pRowIndex]);
