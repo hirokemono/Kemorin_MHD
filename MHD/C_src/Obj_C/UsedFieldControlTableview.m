@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #include "UsedFieldControlTableview.h"
 
+
 @implementation UsedFieldControlTableview
 
 @synthesize FieldControlDictionary;
@@ -20,15 +21,23 @@
 @synthesize key4;
 @synthesize key0;
 
--(void)linkToFieldclist
-{
-    load_MHD_control_c();
+-(void)linkToFieldclist:(struct all_field_ctl_c **) ref_all_fld_table
+{ 
     mhd_ctl_m = link_to_mhd_ctl();
+    all_fld_tbl = ref_all_fld_table;
+}
+
+-(void)initMutablearray
+{
+    integerFormatter = [[NSNumberFormatter alloc] init];
+    integerFormatter.minimumSignificantDigits = 0;
     
-    all_fld_tbl = (struct all_field_ctl_c **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_c *));
-    alloc_all_field_ctl_c(all_fld_tbl);
-    
-    load_field_w_qflag_from_ctl(mhd_ctl_m->model_ctl->fld_ctl, all_fld_tbl);
+    self.FieldControlArray = [[NSMutableArray alloc]init];    
+    self.key1 = [NSString stringWithCString:"Field_name" encoding:NSUTF8StringEncoding];    
+    self.key2 = [NSString stringWithCString:"Viz_flag" encoding:NSUTF8StringEncoding];    
+    self.key3 = [NSString stringWithCString:"Monitor" encoding:NSUTF8StringEncoding];    
+    self.key4 = [NSString stringWithCString:"Quadrature_field" encoding:NSUTF8StringEncoding];    
+    self.key0 = [NSString stringWithCString:"ID" encoding:NSUTF8StringEncoding];    
 }
 
 -(void)createMutablearray
@@ -43,25 +52,16 @@
      all_fld_tbl[i]->iflag_monitor, all_fld_tbl[i]->iflag_quad);
      }
      */
-    integerFormatter = [[NSNumberFormatter alloc] init];
-    integerFormatter.minimumSignificantDigits = 0;
     
-    self.FieldControlArray = [[NSMutableArray alloc]init];    
-    
-    self.key1 = [NSString stringWithCString:"Field_name" encoding:NSUTF8StringEncoding];    
-    self.key2 = [NSString stringWithCString:"Viz_flag" encoding:NSUTF8StringEncoding];    
-    self.key3 = [NSString stringWithCString:"Monitor" encoding:NSUTF8StringEncoding];    
-    self.key4 = [NSString stringWithCString:"Quadrature_field" encoding:NSUTF8StringEncoding];    
-    self.key0 = [NSString stringWithCString:"ID" encoding:NSUTF8StringEncoding];    
-    
+    [self.FieldControlArray removeAllObjects];
     c1_out = (char *)calloc(KCHARA_C, sizeof(char));
     for(i=0;i<NUM_FIELD;i++){
         if(all_fld_tbl[i]->iflag_use > 0){
             NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
-            NSNumber *num2 = [[NSNumber alloc] initWithDouble:all_fld_tbl[i]->iflag_viz];
-            NSNumber *num3 = [[NSNumber alloc] initWithDouble:all_fld_tbl[i]->iflag_monitor];
-            NSNumber *num4 = [[NSNumber alloc] initWithDouble:all_fld_tbl[i]->iflag_quad];
-            NSNumber *num0 = [[NSNumber alloc] initWithDouble:i];
+            NSNumber *num2 = [[NSNumber alloc] initWithInt:all_fld_tbl[i]->iflag_viz];
+            NSNumber *num3 = [[NSNumber alloc] initWithInt:all_fld_tbl[i]->iflag_monitor];
+            NSNumber *num4 = [[NSNumber alloc] initWithInt:all_fld_tbl[i]->iflag_quad];
+            NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.FieldControlDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:num0,self.key0, data1,self.key1, num2,self.key2, num3,self.key3, num4,self.key4, nil];
             [self.FieldControlArray addObject:self.FieldControlDictionary];
         };
@@ -70,11 +70,11 @@
 }
 
 
--(void)createFieldView
+-(void)createFieldView:(NSView *)usedFieldTableViewOutlet
 {
-    NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:FieldTableViewOutlet.bounds];
+    NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:usedFieldTableViewOutlet.bounds];
     [scrollView setBorderType:NSBezelBorder];
-    self.FieldTableView = [[NSTableView alloc] initWithFrame:FieldTableViewOutlet.bounds];
+    self.FieldTableView = [[NSTableView alloc] initWithFrame:usedFieldTableViewOutlet.bounds];
     NSTableColumn *tCol;
     NSButtonCell *cell;
     
@@ -84,7 +84,7 @@
     [self.FieldTableView addTableColumn:tCol];
     
     tCol = [[NSTableColumn alloc] initWithIdentifier:self.key1];
-    [tCol setWidth:80.0];
+    [tCol setWidth:180.0];
     [[tCol headerCell] setStringValue:self.key1];
     [self.FieldTableView addTableColumn:tCol];
     
@@ -114,20 +114,26 @@
     [self.FieldTableView setDataSource:self];
     [self.FieldTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
     [self.FieldTableView setAutoresizesSubviews:YES];
+    [self.FieldTableView setAllowsMultipleSelection:YES];
     
     [scrollView setHasVerticalScroller:YES];
     [scrollView setHasHorizontalScroller:YES];
     [scrollView setAutoresizesSubviews:YES];
     [scrollView setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
     [scrollView setDocumentView:self.FieldTableView];
-    [FieldTableViewOutlet addSubview:scrollView];
+    [usedFieldTableViewOutlet addSubview:scrollView];
+}
+
+-(void) updateUsedFieldTable
+{
+    [self.FieldTableView reloadData];
 }
 
 // TableView Datasource method implementation
 - (void)awakeFromNib {
-    [self linkToFieldclist];
-    [self createMutablearray];
-    [self createFieldView];
+//    [self linkToFieldclist];
+//    [self createMutablearray];
+//    [self createFieldView];
 } // end awakeFromNib
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)pTableColumn 
@@ -186,46 +192,32 @@
     
     //    NSLog(@"Mutablearray again  %@",[self.FieldControlArray objectAtIndex:pRowIndex]);
 };
-- (IBAction)addAtSelectedRow:(id)pId
-{
-    char *c1_out, *c2_out;
-    double r1_out;
-    NSInteger isel = [self.FieldTableView selectedRow];
-    
-    if(isel < 1) return;
-    if(isel >= count_chara2_real_clist(Chara2RealCtlList)) return;
-    
-    c1_out = (char *)calloc(KCHARA_C, sizeof(char));
-    c2_out = (char *)calloc(KCHARA_C, sizeof(char));
-    set_from_chara2_real_clist_at_index((int) isel, Chara2RealCtlList, c1_out, c2_out, &r1_out);
-    add_chara2_real_clist_before_c_tbl(c1_out, c2_out, c1_out, c2_out, r1_out, Chara2RealCtlList);
-    
-    set_from_chara2_real_clist_at_index((int) isel, Chara2RealCtlList, c1_out, c2_out, &r1_out);
-    NSNumber *num3 = [[NSNumber alloc] initWithDouble:r1_out];
-    NSString *data1 = [NSString stringWithCString:c1_out encoding:NSUTF8StringEncoding];
-    NSString *data2 = [NSString stringWithCString:c2_out encoding:NSUTF8StringEncoding];
-    NSString *data3 = [integerFormatter stringFromNumber:num3];
-    free(c1_out);
-    free(c2_out);
-    
-    self.FieldControlDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:data1,self.key1,data2,self.key2,data3,self.key3, nil];
-    [self.FieldControlArray insertObject:self.FieldControlDictionary atIndex:isel];
-    
-    [self.FieldTableView reloadData];
-}
 
-- (IBAction)deleteSelectedRow:(id)pId
+- (void) deleteUsedField
 {
-    NSInteger isel = [self.FieldTableView selectedRow];
-    
-    if(isel < 0) return;
-    if(isel >= count_chara2_real_clist(Chara2RealCtlList)) return;
-    
-    del_chara2_real_clist_by_index((int) isel, Chara2RealCtlList);
-    [self.FieldControlArray removeObjectAtIndex:isel];
-    
-    [self.FieldTableView reloadData];
-}
+    NSIndexSet *selectedRows = [self.FieldTableView selectedRowIndexes];
+//    NSUInteger numberOfSelectedRows = [selectedRows count];
+    NSUInteger isel;
+    int index;
 
+    isel = [selectedRows lastIndex];
+    NSMutableIndexSet *field_Indices = [NSMutableIndexSet indexSet];
+    while(isel != NSNotFound) {
+        NSLog(@"index = %d", (int) isel);
+        NSString *selectedID = [[self.FieldControlArray objectAtIndex:isel] objectForKey:self.key0];
+        index =  [selectedID intValue];
+        [field_Indices addIndex:index];
+        all_fld_tbl[index]->iflag_use =     0;
+        all_fld_tbl[index]->iflag_viz =     0;
+        all_fld_tbl[index]->iflag_monitor = 0;
+        all_fld_tbl[index]->iflag_quad =    0;
+        delete_field_wqflag_in_ctl(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
+        
+        [self.FieldControlArray removeObjectAtIndex:isel];
+        isel = [selectedRows indexLessThanIndex:isel];
+    }
+    [self.FieldTableView reloadData];
+//    NSLog(@"field_Indices   %@",field_Indices);
+}
 @end
 
