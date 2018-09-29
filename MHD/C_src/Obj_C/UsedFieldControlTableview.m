@@ -129,12 +129,32 @@
     [self.FieldTableView reloadData];
 }
 
-// TableView Datasource method implementation
-- (void)awakeFromNib {
-//    [self linkToFieldclist];
-//    [self createMutablearray];
-//    [self createFieldView];
-} // end awakeFromNib
+- (void) deleteUsedField
+{
+    NSIndexSet *selectedRows = [self.FieldTableView selectedRowIndexes];
+    //    NSUInteger numberOfSelectedRows = [selectedRows count];
+    NSUInteger isel;
+    int index;
+    
+    isel = [selectedRows lastIndex];
+    NSMutableIndexSet *field_Indices = [NSMutableIndexSet indexSet];
+    while(isel != NSNotFound) {
+        NSLog(@"index = %d", (int) isel);
+        NSString *selectedID = [[self.FieldControlArray objectAtIndex:isel] objectForKey:self.key0];
+        index =  [selectedID intValue];
+        [field_Indices addIndex:index];
+        all_fld_tbl[index]->iflag_use =     0;
+        all_fld_tbl[index]->iflag_viz =     0;
+        all_fld_tbl[index]->iflag_monitor = 0;
+        all_fld_tbl[index]->iflag_quad =    0;
+        delete_field_wqflag_in_ctl(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
+        
+        [self.FieldControlArray removeObjectAtIndex:isel];
+        isel = [selectedRows indexLessThanIndex:isel];
+    }
+    [self.FieldTableView reloadData];
+    //    NSLog(@"field_Indices   %@",field_Indices);
+}
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)pTableColumn 
             row:(NSInteger)pRowIndex
@@ -192,32 +212,5 @@
     
     //    NSLog(@"Mutablearray again  %@",[self.FieldControlArray objectAtIndex:pRowIndex]);
 };
-
-- (void) deleteUsedField
-{
-    NSIndexSet *selectedRows = [self.FieldTableView selectedRowIndexes];
-//    NSUInteger numberOfSelectedRows = [selectedRows count];
-    NSUInteger isel;
-    int index;
-
-    isel = [selectedRows lastIndex];
-    NSMutableIndexSet *field_Indices = [NSMutableIndexSet indexSet];
-    while(isel != NSNotFound) {
-        NSLog(@"index = %d", (int) isel);
-        NSString *selectedID = [[self.FieldControlArray objectAtIndex:isel] objectForKey:self.key0];
-        index =  [selectedID intValue];
-        [field_Indices addIndex:index];
-        all_fld_tbl[index]->iflag_use =     0;
-        all_fld_tbl[index]->iflag_viz =     0;
-        all_fld_tbl[index]->iflag_monitor = 0;
-        all_fld_tbl[index]->iflag_quad =    0;
-        delete_field_wqflag_in_ctl(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
-        
-        [self.FieldControlArray removeObjectAtIndex:isel];
-        isel = [selectedRows indexLessThanIndex:isel];
-    }
-    [self.FieldTableView reloadData];
-//    NSLog(@"field_Indices   %@",field_Indices);
-}
 @end
 

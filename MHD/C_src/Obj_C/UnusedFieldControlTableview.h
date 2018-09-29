@@ -44,7 +44,6 @@
 -(void)createFieldView:(NSView *) unUsedFieldTableViewOutlet;
 -(void)updateUnusedFieldTable;
 
-- (void)awakeFromNib;
 - (void)addUsedField;
 
 @end

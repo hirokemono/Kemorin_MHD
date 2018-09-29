@@ -41,8 +41,6 @@
 -(void)createMutablearray;
 -(void)createFieldView:(NSView *)usedFieldTableViewOutlet;
 -(void)updateUsedFieldTable;
-
-- (void)awakeFromNib;
 - (void) deleteUsedField;
 
 @end
