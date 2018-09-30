@@ -15,8 +15,19 @@
 @synthesize energyFieldDictionary;
 @synthesize sgsFieldDictionary;
 
+@synthesize baseFieldArray;
+@synthesize forceFieldArray;
+@synthesize energyFieldArray;
+@synthesize sgsFieldArray;
+
+@synthesize baseParentsDictionary;
+@synthesize forceParentsDictionary;
+@synthesize energyParentsDictionary;
+@synthesize sgsParentsDictionary;
+
+@synthesize FieldControlDictionary;
 @synthesize FieldControlArray;
-@synthesize FieldTableView;
+@synthesize unusedFieldTableView;
 
 @synthesize key1;
 @synthesize key0;
@@ -52,36 +63,55 @@
      */
     
     [self.FieldControlArray removeAllObjects];
+    [self.baseFieldArray removeAllObjects];
     c1_out = (char *)calloc(KCHARA_C, sizeof(char));
     for(i=2;i<50;i++){
         if(all_fld_tbl[i]->iflag_use == 0){
             NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.baseFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:num0,self.key0, data1,self.key1, nil];
+            [self.baseFieldArray addObject:self.baseFieldDictionary];
+            self.baseParentsDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Base",@"Parents", self.baseFieldArray,@"children", nil];
+            
             [self.FieldControlArray addObject:self.baseFieldDictionary];
         };
     };
+    
+    [self.forceFieldArray removeAllObjects];
     for(i=50;i<100;i++){
         if(all_fld_tbl[i]->iflag_use == 0){
             NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.forceFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:num0,self.key0, data1,self.key1, nil];
+            [self.forceFieldArray addObject:self.forceFieldDictionary];
+            self.forceParentsDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Force",@"Parents", self.forceFieldArray,@"children", nil];
+
             [self.FieldControlArray addObject:self.forceFieldDictionary];
         };
     };
+
+    [self.energyFieldArray removeAllObjects];
     for(i=100;i<170;i++){
         if(all_fld_tbl[i]->iflag_use == 0){
             NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.energyFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:num0,self.key0, data1,self.key1, nil];
+            [self.energyFieldArray addObject:self.energyFieldDictionary];
+            self.energyParentsDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Energy",@"Parents", self.energyFieldArray,@"children", nil];
+
             [self.FieldControlArray addObject:self.energyFieldDictionary];
         };
     };
+
+    [self.sgsFieldArray removeAllObjects];
     for(i=170;i<NUM_FIELD;i++){
         if(all_fld_tbl[i]->iflag_use == 0){
             NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.sgsFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:num0,self.key0, data1,self.key1, nil];
+            [self.sgsFieldArray addObject:self.sgsFieldDictionary];
+            self.sgsParentsDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"SGS",@"Parents", self.sgsFieldArray,@"children", nil];
+
             [self.FieldControlArray addObject:self.sgsFieldDictionary];
         };
     };
@@ -93,46 +123,46 @@
 {
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:unUsedFieldTableViewOutlet.bounds];
     [scrollView setBorderType:NSBezelBorder];
-    self.FieldTableView = [[NSTableView alloc] initWithFrame:unUsedFieldTableViewOutlet.bounds];
+    self.unusedFieldTableView = [[NSTableView alloc] initWithFrame:unUsedFieldTableViewOutlet.bounds];
     NSTableColumn *tCol;
     NSButtonCell *cell;
     
     tCol = [[NSTableColumn alloc] initWithIdentifier:self.key0];
     [tCol setWidth:40.0];
     [[tCol headerCell] setStringValue:self.key0];
-    [self.FieldTableView addTableColumn:tCol];
+    [self.unusedFieldTableView addTableColumn:tCol];
     
     tCol = [[NSTableColumn alloc] initWithIdentifier:self.key1];
     [tCol setWidth:180.0];
     [[tCol headerCell] setStringValue:self.key1];
-    [self.FieldTableView addTableColumn:tCol];
+    [self.unusedFieldTableView addTableColumn:tCol];
     
-    [self.FieldTableView setUsesAlternatingRowBackgroundColors:YES];
-    [self.FieldTableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask];
-    [self.FieldTableView setGridColor:[NSColor grayColor]];
-    [self.FieldTableView setRowHeight:23.0];
-    [self.FieldTableView setDelegate:self];
-    [self.FieldTableView setDataSource:self];
-    [self.FieldTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
-    [self.FieldTableView setAutoresizesSubviews:YES];
-    [self.FieldTableView setAllowsMultipleSelection:YES];
+    [self.unusedFieldTableView setUsesAlternatingRowBackgroundColors:YES];
+    [self.unusedFieldTableView setGridStyleMask:NSTableViewSolidVerticalGridLineMask];
+    [self.unusedFieldTableView setGridColor:[NSColor grayColor]];
+    [self.unusedFieldTableView setRowHeight:23.0];
+    [self.unusedFieldTableView setDelegate:self];
+    [self.unusedFieldTableView setDataSource:self];
+    [self.unusedFieldTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
+    [self.unusedFieldTableView setAutoresizesSubviews:YES];
+    [self.unusedFieldTableView setAllowsMultipleSelection:YES];
     
     [scrollView setHasVerticalScroller:YES];
     [scrollView setHasHorizontalScroller:YES];
     [scrollView setAutoresizesSubviews:YES];
     [scrollView setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
-    [scrollView setDocumentView:self.FieldTableView];
+    [scrollView setDocumentView:self.unusedFieldTableView];
     [unUsedFieldTableViewOutlet addSubview:scrollView];
 }
 
 -(void) updateUnusedFieldTable
 {
-    [self.FieldTableView reloadData];
+    [self.unusedFieldTableView reloadData];
 }
 
 - (void)addUsedField
 {
-    NSIndexSet *selectedRows = [self.FieldTableView selectedRowIndexes];
+    NSIndexSet *selectedRows = [self.unusedFieldTableView selectedRowIndexes];
     //    NSUInteger numberOfSelectedRows = [selectedRows count];
     NSUInteger isel;
     int index;
@@ -153,11 +183,11 @@
         [self.FieldControlArray removeObjectAtIndex:isel];
         isel = [selectedRows indexLessThanIndex:isel];
     }
-    [self.FieldTableView reloadData];
+    [self.unusedFieldTableView reloadData];
     //    NSLog(@"field_Indices   %@",field_Indices);
 }
 
-
+// TableView Datasource method implementation
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)pTableColumn 
             row:(NSInteger)pRowIndex
 {
@@ -167,7 +197,6 @@
     return aString;
 }
 
-// TableView Datasource method implementation
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
     //we have only one table in the screen and thus we are not checking the row count based on the target table view

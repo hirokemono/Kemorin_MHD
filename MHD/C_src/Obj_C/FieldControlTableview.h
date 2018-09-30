@@ -18,33 +18,12 @@
     UsedFieldControlTableview * usedFieldCtlTableview;
     UnusedFieldControlTableview * unusedFieldCtlTableview;
     
-    NSMutableDictionary * FieldControlDictionary;
-    NSMutableArray * FieldControlArray;
-    NSTableView * FieldTableView;
-    NSNumberFormatter * integerFormatter;
-    
-    IBOutlet NSView *FieldTableViewOutlet;
     IBOutlet NSView *usedFieldTableViewOutlet;
     IBOutlet NSView *unUsedFieldTableViewOutlet;
     
-    NSString *key1;
-    NSString *key2;
-    NSString *key3;
-    NSString *key4;
-    NSString *key0;
-
     struct SGS_MHD_control_c * mhd_ctl_m;
     struct all_field_ctl_c **all_fld_tbl;
 }
-@property(strong) NSMutableDictionary * FieldControlDictionary;
-@property(strong) NSMutableArray * FieldControlArray;
-@property(strong) NSTableView * FieldTableView;
-
-@property(strong) NSString * key1;
-@property(strong) NSString * key2;
-@property(strong) NSString * key3;
-@property(strong) NSString * key4;
-@property(strong) NSString * key0;
 
 -(void)linkToFieldclist;
 

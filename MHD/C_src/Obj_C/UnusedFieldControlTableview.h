@@ -17,8 +17,19 @@
     NSMutableDictionary * energyFieldDictionary;
     NSMutableDictionary * sgsFieldDictionary;
 
+    NSMutableArray * baseFieldArray;
+    NSMutableArray * forceFieldArray;
+    NSMutableArray * energyFieldArray;
+    NSMutableArray * sgsFieldArray;
+    
+    NSMutableDictionary * baseParentsDictionary;
+    NSMutableDictionary * forceParentsDictionary;
+    NSMutableDictionary * energyParentsDictionary;
+    NSMutableDictionary * sgsParentsDictionary;
+    
+    NSMutableDictionary * FieldControlDictionary;
     NSMutableArray * FieldControlArray;
-    NSTableView * FieldTableView;
+    NSOutlineView * unusedFieldTableView;
     NSNumberFormatter * integerFormatter;
     
     NSString *key1;
@@ -32,8 +43,19 @@
 @property(strong) NSMutableDictionary * energyFieldDictionary;
 @property(strong) NSMutableDictionary * sgsFieldDictionary;
 
+@property(strong) NSMutableArray * baseFieldArray;
+@property(strong) NSMutableArray * forceFieldArray;
+@property(strong) NSMutableArray * energyFieldArray;
+@property(strong) NSMutableArray * sgsFieldArray;
+
+@property(strong) NSMutableDictionary * baseParentsDictionary;
+@property(strong) NSMutableDictionary * forceParentsDictionary;
+@property(strong) NSMutableDictionary * energyParentsDictionary;
+@property(strong) NSMutableDictionary * sgsParentsDictionary;
+
+@property(strong) NSMutableDictionary * FieldControlDictionary;
 @property(strong) NSMutableArray * FieldControlArray;
-@property(strong) NSTableView * FieldTableView;
+@property(strong) NSOutlineView * unusedFieldTableView;
 
 @property(strong) NSString * key1;
 @property(strong) NSString * key0;

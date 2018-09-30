@@ -156,6 +156,7 @@
     //    NSLog(@"field_Indices   %@",field_Indices);
 }
 
+// TableView Datasource method implementation
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)pTableColumn 
             row:(NSInteger)pRowIndex
 {
@@ -165,7 +166,6 @@
     return aString;
 }
 
-// TableView Datasource method implementation
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
     //we have only one table in the screen and thus we are not checking the row count based on the target table view
