@@ -93,11 +93,11 @@
 !
       do ip = 1, nprocs
         igrp = old_nod_grp%num_grp + ip
-        call add_int_suffix                                             &
-     &     ((ip-1), import_head, new_nod_grp%grp_name(igrp))
+        new_nod_grp%grp_name(igrp) = add_int_suffix                     &
+     &                              ((ip-1), import_head)
         igrp = old_nod_grp%num_grp + nprocs + ip
-        call add_int_suffix                                             &
-     &     ((ip-1), export_head, new_nod_grp%grp_name(igrp))
+        new_nod_grp%grp_name(igrp) = add_int_suffix                     &
+     &                              ((ip-1), export_head)
       end do
 !
       n_import = 0

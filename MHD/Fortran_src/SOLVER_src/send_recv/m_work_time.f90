@@ -167,8 +167,8 @@
 !
 !
       if(iflag_time_4_each_pe .gt. 0) then
-        call add_int_suffix(my_rank, time_file_prefix, fname_tmp)
-        call add_dat_extension(fname_tmp, file_name)
+        fname_tmp = add_int_suffix(my_rank, time_file_prefix)
+        file_name = add_dat_extension(fname_tmp)
         open(id_timer_file,file=file_name,position='append')
         write(id_timer_file,*) 'Average elapsed time'
         do i = 1, num_elapsed
@@ -186,7 +186,7 @@
         elapsed(i) = elapsed_total(i) / dble(nprocs)
       end do
 !
-      call add_dat_extension(time_file_prefix, file_name)
+      file_name = add_dat_extension(time_file_prefix)
       open(id_timer_file,file=file_name,position='append')
       write(id_timer_file,*) 'Average elapsed time'
       do i = 1, num_elapsed

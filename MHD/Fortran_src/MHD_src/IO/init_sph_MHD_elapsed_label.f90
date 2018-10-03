@@ -216,7 +216,7 @@
       integer(kind = kint), intent(in) :: nproc_rtp_IO(3)
 !
 !
-      call add_dat_extension(time_file_prefix, file_name)
+      file_name = add_dat_extension(time_file_prefix)
       open(id_timer_file,file=file_name,position='append')
 !
       write(id_timer_file,*)

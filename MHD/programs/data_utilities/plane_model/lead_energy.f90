@@ -111,9 +111,9 @@
 !
       close(spectr_data_code)
 !
-      call add_dat_extension(ene_spec_x_head,  yz_stacked_name)
-      call add_dat_extension(ene_spec_y_head,  xz_stacked_name)
-      call add_dat_extension(ene_spec_xy_head, xyz_stacked_name)
+      yz_stacked_name =  add_dat_extension(ene_spec_x_head)
+      xz_stacked_name =  add_dat_extension(ene_spec_y_head)
+      xyz_stacked_name = add_dat_extension(ene_spec_xy_head)
 !
        open (horiz_rms_code,  file=horiz_rms_name,                      &
      &         form='formatted', status ='unknown')

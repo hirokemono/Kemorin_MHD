@@ -49,7 +49,7 @@
       character(len = kchara) :: file_name
 !
 !
-      call add_dat_extension(picked%file_prefix, file_name)
+      file_name = add_dat_extension(picked%file_prefix)
       open(id_pick_mode, file = file_name, form='formatted',            &
      &    status='old', position='append', err = 99)
       return
@@ -134,7 +134,7 @@
       character(len=255) :: tmpchara
 !
 !
-      call add_dat_extension(picked%file_prefix, file_name)
+      file_name = add_dat_extension(picked%file_prefix)
       open(id_pick, file = file_name)
 !
       call skip_comment(tmpchara,id_pick)

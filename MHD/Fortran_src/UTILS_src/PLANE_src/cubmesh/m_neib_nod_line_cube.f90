@@ -129,7 +129,7 @@
        call order_fiilter_nod_line(fil_l1)
 !
 !
-       call add_int_suffix(pe1, filter_file_header, nb_name)
+       nb_name = add_int_suffix(pe1, filter_file_header)
        write(*,*) 'output ascii file: ', trim(nb_name)
        open (nb_out, file=nb_name)
 !

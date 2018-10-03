@@ -106,11 +106,11 @@
       if(istep_fld .eq. iminus) then
         call add_elaps_postfix(file_header, fname_tmp)
       else
-        call add_int_suffix(istep_fld, file_header, fname_tmp)
+        fname_tmp = add_int_suffix(istep_fld, file_header)
       end if
 !
       if((itype_file/iflag_single) .eq. 0) then
-        call add_int_suffix(my_rank, fname_tmp, file_name)
+        file_name = add_int_suffix(my_rank, fname_tmp)
       else
         file_name = fname_tmp
       end if
@@ -148,11 +148,11 @@
       if(istep_fld .eq. iminus) then
         call add_elaps_postfix(file_header, fname_tmp)
       else
-        call add_int_suffix(istep_fld, file_header, fname_tmp)
+        fname_tmp = add_int_suffix(istep_fld, file_header)
       end if
 !
       if((itype_file/iflag_single) .eq. 0) then
-        call add_int_suffix(my_rank, fname_tmp, file_name)
+        file_name = add_int_suffix(my_rank, fname_tmp)
       else
         file_name = fname_tmp
       end if

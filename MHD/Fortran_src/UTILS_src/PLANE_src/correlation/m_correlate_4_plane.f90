@@ -143,8 +143,8 @@
 !
       use set_parallel_file_name
 !
-      call add_dat_extension(crt_rst_header, crt_rst_name)
-      call add_dat_extension(rms_rst_header, rms_rst_name)
+      crt_rst_name = add_dat_extension(crt_rst_header)
+      rms_rst_name = add_dat_extension(rms_rst_header)
 !
       open (crt_data_code, file=crt_rst_name)
       open (rms_data_code, file=rms_rst_name)
@@ -161,13 +161,13 @@
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: istep
-      character(len=kchara) :: fname_tmp1, fname_tmp2
+      character(len=kchara) :: fname_tmp
 !
-      call add_int_suffix(istep, crt_rst_header, fname_tmp1)
-      call add_int_suffix(istep, rms_rst_header, fname_tmp2)
+      fname_tmp =    add_int_suffix(istep, crt_rst_header)
+      crt_rst_name = add_dat_extension(fname_tmp)
 !
-      call add_dat_extension(fname_tmp1, crt_rst_name)
-      call add_dat_extension(fname_tmp2, rms_rst_name)
+      fname_tmp =    add_int_suffix(istep, rms_rst_header)
+      rms_rst_name = add_dat_extension(fname_tmp)
 !
       open (crt_data_code, file=crt_rst_name)
       open (rms_data_code, file=rms_rst_name)

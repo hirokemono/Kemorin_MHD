@@ -259,7 +259,7 @@
     !
     !init local variables
       i_iter = 0
-      i_k = k_size / 2.0 ! index of kernel value
+      i_k = int(dble(k_size) / 2.0) ! index of kernel value
       i_n = 0 ! index of noise value
       n_v = 0.0 ! noise value
       g_v(1:3) = 0.0

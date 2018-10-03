@@ -55,9 +55,9 @@
 !
       subroutine set_linear_mesh_file_names
 !
-      call add_int_suffix(izero, fh_l_mesh,    fn_l_mesh)
-      call add_int_suffix(izero, fh_l_connect, fn_l_connect)
-      call add_int_suffix(izero, fh_l_group,   fn_l_group)
+      fn_l_mesh =    add_int_suffix(izero, fh_l_mesh)
+      fn_l_connect = add_int_suffix(izero, fh_l_connect)
+      fn_l_group =   add_int_suffix(izero, fh_l_group)
 !
       open (id_l_mesh,file=fn_l_mesh)
       open (id_l_connect,file=fn_l_connect)
@@ -69,9 +69,9 @@
 !
       subroutine set_quad_mesh_file_names
 !
-      call add_int_suffix(izero, fh_q_mesh,    fn_q_mesh)
-      call add_int_suffix(izero, fh_q_connect, fn_q_connect)
-      call add_int_suffix(izero, fh_q_group,   fn_q_group)
+      fn_q_mesh =    add_int_suffix(izero, fh_q_mesh)
+      fn_q_connect = add_int_suffix(izero, fh_q_connect)
+      fn_q_group =   add_int_suffix(izero, fh_q_group)
 !
       open (id_q_mesh,file=fn_q_mesh)
       open (id_q_connect,file=fn_q_connect)
@@ -87,17 +87,17 @@
       character(len = kchara) :: fname_tmp
 !
 !
-      call add_int_suffix(ic_level, fh_l_mesh,    fname_tmp)
-      call add_int_suffix(izero,    fname_tmp,    fn_l_mesh)
+      fname_tmp = add_int_suffix(ic_level, fh_l_mesh)
+      fn_l_mesh = add_int_suffix(izero,    fname_tmp)
 !
-      call add_int_suffix(ic_level, fh_l_connect, fname_tmp)
-      call add_int_suffix(izero,    fname_tmp,    fn_l_connect)
+      fname_tmp = add_int_suffix(ic_level, fh_l_connect)
+      fn_l_connect = add_int_suffix(izero,    fname_tmp)
 !
-      call add_int_suffix(ic_level, fh_l_group,   fname_tmp)
-      call add_int_suffix(izero,    fname_tmp,    fn_l_group)
+      fname_tmp = add_int_suffix(ic_level, fh_l_group)
+      fn_l_group = add_int_suffix(izero,    fname_tmp)
 !
-      call add_int_suffix(ic_level, fh_transfer,   fname_tmp)
-      call add_int_suffix(izero,    fname_tmp,    fn_transfer)
+      fname_tmp = add_int_suffix(ic_level, fh_transfer)
+      fn_transfer = add_int_suffix(izero,    fname_tmp)
 !
       open (id_l_mesh,file=fn_l_mesh)
       open (id_l_connect,file=fn_l_connect)

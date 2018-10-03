@@ -104,9 +104,8 @@
 !
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'read_gauss_global_coefs'
-        call add_int_suffix                                             &
-     &     (i_step, d_gauss_trans%fhead_gauss, fname_tmp)
-        call add_dat_extension(fname_tmp, d_gauss_trans%fname_gauss)
+        fname_tmp = add_int_suffix(i_step, d_gauss_trans%fhead_gauss)
+        d_gauss_trans%fname_gauss = add_dat_extension(fname_tmp)
         call read_gauss_global_coefs(d_gauss_trans)
 !
 !    copy and extend magnetic field to outside

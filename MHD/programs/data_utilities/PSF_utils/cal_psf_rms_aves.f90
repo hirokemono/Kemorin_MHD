@@ -55,17 +55,17 @@
       character(len=kchara) :: fname_tmp
 !
       write(fname_tmp,'(a9,a)') 'area_ave_', trim(file_prefix)
-      call add_dat_extension(fname_tmp, fname_ave_psf)
+      fname_ave_psf = add_dat_extension(fname_tmp)
       call open_psf_int_data                                            &
      &   (id_ave_psf, fname_ave_psf, ione, psf_phys)
 !
       write(fname_tmp,'(a9,a)') 'area_rms_', trim(file_prefix)
-      call add_dat_extension(fname_tmp, fname_rms_psf)
+      fname_rms_psf = add_dat_extension(fname_tmp)
       call open_psf_int_data                                            &
      &   (id_rms_psf, fname_rms_psf, ione, psf_phys)
 !
       write(fname_tmp,'(a10,a)') 'area_sdev_', trim(file_prefix)
-      call add_dat_extension(fname_tmp, fname_sdev_psf)
+      fname_sdev_psf = add_dat_extension(fname_tmp)
       call open_psf_int_data                                            &
      &   (id_sdev_psf, fname_sdev_psf, ione, psf_phys)
 !
@@ -83,12 +83,12 @@
 !
 !
       write(fname_tmp,'(a9,a)') 'area_min_', trim(file_prefix)
-      call add_dat_extension(fname_tmp, fname_min_psf)
+      fname_min_psf = add_dat_extension(fname_tmp)
       call open_psf_int_data                                            &
      &   (id_min_psf, fname_min_psf, izero, psf_phys)
 !
       write(fname_tmp,'(a9,a)') 'area_max_', trim(file_prefix)
-      call add_dat_extension(fname_tmp, fname_max_psf)
+      fname_max_psf = add_dat_extension(fname_tmp)
       call open_psf_int_data                                            &
      &   (id_max_psf, fname_max_psf, izero, psf_phys)
 !

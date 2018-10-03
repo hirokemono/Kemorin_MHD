@@ -48,7 +48,7 @@
       else
         filter_z_file_head = 'filter_node_l.0'
       end if
-      call add_dat_extension(filter_z_file_head, filter_z_file_name)
+      filter_z_file_name = add_dat_extension(filter_z_file_head)
       write(*,*) 'filter_z_file_name ', filter_z_file_name
 !
       if(z_filter_ctl%ip_smp_z_ctl%iflag .ne. 0) then

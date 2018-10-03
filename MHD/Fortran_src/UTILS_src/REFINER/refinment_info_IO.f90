@@ -52,7 +52,7 @@
 !
 !
       if (iflag_tmp_tri_refine .eq. 1) then
-        call add_int_suffix(iref, refine_info_head, IO_e_ref%file_head)
+        IO_e_ref%file_head = add_int_suffix(iref, refine_info_head)
       else
         IO_e_ref%file_head = refine_info_head
       end if

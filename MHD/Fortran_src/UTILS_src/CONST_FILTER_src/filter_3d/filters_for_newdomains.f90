@@ -150,7 +150,7 @@
 !
         call dealloc_node_geometry_IO(mesh_IO_f)
 !
-        call add_int_suffix(my_rank2, new_filter_coef_head, file_name)
+        file_name = add_int_suffix(my_rank2, new_filter_coef_head)
 !
         ifmt_filter_file = ifmt_3d_filter
         filter_file_head = new_filter_coef_head

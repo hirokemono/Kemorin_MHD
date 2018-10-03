@@ -135,8 +135,8 @@
       integer (kind=kint) :: i, j
 !
 !
-      call add_int_suffix(my_rank, node_monitor_head, fname_tmp)
-      call add_dat_extension(fname_tmp, file_name)
+      fname_tmp = add_int_suffix(my_rank, node_monitor_head)
+      file_name = add_dat_extension(fname_tmp)
       open (id_monitor_file,file=file_name, status='old',               &
      &    position='append', err = 99)
       return

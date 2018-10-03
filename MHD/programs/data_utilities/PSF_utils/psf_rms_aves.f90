@@ -59,8 +59,8 @@
       write(*,*) 'input radius range'
       read(*,*) rmin, rmax
 !
-      call add_int_suffix                                               &
-     &   (istep_start, psf_file_param%file_prefix, fname_tmp)
+      fname_tmp = add_int_suffix                                        &
+     &          (istep_start, psf_file_param%file_prefix)
       write(ave_psf_param%file_prefix, '(a9,a)')                        &
      &                                'time_ave_', trim(fname_tmp)
       write(rms_psf_param%file_prefix, '(a9,a)')                        &

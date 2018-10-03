@@ -54,8 +54,8 @@
 !
       if(my_rank .gt. 0) return
 !
-      call delete_directory_name(file_prefix, fname_nodir)
-      call add_int_suffix(istep, file_prefix, fname_tmp)
+      fname_nodir = delete_directory_name(file_prefix)
+      fname_tmp =   add_int_suffix(istep, file_prefix)
       call add_pvtk_extension(fname_tmp, file_name)
       call add_gzip_extension(file_name, gzip_name)
 !

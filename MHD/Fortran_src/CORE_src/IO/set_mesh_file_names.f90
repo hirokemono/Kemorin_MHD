@@ -53,7 +53,7 @@
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        call add_int_suffix(my_rank, file_header, file_name)
+        file_name = add_int_suffix(my_rank, file_header)
       else
         file_name = file_header
       end if
@@ -86,7 +86,7 @@
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        call add_int_suffix(my_rank, file_header, file_name)
+        file_name = add_int_suffix(my_rank, file_header)
       else
         file_name = file_header
       end if
@@ -119,7 +119,7 @@
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        call add_int_suffix(my_rank, file_header, file_name)
+        file_name = add_int_suffix(my_rank, file_header)
       else
         file_name = file_header
       end if
@@ -152,7 +152,7 @@
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        call add_int_suffix(my_rank, file_header, file_name)
+        file_name = add_int_suffix(my_rank, file_header)
       else
         file_name = file_header
       end if
@@ -185,7 +185,7 @@
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        call add_int_suffix(my_rank, file_header, file_name)
+        file_name = add_int_suffix(my_rank, file_header)
       else
         file_name = file_header
       end if
@@ -219,7 +219,7 @@
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        call add_int_suffix(my_rank, file_header, file_name)
+        file_name = add_int_suffix(my_rank, file_header)
       else
         file_name = file_header
       end if
@@ -252,7 +252,7 @@
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        call add_int_suffix(my_rank, file_header, file_name)
+        file_name = add_int_suffix(my_rank, file_header)
       else
         file_name = file_header
       end if
@@ -285,7 +285,7 @@
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        call add_int_suffix(my_rank, file_header, file_name)
+        file_name = add_int_suffix(my_rank, file_header)
       else
         file_name = file_header
       end if

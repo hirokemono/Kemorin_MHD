@@ -602,13 +602,13 @@
 !
 !   Get the mesh file name
       call set_merged_hdf_mesh_file_name(file_prefix, mesh_dir_file)
-      call delete_directory_name(mesh_dir_file, mesh_file_name)
+      mesh_file_name = delete_directory_name(mesh_dir_file)
 !
 !  Append field entry
       call real_to_str(t_IO%time, time_str)
       call set_merged_hdf_field_file_name                               &
      &   (file_prefix, istep_hdf5, field_dir_file)
-      call delete_directory_name(field_dir_file, field_file_name)
+      field_file_name = delete_directory_name(field_dir_file)
       write(id_xdmf, '(2a)')                                            &
      &         '    <Grid Name="CellTime" GridType="Collection" ',      &
      &         'CollectionType="Temporal">'

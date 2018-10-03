@@ -86,11 +86,11 @@
       character(len=kchara) :: fname_tmp
 !
 !
-      call add_int_suffix(istep_ucd, file_prefix, fname_tmp)
+      fname_tmp = add_int_suffix(istep_ucd, file_prefix)
 !
       if (my_rank .ge. 0                                                &
      &      .and. (itype_file/icent) .eq. (iflag_para/icent)) then
-        call add_int_suffix(my_rank, fname_tmp, file_name)
+        file_name = add_int_suffix(my_rank, fname_tmp)
       else
         file_name = fname_tmp
       end if
@@ -132,11 +132,11 @@
       character(len=kchara) :: fname_tmp
 !
 !
-      call add_int_suffix(izero, file_prefix, fname_tmp)
+      fname_tmp = add_int_suffix(izero, file_prefix)
 !
       if (my_rank .ge. 0                                                &
      &     .and. itype_file/icent .eq. iflag_para/icent) then
-        call add_int_suffix(my_rank, fname_tmp, file_name)
+        file_name = add_int_suffix(my_rank, fname_tmp)
       else
         file_name = fname_tmp
       end if
@@ -171,7 +171,7 @@
       character(len=kchara) :: fname_tmp
 !
 !
-      call add_int_suffix(istep_ucd, file_prefix, file_name)
+      file_name = add_int_suffix(istep_ucd, file_prefix)
 !
       if (    mod(itype_file,icent)/iten .eq. iflag_vtk/iten) then
         call add_vtk_extension(file_name, fname_tmp)
@@ -206,7 +206,7 @@
       character(len=kchara) :: fname_tmp
 !
 !
-      call add_int_suffix(izero, file_prefix, file_name)
+      file_name = add_int_suffix(izero, file_prefix)
 !
       if     (mod(itype_file,icent)/iten .eq. iflag_vtd/iten) then
         call add_vtg_extension(file_name, fname_tmp)
@@ -257,8 +257,7 @@
 !
       call add_field_suffix(file_prefix, fname_tmp)
       fname_tmp = trim(fname_tmp)
-      call add_int_suffix(istep_ucd, fname_tmp, fname_tmp2)
-      fname_tmp2 = trim(fname_tmp2)
+      fname_tmp2 = trim(add_int_suffix(istep_ucd, fname_tmp))
       call add_hdf_extension(fname_tmp2, file_name)
 !
       end subroutine set_merged_hdf_field_file_name
@@ -276,8 +275,7 @@
       character(len=kchara) :: fname_tmp
 !
 !
-      call add_int_suffix(istep_ucd, file_prefix, fname_tmp)
-      fname_tmp = trim(fname_tmp)
+      fname_tmp = trim(add_int_suffix(istep_ucd, file_prefix))
       call add_xdmf_extension(fname_tmp, file_name)
 !
       end subroutine set_merged_snap_xdmf_file_name

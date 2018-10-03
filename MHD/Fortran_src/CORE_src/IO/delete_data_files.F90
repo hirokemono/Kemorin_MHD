@@ -73,7 +73,7 @@
 !
       do ip = 1, nprocs
         my_rank = ip - 1
-        call add_int_suffix(my_rank, file_head, fname_tmp)
+        fname_tmp = add_int_suffix(my_rank, file_head)
 !
         if(iflag_fmt .eq. id_gzip_txt_file_fmt) then
           call add_gzip_extension(fname_tmp, file_name)

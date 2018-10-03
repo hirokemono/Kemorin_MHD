@@ -129,8 +129,8 @@
         istep_inc = t_egu_ctl%i_step_psf_ctl%intvalue
       end if
 !
-      call add_int_suffix                                               &
-     &   (istep_start, grp_ucd_param%file_prefix, fhead_tmp)
+      fhead_tmp = add_int_suffix                                        &
+     &          (istep_start, grp_ucd_param%file_prefix)
       write(tave_grp_ucd_param%file_prefix,'(6a,a)')                    &
      &                              't_ave_', trim(fhead_tmp)
       write(sdev_grp_ucd_param%file_prefix,'(6a,a)')                    &

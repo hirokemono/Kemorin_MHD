@@ -171,13 +171,13 @@
 !      write(*,*) 'output file from ', my_rank
 !
       if(istep_pvr .ge. 0) then
-        call add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix, tmpchara)
+        tmpchara = add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix)
       else
         tmpchara = pvr_rgb%pvr_prefix
       end if
 !
       if(i_rot .gt. 0) then
-        call add_int_suffix(i_rot, tmpchara, img_head)
+        img_head = add_int_suffix(i_rot, tmpchara)
       else
         img_head = tmpchara
       end if
@@ -215,11 +215,11 @@
 !
 !
       if(istep_pvr .ge. 0) then
-        call add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix, tmpchara)
+        tmpchara = add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix)
       else
         tmpchara = pvr_rgb%pvr_prefix
       end if
-      call add_int_suffix(index, tmpchara, img_head)
+      img_head = add_int_suffix(index, tmpchara)
 !
       call cvt_double_rgba_to_char_rgb(pvr_rgb%num_pixel_xy,            &
      &    pvr_rgb%rgba_real_lc, pvr_rgb%rgb_chara_lc)

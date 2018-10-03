@@ -48,8 +48,8 @@
       write(*,*) 'input istep_start, istep_end, istep_int'
       read(*,*) istep_start, istep_end, istep_int
 !
-      call add_int_suffix                                               &
-     &   (istep_start, psf_file_param%file_prefix, fname_tmp)
+      fname_tmp = add_int_suffix                                        &
+     &          (istep_start, psf_file_param%file_prefix)
       write(ave_psf_param%file_prefix, '(a,a6)')                        &
      &                                trim(fname_tmp), '_fixed'
 !

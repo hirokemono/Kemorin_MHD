@@ -124,8 +124,8 @@
 !
 !
       call copy_file_params_type(spec_fst_param, ave_fst_param)
-      call add_int_suffix(t_SHR%init_d%i_time_step,                     &
-     &    tave_sph_file_head, ave_fst_param%file_prefix)
+      ave_fst_param%file_prefix                                         &
+     &   = add_int_suffix(t_SHR%init_d%i_time_step, tave_sph_file_head)
       call sel_write_step_SPH_field_file                                &
      &   (nprocs, my_rank, t_SHR%finish_d%i_end_step,                   &
      &    ave_fst_param, spec_time_IO, sph_fld_OUT)
@@ -170,8 +170,8 @@
 !
 !
       call copy_file_params_type(spec_fst_param, ave_fst_param)
-      call add_int_suffix(t_SHR%init_d%i_time_step,                     &
-     &    sdev_sph_file_head, ave_fst_param%file_prefix)
+      ave_fst_param%file_prefix                                         &
+     &   = add_int_suffix(t_SHR%init_d%i_time_step, sdev_sph_file_head)
       call sel_write_step_SPH_field_file                                &
      &   (nprocs, my_rank, t_SHR%finish_d%i_end_step,                   &
      &    ave_fst_param, spec_time_IO, sph_fld_OUT)

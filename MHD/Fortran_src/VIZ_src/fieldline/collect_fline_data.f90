@@ -85,8 +85,7 @@
           call write_global_fline_vtk(id_fline_data_code, fline_gl)
           close(id_fline_data_code)
         else
-          call add_int_suffix                                           &
-     &       (istep_fline, fln_prm%fline_prefix, ftmp_1)
+          ftmp_1 = add_int_suffix(istep_fline, fln_prm%fline_prefix)
           call add_dx_extension(ftmp_1, file_name)
           write(*,*) 'output ', trim(file_name)
           open(id_fline_data_code, file=file_name)

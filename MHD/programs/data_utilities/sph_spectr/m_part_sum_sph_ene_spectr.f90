@@ -52,7 +52,7 @@
 !
 !
       sph_IN%iflag_spectr = 1
-      call add_dat_extension(input_header, file_name)
+      file_name = add_dat_extension(input_header)
       open(id_file_rms_l, file=file_name)
       call select_input_sph_pwr_head(id_file_rms_l, sph_IN)
 !
@@ -60,9 +60,9 @@
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
 !
       write(fname_tmp, '(a5,a)') 'part_', trim(input_header)
-      call add_int_suffix(izero, fname_tmp, file_name)
-      call add_int_suffix(izero, file_name, fname_tmp)
-      call add_dat_extension(fname_tmp, file_name)
+      file_name = add_int_suffix(izero, fname_tmp)
+      fname_tmp = add_int_suffix(izero, file_name)
+      file_name = add_dat_extension(fname_tmp)
       open(id_file_rms, file=file_name)
       call select_output_sph_pwr_head(id_file_rms, sph_OUT1)
 !

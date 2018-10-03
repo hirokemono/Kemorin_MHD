@@ -52,7 +52,7 @@
       character(len = kchara) :: file_name
 !
 !
-      call add_dat_extension(gauss%file_prefix, file_name)
+      file_name = add_dat_extension(gauss%file_prefix)
       open(id_gauss_coef, file = file_name,                             &
      &    form='formatted', status='old', position='append', err = 99)
       return
@@ -180,7 +180,7 @@
       if(gauss%num_sph_mode .eq. izero) return
       if(my_rank .gt. izero) return
 !
-      call add_dat_extension(gauss%file_prefix, file_name)
+      file_name = add_dat_extension(gauss%file_prefix)
       open(id_gauss_coef, file = file_name,                             &
      &    form='formatted', status='old', err = 99)
 !
@@ -211,7 +211,7 @@
       character(len=255) :: tmpchara
 !
 !
-      call add_dat_extension(gauss%file_prefix, file_name)
+      file_name = add_dat_extension(gauss%file_prefix)
       open(id_pick, file = file_name)
 !
       call skip_comment(tmpchara,id_pick)

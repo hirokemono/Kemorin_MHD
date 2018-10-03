@@ -81,8 +81,8 @@
       character(len=kchara) :: fname_tmp1
 !
 !
-      call add_int_suffix(i_step, spec_header, fname_tmp1)
-      call add_dat_extension(fname_tmp1, output_data_name)
+      fname_tmp1 =       add_int_suffix(i_step, spec_header)
+      output_data_name = add_dat_extension(fname_tmp1)
 !
       end subroutine s_set_spectr_file_name
 !
@@ -96,8 +96,8 @@
       character(len=kchara) :: fname_tmp1
 !
 !
-      call add_int_suffix(i_step, ene_header, fname_tmp1)
-      call add_dat_extension(fname_tmp1, output_data_name)
+      fname_tmp1 =       add_int_suffix(i_step, ene_header)
+      output_data_name = add_dat_extension(fname_tmp1)
 !
       end subroutine s_set_ene_spec_file_name
 !
@@ -111,8 +111,8 @@
       character(len=kchara) :: fname_tmp1
 !
 !
-      call add_int_suffix(i_step, ene_h_header, fname_tmp1)
-      call add_dat_extension(fname_tmp1, output_data_name)
+      fname_tmp1 =       add_int_suffix(i_step, ene_h_header)
+      output_data_name = add_dat_extension(fname_tmp1)
 !
       end subroutine s_set_horiz_ene_file_name
 !
@@ -130,14 +130,14 @@
       character(len=kchara) :: fname_tmp1
 !
 !
-       call add_int_suffix(jz, ene_spec_x_head, fname_tmp1)
-       call add_dat_extension(fname_tmp1,yz_stacked_name)
+       fname_tmp1 =      add_int_suffix(jz, ene_spec_x_head)
+       yz_stacked_name = add_dat_extension(fname_tmp1)
 !
-       call add_int_suffix(jz, ene_spec_y_head, fname_tmp1)
-       call add_dat_extension(fname_tmp1,xz_stacked_name)
+       fname_tmp1 =      add_int_suffix(jz, ene_spec_y_head)
+       xz_stacked_name = add_dat_extension(fname_tmp1)
 !
-       call add_int_suffix(jz, ene_spec_xy_head, fname_tmp1)
-       call add_dat_extension(fname_tmp1,xyz_stacked_name)
+       fname_tmp1 =       add_int_suffix(jz, ene_spec_xy_head)
+       xyz_stacked_name = add_dat_extension(fname_tmp1)
 !
       end subroutine set_ene_spec_plane_name
 !
@@ -151,9 +151,9 @@
       character(len=kchara) :: fname_tmp1, fname_tmp2
 !
 !
-      call add_int_suffix(jz, ene_h_header, fname_tmp1)
-      call add_int_suffix(istep, fname_tmp1, fname_tmp2)
-      call add_dat_extension(fname_tmp2, output_data_name)
+      fname_tmp1 =       add_int_suffix(jz, ene_h_header)
+      fname_tmp2 =       add_int_suffix(istep, fname_tmp1)
+      output_data_name = add_dat_extension(fname_tmp2)
 !
       end subroutine set_ene_h_spec_plane_name
 !
@@ -168,9 +168,9 @@
       character(len=kchara) :: fname_tmp1, fname_tmp2
 !
 !
-      call add_int_suffix(kx, file_header, fname_tmp1)
-      call add_int_suffix(ky, fname_tmp1, fname_tmp2)
-      call add_dat_extension(fname_tmp2, output_data_name)
+      fname_tmp1 =       add_int_suffix(kx, file_header)
+      fname_tmp2 =       add_int_suffix(ky, fname_tmp1)
+      output_data_name = add_dat_extension(fname_tmp2)
 !
       end subroutine set_mode_file_name
 !
@@ -184,9 +184,9 @@
       character(len=kchara) :: fname_tmp1, fname_tmp2
 !
 !
-      call add_int_suffix(kx, file_header, fname_tmp1)
-      call add_int_suffix(ky, fname_tmp1, fname_tmp2)
-      call add_dat_extension(fname_tmp2, output_data_name)
+      fname_tmp1 =       add_int_suffix(kx, file_header)
+      fname_tmp2 =       add_int_suffix(ky, fname_tmp1)
+      output_data_name = add_dat_extension(fname_tmp2)
 !
       end subroutine set_picked_mode_file_name
 !

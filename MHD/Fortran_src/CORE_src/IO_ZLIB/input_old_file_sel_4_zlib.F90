@@ -90,9 +90,9 @@
       if(istep_fld .lt. 0) then
         call add_elaps_postfix(file_IO%file_prefix, fname_tmp)
       else
-        call add_int_suffix(istep_fld, file_IO%file_prefix, fname_tmp)
+        fname_tmp = add_int_suffix(istep_fld, file_IO%file_prefix)
       end if
-      call add_int_suffix(my_rank, fname_tmp, file_name)
+      file_name = add_int_suffix(my_rank, fname_tmp)
 !
 !
 #ifdef ZLIB_IO
@@ -126,9 +126,9 @@
       if(istep_fld .lt. 0) then
         call add_elaps_postfix(file_IO%file_prefix, fname_tmp)
       else
-        call add_int_suffix(istep_fld, file_IO%file_prefix, fname_tmp)
+        fname_tmp = add_int_suffix(istep_fld, file_IO%file_prefix)
       end if
-      call add_int_suffix(my_rank, fname_tmp, file_name)
+      file_name = add_int_suffix(my_rank, fname_tmp)
 !
 #ifdef ZLIB_IO
       if(file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then

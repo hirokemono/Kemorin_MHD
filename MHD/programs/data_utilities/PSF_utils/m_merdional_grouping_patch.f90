@@ -64,7 +64,7 @@
       integer(kind = kint) :: igrp, itmp
 !
 !
-      call add_dat_extension(file_head, file_name)
+      file_name = add_dat_extension(file_head)
       open(id_gname,file=file_name)
       read(id_gname,*) ele_grp%num_grp
       call allocate_grp_type_num(ele_grp)
@@ -119,7 +119,7 @@
       allocate(istack_ele(0:num_grp))
       allocate(grp_ucd(num_grp))
       do igrp = 1, num_grp
-        call add_int_suffix((igrp+ist_mesh-1), mesh_file_head, f_tmp)
+        f_tmp = add_int_suffix((igrp+ist_mesh-1), mesh_file_head)
         write(*,*) 'grp_ucd: ', ist_mesh, f_tmp
         call set_parallel_grd_file_name                                 &
      &     (f_tmp, iflag_vtd, -1, file_name)

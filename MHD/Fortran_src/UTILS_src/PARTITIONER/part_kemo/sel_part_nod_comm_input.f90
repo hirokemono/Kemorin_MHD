@@ -45,7 +45,7 @@
 !
       else
         my_rank = ip - 1
-        call add_int_suffix(my_rank, work_f_head, work_f_name)
+        work_f_name = add_int_suffix(my_rank, work_f_head)
         open (id_work_file,file=work_f_name, status='unknown',          &
      &       form='unformatted')
         call write_node_import_to_work(id_work_file, new_comm)
@@ -76,7 +76,7 @@
         call copy_node_export_to_mem(ip, new_comm)
       else
         my_rank = ip - 1
-        call add_int_suffix(my_rank, work_f_head, work_f_name)
+        work_f_name = add_int_suffix(my_rank, work_f_head)
         write(*,*) 'write export table: ', trim(work_f_name)
         open(id_work_file,file=work_f_name,status='unknown',          &
      &       form='unformatted')
@@ -110,7 +110,7 @@
         call copy_node_import_from_mem(ip, new_comm)
       else
         my_rank = ip - 1
-        call add_int_suffix(my_rank, work_f_head, work_f_name)
+        work_f_name = add_int_suffix(my_rank, work_f_head)
         write(*,*) 'read import table: ', trim(work_f_name)
         open(id_work_file,file=work_f_name,status='unknown',            &
      &       form='unformatted')
@@ -143,7 +143,7 @@
           call copy_node_export_from_mem(ip, new_comm)
       else
         my_rank = ip - 1
-        call add_int_suffix(my_rank, work_f_head, work_f_name)
+        work_f_name = add_int_suffix(my_rank, work_f_head)
         open (id_work_file,file=work_f_name, status='unknown',          &
      &      form='unformatted')
 !
@@ -175,7 +175,7 @@
         call copy_node_import_num_tmp(jp)
       else
         my_rank = jp - 1
-        call add_int_suffix(my_rank, work_f_head, work_f_name)
+        work_f_name = add_int_suffix(my_rank, work_f_head)
         open(id_work_file,file=work_f_name,status='old',                &
      &       form='unformatted')
         call read_node_import_num_tmp(id_work_file)
@@ -205,7 +205,7 @@
         call copy_node_import_item_tmp(jp)
       else
         my_rank = jp - 1
-        call add_int_suffix(my_rank, work_f_head, work_f_name)
+        work_f_name = add_int_suffix(my_rank, work_f_head)
         open(id_work_file,file=work_f_name,status='old',                &
      &       form='unformatted')
         call read_node_import_num_tmp(id_work_file)

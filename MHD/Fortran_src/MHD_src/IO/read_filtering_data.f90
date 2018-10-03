@@ -182,7 +182,7 @@
       character(len=kchara) :: file_name
 !
 !
-      call add_int_suffix(my_rank, filter_line_head, file_name)
+      file_name = add_int_suffix(my_rank, filter_line_head)
       open(filter_file_code, file=file_name,                            &
      &        form='formatted', status= 'old')
       call read_filter_elen_data_type(filter_file_code,                 &

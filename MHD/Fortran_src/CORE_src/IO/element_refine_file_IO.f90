@@ -51,8 +51,7 @@
       character(len = kchara) :: refine_fname
 !
 !
-      call add_int_suffix(my_rank, e_ref_IO%file_head,                  &
-     &    refine_fname)
+      refine_fname = add_int_suffix(my_rank, e_ref_IO%file_head)
 !
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
@@ -96,8 +95,7 @@
       character(len = kchara) :: refine_fname
 !
 !
-      call add_int_suffix(my_rank, e_ref_IO%file_head,                  &
-     &    refine_fname)
+      refine_fname = add_int_suffix(my_rank, e_ref_IO%file_head)
 !
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &

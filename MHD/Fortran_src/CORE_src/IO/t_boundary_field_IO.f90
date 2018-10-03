@@ -165,7 +165,7 @@
       integer (kind=kint) :: i, j, ist, jed
 !
 !
-      call add_int_suffix(my_rank, boundary_data_head, bc_file_name)
+      bc_file_name = add_int_suffix(my_rank, boundary_data_head)
       open (boundary_data_code, file=bc_file_name)
 !
       read(boundary_data_code,*) IO_bc%num_group
@@ -245,7 +245,7 @@
       integer (kind=kint) :: i, j, jst, jed
 !
 !
-      call add_int_suffix(my_rank, boundary_data_head, bc_file_name)
+      bc_file_name = add_int_suffix(my_rank, boundary_data_head)
       open (boundary_data_code, file=bc_file_name)
 !
       write(boundary_data_code,'(i16)') IO_bc%num_group

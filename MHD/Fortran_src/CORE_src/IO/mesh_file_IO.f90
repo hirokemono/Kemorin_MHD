@@ -183,7 +183,7 @@
       character(len=kchara) :: file_name
 !
 !
-      call add_int_suffix(my_rank_IO, file_prefix, file_name)
+      file_name = add_int_suffix(my_rank_IO, file_prefix)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Write ascii mesh file: ', trim(file_name)
@@ -213,7 +213,7 @@
       character(len=kchara) :: file_name
 !
 !
-      call add_int_suffix(my_rank_IO, file_prefix, file_name)
+      file_name = add_int_suffix(my_rank_IO, file_prefix)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Write ascii mesh file: ', trim(file_name)

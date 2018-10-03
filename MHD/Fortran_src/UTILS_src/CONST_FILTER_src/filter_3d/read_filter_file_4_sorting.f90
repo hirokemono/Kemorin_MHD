@@ -51,7 +51,7 @@
       type(node_data) :: nod_IO
 !
 !
-      call add_int_suffix(my_rank, filter_coef_head, file_name)
+      file_name = add_int_suffix(my_rank, filter_coef_head)
       if ( ifile_type .eq. 0) then
         open(filter_coef_code, file=file_name, form='formatted')
         call read_filter_geometry                                       &
@@ -108,7 +108,7 @@
       call allocate_nod_ele_near_all_w
 !
 !
-      call add_int_suffix(my_rank, filter_coef_head, file_name)
+      file_name = add_int_suffix(my_rank, filter_coef_head)
       if ( ifile_type .eq. 0) then
         open(filter_coef_code, file=file_name, form='formatted')
 !

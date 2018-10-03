@@ -81,9 +81,9 @@
       ny_2 = ny_all/2+1
 !
       if (i_layer .eq. -1) then
-        call add_dat_extension(ene_spec_y_head, xz_stacked_name)
-        call add_dat_extension(ene_spec_x_head, yz_stacked_name)
-        call add_dat_extension(ene_spec_xy_head, xyz_stacked_name)
+        xz_stacked_name =  add_dat_extension(ene_spec_y_head)
+        yz_stacked_name =  add_dat_extension(ene_spec_x_head)
+        xyz_stacked_name = add_dat_extension(ene_spec_xy_head)
       else
         call set_ene_spec_plane_name(i_layer,                           &
      &      yz_stacked_name, xz_stacked_name, xyz_stacked_name)
@@ -251,16 +251,16 @@
 !
 !
       if (i_layer .eq. -1) then
-        call add_dat_extension(t_ene_spec_y_head, xz_stacked_name)
-        call add_dat_extension(t_ene_spec_x_head, yz_stacked_name)
-        call add_dat_extension(t_ene_spec_xy_head, xyz_stacked_name)
+        xz_stacked_name = add_dat_extension(t_ene_spec_y_head)
+        yz_stacked_name = add_dat_extension(t_ene_spec_x_head)
+        xyz_stacked_name = add_dat_extension(t_ene_spec_xy_head)
       else
-        call add_int_suffix(i_layer, t_ene_spec_y_head, fname_tmp)
-        call add_dat_extension(fname_tmp, xz_stacked_name)
-        call add_int_suffix(i_layer, t_ene_spec_x_head, fname_tmp)
-        call add_dat_extension(fname_tmp, yz_stacked_name)
-        call add_int_suffix(i_layer, t_ene_spec_xy_head, fname_tmp)
-        call add_dat_extension(fname_tmp, xyz_stacked_name)
+        fname_tmp = add_int_suffix(i_layer, t_ene_spec_y_head)
+        xz_stacked_name = add_dat_extension(fname_tmp)
+        fname_tmp = add_int_suffix(i_layer, t_ene_spec_x_head)
+        yz_stacked_name = add_dat_extension(fname_tmp)
+        fname_tmp =  add_int_suffix(i_layer, t_ene_spec_xy_head)
+        xyz_stacked_name = add_dat_extension(fname_tmp)
       end if
 !
       open (yz_stacked_code,  file=yz_stacked_name,                     &

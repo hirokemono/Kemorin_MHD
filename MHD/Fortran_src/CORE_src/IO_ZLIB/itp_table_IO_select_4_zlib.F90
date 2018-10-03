@@ -54,7 +54,7 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
-      call add_int_suffix(my_rank, table_file_header, tbl_file_name)
+      tbl_file_name = add_int_suffix(my_rank, table_file_header)
 !
 #ifdef ZLIB_IO
       if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
@@ -85,7 +85,7 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
-      call add_int_suffix(my_rank, table_file_header, tbl_file_name)
+      tbl_file_name = add_int_suffix(my_rank, table_file_header)
 !
 #ifdef ZLIB_IO
       if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
@@ -116,7 +116,7 @@
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
 !
-      call add_int_suffix(my_rank, work_header, tbl_file_name)
+      tbl_file_name = add_int_suffix(my_rank, work_header)
 !
 #ifdef ZLIB_IO
       if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
@@ -147,7 +147,7 @@
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
 !
-      call add_int_suffix(my_rank, work_header, tbl_file_name)
+      tbl_file_name = add_int_suffix(my_rank, work_header)
 !
 #ifdef ZLIB_IO
       if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
@@ -176,7 +176,7 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
-      call add_int_suffix(my_rank, work_header, tbl_file_name)
+      tbl_file_name = add_int_suffix(my_rank, work_header)
 !
 #ifdef ZLIB_IO
       if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
@@ -205,7 +205,7 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
-      call add_int_suffix(my_rank, work_header, tbl_file_name)
+      tbl_file_name =  add_int_suffix(my_rank, work_header)
 !
 #ifdef ZLIB_IO
       if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then

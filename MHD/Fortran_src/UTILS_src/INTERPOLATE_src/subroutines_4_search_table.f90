@@ -246,7 +246,7 @@
       integer(kind = kint) :: inod
 !
 !
-      call add_int_suffix(my_rank, miss_file_head, miss_file_name)
+      miss_file_name = add_int_suffix(my_rank, miss_file_head)
       open (id_miss_file, file = miss_file_name)
 !
       ierr = 0

@@ -117,7 +117,7 @@
       do i = 1, pwr%num_vol_spectr
         if(pwr%v_spectr(i)%iflag_volume_ave_sph .eq. 0)  cycle
 !
-        call add_dat_extension(pwr%v_spectr(i)%fhead_ave, fname_rms)
+        fname_rms = add_dat_extension(pwr%v_spectr(i)%fhead_ave)
         write(mode_label,'(a)') 'EMPTY'
         call open_sph_vol_mean_sq_file(id_file_rms, fname_rms,          &
      &      mode_label, sph_params%l_truncation,                        &
@@ -159,7 +159,7 @@
       if(my_rank.gt.0) return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
-      call add_dat_extension(pwr%v_spectr(1)%fhead_rms_v, fname_rms)
+      fname_rms = add_dat_extension(pwr%v_spectr(1)%fhead_rms_v)
       write(mode_label,'(a)') 'EMPTY'
       check_sph_vol_ms_file = check_sph_vol_mean_sq_file(id_file_rms,   &
      &         fname_rms, mode_label, sph_params%l_truncation,          &

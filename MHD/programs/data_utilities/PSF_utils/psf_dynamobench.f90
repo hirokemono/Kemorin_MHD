@@ -61,7 +61,7 @@
       line_udt_head = 'eq_mid_depth'
 !
 !
-      call add_dat_extension(rms_file_header, file_name)
+      file_name = add_dat_extension(rms_file_header)
       open(id_rms, file = file_name, status='old')
 !
       read(id_rms,*) tmpchara1, tmpchara2

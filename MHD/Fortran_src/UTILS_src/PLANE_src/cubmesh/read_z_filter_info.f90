@@ -43,8 +43,8 @@
        do ifil = 1, nf_type
          ifil0 = ifil-1
 !
-         call add_int_suffix(ifil0, z_filter_header, nb_name)
-         call add_dat_extension(nb_name, filtername)
+         nb_name =    add_int_suffix(ifil0, z_filter_header)
+         filtername = add_dat_extension(nb_name)
          write(*,*) 'filter filte name: ', filtername
          open (filter_id, file=filtername)
 !

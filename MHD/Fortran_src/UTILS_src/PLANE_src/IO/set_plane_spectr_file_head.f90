@@ -37,8 +37,8 @@
 !
 !
       if (plane_spectr_mode_head_ctl%iflag .gt. 0) then
-        call add_dat_extension(plane_spectr_mode_head_ctl%charavalue,   &
-     &                      spec_mode_file_name)
+        spec_mode_file_name                                             &
+     &      = add_dat_extension(plane_spectr_mode_head_ctl%charavalue)
       else
         spec_mode_file_name = spec_mode_def_name
       end if

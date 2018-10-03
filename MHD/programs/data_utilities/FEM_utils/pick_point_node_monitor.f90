@@ -45,8 +45,8 @@
         if(monitor_header .eq. 'end' .or. monitor_header .eq. 'END')    &
      &    go to 98
 !
-        call add_int_suffix(my_rank, monitor_header, fname_tmp)
-        call add_dat_extension(fname_tmp, nod_monitor_file_name)
+        fname_tmp =             add_int_suffix(my_rank, monitor_header)
+        nod_monitor_file_name = add_dat_extension(fname_tmp)
 !
         open(id_monitor_file, file=nod_monitor_file_name, err=98)
         read(id_monitor_file,*) num_monitor_local
@@ -63,9 +63,9 @@
         end do
 !
         if(iflag_init .eq. 0) then
-          call add_int_suffix(inod_2_pick, picked_header, fname_tmp)
-          call add_int_suffix(my_rank, fname_tmp, fname_tmp2)
-          call add_dat_extension(fname_tmp2, picked_monitor_file_name)
+          fname_tmp = add_int_suffix(inod_2_pick, picked_header)
+          fname_tmp2 = add_int_suffix(my_rank, fname_tmp)
+          picked_monitor_file_name = add_dat_extension(fname_tmp2)
 !
           open(pick_monitor_file_code, file=picked_monitor_file_name)
           write(pick_monitor_file_code,*) num_monitor_local

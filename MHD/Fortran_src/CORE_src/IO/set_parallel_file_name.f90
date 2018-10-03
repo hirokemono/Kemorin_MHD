@@ -7,11 +7,13 @@
 !>@brief  Set file extension
 !!
 !!@verbatim
-!!      subroutine delete_directory_name(dir_file_name, file_name)
+!!      character(len = kchara) function delete_directory_name          &
+!!     &                               (dir_file_name)
 !!
-!!      subroutine add_int_suffix(int_id, file_header, file_name)
+!!      character(len = kchara) function add_int_suffix                 &
+!!     &                               (int_id, file_header)
 !!
-!!      subroutine add_dat_extension(file_header, file_name)
+!!      character(len = kchara) function add_dat_extension(file_header)
 !!                put ".dat" at the end
 !!      subroutine add_udt_extension(file_header, file_name)
 !!                put ".udt" at the end
@@ -112,6 +114,10 @@
 !!      subroutine int_to_str(int_val, int_string)
 !!      subroutine lint_to_str(lint_val, int_string)
 !!      subroutine real_to_str(real_val, real_string)
+!!
+!!      character(len = kchara) function set_rayleigh_file_name         &
+!!     &                               (dir, int_id, postfix)
+!!               set file name as "[dir]/[int_id]_[postfix]"
 !!@endverbatim
 !!
 !!@n @param dir_file_name    file name (header) including directory name
@@ -134,10 +140,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine delete_directory_name(dir_file_name, file_name)
+      character(len = kchara) function delete_directory_name            &
+     &                               (dir_file_name)
 !
       character(len=kchara), intent(in) :: dir_file_name
-      character(len=kchara), intent(inout) :: file_name
 !
       integer(kind = kint) :: i, len, len_name, idir_flag
       character(len=kchara) :: fmt_txt
@@ -154,41 +160,41 @@
       len = len_name - idir_flag
 !
       write(fmt_txt,'(a2,i4,a1)') '(a',len,')'
-      write(file_name,fmt_txt) dir_file_name(idir_flag+1:len_name)
+      write(delete_directory_name,fmt_txt)                              &
+     &                            dir_file_name(idir_flag+1:len_name)
 !
-      end subroutine delete_directory_name
+      end function delete_directory_name
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_int_suffix(int_id, file_header, file_name)
+      character(len = kchara) function add_int_suffix                   &
+     &                               (int_id, file_header)
 !
       integer(kind = kint), intent(in) :: int_id
       character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
 !
       character(len=kchara) :: chara_head
 !
 !
       write(chara_head,1000) trim(file_header)
-      call add_index_after_name(int_id, chara_head, file_name)
+      call add_index_after_name(int_id, chara_head, add_int_suffix)
 !
  1000 format (a,".")
 !
-      end subroutine add_int_suffix
+      end function add_int_suffix
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_dat_extension(file_header, file_name)
+      character(len = kchara) function add_dat_extension(file_header)
 !
       character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
 !
-       write(file_name,1011) trim(file_header)
+       write(add_dat_extension,1011) trim(file_header)
  1011 format (a,".dat")
 !
-      end subroutine add_dat_extension
+      end function add_dat_extension
 !
 !-----------------------------------------------------------------------
 !
@@ -769,6 +775,23 @@ end subroutine add_fsb_extension
       write(real_string,'(a)') trim(adjustl(tmp_string))
 !
       end subroutine real_to_str
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      character(len = kchara) function set_rayleigh_file_name           &
+     &                               (dir, int_id, postfix)
+!
+      integer(kind = kint), intent(in) :: int_id
+      character(len=kchara), intent(in) :: dir, postfix
+!
+!
+      write(set_rayleigh_file_name,1000)                                &
+     &                        trim(dir), int_id, trim(postfix)
+!
+ 1000 format(a, '/', i8, '_', a)
+!
+      end function set_rayleigh_file_name
 !
 !-----------------------------------------------------------------------
 !

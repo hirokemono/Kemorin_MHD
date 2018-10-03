@@ -99,8 +99,8 @@
      &    SPH_TEST%sph%sph_rtp%nnod_rtp, SPH_TEST%sph%sph_rtm%nnod_rtm, &
      &    SPH_TEST%sph%sph_rlm%nnod_rlm, SPH_TEST%sph%sph_rj%nnod_rj)
 !
-      call add_int_suffix(my_rank, check_header, fname_tmp)
-      call add_dat_extension(fname_tmp, file_name)
+      fname_tmp = add_int_suffix(my_rank, check_header)
+      file_name = add_dat_extension(fname_tmp)
       write(*,*) 'error check result: ', trim(file_name)
       open(id_check, file=file_name)
 !

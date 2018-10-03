@@ -89,7 +89,7 @@
       call alloc_psf_ctl_stract(psf_ctls_md)
 !
       if(my_rank .eq. 0) then
-        call add_dat_extension(grouping_mesh_head,grouping_mesh_list)
+        grouping_mesh_list = add_dat_extension(grouping_mesh_head)
         open(id_gname,file=grouping_mesh_list)
         write(id_gname,'(i16)') femmesh_FUTIL%group%ele_grp%num_grp
         do igrp = 1, femmesh_FUTIL%group%ele_grp%num_grp
@@ -131,8 +131,8 @@
       do igrp = 1, femmesh_FUTIL%group%ele_grp%num_grp
         fname_psf_ctl(igrp) = 'NO_FILE'
         psf_ctl_struct(igrp)%psf_file_head_ctl%iflag = 1
-        call add_int_suffix(igrp, grouping_mesh_head,                   &
-     &      psf_ctl_struct(igrp)%psf_file_head_ctl%charavalue)
+        psf_ctl_struct(igrp)%psf_file_head_ctl%charavalue               &
+     &              = add_int_suffix(igrp, grouping_mesh_head)
 !
         psf_ctl_struct(igrp)%psf_output_type_ctl%iflag = 1
         psf_ctl_struct(igrp)%psf_output_type_ctl%charavalue = 'VTD'
