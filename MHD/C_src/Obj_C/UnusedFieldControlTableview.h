@@ -32,12 +32,21 @@
     NSOutlineView * unusedFieldTableView;
     NSNumberFormatter * integerFormatter;
     
+    NSString *key2;
     NSString *key1;
     NSString *key0;
     
+    NSMutableDictionary *firstParent;
+    NSMutableDictionary *secondParent;
+    NSMutableArray *list;
+
     struct SGS_MHD_control_c * mhd_ctl_m;
     struct all_field_ctl_c **all_fld_tbl;
 }
+@property(strong) NSMutableDictionary * firstParent;
+@property(strong) NSMutableDictionary * secondParent;
+@property(strong) NSMutableArray * list;
+
 @property(strong) NSMutableDictionary * baseFieldDictionary;
 @property(strong) NSMutableDictionary * forceFieldDictionary;
 @property(strong) NSMutableDictionary * energyFieldDictionary;
@@ -57,6 +66,7 @@
 @property(strong) NSMutableArray * FieldControlArray;
 @property(strong) NSOutlineView * unusedFieldTableView;
 
+@property(strong) NSString * key2;
 @property(strong) NSString * key1;
 @property(strong) NSString * key0;
 
