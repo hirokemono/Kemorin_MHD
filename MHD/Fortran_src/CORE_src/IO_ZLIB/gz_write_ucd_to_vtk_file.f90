@@ -57,7 +57,7 @@
       fname_nodir = delete_directory_name(file_prefix)
       fname_tmp =   add_int_suffix(istep, file_prefix)
       call add_pvtk_extension(fname_tmp, file_name)
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
 !
       write(*,*) 'Write gzipped parallel VTK file: ', trim(gzip_name)
       call open_wt_gzfile_f(gzip_name)

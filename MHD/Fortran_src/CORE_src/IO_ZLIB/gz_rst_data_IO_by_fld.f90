@@ -47,7 +47,7 @@
       integer(kind = kint) :: id_rank
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped restart file: ', trim(gzip_name)
@@ -79,7 +79,7 @@
       integer(kind = kint) :: id_rank
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read gzipped restart file: ', trim(gzip_name)

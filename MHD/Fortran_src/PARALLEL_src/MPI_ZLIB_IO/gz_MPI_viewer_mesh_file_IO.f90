@@ -45,7 +45,7 @@
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write gzipped ascii mesh file: ', trim(gzip_name)
 !

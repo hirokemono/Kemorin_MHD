@@ -54,7 +54,7 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
       call open_wt_gzfile_f(gzip_name)
 !
       call write_gz_itp_table_dest(my_rank, IO_itp_dest)
@@ -91,7 +91,7 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
       call open_rd_gzfile_f(gzip_name)
 !
 !        write(*,*) 'read_gz_itp_domain_dest', trim(file_name)
@@ -125,7 +125,7 @@
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
       call open_wt_gzfile_f(gzip_name)
 !
       call write_gz_itp_table_dest(my_rank, IO_itp_dest)
@@ -156,7 +156,7 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
@@ -183,7 +183,7 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
@@ -209,7 +209,7 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)

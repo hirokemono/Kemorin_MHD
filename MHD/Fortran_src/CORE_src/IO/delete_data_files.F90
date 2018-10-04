@@ -76,7 +76,7 @@
         fname_tmp = add_int_suffix(my_rank, file_head)
 !
         if(iflag_fmt .eq. id_gzip_txt_file_fmt) then
-          call add_gzip_extension(fname_tmp, file_name)
+          file_name =  add_gzip_extension(fname_tmp)
         else
           file_name = fname_tmp
         end if

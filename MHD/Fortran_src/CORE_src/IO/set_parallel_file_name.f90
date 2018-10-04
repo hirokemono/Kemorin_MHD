@@ -15,17 +15,9 @@
 !!
 !!      character(len = kchara) function add_dat_extension(file_header)
 !!                put ".dat" at the end
-!!      subroutine add_udt_extension(file_header, file_name)
-!!                put ".udt" at the end
 !!
-!!      subroutine add_vtk_extension(file_header, file_name)
-!!                put ".vtk" at the end
 !!      subroutine add_pvtk_extension(file_header, file_name)
 !!                put ".pvtk" at the end
-!!      subroutine add_vtd_extension(file_header, file_name)
-!!                put ".vtd" at the end
-!!      subroutine add_vtg_extension(file_header, file_name)
-!!                put ".vtg" at the end
 !!
 !!      subroutine add_hdf_extension(file_header, file_name)
 !!                put ".h5" at the end
@@ -38,11 +30,6 @@
 !!      subroutine add_xdmf_suffix(file_header, file_name)
 !!                put ".solution" at the end
 !!
-!!      subroutine add_grd_extension(file_header, file_name)
-!!                put ".grd" at the end
-!!      subroutine add_ucd_extension(file_header, file_name)
-!!                put ".inp" at the end
-!!
 !!      subroutine add_dx_extension(file_header, file_name)
 !!                put ".dx" at the end
 !!      subroutine add_node_extension(file_header, file_name)
@@ -50,7 +37,7 @@
 !!      subroutine add_connect_extension(file_header, file_name)
 !!                put ".connect.dat" at the end
 !!
-!!      subroutine add_fld_extension(file_header, file_name)
+!!      character(len = kchara) function add_fld_extension(file_header)
 !!                put ".fld" at the end
 !!      subroutine add_flb_extension(file_header, file_name)
 !!                put ".flb" at the end
@@ -61,9 +48,9 @@
 !!      subroutine add_elaps_postfix(file_header, file_name)
 !!                put ".elps" at the end
 !!
-!!      subroutine add_gzip_extension(file_header, file_name)
+!!      character(len = kchara) function add_gzip_extension(file_header)
 !!                put ".gz"
-!!      subroutine add_null_character(file_header, file_name)
+!!      character(len = kchara) function add_null_character(file_header)
 !!                put null character at the end
 !!
 !!      subroutine add_ksm_extension(file_header, file_name)
@@ -121,13 +108,11 @@
 !!@endverbatim
 !!
 !!@n @param dir_file_name    file name (header) including directory name
-!!@n @param file_header      file prefix
 !!@n @param int_id           integer to be added at the end of prefix
 !!@n @param file_name        output file name
 !!@n @param int_val          integer to be tranfered to character
 !!@n @param int_string       output character
 !
-
       module set_parallel_file_name
 !
       use m_precision
@@ -198,30 +183,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_udt_extension(file_header, file_name)
-!
-      character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
-!
-       write(file_name,1011) trim(file_header)
- 1011 format (a,".udt")
-!
-      end subroutine add_udt_extension
-!
-!-----------------------------------------------------------------------
-!
-      subroutine add_vtk_extension(file_header, file_name)
-!
-      character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
-!
-       write(file_name,1011) trim(file_header)
- 1011 format (a,".vtk")
-!
-      end subroutine add_vtk_extension
-!
-!-----------------------------------------------------------------------
-!
       subroutine add_pvtk_extension(file_header, file_name)
 !
       character(len=kchara), intent(in) :: file_header
@@ -231,30 +192,6 @@
  1011 format (a,".pvtk")
 !
       end subroutine add_pvtk_extension
-!
-!-----------------------------------------------------------------------
-!
-      subroutine add_vtd_extension(file_header, file_name)
-!
-      character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
-!
-       write(file_name,1011) trim(file_header)
- 1011 format (a,".vtd")
-!
-      end subroutine add_vtd_extension
-!
-!-----------------------------------------------------------------------
-!
-      subroutine add_vtg_extension(file_header, file_name)
-!
-      character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
-!
-       write(file_name,1011) trim(file_header)
- 1011 format (a,".vtg")
-!
-      end subroutine add_vtg_extension
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -320,31 +257,6 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_grd_extension(file_header, file_name)
-!
-      character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
-!
-      write(file_name,1011) trim(file_header)
- 1011 format (a,".grd")
-!
-      end subroutine add_grd_extension
-!
-!-----------------------------------------------------------------------
-!
-      subroutine add_ucd_extension(file_header, file_name)
-!
-      character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
-!
-       write(file_name,1011) trim(file_header)
-       file_name = trim(file_name)
- 1011 format (a,".inp")
-!
-      end subroutine add_ucd_extension
-!
-!-----------------------------------------------------------------------
-!
       subroutine add_dx_extension(file_header, file_name)
 !
       character(len=kchara), intent(in) :: file_header
@@ -381,15 +293,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_fld_extension(file_header, file_name)
+      character(len = kchara) function add_fld_extension(file_header)
 !
       character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
 !
-       write(file_name,1011) trim(file_header)
+       write(add_fld_extension,1011) trim(file_header)
  1011 format (a,".fld")
 !
-      end subroutine add_fld_extension
+      end function add_fld_extension
 !
 !-----------------------------------------------------------------------
 !
@@ -441,27 +352,25 @@ end subroutine add_fsb_extension
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_gzip_extension(file_header, file_name)
+      character(len = kchara) function add_gzip_extension(file_header)
 !
       character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
 !
-       write(file_name,1011) trim(file_header), ".gz"
+      write(add_gzip_extension,1011) trim(file_header), ".gz"
  1011 format (a,a3)
 !
-      end subroutine add_gzip_extension
+      end function add_gzip_extension
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_null_character(file_header, file_name)
+      character(len = kchara) function add_null_character(file_header)
 !
       character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
 !
-      write(file_name,1011) trim(file_header), char(0)
-      1011 format (a,a1)
+      write(add_null_character,1011) trim(file_header), char(0)
+ 1011 format (a,a1)
 !
-      end subroutine add_null_character
+      end function add_null_character
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

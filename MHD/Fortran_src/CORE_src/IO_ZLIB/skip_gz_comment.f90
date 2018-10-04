@@ -42,10 +42,10 @@
 !
       integer(kind = 4), parameter :: nbuf = 65535
       integer (kind =kint) :: num_word, nchara
-      character(len=nbuf) :: textbuf, tbuf2
+      character(len=nbuf) :: textbuf
       character(len=1), private :: chara_flag
 !
-      private :: nchara, tbuf2
+      private :: nchara
       private :: skip_gz_comment_get_nword
 !
 !------------------------------------------------------------------
@@ -62,7 +62,7 @@
       character(len=kchara) :: file_name
 !
 !
-      call add_null_character(gzip_name, file_name)
+      file_name = add_null_character(gzip_name)
       call open_wt_gzfile(file_name)
 !
       end subroutine open_wt_gzfile_f
@@ -77,7 +77,7 @@
       character(len=kchara) :: file_name
 !
 !
-      call add_null_character(gzip_name, file_name)
+      file_name = add_null_character(gzip_name)
       call open_ad_gzfile(file_name)
 !
       end subroutine open_ad_gzfile_f
@@ -92,7 +92,7 @@
       character(len=kchara) :: file_name
 !
 !
-      call add_null_character(gzip_name, file_name)
+      file_name = add_null_character(gzip_name)
       call open_rd_gzfile(file_name)
 !
       end subroutine open_rd_gzfile_f
@@ -235,6 +235,7 @@
 !
       subroutine skip_gz_comment_get_nword
 !
+!      character(len=nbuf) :: tbuf2
 !
       do
         call get_one_line_from_gz_f

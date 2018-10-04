@@ -30,7 +30,7 @@
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(sph_cor_file_name, gzip_name)
+      gzip_name = add_gzip_extension(sph_cor_file_name)
       write(*,*) 'Write gzipped integration file: ', trim(gzip_name)
       call open_wt_gzfile_f(gzip_name)
 !
@@ -99,7 +99,7 @@
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(sph_cor_file_name, gzip_name)
+      gzip_name = add_gzip_extension(sph_cor_file_name)
 !
       if(iflag_debug.gt.0) write(*,*)                                   &
      &              'Read gzipped integration file: ', trim(gzip_name)

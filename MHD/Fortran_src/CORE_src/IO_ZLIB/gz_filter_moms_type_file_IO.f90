@@ -53,7 +53,7 @@
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
 !
       if(i_debug .gt. 0) then
         write(*,*) 'Write gzipped number of filter moms file: ',        &
@@ -84,7 +84,7 @@
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
 !
       if(i_debug .gt. 0) then
         write(*,*) 'Read gzipped filter length file: ',                 &
@@ -112,7 +112,7 @@
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
 !
       if(i_debug .gt. 0) then
         write(*,*) 'Write gzipped filter length file: ',                &
@@ -146,7 +146,7 @@
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
 !
       if(i_debug .gt. 0) then
         write(*,*) 'Read gzipped filter moment file: ',                 &
@@ -178,7 +178,7 @@
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
 !
       if(i_debug .gt. 0) then
         write(*,*) 'Write gzipped filter moment file: ',                &

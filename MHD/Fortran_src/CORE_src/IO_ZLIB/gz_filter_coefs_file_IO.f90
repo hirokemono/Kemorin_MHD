@@ -53,7 +53,7 @@
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
 !
       if(i_debug .gt. 0) then
         write(*,*) 'Read gzipped filter file: ', trim(gzip_name)
@@ -86,7 +86,7 @@
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
 !
       if(i_debug .gt. 0 .or. my_rank_IO .eq. 0) then
         write(*,*) 'Write gzipped filter files: ', trim(gzip_name)
@@ -122,7 +122,7 @@
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
 !
       if(i_debug .gt. 0 .or. my_rank_IO .eq. 0) then
         write(*,*) 'Read gzipped filter files: ', trim(gzip_name)
@@ -150,7 +150,7 @@
       character(len=kchara) :: gzip_name
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
 !
       if(my_rank_IO .eq. 0 .or. i_debug .gt. 0) then
         write(*,*) 'Write gzipped filter file: ', trim(gzip_name)

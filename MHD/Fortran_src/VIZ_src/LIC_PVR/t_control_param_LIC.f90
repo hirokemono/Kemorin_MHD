@@ -169,6 +169,7 @@
       use set_field_comp_for_viz
       use set_components_flags
       use set_parallel_file_name
+      use set_ucd_extensions
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
@@ -298,8 +299,8 @@
         end if
       end if
 !
-      call add_grd_extension                                            &
-     &   (lic_p%noise_file_name, lic_p%reflection_file_name)
+      lic_p%reflection_file_name                                        &
+     &       = add_grd_extension(lic_p%noise_file_name)
 !
 !
       lic_p%freq_noise = one

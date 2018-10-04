@@ -35,7 +35,7 @@
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
       write(*,*) 'write gzipped viewer mesh file: ', trim(gzip_name)
       call open_wt_gzfile_f(gzip_name)
 !
@@ -85,7 +85,7 @@
       integer(kind = kint) :: nnod_4_edge
 !
 !
-      call add_gzip_extension(file_name, gzip_name)
+      gzip_name = add_gzip_extension(file_name)
       write(*,*) 'read gzipped viewer mesh file: ', trim(gzip_name)
       call open_rd_gzfile_f(gzip_name)
 !

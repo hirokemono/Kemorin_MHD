@@ -65,7 +65,7 @@
 !
 !
 #ifdef ZLIB_IO
-      call add_null_character(file_name, file_name_w_null)
+      file_name_w_null = add_null_character(file_name)
       call open_wt_rawfile(file_name_w_null, ierr_IO)
 #else
       open(id_binary, file = file_name, form='unformatted')
@@ -86,7 +86,7 @@
 !
 !
 #ifdef ZLIB_IO
-      call add_null_character(file_name, file_name_w_null)
+      file_name_w_null = add_null_character(file_name)
       call open_ad_rawfile(file_name_w_null, ierr_IO)
 #else
       open(id_binary, file = file_name, form='unformatted',             &
@@ -107,7 +107,7 @@
 !
 !
 #ifdef ZLIB_IO
-      call add_null_character(file_name, file_name_w_null)
+      file_name_w_null = add_null_character(file_name)
       call open_rd_rawfile(file_name_w_null, ierr_IO)
 #else
       open(id_binary, file = file_name, form='unformatted')

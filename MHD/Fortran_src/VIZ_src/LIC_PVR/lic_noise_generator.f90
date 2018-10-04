@@ -28,37 +28,40 @@
 !
 !  ---------------------------------------------------------------------
 !
-subroutine import_noise_nd_ary(filename, n_node_data, n_data_size, ierr)
+      subroutine import_noise_nd_ary                                    &
+     &         (filename, n_node_data, n_data_size, ierr)
 
-use t_noise_node_data
-use set_parallel_file_name
+      use t_noise_node_data
+      use set_parallel_file_name
 
-character(len = kchara), intent(in) :: filename
-integer(kind = kint), intent(inout) :: n_data_size(3)
-type(noise_node), intent(inout), pointer, dimension(:) :: n_node_data
-integer(kind = kint), intent(inout) :: ierr
-integer(kind = kint) :: d_size, i
-character(len=kchara) :: file_name
-character(len=1) :: noise_char(1)
+      character(len = kchara), intent(in) :: filename
+      integer(kind = kint), intent(inout) :: n_data_size(3)
+      type(noise_node), intent(inout), pointer :: n_node_data(:)
+      integer(kind = kint), intent(inout) :: ierr
 !
-call add_null_character(filename, file_name)
-call open_rd_rawfile(file_name, ierr)
-if(ierr .eq. 0) then
+      integer(kind = kint) :: d_size, i
+      character(len=kchara) :: file_name
+      character(len=1) :: noise_char(1)
+!
+!
+      file_name = add_null_character(filename)
+      call open_rd_rawfile(file_name, ierr)
+      if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-  call read_mul_integer_b(3, n_data_size)
-  d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
+        call read_mul_integer_b(3, n_data_size)
+        d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
   !write(*,*) d_size
-  allocate(n_node_data(d_size))
-  do i=1, d_size
+        allocate(n_node_data(d_size))
+        do i=1, d_size
     ! change 0 to any level to initial complex noise node tree
-    call alloc_noise_node(n_node_data(i), 2, 0)
-    call read_mul_one_character_b(1, noise_char)
-    n_node_data(i)%n_value = ichar(noise_char(1)) / 255.0
+          call alloc_noise_node(n_node_data(i), 2, 0)
+          call read_mul_one_character_b(1, noise_char)
+          n_node_data(i)%n_value = ichar(noise_char(1)) / 255.0
     !write(*,*) n_node_data(i)%n_value
-  end do
-end if
-close(16)
-end subroutine import_noise_nd_ary
+        end do
+      end if
+      close(16)
+      end subroutine import_noise_nd_ary
 !
 !  ---------------------------------------------------------------------
 !
@@ -74,7 +77,7 @@ end subroutine import_noise_nd_ary
       integer(kind = kint) :: d_size
       character(len=kchara) :: file_name
       !
-      call add_null_character(filename, file_name)
+      file_name = add_null_character(filename)
       call open_rd_rawfile(file_name, ierr)
       if(ierr .eq. 0) then
       ! first line read 3 integer size data, byte 4
@@ -102,7 +105,7 @@ end subroutine import_noise_nd_ary
       integer(kind = kint) :: d_size
       character(len=kchara) :: file_name
       !
-      call add_null_character(filename, file_name)
+      file_name = add_null_character(filename)
       call open_rd_rawfile(file_name, ierr)
       if(ierr .eq. 0) then
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3

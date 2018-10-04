@@ -60,10 +60,10 @@
 !
       if     (mod(itype_file,iten) .eq. id_gzip_bin_file_fmt) then
         call add_gfb_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_gzip_txt_file_fmt) then
         call add_gfm_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_binary_file_fmt) then
         call add_gfb_extension(file_name, fname_tmp)
         file_name = fname_tmp
@@ -93,10 +93,10 @@
 !
       if     (mod(itype_file,iten) .eq. id_gzip_bin_file_fmt) then
         call add_btp_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_gzip_txt_file_fmt) then
         call add_rtp_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_binary_file_fmt) then
         call add_btp_extension(file_name, fname_tmp)
         file_name = fname_tmp
@@ -126,10 +126,10 @@
 !
       if     (mod(itype_file,iten) .eq. id_gzip_bin_file_fmt) then
         call add_btm_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_gzip_txt_file_fmt) then
         call add_rtm_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_binary_file_fmt) then
         call add_btm_extension(file_name, fname_tmp)
         file_name = fname_tmp
@@ -159,10 +159,10 @@
 !
       if     (mod(itype_file,iten) .eq. id_gzip_bin_file_fmt) then
         call add_blm_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_gzip_txt_file_fmt) then
         call add_rlm_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_binary_file_fmt) then
         call add_blm_extension(file_name, fname_tmp)
         file_name = fname_tmp
@@ -192,10 +192,10 @@
 !
       if     (mod(itype_file,iten) .eq. id_gzip_bin_file_fmt) then
         call add_brj_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_gzip_txt_file_fmt) then
         call add_rj_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_binary_file_fmt) then
         call add_brj_extension(file_name, fname_tmp)
         file_name = fname_tmp
@@ -226,10 +226,10 @@
 !
       if     (mod(itype_file,iten) .eq. id_gzip_bin_file_fmt) then
         call add_elb_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_gzip_txt_file_fmt) then
         call add_gel_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_binary_file_fmt) then
         call add_elb_extension(file_name, fname_tmp)
         file_name = fname_tmp
@@ -259,10 +259,10 @@
 !
       if     (mod(itype_file,iten) .eq. id_gzip_bin_file_fmt) then
         call add_sfb_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_gzip_txt_file_fmt) then
         call add_gsf_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_binary_file_fmt) then
         call add_sfb_extension(file_name, fname_tmp)
         file_name = fname_tmp
@@ -292,10 +292,10 @@
 !
       if     (mod(itype_file,iten) .eq. id_gzip_bin_file_fmt) then
         call add_edb_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_gzip_txt_file_fmt) then
         call add_ged_extension(file_name, fname_tmp)
-        call add_gzip_extension(fname_tmp, file_name)
+        file_name = add_gzip_extension(fname_tmp)
       else if(mod(itype_file,iten) .eq. id_binary_file_fmt) then
         call add_edb_extension(file_name, fname_tmp)
         file_name = fname_tmp
