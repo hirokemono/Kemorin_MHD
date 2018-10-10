@@ -93,13 +93,15 @@
       character(len=kchara), parameter                                  &
      &      :: hd_magnetic_field_ratio =  'magnetic_field_ratio_ctl'
 !
+      private :: control_file_code
+      private :: ctl_assemble_sph_name, control_file_name
       private :: hd_assemble, i_assemble
       private :: hd_platform, i_platform
-      private :: hd_new_data, i_new_data
+      private :: hd_new_data, i_new_data, i_newrst_magne
       private :: hd_model, hd_control, i_model, i_control
       private :: hd_phys_values, i_phys_values
       private :: hd_time_step, i_tstep, hd_new_time_step, i_nstep
-      private :: hd_newrst_magne
+      private :: hd_newrst_magne, hd_magnetic_field_ratio
 !
       private :: read_merge_control_data
       private :: read_newrst_control
