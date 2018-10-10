@@ -90,22 +90,23 @@
       call turn_off_debug_flag_by_ctl(my_rank, plt)
 !      call check_control_num_domains(plt)
 !
-      call choose_para_file_format(f_ctl%org_spec_file_fmt_ctl,         &
-     &   files%org_file_param%iflag_format)
+      files%org_file_param%iflag_format                                 &
+     &    = choose_para_file_format(f_ctl%org_spec_file_fmt_ctl)
       if(f_ctl%out_field_head_ctl%iflag .gt. 0) then
         files%org_file_param%file_prefix                                &
      &          = f_ctl%org_field_head_ctl%charavalue
       end if
 !
-      call choose_para_file_format(f_ctl%sub_spec_file_fmt_ctl,         &
-     &    files%sub_file_param%iflag_format)
+      files%sub_file_param%iflag_format                                 &
+     &    = choose_para_file_format(f_ctl%sub_spec_file_fmt_ctl)
       if(f_ctl%sub_field_head_ctl%iflag .gt. 0) then
         files%sub_file_param%file_prefix                                &
      &          = f_ctl%sub_field_head_ctl%charavalue
       end if
 !
-      call choose_para_file_format(f_ctl%out_spec_file_fmt_ctl,         &
-     &    files%out_file_param%iflag_format)
+      files%out_file_param%iflag_format                                 &
+     &    = choose_para_file_format(f_ctl%out_spec_file_fmt_ctl)
+
       if(f_ctl%out_field_head_ctl%iflag .gt. 0) then
           files%out_file_param%file_prefix                              &
      &          = f_ctl%out_field_head_ctl%charavalue

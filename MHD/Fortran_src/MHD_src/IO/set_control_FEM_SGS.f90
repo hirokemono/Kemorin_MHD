@@ -164,8 +164,8 @@
           filter_elen_head = ffile_ctl%filter_elen_head_ctl%charavalue
         end if
 !
-        call choose_file_format                                         &
-     &     (ffile_ctl%filter_elen_format, ifmt_filter_elen)
+        ifmt_filter_elen                                                &
+     &     = choose_file_format(ffile_ctl%filter_elen_format)
 !
         if (iflag_debug .gt. 0)  then
           write(*,*) 'filter_elen_head: ', trim(filter_elen_head)

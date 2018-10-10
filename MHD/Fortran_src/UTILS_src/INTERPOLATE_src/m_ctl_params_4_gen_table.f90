@@ -110,8 +110,8 @@
 !
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, gtbl_ctl%dst_plt, itp_dest_mesh_file)
-      call choose_file_format                                           &
-     &   (gtbl_ctl%fmt_itp_table_file_ctl, ifmt_itp_table_file)
+      ifmt_itp_table_file                                               &
+     &    = choose_file_format(gtbl_ctl%fmt_itp_table_file_ctl)
 !
       if (iflag_debug.eq.1)  then
         write(*,*) 'np_smp', np_smp, np_smp

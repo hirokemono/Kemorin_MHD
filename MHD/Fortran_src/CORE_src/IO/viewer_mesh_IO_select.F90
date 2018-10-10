@@ -51,14 +51,15 @@
 !
       subroutine sel_output_surface_grid(mesh_file, mgd_view_mesh)
 !
+      use set_mesh_extensions
+!
       type(field_IO_params), intent(in) :: mesh_file
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
       character(len = kchara) :: file_name
 !
 !
-      call add_ksm_extension                                            &
-     &   (mesh_file%file_prefix, file_name)
+      file_name = add_ksm_extension(mesh_file%file_prefix)
 !
 #ifdef ZLIB_IO
       if(mesh_file%iflag_format .eq. id_gzip_txt_file_fmt) then
@@ -76,6 +77,8 @@
       subroutine sel_read_surface_grid                                  &
      &         (mesh_file, nnod_4_ele, mgd_view_mesh)
 !
+      use set_mesh_extensions
+!
       type(field_IO_params), intent(in) :: mesh_file
       integer(kind = kint), intent(in) :: nnod_4_ele
 !
@@ -84,8 +87,7 @@
       character(len = kchara) :: file_name
 !
 !
-      call add_ksm_extension                                            &
-     &   (mesh_file%file_prefix, file_name)
+      file_name = add_ksm_extension(mesh_file%file_prefix)
 !
 #ifdef ZLIB_IO
       if(mesh_file%iflag_format .eq. id_gzip_txt_file_fmt) then
@@ -106,6 +108,8 @@
      &         (id_rank, mesh_file, view_mesh, domain_grps,             &
      &          view_nod_grps, view_ele_grps, view_sf_grps)
 !
+      use set_mesh_extensions
+!
       integer(kind = kint), intent(in) :: id_rank
 !
       type(field_IO_params), intent(in) :: mesh_file
@@ -124,7 +128,7 @@
       istack_nsurf(1) = view_mesh%nsurf_viewer
 !
       fname_tmp = add_int_suffix(id_rank, mesh_file%file_prefix)
-      call add_ksm_extension(fname_tmp, file_name)
+      file_name = add_ksm_extension(fname_tmp)
 !
       call output_single_surface_grid                                   &
      &   (file_name, istack_nsurf, view_mesh, domain_grps,              &

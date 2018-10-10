@@ -145,10 +145,10 @@
 !
 !   set data format
 !
-      call choose_para_file_format                                      &
-     &  (plt%sph_file_fmt_ctl, iflag_sph_file_fmt)
-      call choose_para_file_format                                      &
-     &   (plt%spectr_field_fmt_ctl, sph_file_param%iflag_format)
+      iflag_sph_file_fmt                                                &
+     &     = choose_para_file_format(plt%sph_file_fmt_ctl)
+      sph_file_param%iflag_format                                       &
+     &     = choose_para_file_format(plt%spectr_field_fmt_ctl)
 !
 !   set file header at once
 !
@@ -289,8 +289,7 @@
         file_params%file_prefix = default_prefix
       end if
 !
-      call choose_file_format                                           &
-     &   (file_format_ctl, file_params%iflag_format)
+      file_params%iflag_format = choose_file_format(file_format_ctl)
 !
       end subroutine set_file_control_params
 !
@@ -316,8 +315,8 @@
         file_params%file_prefix = default_prefix
       end if
 !
-      call choose_para_file_format                                      &
-     &   (file_format_ctl, file_params%iflag_format)
+      file_params%iflag_format                                          &
+     &     = choose_para_file_format(file_format_ctl)
 !
       end subroutine set_parallel_file_ctl_params
 !

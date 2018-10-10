@@ -24,6 +24,7 @@
       use t_phys_data
       use t_time_data
       use t_field_data_IO
+      use t_control_data_4_merge
 !
       use field_IO_select
 !
@@ -33,6 +34,7 @@
       type(mesh_geometry), save :: mesh_m
       type(phys_data), save :: new_fld
 !
+      type(control_data_4_merge), save :: mgd_ctl8
       type(time_data), save :: t_IO_m
       type(field_IO), save :: fld_IO_m
 !
@@ -46,7 +48,6 @@
 !
       use m_error_IDs
       use m_control_param_merge
-      use m_control_data_4_merge
       use m_array_for_send_recv
 !
       use mpi_load_mesh_data
@@ -68,8 +69,8 @@
 !
 !   read control data
 !
-      call read_control_4_merge
-      call set_control_4_merge(ndomain_org)
+      call read_control_4_merge(mgd_ctl8)
+      call set_control_4_merge(mgd_ctl8, ndomain_org)
       if(ndomain_org .ne. nprocs) then
         write(e_message,'(a)')                                          &
      &     'No. of processes and targed sub domain shold be the same.'

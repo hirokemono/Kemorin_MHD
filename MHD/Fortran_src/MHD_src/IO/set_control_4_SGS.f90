@@ -205,9 +205,8 @@
           Csim_file_IO%file_prefix = def_rst_sgs_coef
         end if
 !
-        call choose_para_file_format                                    &
-     &     (sgs_ctl%ffile_ctl%model_coef_rst_format,                    &
-     &      Csim_file_IO%iflag_format)
+        Csim_file_IO%iflag_format = choose_para_file_format             &
+     &     (sgs_ctl%ffile_ctl%model_coef_rst_format)
 !
         if (iflag_debug .gt. 0)  then
           write(*,*) 'Csim_file_IO%file_prefix: ',                      &

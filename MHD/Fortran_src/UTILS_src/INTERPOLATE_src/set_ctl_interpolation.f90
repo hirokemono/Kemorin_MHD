@@ -100,11 +100,11 @@
         ndomain_dest = 1
       end if
 !
-      call choose_file_format(gtbl_ctl%dst_plt%mesh_file_fmt_ctl,       &
-     &    itp_dest_mesh_file%iflag_format)
+      itp_dest_mesh_file%iflag_format                                   &
+     &   = choose_file_format(gtbl_ctl%dst_plt%mesh_file_fmt_ctl)
 !
-      call choose_file_format                                           &
-     &   (gtbl_ctl%fmt_itp_table_file_ctl, ifmt_itp_table_file)
+      ifmt_itp_table_file                                               &
+     &   = choose_file_format(gtbl_ctl%fmt_itp_table_file_ctl)
 !
       if (nprocs .ne. max(ndomain_org,ndomain_dest) ) then
         write(e_message,*)                                              &

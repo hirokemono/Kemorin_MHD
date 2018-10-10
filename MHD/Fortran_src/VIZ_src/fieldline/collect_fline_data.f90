@@ -37,6 +37,7 @@
       use m_field_file_format
       use set_ucd_file_names
       use set_parallel_file_name
+      use set_ucd_extensions
 !
       integer(kind = kint), intent(in) :: istep_fline
       type(fieldline_paramter), intent(in) :: fln_prm
@@ -68,8 +69,8 @@
       if(my_rank .eq. 0) then
         write(*,*) 'output format ', fln_prm%iformat_file_file
         if(fln_prm%iformat_file_file .eq. iflag_ucd) then
-          call set_single_ucd_file_name(fln_prm%fline_prefix,           &
-     &        fln_prm%iformat_file_file, istep_fline, file_name)
+          file_name = set_single_ucd_file_name(fln_prm%fline_prefix,    &
+     &               fln_prm%iformat_file_file, istep_fline)
           write(*,*) 'output ', trim(file_name)
           open(id_fline_data_code, file=file_name)
 !
@@ -77,16 +78,16 @@
           close(id_fline_data_code)
         else if(fln_prm%iformat_file_file .eq. iflag_vtk)               &
      &        then
-          call set_single_ucd_file_name(fln_prm%fline_prefix,           &
-     &        fln_prm%iformat_file_file, istep_fline, file_name)
+          file_name = set_single_ucd_file_name(fln_prm%fline_prefix,    &
+     &               fln_prm%iformat_file_file, istep_fline)
           write(*,*) 'output ', trim(file_name)
           open(id_fline_data_code, file=file_name)
 !
           call write_global_fline_vtk(id_fline_data_code, fline_gl)
           close(id_fline_data_code)
         else
-          ftmp_1 = add_int_suffix(istep_fline, fln_prm%fline_prefix)
-          call add_dx_extension(ftmp_1, file_name)
+          file_name = add_int_suffix(istep_fline, fln_prm%fline_prefix)
+          file_name = add_dx_extension(file_name)
           write(*,*) 'output ', trim(file_name)
           open(id_fline_data_code, file=file_name)
 !

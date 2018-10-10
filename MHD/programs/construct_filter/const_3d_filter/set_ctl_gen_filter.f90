@@ -466,10 +466,9 @@
 !
 !   set data format
 !
-      call choose_file_format                                           &
-     &   (ffile_ctl%filter_3d_format, ifmt_3d_filter)
-      call choose_file_format                                           &
-     &   (ffile_ctl%filter_elen_format, ifmt_filter_elen)
+      ifmt_3d_filter = choose_file_format(ffile_ctl%filter_3d_format)
+      ifmt_filter_elen                                                  &
+     &     = choose_file_format(ffile_ctl%filter_elen_format)
       ifmt_filter_moms = ifmt_filter_elen
 !
       end subroutine set_file_heads_3d_comm_filter

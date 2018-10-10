@@ -204,10 +204,8 @@
           if(yes_flag(pvr_ctls(i_pvr)%anaglyph_ctl%charavalue)) then
             pvr_rgb(ist)%pvr_prefix = pvr_prefix
           else
-            call add_left_label                                         &
-     &         (pvr_prefix, pvr_rgb(ist)%pvr_prefix)
-            call add_right_label                                        &
-     &         (pvr_prefix, pvr_rgb(ist+1)%pvr_prefix)
+            pvr_rgb(ist  )%pvr_prefix = add_left_label(pvr_prefix)
+            pvr_rgb(ist+1)%pvr_prefix = add_right_label(pvr_prefix)
             call set_pvr_file_control                                   &
      &         (pvr_ctls(i_pvr), pvr_rgb(ist+1))
           end if

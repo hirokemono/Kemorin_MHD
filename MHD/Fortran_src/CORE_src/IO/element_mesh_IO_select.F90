@@ -57,6 +57,8 @@
       subroutine sel_read_ele_mesh                                      &
      &         (mesh_file, my_rank_IO, ele_mesh_IO, ierr)
 !
+      use set_mesh_file_names
+!
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
@@ -64,8 +66,8 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call ele_mesh_file_name_by_param                                  &
-     &   (mesh_file, my_rank_IO, file_name)
+      file_name = set_ele_comm_file_name                                &
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call input_element_file_b                                       &
@@ -92,6 +94,8 @@
       subroutine sel_read_surf_mesh                                     &
      &         (mesh_file, my_rank_IO, surf_mesh_IO, ierr)
 !
+      use set_mesh_file_names
+!
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
@@ -99,8 +103,8 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call surf_mesh_file_name_by_param                                 &
-     &   (mesh_file, my_rank_IO, file_name)
+      file_name = set_surf_mesh_file_name                               &
+     &      (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call input_surface_file_b                                       &
@@ -127,6 +131,8 @@
       subroutine sel_read_edge_mesh                                     &
      &         (mesh_file, my_rank_IO, edge_mesh_IO, ierr)
 !
+      use set_mesh_file_names
+!
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
@@ -134,8 +140,8 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call edge_mesh_file_name_by_param                                 &
-     &   (mesh_file, my_rank_IO, file_name)
+      file_name = set_edge_mesh_file_name                               &
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call input_edge_file_b                                          &
@@ -163,14 +169,16 @@
       subroutine sel_write_ele_mesh_file                                &
      &         (mesh_file, my_rank_IO, ele_mesh_IO)
 !
+      use set_mesh_file_names
+!
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(surf_edge_IO_file), intent(in) :: ele_mesh_IO
 !
 !
-      call ele_mesh_file_name_by_param                                  &
-     &   (mesh_file, my_rank_IO, file_name)
+      file_name = set_ele_comm_file_name                                &
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call output_element_file_b                                      &
@@ -197,14 +205,16 @@
       subroutine sel_write_surf_mesh_file                               &
      &         (mesh_file, my_rank_IO, surf_mesh_IO)
 !
+      use set_mesh_file_names
+!
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(surf_edge_IO_file), intent(in) :: surf_mesh_IO
 !
 !
-      call surf_mesh_file_name_by_param                                 &
-     &   (mesh_file, my_rank_IO, file_name)
+      file_name = set_surf_mesh_file_name                               &
+     &      (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call output_surface_file_b                                      &
@@ -231,14 +241,16 @@
       subroutine sel_write_edge_mesh_file                               &
      &         (mesh_file, my_rank_IO, edge_mesh_IO)
 !
+      use set_mesh_file_names
+!
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
 !
 !
-      call edge_mesh_file_name_by_param                                 &
-     &   (mesh_file, my_rank_IO, file_name)
+      file_name = set_edge_mesh_file_name                               &
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call output_edge_file_b                                         &

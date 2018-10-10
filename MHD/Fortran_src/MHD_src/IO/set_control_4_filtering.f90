@@ -162,10 +162,9 @@
           filter_wide_head = ffile_ctl%filter_wide_head_ctl%charavalue
         end if
 !
-        call choose_file_format                                         &
-     &     (ffile_ctl%filter_3d_format, ifmt_3d_filter)
-        call choose_file_format                                         &
-     &     (ffile_ctl%filter_wide_format, ifmt_wide_filter)
+        ifmt_3d_filter = choose_file_format(ffile_ctl%filter_3d_format)
+        ifmt_wide_filter                                                &
+     &               = choose_file_format(ffile_ctl%filter_wide_format)
 !
         if (iflag_debug .gt. 0)  then
           write(*,*) 'filter_3d_head: ',     trim(filter_3d_head)

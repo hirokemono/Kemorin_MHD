@@ -81,8 +81,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_FEM_fld_file_name(file_IO%file_prefix,                   &
-     &    file_IO%iflag_format, id_rank, istep_fld, file_name)
+      file_name = set_FEM_fld_file_name(file_IO%file_prefix,            &
+     &           file_IO%iflag_format, id_rank, istep_fld)
 !
       check_step_FEM_field_file = check_file_exist(file_name)
 !
@@ -104,8 +104,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_FEM_fld_file_name(file_IO%file_prefix,                   &
-     &    file_IO%iflag_format, id_rank, istep_fld, file_name)
+      file_name = set_FEM_fld_file_name(file_IO%file_prefix,            &
+     &           file_IO%iflag_format, id_rank, istep_fld)
 !
       call sel_write_step_field_file                                    &
      &    (file_name, nprocs_in, id_rank, file_IO, t_IO, fld_IO)
@@ -127,8 +127,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_SPH_fld_file_name(file_IO%file_prefix,                   &
-     &    file_IO%iflag_format, id_rank, istep_fld, file_name)
+      file_name = set_SPH_fld_file_name(file_IO%file_prefix,            &
+     &         file_IO%iflag_format, id_rank, istep_fld)
 !
       call sel_write_step_field_file                                    &
      &    (file_name, nprocs_in, id_rank, file_IO, t_IO, fld_IO)
@@ -151,8 +151,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_FEM_fld_file_name(file_IO%file_prefix,                   &
-     &    file_IO%iflag_format, id_rank, istep_fld, file_name)
+      file_name = set_FEM_fld_file_name(file_IO%file_prefix,            &
+     &           file_IO%iflag_format, id_rank, istep_fld)
 !
       call sel_read_step_field_file                                     &
      &    (file_name, nprocs_in, id_rank, file_IO, t_IO, fld_IO)
@@ -174,8 +174,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_SPH_fld_file_name(file_IO%file_prefix,                   &
-     &    file_IO%iflag_format, id_rank, istep_fld, file_name)
+      file_name = set_SPH_fld_file_name(file_IO%file_prefix,            &
+     &         file_IO%iflag_format, id_rank, istep_fld)
 !
       call sel_read_step_field_file                                     &
      &    (file_name, nprocs_in, id_rank, file_IO, t_IO, fld_IO)
@@ -198,8 +198,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_FEM_fld_file_name(file_IO%file_prefix,                   &
-     &    file_IO%iflag_format, id_rank, istep_fld, file_name)
+      file_name = set_FEM_fld_file_name(file_IO%file_prefix,            &
+     &           file_IO%iflag_format, id_rank, istep_fld)
 !
       call sel_read_alloc_step_field_file                               &
      &    (file_name, nprocs_in, id_rank, file_IO, t_IO, fld_IO)
@@ -221,8 +221,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_SPH_fld_file_name(file_IO%file_prefix,                   &
-     &    file_IO%iflag_format, id_rank, istep_fld, file_name)
+      file_name = set_SPH_fld_file_name(file_IO%file_prefix,            &
+     &    file_IO%iflag_format, id_rank, istep_fld)
 !
       call sel_read_alloc_step_field_file                               &
      &    (file_name, nprocs_in, id_rank, file_IO, t_IO, fld_IO)
@@ -244,8 +244,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_FEM_fld_file_name(file_IO%file_prefix,                   &
-     &    file_IO%iflag_format, id_rank, istep_fld, file_name)
+      file_name = set_FEM_fld_file_name(file_IO%file_prefix,            &
+     &           file_IO%iflag_format, id_rank, istep_fld)
 !
       call sel_read_alloc_field_head                                    &
      &    (file_name, nprocs_in, id_rank, file_IO, t_IO, fld_IO)
@@ -267,8 +267,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_SPH_fld_file_name(file_IO%file_prefix,                   &
-     &    file_IO%iflag_format, id_rank, istep_fld, file_name)
+      file_name = set_SPH_fld_file_name(file_IO%file_prefix,            &
+     &    file_IO%iflag_format, id_rank, istep_fld)
 !
       call sel_read_alloc_field_head                                    &
      &    (file_name, nprocs_in, id_rank, file_IO, t_IO, fld_IO)

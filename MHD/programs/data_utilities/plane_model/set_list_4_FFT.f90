@@ -197,8 +197,8 @@
      &   (def_new_mesh_head, new_p_plt, mesh_file)
 !
       if (new_p_plt%field_file_prefix%iflag .gt. 0) then
-        call choose_file_format                                         &
-     &     (new_p_plt%field_file_fmt_ctl, ucd_param%iflag_format)
+        ucd_param%iflag_format                                          &
+     &     = choose_file_format(new_p_plt%field_file_fmt_ctl)
         ucd_param%file_prefix = new_p_plt%field_file_prefix%charavalue
       end if
 !

@@ -96,9 +96,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_parallel_ucd_file_name                                   &
-     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
-     &    my_rank, istep_ucd, file_name)
+      file_name = set_parallel_ucd_file_name(ucd_param%file_prefix,     &
+     &           ucd_param%iflag_format, my_rank, istep_ucd)
 !
       if(ucd_param%iflag_format .eq. iflag_vtk) then
         call write_udt_data_2_vtk_file(my_rank, file_name, ucd)
@@ -145,9 +144,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_parallel_ucd_file_name                                   &
-     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
-     &    my_rank, istep_ucd, file_name)
+      file_name = set_parallel_ucd_file_name(ucd_param%file_prefix,     &
+     &           ucd_param%iflag_format, my_rank, istep_ucd)
 !
 !
       if(ucd_param%iflag_format .eq. iflag_vtk) then
@@ -193,9 +191,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_parallel_grd_file_name                                   &
-     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
-     &    my_rank, file_name)
+      file_name = set_parallel_grd_file_name(ucd_param%file_prefix,     &
+     &           ucd_param%iflag_format, my_rank)
 !
 !
       if(ucd_param%iflag_format .eq. iflag_vtd) then
@@ -229,9 +226,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_parallel_ucd_file_name                                   &
-     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
-     &    my_rank, istep_ucd, file_name)
+      file_name = set_parallel_ucd_file_name(ucd_param%file_prefix,     &
+     &           ucd_param%iflag_format, my_rank, istep_ucd)
 !
 !
       if(ucd_param%iflag_format .eq. iflag_udt) then
@@ -268,9 +264,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_parallel_ucd_file_name                                   &
-     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
-     &    my_rank, istep_ucd, file_name)
+      file_name = set_parallel_ucd_file_name(ucd_param%file_prefix,     &
+     &           ucd_param%iflag_format, my_rank, istep_ucd)
 !
 !
       if(ucd_param%iflag_format .eq. iflag_udt) then
@@ -308,9 +303,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_parallel_ucd_file_name                                   &
-     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
-     &    my_rank, istep_ucd, file_name)
+      file_name = set_parallel_ucd_file_name(ucd_param%file_prefix,     &
+     &           ucd_param%iflag_format, my_rank, istep_ucd)
 !
       if(ucd_param%iflag_format .eq. iflag_udt) then
         call read_udt_file(my_rank, file_name, ucd)
@@ -342,9 +336,8 @@
       character(len=kchara) :: file_name, grid_name
 !
 !
-      call set_parallel_ucd_file_name                                   &
-     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
-     &    my_rank, istep_ucd, file_name)
+      file_name = set_parallel_ucd_file_name(ucd_param%file_prefix,     &
+     &           ucd_param%iflag_format, my_rank, istep_ucd)
 !
       if (ucd_param%iflag_format .eq. iflag_ucd) then
         call read_and_alloc_ucd_file(my_rank, file_name, nnod_ele, ucd)
@@ -355,17 +348,15 @@
       else if (ucd_param%iflag_format .eq. iflag_ucd_gz) then
         call read_alloc_gz_ucd_file(my_rank, file_name, nnod_ele, ucd)
       else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
-        call set_parallel_grd_file_name                                 &
-     &     (ucd_param%file_prefix, ucd_param%iflag_format,              &
-     &      my_rank, grid_name)
+        grid_name = set_parallel_grd_file_name(ucd_param%file_prefix,   &
+     &             ucd_param%iflag_format, my_rank)
         call read_gz_ucd_grd(my_rank, grid_name, nnod_ele, ucd)
         call read_alloc_gz_udt_file(my_rank, file_name, ucd)
 #endif
 !
       else
-        call set_parallel_grd_file_name                                 &
-     &     (ucd_param%file_prefix, ucd_param%iflag_format,              &
-     &      my_rank, grid_name)
+        grid_name = set_parallel_grd_file_name(ucd_param%file_prefix,   &
+     &             ucd_param%iflag_format, my_rank)
         call read_grd_file(my_rank, grid_name, nnod_ele, ucd)
         call read_and_alloc_udt_file(my_rank, file_name, ucd)
       end if

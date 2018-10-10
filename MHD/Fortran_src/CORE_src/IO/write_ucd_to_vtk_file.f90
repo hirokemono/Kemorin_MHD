@@ -53,6 +53,7 @@
      &         (my_rank, nprocs, istep, file_prefix)
 !
       use set_parallel_file_name
+      use set_ucd_extensions
 !
       character(len=kchara), intent(in) :: file_prefix
       integer(kind=kint), intent(in) :: my_rank, nprocs, istep
@@ -65,8 +66,8 @@
       if(my_rank .gt. 0) return
 !
       fname_nodir = delete_directory_name(file_prefix)
-      fname_tmp = add_int_suffix(istep, file_prefix)
-      call add_pvtk_extension(fname_tmp, file_name)
+      fname_tmp =   add_int_suffix(istep, file_prefix)
+      file_name =   add_pvtk_extension(fname_tmp)
 !
       write(*,*) 'Write parallel VTK file: ', trim(file_name)
       open(id_vtk_file, file=file_name)
@@ -77,8 +78,8 @@
       write(id_vtk_file,'(a,i6,a)')                                     &
      &     '       numberOfPieces="', nprocs, '" >'
       do ip = 0, nprocs-1
-        call set_parallel_ucd_file_name(fname_nodir, iflag_vtk,         &
-     &      ip, istep, file_name)
+        file_name = set_parallel_ucd_file_name(fname_nodir, iflag_vtk,  &
+     &                                         ip, istep)
         write(id_vtk_file,'(3a)') '   <Piece fileName="',               &
      &                       trim(file_name), '" />'
       end do

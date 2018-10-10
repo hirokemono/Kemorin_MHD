@@ -69,8 +69,8 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_sph_rtp_file_name(sph_file_head, iflag_sph_file_fmt,     &
-     &    id_rank, sph_file_name)
+      sph_file_name = set_sph_rtp_file_name                             &
+     &            (sph_file_head, iflag_sph_file_fmt, id_rank)
 !
       if(iflag_sph_file_fmt .eq. iflag_single+id_binary_file_fmt) then
         call mpi_read_geom_rtp_file_b                                   &
@@ -113,8 +113,8 @@
       integer(kind = kint) ::  ierr = 0
 !
 !
-      call set_sph_rj_file_name(sph_file_head, iflag_sph_file_fmt,      &
-     &    id_rank, sph_file_name)
+      sph_file_name = set_sph_rj_file_name                              &
+     &            (sph_file_head, iflag_sph_file_fmt, id_rank)
 !
       if(iflag_sph_file_fmt .eq. iflag_single+id_binary_file_fmt) then
         call mpi_read_spectr_rj_file_b                                  &
@@ -157,8 +157,8 @@
       integer(kind = kint) ::  ierr = 0
 !
 !
-      call set_sph_rtm_file_name(sph_file_head, iflag_sph_file_fmt,     &
-     &    id_rank, sph_file_name)
+      sph_file_name = set_sph_rtm_file_name                             &
+     &            (sph_file_head, iflag_sph_file_fmt, id_rank)
 !
       if(iflag_sph_file_fmt .eq. iflag_single+id_binary_file_fmt) then
         call mpi_read_geom_rtm_file_b                                   &
@@ -201,8 +201,8 @@
       integer(kind = kint) ::  ierr = 0
 !
 !
-      call set_sph_rlm_file_name(sph_file_head, iflag_sph_file_fmt,     &
-     &    id_rank, sph_file_name)
+      sph_file_name = set_sph_rlm_file_name                             &
+     &            (sph_file_head, iflag_sph_file_fmt, id_rank)
 !
       if(iflag_sph_file_fmt .eq. iflag_single+id_binary_file_fmt) then
         call mpi_read_modes_rlm_file_b                                  &
@@ -244,8 +244,8 @@
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
-      call set_sph_rtp_file_name(sph_file_head, iflag_sph_file_fmt,     &
-     &    id_rank, sph_file_name)
+      sph_file_name = set_sph_rtp_file_name                             &
+     &            (sph_file_head, iflag_sph_file_fmt, id_rank)
 !
       if(iflag_sph_file_fmt .eq. iflag_single+id_binary_file_fmt) then
         call mpi_write_geom_rtp_file_b                                  &
@@ -282,8 +282,8 @@
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
-      call set_sph_rj_file_name(sph_file_head, iflag_sph_file_fmt,      &
-     &    id_rank, sph_file_name)
+      sph_file_name = set_sph_rj_file_name                              &
+     &            (sph_file_head, iflag_sph_file_fmt, id_rank)
 !
       if(iflag_sph_file_fmt .eq. iflag_single+id_binary_file_fmt) then
         call mpi_write_spectr_rj_file_b                                 &
@@ -320,8 +320,8 @@
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
-      call set_sph_rtm_file_name(sph_file_head, iflag_sph_file_fmt,     &
-     &    id_rank, sph_file_name)
+      sph_file_name = set_sph_rtm_file_name                             &
+     &            (sph_file_head, iflag_sph_file_fmt, id_rank)
 !
       if(iflag_sph_file_fmt .eq. iflag_single+id_binary_file_fmt) then
         call mpi_write_geom_rtm_file_b                                  &
@@ -358,8 +358,8 @@
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
-      call set_sph_rlm_file_name(sph_file_head, iflag_sph_file_fmt,     &
-     &    id_rank, sph_file_name)
+      sph_file_name = set_sph_rlm_file_name                             &
+     &            (sph_file_head, iflag_sph_file_fmt, id_rank)
 !
       if(iflag_sph_file_fmt .eq. iflag_single+id_binary_file_fmt) then
         call mpi_write_modes_rlm_file_b                                 &

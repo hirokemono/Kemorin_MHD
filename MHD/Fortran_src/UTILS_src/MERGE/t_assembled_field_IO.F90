@@ -81,9 +81,9 @@
         do iloop = 1, nloop
           id_rank = my_rank + (iloop-1) * nprocs
 !
-          call set_SPH_fld_file_name                                    &
-     &       (fst_IO_param%file_prefix, fst_IO_param%iflag_format,      &
-     &        id_rank, istep_fld, file_name)
+          file_name = set_SPH_fld_file_name                             &
+     &            (fst_IO_param%file_prefix, fst_IO_param%iflag_format, &
+     &             id_rank, istep_fld)
         end do 
 !
         if(fst_IO_param%iflag_format                                    &

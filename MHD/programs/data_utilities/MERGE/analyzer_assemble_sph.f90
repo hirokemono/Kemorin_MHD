@@ -24,6 +24,7 @@
       use t_time_data
       use t_field_data_IO
       use t_assembled_field_IO
+      use t_control_data_4_merge
 !
       use new_SPH_restart
       use parallel_assemble_sph
@@ -32,6 +33,7 @@
 !
       implicit none
 !
+      type(control_data_4_merge), save :: mgd_ctl1
       type(time_data), save :: init_t
 !
       type(sph_mesh_data), allocatable, save :: org_sph_mesh(:)
@@ -63,7 +65,6 @@
       subroutine init_assemble_sph
 !
       use m_error_IDs
-      use m_control_data_4_merge
 !
       use bcast_4_assemble_sph_ctl
       use sph_file_MPI_IO_select
@@ -76,9 +77,9 @@
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
-      if(my_rank .eq. 0) call read_control_assemble_sph
-      call bcast_merge_control_data
-      call set_control_4_newsph
+      if(my_rank .eq. 0) call read_control_assemble_sph(mgd_ctl1)
+      call bcast_merge_control_data(mgd_ctl1)
+      call set_control_4_newsph(mgd_ctl1)
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &          'istep_start, istep_end, increment_step',               &

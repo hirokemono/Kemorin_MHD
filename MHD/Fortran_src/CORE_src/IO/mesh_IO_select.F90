@@ -48,6 +48,8 @@
 !
       subroutine sel_read_mesh(mesh_file, my_rank_IO, fem_IO, ierr)
 !
+      use set_mesh_file_names
+!
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
@@ -55,8 +57,8 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call set_mesh_file_name_by_param                                  &
-     &   (mesh_file, my_rank_IO, file_name)
+      file_name = set_mesh_file_name                                    &
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call read_mesh_file_b(my_rank_IO, file_name, fem_IO, ierr)
@@ -79,6 +81,8 @@
       subroutine sel_read_mesh_geometry                                 &
      &         (mesh_file, my_rank_IO, mesh_IO, ierr)
 !
+      use set_mesh_file_names
+!
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
@@ -86,8 +90,8 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call set_mesh_file_name_by_param                                  &
-     &   (mesh_file, my_rank_IO, file_name)
+      file_name = set_mesh_file_name                                    &
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call read_mesh_geometry_b(my_rank_IO, file_name, mesh_IO, ierr)
@@ -112,6 +116,8 @@
       subroutine sel_read_node_size                                     &
      &         (mesh_file, my_rank_IO, mesh_IO, ierr)
 !
+      use set_mesh_file_names
+!
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
@@ -119,8 +125,8 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call set_mesh_file_name_by_param                                  &
-     &   (mesh_file, my_rank_IO, file_name)
+      file_name = set_mesh_file_name                                    &
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call read_node_size_b(my_rank_IO, file_name, mesh_IO, ierr)
@@ -144,6 +150,8 @@
       subroutine sel_read_geometry_size                                 &
      &         (mesh_file, my_rank_IO, mesh_IO, ierr)
 !
+      use set_mesh_file_names
+!
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
@@ -151,8 +159,8 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call set_mesh_file_name_by_param                                  &
-     &   (mesh_file, my_rank_IO, file_name)
+      file_name =  set_mesh_file_name                                   &
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call read_geometry_size_b(my_rank_IO, file_name, mesh_IO, ierr)
@@ -177,14 +185,16 @@
 !
       subroutine sel_write_mesh_file(mesh_file, my_rank_IO, fem_IO)
 !
+      use set_mesh_file_names
+!
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_data), intent(in) :: fem_IO
 !
 !
-      call set_mesh_file_name_by_param                                  &
-     &   (mesh_file, my_rank_IO, file_name)
+      file_name = set_mesh_file_name                                    &
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call write_mesh_file_b(my_rank_IO, file_name, fem_IO)

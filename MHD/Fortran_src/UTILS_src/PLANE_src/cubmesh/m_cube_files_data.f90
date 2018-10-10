@@ -41,8 +41,8 @@
 !
 ! ***** open output file
 !
-      call set_mesh_file_name(mesh_file_header, id_ascii_file_fmt,      &
-     &      my_rank, fname)
+      fname = set_mesh_file_name(mesh_file_header, id_ascii_file_fmt,   &
+     &                           my_rank)
       open (l_out, file=fname, form='formatted' )
 !
 ! ..... write 0. header lines

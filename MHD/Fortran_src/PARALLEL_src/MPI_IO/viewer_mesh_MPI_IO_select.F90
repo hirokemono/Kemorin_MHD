@@ -40,6 +40,8 @@
       subroutine sel_mpi_output_surface_grid                            &
      &         (mesh_file, mgd_v_mesh, mgd_view_prm)
 !
+      use set_mesh_extensions
+!
       type(field_IO_params), intent(in) :: mesh_file
       type(merged_viewer_mesh), intent(in) :: mgd_v_mesh
       type(mpi_viewer_mesh_param), intent(in) :: mgd_view_prm
@@ -47,7 +49,7 @@
       character(len = kchara) :: file_name
 !
 !
-      call add_ksm_extension(mesh_file%file_prefix, file_name)
+      file_name = add_ksm_extension(mesh_file%file_prefix)
 !
 #ifdef ZLIB_IO
       if(mod(mesh_file%iflag_format,10) .eq. id_gzip_txt_file_fmt) then

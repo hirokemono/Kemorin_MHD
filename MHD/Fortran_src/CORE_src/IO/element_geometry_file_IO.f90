@@ -72,8 +72,8 @@
 !
       write(*,*) 'file_prefix: ', file_prefix
       write(fhead_tmp,'(a,a4)') trim(file_prefix), '_xyz'
-      call set_ele_comm_file_name(fhead_tmp, id_ascii_file_fmt,         &
-     &    my_rank_IO, file_name)
+      file_name = set_ele_comm_file_name(fhead_tmp, id_ascii_file_fmt,  &
+     &                                   my_rank_IO)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write ascii element comm file: ', trim(file_name)
@@ -105,8 +105,8 @@
 !
 !
       write(fhead_tmp,'(a,a4)') trim(file_prefix), '_sph'
-      call set_ele_comm_file_name(fhead_tmp, id_ascii_file_fmt,       &
-     &    my_rank_IO, file_name)
+      file_name = set_ele_comm_file_name(fhead_tmp, id_ascii_file_fmt,  &
+     &                                   my_rank_IO)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write ascii element comm file: ', trim(file_name)
@@ -138,8 +138,8 @@
 !
 !
       write(fhead_tmp,'(a,a4)') trim(file_prefix), '_cyl'
-      call set_ele_comm_file_name(fhead_tmp, id_ascii_file_fmt,         &
-     &    my_rank_IO, file_name)
+      file_name = set_ele_comm_file_name(fhead_tmp, id_ascii_file_fmt,  &
+     &                                   my_rank_IO)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write ascii element comm file: ', trim(file_name)
@@ -172,8 +172,8 @@
 !
 !
       write(fhead_tmp,'(a,a4)') trim(file_prefix), '_xyz'
-      call set_surf_mesh_file_name(fhead_tmp, id_ascii_file_fmt,        &
-     &    my_rank_IO, file_name)
+      file_name = set_surf_mesh_file_name(fhead_tmp, id_ascii_file_fmt, &
+     &                                    my_rank_IO)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write ascii surface mesh file: ', trim(file_name)
@@ -206,8 +206,8 @@
 !
 !
       write(fhead_tmp,'(a,a4)') trim(file_prefix), '_sph'
-      call set_surf_mesh_file_name(fhead_tmp, id_ascii_file_fmt,        &
-     &    my_rank_IO, file_name)
+      file_name = set_surf_mesh_file_name(fhead_tmp, id_ascii_file_fmt, &
+     &                                    my_rank_IO)
 !
       open (input_file_code, file = file_name, form = 'formatted')
       call write_surface_connection                                     &
@@ -237,8 +237,8 @@
 !
 !
       write(fhead_tmp,'(a,a4)') trim(file_prefix), '_cyl'
-      call set_surf_mesh_file_name(fhead_tmp, id_ascii_file_fmt,        &
-     &    my_rank_IO, file_name)
+      file_name = set_surf_mesh_file_name(fhead_tmp, id_ascii_file_fmt, &
+     &                                    my_rank_IO)
 !
       open (input_file_code, file = file_name, form = 'formatted')
       call write_surface_connection                                     &
@@ -269,8 +269,8 @@
 !
 !
       write(fhead_tmp,'(a,a4)') trim(file_prefix), '_xyz'
-      call set_edge_mesh_file_name(fhead_tmp, id_ascii_file_fmt,        &
-     &    my_rank_IO, file_name)
+      file_name = set_edge_mesh_file_name(fhead_tmp, id_ascii_file_fmt, &
+     &                                    my_rank_IO)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write ascii edge mesh file: ', trim(file_name)
@@ -303,8 +303,8 @@
 !
 !
       write(fhead_tmp,'(a,a4)') trim(file_prefix), '_sph'
-      call set_edge_mesh_file_name(fhead_tmp, id_ascii_file_fmt,        &
-     &    my_rank_IO, file_name)
+      file_name = set_edge_mesh_file_name(fhead_tmp, id_ascii_file_fmt, &
+     &                                    my_rank_IO)
 !
       open (input_file_code, file = file_name, form = 'formatted')
       call write_edge_connection                                        &
@@ -334,8 +334,8 @@
 !
 !
       write(fhead_tmp,'(a,a4)') trim(file_prefix), '_cyl'
-      call set_edge_mesh_file_name(fhead_tmp, id_ascii_file_fmt,        &
-     &    my_rank_IO, file_name)
+      file_name = set_edge_mesh_file_name(fhead_tmp, id_ascii_file_fmt, &
+     &                                    my_rank_IO)
 !
       open (input_file_code, file = file_name, form = 'formatted')
 !

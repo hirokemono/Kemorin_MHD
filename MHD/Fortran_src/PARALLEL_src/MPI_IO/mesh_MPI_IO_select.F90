@@ -61,6 +61,8 @@
       subroutine sel_mpi_read_mesh                                      &
      &         (nprocs_in, id_rank, mesh_file, fem_IO)
 !
+      use set_mesh_file_names
+!
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_data), intent(inout) :: fem_IO
@@ -68,7 +70,8 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_mesh_file_name_by_param(mesh_file, id_rank, file_name)
+      file_name = set_mesh_file_name                                    &
+     &        (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -102,6 +105,8 @@
       subroutine sel_mpi_read_mesh_geometry                             &
      &         (nprocs_in, id_rank, mesh_file, mesh_IO)
 !
+      use set_mesh_file_names
+!
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -109,7 +114,8 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_mesh_file_name_by_param(mesh_file, id_rank, file_name)
+      file_name = set_mesh_file_name                                    &
+     &        (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -145,6 +151,8 @@
       subroutine sel_mpi_read_node_size                                 &
      &         (nprocs_in, id_rank, mesh_file, mesh_IO)
 !
+      use set_mesh_file_names
+!
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -152,7 +160,8 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_mesh_file_name_by_param(mesh_file, id_rank, file_name)
+      file_name = set_mesh_file_name                                    &
+     &        (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -187,6 +196,8 @@
        subroutine sel_mpi_read_geometry_size                            &
      &         (nprocs_in, id_rank, mesh_file, mesh_IO)
 !
+      use set_mesh_file_names
+!
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -194,7 +205,8 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_mesh_file_name_by_param(mesh_file, id_rank, file_name)
+      file_name = set_mesh_file_name                                    &
+     &        (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -231,12 +243,15 @@
       subroutine sel_mpi_write_mesh_file                                &
      &         (nprocs_in, id_rank, mesh_file, fem_IO)
 !
+      use set_mesh_file_names
+!
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_data), intent(inout) :: fem_IO
 !
 !
-      call set_mesh_file_name_by_param(mesh_file, id_rank, file_name)
+      file_name = set_mesh_file_name                                    &
+     &        (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then

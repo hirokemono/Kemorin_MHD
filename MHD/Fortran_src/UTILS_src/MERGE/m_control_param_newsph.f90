@@ -112,48 +112,52 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_control_4_newsph
+      subroutine set_control_4_newsph(mgd_ctl)
 !
-      use m_control_data_4_merge
+      use t_control_data_4_merge
       use m_file_format_switch
       use set_control_platform_data
       use new_SPH_restart
       use skip_comment_f
 !
+      type(control_data_4_merge), intent(in) :: mgd_ctl
+      character(len = kchara) :: tmpchara
 !
-      if (source_plt%ndomain_ctl%iflag .gt. 0) then
-        np_sph_org = source_plt%ndomain_ctl%intvalue
+!
+      if (mgd_ctl%source_plt%ndomain_ctl%iflag .gt. 0) then
+        np_sph_org = mgd_ctl%source_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains'
         stop
       end if
 !
-      if (assemble_plt%ndomain_ctl%iflag .gt. 0) then
-        np_sph_new = assemble_plt%ndomain_ctl%intvalue
+      if (mgd_ctl%assemble_plt%ndomain_ctl%iflag .gt. 0) then
+        np_sph_new = mgd_ctl%assemble_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains for new grid'
         stop
       end if
 !
-      if(source_plt%sph_file_prefix%iflag .gt. 0) then
-        org_sph_head = source_plt%sph_file_prefix%charavalue
+      if(mgd_ctl%source_plt%sph_file_prefix%iflag .gt. 0) then
+        org_sph_head = mgd_ctl%source_plt%sph_file_prefix%charavalue
       end if
-      if (assemble_plt%sph_file_prefix%iflag .gt. 0) then
-        new_sph_head = assemble_plt%sph_file_prefix%charavalue
+      if (mgd_ctl%assemble_plt%sph_file_prefix%iflag .gt. 0) then
+        new_sph_head = mgd_ctl%assemble_plt%sph_file_prefix%charavalue
       end if
 !
-      call choose_para_file_format                                      &
-     &   (source_plt%sph_file_fmt_ctl, ifmt_org_sph_file)
-      call choose_para_file_format                                      &
-     &   (assemble_plt%sph_file_fmt_ctl, ifmt_new_sph_file)
+      ifmt_org_sph_file                                                 &
+     &    = choose_para_file_format                                     &
+     &    (mgd_ctl%source_plt%sph_file_fmt_ctl)
+      ifmt_new_sph_file = choose_para_file_format                       &
+     &                (mgd_ctl%assemble_plt%sph_file_fmt_ctl)
 !
 !
       call set_parallel_file_ctl_params(def_org_sph_fst,                &
-     &    source_plt%restart_file_prefix,                               &
-     &    source_plt%restart_file_fmt_ctl, org_sph_fst_param)
+     &    mgd_ctl%source_plt%restart_file_prefix,                       &
+     &    mgd_ctl%source_plt%restart_file_fmt_ctl, org_sph_fst_param)
       call set_parallel_file_ctl_params(def_new_sph_fst,                &
-     &    assemble_plt%restart_file_prefix,                             &
-     &    assemble_plt%restart_file_fmt_ctl, new_sph_fst_param)
+     &    mgd_ctl%assemble_plt%restart_file_prefix,                     &
+     &    mgd_ctl%assemble_plt%restart_file_fmt_ctl, new_sph_fst_param)
 !
 !
       if((new_sph_fst_param%iflag_format/iflag_single) .gt. 0           &
@@ -165,19 +169,18 @@
      &             'the number of target subdomains.'
       end if
 !
-      if(assemble_plt%del_org_data_ctl%iflag .gt. 0) then
-        if(yes_flag(assemble_plt%del_org_data_ctl%charavalue)) then
-          iflag_delete_org_sph = 1
-        end if
+      if(mgd_ctl%assemble_plt%del_org_data_ctl%iflag .gt. 0) then
+        tmpchara = mgd_ctl%assemble_plt%del_org_data_ctl%charavalue
+        if(yes_flag(tmpchara)) iflag_delete_org_sph = 1
       end if
 !
       b_sph_ratio = 1.0d0
-      if (magnetic_ratio_ctl%iflag .gt. 0) then
-        b_sph_ratio = magnetic_ratio_ctl%realvalue
+      if(mgd_ctl%magnetic_ratio_ctl%iflag .gt. 0) then
+        b_sph_ratio = mgd_ctl%magnetic_ratio_ctl%realvalue
       end if
 !
-      call set_control_original_step(t_mge_ctl)
-      call set_control_new_step(t2_mge_ctl)
+      call set_control_original_step(mgd_ctl%t_mge_ctl)
+      call set_control_new_step(mgd_ctl%t2_mge_ctl)
 !
       end subroutine set_control_4_newsph
 !

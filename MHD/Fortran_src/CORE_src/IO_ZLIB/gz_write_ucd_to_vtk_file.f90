@@ -42,6 +42,7 @@
      &          istep, file_prefix)
 !
       use set_parallel_file_name
+      use set_ucd_extensions
       use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -55,8 +56,8 @@
       if(my_rank .gt. 0) return
 !
       fname_nodir = delete_directory_name(file_prefix)
-      fname_tmp =   add_int_suffix(istep, file_prefix)
-      call add_pvtk_extension(fname_tmp, file_name)
+      fname_tmp = add_int_suffix(istep, file_prefix)
+      file_name = add_pvtk_extension(fname_tmp)
       gzip_name = add_gzip_extension(file_name)
 !
       write(*,*) 'Write gzipped parallel VTK file: ', trim(gzip_name)
@@ -71,8 +72,8 @@
      &     '       numberOfPieces="', nprocs, '" >', char(0)
       call gz_write_textbuf_w_lf
       do ip = 0, nprocs-1
-        call set_parallel_ucd_file_name(fname_nodir, iflag_vtk,         &
-     &      ip, istep, file_name)
+        file_name = set_parallel_ucd_file_name(fname_nodir, iflag_vtk,  &
+     &                                         ip, istep)
         write(textbuf,'(3a,a1)') '   <Piece fileName="',                &
      &                       trim(file_name), '" />', char(0)
         call gz_write_textbuf_w_lf

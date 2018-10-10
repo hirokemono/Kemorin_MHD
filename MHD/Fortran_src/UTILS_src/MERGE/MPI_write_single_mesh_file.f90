@@ -43,10 +43,11 @@
      &         (nprocs_in, my_rank_IO, mesh_file, mesh, group, dbl_nod)
 !
       use t_para_double_numbering
+      use t_file_IO_parameter
       use m_machine_parameter
       use m_fem_mesh_labels
       use mesh_data_IO
-      use mesh_file_name_by_param
+      use set_mesh_file_names
       use MPI_ascii_data_IO
 !
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
@@ -59,7 +60,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_mesh_file_name_by_param(mesh_file, my_rank_IO, file_name)
+      file_name = set_mesh_file_name                                    &
+     &      (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Write ascii mesh file: ', trim(file_name)
 !

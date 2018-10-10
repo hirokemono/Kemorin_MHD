@@ -1,12 +1,19 @@
+!>@file   t_control_data_4_merge.f90
+!!@brief  module t_control_data_4_merge
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in 2007
 !
-!      module m_control_data_4_merge
+!>@brief  Control data for merge program
+!!
+!!@verbatim
+!!       subroutine read_control_4_merge(mgd_ctl)
+!!       subroutine read_control_assemble_sph(mgd_ctl)
+!!        type(control_data_4_merge), intent(inout) :: mgd_ctl
+!!@endverbatim
 !
-!      Written by H. Matsui
 !
-!       subroutine read_control_4_merge
-!       subroutine read_control_assemble_sph
-!
-      module m_control_data_4_merge
+      module t_control_data_4_merge
 !
       use m_precision
       use m_machine_parameter
@@ -26,19 +33,23 @@
      &         :: ctl_assemble_sph_name = 'control_assemble_sph'
 !
 !
-!>      Structure for file information for original data
-      type(platform_data_control), save :: source_plt
-!>      Structure for file information for assembled data
-      type(platform_data_control), save :: assemble_plt
+!>        Structure for merged program control
+      type control_data_4_merge
+!>        Structure for file information for original data
+        type(platform_data_control) :: source_plt
+!>        Structure for file information for assembled data
+        type(platform_data_control) :: assemble_plt
 !
-!>      Structure for field information control
-      type(field_control), save :: fld_mge_ctl
-!>      Structure for time stepping control
-      type(time_data_control), save :: t_mge_ctl
-!>      Structure for new time stepping control
-      type(time_data_control), save :: t2_mge_ctl
+!>        Structure for field information control
+        type(field_control) :: fld_mge_ctl
+!>        Structure for time stepping control
+        type(time_data_control) :: t_mge_ctl
+!>        Structure for new time stepping control
+        type(time_data_control) :: t2_mge_ctl
 !
-      type(read_real_item), save :: magnetic_ratio_ctl
+!>        Re-normalization flag for magnetic field
+        type(read_real_item) :: magnetic_ratio_ctl
+      end type control_data_4_merge
 !
 !   Top level
 !
@@ -100,14 +111,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine read_control_4_merge
+       subroutine read_control_4_merge(mgd_ctl)
+!
+      type(control_data_4_merge), intent(inout) :: mgd_ctl
 !
 !
       ctl_file_code = control_file_code
       open (ctl_file_code, file = control_file_name)
 !
       call load_ctl_label_and_line
-      call read_merge_control_data
+      call read_merge_control_data(mgd_ctl)
 !
       close(ctl_file_code)
 !
@@ -115,14 +128,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine read_control_assemble_sph
+       subroutine read_control_assemble_sph(mgd_ctl)
+!
+      type(control_data_4_merge), intent(inout) :: mgd_ctl
 !
 !
       ctl_file_code = control_file_code
       open (ctl_file_code, file = ctl_assemble_sph_name)
 !
       call load_ctl_label_and_line
-      call read_merge_control_data
+      call read_merge_control_data(mgd_ctl)
 !
       close(ctl_file_code)
 !
@@ -131,9 +146,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-       subroutine read_merge_control_data
+       subroutine read_merge_control_data(mgd_ctl)
 !
-!   2 begin phys_values_ctl
+      type(control_data_4_merge), intent(inout) :: mgd_ctl
+!
 !
       if(right_begin_flag(hd_assemble) .eq. 0) return
       if (i_assemble .gt. 0) return
@@ -145,13 +161,13 @@
 !
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, source_plt)
+     &     (hd_platform, i_platform, mgd_ctl%source_plt)
         call read_control_platforms                                     &
-     &     (hd_new_data, i_new_data, assemble_plt)
+     &     (hd_new_data, i_new_data, mgd_ctl%assemble_plt)
 !
-        call read_merge_field_data
-        call read_merge_step_data
-        call read_newrst_control
+        call read_merge_field_data(mgd_ctl)
+        call read_merge_step_data(mgd_ctl)
+        call read_newrst_control(mgd_ctl)
       end do
 !
       end subroutine read_merge_control_data
@@ -159,7 +175,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-       subroutine read_merge_field_data
+       subroutine read_merge_field_data(mgd_ctl)
+!
+      type(control_data_4_merge), intent(inout) :: mgd_ctl
 !
 !
       if(right_begin_flag(hd_model) .eq. 0) return
@@ -171,14 +189,16 @@
         if(i_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
-     &     (hd_phys_values, i_phys_values, fld_mge_ctl)
+     &     (hd_phys_values, i_phys_values, mgd_ctl%fld_mge_ctl)
       end do
 !
       end subroutine read_merge_field_data
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine read_merge_step_data
+       subroutine read_merge_step_data(mgd_ctl)
+!
+      type(control_data_4_merge), intent(inout) :: mgd_ctl
 !
 !
       if(right_begin_flag(hd_control) .eq. 0) return
@@ -190,18 +210,20 @@
         if(i_control .gt. 0) exit
 !
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, t_mge_ctl)
+     &     (hd_time_step, i_tstep, mgd_ctl%t_mge_ctl)
         call read_control_time_step_data                                &
-     &     (hd_new_time_step, i_nstep, t2_mge_ctl)
+     &     (hd_new_time_step, i_nstep, mgd_ctl%t2_mge_ctl)
       end do
 !
       end subroutine read_merge_step_data
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine  read_newrst_control
+      subroutine read_newrst_control(mgd_ctl)
 !
       use m_machine_parameter
+!
+      type(control_data_4_merge), intent(inout) :: mgd_ctl
 !
 !
       if(right_begin_flag(hd_newrst_magne) .eq. 0) return
@@ -213,11 +235,11 @@
         if(i_newrst_magne .gt. 0) exit
 !
         call read_real_ctl_type(hd_magnetic_field_ratio,                &
-     &      magnetic_ratio_ctl)
+     &      mgd_ctl%magnetic_ratio_ctl)
       end do
 !
-      end subroutine  read_newrst_control
+      end subroutine read_newrst_control
 !
 ! -----------------------------------------------------------------------
 !
-      end module m_control_data_4_merge
+      end module t_control_data_4_merge

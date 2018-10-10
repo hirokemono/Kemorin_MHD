@@ -51,8 +51,8 @@
         write(*,*) 'Set original mesh data'
         stop
       end if
-      call choose_file_format(part_ctl%single_plt%mesh_file_fmt_ctl,    &
-     &    global_mesh_file%iflag_format)
+      global_mesh_file%iflag_format                                     &
+     &     = choose_file_format(part_ctl%single_plt%mesh_file_fmt_ctl)
 !
       nele_grp_ordering = 0
       if (part_ctl%ele_grp_ordering_ctl%icou .eq. 1) then
@@ -106,8 +106,8 @@
       &      part_ctl%finer_mesh_head_ctl, part_ctl%finer_mesh_fmt_ctl, &
       &      finer_mesh_file)
 !
-          call choose_file_format                                       &
-     &       (part_ctl%itp_tbl_format_ctl, ifmt_itp_table_file)
+          ifmt_itp_table_file                                           &
+     &       = choose_file_format(part_ctl%itp_tbl_format_ctl)
         end if
 !
       else if(NTYP_div .eq. iPART_MeTiS_RSB) then

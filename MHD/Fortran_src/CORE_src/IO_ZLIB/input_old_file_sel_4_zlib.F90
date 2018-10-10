@@ -55,8 +55,8 @@
       character(len=kchara) :: file_name
 !
 !
-      call set_FEM_fld_file_name(file_IO%file_prefix,                   &
-     &    file_IO%iflag_format, my_rank, istep_fld, file_name)
+      file_name = set_FEM_fld_file_name(file_IO%file_prefix,            &
+     &         file_IO%iflag_format, my_rank, istep_fld)
 !
 #ifdef ZLIB_IO
       if(file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
@@ -88,7 +88,7 @@
 !
 !
       if(istep_fld .lt. 0) then
-        call add_elaps_postfix(file_IO%file_prefix, fname_tmp)
+        fname_tmp = add_elaps_postfix(file_IO%file_prefix)
       else
         fname_tmp = add_int_suffix(istep_fld, file_IO%file_prefix)
       end if
@@ -124,7 +124,7 @@
 !
 !
       if(istep_fld .lt. 0) then
-        call add_elaps_postfix(file_IO%file_prefix, fname_tmp)
+        fname_tmp = add_elaps_postfix(file_IO%file_prefix)
       else
         fname_tmp = add_int_suffix(istep_fld, file_IO%file_prefix)
       end if

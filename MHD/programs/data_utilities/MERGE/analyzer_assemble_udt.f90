@@ -24,6 +24,7 @@
       use t_phys_data
       use t_time_data
       use t_field_data_IO
+      use t_control_data_4_merge
 !
       use field_IO_select
 !
@@ -34,6 +35,7 @@
       type(mesh_geometry), save :: new_mesh
       type(phys_data), save :: new_fld
 !
+      type(control_data_4_merge), save :: mgd_ctl6
       type(time_data), save :: t_IO_m
 !
       integer(kind = kint), allocatable :: istack_recv(:)
@@ -50,7 +52,6 @@
 !
       use m_error_IDs
       use m_control_param_merge
-      use m_control_data_4_merge
       use m_array_for_send_recv
 !
       use mpi_load_mesh_data
@@ -78,10 +79,10 @@
 !
 !   read control data
 !
-      call read_control_4_merge
+      call read_control_4_merge(mgd_ctl6)
 !
-      call set_control_4_merge(ndomain_org)
-      if(set_control_4_newudt(nprocs) .gt. 0) then
+      call set_control_4_merge(mgd_ctl6, ndomain_org)
+      if(set_control_4_newudt(mgd_ctl6, nprocs) .gt. 0) then
         write(e_message,'(a)')                                          &
      &     'No. of processes and targed sub domain shold be the same.'
         call calypso_mpi_abort(ierr_mesh, e_message)

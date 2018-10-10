@@ -193,8 +193,8 @@
       type(field_IO_params), intent(inout) :: sph_file_param2
 !
 !
-      call choose_para_file_format                                      &
-     &   (new_plt%spectr_field_fmt_ctl, sph_file_param2%iflag_format)
+      sph_file_param2%iflag_format                                      &
+     &   = choose_para_file_format(new_plt%spectr_field_fmt_ctl)
 !
       sph_file_param2%iflag_IO = new_plt%spectr_field_file_prefix%iflag
       if(sph_file_param2%iflag_IO .gt. 0) then
