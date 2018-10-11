@@ -246,6 +246,7 @@
       use copy_rj_phys_data_4_IO
       use field_IO_select
       use assemble_sph_fields
+      use set_merged_restart_data
 !
       real(kind=kreal ), intent(in) :: b_ratio
 !
@@ -269,13 +270,7 @@
      &        (fhd_light, new_sph, r_itp, new_phys)
         end if
 !
-        if(b_ratio.ne.0.0d0 .or. b_ratio.ne.1.0d0) then
-          call mul_sph_magne                                            &
-     &     (b_ratio, new_sph%sph_rj%nnod_rj, new_phys%num_phys,         &
-     &      new_phys%ntot_phys, new_phys%istack_component,              &
-     &      new_phys%phys_name, new_phys%d_fld)
-        end if
-!
+        call rescale_4_magne(b_ratio, new_phys)
 !
         call copy_time_step_size_data(time_d, t_IO)
         call copy_rj_phys_name_to_IO                                    &

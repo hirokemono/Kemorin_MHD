@@ -167,7 +167,7 @@
      &     (ndomain_org, asbl_comm1, new_fld, t_IO_m, org_fIO)
 !
 !   re-scaling for magnetic field
-        call rescale_4_magne(new_fld)
+        call rescale_4_magne(b_ratio, new_fld)
 !
         call nod_fields_send_recv(new_mesh, new_fld)
 !

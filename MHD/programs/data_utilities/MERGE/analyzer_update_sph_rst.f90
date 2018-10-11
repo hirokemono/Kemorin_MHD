@@ -67,7 +67,7 @@
       use share_spectr_index_data
       use count_nnod_4_asseble_sph
 !
-      integer(kind = kint) :: ip, jp, irank_new, jloop
+      integer(kind = kint) :: ip, jp
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
