@@ -25,6 +25,7 @@
       use t_field_data_IO
       use t_assembled_field_IO
       use t_control_data_4_merge
+      use t_control_param_assemble
 !
       use new_SPH_restart
       use parallel_assemble_sph
@@ -34,6 +35,7 @@
       implicit none
 !
       type(control_data_4_merge), save :: mgd_ctl_s
+      type(control_param_assemble), save :: asbl_param_s
       type(time_data), save :: init_t
 !
       type(sph_mesh_data), allocatable, save :: org_sph_mesh(:)
@@ -73,7 +75,7 @@
 !
       if(my_rank .eq. 0) call read_control_assemble_sph(mgd_ctl_s)
       call bcast_merge_control_data(mgd_ctl_s)
-      call set_control_4_newsph(mgd_ctl_s)
+      call set_control_4_newsph(mgd_ctl_s, asbl_param_s)
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &          'istep_start, istep_end, increment_step',               &
@@ -194,9 +196,9 @@
           jp = irank_new + 1
 
           if(irank_new .lt. np_sph_new) then
-            call const_assembled_sph_data                               &
-     &          (b_sph_ratio, init_t, new_sph_mesh(jp)%sph, r_itp,      &
-     &           new_sph_phys(jp), new_fst_IO(jloop), fst_time_IO)
+            call const_assembled_sph_data(asbl_param_s%b_ratio,         &
+     &          init_t, new_sph_mesh(jp)%sph, r_itp,                    &
+     &          new_sph_phys(jp), new_fst_IO(jloop), fst_time_IO)
           end if
         end do
 !

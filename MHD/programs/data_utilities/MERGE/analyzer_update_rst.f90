@@ -25,6 +25,7 @@
       use t_time_data
       use t_field_data_IO
       use t_control_data_4_merge
+      use t_control_param_assemble
       use t_comm_table_4_assemble
 !
       use field_IO_select
@@ -37,6 +38,7 @@
       type(mesh_geometry), save :: new_mesh
       type(phys_data), save :: new_fld
       type(control_data_4_merge), save :: mgd_ctl_f
+      type(control_param_assemble), save :: asbl_param_f
       type(comm_table_4_assemble), save :: asbl_comm_f
 !
       type(time_data), save :: t_IO_m
@@ -83,7 +85,9 @@
       call read_control_4_merge(mgd_ctl_f)
 !
       call set_control_4_merge(mgd_ctl_f, ndomain_org)
-      if(set_control_4_newrst(mgd_ctl_f, nprocs) .gt. 0) then
+      call set_control_4_newrst                                         &
+     &   (nprocs, mgd_ctl_f, asbl_param_f, ierr_MPI)
+      if(ierr_MPI .gt. 0) then
         write(e_message,'(a)')                                          &
      &     'No. of processes and targed sub domain shold be the same.'
         call calypso_mpi_abort(ierr_mesh, e_message)
@@ -167,7 +171,7 @@
      &     (ndomain_org, asbl_comm_f, new_fld, t_IO_m, org_fIO)
 !
 !   re-scaling for magnetic field
-        call rescale_4_magne(b_ratio, new_fld)
+        call rescale_4_magne(asbl_param_f%b_ratio, new_fld)
 !
         call nod_fields_send_recv(new_mesh, new_fld)
 !

@@ -9,7 +9,6 @@
 !
       use m_precision
       use m_constants
-      use calypso_mpi
       use t_file_IO_parameter
 !
       implicit    none
@@ -74,6 +73,7 @@
      &         (source_plt, assemble_plt, asbl_param)
 !
       use t_ctl_data_4_platforms
+      use set_control_platform_data
 !
       type(platform_data_control), intent(in) :: source_plt
       type(platform_data_control), intent(in) :: assemble_plt
@@ -95,6 +95,7 @@
      &         (source_plt, assemble_plt, asbl_param)
 !
       use t_ctl_data_4_platforms
+      use parallel_ucd_IO_select
 !
       type(platform_data_control), intent(in) :: source_plt
       type(platform_data_control), intent(in) :: assemble_plt

@@ -12,6 +12,7 @@
       use m_constants
       use calypso_mpi
       use t_file_IO_parameter
+      use t_control_param_assemble
 !
       implicit    none
 !
@@ -43,10 +44,7 @@
 !
       integer(kind=kint ) :: iflag_delete_org_sph =   0
 !
-!>      multiply the amplitude
-      real(kind = kreal) :: b_sph_ratio
-!
-      private :: set_control_original_step, set_control_new_step
+      private :: set_control_original_step, sset_control_new_step
 !
 !------------------------------------------------------------------
 !
@@ -54,7 +52,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine bcast_ctl_param_newsph
+      subroutine bcast_ctl_param_newsph(asbl_param)
+!
+      type(control_param_assemble), intent(inout) :: asbl_param
 !
 !
       call MPI_Bcast(np_sph_org, ione, CALYPSO_INTEGER,                 &
@@ -105,14 +105,14 @@
       call MPI_Bcast(iflag_delete_org_sph, ione, CALYPSO_INTEGER,       &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(b_sph_ratio ,ione, CALYPSO_REAL,                   &
+      call MPI_Bcast(asbl_param%b_ratio ,ione, CALYPSO_REAL,            &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_param_newsph
 !
 !------------------------------------------------------------------
 !
-      subroutine set_control_4_newsph(mgd_ctl)
+      subroutine set_control_4_newsph(mgd_ctl, asbl_param)
 !
       use t_control_data_4_merge
       use m_file_format_switch
@@ -121,6 +121,7 @@
       use skip_comment_f
 !
       type(control_data_4_merge), intent(in) :: mgd_ctl
+      type(control_param_assemble), intent(inout) :: asbl_param
       character(len = kchara) :: tmpchara
 !
 !
@@ -174,13 +175,11 @@
         if(yes_flag(tmpchara)) iflag_delete_org_sph = 1
       end if
 !
-      b_sph_ratio = 1.0d0
-      if(mgd_ctl%magnetic_ratio_ctl%iflag .gt. 0) then
-        b_sph_ratio = mgd_ctl%magnetic_ratio_ctl%realvalue
-      end if
+      call set_magnetic_ratio_4_assemble                                &
+     &   (mgd_ctl%magnetic_ratio_ctl, asbl_param)
 !
       call set_control_original_step(mgd_ctl%t_mge_ctl)
-      call set_control_new_step(mgd_ctl%t2_mge_ctl)
+      call sset_control_new_step(mgd_ctl%t2_mge_ctl)
 !
       end subroutine set_control_4_newsph
 !
@@ -213,7 +212,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_new_step(t2_mge_ctl)
+      subroutine sset_control_new_step(t2_mge_ctl)
 !
       use t_ctl_data_4_time_steps
 !
@@ -246,7 +245,7 @@
         iflag_newtime = 0
       end if
 !
-      end subroutine set_control_new_step
+      end subroutine sset_control_new_step
 !
 ! -----------------------------------------------------------------------
 !

@@ -5,8 +5,9 @@
 !      subroutine deallocate_control_4_merge
 !
 !!      subroutine set_control_4_merge(mgd_ctl, num_pe)
-!!      integer(kind = kint) function set_control_4_newrst              &
-!!     &                            (mgd_ctl, nprocs)
+!!      subroutine set_control_4_newrst                                 &
+!!     &         (nprocs, mgd_ctl, asbl_param, ierr)
+!!        type(control_param_assemble), intent(inout) :: asbl_param
 !!      integer(kind = kint) function                                   &
 !!     &                    set_control_4_newudt(mgd_ctl, nprocs)
 !!        type(control_data_4_merge), intent(in) :: mgd_ctl
@@ -16,6 +17,7 @@
       use m_precision
       use m_machine_parameter
       use t_file_IO_parameter
+      use t_control_param_assemble
 !
       implicit    none
 !
@@ -45,8 +47,6 @@
      &                      :: new_rst_def_head =   "rst_new/rst"
 !
       integer(kind=kint ) :: iflag_delete_org = 0
-!
-      real(kind = kreal) :: b_ratio
 !
       private :: def_new_udt_head
       private :: org_rst_def_head, new_rst_def_head
@@ -159,20 +159,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function set_control_4_newrst                &
-     &                            (mgd_ctl, nprocs)
+      subroutine set_control_4_newrst                                   &
+     &         (nprocs, mgd_ctl, asbl_param, ierr)
 !
       use t_control_data_4_merge
       use m_file_format_switch
       use set_control_platform_data
 !
+      integer(kind = kint), intent(in) :: nprocs
       type(control_data_4_merge), intent(in) :: mgd_ctl
-      integer(kind = kint), intent(inout) :: nprocs
+      type(control_param_assemble), intent(inout) :: asbl_param
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      set_control_4_newrst = 0
+      ierr = 0
       if(set_control_4_newudt(mgd_ctl, nprocs) .gt. 0) then
-        set_control_4_newrst = 1
+        ierr = 1
         return
       end if
 !
@@ -183,18 +185,15 @@
      &    mgd_ctl%assemble_plt%restart_file_prefix,                     &
      &    mgd_ctl%assemble_plt%restart_file_fmt_ctl, new_fst_param)
 !
-      if (mgd_ctl%magnetic_ratio_ctl%iflag .gt. 0) then
-        b_ratio = mgd_ctl%magnetic_ratio_ctl%realvalue
-      else
-        b_ratio = 1.0d0
-      end if
+      call set_magnetic_ratio_4_assemble                                &
+     &   (mgd_ctl%magnetic_ratio_ctl, asbl_param)
 !
       increment_step = 1
       if (mgd_ctl%t_mge_ctl%i_step_rst_ctl%iflag .gt. 0) then
         increment_step = mgd_ctl%t_mge_ctl%i_step_rst_ctl%intvalue
       end if
 !
-      end function set_control_4_newrst
+      end subroutine set_control_4_newrst
 !
 ! -----------------------------------------------------------------------
 !
