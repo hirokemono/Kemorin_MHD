@@ -25,6 +25,7 @@
       use t_time_data
       use t_field_data_IO
       use t_control_data_4_merge
+      use t_comm_table_4_assemble
 !
       use field_IO_select
 !
@@ -34,13 +35,10 @@
       type(mesh_geometry), allocatable, save :: org_mesh(:)
       type(mesh_geometry), save :: new_mesh
       type(phys_data), save :: new_fld
+      type(comm_table_4_assemble), save :: asbl_comm1
 !
       type(control_data_4_merge), save :: mgd_ctl6
       type(time_data), save :: t_IO_m
-!
-      integer(kind = kint), allocatable :: istack_recv(:)
-      integer(kind = kint), allocatable :: item_send(:)
-      integer(kind = kint), allocatable :: item_recv(:)
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,7 +53,6 @@
       use m_array_for_send_recv
 !
       use mpi_load_mesh_data
-      use search_original_domain_node
       use nod_phys_send_recv
       use const_element_comm_tables
       use const_mesh_information
@@ -116,18 +113,8 @@
       call load_local_node_4_merge                                      &
      &   (merge_org_mesh_file, ndomain_org, org_mesh)
 !
-      allocate(istack_recv(0:ndomain_org))
-      allocate(item_send(new_mesh%node%internal_node))
-      allocate(item_recv(new_mesh%node%internal_node))
-!
-      istack_recv = 0
-!$omp parallel workshare
-      item_send = 0
-      item_recv = 0
-!$omp end parallel workshare
-!
       call s_search_original_domain_node(ndomain_org, org_mesh,         &
-     &    new_mesh%node, istack_recv, item_send, item_recv)
+     &    new_mesh%node, asbl_comm1)
 !
 !   read field name and number of components
 !
@@ -158,7 +145,6 @@
 !
       use m_phys_labels
       use m_control_param_merge
-      use search_original_domain_node
       use set_ucd_data_to_type
       use merged_udt_vtk_file_IO
       use parallel_ucd_IO_select
@@ -196,17 +182,14 @@
      &      ndomain_org, t_IO_m, org_fIO)
 !
         call assemble_field_data                                        &
-     &     (ndomain_org, istack_recv, item_send, item_recv,             &
-     &      new_fld, t_IO_m, org_fIO)
+     &     (ndomain_org, asbl_comm1, new_fld, t_IO_m, org_fIO)
 !
         call nod_fields_send_recv(new_mesh, new_fld)
 !
         call sel_write_parallel_ucd_file                                &
      &     (istep, assemble_ucd_param, t_IO_m, ucd_m, mucd_m)
       end do
-!
-!
-      deallocate(istack_recv, item_send, item_recv)
+      call dealloc_comm_table_4_assemble(asbl_comm1)
 !
       if(iflag_delete_org .gt. 0) then
         icou = 0

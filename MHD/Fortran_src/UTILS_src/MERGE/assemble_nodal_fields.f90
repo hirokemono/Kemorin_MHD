@@ -11,10 +11,11 @@
 !!     &         (nfld_label, ucd_on_label, fld_IO, fld)
 !!
 !!      subroutine assemble_field_data                                  &
-!!     &         (nprocs_org, istack_recv, item_send, item_recv,        &
-!!     &          new_fld, t_IO, org_fIO)
-!!        type(field_IO), intent(in) :: fld_IO
-!!        type(phys_data), intent(inout) :: fld
+!!     &         (nprocs_org, asbl_comm, new_fld, t_IO, org_fIO)
+!!        type(comm_table_4_assemble), intent(in) :: asbl_comm
+!!        type(phys_data), intent(inout) :: new_fld
+!!        type(time_data), intent(inout) :: t_IO
+!!        type(field_IO), intent(inout) :: org_fIO(nprocs_org)
 !!@endverbatim
 !!
       module assemble_nodal_fields
@@ -81,27 +82,23 @@
 ! ----------------------------------------------------------------------
 !
       subroutine assemble_field_data                                    &
-     &         (nprocs_org, istack_recv, item_send, item_recv,          &
-     &          new_fld, t_IO, org_fIO)
+     &         (nprocs_org, asbl_comm, new_fld, t_IO, org_fIO)
 !
       use m_control_param_newsph
       use t_phys_data
       use t_field_data_IO
+      use t_comm_table_4_assemble
 !
       use set_field_to_restart
       use field_IO_select
       use share_field_data
 !
+      integer(kind = kint), intent(in) :: nprocs_org
+      type(comm_table_4_assemble), intent(in) :: asbl_comm
+!
       type(phys_data), intent(inout) :: new_fld
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: org_fIO(nprocs_org)
-!
-      integer(kind = kint), intent(in) :: nprocs_org
-      integer(kind = kint), intent(in) :: istack_recv(0:nprocs_org)
-      integer(kind = kint), intent(in)                                  &
-     &                      :: item_send(istack_recv(nprocs_org))
-      integer(kind = kint), intent(in)                                  &
-     &                      :: item_recv(istack_recv(nprocs_org))
 !
       integer(kind = kint) :: ip, ist, num
 !
@@ -111,10 +108,11 @@
         call share_field_IO_names(ip, org_fIO(ip))
         call share_each_field_IO_data(ip, org_fIO(ip))
 !
-        ist = istack_recv(ip-1) + 1
-        num = istack_recv(ip) - istack_recv(ip-1)
+        ist = asbl_comm%istack_recv(ip-1) + 1
+        num = asbl_comm%istack_recv(ip) - asbl_comm%istack_recv(ip-1)
         call copy_field_data_4_assemble                                 &
-     &     (num, item_send(ist), item_recv(ist), org_fIO(ip), new_fld)
+     &     (num, asbl_comm%item_send(ist), asbl_comm%item_recv(ist),    &
+     &      org_fIO(ip), new_fld)
 !
         call dealloc_merged_field_stack(org_fIO(ip))
         call dealloc_phys_data_IO(org_fIO(ip))
@@ -187,7 +185,6 @@
       integer(kind = kint), intent(in) :: num_item
       integer(kind = kint), intent(in) :: item_send(num_item)
       integer(kind = kint), intent(in) :: item_recv(num_item)
-!
       type(field_IO), intent(in) :: fld_IO
 !
       type(phys_data), intent(inout) :: fld
