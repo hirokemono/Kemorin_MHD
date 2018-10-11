@@ -25,6 +25,8 @@
 !!                put null character at the end
 !!
 !!      character(len=kchara) function                                  &
+!!     &                     add_2chara_extension(file_head, extension)
+!!      character(len=kchara) function                                  &
 !!     &                     add_3chara_extension(file_head, extension)
 !!
 !!       character(len=kchara) function add_left_label(file_head)
@@ -53,6 +55,8 @@
       use m_precision
 !
       implicit  none
+!
+      character(len=2), parameter, private :: gz_ext =  "gz"
 !
 !-----------------------------------------------------------------------
 !
@@ -134,8 +138,7 @@
 !
       character(len=kchara), intent(in) :: file_head
 !
-      write(add_gzip_extension,1011) trim(file_head), ".gz"
- 1011 format (a,a3)
+      add_gzip_extension = add_2chara_extension(file_head, gz_ext)
 !
       end function add_gzip_extension
 !
@@ -151,6 +154,19 @@
       end function add_null_character
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      character(len=kchara) function                                    &
+     &                     add_2chara_extension(file_head, extension)
+!
+      character(len=kchara), intent(in) :: file_head
+      character(len=2), intent(in) :: extension
+!
+       write(add_2chara_extension,'(a,a1,a2)')                          &
+     &                   trim(file_head), '.', trim(extension)
+!
+      end function add_2chara_extension
+!
 !-----------------------------------------------------------------------
 !
       character(len=kchara) function                                    &

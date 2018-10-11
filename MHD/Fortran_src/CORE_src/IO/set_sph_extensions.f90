@@ -49,7 +49,7 @@
       character(len=3), parameter, private :: rtp_ext = "rtp"
       character(len=3), parameter, private :: rtm_ext = "rtm"
       character(len=3), parameter, private :: rlm_ext = "rlm"
-      character(len=3), parameter, private :: rj_ext =  "rj "
+      character(len=2), parameter, private :: rj_ext =  "rj"
       character(len=3), parameter, private :: btp_ext = "btp"
       character(len=3), parameter, private :: btm_ext = "btm"
       character(len=3), parameter, private :: blm_ext = "blm"
@@ -116,7 +116,7 @@
 !
       character(len=kchara), intent(in) :: file_head
 !
-      add_rj_extension = trim(add_3chara_extension(file_head, rj_ext))
+      add_rj_extension = trim(add_2chara_extension(file_head, rj_ext))
 !
       end function add_rj_extension
 !

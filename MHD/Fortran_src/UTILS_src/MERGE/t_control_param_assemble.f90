@@ -178,13 +178,13 @@
       if(t2_mge_ctl%i_step_init_ctl%iflag .gt. 0) then
         asbl_param%istep_new_rst = t2_mge_ctl%i_step_init_ctl%intvalue
       else
-        asbl_param%istep_new_rst = istep_start
+        asbl_param%istep_new_rst = asbl_param%istep_start
       end if
       if (t2_mge_ctl%i_step_rst_ctl%iflag .gt. 0) then
         asbl_param%increment_new_step                                   &
      &       = t2_mge_ctl%i_step_rst_ctl%intvalue
       else
-        asbl_param%increment_new_step = increment_step
+        asbl_param%increment_new_step = asbl_param%increment_step
       end if
       if(t2_mge_ctl%time_init_ctl%iflag .gt. 0) then
         asbl_param%time_new = t2_mge_ctl%time_init_ctl%realvalue
@@ -193,7 +193,7 @@
       if      (t2_mge_ctl%time_init_ctl%iflag .gt. 0                    &
      &   .and. t2_mge_ctl%i_step_init_ctl%iflag .gt. 0                  &
      &   .and. t2_mge_ctl%i_step_rst_ctl%iflag .gt. 0) then
-        if(istep_start .ne. istep_end) then
+        if(asbl_param%istep_start .ne. asbl_param%istep_end) then
           stop 'Choose one snapshot to change time step information'
         else
           asbl_param%iflag_newtime = 1
@@ -209,7 +209,9 @@
 !
       subroutine set_delete_flag_4_assemble(assemble_plt, asbl_param)
 !
+      use t_ctl_data_4_platforms
       use t_control_elements
+      use skip_comment_f
 !
       type(platform_data_control), intent(in) :: assemble_plt
       type(control_param_assemble), intent(inout) :: asbl_param

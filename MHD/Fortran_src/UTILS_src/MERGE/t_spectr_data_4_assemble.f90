@@ -16,6 +16,7 @@
       use t_phys_data
       use t_field_data_IO
       use t_time_data
+      use r_interpolate_marged_sph
       use parallel_assemble_sph
 !
       implicit none
@@ -89,9 +90,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_spectr_data_4_assemble(nprocs, sph_asbl)
+      subroutine dealloc_spectr_data_4_assemble                         &
+     &         (my_rank, nprocs, sph_asbl)
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer(kind = kint), intent(in) :: my_rank, nprocs
       type(spectr_data_4_assemble), intent(inout) :: sph_asbl
 !
       integer(kind = kint) :: ip, jp
@@ -125,4 +127,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      module t_spectr_data_4_assemble
+      end module t_spectr_data_4_assemble
