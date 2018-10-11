@@ -47,15 +47,8 @@
       type(field_IO), allocatable, save :: new_fst_IO(:)
       type(time_data), save :: fst_time_IO
 !
-      integer(kind = kint), allocatable :: nnod_list_lc(:)
-      integer(kind = kint), allocatable :: nnod_list(:)
-      integer(kind = kint_gl), allocatable :: istack_nnod_list(:)
-!
-!
       type(sph_radial_itp_data), save :: r_itp
       type(rj_assemble_tbl), allocatable, save :: j_table(:,:)
-      integer(kind = kint) :: nlayer_ICB_org, nlayer_CMB_org
-      integer(kind = kint) :: nlayer_ICB_new, nlayer_CMB_new
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,6 +65,7 @@
       use sph_file_IO_select
       use field_IO_select
       use share_spectr_index_data
+      use count_nnod_4_asseble_sph
 !
       integer(kind = kint) :: ip, jp, irank_new, jloop
 !
@@ -112,49 +106,13 @@
       nloop_new = (np_sph_new-1)/nprocs + 1
       allocate(new_fst_IO(nloop_new))
 !
-      allocate(nnod_list_lc(np_sph_new))
-      allocate(nnod_list(np_sph_new))
-      allocate(istack_nnod_list(0:np_sph_new))
-      nnod_list_lc(1:np_sph_new) = 0
-      nnod_list(1:np_sph_new) = 0
-!
-      do jp = 1, np_sph_new
-        irank_new = jp - 1
-        if(mod(irank_new,nprocs) .ne. my_rank) cycle
-        nnod_list_lc(jp) = new_sph_mesh(jp)%sph%sph_rj%nnod_rj
-      end do
-!
-      call MPI_allREDUCE(nnod_list_lc, nnod_list, np_sph_new,           &
-     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-!
-      istack_nnod_list(0) = 0
-      do jp = 1, np_sph_new
-        istack_nnod_list(jp) = istack_nnod_list(jp-1) + nnod_list(jp)
-      end do
-      do jloop = 1, nloop_new
-        call alloc_merged_field_stack(np_sph_new, new_fst_IO(jloop))
-        new_fst_IO(jloop)%istack_numnod_IO = istack_nnod_list
-      end do
-      deallocate(istack_nnod_list)
+      call s_count_nnod_4_asseble_sph                                   &
+     &   (np_sph_new, new_sph_mesh, nloop_new, new_fst_IO)
 !
 !     construct radial interpolation table
 !
-      if(my_rank .eq. 0) then
-        call set_sph_boundary_4_merge(org_sph_mesh(1)%sph_grps,         &
-     &      nlayer_ICB_org, nlayer_CMB_org)
-        call set_sph_boundary_4_merge(new_sph_mesh(1)%sph_grps,         &
-     &      nlayer_ICB_new, nlayer_CMB_new)
-!
-        call sph_radial_interpolation_coef                              &
-     &     (org_sph_mesh(1)%sph%sph_rj%nidx_rj(1),                      &
-     &      org_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r,                  &
-     &      new_sph_mesh(1)%sph%sph_rj%nidx_rj(1),                      &
-     &      new_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r, r_itp)
-      end if
-!
-      call share_r_interpolation_tbl                                    &
-     &   (new_sph_mesh(1), r_itp, nlayer_ICB_org, nlayer_CMB_org,       &
-     &    nlayer_ICB_new, nlayer_CMB_new)
+      call const_r_interpolate_table(np_sph_org, np_sph_new,            &
+     &    org_sph_mesh, new_sph_mesh, r_itp)
 !
 !      Construct field list from spectr file
 !

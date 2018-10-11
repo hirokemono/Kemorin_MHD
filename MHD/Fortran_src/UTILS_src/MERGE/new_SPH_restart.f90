@@ -16,10 +16,6 @@
 !!        type(sph_grids), intent(inout) ::       sph
 !!        type(sph_comm_tables), intent(inout) :: sph_comms
 !!        type(sph_group_data), intent(inout) ::  sph_grps
-!!      subroutine set_sph_boundary_4_merge(sph_grps,                   &
-!!     &          nlayer_ICB, nlayer_CMB)
-!!        type(sph_group_data), intent(in) ::  sph_grps
-!!        integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
 !!      subroutine load_field_name_assemble_sph(istep_start, np_sph_org,&
 !!     &          org_fst_param, org_phys, new_phys, t_IO)
 !!      subroutine load_org_sph_data(irank, istep, np_sph_org,          &
@@ -90,31 +86,6 @@
       end do
 !
       end subroutine set_local_rj_mesh_4_merge
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_sph_boundary_4_merge(sph_grps,                     &
-     &          nlayer_ICB, nlayer_CMB)
-!
-      type(sph_group_data), intent(in) ::  sph_grps
-      integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
-!
-      integer(kind = kint) :: k, kk
-!
-!
-      do k = 1, sph_grps%radial_rj_grp%num_grp
-        if     (sph_grps%radial_rj_grp%grp_name(k) .eq. 'ICB'           &
-     &     .or. sph_grps%radial_rj_grp%grp_name(k) .eq. 'icb') then
-          kk = sph_grps%radial_rj_grp%istack_grp(k-1) + 1
-          nlayer_ICB = sph_grps%radial_rj_grp%item_grp(kk)
-        else if(sph_grps%radial_rj_grp%grp_name(k) .eq. 'CMB'           &
-     &     .or. sph_grps%radial_rj_grp%grp_name(k) .eq. 'cmb') then
-          kk = sph_grps%radial_rj_grp%istack_grp(k-1) + 1
-          nlayer_CMB = sph_grps%radial_rj_grp%item_grp(kk)
-        end if
-      end do
-!
-      end subroutine set_sph_boundary_4_merge
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -274,6 +245,7 @@
       use parallel_assemble_sph
       use copy_rj_phys_data_4_IO
       use field_IO_select
+      use assemble_sph_fields
 !
       real(kind=kreal ), intent(in) :: b_ratio
 !
