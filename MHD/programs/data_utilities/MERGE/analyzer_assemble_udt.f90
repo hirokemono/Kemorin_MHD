@@ -35,9 +35,9 @@
       type(mesh_geometry), allocatable, save :: org_mesh(:)
       type(mesh_geometry), save :: new_mesh
       type(phys_data), save :: new_fld
-      type(comm_table_4_assemble), save :: asbl_comm1
+      type(control_data_4_merge), save :: mgd_ctl_u
+      type(comm_table_4_assemble), save :: asbl_comm_u
 !
-      type(control_data_4_merge), save :: mgd_ctl6
       type(time_data), save :: t_IO_m
 !
 ! ----------------------------------------------------------------------
@@ -76,10 +76,10 @@
 !
 !   read control data
 !
-      call read_control_4_merge(mgd_ctl6)
+      call read_control_4_merge(mgd_ctl_u)
 !
-      call set_control_4_merge(mgd_ctl6, ndomain_org)
-      if(set_control_4_newudt(mgd_ctl6, nprocs) .gt. 0) then
+      call set_control_4_merge(mgd_ctl_u, ndomain_org)
+      if(set_control_4_newudt(mgd_ctl_u, nprocs) .gt. 0) then
         write(e_message,'(a)')                                          &
      &     'No. of processes and targed sub domain shold be the same.'
         call calypso_mpi_abort(ierr_mesh, e_message)
@@ -114,7 +114,7 @@
      &   (merge_org_mesh_file, ndomain_org, org_mesh)
 !
       call s_search_original_domain_node(ndomain_org, org_mesh,         &
-     &    new_mesh%node, asbl_comm1)
+     &    new_mesh%node, asbl_comm_u)
 !
 !   read field name and number of components
 !
@@ -182,14 +182,14 @@
      &      ndomain_org, t_IO_m, org_fIO)
 !
         call assemble_field_data                                        &
-     &     (ndomain_org, asbl_comm1, new_fld, t_IO_m, org_fIO)
+     &     (ndomain_org, asbl_comm_u, new_fld, t_IO_m, org_fIO)
 !
         call nod_fields_send_recv(new_mesh, new_fld)
 !
         call sel_write_parallel_ucd_file                                &
      &     (istep, assemble_ucd_param, t_IO_m, ucd_m, mucd_m)
       end do
-      call dealloc_comm_table_4_assemble(asbl_comm1)
+      call dealloc_comm_table_4_assemble(asbl_comm_u)
 !
       if(iflag_delete_org .gt. 0) then
         icou = 0

@@ -27,7 +27,7 @@
 !
       implicit none
 !
-      type(control_data_4_merge), save :: mgd_ctl4
+      type(control_data_4_merge), save :: mgd_ctl_m
       integer(kind = kint), save :: ndomain_org
       type(mesh_data), save :: fem_m
       type(element_geometry), save :: e_mesh_m
@@ -58,9 +58,9 @@
 !
 !   read control data
 !
-      call read_control_4_merge(mgd_ctl4)
-      call set_control_4_merge(mgd_ctl4, ndomain_org)
-      ierr_MPI = set_control_4_newudt(mgd_ctl4, nprocs)
+      call read_control_4_merge(mgd_ctl_m)
+      call set_control_4_merge(mgd_ctl_m, ndomain_org)
+      ierr_MPI = set_control_4_newudt(mgd_ctl_m, nprocs)
 !
 !
 !  set mesh data

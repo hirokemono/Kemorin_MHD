@@ -84,7 +84,6 @@
       subroutine assemble_field_data                                    &
      &         (nprocs_org, asbl_comm, new_fld, t_IO, org_fIO)
 !
-      use m_control_param_newsph
       use t_phys_data
       use t_field_data_IO
       use t_comm_table_4_assemble

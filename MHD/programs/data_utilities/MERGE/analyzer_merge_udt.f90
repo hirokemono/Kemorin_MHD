@@ -34,7 +34,7 @@
       type(mesh_geometry), save :: mesh_m
       type(phys_data), save :: new_fld
 !
-      type(control_data_4_merge), save :: mgd_ctl8
+      type(control_data_4_merge), save :: mgd_ctl_u
       type(time_data), save :: t_IO_m
       type(field_IO), save :: fld_IO_m
 !
@@ -69,8 +69,8 @@
 !
 !   read control data
 !
-      call read_control_4_merge(mgd_ctl8)
-      call set_control_4_merge(mgd_ctl8, ndomain_org)
+      call read_control_4_merge(mgd_ctl_u)
+      call set_control_4_merge(mgd_ctl_u, ndomain_org)
       if(ndomain_org .ne. nprocs) then
         write(e_message,'(a)')                                          &
      &     'No. of processes and targed sub domain shold be the same.'

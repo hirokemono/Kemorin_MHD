@@ -36,9 +36,9 @@
       type(mesh_geometry), allocatable, save :: org_mesh(:)
       type(mesh_geometry), save :: new_mesh
       type(phys_data), save :: new_fld
-      type(comm_table_4_assemble), save :: asbl_comm1
+      type(control_data_4_merge), save :: mgd_ctl_f
+      type(comm_table_4_assemble), save :: asbl_comm_f
 !
-      type(control_data_4_merge), save :: mgd_ctl3
       type(time_data), save :: t_IO_m
       type(field_IO), save :: new_fIO
 !
@@ -79,10 +79,10 @@
 !
 !   read control data
 !
-      call read_control_4_merge(mgd_ctl3)
+      call read_control_4_merge(mgd_ctl_f)
 !
-      call set_control_4_merge(mgd_ctl3, ndomain_org)
-      if(set_control_4_newrst(mgd_ctl3, nprocs) .gt. 0) then
+      call set_control_4_merge(mgd_ctl_f, ndomain_org)
+      if(set_control_4_newrst(mgd_ctl_f, nprocs) .gt. 0) then
         write(e_message,'(a)')                                          &
      &     'No. of processes and targed sub domain shold be the same.'
         call calypso_mpi_abort(ierr_mesh, e_message)
@@ -117,7 +117,7 @@
      &   (merge_org_mesh_file, ndomain_org, org_mesh)
 !
       call s_search_original_domain_node(ndomain_org, org_mesh,         &
-     &    new_mesh%node, asbl_comm1)
+     &    new_mesh%node, asbl_comm_f)
 !
 !   read field name and number of components
 !
@@ -164,7 +164,7 @@
      &      ndomain_org, t_IO_m, org_fIO)
 !
         call assemble_field_data                                        &
-     &     (ndomain_org, asbl_comm1, new_fld, t_IO_m, org_fIO)
+     &     (ndomain_org, asbl_comm_f, new_fld, t_IO_m, org_fIO)
 !
 !   re-scaling for magnetic field
         call rescale_4_magne(b_ratio, new_fld)
@@ -176,7 +176,7 @@
         call sel_write_step_FEM_field_file                              &
      &     (nprocs, my_rank, istep, new_fst_param, t_IO_m, new_fIO)
       end do
-      call dealloc_comm_table_4_assemble(asbl_comm1)
+      call dealloc_comm_table_4_assemble(asbl_comm_f)
 !
       if(iflag_delete_org .gt. 0) then
         icou = 0

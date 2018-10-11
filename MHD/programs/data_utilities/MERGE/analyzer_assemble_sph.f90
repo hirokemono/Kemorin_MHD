@@ -33,7 +33,7 @@
 !
       implicit none
 !
-      type(control_data_4_merge), save :: mgd_ctl1
+      type(control_data_4_merge), save :: mgd_ctl_s
       type(time_data), save :: init_t
 !
       type(sph_mesh_data), allocatable, save :: org_sph_mesh(:)
@@ -71,9 +71,9 @@
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
-      if(my_rank .eq. 0) call read_control_assemble_sph(mgd_ctl1)
-      call bcast_merge_control_data(mgd_ctl1)
-      call set_control_4_newsph(mgd_ctl1)
+      if(my_rank .eq. 0) call read_control_assemble_sph(mgd_ctl_s)
+      call bcast_merge_control_data(mgd_ctl_s)
+      call set_control_4_newsph(mgd_ctl_s)
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &          'istep_start, istep_end, increment_step',               &
