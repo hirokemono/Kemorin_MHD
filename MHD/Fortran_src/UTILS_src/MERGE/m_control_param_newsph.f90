@@ -23,12 +23,6 @@
       type(field_IO_params), save :: org_sph_fst_param
       type(field_IO_params), save :: new_sph_fst_param
 !
-      integer(kind=kint ) :: istep_start, istep_end, increment_step
-!
-      integer(kind = kint) :: iflag_newtime = 0
-      integer(kind = kint) :: istep_new_rst, increment_new_step
-      real(kind = kreal) :: time_new
-!
       character(len=kchara) :: org_sph_head = 'mesh_org/in_rj'
       character(len=kchara) :: new_sph_head = 'mesh_new/in_rj'
 !
@@ -41,8 +35,6 @@
 !>      File prefix for new restart data
       character(len=kchara), parameter                                  &
      &                    :: def_new_sph_fst = "rst_new/rst"
-!
-      private :: sset_control_new_step
 !
 !------------------------------------------------------------------
 !
@@ -60,14 +52,14 @@
       call MPI_Bcast(np_sph_new, ione, CALYPSO_INTEGER,                 &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(iflag_newtime, ione, CALYPSO_INTEGER,              &
-     &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(istep_new_rst, ione, CALYPSO_INTEGER,              &
-     &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(increment_new_step, ione, CALYPSO_INTEGER,         &
-     &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(time_new ,ione, CALYPSO_REAL,                      &
-     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(asbl_param%iflag_newtime, ione,                    &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(asbl_param%istep_new_rst, ione,                    &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(asbl_param%increment_new_step, ione,               &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(asbl_param%time_new ,ione,                         &
+     &               CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
 !
       call MPI_Bcast(asbl_param%istep_start, ione, CALYPSO_INTEGER,     &
      &               izero, CALYPSO_COMM, ierr_MPI)
@@ -174,7 +166,7 @@
      &   (mgd_ctl%magnetic_ratio_ctl, asbl_param)
 !
       call set_assemble_step_4_rst(mgd_ctl%t_mge_ctl, asbl_param)
-      call sset_control_new_step(mgd_ctl%t2_mge_ctl, asbl_param)
+      call set_control_new_step(mgd_ctl%t2_mge_ctl, asbl_param)
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &          'istep_start, istep_end, increment_step',               &
@@ -182,44 +174,6 @@
      &           asbl_param%increment_step
 !
       end subroutine set_control_4_newsph
-!
-! -----------------------------------------------------------------------
-!
-      subroutine sset_control_new_step(t2_mge_ctl, asbl_param)
-!
-      use t_ctl_data_4_time_steps
-!
-      type(time_data_control), intent(in) :: t2_mge_ctl
-      type(control_param_assemble), intent(inout) :: asbl_param
-!
-!
-      if(t2_mge_ctl%i_step_init_ctl%iflag .gt. 0) then
-        istep_new_rst = t2_mge_ctl%i_step_init_ctl%intvalue
-      else
-        istep_new_rst = asbl_param%istep_start
-      end if
-      if (t2_mge_ctl%i_step_rst_ctl%iflag .gt. 0) then
-        increment_new_step = t2_mge_ctl%i_step_rst_ctl%intvalue
-      else
-        increment_new_step = asbl_param%increment_step
-      end if
-      if(t2_mge_ctl%time_init_ctl%iflag .gt. 0) then
-        time_new = t2_mge_ctl%time_init_ctl%realvalue
-      end if
-!
-      if      (t2_mge_ctl%time_init_ctl%iflag .gt. 0                    &
-     &   .and. t2_mge_ctl%i_step_init_ctl%iflag .gt. 0                  &
-     &   .and. t2_mge_ctl%i_step_rst_ctl%iflag .gt. 0) then
-        if(asbl_param%istep_start .ne. asbl_param%istep_end) then
-          stop 'Choose one snapshot to change time step information'
-        else
-          iflag_newtime = 1
-        end if
-      else
-        iflag_newtime = 0
-      end if
-!
-      end subroutine sset_control_new_step
 !
 ! -----------------------------------------------------------------------
 !

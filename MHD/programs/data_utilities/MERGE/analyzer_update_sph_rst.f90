@@ -166,10 +166,11 @@
         end do
 !
         istep_out = istep
-        if(iflag_newtime .gt. 0) then
-          istep_out =          istep_new_rst / increment_new_step
-          init_t%i_time_step = istep_new_rst
-          init_t%time =        time_new
+        if(asbl_param_s%iflag_newtime .gt. 0) then
+          istep_out =          asbl_param_s%istep_new_rst               &
+     &                        / asbl_param_s%increment_new_step
+          init_t%i_time_step = asbl_param_s%istep_new_rst
+          init_t%time =        asbl_param_s%time_new
         else
           call reset_time_data(init_t)
         end if
