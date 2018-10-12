@@ -1,36 +1,34 @@
-!m_control_param_newsph.f90
-!      module m_control_param_newsph
+!>@file   set_control_newsph.f90
+!!@brief  module set_control_newsph
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in Apr., 2010
 !
-!      Written by H. Matsui
+!>@brief  Main loop to assemble spectr data
+!!
+!!@verbatim
+!!      subroutine bcast_ctl_param_newsph(asbl_param, sph_asbl)
+!!      subroutine set_control_4_newsph(mgd_ctl, asbl_param, sph_asbl)
+!!        type(control_data_4_merge), intent(in) :: mgd_ctl
+!!        type(control_param_assemble), intent(inout) :: asbl_param
+!!        type(spectr_data_4_assemble), intent(inout) :: sph_asbl
+!!@endverbatim
 !
-!!      subroutine bcast_ctl_param_newsph
-!!      subroutine set_control_4_newsph
-!
-      module m_control_param_newsph
+      module set_control_newsph
 !
       use m_precision
       use m_constants
       use calypso_mpi
       use t_file_IO_parameter
       use t_control_param_assemble
+      use t_spectr_data_4_assemble
 !
       implicit    none
-!
-!
-      integer(kind = kint) :: np_sph_org
-      integer(kind = kint) :: np_sph_new
 !
       character(len=kchara), parameter, private                         &
      &         :: def_org_sph_head = 'mesh_org/in_rj'
       character(len=kchara), parameter, private                         &
      &         :: def_new_sph_head = 'mesh_new/in_rj'
-!
-!>      File prefix for new restart data
-      character(len=kchara), parameter, private                         &
-     &                    :: def_org_sph_fst = "restart/rst"
-!>      File prefix for new restart data
-      character(len=kchara), parameter, private                         &
-     &                    :: def_new_sph_fst = "rst_new/rst"
 !
 !------------------------------------------------------------------
 !
@@ -38,16 +36,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine bcast_ctl_param_newsph(asbl_param)
+      subroutine bcast_ctl_param_newsph(asbl_param, sph_asbl)
 !
       use bcast_file_IO_parameter
 !
       type(control_param_assemble), intent(inout) :: asbl_param
+      type(spectr_data_4_assemble), intent(inout) :: sph_asbl
 !
 !
-      call MPI_Bcast(np_sph_org, ione, CALYPSO_INTEGER,                 &
+      call MPI_Bcast(sph_asbl%np_sph_org, ione, CALYPSO_INTEGER,        &
      &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(np_sph_new, ione, CALYPSO_INTEGER,                 &
+      call MPI_Bcast(sph_asbl%np_sph_new, ione, CALYPSO_INTEGER,        &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
       call MPI_Bcast(asbl_param%iflag_newtime, ione,                    &
@@ -82,7 +81,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_control_4_newsph(mgd_ctl, asbl_param)
+      subroutine set_control_4_newsph(mgd_ctl, asbl_param, sph_asbl)
 !
       use t_control_data_4_merge
       use m_file_format_switch
@@ -92,17 +91,18 @@
 !
       type(control_data_4_merge), intent(in) :: mgd_ctl
       type(control_param_assemble), intent(inout) :: asbl_param
+      type(spectr_data_4_assemble), intent(inout) :: sph_asbl
 !
 !
       if (mgd_ctl%source_plt%ndomain_ctl%iflag .gt. 0) then
-        np_sph_org = mgd_ctl%source_plt%ndomain_ctl%intvalue
+        sph_asbl%np_sph_org = mgd_ctl%source_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains'
         stop
       end if
 !
       if (mgd_ctl%assemble_plt%ndomain_ctl%iflag .gt. 0) then
-        np_sph_new = mgd_ctl%assemble_plt%ndomain_ctl%intvalue
+        sph_asbl%np_sph_new = mgd_ctl%assemble_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains for new grid'
         stop
@@ -123,7 +123,7 @@
 !
 !
       if((asbl_param%new_fld_file%iflag_format/iflag_single) .gt. 0     &
-     &     .and. np_sph_new .ne. nprocs) then
+     &     .and. sph_asbl%np_sph_new .ne. nprocs) then
         asbl_param%new_fld_file%iflag_format                            &
      &            = asbl_param%new_fld_file%iflag_format - iflag_single
         write(*,*) 'Turn off Merged data IO ',                          &
@@ -148,4 +148,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module m_control_param_newsph
+      end module set_control_newsph

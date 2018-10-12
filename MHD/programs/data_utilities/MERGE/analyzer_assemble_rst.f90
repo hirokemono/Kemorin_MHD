@@ -18,7 +18,6 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_control_param_newsph
 !
       use t_mesh_data
       use t_phys_data
@@ -30,6 +29,7 @@
 !
       use field_IO_select
       use set_field_to_restart
+      use set_control_assemble
 !
       implicit none
 !
@@ -53,7 +53,6 @@
       subroutine init_assemble_rst
 !
       use m_error_IDs
-      use m_control_param_merge
       use m_array_for_send_recv
 !
       use mpi_load_mesh_data
@@ -145,7 +144,6 @@
       subroutine analyze_assemble_rst
 !
       use m_phys_labels
-      use m_control_param_merge
       use assemble_nodal_fields
       use nod_phys_send_recv
       use load_mesh_data_4_merge

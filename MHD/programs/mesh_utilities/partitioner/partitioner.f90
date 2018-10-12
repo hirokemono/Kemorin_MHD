@@ -23,7 +23,7 @@
       use t_control_param_assemble
 !      use m_original_ucd_4_merge
 !      use m_geometry_data_4_merge
-      use m_control_param_merge
+      use set_control_assemble
       use ucd_IO_select
       use intelligent_partition
 !

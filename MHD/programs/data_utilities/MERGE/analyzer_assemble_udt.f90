@@ -18,7 +18,6 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_control_param_newsph
 !
       use t_mesh_data
       use t_phys_data
@@ -30,6 +29,7 @@
 !
       use field_IO_select
       use assemble_nodal_fields
+      use set_control_assemble
 !
       implicit none
 !
@@ -53,7 +53,6 @@
       subroutine init_assemble_udt
 !
       use m_error_IDs
-      use m_control_param_merge
       use m_array_for_send_recv
 !
       use mpi_load_mesh_data
@@ -146,7 +145,6 @@
       use t_ucd_data
 !
       use m_phys_labels
-      use m_control_param_merge
       use set_ucd_data_to_type
       use merged_udt_vtk_file_IO
       use parallel_ucd_IO_select

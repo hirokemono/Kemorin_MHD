@@ -34,7 +34,7 @@
       subroutine init_ucd_data_4_FFT(istep, ucd_param, t_IO, ucd)
 !
       use m_constants
-      use m_control_param_merge
+      use set_control_assemble
 !
       use t_time_data
       use t_ucd_data

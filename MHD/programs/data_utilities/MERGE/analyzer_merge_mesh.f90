@@ -25,6 +25,7 @@
       use t_control_data_4_merge
       use t_control_param_assemble
       use mpi_load_mesh_data
+      use set_control_assemble
 !
       implicit none
 !
@@ -43,7 +44,6 @@
       subroutine init_merge_mesh
 !
       use m_error_IDs
-      use m_control_param_merge
       use m_array_for_send_recv
       use m_default_file_prefix
 !
@@ -92,7 +92,6 @@
 !
       use t_para_double_numbering
       use m_phys_labels
-      use m_control_param_merge
       use m_file_format_switch
       use set_field_to_restart
       use const_internal_mesh_data

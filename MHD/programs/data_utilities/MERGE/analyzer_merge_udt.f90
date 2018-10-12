@@ -29,6 +29,7 @@
 !
       use field_IO_select
       use assemble_nodal_fields
+      use set_control_assemble
 !
       implicit none
 !
@@ -51,7 +52,6 @@
       subroutine init_merge_udt
 !
       use m_error_IDs
-      use m_control_param_merge
       use m_array_for_send_recv
 !
       use mpi_load_mesh_data
@@ -123,7 +123,6 @@
       use t_ucd_data
 !
       use m_phys_labels
-      use m_control_param_merge
       use m_file_format_switch
       use set_field_to_restart
       use nod_phys_send_recv

@@ -1,5 +1,5 @@
 !
-!      module m_control_param_merge
+!      module set_control_assemble
 !      Written by H. Matsui
 !
 !!      subroutine set_control_4_merge(mgd_ctl, asbl_param, num_pe)
@@ -13,14 +13,14 @@
 !!        type(control_data_4_merge), intent(in) :: mgd_ctl
 !!        type(assemble_field_list), intent(inout) :: asbl_tbl
 !
-      module m_control_param_merge
+      module set_control_assemble
 !
       use m_precision
       use m_machine_parameter
       use t_file_IO_parameter
       use t_control_param_assemble
 !
-      implicit    none
+      implicit none
 !
 !------------------------------------------------------------------
 !
@@ -185,4 +185,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module m_control_param_merge
+      end module set_control_assemble

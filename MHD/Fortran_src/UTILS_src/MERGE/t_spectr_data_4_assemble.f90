@@ -7,6 +7,10 @@
 !>@brief  Main loop to assemble spectr data
 !!
 !!@verbatim
+!!      subroutine alloc_spectr_data_4_assemble(sph_asbl)
+!!      subroutine dealloc_spectr_data_4_assemble                       &
+!!     &         (my_rank, nprocs, sph_asbl)
+!!        type(spectr_data_4_assemble), intent(inout) :: sph_asbl
 !!@endverbatim
 !
       module t_spectr_data_4_assemble

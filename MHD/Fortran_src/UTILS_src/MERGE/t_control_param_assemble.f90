@@ -3,7 +3,24 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_control_4_newsph
+!!      subroutine set_assemble_rst_file_param                          &
+!!     &         (source_plt, assemble_plt, asbl_param)
+!!      subroutine set_assemble_ucd_file_param                          &
+!!     &         (source_plt, assemble_plt, asbl_param)
+!!
+!!      subroutine set_assemble_step_4_rst(t_mge_ctl, asbl_param)
+!!      subroutine set_assemble_step_4_ucd(t_mge_ctl, asbl_param)
+!!      subroutine set_control_new_step(t2_mge_ctl, asbl_param)
+!!
+!!      subroutine set_delete_flag_4_assemble(assemble_plt, asbl_param)
+!!      subroutine set_magnetic_ratio_4_assemble                        &
+!!     &         (magnetic_ratio_ctl, asbl_param)
+!!        type(time_data_control), intent(in) :: t_mge_ctl
+!!        type(time_data_control), intent(in) :: t2_mge_ctl
+!!        type(platform_data_control), intent(in) :: source_plt
+!!        type(platform_data_control), intent(in) :: assemble_plt
+!!        type(read_real_item), intent(in)  :: magnetic_ratio_ctl
+!!        type(control_param_assemble), intent(inout) :: asbl_param
 !
       module t_control_param_assemble
 !
