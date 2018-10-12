@@ -42,7 +42,7 @@
       character(len=kchara), parameter                                  &
      &                    :: def_new_sph_fst = "rst_new/rst"
 !
-      private :: set_control_original_step, sset_control_new_step
+      private :: sset_control_new_step
 !
 !------------------------------------------------------------------
 !
@@ -69,11 +69,11 @@
       call MPI_Bcast(time_new ,ione, CALYPSO_REAL,                      &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(np_sph_new, ione, CALYPSO_INTEGER,                 &
+      call MPI_Bcast(asbl_param%istep_start, ione, CALYPSO_INTEGER,     &
      &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(np_sph_new, ione, CALYPSO_INTEGER,                 &
+      call MPI_Bcast(asbl_param%istep_end, ione, CALYPSO_INTEGER,       &
      &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(np_sph_new, ione, CALYPSO_INTEGER,                 &
+      call MPI_Bcast(asbl_param%increment_step, ione, CALYPSO_INTEGER,  &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
       call MPI_Bcast(org_sph_head, kchara, CALYPSO_CHARACTER,           &
@@ -173,56 +173,35 @@
       call set_magnetic_ratio_4_assemble                                &
      &   (mgd_ctl%magnetic_ratio_ctl, asbl_param)
 !
-      call set_control_original_step(mgd_ctl%t_mge_ctl)
-      call sset_control_new_step(mgd_ctl%t2_mge_ctl)
+      call set_assemble_step_4_rst(mgd_ctl%t_mge_ctl, asbl_param)
+      call sset_control_new_step(mgd_ctl%t2_mge_ctl, asbl_param)
+!
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &          'istep_start, istep_end, increment_step',               &
+     &           asbl_param%istep_start, asbl_param%istep_end,          &
+     &           asbl_param%increment_step
 !
       end subroutine set_control_4_newsph
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
-      subroutine set_control_original_step(t_mge_ctl)
-!
-      use t_ctl_data_4_time_steps
-!
-      type(time_data_control), intent(in) :: t_mge_ctl
-!
-!
-      istep_start = 1
-      if(t_mge_ctl%i_step_init_ctl%iflag .gt. 0) then
-        istep_start = t_mge_ctl%i_step_init_ctl%intvalue
-      end if
-!
-      istep_end =  1
-      if(t_mge_ctl%i_step_number_ctl%iflag .gt. 0) then
-        istep_end = t_mge_ctl%i_step_number_ctl%intvalue
-      end if
-!
-      increment_step = 1
-      if (t_mge_ctl%i_step_rst_ctl%iflag .gt. 0) then
-        increment_step = t_mge_ctl%i_step_rst_ctl%intvalue
-      end if
-!
-      end subroutine set_control_original_step
-!
-! -----------------------------------------------------------------------
-!
-      subroutine sset_control_new_step(t2_mge_ctl)
+      subroutine sset_control_new_step(t2_mge_ctl, asbl_param)
 !
       use t_ctl_data_4_time_steps
 !
       type(time_data_control), intent(in) :: t2_mge_ctl
+      type(control_param_assemble), intent(inout) :: asbl_param
 !
 !
       if(t2_mge_ctl%i_step_init_ctl%iflag .gt. 0) then
         istep_new_rst = t2_mge_ctl%i_step_init_ctl%intvalue
       else
-        istep_new_rst = istep_start
+        istep_new_rst = asbl_param%istep_start
       end if
       if (t2_mge_ctl%i_step_rst_ctl%iflag .gt. 0) then
         increment_new_step = t2_mge_ctl%i_step_rst_ctl%intvalue
       else
-        increment_new_step = increment_step
+        increment_new_step = asbl_param%increment_step
       end if
       if(t2_mge_ctl%time_init_ctl%iflag .gt. 0) then
         time_new = t2_mge_ctl%time_init_ctl%realvalue
@@ -231,7 +210,7 @@
       if      (t2_mge_ctl%time_init_ctl%iflag .gt. 0                    &
      &   .and. t2_mge_ctl%i_step_init_ctl%iflag .gt. 0                  &
      &   .and. t2_mge_ctl%i_step_rst_ctl%iflag .gt. 0) then
-        if(istep_start .ne. istep_end) then
+        if(asbl_param%istep_start .ne. asbl_param%istep_end) then
           stop 'Choose one snapshot to change time step information'
         else
           iflag_newtime = 1

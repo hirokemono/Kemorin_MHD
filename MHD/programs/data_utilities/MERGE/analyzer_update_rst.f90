@@ -84,7 +84,7 @@
 !
       call read_control_4_merge(mgd_ctl_f)
 !
-      call set_control_4_merge(mgd_ctl_f, ndomain_org)
+      call set_control_4_merge(mgd_ctl_f, asbl_param_f, ndomain_org)
       call set_control_4_newrst                                         &
      &   (nprocs, mgd_ctl_f, asbl_param_f, ierr_MPI)
       if(ierr_MPI .gt. 0) then
@@ -92,11 +92,6 @@
      &     'No. of processes and targed sub domain shold be the same.'
         call calypso_mpi_abort(ierr_mesh, e_message)
       end if
-!
-!
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &          'istep_start, istep_end, increment_step',               &
-     &           istep_start, istep_end, increment_step
 !
 !  set new mesh data
 !
@@ -128,7 +123,8 @@
 !
       if(my_rank .eq. 0) then
         call sel_read_rst_comps                                         &
-     &     (izero, istep_start, org_fst_param, t_IO_m, fld_IO_m)
+     &     (izero, asbl_param_f%istep_start, org_fst_param,             &
+     &      t_IO_m, fld_IO_m)
         call init_field_name_by_restart(fld_IO_m, new_fld)
 !
         call dealloc_phys_data_IO(fld_IO_m)
@@ -163,7 +159,8 @@
 !
       allocate(org_fIO(ndomain_org))
 !
-      do istep = istep_start, istep_end, increment_step
+      do istep = asbl_param_f%istep_start, asbl_param_f%istep_end,      &
+     &          asbl_param_f%increment_step
         call load_old_FEM_restart_4_merge(istep, org_fst_param,         &
      &      ndomain_org, t_IO_m, org_fIO)
 !
@@ -184,7 +181,8 @@
 !
       if(asbl_param_f%iflag_delete_org .gt. 0) then
         icou = 0
-        do istep = istep_start, istep_end, increment_step
+        do istep = asbl_param_f%istep_start, asbl_param_f%istep_end,    &
+     &            asbl_param_f%increment_step
           icou = icou + 1
           if(mod(icou,nprocs) .ne. my_rank) cycle
           call delete_FEM_fld_file                                      &

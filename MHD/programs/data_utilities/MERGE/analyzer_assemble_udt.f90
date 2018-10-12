@@ -80,7 +80,7 @@
 !
       call read_control_4_merge(mgd_ctl_u)
 !
-      call set_control_4_merge(mgd_ctl_u, ndomain_org)
+      call set_control_4_merge(mgd_ctl_u, asbl_param_u, ndomain_org)
       call set_control_4_newudt                                         &
      &   (nprocs, mgd_ctl_u, asbl_param_u, ierr_MPI)
       if(ierr_MPI .gt. 0) then
@@ -88,11 +88,6 @@
      &     'No. of processes and targed sub domain shold be the same.'
         call calypso_mpi_abort(ierr_mesh, e_message)
       end if
-!
-!
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &          'istep_start, istep_end, increment_step',               &
-     &           istep_start, istep_end, increment_step
 !
 !  set new mesh data
 !
@@ -122,8 +117,9 @@
 !
 !   read field name and number of components
 !
-      call sel_read_alloc_step_FEM_file(ndomain_org, izero,             &
-     &    istep_start, original_ucd_param, t_IO_m, fld_IO_m)
+      call sel_read_alloc_step_FEM_file                                 &
+     &   (ndomain_org, izero,  asbl_param_u%istep_start,                &
+     &    original_ucd_param, t_IO_m, fld_IO_m)
 !
       if(my_rank .eq. 0) then
         call init_field_name_4_assemble_ucd(num_nod_phys, ucd_on_label, &
@@ -181,7 +177,8 @@
       if(iflag_debug .gt. .0) write(*,*) 'sel_write_parallel_ucd_mesh'
       call sel_write_parallel_ucd_mesh(assemble_ucd_param, ucd_m, mucd_m)
 !
-      do istep = istep_start, istep_end, increment_step
+      do istep = asbl_param_u%istep_start, asbl_param_u%istep_end,      &
+     &          asbl_param_u%increment_step
         call load_local_FEM_field_4_merge(istep, original_ucd_param,    &
      &      ndomain_org, t_IO_m, org_fIO)
 !
@@ -197,7 +194,8 @@
 !
       if(asbl_param_u%iflag_delete_org .gt. 0) then
         icou = 0
-        do istep = istep_start, istep_end, increment_step
+        do istep = asbl_param_u%istep_start, asbl_param_u%istep_end,    &
+     &            asbl_param_u%increment_step
           icou = icou + 1
           if(mod(icou,nprocs) .ne. my_rank) cycle
           call delete_FEM_fld_file                                      &

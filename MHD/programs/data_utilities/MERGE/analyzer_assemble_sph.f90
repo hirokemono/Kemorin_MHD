@@ -77,10 +77,6 @@
       call bcast_merge_control_data(mgd_ctl_s)
       call set_control_4_newsph(mgd_ctl_s, asbl_param_s)
 !
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &          'istep_start, istep_end, increment_step',               &
-     &           istep_start, istep_end, increment_step
-!
       allocate( org_sph_mesh(np_sph_org) )
       allocate( org_sph_phys(np_sph_org) )
       allocate( new_sph_mesh(np_sph_new) )
@@ -118,7 +114,7 @@
 !      Construct field list from spectr file
 !
       call load_field_name_assemble_sph                                 &
-     &   (istep_start, np_sph_org, org_sph_fst_param,                   &
+     &   (asbl_param_s%istep_start, np_sph_org, org_sph_fst_param,      &
      &    org_sph_phys(1), new_sph_phys(1), fst_time_IO)
 !
       call share_spectr_field_names(np_sph_org, np_sph_new,             &
@@ -156,7 +152,8 @@
 !
 !     ---------------------
 !
-      do istep = istep_start, istep_end, increment_step
+      do istep = asbl_param_s%istep_start, asbl_param_s%istep_end,      &
+     &          asbl_param_s%increment_step
 !
 !     Load original spectr data
         do iloop = 0, (np_sph_org-1)/nprocs
@@ -230,7 +227,8 @@
 !
       if(asbl_param_s%iflag_delete_org .gt. 0) then
         icou = 0
-        do istep = istep_start, istep_end, increment_step
+        do istep = asbl_param_s%istep_start, asbl_param_s%istep_end,    &
+     &            asbl_param_s%increment_step
           icou = icou + 1
           if(mod(icou,nprocs) .ne. my_rank) cycle
           call delete_SPH_fld_file                                      &

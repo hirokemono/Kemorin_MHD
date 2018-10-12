@@ -4,7 +4,7 @@
 !
 !      subroutine deallocate_control_4_merge
 !
-!!      subroutine set_control_4_merge(mgd_ctl, num_pe)
+!!      subroutine set_control_4_merge(mgd_ctl, asbl_param, num_pe)
 !!      subroutine set_control_4_newrst                                 &
 !!     &         (nprocs, mgd_ctl, asbl_param, ierr)
 !!      subroutine set_control_4_newudt                                 &
@@ -30,8 +30,6 @@
 !
       type(field_IO_params), save :: original_ucd_param
       type(field_IO_params), save :: assemble_ucd_param
-!
-      integer(kind=kint ) :: istep_start, istep_end, increment_step
 !
       integer(kind=kint ) :: num_nod_phys
 !
@@ -75,7 +73,7 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-       subroutine set_control_4_merge(mgd_ctl, num_pe)
+       subroutine set_control_4_merge(mgd_ctl, asbl_param, num_pe)
 !
       use t_file_IO_parameter
 !
@@ -89,6 +87,7 @@
       use parallel_ucd_IO_select
 !
       type(control_data_4_merge), intent(in) :: mgd_ctl
+      type(control_param_assemble), intent(inout) :: asbl_param
       integer(kind = kint), intent(inout) :: num_pe
 !
       integer(kind = kint) :: i, icou
@@ -138,20 +137,12 @@
          end do
        end if
 !
-      istep_start = 1
-      if(mgd_ctl%t_mge_ctl%i_step_init_ctl%iflag .gt. 0) then
-        istep_start = mgd_ctl%t_mge_ctl%i_step_init_ctl%intvalue
-      end if
+      call set_assemble_step_4_ucd(mgd_ctl%t_mge_ctl, asbl_param)
 !
-      istep_end = 1
-      if(mgd_ctl%t_mge_ctl%i_step_number_ctl%iflag .gt. 0) then
-        istep_end = mgd_ctl%t_mge_ctl%i_step_number_ctl%intvalue
-      end if
-!
-      increment_step = 1
-      if(mgd_ctl%t_mge_ctl%i_step_ucd_ctl%iflag .gt. 0) then
-        increment_step = mgd_ctl%t_mge_ctl%i_step_ucd_ctl%intvalue
-      end if
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &          'istep_start, istep_end, increment_step',               &
+     &           asbl_param%istep_start, asbl_param%istep_end,          &
+     &           asbl_param%increment_step
 !
       end subroutine set_control_4_merge
 !
@@ -183,10 +174,7 @@
       call set_magnetic_ratio_4_assemble                                &
      &   (mgd_ctl%magnetic_ratio_ctl, asbl_param)
 !
-      increment_step = 1
-      if (mgd_ctl%t_mge_ctl%i_step_rst_ctl%iflag .gt. 0) then
-        increment_step = mgd_ctl%t_mge_ctl%i_step_rst_ctl%intvalue
-      end if
+      call set_assemble_step_4_rst(mgd_ctl%t_mge_ctl, asbl_param)
 !
       end subroutine set_control_4_newrst
 !

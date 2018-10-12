@@ -61,7 +61,7 @@
 !   read control data
 !
       call read_control_4_merge(mgd_ctl_m)
-      call set_control_4_merge(mgd_ctl_m, ndomain_org)
+      call set_control_4_merge(mgd_ctl_m, asbl_param_m, ndomain_org)
       call set_control_4_newudt                                         &
      &   (nprocs, mgd_ctl_m, asbl_param_m, ierr_MPI)
 !

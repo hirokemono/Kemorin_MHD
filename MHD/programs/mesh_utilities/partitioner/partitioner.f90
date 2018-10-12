@@ -51,7 +51,7 @@
 !
       type(control_data_4_partitioner), save :: part_ctl1
       type(control_data_4_merge), save :: mgd_ctl_p
-!      type(control_param_assemble), save :: asbl_param_p
+      type(control_param_assemble), save :: asbl_param_p
 !
       type(mesh_data), save :: org_fem
       type(element_geometry), save :: org_ele_mesh
@@ -108,12 +108,13 @@
 !  ========= Read global field data for load balance partition =======
       write(*,*) 'read control_merge'
       call read_control_4_merge(mgd_ctl_p)
-      call set_control_4_merge(mgd_ctl_p, num_pe)
+      call set_control_4_merge(mgd_ctl_p, asbl_param_p, num_pe)
+      call set_assemble_step_4_ucd(mgd_ctl_p%t_mge_ctl, asbl_param_p)
 !      call set_control_4_newudt                                        &
 !     &   (sec_mesh1%num_pe2, mgd_ctl5, asbl_param_p, ierr_MPI)
 
-      call sel_read_udt_param(izero, istep_start, original_ucd_param,   &
-     &    fem_time_IO, fem_ucd)
+      call sel_read_udt_param(izero, asbl_param_p%istep_start,          &
+     &    original_ucd_param, fem_time_IO, fem_ucd)
 
       !write(*,*) '-----test-----'
       !write(*,*) 'number of node: ', fem_ucd%nnod

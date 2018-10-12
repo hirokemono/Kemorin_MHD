@@ -25,6 +25,7 @@
       use t_time_data
       use t_field_data_IO
       use t_control_data_4_merge
+      use t_control_param_assemble
 !
       use field_IO_select
 !
@@ -35,6 +36,7 @@
       type(phys_data), save :: new_fld
 !
       type(control_data_4_merge), save :: mgd_ctl_u
+      type(control_param_assemble), save :: asbl_param_u
       type(time_data), save :: t_IO_m
       type(field_IO), save :: fld_IO_m
 !
@@ -70,17 +72,13 @@
 !   read control data
 !
       call read_control_4_merge(mgd_ctl_u)
-      call set_control_4_merge(mgd_ctl_u, ndomain_org)
+      call set_control_4_merge(mgd_ctl_u, asbl_param_u, ndomain_org)
+      call set_assemble_step_4_ucd(mgd_ctl_u%t_mge_ctl, asbl_param_u)
       if(ndomain_org .ne. nprocs) then
         write(e_message,'(a)')                                          &
      &     'No. of processes and targed sub domain shold be the same.'
         call calypso_mpi_abort(ierr_mesh, e_message)
       end if
-!
-!
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &          'istep_start, istep_end, increment_step',               &
-     &           istep_start, istep_end, increment_step
 !
 !  set mesh data
 !
@@ -100,8 +98,9 @@
 !
 !   read field name and number of components
 !
-      call sel_read_alloc_step_FEM_file(nprocs, my_rank,                &
-     &    istep_start, original_ucd_param, t_IO_m, fld_IO_m)
+      call sel_read_alloc_step_FEM_file                                 &
+     &   (nprocs, my_rank, asbl_param_u%istep_start,                    &
+     &    original_ucd_param, t_IO_m, fld_IO_m)
 !
       call init_field_name_4_assemble_ucd(num_nod_phys, ucd_on_label,   &
      &    fld_IO_m, new_fld)
@@ -149,7 +148,8 @@
       if(iflag_debug .gt. .0) write(*,*) 'sel_write_parallel_ucd_mesh'
       call sel_write_parallel_ucd_mesh(assemble_ucd_param, ucd_m, mucd_m)
 !
-      do istep = istep_start, istep_end, increment_step
+      do istep = asbl_param_u%istep_start, asbl_param_u%istep_end,      &
+     &          asbl_param_u%increment_step
         call sel_read_alloc_step_FEM_file(nprocs, my_rank,              &
      &      istep, original_ucd_param, t_IO_m, fld_IO_m)
 !
