@@ -68,7 +68,7 @@
 !  set mesh data
 !
       call mpi_input_mesh                                               &
-     &   (merge_org_mesh_file, nprocs, fem_m, e_mesh_m)
+     &   (asbl_param_m%org_mesh_file, nprocs, fem_m, e_mesh_m)
       call set_nod_and_ele_infos(fem_m%mesh%node, fem_m%mesh%ele)
       call const_global_numnod_list(fem_m%mesh%node)
       call const_global_numele_list(fem_m%mesh%ele)
@@ -108,9 +108,9 @@
       call s_const_internal_mesh_data                                   &
      &   (fem_m%mesh, fem_m%group, new_mesh, new_group)
 !
-      merged_mesh_file%iflag_format = iflag_single
+      asbl_param_m%new_mesh_file%iflag_format = iflag_single
       call mpi_write_merged_mesh_file(nprocs, my_rank,                  &
-     &    merged_mesh_file, new_mesh, new_group, dbl_nod)
+     &    asbl_param_m%new_mesh_file, new_mesh, new_group, dbl_nod)
       call dealloc_mesh_geometry_base(new_mesh)
       call dealloc_groups_data(new_group)
 !

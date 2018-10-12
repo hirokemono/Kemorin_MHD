@@ -73,16 +73,18 @@
 !
       call read_control_4_merge(mgd_ctl_u)
       call set_control_4_merge(mgd_ctl_u, asbl_param_u, ndomain_org)
+      call set_assemble_ucd_file_param                                  &
+     &   (mgd_ctl_u%source_plt, mgd_ctl_u%assemble_plt, asbl_param_u)
       call set_assemble_step_4_ucd(mgd_ctl_u%t_mge_ctl, asbl_param_u)
       if(ndomain_org .ne. nprocs) then
         write(e_message,'(a)')                                          &
-     &     'No. of processes and targed sub domain shold be the same.'
+     &     'No. of processes and original subdomain should be the same.'
         call calypso_mpi_abort(ierr_mesh, e_message)
       end if
 !
 !  set mesh data
 !
-      call mpi_input_mesh_geometry(merge_org_mesh_file, nprocs,         &
+      call mpi_input_mesh_geometry(asbl_param_u%org_mesh_file, nprocs,  &
      &    mesh_m, nnod_4_surf, nnod_4_edge)
       call set_nod_and_ele_infos(mesh_m%node, mesh_m%ele)
       call const_global_numnod_list(mesh_m%node)
@@ -100,7 +102,7 @@
 !
       call sel_read_alloc_step_FEM_file                                 &
      &   (nprocs, my_rank, asbl_param_u%istep_start,                    &
-     &    original_ucd_param, t_IO_m, fld_IO_m)
+     &    asbl_param_u%org_fld_file, t_IO_m, fld_IO_m)
 !
       call init_field_name_4_assemble_ucd(num_nod_phys, ucd_on_label,   &
      &    fld_IO_m, new_fld)
@@ -136,22 +138,23 @@
       call link_local_mesh_2_ucd(mesh_m%node, mesh_m%ele, ucd_m)
       call link_field_data_to_ucd(new_fld, ucd_m)
 !
-      if(assemble_ucd_param%iflag_format/icent .ne. iflag_single/icent) &
-     & then
-        assemble_ucd_param%iflag_format                                 &
-     &       = assemble_ucd_param%iflag_format + 100
+      if(asbl_param_u%new_fld_file%iflag_format/icent                   &
+     &      .ne. iflag_single/icent) then
+        asbl_param_u%new_fld_file%iflag_format                          &
+     &       = asbl_param_u%new_fld_file%iflag_format + 100
       end if
 !
-      call init_merged_ucd(assemble_ucd_param%iflag_format,             &
+      call init_merged_ucd(asbl_param_u%new_fld_file%iflag_format,      &
      &    mesh_m%node, mesh_m%ele, mesh_m%nod_comm, ucd_m, mucd_m)
 !
       if(iflag_debug .gt. .0) write(*,*) 'sel_write_parallel_ucd_mesh'
-      call sel_write_parallel_ucd_mesh(assemble_ucd_param, ucd_m, mucd_m)
+      call sel_write_parallel_ucd_mesh                                  &
+     &   (asbl_param_u%new_fld_file, ucd_m, mucd_m)
 !
       do istep = asbl_param_u%istep_start, asbl_param_u%istep_end,      &
      &          asbl_param_u%increment_step
         call sel_read_alloc_step_FEM_file(nprocs, my_rank,              &
-     &      istep, original_ucd_param, t_IO_m, fld_IO_m)
+     &      istep, asbl_param_u%org_fld_file, t_IO_m, fld_IO_m)
 !
         call copy_field_data_from_restart                               &
      &     (mesh_m%node, fld_IO_m, new_fld)
@@ -161,7 +164,7 @@
         call nod_fields_send_recv(mesh_m, new_fld)
 !
         call sel_write_parallel_ucd_file                                &
-     &     (istep, assemble_ucd_param, t_IO_m, ucd_m, mucd_m)
+     &     (istep, asbl_param_u%new_fld_file, t_IO_m, ucd_m, mucd_m)
       end do
 !
       call calypso_MPI_barrier

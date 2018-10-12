@@ -22,30 +22,9 @@
       implicit    none
 !
 !
-      type(field_IO_params), save :: merge_org_mesh_file
-      type(field_IO_params), save :: merged_mesh_file
-!
-      type(field_IO_params), save :: org_fst_param
-      type(field_IO_params), save :: new_fst_param
-!
-      type(field_IO_params), save :: original_ucd_param
-      type(field_IO_params), save :: assemble_ucd_param
-!
       integer(kind=kint ) :: num_nod_phys
-!
       character(len=kchara), dimension(:), allocatable :: ucd_on_label
 !       setting for merged data
-!
-      character(len=kchara), parameter                                  &
-     &      :: def_new_udt_head = 'field_new/out'
-!
-      character(len=kchara), parameter                                  &
-     &                      :: org_rst_def_head =   "restart/rst"
-      character(len=kchara), parameter                                  &
-     &                      :: new_rst_def_head =   "rst_new/rst"
-!
-      private :: def_new_udt_head
-      private :: org_rst_def_head, new_rst_def_head
 !
       private :: allocate_control_4_merge
 !
@@ -102,13 +81,7 @@
       end if
 !
       call set_control_mesh_def                                         &
-     &   (mgd_ctl%source_plt, merge_org_mesh_file)
-!
-      call set_merged_ucd_file_define                                   &
-     &   (mgd_ctl%source_plt, original_ucd_param)
-      call set_merged_ucd_file_ctl                                      &
-     &   (def_new_udt_head, mgd_ctl%assemble_plt%field_file_prefix,     &
-     &    mgd_ctl%assemble_plt%field_file_fmt_ctl, assemble_ucd_param)
+     &   (mgd_ctl%source_plt, asbl_param%org_mesh_file)
 !
 !
        num_nod_phys = 0
@@ -164,12 +137,8 @@
       call set_control_4_newudt(nprocs, mgd_ctl, asbl_param, ierr)
       if(ierr .gt. 0) return
 !
-      call set_parallel_file_ctl_params(org_rst_def_head,               &
-     &    mgd_ctl%source_plt%restart_file_prefix,                       &
-     &    mgd_ctl%source_plt%restart_file_fmt_ctl, org_fst_param)
-      call set_parallel_file_ctl_params(new_rst_def_head,               &
-     &    mgd_ctl%assemble_plt%restart_file_prefix,                     &
-     &    mgd_ctl%assemble_plt%restart_file_fmt_ctl, new_fst_param)
+      call set_assemble_rst_file_param                            &
+     &   (mgd_ctl%source_plt, mgd_ctl%assemble_plt, asbl_param)
 !
       call set_magnetic_ratio_4_assemble                                &
      &   (mgd_ctl%magnetic_ratio_ctl, asbl_param)
@@ -194,8 +163,6 @@
       type(control_param_assemble), intent(inout) :: asbl_param
       integer(kind = kint), intent(inout) :: ierr
 !
-      character(len = kchara) :: tmpchara
-!
 !
       ierr = 0
       if(mgd_ctl%assemble_plt%ndomain_ctl%iflag .eq. 0) then
@@ -208,8 +175,10 @@
         return
       end if
 !
-      call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, mgd_ctl%assemble_plt, merged_mesh_file)
+      call set_control_mesh_file_def(def_new_mesh_head,                 &
+     &    mgd_ctl%assemble_plt, asbl_param%new_mesh_file)
+      call set_assemble_ucd_file_param                                  &
+     &   (mgd_ctl%source_plt, mgd_ctl%assemble_plt, asbl_param)
 !
       call set_delete_flag_4_assemble(mgd_ctl%assemble_plt, asbl_param)
 !

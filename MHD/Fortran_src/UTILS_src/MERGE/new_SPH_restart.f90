@@ -11,11 +11,9 @@
 !!      subroutine dealloc_sph_mesh_4_merge
 !!
 !!      subroutine set_local_rj_mesh_4_merge                            &
-!!     &         (my_rank, sph, sph_comms, sph_grps)
-!!        integer(kind = kint), intent(in) :: my_rank
-!!        type(sph_grids), intent(inout) ::       sph
-!!        type(sph_comm_tables), intent(inout) :: sph_comms
-!!        type(sph_group_data), intent(inout) ::  sph_grps
+!!     &         (sph_mesh_file, nprocs_in, sph_mesh)
+!!        type(field_IO_params), intent(in) :: sph_mesh_file
+!!        type(sph_mesh_data), intent(inout) :: sph_mesh(nprocs_in)
 !!      subroutine load_field_name_assemble_sph(istep_start, np_sph_org,&
 !!     &          org_fst_param, org_phys, new_phys, t_IO)
 !!      subroutine load_org_sph_data(irank, istep, np_sph_org,          &
@@ -56,14 +54,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_local_rj_mesh_4_merge                              &
-     &         (file_prefix, nprocs_in, sph_mesh)
+     &         (sph_mesh_file, nprocs_in, sph_mesh)
 !
       use sph_file_MPI_IO_select
       use sph_file_IO_select
       use load_data_for_sph_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
       integer(kind = kint), intent(in) ::  nprocs_in
+      type(field_IO_params), intent(in) :: sph_mesh_file
       type(sph_mesh_data), intent(inout) :: sph_mesh(nprocs_in)
 !
       type(sph_file_data_type) :: sph_file
@@ -71,7 +69,8 @@
       integer(kind = kint) :: iloop, ip, ierr
 !
 !
-      sph_file_head = file_prefix
+      sph_file_head = sph_mesh_file%file_prefix
+      iflag_sph_file_fmt = sph_mesh_file%iflag_format
       do iloop = 0, (nprocs_in-1) / nprocs
         id_rank = my_rank + iloop * nprocs
         ip = id_rank + 1

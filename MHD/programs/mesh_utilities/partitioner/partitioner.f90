@@ -114,7 +114,7 @@
 !     &   (sec_mesh1%num_pe2, mgd_ctl5, asbl_param_p, ierr_MPI)
 
       call sel_read_udt_param(izero, asbl_param_p%istep_start,          &
-     &    original_ucd_param, fem_time_IO, fem_ucd)
+     &    asbl_param_p%org_fld_file, fem_time_IO, fem_ucd)
 
       !write(*,*) '-----test-----'
       !write(*,*) 'number of node: ', fem_ucd%nnod

@@ -91,8 +91,8 @@
 !
 !  set new mesh data
 !
-      call mpi_input_mesh_geometry                                      &
-     &   (merged_mesh_file, nprocs, new_mesh, nnod_4_surf, nnod_4_edge)
+      call mpi_input_mesh_geometry(asbl_param_u%new_mesh_file,          &
+     &    nprocs, new_mesh, nnod_4_surf, nnod_4_edge)
       call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
       call const_global_numnod_list(new_mesh%node)
       call const_global_numele_list(new_mesh%ele)
@@ -110,7 +110,7 @@
 !
       allocate( org_mesh(ndomain_org) )
       call load_local_node_4_merge                                      &
-     &   (merge_org_mesh_file, ndomain_org, org_mesh)
+     &   (asbl_param_u%org_mesh_file, ndomain_org, org_mesh)
 !
       call s_search_original_domain_node(ndomain_org, org_mesh,         &
      &    new_mesh%node, asbl_comm_u)
@@ -119,7 +119,7 @@
 !
       call sel_read_alloc_step_FEM_file                                 &
      &   (ndomain_org, izero,  asbl_param_u%istep_start,                &
-     &    original_ucd_param, t_IO_m, fld_IO_m)
+     &    asbl_param_u%org_fld_file, t_IO_m, fld_IO_m)
 !
       if(my_rank .eq. 0) then
         call init_field_name_4_assemble_ucd(num_nod_phys, ucd_on_label, &
@@ -167,20 +167,21 @@
 !
       allocate(org_fIO(ndomain_org))
 !
-      if(assemble_ucd_param%iflag_format/icent .eq. iflag_single/icent) &
-     & then
-        call init_merged_ucd(assemble_ucd_param%iflag_format,           &
+      if(asbl_param_u%new_fld_file%iflag_format/icent                   &
+     &       .eq. iflag_single/icent) then
+        call init_merged_ucd(asbl_param_u%new_fld_file%iflag_format,    &
      &      new_mesh%node, new_mesh%ele, new_mesh%nod_comm,             &
      &     ucd_m, mucd_m)
       end if
 !
       if(iflag_debug .gt. .0) write(*,*) 'sel_write_parallel_ucd_mesh'
-      call sel_write_parallel_ucd_mesh(assemble_ucd_param, ucd_m, mucd_m)
+      call sel_write_parallel_ucd_mesh                                  &
+     &   (asbl_param_u%new_fld_file, ucd_m, mucd_m)
 !
       do istep = asbl_param_u%istep_start, asbl_param_u%istep_end,      &
      &          asbl_param_u%increment_step
-        call load_local_FEM_field_4_merge(istep, original_ucd_param,    &
-     &      ndomain_org, t_IO_m, org_fIO)
+        call load_local_FEM_field_4_merge(istep,                        &
+     &      asbl_param_u%org_fld_file,  ndomain_org, t_IO_m, org_fIO)
 !
         call assemble_field_data                                        &
      &     (ndomain_org, asbl_comm_u, new_fld, t_IO_m, org_fIO)
@@ -188,7 +189,7 @@
         call nod_fields_send_recv(new_mesh, new_fld)
 !
         call sel_write_parallel_ucd_file                                &
-     &     (istep, assemble_ucd_param, t_IO_m, ucd_m, mucd_m)
+     &     (istep, asbl_param_u%new_fld_file, t_IO_m, ucd_m, mucd_m)
       end do
       call dealloc_comm_table_4_assemble(asbl_comm_u)
 !
@@ -199,7 +200,7 @@
           icou = icou + 1
           if(mod(icou,nprocs) .ne. my_rank) cycle
           call delete_FEM_fld_file                                      &
-     &        (original_ucd_param, ndomain_org, istep)
+     &       (asbl_param_u%org_fld_file, ndomain_org, istep)
         end do
       end if
 !

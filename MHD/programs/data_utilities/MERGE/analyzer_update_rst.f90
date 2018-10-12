@@ -95,8 +95,8 @@
 !
 !  set new mesh data
 !
-      call mpi_input_mesh_geometry                                      &
-     &   (merged_mesh_file, nprocs, new_mesh, nnod_4_surf, nnod_4_edge)
+      call mpi_input_mesh_geometry(asbl_param_f%new_mesh_file,          &
+     &    nprocs, new_mesh, nnod_4_surf, nnod_4_edge)
       call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
       call const_global_numnod_list(new_mesh%node)
       call const_global_numele_list(new_mesh%ele)
@@ -114,7 +114,7 @@
 !
       allocate( org_mesh(ndomain_org) )
       call load_local_node_4_merge                                      &
-     &   (merge_org_mesh_file, ndomain_org, org_mesh)
+     &   (asbl_param_f%org_mesh_file, ndomain_org, org_mesh)
 !
       call s_search_original_domain_node(ndomain_org, org_mesh,         &
      &    new_mesh%node, asbl_comm_f)
@@ -123,7 +123,7 @@
 !
       if(my_rank .eq. 0) then
         call sel_read_rst_comps                                         &
-     &     (izero, asbl_param_f%istep_start, org_fst_param,             &
+     &     (izero, asbl_param_f%istep_start, asbl_param_f%org_fld_file, &
      &      t_IO_m, fld_IO_m)
         call init_field_name_by_restart(fld_IO_m, new_fld)
 !
@@ -161,8 +161,8 @@
 !
       do istep = asbl_param_f%istep_start, asbl_param_f%istep_end,      &
      &          asbl_param_f%increment_step
-        call load_old_FEM_restart_4_merge(istep, org_fst_param,         &
-     &      ndomain_org, t_IO_m, org_fIO)
+        call load_old_FEM_restart_4_merge(istep,                        &
+     &      asbl_param_f%org_fld_file, ndomain_org, t_IO_m, org_fIO)
 !
         call assemble_field_data                                        &
      &     (ndomain_org, asbl_comm_f, new_fld, t_IO_m, org_fIO)
@@ -175,7 +175,8 @@
         call simple_copy_fld_data_to_rst                                &
      &     (new_mesh%node, new_fld, new_fIO)
         call sel_write_step_FEM_field_file                              &
-     &     (nprocs, my_rank, istep, new_fst_param, t_IO_m, new_fIO)
+     &     (nprocs, my_rank, istep, asbl_param_f%new_fld_file,          &
+     &      t_IO_m, new_fIO)
       end do
       call dealloc_comm_table_4_assemble(asbl_comm_f)
 !
@@ -186,7 +187,7 @@
           icou = icou + 1
           if(mod(icou,nprocs) .ne. my_rank) cycle
           call delete_FEM_fld_file                                      &
-     &        (org_fst_param, ndomain_org, istep)
+     &        (asbl_param_f%org_fld_file, ndomain_org, istep)
         end do
       end if
 !

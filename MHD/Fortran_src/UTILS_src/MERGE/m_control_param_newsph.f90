@@ -20,20 +20,16 @@
       integer(kind = kint) :: np_sph_org
       integer(kind = kint) :: np_sph_new
 !
-      type(field_IO_params), save :: org_sph_fst_param
-      type(field_IO_params), save :: new_sph_fst_param
-!
-      character(len=kchara) :: org_sph_head = 'mesh_org/in_rj'
-      character(len=kchara) :: new_sph_head = 'mesh_new/in_rj'
-!
-      integer(kind=kint ) :: ifmt_org_sph_file =      0
-      integer(kind=kint ) :: ifmt_new_sph_file =      0
+      character(len=kchara), parameter, private                         &
+     &         :: def_org_sph_head = 'mesh_org/in_rj'
+      character(len=kchara), parameter, private                         &
+     &         :: def_new_sph_head = 'mesh_new/in_rj'
 !
 !>      File prefix for new restart data
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: def_org_sph_fst = "restart/rst"
 !>      File prefix for new restart data
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: def_new_sph_fst = "rst_new/rst"
 !
 !------------------------------------------------------------------
@@ -68,28 +64,28 @@
       call MPI_Bcast(asbl_param%increment_step, ione, CALYPSO_INTEGER,  &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(org_sph_head, kchara, CALYPSO_CHARACTER,           &
+      call MPI_Bcast(asbl_param%org_mesh_file%file_prefix, kchara, CALYPSO_CHARACTER,           &
      &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(new_sph_head ,kchara, CALYPSO_CHARACTER,           &
-     &               izero, CALYPSO_COMM, ierr_MPI)
-!
-      call MPI_Bcast(ifmt_org_sph_file, ione, CALYPSO_INTEGER,          &
-     &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ifmt_new_sph_file, ione, CALYPSO_INTEGER,          &
+      call MPI_Bcast(asbl_param%new_mesh_file%file_prefix ,kchara, CALYPSO_CHARACTER,           &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(org_sph_fst_param%file_prefix, kchara,             &
+      call MPI_Bcast(asbl_param%org_mesh_file%iflag_format, ione, CALYPSO_INTEGER,          &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(asbl_param%new_mesh_file%iflag_format, ione, CALYPSO_INTEGER,          &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+!
+      call MPI_Bcast(asbl_param%org_fld_file%file_prefix, kchara,             &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(org_sph_fst_param%iflag_IO ,ione,                  &
+      call MPI_Bcast(asbl_param%org_fld_file%iflag_IO ,ione,                  &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(org_sph_fst_param%iflag_format, ione,              &
+      call MPI_Bcast(asbl_param%org_fld_file%iflag_format, ione,              &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(new_sph_fst_param%file_prefix, kchara,             &
+      call MPI_Bcast(asbl_param%new_fld_file%file_prefix, kchara,     &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(new_sph_fst_param%iflag_IO ,ione,                  &
+      call MPI_Bcast(asbl_param%new_fld_file%iflag_IO ,ione,          &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(new_sph_fst_param%iflag_format, ione,              &
+      call MPI_Bcast(asbl_param%new_fld_file%iflag_format, ione,              &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
       call MPI_Bcast(asbl_param%iflag_delete_org, ione,                 &
@@ -112,7 +108,6 @@
 !
       type(control_data_4_merge), intent(in) :: mgd_ctl
       type(control_param_assemble), intent(inout) :: asbl_param
-      character(len = kchara) :: tmpchara
 !
 !
       if (mgd_ctl%source_plt%ndomain_ctl%iflag .gt. 0) then
@@ -129,32 +124,24 @@
         stop
       end if
 !
-      if(mgd_ctl%source_plt%sph_file_prefix%iflag .gt. 0) then
-        org_sph_head = mgd_ctl%source_plt%sph_file_prefix%charavalue
-      end if
-      if (mgd_ctl%assemble_plt%sph_file_prefix%iflag .gt. 0) then
-        new_sph_head = mgd_ctl%assemble_plt%sph_file_prefix%charavalue
-      end if
-!
-      ifmt_org_sph_file                                                 &
-     &    = choose_para_file_format                                     &
-     &    (mgd_ctl%source_plt%sph_file_fmt_ctl)
-      ifmt_new_sph_file = choose_para_file_format                       &
-     &                (mgd_ctl%assemble_plt%sph_file_fmt_ctl)
+      call set_parallel_file_ctl_params(def_org_sph_head,               &
+     &    mgd_ctl%source_plt%sph_file_prefix,                           &
+     &    mgd_ctl%source_plt%sph_file_fmt_ctl,                          &
+     &    asbl_param%org_mesh_file)
+      call set_parallel_file_ctl_params(def_new_sph_head,               &
+     &    mgd_ctl%assemble_plt%sph_file_prefix,                         &
+     &    mgd_ctl%assemble_plt%sph_file_fmt_ctl,                        &
+     &    asbl_param%new_mesh_file)
 !
 !
-      call set_parallel_file_ctl_params(def_org_sph_fst,                &
-     &    mgd_ctl%source_plt%restart_file_prefix,                       &
-     &    mgd_ctl%source_plt%restart_file_fmt_ctl, org_sph_fst_param)
-      call set_parallel_file_ctl_params(def_new_sph_fst,                &
-     &    mgd_ctl%assemble_plt%restart_file_prefix,                     &
-     &    mgd_ctl%assemble_plt%restart_file_fmt_ctl, new_sph_fst_param)
+      call set_assemble_rst_file_param                                  &
+     &   (mgd_ctl%source_plt, mgd_ctl%assemble_plt, asbl_param)
 !
 !
-      if((new_sph_fst_param%iflag_format/iflag_single) .gt. 0           &
+      if((asbl_param%new_fld_file%iflag_format/iflag_single) .gt. 0     &
      &     .and. np_sph_new .ne. nprocs) then
-        new_sph_fst_param%iflag_format                                  &
-     &            = new_sph_fst_param%iflag_format - iflag_single
+        asbl_param%new_fld_file%iflag_format                            &
+     &            = asbl_param%new_fld_file%iflag_format - iflag_single
         write(*,*) 'Turn off Merged data IO ',                          &
      &             'when number of MPI prosesses is not ',              &
      &             'the number of target subdomains.'
