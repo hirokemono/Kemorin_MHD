@@ -23,11 +23,13 @@
       use t_mesh_data
       use t_calypso_mpi_IO_param
       use t_control_data_4_merge
+      use t_control_param_assemble
       use mpi_load_mesh_data
 !
       implicit none
 !
       type(control_data_4_merge), save :: mgd_ctl_m
+      type(control_param_assemble), save :: asbl_param_m
       integer(kind = kint), save :: ndomain_org
       type(mesh_data), save :: fem_m
       type(element_geometry), save :: e_mesh_m
@@ -60,8 +62,8 @@
 !
       call read_control_4_merge(mgd_ctl_m)
       call set_control_4_merge(mgd_ctl_m, ndomain_org)
-      ierr_MPI = set_control_4_newudt(mgd_ctl_m, nprocs)
-!
+      call set_control_4_newudt                                         &
+     &   (nprocs, mgd_ctl_m, asbl_param_m, ierr_MPI)
 !
 !  set mesh data
 !

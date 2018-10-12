@@ -7,10 +7,10 @@
 !!      subroutine set_control_4_merge(mgd_ctl, num_pe)
 !!      subroutine set_control_4_newrst                                 &
 !!     &         (nprocs, mgd_ctl, asbl_param, ierr)
-!!        type(control_param_assemble), intent(inout) :: asbl_param
-!!      integer(kind = kint) function                                   &
-!!     &                    set_control_4_newudt(mgd_ctl, nprocs)
+!!      subroutine set_control_4_newudt                                 &
+!!     &         (nprocs, mgd_ctl, asbl_param, ierr)
 !!        type(control_data_4_merge), intent(in) :: mgd_ctl
+!!        type(control_param_assemble), intent(inout) :: asbl_param
 !
       module m_control_param_merge
 !
@@ -45,8 +45,6 @@
      &                      :: org_rst_def_head =   "restart/rst"
       character(len=kchara), parameter                                  &
      &                      :: new_rst_def_head =   "rst_new/rst"
-!
-      integer(kind=kint ) :: iflag_delete_org = 0
 !
       private :: def_new_udt_head
       private :: org_rst_def_head, new_rst_def_head
@@ -172,11 +170,8 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      ierr = 0
-      if(set_control_4_newudt(mgd_ctl, nprocs) .gt. 0) then
-        ierr = 1
-        return
-      end if
+      call set_control_4_newudt(nprocs, mgd_ctl, asbl_param, ierr)
+      if(ierr .gt. 0) return
 !
       call set_parallel_file_ctl_params(org_rst_def_head,               &
      &    mgd_ctl%source_plt%restart_file_prefix,                       &
@@ -197,8 +192,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function                                     &
-     &                    set_control_4_newudt(mgd_ctl, nprocs)
+      subroutine set_control_4_newudt                                   &
+     &         (nprocs, mgd_ctl, asbl_param, ierr)
 !
       use t_control_data_4_merge
       use m_file_format_switch
@@ -206,31 +201,31 @@
       use skip_comment_f
       use set_control_platform_data
 !
-      type(control_data_4_merge), intent(in) :: mgd_ctl
       integer(kind = kint), intent(in) :: nprocs
+      type(control_data_4_merge), intent(in) :: mgd_ctl
+      type(control_param_assemble), intent(inout) :: asbl_param
+      integer(kind = kint), intent(inout) :: ierr
+!
       character(len = kchara) :: tmpchara
 !
 !
-      set_control_4_newudt = 0
+      ierr = 0
       if(mgd_ctl%assemble_plt%ndomain_ctl%iflag .eq. 0) then
         write(*,*) 'Set number of subdomains for new grid'
-        set_control_4_newudt = 1
+        ierr = 1
         return
       end if
       if(mgd_ctl%assemble_plt%ndomain_ctl%intvalue .ne. nprocs) then
-        set_control_4_newudt = 1
+        ierr = 1
         return
       end if
 !
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, mgd_ctl%assemble_plt, merged_mesh_file)
 !
-      if(mgd_ctl%assemble_plt%del_org_data_ctl%iflag .gt. 0) then
-        tmpchara = mgd_ctl%assemble_plt%del_org_data_ctl%charavalue
-        if(yes_flag(tmpchara)) iflag_delete_org = 1
-      end if
+      call set_delete_flag_4_assemble(mgd_ctl%assemble_plt, asbl_param)
 !
-      end function set_control_4_newudt
+      end subroutine set_control_4_newudt
 !
 ! -----------------------------------------------------------------------
 !

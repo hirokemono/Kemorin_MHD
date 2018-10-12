@@ -41,7 +41,8 @@
         real(kind = kreal) :: time_new
 !
 !>        Re-scaling of magnetic field
-        real(kind = kreal) :: b_ratio
+        real(kind = kreal) :: b_ratio = 1.0d0
+!
 !>        Flag to delete original data
         integer(kind=kint ) :: iflag_delete_org =   0
       end type control_param_assemble

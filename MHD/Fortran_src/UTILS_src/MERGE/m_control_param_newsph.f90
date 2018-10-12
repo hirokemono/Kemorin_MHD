@@ -42,8 +42,6 @@
       character(len=kchara), parameter                                  &
      &                    :: def_new_sph_fst = "rst_new/rst"
 !
-      integer(kind=kint ) :: iflag_delete_org_sph =   0
-!
       private :: set_control_original_step, sset_control_new_step
 !
 !------------------------------------------------------------------
@@ -102,11 +100,11 @@
       call MPI_Bcast(new_sph_fst_param%iflag_format, ione,              &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(iflag_delete_org_sph, ione, CALYPSO_INTEGER,       &
-     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(asbl_param%iflag_delete_org, ione,                 &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(asbl_param%b_ratio ,ione, CALYPSO_REAL,            &
-     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(asbl_param%b_ratio ,ione,                          &
+     &               CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_param_newsph
 !
@@ -170,10 +168,7 @@
      &             'the number of target subdomains.'
       end if
 !
-      if(mgd_ctl%assemble_plt%del_org_data_ctl%iflag .gt. 0) then
-        tmpchara = mgd_ctl%assemble_plt%del_org_data_ctl%charavalue
-        if(yes_flag(tmpchara)) iflag_delete_org_sph = 1
-      end if
+      call set_delete_flag_4_assemble(mgd_ctl%assemble_plt, asbl_param)
 !
       call set_magnetic_ratio_4_assemble                                &
      &   (mgd_ctl%magnetic_ratio_ctl, asbl_param)

@@ -228,7 +228,7 @@
 !
       call calypso_MPI_barrier
 !
-      if(iflag_delete_org_sph .gt. 0) then
+      if(asbl_param_s%iflag_delete_org .gt. 0) then
         icou = 0
         do istep = istep_start, istep_end, increment_step
           icou = icou + 1

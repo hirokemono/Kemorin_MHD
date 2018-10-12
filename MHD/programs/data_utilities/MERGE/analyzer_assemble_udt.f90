@@ -25,6 +25,7 @@
       use t_time_data
       use t_field_data_IO
       use t_control_data_4_merge
+      use t_control_param_assemble
       use t_comm_table_4_assemble
 !
       use field_IO_select
@@ -36,6 +37,7 @@
       type(mesh_geometry), save :: new_mesh
       type(phys_data), save :: new_fld
       type(control_data_4_merge), save :: mgd_ctl_u
+      type(control_param_assemble), save :: asbl_param_u
       type(comm_table_4_assemble), save :: asbl_comm_u
 !
       type(time_data), save :: t_IO_m
@@ -79,7 +81,9 @@
       call read_control_4_merge(mgd_ctl_u)
 !
       call set_control_4_merge(mgd_ctl_u, ndomain_org)
-      if(set_control_4_newudt(mgd_ctl_u, nprocs) .gt. 0) then
+      call set_control_4_newudt                                         &
+     &   (nprocs, mgd_ctl_u, asbl_param_u, ierr_MPI)
+      if(ierr_MPI .gt. 0) then
         write(e_message,'(a)')                                          &
      &     'No. of processes and targed sub domain shold be the same.'
         call calypso_mpi_abort(ierr_mesh, e_message)
@@ -191,7 +195,7 @@
       end do
       call dealloc_comm_table_4_assemble(asbl_comm_u)
 !
-      if(iflag_delete_org .gt. 0) then
+      if(asbl_param_u%iflag_delete_org .gt. 0) then
         icou = 0
         do istep = istep_start, istep_end, increment_step
           icou = icou + 1

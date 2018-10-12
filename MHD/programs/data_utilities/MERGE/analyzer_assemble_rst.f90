@@ -182,7 +182,7 @@
       end do
       call dealloc_comm_table_4_assemble(asbl_comm_f)
 !
-      if(iflag_delete_org .gt. 0) then
+      if(asbl_param_f%iflag_delete_org .gt. 0) then
         icou = 0
         do istep = istep_start, istep_end, increment_step
           icou = icou + 1

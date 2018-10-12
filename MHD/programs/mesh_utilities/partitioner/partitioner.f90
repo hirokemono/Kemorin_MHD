@@ -20,6 +20,7 @@
       use m_domain_group_4_partition
 !
       use t_control_data_4_merge
+      use t_control_param_assemble
 !      use m_original_ucd_4_merge
 !      use m_geometry_data_4_merge
       use m_control_param_merge
@@ -50,6 +51,7 @@
 !
       type(control_data_4_partitioner), save :: part_ctl1
       type(control_data_4_merge), save :: mgd_ctl_p
+!      type(control_param_assemble), save :: asbl_param_p
 !
       type(mesh_data), save :: org_fem
       type(element_geometry), save :: org_ele_mesh
@@ -107,7 +109,8 @@
       write(*,*) 'read control_merge'
       call read_control_4_merge(mgd_ctl_p)
       call set_control_4_merge(mgd_ctl_p, num_pe)
-!      call set_control_4_newudt(mgd_ctl5, sec_mesh1%num_pe2)
+!      call set_control_4_newudt                                        &
+!     &   (sec_mesh1%num_pe2, mgd_ctl5, asbl_param_p, ierr_MPI)
 
       call sel_read_udt_param(izero, istep_start, original_ucd_param,   &
      &    fem_time_IO, fem_ucd)
