@@ -7,8 +7,10 @@
 !>@brief  Assemble nodal field data
 !!
 !!@verbatim
+!!      subroutine alloc_assemble_field_list(asbl_tbl)
+!!      subroutine dealloc_assemble_field_list(asbl_tbl)
 !!      subroutine init_field_name_4_assemble_ucd                       &
-!!     &         (nfld_label, ucd_on_label, fld_IO, fld)
+!!     &         (asbl_tbl, fld_IO, fld)
 !!
 !!      subroutine assemble_field_data                                  &
 !!     &         (nprocs_org, asbl_comm, new_fld, t_IO, org_fIO)
@@ -29,6 +31,11 @@
 !
       implicit none
 !
+      type assemble_field_list
+        integer(kind=kint ) :: nfld_label
+        character(len=kchara), allocatable :: ucd_on_label(:)
+      end type assemble_field_list
+!
       private :: count_fields_4_assemble_ucd
       private :: set_field_name_4_assemble_ucd
       private :: copy_field_data_4_assemble
@@ -39,14 +46,35 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine alloc_assemble_field_list(asbl_tbl)
+!
+      type(assemble_field_list), intent(inout) :: asbl_tbl
+!
+!
+       allocate ( asbl_tbl%ucd_on_label(asbl_tbl%nfld_label) )
+!
+      end subroutine alloc_assemble_field_list
+!
+!------------------------------------------------------------------
+!
+      subroutine dealloc_assemble_field_list(asbl_tbl)
+!
+      type(assemble_field_list), intent(inout) :: asbl_tbl
+!
+       deallocate ( asbl_tbl%ucd_on_label )
+!
+      end subroutine dealloc_assemble_field_list
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
       subroutine init_field_name_4_assemble_ucd                         &
-     &         (nfld_label, ucd_on_label, fld_IO, fld)
+     &         (asbl_tbl, fld_IO, fld)
 !
       use cal_minmax_and_stacks
 !
       type(field_IO), intent(in) :: fld_IO
-      integer(kind = kint), intent(in) :: nfld_label
-      character(len=kchara), intent(in) :: ucd_on_label(nfld_label)
+      type(assemble_field_list), intent(in) :: asbl_tbl
 !
       type(phys_data), intent(inout) :: fld
 !
@@ -60,11 +88,12 @@
       end if
 !
       call count_fields_4_assemble_ucd                                  &
-     &   (nfld_label, ucd_on_label, fld_IO, fld%num_phys)
+     &   (asbl_tbl%nfld_label, asbl_tbl%ucd_on_label,                   &
+     &    fld_IO, fld%num_phys)
       call alloc_phys_name_type(fld)
 !
       call set_field_name_4_assemble_ucd                                &
-     &   (nfld_label, ucd_on_label, fld_IO, fld)
+     &   (asbl_tbl%nfld_label, asbl_tbl%ucd_on_label, fld_IO, fld)
       call s_cal_total_and_stacks(fld%num_phys, fld%num_component,      &
      &   izero, fld%istack_component, fld%ntot_phys)
       fld%num_phys_viz = fld%num_phys

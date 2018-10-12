@@ -40,6 +40,8 @@
 !
       subroutine bcast_ctl_param_newsph(asbl_param)
 !
+      use bcast_file_IO_parameter
+!
       type(control_param_assemble), intent(inout) :: asbl_param
 !
 !
@@ -64,29 +66,11 @@
       call MPI_Bcast(asbl_param%increment_step, ione, CALYPSO_INTEGER,  &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(asbl_param%org_mesh_file%file_prefix, kchara, CALYPSO_CHARACTER,           &
-     &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(asbl_param%new_mesh_file%file_prefix ,kchara, CALYPSO_CHARACTER,           &
-     &               izero, CALYPSO_COMM, ierr_MPI)
+      call bcast_field_IO_parameter(asbl_param%org_mesh_file)
+      call bcast_field_IO_parameter(asbl_param%new_mesh_file)
 !
-      call MPI_Bcast(asbl_param%org_mesh_file%iflag_format, ione, CALYPSO_INTEGER,          &
-     &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(asbl_param%new_mesh_file%iflag_format, ione, CALYPSO_INTEGER,          &
-     &               izero, CALYPSO_COMM, ierr_MPI)
-!
-      call MPI_Bcast(asbl_param%org_fld_file%file_prefix, kchara,             &
-     &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(asbl_param%org_fld_file%iflag_IO ,ione,                  &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(asbl_param%org_fld_file%iflag_format, ione,              &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-!
-      call MPI_Bcast(asbl_param%new_fld_file%file_prefix, kchara,     &
-     &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(asbl_param%new_fld_file%iflag_IO ,ione,          &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(asbl_param%new_fld_file%iflag_format, ione,              &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call bcast_field_IO_parameter(asbl_param%org_fld_file)
+      call bcast_field_IO_parameter(asbl_param%new_fld_file)
 !
       call MPI_Bcast(asbl_param%iflag_delete_org, ione,                 &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)

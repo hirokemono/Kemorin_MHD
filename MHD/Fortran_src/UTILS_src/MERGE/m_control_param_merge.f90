@@ -2,8 +2,6 @@
 !      module m_control_param_merge
 !      Written by H. Matsui
 !
-!      subroutine deallocate_control_4_merge
-!
 !!      subroutine set_control_4_merge(mgd_ctl, asbl_param, num_pe)
 !!      subroutine set_control_4_newrst                                 &
 !!     &         (nprocs, mgd_ctl, asbl_param, ierr)
@@ -11,6 +9,9 @@
 !!     &         (nprocs, mgd_ctl, asbl_param, ierr)
 !!        type(control_data_4_merge), intent(in) :: mgd_ctl
 !!        type(control_param_assemble), intent(inout) :: asbl_param
+!!      subroutine set_assemble_field_list(mgd_ctl, asbl_tbl)
+!!        type(control_data_4_merge), intent(in) :: mgd_ctl
+!!        type(assemble_field_list), intent(inout) :: asbl_tbl
 !
       module m_control_param_merge
 !
@@ -21,35 +22,10 @@
 !
       implicit    none
 !
-!
-      integer(kind=kint ) :: num_nod_phys
-      character(len=kchara), dimension(:), allocatable :: ucd_on_label
-!       setting for merged data
-!
-      private :: allocate_control_4_merge
-!
 !------------------------------------------------------------------
 !
       contains
 !
-!------------------------------------------------------------------
-!
-      subroutine allocate_control_4_merge
-!
-!
-       allocate ( ucd_on_label(num_nod_phys) )
-!
-      end subroutine allocate_control_4_merge
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_control_4_merge
-!
-       deallocate ( ucd_on_label )
-!
-      end subroutine deallocate_control_4_merge
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
        subroutine set_control_4_merge(mgd_ctl, asbl_param, num_pe)
@@ -69,9 +45,6 @@
       type(control_param_assemble), intent(inout) :: asbl_param
       integer(kind = kint), intent(inout) :: num_pe
 !
-      integer(kind = kint) :: i, icou
-      character(len = kchara) :: tmpchara
-!
 !
       if (mgd_ctl%source_plt%ndomain_ctl%iflag .gt. 0) then
         num_pe = mgd_ctl%source_plt%ndomain_ctl%intvalue
@@ -83,40 +56,6 @@
       call set_control_mesh_def                                         &
      &   (mgd_ctl%source_plt, asbl_param%org_mesh_file)
 !
-!
-       num_nod_phys = 0
-       do i = 1, mgd_ctl%fld_mge_ctl%field_ctl%num
-         tmpchara = mgd_ctl%fld_mge_ctl%field_ctl%c2_tbl(i)
-         if(cmp_no_case(tmpchara,'Viz_On')) then
-           num_nod_phys = num_nod_phys + 1
-         end if
-       end do
-!
-       call allocate_control_4_merge
-!
-       icou = 0
-       do i = 1, mgd_ctl%fld_mge_ctl%field_ctl%num
-         tmpchara = mgd_ctl%fld_mge_ctl%field_ctl%c2_tbl(i)
-         if(cmp_no_case(tmpchara,'Viz_On')) then
-           icou = icou + 1
-           ucd_on_label(icou) = mgd_ctl%fld_mge_ctl%field_ctl%c1_tbl(i)
-         end if
-       end do
-!
-       if(iflag_debug .gt. 0) then
-         write(*,*) 'ucd_on_label', num_nod_phys
-         do i = 1, num_nod_phys
-           write(*,*) i, trim(ucd_on_label(i))
-         end do
-       end if
-!
-      call set_assemble_step_4_ucd(mgd_ctl%t_mge_ctl, asbl_param)
-!
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &          'istep_start, istep_end, increment_step',               &
-     &           asbl_param%istep_start, asbl_param%istep_end,          &
-     &           asbl_param%increment_step
-!
       end subroutine set_control_4_merge
 !
 ! -----------------------------------------------------------------------
@@ -126,6 +65,7 @@
 !
       use t_control_data_4_merge
       use m_file_format_switch
+      use m_default_file_prefix
       use set_control_platform_data
 !
       integer(kind = kint), intent(in) :: nprocs
@@ -134,10 +74,24 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call set_control_4_newudt(nprocs, mgd_ctl, asbl_param, ierr)
-      if(ierr .gt. 0) return
+      ierr = 0
+      if(mgd_ctl%assemble_plt%ndomain_ctl%iflag .eq. 0) then
+        write(*,*) 'Set number of subdomains for new grid'
+        ierr = 1
+        return
+      end if
+      if(mgd_ctl%assemble_plt%ndomain_ctl%intvalue .ne. nprocs) then
+        ierr = 1
+        return
+      end if
 !
-      call set_assemble_rst_file_param                            &
+      call set_control_mesh_file_def(def_new_mesh_head,                 &
+     &    mgd_ctl%assemble_plt, asbl_param%new_mesh_file)
+!
+      call set_delete_flag_4_assemble(mgd_ctl%assemble_plt, asbl_param)
+!
+!
+      call set_assemble_rst_file_param                                  &
      &   (mgd_ctl%source_plt, mgd_ctl%assemble_plt, asbl_param)
 !
       call set_magnetic_ratio_4_assemble                                &
@@ -182,7 +136,52 @@
 !
       call set_delete_flag_4_assemble(mgd_ctl%assemble_plt, asbl_param)
 !
+      call set_assemble_step_4_ucd(mgd_ctl%t_mge_ctl, asbl_param)
+!
       end subroutine set_control_4_newudt
+!
+! -----------------------------------------------------------------------
+!
+       subroutine set_assemble_field_list(mgd_ctl, asbl_tbl)
+!
+      use t_control_data_4_merge
+      use assemble_nodal_fields
+!
+      type(control_data_4_merge), intent(in) :: mgd_ctl
+      type(assemble_field_list), intent(inout) :: asbl_tbl
+!
+      integer(kind = kint) :: i, icou
+      character(len = kchara) :: tmpchara
+!
+!
+       asbl_tbl%nfld_label = 0
+       do i = 1, mgd_ctl%fld_mge_ctl%field_ctl%num
+         tmpchara = mgd_ctl%fld_mge_ctl%field_ctl%c2_tbl(i)
+         if(cmp_no_case(tmpchara,'Viz_On')) then
+           asbl_tbl%nfld_label = asbl_tbl%nfld_label + 1
+         end if
+       end do
+!
+       call alloc_assemble_field_list(asbl_tbl)
+!
+       icou = 0
+       do i = 1, mgd_ctl%fld_mge_ctl%field_ctl%num
+         tmpchara = mgd_ctl%fld_mge_ctl%field_ctl%c2_tbl(i)
+         if(cmp_no_case(tmpchara,'Viz_On')) then
+           icou = icou + 1
+           asbl_tbl%ucd_on_label(icou)                                  &
+     &          = mgd_ctl%fld_mge_ctl%field_ctl%c1_tbl(i)
+         end if
+       end do
+!
+       if(iflag_debug .gt. 0) then
+         write(*,*) 'ucd_on_label', asbl_tbl%nfld_label
+         do i = 1, asbl_tbl%nfld_label
+           write(*,*) i, trim(asbl_tbl%ucd_on_label(i))
+         end do
+       end if
+!
+      end subroutine set_assemble_field_list
 !
 ! -----------------------------------------------------------------------
 !

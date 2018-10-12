@@ -29,6 +29,7 @@
       use t_comm_table_4_assemble
 !
       use field_IO_select
+      use assemble_nodal_fields
 !
       implicit none
 !
@@ -39,6 +40,7 @@
       type(control_data_4_merge), save :: mgd_ctl_u
       type(control_param_assemble), save :: asbl_param_u
       type(comm_table_4_assemble), save :: asbl_comm_u
+      type(assemble_field_list), save :: asbl_tbl_u
 !
       type(time_data), save :: t_IO_m
 !
@@ -59,7 +61,6 @@
       use const_element_comm_tables
       use const_mesh_information
       use share_field_data
-      use assemble_nodal_fields
       use load_mesh_data_4_merge
 !
       integer(kind = kint) :: nnod_4_surf, nnod_4_edge
@@ -83,6 +84,7 @@
       call set_control_4_merge(mgd_ctl_u, asbl_param_u, ndomain_org)
       call set_control_4_newudt                                         &
      &   (nprocs, mgd_ctl_u, asbl_param_u, ierr_MPI)
+      call set_assemble_field_list(mgd_ctl_u, asbl_tbl_u)
       if(ierr_MPI .gt. 0) then
         write(e_message,'(a)')                                          &
      &     'No. of processes and targed sub domain shold be the same.'
@@ -122,8 +124,8 @@
      &    asbl_param_u%org_fld_file, t_IO_m, fld_IO_m)
 !
       if(my_rank .eq. 0) then
-        call init_field_name_4_assemble_ucd(num_nod_phys, ucd_on_label, &
-     &      fld_IO_m, new_fld)
+        call init_field_name_4_assemble_ucd                             &
+     &     (asbl_tbl_u, fld_IO_m, new_fld)
 !
         call dealloc_phys_data_IO(fld_IO_m)
         call dealloc_phys_name_IO(fld_IO_m)
@@ -148,7 +150,6 @@
       use set_ucd_data_to_type
       use merged_udt_vtk_file_IO
       use parallel_ucd_IO_select
-      use assemble_nodal_fields
       use nod_phys_send_recv
       use load_mesh_data_4_merge
       use set_field_file_names

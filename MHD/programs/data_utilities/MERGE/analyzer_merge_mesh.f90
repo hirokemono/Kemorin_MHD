@@ -45,11 +45,13 @@
       use m_error_IDs
       use m_control_param_merge
       use m_array_for_send_recv
+      use m_default_file_prefix
 !
       use load_mesh_data_4_merge
       use nod_phys_send_recv
       use const_element_comm_tables
       use const_mesh_information
+      use set_control_platform_data
 !
       write(*,*) 'Simulation start: PE. ', my_rank
       if(my_rank .eq. 0) then
@@ -62,8 +64,8 @@
 !
       call read_control_4_merge(mgd_ctl_m)
       call set_control_4_merge(mgd_ctl_m, asbl_param_m, ndomain_org)
-      call set_control_4_newudt                                         &
-     &   (nprocs, mgd_ctl_m, asbl_param_m, ierr_MPI)
+      call set_control_mesh_file_def(def_new_mesh_head,                 &
+     &    mgd_ctl_m%assemble_plt, asbl_param_m%new_mesh_file)
 !
 !  set mesh data
 !

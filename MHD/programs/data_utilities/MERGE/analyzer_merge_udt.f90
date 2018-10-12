@@ -28,6 +28,7 @@
       use t_control_param_assemble
 !
       use field_IO_select
+      use assemble_nodal_fields
 !
       implicit none
 !
@@ -37,6 +38,7 @@
 !
       type(control_data_4_merge), save :: mgd_ctl_u
       type(control_param_assemble), save :: asbl_param_u
+      type(assemble_field_list), save :: asbl_tbl_u
       type(time_data), save :: t_IO_m
       type(field_IO), save :: fld_IO_m
 !
@@ -57,7 +59,6 @@
       use nod_phys_send_recv
       use const_element_comm_tables
       use const_mesh_information
-      use assemble_nodal_fields
 !
       integer(kind = kint) :: nnod_4_surf, nnod_4_edge
 !
@@ -76,6 +77,8 @@
       call set_assemble_ucd_file_param                                  &
      &   (mgd_ctl_u%source_plt, mgd_ctl_u%assemble_plt, asbl_param_u)
       call set_assemble_step_4_ucd(mgd_ctl_u%t_mge_ctl, asbl_param_u)
+      call set_assemble_field_list(mgd_ctl_u, asbl_tbl_u)
+
       if(ndomain_org .ne. nprocs) then
         write(e_message,'(a)')                                          &
      &     'No. of processes and original subdomain should be the same.'
@@ -104,8 +107,8 @@
      &   (nprocs, my_rank, asbl_param_u%istep_start,                    &
      &    asbl_param_u%org_fld_file, t_IO_m, fld_IO_m)
 !
-      call init_field_name_4_assemble_ucd(num_nod_phys, ucd_on_label,   &
-     &    fld_IO_m, new_fld)
+      call init_field_name_4_assemble_ucd                               &
+     &   (asbl_tbl_u, fld_IO_m, new_fld)
       call alloc_phys_data_type(mesh_m%node%numnod, new_fld)
 !
       call dealloc_phys_data_IO(fld_IO_m)
