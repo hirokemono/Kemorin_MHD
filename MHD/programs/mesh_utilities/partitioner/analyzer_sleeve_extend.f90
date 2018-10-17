@@ -62,7 +62,7 @@
 !     ----- read control data
 !
       call read_control_data_4_part(part_ctl1)
-      call s_set_control_data_4_part(part_ctl1)
+      call set_control_4_extend_sleeve(my_rank, part_ctl1)
       call dealloc_ctl_data_4_part(part_ctl1)
 !
 !  --  read geometry
@@ -90,12 +90,11 @@
 !
       use parallel_sleeve_extension
 !
-      integer(kind = kint) :: num_extend = 3
       integer(kind = kint) :: ilevel
 !
 !
-      do ilevel = 1, num_extend
-        if(my_rank .eq. 0) write(*,*) 'para_sleeve_extension', ilevel
+      do ilevel = 1, n_overlap
+        if(my_rank .eq. 0) write(*,*) 'para_sleeve_extension', iflag_debug
         call para_sleeve_extension                                      &
      &     (fem_EXT%mesh, fem_EXT%group, e_mesh_EXT)
       end do
