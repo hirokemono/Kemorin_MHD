@@ -23,6 +23,9 @@
 !!        type(sph_grids), intent(in) :: org_sph
 !!        type(time_data), intent(inout) :: time_d
 !!        type(phys_data), intent(inout) :: org_phys
+!!      subroutine set_assembled_sph_data                               &
+!!     &         (org_sph_mesh, new_sph_mesh, j_table, r_itp,           &
+!!     &          org_phys, new_phys)
 !!
 !!      subroutine const_assembled_sph_data(b_ratio, time_d,            &
 !!     &          new_sph, r_itp, new_phys, new_fst_IO, t_IO)
@@ -200,16 +203,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_assembled_sph_data(org_sph, new_sph, j_table,      &
-     &          r_itp, org_phys, new_phys)
+      subroutine set_assembled_sph_data                                 &
+     &         (org_sph_mesh, new_sph_mesh, j_table, r_itp,             &
+     &          org_phys, new_phys)
 !
+      use t_SPH_mesh_field_data
       use t_spheric_parameter
       use r_interpolate_marged_sph
 !
       use parallel_assemble_sph
 !
-      type(sph_grids), intent(in) :: org_sph
-      type(sph_grids), intent(in) :: new_sph
+      type(sph_mesh_data), intent(in) :: org_sph_mesh
+      type(sph_mesh_data), intent(in) :: new_sph_mesh
       type(rj_assemble_tbl), intent(in) :: j_table
       type(sph_radial_itp_data), intent(in) :: r_itp
       type(phys_data), intent(in) ::    org_phys
@@ -218,14 +223,17 @@
 !
 !
       if(r_itp%iflag_same_rgrid .eq. 0) then
-        call r_itp_field_data_sph_assemble(org_sph, new_sph, r_itp,     &
-     &     j_table, new_phys%ntot_phys, org_phys%d_fld, new_phys%d_fld)
+        call r_itp_field_data_sph_assemble                              &
+     &     (org_sph_mesh%sph, new_sph_mesh%sph, r_itp, j_table,         &
+     &      new_phys%ntot_phys, org_phys%d_fld, new_phys%d_fld)
       else
-        call copy_field_data_sph_assemble(org_sph, new_sph, j_table,    &
+        call copy_field_data_sph_assemble                               &
+     &     (org_sph_mesh%sph, new_sph_mesh%sph, j_table,                &
      &      new_phys%ntot_phys, org_phys%d_fld, new_phys%d_fld)
       end if
 !
-      call copy_field_data_sph_center(org_sph, new_sph, j_table,        &
+      call copy_field_data_sph_center                                   &
+     &   (org_sph_mesh%sph, new_sph_mesh%sph, j_table,                  &
      &    new_phys%ntot_phys, org_phys%d_fld, new_phys%d_fld)
 !
       end subroutine set_assembled_sph_data

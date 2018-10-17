@@ -281,7 +281,7 @@
       write(set_rayleigh_file_name,1000)                                &
      &                        trim(dir), int_id, trim(postfix)
 !
- 1000 format(a, '/', i8, '_', a)
+ 1000 format(a, '/', i8.8, '_', a)
 !
       end function set_rayleigh_file_name
 !

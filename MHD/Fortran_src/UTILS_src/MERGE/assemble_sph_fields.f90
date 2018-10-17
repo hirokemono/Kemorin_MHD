@@ -9,8 +9,13 @@
 !!@verbatim
 !!      subroutine share_org_sph_rj_data(np_sph_org, org_sph_mesh)
 !!        type(sph_mesh_data), intent(inout) :: org_sph_mesh(np_sph_org)
-!!      subroutine share_spectr_field_names(np_sph_org, np_sph_new,     &
-!!     &          new_sph_mesh, org_sph_phys, new_sph_phys)
+!!      subroutine share_org_spectr_field_names                         &
+!!     &         (np_sph_org, org_sph_phys)
+!!        type(phys_data), intent(inout) :: org_sph_phys(np_sph_org)
+!!      subroutine share_new_spectr_field_names                         &
+!!     &         (np_sph_new, new_sph_mesh, new_sph_phys)
+!!        type(sph_mesh_data), intent(in) :: new_sph_mesh(np_sph_new)
+!!        type(phys_data), intent(inout) :: new_sph_phys(np_sph_new)
 !!
 !!      subroutine load_new_spectr_rj_data(np_sph_org, np_sph_new,      &
 !!     &          org_sph_mesh, new_sph_mesh, j_table)
@@ -66,15 +71,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine share_spectr_field_names(np_sph_org, np_sph_new,       &
-     &          new_sph_mesh, org_sph_phys, new_sph_phys)
+      subroutine share_org_spectr_field_names                           &
+     &         (np_sph_org, org_sph_phys)
 !
       use share_field_data
 !
-      integer(kind = kint), intent(in) :: np_sph_org, np_sph_new
-      type(sph_mesh_data), intent(in) :: new_sph_mesh(np_sph_new)
+      integer(kind = kint), intent(in) :: np_sph_org
       type(phys_data), intent(inout) :: org_sph_phys(np_sph_org)
-      type(phys_data), intent(inout) :: new_sph_phys(np_sph_new)
 !
       integer(kind = kint) :: ip, jp
 !
@@ -82,6 +85,22 @@
       do ip = 1, np_sph_org
         call share_phys_field_names(org_sph_phys(ip))
       end do
+!
+      end subroutine share_org_spectr_field_names
+!
+! -----------------------------------------------------------------------
+!
+      subroutine share_new_spectr_field_names                           &
+     &         (np_sph_new, new_sph_mesh, new_sph_phys)
+!
+      use share_field_data
+!
+      integer(kind = kint), intent(in) :: np_sph_new
+      type(sph_mesh_data), intent(in) :: new_sph_mesh(np_sph_new)
+      type(phys_data), intent(inout) :: new_sph_phys(np_sph_new)
+!
+      integer(kind = kint) :: ip, jp
+!
 !
 !
       call share_phys_field_names(new_sph_phys(1))
@@ -97,7 +116,7 @@
      &     (new_sph_mesh(jp)%sph%sph_rj%nnod_rj, new_sph_phys(jp))
       end do
 !
-      end subroutine share_spectr_field_names
+      end subroutine share_new_spectr_field_names
 !
 ! -----------------------------------------------------------------------
 !

@@ -155,19 +155,24 @@
       subroutine read_rayleigh_restart_params                           &
      &         (dir, i_step, ra_rst)
 !
+      use binary_IO
+!
       integer(kind = kint), intent(in) :: i_step
       character(len = kchara), intent(in) :: dir
 !
       type(rayleigh_restart), intent(inout) :: ra_rst
 !
-      character(len = kchara) :: file_name, file_name_w_null
+      character(len = kchara) :: file_name
       integer(kind = kint) :: ierr_IO
       integer(kind = kint) :: int_tmp, ilength
 !
 !
+      write(*,*) 'i_step', i_step
       file_name =  set_rayleigh_file_name(dir, i_step, paramchar)
-      file_name_w_null =  add_null_character(file_name)
-      call open_rd_rawfile(file_name_w_null, ierr_IO)
+      file_name =  add_null_character(file_name)
+      write(*,*) 'read Rayleigh checkpoint paramter file: ',            &
+     &          trim(file_name)
+      call open_rd_rawfile(file_name, ierr_IO)
 !
       ra_rst%iflag_swap = 0
       call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
@@ -193,10 +198,10 @@
       call rawread_f(ra_rst%iflag_swap, kreal, ra_rst%dt_new, ierr_IO)
       call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
 !
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kreal,                          &
-     &    ra_rst%new_dt_org, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+!      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+!      call rawread_f(ra_rst%iflag_swap, kreal,                         &
+!     &    ra_rst%new_dt_org, ierr_IO)
+!      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
 !
       call alloc_rayleigh_radial_grid(ra_rst)
 !
@@ -241,7 +246,7 @@
         call set_rayleigh_restart_field(dir, i_step, fld_IO)
       end if
       ilength = fld_IO%num_field_IO * kchara
-      call MPI_Bcast(fld_IO%num_comp_IO, ilength,                       &
+      call MPI_Bcast(fld_IO%fld_name, ilength,                          &
      &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(fld_IO%num_comp_IO, fld_IO%num_field_IO,           &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -303,7 +308,7 @@
      &    fhd_press, icou, fld_IO)
       call add_scalar_field_4_raylegh(dir, i_step, tchar,               &
      &    fhd_temp, icou, fld_IO)
-      call add_vector_field_4_raylegh(dir, i_step, cchar, achar,       &
+      call add_vector_field_4_raylegh(dir, i_step, cchar, achar,        &
      &    fhd_magne, icou, fld_IO)
 !
 !
@@ -317,6 +322,53 @@
      &    fhd_pre_uxb, icou, fld_IO)
 !
       end subroutine set_rayleigh_restart_field
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_rayleigh_rst_file_name(dir, i_step, field_name,    &
+     &          iflag_ncomp, file_name)
+!
+      use m_phys_labels
+!
+      integer(kind = kint), intent(in) :: i_step
+      character(len = kchara), intent(in) :: dir
+      character(len = kchara), intent(in) :: field_name
+!
+      integer(kind = kint), intent(inout) :: iflag_ncomp
+      character(len = kchara), intent(inout) :: file_name(2)
+!
+      if(field_name .eq. fhd_velo) then
+        iflag_ncomp = 2
+        file_name(1) =  set_rayleigh_file_name(dir, i_step, wchar)
+        file_name(2) =  set_rayleigh_file_name(dir, i_step, zchar)
+      else if(field_name .eq. fhd_press) then
+        iflag_ncomp = 1
+        file_name(1) =  set_rayleigh_file_name(dir, i_step, pchar)
+      else if(field_name .eq. fhd_temp) then
+        iflag_ncomp = 1
+        file_name(1) =  set_rayleigh_file_name(dir, i_step, tchar)
+      else if(field_name .eq. fhd_magne) then
+        iflag_ncomp = 2
+        file_name(1) =  set_rayleigh_file_name(dir, i_step, cchar)
+        file_name(2) =  set_rayleigh_file_name(dir, i_step, achar)
+!
+      else if(field_name .eq. fhd_pre_mom) then
+        iflag_ncomp = 2
+        file_name(1) =  set_rayleigh_file_name(dir, i_step, wabchar)
+        file_name(2) =  set_rayleigh_file_name(dir, i_step, zabchar)
+!      else if(field_name .eq. fhd_pre_press) then
+!        iflag_ncomp = 1
+!        file_name(1) =  set_rayleigh_file_name(dir, i_step, cchar)
+!      else if(field_name .eq. fhd_pre_heat) then
+        iflag_ncomp = 1
+        file_name(1) =  set_rayleigh_file_name(dir, i_step, tabchar)
+      else if(field_name .eq. fhd_pre_uxb) then
+        iflag_ncomp = 2
+        file_name(1) =  set_rayleigh_file_name(dir, i_step, cabchar)
+        file_name(2) =  set_rayleigh_file_name(dir, i_step, aabchar)
+      end if
+!
+      end subroutine set_rayleigh_rst_file_name
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -419,7 +471,7 @@
       if((check_file_exist(file1)+check_file_exist(file2)) .eq. 0) then
         icou = icou + 1
         fld_IO%fld_name(icou) =    fhd_fld
-        fld_IO%num_comp_IO(icou) = n_vector
+        fld_IO%num_comp_IO(icou) = n_solenoid
       end if
 !
       end subroutine add_vector_field_4_raylegh
@@ -427,17 +479,19 @@
 !-----------------------------------------------------------------------
 !
       subroutine find_rayleigh_restart_address                          &
-     &          (ltr, kr, l, m, ioffset1, ioffset2)
+     &          (nri, ltr, kr, l, m, ioffset1, ioffset2)
 !
-      integer(kind = kint), intent(in) :: ltr, kr, l, m
+      integer(kind = kint), intent(in) :: nri, ltr, kr, l, m
       integer(kind = kint_gl), intent(inout) :: ioffset1, ioffset2
 !
       integer(kind = kint_gl) :: jmax_h, ioffset
 !
       jmax_h = 1 + ltr*(ltr+3) / 2
       ioffset = (l - m + 1) + m * (2*ltr +3 - m) / 2
-      ioffset1 = ioffset + (kr - 1) * 2 * jmax_h
-      ioffset2 = ioffset1 + jmax_h
+      ioffset1 = ioffset + (kr - 1) * jmax_h
+      ioffset2 = ioffset1 + jmax_h * nri
+      ioffset1 = (ioffset1 - 1) * kreal
+      ioffset2 = (ioffset2 - 1) * kreal
 !
       end subroutine find_rayleigh_restart_address
 !

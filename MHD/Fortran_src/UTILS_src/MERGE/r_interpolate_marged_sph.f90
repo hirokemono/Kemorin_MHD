@@ -7,8 +7,11 @@
 !>@brief Radial interpolation for assemble program
 !!
 !!@verbatim
-!!      subroutine const_r_interpolate_table(np_sph_org, np_sph_new,    &
-!!     &          org_sph_mesh, new_sph_mesh, r_itp)
+!!      subroutine const_r_interpolate_table                            &
+!!     &         (org_sph_mesh, new_sph_mesh, r_itp)
+!!      subroutine const_ICB_and_CMB_radius(org_sph_mesh, new_sph_mesh, &
+!!     &          nlayer_ICB_org, nlayer_CMB_org,                       &
+!!     &          nlayer_ICB_new, nlayer_CMB_new)
 !!      subroutine deallocate_radial_itp_tbl(nri_new)
 !!      subroutine sph_radial_interpolation_coef                        &
 !!     &         (nri_org, r_org, nri_new, r_new)
@@ -60,37 +63,52 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_r_interpolate_table(np_sph_org, np_sph_new,      &
-     &          org_sph_mesh, new_sph_mesh, r_itp)
+      subroutine const_r_interpolate_table                              &
+     &         (org_sph_mesh, new_sph_mesh, r_itp)
 !
-      integer(kind = kint), intent(in) :: np_sph_org, np_sph_new
-      type(sph_mesh_data), intent(in) :: org_sph_mesh(np_sph_org)
-      type(sph_mesh_data), intent(in) :: new_sph_mesh(np_sph_new)
+      type(sph_mesh_data), intent(in) :: org_sph_mesh
+      type(sph_mesh_data), intent(in) :: new_sph_mesh
 !
       type(sph_radial_itp_data), intent(inout) :: r_itp
 !
-      integer(kind = kint) :: nlayer_ICB_org, nlayer_CMB_org
-      integer(kind = kint) :: nlayer_ICB_new, nlayer_CMB_new
+!
+      if(my_rank .eq. 0) then
+        call sph_radial_interpolation_coef                              &
+     &     (org_sph_mesh%sph%sph_rj%nidx_rj(1),                         &
+     &      org_sph_mesh%sph%sph_rj%radius_1d_rj_r,                     &
+     &      new_sph_mesh%sph%sph_rj%nidx_rj(1),                         &
+     &      new_sph_mesh%sph%sph_rj%radius_1d_rj_r, r_itp)
+      end if
+      call share_r_interpolation_tbl(new_sph_mesh, r_itp)
+!
+      end subroutine const_r_interpolate_table
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_ICB_and_CMB_radius(org_sph_mesh, new_sph_mesh,   &
+     &          nlayer_ICB_org, nlayer_CMB_org,                         &
+     &          nlayer_ICB_new, nlayer_CMB_new)
+!
+      type(sph_mesh_data), intent(in) :: org_sph_mesh
+      type(sph_mesh_data), intent(in) :: new_sph_mesh
+!
+      integer(kind = kint), intent(inout) :: nlayer_ICB_org
+      integer(kind = kint), intent(inout) :: nlayer_CMB_org
+      integer(kind = kint), intent(inout) :: nlayer_ICB_new
+      integer(kind = kint), intent(inout) :: nlayer_CMB_new
 !
 !
       if(my_rank .eq. 0) then
-        call set_sph_boundary_4_merge(org_sph_mesh(1)%sph_grps,         &
+        call set_sph_boundary_4_merge(org_sph_mesh%sph_grps,            &
      &      nlayer_ICB_org, nlayer_CMB_org)
-        call set_sph_boundary_4_merge(new_sph_mesh(1)%sph_grps,         &
+        call set_sph_boundary_4_merge(new_sph_mesh%sph_grps,            &
      &      nlayer_ICB_new, nlayer_CMB_new)
-!
-        call sph_radial_interpolation_coef                              &
-     &     (org_sph_mesh(1)%sph%sph_rj%nidx_rj(1),                      &
-     &      org_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r,                  &
-     &      new_sph_mesh(1)%sph%sph_rj%nidx_rj(1),                      &
-     &      new_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r, r_itp)
       end if
 !
-      call share_r_interpolation_tbl                                    &
-     &   (new_sph_mesh(1), r_itp, nlayer_ICB_org, nlayer_CMB_org,       &
-     &    nlayer_ICB_new, nlayer_CMB_new)
+      call share_ICB_and_CMB_radius(nlayer_ICB_org, nlayer_CMB_org,     &
+     &   nlayer_ICB_new, nlayer_CMB_new)
 !
-      end subroutine const_r_interpolate_table
+      end subroutine const_ICB_and_CMB_radius
 !
 ! -----------------------------------------------------------------------
 !
@@ -154,32 +172,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine share_r_interpolation_tbl                              &
-     &         (new_sph_mesh, r_itp, nlayer_ICB_org, nlayer_CMB_org,    &
-     &          nlayer_ICB_new, nlayer_CMB_new)
+      subroutine share_r_interpolation_tbl(new_sph_mesh, r_itp)
 !
       type(sph_mesh_data), intent(in) :: new_sph_mesh
-!
-      integer(kind = kint), intent(inout) :: nlayer_ICB_org
-      integer(kind = kint), intent(inout) :: nlayer_CMB_org
-      integer(kind = kint), intent(inout) :: nlayer_ICB_new
-      integer(kind = kint), intent(inout) :: nlayer_CMB_new
       type(sph_radial_itp_data), intent(inout) :: r_itp
 !
-!
-      call MPI_Bcast(nlayer_ICB_org, ione, CALYPSO_INTEGER, izero,      &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(nlayer_CMB_org, ione, CALYPSO_INTEGER, izero,      &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(nlayer_ICB_new, ione, CALYPSO_INTEGER, izero,      &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(nlayer_CMB_new, ione, CALYPSO_INTEGER, izero,      &
-     &    CALYPSO_COMM, ierr_MPI)
-!
-      if(my_rank .eq. 0) then
-        write(*,*) 'nlayer_ICB_org: ', nlayer_ICB_org, nlayer_CMB_org
-        write(*,*) 'nlayer_ICB_new: ', nlayer_ICB_new, nlayer_CMB_new
-      end if
 !
       call MPI_Bcast(r_itp%iflag_same_rgrid, ione, CALYPSO_INTEGER,     &
      &    izero, CALYPSO_COMM, ierr_MPI)
@@ -208,6 +205,34 @@
       end if
 !
       end subroutine share_r_interpolation_tbl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine share_ICB_and_CMB_radius                               &
+     &         (nlayer_ICB_org, nlayer_CMB_org,                         &
+     &          nlayer_ICB_new, nlayer_CMB_new)
+!
+      integer(kind = kint), intent(inout) :: nlayer_ICB_org
+      integer(kind = kint), intent(inout) :: nlayer_CMB_org
+      integer(kind = kint), intent(inout) :: nlayer_ICB_new
+      integer(kind = kint), intent(inout) :: nlayer_CMB_new
+!
+!
+      call MPI_Bcast(nlayer_ICB_org, ione, CALYPSO_INTEGER, izero,      &
+     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(nlayer_CMB_org, ione, CALYPSO_INTEGER, izero,      &
+     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(nlayer_ICB_new, ione, CALYPSO_INTEGER, izero,      &
+     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(nlayer_CMB_new, ione, CALYPSO_INTEGER, izero,      &
+     &    CALYPSO_COMM, ierr_MPI)
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'nlayer_ICB_org: ', nlayer_ICB_org, nlayer_CMB_org
+        write(*,*) 'nlayer_ICB_new: ', nlayer_ICB_new, nlayer_CMB_new
+      end if
+!
+      end subroutine share_ICB_and_CMB_radius
 !
 ! -----------------------------------------------------------------------
 !

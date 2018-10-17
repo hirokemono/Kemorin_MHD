@@ -10,6 +10,7 @@ TARGET_MERGE =  merge_field
 TARGET_NEWSPH = assemble_sph
 TARGET_NEWUDT = assemble_udt
 TARGET_NEWRST = assemble_restart
+TARGET_CVT_RAYLEIGH = convert_from_rayleigh
 
 
 TARGET_UPDATE_RST =   update_restart
@@ -64,6 +65,10 @@ MOD_ADD_TIME_SPH = \
 main_update_sph.o \
 analyzer_update_sph_rst.o
 
+MOD_CVT_RAYLEIGH = \
+main_convert_from_rayleigh.o \
+analyzer_rayleigh_convert.o
+
 
 
 #
@@ -81,6 +86,7 @@ target_list:
 	@echo 'TARGET_NEWSPH = $$(BUILDDIR)/$(TARGET_NEWSPH)' >> $(MAKENAME)
 	@echo 'TARGET_UPDATE_RST =   $$(BUILDDIR)/$(TARGET_UPDATE_RST)'   >> $(MAKENAME)
 	@echo 'TARGET_ADD_TIME_SPH = $$(BUILDDIR)/$(TARGET_ADD_TIME_SPH)' >> $(MAKENAME)
+	@echo 'TARGET_CVT_RAYLEIGH = $$(BUILDDIR)/$(TARGET_CVT_RAYLEIGH)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -88,7 +94,7 @@ target_task:
 	'$$(TARGET_MERGE)        $$(TARGET_M_MESH)'            \
 	'$$(TARGET_NEWUDT)       $$(TARGET_NEWRST)'            \
 	'$$(TARGET_NEWSPH)       $$(TARGET_UPDATE_RST)'        \
-	'$$(TARGET_ADD_TIME_SPH)'    \
+	'$$(TARGET_ADD_TIME_SPH) $$(TARGET_CVT_RAYLEIGH)'      \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MERGE)': '$$(MOD_MERGE_UCD) $$(LIB_FILES_MERGE)' \
@@ -141,6 +147,14 @@ target_task:
 	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_CVT_RAYLEIGH)': '$$(MOD_CVT_RAYLEIGH)' \
+	'$$(LIB_FILES_MERGE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_CVT_RAYLEIGH)' '$$(MOD_CVT_RAYLEIGH)' \
+	'-L. $$(LIBS_MERGE)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 
@@ -166,6 +180,8 @@ mod_list:
 	@echo  $(MOD_NEWSPH)         >> $(MAKENAME)
 	@echo  MOD_ADD_TIME_SPH=  \\ >> $(MAKENAME)
 	@echo  $(MOD_ADD_TIME_SPH)   >> $(MAKENAME)
+	@echo  MOD_CVT_RAYLEIGH=  \\ >> $(MAKENAME)
+	@echo  $(MOD_CVT_RAYLEIGH)   >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 

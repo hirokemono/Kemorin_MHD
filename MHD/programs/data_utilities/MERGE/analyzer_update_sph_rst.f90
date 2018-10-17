@@ -96,8 +96,7 @@
 !     construct radial interpolation table
 !
       call const_r_interpolate_table                                    &
-     &   (sph_asbl_s%np_sph_org, sph_asbl_s%np_sph_new,                 &
-     &    sph_asbl_s%org_sph_mesh, sph_asbl_s%new_sph_mesh,             &
+     &   (sph_asbl_s%org_sph_mesh(1), sph_asbl_s%new_sph_mesh(1),       &
      &    sph_asbl_s%r_itp)
 !
 !      Construct field list from spectr file
@@ -107,10 +106,10 @@
      &    asbl_param_s%org_fld_file, sph_asbl_s%org_sph_phys(1),        &
      &    sph_asbl_s%new_sph_phys(1), sph_asbl_s%fst_time_IO)
 !
-      call share_spectr_field_names                                     &
-     &   (sph_asbl_s%np_sph_org, sph_asbl_s%np_sph_new,                 &
-     &    sph_asbl_s%new_sph_mesh, sph_asbl_s%org_sph_phys,             &
-     &    sph_asbl_s%new_sph_phys)
+      call share_org_spectr_field_names                                 &
+     &   (sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_phys)
+      call share_new_spectr_field_names(sph_asbl_s%np_sph_new,          &
+     &    sph_asbl_s%new_sph_mesh, sph_asbl_s%new_sph_phys)
 !
 !
 !      do jp = 1, sph_asbl_s%np_sph_new
@@ -178,8 +177,8 @@
           do jp = 1, sph_asbl_s%np_sph_new
            if(mod(jp-1,nprocs) .ne. my_rank) cycle
             call set_assembled_sph_data                                 &
-     &         (sph_asbl_s%org_sph_mesh(ip)%sph,                        &
-     &          sph_asbl_s%new_sph_mesh(jp)%sph,                        &
+     &         (sph_asbl_s%org_sph_mesh(ip),                            &
+     &          sph_asbl_s%new_sph_mesh(jp),                            &
      &          sph_asbl_s%j_table(ip,jp), sph_asbl_s%r_itp,            &
      &          sph_asbl_s%org_sph_phys(ip),                            &
      &          sph_asbl_s%new_sph_phys(jp))
