@@ -296,7 +296,7 @@ int read_iso_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
     int iflag = 0;
     
     if ((FP_ISO = fopen(file_name, "r")) == NULL) {
-        fprintf(stderr, "Cannot open file!\n");
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
         exit (2);                    /* terminate with error message */
     };
     
@@ -315,7 +315,7 @@ int write_iso_ctl_file_c(const char *file_name, struct iso_ctl_c *iso_c){
     int level;
 
     if ((FP_ISO = fopen(file_name, "w")) == NULL) {
-        fprintf(stderr, "Cannot open file!\n");
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
         exit (2);                    /* terminate with error message */
     };
     

@@ -16,7 +16,7 @@ void read_grouping_mesh_c(char *file_name, struct grouping_data *mesh_g, struct 
 	 	
 	/* Error for failed file*/ 	
 	if ((fp = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	}
 	/* Skip comment lines*/
@@ -109,7 +109,7 @@ void read_coef_file_for_snap_c(char *file_name, struct grouping_data *mesh_g, in
 	 	
 	/* Error for failed file*/ 	
 	if ((fp = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	}
 	/* count components*/
@@ -121,7 +121,7 @@ void read_coef_file_for_snap_c(char *file_name, struct grouping_data *mesh_g, in
 			
 	/* open again*/ 
 	if ((fp = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	}
 	
@@ -151,7 +151,7 @@ void read_tave_coef_file_c(char *file_name, struct grouping_data *mesh_g){
 	 	
 	/* Error for failed file*/ 	
 	if ((fp = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	}
 	/* count components*/

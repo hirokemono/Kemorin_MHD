@@ -270,7 +270,7 @@ int read_kemoview_vtk_gz(const char *file_head, struct psf_data *viz_s){
 	/* Error for failed file*/
 	ierr = open_rd_gzfile_w_flag(file_name);
 	if (ierr == 1){
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		return -1;                    /* terminate with error message */
 	};
 	

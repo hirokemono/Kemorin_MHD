@@ -16,9 +16,9 @@
 !!      subroutine set_control_4_psf                                    &
 !!     &         (psf_c, ele_grp, sf_grp, num_nod_phys, phys_nod_name,  &
 !!     &          psf_fld, psf_param, psf_def, ierr)
+!!        type(psf_ctl), intent(in) :: psf_c
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
-!!        type(psf_ctl), intent(inout) :: psf_c
 !!        type(phys_data), intent(inout) :: psf_fld
 !!        type(psf_parameters), intent(inout) :: psf_param
 !!        type(section_define), intent(inout) :: psf_def
@@ -139,11 +139,11 @@
 !
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: sf_grp
+      type(psf_ctl), intent(in) :: psf_c
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
-      type(psf_ctl), intent(inout) :: psf_c
       type(phys_data), intent(inout) :: psf_fld
       type(psf_parameters), intent(inout) :: psf_param
       type(section_define), intent(inout) :: psf_def

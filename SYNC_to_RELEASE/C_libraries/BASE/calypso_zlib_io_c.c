@@ -31,7 +31,7 @@ exit (EXIT_FAILURE);                                        \
 void open_wt_rawfile(const char *file_name, int *ierr){
     *ierr = 0;
     if ((fp = fopen(file_name, "w")) == NULL) {
-        fprintf(stderr, "Cannot open file!\n");
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
         *ierr = 1;                    /* terminate with error message */
     }
     return;
@@ -40,7 +40,7 @@ void open_wt_rawfile(const char *file_name, int *ierr){
 void open_ad_rawfile(const char *file_name, int *ierr){
     *ierr = 0;
     if ((fp = fopen(file_name, "a")) == NULL) {
-        fprintf(stderr, "Cannot open file!\n");
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
         *ierr = 1;                    /* terminate with error message */
     }
     return;
@@ -49,7 +49,7 @@ void open_ad_rawfile(const char *file_name, int *ierr){
 void open_rd_rawfile(const char *file_name, int *ierr){
     *ierr = 0;
     if ((fp = fopen(file_name, "r")) == NULL) {
-        fprintf(stderr, "Cannot open file!\n");
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
         *ierr = 1;                    /* terminate with error message */
     }
     return;

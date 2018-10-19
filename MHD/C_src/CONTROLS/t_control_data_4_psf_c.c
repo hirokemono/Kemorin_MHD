@@ -326,7 +326,7 @@ int read_psf_define_file_c(const char *file_name, char buf[LENGTHBUF],
 	
     printf("read PVR sections file name: %s\n", file_name);
 	if ((FP_PSF = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	};
 	
@@ -343,7 +343,7 @@ int write_psf_define_file_c(const char *file_name, struct psf_define_ctl_c *psf_
 	
     printf("write PVR sections file name: %s\n", file_name);
 	if ((FP_PSF = fopen(file_name, "w")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	};
 	
@@ -366,7 +366,7 @@ int read_psf_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
 	
     printf("read PVR control file name: %s\n", file_name);
 	if ((FP_PSF = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	};
 	
@@ -394,7 +394,7 @@ int write_psf_ctl_file_c(const char *file_name, struct psf_ctl_c *psf_c){
 	
     printf("write PVR control file name: %s\n", file_name);
 	if ((FP_PSF = fopen(file_name, "w")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	};
 	
