@@ -225,7 +225,7 @@ int read_psf_vtg(const char *file_head, struct psf_data *viz_s){
 	
 	/* Error for failed file*/
 	if ((fp = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		return 1;                    /* terminate with error message */
 	};
 	
@@ -247,7 +247,7 @@ int read_psf_vtd(const char *file_head, int istep, struct psf_data *viz_s){
 	
 	/* Error for failed file*/
 	if ((fp = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		return 1;                    /* terminate with error message */
 	};
 	
@@ -266,7 +266,7 @@ int read_kemoview_vtk(const char *file_head, struct psf_data *viz_s){
 	
 	/* Error for failed file*/
 	if ((fp = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		return -1;                    /* terminate with error message */
 	};
 	

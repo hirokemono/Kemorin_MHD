@@ -37,7 +37,7 @@
       use t_psf_patch_data
       use set_cross_section_coefs
 !
-      type(psf_ctl), intent(inout) :: psf_c
+      type(psf_ctl), intent(in) :: psf_c
 !
       integer(kind = kint), intent(inout)  :: id_section_method
       real(kind = kreal), intent(inout) :: const_psf(10)

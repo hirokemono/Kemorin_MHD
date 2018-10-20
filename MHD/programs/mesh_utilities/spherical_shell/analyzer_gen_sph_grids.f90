@@ -70,7 +70,7 @@
       call start_elapsed_time(1)
       call read_control_4_const_shell(control_file_name, SPH_MAKE_ctl)
       call set_control_4_gen_shell_grids                                &
-     &   (SPH_MAKE_ctl%plt, SPH_MAKE_ctl%psph_ctl,                      &
+     &   (my_rank, SPH_MAKE_ctl%plt, SPH_MAKE_ctl%psph_ctl,             &
      &    sph_const, sph_files1, gen_sph_G, ierr_MPI)
       if(ierr_MPI .gt. 0) call calypso_mpi_abort(ierr_MPI, e_message)
 !

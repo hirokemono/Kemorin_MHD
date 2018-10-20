@@ -101,7 +101,7 @@
 !
 ! Increase sleeve size
       do i_level = 2, gen_sph%num_FEM_sleeve
-        if(my_rank .gt. 0) write(*,*) 'extend sleeve:', i_level
+        if(my_rank .eq. 0) write(*,*) 'extend sleeve:', i_level
         call para_sleeve_extension(mesh, group, ele_mesh)
       end do
 !

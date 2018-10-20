@@ -195,7 +195,7 @@ int read_fline_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
 	int iflag = 0;
 	
 	if ((FP_fline = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	};
 	
@@ -212,7 +212,7 @@ int write_fline_ctl_file_c(const char *file_name, struct fline_ctl_c *fline_c){
 	int level;
 	
 	if ((FP_fline = fopen(file_name, "w")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	};
 	

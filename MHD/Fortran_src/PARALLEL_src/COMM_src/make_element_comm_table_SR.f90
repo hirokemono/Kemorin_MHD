@@ -50,6 +50,9 @@
       integer(kind = kint) :: ip
 !
 !
+      call resize_iwork_4_SR(num_neib_e, num_neib_e,                    &
+     &    num_neib_e, num_neib_e)
+!
       do ip = 1, num_neib_e
         call MPI_ISEND (num_import_e(ip), ione, CALYPSO_INTEGER,        &
      &                  id_neib_e(ip), 0, CALYPSO_COMM,                 &
@@ -82,19 +85,22 @@
       integer(kind = kint), intent(in) :: id_neib(num_neib)
 !
       integer(kind = kint), intent(in) :: istack_import(0:num_neib)
-      integer(kind = kint), intent(in)                                 &
+      integer(kind = kint), intent(in)                                  &
      &                 :: item_import(istack_import(num_neib))
 !
       integer(kind = kint), intent(in) :: istack_export(0:num_neib)
-      integer(kind = kint), intent(in)                                 &
+      integer(kind = kint), intent(in)                                  &
      &                 :: item_export(istack_export(num_neib))
 !
-      integer(kind = kint), intent(inout)                              &
+      integer(kind = kint), intent(inout)                               &
      &                 :: item_local(istack_export(num_neib))
       integer(kind = kint), intent(inout) :: inod_local(numnod)
 !
       integer(kind = kint) :: ip, ist, num, i, inod
 !
+!
+      call resize_iwork_4_SR(num_neib, num_neib,                        &
+     &    istack_import(num_neib), istack_export(num_neib))
 !
       do ip = 1, num_neib
         ist = istack_import(ip-1)
@@ -155,6 +161,10 @@
 !        write(*,*) ip, inod_import_e(ip), xe_import(3*ip-2:3*ip)
 !      end do
 !
+      call resize_iwork_4_SR(num_neib_e, num_neib_e,                    &
+     &    istack_import_e(num_neib_e), istack_export_e(num_neib_e))
+      call resize_work_4_SR(ithree, num_neib_e, num_neib_e,             &
+     &    istack_import_e(num_neib_e), istack_export_e(num_neib_e))
 !
       do ip = 1, num_neib_e
         ist = istack_import_e(ip-1)

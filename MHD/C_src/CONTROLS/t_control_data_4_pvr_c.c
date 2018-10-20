@@ -462,7 +462,7 @@ int read_pvr_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
 	int iflag = 0;
 	
 	if ((FP_PVR = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);					/* terminate with error message */
 	};
 	
@@ -483,7 +483,7 @@ int write_pvr_ctl_file_c(const char *file_name, struct pvr_ctl_c *pvr_c){
 	write_pvr_ctl_subfiles(pvr_c);
 	
 	if ((FP_PVR = fopen(file_name, "w")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);					/* terminate with error message */
 	};
 	

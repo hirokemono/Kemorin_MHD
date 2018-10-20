@@ -60,7 +60,7 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	
 	/* Error for failed file*/ 	
 	if ((fp = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		return 1;                    /* terminate with error message */
 	}
 	/* Skip comment lines*/

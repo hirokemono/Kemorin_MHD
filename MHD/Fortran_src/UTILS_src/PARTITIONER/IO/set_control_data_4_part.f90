@@ -4,11 +4,13 @@
 !      Written by Kemorin on Sep. 2007
 !
 !!      subroutine s_set_control_data_4_part(part_ctl)
+!!      subroutine set_control_4_extend_sleeve(my_rank, part_ctl)
 !!        type(control_data_4_partitioner), intent(in) :: part_ctl
 !
       module set_control_data_4_part
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -38,6 +40,7 @@
       type(control_data_4_partitioner), intent(in) :: part_ctl
 !
 !
+      call turn_off_debug_flag_by_ctl(izero, part_ctl%part_plt)
       call set_control_mesh_def                                         &
      &   (part_ctl%part_plt, distribute_mesh_file)
 !
@@ -69,6 +72,12 @@
 !
       call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
      &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl)
+!
+      write(*,*) 'iflag_memory_conserve', iflag_memory_conserve
+      write(*,*) 'iflag_viewer_output', iflag_viewer_output
+      if(n_overlap .eq. 1) then
+        write(*,*) 'element overlapping flag: ', i_sleeve_ele
+      end if
 !
 !
       if (NTYP_div .eq. iPART_RCB_XYZ) then
@@ -135,6 +144,66 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine set_control_4_extend_sleeve(my_rank, part_ctl)
+!
+      use t_control_data_4_part
+      use m_default_file_prefix
+!
+      use m_ctl_param_partitioner
+      use m_partitioner_comm_table
+      use m_subdomain_table_IO
+      use m_metis_IO
+      use m_file_format_switch
+      use itp_table_IO_select_4_zlib
+      use set_control_platform_data
+!
+      integer(kind = kint), intent(in) :: my_rank
+      type(control_data_4_partitioner), intent(in) :: part_ctl
+!
+!
+      call turn_off_debug_flag_by_ctl(my_rank, part_ctl%part_plt)
+      call set_control_mesh_def                                         &
+     &   (part_ctl%part_plt, distribute_mesh_file)
+!
+!   set local data format
+!
+!
+      if (part_ctl%single_plt%mesh_file_prefix%iflag .gt. 0) then
+        global_mesh_file%file_prefix                                    &
+     &      = part_ctl%single_plt%mesh_file_prefix%charavalue
+      else
+        write(*,*) 'Set original mesh data'
+        stop
+      end if
+      call choose_file_format(part_ctl%single_plt%mesh_file_fmt_ctl,    &
+     &    global_mesh_file%iflag_format)
+!
+!      nele_grp_ordering = 0
+!      if (part_ctl%ele_grp_ordering_ctl%icou .eq. 1) then
+!        nele_grp_ordering = part_ctl%ele_grp_ordering_ctl%num
+!
+!        allocate(ele_grp_ordering(nele_grp_ordering))
+!        allocate(igrp_ele_ordering(nele_grp_ordering))
+!        ele_grp_ordering(1:nele_grp_ordering)                           &
+!     &      = part_ctl%ele_grp_ordering_ctl%c_tbl(1:nele_grp_ordering)
+!      end if
+!
+      call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
+     &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl)
+!
+      if(my_rank .ne. 0) return
+      write(*,*) 'sleeve level :', n_overlap
+      write(*,*) 'iflag_memory_conserve', iflag_memory_conserve
+      write(*,*) 'iflag_viewer_output', iflag_viewer_output
+      if(n_overlap .eq. 1) then
+        write(*,*) 'element overlapping flag: ', i_sleeve_ele
+      end if
+!
+      end subroutine set_control_4_extend_sleeve
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
       subroutine set_FEM_mesh_ctl_4_part                                &
      &         (part_Fmesh, sleeve_level_old, element_overlap_ctl)
 !
@@ -167,10 +236,6 @@
         iflag_viewer_output = 1
       end if
 !
-      write(*,*) 'iflag_memory_conserve', iflag_memory_conserve
-      write(*,*) 'iflag_viewer_output', iflag_viewer_output
-!
-!
       if(part_Fmesh%FEM_sleeve_level_ctl%iflag .gt. 0) then
         n_overlap = part_Fmesh%FEM_sleeve_level_ctl%intvalue
       else if(sleeve_level_old%iflag .gt. 0) then
@@ -179,7 +244,6 @@
         n_overlap = 1
       end if
       if(n_overlap .lt. 1) n_overlap = 1
-      write(*,*) 'sleeve level :', n_overlap
 !
       i_sleeve_ele = 0
       if(n_overlap .eq. 1) then
@@ -190,7 +254,6 @@
           i_sleeve_ele = 1
           n_overlap =    2
         end if
-        write(*,*) 'element overlapping flag: ', i_sleeve_ele
       end if
 !
       end subroutine set_FEM_mesh_ctl_4_part

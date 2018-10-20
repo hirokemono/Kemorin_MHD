@@ -451,7 +451,7 @@ int read_colormap_file_c(const char *file_name, char buf[LENGTHBUF],
 	
     printf("Read PVR colormap file name: %s\n", file_name);
 	if ((FP_Colormap = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	};
 	
@@ -471,7 +471,7 @@ int write_colormap_file_c(const char *file_name,
 	
     printf("Write PVR colormap file name: %s\n", file_name);
 	if ((FP_Colormap = fopen(file_name, "w")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	};
 	

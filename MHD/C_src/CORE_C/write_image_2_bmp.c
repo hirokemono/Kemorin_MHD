@@ -78,7 +78,7 @@ int pixout_BMP_c(const char *fhead, int ihpixf, int jvpixf,
 		return 1;
 	};
 	if ((fp = fopen(fname, "w")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", fname);
 		exit (2);                    /* terminate with error message */
 	}
 	
@@ -243,7 +243,7 @@ int pixout_ppm_p6_c(const char *fhead, int ihpixf, int jvpixf,
 	printf("PPM(P6) file name: %s \n",fname);
 	/* PPM P6 */
 	if ((fp = fopen(fname, "w")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", fname);
 		exit (2);                    /* terminate with error message */
 	}
 	
@@ -278,7 +278,7 @@ int pixout_ppm_p3_c(const char *fhead, int ihpixf, int jvpixf,
 	printf("PPM(P3) file name: %s \n",fname);
 	/* PPM P6 */
 	if ((fp = fopen(fname, "w")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
+		fprintf(stderr, "Cannot open file!: %s\n", fname);
 		exit (2);                    /* terminate with error message */
 	}
 	

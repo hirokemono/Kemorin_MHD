@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine set_control_4_gen_shell_grids                        &
-!!     &         (plt, psph_ctl, sph, sph_files, gen_sph, ierr)
+!!     &         (my_rank, plt, psph_ctl, sph, sph_files, gen_sph, ierr)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
 !!        type(sph_grids), intent(inout) :: sph
@@ -65,8 +65,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_gen_shell_grids                          &
-     &         (plt, psph_ctl, sph, sph_files, gen_sph, ierr)
+     &         (my_rank, plt, psph_ctl, sph, sph_files, gen_sph, ierr)
 !
+      integer(kind = kint), intent(in) :: my_rank
       type(platform_data_control), intent(in) :: plt
       type(parallel_sph_shell_control), intent(inout) :: psph_ctl
       type(sph_grids), intent(inout) :: sph
@@ -78,7 +79,7 @@
 !
 !
       call set_control_4_shell_files                                    &
-     &   (plt, psph_ctl%Fmesh_ctl, nprocs_check, sph_files)
+     &   (my_rank, plt, psph_ctl%Fmesh_ctl, nprocs_check, sph_files)
 !
       call set_control_4_shell_grids                                    &
      &   (nprocs_check, psph_ctl%Fmesh_ctl, psph_ctl%spctl,             &
@@ -92,11 +93,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_shell_files                              &
-     &         (plt, Fmesh_ctl, nprocs_check, sph_files)
+     &         (my_rank, plt, Fmesh_ctl, nprocs_check, sph_files)
 !
       use set_control_platform_data
       use gen_sph_grids_modes
 !
+      integer(kind = kint), intent(in) :: my_rank
       type(platform_data_control), intent(in) :: plt
       type(FEM_mesh_control), intent(in) :: Fmesh_ctl
       type(gen_sph_file_IO_params), intent(inout) ::  sph_files
@@ -108,7 +110,7 @@
         nprocs_check = plt%ndomain_ctl%intvalue
       end if
 !
-      call turn_off_debug_flag_by_ctl(izero, plt)
+      call turn_off_debug_flag_by_ctl(my_rank, plt)
       call set_control_sph_mesh(plt, Fmesh_ctl,                         &
      &    sph_files%mesh_file_IO, sph_files%sph_file_IO,                &
      &    sph_files%FEM_mesh_flags)

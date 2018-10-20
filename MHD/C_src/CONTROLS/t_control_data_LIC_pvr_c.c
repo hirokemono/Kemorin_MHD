@@ -113,7 +113,7 @@ int read_LIC_pvr_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
     
     fprintf(stderr, "Read LIC_PVR control file: %s\n", file_name);
     if ((FP_LIC = fopen(file_name, "r")) == NULL) {
-        fprintf(stderr, "Cannot open file!\n");
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
         exit (2);                    /* terminate with error message */
     };
     
@@ -135,7 +135,7 @@ int write_LIC_pvr_ctl_file_c(const char *file_name, struct LIC_pvr_ctl_c *lic_pv
 	write_pvr_ctl_subfiles(lic_pvr_c->pvr_c);
     
     if ((FP_LIC = fopen(file_name, "w")) == NULL) {
-        fprintf(stderr, "Cannot open file!\n");
+        fprintf(stderr, "Cannot open file!: %s\n", file_name);
         exit (2);                    /* terminate with error message */
     };
     
