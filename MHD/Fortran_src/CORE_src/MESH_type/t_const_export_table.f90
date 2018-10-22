@@ -76,13 +76,13 @@
       use m_precision
       use t_comm_table
 !
+      implicit  none
+!
       type work_4_const_export
         integer(kind = kint) :: nnod_4_ele
         integer(kind = kint) :: ntot_import
         integer(kind = kint), allocatable :: ie_gl_import(:,:)
       end type work_4_const_export
-!
-      implicit  none
 !
 !------------------------------------------------------------------
 !
