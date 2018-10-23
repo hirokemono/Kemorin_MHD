@@ -395,12 +395,13 @@
             vec_mid = half*(vec_org + vec_tgt)
 !   calculate lic value at current location, lic value will be used as intensity
 !   as volume rendering
-            call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,         &
-            &      isf_4_ele, iele_4_surf, interior_surf, xx,                         &
-            &      isurf_orgs, ie_surf, xi, lic_p,                                    &
-            &      r_mid, vec_mid, field_pvr%s_lic,                                   &
-            &      k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,                 &
-            &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
+            call cal_lic_on_surf_vector                                 &
+     &         (numnod, numsurf, numele, nnod_4_surf,                   &
+     &          isf_4_ele, iele_4_surf, interior_surf, xx,              &
+     &          isurf_orgs, ie_surf, xi, lic_p,                         &
+     &          r_mid, vec_mid, field_pvr%s_lic,                        &
+     &          k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,      &
+     &          xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
 
             ave_ray_len = ray_total_len / icount_line_cur_ray
 !
@@ -412,8 +413,8 @@
               grad_tgt(1:3) = grad_tgt(1:3) / grad_len
             endif
 
-            call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_st, xx_tgt,                &
-            &        c_tgt(1), grad_tgt, color_param, ave_ray_len, rgba_ray)
+            call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_st, xx_tgt,  &
+     &          c_tgt(1), grad_tgt, color_param, ave_ray_len, rgba_ray)
           end if
         end if
 !

@@ -99,6 +99,7 @@
       call end_elapsed_time(78)
 !
 !       Outut semented image
+      write(*,*) 'i_debug', i_debug, my_rank
       if(i_debug .gt. 0) then
         do i = 1, pvr_img%num_overlap
           j = pvr_img%istack_overlap(my_rank) + i
