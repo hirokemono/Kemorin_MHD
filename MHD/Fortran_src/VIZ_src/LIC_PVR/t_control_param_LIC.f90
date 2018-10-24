@@ -407,7 +407,9 @@
         write(*,*) 'freq_noise: ', lic_p%freq_noise
 !
         write(*,*) 'iflag_kernel_type: ', lic_p%iflag_kernel_type
-        write(*,*) 'kernel_image_prefix: ', lic_p%kernel_image_prefix
+        if(lic_p%iflag_kernel_type .eq. iflag_from_file) then
+          write(*,*) 'kernel_image_prefix: ', lic_p%kernel_image_prefix
+        end if
 !
         write(*,*) 'iflag_vr_sample_mode: ', lic_p%iflag_vr_sample_mode
         write(*,*) 'step_size: ', lic_p%step_size

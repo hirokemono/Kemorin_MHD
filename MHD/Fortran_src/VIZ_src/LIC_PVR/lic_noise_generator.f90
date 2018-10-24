@@ -98,6 +98,8 @@
         call close_rawfile()
       end if
 !
+      call MPI_BCAST(ierr, ione,                                        &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(n_data_size, ithree,                              &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(d_size, ione,                                     &
