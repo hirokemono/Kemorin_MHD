@@ -107,7 +107,7 @@
       call MPI_BCAST(n_raw_data, d_size,                               &
      &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      write(*,*) 'size', my_rank, d_size, size(n_raw_data)
+      write(*,*) 'size', my_rank, d_size, size(n_raw_data), ierr
 !
       end subroutine import_noise_ary
 !
