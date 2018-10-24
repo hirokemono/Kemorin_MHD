@@ -466,16 +466,18 @@
       if(my_rank .eq. 0) write(*,*) 'loading noise texture from: ',     &
      &                             trim(lic_p%noise_file_name)
       call import_noise_ary(lic_p%noise_file_name,                      &
-      &    lic_p%noise_data, lic_p%noise_dim, read_err)
+     &    lic_p%noise_data, lic_p%noise_dim, read_err)
       if(read_err .eq. 0) then
         if(iflag_debug .gt. 0) then
-          write(*,*) 'loading noise successfuly, loading gradient from: ', lic_p%reflection_file_name
+          write(*,*) 'loading noise successfuly, ',                     &
+     &         'loading gradient from: ', lic_p%reflection_file_name
         end if
-        call import_noise_grad_ary(lic_p%reflection_file_name,            &
-        &      lic_p%noise_grad_data, lic_p%noise_dim, read_err)
+        call import_noise_grad_ary(lic_p%reflection_file_name,          &
+     &      lic_p%noise_grad_data, lic_p%noise_dim, read_err)
       end if
 !
-      lic_p%noise_size = lic_p%noise_dim(1) * lic_p%noise_dim(2) * lic_p%noise_dim(3)
+      lic_p%noise_size = lic_p%noise_dim(1) * lic_p%noise_dim(2)        &
+     &                  * lic_p%noise_dim(3)
       lic_p%freq_noise = lic_p%noise_resolution / lic_p%noise_dim(1)
 !
       if(iflag_debug .gt. 0) then

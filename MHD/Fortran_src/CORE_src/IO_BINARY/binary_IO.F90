@@ -31,7 +31,7 @@
 !!      subroutine read_mul_integer_b(num, int_dat)
 !!      subroutine read_integer_stack_b(num, istack, ntot)
 !!      subroutine read_mul_character_b(num, chara_dat)
-!!      subroutine read_mul_one_character_b(num, chara_dat)
+!!      subroutine read_mul_one_character_b(num, chara_dat, ierr)
 !!      subroutine read_1d_vector_b(num, real_dat)
 !!      subroutine read_2d_vector_b(n1, n2, real_dat)
 !!@endverbatim
@@ -464,10 +464,11 @@ end subroutine write_mul_one_character_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_mul_one_character_b(num, chara_dat)
+      subroutine read_mul_one_character_b(num, chara_dat, ierr)
 !
       integer(kind = kint), intent(in) :: num
       character(len=1), intent(inout) :: chara_dat(num)
+      integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: ilength
 !
@@ -476,9 +477,16 @@ end subroutine write_mul_one_character_b
 #ifdef ZLIB_IO
       ilength = num
       call rawread_f(iflag_endian, ilength, chara_dat(1), ierr_IO)
+      if(ierr_IO .ne. num) goto 99
 #else
-      read(id_binary)  chara_dat(1:num)
+      read(id_binary, err=99, end=99)  chara_dat(1:num)
 #endif
+      ierr = 0
+      return
+!
+  99  continue
+      ierr = 1
+      return
 !
 end subroutine read_mul_one_character_b
 !

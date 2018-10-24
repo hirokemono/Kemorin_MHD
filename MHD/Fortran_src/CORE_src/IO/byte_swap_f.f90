@@ -10,9 +10,14 @@
 !!      subroutine byte_swap_f(l8_byte, array)
 !!         l8_byte :: byte length of array (defined by 8-byte integer)
 !!         array ::   array to be transfered (call by using pointer!)
-!!      subroutine binary_read_and_swap_f                               &
-!!     &         (iflag_endian, id_file, l8_byte, array)
-!!      subroutine binary_write_f(id_file, l8_byte, array)
+!!
+!!      subroutine integer_from_charabuffer(num, buffer, int_dat)
+!!      subroutine int8_from_charabuffer(num, buffer, int8_dat)
+!!      subroutine real_from_charabuffer(num, buffer, real_dat)
+!!
+!!      subroutine integer_to_charabuffer(num, int_dat, buffer)
+!!      subroutine int8_to_charabuffer(num, int8_dat, buffer)
+!!      subroutine real_to_charabuffer(num, real_dat, buffer)
 !!@endverbatim
 !
       subroutine byte_swap_f(l8_byte, array)
