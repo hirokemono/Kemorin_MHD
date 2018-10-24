@@ -84,6 +84,7 @@
 !
       call add_null_character(filename, file_name)
 !
+      if(my_rank .eq. 0) then
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
@@ -95,6 +96,16 @@
           call read_mul_one_character_b(d_size, n_raw_data, ierr)
         end if
         call close_rawfile()
+      end if
+!
+      call MPI_BCAST(n_data_size, ithree,                              &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(d_size, ione,                                     &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
+      if(my_rank .ne. 0) allocate( n_raw_data(d_size))
+      call MPI_BCAST(n_raw_data, d_size,                               &
+     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine import_noise_ary
 !
