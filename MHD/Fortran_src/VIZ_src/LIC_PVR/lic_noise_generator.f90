@@ -82,9 +82,9 @@
       character(len=kchara) :: file_name
       character(len=1) :: one_chara(1)
 !
-      call add_null_character(filename, file_name)
 !
       if(my_rank .eq. 0) then
+        call add_null_character(filename, file_name)
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
@@ -117,15 +117,15 @@
 !
       call MPI_BCAST(ierr, ione,                                        &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(iflag_endian, ione,                               &
+      call MPI_BCAST(iflag_endian, ione,                                &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(n_data_size, ithree,                              &
+      call MPI_BCAST(n_data_size, ithree,                               &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(d_size, ione,                                     &
+      call MPI_BCAST(d_size, ione,                                      &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) allocate( n_raw_data(d_size))
-      call MPI_BCAST(n_raw_data, d_size,                               &
+      call MPI_BCAST(n_raw_data, d_size,                                &
      &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine import_noise_ary
@@ -145,15 +145,27 @@
       integer(kind = kint) :: d_size
       character(len=kchara) :: file_name
 !
-      call add_null_character(filename, file_name)
-      call open_rd_rawfile(file_name, ierr)
-      if(ierr .eq. 0) then
-        d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
-        allocate( n_grad_data(d_size))  ! allocate space for noise data
-        call read_mul_one_character_b(d_size, n_grad_data, ierr)
+!
+      if(my_rank .eq. 0) then
+        call add_null_character(filename, file_name)
+        call open_rd_rawfile(file_name, ierr)
+        if(ierr .eq. 0) then
+          d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
+          allocate( n_grad_data(d_size))  ! allocate space for noise data
+          call read_mul_one_character_b(d_size, n_grad_data, ierr)
+        end if
+        call close_rawfile()
       end if
-      call close_rawfile()
-
+!
+      call MPI_BCAST(ierr, ione,                                        &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(d_size, ione,                                      &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
+      if(my_rank .ne. 0) allocate( n_grad_data(d_size))
+      call MPI_BCAST(n_grad_data, d_size,                               &
+     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+!
       end subroutine import_noise_grad_ary
 !
 !  ---------------------------------------------------------------------
