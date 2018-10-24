@@ -209,7 +209,7 @@
      &     ilength, int_dat, ilen_gzipped)
         deallocate(gzip_buf)
 !
-        if(iflag_endian .eq. iendian_FLIP) then
+        if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
           call byte_swap_f(l8_byte, int_dat(1))
         end if
@@ -263,7 +263,7 @@
      &      ilength, int8_dat(1), ilen_gzipped)
         deallocate(gzip_buf)
 !
-        if(iflag_endian .eq. iendian_FLIP) then
+        if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
           call byte_swap_f(l8_byte, int8_dat(1))
         end if
@@ -336,7 +336,7 @@
      &     ilength, real_dat(1), ilen_gzipped)
         deallocate(gzip_buf)
 !
-        if(iflag_endian .eq. iendian_FLIP) then
+        if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
           call byte_swap_f(l8_byte, real_dat(1))
         end if

@@ -87,7 +87,7 @@
       call open_read_mpi_file                                          &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
       call calypso_mpi_seek_read_endian                                 &
-     &   (IO_param%id_file, IO_param%ioff_gl)
+     &   (IO_param%id_file, IO_param%iflag_bin_swap, IO_param%ioff_gl)
 !
       end subroutine open_read_mpi_file_b
 !
@@ -266,7 +266,8 @@
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
         call calypso_mpi_seek_read_int                                  &
-     &     (IO_param%id_file, ioffset, num, int_dat(1))
+     &     (IO_param%id_file, IO_param%iflag_bin_swap,                  &
+     &      ioffset, num, int_dat(1))
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + num*kint
 !
@@ -304,7 +305,8 @@
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
         call calypso_mpi_seek_read_int8                                 &
-     &     (IO_param%id_file, ioffset, num, int8_dat(1))
+     &     (IO_param%id_file, IO_param%iflag_bin_swap,                  &
+     &      ioffset, num, int8_dat(1))
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + num*kint_gl
 !
@@ -354,7 +356,8 @@
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
         call calypso_mpi_seek_read_real                                 &
-     &     (IO_param%id_file, ioffset, num, real_dat(1))
+     &     (IO_param%id_file, IO_param%iflag_bin_swap,                  &
+     &      ioffset, num, real_dat(1))
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + num*kreal
 !

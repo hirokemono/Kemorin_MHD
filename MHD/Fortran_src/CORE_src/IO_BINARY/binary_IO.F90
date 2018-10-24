@@ -24,7 +24,7 @@
 !!      subroutine write_1d_vector_b(num, real_dat)
 !!      subroutine write_2d_vector_b(n1, n2, real_dat)
 !!
-!!      subroutine read_endian_flag(my_rank)
+!!      integer(kind = kint) function read_endian_flag(my_rank)
 !!      subroutine read_one_integer_b(int_dat)
 !!      subroutine read_one_real_b(real_dat)
 !!      subroutine read_mul_int8_b(num, int_gl_dat)
@@ -114,7 +114,7 @@
       open(id_binary, file = file_name, form='unformatted')
 #endif
 !
-      call read_endian_flag(my_rank)
+      iflag_endian = read_endian_flag(my_rank)
 !
       end subroutine open_read_binary_file
 !
@@ -331,7 +331,7 @@ end subroutine write_mul_one_character_b
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_endian_flag(my_rank)
+      integer(kind = kint) function read_endian_flag(my_rank)
 !
       integer(kind=kint), intent(in) :: my_rank
       integer(kind = kint) :: int_dat
@@ -353,9 +353,10 @@ end subroutine write_mul_one_character_b
       end if
 #else
       read(id_binary)  int_dat
+      read_endian_flag = iendian_KEEP
 #endif
 !
-      end subroutine read_endian_flag
+      end function read_endian_flag
 !
 ! -----------------------------------------------------------------------
 !
@@ -366,9 +367,16 @@ end subroutine write_mul_one_character_b
 !
 #ifdef ZLIB_IO
       call rawread_f(iflag_endian, kint, int_dat, ierr_IO)
+      if(ierr_IO .ne. kint) goto 99
 #else
-      read(id_binary)  int_dat
+      read(id_binary, err=99, end=99)  int_dat
 #endif
+      ierr_IO = 0
+      return
+!
+  99  continue
+      ierr_IO = 1
+      return
 !
       end subroutine read_one_integer_b
 !
@@ -381,9 +389,16 @@ end subroutine write_mul_one_character_b
 !
 #ifdef ZLIB_IO
       call rawread_f(iflag_endian, kreal, real_dat, ierr_IO)
+      if(ierr_IO .ne. kreal) goto 99
 #else
-      read(id_binary)  real_dat
+      read(id_binary, err=99, end=99)  real_dat
 #endif
+      ierr_IO = 0
+      return
+!
+  99  continue
+      ierr_IO = 1
+      return
 !
       end subroutine read_one_real_b
 !
@@ -402,9 +417,16 @@ end subroutine write_mul_one_character_b
 #ifdef ZLIB_IO
       ilength = num * kint_gl
       call rawread_f(iflag_endian, ilength, int_gl_dat(1), ierr_IO)
+      if(ierr_IO .ne. ilength) goto 99
 #else
-      read(id_binary)  int_gl_dat(1:num)
+      read(id_binary, err=99, end=99)  int_gl_dat(1:num)
 #endif
+      ierr_IO = 0
+      return
+!
+  99  continue
+      ierr_IO = 1
+      return
 !
       end subroutine read_mul_int8_b
 !
@@ -424,10 +446,16 @@ end subroutine write_mul_one_character_b
 #ifdef ZLIB_IO
       ilength = num * kint
       call rawread_f(iflag_endian, ilength, int_dat(1), ierr_IO)
+      if(ierr_IO .ne. ilength) goto 99
 #else
-      read(id_binary)  int_dat(1:num)
+      read(id_binary, err=99, end=99)  int_dat(1:num)
 #endif
-      write(*,*) 'ierr_IO', ierr_IO, num, ilength
+      ierr_IO = 0
+      return
+!
+  99  continue
+      ierr_IO = 1
+      return
 !
       end subroutine read_mul_integer_b
 !
@@ -460,9 +488,16 @@ end subroutine write_mul_one_character_b
 #ifdef ZLIB_IO
       ilength = num * kchara
       call rawread_f(iflag_endian, ilength, chara_dat(1), ierr_IO)
+      if(ierr_IO .ne. ilength) goto 99
 #else
-      read(id_binary)  chara_dat(1:num)
+      read(id_binary, err=99, end=99)  chara_dat(1:num)
 #endif
+      ierr_IO = 0
+      return
+!
+  99  continue
+      ierr_IO = 1
+      return
 !
       end subroutine read_mul_character_b
 !
@@ -482,8 +517,8 @@ end subroutine write_mul_one_character_b
       if(num .le. 0) return
 #ifdef ZLIB_IO
       ilength = num
-      call rawread_f(iflag_swap, ilength, chara_dat(1), ierr_IO)
-      if(ierr_IO .ne. num) goto 99
+      call rawread_f(iflag_swap, ilength, chara_dat(1), ierr)
+      if(ierr .ne. ilength) goto 99
 #else
       read(id_binary, err=99, end=99)  chara_dat(1:num)
 #endif
@@ -510,9 +545,16 @@ end subroutine write_mul_one_character_b
 #ifdef ZLIB_IO
       ilength =  num * kreal
       call rawread_f(iflag_endian, ilength, real_dat(1), ierr_IO)
+      if(ierr_IO .ne. ilength) goto 99
 #else
-      read(id_binary)  real_dat(1:num)
+      read(id_binary, err=99, end=99)  real_dat(1:num)
 #endif
+      ierr_IO = 0
+      return
+!
+  99  continue
+      ierr_IO = 1
+      return
 !
       end subroutine read_1d_vector_b
 !
@@ -530,9 +572,16 @@ end subroutine write_mul_one_character_b
       if(n1*n2 .le. 0) return
       ilength =  n1 * n2 * kreal
       call rawread_f(iflag_endian, ilength, real_dat(1,1), ierr_IO)
+      if(ierr_IO .ne. ilength) goto 99
 #else
-      read(id_binary)  real_dat(1:n1,1:n2)
+      read(id_binary, err=99, end=99)  real_dat(1:n1,1:n2)
 #endif
+      ierr_IO = 0
+      return
+!
+  99  continue
+      ierr_IO = 1
+      return
 !
       end subroutine read_2d_vector_b
 !

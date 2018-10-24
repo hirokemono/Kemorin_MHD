@@ -70,6 +70,8 @@
       type calypso_MPI_IO_params
 !>        File ID for MPI-IO
         integer ::  id_file
+!>        Byte swap flag for binary data
+        integer ::  iflag_bin_swap = -1
 !>        process ID for MPI-IO
         integer(kind=kint) ::  id_rank
 !>        number of subdomains (not equal to number of processes)
