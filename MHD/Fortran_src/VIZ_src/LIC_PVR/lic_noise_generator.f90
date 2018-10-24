@@ -90,6 +90,23 @@
 ! first line read 3 integer size data, byte 4
           call read_mul_integer_b(3, n_data_size)
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
+          write(*,*) 'd_size', d_size, n_data_size(1:3)
+!
+          iflag_endian = iendian_KEEP
+          call seek_forward_binary_file(d_size-1)
+          call read_mul_one_character_b(ione, one_chara, ierr)
+          if(ierr .gt. 0) iflag_endian = iendian_FLIP
+          call read_mul_one_character_b(ione, one_chara, ierr)
+          if(ierr .eq. 0) iflag_endian = iendian_FLIP
+          write(*,*) 'iflag_endian', iflag_endian
+        end if
+        call close_rawfile()
+!
+        call open_rd_rawfile(file_name, ierr)
+        if(ierr .eq. 0) then
+! first line read 3 integer size data, byte 4
+          call read_mul_integer_b(3, n_data_size)
+          d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
           write(*,*) 'd_size again', d_size, n_data_size(1:3)
 !
           allocate( n_raw_data(d_size))  ! allocate space for noise data
@@ -100,6 +117,8 @@
 !
       call MPI_BCAST(ierr, ione,                                        &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(iflag_endian, ione,                               &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(n_data_size, ithree,                              &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(d_size, ione,                                     &
@@ -109,8 +128,6 @@
       call MPI_BCAST(n_raw_data, d_size,                               &
      &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      write(*,*) 'size', my_rank, d_size, size(n_raw_data), ierr
-!
       end subroutine import_noise_ary
 !
 !  ---------------------------------------------------------------------
@@ -119,15 +136,15 @@
      &         (filename, n_grad_data, n_data_size, ierr)
 !
       use set_parallel_file_name
-
-      ! parameter for read noise data
+!
+! parameter for read noise data
       character(len = kchara), intent(in) :: filename
       integer(kind = kint), intent(in) :: n_data_size(3)
       character(len=1), allocatable, intent(inout) :: n_grad_data(:)
       integer(kind = kint), intent(inout) :: ierr
       integer(kind = kint) :: d_size
       character(len=kchara) :: file_name
-      !
+!
       call add_null_character(filename, file_name)
       call open_rd_rawfile(file_name, ierr)
       if(ierr .eq. 0) then
