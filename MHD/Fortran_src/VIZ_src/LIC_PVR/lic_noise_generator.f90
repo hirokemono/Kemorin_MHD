@@ -56,7 +56,8 @@
         do i=1, d_size
 !  change 0 to any level to initial complex noise node tree
           call alloc_noise_node(n_node_data(i), 2, 0)
-          call read_mul_one_character_b(1, noise_char, ierr)
+          call read_mul_one_character_b                                 &
+     &       (iflag_endian, 1, noise_char, ierr)
           n_node_data(i)%n_value = ichar(noise_char(1)) / 255.0
 !          write(*,*) n_node_data(i)%n_value
         end do
@@ -94,9 +95,11 @@
 !
           iflag_endian = iendian_KEEP
           call seek_forward_binary_file(d_size-1)
-          call read_mul_one_character_b(ione, one_chara, ierr)
+          call read_mul_one_character_b                                 &
+     &       (iendian_KEEP, ione, one_chara, ierr)
           if(ierr .gt. 0) iflag_endian = iendian_FLIP
-          call read_mul_one_character_b(ione, one_chara, ierr)
+          call read_mul_one_character_b                                 &
+     &       (iendian_KEEP, ione, one_chara, ierr)
           if(ierr .eq. 0) iflag_endian = iendian_FLIP
           write(*,*) 'iflag_endian', iflag_endian
         end if
@@ -110,7 +113,8 @@
           write(*,*) 'd_size again', d_size, n_data_size(1:3)
 !
           allocate( n_raw_data(d_size))  ! allocate space for noise data
-          call read_mul_one_character_b(d_size, n_raw_data, ierr)
+          call read_mul_one_character_b                                 &
+     &       (iflag_endian, d_size, n_raw_data, ierr)
         end if
         call close_rawfile()
       end if
@@ -152,7 +156,8 @@
         if(ierr .eq. 0) then
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
           allocate( n_grad_data(d_size))  ! allocate space for noise data
-          call read_mul_one_character_b(d_size, n_grad_data, ierr)
+          call read_mul_one_character_b                                 &
+     &       (iflag_endian, d_size, n_grad_data, ierr)
         end if
         call close_rawfile()
       end if
