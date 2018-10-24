@@ -84,24 +84,6 @@
 !
       call add_null_character(filename, file_name)
 !
-      if(my_rank .eq. 0) then
-        call open_rd_rawfile(file_name, ierr)
-        if(ierr .eq. 0) then
-! first line read 3 integer size data, byte 4
-          call read_mul_integer_b(3, n_data_size)
-          d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
-          write(*,*) 'd_size', d_size, n_data_size(1:3)
-!
-          iflag_endian = iendian_KEEP
-          call seek_forward_binary_file(d_size-1)
-          call read_mul_one_character_b(ione, one_chara, ierr)
-          if(ierr .gt. 0) iflag_endian = iendian_FLIP
-          call read_mul_one_character_b(ione, one_chara, ierr)
-          if(ierr .eq. 0) iflag_endian = iendian_FLIP
-          write(*,*) 'iflag_endian', iflag_endian
-        end if
-        call close_rawfile()
-!
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
@@ -112,16 +94,7 @@
           allocate( n_raw_data(d_size))  ! allocate space for noise data
           call read_mul_one_character_b(d_size, n_raw_data, ierr)
         end if
-      end if
-!
-      call MPI_BCAST(n_data_size, ithree,                               &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(d_size, ione,                                      &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-!
-      if(my_rank .gt. 0) allocate( n_raw_data(d_size))
-      call MPI_BCAST(n_raw_data, d_size,                                &
-     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+        call close_rawfile()
 !
       end subroutine import_noise_ary
 !
