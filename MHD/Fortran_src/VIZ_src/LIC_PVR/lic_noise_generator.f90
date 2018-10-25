@@ -24,6 +24,9 @@
 !
       implicit  none
 !
+!>      Integer flag of endian swap
+      integer(kind = kint), save, private :: iflag_endian
+!
 !  ---------------------------------------------------------------------
 !
       contains

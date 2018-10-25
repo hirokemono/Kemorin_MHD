@@ -70,7 +70,6 @@
       character(len=kchara) :: fhead_tmp
 !
 !
-      write(*,*) 'file_prefix: ', file_prefix
       write(fhead_tmp,'(a,a4)') trim(file_prefix), '_xyz'
       call set_ele_comm_file_name(fhead_tmp, id_ascii_file_fmt,         &
      &    my_rank_IO, file_name)
