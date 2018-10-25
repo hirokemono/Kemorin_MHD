@@ -39,8 +39,11 @@
       use t_read_mesh_data
       use set_mesh_file_names
       use skip_gz_comment
+      use binary_IO
 !
       implicit none
+!
+      type(file_IO_flags), save :: gz_flags
 !
 !------------------------------------------------------------------
 !
@@ -64,10 +67,11 @@
 !
       call open_rd_gzfile_f(file_name)
       call gz_read_element_comm_table_b                                 &
-     &   (my_rank_IO, ele_mesh_IO%comm, ierr)
+     &   (my_rank_IO, gz_flags, ele_mesh_IO%comm)
 !      call gz_read_element_geometry_b                                  &
-!     &   (ele_mesh_IO%node, ele_mesh_IO%sfed)
+!     &   (gz_flags, ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_gzfile_f
+      ierr = gz_flags%ierr_IO
 !
       end subroutine gz_input_element_file_b
 !
@@ -88,11 +92,12 @@
      &  'Read gzipped binary surface mesh file: ', trim(file_name)
 !
       call open_rd_gzfile_f(file_name)
-      call gz_read_surface_connection_b(my_rank_IO, surf_mesh_IO%comm,  &
-     &   surf_mesh_IO%ele, surf_mesh_IO%sfed, ierr)
+      call gz_read_surface_connection_b(my_rank_IO, gz_flags,           &
+     &    surf_mesh_IO%comm, surf_mesh_IO%ele, surf_mesh_IO%sfed)
 !      call gz_read_surface_geometry_b                                  &
-!     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
+!     &   (gz_flags, surf_mesh_IO%node, surf_mesh_IO%sfed)
       call close_gzfile_f
+      ierr = gz_flags%ierr_IO
 !
       end subroutine gz_input_surface_file_b
 !
@@ -113,11 +118,12 @@
      &  'Read gzipped binary edge mesh file: ', trim(file_name)
 !
       call open_rd_gzfile_f(file_name)
-      call gz_read_edge_connection_b(my_rank_IO, edge_mesh_IO%comm,     &
-     &    edge_mesh_IO%ele, edge_mesh_IO%sfed, ierr)
+      call gz_read_edge_connection_b(my_rank_IO, gz_flags,              &
+     &    edge_mesh_IO%comm, edge_mesh_IO%ele, edge_mesh_IO%sfed)
 !      call gz_read_edge_geometry_b                                     &
-!     &   (edge_mesh_IO%node, edge_mesh_IO%sfed)
+!     &   (gz_flags, edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_gzfile_f
+      ierr = gz_flags%ierr_IO
 !
       end subroutine gz_input_edge_file_b
 !

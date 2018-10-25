@@ -7,8 +7,9 @@
 !> @brief Binary output routines for group data
 !!
 !!@verbatim
-!!      subroutine gz_read_group_data_b(group_IO)
-!!      subroutine gz_read_surf_grp_data_b(surf_grp_IO)
+!!      subroutine gz_read_group_data_b(gz_flags, group_IO)
+!!      subroutine gz_read_surf_grp_data_b(gz_flags, surf_grp_IO)
+!!        type(file_IO_flags), intent(inout) :: gz_flags
 !!        type(group_data), intent(inout) :: group_IO
 !!        type(surface_group_data), intent(inout) :: surf_grp_IO
 !!
@@ -25,6 +26,7 @@
 !
       use t_group_data
 !
+      use binary_IO
       use gz_binary_IO
 !
       implicit none
@@ -35,24 +37,33 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_read_group_data_b(group_IO)
+      subroutine gz_read_group_data_b(gz_flags, group_IO)
 !
+      type(file_IO_flags), intent(inout) :: gz_flags
       type(group_data), intent(inout) :: group_IO
 !
 !
-      call gz_read_one_integer_b(group_IO%num_grp)
+      call gz_read_one_integer_b                                        &
+     &   (gz_flags%iflag_bin_swap, group_IO%num_grp, gz_flags%ierr_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
+!
       call allocate_grp_type_num(group_IO)
 !
       if (group_IO%num_grp .gt. 0) then
-        call gz_read_integer_stack_b(group_IO%num_grp,                  &
-     &      group_IO%istack_grp, group_IO%num_item)
-        call gz_read_mul_character_b                                    &
-     &     (group_IO%num_grp, group_IO%grp_name)
+        call gz_read_integer_stack_b(gz_flags%iflag_bin_swap,           &
+     &      group_IO%num_grp, group_IO%istack_grp,                      &
+     &      group_IO%num_item, gz_flags%ierr_IO)
+        if(gz_flags%ierr_IO .gt. 0) return
+!
+        call gz_read_mul_character_b(gz_flags%iflag_bin_swap,           &
+     &      group_IO%num_grp, group_IO%grp_name, gz_flags%ierr_IO)
+        if(gz_flags%ierr_IO .gt. 0) return
 !
         call allocate_grp_type_item(group_IO)
 !
-        call gz_read_mul_integer_b                                      &
-     &     (group_IO%num_item, group_IO%item_grp)
+        call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,             &
+     &      group_IO%num_item, group_IO%item_grp, gz_flags%ierr_IO)
+         if(gz_flags%ierr_IO .gt. 0) return
       else
         group_IO%num_item = 0
         call allocate_grp_type_item(group_IO)
@@ -62,26 +73,37 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_read_surf_grp_data_b(surf_grp_IO)
+      subroutine gz_read_surf_grp_data_b(gz_flags, surf_grp_IO)
 !
+      type(file_IO_flags), intent(inout) :: gz_flags
       type(surface_group_data), intent(inout) :: surf_grp_IO
 !
       integer(kind = kint) :: nitem
 !
 !
-      call gz_read_one_integer_b(surf_grp_IO%num_grp)
+      call gz_read_one_integer_b(gz_flags%iflag_bin_swap,               &
+     &    surf_grp_IO%num_grp, gz_flags%ierr_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
+!
       call allocate_sf_grp_type_num(surf_grp_IO)
 !
       if (surf_grp_IO%num_grp .gt. 0) then
-        call gz_read_integer_stack_b(surf_grp_IO%num_grp,               &
-     &      surf_grp_IO%istack_grp, surf_grp_IO%num_item)
-        call gz_read_mul_character_b                                    &
-     &     (surf_grp_IO%num_grp, surf_grp_IO%grp_name)
+        call gz_read_integer_stack_b(gz_flags%iflag_bin_swap,           &
+     &      surf_grp_IO%num_grp, surf_grp_IO%istack_grp,                &
+     &      surf_grp_IO%num_item, gz_flags%ierr_IO)
+        if(gz_flags%ierr_IO .gt. 0) return
+!
+        call gz_read_mul_character_b(gz_flags%iflag_bin_swap,           &
+     &      surf_grp_IO%num_grp, surf_grp_IO%grp_name,                  &
+     &      gz_flags%ierr_IO)
+        if(gz_flags%ierr_IO .gt. 0) return
 !
         call allocate_sf_grp_type_item(surf_grp_IO)
 !
         nitem = 2 * surf_grp_IO%num_item
-        call gz_read_mul_integer_b(nitem, surf_grp_IO%item_sf_grp)
+        call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,             &
+     &      nitem, surf_grp_IO%item_sf_grp, gz_flags%ierr_IO)
+        if(gz_flags%ierr_IO .gt. 0) return
       else
         call allocate_sf_grp_type_item(surf_grp_IO)
       end if

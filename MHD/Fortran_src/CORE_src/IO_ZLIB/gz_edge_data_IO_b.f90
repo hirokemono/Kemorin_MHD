@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine gz_read_edge_connection_b                            &
-!!     &         (my_rank_IO, comm_IO, ele_IO, sfed_IO, ierr)
+!!     &         (my_rank_IO, gz_flags, comm_IO, ele_IO, sfed_IO)
+!!        type(file_IO_flags), intent(inout) :: gz_flags
 !!        type(communication_table), intent(inout) :: comm_IO
 !!        type(element_data), intent(inout) :: ele_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
@@ -18,7 +19,8 @@
 !!        type(element_data), intent(in) :: ele_IO
 !!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
-!!      subroutine gz_read_edge_geometry_b(nod_IO, sfed_IO)
+!!      subroutine gz_read_edge_geometry_b(gz_flags, nod_IO, sfed_IO)
+!!        type(file_IO_flags), intent(inout) :: gz_flags
 !!        type(node_data), intent(inout) :: nod_IO
 !!        type(element_data), intent(inout) :: ele_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
@@ -37,6 +39,7 @@
       use t_geometry_data
       use t_read_mesh_data
       use t_surf_edge_IO
+      use binary_IO
       use m_fem_surface_labels
 !
       implicit none
@@ -48,40 +51,44 @@
 !------------------------------------------------------------------
 !
       subroutine gz_read_edge_connection_b                              &
-     &         (my_rank_IO, comm_IO, ele_IO, sfed_IO, ierr)
+     &         (my_rank_IO, gz_flags, comm_IO, ele_IO, sfed_IO)
 !
       use m_fem_mesh_labels
       use gz_domain_data_IO_b
       use gz_element_connect_IO_b
 !
       integer (kind = kint), intent(in) :: my_rank_IO
+      type(file_IO_flags), intent(inout) :: gz_flags
       type(communication_table), intent(inout) :: comm_IO
       type(element_data), intent(inout) :: ele_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
-      integer(kind = kint), intent(inout) :: ierr
 !
 !
 !      textbuf = hd_edge_para() // char(0)
 !      textbuf = hd_fem_para() // char(0)
-      call gz_read_domain_info_b(my_rank_IO, comm_IO, ierr)
+      call gz_read_domain_info_b(my_rank_IO, gz_flags, comm_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
 !
 !      textbuf = hd_edge_connect() // char(0)
-      call gz_read_number_of_element_b(ele_IO)
-      call gz_read_element_info_b(ele_IO)
+      call gz_read_number_of_element_b(gz_flags, ele_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
+      call gz_read_element_info_b(gz_flags, ele_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
 !
 !      textbuf = hd_edge_on_surf() // char(0)
-      call gz_read_surface_4_element_b(sfed_IO)
+      call gz_read_surface_4_element_b(gz_flags, sfed_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
 !
 !      textbuf = hd_edge_on_ele() // char(0)
-      call gz_read_edge_4_element_b(sfed_IO)
-!
-!
+      call gz_read_edge_4_element_b(gz_flags, sfed_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
 !
 !      textbuf = hd_edge_import() // char(0)
-      call gz_read_import_data_b(comm_IO)
+      call gz_read_import_data_b(gz_flags, comm_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
 !
 !      textbuf = hd_edge_export() // char(0)
-      call gz_read_export_data_b(comm_IO)
+      call gz_read_export_data_b(gz_flags, comm_IO)
 !
       end subroutine gz_read_edge_connection_b
 !
@@ -125,23 +132,28 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine gz_read_edge_geometry_b(nod_IO, sfed_IO)
+      subroutine gz_read_edge_geometry_b(gz_flags, nod_IO, sfed_IO)
 !
       use gz_node_geometry_IO_b
 !
+      type(file_IO_flags), intent(inout) :: gz_flags
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
 !      textbuf = hd_edge_point() // char(0)
-      call gz_read_number_of_node_b(nod_IO)
-      call gz_read_geometry_info_b(nod_IO)
+      call gz_read_number_of_node_b(gz_flags, nod_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
+!
+      call gz_read_geometry_info_b(gz_flags, nod_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
 !
 !      textbuf = hd_edge_dir() // char(0)
-      call gz_read_vector_in_element_b(nod_IO, sfed_IO)
+      call gz_read_vector_in_element_b(gz_flags, nod_IO, sfed_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
 !
 !      textbuf = hd_edge_length() // char(0)
-      call gz_read_scalar_in_element_b(nod_IO, sfed_IO)
+      call gz_read_scalar_in_element_b(gz_flags, nod_IO, sfed_IO)
 !
       end subroutine gz_read_edge_geometry_b
 !

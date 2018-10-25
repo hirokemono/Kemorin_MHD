@@ -45,6 +45,13 @@
 !
       implicit none
 !
+      type file_IO_flags
+!>        integer flag for byte swapping
+        integer(kind = kint) :: iflag_bin_swap = -1
+!>        Error flag for data IO
+        integer(kind = kint) :: ierr_IO = 0
+      end type file_IO_flags
+!
       integer(kind = kint), parameter :: id_binary = 19
 !
       integer(kind = kint), private :: ierr_IO
@@ -338,16 +345,16 @@ end subroutine write_mul_one_character_b
 !
 !
 #ifdef ZLIB_IO
-      call rawread_f(iflag_endian, kint, int_dat, ierr_IO)
+      call rawread_f(iendian_KEEP, kint, int_dat, ierr_IO)
 !
       if(int_dat .eq. i_UNIX) then
         if(my_rank.eq.0) write(*,*) 'binary data have correct endian!'
-        iflag_endian = iendian_KEEP
+        read_endian_flag = iendian_KEEP
       else if(int_dat .eq. i_XINU) then
         if(my_rank.eq.0) write(*,*) 'binary data have opposite endian!'
-        iflag_endian = iendian_FLIP
+        read_endian_flag = iendian_FLIP
       else
-        iflag_endian = -1
+        read_endian_flag = -1
         if(my_rank.eq.0) write(*,*) 'Binary Data is someting wrong!',   &
      &                               int_dat
       end if

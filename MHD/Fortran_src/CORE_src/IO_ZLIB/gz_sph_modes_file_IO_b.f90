@@ -38,10 +38,12 @@
 !
       use t_spheric_data_IO
       use gz_sph_modes_data_IO_b
+      use binary_IO
       use skip_gz_comment
 !
-!
       implicit none
+!
+      type(file_IO_flags), private :: gz_sphflags
 !
 !------------------------------------------------------------------
 !
@@ -63,10 +65,16 @@
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &      'Read gzipped binary grid file: ', trim(file_name)
-      call open_rd_gzfile_b(file_name, my_rank_IO)
-      call gz_read_geom_rtp_data_b(my_rank_IO,                          &
-     &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO, ierr)
+      call open_rd_gzfile_b(file_name, my_rank_IO,                      &
+     &    gz_sphflags%iflag_bin_swap, gz_sphflags%ierr_IO)
+      if(gz_sphflags%ierr_IO .gt. 0) goto 99
+!
+      call gz_read_geom_rtp_data_b(my_rank_IO, gz_sphflags,             &
+     &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
+!
+  99  continue
       call close_gzfile_f
+      ierr = gz_sphflags%ierr_IO
 !
       end subroutine gz_read_geom_rtp_file_b
 !
@@ -86,10 +94,16 @@
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &      'Read gzipped binary spectr modes file: ', trim(file_name)
-      call open_rd_gzfile_b(file_name, my_rank_IO)
-      call gz_read_spectr_modes_rj_data_b(my_rank_IO,                   &
-     &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO, ierr)
+      call open_rd_gzfile_b(file_name, my_rank_IO,                      &
+     &    gz_sphflags%iflag_bin_swap, gz_sphflags%ierr_IO)
+      if(gz_sphflags%ierr_IO .gt. 0) goto 99
+!
+      call gz_read_spectr_modes_rj_data_b(my_rank_IO, gz_sphflags,      &
+     &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
+!
+  99  continue
       call close_gzfile_f
+      ierr = gz_sphflags%ierr_IO
 !
       end subroutine gz_read_spectr_modes_rj_file_b
 !
@@ -107,10 +121,16 @@
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &      'Read gzipped binary grid file: ', trim(file_name)
-      call open_rd_gzfile_b(file_name, my_rank_IO)
+      call open_rd_gzfile_b(file_name, my_rank_IO,                      &
+     &    gz_sphflags%iflag_bin_swap, gz_sphflags%ierr_IO)
+      if(gz_sphflags%ierr_IO .gt. 0) goto 99
+!
       call gz_read_geom_rtm_data_b                                      &
-     &   (my_rank_IO, sph_file%comm_IO, sph_file%sph_IO, ierr)
+     &   (my_rank_IO, gz_sphflags, sph_file%comm_IO, sph_file%sph_IO)
+!
+  99  continue
       call close_gzfile_f
+      ierr = gz_sphflags%ierr_IO
 !
       end subroutine gz_read_geom_rtm_file_b
 !
@@ -128,10 +148,16 @@
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &      'Read gzipped binary spectr modes file: ', trim(file_name)
-      call open_rd_gzfile_b(file_name, my_rank_IO)
+      call open_rd_gzfile_b(file_name, my_rank_IO,                      &
+     &    gz_sphflags%iflag_bin_swap, gz_sphflags%ierr_IO)
+      if(gz_sphflags%ierr_IO .gt. 0) goto 99
+!
       call gz_read_modes_rlm_data_b                                     &
-     &   (my_rank_IO, sph_file%comm_IO, sph_file%sph_IO, ierr)
+     &   (my_rank_IO, gz_sphflags, sph_file%comm_IO, sph_file%sph_IO)
+!
+  99  continue
       call close_gzfile_f
+      ierr = gz_sphflags%ierr_IO
 !
       end subroutine gz_read_modes_rlm_file_b
 !
