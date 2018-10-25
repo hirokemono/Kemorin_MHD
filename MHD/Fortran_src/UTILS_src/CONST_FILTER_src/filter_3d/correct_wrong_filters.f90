@@ -5,10 +5,10 @@
 !
 !!      subroutine s_correct_wrong_filters                              &
 !!     &         (id_org_filter, fixed_file_name, mesh,                 &
-!!     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod)
+!!     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod, bin_flags)
 !!      subroutine correct_wrong_fluid_filters                          &
 !!     &         (id_org_filter, fixed_file_name, mesh,                 &
-!!     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod)
+!!     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod, bin_flags)
 !!       type(mesh_geometry), intent(in) :: mesh
 !!       type(jacobians_3d), intent(in) :: jac_3d
 !!       type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -31,6 +31,7 @@
       use t_filter_dxdxi
       use t_filter_moments
 !
+      use binary_IO
       use expand_filter_area_4_1node
       use copy_moments_2_matrix
       use cal_filter_func_each_node
@@ -54,7 +55,7 @@
 !
       subroutine s_correct_wrong_filters                                &
      &         (id_org_filter, fixed_file_name, mesh,                   &
-     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod)
+     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod, bin_flags)
 !
       use set_simple_filters
 !
@@ -68,6 +69,7 @@
 !
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
+      type(file_IO_flags), intent(inout) :: bin_flags
 !
       integer(kind = kint) :: inod, ierr2, ierr
 !
@@ -81,7 +83,7 @@
       write(70+my_rank,*) ' Best condition for filter'
 !
       do inod = inod_start_filter, inod_end_filter
-        call read_each_filter_stack_coef(id_org_filter)
+        call read_each_filter_stack_coef(bin_flags, id_org_filter)
 !
         call cal_rms_filter_coefs(min_rms_weight, ierr2)
 !
@@ -133,7 +135,7 @@
 !
       subroutine correct_wrong_fluid_filters                            &
      &         (id_org_filter, fixed_file_name, mesh,                   &
-     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod)
+     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod, bin_flags)
 !
       character(len = kchara), intent(in) :: fixed_file_name
       integer(kind = kint), intent(in) :: id_org_filter
@@ -143,6 +145,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !
@@ -156,7 +159,7 @@
 !
       do inod = inod_start_filter, inod_end_filter
 !
-        call read_each_filter_stack_coef(id_org_filter)
+        call read_each_filter_stack_coef(bin_flags, id_org_filter)
 !
         if ( nnod_near_1nod_weight .gt. 0) then
           call cal_rms_filter_coefs(min_rms_weight, ierr2)

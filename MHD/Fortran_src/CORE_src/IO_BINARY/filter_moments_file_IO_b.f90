@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine read_num_filter_mom_type_file_b(file_name, my_rank,  &
-!!     &          FEM_elens, FEM_moms)
+!!     &          FEM_elens, FEM_moms, ierr)
 !!
 !!      subroutine read_filter_elen_type_file_b(file_name, my_rank,     &
 !!     &          nnod, nele, FEM_elens, ierr)
@@ -41,6 +41,8 @@
 !
       implicit none
 !
+      type(file_IO_flags), private :: bin_fmflags
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -48,7 +50,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_num_filter_mom_type_file_b(file_name, my_rank,    &
-     &          FEM_elens, FEM_moms)
+     &          FEM_elens, FEM_moms, ierr)
 !
       use t_filter_moments
 !
@@ -56,6 +58,7 @@
       integer(kind = kint), intent(in) :: my_rank
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
@@ -63,9 +66,12 @@
      &             trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, my_rank)
-      call read_filter_moment_num_type_b(FEM_elens, FEM_moms)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank, bin_fmflags%iflag_bin_swap)
+      call read_filter_moment_num_type_b                                &
+     &   (bin_fmflags, FEM_elens, FEM_moms)
       call close_binary_file
+      ierr = bin_fmflags%ierr_IO
 !
       end subroutine read_num_filter_mom_type_file_b
 !
@@ -87,9 +93,12 @@
      &             trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, my_rank)
-      call read_filter_elen_data_type_b(nnod, nele, FEM_elens, ierr)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank, bin_fmflags%iflag_bin_swap)
+      call read_filter_elen_data_type_b                                 &
+     &   (nnod, nele, bin_fmflags, FEM_elens)
       call close_binary_file
+      ierr = bin_fmflags%ierr_IO
 !
       end subroutine read_filter_elen_type_file_b
 !
@@ -135,10 +144,12 @@
      &             trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, my_rank)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank, bin_fmflags%iflag_bin_swap)
       call read_filter_moms_data_type_b                                 &
-     &   (nnod, nele, FEM_elens, FEM_moms, ierr)
+     &   (nnod, nele, bin_fmflags, FEM_elens, FEM_moms)
       call close_binary_file
+      ierr = bin_fmflags%ierr_IO
 !
       end subroutine read_filter_moms_type_file_b
 !

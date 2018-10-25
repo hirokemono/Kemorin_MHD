@@ -33,6 +33,8 @@
 !
       implicit none
 !
+      type(file_IO_flags), private :: bin_meshflags
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -51,12 +53,16 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read binary mesh file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, my_rank_IO)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_meshflags%iflag_bin_swap)
 !
-      call read_geometry_data_b(my_rank_IO, fem_IO%mesh, ierr)
-      call read_mesh_groups_b(fem_IO%group)
+      call read_geometry_data_b(my_rank_IO, bin_meshflags, fem_IO%mesh)
+      if(bin_meshflags%ierr_IO .gt. 0) return
+!
+      call read_mesh_groups_b(bin_meshflags, fem_IO%group)
 !
       call close_binary_file
+      ierr = bin_meshflags%ierr_IO
 !
       end subroutine read_mesh_file_b
 !
@@ -75,9 +81,11 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read binary mesh file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, my_rank_IO)
-      call read_geometry_data_b(my_rank_IO, mesh_IO, ierr)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_meshflags%iflag_bin_swap)
+      call read_geometry_data_b(my_rank_IO, bin_meshflags, mesh_IO)
       call close_binary_file
+      ierr = bin_meshflags%ierr_IO
 !
       end subroutine read_mesh_geometry_b
 !
@@ -96,9 +104,11 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read binary mesh file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, my_rank_IO)
-      call read_num_node_b(my_rank_IO, mesh_IO, ierr)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_meshflags%iflag_bin_swap)
+      call read_num_node_b(my_rank_IO, bin_meshflags, mesh_IO)
       call close_binary_file
+      ierr = bin_meshflags%ierr_IO
 !
       end subroutine read_node_size_b
 !
@@ -117,9 +127,11 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &   'Read binary mesh file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, my_rank_IO)
-      call read_num_node_ele_b(my_rank_IO, mesh_IO, ierr)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_meshflags%iflag_bin_swap)
+      call read_num_node_ele_b(my_rank_IO, bin_meshflags, mesh_IO)
       call close_binary_file
+      ierr = bin_meshflags%ierr_IO
 !
       end subroutine read_geometry_size_b
 !

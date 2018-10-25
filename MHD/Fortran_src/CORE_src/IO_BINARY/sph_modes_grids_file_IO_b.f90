@@ -42,6 +42,8 @@
 !
       implicit none
 !
+      type(file_IO_flags), private :: bin_sphflags
+!
 !------------------------------------------------------------------
 !
       contains
@@ -62,10 +64,13 @@
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &      'Read binary grid file: ', trim(file_name)
-      call open_read_binary_file(file_name, my_rank_IO)
-      call read_geom_rtp_data_b(my_rank_IO,                             &
-     &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO, ierr)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_sphflags%iflag_bin_swap)
+      call read_geom_rtp_data_b(my_rank_IO, bin_sphflags,               &
+     &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
       call close_binary_file
+      ierr = bin_sphflags%ierr_IO
+!
       end subroutine read_geom_rtp_file_b
 !
 !------------------------------------------------------------------
@@ -84,10 +89,12 @@
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &      'Read binary spectr modes file: ', trim(file_name)
-      call open_read_binary_file(file_name, my_rank_IO)
-      call read_spectr_modes_rj_data_b(my_rank_IO,                      &
-     &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO, ierr)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_sphflags%iflag_bin_swap)
+      call read_spectr_modes_rj_data_b(my_rank_IO, bin_sphflags,        &
+     &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
       call close_binary_file
+      ierr = bin_sphflags%ierr_IO
 !
       end subroutine read_spectr_modes_rj_file_b
 !
@@ -105,10 +112,12 @@
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &      'Read binary grid file: ', trim(file_name)
-      call open_read_binary_file(file_name, my_rank_IO)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_sphflags%iflag_bin_swap)
       call read_geom_rtm_data_b                                         &
-     &   (my_rank_IO, sph_file%comm_IO, sph_file%sph_IO, ierr)
+     &   (my_rank_IO, bin_sphflags, sph_file%comm_IO, sph_file%sph_IO)
       call close_binary_file
+      ierr = bin_sphflags%ierr_IO
 !
       end subroutine read_geom_rtm_file_b
 !
@@ -126,10 +135,12 @@
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &      'Read binary spectr modes file: ', trim(file_name)
-      call open_read_binary_file(file_name, my_rank_IO)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_sphflags%iflag_bin_swap)
       call read_modes_rlm_data_b                                        &
-     &   (my_rank_IO, sph_file%comm_IO, sph_file%sph_IO, ierr)
+     &   (my_rank_IO, bin_sphflags, sph_file%comm_IO, sph_file%sph_IO)
       call close_binary_file
+      ierr = bin_sphflags%ierr_IO
 !
       end subroutine read_modes_rlm_file_b
 !

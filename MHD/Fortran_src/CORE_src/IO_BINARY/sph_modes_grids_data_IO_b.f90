@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine read_geom_rtp_data_b                                 &
-!!     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO, ierr)
+!!     &         (my_rank_IO, bin_flags, comm_IO, sph_IO, sph_grps_IO)
 !!      subroutine read_spectr_modes_rj_data_b                          &
-!!     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO, ierr)
+!!     &         (my_rank_IO, bin_flags, comm_IO, sph_IO, sph_grps_IO)
 !!      subroutine read_geom_rtm_data_b                                 &
-!!     &         (my_rank_IO, comm_IO, sph_IO, ierr)
+!!     &         (my_rank_IO, bin_flags, comm_IO, sph_IO)
 !!      subroutine read_modes_rlm_data_b                                &
-!!     &         (my_rank_IO, comm_IO, sph_IO, ierr)
+!!     &         (my_rank_IO, bin_flags, comm_IO, sph_IO)
+!!        type(file_IO_flags), intent(inout) :: bin_flags
 !!        type(communication_table), intent(inout) :: comm_IO
 !!        type(sph_IO_data), intent(inout) :: sph_IO
 !!        type(sph_group_data), intent(inout) :: sph_grps_IO
@@ -56,130 +57,171 @@
 !------------------------------------------------------------------
 !
       subroutine read_geom_rtp_data_b                                   &
-     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO, ierr)
+     &         (my_rank_IO, bin_flags, comm_IO, sph_IO, sph_grps_IO)
 !
       use groups_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO
+!
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(communication_table), intent(inout) :: comm_IO
       type(sph_IO_data), intent(inout) :: sph_IO
       type(sph_group_data), intent(inout) :: sph_grps_IO
-      integer(kind = kint), intent(inout) :: ierr
 !
 !
       sph_IO%numdir_sph =  3
 !
 !      write(*,*) '! domain and communication'
-      call read_domain_info_b(my_rank_IO, comm_IO, ierr)
+      call read_domain_info_b(my_rank_IO, bin_flags, comm_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call read_gl_resolution_sph_b(sph_IO)
+      call read_gl_resolution_sph_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
 !      write(*,*) '! segment ID for each direction'
-      call read_rank_4_sph_b(sph_IO)
+      call read_rank_4_sph_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
 !      write(*,*) '! global ID for each direction'
-      call read_rtp_gl_1d_table_b(sph_IO)
+      call read_rtp_gl_1d_table_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
 !      write(*,*) '! global radial ID and grid ID'
-      call read_gl_nodes_sph_b(sph_IO)
+      call read_gl_nodes_sph_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
 !      write(*,*) '! communication table for rtp'
-      call read_import_data_b(comm_IO)
+      call read_import_data_b(bin_flags, comm_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
 !      write(*,*) '! Group data bc_rtp_grp_IO'
-      call read_group_data_b(sph_grps_IO%bc_rtp_grp)
+      call read_group_data_b(bin_flags, sph_grps_IO%bc_rtp_grp)
+      if(bin_flags%ierr_IO .gt. 0) return
 !      write(*,*) '! Group data radial_rtp_grp_IO'
-      call read_group_data_b(sph_grps_IO%radial_rtp_grp)
+      call read_group_data_b(bin_flags, sph_grps_IO%radial_rtp_grp)
+      if(bin_flags%ierr_IO .gt. 0) return
 !      write(*,*) '! Group data theta_rtp_grp_IO'
-      call read_group_data_b(sph_grps_IO%theta_rtp_grp)
+      call read_group_data_b(bin_flags, sph_grps_IO%theta_rtp_grp)
+      if(bin_flags%ierr_IO .gt. 0) return
 !      write(*,*) '! Group data zonal_rtp_grp_IO'
-      call read_group_data_b(sph_grps_IO%zonal_rtp_grp)
+      call read_group_data_b(bin_flags, sph_grps_IO%zonal_rtp_grp)
 !
       end subroutine read_geom_rtp_data_b
 !
 !------------------------------------------------------------------
 !
       subroutine read_spectr_modes_rj_data_b                            &
-     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO, ierr)
+     &         (my_rank_IO, bin_flags, comm_IO, sph_IO, sph_grps_IO)
 !
       use groups_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO
+!
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(communication_table), intent(inout) :: comm_IO
       type(sph_IO_data), intent(inout) :: sph_IO
       type(sph_group_data), intent(inout) :: sph_grps_IO
-      integer(kind = kint), intent(inout) :: ierr
 !
 !
       sph_IO%numdir_sph =  2
 !
 !      write(*,*) '! domain and communication'
-      call read_domain_info_b(my_rank_IO, comm_IO, ierr)
+      call read_domain_info_b(my_rank_IO, bin_flags, comm_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
 !      write(*,*) '! truncation level for spherical harmonics'
-      call read_gl_resolution_sph_b(sph_IO)
+      call read_gl_resolution_sph_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
 !      write(*,*) '! segment ID for each direction'
-      call read_rank_4_sph_b(sph_IO)
+      call read_rank_4_sph_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
 !      write(*,*) '! global ID for each direction'
-      call read_rj_gl_1d_table_b(sph_IO)
+      call read_rj_gl_1d_table_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
 !      write(*,*) '! global radial ID and spectr ID'
-      call read_gl_nodes_sph_b(sph_IO)
+      call read_gl_nodes_sph_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
 !      write(*,*) '! communication table for rj'
-      call read_import_data_b(comm_IO)
+      call read_import_data_b(bin_flags, comm_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
 !      write(*,*) '! Group data'
-      call read_group_data_b(sph_grps_IO%radial_rj_grp)
-      call read_group_data_b(sph_grps_IO%sphere_rj_grp)
+      call read_group_data_b(bin_flags, sph_grps_IO%radial_rj_grp)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_group_data_b(bin_flags, sph_grps_IO%sphere_rj_grp)
 !
       end subroutine read_spectr_modes_rj_data_b
 !
 !------------------------------------------------------------------
 !
       subroutine read_geom_rtm_data_b                                   &
-     &         (my_rank_IO, comm_IO, sph_IO, ierr)
+     &         (my_rank_IO, bin_flags, comm_IO, sph_IO)
 !
       integer(kind = kint), intent(in) :: my_rank_IO
+!
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(communication_table), intent(inout) :: comm_IO
       type(sph_IO_data), intent(inout) :: sph_IO
-      integer(kind = kint), intent(inout) :: ierr
 !
 !
       sph_IO%numdir_sph =  3
 !
-      call read_domain_info_b(my_rank_IO, comm_IO, ierr)
-      call read_gl_resolution_sph_b(sph_IO)
-      call read_rank_4_sph_b(sph_IO)
-      call read_rtp_gl_1d_table_b(sph_IO)
-      call read_gl_nodes_sph_b(sph_IO)
+      call read_domain_info_b(my_rank_IO, bin_flags, comm_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
-      call read_import_data_b(comm_IO)
+      call read_gl_resolution_sph_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_rank_4_sph_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_rtp_gl_1d_table_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_gl_nodes_sph_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_import_data_b(bin_flags, comm_IO)
 !
       end subroutine read_geom_rtm_data_b
 !
 !------------------------------------------------------------------
 !
       subroutine read_modes_rlm_data_b                                  &
-     &         (my_rank_IO, comm_IO, sph_IO, ierr)
+     &         (my_rank_IO, bin_flags, comm_IO, sph_IO)
 !
       integer(kind = kint), intent(in) :: my_rank_IO
+!
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(communication_table), intent(inout) :: comm_IO
       type(sph_IO_data), intent(inout) :: sph_IO
-      integer(kind = kint), intent(inout) :: ierr
 !
 !
       sph_IO%numdir_sph =  2
 !
-      call read_domain_info_b(my_rank_IO, comm_IO, ierr)
-      call read_gl_resolution_sph_b(sph_IO)
-      call read_rank_4_sph_b(sph_IO)
-      call read_rj_gl_1d_table_b(sph_IO)
-      call read_gl_nodes_sph_b(sph_IO)
+      call read_domain_info_b(my_rank_IO, bin_flags, comm_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_gl_resolution_sph_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_rank_4_sph_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_rj_gl_1d_table_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_gl_nodes_sph_b(bin_flags, sph_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
 !      write(*,*) '! communication table for rj'
-      call read_import_data_b(comm_IO)
+      call read_import_data_b(bin_flags, comm_IO)
 !
       end subroutine read_modes_rlm_data_b
 !

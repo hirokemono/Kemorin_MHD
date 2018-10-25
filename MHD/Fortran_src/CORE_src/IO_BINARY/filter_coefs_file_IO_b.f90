@@ -32,6 +32,8 @@
 !
       implicit none
 !
+      type(file_IO_flags), private :: bin_fcflags
+!
       private :: read_3d_filter_stack_b, write_3d_filter_stack_b
       private :: read_3d_filter_weights_coef_b
       private :: write_3d_filter_weights_coef_b
@@ -58,12 +60,21 @@
         write(*,*) 'Read binary filter file: ', trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, my_rank_IO)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_fcflags%iflag_bin_swap)
       call read_filter_geometry_b                                       &
-     &   (my_rank_IO, filter_IO%nod_comm, filter_IO%node, ierr)
-      call read_3d_filter_stack_b(filter_IO%filters)
-      call read_3d_filter_weights_coef_b(filter_IO%filters)
+     &   (my_rank_IO, bin_fcflags, filter_IO%nod_comm, filter_IO%node)
+      if(bin_fcflags%ierr_IO .gt. 0) goto 99
+!
+      call read_3d_filter_stack_b(bin_fcflags, filter_IO%filters)
+      if(bin_fcflags%ierr_IO .gt. 0) goto 99
+!
+      call read_3d_filter_weights_coef_b                                &
+     &   (bin_fcflags, filter_IO%filters)
+!
+  99  continue
       call close_binary_file
+      ierr = bin_fcflags%ierr_IO
 !
       end subroutine read_sorted_filter_coef_file_b
 !
@@ -114,10 +125,12 @@
         write(*,*) 'Read binary filter file: ', trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, my_rank_IO)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_fcflags%iflag_bin_swap)
       call read_filter_geometry_b                                       &
-     &   (my_rank_IO, filter_IO%nod_comm, filter_IO%node, ierr)
+     &   (my_rank_IO, bin_fcflags, filter_IO%nod_comm, filter_IO%node)
       call close_binary_file
+      ierr = bin_fcflags%ierr_IO
 !
       end subroutine read_filter_geometry_file_b
 !
@@ -150,31 +163,45 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_3d_filter_stack_b(IO_filters)
+      subroutine read_3d_filter_stack_b(bin_flags, IO_filters)
 !
       use cal_minmax_and_stacks
       use binary_IO
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(filter_coefficients_type), intent(inout) :: IO_filters
 !
 !
-      call read_one_integer_b(IO_filters%ngrp_node)
+      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    IO_filters%ngrp_node, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
       call alloc_num_filtering_comb(ione, IO_filters)
 !
-      call read_integer_stack_b(IO_filters%ngrp_node,                   &
-     &    IO_filters%istack_node, IO_filters%ntot_nod)
-      call read_mul_character_b                                         &
-     &   (IO_filters%ngrp_node, IO_filters%group_name)
+      call read_integer_stack_b(bin_flags%iflag_bin_swap,               &
+     &    IO_filters%ngrp_node, IO_filters%istack_node,                 &
+     &    IO_filters%ntot_nod, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_mul_character_b(bin_flags%iflag_bin_swap,               &
+     &    IO_filters%ngrp_node, IO_filters%group_name,                  &
+     &    bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
       call s_cal_numbers_from_stack(IO_filters%ngrp_node,               &
      &    IO_filters%num_node, IO_filters%istack_node)
 !
       call alloc_inod_filter_comb(IO_filters)
 !
-      call read_mul_integer_b                                           &
-     &   (IO_filters%ntot_nod, IO_filters%inod_filter)
-      call read_integer_stack_b(IO_filters%ntot_nod,                    &
-     &   IO_filters%istack_near_nod, IO_filters%ntot_near_nod)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    IO_filters%ntot_nod, IO_filters%inod_filter,                  &
+     &    bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_integer_stack_b(bin_flags%iflag_bin_swap,               &
+     &    IO_filters%ntot_nod, IO_filters%istack_near_nod,              &
+     &    IO_filters%ntot_near_nod, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
       call s_cal_numbers_from_stack(IO_filters%ntot_nod,                &
      &    IO_filters%nnod_near, IO_filters%istack_near_nod)
@@ -184,21 +211,29 @@
 !  ---------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_3d_filter_weights_coef_b(IO_filters)
+      subroutine read_3d_filter_weights_coef_b(bin_flags, IO_filters)
 !
       use binary_IO
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(filter_coefficients_type), intent(inout) :: IO_filters
 !
 !
       call alloc_3d_filter_comb(IO_filters)
       call alloc_3d_filter_func(IO_filters)
 !
-      call read_mul_integer_b                                           &
-     &  (IO_filters%ntot_near_nod, IO_filters%inod_near)
-      call read_1d_vector_b(IO_filters%ntot_near_nod, IO_filters%func)
-      call read_1d_vector_b                                             &
-     &  (IO_filters%ntot_near_nod, IO_filters%weight)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    IO_filters%ntot_near_nod, IO_filters%inod_near,               &
+     &    bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_1d_vector_b(bin_flags%iflag_bin_swap,                   &
+     &    IO_filters%ntot_near_nod, IO_filters%func, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_1d_vector_b(bin_flags%iflag_bin_swap,                   &
+     &    IO_filters%ntot_near_nod, IO_filters%weight,                  &
+     &    bin_flags%ierr_IO)
 !
       end subroutine read_3d_filter_weights_coef_b
 !

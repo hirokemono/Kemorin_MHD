@@ -7,8 +7,9 @@
 !> @brief  Data IO routines for spectrum data
 !!
 !!@verbatim
-!!      subroutine read_rtp_gl_1d_table_b(sph_IO)
-!!      subroutine read_rj_gl_1d_table_b(sph_IO)
+!!      subroutine read_rtp_gl_1d_table_b(bin_flags, sph_IO)
+!!      subroutine read_rj_gl_1d_table_b(bin_flags, sph_IO)
+!!        type(file_IO_flags), intent(inout) :: bin_flags
 !!        type(sph_IO_data), intent(inout) :: sph_IO
 !!
 !!      subroutine write_rtp_gl_1d_table_b(sph_IO)
@@ -29,11 +30,13 @@
 !
       contains
 !
-! -----------------------------------------------------------------------!
-      subroutine read_rtp_gl_1d_table_b(sph_IO)
+! -----------------------------------------------------------------------
+!
+      subroutine read_rtp_gl_1d_table_b(bin_flags, sph_IO)
 !
       integer(kind = kint) :: nvect
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(sph_IO_data), intent(inout) :: sph_IO
 !
 !
@@ -44,29 +47,46 @@
 !
       call alloc_num_idx_sph_IO(sph_IO)
 !
-      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%nidx_sph)
-      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%ist_sph)
-      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%ied_sph)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    sph_IO%numdir_sph, sph_IO%nidx_sph, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    sph_IO%numdir_sph, sph_IO%ist_sph, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    sph_IO%numdir_sph, sph_IO%ied_sph, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
       call alloc_idx_sph_1d1_IO(sph_IO)
       call alloc_idx_sph_1d2_IO(sph_IO)
       call alloc_idx_sph_1d3_IO(sph_IO)
 !
-      call read_mul_integer_b(sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
-      call read_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    sph_IO%nidx_sph(1), sph_IO%idx_gl_1, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_1d_vector_b(bin_flags%iflag_bin_swap,                   &
+     &    sph_IO%nidx_sph(1), sph_IO%r_gl_1, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
-      call read_mul_integer_b(nvect, sph_IO%idx_gl_2)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    nvect, sph_IO%idx_gl_2, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
       nvect = sph_IO%nidx_sph(3) * sph_IO%ncomp_table_1d(3)
-      call read_mul_integer_b(nvect, sph_IO%idx_gl_3)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    nvect, sph_IO%idx_gl_3, bin_flags%ierr_IO)
 !
       end subroutine read_rtp_gl_1d_table_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_rj_gl_1d_table_b(sph_IO)
+      subroutine read_rj_gl_1d_table_b(bin_flags, sph_IO)
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: nvect
@@ -78,18 +98,32 @@
 !
       call alloc_num_idx_sph_IO(sph_IO)
 !
-      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%nidx_sph)
-      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%ist_sph)
-      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%ied_sph)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    sph_IO%numdir_sph, sph_IO%nidx_sph, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    sph_IO%numdir_sph, sph_IO%ist_sph, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    sph_IO%numdir_sph, sph_IO%ied_sph, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
       call alloc_idx_sph_1d1_IO(sph_IO)
       call alloc_idx_sph_1d2_IO(sph_IO)
 !
-      call read_mul_integer_b(sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
-      call read_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    sph_IO%nidx_sph(1), sph_IO%idx_gl_1, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_1d_vector_b(bin_flags%iflag_bin_swap,                   &
+     &    sph_IO%nidx_sph(1), sph_IO%r_gl_1, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
-      call read_mul_integer_b(nvect, sph_IO%idx_gl_2)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    nvect, sph_IO%idx_gl_2, bin_flags%ierr_IO)
 !
       end subroutine read_rj_gl_1d_table_b
 !

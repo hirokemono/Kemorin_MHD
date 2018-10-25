@@ -216,8 +216,10 @@
       if (iflag_set_filter_moms .gt. 0) then
         ifmt_filter_file = id_ascii_file_fmt
         filter_file_head = org_filter_moms_head
+        ierr = 0
         call sel_read_num_filter_mom_file                               &
-     &     (izero, FEM_elen_t, FEM_momenet1)
+     &     (izero, FEM_elen_t, FEM_momenet1, ierr)
+        if(ierr .gt. 0) stop "Error in sel_read_num_filter_mom_file"
 !
         allocate(moment2_ele(FEM_momenet1%num_filter_moms))
         call alloc_filter_mom_ele_items(newmesh%ele%numele,             &

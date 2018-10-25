@@ -3,10 +3,11 @@
 !
 !     Written by H. Matsui on May, 2008
 !
-!      subroutine write_new_whole_filter_coef(file_name)
-!      subroutine write_new_fluid_filter_coef(file_name)
-!      subroutine read_filter_coef_4_newdomain(id_file)
-!      subroutine read_filter_coef_4_newdomain_b
+!!      subroutine write_new_whole_filter_coef(file_name)
+!!      subroutine write_new_fluid_filter_coef(file_name)
+!!      subroutine read_filter_coef_4_newdomain(id_file)
+!!      subroutine read_filter_coef_4_newdomain_b(bin_flags)
+!!       type(file_IO_flags), intent(inout) :: bin_flags
 !
       module filter_IO_for_newdomain
 !
@@ -106,7 +107,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_newdomain_b
+      subroutine read_filter_coef_4_newdomain_b(bin_flags)
+!
+      type(file_IO_flags), intent(inout) :: bin_flags
 !
       integer(kind = kint) :: inod
 !
@@ -115,7 +118,9 @@
       call allocate_whole_filter_coefs
 !
       do inod = 1, inter_nod_3dfilter
-        call read_filter_coef_4_each_b
+        call read_filter_coef_4_each_b(bin_flags)
+        if(bin_flags%ierr_IO .gt. 0) return
+!
         call set_w_filter_item_4_newdomain(inod)
       end do
 !
@@ -124,7 +129,9 @@
       call allocate_fluid_filter_coefs
 !
       do inod = 1, inter_nod_3dfilter
-        call read_filter_coef_4_each_b
+        call read_filter_coef_4_each_b(bin_flags)
+        if(bin_flags%ierr_IO .gt. 0) return
+!
         call set_f_filter_item_4_newdomain(inod)
       end do
 !

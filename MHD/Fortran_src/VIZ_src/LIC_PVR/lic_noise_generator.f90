@@ -49,7 +49,7 @@
       call open_rd_rawfile(file_name, ierr)
       if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-        call read_mul_integer_b(3, n_data_size)
+        call read_mul_integer_b(iflag_endian, 3, n_data_size, ierr)
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
 !        write(*,*) d_size
         allocate(n_node_data(d_size))
@@ -89,7 +89,7 @@
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-          call read_mul_integer_b(3, n_data_size)
+          call read_mul_integer_b(iendian_KEEP, 3, n_data_size, ierr)
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
           write(*,*) 'd_size', d_size, n_data_size(1:3)
 !
@@ -108,7 +108,7 @@
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-          call read_mul_integer_b(3, n_data_size)
+          call read_mul_integer_b(iflag_endian, 3, n_data_size, ierr)
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
           write(*,*) 'd_size again', d_size, n_data_size(1:3)
 !

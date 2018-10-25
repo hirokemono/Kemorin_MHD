@@ -3,11 +3,12 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine write_each_filter_stack_coef(file_name, inod)
-!      subroutine write_each_no_filter_coef(file_name, inod)
-!      subroutine write_each_same_filter_coef(file_name, inod)
-!
-!      subroutine read_each_filter_stack_coef(id_file)
+!!      subroutine write_each_filter_stack_coef(file_name, inod)
+!!      subroutine write_each_no_filter_coef(file_name, inod)
+!!      subroutine write_each_same_filter_coef(file_name, inod)
+!!
+!!      subroutine read_each_filter_stack_coef(bin_flags, id_file)
+!!        type(file_IO_flags), intent(inout) :: bin_flags
 !
       module write_filters_4_each_node
 !
@@ -104,17 +105,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_each_filter_stack_coef(id_file)
+      subroutine read_each_filter_stack_coef(bin_flags, id_file)
 !
       use skip_comment_f
       use filter_IO_for_sorting
 !
       integer(kind = kint), intent(in) :: id_file
+      type(file_IO_flags), intent(inout) :: bin_flags
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         call read_filter_coef_4_each(id_file)
       else if (ifmt_3d_filter .eq. iflag_bin) then
-        call read_filter_coef_4_each_b
+        call read_filter_coef_4_each_b(bin_flags)
+        if(bin_flags%ierr_IO .gt. 0) return
       end if
 !
       end subroutine read_each_filter_stack_coef

@@ -30,6 +30,7 @@
       implicit  none
 !
       integer(kind = kint), parameter, private :: id_refine_table = 19
+      type(file_IO_flags), private :: bin_rfnflags
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,6 +44,7 @@
       use binary_IO
 !
       integer(kind = kint), intent(in) :: my_rank, ifile_type
+!
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(ele_refine_IO_type), intent(inout) :: e_ref_IO
@@ -57,15 +59,27 @@
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_fname)
-        call open_read_binary_file(refine_fname, my_rank)
+        call open_read_binary_file                                      &
+     &     (refine_fname, my_rank, bin_rfnflags%iflag_bin_swap)
 !
-        call read_interpolate_table_dest_b(IO_itp_dest)
-        call read_interpolate_domain_org_b(nrank_ref, IO_itp_org)
-        call read_interpolate_table_org_b(IO_itp_org)
-        call read_interpolate_coefs_org_b(IO_itp_org)
+        call read_interpolate_table_dest_b(bin_rfnflags, IO_itp_dest)
+        if(bin_rfnflags%ierr_IO .gt. 0) goto 99
 !
-        call read_element_refine_data_b(e_ref_IO)
+        call read_interpolate_domain_org_b                              &
+     &     (bin_rfnflags, nrank_ref, IO_itp_org)
+        if(bin_rfnflags%ierr_IO .gt. 0) goto 99
+!
+        call read_interpolate_table_org_b(bin_rfnflags, IO_itp_org)
+        if(bin_rfnflags%ierr_IO .gt. 0) goto 99
+!
+        call read_interpolate_coefs_org_b(bin_rfnflags, IO_itp_org)
+        if(bin_rfnflags%ierr_IO .gt. 0) goto 99
+!
+        call read_element_refine_data_b(bin_rfnflags, e_ref_IO)
+!
+  99    continue
         call close_binary_file
+        if(bin_rfnflags%ierr_IO .gt. 0) stop "Reading error"
       else
         write(*,*) 'element refine information: ',                      &
      &            trim(refine_fname)
