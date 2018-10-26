@@ -80,14 +80,22 @@
       type(surf_edge_IO_file) :: ele_mesh_IO
 !
 !
-      num_elapsed = 5
+      num_elapsed = 11
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                  '
-      elapse_labels(2) = 'const_mesh_infos'
-      elapse_labels(3) = 'const_comm_table_by_connenct2'
-      elapse_labels(4) = 'set_element_export_item2'
-      elapse_labels(5) = 'search_target_element2'
+      elapse_labels(2) = 'const_element_comm_tbls2'
+!
+      elapse_labels(3) = 'const_ele_comm_tbl2'
+      elapse_labels(4) = 'const_global_element_id'
+      elapse_labels(5) = 'const_surf_comm_table'
+      elapse_labels(6) = 'start_elapsed_time'
+      elapse_labels(7) = 'const_edge_comm_table'
+      elapse_labels(8) = 'const_global_edge_id'
+!
+      elapse_labels(9) = 'const_comm_table_by_connenct2'
+      elapse_labels(10) = 'set_element_export_item2'
+      elapse_labels(11) = 'search_target_element2'
 !
 !     --------------------- 
 !
@@ -228,17 +236,15 @@
 !
 !  -----    construct geometry informations
 !
-      call start_elapsed_time(2)
       if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
       call const_mesh_infos(my_rank, mesh, group, ele_mesh)
-      call end_elapsed_time(2)
 !
       if(iflag_ele_mesh .eq. 0) return
 !
-      call start_elapsed_time(3)
+      call start_elapsed_time(2)
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls2'
       call const_element_comm_tbls2(mesh, ele_mesh)
-      call end_elapsed_time(3)
+      call end_elapsed_time(2)
 !
       if(i_debug .eq. iflag_full_msg) then
         call check_whole_num_of_elements(mesh%ele)
@@ -275,24 +281,39 @@
       call find_position_range(mesh%node)
 !
       if(iflag_debug.gt.0) write(*,*) 'const_ele_comm_tbl2'
+      call start_elapsed_time(3)
       call const_ele_comm_tbl2(mesh%node, mesh%ele, mesh%nod_comm,      &
      &    blng_tbl, ele_mesh%ele_comm)
+      call end_elapsed_time(3)
       call calypso_mpi_barrier
+!
+      call start_elapsed_time(4)
       if(i_debug.gt.0) write(*,*)' const_global_element_id', my_rank
       call const_global_element_id(mesh%ele, ele_mesh%ele_comm)
+      call end_elapsed_time(4)
       call calypso_mpi_barrier
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
+      call start_elapsed_time(5)
       call const_surf_comm_table(mesh%node, mesh%nod_comm,              &
      &    ele_mesh%surf, blng_tbl, ele_mesh%surf_comm)
+      call end_elapsed_time(5)
+!
       if(iflag_debug.gt.0) write(*,*)' const_global_surface_id'
+      call start_elapsed_time(6)
       call const_global_surface_id(ele_mesh%surf, ele_mesh%surf_comm)
+      call end_elapsed_time(6)
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
+      call start_elapsed_time(7)
       call const_edge_comm_table(mesh%node, mesh%nod_comm,              &
      &    ele_mesh%edge, blng_tbl, ele_mesh%edge_comm)
+      call end_elapsed_time(7)
+!
       if(iflag_debug.gt.0) write(*,*)' const_global_edge_id'
+      call start_elapsed_time(8)
       call const_global_edge_id(ele_mesh%edge, ele_mesh%edge_comm)
+      call end_elapsed_time(8)
 !
       end subroutine const_element_comm_tbls2
 !
@@ -320,12 +341,12 @@
 !
       if(i_debug.gt.0) write(*,*)' const_comm_table_by_connenct2',      &
      &                            my_rank
-      call start_elapsed_time(3)
+      call start_elapsed_time(9)
       call const_comm_table_by_connenct2                                &
      &   (txt, ele%numele, ele%nnod_4_ele, ele%ie,                      &
      &    ele%interior_ele, ele%x_ele, node, nod_comm,                  &
      &    belongs%blng_ele, belongs%host_ele, ele_comm)
-      call end_elapsed_time(3)
+      call end_elapsed_time(9)
       call calypso_mpi_barrier
 !
       call dealloc_iele_belonged(belongs%host_ele)
@@ -374,7 +395,7 @@
      &    e_comm%istack_import, e_comm%ntot_import)
       call calypso_mpi_barrier
 !
-      call alloc_element_rev_imports(node%numnod,                       &
+      call alloc_element_rev_imports(node%numnod, nnod_4_ele,           &
      &    nod_comm%ntot_export, e_comm%ntot_import, wk_comm)
       call allocate_type_import_item(e_comm)
 !
@@ -391,9 +412,10 @@
      &    numele, nnod_4_ele, ie, node%inod_global, x_ele,              &
      &    host%istack_4_node, host%iele_4_node, wk_comm%inod_local,     &
      &    nod_comm%num_neib, nod_comm%istack_import,                    &
-     &    nod_comm%item_import, e_comm%num_neib, e_comm%istack_import,  &
-     &    e_comm%item_import, wk_comm%inod_import_e,                    &
-     &    wk_comm%inod_import_l, wk_comm%xe_import)
+     &    nod_comm%item_import, e_comm%num_neib,                        &
+     &    e_comm%istack_import, e_comm%item_import,                     &
+     &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
+     &    wk_comm%xe_import, wk_comm%ie_gl_import)
       call calypso_mpi_barrier
 !
       call allocate_type_export_num(e_comm)
@@ -404,28 +426,31 @@
      &    e_comm%ntot_export)
       call calypso_mpi_barrier
 !
-      call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)
+      call alloc_element_rev_exports                                    &
+     &   (nnod_4_ele, e_comm%ntot_export, wk_comm)
       call allocate_type_export_item(e_comm)
 !
-      write(*,*) 'element_position_reverse_SR', my_rank
-      call element_position_reverse_SR(e_comm%num_neib, e_comm%id_neib, &
-     &    e_comm%istack_import, e_comm%istack_export,                   &
+      write(*,*) 'element_data_reverse_SR', my_rank
+      call element_data_reverse_SR(e_comm%num_neib, e_comm%id_neib,     &
+     &    e_comm%istack_import, e_comm%istack_export, nnod_4_ele,       &
      &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
-     &    wk_comm%xe_import, wk_comm%inod_export_e,                     &
-     &    wk_comm%inod_export_l, wk_comm%xe_export)
+     &    wk_comm%xe_import, wk_comm%ie_gl_import,                      &
+     &    wk_comm%inod_export_e, wk_comm%inod_export_l,                 &
+     &    wk_comm%xe_export, wk_comm%ie_gl_export)
       call calypso_mpi_barrier
 !
       write(*,*) 'set_element_export_item2', my_rank
-      call start_elapsed_time(4)
-      call set_element_export_item2(txt, node%numnod, numele,           &
-     &    node%inod_global, internal_flag, x_ele, neib_e%istack_4_node, &
+      call start_elapsed_time(10)
+      call set_element_export_item2                                     &
+     &   (txt, node%numnod, numele, nnod_4_ele, node%inod_global,       &
+     &    ie, internal_flag, x_ele, neib_e%istack_4_node,               &
      &    neib_e%iele_4_node, nod_comm%num_neib,                        &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    e_comm%num_neib, e_comm%istack_export,                        &
      &    wk_comm%inod_export_e, wk_comm%inod_export_l,                 &
-     &    wk_comm%xe_export, e_comm%item_export)
-      call end_elapsed_time(4)
+     &    wk_comm%xe_export, wk_comm%ie_gl_export, e_comm%item_export)
+      call end_elapsed_time(10)
       call calypso_mpi_barrier
 !
       call dealloc_element_rev_exports(wk_comm)
@@ -440,16 +465,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_element_export_item2                               &
-     &         (txt, numnod, numele, inod_global,                       &
+     &         (txt, numnod, numele, nnod_4_ele, inod_global, ie,       &
      &          internal_flag, x_ele, iele_stack_4_node, iele_4_node,   &
      &          num_neib, istack_import, item_import,                   &
      &          istack_export, item_export, num_neib_e,                 &
      &          istack_export_e, inod_export_e, inod_export_l,          &
-     &          xe_export, item_export_e)
+     &          xe_export, ie_gl_export, item_export_e)
 !
       character(len=kchara), intent(in) :: txt
-      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in)  :: x_ele(numele,3)
 !
@@ -472,6 +498,8 @@
      &        :: inod_export_l(istack_export_e(num_neib_e))
       integer(kind = kint_gl), intent(in)                               &
      &        :: inod_export_e(istack_export_e(num_neib_e))
+      integer(kind = kint_gl), intent(in)                               &
+     &        :: ie_gl_export(istack_export_e(num_neib_e),nnod_4_ele)
       real(kind = kreal), intent(in)                                    &
      &        :: xe_export(3*istack_export_e(num_neib_e))
 !
@@ -482,6 +510,7 @@
       integer(kind = kint) :: ist, ied, inum, inod
       integer(kind = kint) :: jst, jed, jnum, jnod
       integer(kind = kint_gl) :: inod_gl
+      integer(kind = kint_gl) :: ie1_gl_export(nnod_4_ele)
       real(kind = kreal) :: dist_min
 !
 !
@@ -502,10 +531,13 @@
             jnod = item_import(jnum)
 !
             if(inod .eq. jnod) then
-              call search_target_element2(jnod, numnod, numele,         &
+              ie1_gl_export(1:nnod_4_ele)                               &
+     &            = ie_gl_export(inum,1:nnod_4_ele)
+              call search_target_element2                               &
+     &           (jnod, numnod, numele, nnod_4_ele, inod_global, ie,    &
      &            internal_flag, x_ele, iele_stack_4_node, iele_4_node, &
-     &            xe_export(3*inum-2), item_export_e(inum),             &
-     &            dist_min, iflag)
+     &            xe_export(3*inum-2), ie1_gl_export,                   &
+     &            item_export_e(inum), dist_min, iflag)
               exit
             end if
           end do
@@ -533,10 +565,13 @@
             jnod = item_export(jnum)
 !
             if(inod_gl .eq. inod_global(jnod)) then
-              call search_target_element2(jnod, numnod, numele,         &
+              ie1_gl_export(1:nnod_4_ele)                               &
+     &            = ie_gl_export(inum,1:nnod_4_ele)
+              call search_target_element2                               &
+     &           (jnod, numnod, numele, nnod_4_ele, inod_global, ie,    &
      &            internal_flag, x_ele, iele_stack_4_node, iele_4_node, &
-     &            xe_export(3*inum-2), item_export_e(inum),             &
-     &            dist_min, iflag)
+     &            xe_export(3*inum-2), ie1_gl_export,                   &
+     &            item_export_e(inum), dist_min, iflag)
               exit
             end if
           end do
@@ -552,12 +587,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine search_target_element2(jnod, numnod, numele,           &
-     &          internal_flag, x_ele, iele_stack_4_node, iele_4_node,   &
-     &          xe_export, item_export_e, dist_min, iflag)
+      subroutine search_target_element2                                 &
+     &         (jnod, numnod, numele, nnod_4_ele,                       &
+     &          inod_global, ie, internal_flag, x_ele,                  &
+     &          iele_stack_4_node, iele_4_node, xe_export,              &
+     &          ie1_gl_export, item_export_e, dist_min, iflag)
 !
       integer(kind = kint), intent(in) :: jnod
-      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in) :: x_ele(numele,3)
 !
@@ -565,18 +604,20 @@
       integer(kind = kint), intent(in)                                  &
      &        :: iele_4_node(iele_stack_4_node(numnod))
 !
+      integer(kind = kint_gl), intent(in) :: ie1_gl_export(nnod_4_ele)
       real(kind = kreal), intent(in) :: xe_export(3)
 !
       integer(kind = kint), intent(inout) :: item_export_e
       integer(kind = kint), intent(inout) :: iflag
       real(kind = kreal), intent(inout) :: dist_min
 !
-      integer(kind = kint) :: kst, ked, knum, kele
-      real(kind = kreal) :: dx(3), dist
       real(kind = kreal) :: tiny = 1.0d-11
 !
+      integer(kind = kint) :: kst, ked, knum, kele, k1, knod
+      real(kind = kreal) :: dx(3), dist
+      integer(kind = kint_gl) :: idiff(nnod_4_ele), idiff_tot
 !
-      call start_elapsed_time(5)
+!
       kst = iele_stack_4_node(jnod-1) + 1
       ked = iele_stack_4_node(jnod)
 !      if(ked-kst .gt. 8) write(50+my_rank,*)                           &
@@ -584,11 +625,24 @@
       do knum = kst, ked
         kele = iele_4_node(knum)
         if(internal_flag(kele) .eq. 0) cycle
-        dx(1) = abs(xe_export(1) - x_ele(kele,1))
-        dx(2) = abs(xe_export(2) - x_ele(kele,2))
-        dx(3) = abs(xe_export(3) - x_ele(kele,3))
-        dist = sqrt(dx(1)**2+dx(2)**2+dx(3)**2)
-        if(dx(1).le.tiny .and. dx(2).le.tiny .and. dx(3).le.tiny) then
+!
+        do k1 = 1, nnod_4_ele
+          knod = ie(kele,k1)
+          idiff(k1) = ie1_gl_export(k1) - inod_global(knod)
+        end do
+        idiff_tot = sum(idiff)
+        if(idiff_tot .eq. 0) then
+          item_export_e = kele
+          iflag = 1
+          exit
+        end if
+!
+        dx(1) = (xe_export(1) - x_ele(kele,1))**2
+        dx(2) = (xe_export(2) - x_ele(kele,2))**2
+        dx(3) = (xe_export(3) - x_ele(kele,3))**2
+        dist = sqrt(sum(dx))
+!
+        if(dist .le. tiny) then
           item_export_e = kele
           iflag = 1
           exit
@@ -596,7 +650,6 @@
         dist_min = min(dist_min,dist)
         if(dist .lt. dist_min)  dist_min = dist
       end do
-      call end_elapsed_time(5)
 !
       end subroutine search_target_element2
 !

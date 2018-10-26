@@ -16,15 +16,15 @@
 !!     &          inod_global, x_ele, iele_stack_ht_node, iele_ht_node, &
 !!     &          inod_local, num_neib, istack_import, item_import,     &
 !!     &          num_neib_e, istack_import_e, item_import_e,           &
-!!     &          inod_import_e, inod_import_l, xe_import)
+!!     &          inod_import_e, inod_import_l, xe_import, ie_gl_import)
 !!
 !!      subroutine set_element_export_item                              &
-!!     &         (txt, numnod, numele, inod_global,                     &
+!!     &         (txt, numnod, numele, nnod_4_ele, inod_global, ie,     &
 !!     &          internal_flag, x_ele, iele_stack_4_node, iele_4_node, &
 !!     &          num_neib, istack_import, item_import,                 &
 !!     &          istack_export, item_export, num_neib_e,               &
 !!     &          istack_export_e, inod_export_e, inod_export_l,        &
-!!     &          xe_export, item_export_e)
+!!     &          xe_export, ie_gl_export, item_export_e)
 !!@endverbatim
 !!
       module find_element_comm_table
@@ -96,7 +96,7 @@
      &          inod_global, x_ele, iele_stack_ht_node, iele_ht_node,   &
      &          inod_local, num_neib, istack_import, item_import,       &
      &          num_neib_e, istack_import_e, item_import_e,             &
-     &          inod_import_e, inod_import_l, xe_import)
+     &          inod_import_e, inod_import_l, xe_import, ie_gl_import)
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
@@ -124,6 +124,8 @@
      &        :: inod_import_l(istack_import_e(num_neib_e))
       real(kind = kreal), intent(inout)                                 &
      &        :: xe_import(3*istack_import_e(num_neib_e))
+      integer(kind = kint_gl), intent(inout)                            &
+     &        :: ie_gl_import(istack_import_e(num_neib_e),nnod_4_ele)
 !
       integer(kind = kint) :: ip, icou
       integer(kind = kint) :: ist, ied, inum, inod
@@ -153,6 +155,8 @@
             minimum = num
             do k1 = 1, nnod_4_ele
               jnod = ie(jele,k1)
+              ie_gl_import(icou,k1) = inod_global(jnod)
+!
               if(jnod .gt. internal_node) cycle
               nele = iele_stack_ht_node(jnod)                           &
      &              - iele_stack_ht_node(jnod-1)
@@ -307,16 +311,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_element_export_item                                &
-     &         (txt, numnod, numele, inod_global,                       &
+     &         (txt, numnod, numele, nnod_4_ele, inod_global, ie,       &
      &          internal_flag, x_ele, iele_stack_4_node, iele_4_node,   &
      &          num_neib, istack_import, item_import,                   &
      &          istack_export, item_export, num_neib_e,                 &
      &          istack_export_e, inod_export_e, inod_export_l,          &
-     &          xe_export, item_export_e)
+     &          xe_export, ie_gl_export, item_export_e)
 !
       character(len=kchara), intent(in) :: txt
-      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in)  :: x_ele(numele,3)
 !
@@ -339,6 +344,8 @@
      &        :: inod_export_l(istack_export_e(num_neib_e))
       integer(kind = kint_gl), intent(in)                               &
      &        :: inod_export_e(istack_export_e(num_neib_e))
+      integer(kind = kint_gl), intent(in)                               &
+     &        :: ie_gl_export(istack_export_e(num_neib_e),nnod_4_ele)
       real(kind = kreal), intent(in)                                    &
      &        :: xe_export(3*istack_export_e(num_neib_e))
 !
@@ -349,6 +356,7 @@
       integer(kind = kint) :: ist, ied, inum, inod
       integer(kind = kint) :: jst, jed, jnum, jnod
       integer(kind = kint_gl) :: inod_gl
+      integer(kind = kint_gl) :: ie1_gl_export(nnod_4_ele)
       real(kind = kreal) :: dist_min
 !
 !
@@ -369,10 +377,13 @@
             jnod = item_import(jnum)
 !
             if(inod .eq. jnod) then
-              call search_target_element(jnod, numnod, numele,          &
+              ie1_gl_export(1:nnod_4_ele)                               &
+     &            = ie_gl_export(inum,1:nnod_4_ele)
+              call search_target_element                                &
+     &           (jnod, numnod, numele, nnod_4_ele, inod_global, ie,    &
      &            internal_flag, x_ele, iele_stack_4_node, iele_4_node, &
-     &            xe_export(3*inum-2), item_export_e(inum),             &
-     &            dist_min, iflag)
+     &            xe_export(3*inum-2), ie1_gl_export,                   &
+     &            item_export_e(inum), dist_min, iflag)
               exit
             end if
           end do
@@ -400,10 +411,13 @@
             jnod = item_export(jnum)
 !
             if(inod_gl .eq. inod_global(jnod)) then
-              call search_target_element(jnod, numnod, numele,          &
+              ie1_gl_export(1:nnod_4_ele)                               &
+     &            = ie_gl_export(inum,1:nnod_4_ele)
+              call search_target_element                                &
+     &           (jnod, numnod, numele, nnod_4_ele, inod_global, ie,    &
      &            internal_flag, x_ele, iele_stack_4_node, iele_4_node, &
-     &            xe_export(3*inum-2), item_export_e(inum),             &
-     &            dist_min, iflag)
+     &            xe_export(3*inum-2), ie1_gl_export,                   &
+     &            item_export_e(inum), dist_min, iflag)
               exit
             end if
           end do
@@ -419,12 +433,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine search_target_element(jnod, numnod, numele,            &
-     &          internal_flag, x_ele, iele_stack_4_node, iele_4_node,   &
-     &          xe_export, item_export_e, dist_min, iflag)
+      subroutine search_target_element                                  &
+     &         (jnod, numnod, numele, nnod_4_ele,                       &
+     &          inod_global, ie, internal_flag, x_ele,                  &
+     &          iele_stack_4_node, iele_4_node, xe_export,              &
+     &          ie1_gl_export, item_export_e, dist_min, iflag)
 !
       integer(kind = kint), intent(in) :: jnod
-      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in) :: x_ele(numele,3)
 !
@@ -432,14 +450,16 @@
       integer(kind = kint), intent(in)                                  &
      &        :: iele_4_node(iele_stack_4_node(numnod))
 !
+      integer(kind = kint_gl), intent(in) :: ie1_gl_export(nnod_4_ele)
       real(kind = kreal), intent(in) :: xe_export(3)
 !
       integer(kind = kint), intent(inout) :: item_export_e
       integer(kind = kint), intent(inout) :: iflag
       real(kind = kreal), intent(inout) :: dist_min
 !
-      integer(kind = kint) :: kst, ked, knum, kele
+      integer(kind = kint) :: kst, ked, knum, kele, k1, knod
       real(kind = kreal) :: dx(3), dist
+      integer(kind = kint_gl) :: idiff(nnod_4_ele), idiff_tot
 !
 !
       kst = iele_stack_4_node(jnod-1) + 1
@@ -449,11 +469,24 @@
       do knum = kst, ked
         kele = iele_4_node(knum)
         if(internal_flag(kele) .eq. 0) cycle
-        dx(1) = abs(xe_export(1) - x_ele(kele,1))
-        dx(2) = abs(xe_export(2) - x_ele(kele,2))
-        dx(3) = abs(xe_export(3) - x_ele(kele,3))
-        dist = sqrt(dx(1)**2+dx(2)**2+dx(3)**2)
-        if(dx(1).le.tiny .and. dx(2).le.tiny .and. dx(3).le.tiny) then
+!
+        do k1 = 1, nnod_4_ele
+          knod = ie(kele,k1)
+          idiff(k1) = ie1_gl_export(k1) - inod_global(knod)
+        end do
+        idiff_tot = sum(idiff)
+        if(idiff_tot .eq. 0) then
+          item_export_e = kele
+          iflag = 1
+          exit
+        end if
+!
+        dx(1) = (xe_export(1) - x_ele(kele,1))**2
+        dx(2) = (xe_export(2) - x_ele(kele,2))**2
+        dx(3) = (xe_export(3) - x_ele(kele,3))**2
+        dist = sqrt(sum(dx))
+!
+        if(dist .le. tiny) then
           item_export_e = kele
           iflag = 1
           exit

@@ -14,8 +14,10 @@
 !!     &         istack_import, item_import, istack_export, item_export,&
 !!     &         item_local, inod_local)
 !!
-!!      subroutine element_position_reverse_SR(num_neib_e, id_neib_e,   &
-!!     &          istack_import_e, istack_export_e)
+!!      subroutine element_data_reverse_SR(num_neib_e, id_neib_e,       &
+!!     &          istack_import_e, istack_export_e, nnod_4_ele,         &
+!!     &          inod_import_e, inod_import_l, xe_import, ie_gl_import,&
+!!     &          inod_export_e, inod_export_l, xe_export, ie_gl_export)
 !!@endverbatim
 !!
       module make_element_comm_table_SR
@@ -26,6 +28,10 @@
       use m_solver_SR
 !
       implicit none
+!
+      private :: global_element_id_reverse_SR
+      private :: local_element_id_reverse_SR
+      private :: element_position_reverse_SR
 !
 !-----------------------------------------------------------------------
 !
@@ -130,10 +136,67 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine element_position_reverse_SR(num_neib_e, id_neib_e,     &
+      subroutine element_data_reverse_SR(num_neib_e, id_neib_e,         &
+     &          istack_import_e, istack_export_e, nnod_4_ele,           &
+     &          inod_import_e, inod_import_l, xe_import, ie_gl_import,  &
+     &          inod_export_e, inod_export_l, xe_export, ie_gl_export)
+!
+      integer(kind = kint), intent(in) :: num_neib_e
+      integer(kind = kint), intent(in) :: id_neib_e(num_neib_e)
+!
+      integer(kind = kint), intent(in) :: istack_import_e(0:num_neib_e)
+      integer(kind = kint), intent(in) :: istack_export_e(0:num_neib_e)
+!
+      integer(kind = kint), intent(in) :: nnod_4_ele
+      integer(kind = kint_gl), intent(in)                               &
+     &         :: inod_import_e(istack_import_e(num_neib_e))
+      integer(kind = kint), intent(in)                                  &
+     &         :: inod_import_l(istack_import_e(num_neib_e))
+      integer(kind = kint_gl), intent(in)                               &
+     &         :: ie_gl_import(istack_import_e(num_neib_e),nnod_4_ele)
+      real(kind = kreal), intent(in)                                    &
+     &         :: xe_import(3*istack_import_e(num_neib_e))
+!
+      integer(kind = kint_gl), intent(inout)                            &
+     &         :: inod_export_e(istack_export_e(num_neib_e))
+      integer(kind = kint), intent(inout)                               &
+     &         :: inod_export_l(istack_export_e(num_neib_e))
+      integer(kind = kint_gl), intent(inout)                            &
+     &         :: ie_gl_export(istack_export_e(num_neib_e),nnod_4_ele)
+      real(kind = kreal), intent(inout)                                 &
+     &         :: xe_export(3*istack_export_e(num_neib_e))
+!
+      integer(kind = kint) :: ip, k1
+!
+!      do ip = 1, istack_import_e(num_neib_e)
+!        write(*,*) ip, inod_import_e(ip), xe_import(3*ip-2:3*ip)
+!      end do
+!
+!
+      call global_element_id_reverse_SR(num_neib_e, id_neib_e,          &
+     &    istack_import_e, istack_export_e,                             &
+     &    inod_import_e, inod_export_e)
+!
+      call local_element_id_reverse_SR(num_neib_e, id_neib_e,           &
+     &    istack_import_e, istack_export_e,                             &
+     &    inod_import_l, inod_export_l)
+!
+      call element_position_reverse_SR(num_neib_e, id_neib_e,           &
+     &    istack_import_e, istack_export_e, xe_import, xe_export)
+!
+      do k1 = 1, nnod_4_ele
+        call global_element_id_reverse_SR(num_neib_e, id_neib_e,        &
+     &      istack_import_e, istack_export_e,                           &
+     &      ie_gl_import(1,k1), ie_gl_export(1,k1))
+      end do
+!
+      end subroutine element_data_reverse_SR
+!
+!-----------------------------------------------------------------------
+!
+      subroutine global_element_id_reverse_SR(num_neib_e, id_neib_e,    &
      &          istack_import_e, istack_export_e,                       &
-     &          inod_import_e, inod_import_l, xe_import,                &
-     &          inod_export_e, inod_export_l, xe_export)
+     &          inod_import_e, inod_export_e)
 !
       integer(kind = kint), intent(in) :: num_neib_e
       integer(kind = kint), intent(in) :: id_neib_e(num_neib_e)
@@ -143,27 +206,14 @@
 !
       integer(kind = kint_gl), intent(in)                               &
      &                 :: inod_import_e(istack_import_e(num_neib_e))
-      integer(kind = kint), intent(in)                                  &
-     &                 :: inod_import_l(istack_import_e(num_neib_e))
-      real(kind = kreal), intent(in)                                    &
-     &                 :: xe_import(3*istack_import_e(num_neib_e))
 !
       integer(kind = kint_gl), intent(inout)                            &
      &                 :: inod_export_e(istack_export_e(num_neib_e))
-      integer(kind = kint), intent(inout)                               &
-     &                 :: inod_export_l(istack_export_e(num_neib_e))
-      real(kind = kreal), intent(inout)                                 &
-     &                 :: xe_export(3*istack_export_e(num_neib_e))
 !
       integer(kind = kint) :: ip, ist, num
 !
-!      do ip = 1, istack_import_e(num_neib_e)
-!        write(*,*) ip, inod_import_e(ip), xe_import(3*ip-2:3*ip)
-!      end do
 !
-      call resize_iwork_4_SR(num_neib_e, num_neib_e,                    &
-     &    istack_import_e(num_neib_e), istack_export_e(num_neib_e))
-      call resize_work_4_SR(ithree, num_neib_e, num_neib_e,             &
+      call resize_i8work_4_SR(num_neib_e, num_neib_e,                   &
      &    istack_import_e(num_neib_e), istack_export_e(num_neib_e))
 !
       do ip = 1, num_neib_e
@@ -184,6 +234,31 @@
       call MPI_WAITALL(num_neib_e, req2(1), sta2(1,1), ierr_MPI)
       call MPI_WAITALL(num_neib_e, req1(1), sta1(1,1), ierr_MPI)
 !
+      end subroutine global_element_id_reverse_SR
+!
+!-----------------------------------------------------------------------
+!
+      subroutine local_element_id_reverse_SR(num_neib_e, id_neib_e,     &
+     &          istack_import_e, istack_export_e,                       &
+     &          inod_import_l, inod_export_l)
+!
+      integer(kind = kint), intent(in) :: num_neib_e
+      integer(kind = kint), intent(in) :: id_neib_e(num_neib_e)
+!
+      integer(kind = kint), intent(in) :: istack_import_e(0:num_neib_e)
+      integer(kind = kint), intent(in) :: istack_export_e(0:num_neib_e)
+!
+      integer(kind = kint), intent(in)                                  &
+     &                 :: inod_import_l(istack_import_e(num_neib_e))
+!
+      integer(kind = kint), intent(inout)                               &
+     &                 :: inod_export_l(istack_export_e(num_neib_e))
+!
+      integer(kind = kint) :: ip, ist, num
+!
+!
+      call resize_iwork_4_SR(num_neib_e, num_neib_e,                    &
+     &    istack_import_e(num_neib_e), istack_export_e(num_neib_e))
 !
       do ip = 1, num_neib_e
         ist = istack_import_e(ip-1)
@@ -203,6 +278,30 @@
       call MPI_WAITALL(num_neib_e, req2(1), sta2(1,1), ierr_MPI)
       call MPI_WAITALL(num_neib_e, req1(1), sta1(1,1), ierr_MPI)
 !
+      end subroutine local_element_id_reverse_SR
+!
+!-----------------------------------------------------------------------
+!
+      subroutine element_position_reverse_SR(num_neib_e, id_neib_e,     &
+     &          istack_import_e, istack_export_e, xe_import, xe_export)
+!
+      integer(kind = kint), intent(in) :: num_neib_e
+      integer(kind = kint), intent(in) :: id_neib_e(num_neib_e)
+!
+      integer(kind = kint), intent(in) :: istack_import_e(0:num_neib_e)
+      integer(kind = kint), intent(in) :: istack_export_e(0:num_neib_e)
+!
+      real(kind = kreal), intent(in)                                    &
+     &                 :: xe_import(3*istack_import_e(num_neib_e))
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                 :: xe_export(3*istack_export_e(num_neib_e))
+!
+      integer(kind = kint) :: ip, ist, num
+!
+!
+      call resize_work_4_SR(ithree, num_neib_e, num_neib_e,             &
+     &    istack_import_e(num_neib_e), istack_export_e(num_neib_e))
 !
       do ip = 1, num_neib_e
         ist = 3*istack_import_e(ip-1)

@@ -81,7 +81,7 @@
       write(elapse_labels(25),'(a)') 'count_element_import_num'
       write(elapse_labels(26),'(a)') 'set_element_import_item'
       write(elapse_labels(27),'(a)') 'element_num_reverse_SR'
-      write(elapse_labels(28),'(a)') 'element_position_reverse_SR'
+      write(elapse_labels(28),'(a)') 'element_data_reverse_SR'
       write(elapse_labels(29),'(a)') 'set_element_export_item'
 !
 !     --------------------- 
