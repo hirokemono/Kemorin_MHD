@@ -275,11 +275,11 @@
       call find_position_range(mesh%node)
       call calypso_mpi_barrier
 !
-      if(i_debug.gt.0) write(*,*)' const_ele_comm_tbl', my_rank
-      call const_ele_comm_tbl(mesh%node, mesh%ele, mesh%nod_comm,       &
+      if(i_debug.gt.0) write(*,*)' const_ele_comm_tbl2', my_rank
+      call const_ele_comm_tbl2(mesh%node, mesh%ele, mesh%nod_comm,      &
      &    blng_tbl, ele_mesh%ele_comm)
       call calypso_mpi_barrier
-      if(i_debug.gt.0) write(*,*)' const_ele_comm_tbl', my_rank
+      if(i_debug.gt.0) write(*,*)' const_global_element_id', my_rank
       call const_global_element_id(mesh%ele, ele_mesh%ele_comm)
       call calypso_mpi_barrier
 !
@@ -296,6 +296,43 @@
       call const_global_edge_id(ele_mesh%edge, ele_mesh%edge_comm)
 !
       end subroutine const_element_comm_tbls2
+!
+!-----------------------------------------------------------------------
+!
+      subroutine const_ele_comm_tbl2                                    &
+     &         (node, ele, nod_comm, belongs, ele_comm)
+!
+      use set_ele_id_4_node_type
+      use const_element_comm_table
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: nod_comm
+      type(belonged_table), intent(inout) :: belongs
+      type(communication_table), intent(inout) :: ele_comm
+!
+      character(len=kchara), parameter :: txt = 'element'
+!
+!
+      if(i_debug.gt.0) write(*,*)' set_ele_id_4_node', my_rank
+      call set_ele_id_4_node(node, ele, belongs%blng_ele)
+      call calypso_mpi_barrier
+!
+      if(i_debug.gt.0) write(*,*)' belonged_ele_id_4_node', my_rank
+      call belonged_ele_id_4_node(node, ele, belongs%host_ele)
+      call calypso_mpi_barrier
+!
+      if(i_debug.gt.0) write(*,*)' const_comm_table_by_connenct', my_rank
+      call const_comm_table_by_connenct                                 &
+     &   (txt, ele%numele, ele%nnod_4_ele, ele%ie,                      &
+     &    ele%interior_ele, ele%x_ele, node, nod_comm,                  &
+     &    belongs%blng_ele, belongs%host_ele, ele_comm)
+      call calypso_mpi_barrier
+!
+      call dealloc_iele_belonged(belongs%host_ele)
+      call dealloc_iele_belonged(belongs%blng_ele)
+!
+      end subroutine const_ele_comm_tbl2
 !
 !-----------------------------------------------------------------------
 !
