@@ -22,6 +22,7 @@
       use t_group_data
       use t_surface_data
       use t_edge_data
+      use m_work_time
 !
       implicit none
 !
@@ -78,6 +79,15 @@
       type(mesh_geometry) :: mesh_IO
       type(surf_edge_IO_file) :: ele_mesh_IO
 !
+!
+      num_elapsed = 4
+      call allocate_elapsed_times
+!
+      elapse_labels(1) = 'Total time                  '
+      elapse_labels(2) = 'Generation of spherical transform table'
+      elapse_labels(3) = 'Generation of spherical mode and grid'
+      elapse_labels(4) = 'Generation of FEM mesh data'
+!
 !     --------------------- 
 !
       if (my_rank.eq.0) then
@@ -99,9 +109,13 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_init_with_IO'
-      call FEM_mesh_init_with_IO(T_meshes%iflag_output_SURF,            &
+      call start_elapsed_time(1)
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_init_with_IO2'
+      call FEM_mesh_init_with_IO2(T_meshes%iflag_output_SURF,           &
      &    T_meshes%mesh_file_IO, fem_T%mesh, fem_T%group, ele_mesh)
+      call end_elapsed_time(1)
+      call calypso_MPI_barrier
+      return
 !
 !  -------------------------------
 !
@@ -150,13 +164,134 @@
 !
 ! ----------------------------------------------------------------------
 !
-        subroutine analyze_mesh_test
+      subroutine analyze_mesh_test
 !
+!
+      call output_elapsed_times
+      call calypso_MPI_barrier
 !
       if (iflag_debug.gt.0) write(*,*) 'exit analyze'
 !
-        end subroutine analyze_mesh_test
+      end subroutine analyze_mesh_test
 !
 ! ----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine FEM_mesh_init_with_IO2                                 &
+     &         (iflag_output_SURF, mesh_file, mesh, group, ele_mesh)
+!
+      use t_file_IO_parameter
+      use t_read_mesh_data
+!
+      use m_array_for_send_recv
+      use m_phys_constants
+!
+      use nod_phys_send_recv
+      use node_monitor_IO
+      use const_mesh_information
+      use const_element_comm_tables
+      use mesh_file_name_by_param
+      use parallel_FEM_mesh_init
+!
+      integer(kind = kint), intent(in) :: iflag_output_SURF
+      type(field_io_params), intent(in) :: mesh_file
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
+      type(element_geometry), intent(inout) :: ele_mesh
+!
+      type(surf_edge_IO_file) :: ele_mesh_IO
+      integer(kind = kint) :: iflag_ele_mesh
+!
+!
+      iflag_ele_mesh =  check_exist_ele_mesh(mesh_file, izero)          &
+     &                + check_exist_surf_mesh(mesh_file, izero)         &
+     &                + check_exist_edge_mesh(mesh_file, izero)
+      if(iflag_ele_mesh .eq. 0) then
+        if(iflag_debug.gt.0) write(*,*) 'mpi_load_element_surface_edge'
+        call mpi_load_element_surface_edge                              &
+     &     (mesh_file, mesh, ele_mesh, ele_mesh_IO)
+      end if
+      call calypso_mpi_barrier
+!
+!  -------------------------------
+!      if (iflag_debug.gt.0) write(*,*) 'set_local_nod_4_monitor'
+!      call set_local_nod_4_monitor(mesh, group)
+!
+!  ------  In itialize data communication for FEM data
+!
+      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(n_sym_tensor, mesh%node%numnod)
+!
+      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
+      call init_nod_send_recv(mesh)
+!
+!  -----    construct geometry informations
+!
+      call start_elapsed_time(2)
+      if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank, mesh, group, ele_mesh)
+      call end_elapsed_time(2)
+!
+      if(iflag_ele_mesh .eq. 0) return
+!
+      call start_elapsed_time(3)
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls2'
+      call const_element_comm_tbls2(mesh, ele_mesh)
+      call end_elapsed_time(3)
+!
+      if(i_debug .eq. iflag_full_msg) then
+        call check_whole_num_of_elements(mesh%ele)
+      end if
+!
+      if(iflag_ele_mesh .ne. 0 .and. iflag_output_SURF .gt. 0) then
+        call mpi_output_element_surface_edge                            &
+     &         (mesh_file, mesh, ele_mesh, ele_mesh_IO)
+      end if
+!
+!      call deallocate_surface_geom_type(ele_mesh%surf)
+!      call dealloc_edge_geometory(ele_mesh%edge)
+!
+      end subroutine FEM_mesh_init_with_IO2
+!
+!-----------------------------------------------------------------------
+!
+      subroutine const_element_comm_tbls2(mesh, ele_mesh)
+!
+      use set_ele_id_4_node_type
+      use t_belonged_element_4_node
+      use const_element_comm_tables
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(element_geometry), intent(inout) :: ele_mesh
+!
+      type(belonged_table) :: blng_tbl
+!
+!
+      if(iflag_debug.gt.0) write(*,*)' const_global_numnod_list'
+      call const_global_numnod_list(mesh%node)
+!
+      if(iflag_debug.gt.0) write(*,*) ' find_position_range'
+      call find_position_range(mesh%node)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
+      call const_ele_comm_tbl(mesh%node, mesh%ele, mesh%nod_comm,       &
+     &    blng_tbl, ele_mesh%ele_comm)
+      call const_global_element_id(mesh%ele, ele_mesh%ele_comm)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
+      call const_surf_comm_table(mesh%node, mesh%nod_comm,              &
+     &    ele_mesh%surf, blng_tbl, ele_mesh%surf_comm)
+      if(iflag_debug.gt.0) write(*,*)' const_global_surface_id'
+      call const_global_surface_id(ele_mesh%surf, ele_mesh%surf_comm)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
+      call const_edge_comm_table(mesh%node, mesh%nod_comm,              &
+     &    ele_mesh%edge, blng_tbl, ele_mesh%edge_comm)
+      if(iflag_debug.gt.0) write(*,*)' const_global_edge_id'
+      call const_global_edge_id(ele_mesh%edge, ele_mesh%edge_comm)
+!
+      end subroutine const_element_comm_tbls2
+!
+!-----------------------------------------------------------------------
 !
       end module analyzer_mesh_test

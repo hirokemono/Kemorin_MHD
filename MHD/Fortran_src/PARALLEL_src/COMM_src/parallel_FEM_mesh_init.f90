@@ -30,7 +30,7 @@
 !
       implicit none
 !
-      private :: check_whole_num_of_elements
+!      private :: check_whole_num_of_elements
 !
 !-----------------------------------------------------------------------
 !
