@@ -54,10 +54,10 @@
 !>      small number
       real(kind = kreal) :: tiny = 1.0d-11
 !
-      private :: alloc_element_rev_imports
-      private :: alloc_element_rev_exports
-      private :: dealloc_element_rev_imports
-      private :: dealloc_element_rev_exports
+!      private :: alloc_element_rev_imports
+!      private :: alloc_element_rev_exports
+!      private :: dealloc_element_rev_imports
+!      private :: dealloc_element_rev_exports
 !
 !-----------------------------------------------------------------------
 !
