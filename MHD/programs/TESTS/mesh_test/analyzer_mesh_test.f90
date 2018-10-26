@@ -267,16 +267,21 @@
       type(belonged_table) :: blng_tbl
 !
 !
-      if(iflag_debug.gt.0) write(*,*)' const_global_numnod_list'
+      if(i_debug.gt.0) write(*,*)' const_global_numnod_list', my_rank
       call const_global_numnod_list(mesh%node)
+      call calypso_mpi_barrier
 !
-      if(iflag_debug.gt.0) write(*,*) ' find_position_range'
+      if(i_debug.gt.0) write(*,*) ' find_position_range', my_rank
       call find_position_range(mesh%node)
+      call calypso_mpi_barrier
 !
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
+      if(i_debug.gt.0) write(*,*)' const_ele_comm_tbl', my_rank
       call const_ele_comm_tbl(mesh%node, mesh%ele, mesh%nod_comm,       &
      &    blng_tbl, ele_mesh%ele_comm)
+      call calypso_mpi_barrier
+      if(i_debug.gt.0) write(*,*)' const_ele_comm_tbl', my_rank
       call const_global_element_id(mesh%ele, ele_mesh%ele_comm)
+      call calypso_mpi_barrier
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table(mesh%node, mesh%nod_comm,              &
