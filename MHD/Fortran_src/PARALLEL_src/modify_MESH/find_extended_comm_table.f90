@@ -194,7 +194,7 @@
         ip = mod(i+my_rank,nprocs)
         if(iflag_recv(ip).gt.0 .or. iflag_send(ip).gt.0) then
           icou = icou + 1
-          new_comm%id_neib(i) = ip
+          new_comm%id_neib(icou) = ip
         end if
       end do
 !
