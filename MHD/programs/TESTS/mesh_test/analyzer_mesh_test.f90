@@ -80,14 +80,22 @@
       type(surf_edge_IO_file) :: ele_mesh_IO
 !
 !
-      num_elapsed = 5
+      num_elapsed = 11
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                  '
-      elapse_labels(2) = 'const_mesh_infos'
-      elapse_labels(3) = 'const_comm_table_by_connenct2'
-      elapse_labels(4) = 'set_element_export_item2'
-      elapse_labels(5) = 'search_target_element2'
+      elapse_labels(2) = 'const_element_comm_tbls2'
+!
+      elapse_labels(3) = 'const_ele_comm_tbl2'
+      elapse_labels(4) = 'const_global_element_id'
+      elapse_labels(5) = 'const_surf_comm_table'
+      elapse_labels(6) = 'start_elapsed_time'
+      elapse_labels(7) = 'const_edge_comm_table'
+      elapse_labels(8) = 'const_global_edge_id'
+!
+      elapse_labels(9) = 'const_comm_table_by_connenct2'
+      elapse_labels(10) = 'set_element_export_item2'
+      elapse_labels(11) = 'search_target_element2'
 !
 !     --------------------- 
 !
@@ -275,23 +283,39 @@
       call find_position_range(mesh%node)
 !
       if(iflag_debug.gt.0) write(*,*) 'const_ele_comm_tbl2'
+      call start_elapsed_time(3)
       call const_ele_comm_tbl2(mesh%node, mesh%ele, mesh%nod_comm,      &
      &    blng_tbl, ele_mesh%ele_comm)
+      call end_elapsed_time(3)
+      call calypso_mpi_barrier
 !
-      if(iflag_debug.gt.0) write(*,*)' const_global_element_id'
+      call start_elapsed_time(4)
+      if(i_debug.gt.0) write(*,*)' const_global_element_id', my_rank
       call const_global_element_id(mesh%ele, ele_mesh%ele_comm)
+      call end_elapsed_time(4)
+      call calypso_mpi_barrier
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
+      call start_elapsed_time(5)
       call const_surf_comm_table(mesh%node, mesh%nod_comm,              &
      &    ele_mesh%surf, blng_tbl, ele_mesh%surf_comm)
+      call end_elapsed_time(5)
+!
       if(iflag_debug.gt.0) write(*,*)' const_global_surface_id'
+      call start_elapsed_time(6)
       call const_global_surface_id(ele_mesh%surf, ele_mesh%surf_comm)
+      call end_elapsed_time(6)
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
+      call start_elapsed_time(7)
       call const_edge_comm_table(mesh%node, mesh%nod_comm,              &
      &    ele_mesh%edge, blng_tbl, ele_mesh%edge_comm)
+      call end_elapsed_time(7)
+!
       if(iflag_debug.gt.0) write(*,*)' const_global_edge_id'
+      call start_elapsed_time(8)
       call const_global_edge_id(ele_mesh%edge, ele_mesh%edge_comm)
+      call end_elapsed_time(8)
 !
       end subroutine const_element_comm_tbls2
 !
@@ -319,12 +343,12 @@
 !
       if(i_debug.gt.0) write(*,*)' const_comm_table_by_connenct2',      &
      &                            my_rank
-      call start_elapsed_time(3)
+      call start_elapsed_time(9)
       call const_comm_table_by_connenct2                                &
      &   (txt, ele%numele, ele%nnod_4_ele, ele%ie,                      &
      &    ele%interior_ele, ele%x_ele, node, nod_comm,                  &
      &    belongs%blng_ele, belongs%host_ele, ele_comm)
-      call end_elapsed_time(3)
+      call end_elapsed_time(9)
       call calypso_mpi_barrier
 !
       call dealloc_iele_belonged(belongs%host_ele)
@@ -373,7 +397,7 @@
      &    e_comm%istack_import, e_comm%ntot_import)
       call calypso_mpi_barrier
 !
-      call alloc_element_rev_imports(node%numnod,                       &
+      call alloc_element_rev_imports(node%numnod, nnod_4_ele,           &
      &    nod_comm%ntot_export, e_comm%ntot_import, wk_comm)
       call allocate_type_import_item(e_comm)
 !
@@ -390,9 +414,10 @@
      &    numele, nnod_4_ele, ie, node%inod_global, x_ele,              &
      &    host%istack_4_node, host%iele_4_node, wk_comm%inod_local,     &
      &    nod_comm%num_neib, nod_comm%istack_import,                    &
-     &    nod_comm%item_import, e_comm%num_neib, e_comm%istack_import,  &
-     &    e_comm%item_import, wk_comm%inod_import_e,                    &
-     &    wk_comm%inod_import_l, wk_comm%xe_import)
+     &    nod_comm%item_import, e_comm%num_neib,                        &
+     &    e_comm%istack_import, e_comm%item_import,                     &
+     &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
+     &    wk_comm%xe_import, wk_comm%ie_gl_import)
       call calypso_mpi_barrier
 !
       call allocate_type_export_num(e_comm)
@@ -403,7 +428,8 @@
      &    e_comm%ntot_export)
       call calypso_mpi_barrier
 !
-      call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)
+      call alloc_element_rev_exports                                    &
+     &   (nnod_4_ele, e_comm%ntot_export, wk_comm)
       call allocate_type_export_item(e_comm)
 !
       write(*,*) 'element_position_reverse_SR', my_rank
@@ -415,7 +441,7 @@
       call calypso_mpi_barrier
 !
       write(*,*) 'set_element_export_item2', my_rank
-      call start_elapsed_time(4)
+      call start_elapsed_time(10)
       call set_element_export_item2(txt, node%numnod, numele,           &
      &    node%inod_global, internal_flag, x_ele, neib_e%istack_4_node, &
      &    neib_e%iele_4_node, nod_comm%num_neib,                        &
@@ -424,7 +450,7 @@
      &    e_comm%num_neib, e_comm%istack_export,                        &
      &    wk_comm%inod_export_e, wk_comm%inod_export_l,                 &
      &    wk_comm%xe_export, e_comm%item_export)
-      call end_elapsed_time(4)
+      call end_elapsed_time(10)
       call calypso_mpi_barrier
 !
       call dealloc_element_rev_exports(wk_comm)
@@ -575,7 +601,7 @@
       real(kind = kreal) :: tiny = 1.0d-11
 !
 !
-      call start_elapsed_time(5)
+      call start_elapsed_time(11)
       kst = iele_stack_4_node(jnod-1) + 1
       ked = iele_stack_4_node(jnod)
 !      if(ked-kst .gt. 8) write(50+my_rank,*)                           &
@@ -595,7 +621,7 @@
         dist_min = min(dist_min,dist)
         if(dist .lt. dist_min)  dist_min = dist
       end do
-      call end_elapsed_time(5)
+      call end_elapsed_time(11)
 !
       end subroutine search_target_element2
 !

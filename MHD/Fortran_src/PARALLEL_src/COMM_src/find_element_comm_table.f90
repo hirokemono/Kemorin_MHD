@@ -16,7 +16,7 @@
 !!     &          inod_global, x_ele, iele_stack_ht_node, iele_ht_node, &
 !!     &          inod_local, num_neib, istack_import, item_import,     &
 !!     &          num_neib_e, istack_import_e, item_import_e,           &
-!!     &          inod_import_e, inod_import_l, xe_import)
+!!     &          inod_import_e, inod_import_l, xe_import, ie_gl_import)
 !!
 !!      subroutine set_element_export_item                              &
 !!     &         (txt, numnod, numele, inod_global,                     &
@@ -96,7 +96,7 @@
      &          inod_global, x_ele, iele_stack_ht_node, iele_ht_node,   &
      &          inod_local, num_neib, istack_import, item_import,       &
      &          num_neib_e, istack_import_e, item_import_e,             &
-     &          inod_import_e, inod_import_l, xe_import)
+     &          inod_import_e, inod_import_l, xe_import, ie_gl_import)
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
@@ -124,6 +124,8 @@
      &        :: inod_import_l(istack_import_e(num_neib_e))
       real(kind = kreal), intent(inout)                                 &
      &        :: xe_import(3*istack_import_e(num_neib_e))
+      integer(kind = kint_gl), intent(inout)                            &
+     &        :: ie_gl_import(istack_import_e(num_neib_e),nnod_4_ele)
 !
       integer(kind = kint) :: ip, icou
       integer(kind = kint) :: ist, ied, inum, inod
@@ -153,6 +155,8 @@
             minimum = num
             do k1 = 1, nnod_4_ele
               jnod = ie(jele,k1)
+              ie_gl_import(icou,k1) = inod_global(jnod)
+!
               if(jnod .gt. internal_node) cycle
               nele = iele_stack_ht_node(jnod)                           &
      &              - iele_stack_ht_node(jnod-1)
