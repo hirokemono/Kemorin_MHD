@@ -95,7 +95,7 @@
 !
       elapse_labels(9) = 'const_comm_table_by_connenct2'
       elapse_labels(10) = 'set_element_export_item2'
-      elapse_labels(11) = 'search_target_element2'
+      elapse_labels(11) = 'search_target_element4'
 !
 !     --------------------- 
 !
@@ -533,7 +533,7 @@
             if(inod .eq. jnod) then
               ie1_gl_export(1:nnod_4_ele)                               &
      &            = ie_gl_export(inum,1:nnod_4_ele)
-              call search_target_element2                               &
+              call search_target_element4                               &
      &           (jnod, numnod, numele, nnod_4_ele, inod_global, ie,    &
      &            internal_flag, x_ele, iele_stack_4_node, iele_4_node, &
      &            xe_export(3*inum-2), ie1_gl_export,                   &
@@ -567,7 +567,7 @@
             if(inod_gl .eq. inod_global(jnod)) then
               ie1_gl_export(1:nnod_4_ele)                               &
      &            = ie_gl_export(inum,1:nnod_4_ele)
-              call search_target_element2                               &
+              call search_target_element4                               &
      &           (jnod, numnod, numele, nnod_4_ele, inod_global, ie,    &
      &            internal_flag, x_ele, iele_stack_4_node, iele_4_node, &
      &            xe_export(3*inum-2), ie1_gl_export,                   &
@@ -627,11 +627,11 @@
         kele = iele_4_node(knum)
         if(internal_flag(kele) .eq. 0) cycle
 !
-        do k1 = 1, nnod_4_ele
-          knod = ie(kele,k1)
-          idiff(k1) = (ie1_gl_export(k1) - inod_global(knod))**2
-        end do
-        idiff_tot = sum(idiff)
+!        do k1 = 1, nnod_4_ele
+!          knod = ie(kele,k1)
+!          idiff(k1) = (ie1_gl_export(k1) - inod_global(knod))**2
+!        end do
+ !       idiff_tot = sum(idiff)
 !
         dx(1) = (xe_export(1) - x_ele(kele,1))**2
         dx(2) = (xe_export(2) - x_ele(kele,2))**2
@@ -650,6 +650,150 @@
       call end_elapsed_time(11)
 !
       end subroutine search_target_element2
+!
+!-----------------------------------------------------------------------
+!
+      subroutine search_target_element3                                 &
+     &         (jnod, numnod, numele, nnod_4_ele,                       &
+     &          inod_global, ie, internal_flag, x_ele,                  &
+     &          iele_stack_4_node, iele_4_node, xe_export,              &
+     &          ie1_gl_export, item_export_e, dist_min, iflag)
+!
+      use quicksort
+!
+      integer(kind = kint), intent(in) :: jnod
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind = kint), intent(in) :: internal_flag(numele)
+      real(kind = kreal), intent(in) :: x_ele(numele,3)
+!
+      integer(kind = kint), intent(in) :: iele_stack_4_node(0:numnod)
+      integer(kind = kint), intent(in)                                  &
+     &        :: iele_4_node(iele_stack_4_node(numnod))
+!
+      integer(kind = kint_gl), intent(in) :: ie1_gl_export(nnod_4_ele)
+      real(kind = kreal), intent(in) :: xe_export(3)
+!
+      integer(kind = kint), intent(inout) :: item_export_e
+      integer(kind = kint), intent(inout) :: iflag
+      real(kind = kreal), intent(inout) :: dist_min
+!
+      real(kind = kreal) :: tiny = 1.0d-11
+!
+      integer(kind = kint) :: kst, ked, num, knum, kele, k1, knod
+      real(kind = kreal) :: dx(3)
+      real(kind = kreal), allocatable :: dist(:)
+      integer(kind = kint), allocatable :: index(:)
+!
+!
+      call start_elapsed_time(11)
+      kst = iele_stack_4_node(jnod-1) + 1
+      ked = iele_stack_4_node(jnod)
+      num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
+!
+      if(num .le. 0) return
+!
+      allocate(dist(num))
+      allocate(index(num))
+!$omp parallel do private(knum,kele,dx)
+      do knum = 1, num
+        kele = iele_4_node(knum + kst - 1)
+        index(knum) = kele
+!
+        if(internal_flag(kele) .eq. 0) then
+          dist(knum) = 1.0e15
+        else
+          dx(1) = (xe_export(1) - x_ele(kele,1))**2
+          dx(2) = (xe_export(2) - x_ele(kele,2))**2
+          dx(3) = (xe_export(3) - x_ele(kele,3))**2
+          dist(knum) = sqrt(sum(dx))
+        end if
+      end do
+!$omp end parallel do
+!
+      call quicksort_real_w_index(num, dist, ione, num, index)
+!
+      if(dist(1) .le. tiny) then
+        item_export_e = index(1)
+        iflag = 1
+      end if
+      dist_min = dist(1)
+!
+      deallocate(dist, index)
+      call end_elapsed_time(11)
+!
+      end subroutine search_target_element3
+!
+!-----------------------------------------------------------------------
+!
+      subroutine search_target_element4                                 &
+     &         (jnod, numnod, numele, nnod_4_ele,                       &
+     &          inod_global, ie, internal_flag, x_ele,                  &
+     &          iele_stack_4_node, iele_4_node, xe_export,              &
+     &          ie1_gl_export, item_export_e, dist_min, iflag)
+!
+      use quicksort
+!
+      integer(kind = kint), intent(in) :: jnod
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind = kint), intent(in) :: internal_flag(numele)
+      real(kind = kreal), intent(in) :: x_ele(numele,3)
+!
+      integer(kind = kint), intent(in) :: iele_stack_4_node(0:numnod)
+      integer(kind = kint), intent(in)                                  &
+     &        :: iele_4_node(iele_stack_4_node(numnod))
+!
+      integer(kind = kint_gl), intent(in) :: ie1_gl_export(nnod_4_ele)
+      real(kind = kreal), intent(in) :: xe_export(3)
+!
+      integer(kind = kint), intent(inout) :: item_export_e
+      integer(kind = kint), intent(inout) :: iflag
+      real(kind = kreal), intent(inout) :: dist_min
+!
+      real(kind = kreal) :: tiny = 1.0d-11
+!
+      integer(kind = kint) :: kst, ked, num, knum, kele, k1, knod
+      real(kind = kreal) :: dx(3)
+      real(kind = kreal), allocatable :: dist(:)
+!
+!
+      call start_elapsed_time(11)
+      kst = iele_stack_4_node(jnod-1) + 1
+      ked = iele_stack_4_node(jnod)
+      num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
+!
+      if(num .le. 0) return
+!
+      allocate(dist(num))
+!$omp parallel do private(knum,kele,dx)
+      do knum = 1, num
+        kele = iele_4_node(knum + kst - 1)
+!
+        if(internal_flag(kele) .eq. 0) then
+          dist(knum) = 1.0e15
+        else
+          dx(1) = (xe_export(1) - x_ele(kele,1))**2
+          dx(2) = (xe_export(2) - x_ele(kele,2))**2
+          dx(3) = (xe_export(3) - x_ele(kele,3))**2
+          dist(knum) = sqrt(sum(dx))
+        end if
+      end do
+!$omp end parallel do
+!
+      dist_min = minval(dist,1)
+      knum = minloc(dist,1)
+      if(dist_min .le. tiny) then
+        item_export_e = iele_4_node(knum + kst - 1)
+        iflag = 1
+      end if
+!
+      deallocate(dist)
+      call end_elapsed_time(11)
+!
+      end subroutine search_target_element4
 !
 !-----------------------------------------------------------------------
 !
