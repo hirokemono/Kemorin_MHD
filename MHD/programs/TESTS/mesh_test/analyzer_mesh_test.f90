@@ -95,7 +95,7 @@
 !
       elapse_labels(9) = 'const_comm_table_by_connenct2'
       elapse_labels(10) = 'set_element_export_item2'
-      elapse_labels(11) = 'search_target_element4'
+      elapse_labels(11) = 'search_target_element3'
 !
 !     --------------------- 
 !
@@ -533,7 +533,7 @@
             if(inod .eq. jnod) then
               ie1_gl_export(1:nnod_4_ele)                               &
      &            = ie_gl_export(inum,1:nnod_4_ele)
-              call search_target_element4                               &
+              call search_target_element3                               &
      &           (jnod, numnod, numele, nnod_4_ele, inod_global, ie,    &
      &            internal_flag, x_ele, iele_stack_4_node, iele_4_node, &
      &            xe_export(3*inum-2), ie1_gl_export,                   &
@@ -567,7 +567,7 @@
             if(inod_gl .eq. inod_global(jnod)) then
               ie1_gl_export(1:nnod_4_ele)                               &
      &            = ie_gl_export(inum,1:nnod_4_ele)
-              call search_target_element4                               &
+              call search_target_element3                               &
      &           (jnod, numnod, numele, nnod_4_ele, inod_global, ie,    &
      &            internal_flag, x_ele, iele_stack_4_node, iele_4_node, &
      &            xe_export(3*inum-2), ie1_gl_export,                   &
@@ -727,7 +727,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine search_target_element4                                 &
+      subroutine search_target_element3                                 &
      &         (jnod, numnod, numele, nnod_4_ele,                       &
      &          inod_global, ie, internal_flag, x_ele,                  &
      &          iele_stack_4_node, iele_4_node, xe_export,              &
@@ -793,7 +793,7 @@
       deallocate(dist)
       call end_elapsed_time(11)
 !
-      end subroutine search_target_element4
+      end subroutine search_target_element3
 !
 !-----------------------------------------------------------------------
 !
