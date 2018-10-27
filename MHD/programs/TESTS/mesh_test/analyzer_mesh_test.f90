@@ -277,10 +277,9 @@
       if(iflag_debug.gt.0) write(*,*) 'const_ele_comm_tbl2'
       call const_ele_comm_tbl2(mesh%node, mesh%ele, mesh%nod_comm,      &
      &    blng_tbl, ele_mesh%ele_comm)
-      call calypso_mpi_barrier
-      if(i_debug.gt.0) write(*,*)' const_global_element_id', my_rank
+!
+      if(iflag_debug.gt.0) write(*,*)' const_global_element_id'
       call const_global_element_id(mesh%ele, ele_mesh%ele_comm)
-      call calypso_mpi_barrier
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table(mesh%node, mesh%nod_comm,              &
