@@ -150,14 +150,15 @@
 !      call calypso_mpi_barrier
 !
 !      write(*,*) 'set_element_export_item', my_rank
-      call set_element_export_item(txt, node%numnod, numele,            &
-     &    node%inod_global, internal_flag, x_ele, neib_e%istack_4_node, &
+      call set_element_export_item                                      &
+     &   (txt, node%numnod, numele, nnod_4_ele, node%inod_global,       &
+     &    ie, internal_flag, x_ele, neib_e%istack_4_node,               &
      &    neib_e%iele_4_node, nod_comm%num_neib,                        &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    e_comm%num_neib, e_comm%istack_export,                        &
      &    wk_comm%inod_export_e, wk_comm%inod_export_l,                 &
-     &    wk_comm%xe_export, e_comm%item_export)
+     &    wk_comm%xe_export, wk_comm%ie_gl_export, e_comm%item_export)
 !      call calypso_mpi_barrier
 !
       call dealloc_element_rev_exports(wk_comm)
