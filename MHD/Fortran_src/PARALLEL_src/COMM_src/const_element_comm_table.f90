@@ -140,8 +140,8 @@
      &   (nnod_4_ele, e_comm%ntot_export, wk_comm)
       call allocate_type_export_item(e_comm)
 !
-!      write(*,*) 'element_position_reverse_SR', my_rank
-      call element_position_reverse_SR(e_comm%num_neib, e_comm%id_neib, &
+!      write(*,*) 'element_data_reverse_SR', my_rank
+      call element_data_reverse_SR(e_comm%num_neib, e_comm%id_neib,     &
      &    e_comm%istack_import, e_comm%istack_export,                   &
      &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
      &    wk_comm%xe_import, wk_comm%inod_export_e,                     &
