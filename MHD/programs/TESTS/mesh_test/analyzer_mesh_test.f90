@@ -727,7 +727,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine search_target_element3                                 &
+      subroutine search_target_element4                                 &
      &         (jnod, numnod, numele, nnod_4_ele,                       &
      &          inod_global, ie, internal_flag, x_ele,                  &
      &          iele_stack_4_node, iele_4_node, xe_export,              &
@@ -793,7 +793,7 @@
       deallocate(dist)
       call end_elapsed_time(11)
 !
-      end subroutine search_target_element3
+      end subroutine search_target_element4
 !
 !-----------------------------------------------------------------------
 !
