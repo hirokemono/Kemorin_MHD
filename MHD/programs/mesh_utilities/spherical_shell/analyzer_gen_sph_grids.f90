@@ -104,9 +104,11 @@
       call dealloc_gen_mesh_params(gen_sph_G)
 !
       call start_elapsed_time(4)
-      call load_para_SPH_and_FEM_mesh                                  &
-     &   (sph_files1%FEM_mesh_flags, sph_const, comms_sph, sph_grps,   &
+      call load_para_SPH_and_FEM_mesh                                   &
+     &   (sph_files1%FEM_mesh_flags, sph_const, comms_sph, sph_grps,    &
      &    geofem, ele_mesh, sph_files1%mesh_file_IO, gen_sph_G)
+      call calypso_MPI_barrier
+
       call dealloc_gen_sph_fem_mesh_param(gen_sph_G)
       call end_elapsed_time(4)
       call end_elapsed_time(1)

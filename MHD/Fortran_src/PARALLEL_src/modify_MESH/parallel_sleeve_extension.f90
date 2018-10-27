@@ -66,13 +66,16 @@
      &   (mesh, next_tbl%neib_ele, next_tbl%neib_nod)
 !
       call alloc_double_numbering(mesh%node%numnod, dbl_id1)
+      if (iflag_debug.gt.0) write(*,*) 'set_para_double_numbering'
       call set_para_double_numbering                                    &
      &   (mesh%node%internal_node, mesh%nod_comm, dbl_id1)
 !
+      if (iflag_debug.gt.0) write(*,*) 'extend_node_comm_table'
       call extend_node_comm_table                                       &
      &   (mesh%nod_comm, mesh%node, dbl_id1, next_tbl%neib_nod,         &
      &    newmesh%nod_comm, newmesh%node)
 !
+      if (iflag_debug.gt.0) write(*,*) 'extend_ele_connectivity'
       call extend_ele_connectivity                                      &
      &   (mesh%nod_comm, ele_mesh%ele_comm, mesh%node, mesh%ele,        &
      &    dbl_id1, next_tbl%neib_ele, newmesh%nod_comm, newmesh%node,   &
@@ -85,6 +88,7 @@
       call const_element_comm_tbl_only(newmesh, new_ele_mesh)
 !
 !
+      if (iflag_debug.gt.0) write(*,*) 's_extend_group_table'
       call s_extend_group_table                                         &
      &   (nprocs, newmesh%nod_comm, new_ele_mesh%ele_comm,              &
      &    newmesh%node, newmesh%ele, group, newgroup)
@@ -93,8 +97,10 @@
       call dealloc_ele_comm_tbl_only(mesh, ele_mesh)
       call dealloc_mesh_infomations(mesh, group, ele_mesh)
 !
+      if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type'
       call set_mesh_data_from_type                                      &
      &   (newmesh, newgroup, mesh, ele_mesh, group)
+!
       call deallocate_sph_node_geometry(newmesh%node)
       call dealloc_ele_comm_tbl_only(newmesh, new_ele_mesh)
       call deallocate_ele_geometry_type(newmesh%ele)

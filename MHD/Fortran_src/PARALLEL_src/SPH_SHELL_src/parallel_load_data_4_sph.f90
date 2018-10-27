@@ -165,11 +165,13 @@
       call const_FEM_mesh_4_sph_mhd                                     &
      &   (FEM_mesh_flags, sph_params, sph_rtp, sph_rj,                  &
      &    femmesh_s%mesh, femmesh_s%group, mesh_file, gen_sph)
+      call calypso_mpi_barrier
 !      call compare_mesh_type                                           &
 !     &   (my_rank, fem%mesh%nod_comm, mesh%node, mesh%ele,             &
 !     &    femmesh_s%mesh)
 !      call compare_mesh_groups(fem%group%nod_grp, femmesh_s%group)
 !
+      if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type'
       call set_mesh_data_from_type(femmesh_s%mesh, femmesh_s%group,     &
      &    fem%mesh, ele_mesh, fem%group)
 !

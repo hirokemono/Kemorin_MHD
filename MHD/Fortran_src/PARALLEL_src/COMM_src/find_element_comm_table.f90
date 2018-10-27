@@ -475,18 +475,12 @@
           idiff(k1) = ie1_gl_export(k1) - inod_global(knod)
         end do
         idiff_tot = sum(idiff)
-        if(idiff_tot .eq. 0) then
-          item_export_e = kele
-          iflag = 1
-          exit
-        end if
 !
-        dx(1) = (xe_export(1) - x_ele(kele,1))**2
-        dx(2) = (xe_export(2) - x_ele(kele,2))**2
-        dx(3) = (xe_export(3) - x_ele(kele,3))**2
-        dist = sqrt(sum(dx))
-!
-        if(dist .le. tiny) then
+        dx(1) = abs(xe_export(1) - x_ele(kele,1))
+        dx(2) = abs(xe_export(2) - x_ele(kele,2))
+        dx(3) = abs(xe_export(3) - x_ele(kele,3))
+        dist = sqrt(dx(1)**2+dx(2)**2+dx(3)**2)
+        if(dx(1).le.tiny .and. dx(2).le.tiny .and. dx(3).le.tiny) then
           item_export_e = kele
           iflag = 1
           exit
