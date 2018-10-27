@@ -142,10 +142,11 @@
 !
 !      write(*,*) 'element_data_reverse_SR', my_rank
       call element_data_reverse_SR(e_comm%num_neib, e_comm%id_neib,     &
-     &    e_comm%istack_import, e_comm%istack_export,                   &
+     &    e_comm%istack_import, e_comm%istack_export, nnod_4_ele,       &
      &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
-     &    wk_comm%xe_import, wk_comm%inod_export_e,                     &
-     &    wk_comm%inod_export_l, wk_comm%xe_export)
+     &    wk_comm%xe_import, wk_comm%ie_gl_import,                      &
+     &    wk_comm%inod_export_e, wk_comm%inod_export_l,                 &
+     &    wk_comm%xe_export, wk_comm%ie_gl_export)
 !      call calypso_mpi_barrier
 !
 !      write(*,*) 'set_element_export_item', my_rank
