@@ -163,6 +163,8 @@
 !
       call resize_iwork_4_SR(num_neib_e, num_neib_e,                    &
      &    istack_import_e(num_neib_e), istack_export_e(num_neib_e))
+      call resize_i8work_4_SR(num_neib_e, num_neib_e,                   &
+     &    istack_import_e(num_neib_e), istack_export_e(num_neib_e))
       call resize_work_4_SR(ithree, num_neib_e, num_neib_e,             &
      &    istack_import_e(num_neib_e), istack_export_e(num_neib_e))
 !

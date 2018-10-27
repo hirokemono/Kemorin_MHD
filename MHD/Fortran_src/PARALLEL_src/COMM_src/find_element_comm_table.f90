@@ -259,7 +259,8 @@
         ist = iele_stack_ht_node(ip-1) + 1
         ied = iele_stack_ht_node(ip)
         do inum = ist, ied
-           if(iele_ht_node(inum) .le. 0 .or. iele_ht_node(inum) .gt. numele) write(*,*)   &
+           if(iele_ht_node(inum) .le. 0                                 &
+     &       .or. iele_ht_node(inum) .gt. numele) write(*,*)            &
      &        'Wrong iele_ht_node at ', inum, ip, iele_ht_node(inum)
         end do
       end do

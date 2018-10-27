@@ -254,10 +254,22 @@
         end do
       end do
 !
-      do i = 1, new_comm%num_neib
+      do i = 1, nod_comm%num_neib
         ip = new_comm%id_neib(i)
         icou = new_comm%istack_import(i-1)                              &
      &        + nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
+        do inum = 1, added_comm%ntot_import
+          if(recv_nbuf%irank_add(inum).eq.ip                            &
+     &         .and. added_comm%item_import(inum).gt.0) then
+            icou = icou + 1
+            new_comm%item_import(icou) = added_comm%item_import(inum)
+          end if
+        end do
+      end do
+!
+      do i = nod_comm%num_neib+1, new_comm%num_neib
+        ip = new_comm%id_neib(i)
+        icou = new_comm%istack_import(i-1)
         do inum = 1, added_comm%ntot_import
           if(recv_nbuf%irank_add(inum).eq.ip                            &
      &         .and. added_comm%item_import(inum).gt.0) then
