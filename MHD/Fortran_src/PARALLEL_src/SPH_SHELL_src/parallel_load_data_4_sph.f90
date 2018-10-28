@@ -128,6 +128,7 @@
       use gen_sph_grids_modes
       use mesh_IO_select
       use mesh_file_name_by_param
+      use set_nnod_4_ele_by_type
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(sph_shell_parameters), intent(inout) :: sph_params
@@ -172,8 +173,12 @@
 !      call compare_mesh_groups(fem%group%nod_grp, femmesh_s%group)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type'
+      femmesh_s%mesh%ele%first_ele_type                                 &
+     &   = set_cube_eletype_from_num(femmesh_s%mesh%ele%nnod_4_ele)
       call set_mesh_data_from_type(femmesh_s%mesh, femmesh_s%group,     &
      &    fem%mesh, ele_mesh, fem%group)
+      call calypso_mpi_barrier
+      if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type end'
 !
       end subroutine load_FEM_mesh_4_SPH
 !

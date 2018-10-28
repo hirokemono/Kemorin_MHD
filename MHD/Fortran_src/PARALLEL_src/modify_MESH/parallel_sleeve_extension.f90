@@ -43,6 +43,7 @@
       use extend_element_connect
       use extend_group_table
       use copy_mesh_structures
+      use set_nnod_4_ele_by_type
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) :: group
@@ -80,6 +81,8 @@
      &   (mesh%nod_comm, ele_mesh%ele_comm, mesh%node, mesh%ele,        &
      &    dbl_id1, next_tbl%neib_ele, newmesh%nod_comm, newmesh%node,   &
      &    newmesh%ele)
+      newmesh%ele%first_ele_type                                        &
+     &   = set_cube_eletype_from_num(newmesh%ele%nnod_4_ele)
 !
       call dealloc_double_numbering(dbl_id1)
 !

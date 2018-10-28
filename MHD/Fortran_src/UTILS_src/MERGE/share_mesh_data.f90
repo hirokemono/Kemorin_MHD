@@ -132,8 +132,7 @@
      &     irank_org, CALYPSO_COMM, ierr_MPI)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
-        call set_nnod_4_ele_by_eletype                                  &
-     &     (ele%first_ele_type, ele%nnod_4_ele)
+        ele%nnod_4_ele = set_nnod_4_ele_by_eletype(ele%first_ele_type)
         call allocate_ele_connect_type(ele)
       end if
 !

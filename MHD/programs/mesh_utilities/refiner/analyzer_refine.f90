@@ -170,7 +170,7 @@
       &    org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge)
 !
 !      call check_refine_items                                          &
-!     &   (org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,                   &
+!     &   (org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,           &
 !     &    org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge)
 !
          refined_fem%mesh%nod_comm%num_neib                             &
@@ -198,6 +198,8 @@
      &     (refined_fem%mesh%ele%nnod_4_ele,                            &
      &      finer_elemesh%surf%nnod_4_surf,                             &
      &      finer_elemesh%edge%nnod_4_edge)
+        refined_fem%mesh%ele%first_ele_type                             &
+     &     = set_cube_eletype_from_num(refined_fem%mesh%ele%nnod_4_ele)
 !
         call set_hanging_nodes                                          &
      &     (org_ele_mesh%surf%numsurf, org_ele_mesh%surf%nnod_4_surf,   &

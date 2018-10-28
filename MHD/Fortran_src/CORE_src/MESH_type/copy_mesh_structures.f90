@@ -192,8 +192,8 @@
       new_ele%numele =         org_ele%numele
       new_ele%first_ele_type = org_ele%first_ele_type
 !
-      call set_nnod_4_ele_by_eletype                                    &
-     &   (new_ele%first_ele_type, new_ele%nnod_4_ele)
+      new_ele%nnod_4_ele                                                &
+     &      = set_nnod_4_ele_by_eletype(new_ele%first_ele_type)
 !
       call allocate_ele_connect_type(new_ele)
 !
