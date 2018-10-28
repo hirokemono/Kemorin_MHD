@@ -30,9 +30,10 @@
       module mark_export_nod_ele_extend
 !
       use m_precision
-!      use calypso_mpi
 !
       implicit none
+!
+      integer(kind = kint), parameter, private :: many = 512
 !
 !  ---------------------------------------------------------------------
 !
@@ -73,6 +74,8 @@
         inod = item_export(inum)
         jst = istack_next(inod-1) + 1
         jed = istack_next(inod)
+!        if((jed-jst) .ge. many) cycle
+!
         do jnum = jst, jed
           jnod = inod_next(jnum)
           iflag_node(jnod) = 1

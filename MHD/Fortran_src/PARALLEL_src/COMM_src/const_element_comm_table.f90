@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine const_comm_table_by_connenct                         &
 !!     &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,    &
-!!     &          node, nod_comm, neib_e, host, e_comm)
+!!     &          node, nod_comm, neib_e, x_ref_ele, host, e_comm)
 !!        type(node_data), intent(in) :: node
 !!        type(element_around_node), intent(in) :: host
 !!        type(element_around_node), intent(in) :: neib_e
@@ -71,7 +71,7 @@
 !
       subroutine const_comm_table_by_connenct                           &
      &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,      &
-     &          node, nod_comm, neib_e, host, e_comm)
+     &          node, nod_comm, neib_e, x_ref_ele, host, e_comm)
 !
       use find_element_comm_table
       use const_global_element_ids
@@ -87,6 +87,8 @@
       type(element_around_node), intent(in) :: host
       type(element_around_node), intent(in) :: neib_e
       type(communication_table), intent(in) :: nod_comm
+      real(kind = kreal), intent(in)                                    &
+     &           :: x_ref_ele(neib_e%istack_4_node(node%numnod))
 !
       type(communication_table), intent(inout) :: e_comm
 !
@@ -153,7 +155,7 @@
       call set_element_export_item                                      &
      &   (txt, node%numnod, numele, nnod_4_ele, node%inod_global,       &
      &    ie, internal_flag, x_ele, neib_e%istack_4_node,               &
-     &    neib_e%iele_4_node, nod_comm%num_neib,                        &
+     &    neib_e%iele_4_node, x_ref_ele, nod_comm%num_neib,             &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    e_comm%num_neib, e_comm%istack_export,                        &

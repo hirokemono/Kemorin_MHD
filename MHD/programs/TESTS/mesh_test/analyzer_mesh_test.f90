@@ -95,7 +95,7 @@
 !
       elapse_labels(9) = 'const_comm_table_by_connenct2'
       elapse_labels(10) = 'set_element_export_item2'
-      elapse_labels(11) = 'search_target_element3'
+      elapse_labels(11) = 'search_target_element2'
 !
 !     --------------------- 
 !
@@ -335,6 +335,9 @@
 !
 !
       call set_ele_id_4_node(node, ele, belongs%blng_ele)
+      call alloc_x_ref_ele(node, belongs)
+      call sort_inod_4_ele_by_position(ione, ele%numele, ele%x_ele,     &
+     &    node, belongs%blng_ele, belongs%x_ref_ele)
 !
       call belonged_ele_id_4_node(node, ele, belongs%host_ele)
       call calypso_mpi_barrier
@@ -345,11 +348,13 @@
       call const_comm_table_by_connenct2                                &
      &   (txt, ele%numele, ele%nnod_4_ele, ele%ie,                      &
      &    ele%interior_ele, ele%x_ele, node, nod_comm,                  &
-     &    belongs%blng_ele, belongs%host_ele, ele_comm)
+     &    belongs%blng_ele, belongs%x_ref_ele, belongs%host_ele,        &
+     &    ele_comm)
       call end_elapsed_time(9)
       call calypso_mpi_barrier
 !
       call dealloc_iele_belonged(belongs%host_ele)
+      call dealloc_x_ref_ele(belongs)
       call dealloc_iele_belonged(belongs%blng_ele)
 !
       end subroutine const_ele_comm_tbl2
@@ -358,7 +363,7 @@
 !
       subroutine const_comm_table_by_connenct2                          &
      &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,      &
-     &          node, nod_comm, neib_e, host, e_comm)
+     &          node, nod_comm, neib_e, x_ref_ele, host, e_comm)
 !
       use t_belonged_element_4_node
       use t_comm_table
@@ -377,6 +382,8 @@
       type(element_around_node), intent(in) :: host
       type(element_around_node), intent(in) :: neib_e
       type(communication_table), intent(in) :: nod_comm
+      real(kind = kreal), intent(in)                                    &
+     &           :: x_ref_ele(neib_e%istack_4_node(node%numnod))
 !
       type(communication_table), intent(inout) :: e_comm
 !
@@ -444,7 +451,7 @@
       call set_element_export_item2                                     &
      &   (txt, node%numnod, numele, nnod_4_ele, node%inod_global,       &
      &    ie, internal_flag, x_ele, neib_e%istack_4_node,               &
-     &    neib_e%iele_4_node, nod_comm%num_neib,                        &
+     &    neib_e%iele_4_node, x_ref_ele, nod_comm%num_neib,             &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    e_comm%num_neib, e_comm%istack_export,                        &
@@ -467,7 +474,7 @@
       subroutine set_element_export_item2                               &
      &         (txt, numnod, numele, nnod_4_ele, inod_global, ie,       &
      &          internal_flag, x_ele, iele_stack_4_node, iele_4_node,   &
-     &          num_neib, istack_import, item_import,                   &
+     &          x_ref_ele, num_neib, istack_import, item_import,        &
      &          istack_export, item_export, num_neib_e,                 &
      &          istack_export_e, inod_export_e, inod_export_l,          &
      &          xe_export, ie_gl_export, item_export_e)
@@ -482,6 +489,8 @@
       integer(kind = kint), intent(in) :: iele_stack_4_node(0:numnod)
       integer(kind = kint), intent(in)                                  &
      &        :: iele_4_node(iele_stack_4_node(numnod))
+      real(kind = kreal), intent(in)                                    &
+     &        :: x_ref_ele(iele_stack_4_node(numnod))
 !
       integer(kind = kint), intent(in) :: num_neib
       integer(kind = kint), intent(in) :: istack_import(0:num_neib)
@@ -533,9 +542,9 @@
             if(inod .eq. jnod) then
               ie1_gl_export(1:nnod_4_ele)                               &
      &            = ie_gl_export(inum,1:nnod_4_ele)
-              call search_target_element3                               &
-     &           (jnod, numnod, numele, nnod_4_ele, inod_global, ie,    &
-     &            internal_flag, x_ele, iele_stack_4_node, iele_4_node, &
+              call search_target_element2(jnod, numnod, numele,         &
+     &            nnod_4_ele, inod_global, ie, internal_flag, x_ele,    &
+     &            iele_stack_4_node, iele_4_node, x_ref_ele,            &
      &            xe_export(3*inum-2), ie1_gl_export,                   &
      &            item_export_e(inum), dist_min, iflag)
               exit
@@ -567,9 +576,9 @@
             if(inod_gl .eq. inod_global(jnod)) then
               ie1_gl_export(1:nnod_4_ele)                               &
      &            = ie_gl_export(inum,1:nnod_4_ele)
-              call search_target_element3                               &
-     &           (jnod, numnod, numele, nnod_4_ele, inod_global, ie,    &
-     &            internal_flag, x_ele, iele_stack_4_node, iele_4_node, &
+              call search_target_element2(jnod, numnod, numele,         &
+     &            nnod_4_ele, inod_global, ie, internal_flag, x_ele,    &
+     &            iele_stack_4_node, iele_4_node, x_ref_ele,            &
      &            xe_export(3*inum-2), ie1_gl_export,                   &
      &            item_export_e(inum), dist_min, iflag)
               exit
@@ -590,7 +599,7 @@
       subroutine search_target_element2                                 &
      &         (jnod, numnod, numele, nnod_4_ele,                       &
      &          inod_global, ie, internal_flag, x_ele,                  &
-     &          iele_stack_4_node, iele_4_node, xe_export,              &
+     &          iele_stack_4_node, iele_4_node, x_ref_ele, xe_export,   &
      &          ie1_gl_export, item_export_e, dist_min, iflag)
 !
       integer(kind = kint), intent(in) :: jnod
@@ -603,6 +612,8 @@
       integer(kind = kint), intent(in) :: iele_stack_4_node(0:numnod)
       integer(kind = kint), intent(in)                                  &
      &        :: iele_4_node(iele_stack_4_node(numnod))
+      real(kind = kreal), intent(in)                                    &
+     &        :: x_ref_ele(iele_stack_4_node(numnod))
 !
       integer(kind = kint_gl), intent(in) :: ie1_gl_export(nnod_4_ele)
       real(kind = kreal), intent(in) :: xe_export(3)
@@ -612,8 +623,9 @@
       real(kind = kreal), intent(inout) :: dist_min
 !
       real(kind = kreal) :: tiny = 1.0d-11
+      integer(kind = kint), parameter :: many = 512
 !
-      integer(kind = kint) :: kst, ked, knum, kele, k1, knod
+      integer(kind = kint) :: kst, ked, num, knum, kele, k1, knod
       real(kind = kreal) :: dx(3), dist
       integer(kind = kint_gl) :: idiff(nnod_4_ele), idiff_tot
 !
@@ -621,6 +633,11 @@
       call start_elapsed_time(11)
       kst = iele_stack_4_node(jnod-1) + 1
       ked = iele_stack_4_node(jnod)
+      num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
+!
+!      if(num .gt. many) write(*,*) 'Too many Search:', jnod, inod_global(jnod), num, xe_export
+!
+!
 !      if(ked-kst .gt. 8) write(50+my_rank,*)                           &
 !     &                  'kst, ked', my_rank, jnod, ked-kst
       do knum = kst, ked
@@ -631,7 +648,7 @@
 !          knod = ie(kele,k1)
 !          idiff(k1) = (ie1_gl_export(k1) - inod_global(knod))**2
 !        end do
- !       idiff_tot = sum(idiff)
+!       idiff_tot = sum(idiff)
 !
         dx(1) = (xe_export(1) - x_ele(kele,1))**2
         dx(2) = (xe_export(2) - x_ele(kele,2))**2
@@ -656,7 +673,7 @@
       subroutine search_target_element3                                 &
      &         (jnod, numnod, numele, nnod_4_ele,                       &
      &          inod_global, ie, internal_flag, x_ele,                  &
-     &          iele_stack_4_node, iele_4_node, xe_export,              &
+     &          iele_stack_4_node, iele_4_node, x_ref_ele, xe_export,   &
      &          ie1_gl_export, item_export_e, dist_min, iflag)
 !
       use quicksort
@@ -671,6 +688,8 @@
       integer(kind = kint), intent(in) :: iele_stack_4_node(0:numnod)
       integer(kind = kint), intent(in)                                  &
      &        :: iele_4_node(iele_stack_4_node(numnod))
+      real(kind = kreal), intent(in)                                    &
+     &        :: x_ref_ele(iele_stack_4_node(numnod))
 !
       integer(kind = kint_gl), intent(in) :: ie1_gl_export(nnod_4_ele)
       real(kind = kreal), intent(in) :: xe_export(3)
@@ -730,7 +749,7 @@
       subroutine search_target_element4                                 &
      &         (jnod, numnod, numele, nnod_4_ele,                       &
      &          inod_global, ie, internal_flag, x_ele,                  &
-     &          iele_stack_4_node, iele_4_node, xe_export,              &
+     &          iele_stack_4_node, iele_4_node, x_ref_ele, xe_export,   &
      &          ie1_gl_export, item_export_e, dist_min, iflag)
 !
       use quicksort
@@ -745,6 +764,8 @@
       integer(kind = kint), intent(in) :: iele_stack_4_node(0:numnod)
       integer(kind = kint), intent(in)                                  &
      &        :: iele_4_node(iele_stack_4_node(numnod))
+      real(kind = kreal), intent(in)                                    &
+     &        :: x_ref_ele(iele_stack_4_node(numnod))
 !
       integer(kind = kint_gl), intent(in) :: ie1_gl_export(nnod_4_ele)
       real(kind = kreal), intent(in) :: xe_export(3)
