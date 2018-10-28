@@ -402,7 +402,7 @@
      &    e_comm%istack_import, e_comm%ntot_import)
       call calypso_mpi_barrier
 !
-      call alloc_element_rev_imports(node%numnod, nnod_4_ele,           &
+      call alloc_element_rev_imports(node%numnod,                       &
      &    nod_comm%ntot_export, e_comm%ntot_import, wk_comm)
       call allocate_type_import_item(e_comm)
 !
@@ -422,7 +422,7 @@
      &    nod_comm%item_import, e_comm%num_neib,                        &
      &    e_comm%istack_import, e_comm%item_import,                     &
      &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
-     &    wk_comm%xe_import, wk_comm%ie_gl_import)
+     &    wk_comm%xe_import)
       call calypso_mpi_barrier
 !
       call allocate_type_export_num(e_comm)
@@ -433,30 +433,28 @@
      &    e_comm%ntot_export)
       call calypso_mpi_barrier
 !
-      call alloc_element_rev_exports                                    &
-     &   (nnod_4_ele, e_comm%ntot_export, wk_comm)
+      call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)
       call allocate_type_export_item(e_comm)
 !
       write(*,*) 'element_data_reverse_SR', my_rank
       call element_data_reverse_SR(e_comm%num_neib, e_comm%id_neib,     &
-     &    e_comm%istack_import, e_comm%istack_export, nnod_4_ele,       &
+     &    e_comm%istack_import, e_comm%istack_export,                   &
      &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
-     &    wk_comm%xe_import, wk_comm%ie_gl_import,                      &
-     &    wk_comm%inod_export_e, wk_comm%inod_export_l,                 &
-     &    wk_comm%xe_export, wk_comm%ie_gl_export)
+     &    wk_comm%xe_import, wk_comm%inod_export_e,                     &
+     &    wk_comm%inod_export_l, wk_comm%xe_export)
       call calypso_mpi_barrier
 !
       write(*,*) 'set_element_export_item2', my_rank
       call start_elapsed_time(10)
       call set_element_export_item2                                     &
-     &   (txt, node%numnod, numele, nnod_4_ele, node%inod_global,       &
-     &    ie, internal_flag, x_ele, neib_e%istack_4_node,               &
+     &   (txt, node%numnod, numele, node%inod_global,                   &
+     &    internal_flag, x_ele, neib_e%istack_4_node,                   &
      &    neib_e%iele_4_node, x_ref_ele, nod_comm%num_neib,             &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    e_comm%num_neib, e_comm%istack_export,                        &
      &    wk_comm%inod_export_e, wk_comm%inod_export_l,                 &
-     &    wk_comm%xe_export, wk_comm%ie_gl_export, e_comm%item_export)
+     &    wk_comm%xe_export, e_comm%item_export)
       call end_elapsed_time(10)
       call calypso_mpi_barrier
 !
@@ -472,17 +470,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_element_export_item2                               &
-     &         (txt, numnod, numele, nnod_4_ele, inod_global, ie,       &
-     &          internal_flag, x_ele, iele_stack_4_node, iele_4_node,   &
-     &          x_ref_ele, num_neib, istack_import, item_import,        &
+     &         (txt, numnod, numele, inod_global, internal_flag,        &
+     &          x_ele, iele_stack_4_node, iele_4_node, x_ref_ele,       &
+     &          num_neib, istack_import, item_import,                   &
      &          istack_export, item_export, num_neib_e,                 &
      &          istack_export_e, inod_export_e, inod_export_l,          &
-     &          xe_export, ie_gl_export, item_export_e)
+     &          xe_export, item_export_e)
 !
       character(len=kchara), intent(in) :: txt
-      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
-      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in)  :: x_ele(numele,3)
 !
@@ -507,8 +504,6 @@
      &        :: inod_export_l(istack_export_e(num_neib_e))
       integer(kind = kint_gl), intent(in)                               &
      &        :: inod_export_e(istack_export_e(num_neib_e))
-      integer(kind = kint_gl), intent(in)                               &
-     &        :: ie_gl_export(istack_export_e(num_neib_e),nnod_4_ele)
       real(kind = kreal), intent(in)                                    &
      &        :: xe_export(3*istack_export_e(num_neib_e))
 !
@@ -519,7 +514,6 @@
       integer(kind = kint) :: ist, ied, inum, inod
       integer(kind = kint) :: jst, jed, jnum, jnod
       integer(kind = kint_gl) :: inod_gl
-      integer(kind = kint_gl) :: ie1_gl_export(nnod_4_ele)
       real(kind = kreal) :: dist_min
 !
 !
@@ -540,13 +534,11 @@
             jnod = item_import(jnum)
 !
             if(inod .eq. jnod) then
-              ie1_gl_export(1:nnod_4_ele)                               &
-     &            = ie_gl_export(inum,1:nnod_4_ele)
-              call search_target_element2(jnod, numnod, numele,         &
-     &            nnod_4_ele, inod_global, ie, internal_flag, x_ele,    &
+              call search_target_element2                               &
+     &           (jnod, numnod, numele, internal_flag, x_ele,           &
      &            iele_stack_4_node, iele_4_node, x_ref_ele,            &
-     &            xe_export(3*inum-2), ie1_gl_export,                   &
-     &            item_export_e(inum), dist_min, iflag)
+     &            xe_export(3*inum-2), item_export_e(inum),             &
+     &            dist_min, iflag)
               exit
             end if
           end do
@@ -574,13 +566,11 @@
             jnod = item_export(jnum)
 !
             if(inod_gl .eq. inod_global(jnod)) then
-              ie1_gl_export(1:nnod_4_ele)                               &
-     &            = ie_gl_export(inum,1:nnod_4_ele)
-              call search_target_element2(jnod, numnod, numele,         &
-     &            nnod_4_ele, inod_global, ie, internal_flag, x_ele,    &
+              call search_target_element2                               &
+     &           (jnod, numnod, numele, internal_flag, x_ele,           &
      &            iele_stack_4_node, iele_4_node, x_ref_ele,            &
-     &            xe_export(3*inum-2), ie1_gl_export,                   &
-     &            item_export_e(inum), dist_min, iflag)
+     &            xe_export(3*inum-2), item_export_e(inum),             &
+     &            dist_min, iflag)
               exit
             end if
           end do
@@ -597,15 +587,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine search_target_element2                                 &
-     &         (jnod, numnod, numele, nnod_4_ele,                       &
-     &          inod_global, ie, internal_flag, x_ele,                  &
-     &          iele_stack_4_node, iele_4_node, x_ref_ele, xe_export,   &
-     &          ie1_gl_export, item_export_e, dist_min, iflag)
+     &         (jnod, numnod, numele, internal_flag, x_ele,             &
+     &          iele_stack_4_node, iele_4_node, x_ref_ele,              &
+     &          xe_export, item_export_e, dist_min, iflag)
 !
       integer(kind = kint), intent(in) :: jnod
-      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
-      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
-      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in) :: x_ele(numele,3)
 !
@@ -615,7 +602,6 @@
       real(kind = kreal), intent(in)                                    &
      &        :: x_ref_ele(iele_stack_4_node(numnod))
 !
-      integer(kind = kint_gl), intent(in) :: ie1_gl_export(nnod_4_ele)
       real(kind = kreal), intent(in) :: xe_export(3)
 !
       integer(kind = kint), intent(inout) :: item_export_e
@@ -625,9 +611,8 @@
       real(kind = kreal) :: tiny = 1.0d-11
       integer(kind = kint), parameter :: many = 512
 !
-      integer(kind = kint) :: kst, ked, num, knum, kele, k1, knod
+      integer(kind = kint) :: kst, ked, num, knum, kele
       real(kind = kreal) :: dx(3), dist
-      integer(kind = kint_gl) :: idiff(nnod_4_ele), idiff_tot
 !
 !
       call start_elapsed_time(11)
@@ -635,28 +620,18 @@
       ked = iele_stack_4_node(jnod)
       num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
 !
-!      if(num .gt. many) write(*,*) 'Too many Search:', jnod, inod_global(jnod), num, xe_export
-!
 !
 !      if(ked-kst .gt. 8) write(50+my_rank,*)                           &
 !     &                  'kst, ked', my_rank, jnod, ked-kst
       do knum = kst, ked
         kele = iele_4_node(knum)
         if(internal_flag(kele) .eq. 0) cycle
-!
-!        do k1 = 1, nnod_4_ele
-!          knod = ie(kele,k1)
-!          idiff(k1) = (ie1_gl_export(k1) - inod_global(knod))**2
-!        end do
-!       idiff_tot = sum(idiff)
-!
         dx(1) = (xe_export(1) - x_ele(kele,1))**2
         dx(2) = (xe_export(2) - x_ele(kele,2))**2
         dx(3) = (xe_export(3) - x_ele(kele,3))**2
         dist = sqrt(sum(dx))
 !
         if(dist .le. tiny) then
-!        if(idiff_tot .eq. 0) then
           item_export_e = kele
           iflag = 1
           exit
@@ -667,154 +642,6 @@
       call end_elapsed_time(11)
 !
       end subroutine search_target_element2
-!
-!-----------------------------------------------------------------------
-!
-      subroutine search_target_element3                                 &
-     &         (jnod, numnod, numele, nnod_4_ele,                       &
-     &          inod_global, ie, internal_flag, x_ele,                  &
-     &          iele_stack_4_node, iele_4_node, x_ref_ele, xe_export,   &
-     &          ie1_gl_export, item_export_e, dist_min, iflag)
-!
-      use quicksort
-!
-      integer(kind = kint), intent(in) :: jnod
-      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
-      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
-      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
-      integer(kind = kint), intent(in) :: internal_flag(numele)
-      real(kind = kreal), intent(in) :: x_ele(numele,3)
-!
-      integer(kind = kint), intent(in) :: iele_stack_4_node(0:numnod)
-      integer(kind = kint), intent(in)                                  &
-     &        :: iele_4_node(iele_stack_4_node(numnod))
-      real(kind = kreal), intent(in)                                    &
-     &        :: x_ref_ele(iele_stack_4_node(numnod))
-!
-      integer(kind = kint_gl), intent(in) :: ie1_gl_export(nnod_4_ele)
-      real(kind = kreal), intent(in) :: xe_export(3)
-!
-      integer(kind = kint), intent(inout) :: item_export_e
-      integer(kind = kint), intent(inout) :: iflag
-      real(kind = kreal), intent(inout) :: dist_min
-!
-      real(kind = kreal) :: tiny = 1.0d-11
-!
-      integer(kind = kint) :: kst, ked, num, knum, kele, k1, knod
-      real(kind = kreal) :: dx(3)
-      real(kind = kreal), allocatable :: dist(:)
-      integer(kind = kint), allocatable :: index(:)
-!
-!
-      call start_elapsed_time(11)
-      kst = iele_stack_4_node(jnod-1) + 1
-      ked = iele_stack_4_node(jnod)
-      num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
-!
-      if(num .le. 0) return
-!
-      allocate(dist(num))
-      allocate(index(num))
-!$omp parallel do private(knum,kele,dx)
-      do knum = 1, num
-        kele = iele_4_node(knum + kst - 1)
-        index(knum) = kele
-!
-        if(internal_flag(kele) .eq. 0) then
-          dist(knum) = 1.0e15
-        else
-          dx(1) = (xe_export(1) - x_ele(kele,1))**2
-          dx(2) = (xe_export(2) - x_ele(kele,2))**2
-          dx(3) = (xe_export(3) - x_ele(kele,3))**2
-          dist(knum) = sqrt(sum(dx))
-        end if
-      end do
-!$omp end parallel do
-!
-      call quicksort_real_w_index(num, dist, ione, num, index)
-!
-      if(dist(1) .le. tiny) then
-        item_export_e = index(1)
-        iflag = 1
-      end if
-      dist_min = dist(1)
-!
-      deallocate(dist, index)
-      call end_elapsed_time(11)
-!
-      end subroutine search_target_element3
-!
-!-----------------------------------------------------------------------
-!
-      subroutine search_target_element4                                 &
-     &         (jnod, numnod, numele, nnod_4_ele,                       &
-     &          inod_global, ie, internal_flag, x_ele,                  &
-     &          iele_stack_4_node, iele_4_node, x_ref_ele, xe_export,   &
-     &          ie1_gl_export, item_export_e, dist_min, iflag)
-!
-      use quicksort
-!
-      integer(kind = kint), intent(in) :: jnod
-      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
-      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
-      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
-      integer(kind = kint), intent(in) :: internal_flag(numele)
-      real(kind = kreal), intent(in) :: x_ele(numele,3)
-!
-      integer(kind = kint), intent(in) :: iele_stack_4_node(0:numnod)
-      integer(kind = kint), intent(in)                                  &
-     &        :: iele_4_node(iele_stack_4_node(numnod))
-      real(kind = kreal), intent(in)                                    &
-     &        :: x_ref_ele(iele_stack_4_node(numnod))
-!
-      integer(kind = kint_gl), intent(in) :: ie1_gl_export(nnod_4_ele)
-      real(kind = kreal), intent(in) :: xe_export(3)
-!
-      integer(kind = kint), intent(inout) :: item_export_e
-      integer(kind = kint), intent(inout) :: iflag
-      real(kind = kreal), intent(inout) :: dist_min
-!
-      real(kind = kreal) :: tiny = 1.0d-11
-!
-      integer(kind = kint) :: kst, ked, num, knum, kele, k1, knod
-      real(kind = kreal) :: dx(3)
-      real(kind = kreal), allocatable :: dist(:)
-!
-!
-      call start_elapsed_time(11)
-      kst = iele_stack_4_node(jnod-1) + 1
-      ked = iele_stack_4_node(jnod)
-      num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
-!
-      if(num .le. 0) return
-!
-      allocate(dist(num))
-!$omp parallel do private(knum,kele,dx)
-      do knum = 1, num
-        kele = iele_4_node(knum + kst - 1)
-!
-        if(internal_flag(kele) .eq. 0) then
-          dist(knum) = 1.0e15
-        else
-          dx(1) = (xe_export(1) - x_ele(kele,1))**2
-          dx(2) = (xe_export(2) - x_ele(kele,2))**2
-          dx(3) = (xe_export(3) - x_ele(kele,3))**2
-          dist(knum) = sqrt(sum(dx))
-        end if
-      end do
-!$omp end parallel do
-!
-      dist_min = minval(dist,1)
-      knum = minloc(dist,1)
-      if(dist_min .le. tiny) then
-        item_export_e = iele_4_node(knum + kst - 1)
-        iflag = 1
-      end if
-!
-      deallocate(dist)
-      call end_elapsed_time(11)
-!
-      end subroutine search_target_element4
 !
 !-----------------------------------------------------------------------
 !
