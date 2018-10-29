@@ -352,6 +352,7 @@
       integer(kind = kint) :: ip, iflag
       integer(kind = kint) :: ist, ied, inum, inod
       integer(kind = kint) :: jst, jed, jnum, jnod
+      integer(kind = kint) :: kst, num
       integer(kind = kint_gl) :: inod_gl
       real(kind = kreal) :: dist_min
 !
@@ -373,9 +374,11 @@
             jnod = item_import(jnum)
 !
             if(inod .eq. jnod) then
+              kst = iele_stack_4_node(jnod-1) + 1
+              num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
               call search_target_element                                &
-     &           (jnod, numnod, numele, internal_flag, x_ele,           &
-     &            iele_stack_4_node, iele_4_node, x_ref_ele,            &
+     &           (jnod, numele, internal_flag, x_ele,           &
+     &            num, iele_4_node(kst), x_ref_ele(kst),                &
      &            xe_export(3*inum-2), item_export_e(inum),             &
      &            dist_min, iflag)
               exit
@@ -405,9 +408,11 @@
             jnod = item_export(jnum)
 !
             if(inod_gl .eq. inod_global(jnod)) then
+              kst = iele_stack_4_node(jnod-1) + 1
+              num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
               call search_target_element                                &
-     &           (jnod, numnod, numele, internal_flag, x_ele,           &
-     &            iele_stack_4_node, iele_4_node, x_ref_ele,            &
+     &           (jnod, numele, internal_flag, x_ele,           &
+     &            num, iele_4_node(kst), x_ref_ele(kst),                &
      &            xe_export(3*inum-2), item_export_e(inum),             &
      &            dist_min, iflag)
               exit
@@ -426,20 +431,18 @@
 !-----------------------------------------------------------------------
 !
       subroutine search_target_element                                  &
-     &         (jnod, numnod, numele, internal_flag, x_ele,             &
-     &          iele_stack_4_node, iele_4_node, x_ref_ele,              &
+     &         (jnod, numele, internal_flag, x_ele,                     &
+     &          nele_4_node, iele_4_node, x_ref_ele,                    &
      &          xe_export, item_export_e, dist_min, iflag)
 !
       integer(kind = kint), intent(in) :: jnod
-      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in) :: x_ele(numele,3)
 !
-      integer(kind = kint), intent(in) :: iele_stack_4_node(0:numnod)
-      integer(kind = kint), intent(in)                                  &
-     &        :: iele_4_node(iele_stack_4_node(numnod))
-      real(kind = kreal), intent(in)                                    &
-     &        :: x_ref_ele(iele_stack_4_node(numnod))
+      integer(kind = kint), intent(in) :: nele_4_node
+      integer(kind = kint), intent(in) :: iele_4_node(nele_4_node)
+      real(kind = kreal), intent(in)   :: x_ref_ele(nele_4_node)
 !
       real(kind = kreal), intent(in) :: xe_export(3)
 !
@@ -447,16 +450,13 @@
       integer(kind = kint), intent(inout) :: iflag
       real(kind = kreal), intent(inout) :: dist_min
 !
-      integer(kind = kint) :: kst, ked, num, knum, kele
+      integer(kind = kint) :: knum, kele
       real(kind = kreal) :: dx(3), dist
 !
 !
-      kst = iele_stack_4_node(jnod-1) + 1
-      ked = iele_stack_4_node(jnod)
-      num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
 !      if(ked-kst .gt. 8) write(50+my_rank,*)                           &
 !     &                  'kst, ked', my_rank, jnod, ked-kst
-      do knum = kst, ked
+      do knum = 1, nele_4_node
         kele = iele_4_node(knum)
         if(internal_flag(kele) .eq. 0) cycle
         dx(1) = (xe_export(1) - x_ele(kele,1))**2
@@ -470,7 +470,6 @@
           exit
         end if
         dist_min = min(dist_min,dist)
-        if(dist .lt. dist_min)  dist_min = dist
       end do
 !
       end subroutine search_target_element
