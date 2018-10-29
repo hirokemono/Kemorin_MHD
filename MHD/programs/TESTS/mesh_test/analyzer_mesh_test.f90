@@ -537,21 +537,13 @@
             if(inod .eq. jnod) then
               kst = iele_stack_4_node(jnod-1) + 1
               num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
-           call start_elapsed_time(11)
-              if(num .gt. 100) then
-              call search_target_element3                               &
-     &           (jnod, numele, internal_flag, x_ele,                   &
+!
+              call start_elapsed_time(11)
+              call search_target_element0(numele, internal_flag, x_ele, &
      &            num, iele_4_node(kst), x_ref_ele(kst),                &
      &            xe_export(3*inum-2), item_export_e(inum),             &
      &            dist_min, iflag)
-              else
-              call search_target_element2                               &
-     &           (jnod, numele, internal_flag, x_ele,                   &
-     &            num, iele_4_node(kst), x_ref_ele(kst),                &
-     &            xe_export(3*inum-2), item_export_e(inum),             &
-     &            dist_min, iflag)
-              end if
-            call end_elapsed_time(11)
+              call end_elapsed_time(11)
               exit
             end if
           end do
@@ -581,21 +573,12 @@
             if(inod_gl .eq. inod_global(jnod)) then
               kst = iele_stack_4_node(jnod-1) + 1
               num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
-              
-           call start_elapsed_time(11)
-              if(num .gt. 100) then
-              call search_target_element3                               &
-     &           (jnod, numele, internal_flag, x_ele,                   &
+!
+              call start_elapsed_time(11)
+              call search_target_element0(numele, internal_flag, x_ele, &
      &            num, iele_4_node(kst), x_ref_ele(kst),                &
      &            xe_export(3*inum-2), item_export_e(inum),             &
      &            dist_min, iflag)
-              else
-              call search_target_element2                               &
-     &           (jnod, numele, internal_flag, x_ele,                   &
-     &            num, iele_4_node(kst), x_ref_ele(kst),                &
-     &            xe_export(3*inum-2), item_export_e(inum),             &
-     &            dist_min, iflag)
-              end if
               call end_elapsed_time(11)
               exit
             end if
@@ -612,12 +595,47 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine search_target_element2                                 &
-     &         (jnod, numele, internal_flag, x_ele,                     &
+      subroutine search_target_element0(numele, internal_flag, x_ele,   &
      &          nele_4_node, iele_4_node, x_ref_ele,                    &
      &          xe_export, item_export_e, dist_min, iflag)
 !
-      integer(kind = kint), intent(in) :: jnod
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: internal_flag(numele)
+      real(kind = kreal), intent(in) :: x_ele(numele,3)
+!
+      integer(kind = kint), intent(in) :: nele_4_node
+      integer(kind = kint), intent(in) :: iele_4_node(nele_4_node)
+      real(kind = kreal), intent(in)   :: x_ref_ele(nele_4_node)
+!
+      real(kind = kreal), intent(in) :: xe_export(3)
+!
+      integer(kind = kint), intent(inout) :: item_export_e
+      integer(kind = kint), intent(inout) :: iflag
+      real(kind = kreal), intent(inout) :: dist_min
+!
+      integer(kind = kint), parameter :: many = 100
+!
+!
+      if(nele_4_node .lt. 1) then
+        return
+      else if(nele_4_node .ge. many) then
+        call search_target_element3(numele, internal_flag, x_ele,       &
+     &      nele_4_node, iele_4_node, x_ref_ele,                        &
+     &      xe_export, item_export_e, dist_min, iflag)
+      else
+        call search_target_element2(numele, internal_flag, x_ele,       &
+     &       nele_4_node, iele_4_node, x_ref_ele,                       &
+     &       xe_export, item_export_e, dist_min, iflag)
+      end if
+!
+      end subroutine search_target_element0
+!
+!-----------------------------------------------------------------------
+!
+      subroutine search_target_element2(numele, internal_flag, x_ele,   &
+     &          nele_4_node, iele_4_node, x_ref_ele,                    &
+     &          xe_export, item_export_e, dist_min, iflag)
+!
       integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in) :: x_ele(numele,3)
@@ -639,8 +657,6 @@
       real(kind = kreal) :: dx(3), dist
 !
 !
-!      if(ked-kst .gt. 8) write(50+my_rank,*)                           &
-!     &                  'kst, ked', my_rank, jnod, ked-kst
       do knum = 1, nele_4_node
         kele = iele_4_node(knum)
         if(internal_flag(kele) .eq. 0) cycle
@@ -661,12 +677,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine search_target_element3                                 &
-     &         (jnod, numele, internal_flag, x_ele,                     &
+      subroutine search_target_element3(numele, internal_flag, x_ele,   &
      &          nele_4_node, iele_4_node, x_ref_ele,                    &
      &          xe_export, item_export_e, dist_min, iflag)
 !
-      integer(kind = kint), intent(in) :: jnod
       integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in) :: x_ele(numele,3)
@@ -689,8 +703,6 @@
       real(kind = kreal) :: dx(3), dist
 !
 !
-!      if(ked-kst .gt. 8) write(50+my_rank,*)                           &
-!     &                  'kst, ked', my_rank, jnod, ked-kst
       if(nele_4_node .lt. 1) return
       kst = 1
       ked = nele_4_node
@@ -733,8 +745,7 @@
             end if
           end do
 !
-          call search_target_element2                                   &
-     &         (jnod, numele, internal_flag, x_ele,                     &
+          call search_target_element2(numele, internal_flag, x_ele,     &
      &          kknum, iele_4_node(kkst), x_ref_ele(kkst),              &
      &          xe_export, item_export_e, dist_min, iflag)
           exit
