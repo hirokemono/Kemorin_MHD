@@ -75,6 +75,7 @@
 !
       use find_element_comm_table
       use const_global_element_ids
+      use set_element_export_item
       use make_element_comm_table_SR
 !
       character(len=kchara), intent(in) :: txt
@@ -150,7 +151,7 @@
 !      call calypso_mpi_barrier
 !
 !      write(*,*) 'set_element_export_item', my_rank
-      call set_element_export_item                                      &
+      call s_set_element_export_item                                    &
      &   (txt, node%numnod, numele, node%inod_global,                   &
      &    internal_flag, x_ele, neib_e%istack_4_node,                   &
      &    neib_e%iele_4_node, x_ref_ele, nod_comm%num_neib,             &

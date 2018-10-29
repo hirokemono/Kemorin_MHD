@@ -17,14 +17,6 @@
 !!     &          inod_local, num_neib, istack_import, item_import,     &
 !!     &          num_neib_e, istack_import_e, item_import_e,           &
 !!     &          inod_import_e, inod_import_l, xe_import)
-!!
-!!      subroutine set_element_export_item                              &
-!!     &         (txt, numnod, numele, inod_global, internal_flag,      &
-!!     &          x_ele, iele_stack_4_node, iele_4_node, x_ref_ele,     &
-!!     &          num_neib, istack_import, item_import,                 &
-!!     &          istack_export, item_export, num_neib_e,               &
-!!     &          istack_export_e, inod_export_e, inod_export_l,        &
-!!     &          xe_export, item_export_e)
 !!@endverbatim
 !!
       module find_element_comm_table
@@ -34,12 +26,6 @@
       use calypso_mpi
 !
       implicit none
-!
-!>      small number
-      real(kind = kreal) :: tiny = 1.0d-11
-!
-      private :: tiny
-!      private :: search_target_element
 !
 !-----------------------------------------------------------------------
 !
@@ -305,174 +291,6 @@
       write(*,*) 'last iclu', istack_import_e(num_neib_e), icou
 !
       end subroutine  set_element_import_item_e
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_element_export_item                                &
-     &         (txt, numnod, numele, inod_global, internal_flag,        &
-     &          x_ele, iele_stack_4_node, iele_4_node, x_ref_ele,       &
-     &          num_neib, istack_import, item_import,                   &
-     &          istack_export, item_export, num_neib_e,                 &
-     &          istack_export_e, inod_export_e, inod_export_l,          &
-     &          xe_export, item_export_e)
-!
-      character(len=kchara), intent(in) :: txt
-      integer(kind = kint), intent(in) :: numnod, numele
-      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
-      integer(kind = kint), intent(in) :: internal_flag(numele)
-      real(kind = kreal), intent(in)  :: x_ele(numele,3)
-!
-      integer(kind = kint), intent(in) :: iele_stack_4_node(0:numnod)
-      integer(kind = kint), intent(in)                                  &
-     &        :: iele_4_node(iele_stack_4_node(numnod))
-      real(kind = kreal), intent(in)                                    &
-     &        :: x_ref_ele(iele_stack_4_node(numnod))
-!
-      integer(kind = kint), intent(in) :: num_neib
-      integer(kind = kint), intent(in) :: istack_import(0:num_neib)
-      integer(kind = kint), intent(in)                                  &
-     &        :: item_import(istack_import(num_neib))
-      integer(kind = kint), intent(in) :: istack_export(0:num_neib)
-      integer(kind = kint), intent(in)                                  &
-     &        :: item_export(istack_export(num_neib))
-!
-      integer(kind = kint), intent(in) :: num_neib_e
-      integer(kind = kint), intent(in) :: istack_export_e(0:num_neib_e)
-!
-      integer(kind = kint), intent(in)                                  &
-     &        :: inod_export_l(istack_export_e(num_neib_e))
-      integer(kind = kint_gl), intent(in)                               &
-     &        :: inod_export_e(istack_export_e(num_neib_e))
-      real(kind = kreal), intent(in)                                    &
-     &        :: xe_export(3*istack_export_e(num_neib_e))
-!
-      integer(kind = kint), intent(inout)                               &
-     &        :: item_export_e(istack_export_e(num_neib_e))
-!
-      integer(kind = kint) :: ip, iflag
-      integer(kind = kint) :: ist, ied, inum, inod
-      integer(kind = kint) :: jst, jed, jnum, jnod
-      integer(kind = kint) :: kst, num
-      integer(kind = kint_gl) :: inod_gl
-      real(kind = kreal) :: dist_min
-!
-!
-      do ip = 1, num_neib
-        ist = istack_export_e(ip-1) + 1
-        ied = istack_export_e(ip)
-        jst = istack_import(ip-1) + 1
-        jed = istack_import(ip)
-!
-        do inum = ist, ied
-          inod = inod_export_l(inum)
-          if(inod .le. 0) cycle
-!
-          iflag = 0
-          dist_min = 1.0d30
-!
-          do jnum = jst, jed
-            jnod = item_import(jnum)
-!
-            if(inod .eq. jnod) then
-              kst = iele_stack_4_node(jnod-1) + 1
-              num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
-              call search_target_element                                &
-     &           (jnod, numele, internal_flag, x_ele,           &
-     &            num, iele_4_node(kst), x_ref_ele(kst),                &
-     &            xe_export(3*inum-2), item_export_e(inum),             &
-     &            dist_min, iflag)
-              exit
-            end if
-          end do
-!          if(iflag .eq. 0) write(*,*)                                  &
-!     &           'Missing imported ', trim(txt), ' by external: ',     &
-!     &                     my_rank, inum, item_export_e(inum),         &
-!     &                     xe_export(3*inum-2:3*inum), dist_min
-        end do
-      end do
-!
-      do ip = 1, num_neib
-        ist = istack_export_e(ip-1) + 1
-        ied = istack_export_e(ip)
-        jst = istack_export(ip-1) + 1
-        jed = istack_export(ip)
-!
-        do inum = ist, ied
-          inod_gl = inod_export_e(inum)
-          if(item_export_e(inum) .gt. 0) cycle
-!
-          iflag = 0
-          dist_min = 1.0d30
-!
-          do jnum = jst, jed
-            jnod = item_export(jnum)
-!
-            if(inod_gl .eq. inod_global(jnod)) then
-              kst = iele_stack_4_node(jnod-1) + 1
-              num = iele_stack_4_node(jnod) - iele_stack_4_node(jnod-1)
-              call search_target_element                                &
-     &           (jnod, numele, internal_flag, x_ele,           &
-     &            num, iele_4_node(kst), x_ref_ele(kst),                &
-     &            xe_export(3*inum-2), item_export_e(inum),             &
-     &            dist_min, iflag)
-              exit
-            end if
-          end do
-          if(iflag .eq. 0) write(*,*)                                   &
-     &           'Missing imported ', trim(txt), ' by internal: ',      &
-     &                     my_rank, inum, item_export_e(inum),          &
-     &                     xe_export(3*inum-2:3*inum), dist_min
-        end do
-      end do
-!
-      end subroutine set_element_export_item
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine search_target_element                                  &
-     &         (jnod, numele, internal_flag, x_ele,                     &
-     &          nele_4_node, iele_4_node, x_ref_ele,                    &
-     &          xe_export, item_export_e, dist_min, iflag)
-!
-      integer(kind = kint), intent(in) :: jnod
-      integer(kind = kint), intent(in) :: numele
-      integer(kind = kint), intent(in) :: internal_flag(numele)
-      real(kind = kreal), intent(in) :: x_ele(numele,3)
-!
-      integer(kind = kint), intent(in) :: nele_4_node
-      integer(kind = kint), intent(in) :: iele_4_node(nele_4_node)
-      real(kind = kreal), intent(in)   :: x_ref_ele(nele_4_node)
-!
-      real(kind = kreal), intent(in) :: xe_export(3)
-!
-      integer(kind = kint), intent(inout) :: item_export_e
-      integer(kind = kint), intent(inout) :: iflag
-      real(kind = kreal), intent(inout) :: dist_min
-!
-      integer(kind = kint) :: knum, kele
-      real(kind = kreal) :: dx(3), dist
-!
-!
-!      if(ked-kst .gt. 8) write(50+my_rank,*)                           &
-!     &                  'kst, ked', my_rank, jnod, ked-kst
-      do knum = 1, nele_4_node
-        kele = iele_4_node(knum)
-        if(internal_flag(kele) .eq. 0) cycle
-        dx(1) = (xe_export(1) - x_ele(kele,1))**2
-        dx(2) = (xe_export(2) - x_ele(kele,2))**2
-        dx(3) = (xe_export(3) - x_ele(kele,3))**2
-        dist = sqrt(sum(dx))
-!
-        if(dist .le. tiny) then
-          item_export_e = kele
-          iflag = 1
-          exit
-        end if
-        dist_min = min(dist_min,dist)
-      end do
-!
-      end subroutine search_target_element
 !
 !-----------------------------------------------------------------------
 !
