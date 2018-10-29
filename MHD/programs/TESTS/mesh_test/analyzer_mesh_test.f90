@@ -345,7 +345,7 @@
       if(i_debug.gt.0) write(*,*)' const_comm_table_by_connenct2',      &
      &                            my_rank
       call start_elapsed_time(9)
-      call const_comm_table_by_connenct2                                &
+      call const_comm_table_by_connenct                                 &
      &   (txt, ele%numele, ele%nnod_4_ele, ele%ie,                      &
      &    ele%interior_ele, ele%x_ele, node, nod_comm,                  &
      &    belongs%blng_ele, belongs%x_ref_ele, belongs%host_ele,        &
@@ -358,115 +358,6 @@
       call dealloc_iele_belonged(belongs%blng_ele)
 !
       end subroutine const_ele_comm_tbl2
-!
-!-----------------------------------------------------------------------
-!
-      subroutine const_comm_table_by_connenct2                          &
-     &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,      &
-     &          node, nod_comm, neib_e, x_ref_ele, host, e_comm)
-!
-      use t_belonged_element_4_node
-      use t_comm_table
-      use find_element_comm_table
-      use const_global_element_ids
-      use make_element_comm_table_SR
-      use const_element_comm_table
-      use set_element_export_item
-!
-      character(len=kchara), intent(in) :: txt
-      integer(kind = kint), intent(in) :: numele, nnod_4_ele
-      integer(kind = kint), intent(in) :: ie(numele, nnod_4_ele)
-      integer(kind = kint), intent(in) :: internal_flag(numele)
-      real(kind = kreal), intent(in)  :: x_ele(numele,3)
-!
-      type(node_data), intent(in) :: node
-      type(element_around_node), intent(in) :: host
-      type(element_around_node), intent(in) :: neib_e
-      type(communication_table), intent(in) :: nod_comm
-      real(kind = kreal), intent(in)                                    &
-     &           :: x_ref_ele(neib_e%istack_4_node(node%numnod))
-!
-      type(communication_table), intent(inout) :: e_comm
-!
-      type(work_4_ele_comm_table) :: wk_comm
-!
-!
-      e_comm%num_neib = nod_comm%num_neib
-      call allocate_type_neib_id(e_comm)
-      call allocate_type_import_num(e_comm)
-!
-      write(*,*) 'count_element_import_num', my_rank
-      call count_element_import_num(node%numnod, host%istack_4_node,    &
-     &    nod_comm%num_neib, nod_comm%id_neib,                          &
-     &    nod_comm%istack_import, nod_comm%item_import,                 &
-     &    e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
-     &    e_comm%istack_import, e_comm%ntot_import)
-      call calypso_mpi_barrier
-!
-      call alloc_element_rev_imports(node%numnod,                       &
-     &    nod_comm%ntot_export, e_comm%ntot_import, wk_comm)
-      call allocate_type_import_item(e_comm)
-!
-      write(*,*) 'local_node_id_reverse_SR', my_rank
-      call local_node_id_reverse_SR                                     &
-     &   (node%numnod, nod_comm%num_neib, nod_comm%id_neib,             &
-     &    nod_comm%istack_import, nod_comm%item_import,                 &
-     &    nod_comm%istack_export, nod_comm%item_export,                 &
-     &    wk_comm%item_local, wk_comm%inod_local)
-      call calypso_mpi_barrier
-!
-      write(*,*) 'set_element_import_item', my_rank
-      call set_element_import_item(node%numnod, node%internal_node,     &
-     &    numele, nnod_4_ele, ie, node%inod_global, x_ele,              &
-     &    host%istack_4_node, host%iele_4_node, wk_comm%inod_local,     &
-     &    nod_comm%num_neib, nod_comm%istack_import,                    &
-     &    nod_comm%item_import, e_comm%num_neib,                        &
-     &    e_comm%istack_import, e_comm%item_import,                     &
-     &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
-     &    wk_comm%xe_import)
-      call calypso_mpi_barrier
-!
-      call allocate_type_export_num(e_comm)
-!
-      write(*,*) 'element_num_reverse_SR', my_rank
-      call element_num_reverse_SR(e_comm%num_neib, e_comm%id_neib,      &
-     &    e_comm%num_import, e_comm%num_export, e_comm%istack_export,   &
-     &    e_comm%ntot_export)
-      call calypso_mpi_barrier
-!
-      call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)
-      call allocate_type_export_item(e_comm)
-!
-      write(*,*) 'element_data_reverse_SR', my_rank
-      call element_data_reverse_SR(e_comm%num_neib, e_comm%id_neib,     &
-     &    e_comm%istack_import, e_comm%istack_export,                   &
-     &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
-     &    wk_comm%xe_import, wk_comm%inod_export_e,                     &
-     &    wk_comm%inod_export_l, wk_comm%xe_export)
-      call calypso_mpi_barrier
-!
-      write(*,*) 's_set_element_export_item', my_rank
-      call start_elapsed_time(10)
-      call s_set_element_export_item                                    &
-     &   (txt, node%numnod, numele, node%inod_global,                   &
-     &    internal_flag, x_ele, neib_e%istack_4_node,                   &
-     &    neib_e%iele_4_node, x_ref_ele, nod_comm%num_neib,             &
-     &    nod_comm%istack_import, nod_comm%item_import,                 &
-     &    nod_comm%istack_export, nod_comm%item_export,                 &
-     &    e_comm%num_neib, e_comm%istack_export,                        &
-     &    wk_comm%inod_export_e, wk_comm%inod_export_l,                 &
-     &    wk_comm%xe_export, e_comm%item_export)
-      call end_elapsed_time(10)
-      call calypso_mpi_barrier
-!
-      call dealloc_element_rev_exports(wk_comm)
-      call dealloc_element_rev_imports(wk_comm)
-!
-      write(*,*) 'check_element_position', my_rank
-      call check_element_position(txt, numele, x_ele, e_comm)
-      call calypso_mpi_barrier
-!
-      end subroutine const_comm_table_by_connenct2
 !
 !-----------------------------------------------------------------------
 !
