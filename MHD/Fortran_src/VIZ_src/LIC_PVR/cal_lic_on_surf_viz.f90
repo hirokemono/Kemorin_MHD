@@ -55,7 +55,7 @@
         use t_noise_node_data
 
         integer(kind = kint), intent(in) :: isurf_orgs(2,3)
-        integer(kind = kint), intent(in) :: nnod, nsurf, nelem, 
+        integer(kind = kint), intent(in) :: nnod, nsurf, nelem
         integer(kind = kint), intent(in) :: nnod_4_surf, isurf
         integer(kind = kint), intent(in)                                &
      &                :: isf_4_ele(nelem, nsurf_4_ele)
@@ -137,7 +137,7 @@
         new_pos(1:3) = xx_org(1:3)
 ! if current surface is exterior surface, then return.
 !        if((interior_surf(icur_sf) .eq. izero) .or. (icur_sf .eq. izero)) then
-        if((icur_sf .eq. izero) then
+        if(icur_sf .eq. izero) then
           if(iflag_debug .eq. 1) write(50+my_rank,*)                    &
      &       "extorior surface, end-------------------------", icur_sf
           iflag_comm = -1
