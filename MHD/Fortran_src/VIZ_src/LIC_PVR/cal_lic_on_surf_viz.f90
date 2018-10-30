@@ -55,8 +55,10 @@
         use t_noise_node_data
 
         integer(kind = kint), intent(in) :: isurf_orgs(2,3)
-        integer(kind = kint), intent(in) :: nnod, nsurf, nelem, nnod_4_surf, isurf
-        integer(kind = kint), intent(in) :: isf_4_ele(nelem, nsurf_4_ele)
+        integer(kind = kint), intent(in) :: nnod, nsurf, nelem, 
+        integer(kind = kint), intent(in) :: nnod_4_surf, isurf
+        integer(kind = kint), intent(in)                                &
+     &                :: isf_4_ele(nelem, nsurf_4_ele)
         integer(kind = kint), intent(in) :: iele_4_surf(nsurf, 2, 2)
         integer(kind = kint), intent(in) :: interior_surf(nsurf)
         integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
@@ -65,8 +67,10 @@
 !
         real(kind = kreal), intent(inout) :: xi(2)
         real(kind = kreal), intent(in) :: v_nod(nnod,3), xx(nnod, 3)
-        real(kind = kreal), intent(in) :: ref_nod(nnod,lic_p%num_masking)
-        real(kind = kreal), intent(in) :: xx_org(3), r_org(:), vec_org(3)
+        real(kind = kreal), intent(in)                                  &
+     &             :: ref_nod(nnod,lic_p%num_masking)
+        real(kind = kreal), intent(in)                                  &
+     &             :: xx_org(3), r_org(:), vec_org(3)
         real(kind = kreal), intent(inout) :: o_tgt, n_grad(3)
         integer(kind = kint), intent(inout) :: iflag_comm
         integer(kind = kint), intent(in) :: kernal_size
@@ -83,7 +87,8 @@
         integer(kind = kint) :: ilic_suf_org(3), icur_sf
         integer(kind = kint) :: i, isf_tgt
         real(kind = kreal) :: lic_v, n_v, k_area
-        integer(kind = kint) :: iflag_found_sf, iele, isf_org, iflag_debug
+        integer(kind = kint) :: iflag_found_sf, iele, isf_org
+        Integer(kind = kint) :: iflag_debug
 
 
         iflag_comm = 1
@@ -100,32 +105,41 @@
         do i = 1, 2
           iele = isurf_orgs(i,1)
           isf_org = isurf_orgs(i,2)
-          if(iflag_debug .eq. 1) write(50+my_rank,*) "ele: ", iele, "local surf: ", isf_org
-          if(iflag_debug .eq. 1) write(50+my_rank,*) "global surf: ", isurf, "surf of ele", isf_4_ele(iele, isf_org)
+          if(iflag_debug .eq. 1) write(50+my_rank,*)                    &
+     &              "ele: ", iele, "local surf: ", isf_org
+          if(iflag_debug .eq. 1) write(50+my_rank,*)                    &
+     &              "global surf: ", isurf, "surf of ele",              &
+     &               isf_4_ele(iele, isf_org)
           if(iele .le. izero .or. iele .gt. nelem) then
-            if(iflag_debug .eq. 1) write(50+my_rank,*) "invalid element, end----------------------"
+            if(iflag_debug .eq. 1) write(50+my_rank,*)                  &
+     &              "invalid element, end----------------------"
             iflag_comm = -5
             return
           end if
         end do
 
         if(mask_flag(lic_p, r_org)) then
-          call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,                   &
-          &     xx_org, xyz_min, xyz_max, n_v)
-          call noise_grad_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data,         &
-          &     xx_org, xyz_min, xyz_max, n_grad)
+          call noise_sampling                                           &
+     &       (lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,     &
+     &       xx_org, xyz_min, xyz_max, n_v)
+          call noise_grad_sampling                                      &
+     &      (lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data, &
+     &       xx_org, xyz_min, xyz_max, n_grad)
         end if
         o_tgt = o_tgt + n_v * kernal_node(kernal_size/2.0)
         n_grad = n_grad + n_grad * kernal_node(kernal_size/2.0)
 
-        if(iflag_debug .eq. 1) write(50+my_rank,*) "------------------------Forward iter begin--------------------"
-        !   forward integration
+        if(iflag_debug .eq. 1) write(50+my_rank,*)                      &
+     &     "--------------------Forward iter begin----------------"
+!   forward integration
         iflag_back = 1
         step_vec(1:3) = vec_org(1:3)
         new_pos(1:3) = xx_org(1:3)
-        ! if current surface is exterior surface, then return.
-        if((interior_surf(icur_sf) .eq. izero) .or. (icur_sf .eq. izero)) then
-          if(iflag_debug .eq. 1) write(50+my_rank,*) "extorior surface, end----------------------------------------", icur_sf
+! if current surface is exterior surface, then return.
+!        if((interior_surf(icur_sf) .eq. izero) .or. (icur_sf .eq. izero)) then
+        if((icur_sf .eq. izero) then
+          if(iflag_debug .eq. 1) write(50+my_rank,*)                    &
+     &       "extorior surface, end-------------------------", icur_sf
           iflag_comm = -1
           return
         end if
@@ -135,9 +149,9 @@
         do i = 1, 2
           iele = isurf_orgs(i,1)
           isf_org = isurf_orgs(i,2)
-          call find_line_end_in_1ele(iflag_back, nnod, nelem, nsurf,         &
-          &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
-          &      vec_org, xx_org, isf_tgt, new_pos, xi)
+          call find_line_end_in_1ele(iflag_back, nnod, nelem, nsurf,    &
+     &        nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,       &
+     &        vec_org, xx_org, isf_tgt, new_pos, xi)
           if(isf_tgt .gt. 0) then
             !write(50+my_rank, *) "find exit point in neighbor element."
             iflag_found_sf = 1
@@ -147,18 +161,21 @@
         end do
 
         if(iflag_found_sf .eq. 0) then
-          if(iflag_debug .eq. 1) write(50+my_rank, *) "not find exit point in neighbor element. end-----------------"
+          if(iflag_debug .eq. 1) write(50+my_rank, *)                   &
+     &      "not find exit point in neighbor element. end------------"
           iflag_comm = -2
         else
           new_pos(1:3) = xx_org(1:3)
-          if(iflag_debug .eq. 1) write(50+my_rank, *) "start cal lic, ele and surf: ", ilic_suf_org(1), ilic_suf_org(2)
+          if(iflag_debug .eq. 1) write(50+my_rank, *)                   &
+     &                          "start cal lic, ele and surf: ",        &
+     &                          ilic_suf_org(1), ilic_suf_org(2)
           call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
-          &          nnod_4_surf, xx, ie_surf, isf_4_ele,               &
-          &          iele_4_surf, interior_surf, lic_p,                 &
-          &          iflag_back, xyz_min, xyz_max,                      &
-          &          v_nod, ilic_suf_org, new_pos, step_vec,            &
-          &          kernal_size, kernal_node, ref_nod,                 &
-          &          lic_v, n_grad, k_area, iflag_comm)
+     &        nnod_4_surf, xx, ie_surf, isf_4_ele,                      &
+     &        iele_4_surf, interior_surf, lic_p,                        &
+     &        iflag_back, xyz_min, xyz_max,                             &
+     &        v_nod, ilic_suf_org, new_pos, step_vec,                   &
+     &        kernal_size, kernal_node, ref_nod,                        &
+     &        lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
         if(iflag_debug .eq. 1) write(50+my_rank,*) "-----------------------Forward iter end-------------with:", iflag_comm
@@ -172,9 +189,9 @@
         do i = 1, 2
           iele = isurf_orgs(i,1)
           isf_org = isurf_orgs(i,2)
-          call find_line_end_in_1ele(iflag_back, nnod, nelem, nsurf,         &
-          &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
-          &      vec_org, xx_org, isf_tgt, new_pos, xi)
+          call find_line_end_in_1ele(iflag_back, nnod, nelem, nsurf,    &
+     &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
+     &      vec_org, xx_org, isf_tgt, new_pos, xi)
           if(isf_tgt .gt. 0) then
             !write(50+my_rank, *) "find exit point in neighbor element."
             iflag_found_sf = 1
