@@ -117,11 +117,14 @@
 !
 !  -----    construct geometry informations
 !
-      if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
+      if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos tako'
       call const_mesh_infos(my_rank, mesh, group, ele_mesh)
+      call calypso_mpi_barrier
 !
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
+      if(iflag_debug.gt.0) write(*,*) ' const_element_comm_tbls tako'
       call const_element_comm_tbls(mesh, ele_mesh)
+      call calypso_mpi_barrier
+      if(iflag_debug.gt.0) write(*,*) ' const_element_comm_tbls end'
 !
       if(i_debug .eq. iflag_full_msg) then
         call check_whole_num_of_elements(mesh%ele)
