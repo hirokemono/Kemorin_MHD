@@ -182,8 +182,8 @@
       call alloc_node_geometry_base(new_node)
       call alloc_double_numbering(new_node%numnod, dbl_id2)
 !
-      call set_nodes_by_extend_sleeve(added_comm, recv_nbuf,            &
-     &    org_node, dbl_idx, new_node, dbl_id2)
+      call set_nodes_by_extend_sleeve(recv_nbuf, org_node, dbl_idx,     &
+     &    added_comm, new_node, dbl_id2)
 !
 !      call check_nodes_by_extend_sleeveorg_node, new_node, dbl_id2)
 !

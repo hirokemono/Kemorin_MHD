@@ -60,7 +60,10 @@
       call set_nod_4_domain_viewer(nnod_4_surf, nnod_4_edge,            &
      &    view_mesh, domain_grps)
 !
+      view_ele_grps%node_grp%num_item = 0
       call alloc_merged_group_item(view_ele_grps%node_grp)
+!
+      view_sf_grps%node_grp%num_item = 0
       call alloc_merged_group_item(view_sf_grps%node_grp)
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_ele_group_viewer'
       call set_nod_4_ele_group_viewer(nnod_4_surf, nnod_4_edge,         &

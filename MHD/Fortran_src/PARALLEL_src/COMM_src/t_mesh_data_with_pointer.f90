@@ -412,24 +412,19 @@
       call const_global_numnod_list(femmesh_p%mesh%node)
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
-      call const_ele_comm_tbl(femmesh_p%mesh%node,                      &
-     &    femmesh_p%mesh%ele, femmesh_p%mesh%nod_comm,                  &
-     &    blng_tbl, ele_mesh%ele_comm)
-      call const_global_element_id                                      &
-     &   (femmesh_p%mesh%ele, ele_mesh%ele_comm)
+      call const_ele_comm_tbl                                           &
+     &   (femmesh_p%mesh%node, femmesh_p%mesh%nod_comm,                 &
+     &    blng_tbl, ele_mesh%ele_comm, femmesh_p%mesh%ele)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table                                        &
      &   (femmesh_p%mesh%node, femmesh_p%mesh%nod_comm,                 &
-     &    ele_mesh%surf, blng_tbl, ele_mesh%surf_comm)
-      call const_global_surface_id(ele_mesh%surf, ele_mesh%surf_comm)
+     &    blng_tbl, ele_mesh%surf_comm, ele_mesh%surf)
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
       call const_edge_comm_table                                        &
      &   (femmesh_p%mesh%node, femmesh_p%mesh%nod_comm,                 &
-     &    ele_mesh%edge, blng_tbl, ele_mesh%edge_comm)
-      if(iflag_debug.gt.0) write(*,*)' const_global_edge_id'
-      call const_global_edge_id(ele_mesh%edge, ele_mesh%edge_comm)
+     &    blng_tbl, ele_mesh%edge_comm, ele_mesh%edge)
 !
       end subroutine const_element_comm_tbls_p
 !

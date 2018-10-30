@@ -87,6 +87,7 @@
       call dealloc_inod_in_edge(par_v%ele_mesh%edge)
 !
       if(iflag_write_subdomain .gt. 0) then
+        if(my_rank .eq. 0) write(*,*) 'sel_output_single_surface_grid'
         call sel_output_single_surface_grid(my_rank, mesh_file,         &
      &       par_v%mgd_vmesh%view_mesh,  par_v%mgd_vmesh%domain_grps,   &
      &       par_v%mgd_vmesh%view_nod_grps,                             &
@@ -97,6 +98,7 @@
       call collect_surf_mesh_4_viewer(mesh_file,  par_v%mgd_vmesh)
 !
       call deallocate_quad4_2_linear
+      call calypso_mpi_barrier
 !
       end subroutine pickup_surface_mesh_para
 !

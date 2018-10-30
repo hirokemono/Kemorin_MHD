@@ -57,7 +57,7 @@
       write(elapse_labels( 1),'(a)') 'const_mesh_informations'
       write(elapse_labels( 2),'(a)') 'const_global_numnod_list'
       write(elapse_labels( 3),'(a)') 'const_ele_comm_tbla'
-      write(elapse_labels( 4),'(a)') 'const_global_element_id'
+      write(elapse_labels( 4),'(a)') '          '
       write(elapse_labels( 5),'(a)') '          '
       write(elapse_labels( 6),'(a)') '          '
       write(elapse_labels( 7),'(a)') '          '
