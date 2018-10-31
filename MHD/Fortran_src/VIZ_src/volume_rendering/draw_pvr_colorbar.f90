@@ -12,10 +12,10 @@
 !
       implicit none
 !
-      private :: gen_colormark
 !
       integer(kind = kint), parameter, private :: BAR_WIDTH = 12
 !
+      private :: gen_colormark
       private :: s_draw_pvr_colorbar
 !
 !  ---------------------------------------------------------------------
@@ -44,7 +44,8 @@
 !          cbar_param%cbar_range(1:2) = outline%d_minmax_pvr(1:2)
 !        end if
 !
-        call s_draw_pvr_colorbar(cbar_param%iflag_pvr_colorbar,         &
+        call s_draw_pvr_colorbar                                        &
+     &     (cbar_param%iflag_opacity, cbar_param%iflag_pvr_colorbar,    &
      &      cbar_param%iflag_pvr_cbar_nums,                             &
      &      cbar_param%iflag_pvr_zero_mark,                             &
      &      cbar_param%iscale_font, cbar_param%ntick_pvr_colorbar,      &
@@ -56,7 +57,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_draw_pvr_colorbar(color_bar_style,                   &
+      subroutine s_draw_pvr_colorbar(iflag_opacity, color_bar_style,    &
      &         iflag_cbar_numeric, iflag_zero_mark, iscale,             &
      &         num_of_scale, c_minmax, npix_img,                        &
      &         ntot_pix, color_param, dimage)
@@ -64,6 +65,7 @@
       use t_control_params_4_pvr
       use draw_pvr_colorbar_nums
 !
+      integer(kind = kint), intent(in) :: iflag_opacity
       integer(kind = kint), intent(in) :: color_bar_style
       integer(kind = kint), intent(in) :: iflag_cbar_numeric
       integer(kind = kint), intent(in) :: iflag_zero_mark
@@ -87,7 +89,7 @@
 !
       if (color_bar_style .gt. 0) then
         call gen_colormark(iscale, c_minmax, npix_img,                  &
-     &        isleeve_bar, ntot_pix, dimage, color_param)
+     &      isleeve_bar, ntot_pix, iflag_opacity, dimage, color_param)
 !
         if(iflag_cbar_numeric .gt. 0) then
           call gen_cbar_label(iscale, num_of_scale, c_minmax,           &
@@ -105,18 +107,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gen_colormark(iscale, c_minmax, npix_img, isleeve_bar, &
-     &          ntot_pix, dimage, color_param)
+     &          ntot_pix, iflag_opacity, dimage, color_param)
 !
       use t_control_params_4_pvr
       use set_color_4_pvr
       use set_rgba_4_each_pixel
 !
+      integer(kind = kint), intent(in) :: iflag_opacity
       integer(kind = kint), intent(in) :: iscale
       real(kind = kreal), intent(in) :: c_minmax(2)
       integer(kind = kint), intent(in) :: isleeve_bar
       integer(kind = kint), intent(in) :: npix_img(2)
       integer(kind = kint), intent(in) :: ntot_pix
       type(pvr_colormap_parameter), intent(in) :: color_param
+!
       real(kind = kreal), intent(inout) :: dimage(4,ntot_pix)
 !
       real(kind = kreal) :: anb_opacity, opa_current
@@ -152,10 +156,15 @@
         value = c_minmax(1) + (c_minmax(2)-c_minmax(1))                 &
      &                         * dble(j-jst) / dble(jed-jst)
 !
-        call compute_opacity(color_param%id_pvr_color(3), anb_opacity,  &
-     &     color_param%num_opacity_pnt, color_param%pvr_opacity_param,  &
-     &     value, opa_current)
-        opa_current = opa_current / color_param%pvr_max_opacity
+        if(iflag_opacity .gt. 0) then
+          call compute_opacity                                          &
+     &     (color_param%id_pvr_color(3), anb_opacity,                   &
+     &      color_param%num_opacity_pnt, color_param%pvr_opacity_param, &
+     &      value, opa_current)
+          opa_current = opa_current / color_param%pvr_max_opacity
+        else
+          opa_current = 1.0d0
+        end if
 !
         call value_to_rgb                                               &
      &     (color_param%id_pvr_color(2), color_param%id_pvr_color(1),   &
