@@ -184,6 +184,8 @@
         integer(kind = kint) :: iflag_pvr_cbar_nums = 0
 !>    Draw flag for zero line in color bar
         integer(kind = kint) :: iflag_pvr_zero_mark = 0
+!>    Flag of colorbar with opacity
+        integer(kind = kint) :: iflag_opacity = 1
 !>    Scaling for number font
         integer(kind = kint) :: iscale_font = 1
 !>    Thicknsess of colorbar
