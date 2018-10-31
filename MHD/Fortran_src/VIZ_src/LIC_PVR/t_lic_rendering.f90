@@ -232,6 +232,7 @@
       end do
       call end_elapsed_time(77)
 !
+      call start_elapsed_time(76)
       do i_lic = 1, lic%pvr%num_pvr
         if(lic%pvr%pvr_param(i_lic)%view%iflag_rotate_snap .gt. 0) then
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
