@@ -282,6 +282,8 @@
       &   ie_surf, isurf_end, xi, xx, xx_st)
       call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
       &   ie_surf, isurf_end, xi, field_pvr%v_lic, vec_org)
+      call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
+      &   ie_surf, isurf_end, xi, field_pvr%d_pvr, scl_org)
 
       allocate(r_org(lic_p%num_masking))
       allocate(r_tgt(lic_p%num_masking))
@@ -339,10 +341,10 @@
 !   find 3D coordinate of exit point on exit surface
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf_end, xi, xx, xx_tgt)
-!        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-!        &    ie_surf, isurf_end, xi, field_pvr%s_lic, r_tgt(1) )
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf_end, xi, field_pvr%v_lic, vec_tgt)
+        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+     &      ie_surf, isurf_end, xi, field_pvr%d_pvr, scl_tgt)
 
         do i = 1, lic_p%num_masking
           call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
@@ -382,6 +384,8 @@
 ! masking on sampling point
 !              if(mask_flag(lic_p, r_mid)) then
 
+              scl_mid(1)                                                &
+     &          = scl_org(1) * (1.0d0 - ratio) + scl_tgt(1) * ratio
               vec_mid(1:3)                                              &
      &          = vec_org(1:3) * (1.0d0 - ratio) + vec_tgt(1:3) * ratio
               call cal_lic_on_surf_vector                               &
@@ -392,20 +396,21 @@
      &            k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,    &
      &            xyz_min_gl, xyz_max_gl, iflag_lic,                    &
      &            lic_tgt(1), grad_tgt)
+               pvr_tgt(1) = scl_mid(1)
 
   !   normalize gradient
-                grad_len = sqrt(grad_tgt(1)*grad_tgt(1)                 &
-     &                        + grad_tgt(2)*grad_tgt(2)                 &
-     &                        + grad_tgt(3)*grad_tgt(3))
-                if(grad_len .ne. 0.0) then
-                  grad_tgt(1:3) = grad_tgt(1:3) / grad_len
-                endif
+              grad_len = sqrt(grad_tgt(1)*grad_tgt(1)                   &
+     &                      + grad_tgt(2)*grad_tgt(2)                   &
+     &                      + grad_tgt(3)*grad_tgt(3))
+              if(grad_len .ne. 0.0) then
+                grad_tgt(1:3) = grad_tgt(1:3) / grad_len
+              endif
 ! render section (clipping surface)
 
 !
               call s_lic_rgba_4_each_pixel                              &
      &           (viewpoint_vec, xx_lic_last, xx_lic,                   &
-     &            c_tgt(1), grad_tgt, lic_tgt(1),                         &
+     &            c_tgt(1), grad_tgt, lic_tgt(1),                       &
      &            color_param, step_size, rgba_ray)
 
 !              end if
@@ -424,6 +429,7 @@
               r_mid(i) = half*(r_org(i) + r_tgt(i))
             end do
 !   the vector interpolate from entry and exit point
+            scl_mid(1) = half*(scl_org(1) + scl_tgt(1))
             vec_mid(1:3) = half*(vec_org(1:3) + vec_tgt(1:3))
 !   calculate lic value at current location, lic value will be used as intensity
 !   as volume rendering
@@ -435,6 +441,7 @@
      &          k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,      &
      &          xyz_min_gl, xyz_max_gl, iflag_lic,                      &
      &          lic_tgt(1), grad_tgt)
+            pvr_tgt(1) = scl_mid(1)
 
             ave_ray_len = ray_total_len / icount_line_cur_ray
 !
@@ -462,6 +469,7 @@
         do i = 1, lic_p%num_masking
           r_org(i) = r_tgt(i)
         end do
+        scl_org(1) =   scl_tgt(1)
         vec_org(1:3) = vec_tgt(1:3)
       end do
       end subroutine lic_ray_trace_each_pixel
