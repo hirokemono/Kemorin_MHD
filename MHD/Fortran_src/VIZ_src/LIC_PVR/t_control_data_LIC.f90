@@ -30,8 +30,8 @@
 !!    color_field         magnetic_field
 !!    color_component     amplitude
 !!
-!!    opacity_field       magnetic_field
-!!    opacity_component   amplitude
+!!!    opacity_field       magnetic_field
+!!!    opacity_component   amplitude
 !!
 !!    array masking_control    1
 !!      begin masking_control

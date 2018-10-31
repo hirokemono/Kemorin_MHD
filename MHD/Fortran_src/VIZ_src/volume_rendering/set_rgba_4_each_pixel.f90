@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine s_set_rgba_4_each_pixel(viewpoint_vec,               &
-!!     &          xin_model, xout_model, c_data, grad_data, o_data,     &
+!!     &          xin_model, xout_model, c_data, grad,                  &
 !!     &          color_param, rgba_pixel)
 !!      subroutine color_plane_with_light                               &
-!!     &         (viewpoint_vec, xout_model, c_data, grad_data,         &
+!!     &         (viewpoint_vec, xout_model, c_data, grad,              &
 !!     &          opa_current, color_param, rgba_pixel)
 !!      subroutine plane_rendering_with_light                           &
 !!     &         (viewpoint_vec, xout_model, surf_normal,               &
@@ -62,14 +62,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_set_rgba_4_each_pixel(viewpoint_vec,                 &
-     &          xin_model, xout_model, c_data, grad_data, o_data,       &
+     &          xin_model, xout_model, c_data, grad,                    &
      &          color_param, rgba_pixel)
 !
       use t_control_params_4_pvr
       use set_color_4_pvr
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: c_data, grad_data(3), o_data
+      real(kind = kreal), intent(in) :: c_data, grad(3)
       real(kind = kreal), intent(in) :: xin_model(3), xout_model(3)
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
@@ -90,7 +90,7 @@
 !
       call compute_opacity(color_param%id_pvr_color(3), anb_opacity,    &
      &    num_of_features, color_param%pvr_opacity_param,               &
-     &    o_data, opa_current)
+     &    c_data, opa_current)
 !
       call value_to_rgb(color_param%id_pvr_color(2),                    &
      &    color_param%id_pvr_color(1), color_param%num_pvr_datamap_pnt, &
@@ -100,7 +100,7 @@
       allocate(rgb(4))
       call phong_reflection(viewpoint_vec,                              &
      &    color_param%num_pvr_lights, color_param%xyz_pvr_lights,       &
-     &    grad_data, color_param%pvr_lighting_real,                     &
+     &    grad, color_param%pvr_lighting_real,                          &
      &    xin_model, xout_model, color, rgb(1))
 !
       rgb(1:3) = rgb(1:3) * opa_current * ray_length
@@ -116,14 +116,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine color_plane_with_light                                 &
-     &         (viewpoint_vec, xout_model, c_data, grad_data,           &
+     &         (viewpoint_vec, xout_model, c_data, grad,                &
      &          opa_current, color_param, rgba_pixel)
 !
       use t_control_params_4_pvr
       use set_color_4_pvr
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: c_data, grad_data(3)
+      real(kind = kreal), intent(in) :: c_data, grad(3)
       real(kind = kreal), intent(in) :: xout_model(3)
       real(kind = kreal), intent(in) :: opa_current
       type(pvr_colormap_parameter), intent(in) :: color_param
@@ -142,7 +142,7 @@
       allocate(rgb(4))
       call phong_reflection(viewpoint_vec,                              &
      &    color_param%num_pvr_lights, color_param%xyz_pvr_lights,       &
-     &    grad_data, color_param%pvr_lighting_real,                     &
+     &    grad, color_param%pvr_lighting_real,                          &
      &    xout_model, xout_model, color, rgb(1))
 !
       rgb(1:3) = rgb(1:3) * opa_current
