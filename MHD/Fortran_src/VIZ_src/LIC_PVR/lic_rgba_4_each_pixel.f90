@@ -11,7 +11,7 @@
 !!     &          xin_model, xout_model, c_data, grad, o_data,          &
 !!     &          color_param, rgba_pixel)
 !!      subroutine lic_color_plane_with_light                           &
-!!     &         (viewpoint_vec, xout_model, c_data, grad,              &
+!!     &         (viewpoint_vec, xout_model, c_data, grad, b_data,      &
 !!     &          opa_current, color_param, rgba_pixel)
 !!      subroutine set_rgba_4_surface_boundary                          &
 !!     &         (viewpoint_vec, xout_model, surf_normal,               &
@@ -99,7 +99,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lic_color_plane_with_light                             &
-     &         (viewpoint_vec, xout_model, c_data, grad,                &
+     &         (viewpoint_vec, xout_model, c_data, grad, b_data,        &
      &          opa_current, color_param, rgba_pixel)
 !
       use t_control_params_4_pvr
@@ -107,7 +107,7 @@
       use set_rgba_4_each_pixel
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: c_data, grad(3)
+      real(kind = kreal), intent(in) :: c_data, grad(3), b_data
       real(kind = kreal), intent(in) :: xout_model(3)
       real(kind = kreal), intent(in) :: opa_current
       type(pvr_colormap_parameter), intent(in) :: color_param
@@ -129,7 +129,7 @@
      &    grad, color_param%pvr_lighting_real,                          &
      &    xout_model, xout_model, color, rgb(1))
 !
-      rgb(1:3) = rgb(1:3) * opa_current
+      rgb(1:3) = rgb(1:3) * b_data * opa_current
       rgb(4) =   opa_current
 !
       call composite_lic_alpha_blending(rgb, rgba_pixel)

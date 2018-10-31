@@ -279,11 +279,11 @@
       end if
 !   get original value of sampling point
       call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
-      &    ie_surf, isurf_end, xi, xx, xx_st)
+      &   ie_surf, isurf_end, xi, xx, xx_st)
       call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
-      &    ie_surf, isurf_end, xi, field_pvr%v_lic, vec_org)
-      call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &    ie_surf, isurf_end, xi, field_pvr%d_pvr, scl_org)
+      &   ie_surf, isurf_end, xi, field_pvr%v_lic, vec_org)
+      call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
+      &   ie_surf, isurf_end, xi, field_pvr%d_pvr, scl_org)
 
       allocate(r_org(lic_p%num_masking))
       allocate(r_tgt(lic_p%num_masking))
