@@ -283,7 +283,7 @@
       call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
       &   ie_surf, isurf_end, xi, field_pvr%v_lic, vec_org)
       call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-      &   ie_surf, isurf_end, xi, field_pvr%d_pvr, scl_org)
+      &   ie_surf, isurf_end, xi, field_pvr%s_pvr, scl_org)
 
       allocate(r_org(lic_p%num_masking))
       allocate(r_tgt(lic_p%num_masking))
@@ -344,7 +344,7 @@
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
     &       ie_surf, isurf_end, xi, field_pvr%v_lic, vec_tgt)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-    &       ie_surf, isurf_end, xi, field_pvr%d_pvr, scl_tgt)
+    &       ie_surf, isurf_end, xi, field_pvr%s_pvr, scl_tgt)
 
         do i = 1, lic_p%num_masking
           call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
