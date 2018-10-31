@@ -184,6 +184,7 @@
       use cal_field_on_surf_viz
       use cal_fline_in_cube
       use set_coefs_of_sections
+      use set_rgba_4_each_pixel
       use t_noise_node_data
 !
       integer(kind = kint), intent(in) :: iflag_check
