@@ -117,7 +117,6 @@
       use set_pvr_control
       use each_LIC_rendering
       use rendering_and_image_nums
-      use ray_trace_LIC_image
 !
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
@@ -169,8 +168,6 @@
         call alloc_nod_vector_4_lic(femmesh%mesh%node%numnod,           &
      &      lic%lic_fld(i_lic)%lic_param%num_masking,                   &
      &      lic%pvr%pvr_param(i_lic)%field)
-        call link_data_pointer_4_LIC_trace                              &
-     &     (lic%lic_fld(i_lic)%lic_param)
       end do
 !
       do i_lic = 1, lic%pvr%num_pvr
