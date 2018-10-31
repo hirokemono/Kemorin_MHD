@@ -62,6 +62,7 @@
       type(lic_parameters), intent(in) :: lic_p
 !
 !
+      write(*,*) 'lic_p%iflag_color_mode', lic_p%iflag_color_mode, iflag_from_control
       if(lic_p%iflag_color_mode .eq. iflag_from_control) then
         c_tgt =>pvr_tgt
       else
