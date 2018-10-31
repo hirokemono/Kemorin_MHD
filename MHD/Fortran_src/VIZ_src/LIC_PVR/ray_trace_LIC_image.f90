@@ -375,8 +375,10 @@
 ! render section (clipping surface)
 
 !
-              call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_lic_last, xx_lic,           &
-              &        c_tgt(1), grad_tgt, color_param, step_size, rgba_ray)
+              call s_lic_rgba_4_each_pixel                              &
+     &           (viewpoint_vec, xx_lic_last, xx_lic,                   &
+     &            c_tgt(1), grad_tgt, c_tgt(1),                         &
+     &            color_param, step_size, rgba_ray)
 
 !              end if
               xx_lic_last = xx_lic
@@ -415,7 +417,8 @@
             endif
 
             call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_st, xx_tgt,  &
-     &          c_tgt(1), grad_tgt, color_param, ave_ray_len, rgba_ray)
+     &          c_tgt(1), grad_tgt, c_tgt(1),                           &
+     &          color_param, ave_ray_len, rgba_ray)
           end if
         end if
 !

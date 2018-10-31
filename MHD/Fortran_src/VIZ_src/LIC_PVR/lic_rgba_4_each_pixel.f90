@@ -8,8 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine s_lic_rgba_4_each_pixel(viewpoint_vec,               &
-!!     &          xin_model, xout_model, c_data, grad, b_data,          &
+!!     &          xin_model, xout_model, c_data, grad, o_data,          &
 !!     &          color_param, rgba_pixel)
+!!      subroutine lic_color_plane_with_light                           &
+!!     &         (viewpoint_vec, xout_model, c_data, grad, b_data,      &
+!!     &          opa_current, color_param, rgba_pixel)
 !!      subroutine set_rgba_4_surface_boundary                          &
 !!     &         (viewpoint_vec, xout_model, surf_normal,               &
 !!     &          opa_current, color_param, rgba_pixel)
@@ -31,7 +34,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_lic_rgba_4_each_pixel(viewpoint_vec,                 &
-     &          xin_model, xout_model, c_data, grad,                    &
+     &          xin_model, xout_model, c_data, grad, o_data,            &
      &          color_param, avr_ray_len, rgba_pixel)
 !
       use t_control_params_4_pvr
@@ -39,7 +42,7 @@
       use set_rgba_4_each_pixel
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: c_data
+      real(kind = kreal), intent(in) :: c_data, o_data
       real(kind = kreal), intent(in) :: grad(3), avr_ray_len
       real(kind = kreal), intent(in) :: xin_model(3), xout_model(3)
       type(pvr_colormap_parameter), intent(in) :: color_param
@@ -55,16 +58,16 @@
       ray_vec = xout_model - xin_model
       ray_length = sqrt(ray_vec(1)*ray_vec(1) + ray_vec(2)*ray_vec(2)   &
      &                + ray_vec(3)*ray_vec(3))
-!      ray_length = sqrt((xout_model(1)-xin_model(1))**2                 &
-!    &                 + (xout_model(2)-xin_model(2))**2                 &
+!      ray_length = sqrt((xout_model(1)-xin_model(1))**2                &
+!    &                 + (xout_model(2)-xin_model(2))**2                &
 !    &                 + (xout_model(3)-xin_model(3))**2)
-
+!
       num_of_features = color_param%num_opacity_pnt
       anb_opacity = color_param%pvr_opacity_param(1,num_of_features)
 !
       call compute_opacity(color_param%id_pvr_color(3), anb_opacity,    &
      &    num_of_features, color_param%pvr_opacity_param,               &
-     &    c_data, opa_current)
+     &    o_data, opa_current)
 !
       call value_to_rgb(color_param%id_pvr_color(2),                    &
      &    color_param%id_pvr_color(1), color_param%num_pvr_datamap_pnt, &
