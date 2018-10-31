@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine count_nodes_by_extend_sleeve                         &
 !!     &         (added_comm, org_node, new_node)
-!!      subroutine set_nodes_by_extend_sleeve(added_comm, recv_nbuf,    &
-!!     &          org_node, dbl_id1, new_node, dbl_id2)
+!!      subroutine set_nodes_by_extend_sleeve(recv_nbuf, org_node,      &
+!!     &          dbl_id1, added_comm, new_node, dbl_id2)
 !!        type(communication_table), intent(in) :: added_comm
 !!        type(node_data), intent(in) :: org_node
 !!        type(parallel_double_numbering), intent(in) :: dbl_id1
@@ -78,15 +78,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_nodes_by_extend_sleeve(added_comm, recv_nbuf,      &
-     &          org_node, dbl_id1, new_node, dbl_id2)
+      subroutine set_nodes_by_extend_sleeve(recv_nbuf, org_node,        &
+     &          dbl_id1, added_comm, new_node, dbl_id2)
 !
-      type(communication_table), intent(in) :: added_comm
       type(node_data), intent(in) :: org_node
       type(parallel_double_numbering), intent(in) :: dbl_id1
       type(node_buffer_2_extend), intent(in) :: recv_nbuf
 !
       type(node_data), intent(inout) :: new_node
+      type(communication_table), intent(inout) :: added_comm
       type(parallel_double_numbering), intent(inout) :: dbl_id2
 !
       integer(kind = kint) :: inum, inod, icou

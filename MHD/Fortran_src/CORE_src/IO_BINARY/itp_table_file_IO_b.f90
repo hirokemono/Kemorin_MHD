@@ -5,8 +5,8 @@
 !
 !!      subroutine write_itp_table_file_b                               &
 !!     &         (file_name, my_rank, IO_itp_org, IO_itp_dest)
-!!      subroutine read_itp_table_file_b                                &
-!!     &         (file_name, my_rank, IO_itp_org, IO_itp_dest, ierr)
+!!      subroutine read_itp_table_file_b(file_name, my_rank,            &
+!!     &          IO_itp_org, IO_itp_dest, ierr)
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!
@@ -34,6 +34,8 @@
       use binary_IO
 !
       implicit none
+!
+      type(file_IO_flags), private :: bin_itpflags
 !
 !-----------------------------------------------------------------------
 !
@@ -72,8 +74,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_itp_table_file_b                                  &
-     &         (file_name, my_rank, IO_itp_org, IO_itp_dest, ierr)
+      subroutine read_itp_table_file_b(file_name, my_rank,              &
+     &          IO_itp_org, IO_itp_dest, ierr)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
@@ -85,17 +87,28 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_read_binary_file(file_name, my_rank)
-      call read_interpolate_domain_dest_b(n_rank_file, IO_itp_dest)
-      call read_interpolate_table_dest_b(IO_itp_dest)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank, bin_itpflags%iflag_bin_swap)
+      call read_interpolate_domain_dest_b                               &
+     &   (bin_itpflags, n_rank_file, IO_itp_dest)
+      if(bin_itpflags%ierr_IO .gt. 0) goto 99
 !
-      call read_interpolate_domain_org_b(n_rank_file, IO_itp_org)
-      call read_interpolate_table_org_b(IO_itp_org)
-      call read_interpolate_coefs_org_b(IO_itp_org)
+      call read_interpolate_table_dest_b(bin_itpflags, IO_itp_dest)
+      if(bin_itpflags%ierr_IO .gt. 0) goto 99
 !
+      call read_interpolate_domain_org_b                                &
+     &   (bin_itpflags, n_rank_file, IO_itp_org)
+      if(bin_itpflags%ierr_IO .gt. 0) goto 99
+!
+      call read_interpolate_table_org_b(bin_itpflags, IO_itp_org)
+      if(bin_itpflags%ierr_IO .gt. 0) goto 99
+!
+      call read_interpolate_coefs_org_b(bin_itpflags, IO_itp_org)
+!
+  99  continue
       call close_binary_file
+      ierr = bin_itpflags%ierr_IO
 !
-      ierr = 0
       if (n_rank_file .ne. my_rank) ierr = n_rank_file
 !
       end subroutine read_itp_table_file_b
@@ -142,13 +155,22 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_read_binary_file(file_name, my_rank)
-      call read_interpolate_domain_dest_b(n_rank_file, IO_itp_dest)
-      call read_interpolate_table_dest_b(IO_itp_dest)
-      call read_interpolate_coefs_dest_b(IO_itp_dest, IO_itp_c_dest)
-      call close_binary_file
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank, bin_itpflags%iflag_bin_swap)
+      call read_interpolate_domain_dest_b                               &
+     &   (bin_itpflags, n_rank_file, IO_itp_dest)
+      if(bin_itpflags%ierr_IO .gt. 0) goto 99
 !
-      ierr = 0
+      call read_interpolate_table_dest_b(bin_itpflags, IO_itp_dest)
+      if(bin_itpflags%ierr_IO .gt. 0) goto 99
+!
+      call read_interpolate_coefs_dest_b                                &
+     &   (bin_itpflags, IO_itp_dest, IO_itp_c_dest)
+!
+  99  continue
+      call close_binary_file
+      ierr = bin_itpflags%ierr_IO
+!
       if (n_rank_file .ne. my_rank) ierr = ierr_file
 !
       end subroutine read_itp_coefs_dest_file_b
@@ -167,12 +189,18 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_read_binary_file(file_name, my_rank)
-      call read_interpolate_domain_dest_b(n_rank_file, IO_itp_dest)
-      call read_interpolate_table_dest_b(IO_itp_dest)
-      call close_binary_file
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank, bin_itpflags%iflag_bin_swap)
+      call read_interpolate_domain_dest_b                               &
+     &   (bin_itpflags, n_rank_file, IO_itp_dest)
+      if(bin_itpflags%ierr_IO .gt. 0) goto 99
 !
-      ierr = 0
+      call read_interpolate_table_dest_b(bin_itpflags, IO_itp_dest)
+!
+  99  continue
+      call close_binary_file
+      ierr = bin_itpflags%ierr_IO
+!
       if (n_rank_file .ne. my_rank) ierr = ierr_file
 !
       end subroutine read_itp_table_dest_file_b
@@ -191,11 +219,13 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_read_binary_file(file_name, my_rank)
-      call read_interpolate_domain_dest_b(n_rank_file, IO_itp_dest)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank, bin_itpflags%iflag_bin_swap)
+      call read_interpolate_domain_dest_b                               &
+     &   (bin_itpflags, n_rank_file, IO_itp_dest)
       call close_binary_file
+      ierr = bin_itpflags%ierr_IO
 !
-      ierr = 0
       if (n_rank_file .ne. my_rank) ierr = ierr_file
 !
       end subroutine read_itp_domain_dest_file_b

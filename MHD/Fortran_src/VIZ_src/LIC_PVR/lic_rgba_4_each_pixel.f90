@@ -8,16 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine s_lic_rgba_4_each_pixel(viewpoint_vec,               &
-!!     &          xin_model, xout_model, c_data, grad_data,             &
+!!     &          xin_model, xout_model, c_data, grad, o_data,          &
 !!     &          color_param, rgba_pixel)
+!!      subroutine lic_color_plane_with_light                           &
+!!     &         (viewpoint_vec, xout_model, c_data, grad, b_data,      &
+!!     &          opa_current, color_param, rgba_pixel)
 !!      subroutine set_rgba_4_surface_boundary                          &
 !!     &         (viewpoint_vec, xout_model, surf_normal,               &
 !!     &          opa_current, color_param, rgba_pixel)
 !!
-!!      subroutine compute_opacity(transfer_function_style, opa_value,  &
-!!     &          num_of_features, fea_point, value, opacity_local)
 !!      subroutine composite_lic_alpha_blending(rgba_src, rgba_tgt)
-!!      subroutine alpha_blending(rgba_src, rgba_tgt)
 !!@endverbatim
 !
       module lic_rgba_4_each_pixel
@@ -27,25 +27,6 @@
 !
       implicit  none
 !
-      real(kind = kreal), parameter :: EPSILON = 1.0d-9
-      private :: EPSILON
-!
-      character(len = kchara), parameter                                &
-     &                        :: hd_intensity =   'intense_chenge'
-      character(len = kchara), parameter                                &
-     &                        :: hd_pointdelta =  'point_delta'
-      character(len = kchara), parameter                                &
-     &                        :: hd_pointrange =  'point_ranges'
-      character(len = kchara), parameter                                &
-     &                        :: hd_pointlinear = 'point_linear'
-      integer(kind = kint), parameter :: iflag_anbient =     1
-      integer(kind = kint), parameter :: iflag_intense =     2
-      integer(kind = kint), parameter :: iflag_pointdelta =  3
-      integer(kind = kint), parameter :: iflag_pointrange =  4
-      integer(kind = kint), parameter :: iflag_pointlinear = 5
-!
-      private :: phong_reflection
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -53,15 +34,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_lic_rgba_4_each_pixel(viewpoint_vec,                 &
-     &          xin_model, xout_model, c_data, grad_data,       &
+     &          xin_model, xout_model, c_data, grad, o_data,            &
      &          color_param, avr_ray_len, rgba_pixel)
 !
       use t_control_params_4_pvr
       use set_color_4_pvr
+      use set_rgba_4_each_pixel
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: c_data
-      real(kind = kreal), intent(in) :: grad_data(3), avr_ray_len
+      real(kind = kreal), intent(in) :: c_data, o_data
+      real(kind = kreal), intent(in) :: grad(3), avr_ray_len
       real(kind = kreal), intent(in) :: xin_model(3), xout_model(3)
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
@@ -76,16 +58,16 @@
       ray_vec = xout_model - xin_model
       ray_length = sqrt(ray_vec(1)*ray_vec(1) + ray_vec(2)*ray_vec(2)   &
      &                + ray_vec(3)*ray_vec(3))
-!      ray_length = sqrt((xout_model(1)-xin_model(1))**2                 &
-!    &                 + (xout_model(2)-xin_model(2))**2                 &
+!      ray_length = sqrt((xout_model(1)-xin_model(1))**2                &
+!    &                 + (xout_model(2)-xin_model(2))**2                &
 !    &                 + (xout_model(3)-xin_model(3))**2)
-
+!
       num_of_features = color_param%num_opacity_pnt
       anb_opacity = color_param%pvr_opacity_param(1,num_of_features)
 !
       call compute_opacity(color_param%id_pvr_color(3), anb_opacity,    &
      &    num_of_features, color_param%pvr_opacity_param,               &
-     &    c_data, opa_current)
+     &    o_data, opa_current)
 !
       call value_to_rgb(color_param%id_pvr_color(2),                    &
      &    color_param%id_pvr_color(1), color_param%num_pvr_datamap_pnt, &
@@ -96,7 +78,7 @@
       allocate(rgb(4))
       call phong_reflection(viewpoint_vec,                              &
      &    color_param%num_pvr_lights, color_param%xyz_pvr_lights,       &
-     &    grad_data, color_param%pvr_lighting_real,                     &
+     &    grad, color_param%pvr_lighting_real,                          &
      &    xin_model, xout_model, color, rgb(1))
 !rgb(1:3) = color(1:3)
 !
@@ -116,15 +98,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine color_plane_with_light                                 &
-     &         (viewpoint_vec, xout_model, c_data, grad_data,           &
+      subroutine lic_color_plane_with_light                             &
+     &         (viewpoint_vec, xout_model, c_data, grad, b_data,        &
      &          opa_current, color_param, rgba_pixel)
 !
       use t_control_params_4_pvr
       use set_color_4_pvr
+      use set_rgba_4_each_pixel
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: c_data, grad_data(3)
+      real(kind = kreal), intent(in) :: c_data, grad(3), b_data
       real(kind = kreal), intent(in) :: xout_model(3)
       real(kind = kreal), intent(in) :: opa_current
       type(pvr_colormap_parameter), intent(in) :: color_param
@@ -143,194 +126,18 @@
       allocate(rgb(4))
       call phong_reflection(viewpoint_vec,                              &
      &    color_param%num_pvr_lights, color_param%xyz_pvr_lights,       &
-     &    grad_data, color_param%pvr_lighting_real,                     &
+     &    grad, color_param%pvr_lighting_real,                          &
      &    xout_model, xout_model, color, rgb(1))
 !
-      rgb(1:3) = rgb(1:3) * opa_current
+      rgb(1:3) = rgb(1:3) * b_data * opa_current
       rgb(4) =   opa_current
 !
       call composite_lic_alpha_blending(rgb, rgba_pixel)
       deallocate(rgb)
 !
-      end subroutine color_plane_with_light
+      end subroutine lic_color_plane_with_light
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine plane_rendering_with_light                             &
-     &         (viewpoint_vec, xout_model, surf_normal,                 &
-     &          opa_current, color_param, rgba_pixel)
-!
-      use t_control_params_4_pvr
-      use set_color_4_pvr
-!
-      real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: xout_model(3)
-      real(kind = kreal), intent(in) :: surf_normal(3)
-      real(kind = kreal), intent(in) :: opa_current
-      type(pvr_colormap_parameter), intent(in) :: color_param
-!
-      real(kind = kreal), intent(inout) :: rgba_pixel(4)
-!
-      real(kind = kreal) :: color(3)
-      real(kind = kreal), allocatable :: rgb(:)
-!
-!
-      allocate(rgb(4))
-      color(1:3) = 0.2
-!
-      call phong_reflection(viewpoint_vec,                              &
-     &    color_param%num_pvr_lights, color_param%xyz_pvr_lights,       &
-     &    surf_normal, color_param%pvr_lighting_real,                   &
-     &    xout_model, xout_model, color, rgb(1))
-!
-      rgb(1:3) = rgb(1:3) * opa_current
-      rgb(4) =   opa_current
-!
-      call composite_lic_alpha_blending(rgb, rgba_pixel)
-      deallocate(rgb)
-!
-      end subroutine plane_rendering_with_light
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine compute_opacity(transfer_function_style, opa_value,    &
-     &          num_of_features, fea_point, value, opacity_local)
-!
-      integer(kind = kint), intent(in) :: transfer_function_style
-      real(kind = kreal), intent(in) :: opa_value
-      integer(kind = kint), intent(in) :: num_of_features
-      real(kind = kreal), intent(in) :: fea_point(3,num_of_features)
-      real(kind = kreal), intent(in) :: value
-!
-      real(kind = kreal), intent(out) :: opacity_local
-!
-      integer(kind = kint) :: i, min_type
-      real(kind = kreal) ::  mint, t
-!
-!
-      opacity_local = zero
-      if     (transfer_function_style .eq. iflag_anbient) then
-        opacity_local = opa_value
-      else if(transfer_function_style .eq. iflag_pointdelta) then
-        mint = 1.0d-17
-        do i = 1, num_of_features
-          t = abs(value - fea_point(1,i))
-          if(t .lt. mint) then
-            mint = t
-            min_type = i
-          end if
-          if(mint .lt. fea_point(2,min_type)) then
-            opacity_local = opa_value + fea_point(3,min_type)          &
-     &                                 * (fea_point(2,min_type)-mint)  &
-     &                                 / fea_point(2,min_type)
-          else
-            opacity_local = opa_value
-          end if
-        end do
-!
-      else if(transfer_function_style .eq. iflag_pointrange) then
-        opacity_local = opa_value
-        do i = 1, num_of_features
-          if(value.ge.fea_point(1,i)                                    &
-     &         .and. value.le.fea_point(2,i)) then
-            opacity_local = fea_point(3,i)
-          end if
-        end do
-!
-      else if(transfer_function_style .eq. iflag_pointlinear) then
-        opacity_local = opa_value
-        do i = 1, num_of_features-1
-          if(value .le. fea_point(1,1)) then
-            opacity_local = fea_point(3,1)
-            exit
-          else if(value .ge. fea_point(1,num_of_features)) then
-            opacity_local = fea_point(3,num_of_features)
-            exit
-          else if(value.ge.fea_point(1,i)                               &
-     &         .and. value.le.fea_point(1,i+1)) then
-            opacity_local = fea_point(3,i)                              &
-     &                     + (fea_point(3,i+1) - fea_point(3,i))        &
-     &                     * (value - fea_point(1,i))                   &
-     &                      / (fea_point(1,i+1) - fea_point(1,i))
-            exit
-          end if
-        end do
-      end if
-!
-      end subroutine compute_opacity
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine phong_reflection(view_point_d,                         &
-     &          num_of_lights, light_point, norm_v, k_ads,              &
-     &          in_point, out_point, color, rgb)
-!
-      real(kind = kreal), intent(in) :: view_point_d(3)
-      real(kind = kreal), intent(in) :: k_ads(3)
-      real(kind = kreal), intent(in) :: norm_v(3)
-      integer(kind = kint), intent(in) :: num_of_lights
-      real(kind = kreal), intent(in) :: light_point(3,num_of_lights)
-!
-      real(kind = kreal), intent(in) :: in_point(3)
-      real(kind = kreal), intent(in) :: out_point(3)
-!
-      real(kind = kreal), intent(in) :: color(3)
-!
-      real(kind = kreal), intent(inout)  :: rgb(3)
-!
-      integer(kind = kint) :: j
-      real(kind = kreal) :: cosalpha, costheta
-      real(kind = kreal) :: lp_norm, vp_norm, hp_norm, norm
-      real(kind = kreal) :: inprodLN, inprodVN, inprodHN
-      real(kind = kreal) :: coef
-      real(kind = kreal), allocatable :: lp(:), vp(:), hp(:)
-      real(kind = kreal), allocatable :: vo(:), x_mid(:)
-!
-      allocate(vo(3), x_mid(3))
-      allocate(lp(3), vp(3), hp(3))
-!
-      rgb(1:3) = zero
-      x_mid(1:3) = half*(out_point(1:3) +  in_point(1:3))
-      vo(1:3) = view_point_d(1:3) - norm_v(1:3)
-!
-      do j = 1, num_of_lights
-        lp(1:3) = light_point(1:3,j) - x_mid(1:3)
-        vp(1:3) = - x_mid(1:3)
-        hp(1:3) = (lp(1:3) + vp(1:3)) / two
-!
-        lp_norm = sqrt( lp(1)*lp(1) + lp(2)*lp(2) + lp(3)*lp(3) )
-        vp_norm = sqrt( vp(1)*vp(1) + vp(2)*vp(2) + vp(3)*vp(3) )
-        hp_norm = sqrt( hp(1)*hp(1) + hp(2)*hp(2) + hp(3)*hp(3) )
-        norm =    sqrt( vo(1)*vo(1) + vo(2)*vo(2) + vo(3)*vo(3) )
-!
-        if(abs(lp_norm) .gt. EPSILON) lp(1:3) = lp(1:3) / lp_norm
-        if(abs(vp_norm) .gt. EPSILON) vp(1:3) = vp(1:3) / vp_norm
-        if(abs(hp_norm) .gt. EPSILON) hp(1:3) = hp(1:3) / hp_norm
-        if(abs(norm) .gt.    EPSILON) vo(1:3) = vo(1:3) / norm
-!
-        inprodLN = vo(1)*lp(1) + vo(2)*lp(2) + vo(3)*lp(3)
-        inprodVN = vo(1)*vp(1) + vo(2)*vp(2) + vo(3)*vp(3)
-        inprodHN = vo(1)*hp(1) + vo(2)*hp(2) + vo(3)*hp(3)
-!
-        cosalpha = inprodLN
-        costheta = inprodLN*inprodVN                                    &
-     &            - sqrt(one-inprodLN*inprodLN)                         &
-     &             *sqrt(one-inprodVN*inprodVN)
-        cosalpha = abs(cosalpha)
-!
-        if(cosalpha .gt. zero) then
-          coef = k_ads(1) + k_ads(2)*cosalpha + k_ads(3)*costheta**6
-        else
-          coef = k_ads(1)
-        end if
-        rgb(1:3) = rgb(1:3) + color(1:3) * coef
-      end do
-      deallocate(vo, x_mid, lp, vp, hp)
-!
-      end subroutine phong_reflection
-!
 ! ----------------------------------------------------------------------
 !
       subroutine composite_lic_alpha_blending(rgba_src, rgba_tgt)
@@ -346,30 +153,6 @@
 !      &               + rgba_tgt(1:3)
 !
       end subroutine composite_lic_alpha_blending
-!
-! ----------------------------------------------------------------------
-!
-      subroutine alpha_blending(rgba_src, rgba_tgt)
-!
-      real(kind = kreal), intent(in) :: rgba_src(4)
-      real(kind = kreal), intent(inout) :: rgba_tgt(4)
-!
-      real(kind = kreal) :: rgba_bck(4), a_rgba
-!
-!
-      rgba_bck(1:4) = rgba_tgt(1:4)
-!
-      rgba_tgt(4) = rgba_src(4) + rgba_bck(4) * (one - rgba_src(4))
-      if(rgba_tgt(4) .eq. zero) then
-        rgba_tgt(1:3) = zero
-      else
-        a_rgba = one / rgba_tgt(4)
-        rgba_tgt(1:3) =  rgba_src(1:3) * (rgba_src(4)*a_rgba)           &
-     &                 + rgba_bck(1:3) * (rgba_bck(4)*a_rgba)           &
-     &                  * (one - rgba_src(4))
-      end if
-!
-      end subroutine alpha_blending
 !
 ! ----------------------------------------------------------------------
 !

@@ -39,6 +39,7 @@
       implicit none
 !
       character(len=kchara), parameter, private :: tmp_head = 'work'
+      type(file_IO_flags), private :: bin_flflags
 !
       private :: const_commutative_filter, const_simple_filter
       private :: correct_commutative_filter, correct_by_simple_filter
@@ -265,21 +266,25 @@
      &     (id_new_filter_coef, my_rank, comm_IO, nod_IO)
         close(id_new_filter_coef)
       else
-        call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
-        if(ierr .gt. 0) then
+        call open_read_binary_file                                      &
+     &     (file_name, my_rank, bin_flflags%iflag_bin_swap)
+        call read_filter_geometry_b                                     &
+     &     (my_rank, bin_flflags, comm_IO, nod_IO)
+        call close_binary_file
+        if(bin_flflags%ierr_IO .gt. 0) then
           call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
         end if
-!
-        call close_binary_file
 !
         call open_write_binary_file(fixed_file_name)
         call write_filter_geometry_b(my_rank, comm_IO, nod_IO)
         call close_binary_file
 !
-        call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
-        if(ierr .gt. 0) then
+        call open_read_binary_file                                      &
+     &     (file_name, my_rank, bin_flflags%iflag_bin_swap)
+        call read_filter_geometry_b                                     &
+     &     (my_rank, bin_flflags, comm_IO, nod_IO)
+        call close_binary_file
+        if(bin_flflags%ierr_IO .gt. 0) then
           call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
         end if
 !
@@ -297,12 +302,19 @@
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
       call s_correct_wrong_filters                                      &
      &   (org_filter_coef_code, fixed_file_name, mesh,                  &
-     &    g_FEM, jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod(1))
+     &    g_FEM, jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod(1),    &
+     &    bin_flflags)
+      if(bin_flflags%ierr_IO .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
+      end if
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
       call correct_wrong_fluid_filters                                  &
-     &   (org_filter_coef_code, fixed_file_name, mesh,                  &
-     &    g_FEM, jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod)
+     &   (org_filter_coef_code, fixed_file_name, mesh, g_FEM, jac_3d_q, &
+     &    FEM_elen, dxidxs, FEM_moments%mom_nod, bin_flflags)
+      if(bin_flflags%ierr_IO .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
+      end if
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         close(org_filter_coef_code)
@@ -351,7 +363,7 @@
       type(communication_table) :: comm_IO
       type(node_data) ::           nod_IO
       character(len=kchara) :: file_name, fixed_file_name
-integer(kind = kint) :: ierr
+      integer(kind = kint) :: ierr
 !
 !
           if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_nod_type'
@@ -383,10 +395,12 @@ integer(kind = kint) :: ierr
      &     (id_new_filter_coef, my_rank, comm_IO, nod_IO)
         close(id_new_filter_coef)
       else
-        call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
+        call open_read_binary_file                                      &
+     &     (file_name, my_rank, bin_flflags%iflag_bin_swap)
+        call read_filter_geometry_b                                     &
+     &     (my_rank, bin_flflags, comm_IO, nod_IO)
         call close_binary_file
-        if(ierr .gt. 0) then
+        if(bin_flflags%ierr_IO .gt. 0) then
           call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
         end if
 !
@@ -394,9 +408,11 @@ integer(kind = kint) :: ierr
         call write_filter_geometry_b(my_rank, comm_IO, nod_IO)
         call close_binary_file
 !
-        call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
-        if(ierr .gt. 0) then
+        call open_read_binary_file                                      &
+     &     (file_name, my_rank, bin_flflags%iflag_bin_swap)
+        call read_filter_geometry_b                                     &
+     &     (my_rank, bin_flflags, comm_IO, nod_IO)
+        if(bin_flflags%ierr_IO .gt. 0) then
           call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
         end if
 !
@@ -413,7 +429,11 @@ integer(kind = kint) :: ierr
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
       call s_correct_wrong_filters                                      &
      &   (org_filter_coef_code, fixed_file_name, mesh,                  &
-     &    g_FEM, jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod(1))
+     &    g_FEM, jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod(1),    &
+     &    bin_flflags)
+      if(bin_flflags%ierr_IO .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
+      end if
 !
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
       call s_const_filter_mom_ele(mesh%nod_comm, mesh%node, mesh%ele,   &
@@ -429,8 +449,11 @@ integer(kind = kint) :: ierr
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
       call correct_wrong_fluid_filters                                  &
-     &   (org_filter_coef_code, fixed_file_name, mesh,                  &
-     &    g_FEM, jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod)
+     &   (org_filter_coef_code, fixed_file_name, mesh, g_FEM, jac_3d_q, &
+     &    FEM_elen, dxidxs, FEM_moments%mom_nod, bin_flflags)
+      if(bin_flflags%ierr_IO .gt. 0) then
+        call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
+      end if
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         close(org_filter_coef_code)

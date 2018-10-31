@@ -142,6 +142,7 @@
       if(my_rank .eq. pvr_rgb%irank_image_file) then
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
      &      color_param, cbar_param, pvr_rgb%rgba_real_gl)
+!
         call set_pvr_axislabel(cbar_param%iflag_pvr_axis,               &
      &      pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                   &
      &      pvr_screen, pvr_rgb%rgba_real_gl)

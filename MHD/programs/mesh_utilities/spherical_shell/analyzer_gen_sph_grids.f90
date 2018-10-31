@@ -22,6 +22,7 @@
 !
       use t_mesh_data
       use t_spheric_parameter
+      use t_spheric_group
       use t_sph_trans_comm_tbl
       use t_file_IO_parameter
       use t_ctl_data_const_sph_mesh
@@ -45,6 +46,12 @@
 !>      Structure to construct grid
       type(construct_spherical_grid), save :: gen_sph_G
 !
+      type(sph_comm_tables), save, private :: comms_sph
+      type(sph_group_data), save, private ::  sph_grps
+      type(mesh_data), save, private :: geofem
+      type(element_geometry), save, private :: ele_mesh
+!
+!
       private :: control_file_name
       private :: sph_const, SPH_MAKE_ctl
 !
@@ -58,13 +65,15 @@
 !
       use m_error_IDs
 !
-      num_elapsed = 4
+      num_elapsed = 6
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                  '
       elapse_labels(2) = 'Generation of spherical transform table'
       elapse_labels(3) = 'Generation of spherical mode and grid'
       elapse_labels(4) = 'Generation of FEM mesh data'
+      elapse_labels(5) = 'Generation of surface FEM mesh data'
+      elapse_labels(6) = 'Generation of viewer data'
 !
 !
       call start_elapsed_time(1)
@@ -88,14 +97,11 @@
 !
       subroutine analyze_gen_sph_grids
 !
+      use m_array_for_send_recv
       use parallel_gen_sph_grids
       use mpi_gen_sph_grids_modes
       use parallel_load_data_4_sph
-!
-      type(sph_comm_tables) :: comms_sph
-      type(sph_group_data) ::  sph_grps
-      type(mesh_data) :: geofem
-      type(element_geometry) :: ele_mesh
+      use parallel_FEM_mesh_init
 !
 !  ========= Generate spherical harmonics table ========================
 !
@@ -104,11 +110,20 @@
       call dealloc_gen_mesh_params(gen_sph_G)
 !
       call start_elapsed_time(4)
-      call load_para_SPH_and_FEM_mesh                                  &
-     &   (sph_files1%FEM_mesh_flags, sph_const, comms_sph, sph_grps,   &
+      call load_para_SPH_and_FEM_mesh                                   &
+     &   (sph_files1%FEM_mesh_flags, sph_const, comms_sph, sph_grps,    &
      &    geofem, ele_mesh, sph_files1%mesh_file_IO, gen_sph_G)
+      call calypso_MPI_barrier
+!
       call dealloc_gen_sph_fem_mesh_param(gen_sph_G)
       call end_elapsed_time(4)
+!
+      call start_elapsed_time(5)
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_init_with_IO'
+      call FEM_mesh_init_with_IO                                        &
+     &   (sph_files1%FEM_mesh_flags%iflag_output_SURF,                  &
+     &    sph_files1%mesh_file_IO, geofem%mesh, geofem%group, ele_mesh)
+      call end_elapsed_time(5)
       call end_elapsed_time(1)
 !
       call output_elapsed_times

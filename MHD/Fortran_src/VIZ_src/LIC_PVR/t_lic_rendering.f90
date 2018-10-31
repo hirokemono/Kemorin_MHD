@@ -165,8 +165,8 @@
       end do
 !
       do i_lic = 1, lic%pvr%num_pvr
-        call alloc_nod_vector_4_lic(femmesh%mesh%node%numnod,          &
-     &      lic%lic_fld(i_lic)%lic_param%num_masking,                  &
+        call alloc_nod_vector_4_lic(femmesh%mesh%node%numnod,           &
+     &      lic%lic_fld(i_lic)%lic_param%num_masking,                   &
      &      lic%pvr%pvr_param(i_lic)%field)
       end do
 !
@@ -232,6 +232,7 @@
       end do
       call end_elapsed_time(77)
 !
+      call start_elapsed_time(76)
       do i_lic = 1, lic%pvr%num_pvr
         if(lic%pvr%pvr_param(i_lic)%view%iflag_rotate_snap .gt. 0) then
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1

@@ -12,11 +12,11 @@
 !!      subroutine gz_write_field_data_b(nnod, num_field,               &
 !!     &          ntot_comp, ncomp_field, field_name, d_nod)
 !!
-!!      subroutine gz_read_step_data_b                                  &
-!!     &         (my_rank, i_time_step_IO, time_IO, delta_t_IO,         &
-!!     &          istack_merged, num_field)
-!!      subroutine gz_read_field_data_b(nnod, num_field, ncomp,         &
-!!     &          field_name, vect)
+!!      subroutine gz_read_step_data_b(iflag_swap, my_rank,             &
+!!     &          i_time_step_IO, time_IO, delta_t_IO,                  &
+!!     &          istack_merged, num_field, ierr)
+!!      subroutine gz_read_field_data_b(iflag_swap, nnod, num_field,    &
+!!     &          ncomp, field_name, vect, ierr)
 !!@endverbatim
 !
       module gz_field_data_IO_b
@@ -82,46 +82,63 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_step_data_b                                    &
-     &         (my_rank, i_time_step_IO, time_IO, delta_t_IO,           &
-     &          istack_merged, num_field)
+      subroutine gz_read_step_data_b(iflag_swap, my_rank,               &
+     &          i_time_step_IO, time_IO, delta_t_IO,                    &
+     &          istack_merged, num_field, ierr)
 !
       integer(kind=kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: iflag_swap
 !
       integer(kind=kint), intent(inout) :: i_time_step_IO
       real(kind = kreal), intent(inout) :: time_IO, delta_t_IO
 !
       integer(kind=kint_gl), intent(inout) :: istack_merged(1)
       integer(kind=kint), intent(inout) :: num_field
+      integer(kind = kint), intent(inout) :: ierr
+!
       integer(kind = kint) :: id_rank
 !
 !
-      call gz_read_endian_flag(my_rank)
+      call gz_read_one_integer_b(iflag_swap, id_rank, ierr)
+      if(ierr .gt. 0) return
 !
-      call gz_read_one_integer_b(id_rank)
-      call gz_read_one_integer_b(i_time_step_IO)
-      call gz_read_one_real_b(time_IO)
-      call gz_read_one_real_b(delta_t_IO)
+      call gz_read_one_integer_b(iflag_swap, i_time_step_IO, ierr)
+      if(ierr .gt. 0) return
 !
-      call gz_read_mul_int8_b(ione, istack_merged(1))
-      call gz_read_one_integer_b(num_field)
+      call gz_read_one_real_b(iflag_swap, time_IO, ierr)
+      if(ierr .gt. 0) return
+!
+      call gz_read_one_real_b(iflag_swap, delta_t_IO, ierr)
+      if(ierr .gt. 0) return
+!
+      call gz_read_mul_int8_b(iflag_swap, ione, istack_merged(1), ierr)
+      if(ierr .gt. 0) return
+!
+      call gz_read_one_integer_b(iflag_swap, num_field, ierr)
 !
       end subroutine gz_read_step_data_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_field_data_b(nnod, num_field, ncomp,           &
-     &          field_name, vect)
+      subroutine gz_read_field_data_b(iflag_swap, nnod, num_field,      &
+     &          ncomp, field_name, vect, ierr)
 !
+      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind=kint), intent(in) :: nnod
       integer(kind=kint), intent(in) :: num_field, ncomp
+!
       character(len=kchara), intent(inout) :: field_name(num_field)
       real(kind = kreal), intent(inout) :: vect(nnod,ncomp)
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call gz_read_mul_character_b(num_field, field_name)
-      call gz_read_2d_vector_b(nnod, ncomp, vect)
+      call gz_read_mul_character_b                                      &
+     &   (iflag_swap, num_field, field_name, ierr)
+      if(ierr .gt. 0) return
+!
+      call gz_read_2d_vector_b                                          &
+     &   (iflag_swap, nnod, ncomp, vect, ierr)
 !
       end subroutine gz_read_field_data_b
 !

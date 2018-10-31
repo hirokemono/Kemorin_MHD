@@ -141,7 +141,7 @@
       real(kind = kreal), parameter :: tiny = 1.0d-14
       real(kind = kreal) :: dx, dy, dz
       real(kind = kreal), allocatable :: x_test(:)
-      integer(kind = kint) :: iele, inum
+      integer(kind = kint) :: iele, inum, iflag, iflag_gl
 !
 !
       if(i_debug .gt. 0) write(*,*) 'Number of  ', trim(txt),           &
@@ -167,6 +167,7 @@
 !
       call SOLVER_SEND_RECV_3_type(nele, e_comm, x_test(1))
 !
+      iflag = 0
       do iele = 1, nele
         dx = x_test(3*iele-2) - x_ele(iele,1)
         dy = x_test(3*iele-1) - x_ele(iele,2)
@@ -177,6 +178,11 @@
      &         my_rank, iele, x_ele(iele,1:3), dx, dy, dz
         end if
       end do
+!
+      call mpi_Allreduce(iflag, iflag_gl, 1, CALYPSO_INTEGER, MPI_SUM,  &
+     &     CALYPSO_COMM, ierr_MPI)
+      if(iflag_gl .eq. 0 .and. my_rank .eq. 0) write(*,*)               &
+     &     trim(txt), ' position is successfully syncronizad'
 !
       deallocate(x_test)
 !

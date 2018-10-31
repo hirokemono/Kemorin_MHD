@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine open_wt_gzfile_b(gzip_name)
-!!      subroutine open_rd_gzfile_b(gzip_name, my_rank)
+!!      subroutine open_rd_gzfile_b                                     &
+!!     &         (gzip_name, my_rank, iflag_swap, ierr)
 !!
 !!      subroutine gz_write_endian_flag
 !!      subroutine gz_write_one_integer_b(int_dat)
@@ -20,15 +21,19 @@
 !!      subroutine gz_write_1d_vector_b(num, real_dat)
 !!      subroutine gz_write_2d_vector_b(n1, n2, real_dat)
 !!
-!!      subroutine gz_read_endian_flag(my_rank)
-!!      subroutine gz_read_one_integer_b(int_dat)
-!!      subroutine gz_read_one_real_b(real_dat)
-!!      subroutine gz_read_mul_int8_b(num, int8_dat)
-!!      subroutine gz_read_mul_integer_b(num, int_dat)
-!!      subroutine gz_read_integer_stack_b(num, istack, ntot)
-!!      subroutine gz_read_mul_character_b(num, chara_dat)
-!!      subroutine gz_read_1d_vector_b(num, real_dat)
-!!      subroutine gz_read_2d_vector_b(n1, n2, real_dat)
+!!      integer(kind = kint) function gz_read_endian_flag(my_rank)
+!!      subroutine gz_read_one_integer_b(iflag_swap, int_dat, ierr)
+!!      subroutine gz_read_one_real_b(iflag_swap, real_dat, ierr)
+!!      subroutine gz_read_mul_int8_b(iflag_swap, num, int8_dat, ierr)
+!!      subroutine gz_read_mul_integer_b(iflag_swap, num, int_dat, ierr)
+!!      subroutine gz_read_integer_stack_b                              &
+!!     &         (iflag_swap, num, istack, ntot, ierr)
+!!      subroutine gz_read_mul_character_b                              &
+!!     &         (iflag_swap, num, chara_dat, ierr)
+!!      subroutine gz_read_1d_vector_b                                  &
+!!     &         (iflag_swap, num, real_dat, ierr)
+!!      subroutine gz_read_2d_vector_b                                  &
+!!     &         (iflag_swap, n1, n2, real_dat, ierr)
 !!@endverbatim
 !
       module gz_binary_IO
@@ -36,11 +41,11 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-!
-      use t_time_data
-      use t_field_data_IO
+      use m_error_IDs
 !
       implicit none
+!
+      private :: gz_read_endian_flag
 !
 !  ---------------------------------------------------------------------
 !
@@ -63,17 +68,22 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine open_rd_gzfile_b(gzip_name, my_rank)
+      subroutine open_rd_gzfile_b                                       &
+     &         (gzip_name, my_rank, iflag_swap, ierr)
 !
       use set_parallel_file_name
       use skip_gz_comment
 !
       integer(kind=kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: gzip_name
+      integer(kind = kint), intent(inout) :: iflag_swap, ierr
 !
 !
       call open_rd_gzfile_f(gzip_name)
-      call gz_read_endian_flag(my_rank)
+      iflag_swap = gz_read_endian_flag(my_rank)
+!
+      ierr = 0
+      if(iflag_swap .eq. -1) ierr = ierr_file
 !
       end subroutine open_rd_gzfile_b
 !
@@ -206,142 +216,173 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_endian_flag(my_rank)
+      integer(kind = kint) function gz_read_endian_flag(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint) :: ierr, int_dat
 !
 !
-      call gzread_f(iflag_endian, kint, int_dat, ierr)
+      call gzread_f(iendian_KEEP, kint, int_dat, ierr)
 !
       if(int_dat .eq. i_UNIX) then
         if(my_rank.eq.0) write(*,*) 'binary data have correct endian!'
-        iflag_endian = iendian_KEEP
+        gz_read_endian_flag = iendian_KEEP
       else if(int_dat .eq. i_XINU) then
         if(my_rank.eq.0) write(*,*) 'binary data have opposite endian!'
-        iflag_endian = iendian_FLIP
+        gz_read_endian_flag = iendian_FLIP
       else
-        iflag_endian = -1
+        gz_read_endian_flag = -1
         if(my_rank.eq.0) write(*,*) 'Binary Data is someting wrong!',   &
      &                   int_dat
       end if
 !
-      end subroutine gz_read_endian_flag
+      end function gz_read_endian_flag
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_one_integer_b(int_dat)
+      subroutine gz_read_one_integer_b(iflag_swap, int_dat, ierr)
 !
+      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind = kint), intent(inout) :: int_dat
+      integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ierr
 !
-!
-      call gzread_f(iflag_endian, kint, int_dat, ierr)
+      ierr = 0
+      call gzread_f(iflag_swap, kint, int_dat, ierr)
+      if(ierr .ne. kint) ierr = ierr_file
 !
       end subroutine gz_read_one_integer_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_one_real_b(real_dat)
+      subroutine gz_read_one_real_b(iflag_swap, real_dat, ierr)
 !
+      integer(kind = kint), intent(in) :: iflag_swap
       real(kind = kreal), intent(inout) :: real_dat
+      integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ierr
 !
-!
-      call gzread_f(iflag_endian, kreal, real_dat, ierr)
+      ierr = 0
+      call gzread_f(iflag_swap, kreal, real_dat, ierr)
+      if(ierr .ne. kreal) ierr = ierr_file
 !
       end subroutine gz_read_one_real_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_mul_int8_b(num, int8_dat)
+      subroutine gz_read_mul_int8_b(iflag_swap, num, int8_dat, ierr)
 !
+      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
+      integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength, ierr
+      integer(kind = kint) :: ilength
 !
 !
+      ierr = 0
       ilength = num * kint_gl
-      call gzread_f(iflag_endian, ilength, int8_dat(1), ierr)
+      call gzread_f(iflag_swap, ilength, int8_dat(1), ierr)
+      if(ierr .ne. ilength) ierr = ierr_file
 !
       end subroutine gz_read_mul_int8_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_mul_integer_b(num, int_dat)
+      subroutine gz_read_mul_integer_b(iflag_swap, num, int_dat, ierr)
 !
+      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_dat(num)
+      integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength, ierr
+      integer(kind = kint) :: ilength
 !
 !
+      ierr = 0
       ilength = num * kint
-      call gzread_f(iflag_endian, ilength, int_dat(1), ierr)
+      call gzread_f(iflag_swap, ilength, int_dat(1), ierr)
+      if(ierr .ne. ilength) ierr = ierr_file
 !
       end subroutine gz_read_mul_integer_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_integer_stack_b(num, istack, ntot)
+      subroutine gz_read_integer_stack_b                                &
+     &         (iflag_swap, num, istack, ntot, ierr)
 !
+      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: ntot
       integer(kind = kint), intent(inout) :: istack(0:num)
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
+      ierr = 0
       istack(0) = 0
-      call gz_read_mul_integer_b(num, istack(1))
+      call gz_read_mul_integer_b(iflag_swap, num, istack(1), ierr)
       ntot = istack(num)
 !
       end subroutine gz_read_integer_stack_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_mul_character_b(num, chara_dat)
+      subroutine gz_read_mul_character_b                                &
+     &         (iflag_swap, num, chara_dat, ierr)
 !
+      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(inout) :: chara_dat(num)
+      integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength, ierr
+      integer(kind = kint) :: ilength
 !
 !
+      ierr = 0
       ilength = num * kchara
-      call gzread_f(iflag_endian, ilength, chara_dat(1), ierr)
+      call gzread_f(iflag_swap, ilength, chara_dat(1), ierr)
+      if(ierr .ne. ilength) ierr = ierr_file
 !
       end subroutine gz_read_mul_character_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_1d_vector_b(num, real_dat)
+      subroutine gz_read_1d_vector_b                                    &
+     &         (iflag_swap, num, real_dat, ierr)
 !
+      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
+      integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength, ierr
+      integer(kind = kint) :: ilength
 !
 !
+      ierr = 0
       ilength =  num * kreal
-      call gzread_f(iflag_endian, ilength, real_dat(1), ierr)
+      call gzread_f(iflag_swap, ilength, real_dat(1), ierr)
+      if(ierr .ne. ilength) ierr = ierr_file
 !
       end subroutine gz_read_1d_vector_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_2d_vector_b(n1, n2, real_dat)
+      subroutine gz_read_2d_vector_b                                    &
+     &         (iflag_swap, n1, n2, real_dat, ierr)
 !
+      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: n1, n2
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)
+      integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength, ierr
+      integer(kind = kint) :: ilength
 !
 !
+      ierr = 0
       ilength =  n1 * n2 * kreal
-      call gzread_f(iflag_endian, ilength, real_dat(1,1), ierr)
+      call gzread_f(iflag_swap, ilength, real_dat(1,1), ierr)
+      if(ierr .ne. ilength) ierr = ierr_file
 !
       end subroutine gz_read_2d_vector_b
 !

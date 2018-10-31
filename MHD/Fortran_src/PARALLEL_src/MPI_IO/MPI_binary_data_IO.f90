@@ -250,7 +250,8 @@
         int_dat(1:num) = 0
       else
         call calypso_mpi_seek_read_int                                  &
-     &     (IO_param%id_file, ioffset, num, int_dat(1))
+     &     (IO_param%id_file, IO_param%iflag_bin_swap,                  &
+     &      ioffset, num, int_dat(1))
       end if
 !
       end subroutine mpi_read_int_vector_b
@@ -283,7 +284,8 @@
         int8_dat(1:num) = 0
       else
         call calypso_mpi_seek_read_int8                                 &
-     &     (IO_param%id_file, ioffset, num, int8_dat(1))
+     &     (IO_param%id_file, IO_param%iflag_bin_swap,                  &
+     &      ioffset, num, int8_dat(1))
       end if
 !
       end subroutine mpi_read_int8_vector_b
@@ -316,7 +318,8 @@
         real_dat(1:num) = 0.0d0
       else
         call calypso_mpi_seek_read_real                                 &
-     &   (IO_param%id_file, ioffset, num, real_dat(1))
+     &     (IO_param%id_file, IO_param%iflag_bin_swap,                  &
+     &      ioffset, num, real_dat(1))
       end if
 !
       end subroutine mpi_read_1d_vector_b

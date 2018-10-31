@@ -17,7 +17,7 @@
 !!        type(filter_file_data), intent(inout) :: filter_IO
 !!
 !!      subroutine sel_read_num_filter_mom_file(my_rank,                &
-!!     &          FEM_elens, FEM_moms)
+!!     &          FEM_elens, FEM_moms, ierr)
 !!      subroutine sel_read_filter_elen_file(my_rank, nnod, nele,       &
 !!     &          FEM_elens, ierr)
 !!      subroutine sel_write_filter_elen_file(my_rank, FEM_elens)
@@ -198,7 +198,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_read_num_filter_mom_file(my_rank,                  &
-     &          FEM_elens, FEM_moms)
+     &          FEM_elens, FEM_moms, ierr)
 !
       use t_filter_elength
       use t_filter_moments
@@ -209,6 +209,7 @@
       integer(kind = kint), intent(in) :: my_rank
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
+      integer(kind = kint), intent(inout) :: ierr
 !
       character(len=kchara) :: file_name
 !
@@ -218,7 +219,7 @@
 #ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
         call read_num_filter_mom_type_file_b(file_name, my_rank,        &
-      &     FEM_elens, FEM_moms)
+      &     FEM_elens, FEM_moms, ierr)
         return
       else if(ifmt_filter_file .eq. id_gzip_txt_file_fmt) then
         call read_num_filter_mom_t_file_gz(file_name, my_rank,          &

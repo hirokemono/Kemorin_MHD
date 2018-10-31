@@ -223,6 +223,7 @@
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
+      integer(kind=kint) :: ierr = 0
       character(len=kchara) :: file_name
 !
 !
@@ -243,10 +244,12 @@
 !
       else if (ucd_param%iflag_format .eq. iflag_bin) then
         call read_alloc_ucd_2_fld_header_b                              &
-     &     (my_rank, file_name, t_IO, ucd)
+     &     (my_rank, file_name, t_IO, ucd, ierr)
       else
         call read_alloc_ucd_2_fld_file(my_rank, file_name, t_IO, ucd)
       end if
+!
+      if(ierr .gt. 0) stop "sel_read_udt_file error"
 !
       end subroutine sel_read_udt_param
 !
@@ -261,6 +264,7 @@
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
+      integer(kind=kint) :: ierr = 0
       character(len=kchara) :: file_name
 !
 !
@@ -282,10 +286,13 @@
 #endif
 !
       else if (ucd_param%iflag_format .eq. iflag_bin) then
-        call read_alloc_ucd_2_fld_file_b(my_rank, file_name, t_IO, ucd)
+        call read_alloc_ucd_2_fld_file_b                                &
+     &     (my_rank, file_name, t_IO, ucd, ierr)
       else
         call read_alloc_ucd_2_fld_file(my_rank, file_name, t_IO, ucd)
       end if
+!
+      if(ierr .gt. 0) stop "sel_read_udt_file error"
 !
       end subroutine sel_read_alloc_udt_file
 !
@@ -300,6 +307,7 @@
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
+      integer(kind=kint) :: ierr = 0
       character(len=kchara) :: file_name
 !
 !
@@ -317,10 +325,12 @@
 #endif
 !
       else if (ucd_param%iflag_format .eq. iflag_bin) then
-        call read_ucd_2_fld_file_b(my_rank, file_name, t_IO, ucd)
+        call read_ucd_2_fld_file_b(my_rank, file_name, t_IO, ucd, ierr)
       else
         call read_ucd_2_fld_file(my_rank, file_name, t_IO, ucd)
       end if
+!
+      if(ierr .gt. 0) stop "sel_read_udt_file error"
 !
       end subroutine sel_read_udt_file
 !

@@ -15,12 +15,14 @@
 !!        type(node_data), intent(in) :: nod_IO
 !!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
-!!      subroutine read_number_of_node_b(nod_IO)
-!!      subroutine read_geometry_info_b(nod_IO)
+!!      subroutine read_number_of_node_b(bin_flags, nod_IO)
+!!      subroutine read_geometry_info_b(bin_flags, nod_IO)
+!!        type(file_IO_flags), intent(inout) :: bin_flags
 !!        type(node_data), intent(inout) :: nod_IO
 !!
-!!      subroutine read_scalar_in_element_b(nod_IO, sfed_IO)
-!!      subroutine read_vector_in_element_b(nod_IO, sfed_IO)
+!!      subroutine read_scalar_in_element_b(bin_flags, nod_IO, sfed_IO)
+!!      subroutine read_vector_in_element_b(bin_flags, nod_IO, sfed_IO)
+!!        type(file_IO_flags), intent(inout) :: bin_flags
 !!        type(node_data), intent(inout) :: nod_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!@endverbatim
@@ -95,69 +97,95 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_number_of_node_b(nod_IO)
+      subroutine read_number_of_node_b(bin_flags, nod_IO)
 !
       use binary_IO
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(node_data), intent(inout) :: nod_IO
 !
 !
-      call read_one_integer_b(nod_IO%numnod)
-      call read_one_integer_b(nod_IO%internal_node)
+      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    nod_IO%numnod, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    nod_IO%internal_node, bin_flags%ierr_IO)
 !
       end subroutine read_number_of_node_b
 !
 !------------------------------------------------------------------
 !
-      subroutine read_geometry_info_b(nod_IO)
+      subroutine read_geometry_info_b(bin_flags, nod_IO)
 !
       use binary_IO
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(node_data), intent(inout) :: nod_IO
 !
 !
       call alloc_node_geometry_base(nod_IO)
 !
-      call read_mul_int8_b(nod_IO%numnod, nod_IO%inod_global)
-      call read_2d_vector_b(nod_IO%numnod, n_vector, nod_IO%xx)
+      call read_mul_int8_b(bin_flags%iflag_bin_swap,                    &
+     &    nod_IO%numnod, nod_IO%inod_global, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_2d_vector_b(bin_flags%iflag_bin_swap,                   &
+     &    nod_IO%numnod, n_vector, nod_IO%xx, bin_flags%ierr_IO)
 !
       end subroutine read_geometry_info_b
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_scalar_in_element_b(nod_IO, sfed_IO)
+      subroutine read_scalar_in_element_b(bin_flags, nod_IO, sfed_IO)
 !
       use binary_IO
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      call read_one_integer_b(nod_IO%numnod)
-      call read_one_integer_b(nod_IO%internal_node)
+      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    nod_IO%numnod, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    nod_IO%internal_node, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
       call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
-      call read_1d_vector_b(nod_IO%numnod, sfed_IO%ele_scalar)
+      call read_1d_vector_b(bin_flags%iflag_bin_swap,                   &
+     &    nod_IO%numnod, sfed_IO%ele_scalar, bin_flags%ierr_IO)
 !
       end subroutine read_scalar_in_element_b
 !
 !------------------------------------------------------------------
 !
-      subroutine read_vector_in_element_b(nod_IO, sfed_IO)
+      subroutine read_vector_in_element_b(bin_flags, nod_IO, sfed_IO)
 !
       use binary_IO
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      call read_one_integer_b(nod_IO%numnod)
-      call read_one_integer_b(nod_IO%internal_node)
+      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    nod_IO%numnod, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    nod_IO%internal_node, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
 !
-      call read_2d_vector_b                                             &
-     &   (nod_IO%numnod, n_vector, sfed_IO%ele_vector)
+      call read_2d_vector_b(bin_flags%iflag_bin_swap,                   &
+     &    nod_IO%numnod, n_vector, sfed_IO%ele_vector,                  &
+     &    bin_flags%ierr_IO)
 !
       end subroutine read_vector_in_element_b
 !

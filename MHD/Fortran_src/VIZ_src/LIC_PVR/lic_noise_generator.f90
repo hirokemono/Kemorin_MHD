@@ -4,6 +4,8 @@
 !
 !      Written by Yangguang Liao 2018
 !
+!!      subroutine import_noise_nd_ary                                  &
+!!     &         (filename, n_node_data, n_data_size, ierr)
 !!      subroutine import_noise_ary(filename, n_raw_data, n_data_size)
 !!
 !!      subroutine noise_sampling(noise_size, f_noise, noise_data,      &
@@ -22,6 +24,9 @@
 !
       implicit  none
 !
+!>      Integer flag of endian swap
+      integer(kind = kint), save, private :: iflag_endian
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -38,34 +43,36 @@
       integer(kind = kint), intent(inout) :: n_data_size(3)
       type(noise_node), intent(inout), pointer :: n_node_data(:)
       integer(kind = kint), intent(inout) :: ierr
-!
       integer(kind = kint) :: d_size, i
       character(len=kchara) :: file_name
       character(len=1) :: noise_char(1)
 !
 !
-      file_name = add_null_character(filename)
+      call add_null_character(filename, file_name)
       call open_rd_rawfile(file_name, ierr)
       if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-        call read_mul_integer_b(3, n_data_size)
+        call read_mul_integer_b(iflag_endian, 3, n_data_size, ierr)
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
-  !write(*,*) d_size
+!        write(*,*) d_size
         allocate(n_node_data(d_size))
         do i=1, d_size
-    ! change 0 to any level to initial complex noise node tree
+!  change 0 to any level to initial complex noise node tree
           call alloc_noise_node(n_node_data(i), 2, 0)
-          call read_mul_one_character_b(1, noise_char)
+          call read_mul_one_character_b                                 &
+     &       (iflag_endian, 1, noise_char, ierr)
           n_node_data(i)%n_value = ichar(noise_char(1)) / 255.0
-    !write(*,*) n_node_data(i)%n_value
+!          write(*,*) n_node_data(i)%n_value
         end do
       end if
-      close(16)
+      call close_rawfile()
+!
       end subroutine import_noise_nd_ary
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine import_noise_ary(filename, n_raw_data, n_data_size, ierr)
+      subroutine import_noise_ary                                       &
+     &         (filename, n_raw_data, n_data_size, ierr)
 
       use set_parallel_file_name
 
@@ -74,62 +81,113 @@
       integer(kind = kint), intent(inout) :: n_data_size(3)
       character(len=1), allocatable, intent(inout) :: n_raw_data(:)
       integer(kind = kint), intent(inout) :: ierr
+!
       integer(kind = kint) :: d_size
       character(len=kchara) :: file_name
-      !
-      file_name = add_null_character(filename)
-      call open_rd_rawfile(file_name, ierr)
-      if(ierr .eq. 0) then
-      ! first line read 3 integer size data, byte 4
-        call read_mul_integer_b(3, n_data_size)
-        d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
-        allocate( n_raw_data(d_size))  ! allocate space for noise data
-        call read_mul_one_character_b(d_size, n_raw_data)
+      character(len=1) :: one_chara(1)
+!
+!
+      if(my_rank .eq. 0) then
+        call add_null_character(filename, file_name)
+        call open_rd_rawfile(file_name, ierr)
+        if(ierr .eq. 0) then
+! first line read 3 integer size data, byte 4
+          call read_mul_integer_b(iendian_KEEP, 3, n_data_size, ierr)
+          d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
+          write(*,*) 'd_size', d_size, n_data_size(1:3)
+!
+          iflag_endian = iendian_KEEP
+          call seek_forward_binary_file(d_size-1)
+          call read_mul_one_character_b                                 &
+     &       (iendian_KEEP, ione, one_chara, ierr)
+          if(ierr .gt. 0) iflag_endian = iendian_FLIP
+          call read_mul_one_character_b                                 &
+     &       (iendian_KEEP, ione, one_chara, ierr)
+          if(ierr .eq. 0) iflag_endian = iendian_FLIP
+          write(*,*) 'iflag_endian', iflag_endian
+        end if
+        call close_rawfile()
+!
+        call open_rd_rawfile(file_name, ierr)
+        if(ierr .eq. 0) then
+! first line read 3 integer size data, byte 4
+          call read_mul_integer_b(iflag_endian, 3, n_data_size, ierr)
+          d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
+          write(*,*) 'd_size again', d_size, n_data_size(1:3)
+!
+          allocate( n_raw_data(d_size))  ! allocate space for noise data
+          call read_mul_one_character_b                                 &
+     &       (iflag_endian, d_size, n_raw_data, ierr)
+        end if
+        call close_rawfile()
       end if
-      close(16)
-
-
+!
+      call MPI_BCAST(ierr, ione,                                        &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(iflag_endian, ione,                                &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(n_data_size, ithree,                               &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(d_size, ione,                                      &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
+      if(my_rank .ne. 0) allocate( n_raw_data(d_size))
+      call MPI_BCAST(n_raw_data, d_size,                                &
+     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+!
       end subroutine import_noise_ary
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine import_noise_grad_ary(filename, n_grad_data, n_data_size, ierr)
-
+      subroutine import_noise_grad_ary                                  &
+     &         (filename, n_grad_data, n_data_size, ierr)
+!
       use set_parallel_file_name
-
-      ! parameter for read noise data
+!
+! parameter for read noise data
       character(len = kchara), intent(in) :: filename
       integer(kind = kint), intent(in) :: n_data_size(3)
       character(len=1), allocatable, intent(inout) :: n_grad_data(:)
       integer(kind = kint), intent(inout) :: ierr
       integer(kind = kint) :: d_size
       character(len=kchara) :: file_name
-      !
-      file_name = add_null_character(filename)
-      call open_rd_rawfile(file_name, ierr)
-      if(ierr .eq. 0) then
-        d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
-        allocate( n_grad_data(d_size))  ! allocate space for noise data
-        call read_mul_one_character_b(d_size, n_grad_data)
+!
+!
+      if(my_rank .eq. 0) then
+        call add_null_character(filename, file_name)
+        call open_rd_rawfile(file_name, ierr)
+        if(ierr .eq. 0) then
+          d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
+          allocate( n_grad_data(d_size))  ! allocate space for noise data
+          call read_mul_one_character_b                                 &
+     &       (iflag_endian, d_size, n_grad_data, ierr)
+        end if
+        call close_rawfile()
       end if
-      close(16)
-
-
+!
+      call MPI_BCAST(ierr, ione,                                        &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(d_size, ione,                                      &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
+      if(my_rank .ne. 0) allocate( n_grad_data(d_size))
+      call MPI_BCAST(n_grad_data, d_size,                               &
+     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+!
       end subroutine import_noise_grad_ary
 !
 !  ---------------------------------------------------------------------
 !
-
-      subroutine cal_pos_idx_volume(noise_size, xx_org, xyz_min, xyz_max, idx)
-
+      subroutine cal_pos_idx_volume                                     &
+     &         (noise_size, xx_org, xyz_min, xyz_max, idx)
+!
       use set_parallel_file_name
-
-      !
+!
       integer(kind = kint), intent(in) :: noise_size
       real(kind = kreal), intent(in) :: xx_org(3), xyz_min(3), xyz_max(3)
       integer(kind = kint), intent(inout) :: idx
       integer(kind = kint) :: xyz_i(3)
-      !
+!
       integer(kind = kint) :: dim
       real(kind = kreal) :: xyz_norm(3)
       xyz_norm = (xx_org - xyz_min) / (xyz_max - xyz_min)

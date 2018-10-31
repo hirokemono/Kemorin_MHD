@@ -7,9 +7,11 @@
 !> @brief  Data IO routines for spectrum data
 !!
 !!@verbatim
-!!      subroutine read_rank_4_sph_b(sph_IO)
-!!      subroutine read_gl_resolution_sph_b(sph_IO)
-!!      subroutine read_gl_nodes_sph_b(sph_IO)
+!!      subroutine read_rank_4_sph_b(bin_flags, sph_IO)
+!!      subroutine read_gl_resolution_sph_b(bin_flags, sph_IO)
+!!      subroutine read_gl_nodes_sph_b(bin_flags, sph_IO)
+!!        type(file_IO_flags), intent(inout) :: bin_flags
+!!        type(sph_IO_data), intent(inout) :: sph_IO
 !!
 !!      subroutine write_rank_4_sph_b(sph_IO)
 !!      subroutine write_gl_resolution_sph_b(sph_IO)
@@ -32,42 +34,57 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_rank_4_sph_b(sph_IO)
+      subroutine read_rank_4_sph_b(bin_flags, sph_IO)
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(sph_IO_data), intent(inout) :: sph_IO
 !
 !
-      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%sph_rank)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    sph_IO%numdir_sph, sph_IO%sph_rank, bin_flags%ierr_IO)
 !
       end subroutine read_rank_4_sph_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_gl_resolution_sph_b(sph_IO)
+      subroutine read_gl_resolution_sph_b(bin_flags, sph_IO)
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(sph_IO_data), intent(inout) :: sph_IO
 !
 !
-      call read_mul_integer_b(sph_IO%numdir_sph, sph_IO%nidx_gl_sph)
-      call read_one_integer_b(sph_IO%ltr_gl)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    sph_IO%numdir_sph, sph_IO%nidx_gl_sph, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    sph_IO%ltr_gl, bin_flags%ierr_IO)
 !
       end subroutine read_gl_resolution_sph_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_gl_nodes_sph_b(sph_IO)
+      subroutine read_gl_nodes_sph_b(bin_flags, sph_IO)
+!
+      type(file_IO_flags), intent(inout) :: bin_flags
+      type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: nvect
 !
-      type(sph_IO_data), intent(inout) :: sph_IO
 !
+      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    sph_IO%numnod_sph, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
-      call read_one_integer_b(sph_IO%numnod_sph)
       call alloc_nod_id_sph_IO(sph_IO)
 !
-      call read_mul_int8_b(sph_IO%numnod_sph, sph_IO%inod_gl_sph)
+      call read_mul_int8_b(bin_flags%iflag_bin_swap,                    &
+     &    sph_IO%numnod_sph, sph_IO%inod_gl_sph, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
       nvect = sph_IO%numnod_sph * sph_IO%numdir_sph
-      call read_mul_integer_b(nvect, sph_IO%idx_gl_sph)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    nvect, sph_IO%idx_gl_sph, bin_flags%ierr_IO)
 !
       end subroutine read_gl_nodes_sph_b
 !

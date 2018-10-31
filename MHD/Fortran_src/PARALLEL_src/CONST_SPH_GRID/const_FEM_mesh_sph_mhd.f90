@@ -116,6 +116,7 @@
           call pickup_surface_mesh_para(mesh_file, par_view)
         end if
       end if
+      call calypso_mpi_barrier
 !
       call dealloc_nnod_nele_sph_mesh(stbl_SF)
       call dealloc_gauss_colatitude(gauss_SF)

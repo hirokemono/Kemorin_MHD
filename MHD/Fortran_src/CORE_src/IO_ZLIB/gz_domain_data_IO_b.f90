@@ -7,9 +7,11 @@
 !>@brief  Routine for gzipped binary doimain data IO
 !!
 !!@verbatim
-!!      subroutine gz_read_domain_info_b(my_rank_IO, comm_IO, ierr)
-!!      subroutine gz_read_import_data_b(comm_IO)
-!!      subroutine gz_read_export_data_b(comm_IO)
+!!      subroutine gz_read_domain_info_b                                &
+!!     &         (my_rank_IO, gz_flags, comm_IO)
+!!      subroutine gz_read_import_data_b(gz_flags, comm_IO)
+!!      subroutine gz_read_export_data_b(gz_flags, comm_IO)
+!!        type(file_IO_flags), intent(inout) :: gz_flags
 !!        type(communication_table), intent(inout) :: comm_IO
 !!
 !!      subroutine gz_write_domain_info_b(my_rank_IO, comm_IO)
@@ -25,6 +27,7 @@
       use m_precision
 !
       use t_comm_table
+      use binary_IO
       use gz_binary_IO
 !
       implicit none
@@ -35,50 +38,62 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_read_domain_info_b(my_rank_IO, comm_IO, ierr)
+      subroutine gz_read_domain_info_b                                  &
+     &         (my_rank_IO, gz_flags, comm_IO)
 !
       use m_error_IDs
 !
       integer(kind = kint), intent(in) :: my_rank_IO
 !
+      type(file_IO_flags), intent(inout) :: gz_flags
       type(communication_table), intent(inout) :: comm_IO
-      integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: irank_read
 !
 !
-      call gz_read_one_integer_b(irank_read)
-      ierr = 0
+      gz_flags%ierr_IO = 0
+      call gz_read_one_integer_b                                        &
+     &   (gz_flags%iflag_bin_swap, irank_read, gz_flags%ierr_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
+!
       if(irank_read .ne. my_rank_IO) then
-        ierr = ierr_mesh
+        gz_flags%ierr_IO = ierr_mesh
         return
       end if
-      call gz_read_one_integer_b(comm_IO%num_neib)
+      call gz_read_one_integer_b                                        &
+     &   (gz_flags%iflag_bin_swap, comm_IO%num_neib, gz_flags%ierr_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
 !
 !
       call allocate_type_neib_id(comm_IO)
 !
-      call gz_read_mul_integer_b(comm_IO%num_neib, comm_IO%id_neib)
+      call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,               &
+     &    comm_IO%num_neib, comm_IO%id_neib, gz_flags%ierr_IO)
+      if(gz_flags%ierr_IO .gt. 0) return
 !
       end subroutine gz_read_domain_info_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_import_data_b(comm_IO)
+      subroutine gz_read_import_data_b(gz_flags, comm_IO)
 !
+      type(file_IO_flags), intent(inout) :: gz_flags
       type(communication_table), intent(inout) :: comm_IO
 !
 !
       call allocate_type_import_num(comm_IO)
       if (comm_IO%num_neib .gt. 0) then
 !
-        call gz_read_integer_stack_b(comm_IO%num_neib,                  &
-     &      comm_IO%istack_import, comm_IO%ntot_import)
+        call gz_read_integer_stack_b(gz_flags%iflag_bin_swap,           &
+     &      comm_IO%num_neib, comm_IO%istack_import,                    &
+     &      comm_IO%ntot_import, gz_flags%ierr_IO)
+        if(gz_flags%ierr_IO .gt. 0) return
 !
         call allocate_type_import_item(comm_IO)
-        call gz_read_mul_integer_b                                      &
-     &     (comm_IO%ntot_import, comm_IO%item_import)
+        call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,             &
+     &      comm_IO%ntot_import, comm_IO%item_import, gz_flags%ierr_IO)
+        if(gz_flags%ierr_IO .gt. 0) return
 !
       else
         comm_IO%ntot_import = 0
@@ -89,19 +104,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_export_data_b(comm_IO)
+      subroutine gz_read_export_data_b(gz_flags, comm_IO)
 !
+      type(file_IO_flags), intent(inout) :: gz_flags
       type(communication_table), intent(inout) :: comm_IO
 !
 !
       call allocate_type_export_num(comm_IO)
       if (comm_IO%num_neib .gt. 0) then
-        call gz_read_integer_stack_b(comm_IO%num_neib,                  &
-     &      comm_IO%istack_export, comm_IO%ntot_export)
+        call gz_read_integer_stack_b(gz_flags%iflag_bin_swap,           &
+     &      comm_IO%num_neib, comm_IO%istack_export,                    &
+     &      comm_IO%ntot_export, gz_flags%ierr_IO)
+        if(gz_flags%ierr_IO .gt. 0) return
 !
         call allocate_type_export_item(comm_IO)
-        call gz_read_mul_integer_b                                      &
-     &     (comm_IO%ntot_export, comm_IO%item_export)
+        call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,             &
+     &      comm_IO%ntot_export, comm_IO%item_export, gz_flags%ierr_IO)
+        if(gz_flags%ierr_IO .gt. 0) return
       else
         comm_IO%ntot_export = 0
         call allocate_type_export_item(comm_IO)

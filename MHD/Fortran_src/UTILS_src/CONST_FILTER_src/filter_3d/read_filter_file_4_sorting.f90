@@ -14,8 +14,11 @@
       use t_filtering_data
       use t_comm_table
       use t_geometry_data
+      use binary_IO
 !
       implicit none
+!
+      type(file_IO_flags), private :: bin_flflags
 !
       private :: set_num_filter_group_4_sort
       private :: count_num_neib_4_filter_sort
@@ -67,8 +70,11 @@
         call read_filter_neib_4_sort(filter_coef_code)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
-        call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
+        call open_read_binary_file                                      &
+     &     (file_name, my_rank, bin_flflags%iflag_bin_swap)
+        call read_filter_geometry_b                                     &
+     &     (my_rank, bin_flflags, comm_IO, nod_IO)
+        if(bin_flflags%ierr_IO .gt. 0) go to 99
 !
         call copy_comm_tbl_type(comm_IO, filtering%comm)
         call copy_filtering_geometry_from_IO(nod_IO)
@@ -76,8 +82,11 @@
         call dealloc_node_geometry_base(nod_IO)
         call dealloc_comm_table(comm_IO)
 !
-        call read_filter_neib_4_sort_b
+        call read_filter_neib_4_sort_b(bin_flflags)
+
+  99    continue
         call close_binary_file
+        if(bin_flflags%ierr_IO .gt. 0) stop "Error rading"
       end if
 !
 !
@@ -118,11 +127,20 @@
         call read_filter_coef_4_sort(filter_coef_code)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
-        call open_read_binary_file(file_name, my_rank)
-        call read_filter_geometry_b(my_rank, comm_IO, nod_IO, ierr)
-        call read_filter_neib_4_sort_b
-        call read_filter_coef_4_sort_b(filtering%filter)
+        call open_read_binary_file                                      &
+     &     (file_name, my_rank, bin_flflags%iflag_bin_swap)
+        call read_filter_geometry_b                                     &
+     &     (my_rank, bin_flflags, comm_IO, nod_IO)
+        if(bin_flflags%ierr_IO .gt. 0) go to 98
+!
+        call read_filter_neib_4_sort_b(bin_flflags)
+        if(bin_flflags%ierr_IO .gt. 0) goto 98
+!
+        call read_filter_coef_4_sort_b(bin_flflags, filtering%filter)
+!
+  98    continue
         call close_binary_file
+        if(bin_flflags%ierr_IO .gt. 0) stop "Error rading"
       end if
 !
       call dealloc_node_geometry_base(nod_IO)

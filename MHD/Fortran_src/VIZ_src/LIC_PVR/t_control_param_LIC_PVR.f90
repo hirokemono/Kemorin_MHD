@@ -166,6 +166,7 @@
      &     (pvr_ctl_type(i_lic), group%ele_grp, group%surf_grp,         &
      &      pvr_param(i_lic)%area_def, pvr_param(i_lic)%field,          &
      &      pvr_param(i_lic)%color, pvr_param(i_lic)%colorbar)
+        pvr_param(i_lic)%colorbar%iflag_opacity = 0
 !
 !   set transfer matrix
 !

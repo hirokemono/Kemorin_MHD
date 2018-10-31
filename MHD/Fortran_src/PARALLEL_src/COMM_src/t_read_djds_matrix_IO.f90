@@ -1,5 +1,5 @@
-!>@file  m_read_djds_matrix_IO.f90
-!!@brief      module m_read_djds_matrix_IO
+!>@file  t_read_djds_matrix_IO.f90
+!!@brief      module t_read_djds_matrix_IO
 !!
 !!@author  H. Matsui
 !!@date Written in Sep., 2006
@@ -7,16 +7,25 @@
 !>@brief IO routines for DJDS matrix
 !!
 !!@verbatim
-!!      subroutine deallocate_djds_mat11_comp_IO
-!!      subroutine deallocate_djds_mat33_cmop_IO
-!!      subroutine deallocate_djds_mat_connects_IO
+!!      subroutine dealloc_djds_mat11_comp_IO(DJDS_IO, DMAT11_IO)
+!!      subroutine dealloc_djds_mat33_cmop_IO(DJDS_IO, DMAT33_IO)
+!!      subroutine dealloc_djds_mat_connects_IO(DJDS_IO)
+!!        type(DJDS_ordering_table), intent(inout) :: DJDS_IO
+!!        type(DJDS_MATRIX), intent(inout) :: DMAT11_IO
+!!        type(DJDS_MATRIX), intent(inout) :: DMAT33_IO
 !!
-!!      subroutine read_djds_mat11_comp(id_file)
-!!      subroutine read_djds_mat33_comp(id_file)
-!!      subroutine read_djds_mat_connects(id_file)
+!!      subroutine read_djds_mat11_comp                                 &
+!!     &         (id_file, PEsmpTOT_IO, N_IO, DJDS_IO, DMAT11_IO)
+!!      subroutine read_djds_mat33_comp                                 &
+!!     &         (id_file, PEsmpTOT_IO, N_IO, DJDS_IO, DMAT33_IO)
+!!      subroutine read_djds_mat_connects                               &
+!!     &         (id_file, NP_IO, PEsmpTOT_IO, NTOT_EXPORT_IO, DJDS_IO)
+!!        type(DJDS_ordering_table), intent(inout) :: DJDS_IO
+!!        type(DJDS_MATRIX), intent(inout) :: DMAT11_IO
+!!        type(DJDS_MATRIX), intent(inout) :: DMAT33_IO
 !!@endverbatim
 !
-      module m_read_djds_matrix_IO
+      module t_read_djds_matrix_IO
 !
       use m_precision
       use t_comm_table
@@ -27,20 +36,23 @@
       implicit none
 !
 !
-      type(DJDS_ordering_table), save :: DJDS_IO
-!!DJDS_IO%NLmax
-      type(DJDS_MATRIX), save :: DMAT11_IO
-!DMAT11_IO%D
-      type(DJDS_MATRIX), save :: DMAT33_IO
+      type djds_matrix_IO
+!>        Ordering list of matrix
+        type(DJDS_ordering_table) :: DJDS_IO
+!>        matrix data
+        type(DJDS_MATRIX) :: DMAT11_IO
+!>        3x3 block matrix data
+        type(DJDS_MATRIX) :: DMAT33_IO
 !
-!C-- Ordering arrays
-!
-      integer(kind=kint) :: N_IO, NP_IO, PEsmpTOT_IO
-!
-!    coefs for ordering!
-      integer(kind=kint) :: NTOT_EXPORT_IO
-!
-      character(len=255), private :: character_4_read
+!>        Number of total node
+        integer(kind=kint) :: NP_IO
+!>        Number of internal node
+        integer(kind=kint) :: N_IO
+!>        Number of SMP threads
+        integer(kind=kint) :: PEsmpTOT_IO
+!>        Total number of export
+        integer(kind=kint) :: NTOT_EXPORT_IO
+      end type djds_matrix_IO
 !
 !  ---------------------------------------------------------------------
 !
@@ -48,50 +60,67 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_djds_mat11_comp_IO
+      subroutine dealloc_djds_mat11_comp_IO(DJDS_IO, DMAT11_IO)
 !
-      deallocate(DJDS_IO%indexDJDS_L, DJDS_IO%indexDJDS_U)
-      deallocate (DJDS_IO%itemDJDS_L, DJDS_IO%itemDJDS_U)
-!
-      deallocate (DMAT11_IO%aiccg, DJDS_IO%NEWtoOLD)
-      deallocate (DMAT11_IO%ALUG_L, DMAT11_IO%ALUG_U)
-!
-      end subroutine deallocate_djds_mat11_comp_IO
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_djds_mat33_cmop_IO
+      type(DJDS_ordering_table), intent(inout) :: DJDS_IO
+      type(DJDS_MATRIX), intent(inout) :: DMAT11_IO
 !
 !
       deallocate(DJDS_IO%indexDJDS_L, DJDS_IO%indexDJDS_U)
-      deallocate (DJDS_IO%itemDJDS_L, DJDS_IO%itemDJDS_U)
+      deallocate(DJDS_IO%itemDJDS_L, DJDS_IO%itemDJDS_U)
 !
-      deallocate (DMAT33_IO%aiccg, DJDS_IO%NEWtoOLD)
-      deallocate (DMAT33_IO%ALUG_L, DMAT33_IO%ALUG_U)
+      deallocate(DMAT11_IO%aiccg, DJDS_IO%NEWtoOLD)
+      deallocate(DMAT11_IO%ALUG_L, DMAT11_IO%ALUG_U)
 !
-      end subroutine deallocate_djds_mat33_cmop_IO
+      end subroutine dealloc_djds_mat11_comp_IO
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_djds_mat33_cmop_IO(DJDS_IO, DMAT33_IO)
+!
+      type(DJDS_ordering_table), intent(inout) :: DJDS_IO
+      type(DJDS_MATRIX), intent(inout) :: DMAT33_IO
+!
+!
+      deallocate(DJDS_IO%indexDJDS_L, DJDS_IO%indexDJDS_U)
+      deallocate(DJDS_IO%itemDJDS_L, DJDS_IO%itemDJDS_U)
+!
+      deallocate(DMAT33_IO%aiccg, DJDS_IO%NEWtoOLD)
+      deallocate(DMAT33_IO%ALUG_L, DMAT33_IO%ALUG_U)
+!
+      end subroutine dealloc_djds_mat33_cmop_IO
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_djds_mat_connects_IO
+      subroutine dealloc_djds_mat_connects_IO(DJDS_IO)
+!
+      type(DJDS_ordering_table), intent(inout) :: DJDS_IO
 !
 !
-      deallocate (DJDS_IO%STACKmcG, DJDS_IO%STACKmc)
-      deallocate (DJDS_IO%IVECT, DJDS_IO%NLmaxHYP, DJDS_IO%NUmaxHYP)
+      deallocate(DJDS_IO%STACKmcG, DJDS_IO%STACKmc)
+      deallocate(DJDS_IO%IVECT, DJDS_IO%NLmaxHYP, DJDS_IO%NUmaxHYP)
 !
-      deallocate (DJDS_IO%NEWtoOLD_DJDS_U, DJDS_IO%OLDtoNEW_DJDS_L)
-      deallocate (DJDS_IO%OLDtoNEW_DJDS_U, DJDS_IO%LtoU)
+      deallocate(DJDS_IO%NEWtoOLD_DJDS_U, DJDS_IO%OLDtoNEW_DJDS_L)
+      deallocate(DJDS_IO%OLDtoNEW_DJDS_U, DJDS_IO%LtoU)
 !
-      deallocate (DJDS_IO%NOD_EXPORT_NEW)
+      deallocate(DJDS_IO%NOD_EXPORT_NEW)
 !
-      end subroutine deallocate_djds_mat_connects_IO
+      end subroutine dealloc_djds_mat_connects_IO
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_djds_mat11_comp(id_file)
+      subroutine read_djds_mat11_comp                                   &
+     &         (id_file, PEsmpTOT_IO, N_IO, DJDS_IO, DMAT11_IO)
 !
       integer(kind=kint ), intent(in) :: id_file
+      integer(kind=kint), intent(in) :: PEsmpTOT_IO
+!
+      integer(kind=kint), intent(inout) :: N_IO
+      type(DJDS_ordering_table), intent(inout) :: DJDS_IO
+      type(DJDS_MATRIX), intent(inout) :: DMAT11_IO
+!
+      character(len=255) :: character_4_read
       integer(kind = kint) :: i, j, itmp, num
 !
 !
@@ -161,9 +190,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_djds_mat33_comp(id_file)
+      subroutine read_djds_mat33_comp                                   &
+     &         (id_file, PEsmpTOT_IO, N_IO, DJDS_IO, DMAT33_IO)
 !
       integer(kind=kint ), intent(in) :: id_file
+      integer(kind=kint), intent(in) :: PEsmpTOT_IO
+!
+      integer(kind=kint), intent(inout) :: N_IO
+      type(DJDS_ordering_table), intent(inout) :: DJDS_IO
+      type(DJDS_MATRIX), intent(inout) :: DMAT33_IO
+!
+!
+      character(len=255) :: character_4_read
       integer(kind = kint) :: i, j, itmp, num
 !
 !
@@ -240,9 +278,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_djds_mat_connects(id_file)
+      subroutine read_djds_mat_connects                                 &
+     &         (id_file, NP_IO, PEsmpTOT_IO, NTOT_EXPORT_IO, DJDS_IO)
 !
       integer(kind=kint ), intent(in) :: id_file
+!
+      integer(kind=kint), intent(inout) :: NP_IO
+      integer(kind=kint), intent(inout) :: PEsmpTOT_IO
+      integer(kind=kint), intent(inout) :: NTOT_EXPORT_IO
+      type(DJDS_ordering_table), intent(inout) :: DJDS_IO
+!
+      character(len=255) :: character_4_read
       integer(kind = kint) :: i, itmp
 !
 !
@@ -302,4 +348,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_read_djds_matrix_IO
+      end module t_read_djds_matrix_IO

@@ -35,9 +35,12 @@
       use t_field_data_IO
       use gz_field_data_IO_b
       use gz_binary_IO
+      use binary_IO
       use skip_gz_comment
 !
       implicit none
+!
+      type(file_IO_flags), private :: gz_fldflags
 !
 !  ---------------------------------------------------------------------
 !
@@ -87,19 +90,28 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary data file: ', trim(gzip_name)
 !
-      call open_rd_gzfile_f(gzip_name)
-      call gz_read_step_data_b                                          &
-     &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt,                &
-     &    istack_merged, fld_IO%num_field_IO)
+      call open_rd_gzfile_b(gzip_name, my_rank,                         &
+     &    gz_fldflags%iflag_bin_swap, gz_fldflags%ierr_IO)
+      if(gz_fldflags%ierr_IO .gt. 0) goto 99
 !
-      call gz_read_mul_integer_b                                        &
-     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
+      call gz_read_step_data_b(gz_fldflags%iflag_bin_swap,              &
+     &    my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt,                &
+     &    istack_merged, fld_IO%num_field_IO, gz_fldflags%ierr_IO)
+      if(gz_fldflags%ierr_IO .gt. 0) goto 99
 !
-      call gz_read_field_data_b                                         &
-     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
-     &    fld_IO%fld_name, fld_IO%d_IO)
+      call gz_read_mul_integer_b(gz_fldflags%iflag_bin_swap,            &
+     &    fld_IO%num_field_IO, fld_IO%num_comp_IO, gz_fldflags%ierr_IO)
+      if(gz_fldflags%ierr_IO .gt. 0) goto 99
+!
+      call gz_read_field_data_b(gz_fldflags%iflag_bin_swap,             &
+     &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
+     &    fld_IO%fld_name, fld_IO%d_IO, gz_fldflags%ierr_IO)
 !
       call close_gzfile_f
+      return
+!
+  99  continue
+      stop "read error in gzipped field file"
 !
       end subroutine gz_read_step_field_file_b
 !
@@ -120,23 +132,32 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary data file: ', trim(gzip_name)
 !
-      call open_rd_gzfile_f(gzip_name)
-      call gz_read_step_data_b                                          &
-     &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt,                &
-     &    istack_merged, fld_IO%num_field_IO)
+      call open_rd_gzfile_b(gzip_name, my_rank,                         &
+     &    gz_fldflags%iflag_bin_swap, gz_fldflags%ierr_IO)
+      if(gz_fldflags%ierr_IO .gt. 0) goto 99
+!
+      call gz_read_step_data_b(gz_fldflags%iflag_bin_swap,              &
+     &    my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt,                &
+     &    istack_merged, fld_IO%num_field_IO, gz_fldflags%ierr_IO)
+      if(gz_fldflags%ierr_IO .gt. 0) goto 99
 !
       call alloc_phys_name_IO(fld_IO)
-      call gz_read_mul_integer_b                                        &
-     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
+      call gz_read_mul_integer_b(gz_fldflags%iflag_bin_swap,            &
+     &    fld_IO%num_field_IO, fld_IO%num_comp_IO, gz_fldflags%ierr_IO)
+      if(gz_fldflags%ierr_IO .gt. 0) goto 99
 !
       fld_IO%nnod_IO = int(istack_merged(1))
       call cal_istack_phys_comp_IO(fld_IO)
       call alloc_phys_data_IO(fld_IO)
-      call gz_read_field_data_b                                         &
-     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
-     &    fld_IO%fld_name, fld_IO%d_IO)
+      call gz_read_field_data_b(gz_fldflags%iflag_bin_swap,             &
+     &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
+     &    fld_IO%fld_name, fld_IO%d_IO, gz_fldflags%ierr_IO)
 !
       call close_gzfile_f
+      return
+!
+  99  continue
+      stop "read error in gzipped field file"
 !
       end subroutine gz_rd_alloc_st_fld_file_b
 !
@@ -157,18 +178,27 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary data file: ', trim(gzip_name)
 !
-      call open_rd_gzfile_f(gzip_name)
-      call gz_read_step_data_b                                          &
-     &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt,                &
-     &    istack_merged, fld_IO%num_field_IO)
+      call open_rd_gzfile_b(gzip_name, my_rank,                         &
+     &    gz_fldflags%iflag_bin_swap, gz_fldflags%ierr_IO)
+      if(gz_fldflags%ierr_IO .gt. 0) goto 99
+!
+      call gz_read_step_data_b(gz_fldflags%iflag_bin_swap,              &
+     &    my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt,                &
+     &    istack_merged, fld_IO%num_field_IO, gz_fldflags%ierr_IO)
+      if(gz_fldflags%ierr_IO .gt. 0) goto 99
 !
       call alloc_phys_name_IO(fld_IO)
-      call gz_read_mul_integer_b                                        &
-     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
+      call gz_read_mul_integer_b(gz_fldflags%iflag_bin_swap,            &
+     &    fld_IO%num_field_IO, fld_IO%num_comp_IO, gz_fldflags%ierr_IO)
+      if(gz_fldflags%ierr_IO .gt. 0) goto 99
 !
       call close_gzfile_f
 !
       call cal_istack_phys_comp_IO(fld_IO)
+      return
+!
+  99  continue
+      stop "read error in gzipped field file"
 !
       end subroutine gz_rd_alloc_st_fld_head_b
 !

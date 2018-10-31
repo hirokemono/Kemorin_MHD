@@ -45,11 +45,6 @@
 !>      debug flag for master process
       integer(kind = kint) :: iflag_debug = iflag_minimum_msg
 !
-!>      Integer flag of endian
-!!      (the same endian: i_UNIX, opposit endian: i_XINU)
-      integer(kind = kint) :: iflag_endian
-!
-!
 !>      character array for error message
       character(len=256) :: e_message
 !

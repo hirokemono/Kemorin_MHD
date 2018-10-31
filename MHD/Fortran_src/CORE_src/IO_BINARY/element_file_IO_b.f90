@@ -40,6 +40,8 @@
 !
       implicit none
 !
+      type(file_IO_flags), private :: bin_emeshflags
+!
 !------------------------------------------------------------------
 !
        contains
@@ -60,11 +62,14 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Read binary element comm file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, my_rank_IO)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_emeshflags%iflag_bin_swap)
       call read_element_comm_table_b                                    &
-     &   (my_rank_IO, ele_mesh_IO%comm, ierr)
-!      call read_element_geometry_b(ele_mesh_IO%node, ele_mesh_IO%sfed)
+     &   (my_rank_IO, bin_emeshflags, ele_mesh_IO%comm)
+!      call read_element_geometry_b                                     &
+!     &   (bin_emeshflags, ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_binary_file
+      ierr = bin_emeshflags%ierr_IO
 !
       end subroutine input_element_file_b
 !
@@ -84,12 +89,14 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Read binary surface mesh file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, my_rank_IO)
-      call read_surface_connection_b(my_rank_IO, surf_mesh_IO%comm,     &
-     &   surf_mesh_IO%ele, surf_mesh_IO%sfed, ierr)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_emeshflags%iflag_bin_swap)
+      call read_surface_connection_b(my_rank_IO, bin_emeshflags,        &
+     &    surf_mesh_IO%comm, surf_mesh_IO%ele, surf_mesh_IO%sfed)
 !      call read_surface_geometry_b                                     &
-!     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
+!     &   (bin_emeshflags, surf_mesh_IO%node, surf_mesh_IO%sfed)
       call close_binary_file
+      ierr = bin_emeshflags%ierr_IO
 !
       end subroutine input_surface_file_b
 !
@@ -109,11 +116,14 @@
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Read binary edge mesh file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, my_rank_IO)
-      call read_edge_connection_b(my_rank_IO, edge_mesh_IO%comm,        &
-     &    edge_mesh_IO%ele, edge_mesh_IO%sfed, ierr)
-!      call read_edge_geometry_b(edge_mesh_IO%node, edge_mesh_IO%sfed)
+      call open_read_binary_file                                        &
+     &   (file_name, my_rank_IO, bin_emeshflags%iflag_bin_swap)
+      call read_edge_connection_b(my_rank_IO, bin_emeshflags,           &
+     &    edge_mesh_IO%comm, edge_mesh_IO%ele, edge_mesh_IO%sfed)
+!      call read_edge_geometry_b                                        &
+!     &    (bin_emeshflags, edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_binary_file
+      ierr = bin_emeshflags%ierr_IO
 !
       end subroutine input_edge_file_b
 !

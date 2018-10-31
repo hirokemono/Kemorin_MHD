@@ -162,19 +162,19 @@
 !
         if(int_dat(1) .eq. i_UNIX) then
           write(*,*) 'binary data have correct endian!'
-          iflag_endian = iendian_KEEP
+          IO_param%iflag_bin_swap = iendian_KEEP
         else if(int_dat(1) .eq. i_XINU) then
           write(*,*) 'binary data have opposite endian!'
-          iflag_endian = iendian_FLIP
+          IO_param%iflag_bin_swap = iendian_FLIP
         else
-          iflag_endian = -1
+          IO_param%iflag_bin_swap = -1
           call calypso_MPI_abort                                        &
      &       (ierr_fld,'Binary Data is someting wrong!')
         end if
       end if
 !
-      call MPI_BCAST(iflag_endian, ione, CALYPSO_INTEGER, izero,        &
-     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(IO_param%iflag_bin_swap, ione, CALYPSO_INTEGER,    &
+     &    izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + ilen_gzipped

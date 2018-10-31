@@ -7,12 +7,15 @@
 !>@brief Data IO routines for element data
 !!
 !!@verbatim
-!!      subroutine read_element_comm_table_b(my_rank_IO, comm_IO, ierr)
+!!      subroutine read_element_comm_table_b                            &
+!!     &         (my_rank_IO, bin_flags, comm_IO)
+!!        type(file_IO_flags), intent(inout) :: bin_flags
 !!        type(communication_table), intent(inout) :: comm_IO
 !!      subroutine write_element_comm_table_b(my_rank_IO, comm_IO)
 !!        type(communication_table), intent(in) :: comm_IO
 !!
-!!      subroutine read_element_geometry_b(nod_IO, sfed_IO)
+!!      subroutine read_element_geometry_b(bin_flags, nod_IO, sfed_IO)
+!!        type(file_IO_flags), intent(inout) :: bin_flags
 !!        type(node_data), intent(inout) :: nod_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!      subroutine write_element_geometry_b(nod_IO, sfed_IO)
@@ -28,6 +31,7 @@
       use t_read_mesh_data
       use t_comm_table
       use t_surf_edge_IO
+      use binary_IO
 !
       implicit none
 !
@@ -38,23 +42,25 @@
 !------------------------------------------------------------------
 !
       subroutine read_element_comm_table_b                              &
-     &         (my_rank_IO, comm_IO, ierr)
+     &         (my_rank_IO, bin_flags, comm_IO)
 !
       use m_fem_mesh_labels
       use domain_data_IO_b
 !
       integer (kind = kint), intent(in) :: my_rank_IO
+!
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(communication_table), intent(inout) :: comm_IO
-      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call read_domain_info_b(my_rank_IO, comm_IO, ierr)
-      if(ierr .ne. 0) return
+      call read_domain_info_b(my_rank_IO, bin_flags, comm_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
 ! ----  import & export 
 !
-      call read_import_data_b(comm_IO)
-      call read_export_data_b(comm_IO)
+      call read_import_data_b(bin_flags, comm_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+      call read_export_data_b(bin_flags, comm_IO)
 !
       end subroutine read_element_comm_table_b
 !
@@ -81,17 +87,22 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_element_geometry_b(nod_IO, sfed_IO)
+      subroutine read_element_geometry_b(bin_flags, nod_IO, sfed_IO)
 !
       use node_geometry_IO_b
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      call read_number_of_node_b(nod_IO)
-      call read_geometry_info_b(nod_IO)
-      call read_scalar_in_element_b(nod_IO, sfed_IO)
+      call read_number_of_node_b(bin_flags, nod_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_geometry_info_b(bin_flags, nod_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_scalar_in_element_b(bin_flags, nod_IO, sfed_IO)
 !
       end subroutine read_element_geometry_b
 !

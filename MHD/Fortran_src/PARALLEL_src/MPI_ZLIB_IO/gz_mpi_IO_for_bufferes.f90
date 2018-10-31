@@ -158,8 +158,8 @@
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
 !
-      call infleat_int8_vector_mul                                      &
-     &   (IO_param%nloop, IO_param%c_array, IO_param%i8_array)
+      call infleat_int8_vector_mul(IO_param%iflag_bin_swap,             &
+     &    IO_param%nloop, IO_param%c_array, IO_param%i8_array)
 !
       end subroutine gz_mpi_read_int8_vector_mul
 !
@@ -176,8 +176,8 @@
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
 !
-      call infleat_int_vector_mul                                       &
-     &   (IO_param%nloop, IO_param%c_array, IO_param%i_array)
+      call infleat_int_vector_mul(IO_param%iflag_bin_swap,              &
+     &    IO_param%nloop, IO_param%c_array, IO_param%i_array)
 !
       end subroutine gz_mpi_read_int_vector_mul
 !
@@ -194,8 +194,8 @@
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
 !
-      call infleat_int2d_vector_mul                                     &
-     &   (IO_param%nloop, IO_param%c_array, IO_param%iv_array)
+      call infleat_int2d_vector_mul(IO_param%iflag_bin_swap,            &
+     &    IO_param%nloop, IO_param%c_array, IO_param%iv_array)
 !
       end subroutine gz_mpi_read_int2d_vector_mul
 !
@@ -212,8 +212,8 @@
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
 !
-      call infleat_1d_vector_mul                                        &
-     &   (IO_param%nloop, IO_param%c_array, IO_param%r_array)
+      call infleat_1d_vector_mul(IO_param%iflag_bin_swap,               &
+     &    IO_param%nloop, IO_param%c_array, IO_param%r_array)
 !
       end subroutine gz_mpi_read_1d_vector_mul
 !
@@ -230,8 +230,8 @@
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
 !
-      call infleat_2d_vector_mul                                        &
-     &   (IO_param%nloop, IO_param%c_array, IO_param%v_array)
+      call infleat_2d_vector_mul(IO_param%iflag_bin_swap,               &
+     &    IO_param%nloop, IO_param%c_array, IO_param%v_array)
 !
       end subroutine gz_mpi_read_2d_vector_mul
 !

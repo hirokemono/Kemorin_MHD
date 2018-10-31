@@ -39,6 +39,8 @@
         type(pvr_field_parameter) :: lic_field
 !
 !>        integer flag to use color
+!>             iflag_from_lic (0):     Use LIC value
+!>             iflag_from_control (1): Use field defined by control
         integer(kind = kint) :: iflag_color_mode =   0
 !>        Structure of field color parameter for LIC
         type(pvr_field_parameter) :: color_field
@@ -46,7 +48,7 @@
 !>        integer flag to use opacity
         integer(kind = kint) :: iflag_opacity_mode =   0
 !>        Structure for field opacity parameter for LIC
-        type(pvr_field_parameter) :: opacity_field
+!        type(pvr_field_parameter) :: opacity_field
 !
 !>        Number of masking field
         integer(kind = kint) :: num_masking =   0
@@ -145,7 +147,7 @@
       integer(kind = kint), parameter :: iflag_from_lic =     0
       integer(kind = kint), parameter :: iflag_from_control = 1
 !
-      integer(kind = kint), parameter :: iflag_fixed_size =   0
+      integer(kind = kint), parameter :: iflag_fixed_size = 0
       integer(kind = kint), parameter :: iflag_by_element = 1
 !
       integer(kind = kint), parameter :: iflag_by_lengh =   0
@@ -186,7 +188,6 @@
       integer(kind = kint) :: i
 !
 !
-      lic_p%iflag_color_mode = lic_ctl%LIC_field_ctl%iflag
       if(lic_ctl%LIC_field_ctl%iflag .ne. 0) then
         tmpfield(1) = lic_ctl%LIC_field_ctl%charavalue
         tmpcomp(1) =  'vector'
@@ -234,15 +235,15 @@
           call calypso_mpi_abort(ierr_fld, e_message)
         end if
 !
-        tmpfield(1) = lic_ctl%opacity_field_ctl%charavalue
-        tmpcomp(1) =  lic_ctl%opacity_component_ctl%charavalue
-        call set_components_4_viz                                       &
-     &     (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp, ione, &
-     &      ifld_tmp, icomp_tmp, icheck_ncomp, ncomp_tmp, fldname_tmp)
-        lic_p%opacity_field%id_field =          ifld_tmp(1)
-        lic_p%opacity_field%id_component =      icomp_tmp(1)
-        lic_p%opacity_field%num_original_comp = ncomp_tmp(1)
-        lic_p%opacity_field%field_name =        fldname_tmp(1)
+!        tmpfield(1) = lic_ctl%opacity_field_ctl%charavalue
+!        tmpcomp(1) =  lic_ctl%opacity_component_ctl%charavalue
+!        call set_components_4_viz                                      &
+!     &     (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp, ione,&
+!     &      ifld_tmp, icomp_tmp, icheck_ncomp, ncomp_tmp, fldname_tmp)
+!        lic_p%opacity_field%id_field =          ifld_tmp(1)
+!        lic_p%opacity_field%id_component =      icomp_tmp(1)
+!        lic_p%opacity_field%num_original_comp = ncomp_tmp(1)
+!        lic_p%opacity_field%field_name =        fldname_tmp(1)
       end if
 !
       lic_p%num_masking = lic_ctl%num_masking_ctl
@@ -261,9 +262,9 @@
         write(*,*) 'LIC color: ', lic_p%color_field%id_field,           &
      &            lic_p%color_field%id_component,                       &
      &            trim(lic_p%color_field%field_name)
-        write(*,*) 'LIC opacity: ', lic_p%opacity_field%id_field,       &
-     &            lic_p%opacity_field%id_component,                     &
-     &            trim(lic_p%opacity_field%field_name)
+!        write(*,*) 'LIC opacity: ', lic_p%opacity_field%id_field,      &
+!     &            lic_p%opacity_field%id_component,                    &
+!     &            trim(lic_p%opacity_field%field_name)
 !
         write(*,*) 'num_masking: ', lic_p%num_masking
         do i = 1, lic_p%num_masking
@@ -408,7 +409,9 @@
         write(*,*) 'freq_noise: ', lic_p%freq_noise
 !
         write(*,*) 'iflag_kernel_type: ', lic_p%iflag_kernel_type
-        write(*,*) 'kernel_image_prefix: ', lic_p%kernel_image_prefix
+        if(lic_p%iflag_kernel_type .eq. iflag_from_file) then
+          write(*,*) 'kernel_image_prefix: ', lic_p%kernel_image_prefix
+        end if
 !
         write(*,*) 'iflag_vr_sample_mode: ', lic_p%iflag_vr_sample_mode
         write(*,*) 'step_size: ', lic_p%step_size
@@ -467,16 +470,18 @@
       if(my_rank .eq. 0) write(*,*) 'loading noise texture from: ',     &
      &                             trim(lic_p%noise_file_name)
       call import_noise_ary(lic_p%noise_file_name,                      &
-      &    lic_p%noise_data, lic_p%noise_dim, read_err)
+     &    lic_p%noise_data, lic_p%noise_dim, read_err)
       if(read_err .eq. 0) then
         if(iflag_debug .gt. 0) then
-          write(*,*) 'loading noise successfuly, loading gradient from: ', lic_p%reflection_file_name
+          write(*,*) 'loading noise successfuly, ',                     &
+     &         'loading gradient from: ', lic_p%reflection_file_name
         end if
-        call import_noise_grad_ary(lic_p%reflection_file_name,            &
-        &      lic_p%noise_grad_data, lic_p%noise_dim, read_err)
+        call import_noise_grad_ary(lic_p%reflection_file_name,          &
+     &      lic_p%noise_grad_data, lic_p%noise_dim, read_err)
       end if
 !
-      lic_p%noise_size = lic_p%noise_dim(1) * lic_p%noise_dim(2) * lic_p%noise_dim(3)
+      lic_p%noise_size = lic_p%noise_dim(1) * lic_p%noise_dim(2)        &
+     &                  * lic_p%noise_dim(3)
       lic_p%freq_noise = lic_p%noise_resolution / lic_p%noise_dim(1)
 !
       if(iflag_debug .gt. 0) then

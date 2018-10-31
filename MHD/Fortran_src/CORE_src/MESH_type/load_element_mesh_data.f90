@@ -210,7 +210,9 @@
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !
 !
-!       Subsittuiton of const_surf_comm_table
+!       Subsittuiton of const_edge_comm_table
+      call copy_comm_tbl_type(edge_mesh_IO%comm, edge_comm)
+!
 !       Subsittuiton of construct_edge_data
 !            and const_global_edge_id
       call copy_edge_connect_from_IO                                    &

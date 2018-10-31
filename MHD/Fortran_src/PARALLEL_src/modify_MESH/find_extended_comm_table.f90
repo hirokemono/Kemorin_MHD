@@ -161,7 +161,7 @@
       integer(kind = kint), intent(in) :: iflag_recv(0:nprocs-1)
       type(communication_table), intent(inout) :: new_comm
 !
-      integer(kind = kint) :: ip, inum, icou
+      integer(kind = kint) :: ip
 !
 !
       new_comm%num_neib = 0
@@ -184,7 +184,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(inout) :: new_comm
 !
-      integer(kind = kint) :: i, ip, inum, icou
+      integer(kind = kint) :: i, ip, icou
 !
 !
       new_comm%id_neib(1:nod_comm%num_neib)                             &
@@ -194,7 +194,7 @@
         ip = mod(i+my_rank,nprocs)
         if(iflag_recv(ip).gt.0 .or. iflag_send(ip).gt.0) then
           icou = icou + 1
-          new_comm%id_neib(i) = ip
+          new_comm%id_neib(icou) = ip
         end if
       end do
 !
@@ -254,10 +254,22 @@
         end do
       end do
 !
-      do i = 1, new_comm%num_neib
+      do i = 1, nod_comm%num_neib
         ip = new_comm%id_neib(i)
         icou = new_comm%istack_import(i-1)                              &
      &        + nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
+        do inum = 1, added_comm%ntot_import
+          if(recv_nbuf%irank_add(inum).eq.ip                            &
+     &         .and. added_comm%item_import(inum).gt.0) then
+            icou = icou + 1
+            new_comm%item_import(icou) = added_comm%item_import(inum)
+          end if
+        end do
+      end do
+!
+      do i = nod_comm%num_neib+1, new_comm%num_neib
+        ip = new_comm%id_neib(i)
+        icou = new_comm%istack_import(i-1)
         do inum = 1, added_comm%ntot_import
           if(recv_nbuf%irank_add(inum).eq.ip                            &
      &         .and. added_comm%item_import(inum).gt.0) then

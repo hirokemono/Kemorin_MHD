@@ -14,7 +14,9 @@
 !!      subroutine read_element_refine_data(id_file, e_ref_IO)
 !!
 !!      subroutine write_element_refine_data_b(e_ref_IO)
-!!      subroutine read_element_refine_data_b(e_ref_IO)
+!!      subroutine read_element_refine_data_b(bin_flags, e_ref_IO)
+!!        type(file_IO_flags), intent(inout) :: bin_flags
+!!        type(ele_refine_IO_type), intent(inout) :: e_ref_IO
 !!@endverbatim
 !
       module t_element_refinement_IO
@@ -171,29 +173,47 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_element_refine_data_b(e_ref_IO)
+      subroutine read_element_refine_data_b(bin_flags, e_ref_IO)
 !
       use binary_IO
 !
+      type(file_IO_flags), intent(inout) :: bin_flags
       type(ele_refine_IO_type), intent(inout) :: e_ref_IO
 !
 !
-      call read_one_integer_b(e_ref_IO%max_refine_level)
-      call read_one_integer_b(e_ref_IO%nele_ref)
-      call read_one_integer_b(e_ref_IO%nele_org)
+      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    e_ref_IO%max_refine_level, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    e_ref_IO%nele_ref, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    e_ref_IO%nele_org, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
 !
       call alloc_element_refine_IO(e_ref_IO)
 !
-      call read_mul_integer_b                                           &
-     &   (e_ref_IO%nele_ref, e_ref_IO%iele_gl_new)
-      call read_mul_integer_b                                           &
-     &   (e_ref_IO%nele_ref, e_ref_IO%ilevel_refine)
-      call read_mul_integer_b                                           &
-     &   (e_ref_IO%nele_ref, e_ref_IO%iflag_refine_ele)
-      call read_mul_integer_b                                           &
-     &   (e_ref_IO%nele_ref, e_ref_IO%iele_gl_org)
-      call read_mul_integer_b                                           &
-     &   (e_ref_IO%nele_ref, e_ref_IO%icou_gl_org)
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    e_ref_IO%nele_ref, e_ref_IO%iele_gl_new, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    e_ref_IO%nele_ref, e_ref_IO%ilevel_refine, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    e_ref_IO%nele_ref, e_ref_IO%iflag_refine_ele,                 &
+     &    bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    e_ref_IO%nele_ref, e_ref_IO%iele_gl_org, bin_flags%ierr_IO)
+      if(bin_flags%ierr_IO .gt. 0) return
+!
+      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
+     &    e_ref_IO%nele_ref, e_ref_IO%icou_gl_org, bin_flags%ierr_IO)
 !
       end subroutine read_element_refine_data_b
 !

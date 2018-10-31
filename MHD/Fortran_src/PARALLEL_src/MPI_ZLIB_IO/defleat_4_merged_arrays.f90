@@ -19,11 +19,16 @@
 !!        type(vectarray_IO), intent(in) ::  v_array(nloop)
 !!        type(charaarray_IO), intent(inout) :: c_array(nloop)
 !!
-!!      subroutine infleat_int8_vector_mul(nloop, c_array, i8_array)
-!!      subroutine infleat_int_vector_mul(nloop, c_array, i_array)
-!!      subroutine infleat_int2d_vector_mul(nloop, c_array, iv_array)
-!!      subroutine infleat_1d_vector_mul(nloop, c_array, r_array)
-!!      subroutine infleat_2d_vector_mul(nloop, c_array, v_array)
+!!      subroutine infleat_int8_vector_mul                              &
+!!     &         (iflag_bin_swap, nloop, c_array, i8_array)
+!!      subroutine infleat_int_vector_mul                               &
+!!     &         (iflag_bin_swap, nloop, c_array, i_array)
+!!      subroutine infleat_int2d_vector_mul                             &
+!!     &        (iflag_bin_swap, nloop, c_array, iv_array)
+!!      subroutine infleat_1d_vector_mul                                &
+!!     &         (iflag_bin_swap, nloop, c_array, r_array)
+!!      subroutine infleat_2d_vector_mul                                &
+!!     &         (iflag_bin_swap, nloop, c_array, v_array)
 !!        type(charaarray_IO), intent(inout) :: c_array(nloop)
 !!        type(int8array_IO), intent(inout) ::  i8_array(nloop)
 !!        type(intarray_IO), intent(inout) ::   i_array(nloop)
@@ -154,8 +159,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine infleat_int8_vector_mul(nloop, c_array, i8_array)
+      subroutine infleat_int8_vector_mul                                &
+     &         (iflag_bin_swap, nloop, c_array, i8_array)
 !
+      integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(charaarray_IO), intent(inout) :: c_array(nloop)
       type(int8array_IO), intent(inout) ::  i8_array(nloop)
@@ -172,7 +179,7 @@
      &     (c_array(iloop)%num, c_array(iloop)%c_IO(1),                 &
      &      ilength, i8_array(iloop)%i8_IO(1), ilen_gzipped)
 !
-        if(iflag_endian .eq. iendian_FLIP) then
+        if(iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
           call byte_swap_f(l8_byte, i8_array(iloop)%i8_IO(1))
         end if
@@ -183,8 +190,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine infleat_int_vector_mul(nloop, c_array, i_array)
+      subroutine infleat_int_vector_mul                                 &
+     &         (iflag_bin_swap, nloop, c_array, i_array)
 !
+      integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(charaarray_IO), intent(inout) :: c_array(nloop)
       type(intarray_IO), intent(inout) ::  i_array(nloop)
@@ -201,7 +210,7 @@
      &     (c_array(iloop)%num, c_array(iloop)%c_IO(1),                 &
      &      ilength, i_array(iloop)%i_IO(1), ilen_gzipped)
 !
-        if(iflag_endian .eq. iendian_FLIP) then
+        if(iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
           call byte_swap_f(l8_byte, i_array(iloop)%i_IO(1))
         end if
@@ -212,8 +221,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine infleat_int2d_vector_mul(nloop, c_array, iv_array)
+      subroutine infleat_int2d_vector_mul                               &
+     &        (iflag_bin_swap, nloop, c_array, iv_array)
 !
+      integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(charaarray_IO), intent(inout) :: c_array(nloop)
       type(ivecarray_IO), intent(inout) ::  iv_array(nloop)
@@ -230,7 +241,7 @@
      &     (c_array(iloop)%num, c_array(iloop)%c_IO(1),                 &
      &      ilength, iv_array(iloop)%iv_IO(1,1), ilen_gzipped)
 !
-        if(iflag_endian .eq. iendian_FLIP) then
+        if(iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
           call byte_swap_f(l8_byte, iv_array(iloop)%iv_IO(1,1))
         end if
@@ -241,8 +252,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine infleat_1d_vector_mul(nloop, c_array, r_array)
+      subroutine infleat_1d_vector_mul                                  &
+     &         (iflag_bin_swap, nloop, c_array, r_array)
 !
+      integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(charaarray_IO), intent(inout) :: c_array(nloop)
       type(realarray_IO), intent(inout) ::  r_array(nloop)
@@ -259,7 +272,7 @@
      &     (c_array(iloop)%num, c_array(iloop)%c_IO(1),                 &
      &      ilength, r_array(iloop)%r_IO(1), ilen_gzipped)
 !
-        if(iflag_endian .eq. iendian_FLIP) then
+        if(iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
           call byte_swap_f(l8_byte, r_array(iloop)%r_IO(1))
         end if
@@ -270,8 +283,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine infleat_2d_vector_mul(nloop, c_array, v_array)
+      subroutine infleat_2d_vector_mul                                  &
+     &         (iflag_bin_swap, nloop, c_array, v_array)
 !
+      integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(charaarray_IO), intent(inout) :: c_array(nloop)
       type(vectarray_IO), intent(inout) ::  v_array(nloop)
@@ -288,7 +303,7 @@
      &     (c_array(iloop)%num, c_array(iloop)%c_IO(1),                 &
      &      ilength, v_array(iloop)%v_IO(1,1), ilen_gzipped)
 !
-        if(iflag_endian .eq. iendian_FLIP) then
+        if(iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
           call byte_swap_f(l8_byte, v_array(iloop)%v_IO(1,1))
         end if

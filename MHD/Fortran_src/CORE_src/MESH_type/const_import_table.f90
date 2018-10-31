@@ -1,35 +1,33 @@
-!const_import_table.f90
-!      module const_import_table
+!> @file  const_import_table.f90
+!!      module const_import_table
+!!
+!! @author  H. Matsui
+!! @date Programmed in Nov., 2008
 !
-!     Written by H. Matsui on Nov., 2008
-!
-!      subroutine count_import_domain(nprocs, num, id_org_domain,       &
-!     &          num_neib)
-!        integer(kind = kint), intent(inout) :: num_neib
-!      subroutine set_import_domain(nprocs, num, id_org_domain,         &
-!     &          num_neib, id_neib)
-!        integer(kind = kint), intent(inout) :: id_neib(num_neib)
-!      subroutine count_num_import(num, id_org_domain, num_neib,        &
-!     &          id_neib, num_import, istack_import, ntot_import)
-!        integer(kind = kint), intent(inout) :: ntot_import
-!        integer(kind = kint), intent(inout) :: num_import(num_neib)
-!        integer(kind = kint), intent(inout) :: istack_import(0:num_neib)
-!      subroutine set_import_item(num, id_org_domain, num_neib,         &
-!     &          id_neib, istack_import, ntot_import, item_import)
-!        integer(kind = kint), intent(inout) :: item_import(ntot_import)
-!
-!      subroutine set_global_nod_4_import_ele(numnod, numele,           &
-!     &          nnod_4_ele, inod_global, ie, ntot_import, item_import, &
-!     &          ie_gl_import)
-!      integer(kind = kint), intent(inout)                              &
-!     &      :: ie_gl_import(nnod_4_ele,ntot_import)
+!> @brief Routines to make import table
+!!
+!!@verbatim
+!!      subroutine count_import_domain(nprocs, num, id_org_domain,      &
+!!     &          num_neib)
+!!        integer(kind = kint), intent(inout) :: num_neib
+!!      subroutine set_import_domain(nprocs, num, id_org_domain,        &
+!!     &          num_neib, id_neib)
+!!        integer(kind = kint), intent(inout) :: id_neib(num_neib)
+!!      subroutine count_num_import(num, id_org_domain, num_neib,       &
+!!     &          id_neib, num_import, istack_import, ntot_import)
+!!        integer(kind = kint), intent(inout) :: ntot_import
+!!        integer(kind = kint), intent(inout) :: num_import(num_neib)
+!!        integer(kind = kint), intent(inout) ::istack_import(0:num_neib)
+!!      subroutine set_import_item(num, id_org_domain, num_neib,        &
+!!     &          id_neib, istack_import, ntot_import, item_import)
+!!        integer(kind = kint), intent(inout) :: item_import(ntot_import)
+!!@endverbatim
 !
       module const_import_table
 !
       use m_precision
 !
       implicit  none
-!
 !
 !------------------------------------------------------------------
 !
@@ -158,34 +156,6 @@
       end do
 !
       end subroutine set_import_item
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine set_global_nod_4_import_ele(numnod, numele,            &
-     &          nnod_4_ele, inod_global, ie, ntot_import, item_import,  &
-     &          ie_gl_import)
-!
-      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
-      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
-      integer(kind = kint), intent(in) :: inod_global(numnod)
-!
-      integer(kind = kint), intent(in) :: ntot_import
-      integer(kind = kint), intent(in) :: item_import(ntot_import)
-      integer(kind = kint), intent(inout)                               &
-     &      :: ie_gl_import(nnod_4_ele,ntot_import)
-!
-      integer(kind = kint) :: inum, iele, k1, inod
-!
-      do inum = 1, ntot_import
-        iele = item_import(inum)
-        do k1 = 1, nnod_4_ele
-          inod = ie(iele,k1)
-          ie_gl_import(k1,inum) = inod_global(inod)
-        end do
-      end do
-!
-      end subroutine set_global_nod_4_import_ele
 !
 !------------------------------------------------------------------
 !

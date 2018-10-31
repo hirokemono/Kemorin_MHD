@@ -68,14 +68,13 @@
      &    icomp_VECTOR, nod_fld%d_fld(1,ist_fld+1),                     &
      &    field_pvr%v_lic)
 !
-      i_field =  lic_p%color_field%id_field
+      i_field =  lic_p%lic_field%id_field
       ist_fld =  nod_fld%istack_component(i_field-1)
       num_comp = nod_fld%istack_component(i_field) - ist_fld
       call convert_comps_4_viz                                          &
      &   (node%numnod, node%istack_nod_smp, node%xx, node%rr,           &
      &    node%a_r, node%ss, node%a_s, ione, num_comp,                  &
-     &    lic_p%color_field%id_component, nod_fld%d_fld(1,ist_fld+1),   &
-     &    field_pvr%d_pvr)
+     &    icomp_NORM, nod_fld%d_fld(1,ist_fld+1), field_pvr%d_pvr)
 !
       call fem_gradient_on_element(ele%istack_ele_smp, node%numnod,     &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
@@ -83,14 +82,16 @@
      &    g_FEM%owe3d, jac_3d%ntot_int, ione, jac_3d%dnx, jac_3d%xjac,  &
      &    field_pvr%grad_ele, field_pvr%d_pvr)
 !
-      i_field =  lic_p%opacity_field%id_field
-      ist_fld =  nod_fld%istack_component(i_field-1)
-      num_comp = nod_fld%istack_component(i_field) - ist_fld
-      call convert_comps_4_viz                                          &
-     &   (node%numnod, node%istack_nod_smp, node%xx, node%rr,           &
-     &    node%a_r, node%ss, node%a_s, ione, num_comp,                  &
-     &    lic_p%opacity_field%id_component, nod_fld%d_fld(1,ist_fld+1), &
-     &    field_pvr%o_pvr)
+      if(lic_p%iflag_color_mode .eq. iflag_from_control) then
+        i_field =  lic_p%color_field%id_field
+        ist_fld =  nod_fld%istack_component(i_field-1)
+        num_comp = nod_fld%istack_component(i_field) - ist_fld
+        call convert_comps_4_viz                                        &
+     &     (node%numnod, node%istack_nod_smp, node%xx, node%rr,         &
+     &      node%a_r, node%ss, node%a_s, ione, num_comp,                &
+     &      lic_p%color_field%id_component, nod_fld%d_fld(1,ist_fld+1), &
+     &      field_pvr%d_pvr)
+      end if
 !
       do i = 1, lic_p%num_masking
         i_field =  lic_p%masking(i)%field_info%id_field

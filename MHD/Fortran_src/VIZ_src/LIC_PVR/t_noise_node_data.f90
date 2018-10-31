@@ -4,13 +4,11 @@
 !!@author  Yangguang Liao
 !!@date Programmed in 2018
 !
-!>@brief structure of geometry data for FEM mesh
-!!  including node and element position, connectivities
+!>@brief structure of noise data for LIC
 !!
 !!@verbatim
 !!      recursive subroutine alloc_noise_node(n_node, dim, level)
 !!      recursive subroutine dealloc_noise_node(n_node)
-
 !!@endverbatim
 !
       module t_noise_node_data
@@ -29,8 +27,7 @@
 !>        node hierarchical level
         integer( kind=kint )  ::  node_level
 !>        subnode list for next level noise node
-        type( noise_node ), dimension(:), pointer ::  sub_node
-!
+        type(noise_node), pointer ::  sub_node(:)
       end type noise_node
 
 !>  structure for noise mask
@@ -41,7 +38,6 @@
         real( kind=kreal )  ::  range_max
 !>        Reference data to define mask
         real(kind = kreal), allocatable :: ref_data(:)
-!
       end type noise_mask
 !
 !  ---------------------------------------------------------------------
@@ -51,9 +47,10 @@
 !  ---------------------------------------------------------------------
 !
       recursive subroutine alloc_noise_node(n_node, dim, level)
-      !
+!
         type(noise_node), intent(inout) :: n_node
         integer(kind=kint), intent(in) :: level, dim
+!
         integer(kind=kint) :: i, size
         real(kind=kreal) :: rand_v
 
@@ -74,8 +71,6 @@
 !  ---------------------------------------------------------------------
 !
       recursive subroutine dealloc_noise_node(n_node)
-!
-
 !
         type(noise_node), intent(inout) :: n_node
         integer(kind=kint) :: i, size, dim
@@ -112,4 +107,4 @@
 !
 !-----------------------------------------------------------------------
 !
-end module t_noise_node_data
+      end module t_noise_node_data

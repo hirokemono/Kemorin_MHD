@@ -285,7 +285,7 @@
           grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)
           c_tgt(1) = half*(c_tgt(1) + c_org(1))
           call s_set_rgba_4_each_pixel(viewpoint_vec, xx_st, xx_tgt,    &
-     &        c_tgt(1), grad_tgt, c_tgt(1), color_param, rgba_ray)
+     &        c_tgt(1), grad_tgt, color_param, rgba_ray)
         end if
 !
         if(isurf_org(1).eq.0) then

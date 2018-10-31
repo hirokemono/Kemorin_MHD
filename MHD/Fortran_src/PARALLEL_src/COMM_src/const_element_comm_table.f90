@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine const_comm_table_by_connenct                         &
 !!     &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,    &
-!!     &          node, nod_comm, neib_e, host, e_comm)
+!!     &          node, nod_comm, neib_e, x_ref_ele, host, e_comm)
 !!        type(node_data), intent(in) :: node
 !!        type(element_around_node), intent(in) :: host
 !!        type(element_around_node), intent(in) :: neib_e
@@ -39,6 +39,10 @@
         integer(kind = kint), allocatable :: inod_import_l(:)
 !>        local node ID for element export table
         integer(kind = kint), allocatable :: inod_export_l(:)
+!>        global node ID for element import connectivity
+!        integer(kind = kint_gl), allocatable :: ie_global_import(:,:)
+!>        global node ID for element export connectivity
+!        integer(kind = kint_gl), allocatable :: ie_global_export(:,:)
 !
 !>        local node ID for import table
         integer(kind = kint), allocatable :: item_local(:)
@@ -54,10 +58,10 @@
 !>      small number
       real(kind = kreal) :: tiny = 1.0d-11
 !
-      private :: alloc_element_rev_imports
-      private :: alloc_element_rev_exports
-      private :: dealloc_element_rev_imports
-      private :: dealloc_element_rev_exports
+!      private :: alloc_element_rev_imports
+!      private :: alloc_element_rev_exports
+!      private :: dealloc_element_rev_imports
+!      private :: dealloc_element_rev_exports
 !
 !-----------------------------------------------------------------------
 !
@@ -67,10 +71,11 @@
 !
       subroutine const_comm_table_by_connenct                           &
      &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,      &
-     &          node, nod_comm, neib_e, host, e_comm)
+     &          node, nod_comm, neib_e, x_ref_ele, host, e_comm)
 !
       use find_element_comm_table
       use const_global_element_ids
+      use set_element_export_item
       use make_element_comm_table_SR
 !
       character(len=kchara), intent(in) :: txt
@@ -83,6 +88,8 @@
       type(element_around_node), intent(in) :: host
       type(element_around_node), intent(in) :: neib_e
       type(communication_table), intent(in) :: nod_comm
+      real(kind = kreal), intent(in)                                    &
+     &           :: x_ref_ele(neib_e%istack_4_node(node%numnod))
 !
       type(communication_table), intent(inout) :: e_comm
 !
@@ -118,9 +125,10 @@
      &    numele, nnod_4_ele, ie, node%inod_global, x_ele,              &
      &    host%istack_4_node, host%iele_4_node, wk_comm%inod_local,     &
      &    nod_comm%num_neib, nod_comm%istack_import,                    &
-     &    nod_comm%item_import, e_comm%num_neib, e_comm%istack_import,  &
-     &    e_comm%item_import, wk_comm%inod_import_e,                    &
-     &    wk_comm%inod_import_l, wk_comm%xe_import)
+     &    nod_comm%item_import, e_comm%num_neib,                        &
+     &    e_comm%istack_import, e_comm%item_import,                     &
+     &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
+     &    wk_comm%xe_import)
 !      call calypso_mpi_barrier
 !
       call allocate_type_export_num(e_comm)
@@ -134,8 +142,8 @@
       call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)
       call allocate_type_export_item(e_comm)
 !
-!      write(*,*) 'element_position_reverse_SR', my_rank
-      call element_position_reverse_SR(e_comm%num_neib, e_comm%id_neib, &
+!      write(*,*) 'element_data_reverse_SR', my_rank
+      call element_data_reverse_SR(e_comm%num_neib, e_comm%id_neib,     &
      &    e_comm%istack_import, e_comm%istack_export,                   &
      &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
      &    wk_comm%xe_import, wk_comm%inod_export_e,                     &
@@ -143,9 +151,10 @@
 !      call calypso_mpi_barrier
 !
 !      write(*,*) 'set_element_export_item', my_rank
-      call set_element_export_item(txt, node%numnod, numele,            &
-     &    node%inod_global, internal_flag, x_ele, neib_e%istack_4_node, &
-     &    neib_e%iele_4_node, nod_comm%num_neib,                        &
+      call s_set_element_export_item                                    &
+     &   (txt, node%numnod, numele, node%inod_global,                   &
+     &    internal_flag, x_ele, neib_e%istack_4_node,                   &
+     &    neib_e%iele_4_node, x_ref_ele, nod_comm%num_neib,             &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    e_comm%num_neib, e_comm%istack_export,                        &
@@ -166,9 +175,10 @@
 !------------------------------------------------------------------
 !
       subroutine alloc_element_rev_imports                              &
-     &         (numnod, ntot_export, ntot_import_e, wk_comm)
+     &        (numnod, ntot_export, ntot_import_e, wk_comm)
 !
-      integer(kind = kint), intent(in) :: numnod, ntot_export
+      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: ntot_export
       integer(kind = kint), intent(in) :: ntot_import_e
       type(work_4_ele_comm_table), intent(inout) :: wk_comm
 !
@@ -189,7 +199,8 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine alloc_element_rev_exports(ntot_export_e, wk_comm)
+      subroutine alloc_element_rev_exports                              &
+     &         (ntot_export_e, wk_comm)
 !
       integer(kind = kint), intent(in) :: ntot_export_e
       type(work_4_ele_comm_table), intent(inout) :: wk_comm

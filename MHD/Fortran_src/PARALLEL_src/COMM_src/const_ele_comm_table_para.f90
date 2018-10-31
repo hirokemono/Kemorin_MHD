@@ -1,12 +1,17 @@
-!const_ele_comm_table_para.f90
-!      module const_ele_comm_table_para
+!> @file  const_ele_comm_table_para.f90
+!!      module const_ele_comm_table_para
+!!
+!! @author  H. Matsui
+!! @date Programmed in Nov., 2008
 !
-!     Written by H. Matsui on Nov., 2008
-!
-!      subroutine const_ele_type_comm_tbl_para(numnod, internal_node,   &
-!     &          numele, nnod_4_ele, inod_global, ie, id_org_domain,    &
-!     &          comm_tbl)
-!        type(communication_table), intent(inout) :: comm_tbl
+!> @brief Routines to make ele,ment communication table
+!!
+!!@verbatim
+!!      subroutine const_ele_type_comm_tbl_para(numnod, internal_node,  &
+!!     &          numele, nnod_4_ele, inod_global, ie, id_org_domain,   &
+!!     &          comm_tbl)
+!!        type(communication_table), intent(inout) :: comm_tbl
+!!@endverbatim
 !
       module const_ele_comm_table_para
 !
@@ -14,10 +19,20 @@
 !
       use calypso_mpi
       use m_constants
-      use m_const_ele_comm_tbl
+!
       use t_comm_table
+      use t_const_export_table
 !
       implicit  none
+!
+      type work_4_const_ele_comm_table
+        integer(kind = kint) :: np
+        type(communication_table), allocatable :: ele_comm_tmp(:)
+        type(work_4_const_export), allocatable :: ele_comm_gl(:)
+      end type work_4_const_ele_comm_table
+!
+      private :: alloc_const_ele_comm_tbl, dealloc_const_ele_comm_tbl
+      private :: bcast_ele_import_table
 !
 !------------------------------------------------------------------
 !
@@ -29,8 +44,7 @@
      &          numele, nnod_4_ele, inod_global, ie, id_org_domain,     &
      &          comm_tbl)
 !
-      use const_nod_ele_import_table
-      use const_ele_comm_table_type
+      use const_nod_ele_comm_table
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
@@ -41,34 +55,67 @@
       type(communication_table), intent(inout) :: comm_tbl
 !
       integer(kind = kint) :: ip
+      type(work_4_const_ele_comm_table) :: ecomm_wk
 !
 !
-      call alloc_const_ele_comm_tbl(nprocs)
+      call alloc_const_ele_comm_tbl(nprocs, ecomm_wk)
 !
       ip = my_rank + 1
       call const_ele_import_table(my_rank, nprocs,                      &
      &    numnod, numele, nnod_4_ele, inod_global, ie, id_org_domain,   &
-     &    ele_comm_tmp(ip), ele_comm_work(ip))
+     &    ecomm_wk%ele_comm_tmp(ip), ecomm_wk%ele_comm_gl(ip))
 !
-      call bcast_ele_import_table(nnod_4_ele)
+      call bcast_ele_import_table                                       &
+     &   (nnod_4_ele, ecomm_wk%ele_comm_tmp, ecomm_wk%ele_comm_gl)
 !
-      call s_const_ele_comm_table_type(my_rank, nprocs, numnod,         &
-     &    internal_node, numele, nnod_4_ele, inod_global, ie, comm_tbl)
+      call const_ele_export_table(my_rank, nprocs, numnod,              &
+     &    internal_node, numele, nnod_4_ele, inod_global, ie,           &
+     &    ecomm_wk%ele_comm_tmp, ecomm_wk%ele_comm_gl, comm_tbl)
 !
-      do ip = 1, nprocs
-        call dealloc_ie_gl_import( ele_comm_work(ip) )
-        call dealloc_import_table( ele_comm_tmp(ip) )
-      end do
-      call dealloc_const_ele_comm_tbl
+      call dealloc_const_ele_comm_tbl(ecomm_wk)
 !
       end subroutine const_ele_type_comm_tbl_para
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine bcast_ele_import_table(nnod_4_ele)
+      subroutine alloc_const_ele_comm_tbl(nprocs, ecomm_wk)
+!
+      integer(kind = kint), intent(in) :: nprocs
+      type(work_4_const_ele_comm_table), intent(inout) :: ecomm_wk
+!
+!
+      ecomm_wk%np = nprocs
+      allocate(ecomm_wk%ele_comm_gl(nprocs))
+      allocate(ecomm_wk%ele_comm_tmp(nprocs))
+!
+      end subroutine alloc_const_ele_comm_tbl
+!
+!------------------------------------------------------------------
+!
+      subroutine dealloc_const_ele_comm_tbl(ecomm_wk)
+!
+      type(work_4_const_ele_comm_table), intent(inout) :: ecomm_wk
+      integer(kind = kint) :: ip
+!
+!
+      do ip = 1, nprocs
+        call dealloc_ie_gl_import( ecomm_wk%ele_comm_gl(ip) )
+        call dealloc_import_table( ecomm_wk%ele_comm_tmp(ip) )
+      end do
+      deallocate(ecomm_wk%ele_comm_gl, ecomm_wk%ele_comm_tmp)
+!
+      end subroutine dealloc_const_ele_comm_tbl
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine bcast_ele_import_table                                 &
+     &         (nnod_4_ele, ele_comm_tmp, ele_comm_gl)
 !
       integer(kind = kint), intent(in) :: nnod_4_ele
+      type(communication_table), intent(inout) :: ele_comm_tmp(nprocs)
+      type(work_4_const_export), intent(inout) :: ele_comm_gl(nprocs)
 !
       integer(kind = kint) :: max_import
       integer(kind = kint) :: num_send
@@ -96,9 +143,6 @@
           call allocate_type_neib_id( ele_comm_tmp(ip) )
           call allocate_type_import_num( ele_comm_tmp(ip) )
           call allocate_type_import_item(ele_comm_tmp(ip))
-!
-          call alloc_ie_gl_import(ele_comm_work(ip), nnod_4_ele,        &
-     &        ele_comm_tmp(ip)%ntot_import)
         end if
         max_import = max(max_import,ele_comm_tmp(ip)%ntot_import)
       end do
@@ -152,13 +196,21 @@
         ele_comm_tmp(ip)%item_import(1:num) = num_recv(1:num)
       end do
 !
+!
+      do ip = 1, nprocs
+        if(my_rank .ne. (ip-1)) then
+          call alloc_ie_gl_import(nnod_4_ele,                           &
+     &        ele_comm_tmp(ip)%ntot_import, ele_comm_gl(ip))
+        end if
+      end do
+!
       do ip = 1, nprocs
         num = nnod_4_ele * ele_comm_tmp(ip)%ntot_import
         if(my_rank .eq. (ip-1)) then
           do j = 1, num
             do k1 = 1, nnod_4_ele
               jj = k1 + (j-1)*nnod_4_ele
-              num_recv(jj) = ele_comm_work(ip)%ie_gl_import(k1,j)
+              num_recv(jj) = ele_comm_gl(ip)%ie_gl_import(k1,j)
             end do
           end do
         end if
@@ -169,7 +221,7 @@
         do j = 1, num
           do k1 = 1, nnod_4_ele
             jj = k1 + (j-1)*nnod_4_ele
-            ele_comm_work(ip)%ie_gl_import(k1,j) = num_recv(jj)
+            ele_comm_gl(ip)%ie_gl_import(k1,j) = num_recv(jj)
           end do
         end do
       end do

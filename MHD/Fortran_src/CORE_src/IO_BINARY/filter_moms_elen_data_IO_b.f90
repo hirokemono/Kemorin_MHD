@@ -5,13 +5,13 @@
 !     modified by H. Matsui on Nov., 2006
 !     modified by H. Matsui on Mar., 2008
 !
-!      subroutine read_elens_ele_b(nele,                                &
+!      subroutine read_elens_ele_b(iflag_swap, nele,                    &
 !     &         e_x2_ele, e_y2_ele, e_z2_ele,                           &
 !     &         e_xy_ele, e_yz_ele, e_zx_ele,                           &
 !     &         e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx,                  &
 !     &         e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx,                  &
 !     &         e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2,               &
-!     &         e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2)
+!     &         e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2, ierr)
 !      subroutine write_elens_ele_b(nele,                               &
 !     &         e_x2_ele, e_y2_ele, e_z2_ele,                           &
 !     &         e_xy_ele, e_yz_ele, e_zx_ele,                           &
@@ -25,7 +25,7 @@
 !     &          e_x2_nod_dx, e_y2_nod_dx, e_z2_nod_dx,                 &
 !     &          e_xy_nod_dx, e_yz_nod_dx, e_zx_nod_dx)
 !
-!      subroutine read_filter_moms_ele_b(nele,                          &
+!      subroutine read_filter_moms_ele_b(iflag_swap, nele,              &
 !     &         f_x2_ele, f_y2_ele, f_z2_ele,                           &
 !     &         f_xy_ele, f_yz_ele, f_zx_ele,                           &
 !     &         f_x_ele,  f_y_ele,  f_z_ele,                            &
@@ -34,7 +34,7 @@
 !     &         f_x_ele_dx,  f_y_ele_dx,  f_z_ele_dx,                   &
 !     &         f_x2_ele_dx2, f_y2_ele_dx2, f_z2_ele_dx2,               &
 !     &         f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2,               &
-!     &         f_x_ele_dx2,  f_y_ele_dx2,  f_z_ele_dx2)
+!     &         f_x_ele_dx2,  f_y_ele_dx2,  f_z_ele_dx2, ierr)
 !      subroutine write_filter_moms_ele_b(nele,                         &
 !     &         f_x2_ele, f_y2_ele, f_z2_ele,                           &
 !     &         f_xy_ele, f_yz_ele, f_zx_ele,                           &
@@ -58,16 +58,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_elens_ele_b(nele,                                 &
+      subroutine read_elens_ele_b(iflag_swap, nele,                     &
      &         e_x2_ele, e_y2_ele, e_z2_ele,                            &
      &         e_xy_ele, e_yz_ele, e_zx_ele,                            &
      &         e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx,                   &
      &         e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx,                   &
      &         e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2,                &
-     &         e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2)
+     &         e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2, ierr)
 !
       use filter_moments_IO_b
 !
+      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: nele
       real(kind = kreal), intent(inout) :: e_x2_ele(nele)
       real(kind = kreal), intent(inout) :: e_y2_ele(nele)
@@ -94,19 +95,29 @@
       real(kind = kreal), intent(inout) :: e_yz_ele_dx2(nele,3)
       real(kind = kreal), intent(inout) :: e_zx_ele_dx2(nele,3)
 !
+      integer(kind = kint), intent(inout) :: ierr
 !
-      call read_elength_b(nele, e_x2_ele, e_y2_ele, e_z2_ele)
-      call read_elength_b(nele, e_xy_ele, e_yz_ele, e_zx_ele)
+!
+      call read_elength_b                                               &
+     &   (iflag_swap, nele, e_x2_ele, e_y2_ele, e_z2_ele, ierr)
+      if(ierr .gt. 0) return
+      call read_elength_b                                               &
+     &   (iflag_swap, nele, e_xy_ele, e_yz_ele, e_zx_ele, ierr)
+      if(ierr .gt. 0) return
 !
       call read_mom_coefs_dx_b                                          &
-     &   (nele, e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx)
+     &   (iflag_swap, nele, e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx,      &
+     &    ierr)
       call read_mom_coefs_dx_b                                          &
-     &   (nele, e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx)
+     &   (iflag_swap, nele, e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx,      &
+     &    ierr)
 !
       call read_mom_coefs_dx_b                                          &
-     &   (nele, e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2)
+     &   (iflag_swap, nele, e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2,   &
+     &    ierr)
       call read_mom_coefs_dx_b                                          &
-     &   (nele, e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2)
+     &   (iflag_swap, nele, e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2,   &
+     &    ierr)
 !
       end subroutine read_elens_ele_b
 !
@@ -238,7 +249,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_moms_ele_b(nele,                           &
+      subroutine read_filter_moms_ele_b(iflag_swap, nele,               &
      &         f_x2_ele, f_y2_ele, f_z2_ele,                            &
      &         f_xy_ele, f_yz_ele, f_zx_ele,                            &
      &         f_x_ele,  f_y_ele,  f_z_ele,                             &
@@ -247,10 +258,11 @@
      &         f_x_ele_dx,  f_y_ele_dx,  f_z_ele_dx,                    &
      &         f_x2_ele_dx2, f_y2_ele_dx2, f_z2_ele_dx2,                &
      &         f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2,                &
-     &         f_x_ele_dx2,  f_y_ele_dx2,  f_z_ele_dx2)
+     &         f_x_ele_dx2,  f_y_ele_dx2,  f_z_ele_dx2, ierr)
 !
       use filter_moments_IO_b
 !
+      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: nele
       real(kind = kreal), intent(inout) :: f_x2_ele(nele)
       real(kind = kreal), intent(inout) :: f_y2_ele(nele)
@@ -289,26 +301,40 @@
       real(kind = kreal), intent(inout) :: f_y_ele_dx2(nele,3)
       real(kind = kreal), intent(inout) :: f_z_ele_dx2(nele,3)
 !
-!
-      call read_elength_b(nele, f_x2_ele, f_y2_ele, f_z2_ele)
-      call read_elength_b(nele, f_xy_ele, f_yz_ele, f_zx_ele)
-      call read_elength_b(nele, f_x_ele, f_y_ele, f_z_ele )
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call read_mom_coefs_dx_b                                          &
-     &   (nele, f_x2_ele_dx, f_y2_ele_dx, f_z2_ele_dx )
-      call read_mom_coefs_dx_b                                          &
-     &   (nele, f_xy_ele_dx, f_yz_ele_dx, f_zx_ele_dx )
-      call read_mom_coefs_dx_b                                          &
-     &   (nele, f_x_ele_dx, f_y_ele_dx, f_z_ele_dx )
+      call read_elength_b                                               &
+     &   (iflag_swap, nele, f_x2_ele, f_y2_ele, f_z2_ele, ierr)
+      if(ierr .gt. 0) return
+      call read_elength_b                                               &
+     &   (iflag_swap, nele, f_xy_ele, f_yz_ele, f_zx_ele, ierr)
+      if(ierr .gt. 0) return
+      call read_elength_b                                               &
+     &   (iflag_swap, nele, f_x_ele, f_y_ele, f_z_ele, ierr)
+      if(ierr .gt. 0) return
 !
 !
       call read_mom_coefs_dx_b                                          &
-     &   (nele, f_x2_ele_dx2, f_y2_ele_dx2,f_z2_ele_dx2 )
+     &   (iflag_swap, nele, f_x2_ele_dx, f_y2_ele_dx, f_z2_ele_dx,      &
+     &    ierr)
       call read_mom_coefs_dx_b                                          &
-     &   (nele, f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2 )
+     &   (iflag_swap, nele, f_xy_ele_dx, f_yz_ele_dx, f_zx_ele_dx,      &
+     &    ierr)
       call read_mom_coefs_dx_b                                          &
-     &   (nele, f_x_ele_dx2, f_y_ele_dx2, f_z_ele_dx2 )
+     &   (iflag_swap, nele, f_x_ele_dx, f_y_ele_dx, f_z_ele_dx,         &
+     &    ierr)
+!
+!
+      call read_mom_coefs_dx_b                                          &
+     &   (iflag_swap, nele, f_x2_ele_dx2, f_y2_ele_dx2,f_z2_ele_dx2,    &
+     &    ierr)
+      call read_mom_coefs_dx_b                                          &
+     &   (iflag_swap, nele, f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2,   &
+     &    ierr)
+      call read_mom_coefs_dx_b                                          &
+     &   (iflag_swap, nele, f_x_ele_dx2, f_y_ele_dx2, f_z_ele_dx2,      &
+     &    ierr)
 !
       end subroutine read_filter_moms_ele_b
 !

@@ -135,16 +135,19 @@
      &    added_comm%ntot_export, send_nbuf%xx_add,                     &
      &    added_comm%istack_import, added_comm%ntot_import,             &
      &    recv_nbuf%xx_add)
+!
       call added_global_id_send_recv(added_comm%num_neib,               &
      &    added_comm%id_neib, added_comm%istack_export,                 &
      &    added_comm%ntot_export, send_nbuf%inod_gl_add,                &
      &    added_comm%istack_import, added_comm%ntot_import,             &
      &    recv_nbuf%inod_gl_add)
+!
       call added_nod_id_send_recv(added_comm%num_neib,                  &
      &    added_comm%id_neib, added_comm%istack_export,                 &
      &    added_comm%ntot_export, send_nbuf%inod_add,                   &
      &    added_comm%istack_import, added_comm%ntot_import,             &
      &    recv_nbuf%inod_add)
+!
       call added_nod_id_send_recv(added_comm%num_neib,                  &
      &    added_comm%id_neib, added_comm%istack_export,                 &
      &    added_comm%ntot_export, send_nbuf%irank_add,                  &
@@ -179,8 +182,8 @@
       call alloc_node_geometry_base(new_node)
       call alloc_double_numbering(new_node%numnod, dbl_id2)
 !
-      call set_nodes_by_extend_sleeve(added_comm, recv_nbuf,            &
-     &    org_node, dbl_idx, new_node, dbl_id2)
+      call set_nodes_by_extend_sleeve(recv_nbuf, org_node, dbl_idx,     &
+     &    added_comm, new_node, dbl_id2)
 !
 !      call check_nodes_by_extend_sleeveorg_node, new_node, dbl_id2)
 !
@@ -249,6 +252,7 @@
       call added_nod_id_send_recv(new_comm%num_neib, new_comm%id_neib,  &
      &  new_comm%istack_import, new_comm%ntot_import, inod_import_new,  &
      &  new_comm%istack_export, new_comm%ntot_export, inod_export_new)
+!
       call added_nod_id_send_recv(new_comm%num_neib, new_comm%id_neib,  &
      &  new_comm%istack_import, new_comm%ntot_import, irank_import_new, &
      &  new_comm%istack_export, new_comm%ntot_export, irank_export_new)

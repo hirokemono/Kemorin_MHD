@@ -28,16 +28,16 @@
 !!
 !!      subroutine mpi_read_chara_array_mul(id_file, nprocs_in, nloop,  &
 !!     &          ioff_gl, istack_merged, c_array)
-!!      subroutine mpi_read_i8_vect_mul_b(id_file, nprocs_in, nloop,    &
-!!     &          ioff_gl, istack_merged, i8_array)
-!!      subroutine mpi_read_intvect_mul_b(id_file, nprocs_in, nloop,    &
-!!     &          ioff_gl, istack_merged, i_array)
-!!      subroutine mpi_read_i2dvect_mul_b(id_file, nprocs_in, nloop,    &
-!!     &          ioff_gl, istack_merged, iv_array)
-!!      subroutine mpi_read_realvect_mul_b(id_file, nprocs_in, nloop,   &
-!!     &          ioff_gl, istack_merged, r_array)
-!!      subroutine mpi_read_r2dvect_mul_b(id_file, nprocs_in, nloop,    &
-!!     &          ioff_gl, istack_merged, v_array)
+!!      subroutine mpi_read_i8_vect_mul_b(id_file, iflag_bin_swap,      &
+!!     &          nprocs_in, nloop, ioff_gl, istack_merged, i8_array)
+!!      subroutine mpi_read_intvect_mul_b(id_file, iflag_bin_swap,      &
+!!     &          nprocs_in, nloop, ioff_gl, istack_merged, i_array)
+!!      subroutine mpi_read_i2dvect_mul_b(id_file, iflag_bin_swap,      &
+!!     &          nprocs_in, nloop, ioff_gl, istack_merged, iv_array)
+!!      subroutine mpi_read_realvect_mul_b(id_file, iflag_bin_swap,     &
+!!     &          nprocs_in, nloop, ioff_gl, istack_merged, r_array)
+!!      subroutine mpi_read_r2dvect_mul_b(id_file, iflag_bin_swap,      &
+!!     &          nprocs_in, nloop, ioff_gl, istack_merged, v_array)
 !!        type(charaarray_IO), intent(inout) :: c_array(nloop)
 !!        type(int8array_IO), intent(inout) ::  i8_array(nloop)
 !!        type(intarray_IO), intent(inout) ::   i_array(nloop)
@@ -68,7 +68,7 @@
 !
       use m_calypso_mpi_IO
 !
-      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
@@ -97,7 +97,7 @@
       subroutine mpi_write_i8_vect_mul_b(id_file, nprocs_in, nloop,     &
      &          ioff_gl, istack_merged, i8_array)
 !
-      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
@@ -123,7 +123,7 @@
       subroutine mpi_write_intvect_mul_b(id_file, nprocs_in, nloop,     &
      &          ioff_gl, istack_merged, i_array)
 !
-      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
@@ -149,7 +149,7 @@
       subroutine mpi_write_i2dvect_mul_b(id_file, nprocs_in, nloop,     &
      &          ioff_gl, istack_merged, iv_array)
 !
-      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
@@ -173,10 +173,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_read_realvect_mul_b(id_file, nprocs_in, nloop,     &
+      subroutine mpi_write_realvect_mul_b(id_file, nprocs_in, nloop,    &
      &          ioff_gl, istack_merged, r_array)
 !
-      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
@@ -195,14 +195,14 @@
       end do
       ioff_gl = ioff_gl + istack_merged(nprocs_in)
 !
-      end subroutine mpi_read_realvect_mul_b
+      end subroutine mpi_write_realvect_mul_b
 !
 ! -----------------------------------------------------------------------
 !
       subroutine mpi_write_r2dvect_mul_b(id_file, nprocs_in, nloop,     &
      &          ioff_gl, istack_merged, v_array)
 !
-      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
@@ -232,7 +232,7 @@
 !
       use m_calypso_mpi_IO
 !
-      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
@@ -261,10 +261,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_read_i8_vect_mul_b(id_file, nprocs_in, nloop,      &
-     &          ioff_gl, istack_merged, i8_array)
+      subroutine mpi_read_i8_vect_mul_b(id_file, iflag_bin_swap,        &
+     &          nprocs_in, nloop, ioff_gl, istack_merged, i8_array)
 !
-      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
@@ -278,8 +279,8 @@
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kint_gl * istack_merged(id_rank)
-        call calypso_mpi_seek_read_int8(id_file, ioffset,               &
-     &      i8_array(iloop)%num, i8_array(iloop)%i8_IO)
+        call calypso_mpi_seek_read_int8(id_file, iflag_bin_swap,        &
+     &      ioffset, i8_array(iloop)%num, i8_array(iloop)%i8_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !
@@ -287,10 +288,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_read_intvect_mul_b(id_file, nprocs_in, nloop,      &
-     &          ioff_gl, istack_merged, i_array)
+      subroutine mpi_read_intvect_mul_b(id_file, iflag_bin_swap,        &
+     &          nprocs_in, nloop, ioff_gl, istack_merged, i_array)
 !
-      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
@@ -304,8 +306,8 @@
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kint * istack_merged(id_rank)
-        call calypso_mpi_seek_read_int                                  &
-     &     (id_file, ioffset, i_array(iloop)%num, i_array(iloop)%i_IO)
+        call calypso_mpi_seek_read_int(id_file, iflag_bin_swap,         &
+     &      ioffset, i_array(iloop)%num, i_array(iloop)%i_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !
@@ -313,10 +315,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_read_i2dvect_mul_b(id_file, nprocs_in, nloop,      &
-     &          ioff_gl, istack_merged, iv_array)
+      subroutine mpi_read_i2dvect_mul_b(id_file, iflag_bin_swap,        &
+     &          nprocs_in, nloop, ioff_gl, istack_merged, iv_array)
 !
-      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
@@ -331,8 +334,8 @@
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kint * istack_merged(id_rank)
         n_2d = iv_array(iloop)%n1 * iv_array(iloop)%n2
-        call calypso_mpi_seek_read_int                                  &
-     &     (id_file, ioffset, n_2d, iv_array(iloop)%iv_IO)
+        call calypso_mpi_seek_read_int(id_file, iflag_bin_swap,         &
+     &      ioffset, n_2d, iv_array(iloop)%iv_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !
@@ -340,10 +343,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_write_realvect_mul_b(id_file, nprocs_in, nloop,    &
-     &          ioff_gl, istack_merged, r_array)
+      subroutine mpi_read_realvect_mul_b(id_file, iflag_bin_swap,       &
+     &          nprocs_in, nloop, ioff_gl, istack_merged, r_array)
 !
-      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
@@ -357,19 +361,20 @@
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kreal * istack_merged(id_rank)
-        call calypso_mpi_seek_read_real                                 &
-     &     (id_file, ioffset, r_array(iloop)%num, r_array(iloop)%r_IO)
+        call calypso_mpi_seek_read_real(id_file, iflag_bin_swap,        &
+     &      ioffset, r_array(iloop)%num, r_array(iloop)%r_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !
-      end subroutine mpi_write_realvect_mul_b
+      end subroutine mpi_read_realvect_mul_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_read_r2dvect_mul_b(id_file, nprocs_in, nloop,      &
-     &          ioff_gl, istack_merged, v_array)
+      subroutine mpi_read_r2dvect_mul_b(id_file, iflag_bin_swap,        &
+     &          nprocs_in, nloop, ioff_gl, istack_merged, v_array)
 !
-      integer(kind = kint) :: id_file
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
@@ -384,8 +389,8 @@
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kreal * istack_merged(id_rank)
         n_2d = v_array(iloop)%n1 * v_array(iloop)%n2
-        call calypso_mpi_seek_read_real                                 &
-     &     (id_file, ioffset, n_2d, v_array(iloop)%v_IO)
+        call calypso_mpi_seek_read_real(id_file, iflag_bin_swap,        &
+     &      ioffset, n_2d, v_array(iloop)%v_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !

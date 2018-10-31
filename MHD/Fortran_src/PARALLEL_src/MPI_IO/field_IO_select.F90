@@ -40,6 +40,7 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_file_format_switch
       use field_file_IO
       use field_file_IO_b
@@ -343,6 +344,8 @@
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint) :: ierr = 0
+!
 !
       if( (file_IO%iflag_format/iflag_single) .eq. 0) then
         if(id_rank .ge. nprocs_in) return
@@ -359,7 +362,8 @@
 !
 #ifdef ZLIB_IO
       else if (file_IO%iflag_format .eq. id_binary_file_fmt) then
-        call read_step_field_file_b(file_name, id_rank, t_IO, fld_IO)
+        call read_step_field_file_b                                     &
+     &     (file_name, id_rank, t_IO, fld_IO, ierr)
       else if(file_IO%iflag_format                                      &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_read_step_field_file_mpi_b                              &
@@ -379,6 +383,9 @@
         call read_step_field_file(file_name, id_rank, t_IO, fld_IO)
       end if
 !
+      if(ierr .gt. 0) call calypso_mpi_abort(ierr,                      &
+     &                   "Read Error in sel_read_step_field_file")
+!
       end subroutine sel_read_step_field_file
 !
 !------------------------------------------------------------------
@@ -391,6 +398,8 @@
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
+!
+      integer(kind = kint) :: ierr = 0
 !
 !
       if( (file_IO%iflag_format/iflag_single) .eq. 0) then
@@ -409,7 +418,7 @@
 #ifdef ZLIB_IO
       else if (file_IO%iflag_format .eq. id_binary_file_fmt) then
         call read_and_allocate_step_field_b                             &
-     &     (file_name, id_rank, t_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO, ierr)
       else if(file_IO%iflag_format                                      &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_rd_alloc_st_fld_file_mpi_b                              &
@@ -431,6 +440,9 @@
      &     (file_name, id_rank, t_IO, fld_IO)
       end if
 !
+      if(ierr .gt. 0) call calypso_mpi_abort(ierr,                      &
+     &              "Read Error in sel_read_alloc_step_field_file")
+!
       end subroutine sel_read_alloc_step_field_file
 !
 !------------------------------------------------------------------
@@ -443,6 +455,8 @@
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
+!
+      integer(kind = kint) :: ierr = 0
 !
 !
       if( (file_IO%iflag_format/iflag_single) .eq. 0) then
@@ -461,7 +475,7 @@
 #ifdef ZLIB_IO
       else if (file_IO%iflag_format .eq. id_binary_file_fmt) then
         call read_and_allocate_step_head_b                              &
-     &     (file_name, id_rank, t_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO, ierr)
       else if(file_IO%iflag_format                                      &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_rd_alloc_st_fld_head_mpi_b                              &
@@ -482,6 +496,9 @@
         call read_and_allocate_step_head                                &
      &     (file_name, id_rank, t_IO, fld_IO)
       end if
+!
+      if(ierr .gt. 0) call calypso_mpi_abort(ierr,                      &
+     &              "Read Error in sel_read_alloc_field_head")
 !
       end subroutine sel_read_alloc_field_head
 !
