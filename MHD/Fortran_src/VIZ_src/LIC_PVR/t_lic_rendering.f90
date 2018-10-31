@@ -117,6 +117,7 @@
       use set_pvr_control
       use each_LIC_rendering
       use rendering_and_image_nums
+      use ray_trace_LIC_image
 !
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
