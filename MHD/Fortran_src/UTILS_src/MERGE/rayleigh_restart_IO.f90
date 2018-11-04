@@ -359,7 +359,7 @@
 !      else if(field_name .eq. fhd_pre_press) then
 !        iflag_ncomp = 1
 !        file_name(1) =  set_rayleigh_file_name(dir, i_step, cchar)
-!      else if(field_name .eq. fhd_pre_heat) then
+      else if(field_name .eq. fhd_pre_heat) then
         iflag_ncomp = 1
         file_name(1) =  set_rayleigh_file_name(dir, i_step, tabchar)
       else if(field_name .eq. fhd_pre_uxb) then

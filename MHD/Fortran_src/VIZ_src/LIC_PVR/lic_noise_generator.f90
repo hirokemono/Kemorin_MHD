@@ -48,7 +48,7 @@
       character(len=1) :: noise_char(1)
 !
 !
-      call add_null_character(filename, file_name)
+      file_name = add_null_character(filename)
       call open_rd_rawfile(file_name, ierr)
       if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
@@ -88,7 +88,7 @@
 !
 !
       if(my_rank .eq. 0) then
-        call add_null_character(filename, file_name)
+        file_name = add_null_character(filename)
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
@@ -154,7 +154,7 @@
 !
 !
       if(my_rank .eq. 0) then
-        call add_null_character(filename, file_name)
+        file_name = add_null_character(filename)
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3

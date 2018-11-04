@@ -120,7 +120,7 @@
 !
 !      Construct field list from spectr file
 !
-      call init_rayleigh_restart_input                                &
+      call init_rayleigh_restart_input                                  &
      &     (asbl_param_s%org_fld_file%file_prefix,                      &
      &      asbl_param_s%istep_start, fld_IO_r)
 !
@@ -136,16 +136,16 @@
      &     (fld_IO_r, sph_asbl_s%new_sph_phys(1))
       end if
       call share_new_spectr_field_names(sph_asbl_s%np_sph_new,          &
-     &    sph_asbl_s%new_sph_mesh, sph_asbl_s%new_sph_phys)
+     &    sph_asbl_s%new_sph_mesh, sph_asbl_s%new_sph_phys(1))
 !
-        write(50+my_rank,*) 'num_phys', sph_asbl_s%new_sph_phys(1)%num_phys
-        write(50+my_rank,*) 'num_component', sph_asbl_s%new_sph_phys(1)%num_component
-        write(50+my_rank,*) 'size', size(sph_asbl_s%new_sph_phys(1)%d_fld,1), &
+      write(50+my_rank,*) 'num_phys', sph_asbl_s%new_sph_phys(1)%num_phys
+      write(50+my_rank,*) 'num_component', sph_asbl_s%new_sph_phys(1)%num_component
+      write(50+my_rank,*) 'size', size(sph_asbl_s%new_sph_phys(1)%d_fld,1), &
      &                      size(sph_asbl_s%new_sph_phys(1)%d_fld,2)
-        write(50+my_rank,*) 'new_sph_phys%fld_name'
-        do k = 1, sph_asbl_s%new_sph_phys(1)%num_phys
-          write(50+my_rank,*) k, trim(sph_asbl_s%new_sph_phys(1)%phys_name(k))
-        end do
+      write(50+my_rank,*) 'new_sph_phys%fld_name'
+      do k = 1, sph_asbl_s%new_sph_phys(1)%num_phys
+        write(50+my_rank,*) k, trim(sph_asbl_s%new_sph_phys(1)%phys_name(k))
+      end do
 !
       end subroutine init_cvt_rayleigh
 !
@@ -169,12 +169,15 @@
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset1, ioffset2
       integer(kind = kint) :: k, kr, l, m, j, iflag
-      integer(kind = kint) :: i_fld, nd
+      integer(kind = kint) :: i_fld, i_comp, nd
       integer(kind = kint) :: iflag_ncomp
       character(len = kchara) :: file_name(2)
       real(kind = kreal) :: rayleigh_in(2)
       real(kind = kreal), allocatable :: rayleigh_r(:,:)
       type(calypso_MPI_IO_params), save :: IO_param
+!
+      integer(kind = kint) :: inod, k_in, k_out
+      real(kind = kreal) :: coef
 !
 !     ---------------------
 !
@@ -198,7 +201,8 @@
         rayleigh_r = 0.0d0
 !
         do i_fld = 1, sph_asbl_s%new_sph_phys(1)%num_phys
-!            write(*,*) my_rank, i_fld,                                 &
+          i_comp = sph_asbl_s%new_sph_phys(1)%istack_component(i_fld-1)
+!          if(my_rank .eq. 0) write(*,*) 'tako', i_fld, i_comp,         &
 !     &         trim(sph_asbl_s%new_sph_phys(1)%phys_name(i_fld))
           call set_rayleigh_rst_file_name                               &
      &       (asbl_param_s%org_fld_file%file_prefix, istep,             &
@@ -222,22 +226,57 @@
      &              k, l, abs(m), ioffset1, ioffset2)
 !
                 call calypso_mpi_seek_read_real                         &
-     &         (IO_param%id_file, ioffset1, ione, rayleigh_in(1))
+     &             (IO_param%id_file, ra_rst_s%iflag_swap,              &
+     &              ioffset1, ione, rayleigh_in(1))
                 call calypso_mpi_seek_read_real                         &
-     &         (IO_param%id_file, ioffset2, ione, rayleigh_in(2))
+     &             (IO_param%id_file, ra_rst_s%iflag_swap,              &
+     &              ioffset2, ione, rayleigh_in(2))
 !
                kr = ra_rst_s%nri_org - k + 1
                rayleigh_r(kr,1) = rayleigh_in(1)
                rayleigh_r(kr,2) = rayleigh_in(2)
               end do
+!
+              do k = 1, sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%nidx_rj(1)
+                inod = j + (k-1) * sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%nidx_rj(2)
+!
+                if     (k .lt. sph_asbl_s%r_itp%kr_inner_domain) then
+                  sph_asbl_s%new_sph_phys(my_rank+1)%d_fld(inod,nd  ) = 0.0d0
+                  sph_asbl_s%new_sph_phys(my_rank+1)%d_fld(inod,nd+1) = 0.0d0
+                else if(k .gt. sph_asbl_s%r_itp%kr_outer_domain) then
+                  sph_asbl_s%new_sph_phys(my_rank+1)%d_fld(inod,nd  ) = 0.0d0
+                  sph_asbl_s%new_sph_phys(my_rank+1)%d_fld(inod,nd+1) = 0.0d0
+                else
+                  k_in =  ra_rst_s%nri_org - sph_asbl_s%r_itp%k_old2new_in(k) +  1
+                  k_out = ra_rst_s%nri_org - sph_asbl_s%r_itp%k_old2new_out(k) + 1
+                  coef = sph_asbl_s%r_itp%coef_old2new_in(k)
+                  sph_asbl_s%new_sph_phys(my_rank+1)%d_fld(inod,i_comp+nd) = coef * rayleigh_r(k_in,1)           &
+     &                           + (1.0d0 - coef) * rayleigh_r(k_out,1) 
+!                  sph_asbl_s%new_sph_phys(my_rank+1)%d_fld(inod,nd+1) = coef * rayleigh_r(k_in,2)           &
+!     &                           + (1.0d0 - coef) * rayleigh_r(k_out,2) 
+                end if
+              end do
+!
+!              do k = 1, ra_rst_s%nri_org
+!                iflag = 0
+!                if(l .eq. 1 .and. m .eq.  0) iflag = 1
+!                if(l .eq. 4 .and. m .eq.  4) iflag = 1
+!                if(l .eq. 4 .and. m .eq. -4) iflag = 1
+!                if(iflag .eq. 1) then
+!                   kr = ra_rst_s%nri_org - k + 1
+!                  write(50+my_rank,*) k, kr, l, m, rayleigh_r(k,1:2)
+!                end if
+!              end do
+!
               do k = 1, ra_rst_s%nri_org
                 iflag = 0
                 if(l .eq. 1 .and. m .eq.  0) iflag = 1
                 if(l .eq. 4 .and. m .eq.  4) iflag = 1
                 if(l .eq. 4 .and. m .eq. -4) iflag = 1
                 if(iflag .eq. 1) then
+                  inod = j + (k-1) * sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%nidx_rj(2)
                    kr = ra_rst_s%nri_org - k + 1
-                  write(50+my_rank,*) k, kr, l, m, rayleigh_r(k,1:2)
+                  write(50+my_rank,*) k, l, m, sph_asbl_s%new_sph_phys(my_rank+1)%d_fld(inod,i_comp:i_comp+iflag_ncomp)
                 end if
               end do
              end do
@@ -248,97 +287,24 @@
         end do
         deallocate(rayleigh_r)
 !
-      end do
-        close(50+my_rank)
-        call calypso_mpi_barrier
-        call calypso_mpi_abort(1, "Rayleigh_test")
+!        write(*,*) 'const_assembled_sph_data', allocated(sph_asbl_s%new_fst_IO(1)%d_IO)
+        call const_assembled_sph_data(asbl_param_s%b_ratio, init_t,     &
+     &      sph_asbl_s%new_sph_mesh(my_rank+1)%sph, sph_asbl_s%r_itp,   &
+     &      sph_asbl_s%new_sph_phys(my_rank+1),                         &
+     &      sph_asbl_s%new_fst_IO(1), sph_asbl_s%fst_time_IO)
 !
-      do istep = asbl_param_s%istep_start, asbl_param_s%istep_end,      &
-     &          asbl_param_s%increment_step
-!     Load original spectr data
-        do iloop = 0, (sph_asbl_s%np_sph_org-1) / nprocs
-          irank_new = my_rank + iloop * nprocs
-          ip = irank_new + 1
-          call load_org_sph_data(irank_new, istep,                      &
-     &        sph_asbl_s%np_sph_org, asbl_param_s%org_fld_file,         &
-     &        sph_asbl_s%org_sph_mesh(ip)%sph, init_t,                  &
-     &        sph_asbl_s%org_sph_phys(ip))
-          call calypso_mpi_barrier
-        end do
-!
-        istep_out = istep
-        if(asbl_param_s%iflag_newtime .gt. 0) then
-          istep_out =          asbl_param_s%istep_new_rst               &
-     &                        / asbl_param_s%increment_new_step
-          init_t%i_time_step = asbl_param_s%istep_new_rst
-          init_t%time =        asbl_param_s%time_new
-        end if
-!
-        call share_time_step_data(init_t)
-!
-!     Bloadcast original spectr data
-        do ip = 1, sph_asbl_s%np_sph_org
-          call share_each_field_data(ip, sph_asbl_s%org_sph_phys(ip))
-!
-!     Copy spectr data to temporal array
-          do jp = 1, sph_asbl_s%np_sph_new
-           if(mod(jp-1,nprocs) .ne. my_rank) cycle
-            call set_assembled_sph_data                                 &
-     &         (sph_asbl_s%org_sph_mesh(ip),                            &
-     &          sph_asbl_s%new_sph_mesh(jp),                            &
-     &          sph_asbl_s%j_table(ip,jp), sph_asbl_s%r_itp,            &
-     &          sph_asbl_s%org_sph_phys(ip),                            &
-     &          sph_asbl_s%new_sph_phys(jp))
-          end do
-          call dealloc_phys_data_type(sph_asbl_s%org_sph_phys(ip))
-        end do
-!
-        do jloop = 1, sph_asbl_s%nloop_new
-          irank_new = my_rank + (jloop-1) * nprocs
-          jp = irank_new + 1
-
-          if(irank_new .lt. sph_asbl_s%np_sph_new) then
-            call const_assembled_sph_data(asbl_param_s%b_ratio, init_t, &
-     &          sph_asbl_s%new_sph_mesh(jp)%sph, sph_asbl_s%r_itp,      &
-     &          sph_asbl_s%new_sph_phys(jp),                            &
-     &          sph_asbl_s%new_fst_IO(jloop), sph_asbl_s%fst_time_IO)
-          end if
-        end do
-!
+!        write(*,*) 'sel_write_SPH_assemble_field'
         call sel_write_SPH_assemble_field                               &
      &     (sph_asbl_s%np_sph_new, istep_out,                           &
      &      sph_asbl_s%nloop_new, asbl_param_s%new_fld_file,            &
      &      sph_asbl_s%fst_time_IO, sph_asbl_s%new_fst_IO)
 !
-        do jloop = 1, sph_asbl_s%nloop_new
-          irank_new = my_rank + (jloop-1) * nprocs
-          if(irank_new .lt. sph_asbl_s%np_sph_new) then
-            call dealloc_phys_data_IO(sph_asbl_s%new_fst_IO(jloop))
-            call dealloc_phys_name_IO(sph_asbl_s%new_fst_IO(jloop))
-          end if
-        end do
-        call calypso_mpi_barrier
+        call dealloc_phys_data_IO(sph_asbl_s%new_fst_IO(1))
+        call dealloc_phys_name_IO(sph_asbl_s%new_fst_IO(1))
       end do
-      call calypso_MPI_barrier
-      return
-!
-      call dealloc_spectr_data_4_assemble                               &
-     &   (my_rank, nprocs, sph_asbl_s)
-!
+        close(50+my_rank)
       call calypso_MPI_barrier
 !
-      if(asbl_param_s%iflag_delete_org .gt. 0) then
-        icou = 0
-        do istep = asbl_param_s%istep_start, asbl_param_s%istep_end,    &
-     &            asbl_param_s%increment_step
-          icou = icou + 1
-          if(mod(icou,nprocs) .ne. my_rank) cycle
-          call delete_SPH_fld_file                                      &
-     &        (asbl_param_s%org_fld_file, sph_asbl_s%np_sph_org, istep)
-        end do
-      end if
-!
-      call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
       end subroutine analyze_cvt_rayleigh
