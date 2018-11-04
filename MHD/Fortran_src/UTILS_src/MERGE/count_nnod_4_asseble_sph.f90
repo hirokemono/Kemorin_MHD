@@ -7,10 +7,10 @@
 !>@brief  Count number of nodes for data assemble
 !!
 !!@verbatim
-!!      subroutine s_count_nnod_4_asseble_sph(np_sph_new, new_sph_mesh, &
-!!     &          nloop_new, new_fst_IO)
+!!      subroutine s_count_nnod_4_asseble_sph                           &
+!!     &         (np_sph_new, new_sph_mesh, new_fst_IO)
 !!        type(sph_mesh_data), intent(in) :: new_sph_mesh(np_sph_new)
-!!        type(field_IO), intent(inout) :: new_fst_IO(nloop_new)
+!!        type(field_IO), intent(inout) :: new_fst_IO
 !!@endverbatim
 !
       module count_nnod_4_asseble_sph
@@ -35,16 +35,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_count_nnod_4_asseble_sph(np_sph_new, new_sph_mesh,   &
-     &          nloop_new, new_fst_IO)
+      subroutine s_count_nnod_4_asseble_sph                             &
+     &         (np_sph_new, new_sph_mesh, new_fst_IO)
 !
       integer(kind = kint), intent(in) :: np_sph_new
       type(sph_mesh_data), intent(in) :: new_sph_mesh(np_sph_new)
 !
-      integer(kind = kint), intent(in) :: nloop_new
-      type(field_IO), intent(inout) :: new_fst_IO(nloop_new)
+      type(field_IO), intent(inout) :: new_fst_IO
 !
-      integer(kind = kint) :: jp, irank_new, jloop
+      integer(kind = kint) :: jp, irank_new
 !
 !
       allocate(nnod_list_lc(np_sph_new))
@@ -66,11 +65,9 @@
       do jp = 1, np_sph_new
         istack_nnod_list(jp) = istack_nnod_list(jp-1) + nnod_list(jp)
       end do
-      do jloop = 1, nloop_new
-        call alloc_merged_field_stack(np_sph_new, new_fst_IO(jloop))
-        new_fst_IO(jloop)%istack_numnod_IO(0:np_sph_new)                &
+      call alloc_merged_field_stack(np_sph_new, new_fst_IO)
+      new_fst_IO%istack_numnod_IO(0:np_sph_new)                         &
      &     = istack_nnod_list(0:np_sph_new)
-      end do
 !
       deallocate(istack_nnod_list)
       deallocate(nnod_list)

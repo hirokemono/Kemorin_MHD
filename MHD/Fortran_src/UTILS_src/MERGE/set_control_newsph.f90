@@ -97,15 +97,21 @@
       if (mgd_ctl%source_plt%ndomain_ctl%iflag .gt. 0) then
         sph_asbl%np_sph_org = mgd_ctl%source_plt%ndomain_ctl%intvalue
       else
-        write(*,*) 'Set number of subdomains'
-        stop
+        write(e_message,'(a)') 'Set number of subdomains'
+        call calypso_mpi_abort(1, e_message)
       end if
 !
       if (mgd_ctl%assemble_plt%ndomain_ctl%iflag .gt. 0) then
         sph_asbl%np_sph_new = mgd_ctl%assemble_plt%ndomain_ctl%intvalue
       else
-        write(*,*) 'Set number of subdomains for new grid'
-        stop
+        write(e_message,'(a)') 'Set number of subdomains for new grid'
+        call calypso_mpi_abort(1, e_message)
+      end if
+!
+      if(sph_asbl%np_sph_new .ne. nprocs) then
+        write(e_message,'(a,a)') 'Number of MPI prosesses should be ',  &
+     &                           'the number of target subdomains.'
+        call calypso_mpi_abort(1, e_message)
       end if
 !
       call set_parallel_file_ctl_params(def_org_sph_head,               &
@@ -122,14 +128,14 @@
      &   (mgd_ctl%source_plt, mgd_ctl%assemble_plt, asbl_param)
 !
 !
-      if((asbl_param%new_fld_file%iflag_format/iflag_single) .gt. 0     &
-     &     .and. sph_asbl%np_sph_new .ne. nprocs) then
-        asbl_param%new_fld_file%iflag_format                            &
-     &            = asbl_param%new_fld_file%iflag_format - iflag_single
-        write(*,*) 'Turn off Merged data IO ',                          &
-     &             'when number of MPI prosesses is not ',              &
-     &             'the number of target subdomains.'
-      end if
+!      if((asbl_param%new_fld_file%iflag_format/iflag_single) .gt. 0    &
+!     &     .and. sph_asbl%np_sph_new .ne. nprocs) then
+!        asbl_param%new_fld_file%iflag_format                           &
+!     &           = asbl_param%new_fld_file%iflag_format - iflag_single
+!        write(*,*) 'Turn off Merged data IO ',                         &
+!     &             'when number of MPI prosesses is not ',             &
+!     &             'the number of target subdomains.'
+!      end if
 !
       call set_delete_flag_4_assemble(mgd_ctl%assemble_plt, asbl_param)
 !

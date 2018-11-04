@@ -24,7 +24,6 @@
       use t_SPH_mesh_field_data
       use t_time_data
       use t_field_data_IO
-      use t_assembled_field_IO
       use t_control_data_4_merge
       use t_control_param_assemble
       use t_spectr_data_4_assemble
@@ -35,6 +34,7 @@
       use assemble_sph_fields
       use set_control_newsph
       use rayleigh_restart_IO
+      use field_IO_select
 !
       implicit none
 !
@@ -105,12 +105,8 @@
 !
 !     Share number of nodes for new mesh
 !
-      sph_asbl_s%nloop_new = (sph_asbl_s%np_sph_new-1)/nprocs + 1
-      allocate(sph_asbl_s%new_fst_IO(sph_asbl_s%nloop_new))
-!
-      call s_count_nnod_4_asseble_sph                                   &
-     &   (sph_asbl_s%np_sph_new, sph_asbl_s%new_sph_mesh,               &
-     &    sph_asbl_s%nloop_new, sph_asbl_s%new_fst_IO)
+      call s_count_nnod_4_asseble_sph(sph_asbl_s%np_sph_new,            &
+     &   sph_asbl_s%new_sph_mesh, sph_asbl_s%new_fst_IO)
 !
 !     construct radial interpolation table
 !
@@ -287,20 +283,18 @@
         end do
         deallocate(rayleigh_r)
 !
-!        write(*,*) 'const_assembled_sph_data', allocated(sph_asbl_s%new_fst_IO(1)%d_IO)
         call const_assembled_sph_data(asbl_param_s%b_ratio, init_t,     &
      &      sph_asbl_s%new_sph_mesh(my_rank+1)%sph, sph_asbl_s%r_itp,   &
      &      sph_asbl_s%new_sph_phys(my_rank+1),                         &
-     &      sph_asbl_s%new_fst_IO(1), sph_asbl_s%fst_time_IO)
+     &      sph_asbl_s%new_fst_IO, sph_asbl_s%fst_time_IO)
 !
-!        write(*,*) 'sel_write_SPH_assemble_field'
-        call sel_write_SPH_assemble_field                               &
-     &     (sph_asbl_s%np_sph_new, istep_out,                           &
-     &      sph_asbl_s%nloop_new, asbl_param_s%new_fld_file,            &
+!        write(*,*) 'sel_write_step_SPH_field_file'
+        call sel_write_step_SPH_field_file                              &
+     &     (nprocs, my_rank, istep_out, asbl_param_s%new_fld_file,      &
      &      sph_asbl_s%fst_time_IO, sph_asbl_s%new_fst_IO)
 !
-        call dealloc_phys_data_IO(sph_asbl_s%new_fst_IO(1))
-        call dealloc_phys_name_IO(sph_asbl_s%new_fst_IO(1))
+        call dealloc_phys_data_IO(sph_asbl_s%new_fst_IO)
+        call dealloc_phys_name_IO(sph_asbl_s%new_fst_IO)
       end do
         close(50+my_rank)
       call calypso_MPI_barrier

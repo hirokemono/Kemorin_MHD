@@ -22,7 +22,6 @@
       use t_SPH_mesh_field_data
       use t_time_data
       use t_field_data_IO
-      use t_assembled_field_IO
       use t_control_data_4_merge
       use t_control_param_assemble
       use t_spectr_data_4_assemble
@@ -32,6 +31,7 @@
       use copy_rj_phys_data_4_IO
       use assemble_sph_fields
       use set_control_newsph
+      use field_IO_select
 !
       implicit none
 !
@@ -86,12 +86,8 @@
 !
 !     Share number of nodes for new mesh
 !
-      sph_asbl_s%nloop_new = (sph_asbl_s%np_sph_new-1)/nprocs + 1
-      allocate(sph_asbl_s%new_fst_IO(sph_asbl_s%nloop_new))
-!
-      call s_count_nnod_4_asseble_sph                                   &
-     &   (sph_asbl_s%np_sph_new, sph_asbl_s%new_sph_mesh,               &
-     &    sph_asbl_s%nloop_new, sph_asbl_s%new_fst_IO)
+      call s_count_nnod_4_asseble_sph(sph_asbl_s%np_sph_new,            &
+     &   sph_asbl_s%new_sph_mesh, sph_asbl_s%new_fst_IO)
 !
 !     construct radial interpolation table
 !
@@ -186,30 +182,18 @@
           call dealloc_phys_data_type(sph_asbl_s%org_sph_phys(ip))
         end do
 !
-        do jloop = 1, sph_asbl_s%nloop_new
-          irank_new = my_rank + (jloop-1) * nprocs
-          jp = irank_new + 1
-
-          if(irank_new .lt. sph_asbl_s%np_sph_new) then
-            call const_assembled_sph_data(asbl_param_s%b_ratio, init_t, &
-     &          sph_asbl_s%new_sph_mesh(jp)%sph, sph_asbl_s%r_itp,      &
-     &          sph_asbl_s%new_sph_phys(jp),                            &
-     &          sph_asbl_s%new_fst_IO(jloop), sph_asbl_s%fst_time_IO)
-          end if
-        end do
+        jp = my_rank + 1
+        call const_assembled_sph_data(asbl_param_s%b_ratio, init_t,     &
+     &      sph_asbl_s%new_sph_mesh(jp)%sph, sph_asbl_s%r_itp,          &
+     &      sph_asbl_s%new_sph_phys(jp),                                &
+     &      sph_asbl_s%new_fst_IO, sph_asbl_s%fst_time_IO)
 !
-        call sel_write_SPH_assemble_field                               &
-     &     (sph_asbl_s%np_sph_new, istep_out,                           &
-     &      sph_asbl_s%nloop_new, asbl_param_s%new_fld_file,            &
+        call sel_write_step_SPH_field_file                              &
+     &     (nprocs, my_rank, istep_out, asbl_param_s%new_fld_file,      &
      &      sph_asbl_s%fst_time_IO, sph_asbl_s%new_fst_IO)
 !
-        do jloop = 1, sph_asbl_s%nloop_new
-          irank_new = my_rank + (jloop-1) * nprocs
-          if(irank_new .lt. sph_asbl_s%np_sph_new) then
-            call dealloc_phys_data_IO(sph_asbl_s%new_fst_IO(jloop))
-            call dealloc_phys_name_IO(sph_asbl_s%new_fst_IO(jloop))
-          end if
-        end do
+        call dealloc_phys_data_IO(sph_asbl_s%new_fst_IO)
+        call dealloc_phys_name_IO(sph_asbl_s%new_fst_IO)
         call calypso_mpi_barrier
       end do
 !

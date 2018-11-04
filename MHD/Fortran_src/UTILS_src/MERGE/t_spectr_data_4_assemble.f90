@@ -37,9 +37,7 @@
 !
         type(rj_assemble_tbl), allocatable :: j_table(:,:)
 !
-!
-        integer(kind = kint) :: nloop_new
-        type(field_IO), allocatable :: new_fst_IO(:)
+        type(field_IO) :: new_fst_IO
         type(time_data) :: fst_time_IO
 !
         type(sph_radial_itp_data) :: r_itp
