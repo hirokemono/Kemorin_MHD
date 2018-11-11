@@ -22,13 +22,16 @@ LIB_FILES_MERGE = \
 '$$(LIB_UTILS_FILE)' \
 '$$(LIB_PARA_FILE)'     \
 '$$(LIB_SOLVER_FILE)'   \
-'$$(LIB_MESH_FILE)'
+'$$(LIB_MESH_FILE)'     \
+'$$(LIB_FFTPACK_FILE)'
+
 
 LIBS_MERGE = \
 '$$(LIB_UTILS)'     \
 '$$(LIB_PARA)'      \
 '$$(LIB_SOLVER)'    \
-'$$(LIB_MESH)'
+'$$(LIB_MESH)'      \
+'$$(LIB_FFTPACK)'
 
 ifdef FORTRAN_C_CONNECT
   LIBS_MERGE+=        '$$(LIB_KEMO_C)'

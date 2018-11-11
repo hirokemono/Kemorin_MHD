@@ -55,6 +55,11 @@
         integer(kind = kint) :: nri_org
 !>        radial
         real(kind = kreal), allocatable :: r_org(:)
+!>        theta
+        real(kind = kreal), allocatable :: theta_org(:)
+!
+!>        forward transform matrix
+        real(kind = kreal), allocatable :: Cheby_fwd(:,:)
 !
 !>        Original delta t
         real(kind = kreal) :: dt_org
