@@ -321,28 +321,25 @@
      &              ioffset2, ione, rayleigh_in(k,2))
               end do
 !
-              rayleigh_tg(1:ra_rst_s%nri_org,1) = rayleigh_in(1:ra_rst_s%nri_org,1)       &
-     &               * sqrt(dble(2*l+1) / (four*pi))
-              rayleigh_tg(1:ra_rst_s%nri_org,2) = rayleigh_in(1:ra_rst_s%nri_org,2)       &
-     &               * sqrt(dble(2*l+1) / (four*pi))
-!
-              do k = 1, ra_rst_s%nri_org
-                rayleigh_tg(k,1) = rayleigh_tg(k,1) * half * (-one)**(k-1)
-                rayleigh_tg(k,2) = rayleigh_tg(k,2) * half * (-one)**(k-1)
-              end do
-!
               if(m .eq. 0) then
                 rayleigh_tg(1:ra_rst_s%nri_org,1:2)                              &
-     &               = rayleigh_tg(1:ra_rst_s%nri_org,1:2) * two
+     &               = rayleigh_in(1:ra_rst_s%nri_org,1:2) * two
               else if(m .gt. 0) then
-                rayleigh_tg(1:ra_rst_s%nri_org,1) = rayleigh_tg(1:ra_rst_s%nri_org,1)     &
-     &                                  + rayleigh_tg(1:ra_rst_s%nri_org,2)
+                rayleigh_tg(1:ra_rst_s%nri_org,1) = rayleigh_in(1:ra_rst_s%nri_org,1)     &
+     &                                  + rayleigh_in(1:ra_rst_s%nri_org,2)
               else
-                rayleigh_tg(1:ra_rst_s%nri_org,1) = rayleigh_tg(1:ra_rst_s%nri_org,1)     &
-     &                                  - rayleigh_tg(1:ra_rst_s%nri_org,2)
+                rayleigh_tg(1:ra_rst_s%nri_org,1) = rayleigh_in(1:ra_rst_s%nri_org,1)     &
+     &                                  - rayleigh_in(1:ra_rst_s%nri_org,2)
               end if
 !
+!
+              rayleigh_tg(1:ra_rst_s%nri_org,1) = rayleigh_tg(1:ra_rst_s%nri_org,1)       &
+     &               * sqrt(dble(2*l+1) / (four*pi))
+!
               rayleigh_tg(1,1) = half * rayleigh_tg(1,1)
+              do k = 1, ra_rst_s%nri_org
+                rayleigh_tg(k,1) = rayleigh_tg(k,1) * half * (-one)**(k-1)
+              end do
 !
 !              if     (sph_asbl_s%new_sph_phys(1)%phys_name(i_fld) .eq. fhd_temp) then
 !                if(l .ne. 0) then
