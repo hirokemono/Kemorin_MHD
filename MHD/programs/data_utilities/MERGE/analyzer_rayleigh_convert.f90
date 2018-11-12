@@ -214,7 +214,7 @@
       type(calypso_MPI_IO_params), save :: IO_param
       integer(kind = kint_gl) :: jmax_h
 !
-      integer(kind = kint) :: nri_tgt
+      integer(kind = kint) :: nri_tgt, nri_min
       integer(kind = kint) :: inod, k_in, k_out
       real(kind = kreal) :: coef, pi
 !
@@ -243,12 +243,13 @@
         init_t%time =        ra_rst_s%time_org
         call share_time_step_data(init_t)
 !
+        nri_min = min(ra_rst_s%nri_org, nri_tgt)
         allocate(rayleigh_in(ra_rst_s%nri_org,2))
-        allocate(rayleigh_tg(ra_rst_s%nri_org,2))
-        allocate(rayleigh_fd(ra_rst_s%nri_org,1))
+        allocate(rayleigh_tg(nri_tgt,2))
         rayleigh_in = 0.0d0
         rayleigh_tg = 0.0d0
-        rayleigh_fd = 0.0d0
+!        allocate(rayleigh_fd(ra_rst_s%nri_org,1))
+!        rayleigh_fd = 0.0d0
 !
         LENSAV = 2*nri_tgt + int(log(dble(nri_tgt))) + 4
         allocate(WSAVE(LENSAV))
@@ -322,22 +323,20 @@
               end do
 !
               if(m .eq. 0) then
-                rayleigh_tg(1:ra_rst_s%nri_org,1:2)                              &
-     &               = rayleigh_in(1:ra_rst_s%nri_org,1:2) * two
+                rayleigh_tg(1:nri_min,1:2)                              &
+     &               = rayleigh_in(1:nri_min,1:2) * sqrt(two)
               else if(m .gt. 0) then
-                rayleigh_tg(1:ra_rst_s%nri_org,1) = rayleigh_in(1:ra_rst_s%nri_org,1)     &
-     &                                  + rayleigh_in(1:ra_rst_s%nri_org,2)
+                rayleigh_tg(1:nri_min,1) =  rayleigh_in(1:nri_min,1)
               else
-                rayleigh_tg(1:ra_rst_s%nri_org,1) = rayleigh_in(1:ra_rst_s%nri_org,1)     &
-     &                                  - rayleigh_in(1:ra_rst_s%nri_org,2)
+                rayleigh_tg(1:nri_min,1) = -rayleigh_in(1:nri_min,2)
               end if
 !
 !
-              rayleigh_tg(1:ra_rst_s%nri_org,1) = rayleigh_tg(1:ra_rst_s%nri_org,1)       &
-     &               * sqrt(dble(2*l+1) / (four*pi))
+              rayleigh_tg(1:nri_tgt,1) = rayleigh_tg(1:nri_tgt,1)       &
+     &               * sqrt(dble(2*l+1) / (two*pi))
 !
               rayleigh_tg(1,1) = half * rayleigh_tg(1,1)
-              do k = 1, ra_rst_s%nri_org
+              do k = 1, nri_tgt
                 rayleigh_tg(k,1) = rayleigh_tg(k,1) * half * (-one)**(k-1)
               end do
 !
@@ -356,16 +355,16 @@
 !              end if
 !
 !
-           call matmul_bwd_leg_trans(ra_rst_s%nri_org, ione, ra_rst_s%nri_org,    &
-     &                     ra_rst_s%Cheby_fwd(1,1), rayleigh_tg(1,1), rayleigh_fd(1,1))
-!              call COST1I(nri_tgt-1, WSAVE, LENSAV, ierr)
-!              call COST1B(nri_tgt-1, ione, rayleigh_tg(1,1), nri_tgt,     &
-!      &           WSAVE, LENSAV, WORK, nri_tgt, ierr)
+!           call matmul_bwd_leg_trans(ra_rst_s%nri_org, ione, ra_rst_s%nri_org,    &
+!     &                     ra_rst_s%Cheby_fwd(1,1), rayleigh_tg(1,1), rayleigh_fd(1,1))
+              call COST1I(nri_tgt-1, WSAVE, LENSAV, ierr)
+              call COST1B(nri_tgt-1, ione, rayleigh_tg(1,1), nri_tgt,     &
+      &           WSAVE, LENSAV, WORK, nri_tgt, ierr)
 !
               if     (sph_asbl_s%new_sph_phys(1)%phys_name(i_fld) .eq. fhd_temp) then
                 if(l .ne. 0) then
-                  rayleigh_fd(1,1) =                zero
-                  rayleigh_fd(ra_rst_s%nri_org,1) = zero
+                  rayleigh_tg(1,1) =                zero
+                  rayleigh_tg(nri_tgt,1) = zero
                 end if
               end if
 !
@@ -375,8 +374,8 @@
 !                  kr = sph_asbl_s%r_itp%kr_outer_domain - k + 1
                   inod = j + (kr-1) * sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%nidx_rj(2)
                   sph_asbl_s%new_sph_phys(my_rank+1)%d_fld(inod,i_comp)  &
-      &              = rayleigh_tg(k,1)   &
-      &          * sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%radius_1d_rj_r(kr)
+      &              = rayleigh_tg(k,1) 
+!      &          * sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%radius_1d_rj_r(kr)
                 end do
               else
                 do k = 1, nri_tgt
@@ -390,7 +389,7 @@
 !
               iflag = 0
               if(l .eq. 0 .and. m .eq.  0) iflag = 1
-              if(l .eq. 1 .and. m .eq.  0) iflag = 1
+              if(l .eq. 2 .and. m .eq.  0) iflag = 1
               if(l .eq. 4 .and. m .eq.  4) iflag = 1
               if(l .eq. 4 .and. m .eq. -4) iflag = 1
               if(iflag .eq. 1) then
@@ -400,13 +399,14 @@
                 write(50+my_rank,*) k, rayleigh_in(k,1:2)
               end do
               write(50+my_rank,*) 'tgt', trim(file_name(nd)), nd, l, m, nri_tgt
-              do k = 1, ra_rst_s%nri_org
-                write(50+my_rank,*) k, rayleigh_tg(k,1)
+              do k = 1, nri_tgt
+                  kr = sph_asbl_s%r_itp%kr_inner_domain + k - 1
+                write(50+my_rank,*) k, sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%radius_1d_rj_r(kr), rayleigh_tg(k,1)
               end do
               write(50+my_rank,*) 'fld', trim(file_name(nd)), nd, l, m, nri_tgt
-              do k = 1, ra_rst_s%nri_org
-                write(50+my_rank,*) k, rayleigh_fd(k,1)
-              end do
+!              do k = 1, ra_rst_s%nri_org
+!                write(50+my_rank,*) k, rayleigh_fd(k,1)
+!              end do
 !
 !                write(50+my_rank,*) trim(sph_asbl_s%new_sph_phys(my_rank+1)%phys_name(i_fld)), nd, i_comp
 !                do k = 1, sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%nidx_rj(1)
@@ -421,7 +421,8 @@
           end do
 !
         end do
-        deallocate(rayleigh_in, rayleigh_tg, rayleigh_fd, WSAVE, WORK)
+        deallocate(rayleigh_in, rayleigh_tg, WSAVE, WORK)
+!        deallocate(rayleigh_fd)
 !
         call const_assembled_sph_data(asbl_param_s%b_ratio, init_t,     &
      &      sph_asbl_s%new_sph_mesh(my_rank+1)%sph, sph_asbl_s%r_itp,   &
