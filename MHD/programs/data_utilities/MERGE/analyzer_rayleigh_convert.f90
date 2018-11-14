@@ -213,7 +213,7 @@
       integer(kind = kint_gl) :: jmax_h
 !
       integer(kind = kint) :: nri_tgt, nri_min
-      integer(kind = kint) :: inod, k_in, k_out
+      integer(kind = kint) :: inod, kr_in, kr_out
       real(kind = kreal) :: coef, pi
 !
       pi = four * atan(one)
@@ -243,15 +243,17 @@
 !
         nri_min = min(ra_rst_s%nri_org, nri_tgt)
         allocate(rayleigh_in(ra_rst_s%nri_org,2))
-        allocate(rayleigh_tg(nri_tgt+1,2))
+        allocate(rayleigh_tg(nri_tgt+1,1))
         rayleigh_in = 0.0d0
         rayleigh_tg = 0.0d0
-!        allocate(rayleigh_fd(ra_rst_s%nri_org,1))
-!        rayleigh_fd = 0.0d0
+        allocate(rayleigh_fd(ra_rst_s%nri_org,1))
+        rayleigh_fd = 0.0d0
 !
         LENSAV = 2*(nri_tgt+1) + int(log(dble(nri_tgt+1))) + 4
         allocate(WSAVE(LENSAV))
         allocate(WORK(nri_tgt+1))
+!
+        call COST1I(nri_tgt, WSAVE, LENSAV, ierr)
 !
         do i_fld = 1, sph_asbl_s%new_sph_phys(1)%num_phys
           call set_rayleigh_rst_file_name                               &
@@ -263,38 +265,14 @@
             i_comp = 2*nd - 1                                           &
      &         + sph_asbl_s%new_sph_phys(1)%istack_component(i_fld-1)
 !
-!            call open_read_mpi_file                                     &
-!     &         (file_name(nd), nprocs, my_rank, IO_param)
-!            if(my_rank .eq. 0) then
-!              write(fn,'(a,i1)') 'tako.', i_comp
-!              open(99,file=fn)
-!
-!              jmax_h = 1 + ra_rst_s%ltr_org*(ra_rst_s%ltr_org+3) / 2
-!              do j = 1, int(ra_rst_s%nri_org * jmax_h)
-!                ioffset1 = (j-1) * kreal
-!                ioffset2 = ioffset1 + kreal*ra_rst_s%nri_org*jmax_h
-!                call calypso_mpi_seek_read_real                         &
-!     &             (IO_param%id_file, ra_rst_s%iflag_swap,              &
-!     &              ioffset1, ione, rayleigh_in(k,1))
-!                call calypso_mpi_seek_read_real                         &
-!     &             (IO_param%id_file, ra_rst_s%iflag_swap,              &
-!     &              ioffset2, ione, rayleigh_in(k,2))
-!
-!                write(99,*) j, rayleigh_in(k,1:2)
-!              end do
-!
-!              close(99)
-!            end if
-!            call close_mpi_file(IO_param)
-!            call calypso_mpi_barrier
-!
+            call check_rayleigh_restart_reading                         &
+     &         (file_name(nd), i_comp, ra_rst_s, rayleigh_in)
 !
 !
             call open_read_mpi_file                                     &
      &         (file_name(nd), nprocs, my_rank, IO_param)
-!
-            write(50+my_rank,*) 'k, kr, l, m, ioffset1, ioffset2', &
-       &     sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%nidx_rj(1:2)
+!            write(50+my_rank,*) 'k, kr, l, m, ioffset1, ioffset2', &
+!       &     sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%nidx_rj(1:2)
             do j = 1, sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%nidx_rj(2)
               l = sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%idx_gl_1d_rj_j(j,2)
               m = sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj%idx_gl_1d_rj_j(j,3)
@@ -313,30 +291,32 @@
               end do
 !
               call rescaling_from_rayleigh                              &
-     &           (l, m, ra_rst_s%nri_org, rayleigh_in,                  &
-     &            nri_tgt, rayleigh_tg(1,1))
-
+     &           (l, m, ra_rst_s%nri_org, rayleigh_in)
 !
 !           call matmul_bwd_leg_trans(ra_rst_s%nri_org, ione, ra_rst_s%nri_org,    &
 !     &                     ra_rst_s%Cheby_fwd(1,1), rayleigh_tg(1,1), rayleigh_fd(1,1))
-              call COST1I(nri_tgt, WSAVE, LENSAV, ierr)
 !
-              call rescaling_for_chebyshev_FFT                          &
-      &          (nri_tgt, rayleigh_tg(1,1))
-              call COST1B(nri_tgt, ione, rayleigh_tg(1,1), nri_tgt+1,   &
-      &           WSAVE, LENSAV, WORK, nri_tgt+1, ierr)
+              if    (sph_asbl_s%new_sph_phys(my_rank+1)%phys_name(i_fld) .eq. fhd_velo      &
+      &         .or. sph_asbl_s%new_sph_phys(my_rank+1)%phys_name(i_fld) .eq. fhd_press      &
+      &         .or. sph_asbl_s%new_sph_phys(my_rank+1)%phys_name(i_fld) .eq. fhd_temp      &
+      &         .or. sph_asbl_s%new_sph_phys(my_rank+1)%phys_name(i_fld) .eq. fhd_magne) then
+                call rescaling_for_chebyshev_FFT                        &
+      &            (ra_rst_s%nri_org, rayleigh_in(1,1),                 &
+      &             nri_tgt, rayleigh_tg(1,1))
+                call COST1B(nri_tgt, ione, rayleigh_tg(1,1), nri_tgt+1, &
+      &             WSAVE, LENSAV, WORK, nri_tgt+1, ierr)
 !
-!              if     (sph_asbl_s%new_sph_phys(1)%phys_name(i_fld) .eq. fhd_temp) then
-!                if(l .ne. 0) then
-!                  rayleigh_tg(1,1) = zero
-!                  rayleigh_tg(nri_tgt,1) = zero
-!                end if
-!              end if
-!
-              call copy_from_chebyshev_trans                            &
-     &           (sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj,        &
-     &            sph_asbl_s%r_itp, j, i_comp,  nri_tgt,                &
-     &            rayleigh_tg(1,1), sph_asbl_s%new_sph_phys(my_rank+1))
+                call copy_from_chebyshev_trans                          &
+     &             (sph_asbl_s%new_sph_mesh(my_rank+1)%sph%sph_rj,      &
+     &              sph_asbl_s%r_itp, j, i_comp,  nri_tgt,              &
+     &              rayleigh_tg(1,1), sph_asbl_s%new_sph_phys(my_rank+1))
+             else if(sph_asbl_s%new_sph_phys(my_rank+1)%phys_name(i_fld) .eq. fhd_pre_mom      &
+      &         .or. sph_asbl_s%new_sph_phys(my_rank+1)%phys_name(i_fld) .eq. fhd_pre_heat      &
+      &         .or. sph_asbl_s%new_sph_phys(my_rank+1)%phys_name(i_fld) .eq. fhd_pre_uxb) then
+                   call radial_interpolation_rayleigh(sph_asbl_s%r_itp, &
+     &                 ra_rst_s%nri_org, rayleigh_in(1,1),              &
+     &                 nri_tgt, rayleigh_tg(1,1))
+             end if
 !
               iflag = 0
               if(l .eq. 0 .and. m .eq.  0) iflag = 1
@@ -358,7 +338,7 @@
 !
         end do
         deallocate(rayleigh_in, rayleigh_tg, WSAVE, WORK)
-!        deallocate(rayleigh_fd)
+        deallocate(rayleigh_fd)
 !
         call const_assembled_sph_data(asbl_param_s%b_ratio, init_t,     &
      &      sph_asbl_s%new_sph_mesh(my_rank+1)%sph, sph_asbl_s%r_itp,   &
@@ -384,62 +364,86 @@
 ! ----------------------------------------------------------------------
 !
 !
-      subroutine rescaling_from_rayleigh(l, m, nri_org, rayleigh_in,    &
-     &          nri_tgt, rayleigh_tg)
+      subroutine rescaling_from_rayleigh(l, m, nri_org, rayleigh_in)
 !
       use m_precision
       use m_constants
       implicit none
 !
       integer(kind = kint), intent(in) :: l, m
-      integer(kind = kint), intent(in) :: nri_org, nri_tgt
-      real(kind = kreal), intent(in) :: rayleigh_in(nri_org,2)
-      real(kind = kreal), intent(inout) :: rayleigh_tg(nri_tgt,1)
+      integer(kind = kint), intent(in) :: nri_org
+      real(kind = kreal), intent(inout) :: rayleigh_in(nri_org,2)
 !
       real(kind= kreal) :: pi
-      integer(kind = kint) :: nri_min
 !
 !
       pi = four * atan(one)
-      nri_min = min(nri_org, nri_tgt)
 !
 !       Transfer to Schinidt normalization
       if(m .eq. 0) then
-        rayleigh_tg(1:nri_min,1)                                        &
-     &               = rayleigh_in(1:nri_min,1) * sqrt(two)
-      else if(m .gt. 0) then
-        rayleigh_tg(1:nri_min,1) =  rayleigh_in(1:nri_min,1)
-      else
-        rayleigh_tg(1:nri_min,1) = -rayleigh_in(1:nri_min,2)
+        rayleigh_in(1:nri_org,1)                                        &
+     &               = rayleigh_in(1:nri_org,1) * sqrt(two)
+      else if(m .lt. 0) then
+        rayleigh_in(1:nri_org,1) = -rayleigh_in(1:nri_org,2)
+!      else if(m .gt. 0) then
+!        rayleigh_in(1:nri_org,1) =  rayleigh_in(1:nri_org,1)
       end if
 !
-      rayleigh_tg(1:nri_tgt+1,1) = rayleigh_tg(1:nri_tgt+1,1)           &
+      rayleigh_in(1:nri_org,1) = rayleigh_in(1:nri_org,1)               &
      &                            * sqrt(dble(2*l+1) / (two*pi))
-!
-!   Normalize for Chebyshev mode 0
-      rayleigh_tg(1,1) = half * rayleigh_tg(1,1)
 !
       end subroutine rescaling_from_rayleigh
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine rescaling_for_chebyshev_FFT(nri_tgt, rayleigh_tg)
+      subroutine rescaling_for_chebyshev_FFT                            &
+     &         (nri_org, rayleigh_in, nri_tgt, rayleigh_tg)
 !
       use m_precision
       use m_constants
+!
       implicit none
 !
-      integer(kind = kint), intent(in) :: nri_tgt
-      real(kind = kreal), intent(inout) :: rayleigh_tg(nri_tgt,1)
+      integer(kind = kint), intent(in) :: nri_org, nri_tgt
+      real(kind = kreal), intent(in) :: rayleigh_in(nri_org)
+      real(kind = kreal), intent(inout) :: rayleigh_tg(nri_tgt+1)
 !
-      integer(kind = kint) :: k
+      integer(kind = kint) :: k, nri_min
 !
 !
-      do k = 1, nri_tgt+1
-        rayleigh_tg(k,1) = rayleigh_tg(k,1) * half * (-one)**(k-1)
+      nri_min = min(nri_org, nri_tgt)
+!
+!   Normalize for Chebyshev mode 0
+      rayleigh_tg(1) = half * half* rayleigh_in(1)
+      do k = 2, nri_min
+        rayleigh_tg(k) = half * (-one)**(k-1) * rayleigh_in(k)
       end do
 !
       end subroutine rescaling_for_chebyshev_FFT
+!
+! -----------------------------------------------------------------------
+!
+      subroutine radial_interpolation_rayleigh                          &
+     &         (r_itp, nri_org, rayleigh_in, nri_tgt, rayleigh_tg)
+!
+      type(sph_radial_itp_data), intent(in) :: r_itp
+      integer(kind = kint), intent(in) :: nri_org, nri_tgt
+      real(kind = kreal), intent(in) :: rayleigh_in(nri_org)
+      real(kind = kreal), intent(inout) :: rayleigh_tg(nri_tgt+1)
+!
+      integer(kind = kint) :: k, kr, kr_in, kr_out
+!
+!
+      do kr = r_itp%kr_inner_domain, r_itp%kr_outer_domain
+        k = kr - r_itp%kr_inner_domain + 1
+        kr_in =  nri_org - r_itp%k_old2new_in(kr) +  1
+        kr_out = nri_org - r_itp%k_old2new_out(kr) + 1
+        rayleigh_tg(k) = r_itp%coef_old2new_in(kr) * rayleigh_in(kr_in) &
+     &                + (1.0d0 - r_itp%coef_old2new_in(kr))             &
+     &                * rayleigh_in(kr_out)
+      end do
+!
+      end subroutine radial_interpolation_rayleigh
 !
 ! -----------------------------------------------------------------------
 !
@@ -454,7 +458,7 @@
       type(sph_radial_itp_data), intent(in) :: r_itp
       integer(kind = kint), intent(in) :: i_comp, j
       integer(kind = kint), intent(in) :: nri_tgt
-      real(kind = kreal), intent(in) :: rayleigh_tg(nri_tgt,1)
+      real(kind = kreal), intent(in) :: rayleigh_tg(nri_tgt+1,1)
 !
       type(phys_data), intent(inout) :: new_sph_phys
 !
@@ -466,12 +470,13 @@
         inod = j + (kr-1) * sph_rj%nidx_rj(2)
         new_sph_phys%d_fld(inod,i_comp) = rayleigh_tg(k,1)
       end do
+!
       end subroutine copy_from_chebyshev_trans
 !
 ! -----------------------------------------------------------------------
 !
       subroutine check_chebyshev_trans                                  &
-     &         (sph_rj, r_itp, file_name, l, m, j, i_fld, i_comp,              &
+     &         (sph_rj, r_itp, file_name, l, m, j, i_fld, i_comp,       &
      &          nri_org, rayleigh_in, nri_tgt, rayleigh_tg, new_sph_phys)
 !
       use t_spheric_rj_data
@@ -480,39 +485,92 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_radial_itp_data), intent(in) :: r_itp
-      character(len = kchara) :: file_name
+      character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: i_fld, i_comp, l, m, j
       integer(kind = kint), intent(in) :: nri_org, nri_tgt
-!
       real(kind = kreal), intent(in) :: rayleigh_in(nri_org,2)
+!
       real(kind = kreal), intent(in) :: rayleigh_tg(nri_tgt,1)
       type(phys_data), intent(in) :: new_sph_phys
 !
       integer(kind = kint) :: k, kr, inod
 !
 !
-              write(50+my_rank,*) trim(file_name), l, m
-              do k = 1, ra_rst_s%nri_org
-                write(50+my_rank,*) k, rayleigh_in(k,1:2)
-              end do
-              write(50+my_rank,*) 'tgt', trim(file_name), l, m, nri_tgt
-              do k = 1, nri_tgt
-                  kr = r_itp%kr_inner_domain + k - 1
-                write(50+my_rank,*) k, sph_rj%radius_1d_rj_r(kr), rayleigh_tg(k,1)
-              end do
-              write(50+my_rank,*) 'fld', trim(file_name), l, m, nri_tgt
-!              do k = 1, ra_rst_s%nri_org
-!                write(50+my_rank,*) k, rayleigh_fd(k,1)
-!              end do
+      write(50+my_rank,*) trim(file_name), l, m
+      do k = 1, ra_rst_s%nri_org
+        write(50+my_rank,*) k, rayleigh_in(k,1:2)
+      end do
 !
-                write(50+my_rank,*) trim(new_sph_phys%phys_name(i_fld)), i_comp
-                do k = 1, sph_rj%nidx_rj(1)
-                  inod = j + (k-1) * sph_rj%nidx_rj(2)
-                  write(50+my_rank,*) k, sph_rj%radius_1d_rj_r(k), &
-     &            l, m, new_sph_phys%d_fld(inod,i_comp)
-                end do
+      write(50+my_rank,*) 'tgt', trim(file_name), l, m, nri_tgt
+      do k = 1, nri_tgt
+        kr = r_itp%kr_inner_domain + k - 1
+        write(50+my_rank,*) k, sph_rj%radius_1d_rj_r(kr),               &
+     &                      rayleigh_tg(k,1)
+      end do
+!
+      write(50+my_rank,*) 'fld', trim(file_name), l, m, nri_tgt
+!      do k = 1, ra_rst_s%nri_org
+!        write(50+my_rank,*) k, rayleigh_fd(k,1)
+!      end do
+!
+      write(50+my_rank,*) trim(new_sph_phys%phys_name(i_fld)), i_comp
+      do k = 1, sph_rj%nidx_rj(1)
+        inod = j + (k-1) * sph_rj%nidx_rj(2)
+        write(50+my_rank,*) k, sph_rj%radius_1d_rj_r(k),                &
+     &                      l, m, new_sph_phys%d_fld(inod,i_comp)
+      end do
 !
       end subroutine check_chebyshev_trans
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_rayleigh_restart_reading                         &
+     &         (file_name, i_comp, ra_rst, rayleigh_in)
+!
+      use calypso_mpi
+      use m_calypso_mpi_IO
+      use t_calypso_mpi_IO_param
+      use MPI_ascii_data_IO
+!
+      type(rayleigh_restart), intent(in) :: ra_rst
+      character(len = kchara), intent(in) :: file_name
+      integer(kind = kint), intent(in) :: i_comp
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: rayleigh_in(ra_rst%nri_org,2)
+!
+      type(calypso_MPI_IO_params), save :: IO_param
+      integer(kind = MPI_OFFSET_KIND) :: ioffset1, ioffset2
+      integer(kind = kint) :: k, j
+      character(len = kchara) :: fn_out
+      integer(kind = kint_gl) :: jmax_h
+!
+!
+      call open_read_mpi_file                                           &
+     &   (file_name, nprocs, my_rank, IO_param)
+      if(my_rank .eq. 0) then
+        write(fn_out,'(a,i1)') 'rayleigh_test.', i_comp
+        open(99,file=fn_out)
+!
+        jmax_h = 1 + ra_rst%ltr_org*(ra_rst%ltr_org+3) / 2
+        do j = 1, int(ra_rst%nri_org * jmax_h)
+          ioffset1 = (j-1) * kreal
+          ioffset2 = ioffset1 + kreal*ra_rst%nri_org*jmax_h
+          call calypso_mpi_seek_read_real                               &
+     &       (IO_param%id_file, ra_rst%iflag_swap,                      &
+     &        ioffset1, ione, rayleigh_in(k,1))
+          call calypso_mpi_seek_read_real                               &
+     &       (IO_param%id_file, ra_rst%iflag_swap,                      &
+     &        ioffset2, ione, rayleigh_in(k,2))
+!
+          write(99,*) j, rayleigh_in(k,1:2)
+        end do
+!
+        close(99)
+      end if
+      call close_mpi_file(IO_param)
+      call calypso_mpi_barrier
+!
+      end subroutine check_rayleigh_restart_reading
 !
 ! -----------------------------------------------------------------------
 !
