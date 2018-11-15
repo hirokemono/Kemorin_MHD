@@ -21,6 +21,8 @@
 !!      subroutine dealloc_merged_field_stack(fld_IO)
 !!
 !!      subroutine cal_istack_phys_comp_IO(fld_IO)
+!!
+!!      subroutine check_field_name_4_IO(id_field, fld_IO)
 !!@endverbatim
 !!
 !
@@ -208,5 +210,24 @@
       end subroutine cal_istack_phys_comp_IO
 !
 ! -------------------------------------------------------------------
+!
+      subroutine check_field_name_4_IO(id_field, fld_IO)
+!
+      integer(kind = kint), intent(in) :: id_field
+      type(field_IO), intent(in) :: fld_IO
+!
+      integer(kind = kint) :: k
+!
+!
+      write(id_field,*) 'fld_IO%num_field_IO', fld_IO%num_field_IO
+      write(id_field,*) 'fld_IO%num_comp_IO', fld_IO%num_comp_IO
+      write(id_field,*) 'fld_IO%fld_name'
+      do k = 1, fld_IO%num_field_IO
+        write(id_field,*) k, trim(fld_IO%fld_name(k))
+      end do
+!
+      end subroutine check_field_name_4_IO
+!
+! -----------------------------------------------------------------------
 !
       end module t_field_data_IO
