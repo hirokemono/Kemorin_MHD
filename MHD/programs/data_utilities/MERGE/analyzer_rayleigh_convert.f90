@@ -78,10 +78,6 @@
 !
       use share_field_data
 !
-      integer(kind = kint) :: ip, jp, k, k1, k2
-      integer(kind = kint) :: k_ICB
-      real(kind = kreal) :: r_ICB, r_norm
-!
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
@@ -95,21 +91,8 @@
 !  set original spectr data
 !
       if(asbl_param_s%org_fld_file%iflag_format .eq. id_rayleigh) then
-        if(my_rank .eq. 0) then
-          call read_rayleigh_restart_params                             &
-     &       (asbl_param_s%org_fld_file%file_prefix,                    &
-     &        asbl_param_s%istep_start, ra_rst_s)
-!
-          sph_asbl_s%org_sph_mesh(1)%sph%sph_rj%nidx_rj(1) = ra_rst_s%nri_org
-          sph_asbl_s%org_sph_mesh(1)%sph%sph_rj%nidx_rj(2) = 1
-          call alloc_type_sph_1d_index_rj(sph_asbl_s%org_sph_mesh(1)%sph%sph_rj)
-          do k = 1, sph_asbl_s%org_sph_mesh(1)%sph%sph_rj%nidx_rj(1)
-            sph_asbl_s%org_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r(k)     &
-     &         = ra_rst_s%r_org(ra_rst_s%nri_org-k+1)
-          end do
-        end if
-        call bcast_rayleigh_rst_params(ra_rst_s)
-        call check_rayleigh_rst_params(50+my_rank, ra_rst_s)
+        call init_rayleigh_restart_params                               &
+     &     (ra_rst_s, sph_asbl_s%org_sph_mesh(1))
       end if
 !
 !  set new spectr data
@@ -128,37 +111,9 @@
      &   (sph_asbl_s%org_sph_mesh(1), sph_asbl_s%new_sph_mesh(1),       &
      &    sph_asbl_s%r_itp)
 !
-      allocate(ra_rst_s%theta_org(ra_rst_s%nri_org))
+!      call chebyshev_fwd_mat_4_rayleigh                                &
+!     &   (sph_asbl_s%new_sph_mesh(1), sph_asbl_s%r_itp, ra_rst_s)
 !
-      if(my_rank .eq. 0) then
-        do k = 1, ra_rst_s%nri_org
-          k_ICB = sph_asbl_s%r_itp%kr_inner_domain
-          r_ICB = sph_asbl_s%new_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r(k_ICB)
-          r_norm = two * (ra_rst_s%r_org(k) - r_ICB) - one
-          if(r_norm .gt.  one) r_norm =  one
-          if(r_norm .lt. -one) r_norm = -one
-          ra_rst_s%theta_org(k) = acos(r_norm)
-        end do
-!
-        write(*,*) 'k, ra_rst_s%theta_org(k)'
-        do k = 1, ra_rst_s%nri_org
-          write(*,*) k, ra_rst_s%r_org(k),  ra_rst_s%theta_org(k)
-        end do
-!
-        allocate(ra_rst_s%Cheby_fwd(ra_rst_s%nri_org,ra_rst_s%nri_org))
-!
-        do k1 = 1, ra_rst_s%nri_org
-          do k2 = 1, ra_rst_s%nri_org
-            ra_rst_s%Cheby_fwd(k2,k1) = cos(dble(k1-1) * ra_rst_s%theta_org(k2))
-          end do
-        end do
-!
-        deallocate(ra_rst_s%theta_org)
-      end if
-!
-       if(my_rank .ne. 0) allocate(ra_rst_s%Cheby_fwd(ra_rst_s%nri_org,ra_rst_s%nri_org))
-      call MPI_Bcast(ra_rst_s%Cheby_fwd, (ra_rst_s%nri_org*ra_rst_s%nri_org),        &
-     &      CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
       call dealloc_rayleigh_radial_grid(ra_rst_s)
 !
 !      Construct field list from spectr file
@@ -167,12 +122,7 @@
      &     (asbl_param_s%org_fld_file%file_prefix,                      &
      &      asbl_param_s%istep_start, fld_IO_r)
 !
-      write(50+my_rank,*) 'fld_IO_r%num_field_IO', fld_IO_r%num_field_IO
-      write(50+my_rank,*) 'fld_IO_r%num_comp_IO', fld_IO_r%num_comp_IO
-      write(50+my_rank,*) 'fld_IO_r%fld_name'
-      do k = 1, fld_IO_r%num_field_IO
-        write(50+my_rank,*) k, trim(fld_IO_r%fld_name(k))
-      end do
+      call chech_field_name_4_IO(50+my_rank, fld_IO_r)
 !
       if(my_rank .eq. 0) then
         call copy_rj_phys_name_from_IO                                  &
@@ -199,20 +149,8 @@
       use t_calypso_mpi_IO_param
       use MPI_ascii_data_IO
 !
-      integer(kind = kint) :: istep, icou
-      integer(kind = kint) :: ip, jp, irank_new
-      integer(kind = kint) :: iloop, jloop
+      integer(kind = kint) :: istep
       integer(kind = kint) :: istep_out
-!
-      type(work_fftpack_chebyshev) :: fcheby_WK
-      type(work_rayleigh_checkpoint) :: rayleigh_WK
-!
-      integer(kind = kint) :: k, kr, l, m, j, iflag
-      integer(kind = kint) :: i_fld, i_comp, nd
-      integer(kind = kint) :: iflag_ncomp
-!
-      integer(kind = kint) :: ierr
-      type(calypso_MPI_IO_params), save :: IO_param
 !
 !     ---------------------
 !
@@ -386,7 +324,7 @@
       type(phys_data), intent(inout) :: new_sph_phys
 !
       type(calypso_MPI_IO_params), save :: IO_param
-      integer(kind = kint) :: k, j, l, m, iflag, ierr
+      integer(kind = kint) :: k, j, l, m, ierr
       integer(kind = MPI_OFFSET_KIND) :: ioffset1, ioffset2
 !
 !
@@ -568,6 +506,86 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine init_rayleigh_restart_params                           &
+     &         (ra_rst, org_sph_mesh)
+!
+      type(rayleigh_restart), intent(inout) :: ra_rst
+      type(sph_mesh_data), intent(inout) :: org_sph_mesh
+!
+      integer(kind = kint) :: k, kr
+!
+!
+      if(my_rank .eq. 0) then
+        call read_rayleigh_restart_params                               &
+     &       (asbl_param_s%org_fld_file%file_prefix,                    &
+     &        asbl_param_s%istep_start, ra_rst)
+!
+        org_sph_mesh%sph%sph_rj%nidx_rj(1) = ra_rst%nri_org
+        org_sph_mesh%sph%sph_rj%nidx_rj(2) = 1
+        call alloc_type_sph_1d_index_rj(org_sph_mesh%sph%sph_rj)
+        do k = 1, org_sph_mesh%sph%sph_rj%nidx_rj(1)
+          kr = ra_rst%nri_org-k+1
+          org_sph_mesh%sph%sph_rj%radius_1d_rj_r(k) = ra_rst%r_org(kr)
+        end do
+!
+      end if
+      call bcast_rayleigh_rst_params(ra_rst)
+!
+      end subroutine init_rayleigh_restart_params
+!
+! -----------------------------------------------------------------------
+!
+      subroutine chebyshev_fwd_mat_4_rayleigh                           &
+     &         (new_sph_mesh, r_itp, ra_rst)
+!
+      type(sph_mesh_data), intent(in) :: new_sph_mesh
+      type(sph_radial_itp_data), intent(in) :: r_itp
+!
+      type(rayleigh_restart), intent(inout) :: ra_rst
+!
+      real(kind = kreal), allocatable :: theta_org(:)
+!
+      integer(kind = kint) :: k1, k2, nmat
+      integer(kind = kint) :: k_ICB
+      real(kind = kreal) :: r_ICB, r_norm
+!
+!
+      allocate(ra_rst%Cheby_fwd(ra_rst%nri_org,ra_rst%nri_org))
+!
+      if(my_rank .eq. 0) then
+        allocate(theta_org(ra_rst%nri_org))
+!
+        do k2 = 1, ra_rst%nri_org
+          k_ICB = r_itp%kr_inner_domain
+          r_ICB = new_sph_mesh%sph%sph_rj%radius_1d_rj_r(k_ICB)
+          r_norm = two * (ra_rst%r_org(k2) - r_ICB) - one
+          if(r_norm .gt.  one) r_norm =  one
+          if(r_norm .lt. -one) r_norm = -one
+          theta_org(k2) = acos(r_norm)
+        end do
+!
+        write(*,*) 'k2, theta_org(k2)'
+        do k2 = 1, ra_rst%nri_org
+          write(*,*) k2, ra_rst%r_org(k2),  theta_org(k2)
+        end do
+!
+        do k1 = 1, ra_rst%nri_org
+          do k2 = 1, ra_rst%nri_org
+            ra_rst%Cheby_fwd(k2,k1) = cos(dble(k1-1) * theta_org(k2))
+          end do
+        end do
+!
+        deallocate(theta_org)
+      end if
+!
+      nmat = ra_rst%nri_org*ra_rst%nri_org
+      call MPI_Bcast(ra_rst%Cheby_fwd, nmat,                            &
+     &    CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
+!
+      end subroutine chebyshev_fwd_mat_4_rayleigh
+!
+! -----------------------------------------------------------------------
+!
       subroutine check_chebyshev_trans                                  &
      &         (sph_rj, r_itp, file_name, l, m, j, i_fld, i_comp,       &
      &          nri_org, rayleigh_in, nri_tgt, rayleigh_tg, new_sph_phys)
@@ -638,7 +656,7 @@
 !
       type(calypso_MPI_IO_params), save :: IO_param
       integer(kind = MPI_OFFSET_KIND) :: ioffset1, ioffset2
-      integer(kind = kint) :: k, j
+      integer(kind = kint) :: j
       character(len = kchara) :: fn_out
       integer(kind = kint_gl) :: jmax_h
       real(kind = kreal) :: read_fld(2)
@@ -694,4 +712,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-     end  module analyzer_rayleigh_convert
+      subroutine chech_field_name_4_IO(id_field, fld_IO)
+!
+      integer(kind = kint), intent(in) :: id_field
+      type(field_IO), intent(in) :: fld_IO
+!
+      integer(kind = kint) :: k
+!
+!
+      write(id_field,*) 'fld_IO%num_field_IO', fld_IO%num_field_IO
+      write(id_field,*) 'fld_IO%num_comp_IO', fld_IO%num_comp_IO
+      write(id_field,*) 'fld_IO%fld_name'
+      do k = 1, fld_IO%num_field_IO
+        write(id_field,*) k, trim(fld_IO%fld_name(k))
+      end do
+!
+      end subroutine chech_field_name_4_IO
+!
+! -----------------------------------------------------------------------
+!
+      end  module analyzer_rayleigh_convert
