@@ -235,7 +235,6 @@
      &                  :: d_rj(sph%sph_rj%nnod_rj,ntot_phys_rj)
 !
 !
-      write(*,*) 'extend', kr_outer_domain, sph%sph_rj%nidx_rj(1)
       if(kr_outer_domain .lt. sph%sph_rj%nidx_rj(1)) then
         call ext_outside_potential_t(sph%sph_rj,                        &
      &      kr_outer_domain, d_rj(1,is_magne))
