@@ -112,7 +112,7 @@
      &     (asbl_param_s%org_fld_file%file_prefix,                      &
      &      asbl_param_s%istep_start, fld_IO_r)
 !
-      call check_field_name_4_IO(50+my_rank, fld_IO_r)
+!      call check_field_name_4_IO(50+my_rank, fld_IO_r)
 !
       if(my_rank .eq. 0) then
         call copy_rj_phys_name_from_IO                                  &
@@ -121,8 +121,8 @@
       call share_new_spectr_field_names(sph_asbl_s%np_sph_new,          &
      &    sph_asbl_s%new_sph_mesh, sph_asbl_s%new_sph_phys(1))
 !
-      call check_nodal_field_name_type                                  &
-     &   (50+my_rank, sph_asbl_s%new_sph_phys(1))
+!      call check_nodal_field_name_type                                 &
+!     &   (50+my_rank, sph_asbl_s%new_sph_phys(1))
 !
       end subroutine init_cvt_rayleigh
 !
