@@ -83,6 +83,7 @@
         call init_rayleigh_restart_params                               &
      &     (asbl_param_s%istep_start, asbl_param_s%org_fld_file,        &
      &      ra_rst_s, sph_asbl_s%org_sph_mesh(1))
+        if(my_rank .eq. 0) call check_rayleigh_rst_params(6, ra_rst_s)
       end if
 !
 !  set new spectr data
