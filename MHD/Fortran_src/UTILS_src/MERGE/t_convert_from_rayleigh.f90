@@ -111,7 +111,7 @@
       type(work_fftpack_chebyshev), intent(inout) :: fcheby_WK
       integer(kind = kint), intent(inout) :: ierr
 !
-      fcheby_WK%LENSAV = 2*(nri_tgt+1) + int(log(dble(nri_tgt+1)))+4
+      fcheby_WK%LENSAV = 2*(nri_tgt+1) + int(log(dble(nri_tgt+1)))+8
       allocate(fcheby_WK%WSAVE(fcheby_WK%LENSAV))
       allocate(fcheby_WK%WORK(nri_tgt+1))
 !
