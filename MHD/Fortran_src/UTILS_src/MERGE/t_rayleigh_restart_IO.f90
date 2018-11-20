@@ -126,8 +126,6 @@
      &    CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(ra_rst%dt_org, ione,                               &
      &    CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ra_rst%dt_org, ione,                               &
-     &    CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(ra_rst%dt_new, ione,                               &
      &    CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(ra_rst%new_dt_org, ione,                           &
@@ -160,46 +158,53 @@
       call open_rd_rawfile(file_name, ierr_IO)
 !
       ra_rst%iflag_swap = 0
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
       if(int_tmp .ne. 4) ra_rst%iflag_swap = 1
 !
-      call rawread_f(ra_rst%iflag_swap, kint, ra_rst%nri_org, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_32bit_f                                              &
+     &   (ra_rst%iflag_swap, kint, ra_rst%nri_org, ierr_IO)
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
 !
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kint,                           &
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_32bit_f(ra_rst%iflag_swap, kint,                     &
      &               ra_rst%iflag_rtype, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
 !
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kint, ra_rst%ltr_org, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_32bit_f                                              &
+     &   (ra_rst%iflag_swap, kint, ra_rst%ltr_org, ierr_IO)
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
 !
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kreal, ra_rst%dt_org, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_64bit_f                                              &
+     &   (ra_rst%iflag_swap, kreal, ra_rst%dt_org, ierr_IO)
+      write(*,*) 'ra_rst%dt_org', ra_rst%dt_org
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
 !
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kreal, ra_rst%dt_new, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_64bit_f                                              &
+     &   (ra_rst%iflag_swap, kreal, ra_rst%dt_new, ierr_IO)
+      write(*,*) 'ra_rst%dt_new', ra_rst%dt_new
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
 !
-!      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
-!      call rawread_f(ra_rst%iflag_swap, kreal,                         &
+!      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+!      call rawread_64bit_f(ra_rst%iflag_swap, kreal,                   &
 !     &    ra_rst%new_dt_org, ierr_IO)
-!      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+!      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
 !
       call alloc_rayleigh_radial_grid(ra_rst)
 !
       ilength =  ra_rst%nri_org * kreal
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, ilength,                        &
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_64bit_f(ra_rst%iflag_swap, ilength,                  &
      &    ra_rst%r_org(1), ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
 !
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kreal,                          &
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_64bit_f(ra_rst%iflag_swap, kreal,                    &
      &   ra_rst%time_org, ierr_IO)
-      call rawread_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      write(*,*) 'ra_rst%time_org', ra_rst%time_org
+      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
 !
       call close_binary_file
 !

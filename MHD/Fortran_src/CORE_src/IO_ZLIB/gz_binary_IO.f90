@@ -222,7 +222,7 @@
       integer(kind = kint) :: ierr, int_dat
 !
 !
-      call gzread_f(iendian_KEEP, kint, int_dat, ierr)
+      call gzread_32bit_f(iendian_KEEP, kint, int_dat, ierr)
 !
       if(int_dat .eq. i_UNIX) then
         if(my_rank.eq.0) write(*,*) 'binary data have correct endian!'
@@ -248,7 +248,7 @@
 !
 !
       ierr = 0
-      call gzread_f(iflag_swap, kint, int_dat, ierr)
+      call gzread_32bit_f(iflag_swap, kint, int_dat, ierr)
       if(ierr .ne. kint) ierr = ierr_file
 !
       end subroutine gz_read_one_integer_b
@@ -263,7 +263,7 @@
 !
 !
       ierr = 0
-      call gzread_f(iflag_swap, kreal, real_dat, ierr)
+      call gzread_64bit_f(iflag_swap, kreal, real_dat, ierr)
       if(ierr .ne. kreal) ierr = ierr_file
 !
       end subroutine gz_read_one_real_b
@@ -283,7 +283,7 @@
 !
       ierr = 0
       ilength = num * kint_gl
-      call gzread_f(iflag_swap, ilength, int8_dat(1), ierr)
+      call gzread_64bit_f(iflag_swap, ilength, int8_dat(1), ierr)
       if(ierr .ne. ilength) ierr = ierr_file
 !
       end subroutine gz_read_mul_int8_b
@@ -302,7 +302,7 @@
 !
       ierr = 0
       ilength = num * kint
-      call gzread_f(iflag_swap, ilength, int_dat(1), ierr)
+      call gzread_32bit_f(iflag_swap, ilength, int_dat(1), ierr)
       if(ierr .ne. ilength) ierr = ierr_file
 !
       end subroutine gz_read_mul_integer_b
@@ -341,7 +341,7 @@
 !
       ierr = 0
       ilength = num * kchara
-      call gzread_f(iflag_swap, ilength, chara_dat(1), ierr)
+      call gzread_32bit_f(iflag_swap, ilength, chara_dat(1), ierr)
       if(ierr .ne. ilength) ierr = ierr_file
 !
       end subroutine gz_read_mul_character_b
@@ -361,7 +361,7 @@
 !
       ierr = 0
       ilength =  num * kreal
-      call gzread_f(iflag_swap, ilength, real_dat(1), ierr)
+      call gzread_64bit_f(iflag_swap, ilength, real_dat(1), ierr)
       if(ierr .ne. ilength) ierr = ierr_file
 !
       end subroutine gz_read_1d_vector_b
@@ -381,7 +381,7 @@
 !
       ierr = 0
       ilength =  n1 * n2 * kreal
-      call gzread_f(iflag_swap, ilength, real_dat(1,1), ierr)
+      call gzread_64bit_f(iflag_swap, ilength, real_dat(1,1), ierr)
       if(ierr .ne. ilength) ierr = ierr_file
 !
       end subroutine gz_read_2d_vector_b

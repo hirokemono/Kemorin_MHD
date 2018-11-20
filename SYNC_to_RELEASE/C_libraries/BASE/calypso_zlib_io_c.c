@@ -65,9 +65,16 @@ void rawseek_go_fwd_f(int *ioffset, int *ierr){
     return;
 }
 
-void rawread_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara){
+void rawread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara){
     *lenchara =  fread(textbuf, sizeof(char), *ilength, fp);
-    if(*iflag_swap == IFLAG_SWAP) {byte_swap(*ilength, textbuf);};
+    if(*iflag_swap == IFLAG_SWAP) {byte_swap_4(*ilength, textbuf);};
+    return;
+}
+
+void rawread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara){
+    int i;
+    *lenchara =  fread(textbuf, sizeof(char), *ilength, fp);
+    if(*iflag_swap == IFLAG_SWAP) {byte_swap_8(*ilength, textbuf);};
     return;
 }
 
@@ -373,9 +380,15 @@ void gzseek_go_fwd_f(int *ioffset, int *ierr){
     *ierr =  (int)ierr_z;
 }
 
-void gzread_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr){
+void gzread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr){
     *ierr =  gzread(file_gz, textbuf, (uInt) *ilength);
-    if(*iflag_swap == IFLAG_SWAP) {byte_swap(*ilength, textbuf);};
+    if(*iflag_swap == IFLAG_SWAP) {byte_swap_4(*ilength, textbuf);};
+    return;
+}
+
+void gzread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr){
+    *ierr =  gzread(file_gz, textbuf, (uInt) *ilength);
+    if(*iflag_swap == IFLAG_SWAP) {byte_swap_8(*ilength, textbuf);};
     return;
 }
 

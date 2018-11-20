@@ -245,7 +245,7 @@
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
-          call byte_swap_f(l8_byte, int_dat(1))
+          call byte_swap_32bit_f(l8_byte, int_dat(1))
         end if
       end if
 !
@@ -291,7 +291,7 @@
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
-          call byte_swap_f(l8_byte, int8_dat(1))
+          call byte_swap_64bit_f(l8_byte, int8_dat(1))
         end if
       end if
 !
@@ -338,7 +338,7 @@
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
-          call byte_swap_f(l8_byte, real_dat(1))
+          call byte_swap_64bit_f(l8_byte, real_dat(1))
         end if
       end if
 !

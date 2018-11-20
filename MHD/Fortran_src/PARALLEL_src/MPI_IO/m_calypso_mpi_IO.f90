@@ -412,7 +412,7 @@
 !
       if(iflag_bin_swap .eq. i_XINU) then
         l8_byte = ilength * kreal
-        call byte_swap_f(l8_byte, vector(1))
+        call byte_swap_64bit_f(l8_byte, vector(1))
       end if
 !
       end subroutine calypso_mpi_seek_read_real
@@ -437,7 +437,7 @@
 !
       if(iflag_bin_swap .eq. i_XINU) then
         l8_byte = ilength * kint
-        call byte_swap_f(l8_byte, int_vector(1))
+        call byte_swap_32bit_f(l8_byte, int_vector(1))
       end if
 !
       end subroutine calypso_mpi_seek_read_int
@@ -462,7 +462,7 @@
 !
       if(iflag_bin_swap .eq. i_XINU) then
         l8_byte = ilength * kint_gl
-        call byte_swap_f(l8_byte, i8_vector(1))
+        call byte_swap_64bit_f(l8_byte, i8_vector(1))
       end if
 !
       end subroutine calypso_mpi_seek_read_int8

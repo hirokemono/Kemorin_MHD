@@ -33,14 +33,25 @@
       subroutine close_rawfile()  BIND(C, name = 'close_rawfile')
       end subroutine
 !
-      subroutine rawread_f(iflag_swap, ilength, textbuf, lenchara)      &
-     &          BIND(C, name = 'rawread_f')
+      subroutine rawread_32bit_f                                        &
+     &         (iflag_swap, ilength, textbuf, lenchara)                 &
+     &          BIND(C, name = 'rawread_32bit_f')
       use ISO_C_BINDING
         integer(C_INT) :: iflag_swap
         integer(C_INT) :: ilength
         character(*) :: textbuf
         integer(C_INT) :: lenchara
-      end subroutine rawread_f
+      end subroutine rawread_32bit_f
+!
+      subroutine rawread_64bit_f                                        &
+     &         (iflag_swap, ilength, textbuf, lenchara)                 &
+     &          BIND(C, name = 'rawread_64bit_f')
+      use ISO_C_BINDING
+        integer(C_INT) :: iflag_swap
+        integer(C_INT) :: ilength
+        character(*) :: textbuf
+        integer(C_INT) :: lenchara
+      end subroutine rawread_64bit_f
 !
       subroutine rawwrite_f(length, textbuf, lenchara)                  &
      &          BIND(C, name = 'rawwrite_f')

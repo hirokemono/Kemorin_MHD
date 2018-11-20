@@ -11,7 +11,8 @@
   #define open_ad_rawfile           open_ad_rawfile_
   #define open_rd_rawfile           open_rd_rawfile_
   #define close_rawfile             close_rawfile_
-  #define rawread_f                 rawread_f_
+  #define rawread_32bit_f           rawread_32bit_f_
+  #define rawread_64bit_f           rawread_64bit_f_
   #define rawwrite_f                rawwrite_f_
   #define rawseek_go_fwd_f          rawseek_go_fwd_f_
 
@@ -23,7 +24,8 @@
   #define write_compress_txt        write_compress_txt_
   #define write_compress_txt_nolf   write_compress_txt_nolf_
   #define gzseek_go_fwd_f           gzseek_go_fwd_f_
-  #define gzread_f                  gzread_f_
+  #define gzread_32bit_f            gzread_32bit_f_
+  #define gzread_64bit_f            gzread_64bit_f_
   #define gzwrite_f                 gzwrite_f_
   #define get_one_line_from_gz      get_one_line_from_gz_
   #define compress_file             compress_file_
@@ -63,7 +65,8 @@
   #define open_ad_rawfile           OPEN_AD_RAWFILE
   #define open_rd_rawfile           OPEN_RD_RAWFILE
   #define close_rawfile             CLOSE_RAWFILE
-  #define rawread_f                 RAWREAD_F
+  #define rawread_32bit_f           RAWREAD_32BIT_F
+  #define rawread_64bit_f           RAWREAD_64BIT_F
   #define rawwrite_f                RAWWRITE_F
   #define rawseek_go_fwd_f          RAWSEEK_GO_FWD_F
 
@@ -75,7 +78,8 @@
   #define write_compress_txt        WRITE_COMPRESS_TXT
   #define write_compress_txt_nolf   WRITE_COMPRESS_TXT_NOLF
   #define gzseek_go_fwd_f           GZSEEK_GO_FWD_F
-  #define gzread_f                  GZREAD_F
+  #define gzread_32bit_f            GZREAD_32BIT_F
+  #define gzread_64bit_f            GZREAD_64BIT_F
   #define gzwrite_f                 GZWRITE_F
   #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
   #define compress_file             COMPRESS_FILE
@@ -115,7 +119,8 @@
   #define open_ad_rawfile           OPEN_AD_RAWFILE
   #define open_rd_rawfile           OPEN_RD_RAWFILE
   #define close_rawfile             CLOSE_RAWFILE
-  #define rawread_f                 RAWREAD_F
+  #define rawread_32bit_f           RAWREAD_32BIT_F
+  #define rawread_64bit_f           RAWREAD_64BIT_F
   #define rawwrite_f                RAWWRITE_F
   #define rawseek_go_fwd_f          RAWSEEK_GO_FWD_F
 
@@ -127,7 +132,8 @@
   #define write_compress_txt        WRITE_COMPRESS_TXT
   #define write_compress_txt_nolf   WRITE_COMPRESS_TXT_NOLF
   #define gzseek_go_fwd_f           GZSEEK_GO_FWD_F
-  #define gzread_f                  GZREAD_F
+  #define gzread_32bit_f            GZREAD_32BIT_F
+  #define gzread_64bit_f            GZREAD_64BIT_F
   #define gzwrite_f                 GZWRITE_F
   #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
   #define compress_file             COMPRESS_FILE
@@ -167,7 +173,8 @@
   #define open_ad_rawfile           open_ad_rawfile
   #define open_rd_rawfile           open_rd_rawfile
   #define close_rawfile             close_rawfile
-  #define rawread_f                 rawread_f
+  #define rawread_32bit_f           rawread_32bit_f
+  #define rawread_64bit_f           rawread_64bit_f
   #define rawwrite_f                rawwrite_f
   #define rawseek_go_fwd_f          rawseek_go_fwd_f
 
@@ -179,7 +186,8 @@
   #define write_compress_txt        write_compress_txt
   #define write_compress_txt_nolf   write_compress_txt_nolf
   #define gzseek_go_fwd_f           gzseek_go_fwd_f
-  #define gzread_f                  gzread_f
+  #define gzread_32bit_f            gzread_32bit_f
+  #define gzread_64bit_f            gzread_64bit_f
   #define gzwrite_f                 gzwrite_f
   #define get_one_line_from_gz      get_one_line_from_gz
   #define compress_file             compress_file

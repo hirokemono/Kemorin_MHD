@@ -181,7 +181,7 @@
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
-          call byte_swap_f(l8_byte, i8_array(iloop)%i8_IO(1))
+          call byte_swap_64bit_f(l8_byte, i8_array(iloop)%i8_IO(1))
         end if
         deallocate(c_array(iloop)%c_IO)
       end do
@@ -212,7 +212,7 @@
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
-          call byte_swap_f(l8_byte, i_array(iloop)%i_IO(1))
+          call byte_swap_32bit_f(l8_byte, i_array(iloop)%i_IO(1))
         end if
         deallocate(c_array(iloop)%c_IO)
       end do
@@ -243,7 +243,7 @@
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
-          call byte_swap_f(l8_byte, iv_array(iloop)%iv_IO(1,1))
+          call byte_swap_32bit_f(l8_byte, iv_array(iloop)%iv_IO(1,1))
         end if
         deallocate(c_array(iloop)%c_IO)
       end do
@@ -274,7 +274,7 @@
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
-          call byte_swap_f(l8_byte, r_array(iloop)%r_IO(1))
+          call byte_swap_64bit_f(l8_byte, r_array(iloop)%r_IO(1))
         end if
         deallocate(c_array(iloop)%c_IO)
       end do
@@ -305,7 +305,7 @@
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = ilength
-          call byte_swap_f(l8_byte, v_array(iloop)%v_IO(1,1))
+          call byte_swap_64bit_f(l8_byte, v_array(iloop)%v_IO(1,1))
         end if
         deallocate(c_array(iloop)%c_IO)
       end do

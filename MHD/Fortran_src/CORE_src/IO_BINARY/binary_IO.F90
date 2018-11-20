@@ -350,7 +350,7 @@ end subroutine write_mul_one_character_b
 !
 !
 #ifdef ZLIB_IO
-      call rawread_f(iendian_KEEP, kint, int_dat, ierr_IO)
+      call rawread_32bit_f(iendian_KEEP, kint, int_dat, ierr_IO)
 !
       if(int_dat .eq. i_UNIX) then
         if(my_rank.eq.0) write(*,*) 'binary data have correct endian!'
@@ -380,7 +380,7 @@ end subroutine write_mul_one_character_b
 !
 !
 #ifdef ZLIB_IO
-      call rawread_f(iflag_swap, kint, int_dat, ierr)
+      call rawread_32bit_f(iflag_swap, kint, int_dat, ierr)
       if(ierr .ne. kint) goto 99
 #else
       read(id_binary, err=99, end=99)  int_dat
@@ -404,7 +404,7 @@ end subroutine write_mul_one_character_b
 !
 !
 #ifdef ZLIB_IO
-      call rawread_f(iflag_swap, kreal, real_dat, ierr)
+      call rawread_64bit_f(iflag_swap, kreal, real_dat, ierr)
       if(ierr .ne. kreal) goto 99
 #else
       read(id_binary, err=99, end=99)  real_dat
@@ -434,7 +434,7 @@ end subroutine write_mul_one_character_b
       if(num .le. 0) return
 #ifdef ZLIB_IO
       ilength = num * kint_gl
-      call rawread_f(iflag_swap, ilength, int_gl_dat(1), ierr)
+      call rawread_64bit_f(iflag_swap, ilength, int_gl_dat(1), ierr)
       if(ierr .ne. ilength) goto 99
 #else
       read(id_binary, err=99, end=99)  int_gl_dat(1:num)
@@ -463,7 +463,7 @@ end subroutine write_mul_one_character_b
       if(num .le. 0) return
 #ifdef ZLIB_IO
       ilength = num * kint
-      call rawread_f(iflag_swap, ilength, int_dat(1), ierr)
+      call rawread_32bit_f(iflag_swap, ilength, int_dat(1), ierr)
       if(ierr .ne. ilength) goto 99
 #else
       read(id_binary, err=99, end=99)  int_dat(1:num)
@@ -510,7 +510,7 @@ end subroutine write_mul_one_character_b
       if(num .le. 0) return
 #ifdef ZLIB_IO
       ilength = num * kchara
-      call rawread_f(iflag_swap, ilength, chara_dat(1), ierr)
+      call rawread_32bit_f(iflag_swap, ilength, chara_dat(1), ierr)
       if(ierr .ne. ilength) goto 99
 #else
       read(id_binary, err=99, end=99)  chara_dat(1:num)
@@ -540,7 +540,7 @@ end subroutine write_mul_one_character_b
       if(num .le. 0) return
 #ifdef ZLIB_IO
       ilength = num
-      call rawread_f(iflag_swap, ilength, chara_dat(1), ierr)
+      call rawread_32bit_f(iflag_swap, ilength, chara_dat(1), ierr)
       if(ierr .ne. ilength) goto 99
 #else
       read(id_binary, err=99, end=99)  chara_dat(1:num)
@@ -569,7 +569,7 @@ end subroutine write_mul_one_character_b
       if(num .le. 0) return
 #ifdef ZLIB_IO
       ilength =  num * kreal
-      call rawread_f(iflag_swap, ilength, real_dat(1), ierr)
+      call rawread_64bit_f(iflag_swap, ilength, real_dat(1), ierr)
       if(ierr .ne. ilength) goto 99
 #else
       read(id_binary, err=99, end=99)  real_dat(1:num)
@@ -598,7 +598,7 @@ end subroutine write_mul_one_character_b
 #ifdef ZLIB_IO
       if(n1*n2 .le. 0) return
       ilength =  n1 * n2 * kreal
-      call rawread_f(iflag_swap, ilength, real_dat(1,1), ierr)
+      call rawread_64bit_f(iflag_swap, ilength, real_dat(1,1), ierr)
       if(ierr .ne. ilength) goto 99
 #else
       read(id_binary, err=99, end=99)  real_dat(1:n1,1:n2)

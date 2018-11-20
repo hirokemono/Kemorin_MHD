@@ -1,5 +1,5 @@
 !>@file   byte_swap_f.f90
-!!@brief  module byte_swap_f
+!!@brief   byte_swap_f
 !!
 !!@authorH.Matsui and H.Okuda
 !!@date Programmed  by  H. Matsui in  Aug., 2016 
@@ -7,7 +7,8 @@
 !>@brief swap byte endian
 !!
 !!@verbatim
-!!      subroutine byte_swap_f(l8_byte, array)
+!!      subroutine byte_swap_32bit_f(l8_byte, array)
+!!      subroutine byte_swap_64bit_f(l8_byte, array)
 !!         l8_byte :: byte length of array (defined by 8-byte integer)
 !!         array ::   array to be transfered (call by using pointer!)
 !!
@@ -20,7 +21,7 @@
 !!      subroutine real_to_charabuffer(num, real_dat, buffer)
 !!@endverbatim
 !
-      subroutine byte_swap_f(l8_byte, array)
+      subroutine byte_swap_32bit_f(l8_byte, array)
 !
       use m_precision
       implicit none
@@ -43,7 +44,42 @@
       end do
 !$omp end parallel do
 !
-      end subroutine byte_swap_f
+      end subroutine byte_swap_32bit_f
+!
+! -----------------------------------------------------------------------
+!
+      subroutine byte_swap_64bit_f(l8_byte, array)
+!
+      use m_precision
+      implicit none
+!
+      integer(kind = kint_gl), intent(in) :: l8_byte
+      character(len=1), intent(inout) :: array(l8_byte)
+!
+      integer(kind = kint_gl) :: i8
+      character(len=1) :: tmp1, tmp2, tmp3, tmp4
+!
+!
+!$omp parallel do private(i8,tmp1,tmp2)
+      do i8 = 8, l8_byte, 8
+        tmp1 = array(8*i8-7)
+        tmp2 = array(8*i8-6)
+        tmp3 = array(8*i8-5)
+        tmp4 = array(8*i8-4)
+!
+        array(8*i8-7) = array(8*i8  )
+        array(8*i8-6) = array(8*i8-1)
+        array(8*i8-5) = array(8*i8-2)
+        array(8*i8-4) = array(8*i8-3)
+!
+        array(8*i8-3) = tmp4
+        array(8*i8-2) = tmp3
+        array(8*i8-1) = tmp2
+        array(8*i8  ) = tmp1
+      end do
+!$omp end parallel do
+!
+      end subroutine byte_swap_64bit_f
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
