@@ -85,10 +85,10 @@
         do nd = 1, iflag_ncomp
           i_comp = 2*nd - 1 + new_sph_phys%istack_component(i_fld-1)
 !
-!          call check_rayleigh_restart_reading(file_name(nd), i_comp, &
+!          call check_rayleigh_restart_reading(file_name(nd), i_comp,   &
 !     &        ra_rst, rayleigh_WK%rayleigh_in)
-          call cvt_each_field_from_rayleigh(file_name(nd),            &
-     &        i_fld, i_comp, new_sph_mesh,                            &
+          call cvt_each_field_from_rayleigh(file_name(nd),              &
+     &        i_fld, i_comp, new_sph_mesh,                              &
      &        r_itp, ra_rst, fcheby_WK, rayleigh_WK, new_sph_phys)
         end do
 !
@@ -169,20 +169,19 @@
           call copy_from_chebyshev_trans(new_sph_mesh%sph%sph_rj,       &
      &        r_itp, j, i_comp,  rayleigh_WK%nri_tgt,                   &
      &        rayleigh_WK%rayleigh_tg(1,1), new_sph_phys)
-       else if(new_sph_phys%phys_name(i_fld) .eq. fhd_pre_mom           &
-      &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_pre_heat          &
-      &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_pre_uxb) then
+        else if(new_sph_phys%phys_name(i_fld) .eq. fhd_pre_mom          &
+     &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_pre_heat           &
+     &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_pre_uxb) then
           call radial_interpolation_rayleigh(r_itp,                     &
      &        ra_rst%nri_org, rayleigh_WK%rayleigh_in(1,1),             &
      &        rayleigh_WK%nri_tgt, rayleigh_WK%rayleigh_tg(1,1))
-       end if
+        end if
 !
-!          call check_chebyshev_trans                                   &
-!     &       (new_sph_mesh%sph%sph_rj, r_itp, file_name,               &
-!     &        l, m, j, i_fld, i_comp, ra_rst%nri_org,                  &
-!     &        rayleigh_WK%rayleigh_in, rayleigh_WK%nri_tgt,            &
-!     &        rayleigh_WK%rayleigh_tg, new_sph_phys)
-!        end if
+        call check_chebyshev_trans                                      &
+     &     (new_sph_mesh%sph%sph_rj, r_itp, file_name,                  &
+     &      l, m, j, i_fld, i_comp, ra_rst%nri_org,                     &
+     &      rayleigh_WK%rayleigh_in, rayleigh_WK%nri_tgt,               &
+     &      rayleigh_WK%rayleigh_tg, new_sph_phys)
       end do
 !
       call close_mpi_file(IO_param)
@@ -216,9 +215,9 @@
 !
       iflag = 0
       if(l .eq. 0 .and. m .eq.  0) iflag = 1
-      if(l .eq. 2 .and. m .eq.  0) iflag = 1
-      if(l .eq. 5 .and. m .eq.  4) iflag = 1
-      if(l .eq. 5 .and. m .eq. -4) iflag = 1
+      if(l .eq. 1 .and. m .eq.  0) iflag = 1
+      if(l .eq. 10 .and. m .eq.  10) iflag = 1
+      if(l .eq. 10 .and. m .eq. -10) iflag = 1
       if(iflag .eq. 0) return
 !
       write(50+my_rank,*) trim(file_name), l, m
@@ -233,7 +232,7 @@
      &                      rayleigh_tg(k,1)
       end do
 !
-      write(50+my_rank,*) 'fld', trim(file_name), l, m, nri_tgt
+!      write(50+my_rank,*) 'fld', trim(file_name), l, m, nri_tgt
 !      do k = 1, nri_org
 !        write(50+my_rank,*) k, rayleigh_fd(k,1)
 !      end do
