@@ -410,7 +410,7 @@
       call MPI_FILE_READ(id_mpi_file, vector, ilength,                  &
      &    CALYPSO_REAL, sta1_IO, ierr_MPI)
 !
-      if(iflag_bin_swap .eq. i_XINU) then
+      if(iflag_bin_swap .eq. iendian_FLIP) then
         l8_byte = ilength * kreal
         call byte_swap_64bit_f(l8_byte, vector(1))
       end if
@@ -435,7 +435,7 @@
       call MPI_FILE_READ(id_mpi_file, int_vector, ilength,              &
      &    CALYPSO_INTEGER, sta1_IO, ierr_MPI)
 !
-      if(iflag_bin_swap .eq. i_XINU) then
+      if(iflag_bin_swap .eq. iendian_FLIP) then
         l8_byte = ilength * kint
         call byte_swap_32bit_f(l8_byte, int_vector(1))
       end if
@@ -460,7 +460,7 @@
       call MPI_FILE_READ(id_mpi_file, i8_vector, ilength,              &
      &    CALYPSO_GLOBAL_INT, sta1_IO, ierr_MPI)
 !
-      if(iflag_bin_swap .eq. i_XINU) then
+      if(iflag_bin_swap .eq. iendian_FLIP) then
         l8_byte = ilength * kint_gl
         call byte_swap_64bit_f(l8_byte, i8_vector(1))
       end if

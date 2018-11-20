@@ -24,6 +24,7 @@
       module t_rayleigh_restart_IO
 !
       use m_precision
+      use m_machine_parameter
       use m_constants
       use t_field_data_IO
       use set_parallel_file_name
@@ -157,9 +158,9 @@
      &          trim(file_name)
       call open_rd_rawfile(file_name, ierr_IO)
 !
-      ra_rst%iflag_swap = 0
+      ra_rst%iflag_swap = iendian_KEEP
       call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
-      if(int_tmp .ne. 4) ra_rst%iflag_swap = 1
+      if(int_tmp .ne. 4) ra_rst%iflag_swap = iendian_FLIP
 !
       call rawread_32bit_f                                              &
      &   (ra_rst%iflag_swap, kint, ra_rst%nri_org, ierr_IO)

@@ -35,12 +35,12 @@
 !
 !$omp parallel do private(i8,tmp1,tmp2)
       do i8 = 4, l8_byte, 4
-        tmp1 = array(4*i8-3)
-        tmp2 = array(4*i8-2)
-        array(4*i8-3) = array(4*i8  )
-        array(4*i8-2) = array(4*i8-1)
-        array(4*i8-1) = tmp2
-        array(4*i8  ) = tmp1
+        tmp1 = array(i8-3)
+        tmp2 = array(i8-2)
+        array(i8-3) = array(i8  )
+        array(i8-2) = array(i8-1)
+        array(i8-1) = tmp2
+        array(i8  ) = tmp1
       end do
 !$omp end parallel do
 !
@@ -60,22 +60,22 @@
       character(len=1) :: tmp1, tmp2, tmp3, tmp4
 !
 !
-!$omp parallel do private(i8,tmp1,tmp2)
+!$omp parallel do private(i8,tmp1,tmp2,tmp3,tmp4)
       do i8 = 8, l8_byte, 8
-        tmp1 = array(8*i8-7)
-        tmp2 = array(8*i8-6)
-        tmp3 = array(8*i8-5)
-        tmp4 = array(8*i8-4)
+        tmp1 = array(i8-7)
+        tmp2 = array(i8-6)
+        tmp3 = array(i8-5)
+        tmp4 = array(i8-4)
 !
-        array(8*i8-7) = array(8*i8  )
-        array(8*i8-6) = array(8*i8-1)
-        array(8*i8-5) = array(8*i8-2)
-        array(8*i8-4) = array(8*i8-3)
+        array(i8-7) = array(i8  )
+        array(i8-6) = array(i8-1)
+        array(i8-5) = array(i8-2)
+        array(i8-4) = array(i8-3)
 !
-        array(8*i8-3) = tmp4
-        array(8*i8-2) = tmp3
-        array(8*i8-1) = tmp2
-        array(8*i8  ) = tmp1
+        array(i8-3) = tmp4
+        array(i8-2) = tmp3
+        array(i8-1) = tmp2
+        array(i8  ) = tmp1
       end do
 !$omp end parallel do
 !

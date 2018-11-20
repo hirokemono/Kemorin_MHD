@@ -128,8 +128,8 @@
 !
       call open_read_mpi_file                                           &
      &   (file_name, nprocs, my_rank, IO_param)
-      write(50+my_rank,*) 'k, kr, l, m, ra_rst%iflag_swap, ioffset1, ioffset2', &
-       &     new_sph_mesh%sph%sph_rj%nidx_rj(1:2)
+!      write(50+my_rank,*) 'k, kr, l, m, ra_rst%iflag_swap',            &
+!       &     new_sph_mesh%sph%sph_rj%nidx_rj(1:2), ra_rst%iflag_swap
       do j = 1, new_sph_mesh%sph%sph_rj%nidx_rj(2)
         l = new_sph_mesh%sph%sph_rj%idx_gl_1d_rj_j(j,2)
         m = new_sph_mesh%sph%sph_rj%idx_gl_1d_rj_j(j,3)
@@ -177,11 +177,11 @@
      &        rayleigh_WK%nri_tgt, rayleigh_WK%rayleigh_tg(1,1))
         end if
 !
-        call check_chebyshev_trans                                      &
-     &     (new_sph_mesh%sph%sph_rj, r_itp, file_name,                  &
-     &      l, m, j, i_fld, i_comp, ra_rst%nri_org,                     &
-     &      rayleigh_WK%rayleigh_in, rayleigh_WK%nri_tgt,               &
-     &      rayleigh_WK%rayleigh_tg, new_sph_phys)
+!        call check_chebyshev_trans                                     &
+!     &     (new_sph_mesh%sph%sph_rj, r_itp, file_name,                 &
+!     &      l, m, j, i_fld, i_comp, ra_rst%nri_org,                    &
+!     &      rayleigh_WK%rayleigh_in, rayleigh_WK%nri_tgt,              &
+!     &      rayleigh_WK%rayleigh_tg, new_sph_phys)
       end do
 !
       call close_mpi_file(IO_param)
