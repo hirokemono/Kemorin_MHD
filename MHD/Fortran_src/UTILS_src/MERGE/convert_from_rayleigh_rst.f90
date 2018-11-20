@@ -128,8 +128,8 @@
 !
       call open_read_mpi_file                                           &
      &   (file_name, nprocs, my_rank, IO_param)
-!      write(50+my_rank,*) 'k, kr, l, m, ioffset1, ioffset2', &
-!       &     new_sph_mesh%sph%sph_rj%nidx_rj(1:2)
+      write(50+my_rank,*) 'k, kr, l, m, ra_rst%iflag_swap, ioffset1, ioffset2', &
+       &     new_sph_mesh%sph%sph_rj%nidx_rj(1:2)
       do j = 1, new_sph_mesh%sph%sph_rj%nidx_rj(2)
         l = new_sph_mesh%sph%sph_rj%idx_gl_1d_rj_j(j,2)
         m = new_sph_mesh%sph%sph_rj%idx_gl_1d_rj_j(j,3)
