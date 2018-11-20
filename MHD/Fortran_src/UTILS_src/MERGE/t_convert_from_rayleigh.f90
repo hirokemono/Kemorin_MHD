@@ -115,6 +115,7 @@
       allocate(fcheby_WK%WSAVE(fcheby_WK%LENSAV))
       allocate(fcheby_WK%WORK(nri_tgt+1))
 !
+      write(*,*) 'COST1I fcheby_WK%LENSAV', fcheby_WK%LENSAV, nri_tgt
       call COST1I(nri_tgt, fcheby_WK%WSAVE, fcheby_WK%LENSAV, ierr)
 !
       end subroutine init_fftpack_4_cheby
