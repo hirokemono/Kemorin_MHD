@@ -272,12 +272,15 @@
       integer(kind = kint) :: k, nri_min
 !
 !
-      nri_min = min(nri_org, nri_tgt)
+      nri_min = min(nri_org, nri_tgt+1)
 !
 !   Normalize for Chebyshev mode 0
       rayleigh_tg(1) = half * half* rayleigh_in(1)
       do k = 2, nri_min
         rayleigh_tg(k) = half * (-one)**(k-1) * rayleigh_in(k)
+      end do
+      do k = nri_min+1, nri_tgt+1
+        rayleigh_tg(k) = 0.0d0
       end do
 !
       end subroutine rescaling_for_chebyshev_FFT
