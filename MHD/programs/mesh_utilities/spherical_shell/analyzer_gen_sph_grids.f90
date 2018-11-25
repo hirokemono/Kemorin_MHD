@@ -109,7 +109,10 @@
       call para_gen_sph_grids(sph_const, gen_sph_G)
       call dealloc_gen_mesh_params(gen_sph_G)
 !
+      if(sph_files1%FEM_mesh_flags%iflag_access_FEM .eq. 0) goto 99
+!
       call start_elapsed_time(4)
+      if(iflag_debug .gt. 0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
      &   (sph_files1%FEM_mesh_flags, sph_const, comms_sph, sph_grps,    &
      &    geofem, ele_mesh, sph_files1%mesh_file_IO, gen_sph_G)
@@ -118,6 +121,8 @@
       call dealloc_gen_sph_fem_mesh_param(gen_sph_G)
       call end_elapsed_time(4)
 !
+      if(sph_files1%FEM_mesh_flags%iflag_output_SURF .eq. 0) goto 99
+!
       call start_elapsed_time(5)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_init_with_IO'
       call FEM_mesh_init_with_IO                                        &
@@ -125,6 +130,8 @@
      &    sph_files1%mesh_file_IO, geofem%mesh, geofem%group, ele_mesh)
       call end_elapsed_time(5)
       call end_elapsed_time(1)
+!
+  99  continue
 !
       call output_elapsed_times
       call calypso_MPI_barrier
