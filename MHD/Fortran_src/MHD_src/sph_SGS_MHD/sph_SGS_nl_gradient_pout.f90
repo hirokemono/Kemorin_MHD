@@ -209,7 +209,6 @@
       real(kind = kreal) :: gamma_r, gamma_t, gamma_p
 !
 !
-      write(*,*) 'Tako'
       do lt = 1, nidx_rtp(2)
         do kr = 1, kr_in-1
           inod = kr + (lt-1)*nidx_rtp(1)                                &
@@ -218,6 +217,9 @@
           d_SGS(inod,2) = zero
           d_SGS(inod,3) = zero
         end do
+!
+        cycle
+!
         do kr = kr_in, kr_out
           inod = kr + (lt-1)*nidx_rtp(1)                                &
      &        + (mphi-1)*nidx_rtp(1)*nidx_rtp(2)
