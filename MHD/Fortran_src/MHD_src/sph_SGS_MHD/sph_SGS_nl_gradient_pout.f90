@@ -209,23 +209,26 @@
       real(kind = kreal) :: gamma_r, gamma_t, gamma_p
 !
 !
-      write(*,*) 'aho'
+      write(*,*) 'ahoaho'
       do lt = 1, nidx_rtp(2)
-!        do kr = 1, kr_in-1
-!          inod = kr + (lt-1)*nidx_rtp(1)                                &
-!     &        + (mphi-1)*nidx_rtp(1)*nidx_rtp(2)
-!          d_SGS(inod,1) = zero
-!          d_SGS(inod,2) = zero
-!          d_SGS(inod,3) = zero
-!        end do
+        do kr = 1, kr_in-1
+          inod = kr + (lt-1)*nidx_rtp(1)                                &
+     &        + (mphi-1)*nidx_rtp(1)*nidx_rtp(2)
+          d_SGS(inod,1) = zero
+          d_SGS(inod,2) = zero
+          d_SGS(inod,3) = zero
+        end do
 !
         do kr = kr_in, kr_out
           inod = kr + (lt-1)*nidx_rtp(1)                                &
      &        + (mphi-1)*nidx_rtp(1)*nidx_rtp(2)
 !
-          gamma_r = coef * radial_2nd_moment(kr)
-          gamma_t = coef * theta_2nd_moment(lt) * (r(kr))**2
-          gamma_p = coef * phi_2nd_moment * (r(kr) * sin_t(lt))**2
+          gamma_r = coef
+          gamma_t = coef
+          gamma_p = coef
+!          gamma_r = coef * radial_2nd_moment(kr)
+!          gamma_t = coef * theta_2nd_moment(lt) * (r(kr))**2
+!          gamma_p = coef * phi_2nd_moment * (r(kr) * sin_t(lt))**2
 !
           du1_dx1 = grad_ux(inod,1)
           du1_dx2 = grad_ux(inod,2) * r(kr) - u_rtp(inod,2)
@@ -269,13 +272,13 @@
      &           + gamma_p * (du1_dx3 * db2_dx3 - du2_dx3 * db1_dx3)
         end do
 !
-!        do kr = kr_out+1, nidx_rtp(1)
-!          inod = kr + (lt-1)*nidx_rtp(1)                                &
-!     &        + (mphi-1)*nidx_rtp(1)*nidx_rtp(2)
-!          d_SGS(inod,1) = zero
-!          d_SGS(inod,2) = zero
-!          d_SGS(inod,3) = zero
-!        end do
+        do kr = kr_out+1, nidx_rtp(1)
+          inod = kr + (lt-1)*nidx_rtp(1)                                &
+     &        + (mphi-1)*nidx_rtp(1)*nidx_rtp(2)
+          d_SGS(inod,1) = zero
+          d_SGS(inod,2) = zero
+          d_SGS(inod,3) = zero
+        end do
       end do
 !
       end subroutine sph_SGS_induct_nl_gradient_rt
