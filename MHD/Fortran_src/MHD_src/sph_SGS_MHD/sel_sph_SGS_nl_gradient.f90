@@ -80,11 +80,6 @@
      &           :: frc_sgs_rtp(sph_rtp%nnod_rtp,ncomp_sgs_rtp_2_rj)
 !
 !
-      write(*,*) 'frc_sgs_rtp start', size(frc_sgs_rtp,1), size(frc_sgs_rtp,2)
-      close(50+my_rank)
-      write(150+my_rank,*) frc_sgs_rtp(1:sph_rtp%nnod_rtp,if_SGS_idct:if_SGS_idct+2)
-      write(*,*) 'frc_sgs_rtp end'
-      close(150+my_rank)
       call calypso_mpi_barrier
 !
       if(iflag_FFT .eq. iflag_FFTW) then

@@ -69,7 +69,7 @@
       integer(kind = kint) :: mp
 !
 !
-!$omp  parallel do private(mp)
+!!$omp  parallel do private(mp)
       do mp = 1, nidx_rtp(3)
         call sph_SGS_induct_nl_gradient_rt(mp, kr_in, kr_out,           &
      &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,              &
@@ -77,7 +77,7 @@
      &          u_rtp, grad_ux, grad_uy, grad_uz,                       &
      &          b_rtp, grad_bx, grad_by, grad_bz, d_SGS)
       end do
-!$omp end parallel do
+!!$omp end parallel do
 !
       end subroutine sph_SGS_induct_nl_gradient_pout
 !
