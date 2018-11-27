@@ -63,6 +63,7 @@
       use parallel_FEM_mesh_init
       use load_element_mesh_data
       use output_test_mesh
+      use const_element_comm_table
 !
       use t_file_IO_parameter
       use t_mesh_data
@@ -96,6 +97,8 @@
       elapse_labels(9) = 'const_comm_table_by_connenct2'
       elapse_labels(10) = 's_set_element_export_item'
       elapse_labels(11) = 'search_target_element3'
+!
+      call elpsed_label_4_ele_comm_tbl
 !
 !     --------------------- 
 !
