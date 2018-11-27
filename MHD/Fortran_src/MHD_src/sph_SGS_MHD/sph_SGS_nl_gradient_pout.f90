@@ -218,7 +218,7 @@
           d_SGS(inod,3) = zero
         end do
 !
-        cycle
+        goto 10
 !
         do kr = kr_in, kr_out
           inod = kr + (lt-1)*nidx_rtp(1)                                &
@@ -269,6 +269,9 @@
      &           + gamma_t * (du1_dx2 * db2_dx2 - du2_dx2 * db1_dx2)    &
      &           + gamma_p * (du1_dx3 * db2_dx3 - du2_dx3 * db1_dx3)
         end do
+!
+  10    continue
+!
         do kr = kr_out+1, nidx_rtp(1)
           inod = kr + (lt-1)*nidx_rtp(1)                                &
      &        + (mphi-1)*nidx_rtp(1)*nidx_rtp(2)
