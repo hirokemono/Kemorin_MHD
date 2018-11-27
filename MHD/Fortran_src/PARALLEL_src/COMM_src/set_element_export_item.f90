@@ -8,11 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine s_set_element_export_item                            &
+!!     &         (txt, numnod, numele, internal_flag, x_ele,            &
+!!     &          iele_stack_4_node, iele_4_node, x_ref_ele,            &
+!!     &          num_neib, istack_import, item_import,                 &
+!!     &          num_neib_e, istack_export_e, inod_export_l,           &
+!!     &          xe_export, item_export_e)
+!!      subroutine element_export_item_in_ext                           &
 !!     &         (txt, numnod, numele, inod_global, internal_flag,      &
 !!     &          x_ele, iele_stack_4_node, iele_4_node, x_ref_ele,     &
-!!     &          num_neib, istack_import, item_import,                 &
-!!     &          istack_export, item_export, num_neib_e,               &
-!!     &          istack_export_e, inod_export_e, inod_export_l,        &
+!!     &          num_neib, istack_export, item_export,                 &
+!!     &          num_neib_e, istack_export_e, inod_export_e,           &
 !!     &          xe_export, item_export_e)
 !!@endverbatim
 !!
@@ -39,16 +44,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_set_element_export_item                              &
-     &         (txt, numnod, numele, inod_global, internal_flag,        &
-     &          x_ele, iele_stack_4_node, iele_4_node, x_ref_ele,       &
+     &         (txt, numnod, numele, internal_flag, x_ele,              &
+     &          iele_stack_4_node, iele_4_node, x_ref_ele,              &
      &          num_neib, istack_import, item_import,                   &
-     &          istack_export, item_export, num_neib_e,                 &
-     &          istack_export_e, inod_export_e, inod_export_l,          &
+     &          num_neib_e, istack_export_e, inod_export_l,             &
      &          xe_export, item_export_e)
 !
       character(len=kchara), intent(in) :: txt
       integer(kind = kint), intent(in) :: numnod, numele
-      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in)  :: x_ele(numele,3)
 !
@@ -62,17 +65,12 @@
       integer(kind = kint), intent(in) :: istack_import(0:num_neib)
       integer(kind = kint), intent(in)                                  &
      &        :: item_import(istack_import(num_neib))
-      integer(kind = kint), intent(in) :: istack_export(0:num_neib)
-      integer(kind = kint), intent(in)                                  &
-     &        :: item_export(istack_export(num_neib))
 !
       integer(kind = kint), intent(in) :: num_neib_e
       integer(kind = kint), intent(in) :: istack_export_e(0:num_neib_e)
 !
       integer(kind = kint), intent(in)                                  &
      &        :: inod_export_l(istack_export_e(num_neib_e))
-      integer(kind = kint_gl), intent(in)                               &
-     &        :: inod_export_e(istack_export_e(num_neib_e))
       real(kind = kreal), intent(in)                                    &
      &        :: xe_export(3*istack_export_e(num_neib_e))
 !
@@ -83,7 +81,6 @@
       integer(kind = kint) :: ist, ied, inum, inod
       integer(kind = kint) :: jst, jed, jnum, jnod
       integer(kind = kint) :: kst, num
-      integer(kind = kint_gl) :: inod_gl
       real(kind = kreal) :: dist_min
 !
 !
@@ -120,6 +117,53 @@
         end do
       end do
 !
+      end subroutine s_set_element_export_item
+!
+!-----------------------------------------------------------------------
+!
+      subroutine element_export_item_in_ext                             &
+     &         (txt, numnod, numele, inod_global, internal_flag,        &
+     &          x_ele, iele_stack_4_node, iele_4_node, x_ref_ele,       &
+     &          num_neib, istack_export, item_export,                   &
+     &          num_neib_e, istack_export_e, inod_export_e,             &
+     &          xe_export, item_export_e)
+!
+      character(len=kchara), intent(in) :: txt
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
+      integer(kind = kint), intent(in) :: internal_flag(numele)
+      real(kind = kreal), intent(in)  :: x_ele(numele,3)
+!
+      integer(kind = kint), intent(in) :: iele_stack_4_node(0:numnod)
+      integer(kind = kint), intent(in)                                  &
+     &        :: iele_4_node(iele_stack_4_node(numnod))
+      real(kind = kreal), intent(in)                                    &
+     &        :: x_ref_ele(iele_stack_4_node(numnod))
+!
+      integer(kind = kint), intent(in) :: num_neib
+      integer(kind = kint), intent(in) :: istack_export(0:num_neib)
+      integer(kind = kint), intent(in)                                  &
+     &        :: item_export(istack_export(num_neib))
+!
+      integer(kind = kint), intent(in) :: num_neib_e
+      integer(kind = kint), intent(in) :: istack_export_e(0:num_neib_e)
+!
+      integer(kind = kint_gl), intent(in)                               &
+     &        :: inod_export_e(istack_export_e(num_neib_e))
+      real(kind = kreal), intent(in)                                    &
+     &        :: xe_export(3*istack_export_e(num_neib_e))
+!
+      integer(kind = kint), intent(inout)                               &
+     &        :: item_export_e(istack_export_e(num_neib_e))
+!
+      integer(kind = kint) :: ip, iflag
+      integer(kind = kint) :: ist, ied, inum
+      integer(kind = kint) :: jst, jed, jnum, jnod
+      integer(kind = kint) :: kst, num
+      integer(kind = kint_gl) :: inod_gl
+      real(kind = kreal) :: dist_min
+!
+!
       do ip = 1, num_neib
         ist = istack_export_e(ip-1) + 1
         ied = istack_export_e(ip)
@@ -153,7 +197,7 @@
         end do
       end do
 !
-      end subroutine s_set_element_export_item
+      end subroutine element_export_item_in_ext
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
