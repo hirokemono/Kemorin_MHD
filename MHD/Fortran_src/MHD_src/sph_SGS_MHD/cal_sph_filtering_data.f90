@@ -82,7 +82,8 @@
       end do
       filter_mom(0:num_momentum-1) = filter_mom**2
 !
-      write(*,*) 'Gaussian filter moments for for sphere:', filter_mom
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &        'Gaussian filter moments for for sphere:', filter_mom
 !
       end subroutine set_sph_gaussian_filter
 !

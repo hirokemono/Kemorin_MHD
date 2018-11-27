@@ -24,9 +24,11 @@
 !!      subroutine dealloc_sph_2nd_filter_moments(sph_filters)
 !!        type(sph_filters_type), intent(inout) :: sph_filters
 !!
-!!      subroutine check_radial_filter(sph_rj, r_filter)
-!!      subroutine check_radial_filter_func(sph_rj, r_filter)
-!!      subroutine check_sph_2nd_moments(sph_rtp, leg, sph_filters)
+!!      subroutine check_radial_filter(id_file, sph_rj, r_filter)
+!!      subroutine check_radial_filter_func(id_file, sph_rj, r_filter)
+!!      subroutine check_horiz_filter_weight(id_file, sph_filter)
+!!      subroutine check_sph_2nd_moments                                &
+!!     &         (id_file, sph_rtp, leg, sph_filters)
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!@endverbatim
 !!
@@ -193,8 +195,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_radial_filter(sph_rj, r_filter)
+      subroutine check_radial_filter(id_file, sph_rj, r_filter)
 !
+      integer(kind = kint), intent(in) :: id_file
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(filter_coefficients_type), intent(inout) :: r_filter
 !
@@ -202,28 +205,30 @@
 !
 !
       if(my_rank .ne. 0) return
-        write(*,*)  'r_filter%inod_filter(i)',  r_filter%istack_node
+        write(id_file,*)  'r_filter%inod_filter(i)',                    &
+     &                   r_filter%istack_node
         do i = r_filter%istack_node(0)+1, r_filter%istack_node(1)
           ist = r_filter%istack_near_nod(i-1) + 1
           ied = r_filter%istack_near_nod(i)
-          write(*,*) i, r_filter%inod_filter(i),                        &
+          write(id_file,*) i, r_filter%inod_filter(i),                  &
      &                  r_filter%inod_near(ist:ied)
         end do
-        write(*,*)  'r_filter%weight(i)'
+        write(id_file,*)  'r_filter%weight(i)'
         do i = r_filter%istack_node(0)+1, r_filter%istack_node(1)
           ist = r_filter%istack_near_nod(i-1) + 1
           ied = r_filter%istack_near_nod(i)
-          write(*,*) sph_rj%radius_1d_rj_r(r_filter%inod_filter(i)),    &
-     &               i, r_filter%inod_filter(i),                        &
-     &                  r_filter%weight(ist:ied)
+          write(id_file,*)                                              &
+     &         sph_rj%radius_1d_rj_r(r_filter%inod_filter(i)),          &
+     &         i, r_filter%inod_filter(i),  r_filter%weight(ist:ied)
         end do
 !
       end subroutine check_radial_filter
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_radial_filter_func(sph_rj, r_filter)
+      subroutine check_radial_filter_func(id_file, sph_rj, r_filter)
 !
+      integer(kind = kint), intent(in) :: id_file
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(filter_coefficients_type), intent(inout) :: r_filter
 !
@@ -231,40 +236,43 @@
 !
 !
       if(my_rank .ne. 0) return
-        write(*,*)  'r_filter%func(i)'
+        write(id_file,*)  'r_filter%func(i)'
         do i = r_filter%istack_node(0)+1, r_filter%istack_node(1)
           ist = r_filter%istack_near_nod(i-1) + 1
           ied = r_filter%istack_near_nod(i)
-          write(*,*) sph_rj%radius_1d_rj_r(r_filter%inod_filter(i)),    &
-     &               i, r_filter%inod_filter(i),                        &
-     &                  r_filter%func(ist:ied)
+          write(id_file,*)                                              &
+     &           sph_rj%radius_1d_rj_r(r_filter%inod_filter(i)),        &
+     &           i, r_filter%inod_filter(i), r_filter%func(ist:ied)
         end do
 !
       end subroutine check_radial_filter_func
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_horiz_filter_weight(sph_filter)
+      subroutine check_horiz_filter_weight(id_file, sph_filter)
 !
+      integer(kind = kint), intent(in) :: id_file
       type(sph_gaussian_filter), intent(in) :: sph_filter
 !
       integer(kind = kint) :: l
 !
 !
-      write(*,*)  'horizontal_filter', sph_filter%f_width
+      write(id_file,*)  'horizontal_filter', sph_filter%f_width
       do l = 0, sph_filter%l_truncation
-        write(*,*) l, sph_filter%weight(l)
+        write(id_file,*) l, sph_filter%weight(l)
       end do
 !
       end subroutine check_horiz_filter_weight
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_sph_2nd_moments(sph_rtp, leg, sph_filters)
+      subroutine check_sph_2nd_moments                                  &
+     &         (id_file, sph_rtp, leg, sph_filters)
 !
       use t_spheric_rtp_data
       use t_schmidt_poly_on_rtm
 !
+      integer(kind = kint), intent(in) :: id_file
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(legendre_4_sph_trans), intent(in) :: leg
       type(sph_filters_type), intent(in) :: sph_filters
@@ -272,20 +280,20 @@
       integer(kind = kint) :: k, l, lt_gl
 !
 !
-      write(*,*) 'Second order filter moments area: ',                  &
+      write(id_file,*) 'Second order filter moments area: ',            &
      &          sph_filters%kr_SGS_in, sph_filters%kr_SGS_out
-      write(*,*) 'Radial-direction, global ID, radius, moments'
+      write(id_file,*) 'Radial-direction, global ID, radius, moments'
       do k = 1, sph_rtp%nidx_rtp(1)
-        write(*,*) k, sph_rtp%idx_gl_1d_rtp_r(k),                       &
+        write(id_file,*) k, sph_rtp%idx_gl_1d_rtp_r(k),                 &
      &    sph_rtp%radius_1d_rtp_r(k), sph_filters%radial_2nd_moment(k)
       end do
-      write(*,*) 'Theta-direction, global ID, moments'
+      write(id_file,*) 'Theta-direction, global ID, moments'
       do l = 1, sph_rtp%nidx_rtp(2)
         lt_gl = sph_rtp%idx_gl_1d_rtp_t(l)
-        write(*,*) l, lt_gl, leg%g_colat_rtm(lt_gl),                    &
+        write(id_file,*) l, lt_gl, leg%g_colat_rtm(lt_gl),              &
      &             sph_filters%theta_2nd_moment(l)
       end do
-      write(*,*) 'Phi-direction', sph_filters%phi_2nd_moment
+      write(id_file,*) 'Phi-direction', sph_filters%phi_2nd_moment
 !
       end subroutine check_sph_2nd_moments
 !

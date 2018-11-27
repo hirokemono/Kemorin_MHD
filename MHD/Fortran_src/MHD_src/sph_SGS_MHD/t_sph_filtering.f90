@@ -149,14 +149,18 @@
      &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
 !
         if(iflag_debug .gt. 0) then
-          write(*,*) 'check_radial_filter for no. ', i
-          call check_radial_filter(sph%sph_rj, sph_filters(i)%r_filter)
-          write(*,*) 'check_horiz_filter_weight for no. ', i
-          call check_horiz_filter_weight(sph_filters(i)%sph_filter)
+          write(50+my_rank,*) 'check_radial_filter for no. ', i
+          call check_radial_filter                                      &
+     &      ((50+my_rank), sph%sph_rj, sph_filters(i)%r_filter)
+          write(50+my_rank,*) 'check_horiz_filter_weight for no. ', i
+          call check_horiz_filter_weight                                &
+     &       ((50+my_rank), sph_filters(i)%sph_filter)
         end if
         if(i_debug .gt. 0) then
-          write(*,*) 'check_sph_2nd_moments for no. ', i, my_rank
-          call check_sph_2nd_moments(sph%sph_rtp, leg, sph_filters(i))
+          write(50+my_rank,*) 'check_sph_2nd_moments for no. ',         &
+     &         i, my_rank
+          call check_sph_2nd_moments                                    &
+     &       ((50+my_rank), sph%sph_rtp, leg, sph_filters(i))
         end if
         call calypso_mpi_barrier
       end do
