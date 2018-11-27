@@ -227,7 +227,7 @@
           gamma_t = coef * theta_2nd_moment(lt) * (r(kr))**2
           gamma_p = coef * phi_2nd_moment * (r(kr) * sin_t(lt))**2
 !
-          du1_dx1 = zero
+          du1_dx1 = zero 
           du1_dx2 = zero
           du1_dx3 = zero
           du2_dx1 = zero
