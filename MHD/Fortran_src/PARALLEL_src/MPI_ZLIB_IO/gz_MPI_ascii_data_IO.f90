@@ -152,7 +152,7 @@
          (gz_mpi_read_charahead(IO_param, ilength),                     &
      &    IO_param%nprocs_in, IO_param%istack_merged)
 !
-      if(IO_param%id_rank .le. IO_param%nprocs_in) then
+      if(IO_param%id_rank .lt. IO_param%nprocs_in) then
         num = int(IO_param%istack_merged(IO_param%id_rank+1))
       else
         num = 0
