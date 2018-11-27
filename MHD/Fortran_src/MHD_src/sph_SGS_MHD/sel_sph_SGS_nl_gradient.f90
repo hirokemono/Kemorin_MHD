@@ -36,6 +36,7 @@
       use t_spheric_rtp_data
       use t_sph_filtering_data
       use t_boundary_params_sph_MHD
+      use calypso_mpi
 !
       implicit none
 !
@@ -80,8 +81,10 @@
 !
 !
       write(*,*) 'frc_sgs_rtp start'
+      close(50+my_rank)
       write(50+my_rank,*) frc_sgs_rtp(1:sph_rtp%nnod_rtp,if_SGS_idct:if_SGS_idct+2)
       write(*,*) 'frc_sgs_rtp end'
+      call calypso_mpi_barrier
 !
       if(iflag_FFT .eq. iflag_FFTW) then
         call sph_SGS_induct_nl_gradient_pin                             &
