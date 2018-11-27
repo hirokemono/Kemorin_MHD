@@ -181,7 +181,7 @@
 !
 !
 !$omp parallel workshare
-      d_SGS(1:nnod_rtp,1:6) = zero
+      d_SGS(1:nnod_rtp,1:3) = zero
 !$omp end parallel workshare
 !
 !$omp parallel do                                                       &

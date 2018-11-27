@@ -75,20 +75,12 @@
       real(kind = kreal) :: gamma_r, gamma_t, gamma_p
 !
 !
-!$omp  parallel private(kr,lt,gamma_r,gamma_t,gamma_p)
-      do lt = 1, nidx_rtp(2)
-        do kr = 1, kr_in-1
-!$omp do private(mp,inod)
-          do mp = 1, nidx_rtp(3)
-            inod = mp + (kr-1)*nidx_rtp(3)                              &
-     &                 + (lt-1)*nidx_rtp(1)*nidx_rtp(3)
-            d_SGS(inod,1) = zero
-            d_SGS(inod,2) = zero
-            d_SGS(inod,3) = zero
-          end do
-!$omp end do nowait
-        end do
+!$omp parallel workshare
+      d_SGS(1:nnod_rtp,1:3) = zero
+!$omp end parallel workshare
 !
+!$omp parallel private(kr,lt,gamma_r,gamma_t,gamma_p)
+      do lt = 1, nidx_rtp(2)
         do kr = kr_in, kr_out
           gamma_r = coef * radial_2nd_moment(kr)
           gamma_t = coef * theta_2nd_moment(lt)
@@ -145,18 +137,6 @@
           end do
 !$omp end do nowait
         end do
-!
-        do kr = kr_out+1, nidx_rtp(1)
-!$omp do private(mp,inod)
-          do mp = 1, nidx_rtp(3)
-            inod = mp + (kr-1)*nidx_rtp(3)                              &
-     &                 + (lt-1)*nidx_rtp(1)*nidx_rtp(3)
-            d_SGS(inod,1) = zero
-            d_SGS(inod,2) = zero
-            d_SGS(inod,3) = zero
-          end do
-!$omp end do nowait
-        end do
       end do
 !$omp end parallel
 !
@@ -198,20 +178,12 @@
       real(kind = kreal) :: gamma_r, gamma_t, gamma_p
 !
 !
+!$omp parallel workshare
+      d_SGS(1:nnod_rtp,1:3) = zero
+!$omp end parallel workshare
+!
 !$omp  parallel private(kr,lt,gamma_r,gamma_t,gamma_p)
       do lt = 1, nidx_rtp(2)
-        do kr = 1, kr_in-1
-!$omp do private(mp,inod)
-          do mp = 1, nidx_rtp(3)
-            inod = mp + (kr-1)*nidx_rtp(3)                              &
-     &                 + (lt-1)*nidx_rtp(1)*nidx_rtp(3)
-            d_SGS(inod,1) = zero
-            d_SGS(inod,2) = zero
-            d_SGS(inod,3) = zero
-          end do
-!$omp end do nowait
-        end do
-!
         do kr = kr_in, kr_out
           gamma_r = coef * radial_2nd_moment(kr)
           gamma_t = coef * theta_2nd_moment(lt)
@@ -254,18 +226,6 @@
           end do
 !$omp end do nowait
         end do
-!
-        do kr = kr_out+1, nidx_rtp(1)
-!$omp do private(mp,inod)
-          do mp = 1, nidx_rtp(3)
-            inod = mp + (kr-1)*nidx_rtp(3)                              &
-     &                 + (lt-1)*nidx_rtp(1)*nidx_rtp(3)
-            d_SGS(inod,1) = zero
-            d_SGS(inod,2) = zero
-            d_SGS(inod,3) = zero
-          end do
-!$omp end do nowait
-        end do
       end do
 !$omp end parallel
 !
@@ -304,20 +264,12 @@
       real(kind = kreal) :: gamma_r, gamma_t, gamma_p
 !
 !
+!$omp parallel workshare
+      d_SGS(1:nnod_rtp,1:6) = zero
+!$omp end parallel workshare
+!
 !$omp  parallel private(kr,lt,gamma_r,gamma_t,gamma_p)
       do lt = 1, nidx_rtp(2)
-        do kr = 1, kr_in-1
-!$omp do private(mp,inod)
-          do mp = 1, nidx_rtp(3)
-            inod = mp + (kr-1)*nidx_rtp(3)                              &
-     &                 + (lt-1)*nidx_rtp(1)*nidx_rtp(3)
-            d_SGS(inod,1) = zero
-            d_SGS(inod,2) = zero
-            d_SGS(inod,3) = zero
-          end do
-!$omp end do nowait
-        end do
-!
         do kr = kr_in, kr_out
           gamma_r = coef * radial_2nd_moment(kr)
           gamma_t = coef * theta_2nd_moment(lt)
@@ -361,18 +313,6 @@
             d_SGS(inod,6) = gamma_r * (du3_dx1 * du3_dx1)               &
      &                   +  gamma_t * (du3_dx2 * du3_dx2)               &
      &                   +  gamma_p * (du3_dx3 * du3_dx3)
-          end do
-!$omp end do nowait
-        end do
-!
-        do kr = kr_out+1, nidx_rtp(1)
-!$omp do private(mp,inod)
-          do mp = 1, nidx_rtp(3)
-            inod = mp + (kr-1)*nidx_rtp(3)                              &
-     &                 + (lt-1)*nidx_rtp(1)*nidx_rtp(3)
-            d_SGS(inod,1) = zero
-            d_SGS(inod,2) = zero
-            d_SGS(inod,3) = zero
           end do
 !$omp end do nowait
         end do
