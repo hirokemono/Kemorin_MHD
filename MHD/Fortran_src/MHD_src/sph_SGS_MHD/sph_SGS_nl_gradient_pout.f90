@@ -208,6 +208,7 @@
       real(kind = kreal) :: gamma_r, gamma_t, gamma_p
 !
 !
+      return
       do lt = 1, nidx_rtp(2)
         do kr = 1, kr_in-1
           inod = kr + (lt-1)*nidx_rtp(1)                                &
