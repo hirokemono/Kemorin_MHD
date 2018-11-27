@@ -71,7 +71,7 @@
 !
 !$omp  parallel do private(mp)
       do mp = 1, nidx_rtp(3)
-        write(*,*) 'TakoTako', mp
+!        write(*,*) 'TakoTako', mp
         call sph_SGS_induct_nl_gradient_rt(mp, kr_in, kr_out,           &
      &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,              &
      &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,    &
