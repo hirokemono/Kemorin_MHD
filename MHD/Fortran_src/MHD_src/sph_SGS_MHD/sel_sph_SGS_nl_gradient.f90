@@ -92,6 +92,12 @@
      &     fld_sgs_rtp(1,ib_grad_by), fld_sgs_rtp(1,ib_grad_bz),        &
      &     frc_sgs_rtp(1,if_SGS_idct))
       else
+        write(*,*) 'fld_rtp', size(fld_rtp,2),ib_mhd_velo,ib_mhd_magne
+        write(*,*) 'fld_sgs_rtp', size(fld_sgs_rtp,2), &
+     &      ib_grad_ux,ib_grad_uy, ib_grad_uz, &
+     &      ib_grad_bx,ib_grad_by, ib_grad_bz
+        write(*,*) 'frc_sgs_rtp', size(frc_sgs_rtp,2),if_SGS_idct
+!
         call sph_SGS_induct_nl_gradient_pout                            &
      &    (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,               &
      &     sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%radius_1d_rtp_r, &
