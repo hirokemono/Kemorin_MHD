@@ -209,7 +209,7 @@
       real(kind = kreal) :: gamma_r, gamma_t, gamma_p
 !
 !
-      write(*,*) 'takotako'
+      write(*,*) 'tako', kr_in, kr_out, nidx_rtp(1)
       do lt = 1, nidx_rtp(2)
         do kr = 1, kr_in-1
           inod = kr + (lt-1)*nidx_rtp(1)                                &
@@ -247,9 +247,9 @@
           db3_dx2 = zero
           db3_dx3 = zero
 
-          d_SGS(inod,1) = zero
-          d_SGS(inod,2) = zero
-          d_SGS(inod,3) = zero
+          d_SGS(inod,1) = gamma_r
+          d_SGS(inod,2) = gamma_t
+          d_SGS(inod,3) = gamma_p
 !
 !          gamma_r = coef * radial_2nd_moment(kr)
 !          gamma_t = coef * theta_2nd_moment(lt) * (r(kr))**2
