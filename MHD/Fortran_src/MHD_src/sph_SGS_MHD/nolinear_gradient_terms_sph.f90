@@ -81,6 +81,12 @@
 !
 !
       if(fg_trns%i_SGS_inertia .gt. 0) then
+        write(*,*)      &
+     &     'bn_trns%i_grad_wx, bn_trns%i_grad_wy, bn_trns%i_grad_wz', &
+     &      bn_trns%i_grad_wx, bn_trns%i_grad_wy, bn_trns%i_grad_wz,    &
+     &      bn_trns%i_grad_vx, bn_trns%i_grad_vy, bn_trns%i_grad_vz,    &
+     &      fg_trns%i_SGS_inertia, trns_b_MHD%ncomp, trns_f_SGS%ncomp
+
         call sel_sph_SGS_induct_nl_gradient(sph%sph_rtp, sph_filters,   &
      &      MHD_prop%fl_prop%coef_velo, b_trns%i_vort, b_trns%i_velo,   &
      &      trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,                       &
@@ -92,6 +98,12 @@
       end if
 !
       if(fg_trns%i_SGS_Lorentz .gt. 0) then
+        write(*,*)      &
+     &     'bn_trns%i_grad_jx, bn_trns%i_grad_jy, bn_trns%i_grad_jz',   &
+     &      bn_trns%i_grad_jx, bn_trns%i_grad_jy, bn_trns%i_grad_jz,    &
+     &      bn_trns%i_grad_bx, bn_trns%i_grad_by, bn_trns%i_grad_bz,    &
+     &      fg_trns%i_SGS_Lorentz, trns_b_MHD%ncomp, trns_f_SGS%ncomp
+
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, sph_filters, MHD_prop%fl_prop%coef_lor,        &
      &      b_trns%i_current, b_trns%i_magne,                           &
@@ -104,6 +116,12 @@
       end if
 !
       if(fg_trns%i_SGS_vp_induct .gt. 0) then
+        write(*,*)      &
+     &     'bn_trns%i_grad_vx, bn_trns%i_grad_vy, bn_trns%i_grad_vz',   &
+     &      bn_trns%i_grad_vx, bn_trns%i_grad_vy, bn_trns%i_grad_vz,    &
+     &      bn_trns%i_grad_bx, bn_trns%i_grad_by, bn_trns%i_grad_bz,    &
+     &      fg_trns%i_SGS_vp_induct, trns_b_MHD%ncomp, trns_f_SGS%ncomp
+
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, sph_filters, MHD_prop%cd_prop%coef_induct,     &
      &      b_trns%i_velo, b_trns%i_magne,                              &
