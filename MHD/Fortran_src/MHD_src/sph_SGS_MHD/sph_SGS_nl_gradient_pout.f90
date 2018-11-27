@@ -209,7 +209,7 @@
       real(kind = kreal) :: gamma_r, gamma_t, gamma_p
 !
 !
-      write(*,*) 'ahoaho'
+      write(*,*) 'tako'
       do lt = 1, nidx_rtp(2)
         do kr = 1, kr_in-1
           inod = kr + (lt-1)*nidx_rtp(1)                                &
@@ -247,6 +247,10 @@
           db3_dx2 = zero
           db3_dx3 = zero
 
+          d_SGS(inod,1) = zero
+          d_SGS(inod,2) = zero
+          d_SGS(inod,3) = zero
+!
 !          du1_dx1 = grad_ux(inod,1)
 !          du1_dx2 = grad_ux(inod,2) * r(kr) - u_rtp(inod,2)
 !          du1_dx3 = grad_ux(inod,3) * sin_t(lt) * r(kr)                &
@@ -275,18 +279,18 @@
 !     &              + b_rtp(inod,2) * cos_t(lt)                        &
 !     &              - b_rtp(inod,1) * sin_t(lt)
 !
-          d_SGS(inod,1)                                                 &
-     &          =  gamma_r * (du2_dx1 * db3_dx1 - du3_dx1 * db2_dx1)    &
-     &           + gamma_t * (du2_dx2 * db3_dx2 - du3_dx2 * db2_dx2)    &
-     &           + gamma_p * (du2_dx3 * db3_dx3 - du3_dx3 * db2_dx3)
-          d_SGS(inod,2)                                                 &
-     &          =  gamma_r * (du3_dx1 * db1_dx1 - du1_dx1 * db3_dx1)    &
-     &           + gamma_t * (du3_dx2 * db1_dx2 - du1_dx2 * db3_dx2)    &
-     &           + gamma_p * (du3_dx3 * db1_dx3 - du1_dx3 * db3_dx3)
-          d_SGS(inod,3)                                                 &
-     &          =  gamma_r * (du1_dx1 * db2_dx1 - du2_dx1 * db1_dx1)    &
-     &           + gamma_t * (du1_dx2 * db2_dx2 - du2_dx2 * db1_dx2)    &
-     &           + gamma_p * (du1_dx3 * db2_dx3 - du2_dx3 * db1_dx3)
+!          d_SGS(inod,1)                                                &
+!     &          =  gamma_r * (du2_dx1 * db3_dx1 - du3_dx1 * db2_dx1)   &
+!     &           + gamma_t * (du2_dx2 * db3_dx2 - du3_dx2 * db2_dx2)   &
+!     &           + gamma_p * (du2_dx3 * db3_dx3 - du3_dx3 * db2_dx3)
+!          d_SGS(inod,2)                                                &
+!     &          =  gamma_r * (du3_dx1 * db1_dx1 - du1_dx1 * db3_dx1)   &
+!     &           + gamma_t * (du3_dx2 * db1_dx2 - du1_dx2 * db3_dx2)   &
+!     &           + gamma_p * (du3_dx3 * db1_dx3 - du1_dx3 * db3_dx3)
+!          d_SGS(inod,3)                                                &
+!     &          =  gamma_r * (du1_dx1 * db2_dx1 - du2_dx1 * db1_dx1)   &
+!     &           + gamma_t * (du1_dx2 * db2_dx2 - du2_dx2 * db1_dx2)   &
+!     &           + gamma_p * (du1_dx3 * db2_dx3 - du2_dx3 * db1_dx3)
         end do
 !
         do kr = kr_out+1, nidx_rtp(1)
