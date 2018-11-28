@@ -175,7 +175,6 @@
       real(kind = kreal) :: du1_dx1, du1_dx2, du1_dx3
       real(kind = kreal) :: du2_dx1, du2_dx2, du2_dx3
       real(kind = kreal) :: du3_dx1, du3_dx2, du3_dx3
-      real(kind = kreal) ::  ds_dx3
       real(kind = kreal) :: gamma_r, gamma_t, gamma_p
 !
 !
@@ -192,7 +191,7 @@
         do lt = 1, nidx_rtp(2)
           do kr = kr_in, kr_out
             inod = kr + (lt-1)*nidx_rtp(1)                              &
-     &          + (mphi-1)*nidx_rtp(1)*nidx_rtp(2)
+     &          + (mp-1)*nidx_rtp(1)*nidx_rtp(2)
 !
             gamma_r = coef * radial_2nd_moment(kr)
             gamma_t = coef * theta_2nd_moment(lt)
