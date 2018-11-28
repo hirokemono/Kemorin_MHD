@@ -98,7 +98,7 @@
      &    pvr_img%iflag_mapped, pvr_img%rgba_lc)
       call end_elapsed_time(78)
 !
-!       Outut semented image
+!       Outut segmented image
       if(i_debug .gt. 0) then
         do i = 1, pvr_img%num_overlap
           j = pvr_img%istack_overlap(my_rank) + i
@@ -111,6 +111,7 @@
       end if
 !
       call start_elapsed_time(79)
+      if(iflag_debug .gt. 0) write(*,*) 'copy_segmented_image'
       call distribute_segmented_images                                  &
      &   (pvr_img%num_overlap, pvr_img%istack_overlap,                  &
      &    pvr_img%ntot_overlap, pvr_img%npixel_img,                     &
@@ -118,10 +119,12 @@
      &    pvr_img%rgba_lc, pvr_img%rgba_recv, pvr_img%rgba_part,        &
      &    pvr_img%COMM)
 !
+      if(iflag_debug .gt. 0) write(*,*) 'blend_image_over_segments'
       call blend_image_over_segments                                    &
      &   (pvr_img%ntot_overlap, pvr_img%npixel_img_local,               &
      &    pvr_img%ip_closer, pvr_img%rgba_part, pvr_img%rgba_whole)
 !
+      if(iflag_debug .gt. 0) write(*,*) 'collect_segmented_images'
       call collect_segmented_images(pvr_rgb%irank_image_file,           &
      &    pvr_img%npixel_img_local, pvr_img%istack_pixel,               &
      &    pvr_img%npixel_img, pvr_rgb%num_pixel_xy,                     &
