@@ -184,10 +184,10 @@
       d_SGS(1:nnod_rtp,1:3) = zero
 !$omp end parallel workshare
 !
-!!$omp parallel do                                                       &
-!!$omp& private(kr,lt,mp,inod,gamma_r,gamma_t,gamma_p,                   &
-!!$omp&         du1_dx1,du1_dx2,du1_dx3,du2_dx1,du2_dx2,du2_dx3,         &
-!!$omp&         du3_dx1,du3_dx2,du3_dx3)
+!$omp parallel do                                                       &
+!$omp& private(kr,lt,mp,inod,gamma_r,gamma_t,gamma_p,                   &
+!$omp&         du1_dx1,du1_dx2,du1_dx3,du2_dx1,du2_dx2,du2_dx3,         &
+!$omp&         du3_dx1,du3_dx2,du3_dx3)
       do mp = 1, nidx_rtp(3)
         do lt = 1, nidx_rtp(2)
           do kr = kr_in, kr_out
@@ -224,7 +224,7 @@
           end do
         end do
       end do
-!!$omp end parallel do
+!$omp end parallel do
 !
       end subroutine sph_SGS_s_flux_nl_gradient_pout
 !
