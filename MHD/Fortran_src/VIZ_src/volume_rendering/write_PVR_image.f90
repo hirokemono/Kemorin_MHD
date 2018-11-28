@@ -110,7 +110,6 @@
           call sel_write_pvr_local_img(j, istep_pvr, pvr_rgb)
         end do
       end if
-      call calypso_mpi_barrier
 !
       call start_elapsed_time(74)
       if(iflag_debug .gt. 0) write(*,*) 'distribute_segmented_images'
@@ -120,13 +119,11 @@
      &    pvr_img%istack_pixel, pvr_img%npixel_img_local,               &
      &    pvr_img%rgba_lc, pvr_img%rgba_recv, pvr_img%rgba_part,        &
      &    pvr_img%COMM)
-      call calypso_mpi_barrier
 !
       if(iflag_debug .gt. 0) write(*,*) 'blend_image_over_segments'
       call blend_image_over_segments                                    &
      &   (pvr_img%ntot_overlap, pvr_img%npixel_img_local,               &
      &    pvr_img%ip_closer, pvr_img%rgba_part, pvr_img%rgba_whole)
-      call calypso_mpi_barrier
 !
       if(iflag_debug .gt. 0) write(*,*) 'collect_segmented_images'
       call collect_segmented_images(pvr_rgb%irank_image_file,           &
@@ -135,7 +132,6 @@
      &    pvr_img%ipixel_small, pvr_img%rgba_whole,                     &
      &    pvr_img%rgba_rank0, pvr_rgb%rgba_real_gl, pvr_img%COMM)
       call end_elapsed_time(74)
-      call calypso_mpi_barrier
 !
 !      if(my_rank .eq. 0) then
 !        write(*,*) 'picked points'
