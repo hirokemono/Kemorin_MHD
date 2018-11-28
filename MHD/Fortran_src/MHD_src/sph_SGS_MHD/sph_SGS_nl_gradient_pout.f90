@@ -175,7 +175,7 @@
       real(kind = kreal) :: du1_dx1, du1_dx2, du1_dx3
       real(kind = kreal) :: du2_dx1, du2_dx2, du2_dx3
       real(kind = kreal) :: du3_dx1, du3_dx2, du3_dx3
-      real(kind = kreal) :: ds_dx1,  ds_dx2,  ds_dx3
+      real(kind = kreal) ::  ds_dx3
       real(kind = kreal) :: gamma_r, gamma_t, gamma_p
 !
 !
@@ -187,7 +187,7 @@
 !!$omp parallel do                                                       &
 !!$omp& private(kr,lt,mp,inod,gamma_r,gamma_t,gamma_p,                   &
 !!$omp&         du1_dx1,du1_dx2,du1_dx3,du2_dx1,du2_dx2,du2_dx3,         &
-!!$omp&         du3_dx1,du3_dx2,du3_dx3,ds_dx1,ds_dx2,ds_dx3)
+!!$omp&         du3_dx1,du3_dx2,du3_dx3)
       do mp = 1, nidx_rtp(3)
         do lt = 1, nidx_rtp(2)
           do kr = kr_in, kr_out
@@ -212,19 +212,15 @@
      &                + u_rtp(inod,2) * cos_t(lt)                       &
      &                - u_rtp(inod,1) * sin_t(lt)
 !
-            ds_dx1 = grad_s(inod,1)
-            ds_dx2 = grad_s(inod,2)
-            ds_dx3 = grad_s(inod,3)
-!
-            d_SGS(inod,1) = gamma_r * (du1_dx1 * ds_dx1)                &
-     &                 +  gamma_t * (du1_dx2 * ds_dx2)                  &
-     &                 +  gamma_p * (du1_dx3 * ds_dx3)
-            d_SGS(inod,2) = gamma_r * (du2_dx1 * ds_dx1)                &
-     &                 +  gamma_t * (du2_dx2 * ds_dx2)                  &
-     &                 +  gamma_p * (du2_dx3 * ds_dx3)
-            d_SGS(inod,3) = gamma_r * (du3_dx1 * ds_dx1)                &
-     &                 +  gamma_t * (du3_dx2 * ds_dx2)                  &
-     &                 +  gamma_p * (du3_dx3 * ds_dx3)
+            d_SGS(inod,1) = gamma_r * (du1_dx1 * grad_s(inod,1))        &
+     &                   +  gamma_t * (du1_dx2 * grad_s(inod,2))        &
+     &                   +  gamma_p * (du1_dx3 * grad_s(inod,3))
+            d_SGS(inod,2) = gamma_r * (du2_dx1 * grad_s(inod,1))        &
+     &                   +  gamma_t * (du2_dx2 * grad_s(inod,2))        &
+     &                   +  gamma_p * (du2_dx3 * grad_s(inod,3))
+            d_SGS(inod,3) = gamma_r * (du3_dx1 * grad_s(inod,1))        &
+     &                   +  gamma_t * (du3_dx2 * grad_s(inod,2))        &
+     &                   +  gamma_p * (du3_dx3 * grad_s(inod,3))
           end do
         end do
       end do

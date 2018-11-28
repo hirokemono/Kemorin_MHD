@@ -164,7 +164,7 @@
 !
       type(address_each_sph_trans), intent(inout) :: trns_f_DYNS
 !
-!$omp parallel
+!
       if(fd_trns%i_wide_SGS_inertia .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, wide_filters, MHD_prop%fl_prop%coef_velo,      &
@@ -225,7 +225,6 @@
      &      fd_trns%i_wide_SGS_c_flux, trns_f_DYNS%ncomp,               &
      &      trns_f_DYNS%fld_rtp)
       end if
-!$omp end parallel
 !
       end subroutine wider_nl_grad_SGS_rtp
 !
