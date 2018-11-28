@@ -147,7 +147,8 @@
       call end_elapsed_time(15)
 !
 !
-      if(istep_dynamic .eq. 0) then
+      if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON                 &
+     &  .and. istep_dynamic .eq. 0) then
         if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
           if(iflag_debug.ge.1) write(*,*) 'dynamic_buo_SGS_by_pseudo_sph'
           call const_dynamic_SGS_4_buo_sph                              &
