@@ -7,7 +7,7 @@
 !>@brief  Routines to construca element communication table
 !!
 !!@verbatim
-!!      subroutine elpsed_label_4_ele_comm_tbl
+!!      subroutine elapsed_label_4_ele_comm_tbl
 !!
 !!      subroutine const_comm_table_by_connenct                         &
 !!     &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,    &
@@ -61,11 +61,11 @@
 !>      small number
       real(kind = kreal) :: tiny = 1.0d-11
 !
-      integer(kind = kint), save :: iflag_elapsed = 0
+      logical, save :: iflag_ecomm_time = .FALSE.
       integer(kind = kint), save :: ist_elapsed
-      character(len=kchara), allocatable :: tmp_label(:)
+      integer(kind = kint), save :: ied_elapsed
 !
-      private :: ist_elapsed, iflag_elapsed, tmp_label
+      private :: ist_elapsed, ied_elapsed, iflag_ecomm_time
 !
 !      private :: alloc_element_rev_imports
 !      private :: alloc_element_rev_exports
@@ -78,19 +78,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine elpsed_label_4_ele_comm_tbl
+      subroutine elapsed_label_4_ele_comm_tbl
+!
+      integer(kind = kint), parameter :: num_append = 8
 !
 !
-      ist_elapsed = num_elapsed
-!
-      allocate(tmp_label(ist_elapsed))
-      tmp_label(1:ist_elapsed) = elapse_labels(1:ist_elapsed)
-!
-      call deallocate_elapsed_times
-!
-      num_elapsed = num_elapsed + 8
-      call allocate_elapsed_times
-      elapse_labels(1:ist_elapsed) = tmp_label(1:ist_elapsed)
+      call append_elapsed_times(num_append, ist_elapsed, ied_elapsed)
 !
       elapse_labels(ist_elapsed+1) = 'count_element_import_num'
       elapse_labels(ist_elapsed+2) = 'local_node_id_reverse_SR'
@@ -101,9 +94,9 @@
       elapse_labels(ist_elapsed+7) = 'element_export_item_in_ext'
       elapse_labels(ist_elapsed+8) = 'check_element_position'
 !
-      iflag_elapsed = 1
+      iflag_ecomm_time = .TRUE.
 !
-      end subroutine elpsed_label_4_ele_comm_tbl
+      end subroutine elapsed_label_4_ele_comm_tbl
 !
 !-----------------------------------------------------------------------
 !
@@ -139,13 +132,13 @@
       call allocate_type_import_num(e_comm)
 !
 !      write(*,*) 'count_element_import_num', my_rank
-      if(iflag_elapsed .gt. 0) call start_elapsed_time(ist_elapsed+1)
+      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+1)
       call count_element_import_num(node%numnod, host%istack_4_node,    &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
      &    e_comm%istack_import, e_comm%ntot_import)
-      if(iflag_elapsed .gt. 0) call end_elapsed_time(ist_elapsed+1)
+      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+1)
 !      call calypso_mpi_barrier
 !
       call alloc_element_rev_imports(node%numnod,                       &
@@ -153,17 +146,17 @@
       call allocate_type_import_item(e_comm)
 !
 !      write(*,*) 'local_node_id_reverse_SR', my_rank
-      if(iflag_elapsed .gt. 0) call start_elapsed_time(ist_elapsed+2)
+      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+2)
       call local_node_id_reverse_SR                                     &
      &   (node%numnod, nod_comm%num_neib, nod_comm%id_neib,             &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    wk_comm%item_local, wk_comm%inod_local)
-      if(iflag_elapsed .gt. 0) call end_elapsed_time(ist_elapsed+2)
+      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+2)
 !      call calypso_mpi_barrier
 !
 !      write(*,*) 'set_element_import_item', my_rank
-      if(iflag_elapsed .gt. 0) call start_elapsed_time(ist_elapsed+3)
+      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+3)
       call set_element_import_item(node%numnod, node%internal_node,     &
      &    numele, nnod_4_ele, ie, node%inod_global, x_ele,              &
      &    host%istack_4_node, host%iele_4_node, wk_comm%inod_local,     &
@@ -172,43 +165,43 @@
      &    e_comm%istack_import, e_comm%item_import,                     &
      &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
      &    wk_comm%xe_import)
-      if(iflag_elapsed .gt. 0) call end_elapsed_time(ist_elapsed+3)
+      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+3)
 !      call calypso_mpi_barrier
 !
       call allocate_type_export_num(e_comm)
 !
 !      write(*,*) 'element_num_reverse_SR', my_rank
-      if(iflag_elapsed .gt. 0) call start_elapsed_time(ist_elapsed+4)
+      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+4)
       call element_num_reverse_SR(e_comm%num_neib, e_comm%id_neib,      &
      &    e_comm%num_import, e_comm%num_export, e_comm%istack_export,   &
      &    e_comm%ntot_export)
-      if(iflag_elapsed .gt. 0) call end_elapsed_time(ist_elapsed+4)
+      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+4)
 !      call calypso_mpi_barrier
 !
       call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)
       call allocate_type_export_item(e_comm)
 !
 !      write(*,*) 'element_data_reverse_SR', my_rank
-      if(iflag_elapsed .gt. 0) call start_elapsed_time(ist_elapsed+5)
+      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+5)
       call element_data_reverse_SR(e_comm%num_neib, e_comm%id_neib,     &
      &    e_comm%istack_import, e_comm%istack_export,                   &
      &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
      &    wk_comm%xe_import, wk_comm%inod_export_e,                     &
      &    wk_comm%inod_export_l, wk_comm%xe_export)
-      if(iflag_elapsed .gt. 0) call end_elapsed_time(ist_elapsed+5)
+      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+5)
 !      call calypso_mpi_barrier
 !
 !      write(*,*) 'set_element_export_item', my_rank
-      if(iflag_elapsed .gt. 0) call start_elapsed_time(ist_elapsed+6)
+      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+6)
       call s_set_element_export_item(txt, node%numnod, numele,          &
      &    internal_flag, x_ele, neib_e%istack_4_node,                   &
      &    neib_e%iele_4_node, x_ref_ele, nod_comm%num_neib,             &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    e_comm%num_neib, e_comm%istack_export,                        &
      &    wk_comm%inod_export_l, wk_comm%xe_export, e_comm%item_export)
-      if(iflag_elapsed .gt. 0) call end_elapsed_time(ist_elapsed+6)
+      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+6)
 !
-      if(iflag_elapsed .gt. 0) call start_elapsed_time(ist_elapsed+7)
+      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+7)
       call element_export_item_in_ext                                   &
      &   (txt, node%numnod, numele, node%inod_global,                   &
      &    internal_flag, x_ele, neib_e%istack_4_node,                   &
@@ -216,7 +209,7 @@
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    e_comm%num_neib, e_comm%istack_export,                        &
      &    wk_comm%inod_export_e, wk_comm%xe_export, e_comm%item_export)
-      if(iflag_elapsed .gt. 0) call end_elapsed_time(ist_elapsed+7)
+      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+7)
 !      call calypso_mpi_barrier
 !
 !
@@ -224,9 +217,9 @@
       call dealloc_element_rev_imports(wk_comm)
 !
 !      write(*,*) 'check_element_position', my_rank
-      if(iflag_elapsed .gt. 0) call start_elapsed_time(ist_elapsed+8)
+      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+8)
       call check_element_position(txt, numele, x_ele, e_comm)
-      if(iflag_elapsed .gt. 0) call end_elapsed_time(ist_elapsed+8)
+      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+8)
 !      call calypso_mpi_barrier
 !
       end subroutine const_comm_table_by_connenct

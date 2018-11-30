@@ -21,6 +21,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_MHD
       use m_ctl_data_sph_MHD
       use m_SPH_MHD_model_data
       use m_MHD_step_parameter
@@ -54,8 +55,8 @@
 !
 !   Load parameter file
 !
-      call start_elapsed_time(1)
-      call start_elapsed_time(4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
       call read_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
 !
@@ -64,15 +65,15 @@
      &   (MHD_files1, DNS_MHD_ctl1, MHD_step1, SPH_model1,              &
      &    SPH_WK1%trns_WK, SPH_WK1%monitor, SPH_MHD1, FEM_d1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
-      call end_elapsed_time(4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
 !
 !        Initialize spherical transform dynamo
 !
-      call start_elapsed_time(2)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_const_initial_field'
       call SPH_const_initial_field(SPH_model1, SPH_MHD1)
 !
-      call end_elapsed_time(2)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
       call reset_elapse_4_init_sph_mhd
 !
       end subroutine initialize_const_sph_initial
@@ -117,6 +118,7 @@
       if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
       call sph_initial_spectrum(MHD_files1%fst_file_IO,                 &
      &    SPH_model%sph_MHD_bc, SPH_MHD, MHD_step1%rst_step, rst_IO1)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
 !
       end subroutine SPH_const_initial_field
 !

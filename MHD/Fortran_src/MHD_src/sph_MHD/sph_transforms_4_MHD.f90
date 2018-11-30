@@ -62,6 +62,7 @@
       use m_constants
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_MHD
       use m_legendre_transform_list
 !
       use calypso_mpi
@@ -195,11 +196,11 @@
       call check_calypso_sph_comm_buf_N(trns_bwd%ncomp,                 &
      &    comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
-!      call start_elapsed_time(51)
       if(iflag_debug .gt. 0) write(*,*) 'mhd_spectr_to_sendbuf'
+      if(iflag_LEG_time) call start_elapsed_time(ist_elapsed_LEG+10)
       call mhd_spectr_to_sendbuf                                        &
      &   (trns_bwd, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
-!      call end_elapsed_time(51)
+      if(iflag_LEG_time) call end_elapsed_time(ist_elapsed_LEG+10)
 !
       if(trns_bwd%ncomp .eq. 0) return
       call pole_b_transform                                             &

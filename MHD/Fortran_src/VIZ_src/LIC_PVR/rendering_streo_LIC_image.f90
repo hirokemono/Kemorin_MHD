@@ -57,6 +57,7 @@
      &         (istep_pvr, node, ele, surf, group, lic_p,               &
      &          pvr_param, pvr_proj, pvr_rgb)
 !
+      use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use composite_pvr_images
       use rendering_LIC_image
@@ -87,12 +88,12 @@
         call rendering_lic_at_once(istep_pvr, node, ele, surf, group,   &
      &      lic_p, pvr_param, pvr_proj, pvr_rgb)
 !
-        call end_elapsed_time(76)
-        call start_elapsed_time(77)
+        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
         call sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
         call calypso_mpi_barrier
-        call end_elapsed_time(77)
-        call start_elapsed_time(76)
+        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       end do
 !
       end subroutine lic_rendering_with_rotation
@@ -103,6 +104,7 @@
      &         (istep_pvr, node, ele, surf, group, lic_p,               &
      &          pvr_param, pvr_proj, pvr_rgb)
 !
+      use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use rendering_LIC_image
       use write_LIC_image
@@ -139,12 +141,12 @@
      &      lic_p, pvr_param, pvr_proj(2), pvr_rgb)
         call add_left_eye_image(pvr_rgb)
 !
-        call end_elapsed_time(76)
-        call start_elapsed_time(77)
+        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
         call sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
         call calypso_mpi_barrier
-        call end_elapsed_time(77)
-        call start_elapsed_time(76)
+        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       end do
 !
       end subroutine anaglyph_lic_rendering_w_rot

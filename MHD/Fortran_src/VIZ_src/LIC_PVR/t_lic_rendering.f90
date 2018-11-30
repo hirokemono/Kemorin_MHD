@@ -189,6 +189,7 @@
       subroutine LIC_visualize                                          &
      &         (istep_pvr, femmesh, ele_mesh, jacs, nod_fld, lic)
 !
+      use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use each_LIC_rendering
       use write_PVR_image
@@ -207,7 +208,7 @@
 !
       if(lic%pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
 !
-      call start_elapsed_time(76)
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_lic = 1, lic%pvr%num_pvr
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
@@ -216,9 +217,9 @@
      &        lic%lic_fld(i_lic), lic%pvr%pvr_param(i_lic),             &
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
       end do
-      call end_elapsed_time(76)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
-      call start_elapsed_time(77)
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, lic%pvr%num_pvr
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
         if(lic%pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
@@ -230,9 +231,9 @@
         call sel_write_pvr_image_file                                   &
      &     (iminus, istep_pvr, lic%pvr%pvr_rgb(i_lic))
       end do
-      call end_elapsed_time(77)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
-      call start_elapsed_time(76)
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_lic = 1, lic%pvr%num_pvr
         if(lic%pvr%pvr_param(i_lic)%view%iflag_rotate_snap .gt. 0) then
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
@@ -243,7 +244,7 @@
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
         end if
       end do
-      call end_elapsed_time(76)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       end subroutine LIC_visualize
 !

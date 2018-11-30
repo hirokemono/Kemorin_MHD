@@ -192,6 +192,7 @@
       subroutine PVR_visualize                                          &
      &         (istep_pvr, femmesh, ele_mesh, jacs, nod_fld, pvr)
 !
+      use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use write_PVR_image
 !
@@ -209,7 +210,7 @@
 !
       if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
 !
-      call start_elapsed_time(71)
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       do i_pvr = 1, pvr%num_pvr
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
@@ -218,10 +219,10 @@
      &      pvr%pvr_param(i_pvr), pvr%pvr_proj(ist_rdr),                &
      &      pvr%pvr_rgb(ist_img))
       end do
-      call end_elapsed_time(71)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
 !
-      call start_elapsed_time(72)
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
       do i_pvr = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
         if(pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0)                &
@@ -234,11 +235,11 @@
         call sel_write_pvr_image_file                                   &
      &     (iminus, istep_pvr, pvr%pvr_rgb(i_pvr))
       end do
-      call end_elapsed_time(72)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !
 !      generate snapshot movie images
 !
-      call start_elapsed_time(71)
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       do i_pvr = 1, pvr%num_pvr
         if(pvr%pvr_param(i_pvr)%view%iflag_rotate_snap .gt. 0) then
           ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
@@ -249,7 +250,7 @@
      &        pvr%pvr_rgb(ist_img))
         end if
       end do
-      call end_elapsed_time(71)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
       end subroutine PVR_visualize
 !

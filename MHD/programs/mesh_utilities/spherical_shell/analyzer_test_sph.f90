@@ -12,6 +12,8 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_work_time
+      use m_elapsed_labels_SEND_RECV
 !
       use t_SPH_mesh_field_data
       use t_spheric_parameter
@@ -59,7 +61,18 @@
         write(*,*) 'Input file: mesh data'
       end if
 !
-      call set_tesh_sph_elapsed_label
+      num_elapsed = 0
+      call allocate_elapsed_times
+!
+      elapse_labels(1) = 'Total time                 '
+      elapse_labels(2) = 'Initialization time        '
+      elapse_labels(3) = 'Time evolution loop time   '
+      elapse_labels(4) = 'Data IO time               '
+      elapse_labels(5) = 'Evolution excluding IO     '
+!
+      call elpsed_label_4_send_recv
+      call append_COMM_TIME_to_elapsed
+!
 !
 !     --------------------- 
 !
@@ -143,6 +156,9 @@
 !
       call deallocate_real_sph_test
       call deallocate_idx_sph_recieve
+!
+      call copy_COMM_TIME_to_elaps
+      call output_elapsed_times
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze_test_sph'
 !

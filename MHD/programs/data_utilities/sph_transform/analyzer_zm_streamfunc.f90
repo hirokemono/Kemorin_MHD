@@ -32,15 +32,13 @@
 !
       use t_ctl_params_sph_trans
       use parallel_load_data_4_sph
-      use set_viz_time_labels
+      use m_elapsed_labels_4_VIZ
 !
 !
-      num_elapsed = 80
+      num_elapsed = 10
       call allocate_elapsed_times
-      call s_set_viz_time_labels
-!
-      elapse_labels(num_elapsed) = 'Communication time        '
-!
+      call elpsed_label_4_VIZ
+      call append_COMM_TIME_to_elapsed
 !
 !   ----  read controls
 !
@@ -105,6 +103,7 @@
         end if
       end do
 !
+      call copy_COMM_TIME_to_elaps
       call output_elapsed_times
 !
       end subroutine analyze_zm_streamfunc

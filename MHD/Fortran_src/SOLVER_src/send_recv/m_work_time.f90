@@ -8,10 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine allocate_elapsed_times
+!!      subroutine append_elapsed_times(num_append, iend_org, iend_new)
 !!      subroutine deallocate_elapsed_times
 !!
 !!      subroutine start_elapsed_time(iflag_elps)
 !!      subroutine end_elapsed_time(iflag_elps)
+!!      subroutine reset_elapsed_times(istart, iend)
 !!      subroutine reset_elapsed_time(iflag_elps)
 !!      subroutine copy_COMM_TIME_to_elaps(iflag_elps)
 !!
@@ -47,6 +49,7 @@
       character (len=kchara), allocatable :: elapse_labels(:)
 !
       real(kind=kreal) :: START_SRtime, END_SRtime, SendRecvtime
+      integer(kind = kint), save, private :: ied_comm_elaps
 !
       private :: start_times, elapsed
       private :: elapsed_total, elapsed_min, elapsed_max
@@ -76,6 +79,31 @@
       end if
 !
       end subroutine allocate_elapsed_times
+!
+! ----------------------------------------------------------------------
+!
+      subroutine append_elapsed_times(num_append, iend_org, iend_new)
+!
+      integer(kind = kint), intent(in) :: num_append
+      integer(kind = kint), intent(inout) :: iend_org, iend_new
+!
+      character(len=kchara), allocatable :: tmp_label(:)
+!
+!
+      iend_org = num_elapsed
+      iend_new = num_elapsed + num_append
+!
+      allocate(tmp_label(iend_org))
+      tmp_label(1:iend_org) = elapse_labels(1:iend_org)
+!
+      call deallocate_elapsed_times
+!
+      num_elapsed = iend_new
+      call allocate_elapsed_times
+      elapse_labels(1:iend_org) = tmp_label(1:iend_org)
+      deallocate(tmp_label)
+!
+      end subroutine append_elapsed_times
 !
 ! ----------------------------------------------------------------------
 !
@@ -123,8 +151,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine reset_elapsed_time(iflag_elps)
+      subroutine reset_elapsed_times(istart, iend)
 !
+!
+      integer(kind = kint), intent(in) :: istart, iend
+!
+!
+      elapsed(istart:iend) = zero
+!
+      end subroutine reset_elapsed_times
+!
+! ----------------------------------------------------------------------
+!
+      subroutine reset_elapsed_time(iflag_elps)
 !
       integer, intent(in) :: iflag_elps
 !
@@ -135,14 +174,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_COMM_TIME_to_elaps(iflag_elps)
+      subroutine append_COMM_TIME_to_elapsed
+!
+      integer(kind = kint) :: ist_comm_elaps
+!
+!
+      call append_elapsed_times(ione, ist_comm_elaps, ied_comm_elaps)
+      elapse_labels(num_elapsed) = 'Communication time'
+!
+      end subroutine append_COMM_TIME_to_elapsed
+!
+! ----------------------------------------------------------------------
+!
+      subroutine copy_COMM_TIME_to_elaps
 !
       use calypso_mpi
 !
-      integer(kind = kint), intent(in) :: iflag_elps
 !
-!
-      elapsed(iflag_elps) = SendRecvtime
+      elapsed(ied_comm_elaps) = SendRecvtime
 !
       end subroutine copy_COMM_TIME_to_elaps
 !

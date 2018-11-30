@@ -22,6 +22,7 @@
 !
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_VIZ
       use calypso_mpi
 !
       use t_VIZ_step_parameter
@@ -60,15 +61,15 @@
       type(surfacing_modules), intent(inout) :: viz_psfs
 !
 !
-      call start_elapsed_time(60)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
       call SECTIONING_initialize                                        &
      &   (femmesh, ele_mesh, nod_fld, psf_ctls, viz_psfs%psf)
-      call end_elapsed_time(60)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
-      call start_elapsed_time(61)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
       call ISOSURF_initialize                                           &
      &   (femmesh, ele_mesh, nod_fld, iso_ctls, viz_psfs%iso)
-      call end_elapsed_time(61)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
 !
       end subroutine init_visualize_surface
 !
@@ -86,15 +87,15 @@
       type(surfacing_modules), intent(inout) :: viz_psfs
 !
 !
-      call start_elapsed_time(65)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
       call SECTIONING_visualize(viz_step%PSF_t%istep_file, time_d,      &
      &    ele_mesh, nod_fld, viz_psfs%psf)
-      call end_elapsed_time(65)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
 !
-      call start_elapsed_time(66)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
       call ISOSURF_visualize(viz_step%ISO_t%istep_file, time_d,         &
      &    femmesh, ele_mesh, nod_fld, viz_psfs%iso)
-      call end_elapsed_time(66)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       end subroutine visualize_surface
 !

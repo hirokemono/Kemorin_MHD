@@ -38,6 +38,7 @@
 !
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_MHD
       use calypso_mpi
 !
       use t_physical_property
@@ -148,7 +149,7 @@
 ! 
       ierr = i_debug
 !
-      call start_elapsed_time(5)
+      if(iflag_FMHD_time) call start_elapsed_time(ist_elapsed_FMHD+1)
       if (cmp_no_case(METHOD, 'MGCG')) then
         call VMGCG33_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_DJDS_tbl, MG_DJDS_mat, MG_vector,                &
@@ -162,7 +163,7 @@
      &      METHOD, PRECOND, ierr, eps, itr, itr_res)
       end if
 !
-      call end_elapsed_time(5)
+      if(iflag_FMHD_time) call end_elapsed_time(ist_elapsed_FMHD+1)
       if(iflag_debug .gt. 0) write(12,*) ' Iteration counts:', itr_res
 !
       end subroutine solver_MGCG_vector
@@ -204,7 +205,7 @@
       if (iflag_debug.eq.1) write(*,*) 'METHOD for scalar: ',           &
      &                                  trim(METHOD)
 !
-      call start_elapsed_time(5)
+      if(iflag_FMHD_time) call start_elapsed_time(ist_elapsed_FMHD+1)
       ierr = i_debug
 !
 !      call CG                                                          &
@@ -230,7 +231,7 @@
      &      METHOD, PRECOND, ierr, eps, itr, itr_res)
       end if
 !
-      call end_elapsed_time(5)
+      if(iflag_FMHD_time) call end_elapsed_time(ist_elapsed_FMHD+1)
       if (iflag_debug .gt. 0) write(12,*) ' iteration counts', itr_res
 !
       end subroutine solver_MGCG_scalar

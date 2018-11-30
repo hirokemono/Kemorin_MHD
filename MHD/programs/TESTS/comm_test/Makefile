@@ -34,6 +34,7 @@ write_diff_4_comm_test.o \
 
 MOD_COMM_TEST = \
 t_ctl_data_comm_test.o \
+send_recv_loop_tests.o \
 mesh_send_recv_test.o \
 \
 t_control_param_comm_test.o \

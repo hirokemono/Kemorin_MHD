@@ -81,24 +81,11 @@
       type(surf_edge_IO_file) :: ele_mesh_IO
 !
 !
-      num_elapsed = 11
+      num_elapsed = 1
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                  '
-      elapse_labels(2) = 'const_element_comm_tbls'
-!
-      elapse_labels(3) = 'const_ele_comm_tbl'
-      elapse_labels(4) = '          '
-      elapse_labels(5) = 'const_surf_comm_table'
-      elapse_labels(6) = 'start_elapsed_time'
-      elapse_labels(7) = 'const_edge_comm_table'
-      elapse_labels(8) = '          '
-!
-      elapse_labels(9) = 'const_comm_table_by_connenct2'
-      elapse_labels(10) = 's_set_element_export_item'
-      elapse_labels(11) = 'search_target_element3'
-!
-      call elpsed_label_4_ele_comm_tbl
+      call elapsed_label_4_ele_comm_tbl
 !
 !     --------------------- 
 !

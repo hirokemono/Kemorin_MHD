@@ -36,6 +36,8 @@
       use m_constants
       use m_machine_parameter
       use m_MHD_step_parameter
+      use m_work_time
+      use m_elapsed_labels_4_MHD
 !
       use calypso_mpi
 !
@@ -47,8 +49,6 @@
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
       use t_field_data_IO
-!
-      use m_work_time
 !
       implicit none
 !
@@ -161,10 +161,10 @@
 !* -----  Open Volume integration data files -----------------
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
-      call start_elapsed_time(4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
       call open_sph_vol_rms_file_mhd                                    &
      &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, SPH_WK%monitor)
-      call end_elapsed_time(4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
       call calypso_mpi_barrier
 !
       end subroutine SPH_initialize_SGS_MHD
@@ -201,8 +201,8 @@
 !*  ----------  add time evolution -----------------
 !*
 !
-      call start_elapsed_time(5)
-      call start_elapsed_time(6)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+1)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+2)
       if(iflag_debug.gt.0) write(*,*) 'sel_explicit_sph_SGS_MHD'
       call sel_explicit_sph_SGS_MHD                                     &
      &   (i_step, MHD_step%time_d%dt, SPH_SGS%SGS_par%model_p,          &
@@ -210,27 +210,27 @@
 !*
 !*  ----------  time evolution by inplicit method ----------
 !*
-      call start_elapsed_time(7)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+3)
       call s_cal_sol_sph_MHD_crank                                      &
      &   (MHD_step%time_d%dt, SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,         &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, &
      &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor,                    &
      &    SPH_WK%MHD_mats, SPH_MHD%fld)
-      call end_elapsed_time(7)
-      call end_elapsed_time(6)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+3)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+2)
 !*
 !*  ----------------lead nonlinear term ... ----------
 !*
-      call start_elapsed_time(8)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+4)
       call nonlinear_with_SGS                                           &
      &   (i_step, SPH_SGS%SGS_par, SPH_WK%r_2nd, SPH_model,             &
      &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
-      call end_elapsed_time(8)
-      call end_elapsed_time(5)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+1)
 !
 !* ----  Update fields after time evolution ------------------------=
 !*
-      call start_elapsed_time(9)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph(SPH_model,                        &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%fld)
@@ -242,12 +242,12 @@
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p, SPH_WK%MHD_mats,      &
      &      SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       end if
-      call end_elapsed_time(9)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !*  -----------  output restart data --------------
 !*
-      call start_elapsed_time(4)
-      call start_elapsed_time(10)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+6)
       iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
      &                         MHD_step%rst_step)
       if(iflag .eq. 0) then
@@ -273,18 +273,18 @@
      &      SPH_SGS%SGS_par%i_step_sgs_coefs, SPH_SGS%SGS_par%model_p,  &
      &      SPH_SGS%dynamic, sph_fst_IO)
       end if
-      call end_elapsed_time(10)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+6)
 !
 !*  -----------  lead energy data --------------
 !*
-      call start_elapsed_time(11)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
       iflag = output_IO_flag(i_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD,       &
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, SPH_WK%monitor)
       end if
-      call end_elapsed_time(11)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
 !
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph(SPH_model,                         &
@@ -294,7 +294,7 @@
      &    .and. MHD_step%finish_d%i_end_step .gt. 0) then
         iflag_finish = 1
       end if
-      call end_elapsed_time(4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
 !
       end subroutine SPH_analyze_SGS_MHD
 !

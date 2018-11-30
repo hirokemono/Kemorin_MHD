@@ -25,7 +25,6 @@
       use m_constants
 !
       use m_machine_parameter
-      use m_work_time
 !
       use calypso_mpi
 !
@@ -66,7 +65,6 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call start_elapsed_time(84)
       if(SGS_param%iflag_SGS_buo_usage .eq. id_use_zonal) then
 !        write(*,*) 'prod_SGS_buoyancy_to_Reynolds'
         call prod_SGS_buoyancy_to_Reynolds                              &
@@ -102,7 +100,6 @@
      &      dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs_buo,               &
      &      trns_SGS%f_trns, trns_SGS%forward)
       end if
-      call end_elapsed_time(84)
 !
       end subroutine product_buo_model_coefs_4_sph
 !

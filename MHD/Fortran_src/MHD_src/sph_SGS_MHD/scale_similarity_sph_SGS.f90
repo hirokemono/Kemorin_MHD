@@ -56,6 +56,7 @@
      &         (sph, comms_sph, MHD_prop, trans_p, WK_sph,              &
      &          dynamic_SPH, ipol, rj_fld, trns_SIMI)
 !
+      use m_elapsed_labels_4_MHD
       use sph_transforms_4_SGS
       use cal_SGS_terms_sph_MHD
       use cal_filtered_sph_fields
@@ -73,28 +74,29 @@
 !
 !
 !   ----  Lead filtered forces for SGS terms
+      if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+1)
       if (iflag_debug.ge.1) write(*,*)                                  &
      &                    'cal_sph_base_filtering_fields'
-      call start_elapsed_time(81)
       call cal_sph_base_filtering_fields                                &
      &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(1), rj_fld)
+!
       if (iflag_debug.ge.1) write(*,*) 'cal_sph_base_filtering_forces'
       call cal_sph_base_filtering_forces                                &
      &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(1), rj_fld)
-      call end_elapsed_time(81)
+      if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+1)
 !
-      call start_elapsed_time(14)
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD SGS'
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+9)
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
      &    rj_fld, trns_SIMI%backward, WK_sph, trns_SIMI%mul_FFTW)
-      call end_elapsed_time(14)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+9)
 !
-      call start_elapsed_time(15)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)
       if (iflag_debug.eq.1) write(*,*) 'similarity_SGS_terms_rtp'
       call similarity_SGS_terms_rtp(sph%sph_rtp, MHD_prop,              &
      &    trns_SIMI%b_trns, trns_SIMI%f_trns,                           &
      &    trns_SIMI%backward, trns_SIMI%forward)
-      call end_elapsed_time(15)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+10)
 !
       end subroutine cal_scale_similarity_sph_SGS
 !

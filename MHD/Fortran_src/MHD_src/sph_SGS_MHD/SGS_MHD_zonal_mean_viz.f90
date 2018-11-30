@@ -74,6 +74,7 @@
       subroutine SGS_MHD_zonal_RMS_section(viz_step, time_d, SGS_par,   &
      &          sph, geofem, ele_mesh, WK, nod_fld, zrms_psf)
 !
+      use m_elapsed_labels_4_VIZ
       use FEM_analyzer_sph_SGS_MHD
       use sph_rtp_zonal_rms_data
       use nod_phys_send_recv
@@ -103,11 +104,11 @@
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(geofem%mesh, nod_fld)
 !
-      call start_elapsed_time(65)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
       if (iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize RMS'
       call SECTIONING_visualize(viz_step%PSF_t%istep_file, time_d,      &
      &    ele_mesh, nod_fld, zrms_psf)
-      call end_elapsed_time(65)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
 !
       end subroutine SGS_MHD_zonal_RMS_section
 !

@@ -52,6 +52,7 @@
 !
       subroutine para_gen_sph_grids(sph, gen_sph)
 !
+      use m_elapsed_labels_gen_SPH
       use set_global_spherical_param
       use mpi_gen_sph_grids_modes
       use set_comm_table_rtp_rj
@@ -82,7 +83,7 @@
      &    gen_sph%s3d_ranks, gen_sph%sph_lcp,                           &
      &    gen_sph%stk_lc1d, gen_sph%sph_gl1d)
 !
-      call start_elapsed_time(2)
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
       allocate(comm_rlm_mul(gen_sph%s3d_ranks%ndomain_sph))
 !
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
@@ -90,17 +91,17 @@
      &   (gen_sph, sph%sph_params, sph%sph_rlm, comm_rlm_mul)
       call bcast_comm_stacks_sph                                        &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
-      call end_elapsed_time(2)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
 !
-      call start_elapsed_time(3)
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
       call mpi_gen_sph_rj_modes(comm_rlm_mul, sph%sph_params,           &
      &    gen_sph, sph%sph_rlm, sph%sph_rj)
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
-      call end_elapsed_time(3)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
 !
-      call start_elapsed_time(2)
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
       allocate(comm_rtm_mul(gen_sph%s3d_ranks%ndomain_sph))
 !
       if(iflag_debug .gt. 0) write(*,*) 'mpi_gen_sph_rtm_grids'
@@ -108,9 +109,9 @@
      &     (gen_sph, sph%sph_params, sph%sph_rtm, comm_rtm_mul)
       call bcast_comm_stacks_sph                                        &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
-      call end_elapsed_time(2)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
 !
-      call start_elapsed_time(3)
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
       call mpi_gen_sph_rtp_grids(comm_rtm_mul, sph%sph_params,          &
      &    gen_sph, sph%sph_rtp, sph%sph_rtm)
       call dealloc_comm_stacks_sph                                      &
@@ -118,7 +119,7 @@
 !
       deallocate(comm_rtm_mul)
       call calypso_MPI_barrier
-      call end_elapsed_time(3)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
 !
       end subroutine para_gen_sph_grids
 !

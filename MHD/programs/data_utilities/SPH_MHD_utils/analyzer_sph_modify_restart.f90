@@ -17,6 +17,7 @@
 !
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_MHD
       use m_SPH_MHD_model_data
       use m_MHD_step_parameter
       use t_step_parameter
@@ -44,7 +45,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      call start_elapsed_time(3)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
@@ -70,7 +71,7 @@
 !
 !  time evolution end
 !
-      call end_elapsed_time(3)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
@@ -78,8 +79,8 @@
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
 !
-      call copy_COMM_TIME_to_elaps(num_elapsed)
-      call end_elapsed_time(1)
+      call copy_COMM_TIME_to_elaps
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
 !
       call output_elapsed_times
 !
@@ -128,6 +129,7 @@
 !*
       call set_modify_rj_fields(SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
 !
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
       call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)
       call set_sph_restart_num_to_IO(SPH_MHD%fld, sph_fst_IO)
@@ -142,7 +144,7 @@
 !*
 !*  -----------  lead energy data --------------
 !*
-      call start_elapsed_time(11)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
       iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
      &                       MHD_step%rms_step)
       if(iflag .eq. 0) then
@@ -150,8 +152,8 @@
         call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD,       &
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, SPH_WK%monitor)
       end if
-      call end_elapsed_time(11)
-      call end_elapsed_time(4)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
 !
       end subroutine SPH_analyze_mod_restart
 !

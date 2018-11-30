@@ -37,6 +37,7 @@
 !
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_VIZ
       use calypso_mpi
 !
       use t_VIZ_step_parameter
@@ -78,12 +79,12 @@
       type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
 !
 !
-      call start_elapsed_time(60)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+ 1)
       call SECTIONING_initialize(geofem, ele_mesh, nod_fld,             &
      &    zm_ctls%zm_psf_ctls, zmeans%zm_psf)
       call SECTIONING_initialize(geofem, ele_mesh, nod_fld,             &
      &   zm_ctls%zRMS_psf_ctls, zmeans%zrms_psf)
-      call end_elapsed_time(60)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+ 1)
 !
       end subroutine init_zonal_mean_sections
 !
@@ -120,6 +121,7 @@
       subroutine SPH_MHD_zonal_mean_section(viz_step, time_d,           &
      &          sph, geofem, ele_mesh, nod_fld, zm_psf)
 !
+      use m_elapsed_labels_4_VIZ
       use sph_rtp_zonal_rms_data
       use nod_phys_send_recv
 !
@@ -144,11 +146,11 @@
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(geofem%mesh, nod_fld)
 !
-      call start_elapsed_time(65)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
       if (iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize zmean'
       call SECTIONING_visualize(viz_step%PSF_t%istep_file, time_d,      &
      &    ele_mesh, nod_fld, zm_psf)
-      call end_elapsed_time(65)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
 !
       end subroutine SPH_MHD_zonal_mean_section
 !
@@ -157,6 +159,7 @@
       subroutine SPH_MHD_zonal_RMS_section(viz_step, time_d,            &
      &          sph, geofem, ele_mesh, WK, nod_fld, zrms_psf)
 !
+      use m_elapsed_labels_4_VIZ
       use FEM_analyzer_sph_MHD
       use sph_rtp_zonal_rms_data
       use nod_phys_send_recv
@@ -184,11 +187,11 @@
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(geofem%mesh, nod_fld)
 !
-      call start_elapsed_time(65)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
       if (iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize RMS'
       call SECTIONING_visualize(viz_step%PSF_t%istep_file, time_d,      &
      &    ele_mesh, nod_fld, zrms_psf)
-      call end_elapsed_time(65)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
 !
       end subroutine SPH_MHD_zonal_RMS_section
 !

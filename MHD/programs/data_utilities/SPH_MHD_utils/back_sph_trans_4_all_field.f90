@@ -30,6 +30,9 @@
 !
       use m_precision
       use calypso_mpi
+      use m_machine_parameter
+      use m_work_time
+      use m_elapsed_labels_4_MHD
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
       use t_work_4_sph_trans
@@ -104,11 +107,6 @@
       use m_solver_SR
       use spherical_SRs_N
 !
-      use m_machine_parameter
-      use m_work_time
-!
-      use calypso_mpi
-!
       use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm
       use t_sph_multi_FFTW
@@ -169,11 +167,11 @@
 !
 !       Transform first data
 !
-      call start_elapsed_time(9)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform(sph, comms_sph, trans_p,              &
      &    ref_rj_fld, trns_MHD, WK_sph)
-      call end_elapsed_time(9)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !$omp parallel workshare
       fld1_rtp(1:nnod_rtp,1:ncomp_rtp)                                  &
@@ -182,11 +180,11 @@
 !
 !       Transform second data
 !
-      call start_elapsed_time(9)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform(sph, comms_sph, trans_p,              &
      &    rj_fld, trns_MHD, WK_sph)
-      call end_elapsed_time(9)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
       end subroutine sph_back_transform_dual
 !

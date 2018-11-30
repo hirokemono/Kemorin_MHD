@@ -55,6 +55,7 @@
      &         (istep_pvr, node, ele, surf, group,                      &
      &          pvr_param, pvr_proj, pvr_rgb)
 !
+      use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use composite_pvr_images
       use write_PVR_image
@@ -82,12 +83,12 @@
         call rendering_at_once(istep_pvr, node, ele, surf, group,       &
      &      pvr_param, pvr_proj, pvr_rgb)
 !
-        call end_elapsed_time(71)
-        call start_elapsed_time(72)
+        if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
+        if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
         call sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
         call calypso_mpi_barrier
-        call end_elapsed_time(72)
-        call start_elapsed_time(71)
+        if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
+        if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       end do
 !
       end subroutine rendering_with_rotation
@@ -98,6 +99,7 @@
      &         (istep_pvr, node, ele, surf, group,                      &
      &          pvr_param, pvr_proj, pvr_rgb)
 !
+      use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use write_PVR_image
 !
@@ -131,12 +133,12 @@
      &      pvr_param, pvr_proj(2), pvr_rgb)
         call add_left_eye_image(pvr_rgb)
 !
-        call end_elapsed_time(71)
-        call start_elapsed_time(72)
+        if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
+        if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
         call sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
         call calypso_mpi_barrier
-        call end_elapsed_time(72)
-        call start_elapsed_time(71)
+        if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
+        if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       end do
 !
       end subroutine anaglyph_rendering_w_rotation

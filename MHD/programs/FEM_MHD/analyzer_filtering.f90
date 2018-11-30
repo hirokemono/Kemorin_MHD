@@ -28,12 +28,12 @@
 !
       use FEM_analyzer_snapshot
       use input_control
-      use set_viz_time_labels
+      use m_elapsed_labels_4_VIZ
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
-      num_elapsed = 80
+      num_elapsed = 6
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                 '
@@ -42,9 +42,9 @@
       elapse_labels(4) = 'Data IO time               '
       elapse_labels(5) = 'Linear solver time         '
       elapse_labels(6) = 'Communication for RHS      '
-      elapse_labels(num_elapsed) = 'Communication time'
 !
-      call s_set_viz_time_labels
+      call elpsed_label_4_VIZ
+      call append_COMM_TIME_to_elapsed
 !
 !     --------------------- 
 !
@@ -100,6 +100,8 @@
 !
       call FEM_finalize_snapshot                                        &
      &   (MHD_files1, MHD_step1, MHD_IO1)
+!
+      call copy_COMM_TIME_to_elaps
       call output_elapsed_times
 !
       end subroutine analyze

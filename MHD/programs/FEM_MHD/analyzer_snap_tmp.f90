@@ -11,6 +11,8 @@
       use m_precision
       use calypso_mpi
 !
+      use m_work_time
+      use m_elapsed_labels_4_MHD
       use m_MHD_step_parameter
       use m_FEM_MHD_model_data
       use FEM_analyzer_snap_tmp
@@ -27,23 +29,18 @@
       subroutine init_analyzer
 !
       use input_control
-      use set_viz_time_labels
+      use m_elapsed_labels_4_VIZ
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
-      num_elapsed = 80
+      num_elapsed = 0
       call allocate_elapsed_times
 !
-      elapse_labels(1) = 'Total time                 '
-      elapse_labels(2) = 'Initialization time        '
-      elapse_labels(3) = 'Time evolution loop time   '
-      elapse_labels(4) = 'Data IO time               '
-      elapse_labels(5) = 'Linear solver time         '
-      elapse_labels(6) = 'Communication for RHS      '
-      elapse_labels(7) = 'Communication time         '
-!
-      call s_set_viz_time_labels
+      call elapsed_label_4_MHD
+      call elapsed_label_4_FEM_MHD
+      call elpsed_label_4_VIZ
+      call append_COMM_TIME_to_elapsed
 !
 !     --------------------- 
 !
@@ -87,16 +84,18 @@
 !
 !  Visualization
         if (visval.eq.0) then
-          call start_elapsed_time(12)
+          if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+5)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field,       &
      &        SGS_MHD_wk1%fem_int%next_tbl%neib_ele,                    &
      &        SGS_MHD_wk1%fem_int%jcs, vizs_F)
-          call end_elapsed_time(12)
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
         end if
       end do
 !
       call FEM_finalize_snap_tmp(MHD_files1, MHD_step1, MHD_IO1)
+
+      call copy_COMM_TIME_to_elaps
       call output_elapsed_times
 !
       end subroutine analyze

@@ -19,6 +19,7 @@
 !
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_MHD
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
       use t_field_on_circle
@@ -62,11 +63,12 @@
       write(*,*) 'Simulation start: PE. ', my_rank
       total_start = MPI_WTIME()
       call set_sph_MHD_elapsed_label
+      call append_COMM_TIME_to_elapsed
 !
 !   Load parameter file
 !
-      call start_elapsed_time(1)
-      call start_elapsed_time(4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_SGS_MHD'
       call read_control_4_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
@@ -95,18 +97,18 @@
       call load_para_sph_mesh                                           &
      &   (SPH_MHD1%sph, SPH_MHD1%comms, SPH_MHD1%groups)
 !
-      call end_elapsed_time(4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
 !
 !        Initialize spherical transform dynamo
 !
-      call start_elapsed_time(2)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
       call SPH_init_sph_pick_circle                                     &
      &   (MHD_files1, FEM_d1%geofem, FEM_d1%iphys,                      &
      &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1, cdat1)
-      call calypso_MPI_barrier
 !
-      call end_elapsed_time(2)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
+      call calypso_MPI_barrier
       call reset_elapse_4_init_sph_mhd
 !
       end subroutine initialize_sph_pick_circle
@@ -119,7 +121,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      call start_elapsed_time(3)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
@@ -145,13 +147,13 @@
 !
 !  time evolution end
 !
-      call end_elapsed_time(3)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_pick_circle'
 !      call SPH_finalize_pick_circle
 !
-      call copy_COMM_TIME_to_elaps(num_elapsed)
-      call end_elapsed_time(1)
+      call copy_COMM_TIME_to_elaps
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
 !
       call output_elapsed_times
 !

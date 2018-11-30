@@ -47,6 +47,7 @@
 !
       use m_precision
       use m_work_time
+      use m_elapsed_labels_4_MHD
       use m_machine_parameter
 !
       use t_mesh_data
@@ -180,8 +181,7 @@
 !
 !
 !    Open monitor files
-      call end_elapsed_time(2)
-      call start_elapsed_time(4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
 !
       call output_grd_file_w_org_connect                               &
      &   (MHD_step%ucd_step, femmesh%mesh, FEM_model%MHD_mesh,         &
@@ -189,7 +189,8 @@
 !
       call alloc_phys_range(nod_fld%ntot_phys_viz, MHD_IO%range)
 !       call s_open_boundary_monitor(my_rank, femmesh%group%sf_grp)
-      call end_elapsed_time(4)
+!
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
 !
       end subroutine FEM_initialize_MHD
 !
@@ -282,8 +283,8 @@
 !
 !     -----Output monitor date
 !
-        call end_elapsed_time(3)
-        call start_elapsed_time(4)
+        if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
+        if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
 !
         call output_time_step_control                                   &
      &     (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,            &
@@ -309,8 +310,8 @@
      &     (MHD_files%ucd_file_IO, MHD_step%flex_p%istep_max_dt,        &
      &      MHD_step%time_d, MHD_step%ucd_step, MHD_IO%fem_ucd)
 !
-        call end_elapsed_time(4)
-        call start_elapsed_time(3)
+        if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
+        if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       end if
 !
 !
@@ -327,13 +328,13 @@
         if(total_max .gt. MHD_step%finish_d%elapsed_time) retval = 0
       end if
 !
-      call start_elapsed_time(4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
       call output_MHD_restart_file_ctl                                  &
      &   (retval, FEM_SGS%SGS_par, MHD_files, MHD_step%time_d,          &
      &    MHD_step%flex_p, femmesh%mesh, iphys_nod,                     &
      &    SGS_MHD_wk%FEM_SGS_wk, MHD_step%rst_step, nod_fld,            &
      &    MHD_IO%rst_IO)
-      call end_elapsed_time(4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
 !
 !   Finish by specific step
       if(MHD_step%finish_d%i_end_step .ne. -1) then

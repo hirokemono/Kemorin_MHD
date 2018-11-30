@@ -1,16 +1,23 @@
+!>@file   mesh_send_recv_test.f90
+!!@brief  module mesh_send_recv_test
+!!
+!!@author H. Matsui
+!!@date Programmed in April, 2013
 !
-!      module mesh_send_recv_test
-!
-!     Written by H. Matsui on Sep., 2007
-!     Written by H. Matsui on Apr., 2008
-!
-!      subroutine s_mesh_send_recv_test
-!      subroutine node_send_recv4_test(node, nod_comm)
-!
-!      subroutine node_send_recv_test(node, nod_comm)
+!>@brief test routine for mesh communication
+!!
+!!@verbatim
+!!      subroutine elpsed_label_4_comm_test
+!!
+!!      subroutine s_mesh_send_recv_test
+!!      subroutine node_send_recv4_test(node, nod_comm)
+!!
+!!      subroutine node_send_recv_test(node, nod_comm)
+!!@endverbatim
 !
       module mesh_send_recv_test
 !
+      use m_work_time
       use m_precision
       use m_constants
 !
@@ -24,6 +31,10 @@
 !
       implicit  none
 !
+      logical, save, private :: iflag_elapsd = .FALSE.
+      integer(kind = kint), save, private :: ist_elapsed =   0
+      integer(kind = kint), save, private :: ied_elapsed =   0
+!
       private :: ele_send_recv_test, surf_send_recv_test
       private :: edge_send_recv_test
 !
@@ -32,6 +43,39 @@
       contains
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine elpsed_label_4_comm_test
+!
+      integer(kind = kint), parameter :: num_append = 8
+!
+!
+      call append_elapsed_times                                         &
+     &   (num_append, ist_elapsed, ied_elapsed)
+!
+      write(elapse_labels(ist_elapsed+1),'(a)')                         &
+     &                             'copy_from_recv_by_comm_table1'
+      write(elapse_labels(ist_elapsed+2),'(a)')                         &
+     &                             'copy_from_recv_by_rev_table1'
+      write(elapse_labels(ist_elapsed+3),'(a)')                         &
+     &                             'copy_from_recv_by_comm_lgloop1'
+      write(elapse_labels(ist_elapsed+4),'(a)')                         &
+     &                             'copy_from_recv_by_rev_lgloop1'
+!
+      write(elapse_labels(ist_elapsed+5),'(a)')                         &
+     &                             'copy_to_send_by_comm_table2'
+      write(elapse_labels(ist_elapsed+6),'(a)')                         &
+     &                             'copy_from_recv_by_rev_table2'
+      write(elapse_labels(ist_elapsed+7),'(a)')                         &
+     &                             'copy_from_recv_by_comm_lgloop2'
+      write(elapse_labels(ist_elapsed+8),'(a)')                         &
+     &                             'copy_from_recv_by_rev_lgloop2'
+!
+      iflag_elapsd = .TRUE.
+!
+      end subroutine elpsed_label_4_comm_test
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
       subroutine s_mesh_send_recv_test(ele, surf, edge,                 &
      &          ele_comm, surf_comm, edge_comm)
@@ -77,21 +121,19 @@
 !
       subroutine node_send_recv4_test(node, nod_comm)
 !
-      use m_work_time
       use m_array_for_send_recv
       use m_solver_SR
       use solver_SR_type
+      use send_recv_loop_tests
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
 !
-      integer(kind = kint) :: inod
       integer(kind = kint), parameter :: NB = 12
       integer(kind = kint), allocatable :: irev_import(:)
       real(kind = kreal),  allocatable :: xx4(:)
 !
-      integer (kind = kint) :: neib, ist, inum, ied, num
-      integer (kind = kint) :: k, ii, ix, nd
+      integer(kind = kint) :: inod, k, ii
 !
       allocate(irev_import(nod_comm%istack_import(nod_comm%num_neib)))
       allocate(xx4(NB*node%numnod))
@@ -121,231 +163,65 @@
         irev_import(k) = ii
       end do
 !
-      call start_elapsed_time(1)
-      call start_elapsed_time(2)
-!$omp parallel private(nd,neib,ist,ied)
-      do neib= 1, nod_comm%num_neib
-        ist = nod_comm%istack_export(neib-1)
-        ied = nod_comm%istack_export(neib  )
-        do nd = 1, NB
-!$omp do private(k,ii,ix)
-          do k= ist+1, ied
-                 ii   = NB * (nod_comm%item_export(k)-1) + nd
-                 ix   = NB * (k-1) + nd
-             WS(ix)= xx4(ii)
-           end do
-!$omp end do nowait
-         end do
-      end do
-!$omp end parallel
-      call end_elapsed_time(2)
+      if(iflag_elapsd) call start_elapsed_time(ist_elapsed+1)
+      if(iflag_elapsd) call start_elapsed_time(ist_elapsed+2)
+      call copy_to_send_by_comm_table1(node, nod_comm, NB, xx4)
+      if(iflag_elapsd) call end_elapsed_time(ist_elapsed+2)
 
-!$omp parallel private(nd,neib,ist,ied)
-      do neib= 1, nod_comm%num_neib
-        ist = nod_comm%istack_import(neib-1)
-        ied = nod_comm%istack_import(neib  )
-        do nd = 1, NB
-!$omp do private(k,ii,ix)
-          do k= ist+1, ied
-            ii   = NB * (nod_comm%item_import(k)-1) + nd
-            ix   = NB * (k-1) + nd
-            xx4(ii)= WR(ix)
-          end do
-!$omp end do nowait
-        enddo
-      enddo
-!$omp end parallel
-      call end_elapsed_time(1)
-      call start_elapsed_time(2)
-!$omp parallel private(nd,neib,ist,ied)
-      do neib= 1, nod_comm%num_neib
-        ist = nod_comm%istack_import(neib-1)
-        ied = nod_comm%istack_import(neib  )
-        do nd = 1, NB
-!$omp do private(k,ii,ix)
-          do k= ist+1, ied
-            ii   = NB * (node%internal_node+k-1) + nd
-            ix   = NB * (irev_import(k)-1) + nd
-            xx4(ii)= WR(ix)
-          end do
-!$omp end do nowait
-        enddo
-      enddo
-!$omp end parallel
-      call end_elapsed_time(2)
+      call copy_from_recv_by_comm_table1(node, nod_comm, NB, xx4)
+      if(iflag_elapsd) call end_elapsed_time(ist_elapsed+1)
 !
-      call start_elapsed_time(3)
-      call start_elapsed_time(4)
-!$omp parallel private(neib,ist,ied)
-      do neib= 1, nod_comm%num_neib
-        ist = nod_comm%istack_export(neib-1)
-        ied = nod_comm%istack_export(neib  )
-!$omp do private(k,nd,ii,ix)
-        do k= ist+1, ied
-          do nd = 1, NB
-                 ii   = NB * (nod_comm%item_export(k)-1) + nd
-                 ix   = NB * (k-1) + nd
-             WS(ix)= xx4(ii)
-           end do
-         end do
-!$omp end do nowait
-      end do
-!$omp end parallel
-      call end_elapsed_time(4)
+      if(iflag_elapsd) call start_elapsed_time(ist_elapsed+2)
+      call copy_from_recv_by_rev_table1                                 &
+     &   (node, nod_comm, NB, irev_import, xx4)
+      if(iflag_elapsd) call end_elapsed_time(ist_elapsed+2)
+!
+      if(iflag_elapsd) call start_elapsed_time(ist_elapsed+3)
+      if(iflag_elapsd) call start_elapsed_time(ist_elapsed+4)
+      call copy_to_send_by_comm_lgloop1(node, nod_comm, NB, xx4)
+      if(iflag_elapsd) call end_elapsed_time(ist_elapsed+4)
 
-!$omp parallel private(nd,neib,ist,ied)
-      do neib= 1, nod_comm%num_neib
-        ist = nod_comm%istack_import(neib-1) 
-        ied = nod_comm%istack_import(neib  )
-!$omp do private(k,nd,ii,ix)
-        do nd = 1, NB
-          do k= ist+1, ied
-            ii   = NB * (nod_comm%item_import(k)-1) + nd
-            ix   = NB * (k-1) + nd
-            xx4(ii)= WR(ix)
-          end do
-        enddo
-!$omp end do nowait
-      enddo
-!$omp end parallel
-      call end_elapsed_time(3)
-      call start_elapsed_time(4)
-!$omp parallel private(nd,neib,ist,ied)
-      do neib= 1, nod_comm%num_neib
-        ist = nod_comm%istack_import(neib-1)
-        ied = nod_comm%istack_import(neib  )
-!$omp do private(k,ii,ix)
-        do nd = 1, NB
-          do k= ist+1, ied
-            ii   = NB * (node%internal_node+k-1) + nd
-            ix   = NB * (irev_import(k)-1) + nd
-            xx4(ii)= WR(ix)
-          end do
-        enddo
-!$omp end do nowait
-      enddo
-!$omp end parallel
-      call end_elapsed_time(4)
+      call copy_from_recv_by_comm_lgloop1(node, nod_comm, NB, xx4)
+      if(iflag_elapsd) call end_elapsed_time(ist_elapsed+3)
+!
+      if(iflag_elapsd) call start_elapsed_time(ist_elapsed+4)
+      call copy_from_recv_by_rev_lgloop1                                &
+     &   (node, nod_comm, NB, irev_import, xx4)
+      if(iflag_elapsd) call end_elapsed_time(ist_elapsed+4)
 !
 !
-!
-      call start_elapsed_time(5)
-      call start_elapsed_time(6)
-!$omp parallel private(neib,nd,ist,num)
-      do neib= 1, nod_comm%num_neib
-        ist = nod_comm%istack_export(neib-1)
-        num = nod_comm%istack_export(neib  )                            &
-     &       - nod_comm%istack_export(neib-1)
-        do nd = 1, NB
-!$omp do private(k,ii,ix)
-          do k= 1, num
-                 ii   = NB * (nod_comm%item_export(k+ist) - 1) + nd
-                 ix   = k + (nd-1) * num + NB*ist
-             WS(ix)= xx4(ii)
-           end do
-!$omp end do nowait
-         end do
-      end do
-!$omp end parallel
-      call end_elapsed_time(6)
+      if(iflag_elapsd) call start_elapsed_time(ist_elapsed+5)
+      if(iflag_elapsd) call start_elapsed_time(ist_elapsed+6)
+      call copy_to_send_by_comm_table2(node, nod_comm, NB, xx4)
+      if(iflag_elapsd) call end_elapsed_time(ist_elapsed+6)
 
-!$omp parallel private(nd,neib,ist,num)
-      do neib= 1, nod_comm%num_neib
-        ist = nod_comm%istack_import(neib-1)
-        num = nod_comm%istack_import(neib  )                            &
-     &       - nod_comm%istack_import(neib-1)
-        do nd = 1, NB
-!$omp do private(k,ii,ix)
-          do k= 1, num
-            ii   = NB * (nod_comm%item_import(k+ist)-1) + nd
-            ix   = k + (nd-1) * num + NB*ist
-            xx4(ii)= WR(ix)
-          end do
-!$omp end do nowait
-        enddo
-      enddo
-!$omp end parallel
-      call end_elapsed_time(5)
-      call start_elapsed_time(6)
-!$omp parallel private(nd,neib,ist,num)
-      do neib= 1, nod_comm%num_neib
-        ist = nod_comm%istack_import(neib-1)
-        num = nod_comm%istack_import(neib  )                            &
-     &       - nod_comm%istack_import(neib-1)
-        do nd = 1, NB
-!$omp do private(k,ii,ix)
-          do k= 1, num
-            ii   = NB * (node%internal_node+k+ist-1) + nd
-            ix   = NB * (irev_import(k+ist)-1) + nd
-            xx4(ii)= WR(ix)
-          end do
-!$omp end do nowait
-        enddo
-      enddo
-!$omp end parallel
-      call end_elapsed_time(6)
+      call copy_from_recv_by_comm_table2(node, nod_comm, NB, xx4)
+      if(iflag_elapsd) call end_elapsed_time(ist_elapsed+5)
 !
-      call start_elapsed_time(7)
-      call start_elapsed_time(8)
-!$omp parallel private(neib,ist,num)
-      do neib= 1, nod_comm%num_neib
-        ist = nod_comm%istack_export(neib-1)
-        num = nod_comm%istack_export(neib  )                            &
-     &       - nod_comm%istack_export(neib-1)
-!$omp do private(k,nd,ii,ix)
-        do inum = 1, NB*num
-          k = mod(inum-ione,num) + ione
-          nd = (inum-k) / NB + ione
-                 ii   = NB * (nod_comm%item_export(k+ist) - 1) + nd
-                 ix   = inum + NB*ist
-             WS(ix)= xx4(ii)
-        end do
-!$omp end do nowait
-      end do
-!$omp end parallel
-      call end_elapsed_time(8)
+      if(iflag_elapsd) call start_elapsed_time(ist_elapsed+6)
+      call copy_from_recv_by_rev_table2                                 &
+     &   (node, nod_comm, NB, irev_import, xx4)
+      if(iflag_elapsd) call end_elapsed_time(ist_elapsed+6)
+!
+!
+      if(iflag_elapsd) call start_elapsed_time(ist_elapsed+7)
+      if(iflag_elapsd) call start_elapsed_time(ist_elapsed+8)
+      call copy_to_send_by_comm_lgloop2(node, nod_comm, NB, xx4)
+      if(iflag_elapsd) call end_elapsed_time(ist_elapsed+8)
 
-!$omp parallel private(nd,neib,ist,num,inum)
-      do neib= 1, nod_comm%num_neib
-        ist = nod_comm%istack_import(neib-1)
-        num = nod_comm%istack_import(neib  )                            &
-     &       - nod_comm%istack_import(neib-1)
-!$omp do private(inum,k,ii,ix)
-        do inum = 1, NB*num
-          nd = mod(inum-ione,NB) + ione
-          k = (inum-nd) / NB + ione
-            ii   = NB * (nod_comm%item_import(k+ist)-1) + nd
-            ix   = k + (nd-1) * num + NB*ist
-            xx4(ii)= WR(ix)
-        end do
-!$omp end do nowait
-      enddo
-!$omp end parallel
-      call end_elapsed_time(7)
+      call copy_from_recv_by_comm_lgloop2(node, nod_comm, NB, xx4)
+      if(iflag_elapsd) call end_elapsed_time(ist_elapsed+7)
 !
-      call start_elapsed_time(8)
-!$omp parallel private(neib,ist,num,inum)
-      do neib= 1, nod_comm%num_neib
-        ist = nod_comm%istack_import(neib-1)
-        num = nod_comm%istack_import(neib  )                            &
-     &       - nod_comm%istack_import(neib-1)
-!$omp do private(nd,k,ii,ix)
-        do inum = 1, NB*num
-          nd = mod(inum-ione,NB) + ione
-          k = (inum-nd) / NB + ione
-            ii   = NB * (node%internal_node+k+ist-1) + nd
-            ix   = (irev_import(k)-ist) + (nd-1) * num + NB*ist
-            xx4(ii)= WR(ix)
-        end do
-!$omp end do nowait
-      enddo
-!$omp end parallel
-      call end_elapsed_time(8)
+      if(iflag_elapsd) call start_elapsed_time(ist_elapsed+8)
+      call copy_from_recv_by_rev_lgloop2                                &
+     &   (node, nod_comm, NB, irev_import, xx4)
+      if(iflag_elapsd) call end_elapsed_time(ist_elapsed+8)
       
       deallocate(xx4)
 !
       end subroutine node_send_recv4_test
 !
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine ele_send_recv_test(ele, ele_comm)

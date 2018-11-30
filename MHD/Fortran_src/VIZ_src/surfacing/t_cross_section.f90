@@ -179,13 +179,10 @@
 !
       if (psf%num_psf.le.0 .or. istep_psf.le.0) return
 !
-!      call start_elapsed_time(20)
       call set_field_4_psf(psf%num_psf, ele_mesh%edge, nod_fld,         &
      &    psf%psf_def, psf%psf_param, psf%psf_list, psf%psf_grp_list,   &
      &    psf%psf_mesh)
-!      call end_elapsed_time(20)
 !
-!      call start_elapsed_time(21)
       if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
       call output_section_data                                          &
      &   (psf%num_psf, psf%psf_file_IO, istep_psf, time_d,              &

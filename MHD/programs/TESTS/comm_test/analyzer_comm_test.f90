@@ -44,6 +44,7 @@
       use collect_diff_4_comm_test
       use nod_phys_send_recv
       use mpi_load_mesh_data
+      use const_element_comm_table
 !
       integer :: i, num_in, num_ex
 !
@@ -51,38 +52,15 @@
 !
 !     --------------------- 
 !
-      num_elapsed = 29
+      num_elapsed = 3
       call allocate_elapsed_times
 !
       write(elapse_labels( 1),'(a)') 'const_mesh_informations'
       write(elapse_labels( 2),'(a)') 'const_global_numnod_list'
       write(elapse_labels( 3),'(a)') 'const_ele_comm_tbla'
-      write(elapse_labels( 4),'(a)') '          '
-      write(elapse_labels( 5),'(a)') '          '
-      write(elapse_labels( 6),'(a)') '          '
-      write(elapse_labels( 7),'(a)') '          '
-      write(elapse_labels( 8),'(a)') '          '
-      write(elapse_labels( 9),'(a)') '          '
-      write(elapse_labels(10),'(a)') '          '
-      write(elapse_labels(11),'(a)') '          '
-      write(elapse_labels(12),'(a)') '          '
-      write(elapse_labels(13),'(a)') '          '
-      write(elapse_labels(14),'(a)') '          '
-      write(elapse_labels(15),'(a)') '          '
-      write(elapse_labels(16),'(a)') '          '
-      write(elapse_labels(17),'(a)') '          '
-      write(elapse_labels(18),'(a)') 'const_comm_table_by_connenct'
-      write(elapse_labels(19),'(a)') '          '
-      write(elapse_labels(20),'(a)') '          '
-      write(elapse_labels(21),'(a)') 'const_edge_hash_4_ele'
-      write(elapse_labels(22),'(a)') 'count_num_edges_by_ele'
-      write(elapse_labels(23),'(a)') 'set_edges_connect_by_ele'
-      write(elapse_labels(24),'(a)') 'set_edges_connect_4_sf'
-      write(elapse_labels(25),'(a)') 'count_element_import_num'
-      write(elapse_labels(26),'(a)') 'set_element_import_item'
-      write(elapse_labels(27),'(a)') 'element_num_reverse_SR'
-      write(elapse_labels(28),'(a)') 'element_data_reverse_SR'
-      write(elapse_labels(29),'(a)') 'set_element_export_item'
+!
+      call elapsed_label_4_ele_comm_tbl
+      call elpsed_label_4_comm_test
 !
 !     --------------------- 
 !

@@ -31,15 +31,16 @@
 !
       use calypso_mpi
       use m_control_data_vizs
-      use set_viz_time_labels
+      use m_elapsed_labels_4_VIZ
 !
       integer(kind = kint) :: ierr
 !
-      num_elapsed = 80
+      num_elapsed = 0
       call allocate_elapsed_times
-      call s_set_viz_time_labels
-!
-      elapse_labels(num_elapsed) = 'Communication time        '
+      elapse_labels(1) = 'Total time                  '
+
+      call elpsed_label_4_VIZ
+      call append_COMM_TIME_to_elapsed
 !
 !     read controls
 !
@@ -80,14 +81,15 @@
 !  Rendering
         if(visval .eq. 0) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
-          call start_elapsed_time(12)
+          call start_elapsed_time(1)
           call visualize_all(viz_step_V, t_VIZ%time_d,                  &
      &        femmesh_VIZ, elemesh_VIZ, field_VIZ,                      &
      &        ele_4_nod_VIZ, jacobians_VIZ, vizs_v)
-          call end_elapsed_time(12)
+          call end_elapsed_time(1)
         end if
       end do
 !
+      call copy_COMM_TIME_to_elaps
       call output_elapsed_times
 !
       end subroutine analyze

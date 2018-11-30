@@ -24,6 +24,8 @@
 !
       use m_precision
       use calypso_mpi
+      use m_work_time
+      use m_elapsed_labels_4_MHD
       use t_phys_address
       use t_MHD_step_parameter
       use t_MHD_file_parameter
@@ -107,7 +109,6 @@
       subroutine SPH_analyze_back_trans                                 &
      &         (i_step, MHD_files, MHD_step, SPH_MHD, SPH_WK)
 !
-      use m_work_time
       use t_sph_mhd_monitor_data_IO
 !
       use cal_nonlinear
@@ -134,22 +135,22 @@
 !
 !* ----  Update fields after time evolution ------------------------=
 !*
-      call start_elapsed_time(9)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform                                       &
      &   (SPH_MHD%sph, SPH_MHD%comms, SPH_WK%trans_p,                   &
      &    SPH_MHD%fld, SPH_WK%trns_WK%trns_MHD, SPH_WK%trns_WK%WK_sph)
-       call end_elapsed_time(9)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !*  -----------  lead energy data --------------
 !*
-      call start_elapsed_time(11)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_back_trans'
       call output_rms_sph_back_trans                                    &
      &   (MHD_step, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,         &
      &    SPH_WK%trans_p%leg, SPH_MHD%ipol, SPH_MHD%fld,                &
      &    SPH_WK%monitor)
-      call end_elapsed_time(11)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
 !
       end subroutine SPH_analyze_back_trans
 !

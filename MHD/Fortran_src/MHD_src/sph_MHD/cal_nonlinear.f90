@@ -86,6 +86,7 @@
       use sum_rotation_of_forces
 !
       use m_work_time
+      use m_elapsed_labels_4_MHD
 !
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
@@ -112,11 +113,11 @@
 !
 !*  ----  copy coriolis term for inner core rotation
 !*
-      call start_elapsed_time(13)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+8)
       call copy_icore_rot_to_tor_coriolis                               &
      &   (SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%sph%sph_rj,            &
      &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
-      call end_elapsed_time(13)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+8)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
       call sum_forces_to_explicit                                       &
@@ -136,6 +137,7 @@
       use cal_nonlinear_sph_MHD
       use cal_sph_field_by_rotation
 !
+      use m_elapsed_labels_4_MHD
       use m_work_time
 !
       type(sph_grids), intent(in) :: sph
@@ -156,32 +158,33 @@
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
-      call start_elapsed_time(14)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+9)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
       call sph_back_trans_4_MHD                                         &
      &   (sph, comms_sph, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,        &
      &    omega_sph, trans_p, gt_cor, rj_fld, trns_MHD%b_trns,          &
      &    trns_MHD%backward, WK_sph, trns_MHD%mul_FFTW, cor_rlm)
-      call end_elapsed_time(14)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+9)
 !
-      call start_elapsed_time(15)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
       call nonlinear_terms_in_rtp(sph%sph_rtp, MHD_prop, trans_p%leg,   &
      &    trns_MHD%b_trns, trns_MHD%f_trns, trns_MHD%backward,          &
      &    trns_MHD%forward)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+10)
 !
-      call start_elapsed_time(16)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+11)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
       call sph_forward_trans_4_MHD(sph, comms_sph, MHD_prop%fl_prop,    &
      &    trans_p, cor_rlm, trns_MHD%f_trns, trns_MHD%forward,          &
      &    WK_sph, trns_MHD%mul_FFTW, rj_fld)
-      call end_elapsed_time(16)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
-      call start_elapsed_time(17)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+12)
       if (iflag_debug.ge.1) write(*,*) 'rot_momentum_eq_exp_sph'
       call rot_momentum_eq_exp_sph(sph%sph_rj, r_2nd, sph_MHD_bc,       &
      &    trans_p%leg, ipol, itor, rj_fld)
-      call end_elapsed_time(17)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+12)
 !
       end subroutine nonlinear_by_pseudo_sph
 !

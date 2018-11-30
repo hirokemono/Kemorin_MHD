@@ -30,15 +30,14 @@
 !
       use calypso_mpi
       use m_control_data_section_only
-      use set_viz_time_labels
+      use m_elapsed_labels_4_VIZ
 !
       integer(kind = kint) :: ierr
 !
-      num_elapsed = 80
+      num_elapsed = 0
       call allocate_elapsed_times
-      call s_set_viz_time_labels
-!
-      elapse_labels(num_elapsed) = 'Communication time        '
+      call elpsed_label_4_VIZ
+      call append_COMM_TIME_to_elapsed
 !
 !     read controls
 !
@@ -73,12 +72,13 @@
      &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V)
 !
 !  Generate field lines
-        call start_elapsed_time(12)
+        call start_elapsed_time(1)
         call visualize_surface(viz_step_V, t_VIZ%time_d,                 &
      &      femmesh_VIZ, elemesh_VIZ, field_VIZ, viz_psfs_v)
-        call end_elapsed_time(12)
+        call end_elapsed_time(1)
       end do
 !
+      call copy_COMM_TIME_to_elaps
       call output_elapsed_times
 !
       end subroutine analyze

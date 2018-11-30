@@ -46,6 +46,7 @@
      &          pvr_start, pvr_img, pvr_rgb)
 !
       use m_geometry_constants
+      use m_elapsed_labels_4_VIZ
       use t_geometry_data
       use t_surface_data
       use t_control_params_4_pvr
@@ -80,7 +81,7 @@
       integer(kind = kint) :: i, j, k, ipix
 !
 !
-      call start_elapsed_time(78)
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+3)
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_each_lic_image'
       call ray_trace_each_lic_image                                     &
      &   (node, ele, surf, lic_p, pvr_screen, field_pvr,                &
@@ -96,7 +97,7 @@
      &    pvr_img%num_overlap, pvr_rgb%num_pixel_xy,                    &
      &    pvr_img%npixel_img, pvr_img%iflag_img_pe,                     &
      &    pvr_img%iflag_mapped, pvr_img%rgba_lc)
-      call end_elapsed_time(78)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+3)
 !
 !       Outut segmented image
       if(i_debug .gt. 0) then
@@ -110,7 +111,7 @@
         end do
       end if
 !
-      call start_elapsed_time(79)
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+4)
       if(iflag_debug .gt. 0) write(*,*) 'copy_segmented_image'
       call distribute_segmented_images                                  &
      &   (pvr_img%num_overlap, pvr_img%istack_overlap,                  &
@@ -130,7 +131,7 @@
      &    pvr_img%npixel_img, pvr_rgb%num_pixel_xy,                     &
      &    pvr_img%ipixel_small, pvr_img%rgba_whole,                     &
      &    pvr_img%rgba_rank0, pvr_rgb%rgba_real_gl, pvr_img%COMM)
-      call end_elapsed_time(79)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+4)
 !
 !      if(my_rank .eq. 0) then
 !        write(*,*) 'picked points'

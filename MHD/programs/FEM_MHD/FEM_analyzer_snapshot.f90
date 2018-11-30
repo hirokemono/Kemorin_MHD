@@ -42,6 +42,8 @@
       use m_precision
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_MHD
+!
       use t_time_data
       use t_mesh_data
       use t_phys_data
@@ -220,7 +222,7 @@
 !
 !     -----Output monitor date
 !
-      call start_elapsed_time(4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
 !
       call output_time_step_control                                     &
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
@@ -249,7 +251,7 @@
 !
       call MHD_viz_routine_flag_and_step                                &
      &   (MHD_step%flex_p, MHD_step%time_d, MHD_step%viz_step, visval)
-      call end_elapsed_time(4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
 !
       end subroutine FEM_analyze_snapshot
 !

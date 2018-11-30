@@ -28,6 +28,7 @@
 !
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_MHD
 !
       use calypso_mpi
 !
@@ -135,11 +136,11 @@
 !
 !*  ----  copy coriolis term for inner core rotation
 !*
-      call start_elapsed_time(13)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+8)
       call copy_icore_rot_to_tor_coriolis                               &
      &   (SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%sph%sph_rj,            &
      &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
-      call end_elapsed_time(13)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+8)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
       call sum_forces_to_explicit                                       &

@@ -32,6 +32,7 @@
 !
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_MHD
 !
       use calypso_mpi
 !
@@ -95,22 +96,23 @@
       istep_dynamic = mod(i_step, i_step_sgs_coefs)
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
+        if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+2)
         call cal_scale_similarity_sph_SGS                               &
      &     (sph, comms_sph, MHD_prop, trans_p, WK%WK_sph,               &
      &      dynamic_SPH, ipol, rj_fld, WK%trns_SGS)
+        if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+2)
 !
-        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
+        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON               &
+     &      .and. istep_dynamic .eq. 0) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                     'Dynamic similarity model:',                 &
-     &                      i_step, i_step_sgs_coefs, istep_dynamic
-          if(istep_dynamic .eq. 0) then
-            call start_elapsed_time(83)
-            call sph_dynamic_similarity                                 &
-     &         (SGS_param, sph, comms_sph, MHD_prop, trans_p,           &
-     &          WK%trns_SGS, WK%trns_DYNS, WK%WK_sph, dynamic_SPH,      &
-     &          ipol, rj_fld)
-            call end_elapsed_time(83)
-          end if
+     &                      i_step, i_step_sgs_coefs
+          if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+3)
+          call sph_dynamic_similarity                                   &
+     &       (SGS_param, sph, comms_sph, MHD_prop, trans_p,             &
+     &        WK%trns_SGS, WK%trns_DYNS, WK%WK_sph, dynamic_SPH,        &
+     &        ipol, rj_fld)
+          if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+3)
         end if
       else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1) write(*,*)                                &
@@ -120,18 +122,17 @@
      &          dynamic_SPH, ipol, WK%trns_MHD, WK%WK_sph, rj_fld,      &
      &          WK%trns_ngTMP, WK%trns_SGS)
 !
-        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
+        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON               &
+     &     .and. istep_dynamic .eq. 0) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                     'Dynamic nonlinear gradient model:',         &
-     &                      i_step, i_step_sgs_coefs, istep_dynamic
-          if(istep_dynamic .eq. 0) then
-            call start_elapsed_time(83)
-            call sph_dynamic_nl_gradient                                &
-     &         (SGS_param, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, &
-     &          trans_p, WK%trns_SGS, WK%trns_SIMI, WK%trns_DYNG,       &
-     &          WK%trns_Csim, WK%WK_sph, dynamic_SPH, ipol, rj_fld)
-            call end_elapsed_time(83)
-          end if
+     &                      i_step, i_step_sgs_coefs
+          if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+3)
+          call sph_dynamic_nl_gradient                                  &
+     &       (SGS_param, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,   &
+     &        trans_p, WK%trns_SGS, WK%trns_SIMI, WK%trns_DYNG,         &
+     &        WK%trns_Csim, WK%WK_sph, dynamic_SPH, ipol, rj_fld)
+          if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+3)
         end if
       end if
 !
@@ -144,7 +145,6 @@
      &      dynamic_SPH%ifld_sgs, WK%trns_SGS%f_trns,                   &
      &      WK%trns_SGS%forward)
       end if
-      call end_elapsed_time(15)
 !
 !
       if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON                 &
@@ -161,36 +161,39 @@
      &    (sph%sph_rtp, dynamic_SPH%sph_d_grp, dynamic_SPH%ifld_sgs,    &
      &     dynamic_SPH%wk_sgs, WK%trns_Csim)
 !
-        call start_elapsed_time(16)
+        if(iflag_SMHD_time)                                             &
+     &         call start_elapsed_time(ist_elapsed_SMHD+11)
         if (iflag_debug.eq.1) write(*,*)                                &
      &                     'sph_forward_trans_SGS_MHD Csim'
         call sph_forward_trans_SGS_MHD                                  &
      &     (sph, comms_sph, trans_p, WK%trns_Csim%forward,              &
      &      WK%WK_sph, WK%trns_Csim%mul_FFTW, rj_fld)
-        call end_elapsed_time(16)
+        if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
       end if
 !
 !
 !
-      call start_elapsed_time(17)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+12)
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
         if(iflag_debug.ge.1) write(*,*) 'product_buo_model_coefs_4_sph'
+        if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+4)
         call product_buo_model_coefs_4_sph                              &
      &     (istep_dynamic, SGS_param, sph, ipol,                        &
      &      WK%trns_SGS, dynamic_SPH, rj_fld)
+        if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+4)
       end if
 !
-      call start_elapsed_time(16)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+11)
       if (iflag_debug.eq.1) write(*,*)                                  &
      &            'sph_forward_trans_SGS_MHD SGS'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
      &    WK%trns_SGS%forward, WK%WK_sph, WK%trns_SGS%mul_FFTW, rj_fld)
-      call end_elapsed_time(16)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       if (iflag_debug.ge.1) write(*,*) 'rot_SGS_terms_exp_sph'
       call rot_SGS_terms_exp_sph(sph%sph_rj, r_2nd, sph_MHD_bc,         &
      &    trans_p%leg, ipol, itor, rj_fld)
-      call end_elapsed_time(17)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+12)
 !
       end subroutine SGS_by_pseudo_sph
 !
@@ -219,11 +222,11 @@
 !
 !
 !
-      call start_elapsed_time(16)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+11)
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD SGS'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
      &    trns_SGS%forward, WK_sph, trns_SGS%mul_FFTW, rj_fld)
-      call end_elapsed_time(16)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       call cal_sph_wide_filtering_fields                                &
      &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(2), rj_fld)
@@ -232,11 +235,11 @@
       call cal_sph_dble_filtering_forces                                &
      &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(2), rj_fld)
 !
-      call start_elapsed_time(14)
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD dyns'
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+9)
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
      &    rj_fld, trns_DYNS%backward, WK_sph, trns_DYNS%mul_FFTW)
-      call end_elapsed_time(14)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+9)
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
       call wider_similarity_SGS_rtp(sph%sph_rtp, MHD_prop,              &
@@ -282,17 +285,19 @@
 !       Make scale similarity model to grid data
       if (iflag_debug .eq. 1) write(*,*)                                &
      &        'cal_scale_similarity_sph_SGS for dynamic model'
+      if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+2)
       call cal_scale_similarity_sph_SGS                                 &
      &   (sph, comms_sph, MHD_prop, trans_p, WK_sph,                    &
      &    dynamic_SPH, ipol, rj_fld, trns_SIMI)
+      if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+2)
 !
 !       Bring SGS terms by nonlinear model to spectr data
-      call start_elapsed_time(16)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+11)
       if (iflag_debug.eq.1) write(*,*)                                  &
      &            'sph_forward_trans_SGS_MHD SGS for dynamic nl. grad'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
      &    trns_SGS%forward, WK_sph, trns_SGS%mul_FFTW, rj_fld)
-      call end_elapsed_time(16)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
       call cal_sph_dble_filtering_forces                                &

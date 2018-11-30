@@ -199,15 +199,15 @@
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
-      call start_elapsed_time(8)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+4)
       call nonlinear_with_SGS                                           &
      &   (i_step, SPH_SGS%SGS_par, SPH_WK%r_2nd, SPH_model,             &
      &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
-      call end_elapsed_time(8)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
 !
 !* ----  Update fields after time evolution ------------------------=
 !*
-      call start_elapsed_time(9)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph(SPH_model,                        &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%fld)
@@ -219,17 +219,17 @@
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p, SPH_WK%MHD_mats,      &
      &      SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       end if
-      call end_elapsed_time(9)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !*  -----------  lead mid-equator field --------------
 !*
-      call start_elapsed_time(4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
       if(iflag_debug.gt.0)  write(*,*) 'sph_transfer_on_circle'
       call sph_transfer_on_circle                                       &
      &   (SPH_MHD%sph%sph_rj, SPH_MHD%fld, cdat)
       call write_field_data_on_circle                                   &
      &   (i_step, MHD_step1%time_d%time, cdat%circle, cdat%d_circle)
-      call end_elapsed_time(4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
 !
       end subroutine SPH_analyze_pick_circle
 !

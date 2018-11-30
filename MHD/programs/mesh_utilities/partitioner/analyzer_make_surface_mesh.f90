@@ -90,6 +90,7 @@
 !
 !     ----- read control data
 !
+      call start_elapsed_time(1)
       call read_control_4_mesh_test(mesh_tctl1)
 !
       call set_ctl_params_4_test_mesh(mesh_tctl1, T_meshes)

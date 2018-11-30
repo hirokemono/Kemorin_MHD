@@ -19,6 +19,7 @@
 !
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_MHD
       use m_MHD_step_parameter
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
@@ -56,7 +57,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      call start_elapsed_time(3)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
@@ -77,8 +78,7 @@
 !*
 !*  -----------  output field data --------------
 !*
-        call start_elapsed_time(1)
-        call start_elapsed_time(4)
+        if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
         iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,      &
      &                               MHD_step1)
         if(iflag .eq. 0) then
@@ -92,18 +92,17 @@
         call FEM_analyze_sph_MHD(MHD_files1,                            &
      &      FEM_d1%geofem, FEM_d1%field, MHD_step1, visval, MHD_IO1)
 !
-        call end_elapsed_time(4)
+        if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
 !
 !*  ----------- Visualization --------------
 !*
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
-          call start_elapsed_time(12)
+          if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+5)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
      &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field, viz_psfs1)
-          call end_elapsed_time(12)
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
         end if
-        call end_elapsed_time(1)
 !
 !*  -----------  exit loop --------------
 !*
@@ -113,7 +112,7 @@
 !
 !  time evolution end
 !
-      call end_elapsed_time(3)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
@@ -121,8 +120,8 @@
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
 !
-      call copy_COMM_TIME_to_elaps(num_elapsed)
-      call end_elapsed_time(1)
+      call copy_COMM_TIME_to_elaps
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
 !
       call output_elapsed_times
 !
@@ -186,16 +185,15 @@
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
-      call start_elapsed_time(8)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+4)
       call nonlinear_with_SGS(i_step, SPH_SGS%SGS_par, SPH_WK%r_2nd,    &
      &    SPH_model, SPH_WK%trans_p, SPH_WK%trns_WK,                    &
      &    SPH_SGS%dynamic, SPH_MHD)
-      call end_elapsed_time(8)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
 !
 !* ----  Update fields after time evolution ------------------------=
 !*
-      call start_elapsed_time(9)
-!
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph(SPH_model,                        &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%fld)
@@ -205,20 +203,20 @@
      &    SPH_WK%r_2nd, SPH_model%MHD_prop, SPH_model%sph_MHD_bc,       &
      &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_SGS%dynamic,              &
      &    SPH_WK%MHD_mats, MHD_step, SPH_MHD)
-      call end_elapsed_time(9)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !*  -----------  lead energy data --------------
 !*
-      call start_elapsed_time(4)
-      call start_elapsed_time(11)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
       iflag = output_IO_flag(i_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(MHD_step1%time_d, SPH_MHD,      &
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, SPH_WK%monitor)
       end if
-      call end_elapsed_time(11)
-      call end_elapsed_time(4)
+      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
 !
 !*  -----------  Output spectr data --------------
 !*

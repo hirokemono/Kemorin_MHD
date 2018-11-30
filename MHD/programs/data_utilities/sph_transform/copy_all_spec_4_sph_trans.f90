@@ -160,10 +160,8 @@
         do i = 1, rj_fld%num_phys
           if (fld_rtp%fld_name(j0) .eq. rj_fld%phys_name(i) ) then
             i_field = rj_fld%istack_component(i-1) + 1
-!$omp parallel
             call sel_sph_rj_vector_from_recv                            &
      &         (ncomp_recv, i_field, itrans, comm_rj, n_WR, WR, rj_fld)
-!$omp end parallel
             exit
           end if
         end do
@@ -195,10 +193,8 @@
         do i = 1, rj_fld%num_phys
           if (fld_rtp%fld_name(j0) .eq. rj_fld%phys_name(i) ) then
             i_field = rj_fld%istack_component(i-1) + 1
-!$omp parallel
             call sel_sph_rj_tensor_to_send                              &
      &         (ncomp_send, i_field, itrans, comm_rj, rj_fld, n_WS, WS)
-!$omp end parallel
             exit
           end if
         end do
@@ -229,10 +225,8 @@
         do i = 1, rj_fld%num_phys
           if (fld_rtp%fld_name(j0) .eq. rj_fld%phys_name(i) ) then
             i_field = rj_fld%istack_component(i-1) + 1
-!$omp parallel
             call sel_sph_rj_tensor_from_recv                            &
      &         (ncomp_recv, i_field, itrans, comm_rj, n_WR, WR, rj_fld)
-!$omp end parallel
             exit
           end if
         end do

@@ -19,6 +19,7 @@
       use calypso_mpi
 !
       use m_work_time
+      use m_elapsed_labels_gen_SPH
 !
       use t_mesh_data
       use t_spheric_parameter
@@ -64,16 +65,12 @@
       subroutine init_gen_sph_grids
 !
       use m_error_IDs
-!
-      num_elapsed = 6
+! 
+      num_elapsed = 1
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                  '
-      elapse_labels(2) = 'Generation of spherical transform table'
-      elapse_labels(3) = 'Generation of spherical mode and grid'
-      elapse_labels(4) = 'Generation of FEM mesh data'
-      elapse_labels(5) = 'Generation of surface FEM mesh data'
-      elapse_labels(6) = 'Generation of viewer data'
+      call elpsed_label_gen_sph_grid
 !
 !
       call start_elapsed_time(1)
@@ -111,7 +108,7 @@
 !
       if(sph_files1%FEM_mesh_flags%iflag_access_FEM .eq. 0) goto 99
 !
-      call start_elapsed_time(4)
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+3)
       if(iflag_debug .gt. 0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
      &   (sph_files1%FEM_mesh_flags, sph_const, comms_sph, sph_grps,    &
@@ -119,16 +116,16 @@
       call calypso_MPI_barrier
 !
       call dealloc_gen_sph_fem_mesh_param(gen_sph_G)
-      call end_elapsed_time(4)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)
 !
       if(sph_files1%FEM_mesh_flags%iflag_output_SURF .eq. 0) goto 99
 !
-      call start_elapsed_time(5)
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+4)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_init_with_IO'
       call FEM_mesh_init_with_IO                                        &
      &   (sph_files1%FEM_mesh_flags%iflag_output_SURF,                  &
      &    sph_files1%mesh_file_IO, geofem%mesh, geofem%group, ele_mesh)
-      call end_elapsed_time(5)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+4)
       call end_elapsed_time(1)
 !
   99  continue
