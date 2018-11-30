@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine elpsed_label_4_VIZ
+!!      subroutine reset_elapse_after_init_VIZ
 !!@endverbatim
 !
       module m_elapsed_labels_4_VIZ
@@ -29,6 +30,12 @@
       integer(kind = kint), save :: ist_elapsed_LIC =   0
       integer(kind = kint), save :: ied_elapsed_LIC =   0
 !
+      private :: elpsed_label_4_VIZ_outline
+      private :: elpsed_label_4_PVR, elpsed_label_4_LIC
+      private :: reset_elapse_after_init_VIZ_top
+      private :: reset_elapse_after_init_PVR
+      private :: reset_elapse_after_init_LIC
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -47,6 +54,20 @@
 !
       end subroutine elpsed_label_4_VIZ
 !
+! ----------------------------------------------------------------------
+!
+      subroutine reset_elapse_after_init_VIZ
+!
+!
+      call reset_elapsed_times(12, 12)
+!
+      call reset_elapse_after_init_VIZ_top
+      call reset_elapse_after_init_PVR
+      call reset_elapse_after_init_LIC
+!
+      end subroutine reset_elapse_after_init_VIZ
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine elpsed_label_4_VIZ_outline
@@ -123,6 +144,37 @@
       iflag_LIC_time = .TRUE.
 !
       end subroutine elpsed_label_4_LIC
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine reset_elapse_after_init_VIZ_top
+!
+!
+      if(iflag_VIZ_time .eqv. .FALSE.) return
+      call reset_elapsed_times(ist_elapsed_VIZ+6, ied_elapsed_VIZ)
+!
+      end subroutine reset_elapse_after_init_VIZ_top
+!
+!-----------------------------------------------------------------------
+!
+      subroutine reset_elapse_after_init_PVR
+!
+!
+      if(iflag_PVR_time .eqv. .FALSE.) return
+      call reset_elapsed_times(ist_elapsed_PVR+1, ied_elapsed_PVR)
+!
+      end subroutine reset_elapse_after_init_PVR
+!
+!-----------------------------------------------------------------------
+!
+      subroutine reset_elapse_after_init_LIC
+!
+!
+      if(iflag_LIC_time .eqv. .FALSE.) return
+      call reset_elapsed_times(ist_elapsed_LIC+1, ied_elapsed_LIC)
+!
+      end subroutine reset_elapse_after_init_LIC
 !
 !-----------------------------------------------------------------------
 !
