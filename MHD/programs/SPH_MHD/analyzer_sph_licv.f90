@@ -42,24 +42,25 @@
 !
       write(*,*) 'Simulation start: PE. ', my_rank
       total_start = MPI_WTIME()
+      call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
       call append_COMM_TIME_to_elapsed
 !
 !   Load parameter file
 !
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       call read_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
 !
       call input_control_4_SPH_MHD_nosnap                               &
      &   (MHD_files1, DNS_MHD_ctl1, MHD_step1, SPH_model1,              &
      &    SPH_WK1%trns_WK, SPH_WK1%monitor, SPH_MHD1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !    precondition elaps start
 !
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
 !
 !   matrix assembling
 !
@@ -69,7 +70,7 @@
      &    MHD_step1, MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1)
       call calypso_MPI_barrier
 !
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call reset_elapse_4_init_sph_mhd
 !
       end subroutine initialize_sph_licv
@@ -88,7 +89,7 @@
 !
 !     ---------------------
 !
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)
 !
 !*  -----------  set initial step data --------------
 !*
@@ -112,7 +113,7 @@
         if(iflag_finish .gt. izero) exit
       end do
 !
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
 !
 !  time evolution end
 !
@@ -120,7 +121,7 @@
 !      call SPH_finalize_licv
 !
       call copy_COMM_TIME_to_elaps
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
+      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times
 !

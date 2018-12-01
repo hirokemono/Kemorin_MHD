@@ -39,8 +39,7 @@
       use parallel_load_data_4_sph
 !
 !
-      num_elapsed = 30
-      call allocate_elapsed_times
+      call init_elapse_time_by_TOTAL
 !
 !     --------------------- 
 !

@@ -45,9 +45,6 @@
       subroutine elpsed_label_4_VIZ
 !
 !
-      elapse_labels(12) = 'Visualizatio time         '
-!
-!
       call elpsed_label_4_VIZ_outline
       call elpsed_label_4_PVR
       call elpsed_label_4_LIC
@@ -58,8 +55,6 @@
 !
       subroutine reset_elapse_after_init_VIZ
 !
-!
-      call reset_elapsed_times(12, 12)
 !
       call reset_elapse_after_init_VIZ_top
       call reset_elapse_after_init_PVR

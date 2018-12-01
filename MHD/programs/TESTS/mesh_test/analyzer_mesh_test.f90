@@ -81,10 +81,7 @@
       type(surf_edge_IO_file) :: ele_mesh_IO
 !
 !
-      num_elapsed = 1
-      call allocate_elapsed_times
-!
-      elapse_labels(1) = 'Total time                  '
+      call init_elapse_time_by_TOTAL
       call elapsed_label_4_ele_comm_tbl
 !
 !     --------------------- 
@@ -108,11 +105,11 @@
 !
 !  -------------------------------
 !
-      call start_elapsed_time(1)
+      if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_init_with_IO'
       call FEM_mesh_init_with_IO(T_meshes%iflag_output_SURF,            &
      &    T_meshes%mesh_file_IO, fem_T%mesh, fem_T%group, ele_mesh)
-      call end_elapsed_time(1)
+      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call calypso_MPI_barrier
       return
 !

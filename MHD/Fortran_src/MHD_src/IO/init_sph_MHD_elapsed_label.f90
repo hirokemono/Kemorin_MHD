@@ -38,9 +38,6 @@
       use const_element_comm_table
 !
 !
-      num_elapsed = 0
-      call allocate_elapsed_times
-!
       call elapsed_label_4_MHD
       call elapsed_label_4_SPH_MHD
 !

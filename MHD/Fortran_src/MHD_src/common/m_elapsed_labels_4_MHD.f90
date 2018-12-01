@@ -54,16 +54,15 @@
 !
       subroutine elapsed_label_4_MHD
 !
-      integer(kind = kint), parameter :: num_append = 5
+      integer(kind = kint), parameter :: num_append = 4
 !
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_MHD, ied_elapsed_MHD)
 !
-      elapse_labels(ist_elapsed_MHD+1) = 'Total time                 '
-      elapse_labels(ist_elapsed_MHD+2) = 'Initialization time        '
-      elapse_labels(ist_elapsed_MHD+3) = 'Time evolution loop time   '
-      elapse_labels(ist_elapsed_MHD+4) = 'Data IO time               '
-      elapse_labels(ist_elapsed_MHD+5) = 'Visualizatio time          '
+      elapse_labels(ist_elapsed_MHD+1) = 'Initialization time        '
+      elapse_labels(ist_elapsed_MHD+2) = 'Time evolution loop time   '
+      elapse_labels(ist_elapsed_MHD+3) = 'Data IO time               '
+      elapse_labels(ist_elapsed_MHD+4) = 'Visualizatio time          '
 !
       iflag_MHD_time = .TRUE.
 !

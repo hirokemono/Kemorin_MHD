@@ -66,14 +66,10 @@
 !
       use m_error_IDs
 ! 
-      num_elapsed = 1
-      call allocate_elapsed_times
-!
-      elapse_labels(1) = 'Total time                  '
+      call init_elapse_time_by_TOTAL
       call elpsed_label_gen_sph_grid
 !
-!
-      call start_elapsed_time(1)
+      call start_elapsed_time(ied_total_elapsed)
       call read_control_4_const_shell(control_file_name, SPH_MAKE_ctl)
       call set_control_4_gen_shell_grids                                &
      &   (my_rank, SPH_MAKE_ctl%plt, SPH_MAKE_ctl%psph_ctl,             &
@@ -126,7 +122,7 @@
      &   (sph_files1%FEM_mesh_flags%iflag_output_SURF,                  &
      &    sph_files1%mesh_file_IO, geofem%mesh, geofem%group, ele_mesh)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+4)
-      call end_elapsed_time(1)
+      call end_elapsed_time(ied_total_elapsed)
 !
   99  continue
 !

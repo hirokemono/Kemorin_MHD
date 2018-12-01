@@ -52,6 +52,7 @@
       use parallel_FEM_mesh_init
       use load_element_mesh_data
       use output_test_mesh
+      use const_element_comm_table
 !
       use t_file_IO_parameter
       use t_mesh_data
@@ -64,22 +65,8 @@
       type(surf_edge_IO_file) :: ele_mesh_IO
 !
 !
-      num_elapsed = 11
-      call allocate_elapsed_times
-!
-      elapse_labels(1) = 'Total time                  '
-      elapse_labels(2) = 'const_element_comm_tbls'
-!
-      elapse_labels(3) = 'const_ele_comm_tbl'
-      elapse_labels(4) = '          '
-      elapse_labels(5) = 'const_surf_comm_table'
-      elapse_labels(6) = 'start_elapsed_time'
-      elapse_labels(7) = 'const_edge_comm_table'
-      elapse_labels(8) = '          '
-!
-      elapse_labels(9) = 'const_comm_table_by_connenct2'
-      elapse_labels(10) = 's_set_element_export_item'
-      elapse_labels(11) = 'search_target_element3'
+      call init_elapse_time_by_TOTAL
+      call elapsed_label_4_ele_comm_tbl
 !
 !     --------------------- 
 !
@@ -90,7 +77,7 @@
 !
 !     ----- read control data
 !
-      call start_elapsed_time(1)
+      call start_elapsed_time(ied_total_elapsed)
       call read_control_4_mesh_test(mesh_tctl1)
 !
       call set_ctl_params_4_test_mesh(mesh_tctl1, T_meshes)
@@ -103,12 +90,11 @@
 !
 !  -------------------------------
 !
-      call start_elapsed_time(1)
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_init_with_IO'
       T_meshes%iflag_output_SURF = 1
       call FEM_mesh_init_with_IO(T_meshes%iflag_output_SURF,            &
      &    T_meshes%mesh_file_IO, fem_T%mesh, fem_T%group, ele_mesh)
-      call end_elapsed_time(1)
+      call end_elapsed_time(ied_total_elapsed)
 !
       end subroutine initialize_make_surface_mesh
 !

@@ -161,10 +161,10 @@
 !* -----  Open Volume integration data files -----------------
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       call open_sph_vol_rms_file_mhd                                    &
      &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, SPH_WK%monitor)
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
       call calypso_mpi_barrier
 !
       end subroutine SPH_initialize_SGS_MHD
@@ -246,7 +246,7 @@
 !
 !*  -----------  output restart data --------------
 !*
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+6)
       iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
      &                         MHD_step%rst_step)
@@ -294,7 +294,7 @@
      &    .and. MHD_step%finish_d%i_end_step .gt. 0) then
         iflag_finish = 1
       end if
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       end subroutine SPH_analyze_SGS_MHD
 !

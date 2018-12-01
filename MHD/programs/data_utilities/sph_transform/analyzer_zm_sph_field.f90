@@ -37,8 +37,7 @@
       use m_elapsed_labels_4_VIZ
 !
 !
-      num_elapsed = 10
-      call allocate_elapsed_times
+      call init_elapse_time_by_TOTAL
       call elpsed_label_4_VIZ
       call append_COMM_TIME_to_elapsed
 !

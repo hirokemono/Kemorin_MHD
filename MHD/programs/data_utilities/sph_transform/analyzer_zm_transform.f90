@@ -32,8 +32,7 @@
 !
 !     --------------------- 
 !
-      num_elapsed = 30
-      call allocate_elapsed_times
+      call init_elapse_time_by_TOTAL
 !
 ! ----   read controls
       if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_trans'

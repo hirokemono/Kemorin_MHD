@@ -34,9 +34,7 @@
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
-      num_elapsed = 0
-      call allocate_elapsed_times
-!
+      call init_elapse_time_by_TOTAL
       call elapsed_label_4_MHD
       call elapsed_label_4_FEM_MHD
       call elpsed_label_4_VIZ
@@ -84,12 +82,12 @@
 !
 !  Visualization
         if (visval.eq.0) then
-          if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+5)
+          if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field,       &
      &        SGS_MHD_wk1%fem_int%next_tbl%neib_ele,                    &
      &        SGS_MHD_wk1%fem_int%jcs, vizs_F)
-          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
       end do
 !

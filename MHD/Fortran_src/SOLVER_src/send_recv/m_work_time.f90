@@ -14,7 +14,6 @@
 !!      subroutine start_elapsed_time(iflag_elps)
 !!      subroutine end_elapsed_time(iflag_elps)
 !!      subroutine reset_elapsed_times(istart, iend)
-!!      subroutine reset_elapsed_time(iflag_elps)
 !!      subroutine copy_COMM_TIME_to_elaps(iflag_elps)
 !!
 !!      subroutine output_elapsed_times
@@ -49,7 +48,12 @@
       character (len=kchara), allocatable :: elapse_labels(:)
 !
       real(kind=kreal) :: START_SRtime, END_SRtime, SendRecvtime
-      integer(kind = kint), save, private :: ied_comm_elaps
+!
+      logical, save :: iflag_TOT_time = .FALSE.
+      integer(kind = kint), save, private :: ist_total_elapsed = 0
+      integer(kind = kint), save :: ied_total_elapsed = 0
+!
+      integer(kind = kint), save, private :: ied_comm_elaps = 0
 !
       private :: start_times, elapsed
       private :: elapsed_total, elapsed_min, elapsed_max
@@ -162,15 +166,20 @@
       end subroutine reset_elapsed_times
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
-      subroutine reset_elapsed_time(iflag_elps)
-!
-      integer, intent(in) :: iflag_elps
+      subroutine init_elapse_time_by_TOTAL
 !
 !
-      elapsed(iflag_elps) = zero
+      num_elapsed = 1
+      ist_total_elapsed = 0
+      ied_total_elapsed = 1
+      call allocate_elapsed_times
 !
-      end subroutine reset_elapsed_time
+      elapse_labels(1) = 'Total time   '
+      iflag_TOT_time = .TRUE.
+!
+      end subroutine init_elapse_time_by_TOTAL
 !
 ! ----------------------------------------------------------------------
 !

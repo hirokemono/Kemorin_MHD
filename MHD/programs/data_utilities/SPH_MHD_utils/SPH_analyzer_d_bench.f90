@@ -192,7 +192,7 @@
 !
 !*  -----------  lead mid-equator field --------------
 !*
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
       if(iflag_debug.gt.0)  write(*,*) 'const_data_4_dynamobench'
       call s_const_data_4_dynamobench                                   &
@@ -203,7 +203,7 @@
       call output_field_4_dynamobench(i_step, MHD_step1%time_d%time,    &
      &   SPH_model%sph_MHD_bc, SPH_MHD%ipol, bench)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       end subroutine SPH_analyze_dbench
 !

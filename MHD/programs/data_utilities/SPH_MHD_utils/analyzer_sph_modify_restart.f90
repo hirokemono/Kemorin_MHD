@@ -45,7 +45,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)
       call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
@@ -71,7 +71,7 @@
 !
 !  time evolution end
 !
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
@@ -80,7 +80,7 @@
 !      call SPH_finalize_snap
 !
       call copy_COMM_TIME_to_elaps
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
+      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times
 !
@@ -129,7 +129,7 @@
 !*
       call set_modify_rj_fields(SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
 !
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
       call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)
       call set_sph_restart_num_to_IO(SPH_MHD%fld, sph_fst_IO)
@@ -153,7 +153,7 @@
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, SPH_WK%monitor)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       end subroutine SPH_analyze_mod_restart
 !

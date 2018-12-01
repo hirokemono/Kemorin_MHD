@@ -61,15 +61,7 @@
         write(*,*) 'Input file: mesh data'
       end if
 !
-      num_elapsed = 0
-      call allocate_elapsed_times
-!
-      elapse_labels(1) = 'Total time                 '
-      elapse_labels(2) = 'Initialization time        '
-      elapse_labels(3) = 'Time evolution loop time   '
-      elapse_labels(4) = 'Data IO time               '
-      elapse_labels(5) = 'Evolution excluding IO     '
-!
+      call init_elapse_time_by_TOTAL
       call elpsed_label_4_send_recv
       call append_COMM_TIME_to_elapsed
 !

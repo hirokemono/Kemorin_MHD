@@ -222,7 +222,7 @@
 !
 !     -----Output monitor date
 !
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
 !
       call output_time_step_control                                     &
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
@@ -251,7 +251,7 @@
 !
       call MHD_viz_routine_flag_and_step                                &
      &   (MHD_step%flex_p, MHD_step%time_d, MHD_step%viz_step, visval)
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       end subroutine FEM_analyze_snapshot
 !

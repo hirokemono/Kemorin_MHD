@@ -52,13 +52,7 @@
 !
 !     --------------------- 
 !
-      num_elapsed = 3
-      call allocate_elapsed_times
-!
-      write(elapse_labels( 1),'(a)') 'const_mesh_informations'
-      write(elapse_labels( 2),'(a)') 'const_global_numnod_list'
-      write(elapse_labels( 3),'(a)') 'const_ele_comm_tbla'
-!
+      call init_elapse_time_by_TOTAL
       call elapsed_label_4_ele_comm_tbl
       call elpsed_label_4_comm_test
 !

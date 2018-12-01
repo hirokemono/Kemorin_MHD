@@ -34,14 +34,14 @@
 !
       integer(kind = kint) :: ierr
 !
-      num_elapsed = 0
-      call allocate_elapsed_times
+      call init_elapse_time_by_TOTAL
       call elpsed_label_4_VIZ
       call append_COMM_TIME_to_elapsed
 !
 !     read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
+      if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       call read_control_data_section_only
       call set_control_params_4_viz(my_rank, t_sect_ctl, sect_plt,      &
      &    mesh_file_VIZ, ucd_file_VIZ, ierr)
@@ -72,12 +72,11 @@
      &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V)
 !
 !  Generate field lines
-        call start_elapsed_time(1)
         call visualize_surface(viz_step_V, t_VIZ%time_d,                 &
      &      femmesh_VIZ, elemesh_VIZ, field_VIZ, viz_psfs_v)
-        call end_elapsed_time(1)
       end do
 !
+      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call copy_COMM_TIME_to_elaps
       call output_elapsed_times
 !

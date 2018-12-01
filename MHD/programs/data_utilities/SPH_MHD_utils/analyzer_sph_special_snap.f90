@@ -57,7 +57,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)
       call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
@@ -78,7 +78,7 @@
 !*
 !*  -----------  output field data --------------
 !*
-        if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+        if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
         iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,      &
      &                               MHD_step1)
         if(iflag .eq. 0) then
@@ -92,16 +92,16 @@
         call FEM_analyze_sph_MHD(MHD_files1,                            &
      &      FEM_d1%geofem, FEM_d1%field, MHD_step1, visval, MHD_IO1)
 !
-        if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
+        if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !*  ----------- Visualization --------------
 !*
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
-          if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+5)
+          if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
      &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field, viz_psfs1)
-          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
 !
 !*  -----------  exit loop --------------
@@ -112,7 +112,7 @@
 !
 !  time evolution end
 !
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
@@ -121,7 +121,7 @@
 !      call SPH_finalize_snap
 !
       call copy_COMM_TIME_to_elaps
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
+      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times
 !
@@ -207,7 +207,7 @@
 !
 !*  -----------  lead energy data --------------
 !*
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
       iflag = output_IO_flag(i_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
@@ -216,7 +216,7 @@
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, SPH_WK%monitor)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
+      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !*  -----------  Output spectr data --------------
 !*

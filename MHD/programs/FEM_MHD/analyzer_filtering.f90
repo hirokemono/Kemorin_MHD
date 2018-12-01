@@ -33,16 +33,7 @@
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
-      num_elapsed = 6
-      call allocate_elapsed_times
-!
-      elapse_labels(1) = 'Total time                 '
-      elapse_labels(2) = 'Initialization time        '
-      elapse_labels(3) = 'Time evolution loop time   '
-      elapse_labels(4) = 'Data IO time               '
-      elapse_labels(5) = 'Linear solver time         '
-      elapse_labels(6) = 'Communication for RHS      '
-!
+      call init_elapse_time_by_TOTAL
       call elpsed_label_4_VIZ
       call append_COMM_TIME_to_elapsed
 !

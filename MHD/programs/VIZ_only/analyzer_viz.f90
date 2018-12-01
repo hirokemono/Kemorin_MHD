@@ -35,12 +35,10 @@
 !
       integer(kind = kint) :: ierr
 !
-      num_elapsed = 0
-      call allocate_elapsed_times
-      elapse_labels(1) = 'Total time                  '
-
+      call init_elapse_time_by_TOTAL
       call elpsed_label_4_VIZ
       call append_COMM_TIME_to_elapsed
+      if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
 !     read controls
 !
@@ -81,14 +79,13 @@
 !  Rendering
         if(visval .eq. 0) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
-          call start_elapsed_time(1)
           call visualize_all(viz_step_V, t_VIZ%time_d,                  &
      &        femmesh_VIZ, elemesh_VIZ, field_VIZ,                      &
      &        ele_4_nod_VIZ, jacobians_VIZ, vizs_v)
-          call end_elapsed_time(1)
         end if
       end do
 !
+      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call copy_COMM_TIME_to_elaps
       call output_elapsed_times
 !
