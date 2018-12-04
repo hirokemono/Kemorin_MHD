@@ -52,22 +52,22 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed, ied_elapsed)
 !
-      write(elapse_labels(ist_elapsed+1),'(a)')                         &
+      write(elps1%labels(ist_elapsed+1),'(a)')                          &
      &                             'copy_from_recv_by_comm_table1'
-      write(elapse_labels(ist_elapsed+2),'(a)')                         &
+      write(elps1%labels(ist_elapsed+2),'(a)')                          &
      &                             'copy_from_recv_by_rev_table1'
-      write(elapse_labels(ist_elapsed+3),'(a)')                         &
+      write(elps1%labels(ist_elapsed+3),'(a)')                          &
      &                             'copy_from_recv_by_comm_lgloop1'
-      write(elapse_labels(ist_elapsed+4),'(a)')                         &
+      write(elps1%labels(ist_elapsed+4),'(a)')                          &
      &                             'copy_from_recv_by_rev_lgloop1'
 !
-      write(elapse_labels(ist_elapsed+5),'(a)')                         &
+      write(elps1%labels(ist_elapsed+5),'(a)')                          &
      &                             'copy_to_send_by_comm_table2'
-      write(elapse_labels(ist_elapsed+6),'(a)')                         &
+      write(elps1%labels(ist_elapsed+6),'(a)')                          &
      &                             'copy_from_recv_by_rev_table2'
-      write(elapse_labels(ist_elapsed+7),'(a)')                         &
+      write(elps1%labels(ist_elapsed+7),'(a)')                          &
      &                             'copy_from_recv_by_comm_lgloop2'
-      write(elapse_labels(ist_elapsed+8),'(a)')                         &
+      write(elps1%labels(ist_elapsed+8),'(a)')                          &
      &                             'copy_from_recv_by_rev_lgloop2'
 !
       iflag_elapsd = .TRUE.

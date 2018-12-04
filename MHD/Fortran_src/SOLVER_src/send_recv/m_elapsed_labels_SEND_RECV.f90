@@ -38,9 +38,9 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_SR, ied_elapsed_SR)
 !
-      elapse_labels(ist_elapsed_SR+1) = 'set_to_send_buf_N    '
-      elapse_labels(ist_elapsed_SR+2) = 'calypso_send_recv_core    '
-      elapse_labels(ist_elapsed_SR+3) = 'set_from_recv_buf_rev_N    '
+      elps1%labels(ist_elapsed_SR+1) = 'set_to_send_buf_N    '
+      elps1%labels(ist_elapsed_SR+2) = 'calypso_send_recv_core    '
+      elps1%labels(ist_elapsed_SR+3) = 'set_from_recv_buf_rev_N    '
 !
       iflag_SR_time = .TRUE.
 !

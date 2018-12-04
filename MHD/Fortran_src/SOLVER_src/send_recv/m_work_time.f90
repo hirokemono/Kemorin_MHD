@@ -25,6 +25,7 @@
 !
       use m_precision
       use m_constants
+      use t_work_time
 !
       implicit  none
 !
@@ -37,15 +38,7 @@
 !
       real (kind=kreal)  ::  total_time, total_start
 !
-      integer(kind = kint) :: num_elapsed
-      real (kind=kreal), allocatable :: elapsed(:)
-!
-      real (kind=kreal), allocatable :: elapsed_total(:)
-      real (kind=kreal), allocatable :: elapsed_min(:)
-      real (kind=kreal), allocatable :: elapsed_max(:)
-!
-      real (kind=kreal), allocatable :: start_times(:)
-      character (len=kchara), allocatable :: elapse_labels(:)
+      type(elapsed_time_data), save :: elps1
 !
       real(kind=kreal) :: START_SRtime, END_SRtime, SendRecvtime
 !
@@ -54,9 +47,6 @@
       integer(kind = kint), save :: ied_total_elapsed = 0
 !
       integer(kind = kint), save, private :: ied_comm_elaps = 0
-!
-      private :: start_times, elapsed
-      private :: elapsed_total, elapsed_min, elapsed_max
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,20 +57,7 @@
       subroutine allocate_elapsed_times
 !
 !
-      allocate(elapsed(num_elapsed))
-      allocate(elapsed_total(num_elapsed))
-      allocate(elapsed_min(num_elapsed))
-      allocate(elapsed_max(num_elapsed))
-      allocate(start_times(num_elapsed))
-      allocate(elapse_labels(num_elapsed))
-!
-      if(num_elapsed .gt. 0) then
-        start_times =   zero
-        elapsed =       zero
-        elapsed_total = zero
-        elapsed_min = zero
-        elapsed_max = zero
-      end if
+      call alloc_elapsed_timer(elps1)
 !
       end subroutine allocate_elapsed_times
 !
@@ -91,21 +68,9 @@
       integer(kind = kint), intent(in) :: num_append
       integer(kind = kint), intent(inout) :: iend_org, iend_new
 !
-      character(len=kchara), allocatable :: tmp_label(:)
 !
-!
-      iend_org = num_elapsed
-      iend_new = num_elapsed + num_append
-!
-      allocate(tmp_label(iend_org))
-      tmp_label(1:iend_org) = elapse_labels(1:iend_org)
-!
-      call deallocate_elapsed_times
-!
-      num_elapsed = iend_new
-      call allocate_elapsed_times
-      elapse_labels(1:iend_org) = tmp_label(1:iend_org)
-      deallocate(tmp_label)
+      call append_elapsed_timer                                         &
+     &         (num_append, iend_org, iend_new, elps1)
 !
       end subroutine append_elapsed_times
 !
@@ -114,10 +79,7 @@
       subroutine deallocate_elapsed_times
 !
 !
-      deallocate(elapsed, elapsed_total)
-      deallocate(elapsed_min, elapsed_max)
-      deallocate(start_times)
-      deallocate(elapse_labels)
+      call dealloc_elapsed_timer(elps1)
 !
       end subroutine deallocate_elapsed_times
 !
@@ -126,14 +88,10 @@
 !
       subroutine start_elapsed_time(iflag_elps)
 !
-      use calypso_mpi
-!
       integer, intent(in) :: iflag_elps
 !
 !
-      start_times(iflag_elps) = MPI_WTIME()
-!      if(iflag_elps .eq. 3) call summary_start()
-!      call hpm_start(elapse_labels(iflag_elps))
+      call start_elapsed_timer(iflag_elps, elps1)
 !
       end subroutine start_elapsed_time
 !
@@ -146,10 +104,7 @@
       integer, intent(in) :: iflag_elps
 !
 !
-!      if(iflag_elps .eq. 3) call summary_stop()
-!      call hpm_stop(elapse_labels(iflag_elps)) 
-      elapsed(iflag_elps) = MPI_WTIME() - start_times(iflag_elps)       &
-     &                     + elapsed(iflag_elps)
+      call end_elapsed_timer(iflag_elps, elps1)
 !
       end subroutine end_elapsed_time
 !
@@ -157,11 +112,10 @@
 !
       subroutine reset_elapsed_times(istart, iend)
 !
-!
       integer(kind = kint), intent(in) :: istart, iend
 !
 !
-      elapsed(istart:iend) = zero
+      call reset_elapsed_timer(istart, iend, elps1)
 !
       end subroutine reset_elapsed_times
 !
@@ -171,12 +125,12 @@
       subroutine init_elapse_time_by_TOTAL
 !
 !
-      num_elapsed = 1
+      elps1%num_elapsed = 1
       ist_total_elapsed = 0
       ied_total_elapsed = 1
       call allocate_elapsed_times
 !
-      elapse_labels(1) = 'Total time   '
+      elps1%labels(1) = 'Total time   '
       iflag_TOT_time = .TRUE.
 !
       end subroutine init_elapse_time_by_TOTAL
@@ -189,7 +143,7 @@
 !
 !
       call append_elapsed_times(ione, ist_comm_elaps, ied_comm_elaps)
-      elapse_labels(num_elapsed) = 'Communication time'
+      elps1%labels(ied_comm_elaps) = 'Communication time'
 !
       end subroutine append_COMM_TIME_to_elapsed
 !
@@ -200,7 +154,7 @@
       use calypso_mpi
 !
 !
-      elapsed(ied_comm_elaps) = SendRecvtime
+      elps1%elapsed(ied_comm_elaps) = SendRecvtime
 !
       end subroutine copy_COMM_TIME_to_elaps
 !
@@ -209,61 +163,9 @@
 !
       subroutine output_elapsed_times
 !
-      use calypso_mpi
-      use set_parallel_file_name
 !
-      integer(kind = kint) :: i
-      character(len=kchara) :: fname_tmp, file_name
-!
-!
-      call MPI_REDUCE(elapsed, elapsed_total, num_elapsed,              &
-     &    CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE(elapsed, elapsed_min, num_elapsed,                &
-     &    CALYPSO_REAL, MPI_MIN, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE(elapsed, elapsed_max, num_elapsed,                &
-     &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
-!
-!
-      if(iflag_time_4_each_pe .gt. 0) then
-        fname_tmp = add_int_suffix(my_rank, time_file_prefix)
-        file_name = add_dat_extension(fname_tmp)
-        open(id_timer_file,file=file_name,position='append')
-        write(id_timer_file,*) 'Average elapsed time'
-        do i = 1, num_elapsed
-          if(elapsed(i) .gt. zero) then
-            write(id_timer_file,'(i3,a2,a,a2,1pe20.11)')                &
-     &            i, '. ', trim(elapse_labels(i)), ': ', elapsed(i)
-          end if
-        end do
-      end if
-!
-!
-      if (my_rank .ne. 0) return
-!
-      do i = 1, num_elapsed
-        elapsed(i) = elapsed_total(i) / dble(nprocs)
-      end do
-!
-      file_name = add_dat_extension(time_file_prefix)
-      open(id_timer_file,file=file_name,position='append')
-      write(id_timer_file,*) 'Average elapsed time'
-      do i = 1, num_elapsed
-        if(elapsed(i) .gt. zero) then
-          write(id_timer_file,'(i3,a2,a,a2,1pe20.11)')                  &
-     &            i, '. ', trim(elapse_labels(i)), ': ', elapsed(i)
-        end if
-      end do
-!
-      write(id_timer_file,*) ''
-      write(id_timer_file,*) 'Minimum and maximum elapsed time'
-      do i = 1, num_elapsed
-        if(elapsed(i) .gt. zero) then
-          write(id_timer_file,'(i3,a2,a,a2,1p2e20.11)')                 &
-     &            i, '. ', trim(elapse_labels(i)), ': ',                &
-     &            elapsed_min(i), elapsed_max(i)
-         end if
-      end do
-      close(id_timer_file)
+      call output_elapsed_log                                           &
+     &   (iflag_time_4_each_pe, time_file_prefix, elps1)
 !
       end subroutine output_elapsed_times
 !

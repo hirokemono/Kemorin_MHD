@@ -73,22 +73,22 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_VIZ, ied_elapsed_VIZ)
 !
-      elapse_labels(ist_elapsed_VIZ+ 1)                                 &
+      elps1%labels(ist_elapsed_VIZ+ 1)                                  &
      &                    = 'Sectioning initialization.    '
-      elapse_labels(ist_elapsed_VIZ+ 2)                                 &
+      elps1%labels(ist_elapsed_VIZ+ 2)                                  &
      &                    = 'Isosurfaceing initialization.    '
-      elapse_labels(ist_elapsed_VIZ+ 3)                                 &
+      elps1%labels(ist_elapsed_VIZ+ 3)                                  &
      &                    = 'Volume rendering initialization.    '
-      elapse_labels(ist_elapsed_VIZ+ 4)                                 &
+      elps1%labels(ist_elapsed_VIZ+ 4)                                  &
      &                    = 'fieldline initialization.    '
-      elapse_labels(ist_elapsed_VIZ+ 5)                                 &
+      elps1%labels(ist_elapsed_VIZ+ 5)                                  &
      &                    = 'LIC rendering initialization.    '
 !
-      elapse_labels(ist_elapsed_VIZ+ 6) = 'Sectioning.    '
-      elapse_labels(ist_elapsed_VIZ+ 7) = 'Isosurfaceing.    '
-      elapse_labels(ist_elapsed_VIZ+ 8) = 'Volume rendering.    '
-      elapse_labels(ist_elapsed_VIZ+ 9) = 'fieldline.    '
-      elapse_labels(ist_elapsed_VIZ+10) = 'LIC rendering.    '
+      elps1%labels(ist_elapsed_VIZ+ 6) = 'Sectioning.    '
+      elps1%labels(ist_elapsed_VIZ+ 7) = 'Isosurfaceing.    '
+      elps1%labels(ist_elapsed_VIZ+ 8) = 'Volume rendering.    '
+      elps1%labels(ist_elapsed_VIZ+ 9) = 'fieldline.    '
+      elps1%labels(ist_elapsed_VIZ+10) = 'LIC rendering.    '
 !
       iflag_VIZ_time = .TRUE.
 !
@@ -104,13 +104,13 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_PVR, ied_elapsed_PVR)
 !
-      elapse_labels(ist_elapsed_PVR+1)                                  &
+      elps1%labels(ist_elapsed_PVR+1)                                  &
      &                    = 'Volume rendering w/o file output   '
-      elapse_labels(ist_elapsed_PVR+2)                                  &
+      elps1%labels(ist_elapsed_PVR+2)                                  &
      &                    = 'Volume rendering file output   '
-      elapse_labels(ist_elapsed_PVR+3)                                  &
+      elps1%labels(ist_elapsed_PVR+3)                                  &
      &                    = 'V. Rendering ray trace   '
-      elapse_labels(ist_elapsed_PVR+4)                                  &
+      elps1%labels(ist_elapsed_PVR+4)                                  &
      &                    = 'V. Rendering subimage composit   '
 !
       iflag_PVR_time = .TRUE.
@@ -127,13 +127,13 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_LIC, ied_elapsed_LIC)
 !
-      elapse_labels(ist_elapsed_LIC+1)                                  &
+      elps1%labels(ist_elapsed_LIC+1)                                   &
      &                    = 'LIC V. rendering w/o file output   '
-      elapse_labels(ist_elapsed_LIC+2)                                  &
+      elps1%labels(ist_elapsed_LIC+2)                                   &
      &                    = 'LIC V. rendering file output   '
-      elapse_labels(ist_elapsed_LIC+3)                                  &
+      elps1%labels(ist_elapsed_LIC+3)                                   &
      &                    = 'LIC V. Rendering ray trace   '
-      elapse_labels(ist_elapsed_LIC+4)                                  &
+      elps1%labels(ist_elapsed_LIC+4)                                   &
      &                    = 'LIC V. Rendering subimage composit   '
 !
       iflag_LIC_time = .TRUE.

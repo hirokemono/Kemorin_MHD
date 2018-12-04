@@ -59,10 +59,10 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_MHD, ied_elapsed_MHD)
 !
-      elapse_labels(ist_elapsed_MHD+1) = 'Initialization time        '
-      elapse_labels(ist_elapsed_MHD+2) = 'Time evolution loop time   '
-      elapse_labels(ist_elapsed_MHD+3) = 'Data IO time               '
-      elapse_labels(ist_elapsed_MHD+4) = 'Visualizatio time          '
+      elps1%labels(ist_elapsed_MHD+1) = 'Initialization time        '
+      elps1%labels(ist_elapsed_MHD+2) = 'Time evolution loop time   '
+      elps1%labels(ist_elapsed_MHD+3) = 'Data IO time               '
+      elps1%labels(ist_elapsed_MHD+4) = 'Visualizatio time          '
 !
       iflag_MHD_time = .TRUE.
 !
@@ -77,20 +77,20 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_SMHD, ied_elapsed_SMHD)
 !
-      elapse_labels(ist_elapsed_SMHD+ 1) = 'Evolution excluding IO    '
-      elapse_labels(ist_elapsed_SMHD+ 2) = 'Linear time               '
-      elapse_labels(ist_elapsed_SMHD+ 3) = 'Solver time               '
-      elapse_labels(ist_elapsed_SMHD+ 4) = 'Nonlinear terms           '
+      elps1%labels(ist_elapsed_SMHD+ 1) = 'Evolution excluding IO    '
+      elps1%labels(ist_elapsed_SMHD+ 2) = 'Linear time               '
+      elps1%labels(ist_elapsed_SMHD+ 3) = 'Solver time               '
+      elps1%labels(ist_elapsed_SMHD+ 4) = 'Nonlinear terms           '
 !
-      elapse_labels(ist_elapsed_SMHD+ 5) = 'Obtain field to output    '
-      elapse_labels(ist_elapsed_SMHD+ 6) = 'output_sph_restart_control'
-      elapse_labels(ist_elapsed_SMHD+ 7) = 'output_rms_sph_mhd_control'
+      elps1%labels(ist_elapsed_SMHD+ 5) = 'Obtain field to output    '
+      elps1%labels(ist_elapsed_SMHD+ 6) = 'output_sph_restart_control'
+      elps1%labels(ist_elapsed_SMHD+ 7) = 'output_rms_sph_mhd_control'
 !
-      elapse_labels(ist_elapsed_SMHD+ 8) = 'Coriolis term             '
-      elapse_labels(ist_elapsed_SMHD+ 9) = 'sph backward transform    '
-      elapse_labels(ist_elapsed_SMHD+10) = 'cal nonlinear terms       '
-      elapse_labels(ist_elapsed_SMHD+11) = 'sph forward transform     '
-      elapse_labels(ist_elapsed_SMHD+12) = 'obtain explicit terms     '
+      elps1%labels(ist_elapsed_SMHD+ 8) = 'Coriolis term             '
+      elps1%labels(ist_elapsed_SMHD+ 9) = 'sph backward transform    '
+      elps1%labels(ist_elapsed_SMHD+10) = 'cal nonlinear terms       '
+      elps1%labels(ist_elapsed_SMHD+11) = 'sph forward transform     '
+      elps1%labels(ist_elapsed_SMHD+12) = 'obtain explicit terms     '
 !
       iflag_SMHD_time = .TRUE.
 !
@@ -105,7 +105,7 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_FMHD, ied_elapsed_FMHD)
 !
-      elapse_labels(ist_elapsed_FMHD+ 1) = 'Linear solver time '
+      elps1%labels(ist_elapsed_FMHD+ 1) = 'Linear solver time '
 !
       iflag_FMHD_time = .TRUE.
 !
@@ -120,10 +120,10 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_SGS, ied_elapsed_SGS)
 !
-      elapse_labels(ist_elapsed_SGS+1) = 'Filtering fields   '
-      elapse_labels(ist_elapsed_SGS+2) = 'Scale similarity   '
-      elapse_labels(ist_elapsed_SGS+3) = 'Dynamic scheme     '
-      elapse_labels(ist_elapsed_SGS+4) = 'SGS Buoyancy       '
+      elps1%labels(ist_elapsed_SGS+1) = 'Filtering fields   '
+      elps1%labels(ist_elapsed_SGS+2) = 'Scale similarity   '
+      elps1%labels(ist_elapsed_SGS+3) = 'Dynamic scheme     '
+      elps1%labels(ist_elapsed_SGS+4) = 'SGS Buoyancy       '
 !
       iflag_SGS_time = .TRUE.
 !
@@ -138,25 +138,25 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_LEG, ied_elapsed_LEG)
 !
-      elapse_labels(ist_elapsed_LEG+1) = 'Copy P_lm for bwd. trans.   '
-      elapse_labels(ist_elapsed_LEG+2)                                  &
+      elps1%labels(ist_elapsed_LEG+1) = 'Copy P_lm for bwd. trans.   '
+      elps1%labels(ist_elapsed_LEG+2)                                   &
      &         = 'Copy spectrum for bwd. trans.  '
-      elapse_labels(ist_elapsed_LEG+3)                                  &
+      elps1%labels(ist_elapsed_LEG+3)                                   &
      &         = 'mat product for bwd. trans.    '
-      elapse_labels(ist_elapsed_LEG+4)                                  &
+      elps1%labels(ist_elapsed_LEG+4)                                   &
      &         = 'Copy fields to bwd. trans.     '
-      elapse_labels(ist_elapsed_LEG+5)                                  &
+      elps1%labels(ist_elapsed_LEG+5)                                   &
      &         = 'Equator for bwd. trans.        '
-      elapse_labels(ist_elapsed_LEG+6)                                  &
+      elps1%labels(ist_elapsed_LEG+6)                                   &
      &         = 'Copy P_lm for fwd. trans.      '
-      elapse_labels(ist_elapsed_LEG+7)                                  &
+      elps1%labels(ist_elapsed_LEG+7)                                   &
      &         = 'Copy field for fwd. trans.     '
-      elapse_labels(ist_elapsed_LEG+8)                                  &
+      elps1%labels(ist_elapsed_LEG+8)                                   &
      &         = 'mat product for fwd. trans.    '
-      elapse_labels(ist_elapsed_LEG+9)                                  &
+      elps1%labels(ist_elapsed_LEG+9)                                   &
      &         = 'Copy spectrum to fwd. trans.   '
 !
-      elapse_labels(ist_elapsed_LEG+10)                                 &
+      elps1%labels(ist_elapsed_LEG+10)                                  &
      &         = 'mhd_spectr_to_sendbuf.   '
 !
       iflag_LEG_time = .TRUE.

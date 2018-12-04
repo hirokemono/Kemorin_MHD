@@ -35,15 +35,15 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_GSP, ied_elapsed_GSP)
 !
-      elapse_labels(ist_elapsed_GSP+1)                                  &
+      elps1%labels(ist_elapsed_GSP+1)                                   &
      &      = 'Generation of spherical transform table'
-      elapse_labels(ist_elapsed_GSP+2)                                  &
+      elps1%labels(ist_elapsed_GSP+2)                                   &
      &      = 'Generation of spherical mode and grid'
-      elapse_labels(ist_elapsed_GSP+3)                                  &
+      elps1%labels(ist_elapsed_GSP+3)                                   &
      &      = 'Generation of FEM mesh data'
-      elapse_labels(ist_elapsed_GSP+4)                                  &
+      elps1%labels(ist_elapsed_GSP+4)                                   &
      &      = 'Generation of surface FEM mesh data'
-!      elapse_labels(ist_elapsed_GSP+5)                                 &
+!      elps1%labels(ist_elapsed_GSP+5)                                  &
 !     &      = 'Generation of viewer data'
 !
       iflag_GSP_time = .TRUE.
