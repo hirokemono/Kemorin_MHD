@@ -31,7 +31,7 @@
         type(org_filter_prefix_ctls) :: org_filter_file_ctls
 !
 !>        Structure for filtering files
-        type(filter_file_control), save :: ffile_ndom_ctl
+        type(filter_file_control) :: ffile_ndom_ctl
       end type ctl_data_newdomain_filter
 !
 !     Top level
