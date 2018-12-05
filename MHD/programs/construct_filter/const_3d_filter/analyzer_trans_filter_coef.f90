@@ -25,10 +25,11 @@
       subroutine init_analyzer
 !
       use m_2nd_pallalel_vector
-      use m_ctl_data_newdomain_filter
+      use t_ctl_data_newdomain_filter
       use m_ctl_param_newdom_filter
       use bcast_nodes_for_trans
 !
+      type(ctl_data_newdomain_filter) :: newd_fil_ctl1
       integer(kind = kint) :: ierr
 !
 !
@@ -42,11 +43,12 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_filter_newdomain'
-      call read_control_filter_newdomain
+      call read_control_filter_newdomain(newd_fil_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain                                 &
-     &   (org_filter_plt, new_filter_plt, ffile_ndom_ctl, ierr)
+      call set_control_filter_newdomain(newd_fil_ctl1%org_filter_plt,   &
+     &    newd_fil_ctl1%new_filter_plt, newd_fil_ctl1%ffile_ndom_ctl,   &
+     &    newd_fil_ctl1%org_filter_file_ctls, ierr)
 !
 !     --------------------- 
 !

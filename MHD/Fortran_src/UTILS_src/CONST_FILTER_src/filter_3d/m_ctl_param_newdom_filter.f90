@@ -4,7 +4,7 @@
 !      modified by H. Matsui on Apr., 2008
 !
 !!      subroutine set_control_filter_newdomain                         &
-!!     &         (org_plt, new_plt, ffile_ctl, ierr)
+!!     &         (org_plt, new_plt, ffile_ctl, org_fil_files_ctl, ierr)
 !!        type(platform_data_control), intent(in) :: org_plt, new_plt
 !!        type(filter_file_control), intent(in) :: ffile_ctl
 !
@@ -41,7 +41,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_filter_newdomain                           &
-     &         (org_plt, new_plt, ffile_ctl, ierr)
+     &         (org_plt, new_plt, ffile_ctl, org_fil_files_ctl, ierr)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -50,13 +50,14 @@
       use m_file_format_switch
 !
       use m_default_file_prefix
-      use m_ctl_data_org_filter_name
+      use t_ctl_data_3d_filter
       use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
       use set_control_platform_data
 !
       type(platform_data_control), intent(in) :: org_plt, new_plt
       type(filter_file_control), intent(in) :: ffile_ctl
+      type(org_filter_prefix_ctls), intent(in) :: org_fil_files_ctl
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -92,21 +93,27 @@
 !
 !
       org_filter_elen_head = "org/filter_elength"
-      iflag_set_filter_elen = org_filter_elen_head_ctl%iflag
+      iflag_set_filter_elen                                             &
+     &      = org_fil_files_ctl%org_filter_elen_head_ctl%iflag
       if(iflag_set_filter_elen .gt. 0) then
-        org_filter_elen_head = org_filter_elen_head_ctl%charavalue
+        org_filter_elen_head                                            &
+     &      = org_fil_files_ctl%org_filter_elen_head_ctl%charavalue
       end if
 !
       org_filter_coef_head = "org/filter_coef"
-      iflag_set_filter_coef = org_filter_coef_head_ctl%iflag
+      iflag_set_filter_coef                                             &
+     &      = org_fil_files_ctl%org_filter_coef_head_ctl%iflag
       if(iflag_set_filter_coef .gt. 0) then
-        org_filter_coef_head = org_filter_coef_head_ctl%charavalue
+        org_filter_coef_head                                            &
+     &      = org_fil_files_ctl%org_filter_coef_head_ctl%charavalue
       end if
 !
       org_filter_moms_head = "org/filter_moms"
-      iflag_set_filter_moms = org_filter_moms_head_ctl%iflag
+      iflag_set_filter_moms                                             &
+     &      = org_fil_files_ctl%org_filter_moms_head_ctl%iflag
       if (iflag_set_filter_moms .gt. 0) then
-        org_filter_moms_head = org_filter_moms_head_ctl%charavalue
+        org_filter_moms_head                                            &
+     &      = org_fil_files_ctl%org_filter_moms_head_ctl%charavalue
       end if
 !
 !

@@ -51,7 +51,8 @@
       call set_file_heads_3d_comm_filter                                &
      &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl%ffile_3d_ctl)
       call set_ctl_params_gen_filter                                    &
-     &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl, FEM_elens)
+     &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl,                &
+     &    filter3d_ctl%org_fil_files_ctl, FEM_elens)
 !
       end subroutine set_controls_gen_3dfilter
 !
@@ -79,20 +80,21 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_gen_filter                              &
-     &         (gen_f_ctl, fil3_ctl, FEM_elens)
+      subroutine set_ctl_params_gen_filter(gen_f_ctl, fil3_ctl,         &
+     &          org_fil_files_ctl, FEM_elens)
 !
       use calypso_mpi
       use m_error_IDs
-      use m_ctl_data_org_filter_name
       use m_reference_moments
 !
+      use t_ctl_data_3d_filter
       use t_filter_elength
 !
       use skip_comment_f
 !
       type(ctl_data_gen_filter), intent(in) :: gen_f_ctl
       type(ctl_data_3d_filter), intent(in) :: fil3_ctl
+      type(org_filter_prefix_ctls), intent(in) :: org_fil_files_ctl
       type(gradient_model_data_type), intent(inout) :: FEM_elens
 !
       integer(kind = kint) :: i
@@ -251,8 +253,9 @@
 !
       org_filter_coef_head = "org/filter_coef"
       if (iflag_tgt_filter_type .lt. 0) then
-        if(org_filter_coef_head_ctl%iflag .gt. 0) then
-          org_filter_coef_head = org_filter_coef_head_ctl%charavalue
+        if(org_fil_files_ctl%org_filter_coef_head_ctl%iflag .gt. 0) then
+          org_filter_coef_head                                          &
+     &         = org_fil_files_ctl%org_filter_coef_head_ctl%charavalue
         else
           write(*,*) 'set original filter coefs file name'
         end if
@@ -416,9 +419,10 @@
         end if
 !
       if (iflag_tgt_filter_type .eq. -1                                 &
-     &  .and. org_filter_coef_head_ctl%iflag .eq. 0) then
-        e_message = "set original filter coefficient datafile"
-        call calypso_MPI_abort(ierr_file, e_message)
+     &  .and. org_fil_files_ctl%org_filter_coef_head_ctl%iflag .eq. 0)  &
+     &  then
+         e_message = "set original filter coefficient datafile"
+         call calypso_MPI_abort(ierr_file, e_message)
       end if
 !
       end subroutine set_ctl_params_gen_filter

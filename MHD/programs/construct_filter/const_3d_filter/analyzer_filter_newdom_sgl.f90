@@ -33,10 +33,11 @@
       subroutine newdomain_filter_init
 !
       use calypso_mpi
-      use m_ctl_data_newdomain_filter
+      use t_ctl_data_newdomain_filter
       use m_ctl_param_newdom_filter
       use const_domain_tbl_by_file
 !
+      type(ctl_data_newdomain_filter) :: newd_fil_ctl1
       integer(kind = kint) :: ierr
 !
 !
@@ -51,12 +52,13 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_filter_newdomain'
-      call read_control_filter_newdomain
+      call read_control_filter_newdomain(newd_fil_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
       nprocs_2nd = 0
-      call set_control_filter_newdomain                                 &
-     &   (org_filter_plt, new_filter_plt, ffile_ndom_ctl, ierr)
+      call set_control_filter_newdomain(newd_fil_ctl1%org_filter_plt,   &
+     &    newd_fil_ctl1%new_filter_plt, newd_fil_ctl1%ffile_ndom_ctl,   &
+     &    newd_fil_ctl1%org_filter_file_ctls, ierr)
       if(ierr .gt. 0) stop
 !
 !

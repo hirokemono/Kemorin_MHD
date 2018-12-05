@@ -1,7 +1,7 @@
-!m_ctl_data_newdomain_filter.f90
-!      module m_ctl_data_newdomain_filter
+!t_ctl_data_newdomain_filter.f90
+!      module t_ctl_data_newdomain_filter
 !
-!      subroutine read_control_filter_newdomain
+!      subroutine read_control_filter_newdomain(newd_fil_ctl)
 !
 !      begin org_filter_filtes_ctl
 !        org_filter_file_header       'org/filter_node'
@@ -12,11 +12,12 @@
 !
 !      Written by H. Matsui on Apr., 2008
 !
-      module m_ctl_data_newdomain_filter
+      module t_ctl_data_newdomain_filter
 !
       use m_precision
       use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
+      use t_ctl_data_3d_filter
 !
       implicit  none
 !
@@ -24,11 +25,14 @@
       character(len = kchara), parameter                                &
      &             :: fname_trans_flt_ctl = "ctl_new_domain_filter"
 !
-      type(platform_data_control), save :: org_filter_plt
-      type(platform_data_control), save :: new_filter_plt
+      type ctl_data_newdomain_filter
+        type(platform_data_control) :: org_filter_plt
+        type(platform_data_control) :: new_filter_plt
+        type(org_filter_prefix_ctls) :: org_filter_file_ctls
 !
-!>      Structure for filtering files
-      type(filter_file_control), save :: ffile_ndom_ctl
+!>        Structure for filtering files
+        type(filter_file_control), save :: ffile_ndom_ctl
+      end type ctl_data_newdomain_filter
 !
 !     Top level
 !
@@ -36,10 +40,6 @@
      &         :: hd_filter_newdomain_ctl = 'change_filter_domain_ctl'
       integer (kind=kint) :: i_filter_newdomain_ctl = 0
 !
-!
-      private :: id_filter_ctl_file, fname_trans_flt_ctl
-      private :: hd_filter_newdomain_ctl, i_filter_newdomain_ctl
-      private :: read_ctl_filter_newdomain_data
 !
       character(len=kchara), parameter                                  &
      &                    :: hd_platform = 'data_files_def'
@@ -56,17 +56,23 @@
       private :: hd_new_data, i_new_data
       private :: hd_filter_fnames, i_filter_fnames
 !
+      private :: id_filter_ctl_file, fname_trans_flt_ctl
+      private :: hd_filter_newdomain_ctl, i_filter_newdomain_ctl
+      private :: read_ctl_filter_newdomain_data
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_filter_newdomain
+      subroutine read_control_filter_newdomain(newd_fil_ctl)
 !
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f
+!
+      type(ctl_data_newdomain_filter), intent(inout) :: newd_fil_ctl
 !
       integer(kind = kint) :: iflag
 !
@@ -76,7 +82,7 @@
       open(ctl_file_code, file=fname_trans_flt_ctl, status='old')
 !
       call load_ctl_label_and_line
-      call read_ctl_filter_newdomain_data
+      call read_ctl_filter_newdomain_data(newd_fil_ctl)
 !
       close(ctl_file_code)
 !
@@ -84,13 +90,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_filter_newdomain_data
+      subroutine read_ctl_filter_newdomain_data(newd_fil_ctl)
 !
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f
 !
-      use m_ctl_data_org_filter_name
+      type(ctl_data_newdomain_filter), intent(inout) :: newd_fil_ctl
 !
 !
       if(right_begin_flag(hd_filter_newdomain_ctl) .eq. 0) return
@@ -104,16 +110,18 @@
 !
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, org_filter_plt)
+     &     (hd_platform, i_platform, newd_fil_ctl%org_filter_plt)
         call read_control_platforms                                     &
-     &     (hd_new_data, i_new_data, new_filter_plt)
+     &     (hd_new_data, i_new_data, newd_fil_ctl%new_filter_plt)
         call read_filter_fnames_control                                 &
-     &     (hd_filter_fnames, i_filter_fnames, ffile_ndom_ctl)
-        call read_org_filter_fnames_ctl
+     &     (hd_filter_fnames, i_filter_fnames,                          &
+     &      newd_fil_ctl%ffile_ndom_ctl)
+        call read_org_filter_fnames_ctl                                 &
+     &     (newd_fil_ctl%org_filter_file_ctls)
       end do
 !
       end subroutine read_ctl_filter_newdomain_data
 !
 !   --------------------------------------------------------------------
 !
-      end module m_ctl_data_newdomain_filter
+      end module t_ctl_data_newdomain_filter
