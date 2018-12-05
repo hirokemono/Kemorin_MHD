@@ -63,10 +63,8 @@
       end do
 !$omp end parallel do
 !
-      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_type                                        &
      &    (nnod_filtering, flt_comm, x_vec_filtering(1))
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine prepare_scalar_2_filter
 !
@@ -114,10 +112,8 @@
 !      write(*,*) 'flt_comm%item_import', size(flt_comm%item_import)
 !      write(*,*) 'flt_comm%item_export', size(flt_comm%item_export)
 !
-      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_3_type                                      &
      &    (nnod_filtering, flt_comm, x_vec_filtering(1))
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine prepare_vector_2_filter
 !
@@ -164,10 +160,8 @@
       end do
 !$omp end parallel do
 !
-      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_6_type                                      &
      &    (nnod_filtering, flt_comm, x_vec_filtering(1))
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine prepare_sym_tensor_2_filter
 !

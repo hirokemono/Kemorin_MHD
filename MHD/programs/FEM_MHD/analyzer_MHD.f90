@@ -13,6 +13,7 @@
       use calypso_mpi
       use m_work_time
       use m_elapsed_labels_4_MHD
+      use m_elapsed_labels_SEND_RECV
 !
       use m_MHD_step_parameter
       use m_FEM_MHD_model_data
@@ -36,15 +37,14 @@
       use m_elapsed_labels_4_VIZ
 !
 !
-      total_start = MPI_WTIME()
-!
+      MHD_step1%finish_d%started_time = MPI_WTIME()
       write(*,*) 'Simulation start: PE. ', my_rank
 !
       call init_elapse_time_by_TOTAL
       call elapsed_label_4_MHD
       call elapsed_label_4_FEM_MHD
       call elpsed_label_4_VIZ
-      call append_COMM_TIME_to_elapsed
+      call elpsed_label_field_send_recv
 !
 !     --------------------- 
 !
@@ -111,7 +111,6 @@
 !
       call FEM_finalize_MHD(MHD_files1, MHD_step1, MHD_IO1)
 !
-      call copy_COMM_TIME_to_elaps
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times

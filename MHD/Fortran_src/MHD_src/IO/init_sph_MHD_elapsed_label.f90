@@ -44,7 +44,7 @@
       call elpsed_label_4_sph_trns
 !      call elpsed_label_4_sph_detail
 !
-      call elpsed_label_4_send_recv
+      call elpsed_label_calypso_send_recv
 !      call elapsed_label_4_Legendre_trans
 !
       call elpsed_label_4_VIZ

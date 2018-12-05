@@ -19,6 +19,7 @@
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
+      use m_elapsed_labels_SEND_RECV
       use m_machine_parameter
       use m_MHD_step_parameter
       use m_SPH_MHD_model_data
@@ -34,6 +35,8 @@
 !
       character(len=kchara), parameter, private                         &
      &                      :: snap_ctl_name = 'control_snapshot'
+!
+      real (kind=kreal), private  ::  total_start
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,7 +58,7 @@
       total_start = MPI_WTIME()
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
-      call append_COMM_TIME_to_elapsed
+      call elpsed_label_field_send_recv
 !
 !   Load parameter file
 !
@@ -184,7 +187,6 @@
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
 !
-      call copy_COMM_TIME_to_elaps
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times
@@ -208,7 +210,7 @@
       integer(kind = kint) :: visval
       integer(kind = kint) :: iflag
 !
-      real(kind = kreal) :: total_max, total_prev
+      real(kind = kreal) :: total_max, total_time, total_prev
 !
 !     ---------------------
 !
@@ -308,7 +310,6 @@
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
 !
-      call copy_COMM_TIME_to_elaps
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times

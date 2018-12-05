@@ -62,8 +62,8 @@
       end if
 !
       call init_elapse_time_by_TOTAL
-      call elpsed_label_4_send_recv
-      call append_COMM_TIME_to_elapsed
+      call elpsed_label_calypso_send_recv
+      call elpsed_label_field_send_recv
 !
 !
 !     --------------------- 
@@ -149,7 +149,6 @@
       call deallocate_real_sph_test
       call deallocate_idx_sph_recieve
 !
-      call copy_COMM_TIME_to_elaps
       call output_elapsed_times
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze_test_sph'

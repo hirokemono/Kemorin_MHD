@@ -208,12 +208,12 @@
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
 !
 !
-      if(iflag_SR_time) call start_elapsed_time(ist_elapsed_SR+2)
+      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+2)
       call calypso_send_recv_core                                       &
      &       (NB, npe_send, isend_self, id_pe_send, istack_send,        &
      &            npe_recv, irecv_self, id_pe_recv, istack_recv)
       call clear_addtional_SR_recv(NB, istack_recv(npe_recv), WR)
-      if(iflag_SR_time) call end_elapsed_time(ist_elapsed_SR+2)
+      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+2)
 !
       end subroutine sel_calypso_sph_comm_N
 !
@@ -236,10 +236,10 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      if(iflag_SR_time) call start_elapsed_time(ist_elapsed_SR+1)
+      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+1)
       call set_to_send_buf_N(NB, nnod_org, istack_send(npe_send),       &
      &    inod_export, X_org, WS(1))
-      if(iflag_SR_time) call end_elapsed_time(ist_elapsed_SR+1)
+      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+1)
 !
       end subroutine sel_calypso_to_send_N
 !
@@ -263,11 +263,11 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      if(iflag_SR_time) call start_elapsed_time(ist_elapsed_SR+1)
+      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+1)
       call set_to_send_buf_vector(NB, nnod_org,                         &
      &      istack_send(npe_send), inod_export, ncomp_X,                &
      &      i_fld_X, i_fld_WS, d_org, WS(1))
-      if(iflag_SR_time) call end_elapsed_time(ist_elapsed_SR+1)
+      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+1)
 !
       end subroutine sel_calypso_to_send_vector
 !
@@ -291,11 +291,11 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      if(iflag_SR_time) call start_elapsed_time(ist_elapsed_SR+1)
+      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+1)
       call set_to_send_buf_scalar(NB, nnod_org,                         &
      &    istack_send(npe_send), inod_export, ncomp_X,                  &
      &    i_fld_X, i_fld_WS, d_org, WS(1))
-      if(iflag_SR_time) call end_elapsed_time(ist_elapsed_SR+1)
+      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+1)
 !
       end subroutine sel_calypso_to_send_scalar
 !
@@ -319,11 +319,11 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      if(iflag_SR_time) call start_elapsed_time(ist_elapsed_SR+1)
+      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+1)
       call set_to_send_buf_tensor(NB, nnod_org,                         &
      &      istack_send(npe_send), inod_export, ncomp_X,                &
      &      i_fld_X, i_fld_WS, d_org, WS(1))
-      if(iflag_SR_time) call end_elapsed_time(ist_elapsed_SR+1)
+      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+1)
 !
       end subroutine sel_calypso_to_send_tensor
 !
@@ -350,7 +350,7 @@
       real (kind=kreal), intent(inout):: d_new(nnod_new,ncomp_X)
 !
 !
-      if(iflag_SR_time) call start_elapsed_time(ist_elapsed_SR+3)
+      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+3)
       if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_vector(NB, nnod_new,                     &
      &      istack_recv(npe_recv), inod_import,                         &
@@ -360,7 +360,7 @@
      &      istack_recv(npe_recv), irev_import,                         &
      &      ncomp_X, i_fld_X, i_fld_WR, WR(1), d_new)
       end if
-      if(iflag_SR_time) call end_elapsed_time(ist_elapsed_SR+3)
+      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+3)
 !
       end subroutine sel_sph_vector_from_recv
 !
@@ -386,7 +386,7 @@
       real (kind=kreal), intent(inout):: d_new(nnod_new,ncomp_X)
 !
 !
-      if(iflag_SR_time) call start_elapsed_time(ist_elapsed_SR+3)
+      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+3)
       if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_scalar(NB, nnod_new,                     &
      &      istack_recv(npe_recv), inod_import,                         &
@@ -396,7 +396,7 @@
      &      istack_recv(npe_recv), irev_import,                         &
      &      ncomp_X, i_fld_X, i_fld_WR, WR(1), d_new)
       end if
-      if(iflag_SR_time) call end_elapsed_time(ist_elapsed_SR+3)
+      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+3)
 !
       end subroutine sel_sph_scalar_from_recv
 !
@@ -422,7 +422,7 @@
       real (kind=kreal), intent(inout):: d_new(nnod_new,ncomp_X)
 !
 !
-      if(iflag_SR_time) call start_elapsed_time(ist_elapsed_SR+3)
+      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+3)
       if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_tensor(NB, nnod_new,                     &
      &      istack_recv(npe_recv), inod_import,                         &
@@ -432,7 +432,7 @@
      &      istack_recv(npe_recv), irev_import,                         &
      &      ncomp_X, i_fld_X, i_fld_WR, WR(1), d_new)
       end if
-      if(iflag_SR_time) call end_elapsed_time(ist_elapsed_SR+3)
+      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+3)
 !
       end subroutine sel_sph_tensor_from_recv
 !
@@ -458,7 +458,7 @@
       real (kind=kreal), intent(inout) :: X_new(NB*nnod_new)
 !
 !
-      if(iflag_SR_time) call start_elapsed_time(ist_elapsed_SR+3)
+      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+3)
       if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_N(NB, nnod_new,                          &
      &      istack_recv(npe_recv), inod_import, WR(1), X_new)
@@ -466,7 +466,7 @@
         call set_from_recv_buf_rev_N(NB, nnod_new,                      &
      &      istack_recv(npe_recv), irev_import, WR(1), X_new)
       end if
-      if(iflag_SR_time) call end_elapsed_time(ist_elapsed_SR+3)
+      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+3)
 !
       end subroutine sel_calypso_from_recv_N
 !

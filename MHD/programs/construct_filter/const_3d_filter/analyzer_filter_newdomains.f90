@@ -11,6 +11,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_work_time
       use calypso_mpi
       use m_2nd_pallalel_vector
       use filters_for_newdomains
@@ -53,6 +54,9 @@
         write(*,*) 'filter moments data on original decomposition'
         write(*,*) 'element size data on new decomposition'
       end if
+!
+      call init_elapse_time_by_TOTAL
+      call elpsed_label_3dfilter
 !
 !     --------------------- 
 !
@@ -97,6 +101,8 @@
         call filters_4_newdomains_para(org_mesh_file,                   &
      &      filtering_nd, orgmesh%node, orgmesh%ele, newmesh)
       end if
+!
+      call output_elapsed_times
 !
       end subroutine filter_to_newdomain_analyze
 !

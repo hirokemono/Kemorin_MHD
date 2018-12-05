@@ -16,8 +16,13 @@
       use calypso_mpi
       use m_constants
       use m_internal_4_partitioner
+      use m_work_time
 !
       implicit none
+!
+      logical, save, private :: iflag_F3D_time = .FALSE.
+      integer(kind = kint), save, private :: ist_elapsed_F3D = 0
+      integer(kind = kint), save, private :: ied_elapsed_F3D = 0
 !
 !   --------------------------------------------------------------------
 !
@@ -25,10 +30,25 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine elpsed_label_3dfilter
+!
+      integer(kind = kint), parameter :: num_append = 2
+!
+      call append_elapsed_times                                         &
+     &   (num_append, ist_elapsed_F3D, ied_elapsed_F3D)
+!
+      elps1%labels(ist_elapsed_F3D+1) = 'count total node time'
+      elps1%labels(ist_elapsed_F3D+2) = 'set domain table time'
+!
+      iflag_F3D_time = .TRUE.
+!
+      end subroutine elpsed_label_3dfilter
+!
+!   --------------------------------------------------------------------
+!
       subroutine bcast_parallel_domain_tbl(mesh_file)
 !
       use t_file_IO_parameter
-      use m_work_time
       use m_2nd_pallalel_vector
       use m_domain_group_4_partition
       use const_domain_tbl_by_file
@@ -36,32 +56,27 @@
       type(field_IO_params), intent(in) :: mesh_file
 !
 !
-      START_SRtime= MPI_WTIME()
       if(my_rank .eq. 0) then
         call count_nnod_whole_domain(mesh_file)
       end if
 !
+      if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+1)
       call MPI_Bcast(nnod_s_domin, ione, CALYPSO_INTEGER, izero,        &
      &    CALYPSO_COMM, ierr_MPI)
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
+      if(iflag_F3D_time) call end_elapsed_time(ist_elapsed_F3D+1)
 !
-      if(my_rank .eq. 0) write(*,*) 'count total node time: ',          &
-     &                              SendRecvtime
 !
       call allocate_domain_nese_group
       call allocate_local_nese_id_tbl
       call allocate_org_gl_nese_id
 !
-      START_SRtime = MPI_WTIME()
+      if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+2)
       if(my_rank .eq. 0) then
         call set_domain_grp_whole_domain(mesh_file)
       else
         call set_domain_grp_each_domain(mesh_file, my_rank)
       end if
-!
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
-      if(my_rank .eq. 0) write(*,*) 'set domain table time: ',          &
-     &                             SendRecvtime
+      if(iflag_F3D_time) call end_elapsed_time(ist_elapsed_F3D+2)
 !
       end subroutine bcast_parallel_domain_tbl
 !

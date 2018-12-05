@@ -7,7 +7,8 @@
 !>@brief  Labels for elapsed time monitor
 !!
 !!@verbatim
-!!      subroutine elpsed_label_4_send_recv
+!!      subroutine elpsed_label_field_send_recv
+!!      subroutine elpsed_label_calypso_send_recv
 !!
 !!      subroutine reset_elapse_after_init_SR
 !!@endverbatim
@@ -20,9 +21,13 @@
       implicit none
 !
 !
-      logical, save :: iflag_SR_time = .FALSE.
-      integer(kind = kint), save :: ist_elapsed_SR =   0
-      integer(kind = kint), save :: ied_elapsed_SR =   0
+      logical, save :: iflag_FSR_time = .FALSE.
+      integer(kind = kint), save :: ist_elapsed_FSR =   0
+      integer(kind = kint), save, private :: ied_elapsed_FSR =   0
+!
+      logical, save :: iflag_CSR_time = .FALSE.
+      integer(kind = kint), save :: ist_elapsed_CSR =   0
+      integer(kind = kint), save, private :: ied_elapsed_CSR =   0
 !
 !-----------------------------------------------------------------------
 !
@@ -30,21 +35,37 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine elpsed_label_4_send_recv
+      subroutine elpsed_label_field_send_recv
+!
+      integer(kind = kint), parameter :: num_append = 1
+!
+!
+      call append_elapsed_times                                         &
+     &   (num_append, ist_elapsed_FSR, ied_elapsed_FSR)
+!
+      elps1%labels(ist_elapsed_FSR+1) = 'Communication for field'
+!
+      iflag_FSR_time = .TRUE.
+!
+      end subroutine elpsed_label_field_send_recv
+!
+!-----------------------------------------------------------------------
+!
+      subroutine elpsed_label_calypso_send_recv
 !
       integer(kind = kint), parameter :: num_append = 3
 !
 !
       call append_elapsed_times                                         &
-     &   (num_append, ist_elapsed_SR, ied_elapsed_SR)
+     &   (num_append, ist_elapsed_CSR, ied_elapsed_CSR)
 !
-      elps1%labels(ist_elapsed_SR+1) = 'set_to_send_buf_N    '
-      elps1%labels(ist_elapsed_SR+2) = 'calypso_send_recv_core    '
-      elps1%labels(ist_elapsed_SR+3) = 'set_from_recv_buf_rev_N    '
+      elps1%labels(ist_elapsed_CSR+1) = 'set_to_send_buf_N    '
+      elps1%labels(ist_elapsed_CSR+2) = 'calypso_send_recv_core    '
+      elps1%labels(ist_elapsed_CSR+3) = 'set_from_recv_buf_rev_N    '
 !
-      iflag_SR_time = .TRUE.
+      iflag_CSR_time = .TRUE.
 !
-      end subroutine elpsed_label_4_send_recv
+      end subroutine elpsed_label_calypso_send_recv
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -52,8 +73,12 @@
       subroutine reset_elapse_after_init_SR
 !
 !
-      if(iflag_SR_time .eqv. .FALSE.) return
-      call reset_elapsed_times(ist_elapsed_SR+1, ied_elapsed_SR)
+      if(iflag_CSR_time) then
+        call reset_elapsed_times(ist_elapsed_FSR+1, ied_elapsed_FSR)
+      end if
+      if(iflag_CSR_time) then
+        call reset_elapsed_times(ist_elapsed_CSR+1, ied_elapsed_CSR)
+      end if
 !
       end subroutine reset_elapse_after_init_SR
 !

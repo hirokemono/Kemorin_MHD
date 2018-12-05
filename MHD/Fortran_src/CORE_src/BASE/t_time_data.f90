@@ -49,6 +49,13 @@
 !
 !>        Elapsed time to terminate simulation
         real(kind=kreal)   :: elapsed_time
+!
+!>        Start time to caliculate elapsed time
+        real(kind=kreal) :: started_time
+!>        Elapsed time for each process
+        real(kind=kreal) :: elapsed_local
+!>        Maximum elapsed time
+        real(kind=kreal) :: elapsed_max
       end type finish_data
 !
 ! -------------------------------------------------------------------

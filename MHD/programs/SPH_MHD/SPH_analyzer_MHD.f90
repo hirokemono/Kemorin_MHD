@@ -170,7 +170,6 @@
       type(field_IO), intent(inout) :: sph_fst_IO
 !
       integer(kind = kint) :: iflag
-      real(kind = kreal) :: total_max
 !
 !*  ----------  add time evolution -----------------
 !*
@@ -230,11 +229,14 @@
      &      MHD_step%rst_step, sph_fst_IO)
       end if
 !
-      total_time = MPI_WTIME() - total_start
-      call MPI_allREDUCE (total_time, total_max, ione, CALYPSO_REAL,    &
-     &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
+      MHD_step%finish_d%elapsed_local                                   &
+     &    = MPI_WTIME() - MHD_step%finish_d%started_time
+      call MPI_allREDUCE(MHD_step%finish_d%elapsed_local,               &
+     &    MHD_step%finish_d%elapsed_max, ione, CALYPSO_REAL, MPI_MAX,   &
+     &    CALYPSO_COMM, ierr_MPI)
       if      (MHD_step%finish_d%i_end_step .eq. -1                     &
-     &   .and. total_max .gt. MHD_step%finish_d%elapsed_time) then
+     &   .and.  MHD_step%finish_d%elapsed_max                           &
+     &        .gt. MHD_step%finish_d%elapsed_time) then
         MHD_step%rst_step%istep_file = MHD_step%finish_d%i_end_step
         iflag_finish = 1
         call output_sph_restart_control(MHD_step%finish_d%i_end_step,   &

@@ -238,8 +238,6 @@
       type(MHD_IO_data), intent(inout) :: MHD_IO
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
-      real(kind = kreal) :: total_max
-!
 !     ---- step to next time!! --- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_new_time_and_step'
@@ -315,17 +313,20 @@
       end if
 !
 !
-      total_time = MPI_WTIME() - total_start
+      MHD_step%finish_d%elapsed_local                                   &
+     &     = MPI_WTIME() - MHD_step%finish_d%started_time
       if(iflag_debug.gt.0) write(*,*) 'total_time',                     &
-     &                       total_time, MHD_step%finish_d%elapsed_time
+     &  MHD_step%finish_d%elapsed_local, MHD_step%finish_d%elapsed_time
 !
-      call MPI_allREDUCE (total_time, total_max, ione, CALYPSO_REAL,    &
+      call MPI_allREDUCE(MHD_step%finish_d%elapsed_local,               &
+     &    MHD_step%finish_d%elapsed_max, ione, CALYPSO_REAL,            &
      &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
 !
 !     ---- Output restart field data
 !
       if(MHD_step%finish_d%i_end_step .eq. -1) then
-        if(total_max .gt. MHD_step%finish_d%elapsed_time) retval = 0
+        if(MHD_step%finish_d%elapsed_max                                &
+     &     .gt. MHD_step%finish_d%elapsed_time) retval = 0
       end if
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)

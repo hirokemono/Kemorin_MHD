@@ -32,12 +32,14 @@
       use calypso_mpi
       use m_control_data_vizs
       use m_elapsed_labels_4_VIZ
+      use m_elapsed_labels_SEND_RECV
 !
       integer(kind = kint) :: ierr
 !
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_VIZ
-      call append_COMM_TIME_to_elapsed
+      call elpsed_label_field_send_recv
+
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
 !     read controls
@@ -86,7 +88,6 @@
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
-      call copy_COMM_TIME_to_elaps
       call output_elapsed_times
 !
       end subroutine analyze

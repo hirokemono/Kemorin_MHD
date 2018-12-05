@@ -195,9 +195,7 @@
        end do
 !$omp end parallel do
 !
-      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_type(numnod, nod_comm, x_vec(1))
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, numnod
@@ -229,9 +227,7 @@
       end do
 !$omp end parallel do
 !
-      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_3_type(numnod, nod_comm, x_vec(1))
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, numnod
@@ -268,9 +264,7 @@
       end do
 !$omp end parallel do
 !
-      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_6_type(numnod, nod_comm, x_vec(1))
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, numnod

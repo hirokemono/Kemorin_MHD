@@ -12,6 +12,7 @@
       use m_constants
       use m_machine_parameter
       use calypso_mpi
+      use m_work_time
 !
       implicit none
 !
@@ -31,6 +32,9 @@
       integer(kind = kint) :: ierr
 !
 !
+      call init_elapse_time_by_TOTAL
+      call elpsed_label_3dfilter
+!
       call copy_num_processes_to_2nd
 !
       if (my_rank.eq.0)   write(*,*) 'Transfer filter coefficiens'
@@ -48,6 +52,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'
       call bcast_parallel_domain_tbl(tgt_mesh_file)
+!
+      call output_elapsed_times
 !
       end subroutine init_analyzer
 !

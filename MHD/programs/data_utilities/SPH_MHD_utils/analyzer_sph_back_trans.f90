@@ -19,6 +19,7 @@
       use m_machine_parameter
       use m_work_time
       use m_elapsed_labels_4_MHD
+      use m_elapsed_labels_SEND_RECV
       use m_MHD_step_parameter
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
@@ -50,10 +51,9 @@
       use input_control_sph_SGS_MHD
 !
       write(*,*) 'Simulation start: PE. ', my_rank
-      total_start = MPI_WTIME()
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
-      call append_COMM_TIME_to_elapsed
+      call elpsed_label_field_send_recv
 !
 !   Load parameter file
 !
@@ -176,7 +176,6 @@
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
 !
-      call copy_COMM_TIME_to_elaps
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times

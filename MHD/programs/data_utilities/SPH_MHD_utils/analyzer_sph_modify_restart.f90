@@ -79,7 +79,6 @@
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
 !
-      call copy_COMM_TIME_to_elaps
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times

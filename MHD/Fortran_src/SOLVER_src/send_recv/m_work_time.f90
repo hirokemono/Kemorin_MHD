@@ -14,7 +14,8 @@
 !!      subroutine start_elapsed_time(iflag_elps)
 !!      subroutine end_elapsed_time(iflag_elps)
 !!      subroutine reset_elapsed_times(istart, iend)
-!!      subroutine copy_COMM_TIME_to_elaps(iflag_elps)
+!!
+!!      subroutine init_elapse_time_by_TOTAL
 !!
 !!      subroutine output_elapsed_times
 !!@endverbatim
@@ -36,17 +37,11 @@
       character(len=kchara), parameter                                  &
      &                   :: time_file_prefix = 'time_total'
 !
-      real (kind=kreal)  ::  total_time, total_start
-!
       type(elapsed_time_data), save :: elps1
-!
-      real(kind=kreal) :: START_SRtime, END_SRtime, SendRecvtime
 !
       logical, save :: iflag_TOT_time = .FALSE.
       integer(kind = kint), save, private :: ist_total_elapsed = 0
       integer(kind = kint), save :: ied_total_elapsed = 0
-!
-      integer(kind = kint), save, private :: ied_comm_elaps = 0
 !
 ! ----------------------------------------------------------------------
 !
@@ -134,29 +129,6 @@
       iflag_TOT_time = .TRUE.
 !
       end subroutine init_elapse_time_by_TOTAL
-!
-! ----------------------------------------------------------------------
-!
-      subroutine append_COMM_TIME_to_elapsed
-!
-      integer(kind = kint) :: ist_comm_elaps
-!
-!
-      call append_elapsed_times(ione, ist_comm_elaps, ied_comm_elaps)
-      elps1%labels(ied_comm_elaps) = 'Communication time'
-!
-      end subroutine append_COMM_TIME_to_elapsed
-!
-! ----------------------------------------------------------------------
-!
-      subroutine copy_COMM_TIME_to_elaps
-!
-      use calypso_mpi
-!
-!
-      elps1%elapsed(ied_comm_elaps) = SendRecvtime
-!
-      end subroutine copy_COMM_TIME_to_elaps
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

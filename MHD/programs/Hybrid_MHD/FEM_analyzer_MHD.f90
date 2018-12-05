@@ -214,7 +214,6 @@
       integer(kind=kint ), intent(inout) :: retval
 !
       integer(kind = kint) :: iflag
-      real(kind = kreal) :: total_max
 !
 !
 !     ---- step to next time!! --- 
@@ -290,16 +289,19 @@
       end if
 !
 !
-      total_time = MPI_WTIME() - total_start
-      call MPI_allREDUCE (total_time, total_max, ione, CALYPSO_REAL,    &
+      MHD_step%finish_d%elapsed_local                                   &
+     &    = MPI_WTIME() - MHD_step%finish_d%started_time
+      call MPI_allREDUCE (MHD_step%finish_d%elapsed_local,              &
+     &    MHD_step%finish_d%elapsed_max, ione, CALYPSO_REAL,            &
      &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
       if(iflag_debug.gt.0) write(*,*) 'total_time',                     &
-     &                       total_time, MHD_step%finish_d%elapsed_time
+     &  MHD_step%finish_d%elapsed_local, MHD_step%finish_d%elapsed_time
 !
 !     ---- Output restart field data
 !
       if(MHD_step%finish_d%i_end_step .eq. -1) then
-        if(total_max .gt. MHD_step%finish_d%elapsed_time) retval = 0
+        if(MHD_step%finish_d%elapsed_max                                &
+     &     .gt. MHD_step%finish_d%elapsed_time) retval = 0
       end if
 !
 !     ----

@@ -19,6 +19,7 @@
       use m_machine_parameter
       use m_work_time
       use m_elapsed_labels_4_MHD
+      use m_elapsed_labels_SEND_RECV
       use m_jacobians_VIZ
       use m_SPH_MHD_model_data
       use m_MHD_step_parameter
@@ -46,10 +47,10 @@
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
-      total_start = MPI_WTIME()
+      MHD_step1%finish_d%started_time = MPI_WTIME()
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
-      call append_COMM_TIME_to_elapsed
+      call elpsed_label_field_send_recv
 !
 !   Load parameter file
 !
@@ -183,7 +184,6 @@
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_MHD'
 !      call SPH_finalize_MHD
 !
-      call copy_COMM_TIME_to_elaps
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       if (iflag_debug.eq.1) write(*,*) 'write_resolution_data'

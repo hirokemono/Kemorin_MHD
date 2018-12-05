@@ -93,11 +93,9 @@
 !
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+1)
-      START_SRtime= MPI_WTIME()
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
       call finish_send_recv_sph(comms_sph%comm_rj)
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+1)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+5)
@@ -109,10 +107,8 @@
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+5)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+2)
-      START_SRtime= MPI_WTIME()
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rtm, comms_sph%comm_rtp)
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+2)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+7)
@@ -152,10 +148,8 @@
 !
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+1)
-      START_SRtime= MPI_WTIME()
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+1)
 !
       if(iflag_debug .gt. 0) write(*,*) 'pole_backward_transforms'
@@ -175,10 +169,8 @@
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+5)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+2)
-      START_SRtime= MPI_WTIME()
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rtm, comms_sph%comm_rtp)
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+2)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+7)
@@ -223,10 +215,8 @@
 !
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+1)
-      START_SRtime= MPI_WTIME()
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+1)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+5)
@@ -269,11 +259,9 @@
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+7)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+3)
-      START_SRtime= MPI_WTIME()
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rtp, comms_sph%comm_rtm)
       call finish_send_recv_sph(comms_sph%comm_rtp)
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+3)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sel_forward_legendre_trans'
@@ -286,11 +274,9 @@
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+6)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+4)
-      START_SRtime= MPI_WTIME()
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rlm, comms_sph%comm_rj)
       call finish_send_recv_sph(comms_sph%comm_rlm)
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+4)
 !
       end subroutine sph_forward_transforms

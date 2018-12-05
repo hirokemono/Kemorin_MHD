@@ -15,6 +15,7 @@
       use m_spheric_data_transform
       use m_SPH_transforms
       use m_work_time
+      use m_elapsed_labels_SEND_RECV
 !
       use SPH_analyzer_sph_trans
       use SPH_analyzer_back_trans_old
@@ -39,7 +40,7 @@
 !
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_VIZ
-      call append_COMM_TIME_to_elapsed
+      call elpsed_label_field_send_recv
 !
 !     ---------------------
 !
@@ -119,7 +120,6 @@
       call FEM_finalize_sph_trans                                       &
      &   (files_STR%org_ucd_file_IO, m_ucd_SPH_TRNS)
 !
-      call copy_COMM_TIME_to_elaps
       call output_elapsed_times
 !
       end subroutine analyze_zm_sph_field

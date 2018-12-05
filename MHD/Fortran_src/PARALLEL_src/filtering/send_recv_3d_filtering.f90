@@ -41,9 +41,7 @@
       integer(kind = kint) :: inod
 !
 !
-      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_type(nnod, nod_comm, x_vec(1))
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, nnod
@@ -68,9 +66,7 @@
       integer(kind = kint) :: inod
 !
 !
-      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_3_type(nnod, nod_comm, x_vec(1))
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod=1, nnod
@@ -97,9 +93,7 @@
       integer(kind = kint) :: inod
 !
 !
-      START_SRtime= MPI_WTIME()
       call SOLVER_SEND_RECV_6_type(nnod, nod_comm, x_vec(1))
-      SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
       do inod =1, nnod

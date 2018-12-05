@@ -13,6 +13,8 @@
 !
       use m_MHD_step_parameter
       use m_FEM_MHD_model_data
+      use m_work_time
+      use m_elapsed_labels_SEND_RECV
       use FEM_analyzer_filtered
       use t_visualizer
 !
@@ -35,7 +37,7 @@
 !
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_VIZ
-      call append_COMM_TIME_to_elapsed
+      call elpsed_label_field_send_recv
 !
 !     --------------------- 
 !
@@ -92,7 +94,6 @@
       call FEM_finalize_snapshot                                        &
      &   (MHD_files1, MHD_step1, MHD_IO1)
 !
-      call copy_COMM_TIME_to_elaps
       call output_elapsed_times
 !
       end subroutine analyze
