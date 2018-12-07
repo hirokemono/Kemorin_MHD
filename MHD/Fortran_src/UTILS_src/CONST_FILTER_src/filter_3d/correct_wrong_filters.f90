@@ -22,6 +22,7 @@
       use m_constants
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
+      use m_crs_matrix_4_filter
 !
       use t_mesh_data
       use t_fem_gauss_int_coefs
@@ -78,7 +79,8 @@
         inod_end_filter = mesh%node%internal_node
       end if
 !
-      call init_4_cal_fileters(mesh, ele_4_nod_f, neib_nod_f)
+      call init_4_cal_fileters(mesh, ele_4_nod_f, neib_nod_f,           &
+     &    fil_tbl_crs, fil_mat_crs)
 !
       write(70+my_rank,*) ' Best condition for filter'
 !

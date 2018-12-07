@@ -41,6 +41,7 @@
       use calypso_mpi
       use m_ctl_params_4_gen_filter
       use m_array_for_send_recv
+      use m_crs_matrix_4_filter
 !
       use   solver
 !
@@ -60,10 +61,10 @@
 !
       call init_solver(ierr)
 !
-      INTARRAY(1) = itr_elesize
-      REALARRAY(1) = eps_elesize
-      REALARRAY(2) = sigma_diag_elesize
-      REALARRAY(3) = sigma_elesize
+      mass%INTARRAY_crs(1) = itr_elesize
+      mass%REALARRAY_crs(1) = eps_elesize
+      mass%REALARRAY_crs(2) = sigma_diag_elesize
+      mass%REALARRAY_crs(3) = sigma_elesize
 !
 !
       imonitor_solve = i_debug
@@ -93,7 +94,7 @@
      &             nod_comm%istack_export, nod_comm%item_export,        &
      &             itr_res, imonitor_solve,                             &
      &             method_elesize, precond_elesize,                     &
-     &             INTARRAY, REALARRAY )
+     &    mass%INTARRAY_crs, mass%REALARRAY_crs)
 !
       if (my_rank .eq. 0 ) then
         write(*,*) ' iteration finish:', itr_res

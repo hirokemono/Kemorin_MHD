@@ -26,6 +26,7 @@
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_matrix_4_filter
+      use m_crs_matrix_4_filter
       use m_reference_moments
 !
       use t_geometry_data
@@ -92,7 +93,8 @@
 !
           call s_expand_filter_area_4_1node                             &
      &       (inod, node, ele, ele_4_nod, FEM_elen)
-          call resize_matrix_size_gen_filter(ele%nnod_4_ele)
+          call resize_matrix_size_gen_filter(ele%nnod_4_ele,            &
+     &        fil_tbl_crs, fil_mat_crs)
 !
         end do
 !
@@ -240,7 +242,8 @@
           do i = 1, maximum_neighbour
             call s_expand_filter_area_4_1node                           &
      &         (inod, node, ele, ele_4_nod, FEM_elen)
-            call resize_matrix_size_gen_filter(ele%nnod_4_ele)
+            call resize_matrix_size_gen_filter(ele%nnod_4_ele,          &
+     &          fil_tbl_crs, fil_mat_crs)
           end do
 !
 !    use same filter for fluid area

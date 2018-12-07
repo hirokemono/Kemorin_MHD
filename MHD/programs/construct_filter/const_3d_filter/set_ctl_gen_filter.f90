@@ -36,6 +36,7 @@
       subroutine set_controls_gen_3dfilter                              &
      &         (filter3d_ctl, FEM_elens, mesh_file)
 !
+      use m_crs_matrix_4_filter
       use t_filter_elength
       use set_control_platform_data
 !
@@ -52,7 +53,7 @@
      &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl%ffile_3d_ctl)
       call set_ctl_params_gen_filter                                    &
      &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl,                &
-     &    filter3d_ctl%org_fil_files_ctl, FEM_elens)
+     &    filter3d_ctl%org_fil_files_ctl, FEM_elens, fil_mat_crs)
 !
       end subroutine set_controls_gen_3dfilter
 !
@@ -81,7 +82,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_ctl_params_gen_filter(gen_f_ctl, fil3_ctl,         &
-     &          org_fil_files_ctl, FEM_elens)
+     &          org_fil_files_ctl, FEM_elens, fil_mat_crs)
 !
       use calypso_mpi
       use m_error_IDs
@@ -89,6 +90,7 @@
 !
       use t_ctl_data_3d_filter
       use t_filter_elength
+      use t_crs_matrix
 !
       use skip_comment_f
 !
@@ -96,6 +98,7 @@
       type(ctl_data_3d_filter), intent(in) :: fil3_ctl
       type(org_filter_prefix_ctls), intent(in) :: org_fil_files_ctl
       type(gradient_model_data_type), intent(inout) :: FEM_elens
+      type(CRS_matrix), intent(inout) :: fil_mat_crs
 !
       integer(kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -362,10 +365,12 @@
       end if
 !
       if(gen_f_ctl%CG_filter_ctl%method_ctl%iflag .gt. 0)  then
-        method =  gen_f_ctl%CG_filter_ctl%method_ctl%charavalue
+        fil_mat_crs%METHOD_crs                                          &
+     &        =  gen_f_ctl%CG_filter_ctl%method_ctl%charavalue
       end if
       if(gen_f_ctl%CG_filter_ctl%precond_ctl%iflag .gt. 0) then
-        precond = gen_f_ctl%CG_filter_ctl%precond_ctl%charavalue
+        fil_mat_crs%PRECOND_crs                                         &
+     &        = gen_f_ctl%CG_filter_ctl%precond_ctl%charavalue
       end if
       if(gen_f_ctl%CG_filter_ctl%itr_ctl%iflag .gt. 0)        then
         itr = gen_f_ctl%CG_filter_ctl%itr_ctl%intvalue
@@ -409,9 +414,8 @@
 !
       if (iflag_debug.gt.0) then
           write(*,*) 'id_solver_type ', id_solver_type
-          write(*,*) 'method ', method
-          write(*,*) 'precond ', precond
-          write(*,*) 'method ', method
+          write(*,*) 'method ',  fil_mat_crs%METHOD_crs
+          write(*,*) 'precond ', fil_mat_crs%PRECOND_crs
           write(*,*) 'itr ', itr
           write(*,*) 'eps ', eps
           write(*,*) 'sigma ', sigma

@@ -23,6 +23,7 @@
       use m_precision
 !
       use m_constants
+      use m_crs_matrix_4_filter
       use t_mesh_data
       use t_fem_gauss_int_coefs
       use t_jacobians
@@ -66,7 +67,8 @@
       integer(kind = kint) :: inod, ierr
 !
 !
-      call init_4_cal_fileters(mesh, ele_4_nod_s, neib_nod_s)
+      call init_4_cal_fileters(mesh, ele_4_nod_s, neib_nod_s,           &
+     &    fil_tbl_crs, fil_mat_crs)
 !
       write(70+my_rank,*) ' Best condition for filter'
 !
@@ -144,7 +146,8 @@
       integer(kind = kint) :: inod
 !
 !
-      call init_4_cal_fileters(mesh, ele_4_nod_s, neib_nod_s)
+      call init_4_cal_fileters(mesh, ele_4_nod_s, neib_nod_s,           &
+     &    fil_tbl_crs, fil_mat_crs)
 !
       i_exp_level_1nod_weight = maximum_neighbour
       do inod = inod_start_filter, inod_end_filter

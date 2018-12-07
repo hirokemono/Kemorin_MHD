@@ -1,16 +1,19 @@
 !
 !      module copy_2_crs_matrix_4_filter
+!     Written by H. Matsui on Aug., 2006
+!
+!!      subroutine s_copy_2_crs_matrix_4_filter                         &
+!!     &         (fil_tbl_crs, fil_mat_crs)
+!
 !
       module copy_2_crs_matrix_4_filter
 !
-!     Written by H. Matsui on Aug., 2006
-!
       use m_precision
 !
+      use t_crs_connect
+      use t_crs_matrix
+!
       implicit none
-!
-!
-!      subroutine s_copy_2_crs_matrix_4_filter
 !
 !-----------------------------------------------------------------------
 !
@@ -18,47 +21,52 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_copy_2_crs_matrix_4_filter
+      subroutine s_copy_2_crs_matrix_4_filter                           &
+     &         (fil_tbl_crs, fil_mat_crs)
 !
-      use m_crs_matrix_4_filter
       use m_matrix_4_filter
+!
+      type(CRS_matrix_connect), intent(inout) :: fil_tbl_crs
+      type(CRS_matrix), intent(inout) :: fil_mat_crs
 !
       integer(kind = kint) :: i, j ,inum
 !
 !
-      n_crs =       mat_size
-      n_inter_crs = mat_size
-      npl_crs = mat_size * (mat_size - 1) / 2
-      npu_crs = mat_size * (mat_size - 1) / 2
+      fil_tbl_crs%ntot_d = mat_size
+      fil_tbl_crs%ntot_l = mat_size * (mat_size - 1) / 2
+      fil_tbl_crs%ntot_u = mat_size * (mat_size - 1) / 2
 !
-      istack_l_crs = 0
-      istack_u_crs = 0
+      fil_tbl_crs%istack_l(0) = 0
+      fil_tbl_crs%istack_u(0) = 0
       do i = 1, mat_size
-        istack_l_crs(i) = istack_l_crs(i-1) + i - 1
-        istack_u_crs(i) = istack_u_crs(i-1) + mat_size - i
+        fil_tbl_crs%nitem_l(i) = i - 1
+        fil_tbl_crs%nitem_u(i) = mat_size - i
+        fil_tbl_crs%istack_l(i) = fil_tbl_crs%istack_l(i-1) + i - 1
+        fil_tbl_crs%istack_u(i) = fil_tbl_crs%istack_u(i-1)             &
+      &                           + mat_size - i
       end do
 !
-      item_l_crs = 0
-      item_u_crs = 0
-      al_mat = 0.0d0
-      au_mat = 0.0d0
-      diag_mat = 0.0d0
+      fil_tbl_crs%item_l = 0
+      fil_tbl_crs%item_u = 0
+      fil_mat_crs%AL_crs = 0.0d0
+      fil_mat_crs%AU_crs = 0.0d0
+      fil_mat_crs%D_crs =  0.0d0
 !
       do i = 1, mat_size
         do j = 1, i-1
-          inum = istack_l_crs(i-1) + j
-          item_l_crs(inum) = j
-          al_mat(inum) = a_mat(i,j)
+          inum = fil_tbl_crs%istack_l(i-1) + j
+          fil_tbl_crs%item_l(inum) = j
+          fil_mat_crs%AL_crs(inum) = a_mat(i,j)
         end do
         do j = 1, mat_size - i
-          inum = istack_u_crs(i-1) + j
-          item_u_crs(inum) = i + j
-          au_mat(inum) = a_mat(i,i+j)
+          inum = fil_tbl_crs%istack_u(i-1) + j
+          fil_tbl_crs%item_u(inum) = i + j
+          fil_mat_crs%AU_crs(inum) = a_mat(i,i+j)
         end do
       end do
 !
       do i = 1, mat_size
-        diag_mat(i) = a_mat(i,i)
+        fil_mat_crs%D_crs(i) = a_mat(i,i)
       end do
 !
       end subroutine s_copy_2_crs_matrix_4_filter

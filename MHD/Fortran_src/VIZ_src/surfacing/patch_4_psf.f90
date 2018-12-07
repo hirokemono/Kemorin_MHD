@@ -114,7 +114,7 @@
      &              :: istack_patch_smp(0:np_smp)
 !
       integer(kind = kint) :: npatch_smp(np_smp)
-      integer(kind = kint) :: ip, iele, ist, ied, inum, np, icou, n
+      integer(kind = kint) :: ip, iele, ist, ied, inum, np, n
       integer(kind = kint) :: ie1, ie2, ie3, iedge1, iedge2, iedge3
       integer(kind = kint) :: mark
       integer(kind = kint_gl) ::  ig1, ig2, ig3
@@ -122,7 +122,7 @@
 !
       npatch_smp(1:np_smp) = 0
 !
-!$omp parallel do private(iele,ist,ied,inum,mark,np,icou,n,ie1,ie2,ie3, &
+!$omp parallel do private(iele,ist,ied,inum,mark,np,n,ie1,ie2,ie3,      &
 !$omp&         iedge1,iedge2,iedge3,ig1,ig2,ig3)
       do ip = 1, np_smp
         ist = ele_search%istack_search_smp(ip-1) + 1
@@ -135,7 +135,6 @@
           if (np .gt. 0) then
 !
             do n = 1, np
-              icou = icou + 1
               ie1 = psf_case_tbl(mark)%iedge(n,1)
               ie2 = psf_case_tbl(mark)%iedge(n,2)
               ie3 = psf_case_tbl(mark)%iedge(n,3)

@@ -21,6 +21,7 @@
       use m_machine_parameter
       use m_ctl_params_4_gen_filter
       use m_reference_moments
+      use m_crs_matrix_4_filter
 !
       use t_mesh_data
       use t_jacobian_3d
@@ -138,7 +139,7 @@
       call const_fluid_filter_coefs                                     &
      &   (file_name, mesh, g_FEM, jac_3d_q, FEM_elen)
 !
-      call finalize_4_cal_fileters
+      call finalize_4_cal_fileters(fil_tbl_crs, fil_mat_crs)
 !
       call deallocate_coef_4_filter_moms
 !
@@ -325,7 +326,7 @@
       call deallocate_correct_filter_flag
 !
       call deallocate_coef_4_filter_moms
-      call finalize_4_cal_fileters
+      call finalize_4_cal_fileters(fil_tbl_crs, fil_mat_crs)
 !
 !
       end subroutine correct_commutative_filter
@@ -464,7 +465,7 @@
       call deallocate_correct_filter_flag
 !
       call deallocate_coef_4_filter_moms
-      call finalize_4_cal_fileters
+      call finalize_4_cal_fileters(fil_tbl_crs, fil_mat_crs)
 !
 !
       end subroutine correct_by_simple_filter

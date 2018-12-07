@@ -54,8 +54,6 @@
 !
       integer (kind=kint) :: id_solver_type
 !
-      character(len=kchara) :: method
-      character(len=kchara) :: precond
       integer (kind=kint) :: itr
       real (kind=kreal) :: eps
       real (kind=kreal) :: sigma
@@ -71,11 +69,6 @@
       real (kind=kreal) :: eps_elesize
       real (kind=kreal) :: sigma_elesize
       real (kind=kreal) :: sigma_diag_elesize
-!
-!
-!
-      integer (kind=kint) :: INTARRAY(2)
-      real (kind=kreal) ::   REALARRAY(3)
 !
 !  ---------------------------------------------------------------------
 !

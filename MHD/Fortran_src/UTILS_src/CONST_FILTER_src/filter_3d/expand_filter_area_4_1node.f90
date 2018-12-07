@@ -3,11 +3,17 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine init_4_cal_fileters(mesh, ele_4_nod, neib_nod)
+!!      subroutine init_4_cal_fileters(mesh, ele_4_nod, neib_nod,       &
+!!     &          fil_tbl_crs, fil_mat_crs)
 !!      subroutine init_4_cal_fluid_fileters(mesh, ele_4_nod, neib_nod)
 !!        type(mesh_geometry),       intent(in) :: mesh
-!!      subroutine finalize_4_cal_fileters
-!!      subroutine resize_matrix_size_gen_filter(nnod_4_ele)
+!!
+!!      subroutine finalize_4_cal_fileters(fil_tbl_crs, fil_mat_crs)
+!!      subroutine resize_matrix_size_gen_filter                        &
+!!     &         (nnod_4_ele, fil_tbl_crs, fil_mat_crs)
+!!        type(CRS_matrix_connect), intent(inout) :: fil_tbl_crs
+!!        type(CRS_matrix), intent(inout) :: fil_mat_crs
+!!
 !!      subroutine s_expand_filter_area_4_1node                         &
 !!     &         (inod, node, ele, ele_4_nod, FEM_elen)
 !!      subroutine copy_next_nod_ele_4_each                             &
@@ -24,6 +30,8 @@
       use m_machine_parameter
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
+      use t_crs_connect
+      use t_crs_matrix
 !
       implicit none
 !
@@ -37,7 +45,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_4_cal_fileters(mesh, ele_4_nod, neib_nod)
+      subroutine init_4_cal_fileters(mesh, ele_4_nod, neib_nod,         &
+     &          fil_tbl_crs, fil_mat_crs)
 !
       use t_mesh_data
       use t_next_node_ele_4_node
@@ -47,8 +56,12 @@
       type(element_around_node), intent(inout) :: ele_4_nod
       type(next_nod_id_4_nod),   intent(inout) :: neib_nod
 !
+      type(CRS_matrix_connect), intent(inout) :: fil_tbl_crs
+      type(CRS_matrix), intent(inout) :: fil_mat_crs
 !
-      call allocate_work_4_fileters(mesh%node, mesh%ele)
+!
+      call allocate_work_4_fileters(mesh%node, mesh%ele,                &
+     &    fil_tbl_crs, fil_mat_crs)
 !
 !  ---------------------------------------------------
 !       set belonged node and element for each node
@@ -93,7 +106,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_work_4_fileters(node, ele)
+      subroutine allocate_work_4_fileters                               &
+     &         (node, ele, fil_tbl_crs, fil_mat_crs)
 !
       use t_geometry_data
       use t_next_node_ele_4_node
@@ -101,14 +115,16 @@
       use m_matrix_4_filter
       use m_filter_file_names
       use m_field_file_format
-      use m_crs_matrix_4_filter
       use fem_const_filter_matrix
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
       use delete_small_weighting
 !
-      type(node_data),           intent(in) :: node
-      type(element_data),        intent(in) :: ele
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+!
+      type(CRS_matrix_connect), intent(inout) :: fil_tbl_crs
+      type(CRS_matrix), intent(inout) :: fil_mat_crs
 !
 !
       if (inod_end_filter .eq. -1) then
@@ -126,11 +142,12 @@
       call allocate_matrix_4_filter
       call allocate_sk_filter(ele%nnod_4_ele)
 !
-      nmax_crs = max_mat_size
-      imax_l = nmax_crs * (nmax_crs - 1) / 2
-      imax_u = nmax_crs * (nmax_crs - 1) / 2
-      call allocate_array_4_crs_stack
-      call allocate_array_4_crs_item
+      call alloc_crs_stack(max_mat_size, fil_tbl_crs)
+!
+      fil_tbl_crs%ntot_l = max_mat_size * (max_mat_size - 1) / 2
+      fil_tbl_crs%ntot_u = max_mat_size * (max_mat_size - 1) / 2
+      call alloc_crs_connect(fil_tbl_crs)
+      call alloc_crs_mat_data(fil_tbl_crs, fil_mat_crs)
 !
       if (iflag_ordering_list .gt. 0) then
         call allocate_dist_ratio(node%numnod)
@@ -148,25 +165,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine finalize_4_cal_fileters
+      subroutine finalize_4_cal_fileters(fil_tbl_crs, fil_mat_crs)
 !
       use m_filter_file_names
       use m_matrix_4_filter
       use m_reference_moments
-      use m_crs_matrix_4_filter
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
       use fem_const_filter_matrix
       use delete_small_weighting
 !
+      type(CRS_matrix_connect), intent(inout) :: fil_tbl_crs
+      type(CRS_matrix), intent(inout) :: fil_mat_crs
 !
-
+!
       call deallocate_tmp_4_filter_sort
 !
 
       if (iflag_ordering_list .gt. 0) call deallocate_dist_ratio
 !
-      call deallocate_array_4_crs_item
+      call dealloc_crs_mat_data(fil_mat_crs)
+      call dealloc_crs_connect(fil_tbl_crs)
       call deallocate_reference_moments
       call deallocate_matrix_4_filter
       call deallocate_mat_num_weight
@@ -180,14 +199,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine resize_matrix_size_gen_filter(nnod_4_ele)
+      subroutine resize_matrix_size_gen_filter                          &
+     &         (nnod_4_ele, fil_tbl_crs, fil_mat_crs)
 !
       use m_reference_moments
       use m_matrix_4_filter
-      use m_crs_matrix_4_filter
       use fem_const_filter_matrix
 !
       integer(kind = kint), intent(in) :: nnod_4_ele
+!
+      type(CRS_matrix_connect), intent(inout) :: fil_tbl_crs
+      type(CRS_matrix), intent(inout) :: fil_mat_crs
 !
 !
       if (max_mat_size .lt. nnod_near_1nod_weight) then
@@ -199,12 +221,16 @@
         max_mat_size = nnod_near_1nod_weight
         call deallocate_matrix_4_filter
         call allocate_matrix_4_filter
-        nmax_crs = max_mat_size
-        imax_l = nmax_crs * (nmax_crs - 1) / 2
-        imax_u = nmax_crs * (nmax_crs - 1) / 2
-        call deallocate_array_4_crs_item
-        call allocate_array_4_crs_stack
-        call allocate_array_4_crs_item
+!
+      call dealloc_crs_mat_data(fil_mat_crs)
+      call dealloc_crs_connect(fil_tbl_crs)
+!
+        call alloc_crs_stack(max_mat_size, fil_tbl_crs)
+!
+        fil_tbl_crs%ntot_l = max_mat_size * (max_mat_size - 1) / 2
+        fil_tbl_crs%ntot_u = max_mat_size * (max_mat_size - 1) / 2
+        call alloc_crs_connect(fil_tbl_crs)
+        call alloc_crs_mat_data(fil_tbl_crs, fil_mat_crs)
       end if
 !
       if (nmax_num_ele_1nod .lt. nele_near_1nod_weight) then

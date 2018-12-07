@@ -46,6 +46,7 @@
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_matrix_4_filter
+      use m_crs_matrix_4_filter
 !
       use expand_filter_area_4_1node
       use set_simple_filters
@@ -71,8 +72,9 @@
 !
 !
       call copy_next_nod_ele_4_each                                     &
-     &     (inod, node%numnod, ele_4_nod, neib_nod)
-      call resize_matrix_size_gen_filter(ele%nnod_4_ele)
+     &   (inod, node%numnod, ele_4_nod, neib_nod)
+      call resize_matrix_size_gen_filter(ele%nnod_4_ele,                &
+     &    fil_tbl_crs, fil_mat_crs)
 !
 !   set filter area for tophat filter
       if ( abs(iflag_tgt_filter_type) .eq. 2) then
@@ -81,7 +83,8 @@
      &       (inod, node, ele, ele_4_nod, FEM_elen)
           nnod_near_1nod_filter = nnod_near_1nod_weight
           nele_near_1nod_filter = nele_near_1nod_weight
-          call resize_matrix_size_gen_filter(ele%nnod_4_ele)
+          call resize_matrix_size_gen_filter(ele%nnod_4_ele,            &
+     &        fil_tbl_crs, fil_mat_crs)
         end do
 !
 !   set filter area for other filters
@@ -89,7 +92,8 @@
         do i = 1, maximum_neighbour
           call s_expand_filter_area_4_1node                             &
      &       (inod, node, ele, ele_4_nod, FEM_elen)
-          call resize_matrix_size_gen_filter(ele%nnod_4_ele)
+          call resize_matrix_size_gen_filter(ele%nnod_4_ele,            &
+     &        fil_tbl_crs, fil_mat_crs)
         end do
       end if
       mat_size = nnod_near_1nod_weight
