@@ -45,6 +45,7 @@
       module m_ludcmp
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -62,7 +63,6 @@
       real(kind = kreal), intent(inout) :: a(np,np)
       real(kind = kreal), intent(inout) :: d
 !
-      real(kind = kreal), parameter :: TINY = 1.d-30
       integer  (kind = kint) :: i,imax,j,k
       real(kind = kreal) :: aamax,dum,sum
       real(kind = kreal), allocatable :: vv(:)
@@ -112,7 +112,7 @@
              vv(imax)=vv(j)
          endif
          indx(j)=imax
-         if(a(j,j).eq.0.0d0) a(j,j)=TINY
+         if(a(j,j).eq.0.0d0) a(j,j)=TINY*TINY
          if(j.ne.n) then
             dum=1./a(j,j)
             do i=j+1,n

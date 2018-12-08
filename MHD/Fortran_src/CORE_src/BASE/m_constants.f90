@@ -57,6 +57,10 @@
       real, parameter :: rtwo =   2.0e0
       real, parameter :: rhalf =  0.5e0
 !
+!>      Tiny value
+      real(kind = kreal), parameter :: TINY =   1.0D-11
+      real(kind = kreal), parameter :: TINY9 =  1.0D-9
+!
 !>      Turn OFF flag
       integer (kind=kint), parameter :: id_turn_OFF = 0
 !>      Turn ON flag

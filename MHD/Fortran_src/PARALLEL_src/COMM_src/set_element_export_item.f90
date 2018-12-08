@@ -29,8 +29,6 @@
 !
       implicit none
 !
-!>      small number
-      real(kind = kreal), parameter, private :: tiny = 1.0d-11
 !>      many number
       integer(kind = kint), parameter, private :: many = 64
 !
@@ -271,7 +269,7 @@
      &              + (xe_export(2) - x_ele(kele,2))**2                 &
      &              + (xe_export(3) - x_ele(kele,3))**2)
 !
-          if(dist .le. tiny) then
+          if(dist .le. TINY) then
             item_export_e = kele
             iflag = 1
             exit
@@ -344,7 +342,7 @@
      &            + (xe_export(2) - x_ele(kele,2))**2                   &
      &            + (xe_export(3) - x_ele(kele,3))**2)
 !
-        if(dist .le. tiny) then
+        if(dist .le. TINY) then
           item_export_e = kele
           iflag = 1
           exit

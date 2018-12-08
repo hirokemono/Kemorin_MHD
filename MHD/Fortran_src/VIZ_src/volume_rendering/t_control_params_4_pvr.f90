@@ -26,7 +26,6 @@
       implicit  none
 !
 !
-      real(kind = kreal), parameter :: TINY =  1.0D-9
       real(kind = kreal), parameter :: SMALL_RAY_TRACE = 0.1d0
       real(kind = kreal), parameter :: SMALL_NORM = -0.1d0
 !

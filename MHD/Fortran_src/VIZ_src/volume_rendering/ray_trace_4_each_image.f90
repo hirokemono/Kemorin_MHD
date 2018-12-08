@@ -249,10 +249,10 @@
           do i_psf = 1, field_pvr%num_sections
             rflag =  side_of_plane(field_pvr%coefs(1:10,i_psf), xx_st)
             rflag2 = side_of_plane(field_pvr%coefs(1:10,i_psf), xx_tgt)
-            if     (rflag .ge. -TINY .and. rflag2 .le. TINY) then
+            if     (rflag .ge. -TINY9 .and. rflag2 .le. TINY9) then
               iflag = 1
               iflag_hit = 1
-            else if(rflag .le. TINY .and. rflag2 .ge. -TINY) then
+            else if(rflag .le. TINY9 .and. rflag2 .ge. -TINY9) then
               iflag = 1
               iflag_hit = 1
             else

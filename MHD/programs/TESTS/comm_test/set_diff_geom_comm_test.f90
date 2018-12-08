@@ -19,6 +19,7 @@
       module set_diff_geom_comm_test
 !
       use m_precision
+      use m_constants
 !
       use t_geometry_data
       use t_surface_data
@@ -28,10 +29,7 @@
 !
       implicit  none
 !
-!>      small number
-      real(kind = kreal), parameter :: TINY = 1.0d-14
 !
-      private :: TINY
       private :: compare_ele_comm_test, count_ele_comm_test
 !
 ! ----------------------------------------------------------------------

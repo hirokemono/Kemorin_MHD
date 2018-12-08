@@ -138,7 +138,6 @@
       type(communication_table), intent(in) :: e_comm
 !
 !
-      real(kind = kreal), parameter :: tiny = 1.0d-14
       real(kind = kreal) :: dx, dy, dz
       real(kind = kreal), allocatable :: x_test(:)
       integer(kind = kint) :: iele, inum, iflag, iflag_gl
@@ -172,8 +171,8 @@
         dx = x_test(3*iele-2) - x_ele(iele,1)
         dy = x_test(3*iele-1) - x_ele(iele,2)
         dz = x_test(3*iele  ) - x_ele(iele,3)
-        if(     (abs(dx) .ge. tiny)  .or. (abs(dy) .ge. tiny)           &
-     &     .or. (abs(dz) .ge. tiny)) then
+        if(     (abs(dx) .ge. TINY)  .or. (abs(dy) .ge. TINY)           &
+     &     .or. (abs(dz) .ge. TINY)) then
           write(*,*) 'wrong ', trim(txt), ' position at: ',             &
      &         my_rank, iele, x_ele(iele,1:3), dx, dy, dz
         end if

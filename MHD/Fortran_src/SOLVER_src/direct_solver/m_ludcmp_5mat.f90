@@ -55,7 +55,6 @@
       REAL(kind = kreal), intent(inout) :: a(np,np)
       REAL(kind = kreal), intent(inout) :: d
 !
-      REAL(kind = kreal), parameter :: TINY = 1.d-30
       INTEGER  (kind = kint) :: i,imax,j,k, num, iflag
       INTEGER  (kind = kint), parameter :: nb1 = 2
       REAL(kind = kreal) :: aamax,dum,sum
@@ -100,7 +99,7 @@
       end if
       indx(j) = imax
 !
-      if(a(j,j) .eq. 0.0d0) a(j,j) = TINY
+      if(a(j,j) .eq. 0.0d0) a(j,j) = TINY*TINY
       dum = 1.0d0 / a(j,j)
       a(j+1:j+2,j) = a(j+1:j+2,j)*dum
 !
@@ -127,7 +126,7 @@
       end if
 !
       indx(j) = imax
-      if(a(j,j) .eq. 0.0d0) a(j,j) = TINY
+      if(a(j,j) .eq. 0.0d0) a(j,j) = TINY*TINY
       dum = 1.0d0 / a(j,j)
       a(j+1:j+2,j) = a(j+1:j+2,j)*dum
 !
@@ -155,7 +154,7 @@
       end if
 !
       indx(j) = imax
-      if(a(j,j) .eq. 0.0d0) a(j,j) = TINY
+      if(a(j,j) .eq. 0.0d0) a(j,j) = TINY*TINY
       dum = 1.0d0 / a(j,j)
       a(j+1:j+2,j) = a(j+1:j+2,j)*dum
 !
@@ -187,7 +186,7 @@
       end if
 !
       indx(j) = imax
-      if(a(j,j) .eq. 0.0d0) a(j,j) = TINY
+      if(a(j,j) .eq. 0.0d0) a(j,j) = TINY*TINY
       dum = 1.0d0 / a(j,j)
       if (j .le. (n-1)) a(j+1,j) = a(j+1,j)*dum
       if (j .le. (n-2)) a(j+2,j) = a(j+2,j)*dum
@@ -233,7 +232,7 @@
         end if
 !
         indx(j) = imax
-        if(a(j,j) .eq. 0.0d0) a(j,j) = TINY
+        if(a(j,j) .eq. 0.0d0) a(j,j) = TINY*TINY
         dum = 1.0d0 / a(j,j)
         if (j .le. (n-1)) a(j+1,j) = a(j+1,j)*dum
         if (j .le. (n-2)) a(j+2,j) = a(j+2,j)*dum

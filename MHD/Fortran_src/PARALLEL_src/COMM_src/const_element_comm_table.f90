@@ -58,9 +58,6 @@
         real(kind = kreal), allocatable :: xe_export(:)
       end type work_4_ele_comm_table
 !
-!>      small number
-      real(kind = kreal) :: tiny = 1.0d-11
-!
       logical, save :: iflag_ecomm_time = .FALSE.
       integer(kind = kint), save :: ist_elapsed
       integer(kind = kint), save :: ied_elapsed
