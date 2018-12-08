@@ -14,7 +14,7 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(section_define), intent(in) :: psf_def(num_psf)
-!!        type(psf_search_lists), intent(inout) :: psf_search(num_psf)
+!!        type(psf_search_lists), intent(in) :: psf_search(num_psf)
 !!        type(sectioning_list), intent(inout) :: psf_list(num_psf)
 !!        type(grp_section_list), intent(inout) :: psf_grp_list(num_psf)
 !!        type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
@@ -87,8 +87,8 @@
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
       type(section_define), intent(in) :: psf_def(num_psf)
+      type(psf_search_lists), intent(in) :: psf_search(num_psf)
 !
-      type(psf_search_lists), intent(inout) :: psf_search(num_psf)
       type(sectioning_list), intent(inout) :: psf_list(num_psf)
       type(grp_section_list), intent(inout) :: psf_grp_list(num_psf)
       type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
