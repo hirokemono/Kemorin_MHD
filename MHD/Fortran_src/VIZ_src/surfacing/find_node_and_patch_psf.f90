@@ -107,7 +107,7 @@
       type(grp_section_list), intent(inout) :: psf_grp_list(num_psf)
       type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
 !
-      integer(kind = kint) :: i_psf
+      integer(kind = kint) :: i_psf, nele_psf
 !
 !
       do i_psf = 1, num_psf
@@ -149,6 +149,10 @@
      &    psf_mesh)
 !
       do i_psf = 1, num_psf
+        call mpi_allreduce(psf_mesh(i_psf)%patch%numele, nele_psf,     &
+     &      ione, CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+        if(my_rank .eq. 0) write(*,*) 'nele_psf', i_psf, nele_psf
+!
         call dealloc_mark_ele_psf(psf_search(i_psf))
       end do
 !
