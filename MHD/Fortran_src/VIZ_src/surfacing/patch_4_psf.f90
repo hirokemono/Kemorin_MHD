@@ -92,7 +92,7 @@
 !
       subroutine count_num_patch_4_psf(numele, numedge, iedge_4_ele,    &
      &          ele_search, num_case_tbl, psf_case_tbl,                 &
-     &          mark_ele, id_n_on_e, istack_patch_smp)
+     &          mark_ele, id_n_on_e, istack_patch_smp, ntot_failed)
 !
       use t_psf_geometry_list
       use t_psf_case_table
@@ -111,7 +111,9 @@
 !
       integer(kind = kint), intent(inout)                               &
      &              :: istack_patch_smp(0:np_smp)
+      integer(kind = kint), intent(inout) :: ntot_failed
 !
+      integer(kind = kint) :: nfail_smp(np_smp)
       integer(kind = kint) :: npatch_smp(np_smp)
       integer(kind = kint) :: ip, iele, ist, ied, inum, np, n
       integer(kind = kint) :: ie1, ie2, ie3, iedge1, iedge2, iedge3
@@ -120,6 +122,8 @@
 !
 !
       npatch_smp(1:np_smp) = 0
+      nfail_smp(1:np_smp) = 0
+      ntot_failed = 0
 !
 !$omp parallel do private(iele,ist,ied,inum,mark,np,n,ie1,ie2,ie3,      &
 !$omp&         iedge1,iedge2,iedge3,ig1,ig2,ig3)
@@ -145,7 +149,9 @@
               ig3 = id_n_on_e(iedge3)
               if ((ig1*ig2*ig3) .gt. 0 .and. ig1.ne.ig2                 &
      &               .and. ig2.ne.ig3  .and. ig3.ne.ig1) then
-                 npatch_smp(ip) = npatch_smp(ip) + 1
+                npatch_smp(ip) = npatch_smp(ip) + 1
+              else
+                nfail_smp(ip) = nfail_smp(ip) + 1
               end if
             end do
           end if
@@ -155,6 +161,7 @@
 !
       do ip = 1, np_smp
         istack_patch_smp(ip) = istack_patch_smp(ip-1) + npatch_smp(ip)
+        ntot_failed = ntot_failed + nfail_smp(ip)
       end do
 !
       end subroutine count_num_patch_4_psf

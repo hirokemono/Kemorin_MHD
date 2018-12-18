@@ -63,7 +63,7 @@
 !
       subroutine count_psf_patches                                      &
      &        (num_psf, node, ele, edge, sf_grp,                        &
-     &         psf_case_tbls, psf_def, psf_search, psf_list, psf_mesh)
+     &         psf_case_tbls, psf_def, psf_search, psf_list, psf_mesh, ntot_failed)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -89,6 +89,7 @@
       type(psf_search_lists), intent(inout) :: psf_search(num_psf)
       type(sectioning_list), intent(inout) :: psf_list(num_psf)
       type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
+      integer(kind = kint) :: ntot_failed(num_psf)
 !
       integer(kind = kint) :: i
 !
@@ -107,7 +108,7 @@
      &       (ele%numele, edge%numedge, edge%iedge_4_ele,               &
      &        psf_search(i)%elem_list, psf_case_tbls%num_case_tbl,      &
      &        psf_case_tbls%psf_case_tbl, psf_search(i)%mark_e,         &
-     &        psf_list(i)%id_n_on_e, psf_mesh(i)%patch%istack_ele_smp)
+     &        psf_list(i)%id_n_on_e, psf_mesh(i)%patch%istack_ele_smp, ntot_failed(i))
 !
         else if(psf_def(i)%id_section_method .eq. 0) then
           call count_num_patch_4_grp                                    &
@@ -146,7 +147,7 @@
       type(sectioning_list), intent(inout) :: iso_list(num_iso)
       type(psf_local_data), intent(inout) :: iso_mesh(num_iso)
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, ntot_failed
 !
 !
       do i = 1, num_iso
@@ -163,7 +164,7 @@
      &      iso_search(i)%elem_list,                                    &
      &      psf_case_tbls%num_case_tbl, psf_case_tbls%psf_case_tbl,     &
      &      iso_search(i)%mark_e, iso_list(i)%id_n_on_e,                &
-     &      iso_mesh(i)%patch%istack_ele_smp)
+     &      iso_mesh(i)%patch%istack_ele_smp, ntot_failed)
         iso_mesh(i)%patch%numele                                        &
       &       = iso_mesh(i)%patch%istack_ele_smp(np_smp)
         iso_mesh(i)%patch%internal_ele = iso_mesh(i)%patch%numele
