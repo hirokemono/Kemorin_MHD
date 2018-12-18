@@ -70,19 +70,18 @@
           i7 = ie(iele,7)
           i8 = ie(iele,8)
 !
-          mk1 = (ione + int( sign(one,c_ref(i1)) )) / itwo
-          mk2 = (ione + int( sign(one,c_ref(i2)) )) / itwo
-          mk3 = (ione + int( sign(one,c_ref(i3)) )) / itwo
-          mk4 = (ione + int( sign(one,c_ref(i4)) )) / itwo
-          mk5 = (ione + int( sign(one,c_ref(i5)) )) / itwo
-          mk6 = (ione + int( sign(one,c_ref(i6)) )) / itwo
-          mk7 = (ione + int( sign(one,c_ref(i7)) )) / itwo
-          mk8 = (ione + int( sign(one,c_ref(i8)) )) / itwo
+          mk1 = (ione + int( sign(one,c_ref(i1)) ))
+          mk2 = (ione + int( sign(one,c_ref(i2)) ))
+          mk3 = (ione + int( sign(one,c_ref(i3)) ))
+          mk4 = (ione + int( sign(one,c_ref(i4)) ))
+          mk5 = (ione + int( sign(one,c_ref(i5)) ))
+          mk6 = (ione + int( sign(one,c_ref(i6)) ))
+          mk7 = (ione + int( sign(one,c_ref(i7)) ))
+          mk8 = (ione + int( sign(one,c_ref(i8)) ))
 !
-          mark_ele(inum) = mk1 + (mk2 + (mk3 + (mk4                     &
-     &                  + (mk5 + (mk6 + (mk7 + mk8*itwo)*itwo)*itwo)    &
-     &                   *itwo)*itwo)*itwo)*itwo
-!
+          mark_ele(inum) = mk1 / itwo +  mk2                            &
+     &                    + (mk3 + (mk4+ (mk5 + (mk6 + (mk7 + mk8*itwo) &
+     &                     *itwo)*itwo)*itwo)*itwo)*itwo
         end do
       end do
 !$omp end parallel do
