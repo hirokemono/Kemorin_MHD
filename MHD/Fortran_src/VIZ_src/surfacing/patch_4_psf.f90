@@ -147,12 +147,14 @@
               ig1 = id_n_on_e(iedge1)
               ig2 = id_n_on_e(iedge2)
               ig3 = id_n_on_e(iedge3)
-              if ((ig1*ig2*ig3) .gt. 0 .and. ig1.ne.ig2                 &
-     &               .and. ig2.ne.ig3  .and. ig3.ne.ig1) then
+              if(ig1.gt.0 .and. ig2.gt.0 .and. ig3.gt.0                 &
+     &           .and. ig1.ne.ig2  .and. ig2.ne.ig3  .and. ig3.ne.ig1)  &
+     &         then
                 npatch_smp(ip) = npatch_smp(ip) + 1
               else
                 nfail_smp(ip) = nfail_smp(ip) + 1
-                write(my_rank+100,*) 'Failed edge', iedge1, iedge2, iedge3, ig1, ig2, ig3
+                write(my_rank+100,*) 'Failed edge', nfail_smp(ip),     &
+     &               iedge1, iedge2, iedge3, ig1, ig2, ig3
               end if
             end do
           end if
@@ -227,8 +229,9 @@
               ig1 = id_n_on_e(iedge1)
               ig2 = id_n_on_e(iedge2)
               ig3 = id_n_on_e(iedge3)
-              if ((ig1*ig2*ig3) .gt. 0 .and. ig1.ne.ig2                 &
-     &               .and. ig2.ne.ig3  .and. ig3.ne.ig1) then
+              if(ig1.gt.0 .and. ig2.gt.0 .and. ig3.gt.0                 &
+     &           .and. ig1.ne.ig2  .and. ig2.ne.ig3  .and. ig3.ne.ig1)  &
+     &         then
                 icou = icou + 1
                 iele_global(icou) = icou + istack_numele
                 ie_patch(icou,1) = int(ig1)
