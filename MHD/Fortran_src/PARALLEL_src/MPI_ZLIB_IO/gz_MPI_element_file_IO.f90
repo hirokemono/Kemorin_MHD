@@ -61,7 +61,8 @@
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Read gzipped ascii element comm file: ', trim(file_name)
+     &  'Read gzipped merged ascii element comm file: ',                &
+     &   trim(file_name)
 !
       call open_read_mpi_file                                           &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
@@ -87,7 +88,8 @@
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Read gzipped ascii surface mesh file: ', trim(file_name)
+     &  'Read gzipped merged ascii surface mesh file: ',                &
+     &   trim(file_name)
 !
       call open_read_mpi_file                                           &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
@@ -114,7 +116,7 @@
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Read gzipped ascii edge mesh file: ', trim(file_name)
+     &  'Read gzipped merged ascii edge mesh file: ', trim(file_name)
 !
       call open_read_mpi_file                                           &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
@@ -141,7 +143,8 @@
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Write gzipped ascii element comm file: ', trim(file_name)
+     &  'Write gzipped merged ascii element comm file: ',               &
+     &   trim(file_name)
 !
       call open_write_mpi_file                                          &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
@@ -166,7 +169,8 @@
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Write gzipped ascii surface mesh file: ', trim(file_name)
+     &  'Write gzipped merged ascii surface mesh file: ',               &
+     &   trim(file_name)
 !
       call open_write_mpi_file                                          &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
@@ -192,7 +196,7 @@
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Write gzipped ascii edge mesh file: ', trim(file_name)
+     &  'Write gzipped merged ascii edge mesh file: ', trim(file_name)
 !
       call open_write_mpi_file                                          &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)

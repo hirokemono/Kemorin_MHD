@@ -1,11 +1,15 @@
-!set_patches_for_psf.f90
-!      module set_patches_for_psf
+!>@file   set_patches_for_psf.f90
+!!@brief  module !set_patches_for_psf
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2006
 !
-!      Written by H. Matsui on June, 2006
-!
+!> @brief count and set surface patch
+!!
+!!@verbatim
 !!      subroutine count_psf_patches                                    &
-!!     &        (num_psf, node, ele, edge, sf_grp,                      &
-!!     &         psf_case_tbls, psf_def, psf_search, psf_list, psf_mesh)
+!!     &        (num_psf, node, ele, edge, sf_grp, psf_case_tbls,       &
+!!     &         psf_def, psf_search, psf_list, psf_mesh, ntot_failed)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge
@@ -45,7 +49,8 @@
 !!        type(psf_search_lists), intent(in) :: iso_search(num_iso)
 !!        type(sectioning_list), intent(in) :: iso_list(num_iso)
 !!        type(psf_local_data), intent(inout) :: iso_mesh(num_iso)
-!!
+!!@endverbatim
+!
       module set_patches_for_psf
 !
       use m_precision
@@ -62,8 +67,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_psf_patches                                      &
-     &        (num_psf, node, ele, edge, sf_grp,                        &
-     &         psf_case_tbls, psf_def, psf_search, psf_list, psf_mesh, ntot_failed)
+     &        (num_psf, node, ele, edge, sf_grp, psf_case_tbls,         &
+     &         psf_def, psf_search, psf_list, psf_mesh, ntot_failed)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -89,7 +94,7 @@
       type(psf_search_lists), intent(inout) :: psf_search(num_psf)
       type(sectioning_list), intent(inout) :: psf_list(num_psf)
       type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
-      integer(kind = kint) :: ntot_failed(num_psf)
+      integer(kind = kint), intent(inout) :: ntot_failed(num_psf)
 !
       integer(kind = kint) :: i
 !
@@ -108,7 +113,8 @@
      &       (ele%numele, edge%numedge, edge%iedge_4_ele,               &
      &        psf_search(i)%elem_list, psf_case_tbls%num_case_tbl,      &
      &        psf_case_tbls%psf_case_tbl, psf_search(i)%mark_e,         &
-     &        psf_list(i)%id_n_on_e, psf_mesh(i)%patch%istack_ele_smp, ntot_failed(i))
+     &        psf_list(i)%id_n_on_e, psf_mesh(i)%patch%istack_ele_smp,  &
+     &        ntot_failed(i))
 !
         else if(psf_def(i)%id_section_method .eq. 0) then
           call count_num_patch_4_grp                                    &

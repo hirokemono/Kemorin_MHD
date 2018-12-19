@@ -1,8 +1,12 @@
-!set_control_pvr_color
-!      module set_control_pvr_color
+!>@file   set_control_pvr_color.f90
+!!@brief  module set_control_pvr_color
+!!
+!!@author H. Matsui
+!!@date Programmed in  May. 2006
 !
-!        programmed by H.Matsui on May. 2006
-!
+!> @brief Load control parameters from input data
+!!
+!!@verbatim
 !!      subroutine set_control_pvr_lighting(light, color_param)
 !!      subroutine set_control_pvr_colormap(color, color_param)
 !!      subroutine set_control_pvr_colorbar(cbar_ctl, cbar_param)
@@ -10,6 +14,7 @@
 !!        type(pvr_colormap_ctl), intent(in) :: color
 !!        type(pvr_colormap_parameter), intent(inout) :: color_param
 !!        type(pvr_colorbar_ctl), intent(in) :: cbar_ctl
+!!@endverbatim
 !
       module set_control_pvr_color
 !

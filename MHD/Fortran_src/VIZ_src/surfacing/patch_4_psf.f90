@@ -153,8 +153,8 @@
                 npatch_smp(ip) = npatch_smp(ip) + 1
               else
                 nfail_smp(ip) = nfail_smp(ip) + 1
-                write(my_rank+100,*) 'Failed edge', nfail_smp(ip),     &
-     &               iedge1, iedge2, iedge3, ig1, ig2, ig3
+                if(i_debug .gt. 0) write(my_rank+100,*) 'Failed edge',  &
+     &             nfail_smp(ip), iedge1, iedge2, iedge3, ig1, ig2, ig3
               end if
             end do
           end if

@@ -141,7 +141,8 @@
       if (iflag_debug.eq.1)  write(*,*) 'count_psf_patches'
       call count_psf_patches                                            &
      &   (num_psf, mesh%node, mesh%ele, ele_mesh%edge, group%surf_grp,  &
-     &    psf_case_tbls, psf_def, psf_search, psf_list, psf_mesh, ntot_failed)
+     &    psf_case_tbls, psf_def, psf_search, psf_list, psf_mesh,       &
+     &    ntot_failed)
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_psf_patches'
       call set_psf_patches                                              &
@@ -150,14 +151,18 @@
      &    psf_mesh)
 !
       do i_psf = 1, num_psf
+        call dealloc_mark_ele_psf(psf_search(i_psf))
+      end do
+!
+      if(i_debug .eq. 0) return
+      do i_psf = 1, num_psf
         call mpi_allreduce(psf_mesh(i_psf)%patch%numele, nele_psf,     &
      &      ione, CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-        call mpi_allreduce(ntot_failed(i_psf), ntot_failed_gl,     &
+        call mpi_allreduce(ntot_failed(i_psf), ntot_failed_gl,         &
      &      ione, CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
         if(my_rank .eq. 0) write(*,*) 'nele_psf', i_psf, nele_psf
-        if(my_rank .eq. 0) write(*,*) 'ntot_failed_gl', i_psf, ntot_failed_gl
-!
-        call dealloc_mark_ele_psf(psf_search(i_psf))
+        if(my_rank .eq. 0) write(*,*) 'ntot_failed_gl',                &
+     &                               i_psf, ntot_failed_gl
       end do
 !
       end subroutine set_node_and_patch_psf

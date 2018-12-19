@@ -61,7 +61,7 @@
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Read binary element comm file: ', trim(file_name)
+     &  'Read merged binary element comm file: ', trim(file_name)
 !
       call open_read_mpi_file                                           &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
@@ -87,7 +87,7 @@
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Read binary surface mesh file: ', trim(file_name)
+     &  'Read merged binary surface mesh file: ', trim(file_name)
 !
       call open_read_mpi_file                                           &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
@@ -114,7 +114,7 @@
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Read binary edge mesh file: ', trim(file_name)
+     &  'Read merged binary edge mesh file: ', trim(file_name)
 !
       call open_read_mpi_file                                           &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
@@ -141,7 +141,7 @@
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Write binary element comm file: ', trim(file_name)
+     &  'Write merged binary element comm file: ', trim(file_name)
 !
       call open_write_mpi_file                                          &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
@@ -166,7 +166,7 @@
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Write binary surface mesh file: ', trim(file_name)
+     &  'Write merged binary surface mesh file: ', trim(file_name)
 !
       call open_write_mpi_file                                          &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
@@ -192,7 +192,7 @@
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Write binary edge mesh file: ', trim(file_name)
+     &  'Write merged binary edge mesh file: ', trim(file_name)
 !
       call open_write_mpi_file                                          &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
