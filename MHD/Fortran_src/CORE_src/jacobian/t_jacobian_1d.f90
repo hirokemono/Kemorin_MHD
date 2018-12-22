@@ -105,10 +105,21 @@
       call alloc_1d_jac_type                                            &
      &   (nedge, nnod_4_edge, jac_org%ntot_int, jac_new)
 !
-      jac_new%an_edge   = jac_org%an_edge
-      jac_new%xeg_edge  = jac_org%xeg_edge
-      jac_new%xj_edge  =  jac_org%xj_edge
-      jac_new%axj_edge =  jac_org%axj_edge
+      jac_new%an_edge(1:nnod_4_edge,1:jac_1d%ntot_int)                  &
+     &      = jac_org%an_edge(1:nnod_4_edge,1:jac_1d%ntot_int)
+!
+!$omp parallel workshare
+      jac_new%xeg_edge(1:nedge,1:jac_1d%ntot_int,1)                     &
+     &      = jac_org%xeg_edge(1:nedge,1:jac_1d%ntot_int,1)
+      jac_new%xeg_edge(1:nedge,1:jac_1d%ntot_int,2)                     &
+     &      = jac_org%xeg_edge(1:nedge,1:jac_1d%ntot_int,2)
+      jac_new%xeg_edge(1:nedge,1:jac_1d%ntot_int,3)                     &
+     &      = jac_org%xeg_edge(1:nedge,1:jac_1d%ntot_int,3)
+      jac_new%xj_edge(1:nedge,1:jac_1d%ntot_int)                        &
+     &      = jac_org%xj_edge(1:nedge,1:jac_1d%ntot_int)
+      jac_new%axj_edge(1:nedge,1:jac_1d%ntot_int)                       &
+     &      = jac_org%axj_edge(1:nedge,1:jac_1d%ntot_int)
+!$omp end parallel workshare
 !
        end subroutine copy_1d_jacobians
 !

@@ -1,10 +1,14 @@
-!
-!      module fem_skv_grad
-!
-!     programmed by H.Matsui on July 2005
-!     Modified by H. Matsui on Oct., 2006
-!     Modified by H. Matsui on Oct., 2011
-!
+!>@file   fem_skv_grad.f90
+!!@brief  module fem_skv_grad
+!!
+!!@author H. Matsui and H.Okuda
+!!@date Programmed in July 2000 (ver 1.1)
+!!      Modified in Oct., 2006
+!!      Modified in Oct., 2011
+!!
+!> @brief FEM integration for gradient
+!!
+!!@verbatim
 !!      subroutine fem_skv_all_grad                                     &
 !!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,&
 !!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
@@ -13,6 +17,7 @@
 !!     &          np_smp, iele_fsmp_stack, nele_grp, iele_grp,          &
 !!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
 !!     &          n_int, k2, ntot_int_3d, xjac, an, dnx, scalar_1, sk_v)
+!!@endverbatim
 !
       module fem_skv_grad
 !

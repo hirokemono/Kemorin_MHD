@@ -1,10 +1,13 @@
-!
-!      module fem_skv_diffusion
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!      Modified by H. Matsui on Aug, 2007
-!
+!>@file   fem_skv_diffusion.f90
+!!@brief  module fem_skv_diffusion
+!!
+!!@author H. Matsui and H.Okuda
+!!@date Programmed in July 2000 (ver 1.1)
+!!      Modified in Aug, 2007
+!!
+!> @brief FEM integration for diffusion and Poisson equation
+!!
+!!@verbatim
 !!      subroutine fem_skv_scalar_diffuse                               &
 !!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,&
 !!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
@@ -15,11 +18,12 @@
 !!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
 !!     &          n_int, k2, ntot_int_3d, xjac, dnx1, dnx2,             &
 !!     &          ak_d, vector_e, sk_v)
-!
+!!
 !!      subroutine fem_skv_poisson                                      &
 !!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_smp_stack, &
 !!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
 !!     &          num_int, k2, ntot_int_3d, xjac, dnx1, dnx2, sk_v)
+!!@endverbatim
 !
       module fem_skv_diffusion
 !

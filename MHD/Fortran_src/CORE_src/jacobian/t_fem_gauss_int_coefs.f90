@@ -1,11 +1,13 @@
-!t_fem_gauss_int_coefs
-!   module t_fem_gauss_int_coefs
-!.......................................................................
+!>@file  t_fem_gauss_int_coefs.f90
+!!       module t_fem_gauss_int_coefs
+!!
+!!@author H. Matsui
+!!@date   Programmed on Dec. 2003
+!!@n      Modified by H. Matsui on Oct., 2006
 !
-!
-!      Written by H. Matsui on Dec. 2003
-!      Modified by H. Matsui on Oct., 2006
-!
+!> @brief  Structure of gauss points for FEM
+!!
+!!@verbatim
 !!      subroutine sel_max_int_point_by_etype(nnod_4_ele, g_FEM)
 !!      subroutine set_max_integration_points(num_int, g_FEM)
 !!      subroutine alloc_gauss_coef_4_fem(g_FEM)
@@ -15,6 +17,7 @@
 !!
 !!      subroutine num_of_int_points(g_FEM)
 !!      subroutine copy_fem_gauss_int_coefs(org_g_FEM, new_g_FEM)
+!!@endverbatim
 !
       module t_fem_gauss_int_coefs
 !

@@ -40,6 +40,7 @@
       module find_node_and_patch_psf
 !
       use m_precision
+      use m_machine_parameter
 !
       implicit none
 !
@@ -81,7 +82,6 @@
      &          psf_def, psf_search, psf_list, psf_grp_list, psf_mesh)
 !
       use m_geometry_constants
-      use m_machine_parameter
       use calypso_mpi
       use t_control_params_4_psf
       use t_mesh_data
