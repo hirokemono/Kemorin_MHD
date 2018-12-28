@@ -173,7 +173,7 @@
       subroutine const_metis_input(numnod, internal_node, edge)
 !
       use t_edge_data
-      use m_geometry_graph
+      use t_geometry_graph
       use m_metis_IO
       use const_geometry_graph
       use copy_4_metis_IO
@@ -181,13 +181,18 @@
       integer(kind = kint), intent(in) :: numnod, internal_node
       type(edge_data), intent(in) :: edge
 !
+      type(geometry_graph) :: node_graph
+      type(geometry_graph) :: intr_graph
 !
-      call s_const_geometry_graph(numnod, edge)
-      call const_internal_geometry_graph(numnod, internal_node)
 !
-      call deallocate_geometry_graph
+      call s_const_geometry_graph(numnod, edge, node_graph)
+      call const_internal_geometry_graph                                &
+     &   (numnod, internal_node, node_graph, intr_graph)
 !
-      call copy_graph_4_metis_IO(numnod, internal_node)
+      call dealloc_geometry_graph(node_graph)
+!
+      call copy_graph_4_metis_IO(intr_graph)
+      call dealloc_geometry_graph(intr_graph)
 !
       call output_graph_4_metis
 !

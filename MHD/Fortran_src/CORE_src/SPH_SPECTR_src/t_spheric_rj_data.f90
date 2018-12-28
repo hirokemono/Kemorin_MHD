@@ -108,7 +108,7 @@
         real(kind = kreal), allocatable :: a_r_1d_rj_r(:)
 !
 !>        1d @f$1 / r @f$ for @f$ f(r,j) @f$
-!!@n@see  set_radius_func_cheby or set_radius_func_cheby
+!!@n       see set_radius_func_cheby or set_radius_func_cheby
         real(kind = kreal), allocatable :: ar_1d_rj(:,:)
 !
 !>        1d radius between grids for @f$ f(r,j) @f$

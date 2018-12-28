@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-!      subroutine copy_graph_4_metis_IO(numnod, internal_node)
+!!      subroutine copy_graph_4_metis_IO(intr_graph)
+!!        type(geometry_graph), intent(in) :: graph
 !
       module copy_4_metis_IO
 !
@@ -17,27 +18,25 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine copy_graph_4_metis_IO(numnod, internal_node)
+      subroutine copy_graph_4_metis_IO(intr_graph)
 !
-      use m_geometry_graph
+      use t_geometry_graph
       use m_metis_IO
 !
-      integer(kind = kint), intent(in) :: numnod, internal_node
+      type(geometry_graph), intent(in) :: intr_graph
 !
 !
-      nnod_metis_IO =  internal_node
-      ntot_metis_IO =  ntot_graph_inter_nod
-      nedge_metis_IO = ntot_graph_inter_nod / 2
+      nnod_metis_IO =  intr_graph%nnod_graph
+      ntot_metis_IO =  intr_graph%ntot_graph_nod
+      nedge_metis_IO = intr_graph%ntot_graph_nod / 2
 !
       call allocate_metis_grp_stack_IO
       call allocate_metis_graph_IO
 !
-      istack_metis_IO(0:internal_node)                                  &
-     &      = istack_graph_inter_nod(0:internal_node)
-      igraph_metis_IO(1:ntot_graph_inter_nod)                           &
-     &      = igraph_inter_nod(1:ntot_graph_inter_nod)
-!
-      call deallocate_internod_graph
+      istack_metis_IO(0:nnod_metis_IO)                                  &
+     &      = intr_graph%istack_graph_nod(0:nnod_metis_IO)
+      igraph_metis_IO(1:intr_graph%ntot_graph_nod)                      &
+     &      = intr_graph%igraph_nod(1:intr_graph%ntot_graph_nod)
 !
       end subroutine copy_graph_4_metis_IO
 !
