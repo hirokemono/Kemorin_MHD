@@ -12,8 +12,6 @@
 !
       implicit  none
 !
-      private :: const_metis_input
-!
 !------------------------------------------------------------------
 !
       contains
@@ -41,6 +39,7 @@
       use set_domain_and_org_id
       use copy_domain_list_4_IO
       use set_partition_by_fine_mesh
+      use const_metis_input
       use error_exit_4_part
 !
       type(node_data), intent(in) :: node
@@ -124,7 +123,7 @@
      &     (node%numnod, node%internal_node)
 !
       else if (NTYP_div .eq. iPART_GEN_MeTiS) then
-        call const_metis_input                                          &
+        call s_const_metis_input                                        &
      &     (node%numnod, node%internal_node, edge)
         stop
 !
@@ -152,7 +151,7 @@
      &   .or. NTYP_div.eq.iPART_MeTiS_RSB                               &
      &   .or. NTYP_div.eq.iPART_CUBED_SPHERE                            &
      &   .or. NTYP_div.eq.iPART_EQ_XYZ                                  &
-     &   .or. NTYP_div.eq.iPART_EQV_XYZ                                  &
+     &   .or. NTYP_div.eq.iPART_EQV_XYZ                                 &
      &   .or. NTYP_div.eq.iPART_EQ_SPH) then
         call copy_domain_list_to_IO(node%numnod, node%internal_node)
         call output_group_4_partition
@@ -168,36 +167,6 @@
       end subroutine grouping_for_partitioner
 !
 !------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine const_metis_input(numnod, internal_node, edge)
-!
-      use t_edge_data
-      use t_geometry_graph
-      use m_metis_IO
-      use const_geometry_graph
-      use copy_4_metis_IO
-!
-      integer(kind = kint), intent(in) :: numnod, internal_node
-      type(edge_data), intent(in) :: edge
-!
-      type(geometry_graph) :: node_graph
-      type(geometry_graph) :: intr_graph
-!
-!
-      call s_const_geometry_graph(numnod, edge, node_graph)
-      call const_internal_geometry_graph                                &
-     &   (numnod, internal_node, node_graph, intr_graph)
-!
-      call dealloc_geometry_graph(node_graph)
-!
-      call copy_graph_4_metis_IO(intr_graph)
-      call dealloc_geometry_graph(intr_graph)
-!
-      call output_graph_4_metis
-!
-      end subroutine const_metis_input
-!
 ! ----------------------------------------------------------------------
 !
       subroutine regrouping_for_partition                               &
