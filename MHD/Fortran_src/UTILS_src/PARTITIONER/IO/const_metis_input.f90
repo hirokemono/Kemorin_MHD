@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-!!      subroutine copy_graph_4_metis_IO(intr_graph)
-!!        type(geometry_graph), intent(in) :: graph
+!!      subroutine s_const_metis_input(numnod, internal_node, edge)
+!!        type(edge_data), intent(in) :: edge
 !
       module const_metis_input
 !
