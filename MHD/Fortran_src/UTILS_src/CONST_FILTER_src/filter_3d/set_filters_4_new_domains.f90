@@ -155,7 +155,7 @@
 !
 !
       nnod_filtering = 0
-      do inod_g = 1,     nnod_s_domin
+      do inod_g = 1, nod_d_grp1%num_s_domin
         nnod_filtering = nnod_filtering + imark_whole_nod(inod_g)
       end do
       inter_nod_3dfilter = new_node%internal_node
@@ -231,7 +231,7 @@
 !   set external nodes
 !
       icou = istack_numnod_sub(ip2-1) + num_intnod_sub(ip2)
-      do inod_g = 1, nnod_s_domin
+      do inod_g = 1, nod_d_grp1%num_s_domin
         if (imark_whole_nod(inod_g) .gt. 0) then
           icou = icou + 1
           inod_4_subdomain(icou) = int(inod_g)

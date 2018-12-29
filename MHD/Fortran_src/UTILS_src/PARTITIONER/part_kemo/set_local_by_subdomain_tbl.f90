@@ -38,7 +38,10 @@
 !
       integer(kind = kint) :: ist, inum, inod
 !
-      inod_local_part(1:nnod_s_domin) = 0
+!$omp parallel workshare
+      inod_local_part(1:nod_d_grp1%num_s_domin) = 0
+!$omp end parallel workshare
+!
       ist = istack_numnod_sub(ip-1)
       do inum = 1, numnod_4_subdomain(ip)
         inod = inod_4_subdomain(inum+ist)
@@ -127,7 +130,10 @@
       integer(kind = kint), intent(in) :: ip
       integer(kind = kint) :: ist, inum, inod
 !
-      inod_local_part(1:nnod_s_domin) = 0
+!$omp parallel workshare
+      inod_local_part(1:nod_d_grp1%num_s_domin) = 0
+!$omp end parallel workshare
+!
       ist = istack_numnod_sub(ip-1)
       do inum = 1, numnod_4_subdomain(ip)
         inod = inod_4_subdomain(inum+ist)

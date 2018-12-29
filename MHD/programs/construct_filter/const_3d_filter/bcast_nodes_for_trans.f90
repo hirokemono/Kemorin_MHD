@@ -61,8 +61,8 @@
       end if
 !
       if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+1)
-      call MPI_Bcast(nnod_s_domin, ione, CALYPSO_INTEGER, izero,        &
-     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(nod_d_grp1%num_s_domin, ione, CALYPSO_INTEGER,     &
+     &    izero, CALYPSO_COMM, ierr_MPI)
       if(iflag_F3D_time) call end_elapsed_time(ist_elapsed_F3D+1)
 !
 !

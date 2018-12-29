@@ -54,7 +54,7 @@
 !
 !
       call allocate_num_internod_4_part(nprocs_2nd)
-      call allocate_imark_whole_nod(nnod_s_domin)
+      call allocate_imark_whole_nod(nod_d_grp1%num_s_domin)
 !
 !   set each number of node (on rank 0)
 !
@@ -80,7 +80,7 @@
       if (my_rank .ne. 0) call allocate_inod_4_subdomain
       call allocate_internod_4_part
 !
-      call bcast_xx_whole_nod(nnod_s_domin)
+      call bcast_xx_whole_nod(nod_d_grp1%num_s_domin)
 !
       write(*,*) 'const_mesh_newdomain_filter', my_rank
       call const_mesh_each_filter_domain(work_file_header, my_rank,     &
@@ -111,7 +111,7 @@
 !
 !
       call allocate_num_internod_4_part(nprocs_2nd)
-      call allocate_imark_whole_nod(nnod_s_domin)
+      call allocate_imark_whole_nod(nod_d_grp1%num_s_domin)
 !
       ntot_numnod_sub = istack_numnod_sub(0)
       call allocate_inod_4_subdomain

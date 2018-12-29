@@ -45,10 +45,13 @@
       integer(kind= kint) :: ip, ist, ied, inum, k, iele, inod
 !
 !
-      allocate (imark_nod(nnod_s_domin))
+      allocate (imark_nod(nod_d_grp1%num_s_domin))
 !
       do ip = 1, n_domain
-        imark_nod(1:nnod_s_domin)= 0
+!$omp parallel workshare
+        imark_nod(1:nod_d_grp1%num_s_domin)= 0
+!$omp end parallel workshare
+!
         numnod_4_subdomain(ip) = num_intnod_sub(ip)
 
         ist = istack_numele_sub(ip-1)+1
@@ -83,8 +86,10 @@
 !
 !
       do ip = 1, n_domain
-        imark_nod(1:nnod_s_domin)= 0
-
+!$omp parallel workshare
+        imark_nod(1:nod_d_grp1%num_s_domin)= 0
+!$omp end parallel workshare
+!
         ist = istack_intnod_sub(ip-1)
         jst = istack_numnod_sub(ip-1)
         do inum = 1, num_intnod_sub(ip)

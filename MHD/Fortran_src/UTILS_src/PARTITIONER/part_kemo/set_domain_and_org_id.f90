@@ -29,7 +29,7 @@
       type(element_data), intent(in) :: ele
 !
 !
-      call set_domain_group_4_ele(nnod_s_domin, nele_s_domin,           &
+      call set_domain_group_4_ele(nod_d_grp1%num_s_domin, nele_s_domin, &
      &    ele%nnod_4_ele, ele%ie, IGROUP_nod, IGROUP_ele)
 !
       end subroutine set_ele_domain_groups
@@ -44,8 +44,8 @@
       type(communication_table), intent(in) :: nod_comm
 !
 !
-      call copy_node_id_4_peri_sleeve                                   &
-     &   (nnod_s_domin, nod_comm%ntot_export, nod_comm%item_export,     &
+      call copy_node_id_4_peri_sleeve(nod_d_grp1%num_s_domin,           &
+     &    nod_comm%ntot_export, nod_comm%item_export,                   &
      &    nod_comm%item_import, id_glnode_org)
 !
       end subroutine set_origin_global_node

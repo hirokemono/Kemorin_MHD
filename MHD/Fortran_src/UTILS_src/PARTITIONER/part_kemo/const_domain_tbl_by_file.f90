@@ -56,7 +56,7 @@
       nsurf_s_domin = 0
       nedge_s_domin = 0
 !
-      nnod_s_domin = 0
+      nod_d_grp1%num_s_domin = 0
       do ip = 1, nprocs_2nd
         my_rank2 = ip - 1
         call sel_read_node_size(mesh_file, my_rank2, mesh_IO_p, ierr)
@@ -64,7 +64,8 @@
           stop 'MESH data is wrong in count_nnod_whole_domain'
         end if
 !
-        nnod_s_domin = nnod_s_domin + mesh_IO_p%node%internal_node
+        nod_d_grp1%num_s_domin                                          &
+     &     = nod_d_grp1%num_s_domin + mesh_IO_p%node%internal_node
 !
         call dealloc_neib_id(mesh_IO_p%nod_comm)
       end do

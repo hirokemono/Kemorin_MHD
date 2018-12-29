@@ -46,7 +46,7 @@
 !
 !   set numbers of global mesh
 !
-      nnod_s_domin =   org_mesh%node%numnod
+      nod_d_grp1%num_s_domin =   org_mesh%node%numnod
       nele_s_domin =   org_mesh%ele%numele
       intnod_s_domin = org_mesh%node%internal_node
 !
