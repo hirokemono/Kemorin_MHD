@@ -59,7 +59,7 @@
       write (*,'(  "MIN.cell/PE        ", i12)') nmin_numele_sub
 !
       write (*,'(/,"TOTAL NODE     #   ", i12)') nod_d_grp1%num_s_domin
-      write (*,'(  "TOTAL CELL     #   ", i12)') nele_s_domin
+      write (*,'(  "TOTAL CELL     #   ", i12)') ele_d_grp1%num_s_domin
       write (*,'(/," PE    NODE#   CELL#   EXT_CELL#")')
 !
       do ip= 1, num_domain

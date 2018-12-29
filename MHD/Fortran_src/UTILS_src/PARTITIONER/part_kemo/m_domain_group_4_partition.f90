@@ -26,7 +26,6 @@
 !
       implicit none
 !
-      integer(kind = kint) :: nele_s_domin
       integer(kind = kint) :: nsurf_s_domin
       integer(kind = kint) :: nedge_s_domin
       integer(kind = kint) :: intnod_s_domin
@@ -60,7 +59,7 @@
       subroutine allocate_domain_nod_group
 !
       allocate(IGROUP_nod(nod_d_grp1%num_s_domin))
-      allocate(IGROUP_ele(nele_s_domin))
+      allocate(IGROUP_ele(ele_d_grp1%num_s_domin))
       IGROUP_nod = 0
       IGROUP_ele = 0
 !
@@ -71,7 +70,7 @@
       subroutine allocate_domain_nese_group
 !
       allocate(IGROUP_nod(nod_d_grp1%num_s_domin))
-      allocate(IGROUP_ele(nele_s_domin))
+      allocate(IGROUP_ele(ele_d_grp1%num_s_domin))
       allocate(IGROUP_edge(nedge_s_domin))
       allocate(IGROUP_surf(nsurf_s_domin))
       IGROUP_nod = 0
@@ -86,7 +85,7 @@
       subroutine allocate_local_ne_id_tbl
 !
       allocate(inod_local_part(nod_d_grp1%num_s_domin))
-      allocate(iele_local_part(nele_s_domin))
+      allocate(iele_local_part(ele_d_grp1%num_s_domin))
       inod_local_part =  0
       iele_local_part =  0
 !
@@ -97,7 +96,7 @@
       subroutine allocate_local_nese_id_tbl
 !
       allocate(inod_local_part(nod_d_grp1%num_s_domin))
-      allocate(iele_local_part(nele_s_domin))
+      allocate(iele_local_part(ele_d_grp1%num_s_domin))
       allocate(isurf_local_part(nsurf_s_domin))
       allocate(iedge_local_part(nedge_s_domin))
       inod_local_part =  0

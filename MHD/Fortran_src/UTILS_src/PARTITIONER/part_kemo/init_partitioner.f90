@@ -47,7 +47,7 @@
 !   set numbers of global mesh
 !
       nod_d_grp1%num_s_domin =   org_mesh%node%numnod
-      nele_s_domin =   org_mesh%ele%numele
+      ele_d_grp1%num_s_domin =   org_mesh%ele%numele
       intnod_s_domin = org_mesh%node%internal_node
 !
 !      write(*,*) 'allocate_domain_nod_group'

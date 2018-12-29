@@ -65,7 +65,10 @@
 !
       integer(kind = kint) :: ist, inum, iele
 !
-      iele_local_part(1:nele_s_domin) = 0
+!$omp parallel workshare
+      iele_local_part(1:ele_d_grp1%num_s_domin) = 0
+!$omp end parallel workshare
+!
       ist = istack_numele_sub(ip-1)
       do inum = 1, numele_4_subdomain(ip)
         iele = iele_4_subdomain(inum+ist)
@@ -149,7 +152,10 @@
       integer(kind = kint), intent(in) :: ip
       integer(kind = kint) :: ist, inum, iele
 !
-      iele_local_part(1:nele_s_domin) = 0
+!$omp parallel workshare
+      iele_local_part(1:ele_d_grp1%num_s_domin) = 0
+!$omp end parallel workshare
+!
       ist = istack_numele_sub(ip-1)
       do inum = 1, numele_4_subdomain(ip)
         iele = iele_4_subdomain(inum+ist)

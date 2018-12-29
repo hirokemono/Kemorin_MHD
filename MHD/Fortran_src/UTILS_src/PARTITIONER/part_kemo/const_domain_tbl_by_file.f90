@@ -52,7 +52,7 @@
       type(mesh_geometry) :: mesh_IO_p
       integer(kind = kint) :: ip, my_rank2, ierr
 !
-      nele_s_domin = 0
+      ele_d_grp1%num_s_domin = 0
       nsurf_s_domin = 0
       nedge_s_domin = 0
 !

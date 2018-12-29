@@ -29,7 +29,8 @@
       type(element_data), intent(in) :: ele
 !
 !
-      call set_domain_group_4_ele(nod_d_grp1%num_s_domin, nele_s_domin, &
+      call set_domain_group_4_ele                                       &
+     &   (nod_d_grp1%num_s_domin, ele_d_grp1%num_s_domin,               &
      &    ele%nnod_4_ele, ele%ie, IGROUP_nod, IGROUP_ele)
 !
       end subroutine set_ele_domain_groups
