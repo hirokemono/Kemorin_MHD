@@ -54,7 +54,7 @@
 !
       ele_d_grp1%num_s_domin = 0
       surf_d_grp1%num_s_domin = 0
-      nedge_s_domin = 0
+      edge_d_grp1%num_s_domin = 0
 !
       nod_d_grp1%num_s_domin = 0
       do ip = 1, nprocs_2nd

@@ -215,11 +215,13 @@
       integer(kind = kint) :: ip, ist, ied, inum, iele, iedge, k
 !
 !
-      allocate (imark_edge(nedge_s_domin))
+      allocate (imark_edge(edge_d_grp1%num_s_domin))
 !
       do ip = 1, n_domain
-        imark_edge(1:nedge_s_domin)= 0
-
+!$omp parallel workshare
+        imark_edge(1:edge_d_grp1%num_s_domin)= 0
+!$omp end parallel workshare
+!
         ist = istack_numele_sub(ip-1)+1
         ied = istack_numele_sub(ip)
         do inum = ist, ied
@@ -254,8 +256,10 @@
 !
 !
       do ip = 1, n_domain
-        imark_edge(1:nedge_s_domin)= 0
-
+!$omp parallel workshare
+        imark_edge(1:edge_d_grp1%num_s_domin)= 0
+!$omp end parallel workshare
+!
         icou = istack_numedge_sub(ip-1)
         ist = istack_numele_sub(ip-1)+1
         ied = istack_numele_sub(ip)

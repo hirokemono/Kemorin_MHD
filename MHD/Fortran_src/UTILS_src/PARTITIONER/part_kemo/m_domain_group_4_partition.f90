@@ -26,7 +26,6 @@
 !
       implicit none
 !
-      integer(kind = kint) :: nedge_s_domin
       integer(kind = kint) :: intnod_s_domin
 !
       integer(kind = kint), allocatable :: IGROUP_nod(:)
@@ -70,7 +69,7 @@
 !
       allocate(IGROUP_nod(nod_d_grp1%num_s_domin))
       allocate(IGROUP_ele(ele_d_grp1%num_s_domin))
-      allocate(IGROUP_edge(nedge_s_domin))
+      allocate(IGROUP_edge(edge_d_grp1%num_s_domin))
       allocate(IGROUP_surf(surf_d_grp1%num_s_domin))
       IGROUP_nod = 0
       IGROUP_ele = 0
@@ -97,7 +96,7 @@
       allocate(inod_local_part(nod_d_grp1%num_s_domin))
       allocate(iele_local_part(ele_d_grp1%num_s_domin))
       allocate(isurf_local_part(surf_d_grp1%num_s_domin))
-      allocate(iedge_local_part(nedge_s_domin))
+      allocate(iedge_local_part(edge_d_grp1%num_s_domin))
       inod_local_part =  0
       iele_local_part =  0
       iedge_local_part = 0

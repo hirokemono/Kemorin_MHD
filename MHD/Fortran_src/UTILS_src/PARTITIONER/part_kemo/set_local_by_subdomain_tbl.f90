@@ -117,7 +117,10 @@
 !
       integer(kind = kint) :: ist, inum, iedge
 !
-      iedge_local_part(1:nedge_s_domin) = 0
+!$omp parallel workshare
+      iedge_local_part(1:edge_d_grp1%num_s_domin) = 0
+!$omp end parallel workshare
+!
       ist = istack_numedge_sub(ip-1)
       do inum = 1, numedge_4_subdomain(ip)
         iedge = iedge_4_subdomain(inum+ist)
@@ -193,7 +196,10 @@
       integer(kind = kint), intent(in) :: ip
       integer(kind = kint) :: ist, inum, iedge
 !
-      iedge_local_part(1:nedge_s_domin) = 0
+!$omp parallel workshare
+      iedge_local_part(1:edge_d_grp1%num_s_domin) = 0
+!$omp end parallel woerkshare
+!
       ist = istack_numedge_sub(ip-1)
       do inum = 1, numedge_4_subdomain(ip)
         iedge = iedge_4_subdomain(inum+ist)
