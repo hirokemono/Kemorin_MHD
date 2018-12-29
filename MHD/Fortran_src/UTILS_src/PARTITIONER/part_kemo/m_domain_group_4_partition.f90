@@ -8,14 +8,12 @@
 !      subroutine allocate_local_ne_id_tbl
 !      subroutine allocate_local_nese_id_tbl
 !      subroutine allocate_org_gl_nod_id
-!      subroutine allocate_org_gl_nese_id
 !      subroutine allocate_finer_domain_group
 !
 !      subroutine deallocate_domain_nod_group
 !      subroutine deallocate_domain_nese_group
 !      subroutine deallocate_local_nese_id_tbl
 !      subroutine deallocate_org_gl_ne_id
-!      subroutine deallocate_org_gl_nese_id
 !      subroutine deallocate_finer_domain_group
 !
 !      subroutine allocate_work_4_rcb(nnod)
@@ -24,6 +22,7 @@
       module m_domain_group_4_partition
 !
       use m_precision
+      use t_domain_group_4_partition
 !
       implicit none
 !
@@ -44,9 +43,6 @@
       integer(kind = kint), allocatable :: iedge_local_part(:)
 !
       integer(kind = kint_gl), allocatable :: id_glnode_org(:)
-      integer(kind = kint_gl), allocatable :: id_glelem_org(:)
-      integer(kind = kint_gl), allocatable :: id_glsurf_org(:)
-      integer(kind = kint_gl), allocatable :: id_gledge_org(:)
 !
 !
       integer(kind = kint) :: nproc_finer
@@ -123,21 +119,6 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine allocate_org_gl_nese_id
-!
-      allocate(id_glnode_org(nnod_s_domin))
-      allocate(id_glelem_org(nele_s_domin))
-      allocate(id_glsurf_org(nsurf_s_domin))
-      allocate(id_gledge_org(nedge_s_domin))
-      id_glnode_org = 0
-      id_glelem_org = 0
-      id_glsurf_org = 0
-      id_gledge_org = 0
-!
-      end subroutine allocate_org_gl_nese_id
-!
-!   --------------------------------------------------------------------
-!
       subroutine allocate_finer_domain_group
 !
       allocate(IGROUP_FINER(nnod_group_finer))
@@ -185,18 +166,9 @@
 !
       subroutine deallocate_org_gl_ne_id
 !
-      deallocate(id_glnode_org, id_glelem_org)
+      deallocate(id_glnode_org)
 !
       end subroutine deallocate_org_gl_ne_id
-!
-!   --------------------------------------------------------------------
-!
-      subroutine deallocate_org_gl_nese_id
-!
-      deallocate(id_glnode_org, id_glelem_org)
-      deallocate(id_glsurf_org, id_gledge_org)
-!
-      end subroutine deallocate_org_gl_nese_id
 !
 !   --------------------------------------------------------------------
 !

@@ -68,7 +68,7 @@
 !
       call allocate_domain_nese_group
       call allocate_local_nese_id_tbl
-      call allocate_org_gl_nese_id
+      call allocate_org_gl_nod_id
 !
       if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+2)
       if(my_rank .eq. 0) then

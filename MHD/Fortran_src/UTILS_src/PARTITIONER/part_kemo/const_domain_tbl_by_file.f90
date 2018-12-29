@@ -35,7 +35,7 @@
       call count_nnod_whole_domain(mesh_file)
 !
       call allocate_domain_nese_group
-      call allocate_org_gl_nese_id
+      call allocate_org_gl_nod_id
       call allocate_local_nese_id_tbl
 !
       call set_domain_grp_whole_domain(mesh_file)
