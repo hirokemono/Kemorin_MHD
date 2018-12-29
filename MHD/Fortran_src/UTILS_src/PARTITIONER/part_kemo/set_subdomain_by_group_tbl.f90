@@ -133,10 +133,12 @@
       integer(kind = kint) :: ip, ist, ied, inum, iele, isurf, k
 !
 !
-      allocate (imark_surf(nsurf_s_domin))
+      allocate (imark_surf(surf_d_grp1%num_s_domin))
 !
       do ip = 1, n_domain
-        imark_surf(1:nsurf_s_domin)= 0
+!$omp parallel workshare
+        imark_surf(1:surf_d_grp1%num_s_domin)= 0
+!$omp end parallel workshare
 !
         ist = istack_numele_sub(ip-1)+1
         ied = istack_numele_sub(ip)
@@ -171,8 +173,10 @@
 !
 !
       do ip = 1, n_domain
-        imark_surf(1:nsurf_s_domin)= 0
-
+!$omp parallel workshare
+        imark_surf(1:surf_d_grp1%num_s_domin)= 0
+!$omp end parallel workshare
+!
         icou = istack_numsurf_sub(ip-1)
         ist = istack_numele_sub(ip-1)+1
         ied = istack_numele_sub(ip)

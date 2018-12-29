@@ -92,7 +92,10 @@
 !
       integer(kind = kint) :: ist, inum, isurf
 !
-      isurf_local_part(1:nsurf_s_domin) = 0
+!$omp parallel workshare
+      isurf_local_part(1:surf_d_grp1%num_s_domin) = 0
+!$omp end parallel workshare
+!
       ist = istack_numsurf_sub(ip-1)
       do inum = 1, numsurf_4_subdomain(ip)
         isurf = isurf_4_subdomain(inum+ist)
@@ -171,7 +174,10 @@
       integer(kind = kint), intent(in) :: ip
       integer(kind = kint) :: ist, inum, isurf
 !
-      isurf_local_part(1:nsurf_s_domin) = 0
+!$omp parallel workshare
+      isurf_local_part(1:surf_d_grp1%num_s_domin) = 0
+!$omp end parallel workshare
+!
       ist = istack_numsurf_sub(ip-1)
       do inum = 1, numsurf_4_subdomain(ip)
         isurf = isurf_4_subdomain(inum+ist)

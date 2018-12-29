@@ -53,7 +53,7 @@
       integer(kind = kint) :: ip, my_rank2, ierr
 !
       ele_d_grp1%num_s_domin = 0
-      nsurf_s_domin = 0
+      surf_d_grp1%num_s_domin = 0
       nedge_s_domin = 0
 !
       nod_d_grp1%num_s_domin = 0
