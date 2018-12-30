@@ -108,7 +108,7 @@
         do inum = ist, ied
           iele = ele_grp%item_grp(inum)
 !
-          if (iele_local_part(iele) .gt. 0) then
+          if(ele_d_grp1%id_local_part(iele) .gt. 0) then
             new_ele_grp%istack_grp(ig) = new_ele_grp%istack_grp(ig) + 1
           end if
         end do
@@ -136,9 +136,9 @@
         do inum = ist, ied
           iele = ele_grp%item_grp(inum)
 !
-          if (iele_local_part(iele) .gt. 0) then
+          if(ele_d_grp1%id_local_part(iele) .gt. 0) then
             icou = icou + 1
-            new_ele_grp%item_grp(icou) = iele_local_part(iele)
+            new_ele_grp%item_grp(icou) = ele_d_grp1%id_local_part(iele)
           end if
         end do
       end do
@@ -168,7 +168,7 @@
         ied = sf_grp%istack_grp(ig)
         do inum = ist, ied
           iele = sf_grp%item_sf_grp(1,inum)
-          if (iele_local_part(iele) .gt. 0) then
+          if(ele_d_grp1%id_local_part(iele) .gt. 0) then
             new_sf_grp%istack_grp(ig) = new_sf_grp%istack_grp(ig) + 1
           end if
         end do
@@ -197,9 +197,10 @@
         do inum = ist, ied
           iele = sf_grp%item_sf_grp(1,inum)
 !
-          if (iele_local_part(iele) .gt. 0) then
+          if(ele_d_grp1%id_local_part(iele) .gt. 0) then
             icou = icou + 1
-            new_sf_grp%item_sf_grp(1,icou) = iele_local_part(iele)
+            new_sf_grp%item_sf_grp(1,icou)                              &
+     &                                 = ele_d_grp1%id_local_part(iele)
             new_sf_grp%item_sf_grp(2,icou)                              &
      &                                 = sf_grp%item_sf_grp(2,inum)
           end if

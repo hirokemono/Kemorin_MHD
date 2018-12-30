@@ -66,7 +66,7 @@
       integer(kind = kint) :: ist, inum, iele
 !
 !$omp parallel workshare
-      iele_local_part(1:ele_d_grp1%num_s_domin) = 0
+      ele_d_grp1%id_local_part(1:ele_d_grp1%num_s_domin) = 0
 !$omp end parallel workshare
 !
       ist = istack_numele_sub(ip-1)
@@ -76,7 +76,7 @@
         new_ele%nodelm(inum) = org_ele%nodelm(iele)
         new_ele%elmtyp(inum) = org_ele%elmtyp(iele)
 !
-        iele_local_part(iele)= inum 
+        ele_d_grp1%id_local_part(iele)= inum 
       end do
 !
       end subroutine set_local_element
@@ -159,13 +159,13 @@
       integer(kind = kint) :: ist, inum, iele
 !
 !$omp parallel workshare
-      iele_local_part(1:ele_d_grp1%num_s_domin) = 0
+      ele_d_grp1%id_local_part(1:ele_d_grp1%num_s_domin) = 0
 !$omp end parallel workshare
 !
       ist = istack_numele_sub(ip-1)
       do inum = 1, numele_4_subdomain(ip)
         iele = iele_4_subdomain(inum+ist)
-        iele_local_part(iele)= inum 
+        ele_d_grp1%id_local_part(iele)= inum 
       end do
 !
       end subroutine set_local_element_4_export
