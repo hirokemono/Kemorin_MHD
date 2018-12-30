@@ -192,7 +192,7 @@
         ied = istack_numedge_sub(ip)
         do inum = ist, ied
           iedge = iedge_4_subdomain(inum)
-          if (IGROUP_edge(iedge) .eq. ip) then
+          if (edge_d_grp1%IGROUP(iedge) .eq. ip) then
             num_intedge_sub(ip) = num_intedge_sub(ip) + 1
           end if
         end do
@@ -218,7 +218,7 @@
         ied = istack_numedge_sub(ip)
         do inum = ist, ied
           iedge = iedge_4_subdomain(inum)
-          if (IGROUP_edge(iedge) .eq. ip) then
+          if (edge_d_grp1%IGROUP(iedge) .eq. ip) then
             icou = icou + 1
             iedge_intedge_sub(icou) = iedge
           end if
