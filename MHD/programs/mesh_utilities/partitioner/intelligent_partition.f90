@@ -172,7 +172,7 @@ subroutine simulate_field_line_integral(nnod, nele, nsurf,                &
 
     do i = 1, nnod_4_surf
       node_id = ie_surf(isurf_end,i)
-      if(IGROUP_nod(node_id) .ne. group_id) then
+      if(nod_d_grp1%IGROUP(node_id) .ne. group_id) then
         iflag_comm = 10
         return
       end if
@@ -311,7 +311,7 @@ subroutine get_ele_group(eles, ele_id, group_id)
   integer(kind = kint) :: nod_1_id
 
   nod_1_id = eles%ie(ele_id,1)
-  group_id = IGROUP_nod(nod_1_id)
+  group_id = nod_d_grp1%IGROUP(nod_1_id)
 
 end subroutine get_ele_group
 !
@@ -329,7 +329,8 @@ logical function is_ele_in_group(ele_idx, eles)
   is_ele_in_group = .true.
   do i = 2, eles%nnod_4_ele
 ! if the two node is not in same group
-    if (IGROUP_nod(nodes_ele(i)) .ne. IGROUP_nod(nodes_ele(i-1))) then
+    if (nod_d_grp1%IGROUP(nodes_ele(i))                                 &
+     &      .ne. nod_d_grp1%IGROUP(nodes_ele(i-1))) then
       is_ele_in_group = .false.
       exit
     end if

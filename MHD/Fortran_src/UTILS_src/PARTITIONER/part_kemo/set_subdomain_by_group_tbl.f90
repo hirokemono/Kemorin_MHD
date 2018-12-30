@@ -60,7 +60,8 @@
           iele = iele_4_subdomain(inum)
           do k = 1, ele%nodelm(iele)
             inod= ele%ie(iele,k)
-            if (IGROUP_nod(inod).ne.ip .and. imark_nod(inod).eq.0) then
+            if(nod_d_grp1%IGROUP(inod).ne.ip                            &
+     &          .and. imark_nod(inod).eq.0) then
               numnod_4_subdomain(ip) = numnod_4_subdomain(ip) + 1
               imark_nod(inod) = 1
             end if
@@ -103,7 +104,8 @@
           iele = iele_4_subdomain(inum)
           do k = 1, ele%nodelm(iele)
             inod = ele%ie(iele,k)
-            if (IGROUP_nod(inod).ne.ip .and. imark_nod(inod).eq.0) then
+            if (nod_d_grp1%IGROUP(inod).ne.ip                           &
+     &              .and. imark_nod(inod).eq.0) then
               icou = icou + 1
               inod_4_subdomain(icou) = inod
               imark_nod(inod) = 1

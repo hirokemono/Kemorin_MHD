@@ -6,7 +6,7 @@
 !      subroutine divide_by_sphere_coord(nproc, nnod, xx,               &
 !     &          radius, theta, phi, num_bc_grp, ntot_bc_grp,           &
 !     &          istack_bc_grp, item_bc_grp, name_bc_grp)
-!        output: IGROUP_nod
+!        output: nod_d_grp1%IGROUP
 !
       module devide_by_spherical_coord
 !
@@ -93,7 +93,7 @@
       allocate (VAL_cube(nnod))
       allocate (IS_cube(nnod))
 
-      IGROUP_nod(1:nnod)= 1
+      nod_d_grp1%IGROUP(1:nnod)= 1
 
 !   grouping radial layer
 !
@@ -112,13 +112,15 @@
         write(*,*) 'set_sphere_domain_list_l'
         call set_sphere_domain_list_l(nproc, nnod, ndivide_eb(1),       &
      &          num_CMB, nnod_CMB, num_layer, istack_sph, item_sph,     &
-     &          IGROUP_cmb, IGROUP_radius, IGROUP_nod, ncore_local)
+     &          IGROUP_cmb, IGROUP_radius, nod_d_grp1%IGROUP,           &
+     &          ncore_local)
 !
         if (nnod_4_ele .eq. 20) then
           write(*,*) 'set_sphere_domain_list_q'
           call set_sphere_domain_list_q(nproc, nnod, ndivide_eb(1),     &
      &          num_CMB, num_layer, istack20_sph, item20_sph,           &
-     &          IGROUP_cmb, IGROUP_radius, IGROUP_nod, ncore_local)
+     &          IGROUP_cmb, IGROUP_radius, nod_d_grp1%IGROUP,           &
+     &          ncore_local)
         end if
 !
 !   count nuber of node for each subdomain
@@ -131,7 +133,7 @@
 !
         call s_sort_cube_4_rcb(nnod, num_cube, nproc, ndivide_eb(1),    &
      &      ndivide_eb(2), ndivide_eb(3), xx, phi, inod_free,           &
-     &      nrest_local, IGROUP_nod, IS_cube, VAL_cube)
+     &      nrest_local, nod_d_grp1%IGROUP, IS_cube, VAL_cube)
 !
       deallocate (VAL_sph, IS_sph)
       deallocate (VAL_cube, IS_cube)

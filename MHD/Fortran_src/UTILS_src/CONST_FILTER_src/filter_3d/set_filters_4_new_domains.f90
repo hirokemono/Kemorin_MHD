@@ -106,7 +106,7 @@
 !
       do inod = 1, internal_node
         inod_g = inod_global(inod)
-        if (IGROUP_nod(inod_g) .eq. ip2) then
+        if (nod_d_grp1%IGROUP(inod_g) .eq. ip2) then
           ist = istack_near_nod_w_filter(inod-1) + 1
           ied = istack_near_nod_w_filter(inod)
           do inum = ist, ied
@@ -383,7 +383,7 @@
 !
       do inod = 1, internal_node
         inod_g = inod_global(inod)
-        if (IGROUP_nod(inod_g) .eq. ip2) then
+        if (nod_d_grp1%IGROUP(inod_g) .eq. ip2) then
           icou_gl = icou_gl + 1
           inod_filter_new_2(icou_gl) = nod_d_grp1%id_local_part(inod_g)
 !
@@ -447,7 +447,7 @@
       do inod = 1, internal_node
         inod_g = inod_global(inod)
 !
-        if (IGROUP_nod(inod_g) .eq. ip2) then
+        if (nod_d_grp1%IGROUP(inod_g) .eq. ip2) then
           icou_gl = icou_gl + 1
           ist_org = istack_near_nod_w_filter(inod-1)
           ist_new = istack_near_nod_w_filter2(icou_gl-1)

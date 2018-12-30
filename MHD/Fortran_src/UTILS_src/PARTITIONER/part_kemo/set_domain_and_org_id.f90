@@ -31,7 +31,7 @@
 !
       call set_domain_group_4_ele                                       &
      &   (nod_d_grp1%num_s_domin, ele_d_grp1%num_s_domin,               &
-     &    ele%nnod_4_ele, ele%ie, IGROUP_nod, ele_d_grp1%IGROUP)
+     &    ele%nnod_4_ele, ele%ie, nod_d_grp1%IGROUP, ele_d_grp1%IGROUP)
 !
       end subroutine set_ele_domain_groups
 !

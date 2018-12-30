@@ -38,7 +38,7 @@
 !
       num_intnod_sub(1:n_domain) = 0
       do inod = 1, intnod_s_domin
-        ig = IGROUP_nod(inod)
+        ig = nod_d_grp1%IGROUP(inod)
         num_intnod_sub(ig) = num_intnod_sub(ig) + 1
       enddo
 !
@@ -57,7 +57,7 @@
 !
       num_intnod_sub(1:n_domain) = 0
       do inod = 1, intnod_s_domin
-        ig = IGROUP_nod(inod)
+        ig = nod_d_grp1%IGROUP(inod)
         num_intnod_sub(ig) = num_intnod_sub(ig) + 1
         icou = istack_intnod_sub(ig-1) + num_intnod_sub(ig)
         inod_intnod_sub(icou) = inod

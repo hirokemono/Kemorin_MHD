@@ -40,7 +40,7 @@
       write(*,*) 'nnod_s_domain', nod_d_grp1%num_s_domin, 'numnod', numnod
 ! find each subdomain's neighbor elements number stored in included_ele%num_nod(1:Ndomain)
       call count_ele_in_subdomain                                       &
-     &   (Ndomain, nod_d_grp1%num_s_domin, IGROUP_nod, numnod,          &
+     &   (Ndomain, nod_d_grp1%num_s_domin, nod_d_grp1%IGROUP, numnod,   &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,               &
      &    included_ele%ntot, included_ele%num_nod,                      &
      &    included_ele%istack_nod)
@@ -52,7 +52,7 @@ write(*,*) 'included_ele%istack_nod', included_ele%istack_nod(1:10)
 !
 ! store each subdomain's neighbor elements id in included_ele%id_near_nod
       call set_ele_in_subdomain                                         &
-     &   (Ndomain, nod_d_grp1%num_s_domin, IGROUP_nod, numnod,          &
+     &   (Ndomain, nod_d_grp1%num_s_domin, nod_d_grp1%IGROUP, numnod,   &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,               &
      &    included_ele%ntot, included_ele%istack_nod,                   &
      &    included_ele%id_near_nod)

@@ -102,7 +102,7 @@
         do ie= 1, nedge
           in1= ie_edge(ie,k1  )
           in2= ie_edge(ie,k1+1)
-          if(IGROUP_nod(in1) .ne. IGROUP_nod(in2)) then
+          if(nod_d_grp1%IGROUP(in1) .ne. nod_d_grp1%IGROUP(in2)) then
             NUM_EDGECUT = NUM_EDGECUT + 1
           end if
         end do
@@ -126,7 +126,8 @@
           inod1 = ie(iele,k1)
           do k2= 1, nnod_4_ele
             inod2 = ie(iele,k2)
-            if (IGROUP_nod(inod1) .ne. IGROUP_nod(inod2)) then
+            if(nod_d_grp1%IGROUP(inod1) .ne. nod_d_grp1%IGROUP(inod2))  &
+     &       then
               iflag = 1
               go to 10
             end if

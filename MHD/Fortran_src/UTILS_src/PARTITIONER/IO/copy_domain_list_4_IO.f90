@@ -36,7 +36,7 @@
       end if
 !
       num_domain = nproc_group_IO
-      IGROUP_nod(1:internal_node) = IGROUP_IO(1:internal_node)
+      nod_d_grp1%IGROUP(1:internal_node) = IGROUP_IO(1:internal_node)
 !
       call deallocate_domain_group_IO
 !
@@ -55,7 +55,7 @@
 !
       call allocate_domain_group_IO
 !
-      IGROUP_IO(1:internal_node) = IGROUP_nod(1:internal_node)
+      IGROUP_IO(1:internal_node) = nod_d_grp1%IGROUP(1:internal_node)
 !
       end subroutine copy_domain_list_to_IO
 !

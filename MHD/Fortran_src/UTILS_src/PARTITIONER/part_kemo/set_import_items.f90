@@ -54,7 +54,7 @@
         do inum = ist, ied
           inod = inod_4_subdomain(inum)
           jnod_org = nod_d_grp1%id_global_org(inod)
-          if (IGROUP_nod(jnod_org).eq.jp) icou = icou + 1
+          if (nod_d_grp1%IGROUP(jnod_org).eq.jp) icou = icou + 1
         end do
         istack_import(j) = istack_import(j-1) + icou
       end do
@@ -89,7 +89,7 @@
         do inum = ist, ied
           inod = inod_4_subdomain(inum)
           jnod_org = nod_d_grp1%id_global_org(inod)
-          if (IGROUP_nod(jnod_org).eq.jp) then
+          if (nod_d_grp1%IGROUP(jnod_org).eq.jp) then
             icou = icou + 1
             item_import(icou) = inum - istack_numnod_sub(ip-1)
           end if

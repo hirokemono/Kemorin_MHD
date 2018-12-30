@@ -5,7 +5,7 @@
 !     Written by K. Nakajima
 !     Modified by H. Matsui
 !
-!       output: IGROUP_nod
+!       output: nod_d_grp1%IGROUP
 !
 !      subroutine equaly_bisection(nnod, inter_nod, xx)
 !      subroutine eb_spherical(nnod, inter_nod,                         &
@@ -44,11 +44,11 @@
 !C===
       call allocate_work_4_rcb(nnod)
 
-      IGROUP_nod(1:nnod)= 0
-      IGROUP_nod(1:inter_nod)= 1
+      nod_d_grp1%IGROUP(1:nnod) = 0
+      nod_d_grp1%IGROUP(1:inter_nod) = 1
 
       call s_sort_by_position_4_eb3d(inter_nod, ndivide_eb,             &
-     &    IGROUP_nod(1), xx(1,1), xx(1,2), xx(1,3), VAL, IS1)
+     &    nod_d_grp1%IGROUP(1), xx(1,1), xx(1,2), xx(1,3), VAL, IS1)
 !
       call deallocate_work_4_rcb
 !
@@ -68,18 +68,18 @@
 !
       call allocate_work_4_rcb(nnod)
 
-      IGROUP_nod(1:nnod)= 0
-      IGROUP_nod(1:inter_nod)= 1
+      nod_d_grp1%IGROUP(1:nnod) = 0
+      nod_d_grp1%IGROUP(1:inter_nod) = 1
 
       call s_sort_by_position_with_volume(                              &
       &    inter_nod, ndivide_eb, node_volume, tot_vol,                 &
-      &    IGROUP_nod(1), xx(1,1), xx(1,2), xx(1,3), VAL, IS1)
+      &    nod_d_grp1%IGROUP(1), xx(1,1), xx(1,2), xx(1,3), VAL, IS1)
 !
 !     ========= verify partition is equal volume =========
       allocate(group_v(ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)))
       group_v(:) = 0.0
       do i = 1, nnod
-        i_grp = IGROUP_nod(i)
+        i_grp = nod_d_grp1%IGROUP(i)
         group_v(i_grp) = group_v(i_grp) + node_volume(i)
       end do
       do i = 1, ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
@@ -107,15 +107,17 @@
 !C===
       call allocate_work_4_rcb(nnod)
 
-      IGROUP_nod(1:nnod)= 0
-      IGROUP_nod(1:inter_nod)= 1
+      nod_d_grp1%IGROUP(1:nnod) =      0
+      nod_d_grp1%IGROUP(1:inter_nod) = 1
 
-      call s_sort_by_position_with_ratio(inter_nod, ndivide_eb, part_tbl,   &
-      &    IGROUP_nod(1), xx(1,1), xx(1,2), xx(1,3), VAL, IS1)
+      call s_sort_by_position_with_ratio                                &
+     &   (inter_nod, ndivide_eb, part_tbl,                              &
+     &    nod_d_grp1%IGROUP(1), xx(1,1), xx(1,2), xx(1,3), VAL, IS1)
 ! verify partition
       node_grp_cnt(:) = 0
       do i = 1, nnod
-        node_grp_cnt(IGROUP_nod(i)) = node_grp_cnt(IGROUP_nod(i)) + 1
+        node_grp_cnt(nod_d_grp1%IGROUP(i))                              &
+     &     = node_grp_cnt(nod_d_grp1%IGROUP(i)) + 1
       end do
       write(*,*) 'num of node in group ', node_grp_cnt(:)
 !
@@ -143,18 +145,18 @@ real(kind = kreal) :: volume_grp_cnt(num_domain)
 !C===
 call allocate_work_4_rcb(nnod)
 
-IGROUP_nod(1:nnod)= 0
-IGROUP_nod(1:inter_nod)= 1
+nod_d_grp1%IGROUP(1:nnod)= 0
+nod_d_grp1%IGROUP(1:inter_nod)= 1
 
 call s_sort_by_position_with_ratio_volume(inter_nod, ndivide_eb,    &
-&   part_volume, n_volume, IGROUP_nod(1), xx(1,1),                  &
+&   part_volume, n_volume, nod_d_grp1%IGROUP(1), xx(1,1),                  &
 &   xx(1,2), xx(1,3), VAL, IS1)
 ! verify partition
 node_grp_cnt(:) = 0
 volume_grp_cnt(:) = 0
 do i = 1, nnod
-  node_grp_cnt(IGROUP_nod(i)) = node_grp_cnt(IGROUP_nod(i)) + 1
-  volume_grp_cnt(IGROUP_nod(i)) = volume_grp_cnt(IGROUP_nod(i)) + n_volume(i)
+  node_grp_cnt(nod_d_grp1%IGROUP(i)) = node_grp_cnt(nod_d_grp1%IGROUP(i)) + 1
+  volume_grp_cnt(nod_d_grp1%IGROUP(i)) = volume_grp_cnt(nod_d_grp1%IGROUP(i)) + n_volume(i)
 end do
 write(*,*) 'num of node in group ', node_grp_cnt(:)
 write(*,*) 'volume of node in group ', volume_grp_cnt(:)
@@ -180,11 +182,11 @@ end subroutine proportion_volume_bisection
 !C===
       call allocate_work_4_rcb(nnod)
 
-      IGROUP_nod(1:nnod)= 0
-      IGROUP_nod(1:inter_nod)= 1
+      nod_d_grp1%IGROUP(1:nnod)= 0
+      nod_d_grp1%IGROUP(1:inter_nod)= 1
 
       call s_sort_by_position_4_eb3d(inter_nod, ndivide_eb,             &
-     &    IGROUP_nod(1), radius(1), colatitude(1), longitude(1),        &
+     &    nod_d_grp1%IGROUP(1), radius(1), colatitude(1), longitude(1), &
      &    VAL, IS1)
 !
       call deallocate_work_4_rcb
@@ -216,13 +218,14 @@ end subroutine proportion_volume_bisection
 !C===
       call allocate_work_4_rcb(nnod)
 
-      IGROUP_nod(1:nnod)= 0
-      IGROUP_nod(1:inter_nod)= 1
+      nod_d_grp1%IGROUP(1:nnod)= 0
+      nod_d_grp1%IGROUP(1:inter_nod)= 1
 
       call s_sort_by_position_w_grp(inter_nod, ndivide_eb, num_mat,     &
      &    mat_name, ntot_node_ele_grp, inod_stack_ele_grp,              &
-     &    inod_ele_grp, num_egrp_layer, grp_layer_name, IGROUP_nod,     &
-     &    radius(1), colatitude(1), longitude(1), VAL, IS1)
+     &    inod_ele_grp, num_egrp_layer, grp_layer_name,                 &
+     &    nod_d_grp1%IGROUP, radius(1), colatitude(1), longitude(1),    &
+     &    VAL, IS1)
 !
       call deallocate_work_4_rcb
 !

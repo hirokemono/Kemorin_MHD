@@ -74,7 +74,7 @@
      &      ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,             &
      &      included_ele%ntot, included_ele%istack_nod,                 &
      &      included_ele%id_near_nod, nod_d_grp1%num_s_domin,           &
-     &      IGROUP_nod)
+     &      nod_d_grp1%IGROUP)
       else
         call selective_extended_overlap(ip, node, ele, surf, field,     &
     &       included_ele%ntot, included_ele%istack_nod,                 &

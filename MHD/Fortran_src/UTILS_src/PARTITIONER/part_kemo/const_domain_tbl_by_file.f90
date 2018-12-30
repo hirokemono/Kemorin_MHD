@@ -107,7 +107,7 @@
 !
       do inod = 1, mesh_IO_p%node%internal_node
         inod_g = mesh_IO_p%node%inod_global(inod)
-        IGROUP_nod(inod_g) = ip2
+        nod_d_grp1%IGROUP(inod_g) = ip2
         nod_d_grp1%id_global_org(inod_g) = inod_g
       end do
 !

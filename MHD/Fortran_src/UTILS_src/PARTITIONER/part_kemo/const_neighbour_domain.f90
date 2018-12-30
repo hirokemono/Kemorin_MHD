@@ -60,7 +60,7 @@
       do inum = ist, ied
         inod = inod_4_subdomain(inum)
         jnod_org = nod_d_grp1%id_global_org(inod)
-        jp = IGROUP_nod(jnod_org)
+        jp = nod_d_grp1%IGROUP(jnod_org)
         imark_pe(jp) = 1
       end do
 !
@@ -89,7 +89,7 @@
       do inum = ist, ied
         inod = inod_4_subdomain(inum)
         jnod_org = nod_d_grp1%id_global_org(inod)
-        jp = IGROUP_nod(jnod_org)
+        jp = nod_d_grp1%IGROUP(jnod_org)
         if (imark_pe(jp) .eq. 0) then
           icou = icou + 1
           id_neib(icou) = jp

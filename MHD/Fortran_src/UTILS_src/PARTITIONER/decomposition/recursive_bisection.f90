@@ -8,7 +8,7 @@
 !      subroutine rcb_spherical(nnod, inter_nod,                        &
 !     &          radius, colatitude, longitude)
 !
-!       output: IGROUP_nod
+!       output: nod_d_grp1%IGROUP
 !
       module recursive_bisection
 !
@@ -40,8 +40,8 @@
 !C===
       call allocate_work_4_rcb(nnod)
 
-      IGROUP_nod(1:nnod)= 0
-      IGROUP_nod(1:inter_nod)= 1
+      nod_d_grp1%IGROUP(1:nnod)= 0
+      nod_d_grp1%IGROUP(1:inter_nod)= 1
 
       do iter= 1, NPOWER_rcb
 
@@ -53,7 +53,7 @@
 
         do ip0= 1, 2**(iter-1)
 !
-          call sort_4_rcb(inter_nod, iter, ip0, IGROUP_nod(1),          &
+          call sort_4_rcb(inter_nod, iter, ip0, nod_d_grp1%IGROUP(1),   &
      &        idir_rcb(iter), xx(1,1), xx(1,2), xx(1,3),                &
      &        VAL(1), IS1(1) )
         enddo
@@ -83,8 +83,8 @@
 !C===
       call allocate_work_4_rcb(nnod)
 
-      IGROUP_nod(1:nnod)= 0
-      IGROUP_nod(1:inter_nod)= 1
+      nod_d_grp1%IGROUP(1:nnod)= 0
+      nod_d_grp1%IGROUP(1:inter_nod)= 1
 
       do iter= 1, NPOWER_rcb
 
@@ -96,7 +96,7 @@
 
         do ip0= 1, 2**(iter-1)
 !
-          call sort_4_rcb(inter_nod, iter, ip0, IGROUP_nod(1),          &
+          call sort_4_rcb(inter_nod, iter, ip0, nod_d_grp1%IGROUP(1),   &
      &        idir_rcb(iter), radius(1), colatitude(1), longitude(1),   &
      &        VAL(1), IS1(1) )
 !

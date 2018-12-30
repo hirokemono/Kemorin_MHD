@@ -99,7 +99,7 @@
      &    new_ele%numele, new_ele%nnod_4_ele, new_ele%ie,               &
      &    IGROUP_FINER(1), itp_org%istack_tbl_type_org_smp,             &
      &    itp_org%ntot_table_org, itp_org%iele_org_4_org,               &
-     &    itp_org%itype_inter_org, IGROUP_nod(1) )
+     &    itp_org%itype_inter_org, nod_d_grp1%IGROUP(1) )
 !
       end subroutine interpolate_domain_group
 !
