@@ -118,7 +118,7 @@
       integer(kind = kint) :: ist, inum, iedge
 !
 !$omp parallel workshare
-      iedge_local_part(1:edge_d_grp1%num_s_domin) = 0
+      edge_d_grp1%id_local_part(1:edge_d_grp1%num_s_domin) = 0
 !$omp end parallel workshare
 !
       ist = istack_numedge_sub(ip-1)
@@ -126,7 +126,7 @@
         iedge = iedge_4_subdomain(inum+ist)
         new_edge%iedge_global(inum) = iedge
 !
-        iedge_local_part(iedge)= inum 
+        edge_d_grp1%id_local_part(iedge)= inum 
       end do
 !
       end subroutine set_local_edge
@@ -197,13 +197,13 @@
       integer(kind = kint) :: ist, inum, iedge
 !
 !$omp parallel workshare
-      iedge_local_part(1:edge_d_grp1%num_s_domin) = 0
+      edge_d_grp1%id_local_part(1:edge_d_grp1%num_s_domin) = 0
 !$omp end parallel workshare
 !
       ist = istack_numedge_sub(ip-1)
       do inum = 1, numedge_4_subdomain(ip)
         iedge = iedge_4_subdomain(inum+ist)
-        iedge_local_part(iedge)= inum 
+        edge_d_grp1%id_local_part(iedge)= inum 
       end do
 !
       end subroutine set_local_edge_4_export

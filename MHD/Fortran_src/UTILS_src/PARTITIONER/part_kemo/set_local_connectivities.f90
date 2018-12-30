@@ -124,7 +124,8 @@
         iele = ele_new%iele_global(inum)
         do k1 = 1, nedge_4_ele
           iedge = abs(edge_org%iedge_4_ele(iele,k1))
-          edge_new%iedge_4_ele(inum,k1) = iedge_local_part(iedge)       &
+          edge_new%iedge_4_ele(inum,k1)                                 &
+     &                      = edge_d_grp1%id_local_part(iedge)          &
      &                       * (edge_org%iedge_4_ele(iele,k1) / iedge)
         end do
       end do
@@ -174,7 +175,8 @@
         isurf = surf_new%isurf_global(inum)
         do k1 = 1, nedge_4_surf
           iedge = abs(edge_org%iedge_4_sf(isurf,k1))
-          edge_new%iedge_4_sf(inum,k1) = iedge_local_part(iedge)        &
+          edge_new%iedge_4_sf(inum,k1)                                  &
+     &                     = edge_d_grp1%id_local_part(iedge)           &
      &                      * (edge_org%iedge_4_sf(isurf,k1) / iedge)
         end do
       end do
