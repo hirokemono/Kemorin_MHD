@@ -7,13 +7,11 @@
 !      subroutine allocate_domain_nese_group
 !      subroutine allocate_local_ne_id_tbl
 !      subroutine allocate_local_nese_id_tbl
-!      subroutine allocate_org_gl_nod_id
 !      subroutine allocate_finer_domain_group
 !
 !      subroutine deallocate_domain_nod_group
 !      subroutine deallocate_domain_nese_group
 !      subroutine deallocate_local_nese_id_tbl
-!      subroutine deallocate_org_gl_ne_id
 !      subroutine deallocate_finer_domain_group
 !
 !      subroutine allocate_work_4_rcb(nnod)
@@ -37,8 +35,6 @@
       integer(kind = kint), allocatable :: iele_local_part(:)
       integer(kind = kint), allocatable :: isurf_local_part(:)
       integer(kind = kint), allocatable :: iedge_local_part(:)
-!
-      integer(kind = kint_gl), allocatable :: id_glnode_org(:)
 !
 !
       integer(kind = kint) :: nproc_finer
@@ -105,14 +101,6 @@
       end subroutine allocate_local_nese_id_tbl
 !
 !   --------------------------------------------------------------------
-!
-      subroutine allocate_org_gl_nod_id
-!
-      allocate(id_glnode_org(nod_d_grp1%num_s_domin))
-      id_glnode_org = 0
-!
-      end subroutine allocate_org_gl_nod_id
-!
 !   --------------------------------------------------------------------
 !
       subroutine allocate_finer_domain_group
@@ -157,14 +145,6 @@
       deallocate(isurf_local_part, iedge_local_part)
 !
       end subroutine deallocate_local_nese_id_tbl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine deallocate_org_gl_ne_id
-!
-      deallocate(id_glnode_org)
-!
-      end subroutine deallocate_org_gl_ne_id
 !
 !   --------------------------------------------------------------------
 !

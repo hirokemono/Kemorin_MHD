@@ -117,7 +117,7 @@
           icou = icou + 1
           jnod = IMPORT_NOD_TMP(jnum)
           inod = inod_4_subdomain(jst+jnod)
-          inod_org = id_glnode_org(inod)
+          inod_org = nod_d_grp1%id_global_org(inod)
           new_comm%item_export(icou) = inod_local_part(inod_org)
         end do
 !

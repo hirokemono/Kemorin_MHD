@@ -35,7 +35,7 @@
       call count_nnod_whole_domain(mesh_file)
 !
       call allocate_domain_nese_group
-      call allocate_org_gl_nod_id
+      call alloc_org_gl_id(nod_d_grp1)
       call allocate_local_nese_id_tbl
 !
       call set_domain_grp_whole_domain(mesh_file)
@@ -108,7 +108,7 @@
       do inod = 1, mesh_IO_p%node%internal_node
         inod_g = mesh_IO_p%node%inod_global(inod)
         IGROUP_nod(inod_g) = ip2
-        id_glnode_org(inod_g) = inod_g
+        nod_d_grp1%id_global_org(inod_g) = inod_g
       end do
 !
       call dealloc_node_geometry_IO(mesh_IO_p)

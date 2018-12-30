@@ -52,7 +52,7 @@
 !
 !      write(*,*) 'allocate_domain_nod_group'
       call allocate_domain_nod_group
-      call allocate_org_gl_nod_id
+      call alloc_org_gl_id(nod_d_grp1)
       call allocate_local_ne_id_tbl
 !
 !      const periodic table

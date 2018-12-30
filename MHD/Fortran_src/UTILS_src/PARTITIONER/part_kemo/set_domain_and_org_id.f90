@@ -47,7 +47,7 @@
 !
       call copy_node_id_4_peri_sleeve(nod_d_grp1%num_s_domin,           &
      &    nod_comm%ntot_export, nod_comm%item_export,                   &
-     &    nod_comm%item_import, id_glnode_org)
+     &    nod_comm%item_import, nod_d_grp1%id_global_org)
 !
       end subroutine set_origin_global_node
 !
