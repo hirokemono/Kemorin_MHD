@@ -99,7 +99,7 @@
 !
 !C===
       deallocate(para_fem)
-      call deallocate_local_ne_id_tbl
+      call dealloc_local_ne_id_tbl
 !
       if(iflag_memory_conserve .ne. 0) then
         call delete_parallel_files(ione, num_domain, work_f_head)

@@ -39,7 +39,7 @@
       integer(kind = kint) :: ist, inum, inod
 !
 !$omp parallel workshare
-      inod_local_part(1:nod_d_grp1%num_s_domin) = 0
+      nod_d_grp1%id_local_part(1:nod_d_grp1%num_s_domin) = 0
 !$omp end parallel workshare
 !
       ist = istack_numnod_sub(ip-1)
@@ -48,7 +48,7 @@
         new_node%inod_global(inum) = inod
         new_node%xx(inum,1:3) = org_node%xx(inod,1:3)
 !
-        inod_local_part(inod)= inum
+        nod_d_grp1%id_local_part(inod)= inum
       end do
 !
       end subroutine set_local_node
@@ -140,13 +140,13 @@
       integer(kind = kint) :: ist, inum, inod
 !
 !$omp parallel workshare
-      inod_local_part(1:nod_d_grp1%num_s_domin) = 0
+      nod_d_grp1%id_local_part(1:nod_d_grp1%num_s_domin) = 0
 !$omp end parallel workshare
 !
       ist = istack_numnod_sub(ip-1)
       do inum = 1, numnod_4_subdomain(ip)
         inod = inod_4_subdomain(inum+ist)
-        inod_local_part(inod)= inum
+        nod_d_grp1%id_local_part(inod)= inum
       end do
 !
       end subroutine set_local_node_4_export

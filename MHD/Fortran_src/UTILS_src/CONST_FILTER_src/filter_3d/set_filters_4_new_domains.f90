@@ -275,7 +275,7 @@
 !
       do inod = 1, nnod_filtering
         inod_g = id_globalnod_filtering(inod)
-        inod_local_part(inod_g) = inod
+        nod_d_grp1%id_local_part(inod_g) = inod
       end do
 !
       end subroutine set_global_nodid_4_newfilter
@@ -385,7 +385,7 @@
         inod_g = inod_global(inod)
         if (IGROUP_nod(inod_g) .eq. ip2) then
           icou_gl = icou_gl + 1
-          inod_filter_new_2(icou_gl) = inod_local_part(inod_g)
+          inod_filter_new_2(icou_gl) = nod_d_grp1%id_local_part(inod_g)
 !
           i_exp_level_w_filter2(icou_gl) = i_exp_level_w_filter(inod)
           i_exp_level_f_filter2(icou_gl) = i_exp_level_f_filter(inod)
@@ -456,7 +456,7 @@
             jnum_new = inum + ist_new
             jnod = inod_near_nod_w_filter(jnum_org)
             jnod_g = inod_global(jnod)
-            jnod_l = inod_local_part(jnod_g)
+            jnod_l = nod_d_grp1%id_local_part(jnod_g)
 !
             inod_near_nod_w_filter2(jnum_new) = jnod_l
             whole_filter_func2(jnum_new)                                &
@@ -473,7 +473,7 @@
             jnum_new = inum + ist_new
             jnod = inod_near_nod_f_filter(jnum_org)
             jnod_g = inod_global(jnod)
-            jnod_l = inod_local_part(jnod_g)
+            jnod_l = nod_d_grp1%id_local_part(jnod_g)
 !
             inod_near_nod_f_filter2(jnum_new) = jnod_l
             fluid_filter_func2(jnum_new)                                &

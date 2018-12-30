@@ -5,13 +5,11 @@
 !
 !      subroutine allocate_domain_nod_group
 !      subroutine allocate_domain_nese_group
-!      subroutine allocate_local_ne_id_tbl
-!      subroutine allocate_local_nese_id_tbl
 !      subroutine allocate_finer_domain_group
 !
 !      subroutine deallocate_domain_nod_group
 !      subroutine deallocate_domain_nese_group
-!      subroutine deallocate_local_nese_id_tbl
+!      subroutine dealloc_local_nese_id_tbl
 !      subroutine deallocate_finer_domain_group
 !
 !      subroutine allocate_work_4_rcb(nnod)
@@ -30,9 +28,6 @@
       integer(kind = kint), allocatable :: IGROUP_ele(:)
       integer(kind = kint), allocatable :: IGROUP_surf(:)
       integer(kind = kint), allocatable :: IGROUP_edge(:)
-!
-      integer(kind = kint), allocatable :: inod_local_part(:)
-!
 !
       integer(kind = kint) :: nproc_finer
       integer(kind = kint) :: nnod_group_finer, internod_group_finer
@@ -72,32 +67,6 @@
       end subroutine allocate_domain_nese_group
 !
 !   --------------------------------------------------------------------
-!
-      subroutine allocate_local_ne_id_tbl
-!
-      allocate(inod_local_part(nod_d_grp1%num_s_domin))
-      allocate(ele_d_grp1%id_local_part(ele_d_grp1%num_s_domin))
-      inod_local_part =  0
-      ele_d_grp1%id_local_part =  0
-!
-      end subroutine allocate_local_ne_id_tbl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine allocate_local_nese_id_tbl
-!
-      allocate(inod_local_part(nod_d_grp1%num_s_domin))
-      allocate(ele_d_grp1%id_local_part(ele_d_grp1%num_s_domin))
-      allocate(surf_d_grp1%id_local_part(surf_d_grp1%num_s_domin))
-      allocate(edge_d_grp1%id_local_part(edge_d_grp1%num_s_domin))
-      inod_local_part =  0
-      ele_d_grp1%id_local_part =  0
-      edge_d_grp1%id_local_part = 0
-      surf_d_grp1%id_local_part = 0
-!
-      end subroutine allocate_local_nese_id_tbl
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine allocate_finer_domain_group
@@ -124,24 +93,6 @@
       deallocate(IGROUP_surf, IGROUP_edge)
 !
       end subroutine deallocate_domain_nese_group
-!
-!   --------------------------------------------------------------------
-!
-      subroutine deallocate_local_ne_id_tbl
-!
-!
-      deallocate(inod_local_part, ele_d_grp1%id_local_part)
-!
-      end subroutine deallocate_local_ne_id_tbl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine deallocate_local_nese_id_tbl
-!
-      deallocate(inod_local_part, ele_d_grp1%id_local_part)
-      deallocate(surf_d_grp1%id_local_part, edge_d_grp1%id_local_part)
-!
-      end subroutine deallocate_local_nese_id_tbl
 !
 !   --------------------------------------------------------------------
 !

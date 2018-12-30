@@ -57,7 +57,7 @@
         call calypso_mpi_abort(ierr, 'Mesh or filter data is wrong!!')
       end if
 !
-      call deallocate_local_nese_id_tbl
+      call dealloc_local_nese_id_tbl
 !
       end subroutine filters_4_newdomains_para
 !
@@ -86,7 +86,7 @@
         if(ierr .gt. 0) stop 'Mesh or filter data is wrong!!'
       end do
 !
-      call deallocate_local_nese_id_tbl
+      call dealloc_local_nese_id_tbl
 !
       end subroutine filters_4_newdomains_single
 !

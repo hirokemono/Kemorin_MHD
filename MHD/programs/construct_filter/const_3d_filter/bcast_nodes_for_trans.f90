@@ -67,7 +67,7 @@
 !
 !
       call allocate_domain_nese_group
-      call allocate_local_nese_id_tbl
+      call alloc_local_nese_id_tbl
       call alloc_org_gl_id(nod_d_grp1)
 !
       if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+2)

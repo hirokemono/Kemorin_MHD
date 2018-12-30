@@ -118,11 +118,11 @@
           jnod = IMPORT_NOD_TMP(jnum)
           inod = inod_4_subdomain(jst+jnod)
           inod_org = nod_d_grp1%id_global_org(inod)
-          new_comm%item_export(icou) = inod_local_part(inod_org)
+          new_comm%item_export(icou)                                    &
+     &         = nod_d_grp1%id_local_part(inod_org)
         end do
 !
         call deallocate_nod_import_tmp
-!
       end do
 !
       end subroutine set_nod_export_item_4_part

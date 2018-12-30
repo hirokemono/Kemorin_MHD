@@ -71,7 +71,7 @@
         iele = ele_new%iele_global(inum)
         do k1 = 1, ele_new%nodelm(inum)
           inod_g = ele_org%ie(iele,k1)
-          ele_new%ie(inum,k1) = inod_local_part(inod_g)
+          ele_new%ie(inum,k1) = nod_d_grp1%id_local_part(inod_g)
         end do
       end do
 !
@@ -151,7 +151,7 @@
         isurf = surf_new%isurf_global(inum)
         do k1 = 1, surf_org%nnod_4_surf
           inod_g = surf_org%ie_surf(isurf,k1)
-          surf_new%ie_surf(inum,k1) = inod_local_part(inod_g)
+          surf_new%ie_surf(inum,k1) = nod_d_grp1%id_local_part(inod_g)
         end do
       end do
 !
@@ -202,7 +202,7 @@
         iedge = edge_new%iedge_global(inum)
         do k1 = 1, edge_org%nnod_4_edge
           inod_g = edge_org%ie_edge(iedge,k1)
-          edge_new%ie_edge(inum,k1) = inod_local_part(inod_g)
+          edge_new%ie_edge(inum,k1) = nod_d_grp1%id_local_part(inod_g)
         end do
       end do
 !

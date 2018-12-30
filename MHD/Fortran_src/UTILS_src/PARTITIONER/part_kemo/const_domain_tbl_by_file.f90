@@ -36,7 +36,7 @@
 !
       call allocate_domain_nese_group
       call alloc_org_gl_id(nod_d_grp1)
-      call allocate_local_nese_id_tbl
+      call alloc_local_nese_id_tbl
 !
       call set_domain_grp_whole_domain(mesh_file)
 !
