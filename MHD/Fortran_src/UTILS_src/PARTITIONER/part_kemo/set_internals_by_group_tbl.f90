@@ -84,7 +84,7 @@
         ied = istack_numele_sub(ip)
         do inum = ist, ied
           iele = iele_4_subdomain(inum)
-          if (IGROUP_ele(iele) .eq. ip) then
+          if (ele_d_grp1%IGROUP(iele) .eq. ip) then
             num_intele_sub(ip) = num_intele_sub(ip) + 1
           end if
         end do
@@ -110,7 +110,7 @@
         ied = istack_numele_sub(ip)
         do inum = ist, ied
           iele = iele_4_subdomain(inum)
-          if (IGROUP_ele(iele) .eq. ip) then
+          if (ele_d_grp1%IGROUP(iele) .eq. ip) then
             icou = icou + 1
             iele_intele_sub(icou) = iele
           end if
