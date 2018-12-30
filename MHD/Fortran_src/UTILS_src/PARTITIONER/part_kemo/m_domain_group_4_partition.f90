@@ -33,7 +33,6 @@
 !
       integer(kind = kint), allocatable :: inod_local_part(:)
       integer(kind = kint), allocatable :: iele_local_part(:)
-      integer(kind = kint), allocatable :: isurf_local_part(:)
 !
 !
       integer(kind = kint) :: nproc_finer
@@ -90,12 +89,12 @@
 !
       allocate(inod_local_part(nod_d_grp1%num_s_domin))
       allocate(iele_local_part(ele_d_grp1%num_s_domin))
-      allocate(isurf_local_part(surf_d_grp1%num_s_domin))
+      allocate(surf_d_grp1%id_local_part(surf_d_grp1%num_s_domin))
       allocate(edge_d_grp1%id_local_part(edge_d_grp1%num_s_domin))
       inod_local_part =  0
       iele_local_part =  0
       edge_d_grp1%id_local_part = 0
-      isurf_local_part = 0
+      surf_d_grp1%id_local_part = 0
 !
       end subroutine allocate_local_nese_id_tbl
 !
@@ -141,7 +140,7 @@
       subroutine deallocate_local_nese_id_tbl
 !
       deallocate(inod_local_part, iele_local_part)
-      deallocate(isurf_local_part, edge_d_grp1%id_local_part)
+      deallocate(surf_d_grp1%id_local_part, edge_d_grp1%id_local_part)
 !
       end subroutine deallocate_local_nese_id_tbl
 !

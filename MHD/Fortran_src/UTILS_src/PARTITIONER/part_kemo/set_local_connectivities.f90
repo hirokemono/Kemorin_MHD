@@ -97,7 +97,8 @@
         iele = ele_new%iele_global(inum)
         do k1 = 1, nsurf_4_ele
           isurf = abs(surf_org%isf_4_ele(iele,k1))
-          surf_new%isf_4_ele(inum,k1) = isurf_local_part(isurf)         &
+          surf_new%isf_4_ele(inum,k1)                                   &
+     &                      = surf_d_grp1%id_local_part(isurf)          &
      &                       * (surf_org%isf_4_ele(iele,k1) / isurf)
         end do
       end do

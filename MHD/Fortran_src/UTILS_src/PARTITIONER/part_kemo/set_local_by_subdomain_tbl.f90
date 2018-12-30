@@ -93,7 +93,7 @@
       integer(kind = kint) :: ist, inum, isurf
 !
 !$omp parallel workshare
-      isurf_local_part(1:surf_d_grp1%num_s_domin) = 0
+      surf_d_grp1%id_local_part(1:surf_d_grp1%num_s_domin) = 0
 !$omp end parallel workshare
 !
       ist = istack_numsurf_sub(ip-1)
@@ -101,7 +101,7 @@
         isurf = isurf_4_subdomain(inum+ist)
         new_surf%isurf_global(inum) = isurf
 !
-        isurf_local_part(isurf)= inum 
+        surf_d_grp1%id_local_part(isurf)= inum 
       end do
 !
       end subroutine set_local_surface
@@ -178,13 +178,13 @@
       integer(kind = kint) :: ist, inum, isurf
 !
 !$omp parallel workshare
-      isurf_local_part(1:surf_d_grp1%num_s_domin) = 0
+      surf_d_grp1%id_local_part(1:surf_d_grp1%num_s_domin) = 0
 !$omp end parallel workshare
 !
       ist = istack_numsurf_sub(ip-1)
       do inum = 1, numsurf_4_subdomain(ip)
         isurf = isurf_4_subdomain(inum+ist)
-        isurf_local_part(isurf)= inum 
+        surf_d_grp1%id_local_part(isurf)= inum 
       end do
 !
       end subroutine set_local_surface_4_export
