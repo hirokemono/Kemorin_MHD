@@ -26,7 +26,6 @@
 !
       integer(kind = kint), allocatable :: IGROUP_nod(:)
       integer(kind = kint), allocatable :: IGROUP_ele(:)
-      integer(kind = kint), allocatable :: IGROUP_surf(:)
       integer(kind = kint), allocatable :: IGROUP_edge(:)
 !
       integer(kind = kint) :: nproc_finer
@@ -58,11 +57,11 @@
       allocate(IGROUP_nod(nod_d_grp1%num_s_domin))
       allocate(IGROUP_ele(ele_d_grp1%num_s_domin))
       allocate(IGROUP_edge(edge_d_grp1%num_s_domin))
-      allocate(IGROUP_surf(surf_d_grp1%num_s_domin))
+      allocate(surf_d_grp1%IGROUP(surf_d_grp1%num_s_domin))
       IGROUP_nod = 0
       IGROUP_ele = 0
       IGROUP_edge = 0
-      IGROUP_surf = 0
+      surf_d_grp1%IGROUP = 0
 !
       end subroutine allocate_domain_nese_group
 !
@@ -90,7 +89,7 @@
       subroutine deallocate_domain_nese_group
 !
       deallocate(IGROUP_nod, IGROUP_ele)
-      deallocate(IGROUP_surf, IGROUP_edge)
+      deallocate(surf_d_grp1%IGROUP, IGROUP_edge)
 !
       end subroutine deallocate_domain_nese_group
 !

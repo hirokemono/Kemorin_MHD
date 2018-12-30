@@ -138,7 +138,7 @@
         ied = istack_numsurf_sub(ip)
         do inum = ist, ied
           isurf = isurf_4_subdomain(inum)
-          if (IGROUP_surf(isurf) .eq. ip) then
+          if(surf_d_grp1%IGROUP(isurf) .eq. ip) then
             num_intsurf_sub(ip) = num_intsurf_sub(ip) + 1
           end if
         end do
@@ -164,7 +164,7 @@
         ied = istack_numsurf_sub(ip)
         do inum = ist, ied
           isurf = isurf_4_subdomain(inum)
-          if (IGROUP_surf(isurf) .eq. ip) then
+          if(surf_d_grp1%IGROUP(isurf) .eq. ip) then
             icou = icou + 1
             isurf_intsurf_sub(icou) = isurf
           end if
