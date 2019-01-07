@@ -64,7 +64,7 @@
 !
 !     deallocate arrays
 !
-      call deallocate_finer_domain_group
+      call dealloc_finer_domain_group(nod_f_grp1)
 !
       call dealloc_itp_num_org(itp_table%tbl_org)
       call dealloc_itp_table_org(itp_table%tbl_org)
@@ -97,7 +97,7 @@
 !
       call s_interporate_imark_para(np_smp, new_node%numnod,            &
      &    new_ele%numele, new_ele%nnod_4_ele, new_ele%ie,               &
-     &    IGROUP_FINER(1), itp_org%istack_tbl_type_org_smp,             &
+     &    nod_f_grp1%IGROUP_FINER(1), itp_org%istack_tbl_type_org_smp,  &
      &    itp_org%ntot_table_org, itp_org%iele_org_4_org,               &
      &    itp_org%itype_inter_org, nod_d_grp1%IGROUP(1) )
 !

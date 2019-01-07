@@ -3,8 +3,10 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-!      subroutine grouping_for_partitioner                              &
-!     &         (nod_grp, ele_grp, ele_grp_data)
+!!      subroutine grouping_for_partitioner                             &
+!!     &         (nod_grp, ele_grp, ele_grp_data)
+!!      subroutine regrouping_for_partition                             &
+!!      &         (node, ele, part_tbl, part_volume, n_volume)
 !
       module grouping_for_partition
 !
@@ -57,7 +59,8 @@
 !C +-----+
 !C===
       if (NTYP_div .eq. iPART_RCB_XYZ) then
-        call rc_bisection(node%numnod, node%internal_node, node%xx)
+        call rc_bisection                                               &
+     &     (node%numnod, node%internal_node, node%xx, nod_d_grp1)
 !C===
 !C===
 !C
@@ -68,7 +71,7 @@
 
       else if (NTYP_div .eq. iPART_RCB_SPH) then
         call rcb_spherical(node%numnod, node%internal_node,             &
-     &      node%rr, node%theta, node%phi)
+     &      node%rr, node%theta, node%phi, nod_d_grp1)
 !
 !C
 !C +------------------------------+
@@ -79,22 +82,22 @@
       else if (NTYP_div .eq. iPART_EQ_XYZ) then
         write(*,*) 'equaly_bisection'
         call equaly_bisection                                           &
-     &     (node%numnod, node%internal_node, node%xx)
+     &     (node%numnod, node%internal_node, node%xx, nod_d_grp1)
       else if (NTYP_div .eq. iPART_EQV_XYZ) then
         call equaly_volume_bisection                                    &
         &     (node%numnod, node%internal_node, node%xx,                &
-        &     node_volume, ele%volume)
+        &     node_volume, ele%volume, nod_d_grp1)
 !
       else if (NTYP_div .eq. iPART_EQ_SPH) then
         call eb_spherical(node%numnod, node%internal_node,              &
-     &      node%rr, node%theta, node%phi)
+     &      node%rr, node%theta, node%phi, nod_d_grp1)
 !
       else if (NTYP_div .eq. iPART_LAYER_SPH) then
         call eb_spherical_w_egrp(node%numnod, node%internal_node,       &
      &    ele_grp%num_grp, ele_grp%grp_name,                            &
      &    ele_grp_data%node%ntot_e_grp, ele_grp_data%node%istack_e_grp, &
      &    ele_grp_data%node%item_e_grp,                                 &
-     &    node%rr, node%theta, node%phi)
+     &    node%rr, node%theta, node%phi, nod_d_grp1)
 !
 !
 !C
@@ -107,7 +110,7 @@
      &      node%numnod, ele%nnod_4_ele, node%xx,                       &
      &      node%rr, node%theta, node%phi,                              &
      &      nod_grp%num_grp, nod_grp%num_item, nod_grp%istack_grp,      &
-     &      nod_grp%item_grp, nod_grp%grp_name)
+     &      nod_grp%item_grp, nod_grp%grp_name, nod_d_grp1)
 !C
 !C +------------------------------+
 !C | Partisioning by MeTiS output |
@@ -120,7 +123,7 @@
         if (ierr .eq. ierr_P_MPI) call ERROR_EXIT(ierr_P_MPI, izero)
         write(*,*) 'copy_domain_list_from_IO'
         call copy_domain_list_from_IO                                   &
-     &     (node%numnod, node%internal_node)
+     &     (node%numnod, node%internal_node, nod_d_grp1)
 !
       else if (NTYP_div .eq. iPART_GEN_MeTiS) then
         call s_const_metis_input                                        &
@@ -138,7 +141,8 @@
 !
       else if (NTYP_div .eq. iPART_DECMP_MESH_TBL) then
         call read_group_4_partition
-        call copy_domain_list_from_IO(node%numnod, node%internal_node)
+        call copy_domain_list_from_IO                                   &
+     &     (node%numnod, node%internal_node, nod_d_grp1)
       end if
 !
 !C
@@ -153,7 +157,8 @@
      &   .or. NTYP_div.eq.iPART_EQ_XYZ                                  &
      &   .or. NTYP_div.eq.iPART_EQV_XYZ                                 &
      &   .or. NTYP_div.eq.iPART_EQ_SPH) then
-        call copy_domain_list_to_IO(node%numnod, node%internal_node)
+        call copy_domain_list_to_IO                                     &
+     &     (node%numnod, node%internal_node, nod_d_grp1)
         call output_group_4_partition
       end if
 !C
@@ -170,8 +175,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine regrouping_for_partition                               &
-      &         (node, ele, edge, nod_grp, ele_grp,                     &
-      &          ele_grp_data, part_tbl, part_volume, n_volume)
+      &         (node, ele, part_tbl, part_volume, n_volume)
 !
       use m_constants
       use m_error_IDs
@@ -192,26 +196,22 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(edge_data), intent(in) :: edge
-      type(group_data), intent(in) :: nod_grp
-      type(group_data), intent(in) :: ele_grp
-      type(element_group_table), intent(in) :: ele_grp_data
       real(kind = kreal), intent(inout) :: part_tbl(num_domain)
       real(kind = kreal), intent(inout) :: part_volume(num_domain)
       real(kind = kreal), intent(in) :: n_volume(node%numnod)
 !
-      integer(kind = kint) :: ierr
-!
       write(*,*) 'regrouping dataset by: ', NTYP_div
 !
       if (NTYP_div .eq. iPART_EQ_XYZ) then
-        call proportionally_bisection                                           &
-        &     (node%numnod, node%internal_node, node%xx, part_tbl)
+        call proportionally_bisection                                   &
+     &     (node%numnod, node%internal_node, node%xx,                   &
+     &      part_tbl, nod_d_grp1)
       end if
 !
       if (NTYP_div .eq. iPART_EQV_XYZ) then
-        call proportion_volume_bisection                                           &
-        &     (node%numnod, node%internal_node, node%xx, part_volume, n_volume)
+        call proportion_volume_bisection                                &
+     &     (node%numnod, node%internal_node, node%xx,                   &
+     &      part_volume, n_volume, nod_d_grp1)
       end if
 
 !
@@ -221,13 +221,14 @@
 !C +------------------------------+
 !C===
       if     (NTYP_div.eq.iPART_RCB_XYZ                                 &
-      &   .or. NTYP_div.eq.iPART_RCB_SPH                                 &
-      &   .or. NTYP_div.eq.iPART_MeTiS_RSB                               &
-      &   .or. NTYP_div.eq.iPART_CUBED_SPHERE                            &
-      &   .or. NTYP_div.eq.iPART_EQ_XYZ                                  &
-      &   .or. NTYP_div.eq.iPART_EQV_XYZ                                 &
-      &   .or. NTYP_div.eq.iPART_EQ_SPH) then
-        call copy_domain_list_to_IO(node%numnod, node%internal_node)
+     &   .or. NTYP_div.eq.iPART_RCB_SPH                                 &
+     &   .or. NTYP_div.eq.iPART_MeTiS_RSB                               &
+     &   .or. NTYP_div.eq.iPART_CUBED_SPHERE                            &
+     &   .or. NTYP_div.eq.iPART_EQ_XYZ                                  &
+     &   .or. NTYP_div.eq.iPART_EQV_XYZ                                 &
+     &   .or. NTYP_div.eq.iPART_EQ_SPH) then
+        call copy_domain_list_to_IO                                     &
+     &     (node%numnod, node%internal_node, nod_d_grp1)
         call output_group_4_partition
       end if
 !C
@@ -238,7 +239,7 @@
 !C===
       call set_ele_domain_groups(ele)
 
-end subroutine regrouping_for_partition
+      end subroutine regrouping_for_partition
 !
 ! ----------------------------------------------------------------------
 !

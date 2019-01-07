@@ -50,10 +50,12 @@
       ele_d_grp1%num_s_domin =   org_mesh%ele%numele
       intnod_s_domin = org_mesh%node%internal_node
 !
-!      write(*,*) 'allocate_domain_nod_group'
-      call allocate_domain_nod_group
+!      write(*,*) 'alloc_domain_nod_group'
+      call alloc_domain_group(nod_d_grp1)
       call alloc_org_gl_id(nod_d_grp1)
-      call alloc_local_ne_id_tbl
+      call alloc_local_id_tbl(nod_d_grp1)
+      call alloc_domain_group(ele_d_grp1)
+      call alloc_local_id_tbl(ele_d_grp1)
 !
 !      const periodic table
 !

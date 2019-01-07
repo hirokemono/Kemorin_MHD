@@ -3,18 +3,22 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine copy_domain_list_from_IO(numnod, internal_node)
-!      subroutine copy_domain_list_to_IO(numnod, internal_node)
-!
-!      subroutine copy_finer_domain_list_from_IO
+!!      subroutine copy_domain_list_from_IO                             &
+!!     &         (numnod, internal_node, nod_d_grp)
+!!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
+!!      subroutine copy_domain_list_to_IO                               &
+!!     &         (numnod, internal_node, nod_d_grp)
+!!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!
+!!      subroutine copy_finer_domain_list_from_IO
 !
       module copy_domain_list_4_IO
 !
       use m_precision
 !
       use m_ctl_param_partitioner
-      use m_domain_group_4_partition
       use m_subdomain_table_IO
+      use t_domain_group_4_partition
 !
       implicit none
 !
@@ -24,9 +28,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine copy_domain_list_from_IO(numnod, internal_node)
+      subroutine copy_domain_list_from_IO                               &
+     &         (numnod, internal_node, nod_d_grp)
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
+      type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
 !
       if (nnod_group_IO .ne. numnod) stop 'check number of node'
@@ -36,7 +42,7 @@
       end if
 !
       num_domain = nproc_group_IO
-      nod_d_grp1%IGROUP(1:internal_node) = IGROUP_IO(1:internal_node)
+      nod_d_grp%IGROUP(1:internal_node) = IGROUP_IO(1:internal_node)
 !
       call deallocate_domain_group_IO
 !
@@ -44,9 +50,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine copy_domain_list_to_IO(numnod, internal_node)
+      subroutine copy_domain_list_to_IO                                 &
+     &         (numnod, internal_node, nod_d_grp)
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
+      type(domain_group_4_partition), intent(in) :: nod_d_grp
 !
 !
       nnod_group_IO =     numnod
@@ -55,7 +63,7 @@
 !
       call allocate_domain_group_IO
 !
-      IGROUP_IO(1:internal_node) = nod_d_grp1%IGROUP(1:internal_node)
+      IGROUP_IO(1:internal_node) = nod_d_grp%IGROUP(1:internal_node)
 !
       end subroutine copy_domain_list_to_IO
 !
@@ -76,11 +84,13 @@
       end if
 !
       num_domain = nproc_group_IO
-      nnod_group_finer = new_node%numnod
-      call allocate_finer_domain_group
+      nod_f_grp1%nnod_group_finer = new_node%numnod
+      call alloc_finer_domain_group(nod_f_grp1)
 !
-      IGROUP_FINER(1:new_node%internal_node)                            &
+!$omp parallel workshare
+      nod_f_grp1%IGROUP_FINER(1:new_node%internal_node)                 &
      &      = IGROUP_IO(1:new_node%internal_node)
+!$omp end parallel workshare
 !
       call deallocate_domain_group_IO
 !

@@ -4,21 +4,24 @@
 !     Written by K. Nakajima
 !     Modified by H. Matsui
 !
-!      subroutine rc_bisection(nnod, inter_nod, xx)
-!      subroutine rcb_spherical(nnod, inter_nod,                        &
-!     &          radius, colatitude, longitude)
+!!      subroutine rc_bisection(nnod, inter_nod, xx, nod_d_grp)
+!!      subroutine rcb_spherical(nnod, inter_nod,                       &
+!!     &          radius, colatitude, longitude, nod_d_grp)
+!!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
-!       output: nod_d_grp1%IGROUP
+!       output: nod_d_grp%IGROUP
 !
       module recursive_bisection
 !
       use m_precision
 !
       use m_ctl_param_partitioner
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
       use sort_by_position_4_rcb
 !
       implicit none
+!
+      type(partitioner_comm_params), private :: part_comm
 !
 !   --------------------------------------------------------------------
 !
@@ -26,10 +29,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine rc_bisection(nnod, inter_nod, xx)
+      subroutine rc_bisection(nnod, inter_nod, xx, nod_d_grp)
 !
       integer(kind = kint), intent(in)  :: nnod, inter_nod
       real(kind= kreal), intent(in) :: xx(nnod,3)
+!
+      type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
 !
       integer(kind = kint) :: iter, ip0
@@ -38,10 +43,10 @@
 !C | RCB |
 !C +-----+
 !C===
-      call allocate_work_4_rcb(nnod)
+      call alloc_work_4_rcb(nnod, part_comm)
 
-      nod_d_grp1%IGROUP(1:nnod)= 0
-      nod_d_grp1%IGROUP(1:inter_nod)= 1
+      nod_d_grp%IGROUP(1:nnod)= 0
+      nod_d_grp%IGROUP(1:inter_nod)= 1
 
       do iter= 1, NPOWER_rcb
 
@@ -53,27 +58,29 @@
 
         do ip0= 1, 2**(iter-1)
 !
-          call sort_4_rcb(inter_nod, iter, ip0, nod_d_grp1%IGROUP(1),   &
+          call sort_4_rcb(inter_nod, iter, ip0, nod_d_grp%IGROUP(1),    &
      &        idir_rcb(iter), xx(1,1), xx(1,2), xx(1,3),                &
-     &        VAL(1), IS1(1) )
-        enddo
+     &        part_comm%VAL(1), part_comm%IS1(1))
+        end do
 !
-      enddo
+      end do
 !
       call deallocate_rcb_directions
-      call deallocate_work_4_rcb
+      call dealloc_work_4_rcb(part_comm)
 !
       end subroutine rc_bisection
 !
 !   --------------------------------------------------------------------
 !
       subroutine rcb_spherical(nnod, inter_nod,                         &
-     &          radius, colatitude, longitude)
+     &          radius, colatitude, longitude, nod_d_grp)
 !
       integer(kind = kint), intent(in)  :: nnod, inter_nod
       real(kind= kreal), intent(in) :: radius(nnod)
       real(kind= kreal), intent(in) :: colatitude(nnod)
       real(kind= kreal), intent(in) :: longitude(nnod)
+!
+      type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
       integer(kind = kint) :: ip0, iter
 !C
@@ -81,10 +88,10 @@
 !C | RCB for spherical coordinate |
 !C +------------------------------+
 !C===
-      call allocate_work_4_rcb(nnod)
+      call alloc_work_4_rcb(nnod, part_comm)
 
-      nod_d_grp1%IGROUP(1:nnod)= 0
-      nod_d_grp1%IGROUP(1:inter_nod)= 1
+      nod_d_grp%IGROUP(1:nnod)= 0
+      nod_d_grp%IGROUP(1:inter_nod)= 1
 
       do iter= 1, NPOWER_rcb
 
@@ -96,15 +103,14 @@
 
         do ip0= 1, 2**(iter-1)
 !
-          call sort_4_rcb(inter_nod, iter, ip0, nod_d_grp1%IGROUP(1),   &
+          call sort_4_rcb(inter_nod, iter, ip0, nod_d_grp%IGROUP(1),    &
      &        idir_rcb(iter), radius(1), colatitude(1), longitude(1),   &
-     &        VAL(1), IS1(1) )
-!
-        enddo
-      enddo
+     &        part_comm%VAL(1), part_comm%IS1(1))
+        end do
+      end do
 
       call deallocate_rcb_directions
-      call deallocate_work_4_rcb
+      call dealloc_work_4_rcb(part_comm)
 !
       end subroutine rcb_spherical
 !

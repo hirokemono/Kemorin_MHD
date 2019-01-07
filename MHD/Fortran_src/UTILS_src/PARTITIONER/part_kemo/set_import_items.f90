@@ -3,18 +3,19 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine count_node_import_item(ip, num_neib,                  &
-!     &          id_neib, ntot_import, istack_import)
-!      subroutine set_node_import_item(ip, num_neib, id_neib,           &
-!     &          ntot_import, istack_import, item_import)
-!
-!      subroutine count_ele_import_item(ip, nproc, ntot_subd,           &
-!     &          istack_subd, item_subd, num, id_gl_org, IGROUP,        &
-!     &          num_neib, id_neib, ntot_import, istack_import)
-!      subroutine set_ele_import_item(ip, nproc, ntot_subd,             &
-!     &          istack_subd, item_subd, num, id_gl_org, IGROUP,        &
-!     &          num_neib, id_neib, ntot_import, istack_import,         &
-!     &          item_import)
+!!      subroutine count_node_import_item(nod_d_grp, ip, num_neib,      &
+!!     &          id_neib, ntot_import, istack_import)
+!!      subroutine set_node_import_item(nod_d_grp, ip, num_neib,        &
+!!     &          id_neib, ntot_import, istack_import, item_import)
+!!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!
+!!      subroutine count_ele_import_item(ip, nproc, ntot_subd,          &
+!!     &          istack_subd, item_subd, num, id_gl_org, IGROUP,       &
+!!     &          num_neib, id_neib, ntot_import, istack_import)
+!!      subroutine set_ele_import_item(ip, nproc, ntot_subd,            &
+!!     &          istack_subd, item_subd, num, id_gl_org, IGROUP,       &
+!!     &          num_neib, id_neib, ntot_import, istack_import,        &
+!!     &          item_import)
 !
       module set_import_items
 !
@@ -28,12 +29,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_node_import_item(ip, num_neib,                   &
+      subroutine count_node_import_item(nod_d_grp, ip, num_neib,        &
      &          id_neib, ntot_import, istack_import)
 !
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
       use m_internal_4_partitioner
 !
+      type(domain_group_4_partition), intent(in) :: nod_d_grp
       integer(kind = kint), intent(in) :: ip, num_neib
       integer(kind = kint), intent(in) :: id_neib(num_neib)
 !
@@ -53,8 +55,8 @@
         ied = istack_numnod_sub(ip)
         do inum = ist, ied
           inod = inod_4_subdomain(inum)
-          jnod_org = nod_d_grp1%id_global_org(inod)
-          if (nod_d_grp1%IGROUP(jnod_org).eq.jp) icou = icou + 1
+          jnod_org = nod_d_grp%id_global_org(inod)
+          if (nod_d_grp%IGROUP(jnod_org).eq.jp) icou = icou + 1
         end do
         istack_import(j) = istack_import(j-1) + icou
       end do
@@ -64,12 +66,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_node_import_item(ip, num_neib, id_neib,            &
-     &          ntot_import, istack_import, item_import)
+      subroutine set_node_import_item(nod_d_grp, ip, num_neib,          &
+     &          id_neib, ntot_import, istack_import, item_import)
 !
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
       use m_internal_4_partitioner
 !
+      type(domain_group_4_partition), intent(in) :: nod_d_grp
       integer(kind = kint), intent(in) :: ip, num_neib
       integer(kind = kint), intent(in) :: id_neib(num_neib)
       integer(kind = kint), intent(in) :: ntot_import
@@ -88,8 +91,8 @@
         ied = istack_numnod_sub(ip)
         do inum = ist, ied
           inod = inod_4_subdomain(inum)
-          jnod_org = nod_d_grp1%id_global_org(inod)
-          if (nod_d_grp1%IGROUP(jnod_org).eq.jp) then
+          jnod_org = nod_d_grp%id_global_org(inod)
+          if (nod_d_grp%IGROUP(jnod_org).eq.jp) then
             icou = icou + 1
             item_import(icou) = inum - istack_numnod_sub(ip-1)
           end if

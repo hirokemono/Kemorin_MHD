@@ -53,12 +53,13 @@
 !C
 !C-- OVERLAPPED ELEMENTs
       call count_overlapped_ele                                         &
-     &   (ele_org%numele, ele_org%nodelm(1), ele_org%ie)
+     &   (ele_org%numele, ele_org%nodelm(1), ele_org%ie, nod_d_grp1)
 !
       call CRE_LOCAL_DATA(num_domain, node_org%numnod,                  &
-     &    ele_org, included_ele)
+     &    ele_org, nod_d_grp1, included_ele)
       call increase_overlapping(num_domain, node_org, ele_org,          &
-     &    surf_org, field_org, iflag_new_ghost_cell, included_ele)
+     &    surf_org, field_org, nod_d_grp1, iflag_new_ghost_cell,        &
+     &    included_ele)
 !
 !C
 !C-- INTERFACE info.
@@ -71,7 +72,8 @@
       call s_const_local_mesh_by_tbl(node_org%numnod, ele_org,          &
      &    group_org%ele_grp, num_domain, included_ele)
       call open_partition_log                                           &
-     &   (num_domain, edge_org%numedge, org_mesh_header)
+     &   (num_domain, edge_org%numedge, org_mesh_header,                &
+     &    nod_d_grp1, ele_d_grp1)
 !C
 !C +---------------------------------------+
 !C | create INITIAL FILE : IMPORT pointers |

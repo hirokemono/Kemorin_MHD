@@ -1,25 +1,32 @@
 !set_internals_by_group_tbl.f90
 !      module set_internals_by_group_tbl
 !
-      module set_internals_by_group_tbl
-!
 !      Written by H. Matsui on Sep., 2007
 !
+!!      subroutine count_internal_nod_by_tbl                            &
+!!     &         (n_domain, intnod_s_domin, nod_d_grp)
+!!      subroutine set_internal_nod_by_tbl                              &
+!!     &         (n_domain, intnod_s_domin, nod_d_grp)
+!!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!
+!!      subroutine count_internal_ele_by_tbl(n_domain, ele_d_grp)
+!!      subroutine set_internal_ele_by_tbl(n_domain, ele_d_grp)
+!!        type(domain_group_4_partition), intent(in) :: ele_d_grp
+!!
+!!      subroutine count_internal_surf_by_tbl(n_domain, surf_d_grp)
+!!      subroutine set_internal_surf_by_tbl(n_domain, surf_d_grp)
+!!        type(domain_group_4_partition), intent(in) :: surf_d_grp
+!!
+!!      subroutine count_internal_edge_by_tbl(n_domain, edge_d_grp)
+!!      subroutine set_internal_edge_by_tbl(n_domain, edge_d_grp)
+!!        type(domain_group_4_partition), intent(in) :: edge_d_grp
+!
+      module set_internals_by_group_tbl
+!
       use m_precision
+      use t_domain_group_4_partition
 !
       implicit none
-!
-!      subroutine count_internal_nod_by_tbl(n_domain)
-!      subroutine set_internal_nod_by_tbl(n_domain)
-!
-!      subroutine count_internal_ele_by_tbl(n_domain)
-!      subroutine set_internal_ele_by_tbl(n_domain)
-!
-!      subroutine count_internal_surf_by_tbl(n_domain)
-!      subroutine set_internal_surf_by_tbl(n_domain)
-!
-!      subroutine count_internal_edge_by_tbl(n_domain)
-!      subroutine set_internal_edge_by_tbl(n_domain)
 !
 !   --------------------------------------------------------------------
 !
@@ -27,18 +34,20 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_internal_nod_by_tbl(n_domain)
+      subroutine count_internal_nod_by_tbl                              &
+     &         (n_domain, intnod_s_domin, nod_d_grp)
 !
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: n_domain
+      integer(kind = kint), intent(in) :: intnod_s_domin
+      type(domain_group_4_partition), intent(in) :: nod_d_grp
 !
       integer(kind= kint) :: inod, ig
 !
       num_intnod_sub(1:n_domain) = 0
       do inod = 1, intnod_s_domin
-        ig = nod_d_grp1%IGROUP(inod)
+        ig = nod_d_grp%IGROUP(inod)
         num_intnod_sub(ig) = num_intnod_sub(ig) + 1
       enddo
 !
@@ -46,18 +55,21 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_internal_nod_by_tbl(n_domain)
+      subroutine set_internal_nod_by_tbl                                &
+     &         (n_domain, intnod_s_domin, nod_d_grp)
 !
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: n_domain
+      integer(kind = kint), intent(in) :: intnod_s_domin
+      type(domain_group_4_partition), intent(in) :: nod_d_grp
 !
       integer(kind= kint) :: inod, ig, icou
 !
       num_intnod_sub(1:n_domain) = 0
       do inod = 1, intnod_s_domin
-        ig = nod_d_grp1%IGROUP(inod)
+        ig = nod_d_grp%IGROUP(inod)
         num_intnod_sub(ig) = num_intnod_sub(ig) + 1
         icou = istack_intnod_sub(ig-1) + num_intnod_sub(ig)
         inod_intnod_sub(icou) = inod
@@ -68,12 +80,13 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_internal_ele_by_tbl(n_domain)
+      subroutine count_internal_ele_by_tbl(n_domain, ele_d_grp)
 !
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: n_domain
+      type(domain_group_4_partition), intent(in) :: ele_d_grp
 !
       integer(kind = kint) :: ip, ist, ied, inum, iele
 !
@@ -84,7 +97,7 @@
         ied = istack_numele_sub(ip)
         do inum = ist, ied
           iele = iele_4_subdomain(inum)
-          if (ele_d_grp1%IGROUP(iele) .eq. ip) then
+          if (ele_d_grp%IGROUP(iele) .eq. ip) then
             num_intele_sub(ip) = num_intele_sub(ip) + 1
           end if
         end do
@@ -94,12 +107,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_internal_ele_by_tbl(n_domain)
+      subroutine set_internal_ele_by_tbl(n_domain, ele_d_grp)
 !
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: n_domain
+      type(domain_group_4_partition), intent(in) :: ele_d_grp
 !
       integer(kind = kint) :: ip, ist, ied, inum, iele, icou
 !
@@ -110,7 +124,7 @@
         ied = istack_numele_sub(ip)
         do inum = ist, ied
           iele = iele_4_subdomain(inum)
-          if (ele_d_grp1%IGROUP(iele) .eq. ip) then
+          if (ele_d_grp%IGROUP(iele) .eq. ip) then
             icou = icou + 1
             iele_intele_sub(icou) = iele
           end if
@@ -122,12 +136,13 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_internal_surf_by_tbl(n_domain)
+      subroutine count_internal_surf_by_tbl(n_domain, surf_d_grp)
 !
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: n_domain
+      type(domain_group_4_partition), intent(in) :: surf_d_grp
 !
       integer(kind = kint) :: ip, ist, ied, inum, isurf
 !
@@ -138,7 +153,7 @@
         ied = istack_numsurf_sub(ip)
         do inum = ist, ied
           isurf = isurf_4_subdomain(inum)
-          if(surf_d_grp1%IGROUP(isurf) .eq. ip) then
+          if(surf_d_grp%IGROUP(isurf) .eq. ip) then
             num_intsurf_sub(ip) = num_intsurf_sub(ip) + 1
           end if
         end do
@@ -148,12 +163,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_internal_surf_by_tbl(n_domain)
+      subroutine set_internal_surf_by_tbl(n_domain, surf_d_grp)
 !
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: n_domain
+      type(domain_group_4_partition), intent(in) :: surf_d_grp
 !
       integer(kind = kint) :: ip, ist, ied, inum, isurf, icou
 !
@@ -164,7 +180,7 @@
         ied = istack_numsurf_sub(ip)
         do inum = ist, ied
           isurf = isurf_4_subdomain(inum)
-          if(surf_d_grp1%IGROUP(isurf) .eq. ip) then
+          if(surf_d_grp%IGROUP(isurf) .eq. ip) then
             icou = icou + 1
             isurf_intsurf_sub(icou) = isurf
           end if
@@ -176,12 +192,13 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_internal_edge_by_tbl(n_domain)
+      subroutine count_internal_edge_by_tbl(n_domain, edge_d_grp)
 !
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: n_domain
+      type(domain_group_4_partition), intent(in) :: edge_d_grp
 !
       integer(kind = kint) :: ip, ist, ied, inum, iedge
 !
@@ -192,7 +209,7 @@
         ied = istack_numedge_sub(ip)
         do inum = ist, ied
           iedge = iedge_4_subdomain(inum)
-          if (edge_d_grp1%IGROUP(iedge) .eq. ip) then
+          if (edge_d_grp%IGROUP(iedge) .eq. ip) then
             num_intedge_sub(ip) = num_intedge_sub(ip) + 1
           end if
         end do
@@ -202,12 +219,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_internal_edge_by_tbl(n_domain)
+      subroutine set_internal_edge_by_tbl(n_domain, edge_d_grp)
 !
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: n_domain
+      type(domain_group_4_partition), intent(in) :: edge_d_grp
 !
       integer(kind = kint) :: ip, ist, ied, inum, iedge, icou
 !
@@ -218,7 +236,7 @@
         ied = istack_numedge_sub(ip)
         do inum = ist, ied
           iedge = iedge_4_subdomain(inum)
-          if (edge_d_grp1%IGROUP(iedge) .eq. ip) then
+          if (edge_d_grp%IGROUP(iedge) .eq. ip) then
             icou = icou + 1
             iedge_intedge_sub(icou) = iedge
           end if

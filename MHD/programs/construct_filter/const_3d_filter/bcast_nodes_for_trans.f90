@@ -57,7 +57,10 @@
 !
 !
       if(my_rank .eq. 0) then
-        call count_nnod_whole_domain(mesh_file)
+        call count_nnod_whole_domain(mesh_file, nod_d_grp1)
+        ele_d_grp1%num_s_domin = 0
+        surf_d_grp1%num_s_domin = 0
+        edge_d_grp1%num_s_domin = 0
       end if
 !
       if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+1)
@@ -66,15 +69,21 @@
       if(iflag_F3D_time) call end_elapsed_time(ist_elapsed_F3D+1)
 !
 !
-      call allocate_domain_nese_group
-      call alloc_local_nese_id_tbl
+      call alloc_domain_group(nod_d_grp1)
+      call alloc_local_id_tbl(nod_d_grp1)
       call alloc_org_gl_id(nod_d_grp1)
+      call alloc_domain_group(ele_d_grp1)
+      call alloc_local_id_tbl(ele_d_grp1)
+      call alloc_domain_group(surf_d_grp1)
+      call alloc_local_id_tbl(surf_d_grp1)
+      call alloc_domain_group(edge_d_grp1)
+      call alloc_local_id_tbl(edge_d_grp1)
 !
       if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+2)
       if(my_rank .eq. 0) then
-        call set_domain_grp_whole_domain(mesh_file)
+        call set_domain_grp_whole_domain(mesh_file, nod_d_grp1)
       else
-        call set_domain_grp_each_domain(mesh_file, my_rank)
+        call set_domain_grp_each_domain(mesh_file, my_rank, nod_d_grp1)
       end if
       if(iflag_F3D_time) call end_elapsed_time(ist_elapsed_F3D+2)
 !

@@ -3,7 +3,11 @@
 !
 !     Written by H. Matsui on Sep., 2007
 !
-!      subroutine CRE_LOCAL_DATA(Ndomain, included_ele)
+!!      subroutine CRE_LOCAL_DATA                                       &
+!!     &         (Ndomain, numnod, ele, nod_d_grp, included_ele)
+!!        type(element_data), intent(in) :: ele
+!!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!        type(near_mesh), intent(inout) :: included_ele
 !
       module find_local_elements
 !
@@ -22,14 +26,17 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine CRE_LOCAL_DATA(Ndomain, numnod, ele, included_ele)
+      subroutine CRE_LOCAL_DATA                                         &
+     &         (Ndomain, numnod, ele, nod_d_grp, included_ele)
 !
       use t_geometry_data
       use t_near_mesh_id_4_node
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: Ndomain, numnod
       type(element_data), intent(in) :: ele
+      type(domain_group_4_partition), intent(in) :: nod_d_grp
+!
       type(near_mesh), intent(inout) :: included_ele
 !
 !
@@ -37,22 +44,22 @@
       allocate (imark_ele(ele%numele))
 !
       write(*,*) 'count_ele_in_subdomain', 'Ndomain', Ndomain
-      write(*,*) 'nnod_s_domain', nod_d_grp1%num_s_domin, 'numnod', numnod
+      write(*,*) 'nnod_s_domain', nod_d_grp%num_s_domin,                &
+     &           'numnod', numnod
 ! find each subdomain's neighbor elements number stored in included_ele%num_nod(1:Ndomain)
       call count_ele_in_subdomain                                       &
-     &   (Ndomain, nod_d_grp1%num_s_domin, nod_d_grp1%IGROUP, numnod,   &
+     &   (Ndomain, nod_d_grp%num_s_domin, nod_d_grp%IGROUP, numnod,     &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,               &
      &    included_ele%ntot, included_ele%num_nod,                      &
      &    included_ele%istack_nod)
-write(*,*) 'included_ele%num_nod', included_ele%num_nod(1:10)
-write(*,*) 'included_ele%istack_nod', included_ele%istack_nod(1:10)
-
+      write(*,*) 'included_ele%num_nod', included_ele%num_nod(1:10)
+      write(*,*) 'included_ele%istack_nod', included_ele%istack_nod(1:10)
 !
       call alloc_near_element(included_ele)
 !
 ! store each subdomain's neighbor elements id in included_ele%id_near_nod
       call set_ele_in_subdomain                                         &
-     &   (Ndomain, nod_d_grp1%num_s_domin, nod_d_grp1%IGROUP, numnod,   &
+     &   (Ndomain, nod_d_grp%num_s_domin, nod_d_grp%IGROUP, numnod,     &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,               &
      &    included_ele%ntot, included_ele%istack_nod,                   &
      &    included_ele%id_near_nod)

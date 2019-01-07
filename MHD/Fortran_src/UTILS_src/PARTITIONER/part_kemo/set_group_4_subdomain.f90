@@ -3,20 +3,31 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
-!        subroutine count_local_node_group(nod_grp, new_nod_grp)
-!        subroutine set_local_node_group(nod_grp, new_nod_grp)
-!
-!        subroutine count_local_ele_group(ele_grp, new_ele_grp)
-!        subroutine set_local_ele_group(ele_grp, new_ele_grp)
-!
-!        subroutine count_local_surf_group(sf_grp, new_sf_grp)
-!        subroutine set_local_surf_group(sf_grp, new_sf_grp)
+!!      subroutine count_local_node_group                               &
+!!     &         (nod_grp, nod_d_grp, new_nod_grp)
+!!      subroutine set_local_node_group(nod_grp, nod_d_grp, new_nod_grp)
+!!        type(group_data), intent(in) :: nod_grp
+!!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!        type(group_data), intent(inout) :: new_nod_grp
+!!
+!!      subroutine count_local_ele_group(ele_grp, ele_d_grp, new_ele_grp)
+!!      subroutine set_local_ele_group(ele_grp, ele_d_grp, new_ele_grp)
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(domain_group_4_partition), intent(in) :: ele_d_grp
+!!        type(group_data), intent(inout) :: new_ele_grp
+!!
+!!      subroutine count_local_surf_group(sf_grp, ele_d_grp, new_sf_grp)
+!!      subroutine set_local_surf_group(sf_grp, ele_d_grp, new_sf_grp)
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(domain_group_4_partition), intent(in) :: ele_d_grp
+!!        type(surface_group_data), intent(inout) :: new_sf_grp
 !
       module set_group_4_subdomain
 !
       use m_precision
 !
       use t_group_data
+      use t_domain_group_4_partition
 !
       implicit none
 !
@@ -26,11 +37,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_local_node_group(nod_grp, new_nod_grp)
-!
-      use m_domain_group_4_partition
+      subroutine count_local_node_group                                 &
+     &         (nod_grp, nod_d_grp, new_nod_grp)
 !
       type(group_data), intent(in) :: nod_grp
+      type(domain_group_4_partition), intent(in) :: nod_d_grp
+!
       type(group_data), intent(inout) :: new_nod_grp
 !
       integer(kind = kint) :: ig, ist, ied, inum, inod
@@ -47,7 +59,7 @@
         do inum = ist, ied
           inod = nod_grp%item_grp(inum)
 !
-          if (nod_d_grp1%id_local_part(inod) .gt. 0) then
+          if (nod_d_grp%id_local_part(inod) .gt. 0) then
             new_nod_grp%istack_grp(ig) = new_nod_grp%istack_grp(ig) + 1
           end if
         end do
@@ -58,11 +70,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_local_node_group(nod_grp, new_nod_grp)
-!
-      use m_domain_group_4_partition
+      subroutine set_local_node_group(nod_grp, nod_d_grp, new_nod_grp)
 !
       type(group_data), intent(in) :: nod_grp
+      type(domain_group_4_partition), intent(in) :: nod_d_grp
+!
       type(group_data), intent(inout) :: new_nod_grp
 !
       integer(kind = kint) :: ig, ist, ied, inum, inod, icou
@@ -75,9 +87,9 @@
         do inum = ist, ied
           inod = nod_grp%item_grp(inum)
 !
-          if (nod_d_grp1%id_local_part(inod) .gt. 0) then
+          if (nod_d_grp%id_local_part(inod) .gt. 0) then
             icou = icou + 1
-            new_nod_grp%item_grp(icou) = nod_d_grp1%id_local_part(inod)
+            new_nod_grp%item_grp(icou) = nod_d_grp%id_local_part(inod)
           end if
         end do
       end do
@@ -87,11 +99,11 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_local_ele_group(ele_grp, new_ele_grp)
-!
-      use m_domain_group_4_partition
+      subroutine count_local_ele_group(ele_grp, ele_d_grp, new_ele_grp)
 !
       type(group_data), intent(in) :: ele_grp
+      type(domain_group_4_partition), intent(in) :: ele_d_grp
+!
       type(group_data), intent(inout) :: new_ele_grp
 !
       integer(kind = kint) :: ig, ist, ied, inum, iele
@@ -108,7 +120,7 @@
         do inum = ist, ied
           iele = ele_grp%item_grp(inum)
 !
-          if(ele_d_grp1%id_local_part(iele) .gt. 0) then
+          if(ele_d_grp%id_local_part(iele) .gt. 0) then
             new_ele_grp%istack_grp(ig) = new_ele_grp%istack_grp(ig) + 1
           end if
         end do
@@ -119,11 +131,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_local_ele_group(ele_grp, new_ele_grp)
-!
-      use m_domain_group_4_partition
+      subroutine set_local_ele_group(ele_grp, ele_d_grp, new_ele_grp)
 !
       type(group_data), intent(in) :: ele_grp
+      type(domain_group_4_partition), intent(in) :: ele_d_grp
+!
       type(group_data), intent(inout) :: new_ele_grp
 !
       integer(kind = kint) :: ig, ist, ied, inum, iele, icou
@@ -136,9 +148,9 @@
         do inum = ist, ied
           iele = ele_grp%item_grp(inum)
 !
-          if(ele_d_grp1%id_local_part(iele) .gt. 0) then
+          if(ele_d_grp%id_local_part(iele) .gt. 0) then
             icou = icou + 1
-            new_ele_grp%item_grp(icou) = ele_d_grp1%id_local_part(iele)
+            new_ele_grp%item_grp(icou) = ele_d_grp%id_local_part(iele)
           end if
         end do
       end do
@@ -148,11 +160,11 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_local_surf_group(sf_grp, new_sf_grp)
-!
-      use m_domain_group_4_partition
+      subroutine count_local_surf_group(sf_grp, ele_d_grp, new_sf_grp)
 !
       type(surface_group_data), intent(in) :: sf_grp
+      type(domain_group_4_partition), intent(in) :: ele_d_grp
+!
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
       integer(kind = kint) :: ig, ist, ied, inum, iele
@@ -168,7 +180,7 @@
         ied = sf_grp%istack_grp(ig)
         do inum = ist, ied
           iele = sf_grp%item_sf_grp(1,inum)
-          if(ele_d_grp1%id_local_part(iele) .gt. 0) then
+          if(ele_d_grp%id_local_part(iele) .gt. 0) then
             new_sf_grp%istack_grp(ig) = new_sf_grp%istack_grp(ig) + 1
           end if
         end do
@@ -179,11 +191,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_local_surf_group(sf_grp, new_sf_grp)
-!
-      use m_domain_group_4_partition
+      subroutine set_local_surf_group(sf_grp, ele_d_grp, new_sf_grp)
 !
       type(surface_group_data), intent(in) :: sf_grp
+      type(domain_group_4_partition), intent(in) :: ele_d_grp
+!
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
       integer(kind = kint) :: ig, ist, ied, inum, iele, icou
@@ -197,10 +209,10 @@
         do inum = ist, ied
           iele = sf_grp%item_sf_grp(1,inum)
 !
-          if(ele_d_grp1%id_local_part(iele) .gt. 0) then
+          if(ele_d_grp%id_local_part(iele) .gt. 0) then
             icou = icou + 1
             new_sf_grp%item_sf_grp(1,icou)                              &
-     &                                 = ele_d_grp1%id_local_part(iele)
+     &                                 = ele_d_grp%id_local_part(iele)
             new_sf_grp%item_sf_grp(2,icou)                              &
      &                                 = sf_grp%item_sf_grp(2,inum)
           end if

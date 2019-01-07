@@ -3,19 +3,23 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
-!      subroutine open_partition_log(num_domain, numedge,               &
-!     &          org_mesh_header)
-!      subroutine write_neighboring_pes(ip)
-!
-!      subroutine cal_edgecut(nedge, nnod_4_edge, ie_edge)
-!      subroutine count_overlapped_ele(nele, nnod_4_ele, ie)
-!      subroutine check_surface_def_in_surf_grp(numele, num_surf_bc,    &
-!     &          elmtyp, surf_item)
+!!      subroutine open_partition_log(num_domain, numedge,              &
+!!     &          org_mesh_header, nod_d_grp, ele_d_grp)
+!!        type(domain_group_4_partition), intent(in)  :: nod_d_grp
+!!        type(domain_group_4_partition), intent(in)  :: ele_d_grp
+!!      subroutine write_neighboring_pes(ip)
+!!
+!!      subroutine cal_edgecut(nedge, nnod_4_edge, ie_edge, nod_d_grp)
+!!        type(domain_group_4_partition), intent(in)  :: nod_d_grp
+!!      subroutine count_overlapped_ele(nele, nnod_4_ele, ie, nod_d_grp)
+!!        type(domain_group_4_partition), intent(in)  :: nod_d_grp
+!!      subroutine check_surface_def_in_surf_grp(numele, num_surf_bc,   &
+!!     &          elmtyp, surf_item)
 !
       module check_domain_prop_4_part
 !
       use m_precision
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       implicit none
 !
@@ -30,12 +34,14 @@
 !   --------------------------------------------------------------------
 !
       subroutine open_partition_log(num_domain, numedge,                &
-     &          org_mesh_header)
+     &          org_mesh_header, nod_d_grp, ele_d_grp)
 !
       use m_internal_4_partitioner
 
       integer(kind = kint), intent(in) :: num_domain, numedge
       character(len = kchara), intent(in) :: org_mesh_header
+      type(domain_group_4_partition), intent(in)  :: nod_d_grp
+      type(domain_group_4_partition), intent(in)  :: ele_d_grp
 !
       integer(kind = kint) :: ip, icou
 !
@@ -58,8 +64,8 @@
       write (*,'(  "MAX.cell/PE        ", i12)') nmax_numele_sub
       write (*,'(  "MIN.cell/PE        ", i12)') nmin_numele_sub
 !
-      write (*,'(/,"TOTAL NODE     #   ", i12)') nod_d_grp1%num_s_domin
-      write (*,'(  "TOTAL CELL     #   ", i12)') ele_d_grp1%num_s_domin
+      write (*,'(/,"TOTAL NODE     #   ", i12)') nod_d_grp%num_s_domin
+      write (*,'(  "TOTAL CELL     #   ", i12)') ele_d_grp%num_s_domin
       write (*,'(/," PE    NODE#   CELL#   EXT_CELL#")')
 !
       do ip= 1, num_domain
@@ -89,10 +95,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine cal_edgecut(nedge, nnod_4_edge, ie_edge)
+      subroutine cal_edgecut(nedge, nnod_4_edge, ie_edge, nod_d_grp)
 !
       integer(kind = kint), intent(in) :: nedge, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_edge(nedge,nnod_4_edge)
+      type(domain_group_4_partition), intent(in)  :: nod_d_grp
 !
       integer(kind = kint) :: k1, ie, in1, in2
 !C
@@ -102,7 +109,7 @@
         do ie= 1, nedge
           in1= ie_edge(ie,k1  )
           in2= ie_edge(ie,k1+1)
-          if(nod_d_grp1%IGROUP(in1) .ne. nod_d_grp1%IGROUP(in2)) then
+          if(nod_d_grp%IGROUP(in1) .ne. nod_d_grp%IGROUP(in2)) then
             NUM_EDGECUT = NUM_EDGECUT + 1
           end if
         end do
@@ -112,10 +119,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_overlapped_ele(nele, nnod_4_ele, ie)
+      subroutine count_overlapped_ele(nele, nnod_4_ele, ie, nod_d_grp)
 !
       integer(kind = kint), intent(in) :: nele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(nele,nnod_4_ele)
+      type(domain_group_4_partition), intent(in)  :: nod_d_grp
 !
       integer(kind = kint) :: iele, k1, k2, inod1, inod2, iflag
 !
@@ -126,7 +134,7 @@
           inod1 = ie(iele,k1)
           do k2= 1, nnod_4_ele
             inod2 = ie(iele,k2)
-            if(nod_d_grp1%IGROUP(inod1) .ne. nod_d_grp1%IGROUP(inod2))  &
+            if(nod_d_grp%IGROUP(inod1) .ne. nod_d_grp%IGROUP(inod2))    &
      &       then
               iflag = 1
               go to 10
@@ -170,6 +178,8 @@
           nmax_sf_ele = 5
         else if(elmtyp(in).eq.331 .or. elmtyp(in).eq.332                &
      &     .or. elmtyp(in).eq.333) then
+          nmax_sf_ele = 6
+        else
           nmax_sf_ele = 6
         end if
 !

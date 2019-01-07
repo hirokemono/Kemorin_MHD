@@ -245,9 +245,7 @@
   !      call cal_part_dim_tbl(num_domain, ndivide_eb, partition_tbl, part_dim_tbl)
 
         call regrouping_for_partition                                   &
-        &   (org_fem%mesh%node, org_fem%mesh%ele, org_ele_mesh%edge,    &
-        &    org_fem%group%nod_grp, org_fem%group%ele_grp,              &
-        &    org_fem%group%tbls_ele_grp, partition_tbl,                 &
+        &   (org_fem%mesh%node, org_fem%mesh%ele,  partition_tbl,       &
         &    partition_volume, node_volume)
         deallocate(part_num_node)
         deallocate(partition_tbl)

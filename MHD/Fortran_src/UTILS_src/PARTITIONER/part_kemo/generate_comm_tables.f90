@@ -48,17 +48,18 @@
       do ip = 1, nprocs
         my_rank = ip - 1
 !
-        call count_neib_domain_by_node(ip, nprocs, new_comm%num_neib)
+        call count_neib_domain_by_node                                  &
+     &     (nod_d_grp1, ip, nprocs, new_comm%num_neib)
 !
         call allocate_type_neib_id(new_comm)
         call set_neib_domain_by_node                                    &
-     &     (ip, nprocs, new_comm%num_neib, new_comm%id_neib)
+     &     (nod_d_grp1, ip, nprocs, new_comm%num_neib, new_comm%id_neib)
 !
         call write_neighboring_pes(ip, new_comm)
 !C
 !C-- ASSEMBLE IMPORT pointers
 
-        call const_nod_import_table_4_part(ip, new_comm)
+        call const_nod_import_table_4_part(ip, nod_d_grp1, new_comm)
         call save_node_import_4_part(ip, work_f_head, new_comm)
 !
         call dealloc_import_table(new_comm)
@@ -98,7 +99,7 @@
 
         if(iflag_debug .gt. 0) write(*,*)                               &
      &      'set_local_node_4_export ', my_rank
-        call set_local_node_4_export(ip)
+        call set_local_node_4_export(ip, nod_d_grp1)
 !
         call load_node_import_4_part(ip, work_f_head, new_comm)
 !
@@ -120,7 +121,8 @@
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &       'set_nod_export_item_4_part ', my_rank
-        call set_nod_export_item_4_part(ip, work_f_head, new_comm)
+        call set_nod_export_item_4_part                                 &
+     &     (ip, work_f_head, nod_d_grp1, new_comm)
 !
         call save_node_export_4_part(ip, work_f_head, new_comm)
         call dealloc_comm_table(new_comm)

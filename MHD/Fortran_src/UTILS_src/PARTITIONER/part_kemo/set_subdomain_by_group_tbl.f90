@@ -3,18 +3,24 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine count_subdomain_nod_by_tbl(n_domain)
-!      subroutine set_subdomain_nod_by_tbl(n_domain)
-!
+!!      subroutine count_subdomain_nod_by_tbl                           &
+!!     &         (ele, n_domain, nnod_4_subdomain, IGROUP_nod, imark_nod)
+!!      subroutine set_subdomain_nod_by_tbl                             &
+!!     &         (ele, n_domain, nnod_4_subdomain, IGROUP_nod, imark_nod)
+!!
 !!      subroutine count_subdomain_surf_by_tbl                          &
-!!     &         (numele, isf_4_ele, n_domain)
+!!     &         (numele, isf_4_ele, n_domain, nsurf_4_subdomain,       &
+!!     &          imark_surf)
 !!      subroutine set_subdomain_surf_by_tbl                            &
-!!     &         (numele, isf_4_ele, n_domain)
+!!     &         (numele, isf_4_ele, n_domain, nsurf_4_subdomain.       &
+!!     &          imark_surf)
 !!
 !!      subroutine count_subdomain_edge_by_tbl                          &
-!!     &         (numele, iedge_4_ele, n_domain)
+!!     &         (numele, iedge_4_ele, n_domain, nedge_4_subdomain,     &
+!!     &          imark_edge)
 !!      subroutine set_subdomain_edge_by_tbl                            &
-!!     &         (numele, iedge_4_ele, n_domain)
+!!     &         (numele, iedge_4_ele, n_domain, nedge_4_subdomain,     &
+!!     &          imark_edge)
 !
       module set_subdomain_by_group_tbl
 !
@@ -22,34 +28,32 @@
 !
       implicit none
 !
-      integer(kind=kint), allocatable :: imark_nod(:)
-      integer(kind=kint), allocatable :: imark_surf(:)
-      integer(kind=kint), allocatable :: imark_edge(:)
-      private :: imark_nod, imark_surf, imark_edge
-!
 !   --------------------------------------------------------------------
 !
       contains
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_subdomain_nod_by_tbl(ele, n_domain)
+      subroutine count_subdomain_nod_by_tbl                             &
+     &         (ele, n_domain, nnod_4_subdomain, IGROUP_nod, imark_nod)
 !
       use t_geometry_data
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
 !
       type(element_data), intent(in) :: ele
       integer(kind = kint), intent(in) :: n_domain
+      integer(kind = kint), intent(in) :: nnod_4_subdomain
+      integer(kind = kint), intent(in) :: IGROUP_nod(nnod_4_subdomain)
+!
+      integer(kind = kint), intent(inout)                               &
+     &              :: imark_nod(nnod_4_subdomain)
 !
       integer(kind= kint) :: ip, ist, ied, inum, k, iele, inod
 !
 !
-      allocate (imark_nod(nod_d_grp1%num_s_domin))
-!
       do ip = 1, n_domain
 !$omp parallel workshare
-        imark_nod(1:nod_d_grp1%num_s_domin)= 0
+        imark_nod(1:nnod_4_subdomain)= 0
 !$omp end parallel workshare
 !
         numnod_4_subdomain(ip) = num_intnod_sub(ip)
@@ -60,8 +64,7 @@
           iele = iele_4_subdomain(inum)
           do k = 1, ele%nodelm(iele)
             inod= ele%ie(iele,k)
-            if(nod_d_grp1%IGROUP(inod).ne.ip                            &
-     &          .and. imark_nod(inod).eq.0) then
+            if(IGROUP_nod(inod).ne.ip .and. imark_nod(inod).eq.0) then
               numnod_4_subdomain(ip) = numnod_4_subdomain(ip) + 1
               imark_nod(inod) = 1
             end if
@@ -73,14 +76,20 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_subdomain_nod_by_tbl(ele, n_domain)
+      subroutine set_subdomain_nod_by_tbl                               &
+     &         (ele, n_domain, nnod_4_subdomain, IGROUP_nod,            &
+     &          imark_nod)
 !
       use t_geometry_data
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
 !
       type(element_data), intent(in) :: ele
       integer(kind = kint), intent(in) :: n_domain
+      integer(kind = kint), intent(in) :: nnod_4_subdomain
+      integer(kind = kint), intent(in) :: IGROUP_nod(nnod_4_subdomain)
+!
+      integer(kind = kint), intent(inout)                               &
+     &              :: imark_nod(nnod_4_subdomain)
 !
       integer(kind= kint) :: ip, ist, ied, inum, k, iele, inod
       integer(kind= kint) :: jst, icou
@@ -88,7 +97,7 @@
 !
       do ip = 1, n_domain
 !$omp parallel workshare
-        imark_nod(1:nod_d_grp1%num_s_domin)= 0
+        imark_nod(1:nnod_4_subdomain)= 0
 !$omp end parallel workshare
 !
         ist = istack_intnod_sub(ip-1)
@@ -104,7 +113,7 @@
           iele = iele_4_subdomain(inum)
           do k = 1, ele%nodelm(iele)
             inod = ele%ie(iele,k)
-            if (nod_d_grp1%IGROUP(inod).ne.ip                           &
+            if (IGROUP_nod(inod).ne.ip                                 &
      &              .and. imark_nod(inod).eq.0) then
               icou = icou + 1
               inod_4_subdomain(icou) = inod
@@ -114,32 +123,32 @@
         end do
       end do
 !
-      deallocate(imark_nod)
-!
       end subroutine set_subdomain_nod_by_tbl
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine count_subdomain_surf_by_tbl                            &
-     &         (numele, isf_4_ele, n_domain)
+     &         (numele, isf_4_ele, n_domain, nsurf_4_subdomain,         &
+     &          imark_surf)
 !
       use m_geometry_constants
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: n_domain
       integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
+      integer(kind = kint), intent(in) :: nsurf_4_subdomain
+!
+      integer(kind = kint), intent(inout)                               &
+     &              :: imark_surf(nsurf_4_subdomain)
 !
       integer(kind = kint) :: ip, ist, ied, inum, iele, isurf, k
 !
 !
-      allocate (imark_surf(surf_d_grp1%num_s_domin))
-!
       do ip = 1, n_domain
 !$omp parallel workshare
-        imark_surf(1:surf_d_grp1%num_s_domin)= 0
+        imark_surf(1:nsurf_4_subdomain)= 0
 !$omp end parallel workshare
 !
         ist = istack_numele_sub(ip-1)+1
@@ -161,22 +170,26 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_subdomain_surf_by_tbl                              &
-     &         (numele, isf_4_ele, n_domain)
+     &         (numele, isf_4_ele, n_domain, nsurf_4_subdomain,         &
+     &          imark_surf)
 !
       use m_geometry_constants
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: n_domain
       integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
+      integer(kind = kint), intent(in) :: nsurf_4_subdomain
+!
+      integer(kind = kint), intent(inout)                               &
+     &              :: imark_surf(nsurf_4_subdomain)
 !
       integer(kind = kint) :: ip, ist, ied, inum, iele, isurf, k, icou
 !
 !
       do ip = 1, n_domain
 !$omp parallel workshare
-        imark_surf(1:surf_d_grp1%num_s_domin)= 0
+        imark_surf(1:nsurf_4_subdomain)= 0
 !$omp end parallel workshare
 !
         icou = istack_numsurf_sub(ip-1)
@@ -195,33 +208,33 @@
         end do
       end do
 !
-      deallocate (imark_surf)
-!
       end subroutine set_subdomain_surf_by_tbl
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine count_subdomain_edge_by_tbl                            &
-     &         (numele, iedge_4_ele, n_domain)
+     &         (numele, iedge_4_ele, n_domain, nedge_4_subdomain,       &
+     &          imark_edge)
 !
       use m_geometry_constants
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: n_domain
       integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in)                                  &
      &      :: iedge_4_ele(numele,nedge_4_ele)
+      integer(kind = kint), intent(in) :: nedge_4_subdomain
+!
+      integer(kind = kint), intent(inout)                               &
+     &              :: imark_edge(nedge_4_subdomain)
 !
       integer(kind = kint) :: ip, ist, ied, inum, iele, iedge, k
 !
 !
-      allocate (imark_edge(edge_d_grp1%num_s_domin))
-!
       do ip = 1, n_domain
 !$omp parallel workshare
-        imark_edge(1:edge_d_grp1%num_s_domin)= 0
+        imark_edge(1:nedge_4_subdomain)= 0
 !$omp end parallel workshare
 !
         ist = istack_numele_sub(ip-1)+1
@@ -243,7 +256,8 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_subdomain_edge_by_tbl                              &
-     &         (numele, iedge_4_ele, n_domain)
+     &         (numele, iedge_4_ele, n_domain, nedge_4_subdomain,       &
+     &          imark_edge)
 !
       use m_geometry_constants
       use m_internal_4_partitioner
@@ -253,13 +267,17 @@
       integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in)                                  &
      &      :: iedge_4_ele(numele,nedge_4_ele)
+      integer(kind = kint), intent(in) :: nedge_4_subdomain
+!
+      integer(kind = kint), intent(inout)                               &
+     &              :: imark_edge(nedge_4_subdomain)
 !
       integer(kind = kint) :: ip, ist, ied, inum, iele, iedge, k, icou
 !
 !
       do ip = 1, n_domain
 !$omp parallel workshare
-        imark_edge(1:edge_d_grp1%num_s_domin)= 0
+        imark_edge(1:nedge_4_subdomain)= 0
 !$omp end parallel workshare
 !
         icou = istack_numedge_sub(ip-1)
@@ -277,8 +295,6 @@
           end do
         end do
       end do
-!
-      deallocate (imark_edge)
 !
       end subroutine set_subdomain_edge_by_tbl
 !

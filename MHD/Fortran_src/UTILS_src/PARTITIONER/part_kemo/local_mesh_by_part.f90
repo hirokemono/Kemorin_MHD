@@ -80,7 +80,7 @@
         call s_const_local_meshes                                       &
      &     (ip, node_org, ele_org, para_fem(ip)%mesh)
         call set_local_connectivity_4_ele                               &
-     &     (ele_org, para_fem(ip)%mesh%ele)
+     &     (ele_org, nod_d_grp1, para_fem(ip)%mesh%ele)
         call s_const_local_groups(group_org, para_fem(ip)%group)
       end do
 !C
