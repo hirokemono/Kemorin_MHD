@@ -4,7 +4,7 @@
 !
 !      Written by H. Matsui on Nov., 2010
 !
-!      subroutine init_analyzer
+!      subroutine init_trans_filter_coef
 !
       module analyzer_trans_filter_coef
 !
@@ -22,14 +22,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine init_trans_filter_coef
 !
       use m_2nd_pallalel_vector
       use t_ctl_data_newdomain_filter
+      use t_domain_group_4_partition
       use m_ctl_param_newdom_filter
       use bcast_nodes_for_trans
 !
       type(ctl_data_newdomain_filter) :: newd_fil_ctl1
+      type(domain_groups_4_partitioner) :: domain_grp1
       integer(kind = kint) :: ierr
 !
 !
@@ -53,11 +55,12 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'
-      call bcast_parallel_domain_tbl(tgt_mesh_file)
+      call bcast_parallel_domain_tbl                                    &
+     &   (tgt_mesh_file, domain_grp1%nod_d_grp)
 !
       call output_elapsed_times
 !
-      end subroutine init_analyzer
+      end subroutine init_trans_filter_coef
 !
 ! ----------------------------------------------------------------------
 !

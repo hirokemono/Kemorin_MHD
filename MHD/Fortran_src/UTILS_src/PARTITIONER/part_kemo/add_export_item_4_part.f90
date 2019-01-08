@@ -10,7 +10,7 @@
 !
       use m_precision
 !
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
       use m_internal_4_partitioner
       use set_parallel_file_name
 !

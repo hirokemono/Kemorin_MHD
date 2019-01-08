@@ -4,13 +4,16 @@
 !      Written by H. Matsui on May, 2008
 !
 !!      subroutine filters_4_newdomains_para                            &
-!!     &         (mesh_file, filtering, org_node, org_ele, newmesh)
+!!     &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,   &
+!!     &          newmesh)
 !!      subroutine filters_4_newdomains_single                          &
-!!     &         (mesh_file, filtering, org_node, org_ele, newmesh)
+!!     &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,   &
+!!     &          newmesh)
 !!       type(field_IO_params), intent(in) :: mesh_file
 !!       type(filtering_data_type), intent(inout) :: filtering
 !!       type(node_data), intent(inout) :: org_node
 !!       type(element_data), intent(inout) :: org_ele
+!!       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !!       type(mesh_geometry), intent(inout) :: newmesh
 !
       module filters_for_newdomains
@@ -37,42 +40,44 @@
 !   --------------------------------------------------------------------
 !
       subroutine filters_4_newdomains_para                              &
-     &         (mesh_file, filtering, org_node, org_ele, newmesh)
+     &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,     &
+     &          newmesh)
 !
       use calypso_mpi
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(filtering_data_type), intent(inout) :: filtering
       type(node_data), intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
+      type(domain_group_4_partition), intent(inout) :: nod_d_grp
       type(mesh_geometry), intent(inout) :: newmesh
 !
       integer(kind = kint) :: ierr
 !
 !
       call filters_4_each_newdomain(my_rank, mesh_file, filtering,      &
-     &    org_node, org_ele, newmesh%node, newmesh%ele, ierr)
+     &   org_node, org_ele, nod_d_grp, newmesh%node, newmesh%ele, ierr)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Mesh or filter data is wrong!!')
       end if
-!
-      call dealloc_local_nese_id_tbl
 !
       end subroutine filters_4_newdomains_para
 !
 !  ---------------------------------------------------------------------
 !
       subroutine filters_4_newdomains_single                            &
-     &         (mesh_file, filtering, org_node, org_ele, newmesh)
+     &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,     &
+     &          newmesh)
 !
       use m_2nd_pallalel_vector
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(filtering_data_type), intent(inout) :: filtering
       type(node_data), intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
+      type(domain_group_4_partition), intent(inout) :: nod_d_grp
       type(mesh_geometry), intent(inout) :: newmesh
 !
       integer(kind = kint) :: ip2, my_rank_2nd, ierr
@@ -81,12 +86,10 @@
       do ip2 = 1, nprocs_2nd
         my_rank_2nd = ip2 - 1
         call filters_4_each_newdomain                                   &
-     &     (my_rank_2nd, mesh_file, filtering,                          &
-     &      org_node, org_ele, newmesh%node, newmesh%ele, ierr)
+     &     (my_rank_2nd, mesh_file, filtering, org_node, org_ele,       &
+     &      nod_d_grp, newmesh%node, newmesh%ele, ierr)
         if(ierr .gt. 0) stop 'Mesh or filter data is wrong!!'
       end do
-!
-      call dealloc_local_nese_id_tbl
 !
       end subroutine filters_4_newdomains_single
 !
@@ -95,7 +98,7 @@
 !
       subroutine filters_4_each_newdomain                               &
      &         (my_rank2, mesh_file, filtering, org_node, org_ele,      &
-     &          new_node, new_ele, ierr)
+     &          nod_d_grp, new_node, new_ele, ierr)
 !
       use m_ctl_param_newdom_filter
       use m_2nd_pallalel_vector
@@ -127,6 +130,7 @@
       type(node_data), intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
       type(filtering_data_type), intent(inout) :: filtering
+      type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
       type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
@@ -164,7 +168,7 @@
         call dealloc_filter_geometry_data(filter_IO)
 !
 !        write(*,*) 'set_global_nodid_4_newfilter'
-        call set_global_nodid_4_newfilter
+        call set_global_nodid_4_newfilter(nod_d_grp)
 !
 !        write(*,*) 'inter_nod_3dfilter', inter_nod_3dfilter
         intnod_w_fliter2 = inter_nod_3dfilter
@@ -178,7 +182,8 @@
 !
 !        write(*,*) 'trans_filter_4_new_domains'
         call trans_filter_4_new_domains                                 &
-     &     (ip2, ifmt_3d_filter, mesh_file, org_node, org_ele%numele)
+     &     (ip2, ifmt_3d_filter, mesh_file, nod_d_grp,                  &
+     &      org_node, org_ele%numele)
 !        write(*,*) 'reorder_filter_new_domain'
         call reorder_filter_new_domain
 !

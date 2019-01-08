@@ -4,7 +4,8 @@
 !     Written by H. Matsui on Aug., 2007
 !
 !!      subroutine s_set_local_connectivities                           &
-!!     &      (ele_org, surf_org, edge_org, ele_new, surf_new, edge_new)
+!!     &         (ele_org, surf_org, edge_org, domain_grp,              &
+!!     &          ele_new, surf_new, edge_new)
 !!      subroutine set_local_connectivity_4_ele                         &
 !!     &         (ele_org, nod_d_grp, ele_new)
 !!        type(element_data), intent(in) :: ele_org
@@ -31,34 +32,38 @@
 !   --------------------------------------------------------------------
 !
       subroutine s_set_local_connectivities                             &
-     &      (ele_org, surf_org, edge_org, ele_new, surf_new, edge_new)
+     &         (ele_org, surf_org, edge_org, domain_grp,                &
+     &          ele_new, surf_new, edge_new)
 !
       use t_geometry_data
       use t_surface_data
       use t_edge_data
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       type(element_data), intent(in) :: ele_org
       type(surface_data), intent(in) :: surf_org
       type(edge_data), intent(in) :: edge_org
+      type(domain_groups_4_partitioner), intent(in) :: domain_grp
 !
       type(element_data), intent(inout) :: ele_new
       type(surface_data), intent(inout) :: surf_new
       type(edge_data), intent(inout) :: edge_new
 !
 !
-      call set_local_connectivity_4_ele(ele_org, nod_d_grp1, ele_new)
+      call set_local_connectivity_4_ele                                 &
+     &   (ele_org, domain_grp%nod_d_grp, ele_new)
 !
       call set_local_connectivity_4_surf                                &
-     &   (surf_org, nod_d_grp1, surf_new)
+     &   (surf_org, domain_grp%nod_d_grp, surf_new)
       call set_local_surf_4_ele                                         &
-     &   (ele_new, surf_org, surf_d_grp1, surf_new)
+     &   (ele_new, surf_org, domain_grp%surf_d_grp, surf_new)
 !
-      call set_local_connect_4_edge(edge_org, nod_d_grp1, edge_new)
+      call set_local_connect_4_edge                                     &
+     &   (edge_org, domain_grp%nod_d_grp, edge_new)
       call set_local_edge_4_ele                                         &
-     &   (ele_new, edge_org, edge_d_grp1, edge_new)
+     &   (ele_new, edge_org, domain_grp%edge_d_grp, edge_new)
       call set_local_edge_4_surf                                        &
-     &   (surf_new, edge_org, edge_d_grp1, edge_new)
+     &   (surf_new, edge_org, domain_grp%edge_d_grp, edge_new)
 !
       end subroutine s_set_local_connectivities
 !

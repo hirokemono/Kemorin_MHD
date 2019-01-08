@@ -261,7 +261,7 @@
 !
       use m_geometry_constants
       use m_internal_4_partitioner
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: n_domain
       integer(kind = kint), intent(in) :: numele

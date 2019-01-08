@@ -10,7 +10,9 @@
 !!     &         (numnod, internal_node, nod_d_grp)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
 !!
-!!      subroutine copy_finer_domain_list_from_IO
+!!      subroutine copy_finer_domain_list_from_IO(new_node, nod_f_grp)
+!!        type(node_data), intent(inout) :: new_node
+!!        type(finer_domain_group), intent(inout) :: nod_f_grp
 !
       module copy_domain_list_4_IO
 !
@@ -70,11 +72,12 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine copy_finer_domain_list_from_IO(new_node)
+      subroutine copy_finer_domain_list_from_IO(new_node, nod_f_grp)
 !
       use t_geometry_data
 !
       type(node_data), intent(inout) :: new_node
+      type(finer_domain_group), intent(inout) :: nod_f_grp
 !
 !
       if(nnod_group_IO .ne. new_node%numnod) stop 'check number of node'
@@ -84,11 +87,11 @@
       end if
 !
       num_domain = nproc_group_IO
-      nod_f_grp1%nnod_group_finer = new_node%numnod
-      call alloc_finer_domain_group(nod_f_grp1)
+      nod_f_grp%nnod_group_finer = new_node%numnod
+      call alloc_finer_domain_group(nod_f_grp)
 !
 !$omp parallel workshare
-      nod_f_grp1%IGROUP_FINER(1:new_node%internal_node)                 &
+      nod_f_grp%IGROUP_FINER(1:new_node%internal_node)                 &
      &      = IGROUP_IO(1:new_node%internal_node)
 !$omp end parallel workshare
 !

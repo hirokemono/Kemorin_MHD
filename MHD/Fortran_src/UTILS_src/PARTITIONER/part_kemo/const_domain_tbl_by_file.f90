@@ -3,7 +3,7 @@
 !
 !      modified by H. Matsui on Apr., 2008
 !
-!!      subroutine s_const_domain_tbl_by_file(mesh_head)
+!!      subroutine s_const_domain_tbl_by_file(mesh_head, nod_d_grp)
 !!      subroutine count_nnod_whole_domain(mesh_file, nod_d_grp)
 !!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !!      subroutine set_domain_grp_whole_domain(mesh_file, nod_d_grp)
@@ -33,30 +33,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_domain_tbl_by_file(mesh_file)
+      subroutine s_const_domain_tbl_by_file(mesh_file, nod_d_grp)
 !
       type(field_IO_params), intent(in) :: mesh_file
+      type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
 !
-      call count_nnod_whole_domain(mesh_file, nod_d_grp1)
+      call count_nnod_whole_domain(mesh_file, nod_d_grp)
 !
-      call alloc_domain_group(nod_d_grp1)
-      call alloc_local_id_tbl(nod_d_grp1)
-      call alloc_org_gl_id(nod_d_grp1)
+      call alloc_domain_group(nod_d_grp)
+      call alloc_local_id_tbl(nod_d_grp)
+      call alloc_org_gl_id(nod_d_grp)
 !
-      ele_d_grp1%num_s_domin = 0
-      call alloc_domain_group(ele_d_grp1)
-      call alloc_local_id_tbl(ele_d_grp1)
-!
-      surf_d_grp1%num_s_domin = 0
-      call alloc_domain_group(surf_d_grp1)
-      call alloc_local_id_tbl(surf_d_grp1)
-!
-      edge_d_grp1%num_s_domin = 0
-      call alloc_domain_group(edge_d_grp1)
-      call alloc_local_id_tbl(edge_d_grp1)
-!
-      call set_domain_grp_whole_domain(mesh_file, nod_d_grp1)
+      call set_domain_grp_whole_domain(mesh_file, nod_d_grp)
 !
       end subroutine s_const_domain_tbl_by_file
 !

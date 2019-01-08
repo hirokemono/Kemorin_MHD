@@ -159,7 +159,7 @@
       ist = istack_numnod_sub(ip-1)
       do inum = 1, numnod_4_subdomain(ip)
         inod = inod_4_subdomain(inum+ist)
-        nod_d_grp%id_local_part(inod)= inum
+        nod_d_grp%id_local_part(inod) = inum
       end do
 !
       end subroutine set_local_node_4_export

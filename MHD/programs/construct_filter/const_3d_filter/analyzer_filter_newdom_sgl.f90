@@ -13,6 +13,7 @@
       use m_machine_parameter
       use t_mesh_data
       use t_filtering_data
+      use t_domain_group_4_partition
 !
       implicit none
 !
@@ -23,6 +24,7 @@
       type(element_geometry), save :: new_ele_mesh
 !
       type(filtering_data_type), save :: filtering_nd
+      type(domain_groups_4_partitioner), save :: domain_grp1
 !
 ! ----------------------------------------------------------------------
 !
@@ -63,7 +65,12 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_const_domain_tbl_by_file'
-      call s_const_domain_tbl_by_file(tgt_mesh_file)
+      call s_const_domain_tbl_by_file                                   &
+     &   (tgt_mesh_file, domain_grp1%nod_d_grp)
+!
+      domain_grp1%ele_d_grp%num_s_domin = 0
+      call alloc_domain_group(domain_grp1%ele_d_grp)
+      call alloc_local_id_tbl(domain_grp1%ele_d_grp)
 !
       end subroutine newdomain_filter_init
 !
@@ -78,7 +85,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_sngl'
       call local_newdomain_filter_sngl                                  &
-     &   (org_mesh_file, orgmesh%node, orgmesh%ele, newmesh)
+     &   (org_mesh_file, domain_grp1%nod_d_grp,                         &
+     &    orgmesh%node, orgmesh%ele, newmesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_sgl'
       if (iflag_set_filter_elen .gt. 0                                  &
@@ -90,9 +98,11 @@
       if (iflag_set_filter_coef .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_single'
         call filters_4_newdomains_single(org_mesh_file,                 &
-     &      filtering_nd, orgmesh%node, orgmesh%ele, newmesh)
-      end if
+     &      filtering_nd, orgmesh%node, orgmesh%ele,                    &
+     &      domain_grp1%nod_d_grp, newmesh)
 !
+        call dealloc_local_ne_id_tbl(domain_grp1)
+      end if
 !
       end subroutine newdomain_filter_analyze
 !

@@ -17,7 +17,7 @@
 !
       call calypso_MPI_init
 !
-      call init_analyzer
+      call init_trans_filter_coef
 
       call calypso_MPI_finalize
 !

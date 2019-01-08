@@ -3,7 +3,12 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
-!      subroutine s_const_local_groups(orggroup, newgroup)
+!!      subroutine s_const_local_groups                                 &
+!!     &         (orggroup, nod_d_grp, ele_d_grp, newgroup)
+!!        type(mesh_groups), intent(in) :: orggroup
+!!        type(domain_group_4_partition), intent(in)  :: nod_d_grp
+!!        type(domain_group_4_partition), intent(in)  :: ele_d_grp
+!!        type(mesh_groups), intent(inout) :: newgroup
 !
       module const_local_groups
 !
@@ -24,22 +29,26 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_local_groups(orggroup, newgroup)
+      subroutine s_const_local_groups                                   &
+     &         (orggroup, nod_d_grp, ele_d_grp, newgroup)
 !
       use t_group_data
       use t_mesh_data
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       type(mesh_groups), intent(in) :: orggroup
+      type(domain_group_4_partition), intent(in)  :: nod_d_grp
+      type(domain_group_4_partition), intent(in)  :: ele_d_grp
+!
       type(mesh_groups), intent(inout) :: newgroup
 !
 !
       call const_local_nod_group                                        &
-     &   (orggroup%nod_grp, nod_d_grp1, newgroup%nod_grp)
+     &   (orggroup%nod_grp, nod_d_grp, newgroup%nod_grp)
       call const_local_ele_group                                        &
-     &   (orggroup%ele_grp, ele_d_grp1, newgroup%ele_grp)
+     &   (orggroup%ele_grp, ele_d_grp, newgroup%ele_grp)
       call const_local_surf_group                                       &
-     &   (orggroup%surf_grp, ele_d_grp1, newgroup%surf_grp)
+     &   (orggroup%surf_grp, ele_d_grp, newgroup%surf_grp)
 !
       end subroutine s_const_local_groups
 !

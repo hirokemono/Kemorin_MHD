@@ -3,8 +3,9 @@
 !
 !      Written by H. Matsui on May, 2008
 !
-!!      subroutine bcast_parallel_domain_tbl(mesh_file)
+!!      subroutine bcast_parallel_domain_tbl(mesh_file, nod_d_grp)
 !!        type(field_IO_params), intent(in) :: mesh_file
+!!        type(domain_group_4_partition), intent(inout)  :: nod_d_grp
 !!
 !!      subroutine bcast_num_filter_part_table(nprocs_2nd)
 !!      subroutine bcast_xx_whole_nod(nnod_global)
@@ -46,44 +47,36 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_parallel_domain_tbl(mesh_file)
+      subroutine bcast_parallel_domain_tbl(mesh_file, nod_d_grp)
 !
       use t_file_IO_parameter
       use m_2nd_pallalel_vector
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
       use const_domain_tbl_by_file
 !
       type(field_IO_params), intent(in) :: mesh_file
+      type(domain_group_4_partition), intent(inout)  :: nod_d_grp
 !
 !
       if(my_rank .eq. 0) then
-        call count_nnod_whole_domain(mesh_file, nod_d_grp1)
-        ele_d_grp1%num_s_domin = 0
-        surf_d_grp1%num_s_domin = 0
-        edge_d_grp1%num_s_domin = 0
+        call count_nnod_whole_domain(mesh_file, nod_d_grp)
       end if
 !
       if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+1)
-      call MPI_Bcast(nod_d_grp1%num_s_domin, ione, CALYPSO_INTEGER,     &
+      call MPI_Bcast(nod_d_grp%num_s_domin, ione, CALYPSO_INTEGER,      &
      &    izero, CALYPSO_COMM, ierr_MPI)
       if(iflag_F3D_time) call end_elapsed_time(ist_elapsed_F3D+1)
 !
 !
-      call alloc_domain_group(nod_d_grp1)
-      call alloc_local_id_tbl(nod_d_grp1)
-      call alloc_org_gl_id(nod_d_grp1)
-      call alloc_domain_group(ele_d_grp1)
-      call alloc_local_id_tbl(ele_d_grp1)
-      call alloc_domain_group(surf_d_grp1)
-      call alloc_local_id_tbl(surf_d_grp1)
-      call alloc_domain_group(edge_d_grp1)
-      call alloc_local_id_tbl(edge_d_grp1)
+      call alloc_domain_group(nod_d_grp)
+      call alloc_local_id_tbl(nod_d_grp)
+      call alloc_org_gl_id(nod_d_grp)
 !
       if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+2)
       if(my_rank .eq. 0) then
-        call set_domain_grp_whole_domain(mesh_file, nod_d_grp1)
+        call set_domain_grp_whole_domain(mesh_file, nod_d_grp)
       else
-        call set_domain_grp_each_domain(mesh_file, my_rank, nod_d_grp1)
+        call set_domain_grp_each_domain(mesh_file, my_rank, nod_d_grp)
       end if
       if(iflag_F3D_time) call end_elapsed_time(ist_elapsed_F3D+2)
 !

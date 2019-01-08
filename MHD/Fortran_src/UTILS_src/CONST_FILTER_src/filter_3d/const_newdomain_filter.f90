@@ -4,9 +4,9 @@
 !      modified by H. Matsui on Apr., 2008
 !
 !!      subroutine marking_used_node_4_filtering                        &
-!!     &         (ip2, ifile_type, mesh_file, node, numele)
+!!     &         (ip2, ifile_type, mesh_file, nod_d_grp, node, numele)
 !!      subroutine trans_filter_4_new_domains                           &
-!!     &         (ip2, ifile_type, mesh_file, node, numele)
+!!     &         (ip2, ifile_type, mesh_file, nod_d_grp, node, numele)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(node_data), intent(inout) :: node
 !
@@ -17,6 +17,7 @@
       use calypso_mpi
       use t_geometry_data
       use t_file_IO_parameter
+      use t_domain_group_4_partition
       use m_filter_func_4_sorting
       use m_filter_coefs
       use set_parallel_file_name
@@ -34,9 +35,10 @@
 !------------------------------------------------------------------
 !
       subroutine marking_used_node_4_filtering                          &
-     &         (ip2, ifile_type, mesh_file, node, numele)
+     &         (ip2, ifile_type, mesh_file, nod_d_grp, node, numele)
 !
       type(field_IO_params), intent(in) ::  mesh_file
+      type(domain_group_4_partition), intent(in)  :: nod_d_grp
       integer(kind = kint), intent(in) :: ip2, ifile_type
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
@@ -69,7 +71,7 @@
 !
         call nod_marking_by_filtering_data                              &
      &     (node%numnod, node%internal_node, node%inod_global, node%xx, &
-     &      ip2)
+     &      ip2, nod_d_grp)
 !
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs
@@ -82,9 +84,10 @@
 !------------------------------------------------------------------
 !
       subroutine trans_filter_4_new_domains                             &
-     &         (ip2, ifile_type, mesh_file, node, numele)
+     &         (ip2, ifile_type, mesh_file, nod_d_grp, node, numele)
 !
       type(field_IO_params), intent(in) ::  mesh_file
+      type(domain_group_4_partition), intent(in)  :: nod_d_grp
       integer(kind = kint), intent(in) :: ip2, ifile_type
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
@@ -116,7 +119,7 @@
 !
         call set_filter_for_new_each_domain                             &
      &     (node%numnod, node%internal_node, node%inod_global,          &
-     &      ip2, icou_st)
+     &      ip2, nod_d_grp, icou_st)
 !
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs

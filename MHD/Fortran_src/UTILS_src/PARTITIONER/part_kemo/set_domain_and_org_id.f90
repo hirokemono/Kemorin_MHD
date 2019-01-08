@@ -3,8 +3,13 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-!      subroutine set_ele_domain_groups(ele)
-!      subroutine set_origin_global_node(nod_comm)
+!!      subroutine set_ele_domain_groups(ele, nod_d_grp, ele_d_grp)
+!!        type(element_data), intent(in) :: ele
+!!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!        type(domain_group_4_partition), intent(inout) :: ele_d_grp
+!!      subroutine set_origin_global_node(nod_comm, nod_d_grp)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
       module set_domain_and_org_id
 !
@@ -21,33 +26,36 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ele_domain_groups(ele)
+      subroutine set_ele_domain_groups(ele, nod_d_grp, ele_d_grp)
 !
       use t_geometry_data
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       type(element_data), intent(in) :: ele
+      type(domain_group_4_partition), intent(in) :: nod_d_grp
+      type(domain_group_4_partition), intent(inout) :: ele_d_grp
 !
 !
       call set_domain_group_4_ele                                       &
-     &   (nod_d_grp1%num_s_domin, ele_d_grp1%num_s_domin,               &
-     &    ele%nnod_4_ele, ele%ie, nod_d_grp1%IGROUP, ele_d_grp1%IGROUP)
+     &   (nod_d_grp%num_s_domin, ele_d_grp%num_s_domin,                 &
+     &    ele%nnod_4_ele, ele%ie, nod_d_grp%IGROUP, ele_d_grp%IGROUP)
 !
       end subroutine set_ele_domain_groups
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_origin_global_node(nod_comm)
+      subroutine set_origin_global_node(nod_comm, nod_d_grp)
 !
       use t_comm_table
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       type(communication_table), intent(in) :: nod_comm
+      type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
 !
-      call copy_node_id_4_peri_sleeve(nod_d_grp1%num_s_domin,           &
+      call copy_node_id_4_peri_sleeve(nod_d_grp%num_s_domin,            &
      &    nod_comm%ntot_export, nod_comm%item_export,                   &
-     &    nod_comm%item_import, nod_d_grp1%id_global_org)
+     &    nod_comm%item_import, nod_d_grp%id_global_org)
 !
       end subroutine set_origin_global_node
 !

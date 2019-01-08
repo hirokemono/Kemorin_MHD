@@ -3,9 +3,13 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine s_const_local_mesh_by_tbl                             &
-!     &          (numnod, ele, ele_grp, n_domain, included_ele)
-!
+!!      subroutine s_const_local_mesh_by_tbl(numnod, ele, ele_grp,      &
+!!     &          n_domain, domain_grp, included_ele)
+!!        type(element_data), intent(in) :: ele
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(domain_groups_4_partitioner), intent(inout) :: domain_grp
+!!        type(near_mesh), intent(inout) :: included_ele
+!!
 !!      subroutine const_local_node_by_near_tbl                         &
 !!     &         (ele, n_domain, intnod_s_domin, nod_d_grp)
 !!        type(element_data), intent(in) :: ele
@@ -48,24 +52,25 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine s_const_local_mesh_by_tbl                              &
-     &          (numnod, ele, ele_grp, n_domain, included_ele)
+      subroutine s_const_local_mesh_by_tbl(numnod, ele, ele_grp,        &
+     &          n_domain, domain_grp, included_ele)
 !
       use t_group_data
       use t_near_mesh_id_4_node
-      use m_domain_group_4_partition
 !
+      type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
       integer(kind = kint), intent(in) :: numnod
-      type(element_data), intent(in) :: ele
       integer(kind = kint), intent(in) :: n_domain
+!
+      type(domain_groups_4_partitioner), intent(inout) :: domain_grp
       type(near_mesh), intent(inout) :: included_ele
 !
 !
       call const_local_ele_by_near_tbl(numnod, ele%numele, n_domain,    &
-     &    ele_grp, ele_d_grp1, included_ele)
-      call const_local_node_by_near_tbl                                 &
-     &   (ele, n_domain, intnod_s_domin, nod_d_grp1)
+     &    ele_grp, domain_grp%ele_d_grp, included_ele)
+      call const_local_node_by_near_tbl(ele, n_domain,                  &
+     &    domain_grp%intnod_s_domin, domain_grp%nod_d_grp)
 !
       end subroutine s_const_local_mesh_by_tbl
 !

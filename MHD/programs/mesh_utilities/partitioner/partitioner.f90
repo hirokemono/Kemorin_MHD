@@ -17,7 +17,7 @@
       use t_control_data_4_part
 !
       use m_ctl_param_partitioner
-      use m_domain_group_4_partition
+      use t_domain_group_4_partition
 !
       use t_control_data_4_merge
       use t_control_param_assemble
@@ -62,6 +62,7 @@
       type(shape_finctions_at_points), save :: spfs_T
 !
       type(single_make_vierwer_mesh), save :: sgl_viewer_p
+      type(domain_groups_4_partitioner), save :: domain_grp1
 !
       integer(kind = kint), parameter :: my_rank = izero
 !      type(mesh_data) :: fem_IO_i
@@ -186,12 +187,13 @@
 !  ========= Routines for partitioner ==============
 !
 !      write(*,*) 'initialize_partitioner'
-      call initialize_partitioner(org_fem%mesh, org_fem%group)
+      call initialize_partitioner(org_fem%mesh, org_fem%group,          &
+     &    domain_grp1)
 !      write(*,*) 'grouping_for_partitioner'
       call grouping_for_partitioner                                     &
      &   (org_fem%mesh%node, org_fem%mesh%ele, org_ele_mesh%edge,       &
      &    org_fem%group%nod_grp, org_fem%group%ele_grp,                 &
-     &    org_fem%group%tbls_ele_grp, node_volume)
+     &    org_fem%group%tbls_ele_grp, node_volume, domain_grp1)
 !  ========= Regrouping after estimate computation load =======
 !
 ! part_plt contain info about num of subdomains
@@ -200,7 +202,8 @@
         allocate(particles(num_particle))
         write(*,*) 'generatie sample particle for estimation'
         call choose_particles_from_eles(org_fem%mesh%ele,               &
-     &      data_field_vec, particles, num_particle)
+     &      data_field_vec, domain_grp1%nod_d_grp,                      &
+     &      particles, num_particle)
   ! debug out put
         if(iflag_part_detail .gt. 0) then
           do iprint = 1, num_particle
@@ -215,14 +218,14 @@
 
         allocate(time_cost(num_domain))
 
-        call seed_particles                                             &
-     &     (org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,          &
-     &   org_ele_mesh%surf%numsurf, org_ele_mesh%surf%nnod_4_surf,      &
-     &   org_ele_mesh%surf%isf_4_ele, org_ele_mesh%surf%ie_surf,        &
-     &   org_ele_mesh%surf%iele_4_surf,                                 &
-     &   org_ele_mesh%surf%interior_surf, org_fem%mesh%node%xx,         &
-     &   data_field_vec%d_ucd,                                          &
-     &   particles, num_particle, time_cost)
+        call seed_particles(domain_grp1%nod_d_grp,                      &
+     &      org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,          &
+     &      org_ele_mesh%surf%numsurf, org_ele_mesh%surf%nnod_4_surf,   &
+     &      org_ele_mesh%surf%isf_4_ele, org_ele_mesh%surf%ie_surf,     &
+     &      org_ele_mesh%surf%iele_4_surf,                              &
+     &      org_ele_mesh%surf%interior_surf, org_fem%mesh%node%xx,      &
+     &      data_field_vec%d_ucd,                                       &
+     &      particles, num_particle, time_cost)
 
   !cal partition table for new partition
         allocate(partition_tbl(num_domain))
@@ -246,7 +249,7 @@
 
         call regrouping_for_partition                                   &
         &   (org_fem%mesh%node, org_fem%mesh%ele,  partition_tbl,       &
-        &    partition_volume, node_volume)
+        &    partition_volume, node_volume, domain_grp1)
         deallocate(part_num_node)
         deallocate(partition_tbl)
         deallocate(time_cost)
@@ -259,8 +262,9 @@
 !      write(*,*) 'PROC_LOCAL_MESH'
       call PROC_LOCAL_MESH                                              &
      &   (org_fem%mesh%node, org_fem%mesh%ele, org_ele_mesh%edge,       &
-     &    org_ele_mesh%surf, data_field_vec,                            &
-     &    org_fem%group, included_ele)
+     &    org_ele_mesh%surf, data_field_vec, org_fem%group,             &
+     &    domain_grp1, included_ele)
+      call dealloc_local_ne_id_tbl(domain_grp1)
 !C
 !C-- Finalize
 !      write(*,*) 'dealloc_nod_ele_infos'

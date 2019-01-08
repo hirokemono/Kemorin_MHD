@@ -10,11 +10,13 @@
 !!      subroutine alloc_finer_domain_group(f_grp)
 !!        type(finer_domain_group), intent(inout) :: f_grp
 !!
-!!      subroutine dealloc_domain_nod_group
-!!      subroutine dealloc_domain_nese_group
-!!      subroutine dealloc_local_nese_id_tbl
-!!      subroutine dealloc_org_gl_ne_id
-!!      subroutine dealloc_org_gl_nese_id
+!!      subroutine dealloc_domain_nod_group(domain_grp)
+!!      subroutine dealloc_domain_se_group(domain_grp)
+!!        type(domain_groups_4_partitioner), intent(inout) :: domain_grp
+!!      subroutine dealloc_local_ne_id_tbl(domain_grp)
+!!      subroutine dealloc_local_se_id_tbl
+!!        type(domain_groups_4_partitioner), intent(inout) :: domain_grp
+!!      subroutine dealloc_org_gl_ne_id(domain_grp)
 !!      subroutine dealloc_finer_domain_group(f_grp)
 !!        type(finer_domain_group), intent(inout) :: f_grp
 !!
@@ -47,12 +49,17 @@
         integer(kind=kint), allocatable :: IS1(:)
       end type partitioner_comm_params
 !
-      type(domain_group_4_partition)  :: nod_d_grp1
-      type(domain_group_4_partition)  :: ele_d_grp1
-      type(domain_group_4_partition)  :: surf_d_grp1
-      type(domain_group_4_partition)  :: edge_d_grp1
+      type domain_groups_4_partitioner
+        integer(kind = kint) :: intnod_s_domin
 !
-      type(finer_domain_group) :: nod_f_grp1
+        type(domain_group_4_partition)  :: nod_d_grp
+        type(domain_group_4_partition)  :: ele_d_grp
+!
+        type(domain_group_4_partition)  :: surf_d_grp
+        type(domain_group_4_partition)  :: edge_d_grp
+!
+        type(finer_domain_group) :: nod_f_grp
+      end type domain_groups_4_partitioner
 !
 !   --------------------------------------------------------------------
 !
@@ -158,64 +165,60 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_domain_nod_group
+      subroutine dealloc_domain_nod_group(domain_grp)
 !
-      call dealloc_domain_group(nod_d_grp1)
-      call dealloc_domain_group(ele_d_grp1)
+      type(domain_groups_4_partitioner), intent(inout) :: domain_grp
+!
+      call dealloc_domain_group(domain_grp%nod_d_grp)
+      call dealloc_domain_group(domain_grp%ele_d_grp)
 !
       end subroutine dealloc_domain_nod_group
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_domain_nese_group
+      subroutine dealloc_domain_se_group(domain_grp)
 !
-      call dealloc_domain_group(nod_d_grp1)
-      call dealloc_domain_group(ele_d_grp1)
-      call dealloc_domain_group(surf_d_grp1)
-      call dealloc_domain_group(edge_d_grp1)
+      type(domain_groups_4_partitioner), intent(inout) :: domain_grp
 !
-      end subroutine dealloc_domain_nese_group
+!
+      call dealloc_domain_group(domain_grp%surf_d_grp)
+      call dealloc_domain_group(domain_grp%edge_d_grp)
+!
+      end subroutine dealloc_domain_se_group
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_local_ne_id_tbl
+      subroutine dealloc_local_ne_id_tbl(domain_grp)
 !
+      type(domain_groups_4_partitioner), intent(inout) :: domain_grp
 !
-      call dealloc_local_id_tbl(nod_d_grp1)
-      call dealloc_local_id_tbl(ele_d_grp1)
+      call dealloc_local_id_tbl(domain_grp%nod_d_grp)
+      call dealloc_local_id_tbl(domain_grp%ele_d_grp)
 !
       end subroutine dealloc_local_ne_id_tbl
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_local_nese_id_tbl
+      subroutine dealloc_local_se_id_tbl(domain_grp)
 !
-      call dealloc_local_id_tbl(nod_d_grp1)
-      call dealloc_local_id_tbl(ele_d_grp1)
-      call dealloc_local_id_tbl(surf_d_grp1)
-      call dealloc_local_id_tbl(edge_d_grp1)
+      type(domain_groups_4_partitioner), intent(inout) :: domain_grp
 !
-      end subroutine dealloc_local_nese_id_tbl
+!
+      call dealloc_local_id_tbl(domain_grp%surf_d_grp)
+      call dealloc_local_id_tbl(domain_grp%edge_d_grp)
+!
+      end subroutine dealloc_local_se_id_tbl
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_org_gl_ne_id
+      subroutine dealloc_org_gl_ne_id(domain_grp)
 !
-      call dealloc_org_gl_id(nod_d_grp1)
-!      call dealloc_org_gl_id(ele_d_grp1)
+      type(domain_groups_4_partitioner), intent(inout) :: domain_grp
+!
+      call dealloc_org_gl_id(domain_grp%nod_d_grp)
+!      call dealloc_org_gl_id(domain_grp%ele_d_grp)
 !
       end subroutine dealloc_org_gl_ne_id
-!
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_org_gl_nese_id
-!
-      call dealloc_org_gl_id(nod_d_grp1)
-!      call dealloc_org_gl_id(ele_d_grp1)
-!      call dealloc_org_gl_id(surf_d_grp1)
-!      call dealloc_org_gl_id(edge_d_grp1)
-!
-      end subroutine dealloc_org_gl_nese_id
 !
 !   --------------------------------------------------------------------
 !
