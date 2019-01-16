@@ -59,6 +59,23 @@
       call add_field_name_4_sph_trns_snap(fhd_mag_stretch, n_vector,    &
      &    ipol%i_mag_stretch, itor%i_mag_stretch, iphys%i_mag_stretch,  &
      &    f_trns%i_mag_stretch, trns_fwd)
+!
+      call add_field_name_4_sph_trns_snap(fhd_square_v, n_vector,       &
+     &    ipol%i_square_v, itor%i_square_v, iphys%i_square_v,           &
+     &    f_trns%i_square_v, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_square_w, n_vector,       &
+     &    ipol%i_square_w, itor%i_square_w, iphys%i_square_w,           &
+     &    f_trns%i_square_w, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_square_b, n_vector,       &
+     &    ipol%i_square_b, itor%i_square_b, iphys%i_square_b,           &
+     &    f_trns%i_square_b, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_square_a, n_vector,       &
+     &    ipol%i_square_a, itor%i_square_a, iphys%i_square_a,           &
+     &    f_trns%i_square_a, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_square_j, n_vector,       &
+     &    ipol%i_square_j, itor%i_square_j, iphys%i_square_j,           &
+     &    f_trns%i_square_j, trns_fwd)
+!
       trns_fwd%num_vector = trns_fwd%nfield
 !
       end subroutine f_trans_address_vector_snap
@@ -168,6 +185,14 @@
      &   (fhd_composition_scale, n_scalar,                              &
      &    ipol%i_comp_scale, itor%i_comp_scale, iphys%i_comp_scale,     &
      &    f_trns%i_comp_scale, trns_fwd)
+!
+      call add_field_name_4_sph_trns_snap(fhd_square_t, n_scalar,       &
+     &    ipol%i_square_t, itor%i_square_t, iphys%i_square_t,           &
+     &    f_trns%i_square_t, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_square_c, n_scalar,       &
+     &    ipol%i_square_c, itor%i_square_c, iphys%i_square_c,           &
+     &    f_trns%i_square_c, trns_fwd)
+!
       trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
 !
       end subroutine f_trans_address_scalar_snap

@@ -81,6 +81,13 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_current     )           &
      &      )   iflag = 1
 !
+      if (   (phys_nod_name_ctl .eq. fhd_square_v           )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_square_w           )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_square_b           )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_square_a           )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_square_j           )           &
+     &      )   iflag = 1
+!
       if (   (phys_nod_name_ctl .eq. fhd_grad_v_1           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_v_2           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_v_3           )           &
@@ -271,6 +278,10 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_div_filter_a        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_temp            )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_comp            )         &
+     &      )   iflag = 1
+!
+      if (    (phys_nod_name_ctl .eq. fhd_square_t            )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_square_c            )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_kinetic_helicity    )         &

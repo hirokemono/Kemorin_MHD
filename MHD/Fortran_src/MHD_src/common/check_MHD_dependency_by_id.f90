@@ -60,6 +60,7 @@
      &     .or. i_start .eq. iphys%i_m_flux                             &
      &     .or. i_start .eq. iphys%i_coriolis                           &
      &     .or. i_start .eq. iphys%i_SGS_m_flux                         &
+     &     .or. i_start .eq. iphys%i_square_v                           &
      &     .or. i_start .eq. iphys%i_grad_vx                            &
      &     .or. i_start .eq. iphys%i_grad_vy                            &
      &     .or. i_start .eq. iphys%i_grad_vz) then
@@ -71,6 +72,7 @@
      &     .or. i_start .eq. iphys%i_wide_SGS_inertia                   &
      &     .or. i_start .eq. iphys%i_velo_scale                         &
      &     .or. i_start .eq. iphys%i_k_heli                             &
+     &     .or. i_start .eq. iphys%i_square_w                           &
      &     .or. i_start .eq. iphys%i_grad_wx                            &
      &     .or. i_start .eq. iphys%i_grad_wy                            &
      &     .or. i_start .eq. iphys%i_grad_wz ) then 
@@ -89,15 +91,17 @@
      &     .or. i_start .eq. iphys%i_lorentz                            &
      &     .or. i_start .eq. iphys%i_maxwell                            &
      &     .or. i_start .eq. iphys%i_SGS_maxwell                        &
+     &     .or. i_start .eq. iphys%i_square_b                           &
      &     .or. i_start .eq. iphys%i_grad_bx                            &
      &     .or. i_start .eq. iphys%i_grad_by                            &
-     &     .or. i_start .eq. iphys%i_grad_bz) then 
+     &     .or. i_start .eq. iphys%i_grad_bz) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
         else if(i_start .eq. iphys%i_filter_vecp                        &
      &     .or. i_start .eq. iphys%i_scalar_p                           &
      &     .or. i_start .eq. iphys%i_m_heli                             &
      &     .or. i_start .eq. iphys%i_vp_diffuse                         &
+     &     .or. i_start .eq. iphys%i_square_a                           &
      &     .or. i_start .eq. iphys%i_grad_ax                            &
      &     .or. i_start .eq. iphys%i_grad_ay                            &
      &     .or. i_start .eq. iphys%i_grad_az) then
@@ -107,6 +111,7 @@
      &     .or. i_start .eq. iphys%i_wide_fil_current                   &
      &     .or. i_start .eq. iphys%i_c_heli                             &
      &     .or. i_start .eq. iphys%i_magne_scale                        &
+     &     .or. i_start .eq. iphys%i_square_j                           &
      &     .or. i_start .eq. iphys%i_grad_jx                            &
      &     .or. i_start .eq. iphys%i_grad_jy                            &
      &     .or. i_start .eq. iphys%i_grad_jz) then 
@@ -126,6 +131,7 @@
      &     .or. i_start .eq. iphys%i_wide_fil_temp                      &
      &     .or. i_start .eq. iphys%i_buoyancy                           &
      &     .or. i_start .eq. iphys%i_heat_source                        &
+     &     .or. i_start .eq. iphys%i_square_t                           &
      &     .or. i_start .eq. iphys%i_grad_t) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, fhd_temp)
@@ -134,6 +140,7 @@
      &     .or. i_start .eq. iphys%i_wide_fil_comp                      &
      &     .or. i_start .eq. iphys%i_comp_buo                           &
      &     .or. i_start .eq. iphys%i_c_diffuse                          &
+     &     .or. i_start .eq. iphys%i_square_c                           &
      &     .or. i_start .eq. iphys%i_light_source) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_light, fhd_light)

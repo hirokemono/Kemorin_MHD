@@ -61,7 +61,6 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data),intent(inout) :: nod_fld
-      integer (kind=kint) :: i, ist
 !
 !
       call fields_send_recv(mesh%nod_comm, nod_fld)

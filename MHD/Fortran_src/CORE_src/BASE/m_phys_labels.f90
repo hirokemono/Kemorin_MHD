@@ -174,13 +174,13 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_poynting = 'poynting_flux'
 !
-!>        Field label for velocity
+!>        Divergence of velocity
 !!         @f$ \partial_{i} u_{i} @f$
       character(len=kchara), parameter :: fhd_div_v = 'div_velocity'
-!>        Field label for magnetic field
+!>        Divergence of magnetic field
 !!         @f$ \partial_{i} B_{i} @f$
       character(len=kchara), parameter :: fhd_div_b = 'div_magnetic'
-!>        Field label for magnetic vector potential
+!>        Divergence of magnetic vector potential
 !!         @f$ \partial_{i} A_{i} @f$
       character(len=kchara), parameter :: fhd_div_a = 'div_vector_p'
 !
@@ -809,6 +809,30 @@
 !!        to obatin commutation error
       character(len=kchara), parameter :: fhd_SGS_comp =   'comp_4_SGS'
 !
+!  Square of each component of fields
+!
+!>        Square of velocity @f$ u_{i}^{2} @f$
+      character(len=kchara), parameter                                  &
+     &      :: fhd_square_v = 'square_velocity'
+!>        Square of vorticity @f$ \omega_{i}^{2} @f$
+      character(len=kchara), parameter                                  &
+     &      :: fhd_square_w = 'square_vorticity'
+!>        Square of magnetic field @f$ B_{i}^{2} @f$
+      character(len=kchara), parameter                                  &
+     &      :: fhd_square_b = 'square_magne'
+!>        Square of magnetic vector potential @f$ A_{i}^{2} @f$
+      character(len=kchara), parameter                                  &
+     &      :: fhd_square_a = 'square_vector_p'
+!>        Square of current density @f$ J_{i}^{2} @f$
+      character(len=kchara), parameter                                  &
+     &      :: fhd_square_j = 'square_current'
+!>        Square of temperature @f$ T^{2} @f$
+      character(len=kchara), parameter                                  &
+     &      :: fhd_square_t = 'square_temperature'
+!>        Square of composition @f$ C^{2} @f$
+      character(len=kchara), parameter                                  &
+     &      :: fhd_square_c = 'square_composition'
+!
 !  difference of field
 !>        Field label for gradient of @f$ u_{x} @f$
       character(len=kchara), parameter :: fhd_grad_v_1 =  'grad_v_1'
@@ -959,7 +983,6 @@
 !>        Field label for filtered grad. of composition by wider filter
       character(len=kchara), parameter                                  &
      &      :: fhd_w_filter_grad_comp = 'wide_filter_grad_composition'
-!
 !
 !  double filtered field
 !

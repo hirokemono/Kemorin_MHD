@@ -515,6 +515,23 @@
 !!            + (\overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j})@f$
       integer (kind=kint) :: i_maxwell_t_w_sgs = izero
 !
+!  Square of each component of fields
+!
+!>        Square of velocity @f$ u_{i}^{2} @f$
+      integer (kind=kint) :: i_square_v = izero
+!>        Square of vorticity @f$ \omega_{i}^{2} @f$
+      integer (kind=kint) :: i_square_w = izero
+!>        Square of magnetic field @f$ B_{i}^{2} @f$
+      integer (kind=kint) :: i_square_b = izero
+!>        Square of magnetic vector potential @f$ A_{i}^{2} @f$
+      integer (kind=kint) :: i_square_a = izero
+!>        Square of current density @f$ J_{i}^{2} @f$
+      integer (kind=kint) :: i_square_j = izero
+!>        Square of temperature @f$ T^{2} @f$
+      integer (kind=kint) :: i_square_t = izero
+!>        Square of composition @f$ C^{2} @f$
+      integer (kind=kint) :: i_square_c = izero
+!
 !    Gradient of fields
 !>        start address for gradient of @f$ u_{x} @f$
         integer (kind=kint) :: i_grad_vx = izero

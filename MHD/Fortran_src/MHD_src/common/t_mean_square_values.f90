@@ -191,9 +191,6 @@
       type(mean_square_list), intent(in) :: msq_list
       type(mean_square_values), intent(in) :: fem_msq
 !
-      character(len=kchara) :: vector_label(3)
-!
-!
 !
       if ( my_rank .ne. 0 ) return
 !

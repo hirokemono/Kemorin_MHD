@@ -294,6 +294,50 @@
       end if
 !$omp end parallel
 !
+!$omp parallel
+      if(fs_trns%i_square_v .gt. 0) then
+        call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
+     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_v))
+      end if
+      if(fs_trns%i_square_w .gt. 0) then
+        call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_vort),                      &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_vort),                      &
+     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_w))
+      end if
+      if(fs_trns%i_square_b .gt. 0) then
+        call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
+     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_b))
+      end if
+      if(fs_trns%i_square_a .gt. 0) then
+        call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_vecp),                      &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_vecp),                      &
+     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_a))
+      end if
+      if(fs_trns%i_square_j .gt. 0) then
+        call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
+     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_j))
+      end if
+      if(fs_trns%i_square_t .gt. 0) then
+        call cal_scalar_prod_no_coef_smp(sph_rtp%nnod_rtp,              &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_temp),                      &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_temp),                      &
+     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_t))
+      end if
+      if(fs_trns%i_square_c .gt. 0) then
+        call cal_scalar_prod_no_coef_smp(sph_rtp%nnod_rtp,              &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_light),                     &
+     &      trns_b_snap%fld_rtp(1,bs_trns%i_light),                     &
+     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_c))
+      end if
+!$omp end parallel
 !
       if(fs_trns%i_mag_stretch .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rtp_magnetic_streach'

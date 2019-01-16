@@ -264,6 +264,36 @@
      &          i_rms%i_dbl_fil_comp, j_ave%i_dbl_fil_comp, msq_list)
           end if
 !
+          if      ( field_name .eq. fhd_square_v ) then
+            call set_rms_address                                        &
+     &         (field_name, num_comps, iphys%i_square_v,                &
+     &          i_rms%i_square_v, j_ave%i_square_v, msq_list)
+          else if ( field_name .eq. fhd_square_w ) then
+            call set_rms_address                                        &
+     &         (field_name, num_comps, iphys%i_square_w,                &
+     &          i_rms%i_square_w, j_ave%i_square_w, msq_list)
+          else if ( field_name .eq. fhd_square_b ) then
+            call set_rms_address                                        &
+     &         (field_name, num_comps, iphys%i_square_b,                &
+     &          i_rms%i_square_b, j_ave%i_square_b, msq_list)
+          else if ( field_name .eq. fhd_square_a ) then
+            call set_rms_address                                        &
+     &         (field_name, num_comps, iphys%i_square_a,                &
+     &          i_rms%i_square_a, j_ave%i_square_a, msq_list)
+          else if ( field_name .eq. fhd_square_j ) then
+            call set_rms_address                                        &
+     &         (field_name, num_comps, iphys%i_square_j,                &
+     &          i_rms%i_square_j, j_ave%i_square_j, msq_list)
+          else if ( field_name .eq. fhd_square_t ) then
+            call set_rms_address                                        &
+     &         (field_name, num_comps, iphys%i_square_t,                &
+     &          i_rms%i_square_t, j_ave%i_square_t, msq_list)
+          else if ( field_name .eq. fhd_square_c ) then
+            call set_rms_address                                        &
+     &         (field_name, num_comps, iphys%i_square_c,                &
+     &          i_rms%i_square_c, j_ave%i_square_c, msq_list)
+          end if
+!
           if      ( field_name .eq. fhd_grad_v_1 ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_grad_vx,                 &
@@ -1019,7 +1049,7 @@
      &          i_rms%i_div_filter_b, j_ave%i_div_filter_b, msq_list)
           else if ( field_name .eq. fhd_filter_vecp ) then
             call set_rms_address                                        &
-     &         (e_hd_fil_div_a, n_scalar, iphys%i_div_filter_a,        &
+     &         (e_hd_fil_div_a, n_scalar, iphys%i_div_filter_a,         &
      &          i_rms%i_div_filter_a, j_ave%i_div_filter_a, msq_list)
           else if ( field_name .eq. fhd_mag_potential ) then
             call set_rms_address                                        &

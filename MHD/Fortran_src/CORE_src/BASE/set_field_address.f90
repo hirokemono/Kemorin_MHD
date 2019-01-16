@@ -434,6 +434,21 @@
           iphys%i_gref_c =           i0
         end if
 !
+        if      ( field_name(i) .eq. fhd_square_v ) then
+          iphys%i_square_v = i0
+        else if ( field_name(i) .eq. fhd_square_w ) then
+          iphys%i_square_w = i0
+        else if ( field_name(i) .eq. fhd_square_b ) then
+          iphys%i_square_b = i0
+        else if ( field_name(i) .eq. fhd_square_a ) then
+          iphys%i_square_a = i0
+        else if ( field_name(i) .eq. fhd_square_j ) then
+          iphys%i_square_j = i0
+        else if ( field_name(i) .eq. fhd_square_t ) then
+          iphys%i_square_t = i0
+        else if ( field_name(i) .eq. fhd_square_c ) then
+          iphys%i_square_c = i0
+        end if
 !
         if      ( field_name(i) .eq. fhd_grad_filter_v_1 ) then
           iphys%i_grad_filter_vx = i0
