@@ -89,7 +89,7 @@
 !
         call cal_dynamobench_data_by_psf(istep, time, line)
 !        call write_psf_line_data                                       &
-!     &     (istep, line_ucd_param, line_time, line)
+!     &     (istep_start, istep, line_ucd_param, line_time, line)
         call deallocate_ucd_mesh(line)
       end do
 !

@@ -7,10 +7,17 @@
 !>@brief Pick data on line defined by two surfaces
 !!
 !!@verbatim
+!!      subroutine write_psf_line_data                                  &
+!!     &         (istep_start, istep, line_ucd_param, line_time, line)
+!!        type(field_IO_params), intent(in) :: line_ucd_param
+!!        type(time_data), intent(inout) :: line_time
+!!        type(ucd_data), intent(inout) :: line
 !!      subroutine pick_psf_by_sections                                 &
 !!     &         (nd, xref, psf_nod, psf_ele, psf_phys, line)
-!!      subroutine write_psf_line_data                                  &
-!!     &         (istep, line_ucd_param, line_time, line)
+!!        type(node_data), intent(in) :: psf_nod
+!!        type(element_data), intent(in) :: psf_ele
+!!        type(phys_data), intent(in) :: psf_phys
+!!        type(ucd_data), intent(inout) :: line
 !!@endverbatim
 !
       module m_line_from_psf
@@ -31,18 +38,22 @@
 !-----------------------------------------------------------------------
 !
       subroutine write_psf_line_data                                    &
-     &         (istep, line_ucd_param, line_time, line)
+     &         (istep_start, istep, line_ucd_param, line_time, line)
 !
       use m_geometry_constants
       use ucd_IO_select
 !
-      integer(kind = kint), intent(in) :: istep
+      integer(kind = kint), intent(in) :: istep_start, istep
       type(field_IO_params), intent(in) :: line_ucd_param
       type(time_data), intent(inout) :: line_time
       type(ucd_data), intent(inout) :: line
 !
       integer(kind = kint), parameter :: delete_process = -1
 !
+!
+      if(istep .eq. istep_start) then
+        call sel_write_grd_file(delete_process, line_ucd_param, line)
+      end if
 !
       call sel_write_ucd_file                                           &
      &   (delete_process, istep, line_ucd_param, line_time, line)

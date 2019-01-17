@@ -70,9 +70,9 @@
         call deallocate_psf_edge
         call dealloc_psf_results(psf_u)
 !
-      line_ucd_param%iflag_format = psf_file_param%iflag_format
+        line_ucd_param%iflag_format = psf_file_param%iflag_format
         call write_psf_line_data                                        &
-     &     (istep, line_ucd_param, line_time, line)
+     &     (istep_start, istep, line_ucd_param, line_time, line)
       end do
 !
       stop ' //// program normally finished //// '
