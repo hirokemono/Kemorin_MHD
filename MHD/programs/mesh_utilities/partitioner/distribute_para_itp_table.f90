@@ -5,8 +5,8 @@
       use t_interpolate_table
       use t_file_IO_parameter
       use t_ctl_data_gen_table
+      use t_work_ditribute_itp
 !
-      use m_work_ditribute_itp
       use m_interpolate_table_IO
       use distribute_itp_tbl_4_para
       use set_parallel_mesh_in_1pe
@@ -32,10 +32,11 @@
 !
       integer(kind = kint) :: nprocs_table
       type(interpolate_table), allocatable, save :: para_tbl(:)
+      type(work_ditribute_itp), save :: wk_dist_itp1
 !
 !  .......................
 !
-     integer(kind = kint) :: ierr, ip, my_rank
+     integer(kind = kint) :: ip, my_rank
 !
 !
       call read_control_4_distribute_itp(gtbl_ctl1)
@@ -57,13 +58,16 @@
 !
 !
       call set_work_4_ditribute_itp(nprocs_org, nprocs_dest,            &
-     &    femmesh_org, femmesh_dest, single_tbl)
+     &    femmesh_org, femmesh_dest, single_tbl, wk_dist_itp1)
 !
-      nprocs_table = max(nprocs_itp_org, nprocs_itp_dest)
+      nprocs_table = max(wk_dist_itp1%nprocs_itp_org,                   &
+     &                   wk_dist_itp1%nprocs_itp_dest)
       allocate( para_tbl(nprocs_table) )
 !
-      call const_parallel_itp_tbl(single_tbl, nprocs_table,  para_tbl)
+      call const_parallel_itp_tbl(single_tbl, wk_dist_itp1,             &
+     &    nprocs_table, para_tbl)
 !
+      call dealloc_work_ditribute_itp(wk_dist_itp1)
 !
       table_file_header = table_file_head
       write(*,*) 'table field header: ', trim(table_file_header)
