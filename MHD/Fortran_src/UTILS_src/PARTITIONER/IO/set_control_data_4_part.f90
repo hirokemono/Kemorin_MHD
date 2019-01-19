@@ -487,7 +487,6 @@
       use t_read_control_arrays
       use t_control_elements
       use m_ctl_param_partitioner
-      use read_sphere_surface
       use skip_comment_f
 !
       type(ctl_array_ci), intent(in) :: ndomain_section_ctl

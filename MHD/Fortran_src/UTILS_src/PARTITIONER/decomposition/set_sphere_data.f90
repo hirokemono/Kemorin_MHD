@@ -3,14 +3,17 @@
 !
 !      Written by H. Matsui on Apr., 2006
 !
-!      subroutine set_sphere_data_4_linear(itheta, iphi)
-!      subroutine set_sphere_data_4_quad(itheta, iphi)
+!!      subroutine set_sphere_data_4_linear                             &
+!!     &         (sphere_file_name, itheta, iphi, sphere_4_part)
+!!      subroutine set_sphere_data_4_quad                               &
+!!     &         (sphere_file_name, itheta, iphi, sphere_4_part)
+!!        type(shell_surface_4_part), intent(inout) :: sphere_4_part
 !
       module set_sphere_data
 !
       use m_precision
 !
-      use m_shell_surface
+      use t_shell_surface_4_part
 !
       implicit none
 !
@@ -24,99 +27,120 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_sphere_data_4_linear(itheta, iphi)
+      subroutine set_sphere_data_4_linear                               &
+     &         (sphere_file_name, itheta, iphi, sphere_4_part)
 !
-      use read_sphere_surface
       use coordinate_converter
       use cal_minmax_and_stacks
 !
+      character(len = kchara), intent(in) :: sphere_file_name
       integer(kind = kint), intent(in) :: itheta, iphi
+      type(shell_surface_4_part), intent(inout) :: sphere_4_part
 !
       integer(kind = kint) :: num1, irest1, itp
 !
 !
       itp = itheta * iphi
 !
-      call read_surface_connect_linear
+      call read_surface_connect_linear(sphere_file_name, sphere_4_part)
 !
-      call position_2_sph(num_CMB, xx_cmb, rtp_cmb(1,1), rtp_cmb(1,2),  &
-     &    rtp_cmb(1,3), ar_cmb, s_cmb, as_cmb)
+      call position_2_sph                                               &
+     &   (sphere_4_part%num_CMB,  sphere_4_part%xx_cmb,                 &
+     &    sphere_4_part%rtp_cmb(1,1), sphere_4_part%rtp_cmb(1,2),       &
+     &    sphere_4_part%rtp_cmb(1,3), sphere_4_part%ar_cmb,             &
+     &    sphere_4_part%s_cmb, sphere_4_part%as_cmb)
 !
-        write(*,*) 'num_CMB nnod_CMB', num_CMB, nnod_CMB
-        write(*,*) 'num_cube', num_cube
-        write(*,*) 'num_layer', num_layer
+        write(*,*) 'num_CMB nnod_CMB', sphere_4_part%num_CMB,           &
+     &                                sphere_4_part%nnod_CMB
+        write(*,*) 'num_cube', sphere_4_part%num_cube
+        write(*,*) 'num_layer', sphere_4_part%num_layer
 !
 !  conut number of surface nodes for each subdomain
 !
-        call cal_divide_and_rest(num1, irest1, num_CMB, itp)
-        call set_number_of_segments(itp, num1, irest1, numcmb_local)
+        call cal_divide_and_rest                                        &
+     &     (num1, irest1, sphere_4_part%num_CMB, itp)
+        call set_number_of_segments                                     &
+     &     (itp, num1, irest1, sphere_4_part%numcmb_local)
 !
-        call set_center_cube_nodes
+        call set_center_cube_nodes(sphere_4_part)
 !
-        call set_surface_layer_node_ID
+        call set_surface_layer_node_ID(sphere_4_part)
 !
       end subroutine set_sphere_data_4_linear
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_sphere_data_4_quad(itheta, iphi)
+      subroutine set_sphere_data_4_quad                                 &
+     &         (sphere_file_name, itheta, iphi, sphere_4_part)
 !
-      use read_sphere_surface
       use coordinate_converter
       use cal_minmax_and_stacks
 !
+      character(len = kchara), intent(in) :: sphere_file_name
       integer(kind = kint), intent(in) :: itheta, iphi
+      type(shell_surface_4_part), intent(inout) :: sphere_4_part
 !
       integer(kind = kint) :: num1, irest1, itp
 !
 !
       itp = itheta * iphi
 !
-      call read_surface_connect_quad
+      call read_surface_connect_quad(sphere_file_name, sphere_4_part)
 !
-      call position_2_sph(num_CMB, xx_cmb, rtp_cmb(1,1), rtp_cmb(1,2),  &
-     &    rtp_cmb(1,3), ar_cmb, s_cmb, as_cmb)
+      call position_2_sph                                               &
+     &   (sphere_4_part%num_CMB,  sphere_4_part%xx_cmb,                 &
+     &    sphere_4_part%rtp_cmb(1,1), sphere_4_part%rtp_cmb(1,2),       &
+     &    sphere_4_part%rtp_cmb(1,3), sphere_4_part%ar_cmb,             &
+     &    sphere_4_part%s_cmb, sphere_4_part%as_cmb)
 !
-        write(*,*) 'num_CMB nnod_CMB', num_CMB, nnod_CMB
-        write(*,*) 'num_cube', num_cube
-        write(*,*) 'num_layer', num_layer
+        write(*,*) 'num_CMB nnod_CMB', sphere_4_part%num_CMB,           &
+     &                                 sphere_4_part%nnod_CMB
+        write(*,*) 'num_cube', sphere_4_part%num_cube
+        write(*,*) 'num_layer', sphere_4_part%num_layer
 !
 !  conut number of surface nodes for each subdomain
 !
-        call cal_divide_and_rest(num1, irest1, num_CMB, itp)
-        call set_number_of_segments(itp, num1, irest1, numcmb_local)
+        call cal_divide_and_rest                                        &
+     &     (num1, irest1, sphere_4_part%num_CMB, itp)
+        call set_number_of_segments                                     &
+     &     (itp, num1, irest1, sphere_4_part%numcmb_local)
 !
-        call set_center_cube_nodes
-        call set_center_cube_edge
+        call set_center_cube_nodes(sphere_4_part)
+        call set_center_cube_edge(sphere_4_part)
 !
-        call set_surface_layer_node_ID
-        call set_surface_layer_edge_ID
+        call set_surface_layer_node_ID(sphere_4_part)
+        call set_surface_layer_edge_ID(sphere_4_part)
 !
       end subroutine set_sphere_data_4_quad
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_center_cube_nodes
+      subroutine set_center_cube_nodes(sphere_4_part)
+!
+      type(shell_surface_4_part), intent(inout) :: sphere_4_part
 !
       integer(kind = kint) :: inod
 !
-      do inod = 1, nnod_cube
-        inod_free(inod) = inod
+      do inod = 1, sphere_4_part%nnod_cube
+        sphere_4_part%inod_free(inod) = inod
       end do
 !
       end subroutine set_center_cube_nodes
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_center_cube_edge
+      subroutine set_center_cube_edge(sphere_4_part)
+!
+      type(shell_surface_4_part), intent(inout) :: sphere_4_part
 !
       integer(kind = kint) :: inod, i, j
 !
-      do inod = 1, nedge_cube
-        i = inod + nnod_cube
-        j = inod + nnod_cube + nnod_CMB*num_layer
-        inod_free(i) = j
+      do inod = 1, sphere_4_part%nedge_cube
+        i = inod + sphere_4_part%nnod_cube
+        j = inod + sphere_4_part%nnod_cube                              &
+     &     + sphere_4_part%nnod_CMB * sphere_4_part%num_layer
+        sphere_4_part%inod_free(i) = j
       end do
 !
       end subroutine set_center_cube_edge
@@ -124,17 +148,21 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_surface_layer_node_ID
+      subroutine set_surface_layer_node_ID(sphere_4_part)
+!
+      type(shell_surface_4_part), intent(inout) :: sphere_4_part
 !
       integer(kind = kint) :: is, inod, k, kk
 !
-      do k = 1, num_layer
-        do is = 1, nnod_CMB
+      do k = 1, sphere_4_part%num_layer
+        do is = 1, sphere_4_part%nnod_CMB
 !
-          inod = nnod_cube + (num_layer-k)*nnod_CMB + is
-          kk = istack_sph(is) + 1
-          istack_sph(is) = kk
-          item_sph(kk,is) = inod
+          inod = sphere_4_part%nnod_cube                                &
+     &          + (sphere_4_part%num_layer - k)*sphere_4_part%nnod_CMB  &
+     &          + is
+          kk = sphere_4_part%istack_sph(is) + 1
+          sphere_4_part%istack_sph(is) = kk
+          sphere_4_part%item_sph(kk,is) = inod
 !
         end do
       end do
@@ -143,28 +171,35 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_surface_layer_edge_ID
+      subroutine set_surface_layer_edge_ID(sphere_4_part)
+!
+      type(shell_surface_4_part), intent(inout) :: sphere_4_part
 !
       integer(kind = kint) :: is, iss, inod, k, kk
 !
-      do k = 1, num_layer-1
-        do is = 1, num_CMB
+      do k = 1, sphere_4_part%num_layer-1
+        do is = 1, sphere_4_part%num_CMB
 !
-          inod = nnod_cube + nnod_CMB*num_layer + nedge_cube            &
-     &          + nedge_CMB + (num_layer-k-1)*num_CMB + is
-          kk = istack20_sph(is) + 1
-          istack20_sph(is) = kk
-          item20_sph(kk,is) = inod
+          inod = sphere_4_part%nnod_cube                                &
+     &          + sphere_4_part%nnod_CMB * sphere_4_part%num_layer      &
+     &          + sphere_4_part%nedge_cube + sphere_4_part%nedge_CMB    &
+     &          + (sphere_4_part%num_layer-k-1) * sphere_4_part%num_CMB &
+     &          + is
+          kk = sphere_4_part%istack20_sph(is) + 1
+          sphere_4_part%istack20_sph(is) = kk
+          sphere_4_part%item20_sph(kk,is) = inod
 !
         end do
       end do
 !
-      do is = 1, nedge_CMB
-          inod = nnod_cube + nnod_CMB*num_layer + nedge_cube + is
-          iss = is+nnod_CMB
-          kk = istack20_sph(iss) + 1
-          istack20_sph(iss) = kk
-          item20_sph(kk,iss) = inod
+      do is = 1, sphere_4_part%nedge_CMB
+          inod = sphere_4_part%nnod_cube                               &
+     &          + sphere_4_part%nnod_CMB*sphere_4_part%num_layer       &
+     &          + sphere_4_part%nedge_cube + is
+          iss = is+sphere_4_part%nnod_CMB
+          kk = sphere_4_part%istack20_sph(iss) + 1
+          sphere_4_part%istack20_sph(iss) = kk
+          sphere_4_part%item20_sph(kk,iss) = inod
       end do
 !
       end subroutine set_surface_layer_edge_ID

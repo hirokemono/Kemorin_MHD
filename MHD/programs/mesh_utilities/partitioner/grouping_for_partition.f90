@@ -40,7 +40,7 @@
 !
       use recursive_bisection
       use node_equaly_sectioning
-      use devide_by_spherical_coord
+      use divide_by_spherical_coord
       use set_domain_and_org_id
       use copy_domain_list_4_IO
       use set_partition_by_fine_mesh

@@ -67,6 +67,8 @@
 !
       type(field_IO_params), save :: finer_mesh_file
 !
+      character(len=kchara), save :: sphere_data_file_name
+!
 !   --------------------------------------------------------------------
 !
       contains

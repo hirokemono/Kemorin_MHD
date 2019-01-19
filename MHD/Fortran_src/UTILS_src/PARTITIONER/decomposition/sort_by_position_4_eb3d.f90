@@ -40,7 +40,7 @@
       integer(kind = kint), intent(inout) :: IS1(nnod)
       integer(kind = kint), intent(inout) :: IGROUP(nnod)
 !
-      integer(kind = kint) :: ncou, ip0, ndiv_2d
+      integer(kind = kint) :: ncou, ip0
       integer(kind = kint) :: irest1, num1
 !
 !
@@ -190,7 +190,7 @@
       integer(kind = kint), intent(inout) :: IS1(nnod)
       integer(kind = kint), intent(inout) :: IGROUP(nnod)
 !
-      integer(kind = kint) :: ncou, ip0, ndiv_2d
+      integer(kind = kint) :: ncou, ip0
       integer(kind = kint) :: irest1, num1
       integer(kind = kint) :: j
 !

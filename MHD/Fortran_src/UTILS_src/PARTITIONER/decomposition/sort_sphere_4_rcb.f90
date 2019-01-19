@@ -105,9 +105,7 @@
       integer(kind= kint), intent(inout) :: IGROUP_radius(num_layer)
 !
       integer(kind= kint) :: irest1, num0, num1
-      integer(kind= kint) :: i, k, kk, n, ist
-!
-      integer(kind = kint), parameter :: ione = 1
+      integer(kind= kint) :: i, k, kk
 !
 !
       allocate (IS_radial(num_layer))
@@ -225,13 +223,13 @@
       real(kind = kreal), intent(in) :: grp_volume
       integer(kind = kint), intent(inout) :: ig_item(nnod)
 !
-      integer(kind = kint) :: ii, ic, in, icou
+      integer(kind = kint) :: ii, in, icou
       real(kind = kreal) :: total_volume, fnode_volume
 !
       ii = 1
       icou= 0
       total_volume = 0.0
-write(*,*) 'divided group volume: ', grp_volume
+      write(*,*) 'divided group volume: ', grp_volume
       do icou = 1, ncou
         in = sort_item(icou)
         fnode_volume = node_volume(in)
@@ -265,7 +263,7 @@ write(*,*) 'divided group volume: ', grp_volume
       integer(kind = kint), intent(inout) :: domain_id(num_domain)
 !
       integer(kind = kint) :: ii, ic, icou, in
-      integer(kind = kint) :: istart, iend, igroup, iproc, ipt, ncnt
+      integer(kind = kint) :: istart, iend, igroup, iproc, ncnt
       integer(kind = kint) :: num(nproc), tmp_i, iflag_debug
       real(kind = kreal) :: ratio(nproc), tmp_r, sum_ratio
 !
@@ -354,7 +352,7 @@ integer(kind = kint), intent(inout) :: group_id(num_domain)
 integer(kind = kint), intent(inout) :: domain_id(num_domain)
 !
 integer(kind = kint) :: ii, ic, icou, in
-integer(kind = kint) :: istart, iend, igroup, iproc, ipt, ncnt
+integer(kind = kint) :: istart, iend, igroup, ncnt
 integer(kind = kint) :: tmp_i, iflag_debug
 real(kind = kreal) :: ratio_v(nproc), tmp_r, i_v, t_sum_v
 !

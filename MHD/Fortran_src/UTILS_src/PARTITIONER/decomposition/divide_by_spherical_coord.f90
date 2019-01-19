@@ -1,5 +1,5 @@
 !
-!      module devide_by_spherical_coord
+!      module divide_by_spherical_coord
 !
 !      Written by H. Matsui
 !
@@ -8,7 +8,7 @@
 !     &          istack_bc_grp, item_bc_grp, name_bc_grp, nod_d_grp)
 !        output: nod_d_grp%IGROUP
 !
-      module devide_by_spherical_coord
+      module divide_by_spherical_coord
 !
       use m_precision
 !
@@ -80,12 +80,14 @@
         if (iflag_sphere_data.eq. 0) then
           call s_find_shell_information(ndivide_eb(2), ndivide_eb(3),   &
      &        nnod, radius, theta, phi, num_bc_grp, ntot_bc_grp,        &
-     &        istack_bc_grp, item_bc_grp, name_bc_grp)
+     &        istack_bc_grp, item_bc_grp, name_bc_grp, sphere_4_part)
         else
           if (nnod_4_ele .eq. 8) then
-            call set_sphere_data_4_linear(ndivide_eb(2), ndivide_eb(3))
+            call set_sphere_data_4_linear                               &
+     &         (ndivide_eb(2), ndivide_eb(3), sphere_4_part)
           else if (nnod_4_ele .eq. 20) then
-            call set_sphere_data_4_quad(ndivide_eb(2), ndivide_eb(3))
+            call set_sphere_data_4_quad                                 &
+     &         (ndivide_eb(2), ndivide_eb(3), sphere_4_part)
           end if
         end if
 !
@@ -142,4 +144,4 @@
 !
 !   --------------------------------------------------------------------
 !
-      end module devide_by_spherical_coord
+      end module divide_by_spherical_coord
