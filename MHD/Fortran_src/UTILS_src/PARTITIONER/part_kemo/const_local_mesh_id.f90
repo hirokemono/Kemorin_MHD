@@ -113,8 +113,8 @@
       type(node_data), intent(inout) :: new_node
 !
 !
-      new_node%numnod = numnod_4_subdomain(ip)
-      new_node%internal_node = num_intnod_sub(ip)
+      new_node%numnod = itl_nod_part%num_4_subdomain(ip)
+      new_node%internal_node = itl_nod_part%num_inter_sub(ip)
       call alloc_node_geometry_w_sph(new_node)
       call set_local_node(ip, org_node, new_node, nod_d_grp)
 !
@@ -133,7 +133,7 @@
       type(element_data), intent(inout) :: new_ele
 !
 !
-      new_ele%numele =     numele_4_subdomain(ip)
+      new_ele%numele =     itl_ele_part%num_4_subdomain(ip)
       new_ele%nnod_4_ele = org_ele%nnod_4_ele
       call allocate_ele_connect_type(new_ele)
 !
@@ -156,7 +156,7 @@
       type(surface_data), intent(inout) :: new_surf
 !
 !
-      new_surf%numsurf =     numsurf_4_subdomain(ip)
+      new_surf%numsurf =     itl_surf_part%num_4_subdomain(ip)
       new_surf%nnod_4_surf = nnod_4_surf
       call allocate_surface_connect_type(new_surf, new_ele%numele)
 !
@@ -181,7 +181,7 @@
       type(edge_data), intent(inout) :: new_edge
 !
 !
-      new_edge%numedge = numedge_4_subdomain(ip)
+      new_edge%numedge = itl_edge_part%num_4_subdomain(ip)
       new_edge%nnod_4_edge = nnod_4_edge
       call alloc_edge_connect(new_edge, new_surf%numsurf)
       call alloc_edge_4_ele(new_edge, new_ele%numele)

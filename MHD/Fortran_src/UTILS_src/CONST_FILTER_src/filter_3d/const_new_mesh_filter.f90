@@ -85,8 +85,8 @@
       new_comm%id_neib(1:new_comm%num_neib)                             &
      &        = new_comm%id_neib(1:new_comm%num_neib) - 1
 !
-      nnod_filtering =     numnod_4_subdomain(ip2)
-      inter_nod_3dfilter = num_intnod_sub(ip2)
+      nnod_filtering =     itl_nod_part%num_4_subdomain(ip2)
+      inter_nod_3dfilter = itl_nod_part%num_inter_sub(ip2)
       call allocate_globalnod_filter
 !          write(*,*) 'set_newdomain_filtering_nod'
       call set_newdomain_filtering_nod(ip2)

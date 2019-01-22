@@ -60,10 +60,11 @@
 !
 !
       imark_pe(0:nproc) = 0
-      ist = istack_numnod_sub(ip-1) + num_intnod_sub(ip) + 1
-      ied = istack_numnod_sub(ip)
+      ist = itl_nod_part%istack_4_subdomain(ip-1)                       &
+     &     + itl_nod_part%num_inter_sub(ip) + 1
+      ied = itl_nod_part%istack_4_subdomain(ip)
       do inum = ist, ied
-        inod = inod_4_subdomain(inum)
+        inod = itl_nod_part%id_4_subdomain(inum)
         jnod_org = nod_d_grp%id_global_org(inod)
         jp = nod_d_grp%IGROUP(jnod_org)
         imark_pe(jp) = 1
@@ -91,10 +92,11 @@
 !
       icou = 0
       imark_pe(0:nproc) = 0
-      ist = istack_numnod_sub(ip-1) + num_intnod_sub(ip) + 1
-      ied = istack_numnod_sub(ip)
+      ist = itl_nod_part%istack_4_subdomain(ip-1)                       &
+     &     + itl_nod_part%num_inter_sub(ip) + 1
+      ied = itl_nod_part%istack_4_subdomain(ip)
       do inum = ist, ied
-        inod = inod_4_subdomain(inum)
+        inod = itl_nod_part%id_4_subdomain(inum)
         jnod_org = nod_d_grp%id_global_org(inod)
         jp = nod_d_grp%IGROUP(jnod_org)
         if (imark_pe(jp) .eq. 0) then

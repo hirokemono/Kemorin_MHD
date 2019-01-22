@@ -56,14 +56,14 @@
       integer(kind = kint) :: ierr
 !
 !
-      call allocate_num_internod_4_part(nprocs_2nd)
+      call alloc_numbers_4_part(nprocs_2nd, itl_nod_part)
       call allocate_imark_whole_nod(nod_d_grp%num_s_domin)
 !
 !   set each number of node (on rank 0)
 !
       if (my_rank .eq. 0) then
-        ntot_numnod_sub = istack_numnod_sub(0)
-        call allocate_inod_4_subdomain
+        itl_nod_part%ntot_sub = itl_nod_part%istack_4_subdomain(0)
+        call alloc_id_4_subdomain(itl_nod_part)
 !
         write(*,*) 'set_inod_4_newdomain_filter'
         call set_inod_4_newdomain_filter(mesh_file, nod_d_grp,          &
@@ -82,8 +82,8 @@
 !
       call bcast_num_filter_part_table(nprocs_2nd)
 !
-      if (my_rank .ne. 0) call allocate_inod_4_subdomain
-      call allocate_internod_4_part
+      if (my_rank .ne. 0) call alloc_id_4_subdomain(itl_nod_part)
+      call alloc_internal_4_part(itl_nod_part)
 !
       call bcast_xx_whole_nod(nod_d_grp%num_s_domin)
 !
@@ -91,8 +91,9 @@
       call const_mesh_each_filter_domain(work_file_header, my_rank,     &
      &    newmesh%nod_comm)
 !
-      call deallocate_internod_4_part
-      call deallocate_nodes_4_subdomain
+      call dealloc_internal_4_part(itl_nod_part)
+      call dealloc_num_4_subdomain(itl_nod_part)
+      call dealloc_id_4_subdomain(itl_nod_part)
 !
       call deallocate_imark_whole_nod
 !
@@ -116,11 +117,11 @@
       integer(kind = kint) :: ierr
 !
 !
-      call allocate_num_internod_4_part(nprocs_2nd)
+      call alloc_numbers_4_part(nprocs_2nd, itl_nod_part)
       call allocate_imark_whole_nod(nod_d_grp%num_s_domin)
 !
-      ntot_numnod_sub = istack_numnod_sub(0)
-      call allocate_inod_4_subdomain
+      itl_nod_part%ntot_sub = itl_nod_part%istack_4_subdomain(0)
+      call alloc_id_4_subdomain(itl_nod_part)
 !
 !      write(*,*) 'set_inod_4_newdomain_filter'
       call set_inod_4_newdomain_filter                                  &
@@ -136,14 +137,15 @@
       call gen_node_export_tables                                       &
      &   (nprocs_2nd, work_file_header, nod_d_grp)
 !
-      call allocate_internod_4_part
+      call alloc_internal_4_part(itl_nod_part)
 !
       write(*,*) 'const_mesh_newdomain_filter'
       call const_mesh_newdomain_filter                                  &
      &   (work_file_header, newmesh%nod_comm)
 !
-      call deallocate_internod_4_part
-      call deallocate_nodes_4_subdomain
+      call dealloc_internal_4_part(itl_nod_part)
+      call dealloc_num_4_subdomain(itl_nod_part)
+      call dealloc_id_4_subdomain(itl_nod_part)
 !
       call deallocate_imark_whole_nod
 !

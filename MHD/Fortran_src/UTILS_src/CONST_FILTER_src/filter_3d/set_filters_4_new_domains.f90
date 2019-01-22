@@ -170,42 +170,48 @@
       end do
       inter_nod_3dfilter = new_node%internal_node
 !
-      num_intnod_sub(ip2) =     inter_nod_3dfilter
-      numnod_4_subdomain(ip2) = nnod_filtering
+      itl_nod_part%num_inter_sub(ip2) =   inter_nod_3dfilter
+      itl_nod_part%num_4_subdomain(ip2) = nnod_filtering
 !
       if(ip2 .eq. 1) then
-        nmax_intnod_sub = num_intnod_sub(ip2)
-        nmin_intnod_sub = num_intnod_sub(ip2)
-        nmax_numnod_sub = numnod_4_subdomain(ip2)
-        nmin_numnod_sub = numnod_4_subdomain(ip2)
+        itl_nod_part%nmax_inter_sub = itl_nod_part%num_inter_sub(ip2)
+        itl_nod_part%nmin_inter_sub = itl_nod_part%num_inter_sub(ip2)
+        itl_nod_part%nmax_sub = itl_nod_part%num_4_subdomain(ip2)
+        itl_nod_part%nmin_sub = itl_nod_part%num_4_subdomain(ip2)
       end if
 !
-      istack_intnod_sub(ip2) = istack_intnod_sub(ip2-1)                &
-     &                        + num_intnod_sub(ip2)
-      nmax_intnod_sub = max(nmax_intnod_sub,num_intnod_sub(ip2))
-      nmin_intnod_sub = min(nmin_intnod_sub,num_intnod_sub(ip2))
-      ntot_intnod_sub = istack_intnod_sub(ip2)
+      itl_nod_part%istack_inter_sub(ip2)                                &
+     &                = itl_nod_part%istack_inter_sub(ip2-1)            &
+     &                 + itl_nod_part%num_inter_sub(ip2)
+      itl_nod_part%nmax_inter_sub                                       &
+     &     = max(itl_nod_part%nmax_inter_sub,itl_nod_part%num_inter_sub(ip2))
+      itl_nod_part%nmin_inter_sub                                       &
+     &     = min(itl_nod_part%nmin_inter_sub,itl_nod_part%num_inter_sub(ip2))
+      itl_nod_part%ntot_inter_sub = itl_nod_part%istack_inter_sub(ip2)
 !
-      istack_numnod_sub(ip2) = istack_numnod_sub(ip2-1)                &
-     &                        + numnod_4_subdomain(ip2)
-      nmax_numnod_sub = max(nmax_numnod_sub,numnod_4_subdomain(ip2))
-      nmin_numnod_sub = min(nmin_numnod_sub,numnod_4_subdomain(ip2))
-      ntot_numnod_sub = istack_numnod_sub(ip2)
+      itl_nod_part%istack_4_subdomain(ip2)                              &
+     &                = itl_nod_part%istack_4_subdomain(ip2-1)          &
+     &                 + itl_nod_part%num_4_subdomain(ip2)
+      itl_nod_part%nmax_sub                                             &
+     &   = max(itl_nod_part%nmax_sub,itl_nod_part%num_4_subdomain(ip2))
+      itl_nod_part%nmin_sub                                             &
+     &   = min(itl_nod_part%nmin_sub,itl_nod_part%num_4_subdomain(ip2))
+      itl_nod_part%ntot_sub = itl_nod_part%istack_4_subdomain(ip2)
 !
 !  reallocate arrays
 !
-      ntot_tmp = istack_numnod_sub(ip2-1)
+      ntot_tmp = itl_nod_part%istack_4_subdomain(ip2-1)
       allocate( inod_4_subdomain_tmp(ntot_tmp) )
 !
       do inod = 1, ntot_tmp
-        inod_4_subdomain_tmp(inod) = inod_4_subdomain(inod)
+        inod_4_subdomain_tmp(inod) = itl_nod_part%id_4_subdomain(inod)
       end do
 !
-      call deallocate_inod_4_subdomain
-      call allocate_inod_4_subdomain
+      call dealloc_id_4_subdomain(itl_nod_part)
+      call alloc_id_4_subdomain(itl_nod_part)
 !
       do inod = 1, ntot_tmp
-        inod_4_subdomain(inod) = inod_4_subdomain_tmp(inod)
+        itl_nod_part%id_4_subdomain(inod) = inod_4_subdomain_tmp(inod)
       end do
       deallocate( inod_4_subdomain_tmp )
 !
@@ -234,19 +240,20 @@
 !   set internal nodes
 !
       do inod = 1, new_node%internal_node
-        icou = istack_numnod_sub(ip2-1) + inod
+        icou = itl_nod_part%istack_4_subdomain(ip2-1) + inod
         inod_g = new_node%inod_global(inod)
-        inod_4_subdomain(icou) = int(inod_g)
+        itl_nod_part%id_4_subdomain(icou) = int(inod_g)
         imark_whole_nod(inod_g) = 0
       end do
 !
 !   set external nodes
 !
-      icou = istack_numnod_sub(ip2-1) + num_intnod_sub(ip2)
+      icou = itl_nod_part%istack_4_subdomain(ip2-1)                     &
+     &      + itl_nod_part%num_inter_sub(ip2)
       do inod_g = 1, nod_d_grp%num_s_domin
         if (imark_whole_nod(inod_g) .gt. 0) then
           icou = icou + 1
-          inod_4_subdomain(icou) = int(inod_g)
+          itl_nod_part%id_4_subdomain(icou) = int(inod_g)
         end if
       end do
 !
@@ -263,9 +270,9 @@
       integer(kind = kint) :: ist, inum
       integer(kind = kint_gl) :: inod_g
 !
-      ist = istack_numnod_sub(ip2-1)
-      do inum = 1, numnod_4_subdomain(ip2)
-        inod_g = inod_4_subdomain(inum+ist)
+      ist = itl_nod_part%istack_4_subdomain(ip2-1)
+      do inum = 1, itl_nod_part%num_4_subdomain(ip2)
+        inod_g = itl_nod_part%id_4_subdomain(inum+ist)
         id_globalnod_filtering(inum) = inod_g
         xx_filtering(inum,1) = xx_whole_nod(inod_g,1)
         xx_filtering(inum,2) = xx_whole_nod(inod_g,2)

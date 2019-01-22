@@ -44,8 +44,8 @@
      &     (numnod, numele, ele_grp, n_domain,                          &
      &      ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
       else
-        iele_4_subdomain(1:ntot_numele_sub)                             &
-     &        = iele_near_nod(1:ntot_numele_sub)
+        itl_ele_part%id_4_subdomain(1:itl_ele_part%ntot_sub)            &
+     &        = iele_near_nod(1:itl_ele_part%ntot_sub)
       end if
 !
       end subroutine set_local_element_table
@@ -107,7 +107,7 @@
               iele = ele_grp%item_grp(jnum)
               if(imark_ele(iele) .gt. 0) then
                 icou = icou + 1
-                iele_4_subdomain(icou) = iele
+                itl_ele_part%id_4_subdomain(icou) = iele
                 inum = imark_ele(iele)
                 imark_ele(iele) =     0
                 iele_near_nod(inum) = 0
@@ -119,7 +119,7 @@
         do inum = ist, ied
           if ( iele_near_nod(inum) .gt. 0) then
             icou = icou + 1
-            iele_4_subdomain(icou) = iele_near_nod(inum)
+            itl_ele_part%id_4_subdomain(icou) = iele_near_nod(inum)
             iele_near_nod(inum) = 0
           end if
         end do

@@ -89,16 +89,17 @@
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
 !
-      call allocate_num_internod_4_part(n_domain)
+      call alloc_numbers_4_part(n_domain, itl_nod_part)
       call count_internal_nod_by_tbl                                    &
      &   (n_domain, intnod_s_domin, nod_d_grp)
 !
-      call s_cal_minmax_and_stacks(n_domain, num_intnod_sub, izero,     &
-     &    istack_intnod_sub, ntot_intnod_sub,                           &
-     &    nmax_intnod_sub, nmin_intnod_sub)
+      call s_cal_minmax_and_stacks                                      &
+     &   (n_domain, itl_nod_part%num_inter_sub, izero,                  &
+     &    itl_nod_part%istack_inter_sub, itl_nod_part%ntot_inter_sub,   &
+     &    itl_nod_part%nmax_inter_sub, itl_nod_part%nmin_inter_sub)
 !
 !
-      call allocate_internod_4_part
+      call alloc_internal_4_part(itl_nod_part)
       call set_internal_nod_by_tbl                                      &
      &   (n_domain, intnod_s_domin, nod_d_grp)
 !C
@@ -109,13 +110,14 @@
      &   (ele, n_domain, nod_d_grp%num_s_domin, nod_d_grp%IGROUP,       &
      &    nod_d_grp%imark)
 !
-      call s_cal_minmax_and_stacks(n_domain, numnod_4_subdomain, izero, &
-     &    istack_numnod_sub, ntot_numnod_sub,                           &
-     &    nmax_numnod_sub, nmin_numnod_sub)
+      call s_cal_minmax_and_stacks                                      &
+     &   (n_domain, itl_nod_part%num_4_subdomain, izero,                &
+     &    itl_nod_part%istack_4_subdomain, itl_nod_part%ntot_sub,       &
+     &    itl_nod_part%nmax_sub, itl_nod_part%nmin_sub)
 !C
 !C-- define INTERIOR and EXTERIOR NODEs
 !
-      call allocate_inod_4_subdomain
+      call alloc_id_4_subdomain(itl_nod_part)
       call set_subdomain_nod_by_tbl                                     &
      &   (ele, n_domain, nod_d_grp%num_s_domin, nod_d_grp%IGROUP,       &
      &    nod_d_grp%imark)
@@ -141,17 +143,17 @@
       type(near_mesh), intent(inout) :: included_ele
 !
 !
-      call allocate_num_interele_4_part(n_domain)
+      call alloc_numbers_4_part(n_domain, itl_ele_part)
 !
-      numele_4_subdomain(1:n_domain)                                    &
+      itl_ele_part%num_4_subdomain(1:n_domain)                          &
      &     = included_ele%num_nod(1:n_domain)
-      istack_numele_sub(0:n_domain)                                     &
+      itl_ele_part%istack_4_subdomain(0:n_domain)                       &
      &     =  included_ele%istack_nod(0:n_domain)
-      nmax_numele_sub = included_ele%nmax
-      nmin_numele_sub = included_ele%nmin
-      ntot_numele_sub = included_ele%ntot
+      itl_ele_part%nmax_sub = included_ele%nmax
+      itl_ele_part%nmin_sub = included_ele%nmin
+      itl_ele_part%ntot_sub = included_ele%ntot
 !
-      call allocate_iele_4_subdomain
+      call alloc_id_4_subdomain(itl_ele_part)
 !
       call set_local_element_table(numnod, numele,                      &
      &    ele_grp, n_domain, included_ele%ntot,                         &
@@ -162,11 +164,12 @@
 !
       call count_internal_ele_by_tbl(n_domain, ele_d_grp)
 !
-      call s_cal_minmax_and_stacks(n_domain, num_intele_sub, izero,     &
-     &    istack_intele_sub, ntot_intele_sub,                           &
-     &    nmax_intele_sub, nmin_intele_sub)
+      call s_cal_minmax_and_stacks                                      &
+     &   (n_domain, itl_ele_part%num_inter_sub, izero,                  &
+     &    itl_ele_part%istack_inter_sub, itl_ele_part%ntot_inter_sub,   &
+     &    itl_ele_part%nmax_inter_sub, itl_ele_part%nmin_inter_sub)
 !
-      call allocate_interele_4_part
+      call alloc_internal_4_part(itl_ele_part)
 !
       call set_internal_ele_by_tbl(n_domain, ele_d_grp)
 !
@@ -187,7 +190,7 @@
       type(domain_group_4_partition), intent(inout) :: surf_d_grp
 !
 !
-      call allocate_num_intersurf_4_part(n_domain)
+      call alloc_numbers_4_part(n_domain, itl_surf_part)
 !C
 !C-- count INTERIOR and EXTERIOR surfaces
 !
@@ -195,13 +198,14 @@
       call count_subdomain_surf_by_tbl(ele%numele, surf%isf_4_ele,      &
      &    n_domain, surf_d_grp%num_s_domin, surf_d_grp%imark)
 !
-      call s_cal_minmax_and_stacks(n_domain, numsurf_4_subdomain,       &
-     &    izero, istack_numsurf_sub, ntot_numsurf_sub,                  &
-     &    nmax_numsurf_sub, nmin_numsurf_sub)
+      call s_cal_minmax_and_stacks                                      &
+     &   (n_domain, itl_surf_part%num_4_subdomain, izero,               &
+     &    itl_surf_part%istack_4_subdomain, itl_surf_part%ntot_sub,     &
+     &    itl_surf_part%nmax_sub, itl_surf_part%nmin_sub)
 !
 !C
 !C-- define INTERIOR and EXTERIOR surfaces
-      call allocate_isurf_4_subdomain
+      call alloc_id_4_subdomain(itl_surf_part)
       call set_subdomain_surf_by_tbl(ele%numele, surf%isf_4_ele,        &
      &    n_domain, surf_d_grp%num_s_domin, surf_d_grp%imark)
       call dealloc_domain_group_imark(surf_d_grp)
@@ -210,13 +214,14 @@
 
       call count_internal_surf_by_tbl(n_domain, surf_d_grp)
 !
-      call s_cal_minmax_and_stacks(n_domain, num_intsurf_sub, izero,    &
-     &    istack_intsurf_sub, ntot_intsurf_sub,                         &
-     &    nmax_intsurf_sub, nmin_intsurf_sub)
+      call s_cal_minmax_and_stacks                                      &
+     &   (n_domain, itl_surf_part%num_inter_sub, izero,                 &
+     &    itl_surf_part%istack_inter_sub, itl_surf_part%ntot_sub,       &
+     &    itl_surf_part%nmax_inter_sub, itl_surf_part%nmin_inter_sub)
 !C
 !C-- define INTERIOR surfaces
 !
-      call allocate_intersurf_4_part
+      call alloc_internal_4_part(itl_surf_part)
       call set_internal_surf_by_tbl(n_domain, surf_d_grp)
 !
       end subroutine const_local_surf_by_near_tbl
@@ -236,7 +241,7 @@
       type(domain_group_4_partition), intent(inout) :: edge_d_grp
 !
 !
-      call allocate_num_interedge_4_part(n_domain)
+      call alloc_numbers_4_part(n_domain, itl_edge_part)
 !C
 !C-- count INTERIOR and EXTERIOR edges
 !
@@ -244,28 +249,29 @@
       call count_subdomain_edge_by_tbl(ele%numele, edge%iedge_4_ele,    &
      &    n_domain, edge_d_grp%num_s_domin, edge_d_grp%imark)
 !
-      call s_cal_minmax_and_stacks(n_domain, numedge_4_subdomain,       &
-     &    izero, istack_numedge_sub, ntot_numedge_sub,                  &
-     &    nmax_numedge_sub, nmin_numedge_sub)
+      call s_cal_minmax_and_stacks                                      &
+     &   (n_domain, itl_edge_part%num_4_subdomain, izero,               &
+     &    itl_edge_part%istack_4_subdomain, itl_edge_part%ntot_sub,     &
+     &    itl_edge_part%nmax_sub, itl_edge_part%nmin_sub)
 !
 !C
 !C-- define INTERIOR and EXTERIOR edges
-      call allocate_iedge_4_subdomain
+      call alloc_id_4_subdomain(itl_edge_part)
       call set_subdomain_edge_by_tbl(ele%numele, edge%iedge_4_ele,      &
      &    n_domain, edge_d_grp%num_s_domin, edge_d_grp%imark)
       call dealloc_domain_group_imark(edge_d_grp)
 !C
 !C-- count INTERIOR edges
-
       call count_internal_edge_by_tbl(n_domain, edge_d_grp)
 !
-      call s_cal_minmax_and_stacks(n_domain, num_intedge_sub, izero,    &
-     &    istack_intedge_sub, ntot_intedge_sub,                         &
-     &    nmax_intedge_sub, nmin_intedge_sub)
+      call s_cal_minmax_and_stacks                                      &
+     &   (n_domain, itl_edge_part%num_inter_sub, izero,                 &
+     &    itl_edge_part%istack_inter_sub, itl_edge_part%ntot_inter_sub, &
+     &    itl_edge_part%nmax_inter_sub, itl_edge_part%nmin_inter_sub)
 !C
 !C-- define INTERIOR edges
 !
-      call allocate_interedge_4_part
+      call alloc_internal_4_part(itl_edge_part)
       call set_internal_edge_by_tbl(n_domain, edge_d_grp)
 !
       end subroutine const_local_edge_by_near_tbl

@@ -124,12 +124,12 @@
           end if
         end do
 !
-        jst = istack_numnod_sub(jp-1)
+        jst = itl_nod_part%istack_4_subdomain(jp-1)
         icou = new_comm%istack_export(j-1)
         do jnum = jst_im+1, jed_im
           icou = icou + 1
           jnod = IMPORT_NOD_TMP(jnum)
-          inod = inod_4_subdomain(jst+jnod)
+          inod = itl_nod_part%id_4_subdomain(jst+jnod)
           inod_org = nod_d_grp%id_global_org(inod)
           new_comm%item_export(icou)                                    &
      &         = nod_d_grp%id_local_part(inod_org)

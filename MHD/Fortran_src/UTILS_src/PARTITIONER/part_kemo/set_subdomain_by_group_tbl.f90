@@ -56,16 +56,18 @@
         imark_nod(1:nnod_4_subdomain)= 0
 !$omp end parallel workshare
 !
-        numnod_4_subdomain(ip) = num_intnod_sub(ip)
+        itl_nod_part%num_4_subdomain(ip)                                &
+     &      = itl_nod_part%num_inter_sub(ip)
 
-        ist = istack_numele_sub(ip-1)+1
-        ied = istack_numele_sub(ip)
+        ist = itl_ele_part%istack_4_subdomain(ip-1)+1
+        ied = itl_ele_part%istack_4_subdomain(ip)
         do inum = ist, ied
-          iele = iele_4_subdomain(inum)
+          iele = itl_ele_part%id_4_subdomain(inum)
           do k = 1, ele%nodelm(iele)
             inod= ele%ie(iele,k)
             if(IGROUP_nod(inod).ne.ip .and. imark_nod(inod).eq.0) then
-              numnod_4_subdomain(ip) = numnod_4_subdomain(ip) + 1
+              itl_nod_part%num_4_subdomain(ip)                          &
+     &             = itl_nod_part%num_4_subdomain(ip) + 1
               imark_nod(inod) = 1
             end if
           end do
@@ -100,23 +102,25 @@
         imark_nod(1:nnod_4_subdomain)= 0
 !$omp end parallel workshare
 !
-        ist = istack_intnod_sub(ip-1)
-        jst = istack_numnod_sub(ip-1)
-        do inum = 1, num_intnod_sub(ip)
-          inod_4_subdomain(inum+jst)= inod_intnod_sub(inum+ist)
+        ist = itl_nod_part%istack_inter_sub(ip-1)
+        jst = itl_nod_part%istack_4_subdomain(ip-1)
+        do inum = 1, itl_nod_part%num_inter_sub(ip)
+          itl_nod_part%id_4_subdomain(inum+jst)                         &
+     &          = itl_nod_part%id_inter_subdomain(inum+ist)
         end do
 
-        icou = istack_numnod_sub(ip-1) + num_intnod_sub(ip)
-        ist = istack_numele_sub(ip-1)+1
-        ied = istack_numele_sub(ip)
+        icou = itl_nod_part%istack_4_subdomain(ip-1)                    &
+     &        + itl_nod_part%num_inter_sub(ip)
+        ist = itl_ele_part%istack_4_subdomain(ip-1)+1
+        ied = itl_ele_part%istack_4_subdomain(ip)
         do inum = ist, ied
-          iele = iele_4_subdomain(inum)
+          iele = itl_ele_part%id_4_subdomain(inum)
           do k = 1, ele%nodelm(iele)
             inod = ele%ie(iele,k)
-            if (IGROUP_nod(inod).ne.ip                                 &
+            if (IGROUP_nod(inod).ne.ip                                  &
      &              .and. imark_nod(inod).eq.0) then
               icou = icou + 1
-              inod_4_subdomain(icou) = inod
+              itl_nod_part%id_4_subdomain(icou) = inod
               imark_nod(inod) = 1
             end if
           end do
@@ -151,14 +155,15 @@
         imark_surf(1:nsurf_4_subdomain)= 0
 !$omp end parallel workshare
 !
-        ist = istack_numele_sub(ip-1)+1
-        ied = istack_numele_sub(ip)
+        ist = itl_ele_part%istack_4_subdomain(ip-1)+1
+        ied = itl_ele_part%istack_4_subdomain(ip)
         do inum = ist, ied
-          iele = iele_4_subdomain(inum)
+          iele = itl_ele_part%id_4_subdomain(inum)
           do k = 1, nsurf_4_ele
             isurf = abs( isf_4_ele(iele,k) )
             if (imark_surf(isurf).eq.0) then
-              numsurf_4_subdomain(ip) = numsurf_4_subdomain(ip) + 1
+              itl_surf_part%num_4_subdomain(ip)                         &
+     &            = itl_surf_part%num_4_subdomain(ip) + 1
               imark_surf(isurf) = 1
             end if
           end do
@@ -192,16 +197,16 @@
         imark_surf(1:nsurf_4_subdomain)= 0
 !$omp end parallel workshare
 !
-        icou = istack_numsurf_sub(ip-1)
-        ist = istack_numele_sub(ip-1)+1
-        ied = istack_numele_sub(ip)
+        icou = itl_surf_part%istack_4_subdomain(ip-1)
+        ist = itl_ele_part%istack_4_subdomain(ip-1)+1
+        ied = itl_ele_part%istack_4_subdomain(ip)
         do inum = ist, ied
-          iele= iele_4_subdomain(inum)
+          iele= itl_ele_part%id_4_subdomain(inum)
           do k = 1, nsurf_4_ele
             isurf = abs( isf_4_ele(iele,k) )
             if (imark_surf(isurf).eq.0) then
               icou = icou + 1
-              isurf_4_subdomain(icou) = isurf
+              itl_surf_part%id_4_subdomain(icou) = isurf
               imark_surf(isurf) = 1
             end if
           end do
@@ -237,14 +242,15 @@
         imark_edge(1:nedge_4_subdomain)= 0
 !$omp end parallel workshare
 !
-        ist = istack_numele_sub(ip-1)+1
-        ied = istack_numele_sub(ip)
+        ist = itl_ele_part%istack_4_subdomain(ip-1)+1
+        ied = itl_ele_part%istack_4_subdomain(ip)
         do inum = ist, ied
-          iele = iele_4_subdomain(inum)
+          iele = itl_ele_part%id_4_subdomain(inum)
           do k = 1, nedge_4_ele
             iedge = abs( iedge_4_ele(iele,k) )
             if (imark_edge(iedge).eq.0) then
-              numedge_4_subdomain(ip) = numedge_4_subdomain(ip) + 1
+              itl_edge_part%num_4_subdomain(ip)                         &
+     &            = itl_edge_part%num_4_subdomain(ip) + 1
               imark_edge(iedge) = 1
             end if
           end do
@@ -280,16 +286,16 @@
         imark_edge(1:nedge_4_subdomain)= 0
 !$omp end parallel workshare
 !
-        icou = istack_numedge_sub(ip-1)
-        ist = istack_numele_sub(ip-1)+1
-        ied = istack_numele_sub(ip)
+        icou = itl_edge_part%istack_4_subdomain(ip-1)
+        ist = itl_ele_part%istack_4_subdomain(ip-1)+1
+        ied = itl_ele_part%istack_4_subdomain(ip)
         do inum = ist, ied
-          iele= iele_4_subdomain(inum)
+          iele= itl_ele_part%id_4_subdomain(inum)
           do k = 1, nedge_4_ele
             iedge = abs(iedge_4_ele(iele,k) )
             if (imark_edge(iedge).eq.0) then
               icou = icou + 1
-              iedge_4_subdomain(icou) = iedge
+              itl_edge_part%id_4_subdomain(icou) = iedge
               imark_edge(iedge) = 1
             end if
           end do

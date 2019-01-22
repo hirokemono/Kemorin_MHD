@@ -59,19 +59,22 @@
       write (*,'(/,"Overlapped elements", i12)')  NUM_OVERLAP_ELE
 !
 !
-      write (*,'(/,"MAX. internal node/PE ", i12)') nmax_intnod_sub
-      write (*,'(  "MIN. internal node/PE ", i12)') nmin_intnod_sub
-      write (*,'(  "MAX.cell/PE        ", i12)') nmax_numele_sub
-      write (*,'(  "MIN.cell/PE        ", i12)') nmin_numele_sub
+      write (*,'(/,"MAX. internal node/PE ", i12)')                     &
+     &     itl_nod_part%nmax_inter_sub
+      write (*,'(  "MIN. internal node/PE ", i12)')                     &
+     &     itl_nod_part%nmin_inter_sub
+      write (*,'(  "MAX.cell/PE        ", i12)') itl_ele_part%nmax_sub
+      write (*,'(  "MIN.cell/PE        ", i12)') itl_ele_part%nmin_sub
 !
       write (*,'(/,"TOTAL NODE     #   ", i12)') nod_d_grp%num_s_domin
       write (*,'(  "TOTAL CELL     #   ", i12)') ele_d_grp%num_s_domin
       write (*,'(/," PE    NODE#   CELL#   EXT_CELL#")')
 !
       do ip= 1, num_domain
-        icou= numele_4_subdomain(ip) - num_intele_sub(ip)
-        write (*,'(i3,5i16)') ip, num_intnod_sub(ip),                   &
-     &                        numele_4_subdomain(ip), icou
+        icou= itl_ele_part%num_4_subdomain(ip)                          &
+     &       - itl_ele_part%num_inter_sub(ip)
+        write (*,'(i3,5i16)') ip, itl_nod_part%num_inter_sub(ip),       &
+     &                        itl_ele_part%num_4_subdomain(ip), icou
       enddo
 !
       write (*,'(/," PE/NEIB-PE#    NEIB-PEs")')

@@ -51,10 +51,11 @@
       do j = 1, num_neib
         icou = 0
         jp =  id_neib(j)
-        ist = istack_numnod_sub(ip-1) + num_intnod_sub(ip) + 1
-        ied = istack_numnod_sub(ip)
+        ist = itl_nod_part%istack_4_subdomain(ip-1)                     &
+     &       + itl_nod_part%num_inter_sub(ip) + 1
+        ied = itl_nod_part%istack_4_subdomain(ip)
         do inum = ist, ied
-          inod = inod_4_subdomain(inum)
+          inod = itl_nod_part%id_4_subdomain(inum)
           jnod_org = nod_d_grp%id_global_org(inod)
           if (nod_d_grp%IGROUP(jnod_org).eq.jp) icou = icou + 1
         end do
@@ -87,14 +88,16 @@
       do j = 1, num_neib
         icou = istack_import(j-1)
         jp =  id_neib(j)
-        ist = istack_numnod_sub(ip-1) + num_intnod_sub(ip) + 1
-        ied = istack_numnod_sub(ip)
+        ist = itl_nod_part%istack_4_subdomain(ip-1)                     &
+     &       + itl_nod_part%num_inter_sub(ip) + 1
+        ied = itl_nod_part%istack_4_subdomain(ip)
         do inum = ist, ied
-          inod = inod_4_subdomain(inum)
+          inod = itl_nod_part%id_4_subdomain(inum)
           jnod_org = nod_d_grp%id_global_org(inod)
           if (nod_d_grp%IGROUP(jnod_org).eq.jp) then
             icou = icou + 1
-            item_import(icou) = inum - istack_numnod_sub(ip-1)
+            item_import(icou)                                           &
+     &           = inum - itl_nod_part%istack_4_subdomain(ip-1)
           end if
         end do
       end do

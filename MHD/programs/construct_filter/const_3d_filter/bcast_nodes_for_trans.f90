@@ -92,26 +92,26 @@
       integer(kind = kint), intent(in) :: nprocs_2nd
 !
 !
-      call MPI_Bcast(num_intnod_sub(1), nprocs_2nd, CALYPSO_INTEGER,    &
-     &    izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(istack_intnod_sub(1), nprocs_2nd, CALYPSO_INTEGER, &
-     &    izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ntot_intnod_sub,  ione, CALYPSO_INTEGER,           &
-     &    izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(nmax_intnod_sub,  ione, CALYPSO_INTEGER,           &
-     &    izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(nmin_intnod_sub,  ione, CALYPSO_INTEGER,           &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(itl_nod_part%num_inter_sub(1), nprocs_2nd,         &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(itl_nod_part%istack_inter_sub(1), nprocs_2nd,      &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(itl_nod_part%ntot_inter_sub,  ione,                &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(itl_nod_part%nmax_inter_sub,  ione,                &
+     &    CALYPSO_INTEGER,  izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(itl_nod_part%nmin_inter_sub,  ione,                &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(numnod_4_subdomain(1), nprocs_2nd,                 &
+      call MPI_Bcast(itl_nod_part%num_4_subdomain(1), nprocs_2nd,       &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(istack_numnod_sub(1),  nprocs_2nd,                 &
+      call MPI_Bcast(itl_nod_part%istack_4_subdomain(1),  nprocs_2nd,   &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ntot_numnod_sub,  ione, CALYPSO_INTEGER,           &
+      call MPI_Bcast(itl_nod_part%ntot_sub,  ione, CALYPSO_INTEGER,     &
      &    izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(nmax_numnod_sub,  ione, CALYPSO_INTEGER,           &
+      call MPI_Bcast(itl_nod_part%nmax_sub,  ione, CALYPSO_INTEGER,     &
      &    izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(nmin_numnod_sub,  ione, CALYPSO_INTEGER,           &
+      call MPI_Bcast(itl_nod_part%nmin_sub,  ione, CALYPSO_INTEGER,     &
      &    izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_num_filter_part_table
@@ -130,9 +130,11 @@
 !
       call MPI_Bcast(xx_whole_nod(1,1), num, CALYPSO_REAL,              &
      &    izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(inod_intnod_sub(1), ntot_intnod_sub,               &
+      call MPI_Bcast                                                    &
+     &   (itl_nod_part%id_inter_subdomain(1), itl_nod_part%ntot_inter_sub,  &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(inod_4_subdomain(1), ntot_numnod_sub,              &
+      call MPI_Bcast                                                    &
+     &   (itl_nod_part%id_4_subdomain(1), itl_nod_part%ntot_sub,        &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_xx_whole_nod

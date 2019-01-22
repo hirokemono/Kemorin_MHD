@@ -49,9 +49,9 @@
       nod_d_grp%id_local_part(1:nod_d_grp%num_s_domin) = 0
 !$omp end parallel workshare
 !
-      ist = istack_numnod_sub(ip-1)
-      do inum = 1, numnod_4_subdomain(ip)
-        inod = inod_4_subdomain(inum+ist)
+      ist = itl_nod_part%istack_4_subdomain(ip-1)
+      do inum = 1, itl_nod_part%num_4_subdomain(ip)
+        inod = itl_nod_part%id_4_subdomain(inum+ist)
         new_node%inod_global(inum) = inod
         new_node%xx(inum,1:3) = org_node%xx(inod,1:3)
 !
@@ -78,9 +78,9 @@
       ele_d_grp%id_local_part(1:ele_d_grp%num_s_domin) = 0
 !$omp end parallel workshare
 !
-      ist = istack_numele_sub(ip-1)
-      do inum = 1, numele_4_subdomain(ip)
-        iele = iele_4_subdomain(inum+ist)
+      ist = itl_ele_part%istack_4_subdomain(ip-1)
+      do inum = 1, itl_ele_part%num_4_subdomain(ip)
+        iele = itl_ele_part%id_4_subdomain(inum+ist)
         new_ele%iele_global(inum) = iele
         new_ele%nodelm(inum) = org_ele%nodelm(iele)
         new_ele%elmtyp(inum) = org_ele%elmtyp(iele)
@@ -106,9 +106,9 @@
       surf_d_grp%id_local_part(1:surf_d_grp%num_s_domin) = 0
 !$omp end parallel workshare
 !
-      ist = istack_numsurf_sub(ip-1)
-      do inum = 1, numsurf_4_subdomain(ip)
-        isurf = isurf_4_subdomain(inum+ist)
+      ist = itl_surf_part%istack_4_subdomain(ip-1)
+      do inum = 1, itl_surf_part%num_4_subdomain(ip)
+        isurf = itl_surf_part%id_4_subdomain(inum+ist)
         new_surf%isurf_global(inum) = isurf
 !
         surf_d_grp%id_local_part(isurf)= inum 
@@ -132,9 +132,9 @@
       edge_d_grp%id_local_part(1:edge_d_grp%num_s_domin) = 0
 !$omp end parallel workshare
 !
-      ist = istack_numedge_sub(ip-1)
-      do inum = 1, numedge_4_subdomain(ip)
-        iedge = iedge_4_subdomain(inum+ist)
+      ist = itl_edge_part%istack_4_subdomain(ip-1)
+      do inum = 1, itl_edge_part%num_4_subdomain(ip)
+        iedge = itl_edge_part%id_4_subdomain(inum+ist)
         new_edge%iedge_global(inum) = iedge
 !
         edge_d_grp%id_local_part(iedge)= inum 
@@ -156,9 +156,9 @@
       nod_d_grp%id_local_part(1:nod_d_grp%num_s_domin) = 0
 !$omp end parallel workshare
 !
-      ist = istack_numnod_sub(ip-1)
-      do inum = 1, numnod_4_subdomain(ip)
-        inod = inod_4_subdomain(inum+ist)
+      ist = itl_nod_part%istack_4_subdomain(ip-1)
+      do inum = 1, itl_nod_part%num_4_subdomain(ip)
+        inod = itl_nod_part%id_4_subdomain(inum+ist)
         nod_d_grp%id_local_part(inod) = inum
       end do
 !
@@ -177,9 +177,9 @@
       ele_d_grp%id_local_part(1:ele_d_grp%num_s_domin) = 0
 !$omp end parallel workshare
 !
-      ist = istack_numele_sub(ip-1)
-      do inum = 1, numele_4_subdomain(ip)
-        iele = iele_4_subdomain(inum+ist)
+      ist = itl_ele_part%istack_4_subdomain(ip-1)
+      do inum = 1, itl_ele_part%num_4_subdomain(ip)
+        iele = itl_ele_part%id_4_subdomain(inum+ist)
         ele_d_grp%id_local_part(iele)= inum 
       end do
 !
@@ -198,9 +198,9 @@
       surf_d_grp%id_local_part(1:surf_d_grp%num_s_domin) = 0
 !$omp end parallel workshare
 !
-      ist = istack_numsurf_sub(ip-1)
-      do inum = 1, numsurf_4_subdomain(ip)
-        isurf = isurf_4_subdomain(inum+ist)
+      ist = itl_surf_part%istack_4_subdomain(ip-1)
+      do inum = 1, itl_surf_part%num_4_subdomain(ip)
+        isurf = itl_surf_part%id_4_subdomain(inum+ist)
         surf_d_grp%id_local_part(isurf)= inum 
       end do
 !
@@ -219,9 +219,9 @@
       edge_d_grp%id_local_part(1:edge_d_grp%num_s_domin) = 0
 !$omp end parallel workshare
 !
-      ist = istack_numedge_sub(ip-1)
-      do inum = 1, numedge_4_subdomain(ip)
-        iedge = iedge_4_subdomain(inum+ist)
+      ist = itl_edge_part%istack_4_subdomain(ip-1)
+      do inum = 1, itl_edge_part%num_4_subdomain(ip)
+        iedge = itl_edge_part%id_4_subdomain(inum+ist)
         edge_d_grp%id_local_part(iedge)= inum 
       end do
 !
