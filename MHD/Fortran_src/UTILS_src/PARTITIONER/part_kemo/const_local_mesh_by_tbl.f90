@@ -34,6 +34,7 @@
 !
       use m_precision
       use m_constants
+      use m_geometry_constants
 !
       use t_geometry_data
       use t_domain_group_4_partition
@@ -91,7 +92,7 @@
 !
       call alloc_numbers_4_part(n_domain, itl_nod_part)
       call count_internal_nod_by_tbl                                    &
-     &   (n_domain, intnod_s_domin, nod_d_grp)
+     &   (n_domain, intnod_s_domin, nod_d_grp, itl_nod_part)
 !
       call s_cal_minmax_and_stacks                                      &
      &   (n_domain, itl_nod_part%num_inter_sub, izero,                  &
@@ -101,14 +102,14 @@
 !
       call alloc_internal_4_part(itl_nod_part)
       call set_internal_nod_by_tbl                                      &
-     &   (n_domain, intnod_s_domin, nod_d_grp)
+     &   (n_domain, intnod_s_domin, nod_d_grp, itl_nod_part)
 !C
 !C-- count INTERIOR and EXTERIOR NODEs
 
       call alloc_domain_group_imark(nod_d_grp)
       call count_subdomain_nod_by_tbl                                   &
      &   (ele, n_domain, nod_d_grp%num_s_domin, nod_d_grp%IGROUP,       &
-     &    nod_d_grp%imark)
+     &    itl_ele_part, itl_nod_part, nod_d_grp%imark)
 !
       call s_cal_minmax_and_stacks                                      &
      &   (n_domain, itl_nod_part%num_4_subdomain, izero,                &
@@ -120,7 +121,7 @@
       call alloc_id_4_subdomain(itl_nod_part)
       call set_subdomain_nod_by_tbl                                     &
      &   (ele, n_domain, nod_d_grp%num_s_domin, nod_d_grp%IGROUP,       &
-     &    nod_d_grp%imark)
+     &    itl_ele_part, itl_nod_part, nod_d_grp%imark)
       call dealloc_domain_group_imark(nod_d_grp)
 !
       end subroutine const_local_node_by_near_tbl
@@ -162,7 +163,7 @@
       call dealloc_near_node(included_ele)
       call dealloc_num_4_near_node(included_ele)
 !
-      call count_internal_ele_by_tbl(n_domain, ele_d_grp)
+      call count_internal_ele_by_tbl(n_domain, ele_d_grp, itl_ele_part)
 !
       call s_cal_minmax_and_stacks                                      &
      &   (n_domain, itl_ele_part%num_inter_sub, izero,                  &
@@ -171,7 +172,7 @@
 !
       call alloc_internal_4_part(itl_ele_part)
 !
-      call set_internal_ele_by_tbl(n_domain, ele_d_grp)
+      call set_internal_ele_by_tbl(n_domain, ele_d_grp, itl_ele_part)
 !
       end subroutine const_local_ele_by_near_tbl
 !
@@ -195,8 +196,10 @@
 !C-- count INTERIOR and EXTERIOR surfaces
 !
       call alloc_domain_group_imark(surf_d_grp)
-      call count_subdomain_surf_by_tbl(ele%numele, surf%isf_4_ele,      &
-     &    n_domain, surf_d_grp%num_s_domin, surf_d_grp%imark)
+      call count_subdomain_id_by_tbl                                    &
+     &   (ele%numele, nsurf_4_ele, surf%isf_4_ele, n_domain,            &
+     &    surf_d_grp%num_s_domin, itl_ele_part, itl_surf_part,          &
+     &    surf_d_grp%imark)
 !
       call s_cal_minmax_and_stacks                                      &
      &   (n_domain, itl_surf_part%num_4_subdomain, izero,               &
@@ -206,13 +209,16 @@
 !C
 !C-- define INTERIOR and EXTERIOR surfaces
       call alloc_id_4_subdomain(itl_surf_part)
-      call set_subdomain_surf_by_tbl(ele%numele, surf%isf_4_ele,        &
-     &    n_domain, surf_d_grp%num_s_domin, surf_d_grp%imark)
+      call set_subdomain_id_by_tbl                                      &
+     &   (ele%numele, nsurf_4_ele, surf%isf_4_ele, n_domain,            &
+     &    surf_d_grp%num_s_domin, itl_ele_part, itl_surf_part,          &
+     &    surf_d_grp%imark)
       call dealloc_domain_group_imark(surf_d_grp)
 !C
 !C-- count INTERIOR and surfaces
 
-      call count_internal_surf_by_tbl(n_domain, surf_d_grp)
+      call count_internal_surf_by_tbl                                   &
+     &   (n_domain, surf_d_grp, itl_surf_part)
 !
       call s_cal_minmax_and_stacks                                      &
      &   (n_domain, itl_surf_part%num_inter_sub, izero,                 &
@@ -222,7 +228,8 @@
 !C-- define INTERIOR surfaces
 !
       call alloc_internal_4_part(itl_surf_part)
-      call set_internal_surf_by_tbl(n_domain, surf_d_grp)
+      call set_internal_surf_by_tbl                                     &
+     &   (n_domain, surf_d_grp, itl_surf_part)
 !
       end subroutine const_local_surf_by_near_tbl
 !
@@ -246,8 +253,10 @@
 !C-- count INTERIOR and EXTERIOR edges
 !
       call alloc_domain_group_imark(edge_d_grp)
-      call count_subdomain_edge_by_tbl(ele%numele, edge%iedge_4_ele,    &
-     &    n_domain, edge_d_grp%num_s_domin, edge_d_grp%imark)
+      call count_subdomain_id_by_tbl                                    &
+     &   (ele%numele, nedge_4_ele, edge%iedge_4_ele, n_domain,          &
+     &    edge_d_grp%num_s_domin, itl_ele_part, itl_edge_part,          &
+     &    edge_d_grp%imark)
 !
       call s_cal_minmax_and_stacks                                      &
      &   (n_domain, itl_edge_part%num_4_subdomain, izero,               &
@@ -257,12 +266,15 @@
 !C
 !C-- define INTERIOR and EXTERIOR edges
       call alloc_id_4_subdomain(itl_edge_part)
-      call set_subdomain_edge_by_tbl(ele%numele, edge%iedge_4_ele,      &
-     &    n_domain, edge_d_grp%num_s_domin, edge_d_grp%imark)
+      call set_subdomain_id_by_tbl                                      &
+     &   (ele%numele, nedge_4_ele, edge%iedge_4_ele, n_domain,          &
+     &    edge_d_grp%num_s_domin, itl_ele_part, itl_edge_part,          &
+     &    edge_d_grp%imark)
       call dealloc_domain_group_imark(edge_d_grp)
 !C
 !C-- count INTERIOR edges
-      call count_internal_edge_by_tbl(n_domain, edge_d_grp)
+      call count_internal_edge_by_tbl                                   &
+     &   (n_domain, edge_d_grp, itl_edge_part)
 !
       call s_cal_minmax_and_stacks                                      &
      &   (n_domain, itl_edge_part%num_inter_sub, izero,                 &
@@ -272,7 +284,8 @@
 !C-- define INTERIOR edges
 !
       call alloc_internal_4_part(itl_edge_part)
-      call set_internal_edge_by_tbl(n_domain, edge_d_grp)
+      call set_internal_edge_by_tbl                                     &
+     &   (n_domain, edge_d_grp, itl_edge_part)
 !
       end subroutine const_local_edge_by_near_tbl
 !

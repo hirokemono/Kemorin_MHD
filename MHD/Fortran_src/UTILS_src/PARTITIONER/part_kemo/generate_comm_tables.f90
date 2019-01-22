@@ -109,8 +109,8 @@
 !C-- "marking" with GLOBAL NODE ID
 
         if(iflag_debug .gt. 0) write(*,*)                               &
-     &      'set_local_node_4_export ', my_rank
-        call set_local_node_4_export(ip, nod_d_grp)
+     &      'set_local_id_4_export ', my_rank
+        call set_local_id_4_export(ip, itl_nod_part, nod_d_grp)
 !
         call load_node_import_4_part(ip, work_f_head, new_comm)
 !

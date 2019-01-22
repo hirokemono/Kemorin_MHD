@@ -4,27 +4,38 @@
 !      Written by H. Matsui on Sep., 2007
 !
 !!      subroutine count_internal_nod_by_tbl                            &
-!!     &         (n_domain, intnod_s_domin, nod_d_grp)
+!!     &         (n_domain, intnod_s_domin, nod_d_grp, itl_nod_part)
 !!      subroutine set_internal_nod_by_tbl                              &
-!!     &         (n_domain, intnod_s_domin, nod_d_grp)
+!!     &         (n_domain, intnod_s_domin, nod_d_grp, itl_nod_part)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!        type(internal_4_partitioner), intent(inout) :: itl_nod_part
 !!
-!!      subroutine count_internal_ele_by_tbl(n_domain, ele_d_grp)
-!!      subroutine set_internal_ele_by_tbl(n_domain, ele_d_grp)
+!!      subroutine count_internal_ele_by_tbl                            &
+!!     &         (n_domain, ele_d_grp, itl_ele_part)
+!!      subroutine set_internal_ele_by_tbl                              &
+!!     &         (n_domain, ele_d_grp, itl_ele_part)
 !!        type(domain_group_4_partition), intent(in) :: ele_d_grp
+!!        type(internal_4_partitioner), intent(inout) :: itl_ele_part
 !!
-!!      subroutine count_internal_surf_by_tbl(n_domain, surf_d_grp)
-!!      subroutine set_internal_surf_by_tbl(n_domain, surf_d_grp)
+!!      subroutine count_internal_surf_by_tbl                           &
+!!     &         (n_domain, surf_d_grp, itl_surf_part)
+!!      subroutine set_internal_surf_by_tbl                             &
+!!     &         (n_domain, surf_d_grp, itl_surf_part)
 !!        type(domain_group_4_partition), intent(in) :: surf_d_grp
+!!        type(internal_4_partitioner), intent(inout) :: itl_surf_part
 !!
-!!      subroutine count_internal_edge_by_tbl(n_domain, edge_d_grp)
-!!      subroutine set_internal_edge_by_tbl(n_domain, edge_d_grp)
+!!      subroutine count_internal_edge_by_tbl                           &
+!!     &         (n_domain, edge_d_grp, itl_edge_part)
+!!      subroutine set_internal_edge_by_tbl                             &
+!!     &         (n_domain, edge_d_grp, itl_edge_part)
 !!        type(domain_group_4_partition), intent(in) :: edge_d_grp
+!!        type(internal_4_partitioner), intent(inout) :: itl_edge_part
 !
       module set_internals_by_group_tbl
 !
       use m_precision
       use t_domain_group_4_partition
+      use t_internal_4_partitioner
 !
       implicit none
 !
@@ -35,13 +46,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine count_internal_nod_by_tbl                              &
-     &         (n_domain, intnod_s_domin, nod_d_grp)
-!
-      use m_internal_4_partitioner
+     &         (n_domain, intnod_s_domin, nod_d_grp, itl_nod_part)
 !
       integer(kind = kint), intent(in) :: n_domain
       integer(kind = kint), intent(in) :: intnod_s_domin
       type(domain_group_4_partition), intent(in) :: nod_d_grp
+!
+      type(internal_4_partitioner), intent(inout) :: itl_nod_part
 !
       integer(kind= kint) :: inod, ig
 !
@@ -50,21 +61,20 @@
         ig = nod_d_grp%IGROUP(inod)
         itl_nod_part%num_inter_sub(ig)                                  &
      &     = itl_nod_part%num_inter_sub(ig) + 1
-      enddo
+      end do
 !
       end subroutine count_internal_nod_by_tbl
 !
 !   --------------------------------------------------------------------
 !
       subroutine set_internal_nod_by_tbl                                &
-     &         (n_domain, intnod_s_domin, nod_d_grp)
-!
-      use m_internal_4_partitioner
-      use t_domain_group_4_partition
+     &         (n_domain, intnod_s_domin, nod_d_grp, itl_nod_part)
 !
       integer(kind = kint), intent(in) :: n_domain
       integer(kind = kint), intent(in) :: intnod_s_domin
       type(domain_group_4_partition), intent(in) :: nod_d_grp
+!
+      type(internal_4_partitioner), intent(inout) :: itl_nod_part
 !
       integer(kind= kint) :: inod, ig, icou
 !
@@ -83,13 +93,13 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_internal_ele_by_tbl(n_domain, ele_d_grp)
-!
-      use m_internal_4_partitioner
-      use t_domain_group_4_partition
+      subroutine count_internal_ele_by_tbl                              &
+     &         (n_domain, ele_d_grp, itl_ele_part)
 !
       integer(kind = kint), intent(in) :: n_domain
       type(domain_group_4_partition), intent(in) :: ele_d_grp
+!
+      type(internal_4_partitioner), intent(inout) :: itl_ele_part
 !
       integer(kind = kint) :: ip, ist, ied, inum, iele
 !
@@ -111,13 +121,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_internal_ele_by_tbl(n_domain, ele_d_grp)
-!
-      use m_internal_4_partitioner
-      use t_domain_group_4_partition
+      subroutine set_internal_ele_by_tbl                                &
+     &         (n_domain, ele_d_grp, itl_ele_part)
 !
       integer(kind = kint), intent(in) :: n_domain
       type(domain_group_4_partition), intent(in) :: ele_d_grp
+!
+      type(internal_4_partitioner), intent(inout) :: itl_ele_part
 !
       integer(kind = kint) :: ip, ist, ied, inum, iele, icou
 !
@@ -140,13 +150,13 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_internal_surf_by_tbl(n_domain, surf_d_grp)
-!
-      use m_internal_4_partitioner
-      use t_domain_group_4_partition
+      subroutine count_internal_surf_by_tbl                             &
+     &         (n_domain, surf_d_grp, itl_surf_part)
 !
       integer(kind = kint), intent(in) :: n_domain
       type(domain_group_4_partition), intent(in) :: surf_d_grp
+!
+      type(internal_4_partitioner), intent(inout) :: itl_surf_part
 !
       integer(kind = kint) :: ip, ist, ied, inum, isurf
 !
@@ -168,13 +178,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_internal_surf_by_tbl(n_domain, surf_d_grp)
-!
-      use m_internal_4_partitioner
-      use t_domain_group_4_partition
+      subroutine set_internal_surf_by_tbl                               &
+     &         (n_domain, surf_d_grp, itl_surf_part)
 !
       integer(kind = kint), intent(in) :: n_domain
       type(domain_group_4_partition), intent(in) :: surf_d_grp
+!
+      type(internal_4_partitioner), intent(inout) :: itl_surf_part
 !
       integer(kind = kint) :: ip, ist, ied, inum, isurf, icou
 !
@@ -197,13 +207,13 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_internal_edge_by_tbl(n_domain, edge_d_grp)
-!
-      use m_internal_4_partitioner
-      use t_domain_group_4_partition
+      subroutine count_internal_edge_by_tbl                             &
+     &         (n_domain, edge_d_grp, itl_edge_part)
 !
       integer(kind = kint), intent(in) :: n_domain
       type(domain_group_4_partition), intent(in) :: edge_d_grp
+!
+      type(internal_4_partitioner), intent(inout) :: itl_edge_part
 !
       integer(kind = kint) :: ip, ist, ied, inum, iedge
 !
@@ -225,13 +235,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_internal_edge_by_tbl(n_domain, edge_d_grp)
-!
-      use m_internal_4_partitioner
-      use t_domain_group_4_partition
+      subroutine set_internal_edge_by_tbl                               &
+     &         (n_domain, edge_d_grp, itl_edge_part)
 !
       integer(kind = kint), intent(in) :: n_domain
       type(domain_group_4_partition), intent(in) :: edge_d_grp
+!
+      type(internal_4_partitioner), intent(inout) :: itl_edge_part
 !
       integer(kind = kint) :: ip, ist, ied, inum, iedge, icou
 !
