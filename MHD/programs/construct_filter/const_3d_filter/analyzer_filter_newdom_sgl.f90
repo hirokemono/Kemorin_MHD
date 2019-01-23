@@ -14,6 +14,7 @@
       use t_mesh_data
       use t_filtering_data
       use t_domain_group_4_partition
+      use t_internal_4_partitioner
 !
       implicit none
 !
@@ -25,6 +26,7 @@
 !
       type(filtering_data_type), save :: filtering_nd
       type(domain_groups_4_partitioner), save :: domain_grp1
+      type(internal_4_partitioner), save :: itl_nod_part1
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,7 +87,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_sngl'
       call local_newdomain_filter_sngl                                  &
-     &   (org_mesh_file, domain_grp1%nod_d_grp,                         &
+     &   (org_mesh_file, itl_nod_part1, domain_grp1%nod_d_grp,          &
      &    orgmesh%node, orgmesh%ele, newmesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_sgl'

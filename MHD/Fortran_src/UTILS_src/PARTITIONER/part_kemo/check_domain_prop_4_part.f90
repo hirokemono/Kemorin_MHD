@@ -4,7 +4,10 @@
 !      Written by H. Matsui on Aug., 2007
 !
 !!      subroutine open_partition_log(num_domain, numedge,              &
-!!     &          org_mesh_header, nod_d_grp, ele_d_grp)
+!!     &          org_mesh_header, itl_nod_part, itl_ele_part,          &
+!!     &          nod_d_grp, ele_d_grp)
+!!        type(internal_4_partitioner), intent(in) :: itl_nod_part
+!!        type(internal_4_partitioner), intent(in) :: itl_ele_part
 !!        type(domain_group_4_partition), intent(in)  :: nod_d_grp
 !!        type(domain_group_4_partition), intent(in)  :: ele_d_grp
 !!      subroutine write_neighboring_pes(ip)
@@ -20,6 +23,7 @@
 !
       use m_precision
       use t_domain_group_4_partition
+      use t_internal_4_partitioner
 !
       implicit none
 !
@@ -34,12 +38,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine open_partition_log(num_domain, numedge,                &
-     &          org_mesh_header, nod_d_grp, ele_d_grp)
+     &          org_mesh_header, itl_nod_part, itl_ele_part,            &
+     &          nod_d_grp, ele_d_grp)
 !
-      use m_internal_4_partitioner
-
       integer(kind = kint), intent(in) :: num_domain, numedge
       character(len = kchara), intent(in) :: org_mesh_header
+      type(internal_4_partitioner), intent(in) :: itl_nod_part
+      type(internal_4_partitioner), intent(in) :: itl_ele_part
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
       type(domain_group_4_partition), intent(in)  :: ele_d_grp
 !

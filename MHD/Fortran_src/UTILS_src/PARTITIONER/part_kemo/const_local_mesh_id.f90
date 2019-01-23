@@ -4,14 +4,15 @@
 !     written by H. Matsui on Sep., 2007
 !
 !!      subroutine s_const_local_meshes(ip, org_node, org_ele,          &
-!!     &          nod_d_grp, ele_d_grp, newmesh)
+!!     &          internals_part, nod_d_grp, ele_d_grp, newmesh)
 !!        type(node_data), intent(in) :: org_node
 !!        type(element_data), intent(in) :: org_ele
+!!        type(internals_4_part), intent(in) :: internals_part
 !!        type(domain_group_4_partition), intent(inout)  :: nod_d_grp
 !!        type(domain_group_4_partition), intent(inout)  :: ele_d_grp
 !!        type(mesh_geometry), intent(inout) :: newmesh
-!!      subroutine const_local_mesh_sf_ele                              &
-!!     &         (ip, org_node, org_ele, org_surf, org_edge,            &
+!!      subroutine const_local_mesh_sf_ele(ip, org_node, org_ele,       &
+!!     &          org_surf, org_edge, internals_part,                   &
 !!     &          domain_grp, newmesh, new_surf, new_edge)
 !!        type(node_data), intent(in) :: org_node
 !!        type(element_data), intent(in) :: org_ele
@@ -43,45 +44,45 @@
 !   --------------------------------------------------------------------
 !
       subroutine s_const_local_meshes(ip, org_node, org_ele,            &
-     &          nod_d_grp, ele_d_grp, newmesh)
+     &          internals_part, nod_d_grp, ele_d_grp, newmesh)
 !
       use t_mesh_data
       use t_geometry_data
-      use m_internal_4_partitioner
 !
       integer(kind = kint), intent(in) :: ip
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
+      type(internals_4_part), intent(in) :: internals_part
 !
       type(domain_group_4_partition), intent(inout)  :: nod_d_grp
       type(domain_group_4_partition), intent(inout)  :: ele_d_grp
       type(mesh_geometry), intent(inout) :: newmesh
 !
 !
-      call const_local_node_position                                    &
-     &   (ip, org_node, itl_nod_part, newmesh%node, nod_d_grp)
-      call const_local_element                                          &
-     &   (ip, org_ele, itl_ele_part, newmesh%ele, ele_d_grp)
+      call const_local_node_position(ip, org_node,                      &
+     &    internals_part%itl_nod_part, newmesh%node, nod_d_grp)
+      call const_local_element(ip, org_ele,                             &
+     &    internals_part%itl_ele_part, newmesh%ele, ele_d_grp)
 !
       end subroutine s_const_local_meshes
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_local_mesh_sf_ele                                &
-     &         (ip, org_node, org_ele, org_surf, org_edge,              &
+      subroutine const_local_mesh_sf_ele(ip, org_node, org_ele,         &
+     &          org_surf, org_edge, internals_part,                     &
      &          domain_grp, newmesh, new_surf, new_edge)
 !
       use t_mesh_data
       use t_geometry_data
       use t_surface_data
       use t_edge_data
-      use m_internal_4_partitioner
 !
       integer(kind = kint), intent(in) :: ip
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
       type(surface_data), intent(in) :: org_surf
       type(edge_data), intent(in) ::    org_edge
+      type(internals_4_part), intent(in) :: internals_part
 !
       type(domain_groups_4_partitioner), intent(inout) :: domain_grp
       type(mesh_geometry), intent(inout) :: newmesh
@@ -89,15 +90,20 @@
       type(edge_data), intent(inout) :: new_edge
 !
 !
-      call const_local_node_position (ip, org_node, itl_nod_part,       &
+      call const_local_node_position                                    &
+     &   (ip, org_node, internals_part%itl_nod_part,                    &
      &    newmesh%node, domain_grp%nod_d_grp)
-      call const_local_element(ip, org_ele, itl_ele_part,               &
+      call const_local_element                                          &
+     &   (ip, org_ele, internals_part%itl_ele_part,                     &
      &    newmesh%ele, domain_grp%ele_d_grp)
 !
       call const_local_surface(ip, org_surf%nnod_4_surf, newmesh%ele,   &
-     &    itl_surf_part, new_surf, domain_grp%surf_d_grp)
-      call const_local_edge(ip, org_edge%nnod_4_edge, newmesh%ele,      &
-     &    new_surf, itl_edge_part, new_edge, domain_grp%edge_d_grp)
+     &    internals_part%itl_surf_part, new_surf,                       &
+     &    domain_grp%surf_d_grp)
+      call const_local_edge                                             &
+     &   (ip, org_edge%nnod_4_edge, newmesh%ele, new_surf,              &
+     &    internals_part%itl_edge_part, new_edge,                       &
+     &    domain_grp%edge_d_grp)
 !
       end subroutine const_local_mesh_sf_ele
 !

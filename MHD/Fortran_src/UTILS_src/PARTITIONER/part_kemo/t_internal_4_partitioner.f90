@@ -36,6 +36,19 @@
         integer(kind = kint), allocatable :: id_4_subdomain(:)
       end type internal_4_partitioner
 !
+!
+      type internals_4_part
+!>      internal nodes for each subdomains
+        type(internal_4_partitioner) :: itl_nod_part
+!>      internal elements for each subdomains
+        type(internal_4_partitioner) :: itl_ele_part
+!>        internal surfaces for each subdomains
+        type(internal_4_partitioner) :: itl_surf_part
+!>        internal edges for each subdomains
+        type(internal_4_partitioner) :: itl_edge_part
+      end type internals_4_part
+!
+!
 !   --------------------------------------------------------------------
 !
       contains

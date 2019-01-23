@@ -5,7 +5,8 @@
 !
 !!      subroutine set_local_element_table                              &
 !!     &         (numnod, numele, ele_grp, n_domain,                    &
-!!     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
+!!     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod,&
+!!     &          ntot_ele_subdomain, iele_4_subdomain)
 !
       module ordering_by_element_group
 !
@@ -24,11 +25,11 @@
 !
       subroutine set_local_element_table                                &
      &         (numnod, numele, ele_grp, n_domain,                      &
-     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
+     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod,  &
+     &          ntot_ele_subdomain, iele_4_subdomain)
 !
       use t_group_data
       use m_ctl_param_partitioner
-      use m_internal_4_partitioner
 !
       type(group_data), intent(in) :: ele_grp
       integer(kind = kint), intent(in) :: numnod, numele
@@ -38,14 +39,19 @@
       integer(kind = kint), intent(inout)                               &
      &                      :: iele_near_nod(ntot_ele_near_nod)
 !
+      integer(kind = kint), intent(in) :: ntot_ele_subdomain
+      integer(kind = kint), intent(inout)                               &
+     &                     :: iele_4_subdomain(ntot_ele_subdomain)
+!
 !
       if (nele_grp_ordering .gt. 0) then
         call s_ordering_by_element_group                                &
      &     (numnod, numele, ele_grp, n_domain,                          &
-     &      ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
+     &      ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod,      &
+     &      ntot_ele_subdomain, iele_4_subdomain)
       else
-        itl_ele_part%id_4_subdomain(1:itl_ele_part%ntot_sub)            &
-     &        = iele_near_nod(1:itl_ele_part%ntot_sub)
+        iele_4_subdomain(1:ntot_ele_subdomain)                          &
+     &        = iele_near_nod(1:ntot_ele_subdomain)
       end if
 !
       end subroutine set_local_element_table
@@ -54,11 +60,11 @@
 !
       subroutine s_ordering_by_element_group                            &
      &         (numnod, numele, ele_grp, n_domain,                      &
-     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
+     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod,  &
+     &          ntot_ele_subdomain, iele_4_subdomain)
 !
       use t_group_data
       use m_ctl_param_partitioner
-      use m_internal_4_partitioner
 !
       type(group_data), intent(in) :: ele_grp
       integer(kind = kint), intent(in) :: numnod, numele
@@ -67,7 +73,11 @@
       integer(kind = kint), intent(in) :: ntot_ele_near_nod
       integer(kind = kint), intent(in) :: iele_stack_near_nod(0:numnod)
       integer(kind = kint), intent(inout)                               &
-     &                      :: iele_near_nod(ntot_ele_near_nod)
+     &                     :: iele_near_nod(ntot_ele_near_nod)
+!
+      integer(kind = kint), intent(in) :: ntot_ele_subdomain
+      integer(kind = kint), intent(inout)                               &
+     &                     :: iele_4_subdomain(ntot_ele_subdomain)
 !
       integer(kind = kint) :: igrp, ip, ist, ied, inum, iele, icou
       integer(kind = kint) :: jgrp, jst, jed, jnum
@@ -107,7 +117,7 @@
               iele = ele_grp%item_grp(jnum)
               if(imark_ele(iele) .gt. 0) then
                 icou = icou + 1
-                itl_ele_part%id_4_subdomain(icou) = iele
+                iele_4_subdomain(icou) = iele
                 inum = imark_ele(iele)
                 imark_ele(iele) =     0
                 iele_near_nod(inum) = 0
@@ -119,7 +129,7 @@
         do inum = ist, ied
           if ( iele_near_nod(inum) .gt. 0) then
             icou = icou + 1
-            itl_ele_part%id_4_subdomain(icou) = iele_near_nod(inum)
+            iele_4_subdomain(icou) = iele_near_nod(inum)
             iele_near_nod(inum) = 0
           end if
         end do

@@ -21,7 +21,6 @@
       use m_precision
 !
       use m_constants
-      use m_internal_4_partitioner
       use t_mesh_data
       use t_geometry_data
       use t_filtering_data

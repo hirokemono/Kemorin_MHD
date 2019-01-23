@@ -4,12 +4,14 @@
 !      Written by H. Matsui on Sep., 2007
 !
 !!      subroutine local_fem_mesh(my_rank, nprocs, work_f_head,         &
-!!     &          node_org, ele_org, group_org, nod_d_grp, ele_d_grp)
+!!   &            node_org, ele_org, group_org, internals_part,         &
+!!   &            nod_d_grp, ele_d_grp)
 !!        type(node_data), intent(in) :: node_org
 !!        type(element_data), intent(in) :: ele_org
 !!        type(mesh_groups), intent(in) :: group_org
-!!        type(domain_group_4_partition), intent(in) :: nod_d_grp
-!!        type(domain_group_4_partition), intent(in) :: ele_d_grp
+!!        type(internals_4_part), intent(in) :: internals_part
+!!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
+!!        type(domain_group_4_partition), intent(inout) :: ele_d_grp
 !
       module local_mesh_by_part
 !
@@ -25,12 +27,14 @@
 !   --------------------------------------------------------------------
 !
       subroutine local_fem_mesh(my_rank, nprocs, work_f_head,           &
-     &          node_org, ele_org, group_org, nod_d_grp, ele_d_grp)
+     &          node_org, ele_org, group_org, internals_part,           &
+     &          nod_d_grp, ele_d_grp)
 !
       use t_mesh_data
       use t_geometry_data
       use t_group_data
       use t_domain_group_4_partition
+      use t_internal_4_partitioner
       use m_partitioner_comm_table
       use m_ctl_param_partitioner
       use set_parallel_file_name
@@ -51,6 +55,7 @@
       type(node_data), intent(in) :: node_org
       type(element_data), intent(in) :: ele_org
       type(mesh_groups), intent(in) :: group_org
+      type(internals_4_part), intent(in) :: internals_part
 !
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
       type(domain_group_4_partition), intent(inout) :: ele_d_grp
@@ -87,7 +92,7 @@
         end do
 
         call s_const_local_meshes(ip, node_org, ele_org,                &
-     &      nod_d_grp, ele_d_grp, para_fem(ip)%mesh)
+     &      internals_part, nod_d_grp, ele_d_grp, para_fem(ip)%mesh)
         call set_local_connectivity_4_ele                               &
      &     (ele_org, nod_d_grp, para_fem(ip)%mesh%ele)
         call s_const_local_groups                                       &

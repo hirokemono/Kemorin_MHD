@@ -4,19 +4,19 @@
 !     Written by H. Matsui on May., 2008
 !
 !!      subroutine set_inod_4_newdomain_filter(mesh_file, nod_d_grp,    &
-!!     &          org_node, org_ele, new_node, ierr)
+!!     &          org_node, org_ele, new_node, itl_nod_part, ierr)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(domain_group_4_partition), intent(in)  :: nod_d_grp
 !!        type(node_data),    intent(inout) :: org_node
 !!        type(element_data), intent(inout) :: org_ele
 !!        type(node_data), intent(inout) :: new_node
+!!        type(internal_4_partitioner), intent(inout) :: itl_nod_part
 !
       module set_inod_newdomain_filter
 !
       use m_precision
 !
       use m_2nd_pallalel_vector
-      use m_internal_4_partitioner
       use set_parallel_file_name
       use mesh_IO_select
       use const_newdomain_filter
@@ -31,12 +31,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_inod_4_newdomain_filter(mesh_file, nod_d_grp,      &
-     &          org_node, org_ele, new_node, ierr)
+     &          org_node, org_ele, new_node, itl_nod_part, ierr)
 !
       use t_mesh_data
       use t_file_IO_parameter
+      use t_internal_4_partitioner
 !
-      use m_internal_4_partitioner
       use m_filter_file_names
       use m_field_file_format
       use copy_mesh_structures
@@ -46,6 +46,7 @@
       type(node_data),    intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
       type(node_data), intent(inout) :: new_node
+      type(internal_4_partitioner), intent(inout) :: itl_nod_part
       integer(kind = kint), intent(inout) :: ierr
 !
       type(mesh_geometry) :: mesh_IO_f
@@ -66,7 +67,8 @@
      &     (ip2, ifmt_3d_filter, mesh_file, nod_d_grp,                  &
      &      org_node, org_ele%numele)
 !
-        call set_num_globalnod_4_newdomain(ip2, nod_d_grp, new_node)
+        call set_num_globalnod_4_newdomain                              &
+     &     (ip2, nod_d_grp, itl_nod_part, new_node)
 !
         call dealloc_node_geometry_base(new_node)
       end do

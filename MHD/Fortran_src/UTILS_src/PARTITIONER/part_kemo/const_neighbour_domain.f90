@@ -7,17 +7,18 @@
 !!      subroutine deallocate_wk_neib_domain
 !!
 !!      subroutine count_neib_domain_by_node                            &
-!!     &         (nod_d_grp, ip, nproc, num_neib)
+!!     &         (nod_d_grp, itl_nod_part, ip, nproc, num_neib)
 !!      subroutine set_neib_domain_by_node                              &
-!!     &         (nod_d_grp, ip, nproc, num_neib, id_neib)
+!!     &         (nod_d_grp, itl_nod_part, ip, nproc, num_neib, id_neib)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!        type(internal_4_partitioner), intent(in) :: itl_nod_part
 !
       module const_neighbour_domain
 !
       use m_precision
 !
       use t_domain_group_4_partition
-      use m_internal_4_partitioner
+      use t_internal_4_partitioner
 !
       implicit none
 !
@@ -50,9 +51,10 @@
 !   --------------------------------------------------------------------
 !
       subroutine count_neib_domain_by_node                              &
-     &         (nod_d_grp, ip, nproc, num_neib)
+     &         (nod_d_grp, itl_nod_part, ip, nproc, num_neib)
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
+      type(internal_4_partitioner), intent(in) :: itl_nod_part
       integer(kind= kint), intent(in) :: ip, nproc
       integer(kind= kint), intent(inout) :: num_neib
       integer(kind= kint) :: ist, ied, inum, inod, jp
@@ -80,9 +82,10 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_neib_domain_by_node                                &
-     &         (nod_d_grp, ip, nproc, num_neib, id_neib)
+     &         (nod_d_grp, itl_nod_part, ip, nproc, num_neib, id_neib)
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
+      type(internal_4_partitioner), intent(in) :: itl_nod_part
       integer(kind= kint), intent(in) :: ip, nproc
       integer(kind= kint), intent(in) :: num_neib
       integer(kind= kint), intent(inout) :: id_neib(num_neib)

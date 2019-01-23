@@ -18,6 +18,7 @@
 !
       use m_ctl_param_partitioner
       use t_domain_group_4_partition
+      use t_internal_4_partitioner
 !
       use t_control_data_4_merge
       use t_control_param_assemble
@@ -63,6 +64,7 @@
 !
       type(single_make_vierwer_mesh), save :: sgl_viewer_p
       type(domain_groups_4_partitioner), save :: domain_grp1
+      type(internals_4_part), save :: internals_part1
 !
       integer(kind = kint), parameter :: my_rank = izero
 !      type(mesh_data) :: fem_IO_i
@@ -263,7 +265,7 @@
       call PROC_LOCAL_MESH                                              &
      &   (org_fem%mesh%node, org_fem%mesh%ele, org_ele_mesh%edge,       &
      &    org_ele_mesh%surf, data_field_vec, org_fem%group,             &
-     &    domain_grp1, included_ele)
+     &    internals_part1, domain_grp1, included_ele)
       call dealloc_local_ne_id_tbl(domain_grp1)
 !C
 !C-- Finalize

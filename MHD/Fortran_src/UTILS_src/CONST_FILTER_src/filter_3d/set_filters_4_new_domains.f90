@@ -13,9 +13,12 @@
 !!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !!
 !!      subroutine set_num_globalnod_4_newdomain                        &
-!!     &         (ip2, nod_d_grp, new_node)
+!!     &         (ip2, nod_d_grp, itl_nod_part, new_node)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
-!!      subroutine set_newdomain_filtering_nod(ip2)
+!!        type(internal_4_partitioner), intent(inout) :: itl_nod_part
+!!        type(node_data), intent(inout) :: new_node
+!!      subroutine set_newdomain_filtering_nod(ip2, itl_nod_part)
+!!        type(internal_4_partitioner), intent(in) :: itl_nod_part
 !!
 !!      subroutine set_filter_for_new_each_domain                       &
 !!     &         (numnod, internal_node, inod_global, ip2, nod_d_grp,   &
@@ -150,15 +153,16 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_num_globalnod_4_newdomain                          &
-     &         (ip2, nod_d_grp, new_node)
+     &         (ip2, nod_d_grp, itl_nod_part, new_node)
 !
       use t_geometry_data
+      use t_internal_4_partitioner
       use m_nod_filter_comm_table
-      use m_internal_4_partitioner
 !
       integer(kind = kint), intent(in) :: ip2
       type(domain_group_4_partition), intent(in) :: nod_d_grp
 !
+      type(internal_4_partitioner), intent(inout) :: itl_nod_part
       type(node_data), intent(inout) :: new_node
 !
       integer(kind = kint) :: inod, inod_g, ntot_tmp
@@ -181,21 +185,25 @@
       end if
 !
       itl_nod_part%istack_inter_sub(ip2)                                &
-     &                = itl_nod_part%istack_inter_sub(ip2-1)            &
-     &                 + itl_nod_part%num_inter_sub(ip2)
+     &               = itl_nod_part%istack_inter_sub(ip2-1)             &
+     &                + itl_nod_part%num_inter_sub(ip2)
       itl_nod_part%nmax_inter_sub                                       &
-     &     = max(itl_nod_part%nmax_inter_sub,itl_nod_part%num_inter_sub(ip2))
+     &               = max(itl_nod_part%nmax_inter_sub,                 &
+     &                     itl_nod_part%num_inter_sub(ip2))
       itl_nod_part%nmin_inter_sub                                       &
-     &     = min(itl_nod_part%nmin_inter_sub,itl_nod_part%num_inter_sub(ip2))
+     &               = min(itl_nod_part%nmin_inter_sub,                 &
+     &                     itl_nod_part%num_inter_sub(ip2))
       itl_nod_part%ntot_inter_sub = itl_nod_part%istack_inter_sub(ip2)
 !
       itl_nod_part%istack_4_subdomain(ip2)                              &
-     &                = itl_nod_part%istack_4_subdomain(ip2-1)          &
+     &               = itl_nod_part%istack_4_subdomain(ip2-1)           &
      &                 + itl_nod_part%num_4_subdomain(ip2)
       itl_nod_part%nmax_sub                                             &
-     &   = max(itl_nod_part%nmax_sub,itl_nod_part%num_4_subdomain(ip2))
+     &               = max(itl_nod_part%nmax_sub,                       &
+     &                     itl_nod_part%num_4_subdomain(ip2))
       itl_nod_part%nmin_sub                                             &
-     &   = min(itl_nod_part%nmin_sub,itl_nod_part%num_4_subdomain(ip2))
+     &               = min(itl_nod_part%nmin_sub,                       &
+     &                     itl_nod_part%num_4_subdomain(ip2))
       itl_nod_part%ntot_sub = itl_nod_part%istack_4_subdomain(ip2)
 !
 !  reallocate arrays
@@ -217,21 +225,24 @@
 !
 !   set internal nodes
 !
-      call set_globalnod_4_newdomain(ip2, nod_d_grp, new_node)
+      call set_globalnod_4_newdomain                                    &
+     &   (ip2, nod_d_grp, itl_nod_part, new_node)
 !
       end subroutine set_num_globalnod_4_newdomain
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_globalnod_4_newdomain(ip2, nod_d_grp, new_node)
+      subroutine set_globalnod_4_newdomain                              &
+     &         (ip2, nod_d_grp, itl_nod_part, new_node)
 !
       use t_geometry_data
-      use m_internal_4_partitioner
+      use t_internal_4_partitioner
 !
       integer(kind = kint), intent(in) :: ip2
       type(domain_group_4_partition), intent(in) :: nod_d_grp
 !
+      type(internal_4_partitioner), intent(inout) :: itl_nod_part
       type(node_data), intent(inout) :: new_node
 !
       integer(kind = kint) :: inod, icou
@@ -261,12 +272,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_newdomain_filtering_nod(ip2)
+      subroutine set_newdomain_filtering_nod(ip2, itl_nod_part)
 !
       use m_nod_filter_comm_table
-      use m_internal_4_partitioner
+      use t_internal_4_partitioner
 !
       integer(kind = kint), intent(in) :: ip2
+      type(internal_4_partitioner), intent(in) :: itl_nod_part
+!
       integer(kind = kint) :: ist, inum
       integer(kind = kint_gl) :: inod_g
 !
@@ -287,7 +300,6 @@
       subroutine set_global_nodid_4_newfilter(nod_d_grp)
 !
       use m_nod_filter_comm_table
-      use m_internal_4_partitioner
 !
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !

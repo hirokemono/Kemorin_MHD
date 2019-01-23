@@ -3,15 +3,18 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
-!!      subroutine const_nod_import_table_4_part(ip, nod_d_grp, new_comm)
+!!      subroutine const_nod_import_table_4_part                        &
+!!     &         (ip, nod_d_grp, itl_nod_part, new_comm)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!        type(internal_4_partitioner), intent(in) :: itl_nod_part
 !!        type(communication_table), intent(inout) :: new_comm
 !!
 !!      subroutine count_nod_export_item_4_part                         &
 !!     &         (ip, work_f_head, new_comm)
 !!      subroutine set_nod_export_item_4_part                           &
-!!     &         (ip, work_f_head, nod_d_grp, new_comm)
+!!     &         (ip, work_f_head, nod_d_grp, itl_nod_part, new_comm)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!        type(internal_4_partitioner), intent(in) :: itl_nod_part
 !!        type(communication_table), intent(inout) :: new_comm
 !
       module const_node_comm_table
@@ -27,27 +30,30 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_nod_import_table_4_part(ip, nod_d_grp, new_comm)
+      subroutine const_nod_import_table_4_part                          &
+     &         (ip, nod_d_grp, itl_nod_part, new_comm)
 !
       use t_domain_group_4_partition
+      use t_internal_4_partitioner
       use set_import_items
 !
       integer(kind = kint), intent(in) :: ip
       type(domain_group_4_partition), intent(in) :: nod_d_grp
+      type(internal_4_partitioner), intent(in) :: itl_nod_part
 !
       type(communication_table), intent(inout) :: new_comm
 !
 !
       call allocate_type_import_num(new_comm)
 !
-      call count_node_import_item(nod_d_grp, ip, new_comm%num_neib,     &
-     &    new_comm%id_neib,  new_comm%ntot_import,                      &
+      call count_node_import_item(nod_d_grp, itl_nod_part, ip,          &
+     &    new_comm%num_neib, new_comm%id_neib, new_comm%ntot_import,    &
      &    new_comm%istack_import)
 !
       call allocate_type_import_item(new_comm)
 !
-      call set_node_import_item(nod_d_grp, ip, new_comm%num_neib,       &
-     &    new_comm%id_neib, new_comm%ntot_import,                       &
+      call set_node_import_item(nod_d_grp, itl_nod_part, ip,            &
+     &    new_comm%num_neib, new_comm%id_neib, new_comm%ntot_import,    &
      &    new_comm%istack_import, new_comm%item_import)
 !
       end subroutine const_nod_import_table_4_part
@@ -60,7 +66,6 @@
 !
       use t_domain_group_4_partition
       use m_partitioner_comm_table
-      use m_internal_4_partitioner
       use sel_part_nod_comm_input
 !
       integer(kind = kint), intent(in) :: ip
@@ -91,16 +96,17 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_nod_export_item_4_part                             &
-     &         (ip, work_f_head, nod_d_grp, new_comm)
+     &         (ip, work_f_head, nod_d_grp, itl_nod_part, new_comm)
 !
       use m_partitioner_comm_table
-      use m_internal_4_partitioner
+      use t_internal_4_partitioner
       use t_domain_group_4_partition
       use sel_part_nod_comm_input
 !
       integer(kind = kint), intent(in) :: ip
       character(len=kchara), intent(in) :: work_f_head
       type(domain_group_4_partition), intent(in) :: nod_d_grp
+      type(internal_4_partitioner), intent(in) :: itl_nod_part
 !
       type(communication_table), intent(inout) :: new_comm
 !

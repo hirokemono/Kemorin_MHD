@@ -7,8 +7,9 @@
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(domain_group_4_partition), intent(inout)  :: nod_d_grp
 !!
-!!      subroutine bcast_num_filter_part_table(nprocs_2nd)
-!!      subroutine bcast_xx_whole_nod(nnod_global)
+!!      subroutine bcast_num_filter_part_table(nprocs_2nd, itl_nod_part)
+!!      subroutine bcast_xx_whole_nod(nnod_global, itl_nod_part)
+!         type(internal_4_partitioner), intent(inout)  :: itl_nod_part
 !
       module bcast_nodes_for_trans
 !
@@ -16,8 +17,8 @@
 !
       use calypso_mpi
       use m_constants
-      use m_internal_4_partitioner
       use m_work_time
+      use t_internal_4_partitioner
 !
       implicit none
 !
@@ -85,11 +86,12 @@
 !  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_num_filter_part_table(nprocs_2nd)
+      subroutine bcast_num_filter_part_table(nprocs_2nd, itl_nod_part)
 !
       use set_filters_4_new_domains
 !
       integer(kind = kint), intent(in) :: nprocs_2nd
+      type(internal_4_partitioner), intent(inout)  :: itl_nod_part
 !
 !
       call MPI_Bcast(itl_nod_part%num_inter_sub(1), nprocs_2nd,         &
@@ -118,11 +120,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_xx_whole_nod(nnod_global)
+      subroutine bcast_xx_whole_nod(nnod_global, itl_nod_part)
 !
       use set_filters_4_new_domains
 !
       integer(kind = kint), intent(in) :: nnod_global
+      type(internal_4_partitioner), intent(inout)  :: itl_nod_part
       integer(kind = kint) :: num
 !
 !
@@ -130,9 +133,9 @@
 !
       call MPI_Bcast(xx_whole_nod(1,1), num, CALYPSO_REAL,              &
      &    izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast                                                    &
-     &   (itl_nod_part%id_inter_subdomain(1), itl_nod_part%ntot_inter_sub,  &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(itl_nod_part%id_inter_subdomain(1),                &
+     &    itl_nod_part%ntot_inter_sub, CALYPSO_INTEGER, izero,          &
+     &    CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast                                                    &
      &   (itl_nod_part%id_4_subdomain(1), itl_nod_part%ntot_sub,        &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)

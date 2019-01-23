@@ -5,13 +5,14 @@
 !
 !!      subroutine PROC_LOCAL_MESH                                      &
 !!     &         (node_org, ele_org, edge_org, surf_org, field_org,     &
-!!     &          group_org, domain_grp, included_ele)
+!!     &          group_org, internals_part, domain_grp, included_ele)
 !!        type(node_data), intent(in) :: node_org
 !!        type(element_data), intent(in) :: ele_org
 !!        type(mesh_groups), intent(in) :: group_org
 !!        type(edge_data), intent(in) :: edge_org
 !!        type(surface_data), intent(in) :: surf_org
 !!        type(vector_field), intent(in) :: field_org
+!!        type(internals_4_part), intent(inout) :: internals_part
 !!        type(near_mesh), intent(inout) :: included_ele
 !!        type(domain_groups_4_partitioner), intent(inout) :: domain_grp
 !
@@ -30,7 +31,7 @@
 !
       subroutine PROC_LOCAL_MESH                                        &
      &         (node_org, ele_org, edge_org, surf_org, field_org,       &
-     &          group_org, domain_grp, included_ele)
+     &          group_org, internals_part, domain_grp, included_ele)
 !
       use t_mesh_data
       use t_near_mesh_id_4_node
@@ -38,6 +39,7 @@
       use t_group_data
       use t_edge_data
       use t_domain_group_4_partition
+      use t_internal_4_partitioner
       use m_ctl_param_partitioner
       use m_subdomain_table_IO
 !
@@ -48,6 +50,7 @@
       use check_domain_prop_4_part
       use generate_comm_tables
       use local_mesh_by_part
+      use const_local_mesh_by_tbl
       use intelligent_partition
 !
       type(node_data), intent(in) :: node_org
@@ -57,6 +60,7 @@
       type(surface_data), intent(in) :: surf_org
       type(vector_field), intent(in) :: field_org
 !
+      type(internals_4_part), intent(inout) :: internals_part
       type(near_mesh), intent(inout) :: included_ele
       type(domain_groups_4_partitioner), intent(inout) :: domain_grp
 !
@@ -83,10 +87,11 @@
 !C===
 !C
       call s_const_local_mesh_by_tbl                                    &
-     &   (node_org%numnod, ele_org, group_org%ele_grp,                  &
-     &    num_domain, domain_grp, included_ele)
+     &   (node_org%numnod, ele_org, group_org%ele_grp, num_domain,      &
+     &    internals_part, domain_grp, included_ele)
       call open_partition_log                                           &
      &   (num_domain, edge_org%numedge, org_mesh_header,                &
+     &    internals_part%itl_nod_part, internals_part%itl_ele_part,     &
      &    domain_grp%nod_d_grp, domain_grp%ele_d_grp)
 !C
 !C +---------------------------------------+
@@ -94,20 +99,22 @@
 !C +---------------------------------------+
 !C===
 !
-      call gen_node_import_tables                                       &
-     &   (num_domain, work_file_header, domain_grp%nod_d_grp)
+      call gen_node_import_tables(num_domain, work_file_header,         &
+     &    internals_part%itl_nod_part, domain_grp%nod_d_grp)
 !C
 !C +-------------------------------+
 !C | update FILE : EXPORT pointers |
 !C +-------------------------------+
 !C===
-      call gen_node_export_tables                                       &
-     &   (num_domain, work_file_header, domain_grp%nod_d_grp)
+      call gen_node_export_tables(num_domain, work_file_header,         &
+     &    internals_part%itl_nod_part, domain_grp%nod_d_grp)
 !C
 !C-- distributed Local DATA
       call local_fem_mesh(izero, ione, work_file_header,                &
-     &    node_org, ele_org, group_org,                                 &
+     &    node_org, ele_org, group_org, internals_part,                 &
      &    domain_grp%nod_d_grp, domain_grp%ele_d_grp)
+!
+      call dealloc_nod_ele_4_subdomain(internals_part)
 !
       end subroutine PROC_LOCAL_MESH
 !

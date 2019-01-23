@@ -3,11 +3,13 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!!      subroutine count_node_import_item(nod_d_grp, ip, num_neib,      &
-!!     &          id_neib, ntot_import, istack_import)
-!!      subroutine set_node_import_item(nod_d_grp, ip, num_neib,        &
-!!     &          id_neib, ntot_import, istack_import, item_import)
+!!      subroutine count_node_import_item(nod_d_grp, itl_nod_part,      &
+!!     &          ip, num_neib, id_neib, ntot_import, istack_import)
+!!      subroutine set_node_import_item                                 &
+!!     &         (nod_d_grp, itl_nod_part, ip, num_neib, id_neib,       &
+!!     &          ntot_import, istack_import, item_import)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!        type(internal_4_partitioner), intent(in) :: itl_nod_part
 !!
 !!      subroutine count_ele_import_item(ip, nproc, ntot_subd,          &
 !!     &          istack_subd, item_subd, num, id_gl_org, IGROUP,       &
@@ -29,13 +31,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_node_import_item(nod_d_grp, ip, num_neib,        &
-     &          id_neib, ntot_import, istack_import)
+      subroutine count_node_import_item(nod_d_grp, itl_nod_part,        &
+     &          ip, num_neib, id_neib, ntot_import, istack_import)
 !
       use t_domain_group_4_partition
-      use m_internal_4_partitioner
+      use t_internal_4_partitioner
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
+      type(internal_4_partitioner), intent(in) :: itl_nod_part
       integer(kind = kint), intent(in) :: ip, num_neib
       integer(kind = kint), intent(in) :: id_neib(num_neib)
 !
@@ -67,13 +70,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_node_import_item(nod_d_grp, ip, num_neib,          &
-     &          id_neib, ntot_import, istack_import, item_import)
+      subroutine set_node_import_item                                   &
+     &         (nod_d_grp, itl_nod_part, ip, num_neib, id_neib,         &
+     &          ntot_import, istack_import, item_import)
 !
       use t_domain_group_4_partition
-      use m_internal_4_partitioner
+      use t_internal_4_partitioner
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
+      type(internal_4_partitioner), intent(in) :: itl_nod_part
       integer(kind = kint), intent(in) :: ip, num_neib
       integer(kind = kint), intent(in) :: id_neib(num_neib)
       integer(kind = kint), intent(in) :: ntot_import
