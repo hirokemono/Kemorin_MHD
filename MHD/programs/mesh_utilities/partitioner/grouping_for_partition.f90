@@ -124,7 +124,7 @@
       else if (NTYP_div .eq. iPART_MeTiS_RSB) then
         write(*,*) 'read_group_by_metis'
         call read_group_by_metis                                        &
-     &     (ierr, node%numnod, node%internal_node)
+     &     (metis_sdom_name, node%numnod, node%internal_node, ierr)
         if (ierr .eq. ierr_P_MPI) call ERROR_EXIT(ierr_P_MPI, izero)
         write(*,*) 'copy_domain_list_from_IO'
         call copy_domain_list_from_IO                                   &
@@ -145,7 +145,7 @@
         call s_set_partition_by_fine_mesh(domain_grp)
 !
       else if (NTYP_div .eq. iPART_DECMP_MESH_TBL) then
-        call read_group_4_partition
+        call read_group_4_partition(fname_subdomain)
         call copy_domain_list_from_IO                                   &
      &     (node%numnod, node%internal_node, domain_grp%nod_d_grp)
       end if
@@ -164,7 +164,7 @@
      &   .or. NTYP_div.eq.iPART_EQ_SPH) then
         call copy_domain_list_to_IO                                     &
      &     (node%numnod, node%internal_node, domain_grp%nod_d_grp)
-        call output_group_4_partition
+        call output_group_4_partition(fname_subdomain)
       end if
 !C
 !C +------------------------------+
@@ -238,7 +238,7 @@
      &   .or. NTYP_div.eq.iPART_EQ_SPH) then
         call copy_domain_list_to_IO                                     &
      &     (node%numnod, node%internal_node, domain_grp%nod_d_grp)
-        call output_group_4_partition
+        call output_group_4_partition(fname_subdomain)
       end if
 !C
 !C +------------------------------+

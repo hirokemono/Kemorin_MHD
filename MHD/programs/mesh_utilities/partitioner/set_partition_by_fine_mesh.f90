@@ -57,7 +57,7 @@
 !
 !     read interpolate table
 !
-      call read_group_4_partition
+      call read_group_4_partition(fname_subdomain)
       call copy_finer_domain_list_from_IO                               &
      &   (finermesh%node, domain_grp%nod_f_grp)
 !

@@ -61,6 +61,10 @@
       integer(kind = kint) :: iflag_new_ghost_cell
 !
       character(len=kchara) :: metis_file_name = 'graph.in'
+      character(len=kchara) :: metis_sdom_name ='metis_part.dat'
+!
+      character(len=kchara) :: fname_subdomain = 'subdomain_table.dat'
+!
       character(len=kchara) :: finer_inter_file_head
 !
       type(field_IO_params), save :: global_mesh_file

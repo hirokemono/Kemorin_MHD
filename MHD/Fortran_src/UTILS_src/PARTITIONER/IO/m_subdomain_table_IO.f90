@@ -10,10 +10,11 @@
 !!      subroutine allocate_domain_group_IO
 !!      subroutine deallocate_domain_group_IO
 !!
-!!      subroutine output_group_4_partition
-!!      subroutine read_group_4_partition
+!!      subroutine output_group_4_partition(file_name)
+!!      subroutine read_group_4_partition(file_name)
 !!
-!!      subroutine read_group_by_metis(ierr, numnod, internal_node)
+!!      subroutine read_group_by_metis                                  &
+!!     &         (file_name, numnod, internal_node, ierr)
 !!@endverbatim
 !
       module m_subdomain_table_IO
@@ -22,9 +23,7 @@
 !
       implicit none
 !
-      integer(kind=kint ), parameter :: id_subdomain = 21
-      character(len=kchara) :: fname_subdomain = 'subdomain_table.dat'
-      character(len=kchara) :: metis_sdom_name ='metis_part.dat'
+      integer(kind=kint ), parameter, private :: id_subdomain = 21
 !
       integer(kind = kint) :: nproc_group_IO
       integer(kind = kint) :: nnod_group_IO, internod_group_IO
@@ -54,9 +53,12 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine output_group_4_partition
+      subroutine output_group_4_partition(file_name)
 !
-      open(id_subdomain,file = fname_subdomain)
+      character(len=kchara), intent(in) :: file_name
+!
+!
+      open(id_subdomain,file = file_name)
 !
       write(id_subdomain,*) '! number of subdomains'
       write(id_subdomain,'(i16)') nproc_group_IO
@@ -74,14 +76,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_group_4_partition
+      subroutine read_group_4_partition(file_name)
 !
       use skip_comment_f
 !
+      character(len=kchara), intent(in) :: file_name
       character(len=255) :: character_4_read
 !
 !
-      open(id_subdomain,file = fname_subdomain)
+      open(id_subdomain,file = file_name)
 !
       call skip_comment(character_4_read, id_subdomain)
       read(character_4_read,*) nproc_group_IO
@@ -98,15 +101,17 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_group_by_metis(ierr, numnod, internal_node)
+      subroutine read_group_by_metis                                    &
+     &         (file_name, numnod, internal_node, ierr)
 !
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(inout) :: ierr
       integer(kind = kint) :: inod, NPARTMAX
 !
 !
       ierr = 0
-      open(id_subdomain,file = metis_sdom_name)
+      open(id_subdomain,file = file_name)
 !
       NPARTMAX=-100
 !
