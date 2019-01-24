@@ -70,8 +70,8 @@
       call count_import_domain(nprocs, numnod, id_org_domain,           &
      &    nod_comm%num_neib)
 !
-      call allocate_type_neib_id( nod_comm )
-      call allocate_type_import_num( nod_comm )
+      call alloc_neighbouring_id( nod_comm )
+      call alloc_import_num( nod_comm )
 !
       call set_import_domain(nprocs, numnod, id_org_domain,             &
      &    nod_comm%num_neib, nod_comm%id_neib)
@@ -79,7 +79,7 @@
      &    nod_comm%num_neib, nod_comm%id_neib, nod_comm%num_import,     &
      &    nod_comm%istack_import, nod_comm%ntot_import)
 !
-      call allocate_type_import_item(nod_comm)
+      call alloc_import_item(nod_comm)
 !
       call set_import_item(numnod, id_org_domain,                       &
      &    nod_comm%num_neib, nod_comm%id_neib, nod_comm%istack_import,  &
@@ -113,8 +113,8 @@
       call count_import_domain(nprocs, numele, id_org_domain,           &
      &    ele_comm%num_neib)
 !
-      call allocate_type_neib_id( ele_comm )
-      call allocate_type_import_num( ele_comm )
+      call alloc_neighbouring_id( ele_comm )
+      call alloc_import_num( ele_comm )
 !
       call set_import_domain(nprocs, numele, id_org_domain,             &
      &    ele_comm%num_neib, ele_comm%id_neib)
@@ -122,7 +122,7 @@
      &    ele_comm%num_neib, ele_comm%id_neib, ele_comm%num_import,     &
      &    ele_comm%istack_import, ele_comm%ntot_import)
 !
-      call allocate_type_import_item(ele_comm)
+      call alloc_import_item(ele_comm)
 !
       call set_import_item(numele, id_org_domain,                       &
      &    ele_comm%num_neib, ele_comm%id_neib, ele_comm%istack_import,  &
@@ -159,7 +159,7 @@
       call count_ele_comm_neib                                          &
      &   (my_rank, nprocs, ele_comm, comm_tbl%num_neib)
 !
-      call allocate_type_comm_tbl_num(comm_tbl)
+      call alloc_comm_table_num(comm_tbl)
 !
       call set_ele_comm_neib(my_rank, nprocs, ele_comm,                 &
      &    comm_tbl%num_neib, comm_tbl%id_neib)
@@ -169,7 +169,7 @@
      &    comm_tbl%num_import, comm_tbl%num_export,                     &
      &    comm_tbl%istack_import, comm_tbl%istack_export)
 !
-      call allocate_type_comm_tbl_item(comm_tbl)
+      call alloc_comm_table_item(comm_tbl)
 !
       call set_ele_import_item(my_rank, nprocs, ele_comm,               &
      &    comm_tbl%num_neib, comm_tbl%ntot_import, comm_tbl%id_neib,    &

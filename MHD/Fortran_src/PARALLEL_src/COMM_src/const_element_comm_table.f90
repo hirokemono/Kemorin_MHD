@@ -125,8 +125,8 @@
 !
 !
       e_comm%num_neib = nod_comm%num_neib
-      call allocate_type_neib_id(e_comm)
-      call allocate_type_import_num(e_comm)
+      call alloc_neighbouring_id(e_comm)
+      call alloc_import_num(e_comm)
 !
 !      write(*,*) 'count_element_import_num', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+1)
@@ -140,7 +140,7 @@
 !
       call alloc_element_rev_imports(node%numnod,                       &
      &    nod_comm%ntot_export, e_comm%ntot_import, wk_comm)
-      call allocate_type_import_item(e_comm)
+      call alloc_import_item(e_comm)
 !
 !      write(*,*) 'local_node_id_reverse_SR', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+2)
@@ -165,7 +165,7 @@
       if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+3)
 !      call calypso_mpi_barrier
 !
-      call allocate_type_export_num(e_comm)
+      call alloc_export_num(e_comm)
 !
 !      write(*,*) 'element_num_reverse_SR', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+4)
@@ -176,7 +176,7 @@
 !      call calypso_mpi_barrier
 !
       call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)
-      call allocate_type_export_item(e_comm)
+      call alloc_export_item(e_comm)
 !
 !      write(*,*) 'element_data_reverse_SR', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+5)

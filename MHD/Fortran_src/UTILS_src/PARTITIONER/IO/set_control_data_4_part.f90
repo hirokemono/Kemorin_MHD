@@ -3,9 +3,11 @@
 !
 !      Written by Kemorin on Sep. 2007
 !
-!!      subroutine s_set_control_data_4_part(part_ctl)
-!!      subroutine set_control_4_extend_sleeve(my_rank, part_ctl)
+!!      subroutine s_set_control_data_4_part(part_ctl, comm_part)
+!!      subroutine set_control_4_extend_sleeve                          &
+!!     &         (my_rank, part_ctl, comm_part)
 !!        type(control_data_4_partitioner), intent(in) :: part_ctl
+!!        type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       module set_control_data_4_part
 !
@@ -24,13 +26,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_data_4_part(part_ctl)
+      subroutine s_set_control_data_4_part(part_ctl, comm_part)
 !
       use t_control_data_4_part
+      use t_partitioner_comm_table
       use m_default_file_prefix
 !
       use m_ctl_param_partitioner
-      use m_partitioner_comm_table
       use m_subdomain_table_IO
       use m_metis_IO
       use m_file_format_switch
@@ -38,6 +40,7 @@
       use set_control_platform_data
 !
       type(control_data_4_partitioner), intent(in) :: part_ctl
+      type(partitioner_comm_tables), intent(inout) :: comm_part
 !
 !
       call turn_off_debug_flag_by_ctl(izero, part_ctl%part_plt)
@@ -71,9 +74,11 @@
      &    part_ctl%new_part_method_ctl, part_ctl%selective_ghost_ctl)
 !
       call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
-     &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl)
+     &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl,      &
+     &    comm_part)
 !
-      write(*,*) 'iflag_memory_conserve', iflag_memory_conserve
+      write(*,*) 'iflag_memory_conserve',                               &
+     &          comm_part%iflag_memory_conserve
       write(*,*) 'iflag_viewer_output', iflag_viewer_output
       if(n_overlap .eq. 1) then
         write(*,*) 'element overlapping flag: ', i_sleeve_ele
@@ -144,13 +149,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_extend_sleeve(my_rank, part_ctl)
+      subroutine set_control_4_extend_sleeve                            &
+     &         (my_rank, part_ctl, comm_part)
 !
       use t_control_data_4_part
+      use t_partitioner_comm_table
       use m_default_file_prefix
 !
       use m_ctl_param_partitioner
-      use m_partitioner_comm_table
       use m_subdomain_table_IO
       use m_metis_IO
       use m_file_format_switch
@@ -159,6 +165,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       type(control_data_4_partitioner), intent(in) :: part_ctl
+      type(partitioner_comm_tables), intent(inout) :: comm_part
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, part_ctl%part_plt)
@@ -189,11 +196,13 @@
 !      end if
 !
       call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
-     &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl)
+     &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl,      &
+     &    comm_part)
 !
       if(my_rank .ne. 0) return
       write(*,*) 'sleeve level :', n_overlap
-      write(*,*) 'iflag_memory_conserve', iflag_memory_conserve
+      write(*,*) 'iflag_memory_conserve',                               &
+     &          comm_part%iflag_memory_conserve
       write(*,*) 'iflag_viewer_output', iflag_viewer_output
       if(n_overlap .eq. 1) then
         write(*,*) 'element overlapping flag: ', i_sleeve_ele
@@ -205,14 +214,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_FEM_mesh_ctl_4_part                                &
-     &         (part_Fmesh, sleeve_level_old, element_overlap_ctl)
+     &         (part_Fmesh, sleeve_level_old, element_overlap_ctl,      &
+     &          comm_part)
 !
       use t_ctl_data_4_FEM_mesh
       use t_control_elements
+      use t_partitioner_comm_table
       use m_default_file_prefix
 !
       use m_ctl_param_partitioner
-      use m_partitioner_comm_table
       use m_subdomain_table_IO
       use m_file_format_switch
       use skip_comment_f
@@ -220,13 +230,14 @@
       type(FEM_mesh_control), intent(in) :: part_Fmesh
       type(read_integer_item), intent(in) :: sleeve_level_old
       type(read_character_item), intent(in)  :: element_overlap_ctl
+      type(partitioner_comm_tables), intent(inout) :: comm_part
 !
 !
-      iflag_memory_conserve = 0
+      comm_part%iflag_memory_conserve = 0
       if(part_Fmesh%memory_conservation_ctl%iflag .gt. 0                &
      &  .and. yes_flag(part_Fmesh%memory_conservation_ctl%charavalue)   &
      &   ) then
-        iflag_memory_conserve = 1
+        comm_part%iflag_memory_conserve = 1
       end if
 !
       iflag_viewer_output = 0

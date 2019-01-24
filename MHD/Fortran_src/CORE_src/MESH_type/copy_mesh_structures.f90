@@ -229,7 +229,7 @@
 !
 !
       new_comm%num_neib =    org_comm%num_neib
-      call allocate_type_comm_tbl_num(new_comm)
+      call alloc_comm_table_num(new_comm)
 !
       if(new_comm%num_neib .gt. 0) then
         new_comm%id_neib(1:new_comm%num_neib)                           &
@@ -246,7 +246,7 @@
       new_comm%ntot_import = org_comm%ntot_import
       new_comm%ntot_export = org_comm%ntot_export
 !
-      call allocate_type_comm_tbl_item(new_comm)
+      call alloc_comm_table_item(new_comm)
 !
       if(new_comm%ntot_import .gt. 0) then
         new_comm%item_import(1:new_comm%ntot_import)                    &

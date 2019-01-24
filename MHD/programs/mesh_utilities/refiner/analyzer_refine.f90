@@ -175,8 +175,8 @@
 !
          refined_fem%mesh%nod_comm%num_neib                             &
      &        = org_fem%mesh%nod_comm%num_neib
-        call allocate_type_comm_tbl_num(refined_fem%mesh%nod_comm)
-        call allocate_type_comm_tbl_item(refined_fem%mesh%nod_comm)
+        call alloc_comm_table_num(refined_fem%mesh%nod_comm)
+        call alloc_comm_table_item(refined_fem%mesh%nod_comm)
 !
         write(*,*) 's_set_refined_position'
         call s_set_refined_position                                     &

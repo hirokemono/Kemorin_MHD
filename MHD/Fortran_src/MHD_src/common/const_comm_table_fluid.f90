@@ -92,7 +92,7 @@
       call count_reduced_neib_domain                                    &
      &   (nod_comm%num_neib, nod_comm%id_neib, fluid_comm%num_neib)
 !
-      call allocate_type_comm_tbl_num(fluid_comm)
+      call alloc_comm_table_num(fluid_comm)
 !
       call set_reduced_neib_domain(nod_comm%num_neib, nod_comm%id_neib, &
      &    fluid_comm%num_neib, fluid_comm%id_neib)
@@ -108,7 +108,7 @@
      &    fluid_comm%num_neib, fluid_comm%ntot_export,                  &
      &    fluid_comm%num_export, fluid_comm%istack_export)
 !
-      call allocate_type_comm_tbl_item(fluid_comm)
+      call alloc_comm_table_item(fluid_comm)
 !
       call set_reduced_comm_item                                        &
      &   (nod_comm%num_neib, nod_comm%ntot_import, nod_comm%id_neib,    &

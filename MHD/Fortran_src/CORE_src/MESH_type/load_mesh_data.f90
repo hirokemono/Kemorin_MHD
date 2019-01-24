@@ -217,8 +217,8 @@
       mesh%nod_comm%num_neib =    izero
       mesh%nod_comm%ntot_import = izero
       mesh%nod_comm%ntot_export = izero
-      call allocate_type_comm_tbl_num(mesh%nod_comm)
-      call allocate_type_comm_tbl_item(mesh%nod_comm)
+      call alloc_comm_table_num(mesh%nod_comm)
+      call alloc_comm_table_item(mesh%nod_comm)
 !
       mesh%node%numnod =        izero
       mesh%node%internal_node = izero

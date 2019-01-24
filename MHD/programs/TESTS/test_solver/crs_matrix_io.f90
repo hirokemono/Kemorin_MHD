@@ -173,7 +173,7 @@
       type(communication_table), intent(inout) :: nod_comm
 !
 !
-      call allocate_type_comm_tbl_num(nod_comm)
+      call alloc_comm_table_num(nod_comm)
 !
       if(nod_comm%num_neib .gt. 0) then
         read (id_file,*) nod_comm%id_neib(1:nod_comm%num_neib)
@@ -184,7 +184,7 @@
       nod_comm%ntot_import= nod_comm%istack_import(nod_comm%num_neib)
       nod_comm%ntot_export= nod_comm%istack_export(nod_comm%num_neib)
 
-      call allocate_type_comm_tbl_item(nod_comm)
+      call alloc_comm_table_item(nod_comm)
 !
       if(nod_comm%ntot_import .gt. 0) then
         read (id_file,*) nod_comm%item_import(1:nod_comm%ntot_import)

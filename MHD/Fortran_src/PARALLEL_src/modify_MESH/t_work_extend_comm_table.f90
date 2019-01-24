@@ -89,7 +89,7 @@
       type(communication_table), intent(inout) :: added_comm
 !
       added_comm%num_neib = nod_comm%num_neib
-      call allocate_type_comm_tbl_num(added_comm)
+      call alloc_comm_table_num(added_comm)
 !
       if(added_comm%num_neib .gt. 0) then
 !$omp parallel workshare

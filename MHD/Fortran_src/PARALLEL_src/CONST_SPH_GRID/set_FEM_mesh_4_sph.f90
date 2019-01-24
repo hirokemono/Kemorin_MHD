@@ -253,7 +253,7 @@
       call count_neib_4_sph_center_mesh(ip_rank, ip_r, ip_t,            &
      &    s3d_ranks, stbl, nod_comm)
 !
-      call allocate_type_comm_tbl_num(nod_comm)
+      call alloc_comm_table_num(nod_comm)
 !
 ! Set subdomain ID to communicate
       call set_neib_4_sph_mesh(ip_rank, ip_r, ip_t,                     &
@@ -268,8 +268,8 @@
      &   (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
 !
 !
-      call allocate_type_import_item(nod_comm)
-      call allocate_type_export_item(nod_comm)
+      call alloc_import_item(nod_comm)
+      call alloc_export_item(nod_comm)
       call alloc_1d_comm_tbl_4_sph                                      &
      &   (nod_comm%ntot_import, nod_comm%ntot_export, stbl)
 !

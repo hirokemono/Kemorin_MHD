@@ -78,9 +78,9 @@
       comm%num_neib =    comm_sph%nneib_domain
       comm%ntot_import = comm_sph%ntot_item_sr
 !
-      call allocate_type_neib_id(comm)
-      call allocate_type_import_num(comm)
-      call allocate_type_import_item(comm)
+      call alloc_neighbouring_id(comm)
+      call alloc_import_num(comm)
+      call alloc_import_item(comm)
 !
       comm%id_neib(1:comm_sph%nneib_domain)                             &
      &      = comm_sph%id_domain(1:comm_sph%nneib_domain)

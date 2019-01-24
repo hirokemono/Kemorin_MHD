@@ -66,8 +66,8 @@
      &    cutted_fem%mesh, cutted_fem%group)
 !
       cutted_fem%mesh%nod_comm%num_neib = 0
-      call allocate_type_comm_tbl_num(cutted_fem%mesh%nod_comm)
-      call allocate_type_comm_tbl_item(cutted_fem%mesh%nod_comm)
+      call alloc_comm_table_num(cutted_fem%mesh%nod_comm)
+      call alloc_comm_table_item(cutted_fem%mesh%nod_comm)
 !
       call output_mesh(modified_mesh_file, my_rank,                     &
      &                 cutted_fem%mesh, cutted_fem%group)

@@ -22,6 +22,7 @@
 !
       use t_control_data_4_merge
       use t_control_param_assemble
+      use t_partitioner_comm_table
 !      use m_original_ucd_4_merge
 !      use m_geometry_data_4_merge
       use set_control_assemble
@@ -65,6 +66,7 @@
       type(single_make_vierwer_mesh), save :: sgl_viewer_p
       type(domain_groups_4_partitioner), save :: domain_grp1
       type(internals_4_part), save :: internals_part1
+      type(partitioner_comm_tables), save :: comm_part1
 !
       integer(kind = kint), parameter :: my_rank = izero
 !      type(mesh_data) :: fem_IO_i
@@ -95,7 +97,7 @@
 !  read control file
 !
       call read_control_data_4_part(part_ctl1)
-      call s_set_control_data_4_part(part_ctl1)
+      call s_set_control_data_4_part(part_ctl1, comm_part1)
       call dealloc_ctl_data_4_part(part_ctl1)
 !
 !  read global mesh
@@ -265,7 +267,7 @@
       call PROC_LOCAL_MESH                                              &
      &   (org_fem%mesh%node, org_fem%mesh%ele, org_ele_mesh%edge,       &
      &    org_ele_mesh%surf, data_field_vec, org_fem%group,             &
-     &    internals_part1, domain_grp1, included_ele)
+     &    internals_part1, domain_grp1, comm_part1, included_ele)
       call dealloc_local_ne_id_tbl(domain_grp1)
 !C
 !C-- Finalize

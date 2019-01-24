@@ -24,6 +24,7 @@
       use t_edge_data
       use t_next_node_ele_4_node
       use t_control_data_4_part
+      use t_partitioner_comm_table
       use para_const_kemoview_mesh
 !
       use mpi_load_mesh_data
@@ -31,6 +32,7 @@
       implicit none
 !
       type(control_data_4_partitioner), save, private :: part_ctl1
+      type(partitioner_comm_tables), save, private :: comm_part1
 !
       type(mesh_data), save, private :: fem_EXT
       type(element_geometry), save, private :: e_mesh_EXT
@@ -62,7 +64,7 @@
 !     ----- read control data
 !
       call read_control_data_4_part(part_ctl1)
-      call set_control_4_extend_sleeve(my_rank, part_ctl1)
+      call set_control_4_extend_sleeve(my_rank, part_ctl1, comm_part1)
       call dealloc_ctl_data_4_part(part_ctl1)
 !
 !  --  read geometry

@@ -5,7 +5,8 @@
 !
 !!      subroutine PROC_LOCAL_MESH                                      &
 !!     &         (node_org, ele_org, edge_org, surf_org, field_org,     &
-!!     &          group_org, internals_part, domain_grp, included_ele)
+!!     &          group_org, internals_part, domain_grp, comm_part,     &
+!!     &          included_ele)
 !!        type(node_data), intent(in) :: node_org
 !!        type(element_data), intent(in) :: ele_org
 !!        type(mesh_groups), intent(in) :: group_org
@@ -31,7 +32,8 @@
 !
       subroutine PROC_LOCAL_MESH                                        &
      &         (node_org, ele_org, edge_org, surf_org, field_org,       &
-     &          group_org, internals_part, domain_grp, included_ele)
+     &          group_org, internals_part, domain_grp, comm_part,       &
+     &          included_ele)
 !
       use t_mesh_data
       use t_near_mesh_id_4_node
@@ -40,6 +42,7 @@
       use t_edge_data
       use t_domain_group_4_partition
       use t_internal_4_partitioner
+      use t_partitioner_comm_table
       use m_ctl_param_partitioner
       use m_subdomain_table_IO
 !
@@ -52,6 +55,7 @@
       use local_mesh_by_part
       use const_local_mesh_by_tbl
       use intelligent_partition
+      use delete_data_files
 !
       type(node_data), intent(in) :: node_org
       type(element_data), intent(in) :: ele_org
@@ -63,8 +67,7 @@
       type(internals_4_part), intent(inout) :: internals_part
       type(near_mesh), intent(inout) :: included_ele
       type(domain_groups_4_partitioner), intent(inout) :: domain_grp
-!
-      character(len=kchara), parameter :: work_file_header = 'work'
+      type(partitioner_comm_tables), intent(inout) :: comm_part
 !C
 !C
 !C-- OVERLAPPED ELEMENTs
@@ -99,20 +102,27 @@
 !C +---------------------------------------+
 !C===
 !
-      call gen_node_import_tables(num_domain, work_file_header,         &
-     &    internals_part%itl_nod_part, domain_grp%nod_d_grp)
+      call gen_node_import_tables                                       &
+     &   (num_domain, internals_part%itl_nod_part,                      &
+     &    domain_grp%nod_d_grp, comm_part)
 !C
 !C +-------------------------------+
 !C | update FILE : EXPORT pointers |
 !C +-------------------------------+
 !C===
-      call gen_node_export_tables(num_domain, work_file_header,         &
-     &    internals_part%itl_nod_part, domain_grp%nod_d_grp)
+      call gen_node_export_tables                                       &
+     &   (num_domain, internals_part%itl_nod_part,                      &
+     &    domain_grp%nod_d_grp, comm_part)
 !C
 !C-- distributed Local DATA
-      call local_fem_mesh(izero, ione, work_file_header,                &
-     &    node_org, ele_org, group_org, internals_part,                 &
-     &    domain_grp%nod_d_grp, domain_grp%ele_d_grp)
+      call local_fem_mesh                                               &
+     &   (izero, ione, node_org, ele_org, group_org, internals_part,    &
+     &    domain_grp%nod_d_grp, domain_grp%ele_d_grp, comm_part)
+!
+      if(comm_part%iflag_memory_conserve .ne. 0) then
+        call delete_parallel_files                                      &
+     &     (ione, num_domain, comm_part%work_f_head)
+      end if
 !
       call dealloc_nod_ele_4_subdomain(internals_part)
 !

@@ -64,7 +64,7 @@
      &    comm_IO%num_neib, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
-      call allocate_type_neib_id(comm_IO)
+      call alloc_neighbouring_id(comm_IO)
 !
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
      &    comm_IO%num_neib, comm_IO%id_neib, bin_flags%ierr_IO)
@@ -80,7 +80,7 @@
       type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call allocate_type_import_num(comm_IO)
+      call alloc_import_num(comm_IO)
       if (comm_IO%num_neib .gt. 0) then
 !
         call read_integer_stack_b(bin_flags%iflag_bin_swap,             &
@@ -88,14 +88,14 @@
      &      comm_IO%ntot_import, bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
 !
-        call allocate_type_import_item(comm_IO)
+        call alloc_import_item(comm_IO)
         call read_mul_integer_b(bin_flags%iflag_bin_swap,               &
      &      comm_IO%ntot_import, comm_IO%item_import,                   &
      &      bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
       else
         comm_IO%ntot_import = 0
-        call allocate_type_import_item(comm_IO)
+        call alloc_import_item(comm_IO)
       end if
 !
       end subroutine read_import_data_b
@@ -108,21 +108,21 @@
       type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call allocate_type_export_num(comm_IO)
+      call alloc_export_num(comm_IO)
       if (comm_IO%num_neib .gt. 0) then
         call read_integer_stack_b(bin_flags%iflag_bin_swap,             &
      &      comm_IO%num_neib, comm_IO%istack_export,                    &
      &      comm_IO%ntot_export, bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
 !
-        call allocate_type_export_item(comm_IO)
+        call alloc_export_item(comm_IO)
         call read_mul_integer_b(bin_flags%iflag_bin_swap,               &
      &      comm_IO%ntot_export, comm_IO%item_export,                   &
      &      bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
       else
         comm_IO%ntot_export = 0
-        call allocate_type_export_item(comm_IO)
+        call alloc_export_item(comm_IO)
       end if
 !
       end subroutine read_export_data_b

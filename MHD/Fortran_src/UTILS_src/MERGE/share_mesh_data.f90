@@ -64,8 +64,8 @@
      &      irank_org, CALYPSO_COMM, ierr_MPI)
 !
       if(irank_org .ne. my_rank) then
-        call allocate_type_comm_tbl_num(nod_comm)
-        call allocate_type_comm_tbl_item(nod_comm)
+        call alloc_comm_table_num(nod_comm)
+        call alloc_comm_table_item(nod_comm)
       end if
 !
 !      write(*,*) 'MPI_Bcast num_neib', ip_org

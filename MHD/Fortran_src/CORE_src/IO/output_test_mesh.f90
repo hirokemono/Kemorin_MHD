@@ -51,12 +51,12 @@
 !  ---------------------------------------------
 !
       mesh_IO%nod_comm%num_neib = 0
-      call allocate_type_neib_id(mesh_IO%nod_comm)
+      call alloc_neighbouring_id(mesh_IO%nod_comm)
       call copy_node_sph_to_xx(mesh%node, mesh_IO%node)
       call write_node_position_sph(my_rank, def_sph_mesh_head, mesh_IO)
 !
       mesh_IO%nod_comm%num_neib = 0
-      call allocate_type_neib_id(mesh_IO%nod_comm)
+      call alloc_neighbouring_id(mesh_IO%nod_comm)
       call copy_node_cyl_to_xx(mesh%node, mesh_IO%node)
       call write_node_position_cyl(my_rank, def_cyl_mesh_head, mesh_IO)
 !

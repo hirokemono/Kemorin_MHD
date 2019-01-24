@@ -101,7 +101,7 @@
      &   (added_comm%num_neib, added_comm%num_export, izero,            &
      &    added_comm%istack_export, added_comm%ntot_export)
 !
-      call allocate_type_export_item(added_comm)
+      call alloc_export_item(added_comm)
       call alloc_node_buffer_2_extend                                   &
      &   (added_comm%ntot_export, send_nbuf)
 !
@@ -126,7 +126,7 @@
 !
 !      call check_num_of_added_table(my_rank, added_comm)
 !
-      call allocate_type_import_item(added_comm)
+      call alloc_import_item(added_comm)
       call alloc_node_buffer_2_extend                                   &
      &   (added_comm%ntot_import, recv_nbuf)
 !
@@ -204,7 +204,7 @@
       call count_extended_nod_neib_pe                                   &
      &   (nprocs, iflag_send, iflag_recv, new_comm)
 !
-      call allocate_type_comm_tbl_num(new_comm)
+      call alloc_comm_table_num(new_comm)
 !
       call set_extended_nod_neib_pe(nprocs, my_rank,                    &
      &   iflag_send, iflag_recv, nod_comm, new_comm)
@@ -224,7 +224,7 @@
      &   (new_comm%num_neib, new_comm%num_export, izero,                &
      &    new_comm%istack_export, new_comm%ntot_export)
 !
-      call allocate_type_comm_tbl_item(new_comm)
+      call alloc_comm_table_item(new_comm)
 !
       call set_extended_node_import                                     &
      &   (recv_nbuf, nod_comm, added_comm, new_comm)

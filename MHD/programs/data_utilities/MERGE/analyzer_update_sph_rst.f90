@@ -133,7 +133,7 @@
 !
       integer(kind = kint) :: istep, icou
       integer(kind = kint) :: ip, jp, irank_new
-      integer(kind = kint) :: iloop, jloop
+      integer(kind = kint) :: iloop
       integer(kind = kint) :: istep_out
 !
 !

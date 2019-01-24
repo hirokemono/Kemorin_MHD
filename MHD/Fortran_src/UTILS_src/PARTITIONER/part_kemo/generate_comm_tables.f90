@@ -4,12 +4,14 @@
 !     Written by H. Matsui on Sep., 2007
 !
 !!      subroutine gen_node_import_tables                               &
-!!     &         (nprocs, work_f_head, itl_nod_part, nod_d_grp)
+!!     &         (nprocs, itl_nod_part, nod_d_grp, comm_part)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!        type(partitioner_comm_tables), intent(inout) :: comm_part
 !!      subroutine gen_node_export_tables                               &
-!!     &         (nprocs, work_f_head, itl_nod_part, nod_d_grp)
+!!     &         (nprocs, itl_nod_part, nod_d_grp, comm_part)
 !!        type(internal_4_partitioner), intent(in) :: itl_nod_part
 !!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
+!!        type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       module generate_comm_tables
 !
@@ -18,6 +20,9 @@
       use m_constants
       use m_machine_parameter
       use t_domain_group_4_partition
+      use t_comm_table
+      use t_internal_4_partitioner
+      use t_partitioner_comm_table
       use cal_minmax_and_stacks
 !
       implicit  none
@@ -29,10 +34,8 @@
 !   --------------------------------------------------------------------
 !
       subroutine gen_node_import_tables                                 &
-     &         (nprocs, work_f_head, itl_nod_part, nod_d_grp)
+     &         (nprocs, itl_nod_part, nod_d_grp, comm_part)
 !
-      use t_comm_table
-      use m_partitioner_comm_table
       use set_parallel_file_name
       use const_neighbour_domain
       use const_node_comm_table
@@ -40,17 +43,18 @@
       use check_domain_prop_4_part
 !
       integer(kind = kint), intent(in) :: nprocs
-      character(len=kchara), intent(in) :: work_f_head
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
       type(internal_4_partitioner), intent(in) :: itl_nod_part
+!
+      type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       type(communication_table) :: new_comm
       integer(kind = kint) :: ip, my_rank
 !
 !
-      if(iflag_memory_conserve .eq. 0) then
-        call alloc_nod_comm_tbl_part(nprocs)
+      if(comm_part%iflag_memory_conserve .eq. 0) then
+        call alloc_nod_comm_tbl_part(nprocs, comm_part)
       end if
 !
       call allocate_wk_neib_domain(nprocs)
@@ -61,7 +65,7 @@
         call count_neib_domain_by_node                                  &
      &     (nod_d_grp, itl_nod_part, ip, nprocs, new_comm%num_neib)
 !
-        call allocate_type_neib_id(new_comm)
+        call alloc_neighbouring_id(new_comm)
         call set_neib_domain_by_node(nod_d_grp, itl_nod_part,           &
      &      ip, nprocs, new_comm%num_neib, new_comm%id_neib)
 !
@@ -71,7 +75,7 @@
 
         call const_nod_import_table_4_part                              &
      &     (ip, nod_d_grp, itl_nod_part, new_comm)
-        call save_node_import_4_part(ip, work_f_head, new_comm)
+        call save_node_import_4_part(ip, new_comm, comm_part)
 !
         call dealloc_import_table(new_comm)
       end do
@@ -83,11 +87,8 @@
 !   --------------------------------------------------------------------
 !
       subroutine gen_node_export_tables                                 &
-     &         (nprocs, work_f_head, itl_nod_part, nod_d_grp)
+     &         (nprocs, itl_nod_part, nod_d_grp, comm_part)
 !
-      use t_comm_table
-      use t_internal_4_partitioner
-      use m_partitioner_comm_table
       use set_parallel_file_name
       use set_local_by_subdomain_tbl
       use const_node_comm_table
@@ -95,10 +96,10 @@
       use sel_part_nod_comm_input
 !
       integer(kind = kint), intent(in) :: nprocs
-      character(len=kchara), intent(in) :: work_f_head
       type(internal_4_partitioner), intent(in) :: itl_nod_part
 !
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
+      type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       type(communication_table) :: new_comm
       integer(kind = kint) :: ip, my_rank
@@ -117,15 +118,15 @@
      &      'set_local_id_4_export ', my_rank
         call set_local_id_4_export(ip, itl_nod_part, nod_d_grp)
 !
-        call load_node_import_4_part(ip, work_f_head, new_comm)
+        call load_node_import_4_part(ip, comm_part, new_comm)
 !
-        call allocate_type_export_num(new_comm)
+        call alloc_export_num(new_comm)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &       'count_nod_export_item_4_part ', my_rank
-        call count_nod_export_item_4_part(ip, work_f_head, new_comm)
+        call count_nod_export_item_4_part(ip, new_comm, comm_part)
         call add_nod_export_item_4_part                                 &
-     &     (nprocs, ip, work_f_head, new_comm)
+     &     (nprocs, ip, new_comm, comm_part)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &       's_cal_total_and_stacks ', my_rank
@@ -133,14 +134,14 @@
      &     (new_comm%num_neib, new_comm%num_export, izero,              &
      &      new_comm%istack_export, new_comm%ntot_export)
 !
-        call allocate_type_export_item(new_comm)
+        call alloc_export_item(new_comm)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &       'set_nod_export_item_4_part ', my_rank
         call set_nod_export_item_4_part                                 &
-     &     (ip, work_f_head, nod_d_grp, itl_nod_part, new_comm)
+     &     (ip, nod_d_grp, itl_nod_part, new_comm, comm_part)
 !
-        call save_node_export_4_part(ip, work_f_head, new_comm)
+        call save_node_export_4_part(ip, new_comm, comm_part)
         call dealloc_comm_table(new_comm)
       end do
 !

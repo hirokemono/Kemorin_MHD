@@ -108,7 +108,7 @@
 !
 !      write(*,*) 'istack_send_added ele', added_comm%istack_export
 !
-      call allocate_type_export_item(added_comm)
+      call alloc_export_item(added_comm)
       call alloc_ele_buffer_2_extend                                    &
      &   (added_comm%ntot_export, ele, send_ebuf)
 !
@@ -137,7 +137,7 @@
 !
 !      call check_num_of_added_table(my_rank, added_comm)
 !
-      call allocate_type_import_item(added_comm)
+      call alloc_import_item(added_comm)
       call alloc_ele_buffer_2_extend                                    &
      &   (added_comm%ntot_import, ele, recv_ebuf)
 !

@@ -55,7 +55,7 @@
 !
       call mpi_read_one_integer_b(IO_param, comm_IO%num_neib)
 !
-      call allocate_type_neib_id(comm_IO)
+      call alloc_neighbouring_id(comm_IO)
 !
       call mpi_read_int_vector_b                                        &
      &   (IO_param, comm_IO%num_neib, comm_IO%id_neib)
@@ -71,12 +71,12 @@
       type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call allocate_type_import_num(comm_IO)
+      call alloc_import_num(comm_IO)
 !
       call mpi_read_integer_stack_b(IO_param, comm_IO%num_neib,         &
      &    comm_IO%istack_import, comm_IO%ntot_import)
 !
-      call allocate_type_import_item(comm_IO)
+      call alloc_import_item(comm_IO)
 !
       call mpi_read_int_vector_b                                        &
      &     (IO_param, comm_IO%ntot_import, comm_IO%item_import)
@@ -91,12 +91,12 @@
       type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call allocate_type_export_num(comm_IO)
+      call alloc_export_num(comm_IO)
 !
       call mpi_read_integer_stack_b(IO_param, comm_IO%num_neib,         &
      &      comm_IO%istack_export, comm_IO%ntot_export)
 !
-      call allocate_type_export_item(comm_IO)
+      call alloc_export_item(comm_IO)
 !
       call mpi_read_int_vector_b                                        &
      &     (IO_param, comm_IO%ntot_export, comm_IO%item_export)

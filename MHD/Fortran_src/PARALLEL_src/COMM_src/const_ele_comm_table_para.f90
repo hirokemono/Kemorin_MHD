@@ -140,9 +140,9 @@
       max_import = 0
       do ip = 1, nprocs
         if(my_rank .ne. (ip-1)) then
-          call allocate_type_neib_id( ele_comm_tmp(ip) )
-          call allocate_type_import_num( ele_comm_tmp(ip) )
-          call allocate_type_import_item(ele_comm_tmp(ip))
+          call alloc_neighbouring_id( ele_comm_tmp(ip) )
+          call alloc_import_num(ele_comm_tmp(ip))
+          call alloc_import_item(ele_comm_tmp(ip))
         end if
         max_import = max(max_import,ele_comm_tmp(ip)%ntot_import)
       end do

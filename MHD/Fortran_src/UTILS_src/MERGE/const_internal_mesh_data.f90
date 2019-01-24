@@ -92,8 +92,8 @@
       new_comm%num_neib =    izero
       new_comm%ntot_import = izero
       new_comm%ntot_export = izero
-      call allocate_type_comm_tbl_num(new_comm)
-      call allocate_type_comm_tbl_item(new_comm)
+      call alloc_comm_table_num(new_comm)
+      call alloc_comm_table_item(new_comm)
 !
 !  Node data
       new_node%numnod =        node%internal_node

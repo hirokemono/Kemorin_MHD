@@ -3,9 +3,9 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!!      subroutine local_fem_mesh(my_rank, nprocs, work_f_head,         &
-!!   &            node_org, ele_org, group_org, internals_part,         &
-!!   &            nod_d_grp, ele_d_grp)
+!!      subroutine local_fem_mesh                                       &
+!!     &         (my_rank, nprocs, node_org, ele_org, group_org,        &
+!!     &          internals_part, nod_d_grp, ele_d_grp, comm_part)
 !!        type(node_data), intent(in) :: node_org
 !!        type(element_data), intent(in) :: ele_org
 !!        type(mesh_groups), intent(in) :: group_org
@@ -26,16 +26,16 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine local_fem_mesh(my_rank, nprocs, work_f_head,           &
-     &          node_org, ele_org, group_org, internals_part,           &
-     &          nod_d_grp, ele_d_grp)
+      subroutine local_fem_mesh                                         &
+     &         (my_rank, nprocs, node_org, ele_org, group_org,          &
+     &          internals_part, nod_d_grp, ele_d_grp, comm_part)
 !
       use t_mesh_data
       use t_geometry_data
       use t_group_data
       use t_domain_group_4_partition
       use t_internal_4_partitioner
-      use m_partitioner_comm_table
+      use t_partitioner_comm_table
       use m_ctl_param_partitioner
       use set_parallel_file_name
 !
@@ -51,7 +51,6 @@
       implicit none
 !
       integer(kind = kint), intent(in) :: my_rank, nprocs
-      character(len=kchara), intent(in) :: work_f_head
       type(node_data), intent(in) :: node_org
       type(element_data), intent(in) :: ele_org
       type(mesh_groups), intent(in) :: group_org
@@ -59,6 +58,7 @@
 !
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
       type(domain_group_4_partition), intent(inout) :: ele_d_grp
+      type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       type(mesh_data), allocatable :: para_fem(:)
 !
@@ -80,7 +80,7 @@
 !C +--------------------------+
 !C===
         call load_node_comm_tbl_4_part                                  &
-     &     (ip, work_f_head, para_fem(ip)%mesh%nod_comm)
+     &     (ip, comm_part, para_fem(ip)%mesh%nod_comm)
 !C
 !C +-----------------+
 !C | LOCAL NUMBERING |
@@ -114,10 +114,6 @@
 !
 !C===
       deallocate(para_fem)
-!
-      if(iflag_memory_conserve .ne. 0) then
-        call delete_parallel_files(ione, num_domain, work_f_head)
-      end if
 !
       end subroutine local_fem_mesh
 !

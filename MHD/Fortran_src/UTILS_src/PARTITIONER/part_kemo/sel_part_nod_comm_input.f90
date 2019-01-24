@@ -3,18 +3,24 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine save_node_import_4_part(ip, work_f_head, new_comm)
-!      subroutine save_node_export_4_part(ip, work_f_head, new_comm)
-!
-!      subroutine load_node_import_4_part(ip, work_f_head, new_comm)
-!      subroutine load_node_comm_tbl_4_part(ip, work_f_head, new_comm)
-!
-!      subroutine load_node_import_num_tmp(jp, work_f_head)
-!      subroutine load_node_import_item_tmp(jp, work_f_head)
+!!      subroutine save_node_import_4_part(ip, new_comm, comm_part)
+!!      subroutine save_node_export_4_part(ip, new_comm, comm_part)
+!!        type(communication_table), intent(inout) :: new_comm
+!!        type(partitioner_comm_tables), intent(inout) :: comm_part
+!!
+!!      subroutine load_node_import_4_part(ip, comm_part, new_comm)
+!!      subroutine load_node_comm_tbl_4_part(ip, comm_part, new_comm)
+!!        type(partitioner_comm_tables), intent(in) :: comm_part
+!!        type(communication_table), intent(inout) :: new_comm
+!!
+!!      subroutine load_node_import_num_tmp(jp, comm_part)
+!!      subroutine load_node_import_item_tmp(jp, comm_part)
+!!        type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       module sel_part_nod_comm_input
 !
       use m_precision
+      use t_partitioner_comm_table
 !
       implicit none
 !
@@ -23,30 +29,31 @@
       contains
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
 !
-      subroutine save_node_import_4_part(ip, work_f_head, new_comm)
+      subroutine save_node_import_4_part(ip, new_comm, comm_part)
 !
       use t_comm_table
       use work_nod_comm_table_IO
-      use copy_part_nod_comm_tbl
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: ip
-      character(len=kchara), intent(in) :: work_f_head
       type(communication_table), intent(inout) :: new_comm
+      type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       integer(kind = kint) :: my_rank
+      character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
 !
-      if(iflag_memory_conserve .eq. 0) then
-        call copy_node_import_to_mem(ip, new_comm)
-!
+      if(comm_part%iflag_memory_conserve .eq. 0) then
+        call copy_neib_pe_type                                          &
+     &     (new_comm, comm_part%nod_comm_tbl_part(ip))
+        call copy_import_table_type                                     &
+     &     (new_comm, comm_part%nod_comm_tbl_part(ip))
       else
         my_rank = ip - 1
-        work_f_name = add_int_suffix(my_rank, work_f_head)
-        open (id_work_file,file=work_f_name, status='unknown',          &
+        file_name = add_int_suffix(my_rank, comm_part%work_f_head)
+        open (id_work_file,file=file_name, status='unknown',            &
      &       form='unformatted')
         call write_node_import_to_work(id_work_file, new_comm)
         close(id_work_file)
@@ -56,29 +63,29 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine save_node_export_4_part(ip, work_f_head, new_comm)
+      subroutine save_node_export_4_part(ip, new_comm, comm_part)
 !
       use t_comm_table
       use work_nod_comm_table_IO
-      use copy_part_nod_comm_tbl
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: ip
-      character(len=kchara), intent(in) :: work_f_head
       type(communication_table), intent(inout) :: new_comm
+      type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       integer(kind = kint) :: my_rank
+      character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
 !
-      if(iflag_memory_conserve .eq. 0) then
-!        write(*,*) 'copy_node_export_to_mem', ip
-        call copy_node_export_to_mem(ip, new_comm)
+      if(comm_part%iflag_memory_conserve .eq. 0) then
+        call copy_export_table_type                                     &
+     &     (new_comm, comm_part%nod_comm_tbl_part(ip))
       else
         my_rank = ip - 1
-        work_f_name = add_int_suffix(my_rank, work_f_head)
-        write(*,*) 'write export table: ', trim(work_f_name)
-        open(id_work_file,file=work_f_name,status='unknown',          &
+        file_name = add_int_suffix(my_rank, comm_part%work_f_head)
+        write(*,*) 'write export table: ', trim(file_name)
+        open(id_work_file,file=file_name,status='unknown',              &
      &       form='unformatted')
         call write_node_import_to_work(id_work_file, new_comm)
         call write_node_export_to_work(id_work_file, new_comm)
@@ -90,29 +97,31 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine load_node_import_4_part(ip, work_f_head, new_comm)
+      subroutine load_node_import_4_part(ip, comm_part, new_comm)
 !
       use t_comm_table
       use work_nod_comm_table_IO
-      use copy_part_nod_comm_tbl
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: ip
-      character(len=kchara), intent(in) :: work_f_head
+      type(partitioner_comm_tables), intent(in) :: comm_part
       type(communication_table), intent(inout) :: new_comm
 !
       integer(kind = kint) :: my_rank
+      character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
 !
-      if(iflag_memory_conserve .eq. 0) then
-!        write(*,*) 'copy_node_import_from_mem', ip
-        call copy_node_import_from_mem(ip, new_comm)
+      if(comm_part%iflag_memory_conserve .eq. 0) then
+        call copy_neib_pe_type                                          &
+     &     (comm_part%nod_comm_tbl_part(ip), new_comm)
+        call copy_import_table_type                                     &
+     &     (comm_part%nod_comm_tbl_part(ip), new_comm)
       else
         my_rank = ip - 1
-        work_f_name = add_int_suffix(my_rank, work_f_head)
-        write(*,*) 'read import table: ', trim(work_f_name)
-        open(id_work_file,file=work_f_name,status='unknown',            &
+        file_name = add_int_suffix(my_rank, comm_part%work_f_head)
+        write(*,*) 'read import table: ', trim(file_name)
+        open(id_work_file,file=file_name,status='unknown',              &
      &       form='unformatted')
         call read_node_import_from_work(id_work_file, new_comm)
         close(id_work_file)
@@ -122,29 +131,29 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine load_node_comm_tbl_4_part(ip, work_f_head, new_comm)
+      subroutine load_node_comm_tbl_4_part(ip, comm_part, new_comm)
 !
       use t_comm_table
       use work_nod_comm_table_IO
-      use copy_part_nod_comm_tbl
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: ip
-      character(len=kchara), intent(in) :: work_f_head
+      type(partitioner_comm_tables), intent(in) :: comm_part
+!
       type(communication_table), intent(inout) :: new_comm
 !
       integer(kind = kint) :: my_rank
+      character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
 !
-      if(iflag_memory_conserve .eq. 0) then
-!          write(*,*) 'copy_all_comm_table_from_mem', ip
-          call copy_node_import_from_mem(ip, new_comm)
-          call copy_node_export_from_mem(ip, new_comm)
+      if(comm_part%iflag_memory_conserve .eq. 0) then
+        call copy_comm_tbl_type                                         &
+     &     (comm_part%nod_comm_tbl_part(ip), new_comm)
       else
         my_rank = ip - 1
-        work_f_name = add_int_suffix(my_rank, work_f_head)
-        open (id_work_file,file=work_f_name, status='unknown',          &
+        file_name = add_int_suffix(my_rank, comm_part%work_f_head)
+        open (id_work_file,file=file_name, status='unknown',            &
      &      form='unformatted')
 !
         call read_node_import_from_work(id_work_file, new_comm)
@@ -157,61 +166,64 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine load_node_import_num_tmp(jp, work_f_head)
+      subroutine load_node_import_num_tmp(jp, comm_part)
 !
-      use work_nod_comm_table_IO
-      use copy_part_nod_comm_tbl
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: jp
-      character(len=kchara), intent(in) :: work_f_head
+      type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       integer(kind = kint) :: my_rank
+      character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
 !
-      if(iflag_memory_conserve .eq. 0) then
+      if(comm_part%iflag_memory_conserve .eq. 0) then
 !        write(*,*) 'copy_all_import_num_tmp', jp
-        call copy_node_import_num_tmp(jp)
+        call copy_node_import_num_tmp                                   &
+     &     (comm_part%nod_comm_tbl_part(jp), comm_part%ipt_tmp)
       else
         my_rank = jp - 1
-        work_f_name = add_int_suffix(my_rank, work_f_head)
-        open(id_work_file,file=work_f_name,status='old',                &
+        file_name = add_int_suffix(my_rank, comm_part%work_f_head)
+        open(id_work_file,file=file_name,status='old',                  &
      &       form='unformatted')
-        call read_node_import_num_tmp(id_work_file)
+        call read_node_import_num_tmp(id_work_file, comm_part%ipt_tmp)
         close(id_work_file)
       end if
+      comm_part%ipt_tmp%ISTACK_NOD_TMP(0) = 0
 !
       end subroutine load_node_import_num_tmp
 !
 !   --------------------------------------------------------------------
 !
-      subroutine load_node_import_item_tmp(jp, work_f_head)
+      subroutine load_node_import_item_tmp(jp, comm_part)
 !
-      use work_nod_comm_table_IO
-      use copy_part_nod_comm_tbl
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: jp
-      character(len=kchara), intent(in) :: work_f_head
+      type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       integer(kind = kint) :: my_rank
+      character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
 !
-      if(iflag_memory_conserve .eq. 0) then
+      if(comm_part%iflag_memory_conserve .eq. 0) then
 !        write(*,*) 'copy_node_import_num_tmp', jp
-        call copy_node_import_num_tmp(jp)
-        call copy_node_import_item_tmp(jp)
+        call copy_node_import_num_tmp                                   &
+     &     (comm_part%nod_comm_tbl_part(jp), comm_part%ipt_tmp)
+        call copy_node_import_item_tmp                                  &
+     &     (comm_part%nod_comm_tbl_part(jp), comm_part%ipt_tmp)
       else
         my_rank = jp - 1
-        work_f_name = add_int_suffix(my_rank, work_f_head)
-        open(id_work_file,file=work_f_name,status='old',                &
+        file_name = add_int_suffix(my_rank, comm_part%work_f_head)
+        open(id_work_file,file=file_name,status='old',                  &
      &       form='unformatted')
-        call read_node_import_num_tmp(id_work_file)
-        call read_node_import_item_tmp(id_work_file)
+        call read_node_import_num_tmp(id_work_file, comm_part%ipt_tmp)
+        call read_node_import_item_tmp(id_work_file, comm_part%ipt_tmp)
         close(id_work_file)
       end if
+      comm_part%ipt_tmp%ISTACK_NOD_TMP(0) = 0
 !
       end subroutine load_node_import_item_tmp
 !

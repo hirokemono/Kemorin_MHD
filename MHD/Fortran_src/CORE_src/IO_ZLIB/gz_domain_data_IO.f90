@@ -58,7 +58,7 @@
       call get_one_line_from_gz_f
       read(textbuf,*) comm_IO%num_neib
 !
-      call allocate_type_neib_id(comm_IO)
+      call alloc_neighbouring_id(comm_IO)
 !
       if (comm_IO%num_neib .gt. 0) then
         call read_gz_multi_int(comm_IO%num_neib, comm_IO%id_neib)
@@ -73,19 +73,19 @@
       type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call allocate_type_import_num(comm_IO)
+      call alloc_import_num(comm_IO)
 !
       comm_IO%istack_import(0) = 0
       if (comm_IO%num_neib .gt. 0) then
         call read_gz_integer_stack(comm_IO%num_neib,                    &
      &      comm_IO%istack_import, comm_IO%ntot_import)
 !
-        call allocate_type_import_item(comm_IO)
+        call alloc_import_item(comm_IO)
         call read_send_recv_item_gz                                     &
      &     (comm_IO%ntot_import, comm_IO%item_import)
       else
         comm_IO%ntot_import = 0
-        call allocate_type_import_item(comm_IO)
+        call alloc_import_item(comm_IO)
       end if
 !
       end subroutine gz_read_import_data
@@ -97,19 +97,19 @@
       type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call allocate_type_export_num(comm_IO)
+      call alloc_export_num(comm_IO)
 !
       comm_IO%istack_export(0) = 0
       if (comm_IO%num_neib .gt. 0) then
         call read_gz_integer_stack(comm_IO%num_neib,                    &
      &      comm_IO%istack_export, comm_IO%ntot_export)
 !
-        call allocate_type_export_item(comm_IO)
+        call alloc_export_item(comm_IO)
         call read_send_recv_item_gz                                     &
      &     (comm_IO%ntot_export, comm_IO%item_export)
       else
         comm_IO%ntot_export = 0
-        call allocate_type_export_item(comm_IO)
+        call alloc_export_item(comm_IO)
       end if
 !
       end subroutine gz_read_export_data

@@ -65,7 +65,7 @@
       end if
 !
       call gz_mpi_read_num_of_data(IO_param, comm_IO%num_neib)
-      call allocate_type_neib_id(comm_IO)
+      call alloc_neighbouring_id(comm_IO)
 !
       call gz_mpi_read_int_vector                                       &
      &   (IO_param, comm_IO%num_neib, comm_IO%id_neib)
@@ -84,13 +84,13 @@
 !
 !
       call gz_mpi_read_num_of_data(IO_param, num_tmp)
-      call allocate_type_import_num(comm_IO)
+      call alloc_import_num(comm_IO)
 !
       call gz_mpi_read_int_stack(IO_param, comm_IO%num_neib,            &
      &    comm_IO%istack_import, comm_IO%ntot_import)
 !
       call gz_mpi_read_num_of_data(IO_param, comm_IO%ntot_import)
-      call allocate_type_import_item(comm_IO)
+      call alloc_import_item(comm_IO)
 !
       call gz_mpi_read_comm_table                                       &
      &   (IO_param, ione, comm_IO%ntot_import, comm_IO%item_import)
@@ -108,13 +108,13 @@
 !
 !
       call gz_mpi_read_num_of_data(IO_param, num_tmp)
-      call allocate_type_export_num(comm_IO)
+      call alloc_export_num(comm_IO)
 !
       call gz_mpi_read_int_stack(IO_param, comm_IO%num_neib,            &
      &    comm_IO%istack_export, comm_IO%ntot_export)
 !
       call gz_mpi_read_num_of_data(IO_param, comm_IO%ntot_import)
-      call allocate_type_export_item(comm_IO)
+      call alloc_export_item(comm_IO)
 !
       call gz_mpi_read_comm_table                                       &
      &   (IO_param, ione, comm_IO%ntot_export, comm_IO%item_export)

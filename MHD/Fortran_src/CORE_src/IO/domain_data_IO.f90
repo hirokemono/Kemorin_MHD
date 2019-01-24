@@ -62,7 +62,7 @@
 !
       read(id_file,*) comm_IO%num_neib
 !
-      call allocate_type_neib_id(comm_IO)
+      call alloc_neighbouring_id(comm_IO)
 !
       if (comm_IO%num_neib .gt. 0) then
         read(id_file,*) comm_IO%id_neib(1:comm_IO%num_neib)
@@ -79,19 +79,19 @@
       type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call allocate_type_import_num(comm_IO)
+      call alloc_import_num(comm_IO)
 !
       if (comm_IO%num_neib .gt. 0) then
 !
         call read_arrays_for_stacks(id_file, comm_IO%num_neib,          &
      &      izero, comm_IO%ntot_import, comm_IO%istack_import)
 !
-        call allocate_type_import_item(comm_IO)
+        call alloc_import_item(comm_IO)
         call read_send_recv_item(id_file, comm_IO%ntot_import,          &
      &      comm_IO%item_import)
       else
         comm_IO%ntot_import = 0
-        call allocate_type_import_item(comm_IO)
+        call alloc_import_item(comm_IO)
       end if
 !
       end subroutine read_import_data
@@ -104,18 +104,18 @@
       type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call allocate_type_export_num(comm_IO)
+      call alloc_export_num(comm_IO)
 !
       if (comm_IO%num_neib .gt. 0) then
 !
         call read_arrays_for_stacks(id_file, comm_IO%num_neib,          &
      &      izero, comm_IO%ntot_export, comm_IO%istack_export)
-        call allocate_type_export_item(comm_IO)
+        call alloc_export_item(comm_IO)
         call read_send_recv_item(id_file, comm_IO%ntot_export,          &
      &      comm_IO%item_export)
       else
         comm_IO%ntot_export = 0
-        call allocate_type_export_item(comm_IO)
+        call alloc_export_item(comm_IO)
       end if
 !
       end subroutine read_export_data

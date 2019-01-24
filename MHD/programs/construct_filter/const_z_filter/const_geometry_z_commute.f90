@@ -75,8 +75,8 @@
       nod_comm%num_neib =    0
       nod_comm%ntot_import = 0
       nod_comm%ntot_export = 0
-      call allocate_type_comm_tbl_num(nod_comm)
-      call allocate_type_comm_tbl_item(nod_comm)
+      call alloc_comm_table_num(nod_comm)
+      call alloc_comm_table_item(nod_comm)
 !
       end subroutine set_geometry_z_commute
 !
