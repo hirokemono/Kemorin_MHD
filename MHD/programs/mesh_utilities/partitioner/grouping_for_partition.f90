@@ -37,6 +37,7 @@
       use t_edge_data
       use t_group_data
       use t_group_connects
+      use t_metis_IO
 !
       use recursive_bisection
       use node_equaly_sectioning
@@ -44,7 +45,6 @@
       use set_domain_and_org_id
       use copy_domain_list_4_IO
       use set_partition_by_fine_mesh
-      use const_metis_input
       use error_exit_4_part
 !
       type(node_data), intent(in) :: node
@@ -131,8 +131,8 @@
      &     (node%numnod, node%internal_node, domain_grp%nod_d_grp)
 !
       else if (NTYP_div .eq. iPART_GEN_MeTiS) then
-        call s_const_metis_input                                        &
-     &     (node%numnod, node%internal_node, edge)
+        call const_metis_input                                          &
+     &     (metis_file_name, node%numnod, node%internal_node, edge)
         stop
 !
 !C

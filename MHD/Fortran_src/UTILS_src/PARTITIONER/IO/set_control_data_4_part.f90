@@ -34,7 +34,6 @@
 !
       use m_ctl_param_partitioner
       use m_subdomain_table_IO
-      use m_metis_IO
       use m_file_format_switch
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
@@ -158,7 +157,6 @@
 !
       use m_ctl_param_partitioner
       use m_subdomain_table_IO
-      use m_metis_IO
       use m_file_format_switch
       use itp_table_IO_select_4_zlib
       use set_control_platform_data

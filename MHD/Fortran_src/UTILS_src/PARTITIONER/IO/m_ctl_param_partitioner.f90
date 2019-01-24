@@ -60,6 +60,7 @@
       integer(kind = kint) :: iflag_new_partition
       integer(kind = kint) :: iflag_new_ghost_cell
 !
+      character(len=kchara) :: metis_file_name = 'graph.in'
       character(len=kchara) :: finer_inter_file_head
 !
       type(field_IO_params), save :: global_mesh_file
