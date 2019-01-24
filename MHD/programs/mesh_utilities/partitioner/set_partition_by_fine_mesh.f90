@@ -31,13 +31,11 @@
       subroutine s_set_partition_by_fine_mesh(domain_grp)
 !
       use t_domain_group_4_partition
-      use m_ctl_param_partitioner
-      use m_subdomain_table_IO
+      use t_subdomain_table_IO
       use m_ctl_param_partitioner
       use m_interpolate_table_IO
 !
       use load_mesh_data
-      use copy_domain_list_4_IO
       use itp_table_IO_select_4_zlib
 !
       type(domain_groups_4_partitioner), intent(inout) :: domain_grp
@@ -57,9 +55,8 @@
 !
 !     read interpolate table
 !
-      call read_group_4_partition(fname_subdomain)
-      call copy_finer_domain_list_from_IO                               &
-     &   (finermesh%node, domain_grp%nod_f_grp)
+      call finer_domain_list_from_file(fname_subdomain,                 &
+     &    finermesh%node, domain_grp%nod_f_grp, num_domain)
 !
 !     construct group table
 !

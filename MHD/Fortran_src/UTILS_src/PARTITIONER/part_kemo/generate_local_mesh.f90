@@ -44,7 +44,6 @@
       use t_internal_4_partitioner
       use t_partitioner_comm_table
       use m_ctl_param_partitioner
-      use m_subdomain_table_IO
 !
       use check_domain_prop_4_part
       use find_local_elements

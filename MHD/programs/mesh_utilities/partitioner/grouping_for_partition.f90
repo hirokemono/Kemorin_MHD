@@ -30,7 +30,6 @@
       use m_constants
       use m_error_IDs
       use m_ctl_param_partitioner
-      use m_subdomain_table_IO
 !
       use t_domain_group_4_partition
       use t_geometry_data
@@ -38,12 +37,12 @@
       use t_group_data
       use t_group_connects
       use t_metis_IO
+      use t_subdomain_table_IO
 !
       use recursive_bisection
       use node_equaly_sectioning
       use divide_by_spherical_coord
       use set_domain_and_org_id
-      use copy_domain_list_4_IO
       use set_partition_by_fine_mesh
       use error_exit_4_part
 !
@@ -122,14 +121,8 @@
 !C +------------------------------+
 !C===
       else if (NTYP_div .eq. iPART_MeTiS_RSB) then
-        write(*,*) 'read_group_by_metis'
-        call read_group_by_metis                                        &
-     &     (metis_sdom_name, node%numnod, node%internal_node, ierr)
-        if (ierr .eq. ierr_P_MPI) call ERROR_EXIT(ierr_P_MPI, izero)
-        write(*,*) 'copy_domain_list_from_IO'
-        call copy_domain_list_from_IO                                   &
-     &     (node%numnod, node%internal_node, domain_grp%nod_d_grp)
-!
+        call input_domain_group_by_metis                                &
+     &     (metis_sdom_name, node, domain_grp%nod_d_grp, num_domain)
       else if (NTYP_div .eq. iPART_GEN_MeTiS) then
         call const_metis_input                                          &
      &     (metis_file_name, node%numnod, node%internal_node, edge)
@@ -145,9 +138,8 @@
         call s_set_partition_by_fine_mesh(domain_grp)
 !
       else if (NTYP_div .eq. iPART_DECMP_MESH_TBL) then
-        call read_group_4_partition(fname_subdomain)
-        call copy_domain_list_from_IO                                   &
-     &     (node%numnod, node%internal_node, domain_grp%nod_d_grp)
+        call input_domain_group_by_file                                 &
+     &     (fname_subdomain, node, domain_grp%nod_d_grp, num_domain)
       end if
 !
 !C
@@ -162,9 +154,8 @@
      &   .or. NTYP_div.eq.iPART_EQ_XYZ                                  &
      &   .or. NTYP_div.eq.iPART_EQV_XYZ                                 &
      &   .or. NTYP_div.eq.iPART_EQ_SPH) then
-        call copy_domain_list_to_IO                                     &
-     &     (node%numnod, node%internal_node, domain_grp%nod_d_grp)
-        call output_group_4_partition(fname_subdomain)
+        call output_domain_group_4_part                                 &
+     &     (fname_subdomain, num_domain, node, domain_grp%nod_d_grp)
       end if
 !C
 !C +------------------------------+
@@ -186,17 +177,16 @@
       use m_constants
       use m_error_IDs
       use m_ctl_param_partitioner
-      use m_subdomain_table_IO
 !
       use t_domain_group_4_partition
       use t_geometry_data
       use t_edge_data
       use t_group_data
       use t_group_connects
+      use t_subdomain_table_IO
 !
       use node_equaly_sectioning
       use set_domain_and_org_id
-      use copy_domain_list_4_IO
       use set_partition_by_fine_mesh
       use error_exit_4_part
 !
@@ -236,9 +226,8 @@
      &   .or. NTYP_div.eq.iPART_EQ_XYZ                                  &
      &   .or. NTYP_div.eq.iPART_EQV_XYZ                                 &
      &   .or. NTYP_div.eq.iPART_EQ_SPH) then
-        call copy_domain_list_to_IO                                     &
-     &     (node%numnod, node%internal_node, domain_grp%nod_d_grp)
-        call output_group_4_partition(fname_subdomain)
+        call output_domain_group_4_part                                 &
+     &     (fname_subdomain, num_domain, node, domain_grp%nod_d_grp)
       end if
 !C
 !C +------------------------------+
