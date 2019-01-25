@@ -30,6 +30,7 @@
      &          radius, theta, phi, num_bc_grp, ntot_bc_grp,            &
      &          istack_bc_grp, item_bc_grp, name_bc_grp, nod_d_grp)
 !
+      use m_geometry_constants
       use m_ctl_param_partitioner
       use t_shell_surface_4_part
       use t_domain_group_4_partition
@@ -70,16 +71,18 @@
      &   (nproc, num1, irest1, sphere_4_part%numnod_local)
 !
 !
-      if (nnod_4_ele.ne.8 .and. iflag_sphere_data.eq.0) then
+      if (nnod_4_ele.ne.num_t_linear                                    &
+     &     .and. part_p1%iflag_sphere_data.eq.0) then
         write(*,*) 'Sphere correction data is required!'
         stop
       end if
-      if(part_p1%ndivide_eb(1).gt.1 .and. iflag_sphere_data.eq.0) then
+      if(part_p1%ndivide_eb(1).gt.1                                     &
+     &     .and. part_p1%iflag_sphere_data.eq.0) then
         write(*,*) 'Use sphere correction data.'
         stop
       end if
 !
-      if (iflag_sphere_data.eq. 0) then
+      if (part_p1%iflag_sphere_data.eq. 0) then
         call s_find_shell_information                                   &
      &     (part_p1%ndivide_eb(2), part_p1%ndivide_eb(3),               &
      &      nnod, radius, theta, phi, num_bc_grp, ntot_bc_grp,          &

@@ -29,6 +29,7 @@
       integer(kind= kint), allocatable :: item_tmp_e(:)
       integer(kind= kint), allocatable :: NPC_tmp2(:)
 !
+      private :: near_ele_tmp
       private :: nele_subdomain, iflag_nod, iflag_ele
       private :: item_tmp_e, NPC_tmp2
 !

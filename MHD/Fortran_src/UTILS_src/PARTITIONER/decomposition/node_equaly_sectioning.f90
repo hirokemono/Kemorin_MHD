@@ -82,7 +82,7 @@
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
       real(kind = kreal), allocatable :: group_v(:)
-      integer(kind = kint) :: i, i_grp, num
+      integer(kind = kint) :: i, i_grp
 !
       call alloc_work_4_rcb(nnod, part_comm)
 
@@ -95,15 +95,13 @@
       &   part_comm%VAL, part_comm%IS1)
 !
 !     ========= verify partition is equal volume =========
-      num = part_p1%ndivide_eb(1) * part_p1%ndivide_eb(2)               &
-     &     * part_p1%ndivide_eb(3)
-      allocate(group_v(num))
+      allocate(group_v(num_domain))
       group_v(:) = 0.0
       do i = 1, nnod
         i_grp = nod_d_grp%IGROUP(i)
         group_v(i_grp) = group_v(i_grp) + node_volume(i)
       end do
-      do i = 1, num
+      do i = 1, num_domain
         write(*,*) 'group id', i, 'volume: ', group_v(i)
       end do
 !

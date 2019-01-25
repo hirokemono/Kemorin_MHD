@@ -45,19 +45,19 @@
 !
       call turn_off_debug_flag_by_ctl(izero, part_ctl%part_plt)
       call set_control_mesh_def                                         &
-     &   (part_ctl%part_plt, distribute_mesh_file)
+     &   (part_ctl%part_plt, part_p1%distribute_mesh_file)
 !
 !   set local data format
 !
 !
       if (part_ctl%single_plt%mesh_file_prefix%iflag .gt. 0) then
-        global_mesh_file%file_prefix                                    &
+        part_p1%global_mesh_file%file_prefix                            &
      &      = part_ctl%single_plt%mesh_file_prefix%charavalue
       else
         write(*,*) 'Set original mesh data'
         stop
       end if
-      global_mesh_file%iflag_format                                     &
+      part_p1%global_mesh_file%iflag_format                             &
      &     = choose_file_format(part_ctl%single_plt%mesh_file_fmt_ctl)
 !
       part_p1%nele_grp_ordering = 0
@@ -80,7 +80,7 @@
 !
       write(*,*) 'iflag_memory_conserve',                               &
      &          comm_part%iflag_memory_conserve
-      write(*,*) 'iflag_viewer_output', iflag_viewer_output
+      write(*,*) 'iflag_viewer_output', part_p1%iflag_viewer_output
       if(n_overlap .eq. 1) then
         write(*,*) 'element overlapping flag: ', i_sleeve_ele
       end if
@@ -122,7 +122,7 @@
 !
         call set_file_control_params(def_finer_mesh,                    &
      &      part_ctl%finer_mesh_head_ctl, part_ctl%finer_mesh_fmt_ctl,  &
-     &      finer_mesh_file)
+     &      part_p1%finer_mesh_file)
 !
         ifmt_itp_table_file                                             &
      &       = choose_file_format(part_ctl%itp_tbl_format_ctl)
@@ -147,7 +147,6 @@
         end if
 !
         write(*,'(/,"generate MeTiS/RSB input")')
-        write(*,'(/,"*** GRID  file   ", a)')  org_mesh_header
         write(*,'(/,"*** MeTiS/RSB input  ", a)')                       &
      &       part_p1%metis_file_name
       end if
@@ -175,19 +174,19 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank, part_ctl%part_plt)
       call set_control_mesh_def                                         &
-     &   (part_ctl%part_plt, distribute_mesh_file)
+     &   (part_ctl%part_plt, part_p1%distribute_mesh_file)
 !
 !   set local data format
 !
 !
       if (part_ctl%single_plt%mesh_file_prefix%iflag .gt. 0) then
-        global_mesh_file%file_prefix                                    &
+        part_p1%global_mesh_file%file_prefix                            &
      &      = part_ctl%single_plt%mesh_file_prefix%charavalue
       else
         write(*,*) 'Set original mesh data'
         stop
       end if
-      global_mesh_file%iflag_format                                     &
+      part_p1%global_mesh_file%iflag_format                             &
      &   = choose_file_format(part_ctl%single_plt%mesh_file_fmt_ctl)
 !
       call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
@@ -198,7 +197,7 @@
       write(*,*) 'sleeve level :', n_overlap
       write(*,*) 'iflag_memory_conserve',                               &
      &          comm_part%iflag_memory_conserve
-      write(*,*) 'iflag_viewer_output', iflag_viewer_output
+      write(*,*) 'iflag_viewer_output', part_p1%iflag_viewer_output
       if(n_overlap .eq. 1) then
         write(*,*) 'element overlapping flag: ', i_sleeve_ele
       end if
@@ -234,11 +233,11 @@
         comm_part%iflag_memory_conserve = 1
       end if
 !
-      iflag_viewer_output = 0
+      part_p1%iflag_viewer_output = 0
       if(part_Fmesh%FEM_viewer_output_switch%iflag .gt. 0               &
      &  .and. yes_flag(part_Fmesh%FEM_viewer_output_switch%charavalue)  &
      &   ) then
-        iflag_viewer_output = 1
+        part_p1%iflag_viewer_output = 1
       end if
 !
       if(part_Fmesh%FEM_sleeve_level_ctl%iflag .gt. 0) then
@@ -277,21 +276,21 @@
       type(read_character_item), intent(in) :: selective_ghost_ctl
 !
 !
-      iflag_new_partition = 0
+      part_p1%iflag_LIC_partition = 0
       if(new_part_method_ctl%iflag .gt. 0) then
         if( cmp_no_case(new_part_method_ctl%charavalue,'YES')) then
-          iflag_new_partition = 1
+          part_p1%iflag_LIC_partition = 1
         end if
       end if
-      write(*,*) 'ifag_new_partition', iflag_new_partition
+      write(*,*) 'ifag_LIC_partition', part_p1%iflag_LIC_partition
 
-      iflag_new_ghost_cell = 0
+      part_p1%iflag_new_ghost_cell = 0
       if(selective_ghost_ctl%iflag .gt. 0) then
         if( cmp_no_case(selective_ghost_ctl%charavalue,'YES')) then
-          iflag_new_ghost_cell = 1
+          part_p1%iflag_new_ghost_cell = 1
         end if
       end if
-      write(*,*) 'iflag_new_ghost_cell', iflag_new_ghost_cell
+      write(*,*) 'iflag_new_ghost_cell', part_p1%iflag_new_ghost_cell
 !
       if (part_method_ctl%iflag .gt. 0) then
         if(     cmp_no_case(part_method_ctl%charavalue,'RCB_xyz')       &
@@ -540,8 +539,8 @@
           end do
 !
         else if ( NTYP_div .eq. iPART_CUBED_SPHERE) then
-          iflag_sphere_data = sphere_file_name_ctl%iflag
-          if (iflag_sphere_data .eq. 1) then
+          part_p1%iflag_sphere_data = sphere_file_name_ctl%iflag
+          if(part_p1%iflag_sphere_data .eq. 1) then
             part_p%sphere_data_file_name                                &
      &                = sphere_file_name_ctl%charavalue
             write(*,*) 'Sphere surface correction file: ',              &

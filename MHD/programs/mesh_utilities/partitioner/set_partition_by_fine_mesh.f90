@@ -45,7 +45,8 @@
 !
 !     read finer mesh
 !
-      call input_mesh_geometry(finer_mesh_file, izero, finermesh, ierr)
+      call input_mesh_geometry                                          &
+     &   (part_p1%finer_mesh_file, izero, finermesh, ierr)
       if(ierr .gt. 0) stop 'finer mesh is wrong!!'
 !
 !     read interpolate table

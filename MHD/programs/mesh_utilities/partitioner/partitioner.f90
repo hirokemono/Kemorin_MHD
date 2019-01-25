@@ -102,8 +102,8 @@
 !
 !  read global mesh
 !
-      call input_mesh                                                   &
-     &   (global_mesh_file, my_rank, org_fem, org_ele_mesh, ierr)
+      call input_mesh(part_p1%global_mesh_file, my_rank,                &
+     &    org_fem, org_ele_mesh, ierr)
       if(ierr .gt. 0) stop 'Global mesh is wrong!'
 !
 !      write(*,*) 'const_mesh_infos'
@@ -201,7 +201,7 @@
 !  ========= Regrouping after estimate computation load =======
 !
 ! part_plt contain info about num of subdomains
-      if(iflag_new_partition .eq. 1) then
+      if(part_p1%iflag_LIC_partition .eq. 1) then
         num_particle = num_domain * 100
         allocate(particles(num_particle))
         write(*,*) 'generatie sample particle for estimation'
@@ -278,10 +278,10 @@
 !
 !  ========= Construct subdomain information for viewer ==============
 !
-      if(iflag_viewer_output .gt. 0) then
+      if(part_p1%iflag_viewer_output .gt. 0) then
         write(*,*) 'choose_surface_mesh_sgl'
         call choose_surface_mesh_sgl                                    &
-     &     (num_domain, distribute_mesh_file, sgl_viewer_p)
+     &     (num_domain, part_p1%distribute_mesh_file, sgl_viewer_p)
       end if
 !
       stop ' * Partitioning finished'

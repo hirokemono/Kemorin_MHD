@@ -78,7 +78,7 @@
      &    ele_org, domain_grp%nod_d_grp, included_ele)
       call increase_overlapping(num_domain, node_org, ele_org,          &
      &    surf_org, field_org, domain_grp%nod_d_grp,                    &
-     &    iflag_new_ghost_cell, included_ele)
+     &    part_p1%iflag_new_ghost_cell, included_ele)
 !
 !C
 !C-- INTERFACE info.
@@ -91,8 +91,8 @@
       call s_const_local_mesh_by_tbl                                    &
      &   (part_p1, node_org%numnod, ele_org, group_org%ele_grp,         &
      &    num_domain, internals_part, domain_grp, included_ele)
-      call open_partition_log                                           &
-     &   (num_domain, edge_org%numedge, org_mesh_header,                &
+      call open_partition_log(num_domain,                               &
+     &    edge_org%numedge, part_p1%global_mesh_file%file_prefix,       &
      &    internals_part%itl_nod_part, internals_part%itl_ele_part,     &
      &    domain_grp%nod_d_grp, domain_grp%ele_d_grp)
 !C

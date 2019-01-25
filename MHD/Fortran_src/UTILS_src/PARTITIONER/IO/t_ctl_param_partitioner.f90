@@ -46,6 +46,16 @@
 !
 !
       type ctl_param_partitioner
+        type(field_IO_params) :: global_mesh_file
+        type(field_IO_params) :: distribute_mesh_file
+        type(field_IO_params) :: finer_mesh_file
+!
+        integer(kind = kint) :: iflag_viewer_output = 0
+        integer(kind = kint) :: iflag_sphere_data = 0
+!
+        integer(kind = kint) :: iflag_LIC_partition
+        integer(kind = kint) :: iflag_new_ghost_cell
+!
         integer(kind = kint) :: ndivide_eb(3)
 !
         integer(kind = kint) :: NPOWER_rcb

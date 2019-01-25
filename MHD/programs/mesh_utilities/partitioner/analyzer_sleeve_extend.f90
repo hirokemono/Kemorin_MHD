@@ -71,7 +71,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh                                               &
-     &   (global_mesh_file, nprocs, fem_EXT, e_mesh_EXT)
+     &   (part_p1%global_mesh_file, nprocs, fem_EXT, e_mesh_EXT)
 !
 !  ------  Initialize data communication for FEM data
 !
@@ -104,11 +104,12 @@
 !
 !
       call mpi_output_mesh                                              &
-     &   (distribute_mesh_file, fem_EXT%mesh, fem_EXT%group)
+     &   (part_p1%distribute_mesh_file, fem_EXT%mesh, fem_EXT%group)
       call dealloc_mesh_infos(fem_EXT%mesh, fem_EXT%group)
 !
       if (iflag_debug.gt.0) write(*,*) 'pickup_surface_mesh_para'
-      call pickup_surface_mesh_para(distribute_mesh_file, par_viexw_ex)
+      call pickup_surface_mesh_para                                     &
+     &   (part_p1%distribute_mesh_file, par_viexw_ex)
 !
       if (iflag_debug.gt.0) write(*,*) 'exit analyze'
 !

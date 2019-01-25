@@ -107,7 +107,7 @@
         irank_subdomain = ip-1
         if(mod(irank_subdomain,nprocs) .ne. my_rank) cycle
 !
-        call output_mesh(distribute_mesh_file, irank_subdomain,         &
+        call output_mesh(part_p1%distribute_mesh_file, irank_subdomain, &
      &      para_fem(ip)%mesh, para_fem(ip)%group)
         call dealloc_mesh_infos(para_fem(ip)%mesh, para_fem(ip)%group)
       end do

@@ -13,26 +13,13 @@
 !
 !
       integer(kind = kint) :: num_domain
-      character(len=kchara) :: org_mesh_header
 !
-      integer(kind = kint) :: iflag_viewer_output = 0
 !
       integer(kind = kint) :: n_overlap =    1
       integer(kind = kint) :: i_sleeve_ele = 0
 !
       integer(kind = kint) :: NTYP_div
 !
-!
-      integer(kind = kint) :: iflag_sphere_data
-      integer(kind = kint) :: iflag_new_partition
-      integer(kind = kint) :: iflag_new_ghost_cell
-!
-!
-!
-      type(field_IO_params), save :: global_mesh_file
-      type(field_IO_params), save :: distribute_mesh_file
-!
-      type(field_IO_params), save :: finer_mesh_file
 !
       type(ctl_param_partitioner), save :: part_p1
 !
