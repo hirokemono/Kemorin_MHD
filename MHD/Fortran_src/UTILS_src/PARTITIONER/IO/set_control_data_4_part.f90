@@ -84,9 +84,9 @@
 !
 !
       if (NTYP_div .eq. iPART_RCB_XYZ) then
-        call set_control_XYZ_RCB(part_ctl%RCB_dir_ctl)
+        call set_control_XYZ_RCB(part_ctl%RCB_dir_ctl, part_p1)
       else if( NTYP_div .eq. iPART_RCB_SPH) then
-        call set_control_SPH_RCB(part_ctl%RCB_dir_ctl)
+        call set_control_SPH_RCB(part_ctl%RCB_dir_ctl, part_p1)
 !
       else if (NTYP_div .eq. iPART_EQ_XYZ) then
         call set_control_EQ_XYZ(part_ctl%ndomain_section_ctl)
@@ -368,35 +368,36 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_XYZ_RCB(RCB_dir_ctl)
+      subroutine set_control_XYZ_RCB(RCB_dir_ctl, part_p)
 !
       use t_read_control_arrays
       use m_ctl_param_partitioner
       use skip_comment_f
 !
       type(ctl_array_chara), intent(in) :: RCB_dir_ctl
+      type(ctl_param_partitioner), intent(inout) :: part_p
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, icou
 !
 !
-        NPOWER_rcb = RCB_dir_ctl%num
-        num_domain = 2**NPOWER_rcb
-        allocate( idir_rcb(NPOWER_rcb) )
+        part_p%NPOWER_rcb = RCB_dir_ctl%num
+        num_domain = 2**part_p%NPOWER_rcb
+        call alloc_rcb_directions(part_p)
 !
-        NPOWER_rcb = 0
+        icou = 0
         do i = 1, RCB_dir_ctl%num
           if     (cmp_no_case(RCB_dir_ctl%c_tbl(i), 'X')) then
-            NPOWER_rcb = NPOWER_rcb + 1
-            idir_rcb(NPOWER_rcb) = 1
+            icou = icou + 1
+            part_p%idir_rcb(icou) = 1
           else if(cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Y')) then
-            NPOWER_rcb = NPOWER_rcb + 1
-            idir_rcb(NPOWER_rcb) = 2
+            icou = icou + 1
+            part_p%idir_rcb(icou) = 2
           else if(cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Z')) then
-            NPOWER_rcb = NPOWER_rcb + 1
-            idir_rcb(NPOWER_rcb) = 3
+            icou = icou + 1
+            part_p%idir_rcb(icou) = 3
           end if
         end do
-        if (NPOWER_rcb .lt. RCB_dir_ctl%num) then
+        if (icou .lt. part_p%NPOWER_rcb) then
           write(*,*) 'Set correct direction'
           stop
         end if
@@ -405,51 +406,52 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_SPH_RCB(RCB_dir_ctl)
+      subroutine set_control_SPH_RCB(RCB_dir_ctl, part_p)
 !
       use t_read_control_arrays
       use m_ctl_param_partitioner
       use skip_comment_f
 !
       type(ctl_array_chara), intent(in) :: RCB_dir_ctl
+      type(ctl_param_partitioner), intent(inout) :: part_p
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, icou
 !
 !
-        NPOWER_rcb = RCB_dir_ctl%num
-        num_domain = 2**NPOWER_rcb
-        allocate( idir_rcb(NPOWER_rcb) )
+        part_p%NPOWER_rcb = RCB_dir_ctl%num
+        num_domain = 2**part_p%NPOWER_rcb
+        call alloc_rcb_directions(part_p)
 !
-        NPOWER_rcb = 0
+        icou = 0
         do i = 1, RCB_dir_ctl%num
           if(      cmp_no_case(RCB_dir_ctl%c_tbl(i), 'R')               &
      &        .or. cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Radius')          &
      &        .or. cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Radial')) then
-            NPOWER_rcb = NPOWER_rcb + 1
-            idir_rcb(NPOWER_rcb) = 1
+            icou = icou + 1
+            part_p%idir_rcb(icou) = 1
 !
           else if( cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Meridional')      &
      &        .or. cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Theta')           &
      &        .or. cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Elevation')) then
-            NPOWER_rcb = NPOWER_rcb + 1
-            idir_rcb(NPOWER_rcb) = 2
+            icou = icou + 1
+            part_p%idir_rcb(icou) = 2
 !
           else if( cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Longitudinal')    &
      &        .or. cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Phi')             &
      &        .or. cmp_no_case(RCB_dir_ctl%c_tbl(i), 'Azimuth')) then
-            NPOWER_rcb = NPOWER_rcb + 1
-            idir_rcb(NPOWER_rcb) = 3
+            icou = icou + 1
+            part_p%idir_rcb(icou) = 3
           end if
         end do
-        if (NPOWER_rcb .lt. RCB_dir_ctl%num) then
+        if (icou .lt. part_p%NPOWER_rcb) then
           write(*,*) 'Set correct direction'
           stop
         end if
 !
         write(*,'(/,"### Spherical RECURSIVE COORDINATE BiSECTION")')
-        write (*,*)  "number of level: ", NPOWER_rcb
+        write (*,*)  "number of level: ", part_p%NPOWER_rcb
         write (*,'(" Direction Code r:1, theta:2, phi:3")')
-        write  (*,*) idir_rcb(1:NPOWER_rcb)
+        write  (*,*) part_p%idir_rcb(1:part_p%NPOWER_rcb)
 !
       end subroutine set_control_SPH_RCB
 !

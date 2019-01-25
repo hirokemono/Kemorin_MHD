@@ -1,8 +1,12 @@
+!>@file   grouping_for_partition.f90
+!!@brief  module grouping_for_partition
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      module grouping_for_partition
-!
-!     Written by H. Matsui on Aug., 2007
-!
+!>@brief Grouping for partitioner
+!!
+!!@verbatim
 !!      subroutine grouping_for_partitioner                             &
 !!     &         (node, ele, edge, nod_grp, ele_grp,                    &
 !!     &          ele_grp_data, node_volume, domain_grp)
@@ -10,6 +14,7 @@
 !!      subroutine regrouping_for_partition                             &
 !!      &        (node, ele, part_tbl, part_volume, n_volume, domain_grp)
 !!        type(domain_groups_4_partitioner), intent(inout)  :: domain_grp
+!!@endverbatim
 !
       module grouping_for_partition
 !
@@ -63,8 +68,10 @@
 !C +-----+
 !C===
       if (NTYP_div .eq. iPART_RCB_XYZ) then
-        call rc_bisection(node%numnod, node%internal_node, node%xx,     &
+        call rc_bisection                                               &
+     &     (part_p1, node%numnod, node%internal_node, node%xx,          &
      &      domain_grp%nod_d_grp)
+        call dealloc_rcb_directions(part_p1)
 !C===
 !C===
 !C
@@ -74,8 +81,9 @@
 !C===
 
       else if (NTYP_div .eq. iPART_RCB_SPH) then
-        call rcb_spherical(node%numnod, node%internal_node,             &
+        call rcb_spherical(part_p1, node%numnod, node%internal_node,    &
      &      node%rr, node%theta, node%phi, domain_grp%nod_d_grp)
+        call dealloc_rcb_directions(part_p1)
 !
 !C
 !C +------------------------------+

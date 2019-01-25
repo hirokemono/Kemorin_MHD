@@ -1,8 +1,3 @@
-!
-!     module t_metis_IO
-!
-!     Written by H. Matsui on Aug., 2007
-!
 !>@file   t_metis_IO.f90
 !!@brief  module t_metis_IO
 !!

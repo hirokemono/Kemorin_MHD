@@ -3,12 +3,10 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
-!      subroutine allocate_rcb_directions
-!      subroutine deallocate_rcb_directions
-!
       module m_ctl_param_partitioner
 !
       use m_precision
+      use t_ctl_param_partitioner
       use t_file_IO_parameter
 !
       implicit none
@@ -23,28 +21,6 @@
       integer(kind = kint) :: i_sleeve_ele = 0
 !
       integer(kind = kint) :: NTYP_div
-!
-      integer(kind = kint), parameter :: iPART_RCB_XYZ = 1
-      integer(kind = kint), parameter :: iPART_RCB_SPH = 2
-!
-      integer(kind = kint), parameter :: iPART_EQ_XYZ =  8
-      integer(kind = kint), parameter :: iPART_EQV_XYZ =  11
-      integer(kind = kint), parameter :: iPART_EQ_SPH =  9
-      integer(kind = kint), parameter :: iPART_LAYER_SPH = 10
-!
-      integer(kind = kint), parameter :: iPART_MeTiS_RSB = 3
-      integer(kind = kint), parameter :: iPART_GEN_MeTiS = 4
-!
-      integer(kind = kint), parameter :: iPART_CUBED_SPHERE =   5
-      integer(kind = kint), parameter :: iPART_FINE_MESH_TBL =  6
-      integer(kind = kint), parameter :: iPART_DECMP_MESH_TBL = 7
-      integer(kind = kint), parameter :: iPART_SPH_TBL_MEM =   17
-!
-      character(len=kchara), parameter                                  &
-     &                      :: def_finer_mesh =    "finer_mesh/in"
-!
-      integer(kind = kint) :: NPOWER_rcb
-      integer(kind = kint), allocatable :: idir_rcb(:)
 !
 !
       integer(kind = kint) :: iflag_sphere_data
@@ -74,27 +50,6 @@
 !
       character(len=kchara), save :: sphere_data_file_name
 !
-!   --------------------------------------------------------------------
-!
-      contains
-!
-!   --------------------------------------------------------------------
-!
-      subroutine allocate_rcb_directions
-!
-      allocate(idir_rcb(NPOWER_rcb))
-      idir_rcb = 300
-!
-      end subroutine allocate_rcb_directions
-!
-!   --------------------------------------------------------------------
-!
-      subroutine deallocate_rcb_directions
-!
-      deallocate(idir_rcb)
-!
-      end subroutine deallocate_rcb_directions
-!
-!   --------------------------------------------------------------------
+      type(ctl_param_partitioner), save :: part_p1
 !
       end module m_ctl_param_partitioner
