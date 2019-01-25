@@ -22,7 +22,7 @@
 !
       implicit    none
 !
-      integer(kind=kint ) :: num_crt, num_domain
+      integer(kind=kint ) :: num_crt, num_domain_c
 !
       type(field_IO_params), save ::  cor_mesh_file
       type(field_IO_params), save ::  ref_mesh_file
@@ -99,8 +99,8 @@
        subroutine allocate_correlate_4_plane
 !
 !
-       allocate ( phys_d1(num_domain*num_crt) )
-       allocate ( phys_d2(num_domain*num_crt) )
+       allocate ( phys_d1(num_domain_c*num_crt) )
+       allocate ( phys_d2(num_domain_c*num_crt) )
        allocate ( ave_data(iz_max*num_crt) )
        allocate ( ave_data2(iz_max*num_crt) )
        allocate ( rms_data(iz_max*num_crt) )

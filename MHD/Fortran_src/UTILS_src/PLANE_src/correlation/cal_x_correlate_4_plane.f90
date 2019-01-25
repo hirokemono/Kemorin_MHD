@@ -37,7 +37,7 @@
         do iy = 1, ky_max
          do ix = 1, kx_max
           i0 = ix + (iy-1)*kx_max + (iz-1)*(kx_max*ky_max)              &
-     &          + (j-1)*num_domain
+     &          + (j-1)*num_domain_c
           crt_data(ii) = crt_data(ii) + (phys_d1(i0) - ave_data(ii))    &
      &                  * (phys_d2(i0) - ave_data2(ii))
          end do
@@ -81,11 +81,11 @@
 !
               j0 = mod((jx+kx_max/2),kx_max)                            &
      &            + (mod((jy+ky_max/2),ky_max)-1)*kx_max                &
-     &            + (iz-1)*(kx_max*ky_max) + (j-1)*num_domain
+     &            + (iz-1)*(kx_max*ky_max) + (j-1)*num_domain_c
               do iy = 1, ky_max
                 do ix = 1, kx_max
                   i0 = ix + (iy-1)*kx_max + (iz-1)*(kx_max*ky_max)      &
-     &                + (j-1)*num_domain
+     &                + (j-1)*num_domain_c
                   crt_data(ii) = crt_data(ii)                           &
      &                          + (phys_d1(i0) - ave_data(ii))          &
      &                           * (phys_d2(j0) - ave_data2(ii))

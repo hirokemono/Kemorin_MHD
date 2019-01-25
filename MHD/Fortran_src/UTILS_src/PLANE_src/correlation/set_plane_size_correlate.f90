@@ -36,7 +36,7 @@
       kx_max = nx_all
       ky_max = ny_all
       iz_max = nz_all
-      num_domain =  nx_all * ny_all * nz_all
+      num_domain_c =  nx_all * ny_all * nz_all
        num_pe =   ndomain_plane_ctl%intvalue(1)                         &
      &          * ndomain_plane_ctl%intvalue(2)                         &
      &          * ndomain_plane_ctl%intvalue(3)

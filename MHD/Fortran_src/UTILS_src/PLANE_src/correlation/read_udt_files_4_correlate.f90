@@ -71,13 +71,13 @@
 !
 !
       call read_udt_data_4_plane_model(mgd_mesh%num_pe, istep,          &
-     &    num_domain, num_crt, icomp_crt, ifield_crt, phys_d1(1),       &
+     &    num_domain_c, num_crt, icomp_crt, ifield_crt, phys_d1(1),     &
      &    mgd_mesh%merge_tbl%nnod_max, mgd_mesh%subdomain,              &
      &    cor_ucd_param, t_IO, ucd)
 !
 !
       call read_udt_data_4_plane_model(sec_mesh%num_pe2, istep,         &
-     &    num_domain, num_crt, icomp_crt, ifield_crt2, phys_d2(1),      &
+     &    num_domain_c, num_crt, icomp_crt, ifield_crt2, phys_d2(1),    &
      &    sec_mesh%merge_tbl_2%nnod_max, sec_mesh%subdomains_2,         &
      &    ref_ucd_param, t_IO, ucd)
 !

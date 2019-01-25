@@ -48,7 +48,7 @@
         do iy = 1, ky_max
          do ix = 1, kx_max
           i0 = ix + (iy-1)*kx_max + (iz-1)*(kx_max*ky_max)              &
-     &          + (j-1)*num_domain
+     &          + (j-1)*num_domain_c
           ave_data(ii) = ave_data(ii) + phys_d1(i0)
           ave_data2(ii) = ave_data2(ii) + phys_d2(i0)
           rms_data(ii) = rms_data(ii) + phys_d1(i0)**2
@@ -77,7 +77,7 @@
         do iy = 1, ky_max
          do ix = 1, kx_max
           i0 = ix + (iy-1)*kx_max + (iz-1)*(kx_max*ky_max)              &
-     &          + (j-1)*num_domain
+     &          + (j-1)*num_domain_c
           sig_data(ii) = sig_data(ii)                                   &
      &                + (phys_d1(i0) - ave_data(ii) )**2
           sig_data2(ii) = sig_data2(ii)                                 &
