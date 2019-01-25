@@ -40,6 +40,8 @@
       type(control_data_4_partitioner), intent(in) :: part_ctl
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
+      integer(kind = kint) :: i
+!
 !
       call turn_off_debug_flag_by_ctl(izero, part_ctl%part_plt)
       call set_control_mesh_def                                         &
@@ -58,14 +60,15 @@
       global_mesh_file%iflag_format                                     &
      &     = choose_file_format(part_ctl%single_plt%mesh_file_fmt_ctl)
 !
-      nele_grp_ordering = 0
+      part_p1%nele_grp_ordering = 0
       if (part_ctl%ele_grp_ordering_ctl%icou .eq. 1) then
-        nele_grp_ordering = part_ctl%ele_grp_ordering_ctl%num
+        part_p1%nele_grp_ordering = part_ctl%ele_grp_ordering_ctl%num
 !
-        allocate(ele_grp_ordering(nele_grp_ordering))
-        allocate(igrp_ele_ordering(nele_grp_ordering))
-        ele_grp_ordering(1:nele_grp_ordering)                           &
-     &      = part_ctl%ele_grp_ordering_ctl%c_tbl(1:nele_grp_ordering)
+        call alloc_ele_grp_ordering(part_p1)
+        do i = 1, part_p1%nele_grp_ordering
+          part_p1%ele_grp_ordering(i)                                   &
+     &       = part_ctl%ele_grp_ordering_ctl%c_tbl(i)
+        end do
       end if
 !
       call set_partition_method(part_ctl%part_method_ctl,               &
@@ -88,43 +91,47 @@
       else if( NTYP_div .eq. iPART_RCB_SPH) then
         call set_control_SPH_RCB(part_ctl%RCB_dir_ctl, part_p1)
 !
-      else if (NTYP_div .eq. iPART_EQ_XYZ) then
-        call set_control_EQ_XYZ(part_ctl%ndomain_section_ctl)
+      else if (NTYP_div .eq. iPART_EQ_XYZ                               &
+     &    .or. NTYP_div .eq. iPART_EQV_XYZ) then
+        call set_control_EQ_XYZ(part_ctl%ndomain_section_ctl, part_p1)
       else if (NTYP_div.eq.iPART_CUBED_SPHERE                           &
      &    .or. NTYP_div.eq.iPART_EQ_SPH                                 &
      &    .or. NTYP_div.eq.iPART_LAYER_SPH) then
         call set_control_EQ_SPH(part_ctl%ndomain_section_ctl,           &
-     &    part_ctl%ele_grp_layering_ctl, part_ctl%sphere_file_name_ctl)
+     &    part_ctl%ele_grp_layering_ctl, part_ctl%sphere_file_name_ctl, &
+     &    part_p1)
 !
       else if (NTYP_div .eq. iPART_DECMP_MESH_TBL                       &
      &    .or. NTYP_div .eq. iPART_FINE_MESH_TBL) then
         if (part_ctl%domain_group_file_ctl%iflag .eq. 1) then
-          fname_subdomain = part_ctl%domain_group_file_ctl%charavalue
+          part_p1%fname_subdomain                                       &
+     &        = part_ctl%domain_group_file_ctl%charavalue
+      else
+        write(*,*) 'set domain table file name'
+        stop
+      end if
+!
+      if(NTYP_div .eq. iPART_FINE_MESH_TBL) then
+        if (part_ctl%itp_tbl_head_ctl%iflag .eq. 1) then
+          part_p1%finer_inter_file_head                                 &
+     &          = part_ctl%itp_tbl_head_ctl%charavalue
         else
-          write(*,*) 'set domain table file name'
+          write(*,*) 'set interpolate file name'
           stop
         end if
 !
-        if(NTYP_div .eq. iPART_FINE_MESH_TBL) then
-          if (part_ctl%itp_tbl_head_ctl%iflag .eq. 1) then
-            finer_inter_file_head                                       &
-     &            = part_ctl%itp_tbl_head_ctl%charavalue
-          else
-            write(*,*) 'set interpolate file name'
-            stop
-          end if
+        call set_file_control_params(def_finer_mesh,                    &
+     &      part_ctl%finer_mesh_head_ctl, part_ctl%finer_mesh_fmt_ctl,  &
+     &      finer_mesh_file)
 !
-          call set_file_control_params(def_finer_mesh,                  &
-      &      part_ctl%finer_mesh_head_ctl, part_ctl%finer_mesh_fmt_ctl, &
-      &      finer_mesh_file)
-!
-          ifmt_itp_table_file                                           &
+        ifmt_itp_table_file                                             &
      &       = choose_file_format(part_ctl%itp_tbl_format_ctl)
-        end if
+      end if
 !
       else if(NTYP_div .eq. iPART_MeTiS_RSB) then
         if (part_ctl%metis_domain_file_ctl%iflag .eq. 1) then
-          metis_sdom_name = part_ctl%metis_domain_file_ctl%charavalue
+          part_p1%metis_sdom_name                                       &
+     &           = part_ctl%metis_domain_file_ctl%charavalue
         else
           write(*,*) 'set MeTiS input file name'
           stop
@@ -132,15 +139,17 @@
 !
       else if (iPART_GEN_MeTiS .eq. iPART_GEN_MeTiS) then
         if (part_ctl%metis_input_file_ctl%iflag .eq. 1) then
-          metis_file_name = part_ctl%metis_input_file_ctl%charavalue
+          part_p1%metis_file_name                                       &
+     &           = part_ctl%metis_input_file_ctl%charavalue
         else
           write(*,*) 'set MeTiS domain file name'
           stop
         end if
 !
-        write ( *,'(/,"generate MeTiS/RSB input")')
-        write  ( *,'(/,"*** GRID  file   ", a)')  org_mesh_header
-        write  ( *,'(/,"*** MeTiS/RSB input  ", a)')  metis_file_name
+        write(*,'(/,"generate MeTiS/RSB input")')
+        write(*,'(/,"*** GRID  file   ", a)')  org_mesh_header
+        write(*,'(/,"*** MeTiS/RSB input  ", a)')                       &
+     &       part_p1%metis_file_name
       end if
 !
       end subroutine s_set_control_data_4_part
@@ -180,16 +189,6 @@
       end if
       global_mesh_file%iflag_format                                     &
      &   = choose_file_format(part_ctl%single_plt%mesh_file_fmt_ctl)
-!
-!      nele_grp_ordering = 0
-!      if (part_ctl%ele_grp_ordering_ctl%icou .eq. 1) then
-!        nele_grp_ordering = part_ctl%ele_grp_ordering_ctl%num
-!
-!        allocate(ele_grp_ordering(nele_grp_ordering))
-!        allocate(igrp_ele_ordering(nele_grp_ordering))
-!        ele_grp_ordering(1:nele_grp_ordering)                           &
-!     &      = part_ctl%ele_grp_ordering_ctl%c_tbl(1:nele_grp_ordering)
-!      end if
 !
       call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
      &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl,      &
@@ -457,40 +456,39 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_EQ_XYZ(ndomain_section_ctl)
+      subroutine set_control_EQ_XYZ(ndomain_section_ctl, part_p)
 !
       use t_read_control_arrays
       use m_ctl_param_partitioner
       use skip_comment_f
 !
       type(ctl_array_ci), intent(in) :: ndomain_section_ctl
+      type(ctl_param_partitioner), intent(inout) :: part_p
 !
       integer(kind = kint) :: i
 !
 !
-      if (NTYP_div .eq. iPART_EQ_XYZ                                    &
-     &  .or. NTYP_div .eq. iPART_EQV_XYZ) then
-        if(ndomain_section_ctl%num .ne. 3)                              &
+      if(ndomain_section_ctl%num .ne. 3)                                &
      &         stop 'number of subdomain should be 3 directions'
 !
-        ndivide_eb(1:3) = 1
-        do i = 1, ndomain_section_ctl%num
-          if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'X')             &
-     &          ) ndivide_eb(1) = ndomain_section_ctl%ivec(i)
-          if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Y')             &
-     &          ) ndivide_eb(2) = ndomain_section_ctl%ivec(i)
-          if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Z')             &
-     &          ) ndivide_eb(3) = ndomain_section_ctl%ivec(i)
-        end do
-        num_domain = ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
-      end if
+      part_p%ndivide_eb(1:3) = 1
+      do i = 1, ndomain_section_ctl%num
+        if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'X')               &
+     &        ) part_p%ndivide_eb(1) = ndomain_section_ctl%ivec(i)
+        if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Y')               &
+     &        ) part_p%ndivide_eb(2) = ndomain_section_ctl%ivec(i)
+        if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Z')               &
+     &        ) part_p%ndivide_eb(3) = ndomain_section_ctl%ivec(i)
+      end do
+      num_domain = part_p%ndivide_eb(1) * part_p%ndivide_eb(2)          &
+     &            * part_p%ndivide_eb(3)
 !
       end subroutine set_control_EQ_XYZ
 !
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_EQ_SPH(ndomain_section_ctl,                &
-     &          ele_grp_layering_ctl, sphere_file_name_ctl)
+     &          ele_grp_layering_ctl, sphere_file_name_ctl, part_p)
 !
       use t_read_control_arrays
       use t_control_elements
@@ -501,50 +499,53 @@
       type(ctl_array_chara), intent(in) :: ele_grp_layering_ctl
       type(read_character_item), intent(in) :: sphere_file_name_ctl
 !
+      type(ctl_param_partitioner), intent(inout) :: part_p
+!
       integer(kind = kint) :: i
 !
 !
         if(ndomain_section_ctl%num .ne. 3)                              &
      &         stop 'number of subdomain should be 3 directions'
 !
-        ndivide_eb(1:3) = 1
+        part_p%ndivide_eb(1:3) = 1
         do i = 1, ndomain_section_ctl%num
           if(      cmp_no_case(ndomain_section_ctl%c_tbl(i), 'R')       &
      &        .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Radius')  &
      &        .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Radial')  &
      &       ) then
-            ndivide_eb(1) = ndomain_section_ctl%ivec(i)
+            part_p%ndivide_eb(1) = ndomain_section_ctl%ivec(i)
 !
           else if( cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Theta')   &
      &     .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Meridional') &
      &     .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Elevation')  &
      &        ) then
-            ndivide_eb(2) = ndomain_section_ctl%ivec(i)
+            part_p%ndivide_eb(2) = ndomain_section_ctl%ivec(i)
 !
           else if( cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Phi')     &
      &    .or. cmp_no_case(ndomain_section_ctl%c_tbl(i),'Longitudinal') &
      &    .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Azimuth')     &
      &        ) then
-            ndivide_eb(3) = ndomain_section_ctl%ivec(i)
+            part_p%ndivide_eb(3) = ndomain_section_ctl%ivec(i)
           end if
         end do
-        num_domain = ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
+        num_domain = part_p%ndivide_eb(1) * part_p%ndivide_eb(2)        &
+     &              * part_p%ndivide_eb(3)
 !
         if(NTYP_div .eq. iPART_LAYER_SPH) then
-          num_egrp_layer = ele_grp_layering_ctl%num
-          allocate(grp_layer_name(num_egrp_layer))
+          part_p%num_egrp_layer = ele_grp_layering_ctl%num
+          call alloc_ele_grp_layer_name(part_p)
 !
-          if (num_egrp_layer .gt. 0) then
-            grp_layer_name(1:num_egrp_layer)                            &
-     &          = ele_grp_layering_ctl%c_tbl(1:num_egrp_layer)
-          end if
+          do i = 1, part_p%num_egrp_layer
+            part_p%grp_layer_name(i) = ele_grp_layering_ctl%c_tbl(i)
+          end do
 !
         else if ( NTYP_div .eq. iPART_CUBED_SPHERE) then
           iflag_sphere_data = sphere_file_name_ctl%iflag
           if (iflag_sphere_data .eq. 1) then
-            sphere_data_file_name = sphere_file_name_ctl%charavalue
+            part_p%sphere_data_file_name                                &
+     &                = sphere_file_name_ctl%charavalue
             write(*,*) 'Sphere surface correction file: ',              &
-     &              trim(sphere_data_file_name)
+     &              trim(part_p%sphere_data_file_name)
           else
             write(*,*) 'No Sphere surface correction file '
           end if

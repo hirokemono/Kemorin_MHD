@@ -4,7 +4,8 @@
 !      Written by H. Matsui on Oct., 2007
 !
 !!      subroutine set_local_element_table                              &
-!!     &         (numnod, numele, ele_grp, n_domain,                    &
+!!     &         (nele_grp_ordering, ele_grp_ordering,                  &
+!!     &          numnod, numele, ele_grp, n_domain,                    &
 !!     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod,&
 !!     &          ntot_ele_subdomain, iele_4_subdomain)
 !
@@ -14,7 +15,10 @@
 !
       implicit none
 !
-      integer(kind = kint), allocatable, private :: imark_ele(:)
+      integer(kind = kint), allocatable :: imark_ele(:)
+      integer(kind = kint), allocatable :: igrp_ele_ordering(:)
+!
+      private :: imark_ele, igrp_ele_ordering
       private :: s_ordering_by_element_group
 !
 !   --------------------------------------------------------------------
@@ -24,12 +28,16 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_local_element_table                                &
-     &         (numnod, numele, ele_grp, n_domain,                      &
+     &         (nele_grp_ordering, ele_grp_ordering,                    &
+     &          numnod, numele, ele_grp, n_domain,                      &
      &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod,  &
      &          ntot_ele_subdomain, iele_4_subdomain)
 !
       use t_group_data
-      use m_ctl_param_partitioner
+!
+      integer(kind = kint), intent(in) :: nele_grp_ordering
+      character(len=kchara), intent(in)                                 &
+     &                      :: ele_grp_ordering(nele_grp_ordering)
 !
       type(group_data), intent(in) :: ele_grp
       integer(kind = kint), intent(in) :: numnod, numele
@@ -44,9 +52,10 @@
      &                     :: iele_4_subdomain(ntot_ele_subdomain)
 !
 !
-      if (nele_grp_ordering .gt. 0) then
+      if(nele_grp_ordering .gt. 0) then
         call s_ordering_by_element_group                                &
-     &     (numnod, numele, ele_grp, n_domain,                          &
+     &     (nele_grp_ordering, ele_grp_ordering,                        &
+     &      numnod, numele, ele_grp, n_domain,                          &
      &      ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod,      &
      &      ntot_ele_subdomain, iele_4_subdomain)
       else
@@ -59,12 +68,16 @@
 !   --------------------------------------------------------------------
 !
       subroutine s_ordering_by_element_group                            &
-     &         (numnod, numele, ele_grp, n_domain,                      &
+     &         (nele_grp_ordering, ele_grp_ordering,                    &
+     &          numnod, numele, ele_grp, n_domain,                      &
      &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod,  &
      &          ntot_ele_subdomain, iele_4_subdomain)
 !
       use t_group_data
-      use m_ctl_param_partitioner
+!
+      integer(kind = kint), intent(in) :: nele_grp_ordering
+      character(len=kchara), intent(in)                                 &
+     &                      :: ele_grp_ordering(nele_grp_ordering)
 !
       type(group_data), intent(in) :: ele_grp
       integer(kind = kint), intent(in) :: numnod, numele
@@ -85,7 +98,12 @@
 !
 !
       allocate(imark_ele(numele))
+!$omp parallel workshare
       imark_ele(1:numele) = 0
+!$omp end parallel workshare
+!
+      allocate(igrp_ele_ordering(nele_grp_ordering))
+      if(nele_grp_ordering .gt. 0) igrp_ele_ordering = 0
 !
 !
       do igrp = 1, nele_grp_ordering
@@ -136,6 +154,7 @@
 !
       end do
 !
+      deallocate(igrp_ele_ordering)
       deallocate(imark_ele)
 !
       end subroutine s_ordering_by_element_group

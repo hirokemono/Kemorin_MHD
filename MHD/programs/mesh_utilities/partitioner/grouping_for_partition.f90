@@ -129,11 +129,11 @@
 !C +------------------------------+
 !C===
       else if (NTYP_div .eq. iPART_MeTiS_RSB) then
-        call input_domain_group_by_metis                                &
-     &     (metis_sdom_name, node, domain_grp%nod_d_grp, num_domain)
+        call input_domain_group_by_metis(part_p1%metis_sdom_name,       &
+     &      node, domain_grp%nod_d_grp, num_domain)
       else if (NTYP_div .eq. iPART_GEN_MeTiS) then
-        call const_metis_input                                          &
-     &     (metis_file_name, node%numnod, node%internal_node, edge)
+        call const_metis_input(part_p1%metis_file_name,                 &
+     &      node%numnod, node%internal_node, edge)
         stop
 !
 !C
@@ -146,8 +146,8 @@
         call s_set_partition_by_fine_mesh(domain_grp)
 !
       else if (NTYP_div .eq. iPART_DECMP_MESH_TBL) then
-        call input_domain_group_by_file                                 &
-     &     (fname_subdomain, node, domain_grp%nod_d_grp, num_domain)
+        call input_domain_group_by_file(part_p1%fname_subdomain,        &
+     &      node, domain_grp%nod_d_grp, num_domain)
       end if
 !
 !C
@@ -162,8 +162,8 @@
      &   .or. NTYP_div.eq.iPART_EQ_XYZ                                  &
      &   .or. NTYP_div.eq.iPART_EQV_XYZ                                 &
      &   .or. NTYP_div.eq.iPART_EQ_SPH) then
-        call output_domain_group_4_part                                 &
-     &     (fname_subdomain, num_domain, node, domain_grp%nod_d_grp)
+        call output_domain_group_4_part(part_p1%fname_subdomain,        &
+     &      num_domain, node, domain_grp%nod_d_grp)
       end if
 !C
 !C +------------------------------+
@@ -234,8 +234,8 @@
      &   .or. NTYP_div.eq.iPART_EQ_XYZ                                  &
      &   .or. NTYP_div.eq.iPART_EQV_XYZ                                 &
      &   .or. NTYP_div.eq.iPART_EQ_SPH) then
-        call output_domain_group_4_part                                 &
-     &     (fname_subdomain, num_domain, node, domain_grp%nod_d_grp)
+        call output_domain_group_4_part(part_p1%fname_subdomain,        &
+     &      num_domain, node, domain_grp%nod_d_grp)
       end if
 !C
 !C +------------------------------+

@@ -248,8 +248,9 @@
           write(*,*) 'partition volume', partition_volume(:)
         end if
 
-  !      call allocate_dim_part_tbl(part_dim_tbl, ndivide_eb)
-  !      call cal_part_dim_tbl(num_domain, ndivide_eb, partition_tbl, part_dim_tbl)
+!      call allocate_dim_part_tbl(part_dim_tbl, part_p1%ndivide_eb)
+!      call cal_part_dim_tbl(num_domain, part_p1%ndivide_eb,            &
+!     &    partition_tbl, part_dim_tbl)
 
         call regrouping_for_partition                                   &
         &   (org_fem%mesh%node, org_fem%mesh%ele,  partition_tbl,       &

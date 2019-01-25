@@ -4,14 +4,15 @@
 !      Written by H. Matsui on Sep., 2007
 !
 !!      subroutine s_const_local_mesh_by_tbl                            &
-!!     &         (numnod, ele, ele_grp, n_domain,                       &
+!!     &         (part_p, numnod, ele, ele_grp, n_domain,               &
 !!     &          itl_nod_part, itl_ele_part, domain_grp, included_ele)
 !!      subroutine const_local_mesh_sf_ed_by_tbl                        &
-!!     &         (numnod, ele, surf, edge, ele_grp, n_domain,           &
+!!     &         (part_p, numnod, ele, surf, edge, ele_grp, n_domain,   &
 !!     &          internals_part, domain_grp, included_ele)
 !!
 !!      subroutine dealloc_nod_ele_4_subdomain(internals_part)
 !!      subroutine dealloc_inter_sfed_subdomain(internals_part)
+!!        type(ctl_param_partitioner), intent(in) :: part_p
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
@@ -27,6 +28,7 @@
       use m_constants
       use m_geometry_constants
 !
+      use t_ctl_param_partitioner
       use t_geometry_data
       use t_domain_group_4_partition
       use t_internal_4_partitioner
@@ -47,12 +49,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine s_const_local_mesh_by_tbl(numnod, ele, ele_grp,        &
-     &          n_domain, internals_part, domain_grp, included_ele)
+      subroutine s_const_local_mesh_by_tbl                              &
+     &         (part_p, numnod, ele, ele_grp, n_domain,                 &
+     &          internals_part, domain_grp, included_ele)
 !
       use t_group_data
       use t_near_mesh_id_4_node
 !
+      type(ctl_param_partitioner), intent(in) :: part_p
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
       integer(kind = kint), intent(in) :: numnod
@@ -63,8 +67,9 @@
       type(near_mesh), intent(inout) :: included_ele
 !
 !
-      call const_local_ele_by_near_tbl(numnod, ele%numele, n_domain,    &
-     &    ele_grp, domain_grp%ele_d_grp, internals_part%itl_ele_part,   &
+      call const_local_ele_by_near_tbl                                  &
+     &   (part_p, numnod, ele%numele, n_domain, ele_grp,                &
+     &    domain_grp%ele_d_grp, internals_part%itl_ele_part,            &
      &    included_ele)
       call const_local_node_by_near_tbl(ele, n_domain,                  &
      &    domain_grp%intnod_s_domin, internals_part%itl_ele_part,       &
@@ -75,7 +80,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine const_local_mesh_sf_ed_by_tbl                          &
-     &         (numnod, ele, surf, edge, ele_grp, n_domain,             &
+     &         (part_p, numnod, ele, surf, edge, ele_grp, n_domain,     &
      &          internals_part, domain_grp, included_ele)
 !
       use t_surface_data
@@ -83,6 +88,7 @@
       use t_group_data
       use t_near_mesh_id_4_node
 !
+      type(ctl_param_partitioner), intent(in) :: part_p
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
@@ -95,7 +101,8 @@
       type(near_mesh), intent(inout) :: included_ele
 !
 !
-      call s_const_local_mesh_by_tbl(numnod, ele, ele_grp, n_domain,    &
+      call s_const_local_mesh_by_tbl                                    &
+     &   (part_p, numnod, ele, ele_grp, n_domain,                       &
      &    internals_part, domain_grp, included_ele)
 !
       call const_local_surf_by_near_tbl(ele, surf, n_domain,            &
@@ -197,7 +204,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine const_local_ele_by_near_tbl                            &
-     &         (numnod, numele, n_domain, ele_grp, ele_d_grp,           &
+     &         (part_p, numnod, numele, n_domain, ele_grp, ele_d_grp,   &
      &          itl_ele_part, included_ele)
 !
       use t_group_data
@@ -208,6 +215,7 @@
       integer(kind = kint), intent(in) :: n_domain
       type(group_data), intent(in) :: ele_grp
       type(domain_group_4_partition), intent(in) :: ele_d_grp
+      type(ctl_param_partitioner), intent(in) :: part_p
 !
       type(internal_4_partitioner), intent(inout) :: itl_ele_part
       type(near_mesh), intent(inout) :: included_ele
@@ -225,8 +233,9 @@
 !
       call alloc_id_4_subdomain(itl_ele_part)
 !
-      call set_local_element_table(numnod, numele,                      &
-     &    ele_grp, n_domain, included_ele%ntot,                         &
+      call set_local_element_table                                      &
+     &   (part_p%nele_grp_ordering, part_p%ele_grp_ordering,            &
+     &    numnod, numele, ele_grp, n_domain, included_ele%ntot,         &
      &    included_ele%istack_nod, included_ele%id_near_nod,            &
      &    itl_ele_part%ntot_sub, itl_ele_part%id_4_subdomain)
 !

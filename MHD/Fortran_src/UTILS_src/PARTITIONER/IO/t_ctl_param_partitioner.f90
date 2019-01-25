@@ -8,7 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine alloc_rcb_directions(part_p)
+!!      subroutine alloc_ele_grp_ordering(part_p)
+!!      subroutine alloc_ele_grp_layer_name(part_p)
+!!
 !!      subroutine dealloc_rcb_directions(part_p)
+!!      subroutine dealloc_ele_grp_ordering(part_p)
+!!      subroutine dealloc_ele_grp_layer_name(part_p)
 !!        type(ctl_param_partitioner), intent(inout) :: part_p
 !!@endverbatim
 !
@@ -41,8 +46,24 @@
 !
 !
       type ctl_param_partitioner
+        integer(kind = kint) :: ndivide_eb(3)
+!
         integer(kind = kint) :: NPOWER_rcb
         integer(kind = kint), allocatable :: idir_rcb(:)
+!
+        integer(kind = kint) :: num_egrp_layer
+        character(len=kchara), allocatable :: grp_layer_name(:)
+!
+        integer(kind = kint) :: nele_grp_ordering = 0
+        character(len=kchara), allocatable :: ele_grp_ordering(:)
+!
+        character(len=kchara) :: fname_subdomain = 'subdomain_table.dat'
+!
+        character(len=kchara) :: metis_file_name = 'graph.in'
+        character(len=kchara) :: metis_sdom_name ='metis_part.dat'
+!
+        character(len=kchara) :: finer_inter_file_head
+        character(len=kchara) :: sphere_data_file_name
       end type ctl_param_partitioner
 !
 !   --------------------------------------------------------------------
@@ -63,6 +84,29 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine alloc_ele_grp_ordering(part_p)
+!
+      type(ctl_param_partitioner), intent(inout) :: part_p
+!
+!
+      allocate(part_p%ele_grp_ordering(part_p%nele_grp_ordering))
+!
+      end subroutine alloc_ele_grp_ordering
+!
+!   --------------------------------------------------------------------
+!
+      subroutine alloc_ele_grp_layer_name(part_p)
+!
+      type(ctl_param_partitioner), intent(inout) :: part_p
+!
+!
+      allocate(part_p%grp_layer_name(part_p%num_egrp_layer))
+!
+      end subroutine alloc_ele_grp_layer_name
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
       subroutine dealloc_rcb_directions(part_p)
 !
       type(ctl_param_partitioner), intent(inout) :: part_p
@@ -70,6 +114,28 @@
       deallocate(part_p%idir_rcb)
 !
       end subroutine dealloc_rcb_directions
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_ele_grp_ordering(part_p)
+!
+      type(ctl_param_partitioner), intent(inout) :: part_p
+!
+!
+      deallocate(part_p%ele_grp_ordering)
+!
+      end subroutine dealloc_ele_grp_ordering
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_ele_grp_layer_name(part_p)
+!
+      type(ctl_param_partitioner), intent(inout) :: part_p
+!
+!
+      deallocate(part_p%grp_layer_name)
+!
+      end subroutine dealloc_ele_grp_layer_name
 !
 !   --------------------------------------------------------------------
 !

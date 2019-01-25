@@ -62,7 +62,7 @@
       nod_d_grp%IGROUP(1:nnod) = 0
       nod_d_grp%IGROUP(1:inter_nod) = 1
 
-      call s_sort_by_position_4_eb3d(inter_nod, ndivide_eb,             &
+      call s_sort_by_position_4_eb3d(inter_nod, part_p1%ndivide_eb,     &
      &    nod_d_grp%IGROUP(1), xx(1,1), xx(1,2), xx(1,3),               &
      &    part_comm%VAL, part_comm%IS1)
 !
@@ -82,7 +82,7 @@
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
       real(kind = kreal), allocatable :: group_v(:)
-      integer(kind = kint) :: i, i_grp
+      integer(kind = kint) :: i, i_grp, num
 !
       call alloc_work_4_rcb(nnod, part_comm)
 
@@ -90,18 +90,20 @@
       nod_d_grp%IGROUP(1:inter_nod) = 1
 
       call s_sort_by_position_with_volume(                              &
-      &   inter_nod, ndivide_eb, node_volume, tot_vol,                  &
+      &   inter_nod, part_p1%ndivide_eb, node_volume, tot_vol,          &
       &   nod_d_grp%IGROUP(1), xx(1,1), xx(1,2), xx(1,3),               &
       &   part_comm%VAL, part_comm%IS1)
 !
 !     ========= verify partition is equal volume =========
-      allocate(group_v(ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)))
+      num = part_p1%ndivide_eb(1) * part_p1%ndivide_eb(2)               &
+     &     * part_p1%ndivide_eb(3)
+      allocate(group_v(num))
       group_v(:) = 0.0
       do i = 1, nnod
         i_grp = nod_d_grp%IGROUP(i)
         group_v(i_grp) = group_v(i_grp) + node_volume(i)
       end do
-      do i = 1, ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
+      do i = 1, num
         write(*,*) 'group id', i, 'volume: ', group_v(i)
       end do
 !
@@ -133,7 +135,7 @@
       nod_d_grp%IGROUP(1:inter_nod) = 1
 
       call s_sort_by_position_with_ratio                                &
-     &   (inter_nod, ndivide_eb, part_tbl,                              &
+     &   (inter_nod, part_p1%ndivide_eb, part_tbl,                      &
      &    nod_d_grp%IGROUP(1), xx(1,1), xx(1,2), xx(1,3),               &
      &    part_comm%VAL, part_comm%IS1)
 ! verify partition
@@ -173,9 +175,10 @@
       nod_d_grp%IGROUP(1:nnod)= 0
       nod_d_grp%IGROUP(1:inter_nod)= 1
 
-      call s_sort_by_position_with_ratio_volume(inter_nod, ndivide_eb,  &
-     &   part_volume, n_volume, nod_d_grp%IGROUP(1), xx(1,1),           &
-     &   xx(1,2), xx(1,3), part_comm%VAL, part_comm%IS1)
+      call s_sort_by_position_with_ratio_volume                         &
+     &   (inter_nod, part_p1%ndivide_eb, part_volume,                   &
+     &    n_volume, nod_d_grp%IGROUP(1), xx(1,1),                       &
+     &    xx(1,2), xx(1,3), part_comm%VAL, part_comm%IS1)
 ! verify partition
       node_grp_cnt(:) = 0
       volume_grp_cnt(:) = 0
@@ -214,7 +217,7 @@
       nod_d_grp%IGROUP(1:nnod)= 0
       nod_d_grp%IGROUP(1:inter_nod)= 1
 
-      call s_sort_by_position_4_eb3d(inter_nod, ndivide_eb,             &
+      call s_sort_by_position_4_eb3d(inter_nod, part_p1%ndivide_eb,     &
      &    nod_d_grp%IGROUP(1), radius(1), colatitude(1), longitude(1),  &
      &    part_comm%VAL, part_comm%IS1)
 !
@@ -253,9 +256,10 @@
       nod_d_grp%IGROUP(1:nnod)= 0
       nod_d_grp%IGROUP(1:inter_nod)= 1
 
-      call s_sort_by_position_w_grp(inter_nod, ndivide_eb, num_mat,     &
+      call s_sort_by_position_w_grp                                     &
+     &   (inter_nod, part_p1%ndivide_eb, num_mat,                       &
      &    mat_name, ntot_node_ele_grp, inod_stack_ele_grp,              &
-     &    inod_ele_grp, num_egrp_layer, grp_layer_name,                 &
+     &    inod_ele_grp, part_p1%num_egrp_layer, part_p1%grp_layer_name, &
      &    nod_d_grp%IGROUP, radius(1), colatitude(1), longitude(1),     &
      &    part_comm%VAL, part_comm%IS1)
 !

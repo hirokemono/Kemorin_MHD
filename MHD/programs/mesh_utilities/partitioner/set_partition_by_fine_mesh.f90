@@ -50,12 +50,12 @@
 !
 !     read interpolate table
 !
-      table_file_header = finer_inter_file_head
+      table_file_header = part_p1%finer_inter_file_head
       call load_interpolate_table(izero, itp_table)
 !
 !     read interpolate table
 !
-      call finer_domain_list_from_file(fname_subdomain,                 &
+      call finer_domain_list_from_file(part_p1%fname_subdomain,         &
      &    finermesh%node, domain_grp%nod_f_grp, num_domain)
 !
 !     construct group table

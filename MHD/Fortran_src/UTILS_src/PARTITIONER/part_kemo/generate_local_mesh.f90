@@ -89,8 +89,8 @@
 !C===
 !C
       call s_const_local_mesh_by_tbl                                    &
-     &   (node_org%numnod, ele_org, group_org%ele_grp, num_domain,      &
-     &    internals_part, domain_grp, included_ele)
+     &   (part_p1, node_org%numnod, ele_org, group_org%ele_grp,         &
+     &    num_domain, internals_part, domain_grp, included_ele)
       call open_partition_log                                           &
      &   (num_domain, edge_org%numedge, org_mesh_header,                &
      &    internals_part%itl_nod_part, internals_part%itl_ele_part,     &
