@@ -89,8 +89,8 @@
       nod_d_grp%IGROUP(1:nnod) = 0
       nod_d_grp%IGROUP(1:inter_nod) = 1
 
-      call s_sort_by_position_with_volume(                              &
-      &   inter_nod, part_p1%ndivide_eb, node_volume, tot_vol,          &
+      call s_sort_by_position_with_volume(num_domain,                   &
+      &   part_p1%ndivide_eb, inter_nod, node_volume, tot_vol,          &
       &   nod_d_grp%IGROUP(1), xx(1,1), xx(1,2), xx(1,3),               &
       &   part_comm%VAL, part_comm%IS1)
 !
@@ -133,7 +133,7 @@
       nod_d_grp%IGROUP(1:inter_nod) = 1
 
       call s_sort_by_position_with_ratio                                &
-     &   (inter_nod, part_p1%ndivide_eb, part_tbl,                      &
+     &   (num_domain, part_p1%ndivide_eb, part_tbl, inter_nod,          &
      &    nod_d_grp%IGROUP(1), xx(1,1), xx(1,2), xx(1,3),               &
      &    part_comm%VAL, part_comm%IS1)
 ! verify partition
@@ -173,8 +173,8 @@
       nod_d_grp%IGROUP(1:nnod)= 0
       nod_d_grp%IGROUP(1:inter_nod)= 1
 
-      call s_sort_by_position_with_ratio_volume                         &
-     &   (inter_nod, part_p1%ndivide_eb, part_volume,                   &
+      call s_sort_by_position_with_ratio_volume(num_domain,             &
+     &    part_p1%ndivide_eb, inter_nod, part_volume,                   &
      &    n_volume, nod_d_grp%IGROUP(1), xx(1,1),                       &
      &    xx(1,2), xx(1,3), part_comm%VAL, part_comm%IS1)
 ! verify partition

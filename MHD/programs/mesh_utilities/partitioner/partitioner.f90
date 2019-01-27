@@ -229,7 +229,7 @@
      &      org_ele_mesh%surf%iele_4_surf,                              &
      &      org_ele_mesh%surf%interior_surf, org_fem%mesh%node%xx,      &
      &      data_field_vec%d_ucd,                                       &
-     &      particles, num_particle, time_cost)
+     &      particles, num_particle, num_domain, time_cost)
 
   !cal partition table for new partition
         allocate(partition_tbl(num_domain))

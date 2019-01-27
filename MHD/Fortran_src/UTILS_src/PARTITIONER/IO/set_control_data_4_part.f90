@@ -81,28 +81,29 @@
       write(*,*) 'iflag_memory_conserve',                               &
      &          comm_part%iflag_memory_conserve
       write(*,*) 'iflag_viewer_output', part_p1%iflag_viewer_output
-      if(n_overlap .eq. 1) then
-        write(*,*) 'element overlapping flag: ', i_sleeve_ele
+      if(part_p1%n_overlap .eq. 1) then
+        write(*,*) 'element overlapping flag: ',                        &
+     &            part_p1%iflag_sleeve_ele
       end if
 !
 !
-      if (NTYP_div .eq. iPART_RCB_XYZ) then
+      if(part_p1%NTYP_div .eq. iPART_RCB_XYZ) then
         call set_control_XYZ_RCB(part_ctl%RCB_dir_ctl, part_p1)
-      else if( NTYP_div .eq. iPART_RCB_SPH) then
+      else if(part_p1%NTYP_div .eq. iPART_RCB_SPH) then
         call set_control_SPH_RCB(part_ctl%RCB_dir_ctl, part_p1)
 !
-      else if (NTYP_div .eq. iPART_EQ_XYZ                               &
-     &    .or. NTYP_div .eq. iPART_EQV_XYZ) then
+      else if (part_p1%NTYP_div .eq. iPART_EQ_XYZ                       &
+     &    .or. part_p1%NTYP_div .eq. iPART_EQV_XYZ) then
         call set_control_EQ_XYZ(part_ctl%ndomain_section_ctl, part_p1)
-      else if (NTYP_div.eq.iPART_CUBED_SPHERE                           &
-     &    .or. NTYP_div.eq.iPART_EQ_SPH                                 &
-     &    .or. NTYP_div.eq.iPART_LAYER_SPH) then
+      else if (part_p1%NTYP_div.eq.iPART_CUBED_SPHERE                   &
+     &    .or. part_p1%NTYP_div.eq.iPART_EQ_SPH                         &
+     &    .or. part_p1%NTYP_div.eq.iPART_LAYER_SPH) then
         call set_control_EQ_SPH(part_ctl%ndomain_section_ctl,           &
      &    part_ctl%ele_grp_layering_ctl, part_ctl%sphere_file_name_ctl, &
      &    part_p1)
 !
-      else if (NTYP_div .eq. iPART_DECMP_MESH_TBL                       &
-     &    .or. NTYP_div .eq. iPART_FINE_MESH_TBL) then
+      else if (part_p1%NTYP_div .eq. iPART_DECMP_MESH_TBL               &
+     &    .or. part_p1%NTYP_div .eq. iPART_FINE_MESH_TBL) then
         if (part_ctl%domain_group_file_ctl%iflag .eq. 1) then
           part_p1%fname_subdomain                                       &
      &        = part_ctl%domain_group_file_ctl%charavalue
@@ -111,7 +112,7 @@
         stop
       end if
 !
-      if(NTYP_div .eq. iPART_FINE_MESH_TBL) then
+      if(part_p1%NTYP_div .eq. iPART_FINE_MESH_TBL) then
         if (part_ctl%itp_tbl_head_ctl%iflag .eq. 1) then
           part_p1%finer_inter_file_head                                 &
      &          = part_ctl%itp_tbl_head_ctl%charavalue
@@ -128,7 +129,7 @@
      &       = choose_file_format(part_ctl%itp_tbl_format_ctl)
       end if
 !
-      else if(NTYP_div .eq. iPART_MeTiS_RSB) then
+      else if(part_p1%NTYP_div .eq. iPART_MeTiS_RSB) then
         if (part_ctl%metis_domain_file_ctl%iflag .eq. 1) then
           part_p1%metis_sdom_name                                       &
      &           = part_ctl%metis_domain_file_ctl%charavalue
@@ -194,12 +195,13 @@
      &    comm_part)
 !
       if(my_rank .ne. 0) return
-      write(*,*) 'sleeve level :', n_overlap
+      write(*,*) 'sleeve level :', part_p1%n_overlap
       write(*,*) 'iflag_memory_conserve',                               &
      &          comm_part%iflag_memory_conserve
       write(*,*) 'iflag_viewer_output', part_p1%iflag_viewer_output
-      if(n_overlap .eq. 1) then
-        write(*,*) 'element overlapping flag: ', i_sleeve_ele
+      if(part_p1%n_overlap .eq. 1) then
+        write(*,*) 'element overlapping flag: ',                        &
+     &            part_p1%iflag_sleeve_ele
       end if
 !
       end subroutine set_control_4_extend_sleeve
@@ -241,22 +243,22 @@
       end if
 !
       if(part_Fmesh%FEM_sleeve_level_ctl%iflag .gt. 0) then
-        n_overlap = part_Fmesh%FEM_sleeve_level_ctl%intvalue
+        part_p1%n_overlap = part_Fmesh%FEM_sleeve_level_ctl%intvalue
       else if(sleeve_level_old%iflag .gt. 0) then
-        n_overlap = sleeve_level_old%intvalue
+        part_p1%n_overlap = sleeve_level_old%intvalue
       else
-        n_overlap = 1
+        part_p1%n_overlap = 1
       end if
-      if(n_overlap .lt. 1) n_overlap = 1
+      if(part_p1%n_overlap .lt. 1) part_p1%n_overlap = 1
 !
-      i_sleeve_ele = 0
-      if(n_overlap .eq. 1) then
+      part_p1%iflag_sleeve_ele = 0
+      if(part_p1%n_overlap .eq. 1) then
         if(part_Fmesh%FEM_element_overlap_ctl%iflag .gt. 0) then
-          i_sleeve_ele = 1
-          n_overlap =    2
+          part_p1%iflag_sleeve_ele = 1
+          part_p1%n_overlap =    2
         else if(element_overlap_ctl%iflag .gt. 0) then
-          i_sleeve_ele = 1
-          n_overlap =    2
+          part_p1%iflag_sleeve_ele = 1
+          part_p1%n_overlap =    2
         end if
       end if
 !
@@ -295,47 +297,47 @@
       if (part_method_ctl%iflag .gt. 0) then
         if(     cmp_no_case(part_method_ctl%charavalue,'RCB_xyz')       &
      &     .or. cmp_no_case(part_method_ctl%charavalue,'RCB')) then
-            NTYP_div = iPART_RCB_XYZ
+            part_p1%NTYP_div = iPART_RCB_XYZ
 !
         else if(cmp_no_case(part_method_ctl%charavalue,'RCB_sph')) then
-            NTYP_div = iPART_RCB_SPH
+            part_p1%NTYP_div = iPART_RCB_SPH
 !
         else if(cmp_no_case(part_method_ctl%charavalue,'ES')            &
      &     .or. cmp_no_case(part_method_ctl%charavalue,'ES_xyz')) then
-            NTYP_div = iPART_EQ_XYZ
+            part_p1%NTYP_div = iPART_EQ_XYZ
 !
         else if(cmp_no_case(part_method_ctl%charavalue,'ES_vol')) then
-        NTYP_div = iPART_EQV_XYZ
+            part_p1%NTYP_div = iPART_EQV_XYZ
 !
         else if(cmp_no_case(part_method_ctl%charavalue,'ES_sph')) then
-            NTYP_div = iPART_EQ_SPH
+            part_p1%NTYP_div = iPART_EQ_SPH
 !
         else if(cmp_no_case(part_method_ctl%charavalue,                 &
      &                      'ES_layered_sph')) then
-            NTYP_div = iPART_LAYER_SPH
+            part_p1%NTYP_div = iPART_LAYER_SPH
 !
         else if( cmp_no_case(part_method_ctl%charavalue,                &
      &                       'MeTiS_input')) then
-            NTYP_div = iPART_GEN_MeTiS
+            part_p1%NTYP_div = iPART_GEN_MeTiS
 !
         else if( cmp_no_case(part_method_ctl%charavalue,                &
      &                       'MeTiS_RSB')) then
-            NTYP_div = iPART_MeTiS_RSB
+            part_p1%NTYP_div = iPART_MeTiS_RSB
 !
         else if( cmp_no_case(part_method_ctl%charavalue, 'Cubed_sph')   &
      &      .or. cmp_no_case(part_method_ctl%charavalue,                &
      &                      'Cubed_sphere')) then
-            NTYP_div = iPART_CUBED_SPHERE
+            part_p1%NTYP_div = iPART_CUBED_SPHERE
 !
         else if( cmp_no_case(part_method_ctl%charavalue, 'finer_mesh')  &
      &      .or. cmp_no_case(part_method_ctl%charavalue,                &
      &                       'Divide_by_finer_mesh') ) then
-            NTYP_div = iPART_FINE_MESH_TBL
+            part_p1%NTYP_div = iPART_FINE_MESH_TBL
 !
         else if( cmp_no_case(part_method_ctl%charavalue, 'Decomp_data') &
      &      .or. cmp_no_case(part_method_ctl%charavalue,                &
      &                       'decomposit_data')) then
-            NTYP_div = iPART_FINE_MESH_TBL
+            part_p1%NTYP_div = iPART_FINE_MESH_TBL
         end if
 !
         write (*,'(/," *********************************")')
@@ -355,7 +357,7 @@
         write (*,'(  "  Divide using decomposition data    (7)")')
         write (*,'(  "  Divide equality with xyz direction (8)")')
         write (*,'(  "  Divide equality with rtp direction (9)")')
-        write(*,*) 'decomposition code:', NTYP_div
+        write(*,*) 'decomposition code:', part_p1%NTYP_div
 !
       else
         write(*,*) 'Set partitioning method'
@@ -530,7 +532,7 @@
         num_domain = part_p%ndivide_eb(1) * part_p%ndivide_eb(2)        &
      &              * part_p%ndivide_eb(3)
 !
-        if(NTYP_div .eq. iPART_LAYER_SPH) then
+        if(part_p1%NTYP_div .eq. iPART_LAYER_SPH) then
           part_p%num_egrp_layer = ele_grp_layering_ctl%num
           call alloc_ele_grp_layer_name(part_p)
 !
@@ -538,7 +540,7 @@
             part_p%grp_layer_name(i) = ele_grp_layering_ctl%c_tbl(i)
           end do
 !
-        else if ( NTYP_div .eq. iPART_CUBED_SPHERE) then
+        else if(part_p1%NTYP_div .eq. iPART_CUBED_SPHERE) then
           part_p1%iflag_sphere_data = sphere_file_name_ctl%iflag
           if(part_p1%iflag_sphere_data .eq. 1) then
             part_p%sphere_data_file_name                                &

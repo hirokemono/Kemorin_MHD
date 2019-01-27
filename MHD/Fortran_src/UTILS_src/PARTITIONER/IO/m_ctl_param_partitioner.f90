@@ -14,10 +14,6 @@
 !
       integer(kind = kint) :: num_domain
 !
-!
-      integer(kind = kint) :: n_overlap =    1
-      integer(kind = kint) :: i_sleeve_ele = 0
-!
       integer(kind = kint) :: NTYP_div
 !
 !

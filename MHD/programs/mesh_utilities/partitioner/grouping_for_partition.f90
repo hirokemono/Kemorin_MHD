@@ -67,7 +67,7 @@
 !C | RCB |
 !C +-----+
 !C===
-      if (NTYP_div .eq. iPART_RCB_XYZ) then
+      if(part_p1%NTYP_div .eq. iPART_RCB_XYZ) then
         call rc_bisection                                               &
      &     (part_p1, node%numnod, node%internal_node, node%xx,          &
      &      domain_grp%nod_d_grp)
@@ -80,7 +80,7 @@
 !C +------------------------------+
 !C===
 
-      else if (NTYP_div .eq. iPART_RCB_SPH) then
+      else if(part_p1%NTYP_div .eq. iPART_RCB_SPH) then
         call rcb_spherical(part_p1, node%numnod, node%internal_node,    &
      &      node%rr, node%theta, node%phi, domain_grp%nod_d_grp)
         call dealloc_rcb_directions(part_p1)
@@ -91,20 +91,20 @@
 !C +------------------------------+
 !C===
 !
-      else if (NTYP_div .eq. iPART_EQ_XYZ) then
+      else if(part_p1%NTYP_div .eq. iPART_EQ_XYZ) then
         write(*,*) 'equaly_bisection'
         call equaly_bisection(node%numnod, node%internal_node, node%xx, &
      &      domain_grp%nod_d_grp)
-      else if (NTYP_div .eq. iPART_EQV_XYZ) then
+      else if(part_p1%NTYP_div .eq. iPART_EQV_XYZ) then
         call equaly_volume_bisection                                    &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &     node_volume, ele%volume, domain_grp%nod_d_grp)
 !
-      else if (NTYP_div .eq. iPART_EQ_SPH) then
+      else if(part_p1%NTYP_div .eq. iPART_EQ_SPH) then
         call eb_spherical(node%numnod, node%internal_node,              &
      &      node%rr, node%theta, node%phi, domain_grp%nod_d_grp)
 !
-      else if (NTYP_div .eq. iPART_LAYER_SPH) then
+      else if(part_p1%NTYP_div .eq. iPART_LAYER_SPH) then
         call eb_spherical_w_egrp(node%numnod, node%internal_node,       &
      &    ele_grp%num_grp, ele_grp%grp_name,                            &
      &    ele_grp_data%node%ntot_e_grp, ele_grp_data%node%istack_e_grp, &
@@ -117,7 +117,7 @@
 !C | RCB for spherical coordinate |
 !C +------------------------------+
 !C===
-      else if (NTYP_div .eq. iPART_CUBED_SPHERE) then
+      else if(part_p1%NTYP_div .eq. iPART_CUBED_SPHERE) then
         call divide_by_sphere_coord(num_domain,                         &
      &      node%numnod, ele%nnod_4_ele, node%xx,                       &
      &      node%rr, node%theta, node%phi,                              &
@@ -128,10 +128,10 @@
 !C | Partisioning by MeTiS output |
 !C +------------------------------+
 !C===
-      else if (NTYP_div .eq. iPART_MeTiS_RSB) then
+      else if(part_p1%NTYP_div .eq. iPART_MeTiS_RSB) then
         call input_domain_group_by_metis(part_p1%metis_sdom_name,       &
      &      node, domain_grp%nod_d_grp, num_domain)
-      else if (NTYP_div .eq. iPART_GEN_MeTiS) then
+      else if(part_p1%NTYP_div .eq. iPART_GEN_MeTiS) then
         call const_metis_input(part_p1%metis_file_name,                 &
      &      node%numnod, node%internal_node, edge)
         stop
@@ -142,10 +142,10 @@
 !C +------------------------------+
 !C===
 !C===
-      else if (NTYP_div .eq. iPART_FINE_MESH_TBL) then
+      else if(part_p1%NTYP_div .eq. iPART_FINE_MESH_TBL) then
         call s_set_partition_by_fine_mesh(domain_grp)
 !
-      else if (NTYP_div .eq. iPART_DECMP_MESH_TBL) then
+      else if(part_p1%NTYP_div .eq. iPART_DECMP_MESH_TBL) then
         call input_domain_group_by_file(part_p1%fname_subdomain,        &
      &      node, domain_grp%nod_d_grp, num_domain)
       end if
@@ -155,13 +155,13 @@
 !C | Output domain grouping table |
 !C +------------------------------+
 !C===
-      if     (NTYP_div.eq.iPART_RCB_XYZ                                 &
-     &   .or. NTYP_div.eq.iPART_RCB_SPH                                 &
-     &   .or. NTYP_div.eq.iPART_MeTiS_RSB                               &
-     &   .or. NTYP_div.eq.iPART_CUBED_SPHERE                            &
-     &   .or. NTYP_div.eq.iPART_EQ_XYZ                                  &
-     &   .or. NTYP_div.eq.iPART_EQV_XYZ                                 &
-     &   .or. NTYP_div.eq.iPART_EQ_SPH) then
+      if     (part_p1%NTYP_div.eq.iPART_RCB_XYZ                         &
+     &   .or. part_p1%NTYP_div.eq.iPART_RCB_SPH                         &
+     &   .or. part_p1%NTYP_div.eq.iPART_MeTiS_RSB                       &
+     &   .or. part_p1%NTYP_div.eq.iPART_CUBED_SPHERE                    &
+     &   .or. part_p1%NTYP_div.eq.iPART_EQ_XYZ                          &
+     &   .or. part_p1%NTYP_div.eq.iPART_EQV_XYZ                         &
+     &   .or. part_p1%NTYP_div.eq.iPART_EQ_SPH) then
         call output_domain_group_4_part(part_p1%fname_subdomain,        &
      &      num_domain, node, domain_grp%nod_d_grp)
       end if
@@ -207,15 +207,15 @@
       type(domain_groups_4_partitioner), intent(inout)  :: domain_grp
 !
 !
-      write(*,*) 'regrouping dataset by: ', NTYP_div
+      write(*,*) 'regrouping dataset by: ', part_p1%NTYP_div
 !
-      if (NTYP_div .eq. iPART_EQ_XYZ) then
+      if(part_p1%NTYP_div .eq. iPART_EQ_XYZ) then
         call proportionally_bisection                                   &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      part_tbl, domain_grp%nod_d_grp)
       end if
 !
-      if (NTYP_div .eq. iPART_EQV_XYZ) then
+      if(part_p1%NTYP_div .eq. iPART_EQV_XYZ) then
         call proportion_volume_bisection                                &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      part_volume, n_volume, domain_grp%nod_d_grp)
@@ -227,13 +227,13 @@
 !C | Output domain grouping table |
 !C +------------------------------+
 !C===
-      if     (NTYP_div.eq.iPART_RCB_XYZ                                 &
-     &   .or. NTYP_div.eq.iPART_RCB_SPH                                 &
-     &   .or. NTYP_div.eq.iPART_MeTiS_RSB                               &
-     &   .or. NTYP_div.eq.iPART_CUBED_SPHERE                            &
-     &   .or. NTYP_div.eq.iPART_EQ_XYZ                                  &
-     &   .or. NTYP_div.eq.iPART_EQV_XYZ                                 &
-     &   .or. NTYP_div.eq.iPART_EQ_SPH) then
+      if     (part_p1%NTYP_div.eq.iPART_RCB_XYZ                         &
+     &   .or. part_p1%NTYP_div.eq.iPART_RCB_SPH                         &
+     &   .or. part_p1%NTYP_div.eq.iPART_MeTiS_RSB                       &
+     &   .or. part_p1%NTYP_div.eq.iPART_CUBED_SPHERE                    &
+     &   .or. part_p1%NTYP_div.eq.iPART_EQ_XYZ                          &
+     &   .or. part_p1%NTYP_div.eq.iPART_EQV_XYZ                         &
+     &   .or. part_p1%NTYP_div.eq.iPART_EQ_SPH) then
         call output_domain_group_4_part(part_p1%fname_subdomain,        &
      &      num_domain, node, domain_grp%nod_d_grp)
       end if

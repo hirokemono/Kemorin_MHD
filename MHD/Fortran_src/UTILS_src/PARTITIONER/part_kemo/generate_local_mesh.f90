@@ -76,7 +76,7 @@
 !
       call CRE_LOCAL_DATA(num_domain, node_org%numnod,                  &
      &    ele_org, domain_grp%nod_d_grp, included_ele)
-      call increase_overlapping(num_domain, node_org, ele_org,          &
+      call increase_overlapping(num_domain, part_p1, node_org, ele_org, &
      &    surf_org, field_org, domain_grp%nod_d_grp,                    &
      &    part_p1%iflag_new_ghost_cell, included_ele)
 !

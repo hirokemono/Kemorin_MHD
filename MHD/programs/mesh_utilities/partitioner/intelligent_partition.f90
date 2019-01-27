@@ -7,10 +7,11 @@
 !> @brief According to vector field feature to partition data set to make a better load balance
 !!
 !!@verbatim
-!!      subroutine seed_particles                                    &
-!!     &         (nod_d_grp, nnod, nele, nsurf, nnod_4_surf,         &
-!!     &          isf_4_ele, ie_surf, iele_4_surf, interior_surf,    &
-!!     &          xx, field, particles, num_particle, time_cost)
+!!      subroutine seed_particles                                      &
+!!     &         (nod_d_grp, nnod, nele, nsurf, nnod_4_surf,           &
+!!     &          isf_4_ele, ie_surf, iele_4_surf, interior_surf,      &
+!!     &          xx, field, particles, num_particle,                  &
+!!     &          num_domain, time_cost)
 !!
 !!      function field_istack_nod_buffer(nprocs, istack_nod)
 !!      subroutine choose_particles_from_eles                           &
@@ -29,7 +30,6 @@
       use t_geometry_data
       use t_surface_data
       use t_domain_group_4_partition
-      use m_ctl_param_partitioner
 !
       use cal_fline_in_cube
       use cal_field_on_surf_viz
@@ -208,10 +208,11 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine seed_particles                                      &
-     &         (nod_d_grp, nnod, nele, nsurf, nnod_4_surf,           &
-     &          isf_4_ele, ie_surf, iele_4_surf, interior_surf,      &
-     &          xx, field, particles, num_particle, time_cost)
+      subroutine seed_particles                                         &
+     &         (nod_d_grp, nnod, nele, nsurf, nnod_4_surf,              &
+     &          isf_4_ele, ie_surf, iele_4_surf, interior_surf,         &
+     &          xx, field, particles, num_particle,                     &
+     &          num_domain, time_cost)
 !
         type(domain_group_4_partition), intent(in)  :: nod_d_grp
         integer(kind = kint), intent(in) :: nnod, nele, nsurf
@@ -223,6 +224,7 @@
         real(kind = kreal), intent(in) :: field(nnod,3), xx(nnod,3)
         integer(kind = kint), intent(in) :: num_particle
         type(simulate_particle), intent(in) :: particles(num_particle)
+        integer(kind = kint), intent(in) :: num_domain
 !        real(kind = kreal), intent(inout) :: time_cost(num_domain)
         type(time_esti), intent(inout) :: time_cost(num_domain)
 !
@@ -294,9 +296,10 @@
       &       new_pos, new_vec, particles(i)%line_len, itr_num,         &
       &       iflag_comm)
 !          write(*,*) 'total iter_num ', itr_num, 'backward res ', iflag_comm
-          time_cost(particles(i)%group_id)%cnt = time_cost(particles(i)%group_id)%cnt + 1
-          time_cost(particles(i)%group_id)%total_time =                 &
-      &           time_cost(particles(i)%group_id)%total_time + itr_num
+          time_cost(particles(i)%group_id)%cnt                          &
+      &         = time_cost(particles(i)%group_id)%cnt + 1
+          time_cost(particles(i)%group_id)%total_time                   &
+      &         = time_cost(particles(i)%group_id)%total_time + itr_num
         end do
         cnt = 0
         aver_time_cost = 0.0
@@ -314,7 +317,7 @@
           aver_time_cost = 1.0
         end if
         do i = 1, num_domain
-          if(time_cost(i)%cnt .eq. 0.0) then
+          if(time_cost(i)%cnt .eq. 0) then
             time_cost(i)%ave_time = aver_time_cost
           end if
         end do

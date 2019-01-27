@@ -46,6 +46,11 @@
 !
 !
       type ctl_param_partitioner
+        integer(kind = kint) :: NTYP_div
+!
+        integer(kind = kint) :: iflag_sleeve_ele = 0
+        integer(kind = kint) :: n_overlap =    1
+!
         type(field_IO_params) :: global_mesh_file
         type(field_IO_params) :: distribute_mesh_file
         type(field_IO_params) :: finer_mesh_file

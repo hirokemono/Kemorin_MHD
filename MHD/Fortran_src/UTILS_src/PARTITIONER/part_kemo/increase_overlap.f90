@@ -3,8 +3,10 @@
 !
 !     written by H. Matsui on Sep., 2007
 !
-!!      subroutine increase_overlapping(Ndomain, node, ele, surf,      &
-!!     &          field, nod_d_grp, iflag_selective, included_ele)
+!!      subroutine increase_overlapping                                 &
+!!     &         (Ndomain, part_p, node, ele, surf, field,              &
+!!     &          nod_d_grp, iflag_selective, included_ele)
+!!        type(ctl_param_partitioner), intent(in) :: part_p
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(node_data), intent(in) :: node
@@ -33,7 +35,7 @@
       private :: nele_subdomain, iflag_nod, iflag_ele
       private :: item_tmp_e, NPC_tmp2
 !
-      private :: mark_extented_overlap
+      private :: mark_extented_overlap, selective_extended_overlap
 !
 !   --------------------------------------------------------------------
 !
@@ -41,14 +43,17 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine increase_overlapping(Ndomain, node, ele, surf,        &
-     &          field, nod_d_grp, iflag_selective, included_ele)
+      subroutine increase_overlapping                                   &
+     &         (Ndomain, part_p, node, ele, surf, field,                &
+     &          nod_d_grp, iflag_selective, included_ele)
 !
+      use t_ctl_param_partitioner
       use t_geometry_data
       use t_surface_data
       use t_domain_group_4_partition
       use intelligent_partition
 !
+      type(ctl_param_partitioner), intent(in) :: part_p
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(node_data), intent(in) :: node
@@ -56,7 +61,7 @@
       type(domain_group_4_partition), intent(in) :: nod_d_grp
       integer(kind = kint), intent(in) :: Ndomain
       integer(kind= kint), intent(in) :: iflag_selective
-!      integer(kind = kint), intent(in) :: n_overlap, i_sleeve_ele
+!      integer(kind = kint), intent(in) :: n_overlap
 !
       type(near_mesh), intent(inout) :: included_ele
 !
@@ -79,13 +84,14 @@
 ! extend overlap one by layer, new extend overlap layer is stored in near_ele_tmp
       if(iflag_selective .eq. 0) then
         call mark_extented_overlap                                      &
-     &     (ip, n_overlap, i_sleeve_ele, node%numnod,                   &
+     &     (ip, part_p%n_overlap, part_p%iflag_sleeve_ele, node%numnod, &
      &      ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,             &
      &      included_ele%ntot, included_ele%istack_nod,                 &
      &      included_ele%id_near_nod, nod_d_grp%num_s_domin,            &
      &      nod_d_grp%IGROUP)
       else
-        call selective_extended_overlap(ip, node, ele, surf, field,     &
+        call selective_extended_overlap                                 &
+    &      (ip, part_p%n_overlap, node, ele, surf, field,               &
     &       included_ele%ntot, included_ele%istack_nod,                 &
     &       included_ele%id_near_nod)
       end if
@@ -239,14 +245,16 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine selective_extended_overlap(ip, node, ele, surf, field, &
-      &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
+      subroutine selective_extended_overlap                             &
+      &        (ip, n_overlap, node, ele, surf, field,                  &
+      &         ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
 !
       use t_geometry_data
       use t_surface_data
       use intelligent_partition
 !
       integer(kind = kint), intent(in) :: ip
+      integer(kind = kint), intent(in) :: n_overlap
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
