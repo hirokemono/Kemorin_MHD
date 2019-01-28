@@ -3,7 +3,9 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine s_set_partition_by_fine_mesh(domain_grp)
+!!      subroutine s_set_partition_by_fine_mesh(part_p, domain_grp)
+!!        type(ctl_param_partitioner), intent(in) :: part_p
+!!        type(domain_groups_4_partitioner), intent(inout) :: domain_grp
 !
       module set_partition_by_fine_mesh
 !
@@ -28,16 +30,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_partition_by_fine_mesh(domain_grp)
+      subroutine s_set_partition_by_fine_mesh(part_p, domain_grp)
 !
       use t_domain_group_4_partition
       use t_subdomain_table_IO
-      use m_ctl_param_partitioner
+      use t_ctl_param_partitioner
       use m_interpolate_table_IO
 !
       use load_mesh_data
       use itp_table_IO_select_4_zlib
 !
+      type(ctl_param_partitioner), intent(inout) :: part_p
       type(domain_groups_4_partitioner), intent(inout) :: domain_grp
 !
       type(interpolate_table)  :: itp_table
@@ -46,18 +49,18 @@
 !     read finer mesh
 !
       call input_mesh_geometry                                          &
-     &   (part_p1%finer_mesh_file, izero, finermesh, ierr)
+     &   (part_p%finer_mesh_file, izero, finermesh, ierr)
       if(ierr .gt. 0) stop 'finer mesh is wrong!!'
 !
 !     read interpolate table
 !
-      table_file_header = part_p1%finer_inter_file_head
+      table_file_header = part_p%finer_inter_file_head
       call load_interpolate_table(izero, itp_table)
 !
 !     read interpolate table
 !
-      call finer_domain_list_from_file(part_p1%fname_subdomain,         &
-     &    finermesh%node, domain_grp%nod_f_grp, num_domain)
+      call finer_domain_list_from_file(part_p%fname_subdomain,          &
+     &    finermesh%node, domain_grp%nod_f_grp, part_p%num_domain)
 !
 !     construct group table
 !

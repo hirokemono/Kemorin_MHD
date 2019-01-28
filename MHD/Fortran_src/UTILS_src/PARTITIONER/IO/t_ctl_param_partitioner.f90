@@ -48,6 +48,8 @@
       type ctl_param_partitioner
         integer(kind = kint) :: NTYP_div
 !
+        integer(kind = kint) :: num_domain
+!
         integer(kind = kint) :: iflag_sleeve_ele = 0
         integer(kind = kint) :: n_overlap =    1
 !

@@ -25,12 +25,14 @@
       use t_next_node_ele_4_node
       use t_control_data_4_part
       use t_partitioner_comm_table
+      use t_ctl_param_partitioner
       use para_const_kemoview_mesh
 !
       use mpi_load_mesh_data
 !
       implicit none
 !
+      type(ctl_param_partitioner), save, private :: part_p1
       type(control_data_4_partitioner), save, private :: part_ctl1
       type(partitioner_comm_tables), save, private :: comm_part1
 !
@@ -49,7 +51,6 @@
       use m_phys_constants
       use m_array_for_send_recv
       use m_default_file_prefix
-      use m_ctl_param_partitioner
 !
       use nod_phys_send_recv
       use set_parallel_file_name
@@ -64,7 +65,8 @@
 !     ----- read control data
 !
       call read_control_data_4_part(part_ctl1)
-      call set_control_4_extend_sleeve(my_rank, part_ctl1, comm_part1)
+      call set_control_4_extend_sleeve                                  &
+     &   (my_rank, part_ctl1, comm_part1, part_p1)
       call dealloc_ctl_data_4_part(part_ctl1)
 !
 !  --  read geometry
@@ -87,8 +89,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine analyze_sleeve_extend
-!
-      use m_ctl_param_partitioner
 !
       use parallel_sleeve_extension
 !

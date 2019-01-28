@@ -2,7 +2,7 @@
 !      module  init_partitioner
 !
 !!      subroutine initialize_partitioner                               &
-!!     &         (org_mesh, org_group, domain_grp)
+!!     &         (num_domain, org_mesh, org_group, domain_grp)
 !!        type(mesh_geometry), intent(inout) :: org_mesh
 !!        type(mesh_groups), intent(inout) :: org_group
 !!        type(domain_groups_4_partitioner), intent(inout) :: domain_grp
@@ -26,18 +26,19 @@
 !   --------------------------------------------------------------------
 !
       subroutine initialize_partitioner                                 &
-     &         (org_mesh, org_group, domain_grp)
+     &         (num_domain, org_mesh, org_group, domain_grp)
 !
       use t_mesh_data
       use t_next_node_ele_4_node
       use t_domain_group_4_partition
 !
       use m_error_IDs
-      use m_ctl_param_partitioner
       use set_domain_and_org_id
       use quick_mesh_check_for_part
 !
       use error_exit_4_part
+!
+      integer(kind = kint), intent(in) :: num_domain
 !
       type(mesh_geometry), intent(inout) :: org_mesh
       type(mesh_groups), intent(inout) :: org_group

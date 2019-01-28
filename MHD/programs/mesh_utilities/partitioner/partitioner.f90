@@ -16,7 +16,7 @@
       use t_fem_gauss_int_coefs
       use t_control_data_4_part
 !
-      use m_ctl_param_partitioner
+      use t_ctl_param_partitioner
       use t_domain_group_4_partition
       use t_internal_4_partitioner
 !
@@ -51,6 +51,7 @@
 !
       implicit none
 !
+      type(ctl_param_partitioner), save :: part_p1
       type(control_data_4_partitioner), save :: part_ctl1
       type(control_data_4_merge), save :: mgd_ctl_p
       type(control_param_assemble), save :: asbl_param_p
@@ -97,7 +98,7 @@
 !  read control file
 !
       call read_control_data_4_part(part_ctl1)
-      call s_set_control_data_4_part(part_ctl1, comm_part1)
+      call s_set_control_data_4_part(part_ctl1, comm_part1, part_p1)
       call dealloc_ctl_data_4_part(part_ctl1)
 !
 !  read global mesh
@@ -191,18 +192,20 @@
 !  ========= Routines for partitioner ==============
 !
 !      write(*,*) 'initialize_partitioner'
-      call initialize_partitioner(org_fem%mesh, org_fem%group,          &
-     &    domain_grp1)
+      call initialize_partitioner(part_p1%num_domain,                   &
+     &    org_fem%mesh, org_fem%group, domain_grp1)
 !      write(*,*) 'grouping_for_partitioner'
       call grouping_for_partitioner                                     &
      &   (org_fem%mesh%node, org_fem%mesh%ele, org_ele_mesh%edge,       &
      &    org_fem%group%nod_grp, org_fem%group%ele_grp,                 &
-     &    org_fem%group%tbls_ele_grp, node_volume, domain_grp1)
+     &    org_fem%group%tbls_ele_grp, node_volume,                      &
+     &    part_p1, domain_grp1)
+!
 !  ========= Regrouping after estimate computation load =======
 !
 ! part_plt contain info about num of subdomains
       if(part_p1%iflag_LIC_partition .eq. 1) then
-        num_particle = num_domain * 100
+        num_particle = part_p1%num_domain * 100
         allocate(particles(num_particle))
         write(*,*) 'generatie sample particle for estimation'
         call choose_particles_from_eles(org_fem%mesh%ele,               &
@@ -220,7 +223,7 @@
           end do
         end if
 
-        allocate(time_cost(num_domain))
+        allocate(time_cost(part_p1%num_domain))
 
         call seed_particles(domain_grp1%nod_d_grp,                      &
      &      org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,          &
@@ -229,32 +232,35 @@
      &      org_ele_mesh%surf%iele_4_surf,                              &
      &      org_ele_mesh%surf%interior_surf, org_fem%mesh%node%xx,      &
      &      data_field_vec%d_ucd,                                       &
-     &      particles, num_particle, num_domain, time_cost)
+     &      particles, num_particle, part_p1%num_domain, time_cost)
 
   !cal partition table for new partition
-        allocate(partition_tbl(num_domain))
-        call cal_partition_tbl(time_cost, num_domain, partition_tbl)
+        allocate(partition_tbl(part_p1%num_domain))
+        call cal_partition_tbl                                          &
+     &     (time_cost, part_p1%num_domain, partition_tbl)
 
-        allocate(part_num_node(num_domain))
+        allocate(part_num_node(part_p1%num_domain))
         part_num_node(:) = partition_tbl(:)*org_fem%mesh%node%numnod
 
-        allocate(partition_volume(num_domain))
+        allocate(partition_volume(part_p1%num_domain))
         partition_volume(:) = partition_tbl(:)*org_fem%mesh%ele%volume
 
         if(iflag_part_debug .gt. 0) then
-          write(*,*) 'time cost', time_cost(1:num_domain)%ave_time
-          write(*,*) 'partition tbl', partition_tbl(1:num_domain)
+          write(*,*) 'time cost',                                       &
+     &              time_cost(1:part_p1%num_domain)%ave_time
+          write(*,*) 'partition tbl',                                   &
+     &              partition_tbl(1:part_p1%num_domain)
           write(*,*) 'target partition num', part_num_node(:)
           write(*,*) 'partition volume', partition_volume(:)
         end if
 
 !      call allocate_dim_part_tbl(part_dim_tbl, part_p1%ndivide_eb)
-!      call cal_part_dim_tbl(num_domain, part_p1%ndivide_eb,            &
+!      call cal_part_dim_tbl(part_p1%num_domain, part_p1%ndivide_eb,    &
 !     &    partition_tbl, part_dim_tbl)
 
         call regrouping_for_partition                                   &
-        &   (org_fem%mesh%node, org_fem%mesh%ele,  partition_tbl,       &
-        &    partition_volume, node_volume, domain_grp1)
+        &   (part_p1, org_fem%mesh%node, org_fem%mesh%ele,              &
+        &    partition_tbl, partition_volume, node_volume, domain_grp1)
         deallocate(part_num_node)
         deallocate(partition_tbl)
         deallocate(time_cost)
@@ -266,9 +272,10 @@
 !C-- create subdomain mesh
 !      write(*,*) 'PROC_LOCAL_MESH'
       call PROC_LOCAL_MESH                                              &
-     &   (org_fem%mesh%node, org_fem%mesh%ele, org_ele_mesh%edge,       &
-     &    org_ele_mesh%surf, data_field_vec, org_fem%group,             &
-     &    internals_part1, domain_grp1, comm_part1, included_ele)
+     &   (part_p1, org_fem%mesh%node, org_fem%mesh%ele,                 &
+     &    org_ele_mesh%edge, org_ele_mesh%surf, data_field_vec,         &
+     &    org_fem%group, internals_part1, domain_grp1,                  &
+     &    comm_part1, included_ele)
       call dealloc_local_ne_id_tbl(domain_grp1)
 !C
 !C-- Finalize
@@ -281,7 +288,8 @@
       if(part_p1%iflag_viewer_output .gt. 0) then
         write(*,*) 'choose_surface_mesh_sgl'
         call choose_surface_mesh_sgl                                    &
-     &     (num_domain, part_p1%distribute_mesh_file, sgl_viewer_p)
+     &     (part_p1%num_domain, part_p1%distribute_mesh_file,           &
+     &      sgl_viewer_p)
       end if
 !
       stop ' * Partitioning finished'

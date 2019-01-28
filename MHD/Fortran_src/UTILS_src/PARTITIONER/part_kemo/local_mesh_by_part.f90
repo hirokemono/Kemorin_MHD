@@ -4,8 +4,9 @@
 !      Written by H. Matsui on Sep., 2007
 !
 !!      subroutine local_fem_mesh                                       &
-!!     &         (my_rank, nprocs, node_org, ele_org, group_org,        &
+!!     &         (my_rank, nprocs, part_p, node_org, ele_org, group_org,&
 !!     &          internals_part, nod_d_grp, ele_d_grp, comm_part)
+!!        type(ctl_param_partitioner), intent(in) :: part_p
 !!        type(node_data), intent(in) :: node_org
 !!        type(element_data), intent(in) :: ele_org
 !!        type(mesh_groups), intent(in) :: group_org
@@ -27,7 +28,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine local_fem_mesh                                         &
-     &         (my_rank, nprocs, node_org, ele_org, group_org,          &
+     &         (my_rank, nprocs, part_p, node_org, ele_org, group_org,  &
      &          internals_part, nod_d_grp, ele_d_grp, comm_part)
 !
       use t_mesh_data
@@ -36,7 +37,7 @@
       use t_domain_group_4_partition
       use t_internal_4_partitioner
       use t_partitioner_comm_table
-      use m_ctl_param_partitioner
+      use t_ctl_param_partitioner
       use set_parallel_file_name
 !
       use m_precision
@@ -51,6 +52,7 @@
       implicit none
 !
       integer(kind = kint), intent(in) :: my_rank, nprocs
+      type(ctl_param_partitioner), intent(in) :: part_p
       type(node_data), intent(in) :: node_org
       type(element_data), intent(in) :: ele_org
       type(mesh_groups), intent(in) :: group_org
@@ -68,9 +70,9 @@
 !C
 !C-- init.
 !
-      allocate(para_fem(num_domain))
+      allocate(para_fem(part_p%num_domain))
 !
-      do ip= 1, num_domain
+      do ip= 1, part_p%num_domain
         irank_subdomain = ip-1
 !
         if(mod(irank_subdomain,nprocs) .ne. my_rank) cycle
@@ -103,11 +105,11 @@
 !C | write FINAL LOCAL files |
 !C +-------------------------+
 !C===
-      do ip= 1, num_domain
+      do ip= 1, part_p%num_domain
         irank_subdomain = ip-1
         if(mod(irank_subdomain,nprocs) .ne. my_rank) cycle
 !
-        call output_mesh(part_p1%distribute_mesh_file, irank_subdomain, &
+        call output_mesh(part_p%distribute_mesh_file, irank_subdomain,  &
      &      para_fem(ip)%mesh, para_fem(ip)%group)
         call dealloc_mesh_infos(para_fem(ip)%mesh, para_fem(ip)%group)
       end do
