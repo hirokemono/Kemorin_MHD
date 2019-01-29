@@ -128,7 +128,7 @@
         num = ied - ist + 1
 !
         do inod0 = ist, ied
-          i_sf = inod_2_org(inod0)
+          i_sf = c_sphere1%inod_2_org(inod0)
           r(inod0) = r_surf(i_sf)
           t(inod0) = theta_surf(i_sf)
           p(inod0) = phi_surf(i_sf)
@@ -138,9 +138,9 @@
      &      x(ist), y(ist), z(ist))
 !
         do inod0 = ist, ied
-          i_sf = inod_2_org(inod0)
+          i_sf = c_sphere1%inod_2_org(inod0)
           j_sf = inod0 - inod_stack_sf(is_level-1)
-          k_sf = inod_2_next(inod0)
+          k_sf = c_sphere1%inod_2_next(inod0)
 !
           inod = i_sf + c_sphere1%numnod_cube                           &
      &          + c_sphere1%numnod_sf * (1-1)

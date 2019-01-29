@@ -60,7 +60,7 @@
        write(*,*) 'allocate_surface_connect'
       call set_ntot_ele_sf20(c_sphere1)
       call allocate_surface_connect
-      call allocate_coarse_surf_connect
+      call alloc_coarse_surf_connect(c_sphere1)
 !
 ! set sphere cube data
 !

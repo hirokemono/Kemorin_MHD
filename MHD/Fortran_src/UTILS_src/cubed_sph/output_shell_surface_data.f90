@@ -122,7 +122,7 @@
       use m_cubed_sph_surf_mesh
 !
       integer(kind = kint), intent(in) :: max_coarse_level
-      integer(kind = kint) :: ic, ist, ied, inod, iele, iele0, i
+      integer(kind = kint) :: ic, ist, ied, inod, iele, iele0, i, num
 !
 !
        open (id_sf_coarsing,file='surf_connectivity_m.dat')
@@ -140,7 +140,7 @@
          ied = inod_stack_sf(ic)
          do inod = ist, ied
            write(id_sf_coarsing,'(3i16)') (inod-inod_stack_sf(ic-1)),   &
-     &         inod_2_next(inod), inod_2_org(inod)
+     &         c_sphere1%inod_2_next(inod), c_sphere1%inod_2_org(inod)
          end do
        end do
 !
@@ -168,7 +168,7 @@
          ist = iele_stack_sf(ic-1)+1
          ied = iele_stack_sf(ic)
          write(id_sf_coarsing,'(8i16)')                                 &
-     &            (num_merge_e_sf(iele),iele=ist,ied)
+     &            (c_sphere1%num_merge_e_sf(iele),iele=ist,ied)
        end do
 !
        write(id_sf_coarsing,'(a)') '! merged element id'
@@ -177,8 +177,9 @@
          ied = iele_stack_sf(ic)
          do iele = ist, ied
            iele0 = iele - iele_stack_sf(ic-1)
+           num = c_sphere1%num_merge_e_sf(iele)
            write(id_sf_coarsing,'(8i16)') iele0,                        &
-     &            (imerge_e_sf(iele,i),i=1,num_merge_e_sf(iele))
+     &         c_sphere1%imerge_e_sf(iele,1:num)
          end do
        end do
 !

@@ -97,7 +97,7 @@
         end if
 !
         do inod0 = ist, ied
-          i_sf = inod_2_org(inod0)
+          i_sf = c_sphere1%inod_2_org(inod0)
           r(inod0) = r_nod(k)
           t(inod0) = theta_mod(i_sf)
           p(inod0) = phi_surf(i_sf)
@@ -107,9 +107,9 @@
      &      x(ist), y(ist), z(ist))
 !
         do inod0 = ist, ied
-          i_sf = inod_2_org(inod0)
+          i_sf = c_sphere1%inod_2_org(inod0)
           j_sf = inod0 - inod_stack_sf(is_level-1)
-          k_sf = inod_2_next(inod0)
+          k_sf = c_sphere1%inod_2_next(inod0)
 !
           inod = i_sf + c_sphere1%numnod_cube                           &
      &                + c_sphere1%numnod_sf*(k-1)
@@ -158,7 +158,7 @@
         end if
 !
         do inod0 = ist, ied
-          i_sf = inod_2_org(inod0)
+          i_sf = c_sphere1%inod_2_org(inod0)
           ratio(inod0)                                                  &
      &          = (dble(nr_adj-k) + dble(k-1)*r_nod(1)/r_surf(i_sf) )   &
      &           * r_nod(k) / ( dble(nr_adj-1)*r_nod(1) )
@@ -172,9 +172,9 @@
      &      x(ist), y(ist), z(ist))
 !
         do inod0 = ist, ied
-          i_sf = inod_2_org(inod0)
+          i_sf = c_sphere1%inod_2_org(inod0)
           j_sf = inod0 - inod_stack_sf(is_level-1)
-          k_sf = inod_2_next(inod0)
+          k_sf = c_sphere1%inod_2_next(inod0)
 !
           inod = i_sf + c_sphere1%numnod_cube                           &
      &                + c_sphere1%numnod_sf*(k-1)

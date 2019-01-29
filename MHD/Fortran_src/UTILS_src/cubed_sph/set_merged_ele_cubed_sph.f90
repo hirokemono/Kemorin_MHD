@@ -111,7 +111,7 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(*,*) 'imerge_ele', size(imerge_ele)
+      write(*,*) 'imerge_ele', size(c_sphere1%imerge_ele)
       write(fmt_txt,'(a1,i3,a6)')  '(', (nl_3+1), '(i16))'
 !
       do iz = 1, n_hemi_c
@@ -136,13 +136,13 @@
                   kele = kele0 + (jz-1)*n_hemi_fc**2                    &
      &                         + (jy-1)*n_hemi_fc                       &
      &                         + jx
-                  imerge_ele(k) = kele
+                  c_sphere1%imerge_ele(k) = kele
 !
                 end do
               end do
             end do
 !
-            write(ifile,fmt_txt) jele, imerge_ele(1:nl_3)
+            write(ifile,fmt_txt) jele, c_sphere1%imerge_ele(1:nl_3)
 !
           end do
         end do
@@ -179,14 +179,14 @@
 !
           do kk = 1, nl_r
             kele1 = kele0 + (kk-1)*nele_sf_fc
-            do j = 1, num_merge_e_sf(jele_m)
-              iele_sf = imerge_e_sf(jele_m,j)
-              k0 = (kk-1)*num_merge_e_sf(jele_m) + j
-              imerge_ele(k0) = kele1 + iele_sf
+            do j = 1, c_sphere1%num_merge_e_sf(jele_m)
+              iele_sf = c_sphere1%imerge_e_sf(jele_m,j)
+              k0 = (kk-1) * c_sphere1%num_merge_e_sf(jele_m) + j
+              c_sphere1%imerge_ele(k0) = kele1 + iele_sf
             end do
           end do
 !
-          write(ifile,fmt_txt) jele, imerge_ele(1:nl_shell)
+          write(ifile,fmt_txt) jele, c_sphere1%imerge_ele(1:nl_shell)
        end do
       end do
 !
