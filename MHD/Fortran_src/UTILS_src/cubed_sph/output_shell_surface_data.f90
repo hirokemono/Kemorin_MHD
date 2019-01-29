@@ -47,7 +47,7 @@
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of node and edge for sphere, layer'
        write(id_sf_linear_mesh,'(5i16)')                                &
-     &              numnod_sf, numedge_sf, (nr+1)
+     &     numnod_sf, numedge_sf, (c_sphere1%nele_shell+1)
 !
        write(id_sf_linear_mesh,'(a)') '! number of element'
        write(id_sf_linear_mesh,'(i16)') numele_sf
@@ -90,7 +90,7 @@
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of node and edge for sphere, layer'
        write(id_sf_quad_mesh,'(5i16)')                                  &
-     &              numnod_sf, numedge_sf, (nr+1)
+     &     numnod_sf, numedge_sf, (c_sphere1%nele_shell+1)
 !
        write(id_sf_quad_mesh,'(a)') '! number of element'
        write(id_sf_quad_mesh,'(i16)') numele_sf
@@ -205,7 +205,7 @@
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of node and edge for sphere, layer'
        write(id_sf_linear_mesh,'(5i16)')                                &
-     &              numnod_sf, numedge_sf, (nr+1)
+     &     numnod_sf, numedge_sf, (c_sphere1%nele_shell+1)
 !
        write(id_sf_linear_mesh,'(a)') '! number of element'
        write(id_sf_linear_mesh,'(i16)') ntot_edge_sf20
@@ -248,7 +248,7 @@
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of node and edge for sphere, layer'
        write(id_sf_quad_mesh,'(5i16)')                                  &
-     &              numnod_sf, numedge_sf, (nr+1)
+     &     numnod_sf, numedge_sf, (c_sphere1%nele_shell+1)
 !
        write(id_sf_quad_mesh,'(a)') '! number of element'
        write(id_sf_quad_mesh,'(i16)') ntot_edge_sf20

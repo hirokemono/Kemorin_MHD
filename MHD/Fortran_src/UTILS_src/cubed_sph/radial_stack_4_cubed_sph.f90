@@ -34,7 +34,7 @@
       integer(kind = kint) :: inod0, inod9, inod17
 !
 !
-      do k = 1, nr
+      do k = 1, c_sphere1%nele_shell
 !
        do iele0 = 1, numele_sf
 !
@@ -79,7 +79,7 @@
         end do
       end do
 !
-      iele_start = iele_start + numele_sf*nr
+      iele_start = iele_start + numele_sf * c_sphere1%nele_shell
 !
       end subroutine radial_stack_quad
 !
@@ -101,7 +101,7 @@
       integer(kind = kint) :: inod0, inod9, inod17
 !
 !
-      do k = 1, nr
+      do k = 1, c_sphere1%nele_shell
        do iele0 = 1, ntot_edge_sf20
 !
         iele = iele_start + ntot_edge_sf20*(k-1) + iele0
@@ -135,7 +135,7 @@
         end do
       end do
 !
-      iele_start = iele_start + numele_sf*nr
+      iele_start = iele_start + numele_sf * c_sphere1%nele_shell
 !
       end subroutine radial_stack_surf_q
 !

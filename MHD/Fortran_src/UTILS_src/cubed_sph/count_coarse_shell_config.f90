@@ -188,7 +188,7 @@
       nmax_merge_sf = num*num
 !
       do icoarse = 1, max_coarse_level
-        num_r = nr / nstep_coarse(icoarse,2)
+        num_r = c_sphere1%nele_shell / nstep_coarse(icoarse,2)
 !
         inod_stack(icoarse) = inod_stack(icoarse-1)                     &
      &    + ( inod_stack_cube(icoarse) - inod_stack_cube(icoarse-1) )   &

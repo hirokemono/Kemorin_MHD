@@ -1,16 +1,18 @@
 !m_cubed_sph_surf_mesh.f90
 !      module m_cubed_sph_surf_mesh
 !
-      module m_cubed_sph_surf_mesh
-!
 !      Written by H. Matsui on Apr., 2006
 !
+      module m_cubed_sph_surf_mesh
+!
       use m_precision
+      use t_cubed_sph_surf_mesh
 !
       implicit none
 !
+      type(cubed_sph_surf_mesh), save :: c_sphere1
+!
 !   num. of node, element
-      integer(kind = kint) :: nr
       integer(kind = kint) :: numnod_sf, numele_sf
       integer(kind = kint) :: numedge_sf
       integer(kind = kint) :: numnod_sf20, numele_sf20

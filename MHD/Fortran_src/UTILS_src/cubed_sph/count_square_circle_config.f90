@@ -85,9 +85,10 @@
       nnod_cb_sph = numnod_cube + numnod_sf
       nele_cb_sph = numele_cube
       nedge_cb_sph = numedge_cube
-      nnod_cb_sph = nnod_cb_sph + numnod_sf * nr
-      nele_cb_sph = nele_cb_sph + numedge_sf * nr
-      nedge_cb_sph = nedge_cb_sph + (numedge_sf+numnod_sf) * nr
+      nnod_cb_sph = nnod_cb_sph + numnod_sf * c_sphere1%nele_shell
+      nele_cb_sph = nele_cb_sph + numedge_sf * c_sphere1%nele_shell
+      nedge_cb_sph = nedge_cb_sph + (numedge_sf+numnod_sf)              &
+     &              * c_sphere1%nele_shell
       numnod_20 = nnod_cb_sph + nedge_cb_sph
       numele_20 = nele_cb_sph
 !

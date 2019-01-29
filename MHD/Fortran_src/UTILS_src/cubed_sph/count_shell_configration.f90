@@ -84,7 +84,7 @@
 !    count number of node & element
 !      number of radius direction
 !
-      nr     =   n_shell - 1
+      c_sphere1%nele_shell =   n_shell - 1
       nr_icb =   nlayer_ICB - 1 
       nr_cmb =   nlayer_CMB - 1
       nr_ocore = nlayer_CMB - nlayer_ICB
@@ -174,10 +174,12 @@
       nele_cb_sph = numele_cube
       nsurf_cb_sph = numsurf_cube
       nedge_cb_sph = numedge_cube
-      nnod_cb_sph = nnod_cb_sph + numnod_sf * nr
-      nele_cb_sph = nele_cb_sph + numele_sf * nr
-      nedge_cb_sph = nedge_cb_sph + (numedge_sf+numnod_sf) * nr
-      nsurf_cb_sph = nsurf_cb_sph + (numele_sf+numedge_sf) * nr
+      nnod_cb_sph = nnod_cb_sph + numnod_sf * c_sphere1%nele_shell
+      nele_cb_sph = nele_cb_sph + numele_sf * c_sphere1%nele_shell
+      nedge_cb_sph = nedge_cb_sph + (numedge_sf+numnod_sf)              &
+     &              * c_sphere1%nele_shell
+      nsurf_cb_sph = nsurf_cb_sph + (numele_sf+numedge_sf)              &
+     &              * c_sphere1%nele_shell
       numnod_20 = nnod_cb_sph + nedge_cb_sph
       numele_20 = nele_cb_sph
 !

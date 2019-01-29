@@ -38,7 +38,7 @@
       n_hemi_c = num_hemi / nskip_s
       n_hemi_fc = num_hemi / nskip_fs
 !
-      nr_c = nr / nskip_r
+      nr_c = c_sphere1%nele_shell / nskip_r
 !
       nl_3 = nl_s*nl_s*nl_s
       nl_shell = nl_s*nl_s*nl_r
@@ -54,7 +54,7 @@
       nele_cube_c = iele_stack_cube(icoarse)                            &
      &             - iele_stack_cube(icoarse-1)
       nele_sf_c = iele_stack_sf(icoarse)-iele_stack_sf(icoarse-1)
-      nele_shell_c = nele_sf_c * nr / nskip_r
+      nele_shell_c = nele_sf_c * c_sphere1%nele_shell / nskip_r
 !
       if (icoarse.eq.1) then
         nnod_cube_fc = numnod_cube
@@ -96,7 +96,7 @@
 !
       n_vert_c =  ncube_vertical / nskip_s
 !
-      nr_c = nr / nskip_r
+      nr_c = c_sphere1%nele_shell / nskip_r
 !
       nl_3 = nl_s*nl_s*nl_s
       nl_shell = nl_s*nl_s*nl_r
@@ -112,7 +112,7 @@
       nele_cube_c = iele_stack_cube(icoarse)                            &
      &             - iele_stack_cube(icoarse-1)
       nele_sf_c = iele_stack_sf(icoarse)-iele_stack_sf(icoarse-1)
-      nele_shell_c = nele_sf_c * nr / nskip_r
+      nele_shell_c = nele_sf_c * c_sphere1%nele_shell / nskip_r
 !
       if (icoarse.eq.1) then
         nnod_cube_fc = numnod_cube
