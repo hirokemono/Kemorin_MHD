@@ -14,6 +14,7 @@
       use count_coarse_parameters
       use const_squre_circle_edge
       use construct_circle_data
+      use set_surf_connect_cubed_sph
 !
       use set_cubed_sph_control
 !
@@ -41,6 +42,7 @@
       call allocate_1d_position
 !
 !       write(*,*) 'allocate_surface_connect'
+      call set_ntot_ele_sf20(c_sphere1)
       call allocate_surface_connect
 !
 ! set sphere cube data

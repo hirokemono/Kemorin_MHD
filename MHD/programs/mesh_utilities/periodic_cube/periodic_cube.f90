@@ -15,6 +15,7 @@
       use count_coarse_parameters
       use const_peri_cube_surface
       use const_peri_cube_data
+      use set_surf_connect_cubed_sph
 !
       use set_peri_cube_control
 !
@@ -58,6 +59,7 @@
       call count_coarse_rect_shell
 !
        write(*,*) 'allocate_surface_connect'
+      call set_ntot_ele_sf20(c_sphere1)
       call allocate_surface_connect
       call allocate_coarse_surf_connect
 !

@@ -150,10 +150,6 @@
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
 !
-      c_sphere%ntot_ele_sf20                                            &
-     &      =  c_sphere%numele_sf20 + c_sphere%numele_sf_w_coarse
-      c_sphere%ntot_edge_sf20                                           &
-     &      = c_sphere%numedge_sf20 + c_sphere%numedge_sf_w_coarse
       allocate( c_sphere%ie_sf20(c_sphere%ntot_ele_sf20,8) )
       allocate( c_sphere%iedge_sf20(c_sphere%ntot_edge_sf20,3) )
       allocate( c_sphere%ie_sf_mid(c_sphere%numele_sf_w_coarse) )

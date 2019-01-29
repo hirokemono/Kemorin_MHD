@@ -107,9 +107,9 @@
 !
 !
       do k = 1, c_sphere1%nele_shell
-       do iele0 = 1, ntot_edge_sf20
+       do iele0 = 1, c_sphere1%ntot_edge_sf20
 !
-        iele = iele_start + ntot_edge_sf20*(k-1) + iele0
+        iele = iele_start + c_sphere1%ntot_edge_sf20*(k-1) + iele0
         inod0 = c_sphere1%numnod_cube + c_sphere1%numnod_sf * (k-1)
 !
         ie20(1) = inod0 + iedge_sf20(iele0,3)
