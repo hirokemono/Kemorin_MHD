@@ -57,7 +57,7 @@
       nele_shell_c = nele_sf_c * c_sphere1%nele_shell / nskip_r
 !
       if (icoarse.eq.1) then
-        nnod_cube_fc = numnod_cube
+        nnod_cube_fc = c_sphere1%numnod_cube
         nnod_sf_fc =   c_sphere1%numnod_sf
         nele_cube_fc = numele_cube
         nele_sf_fc =   c_sphere1%numele_sf
@@ -115,7 +115,7 @@
       nele_shell_c = nele_sf_c * c_sphere1%nele_shell / nskip_r
 !
       if (icoarse.eq.1) then
-        nnod_cube_fc = numnod_cube
+        nnod_cube_fc = c_sphere1%numnod_cube
         nnod_sf_fc =   c_sphere1%numnod_sf
         nele_cube_fc = numele_cube
         nele_sf_fc =   c_sphere1%numele_sf

@@ -58,7 +58,7 @@
        call set_center_cube(inod_start, id_l_mesh, id_flag_quad,        &
      &     num_hemi, num_hemi, x_node, x_node)
 !
-       if ( inod_start .ne. numnod_cube ) then
+       if(inod_start .ne. c_sphere1%numnod_cube) then
          write (*,*) 'number of node of center is wrong'
          stop
        end if

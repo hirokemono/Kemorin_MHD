@@ -111,7 +111,8 @@
           j_sf = inod0 - inod_stack_sf(is_level-1)
           k_sf = inod_2_next(inod0)
 !
-          inod = i_sf + numnod_cube + c_sphere1%numnod_sf*(k-1)
+          inod = i_sf + c_sphere1%numnod_cube                           &
+     &                + c_sphere1%numnod_sf*(k-1)
           jnod = j_sf + nnod_cube_c + nnod_sf_c*((k-1)/nskip_r)
           knod = k_sf + nnod_cube_fc + nnod_sf_fc*((k-1)/nskip_fr)
 !
@@ -175,7 +176,8 @@
           j_sf = inod0 - inod_stack_sf(is_level-1)
           k_sf = inod_2_next(inod0)
 !
-          inod = i_sf + numnod_cube + c_sphere1%numnod_sf*(k-1)
+          inod = i_sf + c_sphere1%numnod_cube                           &
+     &                + c_sphere1%numnod_sf*(k-1)
           jnod = j_sf + nnod_cube_c + nnod_sf_c*((k-1)/nskip_r)
           knod = k_sf + nnod_cube_fc + nnod_sf_fc*((k-1)/nskip_fr)
 !
