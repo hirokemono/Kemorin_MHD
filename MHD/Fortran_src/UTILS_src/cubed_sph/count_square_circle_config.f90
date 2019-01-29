@@ -33,9 +33,10 @@
 !   numbers for center cube
 !       (except for surface of cube for number of node)
 !
-      call count_center_square_size(num_hemi, c_sphere1%numnod_cube,    &
-     &    c_sphere1%numele_cube, c_sphere1%numedge_cube,                &
-     &    numnod_cube20, c_sphere1%numnod_sf, c_sphere1%numedge_sf)
+      call count_center_square_size                                     &
+     &   (num_hemi, c_sphere1%numnod_cube, c_sphere1%numele_cube,       &
+     &    c_sphere1%numedge_cube, c_sphere1%numnod_cube20,              &
+     &    c_sphere1%numnod_sf, c_sphere1%numedge_sf)
 !
       call count_curcle_numbers
 !

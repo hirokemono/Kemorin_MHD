@@ -42,9 +42,10 @@
 !       (except for surface of cube for number of node)
 !
       call count_center_cube_size                                       &
-     &   (num_hemi, c_sphere1%numnod_cube, c_sphere1%numele_cube,       &
-     &    c_sphere1%numedge_cube, c_sphere1%numsurf_cube,               &
-     &    numnod_cube20, c_sphere1%numnod_sf, c_sphere1%numele_sf,      &
+     &   (num_hemi, c_sphere1%numnod_cube,                              &
+     &    c_sphere1%numele_cube, c_sphere1%numedge_cube,                &
+     &    c_sphere1%numsurf_cube, c_sphere1%numnod_cube20,              &
+     &    c_sphere1%numnod_sf, c_sphere1%numele_sf,                     &
      &    c_sphere1%numedge_sf)
 !
       call count_shell_numbers
@@ -67,10 +68,10 @@
 !       (except for surface of cube for number of node)
 !
       call count_center_rect_size                                       &
-     &   (num_hemi, ncube_vertical, &
-     &    c_sphere1%numnod_cube, c_sphere1%numele_cube,                 &
-     &    c_sphere1%numedge_cube, c_sphere1%numsurf_cube,               &
-     &    numnod_cube20, c_sphere1%numnod_sf, c_sphere1%numele_sf,      &
+     &   (num_hemi, ncube_vertical, c_sphere1%numnod_cube,              &
+     &    c_sphere1%numele_cube, c_sphere1%numedge_cube,                &
+     &    c_sphere1%numsurf_cube, c_sphere1%numnod_cube20,              &
+     &    c_sphere1%numnod_sf, c_sphere1%numele_sf,                     &
      &    c_sphere1%numedge_sf)
 !
       call count_shell_numbers
