@@ -63,7 +63,7 @@
        write(*,*) 'connectivity construction for surface start'
        call set_cube_surf_connect(iele_sf_end)
 !
-      if (iele_sf_end.ne.numele_sf) then
+      if (iele_sf_end .ne. c_sphere1%numele_sf) then
         write(*,*) 'check the number of element in a sphere'
         stop
       end if
@@ -91,7 +91,7 @@
       use merged_ele_4_cubed_sph_surf
       use set_surf_connect_cubed_sph
 !
-      integer(kind= kint) :: inod_sf_end
+      integer(kind= kint) :: inod_sf_end, num
       integer(kind= kint) :: iele_sf_end, irod_sf_end
       integer(kind= kint) :: icoarse
 !
@@ -99,7 +99,7 @@
 !
       inod_sf_end = 0
       irod_sf_end = numedge_sf
-      iele_sf_end = numele_sf
+      iele_sf_end = c_sphere1%numele_sf
       do icoarse = 1, max_coarse_level
 !
         call cal_coarse_cube_params(icoarse)
@@ -113,7 +113,8 @@
        write(*,*) 'inod_sf_end!!!', inod_sf_end
 !
        call set_coarse_cube_surf_connect(iele_sf_end)
-       if (iele_sf_end .ne.(iele_stack_sf(icoarse)+numele_sf) ) then
+       num = iele_stack_sf(icoarse) + c_sphere1%numele_sf
+       if(iele_sf_end .ne. num) then
         write(*,*) 'check the number of element in a sphere... level:'  &
      &           ,  icoarse
         stop

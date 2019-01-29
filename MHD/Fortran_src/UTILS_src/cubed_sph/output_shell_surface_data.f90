@@ -50,7 +50,7 @@
      &     c_sphere1%numnod_sf, numedge_sf, (c_sphere1%nele_shell+1)
 !
        write(id_sf_linear_mesh,'(a)') '! number of element'
-       write(id_sf_linear_mesh,'(i16)') numele_sf
+       write(id_sf_linear_mesh,'(i16)') c_sphere1%numele_sf
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of layer for inner and outer core boundary'
        write(id_sf_linear_mesh,'(5i16)')                                &
@@ -63,7 +63,7 @@
        end do
 !
        write(id_sf_linear_mesh,'(a)') '! connectivity'
-       do iele = 1, numele_sf
+       do iele = 1, c_sphere1%numele_sf
         write(id_sf_linear_mesh,'(5i16)') iele, ie_sf20(iele,1:4)
        end do
 !
@@ -93,7 +93,7 @@
      &     c_sphere1%numnod_sf, numedge_sf, (c_sphere1%nele_shell+1)
 !
        write(id_sf_quad_mesh,'(a)') '! number of element'
-       write(id_sf_quad_mesh,'(i16)') numele_sf
+       write(id_sf_quad_mesh,'(i16)') c_sphere1%numele_sf
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of layer for inner and outer core boundary'
        write(id_sf_quad_mesh,'(5i16)')                                  &
@@ -106,7 +106,7 @@
        end do
 !
        write(id_sf_quad_mesh,'(a)') '! connectivity'
-       do iele = 1, numele_sf
+       do iele = 1, c_sphere1%numele_sf
          write(id_sf_quad_mesh,'(9i16)') iele, ie_sf20(iele,1:8)
        end do
 !
@@ -154,7 +154,7 @@
          ist = iele_stack_sf(ic-1) + 1
          ied = iele_stack_sf(ic)
          do iele0 = ist, ied
-           iele = iele0 + numele_sf
+           iele = iele0 + c_sphere1%numele_sf
             write(id_sf_coarsing,'(6i16)') (iele0-iele_stack_sf(ic-1)), &
      &                      ie_sf20(iele,1:4)
          end do

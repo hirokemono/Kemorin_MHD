@@ -60,7 +60,7 @@
         nnod_cube_fc = numnod_cube
         nnod_sf_fc =   c_sphere1%numnod_sf
         nele_cube_fc = numele_cube
-        nele_sf_fc =   numele_sf
+        nele_sf_fc =   c_sphere1%numele_sf
       else
         nnod_cube_fc                                                    &
      &      = inod_stack_cube(icoarse-1) - inod_stack_cube(icoarse-2)
@@ -118,7 +118,7 @@
         nnod_cube_fc = numnod_cube
         nnod_sf_fc =   c_sphere1%numnod_sf
         nele_cube_fc = numele_cube
-        nele_sf_fc =   numele_sf
+        nele_sf_fc =   c_sphere1%numele_sf
       else
         nnod_cube_fc                                                    &
      &      = inod_stack_cube(icoarse-1) - inod_stack_cube(icoarse-2)

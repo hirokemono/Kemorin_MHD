@@ -36,9 +36,9 @@
 !
       do k = 1, c_sphere1%nele_shell
 !
-       do iele0 = 1, numele_sf
+       do iele0 = 1, c_sphere1%numele_sf
 !
-        iele = iele_start + numele_sf*(k-1) + iele0
+        iele = iele_start + c_sphere1%numele_sf*(k-1) + iele0
         inod0 = numnod_cube + c_sphere1%numnod_sf * (k-1)
 !
         ie20(1) = inod0 + ie_sf20(iele0,1)
@@ -83,7 +83,8 @@
         end do
       end do
 !
-      iele_start = iele_start + numele_sf * c_sphere1%nele_shell
+      iele_start = iele_start                                           &
+     &            + c_sphere1%numele_sf * c_sphere1%nele_shell
 !
       end subroutine radial_stack_quad
 !
@@ -139,7 +140,8 @@
         end do
       end do
 !
-      iele_start = iele_start + numele_sf * c_sphere1%nele_shell
+      iele_start = iele_start                                           &
+     &            + c_sphere1%numele_sf * c_sphere1%nele_shell
 !
       end subroutine radial_stack_surf_q
 !

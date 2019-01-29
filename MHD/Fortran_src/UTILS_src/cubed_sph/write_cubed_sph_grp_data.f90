@@ -58,31 +58,33 @@
 !   set element group
 !
       call count_ele_groups                                             &
-     &   (numele_cube, numele_sf, ione, group_csph%ele_grp)
+     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%ele_grp)
 !
       call allocate_grp_type_num(group_csph%ele_grp)
       call set_element_group_names(group_csph%ele_grp)
       call set_ele_grp_istack                                           &
-     &   (numele_cube, numele_sf, ione, group_csph%ele_grp)
+     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%ele_grp)
 !
       call allocate_grp_type_item(group_csph%ele_grp)
       call set_ele_item                                                 &
-     &   (numele_cube, numele_sf, ione, group_csph%ele_grp)
+     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%ele_grp)
 !
       call write_element_group(id_l_group, group_csph%ele_grp)
 !
 !
 ! surface group
 !
-      call count_surf_groups(numele_sf, ione, group_csph%surf_grp)
+      call count_surf_groups                                            &
+     &   (c_sphere1%numele_sf, ione, group_csph%surf_grp)
 !
       call allocate_sf_grp_type_num(group_csph%surf_grp)
       call set_surface_group_names(group_csph%surf_grp)
-      call set_surf_istack(numele_sf, ione, group_csph%surf_grp)
+      call set_surf_istack                                              &
+     &   (c_sphere1%numele_sf, ione, group_csph%surf_grp)
 !
       call allocate_sf_grp_type_item(group_csph%surf_grp)
       call set_surf_item                                                &
-     &   (numele_cube, numele_sf, ione, group_csph%surf_grp)
+     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%surf_grp)
 !
       call write_surf_grp_shell(id_l_group, group_csph%surf_grp)
 !
@@ -117,30 +119,32 @@
 !   set element group
 !
       call count_ele_groups                                             &
-     &   (numele_cube, numele_sf, ione, group_csph%ele_grp)
+     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%ele_grp)
 !
       call allocate_grp_type_num(group_csph%ele_grp)
       call set_element_group_names(group_csph%ele_grp)
       call set_ele_grp_istack                                           &
-     &   (numele_cube, numele_sf, ione, group_csph%ele_grp)
+     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%ele_grp)
 !
       call allocate_grp_type_item(group_csph%ele_grp)
       call set_ele_item                                                 &
-     &   (numele_cube, numele_sf, ione, group_csph%ele_grp)
+     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%ele_grp)
 !
       call write_element_group(id_q_group, group_csph%ele_grp)
 !
 ! surface group
 !
-      call count_surf_groups(numele_sf, ione, group_csph%surf_grp)
+      call count_surf_groups                                            &
+     &   (c_sphere1%numele_sf, ione, group_csph%surf_grp)
 !
       call allocate_sf_grp_type_num(group_csph%surf_grp)
       call set_surface_group_names(group_csph%surf_grp)
-      call set_surf_istack(numele_sf, ione, group_csph%surf_grp)
+      call set_surf_istack                                              &
+     &   (c_sphere1%numele_sf, ione, group_csph%surf_grp)
 !
       call allocate_sf_grp_type_item(group_csph%surf_grp)
       call set_surf_item                                                &
-     &   (numele_cube, numele_sf, ione, group_csph%surf_grp)
+     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%surf_grp)
 !
       call write_surf_grp_shell(id_q_group, group_csph%surf_grp)
 !
