@@ -27,13 +27,6 @@
       integer(kind = kint), allocatable :: iedge_sf20(:,:)
       integer(kind = kint), allocatable :: ie_sf_mid(:)
 !
-      integer(kind = kint) :: numnod_cube_w_coarse
-      integer(kind = kint) :: numele_cube_w_coarse
-      integer(kind = kint) :: numedge_cube_w_coarse
-      integer(kind = kint) :: nsurf_cube_w_coarse
-      integer(kind = kint) :: numnod_sf_w_coarse, numele_sf_w_coarse
-      integer(kind = kint) :: numedge_sf_w_coarse, nsurf_sf_w_coarse
-!
       integer(kind = kint), allocatable :: inod_stack_cube(:)
       integer(kind = kint), allocatable :: iele_stack_cube(:)
       integer(kind = kint), allocatable :: iedge_stack_cube(:)
@@ -119,7 +112,7 @@
 !
       allocate( ie_sf20(c_sphere1%ntot_ele_sf20,8) )
       allocate( iedge_sf20(c_sphere1%ntot_edge_sf20,3) )
-      allocate( ie_sf_mid(numele_sf_w_coarse) )
+      allocate( ie_sf_mid(c_sphere1%numele_sf_w_coarse) )
 !
       ie_sf20 = 0
       iedge_sf20 = 0
@@ -131,10 +124,10 @@
 !
       subroutine allocate_coarse_surf_connect
 !
-      allocate( inod_2_org(numnod_sf_w_coarse) )
-      allocate( inod_2_next(numnod_sf_w_coarse) )
-      allocate( num_merge_e_sf(numnod_sf_w_coarse) )
-      allocate( imerge_e_sf(numnod_sf_w_coarse,nmax_merge_sf) )
+      allocate( inod_2_org(c_sphere1%numnod_sf_w_coarse) )
+      allocate( inod_2_next(c_sphere1%numnod_sf_w_coarse) )
+      allocate( num_merge_e_sf(c_sphere1%numnod_sf_w_coarse) )
+      allocate( imerge_e_sf(c_sphere1%numnod_sf_w_coarse,nmax_merge_sf) )
 !
       allocate( imerge_ele(max_merge_e) )
 !

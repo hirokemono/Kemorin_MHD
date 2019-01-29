@@ -89,18 +89,18 @@
         iele_stack_sf(icoarse) = iele_stack_sf(icoarse-1) +   nele_sf
         iedge_stack_sf(icoarse) = iedge_stack_sf(icoarse-1) + nedge_sf
       end do
-      numnod_cube_w_coarse = c_sphere1%numnod_cube20                    &
+      c_sphere1%numnod_cube_w_coarse = c_sphere1%numnod_cube20          &
      &      + inod_stack_cube(max_coarse_level)
-      numele_cube_w_coarse = c_sphere1%numele_cube20                    &
+      c_sphere1%numele_cube_w_coarse = c_sphere1%numele_cube20          &
      &      + iele_stack_cube(max_coarse_level)
-      numedge_cube_w_coarse = c_sphere1%numedge_cube                    &
+      c_sphere1%numedge_cube_w_coarse = c_sphere1%numedge_cube          &
      &      + iedge_stack_cube(max_coarse_level)
-      nsurf_cube_w_coarse =   c_sphere1%numsurf_cube                    &
+      c_sphere1%nsurf_cube_w_coarse =   c_sphere1%numsurf_cube          &
      &      + isurf_stack_cube(max_coarse_level)
 !
-      numnod_sf_w_coarse =  inod_stack_sf(max_coarse_level)
-      numele_sf_w_coarse =  iele_stack_sf(max_coarse_level)
-      numedge_sf_w_coarse = iedge_stack_sf(max_coarse_level)
+      c_sphere1%numnod_sf_w_coarse =  inod_stack_sf(max_coarse_level)
+      c_sphere1%numele_sf_w_coarse =  iele_stack_sf(max_coarse_level)
+      c_sphere1%numedge_sf_w_coarse = iedge_stack_sf(max_coarse_level)
 !
       end subroutine count_coarse_cubed_shell_nums
 !
@@ -152,18 +152,18 @@
         iele_stack_sf(icoarse) = iele_stack_sf(icoarse-1) +   nele_sf
         iedge_stack_sf(icoarse) = iedge_stack_sf(icoarse-1) + nedge_sf
       end do
-      numnod_cube_w_coarse = c_sphere1%numnod_cube20                    &
+      c_sphere1%numnod_cube_w_coarse = c_sphere1%numnod_cube20          &
      &      + inod_stack_cube(max_coarse_level)
-      numele_cube_w_coarse = c_sphere1%numele_cube20                    &
+      c_sphere1%numele_cube_w_coarse = c_sphere1%numele_cube20          &
      &      + iele_stack_cube(max_coarse_level)
-      numedge_cube_w_coarse = c_sphere1%numedge_cube                    &
+      c_sphere1%numedge_cube_w_coarse = c_sphere1%numedge_cube          &
      &      + iedge_stack_cube(max_coarse_level)
-      nsurf_cube_w_coarse =   c_sphere1%numsurf_cube                    &
+      c_sphere1%nsurf_cube_w_coarse =   c_sphere1%numsurf_cube          &
      &      + isurf_stack_cube(max_coarse_level)
 !
-      numnod_sf_w_coarse =  inod_stack_sf(max_coarse_level)
-      numele_sf_w_coarse =  iele_stack_sf(max_coarse_level)
-      numedge_sf_w_coarse = iedge_stack_sf(max_coarse_level)
+      c_sphere1%numnod_sf_w_coarse =  inod_stack_sf(max_coarse_level)
+      c_sphere1%numele_sf_w_coarse =  iele_stack_sf(max_coarse_level)
+      c_sphere1%numedge_sf_w_coarse = iedge_stack_sf(max_coarse_level)
 !
       end subroutine count_coarse_rect_shell_nums
 !
