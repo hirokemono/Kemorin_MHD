@@ -43,7 +43,7 @@
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of node and edge for cube'
        write(id_sf_linear_mesh,'(5i16)') c_sphere1%numnod_cube,         &
-     &   (numedge_cube - c_sphere1%numedge_sf)
+     &   (c_sphere1%numedge_cube - c_sphere1%numedge_sf)
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of node and edge for sphere, layer'
        write(id_sf_linear_mesh,'(5i16)') c_sphere1%numnod_sf,           &
@@ -86,7 +86,7 @@
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of node and edge for cube'
        write(id_sf_quad_mesh,'(5i16)') c_sphere1%numnod_cube,           &
-     &    (numedge_cube - c_sphere1%numedge_sf)
+     &    (c_sphere1%numedge_cube - c_sphere1%numedge_sf)
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of node and edge for sphere, layer'
        write(id_sf_quad_mesh,'(5i16)') c_sphere1%numnod_sf,             &
@@ -201,7 +201,7 @@
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of node and edge for cube'
        write(id_sf_linear_mesh,'(5i16)') c_sphere1%numnod_cube,         &
-     &     (numedge_cube - c_sphere1%numedge_sf)
+     &     (c_sphere1%numedge_cube - c_sphere1%numedge_sf)
        write(id_sf_linear_mesh,'(a)')                                   &
      &  '! num. of node and edge for sphere, layer'
        write(id_sf_linear_mesh,'(5i16)') c_sphere1%numnod_sf,           &
@@ -244,7 +244,7 @@
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of node and edge for cube'
        write(id_sf_quad_mesh,'(5i16)') c_sphere1%numnod_cube,           &
-     &     (numedge_cube - c_sphere1%numedge_sf)
+     &     (c_sphere1%numedge_cube - c_sphere1%numedge_sf)
        write(id_sf_quad_mesh,'(a)')                                     &
      &  '! num. of node and edge for sphere, layer'
        write(id_sf_quad_mesh,'(5i16)') c_sphere1%numnod_sf,             &

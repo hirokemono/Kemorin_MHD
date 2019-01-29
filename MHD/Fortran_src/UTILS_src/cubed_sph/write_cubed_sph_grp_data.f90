@@ -60,16 +60,19 @@
 !   set element group
 !
       call count_ele_groups                                             &
-     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%ele_grp)
+     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &    ione, group_csph%ele_grp)
 !
       call allocate_grp_type_num(group_csph%ele_grp)
       call set_element_group_names(group_csph%ele_grp)
       call set_ele_grp_istack                                           &
-     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%ele_grp)
+     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &    ione, group_csph%ele_grp)
 !
       call allocate_grp_type_item(group_csph%ele_grp)
       call set_ele_item                                                 &
-     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%ele_grp)
+     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &    ione, group_csph%ele_grp)
 !
       call write_element_group(id_l_group, group_csph%ele_grp)
 !
@@ -86,7 +89,8 @@
 !
       call allocate_sf_grp_type_item(group_csph%surf_grp)
       call set_surf_item                                                &
-     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%surf_grp)
+     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &    ione, group_csph%surf_grp)
 !
       call write_surf_grp_shell(id_l_group, group_csph%surf_grp)
 !
@@ -104,18 +108,18 @@
       write(*,*) 'output quad group information'
 !
       call count_node_groups_quad                                       &
-     &   (c_sphere1%numnod_cube, numedge_cube,                          &
+     &   (c_sphere1%numnod_cube, c_sphere1%numedge_cube,                &
      &    c_sphere1%numnod_sf, c_sphere1%numedge_sf, group_csph%nod_grp)
 !
       call allocate_grp_type_num(group_csph%nod_grp)
       call set_node_group_names(group_csph%nod_grp)
       call set_node_istack_quad                                         &
-     &   (c_sphere1%numnod_cube, numedge_cube,                          &
+     &   (c_sphere1%numnod_cube, c_sphere1%numedge_cube,                &
      &    c_sphere1%numnod_sf, c_sphere1%numedge_sf, group_csph%nod_grp)
 !
       call allocate_grp_type_item(group_csph%nod_grp)
       call set_nodal_item_quad                                          &
-     &   (nnod_cb_sph, c_sphere1%numnod_cube, numedge_cube,             &
+     &   (nnod_cb_sph, c_sphere1%numnod_cube, c_sphere1%numedge_cube,   &
      &    c_sphere1%numnod_sf, c_sphere1%numedge_sf, num_hemi, ione,    &
      &    group_csph%nod_grp)
 !
@@ -124,16 +128,19 @@
 !   set element group
 !
       call count_ele_groups                                             &
-     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%ele_grp)
+     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &    ione, group_csph%ele_grp)
 !
       call allocate_grp_type_num(group_csph%ele_grp)
       call set_element_group_names(group_csph%ele_grp)
       call set_ele_grp_istack                                           &
-     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%ele_grp)
+     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &    ione, group_csph%ele_grp)
 !
       call allocate_grp_type_item(group_csph%ele_grp)
       call set_ele_item                                                 &
-     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%ele_grp)
+     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &    ione, group_csph%ele_grp)
 !
       call write_element_group(id_q_group, group_csph%ele_grp)
 !
@@ -149,7 +156,8 @@
 !
       call allocate_sf_grp_type_item(group_csph%surf_grp)
       call set_surf_item                                                &
-     &   (numele_cube, c_sphere1%numele_sf, ione, group_csph%surf_grp)
+     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &    ione, group_csph%surf_grp)
 !
       call write_surf_grp_shell(id_q_group, group_csph%surf_grp)
 !

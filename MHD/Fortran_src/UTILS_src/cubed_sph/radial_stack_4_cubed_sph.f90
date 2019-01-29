@@ -50,7 +50,7 @@
         ie20(7) = inod0 + ie_sf20(iele0,3) + c_sphere1%numnod_sf
         ie20(8) = inod0 + ie_sf20(iele0,4) + c_sphere1%numnod_sf
 !
-        inod9 = nnod_cb_sph + numedge_cube                              &
+        inod9 = nnod_cb_sph + c_sphere1%numedge_cube                    &
      &         + (c_sphere1%numnod_sf + c_sphere1%numedge_sf)*(k-2)
 !
         ie20( 9) = inod9 + ie_sf20(iele0,5)
@@ -67,7 +67,7 @@
         ie20(16) = inod9 + ie_sf20(iele0,8)                             &
      &            + c_sphere1%numnod_sf + c_sphere1%numedge_sf
 !
-        inod17 = nnod_cb_sph + numedge_cube                             &
+        inod17 = nnod_cb_sph + c_sphere1%numedge_cube                   &
      &          + (c_sphere1%numnod_sf + c_sphere1%numedge_sf)*(k-1)
 !
         ie20(17) = inod17 + ie_sf20(iele0,1)
@@ -117,16 +117,16 @@
         ie20(3) = inod0 + iedge_sf20(iele0,1) + c_sphere1%numnod_sf
         ie20(4) = inod0 + iedge_sf20(iele0,3) + c_sphere1%numnod_sf
 !
-        inod9 = nnod_cb_sph + numedge_cube                              &
+        inod9 = nnod_cb_sph + c_sphere1%numedge_cube                    &
      &         + (c_sphere1%numnod_sf + c_sphere1%numedge_sf)*(k-2)
 !
         ie20( 5) = inod9 + iedge_sf20(iele0,2)
 !
-        inod17 = nnod_cb_sph + numedge_cube                             &
+        inod17 = nnod_cb_sph + c_sphere1%numedge_cube                   &
      &          + (c_sphere1%numnod_sf + c_sphere1%numedge_sf)*(k-1)
         ie20( 7) = inod17 + iedge_sf20(iele0,2)
 !
-        inod17 = nnod_cb_sph + numedge_cube                             &
+        inod17 = nnod_cb_sph + c_sphere1%numedge_cube                   &
      &          + (c_sphere1%numnod_sf + c_sphere1%numedge_sf)*(k-1)
 !
         ie20( 6) = inod17 + iedge_sf20(iele0,1)

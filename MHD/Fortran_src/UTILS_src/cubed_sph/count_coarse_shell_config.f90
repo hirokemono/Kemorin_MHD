@@ -93,9 +93,9 @@
      &      + inod_stack_cube(max_coarse_level)
       numele_cube_w_coarse = numele_cube20                              &
      &      + iele_stack_cube(max_coarse_level)
-      numedge_cube_w_coarse = numedge_cube                              &
+      numedge_cube_w_coarse = c_sphere1%numedge_cube                    &
      &      + iedge_stack_cube(max_coarse_level)
-      nsurf_cube_w_coarse = numsurf_cube                                &
+      nsurf_cube_w_coarse =   c_sphere1%numsurf_cube                    &
      &      + isurf_stack_cube(max_coarse_level)
 !
       numnod_sf_w_coarse =  inod_stack_sf(max_coarse_level)
@@ -156,9 +156,9 @@
      &      + inod_stack_cube(max_coarse_level)
       numele_cube_w_coarse = numele_cube20                              &
      &      + iele_stack_cube(max_coarse_level)
-      numedge_cube_w_coarse = numedge_cube                              &
+      numedge_cube_w_coarse = c_sphere1%numedge_cube                    &
      &      + iedge_stack_cube(max_coarse_level)
-      nsurf_cube_w_coarse = numsurf_cube                                &
+      nsurf_cube_w_coarse =   c_sphere1%numsurf_cube                    &
      &      + isurf_stack_cube(max_coarse_level)
 !
       numnod_sf_w_coarse =  inod_stack_sf(max_coarse_level)

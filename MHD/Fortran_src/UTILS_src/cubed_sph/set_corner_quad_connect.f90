@@ -24,7 +24,7 @@
       integer(kind = kint), intent(in) :: numnod, num_h, num_v
 !
       integer(kind = kint), intent(inout) :: iele
-      integer(kind = kint) :: ncube_c,  numedge_cube
+      integer(kind = kint) :: ncube_c, numedge_cube
       integer(kind = kint) :: ie20(20)
 !
 !

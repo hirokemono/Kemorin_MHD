@@ -13,8 +13,7 @@
       type(cubed_sph_surf_mesh), save :: c_sphere1
 !
 !   num. of node, element
-      integer(kind = kint) :: numele_cube
-      integer(kind = kint) :: numsurf_cube, numedge_cube
+      integer(kind = kint) :: numedge_cube
       integer(kind = kint) :: numnod_cube20, numele_cube20
 !
 !   position

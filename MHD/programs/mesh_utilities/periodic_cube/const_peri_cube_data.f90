@@ -34,6 +34,7 @@
       use modify_colat_cube_surf
 !
       integer(kind = kint) :: inod_start, iele_start, id_flag_quad
+      integer(kind = kint) :: num
 !
 !
       call set_linear_mesh_file_names
@@ -85,13 +86,13 @@
 !  construct center cube
 !
        if (iflag_quad .gt. 0) then
-!
          write(*,*) 'set_center_rect_quad', nnod_cb_sph, inod_start
          call set_center_rect_quad(inod_start, id_q_mesh)
          write(*,*) 'set_center_rect_quad end', nnod_cb_sph, inod_start
-         if ( inod_start .ne. (nnod_cb_sph+numedge_cube) ) then
+         num = nnod_cb_sph + c_sphere1%numedge_cube
+         if(inod_start .ne. num) then
            write (*,*) 'number of quadrature node in center is wrong',  &
-     &             inod_start, (nnod_cb_sph+numedge_cube)
+     &             inod_start, num
            stop
          end if
 !
@@ -110,7 +111,7 @@
       write(*,*) 'set connectivity for center cube'
       call set_center_connect_quad(iele_start, id_l_connect,            &
      &    id_flag_quad, nnod_cb_sph, num_hemi, ncube_vertical)
-      if ( iele_start .ne. numele_cube ) then
+      if(iele_start .ne. c_sphere1%numele_cube) then
         write (*,*) 'number of quadrature element of center is wrong'
         stop
       end if
