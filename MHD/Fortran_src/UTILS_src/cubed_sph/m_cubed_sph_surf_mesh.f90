@@ -35,7 +35,6 @@
       integer(kind = kint), allocatable :: iele_stack_sf(:)
       integer(kind = kint), allocatable :: iedge_stack_sf(:)
 !
-      integer(kind = kint) :: nmax_merge_sf
       integer(kind = kint), allocatable :: inod_2_org(:), inod_2_next(:)
       integer(kind = kint), allocatable :: num_merge_e_sf(:)
       integer(kind = kint), allocatable :: imerge_e_sf(:,:)
@@ -127,7 +126,7 @@
       allocate( inod_2_org(c_sphere1%numnod_sf_w_coarse) )
       allocate( inod_2_next(c_sphere1%numnod_sf_w_coarse) )
       allocate( num_merge_e_sf(c_sphere1%numnod_sf_w_coarse) )
-      allocate( imerge_e_sf(c_sphere1%numnod_sf_w_coarse,nmax_merge_sf) )
+      allocate( imerge_e_sf(c_sphere1%numnod_sf_w_coarse,c_sphere1%nmax_merge_sf) )
 !
       allocate( imerge_ele(max_merge_e) )
 !

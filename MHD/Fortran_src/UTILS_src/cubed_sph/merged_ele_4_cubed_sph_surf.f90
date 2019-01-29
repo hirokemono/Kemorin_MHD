@@ -39,19 +39,19 @@
 !
       iele = iele_stack_sf(is_level-1)
       call set_bottom_merged_cube(num_hemi, nskip_s, nskip_fs,          &
-     &    c_sphere1%numnod_sf_w_coarse, nmax_merge_sf,                  &
+     &    c_sphere1%numnod_sf_w_coarse, c_sphere1%nmax_merge_sf,        &
      &    iele, imerge_e_sf)
 !
 ! side wall
 !
       call set_side_merged_cube(num_hemi, num_hemi, nskip_s, nskip_fs,  &
-     &    c_sphere1%numnod_sf_w_coarse, nmax_merge_sf,                  &
+     &    c_sphere1%numnod_sf_w_coarse, c_sphere1%nmax_merge_sf,        &
      &    iele, imerge_e_sf)
 !
 !  top surface
 !
       call set_top_merged_cube(num_hemi, num_hemi, nskip_s, nskip_fs,   &
-     &    c_sphere1%numnod_sf_w_coarse, nmax_merge_sf,                  &
+     &    c_sphere1%numnod_sf_w_coarse, c_sphere1%nmax_merge_sf,        &
      &    iele, imerge_e_sf)
 !
       end subroutine set_merged_element_cube_surf
@@ -78,21 +78,21 @@
 !
       iele = iele_stack_sf(is_level-1)
       call set_bottom_merged_cube(num_hemi, nskip_s, nskip_fs,          &
-     &    c_sphere1%numnod_sf_w_coarse, nmax_merge_sf,                  &
+     &    c_sphere1%numnod_sf_w_coarse, c_sphere1%nmax_merge_sf,        &
      &    iele, imerge_e_sf)
 !
 ! side wall
 !
       call set_side_merged_cube                                         &
      &   (num_hemi, ncube_vertical, nskip_s, nskip_fs,                  &
-     &    c_sphere1%numnod_sf_w_coarse, nmax_merge_sf,                  &
+     &    c_sphere1%numnod_sf_w_coarse, c_sphere1%nmax_merge_sf,        &
      &    iele, imerge_e_sf)
 !
 !  top surface
 !
       call set_top_merged_cube                                          &
      &   (num_hemi, ncube_vertical, nskip_s, nskip_fs,                  &
-     &    c_sphere1%numnod_sf_w_coarse, nmax_merge_sf,                  &
+     &    c_sphere1%numnod_sf_w_coarse, c_sphere1%nmax_merge_sf,        &
      &    iele, imerge_e_sf)
 !
       end subroutine set_merged_element_rect_surf

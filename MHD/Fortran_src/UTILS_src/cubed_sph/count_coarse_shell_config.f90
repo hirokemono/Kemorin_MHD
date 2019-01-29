@@ -185,7 +185,7 @@
       do icoarse = 1, max_coarse_level
         num = max(num,icoarse_level(icoarse,1))
       end do
-      nmax_merge_sf = num*num
+      c_sphere1%nmax_merge_sf = num*num
 !
       do icoarse = 1, max_coarse_level
         num_r = c_sphere1%nele_shell / nstep_coarse(icoarse,2)
