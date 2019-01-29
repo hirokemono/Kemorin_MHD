@@ -13,12 +13,9 @@
       type(cubed_sph_surf_mesh), save :: c_sphere1
 !
 !   num. of node, element
-!      integer(kind = kint) :: numnod_sf20, numele_sf20
-      integer(kind = kint) :: numele_sf20
       integer(kind = kint) :: numnod_cube, numele_cube
       integer(kind = kint) :: numsurf_cube, numedge_cube
       integer(kind = kint) :: numnod_cube20, numele_cube20
-      integer(kind = kint) :: numedge_sf20
 !
 !   position
       real(kind = kreal), allocatable :: xyz_surf(:,:)
@@ -126,8 +123,8 @@
 !
       subroutine allocate_surface_connect
 !
-      ntot_ele_sf20 =  numele_sf20 + numele_sf_w_coarse
-      ntot_edge_sf20 = numedge_sf20 + numedge_sf_w_coarse
+      ntot_ele_sf20 =  c_sphere1%numele_sf20 + numele_sf_w_coarse
+      ntot_edge_sf20 = c_sphere1%numedge_sf20 + numedge_sf_w_coarse
       allocate( ie_sf20(ntot_ele_sf20,8) )
       allocate( iedge_sf20(ntot_edge_sf20,3) )
       allocate( ie_sf_mid(numele_sf_w_coarse) )
