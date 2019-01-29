@@ -13,7 +13,8 @@
       type(cubed_sph_surf_mesh), save :: c_sphere1
 !
 !   num. of node, element
-      integer(kind = kint) :: numnod_sf20, numele_sf20
+!      integer(kind = kint) :: numnod_sf20, numele_sf20
+      integer(kind = kint) :: numele_sf20
       integer(kind = kint) :: numnod_cube, numele_cube
       integer(kind = kint) :: numsurf_cube, numedge_cube
       integer(kind = kint) :: numnod_cube20, numele_cube20
@@ -77,14 +78,14 @@
 !
       subroutine allocate_surface_geometries
 !
-      allocate (xyz_surf(numnod_sf20,3))
-      allocate (r_surf(numnod_sf20))
-      allocate (theta_surf(numnod_sf20))
-      allocate (phi_surf(numnod_sf20))
+      allocate (xyz_surf(c_sphere1%numnod_sf20,3))
+      allocate (r_surf(c_sphere1%numnod_sf20))
+      allocate (theta_surf(c_sphere1%numnod_sf20))
+      allocate (phi_surf(c_sphere1%numnod_sf20))
 !
-      allocate (s_surf(numnod_sf20))
-      allocate (ar_surf(numnod_sf20))
-      allocate (as_surf(numnod_sf20))
+      allocate (s_surf(c_sphere1%numnod_sf20))
+      allocate (ar_surf(c_sphere1%numnod_sf20))
+      allocate (as_surf(c_sphere1%numnod_sf20))
 !
       xyz_surf = 0.0d0
       r_surf = 0.0d0

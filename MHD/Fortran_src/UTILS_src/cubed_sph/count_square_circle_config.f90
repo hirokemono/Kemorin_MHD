@@ -79,7 +79,8 @@
       use m_cubed_sph_radius
 !
 !
-      numnod_sf20 =  c_sphere1%numnod_sf + c_sphere1%numedge_sf
+      c_sphere1%numnod_sf20                                             &
+     &      = c_sphere1%numnod_sf + c_sphere1%numedge_sf
       numedge_sf20 = c_sphere1%numedge_sf
 !
       nnod_cb_sph = numnod_cube + c_sphere1%numnod_sf

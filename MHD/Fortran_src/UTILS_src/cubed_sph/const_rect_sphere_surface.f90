@@ -48,13 +48,14 @@
         write(*,*) 'check the number of edge in a sphere'
         stop
       end if
-      if (inod_sf_end.ne.numnod_sf20) then
+      if (inod_sf_end .ne. c_sphere1%numnod_sf20) then
         write(*,*) 'check the number of node for quad in a sphere'
         stop
       end if
 !
-      call position_2_sph (numnod_sf20, xyz_surf, r_surf, theta_surf,   &
-     &     phi_surf, ar_surf, s_surf, as_surf)
+      call position_2_sph                                               &
+     &   (c_sphere1%numnod_sf20, xyz_surf, r_surf, theta_surf,          &
+     &    phi_surf, ar_surf, s_surf, as_surf)
 !
       end subroutine const_rect_sphere_surf_node
 !
