@@ -38,7 +38,7 @@
 !
       integer(kind = kint) :: num
 !
-      num = c_sphere1%numnod_sf + numedge_sf
+      num = c_sphere1%numnod_sf + c_sphere1%numedge_sf
       allocate( x(num), y(num), z(num) )
       allocate( r(num), t(num), p(num) )
       allocate( ratio(num), ratio1(num), ratio2(num) )
@@ -120,7 +120,7 @@
       real(kind = kreal) :: rad_edge
 !
 !
-      num = c_sphere1%numnod_sf + numedge_sf
+      num = c_sphere1%numnod_sf + c_sphere1%numedge_sf
       do k = nr_adj+1, n_shell
         r(1:c_sphere1%numnod_sf) = (r_nod(k) + r_nod(k-1)) * half
         r(c_sphere1%numnod_sf+1:num) = r_nod(k)
@@ -147,7 +147,7 @@
         call position_2_xyz(num, r(1), t(1), phi_surf(1),               &
      &      x(1), y(1), z(1))
 !
-        do inod0 = 1, c_sphere1%numnod_sf + numedge_sf
+        do inod0 = 1, c_sphere1%numnod_sf + c_sphere1%numedge_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &         inod, x(inod0), y(inod0), z(inod0)
@@ -221,7 +221,7 @@
       real(kind = kreal) :: rad_edge
 !
 !
-      num = c_sphere1%numnod_sf + numedge_sf
+      num = c_sphere1%numnod_sf + c_sphere1%numedge_sf
       do k = 1, nr_adj-1
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
           call cal_wall_latitude_ratio(num_h, num_v, edge_latitude(k))
@@ -253,7 +253,7 @@
           r(inod0) = r_surf(inod0) * ratio(inod0)
         end do
 !
-        do iedge0 = 1, numedge_sf
+        do iedge0 = 1, c_sphere1%numedge_sf
           inod0 = iedge0 + c_sphere1%numnod_sf
 !
           ratio(inod0)                                                  &
@@ -266,7 +266,7 @@
         call position_2_xyz(num, r(1), t(1), phi_surf(1),               &
      &      x(1), y(1), z(1))
 !
-        do inod0 = 1, c_sphere1%numnod_sf + numedge_sf
+        do inod0 = 1, c_sphere1%numnod_sf + c_sphere1%numedge_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), z(inod0)

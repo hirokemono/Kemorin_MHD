@@ -102,16 +102,16 @@
       write(*,*) 'output quad group information'
 !
       call count_node_groups_quad(numnod_cube, numedge_cube,            &
-     &    c_sphere1%numnod_sf, numedge_sf, group_csph%nod_grp)
+     &    c_sphere1%numnod_sf, c_sphere1%numedge_sf, group_csph%nod_grp)
 !
       call allocate_grp_type_num(group_csph%nod_grp)
       call set_node_group_names(group_csph%nod_grp)
       call set_node_istack_quad(numnod_cube, numedge_cube,              &
-     &    c_sphere1%numnod_sf, numedge_sf, group_csph%nod_grp)
+     &    c_sphere1%numnod_sf, c_sphere1%numedge_sf, group_csph%nod_grp)
 !
       call allocate_grp_type_item(group_csph%nod_grp)
       call set_nodal_item_quad(nnod_cb_sph, numnod_cube, numedge_cube,  &
-     &    c_sphere1%numnod_sf, numedge_sf, num_hemi, ione,              &
+     &    c_sphere1%numnod_sf, c_sphere1%numedge_sf, num_hemi, ione,    &
      &    group_csph%nod_grp)
 !
       call write_cubed_sph_nod_grp(id_q_group, group_csph%nod_grp)

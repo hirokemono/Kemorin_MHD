@@ -36,7 +36,7 @@
 !
       integer(kind = kint) :: num
 !
-      num = c_sphere1%numnod_sf + numedge_sf
+      num = c_sphere1%numnod_sf + c_sphere1%numedge_sf
       allocate(x(num), y(num))
       x = 0.0d0
       y = 0.0d0
@@ -174,7 +174,7 @@
       real(kind = kreal) :: ratio
 !
 !
-      num = c_sphere1%numnod_sf + numedge_sf
+      num = c_sphere1%numnod_sf + c_sphere1%numedge_sf
       do k = nr_adj+1, nr_back
         do inod0 = 1, c_sphere1%numnod_sf
           ratio = half * (r_nod(k)+r_nod(k-1) )/r_surf(inod0)
@@ -183,7 +183,7 @@
           y(inod0) = ratio*xyz_surf(inod0,2)
         end do
 !
-        do iedge0 = 1, numedge_sf
+        do iedge0 = 1, c_sphere1%numedge_sf
           inod0 = iedge0 + c_sphere1%numnod_sf
           ratio = r_nod(k)/r_surf(inod0)
 !
@@ -191,7 +191,7 @@
           y(inod0) = ratio*xyz_surf(inod0,2)
         end do
 !
-        do inod0 = 1, c_sphere1%numnod_sf + numedge_sf
+        do inod0 = 1, c_sphere1%numnod_sf + c_sphere1%numedge_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), zero
@@ -217,7 +217,7 @@
       real(kind = kreal) :: ratio
 !
 !
-      num = c_sphere1%numnod_sf + numedge_sf
+      num = c_sphere1%numnod_sf + c_sphere1%numedge_sf
       do k = 1, nr_adj-1
         do inod0 = 1, c_sphere1%numnod_sf
           ratio1 = (dble(nr_adj-k) + dble(k-1)*r_nod(1)/r_surf(inod0))  &
@@ -230,7 +230,7 @@
           y(inod0) = ratio*xyz_surf(inod0,2)
         end do
 !
-        do iedge0 = 1, numedge_sf
+        do iedge0 = 1, c_sphere1%numedge_sf
           inod0 = iedge0 + c_sphere1%numnod_sf
 !
           ratio = (dble(nr_adj-k-1) + dble(k)*r_nod(1)/r_surf(inod0))   &
@@ -240,7 +240,7 @@
           y(inod0) = ratio*xyz_surf(inod0,2)
         end do
 !
-        do inod0 = 1, c_sphere1%numnod_sf + numedge_sf
+        do inod0 = 1, c_sphere1%numnod_sf + c_sphere1%numedge_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), zero

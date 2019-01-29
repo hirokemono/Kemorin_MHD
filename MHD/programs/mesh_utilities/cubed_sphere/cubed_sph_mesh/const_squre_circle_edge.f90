@@ -49,7 +49,7 @@
 !
       call set_circle_rods(inod_sf_end, irod_sf_end)
 !
-      if (irod_sf_end.ne.numedge_sf) then
+      if (irod_sf_end .ne. c_sphere1%numedge_sf) then
         write(*,*) 'check the number of edge in a sphere'
         stop
       end if

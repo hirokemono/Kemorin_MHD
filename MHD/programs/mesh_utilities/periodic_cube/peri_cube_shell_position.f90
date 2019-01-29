@@ -36,7 +36,7 @@
 !
       integer(kind = kint) :: num
 !
-      num = c_sphere1%numnod_sf + numedge_sf
+      num = c_sphere1%numnod_sf + c_sphere1%numedge_sf
       allocate( x(num), y(num), z(num) )
       allocate( r(num), t(num), p(num) )
       allocate( ratio(num))

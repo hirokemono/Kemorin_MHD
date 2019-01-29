@@ -46,11 +46,11 @@
 !
       call set_cube_rods(inod_sf_end, irod_sf_end)
 !
-      if (irod_sf_end.ne.numedge_sf) then
+      if (irod_sf_end .ne. c_sphere1%numedge_sf) then
         write(*,*) 'check the number of edge in a sphere'
         stop
       end if
-      if (inod_sf_end.ne.numnod_sf20) then
+      if (inod_sf_end .ne. numnod_sf20) then
         write(*,*) 'check the number of node for quad in a sphere'
         stop
       end if
@@ -98,7 +98,7 @@
 !  construct coarse mesh information
 !
       inod_sf_end = 0
-      irod_sf_end = numedge_sf
+      irod_sf_end = c_sphere1%numedge_sf
       iele_sf_end = c_sphere1%numele_sf
       do icoarse = 1, max_coarse_level
 !
