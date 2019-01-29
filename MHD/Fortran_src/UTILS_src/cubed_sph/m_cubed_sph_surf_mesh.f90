@@ -39,7 +39,6 @@
       integer(kind = kint), allocatable :: num_merge_e_sf(:)
       integer(kind = kint), allocatable :: imerge_e_sf(:,:)
 !
-      integer(kind = kint) :: max_merge_e
       integer(kind = kint), allocatable :: imerge_ele(:)
 !
 !      subroutine allocate_surface_geometries
@@ -128,7 +127,7 @@
       allocate( num_merge_e_sf(c_sphere1%numnod_sf_w_coarse) )
       allocate( imerge_e_sf(c_sphere1%numnod_sf_w_coarse,c_sphere1%nmax_merge_sf) )
 !
-      allocate( imerge_ele(max_merge_e) )
+      allocate( imerge_ele(c_sphere1%max_merge_e) )
 !
       inod_2_org = 0
       inod_2_next = 0

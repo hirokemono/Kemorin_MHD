@@ -57,12 +57,12 @@
 !
       end do
 !
-       max_merge_e = 1
+       c_sphere1%max_merge_e = 1
        do i = 1, max_coarse_level
          nl_3 = icoarse_level(i,1)**3
          nl_shell = icoarse_level(i,1)**2 * icoarse_level(i,2)
-         max_merge_e = max(max_merge_e,nl_3)
-         max_merge_e = max(max_merge_e,nl_shell)
+         c_sphere1%max_merge_e = max(c_sphere1%max_merge_e,nl_3)
+         c_sphere1%max_merge_e = max(c_sphere1%max_merge_e,nl_shell)
        end do
 !
       end subroutine check_cube_coarsing_level
@@ -110,12 +110,12 @@
 !
       end do
 !
-       max_merge_e = 1
+       c_sphere1%max_merge_e = 1
        do i = 1, max_coarse_level
          nl_3 = icoarse_level(i,1)**3
          nl_shell = icoarse_level(i,1)**2 * icoarse_level(i,2)
-         max_merge_e = max(max_merge_e,nl_3)
-         max_merge_e = max(max_merge_e,nl_shell)
+         c_sphere1%max_merge_e = max(c_sphere1%max_merge_e,nl_3)
+         c_sphere1%max_merge_e = max(c_sphere1%max_merge_e,nl_shell)
        end do
 !
       end subroutine check_rect_coarsing_level
