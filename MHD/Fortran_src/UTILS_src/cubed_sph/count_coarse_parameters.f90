@@ -58,7 +58,7 @@
 !
       if (icoarse.eq.1) then
         nnod_cube_fc = numnod_cube
-        nnod_sf_fc =   numnod_sf
+        nnod_sf_fc =   c_sphere1%numnod_sf
         nele_cube_fc = numele_cube
         nele_sf_fc =   numele_sf
       else
@@ -116,7 +116,7 @@
 !
       if (icoarse.eq.1) then
         nnod_cube_fc = numnod_cube
-        nnod_sf_fc =   numnod_sf
+        nnod_sf_fc =   c_sphere1%numnod_sf
         nele_cube_fc = numele_cube
         nele_sf_fc =   numele_sf
       else

@@ -35,10 +35,10 @@
       integer(kind= kint) :: inod
 !
 !
-       write(*,*) 'set_circle_node', numnod_sf
+       write(*,*) 'set_circle_node', c_sphere1%numnod_sf
       call set_circle_node(inod_sf_end)
 !
-      if (inod_sf_end.ne.numnod_sf) then
+      if (inod_sf_end .ne. c_sphere1%numnod_sf) then
         write(*,*) 'check the number of node in a sphere'
         stop
       end if

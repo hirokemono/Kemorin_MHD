@@ -38,7 +38,7 @@
 !
       integer(kind = kint) :: num
 !
-      num = numnod_sf+numedge_sf
+      num = c_sphere1%numnod_sf + numedge_sf
       allocate( x(num), y(num), z(num) )
       allocate( r(num), t(num), p(num) )
       allocate( ratio(num), ratio1(num), ratio2(num) )
@@ -79,7 +79,7 @@
 !
 !
       do k = nr_adj+1, n_shell
-        r(1:numnod_sf) = r_nod(k)
+        r(1:c_sphere1%numnod_sf) = r_nod(k)
 !
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
           call cal_wall_latitude_ratio(num_h, num_v, edge_latitude(k))
@@ -88,10 +88,10 @@
         end if
 !
 !
-        call position_2_xyz(numnod_sf,                                  &
+        call position_2_xyz(c_sphere1%numnod_sf,                        &
      &      r(1), theta_surf(1), phi_surf(1), x(1), y(1), z(1))
 !
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &         inod, x(inod0), y(inod0), z(inod0)
@@ -120,10 +120,10 @@
       real(kind = kreal) :: rad_edge
 !
 !
-      num = numnod_sf+numedge_sf
+      num = c_sphere1%numnod_sf + numedge_sf
       do k = nr_adj+1, n_shell
-        r(1:numnod_sf) = (r_nod(k) + r_nod(k-1)) * half
-        r(numnod_sf+1:num) = r_nod(k)
+        r(1:c_sphere1%numnod_sf) = (r_nod(k) + r_nod(k-1)) * half
+        r(c_sphere1%numnod_sf+1:num) = r_nod(k)
 !
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
           call cal_wall_latitude_ratio(num_h, num_v, edge_latitude(k))
@@ -131,21 +131,23 @@
           rad_edge = atan(one) * (edge_latitude(k)+edge_latitude(k-1))  &
      &             / 90.0d0
           call const_rect_sphere_surf_node(rad_edge)
-          t(1:numnod_sf) =     theta_surf(1:numnod_sf)
+          t(1:c_sphere1%numnod_sf) = theta_surf(1:c_sphere1%numnod_sf)
 !
           rad_edge = atan(one) * edge_latitude(k) / 45.0d0
           call const_rect_sphere_surf_node(rad_edge)
-          t(numnod_sf+1:num) = theta_surf(numnod_sf+1:num)
+          t(c_sphere1%numnod_sf+1:num)                                  &
+     &        = theta_surf(c_sphere1%numnod_sf+1:num)
         else
-          t(1:numnod_sf) =     theta_surf(1:numnod_sf)
-          t(numnod_sf+1:num) = theta_surf(numnod_sf+1:num)
+          t(1:c_sphere1%numnod_sf) = theta_surf(1:c_sphere1%numnod_sf)
+          t(c_sphere1%numnod_sf+1:num)                                  &
+     &          = theta_surf(c_sphere1%numnod_sf+1:num)
         end if
 !
 !
         call position_2_xyz(num, r(1), t(1), phi_surf(1),               &
      &      x(1), y(1), z(1))
 !
-        do inod0 = 1, numnod_sf+numedge_sf
+        do inod0 = 1, c_sphere1%numnod_sf + numedge_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &         inod, x(inod0), y(inod0), z(inod0)
@@ -178,18 +180,18 @@
           call const_rect_sphere_surf_node(rad_edge)
         end if
 !
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           ratio(inod0)                                                  &
      &          = (dble(nr_adj-k) + dble(k-1)*r_nod(1)/r_surf(inod0))   &
      &           * r_nod(k) / ( dble(nr_adj-1)*r_nod(1) )
           r(inod0) = r_surf(inod0) * ratio(inod0)
         end do
 !
-        call position_2_xyz(numnod_sf,                                  &
+        call position_2_xyz(c_sphere1%numnod_sf,                        &
      &      r(1), theta_surf(1), phi_surf(1), x(1), y(1), z(1))
 !
 !
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), z(inod0)
@@ -219,7 +221,7 @@
       real(kind = kreal) :: rad_edge
 !
 !
-      num = numnod_sf+numedge_sf
+      num = c_sphere1%numnod_sf + numedge_sf
       do k = 1, nr_adj-1
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
           call cal_wall_latitude_ratio(num_h, num_v, edge_latitude(k))
@@ -227,17 +229,19 @@
           rad_edge = atan(one) * (edge_latitude(k)+edge_latitude(k-1))  &
      &             / 90.0d0
           call const_rect_sphere_surf_node(rad_edge)
-          t(1:numnod_sf) =     theta_surf(1:numnod_sf)
+          t(1:c_sphere1%numnod_sf) = theta_surf(1:c_sphere1%numnod_sf)
 !
           rad_edge = atan(one) * edge_latitude(k) / 45.0d0
           call const_rect_sphere_surf_node(rad_edge)
-          t(numnod_sf+1:num) = theta_surf(numnod_sf+1:num)
+          t(c_sphere1%numnod_sf+1:num)                                  &
+     &          = theta_surf(c_sphere1%numnod_sf+1:num)
         else
-          t(1:numnod_sf) =     theta_surf(1:numnod_sf)
-          t(numnod_sf+1:num) = theta_surf(numnod_sf+1:num)
+          t(1:c_sphere1%numnod_sf) = theta_surf(1:c_sphere1%numnod_sf)
+          t(c_sphere1%numnod_sf+1:num)                                  &
+     &          = theta_surf(c_sphere1%numnod_sf+1:num)
         end if
 !
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           ratio1(inod0)                                                 &
      &           = (dble(nr_adj-k) + dble(k-1)*r_nod(1)/r_surf(inod0))  &
      &            * r_nod(k)   / ( dble(nr_adj-1)*r_nod(1) )
@@ -250,7 +254,7 @@
         end do
 !
         do iedge0 = 1, numedge_sf
-          inod0 = iedge0 + numnod_sf
+          inod0 = iedge0 + c_sphere1%numnod_sf
 !
           ratio(inod0)                                                  &
      &          = (dble(nr_adj-k-1) + dble(k)*r_nod(1)/r_surf(inod0))   &
@@ -262,7 +266,7 @@
         call position_2_xyz(num, r(1), t(1), phi_surf(1),               &
      &      x(1), y(1), z(1))
 !
-        do inod0 = 1, numnod_sf+numedge_sf
+        do inod0 = 1, c_sphere1%numnod_sf + numedge_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), z(inod0)

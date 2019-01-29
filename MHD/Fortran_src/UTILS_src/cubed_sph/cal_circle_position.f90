@@ -36,7 +36,7 @@
 !
       integer(kind = kint) :: num
 !
-      num = numnod_sf+numedge_sf
+      num = c_sphere1%numnod_sf + numedge_sf
       allocate(x(num), y(num))
       x = 0.0d0
       y = 0.0d0
@@ -66,14 +66,14 @@
 !
 !
       do k = nr_adj+1, nr_back
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           ratio = r_nod(k)/r_surf(inod0)
 !
           x(inod0) = ratio*xyz_surf(inod0,1)
           y(inod0) = ratio*xyz_surf(inod0,2)
         end do
 !
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), zero
@@ -100,7 +100,7 @@
 !
 !
       do k = 1, nr_adj
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           ratio = (dble(nr_adj-k) + dble(k-1)*r_nod(1)/r_surf(inod0))   &
      &           * r_nod(k) / ( dble(nr_adj-1)*r_nod(1) )
 !
@@ -108,7 +108,7 @@
           y(inod0) = ratio*xyz_surf(inod0,2)
         end do
 !
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), zero
@@ -135,7 +135,7 @@
 !
 !
       do k = nr_back+1, n_shell
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           ratio = (dble(k-nr_back)                                      &
      &            + dble(n_shell-k)*r_nod(1)/r_surf(inod0))   &
      &         * r_nod(k) / ( dble(n_shell-nr_back)*r_nod(1) )
@@ -145,7 +145,7 @@
           y(inod0) = ratio*xyz_surf(inod0,2)
         end do
 !
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), zero
@@ -174,9 +174,9 @@
       real(kind = kreal) :: ratio
 !
 !
-      num = numnod_sf+numedge_sf
+      num = c_sphere1%numnod_sf + numedge_sf
       do k = nr_adj+1, nr_back
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           ratio = half * (r_nod(k)+r_nod(k-1) )/r_surf(inod0)
 !
           x(inod0) = ratio*xyz_surf(inod0,1)
@@ -184,14 +184,14 @@
         end do
 !
         do iedge0 = 1, numedge_sf
-          inod0 = iedge0 + numnod_sf
+          inod0 = iedge0 + c_sphere1%numnod_sf
           ratio = r_nod(k)/r_surf(inod0)
 !
           x(inod0) = ratio*xyz_surf(inod0,1)
           y(inod0) = ratio*xyz_surf(inod0,2)
         end do
 !
-        do inod0 = 1, numnod_sf+numedge_sf
+        do inod0 = 1, c_sphere1%numnod_sf + numedge_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), zero
@@ -217,9 +217,9 @@
       real(kind = kreal) :: ratio
 !
 !
-      num = numnod_sf+numedge_sf
+      num = c_sphere1%numnod_sf + numedge_sf
       do k = 1, nr_adj-1
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           ratio1 = (dble(nr_adj-k) + dble(k-1)*r_nod(1)/r_surf(inod0))  &
      &            * r_nod(k)   / ( dble(nr_adj-1)*r_nod(1) )
           ratio2 = (dble(nr_adj-k-1) + dble(k)*r_nod(1)/r_surf(inod0))  &
@@ -231,7 +231,7 @@
         end do
 !
         do iedge0 = 1, numedge_sf
-          inod0 = iedge0 + numnod_sf
+          inod0 = iedge0 + c_sphere1%numnod_sf
 !
           ratio = (dble(nr_adj-k-1) + dble(k)*r_nod(1)/r_surf(inod0))   &
      &           * r_nod(k+1) / ( dble(nr_adj-1)*r_nod(1) )
@@ -240,7 +240,7 @@
           y(inod0) = ratio*xyz_surf(inod0,2)
         end do
 !
-        do inod0 = 1, numnod_sf+numedge_sf
+        do inod0 = 1, c_sphere1%numnod_sf + numedge_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), zero

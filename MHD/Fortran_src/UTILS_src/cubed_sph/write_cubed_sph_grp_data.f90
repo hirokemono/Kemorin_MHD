@@ -41,15 +41,16 @@
       write(*,*) 'output group information for linear'
 !
       call count_node_groups_linear                                     &
-     &   (numnod_cube, numnod_sf, ione, group_csph%nod_grp)
+     &   (numnod_cube, c_sphere1%numnod_sf, ione, group_csph%nod_grp)
 !
       call allocate_grp_type_num(group_csph%nod_grp)
       call set_node_group_names(group_csph%nod_grp)
       call set_node_istack_linear                                       &
-     &   (numnod_cube, numnod_sf, ione, group_csph%nod_grp)
+     &   (numnod_cube, c_sphere1%numnod_sf, ione, group_csph%nod_grp)
 !
       call allocate_grp_type_item(group_csph%nod_grp)
-      call set_nodal_item_linear(numnod_cube, numnod_sf, num_hemi,      &
+      call set_nodal_item_linear                                        &
+     &   (numnod_cube, c_sphere1%numnod_sf, num_hemi,                   &
      &    ione, group_csph%nod_grp)
 !
       call write_cubed_sph_nod_grp(id_l_group, group_csph%nod_grp)
@@ -99,16 +100,17 @@
       write(*,*) 'output quad group information'
 !
       call count_node_groups_quad(numnod_cube, numedge_cube,            &
-     &    numnod_sf, numedge_sf, group_csph%nod_grp)
+     &    c_sphere1%numnod_sf, numedge_sf, group_csph%nod_grp)
 !
       call allocate_grp_type_num(group_csph%nod_grp)
       call set_node_group_names(group_csph%nod_grp)
       call set_node_istack_quad(numnod_cube, numedge_cube,              &
-     &    numnod_sf, numedge_sf, group_csph%nod_grp)
+     &    c_sphere1%numnod_sf, numedge_sf, group_csph%nod_grp)
 !
       call allocate_grp_type_item(group_csph%nod_grp)
       call set_nodal_item_quad(nnod_cb_sph, numnod_cube, numedge_cube,  &
-     &    numnod_sf, numedge_sf, num_hemi, ione, group_csph%nod_grp)
+     &    c_sphere1%numnod_sf, numedge_sf, num_hemi, ione,              &
+     &    group_csph%nod_grp)
 !
       call write_cubed_sph_nod_grp(id_q_group, group_csph%nod_grp)
 !

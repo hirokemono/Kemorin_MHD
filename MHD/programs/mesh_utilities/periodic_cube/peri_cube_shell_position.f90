@@ -36,7 +36,7 @@
 !
       integer(kind = kint) :: num
 !
-      num = numnod_sf+numedge_sf
+      num = c_sphere1%numnod_sf + numedge_sf
       allocate( x(num), y(num), z(num) )
       allocate( r(num), t(num), p(num) )
       allocate( ratio(num))
@@ -93,10 +93,10 @@
       integer(kind = kint) :: inod0
 !
 !
-      call position_2_xyz(numnod_sf,                                    &
+      call position_2_xyz(c_sphere1%numnod_sf,                          &
      &      r_surf(1), theta_surf(1), phi_surf(1), x(1), y(1), z(1))
 !
-        do inod0 = 1, numnod_sf
+        do inod0 = 1, c_sphere1%numnod_sf
           inod = inod + 1
           write (ifile,'(i16,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), z(inod0)
@@ -142,7 +142,7 @@
           j_sf = inod0 - inod_stack_sf(is_level-1)
           k_sf = inod_2_next(inod0)
 !
-          inod = i_sf + numnod_cube + numnod_sf*(1-1)
+          inod = i_sf + numnod_cube + c_sphere1%numnod_sf * (1-1)
           jnod = j_sf + nnod_cube_c + nnod_sf_c*((1-1)/nskip_r)
           knod = k_sf + nnod_cube_fc + nnod_sf_fc*((1-1)/nskip_fr)
 !

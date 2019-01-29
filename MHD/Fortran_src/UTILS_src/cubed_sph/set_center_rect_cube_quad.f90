@@ -69,7 +69,7 @@
 !  outer surface
 !
       call set_center_surf_edge(inod, ifile,                            &
-     &    numnod_sf, numedge_sf, xyz_surf)
+     &    c_sphere1%numnod_sf, numedge_sf, xyz_surf)
       iele_ref = 3*(num_hemi)*(num_hemi+1)**2
 !
       end subroutine set_center_cube_quad
@@ -131,10 +131,10 @@
 !  outer surface
 !
       call set_center_surf_edge(inod, ifile,                            &
-     &    numnod_sf, numedge_sf, xyz_surf)
+     &    c_sphere1%numnod_sf, numedge_sf, xyz_surf)
       iele_ref = (3*num_hemi-1)*(num_hemi-1)*(ncube_vertical-1)         &
      &          + (num_hemi-1)*(num_hemi-1)                             &
-     &          + numnod_sf
+     &          + c_sphere1%numnod_sf
       write(*,*) 'set_center_surf_edge', iele_ref, (inod-inod_st)
 !
       end subroutine set_center_rect_quad
@@ -173,7 +173,7 @@
       iele_ref = (3*num_hemi-1)*(num_hemi-1)
 !
       call set_center_surf_edge(inod, ifile,                            &
-     &    numnod_sf, numedge_sf, xyz_surf)
+     &    c_sphere1%numnod_sf, numedge_sf, xyz_surf)
 !
       end subroutine set_center_square_quad
 !

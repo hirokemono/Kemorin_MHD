@@ -42,8 +42,8 @@
 !       (except for surface of cube for number of node)
 !
       call count_center_cube_size(num_hemi,                             &
-     &          numnod_cube, numele_cube, numedge_cube, numsurf_cube,   &
-     &          numnod_cube20, numnod_sf, numele_sf, numedge_sf)
+     &    numnod_cube, numele_cube, numedge_cube, numsurf_cube,   &
+     &    numnod_cube20, c_sphere1%numnod_sf, numele_sf, numedge_sf)
 !
       call count_shell_numbers
 !
@@ -65,8 +65,8 @@
 !       (except for surface of cube for number of node)
 !
       call count_center_rect_size(num_hemi, ncube_vertical,             &
-     &          numnod_cube, numele_cube, numedge_cube, numsurf_cube,   &
-     &          numnod_cube20, numnod_sf, numele_sf, numedge_sf)
+     &    numnod_cube, numele_cube, numedge_cube, numsurf_cube,   &
+     &    numnod_cube20, c_sphere1%numnod_sf, numele_sf, numedge_sf)
 !
       call count_shell_numbers
 !
@@ -166,17 +166,19 @@
       use m_cubed_sph_radius
 !
 !
-      numnod_sf20 =  numnod_sf + numedge_sf
+      numnod_sf20 =  c_sphere1%numnod_sf + numedge_sf
       numedge_sf20 = numedge_sf
       numele_sf20 =  numele_sf
 !
-      nnod_cb_sph = numnod_cube + numnod_sf
+      nnod_cb_sph = numnod_cube + c_sphere1%numnod_sf
       nele_cb_sph = numele_cube
       nsurf_cb_sph = numsurf_cube
       nedge_cb_sph = numedge_cube
-      nnod_cb_sph = nnod_cb_sph + numnod_sf * c_sphere1%nele_shell
+      nnod_cb_sph = nnod_cb_sph                                         &
+     &             + c_sphere1%numnod_sf * c_sphere1%nele_shell
       nele_cb_sph = nele_cb_sph + numele_sf * c_sphere1%nele_shell
-      nedge_cb_sph = nedge_cb_sph + (numedge_sf+numnod_sf)              &
+      nedge_cb_sph = nedge_cb_sph                                       &
+     &             + (numedge_sf + c_sphere1%numnod_sf)                 &
      &              * c_sphere1%nele_shell
       nsurf_cb_sph = nsurf_cb_sph + (numele_sf+numedge_sf)              &
      &              * c_sphere1%nele_shell

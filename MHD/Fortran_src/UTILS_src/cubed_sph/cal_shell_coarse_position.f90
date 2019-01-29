@@ -40,7 +40,7 @@
       allocate( x(num), y(num), z(num) )
       allocate( r(num), t(num), p(num) )
       allocate( ratio(num) )
-      allocate( theta_mod(numnod_sf))
+      allocate( theta_mod(c_sphere1%numnod_sf))
       x = 0.0d0
       y = 0.0d0
       z = 0.0d0
@@ -88,10 +88,12 @@
 !
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
           call cal_wall_latitude_ratio(num_h, num_h, edge_latitude(k))
-          call modify_colat_on_cube_sf(numnod_sf, num_h, num_v,         &
+          call modify_colat_on_cube_sf                                  &
+     &       (c_sphere1%numnod_sf, num_h, num_v,                        &
      &        theta_surf(1), theta_mod(1))
         else
-          theta_mod(1:numnod_sf) = theta_surf(1:numnod_sf)
+          theta_mod(1:c_sphere1%numnod_sf)                              &
+     &         = theta_surf(1:c_sphere1%numnod_sf)
         end if
 !
         do inod0 = ist, ied
@@ -109,7 +111,7 @@
           j_sf = inod0 - inod_stack_sf(is_level-1)
           k_sf = inod_2_next(inod0)
 !
-          inod = i_sf + numnod_cube + numnod_sf*(k-1)
+          inod = i_sf + numnod_cube + c_sphere1%numnod_sf*(k-1)
           jnod = j_sf + nnod_cube_c + nnod_sf_c*((k-1)/nskip_r)
           knod = k_sf + nnod_cube_fc + nnod_sf_fc*((k-1)/nskip_fr)
 !
@@ -146,10 +148,12 @@
 !
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
           call cal_wall_latitude_ratio(num_h, num_h, edge_latitude(k))
-          call modify_colat_on_cube_sf(numnod_sf, num_h, num_v,         &
+          call modify_colat_on_cube_sf                                  &
+     &       (c_sphere1%numnod_sf, num_h, num_v,                        &
      &        theta_surf(1), theta_mod(1))
         else
-          theta_mod(1:numnod_sf) = theta_surf(1:numnod_sf)
+          theta_mod(1:c_sphere1%numnod_sf)                              &
+     &       = theta_surf(1:c_sphere1%numnod_sf)
         end if
 !
         do inod0 = ist, ied
@@ -171,7 +175,7 @@
           j_sf = inod0 - inod_stack_sf(is_level-1)
           k_sf = inod_2_next(inod0)
 !
-          inod = i_sf + numnod_cube + numnod_sf*(k-1)
+          inod = i_sf + numnod_cube + c_sphere1%numnod_sf*(k-1)
           jnod = j_sf + nnod_cube_c + nnod_sf_c*((k-1)/nskip_r)
           knod = k_sf + nnod_cube_fc + nnod_sf_fc*((k-1)/nskip_fr)
 !
