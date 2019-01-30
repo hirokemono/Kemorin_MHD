@@ -93,8 +93,9 @@
       integer(kind = kint) :: inod0
 !
 !
-      call position_2_xyz(c_sphere1%numnod_sf,                          &
-     &      r_surf(1), theta_surf(1), phi_surf(1), x(1), y(1), z(1))
+      call position_2_xyz(c_sphere1%numnod_sf, c_sphere1%r_csph(1),     &
+     &    c_sphere1%theta_csph(1), c_sphere1%phi_csph(1),               &
+     &    x(1), y(1), z(1))
 !
         do inod0 = 1, c_sphere1%numnod_sf
           inod = inod + 1
@@ -129,9 +130,9 @@
 !
         do inod0 = ist, ied
           i_sf = c_sphere1%inod_2_org(inod0)
-          r(inod0) = r_surf(i_sf)
-          t(inod0) = theta_surf(i_sf)
-          p(inod0) = phi_surf(i_sf)
+          r(inod0) = c_sphere1%r_csph(i_sf)
+          t(inod0) = c_sphere1%theta_csph(i_sf)
+          p(inod0) = c_sphere1%phi_csph(i_sf)
         end do
 !
         call position_2_xyz(num, r(ist), t(ist), p(ist),                &

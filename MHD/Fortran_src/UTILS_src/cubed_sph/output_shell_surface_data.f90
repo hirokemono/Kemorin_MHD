@@ -59,7 +59,7 @@
        write(id_sf_linear_mesh,'(a)') '! node'
        do inod = 1, c_sphere1%numnod_sf
         write(id_sf_linear_mesh,'(i16,1p3E25.15e3)') inod,              &
-     &                              xyz_surf(inod,1:3)
+     &                              c_sphere1%x_csph(inod,1:3)
        end do
 !
        write(id_sf_linear_mesh,'(a)') '! connectivity'
@@ -103,7 +103,7 @@
        write(id_sf_quad_mesh,'(a)') '! node'
        do inod = 1, c_sphere1%numnod_sf20
         write(id_sf_quad_mesh,'(i16,1p3E25.15e3)') inod,                &
-     &                              xyz_surf(inod,1:3)
+     &                              c_sphere1%x_csph(inod,1:3)
        end do
 !
        write(id_sf_quad_mesh,'(a)') '! connectivity'
@@ -222,7 +222,7 @@
        write(id_sf_linear_mesh,'(a)') '! node'
        do inod = 1, c_sphere1%numnod_sf
         write(id_sf_linear_mesh,'(i16,1p3E25.15e3)') inod,              &
-     &                          xyz_surf(inod,1:3)
+     &                          c_sphere1%x_csph(inod,1:3)
        end do
 !
        write(id_sf_linear_mesh,'(a)') '! connectivity'
@@ -266,7 +266,7 @@
        write(id_sf_quad_mesh,'(a)') '! node'
        do inod = 1, c_sphere1%numnod_sf20
         write(id_sf_quad_mesh,'(i16,1p3E25.15e3)') inod,                &
-     &                              xyz_surf(inod,1:3)
+     &                              c_sphere1%x_csph(inod,1:3)
        end do
 !
        write(id_sf_quad_mesh,'(a)') '! connectivity'

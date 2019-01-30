@@ -37,8 +37,8 @@
       write(*,*) 'count_square_circle_size'
       call count_square_circle_size
 !
-!      write(*,*) 'allocate_surface_geometries', c_sphere1%numnod_sf20
-      call allocate_surface_geometries
+!      write(*,*) 'alloc_surface_geometries', c_sphere1%numnod_sf20
+      call alloc_surface_geometries(c_sphere1)
       call allocate_1d_position
 !
 !       write(*,*) 'alloc_surface_connect(c_sphere1)'

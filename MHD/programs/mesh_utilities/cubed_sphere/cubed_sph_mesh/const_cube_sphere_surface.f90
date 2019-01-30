@@ -55,8 +55,9 @@
         stop
       end if
 !
-      call position_2_sph (c_sphere1%numnod_sf20, xyz_surf,             &
-     &     r_surf, theta_surf, phi_surf, ar_surf, s_surf, as_surf)
+      call position_2_sph(c_sphere1%numnod_sf20, c_sphere1%x_csph,      &
+     &    c_sphere1%r_csph, c_sphere1%theta_csph, c_sphere1%phi_csph,   &
+     &    c_sphere1%ar_csph, c_sphere1%s_csph, c_sphere1%as_csph)
 !
 !   set connectivity for sphere surface
 !

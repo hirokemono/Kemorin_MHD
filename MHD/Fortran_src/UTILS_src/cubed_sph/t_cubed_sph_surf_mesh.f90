@@ -40,13 +40,13 @@
         integer(kind = kint) :: numedge_sf20
 !
 !   position
-        real(kind = kreal), allocatable :: xyz_surf(:,:)
-        real(kind = kreal), allocatable :: r_surf(:)
-        real(kind = kreal), allocatable :: theta_surf(:)
-        real(kind = kreal), allocatable :: phi_surf(:)
-        real(kind = kreal), allocatable :: s_surf(:)
-        real(kind = kreal), allocatable :: ar_surf(:)
-        real(kind = kreal), allocatable :: as_surf(:)
+        real(kind = kreal), allocatable :: x_csph(:,:)
+        real(kind = kreal), allocatable :: r_csph(:)
+        real(kind = kreal), allocatable :: theta_csph(:)
+        real(kind = kreal), allocatable :: phi_csph(:)
+        real(kind = kreal), allocatable :: s_csph(:)
+        real(kind = kreal), allocatable :: ar_csph(:)
+        real(kind = kreal), allocatable :: as_csph(:)
 !
 !   connectivity
 !
@@ -95,23 +95,26 @@
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
 !
-      allocate (c_sphere%xyz_surf(c_sphere%numnod_sf20,3))
-      allocate (c_sphere%r_surf(c_sphere%numnod_sf20))
-      allocate (c_sphere%theta_surf(c_sphere%numnod_sf20))
-      allocate (c_sphere%phi_surf(c_sphere%numnod_sf20))
+      allocate (c_sphere%x_csph(c_sphere%numnod_sf20,3))
+      allocate (c_sphere%r_csph(c_sphere%numnod_sf20))
+      allocate (c_sphere%theta_csph(c_sphere%numnod_sf20))
+      allocate (c_sphere%phi_csph(c_sphere%numnod_sf20))
 !
-      allocate (c_sphere%s_surf(c_sphere%numnod_sf20))
-      allocate (c_sphere%ar_surf(c_sphere%numnod_sf20))
-      allocate (c_sphere%as_surf(c_sphere%numnod_sf20))
+      allocate (c_sphere%s_csph(c_sphere%numnod_sf20))
+      allocate (c_sphere%ar_csph(c_sphere%numnod_sf20))
+      allocate (c_sphere%as_csph(c_sphere%numnod_sf20))
 !
-      c_sphere%xyz_surf = 0.0d0
-      c_sphere%r_surf = 0.0d0
-      c_sphere%ar_surf = 0.0d0
-      c_sphere%s_surf = 0.0d0
-      c_sphere%as_surf = 0.0d0
-      c_sphere%theta_surf = 0.0d0
-      c_sphere%phi_surf = 0.0d0
-      c_sphere%xyz_surf = 0.0d0
+      if(c_sphere%numnod_sf20 .le. 0) return
+!
+!$omp parallel workshare
+      c_sphere%x_csph = 0.0d0
+      c_sphere%r_csph = 0.0d0
+      c_sphere%ar_csph = 0.0d0
+      c_sphere%s_csph = 0.0d0
+      c_sphere%as_csph = 0.0d0
+      c_sphere%theta_csph = 0.0d0
+      c_sphere%phi_csph = 0.0d0
+!$omp end parallel workshare
 !
       end subroutine alloc_surface_geometries
 !
@@ -133,6 +136,7 @@
       allocate(c_sphere%iele_stack_sf(0:c_sphere%max_level))
       allocate(c_sphere%iedge_stack_sf(0:c_sphere%max_level))
 !
+!$omp parallel workshare
       c_sphere%inod_stack_cube = 0
       c_sphere%iele_stack_cube = 0
       c_sphere%iedge_stack_cube = 0
@@ -140,6 +144,7 @@
       c_sphere%inod_stack_sf = 0
       c_sphere%iele_stack_sf = 0
       c_sphere%iedge_stack_sf = 0
+!$omp end parallel workshare
 !
       end subroutine alloc_coarsing_stack
 !
@@ -154,9 +159,11 @@
       allocate( c_sphere%iedge_sf20(c_sphere%ntot_edge_sf20,3) )
       allocate( c_sphere%ie_sf_mid(c_sphere%numele_sf_w_coarse) )
 !
+!$omp parallel workshare
       c_sphere%ie_sf20 = 0
       c_sphere%iedge_sf20 = 0
       c_sphere%ie_sf_mid = 0
+!$omp end parallel workshare
 !
       end subroutine alloc_surface_connect
 !
@@ -178,12 +185,16 @@
 !
       allocate( c_sphere%imerge_ele(c_sphere%max_merge_e) )
 !
+!$omp parallel workshare
       c_sphere%inod_2_org = 0
       c_sphere%inod_2_next = 0
       c_sphere%num_merge_e_sf = 0
       c_sphere%imerge_e_sf = 0
+!$omp end parallel workshare
 !
+!$omp parallel workshare
       c_sphere%imerge_ele = 0
+!$omp end parallel workshare
 !
       end subroutine alloc_coarse_surf_connect
 !
@@ -195,14 +206,14 @@
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
 !
-      deallocate( c_sphere%xyz_surf   )
-      deallocate( c_sphere%r_surf     )
-      deallocate( c_sphere%theta_surf )
-      deallocate( c_sphere%phi_surf   )
+      deallocate( c_sphere%x_csph   )
+      deallocate( c_sphere%r_csph     )
+      deallocate( c_sphere%theta_csph )
+      deallocate( c_sphere%phi_csph   )
 !
-      deallocate( c_sphere%s_surf  )
-      deallocate( c_sphere%ar_surf )
-      deallocate( c_sphere%as_surf )
+      deallocate( c_sphere%s_csph  )
+      deallocate( c_sphere%ar_csph )
+      deallocate( c_sphere%as_csph )
 !
       end subroutine dealloc_surface_geometries
 !

@@ -93,7 +93,7 @@
       inod_sf_end = 0
       call set_z_plane_squre_node                                       &
      &   (num_hemi, c_sphere1%numnod_sf20, inod_sf_end,                 &
-     &    zero, x_node, xyz_surf)
+     &    zero, x_node, c_sphere1%x_csph)
 !
       end subroutine const_square_surface
 !
@@ -115,19 +115,19 @@
       inod = 0
       call set_z_plane_squre_node                                       &
      &   (num_hemi, c_sphere1%numnod_sf20, inod,                        &
-     &    (-cube_size), x_node, xyz_surf)
+     &    (-cube_size), x_node, c_sphere1%x_csph)
 !
 !  wall
 !
       call set_side_plane_squre_node(num_hemi, num_hemi,                &
      &    c_sphere1%numnod_sf20, inod, cube_size,                       &
-     &    x_node, x_node, xyz_surf)
+     &    x_node, x_node, c_sphere1%x_csph)
 !
 !  top surface
 !
       call set_z_plane_squre_node                                       &
      &   (num_hemi, c_sphere1%numnod_sf20, inod,                        &
-     &    cube_size, x_node, xyz_surf)
+     &    cube_size, x_node, c_sphere1%x_csph)
 !
       inod_sf_end = inod
 !
@@ -154,19 +154,19 @@
       inod = 0
       call set_z_plane_squre_node                                       &
      &   (num_hemi, c_sphere1%numnod_sf20, inod,                        &
-     &    (-z_size), x_node, xyz_surf)
+     &    (-z_size), x_node, c_sphere1%x_csph)
 !
 !  wall
 !
       call set_side_plane_squre_node(num_hemi, ncube_vertical,          &
      &    c_sphere1%numnod_sf20, inod, x_size, x_node,                  &
-     &    v_node, xyz_surf)
+     &    v_node, c_sphere1%x_csph)
 !
 !  top surface
 !
       call set_z_plane_squre_node                                       &
      &   (num_hemi, c_sphere1%numnod_sf20, inod,                        &
-     &    z_size, x_node, xyz_surf)
+     &    z_size, x_node, c_sphere1%x_csph)
 !
       inod_sf_end = inod
 !
@@ -196,7 +196,7 @@
 !
       inod_ed_end = 0
       call set_square_node(num_hemi, c_sphere1%numnod_sf20,             &
-     &    inod_ed_end, cube_size, x_node, xyz_surf)
+     &    inod_ed_end, cube_size, x_node, c_sphere1%x_csph)
 !
       end subroutine set_circle_node
 !

@@ -42,8 +42,8 @@
       write(*,*) 'count_rectangle_shell_size'
       call count_rectangle_shell_size
 !
-      write(*,*) 'allocate_surface_geometries', c_sphere1%numnod_sf20
-      call allocate_surface_geometries
+      write(*,*) 'alloc_surface_geometries', c_sphere1%numnod_sf20
+      call alloc_surface_geometries(c_sphere1)
       call allocate_1d_position
 !
 !  count avaiable coarsing level

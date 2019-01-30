@@ -89,7 +89,8 @@
 !
 !
         call position_2_xyz(c_sphere1%numnod_sf,                        &
-     &      r(1), theta_surf(1), phi_surf(1), x(1), y(1), z(1))
+     &      r(1), c_sphere1%theta_csph(1), c_sphere1%phi_csph(1),       &
+     &      x(1), y(1), z(1))
 !
         do inod0 = 1, c_sphere1%numnod_sf
           inod = inod + 1
@@ -131,20 +132,22 @@
           rad_edge = atan(one) * (edge_latitude(k)+edge_latitude(k-1))  &
      &             / 90.0d0
           call const_rect_sphere_surf_node(rad_edge)
-          t(1:c_sphere1%numnod_sf) = theta_surf(1:c_sphere1%numnod_sf)
+          t(1:c_sphere1%numnod_sf)                                      &
+     &        = c_sphere1%theta_csph(1:c_sphere1%numnod_sf)
 !
           rad_edge = atan(one) * edge_latitude(k) / 45.0d0
           call const_rect_sphere_surf_node(rad_edge)
           t(c_sphere1%numnod_sf+1:num)                                  &
-     &        = theta_surf(c_sphere1%numnod_sf+1:num)
+     &        = c_sphere1%theta_csph(c_sphere1%numnod_sf+1:num)
         else
-          t(1:c_sphere1%numnod_sf) = theta_surf(1:c_sphere1%numnod_sf)
+          t(1:c_sphere1%numnod_sf)                                      &
+     &        = c_sphere1%theta_csph(1:c_sphere1%numnod_sf)
           t(c_sphere1%numnod_sf+1:num)                                  &
-     &          = theta_surf(c_sphere1%numnod_sf+1:num)
+     &          = c_sphere1%theta_csph(c_sphere1%numnod_sf+1:num)
         end if
 !
 !
-        call position_2_xyz(num, r(1), t(1), phi_surf(1),               &
+        call position_2_xyz(num, r(1), t(1), c_sphere1%phi_csph(1),     &
      &      x(1), y(1), z(1))
 !
         do inod0 = 1, c_sphere1%numnod_sf + c_sphere1%numedge_sf
@@ -181,14 +184,15 @@
         end if
 !
         do inod0 = 1, c_sphere1%numnod_sf
-          ratio(inod0)                                                  &
-     &          = (dble(nr_adj-k) + dble(k-1)*r_nod(1)/r_surf(inod0))   &
-     &           * r_nod(k) / ( dble(nr_adj-1)*r_nod(1) )
-          r(inod0) = r_surf(inod0) * ratio(inod0)
+          ratio(inod0) = (dble(nr_adj-k)                                &
+     &                    + dble(k-1)*r_nod(1)/c_sphere1%r_csph(inod0)) &
+     &                  * r_nod(k) / ( dble(nr_adj-1)*r_nod(1) )
+          r(inod0) = c_sphere1%r_csph(inod0) * ratio(inod0)
         end do
 !
         call position_2_xyz(c_sphere1%numnod_sf,                        &
-     &      r(1), theta_surf(1), phi_surf(1), x(1), y(1), z(1))
+     &      r(1), c_sphere1%theta_csph(1), c_sphere1%phi_csph(1),       &
+     &      x(1), y(1), z(1))
 !
 !
         do inod0 = 1, c_sphere1%numnod_sf
@@ -229,41 +233,43 @@
           rad_edge = atan(one) * (edge_latitude(k)+edge_latitude(k-1))  &
      &             / 90.0d0
           call const_rect_sphere_surf_node(rad_edge)
-          t(1:c_sphere1%numnod_sf) = theta_surf(1:c_sphere1%numnod_sf)
+          t(1:c_sphere1%numnod_sf)                                      &
+     &          = c_sphere1%theta_csph(1:c_sphere1%numnod_sf)
 !
           rad_edge = atan(one) * edge_latitude(k) / 45.0d0
           call const_rect_sphere_surf_node(rad_edge)
           t(c_sphere1%numnod_sf+1:num)                                  &
-     &          = theta_surf(c_sphere1%numnod_sf+1:num)
+     &          = c_sphere1%theta_csph(c_sphere1%numnod_sf+1:num)
         else
-          t(1:c_sphere1%numnod_sf) = theta_surf(1:c_sphere1%numnod_sf)
+          t(1:c_sphere1%numnod_sf)                                      &
+     &          = c_sphere1%theta_csph(1:c_sphere1%numnod_sf)
           t(c_sphere1%numnod_sf+1:num)                                  &
-     &          = theta_surf(c_sphere1%numnod_sf+1:num)
+     &          = c_sphere1%theta_csph(c_sphere1%numnod_sf+1:num)
         end if
 !
         do inod0 = 1, c_sphere1%numnod_sf
-          ratio1(inod0)                                                 &
-     &           = (dble(nr_adj-k) + dble(k-1)*r_nod(1)/r_surf(inod0))  &
-     &            * r_nod(k)   / ( dble(nr_adj-1)*r_nod(1) )
-          ratio2(inod0)                                                 &
-     &           = (dble(nr_adj-k-1) + dble(k)*r_nod(1)/r_surf(inod0))  &
-     &            * r_nod(k+1) / ( dble(nr_adj-1)*r_nod(1) )
+          ratio1(inod0) = (dble(nr_adj-k)                               &
+     &                   + dble(k-1)*r_nod(1)/c_sphere1%r_csph(inod0))  &
+     &                 * r_nod(k)   / ( dble(nr_adj-1)*r_nod(1) )
+          ratio2(inod0) = (dble(nr_adj-k-1)                             &
+     &                   + dble(k)*r_nod(1)/c_sphere1%r_csph(inod0))    &
+     &                 * r_nod(k+1) / ( dble(nr_adj-1)*r_nod(1) )
           ratio(inod0) = (ratio1(inod0) + ratio2(inod0)) * half
 !
-          r(inod0) = r_surf(inod0) * ratio(inod0)
+          r(inod0) = c_sphere1%r_csph(inod0) * ratio(inod0)
         end do
 !
         do iedge0 = 1, c_sphere1%numedge_sf
           inod0 = iedge0 + c_sphere1%numnod_sf
 !
-          ratio(inod0)                                                  &
-     &          = (dble(nr_adj-k-1) + dble(k)*r_nod(1)/r_surf(inod0))   &
-     &           * r_nod(k+1) / ( dble(nr_adj-1)*r_nod(1) )
+          ratio(inod0) = (dble(nr_adj-k-1)                              &
+     &                    + dble(k)*r_nod(1)/c_sphere1%r_csph(inod0))   &
+     &                  * r_nod(k+1) / ( dble(nr_adj-1)*r_nod(1) )
 !
-          r(inod0) = r_surf(inod0) * ratio(inod0)
+          r(inod0) = c_sphere1%r_csph(inod0) * ratio(inod0)
         end do
 !
-        call position_2_xyz(num, r(1), t(1), phi_surf(1),               &
+        call position_2_xyz(num, r(1), t(1), c_sphere1%phi_csph(1),     &
      &      x(1), y(1), z(1))
 !
         do inod0 = 1, c_sphere1%numnod_sf + c_sphere1%numedge_sf

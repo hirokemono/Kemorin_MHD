@@ -90,17 +90,17 @@
           call cal_wall_latitude_ratio(num_h, num_h, edge_latitude(k))
           call modify_colat_on_cube_sf                                  &
      &       (c_sphere1%numnod_sf, num_h, num_v,                        &
-     &        theta_surf(1), theta_mod(1))
+     &        c_sphere1%theta_csph(1), theta_mod(1))
         else
           theta_mod(1:c_sphere1%numnod_sf)                              &
-     &         = theta_surf(1:c_sphere1%numnod_sf)
+     &         = c_sphere1%theta_csph(1:c_sphere1%numnod_sf)
         end if
 !
         do inod0 = ist, ied
           i_sf = c_sphere1%inod_2_org(inod0)
           r(inod0) = r_nod(k)
           t(inod0) = theta_mod(i_sf)
-          p(inod0) = phi_surf(i_sf)
+          p(inod0) = c_sphere1%phi_csph(i_sf)
         end do
 !
         call position_2_xyz(num, r(ist), t(ist), p(ist),                &
@@ -151,21 +151,21 @@
           call cal_wall_latitude_ratio(num_h, num_h, edge_latitude(k))
           call modify_colat_on_cube_sf                                  &
      &       (c_sphere1%numnod_sf, num_h, num_v,                        &
-     &        theta_surf(1), theta_mod(1))
+     &        c_sphere1%theta_csph(1), theta_mod(1))
         else
           theta_mod(1:c_sphere1%numnod_sf)                              &
-     &       = theta_surf(1:c_sphere1%numnod_sf)
+     &       = c_sphere1%theta_csph(1:c_sphere1%numnod_sf)
         end if
 !
         do inod0 = ist, ied
           i_sf = c_sphere1%inod_2_org(inod0)
-          ratio(inod0)                                                  &
-     &          = (dble(nr_adj-k) + dble(k-1)*r_nod(1)/r_surf(i_sf) )   &
-     &           * r_nod(k) / ( dble(nr_adj-1)*r_nod(1) )
+          ratio(inod0) = (dble(nr_adj-k)                                &
+     &                    + dble(k-1)*r_nod(1)/c_sphere1%r_csph(i_sf))  &
+     &                  * r_nod(k) / ( dble(nr_adj-1)*r_nod(1) )
 !
-          r(inod0) = r_surf(i_sf) * ratio(inod0)
+          r(inod0) = c_sphere1%r_csph(i_sf) * ratio(inod0)
           t(inod0) = theta_mod(i_sf)
-          p(inod0) = phi_surf(i_sf)
+          p(inod0) = c_sphere1%phi_csph(i_sf)
         end do
 !
         call position_2_xyz(num, r(ist), t(ist), p(ist),                &

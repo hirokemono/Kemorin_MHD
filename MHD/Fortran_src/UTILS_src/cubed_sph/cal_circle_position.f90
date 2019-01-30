@@ -67,10 +67,10 @@
 !
       do k = nr_adj+1, nr_back
         do inod0 = 1, c_sphere1%numnod_sf
-          ratio = r_nod(k)/r_surf(inod0)
+          ratio = r_nod(k) / c_sphere1%r_csph(inod0)
 !
-          x(inod0) = ratio*xyz_surf(inod0,1)
-          y(inod0) = ratio*xyz_surf(inod0,2)
+          x(inod0) = ratio * c_sphere1%x_csph(inod0,1)
+          y(inod0) = ratio * c_sphere1%x_csph(inod0,2)
         end do
 !
         do inod0 = 1, c_sphere1%numnod_sf
@@ -101,11 +101,12 @@
 !
       do k = 1, nr_adj
         do inod0 = 1, c_sphere1%numnod_sf
-          ratio = (dble(nr_adj-k) + dble(k-1)*r_nod(1)/r_surf(inod0))   &
+          ratio = (dble(nr_adj-k)                                       &
+     &             + dble(k-1)*r_nod(1)/c_sphere1%r_csph(inod0))        &
      &           * r_nod(k) / ( dble(nr_adj-1)*r_nod(1) )
 !
-          x(inod0) = ratio*xyz_surf(inod0,1)
-          y(inod0) = ratio*xyz_surf(inod0,2)
+          x(inod0) = ratio * c_sphere1%x_csph(inod0,1)
+          y(inod0) = ratio * c_sphere1%x_csph(inod0,2)
         end do
 !
         do inod0 = 1, c_sphere1%numnod_sf
@@ -137,12 +138,12 @@
       do k = nr_back+1, n_shell
         do inod0 = 1, c_sphere1%numnod_sf
           ratio = (dble(k-nr_back)                                      &
-     &            + dble(n_shell-k)*r_nod(1)/r_surf(inod0))   &
+     &            + dble(n_shell-k)*r_nod(1)/c_sphere1%r_csph(inod0))   &
      &         * r_nod(k) / ( dble(n_shell-nr_back)*r_nod(1) )
 !
       write(*,*) 'nr_back', nr_back, n_shell, ratio
-          x(inod0) = ratio*xyz_surf(inod0,1)
-          y(inod0) = ratio*xyz_surf(inod0,2)
+          x(inod0) = ratio * c_sphere1%x_csph(inod0,1)
+          y(inod0) = ratio * c_sphere1%x_csph(inod0,2)
         end do
 !
         do inod0 = 1, c_sphere1%numnod_sf
@@ -177,18 +178,18 @@
       num = c_sphere1%numnod_sf + c_sphere1%numedge_sf
       do k = nr_adj+1, nr_back
         do inod0 = 1, c_sphere1%numnod_sf
-          ratio = half * (r_nod(k)+r_nod(k-1) )/r_surf(inod0)
+          ratio = half * (r_nod(k)+r_nod(k-1))/c_sphere1%r_csph(inod0)
 !
-          x(inod0) = ratio*xyz_surf(inod0,1)
-          y(inod0) = ratio*xyz_surf(inod0,2)
+          x(inod0) = ratio * c_sphere1%x_csph(inod0,1)
+          y(inod0) = ratio * c_sphere1%x_csph(inod0,2)
         end do
 !
         do iedge0 = 1, c_sphere1%numedge_sf
           inod0 = iedge0 + c_sphere1%numnod_sf
-          ratio = r_nod(k)/r_surf(inod0)
+          ratio = r_nod(k)/c_sphere1%r_csph(inod0)
 !
-          x(inod0) = ratio*xyz_surf(inod0,1)
-          y(inod0) = ratio*xyz_surf(inod0,2)
+          x(inod0) = ratio * c_sphere1%x_csph(inod0,1)
+          y(inod0) = ratio * c_sphere1%x_csph(inod0,2)
         end do
 !
         do inod0 = 1, c_sphere1%numnod_sf + c_sphere1%numedge_sf
@@ -220,24 +221,27 @@
       num = c_sphere1%numnod_sf + c_sphere1%numedge_sf
       do k = 1, nr_adj-1
         do inod0 = 1, c_sphere1%numnod_sf
-          ratio1 = (dble(nr_adj-k) + dble(k-1)*r_nod(1)/r_surf(inod0))  &
+          ratio1 = (dble(nr_adj-k)                                      &
+     &              + dble(k-1)*r_nod(1)/c_sphere1%r_csph(inod0))       &
      &            * r_nod(k)   / ( dble(nr_adj-1)*r_nod(1) )
-          ratio2 = (dble(nr_adj-k-1) + dble(k)*r_nod(1)/r_surf(inod0))  &
+          ratio2 = (dble(nr_adj-k-1)                                    &
+     &              + dble(k)*r_nod(1)/c_sphere1%r_csph(inod0))         &
      &            * r_nod(k+1) / ( dble(nr_adj-1)*r_nod(1) )
           ratio = (ratio1 + ratio2) * half
 !
-          x(inod0) = ratio*xyz_surf(inod0,1)
-          y(inod0) = ratio*xyz_surf(inod0,2)
+          x(inod0) = ratio * c_sphere1%x_csph(inod0,1)
+          y(inod0) = ratio * c_sphere1%x_csph(inod0,2)
         end do
 !
         do iedge0 = 1, c_sphere1%numedge_sf
           inod0 = iedge0 + c_sphere1%numnod_sf
 !
-          ratio = (dble(nr_adj-k-1) + dble(k)*r_nod(1)/r_surf(inod0))   &
+          ratio = (dble(nr_adj-k-1)                                     &
+     &             + dble(k)*r_nod(1)/c_sphere1%r_csph(inod0))          &
      &           * r_nod(k+1) / ( dble(nr_adj-1)*r_nod(1) )
 !
-          x(inod0) = ratio*xyz_surf(inod0,1)
-          y(inod0) = ratio*xyz_surf(inod0,2)
+          x(inod0) = ratio * c_sphere1%x_csph(inod0,1)
+          y(inod0) = ratio * c_sphere1%x_csph(inod0,2)
         end do
 !
         do inod0 = 1, c_sphere1%numnod_sf + c_sphere1%numedge_sf
