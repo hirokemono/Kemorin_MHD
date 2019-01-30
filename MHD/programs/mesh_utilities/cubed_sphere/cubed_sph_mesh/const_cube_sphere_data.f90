@@ -69,10 +69,10 @@
        call allocate_cubed_sph_posi_tmp(c_sphere1)
        call allocate_wall_latitude_ratio(num_hemi)
        call adjust_to_shell(id_l_mesh, id_flag_quad,                    &
-     &     num_hemi, num_hemi, c_sphere1, inod_start)
+     &     num_hemi, num_hemi, inod_start, c_sphere1)
 !
        call project_to_sphere(id_l_mesh, id_flag_quad,                  &
-     &     num_hemi, num_hemi, c_sphere1, inod_start)
+     &     num_hemi, num_hemi, inod_start, c_sphere1)
 !
        if ( inod_start .ne. nnod_cb_sph ) then
         write (*,*) 'number of node in the shell is wrong'
@@ -85,8 +85,8 @@
 !
        if (iflag_quad .gt. 0) then
 !
-         call set_center_cube_quad(inod_start, id_q_mesh)
-         write(*,*) 'set_center_cube_quad end', nnod_cb_sph, inod_start
+         write(*,*) 'set_center_cube_quad', nnod_cb_sph, inod_start
+         call set_center_cube_quad(id_q_mesh, inod_start, c_sphere1)
          num = nnod_cb_sph + c_sphere1%numedge_cube
          if(inod_start .ne. num) then
            write (*,*) 'number of quadrature node in center is wrong',  &
@@ -98,12 +98,12 @@
 !
          write(*,*) 'set nodes around center cube'
          call adjust_to_shell_quad(id_q_mesh,                           &
-     &       num_hemi, num_hemi, c_sphere1, inod_start)
+     &       num_hemi, num_hemi, inod_start, c_sphere1)
 !
          write(*,*) 'set nodes in the sphere shell',                    &
      &              inod_start, numnod_20
          call projection_quad(id_q_mesh,                                &
-     &       num_hemi, num_hemi, c_sphere1, inod_start)
+     &       num_hemi, num_hemi, inod_start, c_sphere1)
          if ( inod_start .ne. numnod_20 ) then
            write (*,*) 'number of quadrature node in shell is wrong',   &
      &                 inod_start, numnod_20
@@ -219,9 +219,9 @@
          call count_merged_cube(id_transfer)
 !
          write(*,*) 'set_merged_cube_data'
-         call set_merged_cube_data(id_transfer)
+         call set_merged_cube_data(id_transfer, c_sphere1)
          write(*,*) 'set_merge_4_shell'
-         call set_merge_4_shell(ic, id_transfer)
+         call set_merge_4_shell(ic, id_transfer, c_sphere1)
          write(*,*) 'output_domain_4_merge'
          call output_domain_4_merge(id_transfer)
 !

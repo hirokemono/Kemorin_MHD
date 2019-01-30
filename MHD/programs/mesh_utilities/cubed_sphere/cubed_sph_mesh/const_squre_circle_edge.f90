@@ -36,7 +36,7 @@
 !
 !
        write(*,*) 'set_circle_node', c_sphere1%numnod_sf
-      call set_circle_node(inod_sf_end)
+      call set_circle_node(inod_sf_end, c_sphere1)
 !
       if (inod_sf_end .ne. c_sphere1%numnod_sf) then
         write(*,*) 'check the number of node in a sphere'

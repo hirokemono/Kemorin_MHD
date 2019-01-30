@@ -37,7 +37,7 @@
 !
 !
        write(*,*) 'set_cube_skin'
-      call set_cube_skin(inod_sf_end)
+      call set_cube_skin(inod_sf_end, c_sphere1)
 !
       if (inod_sf_end .ne. c_sphere1%numnod_sf) then
        write(*,*) 'check the number of node in a sphere'

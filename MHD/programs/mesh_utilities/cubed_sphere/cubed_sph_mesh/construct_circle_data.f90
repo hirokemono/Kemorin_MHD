@@ -93,8 +93,8 @@
 !
       if (iflag_quad .gt. 0) then
         write(*,*) 'set_center_square_quad', nnod_cb_sph, inod_start
-        call set_center_square_quad(inod_start, id_q_mesh)
-        write(*,*) 'set_center_rect_quad end', nnod_cb_sph, inod_start
+        call set_center_square_quad(id_q_mesh, inod_start, c_sphere1)
+!
         num = nnod_cb_sph + c_sphere1%numedge_cube
         if(inod_start .ne. num) then
            write (*,*) 'number of quadrature node in center is wrong',  &

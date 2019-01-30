@@ -6,8 +6,9 @@
 !!      subroutine write_header_4_transfer(is_level, ifile)
 !!      subroutine count_merged_cube(ifile)
 !!      subroutine output_domain_4_merge(ifile)
-!!      subroutine set_merged_cube_data(ifile)
-!!      subroutine set_merge_4_shell(is_level, ifile)
+!!      subroutine set_merged_cube_data(ifile, c_sphere)
+!!      subroutine set_merge_4_shell(is_level, ifile, c_sphere)
+!!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       module set_merged_ele_cubed_sph
 !
@@ -15,6 +16,7 @@
       use m_constants
 !
       use m_numref_cubed_sph
+      use t_cubed_sph_surf_mesh
 !
       implicit none
 !
@@ -50,8 +52,6 @@
 !
       subroutine count_merged_cube(ifile)
 !
-      use m_cubed_sph_surf_mesh
-!
       integer(kind = kint), intent(in) :: ifile
 !
       integer(kind = kint) :: i
@@ -74,8 +74,6 @@
 !
       subroutine output_domain_4_merge(ifile)
 !
-      use m_cubed_sph_surf_mesh
-!
       integer(kind = kint), intent(in) :: ifile
 !
       integer(kind = kint) :: i, iele
@@ -96,12 +94,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_merged_cube_data(ifile)
+      subroutine set_merged_cube_data(ifile, c_sphere)
 !
       use m_cubed_sph_mesh
-      use m_cubed_sph_surf_mesh
 !
       integer(kind = kint), intent(in) :: ifile
+      type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: iele0, jele0, kele0
       integer(kind = kint) :: jele, kele
@@ -112,7 +110,7 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(*,*) 'imerge_ele', size(c_sphere1%imerge_ele)
+      write(*,*) 'imerge_ele', size(c_sphere%imerge_ele)
       write(fmt_txt,'(a1,i3,a6)')  '(', (nl_3+1), '(i16))'
 !
       do iz = 1, n_hemi_c
@@ -137,14 +135,13 @@
                   kele = kele0 + (jz-1)*n_hemi_fc**2                    &
      &                         + (jy-1)*n_hemi_fc                       &
      &                         + jx
-                  c_sphere1%imerge_ele(k) = kele
+                  c_sphere%imerge_ele(k) = kele
 !
                 end do
               end do
             end do
 !
-            write(ifile,fmt_txt) jele, c_sphere1%imerge_ele(1:nl_3)
-!
+            write(ifile,fmt_txt) jele, c_sphere%imerge_ele(1:nl_3)
           end do
         end do
       end do
@@ -153,13 +150,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_merge_4_shell(is_level, ifile)
+      subroutine set_merge_4_shell(is_level, ifile, c_sphere)
 !
       use m_cubed_sph_mesh
-      use m_cubed_sph_surf_mesh
       use m_cubed_sph_radius
 !
       integer(kind = kint), intent(in) :: is_level, ifile
+      type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: j, k, k0, kk
       integer(kind = kint) :: jele0, kele0, kele1
@@ -176,18 +173,18 @@
           kele0 = nele_cube_fc + nl_r*(k-1) * nele_sf_fc
 !
           jele = jele0 + jnum
-          jele_m = jnum + c_sphere1%iele_stack_sf(is_level-1)
+          jele_m = jnum + c_sphere%iele_stack_sf(is_level-1)
 !
           do kk = 1, nl_r
             kele1 = kele0 + (kk-1)*nele_sf_fc
-            do j = 1, c_sphere1%num_merge_e_sf(jele_m)
-              iele_sf = c_sphere1%imerge_e_sf(jele_m,j)
-              k0 = (kk-1) * c_sphere1%num_merge_e_sf(jele_m) + j
-              c_sphere1%imerge_ele(k0) = kele1 + iele_sf
+            do j = 1, c_sphere%num_merge_e_sf(jele_m)
+              iele_sf = c_sphere%imerge_e_sf(jele_m,j)
+              k0 = (kk-1) * c_sphere%num_merge_e_sf(jele_m) + j
+              c_sphere%imerge_ele(k0) = kele1 + iele_sf
             end do
           end do
 !
-          write(ifile,fmt_txt) jele, c_sphere1%imerge_ele(1:nl_shell)
+          write(ifile,fmt_txt) jele, c_sphere%imerge_ele(1:nl_shell)
        end do
       end do
 !

@@ -87,8 +87,8 @@
 !
        if (iflag_quad .gt. 0) then
          write(*,*) 'set_center_rect_quad', nnod_cb_sph, inod_start
-         call set_center_rect_quad(inod_start, id_q_mesh)
-         write(*,*) 'set_center_rect_quad end', nnod_cb_sph, inod_start
+         call set_center_rect_quad(id_q_mesh, inod_start, c_sphere1)
+!
          num = nnod_cb_sph + c_sphere1%numedge_cube
          if(inod_start .ne. num) then
            write (*,*) 'number of quadrature node in center is wrong',  &
@@ -192,9 +192,9 @@
          call count_merged_cube(id_transfer)
 !
          write(*,*) 'set_merged_cube_data'
-         call set_merged_cube_data(id_transfer)
+         call set_merged_cube_data(id_transfer, c_sphere1)
          write(*,*) 'set_merge_4_shell'
-         call set_merge_4_shell(ic, id_transfer)
+         call set_merge_4_shell(ic, id_transfer, c_sphere1)
          write(*,*) 'output_domain_4_merge'
          call output_domain_4_merge(id_transfer)
 !

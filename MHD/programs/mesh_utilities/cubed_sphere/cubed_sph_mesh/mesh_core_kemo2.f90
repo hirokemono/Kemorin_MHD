@@ -66,11 +66,11 @@
 !
        write(*,*) 'const_rect_sphere_surf_data'
       rad_edge = atan(one / sqrt(two))
-      call const_rect_sphere_surf_node(rad_edge)
-      call const_rect_sphere_surf_data
+      call const_rect_sphere_surf_node(rad_edge, c_sphere1)
+      call const_rect_sphere_surf_data(c_sphere1)
 !
        write(*,*) 'const_coarse_rect_surf_data'
-      call const_coarse_rect_surf_data
+      call const_coarse_rect_surf_data(c_sphere1)
 !
 !   construct whole grid
 !

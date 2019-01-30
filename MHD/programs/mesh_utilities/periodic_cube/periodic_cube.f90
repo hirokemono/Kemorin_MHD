@@ -13,7 +13,7 @@
       use t_control_data_cubed_sph
 !
       use count_coarse_parameters
-      use const_peri_cube_surface
+      use const_rect_sphere_surface
       use const_peri_cube_data
       use set_surf_connect_cubed_sph
 !
@@ -67,11 +67,11 @@
 !
        write(*,*) 'const_rect_sphere_surf_data'
       rad_edge = atan(one / sqrt(two))
-      call const_rect_sphere_surf_node(rad_edge)
-      call const_rect_sphere_surf_data
+      call const_rect_sphere_surf_node(rad_edge, c_sphere1)
+      call const_rect_sphere_surf_data(c_sphere1)
 !
        write(*,*) 'const_coarse_rect_surf_data'
-      call const_coarse_rect_surf_data
+      call const_coarse_rect_surf_data(c_sphere1)
 !
 !   construct whole grid
 !

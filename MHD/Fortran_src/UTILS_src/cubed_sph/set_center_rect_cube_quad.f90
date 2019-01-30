@@ -5,14 +5,17 @@
 !     Modified by H. Matsui on Oct., 2007
 !     Modified by H. Matsui on Dec., 2011
 !
-!      subroutine set_center_cube_quad(inod, ifile)
-!      subroutine set_center_rect_quad(inod, ifile)
-!
-!      subroutine set_center_square_quad(inod, ifile)
+!!      subroutine set_center_cube_quad(ifile, inod, c_sphere)
+!!      subroutine set_center_rect_quad(ifile, inod, c_sphere)
+!!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+!!
+!!      subroutine set_center_square_quad(ifile, inod, c_sphere)
+!!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       module set_center_rect_cube_quad
 !
       use m_precision
+      use t_cubed_sph_surf_mesh
 !
       implicit none
 !
@@ -22,17 +25,17 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_center_cube_quad(inod, ifile)
+      subroutine set_center_cube_quad(ifile, inod, c_sphere)
 !
       use m_constants
       use m_cubed_sph_mesh
-      use m_cubed_sph_surf_mesh
       use m_numref_cubed_sph
 !
       use set_center_cube_edge
 !
       integer(kind = kint), intent(in) :: ifile
       integer(kind = kint), intent(inout) :: inod
+      type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: iele_ref
 !
@@ -69,24 +72,24 @@
 !  outer surface
 !
       call set_center_surf_edge(inod, ifile,                            &
-     &    c_sphere1%numnod_sf, c_sphere1%numedge_sf, c_sphere1%x_csph)
+     &    c_sphere%numnod_sf, c_sphere%numedge_sf, c_sphere%x_csph)
       iele_ref = 3*(num_hemi)*(num_hemi+1)**2
 !
       end subroutine set_center_cube_quad
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_center_rect_quad(inod, ifile)
+      subroutine set_center_rect_quad(ifile, inod, c_sphere)
 !
       use m_constants
       use m_cubed_sph_mesh
-      use m_cubed_sph_surf_mesh
       use m_numref_cubed_sph
 !
       use set_center_cube_edge
 !
       integer(kind = kint), intent(in) :: ifile
       integer(kind = kint), intent(inout) :: inod
+      type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: iele_ref, inod_st
 !
@@ -131,10 +134,10 @@
 !  outer surface
 !
       call set_center_surf_edge(inod, ifile,                            &
-     &    c_sphere1%numnod_sf, c_sphere1%numedge_sf, c_sphere1%x_csph)
+     &    c_sphere%numnod_sf, c_sphere%numedge_sf, c_sphere%x_csph)
       iele_ref = (3*num_hemi-1)*(num_hemi-1)*(ncube_vertical-1)         &
      &          + (num_hemi-1)*(num_hemi-1)                             &
-     &          + c_sphere1%numnod_sf
+     &          + c_sphere%numnod_sf
       write(*,*) 'set_center_surf_edge', iele_ref, (inod-inod_st)
 !
       end subroutine set_center_rect_quad
@@ -142,17 +145,17 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_center_square_quad(inod, ifile)
+      subroutine set_center_square_quad(ifile, inod, c_sphere)
 !
       use m_constants
       use m_cubed_sph_mesh
-      use m_cubed_sph_surf_mesh
       use m_numref_cubed_sph
 !
       use set_center_cube_edge
 !
       integer(kind = kint), intent(in) :: ifile
       integer(kind = kint), intent(inout) :: inod
+      type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: iele_ref
       real(kind = kreal), parameter :: vzero(3) = (/zero,zero,zero/)
@@ -173,7 +176,7 @@
       iele_ref = (3*num_hemi-1)*(num_hemi-1)
 !
       call set_center_surf_edge(inod, ifile,                            &
-     &    c_sphere1%numnod_sf, c_sphere1%numedge_sf, c_sphere1%x_csph)
+     &    c_sphere%numnod_sf, c_sphere%numedge_sf, c_sphere%x_csph)
 !
       end subroutine set_center_square_quad
 !
