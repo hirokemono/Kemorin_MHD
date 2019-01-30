@@ -6,7 +6,6 @@
       use m_constants
 !
       use m_cubed_sph_mesh
-      use m_cubed_sph_surf_mesh
       use m_cubed_sph_radius
       use m_cubed_sph_grp_param
       use m_numref_cubed_sph
@@ -27,6 +26,7 @@
 !
       real(kind = kreal) :: rad_edge
       type(control_data_cubed_sph), save :: cubed_sph_c1
+      type(cubed_sph_surf_mesh), save :: c_sphere1
 !
 !      write(*,*) 'Mesh generation is starting. Press return key'
 !      read(5,*)
@@ -74,11 +74,11 @@
 !
 !   construct whole grid
 !
-      call construct_rect_sphere_mesh
+      call construct_rect_sphere_mesh(c_sphere1)
 !
 !   construct coarse grid
 !
-      call construct_coarse_rect_mesh
+      call construct_coarse_rect_mesh(c_sphere1)
 !
       end program mesh_core_kemo2
 

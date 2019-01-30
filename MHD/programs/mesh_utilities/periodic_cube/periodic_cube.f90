@@ -6,7 +6,7 @@
       use m_constants
 !
       use m_cubed_sph_mesh
-      use m_cubed_sph_surf_mesh
+      use t_cubed_sph_surf_mesh
       use m_cubed_sph_radius
       use m_cubed_sph_grp_param
       use m_numref_cubed_sph
@@ -27,6 +27,7 @@
 !
       real(kind = kreal) :: rad_edge
       type(control_data_cubed_sph), save :: cubed_sph_c1
+      type(cubed_sph_surf_mesh), save :: c_sphere1
 !
 !
 !      write(*,*) 'Mesh generation is starting. Press return key'
@@ -75,10 +76,10 @@
 !
 !   construct whole grid
 !
-      call construct_rect_sphere_mesh
+      call construct_rect_peri_mesh(c_sphere1)
 !
 !   construct coarse grid
 !
-      call const_coarse_rect_tri_peri
+      call const_coarse_rect_tri_peri(c_sphere1)
 !
       end program periodic_cube

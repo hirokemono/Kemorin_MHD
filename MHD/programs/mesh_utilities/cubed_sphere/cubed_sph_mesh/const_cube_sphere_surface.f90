@@ -4,13 +4,16 @@
 !
 !      Written by Kemorin on Apr., 2006
 !
-!      subroutine const_cube_surface_data
-!      subroutine const_coarse_cube_surf_data
+!!      subroutine const_cube_surface_data(c_sphere)
+!!      subroutine const_coarse_cube_surf_data(c_sphere)
+!!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
 !
       module const_cube_sphere_surface
 !
       use m_precision
+!
+      use t_cubed_sph_surf_mesh
 !
       implicit none
 !
@@ -20,10 +23,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_cube_surface_data
+      subroutine const_cube_surface_data(c_sphere)
 !
       use m_numref_cubed_sph
-      use m_cubed_sph_surf_mesh
 !
       use output_shell_surface_data
       use set_cube_surface
@@ -32,65 +34,68 @@
       use set_surface_rods_sphere
       use set_surf_connect_cubed_sph
 !
+      type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+!
       integer(kind= kint) :: inod_sf_end
       integer(kind= kint) :: iele_sf_end, irod_sf_end
 !
 !
        write(*,*) 'set_cube_skin'
-      call set_cube_skin(inod_sf_end, c_sphere1)
+      call set_cube_skin(inod_sf_end, c_sphere)
 !
-      if (inod_sf_end .ne. c_sphere1%numnod_sf) then
+      if (inod_sf_end .ne. c_sphere%numnod_sf) then
        write(*,*) 'check the number of node in a sphere'
        stop
       end if
 !
-      call set_cube_rods(inod_sf_end, irod_sf_end, c_sphere1)
+      call set_cube_rods(inod_sf_end, irod_sf_end, c_sphere)
 !
-      if (irod_sf_end .ne. c_sphere1%numedge_sf) then
+      if (irod_sf_end .ne. c_sphere%numedge_sf) then
         write(*,*) 'check the number of edge in a sphere'
         stop
       end if
-      if (inod_sf_end .ne. c_sphere1%numnod_sf20) then
+      if (inod_sf_end .ne. c_sphere%numnod_sf20) then
         write(*,*) 'check the number of node for quad in a sphere'
         stop
       end if
 !
-      call position_2_sph(c_sphere1%numnod_sf20, c_sphere1%x_csph,      &
-     &    c_sphere1%r_csph, c_sphere1%theta_csph, c_sphere1%phi_csph,   &
-     &    c_sphere1%ar_csph, c_sphere1%s_csph, c_sphere1%as_csph)
+      call position_2_sph(c_sphere%numnod_sf20, c_sphere%x_csph,        &
+     &    c_sphere%r_csph, c_sphere%theta_csph, c_sphere%phi_csph,      &
+     &    c_sphere%ar_csph, c_sphere%s_csph, c_sphere%as_csph)
 !
 !   set connectivity for sphere surface
 !
        write(*,*) 'connectivity construction for surface start'
-       call set_cube_surf_connect(iele_sf_end, c_sphere1)
+       call set_cube_surf_connect(iele_sf_end, c_sphere)
 !
-      if (iele_sf_end .ne. c_sphere1%numele_sf) then
+      if (iele_sf_end .ne. c_sphere%numele_sf) then
         write(*,*) 'check the number of element in a sphere'
         stop
       end if
 !
       write(*,*) 'output_surface_data'
-      call output_surface_data(c_sphere1)
+      call output_surface_data(c_sphere)
 !
       if(iflag_quad .gt. 0) then
         write(*,*) 'output_surface_data_quad'
-        call output_surface_data_quad(c_sphere1)
+        call output_surface_data_quad(c_sphere)
       end if
 !
       end subroutine const_cube_surface_data
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_coarse_cube_surf_data
+      subroutine const_coarse_cube_surf_data(c_sphere)
 !
       use m_numref_cubed_sph
-      use m_cubed_sph_surf_mesh
 !
       use output_shell_surface_data
       use count_coarse_parameters
       use set_coarsed_cube_skin
       use merged_ele_4_cubed_sph_surf
       use set_surf_connect_cubed_sph
+!
+      type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind= kint) :: inod_sf_end, num
       integer(kind= kint) :: iele_sf_end, irod_sf_end
@@ -99,22 +104,22 @@
 !  construct coarse mesh information
 !
       inod_sf_end = 0
-      irod_sf_end = c_sphere1%numedge_sf
-      iele_sf_end = c_sphere1%numele_sf
+      irod_sf_end = c_sphere%numedge_sf
+      iele_sf_end = c_sphere%numele_sf
       do icoarse = 1, max_coarse_level
 !
-        call cal_coarse_cube_params(icoarse, c_sphere1)
+        call cal_coarse_cube_params(icoarse, c_sphere)
 !
-        call set_coarse_cube_skin(inod_sf_end, c_sphere1)
-        if (inod_sf_end .ne. c_sphere1%inod_stack_sf(icoarse) ) then
+        call set_coarse_cube_skin(inod_sf_end, c_sphere)
+        if (inod_sf_end .ne. c_sphere%inod_stack_sf(icoarse) ) then
          write(*,*) 'check the number of node in a sphere... level:',   &
-     &        icoarse, inod_sf_end, c_sphere1%inod_stack_sf(icoarse)
+     &        icoarse, inod_sf_end, c_sphere%inod_stack_sf(icoarse)
         stop
        end if
        write(*,*) 'inod_sf_end!!!', inod_sf_end
 !
-       call set_coarse_cube_surf_connect(iele_sf_end, c_sphere1)
-       num = c_sphere1%iele_stack_sf(icoarse) + c_sphere1%numele_sf
+       call set_coarse_cube_surf_connect(iele_sf_end, c_sphere)
+       num = c_sphere%iele_stack_sf(icoarse) + c_sphere%numele_sf
        if(iele_sf_end .ne. num) then
         write(*,*) 'check the number of element in a sphere... level:'  &
      &           ,  icoarse
@@ -122,13 +127,13 @@
        end if
 !
        write(*,*) 'set_merged_element_cube_surf'
-       call set_merged_element_cube_surf(icoarse, c_sphere1)
+       call set_merged_element_cube_surf(icoarse, c_sphere)
 !
       end do
 !
       if (max_coarse_level .gt. 0) then
         write(*,*) 'output_surface_data_full'
-        call output_surface_data_full(max_coarse_level, c_sphere1)
+        call output_surface_data_full(max_coarse_level, c_sphere)
       end if
 !
       end subroutine const_coarse_cube_surf_data

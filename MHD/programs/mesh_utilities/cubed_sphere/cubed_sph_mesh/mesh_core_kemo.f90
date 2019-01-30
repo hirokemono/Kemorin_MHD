@@ -5,7 +5,7 @@
       use m_precision
 !
       use m_cubed_sph_mesh
-      use m_cubed_sph_surf_mesh
+      use t_cubed_sph_surf_mesh
       use m_cubed_sph_radius
       use m_cubed_sph_grp_param
       use m_numref_cubed_sph
@@ -25,6 +25,7 @@
       implicit none
 !
       type(control_data_cubed_sph), save :: cubed_sph_c1
+      type(cubed_sph_surf_mesh), save :: c_sphere1
 !
       write(*,*) 'Mesh generation is starting. Press return key'
       read(5,*)
@@ -63,18 +64,18 @@
 ! set sphere cube data
 !
       write(*,*) 'const_cube_surface_data'
-      call const_cube_surface_data
+      call const_cube_surface_data(c_sphere1)
 !
       write(*,*) 'const_coarse_cube_surf_data'
-      call const_coarse_cube_surf_data
+      call const_coarse_cube_surf_data(c_sphere1)
 !
 !   construct whole grid
 !
-      call construct_sphere_mesh
+      call construct_sphere_mesh(c_sphere1)
 !
 !   construct coarse grid
 !
-      call construct_coarse_mesh
+      call construct_coarse_mesh(c_sphere1)
 !
        stop
        end
