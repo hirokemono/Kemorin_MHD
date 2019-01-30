@@ -3,14 +3,16 @@
 !
 !     Writetn by H. Matsui on Apr., 2006
 !
-!      subroutine count_merged_cube(is_level, ifile)
-!      subroutine output_domain_4_merge(is_level, ifile)
-!      subroutine set_merged_cube_data(is_level, ifile)
-!      subroutine set_merge_4_shell(is_level, ifile)
+!!      subroutine write_header_4_transfer(is_level, ifile)
+!!      subroutine count_merged_cube(ifile)
+!!      subroutine output_domain_4_merge(ifile)
+!!      subroutine set_merged_cube_data(ifile)
+!!      subroutine set_merge_4_shell(is_level, ifile)
 !
       module set_merged_ele_cubed_sph
 !
       use m_precision
+      use m_constants
 !
       use m_numref_cubed_sph
 !
@@ -46,11 +48,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_merged_cube(is_level, ifile)
+      subroutine count_merged_cube(ifile)
 !
       use m_cubed_sph_surf_mesh
 !
-      integer(kind = kint), intent(in) :: is_level, ifile
+      integer(kind = kint), intent(in) :: ifile
 !
       integer(kind = kint) :: i
 !
@@ -70,14 +72,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine output_domain_4_merge(is_level, ifile)
+      subroutine output_domain_4_merge(ifile)
 !
       use m_cubed_sph_surf_mesh
 !
-      integer(kind = kint), intent(in) :: is_level, ifile
+      integer(kind = kint), intent(in) :: ifile
 !
       integer(kind = kint) :: i, iele
-      integer(kind = kint), parameter :: izero = 0
 !
 !
       write(ifile,'(a)') '!'
@@ -95,15 +96,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_merged_cube_data(is_level, ifile)
+      subroutine set_merged_cube_data(ifile)
 !
       use m_cubed_sph_mesh
       use m_cubed_sph_surf_mesh
 !
-      integer(kind = kint), intent(in) :: is_level, ifile
+      integer(kind = kint), intent(in) :: ifile
 !
       integer(kind = kint) :: iele0, jele0, kele0
-      integer(kind = kint) :: iele, jele, kele
+      integer(kind = kint) :: jele, kele
       integer(kind = kint) :: k
       integer(kind = kint) :: ix, iy, iz
       integer(kind = kint) :: jx, jy, jz

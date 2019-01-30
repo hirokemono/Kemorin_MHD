@@ -9,6 +9,8 @@
       module const_rect_sphere_data
 !
       use m_precision
+      
+use m_cubed_sph_surf_mesh
 !
       implicit none
 !
@@ -23,7 +25,6 @@
       use m_geometry_constants
       use m_numref_cubed_sph
       use m_cubed_sph_mesh
-      use m_cubed_sph_surf_mesh
 !
       use cal_shell_position
       use set_center_rect_cube_quad
@@ -69,16 +70,16 @@
 !  set positions of the shell
 !
         write(*,*) 'allocate_cubed_sph_posi_tmp'
-       call allocate_cubed_sph_posi_tmp
+       call allocate_cubed_sph_posi_tmp(c_sphere1)
         write(*,*) 'allocate_wall_latitude_ratio'
        call allocate_wall_latitude_ratio(ncube_vertical)
         write(*,*) 'adjust_to_shell'
-       call adjust_to_shell(inod_start, id_l_mesh, id_flag_quad,        &
-     &      num_hemi, ncube_vertical)
+       call adjust_to_shell(id_l_mesh, id_flag_quad,                    &
+     &     num_hemi, ncube_vertical, c_sphere1, inod_start)
 !
         write(*,*) 'projection'
-       call project_to_sphere(inod_start, id_l_mesh, id_flag_quad,      &
-     &      num_hemi, ncube_vertical)
+       call project_to_sphere(id_l_mesh, id_flag_quad,                  &
+     &      num_hemi, ncube_vertical, c_sphere1, inod_start)
         write(*,*) 'projection end'
 !
         write(*,*) 'inod_start', inod_start, nnod_cb_sph
@@ -106,13 +107,13 @@
 !  construct shell
 !
          write(*,*) 'set nodes around center cube'
-         call adjust_to_shell_quad(inod_start, id_q_mesh,               &
-     &      num_hemi, ncube_vertical)
+         call adjust_to_shell_quad(id_q_mesh,                           &
+     &      num_hemi, ncube_vertical, c_sphere1, inod_start)
 !
          write(*,*) 'set nodes in the sphere shell',                    &
      &              inod_start, numnod_20
-         call projection_quad(inod_start, id_q_mesh,                   &
-     &      num_hemi, ncube_vertical)
+         call projection_quad(id_q_mesh,                                &
+     &      num_hemi, ncube_vertical, c_sphere1, inod_start)
          if ( inod_start .ne. numnod_20 ) then
            write (*,*) 'number of quadrature node in shell is wrong',   &
      &                 inod_start, numnod_20
@@ -139,7 +140,8 @@
       end if
 !
       write(*,*) 'set connectivity in the sphere shell'
-      call radial_stack_quad(iele_start, id_l_connect, id_flag_quad)
+      call radial_stack_quad                                            &
+     &   (id_l_connect, id_flag_quad, c_sphere1, iele_start)
       if(iele_start .ne. nele_cb_sph) then
         write (*,*) 'number of quadrature element in shell is wrong'
         stop
@@ -151,11 +153,11 @@
 !  output group data
 !
       if (iflag_quad .gt. 0) then
-        call output_group_data_quad
+        call output_group_data_quad(c_sphere1)
         close(id_q_group)
       end if
 !
-      call output_group_data
+      call output_group_data(c_sphere1)
       close(id_l_group)
 !
       write(*,*) 'finish!!'
@@ -188,10 +190,10 @@
        iele_start = nele_cb_sph
        inum = iele_start
 !
-       call allocate_coarse_cube_sph_posi
+       call allocate_coarse_cube_sph_posi(c_sphere1)
        call allocate_wall_latitude_ratio(ncube_vertical)
        do ic = 1, max_coarse_level
-         call cal_coarse_rect_params(ic)
+         call cal_coarse_rect_params(ic, c_sphere1)
 !
          call set_coarse_mesh_names(ic)
 !
@@ -206,9 +208,9 @@
      &       nskip_s, nl_s, num_hemi, ncube_vertical, x_node, v_node)
 !
          call adjust_to_coarse_shell(ic, id_l_mesh, id_transfer,        &
-     &       num_hemi, ncube_vertical)
+     &       num_hemi, ncube_vertical, c_sphere1)
          call projection_coarse(ic, id_l_mesh, id_transfer,             &
-     &       num_hemi, ncube_vertical)
+     &       num_hemi, ncube_vertical, c_sphere1)
 !
          close(id_l_mesh)
 !
@@ -221,17 +223,17 @@
      &       numnod_coarse, n_hemi_c, n_vert_c)
 !
          write(*,*) 'radial_coarse_stack'
-         call radial_coarse_stack(ic, id_l_connect)
+         call radial_coarse_stack(id_l_connect, ic, c_sphere1)
 !
-         write(*,*) 'count_merged_cube', ic
-         call count_merged_cube(ic, id_transfer)
+         write(*,*) 'count_merged_cube'
+         call count_merged_cube(id_transfer)
 !
          write(*,*) 'set_merged_cube_data'
-         call set_merged_cube_data(ic, id_transfer)
+         call set_merged_cube_data(id_transfer)
          write(*,*) 'set_merge_4_shell'
          call set_merge_4_shell(ic, id_transfer)
          write(*,*) 'output_domain_4_merge'
-         call output_domain_4_merge(ic, id_transfer)
+         call output_domain_4_merge(id_transfer)
 !
          inum = iele_start
 !

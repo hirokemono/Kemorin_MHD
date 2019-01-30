@@ -52,66 +52,70 @@
 !
 !  construct center cube
 !
-       inod_start = 0
-       id_flag_quad = iflag_quad * id_q_mesh
+      inod_start = 0
+      id_flag_quad = iflag_quad * id_q_mesh
 !
-        write(*,*) 'set_center_cube'
-       call set_center_square(inod_start, id_l_mesh, id_flag_quad,      &
-     &     num_hemi, x_node)
+      write(*,*) 'set_center_cube'
+      call set_center_square(inod_start, id_l_mesh, id_flag_quad,       &
+     &    num_hemi, x_node)
 !
-       if(inod_start .ne. c_sphere1%numnod_cube) then
+      if(inod_start .ne. c_sphere1%numnod_cube) then
         write (*,*) 'number of node of center is wrong',                &
      &              inod_start, c_sphere1%numnod_cube
         stop
-       end if
+      end if
 !
 !  set positions of the shell
 !
-        write(*,*) 'allocate_square_circ_posi_tmp'
-       call allocate_square_circ_posi_tmp
-        write(*,*) 'adjust_to_circle'
-       call adjust_to_circle(inod_start, id_l_mesh, id_flag_quad)
+      write(*,*) 'allocate_square_circ_posi_tmp'
+      call allocate_square_circ_posi_tmp(c_sphere1)
+      write(*,*) 'adjust_to_circle'
+      call adjust_to_circle                                             &
+     &   (inod_start, id_l_mesh, id_flag_quad, c_sphere1)
 !
-        write(*,*) 'projection'
-       call projection_2_circle(inod_start, id_l_mesh, id_flag_quad)
-       call back_to_square(inod_start, id_l_mesh, id_flag_quad)
-        write(*,*) 'projection end'
+      write(*,*) 'projection'
+      call projection_2_circle                                          &
+     &   (inod_start, id_l_mesh, id_flag_quad, c_sphere1)
+      call back_to_square                                               &
+     &   (inod_start, id_l_mesh, id_flag_quad, c_sphere1)
+      write(*,*) 'projection end'
 !
-        write(*,*) 'inod_start', inod_start, nnod_cb_sph
-       if ( inod_start .ne. nnod_cb_sph ) then
+      write(*,*) 'inod_start', inod_start, nnod_cb_sph
+      if ( inod_start .ne. nnod_cb_sph ) then
         write (*,*) 'number of node in the shell is wrong'
         stop
-       end if
+      end if
 !
-        write(*,*) 'id_l_mesh close'
-       close(id_l_mesh)
+      write(*,*) 'id_l_mesh close'
+      close(id_l_mesh)
 !
 !  construct center cube for quadrature mesh
 !
-       if (iflag_quad .gt. 0) then
-         write(*,*) 'set_center_square_quad', nnod_cb_sph, inod_start
-         call set_center_square_quad(inod_start, id_q_mesh)
-         write(*,*) 'set_center_rect_quad end', nnod_cb_sph, inod_start
-         num = nnod_cb_sph + c_sphere1%numedge_cube
-         if(inod_start .ne. num) then
+      if (iflag_quad .gt. 0) then
+        write(*,*) 'set_center_square_quad', nnod_cb_sph, inod_start
+        call set_center_square_quad(inod_start, id_q_mesh)
+        write(*,*) 'set_center_rect_quad end', nnod_cb_sph, inod_start
+        num = nnod_cb_sph + c_sphere1%numedge_cube
+        if(inod_start .ne. num) then
            write (*,*) 'number of quadrature node in center is wrong',  &
      &             inod_start, num
-           stop
-         end if
+        stop
+      end if
 !
 !  construct shell
 !
-         write(*,*) 'set nodes around center cube'
-         call adjust_to_circle_quad(inod_start, id_q_mesh)
+      write(*,*) 'set nodes around center cube'
+      call adjust_to_circle_quad(inod_start, id_q_mesh, c_sphere1)
 !
-         write(*,*) 'set nodes in the sphere shell',                    &
+      write(*,*) 'set nodes in the sphere shell',                       &
      &              inod_start, numnod_20
-         call projection_to_circle_quad(inod_start, id_q_mesh)
-         if ( inod_start .ne. numnod_20 ) then
-           write (*,*) 'number of quadrature node in shell is wrong',   &
+      call projection_to_circle_quad                                    &
+     &   (inod_start, id_q_mesh, c_sphere1)
+      if ( inod_start .ne. numnod_20 ) then
+        write (*,*) 'number of quadrature node in shell is wrong',      &
      &                 inod_start, numnod_20
-!           stop
-         end if
+!       stop
+      end if
 !
          close(id_q_mesh)
        end if
@@ -132,7 +136,8 @@
       end if
 !
       write(*,*) 'set connectivity in the sphere shell'
-      call radial_stack_surf_q(iele_start, id_l_connect, id_flag_quad)
+      call radial_stack_surf_q                                          &
+     &   (id_l_connect, id_flag_quad, c_sphere1, iele_start)
       if ( iele_start .ne. nele_cb_sph ) then
         write (*,*) 'number of quadrature element in shell is wrong'
         stop
@@ -146,11 +151,11 @@
 !  output group data
 !
       if (iflag_quad .gt. 0) then
-        call output_group_data_quad
+        call output_group_data_quad(c_sphere1)
         close(id_q_group)
       end if
 !
-      call output_group_data
+      call output_group_data(c_sphere1)
       close(id_l_group)
 !
       write(*,*) 'finish!!'

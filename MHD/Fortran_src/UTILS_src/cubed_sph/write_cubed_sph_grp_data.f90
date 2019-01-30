@@ -3,7 +3,9 @@
 !
 !      Written by Kemorin on Apr., 2006
 !
-!      subroutine output_group_data
+!!      subroutine output_group_data(c_sphere)
+!!      subroutine output_group_data_quad(c_sphere)
+!!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
       module write_cubed_sph_grp_data
 !
@@ -12,11 +14,11 @@
       use m_constants
       use m_numref_cubed_sph
       use m_cubed_sph_mesh
-      use m_cubed_sph_surf_mesh
       use m_cubed_sph_grp_param
 !
       use t_mesh_data
       use t_group_data
+      use t_cubed_sph_surf_mesh
 !
       use cubed_sph_file_names
       use set_node_groups_4_shell
@@ -33,26 +35,27 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine output_group_data
+      subroutine output_group_data(c_sphere)
 !
+      type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
 !   set groups
 !
       write(*,*) 'output group information for linear'
 !
       call count_node_groups_linear                                     &
-     &   (c_sphere1%numnod_cube, c_sphere1%numnod_sf,                   &
+     &   (c_sphere%numnod_cube, c_sphere%numnod_sf,                     &
      &    ione, group_csph%nod_grp)
 !
       call allocate_grp_type_num(group_csph%nod_grp)
       call set_node_group_names(group_csph%nod_grp)
       call set_node_istack_linear                                       &
-     &   (c_sphere1%numnod_cube, c_sphere1%numnod_sf,                   &
+     &   (c_sphere%numnod_cube, c_sphere%numnod_sf,                     &
      &    ione, group_csph%nod_grp)
 !
       call allocate_grp_type_item(group_csph%nod_grp)
       call set_nodal_item_linear                                        &
-     &   (c_sphere1%numnod_cube, c_sphere1%numnod_sf, num_hemi,         &
+     &   (c_sphere%numnod_cube, c_sphere%numnod_sf, num_hemi,           &
      &    ione, group_csph%nod_grp)
 !
       call write_cubed_sph_nod_grp(id_l_group, group_csph%nod_grp)
@@ -60,18 +63,18 @@
 !   set element group
 !
       call count_ele_groups                                             &
-     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &   (c_sphere%numele_cube, c_sphere%numele_sf,                     &
      &    ione, group_csph%ele_grp)
 !
       call allocate_grp_type_num(group_csph%ele_grp)
       call set_element_group_names(group_csph%ele_grp)
       call set_ele_grp_istack                                           &
-     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &   (c_sphere%numele_cube, c_sphere%numele_sf,                     &
      &    ione, group_csph%ele_grp)
 !
       call allocate_grp_type_item(group_csph%ele_grp)
       call set_ele_item                                                 &
-     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &   (c_sphere%numele_cube, c_sphere%numele_sf,                     &
      &    ione, group_csph%ele_grp)
 !
       call write_element_group(id_l_group, group_csph%ele_grp)
@@ -80,16 +83,16 @@
 ! surface group
 !
       call count_surf_groups                                            &
-     &   (c_sphere1%numele_sf, ione, group_csph%surf_grp)
+     &   (c_sphere%numele_sf, ione, group_csph%surf_grp)
 !
       call allocate_sf_grp_type_num(group_csph%surf_grp)
       call set_surface_group_names(group_csph%surf_grp)
       call set_surf_istack                                              &
-     &   (c_sphere1%numele_sf, ione, group_csph%surf_grp)
+     &   (c_sphere%numele_sf, ione, group_csph%surf_grp)
 !
       call allocate_sf_grp_type_item(group_csph%surf_grp)
       call set_surf_item                                                &
-     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &   (c_sphere%numele_cube, c_sphere%numele_sf,                     &
      &    ione, group_csph%surf_grp)
 !
       call write_surf_grp_shell(id_l_group, group_csph%surf_grp)
@@ -101,26 +104,28 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine output_group_data_quad
+      subroutine output_group_data_quad(c_sphere)
+!
+      type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
 !   set groups
 !
       write(*,*) 'output quad group information'
 !
       call count_node_groups_quad                                       &
-     &   (c_sphere1%numnod_cube, c_sphere1%numedge_cube,                &
-     &    c_sphere1%numnod_sf, c_sphere1%numedge_sf, group_csph%nod_grp)
+     &   (c_sphere%numnod_cube, c_sphere%numedge_cube,                  &
+     &    c_sphere%numnod_sf, c_sphere%numedge_sf, group_csph%nod_grp)
 !
       call allocate_grp_type_num(group_csph%nod_grp)
       call set_node_group_names(group_csph%nod_grp)
       call set_node_istack_quad                                         &
-     &   (c_sphere1%numnod_cube, c_sphere1%numedge_cube,                &
-     &    c_sphere1%numnod_sf, c_sphere1%numedge_sf, group_csph%nod_grp)
+     &   (c_sphere%numnod_cube, c_sphere%numedge_cube,                  &
+     &    c_sphere%numnod_sf, c_sphere%numedge_sf, group_csph%nod_grp)
 !
       call allocate_grp_type_item(group_csph%nod_grp)
       call set_nodal_item_quad                                          &
-     &   (nnod_cb_sph, c_sphere1%numnod_cube, c_sphere1%numedge_cube,   &
-     &    c_sphere1%numnod_sf, c_sphere1%numedge_sf, num_hemi, ione,    &
+     &   (nnod_cb_sph, c_sphere%numnod_cube, c_sphere%numedge_cube,     &
+     &    c_sphere%numnod_sf, c_sphere%numedge_sf, num_hemi, ione,      &
      &    group_csph%nod_grp)
 !
       call write_cubed_sph_nod_grp(id_q_group, group_csph%nod_grp)
@@ -128,18 +133,18 @@
 !   set element group
 !
       call count_ele_groups                                             &
-     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &   (c_sphere%numele_cube, c_sphere%numele_sf,                     &
      &    ione, group_csph%ele_grp)
 !
       call allocate_grp_type_num(group_csph%ele_grp)
       call set_element_group_names(group_csph%ele_grp)
       call set_ele_grp_istack                                           &
-     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &   (c_sphere%numele_cube, c_sphere%numele_sf,                     &
      &    ione, group_csph%ele_grp)
 !
       call allocate_grp_type_item(group_csph%ele_grp)
       call set_ele_item                                                 &
-     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &   (c_sphere%numele_cube, c_sphere%numele_sf,                     &
      &    ione, group_csph%ele_grp)
 !
       call write_element_group(id_q_group, group_csph%ele_grp)
@@ -147,16 +152,16 @@
 ! surface group
 !
       call count_surf_groups                                            &
-     &   (c_sphere1%numele_sf, ione, group_csph%surf_grp)
+     &   (c_sphere%numele_sf, ione, group_csph%surf_grp)
 !
       call allocate_sf_grp_type_num(group_csph%surf_grp)
       call set_surface_group_names(group_csph%surf_grp)
       call set_surf_istack                                              &
-     &   (c_sphere1%numele_sf, ione, group_csph%surf_grp)
+     &   (c_sphere%numele_sf, ione, group_csph%surf_grp)
 !
       call allocate_sf_grp_type_item(group_csph%surf_grp)
       call set_surf_item                                                &
-     &   (c_sphere1%numele_cube, c_sphere1%numele_sf,                   &
+     &   (c_sphere%numele_cube, c_sphere%numele_sf,                     &
      &    ione, group_csph%surf_grp)
 !
       call write_surf_grp_shell(id_q_group, group_csph%surf_grp)

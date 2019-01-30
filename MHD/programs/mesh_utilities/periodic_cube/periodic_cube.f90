@@ -40,7 +40,7 @@
 !    count number of node & element
 !
       write(*,*) 'count_rectangle_shell_size'
-      call count_rectangle_shell_size
+      call count_rectangle_shell_size(c_sphere1)
 !
       write(*,*) 'alloc_surface_geometries', c_sphere1%numnod_sf20
       call alloc_surface_geometries(c_sphere1)
@@ -49,14 +49,14 @@
 !  count avaiable coarsing level
 !
       write(*,*) 'check_rect_coarsing_level'
-      call check_rect_coarsing_level
+      call check_rect_coarsing_level(c_sphere1)
 !
       write(*,*) 'allocate_coarse_mesh_stack'
       call allocate_coarse_mesh_stack(max_coarse_level)
       call alloc_coarsing_stack(max_coarse_level, c_sphere1)
 !
       write(*,*) 'count_coarse_rect_shell'
-      call count_coarse_rect_shell
+      call count_coarse_rect_shell(c_sphere1)
 !
        write(*,*) 'alloc_surface_connect(c_sphere1)'
       call set_ntot_ele_sf20(c_sphere1)

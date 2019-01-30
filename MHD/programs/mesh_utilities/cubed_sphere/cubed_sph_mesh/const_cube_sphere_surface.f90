@@ -44,7 +44,7 @@
        stop
       end if
 !
-      call set_cube_rods(inod_sf_end, irod_sf_end)
+      call set_cube_rods(inod_sf_end, irod_sf_end, c_sphere1)
 !
       if (irod_sf_end .ne. c_sphere1%numedge_sf) then
         write(*,*) 'check the number of edge in a sphere'
@@ -62,7 +62,7 @@
 !   set connectivity for sphere surface
 !
        write(*,*) 'connectivity construction for surface start'
-       call set_cube_surf_connect(iele_sf_end)
+       call set_cube_surf_connect(iele_sf_end, c_sphere1)
 !
       if (iele_sf_end .ne. c_sphere1%numele_sf) then
         write(*,*) 'check the number of element in a sphere'
@@ -70,11 +70,11 @@
       end if
 !
       write(*,*) 'output_surface_data'
-      call output_surface_data
+      call output_surface_data(c_sphere1)
 !
       if(iflag_quad .gt. 0) then
         write(*,*) 'output_surface_data_quad'
-        call output_surface_data_quad
+        call output_surface_data_quad(c_sphere1)
       end if
 !
       end subroutine const_cube_surface_data
@@ -103,9 +103,9 @@
       iele_sf_end = c_sphere1%numele_sf
       do icoarse = 1, max_coarse_level
 !
-        call cal_coarse_cube_params(icoarse)
+        call cal_coarse_cube_params(icoarse, c_sphere1)
 !
-        call set_coarse_cube_skin(inod_sf_end)
+        call set_coarse_cube_skin(inod_sf_end, c_sphere1)
         if (inod_sf_end .ne. c_sphere1%inod_stack_sf(icoarse) ) then
          write(*,*) 'check the number of node in a sphere... level:',   &
      &        icoarse, inod_sf_end, c_sphere1%inod_stack_sf(icoarse)
@@ -113,7 +113,7 @@
        end if
        write(*,*) 'inod_sf_end!!!', inod_sf_end
 !
-       call set_coarse_cube_surf_connect(iele_sf_end)
+       call set_coarse_cube_surf_connect(iele_sf_end, c_sphere1)
        num = c_sphere1%iele_stack_sf(icoarse) + c_sphere1%numele_sf
        if(iele_sf_end .ne. num) then
         write(*,*) 'check the number of element in a sphere... level:'  &
@@ -122,13 +122,13 @@
        end if
 !
        write(*,*) 'set_merged_element_cube_surf'
-       call set_merged_element_cube_surf(icoarse)
+       call set_merged_element_cube_surf(icoarse, c_sphere1)
 !
       end do
 !
       if (max_coarse_level .gt. 0) then
         write(*,*) 'output_surface_data_full'
-        call output_surface_data_full(max_coarse_level)
+        call output_surface_data_full(max_coarse_level, c_sphere1)
       end if
 !
       end subroutine const_coarse_cube_surf_data

@@ -122,11 +122,11 @@
 !  output group data
 !
       if (iflag_quad .gt. 0) then
-        call output_group_data_quad
+        call output_group_data_quad(c_sphere1)
         close(id_q_group)
       end if
 !
-      call output_group_data
+      call output_group_data(c_sphere1)
       close(id_l_group)
 !
       write(*,*) 'finish!!'
@@ -162,7 +162,7 @@
        call allocate_coarse_cube_surf_tmp
        call allocate_wall_latitude_ratio(ncube_vertical)
        do ic = 1, max_coarse_level
-         call cal_coarse_rect_params(ic)
+         call cal_coarse_rect_params(ic, c_sphere1)
 !
          call set_coarse_mesh_names(ic)
 !
@@ -188,15 +188,15 @@
          call set_center_connect_quad(iele_s2, id_l_connect, izero,     &
      &       numnod_coarse, n_hemi_c, n_vert_c)
 !
-         write(*,*) 'count_merged_cube', ic
-         call count_merged_cube(ic, id_transfer)
+         write(*,*) 'count_merged_cube'
+         call count_merged_cube(id_transfer)
 !
          write(*,*) 'set_merged_cube_data'
-         call set_merged_cube_data(ic, id_transfer)
+         call set_merged_cube_data(id_transfer)
          write(*,*) 'set_merge_4_shell'
          call set_merge_4_shell(ic, id_transfer)
          write(*,*) 'output_domain_4_merge'
-         call output_domain_4_merge(ic, id_transfer)
+         call output_domain_4_merge(id_transfer)
 !
          inum = iele_start
 !

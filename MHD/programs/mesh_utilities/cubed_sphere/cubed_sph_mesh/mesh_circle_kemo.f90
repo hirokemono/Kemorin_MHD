@@ -35,7 +35,7 @@
 !    count number of node & element
 !
       write(*,*) 'count_square_circle_size'
-      call count_square_circle_size
+      call count_square_circle_size(c_sphere1)
 !
 !      write(*,*) 'alloc_surface_geometries', c_sphere1%numnod_sf20
       call alloc_surface_geometries(c_sphere1)

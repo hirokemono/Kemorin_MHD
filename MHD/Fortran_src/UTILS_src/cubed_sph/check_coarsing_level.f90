@@ -1,16 +1,19 @@
 !
 !      module check_coarsing_level
 !
-      module check_coarsing_level
-!
 !        programmed by H.Matsui on Apr., 2006
+!
+!!      subroutine check_cube_coarsing_level(c_sphere)
+!!      subroutine check_rect_coarsing_level(c_sphere)
+!!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+!
+      module check_coarsing_level
 !
       use m_precision
 !
-      implicit  none
+      use t_cubed_sph_surf_mesh
 !
-!      subroutine check_cube_coarsing_level
-!      subroutine check_rect_coarsing_level
+      implicit  none
 !
 !   --------------------------------------------------------------------
 !
@@ -18,16 +21,17 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine check_cube_coarsing_level
+      subroutine check_cube_coarsing_level(c_sphere)
 !
       use m_numref_cubed_sph
       use m_cubed_sph_radius
       use m_cubed_sph_grp_param
-      use m_cubed_sph_surf_mesh
 !
+      type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: i, ilevel_tmp
       integer(kind = kint) :: i_sflag, i_riflag, i_roflag, i_rmflag
+!
 !
       do i = 1, max_coarse_level
         nstep_coarse(i,1) = nstep_coarse(i-1,1) * icoarse_level(i,1)
@@ -57,24 +61,25 @@
 !
       end do
 !
-       c_sphere1%max_merge_e = 1
+       c_sphere%max_merge_e = 1
        do i = 1, max_coarse_level
          nl_3 = icoarse_level(i,1)**3
          nl_shell = icoarse_level(i,1)**2 * icoarse_level(i,2)
-         c_sphere1%max_merge_e = max(c_sphere1%max_merge_e,nl_3)
-         c_sphere1%max_merge_e = max(c_sphere1%max_merge_e,nl_shell)
+         c_sphere%max_merge_e = max(c_sphere%max_merge_e,nl_3)
+         c_sphere%max_merge_e = max(c_sphere%max_merge_e,nl_shell)
        end do
 !
       end subroutine check_cube_coarsing_level
 !
 !   --------------------------------------------------------------------
 !
-      subroutine check_rect_coarsing_level
+      subroutine check_rect_coarsing_level(c_sphere)
 !
       use m_numref_cubed_sph
       use m_cubed_sph_radius
       use m_cubed_sph_grp_param
-      use m_cubed_sph_surf_mesh
+!
+      type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: i, ilevel_tmp
       integer(kind = kint) :: i_sflag, i_riflag, i_roflag, i_rmflag
@@ -110,12 +115,12 @@
 !
       end do
 !
-       c_sphere1%max_merge_e = 1
+       c_sphere%max_merge_e = 1
        do i = 1, max_coarse_level
          nl_3 = icoarse_level(i,1)**3
          nl_shell = icoarse_level(i,1)**2 * icoarse_level(i,2)
-         c_sphere1%max_merge_e = max(c_sphere1%max_merge_e,nl_3)
-         c_sphere1%max_merge_e = max(c_sphere1%max_merge_e,nl_shell)
+         c_sphere%max_merge_e = max(c_sphere%max_merge_e,nl_3)
+         c_sphere%max_merge_e = max(c_sphere%max_merge_e,nl_shell)
        end do
 !
       end subroutine check_rect_coarsing_level

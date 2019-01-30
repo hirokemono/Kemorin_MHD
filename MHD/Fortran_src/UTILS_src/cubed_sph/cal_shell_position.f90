@@ -3,14 +3,20 @@
 !
 !        programmed by H.Matsui on Apr., 2006
 !
-!      subroutine allocate_cubed_sph_posi_tmp
-!      subroutine deallocate_cubed_sph_posi_tmp
+!!      subroutine allocate_cubed_sph_posi_tmp(c_sphere)
+!!      subroutine deallocate_cubed_sph_posi_tmp
+!!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
-!      subroutine project_to_sphere(inod, ifile, ifile_q, num_h, num_v)
-!      subroutine projection_quad(inod, ifile, num_h, num_v)
-!
-!      subroutine adjust_to_shell(inod, ifile, ifile_q, num_h, num_v)
-!      subroutine adjust_to_shell_quad(inod, ifile, num_h, num_v)
+!!      subroutine project_to_sphere                                    &
+!!     &         (ifile, ifile_q, num_h, num_v, c_sphere, inod)
+!!      subroutine projection_quad(ifile, num_h, num_v, c_sphere, inod)
+!!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+!!
+!!      subroutine adjust_to_shell                                      &
+!!     &         (ifile, ifile_q, num_h, num_v, c_sphere, inod)
+!!      subroutine adjust_to_shell_quad                                 &
+!!     &         (ifile, num_h, num_v, c_sphere, inod)
+!!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
       module cal_shell_position
 !
@@ -18,7 +24,7 @@
       use m_constants
 !
       use m_cubed_sph_mesh
-      use m_cubed_sph_surf_mesh
+      use t_cubed_sph_surf_mesh
       use m_cubed_sph_radius
 !
       implicit  none
@@ -34,11 +40,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine allocate_cubed_sph_posi_tmp
+      subroutine allocate_cubed_sph_posi_tmp(c_sphere)
 !
+      type(cubed_sph_surf_mesh), intent(in) :: c_sphere
       integer(kind = kint) :: num
 !
-      num = c_sphere1%numnod_sf + c_sphere1%numedge_sf
+      num = c_sphere%numnod_sf + c_sphere%numedge_sf
       allocate( x(num), y(num), z(num) )
       allocate( r(num), t(num), p(num) )
       allocate( ratio(num), ratio1(num), ratio2(num) )
@@ -64,7 +71,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine project_to_sphere(inod, ifile, ifile_q, num_h, num_v)
+      subroutine project_to_sphere                                      &
+     &         (ifile, ifile_q, num_h, num_v, c_sphere, inod)
 !
       use const_rect_sphere_surface
       use coordinate_converter
@@ -72,6 +80,8 @@
 !
       integer(kind = kint), intent(in) :: ifile, ifile_q
       integer(kind = kint), intent(in) :: num_h, num_v
+      type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+!
       integer(kind = kint), intent(inout) :: inod
 !
       integer(kind = kint) :: k, inod0
@@ -79,7 +89,7 @@
 !
 !
       do k = nr_adj+1, n_shell
-        r(1:c_sphere1%numnod_sf) = r_nod(k)
+        r(1:c_sphere%numnod_sf) = r_nod(k)
 !
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
           call cal_wall_latitude_ratio(num_h, num_v, edge_latitude(k))
@@ -88,11 +98,11 @@
         end if
 !
 !
-        call position_2_xyz(c_sphere1%numnod_sf,                        &
-     &      r(1), c_sphere1%theta_csph(1), c_sphere1%phi_csph(1),       &
+        call position_2_xyz(c_sphere%numnod_sf,                         &
+     &      r(1), c_sphere%theta_csph(1), c_sphere%phi_csph(1),         &
      &      x(1), y(1), z(1))
 !
-        do inod0 = 1, c_sphere1%numnod_sf
+        do inod0 = 1, c_sphere%numnod_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &         inod, x(inod0), y(inod0), z(inod0)
@@ -107,7 +117,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine projection_quad(inod, ifile, num_h, num_v)
+      subroutine projection_quad(ifile, num_h, num_v, c_sphere, inod)
 !
       use const_rect_sphere_surface
       use coordinate_converter
@@ -115,16 +125,18 @@
 !
       integer(kind = kint), intent(in) :: ifile
       integer(kind = kint), intent(in) :: num_h, num_v
+      type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+!
       integer(kind = kint), intent(inout) :: inod
 !
       integer(kind = kint) :: k, inod0, num
       real(kind = kreal) :: rad_edge
 !
 !
-      num = c_sphere1%numnod_sf + c_sphere1%numedge_sf
+      num = c_sphere%numnod_sf + c_sphere%numedge_sf
       do k = nr_adj+1, n_shell
-        r(1:c_sphere1%numnod_sf) = (r_nod(k) + r_nod(k-1)) * half
-        r(c_sphere1%numnod_sf+1:num) = r_nod(k)
+        r(1:c_sphere%numnod_sf) = (r_nod(k) + r_nod(k-1)) * half
+        r(c_sphere%numnod_sf+1:num) = r_nod(k)
 !
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
           call cal_wall_latitude_ratio(num_h, num_v, edge_latitude(k))
@@ -132,25 +144,25 @@
           rad_edge = atan(one) * (edge_latitude(k)+edge_latitude(k-1))  &
      &             / 90.0d0
           call const_rect_sphere_surf_node(rad_edge)
-          t(1:c_sphere1%numnod_sf)                                      &
-     &        = c_sphere1%theta_csph(1:c_sphere1%numnod_sf)
+          t(1:c_sphere%numnod_sf)                                       &
+     &        = c_sphere%theta_csph(1:c_sphere%numnod_sf)
 !
           rad_edge = atan(one) * edge_latitude(k) / 45.0d0
           call const_rect_sphere_surf_node(rad_edge)
-          t(c_sphere1%numnod_sf+1:num)                                  &
-     &        = c_sphere1%theta_csph(c_sphere1%numnod_sf+1:num)
+          t(c_sphere%numnod_sf+1:num)                                   &
+     &        = c_sphere%theta_csph(c_sphere%numnod_sf+1:num)
         else
-          t(1:c_sphere1%numnod_sf)                                      &
-     &        = c_sphere1%theta_csph(1:c_sphere1%numnod_sf)
-          t(c_sphere1%numnod_sf+1:num)                                  &
-     &          = c_sphere1%theta_csph(c_sphere1%numnod_sf+1:num)
+          t(1:c_sphere%numnod_sf)                                       &
+     &        = c_sphere%theta_csph(1:c_sphere%numnod_sf)
+          t(c_sphere%numnod_sf+1:num)                                   &
+     &          = c_sphere%theta_csph(c_sphere%numnod_sf+1:num)
         end if
 !
 !
-        call position_2_xyz(num, r(1), t(1), c_sphere1%phi_csph(1),     &
+        call position_2_xyz(num, r(1), t(1), c_sphere%phi_csph(1),      &
      &      x(1), y(1), z(1))
 !
-        do inod0 = 1, c_sphere1%numnod_sf + c_sphere1%numedge_sf
+        do inod0 = 1, c_sphere%numnod_sf + c_sphere%numedge_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &         inod, x(inod0), y(inod0), z(inod0)
@@ -162,7 +174,8 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine adjust_to_shell(inod, ifile, ifile_q, num_h, num_v)
+      subroutine adjust_to_shell                                        &
+     &         (ifile, ifile_q, num_h, num_v, c_sphere, inod)
 !
       use const_rect_sphere_surface
       use coordinate_converter
@@ -170,6 +183,8 @@
 !
       integer(kind = kint), intent(in) :: ifile, ifile_q
       integer(kind = kint), intent(in) :: num_h, num_v
+      type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+!
       integer(kind = kint), intent(inout) :: inod
 !
       integer(kind = kint) :: k, inod0
@@ -183,19 +198,19 @@
           call const_rect_sphere_surf_node(rad_edge)
         end if
 !
-        do inod0 = 1, c_sphere1%numnod_sf
+        do inod0 = 1, c_sphere%numnod_sf
           ratio(inod0) = (dble(nr_adj-k)                                &
-     &                    + dble(k-1)*r_nod(1)/c_sphere1%r_csph(inod0)) &
+     &                    + dble(k-1)*r_nod(1)/c_sphere%r_csph(inod0))  &
      &                  * r_nod(k) / ( dble(nr_adj-1)*r_nod(1) )
-          r(inod0) = c_sphere1%r_csph(inod0) * ratio(inod0)
+          r(inod0) = c_sphere%r_csph(inod0) * ratio(inod0)
         end do
 !
-        call position_2_xyz(c_sphere1%numnod_sf,                        &
-     &      r(1), c_sphere1%theta_csph(1), c_sphere1%phi_csph(1),       &
+        call position_2_xyz(c_sphere%numnod_sf,                         &
+     &      r(1), c_sphere%theta_csph(1), c_sphere%phi_csph(1),         &
      &      x(1), y(1), z(1))
 !
 !
-        do inod0 = 1, c_sphere1%numnod_sf
+        do inod0 = 1, c_sphere%numnod_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), z(inod0)
@@ -211,7 +226,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine adjust_to_shell_quad(inod, ifile, num_h, num_v)
+      subroutine adjust_to_shell_quad                                   &
+     &         (ifile, num_h, num_v, c_sphere, inod)
 !
       use const_rect_sphere_surface
       use coordinate_converter
@@ -219,13 +235,15 @@
 !
       integer(kind = kint), intent(in) :: ifile
       integer(kind = kint), intent(in) :: num_h, num_v
+      type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+!
       integer(kind = kint), intent(inout) :: inod
 !
       integer(kind = kint) :: k, inod0, iedge0, num
       real(kind = kreal) :: rad_edge
 !
 !
-      num = c_sphere1%numnod_sf + c_sphere1%numedge_sf
+      num = c_sphere%numnod_sf + c_sphere%numedge_sf
       do k = 1, nr_adj-1
         if(num_edge_latitude_ref.gt.0 .or. num_h.ne.num_v) then
           call cal_wall_latitude_ratio(num_h, num_v, edge_latitude(k))
@@ -233,46 +251,46 @@
           rad_edge = atan(one) * (edge_latitude(k)+edge_latitude(k-1))  &
      &             / 90.0d0
           call const_rect_sphere_surf_node(rad_edge)
-          t(1:c_sphere1%numnod_sf)                                      &
-     &          = c_sphere1%theta_csph(1:c_sphere1%numnod_sf)
+          t(1:c_sphere%numnod_sf)                                       &
+     &          = c_sphere%theta_csph(1:c_sphere%numnod_sf)
 !
           rad_edge = atan(one) * edge_latitude(k) / 45.0d0
           call const_rect_sphere_surf_node(rad_edge)
-          t(c_sphere1%numnod_sf+1:num)                                  &
-     &          = c_sphere1%theta_csph(c_sphere1%numnod_sf+1:num)
+          t(c_sphere%numnod_sf+1:num)                                   &
+     &          = c_sphere%theta_csph(c_sphere%numnod_sf+1:num)
         else
-          t(1:c_sphere1%numnod_sf)                                      &
-     &          = c_sphere1%theta_csph(1:c_sphere1%numnod_sf)
-          t(c_sphere1%numnod_sf+1:num)                                  &
-     &          = c_sphere1%theta_csph(c_sphere1%numnod_sf+1:num)
+          t(1:c_sphere%numnod_sf)                                       &
+     &          = c_sphere%theta_csph(1:c_sphere%numnod_sf)
+          t(c_sphere%numnod_sf+1:num)                                   &
+     &          = c_sphere%theta_csph(c_sphere%numnod_sf+1:num)
         end if
 !
-        do inod0 = 1, c_sphere1%numnod_sf
+        do inod0 = 1, c_sphere%numnod_sf
           ratio1(inod0) = (dble(nr_adj-k)                               &
-     &                   + dble(k-1)*r_nod(1)/c_sphere1%r_csph(inod0))  &
+     &                   + dble(k-1)*r_nod(1)/c_sphere%r_csph(inod0))   &
      &                 * r_nod(k)   / ( dble(nr_adj-1)*r_nod(1) )
           ratio2(inod0) = (dble(nr_adj-k-1)                             &
-     &                   + dble(k)*r_nod(1)/c_sphere1%r_csph(inod0))    &
+     &                   + dble(k)*r_nod(1)/c_sphere%r_csph(inod0))     &
      &                 * r_nod(k+1) / ( dble(nr_adj-1)*r_nod(1) )
           ratio(inod0) = (ratio1(inod0) + ratio2(inod0)) * half
 !
-          r(inod0) = c_sphere1%r_csph(inod0) * ratio(inod0)
+          r(inod0) = c_sphere%r_csph(inod0) * ratio(inod0)
         end do
 !
-        do iedge0 = 1, c_sphere1%numedge_sf
-          inod0 = iedge0 + c_sphere1%numnod_sf
+        do iedge0 = 1, c_sphere%numedge_sf
+          inod0 = iedge0 + c_sphere%numnod_sf
 !
           ratio(inod0) = (dble(nr_adj-k-1)                              &
-     &                    + dble(k)*r_nod(1)/c_sphere1%r_csph(inod0))   &
+     &                    + dble(k)*r_nod(1)/c_sphere%r_csph(inod0))    &
      &                  * r_nod(k+1) / ( dble(nr_adj-1)*r_nod(1) )
 !
-          r(inod0) = c_sphere1%r_csph(inod0) * ratio(inod0)
+          r(inod0) = c_sphere%r_csph(inod0) * ratio(inod0)
         end do
 !
-        call position_2_xyz(num, r(1), t(1), c_sphere1%phi_csph(1),     &
+        call position_2_xyz(num, r(1), t(1), c_sphere%phi_csph(1),      &
      &      x(1), y(1), z(1))
 !
-        do inod0 = 1, c_sphere1%numnod_sf + c_sphere1%numedge_sf
+        do inod0 = 1, c_sphere%numnod_sf + c_sphere%numedge_sf
           inod = inod + 1
           write (ifile,'(i15,1p3E25.15e3)')                             &
      &          inod, x(inod0), y(inod0), z(inod0)

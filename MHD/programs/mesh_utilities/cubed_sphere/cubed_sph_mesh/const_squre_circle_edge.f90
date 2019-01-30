@@ -47,7 +47,7 @@
         write(*,*) inod, c_sphere1%x_csph(inod,1:3)
       end do
 !
-      call set_circle_rods(inod_sf_end, irod_sf_end)
+      call set_circle_rods(inod_sf_end, irod_sf_end, c_sphere1)
 !
       if (irod_sf_end .ne. c_sphere1%numedge_sf) then
         write(*,*) 'check the number of edge in a sphere'
@@ -63,11 +63,11 @@
      &    c_sphere1%ar_csph, c_sphere1%s_csph, c_sphere1%as_csph)
 !
       write(*,*) 'output_circle_data'
-      call output_circle_data
+      call output_circle_data(c_sphere1)
 !
       if(iflag_quad .gt. 0) then
         write(*,*) 'output_circle_data_quad'
-        call output_circle_data_quad
+        call output_circle_data_quad(c_sphere1)
       end if
 !
       end subroutine const_squre_circle_edge_data
