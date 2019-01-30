@@ -28,16 +28,18 @@
 !
       integer(kind = kint), intent(in) :: is_level
 !
-      integer(kind = kint) :: iele
+      integer(kind = kint) :: ist, ied, iele
 !
 !
-      do iele = iele_stack_sf(is_level-1)+1, iele_stack_sf(is_level)
+      ist = c_sphere1%iele_stack_sf(is_level-1) + 1
+      ied = c_sphere1%iele_stack_sf(is_level)
+      do iele = ist, ied
         c_sphere1%num_merge_e_sf(iele) = nl_s*nl_s
       end do
 !
 !   bottom surface (z = -cube_size)
 !
-      iele = iele_stack_sf(is_level-1)
+      iele = c_sphere1%iele_stack_sf(is_level-1)
       call set_bottom_merged_cube(num_hemi, nskip_s, nskip_fs,          &
      &    c_sphere1%numnod_sf_w_coarse, c_sphere1%nmax_merge_sf,        &
      &    iele, c_sphere1%imerge_e_sf)
@@ -67,16 +69,18 @@
 !
       integer(kind = kint), intent(in) :: is_level
 !
-      integer(kind = kint) :: iele
+      integer(kind = kint) :: ist, ied, iele
 !
 !
-      do iele = iele_stack_sf(is_level-1)+1, iele_stack_sf(is_level)
+      ist = c_sphere1%iele_stack_sf(is_level-1) + 1
+      ied = c_sphere1%iele_stack_sf(is_level)
+      do iele = ist, ied
         c_sphere1%num_merge_e_sf(iele) = nl_s*nl_s
       end do
 !
 !   bottom surface (z = -cube_size)
 !
-      iele = iele_stack_sf(is_level-1)
+      iele = c_sphere1%iele_stack_sf(is_level-1)
       call set_bottom_merged_cube(num_hemi, nskip_s, nskip_fs,          &
      &    c_sphere1%numnod_sf_w_coarse, c_sphere1%nmax_merge_sf,        &
      &    iele, c_sphere1%imerge_e_sf)

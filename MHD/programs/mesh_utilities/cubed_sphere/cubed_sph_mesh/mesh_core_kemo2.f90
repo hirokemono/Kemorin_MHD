@@ -52,7 +52,7 @@
 !
       write(*,*) 'allocate_coarse_mesh_stack'
       call allocate_coarse_mesh_stack(max_coarse_level)
-      call allocate_coarsing_stack(max_coarse_level)
+      call alloc_coarsing_stack(max_coarse_level, c_sphere1)
 !
       write(*,*) 'count_coarse_rect_shell'
       call count_coarse_rect_shell

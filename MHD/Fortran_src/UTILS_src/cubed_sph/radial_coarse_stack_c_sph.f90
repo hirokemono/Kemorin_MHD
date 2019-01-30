@@ -37,7 +37,7 @@
 !
           iele = iele + 1
           iele_sf = c_sphere1%numele_sf                                 &
-     &             + iele_stack_sf(icoarse-1) + iele0
+     &             + c_sphere1%iele_stack_sf(icoarse-1) + iele0
           inod0 = nnod_cube_c + nnod_sf_c*(k-1)
 !
           ie(1) = inod0 + ie_sf20(iele_sf,1)

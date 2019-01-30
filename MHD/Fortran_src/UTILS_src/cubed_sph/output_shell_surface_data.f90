@@ -132,14 +132,15 @@
 !
        write(id_sf_coarsing,'(a)') '! node stack for each level'
        write(id_sf_coarsing,'(10i16)')                                  &
-     &         (inod_stack_sf(ic),ic=1, max_coarse_level)
+     &         (c_sphere1%inod_stack_sf(ic),ic=1, max_coarse_level)
 !
        write(id_sf_coarsing,'(a)') '! node table'
        do ic = 1, max_coarse_level
-         ist = inod_stack_sf(ic-1) + 1
-         ied = inod_stack_sf(ic)
+         ist = c_sphere1%inod_stack_sf(ic-1) + 1
+         ied = c_sphere1%inod_stack_sf(ic)
          do inod = ist, ied
-           write(id_sf_coarsing,'(3i16)') (inod-inod_stack_sf(ic-1)),   &
+           write(id_sf_coarsing,'(3i16)')                               &
+     &        (inod-c_sphere1%inod_stack_sf(ic-1)),                     &
      &         c_sphere1%inod_2_next(inod), c_sphere1%inod_2_org(inod)
          end do
        end do
@@ -147,16 +148,17 @@
 !
        write(id_sf_coarsing,'(a)') '! element stack for each level'
        write(id_sf_coarsing,'(8i16)')                                   &
-     &            (iele_stack_sf(ic),ic=1, max_coarse_level)
+     &    (c_sphere1%iele_stack_sf(ic),ic=1, max_coarse_level)
 !
        write(id_sf_coarsing,'(a)') '! connectivity'
        do ic = 1, max_coarse_level
-         ist = iele_stack_sf(ic-1) + 1
-         ied = iele_stack_sf(ic)
+         ist = c_sphere1%iele_stack_sf(ic-1) + 1
+         ied = c_sphere1%iele_stack_sf(ic)
          do iele0 = ist, ied
            iele = iele0 + c_sphere1%numele_sf
-            write(id_sf_coarsing,'(6i16)') (iele0-iele_stack_sf(ic-1)), &
-     &                      ie_sf20(iele,1:4)
+            write(id_sf_coarsing,'(6i16)')                              &
+     &        (iele0-c_sphere1%iele_stack_sf(ic-1)),                    &
+     &        ie_sf20(iele,1:4)
          end do
        end do
 !
@@ -165,18 +167,18 @@
        write(id_sf_coarsing,'(a)') '! merged element information'
        write(id_sf_coarsing,'(a)') '! number of merged element'
        do ic = 1, max_coarse_level
-         ist = iele_stack_sf(ic-1)+1
-         ied = iele_stack_sf(ic)
+         ist = c_sphere1%iele_stack_sf(ic-1) + 1
+         ied = c_sphere1%iele_stack_sf(ic)
          write(id_sf_coarsing,'(8i16)')                                 &
      &            (c_sphere1%num_merge_e_sf(iele),iele=ist,ied)
        end do
 !
        write(id_sf_coarsing,'(a)') '! merged element id'
        do ic = 1, max_coarse_level
-         ist = iele_stack_sf(ic-1)+1
-         ied = iele_stack_sf(ic)
+         ist = c_sphere1%iele_stack_sf(ic-1) + 1
+         ied = c_sphere1%iele_stack_sf(ic)
          do iele = ist, ied
-           iele0 = iele - iele_stack_sf(ic-1)
+           iele0 = iele - c_sphere1%iele_stack_sf(ic-1)
            num = c_sphere1%num_merge_e_sf(iele)
            write(id_sf_coarsing,'(8i16)') iele0,                        &
      &         c_sphere1%imerge_e_sf(iele,1:num)

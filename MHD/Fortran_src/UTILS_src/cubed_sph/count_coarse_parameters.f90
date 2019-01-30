@@ -47,13 +47,15 @@
       numnod_coarse = inod_stack(icoarse) - inod_stack(icoarse-1)
       numele_coarse = iele_stack(icoarse) - iele_stack(icoarse-1)
 !
-      nnod_cube_c = inod_stack_cube(icoarse)                            &
-     &             - inod_stack_cube(icoarse-1)
-      nnod_sf_c = inod_stack_sf(icoarse) - inod_stack_sf(icoarse-1)
+      nnod_cube_c = c_sphere1%inod_stack_cube(icoarse)                  &
+     &             - c_sphere1%inod_stack_cube(icoarse-1)
+      nnod_sf_c = c_sphere1%inod_stack_sf(icoarse)                      &
+     &           - c_sphere1%inod_stack_sf(icoarse-1)
 !
-      nele_cube_c = iele_stack_cube(icoarse)                            &
-     &             - iele_stack_cube(icoarse-1)
-      nele_sf_c = iele_stack_sf(icoarse)-iele_stack_sf(icoarse-1)
+      nele_cube_c = c_sphere1%iele_stack_cube(icoarse)                  &
+     &             - c_sphere1%iele_stack_cube(icoarse-1)
+      nele_sf_c = c_sphere1%iele_stack_sf(icoarse)                      &
+     &           - c_sphere1%iele_stack_sf(icoarse-1)
       nele_shell_c = nele_sf_c * c_sphere1%nele_shell / nskip_r
 !
       if (icoarse.eq.1) then
@@ -63,14 +65,18 @@
         nele_sf_fc =   c_sphere1%numele_sf
       else
         nnod_cube_fc                                                    &
-     &      = inod_stack_cube(icoarse-1) - inod_stack_cube(icoarse-2)
+     &      = c_sphere1%inod_stack_cube(icoarse-1)                      &
+     &       - c_sphere1%inod_stack_cube(icoarse-2)
         nnod_sf_fc                                                      &
-     &      =  inod_stack_sf(icoarse-1) - inod_stack_sf(icoarse-2)
+     &      = c_sphere1%inod_stack_sf(icoarse-1)                        &
+     &       - c_sphere1%inod_stack_sf(icoarse-2)
 
         nele_cube_fc                                                    &
-     &      = iele_stack_cube(icoarse-1) - iele_stack_cube(icoarse-2)
+     &      = c_sphere1%iele_stack_cube(icoarse-1)                      &
+     &       - c_sphere1%iele_stack_cube(icoarse-2)
         nele_sf_fc                                                      &
-     &      = iele_stack_sf(icoarse-1)-iele_stack_sf(icoarse-2)
+     &      = c_sphere1%iele_stack_sf(icoarse-1)                        &
+     &       - c_sphere1%iele_stack_sf(icoarse-2)
       end if
 !
 !
@@ -105,13 +111,15 @@
       numnod_coarse = inod_stack(icoarse) - inod_stack(icoarse-1)
       numele_coarse = iele_stack(icoarse) - iele_stack(icoarse-1)
 !
-      nnod_cube_c = inod_stack_cube(icoarse)                            &
-     &             - inod_stack_cube(icoarse-1)
-      nnod_sf_c = inod_stack_sf(icoarse) - inod_stack_sf(icoarse-1)
+      nnod_cube_c = c_sphere1%inod_stack_cube(icoarse)                  &
+     &             - c_sphere1%inod_stack_cube(icoarse-1)
+      nnod_sf_c = c_sphere1%inod_stack_sf(icoarse)                      &
+     &           - c_sphere1%inod_stack_sf(icoarse-1)
 !
-      nele_cube_c = iele_stack_cube(icoarse)                            &
-     &             - iele_stack_cube(icoarse-1)
-      nele_sf_c = iele_stack_sf(icoarse)-iele_stack_sf(icoarse-1)
+      nele_cube_c = c_sphere1%iele_stack_cube(icoarse)                  &
+     &             - c_sphere1%iele_stack_cube(icoarse-1)
+      nele_sf_c = c_sphere1%iele_stack_sf(icoarse)                      &
+     &           - c_sphere1%iele_stack_sf(icoarse-1)
       nele_shell_c = nele_sf_c * c_sphere1%nele_shell / nskip_r
 !
       if (icoarse.eq.1) then
@@ -120,15 +128,15 @@
         nele_cube_fc = c_sphere1%numele_cube
         nele_sf_fc =   c_sphere1%numele_sf
       else
-        nnod_cube_fc                                                    &
-     &      = inod_stack_cube(icoarse-1) - inod_stack_cube(icoarse-2)
-        nnod_sf_fc                                                      &
-     &      =  inod_stack_sf(icoarse-1) - inod_stack_sf(icoarse-2)
+        nnod_cube_fc = c_sphere1%inod_stack_cube(icoarse-1)             &
+     &                - c_sphere1%inod_stack_cube(icoarse-2)
+        nnod_sf_fc = c_sphere1%inod_stack_sf(icoarse-1)                 &
+     &              - c_sphere1%inod_stack_sf(icoarse-2)
 
-        nele_cube_fc                                                    &
-     &      = iele_stack_cube(icoarse-1) - iele_stack_cube(icoarse-2)
-        nele_sf_fc                                                      &
-     &      = iele_stack_sf(icoarse-1)-iele_stack_sf(icoarse-2)
+        nele_cube_fc = c_sphere1%iele_stack_cube(icoarse-1)             &
+     &                - c_sphere1%iele_stack_cube(icoarse-2)
+        nele_sf_fc = c_sphere1%iele_stack_sf(icoarse-1)                 &
+     &              - c_sphere1%iele_stack_sf(icoarse-2)
       end if
 !
 !

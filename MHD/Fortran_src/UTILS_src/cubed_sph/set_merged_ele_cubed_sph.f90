@@ -175,7 +175,7 @@
           kele0 = nele_cube_fc + nl_r*(k-1) * nele_sf_fc
 !
           jele = jele0 + jnum
-          jele_m = jnum + iele_stack_sf(is_level-1)
+          jele_m = jnum + c_sphere1%iele_stack_sf(is_level-1)
 !
           do kk = 1, nl_r
             kele1 = kele0 + (kk-1)*nele_sf_fc

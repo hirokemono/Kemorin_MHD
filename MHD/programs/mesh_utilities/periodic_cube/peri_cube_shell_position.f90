@@ -58,7 +58,7 @@
 !
       integer(kind = kint) :: num
 !
-      num = inod_stack_sf(max_coarse_level)
+      num = c_sphere1%inod_stack_sf(max_coarse_level)
       allocate( x(num), y(num), z(num) )
       allocate( r(num), t(num), p(num) )
       allocate( ratio(num) )
@@ -123,8 +123,8 @@
       integer(kind = kint) :: ist, ied, i_sf, j_sf, k_sf
 !
 !
-        ist = inod_stack_sf(is_level-1)+1
-        ied = inod_stack_sf(is_level)
+        ist = c_sphere1%inod_stack_sf(is_level-1)+1
+        ied = c_sphere1%inod_stack_sf(is_level)
         num = ied - ist + 1
 !
         do inod0 = ist, ied
@@ -139,7 +139,7 @@
 !
         do inod0 = ist, ied
           i_sf = c_sphere1%inod_2_org(inod0)
-          j_sf = inod0 - inod_stack_sf(is_level-1)
+          j_sf = inod0 - c_sphere1%inod_stack_sf(is_level-1)
           k_sf = c_sphere1%inod_2_next(inod0)
 !
           inod = i_sf + c_sphere1%numnod_cube                           &

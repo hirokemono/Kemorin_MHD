@@ -27,16 +27,7 @@
       integer(kind = kint), allocatable :: iedge_sf20(:,:)
       integer(kind = kint), allocatable :: ie_sf_mid(:)
 !
-      integer(kind = kint), allocatable :: inod_stack_cube(:)
-      integer(kind = kint), allocatable :: iele_stack_cube(:)
-      integer(kind = kint), allocatable :: iedge_stack_cube(:)
-      integer(kind = kint), allocatable :: isurf_stack_cube(:)
-      integer(kind = kint), allocatable :: inod_stack_sf(:)
-      integer(kind = kint), allocatable :: iele_stack_sf(:)
-      integer(kind = kint), allocatable :: iedge_stack_sf(:)
-!
 !      subroutine allocate_surface_geometries
-!      subroutine allocate_coarsing_stack(max_coarse_level)
 !      subroutine allocate_surface_connect
 !
 !      subroutine deallocate_surface_geometries
@@ -74,30 +65,6 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine allocate_coarsing_stack(max_coarse_level)
-!
-      integer(kind = kint), intent(in) :: max_coarse_level
-!
-      allocate( inod_stack_cube(0:max_coarse_level) )
-      allocate( iele_stack_cube(0:max_coarse_level) )
-      allocate( iedge_stack_cube(0:max_coarse_level) )
-      allocate( isurf_stack_cube(0:max_coarse_level) )
-      allocate( inod_stack_sf(0:max_coarse_level) )
-      allocate( iele_stack_sf(0:max_coarse_level) )
-      allocate( iedge_stack_sf(0:max_coarse_level) )
-!
-      inod_stack_cube = 0
-      iele_stack_cube = 0
-      iedge_stack_cube = 0
-      isurf_stack_cube = 0
-      inod_stack_sf = 0
-      iele_stack_sf = 0
-      iedge_stack_sf = 0
-!
-      end subroutine allocate_coarsing_stack
-!
-!   --------------------------------------------------------------------
-!
       subroutine allocate_surface_connect
 !
 !
@@ -131,13 +98,7 @@
 !
       subroutine deallocate_coarsing_stack
 !
-      deallocate( inod_stack_cube  )
-      deallocate( iele_stack_cube  )
-      deallocate( iedge_stack_cube )
-      deallocate( isurf_stack_cube )
-      deallocate( inod_stack_sf    )
-      deallocate( iele_stack_sf    )
-      deallocate( iedge_stack_sf   )
+      call dealloc_coarsing_stack(c_sphere1)
 !
       end subroutine deallocate_coarsing_stack
 !

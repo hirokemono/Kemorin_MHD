@@ -121,18 +121,19 @@
         call cal_coarse_rect_params(icoarse)
 !
         call set_coarse_rect_skin(inod_sf_end)
-        if (inod_sf_end .ne. inod_stack_sf(icoarse) ) then
-          write(*,*) 'check the number of node in a sphere... level:'   &
-     &           ,  icoarse, inod_sf_end, inod_stack_sf(icoarse)
+        if(inod_sf_end .ne. c_sphere1%inod_stack_sf(icoarse)) then
+          write(*,*) 'check the number of node in a sphere... level:',  &
+     &           icoarse, inod_sf_end, c_sphere1%inod_stack_sf(icoarse)
           stop
         end if
         write(*,*) 'inod_sf_end!!!', inod_sf_end
 !
         call set_coarse_rect_surf_connect(iele_sf_end)
-        num = iele_stack_sf(icoarse) + c_sphere1%numele_sf
+        num = c_sphere1%iele_stack_sf(icoarse) + c_sphere1%numele_sf
         if (iele_sf_end .ne. num) then
-         write(*,*) 'check the number of element in a sphere... level:' &
-     &           ,  icoarse
+         write(*,*)                                                     &
+     &     'check the number of element in a sphere... level:',         &
+     &     icoarse
           stop
         end if
 !
