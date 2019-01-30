@@ -21,14 +21,7 @@
       real(kind = kreal), allocatable :: ar_surf(:)
       real(kind = kreal), allocatable :: as_surf(:)
 !
-!   connectivity
-!
-      integer(kind = kint), allocatable :: ie_sf20(:,:)
-      integer(kind = kint), allocatable :: iedge_sf20(:,:)
-      integer(kind = kint), allocatable :: ie_sf_mid(:)
-!
 !      subroutine allocate_surface_geometries
-!      subroutine allocate_surface_connect
 !
 !      subroutine deallocate_surface_geometries
 !      subroutine deallocate_coarsing_stack
@@ -64,21 +57,6 @@
       end subroutine allocate_surface_geometries
 !
 !   --------------------------------------------------------------------
-!
-      subroutine allocate_surface_connect
-!
-!
-      allocate( ie_sf20(c_sphere1%ntot_ele_sf20,8) )
-      allocate( iedge_sf20(c_sphere1%ntot_edge_sf20,3) )
-      allocate( ie_sf_mid(c_sphere1%numele_sf_w_coarse) )
-!
-      ie_sf20 = 0
-      iedge_sf20 = 0
-      ie_sf_mid = 0
-!
-      end subroutine allocate_surface_connect
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine deallocate_surface_geometries
@@ -106,9 +84,7 @@
 !
       subroutine deallocate_surface_connect
 !
-      deallocate( ie_sf20    )
-      deallocate( iedge_sf20 )
-      deallocate( ie_sf_mid  )
+      call dealloc_surface_connect(c_sphere1)
 !
       end subroutine deallocate_surface_connect
 !

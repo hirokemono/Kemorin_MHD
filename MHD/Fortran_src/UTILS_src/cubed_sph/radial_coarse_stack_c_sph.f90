@@ -40,14 +40,14 @@
      &             + c_sphere1%iele_stack_sf(icoarse-1) + iele0
           inod0 = nnod_cube_c + nnod_sf_c*(k-1)
 !
-          ie(1) = inod0 + ie_sf20(iele_sf,1)
-          ie(2) = inod0 + ie_sf20(iele_sf,2)
-          ie(3) = inod0 + ie_sf20(iele_sf,3)
-          ie(4) = inod0 + ie_sf20(iele_sf,4)
-          ie(5) = inod0 + ie_sf20(iele_sf,1) + nnod_sf_c
-          ie(6) = inod0 + ie_sf20(iele_sf,2) + nnod_sf_c
-          ie(7) = inod0 + ie_sf20(iele_sf,3) + nnod_sf_c
-          ie(8) = inod0 + ie_sf20(iele_sf,4) + nnod_sf_c
+          ie(1) = inod0 + c_sphere1%ie_sf20(iele_sf,1)
+          ie(2) = inod0 + c_sphere1%ie_sf20(iele_sf,2)
+          ie(3) = inod0 + c_sphere1%ie_sf20(iele_sf,3)
+          ie(4) = inod0 + c_sphere1%ie_sf20(iele_sf,4)
+          ie(5) = inod0 + c_sphere1%ie_sf20(iele_sf,1) + nnod_sf_c
+          ie(6) = inod0 + c_sphere1%ie_sf20(iele_sf,2) + nnod_sf_c
+          ie(7) = inod0 + c_sphere1%ie_sf20(iele_sf,3) + nnod_sf_c
+          ie(8) = inod0 + c_sphere1%ie_sf20(iele_sf,4) + nnod_sf_c
 !
          write(ifile,'(10i16)') iele, (ie(i),i=1,8)
 !

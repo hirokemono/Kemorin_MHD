@@ -55,9 +55,9 @@
       write(*,*) 'count_coarse_cubed_shell'
       call count_coarse_cubed_shell
 !
-      write(*,*) 'allocate_surface_connect'
+      write(*,*) 'alloc_surface_connect(c_sphere1)'
       call set_ntot_ele_sf20(c_sphere1)
-      call allocate_surface_connect
+      call alloc_surface_connect(c_sphere1)
       call alloc_coarse_surf_connect(c_sphere1)
 !
 ! set sphere cube data

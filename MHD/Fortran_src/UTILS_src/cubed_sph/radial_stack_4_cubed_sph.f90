@@ -41,39 +41,43 @@
         iele = iele_start + c_sphere1%numele_sf*(k-1) + iele0
         inod0 = c_sphere1%numnod_cube + c_sphere1%numnod_sf * (k-1)
 !
-        ie20(1) = inod0 + ie_sf20(iele0,1)
-        ie20(2) = inod0 + ie_sf20(iele0,2)
-        ie20(3) = inod0 + ie_sf20(iele0,3)
-        ie20(4) = inod0 + ie_sf20(iele0,4)
-        ie20(5) = inod0 + ie_sf20(iele0,1) + c_sphere1%numnod_sf
-        ie20(6) = inod0 + ie_sf20(iele0,2) + c_sphere1%numnod_sf
-        ie20(7) = inod0 + ie_sf20(iele0,3) + c_sphere1%numnod_sf
-        ie20(8) = inod0 + ie_sf20(iele0,4) + c_sphere1%numnod_sf
+        ie20(1) = inod0 + c_sphere1%ie_sf20(iele0,1)
+        ie20(2) = inod0 + c_sphere1%ie_sf20(iele0,2)
+        ie20(3) = inod0 + c_sphere1%ie_sf20(iele0,3)
+        ie20(4) = inod0 + c_sphere1%ie_sf20(iele0,4)
+        ie20(5) = inod0 + c_sphere1%ie_sf20(iele0,1)                    &
+     &           + c_sphere1%numnod_sf
+        ie20(6) = inod0 + c_sphere1%ie_sf20(iele0,2)                    &
+     &           + c_sphere1%numnod_sf
+        ie20(7) = inod0 + c_sphere1%ie_sf20(iele0,3)                    &
+     &           + c_sphere1%numnod_sf
+        ie20(8) = inod0 + c_sphere1%ie_sf20(iele0,4)                    &
+     &           + c_sphere1%numnod_sf
 !
         inod9 = nnod_cb_sph + c_sphere1%numedge_cube                    &
      &         + (c_sphere1%numnod_sf + c_sphere1%numedge_sf)*(k-2)
 !
-        ie20( 9) = inod9 + ie_sf20(iele0,5)
-        ie20(10) = inod9 + ie_sf20(iele0,6)
-        ie20(11) = inod9 + ie_sf20(iele0,7)
-        ie20(12) = inod9 + ie_sf20(iele0,8)
+        ie20( 9) = inod9 + c_sphere1%ie_sf20(iele0,5)
+        ie20(10) = inod9 + c_sphere1%ie_sf20(iele0,6)
+        ie20(11) = inod9 + c_sphere1%ie_sf20(iele0,7)
+        ie20(12) = inod9 + c_sphere1%ie_sf20(iele0,8)
 !
-        ie20(13) = inod9 + ie_sf20(iele0,5)                             &
+        ie20(13) = inod9 + c_sphere1%ie_sf20(iele0,5)                   &
      &            + c_sphere1%numnod_sf + c_sphere1%numedge_sf
-        ie20(14) = inod9 + ie_sf20(iele0,6)                             &
+        ie20(14) = inod9 + c_sphere1%ie_sf20(iele0,6)                   &
      &            + c_sphere1%numnod_sf + c_sphere1%numedge_sf
-        ie20(15) = inod9 + ie_sf20(iele0,7)                             &
+        ie20(15) = inod9 + c_sphere1%ie_sf20(iele0,7)                   &
      &            + c_sphere1%numnod_sf + c_sphere1%numedge_sf
-        ie20(16) = inod9 + ie_sf20(iele0,8)                             &
+        ie20(16) = inod9 + c_sphere1%ie_sf20(iele0,8)                   &
      &            + c_sphere1%numnod_sf + c_sphere1%numedge_sf
 !
         inod17 = nnod_cb_sph + c_sphere1%numedge_cube                   &
      &          + (c_sphere1%numnod_sf + c_sphere1%numedge_sf)*(k-1)
 !
-        ie20(17) = inod17 + ie_sf20(iele0,1)
-        ie20(18) = inod17 + ie_sf20(iele0,2)
-        ie20(19) = inod17 + ie_sf20(iele0,3)
-        ie20(20) = inod17 + ie_sf20(iele0,4)
+        ie20(17) = inod17 + c_sphere1%ie_sf20(iele0,1)
+        ie20(18) = inod17 + c_sphere1%ie_sf20(iele0,2)
+        ie20(19) = inod17 + c_sphere1%ie_sf20(iele0,3)
+        ie20(20) = inod17 + c_sphere1%ie_sf20(iele0,4)
 !
         write(ifile,    '(21i16)') iele, ie20(1:8)
         if (ifile_20 .gt. 0) then
@@ -112,25 +116,27 @@
         iele = iele_start + c_sphere1%ntot_edge_sf20*(k-1) + iele0
         inod0 = c_sphere1%numnod_cube + c_sphere1%numnod_sf * (k-1)
 !
-        ie20(1) = inod0 + iedge_sf20(iele0,3)
-        ie20(2) = inod0 + iedge_sf20(iele0,1)
-        ie20(3) = inod0 + iedge_sf20(iele0,1) + c_sphere1%numnod_sf
-        ie20(4) = inod0 + iedge_sf20(iele0,3) + c_sphere1%numnod_sf
+        ie20(1) = inod0 + c_sphere1%iedge_sf20(iele0,3)
+        ie20(2) = inod0 + c_sphere1%iedge_sf20(iele0,1)
+        ie20(3) = inod0 + c_sphere1%iedge_sf20(iele0,1)                 &
+     &                  + c_sphere1%numnod_sf
+        ie20(4) = inod0 + c_sphere1%iedge_sf20(iele0,3)                 &
+     &                  + c_sphere1%numnod_sf
 !
         inod9 = nnod_cb_sph + c_sphere1%numedge_cube                    &
      &         + (c_sphere1%numnod_sf + c_sphere1%numedge_sf)*(k-2)
 !
-        ie20( 5) = inod9 + iedge_sf20(iele0,2)
+        ie20( 5) = inod9 + c_sphere1%iedge_sf20(iele0,2)
 !
         inod17 = nnod_cb_sph + c_sphere1%numedge_cube                   &
      &          + (c_sphere1%numnod_sf + c_sphere1%numedge_sf)*(k-1)
-        ie20( 7) = inod17 + iedge_sf20(iele0,2)
+        ie20( 7) = inod17 + c_sphere1%iedge_sf20(iele0,2)
 !
         inod17 = nnod_cb_sph + c_sphere1%numedge_cube                   &
      &          + (c_sphere1%numnod_sf + c_sphere1%numedge_sf)*(k-1)
 !
-        ie20( 6) = inod17 + iedge_sf20(iele0,1)
-        ie20( 8) = inod17 + iedge_sf20(iele0,3)
+        ie20( 6) = inod17 + c_sphere1%iedge_sf20(iele0,1)
+        ie20( 8) = inod17 + c_sphere1%iedge_sf20(iele0,3)
 !
         write(ifile,    '(21i16)') iele, ie20(1:4)
         if (ifile_20 .gt. 0) then

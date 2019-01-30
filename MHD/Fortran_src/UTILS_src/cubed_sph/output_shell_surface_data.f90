@@ -64,7 +64,8 @@
 !
        write(id_sf_linear_mesh,'(a)') '! connectivity'
        do iele = 1, c_sphere1%numele_sf
-        write(id_sf_linear_mesh,'(5i16)') iele, ie_sf20(iele,1:4)
+         write(id_sf_linear_mesh,'(5i16)')                              &
+     &     iele, c_sphere1%ie_sf20(iele,1:4)
        end do
 !
       close (id_sf_linear_mesh)
@@ -107,7 +108,8 @@
 !
        write(id_sf_quad_mesh,'(a)') '! connectivity'
        do iele = 1, c_sphere1%numele_sf
-         write(id_sf_quad_mesh,'(9i16)') iele, ie_sf20(iele,1:8)
+         write(id_sf_quad_mesh,'(9i16)')                                &
+     &     iele, c_sphere1%ie_sf20(iele,1:8)
        end do
 !
       close (id_sf_quad_mesh)
@@ -158,7 +160,7 @@
            iele = iele0 + c_sphere1%numele_sf
             write(id_sf_coarsing,'(6i16)')                              &
      &        (iele0-c_sphere1%iele_stack_sf(ic-1)),                    &
-     &        ie_sf20(iele,1:4)
+     &        c_sphere1%ie_sf20(iele,1:4)
          end do
        end do
 !
@@ -225,7 +227,8 @@
 !
        write(id_sf_linear_mesh,'(a)') '! connectivity'
        do iele = 1, c_sphere1%ntot_edge_sf20
-        write(id_sf_linear_mesh,'(5i16)') iele, iedge_sf20(iele,1:3:2)
+         write(id_sf_linear_mesh,'(5i16)')                              &
+     &           iele, c_sphere1%iedge_sf20(iele,1:3:2)
        end do
 !
       close (id_sf_linear_mesh)
@@ -268,7 +271,8 @@
 !
        write(id_sf_quad_mesh,'(a)') '! connectivity'
        do iele = 1, c_sphere1%ntot_edge_sf20
-         write(id_sf_quad_mesh,'(9i16)') iele, iedge_sf20(iele,1:3)
+         write(id_sf_quad_mesh,'(9i16)')                                &
+     &           iele, c_sphere1%iedge_sf20(iele,1:3)
        end do
 !
       close (id_sf_quad_mesh)

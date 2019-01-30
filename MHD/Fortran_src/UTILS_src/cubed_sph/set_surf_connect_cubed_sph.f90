@@ -52,27 +52,31 @@
       iele_sf_end = 0
       call set_bottom_surf_connect                                      &
      &   (num_hemi, iele_sf_end, c_sphere1%numnod_sf,                   &
-     &    c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%ntot_ele_sf20, c_sphere1%ie_sf20)
 !
 !    bottom side
 !
       call set_bottom_side_connect(num_hemi, num_hemi, iele_sf_end,     &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
 !     side wall
 !
       call set_side_wall_connect(num_hemi, num_hemi, iele_sf_end,       &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
 !   top rod
 !
       call set_top_side_connect(num_hemi, num_hemi, iele_sf_end,        &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
 !  top surface
 !
       call set_top_surf_connect(num_hemi, num_hemi, iele_sf_end,        &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
       end subroutine set_cube_surf_connect
 !
@@ -91,28 +95,31 @@
       iele_sf_end = 0
       call set_bottom_surf_connect                                      &
      &   (num_hemi, iele_sf_end, c_sphere1%numnod_sf,                   &
-     &    c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%ntot_ele_sf20, c_sphere1%ie_sf20)
 !
 !    bottom side
 !
       call set_bottom_side_connect(num_hemi, ncube_vertical,            &
      &    iele_sf_end, c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,    &
-     &    ie_sf20)
+     &    c_sphere1%ie_sf20)
 !
 !     side wall
 !
       call set_side_wall_connect(num_hemi, ncube_vertical, iele_sf_end, &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
 !   top side
 !
       call set_top_side_connect(num_hemi, ncube_vertical, iele_sf_end,  &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
 !  top surface
 !
       call set_top_surf_connect(num_hemi, ncube_vertical, iele_sf_end,  &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
       end subroutine set_rect_surf_connect
 !
@@ -132,27 +139,31 @@
 !
       call set_bottom_surf_connect                                      &
      &   (n_hemi_c, iele_sf_end,  c_sphere1%numnod_sf,                  &
-     &    c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%ntot_ele_sf20, c_sphere1%ie_sf20)
 !
 !    bottom side
 !
       call set_bottom_side_connect(n_hemi_c, n_hemi_c, iele_sf_end,     &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
 !     side wall
 !
       call set_side_wall_connect(n_hemi_c, n_hemi_c, iele_sf_end,       &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
 !   top side
 !
       call set_top_side_connect(n_hemi_c, n_hemi_c, iele_sf_end,        &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
 !  top surface
 !
       call set_top_surf_connect(n_hemi_c, n_hemi_c, iele_sf_end,        &
-     &     c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
       end subroutine set_coarse_cube_surf_connect
 !
@@ -171,27 +182,31 @@
 !
       call set_bottom_surf_connect                                      &
      &   (n_hemi_c, iele_sf_end,  c_sphere1%numnod_sf,                  &
-     &    c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%ntot_ele_sf20, c_sphere1%ie_sf20)
 !
 !    bottom side
 !
       call set_bottom_side_connect(n_hemi_c, n_vert_c, iele_sf_end,     &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
 !     side wall
 !
       call set_side_wall_connect(n_hemi_c, n_vert_c, iele_sf_end,       &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
 !   top side
 !
       call set_top_side_connect(n_hemi_c, n_vert_c, iele_sf_end,        &
-     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
 !  top surface
 !
       call set_top_surf_connect(n_hemi_c, n_vert_c, iele_sf_end,        &
-     &     c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20, ie_sf20)
+     &    c_sphere1%numnod_sf, c_sphere1%ntot_ele_sf20,                 &
+     &    c_sphere1%ie_sf20)
 !
       end subroutine set_coarse_rect_surf_connect
 !
