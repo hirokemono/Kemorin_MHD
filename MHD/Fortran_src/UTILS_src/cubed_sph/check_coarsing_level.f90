@@ -3,14 +3,16 @@
 !
 !        programmed by H.Matsui on Apr., 2006
 !
-!!      subroutine check_cube_coarsing_level(c_sphere)
-!!      subroutine check_rect_coarsing_level(c_sphere)
+!!      subroutine check_cube_coarsing_level(rprm_csph, c_sphere)
+!!      subroutine check_rect_coarsing_level(rprm_csph, c_sphere)
+!!        type(cubed_sph_radius), intent(in) :: rprm_csph
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       module check_coarsing_level
 !
       use m_precision
 !
+      use t_cubed_sph_radius
       use t_cubed_sph_surf_mesh
 !
       implicit  none
@@ -21,12 +23,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine check_cube_coarsing_level(c_sphere)
+      subroutine check_cube_coarsing_level(rprm_csph, c_sphere)
 !
       use m_numref_cubed_sph
-      use m_cubed_sph_radius
       use m_cubed_sph_grp_param
 !
+      type(cubed_sph_radius), intent(in) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: i, ilevel_tmp
@@ -42,8 +44,8 @@
       do i = ilevel_tmp, 1, -1
         i_sflag =  mod(num_hemi,nstep_coarse(i,1))
         i_riflag = mod(nr_icb,nstep_coarse(i,2))
-        i_roflag = mod(nr_ocore,nstep_coarse(i,2))
-        i_rmflag = mod(nr_exter,nstep_coarse(i,2))
+        i_roflag = mod(rprm_csph%nr_ocore,nstep_coarse(i,2))
+        i_rmflag = mod(rprm_csph%nr_exter,nstep_coarse(i,2))
 !
         if (i_riflag.eq.0 .and. i_roflag.eq.0 .and. i_rmflag.eq.0       &
      &     .and. i_sflag.eq.0) then
@@ -73,12 +75,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine check_rect_coarsing_level(c_sphere)
+      subroutine check_rect_coarsing_level(rprm_csph, c_sphere)
 !
       use m_numref_cubed_sph
-      use m_cubed_sph_radius
       use m_cubed_sph_grp_param
 !
+      type(cubed_sph_radius), intent(in) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: i, ilevel_tmp
@@ -96,8 +98,8 @@
         i_sflag =  mod(num_hemi,nstep_coarse(i,1))
         i_vflag =  mod(ncube_vertical,nstep_coarse(i,1))
         i_riflag = mod(nr_icb,nstep_coarse(i,2))
-        i_roflag = mod(nr_ocore,nstep_coarse(i,2))
-        i_rmflag = mod(nr_exter,nstep_coarse(i,2))
+        i_roflag = mod(rprm_csph%nr_ocore,nstep_coarse(i,2))
+        i_rmflag = mod(rprm_csph%nr_exter,nstep_coarse(i,2))
 !
         if (i_riflag.eq.0 .and. i_roflag.eq.0 .and. i_rmflag.eq.0       &
      &     .and. i_sflag.eq.0 .and. i_vflag.eq.0) then

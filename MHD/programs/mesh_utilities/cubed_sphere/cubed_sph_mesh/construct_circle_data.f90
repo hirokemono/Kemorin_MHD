@@ -3,7 +3,8 @@
 !
 !      Written by Kemorin on Apr., 2006
 !
-!!      subroutine construct_circle_mesh(csph_mesh, c_sphere)
+!!      subroutine construct_circle_mesh(rprm_csph, csph_mesh, c_sphere)
+!!        type(cubed_sph_radius), intent(in) :: rprm_csph
 !!        type(cubed_sph_mesh), intent(in) :: csph_mesh
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -11,6 +12,7 @@
 !
       use m_precision
 !
+      use t_cubed_sph_radius
       use t_cubed_sph_surf_mesh
       use t_cubed_sph_mesh
 !
@@ -22,7 +24,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine construct_circle_mesh(csph_mesh, c_sphere)
+      subroutine construct_circle_mesh(rprm_csph, csph_mesh, c_sphere)
 !
       use m_geometry_constants
       use m_numref_cubed_sph
@@ -36,6 +38,7 @@
       use write_cubed_sph_grp_data
       use modify_colat_cube_surf
 !
+      type(cubed_sph_radius), intent(in) :: rprm_csph
       type(cubed_sph_mesh), intent(in) :: csph_mesh
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -77,13 +80,13 @@
       call allocate_square_circ_posi_tmp(c_sphere)
       write(*,*) 'adjust_to_circle'
       call adjust_to_circle                                             &
-     &   (inod_start, id_l_mesh, id_flag_quad, c_sphere)
+     &   (id_l_mesh, id_flag_quad, rprm_csph, c_sphere, inod_start)
 !
       write(*,*) 'projection'
       call projection_2_circle                                          &
-     &   (inod_start, id_l_mesh, id_flag_quad, c_sphere)
+     &   (id_l_mesh, id_flag_quad, rprm_csph, c_sphere, inod_start)
       call back_to_square                                               &
-     &   (inod_start, id_l_mesh, id_flag_quad, c_sphere)
+     &   (id_l_mesh, id_flag_quad, rprm_csph, c_sphere, inod_start)
       write(*,*) 'projection end'
 !
       write(*,*) 'inod_start', inod_start, csph_mesh%nnod_cb_sph
@@ -112,12 +115,13 @@
 !  construct shell
 !
       write(*,*) 'set nodes around center cube'
-      call adjust_to_circle_quad(inod_start, id_q_mesh, c_sphere)
+      call adjust_to_circle_quad                                        &
+     &   (id_q_mesh, rprm_csph, c_sphere, inod_start)
 !
       write(*,*) 'set nodes in the sphere shell',                       &
      &              inod_start, csph_mesh%numnod_20
       call projection_to_circle_quad                                    &
-     &   (inod_start, id_q_mesh, c_sphere)
+     &   (id_q_mesh, rprm_csph, c_sphere, inod_start)
       if ( inod_start .ne. csph_mesh%numnod_20 ) then
         write (*,*) 'number of quadrature node in shell is wrong',      &
      &                 inod_start, csph_mesh%numnod_20

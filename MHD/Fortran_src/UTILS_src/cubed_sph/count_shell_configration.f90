@@ -4,8 +4,12 @@
 !        programmed by H.Matsui on Apr., 2006
 !
 !
-!!      subroutine count_cubed_shell_size(c_sphere, csph_mesh)
-!!      subroutine count_rectangle_shell_size(c_sphere, csph_mesh)
+!!      subroutine count_cubed_shell_size                               &
+!!     &         (rprm_csph, c_sphere, csph_mesh)
+!!      subroutine count_rectangle_shell_size                           &
+!!     &         (rprm_csph, c_sphere, csph_mesh)
+!!      subroutine count_rectangle_shell_size(r1, c_sphere, csph_mesh)
+!!        type(cubed_sph_radius), intent(inout) :: rprm_csph
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !!        type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !!
@@ -19,6 +23,7 @@
       module count_shell_configration
 !
       use m_precision
+      use t_cubed_sph_radius
       use t_cubed_sph_surf_mesh
       use t_cubed_sph_mesh
 !
@@ -32,17 +37,19 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_cubed_shell_size(c_sphere, csph_mesh)
+      subroutine count_cubed_shell_size                                 &
+     &         (rprm_csph, c_sphere, csph_mesh)
 !
       use m_numref_cubed_sph
 !
+      type(cubed_sph_radius), intent(inout) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
 !    count number of node & element
 !      number of radius direction
 !
-      call count_radial_layer_size(c_sphere%nele_shell)
+      call count_radial_layer_size(c_sphere%nele_shell, rprm_csph)
 !
 !   numbers for center cube
 !       (except for surface of cube for number of node)
@@ -53,23 +60,25 @@
      &    c_sphere%numsurf_cube, c_sphere%numnod_cube20,                &
      &    c_sphere%numnod_sf, c_sphere%numele_sf, c_sphere%numedge_sf)
 !
-      call count_shell_numbers(c_sphere, csph_mesh)
+      call count_shell_numbers(rprm_csph%r_nod(1), c_sphere, csph_mesh)
 !
       end subroutine count_cubed_shell_size
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_rectangle_shell_size(c_sphere, csph_mesh)
+      subroutine count_rectangle_shell_size                             &
+     &         (rprm_csph, c_sphere, csph_mesh)
 !
       use m_numref_cubed_sph
 !
+      type(cubed_sph_radius), intent(inout) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
 !    count number of node & element
 !      number of radius direction
 !
-      call count_radial_layer_size(c_sphere%nele_shell)
+      call count_radial_layer_size(c_sphere%nele_shell, rprm_csph)
 !
 !   numbers for center cube
 !       (except for surface of cube for number of node)
@@ -80,29 +89,29 @@
      &    c_sphere%numsurf_cube, c_sphere%numnod_cube20,                &
      &    c_sphere%numnod_sf, c_sphere%numele_sf, c_sphere%numedge_sf)
 !
-      call count_shell_numbers(c_sphere, csph_mesh)
+      call count_shell_numbers(rprm_csph%r_nod(1), c_sphere, csph_mesh)
 !
       end subroutine count_rectangle_shell_size
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_radial_layer_size(nele_shell)
+      subroutine count_radial_layer_size(nele_shell, rprm_csph)
 !
-      use m_cubed_sph_radius
       use m_cubed_sph_grp_param
 !
       integer(kind= kint), intent(inout) :: nele_shell
+      type(cubed_sph_radius), intent(inout) :: rprm_csph
 !
 !    count number of node & element
 !      number of radius direction
 !
-      nele_shell =   n_shell - 1
+      nele_shell =   rprm_csph%n_shell - 1
 !
       nr_icb =   nlayer_ICB - 1 
       nr_cmb =   nlayer_CMB - 1
-      nr_ocore = nlayer_CMB - nlayer_ICB
-      nr_exter = n_shell - nlayer_CMB
+      rprm_csph%nr_ocore = nlayer_CMB - nlayer_ICB
+      rprm_csph%nr_exter = rprm_csph%n_shell - nlayer_CMB
 !
       end subroutine count_radial_layer_size
 !
@@ -171,12 +180,12 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_shell_numbers(c_sphere, csph_mesh)
+      subroutine count_shell_numbers(r1, c_sphere, csph_mesh)
 !
       use m_constants
       use m_numref_cubed_sph
-      use m_cubed_sph_radius
 !
+      real(kind = kreal), intent(in) :: r1
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
@@ -206,7 +215,7 @@
 !
 !  set center cube size
 !
-      cube_size = r_nod(1) * sqrt( one / three )
+      cube_size = r1 * sqrt( one / three )
 !
       end subroutine count_shell_numbers
 !

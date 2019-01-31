@@ -29,8 +29,6 @@
       subroutine radial_stack_quad                                      &
      &         (ifile, ifile_20, c_sphere, csph_mesh, iele_start)
 !
-      use m_cubed_sph_radius
-!
       integer(kind = kint), intent(in) :: ifile
       integer(kind = kint), intent(in) :: ifile_20
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
@@ -105,9 +103,6 @@
 !
       subroutine radial_stack_surf_q                                    &
      &         (ifile, ifile_20, c_sphere, csph_mesh, iele_start)
-!
-!
-      use m_cubed_sph_radius
 !
       integer(kind = kint), intent(in) :: ifile
       integer(kind = kint), intent(in) :: ifile_20

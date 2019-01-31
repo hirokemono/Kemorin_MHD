@@ -23,7 +23,6 @@
       subroutine radial_coarse_stack(ifile, icoarse, c_sphere)
 !
       use m_numref_cubed_sph
-      use m_cubed_sph_radius
 !
       integer(kind = kint), intent(in) :: icoarse, ifile
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere

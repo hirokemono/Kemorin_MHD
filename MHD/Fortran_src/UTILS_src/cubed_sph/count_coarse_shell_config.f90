@@ -218,7 +218,6 @@
       subroutine count_coarse_radial_nums(c_sphere, csph_mesh)
 !
       use m_numref_cubed_sph
-      use m_cubed_sph_radius
       use count_shell_configration
 !
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere

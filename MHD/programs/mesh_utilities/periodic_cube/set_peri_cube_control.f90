@@ -3,8 +3,9 @@
 !
 !        programmed by H.Matsui on Apr., 2006
 !
-!!      subroutine set_peri_cube_paramteres(cubed_sph_c)
+!!      subroutine set_peri_cube_paramteres(cubed_sph_c, rprm_csph)
 !!        type(control_data_cubed_sph), intent(in) :: cubed_sph_c
+!!        type(cubed_sph_radius), intent(inout) :: rprm_csph
 !
       module set_peri_cube_control
 !
@@ -18,17 +19,18 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_peri_cube_paramteres(cubed_sph_c)
+      subroutine set_peri_cube_paramteres(cubed_sph_c, rprm_csph)
 !
       use m_numref_cubed_sph
-      use m_cubed_sph_radius
       use m_cubed_sph_grp_param
       use t_control_data_cubed_sph
+      use t_cubed_sph_radius
       use set_cubed_sph_control
 !
       type(control_data_cubed_sph), intent(in) :: cubed_sph_c
+      type(cubed_sph_radius), intent(inout) :: rprm_csph
 !
-      integer(kind = kint) :: i, j, jst, jed
+      integer(kind = kint) :: j, jst, jed
       character(len=kchara) :: tmpchara
 !
 !
@@ -69,7 +71,8 @@
       write(*,*) iflag_quad, trim(tmpchara)
 !
 !
-      call set_cubed_sph_grid_ctl(cubed_sph_c)
+      call set_cubed_sph_radius_ctl(cubed_sph_c, rprm_csph)
+      call set_cubed_sph_grid_ctl(cubed_sph_c, rprm_csph)
 !
 !   set node group table
 !

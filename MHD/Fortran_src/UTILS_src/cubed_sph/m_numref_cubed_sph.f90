@@ -1,9 +1,15 @@
 !
 !      module m_numref_cubed_sph
 !
-      module m_numref_cubed_sph
-!
 !      Written by H. Matsui on Apr., 2006
+!
+!      subroutine allocate_1d_position
+!      subroutine allocate_coarsing_parameter
+!
+!      subroutine deallocate_1d_position
+!      subroutine deallocate_coarsing_parameter
+!
+      module m_numref_cubed_sph
 !
       use m_precision
 !
@@ -43,12 +49,6 @@
 !
 !
       integer(kind = kint) :: n_vert_c
-!
-!      subroutine allocate_1d_position
-!      subroutine allocate_coarsing_parameter
-!
-!      subroutine deallocate_1d_position
-!      subroutine deallocate_coarsing_parameter
 !
 !   --------------------------------------------------------------------
 !

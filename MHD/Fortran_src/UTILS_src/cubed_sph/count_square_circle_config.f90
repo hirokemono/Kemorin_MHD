@@ -3,12 +3,16 @@
 !
 !        programmed by H.Matsui on Apr., 2006
 !
-!!      subroutine count_square_circle_size(c_sphere, csph_mesh)
+!!      subroutine count_square_circle_size                             &
+!!     &         (rprm_csph, c_sphere, csph_mesh)
+!!        type(cubed_sph_radius), intent(inout) :: rprm_csph
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+!!        type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
       module count_square_circle_config
 !
       use m_precision
+      use t_cubed_sph_radius
       use t_cubed_sph_surf_mesh
       use t_cubed_sph_mesh
 !
@@ -22,18 +26,20 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_square_circle_size(c_sphere, csph_mesh)
+      subroutine count_square_circle_size                               &
+     &         (rprm_csph, c_sphere, csph_mesh)
 !
       use m_numref_cubed_sph
       use count_shell_configration
 !
+      type(cubed_sph_radius), intent(inout) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
 !    count number of node & element
 !      number of radius direction
 !
-      call count_radial_layer_size(c_sphere%nele_shell)
+      call count_radial_layer_size(c_sphere%nele_shell, rprm_csph)
 !
 !   numbers for center cube
 !       (except for surface of cube for number of node)
@@ -43,7 +49,8 @@
      &    c_sphere%numedge_cube, c_sphere%numnod_cube20,                &
      &    c_sphere%numnod_sf, c_sphere%numedge_sf)
 !
-      call count_curcle_numbers(c_sphere, csph_mesh)
+      call count_curcle_numbers                                         &
+     &   (rprm_csph%r_nod(1), c_sphere, csph_mesh)
 !
       end subroutine count_square_circle_size
 !
@@ -76,12 +83,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_curcle_numbers(c_sphere, csph_mesh)
+      subroutine count_curcle_numbers(r1, c_sphere, csph_mesh)
 !
       use m_constants
       use m_numref_cubed_sph
-      use m_cubed_sph_radius
 !
+      real(kind = kreal), intent(in) :: r1
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
@@ -106,7 +113,7 @@
 !
 !  set center cube size
 !
-      cube_size = r_nod(1) * sqrt( one / three )
+      cube_size = r1 * sqrt( one / three )
 !
       end subroutine count_curcle_numbers
 !

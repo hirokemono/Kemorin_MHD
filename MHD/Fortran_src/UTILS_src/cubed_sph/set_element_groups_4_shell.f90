@@ -17,7 +17,6 @@
       use m_precision
 !
       use m_cubed_sph_grp_param
-      use m_cubed_sph_radius
       use t_group_data
 !
       implicit  none

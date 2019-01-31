@@ -3,8 +3,11 @@
 !
 !      Written by Kemorin on Apr., 2006
 !
-!!      subroutine construct_rect_sphere_mesh(csph_mesh, c_sphere)
-!!      subroutine construct_coarse_rect_mesh(csph_mesh, c_sphere)
+!!      subroutine construct_rect_sphere_mesh                           &
+!!     &         (rprm_csph, csph_mesh, c_sphere)
+!!      subroutine construct_coarse_rect_mesh                           &
+!!     &         (rprm_csph, csph_mesh, c_sphere)
+!!        type(cubed_sph_radius), intent(in) :: rprm_csph
 !!        type(cubed_sph_mesh), intent(in) :: csph_mesh
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -12,6 +15,7 @@
 !
       use m_precision
 !
+      use t_cubed_sph_radius
       use t_cubed_sph_surf_mesh
       use t_cubed_sph_mesh
 !
@@ -23,7 +27,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine construct_rect_sphere_mesh(csph_mesh, c_sphere)
+      subroutine construct_rect_sphere_mesh                             &
+     &         (rprm_csph, csph_mesh, c_sphere)
 !
       use m_geometry_constants
       use m_numref_cubed_sph
@@ -37,6 +42,7 @@
       use write_cubed_sph_grp_data
       use modify_colat_cube_surf
 !
+      type(cubed_sph_radius), intent(in) :: rprm_csph
       type(cubed_sph_mesh), intent(in) :: csph_mesh
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -80,11 +86,11 @@
        call allocate_wall_latitude_ratio(ncube_vertical)
         write(*,*) 'adjust_to_shell'
        call adjust_to_shell(id_l_mesh, id_flag_quad,                    &
-     &     num_hemi, ncube_vertical, inod_start, c_sphere)
+     &     num_hemi, ncube_vertical, rprm_csph, inod_start, c_sphere)
 !
         write(*,*) 'projection'
        call project_to_sphere(id_l_mesh, id_flag_quad,                  &
-     &      num_hemi, ncube_vertical, inod_start, c_sphere)
+     &      num_hemi, ncube_vertical, rprm_csph, inod_start, c_sphere)
         write(*,*) 'projection end'
 !
         write(*,*) 'inod_start', inod_start, csph_mesh%nnod_cb_sph
@@ -114,12 +120,12 @@
 !
          write(*,*) 'set nodes around center cube'
          call adjust_to_shell_quad(id_q_mesh,                           &
-     &      num_hemi, ncube_vertical, inod_start, c_sphere)
+     &      num_hemi, ncube_vertical, rprm_csph, inod_start, c_sphere)
 !
          write(*,*) 'set nodes in the sphere shell',                    &
      &              inod_start, csph_mesh%numnod_20
          call projection_quad(id_q_mesh,                                &
-     &      num_hemi, ncube_vertical, inod_start, c_sphere)
+     &      num_hemi, ncube_vertical, rprm_csph, inod_start, c_sphere)
          if ( inod_start .ne. csph_mesh%numnod_20 ) then
            write (*,*) 'number of quadrature node in shell is wrong',   &
      &                 inod_start, csph_mesh%numnod_20
@@ -172,7 +178,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine construct_coarse_rect_mesh(csph_mesh, c_sphere)
+      subroutine construct_coarse_rect_mesh                             &
+     &         (rprm_csph, csph_mesh, c_sphere)
 !
       use m_constants
       use m_geometry_constants
@@ -188,6 +195,7 @@
       use write_cubed_sph_grp_data
       use modify_colat_cube_surf
 !
+      type(cubed_sph_radius), intent(in) :: rprm_csph
       type(cubed_sph_mesh), intent(in) :: csph_mesh
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -216,9 +224,9 @@
      &       nskip_s, nl_s, num_hemi, ncube_vertical, x_node, v_node)
 !
          call adjust_to_coarse_shell(ic, id_l_mesh, id_transfer,        &
-     &       num_hemi, ncube_vertical, c_sphere)
+     &       num_hemi, ncube_vertical, rprm_csph, c_sphere)
          call projection_coarse(ic, id_l_mesh, id_transfer,             &
-     &       num_hemi, ncube_vertical, c_sphere)
+     &       num_hemi, ncube_vertical, rprm_csph, c_sphere)
 !
          close(id_l_mesh)
 !

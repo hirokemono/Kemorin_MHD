@@ -20,7 +20,6 @@
 !
       use m_constants
       use t_cubed_sph_surf_mesh
-      use m_cubed_sph_radius
 !
       implicit  none
 !
