@@ -28,7 +28,6 @@
       subroutine set_center_cube_quad(ifile, inod, c_sphere)
 !
       use m_constants
-      use m_cubed_sph_mesh
       use m_numref_cubed_sph
 !
       use set_center_cube_edge
@@ -82,7 +81,6 @@
       subroutine set_center_rect_quad(ifile, inod, c_sphere)
 !
       use m_constants
-      use m_cubed_sph_mesh
       use m_numref_cubed_sph
 !
       use set_center_cube_edge
@@ -148,7 +146,6 @@
       subroutine set_center_square_quad(ifile, inod, c_sphere)
 !
       use m_constants
-      use m_cubed_sph_mesh
       use m_numref_cubed_sph
 !
       use set_center_cube_edge

@@ -4,14 +4,16 @@
 !        programmed by H.Matsui on Apr., 2006
 !
 !
-!!      subroutine count_coarse_cubed_shell(c_sphere)
-!!      subroutine count_coarse_rect_shell(c_sphere)
+!!      subroutine count_coarse_cubed_shell(c_sphere, csph_mesh)
+!!      subroutine count_coarse_rect_shell(c_sphere, csph_mesh)
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+!!        type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
       module count_coarse_shell_config
 !
       use m_precision
       use t_cubed_sph_surf_mesh
+      use t_cubed_sph_mesh
 !
       implicit  none
 !
@@ -25,27 +27,29 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_coarse_cubed_shell(c_sphere)
+      subroutine count_coarse_cubed_shell(c_sphere, csph_mesh)
 !
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+      type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
 !
       call count_coarse_cubed_shell_nums(c_sphere)
       call count_nmax_merge_sf(c_sphere)
-      call count_coarse_radial_nums(c_sphere)
+      call count_coarse_radial_nums(c_sphere, csph_mesh)
 !
       end subroutine count_coarse_cubed_shell
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_coarse_rect_shell(c_sphere)
+      subroutine count_coarse_rect_shell(c_sphere, csph_mesh)
 !
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+      type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
 !
       call count_coarse_rect_shell_nums(c_sphere)
       call count_nmax_merge_sf(c_sphere)
-      call count_coarse_radial_nums(c_sphere)
+      call count_coarse_radial_nums(c_sphere, csph_mesh)
 !
       end subroutine count_coarse_rect_shell
 !
@@ -194,7 +198,6 @@
       subroutine count_nmax_merge_sf(c_sphere)
 !
       use m_numref_cubed_sph
-      use m_cubed_sph_mesh
 !
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -212,14 +215,14 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_coarse_radial_nums(c_sphere)
+      subroutine count_coarse_radial_nums(c_sphere, csph_mesh)
 !
       use m_numref_cubed_sph
-      use m_cubed_sph_mesh
       use m_cubed_sph_radius
       use count_shell_configration
 !
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+      type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
       integer(kind = kint) :: icoarse, num_r
 !
@@ -227,24 +230,28 @@
       do icoarse = 1, max_coarse_level
         num_r = c_sphere%nele_shell / nstep_coarse(icoarse,2)
 !
-        inod_stack(icoarse) = inod_stack(icoarse-1)                     &
+        csph_mesh%inod_stack_csph(icoarse)                              &
+     &     = csph_mesh%inod_stack_csph(icoarse-1)                       &
      &    + ( c_sphere%inod_stack_cube(icoarse)                         &
      &       - c_sphere%inod_stack_cube(icoarse-1) )                    &
      &    + ( c_sphere%inod_stack_sf(icoarse)                           &
      &       - c_sphere%inod_stack_sf(icoarse-1) ) * (num_r+1)
-        iele_stack(icoarse) = iele_stack(icoarse-1)                     &
+        csph_mesh%iele_stack_csph(icoarse)                              &
+     &     = csph_mesh%iele_stack_csph(icoarse-1)                       &
      &    + ( c_sphere%iele_stack_cube(icoarse)                         &
      &       - c_sphere%iele_stack_cube(icoarse-1) )                    &
      &    + ( c_sphere%iele_stack_sf(icoarse)                           &
      &       - c_sphere%iele_stack_sf(icoarse-1) ) * num_r
-        iedge_stack(icoarse) = iedge_stack(icoarse-1)                   &
+        csph_mesh%iedge_stack_csph(icoarse)                             &
+     &     = csph_mesh%iedge_stack_csph(icoarse-1)                      &
      &    + ( c_sphere%iedge_stack_cube(icoarse)                        &
      &       - c_sphere%iedge_stack_cube(icoarse-1) )                   &
      &    + ( c_sphere%inod_stack_sf(icoarse)                           &
      &       - c_sphere%inod_stack_sf(icoarse-1)                        &
      &       + c_sphere%iedge_stack_sf(icoarse)                         &
      &       - c_sphere%iedge_stack_sf(icoarse-1) ) * num_r
-        isurf_stack(icoarse) = isurf_stack(icoarse-1)                   &
+        csph_mesh%isurf_stack_csph(icoarse)                             &
+     &     = csph_mesh%isurf_stack_csph(icoarse-1)                      &
      &    + ( c_sphere%isurf_stack_cube(icoarse)                        &
      &       - c_sphere%isurf_stack_cube(icoarse-1) )                   &
      &    + ( c_sphere%iedge_stack_sf(icoarse)                          &

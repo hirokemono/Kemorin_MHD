@@ -3,14 +3,16 @@
 !
 !      Written by Kemorin on Apr., 2006
 !
-!!      subroutine construct_sphere_mesh(c_sphere)
-!!      subroutine construct_coarse_mesh(c_sphere)
+!!      subroutine construct_sphere_mesh(csph_mesh, c_sphere)
+!!      subroutine construct_coarse_mesh(csph_mesh, c_sphere)
+!!        type(cubed_sph_mesh), intent(in) :: csph_mesh
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       module const_cube_sphere_data
 !
       use m_precision
       use t_cubed_sph_surf_mesh
+      use t_cubed_sph_mesh
 !
       implicit none
 !
@@ -20,11 +22,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine construct_sphere_mesh(c_sphere)
+      subroutine construct_sphere_mesh(csph_mesh, c_sphere)
 !
       use m_geometry_constants
       use m_numref_cubed_sph
-      use m_cubed_sph_mesh
 !
       use cal_shell_position
       use set_center_rect_cube_quad
@@ -35,6 +36,7 @@
       use write_cubed_sph_grp_data
       use modify_colat_cube_surf
 !
+      type(cubed_sph_mesh), intent(in) :: csph_mesh
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: inod_start, iele_start, id_flag_quad
@@ -45,13 +47,13 @@
 !
       write(*,*) 'output mesh information'
       call write_header_4_mesh(id_l_mesh, id_l_connect, id_l_group,     &
-     &          nnod_cb_sph, nele_cb_sph, num_t_linear)
+     &    csph_mesh%nnod_cb_sph, csph_mesh%nele_cb_sph, num_t_linear)
 !
       if (iflag_quad .gt. 0) then
         write(*,*) 'quad mesh'
         call set_quad_mesh_file_names
         call write_header_4_mesh(id_q_mesh, id_q_connect, id_q_group,   &
-     &      numnod_20, numele_20, num_t_quad)
+     &      csph_mesh%numnod_20, csph_mesh%numele_20, num_t_quad)
       end if
 !
 !  construct center cube
@@ -77,7 +79,7 @@
        call project_to_sphere(id_l_mesh, id_flag_quad,                  &
      &     num_hemi, num_hemi, inod_start, c_sphere)
 !
-       if ( inod_start .ne. nnod_cb_sph ) then
+       if(inod_start .ne. csph_mesh%nnod_cb_sph) then
         write (*,*) 'number of node in the shell is wrong'
         stop
        end if
@@ -88,9 +90,10 @@
 !
        if (iflag_quad .gt. 0) then
 !
-         write(*,*) 'set_center_cube_quad', nnod_cb_sph, inod_start
+         write(*,*) 'set_center_cube_quad',                             &
+     &             csph_mesh%nnod_cb_sph, inod_start
          call set_center_cube_quad(id_q_mesh, inod_start, c_sphere)
-         num = nnod_cb_sph + c_sphere%numedge_cube
+         num = csph_mesh%nnod_cb_sph + c_sphere%numedge_cube
          if(inod_start .ne. num) then
            write (*,*) 'number of quadrature node in center is wrong',  &
      &             inod_start, num
@@ -104,12 +107,12 @@
      &       num_hemi, num_hemi, inod_start, c_sphere)
 !
          write(*,*) 'set nodes in the sphere shell',                    &
-     &              inod_start, numnod_20
+     &              inod_start, csph_mesh%numnod_20
          call projection_quad(id_q_mesh,                                &
      &       num_hemi, num_hemi, inod_start, c_sphere)
-         if ( inod_start .ne. numnod_20 ) then
+         if ( inod_start .ne. csph_mesh%numnod_20 ) then
            write (*,*) 'number of quadrature node in shell is wrong',   &
-     &                 inod_start, numnod_20
+     &                 inod_start, csph_mesh%numnod_20
            stop
          end if
 !
@@ -126,7 +129,7 @@
 !
       write(*,*) 'set connectivity for center cube'
       call set_center_connect_quad(iele_start, id_l_connect,            &
-     &    id_flag_quad, nnod_cb_sph, num_hemi, num_hemi)
+     &    id_flag_quad, csph_mesh%nnod_cb_sph, num_hemi, num_hemi)
        if(iele_start .ne. c_sphere%numele_cube) then
         write (*,*) 'number of quadrature element of center is wrong'
         stop
@@ -134,8 +137,8 @@
 !
       write(*,*) 'set connectivity in the sphere shell'
       call radial_stack_quad                                            &
-     &   (id_l_connect, id_flag_quad, c_sphere, iele_start)
-       if ( iele_start .ne. nele_cb_sph ) then
+     &   (id_l_connect, id_flag_quad, c_sphere, csph_mesh, iele_start)
+       if(iele_start .ne. csph_mesh%nele_cb_sph) then
         write (*,*) 'number of quadrature element in shell is wrong'
         stop
        end if
@@ -146,7 +149,7 @@
 !  output group data
 !
       if (iflag_quad .gt. 0) then
-        call output_group_data_quad(c_sphere)
+        call output_group_data_quad(c_sphere, csph_mesh)
         close(id_q_group)
       end if
 !
@@ -159,12 +162,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine construct_coarse_mesh(c_sphere)
+      subroutine construct_coarse_mesh(csph_mesh, c_sphere)
 !
       use m_constants
       use m_geometry_constants
       use m_numref_cubed_sph
-      use m_cubed_sph_mesh
 !
       use count_coarse_parameters
       use cal_shell_coarse_position
@@ -176,19 +178,20 @@
       use write_cubed_sph_grp_data
       use modify_colat_cube_surf
 !
+      type(cubed_sph_mesh), intent(in) :: csph_mesh
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: iele_start, inod_end, inum, ic, iele_s2
 !
 !
-       iele_start = nele_cb_sph
+       iele_start = csph_mesh%nele_cb_sph
        inum = iele_start
 !
        call allocate_coarse_cube_sph_posi(c_sphere)
        call allocate_wall_latitude_ratio(num_hemi)
        do ic = 1, max_coarse_level
 !
-         call cal_coarse_cube_params(ic, c_sphere)
+         call cal_coarse_cube_params(ic, c_sphere, csph_mesh)
 !
          call set_coarse_mesh_names(ic)
 !
@@ -235,7 +238,7 @@
 !      construct groups
 !
          write(*,*) 'output_coarse_group_data'
-         call output_coarse_group_data(ic)
+         call output_coarse_group_data
 !
        end do
        call deallocate_wall_latitude_ratio

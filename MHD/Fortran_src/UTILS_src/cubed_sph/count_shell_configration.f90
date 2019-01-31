@@ -4,9 +4,10 @@
 !        programmed by H.Matsui on Apr., 2006
 !
 !
-!!      subroutine count_cubed_shell_size(c_sphere)
-!!      subroutine count_rectangle_shell_size(c_sphere)
+!!      subroutine count_cubed_shell_size(c_sphere, csph_mesh)
+!!      subroutine count_rectangle_shell_size(c_sphere, csph_mesh)
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+!!        type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !!
 !!      subroutine count_center_cube_size(num_hemi,                     &
 !!     &          nnod_cube, nele_cube, nedge_cube, nsurf_cube,         &
@@ -19,6 +20,7 @@
 !
       use m_precision
       use t_cubed_sph_surf_mesh
+      use t_cubed_sph_mesh
 !
       implicit  none
 !
@@ -30,11 +32,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_cubed_shell_size(c_sphere)
+      subroutine count_cubed_shell_size(c_sphere, csph_mesh)
 !
       use m_numref_cubed_sph
 !
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+      type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
 !    count number of node & element
 !      number of radius direction
@@ -50,17 +53,18 @@
      &    c_sphere%numsurf_cube, c_sphere%numnod_cube20,                &
      &    c_sphere%numnod_sf, c_sphere%numele_sf, c_sphere%numedge_sf)
 !
-      call count_shell_numbers(c_sphere)
+      call count_shell_numbers(c_sphere, csph_mesh)
 !
       end subroutine count_cubed_shell_size
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_rectangle_shell_size(c_sphere)
+      subroutine count_rectangle_shell_size(c_sphere, csph_mesh)
 !
       use m_numref_cubed_sph
 !
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+      type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
 !    count number of node & element
 !      number of radius direction
@@ -76,7 +80,7 @@
      &    c_sphere%numsurf_cube, c_sphere%numnod_cube20,                &
      &    c_sphere%numnod_sf, c_sphere%numele_sf, c_sphere%numedge_sf)
 !
-      call count_shell_numbers(c_sphere)
+      call count_shell_numbers(c_sphere, csph_mesh)
 !
       end subroutine count_rectangle_shell_size
 !
@@ -167,14 +171,14 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_shell_numbers(c_sphere)
+      subroutine count_shell_numbers(c_sphere, csph_mesh)
 !
       use m_constants
       use m_numref_cubed_sph
-      use m_cubed_sph_mesh
       use m_cubed_sph_radius
 !
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+      type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
 !
       c_sphere%numnod_sf20                                              &
@@ -182,22 +186,23 @@
       c_sphere%numedge_sf20 = c_sphere%numedge_sf
       c_sphere%numele_sf20 =  c_sphere%numele_sf
 !
-      nnod_cb_sph =  c_sphere%numnod_cube + c_sphere%numnod_sf
-      nele_cb_sph =  c_sphere%numele_cube
-      nsurf_cb_sph = c_sphere%numsurf_cube
-      nedge_cb_sph = c_sphere%numedge_cube
-      nnod_cb_sph = nnod_cb_sph                                         &
+      csph_mesh%nnod_cb_sph = c_sphere%numnod_cube + c_sphere%numnod_sf
+      csph_mesh%nele_cb_sph =  c_sphere%numele_cube
+      csph_mesh%nsurf_cb_sph = c_sphere%numsurf_cube
+      csph_mesh%nedge_cb_sph = c_sphere%numedge_cube
+      csph_mesh%nnod_cb_sph = csph_mesh%nnod_cb_sph                     &
      &             + c_sphere%numnod_sf * c_sphere%nele_shell
-      nele_cb_sph = nele_cb_sph                                         &
+      csph_mesh%nele_cb_sph = csph_mesh%nele_cb_sph                     &
      &             + c_sphere%numele_sf * c_sphere%nele_shell
-      nedge_cb_sph = nedge_cb_sph                                       &
+      csph_mesh%nedge_cb_sph = csph_mesh%nedge_cb_sph                   &
      &             + (c_sphere%numedge_sf + c_sphere%numnod_sf)         &
      &              * c_sphere%nele_shell
-      nsurf_cb_sph = nsurf_cb_sph                                       &
+      csph_mesh%nsurf_cb_sph = csph_mesh%nsurf_cb_sph                   &
      &              + (c_sphere%numele_sf + c_sphere%numedge_sf)        &
      &              * c_sphere%nele_shell
-      numnod_20 = nnod_cb_sph + nedge_cb_sph
-      numele_20 = nele_cb_sph
+      csph_mesh%numnod_20 = csph_mesh%nnod_cb_sph                       &
+     &                     + csph_mesh%nedge_cb_sph
+      csph_mesh%numele_20 = csph_mesh%nele_cb_sph
 !
 !  set center cube size
 !

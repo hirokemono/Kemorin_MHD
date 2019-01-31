@@ -5,7 +5,7 @@
       use m_precision
       use m_constants
 !
-      use m_cubed_sph_mesh
+      use t_cubed_sph_mesh
       use t_cubed_sph_surf_mesh
       use m_cubed_sph_radius
       use m_cubed_sph_grp_param
@@ -28,6 +28,7 @@
       real(kind = kreal) :: rad_edge
       type(control_data_cubed_sph), save :: cubed_sph_c1
       type(cubed_sph_surf_mesh), save :: c_sphere1
+      type(cubed_sph_mesh), save :: csph_mesh1
 !
 !
 !      write(*,*) 'Mesh generation is starting. Press return key'
@@ -41,7 +42,7 @@
 !    count number of node & element
 !
       write(*,*) 'count_rectangle_shell_size'
-      call count_rectangle_shell_size(c_sphere1)
+      call count_rectangle_shell_size(c_sphere1, csph_mesh1)
 !
       write(*,*) 'alloc_surface_geometries', c_sphere1%numnod_sf20
       call alloc_surface_geometries(c_sphere1)
@@ -52,12 +53,12 @@
       write(*,*) 'check_rect_coarsing_level'
       call check_rect_coarsing_level(c_sphere1)
 !
-      write(*,*) 'allocate_coarse_mesh_stack'
-      call allocate_coarse_mesh_stack(max_coarse_level)
+      write(*,*) 'alloc_coarse_mesh_stack'
+      call alloc_coarse_mesh_stack(max_coarse_level, csph_mesh1)
       call alloc_coarsing_stack(max_coarse_level, c_sphere1)
 !
       write(*,*) 'count_coarse_rect_shell'
-      call count_coarse_rect_shell(c_sphere1)
+      call count_coarse_rect_shell(c_sphere1, csph_mesh1)
 !
        write(*,*) 'alloc_surface_connect(c_sphere1)'
       call set_ntot_ele_sf20(c_sphere1)
@@ -72,14 +73,14 @@
       call const_rect_sphere_surf_data(c_sphere1)
 !
        write(*,*) 'const_coarse_rect_surf_data'
-      call const_coarse_rect_surf_data(c_sphere1)
+      call const_coarse_rect_surf_data(csph_mesh1, c_sphere1)
 !
 !   construct whole grid
 !
-      call construct_rect_peri_mesh(c_sphere1)
+      call construct_rect_peri_mesh(csph_mesh1, c_sphere1)
 !
 !   construct coarse grid
 !
-      call const_coarse_rect_tri_peri(c_sphere1)
+      call const_coarse_rect_tri_peri(csph_mesh1, c_sphere1)
 !
       end program periodic_cube

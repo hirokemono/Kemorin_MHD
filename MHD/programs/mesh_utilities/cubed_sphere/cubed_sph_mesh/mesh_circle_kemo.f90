@@ -4,7 +4,7 @@
 !
       use m_precision
 !
-      use m_cubed_sph_mesh
+      use t_cubed_sph_mesh
       use t_cubed_sph_surf_mesh
       use m_cubed_sph_radius
       use m_cubed_sph_grp_param
@@ -24,6 +24,7 @@
 !
       type(control_data_cubed_sph), save :: cubed_sph_c1
       type(cubed_sph_surf_mesh), save :: c_sphere1
+      type(cubed_sph_mesh), save :: csph_mesh1
 !
 !      write(*,*) 'Mesh generation is starting. Press return key'
 !      read(5,*)
@@ -36,7 +37,7 @@
 !    count number of node & element
 !
       write(*,*) 'count_square_circle_size'
-      call count_square_circle_size(c_sphere1)
+      call count_square_circle_size(c_sphere1, csph_mesh1)
 !
 !      write(*,*) 'alloc_surface_geometries', c_sphere1%numnod_sf20
       call alloc_surface_geometries(c_sphere1)
@@ -53,6 +54,6 @@
 !
 !   construct whole grid
 !
-      call construct_circle_mesh(c_sphere1)
+      call construct_circle_mesh(csph_mesh1, c_sphere1)
 !
       end program mesh_circle_kemo

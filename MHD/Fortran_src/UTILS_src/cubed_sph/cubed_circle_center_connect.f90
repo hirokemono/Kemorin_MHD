@@ -20,7 +20,6 @@
 !
       subroutine set_center_square_connect(iele, ifile)
 !
-      use m_cubed_sph_mesh
       use m_numref_cubed_sph
 !
       integer(kind = kint), intent(in) :: ifile
@@ -28,6 +27,7 @@
       integer(kind = kint), intent(inout) :: iele
 !
       integer(kind = kint) :: ix, iy
+      integer(kind = kint) :: ie20(20)
 !
 !
 !  corner (x = y =-cube_size)

@@ -20,11 +20,10 @@
 !>   radius
       real(kind = kreal), allocatable :: r_nod(:)
 !
-      integer(kind = kint) :: nr_ocore, nr_exter
-!
+      integer(kind = kint) :: nr_ocore
+      integer(kind = kint) :: nr_exter
 !
 !  corner edge information
-!
       integer(kind = kint) :: num_edge_latitude_ref
       integer(kind = kint), allocatable :: kr_edge_latitude_ref(:)
       real(kind = kreal), allocatable :: edge_latitude_ref(:)

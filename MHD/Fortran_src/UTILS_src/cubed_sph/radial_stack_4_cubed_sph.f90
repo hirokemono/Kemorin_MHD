@@ -5,16 +5,18 @@
 !     Modified by H. Matsui on Oct., 2007
 !
 !!      subroutine radial_stack_quad                                    &
-!!     &         (ifile, ifile_20, c_sphere, iele_start)
+!!     &         (ifile, ifile_20, c_sphere, csph_mesh, iele_start)
 !!      subroutine radial_stack_surf_q                                  &
-!!     &         (ifile, ifile_20, c_sphere, iele_start)
+!!     &         (ifile, ifile_20, c_sphere, csph_mesh, iele_start)
 !!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+!!        type(cubed_sph_mesh), intent(in) :: csph_mesh
 !
       module radial_stack_4_cubed_sph
 !
       use m_precision
 !
       use t_cubed_sph_surf_mesh
+      use t_cubed_sph_mesh
 !
       implicit none
 !
@@ -25,20 +27,20 @@
 !   --------------------------------------------------------------------
 !
       subroutine radial_stack_quad                                      &
-     &         (ifile, ifile_20, c_sphere, iele_start)
+     &         (ifile, ifile_20, c_sphere, csph_mesh, iele_start)
 !
-!
-      use m_cubed_sph_mesh
       use m_cubed_sph_radius
 !
       integer(kind = kint), intent(in) :: ifile
       integer(kind = kint), intent(in) :: ifile_20
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+      type(cubed_sph_mesh), intent(in) :: csph_mesh
 !
       integer(kind = kint), intent(inout) :: iele_start
 !
       integer(kind = kint) :: k, iele0, iele
       integer(kind = kint) :: inod0, inod9, inod17
+      integer(kind = kint) :: ie20(20)
 !
 !
       do k = 1, c_sphere%nele_shell
@@ -61,7 +63,7 @@
         ie20(8) = inod0 + c_sphere%ie_sf20(iele0,4)                     &
      &           + c_sphere%numnod_sf
 !
-        inod9 = nnod_cb_sph + c_sphere%numedge_cube                     &
+        inod9 = csph_mesh%nnod_cb_sph + c_sphere%numedge_cube           &
      &         + (c_sphere%numnod_sf + c_sphere%numedge_sf)*(k-2)
 !
         ie20( 9) = inod9 + c_sphere%ie_sf20(iele0,5)
@@ -78,7 +80,7 @@
         ie20(16) = inod9 + c_sphere%ie_sf20(iele0,8)                    &
      &            + c_sphere%numnod_sf + c_sphere%numedge_sf
 !
-        inod17 = nnod_cb_sph + c_sphere%numedge_cube                    &
+        inod17 = csph_mesh%nnod_cb_sph + c_sphere%numedge_cube          &
      &          + (c_sphere%numnod_sf + c_sphere%numedge_sf)*(k-1)
 !
         ie20(17) = inod17 + c_sphere%ie_sf20(iele0,1)
@@ -102,20 +104,21 @@
 !   --------------------------------------------------------------------
 !
       subroutine radial_stack_surf_q                                    &
-     &         (ifile, ifile_20, c_sphere, iele_start)
+     &         (ifile, ifile_20, c_sphere, csph_mesh, iele_start)
 !
 !
-      use m_cubed_sph_mesh
       use m_cubed_sph_radius
 !
       integer(kind = kint), intent(in) :: ifile
       integer(kind = kint), intent(in) :: ifile_20
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+      type(cubed_sph_mesh), intent(in) :: csph_mesh
 !
       integer(kind = kint), intent(inout) :: iele_start
 !
       integer(kind = kint) :: k, iele0, iele
       integer(kind = kint) :: inod0, inod9, inod17
+      integer(kind = kint) :: ie20(20)
 !
 !
       do k = 1, c_sphere%nele_shell
@@ -131,16 +134,16 @@
         ie20(4) = inod0 + c_sphere%iedge_sf20(iele0,3)                  &
      &                  + c_sphere%numnod_sf
 !
-        inod9 = nnod_cb_sph + c_sphere%numedge_cube                     &
+        inod9 = csph_mesh%nnod_cb_sph + c_sphere%numedge_cube           &
      &         + (c_sphere%numnod_sf + c_sphere%numedge_sf)*(k-2)
 !
         ie20( 5) = inod9 + c_sphere%iedge_sf20(iele0,2)
 !
-        inod17 = nnod_cb_sph + c_sphere%numedge_cube                    &
+        inod17 = csph_mesh%nnod_cb_sph + c_sphere%numedge_cube          &
      &          + (c_sphere%numnod_sf + c_sphere%numedge_sf)*(k-1)
         ie20( 7) = inod17 + c_sphere%iedge_sf20(iele0,2)
 !
-        inod17 = nnod_cb_sph + c_sphere%numedge_cube                    &
+        inod17 = csph_mesh%nnod_cb_sph + c_sphere%numedge_cube          &
      &          + (c_sphere%numnod_sf + c_sphere%numedge_sf)*(k-1)
 !
         ie20( 6) = inod17 + c_sphere%iedge_sf20(iele0,1)

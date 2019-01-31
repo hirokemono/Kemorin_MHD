@@ -19,7 +19,6 @@
       use m_precision
 !
       use m_constants
-      use m_cubed_sph_mesh
       use t_cubed_sph_surf_mesh
       use m_cubed_sph_radius
 !

@@ -1,9 +1,10 @@
 !
 !      module count_coarse_parameters
 !
-!!      subroutine cal_coarse_cube_params(icoarse, c_sphere)
-!!      subroutine cal_coarse_rect_params(icoarse, c_sphere)
+!!      subroutine cal_coarse_cube_params(icoarse, c_sphere, csph_mesh)
+!!      subroutine cal_coarse_rect_params(icoarse, c_sphere, csph_mesh)
 !!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+!!        type(cubed_sph_mesh), intent(in) :: csph_mesh
 !
 !      Written by Kemorin on Apr., 2006
 !
@@ -12,7 +13,7 @@
       use m_precision
 !
       use m_numref_cubed_sph
-      use m_cubed_sph_mesh
+      use t_cubed_sph_mesh
       use t_cubed_sph_surf_mesh
 !
       implicit none
@@ -23,10 +24,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine cal_coarse_cube_params(icoarse, c_sphere)
+      subroutine cal_coarse_cube_params(icoarse, c_sphere, csph_mesh)
 !
       integer(kind = kint), intent(in) :: icoarse
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+      type(cubed_sph_mesh), intent(in) :: csph_mesh
 !
       nskip_s = nstep_coarse(icoarse,1)
       nskip_r = nstep_coarse(icoarse,2)
@@ -46,8 +48,10 @@
       nl_shell = nl_s*nl_s*nl_r
 !
 !
-      numnod_coarse = inod_stack(icoarse) - inod_stack(icoarse-1)
-      numele_coarse = iele_stack(icoarse) - iele_stack(icoarse-1)
+      numnod_coarse = csph_mesh%inod_stack_csph(icoarse)                &
+     &               - csph_mesh%inod_stack_csph(icoarse-1)
+      numele_coarse = csph_mesh%iele_stack_csph(icoarse)                &
+     &               - csph_mesh%iele_stack_csph(icoarse-1)
 !
       nnod_cube_c = c_sphere%inod_stack_cube(icoarse)                   &
      &             - c_sphere%inod_stack_cube(icoarse-1)
@@ -86,10 +90,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine cal_coarse_rect_params(icoarse, c_sphere)
+      subroutine cal_coarse_rect_params(icoarse, c_sphere, csph_mesh)
 !
       integer(kind = kint), intent(in) :: icoarse
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+      type(cubed_sph_mesh), intent(in) :: csph_mesh
 !
       nskip_s = nstep_coarse(icoarse,1)
       nskip_r = nstep_coarse(icoarse,2)
@@ -111,8 +116,10 @@
       nl_shell = nl_s*nl_s*nl_r
 !
 !
-      numnod_coarse = inod_stack(icoarse) - inod_stack(icoarse-1)
-      numele_coarse = iele_stack(icoarse) - iele_stack(icoarse-1)
+      numnod_coarse = csph_mesh%inod_stack_csph(icoarse)                &
+     &               - csph_mesh%inod_stack_csph(icoarse-1)
+      numele_coarse = csph_mesh%iele_stack_csph(icoarse)                &
+     &               - csph_mesh%iele_stack_csph(icoarse-1)
 !
       nnod_cube_c = c_sphere%inod_stack_cube(icoarse)                   &
      &             - c_sphere%inod_stack_cube(icoarse-1)

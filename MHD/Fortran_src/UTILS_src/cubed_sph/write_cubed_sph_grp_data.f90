@@ -4,8 +4,10 @@
 !      Written by Kemorin on Apr., 2006
 !
 !!      subroutine output_group_data(c_sphere)
-!!      subroutine output_group_data_quad(c_sphere)
+!!      subroutine output_group_data_quad(c_sphere, csph_mesh)
 !!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+!!        type(cubed_sph_mesh), intent(in) :: csph_mesh
+!!      subroutine output_coarse_group_data
 !
       module write_cubed_sph_grp_data
 !
@@ -13,12 +15,12 @@
 !
       use m_constants
       use m_numref_cubed_sph
-      use m_cubed_sph_mesh
       use m_cubed_sph_grp_param
 !
       use t_mesh_data
       use t_group_data
       use t_cubed_sph_surf_mesh
+      use t_cubed_sph_mesh
 !
       use cubed_sph_file_names
       use set_node_groups_4_shell
@@ -104,9 +106,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine output_group_data_quad(c_sphere)
+      subroutine output_group_data_quad(c_sphere, csph_mesh)
 !
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
+      type(cubed_sph_mesh), intent(in) :: csph_mesh
 !
 !   set groups
 !
@@ -123,8 +126,8 @@
      &    c_sphere%numnod_sf, c_sphere%numedge_sf, group_csph%nod_grp)
 !
       call allocate_grp_type_item(group_csph%nod_grp)
-      call set_nodal_item_quad                                          &
-     &   (nnod_cb_sph, c_sphere%numnod_cube, c_sphere%numedge_cube,     &
+      call set_nodal_item_quad(csph_mesh%nnod_cb_sph,                   &
+     &    c_sphere%numnod_cube, c_sphere%numedge_cube,                  &
      &    c_sphere%numnod_sf, c_sphere%numedge_sf, num_hemi, ione,      &
      &    group_csph%nod_grp)
 !
@@ -172,9 +175,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine output_coarse_group_data(is_level)
-!
-      integer(kind = kint), intent(in) :: is_level
+      subroutine output_coarse_group_data
 !
 !   set groups
 !

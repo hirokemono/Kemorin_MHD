@@ -96,8 +96,6 @@
 !
       subroutine set_merged_cube_data(ifile, c_sphere)
 !
-      use m_cubed_sph_mesh
-!
       integer(kind = kint), intent(in) :: ifile
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -152,7 +150,6 @@
 !
       subroutine set_merge_4_shell(is_level, ifile, c_sphere)
 !
-      use m_cubed_sph_mesh
       use m_cubed_sph_radius
 !
       integer(kind = kint), intent(in) :: is_level, ifile

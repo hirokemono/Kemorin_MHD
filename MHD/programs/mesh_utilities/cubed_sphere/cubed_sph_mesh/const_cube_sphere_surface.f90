@@ -5,7 +5,8 @@
 !      Written by Kemorin on Apr., 2006
 !
 !!      subroutine const_cube_surface_data(c_sphere)
-!!      subroutine const_coarse_cube_surf_data(c_sphere)
+!!      subroutine const_coarse_cube_surf_data(csph_mesh, c_sphere)
+!!        type(cubed_sph_mesh), intent(in) :: csph_mesh
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
 !
@@ -13,6 +14,7 @@
 !
       use m_precision
 !
+      use t_cubed_sph_mesh
       use t_cubed_sph_surf_mesh
 !
       implicit none
@@ -85,7 +87,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_coarse_cube_surf_data(c_sphere)
+      subroutine const_coarse_cube_surf_data(csph_mesh, c_sphere)
 !
       use m_numref_cubed_sph
 !
@@ -95,6 +97,7 @@
       use merged_ele_4_cubed_sph_surf
       use set_surf_connect_cubed_sph
 !
+      type(cubed_sph_mesh), intent(in) :: csph_mesh
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind= kint) :: inod_sf_end, num
@@ -108,7 +111,7 @@
       iele_sf_end = c_sphere%numele_sf
       do icoarse = 1, max_coarse_level
 !
-        call cal_coarse_cube_params(icoarse, c_sphere)
+        call cal_coarse_cube_params(icoarse, c_sphere, csph_mesh)
 !
         call set_coarse_cube_skin(inod_sf_end, c_sphere)
         if (inod_sf_end .ne. c_sphere%inod_stack_sf(icoarse) ) then
