@@ -125,6 +125,7 @@
       call write_one_integer_b(sph_IO%numnod_sph)
       call write_mul_int8_b(sph_IO%numnod_sph, sph_IO%inod_gl_sph)
       nvect = sph_IO%numnod_sph * sph_IO%numdir_sph
+      write(*,*) 'nvect', nvect, nvect*kint
       call write_mul_integer_b(nvect, sph_IO%idx_gl_sph)
 !
       end subroutine write_gl_nodes_sph_b
