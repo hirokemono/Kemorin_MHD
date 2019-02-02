@@ -19,7 +19,6 @@
       module set_cubed_sph_group_ctl
 !
       use m_precision
-      use m_numref_cubed_sph
       use m_cubed_sph_grp_param
       use t_read_control_arrays
 !

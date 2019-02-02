@@ -5,12 +5,15 @@
 !      Modified by H. Matsui on Oct., 2007
 !
 !!      subroutine set_ntot_ele_sf20(c_sphere)
-!!      subroutine set_cube_surf_connect(iele_sf_end, c_sphere)
-!!      subroutine set_rect_surf_connect(iele_sf_end, c_sphere)
+!!      subroutine set_cube_surf_connect(num_h, iele_sf_end, c_sphere)
+!!      subroutine set_rect_surf_connect                                &
+!!     &         (num_h, num_v, iele_sf_end, c_sphere)
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !!
-!!      subroutine set_coarse_cube_surf_connect(iele_sf_end, c_sphere)
-!!      subroutine set_coarse_rect_surf_connect(iele_sf_end, c_sphere)
+!!      subroutine set_coarse_cube_surf_connect                         &
+!!     &         (n_hemi_c, iele_sf_end, c_sphere)
+!!      subroutine set_coarse_rect_surf_connect                         &
+!!     &         (n_hemi_c, n_vert_c, iele_sf_end, c_sphere)
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       module set_surf_connect_cubed_sph
@@ -40,10 +43,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_cube_surf_connect(iele_sf_end, c_sphere)
+      subroutine set_cube_surf_connect(num_h, iele_sf_end, c_sphere)
 !
-      use m_numref_cubed_sph
       use set_cube_surface_connect
+!
+      integer(kind = kint), intent(in) :: num_h
 !
       integer(kind = kint), intent(inout) :: iele_sf_end
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
@@ -52,30 +56,30 @@
 !
       iele_sf_end = 0
       call set_bottom_surf_connect                                      &
-     &   (num_hemi, iele_sf_end, c_sphere%numnod_sf,                    &
+     &   (num_h, iele_sf_end, c_sphere%numnod_sf,                       &
      &    c_sphere%ntot_ele_sf20, c_sphere%ie_sf20)
 !
 !    bottom side
 !
-      call set_bottom_side_connect(num_hemi, num_hemi, iele_sf_end,     &
+      call set_bottom_side_connect(num_h, num_h, iele_sf_end,           &
      &    c_sphere%numnod_sf, c_sphere%ntot_ele_sf20,                   &
      &    c_sphere%ie_sf20)
 !
 !     side wall
 !
-      call set_side_wall_connect(num_hemi, num_hemi, iele_sf_end,       &
+      call set_side_wall_connect(num_h, num_h, iele_sf_end,             &
      &    c_sphere%numnod_sf, c_sphere%ntot_ele_sf20,                   &
      &    c_sphere%ie_sf20)
 !
 !   top rod
 !
-      call set_top_side_connect(num_hemi, num_hemi, iele_sf_end,        &
+      call set_top_side_connect(num_h, num_h, iele_sf_end,              &
      &    c_sphere%numnod_sf, c_sphere%ntot_ele_sf20,                   &
      &    c_sphere%ie_sf20)
 !
 !  top surface
 !
-      call set_top_surf_connect(num_hemi, num_hemi, iele_sf_end,        &
+      call set_top_surf_connect(num_h, num_h, iele_sf_end,              &
      &    c_sphere%numnod_sf, c_sphere%ntot_ele_sf20,                   &
      &    c_sphere%ie_sf20)
 !
@@ -83,11 +87,13 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine set_rect_surf_connect(iele_sf_end, c_sphere)
+      subroutine set_rect_surf_connect                                  &
+     &         (num_h, num_v, iele_sf_end, c_sphere)
 !
-      use m_numref_cubed_sph
       use set_cube_surface_connect
 !
+      integer(kind = kint), intent(in) :: num_h
+      integer(kind = kint), intent(in) :: num_v
       integer(kind = kint), intent(inout) :: iele_sf_end
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -95,30 +101,29 @@
 !
       iele_sf_end = 0
       call set_bottom_surf_connect                                      &
-     &   (num_hemi, iele_sf_end, c_sphere%numnod_sf,                    &
+     &   (num_h, iele_sf_end, c_sphere%numnod_sf,                       &
      &    c_sphere%ntot_ele_sf20, c_sphere%ie_sf20)
 !
 !    bottom side
 !
-      call set_bottom_side_connect(num_hemi, ncube_vertical,            &
-     &    iele_sf_end, c_sphere%numnod_sf, c_sphere%ntot_ele_sf20,      &
-     &    c_sphere%ie_sf20)
+      call set_bottom_side_connect(num_h, num_v, iele_sf_end,           &
+     &    c_sphere%numnod_sf, c_sphere%ntot_ele_sf20, c_sphere%ie_sf20)
 !
 !     side wall
 !
-      call set_side_wall_connect(num_hemi, ncube_vertical, iele_sf_end, &
+      call set_side_wall_connect(num_h, num_v, iele_sf_end,             &
      &    c_sphere%numnod_sf, c_sphere%ntot_ele_sf20,                   &
      &    c_sphere%ie_sf20)
 !
 !   top side
 !
-      call set_top_side_connect(num_hemi, ncube_vertical, iele_sf_end,  &
+      call set_top_side_connect(num_h, num_v, iele_sf_end,              &
      &    c_sphere%numnod_sf, c_sphere%ntot_ele_sf20,                   &
      &    c_sphere%ie_sf20)
 !
 !  top surface
 !
-      call set_top_surf_connect(num_hemi, ncube_vertical, iele_sf_end,  &
+      call set_top_surf_connect(num_h, num_v, iele_sf_end,              &
      &    c_sphere%numnod_sf, c_sphere%ntot_ele_sf20,                   &
      &    c_sphere%ie_sf20)
 !
@@ -127,11 +132,12 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine set_coarse_cube_surf_connect(iele_sf_end, c_sphere)
-!
-      use m_numref_cubed_sph
+      subroutine set_coarse_cube_surf_connect                           &
+     &         (n_hemi_c, iele_sf_end, c_sphere)
 !
       use set_cube_surface_connect
+!
+      integer(kind = kint), intent(in) :: n_hemi_c
 !
       integer(kind = kint), intent(inout) :: iele_sf_end
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
@@ -170,11 +176,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_coarse_rect_surf_connect(iele_sf_end, c_sphere)
-!
-      use m_numref_cubed_sph
+      subroutine set_coarse_rect_surf_connect                           &
+     &         (n_hemi_c, n_vert_c, iele_sf_end, c_sphere)
 !
       use set_cube_surface_connect
+!
+      integer(kind = kint), intent(in) :: n_hemi_c
+      integer(kind = kint), intent(in) :: n_vert_c
 !
       integer(kind = kint), intent(inout) :: iele_sf_end
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere

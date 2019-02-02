@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Apr., 2003
 !     Modified by H. Matsui on Oct., 2007
 !
-!      subroutine set_center_square_connect(iele, ifile)
+!!      subroutine set_center_square_connect(ifile, num_hemi, iele)
 !
       module cubed_circle_center_connect
 !
@@ -18,11 +18,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_center_square_connect(iele, ifile)
+      subroutine set_center_square_connect(ifile, num_hemi, iele)
 !
-      use m_numref_cubed_sph
 !
       integer(kind = kint), intent(in) :: ifile
+      integer(kind = kint), intent(in) :: num_hemi
 !
       integer(kind = kint), intent(inout) :: iele
 !

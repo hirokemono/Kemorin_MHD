@@ -103,7 +103,8 @@
       if (iflag_quad .gt. 0) then
         write(*,*) 'set_center_square_quad',                            &
      &            csph_mesh%nnod_cb_sph, inod_start
-        call set_center_square_quad(id_q_mesh, inod_start, c_sphere)
+        call set_center_square_quad(id_q_mesh, num_hemi,                &
+     &      x_node, x_edge, inod_start, c_sphere)
 !
         num = csph_mesh%nnod_cb_sph + c_sphere%numedge_cube
         if(inod_start .ne. num) then

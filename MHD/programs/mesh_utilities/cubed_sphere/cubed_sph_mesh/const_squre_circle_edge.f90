@@ -51,7 +51,8 @@
         write(*,*) inod, c_sphere%x_csph(inod,1:3)
       end do
 !
-      call set_circle_rods(inod_sf_end, irod_sf_end, c_sphere)
+      call set_circle_rods(num_hemi, x_edge,                            &
+     &    inod_sf_end, irod_sf_end, c_sphere)
 !
       if (irod_sf_end .ne. c_sphere%numedge_sf) then
         write(*,*) 'check the number of edge in a sphere'

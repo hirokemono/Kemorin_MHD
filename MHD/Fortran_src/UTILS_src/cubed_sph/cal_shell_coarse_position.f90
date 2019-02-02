@@ -3,13 +3,16 @@
 !
 !        programmed by H.Matsui on Apr., 2006
 !
-!!      subroutine allocate_coarse_cube_sph_posi(c_sphere)
+!!      subroutine allocate_coarse_cube_sph_posi                        &
+!!     &         (max_coarse_level, c_sphere)
 !!      subroutine deallocate_coarse_cube_sph_posi
 !!
 !!      subroutine projection_coarse(is_level, ifile, id_f2c,           &
-!!     &          num_h, num_v, rprm_csph, c_sphere)
+!!     &          nnod_cube_c, nnod_sf_c, nnod_cube_fc, nnod_sf_fc,     &
+!!     &          nskip_r, nskip_fr, num_h, num_v, rprm_csph, c_sphere)
 !!      subroutine adjust_to_coarse_shell(is_level, ifile, id_f2c,      &
-!!     &          num_h, num_v, rprm_csph, c_sphere)
+!!     &          nnod_cube_c, nnod_sf_c, nnod_cube_fc, nnod_sf_fc,     &
+!!     &          nskip_r, nskip_fr, num_h, num_v, rprm_csph, c_sphere)
 !!        type(cubed_sph_radius), intent(in) :: rprm_csph
 !!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
@@ -18,7 +21,6 @@
       use m_precision
       use m_constants
 !
-      use m_numref_cubed_sph
       use t_cubed_sph_surf_mesh
       use t_cubed_sph_radius
 !
@@ -36,8 +38,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine allocate_coarse_cube_sph_posi(c_sphere)
+      subroutine allocate_coarse_cube_sph_posi                          &
+     &         (max_coarse_level, c_sphere)
 !
+      integer(kind = kint), intent(in) :: max_coarse_level
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
       integer(kind = kint) :: num
 !
@@ -70,12 +74,16 @@
 !   --------------------------------------------------------------------
 !
       subroutine projection_coarse(is_level, ifile, id_f2c,             &
-     &          num_h, num_v, rprm_csph, c_sphere)
+     &          nnod_cube_c, nnod_sf_c, nnod_cube_fc, nnod_sf_fc,       &
+     &          nskip_r, nskip_fr, num_h, num_v, rprm_csph, c_sphere)
 !
       use coordinate_converter
       use modify_colat_cube_surf
 !
       integer(kind = kint), intent(in) :: ifile, id_f2c, is_level
+      integer(kind = kint), intent(in) :: nnod_cube_c,  nnod_sf_c
+      integer(kind = kint), intent(in) :: nnod_cube_fc, nnod_sf_fc
+      integer(kind = kint), intent(in) :: nskip_r, nskip_fr
       integer(kind = kint), intent(in) :: num_h, num_v
       type(cubed_sph_radius), intent(in) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
@@ -136,12 +144,16 @@
 !   --------------------------------------------------------------------
 !
       subroutine adjust_to_coarse_shell(is_level, ifile, id_f2c,        &
-     &          num_h, num_v, rprm_csph, c_sphere)
+     &          nnod_cube_c, nnod_sf_c, nnod_cube_fc, nnod_sf_fc,       &
+     &          nskip_r, nskip_fr, num_h, num_v, rprm_csph, c_sphere)
 !
       use coordinate_converter
       use modify_colat_cube_surf
 !
       integer(kind = kint), intent(in) :: ifile, id_f2c, is_level
+      integer(kind = kint), intent(in) :: nnod_cube_c,  nnod_sf_c
+      integer(kind = kint), intent(in) :: nnod_cube_fc, nnod_sf_fc
+      integer(kind = kint), intent(in) :: nskip_r, nskip_fr
       integer(kind = kint), intent(in) :: num_h, num_v
       type(cubed_sph_radius), intent(in) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere

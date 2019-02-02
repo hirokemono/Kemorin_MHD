@@ -45,7 +45,8 @@
        stop
       end if
 !
-      call set_rect_rods(inod_sf_end, irod_sf_end, c_sphere)
+      call set_rect_rods(num_hemi, ncube_vertical, x_edge, v_edge,      &
+     &    inod_sf_end, irod_sf_end, c_sphere)
 !
       if (irod_sf_end .ne. c_sphere%numedge_sf) then
         write(*,*) 'check the number of edge in a sphere'
@@ -80,7 +81,8 @@
 !   set connectivity for sphere surface
 !
        write(*,*) 'connectivity construction for surface'
-       call set_rect_surf_connect(iele_sf_end, c_sphere)
+       call set_rect_surf_connect                                       &
+    &     (num_hemi, ncube_vertical, iele_sf_end, c_sphere)
 !
       if (iele_sf_end .ne. c_sphere%numele_sf) then
         write(*,*) 'check the number of element in a sphere'
@@ -124,7 +126,8 @@
       do icoarse = 1, max_coarse_level
         call cal_coarse_rect_params(icoarse, c_sphere, csph_mesh)
 !
-        call set_coarse_rect_skin(inod_sf_end, c_sphere)
+        call set_coarse_rect_skin(num_hemi, ncube_vertical,             &
+     &      nskip_s, nskip_fs, inod_sf_end, c_sphere)
         if(inod_sf_end .ne. c_sphere%inod_stack_sf(icoarse)) then
           write(*,*) 'check the number of node in a sphere... level:',  &
      &       icoarse, inod_sf_end, c_sphere%inod_stack_sf(icoarse)
@@ -132,7 +135,8 @@
         end if
         write(*,*) 'inod_sf_end!!!', inod_sf_end
 !
-        call set_coarse_rect_surf_connect(iele_sf_end, c_sphere)
+        call set_coarse_rect_surf_connect                               &
+     &     (n_hemi_c, n_vert_c, iele_sf_end, c_sphere)
         num = c_sphere%iele_stack_sf(icoarse) + c_sphere%numele_sf
         if (iele_sf_end .ne. num) then
          write(*,*)                                                     &

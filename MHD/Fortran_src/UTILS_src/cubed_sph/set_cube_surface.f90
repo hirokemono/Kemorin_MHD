@@ -16,6 +16,7 @@
       use m_precision
       use m_constants
 !
+      use m_numref_cubed_sph
       use t_cubed_sph_surf_mesh
 !
       implicit  none
@@ -30,7 +31,6 @@
 !
       subroutine set_cube_skin(inod_sf_end, c_sphere)
 !
-      use m_numref_cubed_sph
       use set_cube_surface_node
 !
       integer(kind = kint), intent(inout) ::  inod_sf_end
@@ -52,7 +52,6 @@
 !
       subroutine set_rect_skin(rad_edge, inod_sf_end, c_sphere)
 !
-      use m_numref_cubed_sph
       use set_cube_surface_node
 !
       real(kind = kreal), intent(in) :: rad_edge
@@ -86,8 +85,6 @@
 !
       subroutine const_square_surface(inod_sf_end, c_sphere)
 !
-      use m_constants
-      use m_numref_cubed_sph
       use set_cube_surface_node
 !
       integer(kind = kint), intent(inout) ::  inod_sf_end
@@ -105,8 +102,6 @@
 !
       subroutine const_cube_surface(inod_sf_end, c_sphere)
 !
-      use m_constants
-      use m_numref_cubed_sph
       use set_cube_surface_node
 !
       integer(kind = kint), intent(inout) ::  inod_sf_end
@@ -142,8 +137,6 @@
       subroutine const_rect_surface                                     &
      &         (x_size, z_size, inod_sf_end, c_sphere)
 !
-      use m_constants
-      use m_numref_cubed_sph
       use set_cube_surface_node
 !
       real(kind = kreal), intent(in) :: x_size, z_size
@@ -181,8 +174,6 @@
 !
       subroutine set_circle_node(inod_ed_end, c_sphere)
 !
-      use m_constants
-      use m_numref_cubed_sph
       use set_cube_surface_node
       use set_squre_circle_node
 !
