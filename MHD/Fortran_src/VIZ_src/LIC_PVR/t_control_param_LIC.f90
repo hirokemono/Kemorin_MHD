@@ -45,11 +45,6 @@
 !>        Structure of field color parameter for LIC
         type(pvr_field_parameter) :: color_field
 !
-!>        integer flag to use opacity
-        integer(kind = kint) :: iflag_opacity_mode =   0
-!>        Structure for field opacity parameter for LIC
-!        type(pvr_field_parameter) :: opacity_field
-!
 !>        Number of masking field
         integer(kind = kint) :: num_masking =   0
 !>        Structure of masking parameter
@@ -228,24 +223,6 @@
       end if
 !
 !
-      lic_p%iflag_opacity_mode = lic_ctl%opacity_field_ctl%iflag
-      if(lic_p%iflag_opacity_mode .ne. id_turn_OFF) then
-        if(lic_ctl%opacity_component_ctl%iflag .eq. 0) then
-          e_message = 'Set component for LIC opacity component'
-          call calypso_mpi_abort(ierr_fld, e_message)
-        end if
-!
-!        tmpfield(1) = lic_ctl%opacity_field_ctl%charavalue
-!        tmpcomp(1) =  lic_ctl%opacity_component_ctl%charavalue
-!        call set_components_4_viz                                      &
-!     &     (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp, ione,&
-!     &      ifld_tmp, icomp_tmp, icheck_ncomp, ncomp_tmp, fldname_tmp)
-!        lic_p%opacity_field%id_field =          ifld_tmp(1)
-!        lic_p%opacity_field%id_component =      icomp_tmp(1)
-!        lic_p%opacity_field%num_original_comp = ncomp_tmp(1)
-!        lic_p%opacity_field%field_name =        fldname_tmp(1)
-      end if
-!
       lic_p%num_masking = lic_ctl%num_masking_ctl
       if(lic_p%num_masking .gt. 0) then
         allocate(lic_p%masking(lic_p%num_masking))
@@ -262,9 +239,6 @@
         write(*,*) 'LIC color: ', lic_p%color_field%id_field,           &
      &            lic_p%color_field%id_component,                       &
      &            trim(lic_p%color_field%field_name)
-!        write(*,*) 'LIC opacity: ', lic_p%opacity_field%id_field,      &
-!     &            lic_p%opacity_field%id_component,                    &
-!     &            trim(lic_p%opacity_field%field_name)
 !
         write(*,*) 'num_masking: ', lic_p%num_masking
         do i = 1, lic_p%num_masking

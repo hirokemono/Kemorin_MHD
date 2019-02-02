@@ -316,11 +316,11 @@
         end do
 !   find 3D coordinate of exit point on exit surface
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
-    &       ie_surf, isurf_end, xi, xx, xx_tgt)
+     &      ie_surf, isurf_end, xi, xx, xx_tgt)
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
-    &       ie_surf, isurf_end, xi, field_pvr%v_lic, vec_tgt)
+     &      ie_surf, isurf_end, xi, field_pvr%v_lic, vec_tgt)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-    &       ie_surf, isurf_end, xi, field_pvr%d_pvr, scl_tgt)
+     &      ie_surf, isurf_end, xi, field_pvr%d_pvr, scl_tgt)
 
         do i = 1, lic_p%num_masking
           call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
