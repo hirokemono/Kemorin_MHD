@@ -121,6 +121,7 @@
       integer(kind = kint) ::  nvect
 !
 !
+      write(*,*) 'sph_IO%numnod_sph', sph_IO%numnod_sph, sph_IO%numdir_sph
       call write_one_integer_b(sph_IO%numnod_sph)
       call write_mul_int8_b(sph_IO%numnod_sph, sph_IO%inod_gl_sph)
       nvect = sph_IO%numnod_sph * sph_IO%numdir_sph
