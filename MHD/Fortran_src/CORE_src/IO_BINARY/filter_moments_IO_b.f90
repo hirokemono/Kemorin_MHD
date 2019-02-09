@@ -54,7 +54,7 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call read_mul_character_b(iflag_swap, nf_type, filter_type, ierr)
+      call read_mul_character_b(nf_type, filter_type, ierr)
       if(ierr .gt. 0) return
       call read_1d_vector_b(iflag_swap, nf_type, f_width, ierr)
       if(ierr .gt. 0) return

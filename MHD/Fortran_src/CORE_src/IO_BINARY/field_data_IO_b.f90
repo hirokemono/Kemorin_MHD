@@ -124,8 +124,7 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call read_mul_character_b                                         &
-     &   (iflag_swap, num_field, field_name, ierr)
+      call read_mul_character_b(num_field, field_name, ierr)
       if(ierr .gt. 0) return
 !
       call read_2d_vector_b(iflag_swap, nnod, ntot_comp, vect, ierr)

@@ -31,10 +31,8 @@
 !!      subroutine read_mul_integer_b(iflag_swap, num, int_dat, ierr)
 !!      subroutine read_integer_stack_b                                 &
 !!     &         (iflag_swap, num, istack, ntot, ierr)
-!!      subroutine read_mul_character_b                                 &
-!!     &         (iflag_swap, num, chara_dat, ierr)
-!!      subroutine read_mul_one_character_b                             &
-!!     &         (iflag_swap, num, chara_dat, ierr)
+!!      subroutine read_mul_character_b(num, chara_dat, ierr)
+!!      subroutine read_mul_one_character_b(num, chara_dat, ierr)
 !!      subroutine read_1d_vector_b(iflag_swap, num, real_dat, ierr)
 !!      subroutine read_2d_vector_b(iflag_swap, n1, n2, real_dat, ierr)
 !!@endverbatim
@@ -55,7 +53,11 @@
         integer(kind = kint) :: ierr_IO = 0
       end type file_IO_flags
 !
-      integer(kind = kint), parameter :: id_binary = 19
+      integer(kind = kint), parameter, private :: id_binary = 19
+!
+      integer(kind = kint), parameter, private :: huge_25 = 33554432
+      integer(kind = kint), parameter, private :: huge_20 = 1048576
+      integer(kind = kint), parameter, private :: huge_14 = 16384
 !
       integer(kind = kint), private :: ierr_IO
 !
@@ -166,7 +168,6 @@
       subroutine write_endian_flag
 !
 !
-!
 #ifdef ZLIB_IO
       call rawwrite_f(kint, i_UNIX, ierr_IO)
 #else
@@ -182,7 +183,6 @@
       integer(kind = kint), intent(in) :: int_dat
 !
 !
-!
 #ifdef ZLIB_IO
       call rawwrite_f(kint, int_dat, ierr_IO)
 #else
@@ -196,7 +196,6 @@
       subroutine write_one_real_b(real_dat)
 !
       real(kind = kreal), intent(in) :: real_dat
-!
 !
 !
 #ifdef ZLIB_IO
@@ -215,13 +214,20 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int_gl_dat(num)
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       if(num .le. 0) return
 #ifdef ZLIB_IO
-      ilength = num *  kint_gl
-      call rawwrite_f(ilength, int_gl_dat(1), ierr_IO)
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte = ilength *  kint_gl
+!
+        call rawwrite_f(lbyte, int_gl_dat(ist+1), ierr_IO)
+        ist = ist + ilength
+        if(ist .ge. num) exit
+      end do
 #else
       write(id_binary)  int_gl_dat(1:num)
 #endif
@@ -235,13 +241,20 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       if(num .le. 0) return
 #ifdef ZLIB_IO
-      ilength = num *  kint
-      call rawwrite_f(ilength, int_dat(1), ierr_IO)
+      ist = 0
+      do
+        ilength = min((num - ist), huge_25)
+        lbyte = ilength *  kint
+!
+        call rawwrite_f(lbyte, int_dat(ist+1), ierr_IO)
+        ist = ist + ilength
+        if(ist .ge. num) exit
+      end do
 #else
       write(id_binary)  int_dat(1:num)
 #endif
@@ -267,16 +280,27 @@
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       if(num .le. 0) return
 #ifdef ZLIB_IO
-      ilength = num *  kchara
-      call rawwrite_f(ilength, chara_dat(1), ierr_IO)
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte = ilength *  kchara
+!
+        call rawwrite_f(lbyte, chara_dat(ist+1), ierr_IO)
+        ist = ist + ilength
+        if(ierr_IO .ne. lbyte) goto 99
+        if(ist .ge. num) exit
+      end do
 #else
       write(id_binary)  chara_dat(1:num)
 #endif
+!
+  99  continue
+      return
 !
       end subroutine write_mul_character_b
 !
@@ -287,18 +311,29 @@
       integer(kind = kint), intent(in) :: num
       character(len=1), intent(in) :: chara_dat(num)
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       if(num .le. 0) return
 #ifdef ZLIB_IO
-      ilength = num
-      call rawwrite_f(ilength, chara_dat(1), ierr_IO)
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte = ilength
+!
+        call rawwrite_f(lbyte, chara_dat(ist+1), ierr_IO)
+        ist = ist + ilength
+        if(ierr_IO .ne. lbyte) goto 99
+        if(ist .ge. num) exit
+      end do
 #else
       write(id_binary)  chara_dat(1:num)
 #endif
 !
-end subroutine write_mul_one_character_b
+  99  continue
+      return
+!
+      end subroutine write_mul_one_character_b
 !
 ! -----------------------------------------------------------------------
 !
@@ -307,16 +342,27 @@ end subroutine write_mul_one_character_b
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       if(num .le. 0) return
 #ifdef ZLIB_IO
-      ilength =  num * kreal
-      call rawwrite_f(ilength, real_dat(1), ierr_IO)
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte =  ilength * kreal
+!
+        call rawwrite_f(lbyte, real_dat(ist+1), ierr_IO)
+        ist = ist + ilength
+        if(ierr_IO .ne. lbyte) goto 99
+        if(ist .ge. num) exit
+      end do
 #else
       write(id_binary)  real_dat(1:num)
 #endif
+!
+  99  continue
+      return
 !
       end subroutine write_1d_vector_b
 !
@@ -327,13 +373,13 @@ end subroutine write_mul_one_character_b
       integer(kind = kint), intent(in) :: n1, n2
       real(kind = kreal), intent(in) :: real_dat(n1,n2)
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: i2
 !
 !
 #ifdef ZLIB_IO
-      if(n1*n2 .le. 0) return
-      ilength = n1 * n2 * kreal
-      call rawwrite_f(ilength, real_dat(1,1), ierr_IO)
+      do i2 = 1, n2
+        call write_1d_vector_b(n1, real_dat(1,i2))
+      end do
 #else
       write(id_binary)  real_dat(1:n1,1:n2)
 #endif
@@ -428,14 +474,22 @@ end subroutine write_mul_one_character_b
       integer(kind = kint_gl), intent(inout) :: int_gl_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       if(num .le. 0) return
 #ifdef ZLIB_IO
-      ilength = num * kint_gl
-      call rawread_64bit_f(iflag_swap, ilength, int_gl_dat(1), ierr)
-      if(ierr .ne. ilength) goto 99
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte = ilength * kint_gl
+!
+        call rawread_64bit_f                                            &
+     &     (iflag_swap, lbyte, int_gl_dat(ist+1), ierr)
+        ist = ist + ilength
+        if(ierr .ne. lbyte) goto 99
+        if(ist .ge. num) exit
+      end do
 #else
       read(id_binary, err=99, end=99)  int_gl_dat(1:num)
 #endif
@@ -457,14 +511,21 @@ end subroutine write_mul_one_character_b
       integer(kind = kint), intent(inout) :: int_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       if(num .le. 0) return
 #ifdef ZLIB_IO
-      ilength = num * kint
-      call rawread_32bit_f(iflag_swap, ilength, int_dat(1), ierr)
-      if(ierr .ne. ilength) goto 99
+      ist = 0
+      do
+        ilength = min((num - ist), huge_25)
+        lbyte = ilength * kint
+!
+        call rawread_32bit_f(iflag_swap, lbyte, int_dat(ist+1), ierr)
+        ist = ist + ilength
+        if(ierr .ne. lbyte) goto 99
+        if(ist .ge. num) exit
+      end do
 #else
       read(id_binary, err=99, end=99)  int_dat(1:num)
 #endif
@@ -497,21 +558,28 @@ end subroutine write_mul_one_character_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_mul_character_b(iflag_swap, num, chara_dat, ierr)
+      subroutine read_mul_character_b(num, chara_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(inout) :: chara_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       if(num .le. 0) return
 #ifdef ZLIB_IO
-      ilength = num * kchara
-      call rawread_32bit_f(iflag_swap, ilength, chara_dat(1), ierr)
-      if(ierr .ne. ilength) goto 99
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte = ilength *  kchara
+!
+        call rawread_32bit_f                                            &
+     &     (iendian_KEEP, lbyte, chara_dat(ist+1), ierr)
+        ist = ist + ilength
+        if(ierr .ne. lbyte) goto 99
+        if(ist .ge. num) exit
+      end do
 #else
       read(id_binary, err=99, end=99)  chara_dat(1:num)
 #endif
@@ -526,22 +594,28 @@ end subroutine write_mul_one_character_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_mul_one_character_b                               &
-     &         (iflag_swap, num, chara_dat, ierr)
+      subroutine read_mul_one_character_b(num, chara_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: num
       character(len=1), intent(inout) :: chara_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       if(num .le. 0) return
 #ifdef ZLIB_IO
-      ilength = num
-      call rawread_32bit_f(iflag_swap, ilength, chara_dat(1), ierr)
-      if(ierr .ne. ilength) goto 99
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte = ilength
+!
+        call rawread_32bit_f                                            &
+     &      (iendian_KEEP, lbyte, chara_dat(ist+1), ierr)
+        ist = ist + ilength
+        if(ierr .ne. lbyte) goto 99
+        if(ist .ge. num) exit
+      end do
 #else
       read(id_binary, err=99, end=99)  chara_dat(1:num)
 #endif
@@ -563,14 +637,21 @@ end subroutine write_mul_one_character_b
       real(kind = kreal), intent(inout) :: real_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       if(num .le. 0) return
 #ifdef ZLIB_IO
-      ilength =  num * kreal
-      call rawread_64bit_f(iflag_swap, ilength, real_dat(1), ierr)
-      if(ierr .ne. ilength) goto 99
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte =  ilength * kreal
+!
+        call rawread_64bit_f(iflag_swap, lbyte, real_dat(ist+1), ierr)
+        ist = ist + ilength
+        if(ierr .ne. lbyte) goto 99
+        if(ist .ge. num) exit
+      end do
 #else
       read(id_binary, err=99, end=99)  real_dat(1:num)
 #endif
@@ -592,14 +673,14 @@ end subroutine write_mul_one_character_b
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: i2
 !
 !
 #ifdef ZLIB_IO
-      if(n1*n2 .le. 0) return
-      ilength =  n1 * n2 * kreal
-      call rawread_64bit_f(iflag_swap, ilength, real_dat(1,1), ierr)
-      if(ierr .ne. ilength) goto 99
+      do i2 = 1, n2
+        call read_1d_vector_b(iflag_swap, n1, real_dat(1,i2), ierr)
+        if(ierr .ne. 0) goto 99
+      end do
 #else
       read(id_binary, err=99, end=99)  real_dat(1:n1,1:n2)
 #endif

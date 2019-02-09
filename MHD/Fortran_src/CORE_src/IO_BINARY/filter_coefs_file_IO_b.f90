@@ -183,8 +183,8 @@
      &    IO_filters%ntot_nod, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
-      call read_mul_character_b(bin_flags%iflag_bin_swap,               &
-     &    IO_filters%ngrp_node, IO_filters%group_name,                  &
+      call read_mul_character_b                                         &
+     &   (IO_filters%ngrp_node, IO_filters%group_name,                  &
      &    bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !

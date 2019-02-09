@@ -54,8 +54,8 @@
      &      bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
 !
-        call read_mul_character_b(bin_flags%iflag_bin_swap,             &
-     &      group_IO%num_grp, group_IO%grp_name, bin_flags%ierr_IO)
+        call read_mul_character_b                                       &
+     &     (group_IO%num_grp, group_IO%grp_name, bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
 !
         call allocate_grp_type_item(group_IO)
@@ -92,8 +92,8 @@
      &      surf_grp_IO%num_item, bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
 !
-        call read_mul_character_b(bin_flags%iflag_bin_swap,             &
-     &      surf_grp_IO%num_grp, surf_grp_IO%grp_name,                  &
+        call read_mul_character_b                                       &
+     &     (surf_grp_IO%num_grp, surf_grp_IO%grp_name,                  &
      &      bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
 !
