@@ -55,10 +55,6 @@
 !
       integer(kind = kint), parameter, private :: id_binary = 19
 !
-      integer(kind = kint), parameter, private :: huge_25 = 33554432
-      integer(kind = kint), parameter, private :: huge_20 = 1048576
-      integer(kind = kint), parameter, private :: huge_14 = 16384
-!
       integer(kind = kint), private :: ierr_IO
 !
       private :: write_endian_flag, read_endian_flag

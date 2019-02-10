@@ -28,8 +28,7 @@
 !!      subroutine gz_read_mul_integer_b(iflag_swap, num, int_dat, ierr)
 !!      subroutine gz_read_integer_stack_b                              &
 !!     &         (iflag_swap, num, istack, ntot, ierr)
-!!      subroutine gz_read_mul_character_b                              &
-!!     &         (iflag_swap, num, chara_dat, ierr)
+!!      subroutine gz_read_mul_character_b(num, chara_dat, ierr)
 !!      subroutine gz_read_1d_vector_b                                  &
 !!     &         (iflag_swap, num, real_dat, ierr)
 !!      subroutine gz_read_2d_vector_b                                  &
@@ -133,11 +132,19 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
-      integer(kind = kint) :: ierr, ilength
+      integer(kind = kint) :: lbyte, ilength, ist, ierr
 !
 !
-      ilength = num *  kint_gl
-      call gzwrite_f(ilength, int8_dat, ierr)
+      ierr = 0
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte = ilength * kint_gl
+!
+        call gzwrite_f(lbyte, int8_dat(ist+1), ierr)
+        ist = ist + ilength
+        if(ist .ge. num) exit
+      end do
 !
       end subroutine gz_write_mul_int8_b
 !
@@ -148,11 +155,19 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: ierr, ilength
+      integer(kind = kint) :: lbyte, ilength, ist, ierr
 !
 !
-      ilength = num *  kint
-      call gzwrite_f(ilength, int_dat(1), ierr)
+      ierr = 0
+      ist = 0
+      do
+        ilength = min((num - ist), huge_25)
+        lbyte = ilength * kint
+!
+        call gzwrite_f(lbyte, int_dat(ist+1), ierr)
+        ist = ist + ilength
+        if(ist .ge. num) exit
+      end do
 !
       end subroutine gz_write_mul_integer_b
 !
@@ -175,11 +190,19 @@
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
 !
-      integer(kind = kint) :: ierr, ilength
+      integer(kind = kint) :: lbyte, ilength, ist, ierr
 !
 !
-      ilength = num *  kchara
-      call gzwrite_f(ilength, chara_dat(1), ierr)
+      ierr = 0
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte = ilength * kchara
+!
+        call gzwrite_f(lbyte, chara_dat(ist+1), ierr)
+        ist = ist + ilength
+        if(ist .ge. num) exit
+      end do
 !
       end subroutine gz_write_mul_character_b
 !
@@ -190,11 +213,17 @@
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
 !
-      integer(kind = kint) :: ilength, ierr
+      integer(kind = kint) :: lbyte, ilength, ist, ierr
 !
 !
-      ilength =  num * kreal
-      call gzwrite_f(ilength, real_dat(1), ierr)
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte =  ilength * kreal
+        call gzwrite_f(lbyte, real_dat(ist+1), ierr)
+        ist = ist + ilength
+        if(ist .ge. num) exit
+      end do
 !
       end subroutine gz_write_1d_vector_b
 !
@@ -205,11 +234,12 @@
       integer(kind = kint), intent(in) :: n1, n2
       real(kind = kreal), intent(in) :: real_dat(n1,n2)
 !
-      integer(kind = kint) :: ierr, ilength
+      integer(kind = kint) :: i2
 !
 !
-      ilength = n1 * n2 * kreal
-      call gzwrite_f(ilength, real_dat(1,1), ierr)
+      do i2 = 1, n2
+        call gz_write_1d_vector_b(n1, real_dat(1,i2))
+      end do
 !
       end subroutine gz_write_2d_vector_b
 !
@@ -219,12 +249,15 @@
       integer(kind = kint) function gz_read_endian_flag(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
-      integer(kind = kint) :: ierr, int_dat
+      integer(kind = kint) :: ierr_IO, int_dat
 !
 !
-      call gzread_32bit_f(iendian_KEEP, kint, int_dat, ierr)
+      call gzread_32bit_f(iendian_KEEP, kint, int_dat, ierr_IO)
 !
-      if(int_dat .eq. i_UNIX) then
+      if(ierr_IO .ne. kint) then
+        if(my_rank.eq.0) write(*,*) 'Data is broken'
+        gz_read_endian_flag = -1
+      else if(int_dat .eq. i_UNIX) then
         if(my_rank.eq.0) write(*,*) 'binary data have correct endian!'
         gz_read_endian_flag = iendian_KEEP
       else if(int_dat .eq. i_XINU) then
@@ -246,10 +279,12 @@
       integer(kind = kint), intent(inout) :: int_dat
       integer(kind = kint), intent(inout) :: ierr
 !
+      integer(kind = kint) :: ierr_IO
+!
 !
       ierr = 0
-      call gzread_32bit_f(iflag_swap, kint, int_dat, ierr)
-      if(ierr .ne. kint) ierr = ierr_file
+      call gzread_32bit_f(iflag_swap, kint, int_dat, ierr_IO)
+      if(ierr_IO .ne. kint) ierr = ierr_file
 !
       end subroutine gz_read_one_integer_b
 !
@@ -261,10 +296,12 @@
       real(kind = kreal), intent(inout) :: real_dat
       integer(kind = kint), intent(inout) :: ierr
 !
+      integer(kind = kint) :: ierr_IO
+!
 !
       ierr = 0
-      call gzread_64bit_f(iflag_swap, kreal, real_dat, ierr)
-      if(ierr .ne. kreal) ierr = ierr_file
+      call gzread_64bit_f(iflag_swap, kreal, real_dat, ierr_IO)
+      if(ierr_IO .ne. kreal) ierr = ierr_file
 !
       end subroutine gz_read_one_real_b
 !
@@ -278,13 +315,21 @@
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: ierr_IO
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       ierr = 0
-      ilength = num * kint_gl
-      call gzread_64bit_f(iflag_swap, ilength, int8_dat(1), ierr)
-      if(ierr .ne. ilength) ierr = ierr_file
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte = ilength * kint_gl
+!
+        call gzread_64bit_f(iflag_swap, lbyte, int8_dat(ist+1), ierr_IO)
+        ist = ist + ilength
+        if(ist .ge. num) exit
+        if(ierr_IO .ne. lbyte) ierr = ierr_file
+      end do
 !
       end subroutine gz_read_mul_int8_b
 !
@@ -297,13 +342,21 @@
       integer(kind = kint), intent(inout) :: int_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: ierr_IO
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       ierr = 0
-      ilength = num * kint
-      call gzread_32bit_f(iflag_swap, ilength, int_dat(1), ierr)
-      if(ierr .ne. ilength) ierr = ierr_file
+      ist = 0
+      do
+        ilength = min((num - ist), huge_25)
+        lbyte = ilength * kint
+!
+        call gzread_32bit_f(iflag_swap, lbyte, int_dat(ist+1), ierr_IO)
+        ist = ist + ilength
+        if(ist .ge. num) exit
+        if(ierr_IO .ne. lbyte) ierr = ierr_file
+      end do
 !
       end subroutine gz_read_mul_integer_b
 !
@@ -328,21 +381,28 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_mul_character_b                                &
-     &         (iflag_swap, num, chara_dat, ierr)
+      subroutine gz_read_mul_character_b(num, chara_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(inout) :: chara_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: ierr_IO
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       ierr = 0
-      ilength = num * kchara
-      call gzread_32bit_f(iflag_swap, ilength, chara_dat(1), ierr)
-      if(ierr .ne. ilength) ierr = ierr_file
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte = ilength * kchara
+!
+        call gzread_32bit_f                                             &
+     &     (iendian_KEEP, lbyte, chara_dat(ist+1), ierr_IO)
+        ist = ist + ilength
+        if(ist .ge. num) exit
+        if(ierr_IO .ne. lbyte) ierr = ierr_file
+      end do
 !
       end subroutine gz_read_mul_character_b
 !
@@ -356,13 +416,22 @@
       real(kind = kreal), intent(inout) :: real_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: ierr_IO
+      integer(kind = kint) :: lbyte, ilength, ist
 !
 !
       ierr = 0
-      ilength =  num * kreal
-      call gzread_64bit_f(iflag_swap, ilength, real_dat(1), ierr)
-      if(ierr .ne. ilength) ierr = ierr_file
+      ist = 0
+      do
+        ilength = min((num - ist), huge_20)
+        lbyte = ilength * kreal
+!
+        call gzread_64bit_f                                             &
+     &     (iflag_swap, lbyte, real_dat(ist+1), ierr_IO)
+        ist = ist + ilength
+        if(ist .ge. num) exit
+        if(ierr_IO .ne. lbyte) ierr = ierr_file
+      end do
 !
       end subroutine gz_read_1d_vector_b
 !
@@ -376,13 +445,13 @@
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ilength
+      integer(kind = kint) :: i2
 !
 !
-      ierr = 0
-      ilength =  n1 * n2 * kreal
-      call gzread_64bit_f(iflag_swap, ilength, real_dat(1,1), ierr)
-      if(ierr .ne. ilength) ierr = ierr_file
+      do i2 = 1, n2
+        call gz_read_1d_vector_b(iflag_swap, n1, real_dat(1,i2), ierr)
+        if(ierr .ne. 0) exit
+      end do
 !
       end subroutine gz_read_2d_vector_b
 !

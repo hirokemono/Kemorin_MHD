@@ -55,8 +55,8 @@
      &      group_IO%num_item, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
-        call gz_read_mul_character_b(gz_flags%iflag_bin_swap,           &
-     &      group_IO%num_grp, group_IO%grp_name, gz_flags%ierr_IO)
+        call gz_read_mul_character_b                                    &
+     &     (group_IO%num_grp, group_IO%grp_name, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
         call allocate_grp_type_item(group_IO)
@@ -93,8 +93,8 @@
      &      surf_grp_IO%num_item, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
-        call gz_read_mul_character_b(gz_flags%iflag_bin_swap,           &
-     &      surf_grp_IO%num_grp, surf_grp_IO%grp_name,                  &
+        call gz_read_mul_character_b                                    &
+     &     (surf_grp_IO%num_grp, surf_grp_IO%grp_name,                  &
      &      gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !

@@ -133,8 +133,7 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call gz_read_mul_character_b                                      &
-     &   (iflag_swap, num_field, field_name, ierr)
+      call gz_read_mul_character_b(num_field, field_name, ierr)
       if(ierr .gt. 0) return
 !
       call gz_read_2d_vector_b                                          &
