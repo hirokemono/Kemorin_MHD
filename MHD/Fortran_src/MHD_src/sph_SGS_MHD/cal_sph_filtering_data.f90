@@ -47,9 +47,9 @@
 !
       pi = four * atan(one)
 !      k_rev = 2*l_truncation / f_width
-!      b = 2*pi*l_truncation / f_width
-      b = log(two) / (one                                               &
-     &   - cos(pi*dble(f_width) / (dble(l_truncation+1)*six)))
+!      b = log(two) / (one                                               &
+!     &   - cos(pi*dble(f_width) / (dble(l_truncation+1)*six)))
+      b = four * pi * (dble(l_truncation)*f_width)**2 / three 
 !
       weight(0) = one
       if(b .gt. 227.0) then
