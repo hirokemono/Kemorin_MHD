@@ -232,7 +232,7 @@
       call add_field_name_4_sph_trns_snap(fhd_press, n_scalar,          &
      &    ipol%i_press, itor%i_press, iphys%i_press,                    &
      &    b_trns%i_press, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_part_temp, n_scalar,      &
+      call add_field_name_4_sph_trns_nofld(fhd_part_temp, n_scalar,     &
      &    ipol%i_par_temp, itor%i_par_temp, iphys%i_par_temp,           &
      &    b_trns%i_par_temp, trns_back)
       call add_field_name_4_sph_trns_snap(fhd_filter_temp, n_scalar,    &

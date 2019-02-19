@@ -60,6 +60,7 @@
         call ordering_sph_field_by_viz(field_ctl, rj_fld)
 !
         if (iflag_debug .gt. 0) then
+          write(*,*) 'check_nodal_field_name_type for rj_fld'
           call check_nodal_field_name_type(6, rj_fld)
         end if
       end if

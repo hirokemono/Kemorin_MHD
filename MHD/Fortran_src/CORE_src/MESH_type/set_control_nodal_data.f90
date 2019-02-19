@@ -50,8 +50,10 @@
         call alloc_phys_name_type(fld)
         call ordering_field_type_by_viz(field_ctl, fld)
 !
-        if (iflag_debug .ge. iflag_routine_msg)                         &
-     &                 call check_nodal_field_name_type(6, fld)
+        if(iflag_debug .ge. iflag_routine_msg) then
+          write(*,*) 'check_nodal_field_name_type for fld'
+          call check_nodal_field_name_type(6, fld)
+        end if
       end if
 !
       end subroutine s_set_control_nodal_data

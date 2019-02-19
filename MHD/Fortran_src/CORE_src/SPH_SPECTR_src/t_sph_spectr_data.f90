@@ -102,7 +102,7 @@
       type(sph_phys_data), intent(in) :: sph_phys
 !
 !
-      write(*,*) 'sph_phys%rj_fld'
+      write(*,*) 'check_nodal_field_name_type for sph_phys%rj_fld'
       call check_nodal_field_name_type(6,sph_phys%rj_fld)
 !
       end subroutine check_rj_spectr_name_t
@@ -117,7 +117,7 @@
       integer(kind = kint) :: i_fld
 !
 !
-      write(*,*) 'sph_phys%rj_fld'
+      write(*,*) 'check_nodal_field_name_type for sph_phys%rj_fld'
       call check_nodal_field_name_type((50+my_rank),sph_phys%rj_fld)
 !
       write(50+my_rank,*) 'sph_phys%rj_fld'

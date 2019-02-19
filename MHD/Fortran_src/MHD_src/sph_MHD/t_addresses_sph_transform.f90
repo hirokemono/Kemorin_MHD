@@ -26,6 +26,9 @@
 !!      subroutine add_field_name_4_sph_trns_snap                       &
 !!     &         (field_name, num_component, i_pol, i_tor, irtp,        &
 !!     &          i_trns, each_trns)
+!!      subroutine add_field_name_4_sph_trns_nofld                      &
+!!     &         (field_name, num_component, i_pol, i_tor, irtp,        &
+!!     &          i_trns, each_trns)
 !!        type(address_each_sph_trans), intent(inout) :: each_trns
 !!      subroutine add_field_name_4_sph_trns                            &
 !!     &         (iflag_add, field_name, num_component,                 &
@@ -304,6 +307,25 @@
      &    num_component, i_pol, i_tor, irtp, i_trns, each_trns)
 !
       end subroutine add_field_name_4_sph_trns_snap
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_field_name_4_sph_trns_nofld                        &
+     &         (field_name, num_component, i_pol, i_tor, irtp,          &
+     &          i_trns, each_trns)
+!
+      character(len = kchara), intent(in) :: field_name
+      integer(kind = kint), intent(in) :: num_component
+      integer(kind = kint), intent(in) :: i_pol, i_tor, irtp
+!
+      integer(kind = kint), intent(inout) :: i_trns
+      type(address_each_sph_trans), intent(inout) :: each_trns
+!
+!
+      call add_field_name_4_sph_trns(i_pol, field_name,                 &
+     &    num_component, i_pol, i_tor, irtp, i_trns, each_trns)
+!
+      end subroutine add_field_name_4_sph_trns_nofld
 !
 !-----------------------------------------------------------------------
 !
