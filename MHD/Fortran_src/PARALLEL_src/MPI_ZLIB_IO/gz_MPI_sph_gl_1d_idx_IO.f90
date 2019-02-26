@@ -26,7 +26,7 @@
       use m_sph_modes_grid_labels
       use gz_MPI_ascii_data_IO
       use gz_MPI_domain_data_IO
-      use gz_MPI_vectors_IO
+      use gz_MPI_position_IO
       use MPI_ascii_data_IO
 !
       implicit none
@@ -39,7 +39,8 @@
 !
       contains
 !
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       subroutine gz_mpi_read_rtp_gl_1d_table(IO_param, sph_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param

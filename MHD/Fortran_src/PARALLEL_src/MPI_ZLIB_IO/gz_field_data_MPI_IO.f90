@@ -124,6 +124,7 @@
      &                   (nnod, ndir, vector, ilength, ilen_gz, buffer)
 !
       use field_data_IO
+      use data_IO_to_textline
 !
       integer(kind = kint), intent(in) :: nnod, ndir
       real(kind = kreal), intent(in) :: vector(nnod,ndir)
@@ -139,22 +140,22 @@
       if(nnod .eq. 1) then
         v1(1:ndir) = vector(1,1:ndir)
         call gzip_defleat_once(ilength,                                 &
-     &      each_field_data_buffer(ndir, v1),                           &
+     &      vector_textline(ndir, v1),                                  &
      &      ilen_gz, ilen_gzipped, buffer(1))
 !
       else if(nnod .gt. 1) then
         v1(1:ndir) = vector(1,1:ndir)
         call gzip_defleat_begin(ilength,                                &
-     &      each_field_data_buffer(ndir, v1),                           &
+     &      vector_textline(ndir, v1),                                  &
      &      ilen_gz, ilen_gzipped, buffer(1))
         do inod = 2, nnod-1
           v1(1:ndir) = vector(inod,1:ndir)
           call gzip_defleat_cont(ilength,                               &
-     &      each_field_data_buffer(ndir, v1), ilen_gz, ilen_gzipped)
+     &      vector_textline(ndir, v1), ilen_gz, ilen_gzipped)
         end do
         v1(1:ndir) = vector(nnod,1:ndir)
         call gzip_defleat_last(ilength,                                 &
-     &      each_field_data_buffer(ndir, v1), ilen_gz, ilen_gzipped)
+     &      vector_textline(ndir, v1), ilen_gz, ilen_gzipped)
       else
         ilen_gzipped = 0
       end if
