@@ -214,7 +214,8 @@
         ist = 0
         ilen_gzipped = 0
         ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
-!        if(my_rank .eq. 0) write(*,*) 'all start ',                    &
+!        if(my_rank .eq. 0) write(*,*)                                  &
+!     &     'gz_mpi_write_node_position start ',                        &
 !     &      nnod, ilen_line, ilen_gz, ilen_tmp
         do
           nline = int(min((nnod - ist), maxline))

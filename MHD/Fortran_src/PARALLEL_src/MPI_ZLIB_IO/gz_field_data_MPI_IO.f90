@@ -315,28 +315,55 @@
       integer(kind = kint_gl), intent(inout) :: ilen_gzipped
 !
       real(kind = kreal) :: v1(ndir)
-      integer(kind = kint_gl) :: inod
+      integer(kind = kint_gl) :: i, ist, nline
+!
+      integer(kind = kint_gl) :: ilen_tmp
+      integer(kind = kint) :: ilen_used, ilen_in
 !
 !
       if(nnod .eq. 1) then
+        ilen_in = int(ilen_gz)
         v1(1:ndir) = vector(1,1:ndir)
-        call gzip_defleat_once(ilen_line,                               &
-     &      vector_textline(ndir, v1),                                  &
-     &      ilen_gz, ilen_gzipped, gzip_buf(1))
+        call gzip_defleat_once(ilen_line, vector_textline(ndir, v1),    &
+     &      ilen_in, ilen_used, gzip_buf(1))
+        ilen_gzipped = ilen_used
 !
       else if(nnod .gt. 1) then
-        v1(1:ndir) = vector(1,1:ndir)
-        call gzip_defleat_begin(ilen_line,                              &
-     &      vector_textline(ndir, v1),                                  &
-     &      ilen_gz, ilen_gzipped, gzip_buf(1))
-        do inod = 2, nnod-1
-          v1(1:ndir) = vector(inod,1:ndir)
-          call gzip_defleat_cont(ilen_line,                             &
-     &      vector_textline(ndir, v1), ilen_gz, ilen_gzipped)
+        ist = 0
+        ilen_gzipped = 0
+        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+!        if(my_rank .eq. 0) write(*,*)                                  &
+!     &     'gz_mpi_write_node_position start ',                        &
+!     &      nnod, ilen_line, ilen_gz, ilen_tmp
+        do
+          nline = min((nnod - ist), maxline)
+          ilen_in = int(min(ilen_gz-ilen_gzipped, ilen_tmp))
+!
+!          if(my_rank .eq. 0) write(*,*) 'start ',                      &
+!     &      ist+1, ist+nline, nline, ilen_gzipped+1, ilen_in
+          v1(1:ndir) = vector(ist+1,1:ndir)
+          call gzip_defleat_begin(ilen_line, vector_textline(ndir, v1), &
+     &        ilen_in, ilen_used, gzip_buf(ilen_gzipped+1))
+!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_begin', ilen_used
+!
+          do i = ist+2, ist+nline-1
+            v1(1:ndir) = vector(i,1:ndir)
+            call gzip_defleat_cont(ilen_line,                           &
+     &         vector_textline(ndir, v1), ilen_in, ilen_used)
+          end do
+!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_cont', ilen_used
+!
+          v1(1:ndir) = vector(ist+nline,1:ndir)
+          call gzip_defleat_last(ilen_line,                             &
+     &        vector_textline(ndir, v1), ilen_in, ilen_used)
+!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_last',           &
+!     &        ilen_used, ist + nline, nnod
+!
+          ilen_gzipped = ilen_gzipped + ilen_used
+          ist = ist + nline
+          if(ist .ge. nnod) exit
         end do
-        v1(1:ndir) = vector(nnod,1:ndir)
-        call gzip_defleat_last(ilen_line,                               &
-     &      vector_textline(ndir, v1), ilen_gz, ilen_gzipped)
+!        if(my_rank .eq. 0) write(*,*) 'all done ', ilen_gzipped
       else
         ilen_gzipped = 0
       end if
