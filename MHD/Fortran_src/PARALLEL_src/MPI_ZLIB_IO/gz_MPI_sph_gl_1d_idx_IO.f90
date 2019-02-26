@@ -61,9 +61,8 @@
       call alloc_idx_sph_1d1_IO(sph_IO)
 !
       allocate(idx_gl_tmp(sph_IO%nidx_sph(1)))
-      call gz_mpi_read_node_position(IO_param,                          &
-     &   sph_IO%nidx_sph(1), sph_IO%ncomp_table_1d(1),                  &
-     &   idx_gl_tmp, sph_IO%r_gl_1)
+      call gz_mpi_read_radial_position(IO_param,                        &
+     &   sph_IO%nidx_sph(1), idx_gl_tmp, sph_IO%r_gl_1)
       sph_IO%idx_gl_1(1:sph_IO%nidx_sph(1))                             &
      &       = int(idx_gl_tmp(1:sph_IO%nidx_sph(1)))
       deallocate(idx_gl_tmp)
@@ -114,9 +113,8 @@
       call alloc_idx_sph_1d1_IO(sph_IO)
 !
       allocate(idx_gl_tmp(sph_IO%nidx_sph(1)))
-      call gz_mpi_read_node_position(IO_param,                          &
-     &   sph_IO%nidx_sph(1), sph_IO%ncomp_table_1d(1),                  &
-     &   idx_gl_tmp, sph_IO%r_gl_1)
+      call gz_mpi_read_radial_position(IO_param,                        &
+     &   sph_IO%nidx_sph(1), idx_gl_tmp, sph_IO%r_gl_1)
       sph_IO%idx_gl_1(1:sph_IO%nidx_sph(1))                             &
      &       = int(idx_gl_tmp(1:sph_IO%nidx_sph(1)))
       deallocate(idx_gl_tmp)
@@ -153,8 +151,8 @@
       allocate(idx_gl_tmp(sph_IO%nidx_sph(1)))
       idx_gl_tmp(1:sph_IO%nidx_sph(1))                                  &
      &       =  sph_IO%idx_gl_1(1:sph_IO%nidx_sph(1))
-      call gz_mpi_write_node_position(IO_param,                         &
-     &   sph_IO%nidx_sph(1), ione, idx_gl_tmp, sph_IO%r_gl_1)
+      call gz_mpi_write_radial_position(IO_param,                       &
+     &   sph_IO%nidx_sph(1), idx_gl_tmp, sph_IO%r_gl_1)
       deallocate(idx_gl_tmp)
 !
 !
@@ -198,9 +196,8 @@
       allocate(idx_gl_tmp(sph_IO%nidx_sph(1)))
       idx_gl_tmp(1:sph_IO%nidx_sph(1))                                  &
      &       =  sph_IO%idx_gl_1(1:sph_IO%nidx_sph(1))
-      call gz_mpi_write_node_position(IO_param,                         &
-     &    sph_IO%nidx_sph(1), sph_IO%ncomp_table_1d(1),                 &
-     &    idx_gl_tmp, sph_IO%r_gl_1)
+      call gz_mpi_write_radial_position(IO_param,                       &
+     &    sph_IO%nidx_sph(1), idx_gl_tmp, sph_IO%r_gl_1)
       deallocate(idx_gl_tmp)
 !
 !

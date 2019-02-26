@@ -77,8 +77,6 @@
      &      test_fem%mesh%nod_comm%id_neib(i), num_in, num_ex
       end do
       close(50+my_rank)
-      call calypso_mpi_barrier
-      call calypso_mpi_abort(1,'tako')
 !
 !  -------------------------------------------
 !
