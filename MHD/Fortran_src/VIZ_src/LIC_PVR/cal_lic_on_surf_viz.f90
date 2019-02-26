@@ -353,8 +353,12 @@
         g_v(1:3) = 0.0
         ref_value(:) = 0.0
         do i = 1, lic_p%num_masking
-          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-          &      ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
+          if(lic_p%masking(i)%mask_type .eq. 2) then
+            call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+            &      ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
+          else
+            call get_geometry_reference(lic_p, i, x_tgt, ref_value(i))
+          end if
         end do
         if(mask_flag(lic_p, ref_value)) then
           call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,               &
@@ -426,8 +430,12 @@
           n_v = 0.0
           g_v(1:3) = 0.0
           do i = 1, lic_p%num_masking
-            call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-            &      ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
+            if(lic_p%masking(i)%mask_type .eq. 2) then
+              call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+              &      ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
+            else
+              call get_geometry_reference(lic_p, i, x_tgt, ref_value(i))
+            end if
           end do
           if(mask_flag(lic_p, ref_value)) then
             call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,               &

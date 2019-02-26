@@ -27,10 +27,15 @@
       implicit  none
 !
 !
+
 !>      Structure of masking parameter
       type lic_masking_parameter
+!>        Mask type 1: geometry 2: field data
+        integer(kind = kint) :: mask_type =   1
 !>        Structure of soure decision field parameter for LIC
         type(pvr_field_parameter) :: field_info
+!>        Geometry mask component index 1:x 2:y 3:z 4:magnitude
+        integer(kind = kint) :: comp_idx =   1
 !>        Number of masking range
         integer(kind = kint) :: num_range =   1
 !>        minimum value of source point range
@@ -40,6 +45,9 @@
       end type lic_masking_parameter
 !
       private :: alloc_lic_masking_range
+!
+      character(len=kchara) :: hd_masking_geometry = 'geometry'
+      character(len=kchara) :: hd_masking_field = 'field'
 !
 !  ---------------------------------------------------------------------
 !
@@ -68,6 +76,10 @@
       integer(kind = kint) :: j
 !
 !
+      if(mask_ctl%mask_type_ctl%iflag .eq. 0) then
+        e_message = 'Set mask type for LIC source masking'
+        call calypso_mpi_abort(ierr_fld, e_message)
+      end if
       if(mask_ctl%field_name_ctl%iflag .eq. 0) then
         e_message = 'Set field for LIC source masking'
         call calypso_mpi_abort(ierr_fld, e_message)
@@ -77,15 +89,35 @@
         call calypso_mpi_abort(ierr_fld, e_message)
       end if
 !
-      tmpfield(1) = mask_ctl%field_name_ctl%charavalue
-      tmpcomp(1) =  mask_ctl%component_ctl%charavalue
-      call set_components_4_viz(num_nod_phys, phys_nod_name,            &
-     &    ione, tmpfield, tmpcomp, ione, ifld_tmp, icomp_tmp,           &
-     &    icheck_ncomp, ncomp_tmp, fldname_tmp)
-      masking%field_info%id_field = ifld_tmp(1)
-      masking%field_info%id_component = icomp_tmp(1)
-      masking%field_info%num_original_comp = ncomp_tmp(1)
-      masking%field_info%field_name = fldname_tmp(1)
+      if(mask_ctl%mask_type_ctl%charavalue .eq. hd_masking_geometry) then
+        masking%mask_type = 1
+      else
+        masking%mask_type = 2
+      end if
+!
+      if(masking%mask_type .eq. 1) then
+        if(mask_ctl%component_ctl%charavalue .eq. 'x') then
+          masking%comp_idx = 1
+        else if(mask_ctl%component_ctl%charavalue .eq. 'y') then
+          masking%comp_idx = 2
+        else if(mask_ctl%component_ctl%charavalue .eq. 'z') then
+          masking%comp_idx = 3
+        else if(mask_ctl%component_ctl%charavalue .eq. 'magnitude') then
+          masking%comp_idx = 4
+        end if
+      end if
+!
+      if(masking%mask_type .eq. 2) then
+        tmpfield(1) = mask_ctl%field_name_ctl%charavalue
+        tmpcomp(1) =  mask_ctl%component_ctl%charavalue
+        call set_components_4_viz(num_nod_phys, phys_nod_name,            &
+       &    ione, tmpfield, tmpcomp, ione, ifld_tmp, icomp_tmp,           &
+       &    icheck_ncomp, ncomp_tmp, fldname_tmp)
+        masking%field_info%id_field = ifld_tmp(1)
+        masking%field_info%id_component = icomp_tmp(1)
+        masking%field_info%num_original_comp = ncomp_tmp(1)
+        masking%field_info%field_name = fldname_tmp(1)
+      end if
 !
       call alloc_lic_masking_range                                      &
      &   (mask_ctl%mask_range_ctl%num, masking)

@@ -259,8 +259,10 @@
       allocate(r_tgt(lic_p%num_masking))
       allocate(r_mid(lic_p%num_masking))
       do i = 1, lic_p%num_masking
-        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_org(i) )
+        if(lic_p%masking(i)%mask_type .eq. 2) then
+          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+       &      ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_org(i) )
+        end if
       end do
 !
 !   start ray casting
@@ -318,8 +320,10 @@
         &    ie_surf, isurf_end, xi, field_pvr%v_lic, vec_tgt)
 
         do i = 1, lic_p%num_masking
-          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
-     &        ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_tgt(i) )
+          if(lic_p%masking(i)%mask_type .eq. 2) then
+            call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
+       &        ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_tgt(i) )
+          end if
         end do
 
         c_tgt(1) = 0.0
@@ -348,7 +352,9 @@
               ratio = (step_size*step_cnt - ray_left) / ray_len
               xx_lic = xx_st + ratio * (xx_tgt - xx_st)
               do i = 1, lic_p%num_masking
-                r_mid(i) = r_org(i) * (1 - ratio) + r_tgt(i)*ratio
+                if(lic_p%masking(i)%mask_type .eq. 2) then
+                  r_mid(i) = r_org(i) * (1 - ratio) + r_tgt(i)*ratio
+                end if
 !write(*,*) "org", r_org, "tgt", r_tgt, "ratio", ratio
               end do
 ! masking on sampling point
@@ -387,7 +393,9 @@
             xx_lic = half*(xx_st + xx_tgt)
 !   reference data at origin of lic iteration
             do i = 1, lic_p%num_masking
-              r_mid(i) = half*(r_org(i)+r_tgt(i))
+              if(lic_p%masking(i)%mask_type .eq. 2) then
+                r_mid(i) = half*(r_org(i)+r_tgt(i))
+              end if
             end do
 !   the vector interpolate from entry and exit point
             vec_mid = half*(vec_org + vec_tgt)
@@ -423,7 +431,9 @@
         screen_st(1:3) = screen_tgt(1:3)
         xx_st(1:3) = xx_tgt(1:3)
         do i = 1, lic_p%num_masking
-          r_org(i) = r_tgt(i)
+          if(lic_p%masking(i)%mask_type .eq. 2) then
+            r_org(i) = r_tgt(i)
+          end if
         end do
         vec_org(1:3) = vec_tgt(1:3)
       end do
