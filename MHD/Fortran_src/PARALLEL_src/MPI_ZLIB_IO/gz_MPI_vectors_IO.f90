@@ -99,7 +99,7 @@
       else if(nnod .gt. 0) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line *1.01) + 24
+        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
 !        if(my_rank .eq. 0) write(*,*) 'all start ',                    &
 !     &      nnod, ilen_line, ilen_gz, ilen_tmp
 !
@@ -179,7 +179,7 @@
       call gz_mpi_write_num_of_data(IO_param, nnod)
 !
       ilen_line = len_vector_textline(numdir)
-      ilen_gz = int(real(nnod*ilen_line *1.01)) + 24
+      ilen_gz = dble(nnod*ilen_line) * 1.01 + 24
       allocate(gzip_buf(ilen_gz))
 !
       if(nnod .le. 0) then
@@ -196,7 +196,7 @@
       else if(nnod .gt. 0) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line *1.01) + 24
+        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
 !        if(my_rank .eq. 0) write(*,*) 'all start ',                    &
 !     &      nnod, ilen_line, ilen_gz, ilen_tmp
         do

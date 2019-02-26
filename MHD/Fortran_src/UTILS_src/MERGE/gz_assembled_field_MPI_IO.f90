@@ -54,9 +54,9 @@
 !>  Structure for zlib data IO
       type mul_zlib_buffers
 !>  Original data size
-        integer(kind = kint) :: ilen_gz
+        integer(kind = kint_gl) :: ilen_gz
 !>  Data size for compressed data
-        integer(kind = kint) :: len_gzipped
+        integer(kind = kint_gl) :: len_gzipped
 !>  Data buffer for zlib IO
         character(len = 1), allocatable :: buffer(:)
       end type mul_zlib_buffers
@@ -209,8 +209,8 @@
       real(kind = kreal), pointer :: vector(:,:)
       real(kind = kreal) :: v1(ndir)
       integer(kind = kint_gl) :: istack_gz_pe(0:nprocs_in)
-      integer(kind = kint) :: len_gz_pe(nprocs_in)
-      integer(kind = kint) :: len_gz_lc(nprocs_in)
+      integer(kind = kint_gl) :: len_gz_pe(nprocs_in)
+      integer(kind = kint_gl) :: len_gz_lc(nprocs_in)
 !
       integer(kind = kint) :: id_rank
       integer(kind = kint) :: iloop, ip
@@ -235,7 +235,7 @@
      &                 (fld_IO(iloop)%nnod_IO, ndir, vector, ilength,   &
      &                  gz_bufs(iloop)%ilen_gz, gz_bufs(iloop)%buffer,  &
      &                  gz_bufs(iloop)%len_gzipped)
-          len_gz_lc(id_rank+1) =       gz_bufs(iloop)%len_gzipped
+          len_gz_lc(id_rank+1) = gz_bufs(iloop)%len_gzipped
         else
           gz_bufs(iloop)%ilen_gz = 0
           gz_bufs(iloop)%len_gzipped = 0
@@ -246,7 +246,7 @@
 !        Count data size
       len_gz_pe(1:nprocs_in) = 0
       call MPI_allREDUCE(len_gz_lc, len_gz_pe, nprocs_in,               &
-     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       istack_gz_pe(0) = 0
       do ip = 1, nprocs_in
         istack_gz_pe(ip) = istack_gz_pe(ip-1) + len_gz_pe(ip)
@@ -262,7 +262,7 @@
         if(id_rank .lt. nprocs_in) then
           ioffset = int(ioff_gl) + istack_gz_pe(id_rank)
           call calypso_mpi_seek_write_chara (id_mpi_file, ioffset,      &
-     &       gz_bufs(iloop)%len_gzipped, gz_bufs(iloop)%buffer(1))
+     &      int(gz_bufs(iloop)%len_gzipped), gz_bufs(iloop)%buffer(1))
         end if
         deallocate(gz_bufs(iloop)%buffer)
       end do
@@ -287,8 +287,8 @@
       type(mul_zlib_buffers), intent(inout) :: gz_bufs(nloop)
 !
       integer(kind = kint_gl) :: istack_gz_pe(0:IO_param%nprocs_in)
-      integer(kind = kint) :: len_gz_pe(IO_param%nprocs_in)
-      integer(kind = kint) :: len_gz_lc(IO_param%nprocs_in)
+      integer(kind = kint_gl) :: len_gz_pe(IO_param%nprocs_in)
+      integer(kind = kint_gl) :: len_gz_lc(IO_param%nprocs_in)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
       integer(kind = kint) :: id_rank
@@ -322,7 +322,7 @@
 !        Count data size
       len_gz_pe(1:IO_param%nprocs_in) = 0
       call MPI_allREDUCE(len_gz_lc, len_gz_pe, IO_param%nprocs_in,      &
-     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       istack_gz_pe(0) = 0
       do ip = 1, IO_param%nprocs_in
         istack_gz_pe(ip) = istack_gz_pe(ip-1) + len_gz_pe(ip)
@@ -338,7 +338,7 @@
         if(id_rank .lt. IO_param%nprocs_in) then
           ioffset = int(IO_param%ioff_gl) + istack_gz_pe(id_rank)
           call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,  &
-     &       gz_bufs(iloop)%len_gzipped, gz_bufs(iloop)%buffer(1))
+     &       int(gz_bufs(iloop)%len_gzipped), gz_bufs(iloop)%buffer(1))
         end if
         deallocate(gz_bufs(iloop)%buffer)
       end do
