@@ -13,6 +13,8 @@
 !!      integer(kind = kint) function len_multi_6digit_line(num)
 !!      integer(kind = kint) function len_vector_textline(num)
 !!      integer(kind = kint) function len_int8_and_mul_int_textline(num)
+!!      integer(kind = kint) function                                   &
+!!     &                    len_int8_and_mul_int8_textline(num)
 !!      integer(kind = kint) function len_int8_and_vector_textline(num)
 !!
 !!      character(len=len_trim(word)+1) function one_word_textline(word)
@@ -34,6 +36,8 @@
 !!        character(len=num*25+1) :: vector_textline
 !!      function int8_and_mul_int_textline(int8_gl, num, int_dat)
 !!        character(len=num*16+17) :: int8_and_mul_int_textline
+!!      function int8_and_mul_int8_textline(int8_gl, num, int8_dat)
+!!        character(len=num*16+17) :: int8_and_mul_int8_textline
 !!      function int8_and_vector_textline(int8_gl, num, real_dat)
 !!        character(len=num*25+17) :: int8_and_vector_textline
 !!
@@ -122,6 +126,17 @@
       len_int8_and_mul_int_textline = num*16+17
 !
       end function len_int8_and_mul_int_textline
+!
+! -------------------------------------------------------------------
+!
+      integer(kind = kint) function                                     &
+     &                    len_int8_and_mul_int8_textline(num)
+!
+      integer(kind = kint), intent(in) ::    num
+!
+      len_int8_and_mul_int8_textline = num*16+17
+!
+      end function len_int8_and_mul_int8_textline
 !
 ! -------------------------------------------------------------------
 !
@@ -306,6 +321,29 @@
       end if
 !
       end function int8_and_mul_int_textline
+!
+! -------------------------------------------------------------------
+!
+      function int8_and_mul_int8_textline(int8_gl, num, int8_dat)
+!
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: int8_gl
+      integer(kind = kint_gl), intent(in) :: int8_dat(num)
+!
+      character(len=num*16+17) :: int8_and_mul_int8_textline
+!
+      character(len=kchara) :: fmt_txt
+!
+!
+      if(num .gt. 0) then
+        write(fmt_txt,'(a1,i7,a9)') '(', (num+1), '(i16),a1)'
+        write(int8_and_mul_int8_textline,fmt_txt)                       &
+     &                        int8_gl, int8_dat(1:num), char(10)
+      else
+        write(int8_and_mul_int8_textline,'(i16,a1)') int8_gl, char(10)
+      end if
+!
+      end function int8_and_mul_int8_textline
 !
 ! -------------------------------------------------------------------
 !

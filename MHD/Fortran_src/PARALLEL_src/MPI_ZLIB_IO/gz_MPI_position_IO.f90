@@ -221,7 +221,7 @@
           ilen_in = int(min(ilen_gz-ilen_gzipped, ilen_tmp))
 !
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &
-!     &      ist+1, ist+nline, nline, ilen_gzipped+1,  ilen_in
+!     &      ist+1, ist+nline, nline, ilen_gzipped+1, ilen_in
           xx_tmp(1:numdir) = xx(ist+1,1:numdir)
           call gzip_defleat_begin(ilen_line,                            &
      &      int8_and_vector_textline(id_global(ist+1), numdir, xx_tmp), &
