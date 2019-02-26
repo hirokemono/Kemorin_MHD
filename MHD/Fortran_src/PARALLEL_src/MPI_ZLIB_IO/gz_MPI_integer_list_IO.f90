@@ -47,11 +47,13 @@
       integer(kind=kint_gl), intent(inout) :: id_global(nele)
       integer(kind=kint), intent(inout) :: ie(nele, nnod_4_ele)
 !
-      integer(kind = kint) :: ie_tmp(nnod_4_ele)
-      integer(kind = kint) :: i
+      integer(kind = kint_gl) :: ie_tmp(nnod_4_ele)
+      integer(kind = kint) :: i, ist
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_line, ilen_gz, ilen_gzipped
+      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped, ilen_tmp
+      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer(kind = kint) :: nline
 !
       character(len=1), allocatable :: gzip_buf(:)
       character(len=1), allocatable :: textbuf(:)
@@ -62,8 +64,8 @@
      &      len_multi_int_textline(IO_param%nprocs_in)),                &
      &    IO_param%nprocs_in, IO_param%istack_merged)
 !
-      ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)          &
-     &            - IO_param%istack_merged(IO_param%id_rank))
+      ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)              &
+     &         - IO_param%istack_merged(IO_param%id_rank)
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
@@ -72,40 +74,67 @@
       if(ilen_gz .le. 0) return
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
 !
-      ilen_line = len_int8_and_mul_int_textline(nnod_4_ele)
+      ilen_line = len_int8_and_mul_int8_textline(nnod_4_ele)
       allocate(textbuf(ilen_line))
       allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
-     &   ilen_gz, gzip_buf(1))
+     &    int(ilen_gz), gzip_buf(1))
 !
       if(nele .le. 0) then
+        ilen_in = int(ilen_gz)
         call gzip_infleat_once                                          &
-     &    (ilen_gz, gzip_buf(1), ione, textbuf(1), ilen_gzipped)
+     &    (ilen_in, gzip_buf(1), ione, textbuf(1), ilen_used)
+        ilen_gzipped = ilen_used
       else if(nele .eq. 1) then
+        ilen_in = int(ilen_gz)
         call gzip_infleat_once                                          &
-     &    (ilen_gz, gzip_buf(1), ilen_line, textbuf(1), ilen_gzipped)
-        call read_int8_and_mul_int_textline                             &
-     &     (textbuf(1), id_global(1), nnod_4_ele, ie(1,1))
-      else if(nele .gt. 0) then
-        call gzip_infleat_begin                                         &
-     &   (ilen_gz, gzip_buf(1), ilen_line, textbuf(1), ilen_gzipped)
-        call read_int8_and_mul_int_textline                             &
+     &    (ilen_in, gzip_buf(1), ilen_line, textbuf(1), ilen_used)
+        call read_int8_and_mul_int8_textline                            &
      &     (textbuf(1), id_global(1), nnod_4_ele, ie_tmp)
         ie(1,1:nnod_4_ele) = ie_tmp(1:nnod_4_ele)
+        ilen_gzipped = ilen_used
+      else if(nele .gt. 0) then
+        ist = 0
+        ilen_gzipped = 0
+        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+!        if(my_rank .eq. 0) write(*,*) 'all start ',                    &
+!     &      nele, ilen_line, ilen_gz, ilen_tmp
+        do
+          nline = int(min((nele - ist), maxline))
+          ilen_in = int(min(ilen_gz-ilen_gzipped, ilen_tmp))
 !
-        do i = 2, nele-1
-          call gzip_infleat_cont                                        &
-     &       (ilen_gz, ilen_line, textbuf(1), ilen_gzipped)
-          call read_int8_and_mul_int_textline                           &
-     &       (textbuf(1), id_global(i), nnod_4_ele, ie_tmp)
-          ie(i,1:nnod_4_ele) = ie_tmp(1:nnod_4_ele)
+!          if(my_rank .eq. 0) write(*,*) 'start ',                      &
+!     &      ist+1, ist+nline, nline, ilen_gzipped+1,  ilen_in
+          call gzip_infleat_begin(ilen_in, gzip_buf(ilen_gzipped+1),    &
+     &        ilen_line, textbuf(1), ilen_used)
+          call read_int8_and_mul_int8_textline                          &
+     &       (textbuf(1), id_global(ist+1), nnod_4_ele, ie_tmp)
+          ie(ist+1,1:nnod_4_ele) = ie_tmp(1:nnod_4_ele)
+!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_begin', ilen_used
+!
+          do i = ist+2, ist+nline-1
+            call gzip_infleat_cont                                      &
+     &         (ilen_in, ilen_line, textbuf(1), ilen_used)
+            call read_int8_and_mul_int8_textline                        &
+     &         (textbuf(1), id_global(i), nnod_4_ele, ie_tmp)
+            ie(i,1:nnod_4_ele) = ie_tmp(1:nnod_4_ele)
+          end do
+!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_cont', ilen_used
+!
+          call gzip_infleat_last                                        &
+     &       (ilen_in, ilen_line, textbuf(1), ilen_used)
+          call read_int8_and_mul_int8_textline                          &
+     &       (textbuf(1), id_global(ist+nline), nnod_4_ele, ie_tmp)
+          ie(ist+nline,1:nnod_4_ele) = ie_tmp(1:nnod_4_ele)
+!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_last',           &
+!     &        ilen_used, ist + nline, nele
+!
+          ioffset = ioffset + nline * ilen_line
+          ilen_gzipped = ilen_gzipped + ilen_used
+          ist = ist + nline
+          if(ist .ge. nele) exit
         end do
-!
-        call gzip_infleat_last                                          &
-     &     (ilen_gz, ilen_line, textbuf(1), ilen_gzipped)
-        call read_int8_and_mul_int_textline                             &
-     &     (textbuf(1), id_global(nele), nnod_4_ele, ie_tmp)
-        ie(nele,1:nnod_4_ele) = ie_tmp(1:nnod_4_ele)
+!        if(my_rank .eq. 0) write(*,*) 'all done ', ilen_gzipped
       end if
 !
       deallocate(gzip_buf, textbuf)
@@ -229,55 +258,89 @@
      &         (IO_param, nele, nnod_4_ele, id_global, ie)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nele, nnod_4_ele
+      integer(kind=kint), intent(in) :: nele
+      integer(kind=kint), intent(in) :: nnod_4_ele
       integer(kind=kint_gl), intent(in) :: id_global(nele)
       integer(kind=kint), intent(in) :: ie(nele,nnod_4_ele)
 !
-      integer(kind = kint) :: i
-      integer(kind = kint) :: ie_tmp(nnod_4_ele)
+      integer(kind = kint) :: i, ist
+      integer(kind = kint_gl) :: ie_tmp(nnod_4_ele)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_line, ilen_gz, ilen_gzipped
+      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped, ilen_tmp
+      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer(kind = kint) :: nline
 !
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      ilen_line = len_int8_and_mul_int_textline(nnod_4_ele)
-      ilen_gz = int(real(nele*ilen_line *1.01)) + 24
+      ilen_line = len_int8_and_mul_int8_textline(nnod_4_ele)
+      ilen_gz = dble(nele*ilen_line) *1.01 + 24
       allocate(gzip_buf(ilen_gz))
 !
       if(nele .le. 0) then
+        ilen_in = int(ilen_gz)
         call gzip_defleat_once(ione, char(10),                          &
-     &      ilen_gz, ilen_gzipped, gzip_buf(1))
+     &      ilen_in, ilen_used, gzip_buf(1))
+        ilen_gzipped = ilen_used
       else if(nele .eq. 1) then
-        call gzip_defleat_once(ilen_line,                               &
-     &      int8_and_mul_int_textline                                   &
-     &         (id_global(1), nnod_4_ele, ie(1,1)),                     &
-     &      ilen_gz, ilen_gzipped, gzip_buf(1))
-      else if(nele .gt. 0) then
+        ilen_in = int(ilen_gz)
         ie_tmp(1:nnod_4_ele) = ie(1,1:nnod_4_ele)
-        call gzip_defleat_begin(ilen_line,                              &
-     &     int8_and_mul_int_textline(id_global(1), nnod_4_ele, ie_tmp), &
-     &     ilen_gz, ilen_gzipped, gzip_buf(1))
-        do i = 2, nele - 1
-          ie_tmp(1:nnod_4_ele) = ie(i,1:nnod_4_ele)
-          call gzip_defleat_cont(ilen_line,                             &
-     &     int8_and_mul_int_textline(id_global(i), nnod_4_ele, ie_tmp), &
-     &        ilen_gz, ilen_gzipped)
+        call gzip_defleat_once(ilen_line,                               &
+     &      int8_and_mul_int8_textline                                  &
+     &         (id_global(1), nnod_4_ele, ie_tmp),                      &
+     &      ilen_in, ilen_used, gzip_buf(1))
+        ilen_gzipped = ilen_used
+      else if(nele .gt. 0) then
+        ist = 0
+        ilen_gzipped = 0
+        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+!        if(my_rank .eq. 0) write(*,*) 'all start ',                    &
+!     &      nele, ilen_line, ilen_gz, ilen_tmp
+        do
+          nline = int(min((nele - ist), maxline))
+          ilen_in = int(min(ilen_gz-ilen_gzipped, ilen_tmp))
+!
+!          if(my_rank .eq. 0) write(*,*) 'start ',                      &
+!     &      ist+1, ist+nline, nline, ilen_gzipped+1,  ilen_in
+          ie_tmp(1:nnod_4_ele) = ie(ist+1,1:nnod_4_ele)
+          call gzip_defleat_begin(ilen_line,                            &
+     &        int8_and_mul_int8_textline                                &
+     &             (id_global(ist+1), nnod_4_ele, ie_tmp),              &
+     &        ilen_in, ilen_used, gzip_buf(ilen_gzipped+1))
+!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_begin', ilen_used
+!
+          do i = ist+2, ist+nline-1
+            ie_tmp(1:nnod_4_ele) = ie(i,1:nnod_4_ele)
+            call gzip_defleat_cont(ilen_line,                           &
+     &          int8_and_mul_int8_textline                              &
+     &              (id_global(i), nnod_4_ele, ie_tmp),                 &
+     &          ilen_in, ilen_used)
+          end do
+!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_cont', ilen_used
+!
+          ie_tmp(1:nnod_4_ele) = ie(ist+nline,1:nnod_4_ele)
+          call gzip_defleat_last(ilen_line,                             &
+     &        int8_and_mul_int8_textline                                &
+     &             (id_global(ist+nline), nnod_4_ele, ie_tmp),          &
+     &        ilen_in, ilen_used)
+!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_last',           &
+!     &        ilen_used, ist + nline, nele
+!
+          ioffset = ioffset + nline * ilen_line
+          ilen_gzipped = ilen_gzipped + ilen_used
+          ist = ist + nline
+          if(ist .ge. nele) exit
         end do
-        ie_tmp(1:nnod_4_ele) = ie(nele,1:nnod_4_ele)
-        call gzip_defleat_last(ilen_line,                               &
-     &     int8_and_mul_int_textline                                    &
-     &          (id_global(nele), nnod_4_ele, ie_tmp),                  &
-     &      ilen_gz, ilen_gzipped)
+!        if(my_rank .eq. 0) write(*,*) 'all done ', ilen_gzipped
       end if
 !
-      call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
+      call gz_mpi_write_stack_over_domain(IO_param, int(ilen_gzipped))
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &
      &           + IO_param%istack_merged(IO_param%id_rank)
         call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &     ilen_gzipped, gzip_buf(1))
+     &      int(ilen_gzipped), gzip_buf(1))
       end if
 !
       deallocate(gzip_buf)

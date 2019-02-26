@@ -52,6 +52,8 @@
 !!      subroutine read_vector_textline(textbuf, num, real_dat)
 !!      subroutine read_int8_and_mul_int_textline                       &
 !!     &         (textbuf, int8_gl, num, int_dat)
+!!      subroutine read_int8_and_mul_int8_textline                      &
+!!     &         (textbuf, int8_gl, num, int8_dat)
 !!      subroutine read_int8_and_vector_textline                        &
 !!     &         (textbuf, int8_gl, num, real_dat)
 !!@endverbatim
@@ -528,6 +530,27 @@
       end if
 !
       end subroutine read_int8_and_mul_int_textline
+!
+! -------------------------------------------------------------------
+!
+      subroutine read_int8_and_mul_int8_textline                        &
+     &         (textbuf, int8_gl, num, int8_dat)
+!
+      integer(kind = kint), intent(in) :: num
+      character(len=num*16+17), intent(in) :: textbuf
+      integer(kind = kint_gl), intent(inout) :: int8_gl
+      integer(kind = kint_gl), intent(inout) :: int8_dat(num)
+!
+      character(len=num*16+16) ::    tmp1
+!
+      tmp1 = textbuf(1:num*16+16)
+      if(num .gt. 0) then
+        read(tmp1,*) int8_gl, int8_dat(1:num)
+      else
+        read(tmp1,*) int8_gl
+      end if
+!
+      end subroutine read_int8_and_mul_int8_textline
 !
 ! -------------------------------------------------------------------
 !
