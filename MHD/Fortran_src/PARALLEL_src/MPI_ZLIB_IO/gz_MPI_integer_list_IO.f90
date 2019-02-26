@@ -31,7 +31,7 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter, private :: maxline = 1000
+      integer(kind = kint), parameter, private :: maxline = 10000
 !
 ! -----------------------------------------------------------------------
 !
@@ -414,7 +414,7 @@
 !     &      num, ilen_line, ilen_gz, ilen_tmp
 !
         do
-          nitem_1 = num-ist
+          nitem_1 = num - ist
           nitem_2 = min(num-ist,ncolumn*maxline)
           nitem_c = nitem_2 - (mod(nitem_2-1,ncolumn)+1)
           ilen_in = int(min(ilen_gz-ilen_gzipped, ilen_tmp))
