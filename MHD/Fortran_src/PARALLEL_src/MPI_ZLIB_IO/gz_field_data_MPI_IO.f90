@@ -11,8 +11,8 @@
 !!     &         (id_fld, ioff_gl, nnod, ndir, vector)
 !!      subroutine gz_write_fld_header_mpi(id_fld, ioff_gl, header_txt)
 !!
-!!      integer(kind = kint) function  gz_defleat_vector_txt            &
-!!     &                   (nnod, ndir, vector, ilen_gz, buffer)
+!!      subroutine gz_defleat_vector_txt(nnod, ndir, vector, ilength,   &
+!!     &          ilen_gz, buffer, ilen_gzipped)
 !!
 !!      subroutine gz_read_fld_charhead_mpi(id_fld,                     &
 !!     &         ioff_gl, ilength, chara_dat)
@@ -42,6 +42,7 @@
      &         (id_fld, ioff_gl, nnod, ndir, vector)
 !
       use field_data_IO
+      use data_IO_to_textline
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: nnod, ndir
@@ -56,11 +57,11 @@
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      ilength = len_each_field_data_buf(ndir)
+      ilength = len_vector_textline(ndir)
       ilen_gz = int(real(nnod*ilength) * 1.01) + 24
       allocate(gzip_buf(ilen_gz))
-      ilen_gzipped = gz_defleat_vector_txt(nnod, ndir, vector, ilength, &
-     &                                     ilen_gz, gzip_buf(1))
+      call gz_defleat_vector_txt(nnod, ndir, vector, ilength,           &
+     &                           ilen_gz, gzip_buf(1), ilen_gzipped)
 !
       call MPI_Allgather(ilen_gzipped, ione, CALYPSO_INTEGER,           &
      &    ilen_gzipped_gl, ione, CALYPSO_INTEGER, CALYPSO_COMM,         &
@@ -120,8 +121,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function  gz_defleat_vector_txt              &
-     &                   (nnod, ndir, vector, ilength, ilen_gz, buffer)
+      subroutine gz_defleat_vector_txt(nnod, ndir, vector, ilength,     &
+     &          ilen_gz, buffer, ilen_gzipped)
 !
       use field_data_IO
       use data_IO_to_textline
@@ -131,9 +132,9 @@
 !
       integer(kind = kint), intent(in) :: ilength, ilen_gz
       character(len=1), intent(inout) :: buffer(ilen_gz)
+      integer(kind = kint), intent(inout) :: ilen_gzipped
 !
       real(kind = kreal) :: v1(ndir)
-      integer(kind = kint) :: ilen_gzipped
       integer(kind = kint_gl) :: inod
 !
 !
@@ -159,9 +160,8 @@
       else
         ilen_gzipped = 0
       end if
-      gz_defleat_vector_txt = ilen_gzipped
 !
-      end function gz_defleat_vector_txt
+      end subroutine gz_defleat_vector_txt
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -13,7 +13,6 @@
 !!      function field_num_buffer(num_field)
 !!      function field_comp_buffer(num_field, ncomp_field)
 !!      function each_field_name_buffer(field_name)
-!!      integer(kind = kint) function len_each_field_data_buf(ncomp)
 !!
 !!      subroutine read_arrays_for_stacks(file_id, num, istack_begin,   &
 !!      &         ntot, istack)
@@ -128,16 +127,6 @@
       each_field_name_buffer = trim(field_name) // char(10)
 !
       end function each_field_name_buffer
-!
-! -------------------------------------------------------------------
-!
-      integer(kind = kint) function len_each_field_data_buf(ncomp)
-!
-      integer(kind = kint), intent(in) :: ncomp
-!
-      len_each_field_data_buf = ncomp*25+1
-!
-      end function len_each_field_data_buf
 !
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------

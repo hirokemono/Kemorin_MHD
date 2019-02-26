@@ -166,7 +166,7 @@
 !
 !
       v1(1:ncomp) = 0.0d0
-      ilength = len_each_field_data_buf(ncomp)
+      ilength = len_vector_textline(ncomp)
       istack_buffer(0:nprocs_in) = ilength * istack_merged(0:nprocs_in)
 !
       call calypso_mpi_seek_write_head_c(id_fld, ioff_gl,               &

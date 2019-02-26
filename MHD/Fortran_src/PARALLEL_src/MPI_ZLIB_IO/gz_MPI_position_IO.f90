@@ -88,7 +88,6 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
 !
       ilen_line = len_int8_and_vector_textline(numdir)
-      ilen_tmp = dble(maxline*ilen_line *1.01) + 24
       allocate(textbuf(ilen_line))
       allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
@@ -109,6 +108,7 @@
       else if(nnod .gt. 0) then
         ist = 0
         ilen_gzipped = 0
+        ilen_tmp = dble(maxline*ilen_line *1.01) + 24
 !        if(my_rank .eq. 0) write(*,*) 'all start ',                    &
 !     &      nnod, ilen_line, ilen_gz, ilen_tmp
 !
@@ -195,7 +195,6 @@
       call gz_mpi_write_num_of_data(IO_param, nnod)
 !
       ilen_line = len_int8_and_vector_textline(numdir)
-      ilen_tmp = dble(maxline*ilen_line *1.01) + 24
       ilen_gz =  dble(nnod*ilen_line *1.01) + 24
       allocate(gzip_buf(ilen_gz))
 !
@@ -214,14 +213,15 @@
       else if(nnod .gt. 0) then
         ist = 0
         ilen_gzipped = 0
+        ilen_tmp = dble(maxline*ilen_line *1.01) + 24
 !        if(my_rank .eq. 0) write(*,*) 'all start ',                    &
 !     &      nnod, ilen_line, ilen_gz, ilen_tmp
         do
           nline = int(min((nnod - ist), maxline))
           ilen_in = int(min(ilen_gz-ilen_gzipped, ilen_tmp))
 !
-          if(my_rank .eq. 0) write(*,*) 'start ',                       &
-     &      ist+1, ist+nline, nline, ilen_gzipped+1,  ilen_in
+!          if(my_rank .eq. 0) write(*,*) 'start ',                      &
+!     &      ist+1, ist+nline, nline, ilen_gzipped+1,  ilen_in
           xx_tmp(1:numdir) = xx(ist+1,1:numdir)
           call gzip_defleat_begin(ilen_line,                            &
      &      int8_and_vector_textline(id_global(ist+1), numdir, xx_tmp), &

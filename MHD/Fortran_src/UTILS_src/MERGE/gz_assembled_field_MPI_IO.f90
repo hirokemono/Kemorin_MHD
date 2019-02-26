@@ -193,6 +193,7 @@
       use m_calypso_mpi_IO
       use gz_field_file_MPI_IO
       use gz_field_data_MPI_IO
+      use data_IO_to_textline
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: nprocs_in
@@ -218,7 +219,7 @@
 !
       len_gz_lc(1:nprocs_in) = 0
       v1(1:ndir) = 0.0d0
-      ilength = len_each_field_data_buf(ndir)
+      ilength = len_vector_textline(ndir)
 !
 !        deflate data
       do iloop = 1, nloop
@@ -230,9 +231,10 @@
           allocate(gz_bufs(iloop)%buffer(gz_bufs(iloop)%ilen_gz))
  !
           vector => fld_IO(iloop)%d_IO(:,ist_fld:ist_fld+ndir-1)
-          gz_bufs(iloop)%len_gzipped = gz_defleat_vector_txt            &
+          call gz_defleat_vector_txt                                    &
      &                 (fld_IO(iloop)%nnod_IO, ndir, vector, ilength,   &
-     &                  gz_bufs(iloop)%ilen_gz, gz_bufs(iloop)%buffer)
+     &                  gz_bufs(iloop)%ilen_gz, gz_bufs(iloop)%buffer,  &
+     &                  gz_bufs(iloop)%len_gzipped)
           len_gz_lc(id_rank+1) =       gz_bufs(iloop)%len_gzipped
         else
           gz_bufs(iloop)%ilen_gz = 0
