@@ -39,14 +39,14 @@
 !
       use calypso_mpi
 !
-      use m_calypso_mpi_IO
+      use t_buffer_4_gzip
       use t_calypso_mpi_IO_param
+      use m_calypso_mpi_IO
       use gz_MPI_binary_head_IO
 !
       implicit none
 !
-      character(len=1), allocatable, private :: gzip_buf(:)
-      integer(kind = kint), parameter, private :: maxline = 10000
+      type(buffer_4_gzip), private :: zbuf
 !
 !  ---------------------------------------------------------------------
 !
@@ -73,45 +73,27 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped, ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint) :: ist, nline
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint_gl) :: num64
 !
 !
-      ilen_gz = dble(num * kint) *1.01 + 24
-      allocate(gzip_buf(ilen_gz))
+      num64 = num
+      call defleate_int_vector_b(num64, int_dat, zbuf)
 !
-      ist = 0
-      ilen_gzipped = 0
-      ilen_tmp = dble(maxline*kint) * 1.01 + 24
-      do
-        nline = int(min((num - ist), maxline))
-        ilen_in = int(min(ilen_gz-ilen_gzipped, ilen_tmp))
-        ilen_line = nline * kint
-!
-        call gzip_defleat_once(ilen_line, int_dat(ist+1), ilen_in,      &
-     &      ilen_used, gzip_buf(ilen_gzipped+1))
-!
-        ilen_gzipped = ilen_gzipped + ilen_used
-        ist = ist + nline
-        if(ist .ge. num) exit
-      end do
-!
-      call istack64_4_parallell_data(ilen_gzipped, IO_param)
+      call istack64_4_parallell_data(zbuf%ilen_gzipped, IO_param)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, nprocs, IO_param%istack_merged)
 !
-      if(ilen_gzipped .gt. 0) then
+      if(zbuf%ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl + IO_param%istack_merged(my_rank)
         call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
-     &      ilen_gzipped, gzip_buf(1))
+     &      zbuf%ilen_gzipped, zbuf%gzip_buf(1))
       end if
 !
-      deallocate(gzip_buf)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + IO_param%istack_merged(nprocs)
+      call dealloc_zip_buffer(zbuf)
 !
       end subroutine gz_mpi_write_int_vector_b
 !
@@ -123,45 +105,27 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped, ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint) :: ist, nline
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint_gl) :: num64
 !
 !
-      ilen_gz =  dble(num * kint_gl) *1.01 + 24
-      allocate(gzip_buf(ilen_gz))
+      num64 = num
+      call defleate_int8_vector_b(num64, int8_dat, zbuf)
 !
-      ist = 0
-      ilen_gzipped = 0
-      ilen_tmp = dble(maxline*kint_gl) * 1.01 + 24
-      do
-        nline = int(min((num - ist), maxline))
-        ilen_in = int(min(ilen_gz-ilen_gzipped, ilen_tmp))
-        ilen_line = nline * kint_gl
-!
-        call gzip_defleat_once(ilen_line, int8_dat(ist+1), ilen_in,     &
-     &      ilen_used, gzip_buf(ilen_gzipped+1))
-!
-        ilen_gzipped = ilen_gzipped + ilen_used
-        ist = ist + nline
-        if(ist .ge. num) exit
-      end do
-!
-      call istack64_4_parallell_data(ilen_gzipped, IO_param)
+      call istack64_4_parallell_data(zbuf%ilen_gzipped, IO_param)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, nprocs, IO_param%istack_merged)
 !
-      if(ilen_gzipped .gt. 0) then
+      if(zbuf%ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl + IO_param%istack_merged(my_rank)
         call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
-     &      ilen_gzipped, gzip_buf(1))
+     &      zbuf%ilen_gzipped, zbuf%gzip_buf(1))
       end if
 !
-      deallocate(gzip_buf)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + IO_param%istack_merged(nprocs)
+      call dealloc_zip_buffer(zbuf)
 !
       end subroutine gz_mpi_write_int8_vector_b
 !
@@ -173,45 +137,27 @@
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
 !
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped, ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint) :: ist, nline
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint_gl) :: num64
 !
 !
-      ilen_gz = dble(num * kreal) *1.01 + 24
-      allocate(gzip_buf(ilen_gz))
+      num64 = num
+      call defleate_1d_vector_b(num64, real_dat, zbuf)
 !
-      ist = 0
-      ilen_gzipped = 0
-      ilen_tmp = dble(maxline*kreal) * 1.01 + 24
-      do
-        nline = int(min((num - ist), maxline))
-        ilen_in = int(min(ilen_gz-ilen_gzipped, ilen_tmp))
-        ilen_line = nline * kreal
-!
-        call gzip_defleat_once(ilen_line, real_dat(ist+1), ilen_in,     &
-     &      ilen_used, gzip_buf(ilen_gzipped+1))
-!
-        ilen_gzipped = ilen_gzipped + ilen_used
-        ist = ist + nline
-        if(ist .ge. num) exit
-      end do
-!
-      call istack64_4_parallell_data(ilen_gzipped, IO_param)
+      call istack64_4_parallell_data(zbuf%ilen_gzipped, IO_param)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, nprocs, IO_param%istack_merged)
 !
-      if(ilen_gzipped .gt. 0) then
+      if(zbuf%ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl + IO_param%istack_merged(my_rank)
         call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
-     &      ilen_gzipped, gzip_buf(1))
+     &      zbuf%ilen_gzipped, zbuf%gzip_buf(1))
       end if
 !
-      deallocate(gzip_buf)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + IO_param%istack_merged(nprocs)
+      call dealloc_zip_buffer(zbuf)
 !
       end subroutine gz_mpi_write_1d_vector_b
 !
@@ -261,11 +207,9 @@
       integer(kind = kint), intent(inout) :: int_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped, ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint) :: ist, nline
 !
       integer(kind = kint_gl) :: l8_byte
+      integer(kind = kint_gl) :: num64
 !
 !
       call gz_mpi_read_i8stack_head_b                                   &
@@ -274,35 +218,21 @@
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &         + IO_param%istack_merged(IO_param%nprocs_in)
+     &                  + IO_param%istack_merged(IO_param%nprocs_in)
 !
       if(num .le. 0) return
       if(IO_param%id_rank .ge. IO_param%nprocs_in) then
         int_dat(1:num) = 0
       else
-        ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)            &
-     &           - IO_param%istack_merged(IO_param%id_rank)
-        allocate(gzip_buf(ilen_gz))
+        zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)       &
+     &                - IO_param%istack_merged(IO_param%id_rank)
+        call alloc_zip_buffer(zbuf)
 !
         call calypso_mpi_seek_long_read_gz(IO_param%id_file, ioffset,   &
-     &      ilen_gz, gzip_buf(1))
+     &      zbuf%ilen_gz, zbuf%gzip_buf(1))
 !
-        ist = 0
-        ilen_gzipped = 0
-        ilen_tmp = dble(maxline*kint) * 1.01 + 24
-        do
-          nline = int(min((num - ist), maxline))
-          ilen_in = int(min(ilen_gz-ilen_gzipped, ilen_tmp))
-          ilen_line = nline * kint
-!
-          call gzip_infleat_once(ilen_in, gzip_buf(ilen_gzipped+1),     &
-     &        ilen_line, int_dat(ist+1), ilen_used)
-!
-          ilen_gzipped = ilen_gzipped + ilen_used
-          ist = ist + nline
-          if(ist .ge. num) exit
-        end do
-        deallocate(gzip_buf)
+        num64 = num
+        call infleate_int_vector_b(num64, int_dat, zbuf)
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = num * kint
@@ -321,12 +251,10 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
 !
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped, ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint) :: ist, nline
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
       integer(kind = kint_gl) :: l8_byte
+      integer(kind = kint_gl) :: num64
 !
 !
       call gz_mpi_read_i8stack_head_b                                   &
@@ -335,36 +263,21 @@
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &         + IO_param%istack_merged(IO_param%nprocs_in)
+     &                  + IO_param%istack_merged(IO_param%nprocs_in)
 !
       if(num .le. 0) return
       if(IO_param%id_rank .ge. IO_param%nprocs_in) then
         int8_dat(1:num) = 0
       else
-        ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)            &
-     &           - IO_param%istack_merged(IO_param%id_rank)
-        allocate(gzip_buf(ilen_gz))
+        zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)       &
+     &                - IO_param%istack_merged(IO_param%id_rank)
+        call alloc_zip_buffer(zbuf)
 !
         call calypso_mpi_seek_long_read_gz(IO_param%id_file, ioffset,   &
-     &      ilen_gz, gzip_buf(1))
+     &      zbuf%ilen_gz, zbuf%gzip_buf(1))
 !
-        ist = 0
-        ilen_gzipped = 0
-        ilen_tmp = dble(maxline*kint_gl) * 1.01 + 24
-        do
-          nline = int(min((num - ist), maxline))
-          ilen_in = int(min(ilen_gz-ilen_gzipped, ilen_tmp))
-          ilen_line = nline * kint_gl
-!
-          call gzip_infleat_once(ilen_in, gzip_buf(ilen_gzipped+1),     &
-     &        ilen_line, int8_dat(ist+1), ilen_used)
-!
-          ilen_gzipped = ilen_gzipped + ilen_used
-          ist = ist + nline
-          if(ist .ge. num) exit
-        end do
-!
-        deallocate(gzip_buf)
+        num64 = num
+        call infleate_int8_vector_b(num64, int8_dat, zbuf)
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = num * kint_gl
@@ -383,12 +296,10 @@
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
 !
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped, ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint) :: ist, nline
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
       integer(kind = kint_gl) :: l8_byte
+      integer(kind = kint_gl) :: num64
 !
 !
       call gz_mpi_read_i8stack_head_b                                   &
@@ -403,30 +314,15 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) then
         real_dat(1:num) = 0.0d0
       else
-        ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)            &
-     &            - IO_param%istack_merged(IO_param%id_rank)
+        zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)       &
+     &                - IO_param%istack_merged(IO_param%id_rank)
+        call alloc_zip_buffer(zbuf)
 !
-        allocate(gzip_buf(ilen_gz))
         call calypso_mpi_seek_long_read_gz(IO_param%id_file, ioffset,   &
-     &      ilen_gz, gzip_buf(1))
+     &      zbuf%ilen_gz, zbuf%gzip_buf(1))
 !
-        ist = 0
-        ilen_gzipped = 0
-        ilen_tmp = dble(maxline*kreal) * 1.01 + 24
-        do
-          nline = int(min((num - ist), maxline))
-          ilen_in = int(min(ilen_gz-ilen_gzipped, ilen_tmp))
-          ilen_line = nline * kreal
-!
-          call gzip_infleat_once(ilen_in, gzip_buf(ilen_gzipped+1),     &
-     &        ilen_line, real_dat(ist+1), ilen_used)
-!
-          ilen_gzipped = ilen_gzipped + ilen_used
-          ist = ist + nline
-          if(ist .ge. num) exit
-        end do
-!
-        deallocate(gzip_buf)
+        num64 = num
+        call infleate_1d_vector_b(num64, real_dat, zbuf)
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = num * kreal
