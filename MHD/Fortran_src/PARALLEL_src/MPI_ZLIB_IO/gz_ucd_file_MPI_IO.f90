@@ -176,7 +176,7 @@
      &    ilength, ilen_gz, gzip_buf, ilen_gzipped)
 !
       call calypso_gz_mpi_seek_write                                    &
-     &   (id_vtk, ioff_gl, int(ilen_gzipped), gzip_buf(1))
+     &   (id_vtk, ioff_gl, ilen_gzipped, gzip_buf(1))
 !
       deallocate(gzip_buf)
 !
@@ -216,7 +216,7 @@
      &    ilength, ilen_gz, gzip_buf, ilen_gzipped)
 !
       call calypso_gz_mpi_seek_write                                    &
-     &   (id_vtk, ioff_gl, int(ilen_gzipped), gzip_buf(1))
+     &   (id_vtk, ioff_gl, ilen_gzipped, gzip_buf(1))
       deallocate(gzip_buf)
 !
       end subroutine gz_write_ucd_connect_mpi

@@ -217,7 +217,7 @@
      &   ilength, ilen_gz, gzip_buf, ilen_gzipped)
 !
       call calypso_gz_mpi_seek_write                                    &
-     &   (id_vtk, ioff_gl, int(ilen_gzipped), gzip_buf(1))
+     &   (id_vtk, ioff_gl, ilen_gzipped, gzip_buf(1))
       deallocate(gzip_buf)
 !
       end subroutine gz_write_vtk_scalar_mpi
@@ -251,7 +251,7 @@
      &    ilength, ilen_gz, gzip_buf, ilen_gzipped)
 !
       call calypso_gz_mpi_seek_write                                    &
-     &   (id_vtk, ioff_gl, int(ilen_gzipped), gzip_buf(1))
+     &   (id_vtk, ioff_gl, ilen_gzipped, gzip_buf(1))
       deallocate(gzip_buf)
 !
       end subroutine gz_write_vtk_vecotr_mpi
@@ -286,7 +286,7 @@
       call defleate_vtk_tensor(nnod, num, vect,                         &
      &    ilength, ilen_gz, gzip_buf, ilen_gzipped)
 !
-      call MPI_Allgather(ilen_gzipped, ione, CALYPSO_INTEGER,           &
+      call MPI_Allgather(ilen_gzipped, ione, CALYPSO_GLOBAL_INT,        &
      &    ilen_gzipped_list(1), ione, CALYPSO_GLOBAL_INT,               &
      &    CALYPSO_COMM, ierr_MPI)
       ioffset = int(ioff_gl)
@@ -295,8 +295,8 @@
       end do
 !
       if(ilen_gzipped .gt. 0) then
-        call calypso_mpi_seek_write_chara                               &
-     &    (id_vtk, ioffset, int(ilen_gzipped), gzip_buf(1))
+        call calypso_mpi_seek_long_write_gz                             &
+     &    (id_vtk, ioffset, ilen_gzipped, gzip_buf(1))
       end if
       do ip = 1, nprocs
         ioff_gl = ioff_gl + ilen_gzipped_list(ip)
@@ -335,7 +335,7 @@
      &    ilength, ilen_gz, gzip_buf, ilen_gzipped)
 !
       call calypso_gz_mpi_seek_write                                    &
-     &   (id_vtk, ioff_gl, int(ilen_gzipped), gzip_buf(1))
+     &   (id_vtk, ioff_gl, ilen_gzipped, gzip_buf(1))
       deallocate(gzip_buf)
 !
       end subroutine gz_write_vtk_connect_mpi
@@ -366,7 +366,7 @@
      &   ilen_gz, gzip_buf, ilen_gzipped)
 !
       call calypso_gz_mpi_seek_write                                    &
-     &   (id_vtk, ioff_gl, int(ilen_gzipped), gzip_buf(1))
+     &   (id_vtk, ioff_gl, ilen_gzipped, gzip_buf(1))
       deallocate(gzip_buf)
 !
       end subroutine gz_write_vtk_celltype_mpi

@@ -251,7 +251,7 @@
       allocate(textbuf(ilen_line))
       allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
-     &   ilen_gz, gzip_buf(1))
+     &    ilen_gz, gzip_buf(1))
 !
       if(nnod .le. 0) then
         call gzip_infleat_once                                          &
@@ -295,7 +295,9 @@
       integer(kind = kint) :: i
       integer(kind = kint) :: idx_tmp(numdir)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_line, ilen_gz, ilen_gzipped
+      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped
+      integer(kind = kint) :: ilen_line
+      integer(kind = kint) :: ilen_used, ilen_in
 !
       character(len=1), allocatable :: gzip_buf(:)
 !
@@ -303,40 +305,42 @@
       call gz_mpi_write_num_of_data(IO_param, nnod)
 !
       ilen_line = len_multi_int_textline(numdir)
-      ilen_gz = int(real(nnod*ilen_line *1.01)) + 24
+      ilen_gz = dble(nnod*ilen_line) *1.01 + 24
+      ilen_in = int(ilen_gz)
       allocate(gzip_buf(ilen_gz))
 !
       if(nnod .le. 0) then
         call gzip_defleat_once(ione, char(10),                          &
-     &      ilen_gz, ilen_gzipped, gzip_buf(1))
+     &      ilen_in, ilen_used, gzip_buf(1))
       else if(nnod .eq. 1) then
         call gzip_defleat_once(ilen_line,                               &
      &      multi_int_textline(numdir, idx(1,1)),                       &
-     &      ilen_gz, ilen_gzipped, gzip_buf(1))
+     &      ilen_in, ilen_used, gzip_buf(1))
       else if(nnod .gt. 0) then
         idx_tmp(1:numdir) = idx(1,1:numdir)
         call gzip_defleat_begin(ilen_line,                              &
      &     multi_int_textline(numdir, idx_tmp),                         &
-     &     ilen_gz, ilen_gzipped, gzip_buf(1))
+     &     ilen_in, ilen_used, gzip_buf(1))
         do i = 2, nnod - 1
           idx_tmp(1:numdir) = idx(i,1:numdir)
           call gzip_defleat_cont(ilen_line,                             &
      &     multi_int_textline(numdir, idx_tmp),                         &
-     &        ilen_gz, ilen_gzipped)
+     &        ilen_in, ilen_used)
         end do
         idx_tmp(1:numdir) = idx(nnod,1:numdir)
         call gzip_defleat_last(ilen_line,                               &
      &     multi_int_textline(numdir, idx_tmp),                         &
-     &      ilen_gz, ilen_gzipped)
+     &      ilen_in, ilen_used)
       end if
+      ilen_gzipped = ilen_used
 !
       call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &
      &           + IO_param%istack_merged(IO_param%id_rank)
-        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &     ilen_gzipped, gzip_buf(1))
+        call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
+     &      ilen_gzipped, gzip_buf(1))
       end if
 !
       deallocate(gzip_buf)

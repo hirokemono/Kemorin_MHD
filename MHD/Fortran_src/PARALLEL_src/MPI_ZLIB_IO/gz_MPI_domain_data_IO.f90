@@ -283,8 +283,8 @@
 !
       if(ilen_gz .le. 0) return
       allocate(gzip_buf(ilen_gz))
-      call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
-     &    int(ilen_gz), gzip_buf(1))
+      call calypso_mpi_seek_long_read_gz(IO_param%id_file, ioffset,     &
+     &    ilen_gz, gzip_buf(1))
 !
       call infleate_comm_table                                          &
      &   (ncolumn, ilen_gz, gzip_buf, num, int_dat)
@@ -316,13 +316,13 @@
       call defleate_comm_table(ncolumn, num, int_dat,                   &
      &    ilen_gz, gzip_buf, ilen_gzipped)
 !
-      call gz_mpi_write_stack_over_domain(IO_param, int(ilen_gzipped))
+      call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &
      &           + IO_param%istack_merged(IO_param%id_rank)
-        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &      int(ilen_gzipped), gzip_buf(1))
+        call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
+     &      ilen_gzipped, gzip_buf(1))
       end if
 !
       deallocate(gzip_buf)

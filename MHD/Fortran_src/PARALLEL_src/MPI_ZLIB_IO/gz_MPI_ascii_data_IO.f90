@@ -60,7 +60,7 @@
 !
         ioffset = IO_param%ioff_gl
         call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &     ilen_gzipped, gzip_buf(1))
+     &      ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
       end if
       call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
@@ -90,10 +90,10 @@
       subroutine gz_mpi_write_stack_over_domain(IO_param, ilength)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: ilength
+      integer(kind = kint_gl), intent(in) :: ilength
 !
 !
-      call set_istack_4_parallell_data(ilength, IO_param)
+      call istack64_4_parallell_data(ilength, IO_param)
       call gz_mpi_write_charahead(IO_param,                             &
      &    len_multi_int_textline(IO_param%nprocs_in),                   &
      &    int_stack8_textline(IO_param%nprocs_in,                       &
@@ -111,23 +111,27 @@
       integer(kind = kint), intent(in) :: ilength
       character(len=ilength), intent(in) :: chara_dat
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped
+      integer(kind = kint) :: ilen_in, ilen_used
 !
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      ilen_gz = int(real(ilength) *1.01) + 24
+      ilen_gz = dble(ilength) *1.01 + 24
       allocate(gzip_buf(ilen_gz))
-      call gzip_defleat_once(ilength, chara_dat, ilen_gz,               &
-     &    ilen_gzipped, gzip_buf(1))
+!
+      ilen_in = int(ilen_gz)
+      call gzip_defleat_once(ilength, chara_dat, ilen_in,               &
+     &    ilen_used, gzip_buf(1))
+      ilen_gzipped = ilen_used
 !
       call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl + IO_param%istack_merged(my_rank)
-        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &     ilen_gzipped, gzip_buf(1))
+        call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
+     &      ilen_gzipped, gzip_buf(1))
       end if
 !
       deallocate(gzip_buf)

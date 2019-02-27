@@ -81,8 +81,8 @@
 !
       if(ilen_gzipped .gt. 0) then
         ioffset = ioff_gl + istack_buffer(my_rank)
-        call calypso_mpi_seek_write_chara                               &
-     &     (id_fld, ioffset, int(ilen_gzipped), gzip_buf(1))
+        call calypso_mpi_seek_long_write_gz                               &
+     &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
       end if
       deallocate(gzip_buf)
       ioff_gl = ioff_gl + istack_buffer(nprocs)
@@ -259,8 +259,8 @@
 !
       ioffset = ioff_gl + istack_buf(id_rank)
       ioff_gl = ioff_gl + istack_buf(nprocs_in)
-      call calypso_mpi_seek_read_gz                                     &
-     &   (id_fld, ioffset, int(ilen_gz), gzip_buf(1))
+      call calypso_mpi_seek_long_read_gz                                &
+     &   (id_fld, ioffset, ilen_gz, gzip_buf(1))
 !
       ilength = len_vector_textline(ndir)
       call gz_infleat_vector_txt(ilength, ilen_gz, gzip_buf,            &

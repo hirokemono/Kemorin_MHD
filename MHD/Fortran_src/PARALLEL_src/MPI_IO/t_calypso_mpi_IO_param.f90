@@ -14,8 +14,31 @@
 !!     &          ioff_gl, istack_merged, c_array)
 !!      subroutine mpi_read_chara_array_mul(id_file, nprocs_in, nloop,  &
 !!     &          ioff_gl, istack_merged, c_array)
+!!
+!!      integer(kind = kint) function rank_in_multi_domain(iloop)
+!!      integer(kind = kint) function num_loop_4_multi_domain(nprocs_in)
+!!      subroutine copy_istack_4_parallell_data(istack8, IO_param)
+!!      subroutine mul_istack_4_parallell_vect(nvect, IO_param)
+!!      subroutine set_numbers_2_head_node(num_local, IO_param)
+!!
+!!      subroutine istack64_4_parallell_data(num_local, IO_param)
+!!      subroutine set_istack_4_parallell_data(num_local, IO_param)
+!!      subroutine set_istack_over_subdomains                           &
+!!     &         (nprocs_in, nloop, num_local, istack_merged)
+!!      subroutine set_istack_4_fixed_num(num_local, IO_param)
+!!
 !!      subroutine set_istack_by_chara_length                           &
 !!     &         (nprocs_in, nloop, c_array, istack_merged)
+!!      subroutine set_istack_by_i8_buffer                              &
+!!     &         (nprocs_in, nloop, i8_array, istack_merged)
+!!      subroutine set_istack_by_int_buffer                             &
+!!     &         (nprocs_in, nloop, i_array, istack_merged)
+!!      subroutine set_istack_by_int2d_buffer                           &
+!!     &         (nprocs_in, nloop, iv_array, istack_merged)
+!!      subroutine set_istack_by_real_buffer                            &
+!!     &         (nprocs_in, nloop, r_array, istack_merged)
+!!      subroutine set_istack_by_vector_buffer                          &
+!!     &         (nprocs_in, nloop, v_array, istack_merged)
 !!@endverbatim
 !
       module t_calypso_mpi_IO_param
@@ -267,6 +290,29 @@
       IO_param%istack_merged(1:nprocs) = num_global(1:nprocs)
 !
       end subroutine set_numbers_2_head_node
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine istack64_4_parallell_data(num_local, IO_param)
+!
+      integer(kind = kint_gl), intent(in) :: num_local
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!
+      integer(kind = kint_gl) :: num_global(nprocs)
+      integer(kind = kint) :: ip
+!
+!
+      call MPI_Allgather(num_local, ione, CALYPSO_GLOBAL_INT,           &
+     &    num_global, ione, CALYPSO_GLOBAL_INT, CALYPSO_COMM,           &
+     &    ierr_MPI)
+!
+      IO_param%istack_merged(0) = 0
+      do ip = 1, IO_param%nprocs_in
+        IO_param%istack_merged(ip) = IO_param%istack_merged(ip-1)       &
+     &                              + num_global(ip)
+      end do
+!
+      end subroutine istack64_4_parallell_data
 !
 !  ---------------------------------------------------------------------
 !
