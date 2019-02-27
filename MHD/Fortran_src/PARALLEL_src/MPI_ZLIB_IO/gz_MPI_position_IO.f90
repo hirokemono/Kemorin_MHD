@@ -61,15 +61,10 @@
       integer(kind=kint_gl), intent(inout) :: id_global(nnod)
       real(kind=kreal), intent(inout) :: xx(nnod, numdir)
 !
-      integer(kind = kint) :: i, ist
-      real(kind = kreal) :: xx_tmp(numdir)
-!
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped, ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
-      integer(kind = kint) :: nline
+      integer(kind = kint_gl) :: ilen_gz
 !
-      character(len=1), allocatable :: gzip_buf(:), textbuf(:)
+      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       call read_int8_stack_textline                                     &
@@ -87,11 +82,100 @@
       if(ilen_gz .le. 0) return
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
 !
-      ilen_line = len_int8_and_vector_textline(numdir)
-      allocate(textbuf(ilen_line))
       allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
      &    int(ilen_gz), gzip_buf(1))
+!
+      call infleate_node_position                                       &
+     &   (ilen_gz, gzip_buf, nnod, numdir, id_global, xx)
+!
+      deallocate(gzip_buf)
+!
+      end subroutine gz_mpi_read_node_position
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_radial_position                           &
+     &         (IO_param, nnod, id_global, rr)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: nnod
+      integer(kind=kint_gl), intent(in) :: id_global(nnod)
+      real(kind=kreal), intent(in) :: rr(nnod)
+!
+      call gz_mpi_write_node_position                                   &
+     &         (IO_param, nnod, ione, id_global, rr(1))
+!
+      end subroutine gz_mpi_write_radial_position
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_node_position                             &
+     &         (IO_param, nnod, numdir, id_global, xx)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: nnod, numdir
+      integer(kind=kint_gl), intent(in) :: id_global(nnod)
+      real(kind=kreal), intent(in) :: xx(nnod, numdir)
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped
+      integer(kind = kint) :: ilen_line
+!
+      character(len=1), allocatable :: gzip_buf(:)
+!
+!
+      call gz_mpi_write_num_of_data(IO_param, nnod)
+!
+      ilen_line = len_int8_and_vector_textline(numdir)
+      ilen_gz = dble(nnod*ilen_line) * 1.01 + 24
+      allocate(gzip_buf(ilen_gz))
+!
+      call defleate_node_position(nnod, numdir, id_global, xx,          &
+     &    ilen_line, ilen_gz, gzip_buf, ilen_gzipped)
+!
+      call gz_mpi_write_stack_over_domain(IO_param, int(ilen_gzipped))
+!
+      if(ilen_gzipped .gt. 0) then
+        ioffset = IO_param%ioff_gl                                      &
+     &           + IO_param%istack_merged(IO_param%id_rank)
+        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
+     &      int(ilen_gzipped), gzip_buf(1))
+      end if
+!
+      deallocate(gzip_buf)
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &                  + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      end subroutine gz_mpi_write_node_position
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine infleate_node_position                              &
+     &         (ilen_gz, gzip_buf, nnod, numdir, id_global, xx)
+!
+      integer(kind = kint_gl), intent(in) :: ilen_gz
+      character(len=1), intent(in) :: gzip_buf(ilen_gz)
+!
+      integer(kind=kint), intent(in) :: nnod
+      integer(kind=kint), intent(in) :: numdir
+      integer(kind=kint_gl), intent(inout) :: id_global(nnod)
+      real(kind=kreal), intent(inout) :: xx(nnod, numdir)
+!
+      integer(kind = kint) :: i, ist
+      real(kind = kreal) :: xx_tmp(numdir)
+!
+      integer(kind = kint_gl) :: ilen_gzipped, ilen_tmp
+      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer(kind = kint) :: nline
+!
+      character(len=1), allocatable :: textbuf(:)
+!
+!
+      ilen_line = len_int8_and_vector_textline(numdir)
+      allocate(textbuf(ilen_line))
 !
       if(nnod .le. 0) then
         ilen_in = int(ilen_gz)
@@ -144,7 +228,6 @@
      &       (textbuf(1), id_global(ist+nline), numdir, xx_tmp)
           xx(ist+nline,1:numdir) = xx_tmp(1:numdir)
 !
-          ioffset = ioffset + nline * ilen_line
           ilen_gzipped = ilen_gzipped + ilen_used
           ist = ist + nline
           if(ist .ge. nnod) exit
@@ -152,51 +235,30 @@
 !        if(my_rank .eq. 0) write(*,*) 'all done ', ilen_gzipped
       end if
 !
-      deallocate(gzip_buf, textbuf)
+      deallocate(textbuf)
 !
-      end subroutine gz_mpi_read_node_position
+      end subroutine infleate_node_position
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_radial_position                           &
-     &         (IO_param, nnod, id_global, rr)
+      subroutine defleate_node_position(nnod, numdir, id_global, xx,    &
+     &           ilen_line, ilen_gz, gzip_buf, ilen_gzipped)
 !
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind=kint), intent(in) :: nnod
-      integer(kind=kint_gl), intent(in) :: id_global(nnod)
-      real(kind=kreal), intent(in) :: rr(nnod)
-!
-      call gz_mpi_write_node_position                                   &
-     &         (IO_param, nnod, ione, id_global, rr(1))
-!
-      end subroutine gz_mpi_write_radial_position
-!
-! -----------------------------------------------------------------------
-!
-      subroutine gz_mpi_write_node_position                             &
-     &         (IO_param, nnod, numdir, id_global, xx)
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod, numdir
+      integer(kind=kint), intent(in) :: numdir
       integer(kind=kint_gl), intent(in) :: id_global(nnod)
       real(kind=kreal), intent(in) :: xx(nnod, numdir)
 !
-      integer(kind = kint) ::  i, ist
+      integer(kind = kint), intent(in) :: ilen_line
+      integer(kind = kint_gl), intent(in) :: ilen_gz
+      character(len=1), intent(inout) :: gzip_buf(ilen_gz)
+      integer(kind = kint_gl), intent(inout) :: ilen_gzipped
+!
+      integer(kind = kint_gl) ::  i, ist, nline
       real(kind = kreal) :: xx_tmp(numdir)
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped, ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
-      integer(kind = kint) :: nline
+      integer(kind = kint_gl) :: ilen_tmp
+      integer(kind = kint) :: ilen_used, ilen_in
 !
-      character(len=1), allocatable :: gzip_buf(:)
-!
-!
-      call gz_mpi_write_num_of_data(IO_param, nnod)
-!
-      ilen_line = len_int8_and_vector_textline(numdir)
-      ilen_gz =  dble(nnod*ilen_line) * 1.01 + 24
-      allocate(gzip_buf(ilen_gz))
 !
       if(nnod .le. 0) then
         ilen_in = int(ilen_gz)
@@ -215,7 +277,7 @@
         ilen_gzipped = 0
         ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
 !        if(my_rank .eq. 0) write(*,*)                                  &
-!     &     'gz_mpi_write_node_position start ',                        &
+!     &     'defleate_node_position start ',                            &
 !     &      nnod, ilen_line, ilen_gz, ilen_tmp
         do
           nline = int(min((nnod - ist), maxline))
@@ -245,7 +307,6 @@
 !          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_last',           &
 !     &        ilen_used, ist + nline, nnod
 !
-          ioffset = ioffset + nline * ilen_line
           ilen_gzipped = ilen_gzipped + ilen_used
           ist = ist + nline
           if(ist .ge. nnod) exit
@@ -253,20 +314,7 @@
 !        if(my_rank .eq. 0) write(*,*) 'all done ', ilen_gzipped
       end if
 !
-      call gz_mpi_write_stack_over_domain(IO_param, int(ilen_gzipped))
-!
-      if(ilen_gzipped .gt. 0) then
-        ioffset = IO_param%ioff_gl                                      &
-     &           + IO_param%istack_merged(IO_param%id_rank)
-        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &      int(ilen_gzipped), gzip_buf(1))
-      end if
-!
-      deallocate(gzip_buf)
-      IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &                  + IO_param%istack_merged(IO_param%nprocs_in)
-!
-      end subroutine gz_mpi_write_node_position
+      end subroutine defleate_node_position
 !
 ! -----------------------------------------------------------------------
 !

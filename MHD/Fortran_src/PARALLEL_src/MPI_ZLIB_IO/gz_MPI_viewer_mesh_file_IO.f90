@@ -68,6 +68,7 @@
       use m_fem_mesh_labels
       use gz_MPI_ascii_data_IO
       use gz_MPI_viewer_mesh_IO
+      use gz_MPI_integer_list_IO
 !
       type(merged_viewer_mesh), intent(in) :: mgd_v_mesh
       type(mpi_viewer_mesh_param), intent(in) :: mgd_view_prm
@@ -102,11 +103,11 @@
       call gz_mpi_write_charahead(IO_param, len_int_txt,                &
      &    integer_textline(mgd_view_prm%istack_v_surf(nprocs)))
 !
-      call gz_mpi_write_viewer_element_type                             &
+      call gz_mpi_write_element_type                                    &
      &   (IO_param, iten, mgd_v_mesh%view_mesh%nsurf_viewer,            &
      &    mgd_v_mesh%view_mesh%surftyp_viewer)
 !
-      call gz_mpi_write_viewer_connect                                  &
+      call gz_mpi_write_ele_connect                                     &
      &   (IO_param, mgd_v_mesh%view_mesh%nsurf_viewer,                  &
      &    mgd_v_mesh%view_mesh%nnod_v_surf,                             &
      &    mgd_v_mesh%view_mesh%isurf_gl_view,                           &
@@ -118,7 +119,7 @@
       call gz_mpi_write_charahead(IO_param, len_int_txt,                &
      &    integer_textline(mgd_view_prm%istack_v_edge(nprocs)))
 !
-      call gz_mpi_write_viewer_connect                                  &
+      call gz_mpi_write_ele_connect                                     &
      &   (IO_param, mgd_v_mesh%view_mesh%nedge_viewer,                  &
      &    mgd_v_mesh%view_mesh%nnod_v_edge,                             &
      &    mgd_v_mesh%view_mesh%iedge_gl_view,                           &
@@ -131,7 +132,7 @@
      &    integer_textline(mgd_view_prm%istack_v_surf(nprocs)))
 !
 !
-      call gz_mpi_write_viewer_connect(IO_param,                        &
+      call gz_mpi_write_ele_connect(IO_param,                           &
      &    mgd_v_mesh%view_mesh%nsurf_viewer, nedge_4_surf,              &
      &    mgd_v_mesh%view_mesh%isurf_gl_view,                           &
      &    mgd_v_mesh%view_mesh%iedge_sf_viewer)

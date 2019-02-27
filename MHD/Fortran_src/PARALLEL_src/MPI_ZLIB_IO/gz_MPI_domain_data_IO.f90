@@ -258,14 +258,10 @@
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(inout) :: int_dat(num)
 !
-      integer(kind = kint) :: i, ist, nrest
-      integer(kind = kint) :: nitem_1, nitem_2, nitem_c
-!
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped, ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer(kind = kint_gl) :: ilen_gz
 !
-      character(len=1), allocatable :: gzip_buf(:), textbuf(:)
+      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       call read_int8_stack_textline                                     &
@@ -286,10 +282,78 @@
       end if
 !
       if(ilen_gz .le. 0) return
-      allocate(textbuf(len_multi_int_textline(ncolumn)))
       allocate(gzip_buf(ilen_gz))
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
      &    int(ilen_gz), gzip_buf(1))
+!
+      call infleate_comm_table                                          &
+     &   (ncolumn, ilen_gz, gzip_buf, num, int_dat)
+!
+      deallocate(gzip_buf)
+!
+      end subroutine gz_mpi_read_comm_table
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_comm_table                                &
+     &         (IO_param, ncolumn, num, int_dat)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: num, ncolumn
+      integer(kind=kint), intent(in) :: int_dat(num)
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped
+!
+      character(len=1), allocatable :: gzip_buf(:)
+!
+!
+      call gz_mpi_write_num_of_data(IO_param, num)
+!
+      ilen_gz = dble(num*len_int_txt) * 1.01 + 24
+      allocate(gzip_buf(ilen_gz))
+!
+      call defleate_comm_table(ncolumn, num, int_dat,                   &
+     &    ilen_gz, gzip_buf, ilen_gzipped)
+!
+      call gz_mpi_write_stack_over_domain(IO_param, int(ilen_gzipped))
+!
+      if(ilen_gzipped .gt. 0) then
+        ioffset = IO_param%ioff_gl                                      &
+     &           + IO_param%istack_merged(IO_param%id_rank)
+        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
+     &      int(ilen_gzipped), gzip_buf(1))
+      end if
+!
+      deallocate(gzip_buf)
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &                  + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      end subroutine gz_mpi_write_comm_table
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine infleate_comm_table                                    &
+     &         (ncolumn, ilen_gz, gzip_buf, num, int_dat)
+!
+      integer(kind=kint), intent(in) :: ncolumn
+      integer(kind = kint_gl), intent(in) :: ilen_gz
+      character(len=1), intent(in) :: gzip_buf(ilen_gz)
+!
+      integer(kind=kint), intent(in) :: num
+      integer(kind=kint), intent(inout) :: int_dat(num)
+!
+      integer(kind = kint) :: i, ist, nrest
+      integer(kind = kint) :: nitem_1, nitem_2, nitem_c
+!
+      integer(kind = kint_gl) :: ilen_gzipped, ilen_tmp
+      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+!
+      character(len=1), allocatable :: textbuf(:)
+!
+!
+      allocate(textbuf(len_multi_int_textline(ncolumn)))
 !
       if(num .le. 0) then
         ilen_in = int(ilen_gz)
@@ -355,33 +419,29 @@
 !        if(my_rank .eq. 0) write(*,*) 'all done ', ilen_gzipped
       end if
 !
-      deallocate(gzip_buf, textbuf)
+      deallocate(textbuf)
 !
-      end subroutine gz_mpi_read_comm_table
+      end subroutine infleate_comm_table
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_comm_table                                &
-     &         (IO_param, ncolumn, num, int_dat)
+      subroutine defleate_comm_table(ncolumn, num, int_dat,             &
+     &          ilen_gz, gzip_buf, ilen_gzipped)
 !
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num, ncolumn
+      integer(kind=kint), intent(in) :: ncolumn
+      integer(kind=kint), intent(in) :: num
       integer(kind=kint), intent(in) :: int_dat(num)
+!
+      integer(kind = kint_gl), intent(in) :: ilen_gz
+      character(len=1), intent(inout) :: gzip_buf(ilen_gz)
+      integer(kind = kint_gl), intent(inout) :: ilen_gzipped
 !
       integer(kind = kint) :: i, ist, nrest
       integer(kind = kint) :: nitem_1, nitem_2, nitem_c
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped, ilen_tmp
+      integer(kind = kint_gl) :: ilen_tmp
       integer(kind = kint) :: ilen_line, ilen_used, ilen_in
 !
-      character(len=1), allocatable :: gzip_buf(:)
-!
-!
-      call gz_mpi_write_num_of_data(IO_param, num)
-!
-      ilen_gz = real(num*len_int_txt) *1.01 + 24
-      allocate(gzip_buf(ilen_gz))
 !
       if(num .le. 0) then
         ilen_in = int(ilen_gz)
@@ -442,20 +502,7 @@
 !        if(my_rank .eq. 0) write(*,*) 'all done ', ilen_gzipped
       end if
 !
-      call gz_mpi_write_stack_over_domain(IO_param, int(ilen_gzipped))
-!
-      if(ilen_gzipped .gt. 0) then
-        ioffset = IO_param%ioff_gl                                      &
-     &           + IO_param%istack_merged(IO_param%id_rank)
-        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &      int(ilen_gzipped), gzip_buf(1))
-      end if
-!
-      deallocate(gzip_buf)
-      IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &                  + IO_param%istack_merged(IO_param%nprocs_in)
-!
-      end subroutine gz_mpi_write_comm_table
+      end subroutine defleate_comm_table
 !
 ! -----------------------------------------------------------------------
 !

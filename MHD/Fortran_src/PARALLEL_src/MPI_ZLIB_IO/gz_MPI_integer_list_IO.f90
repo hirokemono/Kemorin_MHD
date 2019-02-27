@@ -180,7 +180,7 @@
 !
 !
       ilen_line = len_int8_and_mul_int8_textline(nnod_4_ele)
-      ilen_gz = dble(nele*ilen_line) *1.01 + 24
+      ilen_gz = dble(nele*ilen_line) * 1.01 + 24
       allocate(gzip_buf(ilen_gz))
 !
       call defleate_ele_connect(nele, nnod_4_ele, id_global, ie,        &
@@ -216,7 +216,7 @@
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      ilen_gz = int(real(num*len_6digit_txt) *1.01) + 24
+      ilen_gz = dble(num*len_6digit_txt) * 1.01 + 24
       allocate(gzip_buf(ilen_gz))
 !
       call defleate_element_type                                        &
