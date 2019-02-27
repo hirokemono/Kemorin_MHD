@@ -144,20 +144,20 @@
 !
       integer(kind = kint) :: int_dat(1)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = kint) :: ilen_gz32, ilen_gzipped32, ilength
 !
 !
 !
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
         ilength = kint
-        ilen_gz = int(real(ilength) *1.01) + 24
-        allocate(gzip_buf(ilen_gz))
+        ilen_gz32 = int(real(ilength) *1.01) + 24
+        allocate(gzip_buf(ilen_gz32))
         call calypso_mpi_seek_read_gz                                   &
-     &     (IO_param%id_file, ioffset, ilen_gz, gzip_buf(1))
+     &     (IO_param%id_file, ioffset, ilen_gz32, gzip_buf(1))
 !
         call gzip_infleat_once                                          &
-     &     (ilen_gz, gzip_buf(1), ilength, int_dat, ilen_gzipped)
+     &     (ilen_gz32, gzip_buf(1), ilength, int_dat, ilen_gzipped32)
         deallocate(gzip_buf)
 !
         if(int_dat(1) .eq. i_UNIX) then
@@ -175,9 +175,9 @@
 !
       call MPI_BCAST(IO_param%iflag_bin_swap, ione, CALYPSO_INTEGER,    &
      &    izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
+      call MPI_BCAST(ilen_gzipped32, ione, CALYPSO_INTEGER, izero,      &
      &    CALYPSO_COMM, ierr_MPI)
-      IO_param%ioff_gl = IO_param%ioff_gl + ilen_gzipped
+      IO_param%ioff_gl = IO_param%ioff_gl + ilen_gzipped32
 !
       end subroutine gz_mpi_read_endian_flag
 !

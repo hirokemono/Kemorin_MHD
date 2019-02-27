@@ -164,26 +164,26 @@
 !
       integer, intent(in) ::  id_vtk
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = kint) :: ilen_gz32, ilen_gzipped32, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
 !
       if(my_rank .eq. 0) then
         ilength = len(header_txt)
-        ilen_gz = int(real(ilength) *1.01) + 24
-        allocate(gzip_buf(ilen_gz))
-        call gzip_defleat_once                                          &
-     &     (ilength, header_txt, ilen_gz, ilen_gzipped, gzip_buf(1))
+        ilen_gz32 = int(real(ilength) *1.01) + 24
+        allocate(gzip_buf(ilen_gz32))
+        call gzip_defleat_once(ilength, header_txt,                     &
+     &      ilen_gz32, ilen_gzipped32, gzip_buf(1))
 !
         ioffset = int(ioff_gl)
         call calypso_mpi_seek_write_chara                               &
-     &    (id_vtk, ioffset, ilen_gzipped, gzip_buf(1))
+     &    (id_vtk, ioffset, ilen_gzipped32, gzip_buf(1))
         deallocate(gzip_buf)
       end if
-      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
+      call MPI_BCAST(ilen_gzipped32, ione, CALYPSO_INTEGER, izero,      &
      &    CALYPSO_COMM, ierr_MPI)
-      ioff_gl = ioff_gl + ilen_gzipped
+      ioff_gl = ioff_gl + ilen_gzipped32
 !
       end subroutine gz_write_vtk_header_mpi
 !

@@ -99,27 +99,26 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = kint) :: ilen_gz32, ilen_gzipped32, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
       if(my_rank .eq. 0) then
         ilength = len(header_txt)
-        ilen_gz = real(ilength) * 1.01 + 24
-        allocate(gzip_buf(ilen_gz))
-        call gzip_defleat_once                                          &
-     &     (ilength, header_txt, ilen_gz, ilen_gzipped, gzip_buf(1))
-        ilength = ilen_gzipped
+        ilen_gz32 = real(ilength) * 1.01 + 24
+        allocate(gzip_buf(ilen_gz32))
+        call gzip_defleat_once (ilength, header_txt,                    &
+     &     ilen_gz32, ilen_gzipped32, gzip_buf(1))
 !
         ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
-     &         (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
+     &         (id_fld, ioffset, ilen_gzipped32, gzip_buf(1))
         deallocate(gzip_buf)
       end if
-      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
+      call MPI_BCAST(ilen_gzipped32, ione, CALYPSO_INTEGER, izero,      &
      &    CALYPSO_COMM, ierr_MPI)
-      ioff_gl = ioff_gl + ilen_gzipped
+      ioff_gl = ioff_gl + ilen_gzipped32
 !
       end subroutine gz_write_fld_header_mpi
 !
