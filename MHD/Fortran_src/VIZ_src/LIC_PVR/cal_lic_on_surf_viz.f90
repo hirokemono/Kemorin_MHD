@@ -66,8 +66,8 @@
         real(kind = kreal), intent(inout) :: xi(2)
         real(kind = kreal), intent(in) :: v_nod(nnod,3), xx(nnod, 3)
         real(kind = kreal), intent(in) :: ref_nod(nnod,lic_p%num_masking)
-        real(kind = kreal), intent(in) :: xx_org(3), r_org(:), vec_org(3)
-        real(kind = kreal), intent(inout) :: o_tgt, n_grad(3)
+        real(kind = kreal), intent(in) :: xx_org(3), vec_org(3)
+        real(kind = kreal), intent(inout) :: o_tgt, n_grad(3), r_org(:)
         integer(kind = kint), intent(inout) :: iflag_comm
         integer(kind = kint), intent(in) :: kernal_size
         real(kind = kreal), intent(in) :: kernal_node(kernal_size)
@@ -109,6 +109,11 @@
           end if
         end do
 
+        do i = 1, lic_p%num_masking
+          if(lic_p%masking(i)%mask_type .eq. 1) then
+            call get_geometry_reference(lic_p, i, xx_org, r_org(i))
+          end if
+        end do
         if(mask_flag(lic_p, r_org)) then
           call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,                   &
           &     xx_org, xyz_min, xyz_max, n_v)
