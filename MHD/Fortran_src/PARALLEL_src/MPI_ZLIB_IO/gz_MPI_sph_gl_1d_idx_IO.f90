@@ -305,7 +305,7 @@
       call gz_mpi_write_num_of_data(IO_param, nnod)
 !
       ilen_line = len_multi_int_textline(numdir)
-      ilen_gz = dble(nnod*ilen_line) *1.01 + 24
+      ilen_gz = int(dble(nnod*ilen_line) *1.01 + 24,KIND(ilen_gz))
       ilen_in = int(ilen_gz)
       allocate(gzip_buf(ilen_gz))
 !

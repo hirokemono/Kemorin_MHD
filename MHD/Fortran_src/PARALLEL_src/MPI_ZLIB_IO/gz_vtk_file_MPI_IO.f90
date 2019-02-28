@@ -210,7 +210,7 @@
      &     - istack_merged_intnod(my_rank)
 !
       ilength = len(vtk_each_scalar(zero))
-      ilen_gz = real(num*ilength) * 1.01 + 24
+      ilen_gz = int(dble(num*ilength) * 1.01 + 24,KIND(ilen_gz))
       allocate(gzip_buf(ilen_gz))
 !
       call defleate_vtk_scalar(nnod, num, vect,                         &
@@ -244,7 +244,7 @@
      &     - istack_merged_intnod(my_rank)
 !
       ilength = len(vtk_each_vector(zero, zero, zero))
-      ilen_gz = dble(num*ilength) * 1.01 + 24
+      ilen_gz = int(dble(num*ilength) * 1.01 + 24,KIND(ilen_gz))
       allocate(gzip_buf(ilen_gz))
 !
       call defleate_vtk_vector(nnod, num, vect,                         &
@@ -358,7 +358,7 @@
 !
       icellid = vtk_cell_type(nnod_ele)
       ilength = len(vtk_each_cell_type(icellid))
-      ilen_gz = dble(nele*ilength) * 1.01 + 24
+      ilen_gz = int(dble(nele*ilength) * 1.01 + 24,KIND(ilen_gz))
       allocate(gzip_buf(ilen_gz))
 !
       call defleate_vtk_celltype                                        &
@@ -400,7 +400,7 @@
       else if(num .gt. 1) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_vtk_tensor start ',    &
 !     &      num, ilen_line, ilen_gz, ilen_tmp
         do
@@ -462,7 +462,7 @@
       else if(num .gt. 1) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_vtk_tensor start ',    &
 !     &      num, ilen_line, ilen_gz, ilen_tmp
         do
@@ -534,7 +534,7 @@
       else if(num .gt. 1) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_vtk_tensor start ',    &
 !     &      num, ilen_line, ilen_gz, ilen_tmp
         do
@@ -625,7 +625,7 @@
       else if(nele .gt. 1) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_vtk_celltype start ',  &
 !     &      nele, ilen_line, ilen_gz, ilen_tmp
         do
@@ -692,7 +692,7 @@
       else if(nele .gt. 1) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_vtk_celltype start ',  &
 !     &      nele, ilen_line, ilen_gz, ilen_tmp
         do

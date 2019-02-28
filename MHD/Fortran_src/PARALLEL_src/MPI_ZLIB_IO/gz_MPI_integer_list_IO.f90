@@ -49,7 +49,6 @@
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint_gl) :: ilen_gz
-!
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
@@ -180,7 +179,7 @@
 !
 !
       ilen_line = len_int8_and_mul_int8_textline(nnod_4_ele)
-      ilen_gz = dble(nele*ilen_line) * 1.01 + 24
+      ilen_gz = int(dble(nele*ilen_line) * 1.01 + 24,KIND(ilen_gz))
       allocate(gzip_buf(ilen_gz))
 !
       call defleate_ele_connect(nele, nnod_4_ele, id_global, ie,        &
@@ -216,7 +215,7 @@
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      ilen_gz = dble(num*len_6digit_txt) * 1.01 + 24
+      ilen_gz = int(dble(num*len_6digit_txt) * 1.01 + 24,KIND(ilen_gz))
       allocate(gzip_buf(ilen_gz))
 !
       call defleate_element_type                                        &
@@ -253,7 +252,7 @@
 !
 !
       ilen_line = len_multi_int_textline(ncomp)
-      ilen_gz = real(nele*ilen_line) *1.01 + 24
+      ilen_gz = int(dble(nele*ilen_line) *1.01 + 24,KIND(ilen_gz))
       allocate(gzip_buf(ilen_gz))
 !
       call defleate_ele_int_list(nele, ncomp, ivect,                    &
@@ -317,7 +316,7 @@
       else if(nele .gt. 0) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'infleat_ele_connect start',     &
 !     &      nele, ilen_line, ilen_gz, ilen_tmp
         do
@@ -378,7 +377,6 @@
 !
       integer(kind = kint_gl) :: i, ist, nline
       integer(kind = kint_gl) :: ie_tmp(nnod_4_ele)
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint_gl) :: ilen_tmp
       integer(kind = kint) :: ilen_used, ilen_in
 !
@@ -399,7 +397,7 @@
       else if(nele .gt. 0) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_ele_connect start ',   &
 !     &      nele, ilen_line, ilen_gz, ilen_tmp
         do
@@ -473,7 +471,7 @@
       else
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'infleate_element_type  start ', &
 !     &      num, ilen_line, ilen_gz, ilen_tmp
 !
@@ -558,7 +556,7 @@
         ist = 0
         ilen_gzipped = 0
         ilen_line = len_multi_6digit_line(ncolumn)
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_element_type start ',  &
 !     &      num, ilen_line, ilen_gz, ilen_tmp
 !
@@ -648,7 +646,7 @@
       else if(nele .gt. 0) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'infleate_ele_int_list start ',  &
 !     &      nele, ilen_line, ilen_gz, ilen_tmp
         do
@@ -723,7 +721,7 @@
       else if(nele .gt. 0) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_ele_int_list start ',  &
 !     &      nele, ilen_line, ilen_gz, ilen_tmp
         do

@@ -207,7 +207,7 @@
       iele_gl = 1
       ie0(1:nnod_ele) = 0
       ilength = len(ucd_each_connect(iele_gl, nnod_ele, ie0))
-      ilen_gz = real(nele*ilength) * 1.01 + 24
+      ilen_gz = int(dble(nele*ilength) * 1.01 + 24,KIND(ilen_gz))
       allocate(gzip_buf(ilen_gz))
 !
       call defleate_ucd_connect                                         &
@@ -257,7 +257,7 @@
       else if(num .gt. 1) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_vtk_tensor start ',    &
 !     &      num, ilen_line, ilen_gz, ilen_tmp
         do
@@ -333,7 +333,7 @@
       else if(nele .gt. 1) then
         ist = 0
         ilen_gzipped = 0
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_vtk_celltype start ',  &
 !     &      nele, ilen_line, ilen_gz, ilen_tmp
         do

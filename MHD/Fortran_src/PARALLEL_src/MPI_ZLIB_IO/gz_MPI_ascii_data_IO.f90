@@ -118,7 +118,7 @@
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      ilen_gz = dble(ilength) *1.01 + 24
+      ilen_gz = int(dble(ilength) *1.01 + 24, KIND(ilen_gz))
       allocate(gzip_buf(ilen_gz))
 !
       ilen_in = int(ilen_gz)

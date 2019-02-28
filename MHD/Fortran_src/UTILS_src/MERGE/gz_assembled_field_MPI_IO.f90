@@ -47,21 +47,12 @@
       use t_time_data
       use t_field_data_IO
       use t_calypso_mpi_IO_param
+      use t_buffer_4_gzip
       use m_calypso_mpi_IO
 !
       implicit none
 !
-!>  Structure for zlib data IO
-      type mul_zlib_buffers
-!>  Original data size
-        integer(kind = kint_gl) :: ilen_gz
-!>  Data size for compressed data
-        integer(kind = kint_gl) :: len_gzipped
-!>  Data buffer for zlib IO
-        character(len = 1), allocatable :: buffer(:)
-      end type mul_zlib_buffers
-!
-      type(mul_zlib_buffers), allocatable, save :: gz_bufs(:)
+      type(buffer_4_gzip), allocatable, save :: gz_bufs(:)
 !
       private :: gz_bufs
       private :: alloc_assemble_gz_buffer, dealloc_assemble_gz_buffer
@@ -194,6 +185,7 @@
       use gz_field_file_MPI_IO
       use gz_field_data_MPI_IO
       use data_IO_to_textline
+      use zlib_convert_ascii_vector
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: nprocs_in
@@ -201,7 +193,7 @@
 !
       integer(kind = kint), intent(in) :: nloop
       type(field_IO), intent(in), target :: fld_IO(nloop)
-      type(mul_zlib_buffers), intent(inout) :: gz_bufs(nloop)
+      type(buffer_4_gzip), intent(inout) :: gz_bufs(nloop)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
       integer, intent(in) ::  id_mpi_file
@@ -214,32 +206,26 @@
 !
       integer(kind = kint) :: id_rank
       integer(kind = kint) :: iloop, ip
-      integer(kind = kint) :: ilength
+      integer(kind = kint_gl) :: nnod64
 !
 !
       len_gz_lc(1:nprocs_in) = 0
       v1(1:ndir) = 0.0d0
-      ilength = len_vector_textline(ndir)
 !
 !        deflate data
       do iloop = 1, nloop
         id_rank = my_rank + (iloop-1) * nprocs
  !
         if(id_rank .lt. nprocs_in) then
-          gz_bufs(iloop)%ilen_gz                                        &
-     &       = int(real(fld_IO(iloop)%nnod_IO*ilength) * 1.01) + 24
-          allocate(gz_bufs(iloop)%buffer(gz_bufs(iloop)%ilen_gz))
- !
           vector => fld_IO(iloop)%d_IO(:,ist_fld:ist_fld+ndir-1)
-          call gz_defleat_vector_txt                                    &
-     &                 (fld_IO(iloop)%nnod_IO, ndir, vector, ilength,   &
-     &                  gz_bufs(iloop)%ilen_gz, gz_bufs(iloop)%buffer,  &
-     &                  gz_bufs(iloop)%len_gzipped)
-          len_gz_lc(id_rank+1) = gz_bufs(iloop)%len_gzipped
+          nnod64 = fld_IO(iloop)%nnod_IO
+          call defleate_vector_txt                                      &
+     &        (nnod64, ndir, vector, gz_bufs(iloop))
+          len_gz_lc(id_rank+1) = gz_bufs(iloop)%ilen_gzipped
         else
           gz_bufs(iloop)%ilen_gz = 0
-          gz_bufs(iloop)%len_gzipped = 0
-          allocate(gz_bufs(iloop)%buffer(gz_bufs(iloop)%ilen_gz))
+          gz_bufs(iloop)%ilen_gzipped = 0
+          call alloc_zip_buffer(gz_bufs(iloop))
         end if
       end do
 !
@@ -262,9 +248,10 @@
         if(id_rank .lt. nprocs_in) then
           ioffset = int(ioff_gl) + istack_gz_pe(id_rank)
           call calypso_mpi_seek_write_chara (id_mpi_file, ioffset,      &
-     &      int(gz_bufs(iloop)%len_gzipped), gz_bufs(iloop)%buffer(1))
+     &        int(gz_bufs(iloop)%ilen_gzipped),                         &
+     &         gz_bufs(iloop)%gzip_buf(1))
         end if
-        deallocate(gz_bufs(iloop)%buffer)
+        call dealloc_zip_buffer(gz_bufs(iloop))
       end do
       ioff_gl = ioff_gl + istack_gz_pe(nprocs_in)
 !
@@ -284,7 +271,7 @@
 !
       integer(kind = kint), intent(in) :: nloop
       type(field_IO), intent(in) :: fld_IO(nloop)
-      type(mul_zlib_buffers), intent(inout) :: gz_bufs(nloop)
+      type(buffer_4_gzip), intent(inout) :: gz_bufs(nloop)
 !
       integer(kind = kint_gl) :: istack_gz_pe(0:IO_param%nprocs_in)
       integer(kind = kint_gl) :: len_gz_pe(IO_param%nprocs_in)
@@ -306,16 +293,16 @@
         if(id_rank .lt. IO_param%nprocs_in) then
           gz_bufs(iloop)%ilen_gz                                        &
      &       = int(real(ilength) * 1.01) + 24
-          allocate(gz_bufs(iloop)%buffer(gz_bufs(iloop)%ilen_gz))
+          call alloc_zip_buffer(gz_bufs(iloop))
  !
           call gzip_defleat_once                                        &
      &       (ilength, fld_IO(iloop)%d_IO, gz_bufs(iloop)%ilen_gz,      &
-     &        gz_bufs(iloop)%len_gzipped, gz_bufs(iloop)%buffer)
-          len_gz_lc(id_rank+1) =       gz_bufs(iloop)%len_gzipped
+     &        gz_bufs(iloop)%ilen_gzipped, gz_bufs(iloop)%gzip_buf)
+          len_gz_lc(id_rank+1) =       gz_bufs(iloop)%ilen_gzipped
         else
           gz_bufs(iloop)%ilen_gz = 0
-          gz_bufs(iloop)%len_gzipped = 0
-          allocate(gz_bufs(iloop)%buffer(gz_bufs(iloop)%ilen_gz))
+          gz_bufs(iloop)%ilen_gzipped = 0
+          call alloc_zip_buffer(gz_bufs(iloop))
         end if
       end do
 !
@@ -338,9 +325,10 @@
         if(id_rank .lt. IO_param%nprocs_in) then
           ioffset = int(IO_param%ioff_gl) + istack_gz_pe(id_rank)
           call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,  &
-     &       int(gz_bufs(iloop)%len_gzipped), gz_bufs(iloop)%buffer(1))
+     &        int(gz_bufs(iloop)%ilen_gzipped),                         &
+     &        gz_bufs(iloop)%gzip_buf(1))
         end if
-        deallocate(gz_bufs(iloop)%buffer)
+        call dealloc_zip_buffer(gz_bufs(iloop))
       end do
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + istack_gz_pe(IO_param%nprocs_in)

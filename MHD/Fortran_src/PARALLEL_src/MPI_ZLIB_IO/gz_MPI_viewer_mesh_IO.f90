@@ -27,11 +27,14 @@
       use t_viewer_mesh
       use t_viewer_group
       use t_calypso_mpi_IO_param
+      use t_buffer_4_gzip
       use gz_MPI_ascii_data_IO
       use gz_MPI_domain_data_IO
       use MPI_ascii_data_IO
 !
       implicit none
+!
+      type(buffer_4_gzip) :: zbuf
 !
 ! -----------------------------------------------------------------------
 !
@@ -42,43 +45,35 @@
       subroutine gz_mpi_write_viewer_position                           &
      &         (IO_param, nnod, numdir, id_global, xx)
 !
-       use gz_MPI_position_IO
+      use gz_MPI_position_IO
+      use zlib_convert_ascii_vector
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind=kint), intent(in) :: nnod, numdir
       integer(kind=kint_gl), intent(in) :: id_global(nnod)
       real(kind=kreal), intent(in) :: xx(nnod, numdir)
 !
-      integer(kind = kint) :: i
-      real(kind = kreal) :: xx_tmp(numdir)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_line
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped
-!
-      character(len=1), allocatable :: gzip_buf(:)
+      integer(kind = kint_gl) :: nnod64
 !
 !
 !      call gz_mpi_write_num_of_data(IO_param, nnod)
 !
-      ilen_line = len_int8_and_vector_textline(numdir)
-      ilen_gz = dble(nnod*ilen_line) * 1.01 + 24
-      allocate(gzip_buf(ilen_gz))
+      nnod64 = nnod
+      call defleate_node_position(nnod64, numdir, id_global, xx, zbuf)
 !
-      call defleate_node_position(nnod, numdir, id_global, xx,          &
-     &   ilen_line, ilen_gz, gzip_buf, ilen_gzipped)
+      call gz_mpi_write_stack_over_domain(IO_param, zbuf%ilen_gzipped)
 !
-      call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
-!
-      if(ilen_gzipped .gt. 0) then
+      if(zbuf%ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &
      &           + IO_param%istack_merged(IO_param%id_rank)
         call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
-     &      ilen_gzipped, gzip_buf(1))
+     &      zbuf%ilen_gzipped, zbuf%gzip_buf(1))
       end if
 !
-      deallocate(gzip_buf)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + IO_param%istack_merged(IO_param%nprocs_in)
+      call dealloc_zip_buffer(zbuf)
 !
       end subroutine gz_mpi_write_viewer_position
 !
@@ -167,7 +162,7 @@
       character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      ilen_gz = dble(num*len_int_txt) * 1.01 + 24
+      ilen_gz = int(dble(num*len_int_txt) * 1.01 + 24,KIND(ilen_gz))
       allocate(gzip_buf(ilen_gz))
 !
       call defleate_comm_table(ncolumn, num, int_dat,                   &

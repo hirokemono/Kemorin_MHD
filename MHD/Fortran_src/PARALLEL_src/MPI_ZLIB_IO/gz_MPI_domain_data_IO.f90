@@ -310,7 +310,7 @@
 !
       call gz_mpi_write_num_of_data(IO_param, num)
 !
-      ilen_gz = dble(num*len_int_txt) * 1.01 + 24
+      ilen_gz = int(dble(num*len_int_txt) * 1.01 + 24,KIND(ilen_gz))
       allocate(gzip_buf(ilen_gz))
 !
       call defleate_comm_table(ncolumn, num, int_dat,                   &
@@ -364,7 +364,7 @@
         ist = 0
         ilen_gzipped = 0
         ilen_line = len_multi_int_textline(ncolumn)
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*)                                  &
 !     &     'gz_mpi_write_comm_table start ',                           &
 !     &      num, ilen_line, ilen_gz, ilen_tmp
@@ -452,7 +452,7 @@
         ist = 0
         ilen_gzipped = 0
         ilen_line = len_multi_int_textline(ncolumn)
-        ilen_tmp = dble(maxline*ilen_line) * 1.01 + 24
+        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*)                                  &
 !     &     'gz_mpi_write_comm_table start ',                           &
 !     &      num, ilen_line, ilen_gz, ilen_tmp
