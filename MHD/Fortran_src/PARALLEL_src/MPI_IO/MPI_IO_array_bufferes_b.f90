@@ -33,7 +33,6 @@
       use t_calypso_mpi_IO_param
       use MPI_binery_IO_4_buffers
       use MPI_binary_head_IO
-      use defleat_4_merged_arrays
 !
       implicit none
 !
