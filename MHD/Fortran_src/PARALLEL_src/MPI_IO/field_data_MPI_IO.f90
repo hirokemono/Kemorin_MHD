@@ -346,6 +346,7 @@
      &          ioff_gl, nnod, ncomp, vector, istack_merged)
 !
       use field_data_IO
+      use data_IO_to_textline
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: nprocs_in, id_rank, nnod
@@ -374,7 +375,7 @@
       do inod = 1, nnod
         call calypso_mpi_seek_read_lenchara                             &
      &    (id_fld, ioffset, ilength, textbuf_d)
-        call read_each_field_data_buffer(textbuf_d, ncomp, v1)
+        call read_vector_textline(textbuf_d, ncomp, v1)
         vector(inod,1:ncomp) = v1(1:ncomp)
       end do
       ioff_gl = ioff_gl + ilength * istack_merged(nprocs_in)

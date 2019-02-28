@@ -220,7 +220,7 @@
           vector => fld_IO(iloop)%d_IO(:,ist_fld:ist_fld+ndir-1)
           nnod64 = fld_IO(iloop)%nnod_IO
           call defleate_vector_txt                                      &
-     &        (nnod64, ndir, vector, gz_bufs(iloop))
+     &        (izero, nnod64, ndir, vector, gz_bufs(iloop))
           len_gz_lc(id_rank+1) = gz_bufs(iloop)%ilen_gzipped
         else
           gz_bufs(iloop)%ilen_gz = 0

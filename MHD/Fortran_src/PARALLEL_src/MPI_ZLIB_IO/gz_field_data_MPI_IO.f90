@@ -60,7 +60,7 @@
 !
 !
       nnod64 = nnod
-      call defleate_vector_txt(nnod64, ndir, vector, zbuf)
+      call defleate_vector_txt(izero, nnod64, ndir, vector, zbuf)
 !
       call MPI_Allgather(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,   &
      &    ilen_gzipped_gl, ione, CALYPSO_GLOBAL_INT, CALYPSO_COMM,      &
@@ -246,16 +246,13 @@
         return
       end if
 !
-      zbuf%ilen_gz = istack_buf(id_rank+1) - istack_buf(id_rank)
-      call alloc_zip_buffer(zbuf)
-!
       ioffset = ioff_gl + istack_buf(id_rank)
       ioff_gl = ioff_gl + istack_buf(nprocs_in)
-      call calypso_mpi_seek_long_read_gz                                &
-     &   (id_fld, ioffset, zbuf%ilen_gz, zbuf%gzip_buf(1))
+      zbuf%ilen_gz = istack_buf(id_rank+1) - istack_buf(id_rank)
+      call calypso_mpi_seek_long_read_gz(id_fld, ioffset, zbuf)
 !
       nnod64 = nnod
-      call infleate_vector_txt(nnod64, ndir, vector, zbuf)
+      call infleate_vector_txt(izero, nnod64, ndir, vector, zbuf)
 !
       end subroutine gz_read_each_field_mpi
 !

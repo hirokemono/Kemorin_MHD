@@ -28,10 +28,7 @@
 !!
 !!      subroutine calypso_mpi_seek_write_head_c                        &
 !!     &         (id_mpi_file, ioff_gl, textbuf)
-!!
-!!      subroutine calypso_gz_mpi_seek_write(id_mpi_file,               &
-!!     &          ioff_gl, ilen_gzipped, gzip_buf)
-!!
+!!!
 !!      subroutine calypso_mpi_seek_read_endian                         &
 !!     &         (id_mpi_file, iflag_bin_swap, ioff_gl)
 !!      subroutine calypso_mpi_seek_read_lenchara                       &
@@ -53,8 +50,11 @@
 !!      subroutine calypso_mpi_seek_long_write_gz                       &
 !!     &         (id_mpi_file, ioffset, ilength64, c1buf)
 !!      subroutine calypso_mpi_seek_long_read_gz                        &
-!!     &         (id_mpi_file, ioffset, ilength64, c1buf)
+!!     &         (id_mpi_file, ioffset, zbuf)
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
+!!      subroutine calypso_gz_mpi_seek_write(id_mpi_file, ioff_gl, zbuf)
+!!        type(buffer_4_gzip), intent(in) :: zbuf
 !!    calypso_gz_mpi_seek_write only work correctly when number of 
 !!   subdomain is equal to number of threads
 !!@endverbatim
@@ -288,41 +288,6 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine calypso_gz_mpi_seek_write(id_mpi_file,                 &
-     &          ioff_gl, ilen_gzipped, gzip_buf)
-!
-      integer, intent(in) ::  id_mpi_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint_gl), intent(in) :: ilen_gzipped
-      character(len=1), intent(in) :: gzip_buf(ilen_gzipped)
-!
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: ilen_gzipped_gl(nprocs)
-      integer(kind = kint) :: ip
-!
-!
-      call MPI_Allgather(ilen_gzipped, ione, CALYPSO_GLOBAL_INT,        &
-     &    ilen_gzipped_gl, ione, CALYPSO_GLOBAL_INT, CALYPSO_COMM,      &
-     &    ierr_MPI)
-!
-      if(ilen_gzipped .gt. 0) then
-        ioffset = ioff_gl
-        do ip = 1, my_rank
-          ioffset = ioffset + ilen_gzipped_gl(ip)
-        end do
-        call calypso_mpi_seek_long_write_gz                             &
-     &    (id_mpi_file, ioffset, ilen_gzipped, gzip_buf(1))
-      end if
-!
-      do ip = 1, nprocs
-        ioff_gl = ioff_gl + ilen_gzipped_gl(ip)
-      end do
-!
-      end subroutine calypso_gz_mpi_seek_write
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine calypso_mpi_seek_read_endian                           &
      &         (id_mpi_file, iflag_bin_swap, ioff_gl)
 !
@@ -539,28 +504,66 @@
 !  ---------------------------------------------------------------------
 !
       subroutine calypso_mpi_seek_long_read_gz                          &
-     &         (id_mpi_file, ioffset, ilength64, c1buf)
+     &         (id_mpi_file, ioffset, zbuf)
+!
+      use t_buffer_4_gzip
 !
       integer, intent(in) ::  id_mpi_file
       integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
-      integer(kind = kint_gl), intent(in) :: ilength64
-      character(len=1), intent(inout) :: c1buf(ilength64)
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: ist
       integer(kind = kint) :: ilen_in
 !
 !
+      call alloc_zip_buffer(zbuf)
+!
       ist = 0
       do
-        ilen_in = int(min(ilength64-ist, huge_25))
+        ilen_in = int(min(zbuf%ilen_gz-ist, huge_25))
         call calypso_mpi_seek_read_gz                                   &
-     &     (id_mpi_file, ioffset, ilen_in, c1buf(ist+1))
+     &     (id_mpi_file, ioffset, ilen_in, zbuf%gzip_buf(ist+1))
         ist = ist + ilen_in
         ioffset = ioffset + ilen_in
-        if(ist .ge. ilength64) exit
+        if(ist .ge. zbuf%ilen_gz) exit
       end do
 !
       end subroutine calypso_mpi_seek_long_read_gz
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_gz_mpi_seek_write(id_mpi_file, ioff_gl, zbuf)
+!
+      use t_buffer_4_gzip
+!
+      integer, intent(in) ::  id_mpi_file
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(buffer_4_gzip), intent(in) :: zbuf
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint_gl) :: ilen_gzipped_gl(nprocs)
+      integer(kind = kint) :: ip
+!
+!
+      call MPI_Allgather(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,   &
+     &    ilen_gzipped_gl, ione, CALYPSO_GLOBAL_INT, CALYPSO_COMM,      &
+     &    ierr_MPI)
+!
+      if(zbuf%ilen_gzipped .gt. 0) then
+        ioffset = ioff_gl
+        do ip = 1, my_rank
+          ioffset = ioffset + ilen_gzipped_gl(ip)
+        end do
+        call calypso_mpi_seek_long_write_gz                             &
+     &    (id_mpi_file, ioffset, zbuf%ilen_gzipped, zbuf%gzip_buf(1))
+      end if
+!
+      do ip = 1, nprocs
+        ioff_gl = ioff_gl + ilen_gzipped_gl(ip)
+      end do
+!
+      end subroutine calypso_gz_mpi_seek_write
 !
 !  ---------------------------------------------------------------------
 !
