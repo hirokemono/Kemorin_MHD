@@ -196,6 +196,17 @@
       if(iflag_check .gt. 0) then
         iflag_hit = 0
       end if
+!
+!        Set color if starting surface is colourd
+      if(interior_ele(iele) .gt. 0) then
+        if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
+          grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
+          call plane_rendering_with_light                               &
+     &       (viewpoint_vec, xx_st, grad_tgt,                           &
+     &        arccos_sf(isurf_end),  color_param, rgba_ray)
+        end if
+      end if
+!
       do
         icount_line = icount_line + 1
         iele =    isurf_org(1)
