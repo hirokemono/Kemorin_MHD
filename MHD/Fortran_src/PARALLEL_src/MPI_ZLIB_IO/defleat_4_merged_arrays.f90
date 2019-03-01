@@ -74,8 +74,8 @@
         id_rank = rank_in_multi_domain(iloop)
         if(zbuf(iloop)%ilen_gzipped .gt. 0) then
           ioffset = ioff_gl + istack_merged(id_rank)
-          call calypso_mpi_seek_long_write_gz(id_file, ioffset,         &
-     &        zbuf(iloop)%ilen_gzipped, zbuf(iloop)%gzip_buf)
+          call calypso_mpi_seek_long_write_gz                           &
+     &       (id_file, ioffset, zbuf(iloop))
         end if
         call dealloc_zip_buffer(zbuf(iloop))
       end do

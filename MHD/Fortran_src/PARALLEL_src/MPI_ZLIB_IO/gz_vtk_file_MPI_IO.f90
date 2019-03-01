@@ -175,8 +175,7 @@
         call defleate_characters(len(header_txt), header_txt, zbuf)
 !
         ioffset = int(ioff_gl)
-        call calypso_mpi_seek_long_write_gz                             &
-     &     (id_vtk, ioffset, zbuf%ilen_gzipped, zbuf%gzip_buf(1))
+        call calypso_mpi_seek_long_write_gz(id_vtk, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
@@ -281,8 +280,7 @@
       end do
 !
       if(zbuf%ilen_gzipped .gt. 0) then
-        call calypso_mpi_seek_long_write_gz                             &
-     &    (id_vtk, ioffset, zbuf%ilen_gzipped, zbuf%gzip_buf(1))
+        call calypso_mpi_seek_long_write_gz(id_vtk, ioffset, zbuf)
       end if
       do ip = 1, nprocs
         ioff_gl = ioff_gl + ilen_gzipped_list(ip)

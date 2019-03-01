@@ -48,7 +48,7 @@
 !!      subroutine calypso_mpi_seek_read_gz                             &
 !!     &         (id_mpi_file, ioffset, ilength, c1buf)
 !!      subroutine calypso_mpi_seek_long_write_gz                       &
-!!     &         (id_mpi_file, ioffset, ilength64, c1buf)
+!!     &         (id_mpi_file, ioffset, zbuf)
 !!      subroutine calypso_mpi_seek_long_read_gz                        &
 !!     &         (id_mpi_file, ioffset, zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
@@ -469,12 +469,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine calypso_mpi_seek_long_write_gz                         &
-     &         (id_mpi_file, ioffset, ilength64, c1buf)
+     &         (id_mpi_file, ioffset, zbuf)
+!
+      use t_buffer_4_gzip
 !
       integer, intent(in) ::  id_mpi_file
-      integer(kind = kint_gl), intent(in) :: ilength64
-      character(len=1), intent(in) :: c1buf(ilength64)
       integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
+      type(buffer_4_gzip), intent(in) :: zbuf
 !
       integer(kind = kint_gl) :: ist
       integer(kind = kint) :: ilen_in
@@ -482,12 +483,12 @@
 !
       ist = 0
       do
-        ilen_in = int(min(ilength64-ist, huge_25))
+        ilen_in = int(min(zbuf%ilen_gzipped-ist, huge_25))
         call calypso_mpi_seek_write_gz                                  &
-     &     (id_mpi_file, ioffset, ilen_in, c1buf(ist+1))
+     &     (id_mpi_file, ioffset, ilen_in, zbuf%gzip_buf(ist+1))
         ist = ist + ilen_in
         ioffset = ioffset + ilen_in
-        if(ist .ge. ilength64) exit
+        if(ist .ge. zbuf%ilen_gzipped) exit
       end do
 !
       end subroutine calypso_mpi_seek_long_write_gz
@@ -547,7 +548,7 @@
           ioffset = ioffset + ilen_gzipped_gl(ip)
         end do
         call calypso_mpi_seek_long_write_gz                             &
-     &    (id_mpi_file, ioffset, zbuf%ilen_gzipped, zbuf%gzip_buf(1))
+     &    (id_mpi_file, ioffset, zbuf)
       end if
 !
       do ip = 1, nprocs

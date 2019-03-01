@@ -63,8 +63,8 @@
         call defleate_int_vector_b(num64, int_dat, zbuf)
 !
         ioffset = IO_param%ioff_gl
-        call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
-     &     zbuf%ilen_gzipped, zbuf%gzip_buf(1))
+        call calypso_mpi_seek_long_write_gz                             &
+     &     (IO_param%id_file, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST                                                    &
@@ -104,8 +104,8 @@
         call defleate_int8_vector_b(num64, int8_dat, zbuf)
 !
         ioffset = IO_param%ioff_gl
-        call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
-     &      zbuf%ilen_gzipped, zbuf%gzip_buf(1))
+        call calypso_mpi_seek_long_write_gz                             &
+     &     (IO_param%id_file, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST                                                    &
@@ -132,8 +132,8 @@
         call defleate_1d_character_b(num64, chara_dat, zbuf)
 !
         ioffset = IO_param%ioff_gl
-        call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
-     &      zbuf%ilen_gzipped, zbuf%gzip_buf(1))
+        call calypso_mpi_seek_long_write_gz                             &
+     &     (IO_param%id_file, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST                                                    &
@@ -160,8 +160,8 @@
         call defleate_1d_vector_b(num64, real_dat, zbuf)
 !
         ioffset = IO_param%ioff_gl
-        call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
-     &     zbuf%ilen_gzipped, zbuf%gzip_buf(1))
+        call calypso_mpi_seek_long_write_gz                             &
+     &     (IO_param%id_file, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST                                                    &
