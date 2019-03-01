@@ -265,9 +265,22 @@
       allocate(r_tgt(lic_p%num_masking))
       allocate(r_mid(lic_p%num_masking))
       do i = 1, lic_p%num_masking
-        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_org(i))
+        if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
+          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
+       &      ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_org(i) )
+        end if
       end do
+!
+!
+!        Set color if starting surface is colourd
+      if(interior_ele(iele) .gt. 0) then
+        if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
+          grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
+          call plane_rendering_with_light                               &
+     &       (viewpoint_vec, xx_st, grad_tgt,                           &
+     &        arccos_sf(isurf_end),  color_param, rgba_ray)
+        end if
+      end if
 !
 !   start ray casting
       do
@@ -323,8 +336,10 @@
      &      ie_surf, isurf_end, xi, field_pvr%d_pvr, scl_tgt)
 
         do i = 1, lic_p%num_masking
-          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
-     &        ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_tgt(i) )
+          if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
+            call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
+       &        ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_tgt(i) )
+          end if
         end do
 
         lic_tgt(1) = 0.0
@@ -354,7 +369,11 @@
               xx_lic = xx_st + ratio * (xx_tgt - xx_st)
 !
               do i = 1, lic_p%num_masking
-                r_mid(i) = r_org(i) * (1.0d0 - ratio) + r_tgt(i)*ratio
+                if(lic_p%masking(i)%mask_type                           &
+     &                                .eq. iflag_fieldmask) then
+                  r_mid(i)                                              &
+     &               = r_org(i) * (1.0d0 - ratio) + r_tgt(i)*ratio
+                end if
 !write(*,*) "org", r_org, "tgt", r_tgt, "ratio", ratio
               end do
 ! masking on sampling point
@@ -408,7 +427,9 @@
 !
 !   reference data at origin of lic iteration
             do i = 1, lic_p%num_masking
-              r_mid(i) = half*(r_org(i) + r_tgt(i))
+              if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
+                r_mid(i) = half*(r_org(i)+r_tgt(i))
+              end if
             end do
 !   the vector interpolate from entry and exit point
             vec_mid(1:3) = half*(vec_org(1:3) + vec_tgt(1:3))
@@ -456,7 +477,9 @@
         screen_st(1:3) = screen_tgt(1:3)
         xx_st(1:3) = xx_tgt(1:3)
         do i = 1, lic_p%num_masking
-          r_org(i) = r_tgt(i)
+          if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
+            r_org(i) = r_tgt(i)
+          end if
         end do
         scl_org(1) =   scl_tgt(1)
         vec_org(1:3) = vec_tgt(1:3)
