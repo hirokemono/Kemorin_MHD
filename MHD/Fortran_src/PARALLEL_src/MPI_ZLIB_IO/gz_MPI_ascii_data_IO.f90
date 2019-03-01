@@ -19,6 +19,7 @@
 !!        character(len=ilength) :: gz_mpi_read_characters
 !!
 !!      subroutine gz_mpi_skip_header(IO_param, ilength)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!@endverbatim
 !
       module gz_MPI_ascii_data_IO
@@ -28,6 +29,7 @@
       use m_machine_parameter
 !
       use calypso_mpi
+      use t_buffer_4_gzip
       use m_calypso_mpi_IO
       use t_calypso_mpi_IO_param
       use data_IO_to_textline
@@ -42,30 +44,28 @@
 !
       subroutine gz_mpi_write_charahead(IO_param, ilength, chara_dat)
 !
+      use zlib_convert_text
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!
       integer(kind = kint), intent(in) :: ilength
       character(len=ilength), intent(in) :: chara_dat
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
+      type(buffer_4_gzip) :: zbuf
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
-      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       if(my_rank .eq. 0) then
-        ilen_gz = int(real(ilength) *1.01) + 24
-        allocate(gzip_buf(ilen_gz))
-        call gzip_defleat_once(ilength, chara_dat, ilen_gz,             &
-     &      ilen_gzipped, gzip_buf(1))
+        call defleate_characters(ilength, chara_dat, zbuf)
 !
         ioffset = IO_param%ioff_gl
-        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &      ilen_gzipped, gzip_buf(1))
-        deallocate(gzip_buf)
+        call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
+     &      zbuf%ilen_gzipped, zbuf%gzip_buf(1))
+        call dealloc_zip_buffer(zbuf)
       end if
-      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
-     &    CALYPSO_COMM, ierr_MPI)
-      IO_param%ioff_gl = IO_param%ioff_gl + ilen_gzipped
+      call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
+     &    izero, CALYPSO_COMM, ierr_MPI)
+      IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
       end subroutine gz_mpi_write_charahead
 !
@@ -106,37 +106,29 @@
       subroutine gz_mpi_write_characters(IO_param, ilength, chara_dat)
 !
       use data_IO_to_textline
+      use zlib_convert_text
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint), intent(in) :: ilength
       character(len=ilength), intent(in) :: chara_dat
 !
+      type(buffer_4_gzip) :: zbuf
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped
-      integer(kind = kint) :: ilen_in, ilen_used
-!
-      character(len=1), allocatable :: gzip_buf(:)
 !
 !
-      ilen_gz = int(dble(ilength) *1.01 + 24, KIND(ilen_gz))
-      allocate(gzip_buf(ilen_gz))
+      call defleate_characters(ilength, chara_dat, zbuf)
 !
-      ilen_in = int(ilen_gz)
-      call gzip_defleat_once(ilength, chara_dat, ilen_in,               &
-     &    ilen_used, gzip_buf(1))
-      ilen_gzipped = ilen_used
+      call gz_mpi_write_stack_over_domain(IO_param, zbuf%ilen_gzipped)
 !
-      call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
-!
-      if(ilen_gzipped .gt. 0) then
+      if(zbuf%ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl + IO_param%istack_merged(my_rank)
         call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
-     &      ilen_gzipped, gzip_buf(1))
+     &      zbuf%ilen_gzipped, zbuf%gzip_buf(1))
       end if
 !
-      deallocate(gzip_buf)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + IO_param%istack_merged(IO_param%nprocs_in)
+      call dealloc_zip_buffer(zbuf)
 !
       end subroutine gz_mpi_write_characters
 !

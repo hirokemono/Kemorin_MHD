@@ -30,8 +30,6 @@
 !
       implicit none
 !
-      type(buffer_4_gzip) :: zbuf
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -52,6 +50,7 @@
 !
       integer, intent(in) ::  id_fld
 !
+      type(buffer_4_gzip) :: zbuf
       integer(kind = kint) :: ip
       integer(kind = kint_gl) :: ilen_gzipped_gl(nprocs)
       integer(kind = kint_gl) :: istack_buffer(0:nprocs)
@@ -88,31 +87,28 @@
 !
       subroutine gz_write_fld_header_mpi(id_fld, ioff_gl, header_txt)
 !
+      use zlib_convert_text
+!
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       character(len=*), intent(in) :: header_txt
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = kint) :: ilen_gz32, ilen_gzipped32, ilength
+      type(buffer_4_gzip) :: zbuf
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       if(my_rank .eq. 0) then
-        ilength = len(header_txt)
-        ilen_gz32 = int(real(ilength) * 1.01 + 24)
-        allocate(gzip_buf(ilen_gz32))
-        call gzip_defleat_once (ilength, header_txt,                    &
-     &     ilen_gz32, ilen_gzipped32, gzip_buf(1))
+        call defleate_characters(len(header_txt), header_txt, zbuf)
 !
         ioffset = ioff_gl
-        call calypso_mpi_seek_write_chara                               &
-     &         (id_fld, ioffset, ilen_gzipped32, gzip_buf(1))
-        deallocate(gzip_buf)
+        call calypso_mpi_seek_long_write_gz                             &
+     &     (id_fld, ioffset, zbuf%ilen_gzipped, zbuf%gzip_buf(1))
+        call dealloc_zip_buffer(zbuf)
       end if
-      call MPI_BCAST(ilen_gzipped32, ione, CALYPSO_INTEGER, izero,      &
-     &    CALYPSO_COMM, ierr_MPI)
-      ioff_gl = ioff_gl + ilen_gzipped32
+      call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
+     &    izero, CALYPSO_COMM, ierr_MPI)
+      ioff_gl = ioff_gl + zbuf%ilen_gzipped
 !
       end subroutine gz_write_fld_header_mpi
 !
@@ -223,6 +219,7 @@
       integer(kind = kint), intent(in) :: nnod, ndir
       real(kind = kreal), intent(inout) :: vector(nnod,ndir)
 !
+      type(buffer_4_gzip) :: zbuf
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
       character(len=nprocs_in*16+1) :: textbuf_p

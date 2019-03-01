@@ -30,9 +30,6 @@
 !
       character(len=1), allocatable :: gzip_buf(:)
 !
-      type(buffer_4_gzip), private :: zbuf
-!
-      private :: gz_write_ucd_header_mpi
       private :: gz_write_ucd_vecotr_mpi
 !
 !  ---------------------------------------------------------------------
@@ -44,6 +41,8 @@
       subroutine gz_write_ucd_data_mpi(id_vtk, ioff_gl,                 &
      &          nnod, num_field, ntot_comp, ncomp_field,                &
      &          field_name, d_nod, istack_merged_intnod)
+!
+      use gz_vtk_file_MPI_IO
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint_gl), intent(in)                               &
@@ -59,11 +58,11 @@
       integer(kind = kint) :: j
 !
 !
-      call gz_write_ucd_header_mpi(id_vtk, ioff_gl,                     &
+      call gz_write_vtk_header_mpi(id_vtk, ioff_gl,                     &
      &    ucd_num_comps(num_field, ncomp_field))
 !
       do j = 1, num_field
-        call gz_write_ucd_header_mpi(id_vtk, ioff_gl,                   &
+        call gz_write_vtk_header_mpi(id_vtk, ioff_gl,                   &
      &      ucd_field_name(field_name(j)))
       end do
 !
@@ -80,6 +79,7 @@
 !
       use m_phys_constants
       use zlib_cvt_ucd_data
+      use gz_vtk_file_MPI_IO
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint_gl), intent(in)                               &
@@ -93,13 +93,14 @@
 !
       integer, intent(in) ::  id_vtk
 !
+      type(buffer_4_gzip) :: zbuf
       integer(kind = kint_gl) :: nt_nod, nt_ele
 !
 !
       nt_nod = istack_merged_intnod(nprocs)
       nt_ele = istack_merged_ele(nprocs)
 !
-      call gz_write_ucd_header_mpi(id_vtk, ioff_gl,                     &
+      call gz_write_vtk_header_mpi(id_vtk, ioff_gl,                     &
      &    ucd_connect_head(nt_nod, nt_ele, ntot_comp))
 !
       call gz_write_ucd_vecotr_mpi(id_vtk, ioff_gl,                     &
@@ -111,38 +112,6 @@
       call dealloc_zip_buffer(zbuf)
 !
       end subroutine gz_write_ucd_mesh_mpi
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine gz_write_ucd_header_mpi(id_vtk, ioff_gl, header_txt)
-!
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-      character(len=*), intent(in) :: header_txt
-!
-      integer, intent(in) ::  id_vtk
-!
-      integer(kind = kint) :: ilen_gz32, ilen_gzipped32, ilength
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
-!
-      if(my_rank .eq. 0) then
-        ilength = len(header_txt)
-        ilen_gz32 = int(real(ilength) *1.01) + 24
-        allocate(gzip_buf(ilen_gz32))
-        call gzip_defleat_once(ilength, header_txt,                     &
-     &      ilen_gz32, ilen_gzipped32, gzip_buf(1))
-!
-        ioffset = ioff_gl
-        call calypso_mpi_seek_write_chara                               &
-     &     (id_vtk, ioffset, ilen_gzipped32, gzip_buf(1))
-        deallocate(gzip_buf)
-      end if
-      call MPI_BCAST(ilen_gzipped32, ione, CALYPSO_INTEGER, izero,      &
-     &    CALYPSO_COMM, ierr_MPI)
-      ioff_gl = ioff_gl + ilen_gzipped32
-!
-      end subroutine gz_write_ucd_header_mpi
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -161,6 +130,7 @@
 !
       integer, intent(in) ::  id_vtk
 !
+      type(buffer_4_gzip) :: zbuf
       integer(kind = kint_gl) :: num
 !
 !

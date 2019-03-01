@@ -27,12 +27,8 @@
 !
       implicit none
 !
-      character(len=1), allocatable :: gzip_buf(:)
-      type(buffer_4_gzip) :: zbuf
-!
       private :: gz_write_vtk_scalar_mpi
       private :: gz_write_vtk_tensor_mpi, gz_write_vtk_vecotr_mpi
-!
 !
 !  ---------------------------------------------------------------------
 !
@@ -122,6 +118,7 @@
 !
       integer, intent(in) ::  id_vtk
 !
+      type(buffer_4_gzip) :: zbuf
       integer(kind = kint_gl) :: nt_nod, nt_ele
 !
 !
@@ -163,31 +160,28 @@
 !
       subroutine gz_write_vtk_header_mpi(id_vtk, ioff_gl, header_txt)
 !
+      use zlib_convert_text
+!
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       character(len=*), intent(in) :: header_txt
 !
       integer, intent(in) ::  id_vtk
 !
-      integer(kind = kint) :: ilen_gz32, ilen_gzipped32, ilength
+      type(buffer_4_gzip) :: zbuf
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
-!
       if(my_rank .eq. 0) then
-        ilength = len(header_txt)
-        ilen_gz32 = int(real(ilength) *1.01) + 24
-        allocate(gzip_buf(ilen_gz32))
-        call gzip_defleat_once(ilength, header_txt,                     &
-     &      ilen_gz32, ilen_gzipped32, gzip_buf(1))
+        call defleate_characters(len(header_txt), header_txt, zbuf)
 !
         ioffset = int(ioff_gl)
-        call calypso_mpi_seek_write_chara                               &
-     &    (id_vtk, ioffset, ilen_gzipped32, gzip_buf(1))
-        deallocate(gzip_buf)
+        call calypso_mpi_seek_long_write_gz                             &
+     &     (id_vtk, ioffset, zbuf%ilen_gzipped, zbuf%gzip_buf(1))
+        call dealloc_zip_buffer(zbuf)
       end if
-      call MPI_BCAST(ilen_gzipped32, ione, CALYPSO_INTEGER, izero,      &
-     &    CALYPSO_COMM, ierr_MPI)
-      ioff_gl = ioff_gl + ilen_gzipped32
+      call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
+     &    izero, CALYPSO_COMM, ierr_MPI)
+      ioff_gl = ioff_gl + zbuf%ilen_gzipped
 !
       end subroutine gz_write_vtk_header_mpi
 !
@@ -207,6 +201,7 @@
 !
       integer, intent(in) ::  id_vtk
 !
+      type(buffer_4_gzip) :: zbuf
       integer(kind = kint_gl) :: num
 !
 !
@@ -236,6 +231,7 @@
 !
       integer, intent(in) ::  id_vtk
 !
+      type(buffer_4_gzip) :: zbuf
       integer(kind = kint_gl) :: num
 !
 !
@@ -264,6 +260,7 @@
 !
       integer, intent(in) ::  id_vtk
 !
+      type(buffer_4_gzip) :: zbuf
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint_gl) ::  num
       integer(kind = kint) :: ip
