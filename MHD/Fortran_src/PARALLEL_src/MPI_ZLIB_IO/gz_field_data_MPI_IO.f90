@@ -118,33 +118,29 @@
       subroutine gz_read_fld_charhead_mpi(id_fld,                       &
      &         ioff_gl, ilength, chara_dat)
 !
+      use zlib_convert_text
+!
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind=kint), intent(in) :: ilength
       character(len=ilength), intent(inout) :: chara_dat
 !
+      type(buffer_4_gzip) :: zbuf
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_gz, ilen_gzipped
-!
-      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
-        ilen_gz = int(real(ilength) *1.01) + 24
-        allocate(gzip_buf(ilen_gz))
-        call calypso_mpi_seek_read_gz                                   &
-     &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
+        zbuf%ilen_gz = int(real(ilength) *1.01 + 24, kind(zbuf%ilen_gz))
+        call calypso_mpi_seek_long_read_gz(id_fld, ioffset, zbuf)
 !
-        call gzip_infleat_once                                          &
-     &     (ilen_gz, gzip_buf(1), ilength, chara_dat, ilen_gzipped)
-        deallocate(gzip_buf)
+        call infleate_characters(ilength, chara_dat, zbuf)
       end if
 !
-      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
-     &    CALYPSO_COMM, ierr_MPI)
-      ioff_gl = ioff_gl + ilen_gzipped
+      call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
+     &    izero, CALYPSO_COMM, ierr_MPI)
+      ioff_gl = ioff_gl + zbuf%ilen_gzipped
 !
       end subroutine gz_read_fld_charhead_mpi
 !
@@ -154,50 +150,30 @@
 !
       use field_data_IO
       use field_data_MPI_IO
+      use zlib_convert_text
 !
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       character(len=kchara), intent(inout) :: field_name
 !
+      type(buffer_4_gzip) :: zbuf
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, i
-!
-      character(len=1), allocatable :: gzip_buf(:), textbuf(:)
-      character(len=kchara) :: textbuf_c
+      integer(kind = kint) :: ilength
 !
 !
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
-        ilen_gz = int(real(kchara) *1.01) + 24
-        allocate(gzip_buf(ilen_gz))
-        call calypso_mpi_seek_read_gz                                   &
-     &     (id_fld, ioffset, ilen_gz, gzip_buf(1))
+        zbuf%ilen_gz = int(real(kchara) *1.01 + 24,kind(zbuf%ilen_gz))
+        call calypso_mpi_seek_long_read_gz(id_fld, ioffset, zbuf)
 !
-        call gzip_infleat_once                                          &
-     &     (ilen_gz, gzip_buf(1), kchara, textbuf_c, ilen_gzipped)
-!
-        call read_each_field_name_buffer                                &
-     &     (textbuf_c, field_name, ilength)
-        ilength = ilength + 1
-!        do i = 1, kchara
-!          write(*,*) ilength, i, field_name(i:i),                      &
-!     &         iachar(textbuf_c(i:i)), iachar(field_name(i:i))
-!        end do
-!
-!        write(*,*) 'field_name', ilength, trim(field_name)
-!
-        allocate(textbuf(ilength))
-        call gzip_infleat_once                                          &
-     &     (ilen_gz, gzip_buf(1), ilength, textbuf(1), ilen_gzipped)
-!
-        deallocate(gzip_buf, textbuf)
+        call infleate_1word(ilength, field_name, zbuf)
       end if
 !
       call sync_field_name_mpi(ilength, field_name)
-      call MPI_BCAST(ilen_gzipped, ione, CALYPSO_INTEGER, izero,        &
-     &    CALYPSO_COMM, ierr_MPI)
-      ioff_gl = ioff_gl + ilen_gzipped
+      call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
+     &    izero, CALYPSO_COMM, ierr_MPI)
+      ioff_gl = ioff_gl + zbuf%ilen_gzipped
 !
       end subroutine gz_read_fld_1word_mpi
 !
@@ -209,7 +185,6 @@
       use field_data_IO
       use field_data_MPI_IO
       use data_IO_to_textline
-!
       use zlib_convert_ascii_vector
 !
       integer, intent(in) ::  id_fld
