@@ -7,34 +7,34 @@
 !> @brief gzip compression and expansion for MPI-IO routines
 !!
 !!@verbatim
-!!      subroutine defleat_int8_vector_mul(nloop, i8_array, c_array)
-!!      subroutine defleat_int_vector_mul(nloop, i_array, c_array)
-!!      subroutine defleat_int2d_vector_mul(nloop, iv_array, c_array)
-!!      subroutine defleat_1d_vector_mul(nloop, r_array, c_array)
-!!      subroutine defleat_2d_vector_mul(nloop, v_array, c_array)
+!!      subroutine defleat_int8_vector_mul(nloop, i8_array, zbuf)
+!!      subroutine defleat_int_vector_mul(nloop, i_array, zbuf)
+!!      subroutine defleat_int2d_vector_mul(nloop, iv_array, zbuf)
+!!      subroutine defleat_1d_vector_mul(nloop, r_array, zbuf)
+!!      subroutine defleat_2d_vector_mul(nloop, v_array, zbuf)
 !!        type(int8array_IO), intent(in) ::  i8_array(nloop)
 !!        type(intarray_IO), intent(in) ::  i_array(nloop)
 !!        type(ivecarray_IO), intent(in) ::  iv_array(nloop)
 !!        type(realarray_IO), intent(in) ::  r_array(nloop)
 !!        type(vectarray_IO), intent(in) ::  v_array(nloop)
-!!        type(charaarray_IO), intent(inout) :: c_array(nloop)
+!!        type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !!
 !!      subroutine infleat_int8_vector_mul                              &
-!!     &         (iflag_bin_swap, nloop, c_array, i8_array)
+!!     &         (iflag_bin_swap, nloop, i8_array, zbuf)
 !!      subroutine infleat_int_vector_mul                               &
-!!     &         (iflag_bin_swap, nloop, c_array, i_array)
+!!     &         (iflag_bin_swap, nloop, i_array, zbuf)
 !!      subroutine infleat_int2d_vector_mul                             &
-!!     &        (iflag_bin_swap, nloop, c_array, iv_array)
+!!     &        (iflag_bin_swap, nloop, iv_array, zbuf)
 !!      subroutine infleat_1d_vector_mul                                &
-!!     &         (iflag_bin_swap, nloop, c_array, r_array)
+!!     &         (iflag_bin_swap, nloop, r_array, zbuf)
 !!      subroutine infleat_2d_vector_mul                                &
-!!     &         (iflag_bin_swap, nloop, c_array, v_array)
-!!        type(charaarray_IO), intent(inout) :: c_array(nloop)
+!!     &         (iflag_bin_swap, nloop, v_array, zbuf)
 !!        type(int8array_IO), intent(inout) ::  i8_array(nloop)
 !!        type(intarray_IO), intent(inout) ::   i_array(nloop)
 !!        type(ivecarray_IO), intent(inout) ::  iv_array(nloop)
 !!        type(realarray_IO), intent(inout) ::  r_array(nloop)
 !!        type(vectarray_IO), intent(inout) ::  v_array(nloop)
+!!        type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !!@endverbatim
 !
       module defleat_4_merged_arrays
@@ -46,6 +46,7 @@
       use calypso_mpi
 !
       use t_calypso_mpi_IO_param
+      use t_buffer_4_gzip
 !
 ! -----------------------------------------------------------------------
 !
@@ -53,105 +54,177 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine defleat_int8_vector_mul(nloop, i8_array, c_array)
+      subroutine mpi_write_gzip_array_mul(id_file, nprocs_in, nloop,   &
+     &          ioff_gl, istack_merged, zbuf)
 !
-      integer(kind = kint), intent(in) :: nloop
-      type(int8array_IO), intent(in) ::  i8_array(nloop)
-      type(charaarray_IO), intent(inout) :: c_array(nloop)
+      use m_calypso_mpi_IO
 !
-      integer(kind = kint) :: ilen_gz, ilength, iloop
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
+!
+      type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: iloop, id_rank
 !
 !
       do iloop = 1, nloop
-        ilength =  i8_array(iloop)%num * kint_gl
-        ilen_gz = int(real(ilength) *1.01) + 24
-        allocate(c_array(iloop)%c_IO(ilen_gz))
-        call gzip_defleat_once(ilength, i8_array(iloop)%i8_IO(1),       &
-     &      ilen_gz, c_array(iloop)%num, c_array(iloop)%c_IO(1))
+        id_rank = rank_in_multi_domain(iloop)
+        if(zbuf(iloop)%ilen_gzipped .gt. 0) then
+          ioffset = ioff_gl + istack_merged(id_rank)
+          call calypso_mpi_seek_long_write_gz(id_file, ioffset,         &
+     &        zbuf(iloop)%ilen_gzipped, zbuf(iloop)%gzip_buf)
+        end if
+        call dealloc_zip_buffer(zbuf(iloop))
+      end do
+      ioff_gl = ioff_gl + istack_merged(nprocs)
+!
+      end subroutine mpi_write_gzip_array_mul
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_read_gzip_array_mul(id_file, nprocs_in, nloop,    &
+     &          ioff_gl, istack_merged, zbuf)
+!
+      use m_calypso_mpi_IO
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: iloop, id_rank
+!
+!
+      do iloop = 1, nloop
+        id_rank = rank_in_multi_domain(iloop)
+!
+        ioffset = ioff_gl + istack_merged(id_rank)
+        zbuf(iloop)%ilen_gz = istack_merged(id_rank+1)                  &
+     &                       - istack_merged(id_rank)
+!
+        call calypso_mpi_seek_long_read_gz                              &
+     &     (id_file, ioffset, zbuf(iloop))
+      end do
+      ioff_gl = ioff_gl + istack_merged(nprocs_in)
+!
+      end subroutine mpi_read_gzip_array_mul
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_istack_by_gzip_length                              &
+     &         (nprocs_in, nloop, zbuf, istack_merged)
+!
+      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      type(buffer_4_gzip), intent(inout) ::  zbuf(nloop)
+      integer(kind = kint_gl), intent(inout)                            &
+     &                         :: istack_merged(0:nprocs_in)
+!
+      integer(kind = kint_gl) :: num_local(nloop)
+!
+!
+      num_local(1:nloop) = zbuf(1:nloop)%ilen_gzipped
+      call set_istack_over_subdomains                                   &
+     &   (nprocs_in, nloop, num_local, istack_merged)
+!
+      end subroutine set_istack_by_gzip_length
+!
+! -----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine defleat_int8_vector_mul(nloop, i8_array, zbuf)
+!
+      integer(kind = kint), intent(in) :: nloop
+      type(int8array_IO), intent(in) ::  i8_array(nloop)
+      type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
+!
+      integer(kind = kint) :: iloop
+!
+!
+      do iloop = 1, nloop
+        call defleate_int8_vector_b                                     &
+     &     (i8_array(iloop)%num, i8_array(iloop)%i8_IO, zbuf(iloop))
       end do
 !
       end subroutine defleat_int8_vector_mul
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine defleat_int_vector_mul(nloop, i_array, c_array)
+      subroutine defleat_int_vector_mul(nloop, i_array, zbuf)
 !
       integer(kind = kint), intent(in) :: nloop
       type(intarray_IO), intent(in) ::  i_array(nloop)
-      type(charaarray_IO), intent(inout) :: c_array(nloop)
+      type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
-      integer(kind = kint) :: ilen_gz, ilength, iloop
+      integer(kind = kint) :: iloop
 !
 !
       do iloop = 1, nloop
-        ilength =  i_array(iloop)%num * kint
-        ilen_gz = int(real(ilength) *1.01) + 24
-        allocate(c_array(iloop)%c_IO(ilen_gz))
-        call gzip_defleat_once(ilength, i_array(iloop)%i_IO(1),         &
-     &      ilen_gz, c_array(iloop)%num, c_array(iloop)%c_IO(1))
+        call defleate_int_vector_b                                      &
+     &     (i_array(iloop)%num, i_array(iloop)%i_IO, zbuf(iloop))
       end do
 !
       end subroutine defleat_int_vector_mul
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine defleat_int2d_vector_mul(nloop, iv_array, c_array)
+      subroutine defleat_int2d_vector_mul(nloop, iv_array, zbuf)
 !
       integer(kind = kint), intent(in) :: nloop
       type(ivecarray_IO), intent(in) ::  iv_array(nloop)
-      type(charaarray_IO), intent(inout) :: c_array(nloop)
+      type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
-      integer(kind = kint) :: ilen_gz, ilength, iloop
+      integer(kind = kint) :: iloop
+      integer(kind = kint_gl) :: num
 !
 !
       do iloop = 1, nloop
-        ilength =  iv_array(iloop)%n1 * iv_array(iloop)%n2 * kint
-        ilen_gz = int(real(ilength) *1.01) + 24
-        allocate(c_array(iloop)%c_IO(ilen_gz))
-        call gzip_defleat_once(ilength, iv_array(iloop)%iv_IO(1,1),     &
-     &      ilen_gz, c_array(iloop)%num, c_array(iloop)%c_IO(1))
+        num =  iv_array(iloop)%n1 * iv_array(iloop)%n2
+        call defleate_int_vector_b                                      &
+     &     (num, iv_array(iloop)%iv_IO, zbuf(iloop))
       end do
 !
       end subroutine defleat_int2d_vector_mul
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine defleat_1d_vector_mul(nloop, r_array, c_array)
+      subroutine defleat_1d_vector_mul(nloop, r_array, zbuf)
 !
       integer(kind = kint), intent(in) :: nloop
       type(realarray_IO), intent(in) ::  r_array(nloop)
-      type(charaarray_IO), intent(inout) :: c_array(nloop)
+      type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
-      integer(kind = kint) :: ilen_gz, ilength, iloop
+      integer(kind = kint) :: iloop
 !
 !
       do iloop = 1, nloop
-        ilength =  r_array(iloop)%num * kreal
-        ilen_gz = int(real(ilength) *1.01) + 24
-        allocate(c_array(iloop)%c_IO(ilen_gz))
-        call gzip_defleat_once(ilength, r_array(iloop)%r_IO(1),         &
-     &      ilen_gz, c_array(iloop)%num, c_array(iloop)%c_IO(1))
+        call defleate_1d_vector_b                                       &
+     &     (r_array(iloop)%num, r_array(iloop)%r_IO(1), zbuf(iloop))
       end do
 !
       end subroutine defleat_1d_vector_mul
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine defleat_2d_vector_mul(nloop, v_array, c_array)
+      subroutine defleat_2d_vector_mul(nloop, v_array, zbuf)
 !
       integer(kind = kint), intent(in) :: nloop
       type(vectarray_IO), intent(in) ::  v_array(nloop)
-      type(charaarray_IO), intent(inout) :: c_array(nloop)
+      type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
-      integer(kind = kint) :: ilen_gz, ilength, iloop
+      integer(kind = kint) :: iloop
+      integer(kind = kint_gl) :: num
 !
 !
       do iloop = 1, nloop
-        ilength =  v_array(iloop)%n1 * v_array(iloop)%n2 * kreal
-        ilen_gz = int(real(ilength) *1.01) + 24
-        allocate(c_array(iloop)%c_IO(ilen_gz))
-        call gzip_defleat_once(ilength, v_array(iloop)%v_IO(1,1),       &
-     &      ilen_gz, c_array(iloop)%num, c_array(iloop)%c_IO(1))
+        num =  v_array(iloop)%n1 * v_array(iloop)%n2
+        call defleate_1d_vector_b                                       &
+     &     (num, v_array(iloop)%v_IO(1,1), zbuf(iloop))
       end do
 !
       end subroutine defleat_2d_vector_mul
@@ -160,30 +233,26 @@
 ! -----------------------------------------------------------------------
 !
       subroutine infleat_int8_vector_mul                                &
-     &         (iflag_bin_swap, nloop, c_array, i8_array)
+     &         (iflag_bin_swap, nloop, i8_array, zbuf)
 !
       integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
-      type(charaarray_IO), intent(inout) :: c_array(nloop)
       type(int8array_IO), intent(inout) ::  i8_array(nloop)
+      type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
-      integer(kind = kint) :: ilen_gzipped, ilength,iloop
+      integer(kind = kint) :: iloop
 !
       integer(kind = kint_gl) :: l8_byte
 !
 !
       do iloop = 1, nloop
-        ilength = i8_array(iloop)%num * kint_gl
-!
-        call gzip_infleat_once                                          &
-     &     (c_array(iloop)%num, c_array(iloop)%c_IO(1),                 &
-     &      ilength, i8_array(iloop)%i8_IO(1), ilen_gzipped)
+        call infleate_int8_vector_b                                     &
+     &     (i8_array(iloop)%num, i8_array(iloop)%i8_IO, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = ilength
+          l8_byte = i8_array(iloop)%num * kint_gl
           call byte_swap_64bit_f(l8_byte, i8_array(iloop)%i8_IO(1))
         end if
-        deallocate(c_array(iloop)%c_IO)
       end do
 !
       end subroutine infleat_int8_vector_mul
@@ -191,30 +260,26 @@
 ! -----------------------------------------------------------------------
 !
       subroutine infleat_int_vector_mul                                 &
-     &         (iflag_bin_swap, nloop, c_array, i_array)
+     &         (iflag_bin_swap, nloop, i_array, zbuf)
 !
       integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
-      type(charaarray_IO), intent(inout) :: c_array(nloop)
       type(intarray_IO), intent(inout) ::  i_array(nloop)
+      type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
-      integer(kind = kint) :: ilen_gzipped, ilength,iloop
+      integer(kind = kint) :: iloop
 !
       integer(kind = kint_gl) :: l8_byte
 !
 !
       do iloop = 1, nloop
-        ilength = i_array(iloop)%num * kint
-!
-        call gzip_infleat_once                                          &
-     &     (c_array(iloop)%num, c_array(iloop)%c_IO(1),                 &
-     &      ilength, i_array(iloop)%i_IO(1), ilen_gzipped)
+        call infleate_int_vector_b                                      &
+     &     (i_array(iloop)%num, i_array(iloop)%i_IO, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = ilength
+          l8_byte = i_array(iloop)%num * kint
           call byte_swap_32bit_f(l8_byte, i_array(iloop)%i_IO(1))
         end if
-        deallocate(c_array(iloop)%c_IO)
       end do
 !
       end subroutine infleat_int_vector_mul
@@ -222,30 +287,27 @@
 ! -----------------------------------------------------------------------
 !
       subroutine infleat_int2d_vector_mul                               &
-     &        (iflag_bin_swap, nloop, c_array, iv_array)
+     &        (iflag_bin_swap, nloop, iv_array, zbuf)
 !
       integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
-      type(charaarray_IO), intent(inout) :: c_array(nloop)
       type(ivecarray_IO), intent(inout) ::  iv_array(nloop)
+      type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
-      integer(kind = kint) :: ilen_gzipped, ilength,iloop
-!
+      integer(kind = kint) :: iloop
+      integer(kind = kint_gl) :: num
       integer(kind = kint_gl) :: l8_byte
 !
 !
       do iloop = 1, nloop
-        ilength = iv_array(iloop)%n1*iv_array(iloop)%n2 * kint
-!
-        call gzip_infleat_once                                          &
-     &     (c_array(iloop)%num, c_array(iloop)%c_IO(1),                 &
-     &      ilength, iv_array(iloop)%iv_IO(1,1), ilen_gzipped)
+        num =  iv_array(iloop)%n1 * iv_array(iloop)%n2
+        call infleate_int_vector_b                                      &
+     &     (num, iv_array(iloop)%iv_IO, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = ilength
+          l8_byte = num * kint
           call byte_swap_32bit_f(l8_byte, iv_array(iloop)%iv_IO(1,1))
         end if
-        deallocate(c_array(iloop)%c_IO)
       end do
 !
       end subroutine infleat_int2d_vector_mul
@@ -253,30 +315,26 @@
 ! -----------------------------------------------------------------------
 !
       subroutine infleat_1d_vector_mul                                  &
-     &         (iflag_bin_swap, nloop, c_array, r_array)
+     &         (iflag_bin_swap, nloop, r_array, zbuf)
 !
       integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
-      type(charaarray_IO), intent(inout) :: c_array(nloop)
       type(realarray_IO), intent(inout) ::  r_array(nloop)
+      type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
-      integer(kind = kint) :: ilen_gzipped, ilength,iloop
+      integer(kind = kint) :: iloop
 !
       integer(kind = kint_gl) :: l8_byte
 !
 !
       do iloop = 1, nloop
-        ilength = r_array(iloop)%num * kreal
-!
-        call gzip_infleat_once                                          &
-     &     (c_array(iloop)%num, c_array(iloop)%c_IO(1),                 &
-     &      ilength, r_array(iloop)%r_IO(1), ilen_gzipped)
+        call infleate_1d_vector_b                                       &
+     &     (r_array(iloop)%num, r_array(iloop)%r_IO, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = ilength
+          l8_byte = r_array(iloop)%num * kreal
           call byte_swap_64bit_f(l8_byte, r_array(iloop)%r_IO(1))
         end if
-        deallocate(c_array(iloop)%c_IO)
       end do
 !
       end subroutine infleat_1d_vector_mul
@@ -284,30 +342,27 @@
 ! -----------------------------------------------------------------------
 !
       subroutine infleat_2d_vector_mul                                  &
-     &         (iflag_bin_swap, nloop, c_array, v_array)
+     &         (iflag_bin_swap, nloop, v_array, zbuf)
 !
       integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
-      type(charaarray_IO), intent(inout) :: c_array(nloop)
       type(vectarray_IO), intent(inout) ::  v_array(nloop)
+      type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
-      integer(kind = kint) :: ilen_gzipped, ilength,iloop
-!
+      integer(kind = kint) :: iloop
+      integer(kind = kint_gl) :: num
       integer(kind = kint_gl) :: l8_byte
 !
 !
       do iloop = 1, nloop
-        ilength = v_array(iloop)%n1*v_array(iloop)%n2 * kreal
-!
-        call gzip_infleat_once                                          &
-     &     (c_array(iloop)%num, c_array(iloop)%c_IO(1),                 &
-     &      ilength, v_array(iloop)%v_IO(1,1), ilen_gzipped)
+        num =  v_array(iloop)%n1 * v_array(iloop)%n2
+        call infleate_1d_vector_b                                       &
+     &     (num, v_array(iloop)%v_IO, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = ilength
+          l8_byte = num * kreal
           call byte_swap_64bit_f(l8_byte, v_array(iloop)%v_IO(1,1))
         end if
-        deallocate(c_array(iloop)%c_IO)
       end do
 !
       end subroutine infleat_2d_vector_mul

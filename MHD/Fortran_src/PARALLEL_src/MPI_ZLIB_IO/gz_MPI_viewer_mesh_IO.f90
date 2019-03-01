@@ -151,35 +151,31 @@
      &         (IO_param, ncolumn, num, int_dat)
 !
       use gz_MPI_domain_data_IO
+      use zlib_cvt_ascii_comm_tbl
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(in) :: int_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped
-!
-      character(len=1), allocatable :: gzip_buf(:)
+      integer(kind = kint_gl) :: num64
 !
 !
-      ilen_gz = int(dble(num*len_int_txt) * 1.01 + 24,KIND(ilen_gz))
-      allocate(gzip_buf(ilen_gz))
+      num64 = num
+      call defleate_comm_table(ncolumn, num64, int_dat, zbuf)
 !
-      call defleate_comm_table(ncolumn, num, int_dat,                   &
-     &    ilen_gz, gzip_buf, ilen_gzipped)
+      call gz_mpi_write_stack_over_domain(IO_param, zbuf%ilen_gzipped)
 !
-      call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
-!
-      if(ilen_gzipped .gt. 0) then
+      if(zbuf%ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &
      &           + IO_param%istack_merged(IO_param%id_rank)
         call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
-     &      ilen_gzipped, gzip_buf(1))
+     &      zbuf%ilen_gzipped, zbuf%gzip_buf(1))
       end if
 !
-      deallocate(gzip_buf)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + IO_param%istack_merged(IO_param%nprocs_in)
+      call dealloc_zip_buffer(zbuf)
 !
       end subroutine gz_mpi_write_viewer_grp_item
 !

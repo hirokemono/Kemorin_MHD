@@ -23,7 +23,6 @@
 !!     &         (textbuf, num_field, ncomp_field)
 !!      subroutine read_each_field_name_buffer                          &
 !!     &         (textbuf, field_name, len_text)
-!!      subroutine read_each_field_data_buffer(textbuf ncomp, vect)
 !!
 !!      subroutine write_arrays_for_stacks(file_id, num, istack)
 !!      subroutine write_field_data(id_file, nnod, num_field, ntot_comp,&
@@ -257,21 +256,6 @@
       len_text = i - 1
 !
       end subroutine read_each_field_name_buffer
-!
-! -------------------------------------------------------------------
-!
-      subroutine read_each_field_data_buffer(textbuf, ncomp, vect)
-!
-      integer(kind = kint), intent(in) :: ncomp
-      character(len=ncomp*25+1), intent(in) :: textbuf
-      real(kind = kreal), intent(inout) :: vect(ncomp)
-!
-      character(len=ncomp*25) ::    tmp1
-!
-      tmp1 = textbuf(1:ncomp*25)
-      read(tmp1,*) vect(1:ncomp)
-!
-      end subroutine read_each_field_data_buffer
 !
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------

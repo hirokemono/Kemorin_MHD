@@ -53,39 +53,39 @@
 !
 !>      Structure for real array for MPI-IO
       type realarray_IO
-        integer(kind = kint) :: num
+        integer(kind = kint_gl) :: num
         real(kind = kreal), allocatable :: r_IO(:)
       end type realarray_IO
 !
 !>      Structure for 2D vectr array for MPI-IO
       type vectarray_IO
-        integer(kind = kint) :: n1
+        integer(kind = kint_gl) :: n1
         integer(kind = kint) :: n2
         real(kind = kreal), allocatable :: v_IO(:,:)
       end type vectarray_IO
 !
 !>      Structure for integer array for MPI-IO
       type intarray_IO
-        integer(kind = kint) :: num
+        integer(kind = kint_gl) :: num
         integer(kind = kint), allocatable :: i_IO(:)
       end type intarray_IO
 !
 !>      Structure for integer vector array for MPI-IO
       type ivecarray_IO
-        integer(kind = kint) :: n1
+        integer(kind = kint_gl) :: n1
         integer(kind = kint) :: n2
         integer(kind = kint), allocatable :: iv_IO(:,:)
       end type ivecarray_IO
 !
 !>      Structure for 8-byte integer array for MPI-IO
       type int8array_IO
-        integer(kind = kint) :: num
+        integer(kind = kint_gl) :: num
         integer(kind = kint_gl), allocatable :: i8_IO(:)
       end type int8array_IO
 !
 !>      Structure for 8-byte integer array for MPI-IO
       type charaarray_IO
-        integer(kind = kint) :: num
+        integer(kind = kint_gl) :: num
         character(len = 1), allocatable :: c_IO(:)
       end type charaarray_IO
 !
@@ -343,12 +343,12 @@
      &         (nprocs_in, nloop, num_local, istack_merged)
 !
       integer(kind = kint), intent(in) :: nloop, nprocs_in
-      integer(kind = kint), intent(in) :: num_local(nloop)
+      integer(kind = kint_gl), intent(in) :: num_local(nloop)
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
 !
-      integer(kind = kint) :: num_lc(0:nprocs_in)
-      integer(kind = kint) :: num_gl(0:nprocs_in)
+      integer(kind = kint_gl) :: num_lc(0:nprocs_in)
+      integer(kind = kint_gl) :: num_gl(0:nprocs_in)
       integer(kind = kint) :: iloop, ip
 !
 !
@@ -363,7 +363,7 @@
       end do
 !
       call MPI_allREDUCE(num_lc, num_gl, nprocs_in,                     &
-     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       istack_merged(0) = 0
       do ip = 1, nprocs_in
@@ -399,7 +399,7 @@
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
 !
-      integer(kind = kint) :: num_local(nloop)
+      integer(kind = kint_gl) :: num_local(nloop)
 !
 !
       num_local(1:nloop) = c_array(1:nloop)%num
@@ -418,7 +418,7 @@
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
 !
-      integer(kind = kint) :: num_local(nloop)
+      integer(kind = kint_gl) :: num_local(nloop)
 !
 !
       num_local(1:nloop) = i8_array(1:nloop)%num * kint_gl
@@ -437,7 +437,7 @@
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
 !
-      integer(kind = kint) :: num_local(nloop)
+      integer(kind = kint_gl) :: num_local(nloop)
 !
 !
       num_local(1:nloop) = i_array(1:nloop)%num * kint
@@ -456,7 +456,7 @@
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
 !
-      integer(kind = kint) :: num_local(nloop)
+      integer(kind = kint_gl) :: num_local(nloop)
 !
 !
       num_local(1:nloop) = iv_array(1:nloop)%n1                         &
@@ -476,7 +476,7 @@
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
 !
-      integer(kind = kint) :: num_local(nloop)
+      integer(kind = kint_gl) :: num_local(nloop)
 !
 !
       num_local(1:nloop) = r_array(1:nloop)%num * kreal
@@ -495,7 +495,7 @@
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
 !
-      integer(kind = kint) :: num_local(nloop)
+      integer(kind = kint_gl) :: num_local(nloop)
 !
 !
       num_local(1:nloop) = v_array(1:nloop)%n1                          &

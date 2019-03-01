@@ -31,9 +31,12 @@
       use calypso_mpi
 !
       use t_calypso_mpi_IO_param
+      use t_buffer_4_gzip
       use gz_MPI_binary_head_IO
       use MPI_binery_IO_4_buffers
       use defleat_4_merged_arrays
+!
+      type(buffer_4_gzip), allocatable, private :: zbufs(:)
 !
 !  ---------------------------------------------------------------------
 !
@@ -46,17 +49,18 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
+      allocate(zbufs(IO_param%nloop))
       call defleat_int8_vector_mul                                      &
-     &   (IO_param%nloop, IO_param%i8_array, IO_param%c_array)
-      call set_istack_by_chara_length(IO_param%nprocs_in,               &
-     &   IO_param%nloop, IO_param%c_array, IO_param%istack_merged)
+     &   (IO_param%nloop, IO_param%i8_array, zbufs)
+      call set_istack_by_gzip_length(IO_param%nprocs_in,                &
+     &   IO_param%nloop, zbufs, IO_param%istack_merged)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
-      call mpi_write_chara_array_mul                                    &
+      call mpi_write_gzip_array_mul                                     &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
-     &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
-      call dealloc_character_buffers(IO_param%nloop, IO_param%c_array)
+     &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
+      deallocate(zbufs)
 !
       end subroutine gz_mpi_write_int8_vector_mul
 !
@@ -67,17 +71,18 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
+      allocate(zbufs(IO_param%nloop))
       call defleat_int_vector_mul                                       &
-     &   (IO_param%nloop, IO_param%i_array, IO_param%c_array)
-      call set_istack_by_chara_length(IO_param%nprocs_in,               &
-     &   IO_param%nloop, IO_param%c_array, IO_param%istack_merged)
+     &   (IO_param%nloop, IO_param%i_array, zbufs)
+      call set_istack_by_gzip_length(IO_param%nprocs_in,                &
+     &   IO_param%nloop, zbufs, IO_param%istack_merged)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
-      call mpi_write_chara_array_mul                                    &
+      call mpi_write_gzip_array_mul                                     &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
-     &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
-      call dealloc_character_buffers(IO_param%nloop, IO_param%c_array)
+     &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
+      deallocate(zbufs)
 !
       end subroutine gz_mpi_write_int_vector_mul
 !
@@ -88,17 +93,18 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
+      allocate(zbufs(IO_param%nloop))
       call defleat_int2d_vector_mul                                     &
-     &   (IO_param%nloop, IO_param%iv_array, IO_param%c_array)
-      call set_istack_by_chara_length(IO_param%nprocs_in,               &
-     &   IO_param%nloop, IO_param%c_array, IO_param%istack_merged)
+     &   (IO_param%nloop, IO_param%iv_array, zbufs)
+      call set_istack_by_gzip_length(IO_param%nprocs_in,                &
+     &   IO_param%nloop, zbufs, IO_param%istack_merged)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
-      call mpi_write_chara_array_mul                                    &
+      call mpi_write_gzip_array_mul                                     &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
-     &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
-      call dealloc_character_buffers(IO_param%nloop, IO_param%c_array)
+     &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
+      deallocate(zbufs)
 !
       end subroutine gz_mpi_write_int2d_vector_mul
 !
@@ -109,17 +115,18 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
+      allocate(zbufs(IO_param%nloop))
       call defleat_1d_vector_mul                                        &
-     &   (IO_param%nloop, IO_param%r_array, IO_param%c_array)
-      call set_istack_by_chara_length(IO_param%nprocs_in,               &
-     &   IO_param%nloop, IO_param%c_array, IO_param%istack_merged)
+     &   (IO_param%nloop, IO_param%r_array, zbufs)
+      call set_istack_by_gzip_length(IO_param%nprocs_in,                &
+     &   IO_param%nloop, zbufs, IO_param%istack_merged)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
-      call mpi_write_chara_array_mul                                    &
+      call mpi_write_gzip_array_mul                                     &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
-     &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
-      call dealloc_character_buffers(IO_param%nloop, IO_param%c_array)
+     &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
+      deallocate(zbufs)
 !
       end subroutine gz_mpi_write_1d_vector_mul
 !
@@ -130,17 +137,18 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
+      allocate(zbufs(IO_param%nloop))
       call defleat_2d_vector_mul                                        &
-     &   (IO_param%nloop, IO_param%v_array, IO_param%c_array)
-      call set_istack_by_chara_length(IO_param%nprocs_in,               &
-     &   IO_param%nloop, IO_param%c_array, IO_param%istack_merged)
+     &   (IO_param%nloop, IO_param%v_array, zbufs)
+      call set_istack_by_gzip_length(IO_param%nprocs_in,                &
+     &   IO_param%nloop, zbufs, IO_param%istack_merged)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
-      call mpi_write_chara_array_mul                                    &
+      call mpi_write_gzip_array_mul                                     &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
-     &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
-      call dealloc_character_buffers(IO_param%nloop, IO_param%c_array)
+     &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
+      deallocate(zbufs)
 !
       end subroutine gz_mpi_write_2d_vector_mul
 !
@@ -152,14 +160,16 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
+      allocate(zbufs(IO_param%nloop))
       call gz_mpi_read_i8stack_head_b                                   &
      &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
-      call mpi_read_chara_array_mul                                     &
+      call mpi_read_gzip_array_mul                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
-     &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
+     &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
 !
       call infleat_int8_vector_mul(IO_param%iflag_bin_swap,             &
-     &    IO_param%nloop, IO_param%c_array, IO_param%i8_array)
+     &    IO_param%nloop, IO_param%i8_array, zbufs)
+      deallocate(zbufs)
 !
       end subroutine gz_mpi_read_int8_vector_mul
 !
@@ -170,14 +180,16 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
+      allocate(zbufs(IO_param%nloop))
       call gz_mpi_read_i8stack_head_b                                   &
      &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
-      call mpi_read_chara_array_mul                                     &
+      call mpi_read_gzip_array_mul                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
-     &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
+     &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
 !
       call infleat_int_vector_mul(IO_param%iflag_bin_swap,              &
-     &    IO_param%nloop, IO_param%c_array, IO_param%i_array)
+     &    IO_param%nloop, IO_param%i_array, zbufs)
+      deallocate(zbufs)
 !
       end subroutine gz_mpi_read_int_vector_mul
 !
@@ -188,14 +200,16 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
+      allocate(zbufs(IO_param%nloop))
       call gz_mpi_read_i8stack_head_b                                   &
      &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
-      call mpi_read_chara_array_mul                                     &
+      call mpi_read_gzip_array_mul                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
-     &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
+     &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
 !
       call infleat_int2d_vector_mul(IO_param%iflag_bin_swap,            &
-     &    IO_param%nloop, IO_param%c_array, IO_param%iv_array)
+     &    IO_param%nloop, IO_param%iv_array, zbufs)
+      deallocate(zbufs)
 !
       end subroutine gz_mpi_read_int2d_vector_mul
 !
@@ -206,14 +220,16 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
+      allocate(zbufs(IO_param%nloop))
       call gz_mpi_read_i8stack_head_b                                   &
      &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
-      call mpi_read_chara_array_mul                                     &
+      call mpi_read_gzip_array_mul                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
-     &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
+     &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
 !
       call infleat_1d_vector_mul(IO_param%iflag_bin_swap,               &
-     &    IO_param%nloop, IO_param%c_array, IO_param%r_array)
+     &    IO_param%nloop, IO_param%r_array, zbufs)
+      deallocate(zbufs)
 !
       end subroutine gz_mpi_read_1d_vector_mul
 !
@@ -224,14 +240,16 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
+      allocate(zbufs(IO_param%nloop))
       call gz_mpi_read_i8stack_head_b                                   &
      &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
-      call mpi_read_chara_array_mul                                     &
+      call mpi_read_gzip_array_mul                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
-     &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%c_array)
+     &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
 !
       call infleat_2d_vector_mul(IO_param%iflag_bin_swap,               &
-     &    IO_param%nloop, IO_param%c_array, IO_param%v_array)
+     &    IO_param%nloop, IO_param%v_array, zbufs)
+      deallocate(zbufs)
 !
       end subroutine gz_mpi_read_2d_vector_mul
 !

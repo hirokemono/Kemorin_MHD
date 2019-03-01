@@ -13,8 +13,10 @@
 !!     &         (nnod, numdir, id_global, xx, zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine defleate_vector_txt(nnod, ndir, vector, zbuf)
-!!      subroutine infleate_vector_txt(nnod, ndir, vector, zbuf)
+!!      subroutine defleate_vector_txt                                  &
+!!     &         (iflag_blank, nnod, ndir, vector, zbuf)
+!!      subroutine infleate_vector_txt                                  &
+!!     &         (iflag_blank, nnod, ndir, vector, zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !
@@ -23,11 +25,7 @@
       use m_precision
       use m_constants
 !
-      use t_calypso_mpi_IO_param
       use t_buffer_4_gzip
-      use gz_MPI_ascii_data_IO
-      use gz_MPI_domain_data_IO
-      use MPI_ascii_data_IO
 !
       implicit none
 !
@@ -39,6 +37,8 @@
 !
       subroutine defleate_node_position                                 &
      &         (nnod, numdir, id_global, xx, zbuf)
+!
+      use data_IO_to_textline
 !
       integer(kind = kint_gl), intent(in) :: nnod
       integer(kind = kint), intent(in) :: numdir
@@ -121,6 +121,8 @@
 !
       subroutine infleate_node_position                                 &
      &         (nnod, numdir, id_global, xx, zbuf)
+!
+      use data_IO_to_textline
 !
       integer(kind = kint_gl), intent(in) :: nnod
       integer(kind = kint), intent(in) :: numdir
@@ -208,11 +210,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine defleate_vector_txt(nnod, ndir, vector, zbuf)
+      subroutine defleate_vector_txt                                    &
+     &         (iflag_blank, nnod, ndir, vector, zbuf)
 !
       use field_data_IO
       use data_IO_to_textline
 !
+      integer(kind = kint), intent(in) :: iflag_blank
       integer(kind = kint_gl), intent(in) :: nnod
       integer(kind = kint), intent(in) :: ndir
       real(kind = kreal), intent(in) :: vector(nnod,ndir)
@@ -231,7 +235,12 @@
      &     = int(dble(nnod*ilen_line)*1.01+24, KIND(zbuf%ilen_gz))
       call alloc_zip_buffer(zbuf)
 !
-      if(nnod .eq. 1) then
+      if(nnod .le. 0 .and. iflag_blank .gt. 0) then
+        ilen_in = int(zbuf%ilen_gz)
+        call gzip_defleat_once(ione, char(10),                          &
+     &      ilen_in, ilen_used, zbuf%gzip_buf(1))
+        zbuf%ilen_gzipped = ilen_used
+      else if(nnod .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
         v1(1:ndir) = vector(1,1:ndir)
         call gzip_defleat_once(ilen_line, vector_textline(ndir, v1),    &
@@ -281,11 +290,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine infleate_vector_txt(nnod, ndir, vector, zbuf)
+      subroutine infleate_vector_txt                                    &
+     &         (iflag_blank, nnod, ndir, vector, zbuf)
 !
       use field_data_IO
       use field_data_MPI_IO
+      use data_IO_to_textline
 !
+      integer(kind = kint), intent(in) :: iflag_blank
       integer(kind = kint_gl), intent(in) :: nnod
       integer(kind = kint), intent(in) :: ndir
       real(kind = kreal), intent(inout) :: vector(nnod,ndir)
@@ -304,12 +316,17 @@
       ilen_line = len_vector_textline(ndir)
       allocate(textbuf(ilen_line))
 !
-      if(nnod .eq. 1) then
+      if(nnod .le. 0 .and. iflag_blank .gt. 0) then
+        ilen_in = int(zbuf%ilen_gz)
+        call gzip_infleat_once                                          &
+     &    (ilen_in, zbuf%gzip_buf(1), ione, textbuf(1), ilen_used)
+        zbuf%ilen_gzipped = ilen_used
+      else if(nnod .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_infleat_once(ilen_in, zbuf%gzip_buf(1),               &
      &      ilen_line, textbuf(1), ilen_used)
         zbuf%ilen_gzipped = ilen_used
-        call read_each_field_data_buffer(textbuf(1), ndir, v1)
+        call read_vector_textline(textbuf(1), ndir, v1)
         vector(1,1:ndir) = v1(1:ndir)
       else if(nnod .gt. 0) then
         ist = 0
@@ -327,13 +344,13 @@
           call gzip_infleat_begin                                       &
      &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),              &
      &        ilen_line, textbuf(1), ilen_used)
-          call read_each_field_data_buffer(textbuf(1), ndir, v1)
+          call read_vector_textline(textbuf(1), ndir, v1)
           vector(ist+1,1:ndir) = v1(1:ndir)
 !
           do i = ist+2, ist+nline-1
             call gzip_infleat_cont                                      &
      &         (ilen_in, ilen_line, textbuf(1), ilen_used)
-            call read_each_field_data_buffer(textbuf(1), ndir, v1)
+            call read_vector_textline(textbuf(1), ndir, v1)
             vector(i,1:ndir) = v1(1:ndir)
           end do
 !          if(my_rank .eq. 0) write(*,*) 'gzip_infleat_cont',           &
@@ -341,7 +358,7 @@
 !
           call gzip_infleat_last                                        &
      &       (ilen_in, ilen_line, textbuf(1), ilen_used)
-          call read_each_field_data_buffer(textbuf(1), ndir, v1)
+          call read_vector_textline(textbuf(1), ndir, v1)
           vector(ist+nline,1:ndir) = v1(1:ndir)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used

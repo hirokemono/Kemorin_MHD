@@ -226,10 +226,9 @@
       else
         zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)       &
      &                - IO_param%istack_merged(IO_param%id_rank)
-        call alloc_zip_buffer(zbuf)
 !
-        call calypso_mpi_seek_long_read_gz(IO_param%id_file, ioffset,   &
-     &      zbuf%ilen_gz, zbuf%gzip_buf(1))
+        call calypso_mpi_seek_long_read_gz                              &
+     &     (IO_param%id_file, ioffset, zbuf)
 !
         num64 = num
         call infleate_int_vector_b(num64, int_dat, zbuf)
@@ -271,10 +270,8 @@
       else
         zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)       &
      &                - IO_param%istack_merged(IO_param%id_rank)
-        call alloc_zip_buffer(zbuf)
-!
-        call calypso_mpi_seek_long_read_gz(IO_param%id_file, ioffset,   &
-     &      zbuf%ilen_gz, zbuf%gzip_buf(1))
+        call calypso_mpi_seek_long_read_gz                              &
+     &     (IO_param%id_file, ioffset, zbuf)
 !
         num64 = num
         call infleate_int8_vector_b(num64, int8_dat, zbuf)
@@ -316,10 +313,8 @@
       else
         zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)       &
      &                - IO_param%istack_merged(IO_param%id_rank)
-        call alloc_zip_buffer(zbuf)
-!
-        call calypso_mpi_seek_long_read_gz(IO_param%id_file, ioffset,   &
-     &      zbuf%ilen_gz, zbuf%gzip_buf(1))
+        call calypso_mpi_seek_long_read_gz                              &
+     &     (IO_param%id_file, ioffset, zbuf)
 !
         num64 = num
         call infleate_1d_vector_b(num64, real_dat, zbuf)

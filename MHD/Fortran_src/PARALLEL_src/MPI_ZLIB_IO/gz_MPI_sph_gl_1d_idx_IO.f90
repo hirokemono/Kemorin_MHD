@@ -23,6 +23,7 @@
 !
       use t_node_id_spherical_IO
       use t_calypso_mpi_IO_param
+      use t_buffer_4_gzip
       use m_sph_modes_grid_labels
       use gz_MPI_ascii_data_IO
       use gz_MPI_domain_data_IO
@@ -34,6 +35,8 @@
       integer(kind = kint_gl), allocatable :: idx_gl_tmp(:)
       private :: idx_gl_tmp
       private :: gz_mpi_read_1d_gl_address, gz_mpi_write_1d_gl_address
+!
+      type(buffer_4_gzip) :: zbuf
 !
 ! -----------------------------------------------------------------------
 !
@@ -219,17 +222,13 @@
       subroutine gz_mpi_read_1d_gl_address                              &
      &         (IO_param, nnod, numdir, idx)
 !
+      use zlib_cvt_ascii_ele_connect
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind=kint), intent(in) :: nnod, numdir
       integer(kind=kint), intent(inout) :: idx(nnod, numdir)
 !
-      integer(kind = kint) :: idx_tmp(numdir)
-      integer(kind = kint) :: i
-!
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_line, ilen_gz, ilen_gzipped
-!
-      character(len=1), allocatable :: gzip_buf(:), textbuf(:)
 !
 !
       call read_int8_stack_textline                                     &
@@ -237,49 +236,20 @@
      &      len_multi_int_textline(IO_param%nprocs_in)),                &
      &    IO_param%nprocs_in, IO_param%istack_merged)
 !
-      ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)          &
+      zbuf%ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)     &
      &            - IO_param%istack_merged(IO_param%id_rank))
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
-      if(ilen_gz .le. 0) return
+      if(zbuf%ilen_gz .le. 0) return
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
 !
-      ilen_line = len_multi_int_textline(numdir)
-      allocate(textbuf(ilen_line))
-      allocate(gzip_buf(ilen_gz))
-      call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset,          &
-     &    ilen_gz, gzip_buf(1))
+      call calypso_mpi_seek_long_read_gz                                &
+     &   (IO_param%id_file, ioffset, zbuf)
 !
-      if(nnod .le. 0) then
-        call gzip_infleat_once                                          &
-     &    (ilen_gz, gzip_buf(1), ione, textbuf(1), ilen_gzipped)
-      else if(nnod .eq. 1) then
-        call gzip_infleat_once                                          &
-     &    (ilen_gz, gzip_buf(1), ilen_line, textbuf(1), ilen_gzipped)
-        call read_multi_int_textline(textbuf(1), numdir, idx(1,1))
-      else if(nnod .gt. 0) then
-        call gzip_infleat_begin                                         &
-     &   (ilen_gz, gzip_buf(1), ilen_line, textbuf(1), ilen_gzipped)
-        call read_multi_int_textline(textbuf(1), numdir, idx_tmp)
-        idx(1,1:numdir) = idx_tmp(1:numdir)
-!
-        do i = 2, nnod-1
-          call gzip_infleat_cont                                        &
-     &       (ilen_gz, ilen_line, textbuf(1), ilen_gzipped)
-          call read_multi_int_textline(textbuf(1),  numdir, idx_tmp)
-          idx(i,1:numdir) = idx_tmp(1:numdir)
-        end do
-!
-        call gzip_infleat_last                                          &
-     &     (ilen_gz, ilen_line, textbuf(1), ilen_gzipped)
-        call read_multi_int_textline(textbuf(1), numdir, idx_tmp)
-        idx(nnod,1:numdir) = idx_tmp(1:numdir)
-      end if
-!
-      deallocate(gzip_buf, textbuf)
+      call infleate_1d_global_address(nnod, numdir, idx, zbuf)
 !
       end subroutine gz_mpi_read_1d_gl_address
 !
@@ -288,64 +258,31 @@
       subroutine gz_mpi_write_1d_gl_address                             &
      &         (IO_param, nnod, numdir, idx)
 !
+      use zlib_cvt_ascii_ele_connect
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind=kint), intent(in) :: nnod, numdir
       integer(kind=kint), intent(in) :: idx(nnod, numdir)
 !
-      integer(kind = kint) :: i
-      integer(kind = kint) :: idx_tmp(numdir)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: ilen_gz, ilen_gzipped
-      integer(kind = kint) :: ilen_line
-      integer(kind = kint) :: ilen_used, ilen_in
-!
-      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       call gz_mpi_write_num_of_data(IO_param, nnod)
 !
-      ilen_line = len_multi_int_textline(numdir)
-      ilen_gz = int(dble(nnod*ilen_line) *1.01 + 24,KIND(ilen_gz))
-      ilen_in = int(ilen_gz)
-      allocate(gzip_buf(ilen_gz))
+      call defleate_1d_global_address(nnod, numdir, idx, zbuf)
 !
-      if(nnod .le. 0) then
-        call gzip_defleat_once(ione, char(10),                          &
-     &      ilen_in, ilen_used, gzip_buf(1))
-      else if(nnod .eq. 1) then
-        call gzip_defleat_once(ilen_line,                               &
-     &      multi_int_textline(numdir, idx(1,1)),                       &
-     &      ilen_in, ilen_used, gzip_buf(1))
-      else if(nnod .gt. 0) then
-        idx_tmp(1:numdir) = idx(1,1:numdir)
-        call gzip_defleat_begin(ilen_line,                              &
-     &     multi_int_textline(numdir, idx_tmp),                         &
-     &     ilen_in, ilen_used, gzip_buf(1))
-        do i = 2, nnod - 1
-          idx_tmp(1:numdir) = idx(i,1:numdir)
-          call gzip_defleat_cont(ilen_line,                             &
-     &     multi_int_textline(numdir, idx_tmp),                         &
-     &        ilen_in, ilen_used)
-        end do
-        idx_tmp(1:numdir) = idx(nnod,1:numdir)
-        call gzip_defleat_last(ilen_line,                               &
-     &     multi_int_textline(numdir, idx_tmp),                         &
-     &      ilen_in, ilen_used)
-      end if
-      ilen_gzipped = ilen_used
+      call gz_mpi_write_stack_over_domain(IO_param, zbuf%ilen_gzipped)
 !
-      call gz_mpi_write_stack_over_domain(IO_param, ilen_gzipped)
-!
-      if(ilen_gzipped .gt. 0) then
+      if(zbuf%ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &
      &           + IO_param%istack_merged(IO_param%id_rank)
         call calypso_mpi_seek_long_write_gz(IO_param%id_file, ioffset,  &
-     &      ilen_gzipped, gzip_buf(1))
+     &      zbuf%ilen_gzipped, zbuf%gzip_buf(1))
       end if
 !
-      deallocate(gzip_buf)
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &                  + IO_param%istack_merged(IO_param%nprocs_in)
+      call dealloc_zip_buffer(zbuf)
 !
       end subroutine gz_mpi_write_1d_gl_address
 !
