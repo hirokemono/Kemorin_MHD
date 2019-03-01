@@ -433,6 +433,30 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine get_geometry_reference(lic_p, mask_idx, geo_coord, ref_value)
+      type(lic_parameters), intent(in) :: lic_p
+      integer(kind=kint), intent(in):: mask_idx
+      real(kind=kreal), intent(in) :: geo_coord(:)
+      real(kind=kreal), intent(inout) :: ref_value
+!
+      integer(kind=kint) :: idx
+      real(kind=kreal) :: temp
+!
+      idx = lic_p%masking(mask_idx)%comp_idx
+      if(idx .le. 3) then
+        ref_value = geo_coord(lic_p%masking(mask_idx)%comp_idx)
+      else
+        temp = geo_coord(1)**2 + geo_coord(2)**2 + geo_coord(3)**2
+        if(temp .gt. 0.001) then
+          ref_value = sqrt(temp)
+        else
+          ref_value = 0.0
+        end if
+      end if
+      end subroutine get_geometry_reference
+!
+!-----------------------------------------------------------------------
+!
       subroutine load_noise_data(lic_p)
 !
       use t_control_data_LIC

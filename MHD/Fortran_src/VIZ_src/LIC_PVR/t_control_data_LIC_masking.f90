@@ -41,6 +41,7 @@
 !
 !
       type lic_masking_ctl
+        type(read_character_item) :: mask_type_ctl
         type(read_character_item) :: field_name_ctl
         type(read_character_item) :: component_ctl
         type(ctl_array_r2) ::       mask_range_ctl
@@ -48,6 +49,7 @@
 !
 !     4th level for LIC masking
 !
+      character(len=kchara) :: hd_masking_type = 'masking_type'
       character(len=kchara) :: hd_masking_field = 'masking_field'
       character(len=kchara) :: hd_masking_comp = 'masking_component'
 !
@@ -79,6 +81,8 @@
 !
 !
         call read_chara_ctl_type                                        &
+     &     (hd_masking_type, mask_ctl%mask_type_ctl)
+        call read_chara_ctl_type                                        &
      &     (hd_masking_field, mask_ctl%field_name_ctl)
         call read_chara_ctl_type                                        &
      &     (hd_masking_comp, mask_ctl%component_ctl)
@@ -96,6 +100,7 @@
       type(lic_masking_ctl), intent(inout) :: mask_ctl
 !
 !
+      mask_ctl%mask_type_ctl%iflag = 0
       mask_ctl%field_name_ctl%iflag = 0
       mask_ctl%component_ctl%iflag =  0
 !
@@ -115,6 +120,7 @@
       type(lic_masking_ctl), intent(inout) :: mask_ctl
 !
 !
+      call bcast_ctl_type_c1(mask_ctl%mask_type_ctl)
       call bcast_ctl_type_c1(mask_ctl%field_name_ctl)
       call bcast_ctl_type_c1(mask_ctl%component_ctl)
       call bcast_ctl_array_r2(mask_ctl%mask_range_ctl)

@@ -67,11 +67,9 @@
 !
         real(kind = kreal), intent(inout) :: xi(2)
         real(kind = kreal), intent(in) :: v_nod(nnod,3), xx(nnod, 3)
-        real(kind = kreal), intent(in)                                  &
-     &             :: ref_nod(nnod,lic_p%num_masking)
-        real(kind = kreal), intent(in)                                  &
-     &             :: xx_org(3), r_org(:), vec_org(3)
-        real(kind = kreal), intent(inout) :: o_tgt, n_grad(3)
+        real(kind = kreal), intent(in) :: ref_nod(nnod,lic_p%num_masking)
+        real(kind = kreal), intent(in) :: xx_org(3), vec_org(3)
+        real(kind = kreal), intent(inout) :: o_tgt, n_grad(3), r_org(:)
         integer(kind = kint), intent(inout) :: iflag_comm
         integer(kind = kint), intent(in) :: kernal_size
         real(kind = kreal), intent(in) :: kernal_node(kernal_size)
@@ -118,6 +116,11 @@
           end if
         end do
 
+        do i = 1, lic_p%num_masking
+          if(lic_p%masking(i)%mask_type .eq. iflag_geometrymask) then
+            call get_geometry_reference(lic_p, i, xx_org, r_org(i))
+          end if
+        end do
         if(mask_flag(lic_p, r_org)) then
           call noise_sampling                                           &
      &       (lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,     &
@@ -370,8 +373,12 @@
         g_v(1:3) = 0.0
         ref_value(:) = 0.0
         do i = 1, lic_p%num_masking
-          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-          &      ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
+          if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
+            call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+            &      ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
+          else
+            call get_geometry_reference(lic_p, i, x_tgt, ref_value(i))
+          end if
         end do
         if(mask_flag(lic_p, ref_value)) then
           call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,               &
@@ -443,8 +450,12 @@
           n_v = 0.0
           g_v(1:3) = 0.0
           do i = 1, lic_p%num_masking
-            call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-            &      ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
+            if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
+              call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+              &      ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
+            else
+              call get_geometry_reference(lic_p, i, x_tgt, ref_value(i))
+            end if
           end do
           if(mask_flag(lic_p, ref_value)) then
             call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,               &
