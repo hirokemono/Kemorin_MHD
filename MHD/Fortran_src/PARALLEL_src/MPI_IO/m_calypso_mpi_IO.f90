@@ -292,6 +292,7 @@
      &         (id_mpi_file, iflag_bin_swap, ioff_gl)
 !
       use m_error_IDs
+      use binary_IO
 !
       integer, intent(in) ::  id_mpi_file
       integer(kind = kint), intent(inout) :: iflag_bin_swap
@@ -308,17 +309,7 @@
         call MPI_FILE_READ(id_mpi_file, int_vector, ione,               &
      &      CALYPSO_INTEGER, sta1_IO, ierr_MPI)
 !
-        if(int_vector(1) .eq. i_UNIX) then
-          write(*,*) 'binary data have correct endian!'
-          iflag_bin_swap = iendian_KEEP
-        else if(int_vector(1) .eq. i_XINU) then
-          write(*,*) 'binary data have opposite endian!'
-          iflag_bin_swap = iendian_FLIP
-        else
-          iflag_bin_swap = -1
-          call calypso_MPI_abort                                        &
-     &     (ierr_fld,'Binary Data is someting wrong!')
-        end if
+        iflag_bin_swap = endian_check(my_rank, int_vector(1))
       end if
       ioff_gl = ioff_gl + kint
 !

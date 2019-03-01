@@ -248,26 +248,14 @@
 !
       integer(kind = kint) function gz_read_endian_flag(my_rank)
 !
+      use binary_IO
+!
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint) :: ierr_IO, int_dat
 !
 !
       call gzread_32bit_f(iendian_KEEP, kint, int_dat, ierr_IO)
-!
-      if(ierr_IO .ne. kint) then
-        if(my_rank.eq.0) write(*,*) 'Data is broken'
-        gz_read_endian_flag = -1
-      else if(int_dat .eq. i_UNIX) then
-        if(my_rank.eq.0) write(*,*) 'binary data have correct endian!'
-        gz_read_endian_flag = iendian_KEEP
-      else if(int_dat .eq. i_XINU) then
-        if(my_rank.eq.0) write(*,*) 'binary data have opposite endian!'
-        gz_read_endian_flag = iendian_FLIP
-      else
-        gz_read_endian_flag = -1
-        if(my_rank.eq.0) write(*,*) 'Binary Data is someting wrong!',   &
-     &                   int_dat
-      end if
+      gz_read_endian_flag = endian_check(my_rank, int_dat)
 !
       end function gz_read_endian_flag
 !

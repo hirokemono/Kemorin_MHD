@@ -24,6 +24,7 @@
 !!      subroutine write_1d_vector_b(num, real_dat)
 !!      subroutine write_2d_vector_b(n1, n2, real_dat)
 !!
+!!      integer(kind = kint) function endian_check(my_rank, int_dat)
 !!      integer(kind = kint) function read_endian_flag(my_rank)
 !!      subroutine read_one_integer_b(iflag_swap, int_dat, ierr)
 !!      subroutine read_one_real_b(iflag_swap, real_dat, ierr)
@@ -385,6 +386,28 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      integer(kind = kint) function endian_check(my_rank, int_dat)
+!
+      integer(kind=kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: int_dat
+!
+!
+      if(int_dat .eq. i_UNIX) then
+        if(my_rank.eq.0) write(*,*) 'binary data have correct endian!'
+        endian_check = iendian_KEEP
+      else if(int_dat .eq. i_XINU) then
+        if(my_rank.eq.0) write(*,*) 'binary data have opposite endian!'
+        endian_check = iendian_FLIP
+      else
+        endian_check = -1
+        if(my_rank.eq.0) write(*,*) 'Binary Data is someting wrong!',   &
+     &                               int_dat
+      end if
+!
+      end function endian_check
+!
+! -----------------------------------------------------------------------
+!
       integer(kind = kint) function read_endian_flag(my_rank)
 !
       integer(kind=kint), intent(in) :: my_rank
@@ -393,18 +416,7 @@
 !
 #ifdef ZLIB_IO
       call rawread_32bit_f(iendian_KEEP, kint, int_dat, ierr_IO)
-!
-      if(int_dat .eq. i_UNIX) then
-        if(my_rank.eq.0) write(*,*) 'binary data have correct endian!'
-        read_endian_flag = iendian_KEEP
-      else if(int_dat .eq. i_XINU) then
-        if(my_rank.eq.0) write(*,*) 'binary data have opposite endian!'
-        read_endian_flag = iendian_FLIP
-      else
-        read_endian_flag = -1
-        if(my_rank.eq.0) write(*,*) 'Binary Data is someting wrong!',   &
-     &                               int_dat
-      end if
+      read_endian_flag = endian_check(my_rank, int_dat)
 #else
       read(id_binary)  int_dat
       read_endian_flag = iendian_KEEP
