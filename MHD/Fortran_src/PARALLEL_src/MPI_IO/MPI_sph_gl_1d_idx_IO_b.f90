@@ -40,6 +40,7 @@
       type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: nvect
+      integer(kind = kint_gl) :: num64
 !
 !
       sph_IO%numdir_sph = 3
@@ -62,8 +63,9 @@
 !
       call mpi_read_int_vector_b                                        &
      &   (IO_param, sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
+      num64 = sph_IO%nidx_sph(1)
       call mpi_read_1d_vector_b                                         &
-     &   (IO_param, sph_IO%nidx_sph(1), sph_IO%r_gl_1)
+     &   (IO_param, num64, sph_IO%r_gl_1)
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
       call mpi_read_int_vector_b                                        &
@@ -83,6 +85,7 @@
       type(sph_IO_data), intent(inout) :: sph_IO
 !
       integer(kind = kint) :: nvect
+      integer(kind = kint_gl) :: num64
 !
 !
       sph_IO%numdir_sph = 2
@@ -103,8 +106,9 @@
 !
       call mpi_read_int_vector_b                                        &
      &   (IO_param, sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
+      num64 = sph_IO%nidx_sph(1)
       call mpi_read_1d_vector_b                                         &
-     &   (IO_param, sph_IO%nidx_sph(1), sph_IO%r_gl_1)
+     &   (IO_param, num64, sph_IO%r_gl_1)
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
       call mpi_read_int_vector_b                                        &
@@ -121,6 +125,7 @@
       type(sph_IO_data), intent(in) :: sph_IO
 !
       integer(kind = kint) :: nvect
+      integer(kind = kint_gl) :: num64
 !
 !
       call set_istack_4_fixed_num(sph_IO%numdir_sph, IO_param)
@@ -135,8 +140,9 @@
       call set_istack_4_parallell_data(sph_IO%nidx_sph(1), IO_param)
       call mpi_write_int_vector_b                                       &
      &   (IO_param, sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
+      num64 = sph_IO%nidx_sph(1)
       call mpi_write_1d_vector_b                                        &
-     &   (IO_param, sph_IO%nidx_sph(1), sph_IO%r_gl_1)
+     &   (IO_param, num64, sph_IO%r_gl_1)
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
       call set_istack_4_parallell_data(nvect, IO_param)
@@ -158,6 +164,7 @@
       type(sph_IO_data), intent(in) :: sph_IO
 !
       integer(kind = kint) :: nvect
+      integer(kind = kint_gl) :: num64
 !
 !
       call set_istack_4_fixed_num(sph_IO%numdir_sph, IO_param)
@@ -172,8 +179,9 @@
       call set_istack_4_parallell_data(sph_IO%nidx_sph(1), IO_param)
       call mpi_write_int_vector_b                                       &
      &   (IO_param, sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
+      num64 = sph_IO%nidx_sph(1)
       call mpi_write_1d_vector_b                                        &
-     &   (IO_param, sph_IO%nidx_sph(1), sph_IO%r_gl_1)
+     &   (IO_param, num64, sph_IO%r_gl_1)
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
       call set_istack_4_parallell_data(nvect, IO_param)

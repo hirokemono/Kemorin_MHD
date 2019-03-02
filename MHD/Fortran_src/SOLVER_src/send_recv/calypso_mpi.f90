@@ -13,6 +13,10 @@
 !!      subroutine calypso_MPI_abort(icode, message)
 !!
 !!      subroutine calypso_MPI_barrier
+!!
+!!      subroutine calypso_mpi_bcast_real(buffer, count, root)
+!!      subroutine calypso_mpi_bcast_int(buffer, count, root)
+!!      subroutine calypso_mpi_bcast_int8(buffer, count, root)
 !!@endverbatim
 !!
 !!@n @param  icode       error code
@@ -22,6 +26,7 @@
 !
 !      use mpi
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -136,5 +141,76 @@
       end subroutine  calypso_MPI_barrier
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_bcast_real(buffer, count, root)
+!
+      integer(kind = kint), intent(in) :: root
+      integer(kind = kint_gl), intent(in) :: count
+      real(kind = kreal), intent(inout) :: buffer(count)
+!
+      integer(kind = kint_gl) :: ist
+      integer(kind = kint) :: ilen_in
+!
+!
+      ist = 0
+      do
+        ilen_in = int(min(count-ist, huge_25))
+        call MPI_BCAST(buffer(ist+1), ilen_in, CALYPSO_REAL,            &
+     &      root, CALYPSO_COMM, ierr_MPI)
+        ist = ist + ilen_in
+        if(ist .ge. count) exit
+      end do
+!
+      end subroutine calypso_mpi_bcast_real
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_bcast_int(buffer, count, root)
+!
+      integer(kind = kint), intent(in) :: root
+      integer(kind = kint_gl), intent(in) :: count
+      integer(kind = kint), intent(inout) :: buffer(count)
+!
+      integer(kind = kint_gl) :: ist
+      integer(kind = kint) :: ilen_in
+!
+!
+      ist = 0
+      do
+        ilen_in = int(min(count-ist, huge_25))
+        call MPI_BCAST(buffer(ist+1), ilen_in, CALYPSO_INTEGER,         &
+     &      root, CALYPSO_COMM, ierr_MPI)
+        ist = ist + ilen_in
+        if(ist .ge. count) exit
+      end do
+!
+      end subroutine calypso_mpi_bcast_int
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_bcast_int8(buffer, count, root)
+!
+      integer(kind = kint), intent(in) :: root
+      integer(kind = kint_gl), intent(in) :: count
+      integer(kind = kint_gl), intent(inout) :: buffer(count)
+!
+      integer(kind = kint_gl) :: ist
+      integer(kind = kint) :: ilen_in
+!
+!
+      ist = 0
+      do
+        ilen_in = int(min(count-ist, huge_25))
+        call MPI_BCAST(buffer(ist+1), ilen_in, CALYPSO_GLOBAL_INT,      &
+     &      root, CALYPSO_COMM, ierr_MPI)
+        ist = ist + ilen_in
+        if(ist .ge. count) exit
+      end do
+!
+      end subroutine calypso_mpi_bcast_int8
+!
+!  ---------------------------------------------------------------------
+!
 !
       end module calypso_mpi

@@ -20,7 +20,7 @@
 !!      subroutine calypso_mpi_seek_wrt_mul_chara                       &
 !!     &         (id_mpi_file, ioffset, ilength, nline, textbuf)
 !!      subroutine calypso_mpi_seek_write_real                          &
-!!     &         (id_mpi_file, ioffset, ilength, vector)
+!!     &         (id_mpi_file, ioffset, num, vector)
 !!      subroutine calypso_mpi_seek_write_int                           &
 !!     &         (id_mpi_file, ioffset, ilength, int_vector)
 !!      subroutine calypso_mpi_seek_write_int8                          &
@@ -39,7 +39,7 @@
 !!      subroutine calypso_mpi_seek_read_mul_chara                      &
 !!     &         (id_mpi_file, ioffset, ilength, nline, textbuf)
 !!      subroutine calypso_mpi_seek_read_real(id_mpi_file,              &
-!!     &          iflag_bin_swap, ioffset, ilength, vector)
+!!     &          iflag_bin_swap, ioffset, num, vector)
 !!      subroutine calypso_mpi_seek_read_int(id_mpi_file,               &
 !!     &          iflag_bin_swap, ioffset, ilength, int_vector)
 !!      subroutine calypso_mpi_seek_read_int8(id_mpi_file,              &
@@ -188,17 +188,29 @@
 !  ---------------------------------------------------------------------
 !
       subroutine calypso_mpi_seek_write_real                            &
-     &         (id_mpi_file, ioffset, ilength, vector)
+     &         (id_mpi_file, ioffset, num, vector)
 !
       integer, intent(in) ::  id_mpi_file
-      integer(kind = kint), intent(in) :: ilength
-      real(kind = kreal), intent(in) :: vector(ilength)
-      integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
+      integer(kind = MPI_OFFSET_KIND), intent(in) :: ioffset
+      integer(kind = kint_gl), intent(in) :: num
+      real(kind = kreal), intent(in) :: vector(num)
+!
+      integer(kind = kint) :: ilen_in
+      integer(kind = kint_gl) :: l8_byte, ist
 !
 !
-      call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
-      call MPI_FILE_WRITE(id_mpi_file, vector, ilength,                 &
-     &    CALYPSO_REAL, sta1_IO, ierr_MPI)
+      ist = 0
+      l8_byte = ioffset
+      do
+        ilen_in = int(min(num-ist, huge_20))
+        call MPI_FILE_SEEK                                              &
+     &     (id_mpi_file, l8_byte, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_WRITE(id_mpi_file, vector(ist+1), ilen_in,        &
+     &      CALYPSO_REAL, sta1_IO, ierr_MPI)
+        ist = ist + ilen_in
+        l8_byte = l8_byte + ilen_in*kreal
+        if(ist .ge. num) exit
+      end do
 !
       end subroutine calypso_mpi_seek_write_real
 !
@@ -383,23 +395,33 @@
 !  ---------------------------------------------------------------------
 !
       subroutine calypso_mpi_seek_read_real(id_mpi_file,                &
-     &          iflag_bin_swap, ioffset, ilength, vector)
+     &          iflag_bin_swap, ioffset, num, vector)
 !
       integer, intent(in) ::  id_mpi_file
       integer(kind = kint), intent(in) :: iflag_bin_swap
-      integer(kind = kint), intent(in) :: ilength
-      integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
-      real(kind = kreal), intent(inout) :: vector(ilength)
+      integer(kind = kint_gl), intent(in) :: num
+      integer(kind = MPI_OFFSET_KIND), intent(in) :: ioffset
+      real(kind = kreal), intent(inout) :: vector(num)
 !
-      integer(kind = kint_gl) :: l8_byte
+      integer(kind = kint) :: ilen_in
+      integer(kind = kint_gl) :: l8_byte, ist
 !
 !
-      call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
-      call MPI_FILE_READ(id_mpi_file, vector, ilength,                  &
-     &    CALYPSO_REAL, sta1_IO, ierr_MPI)
+      ist = 0
+      l8_byte = ioffset
+      do
+        ilen_in = int(min(num-ist, huge_20))
+        call MPI_FILE_SEEK                                              &
+     &     (id_mpi_file, l8_byte, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_READ(id_mpi_file, vector(ist+1), ilen_in,         &
+     &      CALYPSO_REAL, sta1_IO, ierr_MPI)
+        ist = ist + ilen_in
+        l8_byte = l8_byte + ilen_in*kreal
+        if(ist .ge. num) exit
+      end do
 !
       if(iflag_bin_swap .eq. iendian_FLIP) then
-        l8_byte = ilength * kreal
+        l8_byte = num * kreal
         call byte_swap_64bit_f(l8_byte, vector(1))
       end if
 !

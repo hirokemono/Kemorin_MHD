@@ -124,6 +124,7 @@
       type(calypso_MPI_IO_params), save :: IO_param
       integer(kind = kint) :: k, j, l, m, ierr
       integer(kind = MPI_OFFSET_KIND) :: ioffset1, ioffset2
+      integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
       call open_read_mpi_file                                           &
@@ -141,10 +142,10 @@
 !
           call calypso_mpi_seek_read_real                               &
      &       (IO_param%id_file, ra_rst%iflag_swap,                      &
-     &        ioffset1, ione, rayleigh_WK%rayleigh_in(k,1))
+     &        ioffset1, ione64, rayleigh_WK%rayleigh_in(k,1))
           call calypso_mpi_seek_read_real                               &
      &       (IO_param%id_file, ra_rst%iflag_swap,                      &
-     &        ioffset2, ione, rayleigh_WK%rayleigh_in(k,2))
+     &        ioffset2, ione64, rayleigh_WK%rayleigh_in(k,2))
         end do
 !
         call rescaling_from_rayleigh                                    &
@@ -266,6 +267,7 @@
       character(len = kchara) :: fn_out
       integer(kind = kint_gl) :: jmax_h
       real(kind = kreal) :: read_fld(2)
+      integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
       call open_read_mpi_file                                           &
@@ -280,10 +282,10 @@
           ioffset2 = ioffset1 + kreal*ra_rst%nri_org*jmax_h
           call calypso_mpi_seek_read_real                               &
      &       (IO_param%id_file, ra_rst%iflag_swap,                      &
-     &        ioffset1, ione, read_fld(1))
+     &        ioffset1, ione64, read_fld(1))
           call calypso_mpi_seek_read_real                               &
      &       (IO_param%id_file, ra_rst%iflag_swap,                      &
-     &        ioffset2, ione, read_fld(2))
+     &        ioffset2, ione64, read_fld(2))
 !
           write(99,*) j, read_fld(1:2)
         end do
