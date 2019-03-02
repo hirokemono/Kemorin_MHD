@@ -66,11 +66,10 @@
 !
       call mpi_read_domain_info_b(IO_param, comm_IO)
 !
+      call mpi_read_number_of_element_b(IO_param, ele_IO)
       call mpi_read_element_info_b(IO_param, ele_IO)
-!
       call mpi_read_surface_4_element_b(IO_param, sfed_IO)
       call mpi_read_edge_4_element_b(IO_param, sfed_IO)
-!
 !
       call mpi_read_import_data_b(IO_param, comm_IO)
       call mpi_read_export_data_b(IO_param, comm_IO)
@@ -93,7 +92,6 @@
       call mpi_write_domain_info_b(IO_param, comm_IO)
 !
       call mpi_write_element_info_b(IO_param, ele_IO)
-!
       call mpi_write_surface_4_element_b(IO_param, sfed_IO)
       call mpi_write_edge_4_element_b(IO_param, sfed_IO)
 !
