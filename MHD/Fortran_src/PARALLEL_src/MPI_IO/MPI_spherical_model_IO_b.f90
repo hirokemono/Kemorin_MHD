@@ -81,8 +81,9 @@
 !
       call alloc_nod_id_sph_IO(sph_IO)
 !
+      num64 = sph_IO%numnod_sph
       call mpi_read_int8_vector_b                                       &
-     &   (IO_param, sph_IO%numnod_sph, sph_IO%inod_gl_sph)
+     &   (IO_param, num64, sph_IO%inod_gl_sph)
 !
       num64 = sph_IO%numnod_sph * sph_IO%numdir_sph
       call mpi_read_int_vector_b(IO_param, num64, sph_IO%idx_gl_sph)
@@ -135,9 +136,10 @@
 !
       call mpi_write_one_integer_b(IO_param, sph_IO%numnod_sph)
 !
-      call set_istack_4_parallell_data(sph_IO%numnod_sph, IO_param)
+      num64 = sph_IO%numnod_sph
+      call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_int8_vector_b                                      &
-     &   (IO_param, sph_IO%numnod_sph, sph_IO%inod_gl_sph)
+     &   (IO_param, num64, sph_IO%inod_gl_sph)
 !
       num64 = sph_IO%numnod_sph * sph_IO%numdir_sph
       call mul_istack_4_parallell_vect(sph_IO%numdir_sph, IO_param)

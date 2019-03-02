@@ -57,7 +57,7 @@
       call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_int_vector_b(IO_param, num64, ele_IO%elmtyp)
       call mpi_write_int8_vector_b                                      &
-     &   (IO_param, ele_IO%numele, ele_IO%iele_global)
+     &   (IO_param, num64, ele_IO%iele_global)
 !
       num64 = ele_IO%numele * ele_IO%nnod_4_ele
       call mul_istack_4_parallell_vect(ele_IO%nnod_4_ele, IO_param)
@@ -126,7 +126,7 @@
       type(element_data), intent(inout) :: ele_IO
 !
       integer(kind = kint_gl) :: num64
-      integer(kind = kint) :: num, i
+      integer(kind = kint) :: i
 !
 !
       call alloc_element_types(ele_IO)
@@ -143,8 +143,9 @@
 !
       call alloc_ele_connectivity(ele_IO)
 !
+      num64 = ele_IO%numele
       call mpi_read_int8_vector_b                                       &
-     &   (IO_param, ele_IO%numele, ele_IO%iele_global)
+     &   (IO_param, num64, ele_IO%iele_global)
 !
       num64 = ele_IO%numele * ele_IO%nnod_4_ele
       call mpi_read_int_vector_b(IO_param, num64, ele_IO%ie)

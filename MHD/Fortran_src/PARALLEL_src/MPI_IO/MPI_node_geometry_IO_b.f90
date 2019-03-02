@@ -65,11 +65,14 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(node_data), intent(in) :: nod_IO
 !
+      integer(kind = kint_gl) ::  num64
+!
 !
       call mpi_write_num_node_b(IO_param, nod_IO)
 !
+      num64 = nod_IO%numnod
       call mpi_write_int8_vector_b                                      &
-     &   (IO_param, nod_IO%numnod, nod_IO%inod_global)
+     &   (IO_param, num64, nod_IO%inod_global)
       call mpi_write_2d_vector_b                                        &
      &   (IO_param, nod_IO%numnod, ithree, nod_IO%xx)
 !
@@ -130,11 +133,14 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(node_data), intent(inout) :: nod_IO
 !
+      integer(kind = kint_gl) ::  num64
+!
 !
       call alloc_node_geometry_base(nod_IO)
 !
+      num64 = nod_IO%numnod
       call mpi_read_int8_vector_b                                       &
-     &   (IO_param, nod_IO%numnod, nod_IO%inod_global)
+     &   (IO_param, num64, nod_IO%inod_global)
       call mpi_read_2d_vector_b                                         &
      &   (IO_param, nod_IO%numnod, ithree, nod_IO%xx)
 !

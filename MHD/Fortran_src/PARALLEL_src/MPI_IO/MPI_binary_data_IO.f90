@@ -96,11 +96,13 @@
       integer(kind = kint_gl) :: istack_buffer(0:IO_param%nprocs_in)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
+      integer(kind = kint_gl) :: num64
 !
+!
+      num64 = IO_param%nprocs_in
       istack_buffer(0:IO_param%nprocs_in)                               &
      &          = IO_param%istack_merged(0:IO_param%nprocs_in) * kint
-      call mpi_write_i8stack_head_b                                     &
-     &   (IO_param, IO_param%nprocs_in, istack_buffer)
+      call mpi_write_i8stack_head_b(IO_param, num64, istack_buffer)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + istack_buffer(IO_param%id_rank)
@@ -119,17 +121,19 @@
       subroutine mpi_write_int8_vector_b(IO_param, num, int8_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
       integer(kind = kint_gl) :: istack_buffer(0:IO_param%nprocs_in)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
+      integer(kind = kint_gl) :: num64
 !
+!
+      num64 = IO_param%nprocs_in
       istack_buffer(0:IO_param%nprocs_in)                               &
      &          = IO_param%istack_merged(0:IO_param%nprocs_in)*kint_gl
-      call mpi_write_i8stack_head_b                                     &
-     &   (IO_param, IO_param%nprocs_in, istack_buffer)
+      call mpi_write_i8stack_head_b(IO_param, num64, istack_buffer)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + istack_buffer(IO_param%id_rank)
@@ -155,11 +159,13 @@
       integer(kind = kint_gl) :: istack_buffer(0:IO_param%nprocs_in)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
+      integer(kind = kint_gl) :: num64
 !
+!
+      num64 = IO_param%nprocs_in
       istack_buffer(0:IO_param%nprocs_in)                               &
      &          = IO_param%istack_merged(0:IO_param%nprocs_in) * kreal
-      call mpi_write_i8stack_head_b                                     &
-     &   (IO_param, IO_param%nprocs_in, istack_buffer)
+      call mpi_write_i8stack_head_b(IO_param, num64, istack_buffer)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + istack_buffer(IO_param%id_rank)
@@ -240,9 +246,11 @@
       integer(kind = kint_gl) :: istack_buffer(0:IO_param%nprocs_in)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
+      integer(kind = kint_gl) :: num64
 !
-      call mpi_read_i8stack_head_b                                      &
-     &   (IO_param, IO_param%nprocs_in, istack_buffer)
+!
+      num64 = IO_param%nprocs_in
+      call mpi_read_i8stack_head_b(IO_param, num64, istack_buffer)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + istack_buffer(IO_param%id_rank)
@@ -267,16 +275,18 @@
       use m_phys_constants
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
 !
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
 !
       integer(kind = kint_gl) :: istack_buffer(0:IO_param%nprocs_in)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
+      integer(kind = kint_gl) :: num64
 !
-      call mpi_read_i8stack_head_b                                      &
-     &   (IO_param, IO_param%nprocs_in, istack_buffer)
+!
+      num64 = IO_param%nprocs_in
+      call mpi_read_i8stack_head_b(IO_param, num64, istack_buffer)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + istack_buffer(IO_param%id_rank)
@@ -308,9 +318,11 @@
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
+      integer(kind = kint_gl) :: num64
 !
-      call mpi_read_i8stack_head_b                                      &
-     &   (IO_param, IO_param%nprocs_in, istack_buffer)
+!
+      num64 = IO_param%nprocs_in
+      call mpi_read_i8stack_head_b(IO_param, num64, istack_buffer)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + istack_buffer(IO_param%id_rank)

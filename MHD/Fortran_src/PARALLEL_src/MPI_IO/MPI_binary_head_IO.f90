@@ -150,7 +150,7 @@
       subroutine mpi_write_i8stack_head_b(IO_param, num, i8stack)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: i8stack(0:num)
 !
 !
@@ -163,7 +163,7 @@
       subroutine mpi_write_mul_int8head_b(IO_param, num, int8_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -285,7 +285,7 @@
       subroutine mpi_read_i8stack_head_b(IO_param, num, i8stack)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: i8stack(0:num)
 !
 !
@@ -300,7 +300,7 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind=kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset

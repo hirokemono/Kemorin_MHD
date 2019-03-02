@@ -56,10 +56,7 @@
       integer(kind=kint), intent(in) :: nnod, numdir
       real(kind=kreal), intent(inout) :: vect(nnod, numdir)
 !
-      real(kind = kreal) :: xx_tmp(numdir)
-      integer(kind = kint) :: i, ist
       integer(kind = kint_gl) :: nnod64
-!
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !

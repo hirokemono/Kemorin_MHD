@@ -254,8 +254,8 @@
       call mpi_write_one_realhead_b(IO_param_l, time_IO)
       call mpi_write_one_realhead_b(IO_param_l, delta_t_IO)
 !
-      call mpi_write_i8stack_head_b                                     &
-     &   (IO_param_l, IO_param_l%nprocs_in, istack_merged)
+      num64 = IO_param_l%nprocs_in
+      call mpi_write_i8stack_head_b(IO_param_l, num64, istack_merged)
 !
       call mpi_write_one_inthead_b(IO_param_l, num_field)
       num64 = num_field
@@ -282,6 +282,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: nprocs_tmp
+      integer(kind = kint_gl) :: num64
 !
 !
       call mpi_read_one_inthead_b(IO_param_l, nprocs_tmp)
@@ -291,8 +292,9 @@
 !
       call alloc_merged_field_stack(IO_param_l%nprocs_in, fld_IO)
 !
-      call mpi_read_i8stack_head_b(IO_param_l, IO_param_l%nprocs_in,    &
-     &    fld_IO%istack_numnod_IO)
+      num64 = IO_param_l%nprocs_in
+      call mpi_read_i8stack_head_b                                     &
+     &   (IO_param_l, num64, fld_IO%istack_numnod_IO)
       call sync_field_header_mpi                                        &
      &   (IO_param_l%nprocs_in, IO_param_l%id_rank,                     &
      &    fld_IO%nnod_IO, fld_IO%istack_numnod_IO)

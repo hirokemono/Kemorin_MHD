@@ -46,12 +46,15 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call set_istack_by_i8_buffer(IO_param%nprocs_in,                  &
      &    IO_param%nloop, IO_param%i8_array, IO_param%istack_merged)
 !
+      num64 = IO_param%nprocs_in
       call mpi_write_mul_int8head_b                                     &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+     &   (IO_param, num64, IO_param%istack_merged)
       call mpi_write_i8_vect_mul_b                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%i8_array)
@@ -64,12 +67,15 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call set_istack_by_int_buffer(IO_param%nprocs_in,                 &
      &    IO_param%nloop, IO_param%i_array, IO_param%istack_merged)
 !
+      num64 = IO_param%nprocs_in
       call mpi_write_mul_int8head_b                                     &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+     &   (IO_param, num64, IO_param%istack_merged)
       call mpi_write_intvect_mul_b                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%i_array)
@@ -82,12 +88,15 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call set_istack_by_int2d_buffer(IO_param%nprocs_in,               &
      &    IO_param%nloop, IO_param%iv_array, IO_param%istack_merged)
 !
+      num64 = IO_param%nprocs_in
       call mpi_write_mul_int8head_b                                     &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+     &   (IO_param, num64, IO_param%istack_merged)
       call mpi_write_i2dvect_mul_b                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%iv_array)
@@ -100,12 +109,15 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call set_istack_by_real_buffer(IO_param%nprocs_in,                &
      &    IO_param%nloop, IO_param%r_array, IO_param%istack_merged)
 !
+      num64 = IO_param%nprocs_in
       call mpi_write_mul_int8head_b                                     &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+     &   (IO_param, num64, IO_param%istack_merged)
       call mpi_read_realvect_mul_b(IO_param%id_file,                    &
      &    IO_param%iflag_bin_swap, IO_param%nprocs_in, IO_param%nloop,  &
      &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%r_array)
@@ -118,12 +130,15 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call set_istack_by_vector_buffer(IO_param%nprocs_in,              &
      &    IO_param%nloop, IO_param%v_array, IO_param%istack_merged)
 !
+      num64 = IO_param%nprocs_in
       call mpi_write_mul_int8head_b                                     &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+     &   (IO_param, num64, IO_param%istack_merged)
       call mpi_write_r2dvect_mul_b                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, IO_param%v_array)
