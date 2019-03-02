@@ -100,10 +100,11 @@
       integer(kind = kint), intent(in) :: int_dat
 !
       integer(kind = kint) :: itmp_IO(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
       itmp_IO(1) = int_dat
-      call mpi_write_mul_inthead_b(IO_param, ione, itmp_IO)
+      call mpi_write_mul_inthead_b(IO_param, ione64, itmp_IO)
 !
       end subroutine mpi_write_one_inthead_b
 !
@@ -129,7 +130,7 @@
       subroutine mpi_write_mul_inthead_b(IO_param, num, int_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -229,9 +230,10 @@
       integer(kind = kint), intent(inout) :: int_dat
 !
       integer(kind = kint) :: itmp_IO(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
-      call mpi_read_mul_inthead_b(IO_param, ione, itmp_IO)
+      call mpi_read_mul_inthead_b(IO_param, ione64, itmp_IO)
       int_dat = itmp_IO(1)
 !
       end subroutine mpi_read_one_inthead_b
@@ -259,7 +261,7 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind=kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset

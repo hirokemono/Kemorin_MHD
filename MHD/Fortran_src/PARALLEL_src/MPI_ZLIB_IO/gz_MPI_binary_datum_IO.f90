@@ -44,8 +44,6 @@
 !
       implicit none
 !
-      character(len=1), allocatable, private :: gzip_buf(:)
-!
 !  ---------------------------------------------------------------------
 !
       contains

@@ -92,7 +92,7 @@
       integer(kind = kint_gl), intent(in) :: ilength
 !
 !
-      call istack64_4_parallell_data(ilength, IO_param)
+      call istack64_4_parallel_data(ilength, IO_param)
       call gz_mpi_write_charahead(IO_param,                             &
      &    len_multi_int_textline(IO_param%nprocs_in),                   &
      &    int_stack8_textline(IO_param%nprocs_in,                       &

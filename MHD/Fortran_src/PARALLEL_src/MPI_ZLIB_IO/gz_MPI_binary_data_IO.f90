@@ -80,7 +80,7 @@
       num64 = num
       call defleate_int_vector_b(num64, int_dat, zbuf)
 !
-      call istack64_4_parallell_data(zbuf%ilen_gzipped, IO_param)
+      call istack64_4_parallel_data(zbuf%ilen_gzipped, IO_param)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, nprocs, IO_param%istack_merged)
@@ -111,7 +111,7 @@
       num64 = num
       call defleate_int8_vector_b(num64, int8_dat, zbuf)
 !
-      call istack64_4_parallell_data(zbuf%ilen_gzipped, IO_param)
+      call istack64_4_parallel_data(zbuf%ilen_gzipped, IO_param)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, nprocs, IO_param%istack_merged)
@@ -142,7 +142,7 @@
       num64 = num
       call defleate_1d_vector_b(num64, real_dat, zbuf)
 !
-      call istack64_4_parallell_data(zbuf%ilen_gzipped, IO_param)
+      call istack64_4_parallel_data(zbuf%ilen_gzipped, IO_param)
 !
       call gz_mpi_write_i8stack_head_b                                  &
      &   (IO_param, nprocs, IO_param%istack_merged)

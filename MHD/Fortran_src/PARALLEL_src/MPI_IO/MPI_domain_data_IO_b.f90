@@ -46,6 +46,7 @@
       type(communication_table), intent(inout) :: comm_IO
 !
       integer(kind = kint) :: nprocs_read
+      integer(kind = kint_gl) :: num64
 !
 !
       call mpi_read_one_inthead_b(IO_param, nprocs_read)
@@ -57,8 +58,8 @@
 !
       call alloc_neighbouring_id(comm_IO)
 !
-      call mpi_read_int_vector_b                                        &
-     &   (IO_param, comm_IO%num_neib, comm_IO%id_neib)
+      num64 = comm_IO%num_neib
+      call mpi_read_int_vector_b(IO_param, num64, comm_IO%id_neib)
 !
       end subroutine mpi_read_domain_info_b
 !
@@ -70,16 +71,19 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(communication_table), intent(inout) :: comm_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call alloc_import_num(comm_IO)
 !
-      call mpi_read_integer_stack_b(IO_param, comm_IO%num_neib,         &
+      num64 = comm_IO%num_neib
+      call mpi_read_integer_stack_b(IO_param, num64,                    &
      &    comm_IO%istack_import, comm_IO%ntot_import)
 !
       call alloc_import_item(comm_IO)
 !
-      call mpi_read_int_vector_b                                        &
-     &     (IO_param, comm_IO%ntot_import, comm_IO%item_import)
+      num64 = comm_IO%ntot_import
+      call mpi_read_int_vector_b(IO_param, num64, comm_IO%item_import)
 !
       end subroutine mpi_read_import_data_b
 !
@@ -90,16 +94,19 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(communication_table), intent(inout) :: comm_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call alloc_export_num(comm_IO)
 !
-      call mpi_read_integer_stack_b(IO_param, comm_IO%num_neib,         &
+      num64 = comm_IO%num_neib
+      call mpi_read_integer_stack_b(IO_param, num64,                    &
      &      comm_IO%istack_export, comm_IO%ntot_export)
 !
       call alloc_export_item(comm_IO)
 !
-      call mpi_read_int_vector_b                                        &
-     &     (IO_param, comm_IO%ntot_export, comm_IO%item_export)
+      num64 = comm_IO%ntot_export
+      call mpi_read_int_vector_b(IO_param, num64, comm_IO%item_export)
 !
       end subroutine mpi_read_export_data_b
 !
@@ -111,14 +118,16 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(communication_table), intent(in) :: comm_IO
 !
+      integer (kind = kint_gl) :: num64
+!
 !
       call mpi_write_one_inthead_b(IO_param, IO_param%nprocs_in)
       call mpi_write_one_integer_b(IO_param, comm_IO%num_neib)
 !
-      call set_istack_4_parallell_data(comm_IO%num_neib, IO_param)
 !
-      call mpi_write_int_vector_b                                       &
-     &   (IO_param, comm_IO%num_neib, comm_IO%id_neib)
+      num64 = comm_IO%num_neib
+      call istack64_4_parallel_data(num64, IO_param)
+      call mpi_write_int_vector_b(IO_param, num64, comm_IO%id_neib)
 !
       end subroutine mpi_write_domain_info_b
 !
@@ -130,14 +139,18 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(communication_table), intent(in) :: comm_IO
 !
+      integer (kind = kint_gl) :: num64
 !
-      call set_istack_4_parallell_data(comm_IO%num_neib, IO_param)
+!
+      num64 = comm_IO%num_neib
+      call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_integer_stack_b                                    &
-     &   (IO_param, comm_IO%num_neib, comm_IO%istack_import)
+     &   (IO_param, num64, comm_IO%istack_import)
 !
-      call set_istack_4_parallell_data(comm_IO%ntot_import, IO_param)
+      num64 = comm_IO%ntot_import
+      call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_int_vector_b                                       &
-     &   (IO_param, comm_IO%ntot_import, comm_IO%item_import)
+     &   (IO_param, num64, comm_IO%item_import)
 !
       end subroutine mpi_write_import_data_b
 !
@@ -148,14 +161,18 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(communication_table), intent(in) :: comm_IO
 !
+      integer (kind = kint_gl) :: num64
 !
-      call set_istack_4_parallell_data(comm_IO%num_neib, IO_param)
+!
+      num64 = comm_IO%num_neib
+      call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_integer_stack_b                                    &
-     &   (IO_param, comm_IO%num_neib, comm_IO%istack_export)
+     &   (IO_param, num64, comm_IO%istack_export)
 !
-      call set_istack_4_parallell_data(comm_IO%ntot_export, IO_param)
+      num64 = comm_IO%ntot_export
+      call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_int_vector_b                                       &
-     &   (IO_param, comm_IO%ntot_export, comm_IO%item_export)
+     &   (IO_param, num64, comm_IO%item_export)
 !
       end subroutine mpi_write_export_data_b
 !

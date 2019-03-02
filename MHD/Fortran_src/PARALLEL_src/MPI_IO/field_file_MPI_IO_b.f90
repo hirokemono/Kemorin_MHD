@@ -101,6 +101,8 @@
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &    'read binary data by MPI-IO: ', trim(file_name)
@@ -110,8 +112,9 @@
      &   (file_name, nprocs_in, id_rank, IO_param)
       call read_field_header_mpi_b(IO_param, t_IO, fld_IO)
 !
+      num64 = fld_IO%num_field_IO
       call mpi_read_mul_inthead_b                                       &
-     &    (IO_param, fld_IO%num_field_IO, fld_IO%num_comp_IO)
+     &    (IO_param, num64, fld_IO%num_comp_IO)
 !
       call mpi_read_mul_charahead_b                                     &
      &   (IO_param, fld_IO%num_field_IO, fld_IO%fld_name)
@@ -141,6 +144,8 @@
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &    'read binary data by MPI-IO: ', trim(file_name)
@@ -150,9 +155,10 @@
      &   (file_name, nprocs_in, id_rank, IO_param)
       call read_field_header_mpi_b(IO_param, t_IO, fld_IO)
 !
+      num64 = fld_IO%num_field_IO
       call alloc_phys_name_IO(fld_IO)
       call mpi_read_mul_inthead_b                                       &
-     &    (IO_param, fld_IO%num_field_IO, fld_IO%num_comp_IO)
+     &    (IO_param, num64, fld_IO%num_comp_IO)
 !
       call cal_istack_phys_comp_IO(fld_IO)
       call alloc_phys_data_IO(fld_IO)
@@ -188,6 +194,8 @@
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &    'read binary data by MPI-IO: ', trim(file_name)
@@ -196,9 +204,10 @@
      &   (file_name, nprocs_in, id_rank, IO_param)
       call read_field_header_mpi_b(IO_param, t_IO, fld_IO)
 !
+      num64 = fld_IO%num_field_IO
       call alloc_phys_name_IO(fld_IO)
       call mpi_read_mul_inthead_b                                       &
-     &    (IO_param, fld_IO%num_field_IO, fld_IO%num_comp_IO)
+     &    (IO_param, num64, fld_IO%num_comp_IO)
 !
       call mpi_read_mul_charahead_b                                     &
      &   (IO_param, fld_IO%num_field_IO, fld_IO%fld_name)
@@ -237,6 +246,8 @@
       character(len=kchara), intent(in) :: field_name(num_field)
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call mpi_write_one_inthead_b(IO_param_l, IO_param_l%nprocs_in)
       call mpi_write_one_inthead_b(IO_param_l, i_time_step_IO)
@@ -247,7 +258,8 @@
      &   (IO_param_l, IO_param_l%nprocs_in, istack_merged)
 !
       call mpi_write_one_inthead_b(IO_param_l, num_field)
-      call mpi_write_mul_inthead_b(IO_param_l, num_field, ncomp_field)
+      num64 = num_field
+      call mpi_write_mul_inthead_b(IO_param_l, num64, ncomp_field)
 !
       call mpi_write_mul_charahead_b(IO_param_l, num_field, field_name)
 !

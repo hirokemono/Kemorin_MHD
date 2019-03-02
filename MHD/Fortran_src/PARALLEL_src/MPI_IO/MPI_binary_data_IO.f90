@@ -61,12 +61,13 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint), intent(in) :: int_dat
 !
+      integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint) :: itmp_IO(1)
 !
 !
       itmp_IO(1) = int_dat
       call set_istack_4_fixed_num(ione, IO_param)
-      call mpi_write_int_vector_b(IO_param, ione, itmp_IO)
+      call mpi_write_int_vector_b(IO_param, ione64, itmp_IO)
 !
       end subroutine mpi_write_one_integer_b
 !
@@ -75,7 +76,7 @@
       subroutine mpi_write_integer_stack_b(IO_param, num, istack)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
 !
       integer(kind = kint), intent(in) :: istack(0:num)
 !
@@ -89,8 +90,7 @@
       subroutine mpi_write_int_vector_b(IO_param, num, int_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num
-!
+      integer(kind=kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
       integer(kind = kint_gl) :: istack_buffer(0:IO_param%nprocs_in)
@@ -200,9 +200,10 @@
       integer(kind = kint), intent(inout) :: int_dat
 !
       integer(kind = kint) :: itmp_IO(IO_param%nprocs_in)
+      integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
-      call mpi_read_int_vector_b(IO_param, ione, itmp_IO(1))
+      call mpi_read_int_vector_b(IO_param, ione64, itmp_IO(1))
       int_dat = itmp_IO(1)
 !
       end subroutine mpi_read_one_integer_b
@@ -210,11 +211,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine mpi_read_integer_stack_b(IO_param, num, istack, ntot)
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
 !
       integer(kind = kint), intent(inout) :: ntot
       integer(kind = kint), intent(inout) :: istack(0:num)
+!
+      integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
       istack(0) = 0
@@ -230,8 +234,7 @@
       use m_phys_constants
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num
-!
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_dat(num)
 !
       integer(kind = kint_gl) :: istack_buffer(0:IO_param%nprocs_in)

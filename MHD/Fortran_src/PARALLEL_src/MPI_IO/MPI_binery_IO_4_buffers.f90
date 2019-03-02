@@ -136,15 +136,13 @@
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: iloop, id_rank
-      integer(kind = kint) :: num32
 !
 !
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + istack_merged(id_rank)
-        num32 = i_array(iloop)%num
         call calypso_mpi_seek_write_int                                 &
-     &    (id_file, ioffset, num32, i_array(iloop)%i_IO)
+     &      (id_file, ioffset, i_array(iloop)%num, i_array(iloop)%i_IO)
       end do
       ioff_gl = ioff_gl + istack_merged(nprocs_in)
 !
@@ -163,7 +161,8 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: iloop, id_rank, n_2d
+      integer(kind = kint) :: iloop, id_rank
+      integer(kind = kint_gl) :: n_2d
 !
 !
       do iloop = 1, nloop
@@ -311,15 +310,13 @@
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: iloop, id_rank
-      integer(kind = kint) :: num32
 !
 !
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kint * istack_merged(id_rank)
-        num32 = i_array(iloop)%num
         call calypso_mpi_seek_read_int(id_file, iflag_bin_swap,         &
-     &      ioffset, num32, i_array(iloop)%i_IO)
+     &      ioffset, i_array(iloop)%num, i_array(iloop)%i_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !
@@ -339,7 +336,8 @@
       type(ivecarray_IO), intent(inout) ::  iv_array(nloop)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: iloop, id_rank, n_2d
+      integer(kind = kint) :: iloop, id_rank
+      integer(kind = kint_gl) :: n_2d
 !
 !
       do iloop = 1, nloop

@@ -21,7 +21,7 @@
 !!      subroutine mul_istack_4_parallell_vect(nvect, IO_param)
 !!      subroutine set_numbers_2_head_node(num_local, IO_param)
 !!
-!!      subroutine istack64_4_parallell_data(num_local, IO_param)
+!!      subroutine istack64_4_parallel_data(num_local, IO_param)
 !!      subroutine set_istack_4_parallell_data(num_local, IO_param)
 !!      subroutine set_istack_over_subdomains                           &
 !!     &         (nprocs_in, nloop, num_local, istack_merged)
@@ -293,7 +293,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine istack64_4_parallell_data(num_local, IO_param)
+      subroutine istack64_4_parallel_data(num_local, IO_param)
 !
       integer(kind = kint_gl), intent(in) :: num_local
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -312,7 +312,7 @@
      &                              + num_global(ip)
       end do
 !
-      end subroutine istack64_4_parallell_data
+      end subroutine istack64_4_parallel_data
 !
 !  ---------------------------------------------------------------------
 !

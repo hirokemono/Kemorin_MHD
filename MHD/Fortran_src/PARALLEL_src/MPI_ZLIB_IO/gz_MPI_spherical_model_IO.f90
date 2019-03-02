@@ -132,8 +132,6 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(sph_IO_data), intent(in) :: sph_IO
 !
-      integer(kind = kint) ::  nvect
-!
 !
       call gz_mpi_write_num_of_data(IO_param, sph_IO%numnod_sph)
       call gz_mpi_write_ele_connect(IO_param,                           &
