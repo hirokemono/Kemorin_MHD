@@ -227,6 +227,7 @@
         zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)       &
      &                - IO_param%istack_merged(IO_param%id_rank)
 !
+        call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_long_read_gz                              &
      &     (IO_param%id_file, ioffset, zbuf)
 !
@@ -270,6 +271,7 @@
       else
         zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)       &
      &                - IO_param%istack_merged(IO_param%id_rank)
+        call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_long_read_gz                              &
      &     (IO_param%id_file, ioffset, zbuf)
 !
@@ -313,6 +315,7 @@
       else
         zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)       &
      &                - IO_param%istack_merged(IO_param%id_rank)
+        call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_long_read_gz                              &
      &     (IO_param%id_file, ioffset, zbuf)
 !

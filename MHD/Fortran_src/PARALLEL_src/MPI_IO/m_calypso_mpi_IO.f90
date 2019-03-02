@@ -522,8 +522,6 @@
       integer(kind = kint) :: ilen_in
 !
 !
-      call alloc_zip_buffer(zbuf)
-!
       ist = 0
       do
         ilen_in = int(min(zbuf%ilen_gz-ist, huge_25))

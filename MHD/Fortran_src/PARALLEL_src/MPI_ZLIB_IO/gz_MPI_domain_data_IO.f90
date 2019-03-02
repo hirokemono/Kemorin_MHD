@@ -284,6 +284,7 @@
       end if
 !
       if(zbuf%ilen_gz .le. 0) return
+      call alloc_zip_buffer(zbuf)
       call calypso_mpi_seek_long_read_gz                                &
      &   (IO_param%id_file, ioffset, zbuf)
 !

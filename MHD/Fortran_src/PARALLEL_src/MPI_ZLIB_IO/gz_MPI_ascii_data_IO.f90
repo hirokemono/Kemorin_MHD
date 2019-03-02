@@ -173,6 +173,7 @@
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
         zbuf%ilen_gz = int(real(ilength) *1.1 + 24,KIND(zbuf%ilen_gz))
+        call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_long_read_gz                              &
      &     (IO_param%id_file, ioffset, zbuf)
 !
@@ -209,8 +210,9 @@
      &         + IO_param%istack_merged(IO_param%id_rank)
       zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)         &
      &              - IO_param%istack_merged(IO_param%id_rank)
-        call calypso_mpi_seek_long_read_gz                              &
-     &     (IO_param%id_file, ioffset, zbuf)
+      call alloc_zip_buffer(zbuf)
+      call calypso_mpi_seek_long_read_gz                                &
+     &   (IO_param%id_file, ioffset, zbuf)
 !
       call infleate_characters(ilength, gz_mpi_read_characters, zbuf)
 !
@@ -233,6 +235,7 @@
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
         zbuf%ilen_gz = int(real(ilength) *1.1 + 24,KIND(zbuf%ilen_gz))
+        call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_long_read_gz                              &
      &     (IO_param%id_file, ioffset, zbuf)
 !

@@ -85,6 +85,7 @@
       if(zbuf%ilen_gz .le. 0) return
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
 !
+      call alloc_zip_buffer(zbuf)
       call calypso_mpi_seek_long_read_gz                                &
      &   (IO_param%id_file, ioffset, zbuf)
 !

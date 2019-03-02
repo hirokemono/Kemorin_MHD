@@ -108,6 +108,7 @@
         zbuf(iloop)%ilen_gz = istack_merged(id_rank+1)                  &
      &                       - istack_merged(id_rank)
 !
+        call alloc_zip_buffer(zbuf(iloop))
         call calypso_mpi_seek_long_read_gz                              &
      &     (id_file, ioffset, zbuf(iloop))
       end do
