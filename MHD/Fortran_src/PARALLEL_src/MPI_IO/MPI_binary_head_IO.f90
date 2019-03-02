@@ -115,10 +115,11 @@
       real(kind = kreal), intent(in) :: real_dat
 !
       real(kind = kreal) :: rtmp_IO(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
       rtmp_IO(1) = real_dat
-      call mpi_write_mul_realhead_b(IO_param, ione, rtmp_IO)
+      call mpi_write_mul_realhead_b(IO_param, ione64, rtmp_IO)
 !
       end subroutine mpi_write_one_realhead_b
 !
@@ -204,7 +205,7 @@
       subroutine mpi_write_mul_realhead_b(IO_param, num, real_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -243,9 +244,10 @@
       real(kind = kreal), intent(inout) :: real_dat
 !
       real(kind = kreal) ::   rtmp_IO(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
-      call mpi_read_mul_realhead_b(IO_param, ione, rtmp_IO)
+      call mpi_read_mul_realhead_b(IO_param, ione64, rtmp_IO)
       real_dat = rtmp_IO(1)
 !
       end subroutine mpi_read_one_realhead_b
@@ -349,7 +351,7 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind=kint), intent(in) :: num
+      integer(kind=kint_gl), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -363,8 +365,7 @@
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + num*kreal
 !
-      call MPI_BCAST(real_dat, num, CALYPSO_REAL, izero,                &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_real(real_dat, num, izero)
 !
       end subroutine mpi_read_mul_realhead_b
 !

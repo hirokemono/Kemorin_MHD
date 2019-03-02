@@ -148,7 +148,7 @@
       subroutine mpi_write_1d_vector_b(IO_param, num, real_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num
+      integer(kind=kint_gl), intent(in) :: num
 !
       real(kind = kreal), intent(in) :: real_dat(num)
 !
@@ -178,15 +178,16 @@
       subroutine mpi_write_2d_vector_b(IO_param, n1, n2, real_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: n1, n2
+      integer(kind=kint), intent(in) :: n1
+      integer(kind=kint), intent(in) :: n2
       real(kind = kreal), intent(in) :: real_dat(n1,n2)
 !
-      integer(kind = kint) :: num
+      integer(kind = kint_gl) :: num64
 !
 !
-      num = n1 * n2
+      num64 = n1 * n2
       call mul_istack_4_parallell_vect(n2, IO_param)
-      call mpi_write_1d_vector_b(IO_param, num, real_dat(1,1))
+      call mpi_write_1d_vector_b(IO_param, num64, real_dat(1,1))
 !
       end subroutine mpi_write_2d_vector_b
 !
@@ -297,7 +298,7 @@
       use m_phys_constants
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num
+      integer(kind=kint_gl), intent(in) :: num
 !
       integer(kind = kint_gl) :: istack_buffer(0:IO_param%nprocs_in)
       real(kind = kreal), intent(inout) :: real_dat(num)
@@ -329,15 +330,16 @@
       subroutine mpi_read_2d_vector_b(IO_param, n1, n2, real_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: n1, n2
+      integer(kind=kint), intent(in) :: n1
+      integer(kind=kint), intent(in) :: n2
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)
 !
-      integer(kind = kint) :: num
+      integer(kind = kint_gl) :: num64
 !
 !
-      num = n1 * n2
+      num64 = n1 * n2
       call mul_istack_4_parallell_vect(n2, IO_param)
-      call mpi_read_1d_vector_b(IO_param, num, real_dat(1,1))
+      call mpi_read_1d_vector_b(IO_param, num64, real_dat(1,1))
 !
       end subroutine mpi_read_2d_vector_b
 !

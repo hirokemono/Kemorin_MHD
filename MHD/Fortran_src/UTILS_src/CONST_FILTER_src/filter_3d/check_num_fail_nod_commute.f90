@@ -6,6 +6,7 @@
       module check_num_fail_nod_commute
 !
       use m_precision
+      use m_constants
 !
       use calypso_mpi
 !
@@ -22,7 +23,6 @@
       integer, save, allocatable :: i_req2(:)
       integer, save ::              i_sta1(MPI_STATUS_SIZE)
       integer, save, allocatable :: i_sta2(:,:)
-      integer(kind = kint), parameter ::izero = 0, ione = 1, itwo = 2
 !
       integer(kind = kint) ::              isend_failed(2)
       integer(kind = kint), allocatable :: irecv_failed(:,:)

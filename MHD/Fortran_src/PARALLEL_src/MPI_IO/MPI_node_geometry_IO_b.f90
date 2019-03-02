@@ -83,10 +83,14 @@
       type(node_data), intent(in) :: nod_IO
       type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call mpi_write_num_node_b(IO_param, nod_IO)
+!
+      num64 = nod_IO%numnod
       call mpi_write_1d_vector_b                                        &
-     &   (IO_param, nod_IO%numnod, sfed_IO%ele_scalar)
+     &   (IO_param, num64, sfed_IO%ele_scalar)
 !
       end subroutine mpi_write_scl_in_ele_b
 !
@@ -144,12 +148,15 @@
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call mpi_read_number_of_node_b(IO_param, nod_IO)
       call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
+      num64 = nod_IO%numnod
       call mpi_write_1d_vector_b                                        &
-     &   (IO_param, nod_IO%numnod, sfed_IO%ele_scalar)
+     &   (IO_param, num64, sfed_IO%ele_scalar)
 !
       end subroutine mpi_read_scl_in_ele_b
 !

@@ -37,6 +37,7 @@
       module solver_JACOBInn_DJDS
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -222,8 +223,6 @@
       integer(kind=kint ), intent(in) :: STACK_EXPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
      &      :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT)) 
-
-      integer(kind=kint ), parameter :: ione = 1
 !
       integer(kind=kint ) :: npLX1, npUX1, i
       integer(kind=kint ) :: iter, MAXIT
