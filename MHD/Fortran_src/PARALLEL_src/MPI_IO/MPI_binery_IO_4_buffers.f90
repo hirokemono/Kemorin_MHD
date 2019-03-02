@@ -249,7 +249,6 @@
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: iloop, id_rank
-      integer(kind = kint) :: num32
 !
 !
       do iloop = 1, nloop
@@ -260,9 +259,8 @@
      &                         - istack_merged(id_rank))
 !
         allocate(c_array(iloop)%c_IO(c_array(iloop)%num))
-        num32 = c_array(iloop)%num
-        call calypso_mpi_seek_read_gz(id_file, ioffset,                 &
-     &      num32, c_array(iloop)%c_IO(1))
+        call calypso_mpi_seek_read_mul_chara(id_file, ioffset,          &
+     &      ione, c_array(iloop)%num, c_array(iloop)%c_IO(1))
       end do
       ioff_gl = ioff_gl + istack_merged(nprocs_in)
 !

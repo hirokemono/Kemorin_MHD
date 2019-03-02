@@ -185,17 +185,17 @@
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
 !
-      integer(kind = kint) :: ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind=kint_gl) :: num64
 !
 !
-      ilength = num * kchara
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ilength, chara_dat(1))
+        num64 = num
+        call calypso_mpi_seek_wrt_mul_chara                             &
+     &     (IO_param%id_file, ioffset, kchara, num64, chara_dat(1))
       end if
-      IO_param%ioff_gl = IO_param%ioff_gl + ilength
+      IO_param%ioff_gl = IO_param%ioff_gl + num * kchara
 !
       end subroutine mpi_write_mul_charahead_b
 !
@@ -325,14 +325,16 @@
       character(len=kchara), intent(inout) :: chara_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
+      integer(kind = kint_gl) :: ilength
+      integer(kind=kint_gl) :: num64
 !
 !
       ilength = num * kchara
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        call calypso_mpi_seek_read_gz                                   &
-     &     (IO_param%id_file, ioffset, ilength, chara_dat(1))
+        num64 = num
+        call calypso_mpi_seek_read_mul_chara                            &
+     &     (IO_param%id_file, ioffset, kchara, num64, chara_dat(1))
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ilength
 !

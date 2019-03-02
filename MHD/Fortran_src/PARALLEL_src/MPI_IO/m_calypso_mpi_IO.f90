@@ -36,6 +36,8 @@
 !!      function calypso_mpi_seek_read_chara                            &
 !!     &       (id_mpi_file, ioffset, ilength)
 !!        character(len=ilength) :: calypso_mpi_seek_read_chara
+!!      subroutine calypso_mpi_seek_read_mul_chara                      &
+!!     &         (id_mpi_file, ioffset, ilength, nline, textbuf)
 !!      subroutine calypso_mpi_seek_read_real(id_mpi_file,              &
 !!     &          iflag_bin_swap, ioffset, ilength, vector)
 !!      subroutine calypso_mpi_seek_read_int(id_mpi_file,               &
@@ -43,8 +45,6 @@
 !!      subroutine calypso_mpi_seek_read_int8(id_mpi_file,              &
 !!     &          iflag_bin_swap, ioffset, ilength, i8_vector)
 !!
-!!      subroutine calypso_mpi_seek_write_gz                            &
-!!     &         (id_mpi_file, ioffset, ilength, c1buf)
 !!      subroutine calypso_mpi_seek_read_gz                             &
 !!     &         (id_mpi_file, ioffset, ilength, c1buf)
 !!      subroutine calypso_mpi_seek_long_write_gz                       &
@@ -356,6 +356,36 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine calypso_mpi_seek_read_mul_chara                        &
+     &         (id_mpi_file, ioffset, ilength, nline, textbuf)
+!
+      integer, intent(in) ::  id_mpi_file
+      integer(kind = MPI_OFFSET_KIND), intent(in) :: ioffset
+      integer(kind = kint), intent(in) :: ilength
+      integer(kind = kint_gl), intent(in) :: nline
+      character(len=ilength), intent(in) :: textbuf(nline)
+!
+      integer(kind = kint) :: ilen_in
+      integer(kind = kint_gl) :: l8_byte, ist
+!
+!
+      ist = 0
+      l8_byte = ioffset
+      do
+        ilen_in = int(min((nline-ist), huge_25/ilength))
+        call MPI_FILE_SEEK                                              &
+     &     (id_mpi_file, l8_byte, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_READ(id_mpi_file, textbuf(ist+1),                 &
+     &       (ilen_in*ilength), CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
+        ist = ist + ilen_in
+        l8_byte = l8_byte + ilen_in*ilength
+        if(ist .ge. nline) exit
+      end do
+!
+      end subroutine calypso_mpi_seek_read_mul_chara
+!
+!  ---------------------------------------------------------------------
+!
       subroutine calypso_mpi_seek_read_real(id_mpi_file,                &
      &          iflag_bin_swap, ioffset, ilength, vector)
 !
@@ -432,24 +462,6 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine calypso_mpi_seek_write_gz                              &
-     &         (id_mpi_file, ioffset, ilength, c1buf)
-!
-      integer, intent(in) ::  id_mpi_file
-      integer(kind = kint), intent(in) :: ilength
-      character(len=1), intent(in) :: c1buf(ilength)
-      integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
-!
-!
-      call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
-      call MPI_FILE_WRITE(id_mpi_file, c1buf(1), ilength,               &
-     &    CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
-      ioffset = ioffset + ilength
-!
-      end subroutine calypso_mpi_seek_write_gz
-!
-!  ---------------------------------------------------------------------
-!
       subroutine calypso_mpi_seek_read_gz                               &
      &         (id_mpi_file, ioffset, ilength, c1buf)
 !
@@ -484,8 +496,10 @@
       ist = 0
       do
         ilen_in = int(min(zbuf%ilen_gzipped-ist, huge_25))
-        call calypso_mpi_seek_write_gz                                  &
-     &     (id_mpi_file, ioffset, ilen_in, zbuf%gzip_buf(ist+1))
+        call MPI_FILE_SEEK                                              &
+     &     (id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_WRITE(id_mpi_file, zbuf%gzip_buf(ist+1), ilen_in, &
+     &      CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
         ist = ist + ilen_in
         ioffset = ioffset + ilen_in
         if(ist .ge. zbuf%ilen_gzipped) exit
@@ -513,8 +527,10 @@
       ist = 0
       do
         ilen_in = int(min(zbuf%ilen_gz-ist, huge_25))
-        call calypso_mpi_seek_read_gz                                   &
-     &     (id_mpi_file, ioffset, ilen_in, zbuf%gzip_buf(ist+1))
+        call MPI_FILE_SEEK                                              &
+     &     (id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_READ(id_mpi_file, zbuf%gzip_buf(ist+1), ilen_in,  &
+     &      CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
         ist = ist + ilen_in
         ioffset = ioffset + ilen_in
         if(ist .ge. zbuf%ilen_gz) exit
