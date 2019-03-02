@@ -22,7 +22,6 @@
 !!      subroutine set_numbers_2_head_node(num_local, IO_param)
 !!
 !!      subroutine istack64_4_parallel_data(num_local, IO_param)
-!!      subroutine set_istack_4_parallell_data(num_local, IO_param)
 !!      subroutine set_istack_over_subdomains                           &
 !!     &         (nprocs_in, nloop, num_local, istack_merged)
 !!      subroutine set_istack_4_fixed_num(num_local, IO_param)
@@ -313,29 +312,6 @@
       end do
 !
       end subroutine istack64_4_parallel_data
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_istack_4_parallell_data(num_local, IO_param)
-!
-      integer(kind = kint), intent(in) :: num_local
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-!
-      integer(kind = kint) :: num_global(nprocs)
-      integer(kind = kint) :: ip
-!
-!
-      call MPI_Allgather(num_local, ione, CALYPSO_INTEGER,              &
-     &    num_global, ione, CALYPSO_INTEGER, CALYPSO_COMM,              &
-     &    ierr_MPI)
-!
-      IO_param%istack_merged(0) = 0
-      do ip = 1, IO_param%nprocs_in
-        IO_param%istack_merged(ip) = IO_param%istack_merged(ip-1)       &
-     &                              + num_global(ip)
-      end do
-!
-      end subroutine set_istack_4_parallell_data
 !
 !  ---------------------------------------------------------------------
 !

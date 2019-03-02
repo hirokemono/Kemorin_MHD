@@ -184,7 +184,7 @@
       subroutine mpi_write_2d_vector_b(IO_param, n1, n2, real_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: n1
+      integer(kind=kint_gl), intent(in) :: n1
       integer(kind=kint), intent(in) :: n2
       real(kind = kreal), intent(in) :: real_dat(n1,n2)
 !

@@ -279,7 +279,8 @@
       integer(kind=kint), intent(in) :: nnod, numdir
       integer(kind=kint), intent(in) :: idx(nnod, numdir)
 !
-      integer(kind = kint) :: i, led, ilength
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, ilength
       integer(kind = kint) :: idx_tmp(numdir)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !

@@ -263,8 +263,9 @@
 !
       call mpi_write_mul_charahead_b(IO_param_l, num_field, field_name)
 !
+      num64 = nnod
       call copy_istack_4_parallell_data(istack_merged, IO_param_l)
-      call mpi_write_2d_vector_b(IO_param_l, nnod, ntot_comp, d_nod)
+      call mpi_write_2d_vector_b(IO_param_l, num64, ntot_comp, d_nod)
 !
       end subroutine write_field_data_mpi_b
 !

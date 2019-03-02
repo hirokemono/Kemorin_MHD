@@ -72,17 +72,20 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_ndomain_viewer()), hd_ndomain_viewer())
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(mgd_view_prm%num_pe_sf))
-      call mpi_write_stack_over_domain                                  &
-     &   (IO_param, mgd_v_mesh%view_mesh%nnod_viewer)
-      call mpi_write_stack_over_domain                                  &
-     &   (IO_param, mgd_v_mesh%view_mesh%nsurf_viewer)
-      call mpi_write_stack_over_domain                                  &
-     &   (IO_param, mgd_v_mesh%view_mesh%nedge_viewer)
+
+      num64 = mgd_v_mesh%view_mesh%nnod_viewer
+      call mpi_write_stack_over_domain(IO_param, num64)
+      num64 = mgd_v_mesh%view_mesh%nsurf_viewer
+      call mpi_write_stack_over_domain(IO_param, num64)
+      num64 = mgd_v_mesh%view_mesh%nedge_viewer
+      call mpi_write_stack_over_domain(IO_param, num64)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_node_viewer()), hd_node_viewer())

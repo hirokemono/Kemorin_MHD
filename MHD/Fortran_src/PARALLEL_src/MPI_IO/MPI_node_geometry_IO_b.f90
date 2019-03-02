@@ -54,8 +54,6 @@
       call mpi_write_one_integer_b(IO_param, nod_IO%numnod)
       call mpi_write_one_integer_b(IO_param, nod_IO%internal_node)
 !
-      call set_istack_4_parallell_data(nod_IO%numnod, IO_param)
-!
       end subroutine mpi_write_num_node_b
 !
 !------------------------------------------------------------------
@@ -71,10 +69,11 @@
       call mpi_write_num_node_b(IO_param, nod_IO)
 !
       num64 = nod_IO%numnod
+      call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_int8_vector_b                                      &
      &   (IO_param, num64, nod_IO%inod_global)
       call mpi_write_2d_vector_b                                        &
-     &   (IO_param, nod_IO%numnod, ithree, nod_IO%xx)
+     &   (IO_param, num64, ithree, nod_IO%xx)
 !
       end subroutine mpi_write_geometry_info_b
 !
@@ -92,6 +91,7 @@
       call mpi_write_num_node_b(IO_param, nod_IO)
 !
       num64 = nod_IO%numnod
+      call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_1d_vector_b                                        &
      &   (IO_param, num64, sfed_IO%ele_scalar)
 !
@@ -105,10 +105,15 @@
       type(node_data), intent(in) :: nod_IO
       type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call mpi_write_num_node_b(IO_param, nod_IO)
+!
+      num64 = nod_IO%numnod
+      call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_2d_vector_b                                        &
-     &   (IO_param, nod_IO%numnod, n_vector, sfed_IO%ele_vector)
+     &   (IO_param, num64, n_vector, sfed_IO%ele_vector)
 !
       end subroutine mpi_write_vect_in_ele_b
 !

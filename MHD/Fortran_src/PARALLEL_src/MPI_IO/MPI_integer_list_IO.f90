@@ -202,7 +202,8 @@
       integer(kind=kint_gl), intent(in) :: id_global(nele)
       integer(kind=kint), intent(in) :: ie(nele,nnod_4_ele)
 !
-      integer(kind = kint) :: i, led, ilength
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, ilength
       integer(kind = kint) :: ie_tmp(nnod_4_ele)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
@@ -247,7 +248,8 @@
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: i, nrest, loop, led
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, nrest, loop
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -293,7 +295,8 @@
       integer(kind=kint), intent(in) :: nele, ncomp
       integer(kind=kint), intent(in) :: ivect(nele,ncomp)
 !
-      integer(kind = kint) :: i, led, ilength
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, ilength
       integer(kind = kint) :: ie_tmp(ncomp)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !

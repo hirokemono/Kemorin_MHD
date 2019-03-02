@@ -153,10 +153,10 @@
       subroutine mpi_write_stack_over_domain(IO_param, num)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
 !
 !
-      call set_istack_4_parallell_data(num, IO_param)
+      call istack64_4_parallel_data(num, IO_param)
       call mpi_write_charahead(IO_param,                                &
      &    len_multi_int_textline(IO_param%nprocs_in),                   &
      &    int_stack8_textline(IO_param%nprocs_in,                       &

@@ -51,14 +51,15 @@
       integer(kind=kint_gl), intent(in) :: id_global(nnod)
       real(kind=kreal), intent(in) :: xx(nnod, numdir)
 !
-      integer(kind = kint) :: i, led, ilength
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, ilength
       real(kind = kreal) :: xx_tmp(numdir)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       ilength = len_int8_and_vector_textline(numdir)
       led = nnod * len_int8_and_vector_textline(numdir)
-      call set_istack_4_parallell_data(led, IO_param)
+      call istack64_4_parallel_data(led, IO_param)
 !      call mpi_write_stack_over_domain(IO_param, led)
 !
       ioffset = IO_param%ioff_gl                                        &
@@ -92,7 +93,8 @@
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: i, nrest, loop, led
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, nrest, loop
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -106,7 +108,7 @@
       end if
 !
 !      call mpi_write_stack_over_domain(IO_param, led)
-      call set_istack_4_parallell_data(led, IO_param)
+      call istack64_4_parallel_data(led, IO_param)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
@@ -141,7 +143,8 @@
       integer(kind=kint_gl), intent(in) :: id_global(nele)
       integer(kind=kint), intent(in) :: ie(nele,nnod_4_ele)
 !
-      integer(kind = kint) :: i, led, ilength
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, ilength
       integer(kind = kint) :: ie_tmp(nnod_4_ele)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
@@ -155,7 +158,7 @@
       end if
 !
 !      call mpi_write_stack_over_domain(IO_param, led)
-      call set_istack_4_parallell_data(led, IO_param)
+      call istack64_4_parallel_data(led, IO_param)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
@@ -187,14 +190,15 @@
       type(viewer_group_data), intent(in) :: view_grp
 !
       integer(kind = kint) :: total_count
+      integer(kind = kint_gl) :: led
 !
 !
       call MPI_allREDUCE(view_grp%num_item, total_count, ione,          &
      &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(total_count))
-      call mpi_write_stack_over_domain                                  &
-     &   (IO_param, view_grp%num_item)
+      led = view_grp%num_item
+      call mpi_write_stack_over_domain(IO_param, led)
       call mpi_write_viewer_grp_item(IO_param, ieight,                  &
      &    view_grp%num_item, view_grp%item_sf)
 !
@@ -252,7 +256,8 @@
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: i, nrest, loop, led
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, nrest, loop
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -267,7 +272,7 @@
       end if
 !
 !      call mpi_write_stack_over_domain(IO_param, led)
-      call set_istack_4_parallell_data(led, IO_param)
+      call istack64_4_parallel_data(led, IO_param)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)

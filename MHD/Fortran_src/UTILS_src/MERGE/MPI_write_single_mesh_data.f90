@@ -54,14 +54,15 @@
       integer(kind=kint_gl), intent(in) :: id_global(nnod)
       real(kind=kreal), intent(in) :: xx(nnod, numdir)
 !
-      integer(kind = kint) :: i, led, ilength
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, ilength
       real(kind = kreal) :: xx_tmp(numdir)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       ilength = len_int8_and_vector_textline(numdir)
       led = nnod * len_int8_and_vector_textline(numdir)
-      call set_istack_4_parallell_data(led, IO_param)
+      call istack64_4_parallel_data(led, IO_param)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
@@ -93,7 +94,8 @@
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: i, nrest, loop, led
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, nrest, loop
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -105,7 +107,7 @@
      &       + len_multi_6digit_line(nrest)
       end if
 !
-      call set_istack_4_parallell_data(led, IO_param)
+      call istack64_4_parallel_data(led, IO_param)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
@@ -144,8 +146,9 @@
       integer(kind=kint), intent(in) :: inod_local(nnod_local)
       integer(kind=kint), intent(in) :: irank_home(nnod_local)
 !
+      integer(kind = kint_gl) :: led
       integer(kind = kint) :: k1, inod, irank
-      integer(kind = kint) :: i, led, ilength
+      integer(kind = kint) :: i, ilength
       integer(kind = kint_gl) :: ie_tmp(0:nnod_4_ele)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
@@ -157,7 +160,7 @@
         led = ilength * nele
       end if
 !
-      call set_istack_4_parallell_data(led, IO_param)
+      call istack64_4_parallel_data(led, IO_param)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
@@ -239,7 +242,8 @@
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint_gl), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: i, nrest, loop, led
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, nrest, loop
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -251,7 +255,7 @@
      &       + len_multi_int_textline(nrest)
       end if
 !
-      call set_istack_4_parallell_data(led, IO_param)
+      call istack64_4_parallel_data(led, IO_param)
 !
       ioffset = IO_param%ioff_gl + IO_param%istack_merged(my_rank)
       IO_param%ioff_gl = IO_param%ioff_gl                               &

@@ -169,19 +169,27 @@
      &         (id_mpi_file, ioffset, ilength, nline, textbuf)
 !
       integer, intent(in) ::  id_mpi_file
+      integer(kind = MPI_OFFSET_KIND), intent(in) :: ioffset
       integer(kind = kint), intent(in) :: ilength
       integer(kind = kint_gl), intent(in) :: nline
       character(len=ilength), intent(in) :: textbuf(nline)
-      integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
 !
-      integer(kind = kint) :: ntot
+      integer(kind = kint) :: ilen_in
+      integer(kind = kint_gl) :: l8_byte, ist
 !
 !
-      ntot = ilength * int(nline)
-      call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
-      call MPI_FILE_WRITE(id_mpi_file, textbuf, ntot,                   &
-     &      CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
-      ioffset = ioffset + ntot
+      ist = 0
+      l8_byte = ioffset
+      do
+        ilen_in = int(min((nline-ist), huge_25/ilength))
+        call MPI_FILE_SEEK                                              &
+     &     (id_mpi_file, l8_byte, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_WRITE(id_mpi_file, textbuf(ist+1),                &
+     &      (ilen_in*ilength), CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
+        ist = ist + ilen_in
+        l8_byte = l8_byte + ilen_in*ilength
+        if(ist .ge. nline) exit
+      end do
 !
       end subroutine calypso_mpi_seek_wrt_mul_chara
 !
@@ -312,7 +320,7 @@
         int_vector(1) = i_UNIX
         ioffset = ioff_gl
         call calypso_mpi_seek_write_int                                 &
-     &         (id_mpi_file, ioffset, ione64, int_vector)
+     &     (id_mpi_file, ioffset, ione64, int_vector)
       end if
       ioff_gl = ioff_gl + kint
 !

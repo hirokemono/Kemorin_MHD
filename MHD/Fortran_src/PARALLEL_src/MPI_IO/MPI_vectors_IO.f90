@@ -199,7 +199,8 @@
       integer(kind=kint_gl), intent(in) :: id_global(nnod)
       real(kind=kreal), intent(in) :: xx(nnod, numdir)
 !
-      integer(kind = kint) :: i, led, ilength
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, ilength
       real(kind = kreal) :: xx_tmp(numdir)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
@@ -239,7 +240,8 @@
       integer(kind=kint), intent(in) :: nnod
       real(kind=kreal), intent(in) :: scalar(nnod)
 !
-      integer(kind = kint) :: i, led, ilength
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, ilength
       real(kind = kreal) :: vec_tmp(1)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
@@ -279,7 +281,8 @@
       integer(kind=kint), intent(in) :: nnod, numdir
       real(kind=kreal), intent(in) :: vect(nnod, numdir)
 !
-      integer(kind = kint) :: i, led, ilength
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, ilength
       real(kind = kreal) :: vec_tmp(numdir)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !

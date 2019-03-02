@@ -336,7 +336,8 @@
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: i, nrest, loop, led
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, nrest, loop
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
