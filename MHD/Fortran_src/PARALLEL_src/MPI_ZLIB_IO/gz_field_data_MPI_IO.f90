@@ -132,7 +132,7 @@
         ioffset = ioff_gl
         zbuf%ilen_gz = int(real(ilength) *1.01 + 24, kind(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
-        call calypso_mpi_seek_long_read_gz(id_fld, ioffset, zbuf)
+        call calypso_mpi_seek_read_gz(id_fld, ioffset, zbuf)
 !
         call infleate_characters(ilength, chara_dat, zbuf)
       end if
@@ -165,7 +165,7 @@
         ioffset = ioff_gl
         zbuf%ilen_gz = int(real(kchara) *1.01 + 24,kind(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
-        call calypso_mpi_seek_long_read_gz(id_fld, ioffset, zbuf)
+        call calypso_mpi_seek_read_gz(id_fld, ioffset, zbuf)
 !
         call infleate_1word(ilength, field_name, zbuf)
       end if
@@ -222,7 +222,7 @@
       ioff_gl = ioff_gl + istack_buf(nprocs_in)
       zbuf%ilen_gz = istack_buf(id_rank+1) - istack_buf(id_rank)
       call alloc_zip_buffer(zbuf)
-      call calypso_mpi_seek_long_read_gz(id_fld, ioffset, zbuf)
+      call calypso_mpi_seek_read_gz(id_fld, ioffset, zbuf)
 !
       nnod64 = nnod
       call infleate_vector_txt(izero, nnod64, ndir, vector, zbuf)

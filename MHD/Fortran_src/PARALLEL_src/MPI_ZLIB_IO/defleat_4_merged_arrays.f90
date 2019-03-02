@@ -109,8 +109,7 @@
      &                       - istack_merged(id_rank)
 !
         call alloc_zip_buffer(zbuf(iloop))
-        call calypso_mpi_seek_long_read_gz                              &
-     &     (id_file, ioffset, zbuf(iloop))
+        call calypso_mpi_seek_read_gz(id_file, ioffset, zbuf(iloop))
       end do
       ioff_gl = ioff_gl + istack_merged(nprocs_in)
 !

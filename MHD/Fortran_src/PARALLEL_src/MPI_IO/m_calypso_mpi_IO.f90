@@ -45,12 +45,9 @@
 !!      subroutine calypso_mpi_seek_read_int8(id_mpi_file,              &
 !!     &          iflag_bin_swap, ioffset, ilength, i8_vector)
 !!
-!!      subroutine calypso_mpi_seek_read_gz                             &
-!!     &         (id_mpi_file, ioffset, ilength, c1buf)
 !!      subroutine calypso_mpi_seek_long_write_gz                       &
 !!     &         (id_mpi_file, ioffset, zbuf)
-!!      subroutine calypso_mpi_seek_long_read_gz                        &
-!!     &         (id_mpi_file, ioffset, zbuf)
+!!      subroutine calypso_mpi_seek_read_gz(id_mpi_file, ioffset, zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
 !!      subroutine calypso_gz_mpi_seek_write(id_mpi_file, ioff_gl, zbuf)
@@ -462,24 +459,6 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine calypso_mpi_seek_read_gz                               &
-     &         (id_mpi_file, ioffset, ilength, c1buf)
-!
-      integer, intent(in) ::  id_mpi_file
-      integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
-      integer(kind = kint), intent(in) :: ilength
-      character(len=1), intent(inout) :: c1buf(ilength)
-!
-!
-      call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
-      call MPI_FILE_READ(id_mpi_file, c1buf(1), ilength,                &
-     &      CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
-      ioffset = ioffset + ilength
-!
-      end subroutine calypso_mpi_seek_read_gz
-!
-!  ---------------------------------------------------------------------
-!
       subroutine calypso_mpi_seek_long_write_gz                         &
      &         (id_mpi_file, ioffset, zbuf)
 !
@@ -509,8 +488,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine calypso_mpi_seek_long_read_gz                          &
-     &         (id_mpi_file, ioffset, zbuf)
+      subroutine calypso_mpi_seek_read_gz(id_mpi_file, ioffset, zbuf)
 !
       use t_buffer_4_gzip
 !
@@ -534,7 +512,7 @@
         if(ist .ge. zbuf%ilen_gz) exit
       end do
 !
-      end subroutine calypso_mpi_seek_long_read_gz
+      end subroutine calypso_mpi_seek_read_gz
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

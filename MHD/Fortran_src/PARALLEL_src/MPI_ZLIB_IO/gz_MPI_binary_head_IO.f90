@@ -192,8 +192,7 @@
         ilength = num * kint
         zbuf%ilen_gz = int(dble(ilength)*1.01+24, KIND(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
-        call calypso_mpi_seek_long_read_gz                              &
-     &     (IO_param%id_file, ioffset, zbuf)
+        call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
         num64 = num
         call infleate_int_vector_b(num64, int_dat, zbuf)
@@ -247,8 +246,7 @@
         ilength = num * kint_gl
         zbuf%ilen_gz = int(dble(ilength)*1.01+24, KIND(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
-        call calypso_mpi_seek_long_read_gz                              &
-     &     (IO_param%id_file, ioffset, zbuf)
+        call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
         num64 = num
         call infleate_int8_vector_b(num64, int8_dat, zbuf)
@@ -286,8 +284,7 @@
         ioffset = IO_param%ioff_gl
         zbuf%ilen_gz = int(real(ilength)*1.01+24, KIND(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
-        call calypso_mpi_seek_long_read_gz                              &
-     &     (IO_param%id_file, ioffset, zbuf)
+        call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
         num64 = num
         call infleate_1d_character_b(num64, chara_dat, zbuf)
@@ -322,8 +319,7 @@
         ilength = num * kreal
         zbuf%ilen_gz = int(dble(ilength)*1.01+24, KIND(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
-        call calypso_mpi_seek_long_read_gz                              &
-     &     (IO_param%id_file, ioffset, zbuf)
+        call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
         num64 = num
         call infleate_1d_vector_b(num64, real_dat, zbuf)

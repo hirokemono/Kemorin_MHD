@@ -79,8 +79,7 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
 !
       call alloc_zip_buffer(zbuf)
-      call calypso_mpi_seek_long_read_gz                                &
-     &   (IO_param%id_file, ioffset, zbuf)
+      call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
       nnod64 = nnod
       call infleate_vector_txt(ione, nnod64, numdir, vect, zbuf)
