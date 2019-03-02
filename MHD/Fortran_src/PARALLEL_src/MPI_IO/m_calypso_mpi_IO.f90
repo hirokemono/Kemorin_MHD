@@ -45,8 +45,7 @@
 !!      subroutine calypso_mpi_seek_read_int8(id_mpi_file,              &
 !!     &          iflag_bin_swap, ioffset, ilength, i8_vector)
 !!
-!!      subroutine calypso_mpi_seek_long_write_gz                       &
-!!     &         (id_mpi_file, ioffset, zbuf)
+!!      subroutine calypso_mpi_seek_write_gz(id_mpi_file, ioffset, zbuf)
 !!      subroutine calypso_mpi_seek_read_gz(id_mpi_file, ioffset, zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
@@ -459,8 +458,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine calypso_mpi_seek_long_write_gz                         &
-     &         (id_mpi_file, ioffset, zbuf)
+      subroutine calypso_mpi_seek_write_gz(id_mpi_file, ioffset, zbuf)
 !
       use t_buffer_4_gzip
 !
@@ -484,7 +482,7 @@
         if(ist .ge. zbuf%ilen_gzipped) exit
       end do
 !
-      end subroutine calypso_mpi_seek_long_write_gz
+      end subroutine calypso_mpi_seek_write_gz
 !
 !  ---------------------------------------------------------------------
 !
@@ -539,8 +537,7 @@
         do ip = 1, my_rank
           ioffset = ioffset + ilen_gzipped_gl(ip)
         end do
-        call calypso_mpi_seek_long_write_gz                             &
-     &    (id_mpi_file, ioffset, zbuf)
+        call calypso_mpi_seek_write_gz(id_mpi_file, ioffset, zbuf)
       end if
 !
       do ip = 1, nprocs

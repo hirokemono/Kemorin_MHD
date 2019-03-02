@@ -276,8 +276,7 @@
       if(zbuf%ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl                                      &
      &           + IO_param%istack_merged(IO_param%id_rank)
-        call calypso_mpi_seek_long_write_gz                             &
-     &     (IO_param%id_file, ioffset, zbuf)
+        call calypso_mpi_seek_write_gz(IO_param%id_file, ioffset, zbuf)
       end if
 !
       IO_param%ioff_gl = IO_param%ioff_gl                               &

@@ -74,7 +74,7 @@
 !
       if(zbuf%ilen_gzipped .gt. 0) then
         ioffset = ioff_gl + istack_buffer(my_rank)
-        call calypso_mpi_seek_long_write_gz(id_fld, ioffset, zbuf)
+        call calypso_mpi_seek_write_gz(id_fld, ioffset, zbuf)
       end if
       ioff_gl = ioff_gl + istack_buffer(nprocs)
       call dealloc_zip_buffer(zbuf)
@@ -101,7 +101,7 @@
         call defleate_characters(len(header_txt), header_txt, zbuf)
 !
         ioffset = ioff_gl
-        call calypso_mpi_seek_long_write_gz(id_fld, ioffset, zbuf)
+        call calypso_mpi_seek_write_gz(id_fld, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &

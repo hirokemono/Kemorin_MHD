@@ -59,8 +59,7 @@
         call defleate_characters(ilength, chara_dat, zbuf)
 !
         ioffset = IO_param%ioff_gl
-        call calypso_mpi_seek_long_write_gz                             &
-     &     (IO_param%id_file, ioffset, zbuf)
+        call calypso_mpi_seek_write_gz(IO_param%id_file, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
@@ -122,8 +121,7 @@
 !
       if(zbuf%ilen_gzipped .gt. 0) then
         ioffset = IO_param%ioff_gl + IO_param%istack_merged(my_rank)
-        call calypso_mpi_seek_long_write_gz                             &
-     &     (IO_param%id_file, ioffset, zbuf)
+        call calypso_mpi_seek_write_gz(IO_param%id_file, ioffset, zbuf)
       end if
 !
       IO_param%ioff_gl = IO_param%ioff_gl                               &
