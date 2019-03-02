@@ -79,6 +79,7 @@
       call mpi_write_one_integer_b(IO_param, sfed_IO%nsf_4_ele)
 !
       num = sfed_IO%nsf_4_ele * sfed_IO%nsurf_in_ele
+      call set_istack_4_parallell_data(sfed_IO%nsf_4_ele, IO_param)
       call mul_istack_4_parallell_vect(sfed_IO%nsurf_in_ele, IO_param)
       call mpi_write_int_vector_b(IO_param, num, sfed_IO%isf_for_ele)
 !
@@ -98,6 +99,7 @@
       call mpi_write_one_integer_b(IO_param, sfed_IO%ned_4_ele)
 !
       num = sfed_IO%ned_4_ele * sfed_IO%nedge_in_ele
+      call set_istack_4_parallell_data(sfed_IO%ned_4_ele, IO_param)
       call mul_istack_4_parallell_vect(sfed_IO%nedge_in_ele, IO_param)
       call mpi_write_int_vector_b(IO_param, num, sfed_IO%iedge_for_ele)
 !
@@ -159,6 +161,7 @@
 !
       integer(kind = kint) :: nsf_4_ele, nsurf_in_ele
       integer(kind = kint) :: num
+!
 !
       call mpi_read_one_integer_b(IO_param, nsurf_in_ele)
       call mpi_read_one_integer_b(IO_param, nsf_4_ele)
