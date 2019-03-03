@@ -58,7 +58,7 @@
       call write_one_integer_b(nod_IO%internal_node)
 !
       num64 = nod_IO%numnod
-      call write_mul_int8_b(nod_IO%numnod, nod_IO%inod_global)
+      call write_mul_int8_b(num64, nod_IO%inod_global)
       call write_2d_vector_b(num64, n_vector, nod_IO%xx)
 !
       end subroutine write_geometry_info_b
@@ -138,11 +138,11 @@
 !
       call alloc_node_geometry_base(nod_IO)
 !
+      num64 = nod_IO%numnod
       call read_mul_int8_b(bin_flags%iflag_bin_swap,                    &
-     &    nod_IO%numnod, nod_IO%inod_global, bin_flags%ierr_IO)
+     &    num64, nod_IO%inod_global, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
-      num64 = nod_IO%numnod
       call read_2d_vector_b(bin_flags%iflag_bin_swap,                   &
      &    num64, n_vector, nod_IO%xx, bin_flags%ierr_IO)
 !

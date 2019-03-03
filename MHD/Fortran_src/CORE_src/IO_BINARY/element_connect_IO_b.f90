@@ -46,14 +46,16 @@
 !
       type(element_data), intent(in) :: ele_IO
 !
+      integer(kind = kint_gl) :: num64
       integer (kind = kint) :: i
       integer (kind = kint), allocatable :: ie_tmp(:)
 !
 !
       call write_one_integer_b(ele_IO%numele)
 !
+      num64 = ele_IO%numele
       call write_mul_integer_b(ele_IO%numele, ele_IO%elmtyp)
-      call write_mul_int8_b(ele_IO%numele, ele_IO%iele_global)
+      call write_mul_int8_b(num64, ele_IO%iele_global)
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))
       do i = 1, ele_IO%numele
@@ -126,6 +128,7 @@
       type(file_IO_flags), intent(inout) :: bin_flags
       type(element_data), intent(inout) :: ele_IO
 !
+      integer(kind = kint_gl) :: num64
       integer (kind = kint) :: i
       integer (kind = kint), allocatable :: ie_tmp(:)
 !
@@ -144,8 +147,9 @@
 !
       call alloc_ele_connectivity(ele_IO)
 !
+      num64 = ele_IO%numele
       call read_mul_int8_b(bin_flags%iflag_bin_swap,                    &
-     &    ele_IO%numele, ele_IO%iele_global, bin_flags%ierr_IO)
+     &    num64, ele_IO%iele_global, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))

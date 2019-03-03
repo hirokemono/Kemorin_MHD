@@ -208,7 +208,7 @@
 !
       subroutine write_mul_int8_b(num, int_gl_dat)
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int_gl_dat(num)
 !
       integer(kind = kint) :: lbyte, ilength, ist
@@ -479,7 +479,7 @@
       subroutine read_mul_int8_b(iflag_swap, num, int_gl_dat, ierr)
 !
       integer(kind = kint), intent(in) :: iflag_swap
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int_gl_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !

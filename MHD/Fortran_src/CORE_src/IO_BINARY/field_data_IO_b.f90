@@ -64,11 +64,12 @@
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
       integer(kind = kint_gl) :: num64
+      integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
       istack_merged(1) = nnod
-      call write_mul_int8_b(ione, istack_merged)
+      call write_mul_int8_b(ione64, istack_merged)
       call write_one_integer_b(num_field)
       call write_mul_integer_b(num_field, ncomp_field)
 !
@@ -94,6 +95,7 @@
       integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: id_rank
+      integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
       call read_one_integer_b(iflag_swap, id_rank, ierr)
@@ -105,7 +107,7 @@
       call read_one_real_b(iflag_swap, delta_t_IO, ierr)
       if(ierr .gt. 0) return
 !
-      call read_mul_int8_b(iflag_swap, ione, istack_merged, ierr)
+      call read_mul_int8_b(iflag_swap, ione64, istack_merged, ierr)
       if(ierr .gt. 0) return
 !
       call read_one_integer_b(iflag_swap, num_field, ierr)
