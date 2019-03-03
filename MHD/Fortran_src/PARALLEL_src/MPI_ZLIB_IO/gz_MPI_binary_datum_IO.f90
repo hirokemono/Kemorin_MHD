@@ -124,11 +124,12 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint), intent(in) :: int_dat
 !
+      integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint) :: itmp_IO(1)
 !
 !
       itmp_IO(1) = int_dat
-      call gz_mpi_write_int_vector_b(IO_param, ione, itmp_IO)
+      call gz_mpi_write_int_vector_b(IO_param, ione64, itmp_IO)
 !
       end subroutine gz_mpi_write_one_integer_b
 !
@@ -171,10 +172,11 @@
 !
       integer(kind = kint), intent(inout) :: int_dat
 !
+      integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint) ::   itmp_IO(1)
 !
 !
-      call gz_mpi_read_int_vector_b(IO_param, ione, itmp_IO(1))
+      call gz_mpi_read_int_vector_b(IO_param, ione64, itmp_IO(1))
       int_dat = itmp_IO(1)
 !
       end subroutine gz_mpi_read_one_integer_b

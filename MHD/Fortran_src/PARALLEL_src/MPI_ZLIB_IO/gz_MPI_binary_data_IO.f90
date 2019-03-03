@@ -57,7 +57,7 @@
       subroutine gz_mpi_write_integer_stack_b(IO_param, num, istack)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: istack(0:num)
 !
 !
@@ -70,15 +70,13 @@
       subroutine gz_mpi_write_int_vector_b(IO_param, num, int_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: num64
 !
 !
-      num64 = num
-      call defleate_int_vector_b(num64, int_dat, zbuf)
+      call defleate_int_vector_b(num, int_dat, zbuf)
 !
       call istack64_4_parallel_data(zbuf%ilen_gzipped, IO_param)
 !
@@ -101,15 +99,13 @@
       subroutine gz_mpi_write_int8_vector_b(IO_param, num, int8_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: num64
 !
 !
-      num64 = num
-      call defleate_int8_vector_b(num64, int8_dat, zbuf)
+      call defleate_int8_vector_b(num, int8_dat, zbuf)
 !
       call istack64_4_parallel_data(zbuf%ilen_gzipped, IO_param)
 !
@@ -132,15 +128,13 @@
       subroutine gz_mpi_write_1d_vector_b(IO_param, num, real_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: num64
 !
 !
-      num64 = num
-      call defleate_1d_vector_b(num64, real_dat, zbuf)
+      call defleate_1d_vector_b(num, real_dat, zbuf)
 !
       call istack64_4_parallel_data(zbuf%ilen_gzipped, IO_param)
 !
@@ -163,15 +157,16 @@
       subroutine gz_mpi_write_2d_vector_b(IO_param, n1, n2, real_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(in) :: n1, n2
+      integer(kind = kint_gl), intent(in) :: n1
+      integer(kind = kint), intent(in) :: n2
 !
       real(kind = kreal), intent(in) :: real_dat(n1,n2)
 !
-      integer(kind = kint) :: num
+      integer(kind = kint_gl) :: num64
 !
 !
-      num = n1 * n2
-      call gz_mpi_write_1d_vector_b(IO_param, num, real_dat(1,1))
+      num64 = n1 * n2
+      call gz_mpi_write_1d_vector_b(IO_param, num64, real_dat(1,1))
 !
       end subroutine gz_mpi_write_2d_vector_b
 !
@@ -183,7 +178,7 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: ntot
       integer(kind = kint), intent(inout) :: istack(0:num)
 !
@@ -200,13 +195,12 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
       integer(kind = kint_gl) :: l8_byte
-      integer(kind = kint_gl) :: num64
 !
 !
       call gz_mpi_read_i8stack_head_b                                   &
@@ -227,8 +221,7 @@
         call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
-        num64 = num
-        call infleate_int_vector_b(num64, int_dat, zbuf)
+        call infleate_int_vector_b(num, int_dat, zbuf)
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = num * kint
@@ -244,13 +237,12 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
       integer(kind = kint_gl) :: l8_byte
-      integer(kind = kint_gl) :: num64
 !
 !
       call gz_mpi_read_i8stack_head_b                                   &
@@ -270,8 +262,7 @@
         call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
-        num64 = num
-        call infleate_int8_vector_b(num64, int8_dat, zbuf)
+        call infleate_int8_vector_b(num, int8_dat, zbuf)
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = num * kint_gl
@@ -287,13 +278,12 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
       integer(kind = kint_gl) :: l8_byte
-      integer(kind = kint_gl) :: num64
 !
 !
       call gz_mpi_read_i8stack_head_b                                   &
@@ -313,8 +303,7 @@
         call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
-        num64 = num
-        call infleate_1d_vector_b(num64, real_dat, zbuf)
+        call infleate_1d_vector_b(num, real_dat, zbuf)
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = num * kreal
@@ -330,14 +319,15 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind = kint), intent(in) :: n1, n2
+      integer(kind = kint_gl), intent(in) :: n1
+      integer(kind = kint), intent(in) :: n2
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)
 !
-      integer(kind = kint) :: num
+      integer(kind = kint_gl) :: num64
 !
 !
-      num = n1 * n2
-      call gz_mpi_read_1d_vector_b(IO_param, num, real_dat(1,1))
+      num64 = n1 * n2
+      call gz_mpi_read_1d_vector_b(IO_param, num64, real_dat(1,1))
 !
       end subroutine gz_mpi_read_2d_vector_b
 !

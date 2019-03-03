@@ -105,6 +105,8 @@
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &    'read gzipped binary data by MPI-IO: ', trim(file_name)
@@ -125,8 +127,9 @@
 !
       call gz_mpi_read_mul_charahead_b                                  &
      &   (IO_param, fld_IO%num_field_IO, fld_IO%fld_name)
+      num64 = fld_IO%nnod_IO
       call gz_mpi_read_2d_vector_b                                      &
-     &   (IO_param, fld_IO%nnod_IO, fld_IO%ntot_comp_IO, fld_IO%d_IO)
+     &   (IO_param, num64, fld_IO%ntot_comp_IO, fld_IO%d_IO)
 !
       call close_mpi_file(IO_param)
 !
@@ -153,6 +156,8 @@
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &      'read gzipped binary data MPI-IO: ', trim(file_name)
@@ -175,8 +180,9 @@
 !
       call gz_mpi_read_mul_charahead_b                                  &
      &   (IO_param, fld_IO%num_field_IO, fld_IO%fld_name)
+      num64 = fld_IO%nnod_IO
       call gz_mpi_read_2d_vector_b                                      &
-     &   (IO_param, fld_IO%nnod_IO, fld_IO%ntot_comp_IO, fld_IO%d_IO)
+     &   (IO_param, num64, fld_IO%ntot_comp_IO, fld_IO%d_IO)
 !
       call close_mpi_file(IO_param)
 !
@@ -289,10 +295,15 @@
       character(len=kchara), intent(in) :: field_name(num_field)
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call gz_mpi_write_mul_charahead_b                                 &
      &   (IO_param_l, num_field, field_name)
-      call gz_mpi_write_2d_vector_b(IO_param_l, nnod, ntot_comp, d_nod)
+!
+      num64 = nnod
+      call gz_mpi_write_2d_vector_b                                     &
+     &   (IO_param_l, num64, ntot_comp, d_nod)
 !
       end subroutine gz_write_field_data_mpi_b
 !
