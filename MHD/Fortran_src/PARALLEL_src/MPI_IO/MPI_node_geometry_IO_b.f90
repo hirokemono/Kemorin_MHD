@@ -147,7 +147,7 @@
       call mpi_read_int8_vector_b                                       &
      &   (IO_param, num64, nod_IO%inod_global)
       call mpi_read_2d_vector_b                                         &
-     &   (IO_param, nod_IO%numnod, ithree, nod_IO%xx)
+     &   (IO_param, num64, ithree, nod_IO%xx)
 !
       end subroutine mpi_read_geometry_info_b
 !
@@ -179,12 +179,15 @@
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call mpi_read_number_of_node_b(IO_param, nod_IO)
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
 !
+      num64 = nod_IO%numnod
       call mpi_read_2d_vector_b                                         &
-     &   (IO_param, nod_IO%numnod, n_vector, sfed_IO%ele_vector)
+     &   (IO_param, num64, n_vector, sfed_IO%ele_vector)
 !
       end subroutine mpi_read_vect_in_ele_b
 !

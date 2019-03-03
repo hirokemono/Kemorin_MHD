@@ -224,8 +224,6 @@
       integer(kind = kint), intent(inout) :: ntot
       integer(kind = kint), intent(inout) :: istack(0:num)
 !
-      integer(kind = kint_gl), parameter :: ione64 = 1
-!
 !
       istack(0) = 0
       call mpi_read_int_vector_b(IO_param, num, istack(1))
@@ -345,8 +343,8 @@
       subroutine mpi_read_2d_vector_b(IO_param, n1, n2, real_dat)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: n1
-      integer(kind=kint), intent(in) :: n2
+      integer(kind = kint_gl), intent(in) :: n1
+      integer(kind = kint), intent(in) :: n2
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)
 !
       integer(kind = kint_gl) :: num64

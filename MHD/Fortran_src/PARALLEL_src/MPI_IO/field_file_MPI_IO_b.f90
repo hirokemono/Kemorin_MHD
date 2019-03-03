@@ -119,8 +119,9 @@
       call mpi_read_mul_charahead_b                                     &
      &   (IO_param, fld_IO%num_field_IO, fld_IO%fld_name)
 !
+      num64 = fld_IO%nnod_IO
       call mpi_read_2d_vector_b                                         &
-     &   (IO_param, fld_IO%nnod_IO, fld_IO%ntot_comp_IO, fld_IO%d_IO)
+     &   (IO_param, num64, fld_IO%ntot_comp_IO, fld_IO%d_IO)
 !
       call dealloc_merged_field_stack(fld_IO)
 !
@@ -166,8 +167,9 @@
       call mpi_read_mul_charahead_b                                     &
      &   (IO_param, fld_IO%num_field_IO, fld_IO%fld_name)
 !
+      num64 = fld_IO%nnod_IO
       call mpi_read_2d_vector_b                                         &
-     &   (IO_param, fld_IO%nnod_IO, fld_IO%ntot_comp_IO, fld_IO%d_IO)
+     &   (IO_param, num64, fld_IO%ntot_comp_IO, fld_IO%d_IO)
 !
       call close_mpi_file(IO_param)
 !
