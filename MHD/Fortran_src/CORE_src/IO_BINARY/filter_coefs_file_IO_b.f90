@@ -218,6 +218,8 @@
       type(file_IO_flags), intent(inout) :: bin_flags
       type(filter_coefficients_type), intent(inout) :: IO_filters
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call alloc_3d_filter_comb(IO_filters)
       call alloc_3d_filter_func(IO_filters)
@@ -227,13 +229,13 @@
      &    bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
+      num64 = IO_filters%ntot_near_nod
       call read_1d_vector_b(bin_flags%iflag_bin_swap,                   &
-     &    IO_filters%ntot_near_nod, IO_filters%func, bin_flags%ierr_IO)
+     &    num64, IO_filters%func, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       call read_1d_vector_b(bin_flags%iflag_bin_swap,                   &
-     &    IO_filters%ntot_near_nod, IO_filters%weight,                  &
-     &    bin_flags%ierr_IO)
+     &    num64, IO_filters%weight, bin_flags%ierr_IO)
 !
       end subroutine read_3d_filter_weights_coef_b
 !
@@ -268,12 +270,15 @@
 !
       type(filter_coefficients_type), intent(in) :: IO_filters
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call write_mul_integer_b                                          &
      &  (IO_filters%ntot_near_nod, IO_filters%inod_near)
-      call write_1d_vector_b(IO_filters%ntot_near_nod, IO_filters%func)
-      call write_1d_vector_b                                            &
-     &  (IO_filters%ntot_near_nod, IO_filters%weight)
+!
+      num64 = IO_filters%ntot_near_nod
+      call write_1d_vector_b(num64, IO_filters%func)
+      call write_1d_vector_b(num64, IO_filters%weight)
 !
       end subroutine write_3d_filter_weights_coef_b
 !

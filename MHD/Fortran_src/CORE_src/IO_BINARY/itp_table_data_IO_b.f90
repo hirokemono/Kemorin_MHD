@@ -82,6 +82,8 @@
 !
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       if (IO_itp_org%num_dest_domain .eq. 0) return
       call write_mul_integer_b                                          &
@@ -93,7 +95,8 @@
      &  (IO_itp_org%ntot_table_org, IO_itp_org%iele_org_4_org)
       call write_mul_integer_b                                          &
      &  (IO_itp_org%ntot_table_org, IO_itp_org%itype_inter_org)
-      call write_2d_vector_b(IO_itp_org%ntot_table_org, ithree,         &
+      num64 = IO_itp_org%ntot_table_org
+      call write_2d_vector_b(num64, ithree,                             &
      &    IO_itp_org%coef_inter_org)
 !
       end subroutine write_interpolate_coefs_org_b
@@ -162,6 +165,8 @@
       type(file_IO_flags), intent(inout) :: bin_flags
       type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       if (IO_itp_org%num_dest_domain .eq. 0) return
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
@@ -184,8 +189,8 @@
      &    bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
-      call read_2d_vector_b(bin_flags%iflag_bin_swap,                   &
-     &    IO_itp_org%ntot_table_org, ithree,                            &
+      num64 = IO_itp_org%ntot_table_org
+      call read_2d_vector_b(bin_flags%iflag_bin_swap, num64, ithree,    &
      &    IO_itp_org%coef_inter_org, bin_flags%ierr_IO)
 !
       end subroutine read_interpolate_coefs_org_b
@@ -227,6 +232,7 @@
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = kint) :: ncomp
 !
 !
@@ -242,7 +248,8 @@
         call write_mul_integer_b                                        &
      &    (IO_itp_dest%ntot_table_dest, IO_itp_c_dest%itype_inter_dest)
 !
-        call write_2d_vector_b(IO_itp_dest%ntot_table_dest,             &
+        num64 = IO_itp_dest%ntot_table_dest
+        call write_2d_vector_b(num64,                                   &
      &      ithree, IO_itp_c_dest%coef_inter_dest)
 !
       end subroutine write_interpolate_coefs_dest_b
@@ -313,6 +320,7 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = kint) :: ncomp
 !
 !
@@ -346,8 +354,8 @@
      &     bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
 !
-        call read_2d_vector_b(bin_flags%iflag_bin_swap,                 &
-     &      IO_itp_dest%ntot_table_dest, ithree,                        &
+        num64 = IO_itp_dest%ntot_table_dest
+        call read_2d_vector_b(bin_flags%iflag_bin_swap, num64, ithree,  &
      &      IO_itp_c_dest%coef_inter_dest, bin_flags%ierr_IO)
 !
       end subroutine read_interpolate_coefs_dest_b

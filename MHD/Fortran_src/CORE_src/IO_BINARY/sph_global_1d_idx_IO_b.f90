@@ -39,6 +39,8 @@
       type(file_IO_flags), intent(inout) :: bin_flags
       type(sph_IO_data), intent(inout) :: sph_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       sph_IO%numdir_sph = 3
       sph_IO%ncomp_table_1d(1) = 1
@@ -67,8 +69,9 @@
      &    sph_IO%nidx_sph(1), sph_IO%idx_gl_1, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
+      num64 = sph_IO%nidx_sph(1)
       call read_1d_vector_b(bin_flags%iflag_bin_swap,                   &
-     &    sph_IO%nidx_sph(1), sph_IO%r_gl_1, bin_flags%ierr_IO)
+     &    num64 , sph_IO%r_gl_1, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
@@ -89,6 +92,7 @@
       type(file_IO_flags), intent(inout) :: bin_flags
       type(sph_IO_data), intent(inout) :: sph_IO
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = kint) :: nvect
 !
 !
@@ -117,8 +121,9 @@
      &    sph_IO%nidx_sph(1), sph_IO%idx_gl_1, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
+      num64 = sph_IO%nidx_sph(1)
       call read_1d_vector_b(bin_flags%iflag_bin_swap,                   &
-     &    sph_IO%nidx_sph(1), sph_IO%r_gl_1, bin_flags%ierr_IO)
+     &    num64, sph_IO%r_gl_1, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
@@ -134,6 +139,7 @@
 !
       type(sph_IO_data), intent(in) :: sph_IO
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = kint) :: nvect
 !
 !
@@ -142,7 +148,8 @@
       call write_mul_integer_b(sph_IO%numdir_sph, sph_IO%ied_sph)
 !
       call write_mul_integer_b(sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
-      call write_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
+      num64 = sph_IO%nidx_sph(1)
+      call write_1d_vector_b(num64, sph_IO%r_gl_1)
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
       call write_mul_integer_b(nvect, sph_IO%idx_gl_2)
@@ -158,6 +165,7 @@
 !
       type(sph_IO_data), intent(in) :: sph_IO
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = kint) :: nvect
 !
 !
@@ -166,7 +174,8 @@
       call write_mul_integer_b(sph_IO%numdir_sph, sph_IO%ied_sph)
 !
       call write_mul_integer_b(sph_IO%nidx_sph(1), sph_IO%idx_gl_1)
-      call write_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
+      num64 = sph_IO%nidx_sph(1)
+      call write_1d_vector_b(num64, sph_IO%r_gl_1)
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
       call write_mul_integer_b(nvect, sph_IO%idx_gl_2)

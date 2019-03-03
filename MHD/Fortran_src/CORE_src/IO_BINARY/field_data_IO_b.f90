@@ -63,6 +63,7 @@
       character(len=kchara), intent(in) :: field_name(num_field)
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
@@ -72,7 +73,8 @@
       call write_mul_integer_b(num_field, ncomp_field)
 !
       call write_mul_character_b(num_field, field_name)
-      call write_2d_vector_b(nnod, ntot_comp, d_nod)
+      num64 = nnod
+      call write_2d_vector_b(num64, ntot_comp, d_nod)
 !
       end subroutine write_field_data_b
 !
@@ -123,11 +125,14 @@
       real(kind = kreal), intent(inout) :: vect(nnod,ntot_comp)
       integer(kind = kint), intent(inout) :: ierr
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call read_mul_character_b(num_field, field_name, ierr)
       if(ierr .gt. 0) return
 !
-      call read_2d_vector_b(iflag_swap, nnod, ntot_comp, vect, ierr)
+      num64 = nnod
+      call read_2d_vector_b(iflag_swap, num64, ntot_comp, vect, ierr)
 !
       end subroutine read_field_data_b
 !

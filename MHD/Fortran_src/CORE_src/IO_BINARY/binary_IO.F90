@@ -10,7 +10,7 @@
 !!      subroutine open_write_binary_file(file_name)
 !!      subroutine open_append_binary_file(file_name)
 !!      subroutine open_read_binary_file(file_name, my_rank, iflag_swap)
-!!      subroutine close_binary_file
+!!      subroutine close_binary_file 
 !!      subroutine seek_forward_binary_file(len_byte)
 !!
 !!      subroutine write_endian_flag
@@ -218,7 +218,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength *  kint_gl
 !
         call rawwrite_f(lbyte, int_gl_dat(ist+1), ierr_IO)
@@ -245,7 +245,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = min((num - ist), huge_25)
+        ilength = int(min((num - ist), huge_25))
         lbyte = ilength *  kint
 !
         call rawwrite_f(lbyte, int_dat(ist+1), ierr_IO)
@@ -284,7 +284,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength *  kchara
 !
         call rawwrite_f(lbyte, chara_dat(ist+1), ierr_IO)
@@ -315,7 +315,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength
 !
         call rawwrite_f(lbyte, chara_dat(ist+1), ierr_IO)
@@ -336,7 +336,7 @@
 !
       subroutine write_1d_vector_b(num, real_dat)
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
 !
       integer(kind = kint) :: lbyte, ilength, ist
@@ -346,7 +346,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte =  ilength * kreal
 !
         call rawwrite_f(lbyte, real_dat(ist+1), ierr_IO)
@@ -367,7 +367,8 @@
 !
       subroutine write_2d_vector_b(n1, n2, real_dat)
 !
-      integer(kind = kint), intent(in) :: n1, n2
+      integer(kind = kint_gl), intent(in) :: n1
+      integer(kind = kint), intent(in) :: n2
       real(kind = kreal), intent(in) :: real_dat(n1,n2)
 !
       integer(kind = kint) :: i2
@@ -489,7 +490,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kint_gl
 !
         call rawread_64bit_f                                            &
@@ -526,7 +527,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = min((num - ist), huge_25)
+        ilength = int(min((num - ist), huge_25))
         lbyte = ilength * kint
 !
         call rawread_32bit_f(iflag_swap, lbyte, int_dat(ist+1), ierr)
@@ -579,7 +580,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength *  kchara
 !
         call rawread_32bit_f                                            &
@@ -615,7 +616,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength
 !
         call rawread_32bit_f                                            &
@@ -641,7 +642,7 @@
       subroutine read_1d_vector_b(iflag_swap, num, real_dat, ierr)
 !
       integer(kind = kint), intent(in) :: iflag_swap
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -652,7 +653,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte =  ilength * kreal
 !
         call rawread_64bit_f(iflag_swap, lbyte, real_dat(ist+1), ierr)
@@ -677,7 +678,8 @@
       subroutine read_2d_vector_b(iflag_swap, n1, n2, real_dat, ierr)
 !
       integer(kind = kint), intent(in) :: iflag_swap
-      integer(kind = kint), intent(in) :: n1, n2
+      integer(kind = kint_gl), intent(in) :: n1
+      integer(kind = kint), intent(in) :: n2
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)
       integer(kind = kint), intent(inout) :: ierr
 !
