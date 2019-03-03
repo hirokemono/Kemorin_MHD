@@ -225,9 +225,11 @@
       use zlib_cvt_ascii_ele_connect
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod, numdir
-      integer(kind=kint), intent(inout) :: idx(nnod, numdir)
+      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: numdir
+      integer(kind = kint), intent(inout) :: idx(nnod, numdir)
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -249,7 +251,8 @@
       call alloc_zip_buffer(zbuf)
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
-      call infleate_1d_global_address(nnod, numdir, idx, zbuf)
+      num64 = nnod
+      call infleate_1d_global_address(num64, numdir, idx, zbuf)
 !
       end subroutine gz_mpi_read_1d_gl_address
 !
@@ -264,12 +267,14 @@
       integer(kind=kint), intent(in) :: nnod, numdir
       integer(kind=kint), intent(in) :: idx(nnod, numdir)
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       call gz_mpi_write_num_of_data(IO_param, nnod)
 !
-      call defleate_1d_global_address(nnod, numdir, idx, zbuf)
+      num64 = nnod
+      call defleate_1d_global_address(num64, numdir, idx, zbuf)
 !
       call gz_mpi_write_stack_over_domain(IO_param, zbuf%ilen_gzipped)
 !

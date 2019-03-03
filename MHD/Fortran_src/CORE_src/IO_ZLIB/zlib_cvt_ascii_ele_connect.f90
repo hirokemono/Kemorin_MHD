@@ -40,10 +40,10 @@
       subroutine defleate_ele_connect                                   &
      &         (nele, nnod_4_ele, id_global, ie, zbuf)
 !
-      integer(kind=kint), intent(in) :: nele
-      integer(kind=kint), intent(in) :: nnod_4_ele
-      integer(kind=kint_gl), intent(in) :: id_global(nele)
-      integer(kind=kint), intent(in) :: ie(nele,nnod_4_ele)
+      integer(kind = kint_gl), intent(in) :: nele
+      integer(kind = kint), intent(in) :: nnod_4_ele
+      integer(kind = kint_gl), intent(in) :: id_global(nele)
+      integer(kind = kint), intent(in) :: ie(nele,nnod_4_ele)
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -122,10 +122,10 @@
       subroutine infleate_ele_connect                                   &
      &         (nele, nnod_4_ele, id_global, ie, zbuf)
 !
-      integer(kind=kint), intent(in) :: nele
-      integer(kind=kint), intent(in) :: nnod_4_ele
-      integer(kind=kint_gl), intent(inout) :: id_global(nele)
-      integer(kind=kint), intent(inout) :: ie(nele, nnod_4_ele)
+      integer(kind = kint_gl), intent(in) :: nele
+      integer(kind = kint), intent(in) :: nnod_4_ele
+      integer(kind = kint_gl), intent(inout) :: id_global(nele)
+      integer(kind = kint), intent(inout) :: ie(nele, nnod_4_ele)
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: ie_tmp(nnod_4_ele)
@@ -208,9 +208,9 @@
 !
       subroutine defleate_ele_int_list(nele, ncomp, ivect, zbuf)
 !
-      integer(kind=kint), intent(in) :: nele
-      integer(kind=kint), intent(in) :: ncomp
-      integer(kind=kint), intent(in) :: ivect(nele,ncomp)
+      integer(kind = kint_gl), intent(in) :: nele
+      integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint), intent(in) :: ivect(nele,ncomp)
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -281,9 +281,9 @@
 !
       subroutine infleate_ele_int_list(nele, ncomp, ivect, zbuf)
 !
-      integer(kind=kint), intent(in) :: nele
-      integer(kind=kint), intent(in) :: ncomp
-      integer(kind=kint), intent(inout) :: ivect(nele, ncomp)
+      integer(kind = kint_gl), intent(in) :: nele
+      integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint), intent(inout) :: ivect(nele, ncomp)
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint) :: ie_tmp(ncomp)
@@ -361,8 +361,9 @@
 !
       subroutine defleate_1d_global_address(nnod, numdir, idx, zbuf)
 !
-      integer(kind=kint), intent(in) :: nnod, numdir
-      integer(kind=kint), intent(in) :: idx(nnod, numdir)
+      integer(kind = kint_gl), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: numdir
+      integer(kind = kint), intent(in) :: idx(nnod, numdir)
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -409,8 +410,9 @@
 !
       subroutine infleate_1d_global_address(nnod, numdir, idx, zbuf)
 !
-      integer(kind=kint), intent(in) :: nnod, numdir
-      integer(kind=kint), intent(inout) :: idx(nnod, numdir)
+      integer(kind = kint_gl), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: numdir
+      integer(kind = kint), intent(inout) :: idx(nnod, numdir)
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint) :: idx_tmp(numdir)

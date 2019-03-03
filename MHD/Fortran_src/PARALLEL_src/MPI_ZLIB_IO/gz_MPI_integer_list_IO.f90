@@ -50,6 +50,7 @@
       integer(kind=kint_gl), intent(inout) :: id_global(nele)
       integer(kind=kint), intent(inout) :: ie(nele, nnod_4_ele)
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -71,8 +72,9 @@
       call alloc_zip_buffer(zbuf)
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
+      num64 = nele
       call infleate_ele_connect                                         &
-     &   (nele, nnod_4_ele, id_global, ie, zbuf)
+     &   (num64, nnod_4_ele, id_global, ie, zbuf)
 !
       end subroutine gz_mpi_read_ele_connect
 !
@@ -126,6 +128,7 @@
       integer(kind=kint), intent(inout) :: ivect(nele, ncomp)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint_gl) :: num64
 !
 !
       call read_int8_stack_textline                                     &
@@ -146,7 +149,8 @@
       call alloc_zip_buffer(zbuf)
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
-      call infleate_ele_int_list(nele, ncomp, ivect, zbuf)
+      num64 = nele
+      call infleate_ele_int_list(num64, ncomp, ivect, zbuf)
 !
       end subroutine gz_mpi_read_int_list
 !
@@ -165,9 +169,11 @@
       integer(kind=kint), intent(in) :: ie(nele,nnod_4_ele)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint_gl) :: num64
 !
 !
-      call defleate_ele_connect(nele, nnod_4_ele, id_global, ie, zbuf)
+      num64 = nele
+      call defleate_ele_connect(num64, nnod_4_ele, id_global, ie, zbuf)
 !
       call gz_mpi_write_stack_over_domain(IO_param, zbuf%ilen_gzipped)
 !
@@ -223,13 +229,16 @@
       use zlib_cvt_ascii_ele_connect
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nele, ncomp
-      integer(kind=kint), intent(in) :: ivect(nele,ncomp)
+      integer(kind = kint), intent(in) :: nele
+      integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint), intent(in) :: ivect(nele,ncomp)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint_gl) :: num64
 !
 !
-      call defleate_ele_int_list(nele, ncomp, ivect, zbuf)
+      num64 = nele
+      call defleate_ele_int_list(num64, ncomp, ivect, zbuf)
 !
       call gz_mpi_write_stack_over_domain(IO_param, zbuf%ilen_gzipped)
 !
