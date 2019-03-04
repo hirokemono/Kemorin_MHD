@@ -44,7 +44,7 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint), intent(in) :: nnod
-      integer(kind = kint_gl), intent(inout) :: id_r_global(nnod)
+      integer(kind = kint), intent(inout) :: id_r_global(nnod)
       real(kind = kreal), intent(inout) :: rr(nnod)
 !
       integer(kind = kint_gl) :: nnod64
