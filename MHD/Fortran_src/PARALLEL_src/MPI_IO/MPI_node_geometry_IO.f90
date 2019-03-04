@@ -31,6 +31,7 @@
       use t_geometry_data
       use t_read_mesh_data
       use t_surf_edge_IO
+      use MPI_position_IO
       use MPI_vectors_IO
 !
       implicit none
@@ -46,11 +47,15 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(node_data), intent(in) :: nod_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call mpi_write_num_of_data(IO_param, nod_IO%internal_node)
+      call mpi_write_num_of_data(IO_param, nod_IO%numnod)
 !
+      num64 = nod_IO%numnod
       call mpi_write_node_position(IO_param,                            &
-     &    nod_IO%numnod, ithree, nod_IO%inod_global, nod_IO%xx)
+     &    num64, ithree, nod_IO%inod_global, nod_IO%xx)
 !
       end subroutine mpi_write_geometry_info
 !
@@ -105,11 +110,14 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(node_data), intent(inout) :: nod_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call alloc_node_geometry_base(nod_IO)
 !
+      num64 = nod_IO%numnod
       call mpi_read_node_position(IO_param,                             &
-     &    nod_IO%numnod, n_vector, nod_IO%inod_global, nod_IO%xx)
+     &    num64, n_vector, nod_IO%inod_global, nod_IO%xx)
 !
       end subroutine mpi_read_geometry_info
 !

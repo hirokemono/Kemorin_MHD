@@ -28,12 +28,10 @@
       use m_sph_modes_grid_labels
       use MPI_domain_data_IO
       use MPI_ascii_data_IO
-      use MPI_vectors_IO
+      use MPI_position_IO
 !
       implicit none
 !
-      integer(kind = kint_gl), allocatable :: idx_gl_tmp(:)
-      private :: idx_gl_tmp
       private :: mpi_read_1d_gl_address, mpi_write_1d_gl_address
 !
 ! -----------------------------------------------------------------------
@@ -57,17 +55,12 @@
       call mpi_skip_read(IO_param, len(hd_rgrid()))
       call mpi_read_num_of_data(IO_param, sph_IO%ist_sph(1))
       call mpi_read_num_of_data(IO_param, sph_IO%ied_sph(1))
-      call mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(1))
 !
+      call mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(1))
       call alloc_idx_sph_1d1_IO(sph_IO)
 !
-      allocate(idx_gl_tmp(sph_IO%nidx_sph(1)))
-      call mpi_read_node_position(IO_param,                             &
-     &   sph_IO%nidx_sph(1), sph_IO%ncomp_table_1d(1),                  &
-     &   idx_gl_tmp, sph_IO%r_gl_1)
-      sph_IO%idx_gl_1(1:sph_IO%nidx_sph(1))                             &
-     &       = int(idx_gl_tmp(1:sph_IO%nidx_sph(1)))
-      deallocate(idx_gl_tmp)
+      call mpi_read_radial_position(IO_param,                           &
+     &    sph_IO%nidx_sph(1), sph_IO%idx_gl_1, sph_IO%r_gl_1)
 !
 !
       call mpi_skip_read(IO_param, len(hd_tgrid()))
@@ -110,18 +103,12 @@
       call mpi_skip_read(IO_param, len(hd_rgrid()))
       call mpi_read_num_of_data(IO_param, sph_IO%ist_sph(1))
       call mpi_read_num_of_data(IO_param, sph_IO%ied_sph(1))
-      call mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(1))
 !
+      call mpi_read_num_of_data(IO_param, sph_IO%nidx_sph(1))
       call alloc_idx_sph_1d1_IO(sph_IO)
 !
-      allocate(idx_gl_tmp(sph_IO%nidx_sph(1)))
-      call mpi_read_node_position(IO_param,                             &
-     &   sph_IO%nidx_sph(1), sph_IO%ncomp_table_1d(1),                  &
-     &   idx_gl_tmp, sph_IO%r_gl_1)
-!
-      sph_IO%idx_gl_1(1:sph_IO%nidx_sph(1))                             &
-     &       = int(idx_gl_tmp(1:sph_IO%nidx_sph(1)))
-      deallocate(idx_gl_tmp)
+      call mpi_read_radial_position(IO_param,                             &
+     &   sph_IO%nidx_sph(1), sph_IO%idx_gl_1, sph_IO%r_gl_1)
 !
 !
       call mpi_skip_read(IO_param, len(hd_jmode()))
@@ -151,12 +138,9 @@
       call mpi_write_num_of_data(IO_param, sph_IO%ist_sph(1))
       call mpi_write_num_of_data(IO_param, sph_IO%ied_sph(1))
 !
-      allocate(idx_gl_tmp(sph_IO%nidx_sph(1)))
-      idx_gl_tmp(1:sph_IO%nidx_sph(1))                                  &
-     &       =  sph_IO%idx_gl_1(1:sph_IO%nidx_sph(1))
-      call mpi_write_node_position(IO_param,                            &
-     &   sph_IO%nidx_sph(1), ione, idx_gl_tmp, sph_IO%r_gl_1)
-      deallocate(idx_gl_tmp)
+      call mpi_write_num_of_data(IO_param, sph_IO%nidx_sph(1))
+      call mpi_write_radial_position(IO_param,                          &
+     &    sph_IO%nidx_sph(1), sph_IO%idx_gl_1, sph_IO%r_gl_1)
 !
 !
       call mpi_write_charahead                                          &
@@ -196,13 +180,9 @@
       call mpi_write_num_of_data(IO_param, sph_IO%ist_sph(1))
       call mpi_write_num_of_data(IO_param, sph_IO%ied_sph(1))
 !
-      allocate(idx_gl_tmp(sph_IO%nidx_sph(1)))
-      idx_gl_tmp(1:sph_IO%nidx_sph(1))                                  &
-     &       =  sph_IO%idx_gl_1(1:sph_IO%nidx_sph(1))
-      call mpi_write_node_position(IO_param,                            &
-     &    sph_IO%nidx_sph(1), sph_IO%ncomp_table_1d(1),                 &
-     &    idx_gl_tmp, sph_IO%r_gl_1)
-      deallocate(idx_gl_tmp)
+      call mpi_write_num_of_data(IO_param, sph_IO%nidx_sph(1))
+      call mpi_write_radial_position(IO_param,                            &
+     &    sph_IO%nidx_sph(1), sph_IO%idx_gl_1, sph_IO%r_gl_1)
 !
 !
       call mpi_write_charahead                                          &
