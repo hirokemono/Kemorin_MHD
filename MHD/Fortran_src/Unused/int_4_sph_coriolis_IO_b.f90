@@ -4,7 +4,7 @@
 !     Written by H. Matsui on March, 2010
 !
 !!      subroutine write_int_4_sph_coriolis_b
-      subroutine read_int_4_sph_coriolis_b(ierr)
+!!      subroutine read_int_4_sph_coriolis_b(ierr)
 !
       module int_4_sph_coriolis_IO_b
 !
