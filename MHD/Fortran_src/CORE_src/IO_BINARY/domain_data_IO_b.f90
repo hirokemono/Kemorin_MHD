@@ -48,6 +48,7 @@
       type(communication_table), intent(inout) :: comm_IO
 !
       integer(kind = kint) :: irank_read
+      integer(kind = kint_gl) :: num64
 !
 !
       bin_flags%ierr_IO = 0
@@ -66,8 +67,9 @@
 !
       call alloc_neighbouring_id(comm_IO)
 !
+      num64 = comm_IO%num_neib
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    comm_IO%num_neib, comm_IO%id_neib, bin_flags%ierr_IO)
+     &    num64, comm_IO%id_neib, bin_flags%ierr_IO)
 !
       end subroutine read_domain_info_b
 !
@@ -79,19 +81,22 @@
       type(file_IO_flags), intent(inout) :: bin_flags
       type(communication_table), intent(inout) :: comm_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call alloc_import_num(comm_IO)
       if (comm_IO%num_neib .gt. 0) then
 !
+        num64 = comm_IO%num_neib
         call read_integer_stack_b(bin_flags%iflag_bin_swap,             &
-     &      comm_IO%num_neib, comm_IO%istack_import,                    &
+     &      num64, comm_IO%istack_import,                               &
      &      comm_IO%ntot_import, bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
 !
         call alloc_import_item(comm_IO)
+        num64 = comm_IO%ntot_import
         call read_mul_integer_b(bin_flags%iflag_bin_swap,               &
-     &      comm_IO%ntot_import, comm_IO%item_import,                   &
-     &      bin_flags%ierr_IO)
+     &      num64, comm_IO%item_import, bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
       else
         comm_IO%ntot_import = 0
@@ -107,18 +112,21 @@
       type(file_IO_flags), intent(inout) :: bin_flags
       type(communication_table), intent(inout) :: comm_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call alloc_export_num(comm_IO)
       if (comm_IO%num_neib .gt. 0) then
+        num64 = comm_IO%num_neib
         call read_integer_stack_b(bin_flags%iflag_bin_swap,             &
-     &      comm_IO%num_neib, comm_IO%istack_export,                    &
+     &      num64, comm_IO%istack_export,                               &
      &      comm_IO%ntot_export, bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
 !
         call alloc_export_item(comm_IO)
+        num64 = comm_IO%ntot_export
         call read_mul_integer_b(bin_flags%iflag_bin_swap,               &
-     &      comm_IO%ntot_export, comm_IO%item_export,                   &
-     &      bin_flags%ierr_IO)
+     &      num64, comm_IO%item_export, bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
       else
         comm_IO%ntot_export = 0
@@ -135,11 +143,14 @@
       integer(kind = kint), intent(in) :: my_rank_IO
       type(communication_table), intent(in) :: comm_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call write_one_integer_b(my_rank_IO)
       call write_one_integer_b(comm_IO%num_neib)
 !
-      call write_mul_integer_b(comm_IO%num_neib, comm_IO%id_neib)
+      num64 = comm_IO%num_neib
+      call write_mul_integer_b(num64, comm_IO%id_neib)
 !
       end subroutine write_domain_info_b
 !
@@ -150,11 +161,15 @@
 !
       type(communication_table), intent(in) :: comm_IO
 !
+      integer(kind = kint_gl) :: num64
 !
+!
+      num64 = comm_IO%num_neib
       call write_integer_stack_b                                        &
-    &    (comm_IO%num_neib, comm_IO%istack_import)
+    &    (num64, comm_IO%istack_import)
+      num64 = comm_IO%ntot_import
       call write_mul_integer_b                                          &
-    &    (comm_IO%ntot_import, comm_IO%item_import)
+    &    (num64, comm_IO%item_import)
 !
       end subroutine write_import_data_b
 !
@@ -164,11 +179,15 @@
 !
       type(communication_table), intent(in) :: comm_IO
 !
+      integer(kind = kint_gl) :: num64
 !
+!
+      num64 = comm_IO%num_neib
       call write_integer_stack_b                                        &
-     &   (comm_IO%num_neib, comm_IO%istack_export)
+     &   (num64, comm_IO%istack_export)
+      num64 = comm_IO%ntot_export
       call write_mul_integer_b                                          &
-     &   (comm_IO%ntot_export, comm_IO%item_export)
+     &   (num64, comm_IO%item_export)
 !
       end subroutine write_export_data_b
 !

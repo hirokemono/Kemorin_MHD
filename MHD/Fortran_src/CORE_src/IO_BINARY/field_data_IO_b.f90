@@ -71,7 +71,8 @@
       istack_merged(1) = nnod
       call write_mul_int8_b(ione64, istack_merged)
       call write_one_integer_b(num_field)
-      call write_mul_integer_b(num_field, ncomp_field)
+      num64 = num_field
+      call write_mul_integer_b(num64, ncomp_field)
 !
       call write_mul_character_b(num_field, field_name)
       num64 = nnod

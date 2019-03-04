@@ -85,6 +85,7 @@
       integer(kind=kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: nnod4
+      integer(kind = kint_gl) :: num64
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
@@ -100,8 +101,9 @@
       nnod4 = int(istack_merged(1))
       if(bin_ucdflags%ierr_IO .gt. 0) goto 99
 !
+      num64 = ucd%num_field
       call read_mul_integer_b(bin_ucdflags%iflag_bin_swap,              &
-     &    ucd%num_field, ucd%num_comp, bin_ucdflags%ierr_IO)
+     &    num64, ucd%num_comp, bin_ucdflags%ierr_IO)
       if(bin_ucdflags%ierr_IO .gt. 0) goto 99
       call read_field_data_b(bin_ucdflags%iflag_bin_swap,               &
      &    nnod4, ucd%num_field, ucd%ntot_comp,                          &
@@ -125,6 +127,7 @@
       integer(kind=kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: nnod4
+      integer(kind = kint_gl) :: num64
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
@@ -142,8 +145,9 @@
 !
       call allocate_ucd_phys_name(ucd)
 !
+      num64 = ucd%num_field
       call read_mul_integer_b(bin_ucdflags%iflag_bin_swap,              &
-     &    ucd%num_field, ucd%num_comp, bin_ucdflags%ierr_IO)
+     &    num64, ucd%num_comp, bin_ucdflags%ierr_IO)
       if(bin_ucdflags%ierr_IO .gt. 0) goto 99
 !
       call cal_istack_ucd_component(ucd)
@@ -170,6 +174,7 @@
       type(ucd_data), intent(inout) :: ucd
       integer(kind=kint), intent(inout) :: ierr
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
@@ -186,8 +191,9 @@
 !
       call allocate_ucd_phys_name(ucd)
 !
+      num64 = ucd%num_field
       call read_mul_integer_b(bin_ucdflags%iflag_bin_swap,              &
-     &    ucd%num_field, ucd%num_comp, bin_ucdflags%ierr_IO)
+     &    num64, ucd%num_comp, bin_ucdflags%ierr_IO)
 !
   99  continue
       call close_binary_file

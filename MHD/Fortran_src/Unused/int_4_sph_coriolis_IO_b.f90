@@ -34,23 +34,24 @@
       call open_write_binary_file(sph_cor_file_name)
       call write_one_integer_b(ltr_cor_IO)
 !
-      call write_mul_integer_b                                          &
-     &  ((jmax_cor_IO*itwo), jgl_kcor_IO(1,1,2))
+      num64 = jmax_cor_IO * itwo
+      call write_mul_integer_b(num64, jgl_kcor_IO(1,1,2))
 !
       num64 = jmax_cor_IO
       call write_2d_vector_b(num64, itwo, gk_cor_IO(1,1,2))
 !
-      call write_mul_integer_b                                          &
-     &   (jmax_cor_IO, jgl_lcor_IO(1,1,2))
+      call write_mul_integer_b(num64, jgl_lcor_IO(1,1,2))
       call write_2d_vector_b(num64, ione, el_cor_IO(1,1,2))
 !
       do j1 = 1, 3, 2
-        call write_mul_integer_b                                        &
-     &    ((jmax_cor_IO*ifour), jgl_kcor_IO(1,1,j1))
+        num64 = jmax_cor_IO * ifour
+        call write_mul_integer_b(num64, jgl_kcor_IO(1,1,j1))
+        num64 = jmax_cor_IO
         call write_2d_vector_b(num64, ifour, gk_cor_IO(1,1,j1))
 !
-        call write_mul_integer_b                                        &
-     &    ((jmax_cor_IO*itwo), jgl_lcor_IO(1,1,j1))
+        num64 = jmax_cor_IO * itwo
+        call write_mul_integer_b(num64, jgl_lcor_IO(1,1,j1))
+        num64 = jmax_cor_IO
         call write_2d_vector_b(num64, itwo, el_cor_IO(1,1,j1))
       end do
       call close_binary_file
@@ -85,8 +86,9 @@
 !
       call allocate_int_sph_cor_IO
 !
+      num64 = jmax_cor_IO*itwo
       call read_mul_integer_b(bin_corflags%iflag_bin_swap,              &
-     &   (jmax_cor_IO*itwo), jgl_kcor_IO(1,1,2), bin_corflags%ierr_IO)
+     &    num64, jgl_kcor_IO(1,1,2), bin_corflags%ierr_IO)
       if(bin_corflags%ierr_IO .gt. 0) go to 99
 !
       num64 = jmax_cor_IO
@@ -95,7 +97,7 @@
       if(bin_corflags%ierr_IO .gt. 0) go to 99
 !
       call read_mul_integer_b(bin_corflags%iflag_bin_swap,              &
-     &    jmax_cor_IO, jgl_lcor_IO(1,1,2), bin_corflags%ierr_IO)
+     &    num64, jgl_lcor_IO(1,1,2), bin_corflags%ierr_IO)
       if(bin_corflags%ierr_IO .gt. 0) go to 99
 !
       call read_2d_vector_b(bin_corflags%iflag_bin_swap,                &
@@ -104,21 +106,25 @@
 !*
 !
       do j1 = 1, 3, 2
+        num64 = jmax_cor_IO * ifour
         call read_mul_integer_b(bin_corflags%iflag_bin_swap,            &
-     &     (jmax_cor_IO*ifour), jgl_kcor_IO(1,1,j1),                    &
+     &      num64, jgl_kcor_IO(1,1,j1),                                 &
      &      bin_corflags%ierr_IO)
         if(bin_corflags%ierr_IO .gt. 0) go to 99
 !
+        num64 = jmax_cor_IO
         call read_2d_vector_b(bin_corflags%iflag_bin_swap,              &
      &      num64, ifour, gk_cor_IO(1,1,j1),                            &
      &      bin_corflags%ierr_IO)
         if(bin_corflags%ierr_IO .gt. 0) goto 99
 !
+        num64 = jmax_cor_IO * itwo
         call read_mul_integer_b(bin_corflags%iflag_bin_swap,            &
-     &     (jmax_cor_IO*itwo), jgl_lcor_IO(1,1,j1),                     &
+     &      num64, jgl_lcor_IO(1,1,j1),                                 &
      &      bin_corflags%ierr_IO)
         if(bin_corflags%ierr_IO .gt. 0) go to 99
 !
+        num64 = jmax_cor_IO
         call read_2d_vector_b(bin_corflags%iflag_bin_swap,              &
      &      num64, itwo, el_cor_IO(1,1,j1), bin_corflags%ierr_IO)
         if(bin_corflags%ierr_IO .gt. 0) goto 99

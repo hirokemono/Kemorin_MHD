@@ -83,6 +83,7 @@
       type(field_IO), intent(inout) :: fld_IO
       integer(kind = kint), intent(inout) :: ierr
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
@@ -96,9 +97,10 @@
      &    istack_merged, fld_IO%num_field_IO, bin_fldflags%ierr_IO)
       if(bin_fldflags%ierr_IO .gt. 0) goto 99
 !
+      num64 = fld_IO%num_field_IO
       call read_mul_integer_b(bin_fldflags%iflag_bin_swap,              &
-     &    fld_IO%num_field_IO, fld_IO%num_comp_IO,                      &
-      &   bin_fldflags%ierr_IO)
+     &    num64, fld_IO%num_comp_IO,                                    &
+    &   bin_fldflags%ierr_IO)
       if(bin_fldflags%ierr_IO .gt. 0) goto 99
 !
       call read_field_data_b(bin_fldflags%iflag_bin_swap,               &
@@ -177,6 +179,7 @@
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
@@ -188,8 +191,9 @@
 !
       call alloc_phys_name_IO(fld_IO)
 !
+      num64 = fld_IO%num_field_IO
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    fld_IO%num_field_IO, fld_IO%num_comp_IO, bin_flags%ierr_IO)
+     &    num64, fld_IO%num_comp_IO, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       call cal_istack_phys_comp_IO(fld_IO)

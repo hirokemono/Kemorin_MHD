@@ -54,13 +54,14 @@
       call write_one_integer_b(ele_IO%numele)
 !
       num64 = ele_IO%numele
-      call write_mul_integer_b(ele_IO%numele, ele_IO%elmtyp)
+      call write_mul_integer_b(num64, ele_IO%elmtyp)
       call write_mul_int8_b(num64, ele_IO%iele_global)
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))
       do i = 1, ele_IO%numele
+        num64 = ele_IO%nodelm(i)
         ie_tmp(1:ele_IO%nodelm(i)) = ele_IO%ie(i,1:ele_IO%nodelm(i))
-        call write_mul_integer_b(ele_IO%nodelm(i), ie_tmp)
+        call write_mul_integer_b(num64, ie_tmp)
       end do
       deallocate(ie_tmp)
 !
@@ -74,13 +75,13 @@
 !
       type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
-      integer(kind = kint) :: num
+      integer(kind = kint_gl) :: num64
 !
 !
-      num = sfed_IO%nsf_4_ele * sfed_IO%nsurf_in_ele
+      num64 = sfed_IO%nsf_4_ele * sfed_IO%nsurf_in_ele
       call write_one_integer_b(sfed_IO%nsf_4_ele)
       call write_one_integer_b(sfed_IO%nsurf_in_ele)
-      call write_mul_integer_b(num, sfed_IO%isf_for_ele)
+      call write_mul_integer_b(num64, sfed_IO%isf_for_ele)
 !
       end subroutine write_surface_4_element_b
 !
@@ -92,13 +93,13 @@
 !
       type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
-      integer(kind = kint) :: num
+      integer(kind = kint_gl) :: num64
 !
 !
-      num = sfed_IO%ned_4_ele * sfed_IO%nedge_in_ele
+      num64 = sfed_IO%ned_4_ele * sfed_IO%nedge_in_ele
       call write_one_integer_b(sfed_IO%ned_4_ele)
       call write_one_integer_b(sfed_IO%nedge_in_ele)
-      call write_mul_integer_b(num, sfed_IO%iedge_for_ele)
+      call write_mul_integer_b(num64, sfed_IO%iedge_for_ele)
 !
       end subroutine write_edge_4_element_b
 !
@@ -134,8 +135,9 @@
 !
 !
       call alloc_element_types(ele_IO)
+      num64 = ele_IO%numele
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    ele_IO%numele, ele_IO%elmtyp, bin_flags%ierr_IO)
+     &    num64, ele_IO%elmtyp, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       ele_IO%nnod_4_ele = 0
@@ -154,8 +156,9 @@
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))
       do i = 1, ele_IO%numele
+        num64 = ele_IO%nodelm(i)
         call read_mul_integer_b(bin_flags%iflag_bin_swap,               &
-     &      ele_IO%nodelm(i), ie_tmp, bin_flags%ierr_IO)
+     &      num64, ie_tmp, bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
 !
         ele_IO%ie(i,1:ele_IO%nodelm(i)) = ie_tmp(1:ele_IO%nodelm(i))
@@ -173,7 +176,8 @@
       type(file_IO_flags), intent(inout) :: bin_flags
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
-      integer(kind = kint) :: num, nsf_4_ele, nsurf_in_ele
+      integer(kind = kint_gl) :: num64
+      integer(kind = kint) :: nsf_4_ele, nsurf_in_ele
 !
       call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
      &    nsf_4_ele, bin_flags%ierr_IO)
@@ -186,9 +190,9 @@
       call alloc_surface_connect_IO                                     &
      &   (nsf_4_ele, nsurf_in_ele, sfed_IO)
 !
-      num = sfed_IO%nsf_4_ele * sfed_IO%nsurf_in_ele
+      num64 = sfed_IO%nsf_4_ele * sfed_IO%nsurf_in_ele
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    num, sfed_IO%isf_for_ele, bin_flags%ierr_IO)
+     &    num64, sfed_IO%isf_for_ele, bin_flags%ierr_IO)
 !
       end subroutine read_surface_4_element_b
 !
@@ -201,7 +205,9 @@
       type(file_IO_flags), intent(inout) :: bin_flags
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
-      integer(kind = kint) :: num, ned_4_ele, nedge_in_ele
+      integer(kind = kint_gl) :: num64
+      integer(kind = kint) :: ned_4_ele, nedge_in_ele
+!
 !
       call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
      &    ned_4_ele, bin_flags%ierr_IO)
@@ -213,9 +219,9 @@
 !
       call alloc_edge_connect_IO(ned_4_ele, nedge_in_ele, sfed_IO)
 !
-      num = sfed_IO%ned_4_ele * sfed_IO%nedge_in_ele
+      num64 = sfed_IO%ned_4_ele * sfed_IO%nedge_in_ele
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    num, sfed_IO%iedge_for_ele, bin_flags%ierr_IO)
+     &    num64, sfed_IO%iedge_for_ele, bin_flags%ierr_IO)
 !
       end subroutine read_edge_4_element_b
 !

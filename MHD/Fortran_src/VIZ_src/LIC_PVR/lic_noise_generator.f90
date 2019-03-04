@@ -46,13 +46,15 @@
       integer(kind = kint) :: d_size, i
       character(len=kchara) :: file_name
       character(len=1) :: noise_char(1)
+      integer(kind = kint_gl), parameter :: ithree64 = 3
 !
 !
       file_name = add_null_character(filename)
       call open_rd_rawfile(file_name, ierr)
       if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-        call read_mul_integer_b(iflag_endian, 3, n_data_size, ierr)
+        call read_mul_integer_b                                         &
+     &     (iflag_endian, ithree64, n_data_size, ierr)
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
 !        write(*,*) d_size
         allocate(n_node_data(d_size))
@@ -84,6 +86,7 @@
       integer(kind = kint) :: d_size
       character(len=kchara) :: file_name
       character(len=1) :: one_chara(1)
+      integer(kind = kint_gl), parameter :: ithree64 = 3
 !
 !
       if(my_rank .eq. 0) then
@@ -91,7 +94,8 @@
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-          call read_mul_integer_b(iendian_KEEP, 3, n_data_size, ierr)
+          call read_mul_integer_b                                       &
+     &       (iendian_KEEP, ithree64, n_data_size, ierr)
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
           write(*,*) 'd_size', d_size, n_data_size(1:3)
 !
@@ -108,7 +112,8 @@
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-          call read_mul_integer_b(iflag_endian, 3, n_data_size, ierr)
+          call read_mul_integer_b                                       &
+     &       (iflag_endian, ithree64, n_data_size, ierr)
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
           write(*,*) 'd_size again', d_size, n_data_size(1:3)
 !

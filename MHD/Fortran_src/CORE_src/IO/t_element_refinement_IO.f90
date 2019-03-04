@@ -153,21 +153,24 @@
 !
       type(ele_refine_IO_type), intent(in) :: e_ref_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call write_one_integer_b(e_ref_IO%max_refine_level)
       call write_one_integer_b(e_ref_IO%nele_ref)
       call write_one_integer_b(e_ref_IO%nele_org)
 !
+      num64 = e_ref_IO%nele_ref
       call write_mul_integer_b                                          &
-     &    (e_ref_IO%nele_ref, e_ref_IO%iele_gl_new)
+     &    (num64, e_ref_IO%iele_gl_new)
       call write_mul_integer_b                                          &
-     &   (e_ref_IO%nele_ref, e_ref_IO%ilevel_refine)
+     &   (num64, e_ref_IO%ilevel_refine)
       call write_mul_integer_b                                          &
-     &   (e_ref_IO%nele_ref, e_ref_IO%iflag_refine_ele)
+     &   (num64, e_ref_IO%iflag_refine_ele)
       call write_mul_integer_b                                          &
-     &   (e_ref_IO%nele_ref, e_ref_IO%iele_gl_org)
+     &   (num64, e_ref_IO%iele_gl_org)
       call write_mul_integer_b                                          &
-     &   (e_ref_IO%nele_ref, e_ref_IO%icou_gl_org)
+     &   (num64, e_ref_IO%icou_gl_org)
 !
       end subroutine write_element_refine_data_b
 !
@@ -179,6 +182,8 @@
 !
       type(file_IO_flags), intent(inout) :: bin_flags
       type(ele_refine_IO_type), intent(inout) :: e_ref_IO
+!
+      integer(kind = kint_gl) :: num64
 !
 !
       call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
@@ -195,25 +200,25 @@
 !
       call alloc_element_refine_IO(e_ref_IO)
 !
+      num64 = e_ref_IO%nele_ref
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    e_ref_IO%nele_ref, e_ref_IO%iele_gl_new, bin_flags%ierr_IO)
+     &    num64, e_ref_IO%iele_gl_new, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    e_ref_IO%nele_ref, e_ref_IO%ilevel_refine, bin_flags%ierr_IO)
+     &    num64, e_ref_IO%ilevel_refine, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    e_ref_IO%nele_ref, e_ref_IO%iflag_refine_ele,                 &
-     &    bin_flags%ierr_IO)
+     &    num64, e_ref_IO%iflag_refine_ele, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    e_ref_IO%nele_ref, e_ref_IO%iele_gl_org, bin_flags%ierr_IO)
+     &    num64, e_ref_IO%iele_gl_org, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    e_ref_IO%nele_ref, e_ref_IO%icou_gl_org, bin_flags%ierr_IO)
+     &    num64, e_ref_IO%icou_gl_org, bin_flags%ierr_IO)
 !
       end subroutine read_element_refine_data_b
 !

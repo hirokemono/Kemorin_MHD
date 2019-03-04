@@ -41,6 +41,8 @@
       type(file_IO_flags), intent(inout) :: bin_flags
       type(group_data), intent(inout) :: group_IO
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
      &    group_IO%num_grp, bin_flags%ierr_IO)
@@ -49,8 +51,9 @@
       call allocate_grp_type_num(group_IO)
 !
       if (group_IO%num_grp .gt. 0) then
+        num64 = group_IO%num_grp
         call read_integer_stack_b(bin_flags%iflag_bin_swap,             &
-     &      group_IO%num_grp, group_IO%istack_grp, group_IO%num_item,   &
+     &      num64, group_IO%istack_grp, group_IO%num_item,              &
      &      bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
 !
@@ -60,8 +63,9 @@
 !
         call allocate_grp_type_item(group_IO)
 !
+        num64 = group_IO%num_item
         call read_mul_integer_b(bin_flags%iflag_bin_swap,               &
-     &      group_IO%num_item, group_IO%item_grp, bin_flags%ierr_IO)
+     &      num64, group_IO%item_grp, bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
       else
         group_IO%num_item = 0
@@ -77,7 +81,7 @@
       type(file_IO_flags), intent(inout) :: bin_flags
       type(surface_group_data), intent(inout) :: surf_grp_IO
 !
-      integer(kind = kint) :: nitem
+      integer(kind = kint_gl) :: num64
 !
 !
       call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
@@ -87,8 +91,9 @@
       call allocate_sf_grp_type_num(surf_grp_IO)
 !
       if (surf_grp_IO%num_grp .gt. 0) then
+        num64 = surf_grp_IO%num_grp
         call read_integer_stack_b(bin_flags%iflag_bin_swap,             &
-     &      surf_grp_IO%num_grp, surf_grp_IO%istack_grp,                &
+     &      num64, surf_grp_IO%istack_grp,                              &
      &      surf_grp_IO%num_item, bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
 !
@@ -99,9 +104,9 @@
 !
         call allocate_sf_grp_type_item(surf_grp_IO)
 !
-        nitem = 2 * surf_grp_IO%num_item
+        num64 = 2 * surf_grp_IO%num_item
         call read_mul_integer_b(bin_flags%iflag_bin_swap,               &
-     &      nitem, surf_grp_IO%item_sf_grp, bin_flags%ierr_IO)
+     &      num64, surf_grp_IO%item_sf_grp, bin_flags%ierr_IO)
         if(bin_flags%ierr_IO .gt. 0) return
       else
         call allocate_sf_grp_type_item(surf_grp_IO)
@@ -116,12 +121,16 @@
 !
       type(group_data), intent(in) :: group_IO
 !
+      integer(kind = kint_gl) :: num64
 !
+!
+      num64 = group_IO%num_grp
       call write_one_integer_b(group_IO%num_grp)
-      call write_integer_stack_b(group_IO%num_grp, group_IO%istack_grp)
+      call write_integer_stack_b(num64, group_IO%istack_grp)
       call write_mul_character_b                                        &
      &   (group_IO%num_grp, group_IO%grp_name)
-      call write_mul_integer_b(group_IO%num_item, group_IO%item_grp)
+      num64 = group_IO%num_item
+      call write_mul_integer_b(num64, group_IO%item_grp)
 !
       end subroutine write_grp_data_b
 !
@@ -131,17 +140,18 @@
 !
       type(surface_group_data), intent(in) :: surf_grp_IO
 !
-      integer(kind = kint) :: nitem
+      integer(kind = kint_gl) :: num64
 !
 !
+      num64 = surf_grp_IO%num_grp
       call write_one_integer_b(surf_grp_IO%num_grp)
       call write_integer_stack_b                                        &
-     &   (surf_grp_IO%num_grp, surf_grp_IO%istack_grp)
+     &   (num64, surf_grp_IO%istack_grp)
       call write_mul_character_b                                        &
      &   (surf_grp_IO%num_grp, surf_grp_IO%grp_name)
 !
-      nitem = 2 * surf_grp_IO%num_item
-      call write_mul_integer_b(nitem, surf_grp_IO%item_sf_grp)
+      num64 = 2 * surf_grp_IO%num_item
+      call write_mul_integer_b(num64, surf_grp_IO%item_sf_grp)
 !
       end subroutine write_surf_grp_data_b
 !

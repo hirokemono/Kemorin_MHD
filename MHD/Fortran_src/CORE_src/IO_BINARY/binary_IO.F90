@@ -235,7 +235,7 @@
 !
       subroutine write_mul_integer_b(num, int_dat)
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
       integer(kind = kint) :: lbyte, ilength, ist
@@ -262,7 +262,7 @@
 !
       subroutine write_integer_stack_b(num, istack)
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: istack(0:num)
 !
 !
@@ -516,7 +516,7 @@
       subroutine read_mul_integer_b(iflag_swap, num, int_dat, ierr)
 !
       integer(kind = kint), intent(in) :: iflag_swap
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -553,7 +553,7 @@
      &         (iflag_swap, num, istack, ntot, ierr)
 !
       integer(kind = kint), intent(in) :: iflag_swap
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: ntot
       integer(kind = kint), intent(inout) :: istack(0:num)
       integer(kind = kint), intent(inout) :: ierr

@@ -256,10 +256,8 @@
       call write_one_integer_b(nnod_near_1nod_weight)
       call write_one_integer_b(i_exp_level_1nod_weight)
 !
-      call write_mul_integer_b                                          &
-     &   (nnod_near_1nod_weight, inod_near_1nod_weight)
-!
       num64 = nnod_near_1nod_weight
+      call write_mul_integer_b(num64, inod_near_1nod_weight)
       call write_1d_vector_b(num64, filter_1nod)
       call write_1d_vector_b(num64, weight_1nod)
 !
@@ -281,12 +279,11 @@
      &    i_exp_level_1nod_weight, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
+      num64 = nnod_near_1nod_weight
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    nnod_near_1nod_weight, inod_near_1nod_weight,                 &
-     &    bin_flags%ierr_IO)
+     &    num64, inod_near_1nod_weight, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
-      num64 = nnod_near_1nod_weight
       call read_1d_vector_b(bin_flags%iflag_bin_swap,                   &
      &    num64, filter_1nod, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return

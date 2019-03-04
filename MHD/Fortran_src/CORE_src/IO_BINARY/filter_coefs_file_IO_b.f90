@@ -171,6 +171,8 @@
       type(file_IO_flags), intent(inout) :: bin_flags
       type(filter_coefficients_type), intent(inout) :: IO_filters
 !
+      integer(kind = kint_gl) :: num64
+!
 !
       call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
      &    IO_filters%ngrp_node, bin_flags%ierr_IO)
@@ -178,8 +180,9 @@
 !
       call alloc_num_filtering_comb(ione, IO_filters)
 !
+      num64 = IO_filters%ngrp_node
       call read_integer_stack_b(bin_flags%iflag_bin_swap,               &
-     &    IO_filters%ngrp_node, IO_filters%istack_node,                 &
+     &    num64, IO_filters%istack_node,                                &
      &    IO_filters%ntot_nod, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
@@ -193,13 +196,14 @@
 !
       call alloc_inod_filter_comb(IO_filters)
 !
+      num64 = IO_filters%ntot_nod
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    IO_filters%ntot_nod, IO_filters%inod_filter,                  &
+     &    num64, IO_filters%inod_filter,                                &
      &    bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       call read_integer_stack_b(bin_flags%iflag_bin_swap,               &
-     &    IO_filters%ntot_nod, IO_filters%istack_near_nod,              &
+     &    num64, IO_filters%istack_near_nod,                            &
      &    IO_filters%ntot_near_nod, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
@@ -224,8 +228,9 @@
       call alloc_3d_filter_comb(IO_filters)
       call alloc_3d_filter_func(IO_filters)
 !
+      num64 = IO_filters%ntot_near_nod
       call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    IO_filters%ntot_near_nod, IO_filters%inod_near,               &
+     &    num64, IO_filters%inod_near,                                  &
      &    bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
@@ -248,17 +253,21 @@
 !
       type(filter_coefficients_type), intent(in) :: IO_filters
 !
+      integer(kind = kint_gl) :: num64
 !
+!
+      num64 = IO_filters%ngrp_node
       call write_one_integer_b(IO_filters%ngrp_node)
       call write_integer_stack_b                                        &
-     &   (IO_filters%ngrp_node, IO_filters%istack_node)
+     &   (num64, IO_filters%istack_node)
       call write_mul_character_b                                        &
      &   (IO_filters%ngrp_node, IO_filters%group_name)
 !
+      num64 = IO_filters%ntot_nod
       call write_mul_integer_b                                          &
-     &   (IO_filters%ntot_nod, IO_filters%inod_filter)
+     &   (num64, IO_filters%inod_filter)
       call write_integer_stack_b                                        &
-     &   (IO_filters%ntot_nod, IO_filters%istack_near_nod)
+     &   (num64, IO_filters%istack_near_nod)
 !
       end subroutine write_3d_filter_stack_b
 !
@@ -273,10 +282,8 @@
       integer(kind = kint_gl) :: num64
 !
 !
-      call write_mul_integer_b                                          &
-     &  (IO_filters%ntot_near_nod, IO_filters%inod_near)
-!
       num64 = IO_filters%ntot_near_nod
+      call write_mul_integer_b(num64, IO_filters%inod_near)
       call write_1d_vector_b(num64, IO_filters%func)
       call write_1d_vector_b(num64, IO_filters%weight)
 !
