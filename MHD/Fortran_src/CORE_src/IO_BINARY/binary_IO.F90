@@ -145,14 +145,21 @@
 !
       subroutine seek_forward_binary_file(len_byte)
 !
-      integer(kind = kint), intent(in) :: len_byte
-      integer(kind = kint) :: len_result
+      integer(kind = kint_gl), intent(in) :: len_byte
 !
+      integer(kind = kint) :: len_result, ilength
       character(len=1) :: tmpchara(len_byte)
+      integer(kind = kint_gl) :: ist
 !
 !
 #ifdef ZLIB_IO
-      call rawseek_go_fwd_f(len_byte, len_result)
+      ist = 0
+      do
+        ilength = int(min((len_byte - ist), huge_25))
+        call rawseek_go_fwd_f(ilength, len_result)
+        ist = ist + ilength
+        if(ist .ge. len_byte) exit
+      end do
 #else
       read(id_binary) tmpchara(1:len_byte)
 #endif
@@ -305,7 +312,7 @@
 !
       subroutine write_mul_one_character_b(num, chara_dat)
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       character(len=1), intent(in) :: chara_dat(num)
 !
       integer(kind = kint) :: lbyte, ilength, ist
@@ -605,7 +612,7 @@
 !
       subroutine read_mul_one_character_b(num, chara_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       character(len=1), intent(inout) :: chara_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !

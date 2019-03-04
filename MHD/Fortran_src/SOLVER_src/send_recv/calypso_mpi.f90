@@ -17,6 +17,7 @@
 !!      subroutine calypso_mpi_bcast_real(buffer, count, root)
 !!      subroutine calypso_mpi_bcast_int(buffer, count, root)
 !!      subroutine calypso_mpi_bcast_int8(buffer, count, root)
+!!      subroutine calypso_mpi_bcast_character(buffer, count, root)
 !!@endverbatim
 !!
 !!@n @param  icode       error code
@@ -209,6 +210,29 @@
       end do
 !
       end subroutine calypso_mpi_bcast_int8
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_bcast_character(buffer, count, root)
+!
+      integer(kind = kint), intent(in) :: root
+      integer(kind = kint_gl), intent(in) :: count
+      character(len = 1), intent(inout) :: buffer(count)
+!
+      integer(kind = kint_gl) :: ist
+      integer(kind = kint) :: ilen_in
+!
+!
+      ist = 0
+      do
+        ilen_in = int(min(count-ist, huge_25))
+        call MPI_BCAST(buffer(ist+1), ilen_in, CALYPSO_CHARACTER,       &
+     &      root, CALYPSO_COMM, ierr_MPI)
+        ist = ist + ilen_in
+        if(ist .ge. count) exit
+      end do
+!
+      end subroutine calypso_mpi_bcast_character
 !
 !  ---------------------------------------------------------------------
 !

@@ -46,6 +46,7 @@
       integer(kind = kint) :: d_size, i
       character(len=kchara) :: file_name
       character(len=1) :: noise_char(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl), parameter :: ithree64 = 3
 !
 !
@@ -61,7 +62,7 @@
         do i=1, d_size
 !  change 0 to any level to initial complex noise node tree
           call alloc_noise_node(n_node_data(i), 2, 0)
-          call read_mul_one_character_b(ione, noise_char, ierr)
+          call read_mul_one_character_b(ione64, noise_char, ierr)
           n_node_data(i)%n_value = ichar(noise_char(1)) / 255.0
 !          write(*,*) n_node_data(i)%n_value
         end do
@@ -83,9 +84,10 @@
       character(len=1), allocatable, intent(inout) :: n_raw_data(:)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: d_size
+      integer(kind = kint_gl) :: d_size
       character(len=kchara) :: file_name
       character(len=1) :: one_chara(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl), parameter :: ithree64 = 3
 !
 !
@@ -101,9 +103,9 @@
 !
           iflag_endian = iendian_KEEP
           call seek_forward_binary_file(d_size-1)
-          call read_mul_one_character_b(ione, one_chara, ierr)
+          call read_mul_one_character_b(ione64, one_chara, ierr)
           if(ierr .gt. 0) iflag_endian = iendian_FLIP
-          call read_mul_one_character_b(ione, one_chara, ierr)
+          call read_mul_one_character_b(ione64, one_chara, ierr)
           if(ierr .eq. 0) iflag_endian = iendian_FLIP
           write(*,*) 'iflag_endian', iflag_endian
         end if
@@ -130,11 +132,10 @@
       call MPI_BCAST(n_data_size, ithree,                               &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(d_size, ione,                                      &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_GLOBAL_INT, izero, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) allocate( n_raw_data(d_size))
-      call MPI_BCAST(n_raw_data, d_size,                                &
-     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character(n_raw_data(1), d_size, izero)
 !
       end subroutine import_noise_ary
 !
@@ -150,7 +151,7 @@
       integer(kind = kint), intent(in) :: n_data_size(3)
       character(len=1), allocatable, intent(inout) :: n_grad_data(:)
       integer(kind = kint), intent(inout) :: ierr
-      integer(kind = kint) :: d_size
+      integer(kind = kint_gl) :: d_size
       character(len=kchara) :: file_name
 !
 !
@@ -168,11 +169,10 @@
       call MPI_BCAST(ierr, ione,                                        &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(d_size, ione,                                      &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_GLOBAL_INT, izero, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) allocate( n_grad_data(d_size))
-      call MPI_BCAST(n_grad_data, d_size,                               &
-     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character(n_grad_data(1), d_size, izero)
 !
       end subroutine import_noise_grad_ary
 !

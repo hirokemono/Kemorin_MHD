@@ -173,7 +173,8 @@
 !
       type(file_IO_flags), intent(inout) :: bin_flags
 !
-      integer(kind = kint) :: inod, ioffset
+      integer(kind = kint) :: inod
+      integer(kind = kint_gl) :: ioffset
 !
 !
       nmax_nod_near_all_w = 0
