@@ -51,6 +51,7 @@
 !
 !
       call gz_mpi_write_num_of_data(IO_param, nod_IO%internal_node)
+      call gz_mpi_write_num_of_data(IO_param, nod_IO%numnod)
 !
       call gz_mpi_write_node_position(IO_param,                         &
      &    nod_IO%numnod, ithree, nod_IO%inod_global, nod_IO%xx)

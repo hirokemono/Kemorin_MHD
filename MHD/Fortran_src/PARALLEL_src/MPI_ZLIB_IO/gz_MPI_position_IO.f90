@@ -40,16 +40,26 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_radial_position                            &
-     &         (IO_param, nnod, id_global, rr)
+     &         (IO_param, nnod, id_r_global, rr)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod
-      integer(kind=kint_gl), intent(inout) :: id_global(nnod)
-      real(kind=kreal), intent(inout) :: rr(nnod)
+      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint_gl), intent(inout) :: id_r_global(nnod)
+      real(kind = kreal), intent(inout) :: rr(nnod)
 !
+      integer(kind = kint_gl) :: nnod64
+      integer(kind = kint_gl), allocatable :: idx_gl_tmp(:)
 !
+      nnod64 = nnod
+      allocate(idx_gl_tmp(nnod64))
       call gz_mpi_read_node_position                                    &
-     &   (IO_param, nnod, ione, id_global, rr(1))
+     &   (IO_param, nnod64, ione, idx_gl_tmp, rr)
+!
+!$omp parallel workshare
+      id_r_global(1:nnod64) = int(idx_gl_tmp(1:nnod64))
+!$omp end parallel workshare
+!
+      deallocate(idx_gl_tmp)
 !
       end subroutine gz_mpi_read_radial_position
 !
@@ -61,13 +71,12 @@
       use zlib_convert_ascii_vector
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint_gl), intent(in) :: nnod
       integer(kind = kint), intent(in) :: numdir
       integer(kind = kint_gl), intent(inout) :: id_global(nnod)
       real(kind=kreal), intent(inout) :: xx(nnod, numdir)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: nnod64
 !
 !
       call read_int8_stack_textline                                     &
@@ -88,9 +97,7 @@
       call alloc_zip_buffer(zbuf)
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
-      nnod64 = nnod
-      call infleate_node_position                                       &
-     &   (nnod64, numdir, id_global, xx, zbuf)
+      call infleate_node_position(nnod, numdir, id_global, xx, zbuf)
 !
       end subroutine gz_mpi_read_node_position
 !
@@ -98,15 +105,25 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_radial_position                           &
-     &         (IO_param, nnod, id_global, rr)
+     &         (IO_param, nnod, id_r_global, rr)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod
-      integer(kind=kint_gl), intent(in) :: id_global(nnod)
-      real(kind=kreal), intent(in) :: rr(nnod)
+      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: id_r_global(nnod)
+      real(kind = kreal), intent(in) :: rr(nnod)
+!
+      integer(kind = kint_gl) :: nnod64
+      integer(kind = kint_gl), allocatable :: idx_gl_tmp(:)
+!
+      nnod64 = nnod
+      allocate(idx_gl_tmp(nnod64))
+!$omp parallel workshare
+      idx_gl_tmp(1:nnod64) = id_r_global(1:nnod64)
+!$omp end parallel workshare
 !
       call gz_mpi_write_node_position                                   &
-     &         (IO_param, nnod, ione, id_global, rr(1))
+     &   (IO_param, nnod64, ione, idx_gl_tmp, rr(1))
+      deallocate(idx_gl_tmp)
 !
       end subroutine gz_mpi_write_radial_position
 !
@@ -118,19 +135,15 @@
       use zlib_convert_ascii_vector
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod
-      integer(kind=kint), intent(in) :: numdir
-      integer(kind=kint_gl), intent(in) :: id_global(nnod)
-      real(kind=kreal), intent(in) :: xx(nnod, numdir)
+      integer(kind = kint_gl), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: numdir
+      integer(kind = kint_gl), intent(in) :: id_global(nnod)
+      real(kind = kreal), intent(in) :: xx(nnod, numdir)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: nnod64
 !
 !
-      call gz_mpi_write_num_of_data(IO_param, nnod)
-!
-      nnod64 = nnod
-      call defleate_node_position(nnod64, numdir, id_global, xx, zbuf)
+      call defleate_node_position(nnod, numdir, id_global, xx, zbuf)
 !
       call gz_mpi_write_stack_over_domain(IO_param, zbuf%ilen_gzipped)
 !
