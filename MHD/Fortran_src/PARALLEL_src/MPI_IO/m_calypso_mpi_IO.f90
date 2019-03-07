@@ -181,7 +181,7 @@
       ist = 0
       l8_byte = ioffset
       do
-        ilen_in = int(min((nline-ist), huge_25/ilength))
+        ilen_in = int(min((nline-ist), huge_20/ilength))
         call MPI_FILE_SEEK                                              &
      &     (id_mpi_file, l8_byte, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_mpi_file, textbuf(ist+1),                &
@@ -239,7 +239,7 @@
       ist = 0
       l8_byte = ioffset
       do
-        ilen_in = int(min(num-ist, huge_25))
+        ilen_in = int(min(num-ist, huge_20))
         call MPI_FILE_SEEK                                              &
      &     (id_mpi_file, l8_byte, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_mpi_file, int_vector(ist+1), ilen_in,    &
@@ -413,7 +413,7 @@
       ist = 0
       l8_byte = ioffset
       do
-        ilen_in = int(min((nline-ist), huge_25/ilength))
+        ilen_in = int(min((nline-ist), huge_20/ilength))
         call MPI_FILE_SEEK                                              &
      &     (id_mpi_file, l8_byte, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_mpi_file, textbuf(ist+1),                 &
@@ -478,7 +478,7 @@
       ist = 0
       l8_byte = ioffset
       do
-        ilen_in = int(min(num-ist, huge_25))
+        ilen_in = int(min(num-ist, huge_20))
         call MPI_FILE_SEEK                                              &
      &     (id_mpi_file, l8_byte, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_mpi_file, int_vector(ist+1), ilen_in,     &
@@ -547,7 +547,7 @@
 !
       ist = 0
       do
-        ilen_in = int(min(zbuf%ilen_gzipped-ist, huge_25))
+        ilen_in = int(min(zbuf%ilen_gzipped-ist, huge_20))
         call MPI_FILE_SEEK                                              &
      &     (id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_mpi_file, zbuf%gzip_buf(ist+1), ilen_in, &
@@ -575,7 +575,7 @@
 !
       ist = 0
       do
-        ilen_in = int(min(zbuf%ilen_gz-ist, huge_25))
+        ilen_in = int(min(zbuf%ilen_gz-ist, huge_20))
         call MPI_FILE_SEEK                                              &
      &     (id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_mpi_file, zbuf%gzip_buf(ist+1), ilen_in,  &

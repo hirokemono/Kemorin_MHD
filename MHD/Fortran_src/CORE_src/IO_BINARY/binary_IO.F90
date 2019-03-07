@@ -155,7 +155,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = int(min((len_byte - ist), huge_25))
+        ilength = int(min((len_byte - ist), huge_20))
         call rawseek_go_fwd_f(ilength, len_result)
         ist = ist + ilength
         if(ist .ge. len_byte) exit
@@ -252,7 +252,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = int(min((num - ist), huge_25))
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength *  kint
 !
         call rawwrite_f(lbyte, int_dat(ist+1), ierr_IO)
@@ -534,7 +534,7 @@
 #ifdef ZLIB_IO
       ist = 0
       do
-        ilength = int(min((num - ist), huge_25))
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kint
 !
         call rawread_32bit_f(iflag_swap, lbyte, int_dat(ist+1), ierr)

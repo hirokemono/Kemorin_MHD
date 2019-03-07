@@ -33,7 +33,6 @@
       use t_calypso_mpi_IO_param
       use t_buffer_4_gzip
       use gz_MPI_binary_head_IO
-      use MPI_binery_IO_4_buffers
       use defleat_4_merged_arrays
 !
       type(buffer_4_gzip), allocatable, private :: zbufs(:)

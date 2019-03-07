@@ -161,7 +161,7 @@
       ierr = 0
       ist = 0
       do
-        ilength = min((num - ist), huge_25)
+        ilength = min((num - ist), huge_20)
         lbyte = ilength * kint
 !
         call gzwrite_f(lbyte, int_dat(ist+1), ierr)
@@ -337,7 +337,7 @@
       ierr = 0
       ist = 0
       do
-        ilength = min((num - ist), huge_25)
+        ilength = min((num - ist), huge_20)
         lbyte = ilength * kint
 !
         call gzread_32bit_f(iflag_swap, lbyte, int_dat(ist+1), ierr_IO)

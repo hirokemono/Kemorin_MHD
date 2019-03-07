@@ -156,7 +156,7 @@
 !
       ist = 0
       do
-        ilen_in = int(min(count-ist, huge_25))
+        ilen_in = int(min(count-ist, huge_20))
         call MPI_BCAST(buffer(ist+1), ilen_in, CALYPSO_REAL,            &
      &      root, CALYPSO_COMM, ierr_MPI)
         ist = ist + ilen_in
@@ -179,7 +179,7 @@
 !
       ist = 0
       do
-        ilen_in = int(min(count-ist, huge_25))
+        ilen_in = int(min(count-ist, huge_20))
         call MPI_BCAST(buffer(ist+1), ilen_in, CALYPSO_INTEGER,         &
      &      root, CALYPSO_COMM, ierr_MPI)
         ist = ist + ilen_in
@@ -202,7 +202,7 @@
 !
       ist = 0
       do
-        ilen_in = int(min(count-ist, huge_25))
+        ilen_in = int(min(count-ist, huge_20))
         call MPI_BCAST(buffer(ist+1), ilen_in, CALYPSO_GLOBAL_INT,      &
      &      root, CALYPSO_COMM, ierr_MPI)
         ist = ist + ilen_in
@@ -225,7 +225,7 @@
 !
       ist = 0
       do
-        ilen_in = int(min(count-ist, huge_25))
+        ilen_in = int(min(count-ist, huge_20))
         call MPI_BCAST(buffer(ist+1), ilen_in, CALYPSO_CHARACTER,       &
      &      root, CALYPSO_COMM, ierr_MPI)
         ist = ist + ilen_in
