@@ -39,6 +39,7 @@
       real(kind = kreal), intent(inout) :: dimage(4,ntot_pix)
 !
       real(kind = kreal) :: value
+      real(kind = kreal) :: rhgt
       integer(kind = kint) :: i, j, k
       integer(kind = kint) :: ist, jst, ied, jed
       integer(kind = kint) :: start_px(2)
@@ -53,10 +54,10 @@
         value = (c_minmax(2)-c_minmax(1))                             &
      &           * dble(k-1) / dble(num_of_scale-1) + c_minmax(1)
 !
+        rhgt = dble(jed-jst) * dble(k-1) / dble(num_of_scale-1)
         start_px(1) = ist + BAR_WIDTH + ithree
-        start_px(2) = jst  - 12 * iscale / 2                            &
-     &             + int( dble(jed-jst) * dble(k-1)                     &
-     &             / dble(num_of_scale-1))
+        start_px(2) = jst - 12 * iscale / 2                             &
+     &                    + int(rhgt, KIND(start_px(1)))
 !
         write(numeric,'(1pe9.2)') value
         call  set_numeric_labels(numeric, iscale, start_px,             &
@@ -82,6 +83,7 @@
       real(kind = kreal), intent(inout) :: dimage(4,ntot_pix)
 !
       real(kind = kreal) :: zero_rgb
+      real(kind = kreal) :: rhgt
       integer(kind = kint) :: i, k
       integer(kind = kint) :: ist, jst, ied, jed
       integer(kind = kint) :: start_px(2)
@@ -94,8 +96,9 @@
 !
       zero_rgb = (zero - c_minmax(1)) / (c_minmax(2) - c_minmax(1))
 !
+      rhgt = zero_rgb * dble(jed-jst) + dble(jst)
       start_px(1) = ist + BAR_WIDTH + ithree
-      start_px(2) = int( zero_rgb * dble(jed-jst) + dble(jst) )
+      start_px(2) = int(rhgt, KIND(rhgt))
 !
       write(numeric,'(1pe9.2)') zero
       call set_numeric_labels(numeric, iscale, start_px,                &

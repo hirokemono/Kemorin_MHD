@@ -49,15 +49,14 @@
 !
       real(kind = kreal) :: xx_tmp(numdir)
       integer(kind = kint_gl) ::  i, ist
-      integer(kind = kint) :: nline
 !
-      integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: nline, ilen_tmp
+      integer :: ilen_line, ilen_used, ilen_in
 !
 !
       ilen_line = len_int8_and_vector_textline(numdir)
       zbuf%ilen_gz                                                      &
-     &      = int(dble(nnod*ilen_line)*1.01+24,kind(zbuf%ilen_gz ))
+     &      = int(dble(nnod*ilen_line)*1.01+24,KIND(zbuf%ilen_gz ))
       call alloc_zip_buffer(zbuf)
 !
       if(nnod .le. 0) then
@@ -132,10 +131,9 @@
 !
       real(kind = kreal) :: xx_tmp(numdir)
       integer(kind = kint_gl) :: i, ist
-      integer(kind = kint) :: nline
 !
-      integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: nline, ilen_tmp
+      integer :: ilen_line, ilen_used, ilen_in
 !
       character(len=1), allocatable :: textbuf(:)
 !
@@ -224,10 +222,10 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       real(kind = kreal) :: v1(ndir)
-      integer(kind = kint_gl) :: i, ist, nline
+      integer(kind = kint_gl) :: i, ist
 !
-      integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: nline, ilen_tmp
+      integer :: ilen_line, ilen_used, ilen_in
 !
 !
       ilen_line = len_vector_textline(ndir)
@@ -304,9 +302,9 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: i, ist
-      integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
-      integer(kind = kint) :: nline
+!
+      integer :: nline, ilen_tmp
+      integer :: ilen_line, ilen_used, ilen_in
 !
       character(len=1), allocatable :: textbuf(:)
 !

@@ -14,6 +14,7 @@
 !!      subroutine get_one_line_from_gz_f
 !!      subroutine skip_gz_comment_int(int_input)
 !!      subroutine skip_gz_comment_int2(int_input, int_input2)
+!!      subroutine skip_gz_comment_int8_int(i8_input, int_input2)
 !!      subroutine skip_gz_comment_real(real_input)
 !!      subroutine skip_gz_comment_real2(real_input, real_input2)
 !!      subroutine skip_gz_comment_chara(chara_input)
@@ -162,6 +163,19 @@
       read(textbuf,*) int_input, int_input2
 !
       end subroutine skip_gz_comment_int2
+!
+!------------------------------------------------------------------
+!
+      subroutine skip_gz_comment_int8_int(i8_input, int_input2)
+!
+      integer(kind = kint_gl), intent(inout) :: i8_input
+      integer(kind = kint), intent(inout) :: int_input2
+!
+!
+      call skip_gz_comment_get_nword
+      read(textbuf,*) i8_input, int_input2
+!
+      end subroutine skip_gz_comment_int8_int
 !
 !------------------------------------------------------------------
 !

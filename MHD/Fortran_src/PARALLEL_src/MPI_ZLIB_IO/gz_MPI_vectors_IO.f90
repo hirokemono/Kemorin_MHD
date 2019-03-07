@@ -38,7 +38,7 @@
       subroutine gz_mpi_read_scalar(IO_param, nnod, scalar)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod
+      integer(kind=kint_gl), intent(in) :: nnod
       real(kind=kreal), intent(inout) :: scalar(nnod)
 !
 !
@@ -53,10 +53,10 @@
       use zlib_convert_ascii_vector
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod, numdir
+      integer(kind=kint_gl), intent(in) :: nnod
+      integer(kind=kint), intent(in) :: numdir
       real(kind=kreal), intent(inout) :: vect(nnod, numdir)
 !
-      integer(kind = kint_gl) :: nnod64
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -78,8 +78,7 @@
       call alloc_zip_buffer(zbuf)
       call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
-      nnod64 = nnod
-      call infleate_vector_txt(ione, nnod64, numdir, vect, zbuf)
+      call infleate_vector_txt(ione, nnod, numdir, vect, zbuf)
 !
       end subroutine gz_mpi_read_vector
 !
@@ -89,7 +88,7 @@
       subroutine gz_mpi_write_scalar(IO_param, nnod, scalar)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod
+      integer(kind=kint_gl), intent(in) :: nnod
       real(kind=kreal), intent(in) :: scalar(nnod)
 !
 !
@@ -104,19 +103,14 @@
       use zlib_convert_ascii_vector
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod
+      integer(kind=kint_gl), intent(in) :: nnod
       integer(kind=kint), intent(in) :: numdir
       real(kind=kreal), intent(in) :: vect(nnod, numdir)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
-      integer(kind = kint_gl) :: nnod64
 !
-!
-      call gz_mpi_write_num_of_data(IO_param, nnod)
-!
-      nnod64 = nnod
-      call defleate_vector_txt(ione, nnod64, numdir, vect, zbuf)
+      call defleate_vector_txt(ione, nnod, numdir, vect, zbuf)
 !
       call gz_mpi_write_stack_over_domain(IO_param, zbuf%ilen_gzipped)
 !

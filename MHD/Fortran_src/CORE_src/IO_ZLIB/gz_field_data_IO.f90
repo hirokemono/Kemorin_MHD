@@ -10,9 +10,11 @@
 !!      subroutine read_gz_step_data                                    &
 !!     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !!
-!!      subroutine read_gz_field_data(nnod, num_field, ntot_comp,       &
+!!      subroutine write_gz_field_data(nnod64, num_field, ntot_comp,    &
 !!     &          ncomp_field, field_name, field_data)
-!!      subroutine read_gz_field_vect(nnod, ndir, vector)
+!!      subroutine read_gz_field_data(nnod64, num_field, ntot_comp,     &
+!!     &          ncomp_field, field_name, field_data)
+!!
 !
       module gz_field_data_IO
 !
@@ -21,7 +23,7 @@
 !
       implicit none
 !
-      private :: write_gz_field_vect
+      private :: write_gz_field_vect, read_gz_field_vect
 !
 !------------------------------------------------------------------
 !
@@ -79,14 +81,14 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine write_gz_field_data(nnod, num_field, ntot_comp,        &
+      subroutine write_gz_field_data(nnod64, num_field, ntot_comp,      &
      &          ncomp_field, field_name, field_data)
 !
-      integer(kind=kint), intent(in)  :: nnod
+      integer(kind=kint_gl), intent(in)  :: nnod64
       integer(kind=kint), intent(in)  :: num_field, ntot_comp
       integer(kind=kint), intent(in)  :: ncomp_field(num_field)
       character(len=kchara), intent(in) :: field_name(num_field)
-      real(kind = kreal), intent(in) :: field_data(nnod,ntot_comp)
+      real(kind = kreal), intent(in) :: field_data(nnod64,ntot_comp)
 !
       integer(kind=kint)  :: i_fld, icou
       character(len=kchara) :: fmt_txt
@@ -96,7 +98,7 @@
      &          '! number of field and component', char(0)
       call gz_write_textbuf_w_lf
       write(textbuf,'(2i16,a1)')                                        &
-     &           nnod, num_field, char(0)
+     &           nnod64, num_field, char(0)
       call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a1,i3,a6)') '(', num_field, 'i4,a1)'
@@ -107,7 +109,7 @@
       do i_fld = 1, num_field
 !
         call write_gz_field_vect(field_name(i_fld),                     &
-     &      nnod, ncomp_field(i_fld), field_data(1,icou+1) )
+     &      nnod64, ncomp_field(i_fld), field_data(1,icou+1) )
         icou = icou + ncomp_field(i_fld)
       end do
 !
@@ -115,14 +117,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_field_data(nnod, num_field, ntot_comp,         &
+      subroutine read_gz_field_data(nnod64, num_field, ntot_comp,       &
      &          ncomp_field, field_name, field_data)
 !
-      integer(kind=kint), intent(in)  :: nnod
+      integer(kind=kint_gl), intent(in)  :: nnod64
       integer(kind=kint), intent(in)  :: num_field, ntot_comp
       integer(kind=kint), intent(in)  :: ncomp_field(num_field)
       character(len=kchara), intent(inout) :: field_name(num_field)
-      real(kind = kreal), intent(inout) :: field_data(nnod,ntot_comp)
+      real(kind = kreal), intent(inout) :: field_data(nnod64,ntot_comp)
 !
       integer(kind=kint)  :: i_fld, icou
 !
@@ -132,7 +134,7 @@
 !
         call skip_gz_comment_chara(field_name(i_fld))
         call read_gz_field_vect                                         &
-     &     (nnod, ncomp_field(i_fld), field_data(1,icou) )
+     &     (nnod64, ncomp_field(i_fld), field_data(1,icou) )
         icou = icou + ncomp_field(i_fld)
       end do
 !
@@ -141,13 +143,14 @@
 !------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine write_gz_field_vect(d_name, nnod, ndir, vector)
+      subroutine write_gz_field_vect(d_name, nnod64, ndir, vector)
 !
-      integer(kind=kint), intent(in) :: nnod, ndir
-      real(kind = kreal), intent(in) :: vector(nnod,ndir)
+      integer(kind=kint_gl), intent(in) :: nnod64
+      integer(kind=kint), intent(in) :: ndir
+      real(kind = kreal), intent(in) :: vector(nnod64,ndir)
       character(len=kchara), intent(in) :: d_name
 !
-      integer(kind=kint)  :: i
+      integer(kind = kint_gl)  :: i
       character(len=kchara) :: fmt_txt
 !
 !
@@ -155,7 +158,7 @@
       call gz_write_textbuf_w_lf
 !
       write(fmt_txt,'(a1,i3,a16)') '(', ndir, '(1pE25.15e3),a1)'
-      do i = 1, nnod
+      do i = 1, nnod64
         write(textbuf,fmt_txt) vector(i,1:ndir), char(0)
         call gz_write_textbuf_w_lf
       end do
@@ -164,15 +167,16 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_field_vect(nnod, ndir, vector)
+      subroutine read_gz_field_vect(nnod64, ndir, vector)
 !
-      integer(kind=kint), intent(in) :: nnod, ndir
-      real(kind = kreal), intent(inout) :: vector(nnod,ndir)
+      integer(kind=kint_gl), intent(in) :: nnod64
+      integer(kind=kint), intent(in) :: ndir
+      real(kind = kreal), intent(inout) :: vector(nnod64,ndir)
 !
-      integer(kind=kint)  :: i
+      integer(kind=kint_gl)  :: i
 !
 !
-      do i = 1, nnod
+      do i = 1, nnod64
         call get_one_line_from_gz_f
         read(textbuf,*)  vector(i,1:ndir)
       end do

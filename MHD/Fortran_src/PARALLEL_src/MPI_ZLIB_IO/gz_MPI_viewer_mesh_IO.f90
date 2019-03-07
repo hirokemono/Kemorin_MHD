@@ -49,18 +49,16 @@
       use zlib_convert_ascii_vector
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod, numdir
+      integer(kind=kint_gl), intent(in) :: nnod
+      integer(kind=kint), intent(in) :: numdir
       integer(kind=kint_gl), intent(in) :: id_global(nnod)
       real(kind=kreal), intent(in) :: xx(nnod, numdir)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: nnod64
-!
 !
 !      call gz_mpi_write_num_of_data(IO_param, nnod)
 !
-      nnod64 = nnod
-      call defleate_node_position(nnod64, numdir, id_global, xx, zbuf)
+      call defleate_node_position(nnod, numdir, id_global, xx, zbuf)
 !
       call gz_mpi_write_stack_over_domain(IO_param, zbuf%ilen_gzipped)
 !

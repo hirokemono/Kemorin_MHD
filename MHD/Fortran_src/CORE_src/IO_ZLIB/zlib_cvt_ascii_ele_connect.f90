@@ -133,7 +133,7 @@
       integer(kind = kint) :: nline
 !
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
       character(len=1), allocatable :: textbuf(:)
 !
@@ -218,7 +218,7 @@
       integer(kind = kint) :: nline
       integer(kind = kint) :: ie_tmp(ncomp)
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
 !
       ilen_line = len_multi_int_textline(ncomp)
@@ -291,7 +291,7 @@
       integer(kind = kint) :: nline
 !
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
       character(len=1), allocatable :: textbuf(:)
 !
@@ -369,8 +369,7 @@
 !
       integer(kind = kint_gl) :: i
       integer(kind = kint) :: idx_tmp(numdir)
-      integer(kind = kint) :: ilen_line
-      integer(kind = kint) :: ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
 !
       ilen_line = len_multi_int_textline(numdir)
@@ -418,7 +417,7 @@
       integer(kind = kint) :: idx_tmp(numdir)
       integer(kind = kint_gl) :: i
 !
-      integer(kind = kint) :: ilen_line, ilen_in, ilen_used
+      integer :: ilen_line, ilen_in, ilen_used
 !
       character(len=1), allocatable :: textbuf(:)
 !

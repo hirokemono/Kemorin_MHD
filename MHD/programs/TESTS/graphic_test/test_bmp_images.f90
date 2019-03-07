@@ -67,8 +67,8 @@
 !      RGB pixel data array
        character(len=1) :: rgb(3,ihpixf,jvpixf)
 !* local
+       integer :: ired, igre, iblu
        real(kind = kreal) :: red, gre, blu
-       integer(kind = kint) ired, igre, iblu
        real(kind = kreal) ::  ofst
        parameter(ofst = 0.7D+00)
        integer(kind = kint) i, j, itmp

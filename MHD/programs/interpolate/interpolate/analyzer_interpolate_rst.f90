@@ -96,7 +96,8 @@
 !
 !     --------------------- 
 !
-      i_step = int(t_ITP%init_d%i_time_step / t_ITP%rst_step%increment)
+      i_step = int(t_ITP%init_d%i_time_step / t_ITP%rst_step%increment, &
+     &        KIND(i_step))
       call sel_read_alloc_step_FEM_file(ndomain_org, izero, i_step,     &
      &    org_fst_IO, itp_time_IO, itp_fld_IO)
       if (iflag_debug.eq.1) write(*,*) 'init_field_name_by_restart'
@@ -136,9 +137,11 @@
 !
 !
       i_rst_start                                                       &
-     &      = int(t_ITP%init_d%i_time_step / t_ITP%rst_step%increment)
+     &    = int(t_ITP%init_d%i_time_step / t_ITP%rst_step%increment,    &
+     &     KIND(i_rst_start))
       i_rst_end                                                         &
-     &      = int(t_ITP%finish_d%i_end_step / t_ITP%rst_step%increment)
+     &    = int(t_ITP%finish_d%i_end_step / t_ITP%rst_step%increment,   &
+     &     KIND(i_rst_end))
       do i_step = i_rst_start, i_rst_end
 !
         if (my_rank .lt. ndomain_org) then

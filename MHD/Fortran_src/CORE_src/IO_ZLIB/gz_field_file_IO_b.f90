@@ -146,7 +146,7 @@
      &    fld_IO%num_field_IO, fld_IO%num_comp_IO, gz_fldflags%ierr_IO)
       if(gz_fldflags%ierr_IO .gt. 0) goto 99
 !
-      fld_IO%nnod_IO = int(istack_merged(1))
+      fld_IO%nnod_IO = int(istack_merged(1),KIND(fld_IO%nnod_IO))
       call cal_istack_phys_comp_IO(fld_IO)
       call alloc_phys_data_IO(fld_IO)
       call gz_read_field_data_b(gz_fldflags%iflag_bin_swap,             &

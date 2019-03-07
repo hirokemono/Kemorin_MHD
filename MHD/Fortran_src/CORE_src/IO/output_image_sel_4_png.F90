@@ -38,7 +38,7 @@
       integer(kind = kint), intent(in) :: npix_x, npix_y
       character(len=kchara), intent(in) :: img_head
       character(len = 1), intent(in) :: cimage(3,npix_x*npix_y)
-      integer(kind = 4) :: npix4_x, npix4_y
+      integer :: npix4_x, npix4_y
 !
 !
 #ifdef PNG_OUTPUT
@@ -65,7 +65,7 @@
       integer(kind = kint), intent(in) :: npix_x, npix_y
       character(len=kchara), intent(in) :: img_head
       character(len = 1), intent(in) :: cimage(4,npix_x*npix_y)
-      integer(kind = 4) :: npix4_x, npix4_y
+      integer :: npix4_x, npix4_y
 !
 !
 #ifdef PNG_OUTPUT

@@ -100,10 +100,10 @@
       end if
 !
 #ifdef _OPENMP
-      if (int(np_smp) .lt. omp_get_max_threads()) then
+      np_smp4 = int(np_smp)
+      if(np_smp4 .lt. omp_get_max_threads()) then
         if(my_rank .eq. 0) write(*,*)                                   &
      &               'Number of SMP threads is chenged to', np_smp
-        np_smp4 = int(np_smp)
         call omp_set_num_threads(np_smp4)
       end if
 #endif

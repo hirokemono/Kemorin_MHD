@@ -108,9 +108,10 @@
 !
       type(ucd_data), intent(inout) :: ucd_med
 !
-      integer(kind = kint) :: igrp, inum, iele
-      integer(kind = kint) :: i1, i2, i3, nd
-      integer(kind = kint), allocatable :: istack_ele(:)
+      integer(kind = kint) :: igrp, nd
+      integer(kind = kint_gl) :: inum, iele
+      integer(kind = kint_gl) :: i1, i2, i3
+      integer(kind = kint_gl), allocatable :: istack_ele(:)
 !
       character(len=kchara) :: file_name, f_tmp
       type(ucd_data), allocatable :: grp_ucd(:)
@@ -128,7 +129,7 @@
 !
       istack_ele(0) = 0
       do igrp = 1, num_grp
-        istack_ele(igrp) = istack_ele(igrp-1) + int(grp_ucd(igrp)%nele)
+        istack_ele(igrp) = istack_ele(igrp-1) + grp_ucd(igrp)%nele
       end do
 !
       ucd_med%nnod_4_ele = grp_ucd(1)%nnod_4_ele
@@ -138,26 +139,26 @@
       call allocate_ucd_ele(ucd_med)
 !
       do igrp = 1, num_grp
-        do inum = 1, int(grp_ucd(igrp)%nele)
+        do inum = 1, grp_ucd(igrp)%nele
           iele = inum + istack_ele(igrp-1)
           ucd_med%iele_global(iele) = iele
           ucd_med%ie(iele,1) = 3*iele-2
           ucd_med%ie(iele,2) = 3*iele-1
           ucd_med%ie(iele,3) = 3*iele
 !
-          i1 = int(grp_ucd(igrp)%ie(inum,1))
+          i1 = grp_ucd(igrp)%ie(inum,1)
           ucd_med%inod_global(3*iele-2) = 3*iele-2
           ucd_med%xx(3*iele-2,1) = grp_ucd(igrp)%xx(i1,1)
           ucd_med%xx(3*iele-2,2) = grp_ucd(igrp)%xx(i1,2)
           ucd_med%xx(3*iele-2,3) = grp_ucd(igrp)%xx(i1,3)
 !
-          i2 = int(grp_ucd(igrp)%ie(inum,2))
+          i2 = grp_ucd(igrp)%ie(inum,2)
           ucd_med%inod_global(3*iele-1) = 3*iele-1
           ucd_med%xx(3*iele-1,1) = grp_ucd(igrp)%xx(i2,1)
           ucd_med%xx(3*iele-1,2) = grp_ucd(igrp)%xx(i2,2)
           ucd_med%xx(3*iele-1,3) = grp_ucd(igrp)%xx(i2,3)
 !
-          i3 = int(grp_ucd(igrp)%ie(inum,3))
+          i3 = grp_ucd(igrp)%ie(inum,3)
           ucd_med%inod_global(3*iele  ) = 3*iele
           ucd_med%xx(3*iele,  1) = grp_ucd(igrp)%xx(i3,1)
           ucd_med%xx(3*iele,  2) = grp_ucd(igrp)%xx(i3,2)
@@ -174,7 +175,7 @@
       ucd_med%phys_name(1:nfld) = fld_name(1:nfld)
 !
       do igrp = 1, num_grp
-        do inum = 1, int(grp_ucd(igrp)%nele)
+        do inum = 1, grp_ucd(igrp)%nele
           iele = inum + istack_ele(igrp-1)
           do nd = 1, ntot_comp
             ucd_med%d_ucd(3*iele-2,nd) = grp_data(igrp,nd)

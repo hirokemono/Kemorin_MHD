@@ -40,7 +40,7 @@
       character(len=ilength), intent(in) :: chara_dat
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint) :: ilen_in, ilen_used
+      integer :: ilen_in, ilen_used
 !
 !
       zbuf%ilen_gz = int(dble(ilength) *1.01+24, KIND(zbuf%ilen_gz))
@@ -64,7 +64,7 @@
       character(len=ilength), intent(inout) :: text
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint) :: ilen_in, ilen_used
+      integer :: ilen_in, ilen_used
 !
 !
       ilen_in = int(zbuf%ilen_gz)
@@ -86,7 +86,7 @@
       character(len=kchara), intent(inout) :: word
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint) :: ilen_in, ilen_used
+      integer :: ilen_in, ilen_used
       integer(kind = kint) :: i
 !
       character(len=1), allocatable :: textbuf(:)
@@ -125,7 +125,7 @@
       integer(kind=kint), intent(in) :: ilength
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint) :: ilen_in, ilen_used
+      integer :: ilen_in, ilen_used
       character(len=1), allocatable :: chara_dat(:)
 !
 !

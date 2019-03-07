@@ -16,7 +16,7 @@
       character(len = 1), allocatable :: rgb_chara(:,:)
       character(len = 1), allocatable :: rgba_chara(:,:)
       character(len=1024) ::  fname_img_v
-      integer(kind = 4) :: npix4_x, npix4_y
+      integer :: npix4_x, npix4_y
 !
 !
       num_pixel_x = 240

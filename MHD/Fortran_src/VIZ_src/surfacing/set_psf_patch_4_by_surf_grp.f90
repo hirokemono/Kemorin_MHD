@@ -73,7 +73,8 @@
       integer(kind = kint), intent(in) :: istack_patch_smp(0:np_smp)
 !
       integer(kind = kint_gl), intent(inout) :: iele_global(npatch_tot)
-      integer(kind = kint), intent(inout) :: ie_patch(npatch_tot,3)
+      integer(kind = kint_gl), intent(inout)                            &
+     &                        :: ie_patch(npatch_tot,num_triangle)
 !
       integer(kind = kint) :: n, i, j, inum, iele, isurf, jnum
       integer(kind = kint) :: l1, l2, l3, k1, k2, k3, i1, i2, i3
@@ -97,9 +98,9 @@
           i2 = ie(k2,iele)
           i3 = ie(k3,iele)
           iele_global(jnum) = jnum + istack_numele
-          ie_patch(jnum,1) = int(id_n_on_n(i1))
-          ie_patch(jnum,2) = int(id_n_on_n(i2))
-          ie_patch(jnum,3) = int(id_n_on_n(i3))
+          ie_patch(jnum,1) = id_n_on_n(i1)
+          ie_patch(jnum,2) = id_n_on_n(i2)
+          ie_patch(jnum,3) = id_n_on_n(i3)
         end do
 !
       end do

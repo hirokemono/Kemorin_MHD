@@ -48,6 +48,8 @@
       subroutine write_step_field_file_b                                &
      &         (file_name, my_rank, t_IO, fld_IO)
 !
+      use transfer_to_long_integers
+!
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
 !
@@ -62,8 +64,8 @@
 !
       call write_step_data_b                                            &
      &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
-      call write_field_data_b                                           &
-     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
+      call write_field_data_b(cast_long(fld_IO%nnod_IO),                &
+     &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
       call close_binary_file
@@ -75,6 +77,8 @@
 !
       subroutine read_step_field_file_b                                 &
      &         (file_name, my_rank, t_IO, fld_IO, ierr)
+!
+      use transfer_to_long_integers
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
@@ -103,8 +107,9 @@
     &   bin_fldflags%ierr_IO)
       if(bin_fldflags%ierr_IO .gt. 0) goto 99
 !
-      call read_field_data_b(bin_fldflags%iflag_bin_swap,               &
-     &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
+      call read_field_data_b                                            &
+     &   (bin_fldflags%iflag_bin_swap, cast_long(fld_IO%nnod_IO),       &
+     &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%fld_name, fld_IO%d_IO, bin_fldflags%ierr_IO)
 !
   99  continue
@@ -117,6 +122,8 @@
 !
       subroutine read_and_allocate_step_field_b                         &
      &         (file_name, my_rank, t_IO, fld_IO, ierr)
+!
+      use transfer_to_long_integers
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
@@ -136,9 +143,10 @@
 !
       call alloc_phys_data_IO(fld_IO)
 !
-      call read_field_data_b(bin_fldflags%iflag_bin_swap,               &
-     &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
-     &    fld_IO%fld_name, fld_IO%d_IO, bin_fldflags%ierr_IO)
+      call read_field_data_b                                            &
+     &   (bin_fldflags%iflag_bin_swap, cast_long(fld_IO%nnod_IO),       &
+     &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO, fld_IO%fld_name,    &
+     &    fld_IO%d_IO, bin_fldflags%ierr_IO)
 !
   99  continue
       call close_binary_file
@@ -186,7 +194,7 @@
       call read_step_data_b(bin_flags%iflag_bin_swap,                   &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt,                         &
      &    istack_merged, fld_IO%num_field_IO, bin_flags%ierr_IO)
-      fld_IO%nnod_IO = int(istack_merged(1))
+      fld_IO%nnod_IO = int(istack_merged(1), KIND(fld_IO%nnod_IO))
       if(bin_flags%ierr_IO .gt. 0) return
 !
       call alloc_phys_name_IO(fld_IO)

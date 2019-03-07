@@ -27,7 +27,7 @@
       real(kind = kreal), intent(in) :: rgba(4,num_pixel)
       character(len = 1), intent(inout) :: crgb(3,num_pixel)
       integer(kind = kint) :: i
-      integer(kind = kint) :: ir, ig, ib
+      integer :: ir, ig, ib
 !
 !$omp parallel do private(i,ir,ig,ib)
       do i = 1, num_pixel
@@ -69,7 +69,7 @@
       real(kind = kreal), intent(in) :: rgba(4,num_pixel)
       character(len = 1), intent(inout) :: crgba(4,num_pixel)
       integer(kind = kint) :: i
-      integer(kind = kint) :: ir, ig, ib, ia
+      integer :: ir, ig, ib, ia
 !
 !$omp parallel do private(i,ir,ig,ib,ia)
       do i = 1, num_pixel

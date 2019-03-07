@@ -52,20 +52,17 @@
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
-      integer(kind = kint) :: nnod4
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Write gzipped step data file: ', trim(gzip_name)
 !
       call open_wt_gzfile_f(gzip_name)
 !
-      nnod4 = int(ucd%nnod)
       call write_gz_step_data                                           &
      &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call write_gz_field_data                                          &
-     &         (nnod4, ucd%num_field, ucd%ntot_comp,                    &
-     &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
+     &   (ucd%nnod, ucd%num_field, ucd%ntot_comp,                       &
+     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
       call close_gzfile_f
 !
@@ -82,7 +79,7 @@
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
-      integer(kind = kint) :: nnod4, id_rank
+      integer(kind = kint) :: id_rank
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -92,13 +89,11 @@
 !
       call read_gz_step_data                                            &
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
-      call skip_gz_comment_int2(nnod4, ucd%num_field)
+      call skip_gz_comment_int8_int(ucd%nnod, ucd%num_field)
       call read_gz_multi_int(ucd%num_field, ucd%num_comp)
 !
-      ucd%nnod = nnod4
-      call read_gz_field_data                                           &
-     &         (nnod4, ucd%num_field, ucd%ntot_comp,                    &
-     &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
+      call read_gz_field_data(ucd%nnod, ucd%num_field, ucd%ntot_comp,   &
+     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
       call close_gzfile_f
 !
@@ -115,7 +110,7 @@
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
-      integer(kind = kint) :: nnod4, id_rank
+      integer(kind = kint) :: id_rank
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -125,8 +120,7 @@
 !
       call read_gz_step_data                                            &
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
-      call skip_gz_comment_int2(nnod4, ucd%num_field)
-      ucd%nnod = nnod4
+      call skip_gz_comment_int8_int(ucd%nnod, ucd%num_field)
 !
       call allocate_ucd_phys_name(ucd)
 !
@@ -136,8 +130,8 @@
       call allocate_ucd_phys_data(ucd)
 !
       call read_gz_field_data                                           &
-     &         (nnod4, ucd%num_field, ucd%ntot_comp,                    &
-     &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
+     &   (ucd%nnod, ucd%num_field, ucd%ntot_comp,                       &
+     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
       call close_gzfile_f
 !

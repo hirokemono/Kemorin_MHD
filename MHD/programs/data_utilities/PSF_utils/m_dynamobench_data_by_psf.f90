@@ -45,7 +45,8 @@
       real(kind = kreal), intent(in) :: time
       type(ucd_data), intent(in) :: line
 !
-      integer(kind = kint) :: k1, i1, i2, icou
+      integer(kind = kint) :: k1, icou
+      integer(kind = kint_gl) :: i1, i2
       integer(kind = kint_gl) :: iedge1
       real(kind = kreal) :: c1, c2, coef1
 !
@@ -55,20 +56,20 @@
 !
 !
       icou = 0
-      do i1 = 1, line%num_field
-        if(line%phys_name(i1) .eq. 'velocity_sph') icomp_vr = icou + 1
-        if(line%phys_name(i1) .eq. 'temperature') icomp_t =  icou + 1
-        if(line%phys_name(i1) .eq. 'magnetic_field_sph')                &
+      do k1 = 1, line%num_field
+        if(line%phys_name(k1) .eq. 'velocity_sph') icomp_vr = icou + 1
+        if(line%phys_name(k1) .eq. 'temperature') icomp_t =  icou + 1
+        if(line%phys_name(k1) .eq. 'magnetic_field_sph')                &
      &                             icomp_bt =  icou + 2
-        icou = icou + line%num_comp(i1)
+        icou = icou + line%num_comp(k1)
       end do
       icomp_vp = icomp_vr + 2
 !
 !
       icou = 0
       do iedge1 = 1, line%nele
-        i1 = int(line%ie(iedge1,1))
-        i2 = int(line%ie(iedge1,2))
+        i1 = line%ie(iedge1,1)
+        i2 = line%ie(iedge1,2)
         c1 = line%d_ucd(i1,icomp_vr)
         c2 = line%d_ucd(i2,icomp_vr)
         phi1  = atan2(line%xx(i1,2),line%xx(i1,1))

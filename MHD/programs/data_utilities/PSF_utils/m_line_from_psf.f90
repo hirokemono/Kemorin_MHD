@@ -134,7 +134,7 @@
         coef_on_edge = 0.0d0
       end if
       istack_smp(0) = 0
-      istack_smp(1) = int(line%nnod)
+      istack_smp(1) = int(line%nnod, KIND(istack_smp(0)))
 !
       call set_section_list_in_triangle(numedge_psf,                    &
      &    istack_smp(1), iedge_4_line)

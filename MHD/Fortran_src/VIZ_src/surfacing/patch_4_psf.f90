@@ -51,7 +51,7 @@
 !
       integer(kind = kint) :: ip, iele, ist, ied, inum
       integer(kind = kint) ::  i1,  i2,  i3,  i4,  i5,  i6,  i7,  i8
-      integer(kind = kint) :: mk1, mk2, mk3, mk4, mk5, mk6, mk7, mk8
+      integer :: mk1, mk2, mk3, mk4, mk5, mk6, mk7, mk8
 !
 !
 !$omp parallel do private(iele,ist,ied,inum, i1,i2,i3,i4,               &
@@ -197,7 +197,8 @@
 !
 !
       integer(kind = kint_gl), intent(inout) :: iele_global(npatch_tot)
-      integer(kind = kint), intent(inout) :: ie_patch(npatch_tot,3)
+      integer(kind = kint_gl), intent(inout)                            &
+     &                     :: ie_patch(npatch_tot,num_triangle)
 !
       integer(kind = kint) :: ip, iele, ist, ied, inum, np, icou, n
       integer(kind = kint) :: ie1, ie2, ie3, iedge1, iedge2, iedge3
@@ -234,9 +235,9 @@
      &         then
                 icou = icou + 1
                 iele_global(icou) = icou + istack_numele
-                ie_patch(icou,1) = int(ig1)
-                ie_patch(icou,2) = int(ig2)
-                ie_patch(icou,3) = int(ig3)
+                ie_patch(icou,1) = ig1
+                ie_patch(icou,2) = ig2
+                ie_patch(icou,3) = ig3
 !                   write(40+my_rank,*) 'iedge_4_ele',                  &
 !     &                iele, imark, np, iedge_4_ele(iele,1:12)
 !                   write(40+my_rank,*) 'id_n_on_e',                    &

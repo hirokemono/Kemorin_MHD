@@ -281,6 +281,7 @@
       use m_phys_constants
       use field_data_IO
       use gz_field_data_MPI_IO
+      use transfer_to_long_integers
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind=kint), intent(in) :: nnod
@@ -299,7 +300,7 @@
         call gz_write_fld_header_mpi                                    &
      &     (id_fld, ioff_gl, each_field_name_buffer(field_name(j)))
         call gz_write_fld_vecotr_mpi(id_fld, ioff_gl,                   &
-     &      nnod, ncomp_field(j), d_nod(1,icou))
+     &      cast_long(nnod), ncomp_field(j), d_nod(1,icou))
 !        write(*,*) 'gz_write_fld_vecotr_mpi end', j, my_rank, ioff_gl
         icou = icou + ncomp_field(j)
       end do
@@ -425,6 +426,7 @@
       use field_data_IO
       use field_data_MPI_IO
       use gz_field_data_MPI_IO
+      use transfer_to_long_integers
 !
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -444,7 +446,7 @@
         call gz_read_fld_1word_mpi(id_fld, ioff_gl, field_name(j))
 !         write(*,*) 'gz_read_each_field_mpi start', j, my_rank
         call gz_read_each_field_mpi(id_fld, nprocs_in, id_rank,        &
-     &      ioff_gl, nnod, ncomp_field(j), d_nod(1,icou))
+     &      ioff_gl, cast_long(nnod), ncomp_field(j), d_nod(1,icou))
 !         write(*,*) 'gz_read_each_field_mpi end', j, my_rank
          if(my_rank .eq. 0) write(*,*) 'Read ', j, trim(field_name(j))
         icou = icou + ncomp_field(j)

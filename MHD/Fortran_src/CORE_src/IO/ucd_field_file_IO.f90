@@ -55,17 +55,14 @@
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
-      integer(kind= kint) :: nnod4
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Write ascii step data file: ', trim(file_name)
 !
       open(id_fld_file, file = file_name, form = 'formatted')
 !
-      nnod4 = int(ucd%nnod)
       call write_step_data(id_fld_file, my_rank, t_IO)
-      call write_field_data(id_fld_file, nnod4, ucd%num_field,          &
+      call write_field_data(id_fld_file, ucd%nnod, ucd%num_field,       &
      &    ucd%ntot_comp, ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
       close (id_fld_file)
@@ -85,7 +82,6 @@
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=255) :: character_4_read
-      integer(kind= kint) :: nnod4
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -96,11 +92,10 @@
       call read_step_data(id_fld_file, t_IO)
 !
       call skip_comment(character_4_read, id_fld_file)
-      read(character_4_read,*) nnod4, ucd%num_field
+      read(character_4_read,*) ucd%nnod, ucd%num_field
       read(id_fld_file,*) ucd%num_comp(1:ucd%num_field)
-      ucd%nnod = nnod4
 !
-      call read_field_data(id_fld_file, nnod4, ucd%num_field,           &
+      call read_field_data(id_fld_file, ucd%nnod, ucd%num_field,        &
      &          ucd%ntot_comp, ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
       close (id_fld_file)
@@ -120,7 +115,6 @@
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=255) :: character_4_read
-      integer(kind= kint) :: nnod4
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -131,8 +125,7 @@
       call read_step_data(id_fld_file, t_IO)
 !
       call skip_comment(character_4_read, id_fld_file)
-      read(character_4_read,*) nnod4, ucd%num_field
-      ucd%nnod = nnod4
+      read(character_4_read,*) ucd%nnod, ucd%num_field
 !
       call allocate_ucd_phys_name(ucd)
       read(id_fld_file,*) ucd%num_comp(1:ucd%num_field)
@@ -141,8 +134,8 @@
       call allocate_ucd_phys_data(ucd)
 !
       call read_field_data(id_fld_file,                                 &
-     &          nnod4, ucd%num_field, ucd%ntot_comp,                    &
-     &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
+     &    ucd%nnod, ucd%num_field, ucd%ntot_comp,                       &
+     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
       close (id_fld_file)
 !

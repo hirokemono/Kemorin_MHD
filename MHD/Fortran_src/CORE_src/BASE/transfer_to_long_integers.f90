@@ -5,6 +5,12 @@
 !
       implicit none
 !
+      type tmp_i8_2darray
+        integer(kind = kint_gl) :: n1
+        integer(kind = kint_gl) :: n2
+        integer(kind = kint_gl), allocatable :: id_da(:,:)
+      end type tmp_i8_2darray
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -23,7 +29,7 @@
 !
       function dup_to_long_array(n, i4_in)
 !
-      integer(kind = kint), intent(in) :: n
+      integer(kind = kint_gl), intent(in) :: n
       integer(kind = kint), intent(in) :: i4_in(n)
       integer(kind = kint_gl) :: dup_to_long_array(n)
 !
@@ -37,7 +43,7 @@
 !
       function dup_to_long_darray(n1, n2, i4_in)
 !
-      integer(kind = kint), intent(in) :: n1, n2
+      integer(kind = kint_gl), intent(in) :: n1, n2
       integer(kind = kint), intent(in) :: i4_in(n1,n2)
       integer(kind = kint_gl) :: dup_to_long_darray(n1,n2)
 !
@@ -62,8 +68,8 @@
 !
       function copy_to_short_array(n, id_a)
 !
-      integer(kind = kint), intent(in) :: n
-      integer(kind = kint_gl), intent(inout) :: id_a(n)
+      integer(kind = kint_gl), intent(in) :: n
+      integer(kind = kint_gl), intent(in) :: id_a(n)
       integer(kind = kint) :: copy_to_short_array(n)
 !
 !$omp parallel workshare
@@ -73,19 +79,36 @@
       end function copy_to_short_array
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-      function copy_to_short_darray(n1, n2, id_da)
+      subroutine alloc_2d_i8array(n1, n2, tmp)
 !
-      integer(kind = kint), intent(in) :: n1, n2
-      integer(kind = kint_gl), intent(inout) :: id_da(n1, n2)
-      integer(kind = kint) :: copy_to_short_darray(n1,n2)
+      integer(kind = kint_gl), intent(in) :: n1, n2
+      type(tmp_i8_2darray), intent(inout) :: tmp
 !
 !
+      tmp%n1 = n1
+      tmp%n2 = n2
+      allocate(tmp%id_da(tmp%n1,tmp%n2))
+!
+      end subroutine alloc_2d_i8array
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dup_to_short_darray(tmp, i4_out)
+!
+      type(tmp_i8_2darray), intent(inout) :: tmp
+      integer(kind = kint), intent(inout) :: i4_out(tmp%n1,tmp%n2)
+!
+!
+      if(tmp%n1*tmp%n2 .le. 0) return
 !$omp parallel workshare
-      copy_to_short_darray(1:n1,1:n2) = id_da(1:n1,1:n2)
+      i4_out(1:tmp%n1,1:tmp%n2) = tmp%id_da(1:tmp%n1,1:tmp%n2)
 !$omp end parallel workshare
 !
-      end function copy_to_short_darray
+      deallocate(tmp%id_da)
+!
+      end subroutine dup_to_short_darray
 !
 !-----------------------------------------------------------------------
 !

@@ -56,7 +56,7 @@
 !
       integer(kind = kint), parameter, private :: id_binary = 19
 !
-      integer(kind = kint), private :: ierr_IO
+      integer, private :: ierr_IO
 !
       private :: write_endian_flag, read_endian_flag
 !
@@ -147,7 +147,7 @@
 !
       integer(kind = kint_gl), intent(in) :: len_byte
 !
-      integer(kind = kint) :: len_result, ilength
+      integer :: len_result, ilength
       character(len=1) :: tmpchara(len_byte)
       integer(kind = kint_gl) :: ist
 !
@@ -218,7 +218,8 @@
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int_gl_dat(num)
 !
-      integer(kind = kint) :: lbyte, ilength, ist
+      integer(kind = kint) :: ist
+      integer:: lbyte, ilength
 !
 !
       if(num .le. 0) return
@@ -245,7 +246,8 @@
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: lbyte, ilength, ist
+      integer(kind = kint) :: ist
+      integer:: lbyte, ilength
 !
 !
       if(num .le. 0) return
@@ -284,7 +286,8 @@
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
 !
-      integer(kind = kint) :: lbyte, ilength, ist
+      integer(kind = kint) :: ist
+      integer:: lbyte, ilength
 !
 !
       if(num .le. 0) return
@@ -315,7 +318,8 @@
       integer(kind = kint_gl), intent(in) :: num
       character(len=1), intent(in) :: chara_dat(num)
 !
-      integer(kind = kint) :: lbyte, ilength, ist
+      integer(kind = kint) :: ist
+      integer:: lbyte, ilength
 !
 !
       if(num .le. 0) return
@@ -346,7 +350,8 @@
       integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
 !
-      integer(kind = kint) :: lbyte, ilength, ist
+      integer(kind = kint) :: ist
+      integer:: lbyte, ilength
 !
 !
       if(num .le. 0) return
@@ -490,7 +495,8 @@
       integer(kind = kint_gl), intent(inout) :: int_gl_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: lbyte, ilength, ist
+      integer(kind = kint) :: ist
+      integer:: lbyte, ilength
 !
 !
       if(num .le. 0) return
@@ -527,7 +533,8 @@
       integer(kind = kint), intent(inout) :: int_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: lbyte, ilength, ist
+      integer(kind = kint) :: ist
+      integer:: lbyte, ilength
 !
 !
       if(num .le. 0) return
@@ -580,7 +587,8 @@
       character(len=kchara), intent(inout) :: chara_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: lbyte, ilength, ist
+      integer(kind = kint) :: ist
+      integer:: lbyte, ilength
 !
 !
       if(num .le. 0) return
@@ -616,7 +624,8 @@
       character(len=1), intent(inout) :: chara_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: lbyte, ilength, ist
+      integer(kind = kint) :: ist
+      integer:: lbyte, ilength
 !
 !
       if(num .le. 0) return
@@ -653,7 +662,8 @@
       real(kind = kreal), intent(inout) :: real_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: lbyte, ilength, ist
+      integer(kind = kint) :: ist
+      integer:: lbyte, ilength
 !
 !
       if(num .le. 0) return

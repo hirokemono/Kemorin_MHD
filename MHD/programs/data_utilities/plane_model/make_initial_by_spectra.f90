@@ -208,7 +208,8 @@
 !
           do j = 1, num_fft
             do i = 1, mgd_mesh_pm%subdomain(ip)%node%numnod
-              inod = int(mgd_mesh_pm%subdomain(ip)%node%inod_global(i))
+              inod = int(mgd_mesh_pm%subdomain(ip)%node%inod_global(i), &
+     &              KIND(inod))
               if (inod .le. mgd_mesh_pm%merge_tbl%inter_nod_m) then
                 i1 = (j-1)*num_spectr + inod
                 rst_from_sp(i,j) = phys_d(i1)

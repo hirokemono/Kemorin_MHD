@@ -23,7 +23,7 @@
       use gz_field_data_IO
       use skip_gz_comment
       use set_parallel_file_name
-!
+      use transfer_to_long_integers
 !
       implicit none
 !
@@ -57,8 +57,8 @@
       call read_gz_step_data                                            &
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call skip_gz_comment_int(fld_IO%num_field_IO)
-      call read_gz_field_data                                           &
-     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
+      call read_gz_field_data(cast_long(fld_IO%nnod_IO),                &
+     &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
       call close_gzfile_f

@@ -54,11 +54,11 @@
       endif
 !*
       if ( npanel_window .le. 2 ) then
-        iw3 = int(npanel_window)
+        iw3 = npanel_window
         call pgsubp(npanel_window,1)
       else
-        iw2 = int(mod(npanel_window,2)                                  &
-     &       + ( npanel_window - mod(npanel_window,2) )) / 2
+        iw2 = mod(npanel_window,2)                                      &
+     &       + ( npanel_window - mod(npanel_window,2) ) / 2
         iw3 = iw2*2
         call pgsubp(iw2,2)
       endif

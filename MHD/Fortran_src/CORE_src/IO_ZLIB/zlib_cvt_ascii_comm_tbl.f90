@@ -44,7 +44,7 @@
       integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
 !
       zbuf%ilen_gz                                                     &
@@ -126,7 +126,7 @@
       integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
       character(len=1), allocatable :: textbuf(:)
 !
@@ -218,7 +218,7 @@
       integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
 !
       zbuf%ilen_gz                                                      &
@@ -299,7 +299,7 @@
       integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
       character(len=1), allocatable :: textbuf(:)
 !

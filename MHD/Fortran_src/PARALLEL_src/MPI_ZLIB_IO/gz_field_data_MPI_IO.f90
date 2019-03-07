@@ -45,7 +45,8 @@
       use zlib_convert_ascii_vector
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint), intent(in) :: nnod, ndir
+      integer(kind = kint_gl), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: ndir
       real(kind = kreal), intent(in) :: vector(nnod,ndir)
 !
       integer, intent(in) ::  id_fld
@@ -55,11 +56,9 @@
       integer(kind = kint_gl) :: ilen_gzipped_gl(nprocs)
       integer(kind = kint_gl) :: istack_buffer(0:nprocs)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: nnod64
 !
 !
-      nnod64 = nnod
-      call defleate_vector_txt(izero, nnod64, ndir, vector, zbuf)
+      call defleate_vector_txt(izero, nnod, ndir, vector, zbuf)
 !
       call MPI_Allgather(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,   &
      &    ilen_gzipped_gl, ione, CALYPSO_GLOBAL_INT, CALYPSO_COMM,      &
@@ -163,7 +162,7 @@
 !
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
-        zbuf%ilen_gz = int(real(kchara) *1.01 + 24,kind(zbuf%ilen_gz))
+        zbuf%ilen_gz = int(real(kchara)*1.1 + 24,kind(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_read_gz(id_fld, ioffset, zbuf)
 !
@@ -191,7 +190,8 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
 !
-      integer(kind = kint), intent(in) :: nnod, ndir
+      integer(kind = kint_gl), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: ndir
       real(kind = kreal), intent(inout) :: vector(nnod,ndir)
 !
       type(buffer_4_gzip) :: zbuf
@@ -200,7 +200,6 @@
       character(len=nprocs_in*16+1) :: textbuf_p
 !
       integer(kind = kint_gl) :: istack_buf(0:nprocs_in)
-      integer(kind = kint_gl) :: nnod64
 !
 !
       call gz_read_fld_charhead_mpi                                     &
@@ -224,8 +223,7 @@
       call alloc_zip_buffer(zbuf)
       call calypso_mpi_seek_read_gz(id_fld, ioffset, zbuf)
 !
-      nnod64 = nnod
-      call infleate_vector_txt(izero, nnod64, ndir, vector, zbuf)
+      call infleate_vector_txt(izero, nnod, ndir, vector, zbuf)
 !
       end subroutine gz_read_each_field_mpi
 !

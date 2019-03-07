@@ -56,7 +56,13 @@
       use m_precision
 !
       use m_machine_parameter
+      use m_geometry_constants
       use t_psf_case_table
+      use t_geometry_data
+      use t_edge_data
+      use t_psf_geometry_list
+      use t_psf_patch_data
+!
 !
       implicit none
 !
@@ -70,13 +76,8 @@
      &        (num_psf, node, ele, edge, sf_grp, psf_case_tbls,         &
      &         psf_def, psf_search, psf_list, psf_mesh, ntot_failed)
 !
-      use m_geometry_constants
-      use t_geometry_data
-      use t_edge_data
       use t_group_data
       use t_control_params_4_psf
-      use t_psf_geometry_list
-      use t_psf_patch_data
 !
       use set_psf_patch_4_by_surf_grp
       use patch_4_psf
@@ -135,12 +136,6 @@
       subroutine count_iso_patches(num_iso, node, ele, edge,            &
      &          psf_case_tbls, iso_search, iso_list, iso_mesh)
 !
-      use m_geometry_constants
-      use t_geometry_data
-      use t_edge_data
-      use t_psf_geometry_list
-      use t_psf_patch_data
-!
       use patch_4_psf
 !
       integer(kind = kint), intent(in) :: num_iso
@@ -187,17 +182,13 @@
      &          psf_search, psf_list, psf_grp_list, psf_mesh)
 !
       use calypso_mpi
-      use m_geometry_constants
-      use t_geometry_data
-      use t_edge_data
       use t_group_data
       use t_control_params_4_psf
-      use t_psf_geometry_list
-      use t_psf_patch_data
 !
       use const_element_comm_tables
       use set_psf_patch_4_by_surf_grp
       use patch_4_psf
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: num_psf
 !
@@ -213,13 +204,15 @@
       type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
 !
       integer(kind = kint) :: i
+      type(tmp_i8_2darray) :: eletmp
 !
       do i = 1, num_psf
         call allocate_ele_connect_type(psf_mesh(i)%patch)
         call const_global_numele_list(psf_mesh(i)%patch)
 !
+        call alloc_2d_i8array(cast_long(psf_mesh(i)%patch%numele),      &
+     &      cast_long(num_triangle), eletmp)
         if(psf_def(i)%id_section_method .gt. 0) then
-!
           call set_patch_4_psf                                          &
      &       (ele%numele, edge%numedge, edge%iedge_4_ele,               &
      &        psf_search(i)%elem_list,                                  &
@@ -228,7 +221,7 @@
      &        psf_mesh(i)%patch%istack_numele(my_rank),                 &
      &        psf_mesh(i)%patch%numele,                                 &
      &        psf_mesh(i)%patch%istack_ele_smp,                         &
-     &        psf_mesh(i)%patch%iele_global, psf_mesh(i)%patch%ie)
+     &        psf_mesh(i)%patch%iele_global, eletmp%id_da)
 !
         else if(psf_def(i)%id_section_method .eq. 0) then
 !
@@ -240,9 +233,9 @@
      &        psf_mesh(i)%patch%istack_numele(my_rank),                 &
      &        psf_mesh(i)%patch%numele,                                 &
      &        psf_mesh(i)%patch%istack_ele_smp,                         &
-     &        psf_mesh(i)%patch%iele_global, psf_mesh(i)%patch%ie)
-!
+     &        psf_mesh(i)%patch%iele_global, eletmp%id_da)
         end if
+        call dup_to_short_darray(eletmp, psf_mesh(i)%patch%ie)
       end do
 !
       end subroutine set_psf_patches
@@ -253,14 +246,10 @@
      &          psf_case_tbls, iso_search, iso_list, iso_mesh)
 !
       use calypso_mpi
-      use m_geometry_constants
-      use t_geometry_data
-      use t_edge_data
-      use t_psf_geometry_list
-      use t_psf_patch_data
 !
       use const_element_comm_tables
       use patch_4_psf
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: num_iso
       type(element_data), intent(in) :: ele
@@ -272,11 +261,15 @@
       type(psf_local_data), intent(inout) :: iso_mesh(num_iso)
 !
       integer(kind = kint) :: i
+      type(tmp_i8_2darray) :: eletmp
+!
 !
       do i = 1, num_iso
         call allocate_ele_connect_type(iso_mesh(i)%patch)
         call const_global_numele_list(iso_mesh(i)%patch)
 !
+        call alloc_2d_i8array(cast_long(iso_mesh(i)%patch%numele),      &
+     &      cast_long(num_triangle), eletmp)
         call set_patch_4_psf                                            &
      &     (ele%numele, edge%numedge, edge%iedge_4_ele,                 &
      &      iso_search(i)%elem_list,                                    &
@@ -284,7 +277,8 @@
      &      iso_search(i)%mark_e, iso_list(i)%id_n_on_e,                &
      &      iso_mesh(i)%patch%istack_numele(my_rank),                   &
      &      iso_mesh(i)%patch%numele, iso_mesh(i)%patch%istack_ele_smp, &
-     &      iso_mesh(i)%patch%iele_global, iso_mesh(i)%patch%ie)
+     &      iso_mesh(i)%patch%iele_global, eletmp%id_da)
+        call dup_to_short_darray(eletmp, iso_mesh(i)%patch%ie)
       end do
 !
       end subroutine set_iso_patches

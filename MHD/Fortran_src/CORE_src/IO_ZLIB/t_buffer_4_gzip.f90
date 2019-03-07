@@ -78,9 +78,8 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: ist
-      integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint_gl) :: nline
+      integer :: nline, ilen_tmp
+      integer :: ilen_in, ilen_used, ilen_line
 !
 !
       zbuf%ilen_gz = dble(num * kint) *1.01 + 24
@@ -114,9 +113,8 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: ist
-      integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint_gl) :: nline
+      integer :: nline, ilen_tmp
+      integer :: ilen_in, ilen_used, ilen_line
 !
 !
       zbuf%ilen_gz =  dble(num * kint_gl) *1.01 + 24
@@ -150,9 +148,8 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: ist
-      integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint_gl) :: nline
+      integer :: nline, ilen_tmp
+      integer :: ilen_in, ilen_used, ilen_line
 !
 !
       zbuf%ilen_gz = dble(num * kreal) *1.01 + 24
@@ -186,9 +183,8 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: ist
-      integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint_gl) :: nline
+      integer :: nline, ilen_tmp
+      integer :: ilen_in, ilen_used, ilen_line
 !
 !
       zbuf%ilen_gz = dble(num * kchara) *1.01 + 24
@@ -223,9 +219,8 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: ist
-      integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint_gl) :: nline
+      integer :: nline, ilen_tmp
+      integer :: ilen_in, ilen_used, ilen_line
 !
 !
       ist = 0
@@ -257,9 +252,8 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: ist
-      integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint_gl) :: nline
+      integer :: nline, ilen_tmp
+      integer :: ilen_in, ilen_used, ilen_line
 !
 !
       ist = 0
@@ -292,9 +286,8 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: ist
-      integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint_gl) :: nline
+      integer :: nline, ilen_tmp
+      integer :: ilen_in, ilen_used, ilen_line
 !
 !
       ist = 0
@@ -327,9 +320,8 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: ist
-      integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_in, ilen_used, ilen_line
-      integer(kind = kint_gl) :: nline
+      integer :: nline, ilen_tmp
+      integer :: ilen_in, ilen_used, ilen_line
 !
 !
       ist = 0

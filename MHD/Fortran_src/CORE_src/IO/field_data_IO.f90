@@ -25,9 +25,11 @@
 !!     &         (textbuf, field_name, len_text)
 !!
 !!      subroutine write_arrays_for_stacks(file_id, num, istack)
-!!      subroutine write_field_data(id_file, nnod, num_field, ntot_comp,&
+!!      subroutine write_field_data                                     &
+!!     &         (id_file, nnod64, num_field, ntot_comp,                &
 !!     &          ncomp_field, field_name, field_data)
-!!      subroutine read_field_data(id_file, nnod, num_field, ntot_comp, &
+!!      subroutine read_field_data                                      &
+!!     &         (id_file, nnod64, num_field, ntot_comp,                &
 !!     &          ncomp_field, field_name, field_data)
 !!@endverbatim
 !
@@ -273,24 +275,26 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_field_data(id_file, nnod, num_field, ntot_comp,  &
+      subroutine write_field_data                                       &
+     &         (id_file, nnod64, num_field, ntot_comp,                  &
      &          ncomp_field, field_name, field_data)
 !
       integer(kind = kint), intent(in) :: id_file
 !
-      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint_gl), intent(in) :: nnod64
       integer(kind = kint), intent(in) :: num_field
       integer(kind = kint), intent(in) :: ntot_comp
       integer(kind = kint), intent(in) :: ncomp_field(num_field)
       character(len=kchara), intent(in) :: field_name(num_field)
-      real(kind = kreal), intent(in) :: field_data(nnod, ntot_comp)
+      real(kind = kreal), intent(in) :: field_data(nnod64, ntot_comp)
 !
-      integer(kind = kint) :: i_fld, icou, ist, inod
+      integer(kind = kint_gl) :: inod
+      integer(kind = kint) :: i_fld, icou, ist
       character(len=kchara) :: fmt_txt
 !
 !
       write(id_file,'(a)'   ) FLD_HD1
-      write(id_file,'(2i16)') nnod, num_field
+      write(id_file,'(2i16)') nnod64, num_field
       write(id_file,'(10i5)') ncomp_field(1:num_field)
 !
       icou = 0
@@ -301,7 +305,7 @@
         icou = icou + ncomp_field(i_fld)
         write(fmt_txt,'(a1,i1,a16)')                                    &
      &                   '(', ncomp_field(i_fld), '(1pE25.15e3),a1)'
-        do inod = 1, nnod
+        do inod = 1, nnod64
           write(id_file,fmt_txt) field_data(inod,ist:icou)
         end do
       end do
@@ -310,23 +314,26 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine read_field_data(id_file, nnod, num_field, ntot_comp,   &
+      subroutine read_field_data                                        &
+     &         (id_file, nnod64, num_field, ntot_comp,                  &
      &          ncomp_field, field_name, field_data)
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
 !
-      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint_gl), intent(in) :: nnod64
       integer(kind = kint), intent(in) :: num_field
       integer(kind = kint), intent(in) :: ntot_comp
       integer(kind = kint), intent(in) :: ncomp_field(num_field)
 !
       character(len=kchara), intent(inout) :: field_name(num_field)
-      real(kind = kreal), intent(inout) :: field_data(nnod, ntot_comp)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: field_data(nnod64, ntot_comp)
 !
       character(len=255) :: character_4_read
-      integer(kind = kint) :: i_fld, icou, ist, inod
+      integer(kind = kint_gl) :: inod
+      integer(kind = kint) :: i_fld, icou, ist
 !
 !
       icou = 0
@@ -336,7 +343,7 @@
 !
         ist = icou + 1
         icou = icou + ncomp_field(i_fld)
-        do inod = 1, nnod
+        do inod = 1, nnod64
           read(id_file,*)  field_data(inod,ist:icou)
         end do
       end do

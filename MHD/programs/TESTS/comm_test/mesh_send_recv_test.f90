@@ -106,7 +106,7 @@
 !
 !
       do inod = 1, node%internal_node
-        i8x_vec(inod) = int(node%inod_global(inod))
+        i8x_vec(inod) =   node%inod_global(inod)
         x_vec(3*inod-2) = node%xx(inod,1)
         x_vec(3*inod-1) = node%xx(inod,2)
         x_vec(3*inod  ) = node%xx(inod,3)

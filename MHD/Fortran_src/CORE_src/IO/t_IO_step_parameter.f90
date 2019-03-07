@@ -195,8 +195,8 @@
       if (IO_step%delta_t .eq. zero) return
 !
       t_next = time_d%time + time_d%dt
-      i_next = int(t_next / IO_step%delta_t)
-      i_now =  int(time_d%time / IO_step%delta_t)
+      i_next = int(t_next / IO_step%delta_t,KIND(i_next))
+      i_now =  int(time_d%time / IO_step%delta_t,KIND(i_now))
       if(i_next .ne. i_now) iflag_viz_flex_step = 0
 !
       end function iflag_viz_flex_step
@@ -235,8 +235,8 @@
       if(IO_step%delta_t .eq. zero) return
 !
       t_next = time_d%time + time_d%dt
-      i_next = int(t_next / IO_step%delta_t)
-      i_now =  int(time_d%time / IO_step%delta_t)
+      i_next = int(t_next / IO_step%delta_t, KIND(i_next))
+      i_now =  int(time_d%time / IO_step%delta_t, KIND(i_now))
       if(i_next .ne. i_now) IO_step%istep_file = i_next
 !
       end subroutine istep_file_w_flex_dt

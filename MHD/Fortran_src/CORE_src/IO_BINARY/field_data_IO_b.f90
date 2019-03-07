@@ -9,14 +9,14 @@
 !!@verbatim
 !!      subroutine write_step_data_b                                    &
 !!     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
-!!      subroutine write_field_data_b(nnod, num_field, ntot_comp,       &
+!!      subroutine write_field_data_b(nnod64, num_field, ntot_comp,     &
 !!     &          ncomp_field, field_name, d_nod)
 !!
 !!      subroutine read_step_data_b(iflag_swap,                         &
 !!     &          i_time_step_IO, time_IO, delta_t_IO,                  &
 !!     &          istack_merged, num_field, ierr)
 !!      subroutine read_field_data_b(iflag_swap,                        &
-!!     &          nnod, num_field, ntot_comp, field_name, vect, ierr)
+!!     &          nnod64, num_field, ntot_comp, field_name, vect, ierr)
 !!@endverbatim
 !
       module field_data_IO_b
@@ -53,30 +53,29 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_field_data_b(nnod, num_field, ntot_comp,         &
+      subroutine write_field_data_b(nnod64, num_field, ntot_comp,       &
      &          ncomp_field, field_name, d_nod)
 !
       use m_phys_constants
+      use transfer_to_long_integers
 !
-      integer(kind=kint), intent(in) :: nnod, num_field, ntot_comp
+      integer(kind=kint_gl), intent(in) :: nnod64
+      integer(kind=kint), intent(in) :: num_field, ntot_comp
       integer(kind=kint), intent(in) :: ncomp_field(num_field)
       character(len=kchara), intent(in) :: field_name(num_field)
-      real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
+      real(kind = kreal), intent(in) :: d_nod(nnod64,ntot_comp)
 !
-      integer(kind = kint_gl) :: num64
       integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
-      istack_merged(1) = nnod
+      istack_merged(1) = nnod64
       call write_mul_int8_b(ione64, istack_merged)
       call write_one_integer_b(num_field)
-      num64 = num_field
-      call write_mul_integer_b(num64, ncomp_field)
+      call write_mul_integer_b(cast_long(num_field), ncomp_field)
 !
       call write_mul_character_b(num_field, field_name)
-      num64 = nnod
-      call write_2d_vector_b(num64, ntot_comp, d_nod)
+      call write_2d_vector_b(nnod64, ntot_comp, d_nod)
 !
       end subroutine write_field_data_b
 !
@@ -119,23 +118,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_field_data_b(iflag_swap,                          &
-     &          nnod, num_field, ntot_comp, field_name, vect, ierr)
+     &          nnod64, num_field, ntot_comp, field_name, vect, ierr)
 !
       integer(kind = kint), intent(in) :: iflag_swap
-      integer(kind=kint), intent(in) :: nnod
+      integer(kind = kint_gl), intent(in) :: nnod64
       integer(kind=kint), intent(in) :: num_field, ntot_comp
       character(len=kchara), intent(inout) :: field_name(num_field)
-      real(kind = kreal), intent(inout) :: vect(nnod,ntot_comp)
+      real(kind = kreal), intent(inout) :: vect(nnod64,ntot_comp)
       integer(kind = kint), intent(inout) :: ierr
-!
-      integer(kind = kint_gl) :: num64
 !
 !
       call read_mul_character_b(num_field, field_name, ierr)
       if(ierr .gt. 0) return
 !
-      num64 = nnod
-      call read_2d_vector_b(iflag_swap, num64, ntot_comp, vect, ierr)
+      call read_2d_vector_b(iflag_swap, nnod64, ntot_comp, vect, ierr)
 !
       end subroutine read_field_data_b
 !

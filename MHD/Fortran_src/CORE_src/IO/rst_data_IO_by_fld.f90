@@ -37,6 +37,7 @@
       use set_parallel_file_name
       use field_data_IO
       use skip_comment_f
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
@@ -56,8 +57,8 @@
       call skip_comment(character_4_read,id_phys_file)
       read(character_4_read,*) fld_IO%num_field_IO
 !
-      call read_field_data(id_phys_file,                                &
-     &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
+      call read_field_data(id_phys_file, cast_long(fld_IO%nnod_IO),     &
+     &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
       close (id_phys_file)
 !

@@ -69,6 +69,8 @@
       use gz_MPI_ascii_data_IO
       use gz_MPI_viewer_mesh_IO
       use gz_MPI_integer_list_IO
+      use m_phys_constants
+      use transfer_to_long_integers
 !
       type(merged_viewer_mesh), intent(in) :: mgd_v_mesh
       type(mpi_viewer_mesh_param), intent(in) :: mgd_view_prm
@@ -102,7 +104,7 @@
 !
 !
       call gz_mpi_write_viewer_position(IO_param,                       &
-     &    mgd_v_mesh%view_mesh%nnod_viewer, ithree,                     &
+     &    cast_long(mgd_v_mesh%view_mesh%nnod_viewer), n_vector,        &
      &    mgd_v_mesh%view_mesh%inod_gl_view,                            &
      &    mgd_v_mesh%view_mesh%xx_view)
 !
