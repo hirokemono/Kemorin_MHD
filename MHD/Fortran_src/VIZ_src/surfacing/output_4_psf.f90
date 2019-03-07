@@ -67,51 +67,51 @@
 !
 !
       do i_psf = 1, num_psf
-        if((psf_file_IO(i_psf)%iflag_format/iflag_single) .eq. 0) then
-          irank_tgt = mod(i_psf-1,nprocs)
+!        if((psf_file_IO(i_psf)%iflag_format/iflag_single) .eq. 0) then
+!          irank_tgt = mod(i_psf-1,nprocs)
 !
-          do iele = 1, psf_mesh(i_psf)%patch%numele
-            if(psf_mesh(i_psf)%patch%ie(iele,1) .le. 0                  &
-     &        .or. psf_mesh(i_psf)%patch%ie(iele,2) .le. 0              &
-     &        .or. psf_mesh(i_psf)%patch%ie(iele,3) .le. 0              &
-     &        .or. psf_mesh(i_psf)%patch%ie(iele,1)                     &
-     &             .gt. psf_mesh(i_psf)%node%istack_internod(nprocs)    &
-     &        .or. psf_mesh(i_psf)%patch%ie(iele,2)                     &
-     &             .gt. psf_mesh(i_psf)%node%istack_internod(nprocs)    &
-     &        .or. psf_mesh(i_psf)%patch%ie(iele,3)                     &
-     &             .gt. psf_mesh(i_psf)%node%istack_internod(nprocs)    &
-     &       ) then
-              write(*,*) 'Failed: ', my_rank,                           &
-     &              psf_mesh(i_psf)%node%istack_internod(nprocs),       &
-     &             iele, psf_mesh(i_psf)%patch%ie(iele,1:3)
-            end if
-          end do
-          call merge_ucd_psf_mesh                                       &
-     &       (irank_tgt, psf_mesh(i_psf), psf_out(i_psf))
-          call calypso_mpi_barrier
-        else
-          call link_nnod_stacks_2_ucd(nprocs, psf_mesh(i_psf)%node,     &
+!          do iele = 1, psf_mesh(i_psf)%patch%numele
+!            if(psf_mesh(i_psf)%patch%ie(iele,1) .le. 0                 &
+!     &        .or. psf_mesh(i_psf)%patch%ie(iele,2) .le. 0             &
+!     &        .or. psf_mesh(i_psf)%patch%ie(iele,3) .le. 0             &
+!     &        .or. psf_mesh(i_psf)%patch%ie(iele,1)                    &
+!     &             .gt. psf_mesh(i_psf)%node%istack_internod(nprocs)   &
+!     &        .or. psf_mesh(i_psf)%patch%ie(iele,2)                    &
+!     &             .gt. psf_mesh(i_psf)%node%istack_internod(nprocs)   &
+!     &        .or. psf_mesh(i_psf)%patch%ie(iele,3)                    &
+!     &             .gt. psf_mesh(i_psf)%node%istack_internod(nprocs)   &
+!     &       ) then
+!              write(*,*) 'Failed: ', my_rank,                          &
+!     &              psf_mesh(i_psf)%node%istack_internod(nprocs),      &
+!     &             iele, psf_mesh(i_psf)%patch%ie(iele,1:3)
+!            end if
+!          end do
+!          call merge_ucd_psf_mesh                                      &
+!     &       (irank_tgt, psf_mesh(i_psf), psf_out(i_psf))
+!          call calypso_mpi_barrier
+!        else
+          call link_nnod_stacks_2_ucd(nprocs, psf_mesh(i_psf)%node,    &
      &        psf_mesh(i_psf)%patch, psf_out_m(i_psf))
-!
+
           call link_node_data_2_ucd                                     &
      &         (psf_mesh(i_psf)%node, psf_out(i_psf))
           call link_ele_data_2_ucd                                      &
      &         (psf_mesh(i_psf)%patch, psf_out(i_psf))
           call link_field_data_to_ucd                                   &
      &         (psf_mesh(i_psf)%field, psf_out(i_psf))
-        end if
+!        end if
       end do
 !
       do i_psf = 1, num_psf
-        if((psf_file_IO(i_psf)%iflag_format/iflag_single) .eq. 0) then
-          if(my_rank .eq. mod(i_psf-1,nprocs)) then
-            call sel_write_grd_file                                     &
-     &         (iminus, psf_file_IO(i_psf), psf_out(i_psf))
-          end if
-        else
+!        if((psf_file_IO(i_psf)%iflag_format/iflag_single) .eq. 0) then
+!          if(my_rank .eq. mod(i_psf-1,nprocs)) then
+!            call sel_write_grd_file                                    &
+!     &         (iminus, psf_file_IO(i_psf), psf_out(i_psf))
+!          end if
+!        else
           call sel_write_parallel_ucd_mesh                              &
      &       (psf_file_IO(i_psf), psf_out(i_psf), psf_out_m(i_psf))
-        end if
+!        end if
       end do
       call calypso_mpi_barrier
 !
@@ -142,25 +142,25 @@
 !
       call copy_time_step_size_data(time_d, t_IO)
 !
-      do i_psf = 1, num_psf
-        if((psf_file_IO(i_psf)%iflag_format/iflag_single) .eq. 0) then
-          irank_tgt = mod(i_psf-1,nprocs)
-          call merge_ucd_psf_data                                       &
-     &       (irank_tgt, psf_mesh(i_psf), psf_out(i_psf))
-        end if
-      end do
+!      do i_psf = 1, num_psf
+!        if((psf_file_IO(i_psf)%iflag_format/iflag_single) .eq. 0) then
+!          irank_tgt = mod(i_psf-1,nprocs)
+!          call merge_ucd_psf_data                                      &
+!     &       (irank_tgt, psf_mesh(i_psf), psf_out(i_psf))
+!        end if
+!      end do
 !
       do i_psf = 1, num_psf
-        if((psf_file_IO(i_psf)%iflag_format/iflag_single) .eq. 0) then
-          if(my_rank .eq. mod(i_psf-1,nprocs)) then
-            call sel_write_udt_file(iminus, istep_psf,                  &
-     &          psf_file_IO(i_psf), t_IO, psf_out(i_psf))
-          end if
-        else
+!        if((psf_file_IO(i_psf)%iflag_format/iflag_single) .eq. 0) then
+!          if(my_rank .eq. mod(i_psf-1,nprocs)) then
+!            call sel_write_udt_file(iminus, istep_psf,                 &
+!     &          psf_file_IO(i_psf), t_IO, psf_out(i_psf))
+!          end if
+!        else
           call sel_write_parallel_ucd_file                              &
      &       (istep_psf, psf_file_IO(i_psf), t_IO,                      &
      &        psf_out(i_psf), psf_out_m(i_psf))
-        end if
+!        end if
       end do
       call calypso_mpi_barrier
 !
@@ -195,13 +195,13 @@
       call copy_time_step_size_data(time_d, t_IO)
 !
       do i_iso = 1, num_iso
-        if((iso_file_IO(i_iso)%iflag_format/iflag_single) .eq. 0) then
-          irank_tgt = mod(i_iso-1,nprocs)
-          call merge_ucd_psf_mesh                                       &
-     &       (irank_tgt, iso_mesh(i_iso), iso_out(i_iso))
-          call merge_ucd_psf_data                                       &
-     &       (irank_tgt, iso_mesh(i_iso), iso_out(i_iso))
-        else
+!        if((iso_file_IO(i_iso)%iflag_format/iflag_single) .eq. 0) then
+!          irank_tgt = mod(i_iso-1,nprocs)
+!          call merge_ucd_psf_mesh                                      &
+!     &       (irank_tgt, iso_mesh(i_iso), iso_out(i_iso))
+!          call merge_ucd_psf_data                                      &
+!     &       (irank_tgt, iso_mesh(i_iso), iso_out(i_iso))
+!        else
           call link_nnod_stacks_2_ucd(nprocs, iso_mesh(i_iso)%node,     &
      &        iso_mesh(i_iso)%patch, iso_out_m(i_iso))
 !
@@ -212,23 +212,23 @@
           call link_field_data_to_ucd                                   &
      &       (iso_mesh(i_iso)%field, iso_out(i_iso))
 !
-        end if
+!        end if
       end do
 !
       do i_iso = 1, num_iso
-        if((iso_file_IO(i_iso)%iflag_format/iflag_single) .eq. 0) then
-          if(my_rank .eq. mod(i_iso-1,nprocs)) then
-            call sel_write_ucd_file(iminus, istep_iso,                  &
-     &          iso_file_IO(i_iso), t_IO, iso_out(i_iso))
-          end if
-          call deallocate_ucd_mesh(iso_out(i_iso))
-        else
+!        if((iso_file_IO(i_iso)%iflag_format/iflag_single) .eq. 0) then
+!          if(my_rank .eq. mod(i_iso-1,nprocs)) then
+!            call sel_write_ucd_file(iminus, istep_iso,                 &
+!     &          iso_file_IO(i_iso), t_IO, iso_out(i_iso))
+!          end if
+!          call deallocate_ucd_mesh(iso_out(i_iso))
+!        else
           call sel_write_parallel_ucd_file                              &
      &       (istep_iso, iso_file_IO(i_iso), t_IO,                      &
      &        iso_out(i_iso), iso_out_m(i_iso))
           call disconnect_merged_ucd_mesh                               &
      &       (iso_out(i_iso), iso_out_m(i_iso))
-        end if
+!        end if
       end do
 !
       call calypso_mpi_barrier

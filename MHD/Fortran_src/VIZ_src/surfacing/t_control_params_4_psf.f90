@@ -104,6 +104,10 @@
       call set_merged_ucd_file_ctl(default_psf_prefix,                  &
      &    psf_c%psf_file_head_ctl, psf_c%psf_output_type_ctl,           &
      &    psf_file_IO)
+      if((psf_file_IO%iflag_format/iflag_single) .eq. 0) then
+        psf_file_IO%iflag_format = psf_file_IO%iflag_format             &
+     &                            + iflag_single
+      end if
 !
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
      &   psf_c%psf_out_field_ctl%num, psf_c%psf_out_field_ctl%c1_tbl,   &
