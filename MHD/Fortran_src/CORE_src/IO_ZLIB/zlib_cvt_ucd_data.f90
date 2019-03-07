@@ -163,7 +163,6 @@
             iele_gl = i + istack_merged_ele
             ie0(1:nnod_ele) = ie(i,1:nnod_ele)
             call gzip_defleat_cont(ilen_line,                           &
-     &          vtk_each_connect(nnod_ele, ie0),                        &
      &          ucd_each_connect(iele_gl, nnod_ele, ie0),               &
      &          ilen_in, ilen_used)
           end do
