@@ -101,10 +101,11 @@
       integer(kind = kint), intent(inout) :: i4_out(tmp%n1,tmp%n2)
 !
 !
-      if(tmp%n1*tmp%n2 .le. 0) return
+      if(tmp%n1*tmp%n2 .gt. 0) then
 !$omp parallel workshare
-      i4_out(1:tmp%n1,1:tmp%n2) = tmp%id_da(1:tmp%n1,1:tmp%n2)
+        i4_out(1:tmp%n1,1:tmp%n2) = tmp%id_da(1:tmp%n1,1:tmp%n2)
 !$omp end parallel workshare
+      end if
 !
       deallocate(tmp%id_da)
 !
