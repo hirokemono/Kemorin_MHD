@@ -430,8 +430,8 @@
       subroutine calypso_mpi_seek_read_real(id_mpi_file,                &
      &          iflag_bin_swap, ioffset, num, vector)
 !
-      integer, intent(in) ::  id_mpi_file
-      integer(kind = kint), intent(in) :: iflag_bin_swap
+      integer, intent(in) :: id_mpi_file
+      integer, intent(in) :: iflag_bin_swap
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = MPI_OFFSET_KIND), intent(in) :: ioffset
       real(kind = kreal), intent(inout) :: vector(num)

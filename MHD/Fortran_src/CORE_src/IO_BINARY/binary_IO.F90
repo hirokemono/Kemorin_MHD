@@ -24,7 +24,7 @@
 !!      subroutine write_1d_vector_b(num, real_dat)
 !!      subroutine write_2d_vector_b(n1, n2, real_dat)
 !!
-!!      integer(kind = kint) function endian_check(my_rank, int_dat)
+!!      integer function endian_check(my_rank, int_dat)
 !!      integer(kind = kint) function read_endian_flag(my_rank)
 !!      subroutine read_one_integer_b(iflag_swap, int_dat, ierr)
 !!      subroutine read_one_real_b(iflag_swap, real_dat, ierr)
@@ -49,7 +49,7 @@
 !
       type file_IO_flags
 !>        integer flag for byte swapping
-        integer(kind = kint) :: iflag_bin_swap = -1
+        integer :: iflag_bin_swap = -1
 !>        Error flag for data IO
         integer(kind = kint) :: ierr_IO = 0
       end type file_IO_flags
@@ -399,7 +399,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function endian_check(my_rank, int_dat)
+      integer function endian_check(my_rank, int_dat)
 !
       integer(kind=kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: int_dat
@@ -441,7 +441,7 @@
 !
       subroutine read_one_integer_b(iflag_swap, int_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint), intent(inout) :: int_dat
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -465,7 +465,7 @@
 !
       subroutine read_one_real_b(iflag_swap, real_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       real(kind = kreal), intent(inout) :: real_dat
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -490,7 +490,7 @@
 !
       subroutine read_mul_int8_b(iflag_swap, num, int_gl_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int_gl_dat(num)
       integer(kind = kint), intent(inout) :: ierr
@@ -528,7 +528,7 @@
 !
       subroutine read_mul_integer_b(iflag_swap, num, int_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_dat(num)
       integer(kind = kint), intent(inout) :: ierr
@@ -657,7 +657,7 @@
 !
       subroutine read_1d_vector_b(iflag_swap, num, real_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
       integer(kind = kint), intent(inout) :: ierr
@@ -694,7 +694,7 @@
 !
       subroutine read_2d_vector_b(iflag_swap, n1, n2, real_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint_gl), intent(in) :: n1
       integer(kind = kint), intent(in) :: n2
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)

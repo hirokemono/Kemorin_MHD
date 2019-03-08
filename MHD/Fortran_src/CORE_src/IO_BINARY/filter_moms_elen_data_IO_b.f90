@@ -68,7 +68,7 @@
 !
       use filter_moments_IO_b
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: nele
       real(kind = kreal), intent(inout) :: e_x2_ele(nele)
       real(kind = kreal), intent(inout) :: e_y2_ele(nele)
@@ -262,7 +262,7 @@
 !
       use filter_moments_IO_b
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: nele
       real(kind = kreal), intent(inout) :: f_x2_ele(nele)
       real(kind = kreal), intent(inout) :: f_y2_ele(nele)

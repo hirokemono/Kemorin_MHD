@@ -45,7 +45,7 @@
 !
       use skip_comment_f
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: nf_type
 !
       character(len=kchara), intent(inout) :: filter_type(nf_type)
@@ -156,7 +156,7 @@
 !
       subroutine read_elength_b(iflag_swap, num, el1, el2, el3, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(inout) :: el1(num), el2(num), el3(num)
       integer(kind = kint), intent(inout) :: ierr
@@ -178,7 +178,7 @@
       subroutine read_mom_coefs_dx_b                                    &
      &         (iflag_swap, num, el1, el2, el3, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(inout) :: el1(num,3), el2(num,3)
       real(kind = kreal), intent(inout) :: el3(num,3)

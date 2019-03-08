@@ -86,7 +86,7 @@
      &          i_time_step_IO, time_IO, delta_t_IO,                    &
      &          istack_merged, num_field, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind=kint), intent(inout) :: i_time_step_IO
       real(kind = kreal), intent(inout) :: time_IO, delta_t_IO
 !
@@ -120,7 +120,7 @@
       subroutine read_field_data_b(iflag_swap,                          &
      &          nnod64, num_field, ntot_comp, field_name, vect, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint_gl), intent(in) :: nnod64
       integer(kind=kint), intent(in) :: num_field, ntot_comp
       character(len=kchara), intent(inout) :: field_name(num_field)

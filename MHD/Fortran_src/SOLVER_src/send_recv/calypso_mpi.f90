@@ -45,6 +45,8 @@
 !
 !>     integer size for MPI
       integer :: CALYPSO_GLOBAL_INT
+!>     4-byte integer size for MPI
+      integer :: CALYPSO_FOUR_INT
 !
 !>      process ID (start from 0)
       integer(kind=kint) :: my_rank
@@ -73,6 +75,7 @@
       my_rank = my_rank4
 !
       CALYPSO_CHARACTER = MPI_CHARACTER
+      CALYPSO_FOUR_INT =  MPI_INTEGER 
 !
       if(kint .eq. 4) then
         CALYPSO_INTEGER = MPI_INTEGER

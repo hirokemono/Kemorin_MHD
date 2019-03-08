@@ -87,7 +87,7 @@
      &          istack_merged, num_field, ierr)
 !
       integer(kind=kint), intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
 !
       integer(kind=kint), intent(inout) :: i_time_step_IO
       real(kind = kreal), intent(inout) :: time_IO, delta_t_IO

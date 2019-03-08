@@ -91,7 +91,7 @@
 !
       subroutine gz_write_endian_flag
 !
-      integer(kind = kint) :: ierr
+      integer :: ierr
 !
 !
       call gzwrite_f(kint, i_UNIX, ierr)
@@ -104,7 +104,7 @@
 !
       integer(kind = kint), intent(in) :: int_dat
 !
-      integer(kind = kint) :: ierr
+      integer :: ierr
 !
 !
       call gzwrite_f(kint, int_dat, ierr)
@@ -117,7 +117,7 @@
 !
       real(kind = kreal), intent(in) :: real_dat
 !
-      integer(kind = kint) :: ierr
+      integer:: ierr
 !
 !
       call gzwrite_f(kreal, real_dat, ierr)
@@ -132,7 +132,8 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
-      integer(kind = kint) :: lbyte, ilength, ist, ierr
+      integer(kind = kint) :: ist
+      integer :: lbyte, ilength, ierr
 !
 !
       ierr = 0
@@ -155,7 +156,8 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: lbyte, ilength, ist, ierr
+      integer(kind = kint) ::  ist
+      integer :: lbyte, ilength, ierr
 !
 !
       ierr = 0
@@ -190,7 +192,8 @@
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
 !
-      integer(kind = kint) :: lbyte, ilength, ist, ierr
+      integer(kind = kint) ::  ist
+      integer :: lbyte, ilength, ierr
 !
 !
       ierr = 0
@@ -213,7 +216,8 @@
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
 !
-      integer(kind = kint) :: lbyte, ilength, ist, ierr
+      integer(kind = kint) :: ist
+      integer :: lbyte, ilength, ierr
 !
 !
       ist = 0
@@ -263,7 +267,7 @@
 !
       subroutine gz_read_one_integer_b(iflag_swap, int_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint), intent(inout) :: int_dat
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -280,7 +284,7 @@
 !
       subroutine gz_read_one_real_b(iflag_swap, real_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       real(kind = kreal), intent(inout) :: real_dat
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -298,7 +302,7 @@
 !
       subroutine gz_read_mul_int8_b(iflag_swap, num, int8_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
       integer(kind = kint), intent(inout) :: ierr
@@ -399,7 +403,7 @@
       subroutine gz_read_1d_vector_b                                    &
      &         (iflag_swap, num, real_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
       integer(kind = kint), intent(inout) :: ierr

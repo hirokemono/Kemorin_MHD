@@ -52,7 +52,7 @@
 !>      Structure for Rayleigh restart data
       type rayleigh_restart
 !>        Endian swap flag
-        integer(kind = kint) :: iflag_swap = 0
+        integer :: iflag_swap = 0
 !
 !>        truncation degree
         integer(kind = kint) :: ltr_org
@@ -111,7 +111,7 @@
       type(rayleigh_restart), intent(inout) :: ra_rst
 !
       call MPI_Bcast(ra_rst%iflag_swap, ione,                           &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_FOUR_INT, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(ra_rst%ltr_org, ione,                              &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(ra_rst%iflag_rtype, ione,                          &

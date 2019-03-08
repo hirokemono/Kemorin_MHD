@@ -25,9 +25,9 @@
       integer(kind = kint), parameter :: iflag_full_msg =     2
 !
 !>      integer flag for keep endian
-      integer(kind = kint), parameter :: iendian_KEEP =       0
+      integer, parameter :: iendian_KEEP =       0
 !>      integer flag for flip endian
-      integer(kind = kint), parameter :: iendian_FLIP =       1
+      integer, parameter :: iendian_FLIP =       1
 !
 !>      Endian check integer
       integer(kind = kint), parameter :: i_UNIX = ichar('U') * 256**3   &

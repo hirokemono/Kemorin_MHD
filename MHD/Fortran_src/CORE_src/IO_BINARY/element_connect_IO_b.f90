@@ -130,8 +130,8 @@
       type(element_data), intent(inout) :: ele_IO
 !
       integer(kind = kint_gl) :: num64
-      integer (kind = kint) :: i
-      integer (kind = kint), allocatable :: ie_tmp(:)
+      integer(kind = kint) :: i
+      integer(kind = kint), allocatable :: ie_tmp(:)
 !
 !
       call alloc_element_types(ele_IO)
