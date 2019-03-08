@@ -71,7 +71,7 @@
      &   (fld%num_phys, fld%num_component, fld%istack_component)
 !
 !        write(*,*) 'MPI_Bcast iflag_monitor', ip
-      call MPI_Bcast(fld%iflag_monitor, fld%num_phys,                   &
+      call MPI_Bcast(fld%iflag_monitor, int(fld%num_phys),              &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine share_phys_field_names
@@ -85,22 +85,21 @@
       integer(kind = kint), intent(in) :: ip_org
       type(phys_data), intent(inout) :: fld
 !
-      integer(kind = kint) ::  irank_org, num
+      integer(kind = kint_gl) ::  num64
+      integer :: irank_org
 !
 !
-      irank_org = mod(ip_org-1,nprocs)
+      irank_org = int(mod(ip_org-1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
       call MPI_Bcast(fld%n_point, 1, CALYPSO_INTEGER,                   &
      &    irank_org, CALYPSO_COMM, ierr_MPI)
 !
       if(mod(irank_org,nprocs) .ne. my_rank) then
-        num = fld%n_point
-        call alloc_phys_data_type(num, fld)
+        call alloc_phys_data_type(fld%n_point, fld)
       end if
 !
-      num = fld%ntot_phys * fld%n_point
-      call MPI_Bcast(fld%d_fld, num, CALYPSO_REAL,                      &
-     &    irank_org, CALYPSO_COMM, ierr_MPI)
+      num64 = fld%ntot_phys * fld%n_point
+      call calypso_mpi_bcast_real(fld%d_fld, num64, irank_org)
 !
       end subroutine share_each_field_data
 !
@@ -115,10 +114,10 @@
       integer(kind = kint), intent(in) :: ip_org
       type(field_IO), intent(inout) :: fld_IO
 !
-      integer(kind = kint) ::  irank_org
+      integer :: irank_org
 !
 !
-      irank_org = mod(ip_org-1,nprocs)
+      irank_org = int(mod(ip_org-1,nprocs))
 !        write(*,*) 'MPI_Bcast fld_IO%num_field_IO', ip
       call MPI_Bcast(fld_IO%num_field_IO, 1,                            &
      &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
@@ -130,10 +129,10 @@
 !
 !
 !        write(*,*) 'MPI_Bcast fld_IO%istack_comp_IO', ip
-      call MPI_Bcast(fld_IO%istack_comp_IO, (fld_IO%num_field_IO+1),    &
+      call MPI_Bcast(fld_IO%istack_comp_IO, int(fld_IO%num_field_IO+1), &
      &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
 !        write(*,*) 'MPI_Bcast phys_name', ip
-      call MPI_Bcast(fld_IO%fld_name, (fld_IO%num_field_IO*kchara),     &
+      call MPI_Bcast(fld_IO%fld_name, int(fld_IO%num_field_IO*kchara),  &
      &    CALYPSO_CHARACTER, irank_org, CALYPSO_COMM, ierr_MPI)
       call s_cal_numbers_from_stack(fld_IO%num_field_IO,                &
      &    fld_IO%num_comp_IO, fld_IO%istack_comp_IO)
@@ -149,10 +148,11 @@
       integer(kind = kint), intent(in) :: ip_org
       type(field_IO), intent(inout) :: fld_IO
 !
-      integer(kind = kint) ::  irank_org, num
+      integer(kind = kint) :: num
+      integer :: irank_org
 !
 !
-      irank_org = mod(ip_org-1,nprocs)
+      irank_org = int(mod(ip_org-1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
       call MPI_Bcast(fld_IO%nnod_IO, 1, CALYPSO_INTEGER,                &
      &    irank_org, CALYPSO_COMM, ierr_MPI)
@@ -193,10 +193,10 @@
       character(len=kchara), intent(inout) :: fld_name(num_field)
 !
 !        write(*,*) 'MPI_Bcast istack_comp', ip
-      call MPI_Bcast(istack_comp, (num_field+1),                        &
+      call MPI_Bcast(istack_comp, int(num_field+1),                     &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !        write(*,*) 'MPI_Bcast phys_name', ip
-      call MPI_Bcast(fld_name, (num_field*kchara),                      &
+      call MPI_Bcast(fld_name, int(num_field*kchara),                   &
      &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine share_field_stack

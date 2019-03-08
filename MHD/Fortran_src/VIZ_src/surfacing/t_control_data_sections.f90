@@ -281,7 +281,7 @@
       if(my_rank .gt. 0) call alloc_psf_ctl_stract(psf_ctls)
 !
       call MPI_BCAST                                                    &
-     &   (psf_ctls%fname_psf_ctl, (kchara*psf_ctls%num_psf_ctl),        &
+     &   (psf_ctls%fname_psf_ctl, int(kchara*psf_ctls%num_psf_ctl),     &
      &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
       do i_psf = 1, psf_ctls%num_psf_ctl
         if(psf_ctls%fname_psf_ctl(i_psf) .eq. 'NO_FILE') then
@@ -309,7 +309,7 @@
       if(my_rank .gt. 0) call alloc_iso_ctl_stract(iso_ctls)
 !
       call MPI_BCAST                                                    &
-     &   (iso_ctls%fname_iso_ctl, (kchara*iso_ctls%num_iso_ctl),        &
+     &   (iso_ctls%fname_iso_ctl, int(kchara*iso_ctls%num_iso_ctl),     &
      &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
       do i_iso = 1, iso_ctls%num_iso_ctl
         if(iso_ctls%fname_iso_ctl(i_iso) .eq. 'NO_FILE') then

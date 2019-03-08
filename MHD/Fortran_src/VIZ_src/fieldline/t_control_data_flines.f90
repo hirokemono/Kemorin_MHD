@@ -119,9 +119,9 @@
 !
       if(my_rank .gt. 0)  call alloc_fline_ctl_struct(fline_ctls)
 !
-      call MPI_BCAST                                                    &
-     &  (fline_ctls%fname_fline_ctl, (kchara*fline_ctls%num_fline_ctl), &
-     &   CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(fline_ctls%fname_fline_ctl,                        &
+     &   int(kchara*fline_ctls%num_fline_ctl), CALYPSO_CHARACTER, 0,    &
+     &   CALYPSO_COMM, ierr_MPI)
       do i_fline = 1, fline_ctls%num_fline_ctl
         if(fline_ctls%fname_fline_ctl(i_fline) .eq. 'NO_FILE') then
           call bcast_field_line_ctl                                     &

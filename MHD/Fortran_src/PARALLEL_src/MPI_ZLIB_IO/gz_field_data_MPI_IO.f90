@@ -208,7 +208,7 @@
       if(my_rank .eq. 0) call read_bufer_istack_nod_buffer              &
      &                      (textbuf_p, nprocs_in, istack_buf)
 !
-      call MPI_BCAST(istack_buf, (nprocs_in+1), CALYPSO_GLOBAL_INT,     &
+      call MPI_BCAST(istack_buf, int(nprocs_in+1), CALYPSO_GLOBAL_INT,  &
      &    0, CALYPSO_COMM, ierr_MPI)
 !
 !

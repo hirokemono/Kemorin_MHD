@@ -47,11 +47,12 @@
 !
       use new_SPH_restart
       use sph_file_MPI_IO_select
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ip_org
       type(communication_table), intent(inout) :: nod_comm
 !
-      integer(kind = kint) :: irank_org
+      integer :: irank_org
 !
 !
         irank_org = int(mod(ip_org - 1,nprocs))
@@ -69,23 +70,25 @@
       end if
 !
 !      write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(nod_comm%id_neib, nod_comm%num_neib,               &
+      call MPI_Bcast(nod_comm%id_neib, int(nod_comm%num_neib),          &
      &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(nod_comm%istack_import, nod_comm%num_neib,         &
+      call MPI_Bcast(nod_comm%istack_import, int(nod_comm%num_neib),    &
      &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(nod_comm%istack_export, nod_comm%num_neib,         &
+      call MPI_Bcast(nod_comm%istack_export, int(nod_comm%num_neib),    &
      &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(nod_comm%item_import, nod_comm%ntot_import,        &
-     &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(nod_comm%item_export, nod_comm%ntot_export,        &
-     &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int(nod_comm%item_import,                  &
+     &    cast_long(nod_comm%ntot_import), irank_org)
+      call calypso_mpi_bcast_int(nod_comm%item_export,                  &
+     &    cast_long(nod_comm%ntot_export), irank_org)
 !
       end subroutine share_each_comm_table
 !
 ! -----------------------------------------------------------------------
 !
       subroutine share_each_node_data(ip_org, node)
+!
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ip_org
       type(node_data), intent(inout) :: node
@@ -105,10 +108,10 @@
       end if
 !
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(node%inod_global, node%numnod, CALYPSO_GLOBAL_INT, &
-     &    irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(node%xx, (3*node%numnod), CALYPSO_REAL,            &
-     &    irank_org, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int8                                       &
+     &   (node%inod_global, cast_long(node%numnod), irank_org)
+      call calypso_mpi_bcast_real                                       &
+     &   (node%xx, cast_long(3*node%numnod), irank_org)
 !
       end subroutine share_each_node_data
 !
@@ -117,6 +120,7 @@
       subroutine share_each_element_data(ip_org, ele)
 !
       use set_nnod_4_ele_by_type
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ip_org
       type(element_data), intent(inout) :: ele
@@ -138,16 +142,15 @@
       end if
 !
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(ele%iele_global, ele%numele,  CALYPSO_GLOBAL_INT,  &
-     &     irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ele%elmtyp, ele%numele,  CALYPSO_INTEGER,          &
-     &     irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ele%nodelm, ele%numele,  CALYPSO_INTEGER,          &
-     &     irank_org, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int8                                       &
+     &    (ele%iele_global, cast_long(ele%numele), irank_org)
+      call calypso_mpi_bcast_int                                        &
+     &    (ele%elmtyp, cast_long(ele%numele), irank_org)
+      call calypso_mpi_bcast_int                                        &
+     &   (ele%nodelm, cast_long(ele%numele), irank_org)
 !
       num = ele%numele * ele%nnod_4_ele
-      call MPI_Bcast(ele%nodelm, num,  CALYPSO_INTEGER,                 &
-     &     irank_org, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int(ele%ie, cast_long(num), irank_org)
 !
       end subroutine share_each_element_data
 !
@@ -155,6 +158,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine share_each_group_data(ip_org, group)
+!
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ip_org
       type(group_data), intent(inout) :: group
@@ -175,17 +180,17 @@
       end if
 !
       if(group%num_grp .gt. 0) then
-        call MPI_Bcast(group%istack_grp, (group%num_grp+1),             &
-     &      CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(group%nitem_grp, group%num_grp,                  &
-     &      CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(group%grp_name, (group%num_grp*kchara),          &
-     &      CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_int                                      &
+     &     (group%istack_grp, cast_long(group%num_grp+1), irank_org)
+        call calypso_mpi_bcast_int                                      &
+     &     (group%nitem_grp, cast_long(group%num_grp), irank_org)
+        call calypso_mpi_bcast_character                                &
+     &     (group%grp_name, cast_long(group%num_grp*kchara), 0)
       end if
 !
       if(group%num_item .gt. 0) then
-        call MPI_Bcast(group%item_grp, group%num_item,                  &
-     &      CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_int                                      &
+     &     (group%item_grp, cast_long(group%num_item), irank_org)
       end if
 !
       end subroutine share_each_group_data
@@ -193,6 +198,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine share_each_surf_group_data(ip_org, sf_group)
+!
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ip_org
       type(surface_group_data), intent(inout) :: sf_group
@@ -213,17 +220,17 @@
       end if
 !
       if(sf_group%num_grp .gt. 0) then
-        call MPI_Bcast(sf_group%istack_grp, (sf_group%num_grp+1),       &
-     &      CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(sf_group%nitem_grp, sf_group%num_grp,            &
-     &      CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(sf_group%grp_name, (sf_group%num_grp*kchara),    &
-     &      CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_int(sf_group%istack_grp,                 &
+     &      cast_long(sf_group%num_grp+1), irank_org)
+        call calypso_mpi_bcast_int(sf_group%nitem_grp,                  &
+     &      cast_long(sf_group%num_grp), irank_org)
+        call calypso_mpi_bcast_character(sf_group%grp_name,             &
+     &      cast_long(sf_group%num_grp*kchara), 0)
       end if
 !
       if(sf_group%num_item .gt. 0) then
-        call MPI_Bcast(sf_group%item_sf_grp, (2*sf_group%num_item),     &
-     &      CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_int(sf_group%item_sf_grp,                &
+     &      cast_long(2*sf_group%num_item), irank_org)
       end if
 !
       end subroutine share_each_surf_group_data
@@ -232,6 +239,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine share_doble_numbering(ip_org, dbl_id)
+!
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ip_org
       type(parallel_double_numbering), intent(inout) :: dbl_id
@@ -251,10 +260,10 @@
       end if
 !
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(dbl_id%inod_local, dbl_id%nnod_local,              &
-     &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(dbl_id%irank_home, dbl_id%nnod_local,              &
-     &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &   (dbl_id%inod_local, cast_long(dbl_id%nnod_local), irank_org)
+      call calypso_mpi_bcast_int                                        &
+     &   (dbl_id%irank_home, cast_long(dbl_id%nnod_local), irank_org)
 !
       end subroutine share_doble_numbering
 !

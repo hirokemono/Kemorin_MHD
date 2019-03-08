@@ -44,7 +44,8 @@
       character(len = kchara), intent(in) :: file_prefix
       type(LIC_kernel_image), intent(inout) :: k_img
 !
-      integer(kind = kint) :: iflag_rgba, n_pixel
+      integer(kind = kint_gl) :: n_pixel
+      integer(kind = kint) :: iflag_rgba
       character(len=kchara) :: file_tmp
 !
 !
@@ -72,8 +73,7 @@
 !
 !
       if(my_rank .ne. 0) call alloc_lic_kernel_image(k_img)
-      call mpi_Bcast(k_img%gray, n_pixel,                              &
-     &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character(k_img%gray, n_pixel, 0)
 !
       end subroutine load_kernel_data_from_file
 !

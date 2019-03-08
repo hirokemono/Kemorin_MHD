@@ -178,8 +178,8 @@
       type(sph_radial_itp_data), intent(inout) :: r_itp
 !
 !
-      call MPI_Bcast(r_itp%iflag_same_rgrid, 1, CALYPSO_INTEGER,        &
-     &    0, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(r_itp%iflag_same_rgrid,                            &
+     &    1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(new_sph_mesh%sph%sph_rj%nidx_rj(1),                &
      &    1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       if(my_rank .eq. 0) write(*,*) 'iflag_same_rgrid: ',               &
@@ -196,11 +196,12 @@
      &      0, CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(r_itp%kr_outer_domain, 1, CALYPSO_INTEGER,       &
      &      0, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(r_itp%k_old2new_in, r_itp%nri_old2new,           &
+!
+        call MPI_Bcast(r_itp%k_old2new_in, int(r_itp%nri_old2new),      &
      &      CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(r_itp%k_old2new_out, r_itp%nri_old2new,          &
+        call MPI_Bcast(r_itp%k_old2new_out, int(r_itp%nri_old2new),     &
      &      CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(r_itp%coef_old2new_in, r_itp%nri_old2new,        &
+        call MPI_Bcast(r_itp%coef_old2new_in, int(r_itp%nri_old2new),   &
      &      CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
       end if
 !

@@ -133,7 +133,7 @@
       if(my_rank .gt. 0)  call alloc_lic_ctl_struct(lic_ctls)
 !
       call MPI_BCAST                                                    &
-     &   (lic_ctls%fname_lic_ctl, (kchara*lic_ctls%num_lic_ctl),        &
+     &   (lic_ctls%fname_lic_ctl, int(kchara*lic_ctls%num_lic_ctl),     &
      &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_files_4_lic_ctl

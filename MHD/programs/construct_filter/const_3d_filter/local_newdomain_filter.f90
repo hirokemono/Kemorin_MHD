@@ -83,7 +83,7 @@
      &     (nprocs_2nd, itl_nod_part, nod_d_grp, comm_part)
       end if
 !
-      call bcast_num_filter_part_table(nprocs_2nd, itl_nod_part)
+      call bcast_num_filter_part_table(int(nprocs_2nd), itl_nod_part)
 !
       if (my_rank .ne. 0) call alloc_id_4_subdomain(itl_nod_part)
       call alloc_internal_4_part(itl_nod_part)

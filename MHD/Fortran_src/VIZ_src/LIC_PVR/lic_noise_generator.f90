@@ -166,9 +166,9 @@
         call close_rawfile()
       end if
 !
-      call MPI_BCAST(ierr, ione,                                        &
+      call MPI_BCAST(ierr, 1,                                           &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(d_size, ione,                                      &
+      call MPI_BCAST(d_size, 1,                                         &
      &    CALYPSO_GLOBAL_INT, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) allocate( n_grad_data(d_size))

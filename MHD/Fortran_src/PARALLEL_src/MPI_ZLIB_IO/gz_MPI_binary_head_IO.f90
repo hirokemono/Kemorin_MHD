@@ -66,8 +66,7 @@
         call calypso_mpi_seek_write_gz(IO_param%id_file, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
-      call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,       &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -106,8 +105,7 @@
         call calypso_mpi_seek_write_gz(IO_param%id_file, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
-      call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,       &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -133,8 +131,7 @@
         call calypso_mpi_seek_write_gz(IO_param%id_file, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
-      call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,       &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -160,8 +157,7 @@
         call calypso_mpi_seek_write_gz(IO_param%id_file, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
-      call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,       &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -172,37 +168,30 @@
 !
       subroutine gz_mpi_read_mul_inthead_b(IO_param, num, int_dat)
 !
+      use transfer_to_long_integers
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
-!
-      integer(kind = kint_gl) :: l8_byte
-      integer(kind = kint_gl) :: num64
 !
 !
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        ilength = num * kint
-        zbuf%ilen_gz = int(dble(ilength)*1.01+24, KIND(zbuf%ilen_gz))
+        zbuf%ilen_gz = int(dble(num*kint)*1.01+24, KIND(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
-        num64 = num
-        call infleate_int_vector_b(num64, int_dat, zbuf)
+        call infleate_int_vector_b(cast_long(num), int_dat, zbuf)
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = ilength
-          call byte_swap_32bit_f(l8_byte, int_dat(1))
+          call byte_swap_32bit_f(cast_long(num*kint), int_dat(1))
         end if
       end if
 !
-      call MPI_BCAST(int_dat, num, CALYPSO_INTEGER, 0,                  &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
+      call calypso_mpi_bcast_int(int_dat, cast_long(num), 0)
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,       &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -226,37 +215,30 @@
 !
       subroutine gz_mpi_read_mul_int8head_b(IO_param, num, int8_dat)
 !
+      use transfer_to_long_integers
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
-!
-      integer(kind = kint_gl) :: l8_byte
-      integer(kind = kint_gl) :: num64
 !
 !
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        ilength = num * kint_gl
-        zbuf%ilen_gz = int(dble(ilength)*1.01+24, KIND(zbuf%ilen_gz))
+        zbuf%ilen_gz = int(dble(num*kint_gl)*1.01+24, KIND(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
-        num64 = num
-        call infleate_int8_vector_b(num64, int8_dat, zbuf)
+        call infleate_int8_vector_b(cast_long(num), int8_dat, zbuf)
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = ilength
-          call byte_swap_64bit_f(l8_byte, int8_dat(1))
+          call byte_swap_64bit_f(cast_long(num*kint_gl), int8_dat(1))
         end if
       end if
 !
-      call MPI_BCAST(int8_dat, num, CALYPSO_GLOBAL_INT, 0,              &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
+      call calypso_mpi_bcast_int8(int8_dat, cast_long(num), 0)
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,       &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -266,30 +248,27 @@
 !
       subroutine gz_mpi_read_mul_charahead_b(IO_param, num, chara_dat)
 !
+      use transfer_to_long_integers
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind=kint), intent(in) :: num
       character(len=kchara), intent(inout) :: chara_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
-      integer(kind = kint_gl) :: num64
 !
 !
-      ilength = num * kchara
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        zbuf%ilen_gz = int(real(ilength)*1.01+24, KIND(zbuf%ilen_gz))
+        zbuf%ilen_gz = int(real(num*kchara)*1.01+24,KIND(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
-        num64 = num
-        call infleate_1d_character_b(num64, chara_dat, zbuf)
+        call infleate_1d_character_b(cast_long(num), chara_dat, zbuf)
       end if
 !
-      call MPI_BCAST(chara_dat, ilength, CALYPSO_CHARACTER, 0,          &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
+      call calypso_mpi_bcast_character                                  &
+     &   (chara_dat, cast_long(num*kchara), 0)
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,       &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -299,37 +278,30 @@
 !
       subroutine gz_mpi_read_mul_realhead_b(IO_param, num, real_dat)
 !
+      use transfer_to_long_integers
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind=kint), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
-!
-      integer(kind = kint_gl) :: l8_byte
-      integer(kind = kint_gl) :: num64
 !
 !
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        ilength = num * kreal
-        zbuf%ilen_gz = int(dble(ilength)*1.01+24, KIND(zbuf%ilen_gz))
+        zbuf%ilen_gz = int(dble(num*kreal)*1.01+24, KIND(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
-        num64 = num
-        call infleate_1d_vector_b(num64, real_dat, zbuf)
+        call infleate_1d_vector_b(cast_long(num), real_dat, zbuf)
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = ilength
-          call byte_swap_64bit_f(l8_byte, real_dat(1))
+          call byte_swap_64bit_f(cast_long(num*kreal), real_dat(1))
         end if
       end if
 !
-      call MPI_BCAST(real_dat, num, CALYPSO_REAL, 0,                    &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
+      call calypso_mpi_bcast_real(real_dat, cast_long(num), 0)
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,       &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !

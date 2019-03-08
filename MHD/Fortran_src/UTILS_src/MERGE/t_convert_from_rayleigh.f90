@@ -188,8 +188,9 @@
 !
       real(kind = kreal), allocatable :: theta_org(:)
 !
-      integer(kind = kint) :: k1, k2, nmat
+      integer(kind = kint) :: k1, k2
       integer(kind = kint) :: k_ICB
+      integer(kind = kint_gl) :: nmat
       real(kind = kreal) :: r_ICB, r_norm
 !
 !
@@ -221,9 +222,8 @@
         deallocate(theta_org)
       end if
 !
-      nmat = ra_rst%nri_org*ra_rst%nri_org
-      call MPI_Bcast(ra_rst%Cheby_fwd, nmat,                            &
-     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      nmat = ra_rst%nri_org * ra_rst%nri_org
+      call calypso_mpi_bcast_real(ra_rst%Cheby_fwd, nmat, 0)
 !
       end subroutine chebyshev_fwd_mat_4_rayleigh
 !

@@ -377,8 +377,8 @@
       if(my_rank .eq. 0) call read_field_num_buffer                     &
      &                      (textbuf_c, num_field)
 !
-      call MPI_BCAST(istack_merged, (nprocs_in+1), CALYPSO_GLOBAL_INT,  &
-     &    0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(istack_merged, int(nprocs_in+1),                   &
+     &    CALYPSO_GLOBAL_INT, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(num_field, 1, CALYPSO_INTEGER, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
 !
@@ -412,7 +412,7 @@
       if(my_rank .eq. 0) call read_field_comp_buffer                    &
      &                      (textbuf, num_field, ncomp_field)
 !
-      call MPI_BCAST(ncomp_field, num_field, CALYPSO_INTEGER, 0,        &
+      call MPI_BCAST(ncomp_field, int(num_field), CALYPSO_INTEGER, 0,   &
      &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine read_field_num_gz_mpi

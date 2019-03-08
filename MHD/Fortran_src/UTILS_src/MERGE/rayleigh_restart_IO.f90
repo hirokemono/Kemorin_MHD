@@ -45,7 +45,7 @@
 !
       type(field_IO), intent(inout) :: fld_IO
 !
-      integer(kind = kint) :: ilength
+      integer :: ilength
 !
 !
       if(my_rank .eq. 0) then
@@ -59,7 +59,7 @@
       if(my_rank .eq. 0) then
         call set_rayleigh_restart_field(dir, i_step, fld_IO)
       end if
-      ilength = fld_IO%num_field_IO * kchara
+      ilength = int(fld_IO%num_field_IO * kchara)
       call MPI_Bcast(fld_IO%fld_name, ilength,                          &
      &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(fld_IO%num_comp_IO, fld_IO%num_field_IO,           &

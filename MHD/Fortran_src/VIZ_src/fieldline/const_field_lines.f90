@@ -72,8 +72,8 @@
       type(local_fieldline), intent(inout) :: fline_lc
 !
       integer(kind = kint) :: iflag_comm
-      integer(kind = kint) :: i, ist, ied, num7, ip, src_rank, nline
-      integer(kind = kint) :: inum
+      integer(kind = kint) :: i, ist, ied, ip, nline, inum
+      integer :: src_rank, num4
 !
 !
       if(i_debug .gt. iflag_full_msg) then
@@ -124,13 +124,13 @@
         call calypso_MPI_barrier
 !
         do ip = 1, nprocs
-          src_rank = ip - 1
+          src_rank = int(ip - 1)
           ist = fln_tce%istack_current_fline(ip-1)
-          num7 = 7 * fln_tce%num_current_fline(ip)
-          if(num7 .gt. 0) then
-            call mpi_Bcast(fln_tce%id_fline_export(1,ist+1), num7,      &
+          num4 = 7 * fln_tce%num_current_fline(ip)
+          if(num4 .gt. 0) then
+            call mpi_Bcast(fln_tce%id_fline_export(1,ist+1), num4,      &
      &          CALYPSO_INTEGER, src_rank, CALYPSO_COMM, ierr_MPI)
-            call mpi_Bcast(fln_tce%fline_export(1,ist+1), num7,         &
+            call mpi_Bcast(fln_tce%fline_export(1,ist+1), num4,         &
      &          CALYPSO_REAL, src_rank, CALYPSO_COMM, ierr_MPI)
           end if
         end do

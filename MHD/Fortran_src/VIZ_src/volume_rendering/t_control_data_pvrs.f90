@@ -127,7 +127,7 @@
       if(my_rank .gt. 0)  call alloc_pvr_ctl_struct(pvr_ctls)
 !
       call MPI_BCAST                                                    &
-     &   (pvr_ctls%fname_pvr_ctl, (kchara*pvr_ctls%num_pvr_ctl),        &
+     &   (pvr_ctls%fname_pvr_ctl, int(kchara*pvr_ctls%num_pvr_ctl),     &
      &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_files_4_pvr_ctl

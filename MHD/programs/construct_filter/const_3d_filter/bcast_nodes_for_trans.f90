@@ -90,7 +90,7 @@
 !
       use set_filters_4_new_domains
 !
-      integer(kind = kint), intent(in) :: nprocs_2nd
+      integer, intent(in) :: nprocs_2nd
       type(internal_4_partitioner), intent(inout)  :: itl_nod_part
 !
 !
@@ -123,22 +123,19 @@
       subroutine bcast_xx_whole_nod(nnod_global, itl_nod_part)
 !
       use set_filters_4_new_domains
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: nnod_global
       type(internal_4_partitioner), intent(inout)  :: itl_nod_part
-      integer(kind = kint) :: num
 !
 !
-      num = 3 * nnod_global
+      call calypso_mpi_bcast_real                                       &
+     &   (xx_whole_nod(1,1), cast_long(3*nnod_global), 0)
 !
-      call MPI_Bcast(xx_whole_nod(1,1), num, CALYPSO_REAL,              &
-     &    0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%id_inter_subdomain(1),                &
-     &    itl_nod_part%ntot_inter_sub, CALYPSO_INTEGER, 0,              &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast                                                    &
-     &   (itl_nod_part%id_4_subdomain(1), itl_nod_part%ntot_sub,        &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int(itl_nod_part%id_inter_subdomain(1),    &
+     &    cast_long(itl_nod_part%ntot_inter_sub), 0)
+      call calypso_mpi_bcast_int(itl_nod_part%id_4_subdomain(1),        &
+     &    cast_long(itl_nod_part%ntot_sub), 0)
 !
       end subroutine bcast_xx_whole_nod
 !
