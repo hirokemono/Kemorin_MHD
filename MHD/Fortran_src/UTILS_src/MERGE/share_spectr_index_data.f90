@@ -39,22 +39,22 @@
       irank_org = int(mod(ip_org - 1,nprocs))
 !      write(*,*) 'MPI_Bcast irank_sph_rj', ip_org
       call MPI_Bcast(sph_mesh%sph%sph_rj%irank_sph_rj,                  &
-     &    itwo, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+     &    2, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
 !      write(*,*) 'MPI_Bcast nidx_global_rj', ip_org
       call MPI_Bcast(sph_mesh%sph%sph_rj%nidx_global_rj,                &
-     &    itwo, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+     &    2, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
 !      write(*,*) 'MPI_Bcast nnod_rj', ip_org
       call MPI_Bcast(sph_mesh%sph%sph_rj%nnod_rj,                       &
-     &    ione, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+     &    1, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
 !      write(*,*) 'MPI_Bcast nidx_rj', ip_org
       call MPI_Bcast(sph_mesh%sph%sph_rj%nidx_rj,                       &
-     &    itwo, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+     &    2, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
 !      write(*,*) 'MPI_Bcast ist_rj', ip_org
       call MPI_Bcast(sph_mesh%sph%sph_rj%ist_rj,                        &
-     &    itwo, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+     &    2, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
 !      write(*,*) 'MPI_Bcast ied_rj', ip_org
       call MPI_Bcast(sph_mesh%sph%sph_rj%ied_rj,                        &
-     &    itwo, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+     &    2, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
         call alloc_type_spheric_param_rj(sph_mesh%sph%sph_rj)

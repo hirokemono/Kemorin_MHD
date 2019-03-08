@@ -119,7 +119,7 @@
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
 !
 !
-      call MPI_BCAST(pvr_ctls%num_pvr_ctl,  ione,                       &
+      call MPI_BCAST(pvr_ctls%num_pvr_ctl,  1,                          &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call calypso_mpi_barrier
       if(pvr_ctls%num_pvr_ctl .le. 0) return

@@ -67,7 +67,7 @@
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT, 0,               &
+     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -107,7 +107,7 @@
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT, 0,               &
+     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -134,7 +134,7 @@
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT, 0,               &
+     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -161,7 +161,7 @@
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT, 0,               &
+     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -202,7 +202,7 @@
       call MPI_BCAST(int_dat, num, CALYPSO_INTEGER, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT, 0,               &
+     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -256,7 +256,7 @@
       call MPI_BCAST(int8_dat, num, CALYPSO_GLOBAL_INT, 0,              &
      &    CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT, 0,               &
+     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -289,7 +289,7 @@
       call MPI_BCAST(chara_dat, ilength, CALYPSO_CHARACTER, 0,          &
      &    CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT, 0,               &
+     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -329,7 +329,7 @@
       call MPI_BCAST(real_dat, num, CALYPSO_REAL, 0,                    &
      &    CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST                                                    &
-     &   (zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT, 0,               &
+     &   (zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !

@@ -341,7 +341,7 @@
       integer(kind = kint) :: i
 !
 !
-      call MPI_BCAST(lic_ctl%i_lic_control,  ione,                      &
+      call MPI_BCAST(lic_ctl%i_lic_control,  1,                         &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_type_c1(lic_ctl%LIC_field_ctl)
@@ -370,7 +370,7 @@
       call bcast_ctl_type_c1(lic_ctl%reflection_ref_type_ctl)
       call bcast_ctl_type_r1(lic_ctl%reflection_parameter_ctl)
 !
-      call MPI_BCAST(lic_ctl%num_masking_ctl,  ione,                    &
+      call MPI_BCAST(lic_ctl%num_masking_ctl,  1,                       &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       if(my_rank .ne. 0) then
         allocate(lic_ctl%mask_ctl(lic_ctl%num_masking_ctl))

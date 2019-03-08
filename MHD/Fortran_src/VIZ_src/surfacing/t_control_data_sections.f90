@@ -274,7 +274,7 @@
       integer (kind=kint) :: i_psf
 !
 !
-      call MPI_BCAST(psf_ctls%num_psf_ctl, ione,                        &
+      call MPI_BCAST(psf_ctls%num_psf_ctl, 1,                           &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       if(psf_ctls%num_psf_ctl .le. 0) return
 !
@@ -302,7 +302,7 @@
       integer (kind=kint) :: i_iso
 !
 !
-      call MPI_BCAST(iso_ctls%num_iso_ctl,  ione,                       &
+      call MPI_BCAST(iso_ctls%num_iso_ctl,  1,                          &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       if(iso_ctls%num_iso_ctl .le. 0) return
 !

@@ -97,9 +97,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(real_item%iflag, ione,                             &
+      call MPI_BCAST(real_item%iflag, 1,                                &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(real_item%realvalue, ione,                         &
+      call MPI_BCAST(real_item%realvalue, 1,                            &
      &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_type_r1
@@ -113,9 +113,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(int_item%iflag, ione,                              &
+      call MPI_BCAST(int_item%iflag, 1,                                 &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(int_item%intvalue, ione,                           &
+      call MPI_BCAST(int_item%intvalue, 1,                              &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_type_i1
@@ -129,7 +129,7 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(chara_item%iflag, ione,                            &
+      call MPI_BCAST(chara_item%iflag, 1,                               &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(chara_item%charavalue, kchara,                     &
      &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
@@ -145,9 +145,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(real2_item%iflag, ione,                            &
+      call MPI_BCAST(real2_item%iflag, 1,                               &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(real2_item%realvalue, itwo,                        &
+      call MPI_BCAST(real2_item%realvalue, 2,                           &
      &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_type_r2
@@ -161,9 +161,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(real3_item%iflag, ione,                            &
+      call MPI_BCAST(real3_item%iflag, 1,                               &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(real3_item%realvalue, ithree,                      &
+      call MPI_BCAST(real3_item%realvalue, 3,                           &
      &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_type_r3
@@ -177,9 +177,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(int3_item%iflag, ione,                             &
+      call MPI_BCAST(int3_item%iflag, 1,                                &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(int3_item%intvalue, ithree,                        &
+      call MPI_BCAST(int3_item%intvalue, 3,                             &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_type_i3
@@ -193,9 +193,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(chara3_item%iflag, ione,                           &
+      call MPI_BCAST(chara3_item%iflag, 1,                              &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(chara3_item%charavalue, ithree*kchara,             &
+      call MPI_BCAST(chara3_item%charavalue, (3*kchara),                &
      &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_type_c3
@@ -210,9 +210,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_real%num,  ione,                             &
+      call MPI_BCAST(array_real%num,  1,                                &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_real%icou, ione,                             &
+      call MPI_BCAST(array_real%icou, 1,                                &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_real(array_real)
@@ -231,9 +231,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_r2%num,  ione,                               &
+      call MPI_BCAST(array_r2%num,  1,                                  &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_r2%icou, ione,                               &
+      call MPI_BCAST(array_r2%icou, 1,                                  &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_r2(array_r2)
@@ -254,9 +254,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_r3%num,  ione,                               &
+      call MPI_BCAST(array_r3%num,  1,                                  &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_r3%icou, ione,                               &
+      call MPI_BCAST(array_r3%icou, 1,                                  &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_r3(array_r3)
@@ -279,9 +279,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_int%num,  ione,                              &
+      call MPI_BCAST(array_int%num,  1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_int%icou, ione,                              &
+      call MPI_BCAST(array_int%icou, 1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_int(array_int)
@@ -300,9 +300,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_i2%num,  ione,                               &
+      call MPI_BCAST(array_i2%num,  1,                                  &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_i2%icou, ione,                               &
+      call MPI_BCAST(array_i2%icou, 1,                                  &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_i2(array_i2)
@@ -323,9 +323,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_chara%num,  ione,                            &
+      call MPI_BCAST(array_chara%num,  1,                               &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_chara%icou, ione,                            &
+      call MPI_BCAST(array_chara%icou, 1,                               &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_chara(array_chara)
@@ -344,9 +344,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_c2%num,  ione,                              &
+      call MPI_BCAST(array_c2%num,  1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_c2%icou, ione,                              &
+      call MPI_BCAST(array_c2%icou, 1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_c2(array_c2)
@@ -367,9 +367,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_c3%num,  ione,                              &
+      call MPI_BCAST(array_c3%num,  1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_c3%icou, ione,                              &
+      call MPI_BCAST(array_c3%icou, 1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_c3(array_c3)
@@ -392,9 +392,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_cr%num,  ione,                              &
+      call MPI_BCAST(array_cr%num,  1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_cr%icou, ione,                              &
+      call MPI_BCAST(array_cr%icou, 1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_c_r(array_cr)
@@ -415,9 +415,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_ci%num,  ione,                              &
+      call MPI_BCAST(array_ci%num,  1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_ci%icou, ione,                              &
+      call MPI_BCAST(array_ci%icou, 1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_c_i(array_ci)
@@ -438,9 +438,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_cr2%num,  ione,                              &
+      call MPI_BCAST(array_cr2%num,  1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_cr2%icou, ione,                              &
+      call MPI_BCAST(array_cr2%icou, 1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_c_r2(array_cr2)
@@ -463,9 +463,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_c2r%num,  ione,                              &
+      call MPI_BCAST(array_c2r%num,  1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_c2r%icou, ione,                              &
+      call MPI_BCAST(array_c2r%icou, 1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_c2_r(array_c2r)
@@ -488,9 +488,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_icr%num,  ione,                              &
+      call MPI_BCAST(array_icr%num,  1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_icr%icou, ione,                              &
+      call MPI_BCAST(array_icr%icou, 1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_i_c_r(array_icr)
@@ -513,9 +513,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_ir%num,  ione,                               &
+      call MPI_BCAST(array_ir%num,  1,                                  &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_ir%icou, ione,                               &
+      call MPI_BCAST(array_ir%icou, 1,                                  &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_i_r(array_ir)
@@ -536,9 +536,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_i2r%num,  ione,                              &
+      call MPI_BCAST(array_i2r%num,  1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_i2r%icou, ione,                              &
+      call MPI_BCAST(array_i2r%icou, 1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_i2_r(array_i2r)
@@ -561,9 +561,9 @@
 !
       if(nprocs .eq. 1) return
 !
-      call MPI_BCAST(array_i2r2%num,  ione,                             &
+      call MPI_BCAST(array_i2r2%num,  1,                                &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_i2r2%icou, ione,                             &
+      call MPI_BCAST(array_i2r2%icou, 1,                                &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) call alloc_control_array_i2_r2(array_i2r2)

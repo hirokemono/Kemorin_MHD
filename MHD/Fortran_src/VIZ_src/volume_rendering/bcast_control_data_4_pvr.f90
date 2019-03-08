@@ -38,7 +38,7 @@
       type(pvr_parameter_ctl), intent(inout) :: pvr
 !
 !
-      call MPI_BCAST(pvr%i_pvr_ctl,  ione,                              &
+      call MPI_BCAST(pvr%i_pvr_ctl,  1,                                 &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
 !
@@ -97,19 +97,19 @@
       integer(kind = kint) :: i
 !
 !
-      call MPI_BCAST(pvr%num_pvr_sect_ctl,  ione,                       &
+      call MPI_BCAST(pvr%num_pvr_sect_ctl,  1,                          &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       if(pvr%num_pvr_sect_ctl .gt. 0 .and. my_rank .gt. 0) then
         allocate(pvr%pvr_sect_ctl(pvr%num_pvr_sect_ctl))
       end if
 !
-      call MPI_BCAST(pvr%i_pvr_sect,  ione,                             &
+      call MPI_BCAST(pvr%i_pvr_sect,  1,                                &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       do i = 1, pvr%num_pvr_sect_ctl
         call MPI_BCAST(pvr%pvr_sect_ctl(i)%fname_sect_ctl, kchara,      &
      &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-        call MPI_BCAST(pvr%pvr_sect_ctl(i)%psf_c%i_psf_ctl,  ione,      &
+        call MPI_BCAST(pvr%pvr_sect_ctl(i)%psf_c%i_psf_ctl,     1,      &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
         call bcast_section_def_control(pvr%pvr_sect_ctl(i)%psf_c)
@@ -127,9 +127,9 @@
       integer(kind = kint) :: i
 !
 !
-      call MPI_BCAST(pvr%i_pvr_iso,  ione,                              &
+      call MPI_BCAST(pvr%i_pvr_iso,  1,                                 &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(pvr%num_pvr_iso_ctl,  ione,                        &
+      call MPI_BCAST(pvr%num_pvr_iso_ctl,  1,                           &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       if(pvr%num_pvr_iso_ctl .gt. 0 .and. my_rank .gt. 0) then
         allocate(pvr%pvr_iso_ctl(pvr%num_pvr_iso_ctl))
@@ -152,7 +152,7 @@
       type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
 !
 !
-      call MPI_BCAST(cbar_ctl%i_pvr_colorbar,  ione,                    &
+      call MPI_BCAST(cbar_ctl%i_pvr_colorbar,  1,                       &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_type_i1(cbar_ctl%font_size_ctl)
@@ -177,7 +177,7 @@
       type(pvr_movie_ctl), intent(inout) :: movie
 !
 !
-      call MPI_BCAST(movie%i_pvr_rotation,  ione,                       &
+      call MPI_BCAST(movie%i_pvr_rotation,  1,                          &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_type_i1(movie%num_frames_ctl)
@@ -193,7 +193,7 @@
       type(pvr_light_ctl), intent(inout) :: light
 !
 !
-      call MPI_BCAST(light%i_pvr_lighting,  ione,                       &
+      call MPI_BCAST(light%i_pvr_lighting,  1,                          &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_array_r3(light%light_position_ctl)
@@ -211,7 +211,7 @@
       type(pvr_colormap_ctl), intent(inout) :: color
 !
 !
-      call MPI_BCAST(color%i_pvr_colordef,  ione,                       &
+      call MPI_BCAST(color%i_pvr_colordef,  1,                          &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_array_r2(color%colortbl_ctl)
@@ -242,7 +242,7 @@
       type(modeview_ctl), intent(inout) :: mat
 !
 !
-      call MPI_BCAST(mat%i_view_transform,  ione,                       &
+      call MPI_BCAST(mat%i_view_transform,  1,                          &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_projection_mat_ctl(mat)
@@ -272,7 +272,7 @@
       type(modeview_ctl), intent(inout) :: mat
 !
 !
-      call MPI_BCAST(mat%i_project_mat,  ione,                          &
+      call MPI_BCAST(mat%i_project_mat,  1,                             &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_type_r1(mat%perspective_angle_ctl)
@@ -289,7 +289,7 @@
       type(modeview_ctl), intent(inout) :: mat
 !
 !
-      call MPI_BCAST(mat%i_image_size,  ione,                           &
+      call MPI_BCAST(mat%i_image_size,  1,                              &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_type_i1(mat%num_xpixel_ctl)
@@ -304,7 +304,7 @@
       type(modeview_ctl), intent(inout) :: mat
 !
 !
-      call MPI_BCAST(mat%i_stereo_view,  ione,                          &
+      call MPI_BCAST(mat%i_stereo_view,  1,                             &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_type_r1(mat%focalpoint_ctl)

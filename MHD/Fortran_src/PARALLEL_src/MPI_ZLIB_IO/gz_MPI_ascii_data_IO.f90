@@ -62,7 +62,7 @@
         call calypso_mpi_seek_write_gz(IO_param%id_file, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
-      call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT,          &
      &    0, CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -179,7 +179,7 @@
 !
       call MPI_BCAST(gz_mpi_read_charahead, ilength,                    &
      &    CALYPSO_CHARACTER, 0,  CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT,          &
      &    0, CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
@@ -237,7 +237,7 @@
         call infleate_skip_header(ilength, zbuf)
       end if
 !
-      call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT,          &
      &    0, CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !

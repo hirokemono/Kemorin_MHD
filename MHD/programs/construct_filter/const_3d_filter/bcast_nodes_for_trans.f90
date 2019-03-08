@@ -64,7 +64,7 @@
       end if
 !
       if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+1)
-      call MPI_Bcast(nod_d_grp%num_s_domin, ione, CALYPSO_INTEGER,      &
+      call MPI_Bcast(nod_d_grp%num_s_domin, 1, CALYPSO_INTEGER,         &
      &    0, CALYPSO_COMM, ierr_MPI)
       if(iflag_F3D_time) call end_elapsed_time(ist_elapsed_F3D+1)
 !
@@ -98,22 +98,22 @@
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(itl_nod_part%istack_inter_sub(1), nprocs_2nd,      &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%ntot_inter_sub,  ione,                &
+      call MPI_Bcast(itl_nod_part%ntot_inter_sub,  1,                   &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%nmax_inter_sub,  ione,                &
+      call MPI_Bcast(itl_nod_part%nmax_inter_sub,  1,                   &
      &    CALYPSO_INTEGER,  0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%nmin_inter_sub,  ione,                &
+      call MPI_Bcast(itl_nod_part%nmin_inter_sub,  1,                   &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call MPI_Bcast(itl_nod_part%num_4_subdomain(1), nprocs_2nd,       &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(itl_nod_part%istack_4_subdomain(1),  nprocs_2nd,   &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%ntot_sub,  ione, CALYPSO_INTEGER,     &
+      call MPI_Bcast(itl_nod_part%ntot_sub,  1, CALYPSO_INTEGER,        &
      &    0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%nmax_sub,  ione, CALYPSO_INTEGER,     &
+      call MPI_Bcast(itl_nod_part%nmax_sub,  1, CALYPSO_INTEGER,        &
      &    0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%nmin_sub,  ione, CALYPSO_INTEGER,     &
+      call MPI_Bcast(itl_nod_part%nmin_sub,  1, CALYPSO_INTEGER,        &
      &    0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_num_filter_part_table

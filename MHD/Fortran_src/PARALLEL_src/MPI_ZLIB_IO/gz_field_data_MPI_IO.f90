@@ -103,7 +103,7 @@
         call calypso_mpi_seek_write_gz(id_fld, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
-      call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT,          &
      &    0, CALYPSO_COMM, ierr_MPI)
       ioff_gl = ioff_gl + zbuf%ilen_gzipped
 !
@@ -136,7 +136,7 @@
         call infleate_characters(ilength, chara_dat, zbuf)
       end if
 !
-      call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT,          &
      &    0, CALYPSO_COMM, ierr_MPI)
       ioff_gl = ioff_gl + zbuf%ilen_gzipped
 !
@@ -170,7 +170,7 @@
       end if
 !
       call sync_field_name_mpi(ilength, field_name)
-      call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT,          &
      &    0, CALYPSO_COMM, ierr_MPI)
       ioff_gl = ioff_gl + zbuf%ilen_gzipped
 !

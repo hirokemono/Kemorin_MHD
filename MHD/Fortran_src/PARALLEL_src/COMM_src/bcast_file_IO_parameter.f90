@@ -35,9 +35,9 @@
 !
       call MPI_Bcast(file_param%file_prefix, kchara,                    &
      &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(file_param%iflag_IO ,ione,                         &
+      call MPI_Bcast(file_param%iflag_IO , 1,                           &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(file_param%iflag_format, ione,                     &
+      call MPI_Bcast(file_param%iflag_format, 1,                        &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_field_IO_parameter
@@ -49,11 +49,11 @@
       type(FEM_file_IO_flags), intent(inout) :: FEM_mesh_flags
 !
 !
-      call MPI_Bcast(FEM_mesh_flags%iflag_access_FEM, ione,             &
+      call MPI_Bcast(FEM_mesh_flags%iflag_access_FEM, 1,                &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(FEM_mesh_flags%iflag_output_SURF ,ione,            &
+      call MPI_Bcast(FEM_mesh_flags%iflag_output_SURF , 1,              &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(FEM_mesh_flags%iflag_output_VMESH, ione,           &
+      call MPI_Bcast(FEM_mesh_flags%iflag_output_VMESH, 1,              &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_FEM_file_IO_flags

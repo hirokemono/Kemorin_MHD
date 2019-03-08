@@ -159,9 +159,9 @@
           call nod_fields_send_recv(org_femmesh%mesh, nod_fld_ITP)
         end if
 !
-        call MPI_Bcast(t_ITP%init_d%time, ione, CALYPSO_REAL,           &
+        call MPI_Bcast(t_ITP%init_d%time, 1, CALYPSO_REAL,              &
      &      0, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(t_ITP%init_d%i_time_step, ione, CALYPSO_INTEGER, &
+        call MPI_Bcast(t_ITP%init_d%i_time_step, 1, CALYPSO_INTEGER,    &
      &      0, CALYPSO_COMM, ierr_MPI)
 !
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'

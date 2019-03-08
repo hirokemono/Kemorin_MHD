@@ -160,7 +160,7 @@
         num_grp_g(3) = sf_grp%num_grp
       end if
 !
-      call MPI_BCAST(num_grp_g, ithree, CALYPSO_INTEGER, 0,             &
+      call MPI_BCAST(num_grp_g, 3, CALYPSO_INTEGER, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ge. n_subdomain) then

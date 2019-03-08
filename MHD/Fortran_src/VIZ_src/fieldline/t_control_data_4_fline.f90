@@ -219,7 +219,7 @@
       type(fline_ctl), intent(inout) :: fln
 !
 !
-      call MPI_BCAST(fln%i_vr_fline_ctl,  ione,                         &
+      call MPI_BCAST(fln%i_vr_fline_ctl,  1,                            &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_array_c1(fln%fline_area_grp_ctl)

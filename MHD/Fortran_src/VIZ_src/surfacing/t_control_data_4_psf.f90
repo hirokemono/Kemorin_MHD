@@ -410,9 +410,9 @@
       type(psf_ctl), intent(inout) :: psf_c
 !
 !
-      call MPI_BCAST(psf_c%i_psf_ctl,  ione,                            &
+      call MPI_BCAST(psf_c%i_psf_ctl,  1,                               &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(psf_c%i_output_field,  ione,                       &
+      call MPI_BCAST(psf_c%i_output_field,  1,                          &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_array_c2(psf_c%psf_out_field_ctl)
@@ -434,9 +434,9 @@
       type(psf_ctl), intent(inout) :: psf_c
 !
 !
-      call MPI_BCAST(psf_c%i_surface_define,  ione,                     &
+      call MPI_BCAST(psf_c%i_surface_define,  1,                        &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(psf_c%i_plot_area,  ione,                          &
+      call MPI_BCAST(psf_c%i_plot_area,  1,                             &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_array_cr(psf_c%psf_coefs_ctl)

@@ -195,9 +195,9 @@
       type(parallel_sph_shell_control), intent(inout) :: psph_ctl
 !
 !
-      call MPI_Bcast(psph_ctl%iflag_sph_shell, ione,                    &
+      call MPI_Bcast(psph_ctl%iflag_sph_shell, 1,                       &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(psph_ctl%ifile_sph_shell, ione,                    &
+      call MPI_Bcast(psph_ctl%ifile_sph_shell, 1,                       &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(psph_ctl%control_sph_file , kchara,                &
      &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)

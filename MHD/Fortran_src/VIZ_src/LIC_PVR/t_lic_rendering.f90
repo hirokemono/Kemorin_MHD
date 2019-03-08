@@ -102,7 +102,7 @@
         end if
         call reset_pvr_update_flags(lic_ctls%pvr_ctl_type(1))
       end if
-      call mpi_Bcast(check_LIC_update, ione, CALYPSO_INTEGER, 0,        &
+      call mpi_Bcast(check_LIC_update, 1, CALYPSO_INTEGER, 0,           &
      &    CALYPSO_COMM, ierr_MPI)
       call calypso_mpi_barrier
 !

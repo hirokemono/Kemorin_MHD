@@ -309,13 +309,13 @@
       type(iso_ctl), intent(inout) :: iso_c
 !
 !
-      call MPI_BCAST(iso_c%i_iso_ctl,  ione,                            &
+      call MPI_BCAST(iso_c%i_iso_ctl,  1,                               &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(iso_c%i_iso_define,  ione,                         &
+      call MPI_BCAST(iso_c%i_iso_define,  1,                            &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(iso_c%i_iso_result,  ione,                         &
+      call MPI_BCAST(iso_c%i_iso_result,  1,                            &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(iso_c%i_iso_plot_area,  ione,                      &
+      call MPI_BCAST(iso_c%i_iso_plot_area,  1,                         &
      &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_type_c1(iso_c%iso_file_head_ctl)

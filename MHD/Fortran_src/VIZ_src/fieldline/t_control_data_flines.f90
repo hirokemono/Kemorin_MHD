@@ -113,7 +113,7 @@
       integer (kind=kint) :: i_fline
 !
 !
-      call MPI_BCAST(fline_ctls%num_fline_ctl,  ione,                   &
+      call MPI_BCAST(fline_ctls%num_fline_ctl,  1,                      &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       if(fline_ctls%num_fline_ctl .le. 0) return
 !

@@ -125,7 +125,7 @@
       type(lic_rendering_controls), intent(inout) :: lic_ctls
 !
 !
-      call MPI_BCAST(lic_ctls%num_lic_ctl,  ione,                       &
+      call MPI_BCAST(lic_ctls%num_lic_ctl,  1,                          &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call calypso_mpi_barrier
       if(lic_ctls%num_lic_ctl .le. 0) return

@@ -51,7 +51,7 @@
       if(my_rank .eq. 0) then
         call count_rayleigh_restart_field(dir, i_step, fld_IO)
       end if
-      call MPI_Bcast(fld_IO%num_field_IO, ione,                         &
+      call MPI_Bcast(fld_IO%num_field_IO, 1,                            &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call alloc_phys_name_IO(fld_IO)

@@ -190,7 +190,7 @@
       s3d_ranks%iglobal_rank_rtp(1:3,my_rank)                           &
      &           = sph_rtp%irank_sph_rtp(1:3)
       do ip = 0, nprocs-1
-        call MPI_Bcast(s3d_ranks%iglobal_rank_rtp(1,ip), ithree,        &
+        call MPI_Bcast(s3d_ranks%iglobal_rank_rtp(1,ip), 3,             &
      &       CALYPSO_INTEGER, ip, CALYPSO_COMM, ierr_MPI)
       end do
       if(s3d_ranks%iglobal_rank_rtp(1,1)                                &
@@ -215,9 +215,9 @@
       stk_lc1d%istack_idx_local_rtp_r(ip) =   sph_rtp%ied_rtp(1)
       do ip = 1, s3d_ranks%ndomain_rtp(1)
         ip_rank = (ip-1) * inc_r
-        call MPI_Bcast(sph_lc1_SF%nidx_local_rtp_r(ip), ione,           &
+        call MPI_Bcast(sph_lc1_SF%nidx_local_rtp_r(ip), 1,              &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(stk_lc1d%istack_idx_local_rtp_r(ip-1), itwo,     &
+        call MPI_Bcast(stk_lc1d%istack_idx_local_rtp_r(ip-1), 2,        &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
@@ -228,9 +228,9 @@
 !
       do ip = 1, s3d_ranks%ndomain_rtp(2)
         ip_rank = (ip-1) * inc_t
-        call MPI_Bcast(sph_lc1_SF%nidx_local_rtp_t(ip), ione,           &
+        call MPI_Bcast(sph_lc1_SF%nidx_local_rtp_t(ip), 1,              &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(stk_lc1d%istack_idx_local_rtp_t(ip-1), itwo,     &
+        call MPI_Bcast(stk_lc1d%istack_idx_local_rtp_t(ip-1), 2,        &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
@@ -287,17 +287,17 @@
 !
       do ip = 1, s3d_ranks%ndomain_rtp(1)
         ip_rank = (ip-1) * inc_r
-        call MPI_Bcast(sph_dbc%nidx_local_rtp_OC(ip), ione,             &
+        call MPI_Bcast(sph_dbc%nidx_local_rtp_OC(ip), 1,                &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(sph_dbc%nidx_local_rtp_IC(ip), ione,             &
+        call MPI_Bcast(sph_dbc%nidx_local_rtp_IC(ip), 1,                &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(sph_dbc%nidx_local_rtp_MT(ip), ione,             &
+        call MPI_Bcast(sph_dbc%nidx_local_rtp_MT(ip), 1,                &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(sph_dbc%ist_idx_local_rtp_OC(ip), ione,          &
+        call MPI_Bcast(sph_dbc%ist_idx_local_rtp_OC(ip), 1,             &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(sph_dbc%ist_idx_local_rtp_IC(ip), ione,          &
+        call MPI_Bcast(sph_dbc%ist_idx_local_rtp_IC(ip), 1,             &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(sph_dbc%ist_idx_local_rtp_MT(ip), ione,          &
+        call MPI_Bcast(sph_dbc%ist_idx_local_rtp_MT(ip), 1,             &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !

@@ -64,9 +64,9 @@
 !#endif
       end if
 !
-      call mpi_Bcast(k_img%npixel_x, ione,                              &
+      call mpi_Bcast(k_img%npixel_x, 1,                                 &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call mpi_Bcast(k_img%npixel_y, ione,                              &
+      call mpi_Bcast(k_img%npixel_y, 1,                                 &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       n_pixel = k_img%npixel_x * k_img%npixel_y
 !
