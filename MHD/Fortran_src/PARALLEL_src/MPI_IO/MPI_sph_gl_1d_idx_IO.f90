@@ -209,7 +209,8 @@
 !
       integer(kind = kint) :: idx_tmp(numdir)
 
-      integer(kind = kint) :: i, led, ilength, n_item
+      integer(kind = kint) :: i, led, n_item
+      integer ::  ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -260,9 +261,10 @@
       integer(kind=kint), intent(in) :: idx(nnod, numdir)
 !
       integer(kind = kint_gl) :: led
-      integer(kind = kint) :: i, ilength
+      integer(kind = kint) :: i
       integer(kind = kint) :: idx_tmp(numdir)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
 !
       call mpi_write_num_of_data(IO_param, nnod)

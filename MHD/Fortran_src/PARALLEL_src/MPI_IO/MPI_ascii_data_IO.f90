@@ -117,7 +117,7 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind = kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
       character(len=ilength), intent(in) :: chara_dat
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -193,7 +193,7 @@
       function  mpi_read_charahead(IO_param, ilength)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind = kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
       character(len=ilength) :: mpi_read_charahead
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -217,7 +217,7 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind = kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
       character(len=ilength) :: mpi_read_characters
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset

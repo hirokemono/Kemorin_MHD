@@ -160,7 +160,7 @@
 !
       real(kind = kreal) :: v1(ncomp)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
+      integer :: ilength
       integer(kind = kint_gl) :: istack_buffer(0:nprocs_in)
       integer(kind = kint_gl) :: inod
 !
@@ -290,7 +290,7 @@
 !
       character(len=num_field*5+1) :: charabuf_c
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
+      integer :: ilength
 !
 !
       ilength = len(charabuf_c)
@@ -322,7 +322,7 @@
 !
       character(len=kchara+1) :: textbuf_c
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
+      integer :: ilength
 !
 !
       if(my_rank .eq. 0) then
@@ -359,7 +359,7 @@
       character(len=ncomp*25+1) :: textbuf_d
       real(kind = kreal) :: v1(ncomp)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
+      integer :: ilength
       integer(kind = kint_gl) :: inod
 !
 !

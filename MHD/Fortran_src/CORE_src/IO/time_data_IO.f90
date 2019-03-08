@@ -32,10 +32,10 @@
       character(len=19), parameter :: TIME_HD2 = '!  time step number'
       character(len=16), parameter :: TIME_HD3 = '!  time, Delta t'
 !
-      integer(kind = kint), parameter :: l_hd = 12 + 19 + 16 + 3
-      integer(kind = kint), parameter :: l_dt = 2*16 + 2*25 + 3
+      integer, parameter :: l_hd = 12 + 19 + 16 + 3
+      integer, parameter :: l_dt = 2*16 + 2*25 + 3
 !
-      integer(kind = kint), parameter :: len_step_data_buf = l_hd+l_dt
+      integer, parameter :: len_step_data_buf = l_hd+l_dt
 !
       private :: TIME_HD1, TIME_HD2, TIME_HD3
       private :: l_hd, l_dt

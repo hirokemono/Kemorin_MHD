@@ -8,14 +8,13 @@
 !> @brief Data IO to one line text buffer
 !!
 !!@verbatim
-!!      integer(kind = kint) function len_one_word_textline(word)
-!!      integer(kind = kint) function len_multi_int_textline(num)
-!!      integer(kind = kint) function len_multi_6digit_line(num)
-!!      integer(kind = kint) function len_vector_textline(num)
-!!      integer(kind = kint) function len_int8_and_mul_int_textline(num)
-!!      integer(kind = kint) function                                   &
-!!     &                    len_int8_and_mul_int8_textline(num)
-!!      integer(kind = kint) function len_int8_and_vector_textline(num)
+!!      integer function len_one_word_textline(word)
+!!      integer function len_multi_int_textline(num)
+!!      integer function len_multi_6digit_line(num)
+!!      integer function len_vector_textline(num)
+!!      integer function len_int8_and_mul_int_textline(num)
+!!      integer function len_int8_and_mul_int8_textline(num)
+!!      integer function len_int8_and_vector_textline(num)
 !!
 !!      character(len=len_trim(word)+1) function one_word_textline(word)
 !!      function integer_nolfline(int_dat)
@@ -65,12 +64,12 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: len_real_text = 25 + 1
-      integer(kind = kint), parameter :: len_real_nolf = 25
-      integer(kind = kint), parameter :: len_int_txt = 16 + 1
-      integer(kind = kint), parameter :: len_integer_nolf = 16
-      integer(kind = kint), parameter :: len_6digit_txt = 6 + 1
-      integer(kind = kint), parameter :: len_6digit_nolf = 6
+      integer, parameter :: len_real_nolf = 25
+      integer, parameter :: len_real_text = len_real_nolf + 1
+      integer, parameter :: len_integer_nolf = 16
+      integer, parameter :: len_int_txt = len_integer_nolf + 1
+      integer, parameter :: len_6digit_nolf = 6
+      integer, parameter :: len_6digit_txt = len_6digit_nolf + 1
 !
 ! -------------------------------------------------------------------
 !
@@ -78,7 +77,7 @@
 !
 ! -------------------------------------------------------------------
 !
-      integer(kind = kint) function len_one_word_textline(word)
+      integer function len_one_word_textline(word)
 !
       character(len=kchara), intent(in) :: word
 !
@@ -89,7 +88,7 @@
 !
 ! -------------------------------------------------------------------
 !
-      integer(kind = kint) function len_multi_int_textline(num)
+      integer function len_multi_int_textline(num)
 !
       integer(kind = kint), intent(in) ::    num
 !
@@ -100,7 +99,7 @@
 !
 ! -------------------------------------------------------------------
 !
-      integer(kind = kint) function len_multi_6digit_line(num)
+      integer function len_multi_6digit_line(num)
 !
       integer(kind = kint), intent(in) ::    num
 !
@@ -111,7 +110,7 @@
 !
 ! -------------------------------------------------------------------
 !
-      integer(kind = kint) function len_vector_textline(num)
+      integer function len_vector_textline(num)
 !
       integer(kind = kint), intent(in) ::    num
 !
@@ -121,7 +120,7 @@
 !
 ! -------------------------------------------------------------------
 !
-      integer(kind = kint) function len_int8_and_mul_int_textline(num)
+      integer function len_int8_and_mul_int_textline(num)
 !
       integer(kind = kint), intent(in) ::    num
 !
@@ -131,8 +130,7 @@
 !
 ! -------------------------------------------------------------------
 !
-      integer(kind = kint) function                                     &
-     &                    len_int8_and_mul_int8_textline(num)
+      integer function len_int8_and_mul_int8_textline(num)
 !
       integer(kind = kint), intent(in) ::    num
 !
@@ -142,7 +140,7 @@
 !
 ! -------------------------------------------------------------------
 !
-      integer(kind = kint) function len_int8_and_vector_textline(num)
+      integer function len_int8_and_vector_textline(num)
 !
       integer(kind = kint), intent(in) ::    num
 !

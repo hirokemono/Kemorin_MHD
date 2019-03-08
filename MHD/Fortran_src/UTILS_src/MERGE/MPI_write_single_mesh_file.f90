@@ -100,7 +100,7 @@
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(izero))
       write(chara_dat,'(a1)') char(10)
-      call mpi_write_charahead(IO_param, ione, chara_dat)
+      call mpi_write_charahead(IO_param, 1, chara_dat)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_node()), hd_fem_node())
@@ -114,11 +114,11 @@
       write(chara_dat,'(a1)') char(10)
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_import()), hd_fem_import())
-      call mpi_write_charahead(IO_param, ione, chara_dat)
+      call mpi_write_charahead(IO_param, 1, chara_dat)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_export()), hd_fem_export())
-      call mpi_write_charahead(IO_param, ione, chara_dat)
+      call mpi_write_charahead(IO_param, 1, chara_dat)
 !
       end subroutine mpi_write_merged_geometry_data
 !
@@ -261,7 +261,7 @@
 !
         if(istack_g(i) .le. istack_g(i-1)) then
           write(chara_dat,'(a1)') char(10)
-          call mpi_write_charahead(IO_param, ione, chara_dat)
+          call mpi_write_charahead(IO_param, 1, chara_dat)
         else
           ist = group_IO%istack_grp(i-1) + 1
           num = group_IO%istack_grp(i) - group_IO%istack_grp(i-1)
@@ -317,7 +317,7 @@
 !
         if(istack_g(i) .le. istack_g(i-1)) then
           write(chara_dat,'(a1)') char(10)
-          call mpi_write_charahead(IO_param, ione, chara_dat)
+          call mpi_write_charahead(IO_param, 1, chara_dat)
         else
           num = surf_grp_IO%istack_grp(i) - surf_grp_IO%istack_grp(i-1)
           call mpi_write_surf_grp_item(IO_param, ieight,                &

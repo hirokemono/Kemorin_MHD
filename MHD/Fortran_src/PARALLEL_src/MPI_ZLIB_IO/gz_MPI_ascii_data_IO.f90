@@ -138,7 +138,7 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind=kint), intent(inout) :: num
 !
-      integer(kind = kint) :: ilength
+      integer :: ilength
 !
 !
       ilength = len_multi_int_textline(IO_param%nprocs_in)

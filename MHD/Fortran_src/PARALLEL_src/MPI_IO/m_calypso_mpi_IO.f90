@@ -151,7 +151,7 @@
      &         (id_mpi_file, ioffset, ilength, textbuf)
 !
       integer, intent(in) ::  id_mpi_file
-      integer(kind = kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
       character(len=ilength), intent(in) :: textbuf
       integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
 !
@@ -347,7 +347,7 @@
         ioffset = ioff_gl
         call MPI_FILE_SEEK                                              &
      &     (id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
-        call MPI_FILE_READ(id_mpi_file, int_vector, ione,               &
+        call MPI_FILE_READ(id_mpi_file, int_vector, 1,                  &
      &      CALYPSO_INTEGER, sta1_IO, ierr_MPI)
 !
         iflag_bin_swap = endian_check(my_rank, int_vector(1))
@@ -366,7 +366,7 @@
 !
       integer, intent(in) ::  id_mpi_file
       integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
-      integer(kind = kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
       character(len=ilength), intent(inout) :: charabuf
 !
 !
@@ -384,7 +384,7 @@
 !
       integer, intent(in) ::  id_mpi_file
       integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
-      integer(kind = kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
       character(len=ilength) :: calypso_mpi_seek_read_chara
 !
 !
@@ -402,7 +402,7 @@
 !
       integer, intent(in) ::  id_mpi_file
       integer(kind = MPI_OFFSET_KIND), intent(in) :: ioffset
-      integer(kind = kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
       integer(kind = kint_gl), intent(in) :: nline
       character(len=ilength), intent(in) :: textbuf(nline)
 !

@@ -46,9 +46,10 @@
 !
       real(kind = kreal) :: xx_tmp(numdir)
 !
-      integer(kind = kint) :: i, n_item, ilength
+      integer(kind = kint) :: i, n_item
       integer(kind = kint_gl) :: inod, led
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
 !
       call mpi_skip_read                                                &
@@ -98,7 +99,8 @@
       real(kind=kreal), intent(inout) :: rr(nri)
 !
       integer(kind = kint_gl) :: int8_tmp
-      integer(kind = kint) :: i, led, n_item, ilength
+      integer(kind = kint) :: i, led, n_item
+      integer :: ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -151,9 +153,10 @@
       real(kind=kreal), intent(in) :: xx(nnod, numdir)
 !
       integer(kind = kint_gl) :: inod, led
-      integer(kind = kint) :: i, ilength
+      integer(kind = kint) :: i
       real(kind = kreal) :: xx_tmp(numdir)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
 !
       ilength = len_int8_and_vector_textline(numdir)
@@ -193,8 +196,9 @@
 !
       integer(kind = kint_gl) :: int8_tmp
       integer(kind = kint_gl) :: led
-      integer(kind = kint) :: i, ilength
+      integer(kind = kint) :: i
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
 !
       ilength = len_int8_and_vector_textline(ione)

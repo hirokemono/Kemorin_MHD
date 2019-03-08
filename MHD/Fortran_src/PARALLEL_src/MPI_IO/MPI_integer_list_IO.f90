@@ -45,8 +45,9 @@
       integer(kind=kint), intent(inout) :: ie(nele, nnod_4_ele)
 !
       integer(kind = kint) :: ie_tmp(nnod_4_ele)
-      integer(kind = kint) :: i, ilength, n_item
+      integer(kind = kint) :: i, n_item
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
 !
       call mpi_skip_read                                                &
@@ -94,8 +95,9 @@
       integer(kind=kint), intent(inout) :: int_dat(num)
 !
       integer(kind = kint_gl) :: led
-      integer(kind = kint) :: i, nrest, n_item, ilength, loop
+      integer(kind = kint) :: i, nrest, n_item, loop
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
 !
       call mpi_skip_read                                                &
@@ -153,8 +155,9 @@
       integer(kind=kint), intent(inout) :: ivect(nele, ncomp)
 !
       integer(kind = kint) :: ie_tmp(ncomp)
-      integer(kind = kint) :: i, ilength, n_item
+      integer(kind = kint) :: i, n_item
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
 !
       call mpi_skip_read                                                &
@@ -297,9 +300,10 @@
       integer(kind=kint), intent(in) :: ivect(nele,ncomp)
 !
       integer(kind = kint_gl) :: led
-      integer(kind = kint) :: i, ilength
+      integer(kind = kint) :: i
       integer(kind = kint) :: ie_tmp(ncomp)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
 !
       ilength = len_multi_int_textline(ncomp)

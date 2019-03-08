@@ -39,7 +39,8 @@
 !
       real(kind = kreal) :: vect_tmp(1)
 !
-      integer(kind = kint) :: i, led, n_item, ilength
+      integer(kind = kint) :: i, led, n_item
+      integer :: ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -90,7 +91,8 @@
 !
       real(kind = kreal) :: vect_tmp(numdir)
 !
-      integer(kind = kint) :: i, led, n_item, ilength
+      integer(kind = kint) :: i, led, n_item
+      integer :: ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -141,9 +143,10 @@
       real(kind=kreal), intent(in) :: scalar(nnod)
 !
       integer(kind = kint_gl) :: led
-      integer(kind = kint) :: i, ilength
+      integer(kind = kint) :: i
       real(kind = kreal) :: vec_tmp(1)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
 !
       call mpi_write_num_of_data(IO_param, nnod)
@@ -182,8 +185,9 @@
       real(kind=kreal), intent(in) :: vect(nnod, numdir)
 !
       integer(kind = kint_gl) :: led
-      integer(kind = kint) :: i, ilength
+      integer(kind = kint) :: i
       real(kind = kreal) :: vec_tmp(numdir)
+      integer :: ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !

@@ -229,7 +229,7 @@
       integer(kind=kint), intent(in) :: num
       integer(kind=kint), intent(inout) :: int_dat(num)
 !
-      integer(kind = kint) :: ilength
+      integer :: ilength
 !
 !
       call read_int8_stack_textline                                     &

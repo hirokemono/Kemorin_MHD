@@ -193,7 +193,8 @@
       integer(kind=kint), intent(in) :: num
       integer(kind=kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: ilength, i
+      integer(kind = kint) :: i
+      integer :: ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -217,7 +218,7 @@
      &         + IO_param%istack_merged(IO_param%nprocs_in)
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
         call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
-     &     ilength, multi_int_textline(num, int_dat))
+     &      ilength, multi_int_textline(num, int_dat))
 !
       end subroutine mpi_write_int_vector
 !
@@ -246,7 +247,8 @@
       integer(kind=kint), intent(in) :: num
       integer(kind=kint), intent(inout) :: int_dat(num)
 !
-      integer(kind = kint) :: ilength, i
+      integer(kind = kint) :: i
+      integer ::  ilength
 !
 !
       call mpi_skip_read                                               &
@@ -277,8 +279,9 @@
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(inout) :: int_dat(num)
 !
-      integer(kind = kint) :: i, nrest, n_item, ilength, led, loop
+      integer(kind = kint) :: i, nrest, n_item, led, loop
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
 !
       call mpi_skip_read                                                &

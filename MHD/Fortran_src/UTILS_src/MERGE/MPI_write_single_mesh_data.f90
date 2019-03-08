@@ -55,9 +55,10 @@
       real(kind=kreal), intent(in) :: xx(nnod, numdir)
 !
       integer(kind = kint_gl) :: led
-      integer(kind = kint) :: i, ilength
+      integer(kind = kint) :: i
       real(kind = kreal) :: xx_tmp(numdir)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
 !
       ilength = len_int8_and_vector_textline(numdir)
@@ -148,9 +149,10 @@
 !
       integer(kind = kint_gl) :: led
       integer(kind = kint) :: k1, inod, irank
-      integer(kind = kint) :: i, ilength
+      integer(kind = kint) :: i
       integer(kind = kint_gl) :: ie_tmp(0:nnod_4_ele)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
 !
       ilength = len_multi_int_textline(nnod_4_ele+1)
