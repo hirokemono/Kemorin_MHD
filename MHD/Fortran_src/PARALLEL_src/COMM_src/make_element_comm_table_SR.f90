@@ -60,18 +60,18 @@
      &    num_neib_e, num_neib_e)
 !
       do ip = 1, num_neib_e
-        call MPI_ISEND (num_import_e(ip), ione, CALYPSO_INTEGER,        &
-     &                  id_neib_e(ip), 0, CALYPSO_COMM,                 &
-     &                  req1(ip), ierr_MPI)
+        call MPI_ISEND(num_import_e(ip), 1, CALYPSO_INTEGER,            &
+     &                 int(id_neib_e(ip)), 0, CALYPSO_COMM,             &
+     &                 req1(ip), ierr_MPI)
       end do
 !
       do ip = 1, num_neib_e
-        call MPI_IRECV (num_export_e(ip), ione, CALYPSO_INTEGER,        &
-     &                 id_neib_e(ip), 0, CALYPSO_COMM,                  &
+        call MPI_IRECV (num_export_e(ip), 1, CALYPSO_INTEGER,           &
+     &                 int(id_neib_e(ip)), 0, CALYPSO_COMM,             &
      &                  req2(ip), ierr_MPI)
       end do
-      call MPI_WAITALL(num_neib_e, req2(1), sta2(1,1), ierr_MPI)
-      call MPI_WAITALL(num_neib_e, req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL(int(num_neib_e), req2(1), sta2(1,1), ierr_MPI)
+      call MPI_WAITALL(int(num_neib_e), req1(1), sta1(1,1), ierr_MPI)
 !
       do ip = 1, num_neib_e
         istack_export_e(ip) = istack_export_e(ip-1) + num_export_e(ip)
@@ -102,7 +102,8 @@
      &                 :: item_local(istack_export(num_neib))
       integer(kind = kint), intent(inout) :: inod_local(numnod)
 !
-      integer(kind = kint) :: ip, ist, num, i, inod
+      integer(kind = kint) :: ip, ist, i, inod
+      integer :: num
 !
 !
       call resize_iwork_4_SR(num_neib, num_neib,                        &
@@ -110,21 +111,21 @@
 !
       do ip = 1, num_neib
         ist = istack_import(ip-1)
-        num = (istack_import(ip  ) - istack_import(ip-1))
+        num = int(istack_import(ip  ) - istack_import(ip-1))
         call MPI_ISEND(item_import(ist+1), num,                         &
-     &                 CALYPSO_INTEGER, id_neib(ip), 0,                 &
+     &                 CALYPSO_INTEGER, int(id_neib(ip)), 0,            &
      &                 CALYPSO_COMM, req1(ip), ierr_MPI)
       end do
 !
       do ip = 1, num_neib
         ist = istack_export(ip-1)
-        num = (istack_export(ip  ) - istack_export(ip-1))
+        num = int(istack_export(ip  ) - istack_export(ip-1))
         call MPI_IRECV(item_local(ist+1), num,                          &
-     &                 CALYPSO_INTEGER, id_neib(ip), 0,                 &
+     &                 CALYPSO_INTEGER, int(id_neib(ip)), 0,            &
      &                 CALYPSO_COMM, req2(ip), ierr_MPI)
       end do
-      call MPI_WAITALL(num_neib, req2(1), sta2(1,1), ierr_MPI)
-      call MPI_WAITALL(num_neib, req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL(int(num_neib), req2(1), sta2(1,1), ierr_MPI)
+      call MPI_WAITALL(int(num_neib), req1(1), sta1(1,1), ierr_MPI)
 !
       inod_local = 0
       do i = 1, istack_export(num_neib)
@@ -199,7 +200,8 @@
       integer(kind = kint_gl), intent(inout)                            &
      &                 :: inod_export_e(istack_export_e(num_neib_e))
 !
-      integer(kind = kint) :: ip, ist, num
+      integer(kind = kint) :: ip, ist
+      integer :: num
 !
 !
       call resize_i8work_4_SR(num_neib_e, num_neib_e,                   &
@@ -207,21 +209,21 @@
 !
       do ip = 1, num_neib_e
         ist = istack_import_e(ip-1)
-        num = (istack_import_e(ip  ) - istack_import_e(ip-1))
+        num = int(istack_import_e(ip  ) - istack_import_e(ip-1))
         call MPI_ISEND(inod_import_e(ist+1), num,                       &
-     &                 CALYPSO_GLOBAL_INT,id_neib_e(ip), 0,             &
+     &                 CALYPSO_GLOBAL_INT, int(id_neib_e(ip)), 0,       &
      &                 CALYPSO_COMM, req1(ip), ierr_MPI)
       end do
 !
       do ip = 1, num_neib_e
         ist = istack_export_e(ip-1)
-        num = (istack_export_e(ip  ) - istack_export_e(ip-1))
+        num = int(istack_export_e(ip  ) - istack_export_e(ip-1))
         call MPI_IRECV(inod_export_e(ist+1), num,                       &
-     &                 CALYPSO_GLOBAL_INT, id_neib_e(ip), 0,            &
+     &                 CALYPSO_GLOBAL_INT, int(id_neib_e(ip)), 0,       &
      &                 CALYPSO_COMM, req2(ip), ierr_MPI)
       end do
-      call MPI_WAITALL(num_neib_e, req2(1), sta2(1,1), ierr_MPI)
-      call MPI_WAITALL(num_neib_e, req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL(int(num_neib_e), req2(1), sta2(1,1), ierr_MPI)
+      call MPI_WAITALL(int(num_neib_e), req1(1), sta1(1,1), ierr_MPI)
 !
       end subroutine global_element_id_reverse_SR
 !
@@ -243,7 +245,8 @@
       integer(kind = kint), intent(inout)                               &
      &                 :: inod_export_l(istack_export_e(num_neib_e))
 !
-      integer(kind = kint) :: ip, ist, num
+      integer(kind = kint) :: ip, ist
+      integer :: num
 !
 !
       call resize_iwork_4_SR(num_neib_e, num_neib_e,                    &
@@ -251,21 +254,21 @@
 !
       do ip = 1, num_neib_e
         ist = istack_import_e(ip-1)
-        num = (istack_import_e(ip  ) - istack_import_e(ip-1))
+        num = int(istack_import_e(ip  ) - istack_import_e(ip-1))
         call MPI_ISEND(inod_import_l(ist+1), num,                       &
-     &                 CALYPSO_INTEGER,id_neib_e(ip), 0,                &
+     &                 CALYPSO_INTEGER,int(id_neib_e(ip)), 0,           &
      &                 CALYPSO_COMM, req1(ip), ierr_MPI)
       end do
 !
       do ip = 1, num_neib_e
         ist = istack_export_e(ip-1)
-        num = (istack_export_e(ip  ) - istack_export_e(ip-1))
+        num = int(istack_export_e(ip  ) - istack_export_e(ip-1))
         call MPI_IRECV(inod_export_l(ist+1), num,                       &
-     &                 CALYPSO_INTEGER, id_neib_e(ip), 0,               &
+     &                 CALYPSO_INTEGER, int(id_neib_e(ip)), 0,          &
      &                 CALYPSO_COMM, req2(ip), ierr_MPI)
       end do
-      call MPI_WAITALL(num_neib_e, req2(1), sta2(1,1), ierr_MPI)
-      call MPI_WAITALL(num_neib_e, req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL(int(num_neib_e), req2(1), sta2(1,1), ierr_MPI)
+      call MPI_WAITALL(int(num_neib_e), req1(1), sta1(1,1), ierr_MPI)
 !
       end subroutine local_element_id_reverse_SR
 !
@@ -286,7 +289,8 @@
       real(kind = kreal), intent(inout)                                 &
      &                 :: xe_export(3*istack_export_e(num_neib_e))
 !
-      integer(kind = kint) :: ip, ist, num
+      integer(kind = kint) :: ip, ist
+      integer :: num
 !
 !
       call resize_work_4_SR(ithree, num_neib_e, num_neib_e,             &
@@ -294,21 +298,21 @@
 !
       do ip = 1, num_neib_e
         ist = 3*istack_import_e(ip-1)
-        num = 3*(istack_import_e(ip  ) - istack_import_e(ip-1))
+        num = int(3*(istack_import_e(ip  ) - istack_import_e(ip-1)))
         call MPI_ISEND (xe_import(ist+1), num, CALYPSO_REAL,            &
-     &                  id_neib_e(ip), 0, CALYPSO_COMM,                 &
+     &                  int(id_neib_e(ip)), 0, CALYPSO_COMM,            &
      &                  req1(ip), ierr_MPI)
       end do
 !
       do ip = 1, num_neib_e
         ist = 3* istack_export_e(ip-1)
-        num = 3*(istack_export_e(ip  ) - istack_export_e(ip-1))
+        num = int(3*(istack_export_e(ip  ) - istack_export_e(ip-1)))
         call MPI_IRECV (xe_export(ist+1), num, CALYPSO_REAL,            &
-     &                 id_neib_e(ip), 0, CALYPSO_COMM,                  &
+     &                 int(id_neib_e(ip)), 0, CALYPSO_COMM,             &
      &                 req2(ip), ierr_MPI)
       end do
-      call MPI_WAITALL(num_neib_e, req2(1), sta2(1,1), ierr_MPI)
-      call MPI_WAITALL(num_neib_e, req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL(int(num_neib_e), req2(1), sta2(1,1), ierr_MPI)
+      call MPI_WAITALL(int(num_neib_e), req1(1), sta1(1,1), ierr_MPI)
 !
       end subroutine element_position_reverse_SR
 !

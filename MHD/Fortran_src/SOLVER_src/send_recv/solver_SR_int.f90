@@ -80,7 +80,8 @@
       integer (kind=kint), dimension(NP)  , intent(inout):: iX
 !C
 !
-      integer (kind = kint) :: neib, istart, inum, k
+      integer (kind = kint) :: neib, istart, iend, k
+      integer :: inum
 !
 !
       call resize_iwork_4_SR(NEIBPETOT, NEIBPETOT,                      &
@@ -90,16 +91,17 @@
       
       do neib= 1, NEIBPETOT
         istart= STACK_EXPORT(neib-1)
-        inum  = STACK_EXPORT(neib  ) - istart
-        
+        iend =  STACK_EXPORT(neib  ) 
+        inum  = int(iend - istart)
+!
 !$omp parallel do
-        do k= istart+1, istart+inum
+        do k= istart+1, iend
            iWS(k)= iX(NOD_EXPORT(k))
         end do
 !$omp end parallel do
 !
         call MPI_ISEND (iWS(istart+1), inum, CALYPSO_INTEGER,           &
-     &                  NEIBPE(neib), 0, CALYPSO_COMM,                  &
+     &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
      &                  req1(neib), ierr_MPI)
       enddo
 
@@ -108,27 +110,27 @@
       
       do neib= 1, NEIBPETOT
         istart= STACK_IMPORT(neib-1)
-        inum  = STACK_IMPORT(neib  ) - istart
+        inum  = int(STACK_IMPORT(neib  ) - istart)
         call MPI_IRECV (iWR(istart+1), inum, CALYPSO_INTEGER,           &
-     &                  NEIBPE(neib), 0, CALYPSO_COMM,                  &
+     &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
      &                  req2(neib), ierr_MPI)
       enddo
 
-      call MPI_WAITALL (NEIBPETOT, req2(1), sta2(1,1), ierr_MPI)
+      call MPI_WAITALL(int(NEIBPETOT), req2(1), sta2(1,1), ierr_MPI)
    
 !$omp parallel private(neib,istart,inum)
       do neib = 1, NEIBPETOT
         istart= STACK_IMPORT(neib-1)
-        inum  = STACK_IMPORT(neib  ) - istart
+        iend =  STACK_IMPORT(neib  ) 
 !$omp do
-        do k= istart+1, istart+inum
+        do k= istart+1, iend
           iX(NOD_IMPORT(k))= iWR(k)
         end do
 !$omp end do nowait
       end do
 !$omp end parallel
 
-      call MPI_WAITALL (NEIBPETOT, req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL(int(NEIBPETOT), req1(1), sta1(1,1), ierr_MPI)
 
       end subroutine solver_send_recv_i
 !
@@ -161,7 +163,8 @@
       integer (kind=kint_gl), dimension(NP)  , intent(inout):: iX8
 !C
 !
-      integer (kind = kint) :: neib, istart, inum, k
+      integer (kind = kint) :: neib, istart, iend, k
+      integer :: inum
 !
 !
       call resize_i8work_4_SR(NEIBPETOT, NEIBPETOT,                     &
@@ -171,45 +174,46 @@
       
       do neib= 1, NEIBPETOT
         istart= STACK_EXPORT(neib-1)
-        inum  = STACK_EXPORT(neib  ) - istart
+        iend  = STACK_EXPORT(neib  )
+        inum  = int(iend - istart)
         
 !$omp parallel do
-        do k= istart+1, istart+inum
+        do k= istart+1, iend
            i8WS(k)= iX8(NOD_EXPORT(k))
         end do
 !$omp end parallel do
 !
         call MPI_ISEND (i8WS(istart+1), inum, CALYPSO_GLOBAL_INT,       &
-     &                  NEIBPE(neib), 0, CALYPSO_COMM,                  &
+     &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
      &                  req1(neib), ierr_MPI)
-      enddo
+      end do
 
 !C
 !C-- RECEIVE
       
-      do neib= 1, NEIBPETOT
+      do neib = 1, NEIBPETOT
         istart= STACK_IMPORT(neib-1)
-        inum  = STACK_IMPORT(neib  ) - istart
+        inum  = int(STACK_IMPORT(neib  ) - istart)
         call MPI_IRECV (i8WR(istart+1), inum, CALYPSO_GLOBAL_INT,       &
-     &                  NEIBPE(neib), 0, CALYPSO_COMM,                  &
+     &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
      &                  req2(neib), ierr_MPI)
       enddo
 
-      call MPI_WAITALL (NEIBPETOT, req2(1), sta2(1,1), ierr_MPI)
+      call MPI_WAITALL(int(NEIBPETOT), req2(1), sta2(1,1), ierr_MPI)
 
 !$omp parallel private(neib,istart,inum)
       do neib = 1, NEIBPETOT
         istart= STACK_IMPORT(neib-1)
-        inum  = STACK_IMPORT(neib  ) - istart
+        iend  = STACK_IMPORT(neib  )
 !$omp do
-        do k = istart+1, istart+inum
+        do k = istart+1, iend
           iX8(NOD_IMPORT(k))= i8WR(k)
         end do
 !$omp end do nowait
       end do
 !$omp end parallel
 
-      call MPI_WAITALL (NEIBPETOT, req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL(int(NEIBPETOT), req1(1), sta1(1,1), ierr_MPI)
 
       end subroutine solver_send_recv_i8
 !
@@ -242,19 +246,19 @@
 !C-- SEND
       
       do neib= 1, NEIBPETOT
-        call MPI_ISEND(nSEND(neib), ione, CALYPSO_INTEGER,              &
-     &      NEIBPE(neib), 0, CALYPSO_COMM, req1(neib), ierr_MPI)
+        call MPI_ISEND(nSEND(neib), 1, CALYPSO_INTEGER,                 &
+     &      int(NEIBPE(neib)), 0, CALYPSO_COMM, req1(neib), ierr_MPI)
       end do
 !C
 !C-- RECEIVE
       
       do neib= 1, NEIBPETOT
-        call MPI_IRECV(nRECV(neib), ione, CALYPSO_INTEGER,              &
-     &      NEIBPE(neib), 0, CALYPSO_COMM, req2(neib), ierr_MPI)
+        call MPI_IRECV(nRECV(neib), 1, CALYPSO_INTEGER,                 &
+     &      int(NEIBPE(neib)), 0, CALYPSO_COMM, req2(neib), ierr_MPI)
       end do
 !
-      call MPI_WAITALL(NEIBPETOT, req2(1), sta2(1,1), ierr_MPI)
-      call MPI_WAITALL(NEIBPETOT, req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL(int(NEIBPETOT), req2(1), sta2(1,1), ierr_MPI)
+      call MPI_WAITALL(int(NEIBPETOT), req1(1), sta1(1,1), ierr_MPI)
 !
       end subroutine solver_send_recv_num
 !

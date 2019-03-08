@@ -93,6 +93,7 @@
      &          iflag_img_pe, iflag_mapped)
 !
       use cal_minmax_and_stacks
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: num_pixel_xy
 !
@@ -101,12 +102,10 @@
       integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
 !
       integer(kind = kint) :: ipix
-      integer(kind = kint_gl) :: num64
 !
 !
-      num64 = int(num_pixel_xy,KIND(num64))
       call calypso_mpi_allreduce_int                                    &
-     &   (iflag_img_pe, iflag_mapped, num64, MPI_MAX)
+     &   (iflag_img_pe, iflag_mapped, cast_long(num_pixel_xy), MPI_MAX)
 !
       npixel_img = 0
       do ipix = 1, num_pixel_xy
@@ -128,8 +127,8 @@
       integer(kind = kint) :: ip
 !
 !
-      call MPI_Allgather(num_overlap, ione, CALYPSO_INTEGER,            &
-     &                   istack_overlap(1), ione, CALYPSO_INTEGER,      &
+      call MPI_Allgather(num_overlap, 1, CALYPSO_INTEGER,               &
+     &                   istack_overlap(1), 1, CALYPSO_INTEGER,         &
      &                   CALYPSO_COMM, ierr_MPI)
       istack_overlap(0) = 0
       do ip = 1, nprocs
@@ -164,8 +163,10 @@
       real(kind = kreal), intent(inout)                                 &
      &             :: depth_part(ntot_overlap,npixel_img_local)
 !
-      integer(kind = kint) :: num, i_rank, ist, ipix, icou, jst
-      integer(kind = kint) :: nneib_send, nneib_recv
+      integer(kind = kint) :: ist, ipix, jst
+      integer :: nneib_send, nneib_recv
+      integer :: i_rank
+      integer :: num, icou
 !
 !
 !$omp workshare
@@ -181,8 +182,8 @@
       do i_rank = 0, nprocs-1
           nneib_send = nneib_send + 1
           ist =  istack_pixel(i_rank)
-          num = (istack_pixel(i_rank+1) - istack_pixel(i_rank))         &
-     &          * num_overlap
+          num = int((istack_pixel(i_rank+1) - istack_pixel(i_rank))     &
+     &              * num_overlap)
           call MPI_ISEND(depth_lc(1,ist+1), num, CALYPSO_REAL, i_rank,  &
      &        0, CALYPSO_COMM, PVR_COMM%req1(nneib_send), ierr_MPI)
       end do
@@ -191,8 +192,8 @@
       do i_rank = 0, nprocs-1
           nneib_recv = nneib_recv + 1
           jst = istack_overlap(i_rank) * npixel_img_local
-          num =  npixel_img_local                                       &
-     &         * (istack_overlap(i_rank+1) - istack_overlap(i_rank))
+          num =  int(npixel_img_local                                   &
+     &          * (istack_overlap(i_rank+1) - istack_overlap(i_rank)))
           call MPI_IRECV(depth_recv(jst+1), num, CALYPSO_REAL, i_rank,  &
      &        0, CALYPSO_COMM, PVR_COMM%req2(nneib_recv), ierr_MPI)
       end do
@@ -207,7 +208,7 @@
       do ipix = 1, npixel_img_local
         do i_rank = 0, nprocs-1
           ist = istack_overlap(i_rank)
-          num = istack_overlap(i_rank+1) - istack_overlap(i_rank)
+          num = int(istack_overlap(i_rank+1) - istack_overlap(i_rank))
           jst = ist * npixel_img_local + (ipix-1) * num
           do icou = 1, num
             depth_part(ist+icou,ipix) = depth_recv(jst+icou)
@@ -242,8 +243,9 @@
       real(kind = kreal), intent(inout)                                 &
      &             :: rgba_part(4,ntot_overlap,npixel_img_local)
 !
-      integer(kind = kint) :: num, i_rank, ist, ipix, icou, jst
-      integer(kind = kint) :: nneib_send, nneib_recv
+      integer(kind = kint) :: ist, ipix, jst
+      integer :: i_rank, nneib_send, nneib_recv
+      integer :: num, icou
 !
 !
 !$omp workshare
@@ -260,8 +262,8 @@
 !        if(i_rank .eq. my_rank) cycle
           nneib_send = nneib_send + 1
           ist =  istack_pixel(i_rank)
-          num = (istack_pixel(i_rank+1) - istack_pixel(i_rank))         &
-     &          * ifour * num_overlap
+          num = int((istack_pixel(i_rank+1) - istack_pixel(i_rank))     &
+     &               * ifour * num_overlap)
           call MPI_ISEND(rgba_lc(1,1,ist+1), num, CALYPSO_REAL, i_rank, &
      &        0, CALYPSO_COMM, PVR_COMM%req1(nneib_send), ierr_MPI)
       end do
@@ -271,8 +273,8 @@
 !        if(i_rank .eq. my_rank) cycle
           nneib_recv = nneib_recv + 1
           jst = istack_overlap(i_rank) * npixel_img_local
-          num = ifour * npixel_img_local                                &
-     &         * (istack_overlap(i_rank+1) - istack_overlap(i_rank))
+          num = int(ifour * npixel_img_local                            &
+     &         * (istack_overlap(i_rank+1) - istack_overlap(i_rank)))
           call MPI_IRECV(rgba_recv(1,jst+1), num, CALYPSO_REAL, i_rank, &
      &        0, CALYPSO_COMM, PVR_COMM%req2(nneib_recv), ierr_MPI)
       end do
@@ -321,13 +323,14 @@
       real(kind = kreal), intent(inout) :: rgba_rank0(4,npixel_img)
       real(kind = kreal), intent(inout) :: rgba_real_gl(4,num_pixel_xy)
 !
-      integer(kind = kint) :: num, i_rank, ist, i, ipix
-      integer(kind = kint) :: nneib_send, nneib_recv
+      integer(kind = kint) :: ist, ipix
+      integer :: i_rank, nneib_send, nneib_recv
+      integer :: num, i
 !
 !
       nneib_send = 0
       nneib_recv = 0
-      num = ifour * npixel_img_local
+      num = int(ifour * npixel_img_local)
       if(my_rank .ne. irank_tgt) then
         nneib_send = 1
         call MPI_ISEND(rgba_whole(1,1), num, CALYPSO_REAL,              &
@@ -340,7 +343,8 @@
 !
           nneib_recv = nneib_recv + 1
           ist =          istack_pixel(i_rank)
-          num = ifour * (istack_pixel(i_rank+1) - istack_pixel(i_rank))
+          num = int((istack_pixel(i_rank+1) - istack_pixel(i_rank))     &
+     &         * ifour)
           call MPI_IRECV(rgba_rank0(1,ist+1), num, CALYPSO_REAL,        &
      &        i_rank, 0, CALYPSO_COMM, PVR_COMM%req2(nneib_recv),       &
      &        ierr_MPI)

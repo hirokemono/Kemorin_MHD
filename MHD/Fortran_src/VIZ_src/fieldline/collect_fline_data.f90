@@ -139,28 +139,29 @@
       type(local_fieldline), intent(in) :: fline_lc
       type(global_fieldline_data), intent(inout) :: fline_gl
 !
-      integer(kind = kint) :: ip, num, ist, ied, inum, nneib_recv
+      integer(kind = kint) :: ip, ist, ied, inum
+      integer :: num, nneib_recv
 !
 !
       nneib_recv = 0
-      num = 2 * fline_lc%nele_line_l
+      num = int(2 * fline_lc%nele_line_l)
       call MPI_Isend(fline_lc%iedge_line_l(1,1), num, CALYPSO_INTEGER,  &
-     &   izero, 0, CALYPSO_COMM, fline_gl%req1_fline(1), ierr_MPI)
+     &    0, 0, CALYPSO_COMM, fline_gl%req1_fline(1), ierr_MPI)
 !
       if(my_rank .eq. 0) then
-        nneib_recv = nprocs
+        nneib_recv = int(nprocs)
         do ip = 1, nprocs
           ist = fline_gl%istack_ele_line_gl(ip-1) + 1
-          num = 2 * fline_gl%nele_line_gl(ip)
+          num = int(2 * fline_gl%nele_line_gl(ip))
           call MPI_Irecv (fline_gl%iedge_line_gl(1,ist), num,           &
-     &        CALYPSO_INTEGER, (ip-1), 0, CALYPSO_COMM,                 &
+     &        CALYPSO_INTEGER, int(ip-1), 0, CALYPSO_COMM,              &
      &        fline_gl%req2_fline(ip), ierr_MPI)
         end do
 !
       end if
       call MPI_WAITALL(nneib_recv, fline_gl%req2_fline,                 &
      &    fline_gl%sta2_fline, ierr_MPI)
-      call MPI_WAITALL(ione, fline_gl%req1_fline(ione),                 &
+      call MPI_WAITALL(1, fline_gl%req1_fline(ione),                    &
      &    fline_gl%sta1_fline(ione,ione), ierr_MPI)
 !
       if(my_rank .eq. 0) then
@@ -184,28 +185,29 @@
       type(local_fieldline), intent(in) :: fline_lc
       type(global_fieldline_data), intent(inout) :: fline_gl
 !
-      integer(kind = kint) :: ip, num, ist, nneib_recv
+      integer(kind = kint) :: ip, ist
+      integer :: num, nneib_recv
 !
 !
       nneib_recv = 0
-      num = 3 * fline_lc%nnod_line_l
-      call MPI_Isend(fline_lc%xx_line_l(1,1), num, CALYPSO_REAL, izero, &
+      num = int(3 * fline_lc%nnod_line_l)
+      call MPI_Isend(fline_lc%xx_line_l(1,1), num, CALYPSO_REAL, 0, &
      &    0, CALYPSO_COMM, fline_gl%req1_fline(1), ierr_MPI)
 !
       if(my_rank .eq. 0) then
-        nneib_recv = nprocs
+        nneib_recv = int(nprocs)
         do ip = 1, nprocs
           ist = fline_gl%istack_nod_line_gl(ip-1) + 1
-          num = 3 * fline_gl%nnod_line_gl(ip)
+          num = int(3 * fline_gl%nnod_line_gl(ip))
           call MPI_Irecv                                                &
-     &       (fline_gl%xx_line_gl(1,ist), num, CALYPSO_REAL, (ip-1),    &
+     &       (fline_gl%xx_line_gl(1,ist), num, CALYPSO_REAL, int(ip-1), &
      &        0, CALYPSO_COMM, fline_gl%req2_fline(ip), ierr_MPI)
         end do
 !
       end if
       call MPI_WAITALL(nneib_recv, fline_gl%req2_fline,                 &
      &    fline_gl%sta2_fline, ierr_MPI)
-      call MPI_WAITALL(ione, fline_gl%req1_fline(ione),                 &
+      call MPI_WAITALL(1, fline_gl%req1_fline(ione),                    &
      &    fline_gl%sta1_fline(ione,ione), ierr_MPI)
 !
       end subroutine collect_fline_position
@@ -217,28 +219,29 @@
       type(local_fieldline), intent(in) :: fline_lc
       type(global_fieldline_data), intent(inout) :: fline_gl
 !
-      integer(kind = kint) :: ip, num, ist, nneib_recv
+      integer(kind = kint) :: ip, ist
+      integer :: num, nneib_recv
 !
 !
       nneib_recv = 0
-      num = fline_lc%nnod_line_l
-      call MPI_Isend(fline_lc%col_line_l(1), num, CALYPSO_REAL, izero,  &
+      num = int(fline_lc%nnod_line_l)
+      call MPI_Isend(fline_lc%col_line_l(1), num, CALYPSO_REAL, 0,      &
      &    0, CALYPSO_COMM, fline_gl%req1_fline(1), ierr_MPI)
 !
       if(my_rank .eq. 0) then
-        nneib_recv = nprocs
+        nneib_recv = int(nprocs)
         do ip = 1, nprocs
           ist = fline_gl%istack_nod_line_gl(ip-1) + 1
-          num = fline_gl%nnod_line_gl(ip)
+          num = int(fline_gl%nnod_line_gl(ip))
           call MPI_Irecv                                                &
-     &       (fline_gl%col_line_gl(ist), num, CALYPSO_REAL, (ip-1),     &
+     &       (fline_gl%col_line_gl(ist), num, CALYPSO_REAL, int(ip-1),  &
      &        0, CALYPSO_COMM, fline_gl%req2_fline(ip), ierr_MPI)
         end do
 !
       end if
       call MPI_WAITALL(nneib_recv, fline_gl%req2_fline,                 &
      &    fline_gl%sta2_fline, ierr_MPI)
-      call MPI_WAITALL(ione, fline_gl%req1_fline(ione),                 &
+      call MPI_WAITALL(1, fline_gl%req1_fline(ione),                    &
      &    fline_gl%sta1_fline(ione,ione), ierr_MPI)
 !
       end subroutine collect_fline_color

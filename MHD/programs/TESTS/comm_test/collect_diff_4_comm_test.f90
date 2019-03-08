@@ -252,12 +252,12 @@
       integer(kind = kint), intent(inout) :: id_diff_IO(ntot_diff_pe)
       real(kind = kreal), intent(inout) :: x_diff_IO(6*ntot_diff_pe)
 !
-      integer(kind = kint) :: num, ist, ip, id_rank, nneib_recv
+      integer(kind = kint) :: ist, ip
+      integer :: num, id_rank, nneib_recv
       
 !
 !
       nneib_recv = 0
-      num = num_diff_l
       call MPI_ISEND (id_diff, int(num_diff_l), CALYPSO_INTEGER,        &
      &    0, 0, CALYPSO_COMM, req1(ione), ierr_MPI)
       if (my_rank .eq. 0) then
@@ -288,7 +288,7 @@
         end do
       end if
       call MPI_WAITALL (nneib_recv, req2(1), sta2(1,1), ierr_MPI)
-      call MPI_WAITALL (ione, req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL (1, req1(1), sta1(1,1), ierr_MPI)
 !
       end subroutine collect_diff_ctest
 !

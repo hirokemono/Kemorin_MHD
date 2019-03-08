@@ -77,7 +77,8 @@
 !
       use m_filter_coefs
 !
-      integer(kind = kint) :: ip, id_dest, nneib_recv, nneib_send
+      integer(kind = kint) :: ip
+      integer :: id_dest, nneib_recv, nneib_send
 !
 !
       if (my_rank .eq. izero) call allocate_num_failed_nodes
@@ -89,17 +90,17 @@
         nneib_send = 1
         isend_failed(1) = num_failed_whole
         isend_failed(2) = num_failed_fluid
-        call MPI_ISEND (isend_failed(1), itwo, CALYPSO_INTEGER,         &
-     &      izero, izero, CALYPSO_COMM, i_req1, ierr_MPI)
+        call MPI_ISEND (isend_failed(1), 2, CALYPSO_INTEGER,            &
+     &      0, 0, CALYPSO_COMM, i_req1, ierr_MPI)
       end if
 !C
 !C-- RECEIVE
       if (my_rank .eq. izero) then
         nneib_recv = nprocs-1
         do ip = 2, nprocs
-          id_dest = ip - 1
-          call MPI_IRECV (irecv_failed(1,id_dest), itwo,                &
-     &        CALYPSO_INTEGER, id_dest, izero, CALYPSO_COMM,            &
+          id_dest = int(ip - 1)
+          call MPI_IRECV (irecv_failed(1,id_dest), 2,                   &
+     &        CALYPSO_INTEGER, id_dest, 0, CALYPSO_COMM,                &
      &        i_req2(id_dest), ierr_MPI)
         end do
       end if
