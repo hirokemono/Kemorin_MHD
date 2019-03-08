@@ -66,9 +66,9 @@
      &   (iele_fsmp_stack, num_int, ir_phi, ja_phi, i_phi,              &
      &    mesh, nod_fld, jacs, fem_wk, fem_msq)
 !
-      call MPI_allREDUCE(fem_msq%ave_local(ja_phi) , ave_mp, ione,      &
+      call MPI_allREDUCE(fem_msq%ave_local(ja_phi) , ave_mp, 1,         &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE(fem_msq%rms_local(ir_phi) , rms_mp, ione,      &
+      call MPI_allREDUCE(fem_msq%rms_local(ir_phi) , rms_mp, 1,         &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if (iloop .eq. 0) then

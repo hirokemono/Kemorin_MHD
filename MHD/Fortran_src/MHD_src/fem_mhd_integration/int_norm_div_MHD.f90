@@ -75,7 +75,7 @@
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
      &    fem_msq%ave_local(j_ave%i_div_v))
       call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local(j_ave%i_div_v) , div_v_sig, ione,           &
+     &   (fem_msq%ave_local(j_ave%i_div_v) , div_v_sig, 1,              &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !
@@ -114,7 +114,7 @@
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
      &    fem_msq%ave_local(j_ave%i_div_b))
       call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local(j_ave%i_div_b) , div_b_sig, ione,           &
+     &   (fem_msq%ave_local(j_ave%i_div_b) , div_b_sig, 1,              &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       div_b_sig = abs(div_b_sig) / ele%volume
@@ -152,7 +152,7 @@
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
      &    fem_msq%ave_local(j_ave%i_div_a))
       call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local(j_ave%i_div_a) , div_a_sig, ione,           &
+     &   (fem_msq%ave_local(j_ave%i_div_a) , div_a_sig, 1,              &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       div_a_sig = abs(div_a_sig) / ele%volume

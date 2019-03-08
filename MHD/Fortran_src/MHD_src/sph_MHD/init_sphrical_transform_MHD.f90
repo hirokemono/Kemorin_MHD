@@ -230,6 +230,7 @@
       real(kind = kreal) :: etime_max(ntype_Leg_trans_loop)
 !
       integer(kind = kint) :: id, iloop_type
+      integer(kind = kint_gl) :: num64
 !
 !
       if(WK_sph%WK_leg%id_legendre .ne. iflag_leg_undefined) return
@@ -258,10 +259,11 @@
         call sel_finalize_legendre_trans(WK_sph%WK_leg)
       end do
 !
-      call MPI_allREDUCE (endtime, etime_trans, ntype_Leg_trans_loop,   &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE (endtime, etime_max, ntype_Leg_trans_loop,     &
-     &    CALYPSO_REAL, MPI_MAX, CALYPSO_COMM, ierr_MPI)
+      num64 = int(ntype_Leg_trans_loop,KIND(num64))
+      call calypso_mpi_allreduce_real                                   &
+     &   (endtime, etime_trans, num64, MPI_SUM)
+      call calypso_mpi_allreduce_real                                   &
+     &   (endtime, etime_max, num64, MPI_MAX)
       etime_trans(1:ntype_Leg_trans_loop)                               &
      &      = etime_trans(1:ntype_Leg_trans_loop) / dble(nprocs)
 !

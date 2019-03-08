@@ -296,7 +296,7 @@
 !
         if(total_time .gt. MHD_step1%finish_d%elapsed_time) then
           call calypso_mpi_barrier
-          call MPI_allREDUCE (total_time, total_max, ione,              &
+          call MPI_allREDUCE (total_time, total_max, 1,                 &
      &       CALYPSO_REAL, MPI_MAX, CALYPSO_COMM, ierr_MPI)
           exit
         end if

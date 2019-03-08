@@ -44,7 +44,7 @@
      &    inner_core%istack_ele_fld_smp, inner_core%iele_fld,           &
      &    vol_i_core_local)
 !
-      call MPI_allREDUCE(vol_i_core_local, inner_core%volume, ione,     &
+      call MPI_allREDUCE(vol_i_core_local, inner_core%volume, 1,        &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if (my_rank.eq.0) write(*,*) inner_core%volume

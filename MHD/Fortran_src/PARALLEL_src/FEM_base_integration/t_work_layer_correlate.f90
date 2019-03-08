@@ -146,18 +146,18 @@
 !
       integer (kind = kint), intent(in) :: n_layer_d
       type(dynamic_correlation_data), intent(inout) :: wk_cor
-      integer (kind = kint) :: num
+      integer(kind = kint_gl) :: num64
 !
 !
-      num = wk_cor%ncomp_dble * wk_cor%nlayer
+      num64 = wk_cor%ncomp_dble * wk_cor%nlayer
 !
       wk_cor%ave_les(1:n_layer_d,1:wk_cor%ncomp_dble) = 0.0d0
       wk_cor%rms_les(1:n_layer_d,1:wk_cor%ncomp_dble) = 0.0d0
 !
-      call MPI_allREDUCE(wk_cor%ave_l, wk_cor%ave_les, num,             &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE(wk_cor%rms_l, wk_cor%rms_les, num,             &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real                                   &
+     &   (wk_cor%ave_l, wk_cor%ave_les, num64, MPI_SUM)
+      call calypso_mpi_allreduce_real                                   &
+     &   (wk_cor%rms_l, wk_cor%rms_les, num64, MPI_SUM)
 !
       end subroutine sum_layerd_averages
 !
@@ -169,7 +169,7 @@
 !
       integer (kind = kint), intent(in) :: n_layer_d
       type(dynamic_correlation_data), intent(inout) :: wk_cor
-      integer (kind = kint) :: num_1, num_2
+      integer(kind = kint_gl) :: num_1, num_2
 !
 !
       num_1 = wk_cor%ncomp_sgl *  wk_cor%nlayer
@@ -178,10 +178,10 @@
       wk_cor%sig_les(1:n_layer_d,1:wk_cor%ncomp_dble) = 0.0d0
       wk_cor%cov_les(1:n_layer_d,1:wk_cor%ncomp_sgl ) = 0.0d0
 !
-      call MPI_allREDUCE(wk_cor%sig_l, wk_cor%sig_les, num_2,           &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE(wk_cor%cov_l, wk_cor%cov_les, num_1,           &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real                                   &
+     &   (wk_cor%sig_l, wk_cor%sig_les, num_2, MPI_SUM)
+      call calypso_mpi_allreduce_real                                   &
+     &   (wk_cor%cov_l, wk_cor%cov_les, num_1, MPI_SUM)
 !
       end subroutine sum_layerd_correlation
 !
@@ -194,16 +194,17 @@
 !
       type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
+      integer(kind = kint_gl) :: num64
 !
+!
+      num64 = int(wk_cor%ncomp_dble,KIND(num64))
       wk_cor%ave_wg(1:wk_cor%ncomp_dble) = 0.0d0
       wk_cor%rms_wg(1:wk_cor%ncomp_dble) = 0.0d0
 !
-      call MPI_allREDUCE                                                &
-     &   (wk_cor%ave_w, wk_cor%ave_wg, wk_cor%ncomp_dble,               &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE                                                &
-     &   (wk_cor%rms_w, wk_cor%rms_wg, wk_cor%ncomp_dble,               &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real                                   &
+     &   (wk_cor%ave_w, wk_cor%ave_wg, num64, MPI_SUM)
+      call calypso_mpi_allreduce_real                                   &
+     &   (wk_cor%rms_w, wk_cor%rms_wg, num64, MPI_SUM)
 !
       end subroutine sum_whole_averages
 !
@@ -215,15 +216,17 @@
 !
       type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
+      integer(kind = kint_gl) :: num_d, num_s
 !
+      num_d = int(wk_cor%ncomp_dble,KIND(num_d))
+      num_s = int(wk_cor%ncomp_sgl,KIND(num_s))
       wk_cor%sig_wg(1:wk_cor%ncomp_dble) = 0.0d0
       wk_cor%cov_wg(1:wk_cor%ncomp_sgl ) = 0.0d0
 !
-      call MPI_allREDUCE                                                &
-     &   (wk_cor%sig_w, wk_cor%sig_wg, wk_cor%ncomp_dble,               &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE(wk_cor%cov_w, wk_cor%cov_wg, wk_cor%ncomp_sgl, &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real                                   &
+     &   (wk_cor%sig_w, wk_cor%sig_wg, num_d, MPI_SUM)
+      call calypso_mpi_allreduce_real                                   &
+     &   (wk_cor%cov_w, wk_cor%cov_wg, num_s, MPI_SUM)
 !
       end subroutine sum_whole_correlation
 !

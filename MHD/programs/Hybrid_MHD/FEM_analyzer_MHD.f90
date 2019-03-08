@@ -292,7 +292,7 @@
       MHD_step%finish_d%elapsed_local                                   &
      &    = MPI_WTIME() - MHD_step%finish_d%started_time
       call MPI_allREDUCE (MHD_step%finish_d%elapsed_local,              &
-     &    MHD_step%finish_d%elapsed_max, ione, CALYPSO_REAL,            &
+     &    MHD_step%finish_d%elapsed_max, 1, CALYPSO_REAL,               &
      &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
       if(iflag_debug.gt.0) write(*,*) 'total_time',                     &
      &  MHD_step%finish_d%elapsed_local, MHD_step%finish_d%elapsed_time

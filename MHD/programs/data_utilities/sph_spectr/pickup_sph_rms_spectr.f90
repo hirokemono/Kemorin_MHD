@@ -119,7 +119,8 @@
       integer(kind = kint) :: i_fld, j_fld, j, icomp, ncomp
       integer(kind = kint) :: ist_fld, jst_rms
       integer(kind = kint) :: inum, knum, kr
-      integer(kind = kint) :: ipick, num
+      integer(kind = kint) :: ipick
+      integer(kind = kint_gl) :: num
 !
 !
 !$omp parallel do
@@ -156,8 +157,8 @@
 !
       num = pwr%ntot_comp_sq                                            &
      &     * pick_rms%num_layer * pick_rms%num_sph_mode
-      call MPI_allREDUCE(pick_rms%d_rj_lc, pick_rms%d_rj_gl, num,       &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real                                   &
+     &   (pick_rms%d_rj_lc, pick_rms%d_rj_gl, num, MPI_SUM)
 !
       end subroutine pickup_sph_rms_4_monitor
 !
@@ -181,7 +182,8 @@
       type(picked_spectrum_data), intent(inout) :: pick_rms
 !
       integer(kind = kint) :: i_fld, j_fld, j, icomp, ncomp
-      integer(kind = kint) :: ist_fld, jst_rms, num, inum
+      integer(kind = kint) :: ist_fld, jst_rms, inum
+      integer(kind = kint_gl) :: num
       real(kind = kreal) :: avol
 !
 !
@@ -218,9 +220,8 @@
       end do
 !
       num = pwr%ntot_comp_sq * pick_rms%num_sph_mode
-      call MPI_allREDUCE                                                &
-     &   (pick_rms%d_rj_lc(1,1), pick_rms%d_rj_gl(1,1),                 &
-     &    num, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real                                   &
+     &   (pick_rms%d_rj_lc(1,1), pick_rms%d_rj_gl(1,1), num, MPI_SUM)
 !
       end subroutine pickup_sph_rms_vol_monitor
 !

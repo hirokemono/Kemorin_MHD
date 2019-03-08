@@ -46,6 +46,7 @@
       type(flexible_stepping_data), intent(inout) :: flex_data
 !
       integer(kind = kint) :: ip, nd
+      integer(kind = kint_gl) :: num64
 !
 !
 !$omp parallel
@@ -130,14 +131,13 @@
         end do
       end do
 !
-      call MPI_allREDUCE                                                &
+      num64 = int(flex_data%ntot_comp,KIND(num64))
+      call calypso_mpi_allreduce_real                                   &
      &   (flex_data%d_ratio_max_l, flex_data%d_ratio_max,               &
-     &    flex_data%ntot_comp, CALYPSO_REAL, MPI_MAX,                   &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE                                                &
+     &    num64, MPI_MAX)
+      call calypso_mpi_allreduce_real                                   &
      &   (flex_data%d_ratio_min_l, flex_data%d_ratio_min,               &
-     &    flex_data%ntot_comp, CALYPSO_REAL, MPI_MIN,                   &
-     &    CALYPSO_COMM, ierr_MPI)
+     &    num64, MPI_MAX)
 !
 !
       flex_data%d_ratio_allmax = flex_data%d_ratio_max(1)

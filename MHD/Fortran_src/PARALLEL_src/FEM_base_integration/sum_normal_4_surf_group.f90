@@ -6,7 +6,6 @@
 !      Modified by H. Matsui on Jan., 2009
 !
 !      subroutine s_sum_normal_4_surf_group(ele, sf_grp, sf_grp_v)
-!      subroutine s_sum_norm_of_surf_grp_para(num_surf, tot_area_sf_grp)
 !
       module sum_normal_4_surf_group
 !
@@ -38,6 +37,7 @@
       type(surface_group_geometry), intent(inout) :: sf_grp_v
 !
       integer(kind = kint) :: i
+      integer(kind = kint_gl) :: num64
 !
 !
       call allocate_sum_local_area_grp(sf_grp%num_grp)
@@ -48,8 +48,9 @@
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    sf_grp_v%area_sf_grp)
 !
-      call s_sum_norm_of_surf_grp_para                                  &
-     &   (sf_grp%num_grp, sf_grp_v%tot_area_sf_grp)
+      num64 = int(sf_grp%num_grp,KIND(num64))
+      call calypso_mpi_allreduce_real                                   &
+     &   (area_sf_grp_l, sf_grp_v%tot_area_sf_grp, num64, MPI_SUM)
       call deallocate_sum_local_area_grp
 !
       if (my_rank.eq.0) then
@@ -133,21 +134,6 @@
       end do
 !
       end subroutine sum_norm_of_surf_group
-!
-! ----------------------------------------------------------------------
-!
-      subroutine s_sum_norm_of_surf_grp_para(num_surf, tot_area_sf_grp)
-!
-      use calypso_mpi
-!
-      integer(kind = kint), intent(in) :: num_surf
-      real(kind = kreal), intent(inout) :: tot_area_sf_grp(num_surf)
-!
-!
-      call MPI_allREDUCE (area_sf_grp_l, tot_area_sf_grp, num_surf,     &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-!
-      end subroutine s_sum_norm_of_surf_grp_para
 !
 ! ----------------------------------------------------------------------
 !

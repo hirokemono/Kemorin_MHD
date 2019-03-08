@@ -200,7 +200,7 @@
      &    ele%istack_ele_smp, ele%volume_ele, vol_local)
 !
 !      write(*,*) 'MPI_allREDUCE'
-       call MPI_allREDUCE (vol_local, ele%volume, ione,                 &
+       call MPI_allREDUCE (vol_local, ele%volume, 1,                    &
      &  CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
        if (ele%volume .eq. 0.0d0) then

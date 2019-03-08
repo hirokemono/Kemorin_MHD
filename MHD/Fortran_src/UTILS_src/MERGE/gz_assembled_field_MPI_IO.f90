@@ -206,7 +206,7 @@
 !
       integer(kind = kint) :: id_rank
       integer(kind = kint) :: iloop, ip
-      integer(kind = kint_gl) :: nnod64
+      integer(kind = kint_gl) :: num64
 !
 !
       len_gz_lc(1:nprocs_in) = 0
@@ -218,9 +218,9 @@
  !
         if(id_rank .lt. nprocs_in) then
           vector => fld_IO(iloop)%d_IO(:,ist_fld:ist_fld+ndir-1)
-          nnod64 = fld_IO(iloop)%nnod_IO
+          num64 = fld_IO(iloop)%nnod_IO
           call defleate_vector_txt                                      &
-     &        (izero, nnod64, ndir, vector, gz_bufs(iloop))
+     &        (izero, num64, ndir, vector, gz_bufs(iloop))
           len_gz_lc(id_rank+1) = gz_bufs(iloop)%ilen_gzipped
         else
           gz_bufs(iloop)%ilen_gz = 0
@@ -230,9 +230,10 @@
       end do
 !
 !        Count data size
+      num64 = int(nprocs_in,KIND(num64))
       len_gz_pe(1:nprocs_in) = 0
-      call MPI_allREDUCE(len_gz_lc, len_gz_pe, nprocs_in,               &
-     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_int8                                   &
+     &   (len_gz_lc, len_gz_pe, num64, MPI_SUM)
       istack_gz_pe(0) = 0
       do ip = 1, nprocs_in
         istack_gz_pe(ip) = istack_gz_pe(ip-1) + len_gz_pe(ip)
@@ -280,6 +281,7 @@
 !
       integer(kind = kint) :: id_rank
       integer(kind = kint) :: iloop, ip, ilength
+      integer(kind = kint_gl) :: num64
 !
 !
       len_gz_lc(1:IO_param%nprocs_in) = 0
@@ -307,9 +309,10 @@
       end do
 !
 !        Count data size
+      num64 = int(IO_param%nprocs_in,KIND(num64))
       len_gz_pe(1:IO_param%nprocs_in) = 0
-      call MPI_allREDUCE(len_gz_lc, len_gz_pe, IO_param%nprocs_in,      &
-     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_int8                                   &
+     &   (len_gz_lc, len_gz_pe, num64, MPI_SUM)
       istack_gz_pe(0) = 0
       do ip = 1, IO_param%nprocs_in
         istack_gz_pe(ip) = istack_gz_pe(ip-1) + len_gz_pe(ip)

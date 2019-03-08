@@ -323,6 +323,7 @@
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = kint_gl) :: num_lc(0:nprocs_in)
       integer(kind = kint_gl) :: num_gl(0:nprocs_in)
       integer(kind = kint) :: iloop, ip
@@ -338,8 +339,8 @@
         num_lc(ip) = num_local(iloop)
       end do
 !
-      call MPI_allREDUCE(num_lc, num_gl, nprocs_in,                     &
-     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      num64 = int(nprocs_in,KIND(num64))
+      call calypso_mpi_allreduce_int8(num_lc, num_gl, num64, MPI_SUM)
 !
       istack_merged(0) = 0
       do ip = 1, nprocs_in

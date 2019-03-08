@@ -154,7 +154,7 @@
       call sum_4_volume(ele%numele, ele%interior_ele,                   &
      &    area%istack_ele_fld_smp, ele%volume_ele, vol_fl_local)
 !
-      call MPI_allREDUCE (vol_fl_local, area%volume, ione,              &
+      call MPI_allREDUCE (vol_fl_local, area%volume, 1,                 &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if (area%volume .eq. 0.0d0) then

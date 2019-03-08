@@ -97,6 +97,7 @@
 !
       type(element_data), intent(in) :: org_ele
 !
+      integer(kind = kint_gl) :: num64
 !
       if (iflag_grping_direction .eq. 0) then
         call count_added_egrp_item                                      &
@@ -122,8 +123,9 @@
      &      num_t_ele_grp, minmax_t_ele_grping)
       end if
 !
-      call MPI_allREDUCE(nitem_added_lc, nitem_added_gl, ngrp_added,    &
-     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      num64 = int(ngrp_added,KIND(num64))
+      call calypso_mpi_allreduce_int                                    &
+     &   (nitem_added_lc, nitem_added_gl, num64, MPI_SUM)
 !
       end subroutine count_new_2d_element_group
 !

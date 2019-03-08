@@ -144,7 +144,7 @@
      &                :: v_pole(sph%sph_rtp%nnod_pole,ncomp_trans)
       type(spherical_trns_works), intent(inout) :: WK_sph
 !
-      integer(kind = kint) :: ncomp_pole
+      integer(kind = kint_gl) :: ncomp_pole
 !
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+1)
@@ -184,8 +184,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'v_pole'
       v_pole(1:sph%sph_rtp%nnod_pole,1:ncomp_trans) = zero
       ncomp_pole = ncomp_trans * sph%sph_rtp%nnod_pole
-      call MPI_allreduce(v_pl_local, v_pole, ncomp_pole,                &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real                                   &
+     &   (v_pl_local, v_pole, ncomp_pole, MPI_SUM)
 !
       end subroutine sph_b_trans_w_poles
 !
@@ -211,7 +211,7 @@
       real(kind = kreal), intent(inout)                                 &
      &                :: v_pole(sph%sph_rtp%nnod_pole,ncomp_trans)
 !
-      integer(kind = kint) :: ncomp_pole
+      integer(kind = kint_gl) :: ncomp_pole
 !
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+1)
@@ -228,8 +228,8 @@
 !
       v_pole(1:sph%sph_rtp%nnod_pole,1:ncomp_trans) = zero
       ncomp_pole = ncomp_trans * sph%sph_rtp%nnod_pole
-      call MPI_allreduce(v_pl_local, v_pole, ncomp_pole,                &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real                                   &
+     &   (v_pl_local, v_pole, ncomp_pole, MPI_SUM)
 !
       end subroutine pole_b_transform
 !

@@ -117,6 +117,7 @@
 !
       integer(kind = kint) :: i, imax
       real(kind = kreal) :: delta1, delta2
+      integer(kind = kint_gl) :: num64
 !
 !
       do i = 0, flex_data%ntot_comp
@@ -212,14 +213,13 @@
      &      flex_data%ave_dt_local(flex_data%i_drmax_d))
       end if
 !
-      call MPI_allREDUCE                                                &
+      num64 = int(flex_data%ntot_comp,KIND(num64))
+      call calypso_mpi_allreduce_real                                   &
      &   (flex_data%rms_dt_local, flex_data%rms_dt_global,              &
-     &    flex_data%ntot_comp, CALYPSO_REAL, MPI_SUM,                   &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE                                                &
+     &    num64, MPI_SUM)
+      call calypso_mpi_allreduce_real                                   &
      &   (flex_data%ave_dt_local, flex_data%ave_dt_global,              &
-     &    flex_data%ntot_comp, CALYPSO_REAL, MPI_SUM,                   &
-     &    CALYPSO_COMM, ierr_MPI)
+     &    num64, MPI_SUM)
 !
 !
       do i = 1, flex_data%ntot_comp
@@ -277,6 +277,8 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(flexible_stepping_data), intent(inout) :: flex_data
+!
+      integer(kind = kint_gl) :: num64
 !
 !
       if(flex_data%i_drmax_v .gt. izero) then
@@ -350,14 +352,13 @@
       end if
 !
 !
-      call MPI_allREDUCE                                                &
+      num64 = int(flex_data%ntot_comp,KIND(num64))
+      call calypso_mpi_allreduce_real                                   &
      &   (flex_data%rms_dt_local, flex_data%rms_dt_global,              &
-     &    flex_data%ntot_comp, CALYPSO_REAL, MPI_MAX,                   &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE                                                &
+     &    num64, MPI_MAX)
+      call calypso_mpi_allreduce_real                                   &
      &   (flex_data%ave_dt_local, flex_data%ave_dt_global,              &
-     &    flex_data%ntot_comp, CALYPSO_REAL, MPI_MIN,                   &
-     &    CALYPSO_COMM, ierr_MPI)
+     &    num64, MPI_MAX)
 !
       flex_data%rms_dt_global(0) = time_d%time - time_d%dt
       flex_data%rms_dt_pre1 = 0.0d0

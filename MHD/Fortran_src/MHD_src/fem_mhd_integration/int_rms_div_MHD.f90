@@ -77,7 +77,7 @@
      &    fem_msq%rms_local(i_rms%i_div_v))
 !
       call MPI_allREDUCE                                                &
-     &   (fem_msq%rms_local(i_rms%i_div_v) , rms_div_v_sig, ione,       &
+     &   (fem_msq%rms_local(i_rms%i_div_v) , rms_div_v_sig, 1,          &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       rms_div_v_sig = sqrt(rms_div_v_sig / fluid%volume)
@@ -117,7 +117,7 @@
 !
       call MPI_allREDUCE                                                &
      &   (fem_msq%rms_local(i_rms%i_div_b) , rms_div_b_sig,             &
-     &    ione, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+     &    1, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       rms_div_b_sig = sqrt(rms_div_b_sig / ele%volume)
 !
@@ -158,7 +158,7 @@
 !
       call MPI_allREDUCE                                                &
      &   (fem_msq%rms_local(i_rms%i_div_a) , rms_div_a_sig,             &
-     &    ione, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+     &    1, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       rms_div_a_sig = sqrt(rms_div_a_sig / ele%volume)
 !

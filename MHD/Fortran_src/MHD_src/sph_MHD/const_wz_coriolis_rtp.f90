@@ -179,6 +179,7 @@
      &           :: coriolis_rtp(sph_rtp%nnod_rtp,3)
 !
       integer(kind = kint) :: mphi, l_rtp, kr, k_gl, inod
+      integer(kind = kint_gl) :: num64
 !
 !
       if(sph_rj%idx_rj_degree_zero .gt. 0) then
@@ -192,9 +193,9 @@
       call clear_rj_degree0_scalar_smp                                  &
      &   (sph_rj, is_coriolis, sph_rj%nnod_rj, ntot_phys_rj, d_rj)
 !
-      call MPI_Allreduce(sphere_ave_coriolis_l, sphere_ave_coriolis_g,  &
-     &    sph_rj%nidx_rj(1), CALYPSO_REAL, MPI_SUM,                     &
-     &    CALYPSO_COMM, ierr_MPI)
+      num64 = int(sph_rj%nidx_rj(1),KIND(num64))
+      call calypso_mpi_allreduce_real                                   &
+     &   (sphere_ave_coriolis_l, sphere_ave_coriolis_g, num64, MPI_SUM)
 !
 !
 !$omp do private(mphi,l_rtp,kr,k_gl,inod)

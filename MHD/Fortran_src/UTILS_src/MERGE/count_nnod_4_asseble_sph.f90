@@ -44,6 +44,7 @@
       type(field_IO), intent(inout) :: new_fst_IO
 !
       integer(kind = kint) :: jp, irank_new
+      integer(kind = kint_gl) :: num64
 !
 !
       allocate(nnod_list_lc(np_sph_new))
@@ -58,8 +59,9 @@
         nnod_list_lc(jp) = new_sph_mesh(jp)%sph%sph_rj%nnod_rj
       end do
 !
-      call MPI_allREDUCE(nnod_list_lc, nnod_list, np_sph_new,           &
-     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      num64 = int(np_sph_new, KIND(num64))
+      call calypso_mpi_allreduce_int                                    &
+     &   (nnod_list_lc, nnod_list, num64, MPI_SUM)
 !
       istack_nnod_list(0) = 0
       do jp = 1, np_sph_new

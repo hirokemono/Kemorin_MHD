@@ -180,7 +180,7 @@
 !
 !
       call MPI_allREDUCE(sph_rtp%irank_sph_rtp, s3d_ranks%ndomain_rtp,  &
-     &    ithree, CALYPSO_INTEGER, MPI_MAX, CALYPSO_COMM, ierr_MPI)
+     &    3, CALYPSO_INTEGER, MPI_MAX, CALYPSO_COMM, ierr_MPI)
       s3d_ranks%ndomain_rtp(1:3) = s3d_ranks%ndomain_rtp(1:3) + 1
 !
       s3d_ranks%ndomain_sph = nprocs

@@ -101,10 +101,12 @@
       integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
 !
       integer(kind = kint) :: ipix
+      integer(kind = kint_gl) :: num64
 !
 !
-      call MPI_allREDUCE(iflag_img_pe, iflag_mapped, num_pixel_xy,      &
-     &    CALYPSO_INTEGER, MPI_MAX, CALYPSO_COMM, ierr_MPI)
+      num64 = int(num_pixel_xy,KIND(num64))
+      call calypso_mpi_allreduce_int                                    &
+     &   (iflag_img_pe, iflag_mapped, num64, MPI_MAX)
 !
       npixel_img = 0
       do ipix = 1, num_pixel_xy

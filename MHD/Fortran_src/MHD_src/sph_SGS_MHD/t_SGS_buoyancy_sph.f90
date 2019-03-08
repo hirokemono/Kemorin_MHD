@@ -147,7 +147,8 @@
       type(phys_data), intent(inout) :: rj_fld
       type(work_4_sph_SGS_buoyancy), intent(inout) :: wk_sgs_buo
 !
-      integer(kind = kint) :: k, k_gl, num
+      integer(kind = kint) :: k, k_gl
+      integer(kind = kint_gl) :: num64
 !
 !
       wk_sgs_buo%Cbuo_ave_sph_lc(0:sph_rj%nidx_rj(1),1:2) = 0.0d0
@@ -171,12 +172,10 @@
         end if
       end if
 !
-      num = itwo * (sph_rj%nidx_rj(1) + 1)
-!
-!
-      call MPI_allREDUCE                                                &
+      num64 = itwo * (sph_rj%nidx_rj(1) + 1)
+      call calypso_mpi_allreduce_real                                   &
      &   (wk_sgs_buo%Cbuo_ave_sph_lc, wk_sgs_buo%Cbuo_ave_sph_gl,       &
-     &    num, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+     &    num64, MPI_SUM)
 !
       do k = 1, sph_rtp%nidx_rtp(1)
         k_gl = sph_rtp%idx_gl_1d_rtp_r(k)
@@ -243,7 +242,7 @@
       end if
 !
       call MPI_allREDUCE                                                &
-     &   (wk_sgs_buo%Cbuo_vol_lc, wk_sgs_buo%Cbuo_vol_gl, itwo,         &
+     &   (wk_sgs_buo%Cbuo_vol_lc, wk_sgs_buo%Cbuo_vol_gl, 2,            &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !      write(*,*) 'wk_sgs_buo%Cbuo_vol_gl', wk_sgs_buo%Cbuo_vol_gl
 !

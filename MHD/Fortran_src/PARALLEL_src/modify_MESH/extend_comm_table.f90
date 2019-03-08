@@ -313,7 +313,7 @@
         end if
       end do
 !
-      call MPI_ALLREDUCE(icou, nerror, ione, CALYPSO_INTEGER, MPI_SUM, &
+      call MPI_ALLREDUCE(icou, nerror, 1, CALYPSO_INTEGER, MPI_SUM,     &
      &    CALYPSO_COMM,ierr_MPI)
       if(my_rank .eq. 0) write(*,*)                                     &
      &      'Number of wrong communication items:', nerror

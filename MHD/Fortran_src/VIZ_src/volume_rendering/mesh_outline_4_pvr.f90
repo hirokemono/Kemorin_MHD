@@ -69,6 +69,7 @@
 !
       type(pvr_domain_outline), intent(inout) :: outline
 !
+      integer(kind = kint_gl) :: np6
       integer(kind = kint) :: inod, ip
       real(kind = kreal) :: rmax_l, r_from_ct
 !
@@ -86,10 +87,10 @@
         xx_minmax_l(2,3,ip) = max(xx_minmax_l(2,3,ip), xx(inod,3))
       end do
 !
+      np6 = isix * nprocs
       xx_minmax_tbl = 0.0d0
-      call MPI_allREDUCE( xx_minmax_l(1,1,1),                           &
-     &    xx_minmax_tbl(1,1,1), (isix*nprocs),                          &
-     &    CALYPSO_REAL,  MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real(xx_minmax_l(1,1,1),               &
+     &    xx_minmax_tbl(1,1,1), np6, MPI_SUM)
 !
       outline%xx_minmax_g(1,1:3) = xx_minmax_tbl(1,1:3,1)
       outline%xx_minmax_g(2,1:3) = xx_minmax_tbl(2,1:3,1)
@@ -124,7 +125,7 @@
         rmax_l = max(rmax_l, r_from_ct)
       end do
 !
-      call MPI_allREDUCE( rmax_l, outline%rmax_g, ione,                 &
+      call MPI_allREDUCE(rmax_l, outline%rmax_g, 1,                     &
      &    CALYPSO_REAL,  MPI_MAX, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine cal_mesh_outline_pvr

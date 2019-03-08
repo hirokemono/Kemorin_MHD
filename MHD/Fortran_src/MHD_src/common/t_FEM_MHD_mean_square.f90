@@ -137,6 +137,7 @@
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       integer (kind = kint) :: nd
+      integer(kind = kint_gl) :: num_a, num_r
 !
 !
       if(output_IO_flag(istep, rms_step) .ne. 0) return
@@ -152,12 +153,12 @@
      &    iphys, nod_fld, iphys_ele, ele_fld, MHD_mesh%fluid,           &
      &    jacs, fem_sq%i_rms, fem_sq%j_ave, rhs_mat%fem_wk, fem_sq%msq)
 !
-      call MPI_allREDUCE(fem_sq%msq%ave_local, fem_sq%msq%ave_global,   &
-     &    fem_sq%msq%num_ave, CALYPSO_REAL, MPI_SUM,                    &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE(fem_sq%msq%rms_local, fem_sq%msq%rms_global,   &
-     &    fem_sq%msq%num_rms, CALYPSO_REAL, MPI_SUM,                    &
-     &    CALYPSO_COMM, ierr_MPI)
+      num_a = int(fem_sq%msq%num_ave,KIND(num_a))
+      num_r = int(fem_sq%msq%num_rms,KIND(num_a))
+      call calypso_mpi_allreduce_real                                   &
+     &   (fem_sq%msq%ave_local, fem_sq%msq%ave_global, num_a, MPI_SUM)
+      call calypso_mpi_allreduce_real                                   &
+     &   (fem_sq%msq%rms_local, fem_sq%msq%rms_global, num_r, MPI_SUM)
 !
 !
        do nd = 1, fem_sq%msq%num_ave

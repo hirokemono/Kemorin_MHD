@@ -86,7 +86,7 @@
       integer(kind = kint_gl) :: num_item64
 !
 !
-      call MPI_allREDUCE(view_grp%num_item, total_count, ione,          &
+      call MPI_allREDUCE(view_grp%num_item, total_count, 1,             &
      &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call gz_mpi_write_charahead(IO_param, len_int_txt,                &
      &    integer_textline(total_count))

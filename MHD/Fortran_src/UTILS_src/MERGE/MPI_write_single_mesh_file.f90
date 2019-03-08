@@ -169,7 +169,7 @@
 !
       num_item_l(1) = nod_IO%numnod
       num_item_l(2) = nod_IO%internal_node
-      call MPI_allREDUCE(num_item_l(1), istack_g(1), itwo,              &
+      call MPI_allREDUCE(num_item_l(1), istack_g(1), 2,                 &
      &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       call mpi_write_charahead(IO_param, len_multi_int_textline(itwo),  &
@@ -200,7 +200,7 @@
 !
 !
       num_item_l(1) = ele_IO%numele
-      call MPI_allREDUCE(num_item_l(1), istack_g(1), ione,              &
+      call MPI_allREDUCE(num_item_l(1), istack_g(1), 1,                 &
      &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       call mpi_write_charahead(IO_param, len_multi_int_textline(ione),  &
@@ -231,6 +231,7 @@
       type(group_data), intent(in) :: group_IO
 !
       integer(kind = kint) :: i, ist, num
+      integer(kind = kint_gl) :: num64
       integer(kind = kint_gl) :: num_item_l(group_IO%num_grp)
       integer(kind = kint_gl) :: istack_g(0:group_IO%num_grp)
       character(len=1) :: chara_dat
@@ -243,8 +244,10 @@
         num_item_l(i) = group_IO%istack_grp(i)                          &
      &                 - group_IO%istack_grp(i-1)
       end do
-      call MPI_allREDUCE(num_item_l, istack_g(1), group_IO%num_grp,     &
-     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+!
+      num64 = int(group_IO%num_grp, KIND(num64))
+      call calypso_mpi_allreduce_int8                                   &
+     &   (num_item_l, istack_g(1), num64, MPI_SUM)
       istack_g(0) = 0
       do i = 1, group_IO%num_grp
         istack_g(i) = istack_g(i) + istack_g(i-1)
@@ -287,6 +290,7 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
       integer(kind = kint) :: i, num
+      integer(kind = kint_gl) :: num64
       integer(kind = kint_gl) :: num_item_l(surf_grp_IO%num_grp)
       integer(kind = kint_gl) :: istack_g(0:surf_grp_IO%num_grp)
       character(len=1) :: chara_dat
@@ -299,8 +303,10 @@
         num_item_l(i) = surf_grp_IO%istack_grp(i)                       &
      &                 - surf_grp_IO%istack_grp(i-1)
       end do
-      call MPI_allREDUCE(num_item_l, istack_g(1), surf_grp_IO%num_grp,  &
-     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+
+      num64 = int(surf_grp_IO%num_grp, KIND(num64))
+      call calypso_mpi_allreduce_int8                                   &
+     &   (num_item_l, istack_g(1), num64, MPI_SUM)
       istack_g(0) = 0
       do i = 1, surf_grp_IO%num_grp
         istack_g(i) = istack_g(i) + istack_g(i-1)

@@ -168,6 +168,7 @@
      &                    :: id_pixel_start(num_pvr_ray)
 !
       integer(kind = kint) :: inum, icou
+      integer(kind = kint_gl) :: npixel
 !
       character(len=kchara), parameter :: img_head = 'startpoints'
       integer(kind = kint), allocatable :: iflag_pix_g(:)
@@ -186,9 +187,10 @@
         inum = id_pixel_start(icou)
         iflag_pix_l(inum) = 1
       end do
-      call MPI_allREDUCE (iflag_pix_l, iflag_pix_g,                     &
-     &    npixel_x*npixel_y, CALYPSO_INTEGER,                           &
-     &    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+!
+      npixel = npixel_x*npixel_y
+      call calypso_mpi_allreduce_int                                    &
+     &   (iflag_pix_l, iflag_pix_g, npixel, MPI_SUM)
 !
       if(my_rank .eq. 0) then
         do icou = 1, npixel_x*npixel_y

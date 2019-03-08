@@ -131,6 +131,7 @@
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(inout) :: comm_sph(ndomain_sph)
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = kint) :: ip, iroot
       integer(kind = kint) :: iflag, i
       type(sph_comm_tbl) :: comm_tmp
@@ -147,9 +148,10 @@
         end if
       end do
 !
-      call MPI_allREDUCE(nneib_rtm_lc(1), nneib_rtm_gl(1),              &
-     &      ndomain_sph, CALYPSO_INTEGER, MPI_SUM,                      &
-     &      CALYPSO_COMM, ierr_MPI)
+!
+      num64 = int(ndomain_sph,KIND(num64))
+      call calypso_mpi_allreduce_int                                    &
+     &   (nneib_rtm_lc(1), nneib_rtm_gl(1), num64, MPI_SUM)
 !
       do ip = 1, ndomain_sph
         iroot = mod(ip-1,nprocs)

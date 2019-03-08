@@ -154,7 +154,7 @@
 !C===
 !C
 !C-- ORDERING
-        call MPI_allREDUCE (djds_tbl%NHYP, NHYPmax, ione,               &
+        call MPI_allREDUCE (djds_tbl%NHYP, NHYPmax, 1,                  &
      &      CALYPSO_INTEGER, MPI_MAX, solver_C%SOLVER_COMM, ierr_MPI)
 
         WK_DJDS%NCOLORtot = DJDS_param%min_color

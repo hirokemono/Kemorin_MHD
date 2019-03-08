@@ -85,13 +85,13 @@
 !
       integer(kind = kint), intent(in) :: ncomp_sgs
       type(dynamic_least_suare_data), intent(inout) :: wk_lsq
-      integer(kind = kint) :: num
+      integer(kind = kint_gl) :: num64
 !
 !
-      num = ncomp_sgs*wk_lsq%nlayer
+      num64 = ncomp_sgs*wk_lsq%nlayer
       wk_lsq%slsq(1:wk_lsq%nlayer,1:ncomp_sgs) = 0.0d0
-      call MPI_allREDUCE(wk_lsq%slocal, wk_lsq%slsq, num,               &
-     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real                                   &
+     &   (wk_lsq%slocal, wk_lsq%slsq, num64, MPI_SUM)
 !
       end subroutine sum_lsq_coefs_4_comps
 !
@@ -104,10 +104,12 @@
       integer(kind = kint), intent(in) :: ncomp_sgs
       type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !
+      integer(kind = kint_gl) :: num64
 !
+      num64 = int(ncomp_sgs,KIND(num64))
       wk_lsq%wlsq(1:ncomp_sgs) = 0.0d0
-      call MPI_allREDUCE(wk_lsq%wlocal, wk_lsq%wlsq, ncomp_sgs,         &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real                                   &
+     &   (wk_lsq%wlocal, wk_lsq%wlsq, num64, MPI_SUM)
 !      write(*,*) 'sgs_les_whole', icomp_f, wk_lsq%slsq
 !
       end subroutine sum_lsq_whole_coefs
