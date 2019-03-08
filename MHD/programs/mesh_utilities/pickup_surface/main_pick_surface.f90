@@ -43,9 +43,9 @@
       end if
       call calypso_mpi_barrier
       call MPI_BCAST(pick_mesh_file%file_prefix, kchara,                &
-     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(pick_mesh_file%iflag_format, ione,                 &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(pick_mesh_file%iflag_format, 1,                    &
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call pickup_surface_mesh_para(pick_mesh_file, par_view1)
 !

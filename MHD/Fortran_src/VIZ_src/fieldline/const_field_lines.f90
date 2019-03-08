@@ -320,8 +320,8 @@
         end if
       end do
 !
-      call MPI_AllGather(icou, ione, CALYPSO_INTEGER,                   &
-     &    fln_tce%num_current_fline, ione, CALYPSO_INTEGER,             &
+      call MPI_AllGather(icou, 1, CALYPSO_INTEGER,                      &
+     &    fln_tce%num_current_fline, 1, CALYPSO_INTEGER,                &
      &    CALYPSO_COMM, ierr_MPI)
 !
       do ip = 1, nprocs

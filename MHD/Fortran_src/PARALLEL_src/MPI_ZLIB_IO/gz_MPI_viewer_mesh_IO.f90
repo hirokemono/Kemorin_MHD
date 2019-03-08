@@ -119,8 +119,8 @@
       ntot = 0
       do i = 1, num_grp
         num = view_grp%istack_sf(i) - view_grp%istack_sf(i-1)
-        call MPI_Allgather(num, ione, CALYPSO_INTEGER, num_global,      &
-     &      ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
+        call MPI_Allgather(num, 1, CALYPSO_INTEGER, num_global,         &
+     &      1, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
         do ip = 2, nprocs
           num_global(ip) = num_global(ip-1) + num_global(ip)
         end do

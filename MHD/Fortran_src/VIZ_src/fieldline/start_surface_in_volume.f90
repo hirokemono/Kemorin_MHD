@@ -65,8 +65,8 @@
      &     fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline,  &
      &     iflag_ele, volume_local)
 !
-      call MPI_AllGather(volume_local, ione,                            &
-     &    CALYPSO_REAL, fln_tce%flux_stack_fline(1), ione,              &
+      call MPI_AllGather(volume_local, 1,                               &
+     &    CALYPSO_REAL, fln_tce%flux_stack_fline(1), 1,                 &
      &    CALYPSO_REAL, CALYPSO_COMM, ierr_MPI)
 !
       fln_tce%flux_stack_fline(0) = 0.0d0

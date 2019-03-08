@@ -60,8 +60,8 @@
 !
       call defleate_vector_txt(izero, nnod, ndir, vector, zbuf)
 !
-      call MPI_Allgather(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,   &
-     &    ilen_gzipped_gl, ione, CALYPSO_GLOBAL_INT, CALYPSO_COMM,      &
+      call MPI_Allgather(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT,      &
+     &    ilen_gzipped_gl, 1, CALYPSO_GLOBAL_INT, CALYPSO_COMM,         &
      &    ierr_MPI)
 !
       istack_buffer(0) = 0

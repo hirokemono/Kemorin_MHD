@@ -50,19 +50,19 @@
       call alloc_mk_sph_dgrp_flag(nprocs, wk_dgrp1)
 !
       call MPI_Allgather                                                &
-     &   (sph_rtp%irank_sph_rtp(1), ione, CALYPSO_INTEGER,              &
-     &    wk_dgrp1%irank_list_r, ione, CALYPSO_INTEGER, CALYPSO_COMM,   &
+     &   (sph_rtp%irank_sph_rtp(1), 1, CALYPSO_INTEGER,                 &
+     &    wk_dgrp1%irank_list_r, 1, CALYPSO_INTEGER, CALYPSO_COMM,      &
      &    ierr_MPI)
       call MPI_Allgather                                                &
-     &   (sph_rtp%irank_sph_rtp(2), ione, CALYPSO_INTEGER,              &
-     &    wk_dgrp1%irank_list_t, ione, CALYPSO_INTEGER,                 &
+     &   (sph_rtp%irank_sph_rtp(2), 1, CALYPSO_INTEGER,                 &
+     &    wk_dgrp1%irank_list_t, 1, CALYPSO_INTEGER,                    &
      &    CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Allgather(nlayer_fl, ione, CALYPSO_INTEGER,              &
-     &    wk_dgrp1%nri_pe_list, ione, CALYPSO_INTEGER,                  &
+      call MPI_Allgather(nlayer_fl, 1, CALYPSO_INTEGER,                 &
+     &    wk_dgrp1%nri_pe_list, 1, CALYPSO_INTEGER,                     &
      &    CALYPSO_COMM, ierr_MPI)
-      call MPI_Allgather(sph_rtp%nidx_rtp(2), ione, CALYPSO_INTEGER,    &
-     &    wk_dgrp1%nth_pe_list, ione, CALYPSO_INTEGER,                  &
+      call MPI_Allgather(sph_rtp%nidx_rtp(2), 1, CALYPSO_INTEGER,       &
+     &    wk_dgrp1%nth_pe_list, 1, CALYPSO_INTEGER,                     &
      &    CALYPSO_COMM, ierr_MPI)
       wk_dgrp1%nprocs_rt(1) = maxval(wk_dgrp1%irank_list_r,1) + 1
       wk_dgrp1%nprocs_rt(2) = maxval(wk_dgrp1%irank_list_t,1) + 1

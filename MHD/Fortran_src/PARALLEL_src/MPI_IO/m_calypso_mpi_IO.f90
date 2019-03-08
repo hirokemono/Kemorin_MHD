@@ -603,8 +603,8 @@
       integer(kind = kint) :: ip
 !
 !
-      call MPI_Allgather(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,   &
-     &    ilen_gzipped_gl, ione, CALYPSO_GLOBAL_INT, CALYPSO_COMM,      &
+      call MPI_Allgather(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT,      &
+     &    ilen_gzipped_gl, 1, CALYPSO_GLOBAL_INT, CALYPSO_COMM,         &
      &    ierr_MPI)
 !
       if(zbuf%ilen_gzipped .gt. 0) then

@@ -78,11 +78,10 @@
         end if
       end do
 !
-      call calypso_mpi_barrier
-      write(*,*) 'MPI_AllGather'
+!      call calypso_mpi_barrier
       call MPI_AllGather                                                &
-     &   (fln_src%num_line_local, ione, CALYPSO_INTEGER,                &
-     &    fln_tce%num_current_fline, ione, CALYPSO_INTEGER,             &
+     &   (fln_src%num_line_local, 1, CALYPSO_INTEGER,                   &
+     &    fln_tce%num_current_fline, 1, CALYPSO_INTEGER,                &
      &    CALYPSO_COMM, ierr_MPI)
 !
       if(fln_prm%id_fline_direction .eq. iflag_both_trace) then

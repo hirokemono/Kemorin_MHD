@@ -89,8 +89,8 @@
 !
       call MPI_allREDUCE(tot_flux_start_l, tot_flux_start, 1,           &
      &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_AllGather(abs_flux_start_l, ione,                        &
-     &      CALYPSO_REAL, fln_tce%flux_stack_fline(1), ione,            &
+      call MPI_AllGather(abs_flux_start_l, 1,                           &
+     &      CALYPSO_REAL, fln_tce%flux_stack_fline(1), 1,               &
      &      CALYPSO_REAL, CALYPSO_COMM, ierr_MPI)
 !
       fln_tce%flux_stack_fline(0) = 0.0d0

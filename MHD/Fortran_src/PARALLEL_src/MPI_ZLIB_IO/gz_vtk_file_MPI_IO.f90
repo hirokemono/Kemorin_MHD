@@ -271,8 +271,8 @@
 !
       call defleate_vtk_tensor(nnod, num, vect, zbuf)
 !
-      call MPI_Allgather(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,   &
-     &    ilen_gzipped_list(1), ione, CALYPSO_GLOBAL_INT,               &
+      call MPI_Allgather(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT,      &
+     &    ilen_gzipped_list(1), 1, CALYPSO_GLOBAL_INT,                  &
      &    CALYPSO_COMM, ierr_MPI)
       ioffset = int(ioff_gl)
       do ip = 1, my_rank

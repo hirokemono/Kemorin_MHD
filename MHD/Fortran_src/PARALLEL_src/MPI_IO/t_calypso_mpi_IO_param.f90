@@ -283,9 +283,8 @@
       integer(kind = kint) :: num_global(nprocs)
 !
 !
-      call MPI_Allgather(num_local, ione, CALYPSO_INTEGER,              &
-     &    num_global, ione, CALYPSO_INTEGER, CALYPSO_COMM,              &
-     &    ierr_MPI)
+      call MPI_Allgather(num_local, 1, CALYPSO_INTEGER,                 &
+     &    num_global, 1, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
       IO_param%istack_merged(1:nprocs) = num_global(1:nprocs)
 !
       end subroutine set_numbers_2_head_node
@@ -301,8 +300,8 @@
       integer(kind = kint) :: ip
 !
 !
-      call MPI_Allgather(num_local, ione, CALYPSO_GLOBAL_INT,           &
-     &    num_global, ione, CALYPSO_GLOBAL_INT, CALYPSO_COMM,           &
+      call MPI_Allgather(num_local, 1, CALYPSO_GLOBAL_INT,              &
+     &    num_global, 1, CALYPSO_GLOBAL_INT, CALYPSO_COMM,              &
      &    ierr_MPI)
 !
       IO_param%istack_merged(0) = 0

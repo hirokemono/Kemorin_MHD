@@ -1,8 +1,7 @@
-!share_local_group_2_all.f90
-!      module share_local_group_2_all
+!share_local_data_2_all.f90
+!      module share_local_data_2_all
 !
 !     Written by H. Matsui on Aug., 2011
-!
 !
 !      subroutine share_local_num_to_all(n_local, ntot, nmax, num_each, &
 !     &          istack)
@@ -19,7 +18,7 @@
 !     &          num_each, istack, real_send, real_recv,                &
 !     &          vect_local, vect_share)
 !
-      module share_local_group_2_all
+      module share_local_data_2_all
 !
       use m_precision
 !
@@ -46,8 +45,8 @@
       integer(kind = kint) :: ip
 !
 !
-      call MPI_AllGather(n_local, ione, CALYPSO_INTEGER,                &
-     &    num_each, ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
+      call MPI_AllGather(n_local, 1, CALYPSO_INTEGER,                   &
+     &    num_each, 1, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
 !
       istack(0) = 0
       do ip = 1, nprocs
@@ -79,8 +78,8 @@
 !
       int_send(1:n_local) = int_local(1:n_local)
 !
-      call MPI_AllGather(int_send, nmax, CALYPSO_INTEGER,               &
-     &    int_recv, nmax, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
+      call MPI_AllGather(int_send, int(nmax), CALYPSO_INTEGER,          &
+     &    int_recv, int(nmax), CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)
@@ -113,8 +112,9 @@
 !
       real_send(1:n_local) = real_local(1:n_local)
 !
-      call MPI_AllGather(real_send(1), nmax, CALYPSO_REAL,              &
-     &    real_recv(1), nmax, CALYPSO_REAL, CALYPSO_COMM, ierr_MPI)
+      call MPI_AllGather(real_send(1), int(nmax), CALYPSO_REAL,         &
+     &    real_recv(1), int(nmax), CALYPSO_REAL,  CALYPSO_COMM,         &
+     &    ierr_MPI)
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)
@@ -152,8 +152,8 @@
       end do
 !
       call MPI_AllGather                                                &
-     &    (real_send(1), (ithree*nmax), CALYPSO_REAL,                   &
-     &     real_recv(1), (ithree*nmax), CALYPSO_REAL,                   &
+     &    (real_send(1), int(ithree*nmax), CALYPSO_REAL,                &
+     &     real_recv(1), int(ithree*nmax), CALYPSO_REAL,                &
      &     CALYPSO_COMM, ierr_MPI)
 !
       do ip = 1, nprocs
@@ -197,8 +197,8 @@
       end do
 !
       call MPI_AllGather                                                &
-     &    (real_send(1), (isix*nmax), CALYPSO_REAL,                     &
-     &     real_recv(1), (isix*nmax), CALYPSO_REAL,                     &
+     &    (real_send(1), int(isix*nmax), CALYPSO_REAL,                  &
+     &     real_recv(1), int(isix*nmax), CALYPSO_REAL,                  &
      &     CALYPSO_COMM, ierr_MPI)
 !
       do ip = 1, nprocs
@@ -218,4 +218,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module share_local_group_2_all
+      end module share_local_data_2_all

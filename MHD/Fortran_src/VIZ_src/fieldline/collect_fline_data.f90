@@ -109,12 +109,12 @@
       integer(kind = kint) :: ip
 !
 !
-      call MPI_AllGather(fline_lc%nnod_line_l, ione, CALYPSO_INTEGER,   &
-     &    fline_gl%nnod_line_gl(1), ione, CALYPSO_INTEGER,              &
+      call MPI_AllGather(fline_lc%nnod_line_l, 1, CALYPSO_INTEGER,      &
+     &    fline_gl%nnod_line_gl(1), 1, CALYPSO_INTEGER,                 &
      &    CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_AllGather(fline_lc%nele_line_l, ione, CALYPSO_INTEGER,   &
-     &    fline_gl%nele_line_gl(1), ione, CALYPSO_INTEGER,              &
+      call MPI_AllGather(fline_lc%nele_line_l, 1, CALYPSO_INTEGER,      &
+     &    fline_gl%nele_line_gl(1), 1, CALYPSO_INTEGER,                 &
      &    CALYPSO_COMM, ierr_MPI)
 !
       fline_gl%istack_nod_line_gl(0) = 0
