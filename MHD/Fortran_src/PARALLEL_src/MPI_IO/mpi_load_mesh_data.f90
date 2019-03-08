@@ -143,6 +143,7 @@
      &          nod_grp, ele_grp, sf_grp)
 !
       use t_group_data
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: n_subdomain
       type(group_data), intent(inout) :: nod_grp
@@ -150,7 +151,7 @@
       type(surface_group_data), intent(inout) :: sf_grp
 !
       integer(kind = kint) :: ist, ied
-      integer(kind = kint) :: nlen_comm, ntot_grp, num_grp_g(3)
+      integer(kind = kint) ::  ntot_grp, num_grp_g(3)
       character(len=kchara), allocatable :: grp_name_g(:)
 !
 !
@@ -189,9 +190,8 @@
         grp_name_g(ist:ied) = sf_grp%grp_name(1:sf_grp%num_grp)
       end if
 !
-      nlen_comm = kchara*ntot_grp
-      call MPI_BCAST(grp_name_g, nlen_comm, CALYPSO_CHARACTER, 0,       &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character                                  &
+     &   (grp_name_g, cast_long(kchara*ntot_grp), 0)
 !
       if(my_rank .ge. n_subdomain) then
         ied = nod_grp%num_grp

@@ -275,8 +275,7 @@
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + num*kint
 !
-      call MPI_BCAST(int_dat, num, CALYPSO_INTEGER, 0,                  &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int(int_dat, num, 0)
 !
       end subroutine mpi_read_mul_inthead_b
 !
@@ -314,8 +313,7 @@
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + num*kint_gl
 !
-      call MPI_BCAST(int8_dat, num, CALYPSO_GLOBAL_INT, 0,              &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int8(int8_dat, num, 0)
 !
       end subroutine mpi_read_mul_int8head_b
 !
@@ -323,27 +321,26 @@
 !
       subroutine mpi_read_mul_charahead_b(IO_param, num, chara_dat)
 !
+      use transfer_to_long_integers
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
       integer(kind=kint), intent(in) :: num
       character(len=kchara), intent(inout) :: chara_dat(num)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: ilength
-      integer(kind=kint_gl) :: num64
+      integer(kind = kint_gl) :: ilen_64
 !
 !
-      ilength = num * kchara
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        num64 = num
-        call calypso_mpi_seek_read_mul_chara                            &
-     &     (IO_param%id_file, ioffset, kchara, num64, chara_dat(1))
+        call calypso_mpi_seek_read_mul_chara(IO_param%id_file, ioffset, &
+     &     kchara, cast_long(num), chara_dat(1))
       end if
-      IO_param%ioff_gl = IO_param%ioff_gl + ilength
+      ilen_64 = num * kchara
+      IO_param%ioff_gl = IO_param%ioff_gl + ilen_64
 !
-      call MPI_BCAST(chara_dat, ilength, CALYPSO_CHARACTER, 0,          &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character(chara_dat, ilen_64, 0)
 !
       end subroutine mpi_read_mul_charahead_b
 !

@@ -115,12 +115,14 @@
 !
       subroutine sync_field_names_mpi(num_field, field_name)
 !
+     use transfer_to_long_integers
+!
       integer(kind=kint), intent(in) :: num_field
       character(len=kchara), intent(inout) :: field_name(num_field)
 !
 !
-      call MPI_BCAST(field_name, (num_field*kchara), CALYPSO_CHARACTER, &
-     &    0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character                                  &
+     &   (field_name, cast_long(num_field*kchara), 0)
 !
       end subroutine sync_field_names_mpi
 !
@@ -228,6 +230,7 @@
 !
       use m_phys_constants
       use field_data_IO
+      use transfer_to_long_integers
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind=kint), intent(in) :: nprocs_in, id_rank
@@ -263,8 +266,8 @@
       end if
       ioff_gl = ioff_gl + ilength
 !
-      call MPI_BCAST(istack_merged, (nprocs_in+1), CALYPSO_GLOBAL_INT,  &
-     &    0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int8                                       &
+     &   (istack_merged, cast_long(nprocs_in+1), 0)
       call MPI_BCAST(num_field, 1, CALYPSO_INTEGER, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
 !
@@ -302,7 +305,7 @@
       end if
       ioff_gl = ioff_gl + ilength
 !
-      call MPI_BCAST(ncomp_field, num_field, CALYPSO_INTEGER, 0,        &
+      call MPI_BCAST(ncomp_field, int(num_field), CALYPSO_INTEGER, 0,   &
      &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine read_field_num_mpi

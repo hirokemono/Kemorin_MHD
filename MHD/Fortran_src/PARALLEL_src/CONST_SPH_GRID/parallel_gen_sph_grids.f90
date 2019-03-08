@@ -131,8 +131,9 @@
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(inout) :: comm_sph(ndomain_sph)
 !
+      integer :: iroot
       integer(kind = kint_gl) :: num64
-      integer(kind = kint) :: ip, iroot
+      integer(kind = kint) :: ip
       integer(kind = kint) :: iflag, i
       type(sph_comm_tbl) :: comm_tmp
 !
@@ -154,7 +155,7 @@
      &   (nneib_rtm_lc(1), nneib_rtm_gl(1), num64, MPI_SUM)
 !
       do ip = 1, ndomain_sph
-        iroot = mod(ip-1,nprocs)
+        iroot = int(mod(ip-1,nprocs))
         comm_tmp%nneib_domain = nneib_rtm_gl(ip)
         call alloc_type_sph_comm_stack(comm_tmp)
 !

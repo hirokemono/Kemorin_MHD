@@ -122,6 +122,7 @@
       integer(kind = kint), allocatable :: num_recv(:)
 !
       integer(kind = kint) :: ip, num, j, jj, k1
+      integer(kind = kint_gl) :: num64
 !
 !
       allocate(num_recv(nprocs))
@@ -151,49 +152,45 @@
       allocate(num_recv(0:nnod_4_ele*max_import))
 !
       do ip = 1, nprocs
-        num = ele_comm_tmp(ip)%num_neib
+        num64 = ele_comm_tmp(ip)%num_neib
         if(my_rank .eq. (ip-1)) then
-          num_recv(1:num) = ele_comm_tmp(ip)%id_neib(1:num)
+          num_recv(1:num64) = ele_comm_tmp(ip)%id_neib(1:num64)
         end if
-        call MPI_Bcast(num_recv(1), num, CALYPSO_INTEGER, my_rank,      &
-     &      CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_int(num_recv(1), num64, my_rank)
 !
-        ele_comm_tmp(ip)%id_neib(1:num) = num_recv(1:num)
+        ele_comm_tmp(ip)%id_neib(1:num64) = num_recv(1:num64)
       end do
 !
       do ip = 1, nprocs
-        num = ele_comm_tmp(ip)%num_neib
+        num64 = ele_comm_tmp(ip)%num_neib
         if(my_rank .eq. (ip-1)) then
-          num_recv(1:num) = ele_comm_tmp(ip)%istack_import(1:num)
+          num_recv(1:num64) = ele_comm_tmp(ip)%istack_import(1:num64)
         end if
-        call MPI_Bcast(num_recv(1), num, CALYPSO_INTEGER, my_rank,      &
-     &      CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_int(num_recv(1), num64, my_rank)
 !
         ele_comm_tmp(ip)%istack_import(0) =     0
-        ele_comm_tmp(ip)%istack_import(1:num) = num_recv(1:num)
+        ele_comm_tmp(ip)%istack_import(1:num64) = num_recv(1:num64)
       end do
 !
       do ip = 1, nprocs
-        num = ele_comm_tmp(ip)%ntot_import
+        num64 = ele_comm_tmp(ip)%ntot_import
         if(my_rank .eq. (ip-1)) then
-          num_recv(1:num) = ele_comm_tmp(ip)%item_import(1:num)
+          num_recv(1:num64) = ele_comm_tmp(ip)%item_import(1:num64)
         end if
-        call MPI_Bcast(num_recv(1), num, CALYPSO_INTEGER, my_rank,      &
-     &      CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_int(num_recv(1), num64, my_rank)
 !
-        ele_comm_tmp(ip)%item_import(1:num) = num_recv(1:num)
+        ele_comm_tmp(ip)%item_import(1:num64) = num_recv(1:num64)
       end do
 !
 !
       do ip = 1, nprocs
-        num = ele_comm_tmp(ip)%ntot_import
+        num64 = ele_comm_tmp(ip)%ntot_import
         if(my_rank .eq. (ip-1)) then
-          num_recv(1:num) = ele_comm_tmp(ip)%item_import(1:num)
+          num_recv(1:num64) = ele_comm_tmp(ip)%item_import(1:num64)
         end if
-        call MPI_Bcast(num_recv(1), num, CALYPSO_INTEGER, my_rank,      &
-     &      CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_int(num_recv(1), num64, my_rank)
 !
-        ele_comm_tmp(ip)%item_import(1:num) = num_recv(1:num)
+        ele_comm_tmp(ip)%item_import(1:num64) = num_recv(1:num64)
       end do
 !
 !
@@ -205,9 +202,9 @@
       end do
 !
       do ip = 1, nprocs
-        num = nnod_4_ele * ele_comm_tmp(ip)%ntot_import
+        num64 = nnod_4_ele * ele_comm_tmp(ip)%ntot_import
         if(my_rank .eq. (ip-1)) then
-          do j = 1, num
+          do j = 1, num64
             do k1 = 1, nnod_4_ele
               jj = k1 + (j-1)*nnod_4_ele
               num_recv(jj) = ele_comm_gl(ip)%ie_gl_import(k1,j)
@@ -215,10 +212,9 @@
           end do
         end if
 !
-        call MPI_Bcast(num_recv(1), num, CALYPSO_INTEGER, my_rank,      &
-     &      CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_int(num_recv(1), num64, my_rank)
 !
-        do j = 1, num
+        do j = 1, num64
           do k1 = 1, nnod_4_ele
             jj = k1 + (j-1)*nnod_4_ele
             ele_comm_gl(ip)%ie_gl_import(k1,j) = num_recv(jj)

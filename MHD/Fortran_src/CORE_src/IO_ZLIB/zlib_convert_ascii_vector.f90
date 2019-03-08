@@ -252,7 +252,7 @@
 !        if(my_rank .eq. 0) write(*,*) 'defleate_vector_txt start ',    &
 !     &      nnod, ilen_line, zbuf%ilen_gz, ilen_tmp
         do
-          nline = min((nnod - ist), maxline)
+          nline = int(min((nnod - ist), maxline))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &

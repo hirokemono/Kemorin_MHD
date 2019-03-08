@@ -205,6 +205,8 @@
 !
       subroutine bcast_ctl_array_r1(array_real)
 !
+      use transfer_to_long_integers
+!
       type(ctl_array_real), intent(inout) :: array_real
 !
 !
@@ -217,14 +219,16 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_real(array_real)
 !
-      call MPI_BCAST(array_real%vect, array_real%num,                   &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_real%vect, cast_long(array_real%num), 0)
 !
       end subroutine bcast_ctl_array_r1
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_r2(array_r2)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_r2), intent(inout) :: array_r2
 !
@@ -238,16 +242,18 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_r2(array_r2)
 !
-      call MPI_BCAST(array_r2%vec1, array_r2%num,                       &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_r2%vec2, array_r2%num,                       &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_r2%vec1, cast_long(array_r2%num), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_r2%vec2, cast_long(array_r2%num), 0)
 !
       end subroutine bcast_ctl_array_r2
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_r3(array_r3)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_r3), intent(inout) :: array_r3
 !
@@ -261,18 +267,20 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_r3(array_r3)
 !
-      call MPI_BCAST(array_r3%vec1, array_r3%num,                       &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_r3%vec2, array_r3%num,                       &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_r3%vec3, array_r3%num,                       &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_r3%vec1, cast_long(array_r3%num), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_r3%vec2, cast_long(array_r3%num), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_r3%vec3, cast_long(array_r3%num), 0)
 !
       end subroutine bcast_ctl_array_r3
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_i1(array_int)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_int), intent(inout) :: array_int
 !
@@ -286,14 +294,16 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_int(array_int)
 !
-      call MPI_BCAST(array_int%ivec, array_int%num,                     &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &   (array_int%ivec, cast_long(array_int%num), 0)
 !
       end subroutine bcast_ctl_array_i1
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_i2(array_i2)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_i2), intent(inout) :: array_i2
 !
@@ -307,16 +317,18 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_i2(array_i2)
 !
-      call MPI_BCAST(array_i2%int1, array_i2%num,                       &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_i2%int2, array_i2%num,                       &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &   (array_i2%int1, cast_long(array_i2%num), 0)
+      call calypso_mpi_bcast_int                                        &
+     &   (array_i2%int2, cast_long(array_i2%num), 0)
 !
       end subroutine bcast_ctl_array_i2
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_c1(array_chara)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_chara), intent(inout) :: array_chara
 !
@@ -330,14 +342,16 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_chara(array_chara)
 !
-      call MPI_BCAST(array_chara%c_tbl, array_chara%num*kchara,         &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_chara%c_tbl, cast_long(array_chara%num*kchara), 0)
 !
       end subroutine bcast_ctl_array_c1
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_c2(array_c2)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_c2), intent(inout) :: array_c2
 !
@@ -351,16 +365,18 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_c2(array_c2)
 !
-      call MPI_BCAST(array_c2%c1_tbl, array_c2%num*kchara,              &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_c2%c2_tbl, array_c2%num*kchara,              &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_c2%c1_tbl, cast_long(array_c2%num*kchara), 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_c2%c2_tbl, cast_long(array_c2%num*kchara), 0)
 !
       end subroutine bcast_ctl_array_c2
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_c3(array_c3)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_c3), intent(inout) :: array_c3
 !
@@ -374,18 +390,20 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_c3(array_c3)
 !
-      call MPI_BCAST(array_c3%c1_tbl, array_c3%num*kchara,              &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_c3%c2_tbl, array_c3%num*kchara,              &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_c3%c3_tbl, array_c3%num*kchara,              &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_c3%c1_tbl, cast_long(array_c3%num*kchara), 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_c3%c2_tbl, cast_long(array_c3%num*kchara), 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_c3%c3_tbl, cast_long(array_c3%num*kchara), 0)
 !
       end subroutine bcast_ctl_array_c3
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_cr(array_cr)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_cr), intent(inout) :: array_cr
 !
@@ -399,16 +417,18 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_c_r(array_cr)
 !
-      call MPI_BCAST(array_cr%c_tbl, array_cr%num*kchara,               &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_cr%vect, array_cr%num,                       &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_cr%c_tbl, cast_long(array_cr%num*kchara), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_cr%vect, cast_long(array_cr%num), 0)
 !
       end subroutine bcast_ctl_array_cr
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_ci(array_ci)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_ci), intent(inout) :: array_ci
 !
@@ -422,16 +442,18 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_c_i(array_ci)
 !
-      call MPI_BCAST(array_ci%c_tbl, array_ci%num*kchara,               &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_ci%ivec, array_ci%num,                       &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_ci%c_tbl, cast_long(array_ci%num*kchara), 0)
+      call calypso_mpi_bcast_int                                        &
+     &   (array_ci%ivec, cast_long(array_ci%num), 0)
 !
       end subroutine bcast_ctl_array_ci
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_cr2(array_cr2)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_cr2), intent(inout) :: array_cr2
 !
@@ -445,18 +467,20 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_c_r2(array_cr2)
 !
-      call MPI_BCAST(array_cr2%c_tbl, array_cr2%num*kchara,             &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_cr2%vec1, array_cr2%num,                     &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_cr2%vec2, array_cr2%num,                     &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_cr2%c_tbl, cast_long(array_cr2%num*kchara), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_cr2%vec1, cast_long(array_cr2%num), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_cr2%vec2, cast_long(array_cr2%num), 0)
 !
       end subroutine bcast_ctl_array_cr2
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_c2r(array_c2r)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_c2r), intent(inout) :: array_c2r
 !
@@ -470,18 +494,20 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_c2_r(array_c2r)
 !
-      call MPI_BCAST(array_c2r%c1_tbl, array_c2r%num*kchara,            &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_c2r%c2_tbl, array_c2r%num*kchara,            &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_c2r%vect, array_c2r%num,                     &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_c2r%c1_tbl, cast_long(array_c2r%num*kchara), 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_c2r%c2_tbl, cast_long(array_c2r%num*kchara), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_c2r%vect, cast_long(array_c2r%num), 0)
 !
       end subroutine bcast_ctl_array_c2r
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_icr(array_icr)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_icr), intent(inout) :: array_icr
 !
@@ -495,18 +521,20 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_i_c_r(array_icr)
 !
-      call MPI_BCAST(array_icr%ivec, array_icr%num,                     &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_icr%c_tbl, array_icr%num*kchara,             &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_icr%vect, array_icr%num,                     &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &   (array_icr%ivec, cast_long(array_icr%num), 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_icr%c_tbl, cast_long(array_icr%num*kchara), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_icr%vect, cast_long(array_icr%num), 0)
 !
       end subroutine bcast_ctl_array_icr
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_ir(array_ir)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_ir), intent(inout) :: array_ir
 !
@@ -520,16 +548,18 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_i_r(array_ir)
 !
-      call MPI_BCAST(array_ir%ivec, array_ir%num,                       &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_ir%vect, array_ir%num,                       &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &   (array_ir%ivec, cast_long(array_ir%num), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_ir%vect, cast_long(array_ir%num), 0)
 !
       end subroutine bcast_ctl_array_ir
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_i2r(array_i2r)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_i2r), intent(inout) :: array_i2r
 !
@@ -543,18 +573,20 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_i2_r(array_i2r)
 !
-      call MPI_BCAST(array_i2r%int1, array_i2r%num,                     &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_i2r%int2, array_i2r%num,                     &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_i2r%vect, array_i2r%num,                     &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &   (array_i2r%int1, cast_long(array_i2r%num), 0)
+      call calypso_mpi_bcast_int                                        &
+     &   (array_i2r%int2, cast_long(array_i2r%num), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_i2r%vect, cast_long(array_i2r%num), 0)
 !
       end subroutine bcast_ctl_array_i2r
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_array_i2r2(array_i2r2)
+!
+      use transfer_to_long_integers
 !
       type(ctl_array_i2r2), intent(inout) :: array_i2r2
 !
@@ -568,14 +600,14 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_i2_r2(array_i2r2)
 !
-      call MPI_BCAST(array_i2r2%int1, array_i2r2%num,                   &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_i2r2%int2, array_i2r2%num,                   &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_i2r2%vec1, array_i2r2%num,                   &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_i2r2%vec2, array_i2r2%num,                   &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &   (array_i2r2%int1, cast_long(array_i2r2%num), 0)
+      call calypso_mpi_bcast_int                                        &
+     &   (array_i2r2%int2, cast_long(array_i2r2%num), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_i2r2%vec1, cast_long(array_i2r2%num), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (array_i2r2%vec2, cast_long(array_i2r2%num), 0)
 !
       end subroutine bcast_ctl_array_i2r2
 !
