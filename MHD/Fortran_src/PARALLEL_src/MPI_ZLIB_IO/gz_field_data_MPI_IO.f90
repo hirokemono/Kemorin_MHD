@@ -104,7 +104,7 @@
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+     &    0, CALYPSO_COMM, ierr_MPI)
       ioff_gl = ioff_gl + zbuf%ilen_gzipped
 !
       end subroutine gz_write_fld_header_mpi
@@ -137,7 +137,7 @@
       end if
 !
       call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+     &    0, CALYPSO_COMM, ierr_MPI)
       ioff_gl = ioff_gl + zbuf%ilen_gzipped
 !
       end subroutine gz_read_fld_charhead_mpi
@@ -171,7 +171,7 @@
 !
       call sync_field_name_mpi(ilength, field_name)
       call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+     &    0, CALYPSO_COMM, ierr_MPI)
       ioff_gl = ioff_gl + zbuf%ilen_gzipped
 !
       end subroutine gz_read_fld_1word_mpi
@@ -209,7 +209,7 @@
      &                      (textbuf_p, nprocs_in, istack_buf)
 !
       call MPI_BCAST(istack_buf, (nprocs_in+1), CALYPSO_GLOBAL_INT,     &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+     &    0, CALYPSO_COMM, ierr_MPI)
 !
 !
       if(id_rank .ge. nprocs_in) then

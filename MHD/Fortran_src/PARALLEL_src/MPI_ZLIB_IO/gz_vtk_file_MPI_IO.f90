@@ -178,8 +178,8 @@
         call calypso_mpi_seek_write_gz(id_vtk, ioffset, zbuf)
         call dealloc_zip_buffer(zbuf)
       end if
-      call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT,          &
+     &    0, CALYPSO_COMM, ierr_MPI)
       ioff_gl = ioff_gl + zbuf%ilen_gzipped
 !
       end subroutine gz_write_vtk_header_mpi

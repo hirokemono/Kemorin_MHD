@@ -275,14 +275,14 @@
 !
 !
       call MPI_BCAST(psf_ctls%num_psf_ctl, ione,                        &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       if(psf_ctls%num_psf_ctl .le. 0) return
 !
       if(my_rank .gt. 0) call alloc_psf_ctl_stract(psf_ctls)
 !
       call MPI_BCAST                                                    &
      &   (psf_ctls%fname_psf_ctl, (kchara*psf_ctls%num_psf_ctl),        &
-     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
       do i_psf = 1, psf_ctls%num_psf_ctl
         if(psf_ctls%fname_psf_ctl(i_psf) .eq. 'NO_FILE') then
           call bcast_psf_control_data(psf_ctls%psf_ctl_struct(i_psf))
@@ -303,14 +303,14 @@
 !
 !
       call MPI_BCAST(iso_ctls%num_iso_ctl,  ione,                       &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       if(iso_ctls%num_iso_ctl .le. 0) return
 !
       if(my_rank .gt. 0) call alloc_iso_ctl_stract(iso_ctls)
 !
       call MPI_BCAST                                                    &
      &   (iso_ctls%fname_iso_ctl, (kchara*iso_ctls%num_iso_ctl),        &
-     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
       do i_iso = 1, iso_ctls%num_iso_ctl
         if(iso_ctls%fname_iso_ctl(i_iso) .eq. 'NO_FILE') then
           call bcast_iso_control_data(iso_ctls%iso_ctl_struct(i_iso))

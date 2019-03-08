@@ -48,22 +48,22 @@
       integer(kind = kint) :: ilength
 !
 !
-      if(my_rank .eq. izero) then
+      if(my_rank .eq. 0) then
         call count_rayleigh_restart_field(dir, i_step, fld_IO)
       end if
       call MPI_Bcast(fld_IO%num_field_IO, ione,                         &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call alloc_phys_name_IO(fld_IO)
 !
-      if(my_rank .eq. izero) then
+      if(my_rank .eq. 0) then
         call set_rayleigh_restart_field(dir, i_step, fld_IO)
       end if
       ilength = fld_IO%num_field_IO * kchara
       call MPI_Bcast(fld_IO%fld_name, ilength,                          &
-     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(fld_IO%num_comp_IO, fld_IO%num_field_IO,           &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call cal_istack_phys_comp_IO(fld_IO)
       call alloc_phys_data_IO(fld_IO)

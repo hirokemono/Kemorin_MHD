@@ -84,7 +84,7 @@
      &     .or. check_exsist_rlm_file(my_rank) .ne. 0                   &
      &     .or. check_exsist_rj_file(my_rank) .ne.  0) iflag_lc = 1
       end if
-      call MPI_BCAST(iflag_lc, ione, CALYPSO_INTEGER, izero,            &
+      call MPI_BCAST(iflag_lc, 1, CALYPSO_INTEGER, 0,                   &
      &    CALYPSO_COMM, ierr_MPI)
 !
       if(iflag_lc .eq. 0) then

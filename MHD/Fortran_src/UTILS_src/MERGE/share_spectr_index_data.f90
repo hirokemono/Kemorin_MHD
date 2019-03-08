@@ -33,10 +33,10 @@
       integer(kind = kint), intent(in) :: ip_org
       type(sph_mesh_data), intent(inout) :: sph_mesh
 !
-      integer(kind = kint) :: irank_org
+      integer :: irank_org
 !
 !
-      irank_org = mod(ip_org - 1,nprocs)
+      irank_org = int(mod(ip_org - 1,nprocs))
 !      write(*,*) 'MPI_Bcast irank_sph_rj', ip_org
       call MPI_Bcast(sph_mesh%sph%sph_rj%irank_sph_rj,                  &
      &    itwo, CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)

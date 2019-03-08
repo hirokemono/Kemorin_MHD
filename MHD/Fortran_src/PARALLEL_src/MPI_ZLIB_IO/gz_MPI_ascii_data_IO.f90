@@ -63,7 +63,7 @@
         call dealloc_zip_buffer(zbuf)
       end if
       call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+     &    0, CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
       end subroutine gz_mpi_write_charahead
@@ -178,9 +178,9 @@
       end if
 !
       call MPI_BCAST(gz_mpi_read_charahead, ilength,                    &
-     &    CALYPSO_CHARACTER, izero,  CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_CHARACTER, 0,  CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+     &    0, CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
       end function gz_mpi_read_charahead
@@ -238,7 +238,7 @@
       end if
 !
       call MPI_BCAST(zbuf%ilen_gzipped, ione, CALYPSO_GLOBAL_INT,       &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+     &    0, CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
 !
       end subroutine gz_mpi_skip_header

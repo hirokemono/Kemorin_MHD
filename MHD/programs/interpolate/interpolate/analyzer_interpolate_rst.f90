@@ -160,9 +160,9 @@
         end if
 !
         call MPI_Bcast(t_ITP%init_d%time, ione, CALYPSO_REAL,           &
-     &      izero, CALYPSO_COMM, ierr_MPI)
+     &      0, CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(t_ITP%init_d%i_time_step, ione, CALYPSO_INTEGER, &
-     &      izero, CALYPSO_COMM, ierr_MPI)
+     &      0, CALYPSO_COMM, ierr_MPI)
 !
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'
         call interpolate_nodal_data(org_femmesh%mesh%node, nod_fld_ITP, &

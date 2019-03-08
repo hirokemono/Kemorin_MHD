@@ -42,11 +42,11 @@
 !
 !
       call MPI_Bcast(time_d%i_time_step, ione, CALYPSO_INTEGER,         &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+     &    0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(time_d%time, ione, CALYPSO_REAL,                   &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+     &    0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(time_d%dt, ione, CALYPSO_REAL,                     &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+     &    0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine share_time_step_data
 !
@@ -72,7 +72,7 @@
 !
 !        write(*,*) 'MPI_Bcast iflag_monitor', ip
       call MPI_Bcast(fld%iflag_monitor, fld%num_phys,                   &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine share_phys_field_names
 !
@@ -177,10 +177,10 @@
 !
 !        write(*,*) 'MPI_Bcast num_field', ip
       call MPI_Bcast(num_field, ione,                                   &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !        write(*,*) 'MPI_Bcast ntot_component', ip
       call MPI_Bcast(ntot_component, ione,                              &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
      end  subroutine share_field_num
 !
@@ -194,10 +194,10 @@
 !
 !        write(*,*) 'MPI_Bcast istack_comp', ip
       call MPI_Bcast(istack_comp, (num_field+1),                        &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !        write(*,*) 'MPI_Bcast phys_name', ip
       call MPI_Bcast(fld_name, (num_field*kchara),                      &
-     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine share_field_stack
 !

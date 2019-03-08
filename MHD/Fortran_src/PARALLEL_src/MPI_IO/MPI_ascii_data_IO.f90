@@ -207,7 +207,7 @@
 !
       IO_param%ioff_gl = IO_param%ioff_gl + ilength
       call MPI_BCAST(mpi_read_charahead, ilength, CALYPSO_CHARACTER,    &
-     &    izero, CALYPSO_COMM, ierr_MPI)
+     &    0, CALYPSO_COMM, ierr_MPI)
 !
       end function mpi_read_charahead
 !

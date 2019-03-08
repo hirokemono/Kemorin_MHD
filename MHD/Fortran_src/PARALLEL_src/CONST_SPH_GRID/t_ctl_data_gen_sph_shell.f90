@@ -196,11 +196,11 @@
 !
 !
       call MPI_Bcast(psph_ctl%iflag_sph_shell, ione,                    &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(psph_ctl%ifile_sph_shell, ione,                    &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(psph_ctl%control_sph_file , kchara,                &
-     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(psph_ctl%iflag_sph_shell .eq. 0) return
 !

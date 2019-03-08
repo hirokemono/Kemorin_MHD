@@ -126,16 +126,16 @@
       end if
 !
       call MPI_BCAST(ierr, ione,                                        &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(iflag_endian, ione,                                &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(n_data_size, ithree,                               &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(d_size, ione,                                      &
-     &    CALYPSO_GLOBAL_INT, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_GLOBAL_INT, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) allocate( n_raw_data(d_size))
-      call calypso_mpi_bcast_character(n_raw_data(1), d_size, izero)
+      call calypso_mpi_bcast_character(n_raw_data(1), d_size, 0)
 !
       end subroutine import_noise_ary
 !
@@ -167,12 +167,12 @@
       end if
 !
       call MPI_BCAST(ierr, ione,                                        &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(d_size, ione,                                      &
-     &    CALYPSO_GLOBAL_INT, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_GLOBAL_INT, 0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .ne. 0) allocate( n_grad_data(d_size))
-      call calypso_mpi_bcast_character(n_grad_data(1), d_size, izero)
+      call calypso_mpi_bcast_character(n_grad_data(1), d_size, 0)
 !
       end subroutine import_noise_grad_ary
 !

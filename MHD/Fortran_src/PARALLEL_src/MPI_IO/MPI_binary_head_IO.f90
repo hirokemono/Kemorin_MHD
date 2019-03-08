@@ -275,7 +275,7 @@
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + num*kint
 !
-      call MPI_BCAST(int_dat, num, CALYPSO_INTEGER, izero,              &
+      call MPI_BCAST(int_dat, num, CALYPSO_INTEGER, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine mpi_read_mul_inthead_b
@@ -314,7 +314,7 @@
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + num*kint_gl
 !
-      call MPI_BCAST(int8_dat, num, CALYPSO_GLOBAL_INT, izero,          &
+      call MPI_BCAST(int8_dat, num, CALYPSO_GLOBAL_INT, 0,              &
      &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine mpi_read_mul_int8head_b
@@ -342,7 +342,7 @@
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ilength
 !
-      call MPI_BCAST(chara_dat, ilength, CALYPSO_CHARACTER, izero,      &
+      call MPI_BCAST(chara_dat, ilength, CALYPSO_CHARACTER, 0,          &
      &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine mpi_read_mul_charahead_b

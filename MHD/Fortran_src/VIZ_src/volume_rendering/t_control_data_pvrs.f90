@@ -120,7 +120,7 @@
 !
 !
       call MPI_BCAST(pvr_ctls%num_pvr_ctl,  ione,                       &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call calypso_mpi_barrier
       if(pvr_ctls%num_pvr_ctl .le. 0) return
 !
@@ -128,7 +128,7 @@
 !
       call MPI_BCAST                                                    &
      &   (pvr_ctls%fname_pvr_ctl, (kchara*pvr_ctls%num_pvr_ctl),        &
-     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_files_4_pvr_ctl
 !

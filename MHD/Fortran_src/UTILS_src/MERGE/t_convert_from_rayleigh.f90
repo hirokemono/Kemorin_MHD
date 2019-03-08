@@ -223,7 +223,7 @@
 !
       nmat = ra_rst%nri_org*ra_rst%nri_org
       call MPI_Bcast(ra_rst%Cheby_fwd, nmat,                            &
-     &    CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine chebyshev_fwd_mat_4_rayleigh
 !

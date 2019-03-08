@@ -68,11 +68,11 @@
       type(time_data), intent(inout) :: t_IO
 !
 !
-      call MPI_BCAST(t_IO%i_time_step, ione, CALYPSO_INTEGER, izero,    &
+      call MPI_BCAST(t_IO%i_time_step, ione, CALYPSO_INTEGER, 0,        &
      &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(t_IO%time, ione, CALYPSO_REAL, izero,              &
+      call MPI_BCAST(t_IO%time, ione, CALYPSO_REAL, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(t_IO%dt, ione, CALYPSO_REAL, izero,                &
+      call MPI_BCAST(t_IO%dt, ione, CALYPSO_REAL, 0,                    &
      &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine sync_field_time_mpi
@@ -104,9 +104,9 @@
       character(len=kchara), intent(inout) :: field_name
 !
 !
-      call MPI_BCAST(ilength, ione, CALYPSO_INTEGER, izero,             &
+      call MPI_BCAST(ilength, ione, CALYPSO_INTEGER, 0,                 &
      &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(field_name, kchara, CALYPSO_CHARACTER, izero,      &
+      call MPI_BCAST(field_name, kchara, CALYPSO_CHARACTER, 0,          &
      &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine sync_field_name_mpi
@@ -120,7 +120,7 @@
 !
 !
       call MPI_BCAST(field_name, (num_field*kchara), CALYPSO_CHARACTER, &
-     &      izero, CALYPSO_COMM, ierr_MPI)
+     &    0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine sync_field_names_mpi
 !
@@ -264,8 +264,8 @@
       ioff_gl = ioff_gl + ilength
 !
       call MPI_BCAST(istack_merged, (nprocs_in+1), CALYPSO_GLOBAL_INT,  &
-     &    izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(num_field, ione, CALYPSO_INTEGER, izero,           &
+     &    0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(num_field, ione, CALYPSO_INTEGER, 0,               &
      &    CALYPSO_COMM, ierr_MPI)
 !
       call sync_field_header_mpi(nprocs_in, id_rank, nnod,              &
@@ -302,7 +302,7 @@
       end if
       ioff_gl = ioff_gl + ilength
 !
-      call MPI_BCAST(ncomp_field, num_field, CALYPSO_INTEGER, izero,    &
+      call MPI_BCAST(ncomp_field, num_field, CALYPSO_INTEGER, 0,        &
      &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine read_field_num_mpi

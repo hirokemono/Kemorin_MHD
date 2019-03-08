@@ -45,25 +45,25 @@
 !
 !
       call MPI_Bcast(sph_asbl%np_sph_org, ione, CALYPSO_INTEGER,        &
-     &               izero, CALYPSO_COMM, ierr_MPI)
+     &               0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(sph_asbl%np_sph_new, ione, CALYPSO_INTEGER,        &
-     &               izero, CALYPSO_COMM, ierr_MPI)
+     &               0, CALYPSO_COMM, ierr_MPI)
 !
       call MPI_Bcast(asbl_param%iflag_newtime, ione,                    &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(asbl_param%istep_new_rst, ione,                    &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(asbl_param%increment_new_step, ione,               &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(asbl_param%time_new ,ione,                         &
-     &               CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
+     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
 !
       call MPI_Bcast(asbl_param%istep_start, ione, CALYPSO_INTEGER,     &
-     &               izero, CALYPSO_COMM, ierr_MPI)
+     &               0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(asbl_param%istep_end, ione, CALYPSO_INTEGER,       &
-     &               izero, CALYPSO_COMM, ierr_MPI)
+     &               0, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(asbl_param%increment_step, ione, CALYPSO_INTEGER,  &
-     &               izero, CALYPSO_COMM, ierr_MPI)
+     &               0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_field_IO_parameter(asbl_param%org_mesh_file)
       call bcast_field_IO_parameter(asbl_param%new_mesh_file)
@@ -72,10 +72,10 @@
       call bcast_field_IO_parameter(asbl_param%new_fld_file)
 !
       call MPI_Bcast(asbl_param%iflag_delete_org, ione,                 &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call MPI_Bcast(asbl_param%b_ratio ,ione,                          &
-     &               CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
+     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_param_newsph
 !

@@ -65,15 +65,15 @@
       end if
 !
       call mpi_Bcast(k_img%npixel_x, ione,                              &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call mpi_Bcast(k_img%npixel_y, ione,                              &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       n_pixel = k_img%npixel_x * k_img%npixel_y
 !
 !
       if(my_rank .ne. 0) call alloc_lic_kernel_image(k_img)
       call mpi_Bcast(k_img%gray, n_pixel,                              &
-     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine load_kernel_data_from_file
 !

@@ -354,7 +354,7 @@
       end if
       ioff_gl = ioff_gl + kint
 !
-      call MPI_BCAST(iflag_bin_swap, ione, CALYPSO_INTEGER, izero,      &
+      call MPI_BCAST(iflag_bin_swap, 1, CALYPSO_INTEGER, 0,             &
      &    CALYPSO_COMM, ierr_MPI)
 
       end subroutine calypso_mpi_seek_read_endian

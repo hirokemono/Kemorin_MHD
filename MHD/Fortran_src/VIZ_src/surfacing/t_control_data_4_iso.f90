@@ -310,13 +310,13 @@
 !
 !
       call MPI_BCAST(iso_c%i_iso_ctl,  ione,                            &
-     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(iso_c%i_iso_define,  ione,                         &
-     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(iso_c%i_iso_result,  ione,                         &
-     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(iso_c%i_iso_plot_area,  ione,                      &
-     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_type_c1(iso_c%iso_file_head_ctl)
       call bcast_ctl_type_c1(iso_c%iso_file_head_ctl)

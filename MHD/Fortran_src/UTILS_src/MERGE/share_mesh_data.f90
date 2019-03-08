@@ -54,13 +54,13 @@
       integer(kind = kint) :: irank_org
 !
 !
-        irank_org = mod(ip_org - 1,nprocs)
+        irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-        call MPI_Bcast(nod_comm%num_neib, ione, CALYPSO_INTEGER,        &
+        call MPI_Bcast(nod_comm%num_neib, 1, CALYPSO_INTEGER,           &
      &      irank_org, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(nod_comm%ntot_import, ione, CALYPSO_INTEGER,     &
+        call MPI_Bcast(nod_comm%ntot_import, 1, CALYPSO_INTEGER,        &
      &      irank_org, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(nod_comm%ntot_export, ione, CALYPSO_INTEGER,     &
+        call MPI_Bcast(nod_comm%ntot_export, 1, CALYPSO_INTEGER,        &
      &      irank_org, CALYPSO_COMM, ierr_MPI)
 !
       if(irank_org .ne. my_rank) then
@@ -90,14 +90,14 @@
       integer(kind = kint), intent(in) :: ip_org
       type(node_data), intent(inout) :: node
 !
-      integer(kind = kint) :: irank_org
+      integer :: irank_org
 !
 !
-      irank_org = mod(ip_org - 1,nprocs)
+      irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(node%numnod, ione, CALYPSO_INTEGER,                &
+      call MPI_Bcast(node%numnod, 1, CALYPSO_INTEGER,                   &
      &    irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(node%internal_node, ione, CALYPSO_INTEGER,         &
+      call MPI_Bcast(node%internal_node,  1, CALYPSO_INTEGER,           &
      &    irank_org, CALYPSO_COMM, ierr_MPI)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
@@ -121,14 +121,15 @@
       integer(kind = kint), intent(in) :: ip_org
       type(element_data), intent(inout) :: ele
 !
-      integer(kind = kint) :: irank_org, num
+      integer(kind = kint) :: num
+      integer :: irank_org
 !
 !
-      irank_org = mod(ip_org - 1,nprocs)
+      irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(ele%numele, ione, CALYPSO_INTEGER,                 &
+      call MPI_Bcast(ele%numele, 1, CALYPSO_INTEGER,                    &
      &    irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ele%first_ele_type, ione, CALYPSO_INTEGER,         &
+      call MPI_Bcast(ele%first_ele_type, 1, CALYPSO_INTEGER,            &
      &     irank_org, CALYPSO_COMM, ierr_MPI)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
@@ -158,14 +159,14 @@
       integer(kind = kint), intent(in) :: ip_org
       type(group_data), intent(inout) :: group
 !
-      integer(kind = kint) :: irank_org
+      integer :: irank_org
 !
 !
-      irank_org = mod(ip_org - 1,nprocs)
+      irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(group%num_grp, ione, CALYPSO_INTEGER,              &
+      call MPI_Bcast(group%num_grp, 1, CALYPSO_INTEGER,                 &
      &    irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(group%num_item, ione, CALYPSO_INTEGER,             &
+      call MPI_Bcast(group%num_item, 1, CALYPSO_INTEGER,                &
      &    irank_org, CALYPSO_COMM, ierr_MPI)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
@@ -179,7 +180,7 @@
         call MPI_Bcast(group%nitem_grp, group%num_grp,                  &
      &      CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(group%grp_name, (group%num_grp*kchara),          &
-     &      CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+     &      CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
       end if
 !
       if(group%num_item .gt. 0) then
@@ -196,14 +197,14 @@
       integer(kind = kint), intent(in) :: ip_org
       type(surface_group_data), intent(inout) :: sf_group
 !
-      integer(kind = kint) :: irank_org
+      integer :: irank_org
 !
 !
-      irank_org = mod(ip_org - 1,nprocs)
+      irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(sf_group%num_grp, ione, CALYPSO_INTEGER,           &
+      call MPI_Bcast(sf_group%num_grp, 1, CALYPSO_INTEGER,              &
      &    irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(sf_group%num_item, ione, CALYPSO_INTEGER,          &
+      call MPI_Bcast(sf_group%num_item, 1, CALYPSO_INTEGER,             &
      &    irank_org, CALYPSO_COMM, ierr_MPI)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
@@ -217,7 +218,7 @@
         call MPI_Bcast(sf_group%nitem_grp, sf_group%num_grp,            &
      &      CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(sf_group%grp_name, (sf_group%num_grp*kchara),    &
-     &      CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+     &      CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
       end if
 !
       if(sf_group%num_item .gt. 0) then
@@ -235,12 +236,13 @@
       integer(kind = kint), intent(in) :: ip_org
       type(parallel_double_numbering), intent(inout) :: dbl_id
 !
-      integer(kind = kint) :: irank_org, num
+      integer(kind = kint) :: num
+      integer :: irank_org
 !
 !
-      irank_org = mod(ip_org - 1,nprocs)
+      irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(dbl_id%nnod_local, ione, CALYPSO_INTEGER,          &
+      call MPI_Bcast(dbl_id%nnod_local, 1, CALYPSO_INTEGER,             &
      &    irank_org, CALYPSO_COMM, ierr_MPI)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then

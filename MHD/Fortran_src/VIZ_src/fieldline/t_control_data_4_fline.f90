@@ -220,7 +220,7 @@
 !
 !
       call MPI_BCAST(fln%i_vr_fline_ctl,  ione,                         &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_array_c1(fln%fline_area_grp_ctl)
 !

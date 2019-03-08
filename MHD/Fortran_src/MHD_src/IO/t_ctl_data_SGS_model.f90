@@ -517,8 +517,8 @@
       call bcast_ele_layers_control(sgs_ctl%elayer_ctl)
 !
 !
-      call MPI_BCAST(sgs_ctl%num_sph_filter_ctl, ione,                  &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(sgs_ctl%num_sph_filter_ctl, 1,                     &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       if(my_rank .gt. 0 .and. sgs_ctl%num_sph_filter_ctl.gt. 0) then
         call alloc_sph_filter_ctl(sgs_ctl)
       end if
