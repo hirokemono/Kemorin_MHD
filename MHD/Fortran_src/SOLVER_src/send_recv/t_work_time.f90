@@ -181,16 +181,18 @@
 !
       type(elapsed_time_data), intent(inout) :: elps
 !
+      integer(kind = kint_gl) :: num64
       integer(kind = kint) :: i
       character(len=kchara) :: fname_tmp, file_name
 !
 !
-      call MPI_REDUCE(elps%elapsed, elps%elapsed_tot, elps%num_elapsed, &
-     &    CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE(elps%elapsed, elps%elapsed_min, elps%num_elapsed, &
-     &    CALYPSO_REAL, MPI_MIN, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE(elps%elapsed, elps%elapsed_max, elps%num_elapsed, &
-     &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
+      num64 = int(elps%num_elapsed,KIND(num64))
+      call calypso_mpi_reduce_real(elps%elapsed, elps%elapsed_tot,      &
+     &    num64, MPI_SUM, 0)
+      call calypso_mpi_reduce_real(elps%elapsed, elps%elapsed_min,      &
+     &    num64, MPI_MIN, 0)
+      call calypso_mpi_reduce_real(elps%elapsed, elps%elapsed_max,      &
+     &    num64, MPI_MAX, 0)
 !
 !
       if(iflag_time_4_each_pe .gt. 0) then

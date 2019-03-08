@@ -240,6 +240,33 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine calypso_mpi_reduce_real                                &
+     &         (r_local, r_global, count, operation, destination)
+!
+      integer, intent(in) :: operation, destination
+      integer(kind = kint_gl), intent(in) :: count
+      real(kind = kreal), intent(in) ::    r_local(count)
+      real(kind = kreal), intent(inout) :: r_global(count)
+!
+      integer(kind = kint_gl) :: ist
+      integer :: ilen_in
+!
+!
+      ist = 0
+      do
+        ilen_in = int(min(count-ist, huge_20))
+        call MPI_Reduce(r_local(ist+1), r_global(ist+1), ilen_in,       &
+     &      CALYPSO_REAL, operation, destination,                       &
+     &      CALYPSO_COMM, ierr_MPI)
+        ist = ist + ilen_in
+        if(ist .ge. count) exit
+      end do
+!
+      end subroutine calypso_mpi_reduce_real
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       subroutine calypso_mpi_allreduce_real                             &
      &         (r_local, r_global, count, operation)
 !

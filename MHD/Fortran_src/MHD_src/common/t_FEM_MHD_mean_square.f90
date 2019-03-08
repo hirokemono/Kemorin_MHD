@@ -118,6 +118,7 @@
 !
       use int_bulk
       use time_step_file_IO
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: istep
       type(IO_step_param), intent(in) :: rms_step
@@ -137,7 +138,6 @@
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       integer (kind = kint) :: nd
-      integer(kind = kint_gl) :: num_a, num_r
 !
 !
       if(output_IO_flag(istep, rms_step) .ne. 0) return
@@ -153,12 +153,12 @@
      &    iphys, nod_fld, iphys_ele, ele_fld, MHD_mesh%fluid,           &
      &    jacs, fem_sq%i_rms, fem_sq%j_ave, rhs_mat%fem_wk, fem_sq%msq)
 !
-      num_a = int(fem_sq%msq%num_ave,KIND(num_a))
-      num_r = int(fem_sq%msq%num_rms,KIND(num_a))
       call calypso_mpi_allreduce_real                                   &
-     &   (fem_sq%msq%ave_local, fem_sq%msq%ave_global, num_a, MPI_SUM)
+     &   (fem_sq%msq%ave_local, fem_sq%msq%ave_global,                  &
+     &    cast_long(fem_sq%msq%num_ave), MPI_SUM)
       call calypso_mpi_allreduce_real                                   &
-     &   (fem_sq%msq%rms_local, fem_sq%msq%rms_global, num_r, MPI_SUM)
+     &   (fem_sq%msq%rms_local, fem_sq%msq%rms_global,                  &
+     &    cast_long(fem_sq%msq%num_rms), MPI_SUM)
 !
 !
        do nd = 1, fem_sq%msq%num_ave
