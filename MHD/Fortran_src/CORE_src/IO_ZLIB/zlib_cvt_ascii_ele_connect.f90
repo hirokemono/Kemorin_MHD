@@ -48,10 +48,10 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: i, ist
-      integer(kind = kint) :: nline
+      integer :: nline
       integer(kind = kint_gl) :: ie_tmp(nnod_4_ele)
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
 !
       ilen_line = len_int8_and_mul_int8_textline(nnod_4_ele)
@@ -130,7 +130,7 @@
 !
       integer(kind = kint_gl) :: ie_tmp(nnod_4_ele)
       integer(kind = kint_gl) :: i, ist
-      integer(kind = kint) :: nline
+      integer :: nline
 !
       integer(kind = kint_gl) :: ilen_tmp
       integer :: ilen_line, ilen_used, ilen_in
@@ -215,7 +215,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: i, ist
-      integer(kind = kint) :: nline
+      integer :: nline
       integer(kind = kint) :: ie_tmp(ncomp)
       integer(kind = kint_gl) :: ilen_tmp
       integer :: ilen_line, ilen_used, ilen_in
@@ -288,7 +288,7 @@
 !
       integer(kind = kint) :: ie_tmp(ncomp)
       integer(kind = kint_gl) :: i, ist
-      integer(kind = kint) :: nline
+      integer :: nline
 !
       integer(kind = kint_gl) :: ilen_tmp
       integer :: ilen_line, ilen_used, ilen_in

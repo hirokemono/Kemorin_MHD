@@ -94,11 +94,11 @@
         l3 = idx_gl_1d_rlm_j(j_rlm,2)
         m3 = idx_gl_1d_rlm_j(j_rlm,3)
 !
-        call get_dgree_order_by_full_j                                  &
+        call get_degree_order_by_full_j                                 &
      &     (jgl_kcor(j3,1,2), lgi_cor_ref1, mgi_cor_ref1)
-        call get_dgree_order_by_full_j                                  &
+        call get_degree_order_by_full_j                                 &
      &     (jgl_kcor(j3,2,2), lgi_cor_ref2, mgi_cor_ref2)
-        call get_dgree_order_by_full_j                                  &
+        call get_degree_order_by_full_j                                 &
      &     (jgl_lcor(j3,1,2), lei_cor_ref, mei_cor_ref)
         jgi_cor_ref1 = find_local_sph_rlm_address(jmax_rlm,             &
      &                idx_gl_1d_rlm_j, lgi_cor_ref1, mgi_cor_ref1)

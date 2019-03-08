@@ -218,7 +218,7 @@
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
-        n_item = int(IO_param%istack_merged(i))
+        n_item = int(IO_param%istack_merged(i),KIND(n_item))
         if(n_item .le. 0) then
           led = ione
         else if(n_item .gt. 0) then

@@ -300,7 +300,7 @@
       integer(kind = kint) function find_local_sph_address(rj, l, m)
 !
       type(sph_rj_grid), intent(in) :: rj
-      integer(kind = 4), intent(in) :: l, m
+      integer, intent(in) :: l, m
 !
       integer(kind = kint) :: j
 !

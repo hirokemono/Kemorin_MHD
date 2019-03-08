@@ -131,7 +131,7 @@
 !
 !
       j_rst = ( isig-mod(isig,ikilo) )/ikilo
-      call get_dgree_order_by_full_j(j_rst, l_rst, m_rst)
+      call get_degree_order_by_full_j(j_rst, l_rst, m_rst)
 !
       ifl = 1
       rflag = ref_param_T%depth_top/ref_param_T%depth_bottom - 0.35
@@ -196,7 +196,7 @@
 !
 !
       j_rst = ( isig-mod(isig,ikilo) )/ikilo
-      call get_dgree_order_by_full_j(j_rst, l_rst, m_rst)
+      call get_degree_order_by_full_j(j_rst, l_rst, m_rst)
 !
       ifl = 1
       rflag = ref_param_T%depth_top/ref_param_T%depth_bottom - 0.35

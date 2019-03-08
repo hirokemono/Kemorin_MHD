@@ -151,7 +151,7 @@
       real(kind = kreal), intent(inout) :: buffer(count)
 !
       integer(kind = kint_gl) :: ist
-      integer(kind = kint) :: ilen_in
+      integer :: ilen_in
 !
 !
       ist = 0
@@ -174,7 +174,7 @@
       integer(kind = kint), intent(inout) :: buffer(count)
 !
       integer(kind = kint_gl) :: ist
-      integer(kind = kint) :: ilen_in
+      integer :: ilen_in
 !
 !
       ist = 0
@@ -197,7 +197,7 @@
       integer(kind = kint_gl), intent(inout) :: buffer(count)
 !
       integer(kind = kint_gl) :: ist
-      integer(kind = kint) :: ilen_in
+      integer :: ilen_in
 !
 !
       ist = 0
@@ -220,7 +220,7 @@
       character(len = 1), intent(inout) :: buffer(count)
 !
       integer(kind = kint_gl) :: ist
-      integer(kind = kint) :: ilen_in
+      integer :: ilen_in
 !
 !
       ist = 0

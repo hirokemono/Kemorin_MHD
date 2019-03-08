@@ -129,7 +129,7 @@
 !
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
-        zbuf%ilen_gz = int(real(ilength) *1.01 + 24, kind(zbuf%ilen_gz))
+        zbuf%ilen_gz = int(real(ilength) *1.01 + 24, KIND(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_read_gz(id_fld, ioffset, zbuf)
 !
@@ -162,7 +162,7 @@
 !
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
-        zbuf%ilen_gz = int(real(kchara)*1.1 + 24,kind(zbuf%ilen_gz))
+        zbuf%ilen_gz = int(real(kchara)*1.1 + 24,KIND(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_read_gz(id_fld, ioffset, zbuf)
 !

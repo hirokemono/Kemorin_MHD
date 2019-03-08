@@ -190,10 +190,12 @@
 !
       integer(kind = kint) :: dim
       real(kind = kreal) :: xyz_norm(3)
+!
+!
       xyz_norm = (xx_org - xyz_min) / (xyz_max - xyz_min)
-      dim = int(noise_size**(1./3.))
-      xyz_i = int(xyz_norm * dim)
-      xyz_i = mod((xyz_i * 2), dim)
+      dim = int(noise_size**(1./3.),KIND(dim))
+      xyz_i(1:3) = int(xyz_norm(1:3) * dim, KIND(xyz_i(1)))
+      xyz_i(1:3) = mod((xyz_i(1:3) * 2), dim)
 
       idx = xyz_i(1) + (xyz_i(2)-1) * dim + (xyz_i(3)-1) * dim * dim
 

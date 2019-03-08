@@ -117,8 +117,8 @@
       type(phys_data), intent(inout) :: psf_phys
 !
 !
-      psf_nod%numnod =     int(ucd%nnod)
-      psf_ele%numele =     int(ucd%nele)
+      psf_nod%numnod =     int(ucd%nnod, KIND(psf_nod%numnod))
+      psf_ele%numele =     int(ucd%nele, KIND(psf_ele%numele))
       psf_ele%nnod_4_ele = num_triangle
       psf_phys%ntot_phys = ucd%ntot_comp
       call alloc_node_geometry_w_sph(psf_nod)
@@ -131,7 +131,8 @@
       psf_nod%xx(1:psf_nod%numnod,1:n_vector)                           &
      &      = ucd%xx(1:psf_nod%numnod,1:n_vector)
       psf_ele%ie(1:psf_ele%numele,1:ithree)                             &
-     &      = int(ucd%ie(1:psf_ele%numele,1:ithree))
+     &      = int(ucd%ie(1:psf_ele%numele,1:ithree),                    &
+     &            KIND(psf_ele%ie(1,1)))
 !
       call deallocate_ucd_node(ucd)
       call deallocate_ucd_ele(ucd)

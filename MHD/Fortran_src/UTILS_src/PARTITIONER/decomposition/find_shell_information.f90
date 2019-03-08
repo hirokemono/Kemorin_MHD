@@ -96,7 +96,7 @@
         end if
       end do
 !
-      numnod_horizontal = 1+int( sqrt( real(num_ICB-2)/6.0 ) )
+      numnod_horizontal = 1 + int( sqrt( real(num_ICB-2)/6.0 ) )
       sphere_4_part%num_cube = (numnod_horizontal)**3
       sphere_4_part%num_layer = (nnod-sphere_4_part%num_cube)           &
      &                         / sphere_4_part%num_CMB

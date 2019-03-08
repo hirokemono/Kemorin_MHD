@@ -254,7 +254,7 @@
           ist = d_rad%istack_component(icou-1)
           ncomp = d_rad%num_component(icou)
           do inum = 1, rfld%nri_param
-            k = int(rfld%kr_param(inum))
+            k = int(rfld%kr_param(inum), KIND(k))
             d_rad%d_fld(k,ist+1:ist+ncomp) = rfld%r_param(inum,1:ncomp)
           end do
           exit

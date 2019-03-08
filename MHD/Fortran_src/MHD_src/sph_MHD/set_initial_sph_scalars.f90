@@ -116,7 +116,7 @@
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
-      integer(kind = 4) ::  m
+      integer ::  m
       integer(kind = kint) :: inod, k, jj
       real (kind = kreal) :: pi, xr, shell
 !
@@ -162,7 +162,7 @@
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
-      integer(kind = 4) :: m
+      integer :: m
       integer ( kind = kint) :: inod, k, jj
       real (kind = kreal) :: pi, xr, shell
 !

@@ -220,8 +220,8 @@
      &      len_multi_int_textline(IO_param%nprocs_in)),                &
      &    IO_param%nprocs_in, IO_param%istack_merged)
 !
-      zbuf%ilen_gz = int(IO_param%istack_merged(IO_param%id_rank+1)     &
-     &            - IO_param%istack_merged(IO_param%id_rank))
+      zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)         &
+     &            - IO_param%istack_merged(IO_param%id_rank)
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
       IO_param%ioff_gl = IO_param%ioff_gl                               &

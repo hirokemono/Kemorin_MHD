@@ -54,7 +54,7 @@
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
-        n_item = int(IO_param%istack_merged(i))
+        n_item = int(IO_param%istack_merged(i),KIND(n_item))
         if(n_item .le. 0) then
           ilength = ione
         else if(n_item .gt. 0) then
@@ -93,7 +93,8 @@
       integer(kind=kint), intent(in) :: num, ncolumn
       integer(kind=kint), intent(inout) :: int_dat(num)
 !
-      integer(kind = kint) :: i, nrest, n_item, ilength, led, loop
+      integer(kind = kint_gl) :: led
+      integer(kind = kint) :: i, nrest, n_item, ilength, loop
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
@@ -102,7 +103,7 @@
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
-        n_item = int(IO_param%istack_merged(i))
+        n_item = int(IO_param%istack_merged(i),KIND(n_item))
         if(n_item .le. 0) then
           led = ione
         else if(n_item .le. ncolumn) then
@@ -115,8 +116,8 @@
         end if
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1) + led
       end do
-      led = int(IO_param%istack_merged(IO_param%id_rank+1)              &
-     &         -  IO_param%istack_merged(IO_param%id_rank))
+      led = IO_param%istack_merged(IO_param%id_rank+1)                  &
+     &     -  IO_param%istack_merged(IO_param%id_rank)
 !
       if(num .le. 0) then
         led = ione

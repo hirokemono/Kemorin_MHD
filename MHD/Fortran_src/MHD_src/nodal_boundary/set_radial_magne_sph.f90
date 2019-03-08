@@ -53,8 +53,8 @@
 !
       call alloc_schmidt_polynomial(ltr_ini, leg_b)
 !
-      jj = int( aint( magne_nod%bc_magnitude(j)) )
-      call get_dgree_order_by_full_j(jj, ll, mm)
+      jj = int( aint( magne_nod%bc_magnitude(j)), KIND(jj) )
+      call get_degree_order_by_full_j(jj, ll, mm)
 !
       do k=1, nod_grp%istack_grp(i)-nod_grp%istack_grp(i-1)
         inod = nod_grp%item_grp(k+nod_grp%istack_grp(i-1))

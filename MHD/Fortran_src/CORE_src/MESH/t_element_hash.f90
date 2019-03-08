@@ -294,8 +294,9 @@
 !
       pi = four*atan(one)
       k_phi = int(aint(phi_ele * dble(e_hash%nphi_ele_hash)             &
-     &       / (two * pi) ))
-      j_theta = int( aint( theta_ele * dble(e_hash%nth_ele_hash) / pi))
+     &       / (two * pi) ), KIND(k_phi))
+      j_theta = int( aint( theta_ele * dble(e_hash%nth_ele_hash) / pi), &
+     &         KIND(j_theta))
 !
       i_r = 0
       do i0 = 1, e_hash%nr_ele_hash-1

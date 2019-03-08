@@ -235,7 +235,7 @@
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: j,k,inod
-      integer(kind = 4) :: l4, m4
+      integer :: l4, m4
 !
 !
       l4 = int(l)
@@ -271,7 +271,7 @@
         if(d_rj(inod,is_field) .ne. d_rj(inod,is_field)) then
           j = sph_rj%idx_global_rj(inod,2)
           k = sph_rj%idx_global_rj(inod,1)
-          call get_dgree_order_by_full_j(j, l, m)
+          call get_degree_order_by_full_j(j, l, m)
           write(50+my_rank,*) 'Broken', inod, k, j, l, m,  &
      &              d_rj(inod,is_field)
         end if

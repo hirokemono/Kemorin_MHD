@@ -52,8 +52,8 @@
       call alloc_schmidt_polynomial(ltr_ini, leg_p)
 !
 !
-      jj = int(e_potential_nod%bc_magnitude(j))
-      call get_dgree_order_by_full_j(jj, ll, mm)
+      jj = int(e_potential_nod%bc_magnitude(j),KIND(jj))
+      call get_degree_order_by_full_j(jj, ll, mm)
 !
       do k=1, nod_grp%istack_grp(i)-nod_grp%istack_grp(i-1)
         ii=ii+1

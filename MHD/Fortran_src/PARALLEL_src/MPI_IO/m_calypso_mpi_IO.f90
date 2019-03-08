@@ -174,7 +174,7 @@
       integer(kind = kint_gl), intent(in) :: nline
       character(len=ilength), intent(in) :: textbuf(nline)
 !
-      integer(kind = kint) :: ilen_in
+      integer :: ilen_in
       integer(kind = kint_gl) :: l8_byte, ist
 !
 !
@@ -203,7 +203,7 @@
       integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(in) :: vector(num)
 !
-      integer(kind = kint) :: ilen_in
+      integer :: ilen_in
       integer(kind = kint_gl) :: l8_byte, ist
 !
 !
@@ -232,7 +232,7 @@
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: int_vector(num)
 !
-      integer(kind = kint) :: ilen_in
+      integer :: ilen_in
       integer(kind = kint_gl) :: l8_byte, ist
 !
 !
@@ -261,7 +261,7 @@
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: i8_vector(num)
 !
-      integer(kind = kint) :: ilen_in
+      integer :: ilen_in
       integer(kind = kint_gl) :: l8_byte, ist
 !
 !
@@ -291,7 +291,7 @@
       character(len=*), intent(in) :: textbuf
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
+      integer :: ilength
 !
 !
       ilength = len(textbuf)
@@ -372,7 +372,7 @@
 !
       call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
       call MPI_FILE_READ(id_mpi_file, charabuf, ilength,                &
-     &      CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
+     &    CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
       ioffset = ioffset + ilength
 !
       end subroutine calypso_mpi_seek_read_lenchara

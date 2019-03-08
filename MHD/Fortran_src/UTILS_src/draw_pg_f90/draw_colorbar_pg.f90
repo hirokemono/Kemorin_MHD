@@ -127,7 +127,7 @@
         call pgbbuf
 !
         do ic = 1, nline
-          ic2 = int((ic-1)*14/nline) + itwo
+          ic2 = int((ic-1)*14/nline,KiND(ic2)) + itwo
 !
           if (idisp_mode .eq. ithree ) then
             call pgsci(ione)

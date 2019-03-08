@@ -147,7 +147,7 @@
      &    IO_param%nprocs_in, IO_param%istack_merged)
 !
       if(IO_param%id_rank .lt. IO_param%nprocs_in) then
-        num = int(IO_param%istack_merged(IO_param%id_rank+1))
+        num = int(IO_param%istack_merged(IO_param%id_rank+1),KIND(num))
       else
         num = 0
       end if

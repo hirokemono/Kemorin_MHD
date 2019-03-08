@@ -83,8 +83,8 @@
       real :: xg_real, yg_real
 !
 !
-      ix = int(x)
-      iy = int(y)
+      ix = int(x, KIND(iX))
+      iy = int(y, KIND(iy))
 !*
       call aitoff (sin_theta_map(iy), cos_theta_map(iy), phi_map(ix),   &
      &    xg, yg)

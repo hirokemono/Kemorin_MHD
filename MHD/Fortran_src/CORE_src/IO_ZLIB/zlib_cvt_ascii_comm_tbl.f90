@@ -41,7 +41,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: i, ist
-      integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
+      integer :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
       integer :: ilen_line, ilen_used, ilen_in
@@ -123,7 +123,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: i, ist
-      integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
+      integer :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
       integer :: ilen_line, ilen_used, ilen_in
@@ -215,7 +215,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: i, ist
-      integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
+      integer :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
       integer :: ilen_line, ilen_used, ilen_in
@@ -296,7 +296,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: i, ist
-      integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
+      integer :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
       integer :: ilen_line, ilen_used, ilen_in

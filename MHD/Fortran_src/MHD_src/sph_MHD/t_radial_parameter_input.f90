@@ -302,7 +302,7 @@
 !
       if(cmp_no_case(rfld%r_param_name, field_name)) then
         do inum = 1, rfld%nri_param
-          k = int(rfld%kr_param(inum))
+          k = int(rfld%kr_param(inum), KIND(k))
           radius_data(k) = rfld%r_param(inum,1)
         end do
         iflag_bc_scalar =  iflag_fixed_field

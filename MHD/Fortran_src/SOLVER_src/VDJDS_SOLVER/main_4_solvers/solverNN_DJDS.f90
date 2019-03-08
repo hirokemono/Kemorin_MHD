@@ -6,7 +6,7 @@
 !C***
 !
 !        subroutine  init_solverNN_DJDS                                 &
-!     &         (NP, NB, PEsmpTOT, METHOD, PRECOND, ERROR)
+!     &         (NP, NB, PEsmpTOT, METHOD, PRECOND, IER)
 !
 !      subroutine  solveNN_DJDS_kemo                                    &
 !     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,         &
@@ -44,7 +44,7 @@
 !
 !C--- init_solverNN
         subroutine  init_solverNN_DJDS                                  &
-     &         (NP, NB, PEsmpTOT, METHOD, PRECOND, ERROR)
+     &         (NP, NB, PEsmpTOT, METHOD, PRECOND, IER)
 !
       use calypso_mpi
 !
@@ -58,12 +58,12 @@
       integer(kind=kint ), intent(in) :: NP, NB, PEsmpTOT
       character(len=kchara) , intent(in):: METHOD
       character(len=kchara) , intent(in):: PRECOND
-      integer(kind=kint), intent(inout) :: ERROR
+      integer(kind=kint), intent(inout) :: IER
 !
       integer :: ierror
 !C
 !C
-      ERROR = 0
+      IER = 0
 !
 !C-- BiCGSTAB
       if(solver_iflag(METHOD) .eq. iflag_bicgstab) then
@@ -88,14 +88,14 @@
         call init_VJACOBInn_DJDS_SMP(NP, NB, PEsmpTOT)
 !
       else
-        ERROR = 1
+        IER = 1
       end if
 !
 !C-- ERROR
-      if (ERROR.gt.0) then
-        ierror = int(ERROR)
+      if (IER.gt.0) then
+        ierror = int(IER)
         if (my_rank.eq.0) then
-          write (*,'(//,"#### GeoFEM SOLVER abort CODE=", i8,/)') ERROR
+          write (*,'(//,"#### GeoFEM SOLVER abort CODE=", i8,/)') IER
         end if
         call MPI_FINALIZE(ierror)
         stop

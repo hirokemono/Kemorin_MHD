@@ -38,9 +38,10 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      integer(kind = kint_gl) :: inod, ist, nline
+      integer(kind = kint_gl) :: inod, ist
+      integer :: nline
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
 !
       ilen_line = len(vtk_each_vector(zero, zero, zero))
@@ -61,7 +62,7 @@
 !        if(my_rank .eq. 0) write(*,*) 'defleate_vtk_tensor start ',    &
 !     &      num, ilen_line, zbuf%ilen_gz, ilen_tmp
         do
-          nline = min((num - ist), maxline)
+          nline = int(min((num - ist), maxline))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &
@@ -99,9 +100,10 @@
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint_gl) :: inod, ist, nline
+      integer(kind = kint_gl) :: inod, ist
+      integer :: nline
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
 !
       ilen_line = len(vtk_each_vector(zero, zero, zero))
@@ -123,7 +125,7 @@
 !        if(my_rank .eq. 0) write(*,*) 'defleate_vtk_vector start ',    &
 !     &      num, ilen_line, zbuf%ilen_gz, ilen_tmp
         do
-          nline = min((num - ist), maxline)
+          nline = int(min((num - ist), maxline))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &

@@ -97,7 +97,7 @@
       do iele = 1, org_ele%numele
         iele_gl = org_ele%iele_global(iele)
         if (org_ele%ie(iele,1) .le. new_node%internal_node              &
-     &      .and. int(iele_gl) .le. max_gl_ele_newdomain                &
+     &      .and. iele_gl .le. max_gl_ele_newdomain                     &
      &      .and. iele_local_2nd(iele_gl) .gt. 0) then
 !
           iele_2nd = iele_local_2nd(iele_gl)

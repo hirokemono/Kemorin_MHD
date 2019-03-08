@@ -186,7 +186,7 @@
       if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
       call output_section_data                                          &
      &   (psf%num_psf, psf%psf_file_IO, istep_psf, time_d,              &
-     &    psf%psf_mesh, psf%psf_time_IO, psf%psf_out, psf%psf_out_m)
+     &    psf%psf_time_IO, psf%psf_out, psf%psf_out_m)
 !
       end subroutine SECTIONING_visualize
 !

@@ -73,7 +73,8 @@
       if(ierr .gt. 0) return
 !
       if(i_step_sgs_coefs .eq. 0) then
-        i_step_sgs_coefs = int(Csim_time%dt / time_d%dt)
+        i_step_sgs_coefs = int((Csim_time%dt / time_d%dt),              &
+     &                          KIND(i_step_sgs_coefs))
       end if
 !
       do i_fld = 1, wk_sgs%num_kinds
