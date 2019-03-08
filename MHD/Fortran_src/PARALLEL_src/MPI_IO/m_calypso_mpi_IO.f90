@@ -340,7 +340,7 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: int_vector(1)
+      integer :: int_vector(1)
 !
 !
       if(my_rank .eq. 0) then
@@ -348,11 +348,11 @@
         call MPI_FILE_SEEK                                              &
      &     (id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_READ(id_mpi_file, int_vector, 1,                  &
-     &      CALYPSO_INTEGER, sta1_IO, ierr_MPI)
+     &      CALYPSO_FOUR_INT, sta1_IO, ierr_MPI)
 !
         iflag_bin_swap = endian_check(my_rank, int_vector(1))
       end if
-      ioff_gl = ioff_gl + kint
+      ioff_gl = ioff_gl + CALYPSO_FOUR_INT
 !
       call MPI_BCAST(iflag_bin_swap, 1, CALYPSO_INTEGER, 0,             &
      &    CALYPSO_COMM, ierr_MPI)

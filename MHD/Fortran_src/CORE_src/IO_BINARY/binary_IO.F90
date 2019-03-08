@@ -402,7 +402,7 @@
       integer function endian_check(my_rank, int_dat)
 !
       integer(kind=kint), intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: int_dat
+      integer, intent(in) :: int_dat
 !
 !
       if(int_dat .eq. i_UNIX) then
@@ -424,7 +424,7 @@
       integer(kind = kint) function read_endian_flag(my_rank)
 !
       integer(kind=kint), intent(in) :: my_rank
-      integer(kind = kint) :: int_dat
+      integer :: int_dat
 !
 !
 #ifdef ZLIB_IO

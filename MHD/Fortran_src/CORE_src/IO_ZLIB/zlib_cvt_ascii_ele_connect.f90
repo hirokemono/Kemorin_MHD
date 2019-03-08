@@ -152,7 +152,7 @@
      &    (ilen_in, zbuf%gzip_buf(1), ilen_line, textbuf(1), ilen_used)
         call read_int8_and_mul_int8_textline                            &
      &     (textbuf(1), id_global(1), nnod_4_ele, ie_tmp)
-        ie(1,1:nnod_4_ele) = ie_tmp(1:nnod_4_ele)
+        ie(1,1:nnod_4_ele) = int(ie_tmp(1:nnod_4_ele), KIND(ie(1,1)))
         zbuf%ilen_gzipped = ilen_used
       else if(nele .gt. 0) then
         ist = 0
@@ -171,7 +171,8 @@
      &        ilen_line, textbuf(1), ilen_used)
           call read_int8_and_mul_int8_textline                          &
      &       (textbuf(1), id_global(ist+1), nnod_4_ele, ie_tmp)
-          ie(ist+1,1:nnod_4_ele) = ie_tmp(1:nnod_4_ele)
+          ie(ist+1,1:nnod_4_ele)                                        &
+     &            = int(ie_tmp(1:nnod_4_ele), KIND(ie(1,1)))
 !          if(my_rank .eq. 0) write(*,*) 'gzip_infleat_begin', ilen_used
 !
           do i = ist+2, ist+nline-1
@@ -179,7 +180,8 @@
      &         (ilen_in, ilen_line, textbuf(1), ilen_used)
             call read_int8_and_mul_int8_textline                        &
      &         (textbuf(1), id_global(i), nnod_4_ele, ie_tmp)
-            ie(i,1:nnod_4_ele) = ie_tmp(1:nnod_4_ele)
+            ie(i,1:nnod_4_ele)                                          &
+     &            = int(ie_tmp(1:nnod_4_ele),KIND(ie(1,1)))
           end do
 !          if(my_rank .eq. 0) write(*,*) 'gzip_infleat_cont', ilen_used
 !
@@ -187,7 +189,8 @@
      &       (ilen_in, ilen_line, textbuf(1), ilen_used)
           call read_int8_and_mul_int8_textline                          &
      &       (textbuf(1), id_global(ist+nline), nnod_4_ele, ie_tmp)
-          ie(ist+nline,1:nnod_4_ele) = ie_tmp(1:nnod_4_ele)
+          ie(ist+nline,1:nnod_4_ele)                                    &
+     &             = int(ie_tmp(1:nnod_4_ele), KIND(ie(1,1)))
 !          if(my_rank .eq. 0) write(*,*) 'gzip_infleat_last',           &
 !     &        ilen_used, ist + nline, nele
 !

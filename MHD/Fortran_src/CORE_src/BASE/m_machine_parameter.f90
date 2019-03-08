@@ -30,15 +30,15 @@
       integer, parameter :: iendian_FLIP =       1
 !
 !>      Endian check integer
-      integer(kind = kint), parameter :: i_UNIX = ichar('U') * 256**3   &
-     &                                           +ichar('N') * 256**2   &
-     &                                           +ichar('I') * 256      &
-     &                                           +ichar('X')
+      integer, parameter :: i_UNIX = ichar('U') * 256**3                &
+     &                              +ichar('N') * 256**2                &
+     &                              +ichar('I') * 256                   &
+     &                              +ichar('X')
 !>      Endian check integer (reversed)
-      integer(kind = kint), parameter :: i_XINU = ichar('X') * 256**3   &
-     &                                           +ichar('I') * 256**2   &
-     &                                           +ichar('N') * 256      &
-     &                                           +ichar('U')
+      integer, parameter :: i_XINU = ichar('X') * 256**3                &
+     &                              +ichar('I') * 256**2                &
+     &                              +ichar('N') * 256                   &
+     &                              +ichar('U')
 !
 !>      debug flag for all processes
       integer(kind = kint) :: i_debug =     iflag_minimum_msg

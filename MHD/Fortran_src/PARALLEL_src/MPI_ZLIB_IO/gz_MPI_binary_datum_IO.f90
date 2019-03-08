@@ -76,7 +76,7 @@
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind = kint) :: int_dat
+      integer :: int_dat
 !
 !
       call open_read_mpi_file                                          &

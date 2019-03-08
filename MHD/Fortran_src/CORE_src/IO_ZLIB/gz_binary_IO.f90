@@ -255,7 +255,7 @@
       use binary_IO
 !
       integer(kind = kint), intent(in) :: my_rank
-      integer(kind = kint) :: ierr_IO, int_dat
+      integer :: ierr_IO, int_dat
 !
 !
       call gzread_32bit_f(iendian_KEEP, kint, int_dat, ierr_IO)
