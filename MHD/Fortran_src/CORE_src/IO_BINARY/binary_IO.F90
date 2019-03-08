@@ -184,13 +184,15 @@
 !
       subroutine write_one_integer_b(int_dat)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint), intent(in) :: int_dat
 !
 !
 #ifdef ZLIB_IO
-      call rawwrite_f(kint, int_dat, ierr_IO)
+      call rawwrite_f(kint_gl, cast_long(int_dat), ierr_IO)
 #else
-      write(id_binary)  int_dat
+      write(id_binary)  cast_long(int_dat)
 #endif
 !
       end subroutine write_one_integer_b
@@ -445,13 +447,17 @@
       integer(kind = kint), intent(inout) :: int_dat
       integer(kind = kint), intent(inout) :: ierr
 !
+      integer(kind = kint_gl) :: int64
+!
 !
 #ifdef ZLIB_IO
-      call rawread_32bit_f(iflag_swap, kint, int_dat, ierr)
-      if(ierr .ne. kint) goto 99
+      call rawread_64bit_f(iflag_swap, kint_gl, int64, ierr)
+      if(ierr .ne. kint_gl) goto 99
 #else
-      read(id_binary, err=99, end=99)  int_dat
+      read(id_binary, err=99, end=99)  int64
 #endif
+!
+      int_dat = int(int64,KIND(int_dat))
       ierr = 0
       return
 !
