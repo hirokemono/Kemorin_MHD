@@ -245,27 +245,17 @@
 !
       subroutine write_mul_integer_b(num, int_dat)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: ist
-      integer:: lbyte, ilength
-!
+      type(tmp_i8_array)  :: tmp64
 !
       if(num .le. 0) return
-#ifdef ZLIB_IO
-      ist = 0
-      do
-        ilength = int(min((num - ist), huge_20))
-        lbyte = ilength *  kint
-!
-        call rawwrite_f(lbyte, int_dat(ist+1), ierr_IO)
-        ist = ist + ilength
-        if(ist .ge. num) exit
-      end do
-#else
-      write(id_binary)  int_dat(1:num)
-#endif
+      call dup_from_short_array(num, int_dat, tmp64)
+      call write_mul_int8_b(num, tmp64%id_a)
+      call dealloc_1d_i8array(tmp64)
 !
       end subroutine write_mul_integer_b
 !
@@ -534,36 +524,20 @@
 !
       subroutine read_mul_integer_b(iflag_swap, num, int_dat, ierr)
 !
+      use transfer_to_long_integers
+!
       integer, intent(in) :: iflag_swap
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ist
-      integer:: lbyte, ilength
-!
+      type(tmp_i8_array)  :: tmp64
 !
       if(num .le. 0) return
-#ifdef ZLIB_IO
-      ist = 0
-      do
-        ilength = int(min((num - ist), huge_20))
-        lbyte = ilength * kint
 !
-        call rawread_32bit_f(iflag_swap, lbyte, int_dat(ist+1), ierr)
-        ist = ist + ilength
-        if(ierr .ne. lbyte) goto 99
-        if(ist .ge. num) exit
-      end do
-#else
-      read(id_binary, err=99, end=99)  int_dat(1:num)
-#endif
-      ierr = 0
-      return
-!
-  99  continue
-      ierr = ierr_file
-      return
+      call alloc_1d_i8array(num, tmp64)
+      call read_mul_int8_b(iflag_swap, tmp64%n1, tmp64%id_a, ierr)
+      call dup_to_short_array(tmp64, int_dat)
 !
       end subroutine read_mul_integer_b
 !
