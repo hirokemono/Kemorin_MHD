@@ -131,7 +131,7 @@
 !
       subroutine gz_write_mul_int8_b(num, int8_dat)
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
       integer(kind = kint) :: ist
@@ -141,7 +141,7 @@
       ierr = 0
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kint_gl
 !
         call gzwrite_f(lbyte, int8_dat(ist+1), ierr)
@@ -155,23 +155,17 @@
 !
       subroutine gz_write_mul_integer_b(num, int_dat)
 !
-      integer(kind = kint), intent(in) :: num
+      use transfer_to_long_integers
+!
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) ::  ist
-      integer :: lbyte, ilength, ierr
+      type(tmp_i8_array)  :: tmp64
 !
-!
-      ierr = 0
-      ist = 0
-      do
-        ilength = min((num - ist), huge_20)
-        lbyte = ilength * kint
-!
-        call gzwrite_f(lbyte, int_dat(ist+1), ierr)
-        ist = ist + ilength
-        if(ist .ge. num) exit
-      end do
+      if(num .le. 0) return
+      call dup_from_short_array(num, int_dat, tmp64)
+      call gz_write_mul_int8_b(num, tmp64%id_a)
+      call dealloc_1d_i8array(tmp64)
 !
       end subroutine gz_write_mul_integer_b
 !
@@ -179,7 +173,7 @@
 !
       subroutine gz_write_integer_stack_b(num, istack)
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: istack(0:num)
 !
 !
@@ -201,7 +195,7 @@
       ierr = 0
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kchara
 !
         call gzwrite_f(lbyte, chara_dat(ist+1), ierr)
@@ -224,7 +218,7 @@
 !
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte =  ilength * kreal
         call gzwrite_f(lbyte, real_dat(ist+1), ierr)
         ist = ist + ilength
@@ -278,7 +272,7 @@
 !
 !
       ierr = 0
-      call gzread_64bit_f(iflag_swap, kint_gl, int_dat, ierr_IO)
+      call gzread_64bit_f(iflag_swap, kint_gl, int64, ierr_IO)
       if(ierr_IO .ne. kint_gl) ierr = ierr_file
 !
       int_dat = int(int64,KIND(int_dat))
@@ -308,7 +302,7 @@
       subroutine gz_read_mul_int8_b(iflag_swap, num, int8_dat, ierr)
 !
       integer, intent(in) :: iflag_swap
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -319,7 +313,7 @@
       ierr = 0
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kint_gl
 !
         call gzread_64bit_f(iflag_swap, lbyte, int8_dat(ist+1), ierr_IO)
@@ -334,26 +328,19 @@
 !
       subroutine gz_read_mul_integer_b(iflag_swap, num, int_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
-      integer(kind = kint), intent(in) :: num
+      use transfer_to_long_integers
+!
+      integer, intent(in) :: iflag_swap
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer :: ierr_IO
-      integer(kind = kint) :: lbyte, ilength, ist
+      type(tmp_i8_array)  :: tmp64
 !
-!
-      ierr = 0
-      ist = 0
-      do
-        ilength = min((num - ist), huge_20)
-        lbyte = ilength * kint
-!
-        call gzread_32bit_f(iflag_swap, lbyte, int_dat(ist+1), ierr_IO)
-        ist = ist + ilength
-        if(ist .ge. num) exit
-        if(ierr_IO .ne. lbyte) ierr = ierr_file
-      end do
+      if(num .le. 0) return
+      call alloc_1d_i8array(num, tmp64)
+      call gz_read_mul_int8_b(iflag_swap, num, tmp64%id_a, ierr)
+      call dup_to_short_array(tmp64, int_dat)
 !
       end subroutine gz_read_mul_integer_b
 !
@@ -363,7 +350,7 @@
      &         (iflag_swap, num, istack, ntot, ierr)
 !
       integer(kind = kint), intent(in) :: iflag_swap
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: ntot
       integer(kind = kint), intent(inout) :: istack(0:num)
       integer(kind = kint), intent(inout) :: ierr
@@ -391,7 +378,7 @@
       ierr = 0
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kchara
 !
         call gzread_32bit_f                                             &
@@ -420,7 +407,7 @@
       ierr = 0
       ist = 0
       do
-        ilength = min((num - ist), huge_20)
+        ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kreal
 !
         call gzread_64bit_f                                             &

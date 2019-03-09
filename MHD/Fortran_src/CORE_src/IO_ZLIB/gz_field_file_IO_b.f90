@@ -100,7 +100,8 @@
       if(gz_fldflags%ierr_IO .gt. 0) goto 99
 !
       call gz_read_mul_integer_b(gz_fldflags%iflag_bin_swap,            &
-     &    fld_IO%num_field_IO, fld_IO%num_comp_IO, gz_fldflags%ierr_IO)
+     &    cast_long(fld_IO%num_field_IO), fld_IO%num_comp_IO,           &
+     &    gz_fldflags%ierr_IO)
       if(gz_fldflags%ierr_IO .gt. 0) goto 99
 !
       call gz_read_field_data_b(gz_fldflags%iflag_bin_swap,             &
@@ -143,7 +144,8 @@
 !
       call alloc_phys_name_IO(fld_IO)
       call gz_read_mul_integer_b(gz_fldflags%iflag_bin_swap,            &
-     &    fld_IO%num_field_IO, fld_IO%num_comp_IO, gz_fldflags%ierr_IO)
+     &    cast_long(fld_IO%num_field_IO), fld_IO%num_comp_IO,           &
+     &    gz_fldflags%ierr_IO)
       if(gz_fldflags%ierr_IO .gt. 0) goto 99
 !
       fld_IO%nnod_IO = int(istack_merged(1),KIND(fld_IO%nnod_IO))
@@ -189,7 +191,8 @@
 !
       call alloc_phys_name_IO(fld_IO)
       call gz_read_mul_integer_b(gz_fldflags%iflag_bin_swap,            &
-     &    fld_IO%num_field_IO, fld_IO%num_comp_IO, gz_fldflags%ierr_IO)
+     &    cast_long(fld_IO%num_field_IO), fld_IO%num_comp_IO,           &
+     &    gz_fldflags%ierr_IO)
       if(gz_fldflags%ierr_IO .gt. 0) goto 99
 !
       call close_gzfile_f

@@ -31,6 +31,7 @@
       use t_surf_edge_IO
       use binary_IO
       use skip_gz_comment
+      use transfer_to_long_integers
 !
       implicit none
 !
@@ -53,13 +54,16 @@
 !
       call gz_write_one_integer_b(ele_IO%numele)
 !
-      call gz_write_mul_integer_b(ele_IO%numele, ele_IO%elmtyp)
-      call gz_write_mul_int8_b(ele_IO%numele, ele_IO%iele_global)
+      call gz_write_mul_integer_b                                       &
+     &   (cast_long(ele_IO%numele), ele_IO%elmtyp)
+      call gz_write_mul_int8_b                                          &
+     &   (cast_long(ele_IO%numele), ele_IO%iele_global)
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))
       do i = 1, ele_IO%numele
         ie_tmp(1:ele_IO%nodelm(i)) = ele_IO%ie(i,1:ele_IO%nodelm(i))
-        call gz_write_mul_integer_b(ele_IO%nodelm(i), ie_tmp)
+        call gz_write_mul_integer_b                                     &
+     &     (cast_long(ele_IO%nodelm(i)), ie_tmp)
       end do
       deallocate(ie_tmp)
 !
@@ -82,7 +86,8 @@
       do i = 1, sfed_IO%nsf_4_ele
         ie_tmp(1:sfed_IO%nsurf_in_ele)                                  &
      &          = sfed_IO%isf_for_ele(i,1:sfed_IO%nsurf_in_ele)
-        call gz_write_mul_integer_b(sfed_IO%nsurf_in_ele, ie_tmp)
+        call gz_write_mul_integer_b                                     &
+     &     (cast_long(sfed_IO%nsurf_in_ele), ie_tmp)
       end do
       deallocate(ie_tmp)
 !
@@ -105,7 +110,8 @@
       do i = 1, sfed_IO%ned_4_ele
         ie_tmp(1:sfed_IO%nedge_in_ele)                                  &
      &          = sfed_IO%iedge_for_ele(i,1:sfed_IO%nedge_in_ele)
-        call gz_write_mul_integer_b(sfed_IO%nedge_in_ele, ie_tmp)
+        call gz_write_mul_integer_b                                     &
+     &     (cast_long(sfed_IO%nedge_in_ele), ie_tmp)
       end do
       deallocate(ie_tmp)
 !
@@ -142,7 +148,7 @@
 !
       call alloc_element_types(ele_IO)
       call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,               &
-     &    ele_IO%numele, ele_IO%elmtyp, gz_flags%ierr_IO)
+     &    cast_long(ele_IO%numele), ele_IO%elmtyp, gz_flags%ierr_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
       ele_IO%nnod_4_ele = 0
@@ -155,13 +161,14 @@
       call alloc_ele_connectivity(ele_IO)
 !
       call gz_read_mul_int8_b(gz_flags%iflag_bin_swap,                  &
-     &    ele_IO%numele, ele_IO%iele_global, gz_flags%ierr_IO)
+     &    cast_long(ele_IO%numele), ele_IO%iele_global,                 &
+     &    gz_flags%ierr_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
       allocate(ie_tmp(ele_IO%nnod_4_ele))
       do i = 1, ele_IO%numele
         call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,             &
-     &      ele_IO%nodelm(i), ie_tmp, gz_flags%ierr_IO)
+     &      cast_long(ele_IO%nodelm(i)), ie_tmp, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
         ele_IO%ie(i,1:ele_IO%nodelm(i)) = ie_tmp(1:ele_IO%nodelm(i))
@@ -195,7 +202,7 @@
       allocate(ie_tmp(sfed_IO%nsurf_in_ele))
       do i = 1, sfed_IO%nsf_4_ele
         call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,             &
-     &      sfed_IO%nsurf_in_ele, ie_tmp, gz_flags%ierr_IO)
+     &      cast_long(sfed_IO%nsurf_in_ele), ie_tmp, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
         sfed_IO%isf_for_ele(i,1:sfed_IO%nsurf_in_ele)                   &
@@ -230,7 +237,7 @@
       allocate(ie_tmp(sfed_IO%nedge_in_ele))
       do i = 1, sfed_IO%ned_4_ele
         call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,             &
-     &      sfed_IO%nedge_in_ele, ie_tmp, gz_flags%ierr_IO)
+     &      cast_long(sfed_IO%nedge_in_ele), ie_tmp, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
         sfed_IO%iedge_for_ele(i,1:sfed_IO%nedge_in_ele)                 &

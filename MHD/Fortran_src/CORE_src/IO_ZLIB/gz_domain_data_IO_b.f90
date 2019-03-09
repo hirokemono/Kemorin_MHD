@@ -29,6 +29,7 @@
       use t_comm_table
       use binary_IO
       use gz_binary_IO
+      use transfer_to_long_integers
 !
       implicit none
 !
@@ -68,7 +69,8 @@
       call alloc_neighbouring_id(comm_IO)
 !
       call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,               &
-     &    comm_IO%num_neib, comm_IO%id_neib, gz_flags%ierr_IO)
+     &    cast_long(comm_IO%num_neib), comm_IO%id_neib,                 &
+     &    gz_flags%ierr_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
       end subroutine gz_read_domain_info_b
@@ -86,13 +88,14 @@
       if (comm_IO%num_neib .gt. 0) then
 !
         call gz_read_integer_stack_b(gz_flags%iflag_bin_swap,           &
-     &      comm_IO%num_neib, comm_IO%istack_import,                    &
+     &      cast_long(comm_IO%num_neib), comm_IO%istack_import,         &
      &      comm_IO%ntot_import, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
         call alloc_import_item(comm_IO)
         call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,             &
-     &      comm_IO%ntot_import, comm_IO%item_import, gz_flags%ierr_IO)
+     &      cast_long(comm_IO%ntot_import), comm_IO%item_import,        &
+     &      gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
       else
@@ -113,13 +116,14 @@
       call alloc_export_num(comm_IO)
       if (comm_IO%num_neib .gt. 0) then
         call gz_read_integer_stack_b(gz_flags%iflag_bin_swap,           &
-     &      comm_IO%num_neib, comm_IO%istack_export,                    &
+     &      cast_long(comm_IO%num_neib), comm_IO%istack_export,         &
      &      comm_IO%ntot_export, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
         call alloc_export_item(comm_IO)
         call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,             &
-     &      comm_IO%ntot_export, comm_IO%item_export, gz_flags%ierr_IO)
+     &      cast_long(comm_IO%ntot_export), comm_IO%item_export,        &
+     &      gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
       else
         comm_IO%ntot_export = 0
@@ -141,7 +145,7 @@
       call gz_write_one_integer_b(comm_IO%num_neib)
 !
       call gz_write_mul_integer_b                                       &
-     &   (comm_IO%num_neib, comm_IO%id_neib)
+     &   (cast_long(comm_IO%num_neib), comm_IO%id_neib)
 !
       end subroutine gz_write_domain_info_b
 !
@@ -154,9 +158,9 @@
 !
 !
       call gz_write_integer_stack_b                                     &
-     &   (comm_IO%num_neib, comm_IO%istack_import)
+     &   (cast_long(comm_IO%num_neib), comm_IO%istack_import)
       call gz_write_mul_integer_b                                       &
-     &   (comm_IO%ntot_import, comm_IO%item_import)
+     &   (cast_long(comm_IO%ntot_import), comm_IO%item_import)
 !
       end subroutine gz_write_import_data_b
 !
@@ -168,9 +172,9 @@
 !
 !
       call gz_write_integer_stack_b                                     &
-     &  (comm_IO%num_neib, comm_IO%istack_export)
+     &   (cast_long(comm_IO%num_neib), comm_IO%istack_export)
       call gz_write_mul_integer_b                                       &
-     &   (comm_IO%ntot_export, comm_IO%item_export)
+     &   (cast_long(comm_IO%ntot_export), comm_IO%item_export)
 !
       end subroutine gz_write_export_data_b
 !

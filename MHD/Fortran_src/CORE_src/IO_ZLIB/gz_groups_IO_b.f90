@@ -28,6 +28,7 @@
 !
       use binary_IO
       use gz_binary_IO
+      use transfer_to_long_integers
 !
       implicit none
 !
@@ -51,7 +52,7 @@
 !
       if (group_IO%num_grp .gt. 0) then
         call gz_read_integer_stack_b(gz_flags%iflag_bin_swap,           &
-     &      group_IO%num_grp, group_IO%istack_grp,                      &
+     &      cast_long(group_IO%num_grp), group_IO%istack_grp,           &
      &      group_IO%num_item, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
@@ -62,7 +63,8 @@
         call allocate_grp_type_item(group_IO)
 !
         call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,             &
-     &      group_IO%num_item, group_IO%item_grp, gz_flags%ierr_IO)
+     &      cast_long(group_IO%num_item), group_IO%item_grp,            &
+     &      gz_flags%ierr_IO)
          if(gz_flags%ierr_IO .gt. 0) return
       else
         group_IO%num_item = 0
@@ -78,7 +80,7 @@
       type(file_IO_flags), intent(inout) :: gz_flags
       type(surface_group_data), intent(inout) :: surf_grp_IO
 !
-      integer(kind = kint) :: nitem
+      integer(kind = kint_gl) :: nitem
 !
 !
       call gz_read_one_integer_b(gz_flags%iflag_bin_swap,               &
@@ -89,7 +91,7 @@
 !
       if (surf_grp_IO%num_grp .gt. 0) then
         call gz_read_integer_stack_b(gz_flags%iflag_bin_swap,           &
-     &      surf_grp_IO%num_grp, surf_grp_IO%istack_grp,                &
+     &      cast_long(surf_grp_IO%num_grp), surf_grp_IO%istack_grp,     &
      &      surf_grp_IO%num_item, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
@@ -120,11 +122,11 @@
 !
       call gz_write_one_integer_b(group_IO%num_grp)
       call gz_write_integer_stack_b                                     &
-     &  (group_IO%num_grp, group_IO%istack_grp)
+     &   (cast_long(group_IO%num_grp), group_IO%istack_grp)
       call gz_write_mul_character_b                                     &
      &   (group_IO%num_grp, group_IO%grp_name)
       call gz_write_mul_integer_b                                       &
-     &   (group_IO%num_item, group_IO%item_grp)
+     &   (cast_long(group_IO%num_item), group_IO%item_grp)
 !
       end subroutine gz_write_grp_data_b
 !
@@ -134,12 +136,12 @@
 !
       type(surface_group_data), intent(in) :: surf_grp_IO
 !
-      integer(kind = kint) :: nitem
+      integer(kind = kint_gl) :: nitem
 !
 !
       call gz_write_one_integer_b(surf_grp_IO%num_grp)
       call gz_write_integer_stack_b                                     &
-     &   (surf_grp_IO%num_grp, surf_grp_IO%istack_grp)
+     &   (cast_long(surf_grp_IO%num_grp), surf_grp_IO%istack_grp)
       call gz_write_mul_character_b                                     &
      &   (surf_grp_IO%num_grp, surf_grp_IO%grp_name)
 !

@@ -26,6 +26,7 @@
       use m_machine_parameter
 !
       use gz_binary_IO
+      use transfer_to_long_integers
 !
       implicit none
 !
@@ -67,12 +68,13 @@
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
       integer(kind = kint_gl) :: istack_merged(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
       istack_merged(1) = nnod
-      call gz_write_mul_int8_b(ione, istack_merged)
+      call gz_write_mul_int8_b(ione64, istack_merged)
       call gz_write_one_integer_b(num_field)
-      call gz_write_mul_integer_b(num_field, ncomp_field)
+      call gz_write_mul_integer_b(cast_long(num_field), ncomp_field)
 !
       call gz_write_mul_character_b(num_field, field_name)
       call gz_write_2d_vector_b(nnod, ntot_comp, d_nod)
@@ -97,6 +99,7 @@
       integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: id_rank
+      integer(kind = kint_gl) :: ione64 = 1
 !
 !
       call gz_read_one_integer_b(iflag_swap, id_rank, ierr)
@@ -111,7 +114,8 @@
       call gz_read_one_real_b(iflag_swap, delta_t_IO, ierr)
       if(ierr .gt. 0) return
 !
-      call gz_read_mul_int8_b(iflag_swap, ione, istack_merged(1), ierr)
+      call gz_read_mul_int8_b                                           &
+     &   (iflag_swap, ione64, istack_merged(1), ierr)
       if(ierr .gt. 0) return
 !
       call gz_read_one_integer_b(iflag_swap, num_field, ierr)

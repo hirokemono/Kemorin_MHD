@@ -32,6 +32,7 @@
       use t_surf_edge_IO
       use binary_IO
       use skip_gz_comment
+      use transfer_to_long_integers
 !
       implicit none
 !
@@ -51,7 +52,8 @@
       call gz_write_one_integer_b(nod_IO%numnod)
       call gz_write_one_integer_b(nod_IO%internal_node)
 !
-      call gz_write_mul_int8_b(nod_IO%numnod, nod_IO%inod_global)
+      call gz_write_mul_int8_b                                          &
+     &   (cast_long(nod_IO%numnod), nod_IO%inod_global)
       call gz_write_2d_vector_b(nod_IO%numnod, ithree, nod_IO%xx)
 !
       end subroutine gz_write_geometry_info_b
@@ -124,7 +126,8 @@
       call alloc_node_geometry_base(nod_IO)
 !
       call gz_read_mul_int8_b(gz_flags%iflag_bin_swap,                  &
-     &    nod_IO%numnod, nod_IO%inod_global, gz_flags%ierr_IO)
+     &    cast_long(nod_IO%numnod), nod_IO%inod_global,                 &
+     &    gz_flags%ierr_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
       call gz_read_2d_vector_b(gz_flags%iflag_bin_swap,                 &
