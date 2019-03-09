@@ -56,8 +56,8 @@
      &      group_IO%num_item, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
-        call gz_read_mul_character_b                                    &
-     &     (group_IO%num_grp, group_IO%grp_name, gz_flags%ierr_IO)
+        call gz_read_mul_character_b(cast_long(group_IO%num_grp),       &
+     &      group_IO%grp_name, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
         call allocate_grp_type_item(group_IO)
@@ -95,9 +95,8 @@
      &      surf_grp_IO%num_item, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
-        call gz_read_mul_character_b                                    &
-     &     (surf_grp_IO%num_grp, surf_grp_IO%grp_name,                  &
-     &      gz_flags%ierr_IO)
+        call gz_read_mul_character_b(cast_long(surf_grp_IO%num_grp),    &
+     &     surf_grp_IO%grp_name, gz_flags%ierr_IO)
         if(gz_flags%ierr_IO .gt. 0) return
 !
         call allocate_sf_grp_type_item(surf_grp_IO)
@@ -124,7 +123,7 @@
       call gz_write_integer_stack_b                                     &
      &   (cast_long(group_IO%num_grp), group_IO%istack_grp)
       call gz_write_mul_character_b                                     &
-     &   (group_IO%num_grp, group_IO%grp_name)
+     &   (cast_long(group_IO%num_grp), group_IO%grp_name)
       call gz_write_mul_integer_b                                       &
      &   (cast_long(group_IO%num_item), group_IO%item_grp)
 !
@@ -143,7 +142,7 @@
       call gz_write_integer_stack_b                                     &
      &   (cast_long(surf_grp_IO%num_grp), surf_grp_IO%istack_grp)
       call gz_write_mul_character_b                                     &
-     &   (surf_grp_IO%num_grp, surf_grp_IO%grp_name)
+     &   (cast_long(surf_grp_IO%num_grp), surf_grp_IO%grp_name)
 !
       nitem = 2 * surf_grp_IO%num_item
       call gz_write_mul_integer_b(nitem, surf_grp_IO%item_sf_grp)

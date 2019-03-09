@@ -54,7 +54,8 @@
 !
       call gz_write_mul_int8_b                                          &
      &   (cast_long(nod_IO%numnod), nod_IO%inod_global)
-      call gz_write_2d_vector_b(nod_IO%numnod, ithree, nod_IO%xx)
+      call gz_write_2d_vector_b                                         &
+     &   (cast_long(nod_IO%numnod), ithree, nod_IO%xx)
 !
       end subroutine gz_write_geometry_info_b
 !
@@ -71,7 +72,8 @@
       call gz_write_one_integer_b(nod_IO%numnod)
       call gz_write_one_integer_b(nod_IO%internal_node)
 !
-      call gz_write_1d_vector_b(nod_IO%numnod, sfed_IO%ele_scalar)
+      call gz_write_1d_vector_b                                         &
+     &   (cast_long(nod_IO%numnod), sfed_IO%ele_scalar)
 !
       end subroutine gz_write_scalar_in_element_b
 !
@@ -89,7 +91,7 @@
       call gz_write_one_integer_b(nod_IO%internal_node)
 !
       call gz_write_2d_vector_b                                         &
-     &   (nod_IO%numnod, n_vector, sfed_IO%ele_scalar)
+     &   (cast_long(nod_IO%numnod), n_vector, sfed_IO%ele_scalar)
 !
       end subroutine gz_write_vector_in_element_b
 !
@@ -130,8 +132,9 @@
      &    gz_flags%ierr_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
-      call gz_read_2d_vector_b(gz_flags%iflag_bin_swap,                 &
-     &    nod_IO%numnod, ithree, nod_IO%xx, gz_flags%ierr_IO)
+      call gz_read_2d_vector_b                                          &
+     &   (gz_flags%iflag_bin_swap, cast_long(nod_IO%numnod), ithree,    &
+     &    nod_IO%xx, gz_flags%ierr_IO)
 !
       end subroutine gz_read_geometry_info_b
 !
@@ -151,7 +154,8 @@
 !
       call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
-      call gz_write_1d_vector_b(nod_IO%numnod, sfed_IO%ele_scalar)
+      call gz_write_1d_vector_b                                         &
+     &   (cast_long(nod_IO%numnod), sfed_IO%ele_scalar)
 !
       end subroutine gz_read_scalar_in_element_b
 !
@@ -172,7 +176,8 @@
 !
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
 !
-      call gz_read_2d_vector_b(gz_flags%iflag_bin_swap, nod_IO%numnod,  &
+      call gz_read_2d_vector_b                                          &
+     &   (gz_flags%iflag_bin_swap, cast_long(nod_IO%numnod),            &
      &    n_vector, sfed_IO%ele_scalar, gz_flags%ierr_IO)
 !
       end subroutine gz_read_vector_in_element_b

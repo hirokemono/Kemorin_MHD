@@ -60,7 +60,7 @@
 !
       use m_phys_constants
 !
-      integer(kind=kint), intent(in) ::  nnod
+      integer(kind=kint_gl), intent(in) ::  nnod
 !
       integer(kind=kint), intent(in) :: num_field, ntot_comp
       integer(kind=kint), intent(in) :: ncomp_field(num_field)
@@ -76,7 +76,7 @@
       call gz_write_one_integer_b(num_field)
       call gz_write_mul_integer_b(cast_long(num_field), ncomp_field)
 !
-      call gz_write_mul_character_b(num_field, field_name)
+      call gz_write_mul_character_b(cast_long(num_field), field_name)
       call gz_write_2d_vector_b(nnod, ntot_comp, d_nod)
 !
       end subroutine gz_write_field_data_b
@@ -129,15 +129,16 @@
      &          ncomp, field_name, vect, ierr)
 !
       integer(kind = kint), intent(in) :: iflag_swap
-      integer(kind=kint), intent(in) :: nnod
-      integer(kind=kint), intent(in) :: num_field, ncomp
+      integer(kind = kint_gl), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: num_field, ncomp
 !
       character(len=kchara), intent(inout) :: field_name(num_field)
       real(kind = kreal), intent(inout) :: vect(nnod,ncomp)
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call gz_read_mul_character_b(num_field, field_name, ierr)
+      call gz_read_mul_character_b                                      &
+     &   (cast_long(num_field), field_name, ierr)
       if(ierr .gt. 0) return
 !
       call gz_read_2d_vector_b                                          &

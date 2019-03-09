@@ -71,11 +71,12 @@
 !
       call gz_read_mul_integer_b(gz_flags%iflag_bin_swap,               &
      &    cast_long(sph_IO%nidx_sph(1)), sph_IO%idx_gl_1,               &
-     &     gz_flags%ierr_IO)
+     &    gz_flags%ierr_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
       call gz_read_1d_vector_b(gz_flags%iflag_bin_swap,                 &
-     &    sph_IO%nidx_sph(1), sph_IO%r_gl_1, gz_flags%ierr_IO)
+     &    cast_long(sph_IO%nidx_sph(1)), sph_IO%r_gl_1,                 &
+     &    gz_flags%ierr_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
@@ -130,7 +131,7 @@
       if(gz_flags%ierr_IO .gt. 0) return
 !
       call gz_read_1d_vector_b(gz_flags%iflag_bin_swap,                 &
-     &    (sph_IO%nidx_sph(1)), sph_IO%r_gl_1,                 &
+     &    cast_long(sph_IO%nidx_sph(1)), sph_IO%r_gl_1,                 &
      &    gz_flags%ierr_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
@@ -152,14 +153,15 @@
 !
       call gz_write_mul_integer_b                                       &
      &   (cast_long(sph_IO%numdir_sph), sph_IO%nidx_sph)
-      call gz_write_mul_integer_b                                      &
+      call gz_write_mul_integer_b                                       &
      &   (cast_long(sph_IO%numdir_sph), sph_IO%ist_sph)
-      call gz_write_mul_integer_b                                      &
+      call gz_write_mul_integer_b                                       &
      &   (cast_long(sph_IO%numdir_sph), sph_IO%ied_sph)
 !
-      call gz_write_mul_integer_b                                      &
+      call gz_write_mul_integer_b                                       &
      &   (cast_long(sph_IO%nidx_sph(1)), sph_IO%idx_gl_1)
-      call gz_write_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
+      call gz_write_1d_vector_b                                         &
+     &   (cast_long(sph_IO%nidx_sph(1)), sph_IO%r_gl_1)
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
       call gz_write_mul_integer_b(nvect, sph_IO%idx_gl_2)
@@ -178,16 +180,17 @@
       integer(kind = kint_gl) :: nvect
 !
 !
-      call gz_write_mul_integer_b                                      &
+      call gz_write_mul_integer_b                                       &
      &   (cast_long(sph_IO%numdir_sph), sph_IO%nidx_sph)
-      call gz_write_mul_integer_b                                      &
+      call gz_write_mul_integer_b                                       &
      &   (cast_long(sph_IO%numdir_sph), sph_IO%ist_sph)
-      call gz_write_mul_integer_b                                      &
+      call gz_write_mul_integer_b                                       &
      &   (cast_long(sph_IO%numdir_sph), sph_IO%ied_sph)
 !
-      call gz_write_mul_integer_b                                      &
+      call gz_write_mul_integer_b                                       &
      &   (cast_long(sph_IO%nidx_sph(1)), sph_IO%idx_gl_1)
-      call gz_write_1d_vector_b(sph_IO%nidx_sph(1), sph_IO%r_gl_1)
+      call gz_write_1d_vector_b                                         &
+     &   (cast_long(sph_IO%nidx_sph(1)), sph_IO%r_gl_1)
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
       call gz_write_mul_integer_b(nvect, sph_IO%idx_gl_2)

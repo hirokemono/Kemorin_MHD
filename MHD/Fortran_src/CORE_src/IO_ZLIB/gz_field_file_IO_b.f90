@@ -37,6 +37,7 @@
       use gz_binary_IO
       use binary_IO
       use skip_gz_comment
+      use transfer_to_long_integers
 !
       implicit none
 !
@@ -66,8 +67,9 @@
       call gz_write_step_data_b(my_rank,                                &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt)
       call gz_write_field_data_b                                        &
-     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
-     &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
+     &   (cast_long(fld_IO%nnod_IO), fld_IO%num_field_IO,               &
+     &    fld_IO%ntot_comp_IO, fld_IO%num_comp_IO, fld_IO%fld_name,     &
+     &    fld_IO%d_IO)
 !
       call close_gzfile_f
 !
@@ -105,8 +107,9 @@
       if(gz_fldflags%ierr_IO .gt. 0) goto 99
 !
       call gz_read_field_data_b(gz_fldflags%iflag_bin_swap,             &
-     &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
-     &    fld_IO%fld_name, fld_IO%d_IO, gz_fldflags%ierr_IO)
+     &    cast_long(fld_IO%nnod_IO), fld_IO%num_field_IO,               &
+     &    fld_IO%ntot_comp_IO, fld_IO%fld_name, fld_IO%d_IO,            &
+     &    gz_fldflags%ierr_IO)
 !
       call close_gzfile_f
       return
@@ -152,8 +155,9 @@
       call cal_istack_phys_comp_IO(fld_IO)
       call alloc_phys_data_IO(fld_IO)
       call gz_read_field_data_b(gz_fldflags%iflag_bin_swap,             &
-     &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
-     &    fld_IO%fld_name, fld_IO%d_IO, gz_fldflags%ierr_IO)
+     &    cast_long(fld_IO%nnod_IO), fld_IO%num_field_IO,               &
+     &    fld_IO%ntot_comp_IO, fld_IO%fld_name, fld_IO%d_IO,            &
+     &    gz_fldflags%ierr_IO)
 !
       call close_gzfile_f
       return

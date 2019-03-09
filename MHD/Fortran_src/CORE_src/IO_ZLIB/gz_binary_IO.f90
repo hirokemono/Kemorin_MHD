@@ -185,7 +185,7 @@
 !
       subroutine gz_write_mul_character_b(num, chara_dat)
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
 !
       integer(kind = kint) ::  ist
@@ -209,7 +209,7 @@
 !
       subroutine gz_write_1d_vector_b(num, real_dat)
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
 !
       integer(kind = kint) :: ist
@@ -231,7 +231,8 @@
 !
       subroutine gz_write_2d_vector_b(n1, n2, real_dat)
 !
-      integer(kind = kint), intent(in) :: n1, n2
+      integer(kind = kint_gl), intent(in) :: n1
+      integer(kind = kint), intent(in) :: n2
       real(kind = kreal), intent(in) :: real_dat(n1,n2)
 !
       integer(kind = kint) :: i2
@@ -367,7 +368,7 @@
 !
       subroutine gz_read_mul_character_b(num, chara_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       character(len=kchara), intent(inout) :: chara_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -396,7 +397,7 @@
      &         (iflag_swap, num, real_dat, ierr)
 !
       integer, intent(in) :: iflag_swap
-      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -425,7 +426,8 @@
      &         (iflag_swap, n1, n2, real_dat, ierr)
 !
       integer(kind = kint), intent(in) :: iflag_swap
-      integer(kind = kint), intent(in) :: n1, n2
+      integer(kind = kint_gl), intent(in) :: n1
+      integer(kind = kint), intent(in) :: n2
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)
       integer(kind = kint), intent(inout) :: ierr
 !
