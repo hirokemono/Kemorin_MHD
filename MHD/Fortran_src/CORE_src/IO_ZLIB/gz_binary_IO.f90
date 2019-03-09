@@ -102,12 +102,14 @@
 !
       subroutine gz_write_one_integer_b(int_dat)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint), intent(in) :: int_dat
 !
       integer :: ierr
 !
 !
-      call gzwrite_f(kint, int_dat, ierr)
+      call gzwrite_f(kint_gl, cast_long(int_dat), ierr)
 !
       end subroutine gz_write_one_integer_b
 !
@@ -271,12 +273,15 @@
       integer(kind = kint), intent(inout) :: int_dat
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ierr_IO
+      integer :: ierr_IO
+      integer(kind = kint_gl) :: int64
 !
 !
       ierr = 0
-      call gzread_32bit_f(iflag_swap, kint, int_dat, ierr_IO)
-      if(ierr_IO .ne. kint) ierr = ierr_file
+      call gzread_64bit_f(iflag_swap, kint_gl, int_dat, ierr_IO)
+      if(ierr_IO .ne. kint_gl) ierr = ierr_file
+!
+      int_dat = int(int64,KIND(int_dat))
 !
       end subroutine gz_read_one_integer_b
 !
@@ -288,7 +293,7 @@
       real(kind = kreal), intent(inout) :: real_dat
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ierr_IO
+      integer :: ierr_IO
 !
 !
       ierr = 0
@@ -307,7 +312,7 @@
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ierr_IO
+      integer :: ierr_IO
       integer(kind = kint) :: lbyte, ilength, ist
 !
 !
@@ -334,7 +339,7 @@
       integer(kind = kint), intent(inout) :: int_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ierr_IO
+      integer :: ierr_IO
       integer(kind = kint) :: lbyte, ilength, ist
 !
 !
@@ -379,7 +384,7 @@
       character(len=kchara), intent(inout) :: chara_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ierr_IO
+      integer :: ierr_IO
       integer(kind = kint) :: lbyte, ilength, ist
 !
 !
@@ -408,7 +413,7 @@
       real(kind = kreal), intent(inout) :: real_dat(num)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: ierr_IO
+      integer :: ierr_IO
       integer(kind = kint) :: lbyte, ilength, ist
 !
 !
