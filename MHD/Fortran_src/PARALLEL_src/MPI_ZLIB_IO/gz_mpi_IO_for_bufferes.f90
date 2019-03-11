@@ -34,6 +34,7 @@
       use t_buffer_4_gzip
       use gz_MPI_binary_head_IO
       use defleat_4_merged_arrays
+      use transfer_to_long_integers
 !
       type(buffer_4_gzip), allocatable, private :: zbufs(:)
 !
@@ -54,8 +55,8 @@
       call set_istack_by_gzip_length(IO_param%nprocs_in,                &
      &   IO_param%nloop, zbufs, IO_param%istack_merged)
 !
-      call gz_mpi_write_i8stack_head_b                                  &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+      call gz_mpi_write_i8stack_head_b(IO_param,                        &
+     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
       call mpi_write_gzip_array_mul                                     &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
@@ -76,8 +77,8 @@
       call set_istack_by_gzip_length(IO_param%nprocs_in,                &
      &   IO_param%nloop, zbufs, IO_param%istack_merged)
 !
-      call gz_mpi_write_i8stack_head_b                                  &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+      call gz_mpi_write_i8stack_head_b(IO_param,                        &
+     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
       call mpi_write_gzip_array_mul                                     &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
@@ -98,8 +99,8 @@
       call set_istack_by_gzip_length(IO_param%nprocs_in,                &
      &   IO_param%nloop, zbufs, IO_param%istack_merged)
 !
-      call gz_mpi_write_i8stack_head_b                                  &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+      call gz_mpi_write_i8stack_head_b(IO_param,                        &
+     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
       call mpi_write_gzip_array_mul                                     &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
@@ -120,8 +121,8 @@
       call set_istack_by_gzip_length(IO_param%nprocs_in,                &
      &   IO_param%nloop, zbufs, IO_param%istack_merged)
 !
-      call gz_mpi_write_i8stack_head_b                                  &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+      call gz_mpi_write_i8stack_head_b(IO_param,                        &
+     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
       call mpi_write_gzip_array_mul                                     &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
@@ -142,8 +143,8 @@
       call set_istack_by_gzip_length(IO_param%nprocs_in,                &
      &   IO_param%nloop, zbufs, IO_param%istack_merged)
 !
-      call gz_mpi_write_i8stack_head_b                                  &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+      call gz_mpi_write_i8stack_head_b(IO_param,                        &
+     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
       call mpi_write_gzip_array_mul                                     &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
@@ -160,8 +161,8 @@
 !
 !
       allocate(zbufs(IO_param%nloop))
-      call gz_mpi_read_i8stack_head_b                                   &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+      call gz_mpi_read_i8stack_head_b(IO_param,                         &
+     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
       call mpi_read_gzip_array_mul                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
@@ -180,8 +181,8 @@
 !
 !
       allocate(zbufs(IO_param%nloop))
-      call gz_mpi_read_i8stack_head_b                                   &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+      call gz_mpi_read_i8stack_head_b(IO_param,                         &
+     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
       call mpi_read_gzip_array_mul                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
@@ -200,8 +201,8 @@
 !
 !
       allocate(zbufs(IO_param%nloop))
-      call gz_mpi_read_i8stack_head_b                                   &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+      call gz_mpi_read_i8stack_head_b(IO_param,                         &
+     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
       call mpi_read_gzip_array_mul                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
@@ -220,8 +221,8 @@
 !
 !
       allocate(zbufs(IO_param%nloop))
-      call gz_mpi_read_i8stack_head_b                                   &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+      call gz_mpi_read_i8stack_head_b(IO_param,                         &
+     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
       call mpi_read_gzip_array_mul                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)
@@ -240,8 +241,8 @@
 !
 !
       allocate(zbufs(IO_param%nloop))
-      call gz_mpi_read_i8stack_head_b                                   &
-     &   (IO_param, IO_param%nprocs_in, IO_param%istack_merged)
+      call gz_mpi_read_i8stack_head_b(IO_param,                         &
+     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
       call mpi_read_gzip_array_mul                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, zbufs)

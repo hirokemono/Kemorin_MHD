@@ -267,6 +267,7 @@
       use m_calypso_mpi_IO
       use gz_field_file_MPI_IO_b
       use gz_MPI_binary_head_IO
+      use transfer_to_long_integers
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
@@ -320,7 +321,7 @@
 !
 !       Write data size
       call gz_mpi_write_i8stack_head_b                                  &
-     &   (IO_param, IO_param%nprocs_in, istack_gz_pe)
+     &   (IO_param, cast_long(IO_param%nprocs_in), istack_gz_pe)
 !
 !       Write to file
       do iloop = 1, nloop

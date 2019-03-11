@@ -254,7 +254,7 @@
 !
       if(num .le. 0) return
       call dup_from_short_array(num, int_dat, tmp64)
-      call write_mul_int8_b(num, tmp64%id_a)
+      call write_mul_int8_b(tmp64%n1, tmp64%id_a)
       call dealloc_1d_i8array(tmp64)
 !
       end subroutine write_mul_integer_b

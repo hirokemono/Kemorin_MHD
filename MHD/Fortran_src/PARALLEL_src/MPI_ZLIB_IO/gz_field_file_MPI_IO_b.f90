@@ -252,6 +252,7 @@
       use field_data_IO
       use gz_MPI_binary_head_IO
       use gz_MPI_binary_datum_IO
+      use transfer_to_long_integers
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param_l
 !
@@ -270,8 +271,8 @@
       call gz_mpi_write_one_realhead_b(IO_param_l, delta_t_IO)
 !
 !
-      call gz_mpi_write_i8stack_head_b                                  &
-     &   (IO_param_l, IO_param_l%nprocs_in, istack_merged)
+      call gz_mpi_write_i8stack_head_b(IO_param_l,                      &
+     &    cast_long(IO_param_l%nprocs_in), istack_merged)
       call gz_mpi_write_one_inthead_b(IO_param_l, num_field)
       call gz_mpi_write_mul_inthead_b                                   &
      &   (IO_param_l, num_field, ncomp_field)
@@ -341,13 +342,14 @@
       use field_data_IO
       use gz_MPI_binary_head_IO
       use gz_MPI_binary_datum_IO
+      use transfer_to_long_integers
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param_l
       integer(kind=kint), intent(inout) :: nnod, num_field
 !
 !
-      call gz_mpi_read_i8stack_head_b                                   &
-     &   (IO_param_l, IO_param_l%nprocs_in, IO_param_l%istack_merged)
+      call gz_mpi_read_i8stack_head_b(IO_param_l,                       &
+     &    cast_long(IO_param_l%nprocs_in), IO_param_l%istack_merged)
       nnod = int(IO_param_l%istack_merged(IO_param_l%id_rank+1)         &
      &         - IO_param_l%istack_merged(IO_param_l%id_rank))
 !

@@ -61,7 +61,7 @@
 !
       call open_write_mpi_file                                          &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
-      call gz_mpi_write_one_inthead_b(IO_param, i_UNIX)
+      call gz_mpi_write_byte_flag(IO_param)
 !
       end subroutine open_write_gz_mpi_file_b
 !
@@ -70,19 +70,14 @@
       subroutine open_read_gz_mpi_file_b                                &
      &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !
-      use binary_IO
-!
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer :: int_dat
-!
 !
       call open_read_mpi_file                                          &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
-      call gz_mpi_read_one_inthead_b(IO_param, int_dat)
-      IO_param%iflag_bin_swap = endian_check(my_rank, int_dat)
+      call gz_mpi_read_byte_check(IO_param)
 !
       end subroutine open_read_gz_mpi_file_b
 !
