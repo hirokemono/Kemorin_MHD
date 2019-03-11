@@ -70,28 +70,18 @@
 !
       subroutine gz_mpi_write_int_vector_b(IO_param, num, int_dat)
 !
+      use transfer_to_long_integers
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      type(tmp_i8_array)  :: tmp64
 !
 !
-      call defleate_int_vector_b(num, int_dat, zbuf)
-!
-      call istack64_4_parallel_data(zbuf%ilen_gzipped, IO_param)
-!
-      call gz_mpi_write_i8stack_head_b                                  &
-     &   (IO_param, cast_long(nprocs), IO_param%istack_merged)
-!
-      if(zbuf%ilen_gzipped .gt. 0) then
-        ioffset = IO_param%ioff_gl + IO_param%istack_merged(my_rank)
-        call calypso_mpi_seek_write_gz(IO_param%id_file, ioffset, zbuf)
-      end if
-!
-      IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &                  + IO_param%istack_merged(nprocs)
-      call dealloc_zip_buffer(zbuf)
+      call dup_from_short_array(num, int_dat, tmp64)
+      call gz_mpi_write_int8_vector_b(IO_param, tmp64%n1, tmp64%id_a)
+      call dealloc_1d_i8array(tmp64)
 !
       end subroutine gz_mpi_write_int_vector_b
 !
@@ -194,41 +184,19 @@
 !
       subroutine gz_mpi_read_int_vector_b(IO_param, num, int_dat)
 !
+      use transfer_to_long_integers
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_dat(num)
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
-      integer(kind = kint_gl) :: l8_byte
+      type(tmp_i8_array)  :: tmp64
 !
 !
-      call gz_mpi_read_i8stack_head_b(IO_param,                         &
-     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
-!
-      ioffset = IO_param%ioff_gl                                        &
-     &         + IO_param%istack_merged(IO_param%id_rank)
-      IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &                  + IO_param%istack_merged(IO_param%nprocs_in)
-!
-      if(num .le. 0) return
-      if(IO_param%id_rank .ge. IO_param%nprocs_in) then
-        int_dat(1:num) = 0
-      else
-        zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)       &
-     &                - IO_param%istack_merged(IO_param%id_rank)
-!
-        call alloc_zip_buffer(zbuf)
-        call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
-!
-        call infleate_int_vector_b(num, int_dat, zbuf)
-!
-        if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = num * kint
-          call byte_swap_32bit_f(l8_byte, int_dat(1))
-        end if
-      end if
+      call alloc_1d_i8array(num, tmp64)
+      call gz_mpi_read_int8_vector_b(IO_param, tmp64%n1, tmp64%id_a)
+      call dup_to_short_array(tmp64, int_dat)
 !
       end subroutine gz_mpi_read_int_vector_b
 !

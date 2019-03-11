@@ -10,13 +10,13 @@
 !!      subroutine alloc_zip_buffer(zbuf)
 !!      subroutine dealloc_zip_buffer(zbuf)
 !!
-!!      subroutine defleate_int_vector_b(num, int_dat, zbuf)
+!!      subroutine defleate_endian_flag(zbuf)
 !!      subroutine defleate_int8_vector_b(num, int8_dat, zbuf)
 !!      subroutine defleate_1d_vector_b(num, real_dat, zbuf)
 !!      subroutine defleate_1d_character_b(num, chara_dat, zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine infleate_int_vector_b(num, int_dat, zbuf)
+!!      subroutine infleate_endian_flag(my_rank, iflag_swap, zbuf)
 !!      subroutine infleate_int8_vector_b(num, int8_dat, zbuf)
 !!      subroutine infleate_1d_vector_b(num, real_dat, zbuf)
 !!      subroutine infleate_1d_character_b(num, chara_dat, zbuf)
@@ -70,38 +70,23 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine defleate_int_vector_b(num, int_dat, zbuf)
-!
-      integer(kind = kint_gl), intent(in) :: num
-      integer(kind = kint), intent(in) :: int_dat(num)
+      subroutine defleate_endian_flag(zbuf)
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint_gl) :: ist
-      integer :: nline, ilen_tmp
-      integer :: ilen_in, ilen_used, ilen_line
+      integer, parameter :: int_dat = i_UNIX
+      integer :: ilen_in, ilen_used
 !
 !
-      zbuf%ilen_gz = int(dble(num*kint)*1.01 + 24, KIND(zbuf%ilen_gz))
+      ilen_in = int(dble(kint)*1.01 + 24)
+      zbuf%ilen_gz = ilen_in
       call alloc_zip_buffer(zbuf)
 !
-      ist = 0
-      zbuf%ilen_gzipped = 0
-      ilen_tmp = int(dble(maxline*kint) * 1.01 + 24)
-      do
-        nline = int(min((num - ist), maxline))
-        ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
-        ilen_line = nline * kint
+      call gzip_defleat_once(kint, int_dat, ilen_in,                    &
+     &    ilen_used, zbuf%gzip_buf(1))
+        zbuf%ilen_gzipped =  ilen_used
 !
-        call gzip_defleat_once(ilen_line, int_dat(ist+1), ilen_in,      &
-     &      ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
-!
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
-        ist = ist + nline
-        if(ist .ge. num) exit
-      end do
-!
-      end subroutine defleate_int_vector_b
+      end subroutine defleate_endian_flag
 !
 ! -----------------------------------------------------------------------
 !
@@ -211,37 +196,28 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine infleate_int_vector_b(num, int_dat, zbuf)
+      subroutine infleate_endian_flag(my_rank, iflag_swap, zbuf)
 !
+      use binary_IO
 !
-      integer(kind = kint_gl), intent(in) :: num
-      integer(kind = kint), intent(inout) :: int_dat(num)
+      integer, intent(in) :: my_rank
+      integer, intent(inout) :: iflag_swap
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint_gl) :: ist
-      integer :: nline, ilen_tmp
-      integer :: ilen_in, ilen_used, ilen_line
+      integer :: int_dat
+      integer :: ilen_in, ilen_used
 !
 !
-      ist = 0
-      zbuf%ilen_gzipped = 0
-      ilen_tmp = int(dble(maxline*kint) * 1.01 + 24)
-      do
-        nline = int(min((num - ist), maxline))
-        ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
-        ilen_line = nline * kint
+      ilen_in = int(zbuf%ilen_gz)
 !
-        call gzip_infleat_once                                          &
-     &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
-     &      ilen_line, int_dat(ist+1), ilen_used)
+      call gzip_infleat_once                                          &
+     &   (ilen_in, zbuf%gzip_buf(1), kint, int_dat, ilen_used)
+      iflag_swap = endian_check(my_rank, int_dat)
 !
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
-        ist = ist + nline
-        if(ist .ge. num) exit
-      end do
+      zbuf%ilen_gzipped = ilen_used
       call dealloc_zip_buffer(zbuf)
 !
-      end subroutine infleate_int_vector_b
+      end subroutine infleate_endian_flag
 !
 ! -----------------------------------------------------------------------
 !

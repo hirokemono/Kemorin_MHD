@@ -156,16 +156,21 @@
 !
       subroutine defleat_int_vector_mul(nloop, i_array, zbuf)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint), intent(in) :: nloop
       type(intarray_IO), intent(in) ::  i_array(nloop)
       type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
       integer(kind = kint) :: iloop
+      type(tmp_i8_array)  :: tmp64
 !
 !
       do iloop = 1, nloop
-        call defleate_int_vector_b                                      &
-     &     (i_array(iloop)%num, i_array(iloop)%i_IO, zbuf(iloop))
+        call dup_from_short_array                                       &
+     &     (i_array(iloop)%num, i_array(iloop)%i_IO, tmp64)
+        call defleate_int8_vector_b(tmp64%n1, tmp64%id_a, zbuf(iloop))
+        call dealloc_1d_i8array(tmp64)
       end do
 !
       end subroutine defleat_int_vector_mul
@@ -174,18 +179,23 @@
 !
       subroutine defleat_int2d_vector_mul(nloop, iv_array, zbuf)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint), intent(in) :: nloop
       type(ivecarray_IO), intent(in) ::  iv_array(nloop)
       type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
       integer(kind = kint) :: iloop
       integer(kind = kint_gl) :: num
+      type(tmp_i8_array)  :: tmp64
 !
 !
       do iloop = 1, nloop
         num =  iv_array(iloop)%n1 * iv_array(iloop)%n2
-        call defleate_int_vector_b                                      &
-     &     (num, iv_array(iloop)%iv_IO, zbuf(iloop))
+        call dup_from_short_array                                       &
+     &     (num, iv_array(iloop)%iv_IO(1,1), tmp64)
+        call defleate_int8_vector_b(tmp64%n1, tmp64%id_a, zbuf(iloop))
+        call dealloc_1d_i8array(tmp64)
       end do
 !
       end subroutine defleat_int2d_vector_mul
@@ -261,24 +271,29 @@
       subroutine infleat_int_vector_mul                                 &
      &         (iflag_bin_swap, nloop, i_array, zbuf)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(intarray_IO), intent(inout) ::  i_array(nloop)
       type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
+      type(tmp_i8_array)  :: tmp64
       integer(kind = kint) :: iloop
 !
       integer(kind = kint_gl) :: l8_byte
 !
 !
       do iloop = 1, nloop
-        call infleate_int_vector_b                                      &
-     &     (i_array(iloop)%num, i_array(iloop)%i_IO, zbuf(iloop))
+        call alloc_1d_i8array(i_array(iloop)%num, tmp64)
+        call infleate_int8_vector_b(tmp64%n1, tmp64%id_a, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = i_array(iloop)%num * kint
-          call byte_swap_32bit_f(l8_byte, i_array(iloop)%i_IO(1))
+          l8_byte = tmp64%n1 * kint_gl
+          call byte_swap_64bit_f(l8_byte, tmp64%id_a)
         end if
+!
+        call dup_to_short_array(tmp64, i_array(iloop)%i_IO)
       end do
 !
       end subroutine infleat_int_vector_mul
@@ -288,11 +303,14 @@
       subroutine infleat_int2d_vector_mul                               &
      &        (iflag_bin_swap, nloop, iv_array, zbuf)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(ivecarray_IO), intent(inout) ::  iv_array(nloop)
       type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
 !
+      type(tmp_i8_array)  :: tmp64
       integer(kind = kint) :: iloop
       integer(kind = kint_gl) :: num
       integer(kind = kint_gl) :: l8_byte
@@ -300,13 +318,15 @@
 !
       do iloop = 1, nloop
         num =  iv_array(iloop)%n1 * iv_array(iloop)%n2
-        call infleate_int_vector_b                                      &
-     &     (num, iv_array(iloop)%iv_IO, zbuf(iloop))
+        call alloc_1d_i8array(num, tmp64)
+        call infleate_int8_vector_b(tmp64%n1, tmp64%id_a, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = num * kint
-          call byte_swap_32bit_f(l8_byte, iv_array(iloop)%iv_IO(1,1))
+          l8_byte = tmp64%n1 * kint_gl
+          call byte_swap_64bit_f(l8_byte, tmp64%id_a)
         end if
+!
+        call dup_to_short_array(tmp64, iv_array(iloop)%iv_IO)
       end do
 !
       end subroutine infleat_int2d_vector_mul

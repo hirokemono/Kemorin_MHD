@@ -52,15 +52,11 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind = kint) :: int_dat(1)
-!
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
       if(my_rank .eq. 0) then
-        int_dat(1) = i_UNIX
-        call defleate_int_vector_b(ione64, int_dat, zbuf)
+        call defleate_endian_flag(zbuf)
 !
         ioffset = IO_param%ioff_gl
         call calypso_mpi_seek_write_gz(IO_param%id_file, ioffset, zbuf)
@@ -190,10 +186,7 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind = kint) :: int_dat(1)
-!
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl), parameter :: ione64 = 1, ifour64 = 4
 !
 !
       if(my_rank .eq. 0) then
@@ -202,20 +195,15 @@
         call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
-        call infleate_int_vector_b(ione64, int_dat(1), zbuf)
-!
-        if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
-          call byte_swap_32bit_f(ifour64, int_dat(1))
-        end if
+        call infleate_endian_flag                                       &
+     &     (my_rank, IO_param%iflag_bin_swap, zbuf)
       end if
 !
+      call MPI_BCAST(IO_param%iflag_bin_swap, 1, CALYPSO_FOUR_INT, 0,   &
+     &    CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT, 0,       &
      &    CALYPSO_COMM, ierr_MPI)
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf%ilen_gzipped
-!
-      IO_param%iflag_bin_swap = endian_check(my_rank, int_dat(1))
-      call MPI_BCAST(IO_param%iflag_bin_swap, 1, CALYPSO_FOUR_INT, 0,   &
-     &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine gz_mpi_read_byte_check
 !

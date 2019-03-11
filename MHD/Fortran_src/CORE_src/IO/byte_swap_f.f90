@@ -7,7 +7,6 @@
 !>@brief swap byte endian
 !!
 !!@verbatim
-!!      subroutine byte_swap_32bit_f(l8_byte, array)
 !!      subroutine byte_swap_64bit_f(l8_byte, array)
 !!         l8_byte :: byte length of array (defined by 8-byte integer)
 !!         array ::   array to be transfered (call by using pointer!)
@@ -21,32 +20,6 @@
 !!      subroutine real_to_charabuffer(num, real_dat, buffer)
 !!@endverbatim
 !
-      subroutine byte_swap_32bit_f(l8_byte, array)
-!
-      use m_precision
-      implicit none
-!
-      integer(kind = kint_gl), intent(in) :: l8_byte
-      character(len=1), intent(inout) :: array(l8_byte)
-!
-      integer(kind = kint_gl) :: i8
-      character(len=1) :: tmp1, tmp2
-!
-!
-!$omp parallel do private(i8,tmp1,tmp2)
-      do i8 = 4, l8_byte, 4
-        tmp1 = array(i8-3)
-        tmp2 = array(i8-2)
-        array(i8-3) = array(i8  )
-        array(i8-2) = array(i8-1)
-        array(i8-1) = tmp2
-        array(i8  ) = tmp1
-      end do
-!$omp end parallel do
-!
-      end subroutine byte_swap_32bit_f
-!
-! -----------------------------------------------------------------------
 !
       subroutine byte_swap_64bit_f(l8_byte, array)
 !
