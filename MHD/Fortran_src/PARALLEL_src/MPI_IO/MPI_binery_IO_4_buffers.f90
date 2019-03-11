@@ -125,6 +125,8 @@
       subroutine mpi_write_intvect_mul_b(id_file, nprocs_in, nloop,     &
      &          ioff_gl, istack_merged, i_array)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nloop, nprocs_in
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
@@ -134,13 +136,17 @@
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: iloop, id_rank
+      type(tmp_i8_array)  :: tmp64
 !
 !
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + istack_merged(id_rank)
-        call calypso_mpi_seek_write_int                                 &
-     &      (id_file, ioffset, i_array(iloop)%num, i_array(iloop)%i_IO)
+        call dup_from_short_array                                       &
+     &     (i_array(iloop)%num, i_array(iloop)%i_IO, tmp64)
+        call calypso_mpi_seek_write_int8                                &
+     &    (id_file, ioffset, tmp64%n1, tmp64%id_a)
+        call dealloc_1d_i8array(tmp64)
       end do
       ioff_gl = ioff_gl + istack_merged(nprocs_in)
 !
@@ -150,6 +156,8 @@
 !
       subroutine mpi_write_i2dvect_mul_b(id_file, nprocs_in, nloop,     &
      &          ioff_gl, istack_merged, iv_array)
+!
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nloop, nprocs_in
@@ -161,14 +169,17 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: iloop, id_rank
       integer(kind = kint_gl) :: n_2d
+      type(tmp_i8_array)  :: tmp64
 !
 !
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + istack_merged(id_rank)
         n_2d = iv_array(iloop)%n1 * iv_array(iloop)%n2
-        call calypso_mpi_seek_write_int                                 &
-     &    (id_file, ioffset, n_2d, iv_array(iloop)%iv_IO)
+        call dup_from_short_array(n_2d, iv_array(iloop)%iv_IO, tmp64)
+        call calypso_mpi_seek_write_int8                                &
+     &    (id_file, ioffset, tmp64%n1, tmp64%id_a)
+        call dealloc_1d_i8array(tmp64)
       end do
       ioff_gl = ioff_gl + istack_merged(nprocs_in)
 !
@@ -295,6 +306,8 @@
       subroutine mpi_read_intvect_mul_b(id_file, iflag_bin_swap,        &
      &          nprocs_in, nloop, ioff_gl, istack_merged, i_array)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop, nprocs_in
@@ -305,13 +318,16 @@
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: iloop, id_rank
+      type(tmp_i8_array)  :: tmp64
 !
 !
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kint * istack_merged(id_rank)
-        call calypso_mpi_seek_read_int(id_file, iflag_bin_swap,         &
-     &      ioffset, i_array(iloop)%num, i_array(iloop)%i_IO)
+        call alloc_1d_i8array(i_array(iloop)%num, tmp64)
+        call calypso_mpi_seek_read_int8(id_file, iflag_bin_swap,        &
+     &      ioffset, tmp64%n1, tmp64%id_a)
+        call dup_to_short_array(tmp64, i_array(iloop)%i_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !
@@ -321,6 +337,8 @@
 !
       subroutine mpi_read_i2dvect_mul_b(id_file, iflag_bin_swap,        &
      &          nprocs_in, nloop, ioff_gl, istack_merged, iv_array)
+!
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: iflag_bin_swap
@@ -333,14 +351,17 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: iloop, id_rank
       integer(kind = kint_gl) :: n_2d
+      type(tmp_i8_array)  :: tmp64
 !
 !
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kint * istack_merged(id_rank)
         n_2d = iv_array(iloop)%n1 * iv_array(iloop)%n2
-        call calypso_mpi_seek_read_int(id_file, iflag_bin_swap,         &
-     &      ioffset, n_2d, iv_array(iloop)%iv_IO)
+        call alloc_1d_i8array(n_2d, tmp64)
+        call calypso_mpi_seek_read_int8(id_file, iflag_bin_swap,        &
+     &      ioffset, tmp64%n1, tmp64%id_a)
+        call dup_to_short_array(tmp64, iv_array(iloop)%iv_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !

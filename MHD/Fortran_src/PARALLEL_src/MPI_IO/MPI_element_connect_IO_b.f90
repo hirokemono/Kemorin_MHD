@@ -99,7 +99,8 @@
 !
       num64 = sfed_IO%ned_4_ele * sfed_IO%nedge_in_ele
       call istack64_4_parallel_data(num64, IO_param)
-      call mpi_write_int_vector_b(IO_param, num64, sfed_IO%iedge_for_ele)
+      call mpi_write_int_vector_b                                       &
+     &   (IO_param, num64, sfed_IO%iedge_for_ele)
 !
       end subroutine mpi_write_edge_4_element_b
 !
