@@ -6,15 +6,17 @@
 !>@brief Routines to make triangle patich list
 !!
 !!@verbatim
-!!      subroutine set_psf_type_id(numnod, numele, nnod_4_ele, ie,      &
-!!     &          ele_search, mark_ele, c_ref)
-!!      subroutine count_num_patch_4_psf(numele, numedge, iedge_4_ele,  &
-!!     &          ele_search, num_case_tbl, psf_case_tbl,               &
-!!     &          mark_ele, id_n_on_e, istack_patch_smp)
-!!      subroutine set_patch_4_psf(numele, numedge, iedge_4_ele,        &
-!!     &          ele_search, num_case_tbl, psf_case_tbl,               &
-!!     &          mark_ele,  id_n_on_e, istack_numele,                  &
+!!      subroutine set_psf_type_id                                      &
+!!     &         (ele, numnod, ele_search, mark_ele, c_ref)
+!!      subroutine count_num_patch_4_psf(edge, psf_list,                &
+!!     &          ele_search, mark_ele, num_case_tbl, psf_case_tbl,     &
+!!     &          istack_patch_smp, ntot_failed)
+!!      subroutine set_patch_4_psf(edge, psf_list, ele_search, mark_ele,&
+!!     &          num_case_tbl, psf_case_tbl, istack_numele,            &
 !!     &          npatch_tot, istack_patch_smp, iele_global, ie_patch)
+!!        type(element_data), intent(in) :: ele
+!!        type(edge_data), intent(in) :: edge
+!!        type(sectioning_list), intent(in) :: psf_list
 !!        type(psf_each_case), intent(in) :: psf_case_tbl(num_case_tbl)
 !!        type(sect_search_list), intent(in) :: ele_search
 !!@endverbatim
@@ -36,15 +38,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_psf_type_id(numnod, numele, nnod_4_ele, ie,        &
-     &          ele_search, mark_ele, c_ref)
+      subroutine set_psf_type_id                                        &
+     &         (ele, numnod, ele_search, mark_ele, c_ref)
 !
+      use t_geometry_data
       use t_psf_geometry_list
 !
-      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
-      integer(kind = kint), intent(in) :: ie(numele, nnod_4_ele)
-      real(kind= kreal), intent(in) :: c_ref(numnod)
+      type(element_data), intent(in) :: ele
       type(sect_search_list), intent(in) :: ele_search
+      integer(kind = kint), intent(in) :: numnod
+      real(kind= kreal), intent(in) :: c_ref(numnod)
 !
       integer(kind = kint), intent(inout)                               &
      &       :: mark_ele(ele_search%num_search)
@@ -61,14 +64,14 @@
         ied = ele_search%istack_search_smp(ip)
         do inum = ist, ied
           iele = ele_search%id_search(inum)
-          i1 = ie(iele,1)
-          i2 = ie(iele,2)
-          i3 = ie(iele,3)
-          i4 = ie(iele,4)
-          i5 = ie(iele,5)
-          i6 = ie(iele,6)
-          i7 = ie(iele,7)
-          i8 = ie(iele,8)
+          i1 = ele%ie(iele,1)
+          i2 = ele%ie(iele,2)
+          i3 = ele%ie(iele,3)
+          i4 = ele%ie(iele,4)
+          i5 = ele%ie(iele,5)
+          i6 = ele%ie(iele,6)
+          i7 = ele%ie(iele,7)
+          i8 = ele%ie(iele,8)
 !
           mk1 = (ione + int( sign(one,c_ref(i1)) ))
           mk2 = (ione + int( sign(one,c_ref(i2)) ))
@@ -90,22 +93,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_num_patch_4_psf(numele, numedge, iedge_4_ele,    &
-     &          ele_search, num_case_tbl, psf_case_tbl,                 &
-     &          mark_ele, id_n_on_e, istack_patch_smp, ntot_failed)
+      subroutine count_num_patch_4_psf(edge, psf_list,                  &
+     &          ele_search, mark_ele, num_case_tbl, psf_case_tbl,       &
+     &          istack_patch_smp, ntot_failed)
 !
+      use t_edge_data
       use t_psf_geometry_list
       use t_psf_case_table
 !
-      integer(kind = kint), intent(in) :: numele, numedge
+      type(edge_data), intent(in) :: edge
+      type(sectioning_list), intent(in) :: psf_list
 !
       integer(kind=kint), intent(in) :: num_case_tbl
       type(psf_each_case), intent(in) :: psf_case_tbl(0:num_case_tbl)
       type(sect_search_list), intent(in) :: ele_search
 !
-      integer(kind = kint), intent(in)                                  &
-     &              :: iedge_4_ele(numele,nedge_4_ele)
-      integer(kind = kint_gl), intent(in) :: id_n_on_e(numedge)
       integer(kind = kint), intent(in)                                  &
      &              :: mark_ele(ele_search%num_search)
 !
@@ -141,12 +143,12 @@
               ie1 = psf_case_tbl(mark)%iedge(n,1)
               ie2 = psf_case_tbl(mark)%iedge(n,2)
               ie3 = psf_case_tbl(mark)%iedge(n,3)
-              iedge1 = abs( iedge_4_ele(iele,ie1) )
-              iedge2 = abs( iedge_4_ele(iele,ie2) )
-              iedge3 = abs( iedge_4_ele(iele,ie3) )
-              ig1 = id_n_on_e(iedge1)
-              ig2 = id_n_on_e(iedge2)
-              ig3 = id_n_on_e(iedge3)
+              iedge1 = abs( edge%iedge_4_ele(iele,ie1) )
+              iedge2 = abs( edge%iedge_4_ele(iele,ie2) )
+              iedge3 = abs( edge%iedge_4_ele(iele,ie3) )
+              ig1 = psf_list%id_n_on_e(iedge1)
+              ig2 = psf_list%id_n_on_e(iedge2)
+              ig3 = psf_list%id_n_on_e(iedge3)
               if(ig1.gt.0 .and. ig2.gt.0 .and. ig3.gt.0                 &
      &           .and. ig1.ne.ig2  .and. ig2.ne.ig3  .and. ig3.ne.ig1)  &
      &         then
@@ -171,24 +173,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_patch_4_psf(numele, numedge, iedge_4_ele,          &
-     &          ele_search, num_case_tbl, psf_case_tbl,                 &
-     &          mark_ele,  id_n_on_e, istack_numele,                    &
+      subroutine set_patch_4_psf(edge, psf_list, ele_search, mark_ele,  &
+     &          num_case_tbl, psf_case_tbl, istack_numele,              &
      &          npatch_tot, istack_patch_smp, iele_global, ie_patch)
 !
+      use t_edge_data
       use t_psf_geometry_list
       use t_psf_case_table
 !
-      integer(kind = kint), intent(in) :: numele, numedge
-      integer(kind = kint_gl), intent(in) :: istack_numele
-      integer(kind = kint), intent(in)                                  &
-     &              :: iedge_4_ele(numele,nedge_4_ele)
-!
-      integer(kind=kint), intent(in) :: num_case_tbl
+      type(edge_data), intent(in) :: edge
+      type(sectioning_list), intent(in) :: psf_list
       type(psf_each_case), intent(in) :: psf_case_tbl(0:num_case_tbl)
       type(sect_search_list), intent(in) :: ele_search
 !
-      integer(kind = kint_gl), intent(in) :: id_n_on_e(numedge)
+      integer(kind = kint_gl), intent(in) :: istack_numele
+      integer(kind=kint), intent(in) :: num_case_tbl
+!
       integer(kind = kint), intent(in)                                  &
      &              :: mark_ele(ele_search%num_search)
       integer(kind = kint), intent(in) :: npatch_tot
@@ -224,12 +224,12 @@
               ie1 = psf_case_tbl(imark)%iedge(n,1)
               ie2 = psf_case_tbl(imark)%iedge(n,2)
               ie3 = psf_case_tbl(imark)%iedge(n,3)
-              iedge1 = abs( iedge_4_ele(iele,ie1) )
-              iedge2 = abs( iedge_4_ele(iele,ie2) )
-              iedge3 = abs( iedge_4_ele(iele,ie3) )
-              ig1 = id_n_on_e(iedge1)
-              ig2 = id_n_on_e(iedge2)
-              ig3 = id_n_on_e(iedge3)
+              iedge1 = abs( edge%iedge_4_ele(iele,ie1) )
+              iedge2 = abs( edge%iedge_4_ele(iele,ie2) )
+              iedge3 = abs( edge%iedge_4_ele(iele,ie3) )
+              ig1 = psf_list%id_n_on_e(iedge1)
+              ig2 = psf_list%id_n_on_e(iedge2)
+              ig3 = psf_list%id_n_on_e(iedge3)
               if(ig1.gt.0 .and. ig2.gt.0 .and. ig3.gt.0                 &
      &           .and. ig1.ne.ig2  .and. ig2.ne.ig3  .and. ig3.ne.ig1)  &
      &         then
@@ -238,13 +238,13 @@
                 ie_patch(icou,1) = ig1
                 ie_patch(icou,2) = ig2
                 ie_patch(icou,3) = ig3
-!                   write(40+my_rank,*) 'iedge_4_ele',                  &
-!     &                iele, imark, np, iedge_4_ele(iele,1:12)
-!                   write(40+my_rank,*) 'id_n_on_e',                    &
-!     &                iele, id_n_on_e( abs(iedge_4_ele(iele,1:12)) )
-!                   write(40+my_rank,*) 'iedge_4_patch',                &
+!                write(40+my_rank,*) 'iedge_4_ele',                     &
+!     &                iele, imark, np, edge%iedge_4_ele(iele,1:12)
+!                write(40+my_rank,*) 'id_n_on_e', iele,                 &
+!     &            psf_list%id_n_on_e(abs(edge%iedge_4_ele(iele,1:12)))
+!                write(40+my_rank,*) 'iedge_4_patch',                   &
 !     &                icou, psf_case_tbl(imark)%iedge(n,1:3)
-!                   write(40+my_rank,*)
+!                write(40+my_rank,*)
               end if
             end do
 !

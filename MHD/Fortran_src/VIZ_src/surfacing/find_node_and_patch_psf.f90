@@ -139,18 +139,17 @@
      &    psf_list, psf_grp_list, psf_mesh)
 !
       if (iflag_debug.eq.1)  write(*,*) 'count_psf_patches'
-      call count_psf_patches                                            &
-     &   (num_psf, mesh%node, mesh%ele, ele_mesh%edge, group%surf_grp,  &
-     &    psf_case_tbls, psf_def, psf_search, psf_list, psf_mesh,       &
-     &    ntot_failed)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'set_psf_patches'
-      call set_psf_patches                                              &
-     &   (num_psf, mesh%ele, ele_mesh%edge, group%surf_grp,             &
-     &    psf_case_tbls, psf_def, psf_search, psf_list, psf_grp_list,   &
-     &    psf_mesh)
-!
       do i_psf = 1, num_psf
+        call count_psf_patches(mesh%node, mesh%ele,                     &
+     &      ele_mesh%edge, group%surf_grp, psf_case_tbls,               &
+     &      psf_def(i_psf), psf_search(i_psf), psf_list(i_psf),         &
+     &      psf_mesh(i_psf)%patch, ntot_failed(i_psf))
+!
+        if (iflag_debug.eq.1)  write(*,*) 'set_psf_patches'
+        call set_psf_patches(mesh%ele, ele_mesh%edge, group%surf_grp,   &
+     &     psf_case_tbls, psf_def(i_psf), psf_search(i_psf),            &
+     &     psf_list(i_psf), psf_grp_list(i_psf), psf_mesh(i_psf)%patch)
+!
         call dealloc_mark_ele_psf(psf_search(i_psf))
       end do
 !
@@ -203,14 +202,14 @@
      &    iso_search, iso_list, iso_mesh)
 !
 !
-      call count_iso_patches                                            &
-     &   (num_iso, mesh%node, mesh%ele, ele_mesh%edge,                  &
-     &    psf_case_tbls, iso_search, iso_list, iso_mesh)
-!
-      call set_iso_patches(num_iso, mesh%ele, ele_mesh%edge,            &
-     &    psf_case_tbls, iso_search, iso_list, iso_mesh)
-!
       do i_iso = 1, num_iso
+        call count_iso_patches                                          &
+     &     (mesh%node, mesh%ele, ele_mesh%edge, psf_case_tbls,          &
+     &      iso_search(i_iso), iso_list(i_iso), iso_mesh(i_iso)%patch)
+!
+        call set_iso_patches(ele_mesh%edge, psf_case_tbls,              &
+     &      iso_search(i_iso), iso_list(i_iso), iso_mesh(i_iso)%patch)
+!
         call dealloc_mark_ele_psf(iso_search(i_iso))
       end do
 !

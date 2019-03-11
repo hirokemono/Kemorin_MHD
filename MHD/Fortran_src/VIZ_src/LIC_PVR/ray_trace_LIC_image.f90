@@ -419,6 +419,7 @@
               step_cnt = step_cnt + 1
             end do
             ray_left = ray_len_left
+!
 ! sampling by cell
           else
             ray_total_len = ray_total_len + ray_len
