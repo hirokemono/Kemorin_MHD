@@ -3,9 +3,9 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!!      subroutine search_node_in_element_1st(my_rank,                  &
+!!      subroutine search_node_in_element_1st(id_rank,                  &
 !!     &          org_node, org_ele, org_blk, dest_node, itp_coef_dest)
-!!      subroutine search_node_in_element_2nd(iinc, my_rank,            &
+!!      subroutine search_node_in_element_2nd(iinc, id_rank,            &
 !!     &          org_node, org_ele, org_blk, dest_node, itp_coef_dest)
 !!      subroutine search_node_in_all_element(my_rank_2nd, error_level  &
 !!     &          org_node, org_ele, dest_node, itp_coef_dest)
@@ -42,10 +42,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine search_node_in_element_1st(my_rank,                    &
+      subroutine search_node_in_element_1st(id_rank,                    &
      &          org_node, org_ele, org_blk, dest_node, itp_coef_dest)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
@@ -82,7 +82,7 @@
      &              ) then
 !
                  call s_cal_interpolate_coefs                           &
-     &              (dest_node, org_node, org_ele, my_rank,             &
+     &              (dest_node, org_node, org_ele, id_rank,             &
      &               inod, jele, zero, iflag_nomessage,                 &
      &               iflag_org_tmp, itp_coef_dest)
                  if ( iflag_org_domain(inod) .gt. 0) go to 10
@@ -99,10 +99,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine search_node_in_element_2nd(iinc, my_rank,              &
+      subroutine search_node_in_element_2nd(iinc, id_rank,              &
      &          org_node, org_ele, org_blk, dest_node, itp_coef_dest)
 !
-      integer(kind = kint), intent(in) :: my_rank, iinc
+      integer(kind = kint), intent(in) :: id_rank, iinc
 !
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
@@ -141,7 +141,7 @@
               jele = org_blk%ele_list_by_rng%item_grp(jnum)
 !
                 call s_cal_interpolate_coefs                            &
-     &              (dest_node, org_node, org_ele, my_rank,             &
+     &              (dest_node, org_node, org_ele, id_rank,             &
      &               inod, jele, zero, iflag_nomessage,                 &
      &               iflag_org_tmp, itp_coef_dest)
                 if ( iflag_org_domain(inod) .gt. 0) go to 10

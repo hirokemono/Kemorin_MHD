@@ -6,7 +6,7 @@
 !!      subroutine alloc_int_surf_data                                  &
 !!     &         (num_surf_bc, nnod_4_surf, surf_wk)
 !!      subroutine dealloc_int_surf_data(surf_wk)
-!!      subroutine check_vect_sf(num_surf_bc, my_rank, txt, surf_wk)
+!!      subroutine check_vect_sf(num_surf_bc, id_rank, txt, surf_wk)
 !!      type(work_surface_element_mat), intent(inout) :: surf_wk
 !
       module t_int_surface_data
@@ -67,17 +67,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_vect_sf(my_rank, txt, surf_wk)
+      subroutine check_vect_sf(id_rank, txt, surf_wk)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       character(*), intent(in) :: txt
       type(work_surface_element_mat), intent(in) :: surf_wk
 !
       integer(kind = kint) :: isurf
 !
-      write(50+my_rank,*) txt
+      write(50+id_rank,*) txt
       do isurf = 1, surf_wk%ntot_item
-        write(50+my_rank,*) isurf, surf_wk%vect_sf(isurf,1:3)
+        write(50+id_rank,*) isurf, surf_wk%vect_sf(isurf,1:3)
       end do
 !
       end subroutine check_vect_sf

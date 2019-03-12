@@ -4,7 +4,7 @@
 !      Written by H. Matsui on May, 2008
 !
 !!      subroutine read_original_filter_coefs                           &
-!!     &         (ifile_type, my_rank, numnod, numele)
+!!     &         (ifile_type, id_rank, numnod, numele)
 !
       module read_org_filter_coefs
 !
@@ -26,7 +26,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_original_filter_coefs                             &
-     &         (ifile_type, my_rank, numnod, numele)
+     &         (ifile_type, id_rank, numnod, numele)
 !
       use m_filter_file_names
       use m_filter_coefs
@@ -39,7 +39,7 @@
       use mesh_data_IO_b
       use binary_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ifile_type
       integer(kind = kint), intent(in) :: numnod, numele
 !
@@ -52,13 +52,13 @@
 !
       call allocate_nod_ele_near_1nod(numnod, numele)
 !
-      file_name = add_int_suffix(my_rank, org_filter_coef_head)
+      file_name = add_int_suffix(id_rank, org_filter_coef_head)
 !
       if (ifile_type .eq. 0) then
         write(*,*) 'ascii coefficients file name: ', trim(file_name)
         open(id_org_filter_coef, file=file_name, form='formatted')
         call read_filter_geometry                                       &
-     &     (id_org_filter_coef, my_rank, comm_IO, nod_IO, ierr)
+     &     (id_org_filter_coef, id_rank, comm_IO, nod_IO, ierr)
 !
         inter_nod_3dfilter = nod_IO%internal_node
         call read_filter_coef_4_newdomain(id_org_filter_coef)
@@ -66,9 +66,9 @@
       else if(ifile_type .eq. 1) then
         write(*,*) 'binary coefficients file name: ', trim(file_name)
         call open_read_binary_file                                      &
-     &     (file_name, my_rank, bin_flflags%iflag_bin_swap)
+     &     (file_name, id_rank, bin_flflags%iflag_bin_swap)
         call read_filter_geometry_b                                     &
-     &     (my_rank, bin_flflags, comm_IO, nod_IO)
+     &     (id_rank, bin_flflags, comm_IO, nod_IO)
         if(bin_flflags%ierr_IO .gt. 0) go to 98
 !
         inter_nod_3dfilter = nod_IO%internal_node

@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Aug., 2006
 !
 !!      subroutine const_edge_vector                                    &
-!!     &         (my_rank, nprocs, node, edge, spf_1d, jacs)
+!!     &         (id_rank, nprocs, node, edge, spf_1d, jacs)
 !!        type(node_data), intent(in) :: node
 !!        type(edge_data), intent(inout) :: edge
 !!        type(edge_shape_function), intent(inout) :: spf_1d
@@ -32,11 +32,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_edge_vector                                      &
-     &         (my_rank, nprocs, node, edge, spf_1d, jacs)
+     &         (id_rank, nprocs, node, edge, spf_1d, jacs)
 !
       use int_edge_vector
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(edge_data), intent(inout) :: edge
       type(edge_shape_function), intent(inout) :: spf_1d
@@ -45,7 +45,7 @@
 !
       call alloc_edge_shape_func(num_linear_edge, jacs%g_FEM, spf_1d)
       call const_jacobians_edge                                         &
-     &   (my_rank, nprocs, node, edge, spf_1d, jacs)
+     &   (id_rank, nprocs, node, edge, spf_1d, jacs)
       call dealloc_edge_shape_func(spf_1d)
 !
       call alloc_edge_vect(edge)

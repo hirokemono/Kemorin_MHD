@@ -19,12 +19,12 @@
 !!
 !!      subroutine mpi_input_mesh_p                                     &
 !!     &         (mesh_file, femmesh_p, nnod_4_surf, nnod_4_edge)
-!!      subroutine input_mesh_p(my_rank, mesh_file, femmesh_p,          &
+!!      subroutine input_mesh_p(id_rank, mesh_file, femmesh_p,          &
 !!     &          nnod_4_surf, nnod_4_edge, ierr)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(mesh_data_p), intent(inout) :: femmesh_p
 !!
-!!      subroutine const_mesh_infos_p(my_rank, femmesh_p, ele_mesh)
+!!      subroutine const_mesh_infos_p(id_rank, femmesh_p, ele_mesh)
 !!      subroutine const_element_comm_tbls_p(femmesh_p, ele_mesh)
 !!        type(mesh_data_p), intent(inout) :: femmesh_p
 !!        type(element_geometry_p), intent(inout) :: ele_mesh
@@ -283,7 +283,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_mesh_p(my_rank, mesh_file, femmesh_p,            &
+      subroutine input_mesh_p(id_rank, mesh_file, femmesh_p,            &
      &          nnod_4_surf, nnod_4_edge, ierr)
 !
       use t_mesh_data
@@ -298,7 +298,7 @@
       use set_nnod_4_ele_by_type
       use load_mesh_data
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_data_p), intent(inout) :: femmesh_p
@@ -308,7 +308,7 @@
       type(mesh_data) :: fem_IO_i
 !
 !
-      call sel_read_mesh(mesh_file, my_rank, fem_IO_i, ierr)
+      call sel_read_mesh(mesh_file, id_rank, fem_IO_i, ierr)
 !
       call set_mesh_geometry_data(fem_IO_i%mesh,                        &
      &    femmesh_p%mesh%nod_comm, femmesh_p%mesh%node,                 &
@@ -325,7 +325,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_mesh_infos_p(my_rank, femmesh_p, ele_mesh)
+      subroutine const_mesh_infos_p(id_rank, femmesh_p, ele_mesh)
 !
       use t_mesh_data
       use t_geometry_data
@@ -342,13 +342,13 @@
       use const_mesh_information
 !      use check_surface_groups
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(mesh_data_p), intent(inout) :: femmesh_p
       type(element_geometry_p), intent(inout) :: ele_mesh
 !
 !
        if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
-      call const_nod_ele_infos(my_rank,                                 &
+      call const_nod_ele_infos(id_rank,                                 &
      &    femmesh_p%mesh%node, femmesh_p%mesh%ele,                      &
      &    femmesh_p%group%nod_grp, femmesh_p%group%ele_grp,             &
      &    femmesh_p%group%surf_grp)
@@ -369,11 +369,11 @@
       call set_node_4_surf_group                                        &
      &   (femmesh_p%mesh%node, femmesh_p%mesh%ele, ele_mesh%surf,       &
      &    femmesh_p%group%surf_grp, femmesh_p%group%surf_nod_grp)
-!       call check_surface_node_id(my_rank, femmesh_p%group%surf_nod_grp)
+!      call check_surface_node_id(id_rank, femmesh_p%group%surf_nod_grp)
 !
 !      if (iflag_debug.gt.0) then
 !        call check_surf_nod_4_sheard_para                              &
-!     &     (my_rank, femmesh_p%group%surf_grp%num_grp,                 &
+!     &     (id_rank, femmesh_p%group%surf_grp%num_grp,                 &
 !     &      femmesh_p%group%surf_nod_grp)
 !      end if
 !

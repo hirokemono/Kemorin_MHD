@@ -11,7 +11,7 @@
 !!      subroutine allocate_vpol_evo5_mat_sph                           &
 !!     &         (nlayer_ICB, nlayer_CMB, sph_rj)
 !!      subroutine deallocate_vpol_evo5_mat_sph
-!!      subroutine check_vpol_evo5_mat_sph(my_rank, nidx_rj)
+!!      subroutine check_vpol_evo5_mat_sph(id_rank, nidx_rj)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!@endverbatim
 !
@@ -65,19 +65,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_vpol_evo5_mat_sph(my_rank, sph_rj)
+      subroutine check_vpol_evo5_mat_sph(id_rank, sph_rj)
 !
       use check_sph_radial_mat
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(sph_rj_grid), intent(in) :: sph_rj
 !
 !
       write(band3_vp_poisson%mat_name,'(a)') 'pressure_poisson'
-      call check_radial_band_mat(my_rank, sph_rj, band3_vp_poisson)
+      call check_radial_band_mat(id_rank, sph_rj, band3_vp_poisson)
 !
       write(band5_vp_evo%mat_name,'(a)') 'poloidal_velocity_evolution'
-      call check_radial_band_mat(my_rank, sph_rj, band5_vp_evo)
+      call check_radial_band_mat(id_rank, sph_rj, band5_vp_evo)
 !
       end subroutine check_vpol_evo5_mat_sph
 !

@@ -5,7 +5,7 @@
 !
 !!      subroutine set_2nd_geometry_type_itp_tbl(mesh_file, nprocs_2nd)
 !!        type(field_IO_params), intent(in) ::  mesh_file
-!!      subroutine link_2nd_geometry_4_itp_tbl(my_rank,                 &
+!!      subroutine link_2nd_geometry_4_itp_tbl(id_rank,                 &
 !!     &          newmesh, newgroup)
 !!      subroutine unlink_2nd_geometry_4_table(newmesh, newgroup)
 !!      subroutine s_set_serach_data_4_dest                             &
@@ -75,18 +75,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine link_2nd_geometry_4_itp_tbl(my_rank,                   &
+      subroutine link_2nd_geometry_4_itp_tbl(id_rank,                   &
      &          newmesh, newgroup)
 !
       use m_geometry_constants
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(mesh_geometry_p), intent(inout) :: newmesh
       type(mesh_groups_p), intent(inout) :: newgroup
       integer(kind = kint) :: jp
 !
 !
-      jp = my_rank + 1
+      jp = id_rank + 1
       call link_pointer_mesh                                           &
      &   (origin_mesh(jp)%mesh, origin_mesh(jp)%group, newmesh, newgroup)
 !
@@ -125,7 +125,7 @@
       call set_all_block_points_4_itp                                   &
      &   (num_xyz_block, dest_node%numnod, dest_node%xx,                &
      &    nprocs_2nd, origin_mesh)
-!      call check_block_points_4_itp(50+my_rank, nprocs_2nd)
+!      call check_block_points_4_itp(50+id_rank, nprocs_2nd)
 !
 !  -------------------------------
 !

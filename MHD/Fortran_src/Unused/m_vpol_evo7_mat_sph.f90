@@ -11,7 +11,7 @@
 !!      subroutine allocate_vpol_evo7_mat_sph                           &
 !!     &         (nlayer_ICB, nlayer_CMB, sph_rj)
 !!      subroutine deallocate_vpol_evo7_mat_sph
-!!      subroutine check_vpol_evo7_mat_sph(my_rank, sph_rj)
+!!      subroutine check_vpol_evo7_mat_sph(id_rank, sph_rj)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!@endverbatim
 !
@@ -99,23 +99,23 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_vpol_evo7_mat_sph(my_rank, sph_rj)
+      subroutine check_vpol_evo7_mat_sph(id_rank, sph_rj)
 !
       use check_sph_radial_mat
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(sph_rj_grid), intent(in) :: sph_rj
 !
 !
-      write(50+my_rank,'(a)') 'poisson matrix for poloidal velocity'
+      write(50+id_rank,'(a)') 'poisson matrix for poloidal velocity'
       call check_radial_5band_mat                                       &
-     &   (my_rank,sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
+     &   (id_rank,sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
      &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r,                 &
      &    vs_poisson5_mat)
 !
-      write(50+my_rank,'(a)') 'crank matrix for poloidal velocity'
+      write(50+id_rank,'(a)') 'crank matrix for poloidal velocity'
       call check_radial_7band_mat                                       &
-     &   (my_rank,sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
+     &   (id_rank,sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                 &
      &    sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r, vs_evo7_mat)
 !
       end subroutine check_vpol_evo7_mat_sph

@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Aug., 2006
 !
 !!      subroutine const_normal_vector                                  &
-!!     &         (my_rank, nprocs, node, surf, spf_2d, jacs)
+!!     &         (id_rank, nprocs, node, surf, spf_2d, jacs)
 !!      subroutine int_normal_4_all_surface(g_FEM, surf, jac_2d)
 !!        type(jacobians_2d), intent(in) :: jac_2d
 !!        type(surface_data), intent(inout) :: surf
@@ -33,9 +33,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_normal_vector                                    &
-     &         (my_rank, nprocs, node, surf, spf_2d, jacs)
+     &         (id_rank, nprocs, node, surf, spf_2d, jacs)
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(surface_data), intent(inout) :: surf
       type(surface_shape_function), intent(inout) :: spf_2d
@@ -44,7 +44,7 @@
 !
       call alloc_surf_shape_func(surf%nnod_4_surf, jacs%g_FEM, spf_2d)
       call const_jacobians_surface                                      &
-     &   (my_rank, nprocs, node, surf, spf_2d, jacs)
+     &   (id_rank, nprocs, node, surf, spf_2d, jacs)
       call int_normal_4_all_surface(jacs%g_FEM, surf, jacs%jac_2d)
 !
       call dealloc_jacobians_surface(surf, jacs)

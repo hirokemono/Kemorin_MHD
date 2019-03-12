@@ -8,13 +8,13 @@
 !     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
 !     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, NtoO,     &
 !     &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,    &
-!     &            my_rank)
+!     &            id_rank)
 !
 !       subroutine reverse_DJDS_matrix                                  &
 !     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
 !     &             PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, NtoO,    &
 !     &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,    &
-!     &            d, al, au, my_rank)
+!     &            d, al, au, id_rank)
 !
       module check_DJDS_ordering
 !
@@ -56,7 +56,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, NtoO,      &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
-     &            my_rank)
+     &            id_rank)
 !
       use order_vect_4_solver_11
       use ordering_by_l2u_11
@@ -77,7 +77,7 @@
        integer(kind = kint), intent(in) :: INU(0:NU*NVECT*PEsmpTOT)
        integer(kind = kint), intent(in) :: IAL(NPL)
        integer(kind = kint), intent(in) :: IAU(NPU)
-       integer(kind = kint), intent(in) :: my_rank
+       integer(kind = kint), intent(in) :: id_rank
 !
 !
        integer (kind = kint) :: ip, iS, iE, iv0, iv, i, j, k, kk
@@ -94,13 +94,13 @@
        call change_order_2_solve_int(NP, PEsmpTOT, STACKmcG,            &
      &     NtoO, iX, iW(1,1))
 !
-      write(my_rank+50,'(a)') 'ordering for solver(Multicolor)'
-      write(my_rank+50,'(a)') 'ip, i, iX(i)'
+      write(id_rank+50,'(a)') 'ordering for solver(Multicolor)'
+      write(id_rank+50,'(a)') 'ip, i, iX(i)'
       do ip= 1, PEsmpTOT
         iS= STACKmcG(ip-1) + 1
         iE= STACKmcG(ip  )
         do i= iS, iE
-          write(my_rank+50,*) ip, i, iX(i)
+          write(id_rank+50,*) ip, i, iX(i)
         end do
       end do
 !
@@ -108,9 +108,9 @@
      &    OtoN_L, iW(1,1), iX)
        if(NP.gt.N) iW(N+1:NP,1) = iX(N+1:NP)
 
-      write(my_rank+50,'(a)') 'ordering for lower triangle'
+      write(id_rank+50,'(a)') 'ordering for lower triangle'
       do iv= 1, NVECT
-        write(my_rank+50,'(a)') 'iv, ip, i, iW(i,1), IAL(k)'
+        write(id_rank+50,'(a)') 'iv, ip, i, iW(i,1), IAL(k)'
         do ip= 1, PEsmpTOT
           iv0= STACKmc(PEsmpTOT*(iv-1)+ip- 1)
           do  j= 1, NLhyp(iv)
@@ -118,7 +118,7 @@
             iE= INL(npLX1*(iv-1)+NL*(ip-1)+j )
             do i= iv0+1, iv0+iE-iS
               k  = i+iS - iv0
-              write(my_rank+50,*) iv, ip, i, iW(i,1), IAL(k)
+              write(id_rank+50,*) iv, ip, i, iW(i,1), IAL(k)
             end do
           end do
         end do
@@ -126,9 +126,9 @@
 
       call ordering_int_by_l2u(NP, LtoU, iW(1,2), iW(1,1))
 
-      write(my_rank+50,'(a)') 'ordering for upper triangle'
+      write(id_rank+50,'(a)') 'ordering for upper triangle'
       do iv= 1, NVECT
-        write(my_rank+50,'(a)') 'iv, ip, i, iW(i,2), IAU(k)'
+        write(id_rank+50,'(a)') 'iv, ip, i, iW(i,2), IAU(k)'
         do ip= 1, PEsmpTOT
           iv0= STACKmc(PEsmpTOT*(iv-1)+ip- 1)
           do  j= 1, NUhyp(iv)
@@ -136,7 +136,7 @@
             iE= INU(npUX1*(iv-1)+NU*(ip-1)+j  )
             do i= iv0+1, iv0+iE-iS
               k= i+iS - iv0
-              write(my_rank+50,*) iv, ip, i, iW(i,2), IAU(k)
+              write(id_rank+50,*) iv, ip, i, iW(i,2), IAU(k)
             end do
           end do
         end do
@@ -146,25 +146,25 @@
      &    NtoO_U, iX, iW(1,2) )
        if(NP.gt.N) iX(N+1:NP) = iW(N+1:NP,1)
 !
-      write(my_rank+50,'(a)') 'finish non-digonal part'
-      write(my_rank+50,'(a)') 'ip, i, iX(i)'
+      write(id_rank+50,'(a)') 'finish non-digonal part'
+      write(id_rank+50,'(a)') 'ip, i, iX(i)'
       do ip= 1, PEsmpTOT
         iS= STACKmcG(ip-1) + 1
         iE= STACKmcG(ip  )
         do i= iS, iE
-          write(my_rank+50,*) ip, i, iX(i)
+          write(id_rank+50,*) ip, i, iX(i)
         end do
       end do
 !
        call back_2_original_order_int(NP, NtoO, iX, iW(1,1) )
 !
-      write(my_rank+50,'(a)') 'Returned index'
-      write(my_rank+50,'(a)') 'ip, i, iX(i)'
+      write(id_rank+50,'(a)') 'Returned index'
+      write(id_rank+50,'(a)') 'ip, i, iX(i)'
       do ip= 1, PEsmpTOT
         iS= STACKmcG(ip-1) + 1
         iE= STACKmcG(ip  )
         do i= iS, iE
-          write(my_rank+50,*) ip, i, iX(i)
+          write(id_rank+50,*) ip, i, iX(i)
         end do
       end do
 !
@@ -178,7 +178,7 @@
      &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,         &
      &             PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, NtoO,     &
      &            OtoN_L, OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU,     &
-     &            d, al, au, my_rank)
+     &            d, al, au, id_rank)
 !
       use order_vect_4_solver_11
       use ordering_by_l2u_11
@@ -199,7 +199,7 @@
        integer(kind = kint), intent(in) :: INU(0:NU*NVECT*PEsmpTOT)
        integer(kind = kint), intent(in) :: IAL(NPL)
        integer(kind = kint), intent(in) :: IAU(NPU)
-       integer(kind = kint), intent(in) :: my_rank
+       integer(kind = kint), intent(in) :: id_rank
        real(kind = kreal), intent(in) :: d(NP), al(NPL), au(NPU)
 !
        integer (kind = kint) :: ip, iS, iE, iv0, iv, i, j, k, kk
@@ -315,28 +315,28 @@
         end do
       end do
 !
-      write(50+my_rank,*) 'i, d_crs(i)'
+      write(50+id_rank,*) 'i, d_crs(i)'
       do i = 1, NP
-        write(50+my_rank,*) i, d_crs(i)
+        write(50+id_rank,*) i, d_crs(i)
       end do
 !
-      write(50+my_rank,*) 'i, j, item_l_crs(k), al_crs(k)'
+      write(50+id_rank,*) 'i, j, item_l_crs(k), al_crs(k)'
       do i = 1, NP
         do j = istack_l_crs(i-1)+1, istack_l_crs(i)
-          write(50+my_rank,*) i, j, item_l_crs(j), al_crs(j)
+          write(50+id_rank,*) i, j, item_l_crs(j), al_crs(j)
         end do
       end do
 !
-          write(50+my_rank,*) 'i, j, item_u_crs(j), au_crs(j)'
+          write(50+id_rank,*) 'i, j, item_u_crs(j), au_crs(j)'
       do i = 1, NP
         do j = istack_u_crs(i-1)+1, istack_u_crs(i)
-          write(50+my_rank,*) i, j, item_u_crs(j), au_crs(j)
+          write(50+id_rank,*) i, j, item_u_crs(j), au_crs(j)
         end do
       end do
 !
-      write(my_rank+50,*) 'ii, a_check(ii,1:NP)'
+      write(id_rank+50,*) 'ii, a_check(ii,1:NP)'
       do ii = 1, NP
-        write(my_rank+50,*) ii, a_check(ii,1:NP)
+        write(id_rank+50,*) ii, a_check(ii,1:NP)
       end do
 !
       end subroutine reverse_DJDS_matrix

@@ -26,12 +26,12 @@
 !!        type(sph_rtp_grid), intent(inout) :: rtp_org
 !!        type(sph_rtp_grid), intent(inout) :: rtp_new
 !!
-!!      subroutine check_type_spheric_param_rtp(my_rank, sph_rtp)
-!!        integer(kind = kint), intent(in) :: my_rank
+!!      subroutine check_type_spheric_param_rtp(id_rank, sph_rtp)
+!!        integer(kind = kint), intent(in) :: id_rank
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!@endverbatim
 !!
-!!@n @param  my_rank     Running rank ID
+!!@n @param  id_rank     Running rank ID
 !!
       module t_spheric_rtp_data
 !
@@ -322,20 +322,20 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_type_spheric_param_rtp(my_rank, sph_rtp)
+      subroutine check_type_spheric_param_rtp(id_rank, sph_rtp)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(sph_rtp_grid), intent(in) :: sph_rtp
       integer(kind = kint) :: i
 !
 !
-      write(my_rank+50,*) 'irank_sph_rtp ', sph_rtp%irank_sph_rtp(1:3)
-      write(my_rank+50,*) 'nidx_rtp ', sph_rtp%nidx_rtp(1:3)
-      write(my_rank+50,*) 'nnod_rtp ', sph_rtp%nnod_rtp
+      write(id_rank+50,*) 'irank_sph_rtp ', sph_rtp%irank_sph_rtp(1:3)
+      write(id_rank+50,*) 'nidx_rtp ', sph_rtp%nidx_rtp(1:3)
+      write(id_rank+50,*) 'nnod_rtp ', sph_rtp%nnod_rtp
 !
-      write(my_rank+50,*)  'i, idx_global_rtp(r,t,p)'
+      write(id_rank+50,*)  'i, idx_global_rtp(r,t,p)'
       do i = 1, sph_rtp%nnod_rtp
-        write(my_rank+50,*) i, sph_rtp%idx_global_rtp(i,1:3)
+        write(id_rank+50,*) i, sph_rtp%idx_global_rtp(i,1:3)
       end do
 !
       end subroutine check_type_spheric_param_rtp

@@ -22,8 +22,8 @@
 !!        type(sph_rj_grid), intent(in) :: rj_org
 !!        type(sph_rj_grid), intent(inout) :: rj_new
 !!
-!!      subroutine check_type_spheric_param_rj(my_rank, rj)
-!!        integer(kind = kint), intent(in) :: my_rank
+!!      subroutine check_type_spheric_param_rj(id_rank, rj)
+!!        integer(kind = kint), intent(in) :: id_rank
 !!        type(sph_rj_grid), intent(in) :: rj
 !!
 !!      integer(kind = kint) function find_local_sph_address(rj, l, m)
@@ -34,7 +34,7 @@
 !!        type(sph_rj_grid), intent(in) :: rj
 !!@endverbatim
 !!
-!!@n @param  my_rank     Running rank ID
+!!@n @param  id_rank     Running rank ID
 !!
       module t_spheric_rj_data
 !
@@ -276,20 +276,20 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_type_spheric_param_rj(my_rank, rj)
+      subroutine check_type_spheric_param_rj(id_rank, rj)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(sph_rj_grid), intent(in) :: rj
       integer(kind = kint) :: i
 !
 !
-      write(my_rank+50,*) 'irank_sph_rj ',  rj%irank_sph_rj(1:2)
-      write(my_rank+50,*) 'nidx_rj  ',  rj%nidx_rj(1:2)
-      write(my_rank+50,*) 'nnod_rj ',  rj%nnod_rj
+      write(id_rank+50,*) 'irank_sph_rj ',  rj%irank_sph_rj(1:2)
+      write(id_rank+50,*) 'nidx_rj  ',  rj%nidx_rj(1:2)
+      write(id_rank+50,*) 'nnod_rj ',  rj%nnod_rj
 !
-      write(my_rank+50,*) 'i, idx_global_rj(r,j)'
+      write(id_rank+50,*) 'i, idx_global_rj(r,j)'
       do i = 1, rj%nnod_rj
-        write(my_rank+50,*) i, rj%idx_global_rj(i,1:2)
+        write(id_rank+50,*) i, rj%idx_global_rj(i,1:2)
       end do
 !
       end subroutine check_type_spheric_param_rj

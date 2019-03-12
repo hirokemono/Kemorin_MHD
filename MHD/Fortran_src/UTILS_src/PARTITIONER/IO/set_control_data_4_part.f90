@@ -6,7 +6,7 @@
 !!      subroutine s_set_control_data_4_part                            &
 !!     &         (part_ctl, comm_part, part_p)
 !!      subroutine set_control_4_extend_sleeve                          &
-!!     &         (my_rank, part_ctl, comm_part, part_p)
+!!     &         (id_rank, part_ctl, comm_part, part_p)
 !!        type(control_data_4_partitioner), intent(in) :: part_ctl
 !!        type(partitioner_comm_tables), intent(inout) :: comm_part
 !!        type(ctl_param_partitioner), intent(inout) :: part_p
@@ -164,7 +164,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_extend_sleeve                            &
-     &         (my_rank, part_ctl, comm_part, part_p)
+     &         (id_rank, part_ctl, comm_part, part_p)
 !
       use t_control_data_4_part
       use t_partitioner_comm_table
@@ -174,14 +174,14 @@
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(control_data_4_partitioner), intent(in) :: part_ctl
 !
       type(partitioner_comm_tables), intent(inout) :: comm_part
       type(ctl_param_partitioner), intent(inout) :: part_p
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, part_ctl%part_plt)
+      call turn_off_debug_flag_by_ctl(id_rank, part_ctl%part_plt)
       call set_control_mesh_def                                         &
      &   (part_ctl%part_plt, part_p%distribute_mesh_file)
 !
@@ -202,7 +202,7 @@
      &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl,      &
      &    comm_part, part_p)
 !
-      if(my_rank .ne. 0) return
+      if(id_rank .ne. 0) return
       write(*,*) 'sleeve level :', part_p%n_overlap
       write(*,*) 'iflag_memory_conserve',                               &
      &          comm_part%iflag_memory_conserve

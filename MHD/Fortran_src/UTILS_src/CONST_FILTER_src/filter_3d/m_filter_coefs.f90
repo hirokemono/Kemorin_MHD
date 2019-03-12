@@ -17,9 +17,9 @@
 !      subroutine deallocate_nod_ele_near_1nod
 !      subroutine deallocate_nod_ele_1nod_tmp
 !
-!      subroutine check_num_near_all_f(my_rank)
-!      subroutine check_near_nod_all_filter(my_rank)
-!      subroutine check_filter_functions(my_rank, id_base)
+!      subroutine check_num_near_all_f(id_rank)
+!      subroutine check_near_nod_all_filter(id_rank)
+!      subroutine check_filter_functions(id_rank, id_base)
 !
       module m_filter_coefs
 !
@@ -319,16 +319,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_num_near_all_f(my_rank)
+      subroutine check_num_near_all_f(id_rank)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint) :: inum
 !
-      write(50+my_rank,*) 'near node ID for filter and entire'
-      write(50+my_rank,*)                                               &
+      write(50+id_rank,*) 'near node ID for filter and entire'
+      write(50+id_rank,*)                                               &
      &      'max., min.: ', nmax_nod_near_all_w, nmin_nod_near_all_w
       do inum = 1, ntot_nod_fcoefs
-        write(50+my_rank,*)                                             &
+        write(50+id_rank,*)                                             &
      &     inum, nnod_near_nod_all_w(inum)
       end do
 !
@@ -336,37 +336,37 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_near_nod_all_filter(my_rank)
+      subroutine check_near_nod_all_filter(id_rank)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint) :: inum, ist, ied
 !
-      write(50+my_rank,*) 'max and min. of near node ID for node ',     &
+      write(50+id_rank,*) 'max and min. of near node ID for node ',     &
      &                 nmax_nod_near_all_w, nmin_nod_near_all_w
       do inum = 1, ntot_nod_fcoefs
         ist = inod_stack_nod_all_w(inum-1) + 1
         ied = inod_stack_nod_all_w(inum)
-        write(50+my_rank,*) 'near node ID inod_near_nod_all_w',         &
+        write(50+id_rank,*) 'near node ID inod_near_nod_all_w',         &
      &     inum, inod_all_w(inum), ist, ied, nnod_near_nod_all_w(inum)
-        write(50+my_rank,'(8i16)') inod_near_nod_all_w(ist:ied)
+        write(50+id_rank,'(8i16)') inod_near_nod_all_w(ist:ied)
       end do
 !
       end subroutine check_near_nod_all_filter
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_filter_functions(my_rank, id_base)
+      subroutine check_filter_functions(id_rank, id_base)
 !
-      integer(kind = kint), intent(in) :: my_rank, id_base
+      integer(kind = kint), intent(in) :: id_rank, id_base
       integer(kind = kint) :: inum, ist, ied, i
 !
       do inum = 1, ntot_nod_fcoefs
         ist = inod_stack_nod_all_w(inum-1)
         ied = inod_stack_nod_all_w(inum)
-        write(id_base+my_rank,*) 'filter',                              &
+        write(id_base+id_rank,*) 'filter',                              &
      &        inum, inod_all_w(inum), nnod_near_nod_all_w(inum)
         do i = 1, (ied-ist)
-          write(id_base+my_rank,*) i, inod_near_nod_all_w(ist+i),       &
+          write(id_base+id_rank,*) i, inod_near_nod_all_w(ist+i),       &
      &         filter_func(ist+i), filter_weight(ist+i)
         end do
       end do

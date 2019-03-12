@@ -15,7 +15,7 @@
 !      subroutine set_results_2_array_fin(inod, jele, xi,               &
 !     &          differ_tmp, differ_res, iflag_org_tmp, itp_coef_dest)
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
-!      subroutine check_missing_nodes(ierr, my_rank, node)
+!      subroutine check_missing_nodes(ierr, id_rank, node)
 !
       module subroutines_4_search_table
 !
@@ -229,7 +229,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_missing_nodes(ierr, my_rank, node)
+      subroutine check_missing_nodes(ierr, id_rank, node)
 !
       use t_geometry_data
       use m_work_const_itp_table
@@ -237,7 +237,7 @@
 !
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint), intent(inout) ::ierr
       type(node_data), intent(in) :: node
 !
@@ -246,7 +246,7 @@
       integer(kind = kint) :: inod
 !
 !
-      miss_file_name = add_int_suffix(my_rank, miss_file_head)
+      miss_file_name = add_int_suffix(id_rank, miss_file_head)
       open (id_miss_file, file = miss_file_name)
 !
       ierr = 0
@@ -260,7 +260,7 @@
       close(id_miss_file)
 !
       write(*,*) 'Number of missing nodes: ', ierr,                     &
-     &          ' of  ', node%internal_node, ' at rank ', my_rank
+     &          ' of  ', node%internal_node, ' at rank ', id_rank
 !
       end subroutine check_missing_nodes
 !

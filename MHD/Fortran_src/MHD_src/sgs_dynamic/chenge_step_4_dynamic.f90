@@ -4,7 +4,7 @@
 !        Written by H. Matsui on Aug., 2007
 !
 !!      subroutine s_chenge_step_4_dynamic                              &
-!!     &         (my_rank, i_step_MHD, SGS_par, SGS_MHD_wk)
+!!     &         (id_rank, i_step_MHD, SGS_par, SGS_MHD_wk)
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!      subroutine copy_model_coef_2_previous                           &
@@ -36,12 +36,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine open_sgs_diff_monitor(my_rank)
+      subroutine open_sgs_diff_monitor(id_rank)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
 !
-      if(my_rank .gt. 0) return
+      if(id_rank .gt. 0) return
 !
       open (sgs_diff_max_code,file = sgs_diff_max_name,                 &
      &        status='old', position='append', err = 99)
@@ -56,11 +56,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_chenge_step_4_dynamic                                &
-     &         (my_rank, i_step_MHD, SGS_par, SGS_MHD_wk)
+     &         (id_rank, i_step_MHD, SGS_par, SGS_MHD_wk)
 !
       use t_work_FEM_SGS_MHD
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: i_step_MHD
 !
       type(SGS_paremeters), intent(inout) :: SGS_par
@@ -69,7 +69,7 @@
 !
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
       call chenge_increment_4_dynamic                                   &
-     &   (my_rank, i_step_MHD, SGS_par%model_p, SGS_par%commute_p,      &
+     &   (id_rank, i_step_MHD, SGS_par%model_p, SGS_par%commute_p,      &
      &    SGS_par%i_step_sgs_coefs,  SGS_MHD_wk%FEM_SGS_wk)
 !
       end subroutine s_chenge_step_4_dynamic
@@ -122,14 +122,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine chenge_increment_4_dynamic                             &
-     &         (my_rank, i_step_MHD, SGS_param, cmt_param,              &
+     &         (id_rank, i_step_MHD, SGS_param, cmt_param,              &
      &          i_step_sgs_coefs, FEM_SGS_wk)
 !
       use t_work_FEM_dynamic_SGS
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: i_step_MHD
 !
       integer(kind = kint), intent(inout) :: i_step_sgs_coefs
@@ -139,7 +139,7 @@
 !
 !
       if(mod(i_step_MHD, i_step_sgs_coefs) .eq. 0) then
-        call open_sgs_diff_monitor(my_rank)
+        call open_sgs_diff_monitor(id_rank)
 !
         call find_maximum_model_coefs                                   &
      &     (cmt_param, FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_diff, diff_max)
@@ -147,7 +147,7 @@
         call copy_model_coef_2_previous                                 &
      &     (SGS_param, cmt_param, FEM_SGS_wk)
 !
-        if (my_rank .eq. 0) write(sgs_diff_max_code,*)                  &
+        if (id_rank .eq. 0) write(sgs_diff_max_code,*)                  &
      &    'difference from previous step: ', i_step_MHD, diff_max
 !
         if (diff_max .gt. SGS_param%extend_SGS_dt) then
@@ -174,7 +174,7 @@
             i_step_sgs_coefs = SGS_param%min_step_dynamic
           end if
 !
-          if (my_rank .eq. 0) write(sgs_diff_max_code,*)                &
+          if (id_rank .eq. 0) write(sgs_diff_max_code,*)                &
      &    'change step interbal for dynamic to ', i_step_sgs_coefs
         end if
 !
@@ -201,11 +201,11 @@
             i_step_sgs_coefs = SGS_param%min_step_dynamic
           end if
 !
-          if (my_rank .eq. 0) write(sgs_diff_max_code,*)                &
+          if (id_rank .eq. 0) write(sgs_diff_max_code,*)                &
      &    'change step interbal for dynamic to ', i_step_sgs_coefs
         end if
 !
-        if(my_rank .eq. 0) close(sgs_diff_max_code)
+        if(id_rank .eq. 0) close(sgs_diff_max_code)
       end if
 !
       end subroutine chenge_increment_4_dynamic

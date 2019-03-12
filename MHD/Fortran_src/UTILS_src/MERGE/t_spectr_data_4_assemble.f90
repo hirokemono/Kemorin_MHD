@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine alloc_spectr_data_4_assemble(sph_asbl)
 !!      subroutine dealloc_spectr_data_4_assemble                       &
-!!     &         (my_rank, nprocs, sph_asbl)
+!!     &         (id_rank, nprocs, sph_asbl)
 !!        type(spectr_data_4_assemble), intent(inout) :: sph_asbl
 !!@endverbatim
 !
@@ -66,16 +66,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine dealloc_spectr_data_4_assemble                         &
-     &         (my_rank, nprocs, sph_asbl)
+     &         (id_rank, nprocs, sph_asbl)
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       type(spectr_data_4_assemble), intent(inout) :: sph_asbl
 !
       integer(kind = kint) :: ip, jp
 !
 !
       do jp = 1, sph_asbl%np_sph_new
-        if(mod(jp-1,nprocs) .ne. my_rank) cycle
+        if(mod(jp-1,nprocs) .ne. id_rank) cycle
         do ip = 1, sph_asbl%np_sph_org
           call dealloc_mode_table_4_assemble(sph_asbl%j_table(ip,jp))
         end do

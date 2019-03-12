@@ -14,7 +14,7 @@
 !!      subroutine dealloc_layering_ele_list_type(layer_tbl)
 !!      subroutine dealloc_layering_volumes_type(layer_tbl)
 !!
-!!      subroutine check_layer_stack_type(my_rank, layer_tbl)
+!!      subroutine check_layer_stack_type(id_rank, layer_tbl)
 !!@endverbatim
 !
       module t_layering_ele_list
@@ -138,13 +138,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_layer_stack_type(my_rank, layer_tbl)
+      subroutine check_layer_stack_type(id_rank, layer_tbl)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(layering_tbl), intent(in) :: layer_tbl
 !
 !
-      call check_group_type_data(my_rank, layer_tbl%e_grp)
+      call check_group_type_data(id_rank, layer_tbl%e_grp)
 !
       end subroutine check_layer_stack_type
 !

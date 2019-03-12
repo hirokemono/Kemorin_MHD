@@ -27,8 +27,8 @@
 !
 !      subroutine copy_rhs_2_solution
 !
-!      subroutine check_matrix_4_filter(my_rank)
-!      subroutine check_rhs_4_filter(my_rank)
+!      subroutine check_matrix_4_filter(id_rank)
+!      subroutine check_rhs_4_filter(id_rank)
 !
 !-----------------------------------------------------------------------
 !
@@ -76,15 +76,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_matrix_4_filter(my_rank)
+      subroutine check_matrix_4_filter(id_rank)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint) :: i, j
 !
-      write(50+my_rank,*) 'size of matrix', mat_size
+      write(50+id_rank,*) 'size of matrix', mat_size
       do i = 1, mat_size
         do j = 1, mat_size
-          write(50+my_rank,*) i, j, a_mat(i,j)
+          write(50+id_rank,*) i, j, a_mat(i,j)
         end do
       end do
 !
@@ -92,14 +92,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_rhs_4_filter(my_rank)
+      subroutine check_rhs_4_filter(id_rank)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint) :: i
 !
-      write(50+my_rank,*) 'size of RHS vector', mat_size
+      write(50+id_rank,*) 'size of RHS vector', mat_size
       do i = 1, mat_size
-          write(50+my_rank,*) i, vec_mat(i)
+          write(50+id_rank,*) i, vec_mat(i)
       end do
 !
       end subroutine check_rhs_4_filter

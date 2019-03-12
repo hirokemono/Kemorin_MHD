@@ -8,7 +8,7 @@
 !!       for quadrature elements
 !!
 !!@verbatim
-!!      subroutine s_order_interpolate_type_20(my_rank, ist, ied,       &
+!!      subroutine s_order_interpolate_type_20(id_rank, ist, ied,       &
 !!     &          itp_dest, inod_stack_type, nnod_interpolate_type,     &
 !!     &          itp_coef_dest)
 !!        type(interpolate_table_dest), intent(in) :: itp_dest
@@ -31,14 +31,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_order_interpolate_type_20(my_rank, ist, ied,         &
+      subroutine s_order_interpolate_type_20(id_rank, ist, ied,         &
      &          itp_dest, inod_stack_type, nnod_interpolate_type,       &
      &          itp_coef_dest)
 !
       use m_work_const_itp_table
 !
       type(interpolate_table_dest), intent(in) :: itp_dest
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ist, ied
       integer(kind = kint), intent(in) :: inod_stack_type(0:4)
 !
@@ -501,7 +501,7 @@
      &       (icou, inod, itp_dest, itp_coef_dest)
 !
         else
-          write(*,*) 'Where I am???', my_rank,                          &
+          write(*,*) 'Where I am???', id_rank,                          &
      &            itp_dest%inod_dest_4_dest(inod),                      &
      &            itp_coef_dest%iele_org_4_dest(inod),                  &
      &            itp_coef_dest%coef_inter_dest(inod,1:3)

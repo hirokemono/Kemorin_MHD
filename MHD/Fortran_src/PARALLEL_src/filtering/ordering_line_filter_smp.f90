@@ -136,7 +136,7 @@
         end do
       end do
 !
-!     call check_istack_l_filter(fil_l%nnod_lf, my_rank, fil_l)
+!     call check_istack_l_filter(fil_l%nnod_lf, id_rank, fil_l)
 !
       call dealloc_l_filtering_data(fil_l_tmp)
 !
@@ -157,7 +157,7 @@
       end do
 !
 !      call check_num_4_lf_smp                                          &
-!     &   (my_rank, inod_smp_stack, fil_l_smp%nsize_smp)
+!     &   (id_rank, inod_smp_stack, fil_l_smp%nsize_smp)
 !
       fil_l_smp%istack_lf(0,1:3) = 0
       do ip = 1, np_smp
@@ -175,7 +175,7 @@
       end do
 !
 !      call check_istack_l_filter_smp                                   &
-!     &   (my_rank, inod_smp_stack, fil_l_smp)
+!     &   (id_rank, inod_smp_stack, fil_l_smp)
 !
       do ip = 1, np_smp
         do nd = 1, 3
@@ -200,21 +200,21 @@
 ! ----------------------------------------------------------------------
 !
       subroutine check_num_4_lf_smp                                     &
-     &         (my_rank, inod_smp_stack, nsize_lf_smp)
+     &         (id_rank, inod_smp_stack, nsize_lf_smp)
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: my_rank, nsize_lf_smp
+      integer(kind = kint), intent(in) :: id_rank, nsize_lf_smp
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer (kind = kint) :: ist, ied, nd, ip, i
 !
-      write(50+my_rank,*) 'nd, ip, i, num_4_lf_smp(i,ip,nd)'
+      write(50+id_rank,*) 'nd, ip, i, num_4_lf_smp(i,ip,nd)'
       do ip = 1, np_smp
        ist = inod_smp_stack(ip-1) + 1
        ied = inod_smp_stack(ip)
        do nd = 1, 3
         do i = 1, nsize_lf_smp
-          write(50+my_rank,*) nd, ip, i, num_4_lf_smp(i,ip,nd)
+          write(50+id_rank,*) nd, ip, i, num_4_lf_smp(i,ip,nd)
         end do
        end do
       end do

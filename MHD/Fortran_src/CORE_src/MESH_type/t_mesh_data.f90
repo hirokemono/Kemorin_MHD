@@ -20,7 +20,7 @@
 !!      subroutine dealloc_ele_surf_edge_type(ele_mesh)
 !!      subroutine check_smp_size_surf_edge_type(ele_mesh)
 !!
-!!      subroutine compare_mesh_groups(my_rank, group_ref, group)
+!!      subroutine compare_mesh_groups(id_rank, group_ref, group)
 !!        type(mesh_groups), intent(in) :: group_ref, group
 !
       module t_mesh_data
@@ -293,17 +293,17 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine check_smp_size_type(my_rank, mesh)
+      subroutine check_smp_size_type(id_rank, mesh)
 !
       type(mesh_geometry) :: mesh
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
-       write(*,*) 'PE: ', my_rank,                                      &
+       write(*,*) 'PE: ', id_rank,                                      &
      &        'mesh%node%istack_nod_smp: ', mesh%node%istack_nod_smp
-       write(*,*) 'PE: ', my_rank,                                      &
+       write(*,*) 'PE: ', id_rank,                                      &
      &        'mesh%node%istack_nod_smp: ', mesh%node%istack_nod_smp
-       write(*,*) 'PE: ', my_rank,                                      &
+       write(*,*) 'PE: ', id_rank,                                      &
      &        'mesh%ele%istack_ele_smp: ', mesh%ele%istack_ele_smp
 !
       end subroutine check_smp_size_type
@@ -325,18 +325,18 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine compare_mesh_groups(my_rank, group_ref, group)
+      subroutine compare_mesh_groups(id_rank, group_ref, group)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(mesh_groups), intent(in) :: group_ref, group
 !
 !
       call compare_group_types                                         &
-     &   (my_rank, group_ref%nod_grp, group%nod_grp)
+     &   (id_rank, group_ref%nod_grp, group%nod_grp)
       call compare_group_types                                         &
-     &   (my_rank, group_ref%ele_grp, group%ele_grp)
+     &   (id_rank, group_ref%ele_grp, group%ele_grp)
       call compare_surface_grp_types                                   &
-     &   (my_rank, group_ref%surf_grp, group%surf_grp)
+     &   (id_rank, group_ref%surf_grp, group%surf_grp)
 !
       end subroutine compare_mesh_groups
 !

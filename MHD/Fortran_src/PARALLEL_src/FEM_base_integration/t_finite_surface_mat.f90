@@ -5,7 +5,7 @@
 !
 !      subroutine alloc_work_fem_surf_mat_t(surf, sf_grp, fem_sf_wk)
 !      subroutine dealloc_work_fem_surf_mat_t(fem_sf_wk)
-!      subroutine check_vect_sf_t(my_rank, txt, sf_grp, fem_sf_wk)
+!      subroutine check_vect_sf_t(id_rank, txt, sf_grp, fem_sf_wk)
 !
       module t_finite_surface_mat
 !
@@ -67,20 +67,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_vect_sf_t(my_rank, txt, sf_grp, fem_sf_wk)
+      subroutine check_vect_sf_t(id_rank, txt, sf_grp, fem_sf_wk)
 !
       use t_group_data
 !
       type(surface_group_data), intent(in) :: sf_grp
       type(work_finite_surface_mat), intent(inout) :: fem_sf_wk
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       character(*), intent(in) :: txt
       integer(kind = kint) :: isurf
 !
 !
-      write(50+my_rank,*) txt
+      write(50+id_rank,*) txt
       do isurf = 1, sf_grp%num_item
-        write(50+my_rank,*) isurf, fem_sf_wk%vector_sf(isurf,1:3)
+        write(50+id_rank,*) isurf, fem_sf_wk%vector_sf(isurf,1:3)
       end do
 !
        end subroutine check_vect_sf_t

@@ -14,7 +14,7 @@
 !!        type(CG_poarameter), intent(inout) :: CG_param
 !!
 !!      subroutine dealloc_crs_mat_data(mat_crs)
-!!      subroutine check_crs_matrix_comps(my_rank, tbl_crs, mat_crs)
+!!      subroutine check_crs_matrix_comps(id_rank, tbl_crs, mat_crs)
 !
       module t_crs_matrix
 !
@@ -163,9 +163,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine check_crs_matrix_comps(my_rank, tbl_crs, mat_crs)
+      subroutine check_crs_matrix_comps(id_rank, tbl_crs, mat_crs)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(CRS_matrix), intent(inout) :: mat_crs
 !
@@ -173,8 +173,8 @@
 !
        NB = mat_crs%NB_crs
        do i = 1, tbl_crs%ntot_d
-           write(my_rank+50,*) "vector (inod) = ", i
-           write(my_rank+50,'(1p5e16.8)')                               &
+           write(id_rank+50,*) "vector (inod) = ", i
+           write(id_rank+50,'(1p5e16.8)')                               &
      &           (mat_crs%B_crs(NB*(i-1)+k2),k2=1,NB)
        end do
 !
@@ -182,8 +182,8 @@
          do k1 = 1, NB
            kst = k1 + (i-1) * NB*NB
            ked = k1 + (NB-1) * NB + (i-1) * NB*NB
-           write(my_rank+50,*) "diagonal (inod,k1) = ", i, k1
-           write(my_rank+50,'(1p5e16.8)')                               &
+           write(id_rank+50,*) "diagonal (inod,k1) = ", i, k1
+           write(id_rank+50,'(1p5e16.8)')                               &
      &                  mat_crs%D_crs(kst:ked:NB)
          end do
        end do
@@ -193,9 +193,9 @@
            do k1 = 1, NB
              kst = k1 + (j-1) * NB*NB
              ked = k1 + (NB-1) * NB + (j-1) * NB*NB
-             write(my_rank+50,*) "Lower component (i1,i2,k1) = ",      &
+             write(id_rank+50,*) "Lower component (i1,i2,k1) = ",      &
      &             i, tbl_crs%item_l(j), k1
-             write(my_rank+50,'(1p5e16.8)')                            &
+             write(id_rank+50,'(1p5e16.8)')                            &
      &                  mat_crs%AL_crs(kst:ked:NB)
            end do
          end do
@@ -206,9 +206,9 @@
            do k1 = 1, NB
              kst = k1 + (j-1) * NB*NB
              ked = k1 + (NB-1) * NB + (j-1) * NB*NB
-             write(my_rank+50,*) "Lower component (i1,i2,k1) = ",      &
+             write(id_rank+50,*) "Lower component (i1,i2,k1) = ",      &
      &             i, tbl_crs%item_u(j), k1
-              write(my_rank+50,'(1p5e16.8)')                           &
+              write(id_rank+50,'(1p5e16.8)')                           &
      &                  mat_crs%AU_crs(kst:ked:NB)
            end do
          end do

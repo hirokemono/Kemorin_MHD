@@ -17,11 +17,11 @@
 !!      subroutine dealloc_fem_mat_conduct_type(mk_MHD)
 !!
 !!      subroutine check_mass_martix_fluid                              &
-!!     &         (my_rank, numnod, mhd_fem_wk)
+!!     &         (id_rank, numnod, mhd_fem_wk)
 !!      subroutine check_mass_martix_conduct                            &
-!!     &         (my_rank, numnod, mhd_fem_wk)
+!!     &         (id_rank, numnod, mhd_fem_wk)
 !!      subroutine check_mass_martix_insulate                           &
-!!     &         (my_rank, numnod, mhd_fem_wk)
+!!     &         (id_rank, numnod, mhd_fem_wk)
 !
       module t_MHD_mass_matrices
 !
@@ -98,42 +98,42 @@
 !   ---------------------------------------------------------------------
 !
       subroutine check_mass_martix_fluid                                &
-     &         (my_rank, numnod, mk_MHD)
+     &         (id_rank, numnod, mk_MHD)
 !
-      integer(kind = kint), intent(in) :: my_rank, numnod
+      integer(kind = kint), intent(in) :: id_rank, numnod
       type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
 !
 !
-      write(50+my_rank,*) 'Check ml_fl'
-      call check_mass_martix(my_rank, numnod, mk_MHD%mlump_fl)
+      write(50+id_rank,*) 'Check ml_fl'
+      call check_mass_martix(id_rank, numnod, mk_MHD%mlump_fl)
 !
       end subroutine check_mass_martix_fluid
 !
 !   ---------------------------------------------------------------------
 !
       subroutine check_mass_martix_conduct                              &
-     &         (my_rank, numnod, mk_MHD)
+     &         (id_rank, numnod, mk_MHD)
 !
-      integer(kind = kint), intent(in) :: my_rank, numnod
+      integer(kind = kint), intent(in) :: id_rank, numnod
       type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
 !
 !
-      write(50+my_rank,*) 'Check ml_ins'
-      call check_mass_martix(my_rank, numnod, mk_MHD%mlump_cd)
+      write(50+id_rank,*) 'Check ml_ins'
+      call check_mass_martix(id_rank, numnod, mk_MHD%mlump_cd)
 !
       end subroutine check_mass_martix_conduct
 !
 !   ---------------------------------------------------------------------
 !
       subroutine check_mass_martix_insulate                             &
-     &         (my_rank, numnod, mk_MHD)
+     &         (id_rank, numnod, mk_MHD)
 !
-      integer(kind = kint), intent(in) :: my_rank, numnod
+      integer(kind = kint), intent(in) :: id_rank, numnod
       type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
 !
 !
-      write(50+my_rank,*) 'Check ml_ins'
-      call check_mass_martix(my_rank, numnod, mk_MHD%mlump_ins)
+      write(50+id_rank,*) 'Check ml_ins'
+      call check_mass_martix(id_rank, numnod, mk_MHD%mlump_ins)
 !
       end subroutine check_mass_martix_insulate
 !
