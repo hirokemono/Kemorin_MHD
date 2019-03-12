@@ -7,9 +7,9 @@
 !>@brief  Selector of Fourier transform
 !!
 !!@verbatim
-!!      subroutine init_MHD_FFT_select(my_rank, sph_rtp,                &
+!!      subroutine init_MHD_FFT_select(id_rank, sph_rtp,                &
 !!     &          ncomp, ncomp_fwd, ncomp_bwd, MHD_mul_FFTW)
-!!      subroutine verify_MHD_FFT_select(my_rank, sph_rtp,              &
+!!      subroutine verify_MHD_FFT_select(id_rank, sph_rtp,              &
 !!     &          ncomp, ncomp_fwd, ncomp_bwd, MHD_mul_FFTW)
 !!      subroutine finalize_MHD_FFT_select(MHD_mul_FFTW)
 !!      subroutine verify_MHD_FFT_select                                &
@@ -69,7 +69,7 @@
 !! ------------------------------------------------------------------
 !!@endverbatim
 !!
-!!@n @param my_rank     Procdess ID
+!!@n @param id_rank     Procdess ID
 !!@n @param Nsmp  Number of SMP processors
 !!@n @param Nstacksmp(0:Nsmp)   End number for each SMP process
 !!@n @param M           Number of components for Fourier transforms
@@ -102,13 +102,13 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_MHD_FFT_select(my_rank, sph_rtp,                  &
+      subroutine init_MHD_FFT_select(id_rank, sph_rtp,                  &
      &          ncomp, ncomp_fwd, ncomp_bwd, MHD_mul_FFTW)
 !
       use t_spheric_rtp_data
 !
-      integer(kind = kint), intent(in) ::  my_rank
-      integer(kind = kint), intent(in) ::  ncomp, ncomp_fwd, ncomp_bwd
+      integer(kind = kint), intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: ncomp, ncomp_fwd, ncomp_bwd
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
@@ -117,7 +117,7 @@
 !
 #ifdef FFTW3
       if(iflag_FFT .eq. iflag_FFTW) then
-        if(my_rank .eq. 0) write(*,*) 'Use FFTW with prefixed recipi'
+        if(id_rank .eq. 0) write(*,*) 'Use FFTW with prefixed recipi'
         call init_MHD_multi_FFTW(ncomp, ncomp_fwd, ncomp_bwd,           &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, MHD_mul_FFTW)
       end if
@@ -145,21 +145,21 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_MHD_FFT_select(my_rank, sph_rtp,                &
+      subroutine verify_MHD_FFT_select(id_rank, sph_rtp,                &
      &          ncomp, ncomp_fwd, ncomp_bwd, MHD_mul_FFTW)
 !
       use t_spheric_rtp_data
 !
-      integer(kind = kint), intent(in) ::  my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
-      integer(kind = kint), intent(in) ::  ncomp, ncomp_fwd, ncomp_bwd
+      integer(kind = kint), intent(in) :: ncomp, ncomp_fwd, ncomp_bwd
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
 #ifdef FFTW3
       if(iflag_FFT .eq. iflag_FFTW) then
-        if(my_rank .eq. 0) write(*,*) 'Use FFTW with prefixed recipi'
+        if(id_rank .eq. 0) write(*,*) 'Use FFTW with prefixed recipi'
         call verify_MHD_multi_FFTW(ncomp, ncomp_fwd, ncomp_bwd,         &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, MHD_mul_FFTW)

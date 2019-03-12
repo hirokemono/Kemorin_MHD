@@ -35,7 +35,6 @@
 !
 !      character (len=kchara), intent(in) :: PRECOND
 !      character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-!      integer(kind = kint), intent(in) ::  my_rank
 !      integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
 !      integer(kind=kint ), intent(in) :: MAXIT
 !      integer(kind=kint ), intent(inout) :: ITR, IER

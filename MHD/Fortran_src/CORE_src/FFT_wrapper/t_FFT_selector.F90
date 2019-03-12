@@ -10,7 +10,7 @@
 !>@brief  Selector of Fourier transform using structure
 !!
 !!@verbatim
-!!      subroutine initialize_FFT_select(my_rank, Nsmp, Nstacksmp, Nfft,&
+!!      subroutine initialize_FFT_select(id_rank, Nsmp, Nstacksmp, Nfft,&
 !!     &          WKS)
 !!      subroutine finalize_FFT_sel_t(Nsmp, Nstacksmp, WKS)
 !!      subroutine verify_FFT_select(Nsmp, Nstacksmp, Nfft, WKS)
@@ -90,29 +90,30 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine initialize_FFT_select(my_rank, Nsmp, Nstacksmp, Nfft,  &
+      subroutine initialize_FFT_select(id_rank, Nsmp, Nstacksmp, Nfft,  &
      &          WKS)
 !
 !
-      integer(kind = kint), intent(in) ::  my_rank, Nfft
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: Nfft
+      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
 !
       type(working_FFTs), intent(inout) :: WKS
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
-        if(my_rank .eq. 0) write(*,*) 'Use ISPACK'
+        if(id_rank .eq. 0) write(*,*) 'Use ISPACK'
         call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
-        if(my_rank .eq. 0) write(*,*) 'Use FFTW'
+        if(id_rank .eq. 0) write(*,*) 'Use FFTW'
         call init_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WKS%WK_MUL_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        if(my_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
+        if(id_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
         call init_FFTW_type(Nstacksmp(Nsmp), Nfft, WKS%WK_FFTW)
 #endif
       else
-        if(my_rank .eq. 0) write(*,*) 'Use FFTPACK'
+        if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
         call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
       end if
 !

@@ -7,7 +7,7 @@
 !>@brief  Selector of Fourier transform
 !!
 !!@verbatim
-!!      subroutine init_sph_FFT_select(my_rank, sph_rtp, ncomp, WK_FFTs)
+!!      subroutine init_sph_FFT_select(id_rank, sph_rtp, ncomp, WK_FFTs)
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!      subroutine finalize_sph_FFT_select(WK_FFTs)
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
@@ -64,7 +64,7 @@
 !! ------------------------------------------------------------------
 !!@endverbatim
 !!
-!!@n @param my_rank     Procdess ID
+!!@n @param id_rank     Procdess ID
 !!@n @param Nsmp  Number of SMP processors
 !!@n @param Nstacksmp(0:Nsmp)   End number for each SMP process
 !!@n @param M           Number of components for Fourier transforms
@@ -107,34 +107,34 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_FFT_select(my_rank, sph_rtp, ncomp, WK_FFTs)
+      subroutine init_sph_FFT_select(id_rank, sph_rtp, ncomp, WK_FFTs)
 !
       use t_spheric_rtp_data
 !
-      integer(kind = kint), intent(in) ::  my_rank, ncomp
+      integer(kind = kint), intent(in) :: id_rank, ncomp
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
-        if(my_rank .eq. 0) write(*,*) 'Use ISPACK'
+        if(id_rank .eq. 0) write(*,*) 'Use ISPACK'
         call init_sph_ISPACK                                            &
      &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
      &      WK_FFTs%sph_ISPACK)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW                                 &
      &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
-        if(my_rank .eq. 0) write(*,*) 'Use FFTW'
+        if(id_rank .eq. 0) write(*,*) 'Use FFTW'
         call init_sph_field_FFTW                                        &
      &     (sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      WK_FFTs%sph_fld_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        if(my_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
+        if(id_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
         call init_sph_single_FFTW                                       &
      &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTW)
 #endif
       else
-        if(my_rank .eq. 0) write(*,*) 'Use FFTPACK'
+        if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
         call init_sph_FFTPACK5                                          &
      &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
      &      WK_FFTs%sph_FFTPACK)

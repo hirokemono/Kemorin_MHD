@@ -8,15 +8,15 @@
 !>@brief Output FEM field data to distributed VTK file (gzipped)
 !!
 !!@verbatim
-!!      subroutine write_gz_parallel_vtk_file(my_rank, nprocs,          &
+!!      subroutine write_gz_parallel_vtk_file(id_rank, nprocs,          &
 !!     &          istep, file_prefix)
 !!
-!!      subroutine write_ucd_data_2_gz_vtk(my_rank, gzip_name, ucd)
-!!      subroutine write_ucd_data_2_gz_vtk_phys(my_rank, gzip_name, ucd)
-!!      subroutine write_ucd_data_2_gz_vtk_grid(my_rank, gzip_name, ucd)
+!!      subroutine write_ucd_data_2_gz_vtk(id_rank, gzip_name, ucd)
+!!      subroutine write_ucd_data_2_gz_vtk_phys(id_rank, gzip_name, ucd)
+!!      subroutine write_ucd_data_2_gz_vtk_grid(id_rank, gzip_name, ucd)
 !!@endverbatim
 !!
-!!@param my_rank    subdomain ID
+!!@param id_rank    subdomain ID
 !!@param gzip_name  file name
 !
       module gz_write_ucd_to_vtk_file
@@ -38,7 +38,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_parallel_vtk_file(my_rank, nprocs,            &
+      subroutine write_gz_parallel_vtk_file(id_rank, nprocs,            &
      &          istep, file_prefix)
 !
       use set_parallel_file_name
@@ -46,14 +46,14 @@
       use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_prefix
-      integer(kind=kint), intent(in) :: my_rank, nprocs, istep
+      integer(kind=kint), intent(in) :: id_rank, nprocs, istep
 !
       character(len=kchara) :: gzip_name, file_name, fname_tmp
       character(len=kchara) :: fname_nodir
       integer(kind = kint) :: ip
 !
 !
-      if(my_rank .gt. 0) return
+      if(id_rank .gt. 0) return
 !
       fname_nodir = delete_directory_name(file_prefix)
       fname_tmp = add_int_suffix(istep, file_prefix)
@@ -87,16 +87,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_ucd_data_2_gz_vtk(my_rank, gzip_name, ucd)
+      subroutine write_ucd_data_2_gz_vtk(id_rank, gzip_name, ucd)
 !
       use gz_vtk_file_IO
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(in) ::  my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
-      if(my_rank.le.0) write(*,*)                                       &
+      if(id_rank.le.0) write(*,*)                                       &
      &    'Write gzipped VTK data: ', trim(gzip_name)
 !
       call write_gz_vtk_file(gzip_name,                                 &
@@ -108,16 +108,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_ucd_data_2_gz_vtk_phys(my_rank, gzip_name, ucd)
+      subroutine write_ucd_data_2_gz_vtk_phys(id_rank, gzip_name, ucd)
 !
       use gz_vtk_file_IO
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(in) ::  my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
-      if(my_rank.le.0) write(*,*)                                       &
+      if(id_rank.le.0) write(*,*)                                       &
      &    'Write gzipped VTK field: ', trim(gzip_name)
 !
       call write_gz_vtk_phys(gzip_name, ucd%nnod, ucd%num_field,        &
@@ -127,16 +127,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_ucd_data_2_gz_vtk_grid(my_rank, gzip_name, ucd)
+      subroutine write_ucd_data_2_gz_vtk_grid(id_rank, gzip_name, ucd)
 !
       use gz_vtk_file_IO
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(in) ::  my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
-      if(my_rank.le.0) write(*,*)                                       &
+      if(id_rank.le.0) write(*,*)                                       &
      &    'Write gzipped VTK grid: ', trim(gzip_name)
 !
       call write_gz_vtk_grid(gzip_name,                                 &

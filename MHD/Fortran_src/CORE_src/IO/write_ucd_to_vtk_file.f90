@@ -9,19 +9,19 @@
 !!
 !!@verbatim
 !!      subroutine write_parallel_vtk_file                              &
-!!     &         (my_rank, nprocs, istep, file_prefix)
+!!     &         (id_rank, nprocs, istep, file_prefix)
 !!
-!!      subroutine write_udt_data_2_vtk_file(my_rank, file_name, ucd)
-!!      subroutine write_udt_data_2_vtk_phys(my_rank, file_name, ucd)
-!!      subroutine write_udt_data_2_vtk_grid(my_rank, file_name, ucd)
+!!      subroutine write_udt_data_2_vtk_file(id_rank, file_name, ucd)
+!!      subroutine write_udt_data_2_vtk_phys(id_rank, file_name, ucd)
+!!      subroutine write_udt_data_2_vtk_grid(id_rank, file_name, ucd)
 !!
-!!      subroutine read_udt_data_2_vtk_file(my_rank, file_name, ucd)
-!!      subroutine read_udt_data_2_vtk_phys(my_rank, file_name, ucd)
-!!      subroutine read_udt_data_2_vtk_grid(my_rank, file_name, ucd)
+!!      subroutine read_udt_data_2_vtk_file(id_rank, file_name, ucd)
+!!      subroutine read_udt_data_2_vtk_phys(id_rank, file_name, ucd)
+!!      subroutine read_udt_data_2_vtk_grid(id_rank, file_name, ucd)
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !!
-!!@param my_rank    subdomain ID
+!!@param id_rank    subdomain ID
 !!@param file_name   File name
 !!@param ucd      Structure for FEM field data IO
 !
@@ -50,20 +50,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine write_parallel_vtk_file                                &
-     &         (my_rank, nprocs, istep, file_prefix)
+     &         (id_rank, nprocs, istep, file_prefix)
 !
       use set_parallel_file_name
       use set_ucd_extensions
 !
       character(len=kchara), intent(in) :: file_prefix
-      integer(kind=kint), intent(in) :: my_rank, nprocs, istep
+      integer(kind=kint), intent(in) :: id_rank, nprocs, istep
 !
       character(len=kchara)  :: file_name, fname_tmp
       character(len=kchara) :: fname_nodir
       integer(kind = kint) :: ip
 !
 !
-      if(my_rank .gt. 0) return
+      if(id_rank .gt. 0) return
 !
       fname_nodir = delete_directory_name(file_prefix)
       fname_tmp =   add_int_suffix(istep, file_prefix)
@@ -92,16 +92,16 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine write_udt_data_2_vtk_file(my_rank, file_name, ucd)
+      subroutine write_udt_data_2_vtk_file(id_rank, file_name, ucd)
 !
       use vtk_file_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) ::  my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
-      if(my_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write ascii VTK file: ', trim(file_name)
 !
       call write_vtk_file(file_name, id_vtk_file, ucd)
@@ -110,16 +110,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_udt_data_2_vtk_phys(my_rank, file_name, ucd)
+      subroutine write_udt_data_2_vtk_phys(id_rank, file_name, ucd)
 !
       use vtk_file_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) ::  my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
-      if(my_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write ascii VTK fields: ', trim(file_name)
 !
       call write_vtk_phys(file_name, id_vtk_file, ucd)
@@ -128,16 +128,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_udt_data_2_vtk_grid(my_rank, file_name, ucd)
+      subroutine write_udt_data_2_vtk_grid(id_rank, file_name, ucd)
 !
       use vtk_file_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) ::  my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
-      if(my_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write ascii VTK mesh: ', trim(file_name)
 !
       call write_vtk_grid(file_name, id_vtk_file, ucd)
@@ -147,14 +147,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_udt_data_2_vtk_file(my_rank, file_name, ucd)
+      subroutine read_udt_data_2_vtk_file(id_rank, file_name, ucd)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) ::  my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      if(my_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read ascii VTK file: ', trim(file_name)
 !
       open(id_vtk_file, file=file_name,                                 &
@@ -167,15 +167,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_udt_data_2_vtk_phys(my_rank, file_name, ucd)
+      subroutine read_udt_data_2_vtk_phys(id_rank, file_name, ucd)
 !
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) ::  my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      if(my_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read ascii VTK fields: ', trim(file_name)
 !
       open(id_vtk_file, file=file_name,                                 &
@@ -187,14 +187,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_udt_data_2_vtk_grid(my_rank, file_name, ucd)
+      subroutine read_udt_data_2_vtk_grid(id_rank, file_name, ucd)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) ::  my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      if(my_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read ascii VTK mesh: ', trim(file_name)
 !
       open(id_vtk_file, file=file_name,                                 &
