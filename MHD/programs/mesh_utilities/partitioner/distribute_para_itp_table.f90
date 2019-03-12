@@ -36,7 +36,7 @@
 !
 !  .......................
 !
-     integer(kind = kint) :: ip, my_rank
+     integer :: ip, id_rank
 !
 !
       call read_control_4_distribute_itp(gtbl_ctl1)
@@ -72,8 +72,8 @@
       table_file_header = table_file_head
       write(*,*) 'table field header: ', trim(table_file_header)
       do ip = 1, nprocs_table
-        my_rank = ip - 1
-        call output_interpolate_table(my_rank, para_tbl(ip))
+        id_rank = ip - 1
+        call output_interpolate_table(id_rank, para_tbl(ip))
       end do
 !
       stop 'Distibution finished'
@@ -93,8 +93,8 @@
 !
       type(ctl_data_gen_table), intent(in) :: gtbl_ctl
 !
-      call turn_off_debug_flag_by_ctl(my_rank, gtbl_ctl%src_plt)
-      call set_control_smp_def(my_rank, gtbl_ctl%src_plt)
+      call turn_off_debug_flag_by_ctl(id_rank, gtbl_ctl%src_plt)
+      call set_control_smp_def(id_rank, gtbl_ctl%src_plt)
       call set_control_mesh_def(gtbl_ctl%src_plt, org_mesh_file)
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, gtbl_ctl%dst_plt, dest_mesh_file)

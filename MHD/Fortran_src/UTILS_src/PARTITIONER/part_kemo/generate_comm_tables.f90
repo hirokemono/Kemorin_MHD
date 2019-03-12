@@ -50,7 +50,7 @@
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       type(communication_table) :: new_comm
-      integer(kind = kint) :: ip, my_rank
+      integer :: ip, id_rank
 !
 !
       if(comm_part%iflag_memory_conserve .eq. 0) then
@@ -60,7 +60,7 @@
       call allocate_wk_neib_domain(nprocs)
 !
       do ip = 1, nprocs
-        my_rank = ip - 1
+        id_rank = ip - 1
 !
         call count_neib_domain_by_node                                  &
      &     (nod_d_grp, itl_nod_part, ip, nprocs, new_comm%num_neib)
@@ -102,7 +102,7 @@
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       type(communication_table) :: new_comm
-      integer(kind = kint) :: ip, my_rank
+      integer :: ip, id_rank
 !
 !C
 !C +-------------------------------+
@@ -110,12 +110,12 @@
 !C +-------------------------------+
 !C===
       do ip = 1, nprocs
-        my_rank = ip - 1
+        id_rank = ip - 1
 !C
 !C-- "marking" with GLOBAL NODE ID
 
         if(iflag_debug .gt. 0) write(*,*)                               &
-     &      'set_local_id_4_export ', my_rank
+     &      'set_local_id_4_export ', id_rank
         call set_local_id_4_export(ip, itl_nod_part, nod_d_grp)
 !
         call load_node_import_4_part(ip, comm_part, new_comm)
@@ -123,13 +123,13 @@
         call alloc_export_num(new_comm)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
-     &       'count_nod_export_item_4_part ', my_rank
+     &       'count_nod_export_item_4_part ', id_rank
         call count_nod_export_item_4_part(ip, new_comm, comm_part)
         call add_nod_export_item_4_part                                 &
      &     (nprocs, ip, new_comm, comm_part)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
-     &       's_cal_total_and_stacks ', my_rank
+     &       's_cal_total_and_stacks ', id_rank
         call s_cal_total_and_stacks                                     &
      &     (new_comm%num_neib, new_comm%num_export, izero,              &
      &      new_comm%istack_export, new_comm%ntot_export)
@@ -137,7 +137,7 @@
         call alloc_export_item(new_comm)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
-     &       'set_nod_export_item_4_part ', my_rank
+     &       'set_nod_export_item_4_part ', id_rank
         call set_nod_export_item_4_part                                 &
      &     (ip, nod_d_grp, itl_nod_part, new_comm, comm_part)
 !

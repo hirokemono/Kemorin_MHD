@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine write_interpolate_table_org                          &
-!!     &         (id_file, my_rank, IO_itp_org)
+!!     &         (id_file, id_rank, IO_itp_org)
 !!      subroutine write_interpolate_coefs_org(id_file, IO_itp_org)
 !!        type(interpolate_table_org), intent(in) :: IO_itp_org
 !!
@@ -19,7 +19,7 @@
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!
 !!      subroutine write_interpolate_table_dest                         &
-!!     &         (id_file, my_rank, IO_itp_dest)
+!!     &         (id_file, id_rank, IO_itp_dest)
 !!      subroutine write_interpolate_coefs_dest                         &
 !!     &         (id_file, IO_itp_dest, IO_itp_c_dest)
 !!        type(interpolate_table_dest), intent(in) :: IO_itp_dest
@@ -52,11 +52,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine write_interpolate_table_org                            &
-     &         (id_file, my_rank, IO_itp_org)
+     &         (id_file, id_rank, IO_itp_org)
 !
       use t_interpolate_tbl_org
 !
-      integer(kind = kint), intent(in) :: id_file, my_rank
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: id_file
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
 !
@@ -66,7 +67,7 @@
       write(id_file,'(a)') '!  domain IDs to export'
       write(id_file,'(a)') '!'
 !
-      write(id_file,'(i16)') my_rank
+      write(id_file,'(i16)') id_rank
       write(id_file,'(i16)') IO_itp_org%num_dest_domain
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
@@ -214,11 +215,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine write_interpolate_table_dest                           &
-     &         (id_file, my_rank, IO_itp_dest)
+     &         (id_file, id_rank, IO_itp_dest)
 !
       use t_interpolate_tbl_dest
 !
-      integer(kind = kint), intent(in) :: id_file, my_rank
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: id_file
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !
 !
@@ -228,7 +230,7 @@
       write(id_file,'(a)') '!  domain IDs to import'
       write(id_file,'(a)') '!'
 !
-      write(id_file,'(i16)') my_rank
+      write(id_file,'(i16)') id_rank
       write(id_file,'(i16)') IO_itp_dest%num_org_domain
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then

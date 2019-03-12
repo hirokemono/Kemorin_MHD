@@ -13,9 +13,9 @@
 !!     &          nprocs, istep_ucd)
 !!
 !!      character(len=kchara) function set_parallel_ucd_file_name       &
-!!     &                  (file_prefix, itype_file, my_rank, istep_ucd)
+!!     &                  (file_prefix, itype_file, id_rank, istep_ucd)
 !!      character(len=kchara) function set_parallel_grd_file_name       &
-!!     &                    (file_prefix, itype_file, my_rank)
+!!     &                    (file_prefix, itype_file, id_rank)
 !!
 !!      character(len=kchara) function set_single_ucd_file_name         &
 !!     &                    (file_prefix, itype_file, istep_ucd)
@@ -33,7 +33,7 @@
 !!@endverbatim
 !!
 !!@param nprocs     number of subdomains
-!!@param my_rank    subdomain ID
+!!@param id_rank    subdomain ID
 !!@param istep      Step number for VTK data
 !
 !
@@ -60,14 +60,14 @@
       character(len=kchara), intent(in) :: file_prefix
       integer(kind=kint), intent(in) :: itype_file, nprocs, istep_ucd
 !
-      integer(kind=kint) :: my_rank, ip
+      integer :: ip, id_rank
       character(len=kchara) :: file_name
 !
 !
       do ip = 1, nprocs
-        my_rank = ip - 1
+        id_rank = ip - 1
         file_name = set_parallel_ucd_file_name                          &
-     &            (file_prefix,  itype_file, my_rank, istep_ucd)
+     &            (file_prefix,  itype_file, id_rank, istep_ucd)
 !
         call delete_file_by_f(file_name)
       end do
@@ -78,22 +78,23 @@
 !------------------------------------------------------------------
 !
       character(len=kchara) function set_parallel_ucd_file_name         &
-     &                  (file_prefix, itype_file, my_rank, istep_ucd)
+     &                  (file_prefix, itype_file, id_rank, istep_ucd)
 !
       use set_parallel_file_name
       use set_mesh_extensions
       use set_ucd_extensions
 !
-      integer(kind=kint), intent(in) :: itype_file, my_rank, istep_ucd
+      integer, intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: itype_file, istep_ucd
       character(len=kchara), intent(in) ::    file_prefix
       character(len=kchara) :: fname_tmp, file_name
 !
 !
       fname_tmp = add_int_suffix(istep_ucd, file_prefix)
 !
-      if (my_rank .ge. 0                                                &
+      if (id_rank .ge. 0                                                &
      &      .and. (itype_file/icent) .eq. (iflag_para/icent)) then
-        file_name = add_int_suffix(my_rank, fname_tmp)
+        file_name = add_int_suffix(id_rank, fname_tmp)
       else
         file_name = fname_tmp
       end if
@@ -126,21 +127,21 @@
 !------------------------------------------------------------------
 !
       character(len=kchara) function set_parallel_grd_file_name         &
-     &                    (file_prefix, itype_file, my_rank)
+     &                    (file_prefix, itype_file, id_rank)
 !
       use set_parallel_file_name
       use set_ucd_extensions
 !
-      integer(kind=kint), intent(in) :: itype_file, my_rank
+      integer(kind=kint), intent(in) :: itype_file, id_rank
       character(len=kchara), intent(in) ::    file_prefix
       character(len=kchara) :: fname_tmp, file_name
 !
 !
       fname_tmp = add_int_suffix(izero, file_prefix)
 !
-      if (my_rank .ge. 0                                                &
+      if (id_rank .ge. 0                                                &
      &     .and. itype_file/icent .eq. iflag_para/icent) then
-        file_name = add_int_suffix(my_rank, fname_tmp)
+        file_name = add_int_suffix(id_rank, fname_tmp)
       else
         file_name = fname_tmp
       end if

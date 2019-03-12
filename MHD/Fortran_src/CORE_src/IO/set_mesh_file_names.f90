@@ -8,23 +8,23 @@
 !!
 !!@verbatim
 !!      character(len=kchara) function                                  &
-!!     &       set_mesh_file_name(file_header, itype_file, my_rank)
+!!     &       set_mesh_file_name(file_header, itype_file, id_rank)
 !!
 !!      character(len=kchara) function                                  &
-!!     &       set_sph_rtp_file_name(file_header, itype_file, my_rank)
+!!     &       set_sph_rtp_file_name(file_header, itype_file, id_rank)
 !!      character(len=kchara) function                                  &
-!!     &       set_sph_rtm_file_name(file_header, itype_file, my_rank)
+!!     &       set_sph_rtm_file_name(file_header, itype_file, id_rank)
 !!      character(len=kchara) function                                  &
-!!     &       set_sph_rlm_file_name(file_header, itype_file, my_rank)
+!!     &       set_sph_rlm_file_name(file_header, itype_file, id_rank)
 !!      character(len=kchara) function                                  &
-!!     &       set_sph_rj_file_name(file_header, itype_file, my_rank)
+!!     &       set_sph_rj_file_name(file_header, itype_file, id_rank)
 !!
 !!      character(len=kchara) function                                  &
-!!     &       set_ele_comm_file_name(file_header, itype_file, my_rank)
+!!     &       set_ele_comm_file_name(file_header, itype_file, id_rank)
 !!      character(len=kchara) function                                  &
-!!     &       set_surf_mesh_file_name(file_header, itype_file, my_rank)
+!!     &       set_surf_mesh_file_name(file_header, itype_file, id_rank)
 !!      character(len=kchara) function                                  &
-!!     &       set_edge_mesh_file_name(file_header, itype_file, my_rank)
+!!     &       set_edge_mesh_file_name(file_header, itype_file, id_rank)
 !!@endverbatim
 !
       module set_mesh_file_names
@@ -44,17 +44,18 @@
 ! -----------------------------------------------------------------------
 !
       character(len=kchara) function                                    &
-     &       set_mesh_file_name(file_header, itype_file, my_rank)
+     &       set_mesh_file_name(file_header, itype_file, id_rank)
 !
       use set_mesh_extensions
 !
-      integer(kind=kint), intent(in) :: itype_file, my_rank
+      integer, intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: itype_file
       character(len=kchara), intent(in) ::    file_header
       character(len=kchara) :: fname_tmp, file_name
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        file_name = add_int_suffix(my_rank, file_header)
+        file_name = add_int_suffix(id_rank, file_header)
       else
         file_name = file_header
       end if
@@ -79,17 +80,18 @@
 !------------------------------------------------------------------
 !
       character(len=kchara) function                                    &
-     &       set_sph_rtp_file_name(file_header, itype_file, my_rank)
+     &       set_sph_rtp_file_name(file_header, itype_file, id_rank)
 !
       use set_sph_extensions
 !
-      integer(kind=kint), intent(in) :: itype_file, my_rank
+      integer, intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: itype_file
       character(len=kchara), intent(in) ::    file_header
       character(len=kchara) :: fname_tmp, file_name
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        file_name = add_int_suffix(my_rank, file_header)
+        file_name = add_int_suffix(id_rank, file_header)
       else
         file_name = file_header
       end if
@@ -114,17 +116,18 @@
 !------------------------------------------------------------------
 !
       character(len=kchara) function                                    &
-     &       set_sph_rtm_file_name(file_header, itype_file, my_rank)
+     &       set_sph_rtm_file_name(file_header, itype_file, id_rank)
 !
       use set_sph_extensions
 !
-      integer(kind=kint), intent(in) :: itype_file, my_rank
+      integer, intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: itype_file
       character(len=kchara), intent(in) ::    file_header
       character(len=kchara) :: fname_tmp, file_name
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        file_name = add_int_suffix(my_rank, file_header)
+        file_name = add_int_suffix(id_rank, file_header)
       else
         file_name = file_header
       end if
@@ -149,17 +152,18 @@
 !------------------------------------------------------------------
 !
       character(len=kchara) function                                    &
-     &       set_sph_rlm_file_name(file_header, itype_file, my_rank)
+     &       set_sph_rlm_file_name(file_header, itype_file, id_rank)
 !
       use set_sph_extensions
 !
-      integer(kind=kint), intent(in) :: itype_file, my_rank
+      integer, intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: itype_file
       character(len=kchara), intent(in) ::    file_header
       character(len=kchara) :: fname_tmp, file_name
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        file_name = add_int_suffix(my_rank, file_header)
+        file_name = add_int_suffix(id_rank, file_header)
       else
         file_name = file_header
       end if
@@ -184,17 +188,18 @@
 !------------------------------------------------------------------
 !
       character(len=kchara) function                                    &
-     &       set_sph_rj_file_name(file_header, itype_file, my_rank)
+     &       set_sph_rj_file_name(file_header, itype_file, id_rank)
 !
       use set_sph_extensions
 !
-      integer(kind=kint), intent(in) :: itype_file, my_rank
+      integer, intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: itype_file
       character(len=kchara), intent(in) ::    file_header
       character(len=kchara) :: fname_tmp, file_name
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        file_name = add_int_suffix(my_rank, file_header)
+        file_name = add_int_suffix(id_rank, file_header)
       else
         file_name = file_header
       end if
@@ -220,17 +225,18 @@
 !------------------------------------------------------------------
 !
       character(len=kchara) function                                    &
-     &        set_ele_comm_file_name(file_header, itype_file, my_rank)
+     &        set_ele_comm_file_name(file_header, itype_file, id_rank)
 !
       use set_mesh_extensions
 !
-      integer(kind=kint), intent(in) :: itype_file, my_rank
+      integer, intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: itype_file
       character(len=kchara), intent(in) ::    file_header
       character(len=kchara) :: fname_tmp, file_name
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        file_name = add_int_suffix(my_rank, file_header)
+        file_name = add_int_suffix(id_rank, file_header)
       else
         file_name = file_header
       end if
@@ -255,17 +261,18 @@
 !------------------------------------------------------------------
 !
       character(len=kchara) function                                    &
-     &       set_surf_mesh_file_name(file_header, itype_file, my_rank)
+     &       set_surf_mesh_file_name(file_header, itype_file, id_rank)
 !
       use set_mesh_extensions
 !
-      integer(kind=kint), intent(in) :: itype_file, my_rank
+      integer, intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: itype_file
       character(len=kchara), intent(in) ::    file_header
       character(len=kchara) :: fname_tmp, file_name
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        file_name = add_int_suffix(my_rank, file_header)
+        file_name = add_int_suffix(id_rank, file_header)
       else
         file_name = file_header
       end if
@@ -290,17 +297,18 @@
 !------------------------------------------------------------------
 !
       character(len=kchara) function                                    &
-     &       set_edge_mesh_file_name(file_header, itype_file, my_rank)
+     &       set_edge_mesh_file_name(file_header, itype_file, id_rank)
 !
       use set_mesh_extensions
 !
-      integer(kind=kint), intent(in) :: itype_file, my_rank
+      integer, intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: itype_file
       character(len=kchara), intent(in) ::    file_header
       character(len=kchara) :: fname_tmp, file_name
 !
 !
       if((itype_file/iflag_single) .eq. 0) then
-        file_name = add_int_suffix(my_rank, file_header)
+        file_name = add_int_suffix(id_rank, file_header)
       else
         file_name = file_header
       end if

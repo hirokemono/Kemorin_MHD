@@ -74,7 +74,8 @@
       use t_ucd_data
       use ucd_IO_select
 !
-      integer(kind = kint), intent(in) :: num_pe, istep, nnod_max
+      integer(kind = kint), intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: istep, nnod_max
       type(mesh_geometry), intent(in) :: mesh(num_pe)
       type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
@@ -87,16 +88,16 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: phys_data(nnod_target*nfield_target)
 !
-      integer(kind = kint) :: ip, my_rank
+      integer :: ip, id_rank
 !
 !
       ucd%nnod = nnod_max
       call allocate_ucd_phys_data(ucd)
       do ip =1, num_pe
-        my_rank = ip - 1
+        id_rank = ip - 1
 !
         ucd%nnod =        mesh(ip)%node%numnod
-        call sel_read_udt_file(my_rank, istep, ucd_param, t_IO, ucd)
+        call sel_read_udt_file(id_rank, istep, ucd_param, t_IO, ucd)
 !
         call copy_and_pick_ucd_data_merge                               &
      &         (nnod_target, nfield_target, icomp_target,               &

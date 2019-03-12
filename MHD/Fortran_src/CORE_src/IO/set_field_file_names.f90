@@ -16,9 +16,9 @@
 !!      subroutine delete_SPH_fld_file(itype_file, nprocs, istep_fld)
 !!
 !!      character(len=kchara) function set_FEM_fld_file_name            &
-!!     &                   (file_header, itype_file, my_rank, istep_fld)
+!!     &                   (file_header, itype_file, id_rank, istep_fld)
 !!      character(len=kchara) function set_SPH_fld_file_name            &
-!!     &                   (file_header, itype_file, my_rank, istep_fld)
+!!     &                   (file_header, itype_file, id_rank, istep_fld)
 !!@endverbatim
 !
       module set_field_file_names
@@ -45,16 +45,16 @@
       type(field_IO_params), intent(in) :: file_param
       integer(kind=kint), intent(in) :: nprocs, istep_fld
 !
-      integer(kind=kint) :: my_rank, ip
+      integer :: ip, id_rank
       character(len=kchara) :: file_name
 !
 !
       do ip =1, nprocs
-        my_rank = ip - 1
+        id_rank = ip - 1
 !
         file_name = set_FEM_fld_file_name                               &
      &          (file_param%file_prefix, file_param%iflag_format,       &
-     &           my_rank, istep_fld)
+     &           id_rank, istep_fld)
 !
         call delete_file_by_f(file_name)
       end do
@@ -72,16 +72,16 @@
       type(field_IO_params), intent(in) :: file_param
       integer(kind=kint), intent(in) :: nprocs, istep_fld
 !
-      integer(kind=kint) :: my_rank, ip
+      integer :: ip, id_rank
       character(len=kchara) :: file_name
 !
 !
       do ip =1, nprocs
-        my_rank = ip - 1
+        id_rank = ip - 1
 !
         file_name = set_SPH_fld_file_name                               &
      &          (file_param%file_prefix, file_param%iflag_format,       &
-     &           my_rank, istep_fld)
+     &           id_rank, istep_fld)
 !
         call delete_file_by_f(file_name)
       end do
@@ -92,13 +92,13 @@
 !------------------------------------------------------------------
 !
       character(len=kchara) function set_FEM_fld_file_name              &
-     &                   (file_header, itype_file, my_rank, istep_fld)
+     &                   (file_header, itype_file, id_rank, istep_fld)
 !
       use set_parallel_file_name
       use set_mesh_extensions
       use m_file_format_switch
 !
-      integer(kind=kint), intent(in) :: itype_file, my_rank, istep_fld
+      integer(kind=kint), intent(in) :: itype_file, id_rank, istep_fld
       character(len=kchara), intent(in) ::    file_header
       character(len=kchara) :: fname_tmp, file_name
 !
@@ -110,7 +110,7 @@
       end if
 !
       if((itype_file/iflag_single) .eq. 0) then
-        file_name = add_int_suffix(my_rank, fname_tmp)
+        file_name = add_int_suffix(id_rank, fname_tmp)
       else
         file_name = fname_tmp
       end if
@@ -135,13 +135,13 @@
 !------------------------------------------------------------------
 !
       character(len=kchara) function set_SPH_fld_file_name              &
-     &                   (file_header, itype_file, my_rank, istep_fld)
+     &                   (file_header, itype_file, id_rank, istep_fld)
 !
       use set_parallel_file_name
       use set_sph_extensions
       use m_file_format_switch
 !
-      integer(kind=kint), intent(in) :: itype_file, my_rank, istep_fld
+      integer(kind=kint), intent(in) :: itype_file, id_rank, istep_fld
       character(len=kchara), intent(in) ::    file_header
       character(len=kchara) :: fname_tmp, file_name
 !
@@ -153,7 +153,7 @@
       end if
 !
       if((itype_file/iflag_single) .eq. 0) then
-        file_name = add_int_suffix(my_rank, fname_tmp)
+        file_name = add_int_suffix(id_rank, fname_tmp)
       else
         file_name = fname_tmp
       end if

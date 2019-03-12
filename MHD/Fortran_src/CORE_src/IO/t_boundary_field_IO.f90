@@ -13,8 +13,8 @@
 !!      subroutine dealloc_boundary_values
 !!
 !!      subroutine read_bc_condition_file                               &
-!!     &         (my_rank, nod_grp, sf_grp, IO_bc)
-!!      subroutine write_boundary_values_file(my_rank, IO_bc)
+!!     &         (id_rank, nod_grp, sf_grp, IO_bc)
+!!      subroutine write_boundary_values_file(id_rank, IO_bc)
 !!        type(IO_boundary), intent(inout) :: IO_bc
 !!
 !!    format for data file for boundary data
@@ -75,18 +75,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_bc_condition_file                                 &
-     &         (my_rank, nod_grp, sf_grp, IO_bc)
+     &         (id_rank, nod_grp, sf_grp, IO_bc)
 !
       use t_group_data
 !
       type(group_data), intent(in) :: nod_grp
       type(surface_group_data), intent(in) :: sf_grp
-      integer (kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
 !
       type(IO_boundary), intent(inout) :: IO_bc
 !
 !
-      call read_boundary_values_file(my_rank,                           &
+      call read_boundary_values_file(id_rank,                           &
      &    nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
      &    sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name, IO_bc)
 !
@@ -143,13 +143,13 @@
 !  ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_boundary_values_file(my_rank,                     &
+      subroutine read_boundary_values_file(id_rank,                     &
      &          num_bc, bc_istack, bc_name,                             &
      &          num_surf, surf_istack, surf_name, IO_bc)
 !
       use set_parallel_file_name
 !
-      integer (kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
 !
       integer(kind = kint), intent(in) :: num_bc
       integer(kind = kint), intent(in) :: bc_istack(0:num_bc)
@@ -165,7 +165,7 @@
       integer (kind=kint) :: i, j, ist, jed
 !
 !
-      bc_file_name = add_int_suffix(my_rank, boundary_data_head)
+      bc_file_name = add_int_suffix(id_rank, boundary_data_head)
       open (boundary_data_code, file=bc_file_name)
 !
       read(boundary_data_code,*) IO_bc%num_group
@@ -234,18 +234,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_boundary_values_file(my_rank, IO_bc)
+      subroutine write_boundary_values_file(id_rank, IO_bc)
 !
       use set_parallel_file_name
 !
-      integer (kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
       type(IO_boundary), intent(inout) :: IO_bc
 !
       character(len=kchara) :: bc_file_name
       integer (kind=kint) :: i, j, jst, jed
 !
 !
-      bc_file_name = add_int_suffix(my_rank, boundary_data_head)
+      bc_file_name = add_int_suffix(id_rank, boundary_data_head)
       open (boundary_data_code, file=bc_file_name)
 !
       write(boundary_data_code,'(i16)') IO_bc%num_group

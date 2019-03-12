@@ -14,12 +14,12 @@
 !!        type(mean_square_values), intent(inout) :: fem_msq
 !!
 !!      subroutine output_monitor_file                                  &
-!!     &         (my_rank, i_step_MHD, time, iphys, fem_msq, msq_list)
+!!     &         (id_rank, i_step_MHD, time, iphys, fem_msq, msq_list)
 !!        real(kind = kreal), intent(in) :: time
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(mean_square_values), intent(in) :: fem_msq
 !!      subroutine skip_time_step_data                                  &
-!!     &         (my_rank, i_step_MHD, i_step_init, rms_step, fem_msq)
+!!     &         (id_rank, i_step_MHD, i_step_init, rms_step, fem_msq)
 !!        type(IO_step_param), intent(in) :: rms_step
 !!        type(mean_square_values), intent(inout) :: fem_msq
 !!@endverbatim
@@ -150,11 +150,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine output_monitor_file                                    &
-     &         (my_rank, i_step_MHD, time, iphys, fem_msq, msq_list)
+     &         (id_rank, i_step_MHD, time, iphys, fem_msq, msq_list)
 !
       use t_phys_data
 !
-      integer (kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: i_step_MHD
       real(kind = kreal), intent(in) :: time
 !
@@ -163,10 +163,10 @@
       type(mean_square_list), intent(in) :: msq_list
 !
 !
-      if ( my_rank .gt. 0 ) return
+      if ( id_rank .gt. 0 ) return
 !
       call open_monitor_file                                            &
-     &   (my_rank, iphys, fem_msq, msq_list)
+     &   (id_rank, iphys, fem_msq, msq_list)
 !
       write(time_step_data_code,'(i16,1p1000e20.11)')                   &
      &     i_step_MHD, time, fem_msq%ave_global(1:fem_msq%num_ave)
@@ -181,18 +181,18 @@
 ! ----------------------------------------------------------------------
 !
       subroutine open_monitor_file                                      &
-     &         (my_rank, iphys, fem_msq, msq_list)
+     &         (id_rank, iphys, fem_msq, msq_list)
 !
       use t_phys_data
       use time_step_file_IO
 !
-      integer (kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
       type(phys_address), intent(in) :: iphys
       type(mean_square_list), intent(in) :: msq_list
       type(mean_square_values), intent(in) :: fem_msq
 !
 !
-      if ( my_rank .ne. 0 ) return
+      if ( id_rank .ne. 0 ) return
 !
 !   If data files exist, append data at the end of file
 !
@@ -221,11 +221,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine skip_time_step_data                                    &
-     &         (my_rank, i_step_MHD, i_step_init, rms_step, fem_msq)
+     &         (id_rank, i_step_MHD, i_step_init, rms_step, fem_msq)
 !
       use t_IO_step_parameter
 !
-      integer (kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: i_step_MHD, i_step_init
       type(IO_step_param), intent(in) :: rms_step
 !
@@ -235,7 +235,7 @@
       real(kind = kreal) :: rtmp
 !
 !
-      if(my_rank .gt. 0) return
+      if(id_rank .gt. 0) return
       iflag = i_step_init - mod(i_step_MHD, rms_step%increment)
 !
       do

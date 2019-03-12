@@ -158,7 +158,7 @@
       type(merged_stacks), intent(inout) :: merge_tbl
       type(merged_stacks), intent(inout) :: merge_tbl_2
 !
-      integer(kind = kint) :: ip, my_rank
+      integer :: ip, id_rank
 !
 !
       write(*,*) 's_const_parallel_itp_table course_2_fine'
@@ -186,16 +186,16 @@
 !
 !
       do ip = 1, nprocs_larger
-        my_rank = ip - 1
+        id_rank = ip - 1
 !
         table_file_header = c2f_para_head
-        call output_interpolate_table(my_rank, c2f_para(ip) )
+        call output_interpolate_table(id_rank, c2f_para(ip) )
 !
         table_file_header = f2c_para_head
-        call output_interpolate_table(my_rank, f2c_para(ip) )
+        call output_interpolate_table(id_rank, f2c_para(ip) )
 !
         table_file_header = f2c_ele_para_head
-        call output_interpolate_table(my_rank, f2c_ele_para(ip) )
+        call output_interpolate_table(id_rank, f2c_ele_para(ip) )
       end do
 !
       end subroutine refine_interpolation_table

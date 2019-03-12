@@ -44,16 +44,17 @@
       type(node_data), intent(inout) :: node
 !
       type(mesh_geometry) :: mesh_IO_f
-      integer(kind = kint) :: ip, my_rank, ierr
+      integer(kind = kint) :: ierr
+      integer :: ip, id_rank
 !
 !
       call clear_imark_whole_nod
 !
       do ip = 1, nprocs
-        my_rank = ip - 1
+        id_rank = ip - 1
 !
         call sel_read_geometry_size                                     &
-     &     (mesh_file, my_rank, mesh_IO_f, ierr)
+     &     (mesh_file, id_rank, mesh_IO_f, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
         end if
@@ -66,7 +67,7 @@
 !
 !     read filtering information
 !
-        call read_original_filter_coefs(ifile_type, my_rank,            &
+        call read_original_filter_coefs(ifile_type, id_rank,            &
      &      node%numnod, numele)
 !
         call nod_marking_by_filtering_data                              &
@@ -93,15 +94,16 @@
       type(node_data), intent(inout) :: node
 !
       type(mesh_geometry) :: mesh_IO_f
-      integer(kind = kint) :: ip, my_rank, ierr, icou_st
+      integer(kind = kint) :: ierr, icou_st
+      integer(kind = kint) :: ip, id_rank
 !
 !
       icou_st = 0
       do ip = 1, nprocs
-        my_rank = ip - 1
+        id_rank = ip - 1
 !
         call sel_read_geometry_size                                     &
-     &     (mesh_file, my_rank, mesh_IO_f, ierr)
+     &     (mesh_file, id_rank, mesh_IO_f, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
         end if
@@ -114,7 +116,7 @@
 !
 !     read filtering information
 !
-        call read_original_filter_coefs(ifile_type, my_rank,            &
+        call read_original_filter_coefs(ifile_type, id_rank,            &
      &      node%numnod, numele)
 !
         call set_filter_for_new_each_domain                             &
