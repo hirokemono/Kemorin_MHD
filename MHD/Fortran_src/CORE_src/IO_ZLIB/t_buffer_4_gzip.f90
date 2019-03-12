@@ -41,7 +41,7 @@
         character(len=1), allocatable :: gzip_buf(:)
       end type buffer_4_gzip
 !
-      integer(kind = kint), parameter :: maxline = 10000
+      integer(kind = kint), parameter :: maxline = huge_20
 !
 !  ---------------------------------------------------------------------
 !
