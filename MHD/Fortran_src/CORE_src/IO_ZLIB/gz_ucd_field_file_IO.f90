@@ -79,7 +79,7 @@
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
-      integer(kind = kint) :: id_rank
+      integer :: id_read_rank
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -88,7 +88,7 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_read_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call skip_gz_comment_int8_int(ucd%nnod, ucd%num_field)
       call read_gz_multi_int(ucd%num_field, ucd%num_comp)
 !
@@ -110,7 +110,7 @@
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
-      integer(kind = kint) :: id_rank
+      integer :: id_read_rank
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -119,7 +119,7 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_read_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call skip_gz_comment_int8_int(ucd%nnod, ucd%num_field)
 !
       call allocate_ucd_phys_name(ucd)

@@ -8,20 +8,20 @@
 !> @brief file IO for filtering structure
 !!
 !!@verbatim
-!!      subroutine read_num_filter_mom_type_file(file_name, my_rank,    &
+!!      subroutine read_num_filter_mom_type_file(file_name, id_rank,    &
 !!     &          FEM_elens, FEM_moms)
 !!
-!!      subroutine read_filter_elen_type_file(file_name, my_rank,       &
+!!      subroutine read_filter_elen_type_file(file_name, id_rank,       &
 !!     &          nnod, nele, FEM_elens, ierr)
-!!      subroutine write_filter_elen_type_file(file_name, my_rank,      &
+!!      subroutine write_filter_elen_type_file(file_name, id_rank,      &
 !!     &          FEM_elens)
 !!
-!!      subroutine read_filter_moms_type_file(file_name, my_rank,       &
+!!      subroutine read_filter_moms_type_file(file_name, id_rank,       &
 !!     &          nnod, nele, FEM_elens, FEM_moms, ierr)
-!!      subroutine write_filter_moms_type_file(file_name, my_rank,      &
+!!      subroutine write_filter_moms_type_file(file_name, id_rank,      &
 !!     &          FEM_elens, FEM_moms)
 !!        character(len=kchara), intent(in) :: file_name
-!!        integer(kind = kint), intent(in) :: my_rank
+!!        integer(kind = kint), intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: nnod, nele
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elens
 !!        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
@@ -46,19 +46,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_num_filter_mom_type_file(file_name, my_rank,      &
+      subroutine read_num_filter_mom_type_file(file_name, id_rank,      &
      &          FEM_elens, FEM_moms)
 !
       use t_filter_moments
       use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Write ascii number of filter moms file: ',          &
      &             trim(file_name)
       end if
@@ -74,19 +74,19 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_filter_elen_type_file(file_name, my_rank,         &
+      subroutine read_filter_elen_type_file(file_name, id_rank,         &
      &          nnod, nele, FEM_elens, ierr)
 !
       use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nnod, nele
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read ascii filter length file: ',                   &
      &             trim(file_name)
       end if
@@ -101,17 +101,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_filter_elen_type_file(file_name, my_rank,        &
+      subroutine write_filter_elen_type_file(file_name, id_rank,        &
      &          FEM_elens)
 !
       use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(gradient_model_data_type), intent(inout) :: FEM_elens
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Write ascii filter length file: ',                  &
      &             trim(file_name)
       end if
@@ -125,21 +125,21 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_filter_moms_type_file(file_name, my_rank,         &
+      subroutine read_filter_moms_type_file(file_name, id_rank,         &
      &          nnod, nele, FEM_elens, FEM_moms, ierr)
 !
       use t_filter_moments
       use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nnod, nele
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read ascii filter moment file: ',                   &
      &             trim(file_name)
       end if
@@ -153,19 +153,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_filter_moms_type_file(file_name, my_rank,        &
+      subroutine write_filter_moms_type_file(file_name, id_rank,        &
      &          FEM_elens, FEM_moms)
 !
       use t_filter_moments
       use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Write ascii filter moment file: ',                  &
      &             trim(file_name)
       end if

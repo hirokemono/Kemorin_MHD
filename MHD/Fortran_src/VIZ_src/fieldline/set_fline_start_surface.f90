@@ -4,7 +4,7 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine set_fline_start_surf(my_rank, numnod, numele,        &
+!!      subroutine set_fline_start_surf(id_rank, numnod, numele,        &
 !!     &          numsurf, nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf,&
 !!     &          fln_prm, fln_src, fln_tce)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
@@ -26,7 +26,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_start_surf(my_rank, numnod, numele,          &
+      subroutine set_fline_start_surf(id_rank, numnod, numele,          &
      &          numsurf, nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf,  &
      &          fln_prm, fln_src, fln_tce)
 !
@@ -37,7 +37,7 @@
 !
       use cal_field_on_surf_viz
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
@@ -55,7 +55,7 @@
 !
 !
       do i = 1, fln_src%num_line_local
-        inum1 = i + fln_tce%istack_current_fline(my_rank)
+        inum1 = i + fln_tce%istack_current_fline(id_rank)
         iele =     fln_prm%id_surf_start_fline(1,i)
         isf_1ele = fln_prm%id_surf_start_fline(2,i)
         isurf = abs(isf_4_ele(iele,isf_1ele))

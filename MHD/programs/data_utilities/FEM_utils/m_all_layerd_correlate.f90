@@ -8,7 +8,7 @@
 !      subroutine deallocate_all_layer_correlate
 !      subroutine deallocate_name_layer_correlate
 !
-!      subroutine write_layerd_correlate_data(my_rank, i_step)
+!      subroutine write_layerd_correlate_data(id_rank, i_step)
 !      subroutine read_layerd_data(id_file, i_step, data, ierr)
 !
       module m_all_layerd_correlate
@@ -115,12 +115,12 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine write_layerd_correlate_data(my_rank, i_step)
+      subroutine write_layerd_correlate_data(id_rank, i_step)
 !
-      integer(kind = kint), intent(in) :: my_rank, i_step
+      integer(kind = kint), intent(in) :: id_rank, i_step
 !
 !
-      if(my_rank .ne. 0) return
+      if(id_rank .ne. 0) return
 !
       call write_layerd_data(id_layerd_data, fname_layer_ave_ref,       &
      &    i_step, ave_ref)

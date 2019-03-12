@@ -75,11 +75,11 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine neib_edge_line(my_rank)
+       subroutine neib_edge_line(id_rank)
 !
        use m_constants
 !
-       integer(kind = kint), intent(in) :: my_rank
+       integer(kind = kint), intent(in) :: id_rank
 !
 !
        call allocate_neighbour_edge_line
@@ -91,7 +91,7 @@
        call set_neib_edge_line(ithree, i_st, i_end, j_st, j_end,        &
      &       kedge_st, kedge_end)
 !
-       call write_neib_edge_line(my_rank)
+       call write_neib_edge_line(id_rank)
 !
        call deallocate_neighbour_edge_line
 !
@@ -141,13 +141,13 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine write_neib_edge_line(my_rank)
+       subroutine write_neib_edge_line(id_rank)
 !
-       integer(kind = kint), intent(in) :: my_rank
+       integer(kind = kint), intent(in) :: id_rank
        integer (kind = kint) :: ist, ied, iedge, i
 !
 !
-       fname = add_int_suffix(my_rank, filter_edge_header)
+       fname = add_int_suffix(id_rank, filter_edge_header)
        open (nb_out, file=nb_name)
 !
        write(nb_out,'(a12)') '! num_edge:  '

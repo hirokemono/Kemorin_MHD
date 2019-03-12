@@ -12,7 +12,7 @@
 !> @brief Binary data IO for interpolation
 !!
 !!@verbatim
-!!      subroutine write_interpolate_table_org_b(my_rank, IO_itp_org)
+!!      subroutine write_interpolate_table_org_b(id_rank, IO_itp_org)
 !!      subroutine write_interpolate_coefs_org_b(IO_itp_org)
 !!        type(interpolate_table_org), intent(in) :: IO_itp_org
 !!
@@ -23,7 +23,7 @@
 !!        type(file_IO_flags), intent(inout) :: bin_flags
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!
-!!      subroutine write_interpolate_table_dest_b(my_rank, IO_itp_dest)
+!!      subroutine write_interpolate_table_dest_b(id_rank, IO_itp_dest)
 !!      subroutine write_interpolate_coefs_dest_b                       &
 !!     &         (IO_itp_dest, IO_itp_c_dest)
 !!        type(interpolate_table_dest), intent(in) :: IO_itp_dest
@@ -53,17 +53,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_interpolate_table_org_b(my_rank, IO_itp_org)
+      subroutine write_interpolate_table_org_b(id_rank, IO_itp_org)
 !
       use t_interpolate_tbl_org
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
       integer(kind = kint_gl) :: num64
 !
 !
-      call write_one_integer_b(my_rank)
+      call write_one_integer_b(id_rank)
       call write_one_integer_b(IO_itp_org%num_dest_domain)
 !
       if (IO_itp_org%num_dest_domain .le. 0) return
@@ -216,17 +216,17 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_interpolate_table_dest_b(my_rank, IO_itp_dest)
+      subroutine write_interpolate_table_dest_b(id_rank, IO_itp_dest)
 !
       use t_interpolate_tbl_dest
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !
       integer(kind = kint_gl) :: num64
 !
 !
-      call write_one_integer_b(my_rank)
+      call write_one_integer_b(id_rank)
       call write_one_integer_b(IO_itp_dest%num_org_domain)
 !
       if (IO_itp_dest%num_org_domain .le. 0) return

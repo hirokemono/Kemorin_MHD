@@ -4,7 +4,7 @@
 !      Written by H. Matsui on Sep., 2007
 !
 !!      subroutine local_fem_mesh                                       &
-!!     &         (my_rank, nprocs, part_p, node_org, ele_org, group_org,&
+!!     &         (id_rank, nprocs, part_p, node_org, ele_org, group_org,&
 !!     &          internals_part, nod_d_grp, ele_d_grp, comm_part)
 !!        type(ctl_param_partitioner), intent(in) :: part_p
 !!        type(node_data), intent(in) :: node_org
@@ -28,7 +28,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine local_fem_mesh                                         &
-     &         (my_rank, nprocs, part_p, node_org, ele_org, group_org,  &
+     &         (id_rank, nprocs, part_p, node_org, ele_org, group_org,  &
      &          internals_part, nod_d_grp, ele_d_grp, comm_part)
 !
       use t_mesh_data
@@ -51,7 +51,7 @@
 !
       implicit none
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       type(ctl_param_partitioner), intent(in) :: part_p
       type(node_data), intent(in) :: node_org
       type(element_data), intent(in) :: ele_org
@@ -75,7 +75,7 @@
       do ip= 1, part_p%num_domain
         irank_subdomain = ip-1
 !
-        if(mod(irank_subdomain,nprocs) .ne. my_rank) cycle
+        if(mod(irank_subdomain,nprocs) .ne. id_rank) cycle
 !C
 !C +--------------------------+
 !C | load communication table |
@@ -107,7 +107,7 @@
 !C===
       do ip= 1, part_p%num_domain
         irank_subdomain = ip-1
-        if(mod(irank_subdomain,nprocs) .ne. my_rank) cycle
+        if(mod(irank_subdomain,nprocs) .ne. id_rank) cycle
 !
         call output_mesh(part_p%distribute_mesh_file, irank_subdomain,  &
      &      para_fem(ip)%mesh, para_fem(ip)%group)

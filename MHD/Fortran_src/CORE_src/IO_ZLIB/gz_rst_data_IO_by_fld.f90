@@ -44,7 +44,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: gzip_name
-      integer(kind = kint) :: id_rank
+      integer :: id_read_rank
 !
 !
       gzip_name = add_gzip_extension(file_name)
@@ -55,7 +55,7 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_read_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call skip_gz_comment_int(fld_IO%num_field_IO)
       call read_gz_field_data(cast_long(fld_IO%nnod_IO),                &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
@@ -76,7 +76,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: gzip_name
-      integer(kind = kint) :: id_rank
+      integer :: id_read_rank
 !
 !
       gzip_name = add_gzip_extension(file_name)
@@ -87,7 +87,7 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_read_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call skip_gz_comment_int(fld_IO%num_field_IO)
 !
       call alloc_phys_name_IO(fld_IO)

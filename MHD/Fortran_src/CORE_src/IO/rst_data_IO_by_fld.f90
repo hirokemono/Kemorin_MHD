@@ -7,8 +7,8 @@
 !> @brief read restart file
 !!
 !!@verbatim
-!!      subroutine read_rst_file(my_rank, file_name, t_IO, fld_IO)
-!!      subroutine read_rst_data_comps(my_rank, file_name, t_IO, fld_IO)
+!!      subroutine read_rst_file(id_rank, file_name, t_IO, fld_IO)
+!!      subroutine read_rst_data_comps(id_rank, file_name, t_IO, fld_IO)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
@@ -32,14 +32,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_rst_file(my_rank, file_name, t_IO, fld_IO)
+      subroutine read_rst_file(id_rank, file_name, t_IO, fld_IO)
 !
       use set_parallel_file_name
       use field_data_IO
       use skip_comment_f
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(time_data), intent(inout) :: t_IO
@@ -48,7 +48,7 @@
       character(len=kchara) :: character_4_read
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read ascii restart file: ', trim(file_name)
       open (id_phys_file, file = file_name, form='formatted')
 !
@@ -66,13 +66,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_rst_data_comps(my_rank, file_name, t_IO, fld_IO)
+      subroutine read_rst_data_comps(id_rank, file_name, t_IO, fld_IO)
 !
       use set_parallel_file_name
       use field_data_IO
       use skip_comment_f
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(time_data), intent(inout) :: t_IO
@@ -81,7 +81,7 @@
       character(len=kchara) :: character_4_read
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read ascii restart file: ', trim(file_name)
       open (id_phys_file, file = file_name, form='formatted')
 !

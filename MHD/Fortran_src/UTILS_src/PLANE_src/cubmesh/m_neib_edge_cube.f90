@@ -40,9 +40,9 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine neighboring_edge(my_rank, kpe)
+       subroutine neighboring_edge(id_rank, kpe)
 !
-        integer(kind = kint), intent(in) :: my_rank, kpe
+        integer(kind = kint), intent(in) :: id_rank, kpe
 !
 !
       call set_range_4_nodeloop(kpe)
@@ -85,7 +85,7 @@
       call count_neib_edge_z(ithree, i_st, i_end, j_st, j_end,          &
      &     kedge_st, kedge_end)
 !
-      call neib_edge_line(my_rank)
+      call neib_edge_line(id_rank)
 !
        end subroutine neighboring_edge
 !

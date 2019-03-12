@@ -30,19 +30,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine open_mesh_file(my_rank)
+      subroutine open_mesh_file(id_rank)
 !
       use m_size_4_plane
       use m_size_of_cube
       use set_mesh_file_names
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       character(len=kchara) ::  fname_tmp
 !
 ! ***** open output file
 !
       fname = set_mesh_file_name(mesh_file_header, id_ascii_file_fmt,   &
-     &                           my_rank)
+     &                           id_rank)
       open (l_out, file=fname, form='formatted' )
 !
 ! ..... write 0. header lines

@@ -15,7 +15,7 @@
 !!
 !!      subroutine copy_item_pvr_ray_start(pvr_st_org, pvr_start)
 !!
-!!      subroutine check_pvr_ray_startpoints(my_rank, pvr_start)
+!!      subroutine check_pvr_ray_startpoints(id_rank, pvr_start)
 !!@endverbatim
 !
       module t_pvr_ray_startpoints
@@ -247,18 +247,18 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine check_pvr_ray_startpoints(my_rank, pvr_start)
+      subroutine check_pvr_ray_startpoints(id_rank, pvr_start)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
       integer(kind = kint) :: inum
 !
 !
-        write(50+my_rank,*) 'num_pvr_ray', pvr_start%num_pvr_ray
+        write(50+id_rank,*) 'num_pvr_ray', pvr_start%num_pvr_ray
         do inum = 1, pvr_start%num_pvr_ray
-          write(50+my_rank,*) inum, pvr_start%id_pixel_start(inum),    &
+          write(50+id_rank,*) inum, pvr_start%id_pixel_start(inum),    &
      &      pvr_start%isf_pvr_ray_start(1:3,inum),                     &
      &      pvr_start%xx_pvr_ray_start(1:3,inum),                      &
      &      pvr_start%icount_pvr_trace(inum)

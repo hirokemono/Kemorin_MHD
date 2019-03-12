@@ -114,7 +114,7 @@
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
-      integer(kind = kint) :: id_rank
+      integer :: id_read_rank
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
@@ -124,7 +124,7 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_read_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
       call read_gz_multi_int(fld_IO%num_field_IO, fld_IO%num_comp_IO)
       call read_gz_field_data(cast_long(fld_IO%nnod_IO),                &
@@ -146,7 +146,7 @@
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
-      integer(kind = kint) :: id_rank
+      integer :: id_read_rank
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
@@ -156,7 +156,7 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_read_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
       call alloc_phys_name_IO(fld_IO)
 !
@@ -184,7 +184,7 @@
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
-      integer(kind = kint) :: id_rank
+      integer :: id_read_rank
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
@@ -194,7 +194,7 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_read_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
 !
       call alloc_phys_name_IO(fld_IO)

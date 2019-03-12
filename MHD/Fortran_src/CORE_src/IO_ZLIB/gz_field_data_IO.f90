@@ -5,8 +5,8 @@
 !
 !       zlib and kemo_zlib_io_c are required
 !
-!!      subroutine write_gz_step_data(                                  &
-!!     &          id_rank, i_time_step_IO, time_IO, delta_t_IO)
+!!      subroutine write_gz_step_data                                   &
+!!     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !!      subroutine read_gz_step_data                                    &
 !!     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !!
@@ -31,10 +31,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_step_data(                                    &
-     &          id_rank, i_time_step_IO, time_IO, delta_t_IO)
+      subroutine write_gz_step_data                                     &
+     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind=kint), intent(in) :: i_time_step_IO
       real(kind = kreal), intent(in) :: time_IO, delta_t_IO
 !
@@ -59,7 +59,7 @@
       subroutine read_gz_step_data                                      &
      &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !
-      integer(kind = kint), intent(inout) :: id_rank
+      integer, intent(inout) :: id_rank
       integer(kind=kint), intent(inout) :: i_time_step_IO
       real(kind = kreal), intent(inout) :: time_IO, delta_t_IO
 !

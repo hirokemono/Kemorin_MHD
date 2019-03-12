@@ -2,7 +2,7 @@
 !     Written by H. Matsui on Oct., 2007
 !
 !!      subroutine s_const_refine_interpolate_tbl                       &
-!!     &         (my_rank, org_mesh, org_e_mesh, newmesh)
+!!     &         (id_rank, org_mesh, org_e_mesh, newmesh)
 !!        type(mesh_geometry), intent(in) :: org_mesh
 !!        type(element_geometry), intent(in) :: org_e_mesh
 !!        type(mesh_geometry), intent(in) :: newmesh
@@ -39,7 +39,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine s_const_refine_interpolate_tbl                         &
-     &         (my_rank, org_mesh, org_e_mesh, newmesh)
+     &         (id_rank, org_mesh, org_e_mesh, newmesh)
 !
       use t_mesh_data
       use t_geometry_data
@@ -48,7 +48,7 @@
       use m_work_merge_refine_itp
       use refinment_info_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(mesh_geometry), intent(in) :: org_mesh
       type(element_geometry), intent(in) :: org_e_mesh
       type(mesh_geometry), intent(in) :: newmesh
@@ -59,7 +59,7 @@
       if(iflag_tmp_tri_refine .eq. 0 .and. iflag_merge .eq. 0) then
         write(*,*) 'const_single_refine_itp_tbl'
         call const_single_refine_itp_tbl                                &
-     &     (my_rank, org_mesh%ele, org_e_mesh%surf, org_e_mesh%edge,    &
+     &     (id_rank, org_mesh%ele, org_e_mesh%surf, org_e_mesh%edge,    &
      &      newmesh%node%numnod, itp_refine)
         call write_refinement_table(org_mesh%ele%numele, ione)
       else if(iflag_tmp_tri_refine .gt. 0 .or. iflag_merge .eq. 0) then
@@ -76,7 +76,7 @@
      &      newmesh%node%numnod, itp_refine)
         write(*,*) 'const_merged_refine_itp_tbl'
         call const_merged_refine_itp_tbl                                &
-     &     (my_rank, org_mesh%ele%nnod_4_ele,                           &
+     &     (id_rank, org_mesh%ele%nnod_4_ele,                           &
      &      newmesh%node%numnod, newmesh%ele%nnod_4_ele,                &
      &      newmesh%node%xx)
 !
@@ -90,14 +90,14 @@
 !   --------------------------------------------------------------------
 !
       subroutine const_single_refine_itp_tbl                            &
-     &         (my_rank, ele, surf, edge, nnod_2, itp_info)
+     &         (id_rank, ele, surf, edge, nnod_2, itp_info)
 !
       use m_work_merge_refine_itp
       use m_interpolate_table_IO
       use set_refine_interpolate_tbl
       use copy_interpolate_types
 !
-      integer(kind = kint), intent(in) :: my_rank, nnod_2
+      integer(kind = kint), intent(in) :: id_rank, nnod_2
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
@@ -159,7 +159,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_merged_refine_itp_tbl                            &
-     &         (my_rank, nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2)
+     &         (id_rank, nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2)
 !
       use t_interpolate_table
       use m_work_merge_refine_itp
@@ -168,7 +168,7 @@
       use set_refine_interpolate_tbl
       use set_merged_refine_itp
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(in) :: nnod_2, nnod_4_ele_2
       real(kind = kreal), intent(in) :: xx_2(nnod_2,3)

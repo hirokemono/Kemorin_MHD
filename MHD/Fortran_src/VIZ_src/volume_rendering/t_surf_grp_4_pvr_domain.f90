@@ -142,9 +142,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_sf_grp_4_pvr_domain(my_rank, num_pvr, pvr_bound)
+      subroutine check_sf_grp_4_pvr_domain(id_rank, num_pvr, pvr_bound)
 !
-      integer(kind = kint), intent(in) :: my_rank, num_pvr
+      integer(kind = kint), intent(in) :: id_rank, num_pvr
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound(num_pvr)
 !
       integer(kind = kint) :: i_pvr, num
@@ -152,11 +152,11 @@
 !
       do i_pvr = 1, num_pvr
         num = pvr_bound(i_pvr)%num_pvr_surf
-        write(50+my_rank,*) 'num_pvr_surf',                             &
+        write(50+id_rank,*) 'num_pvr_surf',                             &
      &                     i_pvr, pvr_bound(i_pvr)%num_pvr_surf
-        write(50+my_rank,'(8i16)')                                      &
+        write(50+id_rank,'(8i16)')                                      &
     &      pvr_bound(i_pvr)%item_pvr_surf(1,1:num)
-        write(50+my_rank,'(8i16)')                                      &
+        write(50+id_rank,'(8i16)')                                      &
     &      pvr_bound(i_pvr)%item_pvr_surf(2,1:num)
       end do
 !
@@ -164,19 +164,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_sf_posi_pvr_domain(my_rank, num_pvr, pvr_bound)
+      subroutine check_sf_posi_pvr_domain(id_rank, num_pvr, pvr_bound)
 !
-      integer(kind = kint), intent(in) :: my_rank, num_pvr
+      integer(kind = kint), intent(in) :: id_rank, num_pvr
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound(num_pvr)
 !
       integer(kind = kint) :: i_pvr, inum
 !
 !
       do i_pvr = 1, num_pvr
-        write(50+my_rank,*) 'screen_posi',                              &
+        write(50+id_rank,*) 'screen_posi',                              &
      &                     i_pvr, pvr_bound(i_pvr)%num_pvr_surf
         do inum = 1, pvr_bound(i_pvr)%num_pvr_surf
-          write(50+my_rank,*) inum,                                     &
+          write(50+id_rank,*) inum,                                     &
      &      pvr_bound(i_pvr)%screen_posi(1:3,inum),                     &
      &      pvr_bound(i_pvr)%screen_w(inum)
         end do
@@ -186,19 +186,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_sf_norm_pvr_domain(my_rank, num_pvr, pvr_bound)
+      subroutine check_sf_norm_pvr_domain(id_rank, num_pvr, pvr_bound)
 !
-      integer(kind = kint), intent(in) :: my_rank, num_pvr
+      integer(kind = kint), intent(in) :: id_rank, num_pvr
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound(num_pvr)
 !
       integer(kind = kint) :: i_pvr, inum
 !
 !
       do i_pvr = 1, num_pvr
-        write(50+my_rank,*) 'screen_norm',                              &
+        write(50+id_rank,*) 'screen_norm',                              &
      &                     i_pvr, pvr_bound(i_pvr)%num_pvr_surf
         do inum = 1, pvr_bound(i_pvr)%num_pvr_surf
-          write(50+my_rank,*) inum,                                     &
+          write(50+id_rank,*) inum,                                     &
      &           pvr_bound(i_pvr)%screen_norm(1:3,inum)
         end do
       end do
@@ -207,19 +207,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_surf_rng_pvr_domain(my_rank, num_pvr, pvr_bound)
+      subroutine check_surf_rng_pvr_domain(id_rank, num_pvr, pvr_bound)
 !
-      integer(kind = kint), intent(in) :: my_rank, num_pvr
+      integer(kind = kint), intent(in) :: id_rank, num_pvr
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound(num_pvr)
 !
       integer(kind = kint) :: i_pvr, inum
 !
 !
       do i_pvr = 1, num_pvr
-        write(50+my_rank,*) 'isurf_xrng',                               &
+        write(50+id_rank,*) 'isurf_xrng',                               &
      &                     i_pvr, pvr_bound(i_pvr)%num_pvr_surf
         do inum = 1, pvr_bound(i_pvr)%num_pvr_surf
-          write(50+my_rank,'(i16,4i5,1p4e16.7)')                        &
+          write(50+id_rank,'(i16,4i5,1p4e16.7)')                        &
      &          inum, pvr_bound(i_pvr)%isurf_xrng(1:2,inum),            &
      &                pvr_bound(i_pvr)%jsurf_yrng(1:2,inum),            &
      &                pvr_bound(i_pvr)%screen_xrng(1:2,inum),           &
