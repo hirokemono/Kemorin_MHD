@@ -47,7 +47,7 @@
       integer(kind = kint), parameter :: IFLAG_SHOW_FORWARD =  1
       integer(kind = kint), parameter :: IFLAG_SHOW_REVERSE = -1
 !
-      real(kind = kreal), parameter :: coef_op = 3e-2
+      real(kind = kreal), parameter :: coef_op = 4.0e-2
 !
 !  ---------------------------------------------------------------------
 !
@@ -83,9 +83,9 @@
             if(cmp_no_case(draw_type(jgrp), LABEL_EDGE)) then
               iflag_enhanse(igrp) = IFLAG_SHOW_EDGE
             else if(cmp_no_case(draw_type(jgrp), LABEL_FORWARD)) then
-              iflag_enhanse(igrp) = IFLAG_SHOW_EDGE
+              iflag_enhanse(igrp) = IFLAG_SHOW_FORWARD
             else if(cmp_no_case(draw_type(jgrp), LABEL_REVERSE)) then
-              iflag_enhanse(igrp) = IFLAG_SHOW_EDGE
+              iflag_enhanse(igrp) = IFLAG_SHOW_REVERSE
             end if
             enhansed_opacity(igrp) = fixed_opacity(jgrp)
             exit
@@ -146,27 +146,27 @@
           k1 =   surf_grp%item_sf_grp(2,inum)
           isurf = abs(isf_4_ele(iele,k1))
           size_v = sqrt(norm_sf_model(inum,1)*norm_sf_model(inum,1)     &
-     &              + norm_sf_model(inum,2)*norm_sf_model(inum,2)       &
-     &              + norm_sf_model(inum,3)*norm_sf_model(inum,3))
+     &                + norm_sf_model(inum,2)*norm_sf_model(inum,2)     &
+     &                + norm_sf_model(inum,3)*norm_sf_model(inum,3))
           ratio = coef_op * size_v / norm_sf_model(inum,3)
 !
           if(iflag_enhanse(igrp) .eq. IFLAG_SHOW_EDGE) then
             if(abs(ratio) .gt. ONE) then
-              arccos_sf(isurf) = zero
-            else
               arccos_sf(isurf) = enhansed_opacity(igrp)
+            else
+              arccos_sf(isurf) = zero
             end if
           else if(iflag_enhanse(igrp) .eq. IFLAG_SHOW_FORWARD) then
-            if(ratio .gt. zero) then
+            if(ratio .lt. zero) then
               arccos_sf(isurf) = zero
             else
               arccos_sf(isurf) = enhansed_opacity(igrp)
             end if
           else if(iflag_enhanse(igrp) .eq. IFLAG_SHOW_REVERSE) then
             if(ratio .lt. zero) then
-              arccos_sf(isurf) = zero
-            else
               arccos_sf(isurf) = enhansed_opacity(igrp)
+            else
+              arccos_sf(isurf) = zero
             end if
           else
             arccos_sf(isurf) = zero
