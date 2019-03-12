@@ -7,8 +7,8 @@
 !> @brief read gzipped restart file
 !!
 !!@verbatim
-!!      subroutine read_gz_rst_file(my_rank, file_name, t_IO, fld_IO)
-!!      subroutine read_gz_rst_comps(my_rank, file_name, t_IO, fld_IO)
+!!      subroutine read_gz_rst_file(id_rank, file_name, t_IO, fld_IO)
+!!      subroutine read_gz_rst_comps(id_rank, file_name, t_IO, fld_IO)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
@@ -35,10 +35,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_rst_file(my_rank, file_name, t_IO, fld_IO)
+      subroutine read_gz_rst_file(id_rank, file_name, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -49,7 +49,7 @@
 !
       gzip_name = add_gzip_extension(file_name)
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped restart file: ', trim(gzip_name)
 !
       call open_rd_gzfile_f(gzip_name)
@@ -67,10 +67,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_rst_comps(my_rank, file_name, t_IO, fld_IO)
+      subroutine read_gz_rst_comps(id_rank, file_name, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -81,7 +81,7 @@
 !
       gzip_name = add_gzip_extension(file_name)
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read gzipped restart file: ', trim(gzip_name)
 !
       call open_rd_gzfile_f(gzip_name)

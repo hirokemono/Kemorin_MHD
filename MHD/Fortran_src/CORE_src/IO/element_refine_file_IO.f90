@@ -7,9 +7,9 @@
 !>@brief File IO for element refinment data
 !!
 !!@verbatim
-!!      subroutine read_element_refine_file(my_rank, ifile_type,        &
+!!      subroutine read_element_refine_file(id_rank, ifile_type,        &
 !!    &           IO_itp_org, IO_itp_dest, e_ref_IO)
-!!      subroutine write_element_refine_file(my_rank, ifile_type,       &
+!!      subroutine write_element_refine_file(id_rank, ifile_type,       &
 !!     &          IO_itp_org, IO_itp_dest, e_ref_IO)
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -38,12 +38,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_element_refine_file(my_rank, ifile_type,          &
+      subroutine read_element_refine_file(id_rank, ifile_type,          &
     &           IO_itp_org, IO_itp_dest, e_ref_IO)
 !
       use binary_IO
 !
-      integer(kind = kint), intent(in) :: my_rank, ifile_type
+      integer(kind = kint), intent(in) :: id_rank, ifile_type
 !
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -53,13 +53,13 @@
       character(len = kchara) :: refine_fname
 !
 !
-      refine_fname = add_int_suffix(my_rank, e_ref_IO%file_head)
+      refine_fname = add_int_suffix(id_rank, e_ref_IO%file_head)
 !
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_fname)
         call open_read_binary_file                                      &
-     &     (refine_fname, my_rank, bin_rfnflags%iflag_bin_swap)
+     &     (refine_fname, id_rank, bin_rfnflags%iflag_bin_swap)
 !
         call read_interpolate_table_dest_b(bin_rfnflags, IO_itp_dest)
         if(bin_rfnflags%ierr_IO .gt. 0) goto 99
@@ -98,10 +98,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_element_refine_file(my_rank, ifile_type,         &
+      subroutine write_element_refine_file(id_rank, ifile_type,         &
      &          IO_itp_org, IO_itp_dest, e_ref_IO)
 !
-      integer(kind = kint), intent(in) :: my_rank, ifile_type
+      integer(kind = kint), intent(in) :: id_rank, ifile_type
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(ele_refine_IO_type), intent(inout) :: e_ref_IO
@@ -109,15 +109,15 @@
       character(len = kchara) :: refine_fname
 !
 !
-      refine_fname = add_int_suffix(my_rank, e_ref_IO%file_head)
+      refine_fname = add_int_suffix(id_rank, e_ref_IO%file_head)
 !
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_fname)
         call open_write_binary_file(refine_fname)
 !
-        call write_interpolate_table_dest_b(my_rank, IO_itp_dest)
-        call write_interpolate_table_org_b(my_rank, IO_itp_org)
+        call write_interpolate_table_dest_b(id_rank, IO_itp_dest)
+        call write_interpolate_table_org_b(id_rank, IO_itp_org)
         call write_interpolate_coefs_org_b(IO_itp_org)
 !
         call write_element_refine_data_b(e_ref_IO)
@@ -129,9 +129,9 @@
         open (id_refine_table,file = refine_fname)
 !
         call write_interpolate_table_dest                               &
-     &     (id_refine_table, my_rank, IO_itp_dest)
+     &     (id_refine_table, id_rank, IO_itp_dest)
         call write_interpolate_table_org                                &
-     &     (id_refine_table, my_rank, IO_itp_org)
+     &     (id_refine_table, id_rank, IO_itp_org)
         call write_interpolate_coefs_org(id_refine_table, IO_itp_org)
 !
         call write_element_refine_data(id_refine_table, e_ref_IO)

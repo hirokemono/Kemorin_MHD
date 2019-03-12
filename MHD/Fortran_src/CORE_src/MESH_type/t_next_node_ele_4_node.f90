@@ -26,11 +26,11 @@
 !!
 !!      subroutine dealloc_next_nod_ele_table(next_tbl)
 !!        type(next_nod_ele_table), intent(inout) :: next_tbl
-!!      subroutine check_ele_id_4_node_type(my_rank, numnod, neib_ele)
-!!        integer(kind = kint), intent(in) :: my_rank, numnod
+!!      subroutine check_ele_id_4_node_type(id_rank, numnod, neib_ele)
+!!        integer(kind = kint), intent(in) :: id_rank, numnod
 !!        type(element_around_node), intent(in) :: neib_ele
-!!      subroutine check_next_node_id_4_node(my_rank, numnod, neib_nod)
-!!        integer(kind = kint), intent(in) :: my_rank, numnod
+!!      subroutine check_next_node_id_4_node(id_rank, numnod, neib_nod)
+!!        integer(kind = kint), intent(in) :: id_rank, numnod
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
 !!@endverbatim
 !
@@ -199,9 +199,9 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine check_ele_id_4_node_type(my_rank, numnod, neib_ele)
+      subroutine check_ele_id_4_node_type(id_rank, numnod, neib_ele)
 !
-      integer(kind = kint), intent(in) :: my_rank, numnod
+      integer(kind = kint), intent(in) :: id_rank, numnod
       type(element_around_node), intent(in) :: neib_ele
 !
       integer(kind = kint) :: inod, inum, ist, ied
@@ -209,10 +209,10 @@
       do inod = 1, numnod
         ist = neib_ele%istack_4_node(inod-1) + 1
         ied = neib_ele%istack_4_node(inod)
-        write(50+my_rank,*) 'element and local index for node ',        &
+        write(50+id_rank,*) 'element and local index for node ',        &
      &                     inod, ist, ied, neib_ele%nele_4_node(inod)
         do inum = ist, ied
-          write(50+my_rank,*)                                           &
+          write(50+id_rank,*)                                           &
      &        neib_ele%iele_4_node(inum), neib_ele%iconn_4_node(inum)
         end do
       end do
@@ -221,9 +221,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_next_node_id_4_node(my_rank, numnod, neib_nod)
+      subroutine check_next_node_id_4_node(id_rank, numnod, neib_nod)
 !
-      integer(kind = kint), intent(in) :: my_rank, numnod
+      integer(kind = kint), intent(in) :: id_rank, numnod
       type(next_nod_id_4_nod), intent(in) :: neib_nod
 !
       integer(kind = kint) :: inod, ist, ied
@@ -231,11 +231,11 @@
       do inod = 1, numnod
         ist = neib_nod%istack_next(inod-1) + 1
         ied = neib_nod%istack_next(inod)
-        write(50+my_rank,*) 'next node ID for node nnod_next ',         &
+        write(50+id_rank,*) 'next node ID for node nnod_next ',         &
      &                     inod, ist, ied, neib_nod%nnod_next(inod)
-        write(50+my_rank,'(8i16)') neib_nod%nnod_next(ist:ied)
-        write(50+my_rank,*) 'iweight_next'
-        write(50+my_rank,'(8i16)') neib_nod%iweight_next(ist:ied)
+        write(50+id_rank,'(8i16)') neib_nod%nnod_next(ist:ied)
+        write(50+id_rank,*) 'iweight_next'
+        write(50+id_rank,'(8i16)') neib_nod%iweight_next(ist:ied)
       end do
 !
       end subroutine check_next_node_id_4_node

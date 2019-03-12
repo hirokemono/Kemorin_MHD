@@ -6,7 +6,7 @@
 !        modified by H. Matsui on June. 2006
 !        modified by H. Matsui on Jan., 2009
 !
-!!      subroutine check_dependency_RCM_MC(my_rank, NP,                 &
+!!      subroutine check_dependency_RCM_MC(id_rank, NP,                 &
 !!     &          NPL_mc, NPU_mc, INL_mc, INU_mc, IAL_mc, IAU_mc,       &
 !!     &          NCOLORtot, IVECmc, IVnew, IW, IFLAG)
 !!      subroutine set_color_tbl_RCM_MC(NP, NHYP, NCOLORtot, IVECT_rcm, &
@@ -75,11 +75,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_dependency_RCM_MC(my_rank, NP,                   &
+      subroutine check_dependency_RCM_MC(id_rank, NP,                   &
      &          NPL_mc, NPU_mc, INL_mc, INU_mc, IAL_mc, IAU_mc,         &
      &          NCOLORtot, IVECmc, IVnew, IW, IFLAG)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint), intent(in) :: NP
       integer(kind = kint), intent(in) :: NPL_mc, NPU_mc
       integer(kind = kint), intent(in) :: INL_mc(0:NP)
@@ -115,7 +115,7 @@
           do k = kst, ked
             ip= IAL_mc(k)
             if (IW(ip).eq.1) then
-!              write(*,*) 'dep. for lower', my_rank, in, k, ip
+!              write(*,*) 'dep. for lower', id_rank, in, k, ip
               IFLAG= 1
               exit
             end if
@@ -126,7 +126,7 @@
           do k = kst, ked
             ip= IAU_mc(k)
             if (IW(ip).eq.1) then
-!              write(*,*) 'dep. for upper', my_rank, in, k, ip
+!              write(*,*) 'dep. for upper', id_rank, in, k, ip
               IFLAG= 1
               exit
             end if

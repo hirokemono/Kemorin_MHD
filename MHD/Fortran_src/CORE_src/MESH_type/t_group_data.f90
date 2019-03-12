@@ -24,13 +24,13 @@
 !!      subroutine deallocate_sf_grp_type_item(sf_grp)
 !!      subroutine deallocate_sf_grp_type_smp(grp)
 !!
-!!      subroutine check_group_type_data(my_rank, grp)
-!!      subroutine check_surf_grp_type_data(my_rank, sf_grp)
-!!      subroutine check_grp_4_sheard_para(my_rank, grp)
-!!      subroutine check_surf_grp_4_sheard_para(my_rank, sf_grp)
-!!      subroutine compare_group_types(my_rank, grp_ref, grp)
-!!      subroutine compare_surface_grp_types(my_rank, sf_grp_ref, sf_grp)
-!!        integer(kind = kint), intent(in) :: my_rank
+!!      subroutine check_group_type_data(id_rank, grp)
+!!      subroutine check_surf_grp_type_data(id_rank, sf_grp)
+!!      subroutine check_grp_4_sheard_para(id_rank, grp)
+!!      subroutine check_surf_grp_4_sheard_para(id_rank, sf_grp)
+!!      subroutine compare_group_types(id_rank, grp_ref, grp)
+!!      subroutine compare_surface_grp_types(id_rank, sf_grp_ref, sf_grp)
+!!        integer(kind = kint), intent(in) :: id_rank
 !!        type(group_data), intent(in) :: grp
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!@endverbatim
@@ -269,41 +269,41 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_group_type_data(my_rank, grp)
+      subroutine check_group_type_data(id_rank, grp)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(group_data), intent(in) :: grp
       integer(kind = kint) :: i, ist, ied
 !
-      write(50+my_rank,*) 'num_grp',  grp%num_grp
-      write(50+my_rank,*) 'num_item', grp%num_item
-      write(50+my_rank,*) 'istack_grp', grp%istack_grp
+      write(50+id_rank,*) 'num_grp',  grp%num_grp
+      write(50+id_rank,*) 'num_item', grp%num_item
+      write(50+id_rank,*) 'istack_grp', grp%istack_grp
       do i = 1, grp%num_grp
-        write(50+my_rank,*) trim(grp%grp_name(i))
+        write(50+id_rank,*) trim(grp%grp_name(i))
         ist = grp%istack_grp(i-1)+1
         ied = grp%istack_grp(i)
-        write(50+my_rank,'(5i16)') grp%item_grp(ist:ied)
+        write(50+id_rank,'(5i16)') grp%item_grp(ist:ied)
       end do
 !
       end subroutine check_group_type_data
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_surf_grp_type_data(my_rank, sf_grp)
+      subroutine check_surf_grp_type_data(id_rank, sf_grp)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint) :: i, ist, ied
 !
-      write(50+my_rank,*) 'num_grp',  sf_grp%num_grp
-      write(50+my_rank,*) 'num_item', sf_grp%num_item
-      write(50+my_rank,*) 'istack_grp', sf_grp%istack_grp
+      write(50+id_rank,*) 'num_grp',  sf_grp%num_grp
+      write(50+id_rank,*) 'num_item', sf_grp%num_item
+      write(50+id_rank,*) 'istack_grp', sf_grp%istack_grp
       do i = 1, sf_grp%num_grp
-        write(50+my_rank,*) trim(sf_grp%grp_name(i))
+        write(50+id_rank,*) trim(sf_grp%grp_name(i))
         ist = sf_grp%istack_grp(i-1)+1
         ied = sf_grp%istack_grp(i)
-        write(50+my_rank,'(5i16)') sf_grp%item_sf_grp(1,ist:ied)
-        write(50+my_rank,'(5i16)') sf_grp%item_sf_grp(2,ist:ied)
+        write(50+id_rank,'(5i16)') sf_grp%item_sf_grp(1,ist:ied)
+        write(50+id_rank,'(5i16)') sf_grp%item_sf_grp(2,ist:ied)
       end do
 !
       end subroutine check_surf_grp_type_data
@@ -311,9 +311,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine compare_group_types(my_rank, grp_ref, grp)
+      subroutine compare_group_types(id_rank, grp_ref, grp)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(group_data), intent(in) :: grp_ref
       type(group_data), intent(in) :: grp
 !
@@ -321,20 +321,20 @@
 !
 !
       if(grp_ref%num_grp .ne. grp%num_grp) write(*,*)                   &
-     &   'num_bc', my_rank, grp_ref%num_grp, grp%num_grp
+     &   'num_bc', id_rank, grp_ref%num_grp, grp%num_grp
       if(grp_ref%num_item .ne. grp%num_item) write(*,*)                 &
-     &   'num_nod_bc', my_rank, grp_ref%num_item, grp%num_item
+     &   'num_nod_bc', id_rank, grp_ref%num_item, grp%num_item
       do i = 1, grp%num_grp
         if(grp_ref%grp_name(i) .ne. grp%grp_name(i))                    &
-     &       write(*,*) 'bc_name(i)', my_rank, i,                       &
+     &       write(*,*) 'bc_name(i)', id_rank, i,                       &
      &       grp_ref%grp_name(i), grp%grp_name(i)
         if(grp_ref%istack_grp(i) .ne. grp%istack_grp(i))                &
-     &       write(*,*) 'bc_istack(i)', my_rank, i,                     &
+     &       write(*,*) 'bc_istack(i)', id_rank, i,                     &
      &       grp_ref%istack_grp(i), grp%istack_grp(i)
       end do
       do i = 1, grp%num_item
         if(grp_ref%item_grp(i) .ne. grp%item_grp(i))                    &
-     &       write(*,*) 'bc_item(i)', my_rank, i,                       &
+     &       write(*,*) 'bc_item(i)', id_rank, i,                       &
      &       grp_ref%item_grp(i), grp%item_grp(i)
       end do
 !
@@ -342,9 +342,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine compare_surface_grp_types(my_rank, sf_grp_ref, sf_grp)
+      subroutine compare_surface_grp_types(id_rank, sf_grp_ref, sf_grp)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(surface_group_data), intent(in) :: sf_grp_ref
       type(surface_group_data), intent(in) :: sf_grp
 !
@@ -352,21 +352,21 @@
 !
 !
       if(sf_grp_ref%num_grp .ne. sf_grp%num_grp) write(*,*)             &
-     &   'num_surf', my_rank, sf_grp_ref%num_grp, sf_grp%num_grp
+     &   'num_surf', id_rank, sf_grp_ref%num_grp, sf_grp%num_grp
       if(sf_grp_ref%num_item .ne. sf_grp%num_item) write(*,*)           &
-     &   'num_surf_bc', my_rank, sf_grp_ref%num_item, sf_grp%num_item
+     &   'num_surf_bc', id_rank, sf_grp_ref%num_item, sf_grp%num_item
       do i = 1, sf_grp%num_grp
         if(sf_grp_ref%grp_name(i) .ne. sf_grp%grp_name(i))              &
-     &       write(*,*) 'surf_name(i)', my_rank, i,                     &
+     &       write(*,*) 'surf_name(i)', id_rank, i,                     &
      &       sf_grp_ref%grp_name(i), sf_grp%grp_name(i)
         if(sf_grp_ref%istack_grp(i) .ne. sf_grp%istack_grp(i))          &
-     &       write(*,*) 'surf_istack(i)', my_rank, i,                   &
+     &       write(*,*) 'surf_istack(i)', id_rank, i,                   &
      &       sf_grp_ref%istack_grp(i), sf_grp%istack_grp(i)
       end do
       do i = 1, sf_grp%num_item
         if(sf_grp_ref%item_sf_grp(1,i) .ne. sf_grp%item_sf_grp(1,i)     &
      &  .or. sf_grp_ref%item_sf_grp(2,i) .ne. sf_grp%item_sf_grp(2,i))  &
-     &       write(*,*) 'surf_item(:,i)', my_rank, i,                   &
+     &       write(*,*) 'surf_item(:,i)', id_rank, i,                   &
      &       sf_grp_ref%item_sf_grp(1,i), sf_grp%item_sf_grp(1,i),      &
      &       sf_grp_ref%item_sf_grp(2,i), sf_grp%item_sf_grp(2,i)
       end do
@@ -376,29 +376,29 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_grp_4_sheard_para(my_rank, grp)
+      subroutine check_grp_4_sheard_para(id_rank, grp)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(group_data), intent(in) :: grp
 !
 !
-      write(*,*) 'PE: ', my_rank, 'num_bc ', grp%num_grp
-      write(*,*) 'PE: ', my_rank, 'num_bc_smp ', grp%num_grp_smp
-      write(*,*) 'PE: ', my_rank, 'ibc_smp_stack ', grp%istack_grp_smp
+      write(*,*) 'PE: ', id_rank, 'num_bc ', grp%num_grp
+      write(*,*) 'PE: ', id_rank, 'num_bc_smp ', grp%num_grp_smp
+      write(*,*) 'PE: ', id_rank, 'ibc_smp_stack ', grp%istack_grp_smp
 !
       end subroutine check_grp_4_sheard_para
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_surf_grp_4_sheard_para(my_rank, sf_grp)
+      subroutine check_surf_grp_4_sheard_para(id_rank, sf_grp)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(surface_group_data), intent(in) :: sf_grp
 !
 !
-      write(*,*) 'PE: ', my_rank, 'num_bc ', sf_grp%num_grp
-      write(*,*) 'PE: ', my_rank, 'num_bc_smp ', sf_grp%num_grp_smp
-      write(*,*) 'PE: ', my_rank, 'ibc_smp_stack ',                     &
+      write(*,*) 'PE: ', id_rank, 'num_bc ', sf_grp%num_grp
+      write(*,*) 'PE: ', id_rank, 'num_bc_smp ', sf_grp%num_grp_smp
+      write(*,*) 'PE: ', id_rank, 'ibc_smp_stack ',                     &
      &          sf_grp%istack_grp_smp
 !
       end subroutine check_surf_grp_4_sheard_para

@@ -27,10 +27,11 @@
 !!      character(len=kchara) function field_name_by_address(fld, i_ref)
 !!        type(phys_data), intent(in) :: fld
 !!
-!!      subroutine check_all_field_data(my_rank, fld)
+!!      subroutine check_all_field_data(id_rank, fld)
 !!      subroutine check_nodal_field_name_type(id_output, fld)
 !!      subroutine check_nodal_data(id_output, fld, numdir, i_field)
-!!        integer(kind = kint), intent(in) :: my_rank, numdir, i_field
+!!        integer(kind = kint), intent(in) :: id_rank
+!!        integer(kind = kint), intent(in) :: numdir, i_field
 !!        type(phys_data), intent(in) :: fld
 !!@endverbatim
 !
@@ -359,15 +360,15 @@
 ! -----------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine check_all_field_data(my_rank, fld)
+      subroutine check_all_field_data(id_rank, fld)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(phys_data), intent(in) :: fld
 !
 !
-      call check_nodal_field_name_type((50+my_rank), fld)
+      call check_nodal_field_name_type((50+id_rank), fld)
       call check_nodal_data                                             &
-     &   ((50+my_rank), fld, fld%ntot_phys, ione)
+     &   ((50+id_rank), fld, fld%ntot_phys, ione)
 !
       end subroutine check_all_field_data
 !

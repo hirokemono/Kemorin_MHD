@@ -36,8 +36,8 @@
 !!      subroutine deallocate_ele_param_smp_type(ele)
 !!        type(element_data), intent(inout) :: ele
 !!
-!!      subroutine check_nod_size_smp_type(node, my_rank)
-!!      subroutine check_ele_size_smp_type(ele, my_rank)
+!!      subroutine check_nod_size_smp_type(node, id_rank)
+!!      subroutine check_ele_size_smp_type(ele, id_rank)
 !!@endverbatim
 !
       module t_geometry_data
@@ -489,32 +489,32 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine check_nod_size_smp_type(node, my_rank)
+      subroutine check_nod_size_smp_type(node, id_rank)
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(node_data), intent(in) :: node
 !
        write(*,*) 'np_smp: ', np_smp
-       write(*,*) 'PE: ', my_rank,                                      &
+       write(*,*) 'PE: ', id_rank,                                      &
      &           'istack_nod_smp ', node%istack_nod_smp
-       write(*,*) 'PE: ', my_rank,                                      &
+       write(*,*) 'PE: ', id_rank,                                      &
      &           'istack_internal_smp ', node%istack_internal_smp
 !
       end subroutine check_nod_size_smp_type
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_ele_size_smp_type(ele, my_rank)
+      subroutine check_ele_size_smp_type(ele, id_rank)
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(element_data), intent(in) :: ele
 !
        write(*,*) 'np_smp: ', np_smp
-       write(*,*) 'PE: ', my_rank,                                      &
+       write(*,*) 'PE: ', id_rank,                                      &
      &           'istack_ele_smp ', ele%istack_ele_smp
 !
       end subroutine check_ele_size_smp_type

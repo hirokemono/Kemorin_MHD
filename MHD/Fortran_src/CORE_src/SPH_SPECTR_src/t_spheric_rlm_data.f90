@@ -21,12 +21,12 @@
 !!        type(sph_rlm_grid), intent(in) :: rlm_org
 !!        type(sph_rlm_grid), intent(inout) :: rlm_new
 !!
-!!      subroutine check_type_spheric_param_rlm(my_rank, sph_rlm)
-!!        integer(kind = kint), intent(in) :: my_rank
+!!      subroutine check_type_spheric_param_rlm(id_rank, sph_rlm)
+!!        integer(kind = kint), intent(in) :: id_rank
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!@endverbatim
 !!
-!!@n @param  my_rank     Running rank ID
+!!@n @param  id_rank     Running rank ID
 !!
       module t_spheric_rlm_data
 !
@@ -231,20 +231,20 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_type_spheric_param_rlm(my_rank, sph_rlm)
+      subroutine check_type_spheric_param_rlm(id_rank, sph_rlm)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(sph_rlm_grid), intent(in) :: sph_rlm
       integer(kind = kint) :: i
 !
 !
-      write(my_rank+50,*) 'irank_sph_rlm ', sph_rlm%irank_sph_rlm(1:2)
-      write(my_rank+50,*) 'nidx_rlm ', sph_rlm%nidx_rlm(1:2)
-      write(my_rank+50,*) 'nnod_rlm ', sph_rlm%nnod_rlm
+      write(id_rank+50,*) 'irank_sph_rlm ', sph_rlm%irank_sph_rlm(1:2)
+      write(id_rank+50,*) 'nidx_rlm ', sph_rlm%nidx_rlm(1:2)
+      write(id_rank+50,*) 'nnod_rlm ', sph_rlm%nnod_rlm
 !
-      write(my_rank+50,*) 'i, idx_global_rlm(r,j)'
+      write(id_rank+50,*) 'i, idx_global_rlm(r,j)'
       do i = 1, sph_rlm%nnod_rlm
-        write(my_rank+50,*) i, sph_rlm%idx_global_rlm(i,1:2)
+        write(id_rank+50,*) i, sph_rlm%idx_global_rlm(i,1:2)
       end do
 !
       end subroutine check_type_spheric_param_rlm

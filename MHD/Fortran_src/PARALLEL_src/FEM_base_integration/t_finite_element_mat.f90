@@ -32,12 +32,12 @@
 !!      subroutine reset_ff_smps(max_nod_smp, f_l, f_nl)
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!
-!!      subroutine check_mass_martix(my_rank, numnod, lump)
+!!      subroutine check_mass_martix(id_rank, numnod, lump)
 !!        type(lumped_mass_matrices), intent(inout) :: lump
-!!      subroutine check_ff(my_rank, numdir, numnod, ffs)
-!!      subroutine check_ff_smp(my_rank, numdir, max_nod_smp, ffs)
+!!      subroutine check_ff(id_rank, numdir, numnod, ffs)
+!!      subroutine check_ff_smp(id_rank, numdir, max_nod_smp, ffs)
 !!        type(finite_ele_mat_node), intent(inout) :: ffs
-!!      subroutine check_sk6(my_rank, ele, fem_wk)
+!!      subroutine check_sk6(id_rank, ele, fem_wk)
 !!        type(element_data), intent(in) :: ele
 !!        type(work_finite_element_mat), intent(in) :: fem_wk
 !!@endverbatim
@@ -272,16 +272,16 @@
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
-      subroutine check_mass_martix(my_rank, numnod, lump)
+      subroutine check_mass_martix(id_rank, numnod, lump)
 !
-      integer(kind = kint), intent(in) :: my_rank, numnod
+      integer(kind = kint), intent(in) :: id_rank, numnod
       type(lumped_mass_matrices), intent(inout) :: lump
 !
       integer(kind = kint) :: inod
 !
-      write(50+my_rank,*) 'inod, ml, ml_o'
+      write(50+id_rank,*) 'inod, ml, ml_o'
       do inod = 1, numnod
-        write(50+my_rank,'(i16,1p2e25.14)')                             &
+        write(50+id_rank,'(i16,1p2e25.14)')                             &
      &        inod, lump%ml(inod), lump%ml_o(inod)
       end do
 !
@@ -289,16 +289,16 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine check_ff(my_rank, numdir, numnod, ffs)
+      subroutine check_ff(id_rank, numdir, numnod, ffs)
 !
-      integer(kind = kint), intent(in) :: my_rank, numdir, numnod
+      integer(kind = kint), intent(in) :: id_rank, numdir, numnod
       type(finite_ele_mat_node), intent(inout) :: ffs
 !
       integer(kind = kint) :: inod, nd
 !
-      write(50+my_rank,*) 'inod, ff', numdir
+      write(50+id_rank,*) 'inod, ff', numdir
       do inod = 1, numnod
-        write(50+my_rank,'(i16,1p10e25.14)')                            &
+        write(50+id_rank,'(i16,1p10e25.14)')                            &
      &         inod, (ffs%ff(inod,nd),nd=1, numdir)
       end do
 !
@@ -306,19 +306,19 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine check_ff_smp(my_rank, numdir, max_nod_smp, ffs)
+      subroutine check_ff_smp(id_rank, numdir, max_nod_smp, ffs)
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: my_rank, numdir, max_nod_smp
+      integer(kind = kint), intent(in) :: id_rank, numdir, max_nod_smp
       type(finite_ele_mat_node), intent(inout) :: ffs
 !
       integer(kind = kint) :: ip, inod, nd
 !
-      write(50+my_rank,*) 'ip, inod, ff_smp', numdir
+      write(50+id_rank,*) 'ip, inod, ff_smp', numdir
       do ip = 1, np_smp
         do inod = 1, max_nod_smp
-          write(50+my_rank,'(2i16,1p10e25.14)')                         &
+          write(50+id_rank,'(2i16,1p10e25.14)')                         &
      &         ip, inod, (ffs%ff_smp(inod,nd,ip),nd=1, numdir)
         end do
       end do
@@ -327,20 +327,20 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine check_sk6(my_rank, ele, fem_wk)
+      subroutine check_sk6(id_rank, ele, fem_wk)
 !
       use t_geometry_data
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(element_data), intent(in) :: ele
       type(work_finite_element_mat), intent(in) :: fem_wk
 !
       integer(kind = kint) :: iele, k1
 !
-      write(50+my_rank,*) 'k1, iele, sk6'
+      write(50+id_rank,*) 'k1, iele, sk6'
       do k1 = 1, ele%nnod_4_ele
         do iele = 1, ele%numele
-          write(50+my_rank,'(2i16,1p10e25.14)')                         &
+          write(50+id_rank,'(2i16,1p10e25.14)')                         &
      &         k1, iele, fem_wk%sk6(iele,1:6,k1)
         end do
       end do

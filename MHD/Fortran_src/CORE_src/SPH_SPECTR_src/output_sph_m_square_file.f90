@@ -7,27 +7,27 @@
 !> @brief Output mean square of spectr data
 !!
 !!@verbatim
-!!      subroutine write_total_energy_to_screen(my_rank, time_d, pwr)
+!!      subroutine write_total_energy_to_screen(id_rank, time_d, pwr)
 !!      subroutine write_sph_vol_ave_file                               &
 !!     &         (time_d, sph_params, sph_rj, pwr)
 !!
 !!      integer(kind = kint) function check_sph_vol_ms_file             &
-!!     &                   (my_rank, sph_params, sph_rj, pwr)
+!!     &                   (id_rank, sph_params, sph_rj, pwr)
 !!      subroutine write_sph_vol_ms_file                                &
-!!     &         (my_rank, time_d, sph_params, sph_rj, pwr)
+!!     &         (id_rank, time_d, sph_params, sph_rj, pwr)
 !!      subroutine write_sph_vol_ms_spectr_file                         &
-!!     &         (my_rank, time_d, sph_params, sph_rj, pwr)
+!!     &         (id_rank, time_d, sph_params, sph_rj, pwr)
 !!      subroutine write_sph_layer_ms_file                              &
-!!     &         (my_rank, time_d, sph_params, pwr)
+!!     &         (id_rank, time_d, sph_params, pwr)
 !!      subroutine write_sph_layer_spectr_file                          &
-!!     &         (my_rank, time_d, sph_params, pwr)
+!!     &         (id_rank, time_d, sph_params, pwr)
 !!        type(time_data), intent(in) :: time_d
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_mean_squares), intent(in) :: pwr
 !!@endverbatim
 !!
-!!@n @param my_rank       Process ID
+!!@n @param id_rank       Process ID
 !!@n @param istep         time step number
 !!@n @param time          time
 !
@@ -51,21 +51,21 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine write_total_energy_to_screen(my_rank, time_d, pwr)
+      subroutine write_total_energy_to_screen(id_rank, time_d, pwr)
 !
       use m_phys_labels
       use t_spheric_parameter
       use t_rms_4_sph_spectr
       use sph_mean_spectr_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(time_data), intent(in) :: time_d
       type(sph_mean_squares), intent(in) :: pwr
 !
       integer(kind = kint) :: i, icomp
 !
 !
-      if(my_rank .gt. 0) return
+      if(id_rank .gt. 0) return
       write(*,'(a10,i16,a10,1pe15.8)',advance='no')                     &
      &     'time step=', time_d%i_time_step, 'time=', time_d%time
 !
@@ -139,14 +139,14 @@
 ! -----------------------------------------------------------------------
 !
       integer(kind = kint) function check_sph_vol_ms_file               &
-     &                   (my_rank, sph_params, sph_rj, pwr)
+     &                   (id_rank, sph_params, sph_rj, pwr)
 !
       use t_spheric_parameter
       use t_rms_4_sph_spectr
       use set_parallel_file_name
       use sph_mean_spectr_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -156,7 +156,7 @@
 !
 !
       check_sph_vol_ms_file = 0
-      if(my_rank.gt.0) return
+      if(id_rank.gt.0) return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
       fname_rms = add_dat_extension(pwr%v_spectr(1)%fhead_rms_v)
@@ -173,14 +173,14 @@
 !  --------------------------------------------------------------------
 !
       subroutine write_sph_vol_ms_file                                  &
-     &         (my_rank, time_d, sph_params, sph_rj, pwr)
+     &         (id_rank, time_d, sph_params, sph_rj, pwr)
 !
       use t_spheric_parameter
       use t_rms_4_sph_spectr
       use set_parallel_file_name
       use sph_mean_spectr_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -191,7 +191,7 @@
       integer(kind = kint) :: i
 !
 !
-      if(my_rank .ne. 0)  return
+      if(id_rank .ne. 0)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
       do i = 1, pwr%num_vol_spectr
@@ -212,14 +212,14 @@
 !  --------------------------------------------------------------------
 !
       subroutine write_sph_vol_ms_spectr_file                           &
-     &         (my_rank, time_d, sph_params, sph_rj, pwr)
+     &         (id_rank, time_d, sph_params, sph_rj, pwr)
 !
       use t_spheric_parameter
       use t_rms_4_sph_spectr
       use set_parallel_file_name
       use sph_mean_spectr_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -230,7 +230,7 @@
       integer(kind = kint) :: i
 !
 !
-      if(my_rank .ne. 0)  return
+      if(id_rank .ne. 0)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
 !
@@ -296,14 +296,14 @@
 !  --------------------------------------------------------------------
 !
       subroutine write_sph_layer_ms_file                                &
-     &         (my_rank, time_d, sph_params, pwr)
+     &         (id_rank, time_d, sph_params, pwr)
 !
       use t_spheric_parameter
       use t_rms_4_sph_spectr
       use set_parallel_file_name
       use sph_mean_spectr_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -312,7 +312,7 @@
       character(len=kchara) :: fname_rms, mode_label
 !
 !
-      if(my_rank .ne. 0)  return
+      if(id_rank .ne. 0)  return
       if(pwr%iflag_layer_rms_spec .eq. izero)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
@@ -330,14 +330,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_sph_layer_spectr_file                            &
-     &         (my_rank, time_d, sph_params, pwr)
+     &         (id_rank, time_d, sph_params, pwr)
 !
       use t_spheric_parameter
       use t_rms_4_sph_spectr
       use set_parallel_file_name
       use sph_mean_spectr_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -346,7 +346,7 @@
       character(len=kchara) :: fname_rms, mode_label
 !
 !
-      if(my_rank .ne. 0)  return
+      if(id_rank .ne. 0)  return
       if(pwr%iflag_layer_rms_spec .eq. izero)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !

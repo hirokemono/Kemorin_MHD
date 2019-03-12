@@ -8,8 +8,8 @@
 !!        from control data
 !!
 !!@verbatim
-!!      subroutine turn_off_debug_flag_by_ctl(my_rank, plt)
-!!      subroutine set_control_smp_def(my_rank, plt)
+!!      subroutine turn_off_debug_flag_by_ctl(id_rank, plt)
+!!      subroutine set_control_smp_def(id_rank, plt)
 !!      subroutine set_control_mesh_def(plt, mesh_file)
 !!      subroutine set_control_sph_mesh(plt, Fmesh_ctl,                 &
 !!     &          mesh_file, sph_file_param, FEM_mesh_flags)
@@ -35,7 +35,7 @@
 !!     &          file_prefix_ctl, file_format_ctl,  file_params)
 !!@endverbatim
 !!
-!!@param my_rank  preocess ID
+!!@param id_rank  preocess ID
 !
       module set_control_platform_data
 !
@@ -56,12 +56,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine turn_off_debug_flag_by_ctl(my_rank, plt)
+      subroutine turn_off_debug_flag_by_ctl(id_rank, plt)
 !
       use m_machine_parameter
       use skip_comment_f
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(platform_data_control), intent(in) :: plt
 !
 !
@@ -77,17 +77,17 @@
         end if
       end if
 !
-      if(my_rank .eq. 0) iflag_debug = i_debug
+      if(id_rank .eq. 0) iflag_debug = i_debug
 !
       end subroutine turn_off_debug_flag_by_ctl
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_smp_def(my_rank, plt)
+      subroutine set_control_smp_def(id_rank, plt)
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(platform_data_control), intent(in) :: plt
 !
       integer, external :: omp_get_max_threads
@@ -102,7 +102,7 @@
 #ifdef _OPENMP
       np_smp4 = int(np_smp)
       if(np_smp4 .lt. omp_get_max_threads()) then
-        if(my_rank .eq. 0) write(*,*)                                   &
+        if(id_rank .eq. 0) write(*,*)                                   &
      &               'Number of SMP threads is chenged to', np_smp
         call omp_set_num_threads(np_smp4)
       end if

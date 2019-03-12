@@ -8,16 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine write_step_field_file_b                              &
-!!     &         (file_name, my_rank, t_IO, fld_IO)
+!!     &         (file_name, id_rank, t_IO, fld_IO)
 !!        type(time_data), intent(in) :: t_IO
 !!        type(field_IO), intent(in) :: fld_IO
 !!
 !!      subroutine read_step_field_file_b                               &
-!!     &         (file_name, my_rank, t_IO, fld_IO, ierr)
+!!     &         (file_name, id_rank, t_IO, fld_IO, ierr)
 !!      subroutine read_and_allocate_step_field_b                       &
-!!     &         (file_name, my_rank, t_IO, fld_IO, ierr)
+!!     &         (file_name, id_rank, t_IO, fld_IO, ierr)
 !!      subroutine read_and_allocate_step_head_b                        &
-!!     &         (file_name, my_rank, t_IO, fld_IO, ierr)
+!!     &         (file_name, id_rank, t_IO, fld_IO, ierr)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
@@ -46,24 +46,24 @@
 !  ---------------------------------------------------------------------
 !
       subroutine write_step_field_file_b                                &
-     &         (file_name, my_rank, t_IO, fld_IO)
+     &         (file_name, id_rank, t_IO, fld_IO)
 !
       use transfer_to_long_integers
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write binary data file: ', trim(file_name)
 !
       call open_write_binary_file(file_name)
 !
       call write_step_data_b                                            &
-     &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call write_field_data_b(cast_long(fld_IO%nnod_IO),                &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
@@ -76,12 +76,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_step_field_file_b                                 &
-     &         (file_name, my_rank, t_IO, fld_IO, ierr)
+     &         (file_name, id_rank, t_IO, fld_IO, ierr)
 !
       use transfer_to_long_integers
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -91,11 +91,11 @@
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file                                        &
-     &   (file_name, my_rank, bin_fldflags%iflag_bin_swap)
+     &   (file_name, id_rank, bin_fldflags%iflag_bin_swap)
       call read_step_data_b(bin_fldflags%iflag_bin_swap,                &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt,                         &
      &    istack_merged, fld_IO%num_field_IO, bin_fldflags%ierr_IO)
@@ -121,23 +121,23 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_and_allocate_step_field_b                         &
-     &         (file_name, my_rank, t_IO, fld_IO, ierr)
+     &         (file_name, id_rank, t_IO, fld_IO, ierr)
 !
       use transfer_to_long_integers
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file                                        &
-     &   (file_name, my_rank, bin_fldflags%iflag_bin_swap)
+     &   (file_name, id_rank, bin_fldflags%iflag_bin_swap)
       call read_and_allocate_step_b(bin_fldflags, t_IO, fld_IO)
       if(bin_fldflags%ierr_IO .gt. 0) goto 99
 !
@@ -157,21 +157,21 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_and_allocate_step_head_b                          &
-     &         (file_name, my_rank, t_IO, fld_IO, ierr)
+     &         (file_name, id_rank, t_IO, fld_IO, ierr)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file                                        &
-     &   (file_name, my_rank, bin_fldflags%iflag_bin_swap)
+     &   (file_name, id_rank, bin_fldflags%iflag_bin_swap)
       call read_and_allocate_step_b(bin_fldflags, t_IO, fld_IO)
       call close_binary_file
       ierr = bin_fldflags%ierr_IO

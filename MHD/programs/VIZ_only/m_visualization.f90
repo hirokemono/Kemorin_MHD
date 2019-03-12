@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine set_control_params_4_viz                             &
-!!     &         (id_rank, tctl, plt, mesh_file, ucd_param, ierr)
+!!     &         (tctl, plt, mesh_file, ucd_param, ierr)
 !!      subroutine mesh_setup_4_VIZ(ucd_param)
 !!      subroutine element_normals_4_VIZ
 !!      subroutine set_field_data_4_VIZ(iflag, istep_ucd, time_d)
@@ -81,7 +81,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_params_4_viz                               &
-     &         (id_rank, tctl, plt, mesh_file, ucd_param, ierr)
+     &         (tctl, plt, mesh_file, ucd_param, ierr)
 !
       use t_ucd_data
       use t_file_IO_parameter
@@ -94,7 +94,6 @@
       use set_control_platform_data
       use ucd_IO_select
 !
-      integer(kind = kint), intent(in) :: id_rank
       type(time_data_control), intent(in) :: tctl
 !
       integer(kind = kint), intent(inout) :: ierr
@@ -103,8 +102,8 @@
       type(field_IO_params), intent(inout) :: ucd_param
 !
 !
-      call turn_off_debug_flag_by_ctl(id_rank, plt)
-      call set_control_smp_def(id_rank, plt)
+      call turn_off_debug_flag_by_ctl(my_rank, plt)
+      call set_control_smp_def(my_rank, plt)
       call set_control_mesh_def(plt, mesh_file)
       call set_ucd_file_define(plt, ucd_param)
 !
@@ -122,7 +121,6 @@
 !
       subroutine mesh_setup_4_VIZ(ucd_param)
 !
-      use calypso_mpi
       use m_array_for_send_recv
       use mpi_load_mesh_data
       use nod_phys_send_recv
@@ -149,7 +147,7 @@
 !     ---------------------
 !
       ucd_VIZ%nnod =      femmesh_VIZ%mesh%node%numnod
-      call sel_read_udt_param(id_rank, t_VIZ%init_d%i_time_step,        &
+      call sel_read_udt_param(my_rank, t_VIZ%init_d%i_time_step,        &
      &    ucd_param, VIZ_time_IO, ucd_VIZ)
       call alloc_phys_data_type_by_output                               &
      &   (ucd_VIZ, femmesh_VIZ%mesh%node, field_VIZ)
@@ -176,7 +174,7 @@
       allocate(jacobians_VIZ%g_FEM)
       call sel_max_int_point_by_etype                                   &
      &   (femmesh_VIZ%mesh%ele%nnod_4_ele, jacobians_VIZ%g_FEM)
-      call const_jacobian_volume_normals(id_rank, nprocs,               &
+      call const_jacobian_volume_normals(my_rank, nprocs,               &
      &    femmesh_VIZ%mesh, elemesh_VIZ%surf, femmesh_VIZ%group,        &
      &    spfs_VIZ, jacobians_VIZ)
 !
@@ -197,7 +195,7 @@
 !
 !
       if(iflag .ne. 0) return
-      call set_data_by_read_ucd(id_rank, istep_ucd,                     &
+      call set_data_by_read_ucd(my_rank, istep_ucd,                     &
      &    ucd_param, VIZ_time_IO, ucd_VIZ, field_VIZ)
       call copy_time_step_size_data(VIZ_time_IO, time_d)
 !

@@ -7,14 +7,14 @@
 !>@brief  Data arrays to monitoring spectrum data
 !!
 !!@verbatim
-!!      subroutine write_sph_spec_monitor(my_rank, i_step, time, picked)
+!!      subroutine write_sph_spec_monitor(id_rank, i_step, time, picked)
 !!
 !!      subroutine open_sph_spec_read(id_pick, picked)
 !!      subroutine read_sph_spec_monitor                                &
 !!     &         (id_pick, i_step, time, picked, ierr)
 !!@endverbatim
 !!
-!!@n @param  my_rank   Process ID
+!!@n @param  id_rank   Process ID
 !!@n @param  i_step    time step
 !!@n @param  time      time
 !!@n @param  id_pick   file ID
@@ -80,9 +80,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_sph_spec_monitor(my_rank, i_step, time, picked)
+      subroutine write_sph_spec_monitor(id_rank, i_step, time, picked)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
 !
@@ -92,7 +92,7 @@
 !
 !
       if(picked%num_sph_mode .eq. izero) return
-      if(my_rank .gt. izero) return
+      if(id_rank .gt. izero) return
 !
       call open_sph_spec_4_monitor(picked)
 !

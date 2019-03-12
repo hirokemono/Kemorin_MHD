@@ -18,9 +18,9 @@
 !!      subroutine reset_ff_m_smp(max_nod_smp, mhd_fem_wk)
 !!
 !!      subroutine check_ff_m_smp                                       &
-!!     &         (my_rank, numdir, max_nod_smp, mhd_fem_wk)
+!!     &         (id_rank, numdir, max_nod_smp, mhd_fem_wk)
 !!      subroutine check_diff_elemental_data                            &
-!!     &         (my_rank, numele, numdir, i_field, mhd_fem_wk)
+!!     &         (id_rank, numele, numdir, i_field, mhd_fem_wk)
 !
       module t_MHD_finite_element_mat
 !
@@ -217,19 +217,20 @@
 !   ---------------------------------------------------------------------
 !
       subroutine check_ff_m_smp                                         &
-     &         (my_rank, numdir, max_nod_smp, mhd_fem_wk)
+     &         (id_rank, numdir, max_nod_smp, mhd_fem_wk)
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: my_rank, numdir, max_nod_smp
+      integer(kind = kint), intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: numdir, max_nod_smp
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       integer(kind = kint) :: ip, inod, nd
 !
-      write(50+my_rank,*) 'ip, inod, ff_m_smp', numdir
+      write(50+id_rank,*) 'ip, inod, ff_m_smp', numdir
       do ip = 1, np_smp
        do inod = 1, max_nod_smp
-         write(50+my_rank,'(2i16,1p10e25.14)')                          &
+         write(50+id_rank,'(2i16,1p10e25.14)')                          &
      &       ip, inod, (mhd_fem_wk%ff_m_smp(inod,nd,ip),nd=1, numdir)
         end do
       end do
@@ -240,19 +241,19 @@
 !   ---------------------------------------------------------------------
 !
       subroutine check_diff_elemental_data                              &
-     &         (my_rank, numele, numdir, i_field, mhd_fem_wk)
+     &         (id_rank, numele, numdir, i_field, mhd_fem_wk)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint), intent(in) :: numele, numdir, i_field
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       integer(kind = kint) :: iele, nd, ndiff
 !
       do nd = 1, numdir
-        write(50+my_rank,*)                                             &
+        write(50+id_rank,*)                                             &
      &      'iele, diff. of elemental field: ', i_field, nd
        do iele = 1, numele
-        write(50+my_rank,'(i16,1p10e25.14)') iele,                      &
+        write(50+id_rank,'(i16,1p10e25.14)') iele,                      &
      &    (mhd_fem_wk%dvx(iele,i_field+3*(nd-1)+ndiff-1),ndiff=1, 3)
        end do
       end do

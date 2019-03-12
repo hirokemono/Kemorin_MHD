@@ -3,9 +3,9 @@
 !
 !     Written by H. Matsui on Dec., 2008
 !
-!!      subroutine load_interpolate_table(my_rank, itp_table)
+!!      subroutine load_interpolate_table(id_rank, itp_table)
 !!      subroutine load_zero_interpolate_table(itp_table)
-!!      subroutine output_interpolate_table(my_rank, itp_table)
+!!      subroutine output_interpolate_table(id_rank, itp_table)
 !
       module m_interpolate_table_IO
 !
@@ -33,26 +33,26 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine load_interpolate_table(my_rank, itp_table)
+      subroutine load_interpolate_table(id_rank, itp_table)
 !
       use copy_interpolate_types
       use itp_table_IO_select_4_zlib
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(interpolate_table), intent(inout) :: itp_table
 !
       integer(kind = kint) :: ierr
 !
 !
       call sel_read_interpolate_table                                   &
-     &   (my_rank, IO_itp_org, IO_itp_dest, ierr)
+     &   (id_rank, IO_itp_org, IO_itp_dest, ierr)
 !
       call copy_itp_tbl_types_dst                                       &
-     &   (my_rank, IO_itp_dest, itp_table%tbl_dest)
+     &   (id_rank, IO_itp_dest, itp_table%tbl_dest)
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_types_org'
       call copy_itp_tbl_types_org                                       &
-     &   (my_rank, IO_itp_org, itp_table%tbl_org)
+     &   (id_rank, IO_itp_org, itp_table%tbl_org)
       call dealloc_itp_table_org(IO_itp_org)
       call dealloc_itp_num_org(IO_itp_org)
 !
@@ -74,25 +74,25 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_interpolate_table(my_rank, itp_table)
+      subroutine output_interpolate_table(id_rank, itp_table)
 !
       use copy_interpolate_types
       use itp_table_IO_select_4_zlib
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(interpolate_table), intent(inout) :: itp_table
 !
 !
       call copy_itp_tbl_types_dst                                       &
-     &   (my_rank, itp_table%tbl_dest, IO_itp_dest)
+     &   (id_rank, itp_table%tbl_dest, IO_itp_dest)
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_types_org'
       call copy_itp_tbl_types_org                                       &
-     &   (my_rank, itp_table%tbl_org, IO_itp_org)
+     &   (id_rank, itp_table%tbl_org, IO_itp_org)
       call dealloc_itp_table_org(itp_table%tbl_org)
       call dealloc_itp_num_org(itp_table%tbl_org)
 !
       call sel_write_interpolate_table                                  &
-     &   (my_rank, IO_itp_org, IO_itp_dest)
+     &   (id_rank, IO_itp_org, IO_itp_dest)
 !
       end subroutine output_interpolate_table
 !

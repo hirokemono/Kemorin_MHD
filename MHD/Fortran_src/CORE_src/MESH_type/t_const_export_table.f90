@@ -14,24 +14,24 @@
 !!        type(work_4_const_export), intent(inout) :: ele_comm_gl
 !!
 !!      subroutine count_ele_comm_neib                                  &
-!!     &         (my_rank, nprocs, ele_comm_tmp, num_neib)
-!!        integer(kind = kint), intent(in) :: my_rank, nprocs
+!!     &         (id_rank, nprocs, ele_comm_tmp, num_neib)
+!!        integer(kind = kint), intent(in) :: id_rank, nprocs
 !!        type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
 !!        integer(kind = kint), intent(inout) :: num_neib
 !!
 !!      subroutine set_ele_comm_neib                                    &
-!!     &         (my_rank, nprocs, ele_comm_tmp, num_neib, id_neib)
-!!        integer(kind = kint), intent(in) :: my_rank, nprocs
+!!     &         (id_rank, nprocs, ele_comm_tmp, num_neib, id_neib)
+!!        integer(kind = kint), intent(in) :: id_rank, nprocs
 !!        type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
 !!        integer(kind = kint), intent(in) :: num_neib
 !!        integer(kind = kint), intent(inout) :: id_neib(num_neib)
 !!
-!!      subroutine set_ele_comm_tbl_num(my_rank, nprocs, ele_comm_tmp,  &
+!!      subroutine set_ele_comm_tbl_num(id_rank, nprocs, ele_comm_tmp,  &
 !!     &          num_neib, id_neib, ntot_import, ntot_export,          &
 !!     &          num_import, num_export, istack_import, istack_export)
-!!        integer(kind = kint), intent(in) :: my_rank, nprocs
+!!        integer(kind = kint), intent(in) :: id_rank, nprocs
 !!        type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
-!!        integer(kind = kint), intent(in) :: my_rank
+!!        integer(kind = kint), intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: num_neib
 !!        integer(kind = kint), intent(in) :: id_neib(num_neib)
 !!        integer(kind = kint), intent(inout) :: ntot_import, ntot_export
@@ -40,12 +40,12 @@
 !!        integer(kind = kint), intent(inout) ::istack_import(0:num_neib)
 !!        integer(kind = kint), intent(inout) ::istack_export(0:num_neib)
 !!
-!!      subroutine set_ele_import_item(my_rank, nprocs, ele_comm_tmp,   &
+!!      subroutine set_ele_import_item(id_rank, nprocs, ele_comm_tmp,   &
 !!     &          num_neib, ntot_import, id_neib, num_import,           &
 !!     &          istack_import, item_import)
-!!        integer(kind = kint), intent(in) :: my_rank, nprocs
+!!        integer(kind = kint), intent(in) :: id_rank, nprocs
 !!        type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
-!!        integer(kind = kint), intent(in) :: my_rank
+!!        integer(kind = kint), intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: num_neib, ntot_import
 !!        integer(kind = kint), intent(in) :: id_neib(num_neib)
 !!        integer(kind = kint), intent(in) :: num_import(num_neib)
@@ -117,9 +117,9 @@
 !------------------------------------------------------------------
 !
       subroutine count_ele_comm_neib                                    &
-     &         (my_rank, nprocs, ele_comm_tmp, num_neib)
+     &         (id_rank, nprocs, ele_comm_tmp, num_neib)
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
       integer(kind = kint), intent(inout) :: num_neib
 !
@@ -129,7 +129,7 @@
       num_neib = 0
       do ip = 1, nprocs
         do j = 1, ele_comm_tmp(ip)%num_neib
-          if(ele_comm_tmp(ip)%id_neib(j) .eq. my_rank) then
+          if(ele_comm_tmp(ip)%id_neib(j) .eq. id_rank) then
             num_neib = num_neib + 1
           end if
         end do
@@ -140,9 +140,9 @@
 !------------------------------------------------------------------
 !
       subroutine set_ele_comm_neib                                      &
-     &         (my_rank, nprocs, ele_comm_tmp, num_neib, id_neib)
+     &         (id_rank, nprocs, ele_comm_tmp, num_neib, id_neib)
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
 !
       integer(kind = kint), intent(in) :: num_neib
@@ -154,7 +154,7 @@
       i = 0
       do ip = 1, nprocs
         do j = 1, ele_comm_tmp(ip)%num_neib
-          if(ele_comm_tmp(ip)%id_neib(j) .eq. my_rank) then
+          if(ele_comm_tmp(ip)%id_neib(j) .eq. id_rank) then
             i = i + 1
             id_neib(i) = ip - 1
           end if
@@ -165,11 +165,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ele_comm_tbl_num(my_rank, nprocs, ele_comm_tmp,    &
+      subroutine set_ele_comm_tbl_num(id_rank, nprocs, ele_comm_tmp,    &
      &          num_neib, id_neib, ntot_import, ntot_export,            &
      &          num_import, num_export, istack_import, istack_export)
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
 !
       integer(kind = kint), intent(in) :: num_neib
@@ -184,7 +184,7 @@
       integer(kind = kint) :: i, ip, j
 !
 !
-      ip = my_rank + 1
+      ip = id_rank + 1
       do i = 1, num_neib
         do j = 1, ele_comm_tmp(ip)%num_neib
           if(ele_comm_tmp(ip)%id_neib(j) .eq. id_neib(i)) then
@@ -218,11 +218,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ele_import_item(my_rank, nprocs, ele_comm_tmp,     &
+      subroutine set_ele_import_item(id_rank, nprocs, ele_comm_tmp,     &
      &          num_neib, ntot_import, id_neib, num_import,             &
      &          istack_import, item_import)
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
 !
       integer(kind = kint), intent(in) :: num_neib, ntot_import
@@ -235,7 +235,7 @@
       integer(kind = kint) :: inum, i, ip, j, ii, jj
 !
 !
-      ip = my_rank + 1
+      ip = id_rank + 1
       do i = 1, num_neib
         do j = 1, ele_comm_tmp(ip)%num_neib
           if(ele_comm_tmp(ip)%id_neib(j) .eq. id_neib(i)) then

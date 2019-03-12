@@ -16,7 +16,7 @@
 !      subroutine set_ele_4_dynamic_by_start(n_layer_d,                 &
 !     &          n_item_layer_d, layer_stack, item_layer)
 !
-!      subroutine check_layer_start(my_rank, n_layer_d)
+!      subroutine check_layer_start(id_rank, n_layer_d)
 !
       module set_layer_list_by_start_end
 !
@@ -160,17 +160,17 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_layer_start(my_rank, n_layer_d)
+      subroutine check_layer_start(id_rank, n_layer_d)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer (kind=kint), intent(in) :: n_layer_d
 !
       integer(kind = kint) :: j
 !
 !
-      write(50+my_rank,*) 'j, item_layer_start(j), item_layer_end(j)'
+      write(50+id_rank,*) 'j, item_layer_start(j), item_layer_end(j)'
       do j = 1, n_layer_d
-        write(50+my_rank,*) j, item_layer_start(j), item_layer_end(j)
+        write(50+id_rank,*) j, item_layer_start(j), item_layer_end(j)
       end do
 !
       end subroutine check_layer_start

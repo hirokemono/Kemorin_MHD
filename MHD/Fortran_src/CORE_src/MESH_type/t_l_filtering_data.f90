@@ -10,9 +10,9 @@
 !!      subroutine read_line_filter_data_a(file_code, numnod, fil_l)
 !!      subroutine write_line_filter_data_a(file_code, fil_l)
 !!
-!!      subroutine check_istack_l_filter(my_rank, fil_l)
+!!      subroutine check_istack_l_filter(id_rank, fil_l)
 !!      subroutine check_istack_l_filter_smp                            &
-!!     &         (my_rank, inod_smp_stack, fil_l_smp)
+!!     &         (id_rank, inod_smp_stack, fil_l_smp)
 !
       module t_l_filtering_data
 !
@@ -233,17 +233,17 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_istack_l_filter(my_rank, fil_l)
+      subroutine check_istack_l_filter(id_rank, fil_l)
 !
-      integer (kind = kint), intent(in) :: my_rank
+      integer (kind = kint), intent(in) :: id_rank
       type(line_filtering_type), intent(in) :: fil_l
 !
       integer (kind = kint) :: inod, nd
 !
-      write(50+my_rank,*) 'nd, inod, fil_l%istack_lf(inod, nd)'
+      write(50+id_rank,*) 'nd, inod, fil_l%istack_lf(inod, nd)'
       do inod = 1, fil_l%nnod_lf
        do nd = 1, 3
-         write(50+my_rank,*) nd, inod, fil_l%istack_lf(inod, nd)
+         write(50+id_rank,*) nd, inod, fil_l%istack_lf(inod, nd)
        end do
       end do
 !
@@ -252,22 +252,22 @@
 !  ---------------------------------------------------------------------
 !
       subroutine check_istack_l_filter_smp                              &
-     &         (my_rank, inod_smp_stack, fil_l_smp)
+     &         (id_rank, inod_smp_stack, fil_l_smp)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       type(line_filtering_type), intent(in) :: fil_l_smp
 !
       integer(kind = kint) :: ist, ied, nd, ip, isum, ii
 !
-      write(50+my_rank,*) 'nd, ip, isum, fil_l_smp%istack_lf(i,ip,nd)'
+      write(50+id_rank,*) 'nd, ip, isum, fil_l_smp%istack_lf(i,ip,nd)'
       do ip = 1, np_smp
        ist = inod_smp_stack(ip-1) + 1
        ied = inod_smp_stack(ip)
        do nd = 1, 3
         do isum = 1, fil_l_smp%nmax_lf(nd)
           ii = (ip-1)*fil_l_smp%nsize_smp + isum
-          write(50+my_rank,*) ip, nd, isum, fil_l_smp%istack_lf(ii,nd)
+          write(50+id_rank,*) ip, nd, isum, fil_l_smp%istack_lf(ii,nd)
         end do
        end do
       end do

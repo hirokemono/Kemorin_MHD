@@ -24,14 +24,14 @@
 !!        type(ucd_data), intent(inout) :: ucd
 !!
 !!      subroutine set_data_by_read_ucd                                 &
-!!     &         (my_rank, istep_ucd, ucd_param, t_IO, ucd, nod_fld)
+!!     &         (id_rank, istep_ucd, ucd_param, t_IO, ucd, nod_fld)
 !!
-!!      subroutine set_data_by_read_ucd_once(my_rank, istep_ucd,        &
+!!      subroutine set_data_by_read_ucd_once(id_rank, istep_ucd,        &
 !!     &          ucd_param, nod_fld, t_IO)
 !!      subroutine add_ucd_to_data                                      &
-!!     &         (my_rank, istep_ucd, ucd_param, nod_fld)
+!!     &         (id_rank, istep_ucd, ucd_param, nod_fld)
 !!      subroutine subtract_by_ucd_data                                 &
-!!     &         (my_rank, istep_ucd, ucd_param, nod_fld)
+!!     &         (id_rank, istep_ucd, ucd_param, nod_fld)
 !!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
@@ -216,19 +216,19 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_data_by_read_ucd                                   &
-     &         (my_rank, istep_ucd, ucd_param, t_IO, ucd, nod_fld)
+     &         (id_rank, istep_ucd, ucd_param, t_IO, ucd, nod_fld)
 !
       use set_and_cal_udt_data
       use ucd_IO_select
 !
-      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
+      integer(kind = kint),  intent(in) :: id_rank, istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call sel_read_udt_file(my_rank, istep_ucd, ucd_param, t_IO, ucd)
+      call sel_read_udt_file(id_rank, istep_ucd, ucd_param, t_IO, ucd)
       call set_field_by_udt_data(nod_fld%n_point, nod_fld%num_phys,     &
      &    nod_fld%ntot_phys, nod_fld%istack_component,                  &
      &    nod_fld%phys_name, nod_fld%d_fld, ucd)
@@ -237,14 +237,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_data_by_read_ucd_once(my_rank, istep_ucd,          &
+      subroutine set_data_by_read_ucd_once(id_rank, istep_ucd,          &
      &          ucd_param, nod_fld, t_IO)
 !
       use set_and_cal_udt_data
       use ucd_IO_select
 !
       type(field_IO_params), intent(in) :: ucd_param
-      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
+      integer(kind = kint),  intent(in) :: id_rank, istep_ucd
 !
       type(phys_data), intent(inout) :: nod_fld
       type(time_data), intent(inout) :: t_IO
@@ -254,7 +254,7 @@
 !
       local_ucd%nnod = nod_fld%n_point
       call sel_read_alloc_udt_file                                      &
-     &   (my_rank, istep_ucd, ucd_param, t_IO, local_ucd)
+     &   (id_rank, istep_ucd, ucd_param, t_IO, local_ucd)
       call set_field_by_udt_data(nod_fld%n_point, nod_fld%num_phys,     &
      &    nod_fld%ntot_phys, nod_fld%istack_component,                  &
      &    nod_fld%phys_name, nod_fld%d_fld, local_ucd)
@@ -265,12 +265,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_ucd_to_data                                        &
-     &         (my_rank, istep_ucd, ucd_param, nod_fld)
+     &         (id_rank, istep_ucd, ucd_param, nod_fld)
 !
       use set_and_cal_udt_data
       use ucd_IO_select
 !
-      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
+      integer(kind = kint),  intent(in) :: id_rank, istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
 !
       type(phys_data), intent(inout) :: nod_fld
@@ -281,7 +281,7 @@
 !
       local_ucd%nnod =  nod_fld%n_point
       call sel_read_alloc_udt_file                                      &
-     &   (my_rank, istep_ucd, ucd_param, local_t_IO, local_ucd)
+     &   (id_rank, istep_ucd, ucd_param, local_t_IO, local_ucd)
       call add_field_by_udt_data(nod_fld%n_point, nod_fld%num_phys,     &
      &    nod_fld%ntot_phys, nod_fld%istack_component,                  &
      &    nod_fld%phys_name, nod_fld%d_fld, local_ucd)
@@ -292,13 +292,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine subtract_by_ucd_data                                   &
-     &         (my_rank, istep_ucd, ucd_param, nod_fld)
+     &         (id_rank, istep_ucd, ucd_param, nod_fld)
 !
 !
       use set_and_cal_udt_data
       use ucd_IO_select
 !
-      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
+      integer(kind = kint),  intent(in) :: id_rank, istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
 !
       type(phys_data), intent(inout) :: nod_fld
@@ -309,7 +309,7 @@
 !
       local_ucd%nnod = nod_fld%n_point
       call sel_read_alloc_udt_file                                      &
-     &   (my_rank, istep_ucd, ucd_param, local_t_IO, local_ucd)
+     &   (id_rank, istep_ucd, ucd_param, local_t_IO, local_ucd)
       call subtract_field_by_udt_data                                   &
      &   (nod_fld%n_point, nod_fld%num_phys,                            &
      &    nod_fld%ntot_phys, nod_fld%istack_component,                  &

@@ -22,10 +22,10 @@
 !!      subroutine dealloc_gauss_colatitude_rtp(Plm_WK)
 !!        type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !!
-!!      subroutine check_gauss_colat_rtm(my_rank, nth_rtm, Plm_WK)
+!!      subroutine check_gauss_colat_rtm(id_rank, nth_rtm, Plm_WK)
 !!      subroutine check_schmidt_poly_rtm                               &
-!!     &         (my_rank, sph_rtm, sph_rlm, Plm_WK)
-!!      subroutine check_schmidt_p_rtm_pole(my_rank, sph_rlm, Plm_WK)
+!!     &         (id_rank, sph_rtm, sph_rlm, Plm_WK)
+!!      subroutine check_schmidt_p_rtm_pole(id_rank, sph_rlm, Plm_WK)
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(legendre_4_sph_trans), intent(in) :: Plm_WK
@@ -231,19 +231,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_gauss_colat_rtm(my_rank, nth_rtm, Plm_WK)
+      subroutine check_gauss_colat_rtm(id_rank, nth_rtm, Plm_WK)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nth_rtm
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
 !
       integer(kind = kint) :: i
 !
 !
-      write(50+my_rank,*) 'num_gauss_points', nth_rtm
+      write(50+id_rank,*) 'num_gauss_points', nth_rtm
 !
       do i = 1, nth_rtm
-        write(50+my_rank,'(i5,1p3E25.15e3)') i, Plm_WK%g_point_rtm(i),  &
+        write(50+id_rank,'(i5,1p3E25.15e3)') i, Plm_WK%g_point_rtm(i),  &
      &        Plm_WK%g_colat_rtm(i), Plm_WK%weight_rtm(i)
       end do
 !
@@ -252,12 +252,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_schmidt_poly_rtm                                 &
-     &         (my_rank, sph_rtm, sph_rlm, Plm_WK)
+     &         (id_rank, sph_rtm, sph_rlm, Plm_WK)
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
@@ -265,13 +265,13 @@
       integer(kind = kint) :: i, j
 !
 !
-      write(50+my_rank,*) 'num_gauss_points, truncation',               &
+      write(50+id_rank,*) 'num_gauss_points, truncation',               &
      &         sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2)
-      write(50+my_rank,*) 'med_no, j, l, m, P, dp/dtheta'
+      write(50+id_rank,*) 'med_no, j, l, m, P, dp/dtheta'
 !
       do j = 1, sph_rlm%nidx_rlm(2)
         do i = 1, sph_rtm%nidx_rtm(2)
-          write(50+my_rank,'(5i5,1p3E25.15e3)') i, j,                   &
+          write(50+id_rank,'(5i5,1p3E25.15e3)') i, j,                   &
      &      sph_rlm%idx_gl_1d_rlm_j(j,1:3),                             &
      &      Plm_WK%P_rtm(i,j), Plm_WK%dPdt_rtm(i,j)
         end do
@@ -281,23 +281,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_schmidt_p_rtm_pole(my_rank, sph_rlm, Plm_WK)
+      subroutine check_schmidt_p_rtm_pole(id_rank, sph_rlm, Plm_WK)
 !
       use t_spheric_rlm_data
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
 !
       integer(kind = kint) :: i, j
 !
 !
-      write(50+my_rank,*) 'truncation', sph_rlm%nidx_rlm(2)
-      write(50+my_rank,*) 'med_no, j, l, m, P, dp/dtheta'
+      write(50+id_rank,*) 'truncation', sph_rlm%nidx_rlm(2)
+      write(50+id_rank,*) 'med_no, j, l, m, P, dp/dtheta'
 !
       do j = 1, sph_rlm%nidx_rlm(2)
         do i = 1, 2
-          write(50+my_rank,'(5i5,1p3E25.15e3)') i, j,                   &
+          write(50+id_rank,'(5i5,1p3E25.15e3)') i, j,                   &
      &      sph_rlm%idx_gl_1d_rlm_j(j,1:3),                             &
      &      Plm_WK%P_pole_rtm(i,j), Plm_WK%dPdt_pole_rtm(i,j)
         end do

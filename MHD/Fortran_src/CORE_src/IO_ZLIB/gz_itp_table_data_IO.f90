@@ -3,7 +3,7 @@
 !
 !        programmed by H.Matsui on Sep. 2012
 !
-!!      subroutine write_gz_itp_table_org(my_rank, IO_itp_org)
+!!      subroutine write_gz_itp_table_org(id_rank, IO_itp_org)
 !!      subroutine write_gz_itp_coefs_org(IO_itp_org)
 !!        type(interpolate_table_org), intent(in) :: IO_itp_org
 !!
@@ -12,7 +12,7 @@
 !!      subroutine read_gz_itp_coefs_org(IO_itp_org)
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!
-!!      subroutine write_gz_itp_table_dest(my_rank, IO_itp_dest)
+!!      subroutine write_gz_itp_table_dest(id_rank, IO_itp_dest)
 !!      subroutine write_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest)
 !!        type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
@@ -39,11 +39,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_itp_table_org(my_rank, IO_itp_org)
+      subroutine write_gz_itp_table_org(id_rank, IO_itp_org)
 !
       use t_interpolate_tbl_org
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
 !
@@ -58,7 +58,7 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i16,a1)') my_rank, char(0)
+      write(textbuf,'(i16,a1)') id_rank, char(0)
       call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') IO_itp_org%num_dest_domain, char(0)
       call gz_write_textbuf_w_lf
@@ -213,12 +213,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_itp_table_dest(my_rank, IO_itp_dest)
+      subroutine write_gz_itp_table_dest(id_rank, IO_itp_dest)
 !
       use t_interpolate_tbl_dest
 !
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
@@ -232,7 +232,7 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i16,a1)') my_rank, char(0)
+      write(textbuf,'(i16,a1)') id_rank, char(0)
       call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') IO_itp_dest%num_org_domain, char(0)
       call gz_write_textbuf_w_lf

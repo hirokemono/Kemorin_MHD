@@ -9,14 +9,14 @@
 !!      subroutine unlink_3d_linear_jac_type(jacs)
 !!        type(jacobians_type), intent(inout) :: jacs
 !!
-!!      subroutine const_jacobians_element(my_rank, nprocs,             &
+!!      subroutine const_jacobians_element(id_rank, nprocs,             &
 !!     &          node, ele, surf_grp, infinity_list, jacs)
-!!      subroutine const_jacobians_surf_group (my_rank, nprocs,         &
+!!      subroutine const_jacobians_surf_group (id_rank, nprocs,         &
 !!     &          node, ele, surf, surf_grp, spf_2d, jacs)
 !!      subroutine const_jacobians_surface                              &
-!!     &         (my_rank, nprocs, node, surf, spf_2d, jacs)
+!!     &         (id_rank, nprocs, node, surf, spf_2d, jacs)
 !!      subroutine const_jacobians_edge                                 &
-!!     &         (my_rank, nprocs, node, edge, spf_1d, jacs)
+!!     &         (id_rank, nprocs, node, edge, spf_1d, jacs)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in)  :: surf
@@ -113,13 +113,13 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_jacobians_element(my_rank, nprocs,               &
+      subroutine const_jacobians_element(id_rank, nprocs,               &
      &          node, ele, surf_grp, infinity_list, spf_3d, jacs)
 !
       use const_jacobians_3d
       use const_jacobians_infinity
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: surf_grp
@@ -133,7 +133,7 @@
      &    jacs%g_FEM%maxtot_int_3d, jacs%jac_3d)
       call alloc_dxi_dx_type(ele%numele, jacs%jac_3d)
 !
-      if(my_rank .lt. nprocs) then
+      if(id_rank .lt. nprocs) then
         call sel_jacobian_type                                          &
      &     (node, ele, jacs%g_FEM, spf_3d, jacs%jac_3d)
         call sel_jacobian_infinity(node, ele, surf_grp,                 &
@@ -149,7 +149,7 @@
      &      jacs%g_FEM%maxtot_int_3d, jacs%jac_3d_l)
         call alloc_dxi_dx_type(ele%numele, jacs%jac_3d_l)
 !
-        if(my_rank .lt. nprocs) then
+        if(id_rank .lt. nprocs) then
           call cal_jacobian_trilinear                                   &
      &       (node, ele, jacs%g_FEM, spf_3d, jacs%jac_3d_l)
           call const_linear_jacobian_infinity(node, ele, surf_grp,      &
@@ -165,12 +165,12 @@
 !> Construct shape function, difference of shape function, and Jacobian
 !> for surface group
 !
-      subroutine const_jacobians_surf_group (my_rank, nprocs,           &
+      subroutine const_jacobians_surf_group (id_rank, nprocs,           &
      &          node, ele, surf, surf_grp, spf_2d, jacs)
 !
       use const_jacobians_sf_grp
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in)  :: surf
@@ -184,7 +184,7 @@
       call alloc_2d_jac_type(surf_grp%num_item,                         &
      &    surf%nnod_4_surf, jacs%g_FEM%maxtot_int_2d, jacs%jac_sf_grp)
 !
-      if(my_rank .lt. nprocs) then
+      if(id_rank .lt. nprocs) then
         call sel_jacobian_surface_grp (node, ele, surf, surf_grp,       &
      &      jacs%g_FEM, spf_2d, jacs%jac_sf_grp)
       end if
@@ -196,7 +196,7 @@
         call alloc_2d_jac_type(surf_grp%num_item, num_linear_sf,        &
      &      jacs%g_FEM%maxtot_int_2d, jacs%jac_sf_grp_l)
 !
-        if(my_rank .lt. nprocs) then
+        if(id_rank .lt. nprocs) then
           call const_jacobian_sf_grp_linear(node, ele, surf_grp,        &
      &        jacs%g_FEM, spf_2d, jacs%jac_sf_grp_l)
         end if
@@ -209,11 +209,11 @@
 !> for surface element
 !
       subroutine const_jacobians_surface                                &
-     &         (my_rank, nprocs, node, surf, spf_2d, jacs)
+     &         (id_rank, nprocs, node, surf, spf_2d, jacs)
 !
       use const_jacobians_2d
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(surface_data), intent(in)  :: surf
       type(surface_shape_function), intent(inout) :: spf_2d
@@ -224,7 +224,7 @@
       call alloc_2d_jac_type(surf%numsurf,                              &
      &    surf%nnod_4_surf, jacs%g_FEM%maxtot_int_2d, jacs%jac_2d)
 !
-      if(my_rank .lt. nprocs) then
+      if(id_rank .lt. nprocs) then
         call sel_jacobian_surface                                       &
      &     (node, surf, jacs%g_FEM, spf_2d, jacs%jac_2d)
       end if
@@ -235,7 +235,7 @@
         allocate(jacs%jac_2d_l)
         call alloc_2d_jac_type(surf%numsurf, num_linear_sf,             &
      &      jacs%g_FEM%maxtot_int_2d, jacs%jac_2d_l)
-        if(my_rank .lt. nprocs) then
+        if(id_rank .lt. nprocs) then
           call cal_jacobian_surface_linear                              &
      &       (node, surf, jacs%g_FEM, spf_2d, jacs%jac_2d_l)
         end if
@@ -248,11 +248,11 @@
 !> for edge element
 !
       subroutine const_jacobians_edge                                   &
-     &         (my_rank, nprocs, node, edge, spf_1d, jacs)
+     &         (id_rank, nprocs, node, edge, spf_1d, jacs)
 !
       use const_jacobians_1d
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(edge_data), intent(in)  :: edge
       type(edge_shape_function), intent(inout) :: spf_1d
@@ -263,7 +263,7 @@
       call alloc_1d_jac_type(edge%numedge, edge%nnod_4_edge,            &
      &    jacs%g_FEM%maxtot_int_1d, jacs%jac_1d)
 !
-      if(my_rank .lt. nprocs) then
+      if(id_rank .lt. nprocs) then
         call sel_jacobian_edge                                          &
      &     (node, edge, jacs%g_FEM, spf_1d, jacs%jac_1d)
       end if
@@ -274,7 +274,7 @@
         allocate(jacs%jac_1d_l)
         call alloc_1d_jac_type(edge%numedge, num_linear_edge,           &
      &      jacs%g_FEM%maxtot_int_1d, jacs%jac_1d_l)
-        if(my_rank .lt. nprocs) then
+        if(id_rank .lt. nprocs) then
           call cal_jacobian_edge_linear                                 &
      &       (node, edge, jacs%g_FEM, spf_1d, jacs%jac_1d_l)
         end if

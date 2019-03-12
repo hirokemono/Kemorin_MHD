@@ -7,17 +7,17 @@
 !> @brief Routines to make import table
 !!
 !!@verbatim
-!!      subroutine const_nod_import_table(my_rank, nprocs,              &
+!!      subroutine const_nod_import_table(id_rank, nprocs,              &
 !!     &          numnod, id_org_domain, nod_comm)
-!!        integer(kind = kint), intent(in) :: my_rank, nprocs
+!!        integer(kind = kint), intent(in) :: id_rank, nprocs
 !!        integer(kind = kint), intent(in) :: numnod
 !!        integer(kind = kint), intent(in) :: id_org_domain(numnod)
 !!        type(communication_table), intent(inout) :: nod_comm
 !!
-!!      subroutine const_ele_import_table(my_rank, nprocs,              &
+!!      subroutine const_ele_import_table(id_rank, nprocs,              &
 !!     &          numnod, numele, nnod_4_ele, inod_global, ie,          &
 !!     &          id_org_domain, ele_comm, ele_comm_gl)
-!!        integer(kind = kint), intent(in) :: my_rank, nprocs
+!!        integer(kind = kint), intent(in) :: id_rank, nprocs
 !!        integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
 !!        integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !!        integer(kind = kint), intent(in) :: inod_global(numnod)
@@ -25,7 +25,7 @@
 !!        type(communication_table), intent(inout) :: ele_comm
 !!        type(work_4_const_export), intent(inout) :: ele_comm_gl
 !!
-!!      subroutine const_ele_export_table(my_rank, nprocs,              &
+!!      subroutine const_ele_export_table(id_rank, nprocs,              &
 !!     &          numnod, internal_node, numele, nnod_4_ele,            &
 !!     &          id_global, ie, ele_comm, ele_comm_gl, comm_tbl)
 !!        integer(kind = kint), intent(in) :: numnod, internal_node
@@ -54,12 +54,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_nod_import_table(my_rank, nprocs,                &
+      subroutine const_nod_import_table(id_rank, nprocs,                &
      &          numnod, id_org_domain, nod_comm)
 !
       use const_import_table
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
 !
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: id_org_domain(numnod)
@@ -89,13 +89,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_ele_import_table(my_rank, nprocs,                &
+      subroutine const_ele_import_table(id_rank, nprocs,                &
      &          numnod, numele, nnod_4_ele, inod_global, ie,            &
      &          id_org_domain, ele_comm, ele_comm_gl)
 !
       use const_import_table
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
 !
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -108,7 +108,7 @@
       integer(kind = kint) :: ip
 !
 !
-      ip = my_rank + 1
+      ip = id_rank + 1
 !
       call count_import_domain(nprocs, numele, id_org_domain,           &
      &    ele_comm%num_neib)
@@ -141,11 +141,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_ele_export_table(my_rank, nprocs,                &
+      subroutine const_ele_export_table(id_rank, nprocs,                &
      &          numnod, internal_node, numele, nnod_4_ele,              &
      &          id_global, ie, ele_comm, ele_comm_gl, comm_tbl)
 !
-      integer(kind = kint), intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: id_rank, nprocs
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
       integer(kind = kint), intent(in) :: id_global(numnod)
@@ -157,13 +157,13 @@
 !
 !
       call count_ele_comm_neib                                          &
-     &   (my_rank, nprocs, ele_comm, comm_tbl%num_neib)
+     &   (id_rank, nprocs, ele_comm, comm_tbl%num_neib)
 !
       call alloc_comm_table_num(comm_tbl)
 !
-      call set_ele_comm_neib(my_rank, nprocs, ele_comm,                 &
+      call set_ele_comm_neib(id_rank, nprocs, ele_comm,                 &
      &    comm_tbl%num_neib, comm_tbl%id_neib)
-      call set_ele_comm_tbl_num(my_rank, nprocs, ele_comm,              &
+      call set_ele_comm_tbl_num(id_rank, nprocs, ele_comm,              &
      &    comm_tbl%num_neib, comm_tbl%id_neib,                          &
      &    comm_tbl%ntot_import, comm_tbl%ntot_export,                   &
      &    comm_tbl%num_import, comm_tbl%num_export,                     &
@@ -171,7 +171,7 @@
 !
       call alloc_comm_table_item(comm_tbl)
 !
-      call set_ele_import_item(my_rank, nprocs, ele_comm,               &
+      call set_ele_import_item(id_rank, nprocs, ele_comm,               &
      &    comm_tbl%num_neib, comm_tbl%ntot_import, comm_tbl%id_neib,    &
      &    comm_tbl%num_import, comm_tbl%istack_import,                  &
      &    comm_tbl%item_import)

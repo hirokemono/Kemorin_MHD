@@ -7,16 +7,16 @@
 !>@brief  Copy interpolation table between structures
 !!
 !!@verbatim
-!!      subroutine copy_interpolate_between_types(my_rank,              &
+!!      subroutine copy_interpolate_between_types(id_rank,              &
 !!     &          itp_input, itp_copied)
 !!
-!!      subroutine copy_itp_tbl_types_dst(my_rank,                      &
+!!      subroutine copy_itp_tbl_types_dst(id_rank,                      &
 !!     &          tbl_dst_in, tbl_dst_cp)
-!!      subroutine copy_itp_tbl_types_org(my_rank,                      &
+!!      subroutine copy_itp_tbl_types_org(id_rank,                      &
 !!     &          tbl_org_in, tbl_org_cp)
 !!
 !!      subroutine copy_itp_coefs_dest                                  &
-!!     &         (my_rank, itp_dest, coef_dest, tbl_dst_cp, coef_dst_cp)
+!!     &         (id_rank, itp_dest, coef_dest, tbl_dst_cp, coef_dst_cp)
 !!@endverbatim
 !
       module copy_interpolate_types
@@ -31,23 +31,23 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_interpolate_between_types(my_rank,                &
+      subroutine copy_interpolate_between_types(id_rank,                &
      &          itp_input, itp_copied)
 !
       use m_machine_parameter
       use t_interpolate_table
       use t_interpolate_tbl_org
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(interpolate_table), intent(inout) :: itp_input
       type(interpolate_table), intent(inout) :: itp_copied
 
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_types_dst'
-      call copy_itp_tbl_types_dst(my_rank, itp_input%tbl_dest,          &
+      call copy_itp_tbl_types_dst(id_rank, itp_input%tbl_dest,          &
      &    itp_copied%tbl_dest)
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_types_org'
-      call copy_itp_tbl_types_org(my_rank, itp_input%tbl_org,           &
+      call copy_itp_tbl_types_org(id_rank, itp_input%tbl_org,           &
      &    itp_copied%tbl_org)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_stack_tbl_org_smp_type'
@@ -58,12 +58,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_itp_tbl_types_dst(my_rank,                        &
+      subroutine copy_itp_tbl_types_dst(id_rank,                        &
      &          tbl_dst_in, tbl_dst_cp)
 !
       use t_interpolate_tbl_dest
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(interpolate_table_dest), intent(inout) :: tbl_dst_in
       type(interpolate_table_dest), intent(inout) :: tbl_dst_cp
 !
@@ -92,7 +92,7 @@
         call dealloc_itp_num_dest(tbl_dst_in)
 !
         ilast_domain = tbl_dst_cp%num_org_domain
-        if (tbl_dst_cp%id_org_domain(ilast_domain) .eq. my_rank) then
+        if (tbl_dst_cp%id_org_domain(ilast_domain) .eq. id_rank) then
           tbl_dst_cp%iflag_self_itp_recv = 1
         end if
       else
@@ -105,13 +105,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_itp_tbl_types_org(my_rank,                        &
+      subroutine copy_itp_tbl_types_org(id_rank,                        &
      &          tbl_org_in, tbl_org_cp)
 !
       use t_interpolate_tbl_org
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(interpolate_table_org), intent(in) :: tbl_org_in
       type(interpolate_table_org), intent(inout) :: tbl_org_cp
 !
@@ -150,7 +150,7 @@
         end do
 !
         ilast_domain = tbl_org_cp%num_dest_domain
-        if ( tbl_org_cp%id_dest_domain(ilast_domain) .eq. my_rank) then
+        if ( tbl_org_cp%id_dest_domain(ilast_domain) .eq. id_rank) then
           tbl_org_cp%iflag_self_itp_send = 1
         end if
 !
@@ -166,12 +166,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_itp_coefs_dest                                    &
-     &         (my_rank, itp_dest, coef_dest, tbl_dst_cp, coef_dst_cp)
+     &         (id_rank, itp_dest, coef_dest, tbl_dst_cp, coef_dst_cp)
 !
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
       type(interpolate_table_dest), intent(inout) :: itp_dest
       type(interpolate_coefs_dest), intent(inout) :: coef_dest
@@ -181,7 +181,7 @@
       integer(kind = kint) :: num
 !
 !
-      call copy_itp_tbl_types_dst(my_rank, itp_dest, tbl_dst_cp)
+      call copy_itp_tbl_types_dst(id_rank, itp_dest, tbl_dst_cp)
 !
       if (tbl_dst_cp%num_org_domain .le. 0) return
         call alloc_itp_coef_stack                                       &

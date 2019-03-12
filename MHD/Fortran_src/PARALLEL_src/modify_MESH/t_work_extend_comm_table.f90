@@ -21,24 +21,24 @@
 !!      subroutine dealloc_ele_buffer_2_extend(ele_buf)
 !!        type(ele_buffer_2_extend), intent(inout) :: ele_buf
 !!
-!!      subroutine check_num_of_added_table(my_rank, added_comm)
+!!      subroutine check_num_of_added_table(id_rank, added_comm)
 !!        type(communication_table), intent(in) :: added_comm
 !!      subroutine check_added_impoert_items                            &
-!!     &         (my_rank, nod_comm, added_comm, dbl_id1, recv_nbuf)
+!!     &         (id_rank, nod_comm, added_comm, dbl_id1, recv_nbuf)
 !!        type(communication_table), intent(in) :: nod_comm, added_comm
 !!        type(parallel_double_numbering), intent(in) :: dbl_id1
 !!        type(node_buffer_2_extend), intent(in) :: recv_nbuf
 !!      subroutine check_delete_from_SR_list                            &
-!!     &         (my_rank, added_comm, send_nbuf, recv_nbuf)
+!!     &         (id_rank, added_comm, send_nbuf, recv_nbuf)
 !!        type(communication_table), intent(in) :: added_comm
 !!        type(node_buffer_2_extend), intent(in) :: send_nbuf, recv_nbuf
 !!      subroutine check_ie_send_added                                  &
-!!     &         (my_rank, added_comm, ele, send_ebuf)
+!!     &         (id_rank, added_comm, ele, send_ebuf)
 !!        type(communication_table), intent(in) ::  added_comm
 !!        type(element_data), intent(in) :: ele
 !!        type(ele_buffer_2_extend), intent(in) :: send_ebuf
 !!      subroutine check_element_list_to_add                            &
-!!     &         (my_rank, added_comm, ele, send_ebuf, recv_ebuf)
+!!     &         (id_rank, added_comm, ele, send_ebuf, recv_ebuf)
 !!        type(communication_table), intent(in) ::  added_comm
 !!        type(element_data), intent(in) :: ele
 !!        type(ele_buffer_2_extend), intent(in) :: send_ebuf
@@ -193,25 +193,25 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine check_num_of_added_table(my_rank, added_comm)
+      subroutine check_num_of_added_table(id_rank, added_comm)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(communication_table), intent(in) :: added_comm
 !
 !
-      write(*,*) 'istack_send_added', my_rank, added_comm%istack_export
-      write(*,*) 'ntot_send_added', my_rank, added_comm%ntot_export
-      write(*,*) 'istack_recv_added', my_rank, added_comm%istack_import
-      write(*,*) 'ntot_recv_added', my_rank, added_comm%ntot_import
+      write(*,*) 'istack_send_added', id_rank, added_comm%istack_export
+      write(*,*) 'ntot_send_added', id_rank, added_comm%ntot_export
+      write(*,*) 'istack_recv_added', id_rank, added_comm%istack_import
+      write(*,*) 'ntot_recv_added', id_rank, added_comm%ntot_import
 !
       end subroutine check_num_of_added_table
 !
 !  ---------------------------------------------------------------------
 !
       subroutine check_added_impoert_items                              &
-     &         (my_rank, nod_comm, added_comm, dbl_id1, recv_nbuf)
+     &         (id_rank, nod_comm, added_comm, dbl_id1, recv_nbuf)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(communication_table), intent(in) :: nod_comm, added_comm
       type(parallel_double_numbering), intent(in) :: dbl_id1
       type(node_buffer_2_extend), intent(in) :: recv_nbuf
@@ -222,22 +222,22 @@
       do i = 1, nod_comm%num_neib
         ist = nod_comm%istack_import(i-1) + 1
         ied = nod_comm%istack_import(i)
-        write(120+my_rank,*) 'import', nod_comm%id_neib(i), ist, ied
+        write(120+id_rank,*) 'import', nod_comm%id_neib(i), ist, ied
 !
         do inum = ist, ied
           inod = nod_comm%item_import(inum)
-          write(120+my_rank,*) inum, inod,                              &
+          write(120+id_rank,*) inum, inod,                              &
      &        dbl_id1%irank_home(inod), dbl_id1%inod_local(inod), '  '
         end do
       end do
       do i = 1, nod_comm%num_neib
         ist = added_comm%istack_import(i-1) + 1
         ied = added_comm%istack_import(i)
-        write(120+my_rank,*) 'added_comm%istack_import',                &
+        write(120+id_rank,*) 'added_comm%istack_import',                &
      &                        nod_comm%id_neib(i), ist, ied
 !
         do inum = ist, ied
-          write(120+my_rank,*) inum, recv_nbuf%irank_add(inum),         &
+          write(120+id_rank,*) inum, recv_nbuf%irank_add(inum),         &
      &         recv_nbuf%inod_add(inum), added_comm%item_import(inum)
         end do
       end do
@@ -247,9 +247,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine check_delete_from_SR_list                              &
-     &         (my_rank, added_comm, send_nbuf, recv_nbuf)
+     &         (id_rank, added_comm, send_nbuf, recv_nbuf)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(communication_table), intent(in) :: added_comm
       type(node_buffer_2_extend), intent(in) :: send_nbuf, recv_nbuf
 !
@@ -258,12 +258,12 @@
 !
       do inum = 1, added_comm%ntot_import
         if(added_comm%item_import(inum) .lt. 0) write(*,*)              &
-     &      'recv delete', my_rank, inum,                               &
+     &      'recv delete', id_rank, inum,                               &
      &       recv_nbuf%irank_add(inum), recv_nbuf%inod_add(inum)
       end do
       do inum = 1, added_comm%ntot_export
         if(added_comm%item_export(inum) .lt. 0) write(*,*)              &
-     &      'send delete', my_rank, inum,                               &
+     &      'send delete', id_rank, inum,                               &
      &       send_nbuf%irank_add(inum), send_nbuf%inod_add(inum)
       end do
 !
@@ -272,9 +272,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine check_ie_send_added                                    &
-     &         (my_rank, added_comm, ele, send_ebuf)
+     &         (id_rank, added_comm, ele, send_ebuf)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(communication_table), intent(in) ::  added_comm
       type(element_data), intent(in) :: ele
       type(ele_buffer_2_extend), intent(in) :: send_ebuf
@@ -285,13 +285,13 @@
       do i = 1, added_comm%num_neib
         ist = added_comm%istack_export(i-1) + 1
         ied = added_comm%istack_export(i)
-        write(50+my_rank,*) 'added_comm%istack_export',                 &
+        write(50+id_rank,*) 'added_comm%istack_export',                 &
      &                      i, added_comm%id_neib(i), ist, ied
         do inum = ist, ied
           if(send_ebuf%irank_add(inum) .eq. added_comm%id_neib(i)) then
-              write(50+my_rank,*) inum, send_ebuf%iele_lc(inum),        &
+              write(50+id_rank,*) inum, send_ebuf%iele_lc(inum),        &
      &         send_ebuf%ie_added(inum,1:ele%nnod_4_ele)
-              write(50+my_rank,*) inum, send_ebuf%irank_add(inum),      &
+              write(50+id_rank,*) inum, send_ebuf%irank_add(inum),      &
      &         send_ebuf%ip_added(inum,1:ele%nnod_4_ele)
           end if
         end do
@@ -302,9 +302,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine check_element_list_to_add                              &
-     &         (my_rank, added_comm, ele, send_ebuf, recv_ebuf)
+     &         (id_rank, added_comm, ele, send_ebuf, recv_ebuf)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(communication_table), intent(in) ::  added_comm
       type(element_data), intent(in) :: ele
       type(ele_buffer_2_extend), intent(in) :: send_ebuf
@@ -316,13 +316,13 @@
       do i = 1, added_comm%num_neib
         ist = added_comm%istack_import(i-1) + 1
         ied = added_comm%istack_import(i)
-        write(50+my_rank,*) 'istack_recv_added',  &
+        write(50+id_rank,*) 'istack_recv_added',  &
      &                      i, added_comm%id_neib(i), ist, ied
         do inum = ist, ied
           if(send_ebuf%irank_add(inum) .eq. added_comm%id_neib(i)) then
-              write(50+my_rank,*) inum,                                 &
+              write(50+id_rank,*) inum,                                 &
      &          recv_ebuf%ie_added(inum,1:ele%nnod_4_ele)
-              write(50+my_rank,*) inum,                                 &
+              write(50+id_rank,*) inum,                                 &
      &          recv_ebuf%ip_added(inum,1:ele%nnod_4_ele)
           end if
         end do

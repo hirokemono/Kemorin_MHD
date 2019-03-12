@@ -8,21 +8,21 @@
 !!
 !!@verbatim
 !!      subroutine write_gz_step_field_file                             &
-!!     &         (gzip_name, my_rank, t_IO, fld_IO)
+!!     &         (gzip_name, id_rank, t_IO, fld_IO)
 !!        type(time_data), intent(in) :: t_IO
 !!        type(field_IO), intent(in) :: fld_IO
 !!
-!!      subroutine read_alloc_gz_field_file(gzip_name, my_rank, fld_IO)
+!!      subroutine read_alloc_gz_field_file(gzip_name, id_rank, fld_IO)
 !!
 !!      subroutine read_gz_step_field_file                              &
-!!     &         (gzip_name, my_rank, t_IO, fld_IO)
+!!     &         (gzip_name, id_rank, t_IO, fld_IO)
 !!      subroutine read_alloc_gz_step_field_file                        &
-!!     &          (gzip_name, my_rank, t_IO, fld_IO)
+!!     &          (gzip_name, id_rank, t_IO, fld_IO)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!
 !!      subroutine read_alloc_gz_step_field_head                        &
-!!     &         (gzip_name, my_rank, t_IO, fld_IO)
+!!     &         (gzip_name, id_rank, t_IO, fld_IO)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
@@ -47,22 +47,22 @@
 !------------------------------------------------------------------
 !
       subroutine write_gz_step_field_file                               &
-     &         (gzip_name, my_rank, t_IO, fld_IO)
+     &         (gzip_name, id_rank, t_IO, fld_IO)
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
       type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Write gzipped field file: ', trim(gzip_name)
       end if
 !
       call open_wt_gzfile_f(gzip_name)
 !
       call write_gz_step_data                                           &
-     &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call write_gz_field_data(cast_long(fld_IO%nnod_IO),               &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
@@ -74,14 +74,14 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_alloc_gz_field_file(gzip_name, my_rank, fld_IO)
+      subroutine read_alloc_gz_field_file(gzip_name, id_rank, fld_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped data file: ', trim(gzip_name)
 !
       call open_rd_gzfile_f(gzip_name)
@@ -106,9 +106,9 @@
 !------------------------------------------------------------------
 !
       subroutine read_gz_step_field_file                                &
-     &         (gzip_name, my_rank, t_IO, fld_IO)
+     &         (gzip_name, id_rank, t_IO, fld_IO)
 !
-      integer(kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
 !
       type(time_data), intent(inout) :: t_IO
@@ -117,7 +117,7 @@
       integer :: id_read_rank
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read gzipped field file: ', trim(gzip_name)
       end if
 !
@@ -138,9 +138,9 @@
 !------------------------------------------------------------------
 !
       subroutine read_alloc_gz_step_field_file                          &
-     &          (gzip_name, my_rank, t_IO, fld_IO)
+     &          (gzip_name, id_rank, t_IO, fld_IO)
 !
-      integer(kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
 !
       type(time_data), intent(inout) :: t_IO
@@ -149,7 +149,7 @@
       integer :: id_read_rank
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read gzipped field file: ', trim(gzip_name)
       end if
 !
@@ -176,9 +176,9 @@
 !------------------------------------------------------------------
 !
       subroutine read_alloc_gz_step_field_head                          &
-     &         (gzip_name, my_rank, t_IO, fld_IO)
+     &         (gzip_name, id_rank, t_IO, fld_IO)
 !
-      integer(kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
 !
       type(time_data), intent(inout) :: t_IO
@@ -187,7 +187,7 @@
       integer :: id_read_rank
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read gzipped field file: ', trim(gzip_name)
       end if
 !

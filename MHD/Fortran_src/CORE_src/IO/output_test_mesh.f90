@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine output_test_mesh_informations                        &
-!!     &         (my_rank, mesh, ele_mesh, mesh_IO, ele_mesh_IO)
+!!     &         (id_rank, mesh, ele_mesh, mesh_IO, ele_mesh_IO)
 !!@endverbatim
 !
       module output_test_mesh
@@ -29,7 +29,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine output_test_mesh_informations                          &
-     &         (my_rank, mesh, ele_mesh, mesh_IO, ele_mesh_IO)
+     &         (id_rank, mesh, ele_mesh, mesh_IO, ele_mesh_IO)
 !
       use copy_mesh_structures
       use mesh_file_IO
@@ -39,7 +39,7 @@
       use element_file_IO
       use element_geometry_file_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       type(mesh_geometry), intent(in) :: mesh
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -53,12 +53,12 @@
       mesh_IO%nod_comm%num_neib = 0
       call alloc_neighbouring_id(mesh_IO%nod_comm)
       call copy_node_sph_to_xx(mesh%node, mesh_IO%node)
-      call write_node_position_sph(my_rank, def_sph_mesh_head, mesh_IO)
+      call write_node_position_sph(id_rank, def_sph_mesh_head, mesh_IO)
 !
       mesh_IO%nod_comm%num_neib = 0
       call alloc_neighbouring_id(mesh_IO%nod_comm)
       call copy_node_cyl_to_xx(mesh%node, mesh_IO%node)
-      call write_node_position_cyl(my_rank, def_cyl_mesh_head, mesh_IO)
+      call write_node_position_cyl(id_rank, def_cyl_mesh_head, mesh_IO)
 !
 !  -------------------------------
 !     output element data
@@ -69,21 +69,21 @@
       call copy_ele_geometry_to_IO                                      &
      &   (mesh%ele, ele_mesh_IO%node, ele_mesh_IO%sfed)
       call output_element_xyz_file                                      &
-     &   (my_rank, def_ele_mesh_head, ele_mesh_IO)
+     &   (id_rank, def_ele_mesh_head, ele_mesh_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_sph_geom_to_IO'
       call copy_comm_tbl_type(ele_mesh%ele_comm, ele_mesh_IO%comm)
       call copy_ele_sph_geom_to_IO                                      &
      &   (mesh%ele, ele_mesh_IO%node, ele_mesh_IO%sfed)
       call output_element_sph_file                                      &
-     &   (my_rank, def_ele_mesh_head, ele_mesh_IO)
+     &   (id_rank, def_ele_mesh_head, ele_mesh_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_cyl_geom_to_IO'
       call copy_comm_tbl_type(ele_mesh%ele_comm, ele_mesh_IO%comm)
       call copy_ele_cyl_geom_to_IO                                      &
      &    (mesh%ele, ele_mesh_IO%node, ele_mesh_IO%sfed)
       call output_element_cyl_file                                      &
-     &   (my_rank, def_ele_mesh_head, ele_mesh_IO)
+     &   (id_rank, def_ele_mesh_head, ele_mesh_IO)
 !
 !  -------------------------------
 !     output surface data
@@ -97,7 +97,7 @@
      &   (ele_mesh%surf, ele_mesh_IO%node, ele_mesh_IO%sfed)
       if (iflag_debug.gt.0) write(*,*) 'output_surface_sph_file'
       call output_surface_xyz_file                                      &
-     &   (my_rank, def_surf_mesh_head, ele_mesh_IO)
+     &   (id_rank, def_surf_mesh_head, ele_mesh_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO_sph'
       call copy_comm_tbl_type(ele_mesh%surf_comm, ele_mesh_IO%comm)
@@ -107,7 +107,7 @@
      &   (ele_mesh%surf, ele_mesh_IO%node, ele_mesh_IO%sfed)
       if (iflag_debug.gt.0) write(*,*) 'output_surface_sph_file'
       call output_surface_sph_file                                      &
-     &   (my_rank, def_surf_mesh_head, ele_mesh_IO)
+     &   (id_rank, def_surf_mesh_head, ele_mesh_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO_cyl'
       call copy_comm_tbl_type(ele_mesh%surf_comm, ele_mesh_IO%comm)
@@ -117,7 +117,7 @@
      &   (ele_mesh%surf, ele_mesh_IO%node, ele_mesh_IO%sfed)
       if (iflag_debug.gt.0) write(*,*) 'output_surface_cyl_file'
       call output_surface_cyl_file                                      &
-      &  (my_rank, def_surf_mesh_head, ele_mesh_IO)
+      &  (id_rank, def_surf_mesh_head, ele_mesh_IO)
 !
 !  -------------------------------
 !     output edge data
@@ -131,7 +131,7 @@
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       if (iflag_debug.gt.0) write(*,*) 'output_edge_sph_file'
       call output_edge_xyz_file                                         &
-     &   (my_rank, def_edge_mesh_head, ele_mesh_IO)
+     &   (id_rank, def_edge_mesh_head, ele_mesh_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO_sph'
       call copy_comm_tbl_type(ele_mesh%edge_comm, ele_mesh_IO%comm)
@@ -142,7 +142,7 @@
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       if (iflag_debug.gt.0) write(*,*) 'output_edge_sph_file'
       call output_edge_sph_file                                         &
-     &   (my_rank, def_edge_mesh_head, ele_mesh_IO)
+     &   (id_rank, def_edge_mesh_head, ele_mesh_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO_cyl'
       call copy_comm_tbl_type(ele_mesh%edge_comm, ele_mesh_IO%comm)
@@ -153,7 +153,7 @@
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       if (iflag_debug.gt.0) write(*,*) 'output_edge_cyl_file'
       call output_edge_cyl_file                                         &
-     &   (my_rank, def_edge_mesh_head, ele_mesh_IO)
+     &   (id_rank, def_edge_mesh_head, ele_mesh_IO)
 !
        end subroutine output_test_mesh_informations
 !

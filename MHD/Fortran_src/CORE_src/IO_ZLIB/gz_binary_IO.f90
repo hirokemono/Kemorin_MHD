@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine open_wt_gzfile_b(gzip_name)
 !!      subroutine open_rd_gzfile_b                                     &
-!!     &         (gzip_name, my_rank, iflag_swap, ierr)
+!!     &         (gzip_name, id_rank, iflag_swap, ierr)
 !!
 !!      subroutine gz_write_endian_flag
 !!      subroutine gz_write_one_integer_b(int_dat)
@@ -21,7 +21,7 @@
 !!      subroutine gz_write_1d_vector_b(num, real_dat)
 !!      subroutine gz_write_2d_vector_b(n1, n2, real_dat)
 !!
-!!      integer(kind = kint) function gz_read_endian_flag(my_rank)
+!!      integer(kind = kint) function gz_read_endian_flag(id_rank)
 !!      subroutine gz_read_one_integer_b(iflag_swap, int_dat, ierr)
 !!      subroutine gz_read_one_real_b(iflag_swap, real_dat, ierr)
 !!      subroutine gz_read_mul_int8_b(iflag_swap, num, int8_dat, ierr)
@@ -68,18 +68,18 @@
 !------------------------------------------------------------------
 !
       subroutine open_rd_gzfile_b                                       &
-     &         (gzip_name, my_rank, iflag_swap, ierr)
+     &         (gzip_name, id_rank, iflag_swap, ierr)
 !
       use set_parallel_file_name
       use skip_gz_comment
 !
-      integer(kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
       integer(kind = kint), intent(inout) :: iflag_swap, ierr
 !
 !
       call open_rd_gzfile_f(gzip_name)
-      iflag_swap = gz_read_endian_flag(my_rank)
+      iflag_swap = gz_read_endian_flag(id_rank)
 !
       ierr = 0
       if(iflag_swap .eq. -1) ierr = ierr_file
@@ -247,16 +247,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function gz_read_endian_flag(my_rank)
+      integer(kind = kint) function gz_read_endian_flag(id_rank)
 !
       use binary_IO
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
       integer :: ierr_IO, int_dat
 !
 !
       call gzread_32bit_f(iendian_KEEP, kint, int_dat, ierr_IO)
-      gz_read_endian_flag = endian_check(my_rank, int_dat)
+      gz_read_endian_flag = endian_check(id_rank, int_dat)
 !
       end function gz_read_endian_flag
 !
