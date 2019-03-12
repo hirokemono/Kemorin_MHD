@@ -8,16 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine write_ucd_2_gz_fld_file                              &
-!!     &         (my_rank, gzip_name, t_IO, ucd)
+!!     &         (id_rank, gzip_name, t_IO, ucd)
 !!
-!!      subroutine read_ucd_2_gz_fld_file(my_rank, gzip_name, t_IO, ucd)
+!!      subroutine read_ucd_2_gz_fld_file(id_rank, gzip_name, t_IO, ucd)
 !!      subroutine read_alloc_ucd_2_gz_fld_file                         &
-!!     &         (my_rank, gzip_name, t_IO, ucd)
+!!     &         (id_rank, gzip_name, t_IO, ucd)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !!
-!!@param my_rank  process ID
+!!@param id_rank  process ID
 !!@param gzip_name    File name
 !!@param ucd      Structure for FEM field data IO
 !
@@ -44,22 +44,22 @@
 !------------------------------------------------------------------
 !
       subroutine write_ucd_2_gz_fld_file                                &
-     &         (my_rank, gzip_name, t_IO, ucd)
+     &         (id_rank, gzip_name, t_IO, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
 !
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Write gzipped step data file: ', trim(gzip_name)
 !
       call open_wt_gzfile_f(gzip_name)
 !
       call write_gz_step_data                                           &
-     &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call write_gz_field_data                                          &
      &   (ucd%nnod, ucd%num_field, ucd%ntot_comp,                       &
      &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
@@ -71,10 +71,10 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_ucd_2_gz_fld_file(my_rank, gzip_name, t_IO, ucd)
+      subroutine read_ucd_2_gz_fld_file(id_rank, gzip_name, t_IO, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
@@ -82,7 +82,7 @@
       integer :: id_read_rank
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped data file: ', trim(gzip_name)
 !
       call open_rd_gzfile_f(gzip_name)
@@ -102,10 +102,10 @@
 !------------------------------------------------------------------
 !
       subroutine read_alloc_ucd_2_gz_fld_file                           &
-     &         (my_rank, gzip_name, t_IO, ucd)
+     &         (id_rank, gzip_name, t_IO, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
@@ -113,7 +113,7 @@
       integer :: id_read_rank
 !
 !
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped data file: ', trim(gzip_name)
 !
       call open_rd_gzfile_f(gzip_name)

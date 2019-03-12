@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine open_write_binary_file(file_name)
 !!      subroutine open_append_binary_file(file_name)
-!!      subroutine open_read_binary_file(file_name, my_rank, iflag_swap)
+!!      subroutine open_read_binary_file(file_name, id_rank, iflag_swap)
 !!      subroutine close_binary_file 
 !!      subroutine seek_forward_binary_file(len_byte)
 !!
@@ -24,8 +24,8 @@
 !!      subroutine write_1d_vector_b(num, real_dat)
 !!      subroutine write_2d_vector_b(n1, n2, real_dat)
 !!
-!!      integer function endian_check(my_rank, int_dat)
-!!      integer(kind = kint) function read_endian_flag(my_rank)
+!!      integer function endian_check(id_rank, int_dat)
+!!      integer(kind = kint) function read_endian_flag(id_rank)
 !!      subroutine read_one_integer_b(iflag_swap, int_dat, ierr)
 !!      subroutine read_one_real_b(iflag_swap, real_dat, ierr)
 !!      subroutine read_mul_int8_b(iflag_swap, num, int_gl_dat, ierr)
@@ -107,11 +107,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine open_read_binary_file(file_name, my_rank, iflag_swap)
+      subroutine open_read_binary_file(file_name, id_rank, iflag_swap)
 !
       use set_parallel_file_name
 !
-      integer(kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(inout) :: iflag_swap
 !
@@ -125,7 +125,7 @@
       open(id_binary, file = file_name, form='unformatted')
 #endif
 !
-      iflag_swap = read_endian_flag(my_rank)
+      iflag_swap = read_endian_flag(id_rank)
 !
       end subroutine open_read_binary_file
 !
@@ -391,21 +391,21 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer function endian_check(my_rank, int_dat)
+      integer function endian_check(id_rank, int_dat)
 !
-      integer(kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
       integer, intent(in) :: int_dat
 !
 !
       if(int_dat .eq. i_UNIX) then
-        if(my_rank.eq.0) write(*,*) 'binary data have correct endian!'
+        if(id_rank.eq.0) write(*,*) 'binary data have correct endian!'
         endian_check = iendian_KEEP
       else if(int_dat .eq. i_XINU) then
-        if(my_rank.eq.0) write(*,*) 'binary data have opposite endian!'
+        if(id_rank.eq.0) write(*,*) 'binary data have opposite endian!'
         endian_check = iendian_FLIP
       else
         endian_check = -1
-        if(my_rank.eq.0) write(*,*) 'Binary Data is someting wrong!',   &
+        if(id_rank.eq.0) write(*,*) 'Binary Data is someting wrong!',   &
      &                               int_dat
       end if
 !
@@ -413,15 +413,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function read_endian_flag(my_rank)
+      integer(kind = kint) function read_endian_flag(id_rank)
 !
-      integer(kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: id_rank
       integer :: int_dat
 !
 !
 #ifdef ZLIB_IO
       call rawread_32bit_f(iendian_KEEP, kint, int_dat, ierr_IO)
-      read_endian_flag = endian_check(my_rank, int_dat)
+      read_endian_flag = endian_check(id_rank, int_dat)
 #else
       read(id_binary)  int_dat
       read_endian_flag = iendian_KEEP

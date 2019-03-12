@@ -10,12 +10,12 @@
 !!
 !!@verbatim
 !!      subroutine sel_read_alloc_field_file                            &
-!!     &         (my_rank, istep_fld, file_IO, fld_IO)
+!!     &         (id_rank, istep_fld, file_IO, fld_IO)
 !!
 !!      subroutine sel_read_rst_file                                    &
-!!     &         (my_rank, istep_fld, file_IO, t_IO, fld_IO)
+!!     &         (id_rank, istep_fld, file_IO, t_IO, fld_IO)
 !!      subroutine sel_read_rst_comps                                   &
-!!     &         (my_rank, istep_fld, file_IO, t_IO, fld_IO)
+!!     &         (id_rank, istep_fld, file_IO, t_IO, fld_IO)
 !!        type(field_IO_params), intent(in) :: file_IO
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
@@ -44,29 +44,29 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_field_file                              &
-     &         (my_rank, istep_fld, file_IO, fld_IO)
+     &         (id_rank, istep_fld, file_IO, fld_IO)
 !
       use field_file_IO
       use set_field_file_names
 !
-      integer(kind=kint), intent(in) :: my_rank, istep_fld
+      integer(kind=kint), intent(in) :: id_rank, istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(field_IO), intent(inout) :: fld_IO
       character(len=kchara) :: file_name
 !
 !
       file_name = set_FEM_fld_file_name(file_IO%file_prefix,            &
-     &         file_IO%iflag_format, my_rank, istep_fld)
+     &         file_IO%iflag_format, id_rank, istep_fld)
 !
 #ifdef ZLIB_IO
       if(file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
         call read_alloc_gz_field_file                                   &
-     &     (file_name, my_rank, fld_IO)
+     &     (file_name, id_rank, fld_IO)
         return
       end if
 #endif
 !
-      call read_and_allocate_field_file(file_name, my_rank, fld_IO)
+      call read_and_allocate_field_file(file_name, id_rank, fld_IO)
 !
       end subroutine sel_read_alloc_field_file
 !
@@ -74,12 +74,12 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_rst_file                                      &
-     &         (my_rank, istep_fld, file_IO, t_IO, fld_IO)
+     &         (id_rank, istep_fld, file_IO, t_IO, fld_IO)
 !
       use rst_data_IO_by_fld
       use set_parallel_file_name
 !
-      integer(kind=kint), intent(in) :: my_rank, istep_fld
+      integer(kind=kint), intent(in) :: id_rank, istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -92,17 +92,17 @@
       else
         fname_tmp = add_int_suffix(istep_fld, file_IO%file_prefix)
       end if
-      file_name = add_int_suffix(my_rank, fname_tmp)
+      file_name = add_int_suffix(id_rank, fname_tmp)
 !
 !
 #ifdef ZLIB_IO
       if(file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call read_gz_rst_file(my_rank, file_name, t_IO, fld_IO)
+        call read_gz_rst_file(id_rank, file_name, t_IO, fld_IO)
         return
       end if
 #endif
 !
-      call read_rst_file(my_rank, file_name, t_IO, fld_IO)
+      call read_rst_file(id_rank, file_name, t_IO, fld_IO)
 !
 !
       end subroutine sel_read_rst_file
@@ -110,12 +110,12 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_rst_comps                                     &
-     &         (my_rank, istep_fld, file_IO, t_IO, fld_IO)
+     &         (id_rank, istep_fld, file_IO, t_IO, fld_IO)
 !
       use rst_data_IO_by_fld
       use set_parallel_file_name
 !
-      integer(kind=kint), intent(in) :: my_rank, istep_fld
+      integer(kind=kint), intent(in) :: id_rank, istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -128,16 +128,16 @@
       else
         fname_tmp = add_int_suffix(istep_fld, file_IO%file_prefix)
       end if
-      file_name = add_int_suffix(my_rank, fname_tmp)
+      file_name = add_int_suffix(id_rank, fname_tmp)
 !
 #ifdef ZLIB_IO
       if(file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call read_gz_rst_comps(my_rank, file_name, t_IO, fld_IO)
+        call read_gz_rst_comps(id_rank, file_name, t_IO, fld_IO)
         return
       end if
 #endif
 !
-      call read_rst_data_comps(my_rank, file_name, t_IO, fld_IO)
+      call read_rst_data_comps(id_rank, file_name, t_IO, fld_IO)
 !
       end subroutine sel_read_rst_comps
 !

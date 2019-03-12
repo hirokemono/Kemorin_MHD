@@ -12,7 +12,7 @@
 !!      subroutine gz_write_field_data_b(nnod, num_field,               &
 !!     &          ntot_comp, ncomp_field, field_name, d_nod)
 !!
-!!      subroutine gz_read_step_data_b(iflag_swap, my_rank,             &
+!!      subroutine gz_read_step_data_b(iflag_swap, id_rank,             &
 !!     &          i_time_step_IO, time_IO, delta_t_IO,                  &
 !!     &          istack_merged, num_field, ierr)
 !!      subroutine gz_read_field_data_b(iflag_swap, nnod, num_field,    &
@@ -39,8 +39,8 @@
       subroutine gz_write_step_data_b                                   &
      &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !
-      integer(kind=kint), intent(in) :: id_rank
-      integer(kind=kint), intent(in) :: i_time_step_IO
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: i_time_step_IO
       real(kind = kreal), intent(in) :: time_IO, delta_t_IO
 !
 !
@@ -84,11 +84,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_step_data_b(iflag_swap, my_rank,               &
+      subroutine gz_read_step_data_b(iflag_swap, id_rank,               &
      &          i_time_step_IO, time_IO, delta_t_IO,                    &
      &          istack_merged, num_field, ierr)
 !
-      integer(kind=kint), intent(in) :: my_rank
+      integer, intent(in) :: id_rank
       integer, intent(in) :: iflag_swap
 !
       integer(kind=kint), intent(inout) :: i_time_step_IO
@@ -98,11 +98,11 @@
       integer(kind=kint), intent(inout) :: num_field
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: id_rank
-      integer(kind = kint_gl) :: ione64 = 1
+      integer :: id_read_rank
+      integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
-      call gz_read_one_integer_b(iflag_swap, id_rank, ierr)
+      call gz_read_one_integer_b(iflag_swap, id_read_rank, ierr)
       if(ierr .gt. 0) return
 !
       call gz_read_one_integer_b(iflag_swap, i_time_step_IO, ierr)
