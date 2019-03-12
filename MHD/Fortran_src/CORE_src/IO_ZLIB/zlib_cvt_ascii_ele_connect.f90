@@ -75,11 +75,11 @@
       else if(nele .gt. 0) then
         ist = 0
         zbuf%ilen_gzipped = 0
-        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
+        ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_ele_connect start ',   &
 !     &      nele, ilen_line, zbuf%ilen_gz, ilen_tmp
         do
-          nline = int(min((nele - ist), maxline))
+          nline = int(min((nele - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &
@@ -157,11 +157,11 @@
       else if(nele .gt. 0) then
         ist = 0
         zbuf%ilen_gzipped = 0
-        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
+        ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'infleate_ele_connect start',    &
 !     &      nele, ilen_line, zbuf%ilen_gz, ilen_tmp
         do
-          nline = int(min((nele - ist), maxline))
+          nline = int(min((nele - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &
@@ -243,11 +243,11 @@
       else if(nele .gt. 0) then
         ist = 0
         zbuf%ilen_gzipped = 0
-        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
+        ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_ele_int_list start ',  &
 !     &      nele, ilen_line, zbuf%ilen_gz, ilen_tmp
         do
-          nline = int(min((nele - ist), maxline))
+          nline = int(min((nele - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &
@@ -316,11 +316,11 @@
       else if(nele .gt. 0) then
         ist = 0
         zbuf%ilen_gzipped = 0
-        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
+        ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'infleate_ele_int_list start ',  &
 !     &      nele, ilen_line, zbuf%ilen_gz, ilen_tmp
         do
-          nline = int(min((nele - ist), maxline))
+          nline = int(min((nele - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &

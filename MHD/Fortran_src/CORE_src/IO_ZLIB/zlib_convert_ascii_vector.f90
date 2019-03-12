@@ -74,12 +74,12 @@
       else if(nnod .gt. 0) then
         ist = 0
         zbuf%ilen_gzipped = 0
-        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24, KIND(ilen_tmp))
+        ilen_tmp = int(dble(huge_30)*1.01+24, KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*)                                  &
 !     &     'defleate_node_position start ',                            &
 !     &      nnod, ilen_line, zbuf%ilen_gz, ilen_tmp
         do
-          nline = int(min((nnod - ist), maxline))
+          nline = int(min((nnod - ist), huge_30/ilen_line))
           ilen_in                                                       &
      &       = int(min(zbuf%ilen_gz - zbuf%ilen_gzipped, ilen_tmp))
 !
@@ -156,12 +156,12 @@
       else if(nnod .gt. 0) then
         ist = 0
         zbuf%ilen_gzipped = 0
-        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24, KIND(ilen_tmp))
+        ilen_tmp = int(dble(huge_30)*1.01+24, KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'all start ',                    &
 !     &      nnod, ilen_line, zbuf%ilen_gz, ilen_tmp
 !
         do
-          nline = int(min((nnod - ist), maxline))
+          nline = int(min((nnod - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &
@@ -248,11 +248,11 @@
       else if(nnod .gt. 1) then
         ist = 0
         zbuf%ilen_gzipped = 0
-        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24, KIND(ilen_tmp))
+        ilen_tmp = int(dble(huge_30)*1.01+24, KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_vector_txt start ',    &
 !     &      nnod, ilen_line, zbuf%ilen_gz, ilen_tmp
         do
-          nline = int(min((nnod - ist), maxline))
+          nline = int(min((nnod - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &
@@ -329,12 +329,12 @@
       else if(nnod .gt. 0) then
         ist = 0
         zbuf%ilen_gzipped = 0
-        ilen_tmp = int(dble(maxline*ilen_line*1.01)+24, KIND(ilen_tmp))
+        ilen_tmp = int(dble(huge_30)*1.01+24, KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'all start ',                    &
 !     &      nnod, ilen_line, zbuf%ilen_gz, ilen_tmp
 !
         do
-          nline = int(min((nnod - ist), maxline))
+          nline = int(min((nnod - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &

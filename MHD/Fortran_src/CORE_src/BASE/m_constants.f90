@@ -62,6 +62,7 @@
       real(kind = kreal), parameter :: TINY9 =  1.0D-9
 !
 !>      Huge value
+      integer(kind = kint), parameter :: huge_30 = 1073741824
       integer(kind = kint), parameter :: huge_20 = 1048576
       integer(kind = kint), parameter :: huge_14 = 16384
 !

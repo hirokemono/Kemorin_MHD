@@ -60,14 +60,14 @@
         ist = 0
         zbuf%ilen_gzipped = 0
         ilen_line = len_multi_int_textline(ncolumn)
-        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
+        ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*)                                  &
 !     &     'gz_mpi_write_comm_table start ',                           &
 !     &      num, ilen_line, zbuf%ilen_gz, ilen_tmp
 !
         do
           nitem_1 = int(min(num-ist,ncolumn+1))
-          nitem_2 = int(min(num-ist,ncolumn*maxline))
+          nitem_2 = int(min(num-ist,ncolumn*(huge_30/ilen_line)))
           nitem_c = nitem_2 - (mod(nitem_2-1,ncolumn)+1)
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
@@ -142,14 +142,14 @@
         ist = 0
         zbuf%ilen_gzipped = 0
         ilen_line = len_multi_int_textline(ncolumn)
-        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
+        ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*)                                  &
 !     &     'gz_mpi_write_comm_table start ',                           &
 !     &      num, ilen_line, zbuf%ilen_gz, ilen_tmp
 !
         do
           nitem_1 = int(min(num-ist,ncolumn+1))
-          nitem_2 = int(min(num-ist,ncolumn*maxline))
+          nitem_2 = int(min(num-ist,ncolumn*(huge_30/ilen_line)))
           nitem_c = nitem_2 - (mod(nitem_2-1,ncolumn)+1)
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
@@ -234,13 +234,13 @@
         ist = 0
         zbuf%ilen_gzipped = 0
         ilen_line = len_multi_6digit_line(ncolumn)
-        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
+        ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'defleate_element_type start ',  &
 !     &      num, ilen_line, zbuf%ilen_gz, ilen_tmp
 !
         do
           nitem_1 = int(min(num-ist,ncolumn+1))
-          nitem_2 = int(min(num-ist,ncolumn*maxline))
+          nitem_2 = int(min(num-ist,ncolumn*(huge_30/ilen_line)))
           nitem_c = nitem_2 - (mod(nitem_2-1,ncolumn)+1)
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
@@ -315,13 +315,13 @@
       else
         ist = 0
         zbuf%ilen_gzipped = 0
-        ilen_tmp = int(dble(maxline*ilen_line)*1.01+24,KIND(ilen_tmp))
+        ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'infleate_element_type  start ', &
 !     &      num, ilen_line, zbuf%ilen_gz, ilen_tmp
 !
         do
           nitem_1 = int(min(num-ist,ncolumn+1))
-          nitem_2 = int(min(num-ist,ncolumn*maxline))
+          nitem_2 = int(min(num-ist,ncolumn*(huge_30/ilen_line)))
           nitem_c = nitem_2 - (mod(nitem_2-1,ncolumn)+1)
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !

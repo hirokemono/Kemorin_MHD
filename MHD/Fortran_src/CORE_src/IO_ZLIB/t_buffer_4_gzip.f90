@@ -41,8 +41,6 @@
         character(len=1), allocatable :: gzip_buf(:)
       end type buffer_4_gzip
 !
-      integer(kind = kint), parameter :: maxline = huge_20
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -107,9 +105,9 @@
 !
       ist = 0
       zbuf%ilen_gzipped = 0
-      ilen_tmp = int(dble(maxline*kint_gl) * 1.01 + 24)
+      ilen_tmp = int(dble(huge_30) * 1.01 + 24)
       do
-        nline = int(min((num - ist), maxline))
+        nline = int(min((num - ist), huge_30/kint_gl))
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kint_gl
 !
@@ -142,9 +140,9 @@
 !
       ist = 0
       zbuf%ilen_gzipped = 0
-      ilen_tmp = int(dble(maxline*kreal) * 1.01 + 24)
+      ilen_tmp = int(dble(huge_30) * 1.01 + 24)
       do
-        nline = int(min((num - ist), maxline))
+        nline = int(min((num - ist), huge_30/kreal))
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kreal
 !
@@ -177,9 +175,9 @@
 !
       ist = 0
       zbuf%ilen_gzipped = 0
-      ilen_tmp = int(dble(maxline*kchara) * 1.01 + 24)
+      ilen_tmp = int(dble(huge_30) * 1.01 + 24)
       do
-        nline = int(min((num - ist), maxline))
+        nline = int(min((num - ist), huge_30/kchara))
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kchara
 !
@@ -234,9 +232,9 @@
 !
       ist = 0
       zbuf%ilen_gzipped = 0
-      ilen_tmp = int(dble(maxline*kint_gl) * 1.01 + 24)
+      ilen_tmp = int(dble(huge_30) * 1.01 + 24)
       do
-        nline = int(min((num - ist), maxline))
+        nline = int(min((num - ist), huge_30/kint_gl))
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kint_gl
 !
@@ -268,9 +266,9 @@
 !
       ist = 0
       zbuf%ilen_gzipped = 0
-      ilen_tmp = int(dble(maxline*kreal) * 1.01 + 24)
+      ilen_tmp = int(dble(huge_30) * 1.01 + 24)
       do
-        nline = int(min((num - ist), maxline))
+        nline = int(min((num - ist), huge_30/kreal))
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kreal
 !
@@ -302,9 +300,9 @@
 !
       ist = 0
       zbuf%ilen_gzipped = 0
-      ilen_tmp = int(dble(maxline*kchara) * 1.01 + 24)
+      ilen_tmp = int(dble(huge_30) * 1.01 + 24)
       do
-        nline = int(min((num - ist), maxline))
+        nline = int(min((num - ist), huge_30/kchara))
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kchara
 !
