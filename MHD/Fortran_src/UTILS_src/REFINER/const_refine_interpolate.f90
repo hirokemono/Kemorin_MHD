@@ -97,7 +97,8 @@
       use set_refine_interpolate_tbl
       use copy_interpolate_types
 !
-      integer(kind = kint), intent(in) :: id_rank, nnod_2
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: nnod_2
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge

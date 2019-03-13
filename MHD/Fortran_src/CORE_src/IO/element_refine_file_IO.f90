@@ -43,7 +43,8 @@
 !
       use binary_IO
 !
-      integer(kind = kint), intent(in) :: id_rank, ifile_type
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: ifile_type
 !
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -101,7 +102,8 @@
       subroutine write_element_refine_file(id_rank, ifile_type,         &
      &          IO_itp_org, IO_itp_dest, e_ref_IO)
 !
-      integer(kind = kint), intent(in) :: id_rank, ifile_type
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: ifile_type
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(ele_refine_IO_type), intent(inout) :: e_ref_IO

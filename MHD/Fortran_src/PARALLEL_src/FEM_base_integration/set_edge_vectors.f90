@@ -36,7 +36,7 @@
 !
       use int_edge_vector
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(edge_data), intent(inout) :: edge
       type(edge_shape_function), intent(inout) :: spf_1d

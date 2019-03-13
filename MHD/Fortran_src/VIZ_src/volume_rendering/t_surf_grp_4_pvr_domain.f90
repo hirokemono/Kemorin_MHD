@@ -144,7 +144,8 @@
 !
       subroutine check_sf_grp_4_pvr_domain(id_rank, num_pvr, pvr_bound)
 !
-      integer(kind = kint), intent(in) :: id_rank, num_pvr
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: num_pvr
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound(num_pvr)
 !
       integer(kind = kint) :: i_pvr, num
@@ -166,7 +167,8 @@
 !
       subroutine check_sf_posi_pvr_domain(id_rank, num_pvr, pvr_bound)
 !
-      integer(kind = kint), intent(in) :: id_rank, num_pvr
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: num_pvr
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound(num_pvr)
 !
       integer(kind = kint) :: i_pvr, inum
@@ -188,7 +190,8 @@
 !
       subroutine check_sf_norm_pvr_domain(id_rank, num_pvr, pvr_bound)
 !
-      integer(kind = kint), intent(in) :: id_rank, num_pvr
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: num_pvr
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound(num_pvr)
 !
       integer(kind = kint) :: i_pvr, inum
@@ -209,7 +212,8 @@
 !
       subroutine check_surf_rng_pvr_domain(id_rank, num_pvr, pvr_bound)
 !
-      integer(kind = kint), intent(in) :: id_rank, num_pvr
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: num_pvr
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound(num_pvr)
 !
       integer(kind = kint) :: i_pvr, inum

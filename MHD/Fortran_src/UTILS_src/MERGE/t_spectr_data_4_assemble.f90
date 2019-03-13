@@ -68,7 +68,7 @@
       subroutine dealloc_spectr_data_4_assemble                         &
      &         (id_rank, nprocs, sph_asbl)
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
       type(spectr_data_4_assemble), intent(inout) :: sph_asbl
 !
       integer(kind = kint) :: ip, jp

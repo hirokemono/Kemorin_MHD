@@ -27,10 +27,12 @@
 !!      subroutine dealloc_next_nod_ele_table(next_tbl)
 !!        type(next_nod_ele_table), intent(inout) :: next_tbl
 !!      subroutine check_ele_id_4_node_type(id_rank, numnod, neib_ele)
-!!        integer(kind = kint), intent(in) :: id_rank, numnod
+!!        integer, intent(in) :: id_rank
+!!        integer(kind = kint), intent(in) :: numnod
 !!        type(element_around_node), intent(in) :: neib_ele
 !!      subroutine check_next_node_id_4_node(id_rank, numnod, neib_nod)
-!!        integer(kind = kint), intent(in) :: id_rank, numnod
+!!        integer, intent(in) :: id_rank
+!!        integer(kind = kint), intent(in) :: numnod
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
 !!@endverbatim
 !
@@ -201,7 +203,8 @@
 !
       subroutine check_ele_id_4_node_type(id_rank, numnod, neib_ele)
 !
-      integer(kind = kint), intent(in) :: id_rank, numnod
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) ::  numnod
       type(element_around_node), intent(in) :: neib_ele
 !
       integer(kind = kint) :: inod, inum, ist, ied
@@ -223,7 +226,8 @@
 !
       subroutine check_next_node_id_4_node(id_rank, numnod, neib_nod)
 !
-      integer(kind = kint), intent(in) :: id_rank, numnod
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: numnod
       type(next_nod_id_4_nod), intent(in) :: neib_nod
 !
       integer(kind = kint) :: inod, ist, ied

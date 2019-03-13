@@ -51,7 +51,7 @@
 !
       implicit none
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
       type(ctl_param_partitioner), intent(in) :: part_p
       type(node_data), intent(in) :: node_org
       type(element_data), intent(in) :: ele_org

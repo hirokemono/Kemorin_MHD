@@ -42,7 +42,8 @@
 !
        subroutine neighboring_edge(id_rank, kpe)
 !
-        integer(kind = kint), intent(in) :: id_rank, kpe
+      integer, intent(in) :: id_rank
+        integer(kind = kint), intent(in) :: kpe
 !
 !
       call set_range_4_nodeloop(kpe)

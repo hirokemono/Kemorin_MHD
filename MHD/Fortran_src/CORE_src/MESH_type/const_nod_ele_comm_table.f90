@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine const_nod_import_table(id_rank, nprocs,              &
 !!     &          numnod, id_org_domain, nod_comm)
-!!        integer(kind = kint), intent(in) :: id_rank, nprocs
+!!        integer, intent(in) :: id_rank, nprocs
 !!        integer(kind = kint), intent(in) :: numnod
 !!        integer(kind = kint), intent(in) :: id_org_domain(numnod)
 !!        type(communication_table), intent(inout) :: nod_comm
@@ -17,7 +17,7 @@
 !!      subroutine const_ele_import_table(id_rank, nprocs,              &
 !!     &          numnod, numele, nnod_4_ele, inod_global, ie,          &
 !!     &          id_org_domain, ele_comm, ele_comm_gl)
-!!        integer(kind = kint), intent(in) :: id_rank, nprocs
+!!        integer, intent(in) :: id_rank, nprocs
 !!        integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
 !!        integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !!        integer(kind = kint), intent(in) :: inod_global(numnod)
@@ -59,7 +59,7 @@
 !
       use const_import_table
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
 !
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: id_org_domain(numnod)
@@ -95,7 +95,7 @@
 !
       use const_import_table
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
 !
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -145,7 +145,7 @@
      &          numnod, internal_node, numele, nnod_4_ele,              &
      &          id_global, ie, ele_comm, ele_comm_gl, comm_tbl)
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
       integer(kind = kint), intent(in) :: id_global(numnod)

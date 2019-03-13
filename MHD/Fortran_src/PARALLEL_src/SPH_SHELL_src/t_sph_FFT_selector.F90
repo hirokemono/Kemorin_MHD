@@ -111,7 +111,8 @@
 !
       use t_spheric_rtp_data
 !
-      integer(kind = kint), intent(in) :: id_rank, ncomp
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: ncomp
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !

@@ -119,7 +119,7 @@
       use const_jacobians_3d
       use const_jacobians_infinity
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: surf_grp
@@ -170,7 +170,7 @@
 !
       use const_jacobians_sf_grp
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in)  :: surf
@@ -213,7 +213,7 @@
 !
       use const_jacobians_2d
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(surface_data), intent(in)  :: surf
       type(surface_shape_function), intent(inout) :: spf_2d
@@ -252,7 +252,7 @@
 !
       use const_jacobians_1d
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(edge_data), intent(in)  :: edge
       type(edge_shape_function), intent(inout) :: spf_1d

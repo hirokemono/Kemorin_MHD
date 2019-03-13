@@ -204,7 +204,8 @@
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: id_rank, nsize_lf_smp
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: nsize_lf_smp
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer (kind = kint) :: ist, ied, nd, ip, i
 !

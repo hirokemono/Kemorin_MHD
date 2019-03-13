@@ -60,7 +60,7 @@
       use set_connects_4_surf_group
       use const_jacobians_3d
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
       type(mesh_geometry), intent(inout) :: mesh
       type(surface_data), intent(inout) :: surf
       type(mesh_groups), intent(inout) :: group
@@ -111,7 +111,7 @@
       use sum_volume_of_domain
       use const_jacobians_3d
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(surface_group_data), intent(in) :: sf_grp
       type(scalar_surf_BC_list), intent(in) :: infinity_list
@@ -145,7 +145,7 @@
       use sum_volume_of_domain
       use cal_layered_volumes
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(surface_group_data), intent(in) :: sf_grp
       type(scalar_surf_BC_list), intent(in) :: infinity_list

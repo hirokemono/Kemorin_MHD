@@ -102,7 +102,8 @@
       subroutine search_node_in_element_2nd(iinc, id_rank,              &
      &          org_node, org_ele, org_blk, dest_node, itp_coef_dest)
 !
-      integer(kind = kint), intent(in) :: id_rank, iinc
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: iinc
 !
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele

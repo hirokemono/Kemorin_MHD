@@ -117,7 +117,8 @@
 !
       subroutine write_layerd_correlate_data(id_rank, i_step)
 !
-      integer(kind = kint), intent(in) :: id_rank, i_step
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: i_step
 !
 !
       if(id_rank .ne. 0) return

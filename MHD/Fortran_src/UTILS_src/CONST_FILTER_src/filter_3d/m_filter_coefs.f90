@@ -357,7 +357,8 @@
 !
       subroutine check_filter_functions(id_rank, id_base)
 !
-      integer(kind = kint), intent(in) :: id_rank, id_base
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: id_base
       integer(kind = kint) :: inum, ist, ied, i
 !
       do inum = 1, ntot_nod_fcoefs

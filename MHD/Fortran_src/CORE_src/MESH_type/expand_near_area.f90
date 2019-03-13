@@ -10,7 +10,8 @@
 !!      subroutine extend_near_area_no_flag(id_rank, iloop, mesh,       &
 !!     &          next_ele_tbl, near_ele_tbl, near_node_tbl,            &
 !!     &          near_ele_wide, near_node_wide)
-!!        integer(kind = kint), intent(in) :: id_rank, iloop
+!!        integer, intent(in) :: id_rank
+!!        integer(kind = kint), intent(in) :: iloop
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(element_around_node), intent(in) :: next_ele_tbl
 !!        type(near_mesh), intent(inout) :: near_ele_tbl
@@ -21,7 +22,8 @@
 !!      subroutine extend_near_area_with_flag(id_rank, nref_neib,       &
 !!     &          node, ele, next_ele_tbl, near_ele_tbl, near_node_tbl, &
 !!     &          near_ele_wide, near_node_wide)
-!!        integer(kind = kint), intent(in) :: id_rank, nref_neib
+!!        integer, intent(in) :: id_rank
+!!        integer(kind = kint), intent(in) :: nref_neib
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(element_around_node), intent(in) :: next_ele_tbl
 !!        type(near_mesh), intent(inout) :: near_ele_tbl
@@ -57,7 +59,8 @@
       use add_node_4_group
       use expand_near_flag
 !
-      integer(kind = kint), intent(in) :: id_rank, iloop
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: iloop
       type(mesh_geometry), intent(in) :: mesh
       type(element_around_node), intent(in) :: next_ele_tbl
 !
@@ -104,7 +107,8 @@
       use add_node_4_group
       use expand_near_flag
 !
-      integer(kind = kint), intent(in) :: id_rank, nref_neib
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: nref_neib
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: next_ele_tbl

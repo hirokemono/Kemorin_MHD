@@ -35,7 +35,7 @@
       subroutine const_normal_vector                                    &
      &         (id_rank, nprocs, node, surf, spf_2d, jacs)
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs
+      integer, intent(in) :: id_rank, nprocs
       type(node_data), intent(in) :: node
       type(surface_data), intent(inout) :: surf
       type(surface_shape_function), intent(inout) :: spf_2d

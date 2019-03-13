@@ -100,7 +100,8 @@
       subroutine check_mass_martix_fluid                                &
      &         (id_rank, numnod, mk_MHD)
 !
-      integer(kind = kint), intent(in) :: id_rank, numnod
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: numnod
       type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
 !
 !
@@ -114,7 +115,8 @@
       subroutine check_mass_martix_conduct                              &
      &         (id_rank, numnod, mk_MHD)
 !
-      integer(kind = kint), intent(in) :: id_rank, numnod
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: numnod
       type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
 !
 !
@@ -128,7 +130,8 @@
       subroutine check_mass_martix_insulate                             &
      &         (id_rank, numnod, mk_MHD)
 !
-      integer(kind = kint), intent(in) :: id_rank, numnod
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: numnod
       type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
 !
 !

@@ -274,7 +274,8 @@
 !
       subroutine check_mass_martix(id_rank, numnod, lump)
 !
-      integer(kind = kint), intent(in) :: id_rank, numnod
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: numnod
       type(lumped_mass_matrices), intent(inout) :: lump
 !
       integer(kind = kint) :: inod
@@ -291,7 +292,8 @@
 !
       subroutine check_ff(id_rank, numdir, numnod, ffs)
 !
-      integer(kind = kint), intent(in) :: id_rank, numdir, numnod
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: numdir, numnod
       type(finite_ele_mat_node), intent(inout) :: ffs
 !
       integer(kind = kint) :: inod, nd
@@ -310,7 +312,8 @@
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: id_rank, numdir, max_nod_smp
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: numdir, max_nod_smp
       type(finite_ele_mat_node), intent(inout) :: ffs
 !
       integer(kind = kint) :: ip, inod, nd
@@ -331,7 +334,7 @@
 !
       use t_geometry_data
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(element_data), intent(in) :: ele
       type(work_finite_element_mat), intent(in) :: fem_wk
 !
