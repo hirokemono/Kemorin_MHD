@@ -69,14 +69,10 @@
         ist = 0
         zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
-!        if(my_rank .eq. 0) write(*,*) 'defleate_vtk_tensor start ',    &
-!     &      num, ilen_line, zbuf%ilen_gz, ilen_tmp
         do
           nline = int(min((num - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
-!          if(my_rank .eq. 0) write(*,*) 'start ',                      &
-!     &      ist+1, ist+nline, nline, zbuf%ilen_gzipped+1,  ilen_in
           inod_gl = ist+1 + istack_merged_intnod
           dat_1(1:ntot_comp) = vect(ist+1,1:ntot_comp)
           call gzip_defleat_begin(ilen_line,                            &
@@ -95,14 +91,11 @@
           call gzip_defleat_last(ilen_line,                             &
      &        ucd_each_field(inod_gl, ntot_comp, dat_1),                &
      &        ilen_in, ilen_used)
-!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_last',           &
-!     &        ilen_used, ist + nline, num
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
           ist = ist + nline
           if(ist .ge. num) exit
         end do
-!        if(my_rank .eq. 0) write(*,*) 'all done ', zbuf%ilen_gzipped
       else
         zbuf%ilen_gzipped = 0
       end if
@@ -148,14 +141,10 @@
         ist = 0
         zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
-!        if(my_rank .eq. 0) write(*,*) 'defleate_ucd_connect start ',   &
-!     &      nele, ilen_line, zbuf%ilen_gz, ilen_tmp
         do
           nline = int(min((nele - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
-!          if(my_rank .eq. 0) write(*,*) 'start ',                      &
-!     &      ist+1, ist+nline, nline, zbuf%ilen_gzipped+1,  ilen_in
           iele_gl = ist+1 + istack_merged_ele
           ie0(1:nnod_ele) = ie(ist+1,1:nnod_ele)
           call gzip_defleat_begin(ilen_line,                            &
@@ -174,14 +163,11 @@
           call gzip_defleat_last(ilen_line,                             &
      &      ucd_each_connect(iele_gl, nnod_ele, ie0),                   &
      &        ilen_in, ilen_used)
-!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_last',           &
-!     &        ilen_used, ist + nline, nele
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
           ist = ist + nline
           if(ist .ge. nele) exit
         end do
-!        if(my_rank .eq. 0) write(*,*) 'all done ', zbuf%ilen_gzipped
       else
         zbuf%ilen_gzipped = 0
       end if

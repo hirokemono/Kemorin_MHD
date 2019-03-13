@@ -56,7 +56,7 @@
      &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
 !
       type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
@@ -90,8 +90,8 @@
       use field_data_MPI_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
-      integer(kind=kint), intent(in) :: nprocs_in
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: nprocs_in
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -135,8 +135,7 @@
       use field_data_MPI_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
-      integer(kind=kint), intent(in) :: nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -188,7 +187,7 @@
       use field_data_MPI_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -244,7 +243,8 @@
 !
       type(time_data), intent(in) :: t_IO
 !
-      integer(kind=kint), intent(in) :: nnod, id_rank, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
+      integer(kind=kint), intent(in) :: nnod
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
       integer(kind=kint), intent(in) :: num_field, ntot_comp
       integer(kind=kint), intent(in) :: ncomp_field(num_field)
@@ -286,9 +286,10 @@
       use field_data_IO
       use field_data_MPI_IO
 !
+      integer, intent(in) :: id_rank, nprocs_in
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
-      integer(kind=kint), intent(in) :: nprocs_in, id_rank, nnod
+      integer(kind=kint), intent(in) :: nnod
       integer(kind=kint), intent(in) :: num_field, ntot_comp
       integer(kind=kint), intent(in) :: ncomp_field(num_field)
       character(len=kchara), intent(inout) :: field_name(num_field)
@@ -319,9 +320,9 @@
       use field_data_IO
       use field_data_MPI_IO
 !
-      integer(kind=kint), intent(in) :: nprocs_in, id_rank
-      integer(kind=kint), intent(in) :: num_field
-      integer(kind=kint), intent(in) :: ncomp_field(num_field)
+      integer, intent(in) :: id_rank, nprocs_in
+      integer(kind = kint), intent(in) :: num_field
+      integer(kind = kint), intent(in) :: ncomp_field(num_field)
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
       character(len=kchara), intent(inout) :: field_name(num_field)

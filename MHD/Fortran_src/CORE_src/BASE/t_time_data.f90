@@ -20,7 +20,6 @@
 !!      subroutine add_one_step(time_d)
 !!@endverbatim
 !!
-!!@n @param  my_rank   Process ID
 !!@n @param  id_file   file ID for data IO
 !
       module t_time_data

@@ -33,7 +33,6 @@
 !!        type(sph_group_data), intent(in) :: sph_grps_IO
 !!@endverbatim
 !!
-!!@param my_rank    Process ID
 !!@param file_name  file name for IO (.gz is appended in this module)
 !
       module gz_sph_modes_data_IO_b
@@ -148,7 +147,6 @@
       call gz_read_gl_nodes_sph_b(gz_flags, sph_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
-!      write(50+my_rank,*) '! communication table for rj'
       call gz_read_import_data_b(gz_flags, comm_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
@@ -185,7 +183,6 @@
       call gz_read_gl_nodes_sph_b(gz_flags, sph_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
-!      write(50+my_rank,*) '! communication table for rtm'
       call gz_read_import_data_b(gz_flags, comm_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
@@ -217,7 +214,6 @@
       call gz_read_gl_nodes_sph_b(gz_flags, sph_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
-!      write(50+my_rank,*) '! communication table for rj'
       call gz_read_import_data_b(gz_flags, comm_IO)
 !
       end subroutine gz_read_modes_rlm_data_b

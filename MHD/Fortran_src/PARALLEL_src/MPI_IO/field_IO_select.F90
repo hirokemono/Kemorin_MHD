@@ -76,7 +76,8 @@
       use set_field_file_names
       use delete_data_files
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_fld
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: file_IO
 !
       character(len=kchara) :: file_name
@@ -97,7 +98,8 @@
 !
       use set_field_file_names
 !
-      integer(kind=kint), intent(in) :: nprocs_in, id_rank, istep_fld
+      integer, intent(in) :: id_rank, nprocs_in
+      integer(kind = kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -120,7 +122,8 @@
 !
       use set_field_file_names
 !
-      integer(kind=kint), intent(in) :: nprocs_in, id_rank, istep_fld
+      integer, intent(in) :: id_rank, nprocs_in
+      integer(kind = kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -144,7 +147,8 @@
 !
       use set_field_file_names
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
+      integer(kind = kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -167,7 +171,8 @@
 !
       use set_field_file_names
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
+      integer(kind = kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -191,7 +196,8 @@
 !
       use set_field_file_names
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
+      integer(kind = kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -214,7 +220,8 @@
 !
       use set_field_file_names
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
+      integer(kind = kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -237,7 +244,8 @@
 !
       use set_field_file_names
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
+      integer(kind=kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -260,7 +268,8 @@
 !
       use set_field_file_names
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
+      integer(kind = kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -286,7 +295,7 @@
       use m_error_IDs
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(in) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -338,7 +347,7 @@
       subroutine sel_read_step_field_file                               &
      &     (file_name, nprocs_in, id_rank, file_IO, t_IO, fld_IO)
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
       character(len=kchara), intent(in) :: file_name
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
@@ -393,7 +402,7 @@
       subroutine sel_read_alloc_step_field_file                         &
      &         (file_name, nprocs_in, id_rank, file_IO, t_IO, fld_IO)
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
       character(len=kchara), intent(in) :: file_name
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
@@ -450,7 +459,7 @@
       subroutine sel_read_alloc_field_head                              &
      &         (file_name, nprocs_in, id_rank, file_IO, t_IO, fld_IO)
 !
-      integer(kind = kint), intent(in) :: id_rank, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
       character(len=kchara), intent(in) :: file_name
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO

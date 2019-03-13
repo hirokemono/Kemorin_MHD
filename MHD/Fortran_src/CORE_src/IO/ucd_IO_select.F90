@@ -88,7 +88,8 @@
 !
       use write_ucd_to_vtk_file
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_ucd
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
@@ -136,7 +137,8 @@
 !
       use write_ucd_to_vtk_file
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_ucd
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
@@ -218,7 +220,8 @@
      &         (id_rank, istep_ucd, ucd_param, t_IO, ucd)
 !
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_ucd
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
@@ -259,7 +262,8 @@
      &         (id_rank, istep_ucd, ucd_param, t_IO, ucd)
 !
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_ucd
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
@@ -302,7 +306,8 @@
      &         (id_rank, istep_ucd, ucd_param, t_IO, ucd)
 !
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_ucd
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
@@ -339,7 +344,8 @@
       subroutine sel_read_ucd_file                                      &
      &         (id_rank, istep_ucd, nnod_ele, ucd_param, ucd)
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_ucd, nnod_ele
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: istep_ucd, nnod_ele
       type(field_IO_params), intent(in) :: ucd_param
       type(ucd_data), intent(inout) :: ucd
 !

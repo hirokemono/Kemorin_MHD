@@ -16,7 +16,6 @@
 !!        type(communication_table), intent(inout) :: comm
 !!@endverbatim
 !!
-!!@n @param my_rank   running process ID
 !!@n @param nnod_rtp
 !!      number of data points for @f$ f(r,\theta,\phi) @f$
 !!@n @param nnod_rtm

@@ -249,37 +249,28 @@
         ist = 0
         zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24, KIND(ilen_tmp))
-!        if(my_rank .eq. 0) write(*,*) 'defleate_vector_txt start ',    &
-!     &      nnod, ilen_line, zbuf%ilen_gz, ilen_tmp
         do
           nline = int(min((nnod - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
-!          if(my_rank .eq. 0) write(*,*) 'start ',                      &
-!     &      ist+1, ist+nline, nline, zbuf%ilen_gzipped+1, ilen_in
           v1(1:ndir) = vector(ist+1,1:ndir)
           call gzip_defleat_begin(ilen_line, vector_textline(ndir, v1), &
      &        ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
-!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_begin', ilen_used
 !
           do i = ist+2, ist+nline-1
             v1(1:ndir) = vector(i,1:ndir)
             call gzip_defleat_cont(ilen_line,                           &
      &         vector_textline(ndir, v1), ilen_in, ilen_used)
           end do
-!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_cont', ilen_used
 !
           v1(1:ndir) = vector(ist+nline,1:ndir)
           call gzip_defleat_last(ilen_line,                             &
      &        vector_textline(ndir, v1), ilen_in, ilen_used)
-!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_last',           &
-!     &        ilen_used, ist + nline, nnod
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
           ist = ist + nline
           if(ist .ge. nnod) exit
         end do
-!        if(my_rank .eq. 0) write(*,*) 'all done ', zbuf%ilen_gzipped
       else
         zbuf%ilen_gzipped = 0
       end if
@@ -330,15 +321,11 @@
         ist = 0
         zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24, KIND(ilen_tmp))
-!        if(my_rank .eq. 0) write(*,*) 'all start ',                    &
-!     &      nnod, ilen_line, zbuf%ilen_gz, ilen_tmp
 !
         do
           nline = int(min((nnod - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
-!          if(my_rank .eq. 0) write(*,*) 'start ',                      &
-!     &      ist+1, ist+nline, nline, zbuf%ilen_gzipped+1,  ilen_in
           call gzip_infleat_begin                                       &
      &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),              &
      &        ilen_line, textbuf(1), ilen_used)
@@ -351,8 +338,6 @@
             call read_vector_textline(textbuf(1), ndir, v1)
             vector(i,1:ndir) = v1(1:ndir)
           end do
-!          if(my_rank .eq. 0) write(*,*) 'gzip_infleat_cont',           &
-!     &                      ilen_used
 !
           call gzip_infleat_last                                        &
      &       (ilen_in, ilen_line, textbuf(1), ilen_used)
@@ -363,7 +348,6 @@
           ist = ist + nline
           if(ist .ge. nnod) exit
         end do
-!        if(my_rank .eq. 0) write(*,*) 'all done ', zbuf%ilen_gzipped
       end if
 !
       deallocate(textbuf)

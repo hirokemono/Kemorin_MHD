@@ -49,7 +49,8 @@
       use field_file_IO
       use set_field_file_names
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_fld
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(field_IO), intent(inout) :: fld_IO
       character(len=kchara) :: file_name
@@ -79,7 +80,8 @@
       use rst_data_IO_by_fld
       use set_parallel_file_name
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_fld
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -115,7 +117,8 @@
       use rst_data_IO_by_fld
       use set_parallel_file_name
 !
-      integer(kind=kint), intent(in) :: id_rank, istep_fld
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: file_IO
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO

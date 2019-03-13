@@ -235,7 +235,8 @@
       use udt_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank, nnod_ele
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: nnod_ele
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -268,7 +269,8 @@
       subroutine read_grd_file(id_rank, file_name, nnod_ele, ucd)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank, nnod_ele
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: nnod_ele
       type(ucd_data), intent(inout) :: ucd
 !
 !

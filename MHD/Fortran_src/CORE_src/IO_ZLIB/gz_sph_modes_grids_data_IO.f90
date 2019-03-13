@@ -30,7 +30,6 @@
 !!        type(sph_group_data), intent(in) :: sph_grps_IO
 !!@endverbatim
 !!
-!!@param my_rank    Process ID
 !!@param file_name  file name for IO (.gz is appended in this module)
 !
       module gz_sph_modes_grids_data_IO

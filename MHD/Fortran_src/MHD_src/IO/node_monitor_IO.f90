@@ -241,7 +241,7 @@
       integer (kind = kint) :: i, inod, i_fld, ist, ied
 !
 !
-      call open_node_monitor_file(id_rank, nod_fld)
+      call open_node_monitor_file(my_rank, nod_fld)
 !
       do i = 1, num_monitor_local
         inod = monitor_local(i)

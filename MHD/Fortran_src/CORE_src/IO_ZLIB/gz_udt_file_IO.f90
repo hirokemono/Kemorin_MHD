@@ -185,7 +185,8 @@
      &         (id_rank, gzip_name, nnod_ele, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: id_rank, nnod_ele
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: nnod_ele
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -221,7 +222,8 @@
       subroutine read_gz_ucd_grd(id_rank, gzip_name, nnod_ele, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: id_rank, nnod_ele
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: nnod_ele
       type(ucd_data), intent(inout) :: ucd
 !
 !

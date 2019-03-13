@@ -46,7 +46,8 @@
       use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_prefix
-      integer(kind=kint), intent(in) :: id_rank, nprocs, istep
+      integer, intent(in) :: id_rank, nprocs
+      integer(kind = kint), intent(in) :: istep
 !
       character(len=kchara) :: gzip_name, file_name, fname_tmp
       character(len=kchara) :: fname_nodir

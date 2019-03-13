@@ -16,7 +16,7 @@
 !!      subroutine defleate_1d_character_b(num, chara_dat, zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine infleate_endian_flag(my_rank, iflag_swap, zbuf)
+!!      subroutine infleate_endian_flag(id_rank, iflag_swap, zbuf)
 !!      subroutine infleate_int8_vector_b(num, int8_dat, zbuf)
 !!      subroutine infleate_1d_vector_b(num, real_dat, zbuf)
 !!      subroutine infleate_1d_character_b(num, chara_dat, zbuf)
@@ -194,11 +194,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine infleate_endian_flag(my_rank, iflag_swap, zbuf)
+      subroutine infleate_endian_flag(id_rank, iflag_swap, zbuf)
 !
       use binary_IO
 !
-      integer, intent(in) :: my_rank
+      integer, intent(in) :: id_rank
       integer, intent(inout) :: iflag_swap
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -210,7 +210,7 @@
 !
       call gzip_infleat_once                                          &
      &   (ilen_in, zbuf%gzip_buf(1), kint, int_dat, ilen_used)
-      iflag_swap = endian_check(my_rank, int_dat)
+      iflag_swap = endian_check(id_rank, int_dat)
 !
       zbuf%ilen_gzipped = ilen_used
       call dealloc_zip_buffer(zbuf)
