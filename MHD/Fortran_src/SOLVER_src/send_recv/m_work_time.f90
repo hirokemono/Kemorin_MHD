@@ -191,7 +191,7 @@
       write(id_timer_file,*) 'Average elapsed time'
       do i = 1, num_elapsed
         if(elapsed(i) .gt. zero) then
-          write(id_timer_file,'(i2,a2,a,a2,1pe20.11)')                  &
+          write(id_timer_file,'(i3,a2,a,a2,1pe20.11)')                  &
      &            i, '. ', trim(elapse_labels(i)), ': ', elapsed(i)
         end if
       end do
@@ -200,7 +200,7 @@
       write(id_timer_file,*) 'Minimum and maximum elapsed time'
       do i = 1, num_elapsed
         if(elapsed(i) .gt. zero) then
-          write(id_timer_file,'(i2,a2,a,a2,1p2e20.11)')                 &
+          write(id_timer_file,'(i3,a2,a,a2,1p2e20.11)')                 &
      &            i, '. ', trim(elapse_labels(i)), ': ',                &
      &            elapsed_min(i), elapsed_max(i)
          end if

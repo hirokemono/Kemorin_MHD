@@ -63,8 +63,6 @@
       type(shape_finctions_at_points), save :: spfs_T
 !
       type(single_make_vierwer_mesh), save :: sgl_viewer_p
-!
-      integer(kind = kint), parameter :: my_rank = izero
 !      type(mesh_data) :: fem_IO_i
 !
       integer(kind = kint) :: ierr, iprint, ifield, icomp
@@ -120,12 +118,13 @@
      &   (my_rank, org_fem%mesh, org_fem%group, org_ele_mesh)
 !
 !  ========= Read global field data for load balance partition =======
-      write(*,*) 'read control_merge'
-      call read_control_4_merge
-      call set_control_4_merge(num_pe)
-      !call set_control_4_newudt(sec_mesh1%num_pe2)
+      if(iflag_new_partition .eq. 1) then
+        write(*,*) 'read control_merge'
+        call read_control_4_merge
+        call set_control_4_merge(num_pe)
+!         call set_control_4_newudt(sec_mesh1%num_pe2)
 
-      call sel_read_udt_param(izero, istep_start, original_ucd_param,   &
+        call sel_read_udt_param(izero, istep_start, original_ucd_param, &
      &    fem_time_IO, fem_ucd)
 
       !write(*,*) '-----test-----'
@@ -139,26 +138,27 @@
 
 !  ========= Estimate load for each subdomain based on field data ====
 !  Load one field data from ucd file
-      data_field_vec%nnod = fem_ucd%nnod
-      icou = 0
-      do ifield = 1, fem_ucd%num_field
-        write(*,*) fem_ucd%phys_name(ifield)
-        if(cmp_no_case(fem_ucd%phys_name(ifield),                       &
+        data_field_vec%nnod = fem_ucd%nnod
+        icou = 0
+        do ifield = 1, fem_ucd%num_field
+          write(*,*) fem_ucd%phys_name(ifield)
+          if(cmp_no_case(fem_ucd%phys_name(ifield),                     &
     &                  def_magnetic_field_name)) then
           !write(*,*) 'is ', def_magnetic_field_name
-          data_field_vec%ncomp = fem_ucd%num_comp(ifield)
+            data_field_vec%ncomp = fem_ucd%num_comp(ifield)
           !write(*,*) 'num of node', data_field_vec%nnod,'num of comp', data_field_vec%ncomp
-          data_field_vec%phys_name = fem_ucd%phys_name(ifield)
-          call alloc_vector_field(data_field_vec)
+            data_field_vec%phys_name = fem_ucd%phys_name(ifield)
+            call alloc_vector_field(data_field_vec)
           !write(*,*) 'field:', data_field_vec%phys_name, 'component idx is ', icou + 1
-          do icomp = 1, fem_ucd%num_comp(ifield)
-            !write(*,*) 'read from idx:', icou+icomp
-            data_field_vec%d_ucd(:,icomp) = fem_ucd%d_ucd(:,icomp + icou)
-          end do
-        end if
-        icou = icou + fem_ucd%num_comp(ifield)
-      end do
-
+            do icomp = 1, fem_ucd%num_comp(ifield)
+              !write(*,*) 'read from idx:', icou+icomp
+              data_field_vec%d_ucd(:,icomp)                             &
+     &              = fem_ucd%d_ucd(:,icomp + icou)
+            end do
+          end if
+          icou = icou + fem_ucd%num_comp(ifield)
+        end do
+      end if
 ! org_mesh output test
       if(iflag_part_debug .gt. 0) then
         write(*,*) 'mesh data info test'
