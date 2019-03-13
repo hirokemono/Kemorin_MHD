@@ -34,8 +34,6 @@
 !
       subroutine read_rtp_gl_1d_table_b(bin_flags, sph_IO)
 !
-      integer(kind = kint) :: nvect
-!
       type(file_IO_flags), intent(inout) :: bin_flags
       type(sph_IO_data), intent(inout) :: sph_IO
 !

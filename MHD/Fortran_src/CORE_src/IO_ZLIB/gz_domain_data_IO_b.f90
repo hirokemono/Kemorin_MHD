@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine gz_read_domain_info_b                                &
-!!     &         (my_rank_IO, gz_flags, comm_IO)
+!!     &         (id_rank, gz_flags, comm_IO)
 !!      subroutine gz_read_import_data_b(gz_flags, comm_IO)
 !!      subroutine gz_read_export_data_b(gz_flags, comm_IO)
 !!        type(file_IO_flags), intent(inout) :: gz_flags
 !!        type(communication_table), intent(inout) :: comm_IO
 !!
-!!      subroutine gz_write_domain_info_b(my_rank_IO, comm_IO)
+!!      subroutine gz_write_domain_info_b(id_rank, comm_IO)
 !!      subroutine gz_write_import_data_b(comm_IO)
 !!      subroutine gz_write_export_data_b(comm_IO)
 !!        type(communication_table), intent(in) :: comm_IO
@@ -40,11 +40,11 @@
 !------------------------------------------------------------------
 !
       subroutine gz_read_domain_info_b                                  &
-     &         (my_rank_IO, gz_flags, comm_IO)
+     &         (id_rank, gz_flags, comm_IO)
 !
       use m_error_IDs
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
 !
       type(file_IO_flags), intent(inout) :: gz_flags
       type(communication_table), intent(inout) :: comm_IO
@@ -57,7 +57,7 @@
      &   (gz_flags%iflag_bin_swap, irank_read, gz_flags%ierr_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
-      if(irank_read .ne. my_rank_IO) then
+      if(irank_read .ne. id_rank) then
         gz_flags%ierr_IO = ierr_mesh
         return
       end if
@@ -135,13 +135,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_domain_info_b(my_rank_IO, comm_IO)
+      subroutine gz_write_domain_info_b(id_rank, comm_IO)
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
 !
 !
-      call gz_write_one_integer_b(my_rank_IO)
+      call gz_write_one_integer_b(id_rank)
       call gz_write_one_integer_b(comm_IO%num_neib)
 !
       call gz_write_mul_integer_b                                       &

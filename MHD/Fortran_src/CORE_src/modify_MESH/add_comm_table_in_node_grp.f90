@@ -74,7 +74,8 @@
       integer(kind = kint) :: n_import(nprocs)
       integer(kind = kint) :: n_export(nprocs)
 !
-      integer(kind = kint) :: i, ip, igrp, inum, ist, jst
+      integer(kind = kint) :: i, igrp, inum, ist, jst
+      integer :: ip
 !
 !
       new_nod_grp%num_grp = old_nod_grp%num_grp + 2*nprocs
@@ -93,11 +94,11 @@
 !
       do ip = 1, nprocs
         igrp = old_nod_grp%num_grp + ip
-        new_nod_grp%grp_name(igrp) = add_int_suffix                     &
-     &                              ((ip-1), import_head)
+        new_nod_grp%grp_name(igrp)                                      &
+     &        = add_process_id((ip-1), import_head)
         igrp = old_nod_grp%num_grp + nprocs + ip
-        new_nod_grp%grp_name(igrp) = add_int_suffix                     &
-     &                              ((ip-1), export_head)
+        new_nod_grp%grp_name(igrp)                                      &
+     &        = add_process_id((ip-1), export_head)
       end do
 !
       n_import = 0

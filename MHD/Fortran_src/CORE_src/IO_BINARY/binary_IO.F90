@@ -111,9 +111,9 @@
 !
       use set_parallel_file_name
 !
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(inout) :: iflag_swap
+      integer, intent(inout) :: iflag_swap
 !
       character(len=kchara) :: file_name_w_null
 !
@@ -393,7 +393,7 @@
 !
       integer function endian_check(id_rank, int_dat)
 !
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer, intent(in) :: int_dat
 !
 !
@@ -413,9 +413,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function read_endian_flag(id_rank)
+      integer function read_endian_flag(id_rank)
 !
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer :: int_dat
 !
 !
@@ -546,7 +546,7 @@
       subroutine read_integer_stack_b                                   &
      &         (iflag_swap, num, istack, ntot, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: ntot
       integer(kind = kint), intent(inout) :: istack(0:num)

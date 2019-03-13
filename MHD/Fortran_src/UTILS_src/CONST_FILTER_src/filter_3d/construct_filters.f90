@@ -250,8 +250,8 @@
 !     check filter function
 !  ---------------------------------------------------
 !
-      file_name =       add_int_suffix(my_rank, org_filter_coef_head)
-      fixed_file_name = add_int_suffix(my_rank, new_filter_coef_head)
+      file_name =       add_process_id(my_rank, org_filter_coef_head)
+      fixed_file_name = add_process_id(my_rank, new_filter_coef_head)
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         open(org_filter_coef_code, file=file_name, form='formatted')
@@ -379,8 +379,8 @@
 !  ---------------------------------------------------
 !
       write(*,*) 'org_filter_coef_head', org_filter_coef_head
-      file_name =        add_int_suffix(my_rank, org_filter_coef_head)
-      fixed_file_name =  add_int_suffix(my_rank, new_filter_coef_head)
+      file_name =        add_process_id(my_rank, org_filter_coef_head)
+      fixed_file_name =  add_process_id(my_rank, new_filter_coef_head)
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         open(org_filter_coef_code, file=file_name, form='formatted')

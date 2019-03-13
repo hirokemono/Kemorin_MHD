@@ -52,7 +52,7 @@
       subroutine write_ucd_2_fld_file_b(id_rank, file_name, t_IO, ucd)
 !
       character(len=kchara), intent(in)  :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
@@ -77,7 +77,7 @@
      &         (id_rank, file_name, t_IO, ucd, ierr)
 !
       character(len=kchara), intent(in)  :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
       integer(kind=kint), intent(inout) :: ierr
@@ -115,7 +115,7 @@
      &         (id_rank, file_name, t_IO, ucd, ierr)
 !
       character(len=kchara), intent(in)  :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
       integer(kind=kint), intent(inout) :: ierr
@@ -159,7 +159,7 @@
      &         (id_rank, file_name, t_IO, ucd, ierr)
 !
       character(len=kchara), intent(in)  :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
       integer(kind=kint), intent(inout) :: ierr

@@ -52,7 +52,7 @@
 !
       call allocate_nod_ele_near_1nod(numnod, numele)
 !
-      file_name = add_int_suffix(id_rank, org_filter_coef_head)
+      file_name = add_process_id(id_rank, org_filter_coef_head)
 !
       if (ifile_type .eq. 0) then
         write(*,*) 'ascii coefficients file name: ', trim(file_name)

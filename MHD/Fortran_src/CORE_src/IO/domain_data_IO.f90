@@ -7,12 +7,12 @@
 !>@brief  Routine for doimain data IO
 !!
 !!@verbatim
-!!      subroutine read_domain_info(id_file, my_rank_IO, comm_IO, ierr)
+!!      subroutine read_domain_info(id_file, id_rank, comm_IO, ierr)
 !!      subroutine read_import_data(id_file, comm_IO)
 !!      subroutine read_export_data(id_file, comm_IO)
 !!        type(communication_table), intent(inout) :: comm_IO
 !!
-!!      subroutine write_domain_info(id_file, my_rank_IO, comm_IO)
+!!      subroutine write_domain_info(id_file, id_rank, comm_IO)
 !!      subroutine write_import_data(id_file, comm_IO)
 !!      subroutine write_export_data(id_file, comm_IO)
 !!        type(communication_table), intent(in) :: comm_IO
@@ -37,13 +37,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_domain_info(id_file, my_rank_IO, comm_IO, ierr)
+      subroutine read_domain_info(id_file, id_rank, comm_IO, ierr)
 !
       use m_error_IDs
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(communication_table), intent(inout) :: comm_IO
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -55,7 +55,7 @@
       read(character_4_read,*) irank_read
 !
       ierr = 0
-      if(irank_read .ne. my_rank_IO) then
+      if(irank_read .ne. id_rank) then
         ierr = ierr_mesh
         return
       end if
@@ -123,10 +123,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_domain_info(id_file, my_rank_IO, comm_IO)
+      subroutine write_domain_info(id_file, id_rank, comm_IO)
 !
       integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
 !
 !
@@ -137,7 +137,7 @@
 !      write(id_file,'(a)') '!    domain ID for transfer'
 !      write(id_file,'(a)') '! '
 !
-      write(id_file,'(i16)') my_rank_IO
+      write(id_file,'(i16)') id_rank
       write(id_file,'(i16)') comm_IO%num_neib
 !
       if (comm_IO%num_neib .gt. 0) then

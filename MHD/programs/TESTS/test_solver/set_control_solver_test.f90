@@ -41,7 +41,7 @@
       else
         matrix_file_head = "matIN"
       end if
-      matrix_file_name = add_int_suffix(my_rank, matrix_file_head)
+      matrix_file_name = add_process_id(my_rank, matrix_file_head)
       write(*,*) 'matrix data file: ', matrix_file_name
 !
       if (solution_head_ctl%iflag .ne. 0) then
@@ -49,7 +49,7 @@
       else
         solution_file_head = "matIN"
       end if
-      solution_file_name = add_int_suffix(my_rank, solution_file_head)
+      solution_file_name = add_process_id(my_rank, solution_file_head)
       write(*,*) 'solution data file: ', solution_file_name
 !
       if (ip_smp_p_ctl%iflag .ne. 0) then

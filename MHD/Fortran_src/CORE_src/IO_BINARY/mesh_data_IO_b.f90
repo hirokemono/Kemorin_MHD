@@ -8,14 +8,14 @@
 !>@brief  Routines for Binary mesh data IO
 !!
 !!@verbatim
-!!      subroutine write_geometry_data_b(my_rank_IO, mesh_IO)
+!!      subroutine write_geometry_data_b(id_rank, mesh_IO)
 !!      subroutine write_mesh_groups_b(mesh_group_IO)
 !!        type(mesh_geometry), intent(in) :: mesh_IO
 !!        type(mesh_groups), intent(in) ::   mesh_group_IO
 !!
-!!      subroutine read_num_node_b(my_rank_IO, bin_flags, mesh_IO)
-!!      subroutine read_num_node_ele_b(my_rank_IO, bin_flags, mesh_IO)
-!!      subroutine read_geometry_data_b(my_rank_IO, bin_flags, mesh_IO)
+!!      subroutine read_num_node_b(id_rank, bin_flags, mesh_IO)
+!!      subroutine read_num_node_ele_b(id_rank, bin_flags, mesh_IO)
+!!      subroutine read_geometry_data_b(id_rank, bin_flags, mesh_IO)
 !!        type(file_IO_flags), intent(inout) :: bin_flags
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
 !!
@@ -24,11 +24,11 @@
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
 !!        type(mesh_groups), intent(inout) ::   mesh_group_IO
 !!
-!!      subroutine write_filter_geometry_b(my_rank_IO, comm_IO, nod_IO)
+!!      subroutine write_filter_geometry_b(id_rank, comm_IO, nod_IO)
 !!        type(communication_table), intent(in) :: comm_IO
 !!        type(node_data), intent(in) :: nod_IO
 !!      subroutine read_filter_geometry_b                               &
-!!     &         (my_rank_IO, bin_flags, comm_IO, nod_IO)
+!!     &         (id_rank, bin_flags, comm_IO, nod_IO)
 !!        type(file_IO_flags), intent(inout) :: bin_flags
 !!        type(communication_table), intent(inout) :: comm_IO
 !!        type(node_data), intent(inout) :: nod_IO
@@ -51,17 +51,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_geometry_data_b(my_rank_IO, mesh_IO)
+      subroutine write_geometry_data_b(id_rank, mesh_IO)
 !
       use domain_data_IO_b
       use node_geometry_IO_b
       use element_connect_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(mesh_geometry), intent(in) :: mesh_IO
 !
 !
-      call write_domain_info_b(my_rank_IO, mesh_IO%nod_comm)
+      call write_domain_info_b(id_rank, mesh_IO%nod_comm)
 !
       call write_geometry_info_b(mesh_IO%node)
       call write_element_info_b(mesh_IO%ele)
@@ -91,17 +91,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_filter_geometry_b(my_rank_IO, comm_IO, nod_IO)
+      subroutine write_filter_geometry_b(id_rank, comm_IO, nod_IO)
 !
       use domain_data_IO_b
       use node_geometry_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
       type(node_data), intent(in) :: nod_IO
 !
 !
-      call write_domain_info_b(my_rank_IO, comm_IO)
+      call write_domain_info_b(id_rank, comm_IO)
 !
       call write_geometry_info_b(nod_IO)
 !
@@ -113,18 +113,18 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_num_node_b(my_rank_IO, bin_flags, mesh_IO)
+      subroutine read_num_node_b(id_rank, bin_flags, mesh_IO)
 !
       use domain_data_IO_b
       use node_geometry_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
 !
       type(file_IO_flags), intent(inout) :: bin_flags
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
 !
-      call read_domain_info_b(my_rank_IO, bin_flags, mesh_IO%nod_comm)
+      call read_domain_info_b(id_rank, bin_flags, mesh_IO%nod_comm)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       call read_number_of_node_b(bin_flags, mesh_IO%node)
@@ -133,19 +133,19 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_num_node_ele_b(my_rank_IO, bin_flags, mesh_IO)
+      subroutine read_num_node_ele_b(id_rank, bin_flags, mesh_IO)
 !
       use domain_data_IO_b
       use node_geometry_IO_b
       use element_connect_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
 !
       type(file_IO_flags), intent(inout) :: bin_flags
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
 !
-      call read_num_node_b(my_rank_IO, bin_flags, mesh_IO)
+      call read_num_node_b(id_rank, bin_flags, mesh_IO)
       call read_geometry_info_b(bin_flags, mesh_IO%node)
       if(bin_flags%ierr_IO .gt. 0) return
 !
@@ -157,19 +157,19 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_geometry_data_b(my_rank_IO, bin_flags, mesh_IO)
+      subroutine read_geometry_data_b(id_rank, bin_flags, mesh_IO)
 !
       use domain_data_IO_b
       use node_geometry_IO_b
       use element_connect_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
 !
       type(file_IO_flags), intent(inout) :: bin_flags
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
 !
-      call read_num_node_ele_b(my_rank_IO, bin_flags, mesh_IO)
+      call read_num_node_ele_b(id_rank, bin_flags, mesh_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
 !  ----  read element data -------
@@ -210,19 +210,19 @@
 !------------------------------------------------------------------
 !
       subroutine read_filter_geometry_b                                 &
-     &         (my_rank_IO, bin_flags, comm_IO, nod_IO)
+     &         (id_rank, bin_flags, comm_IO, nod_IO)
 !
       use domain_data_IO_b
       use node_geometry_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
 !
       type(file_IO_flags), intent(inout) :: bin_flags
       type(communication_table), intent(inout) :: comm_IO
       type(node_data), intent(inout) :: nod_IO
 !
 !
-      call read_domain_info_b(my_rank_IO, bin_flags, comm_IO)
+      call read_domain_info_b(id_rank, bin_flags, comm_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
       call read_number_of_node_b(bin_flags, nod_IO)

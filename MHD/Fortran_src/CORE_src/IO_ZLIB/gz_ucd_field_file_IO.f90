@@ -47,7 +47,7 @@
      &         (id_rank, gzip_name, t_IO, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
@@ -74,7 +74,7 @@
       subroutine read_ucd_2_gz_fld_file(id_rank, gzip_name, t_IO, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
@@ -105,7 +105,7 @@
      &         (id_rank, gzip_name, t_IO, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd

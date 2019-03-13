@@ -82,8 +82,8 @@
       subroutine sync_field_header_mpi(nprocs_in, id_rank,              &
      &           nnod, istack_merged)
 !
-      integer(kind=kint), intent(in) :: nprocs_in, id_rank
-      integer(kind=kint), intent(inout) ::  nnod
+      integer, intent(in) :: nprocs_in, id_rank
+      integer(kind = kint), intent(inout) ::  nnod
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
 !
@@ -196,7 +196,7 @@
 !
       type(time_data), intent(inout) :: t_IO
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind=kint), intent(in) :: nprocs_in
+      integer, intent(in) :: nprocs_in
 !
       integer, intent(in) ::  id_fld
 !
@@ -233,7 +233,7 @@
       use transfer_to_long_integers
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind=kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
 !
       integer(kind=kint), intent(inout) :: nnod, num_field
       integer(kind = kint_gl), intent(inout)                            &

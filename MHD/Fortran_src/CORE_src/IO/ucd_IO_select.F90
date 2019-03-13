@@ -186,7 +186,7 @@
 !
       use write_ucd_to_vtk_file
 !
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) :: ucd_param
       type(ucd_data), intent(in) :: ucd
 !

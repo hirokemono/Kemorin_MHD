@@ -108,7 +108,8 @@
       use filter_mom_type_data_IO
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: pe1, nf_type
+      integer, intent(in) :: pe1
+      integer(kind = kint), intent(in) :: nf_type
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i
@@ -129,7 +130,7 @@
        call order_fiilter_nod_line(fil_l1)
 !
 !
-       nb_name = add_int_suffix(pe1, filter_file_header)
+       nb_name = add_process_id(pe1, filter_file_header)
        write(*,*) 'output ascii file: ', trim(nb_name)
        open (nb_out, file=nb_name)
 !

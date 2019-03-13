@@ -110,7 +110,7 @@
       end if
 !
       if((itype_file/iflag_single) .eq. 0) then
-        file_name = add_int_suffix(id_rank, fname_tmp)
+        file_name = add_process_id(id_rank, fname_tmp)
       else
         file_name = fname_tmp
       end if
@@ -153,7 +153,7 @@
       end if
 !
       if((itype_file/iflag_single) .eq. 0) then
-        file_name = add_int_suffix(id_rank, fname_tmp)
+        file_name = add_process_id(id_rank, fname_tmp)
       else
         file_name = fname_tmp
       end if

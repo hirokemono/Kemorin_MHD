@@ -123,7 +123,7 @@
       use t_mesh_data
       use t_filter_file_data
 !
-      integer(kind = kint), intent(in) :: my_rank2
+      integer, intent(in) :: my_rank2
       type(field_IO_params), intent(in) :: mesh_file
 !
       type(node_data), intent(inout) :: org_node
@@ -138,7 +138,7 @@
       type(mesh_geometry) :: mesh_IO_f
       type(filter_file_data) :: filter_IO
       character(len=kchara) :: file_name
-      integer(kind = kint) :: ip2
+      integer :: ip2
 !
 !
         ip2 = my_rank2 + 1
@@ -153,7 +153,7 @@
 !
         call dealloc_node_geometry_IO(mesh_IO_f)
 !
-        file_name = add_int_suffix(my_rank2, new_filter_coef_head)
+        file_name = add_process_id(my_rank2, new_filter_coef_head)
 !
         ifmt_filter_file = ifmt_3d_filter
         filter_file_head = new_filter_coef_head

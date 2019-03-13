@@ -157,7 +157,7 @@
       character(len = kchara) :: fname_tmp, fname
 !
 !
-      fname_tmp = add_int_suffix(my_rank, fhead)
+      fname_tmp = add_process_id(my_rank, fhead)
       fname =     add_dat_extension(fname_tmp)
       open(my_rank+50, file=fname)
 !

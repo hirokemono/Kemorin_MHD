@@ -148,7 +148,7 @@
        integer (kind = kint) :: ist, ied, iedge, i
 !
 !
-       fname = add_int_suffix(id_rank, filter_edge_header)
+       fname = add_process_id(id_rank, filter_edge_header)
        open (nb_out, file=nb_name)
 !
        write(nb_out,'(a12)') '! num_edge:  '

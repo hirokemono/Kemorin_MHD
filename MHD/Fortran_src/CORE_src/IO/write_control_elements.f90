@@ -568,13 +568,14 @@
       integer(kind = kint), intent(in) :: num
       integer (kind=kint), intent(in) :: ivect(num)
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, length
 !
 !
       call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
+        length = len_trim(label)
         call write_integer_ctl_item                                     &
-     &     (id_file, (level+1), len_trim(label), label, ivect(i))
+     &     (id_file, (level+1), length, label, ivect(i))
       end do
       call write_end_array_flag_for_ctl(id_file, level, label)
 !
@@ -659,13 +660,14 @@
       integer(kind = kint), intent(in) :: num
       real (kind=kreal), intent(in) :: vec1(num)
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, length
 !
 !
       call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
+        length = len_trim(label)
         call write_real_ctl_item                                        &
-     &     (id_file, (level+1), len_trim(label), label, vec1(i))
+     &     (id_file, (level+1), length, label, vec1(i))
       end do
       call write_end_array_flag_for_ctl(id_file, level, label)
 !
@@ -726,13 +728,14 @@
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(in) :: c_tbl(num)
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, length
 !
 !
       call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
+        length = len_trim(label)
         call write_character_ctl_item                                   &
-     &     (id_file, (level+1), len_trim(label), label, c_tbl(i))
+     &     (id_file, (level+1), length, label, c_tbl(i))
       end do
       call write_end_array_flag_for_ctl(id_file, level, label)
 !

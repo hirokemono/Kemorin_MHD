@@ -8,15 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine read_sorted_filter_coef_file                         &
-!!     &          (file_name, my_rank_IO, filter_IO, ierr)
+!!     &          (file_name, id_rank, filter_IO, ierr)
 !!      subroutine write_sorted_filter_coef_file                        &
-!!     &         (file_name, my_rank_IO, filter_IO)
+!!     &         (file_name, id_rank, filter_IO)
 !!        type(filter_file_data), intent(inout) :: filter_IO
 !!
 !!      subroutine read_filter_geometry_file                            &
-!!     &         (file_name, my_rank_IO, filter_IO, ierr)
+!!     &         (file_name, id_rank, filter_IO, ierr)
 !!      subroutine write_filter_geometry_file                           &
-!!     &         (file_name, my_rank_IO, filter_IO)
+!!     &         (file_name, id_rank, filter_IO)
 !!        type(filter_file_data), intent(inout) :: filter_IO
 !!@endverbatim
 !
@@ -41,25 +41,25 @@
 !------------------------------------------------------------------
 !
       subroutine read_sorted_filter_coef_file                           &
-     &          (file_name, my_rank_IO, filter_IO, ierr)
+     &          (file_name, id_rank, filter_IO, ierr)
 !
       use mesh_data_IO
       use m_filter_file_names
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(filter_file_data), intent(inout) :: filter_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read ascii filter file: ', trim(file_name)
       end if
 !
       open(filter_coef_code, file=file_name,                            &
      &      form='formatted', status= 'old')
-      call read_filter_geometry(filter_coef_code, my_rank_IO,           &
+      call read_filter_geometry(filter_coef_code, id_rank,              &
      &    filter_IO%nod_comm, filter_IO%node, ierr)
       call read_3d_filter_stack(filter_coef_code, filter_IO%filters)
       call read_3d_filter_weights_coef                                  &
@@ -71,23 +71,23 @@
 !------------------------------------------------------------------
 !
       subroutine write_sorted_filter_coef_file                          &
-     &         (file_name, my_rank_IO, filter_IO)
+     &         (file_name, id_rank, filter_IO)
 !
       use mesh_data_IO
       use m_filter_file_names
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(filter_file_data), intent(inout) :: filter_IO
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Write ascii filter file: ', trim(file_name)
       end if
 !
       open(filter_coef_code, file=file_name, form='formatted')
-      call write_filter_geometry(filter_coef_code, my_rank_IO,          &
+      call write_filter_geometry(filter_coef_code, id_rank,             &
      &    filter_IO%nod_comm, filter_IO%node)
       call write_3d_filter_stack(filter_coef_code, filter_IO%filters)
       call write_3d_filter_weights_coef                                 &
@@ -102,25 +102,25 @@
 !------------------------------------------------------------------
 !
       subroutine read_filter_geometry_file                              &
-     &         (file_name, my_rank_IO, filter_IO, ierr)
+     &         (file_name, id_rank, filter_IO, ierr)
 !
       use mesh_data_IO
       use m_filter_file_names
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(filter_file_data), intent(inout) :: filter_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read ascii filter file: ', trim(file_name)
       end if
 !
       open(filter_coef_code, file=file_name,                            &
      &      form='formatted', status= 'old')
-      call read_filter_geometry(filter_coef_code, my_rank_IO,           &
+      call read_filter_geometry(filter_coef_code, id_rank,              &
      &    filter_IO%nod_comm, filter_IO%node, ierr)
       close (filter_coef_code)
 !
@@ -129,23 +129,23 @@
 !------------------------------------------------------------------
 !
       subroutine write_filter_geometry_file                             &
-     &         (file_name, my_rank_IO, filter_IO)
+     &         (file_name, id_rank, filter_IO)
 !
       use mesh_data_IO
       use m_filter_file_names
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(filter_file_data), intent(inout) :: filter_IO
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) then
+      if(id_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Write ascii filter file: ', trim(file_name)
       end if
 !
       open(filter_coef_code, file=file_name, form='formatted')
-      call write_filter_geometry(filter_coef_code, my_rank_IO,          &
+      call write_filter_geometry(filter_coef_code, id_rank,             &
      &    filter_IO%nod_comm, filter_IO%node)
 !
       close(filter_coef_code)

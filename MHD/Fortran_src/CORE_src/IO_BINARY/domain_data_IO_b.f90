@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine read_domain_info_b                                   &
-!!     &         (my_rank_IO, bin_flags, comm_IO)
+!!     &         (id_rank, bin_flags, comm_IO)
 !!      subroutine read_import_data_b(bin_flags, comm_IO)
 !!      subroutine read_export_data_b(bin_flags, comm_IO)
 !!        type(file_IO_flags), intent(inout) :: bin_flags
 !!        type(communication_table), intent(inout) :: comm_IO
 !!
-!!      subroutine write_domain_info_b(my_rank_IO, comm_IO)
+!!      subroutine write_domain_info_b(id_rank, comm_IO)
 !!      subroutine write_import_data_b(comm_IO)
 !!      subroutine write_export_data_b(comm_IO)
 !!        type(communication_table), intent(in) :: comm_IO
@@ -38,11 +38,11 @@
 !------------------------------------------------------------------
 !
       subroutine read_domain_info_b                                     &
-     &         (my_rank_IO, bin_flags, comm_IO)
+     &         (id_rank, bin_flags, comm_IO)
 !
       use m_error_IDs
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
 !
       type(file_IO_flags), intent(inout) :: bin_flags
       type(communication_table), intent(inout) :: comm_IO
@@ -56,7 +56,7 @@
      &    irank_read, bin_flags%ierr_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
-       if(irank_read .ne. my_rank_IO) then
+       if(irank_read .ne. id_rank) then
          bin_flags%ierr_IO = ierr_mesh
          return
        end if
@@ -138,15 +138,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_domain_info_b(my_rank_IO, comm_IO)
+      subroutine write_domain_info_b(id_rank, comm_IO)
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
 !
       integer(kind = kint_gl) :: num64
 !
 !
-      call write_one_integer_b(my_rank_IO)
+      call write_one_integer_b(id_rank)
       call write_one_integer_b(comm_IO%num_neib)
 !
       num64 = comm_IO%num_neib

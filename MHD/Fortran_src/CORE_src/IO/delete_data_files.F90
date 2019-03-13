@@ -73,7 +73,7 @@
 !
       do ip = 1, nprocs
         id_rank = ip - 1
-        fname_tmp = add_int_suffix(id_rank, file_head)
+        fname_tmp = add_process_id(id_rank, file_head)
 !
         if(iflag_fmt .eq. id_gzip_txt_file_fmt) then
           file_name =  add_gzip_extension(fname_tmp)

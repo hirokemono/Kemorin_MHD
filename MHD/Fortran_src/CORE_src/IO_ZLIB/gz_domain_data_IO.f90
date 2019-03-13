@@ -7,12 +7,12 @@
 !>@brief  Routine for doimain data IO using zlib
 !!
 !!@verbatim
-!!      subroutine gz_read_domain_info(my_rank_IO, comm_IO, ierr)
+!!      subroutine gz_read_domain_info(id_rank, comm_IO, ierr)
 !!      subroutine gz_read_import_data(comm_IO)
 !!      subroutine gz_read_export_data(comm_IO)
 !!        type(communication_table), intent(inout) :: comm_IO
 !!
-!!      subroutine gz_write_domain_info(my_rank_IO, comm_IO)
+!!      subroutine gz_write_domain_info(id_rank, comm_IO)
 !!      subroutine gz_write_import_data(comm_IO)
 !!      subroutine gz_write_export_data(comm_IO)
 !!        type(communication_table), intent(in) :: comm_IO
@@ -35,11 +35,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_read_domain_info(my_rank_IO, comm_IO, ierr)
+      subroutine gz_read_domain_info(id_rank, comm_IO, ierr)
 !
       use m_error_IDs
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
 !
       type(communication_table), intent(inout) :: comm_IO
       integer(kind = kint), intent(inout) :: ierr
@@ -50,7 +50,7 @@
       call skip_gz_comment_int(irank_read)
 !
       ierr = 0
-      if(irank_read .ne. my_rank_IO) then
+      if(irank_read .ne. id_rank) then
         ierr = ierr_mesh
         return
       end if
@@ -117,15 +117,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_domain_info(my_rank_IO, comm_IO)
+      subroutine gz_write_domain_info(id_rank, comm_IO)
 !
       use m_sph_modes_grid_labels
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
 !
 !
-      write(textbuf,'(i16,a1)') my_rank_IO, char(0)
+      write(textbuf,'(i16,a1)') id_rank, char(0)
       call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') comm_IO%num_neib, char(0)
       call gz_write_textbuf_w_lf

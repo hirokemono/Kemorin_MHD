@@ -38,7 +38,7 @@
       subroutine write_step_data_b                                      &
      &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind=kint), intent(in) :: i_time_step_IO
       real(kind = kreal), intent(in) :: time_IO, delta_t_IO
 !

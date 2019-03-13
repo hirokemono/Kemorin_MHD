@@ -153,7 +153,7 @@
       if (cmp_no_case(METHOD, 'MGCG')) then
         do i = 0, num_MG_level
           fname_tmp = add_int_suffix(i, fhead_matrix)
-          fname =  add_int_suffix(my_rank, fname_tmp)
+          fname =  add_process_id(my_rank, fname_tmp)
           open(id_mat_file, file=fname)
           call write_djds_mat33_comp_type(id_mat_file,  np_smp,         &
      &        MG_djds_tbl(i), MG_mat33(i) )
@@ -162,7 +162,7 @@
           close(id_mat_file)
         end do
       else
-        fname = add_int_suffix(my_rank, fhead_matrix)
+        fname = add_process_id(my_rank, fhead_matrix)
         open(id_mat_file, file=fname)
         call write_djds_mat33_comp_type(id_mat_file, np_smp,            &
      &      MG_djds_tbl(0), MG_mat33(0))
@@ -196,7 +196,7 @@
       if (cmp_no_case(METHOD, 'MGCG')) then
         do i = 0, num_MG_level
           fname_tmp = add_int_suffix(i, fhead_matrix)
-          fname =  add_int_suffix(my_rank, fname_tmp)
+          fname =  add_process_id(my_rank, fname_tmp)
           open(id_mat_file, file=fname)
           call write_djds_mat11_comp_type(id_mat_file,  np_smp,         &
      &        MG_djds_tbl(i), MG_mat11(i) )
@@ -205,7 +205,7 @@
           close(id_mat_file)
         end do
       else
-        fname = add_int_suffix(my_rank, fhead_matrix)
+        fname = add_process_id(my_rank, fhead_matrix)
         open(id_mat_file, file=fname)
         call write_djds_mat11_comp_type(id_mat_file, np_smp,            &
      &      MG_djds_tbl(0), MG_mat11(0))

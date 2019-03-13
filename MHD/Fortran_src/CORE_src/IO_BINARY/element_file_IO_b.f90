@@ -8,25 +8,25 @@
 !!
 !!@verbatim
 !!      subroutine input_element_file_b                                 &
-!!     &         (my_rank_IO, file_name, ele_mesh_IO, ierr)
+!!     &         (id_rank, file_name, ele_mesh_IO, ierr)
 !!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !!      subroutine input_surface_file_b                                 &
-!!     &         (my_rank_IO, file_name, surf_mesh_IO, ierr)
+!!     &         (id_rank, file_name, surf_mesh_IO, ierr)
 !!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !!      subroutine input_edge_file_b                                    &
-!!     &         (my_rank_IO, file_name, edge_mesh_IO, ierr)
+!!     &         (id_rank, file_name, edge_mesh_IO, ierr)
 !!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !!
 !!      subroutine output_element_file_b                                &
-!!     &         (my_rank_IO, ele_mesh_IO)
+!!     &         (id_rank, ele_mesh_IO)
 !!      subroutine output_surface_file_b                                &
-!!     &         (my_rank_IO, file_name, surf_mesh_IO)
+!!     &         (id_rank, file_name, surf_mesh_IO)
 !!      subroutine output_edge_file_b                                   &
-!!     &         (my_rank_IO, file_name, edge_mesh_IO)
+!!     &         (id_rank, file_name, edge_mesh_IO)
 !!        type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
 !!@endverbatim
 !!
-!!@param my_rank_IO  MPI rank
+!!@param id_rank  MPI rank
 !
       module element_file_IO_b
 !
@@ -49,23 +49,23 @@
 !------------------------------------------------------------------
 !
       subroutine input_element_file_b                                   &
-     &         (my_rank_IO, file_name, ele_mesh_IO, ierr)
+     &         (id_rank, file_name, ele_mesh_IO, ierr)
 !
       use element_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Read binary element comm file: ', trim(file_name)
 !
       call open_read_binary_file                                        &
-     &   (file_name, my_rank_IO, bin_emeshflags%iflag_bin_swap)
+     &   (file_name, id_rank, bin_emeshflags%iflag_bin_swap)
       call read_element_comm_table_b                                    &
-     &   (my_rank_IO, bin_emeshflags, ele_mesh_IO%comm)
+     &   (id_rank, bin_emeshflags, ele_mesh_IO%comm)
 !      call read_element_geometry_b                                     &
 !     &   (bin_emeshflags, ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_binary_file
@@ -76,22 +76,22 @@
 !------------------------------------------------------------------
 !
       subroutine input_surface_file_b                                   &
-     &         (my_rank_IO, file_name, surf_mesh_IO, ierr)
+     &         (id_rank, file_name, surf_mesh_IO, ierr)
 !
       use surface_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Read binary surface mesh file: ', trim(file_name)
 !
       call open_read_binary_file                                        &
-     &   (file_name, my_rank_IO, bin_emeshflags%iflag_bin_swap)
-      call read_surface_connection_b(my_rank_IO, bin_emeshflags,        &
+     &   (file_name, id_rank, bin_emeshflags%iflag_bin_swap)
+      call read_surface_connection_b(id_rank, bin_emeshflags,           &
      &    surf_mesh_IO%comm, surf_mesh_IO%ele, surf_mesh_IO%sfed)
 !      call read_surface_geometry_b                                     &
 !     &   (bin_emeshflags, surf_mesh_IO%node, surf_mesh_IO%sfed)
@@ -103,22 +103,22 @@
 !------------------------------------------------------------------
 !
       subroutine input_edge_file_b                                      &
-     &         (my_rank_IO, file_name, edge_mesh_IO, ierr)
+     &         (id_rank, file_name, edge_mesh_IO, ierr)
 !
       use edge_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Read binary edge mesh file: ', trim(file_name)
 !
       call open_read_binary_file                                        &
-     &   (file_name, my_rank_IO, bin_emeshflags%iflag_bin_swap)
-      call read_edge_connection_b(my_rank_IO, bin_emeshflags,           &
+     &   (file_name, id_rank, bin_emeshflags%iflag_bin_swap)
+      call read_edge_connection_b(id_rank, bin_emeshflags,              &
      &    edge_mesh_IO%comm, edge_mesh_IO%ele, edge_mesh_IO%sfed)
 !      call read_edge_geometry_b                                        &
 !     &    (bin_emeshflags, edge_mesh_IO%node, edge_mesh_IO%sfed)
@@ -131,20 +131,20 @@
 !------------------------------------------------------------------
 !
       subroutine output_element_file_b                                  &
-     &         (my_rank_IO, file_name, ele_mesh_IO)
+     &         (id_rank, file_name, ele_mesh_IO)
 !
       use element_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(surf_edge_IO_file), intent(in) :: ele_mesh_IO
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Write binary element comm file: ', trim(file_name)
 !
       call open_write_binary_file(file_name)
-      call write_element_comm_table_b(my_rank_IO, ele_mesh_IO%comm)
+      call write_element_comm_table_b(id_rank, ele_mesh_IO%comm)
 !      call write_element_geometry_b(ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_binary_file
 !
@@ -153,20 +153,20 @@
 !------------------------------------------------------------------
 !
       subroutine output_surface_file_b                                  &
-     &         (my_rank_IO, file_name, surf_mesh_IO)
+     &         (id_rank, file_name, surf_mesh_IO)
 !
       use surface_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(surf_edge_IO_file), intent(in) :: surf_mesh_IO
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Write binary surface mesh file: ', trim(file_name)
 !
       call open_write_binary_file(file_name)
-      call write_surface_connection_b(my_rank_IO, surf_mesh_IO%comm,    &
+      call write_surface_connection_b(id_rank, surf_mesh_IO%comm,       &
      &    surf_mesh_IO%ele, surf_mesh_IO%sfed)
 !      call write_surface_geometry_b                                    &
 !     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
@@ -177,20 +177,20 @@
 !------------------------------------------------------------------
 !
       subroutine output_edge_file_b                                     &
-     &         (my_rank_IO, file_name, edge_mesh_IO)
+     &         (id_rank, file_name, edge_mesh_IO)
 !
       use edge_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Write binary edge mesh file: ', trim(file_name)
 !
       call open_write_binary_file(file_name)
-      call write_edge_connection_b(my_rank_IO, edge_mesh_IO%comm,       &
+      call write_edge_connection_b(id_rank, edge_mesh_IO%comm,          &
      &    edge_mesh_IO%ele, edge_mesh_IO%sfed)
 !      call write_edge_geometry_b(edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_binary_file

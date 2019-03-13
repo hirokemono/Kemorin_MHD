@@ -100,8 +100,8 @@
       use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
-      integer(kind=kint), intent(in) :: nprocs_in
+      integer, intent(in) :: id_rank
+      integer, intent(in) :: nprocs_in
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -143,8 +143,8 @@
       use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
-      integer(kind=kint), intent(in) :: nprocs_in
+      integer, intent(in) :: id_rank
+      integer, intent(in) :: nprocs_in
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -197,8 +197,8 @@
       use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
-      integer(kind=kint), intent(in) :: nprocs_in
+      integer, intent(in) :: id_rank
+      integer, intent(in) :: nprocs_in
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO

@@ -52,7 +52,7 @@
      &     (new_comm, comm_part%nod_comm_tbl_part(ip))
       else
         id_rank = ip - 1
-        file_name = add_int_suffix(id_rank, comm_part%work_f_head)
+        file_name = add_process_id(id_rank, comm_part%work_f_head)
         open (id_work_file,file=file_name, status='unknown',            &
      &       form='unformatted')
         call write_node_import_to_work(id_work_file, new_comm)
@@ -83,7 +83,7 @@
      &     (new_comm, comm_part%nod_comm_tbl_part(ip))
       else
         id_rank = ip - 1
-        file_name = add_int_suffix(id_rank, comm_part%work_f_head)
+        file_name = add_process_id(id_rank, comm_part%work_f_head)
         write(*,*) 'write export table: ', trim(file_name)
         open(id_work_file,file=file_name,status='unknown',              &
      &       form='unformatted')
@@ -119,7 +119,7 @@
      &     (comm_part%nod_comm_tbl_part(ip), new_comm)
       else
         id_rank = ip - 1
-        file_name = add_int_suffix(id_rank, comm_part%work_f_head)
+        file_name = add_process_id(id_rank, comm_part%work_f_head)
         write(*,*) 'read import table: ', trim(file_name)
         open(id_work_file,file=file_name,status='unknown',              &
      &       form='unformatted')
@@ -152,7 +152,7 @@
      &     (comm_part%nod_comm_tbl_part(ip), new_comm)
       else
         id_rank = ip - 1
-        file_name = add_int_suffix(id_rank, comm_part%work_f_head)
+        file_name = add_process_id(id_rank, comm_part%work_f_head)
         open (id_work_file,file=file_name, status='unknown',            &
      &      form='unformatted')
 !
@@ -184,7 +184,7 @@
      &     (comm_part%nod_comm_tbl_part(jp), comm_part%ipt_tmp)
       else
         id_rank = jp - 1
-        file_name = add_int_suffix(id_rank, comm_part%work_f_head)
+        file_name = add_process_id(id_rank, comm_part%work_f_head)
         open(id_work_file,file=file_name,status='old',                  &
      &       form='unformatted')
         call read_node_import_num_tmp(id_work_file, comm_part%ipt_tmp)
@@ -216,7 +216,7 @@
      &     (comm_part%nod_comm_tbl_part(jp), comm_part%ipt_tmp)
       else
         id_rank = jp - 1
-        file_name = add_int_suffix(id_rank, comm_part%work_f_head)
+        file_name = add_process_id(id_rank, comm_part%work_f_head)
         open(id_work_file,file=file_name,status='old',                  &
      &       form='unformatted')
         call read_node_import_num_tmp(id_work_file, comm_part%ipt_tmp)

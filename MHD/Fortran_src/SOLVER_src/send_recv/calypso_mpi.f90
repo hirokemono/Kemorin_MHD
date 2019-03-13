@@ -49,7 +49,7 @@
       integer :: CALYPSO_FOUR_INT
 !
 !>      process ID (start from 0)
-      integer(kind=kint) :: my_rank
+      integer :: my_rank
 !>      total number of processes
       integer(kind=kint) :: nprocs
 !

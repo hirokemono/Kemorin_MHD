@@ -128,14 +128,14 @@
 !
       use set_parallel_file_name
 !
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(phys_data), intent(in) :: nod_fld
 !
       character(len=kchara) :: fname_tmp, file_name
       integer (kind=kint) :: i, j
 !
 !
-      fname_tmp = add_int_suffix(id_rank, node_monitor_head)
+      fname_tmp = add_process_id(id_rank, node_monitor_head)
       file_name = add_dat_extension(fname_tmp)
       open (id_monitor_file,file=file_name, status='old',               &
      &    position='append', err = 99)

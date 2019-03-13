@@ -53,7 +53,7 @@
       use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -74,7 +74,7 @@
       use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -94,7 +94,7 @@
       use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -146,7 +146,7 @@
       use udt_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -173,7 +173,7 @@
       use udt_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -202,7 +202,7 @@
       use udt_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
 !

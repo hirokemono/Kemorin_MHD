@@ -196,7 +196,7 @@
 !
 !
       if(iflag_time_4_each_pe .gt. 0) then
-        fname_tmp = add_int_suffix(my_rank, time_file_prefix)
+        fname_tmp = add_process_id(my_rank, time_file_prefix)
         file_name = add_dat_extension(fname_tmp)
         open(id_timer_file,file=file_name,position='append')
         write(id_timer_file,*) 'Average elapsed time'

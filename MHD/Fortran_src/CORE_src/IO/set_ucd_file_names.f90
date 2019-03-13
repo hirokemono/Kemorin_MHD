@@ -94,7 +94,7 @@
 !
       if (id_rank .ge. 0                                                &
      &      .and. (itype_file/icent) .eq. (iflag_para/icent)) then
-        file_name = add_int_suffix(id_rank, fname_tmp)
+        file_name = add_process_id(id_rank, fname_tmp)
       else
         file_name = fname_tmp
       end if
@@ -141,7 +141,7 @@
 !
       if (id_rank .ge. 0                                                &
      &     .and. itype_file/icent .eq. iflag_para/icent) then
-        file_name = add_int_suffix(id_rank, fname_tmp)
+        file_name = add_process_id(id_rank, fname_tmp)
       else
         file_name = fname_tmp
       end if

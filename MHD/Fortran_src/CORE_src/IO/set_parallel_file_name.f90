@@ -10,6 +10,8 @@
 !!      character(len = kchara) function delete_directory_name          &
 !!     &                               (dir_file_name)
 !!
+!!      character(len = kchara) function add_process_id                 &
+!!     &                               (id_rank, file_head)
 !!      character(len = kchara) function add_int_suffix                 &
 !!     &                               (int_id, file_head)
 !!
@@ -90,6 +92,22 @@
       end function delete_directory_name
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      character(len = kchara) function add_process_id                   &
+     &                               (id_rank, file_head)
+!
+      integer, intent(in) :: id_rank
+      character(len=kchara), intent(in) :: file_head
+!
+      integer(kind = kint) :: int_id
+!
+!
+      int_id = int(id_rank, KIND(int_id))
+      add_process_id = add_int_suffix(int_id, file_head)
+!
+      end function add_process_id
+!
 !-----------------------------------------------------------------------
 !
       character(len = kchara) function add_int_suffix                   &

@@ -127,7 +127,7 @@
       istack_nsurf(0) = 0
       istack_nsurf(1) = view_mesh%nsurf_viewer
 !
-      fname_tmp = add_int_suffix(id_rank, mesh_file%file_prefix)
+      fname_tmp = add_process_id(id_rank, mesh_file%file_prefix)
       file_name = add_ksm_extension(fname_tmp)
 !
       call output_single_surface_grid                                   &

@@ -21,7 +21,7 @@
 !!      subroutine gz_write_1d_vector_b(num, real_dat)
 !!      subroutine gz_write_2d_vector_b(n1, n2, real_dat)
 !!
-!!      integer(kind = kint) function gz_read_endian_flag(id_rank)
+!!      integer function gz_read_endian_flag(id_rank)
 !!      subroutine gz_read_one_integer_b(iflag_swap, int_dat, ierr)
 !!      subroutine gz_read_one_real_b(iflag_swap, real_dat, ierr)
 !!      subroutine gz_read_mul_int8_b(iflag_swap, num, int8_dat, ierr)
@@ -73,7 +73,7 @@
       use set_parallel_file_name
       use skip_gz_comment
 !
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
       integer(kind = kint), intent(inout) :: iflag_swap, ierr
 !
@@ -247,7 +247,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function gz_read_endian_flag(id_rank)
+      integer function gz_read_endian_flag(id_rank)
 !
       use binary_IO
 !
@@ -350,7 +350,7 @@
       subroutine gz_read_integer_stack_b                                &
      &         (iflag_swap, num, istack, ntot, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: ntot
       integer(kind = kint), intent(inout) :: istack(0:num)
@@ -425,7 +425,7 @@
       subroutine gz_read_2d_vector_b                                    &
      &         (iflag_swap, n1, n2, real_dat, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint_gl), intent(in) :: n1
       integer(kind = kint), intent(in) :: n2
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)

@@ -94,7 +94,7 @@
       else
         fname_tmp = add_int_suffix(istep_fld, file_IO%file_prefix)
       end if
-      file_name = add_int_suffix(id_rank, fname_tmp)
+      file_name = add_process_id(id_rank, fname_tmp)
 !
 !
 #ifdef ZLIB_IO
@@ -131,7 +131,7 @@
       else
         fname_tmp = add_int_suffix(istep_fld, file_IO%file_prefix)
       end if
-      file_name = add_int_suffix(id_rank, fname_tmp)
+      file_name = add_process_id(id_rank, fname_tmp)
 !
 #ifdef ZLIB_IO
       if(file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then

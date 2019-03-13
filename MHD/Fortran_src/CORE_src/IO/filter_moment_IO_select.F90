@@ -65,7 +65,7 @@
       character(len=kchara) :: file_name
 !
 !
-      file_name =  add_int_suffix(id_rank, filter_file_head)
+      file_name =  add_process_id(id_rank, filter_file_head)
 !
 #ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
@@ -98,7 +98,7 @@
       character(len=kchara) :: file_name
 !
 !
-      file_name = add_int_suffix(id_rank, filter_file_head)
+      file_name = add_process_id(id_rank, filter_file_head)
 !
 !
       if (ifmt_filter_file .eq. id_ascii_file_fmt) then
@@ -143,7 +143,7 @@
       character(len=kchara) :: file_name
 !
 !
-      file_name = add_int_suffix(id_rank, filter_file_head)
+      file_name = add_process_id(id_rank, filter_file_head)
 !
 #ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
@@ -176,7 +176,7 @@
       character(len=kchara) :: file_name
 !
 !
-      file_name = add_int_suffix(id_rank, filter_file_head)
+      file_name = add_process_id(id_rank, filter_file_head)
 !
 #ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
@@ -214,7 +214,7 @@
       character(len=kchara) :: file_name
 !
 !
-      file_name = add_int_suffix(id_rank, filter_file_head)
+      file_name = add_process_id(id_rank, filter_file_head)
 !
 #ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
@@ -252,7 +252,7 @@
       character(len=kchara) :: file_name
 !
 !
-      file_name = add_int_suffix(id_rank, filter_file_head)
+      file_name = add_process_id(id_rank, filter_file_head)
 !
 #ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
@@ -286,7 +286,7 @@
       character(len=kchara) :: file_name
 !
 !
-      file_name = add_int_suffix(id_rank, filter_file_head)
+      file_name = add_process_id(id_rank, filter_file_head)
 !
 !
 #ifdef ZLIB_IO
@@ -325,7 +325,7 @@
       character(len=kchara) :: file_name
 !
 !
-      file_name = add_int_suffix(id_rank, filter_file_head)
+      file_name = add_process_id(id_rank, filter_file_head)
 !
 #ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
@@ -362,7 +362,7 @@
       character(len=kchara) :: file_name
 !
 !
-      file_name = add_int_suffix(id_rank, filter_file_head)
+      file_name = add_process_id(id_rank, filter_file_head)
 !
 #ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then

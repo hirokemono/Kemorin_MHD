@@ -51,7 +51,7 @@
       subroutine write_ucd_2_fld_file(id_rank, file_name, t_IO, ucd)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
@@ -77,7 +77,7 @@
       use skip_comment_f
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
@@ -110,7 +110,7 @@
       use skip_comment_f
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !

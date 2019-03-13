@@ -8,16 +8,16 @@
 !>@brief  Routines for gzipped binary mesh data IO
 !!
 !!@verbatim
-!!      subroutine gz_write_geometry_data_b(my_rank_IO, mesh_IO)
+!!      subroutine gz_write_geometry_data_b(id_rank, mesh_IO)
 !!      subroutine gz_write_mesh_groups_b(mesh_group_IO)
 !!        type(mesh_geometry), intent(in) :: mesh_IO
 !!        type(mesh_groups), intent(in) ::   mesh_group_IO
 !!
-!!      subroutine gz_read_num_node_b(my_rank_IO, gz_flags, mesh_IO)
+!!      subroutine gz_read_num_node_b(id_rank, gz_flags, mesh_IO)
 !!      subroutine gz_read_num_node_ele_b                               &
-!!     &         (my_rank_IO, gz_flags, mesh_IO)
+!!     &         (id_rank, gz_flags, mesh_IO)
 !!      subroutine gz_read_geometry_data_b                              &
-!!     &         (my_rank_IO, gz_flags, mesh_IO)
+!!     &         (id_rank, gz_flags, mesh_IO)
 !!      subroutine gz_read_mesh_groups_b(gz_flags, mesh_group_IO)
 !!        type(file_IO_flags), intent(inout) :: gz_flags
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
@@ -42,17 +42,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_geometry_data_b(my_rank_IO, mesh_IO)
+      subroutine gz_write_geometry_data_b(id_rank, mesh_IO)
 !
       use gz_domain_data_IO_b
       use gz_node_geometry_IO_b
       use gz_element_connect_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(mesh_geometry), intent(in) :: mesh_IO
 !
 !
-      call gz_write_domain_info_b(my_rank_IO, mesh_IO%nod_comm)
+      call gz_write_domain_info_b(id_rank, mesh_IO%nod_comm)
 !
       call gz_write_geometry_info_b(mesh_IO%node)
       call gz_write_element_info_b(mesh_IO%ele)
@@ -83,19 +83,19 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine gz_read_num_node_b(my_rank_IO, gz_flags, mesh_IO)
+      subroutine gz_read_num_node_b(id_rank, gz_flags, mesh_IO)
 !
       use gz_domain_data_IO_b
       use gz_node_geometry_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
 !
       type(file_IO_flags), intent(inout) :: gz_flags
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
 !
       call gz_read_domain_info_b                                        &
-     &   (my_rank_IO, gz_flags, mesh_IO%nod_comm)
+     &   (id_rank, gz_flags, mesh_IO%nod_comm)
       if(gz_flags%ierr_IO .gt. 0) return
 !
       call gz_read_number_of_node_b(gz_flags, mesh_IO%node)
@@ -105,19 +105,19 @@
 !------------------------------------------------------------------
 !
       subroutine gz_read_num_node_ele_b                                 &
-     &         (my_rank_IO, gz_flags, mesh_IO)
+     &         (id_rank, gz_flags, mesh_IO)
 !
       use gz_domain_data_IO_b
       use gz_node_geometry_IO_b
       use gz_element_connect_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
 !
       type(file_IO_flags), intent(inout) :: gz_flags
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
 !
-      call gz_read_num_node_b(my_rank_IO, gz_flags, mesh_IO)
+      call gz_read_num_node_b(id_rank, gz_flags, mesh_IO)
       if(gz_flags%ierr_IO .gt. 0) return
       call gz_read_geometry_info_b(gz_flags, mesh_IO%node)
       if(gz_flags%ierr_IO .gt. 0) return
@@ -131,19 +131,19 @@
 !------------------------------------------------------------------
 !
       subroutine gz_read_geometry_data_b                                &
-     &         (my_rank_IO, gz_flags, mesh_IO)
+     &         (id_rank, gz_flags, mesh_IO)
 !
       use gz_domain_data_IO_b
       use gz_node_geometry_IO_b
       use gz_element_connect_IO_b
 !
-      integer(kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
 !
       type(file_IO_flags), intent(inout) :: gz_flags
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
 !
-      call gz_read_num_node_ele_b(my_rank_IO, gz_flags, mesh_IO)
+      call gz_read_num_node_ele_b(id_rank, gz_flags, mesh_IO)
 !
 !  ----  read element data -------
 !

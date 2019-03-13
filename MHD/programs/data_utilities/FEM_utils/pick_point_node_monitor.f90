@@ -46,7 +46,7 @@
         if(monitor_header .eq. 'end' .or. monitor_header .eq. 'END')    &
      &    go to 98
 !
-        fname_tmp =             add_int_suffix(id_rank, monitor_header)
+        fname_tmp =             add_process_id(id_rank, monitor_header)
         nod_monitor_file_name = add_dat_extension(fname_tmp)
 !
         open(id_monitor_file, file=nod_monitor_file_name, err=98)
@@ -65,7 +65,7 @@
 !
         if(iflag_init .eq. 0) then
           fname_tmp = add_int_suffix(inod_2_pick, picked_header)
-          fname_tmp2 = add_int_suffix(id_rank, fname_tmp)
+          fname_tmp2 = add_process_id(id_rank, fname_tmp)
           picked_monitor_file_name = add_dat_extension(fname_tmp2)
 !
           open(pick_monitor_file_code, file=picked_monitor_file_name)

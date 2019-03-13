@@ -50,7 +50,7 @@
       subroutine write_gz_ucd_file(id_rank, gzip_name, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -69,7 +69,7 @@
       subroutine write_gz_udt_file(id_rank, gzip_name, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -87,7 +87,7 @@
       subroutine write_gz_grd_file(id_rank, gzip_name, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -106,7 +106,7 @@
       subroutine read_gz_udt_file(id_rank, gzip_name, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -130,7 +130,7 @@
       subroutine read_alloc_gz_udt_head(id_rank, gzip_name, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -157,7 +157,7 @@
       subroutine read_alloc_gz_udt_file(id_rank, gzip_name, ucd)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
 !

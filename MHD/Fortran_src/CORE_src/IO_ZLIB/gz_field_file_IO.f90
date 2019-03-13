@@ -108,7 +108,7 @@
       subroutine read_gz_step_field_file                                &
      &         (gzip_name, id_rank, t_IO, fld_IO)
 !
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
 !
       type(time_data), intent(inout) :: t_IO
@@ -140,7 +140,7 @@
       subroutine read_alloc_gz_step_field_file                          &
      &          (gzip_name, id_rank, t_IO, fld_IO)
 !
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
 !
       type(time_data), intent(inout) :: t_IO
@@ -178,7 +178,7 @@
       subroutine read_alloc_gz_step_field_head                          &
      &         (gzip_name, id_rank, t_IO, fld_IO)
 !
-      integer(kind=kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
 !
       type(time_data), intent(inout) :: t_IO
