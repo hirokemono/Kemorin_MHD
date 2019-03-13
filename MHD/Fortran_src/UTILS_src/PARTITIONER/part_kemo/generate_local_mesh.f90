@@ -31,6 +31,7 @@
       use m_ctl_param_partitioner
       use m_subdomain_table_IO
 !
+      use m_work_time
       use check_domain_prop_4_part
       use find_local_elements
       use increase_overlap
@@ -57,8 +58,11 @@
 !
       call CRE_LOCAL_DATA(num_domain, node_org%numnod,                  &
      &    ele_org, included_ele)
+!
+      call start_elapsed_time(301)
       call increase_overlapping(num_domain, node_org, ele_org,          &
      &    surf_org, field_org, iflag_new_ghost_cell, included_ele)
+      call end_elapsed_time(301)
 !
 !C
 !C-- INTERFACE info.
@@ -78,6 +82,7 @@
 !C +---------------------------------------+
 !C===
 !
+      call start_elapsed_time(304)
       call gen_node_import_tables(num_domain, work_file_header)
 !C
 !C +-------------------------------+
@@ -85,6 +90,7 @@
 !C +-------------------------------+
 !C===
       call gen_node_export_tables(num_domain, work_file_header)
+      call end_elapsed_time(304)
 !C
 !C-- distributed Local DATA
       call local_fem_mesh(izero, ione, work_file_header,                &

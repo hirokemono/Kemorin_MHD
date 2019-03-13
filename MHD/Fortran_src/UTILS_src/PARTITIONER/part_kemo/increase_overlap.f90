@@ -10,6 +10,7 @@
 !
       use m_precision
       use m_constants
+      use m_work_time
 !
       use t_near_mesh_id_4_node
 !
@@ -69,15 +70,19 @@
       do ip= 1, Ndomain
 ! extend overlap one by layer, new extend overlap layer is stored in near_ele_tmp
       if(iflag_selective .eq. 0) then
+        call start_elapsed_time(302)
         call mark_extented_overlap                                      &
      &     (ip, n_overlap, i_sleeve_ele, node%numnod,                   &
      &      ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,             &
      &      included_ele%ntot, included_ele%istack_nod,                 &
      &      included_ele%id_near_nod, nnod_s_domin, IGROUP_nod)
+        call end_elapsed_time(302)
       else
+        call start_elapsed_time(303)
         call selective_extended_overlap(ip, node, ele, surf, field,     &
     &       included_ele%ntot, included_ele%istack_nod,                 &
     &       included_ele%id_near_nod)
+        call end_elapsed_time(303)
       end if
 !
         allocate(NPC_tmp2(near_ele_tmp%istack_nod(ip-1)) )
@@ -229,7 +234,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine selective_extended_overlap(ip, node, ele, surf, field,    &
+      subroutine selective_extended_overlap(ip, node, ele, surf, field, &
       &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
 !
       use t_geometry_data

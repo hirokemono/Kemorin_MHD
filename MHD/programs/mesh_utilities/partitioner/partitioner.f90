@@ -1,8 +1,12 @@
 !
       program patitioner
 !
+      use calypso_mpi
+!
       use m_precision
       use m_constants
+!
+      use m_work_time
 !
       use t_mesh_data
       use t_geometry_data
@@ -82,9 +86,22 @@
       integer(kind = kint) :: num_particle
       integer(kind = kint) :: iflag_part_debug, iflag_part_detail
       real(kind = kreal), pointer :: node_volume(:)
+!
+!
+      call calypso_MPI_init
+!
 ! initial debug flag
       iflag_part_debug = 1
       iflag_part_detail = 0
+!
+      num_elapsed = 310
+      call allocate_elapsed_times
+!
+      elapse_labels(301) = 'increase_overlapping       '
+      elapse_labels(302) = 'mark_extented_overlap    '
+      elapse_labels(303) = 'selective_extended_overlap   '
+      elapse_labels(304) = 'gen_node_import/export_tables   '
+!
 !
 !  read control file
 !
@@ -272,6 +289,9 @@
      &     (num_domain, distribute_mesh_file, sgl_viewer_p)
       end if
 !
+      call output_elapsed_times
+!
+      call calypso_MPI_finalize
       stop ' * Partitioning finished'
 !
       end program patitioner
