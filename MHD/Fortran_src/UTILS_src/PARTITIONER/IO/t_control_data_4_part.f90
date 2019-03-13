@@ -28,8 +28,6 @@
       character (len = kchara), parameter                               &
      &         :: control_file_name = 'ctl_part'
 !
-      integer (kind=kint), parameter :: my_rank = 0
-!
 !
       type control_data_4_partitioner
 !>        Structure for file names
@@ -181,7 +179,6 @@
 !
 !
       private :: control_file_name
-      private :: my_rank
       private :: hd_part_ctl, i_part_ctl
       private :: hd_org_f_ctl
       private :: hd_platform, i_platform

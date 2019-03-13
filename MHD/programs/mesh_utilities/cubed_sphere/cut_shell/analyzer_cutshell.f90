@@ -15,7 +15,7 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter, private :: my_rank = izero
+      integer, parameter, private :: my_rank = izero
 !
       type(mesh_data), save :: original_fem
       type(mesh_data), save :: cutted_fem

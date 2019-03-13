@@ -69,7 +69,7 @@
 !
       subroutine check_vect_sf(id_rank, txt, surf_wk)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(*), intent(in) :: txt
       type(work_surface_element_mat), intent(in) :: surf_wk
 !

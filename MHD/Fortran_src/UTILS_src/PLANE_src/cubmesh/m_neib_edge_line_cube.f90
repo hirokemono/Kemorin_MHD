@@ -79,7 +79,7 @@
 !
        use m_constants
 !
-       integer(kind = kint), intent(in) :: id_rank
+       integer, intent(in) :: id_rank
 !
 !
        call allocate_neighbour_edge_line
@@ -143,7 +143,8 @@
 !
        subroutine write_neib_edge_line(id_rank)
 !
-       integer(kind = kint), intent(in) :: id_rank
+       integer, intent(in) :: id_rank
+!
        integer (kind = kint) :: ist, ied, iedge, i
 !
 !

@@ -78,7 +78,7 @@
 !
       use m_commute_filter_z
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: numnod, internal_node
 !
       integer(kind = kint) :: i, j, k
@@ -106,7 +106,7 @@
 !
       use m_commute_filter_z
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint) :: i, j, k
 !
       write(50+id_rank,*) 'nneib_ele'

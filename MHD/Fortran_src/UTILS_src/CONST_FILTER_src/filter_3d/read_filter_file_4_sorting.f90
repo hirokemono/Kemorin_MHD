@@ -5,7 +5,7 @@
 !     Written by H. Matsui on Mar., 2008
 !
 !!      subroutine s_read_filter_file_4_sorting                         &
-!!     &          (ifile_type, my_rank, filter)
+!!     &          (ifile_type, id_rank, filter)
 !
       module read_filter_file_4_sorting
 !
@@ -31,7 +31,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_read_filter_file_4_sorting                           &
-     &          (ifile_type, my_rank, filtering)
+     &          (ifile_type, id_rank, filtering)
 !
       use m_filter_file_names
       use m_filter_coefs
@@ -45,7 +45,8 @@
       use mesh_data_IO_b
       use binary_IO
 !
-      integer(kind = kint), intent(in) :: ifile_type, my_rank
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: ifile_type
       type(filtering_data_type), intent(inout) :: filtering
 !
       integer(kind = kint) :: ierr
@@ -54,11 +55,11 @@
       type(node_data) :: nod_IO
 !
 !
-      file_name = add_int_suffix(my_rank, filter_coef_head)
+      file_name = add_int_suffix(id_rank, filter_coef_head)
       if ( ifile_type .eq. 0) then
         open(filter_coef_code, file=file_name, form='formatted')
         call read_filter_geometry                                       &
-     &     (filter_coef_code, my_rank, comm_IO, nod_IO, ierr)
+     &     (filter_coef_code, id_rank, comm_IO, nod_IO, ierr)
 !
         call copy_comm_tbl_type(comm_IO, filtering%comm)
         call copy_filtering_geometry_from_IO(nod_IO)
@@ -71,9 +72,9 @@
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
         call open_read_binary_file                                      &
-     &     (file_name, my_rank, bin_flflags%iflag_bin_swap)
+     &     (file_name, id_rank, bin_flflags%iflag_bin_swap)
         call read_filter_geometry_b                                     &
-     &     (my_rank, bin_flflags, comm_IO, nod_IO)
+     &     (id_rank, bin_flflags, comm_IO, nod_IO)
         if(bin_flflags%ierr_IO .gt. 0) go to 99
 !
         call copy_comm_tbl_type(comm_IO, filtering%comm)
@@ -117,20 +118,20 @@
       call allocate_nod_ele_near_all_w
 !
 !
-      file_name = add_int_suffix(my_rank, filter_coef_head)
+      file_name = add_int_suffix(id_rank, filter_coef_head)
       if ( ifile_type .eq. 0) then
         open(filter_coef_code, file=file_name, form='formatted')
 !
         call read_filter_geometry                                       &
-     &     (filter_coef_code, my_rank, comm_IO, nod_IO, ierr)
+     &     (filter_coef_code, id_rank, comm_IO, nod_IO, ierr)
         write(*,*) 'read_filter_coef_4_sort'
         call read_filter_coef_4_sort(filter_coef_code)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
         call open_read_binary_file                                      &
-     &     (file_name, my_rank, bin_flflags%iflag_bin_swap)
+     &     (file_name, id_rank, bin_flflags%iflag_bin_swap)
         call read_filter_geometry_b                                     &
-     &     (my_rank, bin_flflags, comm_IO, nod_IO)
+     &     (id_rank, bin_flflags, comm_IO, nod_IO)
         if(bin_flflags%ierr_IO .gt. 0) go to 98
 !
         call read_filter_neib_4_sort_b(bin_flflags)

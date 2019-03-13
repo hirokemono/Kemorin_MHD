@@ -78,7 +78,7 @@
 !
       subroutine check_matrix_4_filter(id_rank)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint) :: i, j
 !
       write(50+id_rank,*) 'size of matrix', mat_size
@@ -94,7 +94,7 @@
 !
       subroutine check_rhs_4_filter(id_rank)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint) :: i
 !
       write(50+id_rank,*) 'size of RHS vector', mat_size

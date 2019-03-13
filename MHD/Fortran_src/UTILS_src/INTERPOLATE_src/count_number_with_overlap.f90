@@ -65,7 +65,7 @@
       use load_mesh_data
 !
       type(field_IO_params), intent(in) :: mesh_file
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in)  :: num_pe
 !
       integer (kind = kint), intent(inout) :: nnod_4_ele
       type(mesh_geometry), intent(inout) :: subdomain(num_pe)
@@ -73,14 +73,15 @@
       type(group_data), intent(inout) :: sub_ele_grp(num_pe)
       type(surface_group_data), intent(inout) :: sub_surf_grp(num_pe)
 !
-      integer (kind = kint) :: ip, my_rank, ierr
+      integer :: ip, id_rank
+      integer(kind = kint) :: ierr
 !
        type(mesh_data) :: fem_IO_o
 !
 !
       do ip = 1, num_pe
-        my_rank = ip - 1
-        call sel_read_mesh(mesh_file, my_rank, fem_IO_o, ierr)
+        id_rank = ip - 1
+        call sel_read_mesh(mesh_file, id_rank, fem_IO_o, ierr)
         if(ierr .gt. 0) stop 'Error in Mesh data'
 !
         call set_mesh_geometry_data(fem_IO_o%mesh,                      &

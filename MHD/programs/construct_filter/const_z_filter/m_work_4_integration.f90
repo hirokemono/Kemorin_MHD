@@ -58,16 +58,16 @@
 ! -----------------------------------------------------------------------
 !
 !
-       subroutine check_work_4_norm_ele(my_rank)
+       subroutine check_work_4_norm_ele(id_rank)
 !
        use m_commute_filter_z
 !
-       integer(kind = kint) :: my_rank
+       integer :: id_rank
        integer(kind = kint) :: k ,is, idx, i, kfact
        integer(kind = kint) :: iele, jele, idx1, ia
 !
 !
-       write(my_rank+50,*) 'jele, iele, kfact, i, sk_norm'
+       write(id_rank+50,*) 'jele, iele, kfact, i, sk_norm'
           do idx = 1, num_idx
 !
              jele = mod(idx-1,nfilter2_1) + 1
@@ -77,7 +77,7 @@
              kfact = mod( idx1, (nfilter2_3+1) )
              i = (idx1-kfact) / (nfilter2_3+1) + 1
 !
-             write(my_rank+50,'(4i4, 1p4e16.8)') jele, iele, kfact, i,  &
+             write(id_rank+50,'(4i4, 1p4e16.8)') jele, iele, kfact, i,  &
      &             ((sk_norm(idx,ia,is),ia=1,2), is=1,2 )
 !
           end do

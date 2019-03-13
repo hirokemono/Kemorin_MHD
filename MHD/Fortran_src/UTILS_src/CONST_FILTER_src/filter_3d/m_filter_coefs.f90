@@ -321,7 +321,7 @@
 !
       subroutine check_num_near_all_f(id_rank)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint) :: inum
 !
       write(50+id_rank,*) 'near node ID for filter and entire'
@@ -338,7 +338,7 @@
 !
       subroutine check_near_nod_all_filter(id_rank)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint) :: inum, ist, ied
 !
       write(50+id_rank,*) 'max and min. of near node ID for node ',     &

@@ -213,7 +213,7 @@
       use t_spheric_rj_data
       use check_sph_radial_mat
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(band_matrix_type), intent(in) :: smat
 !

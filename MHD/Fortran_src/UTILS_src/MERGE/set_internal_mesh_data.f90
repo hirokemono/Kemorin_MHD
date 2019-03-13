@@ -10,7 +10,7 @@
 !!      subroutine find_internal_element(internal_node, numele, ie,     &
 !!     &          nele_new, iele_to_new, iele_to_org)
 !!
-!!      subroutine copy_internal_node_position(my_rank, node, new_node)
+!!      subroutine copy_internal_node_position(id_rank, node, new_node)
 !!        type(node_data), intent(in) :: node
 !!        type(node_data), intent(inout) :: new_node
 !!      subroutine set_internal_element_connent                         &
@@ -92,9 +92,9 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_internal_node_position(my_rank, node, new_node)
+      subroutine copy_internal_node_position(id_rank, node, new_node)
 !
-      integer(kind=kint), intent(in)  :: my_rank
+      integer, intent(in)  :: id_rank
       type(node_data), intent(in) :: node
       type(node_data), intent(inout) :: new_node
 !
@@ -104,7 +104,7 @@
 !$omp parallel do private(inod)
       do inod = 1, node%internal_node
         new_node%inod_global(inod)                                     &
-     &        = inod + node%istack_internod(my_rank)
+     &        = inod + node%istack_internod(id_rank)
         new_node%xx(inod,1) = node%xx(inod,1)
         new_node%xx(inod,2) = node%xx(inod,2)
         new_node%xx(inod,3) = node%xx(inod,3)

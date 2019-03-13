@@ -17,8 +17,6 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter, private :: my_rank = 0
-!
 !   --------------------------------------------------------------------
 !
       contains

@@ -92,8 +92,7 @@
         call nod_fields_send_recv(femmesh_FUTIL%mesh, field_FUTIL)
 !
 !    output udt data
-        call link_output_ucd_file_once                                  &
-     &     (my_rank, time_U%ucd_step%istep_file,                        &
+        call link_output_ucd_file_once(time_U%ucd_step%istep_file,      &
      &      field_FUTIL, diff_ucd_param, time_IO_FUTIL)
       end do
 !

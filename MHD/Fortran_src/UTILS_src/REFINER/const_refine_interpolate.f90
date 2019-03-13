@@ -48,7 +48,7 @@
       use m_work_merge_refine_itp
       use refinment_info_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(mesh_geometry), intent(in) :: org_mesh
       type(element_geometry), intent(in) :: org_e_mesh
       type(mesh_geometry), intent(in) :: newmesh
@@ -169,7 +169,7 @@
       use set_refine_interpolate_tbl
       use set_merged_refine_itp
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(in) :: nnod_2, nnod_4_ele_2
       real(kind = kreal), intent(in) :: xx_2(nnod_2,3)

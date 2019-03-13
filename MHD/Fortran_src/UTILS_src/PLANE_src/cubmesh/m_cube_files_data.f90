@@ -36,7 +36,7 @@
       use m_size_of_cube
       use set_mesh_file_names
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara) ::  fname_tmp
 !
 ! ***** open output file

@@ -27,11 +27,13 @@
 !      subroutine dealloc_type_2d_rs_connect(tbl_2drs)
 !        type(RS2d_matrix_connect), intent(inout) :: tbl_2drs
 !
-!      subroutine check_crs_connect(my_rank, numnod, tbl_crs)
-!         integer (kind = kint), intent(in) :: my_rank, numnod
+!      subroutine check_crs_connect(id_rank, numnod, tbl_crs)
+!         integer, intent(in) :: id_rank
+!         integer(kind = kint), intent(in) :: numnod
 !         type(CRS_matrix_connect), intent(in) :: tbl_crs
-!      subroutine check_2d_rs_connect_type(my_rank, numnod, tbl_2drs)
-!         integer (kind = kint), intent(in) :: my_rank, numnod
+!      subroutine check_2d_rs_connect_type(id_rank, numnod, tbl_2drs)
+!         integer, intent(in) :: id_rank
+!         integer(kind = kint), intent(in) :: numnod
 !         type(RS2d_matrix_connect), intent(in) :: tbl_2drs
 !
       module t_crs_connect
@@ -228,9 +230,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-       subroutine check_crs_connect(my_rank, numnod, tbl_crs)
+       subroutine check_crs_connect(id_rank, numnod, tbl_crs)
 !
-       integer (kind = kint), intent(in) :: my_rank, numnod
+       integer, intent(in) :: id_rank
+       integer(kind = kint), intent(in) :: numnod
        type(CRS_matrix_connect), intent(in) :: tbl_crs
 !
        integer (kind = kint) :: i, ist, ied
@@ -239,38 +242,39 @@
         do i = 1, numnod
           ist = tbl_crs%istack_l(i-1)+1
           ied = tbl_crs%istack_l(i)
-          write(50+my_rank,*) 'item_l', i, ist, ied
-          write(50+my_rank,'(10i16)') tbl_crs%item_l(ist:ied)
+          write(50+id_rank,*) 'item_l', i, ist, ied
+          write(50+id_rank,'(10i16)') tbl_crs%item_l(ist:ied)
         end do
         do i = 1, numnod
           ist = tbl_crs%istack_u(i-1)+1
           ied = tbl_crs%istack_u(i)
-          write(50+my_rank,*) 'item_u', i, ist, ied
-          write(50+my_rank,'(10i16)') tbl_crs%item_u(ist:ied)
+          write(50+id_rank,*) 'item_u', i, ist, ied
+          write(50+id_rank,'(10i16)') tbl_crs%item_u(ist:ied)
         end do
 !
        end subroutine check_crs_connect
 !
 !-----------------------------------------------------------------------
 !
-       subroutine check_2d_rs_connect_type(my_rank, numnod, tbl_2drs)
+       subroutine check_2d_rs_connect_type(id_rank, numnod, tbl_2drs)
 !
-       integer (kind = kint), intent(in) :: my_rank, numnod
+       integer, intent(in) :: id_rank
+       integer(kind = kint), intent(in) :: numnod
        type(RS2d_matrix_connect), intent(in) :: tbl_2drs
 !
        integer (kind = kint) :: i
 !
 !
         do i = 1, numnod
-          write(50+my_rank,*) 'item_2l',                                &
+          write(50+id_rank,*) 'item_2l',                                &
      &            i, tbl_2drs%nitem_2l(i)
-          write(50+my_rank,'(10i16)')                                   &
+          write(50+id_rank,'(10i16)')                                   &
      &            tbl_2drs%item_2l(1:tbl_2drs%nitem_2l(i),i)
         end do
         do i = 1, numnod
-          write(50+my_rank,*) 'item_2u',                                &
+          write(50+id_rank,*) 'item_2u',                                &
      &            i, tbl_2drs%nitem_2u(i)
-          write(50+my_rank,'(10i16)')                                   &
+          write(50+id_rank,'(10i16)')                                   &
      &            tbl_2drs%item_2u(1:tbl_2drs%nitem_2u(i),i)
         end do
 !

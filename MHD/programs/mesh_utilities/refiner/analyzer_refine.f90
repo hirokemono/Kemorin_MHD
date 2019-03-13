@@ -23,7 +23,7 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter, private :: my_rank = 0
+      integer, parameter, private :: my_rank = 0
       integer(kind = kint), parameter, private :: ifile_type = 0
 !
       type(control_data_4_refine), save :: refine_ctl1

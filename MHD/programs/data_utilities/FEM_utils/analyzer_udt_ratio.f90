@@ -95,8 +95,7 @@
      &      field_FUTIL%ntot_phys, field_FUTIL%d_fld)
 !
 !    output udt data
-        call link_output_ucd_file_once                                  &
-     &     (my_rank, time_U%ucd_step%istep_file,                        &
+        call link_output_ucd_file_once(time_U%ucd_step%istep_file,      &
      &      field_FUTIL, output_ucd_param, time_IO_FUTIL)
       end do
 !

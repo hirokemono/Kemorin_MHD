@@ -45,7 +45,7 @@
       subroutine search_node_in_element_1st(id_rank,                    &
      &          org_node, org_ele, org_blk, dest_node, itp_coef_dest)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele

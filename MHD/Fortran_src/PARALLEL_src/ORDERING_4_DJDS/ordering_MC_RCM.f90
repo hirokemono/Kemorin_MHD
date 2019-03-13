@@ -79,7 +79,7 @@
      &          NPL_mc, NPU_mc, INL_mc, INU_mc, IAL_mc, IAU_mc,         &
      &          NCOLORtot, IVECmc, IVnew, IW, IFLAG)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: NP
       integer(kind = kint), intent(in) :: NPL_mc, NPU_mc
       integer(kind = kint), intent(in) :: INL_mc(0:NP)

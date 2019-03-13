@@ -40,7 +40,7 @@
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: my_rank
+      integer(kind = kint) :: id_rank
       character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
@@ -51,8 +51,8 @@
         call copy_import_table_type                                     &
      &     (new_comm, comm_part%nod_comm_tbl_part(ip))
       else
-        my_rank = ip - 1
-        file_name = add_int_suffix(my_rank, comm_part%work_f_head)
+        id_rank = ip - 1
+        file_name = add_int_suffix(id_rank, comm_part%work_f_head)
         open (id_work_file,file=file_name, status='unknown',            &
      &       form='unformatted')
         call write_node_import_to_work(id_work_file, new_comm)
@@ -73,7 +73,7 @@
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: my_rank
+      integer(kind = kint) :: id_rank
       character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
@@ -82,8 +82,8 @@
         call copy_export_table_type                                     &
      &     (new_comm, comm_part%nod_comm_tbl_part(ip))
       else
-        my_rank = ip - 1
-        file_name = add_int_suffix(my_rank, comm_part%work_f_head)
+        id_rank = ip - 1
+        file_name = add_int_suffix(id_rank, comm_part%work_f_head)
         write(*,*) 'write export table: ', trim(file_name)
         open(id_work_file,file=file_name,status='unknown',              &
      &       form='unformatted')
@@ -107,7 +107,7 @@
       type(partitioner_comm_tables), intent(in) :: comm_part
       type(communication_table), intent(inout) :: new_comm
 !
-      integer(kind = kint) :: my_rank
+      integer(kind = kint) :: id_rank
       character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
@@ -118,8 +118,8 @@
         call copy_import_table_type                                     &
      &     (comm_part%nod_comm_tbl_part(ip), new_comm)
       else
-        my_rank = ip - 1
-        file_name = add_int_suffix(my_rank, comm_part%work_f_head)
+        id_rank = ip - 1
+        file_name = add_int_suffix(id_rank, comm_part%work_f_head)
         write(*,*) 'read import table: ', trim(file_name)
         open(id_work_file,file=file_name,status='unknown',              &
      &       form='unformatted')
@@ -142,7 +142,7 @@
 !
       type(communication_table), intent(inout) :: new_comm
 !
-      integer(kind = kint) :: my_rank
+      integer(kind = kint) :: id_rank
       character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
@@ -151,8 +151,8 @@
         call copy_comm_tbl_type                                         &
      &     (comm_part%nod_comm_tbl_part(ip), new_comm)
       else
-        my_rank = ip - 1
-        file_name = add_int_suffix(my_rank, comm_part%work_f_head)
+        id_rank = ip - 1
+        file_name = add_int_suffix(id_rank, comm_part%work_f_head)
         open (id_work_file,file=file_name, status='unknown',            &
      &      form='unformatted')
 !
@@ -173,7 +173,7 @@
       integer(kind = kint), intent(in) :: jp
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: my_rank
+      integer(kind = kint) :: id_rank
       character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
@@ -183,8 +183,8 @@
         call copy_node_import_num_tmp                                   &
      &     (comm_part%nod_comm_tbl_part(jp), comm_part%ipt_tmp)
       else
-        my_rank = jp - 1
-        file_name = add_int_suffix(my_rank, comm_part%work_f_head)
+        id_rank = jp - 1
+        file_name = add_int_suffix(id_rank, comm_part%work_f_head)
         open(id_work_file,file=file_name,status='old',                  &
      &       form='unformatted')
         call read_node_import_num_tmp(id_work_file, comm_part%ipt_tmp)
@@ -203,7 +203,7 @@
       integer(kind = kint), intent(in) :: jp
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: my_rank
+      integer :: id_rank
       character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
@@ -215,8 +215,8 @@
         call copy_node_import_item_tmp                                  &
      &     (comm_part%nod_comm_tbl_part(jp), comm_part%ipt_tmp)
       else
-        my_rank = jp - 1
-        file_name = add_int_suffix(my_rank, comm_part%work_f_head)
+        id_rank = jp - 1
+        file_name = add_int_suffix(id_rank, comm_part%work_f_head)
         open(id_work_file,file=file_name,status='old',                  &
      &       form='unformatted')
         call read_node_import_num_tmp(id_work_file, comm_part%ipt_tmp)

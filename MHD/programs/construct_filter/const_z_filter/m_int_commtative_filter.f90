@@ -6,9 +6,9 @@
 !      subroutine allocate_int_commute_filter(numnod_z, numele_z)
 !      subroutine deallocate_int_commute_filter
 !
-!      subroutine check_int_commutative_filter(my_rank, numnod_z)
-!      subroutine check_neib_nod_2nd(my_rank, numnod_z)
-!      subroutine check_neib_ele_2nd(my_rank, numele_z)
+!      subroutine check_int_commutative_filter(id_rank, numnod_z)
+!      subroutine check_neib_nod_2nd(id_rank, numnod_z)
+!      subroutine check_neib_ele_2nd(id_rank, numele_z)
 !
       module m_int_commtative_filter
 !
@@ -128,37 +128,38 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine check_int_commutative_filter(my_rank, numnod_z)
+      subroutine check_int_commutative_filter(id_rank, numnod_z)
 !
 !
-      integer (kind = kint) :: my_rank, numnod_z
-      integer (kind = kint) :: i, j, k
+      integer :: id_rank
+      integer(kind = kint) :: numnod_z
+      integer(kind = kint) :: i, j, k
 !
        do i = 1, numnod_z
-        write(my_rank+30,*)  'c_filter (inod) = ',i
-        write(my_rank+30,'(1p5e16.8)')                                  &
+        write(id_rank+30,*)  'c_filter (inod) = ',i
+        write(id_rank+30,'(1p5e16.8)')                                  &
      &              (c_filter(j,i),j=1,ndep_filter)
        end do
 !
       do k = 0, 2
        do i = 1, numnod_z
-        write(my_rank+30,*)  'xmom_int_org (order, inod) = ', k, i
-        write(my_rank+30,'(1p5e16.8)')                                  &
+        write(id_rank+30,*)  'xmom_int_org (order, inod) = ', k, i
+        write(id_rank+30,'(1p5e16.8)')                                  &
      &              (xmom_int_org(i,j,k),j=1,ndep_filter)
        end do
       end do
 !
       do k = 0, 2
        do i = 1, numnod_z
-        write(my_rank+30,*)  'xmom_int (order, inod) = ', k, i
-        write(my_rank+30,'(1p5e16.8)')                                  &
+        write(id_rank+30,*)  'xmom_int (order, inod) = ', k, i
+        write(id_rank+30,'(1p5e16.8)')                                  &
      &              (xmom_int(i,j,k),j=1,ndep_filter)
        end do
       end do
 !
-        write(my_rank+30,*)  'xmom_int_t '
+        write(id_rank+30,*)  'xmom_int_t '
        do i = 1, numnod_z
-        write(my_rank+30,'(1p5e16.8)')                                  &
+        write(id_rank+30,'(1p5e16.8)')                                  &
      &              (xmom_int_t(i,k),k=0,2)
        end do
 !
@@ -166,20 +167,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_neib_nod_2nd(my_rank, numnod_z)
+      subroutine check_neib_nod_2nd(id_rank, numnod_z)
 !
       use m_commute_filter_z
 !
-      integer(kind = kint) :: my_rank, numnod_z
+      integer :: id_rank
+      integer(kind = kint) :: numnod_z
       integer(kind = kint) :: i, j, k, i1
 !
-      write(50+my_rank,*) 'nneib_nod2'
-      write(50+my_rank,'(10i16)') (nneib_nod2(i,1),i=1,numnod_z)
-      write(50+my_rank,'(10i16)') (nneib_nod2(i,2),i=1,numnod_z)
-      write(50+my_rank,*) 'direction, inod, ineib_nod2'
+      write(50+id_rank,*) 'nneib_nod2'
+      write(50+id_rank,'(10i16)') (nneib_nod2(i,1),i=1,numnod_z)
+      write(50+id_rank,'(10i16)') (nneib_nod2(i,2),i=1,numnod_z)
+      write(50+id_rank,*) 'direction, inod, ineib_nod2'
       do k = 1, 2
         do i = 1, numnod_z
-          write(50+my_rank,'(10i16)') k, i,                             &
+          write(50+id_rank,'(10i16)') k, i,                             &
      &            (ineib_nod2(i,j,k),j=1,nneib_nod2(i,k))
         end do
       end do
@@ -188,20 +190,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_neib_ele_2nd(my_rank, numele_z)
+      subroutine check_neib_ele_2nd(id_rank, numele_z)
 !
       use m_commute_filter_z
 !
-      integer(kind = kint) :: my_rank, numele_z
+      integer :: id_rank
+      integer(kind = kint) ::  numele_z
       integer(kind = kint) :: i, j, k, i1
 !
-      write(50+my_rank,*) 'nneib_ele2'
-      write(50+my_rank,'(10i16)') (nneib_ele2(i,1),i=1,numele_z)
-      write(50+my_rank,'(10i16)') (nneib_ele2(i,2),i=1,numele_z)
-      write(50+my_rank,*) 'direction, iele, ineib_ele2'
+      write(50+id_rank,*) 'nneib_ele2'
+      write(50+id_rank,'(10i16)') (nneib_ele2(i,1),i=1,numele_z)
+      write(50+id_rank,'(10i16)') (nneib_ele2(i,2),i=1,numele_z)
+      write(50+id_rank,*) 'direction, iele, ineib_ele2'
       do k = 1, 2
         do i = 1, numele_z
-          write(50+my_rank,'(10i16)') k, i,                             &
+          write(50+id_rank,'(10i16)') k, i,                             &
      &            (ineib_ele2(i,j,k),j=1,nneib_ele2(i,k))
         end do
       end do

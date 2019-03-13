@@ -50,14 +50,12 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine check_integrated_values(id_rank)
 !
-      subroutine check_integrated_values(my_rank)
+      integer :: id_rank
 !
-      integer(kind = kint) :: my_rank
-      integer(kind = kint) :: i, ii, is, j, k
-!
-      write(50+my_rank,*) 'f_mom_full'
-      write(50+my_rank,'(1p5e16.8)') (f_mom_full(i),i=0,nfilter6_1)
+      write(50+id_rank,*) 'f_mom_full'
+      write(50+id_rank,'(1p5e16.8)') f_mom_full(0:nfilter6_1)
 !
       end subroutine check_integrated_values
 !

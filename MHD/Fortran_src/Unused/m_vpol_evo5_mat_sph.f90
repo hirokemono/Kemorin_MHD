@@ -69,7 +69,7 @@
 !
       use check_sph_radial_mat
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_rj_grid), intent(in) :: sph_rj
 !
 !

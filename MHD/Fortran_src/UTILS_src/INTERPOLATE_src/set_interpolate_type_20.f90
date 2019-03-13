@@ -38,7 +38,7 @@
       use m_work_const_itp_table
 !
       type(interpolate_table_dest), intent(in) :: itp_dest
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ist, ied
       integer(kind = kint), intent(in) :: inod_stack_type(0:4)
 !

@@ -24,7 +24,7 @@
      &                  D,  AL, INL, IAL, AU, INU, IAU,                 &
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  RESID,  ITER, ERROR,                            &
-     &                  my_rank, NSET)     
+     &                  id_rank, NSET)     
 
 ! \beginSUBROUTINE
 !     BiCGSTAB solves the linear system Ax = b using the
@@ -45,7 +45,7 @@
       real   (kind=kreal),                   intent(in   )::  SIGMA
       integer(kind=kint ),                   intent(inout)::  ITER
       integer(kind=kint ),                   intent(inout)::  ERROR
-      integer(kind=kint ),                   intent(in   )::  my_rank
+      integer,                               intent(in   )::  id_rank
 
       integer(kind=kint )                  , intent(in)   :: NSET
 
@@ -410,7 +410,7 @@
       DNRM2 = DNRM20
       RESID= dsqrt(DNRM2/BNRM2)
 
-        if (my_rank.eq.0 .and. MONITORFLAG.eq.1)                        &
+        if (id_rank.eq.0 .and. MONITORFLAG.eq.1)                        &
      &    write (*, 1000) ITER, RESID
  1000   format ('BiCGSTAB_11: ', i5, 1pe16.6)
 

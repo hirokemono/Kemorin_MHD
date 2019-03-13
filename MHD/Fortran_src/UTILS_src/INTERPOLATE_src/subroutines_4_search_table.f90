@@ -237,7 +237,7 @@
 !
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(inout) ::ierr
       type(node_data), intent(in) :: node
 !

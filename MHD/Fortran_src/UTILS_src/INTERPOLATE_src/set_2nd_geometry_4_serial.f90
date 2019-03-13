@@ -58,18 +58,19 @@
 !
       type(field_IO_params), intent(in) :: mesh_file
 !
-      integer(kind = kint), intent(in) :: num_pe2
+      integer, intent(in) :: num_pe2
       type(mesh_geometry), intent(inout) :: subdomains_2(num_pe2)
 !
       type(mesh_geometry) :: mesh_IO_2
-      integer (kind = kint) :: ip, my_rank, ierr
+      integer(kind = kint) :: ip, id_rank
+      integer(kind = kint) :: ierr
 !
 !
       do ip = 1, num_pe2
-        my_rank = ip - 1
+        id_rank = ip - 1
 !
         call sel_read_mesh_geometry                                     &
-     &     (mesh_file, my_rank, mesh_IO_2, ierr)
+     &     (mesh_file, id_rank, mesh_IO_2, ierr)
         if(ierr .gt. 0) stop 'Error in Mesh data'
 !
         call copy_node_geometry_types                                   &

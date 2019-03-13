@@ -73,7 +73,7 @@
 !
       type(surface_group_data), intent(in) :: sf_grp
       type(work_finite_surface_mat), intent(inout) :: fem_sf_wk
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(*), intent(in) :: txt
       integer(kind = kint) :: isurf
 !

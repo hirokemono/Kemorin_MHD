@@ -77,7 +77,7 @@
        integer(kind = kint), intent(in) :: INU(0:NU*NVECT*PEsmpTOT)
        integer(kind = kint), intent(in) :: IAL(NPL)
        integer(kind = kint), intent(in) :: IAU(NPU)
-       integer(kind = kint), intent(in) :: id_rank
+       integer, intent(in) :: id_rank
 !
 !
        integer (kind = kint) :: ip, iS, iE, iv0, iv, i, j, k, kk
@@ -199,7 +199,7 @@
        integer(kind = kint), intent(in) :: INU(0:NU*NVECT*PEsmpTOT)
        integer(kind = kint), intent(in) :: IAL(NPL)
        integer(kind = kint), intent(in) :: IAU(NPU)
-       integer(kind = kint), intent(in) :: id_rank
+       integer, intent(in) :: id_rank
        real(kind = kreal), intent(in) :: d(NP), al(NPL), au(NPU)
 !
        integer (kind = kint) :: ip, iS, iE, iv0, iv, i, j, k, kk

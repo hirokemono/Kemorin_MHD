@@ -32,10 +32,10 @@
 !!
 !!       subroutine dealloc_type_djds_mat(mat)
 !!
-!!       subroutine check_type_DJDS_ordering_info(my_rank, numnod,      &
+!!       subroutine check_type_DJDS_ordering_info(id_rank, numnod,      &
 !!     &           djds_tbl)
 !!      subroutine check_djds_matrix_components                         &
-!!     &         (my_rank, djds_tbl, djds_mat)
+!!     &         (id_rank, djds_tbl, djds_mat)
 !!
 !!      subroutine link_djds_connect_structs(djds_org, djds_tbl)
 !!      subroutine link_djds_matrix_structs(mat_org, mat)
@@ -530,40 +530,41 @@
 ! ------------------------------------------
 ! ------------------------------------------
 !
-       subroutine check_type_DJDS_ordering_info(my_rank, numnod,        &
+       subroutine check_type_DJDS_ordering_info(id_rank, numnod,        &
      &           djds_tbl)
 !
-       integer (kind = kint), intent(in) :: my_rank, numnod
+       integer, intent(in) :: id_rank
+       integer(kind = kint), intent(in) :: numnod
        type(DJDS_ordering_table), intent(in) :: djds_tbl
 !
        integer(kind = kint) :: i
 !
-      write(50+my_rank,*) 'inod, NEWtoOLD, OLDtoNEW_DJDS_L, ',          &
+      write(50+id_rank,*) 'inod, NEWtoOLD, OLDtoNEW_DJDS_L, ',          &
      &        ' OLDtoNEW_DJDS_U, LtoU'
       do i = 1, numnod
-      write(50+my_rank,'(10i16)') i, djds_tbl%NEWtoOLD(i),              &
+      write(50+id_rank,'(10i16)') i, djds_tbl%NEWtoOLD(i),              &
      &                              djds_tbl%OLDtoNEW_DJDS_L(i),        &
      &                              djds_tbl%OLDtoNEW_DJDS_U(i),        &
      &                              djds_tbl%LtoU(i)
       end do
 !
-      write(50+my_rank,*) 'indexDJDS_L'
-      write(50+my_rank,'(10i16)') djds_tbl%indexDJDS_L
-      write(50+my_rank,*) 'itemDJDS_l'
-      write(50+my_rank,'(10i16)') djds_tbl%itemDJDS_l
-      write(50+my_rank,*) 'indexDJDS_U'
-      write(50+my_rank,'(10i16)') djds_tbl%indexDJDS_U
-      write(50+my_rank,*) 'itemDJDS_u'
-      write(50+my_rank,'(10i16)') djds_tbl%itemDJDS_u
+      write(50+id_rank,*) 'indexDJDS_L'
+      write(50+id_rank,'(10i16)') djds_tbl%indexDJDS_L
+      write(50+id_rank,*) 'itemDJDS_l'
+      write(50+id_rank,'(10i16)') djds_tbl%itemDJDS_l
+      write(50+id_rank,*) 'indexDJDS_U'
+      write(50+id_rank,'(10i16)') djds_tbl%indexDJDS_U
+      write(50+id_rank,*) 'itemDJDS_u'
+      write(50+id_rank,'(10i16)') djds_tbl%itemDJDS_u
 !
       end subroutine check_type_DJDS_ordering_info
 !
 ! ------------------------------------------
 !
       subroutine check_djds_matrix_components                           &
-     &         (my_rank, djds_tbl, djds_mat)
+     &         (id_rank, djds_tbl, djds_mat)
 !
-      integer (kind = kint), intent(in) :: my_rank
+      integer, intent(in) :: id_rank
       type(DJDS_ordering_table), intent(in) :: djds_tbl
       type(DJDS_MATRIX), intent(in) :: djds_mat
 !
@@ -575,8 +576,8 @@
          do k1 = 1, NB_djds
            kst = NB_djds*NB_djds*(i-1) + NB_djds*(k1-1) + 1
            ked = NB_djds*NB_djds*(i-1) + NB_djds*k1
-           write(my_rank+50,*) "diagonal (inod,k1) = ", i, k1
-           write(my_rank+50,'(1p5e16.8)') djds_mat%aiccg(kst:ked)
+           write(id_rank+50,*) "diagonal (inod,k1) = ", i, k1
+           write(id_rank+50,'(1p5e16.8)') djds_mat%aiccg(kst:ked)
          end do
        end do
 !
@@ -586,9 +587,9 @@
            do k1 = 1, NB_djds
              kst = NB_djds*NB_djds*(i-1) + NB_djds*(k1-1) + 1
              ked = NB_djds*NB_djds*(i-1) + NB_djds*k1
-             write(my_rank+50,*) "Lower component (i,k1) = ",          &
+             write(id_rank+50,*) "Lower component (i,k1) = ",          &
      &             (i-djds_mat%num_diag), k1
-             write(my_rank+50,'(1p5e16.8)') djds_mat%aiccg(kst:ked)
+             write(id_rank+50,'(1p5e16.8)') djds_mat%aiccg(kst:ked)
            end do
        end do
 !
@@ -598,9 +599,9 @@
            do k1 = 1, NB_djds
              kst = NB_djds*NB_djds*(i-1) + NB_djds*(k1-1) + 1
              ked = NB_djds*NB_djds*(i-1) + NB_djds*k1
-             write(my_rank+50,*) "Upper component (i,k1) = ",          &
+             write(id_rank+50,*) "Upper component (i,k1) = ",          &
      &             (i-djds_mat%num_diag-djds_tbl%itotal_l), k1
-             write(my_rank+50,'(1p5e16.8)') djds_mat%aiccg(kst:ked)
+             write(id_rank+50,'(1p5e16.8)') djds_mat%aiccg(kst:ked)
            end do
        end do
 !

@@ -39,7 +39,7 @@
       use mesh_data_IO_b
       use binary_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ifile_type
       integer(kind = kint), intent(in) :: numnod, numele
 !

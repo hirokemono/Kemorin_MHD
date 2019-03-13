@@ -174,7 +174,7 @@
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(control_data_4_partitioner), intent(in) :: part_ctl
 !
       type(partitioner_comm_tables), intent(inout) :: comm_part

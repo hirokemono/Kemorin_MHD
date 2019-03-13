@@ -23,7 +23,7 @@
 !!       subroutine dealloc_work_4_djds(WK_DJDS)
 !!       subroutine dealloc_4_IVECmc(WK_DJDS)
 !!
-!!       subroutine check_istack_and_items_mc(my_rank, N, WK_DJDS)
+!!       subroutine check_istack_and_items_mc(id_rank, N, WK_DJDS)
 !!@endverbatim
 !
       module t_work_DJDS_ordering
@@ -243,22 +243,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_istack_and_items_mc(my_rank, N, WK_DJDS)
+      subroutine check_istack_and_items_mc(id_rank, N, WK_DJDS)
 !
-      integer (kind = kint), intent(in) :: my_rank
-      integer (kind = kint), intent(in) :: N
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: N
       type(work_DJDS_ordering), intent(in) ::WK_DJDS
 !
        integer (kind = kint) :: i, j
 !
         do i = 1, N
-          write(50+my_rank,*) 'IALmc', i, WK_DJDS%INLmc(i)
-          write(50+my_rank,'(10i16)')                                   &
+          write(50+id_rank,*) 'IALmc', i, WK_DJDS%INLmc(i)
+          write(50+id_rank,'(10i16)')                                   &
      &                      (WK_DJDS%IALmc(i,j),j=1,WK_DJDS%INLmc(i))
         end do
         do i = 1, N
-          write(50+my_rank,*) 'IAUmc', i, WK_DJDS%INUmc(i)
-          write(50+my_rank,'(10i16)')                                   &
+          write(50+id_rank,*) 'IAUmc', i, WK_DJDS%INUmc(i)
+          write(50+id_rank,'(10i16)')                                   &
      &                      (WK_DJDS%IAUmc(i,j),j=1,WK_DJDS%INUmc(i))
         end do
 !

@@ -80,7 +80,7 @@
 !
       use m_geometry_constants
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(mesh_geometry_p), intent(inout) :: newmesh
       type(mesh_groups_p), intent(inout) :: newgroup
       integer(kind = kint) :: jp

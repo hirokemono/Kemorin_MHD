@@ -322,14 +322,15 @@
 !-----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine find_field_id_in_read_ucd(my_rank, istep_ucd,          &
+      subroutine find_field_id_in_read_ucd(id_rank, istep_ucd,          &
      &          ucd_param, numnod, field_name,                          &
      &          i_field, ncomp_field, t_IO)
 !
       use set_and_cal_udt_data
       use ucd_IO_select
 !
-      integer(kind = kint),  intent(in) :: my_rank, istep_ucd, numnod
+      integer, intent(in) :: id_rank
+      integer(kind = kint),  intent(in) :: istep_ucd, numnod
       type(field_IO_params), intent(in) :: ucd_param
 !
       character(len = kchara), intent(in) :: field_name
@@ -341,7 +342,7 @@
 !
       local_ucd%nnod = numnod
       call sel_read_udt_param                                           &
-     &   (my_rank, istep_ucd, ucd_param, t_IO, local_ucd)
+     &   (id_rank, istep_ucd, ucd_param, t_IO, local_ucd)
       call find_field_id_in_ucd(local_ucd, field_name,                  &
      &    i_field, ncomp_field)
       call deallocate_ucd_data(local_ucd)
@@ -350,14 +351,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_one_field_by_read_ucd_once(my_rank, istep_ucd,     &
+      subroutine set_one_field_by_read_ucd_once(id_rank, istep_ucd,     &
      &          ucd_param, i_field, ncomp_field, numnod, d_fld, t_IO)
 !
       use set_and_cal_udt_data
       use ucd_IO_select
 !
       type(field_IO_params), intent(in) :: ucd_param
-      integer(kind = kint),  intent(in) :: my_rank, istep_ucd
+      integer, intent(in) :: id_rank
+      integer(kind = kint),  intent(in) :: istep_ucd
       integer(kind = kint),  intent(in) :: numnod, i_field, ncomp_field
 !
       real(kind = kreal), intent(inout) :: d_fld(numnod,ncomp_field)
@@ -369,7 +371,7 @@
 !
       local_ucd%nnod =      numnod
       call sel_read_alloc_udt_file                                      &
-     &   (my_rank, istep_ucd, ucd_param, t_IO, local_ucd)
+     &   (id_rank, istep_ucd, ucd_param, t_IO, local_ucd)
       call set_one_field_by_udt_data(numnod, ncomp_field,               &
      &    i_field, d_fld, local_ucd)
       call deallocate_ucd_data(local_ucd)

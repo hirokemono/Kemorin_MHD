@@ -13,7 +13,7 @@
 !!
 !!      subroutine dealloc_mc_connect(WK_MC)
 !!
-!!      subroutine check_mc_connect(my_rank, WK_MC)
+!!      subroutine check_mc_connect(id_rank, WK_MC)
 !!
 !!      subroutine copy_ntot_from_crs_mat(tbl_crs, WK_MC)
 !!@endverbatim
@@ -115,25 +115,25 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-       subroutine check_mc_connect(my_rank, WK_MC)
+      subroutine check_mc_connect(id_rank, WK_MC)
 !
-       integer (kind = kint), intent(in) :: my_rank
+      integer, intent(in) :: id_rank
       type(work_4_RCM), intent(in) :: WK_MC
 !
        integer (kind = kint) :: i
 !
 !
         do i = 1, WK_MC%NP
-          write(50+my_rank,*) 'item_mc_l',                              &
+          write(50+id_rank,*) 'item_mc_l',                              &
      &                i, WK_MC%istack_mc_l(i-1), WK_MC%istack_mc_l(i)
-          write(50+my_rank,'(10i16)')                                   &
+          write(50+id_rank,'(10i16)')                                   &
      &      WK_MC%item_mc_l(WK_MC%istack_mc_l(i-1)+1                    &
      &                     :WK_MC%istack_mc_l(i))
         end do
         do i = 1, WK_MC%NP
-          write(50+my_rank,*) 'item_mc_u',                              &
+          write(50+id_rank,*) 'item_mc_u',                              &
      &                i, WK_MC%istack_mc_u(i-1), WK_MC%istack_mc_u(i)
-          write(50+my_rank,'(10i16)')                                   &
+          write(50+id_rank,'(10i16)')                                   &
      &      WK_MC%item_mc_u(WK_MC%istack_mc_u(i-1)+1                    &
      &                     :WK_MC%istack_mc_u(i))
         end do

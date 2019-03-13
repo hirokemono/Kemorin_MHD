@@ -38,7 +38,7 @@
       use t_interpolate_table
       use t_interpolate_tbl_org
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(interpolate_table), intent(inout) :: itp_input
       type(interpolate_table), intent(inout) :: itp_copied
 
@@ -63,7 +63,7 @@
 !
       use t_interpolate_tbl_dest
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(interpolate_table_dest), intent(inout) :: tbl_dst_in
       type(interpolate_table_dest), intent(inout) :: tbl_dst_cp
 !
@@ -111,7 +111,7 @@
       use t_interpolate_tbl_org
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(interpolate_table_org), intent(in) :: tbl_org_in
       type(interpolate_table_org), intent(inout) :: tbl_org_cp
 !
@@ -171,7 +171,7 @@
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(interpolate_table_dest), intent(inout) :: itp_dest
       type(interpolate_coefs_dest), intent(inout) :: coef_dest

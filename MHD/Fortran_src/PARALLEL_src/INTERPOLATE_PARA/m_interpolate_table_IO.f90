@@ -38,7 +38,7 @@
       use copy_interpolate_types
       use itp_table_IO_select_4_zlib
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(interpolate_table), intent(inout) :: itp_table
 !
       integer(kind = kint) :: ierr
@@ -79,7 +79,7 @@
       use copy_interpolate_types
       use itp_table_IO_select_4_zlib
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(interpolate_table), intent(inout) :: itp_table
 !
 !

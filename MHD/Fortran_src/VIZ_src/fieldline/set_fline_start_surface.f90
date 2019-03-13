@@ -37,7 +37,7 @@
 !
       use cal_field_on_surf_viz
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)

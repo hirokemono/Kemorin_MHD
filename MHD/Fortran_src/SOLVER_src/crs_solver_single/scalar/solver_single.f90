@@ -37,7 +37,7 @@
 !C--- solve
       subroutine  solve (N, NP, NPL, NPU,                               &
      &                   D, AL, INL, IAL, AU, INU, IAU, B, X, PRESET,   &
-     &                   my_rank, ITERactual, ERROR, METHOD, PRECOND,   &
+     &                   id_rank, ITERactual, ERROR, METHOD, PRECOND,   &
      &                   INTARRAY, REALARRAY         )
 
 ! \beginSUBROUTINE
@@ -82,7 +82,7 @@
 ! \beginARG       solution vector
       integer(kind=kint )                  , intent(in)   ::  PRESET
 ! \beginARG       preconditioning RESET flag (n:0, y:1)
-      integer(kind=kint )                  , intent(in)   :: my_rank
+      integer                              , intent(in)   :: id_rank
 ! \beginARG       process ID for mpi
       integer(kind=kint )                  , intent(out)  :: ITERactual
 ! \beginARG       actual iteration number
@@ -182,7 +182,7 @@
           FLAGmethod = 1
           call CG_sgl(N, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU,       &
      &        B, X, PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,    &
-     &        my_rank, PRESET)
+     &        id_rank, PRESET)
 
         else if ( ((METHOD(1:1).eq.'B').or.(METHOD(1:1).eq.'b')) .and.  &
      &            ((METHOD(2:2).eq.'I').or.(METHOD(2:2).eq.'i')) .and.  &
@@ -192,7 +192,7 @@
           call BiCGSTAB                                                 &
      &        (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,    &
      &         PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,         &
-     &         my_rank, PRESET)
+     &         id_rank, PRESET)
 
         else if ( ((METHOD(1:1).eq.'G').or.(METHOD(1:1).eq.'g')) .and.  &
      &            ((METHOD(2:2).eq.'P').or.(METHOD(2:2).eq.'p')) .and.  &
@@ -202,7 +202,7 @@
           call GPBiCG                                                   &
      &        (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,    &
      &         PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,         &
-     &         my_rank, PRESET)
+     &         id_rank, PRESET)
 
         else if ( ((METHOD(1:1).eq.'G').or.(METHOD(1:1).eq.'g')) .and.  &
      &            ((METHOD(2:2).eq.'M').or.(METHOD(2:2).eq.'m')) .and.  &
@@ -212,7 +212,7 @@
           call GMRES                                                    &
      &        (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,    &
      &         PRECOND, SIGMA_DIAG, SIGMA, NREST, RESID, ITER,  ERROR,  &
-     &         my_rank, PRESET)
+     &         id_rank, PRESET)
         endif
       endif
 
@@ -226,7 +226,7 @@
 !C===
       if (ERROR.eq.0.and.FLAGmethod.eq.0) ERROR= 102
       if (ERROR.gt.0) then
-        if (my_rank.eq.0) then
+        if (id_rank.eq.0) then
           write (*,'(//,"#### GeoFEM SOLVER abort CODE=", i8,/)') ERROR
         endif
         call MPI_FINALIZE(ierr_MPI)
@@ -235,7 +235,7 @@
 
       if (ERROR.eq.0.and.FLAGprecond.eq.0) ERROR= -101
       if (ERROR.lt.0) then
-        if (my_rank.eq.0) then
+        if (id_rank.eq.0) then
           write (*,'(//,"#### GeoFEM SOLVER warn. CODE=", i8,/)') ERROR
         endif
       endif

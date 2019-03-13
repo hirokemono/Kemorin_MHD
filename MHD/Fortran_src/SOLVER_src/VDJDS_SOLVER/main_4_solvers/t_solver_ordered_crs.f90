@@ -224,29 +224,30 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-       subroutine check_type_DJO_table_info(my_rank, np_smp, djo_tbl)
+       subroutine check_type_DJO_table_info(id_rank, np_smp, djo_tbl)
 !
-       integer (kind = kint), intent(in) :: my_rank, np_smp
+       integer, intent(in) :: id_rank
+       integer(kind = kint), intent(in) :: np_smp
        type(DJORS_CONNECT), intent(in) :: djo_tbl
 !
        integer(kind = kint) :: i
 !
-      write(50+my_rank,'(a,i15)')                                       &
+      write(50+id_rank,'(a,i15)')                                       &
      &                      'inod, INOD_DJO, INOD_DJO', djo_tbl%NC
       do i = 1, djo_tbl%NC
-        write(50+my_rank,'(10i16)')                                     &
+        write(50+id_rank,'(10i16)')                                     &
      &                      i, djo_tbl%INOD_DJO(i), djo_tbl%INM(i)
       end do
 !
-      write(50+my_rank,'(a,i15)') 'NUM_NCOMP', djo_tbl%NUM_NCOMP
-      write(50+my_rank,'(a,i15)') 'IEND_SUM'
-      write(50+my_rank,'(10i16)') djo_tbl%IEND_SUM(1:djo_tbl%NUM_NCOMP)
-      write(50+my_rank,'(a,i15)') 'IEND_SUM_smp'
-      write(50+my_rank,'(10i16)')                                       &
+      write(50+id_rank,'(a,i15)') 'NUM_NCOMP', djo_tbl%NUM_NCOMP
+      write(50+id_rank,'(a,i15)') 'IEND_SUM'
+      write(50+id_rank,'(10i16)') djo_tbl%IEND_SUM(1:djo_tbl%NUM_NCOMP)
+      write(50+id_rank,'(a,i15)') 'IEND_SUM_smp'
+      write(50+id_rank,'(10i16)')                                       &
      &                djo_tbl%IEND_SUM_smp(1:np_smp*djo_tbl%NUM_NCOMP)
 !
-      write(50+my_rank,'(a,i15)') 'IAM', djo_tbl%NCM
-      write(50+my_rank,'(10i16)') djo_tbl%IAM(1:djo_tbl%NCM)
+      write(50+id_rank,'(a,i15)') 'IAM', djo_tbl%NCM
+      write(50+id_rank,'(10i16)') djo_tbl%IAM(1:djo_tbl%NCM)
 !
       end subroutine check_type_DJO_table_info
 !

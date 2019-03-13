@@ -7,7 +7,7 @@
 !
 !      subroutine CG_sgl(N, NPL, NPU, D,  AL, INL, IAL, AU, INU, IAU,   &
 !     &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,              &
-!     &                  EPS,  ITER, ERROR, my_rank, NSET)
+!     &                  EPS,  ITER, ERROR, id_rank, NSET)
 !
 !     CG solves the linear system Ax = b using the
 !     Conjugate Gradient iterative method with preconditioning.
@@ -38,7 +38,7 @@
 !C
       subroutine CG_sgl(N, NPL, NPU, D,  AL, INL, IAL, AU, INU, IAU,    &
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
-     &                  EPS, ITER, ERROR, my_rank, NSET)
+     &                  EPS, ITER, ERROR, id_rank, NSET)
 !
       use m_work_4_CG
       use crs_matrix_calcs_11
@@ -56,7 +56,7 @@
       real   (kind=kreal),                   intent(in   )::  SIGMA
       integer(kind=kint ),                   intent(inout)::  ITER
       integer(kind=kint ),                   intent(inout)::  ERROR
-      integer(kind=kint ),                   intent(in   )::  my_rank
+      integer,                               intent(in   )::  id_rank
 
       integer(kind=kint )                  , intent(in)   :: NSET
 
@@ -226,7 +226,7 @@
         DNRM2 = DNRM20
         RESID= dsqrt(DNRM2/BNRM2)
 
-        if (my_rank.eq.0 .and. MONITORFLAG.eq.1)                        &
+        if (id_rank.eq.0 .and. MONITORFLAG.eq.1)                        &
      &    write (*, 1000) ITER, RESID
  1000   format ('CG_11: ', i5, 1pe16.6)
 

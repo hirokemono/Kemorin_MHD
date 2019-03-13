@@ -43,7 +43,7 @@
 !
       subroutine check_radial_3band_mat_w_ctr(id_rank, nri, rr, mat00)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: rr(nri)
       real(kind = kreal), intent(in) :: mat00(3,0:nri)
@@ -69,7 +69,7 @@
       subroutine check_radial_3band_mat(id_rank, nri, jmax, j_sph,      &
      &           rr, mat)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nri, jmax
       integer(kind = kint), intent(in) :: j_sph(jmax,3)
       real(kind = kreal), intent(in) :: rr(nri)
@@ -92,7 +92,7 @@
       subroutine check_radial_5band_mat(id_rank, nri, jmax, j_sph,      &
      &           rr, mat)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nri, jmax
       integer(kind = kint), intent(in) :: j_sph(jmax,3)
       real(kind = kreal), intent(in) :: rr(nri)
@@ -115,7 +115,7 @@
       subroutine check_radial_7band_mat(id_rank, nri, jmax, j_sph,      &
      &           rr, mat)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nri, jmax
       integer(kind = kint), intent(in) :: j_sph(jmax,3)
       real(kind = kreal), intent(in) :: rr(nri)
@@ -138,7 +138,7 @@
 !
       subroutine check_single_radial_3band_mat(id_rank, nri, rr, mat)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: rr(nri)
       real(kind = kreal), intent(in) :: mat(3,nri)
@@ -163,7 +163,7 @@
 !
       subroutine check_single_radial_5band_mat(id_rank, nri, rr, mat)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: rr(nri)
       real(kind = kreal), intent(in) :: mat(5,nri)
@@ -192,7 +192,7 @@
 !
       subroutine check_single_radial_7band_mat(id_rank, nri,  rr, mat)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: rr(nri)
       real(kind = kreal), intent(in) :: mat(7,nri)

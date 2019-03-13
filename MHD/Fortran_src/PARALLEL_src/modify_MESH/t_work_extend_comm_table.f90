@@ -195,7 +195,7 @@
 !
       subroutine check_num_of_added_table(id_rank, added_comm)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: added_comm
 !
 !
@@ -211,7 +211,7 @@
       subroutine check_added_impoert_items                              &
      &         (id_rank, nod_comm, added_comm, dbl_id1, recv_nbuf)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: nod_comm, added_comm
       type(parallel_double_numbering), intent(in) :: dbl_id1
       type(node_buffer_2_extend), intent(in) :: recv_nbuf
@@ -249,7 +249,7 @@
       subroutine check_delete_from_SR_list                              &
      &         (id_rank, added_comm, send_nbuf, recv_nbuf)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: added_comm
       type(node_buffer_2_extend), intent(in) :: send_nbuf, recv_nbuf
 !
@@ -274,7 +274,7 @@
       subroutine check_ie_send_added                                    &
      &         (id_rank, added_comm, ele, send_ebuf)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) ::  added_comm
       type(element_data), intent(in) :: ele
       type(ele_buffer_2_extend), intent(in) :: send_ebuf
@@ -304,7 +304,7 @@
       subroutine check_element_list_to_add                              &
      &         (id_rank, added_comm, ele, send_ebuf, recv_ebuf)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) ::  added_comm
       type(element_data), intent(in) :: ele
       type(ele_buffer_2_extend), intent(in) :: send_ebuf

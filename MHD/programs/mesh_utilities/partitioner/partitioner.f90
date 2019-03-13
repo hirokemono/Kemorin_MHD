@@ -69,7 +69,7 @@
       type(internals_4_part), save :: internals_part1
       type(partitioner_comm_tables), save :: comm_part1
 !
-      integer(kind = kint), parameter :: my_rank = izero
+      integer, parameter :: my_rank = izero
 !      type(mesh_data) :: fem_IO_i
 !
       integer(kind = kint) :: ierr, iprint, ifield, icomp

@@ -249,7 +249,7 @@
 !
       subroutine check_pvr_ray_startpoints(id_rank, pvr_start)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !

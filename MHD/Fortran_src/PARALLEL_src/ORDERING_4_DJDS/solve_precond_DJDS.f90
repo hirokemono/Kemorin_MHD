@@ -73,11 +73,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine check_djds_RHS_vector(my_rank, djds_mat)
+      subroutine check_djds_RHS_vector(id_rank, djds_mat)
 !
       use t_solver_djds
 !
-      integer (kind = kint), intent(in) :: my_rank
+      integer, intent(in) :: id_rank
       type(DJDS_MATRIX), intent(in) :: djds_mat
 !
       integer(kind = kint) :: i, NB_djds, k2
@@ -85,8 +85,8 @@
 !
        NB_djds = djds_mat%NB
        do i = 1, djds_mat%num_diag
-           write(my_rank+50,*) "vector (inod) = ", i
-           write(my_rank+50,'(1p5e16.8)')                               &
+           write(id_rank+50,*) "vector (inod) = ", i
+           write(id_rank+50,'(1p5e16.8)')                               &
      &           (b_djds(NB_djds*(i-1)+k2),k2=1,NB_djds)
        end do
 !
@@ -139,7 +139,7 @@
 !C
 !C-- ICCG computation
 
-        write(*,*) 'init_solve_DJDS_kemo', my_rank
+        write(*,*) 'init_solve_DJDS_kemo'
       call init_solve_DJDS11_struct(np_smp, nod_comm,                   &
      &    djds_tbl, djds_mat, node%numnod, b_djds, x_djds,              &
      &    CG_param%METHOD, CG_param%PRECOND, ierr,                      &
@@ -258,7 +258,6 @@
 !C-- ICCG computation
 
         ierr = 1
-!       if (my_rank.eq.0) write(*,*) 'init_solveNN_DJDS_struct'
       call init_solveNN_DJDS_struct(djds_mat%NB, np_smp, nod_comm,      &
      &    djds_tbl, djds_mat, node%numnod, b_djds, x_djds,              &
      &    CG_param%METHOD, CG_param%PRECOND, ierr,                      &
