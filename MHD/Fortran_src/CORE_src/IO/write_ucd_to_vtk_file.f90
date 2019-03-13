@@ -98,7 +98,7 @@
       use vtk_file_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -116,7 +116,7 @@
       use vtk_file_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -134,7 +134,7 @@
       use vtk_file_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -151,7 +151,7 @@
       subroutine read_udt_data_2_vtk_file(id_rank, file_name, ucd)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -172,7 +172,7 @@
 !
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -191,7 +191,7 @@
       subroutine read_udt_data_2_vtk_grid(id_rank, file_name, ucd)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
 !

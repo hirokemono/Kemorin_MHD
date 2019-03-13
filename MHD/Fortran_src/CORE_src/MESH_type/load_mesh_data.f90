@@ -60,7 +60,7 @@
       use set_nnod_4_ele_by_type
       use cal_minmax_and_stacks
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_data), intent(inout) :: fem
@@ -89,7 +89,7 @@
 !
       use mesh_IO_select
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(inout) :: mesh
       integer(kind = kint), intent(inout) :: ierr
@@ -112,7 +112,7 @@
       use set_element_data_4_IO
       use copy_mesh_structures
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_geometry), intent(inout) :: mesh

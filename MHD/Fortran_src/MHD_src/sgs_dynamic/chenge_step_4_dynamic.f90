@@ -38,7 +38,7 @@
 !
       subroutine open_sgs_diff_monitor(id_rank)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
 !
       if(id_rank .gt. 0) return
@@ -60,7 +60,7 @@
 !
       use t_work_FEM_SGS_MHD
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind=kint), intent(in) :: i_step_MHD
 !
       type(SGS_paremeters), intent(inout) :: SGS_par
@@ -129,7 +129,7 @@
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind=kint), intent(in) :: i_step_MHD
 !
       integer(kind = kint), intent(inout) :: i_step_sgs_coefs

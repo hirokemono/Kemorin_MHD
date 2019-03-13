@@ -297,7 +297,7 @@
 !
       type(mesh_geometry) :: mesh
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
        write(*,*) 'PE: ', id_rank,                                      &
      &        'mesh%node%istack_nod_smp: ', mesh%node%istack_nod_smp
@@ -327,7 +327,7 @@
 !
       subroutine compare_mesh_groups(id_rank, group_ref, group)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(mesh_groups), intent(in) :: group_ref, group
 !
 !

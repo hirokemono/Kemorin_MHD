@@ -98,7 +98,7 @@
       use set_size_4_smp_types
 !      use check_geometries
 !
-!      integer(kind = kint), intent(in) :: id_rank
+!      integer, intent(in) :: id_rank
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
 !

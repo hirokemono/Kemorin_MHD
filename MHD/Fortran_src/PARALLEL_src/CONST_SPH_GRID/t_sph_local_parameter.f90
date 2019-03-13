@@ -258,7 +258,7 @@
       subroutine check_spheric_global_param                             &
      &         (id_rank, s3d_ranks, sph_lcp)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_parameters), intent(in) :: sph_lcp
 !
@@ -329,7 +329,7 @@
 !
       subroutine check_sph_gl_bc_param(id_rank, sph_dbc)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_local_default_BC), intent(in) :: sph_dbc
 !
 !

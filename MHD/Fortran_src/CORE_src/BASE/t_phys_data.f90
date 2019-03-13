@@ -30,7 +30,7 @@
 !!      subroutine check_all_field_data(id_rank, fld)
 !!      subroutine check_nodal_field_name_type(id_output, fld)
 !!      subroutine check_nodal_data(id_output, fld, numdir, i_field)
-!!        integer(kind = kint), intent(in) :: id_rank
+!!        integer, intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: numdir, i_field
 !!        type(phys_data), intent(in) :: fld
 !!@endverbatim
@@ -362,7 +362,7 @@
 !
       subroutine check_all_field_data(id_rank, fld)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(phys_data), intent(in) :: fld
 !
 !

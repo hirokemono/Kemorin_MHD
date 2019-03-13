@@ -49,7 +49,7 @@
       subroutine write_gz_step_field_file                               &
      &         (gzip_name, id_rank, t_IO, fld_IO)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
       type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
@@ -77,7 +77,7 @@
       subroutine read_alloc_gz_field_file(gzip_name, id_rank, fld_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(field_IO), intent(inout) :: fld_IO
 !
 !

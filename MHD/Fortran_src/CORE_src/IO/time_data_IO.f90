@@ -48,7 +48,7 @@
 !
       function step_data_buffer(id_rank, t_IO)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(time_data), intent(in) :: t_IO
 !
       character(len=len_step_data_buf) :: step_data_buffer

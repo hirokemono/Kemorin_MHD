@@ -53,7 +53,7 @@
      &         (gzip_name, id_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
@@ -81,7 +81,7 @@
      &         (gzip_name, id_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -125,7 +125,7 @@
      &         (gzip_name, id_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -173,7 +173,7 @@
      &         (gzip_name, id_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO

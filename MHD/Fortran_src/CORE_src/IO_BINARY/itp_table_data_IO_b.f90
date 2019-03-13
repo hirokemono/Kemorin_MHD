@@ -57,7 +57,7 @@
 !
       use t_interpolate_tbl_org
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
       integer(kind = kint_gl) :: num64
@@ -220,7 +220,7 @@
 !
       use t_interpolate_tbl_dest
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !
       integer(kind = kint_gl) :: num64

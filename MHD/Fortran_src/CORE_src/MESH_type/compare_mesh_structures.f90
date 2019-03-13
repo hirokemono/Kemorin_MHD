@@ -42,7 +42,7 @@
       use t_geometry_data
       use t_mesh_data
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(mesh_geometry),    intent(inout) :: mesh
       type(communication_table), intent(inout) :: nod_comm
       type(node_data), intent(inout) ::           node
@@ -62,7 +62,7 @@
 !
       use t_geometry_data
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(node_data), intent(in) :: org_node
       type(node_data), intent(in) :: new_node
 !
@@ -94,7 +94,7 @@
 !
       use t_geometry_data
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(element_data), intent(in) :: org_ele
       type(element_data), intent(in) :: new_ele
 !
@@ -142,7 +142,7 @@
       use copy_communication_table
       use t_comm_table
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: org_comm
       type(communication_table), intent(in) :: new_comm
 !

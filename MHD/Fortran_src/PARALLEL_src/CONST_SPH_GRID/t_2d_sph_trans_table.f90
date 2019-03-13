@@ -109,7 +109,7 @@
       subroutine check_2d_sph_indices                                   &
      &         (id_rank, nphi, ltr, jmax, s2d_tbl)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nphi, jmax, ltr
       type(sph_trans_2d_table), intent(in) :: s2d_tbl
 !
@@ -156,7 +156,7 @@
       subroutine check_2d_sph_trans_table                               &
      &         (id_rank, ntheta, nphi, s2d_tbl)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ntheta, nphi
       type(sph_trans_2d_table), intent(in) :: s2d_tbl
 !

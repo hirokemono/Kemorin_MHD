@@ -107,7 +107,7 @@
 !
       use t_spheric_rtp_data
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ncomp, ncomp_fwd, ncomp_bwd
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -150,7 +150,7 @@
 !
       use t_spheric_rtp_data
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       integer(kind = kint), intent(in) :: ncomp, ncomp_fwd, ncomp_bwd

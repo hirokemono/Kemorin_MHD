@@ -25,7 +25,7 @@
 !!     &          FEM_elens, FEM_moms, ierr)
 !!      subroutine sel_write_filter_moms_file(id_rank,                  &
 !!     &          FEM_elens, FEM_moms)
-!!          integer(kind = kint), intent(in) :: id_rank
+!!          integer, intent(in) :: id_rank
 !!          integer(kind = kint), intent(in) :: nnod, nele
 !!          type(gradient_model_data_type), intent(inout) :: FEM_elens
 !!          type(gradient_filter_mom_type), intent(inout) :: FEM_moms
@@ -57,7 +57,7 @@
       use filter_coefs_file_IO_b
       use gz_filter_coefs_file_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(filter_file_data), intent(inout) :: filter_IO
       integer(kind = kint), intent(inout) :: ierr
@@ -92,7 +92,7 @@
       use filter_coefs_file_IO_b
       use gz_filter_coefs_file_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(filter_file_data), intent(inout) :: filter_IO
 !
       character(len=kchara) :: file_name
@@ -135,7 +135,7 @@
       use filter_coefs_file_IO_b
       use gz_filter_coefs_file_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(filter_file_data), intent(inout) :: filter_IO
       integer(kind = kint), intent(inout) :: ierr
@@ -170,7 +170,7 @@
       use filter_coefs_file_IO_b
       use gz_filter_coefs_file_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(filter_file_data), intent(inout) :: filter_IO
 !
       character(len=kchara) :: file_name
@@ -206,7 +206,7 @@
       use filter_moments_file_IO_b
       use gz_filter_moms_type_file_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
       integer(kind = kint), intent(inout) :: ierr
@@ -244,7 +244,7 @@
       use filter_moments_file_IO_b
       use gz_filter_moms_type_file_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nnod, nele
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       integer(kind = kint), intent(inout) :: ierr
@@ -280,7 +280,7 @@
       use filter_moments_file_IO_b
       use gz_filter_moms_type_file_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(gradient_model_data_type), intent(inout) :: FEM_elens
 !
       character(len=kchara) :: file_name
@@ -316,7 +316,7 @@
       use filter_moments_file_IO_b
       use gz_filter_moms_type_file_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nnod, nele
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
@@ -355,7 +355,7 @@
       use filter_moments_file_IO_b
       use gz_filter_moms_type_file_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
 !

@@ -111,7 +111,7 @@
 !
       subroutine check_rj_spectr_data_t(id_rank, sph_phys)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_phys_data), intent(in) :: sph_phys
 !
       integer(kind = kint) :: i_fld

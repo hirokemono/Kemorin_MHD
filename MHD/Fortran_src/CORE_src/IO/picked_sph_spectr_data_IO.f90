@@ -82,7 +82,7 @@
 !
       subroutine write_sph_spec_monitor(id_rank, i_step, time, picked)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
 !

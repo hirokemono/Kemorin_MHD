@@ -58,7 +58,7 @@
       use t_rms_4_sph_spectr
       use sph_mean_spectr_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(time_data), intent(in) :: time_d
       type(sph_mean_squares), intent(in) :: pwr
 !
@@ -146,7 +146,7 @@
       use set_parallel_file_name
       use sph_mean_spectr_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -180,7 +180,7 @@
       use set_parallel_file_name
       use sph_mean_spectr_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -219,7 +219,7 @@
       use set_parallel_file_name
       use sph_mean_spectr_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -303,7 +303,7 @@
       use set_parallel_file_name
       use sph_mean_spectr_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -337,7 +337,7 @@
       use set_parallel_file_name
       use sph_mean_spectr_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params

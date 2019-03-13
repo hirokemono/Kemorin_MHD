@@ -138,7 +138,7 @@
       subroutine write_gauss_coefs_4_monitor                            &
      &         (id_rank, i_step, time, gauss)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
       type(picked_spectrum_data), intent(in) :: gauss
@@ -170,7 +170,7 @@
 !
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(picked_spectrum_data), intent(in) :: gauss
 !!
       character(len = kchara) :: file_name

@@ -17,7 +17,7 @@
 !!
 !!      subroutine check_near_nodes_list(id_rank, numnod, near_tbl)
 !!      subroutine check_near_elements(id_rank, numnod, near_tbl)
-!!        integer(kind = kint), intent(in) :: id_rank
+!!        integer, intent(in) :: id_rank
 !!        type(near_mesh), intent(in) :: near_tbl
 !!@endverbatim
 !
@@ -158,7 +158,7 @@
 !
       subroutine check_near_nodes_list(id_rank, numnod, near_tbl)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: numnod
       type(near_mesh), intent(in) :: near_tbl
 !
@@ -185,7 +185,7 @@
 !
       subroutine check_near_elements(id_rank, numnod, near_tbl)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: numnod
       type(near_mesh), intent(in) :: near_tbl
 !

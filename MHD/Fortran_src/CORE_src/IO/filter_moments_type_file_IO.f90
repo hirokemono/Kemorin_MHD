@@ -21,7 +21,7 @@
 !!      subroutine write_filter_moms_type_file(file_name, id_rank,      &
 !!     &          FEM_elens, FEM_moms)
 !!        character(len=kchara), intent(in) :: file_name
-!!        integer(kind = kint), intent(in) :: id_rank
+!!        integer, intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: nnod, nele
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elens
 !!        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
@@ -53,7 +53,7 @@
       use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
 !
@@ -80,7 +80,7 @@
       use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nnod, nele
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       integer(kind = kint), intent(inout) :: ierr
@@ -107,7 +107,7 @@
       use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(gradient_model_data_type), intent(inout) :: FEM_elens
 !
 !
@@ -132,7 +132,7 @@
       use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nnod, nele
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
@@ -160,7 +160,7 @@
       use m_filter_file_names
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
 !

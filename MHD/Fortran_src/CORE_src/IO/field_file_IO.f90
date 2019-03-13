@@ -53,7 +53,7 @@
 !
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(time_data), intent(in) :: t_IO
@@ -84,7 +84,7 @@
       use skip_comment_f
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
       type(field_IO), intent(inout) :: fld_IO
 !
@@ -122,7 +122,7 @@
       use skip_comment_f
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(time_data), intent(inout) :: t_IO
@@ -158,7 +158,7 @@
       use skip_comment_f
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(time_data), intent(inout) :: t_IO
@@ -199,7 +199,7 @@
       use skip_comment_f
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(time_data), intent(inout) :: t_IO

@@ -39,7 +39,7 @@
       use skip_comment_f
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(time_data), intent(inout) :: t_IO
@@ -72,7 +72,7 @@
       use field_data_IO
       use skip_comment_f
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(time_data), intent(inout) :: t_IO

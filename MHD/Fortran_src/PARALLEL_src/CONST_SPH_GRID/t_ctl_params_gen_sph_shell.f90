@@ -67,7 +67,7 @@
       subroutine set_control_4_gen_shell_grids                          &
      &         (id_rank, plt, psph_ctl, sph, sph_files, gen_sph, ierr)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(platform_data_control), intent(in) :: plt
       type(parallel_sph_shell_control), intent(inout) :: psph_ctl
       type(sph_grids), intent(inout) :: sph
@@ -98,7 +98,7 @@
       use set_control_platform_data
       use gen_sph_grids_modes
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(platform_data_control), intent(in) :: plt
       type(FEM_mesh_control), intent(in) :: Fmesh_ctl
       type(gen_sph_file_IO_params), intent(inout) ::  sph_files

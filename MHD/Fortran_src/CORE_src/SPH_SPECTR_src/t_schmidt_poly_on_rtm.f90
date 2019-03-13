@@ -233,7 +233,7 @@
 !
       subroutine check_gauss_colat_rtm(id_rank, nth_rtm, Plm_WK)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nth_rtm
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
 !
@@ -257,7 +257,7 @@
       use t_spheric_rtm_data
       use t_spheric_rlm_data
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
@@ -285,7 +285,7 @@
 !
       use t_spheric_rlm_data
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(legendre_4_sph_trans), intent(in) :: Plm_WK
 !

@@ -244,7 +244,7 @@
 !
       subroutine check_sph_ranks(id_rank, s3d_ranks)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(spheric_global_rank), intent(in) :: s3d_ranks
 !
       integer(kind = kint) :: i

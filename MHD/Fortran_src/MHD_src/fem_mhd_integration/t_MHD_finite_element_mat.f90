@@ -221,7 +221,7 @@
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: numdir, max_nod_smp
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
@@ -243,7 +243,7 @@
       subroutine check_diff_elemental_data                              &
      &         (id_rank, numele, numdir, i_field, mhd_fem_wk)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: numele, numdir, i_field
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !

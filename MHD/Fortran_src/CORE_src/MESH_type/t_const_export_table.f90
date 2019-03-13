@@ -31,7 +31,7 @@
 !!     &          num_import, num_export, istack_import, istack_export)
 !!        integer, intent(in) :: id_rank, nprocs
 !!        type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
-!!        integer(kind = kint), intent(in) :: id_rank
+!!        integer, intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: num_neib
 !!        integer(kind = kint), intent(in) :: id_neib(num_neib)
 !!        integer(kind = kint), intent(inout) :: ntot_import, ntot_export
@@ -45,7 +45,7 @@
 !!     &          istack_import, item_import)
 !!        integer, intent(in) :: id_rank, nprocs
 !!        type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
-!!        integer(kind = kint), intent(in) :: id_rank
+!!        integer, intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: num_neib, ntot_import
 !!        integer(kind = kint), intent(in) :: id_neib(num_neib)
 !!        integer(kind = kint), intent(in) :: num_import(num_neib)

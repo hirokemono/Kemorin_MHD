@@ -23,7 +23,7 @@
 !!      type(sph_rtm_grid), intent(inout) :: rtm_new
 !!
 !!      subroutine check_type_spheric_param_rtm(id_rank, sph_rtm)
-!!        integer(kind = kint), intent(in) :: id_rank
+!!        integer, intent(in) :: id_rank
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!@endverbatim
 !!
@@ -258,7 +258,7 @@
 !
       subroutine check_type_spheric_param_rtm(id_rank, sph_rtm)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_rtm_grid), intent(in) :: sph_rtm
       integer(kind = kint) :: i
 !

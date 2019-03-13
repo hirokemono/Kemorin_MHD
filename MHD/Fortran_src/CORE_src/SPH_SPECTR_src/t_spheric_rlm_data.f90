@@ -22,7 +22,7 @@
 !!        type(sph_rlm_grid), intent(inout) :: rlm_new
 !!
 !!      subroutine check_type_spheric_param_rlm(id_rank, sph_rlm)
-!!        integer(kind = kint), intent(in) :: id_rank
+!!        integer, intent(in) :: id_rank
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!@endverbatim
 !!
@@ -233,7 +233,7 @@
 !
       subroutine check_type_spheric_param_rlm(id_rank, sph_rlm)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_rlm_grid), intent(in) :: sph_rlm
       integer(kind = kint) :: i
 !

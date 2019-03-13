@@ -23,7 +23,7 @@
 !!      subroutine check_type_spheric_para_gl_part(sph)
 !!        type(sph_grids), intent(in) :: sph
 !!      subroutine check_type_spheric_parameter(id_rank, sph)
-!!        integer(kind = kint), intent(in) :: id_rank
+!!        integer, intent(in) :: id_rank
 !!        type(sph_grids), intent(in) :: sph
 !!@endverbatim
 !!
@@ -189,7 +189,7 @@
 !
       subroutine check_type_spheric_parameter(id_rank, sph)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_grids), intent(in) :: sph
 !
       call check_type_spheric_param_rtp(id_rank, sph%sph_rtp)

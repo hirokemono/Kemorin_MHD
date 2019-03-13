@@ -430,7 +430,7 @@
       subroutine compare_comm_table_stacks                              &
      &         (id_rank, org_comm, new_comm)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: org_comm
       type(communication_table), intent(in) :: new_comm
 !

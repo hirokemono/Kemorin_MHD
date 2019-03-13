@@ -30,7 +30,7 @@
 !!      subroutine check_surf_grp_4_sheard_para(id_rank, sf_grp)
 !!      subroutine compare_group_types(id_rank, grp_ref, grp)
 !!      subroutine compare_surface_grp_types(id_rank, sf_grp_ref, sf_grp)
-!!        integer(kind = kint), intent(in) :: id_rank
+!!        integer, intent(in) :: id_rank
 !!        type(group_data), intent(in) :: grp
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!@endverbatim
@@ -271,7 +271,7 @@
 !
       subroutine check_group_type_data(id_rank, grp)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(group_data), intent(in) :: grp
       integer(kind = kint) :: i, ist, ied
 !
@@ -291,7 +291,7 @@
 !
       subroutine check_surf_grp_type_data(id_rank, sf_grp)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint) :: i, ist, ied
 !
@@ -313,7 +313,7 @@
 !
       subroutine compare_group_types(id_rank, grp_ref, grp)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(group_data), intent(in) :: grp_ref
       type(group_data), intent(in) :: grp
 !
@@ -344,7 +344,7 @@
 !
       subroutine compare_surface_grp_types(id_rank, sf_grp_ref, sf_grp)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(surface_group_data), intent(in) :: sf_grp_ref
       type(surface_group_data), intent(in) :: sf_grp
 !
@@ -378,7 +378,7 @@
 !
       subroutine check_grp_4_sheard_para(id_rank, grp)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(group_data), intent(in) :: grp
 !
 !
@@ -392,7 +392,7 @@
 !
       subroutine check_surf_grp_4_sheard_para(id_rank, sf_grp)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(surface_group_data), intent(in) :: sf_grp
 !
 !

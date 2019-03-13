@@ -23,7 +23,7 @@
 !!        type(sph_rj_grid), intent(inout) :: rj_new
 !!
 !!      subroutine check_type_spheric_param_rj(id_rank, rj)
-!!        integer(kind = kint), intent(in) :: id_rank
+!!        integer, intent(in) :: id_rank
 !!        type(sph_rj_grid), intent(in) :: rj
 !!
 !!      integer(kind = kint) function find_local_sph_address(rj, l, m)
@@ -278,7 +278,7 @@
 !
       subroutine check_type_spheric_param_rj(id_rank, rj)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_rj_grid), intent(in) :: rj
       integer(kind = kint) :: i
 !

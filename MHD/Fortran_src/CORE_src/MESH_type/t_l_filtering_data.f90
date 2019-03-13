@@ -254,7 +254,7 @@
       subroutine check_istack_l_filter_smp                              &
      &         (id_rank, inod_smp_stack, fil_l_smp)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       type(line_filtering_type), intent(in) :: fil_l_smp
 !

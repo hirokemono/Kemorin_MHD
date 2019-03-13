@@ -38,7 +38,7 @@
       subroutine read_gz_rst_file(id_rank, file_name, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -70,7 +70,7 @@
       subroutine read_gz_rst_comps(id_rank, file_name, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO

@@ -92,7 +92,7 @@
      &          num_neib, ntot_import, id_neib, istack_import,          &
      &          item_import, idomain_nod)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nnod
       integer(kind = kint), intent(in) :: num_neib, ntot_import
       integer(kind = kint), intent(in) :: id_neib(num_neib)

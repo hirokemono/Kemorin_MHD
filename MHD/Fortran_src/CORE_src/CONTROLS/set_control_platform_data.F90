@@ -61,7 +61,7 @@
       use m_machine_parameter
       use skip_comment_f
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(platform_data_control), intent(in) :: plt
 !
 !
@@ -87,7 +87,7 @@
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(platform_data_control), intent(in) :: plt
 !
       integer, external :: omp_get_max_threads

@@ -119,7 +119,7 @@
       use set_connects_4_surf_group
 !      use check_surface_groups
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
@@ -172,7 +172,7 @@
 !
       use set_smp_4_group_types
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(node_data), intent(inout) :: node
       type(element_data), intent(inout) :: ele
 !

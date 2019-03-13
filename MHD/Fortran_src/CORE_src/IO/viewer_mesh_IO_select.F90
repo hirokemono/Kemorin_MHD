@@ -110,7 +110,7 @@
 !
       use set_mesh_extensions
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(viewer_mesh_data), intent(in) :: view_mesh

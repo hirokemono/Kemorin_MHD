@@ -162,7 +162,7 @@
 !
       subroutine check_layer_start(id_rank, n_layer_d)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer (kind=kint), intent(in) :: n_layer_d
 !
       integer(kind = kint) :: j

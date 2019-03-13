@@ -77,7 +77,7 @@
 !
       subroutine sel_read_geom_rtp_file(id_rank, sph_file, ierr)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(sph_file_data_type), intent(inout) :: sph_file
       integer(kind = kint), intent(inout) :: ierr
@@ -110,7 +110,7 @@
 !
       subroutine sel_read_spectr_rj_file(id_rank, sph_file, ierr)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(sph_file_data_type), intent(inout) :: sph_file
       integer(kind = kint), intent(inout) :: ierr
@@ -143,7 +143,7 @@
 !
       subroutine sel_read_geom_rtm_file(id_rank, sph_file, ierr)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(sph_file_data_type), intent(inout) :: sph_file
       integer(kind = kint), intent(inout) :: ierr
@@ -176,7 +176,7 @@
 !
       subroutine sel_read_modes_rlm_file(id_rank, sph_file, ierr)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(sph_file_data_type), intent(inout) :: sph_file
       integer(kind = kint), intent(inout) :: ierr
@@ -210,7 +210,7 @@
 !
       subroutine sel_write_geom_rtp_file(id_rank, sph_file)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -238,7 +238,7 @@
 !
       subroutine sel_write_spectr_modes_rj_file(id_rank, sph_file)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -269,7 +269,7 @@
 !
       subroutine sel_write_geom_rtm_file(id_rank, sph_file)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -297,7 +297,7 @@
 !
       subroutine sel_write_modes_rlm_file(id_rank, sph_file)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -329,7 +329,7 @@
 !
       use delete_data_files
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
 !
       sph_file_name = set_sph_rtp_file_name                             &
@@ -344,7 +344,7 @@
 !
       use delete_data_files
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
 !
       sph_file_name = set_sph_rj_file_name                              &
@@ -359,7 +359,7 @@
 !
       use delete_data_files
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
 !
       sph_file_name = set_sph_rtm_file_name                             &
@@ -374,7 +374,7 @@
 !
       use delete_data_files
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
 !
       sph_file_name = set_sph_rlm_file_name                             &

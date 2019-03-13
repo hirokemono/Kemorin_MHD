@@ -94,7 +94,7 @@
      &          WKS)
 !
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: Nfft
       integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
 !

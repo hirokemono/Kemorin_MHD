@@ -221,7 +221,7 @@
 !
       subroutine alloc_rms_4_sph_spectr(id_rank, ltr, pwr)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ltr
       type(sph_mean_squares), intent(inout) :: pwr
 !
@@ -281,7 +281,7 @@
 !
       subroutine dealloc_rms_4_sph_spectr(id_rank, pwr)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_mean_squares), intent(inout) :: pwr
 !
       integer(kind = kint) :: i
@@ -325,7 +325,7 @@
       subroutine alloc_sph_vol_mean_square                              &
      &         (id_rank, ltr, ntot_comp_sq, v_pwr)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ltr, ntot_comp_sq
       type(sph_vol_mean_squares), intent(inout) :: v_pwr
 !
@@ -373,7 +373,7 @@
 !
       subroutine dealloc_sph_vol_mean_square(id_rank, v_pwr)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_vol_mean_squares), intent(inout) :: v_pwr
 !
 !

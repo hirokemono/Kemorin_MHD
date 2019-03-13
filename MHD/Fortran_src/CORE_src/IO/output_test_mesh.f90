@@ -39,7 +39,7 @@
       use element_file_IO
       use element_geometry_file_IO
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(mesh_geometry), intent(in) :: mesh
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_geometry), intent(inout) :: mesh_IO

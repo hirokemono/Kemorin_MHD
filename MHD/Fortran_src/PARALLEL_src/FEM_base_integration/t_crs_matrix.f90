@@ -165,7 +165,7 @@
 !
       subroutine check_crs_matrix_comps(id_rank, tbl_crs, mat_crs)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(CRS_matrix), intent(inout) :: mat_crs
 !

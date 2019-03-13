@@ -43,7 +43,7 @@
 !
       use t_interpolate_tbl_org
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
 !
@@ -218,7 +218,7 @@
       use t_interpolate_tbl_dest
 !
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)

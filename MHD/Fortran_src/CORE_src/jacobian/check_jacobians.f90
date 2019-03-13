@@ -26,7 +26,7 @@
 !
       subroutine check_jacobians_trilinear(id_rank, ele, jac_3d)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(inout) :: jac_3d
 !
@@ -62,7 +62,7 @@
 !
       subroutine check_jacobians_triquad(id_rank, ele, jac_3d)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(inout) :: jac_3d
 !

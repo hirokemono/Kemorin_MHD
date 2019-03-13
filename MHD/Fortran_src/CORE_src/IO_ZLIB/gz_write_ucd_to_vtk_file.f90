@@ -93,7 +93,7 @@
       use gz_vtk_file_IO
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -114,7 +114,7 @@
       use gz_vtk_file_IO
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -133,7 +133,7 @@
       use gz_vtk_file_IO
 !
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
 !
 !

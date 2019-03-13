@@ -266,7 +266,7 @@
 !
       subroutine check_spheric_global_stack(id_rank, stk_lc1d)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !
       write(id_rank+50,*) 'istack_idx_local_rtp_r',                     &

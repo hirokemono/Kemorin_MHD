@@ -298,7 +298,7 @@
       use set_nnod_4_ele_by_type
       use load_mesh_data
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_data_p), intent(inout) :: femmesh_p
@@ -342,7 +342,7 @@
       use const_mesh_information
 !      use check_surface_groups
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(mesh_data_p), intent(inout) :: femmesh_p
       type(element_geometry_p), intent(inout) :: ele_mesh
 !

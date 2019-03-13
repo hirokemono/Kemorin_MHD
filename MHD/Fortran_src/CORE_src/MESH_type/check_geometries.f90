@@ -39,7 +39,7 @@
       subroutine check_node_data(id_rank, node)
 !
       type(node_data), intent(in) :: node
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint) ::inod
 !
 !
@@ -58,7 +58,7 @@
       subroutine check_element_data(id_rank, ele)
 !
       type(element_data), intent(in) :: ele
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint) :: iele
 !
       write(50+id_rank,*) 'numele, nnod_4_ele'
@@ -80,7 +80,7 @@
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint) :: isurf, iele
 !
 !
@@ -113,7 +113,7 @@
 !
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint) :: iedge, isurf
 !
 !
@@ -146,7 +146,7 @@
 !
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint) :: iele
 !
 !
@@ -167,7 +167,7 @@
       subroutine check_external_surface(id_rank, surf)
 !
       type(surface_data), intent(in) :: surf
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
 !
       write(50+id_rank,*) 'numsurf_ext', surf%numsurf_ext
@@ -183,7 +183,7 @@
       subroutine check_iso_surface(id_rank, surf)
 !
       type(surface_data), intent(in) :: surf
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
 !
       write(50+id_rank,*) 'numsurf_iso', surf%numsurf_iso
@@ -198,7 +198,7 @@
       subroutine check_bc_edge(id_rank, edge)
 !
       type(edge_data), intent(in) :: edge
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
 !
       write(50+id_rank,*) 'numedge_iso', edge%numedge_iso

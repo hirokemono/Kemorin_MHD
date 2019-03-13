@@ -493,7 +493,7 @@
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(node_data), intent(in) :: node
 !
        write(*,*) 'np_smp: ', np_smp
@@ -510,7 +510,7 @@
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(element_data), intent(in) :: ele
 !
        write(*,*) 'np_smp: ', np_smp

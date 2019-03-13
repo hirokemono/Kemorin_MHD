@@ -263,7 +263,7 @@
 !
       subroutine check_spheric_global_numnod(id_rank)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
 !
       write(id_rank+50,*) 'nnod_global_rtp ', nnod_global_rtp

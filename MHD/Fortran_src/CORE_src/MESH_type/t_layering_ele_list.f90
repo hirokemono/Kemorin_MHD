@@ -140,7 +140,7 @@
 !
       subroutine check_layer_stack_type(id_rank, layer_tbl)
 !
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(layering_tbl), intent(in) :: layer_tbl
 !
 !
