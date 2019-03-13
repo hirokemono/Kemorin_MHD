@@ -85,7 +85,8 @@
       else if( NTYP_div .eq. iPART_RCB_SPH) then
         call set_control_SPH_RCB(part_ctl%RCB_dir_ctl)
 !
-      else if (NTYP_div .eq. iPART_EQ_XYZ) then
+      else if (NTYP_div .eq. iPART_EQ_XYZ                               &
+     &  .or. NTYP_div .eq. iPART_EQV_XYZ) then
         call set_control_EQ_XYZ(part_ctl%ndomain_section_ctl)
       else if (NTYP_div.eq.iPART_CUBED_SPHERE                           &
      &    .or. NTYP_div.eq.iPART_EQ_SPH                                 &
@@ -460,22 +461,19 @@
       integer(kind = kint) :: i
 !
 !
-      if (NTYP_div .eq. iPART_EQ_XYZ                                    &
-     &  .or. NTYP_div .eq. iPART_EQV_XYZ) then
-        if(ndomain_section_ctl%num .ne. 3)                              &
+      if(ndomain_section_ctl%num .ne. 3)                                &
      &         stop 'number of subdomain should be 3 directions'
 !
-        ndivide_eb(1:3) = 1
-        do i = 1, ndomain_section_ctl%num
-          if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'X')             &
+      ndivide_eb(1:3) = 1
+      do i = 1, ndomain_section_ctl%num
+        if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'X')               &
      &          ) ndivide_eb(1) = ndomain_section_ctl%ivec(i)
-          if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Y')             &
+        if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Y')               &
      &          ) ndivide_eb(2) = ndomain_section_ctl%ivec(i)
-          if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Z')             &
+        if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Z')               &
      &          ) ndivide_eb(3) = ndomain_section_ctl%ivec(i)
-        end do
-        num_domain = ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
-      end if
+      end do
+      num_domain = ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
 !
       end subroutine set_control_EQ_XYZ
 !
