@@ -151,7 +151,7 @@
         d2h_psf(2) = sqrt( (xele_psf(1) - psf_nod%xx(i2,1))**2          &
      &                   + (xele_psf(2) - psf_nod%xx(i2,2))**2          &
      &                   + (xele_psf(3) - psf_nod%xx(i2,3))**2 )
-        d2h_psf(2) = sqrt( (xele_psf(1) - psf_nod%xx(i3,1))**2          &
+        d2h_psf(3) = sqrt( (xele_psf(1) - psf_nod%xx(i3,1))**2          &
      &                   + (xele_psf(2) - psf_nod%xx(i3,2))**2          &
      &                   + (xele_psf(3) - psf_nod%xx(i3,3))**2 )
 !
