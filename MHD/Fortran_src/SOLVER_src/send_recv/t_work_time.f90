@@ -128,7 +128,7 @@
 !
       use calypso_mpi
 !
-      integer, intent(in) :: iflag_elps
+      integer(kind = kint), intent(in) :: iflag_elps
       type(elapsed_time_data), intent(inout) :: elps
 !
 !
@@ -144,7 +144,7 @@
 !
       use calypso_mpi
 !
-      integer, intent(in) :: iflag_elps
+      integer(kind = kint), intent(in) :: iflag_elps
       type(elapsed_time_data), intent(inout) :: elps
 !
 !

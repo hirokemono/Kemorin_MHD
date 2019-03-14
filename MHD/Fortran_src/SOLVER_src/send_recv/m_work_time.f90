@@ -83,7 +83,7 @@
 !
       subroutine start_elapsed_time(iflag_elps)
 !
-      integer, intent(in) :: iflag_elps
+      integer(kind = kint), intent(in) :: iflag_elps
 !
 !
       call start_elapsed_timer(iflag_elps, elps1)
@@ -96,7 +96,7 @@
 !
       use calypso_mpi
 !
-      integer, intent(in) :: iflag_elps
+      integer(kind = kint), intent(in) :: iflag_elps
 !
 !
       call end_elapsed_timer(iflag_elps, elps1)

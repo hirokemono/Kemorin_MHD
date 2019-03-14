@@ -94,7 +94,7 @@
            WS(k)= X(NOD_EXPORT(k))
         enddo
         istart= STACK_EXPORT(neib-1) + 1
-        inum  = STACK_EXPORT(neib  ) - STACK_EXPORT(neib-1)
+        inum  = int(STACK_EXPORT(neib  ) - STACK_EXPORT(neib-1))
         call MPI_ISEND (WS(istart), inum, CALYPSO_REAL,                 &
      &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
      &                  req1(neib), ierr_MPI)
@@ -104,8 +104,8 @@
 !C-- RECEIVE
       
       do neib= 1, NEIBPETOT
-        istart= STACK_IMPORT(neib-1) + 1
-        inum  = STACK_IMPORT(neib  ) - STACK_IMPORT(neib-1)
+        istart = STACK_IMPORT(neib-1) + 1
+        inum  = int(STACK_IMPORT(neib  ) - STACK_IMPORT(neib-1))
         call MPI_IRECV (WR(istart), inum, CALYPSO_REAL,                 &
      &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
      &                  req2(neib), ierr_MPI)

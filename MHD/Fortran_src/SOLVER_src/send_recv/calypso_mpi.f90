@@ -51,7 +51,7 @@
 !>      process ID (start from 0)
       integer :: my_rank
 !>      total number of processes
-      integer(kind=kint) :: nprocs
+      integer :: nprocs
 !
 !>      error flag for MPI
       integer :: ierr_MPI
