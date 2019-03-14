@@ -257,7 +257,7 @@
      &  new_comm%istack_import, new_comm%ntot_import, irank_import_new, &
      &  new_comm%istack_export, new_comm%ntot_export, irank_export_new)
 !
-      call set_extended_node_export(nod_comm, added_comm,               &
+      call set_extended_node_export(my_rank, nod_comm, added_comm,      &
      &          inod_export_new, irank_export_new, new_comm)
 !
       deallocate(inod_export_new, irank_export_new)

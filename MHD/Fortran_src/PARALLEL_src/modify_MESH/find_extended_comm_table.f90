@@ -20,13 +20,13 @@
 !!        type(ele_buffer_2_extend), intent(inout) :: send_ebuf
 !!
 !!      subroutine mark_extended_nod_neib_pe                            &
-!!     &         (nprocs, nod_comm, added_comm, recv_nbuf,              &
+!!     &         (num_pe, nod_comm, added_comm, recv_nbuf,              &
 !!     &          iflag_send, iflag_recv)
 !!        type(communication_table), intent(in) :: nod_comm, added_comm
 !!        type(node_buffer_2_extend), intent(in) :: recv_nbuf
 !!      subroutine count_extended_nod_neib_pe                           &
-!!     &         (nprocs, iflag_send, iflag_recv, new_comm)
-!!      subroutine set_extended_nod_neib_pe(nprocs, my_rank,            &
+!!     &         (num_pe, iflag_send, iflag_recv, new_comm)
+!!      subroutine set_extended_nod_neib_pe(num_pe, id_rank,            &
 !!     &          iflag_send, iflag_recv, nod_comm, new_comm)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: new_comm
@@ -35,7 +35,8 @@
 !!     &        (recv_nbuf, nod_comm, added_comm, new_comm)
 !!      subroutine set_extended_node_import                             &
 !!     &        (recv_nbuf, nod_comm, added_comm, new_comm)
-!!      subroutine set_extended_node_export(nod_comm, added_comm,       &
+!!      subroutine set_extended_node_export                             &
+!!     &         (id_rank, nod_comm, added_comm,                        &
 !!     &          inod_export_new, irank_export_new, new_comm)
 !!        type(communication_table), intent(in) :: nod_comm, added_comm
 !!        type(node_buffer_2_extend), intent(in) :: recv_nbuf
@@ -127,14 +128,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine mark_extended_nod_neib_pe                              &
-     &         (nprocs, nod_comm, added_comm, recv_nbuf,                &
+     &         (num_pe, nod_comm, added_comm, recv_nbuf,                &
      &          iflag_send, iflag_recv)
 !
       type(communication_table), intent(in) :: nod_comm, added_comm
       type(node_buffer_2_extend), intent(in) :: recv_nbuf
-      integer(kind = kint), intent(in) :: nprocs
-      integer(kind = kint), intent(inout) :: iflag_send(0:nprocs-1)
-      integer(kind = kint), intent(inout) :: iflag_recv(0:nprocs-1)
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(inout) :: iflag_send(0:num_pe-1)
+      integer(kind = kint), intent(inout) :: iflag_recv(0:num_pe-1)
 !
       integer(kind = kint) :: i, ip
 !
@@ -154,18 +155,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_extended_nod_neib_pe                             &
-     &         (nprocs, iflag_send, iflag_recv, new_comm)
+     &         (num_pe, iflag_send, iflag_recv, new_comm)
 !
-      integer(kind = kint), intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: iflag_send(0:nprocs-1)
-      integer(kind = kint), intent(in) :: iflag_recv(0:nprocs-1)
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: iflag_send(0:num_pe-1)
+      integer(kind = kint), intent(in) :: iflag_recv(0:num_pe-1)
       type(communication_table), intent(inout) :: new_comm
 !
       integer(kind = kint) :: ip
 !
 !
       new_comm%num_neib = 0
-      do ip = 0, nprocs-1
+      do ip = 0, num_pe-1
         if(iflag_recv(ip).ne.0 .or. iflag_send(ip).ne.0) then
           new_comm%num_neib = new_comm%num_neib + 1
         end if
@@ -175,12 +176,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_extended_nod_neib_pe(nprocs, my_rank,              &
+      subroutine set_extended_nod_neib_pe(num_pe, id_rank,              &
      &          iflag_send, iflag_recv, nod_comm, new_comm)
 !
-      integer(kind = kint), intent(in) :: nprocs, my_rank
-      integer(kind = kint), intent(in) :: iflag_send(0:nprocs-1)
-      integer(kind = kint), intent(in) :: iflag_recv(0:nprocs-1)
+      integer, intent(in) :: num_pe, id_rank
+      integer(kind = kint), intent(in) :: iflag_send(0:num_pe-1)
+      integer(kind = kint), intent(in) :: iflag_recv(0:num_pe-1)
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(inout) :: new_comm
 !
@@ -190,8 +191,8 @@
       new_comm%id_neib(1:nod_comm%num_neib)                             &
      &              = nod_comm%id_neib(1:nod_comm%num_neib)
       icou = nod_comm%num_neib
-      do i = 0, nprocs-1
-        ip = mod(i+my_rank,nprocs)
+      do i = 0, num_pe-1
+        ip = mod(i+id_rank,num_pe)
         if(iflag_recv(ip).gt.0 .or. iflag_send(ip).gt.0) then
           icou = icou + 1
           new_comm%id_neib(icou) = ip
@@ -283,9 +284,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_extended_node_export(nod_comm, added_comm,         &
+      subroutine set_extended_node_export                               &
+     &         (id_rank, nod_comm, added_comm,                          &
      &          inod_export_new, irank_export_new, new_comm)
 !
+      use calypso_mpi
+!
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: nod_comm, added_comm
       type(communication_table), intent(inout) :: new_comm
 !
@@ -311,7 +316,7 @@
         ist = new_comm%istack_export(i-1) + 1
         ied = new_comm%istack_export(i)
         do inum = ist, ied
-          if(irank_export_new(inum) .eq. my_rank) then
+          if(irank_export_new(inum) .eq. id_rank) then
             new_comm%item_export(inum) = inod_export_new(inum)
           end if
         end do

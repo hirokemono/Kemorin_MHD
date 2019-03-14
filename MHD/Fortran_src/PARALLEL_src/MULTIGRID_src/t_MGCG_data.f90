@@ -146,16 +146,15 @@
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
 !
-      integer(kind = kint) :: ilevel, my_rank4, nprocs_mg4, my_rank_mg4
+      integer(kind = kint) :: ilevel
 !
 !
        MGCG_WK%MG_mpi(0)%icolor_MG = 0
 !
       call MPI_COMM_DUP                                                 &
      &   (CALYPSO_COMM, MGCG_WK%MG_mpi(0)%SOLVER_COMM, ierr_MPI)
-      call MPI_COMM_RANK                                                &
-     &   (MGCG_WK%MG_mpi(0)%SOLVER_COMM, my_rank_mg4, ierr_MPI)
-       MGCG_WK%MG_mpi(0)%MG_rank = my_rank_mg4
+      call MPI_COMM_RANK(MGCG_WK%MG_mpi(0)%SOLVER_COMM,                 &
+     &    MGCG_WK%MG_mpi(0)%MG_rank, ierr_MPI)
        MGCG_WK%MG_mpi(0)%nprocs =  nprocs
 !
       do ilevel = 1, MGCG_WK%num_MG_level
@@ -165,15 +164,13 @@
           MGCG_WK%MG_mpi(ilevel)%icolor_MG = 1
         end if
 !
-        my_rank4 = int(my_rank)
         call MPI_COMM_SPLIT                                             &
      &     (CALYPSO_COMM, MGCG_WK%MG_mpi(ilevel)%icolor_MG,             &
-     &      my_rank4, MGCG_WK%MG_mpi(ilevel)%SOLVER_COMM, ierr_MPI)
-        call MPI_COMM_SIZE                                              &
-     &     (MGCG_WK%MG_mpi(ilevel)%SOLVER_COMM, nprocs_mg4, ierr_MPI)
-        call MPI_COMM_RANK                                              &
-     &     (MGCG_WK%MG_mpi(ilevel)%SOLVER_COMM, my_rank_mg4, ierr_MPI)
-        MGCG_WK%MG_mpi(ilevel)%MG_rank = my_rank_mg4
+     &      my_rank, MGCG_WK%MG_mpi(ilevel)%SOLVER_COMM, ierr_MPI)
+        call MPI_COMM_SIZE(MGCG_WK%MG_mpi(ilevel)%SOLVER_COMM,          &
+     &     MGCG_WK%MG_mpi(ilevel)%nprocs, ierr_MPI)
+        call MPI_COMM_RANK(MGCG_WK%MG_mpi(ilevel)%SOLVER_COMM,          &
+     &      MGCG_WK%MG_mpi(ilevel)%MG_rank, ierr_MPI)
       end do
 !
       end subroutine split_multigrid_comms

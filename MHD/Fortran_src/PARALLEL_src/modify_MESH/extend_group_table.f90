@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine s_extend_group_table                                 &
-!!     &        (nprocs, new_comm, new_ele_comm, new_node, new_ele,     &
+!!     &        (num_pe, new_comm, new_ele_comm, new_node, new_ele,     &
 !!     &         org_group, new_group)
 !!        type(communication_table), intent(in) :: new_comm, new_ele_comm
 !!        type(node_data), intent(in) :: new_node
@@ -39,13 +39,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_extend_group_table                                   &
-     &        (nprocs, new_comm, new_ele_comm, new_node, new_ele,       &
+     &        (num_pe, new_comm, new_ele_comm, new_node, new_ele,       &
      &         org_group, new_group)
 !
       use copy_mesh_structures
       use add_comm_table_in_node_grp
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(communication_table), intent(in) :: new_comm, new_ele_comm
       type(node_data), intent(in) :: new_node
       type(element_data), intent(inout) :: new_ele
@@ -58,7 +58,7 @@
      &    org_group%nod_grp, new_group%nod_grp)
 !
 !      call add_comm_table_in_node_group                                &
-!     &   (nprocs, new_comm, org_group%nod_grp, new_group%nod_grp)
+!     &   (num_pe, new_comm, org_group%nod_grp, new_group%nod_grp)
 !
       call extend_node_group(new_ele%numele, new_ele_comm,              &
      &    org_group%ele_grp, new_group%ele_grp)
