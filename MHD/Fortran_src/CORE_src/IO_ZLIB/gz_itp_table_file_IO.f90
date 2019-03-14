@@ -48,7 +48,7 @@
      &         (file_name, id_rank, IO_itp_org, IO_itp_dest)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind= kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -119,7 +119,7 @@
      &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind= kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
@@ -147,7 +147,7 @@
      &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind= kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -175,7 +175,7 @@
      &         (file_name, id_rank, IO_itp_dest, ierr)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind= kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest

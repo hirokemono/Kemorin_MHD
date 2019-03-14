@@ -87,6 +87,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name, fname_tmp
+      integer(kind = kint) :: ierr_IO = 0
 !
 !
       if(istep_fld .lt. 0) then
@@ -99,7 +100,8 @@
 !
 #ifdef ZLIB_IO
       if(file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call read_gz_rst_file(id_rank, file_name, t_IO, fld_IO)
+        call read_gz_rst_file                                           &
+     &      (id_rank, file_name, t_IO, fld_IO, ierr_IO)
         return
       end if
 #endif
@@ -124,6 +126,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name, fname_tmp
+      integer(kind=kint) :: ierr
 !
 !
       if(istep_fld .lt. 0) then
@@ -135,7 +138,7 @@
 !
 #ifdef ZLIB_IO
       if(file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call read_gz_rst_comps(id_rank, file_name, t_IO, fld_IO)
+        call read_gz_rst_comps(id_rank, file_name, t_IO, fld_IO, ierr)
         return
       end if
 #endif

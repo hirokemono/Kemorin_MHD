@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine gz_read_element_comm_table_b                         &
-!!     &         (my_rank_IO, gz_flags, comm_IO)
+!!     &         (id_rank, gz_flags, comm_IO)
 !!        type(file_IO_flags), intent(inout) :: gz_flags
 !!        type(communication_table), intent(inout) :: comm_IO
-!!      subroutine gz_write_element_comm_table_b(my_rank_IO, comm_IO)
+!!      subroutine gz_write_element_comm_table_b(id_rank, comm_IO)
 !!        type(communication_table), intent(in) :: comm_IO
 !!
 !!      subroutine gz_read_element_geometry_b(gz_flags, nod_IO, sfed_IO)
@@ -42,11 +42,11 @@
 !------------------------------------------------------------------
 !
       subroutine gz_read_element_comm_table_b                           &
-     &         (my_rank_IO, gz_flags, comm_IO)
+     &         (id_rank, gz_flags, comm_IO)
 !
       use gz_domain_data_IO_b
 !
-      integer (kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(file_IO_flags), intent(inout) :: gz_flags
       type(communication_table), intent(inout) :: comm_IO
 !
@@ -57,7 +57,7 @@
 !      write(textbuf,'(a,a1)') '!' , char(0)
 !      write(textbuf,'(a,a1)', advance='NO') hd_fem_para(), char(0)
 !
-      call gz_read_domain_info_b(my_rank_IO, gz_flags, comm_IO)
+      call gz_read_domain_info_b(id_rank, gz_flags, comm_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
 !      write(textbuf,'(a,a1)') '!', char(0)
@@ -79,17 +79,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_element_comm_table_b(my_rank_IO, comm_IO)
+      subroutine gz_write_element_comm_table_b(id_rank, comm_IO)
 !
       use gz_domain_data_IO_b
 !
-      integer (kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
 !
 !
 !      textbuf = hd_ecomm_para() // char(0)
 !      textbuf = hd_fem_para() // char(0)
-      call gz_write_domain_info_b(my_rank_IO, comm_IO)
+      call gz_write_domain_info_b(id_rank, comm_IO)
 !
 !      textbuf = hd_ecomm_import() // char(0)
       call gz_write_import_data_b(comm_IO)

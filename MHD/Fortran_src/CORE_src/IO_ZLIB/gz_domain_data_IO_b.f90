@@ -57,7 +57,7 @@
      &   (gz_flags%iflag_bin_swap, irank_read, gz_flags%ierr_IO)
       if(gz_flags%ierr_IO .gt. 0) return
 !
-      if(irank_read .ne. id_rank) then
+      if(int(irank_read) .ne. id_rank) then
         gz_flags%ierr_IO = ierr_mesh
         return
       end if
@@ -140,8 +140,11 @@
       integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
 !
+      integer(kind = kint) :: irank_write
 !
-      call gz_write_one_integer_b(id_rank)
+!
+      irank_write = int(id_rank,KIND(irank_write))
+      call gz_write_one_integer_b(irank_write)
       call gz_write_one_integer_b(comm_IO%num_neib)
 !
       call gz_write_mul_integer_b                                       &

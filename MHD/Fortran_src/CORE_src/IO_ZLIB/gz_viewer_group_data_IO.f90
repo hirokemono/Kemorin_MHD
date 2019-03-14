@@ -41,20 +41,23 @@
 !
       subroutine write_domain_group_viewer_gz(num_pe, domain_grps)
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(in) :: domain_grps
 !
-      integer(kind = kint) :: ip, ist, num
+      integer :: ip
+      integer(kind = kint) :: ist, num
+      integer(kind = kint) :: ngrp_pe
 !
 !
+      ngrp_pe = int(num_pe, KIND(ngrp_pe))
       textbuf = hd_domain_nod_grp() // char(0)
       call gz_write_textbuf_no_lf
 !
       write(textbuf,'(i16,a1)') domain_grps%node_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_gz_multi_int_8i10(num_pe,                              &
-     &    domain_grps%node_grp%istack_sf(1) )
+      call write_gz_multi_int_8i10                                      &
+     &   (ngrp_pe, domain_grps%node_grp%istack_sf(1) )
       do ip = 1, num_pe
         ist = domain_grps%node_grp%istack_sf(ip-1)
         num = domain_grps%node_grp%istack_sf(ip) - ist
@@ -68,8 +71,8 @@
       write(textbuf,'(i16,a1)') domain_grps%surf_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_gz_multi_int_8i10(num_pe,                              &
-     &    domain_grps%surf_grp%istack_sf(1) )
+      call write_gz_multi_int_8i10                                      &
+     &   (ngrp_pe, domain_grps%surf_grp%istack_sf(1) )
       do ip = 1, num_pe
         ist = domain_grps%surf_grp%istack_sf(ip-1)
         num = domain_grps%surf_grp%istack_sf(ip) - ist
@@ -83,8 +86,8 @@
       write(textbuf,'(i16,a1)') domain_grps%edge_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_gz_multi_int_8i10(num_pe,                              &
-     &    domain_grps%edge_grp%istack_sf(1) )
+      call write_gz_multi_int_8i10                                      &
+     &   (ngrp_pe, domain_grps%edge_grp%istack_sf(1))
       do ip = 1, num_pe
         ist = domain_grps%edge_grp%istack_sf(ip-1)
         num = domain_grps%edge_grp%istack_sf(ip) - ist
@@ -98,14 +101,18 @@
 !
       subroutine read_domain_group_viewer_gz(num_pe, domain_grps)
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(inout) :: domain_grps
+!
+      integer(kind = kint) :: ngrp_pe
 !
 !
 !      write(surface_id,'(a)') '! 3. node ID for domain boundary'
 !
+      ngrp_pe = int(num_pe, KIND(ngrp_pe))
       call skip_gz_comment_int(domain_grps%node_grp%num_item)
-      call read_gz_multi_int(num_pe, domain_grps%node_grp%istack_sf(1))
+      call read_gz_multi_int                                            &
+     &   (ngrp_pe, domain_grps%node_grp%istack_sf(1))
 !
       call alloc_merged_group_item(domain_grps%node_grp)
       call read_gz_multi_int(domain_grps%node_grp%num_item,             &
@@ -114,7 +121,8 @@
 !      write(surface_id,'(a)') '! 3.1 surface ID for domain boundary'
 !
       call skip_gz_comment_int(domain_grps%surf_grp%num_item)
-      call read_gz_multi_int(num_pe, domain_grps%surf_grp%istack_sf(1))
+      call read_gz_multi_int                                            &
+     &   (ngrp_pe, domain_grps%surf_grp%istack_sf(1))
 !
       call alloc_merged_group_item(domain_grps%surf_grp)
       call read_gz_multi_int                                            &
@@ -123,7 +131,8 @@
 !      write(surface_id,'(a)') '! 3.2 edge ID for domain boundary'
 !
       call skip_gz_comment_int(domain_grps%edge_grp%num_item)
-      call read_gz_multi_int(num_pe, domain_grps%edge_grp%istack_sf(1))
+      call read_gz_multi_int                                            &
+     &   (ngrp_pe, domain_grps%edge_grp%istack_sf(1))
 !
       call alloc_merged_group_item(domain_grps%edge_grp)
       call read_gz_multi_int                                            &
@@ -138,7 +147,7 @@
 !
       use m_fem_mesh_labels
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_node_groups), intent(in) :: view_nod_grps
 !
 !
@@ -157,7 +166,7 @@
 !
       subroutine read_nod_group_viewer_gz(num_pe, view_nod_grps)
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_node_groups), intent(inout) :: view_nod_grps
 !
       integer(kind = kint) :: num
@@ -186,7 +195,7 @@
 !
       use m_fem_mesh_labels
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(in) :: view_ele_grps
 !
 !
@@ -224,7 +233,7 @@
 !
       subroutine read_ele_group_viewer_gz(num_pe, view_ele_grps)
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(inout) :: view_ele_grps
 !
       integer(kind = kint) :: num, itmp
@@ -279,7 +288,7 @@
 !
       use m_fem_mesh_labels
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(in) :: view_sf_grps
 !
       textbuf = hd_fem_sfgrp() // char(0)
@@ -315,7 +324,7 @@
 !
       subroutine read_surf_group_viewer_gz(num_pe, view_sf_grps)
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(inout) :: view_sf_grps
 !
       integer(kind = kint) :: num, itmp
@@ -366,24 +375,29 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_viewer_group_data_gz(nprocs, ngrp, name, group)
+      subroutine write_viewer_group_data_gz                             &
+     &         (num_pe, ngrp, name, group)
 !
-      integer(kind = kint), intent(in) :: nprocs, ngrp
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: ngrp
       character(len = kchara), intent(in) :: name(ngrp)
       type(viewer_group_data), intent(in) :: group
 !
-      integer(kind = kint) :: i, ip, ist, num
+      integer :: ip
+      integer(kind = kint) :: i, ist, num
+      integer(kind = kint) :: ngrp_pe
 !
 !
+      ngrp_pe = int(num_pe, KIND(ngrp_pe))
       do i = 1, ngrp
-        ist = (i-1) * nprocs
-        call write_gz_multi_int_8i10(nprocs, group%istack_sf(ist+1))
+        ist = (i-1) * num_pe
+        call write_gz_multi_int_8i10(ngrp_pe, group%istack_sf(ist+1))
       end do
 !
       if (ngrp .gt. 0) then
         do i = 1, ngrp
-          num = group%istack_sf(nprocs*i)                               &
-     &         - group%istack_sf(nprocs*(i-1))
+          num = group%istack_sf(num_pe*i)                            &
+     &         - group%istack_sf(num_pe*(i-1))
 !
           write(textbuf,'(a,a1)') trim(name(i)), char(0)
           call gz_write_textbuf_w_lf
@@ -392,9 +406,9 @@
             write(textbuf,'(a1)') char(0)
             call gz_write_textbuf_w_lf
           else
-            do ip = 1, nprocs
-              ist = group%istack_sf(nprocs*(i-1)+ip-1)
-              num = group%istack_sf(nprocs*(i-1)+ip) - ist
+            do ip = 1, num_pe
+              ist = group%istack_sf(num_pe*(i-1)+ip-1)
+              num = group%istack_sf(num_pe*(i-1)+ip) - ist
               if(num .gt. 0) call write_gz_multi_int_8i10               &
      &                          (num, group%item_sf(ist+1))
             end do
@@ -409,9 +423,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_viewer_group_item_gz(nprocs, ngrp, name, group)
+      subroutine read_viewer_group_item_gz(num_pe, ngrp, name, group)
 !
-      integer(kind = kint), intent(in) :: nprocs, ngrp
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: ngrp
 !
       character(len = kchara), intent(inout) :: name(ngrp)
       type(viewer_group_data), intent(inout) :: group
@@ -422,8 +437,9 @@
       call alloc_merged_group_item(group)
 !
       do i = 1, ngrp
-        ist = group%istack_sf(nprocs*(i-1)) + 1
-        num = group%istack_sf(nprocs*i) - group%istack_sf(nprocs*(i-1))
+        ist = group%istack_sf(num_pe*(i-1)) + 1
+        num = group%istack_sf(num_pe*i)                                 &
+     &       - group%istack_sf(num_pe*(i-1))
         call skip_gz_comment_chara( name(i) )
         call read_gz_multi_int(num, group%item_sf(ist))
       end do

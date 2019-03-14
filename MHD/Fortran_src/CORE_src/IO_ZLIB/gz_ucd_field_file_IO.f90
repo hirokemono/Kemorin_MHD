@@ -10,9 +10,10 @@
 !!      subroutine write_ucd_2_gz_fld_file                              &
 !!     &         (id_rank, gzip_name, t_IO, ucd)
 !!
-!!      subroutine read_ucd_2_gz_fld_file(id_rank, gzip_name, t_IO, ucd)
+!!      subroutine read_ucd_2_gz_fld_file                               &
+!!     &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
 !!      subroutine read_alloc_ucd_2_gz_fld_file                         &
-!!     &         (id_rank, gzip_name, t_IO, ucd)
+!!     &         (id_rank, gzip_name, t_IO, ucd, ierr)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
@@ -71,15 +72,15 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_ucd_2_gz_fld_file(id_rank, gzip_name, t_IO, ucd)
+      subroutine read_ucd_2_gz_fld_file                                 &
+     &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
+      integer(kind = kint), intent(inout) :: ierr_IO
 !
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
-!
-      integer :: id_read_rank
 !
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -88,7 +89,8 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_read_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
+      if(ierr_IO .gt. 0) return
       call skip_gz_comment_int8_int(ucd%nnod, ucd%num_field)
       call read_gz_multi_int(ucd%num_field, ucd%num_comp)
 !
@@ -102,15 +104,14 @@
 !------------------------------------------------------------------
 !
       subroutine read_alloc_ucd_2_gz_fld_file                           &
-     &         (id_rank, gzip_name, t_IO, ucd)
+     &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
+      integer(kind = kint), intent(inout) :: ierr_IO
 !
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
-!
-      integer :: id_read_rank
 !
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -119,7 +120,8 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_read_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
+      if(ierr_IO .gt. 0) return
       call skip_gz_comment_int8_int(ucd%nnod, ucd%num_field)
 !
       call allocate_ucd_phys_name(ucd)

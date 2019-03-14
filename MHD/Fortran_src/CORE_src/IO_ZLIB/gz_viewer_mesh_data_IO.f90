@@ -47,19 +47,22 @@
 !
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
+      integer(kind = kint) :: num_pe_write
+!
 !
       textbuf = hd_ndomain_viewer() // char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(i16,a1)') mgd_view_mesh%num_pe_sf, char(0)
+      num_pe_write = int(mgd_view_mesh%num_pe_sf,KIND(num_pe_write))
+      write(textbuf,'(i16,a1)') num_pe_write, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_gz_multi_int_8i10(mgd_view_mesh%num_pe_sf,             &
-     &    mgd_view_mesh%inod_sf_stack(1))
-      call write_gz_multi_int_8i10(mgd_view_mesh%num_pe_sf,             &
-     &    mgd_view_mesh%isurf_sf_stack(1))
-      call write_gz_multi_int_8i10(mgd_view_mesh%num_pe_sf,             &
-     &    mgd_view_mesh%iedge_sf_stack(1))
+      call write_gz_multi_int_8i10                                      &
+     &   (num_pe_write, mgd_view_mesh%inod_sf_stack(1))
+      call write_gz_multi_int_8i10                                      &
+     &   (num_pe_write, mgd_view_mesh%isurf_sf_stack(1))
+      call write_gz_multi_int_8i10                                      &
+     &   (num_pe_write, mgd_view_mesh%iedge_sf_stack(1))
 !
       end subroutine write_domain_data_viewer_gz
 !
@@ -69,19 +72,19 @@
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
-      integer(kind = kint) :: num_pe
+      integer(kind = kint) :: num_pe_read
 !
 !
-      call skip_gz_comment_int(num_pe)
+      call skip_gz_comment_int(num_pe_read)
 !
-      call alloc_num_mesh_sf(num_pe, mgd_view_mesh)
+      call alloc_num_mesh_sf(int(num_pe_read), mgd_view_mesh)
 !
       call read_gz_multi_int                                            &
-     &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%inod_sf_stack)
+     &   (num_pe_read, mgd_view_mesh%inod_sf_stack)
       call read_gz_multi_int                                            &
-     &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%isurf_sf_stack)
+     &   (num_pe_read, mgd_view_mesh%isurf_sf_stack)
       call read_gz_multi_int                                            &
-     &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%iedge_sf_stack)
+     &   (num_pe_read, mgd_view_mesh%iedge_sf_stack)
 !
       end subroutine read_domain_data_viewer_gz
 !
@@ -135,7 +138,7 @@
       subroutine write_surf_connect_viewer_gz                           &
      &         (num_pe, isurf_sf_stack, view_mesh)
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: isurf_sf_stack(0:num_pe)
       type(viewer_mesh_data), intent(in) :: view_mesh
 !

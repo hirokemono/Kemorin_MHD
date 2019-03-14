@@ -7,8 +7,10 @@
 !> @brief read gzipped restart file
 !!
 !!@verbatim
-!!      subroutine read_gz_rst_file(id_rank, file_name, t_IO, fld_IO)
-!!      subroutine read_gz_rst_comps(id_rank, file_name, t_IO, fld_IO)
+!!      subroutine read_gz_rst_file                                     &
+!!     &         (id_rank, file_name, t_IO, fld_IO, ierr_IO)
+!!      subroutine read_gz_rst_comps                                    &
+!!     &          (id_rank, file_name, t_IO, fld_IO, ierr_IO)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
@@ -35,16 +37,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_rst_file(id_rank, file_name, t_IO, fld_IO)
+      subroutine read_gz_rst_file                                       &
+     &         (id_rank, file_name, t_IO, fld_IO, ierr_IO)
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
+      integer(kind=kint), intent(inout) :: ierr_IO
 !
       character(len=kchara) :: gzip_name
-      integer :: id_read_rank
 !
 !
       gzip_name = add_gzip_extension(file_name)
@@ -55,7 +58,9 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_read_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
+      if(ierr_IO .gt. 0) return
+!
       call skip_gz_comment_int(fld_IO%num_field_IO)
       call read_gz_field_data(cast_long(fld_IO%nnod_IO),                &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
@@ -67,16 +72,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_rst_comps(id_rank, file_name, t_IO, fld_IO)
+      subroutine read_gz_rst_comps                                      &
+     &          (id_rank, file_name, t_IO, fld_IO, ierr_IO)
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
+      integer(kind=kint), intent(inout) :: ierr_IO
 !
       character(len=kchara) :: gzip_name
-      integer :: id_read_rank
 !
 !
       gzip_name = add_gzip_extension(file_name)
@@ -87,7 +93,9 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_read_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
+      if(ierr_IO .gt. 0) return
+!
       call skip_gz_comment_int(fld_IO%num_field_IO)
 !
       call alloc_phys_name_IO(fld_IO)

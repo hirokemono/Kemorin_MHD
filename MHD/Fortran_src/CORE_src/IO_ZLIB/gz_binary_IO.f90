@@ -75,7 +75,8 @@
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
-      integer(kind = kint), intent(inout) :: iflag_swap, ierr
+      integer, intent(inout) :: iflag_swap
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       call open_rd_gzfile_f(gzip_name)

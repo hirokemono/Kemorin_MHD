@@ -43,9 +43,12 @@
       integer(kind = kint), intent(in) :: i_time_step_IO
       real(kind = kreal), intent(in) :: time_IO, delta_t_IO
 !
+      integer(kind = kint) :: irank_write
 !
+!
+      irank_write = int(id_rank,KIND(irank_write))
       call gz_write_endian_flag
-      call gz_write_one_integer_b(id_rank)
+      call gz_write_one_integer_b(irank_write)
       call gz_write_one_integer_b(i_time_step_IO)
 !
       call gz_write_one_real_b(time_IO)
@@ -88,21 +91,27 @@
      &          i_time_step_IO, time_IO, delta_t_IO,                    &
      &          istack_merged, num_field, ierr)
 !
+      use m_error_IDs
+!
       integer, intent(in) :: id_rank
       integer, intent(in) :: iflag_swap
 !
       integer(kind=kint), intent(inout) :: i_time_step_IO
       real(kind = kreal), intent(inout) :: time_IO, delta_t_IO
 !
-      integer(kind=kint_gl), intent(inout) :: istack_merged(1)
-      integer(kind=kint), intent(inout) :: num_field
+      integer(kind = kint_gl), intent(inout) :: istack_merged(1)
+      integer(kind = kint), intent(inout) :: num_field
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer :: id_read_rank
+      integer(kind = kint) :: id_read_rank
       integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
       call gz_read_one_integer_b(iflag_swap, id_read_rank, ierr)
+      if(int(id_read_rank) .ne. id_rank) then
+        write(*,*) 'error in peocess ID input'
+        ierr = ierr_file
+      end if
       if(ierr .gt. 0) return
 !
       call gz_read_one_integer_b(iflag_swap, i_time_step_IO, ierr)
@@ -128,7 +137,7 @@
       subroutine gz_read_field_data_b(iflag_swap, nnod, num_field,      &
      &          ncomp, field_name, vect, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
+      integer, intent(in) :: iflag_swap
       integer(kind = kint_gl), intent(in) :: nnod
       integer(kind = kint), intent(in) :: num_field, ncomp
 !

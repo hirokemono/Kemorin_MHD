@@ -7,8 +7,8 @@
 !>@brief Data IO routines for element data
 !!
 !!@verbatim
-!!      subroutine gz_read_element_comm_table(my_rank_IO, comm_IO, ierr)
-!!      subroutine gz_write_element_comm_table(my_rank_IO, comm_IO)
+!!      subroutine gz_read_element_comm_table(id_rank, comm_IO, ierr)
+!!      subroutine gz_write_element_comm_table(id_rank, comm_IO)
 !!        type(communication_table), intent(inout) :: comm_IO
 !!
 !!      subroutine gz_read_element_geometry(nod_IO, sfed_IO)
@@ -35,12 +35,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_read_element_comm_table(my_rank_IO, comm_IO, ierr)
+      subroutine gz_read_element_comm_table(id_rank, comm_IO, ierr)
 !
       use m_fem_mesh_labels
       use gz_domain_data_IO
 !
-      integer (kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(communication_table), intent(inout) :: comm_IO
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -51,7 +51,7 @@
 !      write(textbuf,'(a,a1)') '!' , char(0)
 !      write(textbuf,'(a,a1)', advance='NO') hd_fem_para(), char(0)
 !
-      call gz_read_domain_info(my_rank_IO, comm_IO, ierr)
+      call gz_read_domain_info(id_rank, comm_IO, ierr)
       if(ierr .ne. 0) return
 !
 !      write(textbuf,'(a,a1)') '!', char(0)
@@ -72,12 +72,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_element_comm_table(my_rank_IO, comm_IO)
+      subroutine gz_write_element_comm_table(id_rank, comm_IO)
 !
       use m_fem_mesh_labels
       use gz_domain_data_IO
 !
-      integer (kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
 !
 !
@@ -86,7 +86,7 @@
       textbuf = hd_fem_para() // char(0)
       call gz_write_textbuf_no_lf
 !
-      call gz_write_domain_info(my_rank_IO, comm_IO)
+      call gz_write_domain_info(id_rank, comm_IO)
 !
       textbuf = hd_ecomm_import() // char(0)
       call gz_write_textbuf_no_lf

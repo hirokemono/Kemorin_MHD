@@ -41,7 +41,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: i, ist
-      integer :: nitem_1, nitem_2, nitem_c, nrest
+      integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
       integer :: ilen_line, ilen_used, ilen_in
@@ -66,7 +66,7 @@
 !     &      num, ilen_line, zbuf%ilen_gz, ilen_tmp
 !
         do
-          nitem_1 = int(min(num-ist,ncolumn+1))
+          nitem_1 = min(num-ist,ncolumn+1)
           nitem_2 = int(min(num-ist,ncolumn*(huge_30/ilen_line)))
           nitem_c = nitem_2 - (mod(nitem_2-1,ncolumn)+1)
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
@@ -123,7 +123,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: i, ist
-      integer :: nitem_1, nitem_2, nitem_c, nrest
+      integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
       integer :: ilen_line, ilen_used, ilen_in
@@ -215,10 +215,10 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: i, ist
-      integer :: nitem_1, nitem_2, nitem_c, nrest
+      integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
-      integer :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in, ilength
 !
 !
       zbuf%ilen_gz                                                      &
@@ -248,8 +248,9 @@
 !     &         ist+1, ist+nitem_1, ist+nitem_2, ist+nitem_c,           &
 !     &         zbuf%ilen_gzipped+1, ilen_in
           if(nitem_1 .le. ncolumn) then
-            call gzip_defleat_once(len_multi_6digit_line(nitem_1),      &
-     &          mul_6digit_int_line(nitem_1, int_dat(ist+1)),           &
+            ilength = int(len_multi_6digit_line(nitem_1))
+            call gzip_defleat_once                                      &
+     &         (ilength, mul_6digit_int_line(nitem_1, int_dat(ist+1)),  &
      &          ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
             exit
@@ -269,7 +270,8 @@
 !     &                       ist+nitem_c, ilen_used
 !
             nrest = nitem_2 - nitem_c
-            call gzip_defleat_last(len_multi_6digit_line(nrest),        &
+            ilength = int(len_multi_6digit_line(nrest))
+            call gzip_defleat_last(ilength,                             &
      &          mul_6digit_int_line(nrest, int_dat(ist+nitem_c+1)),     &
      &          ilen_in, ilen_used)
 !            if(my_rank .eq. 0) write(*,*) 'gzip_defleat_last',         &
@@ -296,7 +298,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: i, ist
-      integer :: nitem_1, nitem_2, nitem_c, nrest
+      integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
       integer :: ilen_line, ilen_used, ilen_in
@@ -322,7 +324,7 @@
         do
           nitem_1 = int(min(num-ist,ncolumn+1))
           nitem_2 = int(min(num-ist,ncolumn*(huge_30/ilen_line)))
-          nitem_c = nitem_2 - (mod(nitem_2-1,ncolumn)+1)
+          nitem_c = int(nitem_2 - (mod(nitem_2-1,ncolumn)+1))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
 !          if(my_rank .eq. 0) write(*,*) 'start loop',                  &

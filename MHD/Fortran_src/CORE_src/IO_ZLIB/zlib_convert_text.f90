@@ -36,7 +36,7 @@
 !
       use data_IO_to_textline
 !
-      integer(kind = kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
       character(len=ilength), intent(in) :: chara_dat
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -60,7 +60,7 @@
 !
       use data_IO_to_textline
 !
-      integer(kind = kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
       character(len=ilength), intent(inout) :: text
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -82,7 +82,7 @@
       use field_data_IO
       use field_data_MPI_IO
 !
-      integer(kind = kint), intent(inout) :: ilength
+      integer, intent(inout) :: ilength
       character(len=kchara), intent(inout) :: word
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -122,7 +122,7 @@
 !
       subroutine infleate_skip_header(ilength, zbuf)
 !
-      integer(kind=kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer :: ilen_in, ilen_used

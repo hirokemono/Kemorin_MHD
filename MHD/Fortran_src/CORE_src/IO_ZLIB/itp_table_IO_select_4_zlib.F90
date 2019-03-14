@@ -49,7 +49,7 @@
       subroutine sel_write_interpolate_table                            &
      &         (id_rank, IO_itp_org, IO_itp_dest)
 !
-      integer(kind= kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
@@ -111,7 +111,7 @@
       subroutine sel_write_itp_coefs_dest                               &
      &         (id_rank, IO_itp_dest, IO_itp_c_dest)
 !
-      integer(kind= kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
@@ -141,7 +141,7 @@
       subroutine sel_read_itp_coefs_dest                                &
      &         (id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !
-      integer(kind= kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
@@ -171,7 +171,7 @@
 !
       subroutine sel_read_itp_table_dest(id_rank, IO_itp_dest, ierr)
 !
-      integer(kind= kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !

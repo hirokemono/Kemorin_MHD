@@ -8,7 +8,7 @@
 !!      subroutine write_gz_step_data                                   &
 !!     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !!      subroutine read_gz_step_data                                    &
-!!     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
+!!     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO, ierr_IO)
 !!
 !!      subroutine write_gz_field_data(nnod64, num_field, ntot_comp,    &
 !!     &          ncomp_field, field_name, field_data)
@@ -57,16 +57,23 @@
 !-------------------------------------------------------------------
 !
       subroutine read_gz_step_data                                      &
-     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
+     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO, ierr_IO)
 !
-      integer, intent(inout) :: id_rank
-      integer(kind=kint), intent(inout) :: i_time_step_IO
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(inout) :: i_time_step_IO, ierr_IO
       real(kind = kreal), intent(inout) :: time_IO, delta_t_IO
 !
       character(len = kchara) :: tmpchara
+      integer(kind = kint) :: irank_read
 !
 !
-      call skip_gz_comment_int(id_rank)
+      ierr_IO = 0
+      call skip_gz_comment_int(irank_read)
+      if(int(irank_read) .ne. id_rank) then
+        ierr_IO = 1
+        write(*,*) 'Domain ID is different between process and data'
+      end if
+!
       call skip_gz_comment_int(i_time_step_IO)
       call skip_gz_comment_chara(tmpchara)
       read(tmpchara,*,err=99, end=99) time_IO, delta_t_IO
