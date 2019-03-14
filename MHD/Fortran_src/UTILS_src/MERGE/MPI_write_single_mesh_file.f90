@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine mpi_write_merged_mesh_file                           &
-!!     &         (nprocs_in, my_rank_IO, mesh_file, mesh, group, dbl_nod)
+!!     &         (nprocs_in, id_rank, mesh_file, mesh, group, dbl_nod)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
@@ -40,7 +40,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine mpi_write_merged_mesh_file                             &
-     &         (nprocs_in, my_rank_IO, mesh_file, mesh, group, dbl_nod)
+     &         (nprocs_in, id_rank, mesh_file, mesh, group, dbl_nod)
 !
       use t_para_double_numbering
       use t_file_IO_parameter
@@ -50,7 +50,7 @@
       use set_mesh_file_names
       use MPI_ascii_data_IO
 !
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
@@ -61,12 +61,12 @@
 !
 !
       file_name = set_mesh_file_name                                    &
-     &      (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+     &      (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write ascii mesh file: ', trim(file_name)
 !
       call open_write_mpi_file                                          &
-     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+     &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call mpi_write_merged_geometry_data(IO_param, mesh, dbl_nod)
       call mpi_write_merged_mesh_groups                                 &

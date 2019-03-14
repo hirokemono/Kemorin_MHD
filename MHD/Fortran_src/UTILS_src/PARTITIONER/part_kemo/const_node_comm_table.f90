@@ -72,10 +72,11 @@
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: j, jp
+      integer(kind = kint) :: j
+      integer :: jp
 !
       do j = 1, new_comm%num_neib
-        jp = new_comm%id_neib(j)
+        jp = int(new_comm%id_neib(j))
 !
         call load_node_import_num_tmp(jp, comm_part)
         call count_each_nod_export_num_part                             &
@@ -102,11 +103,12 @@
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: j, jp
+      integer(kind = kint) :: j
+      integer :: jp
 !
 !
       do j = 1, new_comm%num_neib
-        jp = new_comm%id_neib(j)
+        jp = int(new_comm%id_neib(j))
 !
         call load_node_import_item_tmp(jp, comm_part)
         call each_nod_export_item_4_part(ip, j, nod_d_grp,              &

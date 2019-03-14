@@ -36,11 +36,11 @@
       use work_nod_comm_table_IO
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: ip
+      integer, intent(in) :: ip
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: id_rank
+      integer :: id_rank
       character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
@@ -69,11 +69,11 @@
       use work_nod_comm_table_IO
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: ip
+      integer, intent(in) :: ip
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: id_rank
+      integer :: id_rank
       character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
@@ -103,11 +103,11 @@
       use work_nod_comm_table_IO
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: ip
+      integer, intent(in) :: ip
       type(partitioner_comm_tables), intent(in) :: comm_part
       type(communication_table), intent(inout) :: new_comm
 !
-      integer(kind = kint) :: id_rank
+      integer :: id_rank
       character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
@@ -137,12 +137,12 @@
       use work_nod_comm_table_IO
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: ip
+      integer, intent(in) :: ip
       type(partitioner_comm_tables), intent(in) :: comm_part
 !
       type(communication_table), intent(inout) :: new_comm
 !
-      integer(kind = kint) :: id_rank
+      integer :: id_rank
       character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
@@ -170,10 +170,10 @@
 !
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: jp
+      integer, intent(in) :: jp
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: id_rank
+      integer :: id_rank
       character(len=kchara) :: file_name
       integer(kind = kint), parameter :: id_work_file = 11
 !
@@ -200,7 +200,7 @@
 !
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: jp
+      integer, intent(in) :: jp
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       integer :: id_rank

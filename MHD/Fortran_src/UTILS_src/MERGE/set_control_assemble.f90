@@ -4,9 +4,9 @@
 !
 !!      subroutine set_control_4_merge(mgd_ctl, asbl_param, num_pe)
 !!      subroutine set_control_4_newrst                                 &
-!!     &         (nprocs, mgd_ctl, asbl_param, ierr)
+!!     &         (num_pe, mgd_ctl, asbl_param, ierr)
 !!      subroutine set_control_4_newudt                                 &
-!!     &         (nprocs, mgd_ctl, asbl_param, ierr)
+!!     &         (num_pe, mgd_ctl, asbl_param, ierr)
 !!        type(control_data_4_merge), intent(in) :: mgd_ctl
 !!        type(control_param_assemble), intent(inout) :: asbl_param
 !!      subroutine set_assemble_field_list(mgd_ctl, asbl_tbl)
@@ -61,14 +61,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_newrst                                   &
-     &         (nprocs, mgd_ctl, asbl_param, ierr)
+     &         (num_pe, mgd_ctl, asbl_param, ierr)
 !
       use t_control_data_4_merge
       use m_file_format_switch
       use m_default_file_prefix
       use set_control_platform_data
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(control_data_4_merge), intent(in) :: mgd_ctl
       type(control_param_assemble), intent(inout) :: asbl_param
       integer(kind = kint), intent(inout) :: ierr
@@ -80,7 +80,7 @@
         ierr = 1
         return
       end if
-      if(mgd_ctl%assemble_plt%ndomain_ctl%intvalue .ne. nprocs) then
+      if(mgd_ctl%assemble_plt%ndomain_ctl%intvalue .ne. num_pe) then
         ierr = 1
         return
       end if
@@ -104,7 +104,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_newudt                                   &
-     &         (nprocs, mgd_ctl, asbl_param, ierr)
+     &         (num_pe, mgd_ctl, asbl_param, ierr)
 !
       use t_control_data_4_merge
       use m_file_format_switch
@@ -112,7 +112,7 @@
       use skip_comment_f
       use set_control_platform_data
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(control_data_4_merge), intent(in) :: mgd_ctl
       type(control_param_assemble), intent(inout) :: asbl_param
       integer(kind = kint), intent(inout) :: ierr
@@ -124,7 +124,7 @@
         ierr = 1
         return
       end if
-      if(mgd_ctl%assemble_plt%ndomain_ctl%intvalue .ne. nprocs) then
+      if(mgd_ctl%assemble_plt%ndomain_ctl%intvalue .ne. num_pe) then
         ierr = 1
         return
       end if

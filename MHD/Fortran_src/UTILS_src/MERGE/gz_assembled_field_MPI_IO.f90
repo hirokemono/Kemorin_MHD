@@ -320,8 +320,8 @@
       end do
 !
 !       Write data size
-      call gz_mpi_write_i8stack_head_b                                  &
-     &   (IO_param, cast_long(IO_param%nprocs_in), istack_gz_pe)
+      call gz_mpi_write_merged_stack_b                                  &
+     &   (IO_param, IO_param%nprocs_in, istack_gz_pe)
 !
 !       Write to file
       do iloop = 1, nloop

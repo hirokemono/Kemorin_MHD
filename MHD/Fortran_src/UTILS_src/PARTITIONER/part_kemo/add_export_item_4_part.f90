@@ -4,7 +4,7 @@
 !      Written by H. Matsui on Sep., 2007
 !
 !!      subroutine add_nod_export_item_4_part                           &
-!!     &         (nprocs, ip, new_comm, comm_part)
+!!     &         (num_pe, ip, new_comm, comm_part)
 !!        type(communication_table), intent(inout) :: new_comm
 !!        type(temporary_import_4_part), intent(inout) :: ipt_tmp
 !
@@ -37,29 +37,31 @@
 !   --------------------------------------------------------------------
 !
       subroutine add_nod_export_item_4_part                             &
-     &         (nprocs, ip, new_comm, comm_part)
+     &         (num_pe, ip, new_comm, comm_part)
 !
       use t_comm_table
       use t_partitioner_comm_table
       use sel_part_nod_comm_input
 !
-      integer(kind = kint), intent(in) :: nprocs, ip
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: ip
 !
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: j, jg, jp
+      integer(kind = kint) :: j, jg
+      integer :: jp
 !
 !
-      allocate( iflag_neib(nprocs) )
-      iflag_neib(1:nprocs) = 1
+      allocate( iflag_neib(num_pe) )
+      iflag_neib(1:num_pe) = 1
 !
       do j = 1, new_comm%num_neib
         jp = new_comm%id_neib(j)
         iflag_neib(jp) = 0
       end do
 !
-      do jp = 1, nprocs
+      do jp = 1, num_pe
         if ( iflag_neib(jp) .eq. 1) then
 !
           call load_node_import_num_tmp(jp, comm_part)

@@ -4,11 +4,11 @@
 !     Written by H. Matsui on Sep., 2007
 !
 !!      subroutine gen_node_import_tables                               &
-!!     &         (nprocs, itl_nod_part, nod_d_grp, comm_part)
+!!     &         (num_pe, itl_nod_part, nod_d_grp, comm_part)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
 !!        type(partitioner_comm_tables), intent(inout) :: comm_part
 !!      subroutine gen_node_export_tables                               &
-!!     &         (nprocs, itl_nod_part, nod_d_grp, comm_part)
+!!     &         (num_pe, itl_nod_part, nod_d_grp, comm_part)
 !!        type(internal_4_partitioner), intent(in) :: itl_nod_part
 !!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !!        type(partitioner_comm_tables), intent(inout) :: comm_part
@@ -34,7 +34,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine gen_node_import_tables                                 &
-     &         (nprocs, itl_nod_part, nod_d_grp, comm_part)
+     &         (num_pe, itl_nod_part, nod_d_grp, comm_part)
 !
       use set_parallel_file_name
       use const_neighbour_domain
@@ -42,7 +42,7 @@
       use sel_part_nod_comm_input
       use check_domain_prop_4_part
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
       type(internal_4_partitioner), intent(in) :: itl_nod_part
@@ -54,20 +54,20 @@
 !
 !
       if(comm_part%iflag_memory_conserve .eq. 0) then
-        call alloc_nod_comm_tbl_part(nprocs, comm_part)
+        call alloc_nod_comm_tbl_part(num_pe, comm_part)
       end if
 !
-      call allocate_wk_neib_domain(nprocs)
+      call allocate_wk_neib_domain(num_pe)
 !
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         id_rank = ip - 1
 !
         call count_neib_domain_by_node                                  &
-     &     (nod_d_grp, itl_nod_part, ip, nprocs, new_comm%num_neib)
+     &     (nod_d_grp, itl_nod_part, ip, num_pe, new_comm%num_neib)
 !
         call alloc_neighbouring_id(new_comm)
         call set_neib_domain_by_node(nod_d_grp, itl_nod_part,           &
-     &      ip, nprocs, new_comm%num_neib, new_comm%id_neib)
+     &      ip, num_pe, new_comm%num_neib, new_comm%id_neib)
 !
         call write_neighboring_pes(ip, new_comm)
 !C
@@ -87,7 +87,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine gen_node_export_tables                                 &
-     &         (nprocs, itl_nod_part, nod_d_grp, comm_part)
+     &         (num_pe, itl_nod_part, nod_d_grp, comm_part)
 !
       use set_parallel_file_name
       use set_local_by_subdomain_tbl
@@ -95,7 +95,7 @@
       use add_export_item_4_part
       use sel_part_nod_comm_input
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(internal_4_partitioner), intent(in) :: itl_nod_part
 !
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
@@ -109,7 +109,7 @@
 !C | update FILE : EXPORT pointers |
 !C +-------------------------------+
 !C===
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         id_rank = ip - 1
 !C
 !C-- "marking" with GLOBAL NODE ID
@@ -126,7 +126,7 @@
      &       'count_nod_export_item_4_part ', id_rank
         call count_nod_export_item_4_part(ip, new_comm, comm_part)
         call add_nod_export_item_4_part                                 &
-     &     (nprocs, ip, new_comm, comm_part)
+     &     (num_pe, ip, new_comm, comm_part)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &       's_cal_total_and_stacks ', id_rank

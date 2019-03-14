@@ -64,8 +64,8 @@
 !
       type(mesh_data), allocatable :: para_fem(:)
 !
-      integer(kind=kint) :: ip, i
-      integer(kind=kint) :: irank_subdomain
+      integer :: ip, irank_subdomain
+      integer(kind=kint) :: i
 
 !C
 !C-- init.
