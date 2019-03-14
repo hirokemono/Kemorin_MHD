@@ -79,8 +79,6 @@
         real(kind = kreal), intent(in) :: xyz_min(3)
         real(kind = kreal), intent(in) :: xyz_max(3)
 
-        integer(kind = kint) :: iflag_back
-
         real(kind = kreal) :: step_vec(3), new_pos(3)
         integer(kind = kint) :: ilic_suf_org(3), icur_sf
         integer(kind = kint) :: i, isf_tgt
@@ -135,7 +133,6 @@
         if(iflag_debug .eq. 1) write(50+my_rank,*)                      &
      &     "--------------------Forward iter begin----------------"
 !   forward integration
-        iflag_back = 1
         step_vec(1:3) = vec_org(1:3)
         new_pos(1:3) = xx_org(1:3)
 ! if current surface is exterior surface, then return.
@@ -152,7 +149,8 @@
         do i = 1, 2
           iele = isurf_orgs(i,1)
           isf_org = isurf_orgs(i,2)
-          call find_line_end_in_1ele(iflag_back, nnod, nelem, nsurf,    &
+          call find_line_end_in_1ele                                    &
+     &       (iflag_forward_line, nnod, nelem, nsurf,                   &
      &        nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,       &
      &        vec_org, xx_org, isf_tgt, new_pos, xi)
           if(isf_tgt .gt. 0) then
@@ -175,7 +173,7 @@
           call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
      &        nnod_4_surf, xx, ie_surf, isf_4_ele,                      &
      &        iele_4_surf, interior_surf, lic_p,                        &
-     &        iflag_back, xyz_min, xyz_max,                             &
+     &        iflag_forward_line, xyz_min, xyz_max,                     &
      &        v_nod, ilic_suf_org, new_pos, step_vec,                   &
      &        kernal_size, kernal_node, ref_nod,                        &
      &        lic_v, n_grad, k_area, iflag_comm)
@@ -184,15 +182,15 @@
         if(iflag_debug .eq. 1) write(50+my_rank,*) "-----------------------Forward iter end-------------with:", iflag_comm
 
         if(iflag_debug .eq. 1) write(50+my_rank,*) "-----------------------Backward iter begin--------------------"
-        !   Backward iteration
+!   Backward iteration
         iflag_found_sf = 0
-        iflag_back = -1
         step_vec(1:3) = vec_org(1:3)
         new_pos(1:3) = xx_org(1:3)
         do i = 1, 2
           iele = isurf_orgs(i,1)
           isf_org = isurf_orgs(i,2)
-          call find_line_end_in_1ele(iflag_back, nnod, nelem, nsurf,    &
+          call find_line_end_in_1ele                                    &
+     &     (iflag_backward_line, nnod, nelem, nsurf,                    &
      &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
      &      vec_org, xx_org, isf_tgt, new_pos, xi)
           if(isf_tgt .gt. 0) then
@@ -212,7 +210,7 @@
           call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
           &          nnod_4_surf, xx, ie_surf, isf_4_ele,               &
           &          iele_4_surf, interior_surf, lic_p,                 &
-          &          iflag_back, xyz_min, xyz_max,                      &
+          &          iflag_backward_line, xyz_min, xyz_max,             &
           &          v_nod, ilic_suf_org, new_pos, step_vec,            &
           &          kernal_size, kernal_node, ref_nod,                 &
           &          lic_v, n_grad, k_area, iflag_comm)
@@ -235,7 +233,7 @@
     subroutine s_cal_lic_from_point(numnod, numele, numsurf,           &
     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
     &          iele_4_surf, interior_surf, lic_p,                      &
-    &          iflag_back, xyz_min, xyz_max,                           &
+    &          iflag_dir, xyz_min, xyz_max,                            &
     &          vect_nod, isurf_org, x_start, v_start,                  &
     &          k_size, k_node, ref_nod,                                &
     &          lic_v, grad_v, k_area, iflag_comm)
@@ -251,7 +249,7 @@
       integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
       integer(kind = kint), intent(in) :: interior_surf(numsurf)
     !
-      integer(kind = kint), intent(in) :: iflag_back
+      integer(kind = kint), intent(in) :: iflag_dir
       real(kind = kreal), intent(in) :: vect_nod(numnod,3)
       type(lic_parameters), intent(in) :: lic_p
       real(kind = kreal), intent(in) :: ref_nod(numnod,lic_p%num_masking)
@@ -320,7 +318,7 @@
           iele = iele_4_surf(isurf_start,i,1)
           isf_org = iele_4_surf(isurf_start,i,2)
           if(iele .gt. 0) then
-            call find_line_end_in_1ele(iflag_back, numnod, numele, numsurf,         &
+            call find_line_end_in_1ele(iflag_dir, numnod, numele, numsurf,          &
             &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,              &
             &      v_start, x_start, isf_tgt, x_tgt, xi)
             if(isf_tgt .gt. 0) then
@@ -350,7 +348,7 @@
       !
       !   extend to surface of element
       !
-        call find_line_end_in_1ele(iflag_back, numnod, numele, numsurf, &
+        call find_line_end_in_1ele(iflag_dir, numnod, numele, numsurf,  &
      &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
      &      v_start, x_start, isf_tgt, x_tgt, xi)
       !
@@ -390,7 +388,7 @@
         len_sum = len_sum + step_len
         len_sum = min(len_sum, lic_p%trace_length)
         k_pos = 0.0
-        if(iflag_back .eq. ione) then
+        if(iflag_dir .eq. iflag_forward_line) then
           k_pos =  0.5 + 0.5 * len_sum/(lic_p%trace_length)
         else
           k_pos =  0.5 - 0.5 * len_sum/(lic_p%trace_length)
@@ -464,7 +462,7 @@
             &     x_tgt, xyz_min, xyz_max, g_v)
           end if
           !call noise_nd_sampling(n_size, n_node, x_tgt, xyz_min, xyz_max, n_v)
-          if(iflag_back .eq. ione) then
+          if(iflag_dir .eq. iflag_forward_line) then
             k_pos =  0.5 + 0.5 * len_sum/(lic_p%trace_length)
           else
             k_pos =  0.5 - 0.5 * len_sum/(lic_p%trace_length)

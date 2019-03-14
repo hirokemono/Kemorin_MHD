@@ -4,7 +4,7 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!      subroutine find_line_end_in_1ele(iflag_back, nnod, nele, nsurf,  &
+!      subroutine find_line_end_in_1ele(iflag_dir, nnod, nele, nsurf,   &
 !     &          nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,    &
 !     &          fline, x0, isf_tgt, x_tgt, xi)
 !      subroutine cal_fline_to_square(x0, vec, x_quad, x_tgt, ierr)
@@ -15,10 +15,13 @@
       use m_precision
 !
       use m_constants
-!      use calypso_mpi
       use m_geometry_constants
 !
+!
       implicit  none
+!
+      integer(kind = kint), parameter :: iflag_forward_line =   1
+      integer(kind = kint), parameter :: iflag_backward_line = -1
 !
 !------------------------------------------------------------------
 !
@@ -26,12 +29,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine find_line_end_in_1ele(iflag_back, nnod, nele, nsurf,   &
+      subroutine find_line_end_in_1ele(iflag_dir, nnod, nele, nsurf,    &
      &          nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,     &
      &          fline, x0, isf_tgt, x_tgt, xi)
 !
       integer(kind = kint), intent(in) :: nnod, nele, nsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf, iflag_back
+      integer(kind = kint), intent(in) :: nnod_4_surf, iflag_dir
       integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(nele,nsurf_4_ele)
       real(kind = kreal), intent(in) :: xx(nnod,3)
@@ -47,7 +50,7 @@
       integer(kind = kint) :: ist, ied, inc, k, k1, k2, inod, isurf
 !
 !
-      if(iflag_back .eq. 1) then
+      if(iflag_dir .eq. iflag_forward_line) then
         b_ray(1:3) = -fline(1:3)
       else
         b_ray(1:3) =  fline(1:3)

@@ -7,7 +7,7 @@
 !!      subroutine s_extend_field_line(numnod, numele, numsurf,         &
 !!     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                  &
 !!     &          iele_4_surf, interior_surf, vnorm_surf,               &
-!!     &          max_line_step, iflag_used_ele, iflag_back,            &
+!!     &          max_line_step, iflag_used_ele, iflag_dir,             &
 !!     &          vect_nod, color_nod, isurf_org, x_start, v_start,     &
 !!     &          c_field, icount_line, iflag_comm, fline_lc)
 !!        type(local_fieldline), intent(inout) :: fline_lc
@@ -31,7 +31,7 @@
       subroutine s_extend_field_line(numnod, numele, numsurf,           &
      &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
      &          iele_4_surf, interior_surf, vnorm_surf,                 &
-     &          max_line_step, iflag_used_ele, iflag_back,              &
+     &          max_line_step, iflag_used_ele, iflag_dir,               &
      &          vect_nod, color_nod, isurf_org, x_start, v_start,       &
      &          c_field, icount_line, iflag_comm, fline_lc)
 !
@@ -48,7 +48,7 @@
       integer(kind = kint), intent(in) :: interior_surf(numsurf)
       real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
 !
-      integer(kind = kint), intent(in) :: iflag_back, max_line_step
+      integer(kind = kint), intent(in) :: iflag_dir, max_line_step
       integer(kind = kint), intent(in) :: iflag_used_ele(numele)
       real(kind = kreal), intent(in) :: vect_nod(numnod,3)
       real(kind = kreal), intent(in) :: color_nod(numnod)
@@ -78,7 +78,7 @@
 !
 !   extend in the middle of element
 !
-        call find_line_end_in_1ele(iflag_back, numnod, numele, numsurf, &
+        call find_line_end_in_1ele(iflag_dir, numnod, numele, numsurf,  &
      &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
      &      v_start, x_start, isf_tgt, x_tgt, xi)
 !
@@ -102,7 +102,7 @@
 !
 !   extend to surface of element
 !
-        call find_line_end_in_1ele(iflag_back, numnod, numele, numsurf, &
+        call find_line_end_in_1ele(iflag_dir, numnod, numele, numsurf,  &
      &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
      &      v_start, x_start, isf_tgt, x_tgt, xi)
 !
@@ -124,7 +124,7 @@
      &        + v_start(2) * vnorm_surf(isurf_end,2)                    &
      &        + v_start(3) * vnorm_surf(isurf_end,3))                   &
      &         * dble(isf_4_ele(iele,isf_tgt) / isurf_end)              &
-     &         *(-one)**iflag_back
+     &         *(-one)**iflag_dir
 !
 !         write(60+my_rank,'(a6,i8,1p4e16.7)')  'x_tgt: ', icount_line, &
 !     &          v_start(1:3), flux
