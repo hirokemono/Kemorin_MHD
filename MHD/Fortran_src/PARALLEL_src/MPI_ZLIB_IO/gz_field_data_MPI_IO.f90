@@ -14,9 +14,9 @@
 !!      subroutine gz_read_fld_charhead_mpi(id_fld,                     &
 !!     &         ioff_gl, ilength, chara_dat)
 !!      subroutine gz_read_fld_1word_mpi(id_fld, ioff_gl, field_name)
-!!      subroutine gz_read_each_field_mpi(id_fld, nprocs_in, id_rank,   &
+!!      subroutine gz_read_each_field_mpi(id_fld, num_pe, id_rank,      &
 !!     &          ioff_gl, nnod, ndir, vector)
-!!      subroutine gz_skip_each_field_mpi(id_fld, nprocs_in, ioff_gl)
+!!      subroutine gz_skip_each_field_mpi(id_fld, num_pe, ioff_gl)
 !!@endverbatim
 !
       module gz_field_data_MPI_IO
@@ -178,7 +178,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_each_field_mpi(id_fld, nprocs_in, id_rank,     &
+      subroutine gz_read_each_field_mpi(id_fld, num_pe, id_rank,        &
      &          ioff_gl, nnod, ndir, vector)
 !
       use field_data_IO
@@ -188,7 +188,7 @@
 !
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
 !
       integer(kind = kint_gl), intent(in) :: nnod
       integer(kind = kint), intent(in) :: ndir
@@ -197,28 +197,28 @@
       type(buffer_4_gzip) :: zbuf
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
-      character(len=nprocs_in*16+1) :: textbuf_p
+      character(len=num_pe*16+1) :: textbuf_p
 !
-      integer(kind = kint_gl) :: istack_buf(0:nprocs_in)
+      integer(kind = kint_gl) :: istack_buf(0:num_pe)
 !
 !
       call gz_read_fld_charhead_mpi                                     &
      &   (id_fld, ioff_gl, len(textbuf_p), textbuf_p)
 
       if(my_rank .eq. 0) call read_bufer_istack_nod_buffer              &
-     &                      (textbuf_p, nprocs_in, istack_buf)
+     &                      (textbuf_p, num_pe, istack_buf)
 !
-      call MPI_BCAST(istack_buf, int(nprocs_in+1), CALYPSO_GLOBAL_INT,  &
+      call MPI_BCAST(istack_buf, int(num_pe+1), CALYPSO_GLOBAL_INT,     &
      &    0, CALYPSO_COMM, ierr_MPI)
 !
 !
-      if(id_rank .ge. nprocs_in) then
-        ioff_gl = ioff_gl + istack_buf(nprocs_in)
+      if(id_rank .ge. num_pe) then
+        ioff_gl = ioff_gl + istack_buf(num_pe)
         return
       end if
 !
       ioffset = ioff_gl + istack_buf(id_rank)
-      ioff_gl = ioff_gl + istack_buf(nprocs_in)
+      ioff_gl = ioff_gl + istack_buf(num_pe)
       zbuf%ilen_gz = istack_buf(id_rank+1) - istack_buf(id_rank)
       call alloc_zip_buffer(zbuf)
       call calypso_mpi_seek_read_gz(id_fld, ioffset, zbuf)
@@ -229,28 +229,28 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_skip_each_field_mpi(id_fld, nprocs_in, ioff_gl)
+      subroutine gz_skip_each_field_mpi(id_fld, num_pe, ioff_gl)
 !
       use field_data_IO
 !
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer, intent(in) :: nprocs_in
+      integer, intent(in) :: num_pe
 !
       integer :: ilength
-      character(nprocs_in*16+1) :: textbuf_c
+      character(num_pe*16+1) :: textbuf_c
 !
-      integer(kind = kint_gl) :: istack_buf(0:nprocs_in)
+      integer(kind = kint_gl) :: istack_buf(0:num_pe)
 !
 !
-      ilength = len(buffer_istack_nod_buffer(nprocs_in,istack_buf))
+      ilength = len(buffer_istack_nod_buffer(num_pe,istack_buf))
 !
       call gz_read_fld_charhead_mpi                                     &
      &   (id_fld, ioff_gl, ilength, textbuf_c)
       call read_bufer_istack_nod_buffer                                 &
-     &   (textbuf_c, nprocs_in, istack_buf)
+     &   (textbuf_c, num_pe, istack_buf)
 !
-      ioff_gl = ioff_gl + istack_buf(nprocs_in)
+      ioff_gl = ioff_gl + istack_buf(num_pe)
 !
       end subroutine gz_skip_each_field_mpi
 !

@@ -8,19 +8,19 @@
 !!
 !!@verbatim
 !!      subroutine gz_mpi_read_mesh                                     &
-!!     &         (nprocs_in, id_rank, file_name, fem_IO)
+!!     &         (num_pe, id_rank, file_name, fem_IO)
 !!        type(mesh_data), intent(inout) :: fem_IO
 !!
 !!      subroutine gz_mpi_read_mesh_geometry                            &
-!!     &         (nprocs_in, id_rank, file_name, mesh_IO)
+!!     &         (num_pe, id_rank, file_name, mesh_IO)
 !!      subroutine gz_mpi_read_node_size                                &
-!!     &         (nprocs_in, id_rank, file_name, mesh_IO)
+!!     &         (num_pe, id_rank, file_name, mesh_IO)
 !!      subroutine gz_mpi_read_geometry_size                            &
-!!     &         (nprocs_in, id_rank, file_name, mesh_IO)
+!!     &         (num_pe, id_rank, file_name, mesh_IO)
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
 !!
 !!      subroutine gz_mpi_write_mesh_file                               &
-!!     &         (nprocs_in, id_rank, file_name, fem_IO)
+!!     &         (num_pe, id_rank, file_name, fem_IO)
 !!        type(mesh_data), intent(in) :: fem_IO
 !!@endverbatim
 !!
@@ -46,9 +46,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gz_mpi_read_mesh                                       &
-     &         (nprocs_in, id_rank, file_name, fem_IO)
+     &         (num_pe, id_rank, file_name, fem_IO)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       character(len=kchara), intent(in) :: file_name
       type(mesh_data), intent(inout) :: fem_IO
 !
@@ -57,7 +57,7 @@
      &   'Read gzipped merged mesh file: ', trim(file_name)
 !
       call open_read_mpi_file                                           &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_mpi_read_geometry_data(IO_param, fem_IO%mesh)
       call gz_mpi_read_mesh_groups(IO_param, fem_IO%group)
@@ -69,9 +69,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gz_mpi_read_mesh_geometry                              &
-     &         (nprocs_in, id_rank, file_name, mesh_IO)
+     &         (num_pe, id_rank, file_name, mesh_IO)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       character(len=kchara), intent(in) :: file_name
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
@@ -80,7 +80,7 @@
      &   'Read gzipped merged mesh file: ', trim(file_name)
 !
       call open_read_mpi_file                                           &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
       call gz_mpi_read_geometry_data(IO_param, mesh_IO)
       call close_mpi_file(IO_param)
 !
@@ -89,9 +89,9 @@
 !  ---------------------------------------------------------------------
 !
        subroutine gz_mpi_read_node_size                                 &
-     &         (nprocs_in, id_rank, file_name, mesh_IO)
+     &         (num_pe, id_rank, file_name, mesh_IO)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       character(len=kchara), intent(in) :: file_name
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
@@ -100,7 +100,7 @@
      &   'Read gzipped merged mesh file: ', trim(file_name)
 !
       call open_read_mpi_file                                           &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
       call gz_mpi_read_num_node(IO_param, mesh_IO)
       call close_mpi_file(IO_param)
 !
@@ -109,9 +109,9 @@
 !------------------------------------------------------------------
 !
        subroutine gz_mpi_read_geometry_size                             &
-      &         (nprocs_in, id_rank, file_name, mesh_IO)
+      &         (num_pe, id_rank, file_name, mesh_IO)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       character(len=kchara), intent(in) :: file_name
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
@@ -120,7 +120,7 @@
      &   'Read gzipped merged mesh file: ', trim(file_name)
 !
       call open_read_mpi_file                                           &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
       call gz_mpi_read_num_node_ele(IO_param, mesh_IO)
       call close_mpi_file(IO_param)
 !
@@ -130,9 +130,9 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_write_mesh_file                                 &
-     &         (nprocs_in, id_rank, file_name, fem_IO)
+     &         (num_pe, id_rank, file_name, fem_IO)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       character(len=kchara), intent(in) :: file_name
       type(mesh_data), intent(in) :: fem_IO
 !
@@ -141,7 +141,7 @@
      &  'Write gzipped merged mesh file: ', trim(file_name)
 !
       call open_write_mpi_file                                          &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
       call gz_mpi_write_geometry_data(IO_param, fem_IO%mesh)
       call gz_mpi_write_mesh_groups(IO_param, fem_IO%group)
 !

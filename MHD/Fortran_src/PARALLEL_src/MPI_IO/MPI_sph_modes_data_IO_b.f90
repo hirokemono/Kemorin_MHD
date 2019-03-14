@@ -34,8 +34,6 @@
 !!        type(sph_group_data), intent(in) :: sph_grps_IO
 !!@endverbatim
 !!
-!!@param nprocs_in  Number of subdomain
-!!@param id_rank    Domain ID
 !
       module MPI_sph_modes_data_IO_b
 !

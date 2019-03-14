@@ -14,7 +14,7 @@
 !!      subroutine link_node_data_2_ucd(node, ucd)
 !!      subroutine link_ele_data_2_ucd(ele, ucd)
 !!      subroutine link_field_data_to_ucd(node, phys_nod, ucd)
-!!      subroutine link_nnod_stacks_2_ucd(nprocs_in, node, ele, m_ucd)
+!!      subroutine link_nnod_stacks_2_ucd(num_pe, node, ele, m_ucd)
 !!
 !!      subroutine alloc_phys_name_type_by_output(ucd, phys_nod)
 !!      subroutine alloc_phys_data_type_by_output(ucd, node, phys_nod)
@@ -155,17 +155,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine link_nnod_stacks_2_ucd(nprocs_in, node, ele, m_ucd)
+      subroutine link_nnod_stacks_2_ucd(num_pe, node, ele, m_ucd)
 !
       use set_ucd_data
 !
-      integer, intent(in) :: nprocs_in
+      integer, intent(in) :: num_pe
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
-      call link_numnod_stacks_2_output(nprocs_in, node%istack_numnod,   &
+      call link_numnod_stacks_2_output(num_pe, node%istack_numnod,      &
      &    node%istack_internod, ele%istack_interele, m_ucd)
 !
       end subroutine link_nnod_stacks_2_ucd

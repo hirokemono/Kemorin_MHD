@@ -10,11 +10,6 @@
 !!      subroutine alloc_istack_merge(id_rank, nprocs_in, IO_param)
 !!      subroutine dealloc_istack_merge(IO_param)
 !!
-!!      subroutine mpi_write_chara_array_mul(id_file, nprocs_in, nloop, &
-!!     &          ioff_gl, istack_merged, c_array)
-!!      subroutine mpi_read_chara_array_mul(id_file, nprocs_in, nloop,  &
-!!     &          ioff_gl, istack_merged, c_array)
-!!
 !!      integer(kind = kint) function rank_in_multi_domain(iloop)
 !!      integer(kind = kint) function num_loop_4_multi_domain(nprocs_in)
 !!      subroutine copy_istack_4_parallell_data(istack8, IO_param)

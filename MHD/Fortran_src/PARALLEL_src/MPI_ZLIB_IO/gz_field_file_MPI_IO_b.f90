@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine gz_write_step_fld_file_mpi_b                         &
-!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+!!     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !!
 !!      subroutine gz_write_field_head_mpi_b                            &
 !!     &         (IO_param_l, i_time_step_IO, time_IO, delta_t_IO,      &
@@ -17,12 +17,12 @@
 !!     &          nnod, num_field, ntot_comp, field_name, d_nod)
 !!
 !!      subroutine gz_read_step_field_file_mpi_b                        &
-!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+!!     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !!      subroutine gz_rd_alloc_st_fld_file_mpi_b                        &
-!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+!!     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !!
 !!      subroutine gz_rd_alloc_st_fld_head_mpi_b                        &
-!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+!!     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !!@endverbatim
 !
       module gz_field_file_MPI_IO_b
@@ -51,7 +51,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gz_write_step_fld_file_mpi_b                           &
-     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !
       use m_error_IDs
       use MPI_binary_head_IO
@@ -60,19 +60,19 @@
 !
       character(len=kchara), intent(in) :: file_name
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
 !
-      if(nprocs .ne. nprocs_in)  call calypso_mpi_abort                 &
+      if(nprocs .ne. num_pe)  call calypso_mpi_abort                    &
      &                (ierr_fld, 'gzipped data output does not work')
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &    'write gzipped binary data by MPI-IO: ', trim(file_name)
 !
       call open_write_gz_mpi_file_b                                     &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_write_field_head_mpi_b(IO_param,                          &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt,                         &
@@ -89,7 +89,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_read_step_field_file_mpi_b                          &
-     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !
       use field_file_MPI_IO
       use MPI_binary_head_IO
@@ -99,7 +99,7 @@
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -110,12 +110,12 @@
       if(my_rank .eq. 0) write(*,*)                                     &
      &    'read gzipped binary data by MPI-IO: ', trim(file_name)
       call open_read_gz_mpi_file_b                                      &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_read_step_data_mpi_b(IO_param,                            &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt)
 !
-      call alloc_merged_field_stack(nprocs_in, fld_IO)
+      call alloc_merged_field_stack(num_pe, fld_IO)
       call gz_read_field_header_mpi_b                                   &
      &   (IO_param, fld_IO%nnod_IO, fld_IO%num_field_IO)
 !
@@ -139,7 +139,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_rd_alloc_st_fld_file_mpi_b                          &
-     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !
       use field_file_MPI_IO
       use MPI_binary_head_IO
@@ -149,7 +149,7 @@
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -160,12 +160,12 @@
       if(my_rank .eq. 0) write(*,*)                                     &
      &      'read gzipped binary data MPI-IO: ', trim(file_name)
       call open_read_gz_mpi_file_b                                      &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_read_step_data_mpi_b(IO_param,                            &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt)
 !
-      call alloc_merged_field_stack(nprocs_in, fld_IO)
+      call alloc_merged_field_stack(num_pe, fld_IO)
       call gz_read_field_header_mpi_b                                   &
      &   (IO_param, fld_IO%nnod_IO, fld_IO%num_field_IO)
 !
@@ -185,7 +185,7 @@
       call close_mpi_file(IO_param)
 !
       call dealloc_merged_field_stack(fld_IO)
-      if(id_rank .ge. nprocs_in) then
+      if(id_rank .ge. num_pe) then
         call dealloc_phys_data_IO(fld_IO)
         call dealloc_phys_name_IO(fld_IO)
       end if
@@ -195,7 +195,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_rd_alloc_st_fld_head_mpi_b                          &
-     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !
       use field_file_MPI_IO
       use MPI_binary_head_IO
@@ -204,7 +204,7 @@
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -213,12 +213,12 @@
       if(my_rank .eq. 0) write(*,*)                                     &
      &    'read gzipped binary data by MPI-IO: ', trim(file_name)
       call open_read_gz_mpi_file_b                                      &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_read_step_data_mpi_b(IO_param,                            &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt)
 !
-      call alloc_merged_field_stack(nprocs_in, fld_IO)
+      call alloc_merged_field_stack(num_pe, fld_IO)
       call gz_read_field_header_mpi_b                                   &
      &   (IO_param, fld_IO%nnod_IO, fld_IO%num_field_IO)
 !
@@ -234,7 +234,7 @@
       call close_mpi_file(IO_param)
 !
       call dealloc_merged_field_stack(fld_IO)
-      if(id_rank .ge. nprocs_in) call dealloc_phys_name_IO(fld_IO)
+      if(id_rank .ge. num_pe) call dealloc_phys_name_IO(fld_IO)
 !
       end subroutine gz_rd_alloc_st_fld_head_mpi_b
 !

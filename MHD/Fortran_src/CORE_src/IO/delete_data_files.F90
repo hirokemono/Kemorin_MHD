@@ -67,11 +67,12 @@
 !
       integer(kind=kint), intent(in) :: iflag_fmt, nprocs
       character(len=kchara), intent(in) :: file_head
+!
       integer :: ip, id_rank
       character(len=kchara) :: file_name, fname_tmp
 !
 !
-      do ip = 1, nprocs
+      do ip = 1, int(nprocs)
         id_rank = ip - 1
         fname_tmp = add_process_id(id_rank, file_head)
 !
