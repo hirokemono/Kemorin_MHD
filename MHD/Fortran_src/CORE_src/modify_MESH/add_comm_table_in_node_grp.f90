@@ -7,11 +7,11 @@
 !> @brief Update group data for sleeve extender
 !!
 !!@verbatim
-!!      subroutine add_comm_tbl_in_node_grp_mesh(nprocs, mesh, group)
+!!      subroutine add_comm_tbl_in_node_grp_mesh(num_pe, mesh, group)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!      subroutine add_comm_table_in_node_group                         &
-!!     &         (nprocs, new_comm, old_nod_grp, new_nod_grp)
+!!     &         (num_pe, new_comm, old_nod_grp, new_nod_grp)
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(group_data), intent(in) :: old_nod_grp
 !!        type(group_data), intent(inout) :: new_nod_grp
@@ -36,11 +36,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine add_comm_tbl_in_node_grp_mesh(nprocs, mesh, group)
+      subroutine add_comm_tbl_in_node_grp_mesh(num_pe, mesh, group)
 !
       use copy_mesh_structures
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -48,7 +48,7 @@
       type(group_data) :: new_nod_grp
 !
 !
-      call add_comm_table_in_node_group(nprocs,                         &
+      call add_comm_table_in_node_group(num_pe,                         &
      &    mesh%nod_comm, group%nod_grp, new_nod_grp)
 !
       call deallocate_grp_type(group%nod_grp)
@@ -60,25 +60,25 @@
 !------------------------------------------------------------------
 !
       subroutine add_comm_table_in_node_group                           &
-     &         (nprocs, new_comm, old_nod_grp, new_nod_grp)
+     &         (num_pe, new_comm, old_nod_grp, new_nod_grp)
 !
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(communication_table), intent(in) :: new_comm
       type(group_data), intent(in) :: old_nod_grp
       type(group_data), intent(inout) :: new_nod_grp
 !
       character(len=kchara), parameter :: import_head = 'import'
       character(len=kchara), parameter :: export_head = 'export'
-      integer(kind = kint) :: n_import(nprocs)
-      integer(kind = kint) :: n_export(nprocs)
+      integer(kind = kint) :: n_import(num_pe)
+      integer(kind = kint) :: n_export(num_pe)
 !
       integer(kind = kint) :: i, igrp, inum, ist, jst
       integer :: ip
 !
 !
-      new_nod_grp%num_grp = old_nod_grp%num_grp + 2*nprocs
+      new_nod_grp%num_grp = old_nod_grp%num_grp + 2*num_pe
       new_nod_grp%num_item = old_nod_grp%num_item                       &
      &                    + new_comm%ntot_import + new_comm%ntot_export
 !
@@ -92,11 +92,11 @@
      &          = old_nod_grp%istack_grp(0:old_nod_grp%num_grp)
       end if
 !
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         igrp = old_nod_grp%num_grp + ip
         new_nod_grp%grp_name(igrp)                                      &
      &        = add_process_id((ip-1), import_head)
-        igrp = old_nod_grp%num_grp + nprocs + ip
+        igrp = old_nod_grp%num_grp + num_pe + ip
         new_nod_grp%grp_name(igrp)                                      &
      &        = add_process_id((ip-1), export_head)
       end do
@@ -111,13 +111,13 @@
      &                - new_comm%istack_export(i-1)
       end do
 !
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         igrp = old_nod_grp%num_grp + ip
         new_nod_grp%istack_grp(igrp) = new_nod_grp%istack_grp(igrp-1)   &
      &                                + n_import(ip)
       end do
-      do ip = 1, nprocs
-        igrp = old_nod_grp%num_grp + nprocs + ip
+      do ip = 1, num_pe
+        igrp = old_nod_grp%num_grp + num_pe + ip
         new_nod_grp%istack_grp(igrp) = new_nod_grp%istack_grp(igrp-1)   &
      &                                + n_export(ip)
       end do
@@ -139,7 +139,7 @@
         end do
 !
         ist = new_comm%istack_export(i-1)
-        jst = new_nod_grp%istack_grp(old_nod_grp%num_grp+nprocs+ip-1)
+        jst = new_nod_grp%istack_grp(old_nod_grp%num_grp+num_pe+ip-1)
         do inum = 1, n_export(ip)
           new_nod_grp%item_grp(jst+inum) = new_comm%item_export(ist+inum)
         end do

@@ -322,7 +322,7 @@
      &                            (rj, kr, j_lc)
 !
       type(sph_rj_grid), intent(in) :: rj
-      integer(kind = kint), intent(in) :: kr, j_lc
+      integer, intent(in) :: kr, j_lc
 !
 !
       local_sph_node_address = j_lc + (kr-1)*rj%nidx_rj(2)

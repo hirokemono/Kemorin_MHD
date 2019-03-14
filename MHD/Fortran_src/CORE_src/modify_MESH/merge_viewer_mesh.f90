@@ -7,18 +7,18 @@
 !>@brief Surface mesh data generator for kemoviewer
 !!
 !!@verbatim
-!!      subroutine s_merge_viewer_mesh(nprocs, vmesh, domain_grps_p,    &
+!!      subroutine s_merge_viewer_mesh(num_pe, vmesh, domain_grps_p,    &
 !!     &          view_nod_grps_p, view_ele_grps_p, view_sf_grps_p,     &
 !!     &          mgd_vmesh)
-!!        type(viewer_mesh_data), intent(in) :: vmesh(nprocs)
+!!        type(viewer_mesh_data), intent(in) :: vmesh(num_pe)
 !!        type(viewer_surface_groups), intent(inout)                    &
-!!       &                             :: domain_grps_p(nprocs)
+!!       &                             :: domain_grps_p(num_pe)
 !!        type(viewer_node_groups), intent(inout)                       &
-!!       &                             :: view_nod_grps_p(nprocs)
+!!       &                             :: view_nod_grps_p(num_pe)
 !!        type(viewer_surface_groups), intent(inout)                    &
-!!       &                             :: view_ele_grps_p(nprocs)
+!!       &                             :: view_ele_grps_p(num_pe)
 !!        type(viewer_surface_groups), intent(inout)                    &
-!!       &                             :: view_sf_grps_p(nprocs)
+!!       &                             :: view_sf_grps_p(num_pe)
 !!@endverbatim
 !
       module merge_viewer_mesh
@@ -45,31 +45,31 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_merge_viewer_mesh(nprocs, vmesh, domain_grps_p,      &
+      subroutine s_merge_viewer_mesh(num_pe, vmesh, domain_grps_p,      &
      &          view_nod_grps_p, view_ele_grps_p, view_sf_grps_p,       &
      &          mgd_vmesh)
 !
-      integer(kind = kint), intent(in) :: nprocs
-      type(viewer_mesh_data), intent(in) :: vmesh(nprocs)
+      integer, intent(in) :: num_pe
+      type(viewer_mesh_data), intent(in) :: vmesh(num_pe)
 !
       type(viewer_surface_groups), intent(inout)                        &
-     &                             :: domain_grps_p(nprocs)
+     &                             :: domain_grps_p(num_pe)
       type(viewer_node_groups), intent(inout)                           &
-     &                             :: view_nod_grps_p(nprocs)
+     &                             :: view_nod_grps_p(num_pe)
       type(viewer_surface_groups), intent(inout)                        &
-     &                             :: view_ele_grps_p(nprocs)
+     &                             :: view_ele_grps_p(num_pe)
       type(viewer_surface_groups), intent(inout)                        &
-     &                             :: view_sf_grps_p(nprocs)
+     &                             :: view_sf_grps_p(num_pe)
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_vmesh
 !
 !
 write(*,*) 'each mesh node:', vmesh(:)%nnod_viewer
 write(*,*) 'each mesh surface:', vmesh(:)%nsurf_viewer
-      call count_merged_viewer_node(nprocs, vmesh, mgd_vmesh)
+      call count_merged_viewer_node(num_pe, vmesh, mgd_vmesh)
 !
       call alloc_nod_position_viewer(mgd_vmesh%view_mesh)
-      call copy_2_merged_viewer_node(nprocs, vmesh, mgd_vmesh)
+      call copy_2_merged_viewer_node(num_pe, vmesh, mgd_vmesh)
 !
 !
 write(*,*) 'each mesh node:', vmesh(:)%nnod_viewer
@@ -77,31 +77,31 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
       call alloc_surf_type_viewer(mgd_vmesh%view_mesh)
       call alloc_surf_connect_viewer                                    &
      &   (vmesh(1)%nnod_v_surf, mgd_vmesh%view_mesh)
-      call copy_2_merged_viewer_surf(nprocs, vmesh, mgd_vmesh)
+      call copy_2_merged_viewer_surf(num_pe, vmesh, mgd_vmesh)
 !
       call alloc_edge_data_4_sf                                         &
      &   (vmesh(1)%nnod_v_edge, mgd_vmesh%view_mesh)
-      call copy_2_merged_viewer_edge(nprocs, vmesh, mgd_vmesh)
+      call copy_2_merged_viewer_edge(num_pe, vmesh, mgd_vmesh)
 !
       call set_global_groups_items                                      &
-     &   (nprocs, mgd_vmesh, domain_grps_p)
+     &   (num_pe, mgd_vmesh, domain_grps_p)
 !
       call set_global_node_group_items                                  &
-     &         (nprocs, mgd_vmesh, view_nod_grps_p)
+     &         (num_pe, mgd_vmesh, view_nod_grps_p)
       call set_global_groups_items                                      &
-     &         (nprocs, mgd_vmesh, view_ele_grps_p)
+     &         (num_pe, mgd_vmesh, view_ele_grps_p)
       call set_global_groups_items                                      &
-     &         (nprocs, mgd_vmesh, view_sf_grps_p)
+     &         (num_pe, mgd_vmesh, view_sf_grps_p)
 !
       call merged_viewer_groups                                         &
-     &   (nprocs, domain_grps_p, mgd_vmesh%domain_grps)
+     &   (num_pe, domain_grps_p, mgd_vmesh%domain_grps)
 !
       call merged_viewer_nod_groups                                     &
-     &   (nprocs, view_nod_grps_p, mgd_vmesh%view_nod_grps)
+     &   (num_pe, view_nod_grps_p, mgd_vmesh%view_nod_grps)
       call merged_viewer_groups                                         &
-     &   (nprocs, view_ele_grps_p, mgd_vmesh%view_ele_grps)
+     &   (num_pe, view_ele_grps_p, mgd_vmesh%view_ele_grps)
       call merged_viewer_groups                                         &
-     &   (nprocs, view_sf_grps_p, mgd_vmesh%view_sf_grps)
+     &   (num_pe, view_sf_grps_p, mgd_vmesh%view_sf_grps)
 !
       end subroutine s_merge_viewer_mesh
 !
@@ -109,17 +109,17 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !------------------------------------------------------------------
 !
       subroutine count_merged_viewer_node                               &
-     &         (nprocs, sgl_vmesh, mgd_vmesh)
+     &         (num_pe, sgl_vmesh, mgd_vmesh)
 !
-      integer(kind = kint), intent(in) :: nprocs
-      type(viewer_mesh_data), intent(in) :: sgl_vmesh(nprocs)
+      integer, intent(in) :: num_pe
+      type(viewer_mesh_data), intent(in) :: sgl_vmesh(num_pe)
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_vmesh
 !
       integer(kind= kint) :: ip
 !
 !
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         mgd_vmesh%inod_sf_stack(ip)                                     &
      &    = mgd_vmesh%inod_sf_stack(ip-1) + sgl_vmesh(ip)%nnod_viewer
         mgd_vmesh%isurf_sf_stack(ip)                                    &
@@ -128,11 +128,11 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
      &    = mgd_vmesh%iedge_sf_stack(ip-1) + sgl_vmesh(ip)%nedge_viewer
       end do
       mgd_vmesh%view_mesh%nnod_viewer                                   &
-     &    = mgd_vmesh%inod_sf_stack(nprocs)
+     &    = mgd_vmesh%inod_sf_stack(num_pe)
       mgd_vmesh%view_mesh%nsurf_viewer                                  &
-     &    = mgd_vmesh%isurf_sf_stack(nprocs)
+     &    = mgd_vmesh%isurf_sf_stack(num_pe)
       mgd_vmesh%view_mesh%nedge_viewer                                  &
-     &    = mgd_vmesh%iedge_sf_stack(nprocs)
+     &    = mgd_vmesh%iedge_sf_stack(num_pe)
 !
       end subroutine count_merged_viewer_node
 !
@@ -140,10 +140,10 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !------------------------------------------------------------------
 !
       subroutine copy_2_merged_viewer_node                              &
-     &         (nprocs, sgl_vmesh, mgd_vmesh)
+     &         (num_pe, sgl_vmesh, mgd_vmesh)
 !
-      integer(kind = kint), intent(in) :: nprocs
-      type(viewer_mesh_data), intent(in) :: sgl_vmesh(nprocs)
+      integer, intent(in) :: num_pe
+      type(viewer_mesh_data), intent(in) :: sgl_vmesh(num_pe)
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_vmesh
 !
@@ -151,7 +151,7 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !
 !
 !$omp parallel
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         ist = mgd_vmesh%inod_sf_stack(ip-1)
         num = mgd_vmesh%inod_sf_stack(ip) - ist
 !$omp do private(inum)
@@ -173,10 +173,10 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !------------------------------------------------------------------
 !
       subroutine copy_2_merged_viewer_surf                              &
-     &         (nprocs, sgl_vmesh, mgd_vmesh)
+     &         (num_pe, sgl_vmesh, mgd_vmesh)
 !
-      integer(kind = kint), intent(in) :: nprocs
-      type(viewer_mesh_data), intent(in) :: sgl_vmesh(nprocs)
+      integer, intent(in) :: num_pe
+      type(viewer_mesh_data), intent(in) :: sgl_vmesh(num_pe)
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_vmesh
 !
@@ -184,7 +184,7 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !
 !
 !$omp parallel
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         ist = mgd_vmesh%isurf_sf_stack(ip-1)
         num = mgd_vmesh%isurf_sf_stack(ip) - ist
 !$omp do private(inum)
@@ -207,17 +207,17 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !------------------------------------------------------------------
 !
       subroutine copy_2_merged_viewer_edge                              &
-     &         (nprocs, sgl_vmesh, mgd_vmesh)
+     &         (num_pe, sgl_vmesh, mgd_vmesh)
 !
-      integer(kind = kint), intent(in) :: nprocs
-      type(viewer_mesh_data), intent(in) :: sgl_vmesh(nprocs)
+      integer, intent(in) :: num_pe
+      type(viewer_mesh_data), intent(in) :: sgl_vmesh(num_pe)
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_vmesh
 !
       integer(kind= kint) :: ip, ist, num, inum, k1
 !
 !$omp parallel
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         ist = mgd_vmesh%iedge_sf_stack(ip-1)
         num = mgd_vmesh%iedge_sf_stack(ip) - ist
 !$omp do private(inum)
@@ -252,18 +252,18 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !------------------------------------------------------------------
 !
       subroutine set_global_node_group_items                            &
-     &         (nprocs, mgd_view_mesh, sgl_grps)
+     &         (num_pe, mgd_view_mesh, sgl_grps)
 !
       use renumber_para_viewer_mesh
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
-      type(viewer_node_groups), intent(inout) :: sgl_grps(nprocs)
+      type(viewer_node_groups), intent(inout) :: sgl_grps(num_pe)
 !
       integer(kind = kint) :: ip
 !
 !
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         call set_global_group_items                                     &
      &     (mgd_view_mesh%inod_sf_stack(ip-1), sgl_grps(ip)%node_grp)
       end do
@@ -273,18 +273,18 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !------------------------------------------------------------------
 !
       subroutine set_global_groups_items                                &
-     &         (nprocs, mgd_vmesh, sgl_grps)
+     &         (num_pe, mgd_vmesh, sgl_grps)
 !
       use renumber_para_viewer_mesh
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(merged_viewer_mesh), intent(in) :: mgd_vmesh
-      type(viewer_surface_groups), intent(inout) :: sgl_grps(nprocs)
+      type(viewer_surface_groups), intent(inout) :: sgl_grps(num_pe)
 !
       integer(kind = kint) :: ip
 !
 !
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         call shift_global_surf_grps_items                               &
      &     (mgd_vmesh%inod_sf_stack(ip-1),                              &
      &      mgd_vmesh%isurf_sf_stack(ip-1),                             &
@@ -297,37 +297,38 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine merged_viewer_nod_groups(nprocs, sgl_grps, mgd_grps)
+      subroutine merged_viewer_nod_groups(num_pe, sgl_grps, mgd_grps)
 !
-      integer(kind = kint), intent(in) :: nprocs
-      type(viewer_node_groups), intent(in) :: sgl_grps(nprocs)
+      integer, intent(in) :: num_pe
+      type(viewer_node_groups), intent(in) :: sgl_grps(num_pe)
       type(viewer_node_groups), intent(inout) :: mgd_grps
 !
-      integer(kind = kint) :: igrp, i, ip
+      integer(kind = kint) :: igrp, i
+      integer :: ip
 !
 !
       mgd_grps%num_grp = sgl_grps(1)%num_grp
-      call alloc_merged_node_grps_stack(nprocs, mgd_grps)
+      call alloc_merged_node_grps_stack(num_pe, mgd_grps)
 !
       do igrp = 1, mgd_grps%num_grp
         mgd_grps%grp_name(igrp) = sgl_grps(1)%grp_name(igrp)
       end do
 !
-      do ip = 1, nprocs
-        call merge_viewer_group_stack(ip, nprocs, sgl_grps(ip)%num_grp, &
+      do ip = 1, num_pe
+        call merge_viewer_group_stack(ip, num_pe, sgl_grps(ip)%num_grp, &
      &      sgl_grps(ip)%node_grp, mgd_grps%node_grp)
       end do
-      do i = 1, nprocs*mgd_grps%num_grp
+      do i = 1, num_pe*mgd_grps%num_grp
         mgd_grps%node_grp%istack_sf(i) = mgd_grps%node_grp%istack_sf(i) &
      &                               + mgd_grps%node_grp%istack_sf(i-1)
       end do
       mgd_grps%node_grp%num_item                                        &
-     &     = mgd_grps%node_grp%istack_sf(nprocs*mgd_grps%num_grp)
+     &     = mgd_grps%node_grp%istack_sf(num_pe*mgd_grps%num_grp)
 !
       call alloc_merged_group_item(mgd_grps%node_grp)
 !
-      do ip = 1, nprocs
-        call merge_viewer_group_item(ip, nprocs, sgl_grps(ip)%num_grp,  &
+      do ip = 1, num_pe
+        call merge_viewer_group_item(ip, num_pe, sgl_grps(ip)%num_grp,  &
      &      sgl_grps(ip)%node_grp, mgd_grps%node_grp)
       end do
 !
@@ -335,34 +336,35 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !
 !------------------------------------------------------------------
 !
-      subroutine merged_viewer_groups(nprocs, sgl_grps, mgd_grps)
+      subroutine merged_viewer_groups(num_pe, sgl_grps, mgd_grps)
 !
-      integer(kind = kint), intent(in) :: nprocs
-      type(viewer_surface_groups), intent(in) :: sgl_grps(nprocs)
+      integer, intent(in) :: num_pe
+      type(viewer_surface_groups), intent(in) :: sgl_grps(num_pe)
       type(viewer_surface_groups), intent(inout) :: mgd_grps
 !
-      integer(kind = kint) :: igrp, i, ip
+      integer(kind = kint) :: igrp, i
+      integer :: ip
 !
 !
       mgd_grps%num_grp = sgl_grps(1)%num_grp
-      call alloc_merged_surf_grps_stack(nprocs, mgd_grps)
+      call alloc_merged_surf_grps_stack(num_pe, mgd_grps)
 !
       do igrp = 1, mgd_grps%num_grp
         mgd_grps%grp_name(igrp) = sgl_grps(1)%grp_name(igrp)
       end do
 !
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         call merge_viewer_group_stack                                   &
-     &     (ip, nprocs, sgl_grps(ip)%num_grp, sgl_grps(ip)%node_grp,    &
+     &     (ip, num_pe, sgl_grps(ip)%num_grp, sgl_grps(ip)%node_grp,    &
      &      mgd_grps%node_grp)
         call merge_viewer_group_stack                                   &
-     &     (ip, nprocs, sgl_grps(ip)%num_grp, sgl_grps(ip)%surf_grp,    &
+     &     (ip, num_pe, sgl_grps(ip)%num_grp, sgl_grps(ip)%surf_grp,    &
      &      mgd_grps%surf_grp)
         call merge_viewer_group_stack                                   &
-     &     (ip, nprocs, sgl_grps(ip)%num_grp, sgl_grps(ip)%edge_grp,    &
+     &     (ip, num_pe, sgl_grps(ip)%num_grp, sgl_grps(ip)%edge_grp,    &
      &      mgd_grps%edge_grp)
       end do
-      do i = 1, nprocs*mgd_grps%num_grp
+      do i = 1, num_pe*mgd_grps%num_grp
         mgd_grps%node_grp%istack_sf(i) = mgd_grps%node_grp%istack_sf(i) &
      &                               + mgd_grps%node_grp%istack_sf(i-1)
         mgd_grps%surf_grp%istack_sf(i) = mgd_grps%surf_grp%istack_sf(i) &
@@ -371,22 +373,22 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
      &                               + mgd_grps%edge_grp%istack_sf(i-1)
       end do
       mgd_grps%node_grp%num_item                                        &
-     &     = mgd_grps%node_grp%istack_sf(nprocs*mgd_grps%num_grp)
+     &     = mgd_grps%node_grp%istack_sf(num_pe*mgd_grps%num_grp)
       mgd_grps%surf_grp%num_item                                        &
-     &     = mgd_grps%surf_grp%istack_sf(nprocs*mgd_grps%num_grp)
+     &     = mgd_grps%surf_grp%istack_sf(num_pe*mgd_grps%num_grp)
       mgd_grps%edge_grp%num_item                                        &
-     &     = mgd_grps%edge_grp%istack_sf(nprocs*mgd_grps%num_grp)
+     &     = mgd_grps%edge_grp%istack_sf(num_pe*mgd_grps%num_grp)
 !
       call alloc_merged_group_item(mgd_grps%node_grp)
       call alloc_merged_group_item(mgd_grps%surf_grp)
       call alloc_merged_group_item(mgd_grps%edge_grp)
 !
-      do ip = 1, nprocs
-        call merge_viewer_group_item(ip, nprocs, sgl_grps(ip)%num_grp,  &
+      do ip = 1, num_pe
+        call merge_viewer_group_item(ip, num_pe, sgl_grps(ip)%num_grp,  &
      &      sgl_grps(ip)%node_grp, mgd_grps%node_grp)
-        call merge_viewer_group_item(ip, nprocs, sgl_grps(ip)%num_grp,  &
+        call merge_viewer_group_item(ip, num_pe, sgl_grps(ip)%num_grp,  &
      &      sgl_grps(ip)%surf_grp, mgd_grps%surf_grp)
-        call merge_viewer_group_item(ip, nprocs, sgl_grps(ip)%num_grp,  &
+        call merge_viewer_group_item(ip, num_pe, sgl_grps(ip)%num_grp,  &
      &      sgl_grps(ip)%edge_grp, mgd_grps%edge_grp)
       end do
 !
@@ -395,9 +397,9 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !------------------------------------------------------------------
 !
       subroutine merge_viewer_group_stack                               &
-     &         (ip, nprocs, num_grp, sgl_grp, mgd_grp)
+     &         (ip, num_pe, num_grp, sgl_grp, mgd_grp)
 !
-      integer(kind = kint), intent(in) :: ip, nprocs
+      integer, intent(in) :: ip, num_pe
       integer(kind = kint), intent(in) :: num_grp
       type(viewer_group_data), intent(in) :: sgl_grp
 !
@@ -407,7 +409,7 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !
 !
       do igrp = 1, num_grp
-        igrp_m = ip + (igrp-1) * nprocs
+        igrp_m = ip + (igrp-1) * num_pe
         mgd_grp%istack_sf(igrp_m)                                       &
      &       = sgl_grp%istack_sf(igrp) - sgl_grp%istack_sf(igrp-1)
       end do
@@ -417,9 +419,9 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !------------------------------------------------------------------
 !
       subroutine merge_viewer_group_item                                &
-     &          (ip, nprocs, num_grp, sgl_grp, mgd_grp)
+     &          (ip, num_pe, num_grp, sgl_grp, mgd_grp)
 !
-      integer(kind = kint), intent(in) :: ip, nprocs
+      integer, intent(in) :: ip, num_pe
       integer(kind = kint), intent(in) :: num_grp
       type(viewer_group_data), intent(in) :: sgl_grp
 !
@@ -431,7 +433,7 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
       do igrp = 1, num_grp
         ist = sgl_grp%istack_sf(igrp-1)
         num = sgl_grp%istack_sf(igrp) - sgl_grp%istack_sf(igrp-1)
-        igrp_m = ip + (igrp-1) * nprocs
+        igrp_m = ip + (igrp-1) * num_pe
         ist_m = mgd_grp%istack_sf(igrp_m-1)
         do inum = 1, num
           mgd_grp%item_sf(inum+ist_m) = sgl_grp%item_sf(inum+ist)
