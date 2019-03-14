@@ -11,7 +11,7 @@
 !!      subroutine alloc_start_point_fline(fln_prm, fln_src)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
-!!      subroutine alloc_num_gl_start_fline(nprocs, fln_prm, fln_tce)
+!!      subroutine alloc_num_gl_start_fline(num_pe, fln_prm, fln_tce)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
@@ -115,18 +115,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_num_gl_start_fline(nprocs, fln_prm, fln_tce)
+      subroutine alloc_num_gl_start_fline(num_pe, fln_prm, fln_tce)
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: num
 !
 !
-      allocate(fln_tce%istack_current_fline(0:nprocs))
-      allocate(fln_tce%num_current_fline(nprocs))
-      allocate(fln_tce%flux_stack_fline(0:nprocs))
+      allocate(fln_tce%istack_current_fline(0:num_pe))
+      allocate(fln_tce%num_current_fline(num_pe))
+      allocate(fln_tce%flux_stack_fline(0:num_pe))
       fln_tce%istack_current_fline = 0
       fln_tce%num_current_fline =    0
       fln_tce%flux_stack_fline = 0.0d0

@@ -25,7 +25,7 @@
       implicit  none
 !
 !>      Integer flag of endian swap
-      integer(kind = kint), save, private :: iflag_endian
+      integer, save, private :: iflag_endian
 !
 !  ---------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@
         allocate(n_node_data(d_size))
         do i=1, d_size
 !  change 0 to any level to initial complex noise node tree
-          call alloc_noise_node(n_node_data(i), 2, 0)
+          call alloc_noise_node(n_node_data(i), itwo, izero)
           call read_mul_one_character_b(ione64, noise_char, ierr)
           n_node_data(i)%n_value = ichar(noise_char(1)) / 255.0
 !          write(*,*) n_node_data(i)%n_value
@@ -230,8 +230,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-
-      function get_noise_nd_value(noise_size, noise_node_data, idx, level)
+      function get_noise_nd_value                                       &
+     &       (noise_size, noise_node_data, idx, level)
 
       use set_parallel_file_name
       use t_noise_node_data
@@ -430,7 +430,7 @@
       xyz = xyz_norm * dim
       xyz_i = int(xyz_norm * (dim-1))+1
       idx = get_offset_vol(xyz_i(1), xyz_i(2), xyz_i(3), dim)
-      noise_value = get_noise_nd_value(noise_size, n_node, idx, 0)
+      noise_value = get_noise_nd_value(noise_size, n_node, idx, izero)
 
       end subroutine noise_nd_sampling
 !

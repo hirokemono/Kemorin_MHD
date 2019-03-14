@@ -8,7 +8,7 @@
 !!@verbatim
 !!      subroutine count_num_rendering_and_images(num_pvr_ctl, pvr_ctls,&
 !!     &          num_pvr, num_pvr_rendering, num_pvr_images)
-!!      subroutine s_num_rendering_and_images(nprocs, num_pvr, pvr_ctl, &
+!!      subroutine s_num_rendering_and_images(num_pe, num_pvr, pvr_ctl, &
 !!     &          istack_pvr_render, istack_pvr_images, num_pvr_images, &
 !!     &          pvr_rgb)
 !!
@@ -76,11 +76,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_num_rendering_and_images(nprocs, num_pvr, pvr_ctl,   &
+      subroutine s_num_rendering_and_images(num_pe, num_pvr, pvr_ctl,   &
      &          istack_pvr_render, istack_pvr_images, num_pvr_images,   &
      &          pvr_rgb)
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
       integer(kind = kint), intent(in) :: num_pvr
       integer(kind = kint), intent(in) :: num_pvr_images
@@ -97,7 +97,7 @@
       call set_num_rendering_and_images(num_pvr, pvr_ctl,               &
      &    istack_pvr_render, istack_pvr_images)
 !
-      call set_rank_to_write_images(nprocs, num_pvr_images, pvr_rgb)
+      call set_rank_to_write_images(num_pe, num_pvr_images, pvr_rgb)
       call set_pvr_file_parameters(num_pvr, pvr_ctl,                    &
      &    istack_pvr_images, num_pvr_images, pvr_rgb)
 !
@@ -150,26 +150,28 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_rank_to_write_images                               &
-     &         (nprocs, num_pvr_images, pvr_rgb)
+     &         (num_pe, num_pvr_images, pvr_rgb)
 !
       use cal_minmax_and_stacks
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: num_pvr_images
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
       integer(kind = kint) :: i_pvr, icou, nstep
+      integer(kind = kint) :: np
 !
 !
-      if(num_pvr_images .gt. nprocs) then
+      if(num_pvr_images .gt. num_pe) then
         nstep = 1
       else
-        call cal_divide_and_rest(nstep, icou, nprocs, num_pvr_images)
+        np = int(num_pe,KIND(np))
+        call cal_divide_and_rest(nstep, icou, np, num_pvr_images)
       end if
 !
       do i_pvr = 1, num_pvr_images
         icou = (i_pvr-1) * nstep
-        pvr_rgb(i_pvr)%irank_image_file = mod(icou, nprocs)
+        pvr_rgb(i_pvr)%irank_image_file = mod(icou, num_pe)
       end do
 !
       end subroutine set_rank_to_write_images

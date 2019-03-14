@@ -89,9 +89,11 @@
       integer(kind = kint), intent(inout) :: iflag_img_pe(num_pixel_xy)
 !
       integer(kind = kint) :: ipix, icou, max_smp
+      integer(kind = kint) :: np
 !
 !
-      call count_number_4_smp(nprocs, ione, npixel_img,                 &
+      np = int(nprocs,KIND(np))
+      call count_number_4_smp(np, ione, npixel_img,                     &
      &    istack_pixel, max_smp)
       npixel_img_local = istack_pixel(my_rank+1)                        &
      &                  - istack_pixel(my_rank)
