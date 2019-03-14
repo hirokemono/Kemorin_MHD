@@ -8,22 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine gz_mpi_write_mul_inthead_b(IO_param, num, int_dat)
-!!        Substittion of gz_write_mul_integer_b
+!!      subroutine gz_mpi_write_merged_stack_b                          &
+!!     &         (IO_param, num_pe, i8stack)
 !!      subroutine gz_mpi_write_i8stack_head_b(IO_param, num, i8stack)
 !!      subroutine gz_mpi_write_mul_int8head_b(IO_param, num, int8_dat)
-!!        Substittion of gz_write_mul_int8_b
-!!      subroutine gz_mpi_write_charahead(IO_param, ilength, chara_dat)
 !!      subroutine gz_mpi_write_mul_charahead_b(IO_param, num, chara_dat)
-!!       Substittion of gz_write_mul_character_b
 !!      subroutine gz_mpi_write_mul_realhead_b(IO_param, num, real_dat)
 !!
 !!      subroutine gz_mpi_read_mul_inthead_b(IO_param, num, int_dat)
-!!        Substittion of gz_read_mul_integer_b
+!!      subroutine gz_mpi_read_merged_stack_b(IO_param, num_pe, i8stack)
 !!      subroutine gz_mpi_read_i8stack_head_b(IO_param, num, i8stack)
 !!      subroutine gz_mpi_read_mul_int8head_b(IO_param, num, int_dat)
-!!        Substittion of gz_read_mul_int8_b
 !!      subroutine gz_mpi_read_mul_charahead_b(IO_param, num, chara_dat)
-!!        Substittion of gz_read_mul_character_b
 !!      subroutine gz_mpi_read_mul_realhead_b(IO_param, num, real_dat)
 !!@endverbatim
 !
@@ -86,6 +82,23 @@
       call dealloc_1d_i8array(tmp64)
 !
       end subroutine gz_mpi_write_mul_inthead_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_merged_stack_b                            &
+     &         (IO_param, num_pe, i8stack)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer, intent(in) :: num_pe
+      integer(kind = kint_gl), intent(in) :: i8stack(0:num_pe)
+!
+      integer(kind = kint_gl) :: num64
+!
+!
+      num64 = int(IO_param%nprocs_in,KIND(num64))
+      call gz_mpi_write_mul_int8head_b(IO_param, num64, i8stack(1))
+!
+      end subroutine gz_mpi_write_merged_stack_b
 !
 ! -----------------------------------------------------------------------
 !
@@ -225,6 +238,23 @@
       call dup_to_short_array(tmp64, int_dat)
 !
       end subroutine gz_mpi_read_mul_inthead_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_mpi_read_merged_stack_b(IO_param, num_pe, i8stack)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer, intent(in) :: num_pe
+      integer(kind = kint_gl), intent(inout) :: i8stack(0:num_pe)
+!
+      integer(kind = kint_gl) :: num64
+!
+!
+      num64 = int(num_pe,KIND(num64))
+      i8stack(0) = 0
+      call gz_mpi_read_mul_int8head_b(IO_param, num64, i8stack(1))
+!
+      end subroutine gz_mpi_read_merged_stack_b
 !
 ! -----------------------------------------------------------------------
 !

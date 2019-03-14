@@ -45,15 +45,10 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(communication_table), intent(inout) :: comm_IO
 !
-      integer(kind = kint) :: nprocs_read
       integer(kind = kint_gl) :: num64
 !
 !
-      call gz_mpi_read_one_inthead_b(IO_param, nprocs_read)
-      if(nprocs_read .ne. IO_param%nprocs_in) then
-        call calypso_mpi_abort(ierr_file, '#. of subdmain is wrong')
-      end if
-!
+      call gz_mpi_read_process_id_b(IO_param)
       call gz_mpi_read_one_integer_b(IO_param, comm_IO%num_neib)
 !
       call alloc_neighbouring_id(comm_IO)
@@ -119,7 +114,7 @@
       integer(kind = kint_gl) :: num64
 !
 !
-      call gz_mpi_write_one_inthead_b(IO_param, IO_param%nprocs_in)
+      call gz_mpi_write_process_id_b(IO_param)
       call gz_mpi_write_one_integer_b(IO_param, comm_IO%num_neib)
 !
       num64 = comm_IO%num_neib

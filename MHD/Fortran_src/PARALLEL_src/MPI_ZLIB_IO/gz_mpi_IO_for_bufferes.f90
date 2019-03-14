@@ -207,8 +207,8 @@
       call set_istack_by_gzip_length(IO_param%nprocs_in,                &
      &   IO_param%nloop, zbuffers, IO_param%istack_merged)
 !
-      call gz_mpi_write_i8stack_head_b(IO_param,                        &
-     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
+      call gz_mpi_write_merged_stack_b(IO_param,                        &
+     &    IO_param%nprocs_in, IO_param%istack_merged)
       call mpi_write_gzip_array_mul                                     &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, zbuffers)
@@ -223,8 +223,8 @@
       type(buffer_4_gzip), intent(inout) :: zbuffers(IO_param%nloop)
 !
 !
-      call gz_mpi_read_i8stack_head_b(IO_param,                         &
-     &    cast_long(IO_param%nprocs_in), IO_param%istack_merged)
+      call gz_mpi_read_merged_stack_b(IO_param,                         &
+     &    IO_param%nprocs_in, IO_param%istack_merged)
       call mpi_read_gzip_array_mul                                      &
      &   (IO_param%id_file, IO_param%nprocs_in, IO_param%nloop,         &
      &    IO_param%ioff_gl, IO_param%istack_merged, zbuffers)

@@ -60,7 +60,7 @@
 !
       character(len=kchara), intent(in) :: file_name
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
@@ -99,8 +99,7 @@
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
-      integer, intent(in) :: nprocs_in
+      integer, intent(in) :: nprocs_in, id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -150,8 +149,7 @@
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
-      integer, intent(in) :: nprocs_in
+      integer, intent(in) :: nprocs_in, id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -206,8 +204,7 @@
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
-      integer, intent(in) :: nprocs_in
+      integer, intent(in) :: nprocs_in, id_rank
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -264,15 +261,15 @@
       integer(kind=kint), intent(in) :: ncomp_field(num_field)
 !
 !
-      call gz_mpi_write_one_inthead_b(IO_param_l, IO_param_l%nprocs_in)
+      call gz_mpi_write_process_id_b(IO_param_l)
       call gz_mpi_write_one_inthead_b(IO_param_l, i_time_step_IO)
 !
       call gz_mpi_write_one_realhead_b(IO_param_l, time_IO)
       call gz_mpi_write_one_realhead_b(IO_param_l, delta_t_IO)
 !
 !
-      call gz_mpi_write_i8stack_head_b(IO_param_l,                      &
-     &    cast_long(IO_param_l%nprocs_in), istack_merged)
+      call gz_mpi_write_merged_stack_b(IO_param_l,                      &
+     &    IO_param_l%nprocs_in, istack_merged)
       call gz_mpi_write_one_inthead_b(IO_param_l, num_field)
       call gz_mpi_write_mul_inthead_b                                   &
      &   (IO_param_l, num_field, ncomp_field)
@@ -323,10 +320,8 @@
       integer(kind=kint), intent(inout) :: i_time_step_IO
       real(kind = kreal), intent(inout) :: time_IO, delta_t_IO
 !
-      integer(kind=kint) :: int_tmp
 !
-!
-      call gz_mpi_read_one_inthead_b(IO_param_l, int_tmp)
+      call gz_mpi_read_process_id_b(IO_param_l)
       call gz_mpi_read_one_inthead_b(IO_param_l, i_time_step_IO)
 !
       call gz_mpi_read_one_realhead_b(IO_param_l, time_IO)
@@ -348,8 +343,8 @@
       integer(kind=kint), intent(inout) :: nnod, num_field
 !
 !
-      call gz_mpi_read_i8stack_head_b(IO_param_l,                       &
-     &    cast_long(IO_param_l%nprocs_in), IO_param_l%istack_merged)
+      call gz_mpi_read_merged_stack_b(IO_param_l,                       &
+     &    IO_param_l%nprocs_in, IO_param_l%istack_merged)
       nnod = int(IO_param_l%istack_merged(IO_param_l%id_rank+1)         &
      &         - IO_param_l%istack_merged(IO_param_l%id_rank))
 !

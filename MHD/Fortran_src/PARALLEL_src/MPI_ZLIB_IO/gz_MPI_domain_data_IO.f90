@@ -132,9 +132,12 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(communication_table), intent(in) :: comm_IO
 !
+      integer(kind = kint) :: num_tmp
 !
+!
+      num_tmp = int(IO_param%nprocs_in,KIND(num_tmp))
       call gz_mpi_write_charahead(IO_param, len_int_txt,                &
-     &    integer_textline(IO_param%nprocs_in))
+     &    integer_textline(num_tmp))
 !
       call gz_mpi_write_int_vector                                      &
      &   (IO_param, comm_IO%num_neib, comm_IO%id_neib)
@@ -232,9 +235,9 @@
       integer :: ilength
 !
 !
-      call read_int8_stack_textline                                     &
+      call read_byte_stack_textline                                     &
          (gz_mpi_read_charahead(IO_param,                               &
-     &      len_multi_int_textline(IO_param%nprocs_in)),                &
+     &      len_byte_stack_textline(IO_param%nprocs_in)),               &
      &    IO_param%nprocs_in, IO_param%istack_merged)
 !
 !
@@ -266,9 +269,9 @@
       integer(kind = kint_gl) :: num64
 !
 !
-      call read_int8_stack_textline                                     &
+      call read_byte_stack_textline                                     &
          (gz_mpi_read_charahead(IO_param,                               &
-     &      len_multi_int_textline(IO_param%nprocs_in)),                &
+     &      len_byte_stack_textline(IO_param%nprocs_in)),               &
      &    IO_param%nprocs_in, IO_param%istack_merged)
 !
       zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)         &

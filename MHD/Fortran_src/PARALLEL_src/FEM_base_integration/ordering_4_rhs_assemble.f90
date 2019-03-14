@@ -44,6 +44,7 @@
 !
 !    count number of node to RHS assemble
 !
+      ip = 0
       ii = 0
       jj = 0
       do inum = nmax_ele_4_node, 1, -1

@@ -64,7 +64,7 @@
 !
       character(len=kchara), intent(in) :: file_name
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
@@ -251,7 +251,7 @@
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
-      integer(kind = kint), intent(in) :: nprocs_in
+      integer, intent(in) :: nprocs_in
 !
       type(time_data), intent(in) :: t_IO
 !
@@ -321,7 +321,7 @@
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
-      integer(kind = kint), intent(in) :: nprocs_in
+      integer, intent(in) :: nprocs_in
       type(time_data), intent(inout) :: t_IO
 !
       integer(kind=kint) :: iread
@@ -355,12 +355,12 @@
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       integer(kind=kint), intent(inout) :: nnod, num_field
       integer(kind = kint_gl), intent(inout)                            &
      &                       :: istack_merged(0:nprocs_in)
 !
-      integer(kind=kint) :: ilength
+      integer :: ilength
       character(len=31+1+16+1) ::           textbuf_c
       character(len=25+1+nprocs_in*16+1) :: textbuf_d
 !
@@ -402,7 +402,7 @@
       integer(kind=kint), intent(inout) :: num_field
       integer(kind=kint), intent(inout) :: ncomp_field(num_field)
 !
-      integer(kind=kint) :: ilength
+      integer :: ilength
       character(len=num_field*5+1) :: textbuf
 !
 !
@@ -430,7 +430,7 @@
 !
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
 !
       integer(kind=kint), intent(in) :: nnod
       integer(kind=kint), intent(in) :: num_field, ntot_comp
@@ -465,7 +465,7 @@
 !
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
 !
       integer(kind=kint), intent(in) :: num_field
       character(len=kchara), intent(inout) :: field_name(num_field)

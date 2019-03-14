@@ -59,8 +59,9 @@
 !
       use m_calypso_mpi_IO
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file
+      integer, intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
@@ -89,8 +90,9 @@
 !
       use m_calypso_mpi_IO
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file
+      integer, intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -119,7 +121,8 @@
       subroutine set_istack_by_gzip_length                              &
      &         (nprocs_in, nloop, zbuf, istack_merged)
 !
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       type(buffer_4_gzip), intent(inout) ::  zbuf(nloop)
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
@@ -244,7 +247,7 @@
       subroutine infleat_int8_vector_mul                                &
      &         (iflag_bin_swap, nloop, i8_array, zbuf)
 !
-      integer(kind = kint), intent(in) :: iflag_bin_swap
+      integer, intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(int8array_IO), intent(inout) ::  i8_array(nloop)
       type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
@@ -273,7 +276,7 @@
 !
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: iflag_bin_swap
+      integer, intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(intarray_IO), intent(inout) ::  i_array(nloop)
       type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
@@ -305,7 +308,7 @@
 !
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: iflag_bin_swap
+      integer, intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(ivecarray_IO), intent(inout) ::  iv_array(nloop)
       type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
@@ -336,7 +339,7 @@
       subroutine infleat_1d_vector_mul                                  &
      &         (iflag_bin_swap, nloop, r_array, zbuf)
 !
-      integer(kind = kint), intent(in) :: iflag_bin_swap
+      integer, intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(realarray_IO), intent(inout) ::  r_array(nloop)
       type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
@@ -363,7 +366,7 @@
       subroutine infleat_2d_vector_mul                                  &
      &         (iflag_bin_swap, nloop, v_array, zbuf)
 !
-      integer(kind = kint), intent(in) :: iflag_bin_swap
+      integer, intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(vectarray_IO), intent(inout) ::  v_array(nloop)
       type(buffer_4_gzip), intent(inout) :: zbuf(nloop)

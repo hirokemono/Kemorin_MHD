@@ -120,7 +120,7 @@
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
-      integer(kind=kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
       character(len=ilength), intent(inout) :: chara_dat
 !
       type(buffer_4_gzip) :: zbuf
@@ -157,7 +157,7 @@
 !
       type(buffer_4_gzip) :: zbuf
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
+      integer :: ilength
 !
 !
       if(my_rank .eq. 0) then
@@ -188,7 +188,7 @@
 !
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
 !
       integer(kind = kint_gl), intent(in) :: nnod
       integer(kind = kint), intent(in) :: ndir
@@ -235,10 +235,9 @@
 !
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint), intent(in) :: nprocs_in
+      integer, intent(in) :: nprocs_in
 !
-      integer(kind = kint) :: ilength
-!
+      integer :: ilength
       character(nprocs_in*16+1) :: textbuf_c
 !
       integer(kind = kint_gl) :: istack_buf(0:nprocs_in)

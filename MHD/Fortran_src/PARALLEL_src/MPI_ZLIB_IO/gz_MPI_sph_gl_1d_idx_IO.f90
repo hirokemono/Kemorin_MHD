@@ -215,9 +215,9 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
-      call read_int8_stack_textline                                     &
+      call read_byte_stack_textline                                     &
          (gz_mpi_read_charahead(IO_param,                               &
-     &      len_multi_int_textline(IO_param%nprocs_in)),                &
+     &      len_byte_stack_textline(IO_param%nprocs_in)),               &
      &    IO_param%nprocs_in, IO_param%istack_merged)
 !
       zbuf%ilen_gz = IO_param%istack_merged(IO_param%id_rank+1)         &

@@ -8,27 +8,27 @@
 !!
 !!@verbatim
 !!      subroutine gz_mpi_input_element_file_b                          &
-!!     &         (nprocs_in, my_rank_IO, file_name, ele_mesh_IO, ierr)
+!!     &         (nprocs_in, id_rank, file_name, ele_mesh_IO, ierr)
 !!      subroutine gz_mpi_input_surface_file_b                          &
-!!     &         (nprocs_in, my_rank_IO, file_name, surf_mesh_IO, ierr)
+!!     &         (nprocs_in, id_rank, file_name, surf_mesh_IO, ierr)
 !!      subroutine gz_mpi_input_edge_file_b                             &
-!!     &         (nprocs_in, my_rank_IO, file_name, edge_mesh_IO, ierr)
+!!     &         (nprocs_in, id_rank, file_name, edge_mesh_IO, ierr)
 !!        type(surf_edge_IO_file), intent(in) :: ele_mesh_IO
 !!        type(surf_edge_IO_file), intent(in) :: surf_mesh_IO
 !!        type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
 !!
 !!      subroutine gz_mpi_output_element_file_b                         &
-!!     &         (nprocs_in, my_rank_IO, ele_mesh_IO)
+!!     &         (nprocs_in, id_rank, ele_mesh_IO)
 !!      subroutine gz_mpi_output_surface_file_b                         &
-!!     &         (nprocs_in, my_rank_IO, file_name, surf_mesh_IO)
+!!     &         (nprocs_in, id_rank, file_name, surf_mesh_IO)
 !!      subroutine gz_mpi_output_edge_file_b                            &
-!!     &         (nprocs_in, my_rank_IO, file_name, edge_mesh_IO)
+!!     &         (nprocs_in, id_rank, file_name, edge_mesh_IO)
 !!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !!@endverbatim
 !!
-!!@param my_rank_IO  MPI rank
+!!@param id_rank  MPI rank
 !
       module gz_MPI_element_file_IO_b
 !
@@ -50,22 +50,22 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_input_element_file_b                            &
-     &         (nprocs_in, my_rank_IO, file_name, ele_mesh_IO, ierr)
+     &         (nprocs_in, id_rank, file_name, ele_mesh_IO, ierr)
 !
       use gz_MPI_element_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, id_rank
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Read gzipped merged binary element comm file: ',               &
      &   trim(file_name)
 !
       call open_read_mpi_file                                           &
-     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+     &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_mpi_read_ele_comm_table_b(IO_param, ele_mesh_IO%comm)
 !      call gz_mpi_read_ele_geometry_b(IO_param,                        &
@@ -77,22 +77,22 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_input_surface_file_b                            &
-     &         (nprocs_in, my_rank_IO, file_name, surf_mesh_IO, ierr)
+     &         (nprocs_in, id_rank, file_name, surf_mesh_IO, ierr)
 !
       use gz_MPI_surface_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, id_rank
       type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Read gzipped merged binary surface mesh file: ',               &
      &   trim(file_name)
 !
       call open_read_mpi_file                                           &
-     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+     &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_mpi_read_surf_connect_b(IO_param, surf_mesh_IO%comm,      &
      &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
@@ -105,21 +105,21 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_input_edge_file_b                               &
-     &         (nprocs_in, my_rank_IO, file_name, edge_mesh_IO, ierr)
+     &         (nprocs_in, id_rank, file_name, edge_mesh_IO, ierr)
 !
       use gz_MPI_edge_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, id_rank
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Read gzipped merged binary edge mesh file: ', trim(file_name)
 !
       call open_read_mpi_file                                           &
-     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+     &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_mpi_read_edge_connect_b(IO_param, edge_mesh_IO%comm,      &
      &    edge_mesh_IO%ele, edge_mesh_IO%sfed)
@@ -133,21 +133,21 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_output_element_file_b                           &
-     &         (nprocs_in, my_rank_IO, file_name, ele_mesh_IO)
+     &         (nprocs_in, id_rank, file_name, ele_mesh_IO)
 !
       use gz_MPI_element_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, id_rank
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Write gzipped merged binary element comm file: ',              &
      &   trim(file_name)
 !
       call open_write_mpi_file                                          &
-     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+     &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_mpi_write_ele_comm_table_b(IO_param, ele_mesh_IO%comm)
 !      call gz_mpi_write_ele_geometry_b(IO_param,                       &
@@ -159,21 +159,21 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_output_surface_file_b                           &
-     &         (nprocs_in, my_rank_IO, file_name, surf_mesh_IO)
+     &         (nprocs_in, id_rank, file_name, surf_mesh_IO)
 !
       use gz_MPI_surface_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, id_rank
       type(surf_edge_IO_file), intent(in) :: surf_mesh_IO
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Write gzipped merged binary surface mesh file: ',              &
      &   trim(file_name)
 !
       call open_write_mpi_file                                          &
-     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+     &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_mpi_write_surf_connect_b(IO_param, surf_mesh_IO%comm,     &
      &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
@@ -186,20 +186,20 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_output_edge_file_b                              &
-     &         (nprocs_in, my_rank_IO, file_name, edge_mesh_IO)
+     &         (nprocs_in, id_rank, file_name, edge_mesh_IO)
 !
       use gz_MPI_edge_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, id_rank
       type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
 !
 !
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
+      if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Write gzipped merged binary edge mesh file: ', trim(file_name)
 !
       call open_write_mpi_file                                          &
-     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+     &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_mpi_write_edge_connect_b(IO_param, edge_mesh_IO%comm,     &
      &   edge_mesh_IO%ele, edge_mesh_IO%sfed)
