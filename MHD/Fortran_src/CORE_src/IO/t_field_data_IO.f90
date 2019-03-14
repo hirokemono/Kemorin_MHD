@@ -13,7 +13,7 @@
 !!
 !!      subroutine alloc_phys_name_IO(fld_IO)
 !!      subroutine alloc_phys_data_IO(fld_IO)
-!!      subroutine alloc_merged_field_stack(nprocs, fld_IO)
+!!      subroutine alloc_merged_field_stack(num_pe, fld_IO)
 !!
 !!      subroutine dealloc_phys_IO(fld_IO)
 !!      subroutine dealloc_phys_name_IO(fld_IO)
@@ -129,13 +129,13 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine alloc_merged_field_stack(nprocs, fld_IO)
+      subroutine alloc_merged_field_stack(num_pe, fld_IO)
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      allocate(fld_IO%istack_numnod_IO(0:nprocs))
+      allocate(fld_IO%istack_numnod_IO(0:num_pe))
       fld_IO%istack_numnod_IO = 0
 !
       end subroutine alloc_merged_field_stack

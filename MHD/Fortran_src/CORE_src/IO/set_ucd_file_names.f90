@@ -58,7 +58,8 @@
       use delete_data_files
 !
       character(len=kchara), intent(in) :: file_prefix
-      integer(kind=kint), intent(in) :: itype_file, nprocs, istep_ucd
+      integer, intent(in) :: nprocs
+      integer(kind = kint), intent(in) :: itype_file, istep_ucd
 !
       integer :: ip, id_rank
       character(len=kchara) :: file_name
@@ -132,7 +133,8 @@
       use set_parallel_file_name
       use set_ucd_extensions
 !
-      integer(kind=kint), intent(in) :: itype_file, id_rank
+      integer, intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: itype_file
       character(len=kchara), intent(in) ::    file_prefix
       character(len=kchara) :: fname_tmp, file_name
 !

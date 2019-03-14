@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine delete_FEM_fld_file                                  &
-!!     &         (file_param, nprocs, istep_fld)
+!!     &         (file_param, num_pe, istep_fld)
 !!        type(field_IO_params), intent(in) :: file_param
 !!      subroutine delete_SPH_fld_file                                  &
-!!     &         (file_param, nprocs, istep_fld)
+!!     &         (file_param, num_pe, istep_fld)
 !!        type(field_IO_params), intent(in) :: file_param
-!!      subroutine delete_SPH_fld_file(itype_file, nprocs, istep_fld)
+!!      subroutine delete_SPH_fld_file(itype_file, num_pe, istep_fld)
 !!
 !!      character(len=kchara) function set_FEM_fld_file_name            &
 !!     &                   (file_header, itype_file, id_rank, istep_fld)
@@ -37,19 +37,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine delete_FEM_fld_file                                    &
-     &         (file_param, nprocs, istep_fld)
+     &         (file_param, num_pe, istep_fld)
 !
       use t_file_IO_parameter
       use delete_data_files
 !
       type(field_IO_params), intent(in) :: file_param
-      integer(kind=kint), intent(in) :: nprocs, istep_fld
+      integer, intent(in) :: num_pe
+      integer(kind=kint), intent(in) :: istep_fld
 !
       integer :: ip, id_rank
       character(len=kchara) :: file_name
 !
 !
-      do ip =1, nprocs
+      do ip =1, num_pe
         id_rank = ip - 1
 !
         file_name = set_FEM_fld_file_name                               &
@@ -64,19 +65,20 @@
 !------------------------------------------------------------------
 !
       subroutine delete_SPH_fld_file                                    &
-     &         (file_param, nprocs, istep_fld)
+     &         (file_param, num_pe, istep_fld)
 !
       use t_file_IO_parameter
       use delete_data_files
 !
       type(field_IO_params), intent(in) :: file_param
-      integer(kind=kint), intent(in) :: nprocs, istep_fld
+      integer, intent(in) :: num_pe
+      integer(kind=kint), intent(in) :: istep_fld
 !
       integer :: ip, id_rank
       character(len=kchara) :: file_name
 !
 !
-      do ip =1, nprocs
+      do ip =1, num_pe
         id_rank = ip - 1
 !
         file_name = set_SPH_fld_file_name                               &
@@ -98,8 +100,9 @@
       use set_mesh_extensions
       use m_file_format_switch
 !
-      integer(kind=kint), intent(in) :: itype_file, id_rank, istep_fld
-      character(len=kchara), intent(in) ::    file_header
+      integer, intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: itype_file, istep_fld
+      character(len=kchara), intent(in) :: file_header
       character(len=kchara) :: fname_tmp, file_name
 !
 !
@@ -141,7 +144,8 @@
       use set_sph_extensions
       use m_file_format_switch
 !
-      integer(kind=kint), intent(in) :: itype_file, id_rank, istep_fld
+      integer, intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: itype_file, istep_fld
       character(len=kchara), intent(in) ::    file_header
       character(len=kchara) :: fname_tmp, file_name
 !

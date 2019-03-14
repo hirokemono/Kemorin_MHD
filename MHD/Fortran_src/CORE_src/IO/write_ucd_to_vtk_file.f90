@@ -61,7 +61,7 @@
 !
       character(len=kchara)  :: file_name, fname_tmp
       character(len=kchara) :: fname_nodir
-      integer(kind = kint) :: ip
+      integer :: ip
 !
 !
       if(id_rank .gt. 0) return

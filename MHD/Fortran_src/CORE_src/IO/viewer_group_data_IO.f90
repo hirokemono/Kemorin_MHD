@@ -44,7 +44,7 @@
 !
       subroutine write_domain_group_viewer(num_pe, domain_grps)
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(in) :: domain_grps
 !
       integer(kind = kint) :: ip, ist, ied
@@ -97,7 +97,7 @@
 !
       use skip_comment_f
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(inout) :: domain_grps
 !
 !
@@ -140,7 +140,7 @@
 !
       use m_fem_mesh_labels
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_node_groups), intent(in) :: view_nod_grps
 !
 !
@@ -159,7 +159,7 @@
 !
       use skip_comment_f
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_node_groups), intent(inout) :: view_nod_grps
 !
       integer(kind = kint) :: num
@@ -188,7 +188,7 @@
 !
       use m_fem_mesh_labels
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(in) :: view_ele_grps
 !
 !
@@ -224,7 +224,7 @@
 !
       use skip_comment_f
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(inout) :: view_ele_grps
 !
       integer(kind = kint) :: num, itmp
@@ -282,7 +282,7 @@
 !
       use m_fem_mesh_labels
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(in) :: view_sf_grps
 !
 !
@@ -317,7 +317,7 @@
 !
       use skip_comment_f
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(inout) :: view_sf_grps
 !
       integer(kind = kint) :: num, itmp
@@ -368,11 +368,12 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_viewer_group_data(id_file, nprocs, ngrp,         &
+      subroutine write_viewer_group_data(id_file, num_pe, ngrp,         &
      &          name, v_grp)
 !
       integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nprocs, ngrp
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: ngrp
       character(len = kchara), intent(in) :: name(ngrp)
       type(viewer_group_data), intent(in) :: v_grp
 !
@@ -380,17 +381,17 @@
 !
 !
       do i = 1, ngrp
-        ist = (i-1) * nprocs + 1
-        ied = i*nprocs
+        ist = (i-1) * num_pe + 1
+        ied = i*num_pe
         write(id_file,'(8i16)') v_grp%istack_sf(ist:ied)
       end do
 !
       if (ngrp .gt. 0) then
         do i = 1, ngrp
           write(id_file,'(a)') trim(name(i))
-          do ip = 1, nprocs
-            ist = v_grp%istack_sf(nprocs*(i-1)+ip-1) + 1
-            ied = v_grp%istack_sf(nprocs*(i-1)+ip)
+          do ip = 1, num_pe
+            ist = v_grp%istack_sf(num_pe*(i-1)+ip-1) + 1
+            ied = v_grp%istack_sf(num_pe*(i-1)+ip)
             if(ied .ge. ist) write(id_file,'(8i16)')                    &
      &                            v_grp%item_sf(ist:ied)
           end do
@@ -403,11 +404,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_viewer_group_item(id_file, nprocs, ngrp,          &
+      subroutine read_viewer_group_item(id_file, num_pe, ngrp,          &
      &          name, v_grp)
 !
       integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nprocs, ngrp
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: ngrp
 !
       character(len = kchara), intent(inout) :: name(ngrp)
       type(viewer_group_data), intent(inout) :: v_grp
@@ -418,8 +420,8 @@
       call alloc_merged_group_item(v_grp)
 !
       do i = 1, ngrp
-        ist = v_grp%istack_sf(nprocs*(i-1)) + 1
-        ied = v_grp%istack_sf(nprocs*i    )
+        ist = v_grp%istack_sf(num_pe*(i-1)) + 1
+        ied = v_grp%istack_sf(num_pe*i    )
         read(id_file,*) name(i)
         read(id_file,*) v_grp%item_sf(ist:ied)
       end do

@@ -48,7 +48,7 @@
       subroutine endian_swap_int(num_int, int_data)
 !
       integer(kind = kint), intent(inout) :: num_int
-      integer(kind = kint), intent(inout) :: int_data(num_int)
+      integer, intent(inout) :: int_data(num_int)
 !
 !
 !      if(kint .eq. 8) then
@@ -145,7 +145,7 @@
       subroutine endian_swap_int4(num_int4, int4_data)
 !
       integer(kind = kint), intent(inout) :: num_int4
-      integer(kind = 4), intent(inout) :: int4_data(num_int4)
+      integer, intent(inout) :: int4_data(num_int4)
 !
       integer(kind = kint)  :: i
       character(len=1) :: tmpchara1,tmpchara2

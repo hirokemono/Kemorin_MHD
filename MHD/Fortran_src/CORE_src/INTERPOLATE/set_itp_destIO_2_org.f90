@@ -30,11 +30,11 @@
       subroutine count_num_interpolation_4_orgin                        &
      &         (n_org_rank, n_dest_rank, IO_dest, itp_org)
 !
-      integer(kind = kint), intent(in) :: n_org_rank, n_dest_rank
+      integer, intent(in) :: n_org_rank, n_dest_rank
       type(interpolate_table_dest), intent(inout) :: IO_dest
       type(interpolate_table_org), intent(inout) :: itp_org
 !
-      integer(kind = kint) :: i
+      integer :: i
 !
       do i = 1, IO_dest%num_org_domain
 !
@@ -61,13 +61,14 @@
 !
       use m_work_const_itp_table
 !
-      integer(kind = kint), intent(in) :: n_org_rank
+      integer, intent(in) :: n_org_rank
       type(interpolate_table_dest), intent(inout) :: IO_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_coef_dest
 !
       type(interpolate_table_org), intent(inout) :: itp_org
 !
-      integer(kind = kint) :: i, j, nnod, inum, iorg, idest
+      integer :: i, j
+      integer(kind = kint) :: nnod, inum, iorg, idest
 !
 !
       do i = 1, IO_dest%num_org_domain

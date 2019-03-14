@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine read_element_comm_table                              &
-!!     &         (id_file, my_rank_IO, comm_IO, ierr)
+!!     &         (id_file, id_rank, comm_IO, ierr)
 !!        type(communication_table), intent(inout) :: comm_IO
 !!      subroutine write_element_comm_table                             &
-!!     &         (id_file, my_rank_IO, comm_IO)
+!!     &         (id_file, id_rank, comm_IO)
 !!        type(communication_table), intent(in) :: comm_IO
 !!
 !!      subroutine read_element_geometry(id_file, nod_IO, sfed_IO)
@@ -43,13 +43,13 @@
 !------------------------------------------------------------------
 !
       subroutine read_element_comm_table                                &
-     &         (id_file, my_rank_IO, comm_IO, ierr)
+     &         (id_file, id_rank, comm_IO, ierr)
 !
       use m_fem_mesh_labels
       use domain_data_IO
 !
       integer (kind = kint), intent(in) :: id_file
-      integer (kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(communication_table), intent(inout) :: comm_IO
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -60,7 +60,7 @@
 !      write(id_file,'(a)') '!' 
 !      write(id_file,'(a)', advance='NO') hd_fem_para()
 !
-      call read_domain_info(id_file, my_rank_IO, comm_IO, ierr)
+      call read_domain_info(id_file, id_rank, comm_IO, ierr)
       if(ierr .ne. 0) return
 !
 !      write(id_file,'(a)') '!'
@@ -81,19 +81,19 @@
 !------------------------------------------------------------------
 !
       subroutine write_element_comm_table                               &
-     &         (id_file, my_rank_IO, comm_IO)
+     &         (id_file, id_rank, comm_IO)
 !
       use m_fem_mesh_labels
       use domain_data_IO
 !
       integer (kind = kint), intent(in) :: id_file
-      integer (kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
 !
 !
       write(id_file,'(a)', advance='NO') hd_ecomm_para()
       write(id_file,'(a)', advance='NO') hd_fem_para()
-      call write_domain_info(id_file, my_rank_IO, comm_IO)
+      call write_domain_info(id_file, id_rank, comm_IO)
 !
       write(id_file,'(a)', advance='NO') hd_ecomm_import()
       call write_import_data(id_file, comm_IO)

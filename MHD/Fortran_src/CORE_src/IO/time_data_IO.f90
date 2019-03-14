@@ -96,7 +96,8 @@
 !
       subroutine write_step_data(id_file, id_rank, t_IO)
 !
-      integer(kind = kint), intent(in) :: id_file, id_rank
+      integer(kind = kint), intent(in) :: id_file
+      integer, intent(in) :: id_rank
       type(time_data), intent(in) :: t_IO
 !
 !

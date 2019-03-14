@@ -365,10 +365,13 @@
       integer, intent(in) :: id_rank
       type(phys_data), intent(in) :: fld
 !
+      integer(kind = kint) :: id
 !
-      call check_nodal_field_name_type((50+id_rank), fld)
-      call check_nodal_data                                             &
-     &   ((50+id_rank), fld, fld%ntot_phys, ione)
+      id = 50 + id_rank
+!
+
+      call check_nodal_field_name_type(id, fld)
+      call check_nodal_data(id, fld, fld%ntot_phys, ione)
 !
       end subroutine check_all_field_data
 !

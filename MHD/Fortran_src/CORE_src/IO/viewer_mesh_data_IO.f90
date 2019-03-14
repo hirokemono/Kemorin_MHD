@@ -87,13 +87,13 @@
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
-      integer(kind = kint) :: num_pe
+      integer(kind = kint) :: num_pe_read
 !
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) num_pe
+      read(tmp_character,*) num_pe_read
 !
-      call alloc_num_mesh_sf(num_pe, mgd_view_mesh)
+      call alloc_num_mesh_sf(int(num_pe_read), mgd_view_mesh)
 !
       read(surface_id,*)                                                &
      &   mgd_view_mesh%inod_sf_stack(1:mgd_view_mesh%num_pe_sf)
@@ -150,7 +150,7 @@
       subroutine write_surf_connect_viewer                              &
      &         (num_pe, isurf_sf_stack, view_mesh)
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: isurf_sf_stack(0:num_pe)
       type(viewer_mesh_data), intent(in) :: view_mesh
 !

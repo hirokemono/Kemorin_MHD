@@ -8,8 +8,8 @@
 !> @brief Data IO rountines for field data IO
 !!
 !!@verbatim
-!!      function field_istack_nod_buffer(nprocs, istack_nod)
-!!      function buffer_istack_nod_buffer(nprocs, istack_nod)
+!!      function field_istack_nod_buffer(num_pe, istack_nod)
+!!      function buffer_istack_nod_buffer(num_pe, istack_nod)
 !!      function field_num_buffer(num_field)
 !!      function field_comp_buffer(num_field, ncomp_field)
 !!      function each_field_name_buffer(field_name)
@@ -18,7 +18,7 @@
 !!      &         ntot, istack)
 !!      subroutine read_field_num_buffer(textbuf, nnod, num_field)
 !!      subroutine read_bufer_istack_nod_buffer                         &
-!!     &         (textbuf, nprocs, istack_nod)
+!!     &         (textbuf, num_pe, istack_nod)
 !!      subroutine read_field_comp_buffer                               &
 !!     &         (textbuf, num_field, ncomp_field)
 !!      subroutine read_each_field_name_buffer                          &
@@ -52,32 +52,32 @@
 !
 ! -------------------------------------------------------------------
 !
-      function field_istack_nod_buffer(nprocs, istack_nod)
+      function field_istack_nod_buffer(num_pe, istack_nod)
 !
-      integer(kind = kint), intent(in) ::    nprocs
-      integer(kind = kint_gl), intent(in) :: istack_nod(0:nprocs)
-      character(len=25+1+nprocs*16+1) :: field_istack_nod_buffer
+      integer, intent(in) ::    num_pe
+      integer(kind = kint_gl), intent(in) :: istack_nod(0:num_pe)
+      character(len=25+1+num_pe*16+1) :: field_istack_nod_buffer
 !
 !
       field_istack_nod_buffer = FLD_HD0  // char(10)                    &
-     &         // buffer_istack_nod_buffer(nprocs, istack_nod)
+     &         // buffer_istack_nod_buffer(num_pe, istack_nod)
 !
       end function field_istack_nod_buffer
 !
 ! -------------------------------------------------------------------
 !
-      function buffer_istack_nod_buffer(nprocs, istack_nod)
+      function buffer_istack_nod_buffer(num_pe, istack_nod)
 !
-      integer(kind = kint), intent(in) ::    nprocs
-      integer(kind = kint_gl), intent(in) :: istack_nod(0:nprocs)
-      character(len=nprocs*16+1) :: buffer_istack_nod_buffer
+      integer, intent(in) ::    num_pe
+      integer(kind = kint_gl), intent(in) :: istack_nod(0:num_pe)
+      character(len=num_pe*16+1) :: buffer_istack_nod_buffer
 !
-      character(len=nprocs*16) :: buf_nfld
+      character(len=num_pe*16) :: buf_nfld
       character(len=kchara) :: fmt_txt
 !
 !
-      write(fmt_txt,'(a1,i7,a9)') '(', nprocs, '(i16),a1)'
-      write(buf_nfld,fmt_txt) istack_nod(1:nprocs)
+      write(fmt_txt,'(a1,i7,a9)') '(', num_pe, '(i16),a1)'
+      write(buf_nfld,fmt_txt) istack_nod(1:num_pe)
 !
       buffer_istack_nod_buffer = buf_nfld // char(10)
 !
@@ -176,34 +176,34 @@
 !------------------------------------------------------------------
 !
       subroutine read_field_istack_nod_buffer                           &
-     &         (textbuf, nprocs, istack_nod)
+     &         (textbuf, num_pe, istack_nod)
 !
-      integer(kind = kint), intent(in) :: nprocs
-      character(len=25+1+nprocs*16+1), intent(in) :: textbuf
-      integer(kind = kint_gl), intent(inout) :: istack_nod(0:nprocs)
+      integer, intent(in) :: num_pe
+      character(len=25+1+num_pe*16+1), intent(in) :: textbuf
+      integer(kind = kint_gl), intent(inout) :: istack_nod(0:num_pe)
 !
-      character(len=nprocs*16) ::    tmp1
+      character(len=num_pe*16) ::    tmp1
 !
-      tmp1 = textbuf(27:27+nprocs*16)
+      tmp1 = textbuf(27:27+num_pe*16)
       istack_nod(0) = 0
-      read(tmp1,*) istack_nod(1:nprocs)
+      read(tmp1,*) istack_nod(1:num_pe)
 !
       end subroutine read_field_istack_nod_buffer
 !
 ! -------------------------------------------------------------------
 !
       subroutine read_bufer_istack_nod_buffer                           &
-     &         (textbuf, nprocs, istack_nod)
+     &         (textbuf, num_pe, istack_nod)
 !
-      integer(kind = kint), intent(in) :: nprocs
-      character(nprocs*16+1), intent(in) :: textbuf
-      integer(kind = kint_gl), intent(inout) :: istack_nod(0:nprocs)
+      integer, intent(in) :: num_pe
+      character(num_pe*16+1), intent(in) :: textbuf
+      integer(kind = kint_gl), intent(inout) :: istack_nod(0:num_pe)
 !
-      character(len=nprocs*16) ::    tmp1
+      character(len=num_pe*16) ::    tmp1
 !
-      tmp1 = textbuf(1:nprocs*16)
+      tmp1 = textbuf(1:num_pe*16)
       istack_nod(0) = 0
-      read(tmp1,*) istack_nod(1:nprocs)
+      read(tmp1,*) istack_nod(1:num_pe)
 !
       end subroutine read_bufer_istack_nod_buffer
 !
@@ -245,7 +245,7 @@
 !
       character(len=kchara), intent(in) :: textbuf
       character(len=kchara), intent(inout) :: field_name
-      integer(kind = kint), intent(inout) :: len_text
+      integer, intent(inout) :: len_text
 !
       integer(kind = kint) :: i
 !
@@ -255,7 +255,7 @@
      &    .or. iachar(textbuf(i:i)) .eq. 0) exit 
         field_name(i:i) = textbuf(i:i)
       end do
-      len_text = i - 1
+      len_text = int(i - 1)
 !
       end subroutine read_each_field_name_buffer
 !

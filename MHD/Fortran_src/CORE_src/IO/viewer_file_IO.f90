@@ -106,14 +106,14 @@
 !
       call write_node_data_viewer(view_mesh)
       call write_surf_connect_viewer                                    &
-     &   (ione, isurf_sf_stack, view_mesh)
+     &   (1, isurf_sf_stack, view_mesh)
       call write_edge_connect_viewer(view_mesh)
 !
-      call write_domain_group_viewer(ione, domain_grps)
+      call write_domain_group_viewer(1, domain_grps)
 !
-      call write_nod_group_viewer(ione, view_nod_grps)
-      call write_ele_group_viewer(ione, view_ele_grps)
-      call write_surf_group_viewer(ione, view_sf_grps)
+      call write_nod_group_viewer(1, view_nod_grps)
+      call write_ele_group_viewer(1, view_ele_grps)
+      call write_surf_group_viewer(1, view_sf_grps)
 !
       close(surface_id)
 !

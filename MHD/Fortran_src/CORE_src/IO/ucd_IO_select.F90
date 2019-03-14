@@ -242,7 +242,7 @@
         call read_alloc_gz_udt_head(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_fld_gz) then
         call read_alloc_ucd_2_gz_fld_file                               &
-     &     (id_rank, file_name, t_IO, ucd)
+     &     (id_rank, file_name, t_IO, ucd, ierr)
 #endif
 !
       else if (ucd_param%iflag_format .eq. iflag_bin) then
@@ -286,7 +286,7 @@
         call read_alloc_gz_udt_file(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_fld_gz) then
         call read_alloc_ucd_2_gz_fld_file                               &
-     &     (id_rank, file_name, t_IO, ucd)
+     &     (id_rank, file_name, t_IO, ucd, ierr)
 #endif
 !
       else if (ucd_param%iflag_format .eq. iflag_bin) then
@@ -326,7 +326,8 @@
       else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
         call read_gz_udt_file(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_fld_gz) then
-        call read_ucd_2_gz_fld_file(id_rank, file_name, t_IO, ucd)
+        call read_ucd_2_gz_fld_file                                     &
+     &     (id_rank, file_name, t_IO, ucd, ierr)
 #endif
 !
       else if (ucd_param%iflag_format .eq. iflag_bin) then

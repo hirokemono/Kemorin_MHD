@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      integer(kind = kint) function check_exist_mesh                  &
-!!     &                            (mesh_file, my_rank_IO)
+!!     &                            (mesh_file, id_rank)
 !!      integer(kind = kint) function check_exist_ele_mesh              &
-!!     &                            (mesh_file, my_rank_IO)
+!!     &                            (mesh_file, id_rank)
 !!      integer(kind = kint) function check_exist_surf_mesh             &
-!!     &                            (mesh_file, my_rank_IO)
+!!     &                            (mesh_file, id_rank)
 !!      integer(kind = kint) function check_exist_edge_mesh             &
-!!     &                            (mesh_file, my_rank_IO)
+!!     &                            (mesh_file, id_rank)
 !!@endverbatim
 !
       module mesh_file_name_by_param
@@ -33,19 +33,19 @@
 !  ---------------------------------------------------------------------
 !
       integer(kind = kint) function check_exist_mesh                    &
-     &                            (mesh_file, my_rank_IO)
+     &                            (mesh_file, id_rank)
 !
       use set_mesh_file_names
       use delete_data_files
 !
-      integer(kind= kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  mesh_file
 !
       character(len=kchara) :: file_name
 !
 !
       file_name =  set_mesh_file_name                                   &
-     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
       check_exist_mesh = check_file_exist(file_name)
 !
@@ -55,19 +55,19 @@
 !  ---------------------------------------------------------------------
 !
       integer(kind = kint) function check_exist_ele_mesh                &
-     &                            (mesh_file, my_rank_IO)
+     &                            (mesh_file, id_rank)
 !
       use set_mesh_file_names
       use delete_data_files
 !
-      integer(kind= kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  mesh_file
 !
       character(len=kchara) :: file_name
 !
 !
       file_name = set_ele_comm_file_name                                &
-     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
       check_exist_ele_mesh = check_file_exist(file_name)
 !
@@ -77,19 +77,19 @@
 !  ---------------------------------------------------------------------
 !
       integer(kind = kint) function check_exist_surf_mesh               &
-     &                            (mesh_file, my_rank_IO)
+     &                            (mesh_file, id_rank)
 !
       use set_mesh_file_names
       use delete_data_files
 !
-      integer(kind= kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  mesh_file
 !
       character(len=kchara) :: file_name
 !
 !
       file_name = set_surf_mesh_file_name                               &
-     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
       check_exist_surf_mesh = check_file_exist(file_name)
 !
@@ -99,19 +99,19 @@
 !  ---------------------------------------------------------------------
 !
       integer(kind = kint) function check_exist_edge_mesh               &
-     &                            (mesh_file, my_rank_IO)
+     &                            (mesh_file, id_rank)
 !
       use set_mesh_file_names
       use delete_data_files
 !
-      integer(kind= kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  mesh_file
 !
       character(len=kchara) :: file_name
 !
 !
       file_name = set_edge_mesh_file_name                               &
-     &   (mesh_file%file_prefix, mesh_file%iflag_format, my_rank_IO)
+     &   (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
       check_exist_edge_mesh = check_file_exist(file_name)
 !

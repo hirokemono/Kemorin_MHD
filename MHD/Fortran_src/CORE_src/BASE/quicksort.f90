@@ -211,7 +211,6 @@
       integer(kind = kint) function comp_coord(a,b)
 !
       real(kind = kreal), intent(in) :: a(3), b(3)
-      real(kind = kreal) :: w
       integer(kind = kint) :: i
 !
       do i = 1, 3
