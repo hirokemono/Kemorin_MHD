@@ -37,9 +37,9 @@
      &          inod_local_tgt,  ipe_nod_local_tgt)
 !
 
-      integer(kind = kint), intent(in) :: nprocs_org
-      integer(kind = kint), intent(in) :: nprocs_tgt
-      integer(kind = kint), intent(in) :: nprocs_larger
+      integer, intent(in) :: nprocs_org
+      integer, intent(in) :: nprocs_tgt
+      integer, intent(in) :: nprocs_larger
       type(interpolate_table), intent(in) :: itp_sgl
 !
       integer(kind = kint), intent(in) :: nele_org_1pe
@@ -81,7 +81,7 @@
      &        ipe_ele_local_org, nnod_tgt_1pe, inod_local_tgt,          &
      &        ipe_nod_local_tgt)
 !
-      integer(kind = kint), intent(in) :: nprocs_org, nprocs_larger
+      integer, intent(in) :: nprocs_org, nprocs_larger
       type(interpolate_table), intent(in) :: itp_sgl
       type(itp_stack_dest_wk_refine), intent(in) :: dest_sgl
 !
@@ -140,8 +140,8 @@
       use const_parallel_itp_tbl_org
       use ordering_itp_org_tbl
 !
-      integer(kind = kint), intent(in) :: nprocs_tgt
-      integer(kind = kint), intent(in) :: nprocs_larger
+      integer, intent(in) :: nprocs_tgt
+      integer, intent(in) :: nprocs_larger
       type(interpolate_table), intent(in) :: itp_sgl
 !
       integer(kind = kint), intent(in) :: nele_org_1pe

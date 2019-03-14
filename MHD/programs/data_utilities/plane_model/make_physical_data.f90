@@ -188,7 +188,7 @@
 !
         ucd_file_param%iflag_format = iflag_udt
         call sel_write_ucd_file                                         &
-     &     (izero, istep, ucd_file_param, fft_t_IO, fft_ucd)
+     &     (0, istep, ucd_file_param, fft_t_IO, fft_ucd)
         call disconnect_ucd_data(fft_ucd)
       end do
 !
@@ -210,7 +210,7 @@
       type(mesh_geometry), intent(in):: merged
       type(merged_stacks), intent(in) :: merge_tbl
 !
-      integer(kind = kint), intent(in) :: num_pe2
+      integer, intent(in) :: num_pe2
       type(mesh_geometry), intent(inout) :: subdomains_2(num_pe2)
       type(merged_stacks), intent(inout) :: merge_tbl_2
 !

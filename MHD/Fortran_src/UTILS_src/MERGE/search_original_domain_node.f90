@@ -44,7 +44,7 @@
 !
       use quicksort
 !
-      integer(kind = kint), intent(in) :: irank_org
+      integer, intent(in) :: irank_org
       type(node_data), intent(in) :: org_node
       type(node_data), intent(in) :: new_node
 !
@@ -95,7 +95,7 @@
      &          internal_node_new, inew_gl_sorted, inew_lc_sorted,      &
      &          irank_from_org, inod_from_org, inod_to_new)
 !
-      integer(kind = kint), intent(in) :: irank_org
+      integer, intent(in) :: irank_org
       integer(kind = kint), intent(in) :: internal_node_org
       integer(kind = kint_gl), intent(in)                               &
      &                      :: iorg_gl_sorted(internal_node_org)
@@ -184,7 +184,7 @@
      &          irank_from_org, inod_from_org,                          &
      &          istack_recv, item_send, item_recv)
 !
-      integer(kind = kint), intent(in) :: nprocs_org
+      integer, intent(in) :: nprocs_org
       type(node_data), intent(in) :: new_node
 !
       type(mesh_geometry), intent(in) :: org_mesh(nprocs_org)

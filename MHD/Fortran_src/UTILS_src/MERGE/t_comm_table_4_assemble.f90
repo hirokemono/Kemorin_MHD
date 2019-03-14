@@ -45,7 +45,7 @@
       subroutine alloc_comm_table_4_assemble                            &
      &         (nprocs_org, new_node, asbl_comm)
 !
-      integer(kind = kint), intent(in) :: nprocs_org
+      integer, intent(in) :: nprocs_org
       type(node_data), intent(in) :: new_node
       type(comm_table_4_assemble), intent(inout) :: asbl_comm
 !
@@ -83,7 +83,7 @@
       use share_mesh_data
       use search_original_domain_node
 !
-      integer(kind = kint), intent(in) :: nprocs_org
+      integer, intent(in) :: nprocs_org
       type(node_data), intent(in) :: new_node
 !
       type(mesh_geometry), intent(inout) :: org_mesh(nprocs_org)
@@ -96,6 +96,7 @@
       integer(kind = kint), allocatable :: inew_lc_sorted(:)
 !
       integer(kind = kint) :: inod, ip
+      integer :: id_rank
 !
 !
       call alloc_comm_table_4_assemble(nprocs_org, new_node, asbl_comm)
@@ -116,10 +117,11 @@
 !$omp end parallel do
 !
       do ip = 1, nprocs_org
+        id_rank = int(ip - 1)
 !        write(*,*) 'share_each_node_data', ip
         call share_each_node_data(ip, org_mesh(ip)%node)
 !
-        call search_node_by_global_id((ip-1), org_mesh(ip)%node,        &
+        call search_node_by_global_id(id_rank, org_mesh(ip)%node,       &
      &      new_node, inew_gl_sorted, inew_lc_sorted,                   &
      &      irank_from_org, inod_from_org)
       end do

@@ -44,7 +44,7 @@
      &        ipe_nod_local_tgt, num_dest_domain)
 !
       integer(kind = kint), intent(in) :: ip_org
-      integer(kind = kint), intent(in) :: nprocs_tgt
+      integer, intent(in) :: nprocs_tgt
       type(interpolate_table), intent(in) :: itp_sgl
 !
       integer(kind = kint), intent(in) :: nele_org_1pe
@@ -83,7 +83,7 @@
      &        ipe_nod_local_tgt, itp_org_para)
 !
       integer(kind = kint), intent(in) :: ip_org
-      integer(kind = kint), intent(in) :: nprocs_tgt
+      integer, intent(in) :: nprocs_tgt
       type(interpolate_table), intent(in) :: itp_sgl
 !
       integer(kind = kint), intent(in) :: nele_org_1pe

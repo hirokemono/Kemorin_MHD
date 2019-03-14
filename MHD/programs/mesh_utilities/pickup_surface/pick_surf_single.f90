@@ -19,7 +19,7 @@
       character(len=kchara) :: file_head
       integer(kind = kint) :: icount
 !
-      integer(kind = kint) :: num_pe_s
+      integer(kind = kint) :: n_domain
       type(field_IO_params), save ::  pick_mesh_file
       type(single_make_vierwer_mesh), save :: sgl_viewer1
 !
@@ -35,10 +35,10 @@
       write(*,*) 'find_mesh_format_4_viewer'
       call find_mesh_format_4_viewer(pick_mesh_file)
       write(*,*) 'count_subdomains_4_viewer'
-      call count_subdomains_4_viewer(pick_mesh_file, num_pe_s)
+      call count_subdomains_4_viewer(pick_mesh_file, n_domain)
 !
       call choose_surface_mesh_sgl                                      &
-     &   (num_pe_s, pick_mesh_file, sgl_viewer1)
+     &   (n_domain, pick_mesh_file, sgl_viewer1)
 !
       stop ' //// program normally finished //// '
 !

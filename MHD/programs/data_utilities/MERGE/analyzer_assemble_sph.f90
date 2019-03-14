@@ -132,9 +132,10 @@
       use share_field_data
 !
       integer(kind = kint) :: istep, icou
-      integer(kind = kint) :: ip, jp, irank_new
-      integer(kind = kint) :: iloop, jloop
+      integer(kind = kint) :: ip, jp
+      integer(kind = kint) :: iloop
       integer(kind = kint) :: istep_out
+      integer :: irank_new
 !
 !
 !     ---------------------
@@ -144,7 +145,7 @@
 !
 !     Load original spectr data
         do iloop = 0, (sph_asbl_s%np_sph_org-1) / nprocs
-          irank_new = my_rank + iloop * nprocs
+          irank_new = int(my_rank + iloop * nprocs)
           ip = irank_new + 1
           call load_org_sph_data(irank_new, istep,                      &
      &        sph_asbl_s%np_sph_org, asbl_param_s%org_fld_file,         &

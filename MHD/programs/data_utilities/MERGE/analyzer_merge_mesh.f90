@@ -31,7 +31,7 @@
 !
       type(control_data_4_merge), save :: mgd_ctl_m
       type(control_param_assemble), save :: asbl_param_m
-      integer(kind = kint), save :: ndomain_org
+      integer, save :: ndomain_org
       type(mesh_data), save :: fem_m
       type(element_geometry), save :: e_mesh_m
 !

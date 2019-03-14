@@ -58,7 +58,7 @@
       call load_psf_data_to_link_IO                                     &
      &   (istep_start, psf_file_param, psf_u, psf_ucd)
 !
-      call sel_write_grd_file(iminus, ave_psf_param, psf_ucd)
+      call sel_write_grd_file(-1, ave_psf_param, psf_ucd)
 !
 !   Evaluate size of patches
 !
@@ -76,7 +76,7 @@
         write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file                                          &
-     &     (iminus, istep, psf_file_param, psf_time, psf_ucd)
+     &     (-1, istep, psf_file_param, psf_time, psf_ucd)
 !
 !
         do ifld = 1, psf_u%psf_phys%num_phys
@@ -97,7 +97,7 @@
         end do
 !
         call sel_write_udt_file                                         &
-     &     (iminus, istep, ave_psf_param, psf_time, psf_ucd)
+     &     (-1, istep, ave_psf_param, psf_time, psf_ucd)
       end do
 !
       stop ' //// program normally finished //// '

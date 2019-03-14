@@ -48,7 +48,7 @@
       type(time_data), intent(inout) :: line_time
       type(ucd_data), intent(inout) :: line
 !
-      integer(kind = kint), parameter :: delete_process = -1
+      integer, parameter :: delete_process = -1
 !
 !
       if(istep .eq. istep_start) then

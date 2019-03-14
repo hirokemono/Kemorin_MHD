@@ -215,7 +215,7 @@
 !
       subroutine check_rayleigh_rst_params(id_file, ra_rst)
 !
-      integer(kind = kint), intent(in) :: id_file
+      integer, intent(in) :: id_file
       type(rayleigh_restart), intent(in) :: ra_rst
 !
       integer(kind = kint) :: i

@@ -49,13 +49,13 @@
 !     read finer mesh
 !
       call input_mesh_geometry                                          &
-     &   (part_p%finer_mesh_file, izero, finermesh, ierr)
+     &   (part_p%finer_mesh_file, 0, finermesh, ierr)
       if(ierr .gt. 0) stop 'finer mesh is wrong!!'
 !
 !     read interpolate table
 !
       table_file_header = part_p%finer_inter_file_head
-      call load_interpolate_table(izero, itp_table)
+      call load_interpolate_table(0, itp_table)
 !
 !     read interpolate table
 !

@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine find_merged_mesh_format(mesh_file)
 !!      subroutine find_mesh_format_4_viewer(mesh_file)
-!!      subroutine count_subdomains_4_viewer(mesh_file, num_pe)
+!!      subroutine count_subdomains_4_viewer(mesh_file, n_domain)
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!@endverbatim
 !
@@ -90,20 +90,20 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_subdomains_4_viewer(mesh_file, num_pe)
+      subroutine count_subdomains_4_viewer(mesh_file, n_domain)
 !
       use mesh_IO_select
 !
       type(field_IO_params), intent(in) ::  mesh_file
-      integer, intent(inout) :: num_pe
+      integer(kind = kint), intent(inout) :: n_domain
 !
-      num_pe = 0
+      n_domain = 0
       do
-        if(check_exist_mesh(mesh_file, num_pe) .gt. 0) exit
-        num_pe = num_pe + 1
+        if(check_exist_mesh(mesh_file, int(n_domain)) .gt. 0) exit
+        n_domain = n_domain + 1
       end do
 !
-      write(*,*) 'Number of subdomains: ', num_pe
+      write(*,*) 'Number of subdomains: ', n_domain
 !
       end subroutine count_subdomains_4_viewer
 !

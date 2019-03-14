@@ -43,7 +43,8 @@
 !
       implicit none
 !
-      integer(kind=kint) :: ip, id_rank, ierr, inod
+      integer :: id_rank
+      integer(kind=kint) :: ip, ierr, inod
       integer(kind=kint) :: np, jst, jed
       type(node_data) :: node_plane
       type(time_data), save :: plane_t_IO

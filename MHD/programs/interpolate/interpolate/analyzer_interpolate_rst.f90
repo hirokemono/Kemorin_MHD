@@ -98,7 +98,7 @@
 !
       i_step = int(t_ITP%init_d%i_time_step / t_ITP%rst_step%increment, &
      &        KIND(i_step))
-      call sel_read_alloc_step_FEM_file(ndomain_org, izero, i_step,     &
+      call sel_read_alloc_step_FEM_file(ndomain_org, 0, i_step,         &
      &    org_fst_IO, itp_time_IO, itp_fld_IO)
       if (iflag_debug.eq.1) write(*,*) 'init_field_name_by_restart'
       call init_field_name_by_restart(itp_fld_IO, nod_fld_ITP)

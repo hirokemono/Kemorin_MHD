@@ -150,7 +150,7 @@
       end do
 !
       pick%file_prefix = tave_header
-      call write_sph_spec_monitor(izero, i_step, time, pick)
+      call write_sph_spec_monitor(0, i_step, time, pick)
 !
 !    output standard deviation
 !
@@ -161,7 +161,7 @@
       end do
 !
       pick%file_prefix = sdev_header
-      call write_sph_spec_monitor(izero, i_step, time, pick)
+      call write_sph_spec_monitor(0, i_step, time, pick)
 !
       call dealloc_pick_sph_monitor(pick)
       call dealloc_num_pick_layer(pick)

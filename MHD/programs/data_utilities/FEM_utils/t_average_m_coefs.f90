@@ -56,9 +56,9 @@
 !    output grid data
 !
 !      tave_grp_ucd_param%iflag_format = iflag_udt
-!      call sel_write_grd_file(iminus, tave_grp_ucd_param, psf_ucd)
+!      call sel_write_grd_file(-1, tave_grp_ucd_param, psf_ucd)
 !      sdev_grp_ucd_param%iflag_format = iflag_udt
-!      call sel_write_grd_file(iminus, sdev_grp_ucd_param, psf_ucd)
+!      call sel_write_grd_file(-1, sdev_grp_ucd_param, psf_ucd)
 !
 !      call deallocate_med_grouping_patch
 !
@@ -139,7 +139,7 @@
 !
       tave_grp_ucd_param%iflag_format = iflag_vtk
       call sel_write_udt_file                                           &
-     &   (iminus, istep_read, tave_grp_ucd_param, med_time_IO, ucd_med)
+     &   (-1, istep_read, tave_grp_ucd_param, med_time_IO, ucd_med)
       stop
 !
       end program element_grouping_udt

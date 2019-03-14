@@ -44,15 +44,15 @@
 !
       allocate( femmesh_dest(nprocs_dest) )
       call s_set_parallel_mesh_in_1pe                                   &
-     &   (dest_mesh_file, nprocs_dest, femmesh_dest)
+     &   (dest_mesh_file, int(nprocs_dest), femmesh_dest)
 !
       allocate( femmesh_org(nprocs_org) )
       call s_set_parallel_mesh_in_1pe                                   &
-     &   (org_mesh_file, nprocs_org, femmesh_org)
+     &   (org_mesh_file, int(nprocs_org), femmesh_org)
 !
 !
       table_file_header = sgl_table_file_head
-      call load_interpolate_table(izero, single_tbl)
+      call load_interpolate_table(0, single_tbl)
       write(*,*) 'interplation table is loaded'
 !
 !

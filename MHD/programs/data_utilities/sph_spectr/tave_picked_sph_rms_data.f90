@@ -74,7 +74,7 @@
       deallocate(ave_rms_pick_sph)
 !
       pick_rms%file_prefix = tave_pick_sph_rms_head
-      call write_sph_spec_monitor(izero, i_step, time, pick_rms)
+      call write_sph_spec_monitor(0, i_step, time, pick_rms)
 !
       write(*,*) '***** program finished *****'
       stop

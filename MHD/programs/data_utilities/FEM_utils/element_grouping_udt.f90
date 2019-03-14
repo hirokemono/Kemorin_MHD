@@ -64,7 +64,7 @@
       call link_ele_data_2_ucd(psf_data%psf_ele, psf_ucd)
 !
       grp_ucd_param%iflag_format = iflag_udt
-      call sel_write_grd_file(iminus, grp_ucd_param, psf_ucd)
+      call sel_write_grd_file(-1, grp_ucd_param, psf_ucd)
       call deallocate_med_grouping_patch
 !
 !    output udt data
@@ -72,7 +72,7 @@
       call sqrt_of_rms_coefs(num_layer, num_comp, coef)
 !
       tave_grp_ucd_param%iflag_format = iflag_udt
-      call sel_write_udt_file(iminus, istep_start,                     &
+      call sel_write_udt_file(-1, istep_start,                          &
      &    tave_grp_ucd_param, psf_time_IO, psf_ucd)
 !
       do
@@ -85,7 +85,7 @@
      &     .and. istep_read.ge.istep_start) then
           call sqrt_of_rms_coefs(num_layer, num_comp, coef)
           call sel_write_udt_file                                       &
-     &       (iminus, istep_start, grp_ucd_param, psf_time_IO, psf_ucd)
+     &       (-1, istep_start, grp_ucd_param, psf_time_IO, psf_ucd)
         end if
 !
         if(istep_read .ge. istep_end) exit

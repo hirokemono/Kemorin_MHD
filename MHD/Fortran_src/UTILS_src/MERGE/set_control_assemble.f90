@@ -43,11 +43,11 @@
 !
       type(control_data_4_merge), intent(in) :: mgd_ctl
       type(control_param_assemble), intent(inout) :: asbl_param
-      integer(kind = kint), intent(inout) :: num_pe
+      integer, intent(inout) :: num_pe
 !
 !
       if (mgd_ctl%source_plt%ndomain_ctl%iflag .gt. 0) then
-        num_pe = mgd_ctl%source_plt%ndomain_ctl%intvalue
+        num_pe = int(mgd_ctl%source_plt%ndomain_ctl%intvalue)
       else
         write(*,*) 'Set number of subdomains'
         stop

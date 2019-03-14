@@ -33,7 +33,7 @@
 !
       implicit none
 !
-      integer(kind = kint), save :: ndomain_org
+      integer, save :: ndomain_org
       type(mesh_geometry), allocatable, save :: org_mesh(:)
       type(mesh_geometry), save :: new_mesh
       type(phys_data), save :: new_fld
@@ -64,7 +64,7 @@
       use load_mesh_data_4_merge
       use set_field_to_restart
 !
-      integer(kind = kint) :: nnod_4_surf, nnod_4_edge
+      integer(kind = kint) :: nnod_4_surf, nnod_4_edge, ierr
       type(field_IO), save :: fld_IO_m
 !
 !
@@ -84,7 +84,7 @@
 !
       call set_control_4_merge(mgd_ctl_f, asbl_param_f, ndomain_org)
       call set_control_4_newrst                                         &
-     &   (nprocs, mgd_ctl_f, asbl_param_f, ierr_MPI)
+     &   (nprocs, mgd_ctl_f, asbl_param_f, ierr)
       if(ierr_MPI .gt. 0) then
         write(e_message,'(a)')                                          &
      &     'No. of processes and targed sub domain shold be the same.'
@@ -119,7 +119,7 @@
 !
 !   read field name and number of components
 !
-      call sel_read_alloc_step_FEM_file(ndomain_org, izero,             &
+      call sel_read_alloc_step_FEM_file(ndomain_org, 0,                 &
      &    asbl_param_f%istep_start, asbl_param_f%org_fld_file,          &
      &    t_IO_m, fld_IO_m)
 !

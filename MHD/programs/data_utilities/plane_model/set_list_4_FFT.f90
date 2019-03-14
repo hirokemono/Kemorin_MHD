@@ -44,7 +44,8 @@
       use m_size_4_plane
       use m_spectr_4_ispack
 !
-      integer(kind=kint ), intent(inout) :: num_pe, ist, ied, iint
+      integer, intent(inout) :: num_pe
+      integer(kind = kint), intent(inout) :: ist, ied, iint
 !
 !
       nx_all = nnod_plane_ctl%intvalue(1)
@@ -90,9 +91,10 @@
       use set_control_platform_data
 !
       type(field_IO_params),  intent(inout) ::  mesh_file
-      integer(kind=kint ), intent(inout) :: num_pe, ist, ied
-      integer(kind=kint ), intent(inout) :: ifactor_step, ifactor_rst
-      integer(kind=kint ), intent(inout) :: kx_org, ky_org, iz_org
+      integer, intent(inout) :: num_pe
+      integer(kind = kint), intent(inout) :: ist, ied
+      integer(kind = kint), intent(inout) :: ifactor_step, ifactor_rst
+      integer(kind = kint), intent(inout) :: kx_org, ky_org, iz_org
       real(kind = kreal), intent(inout) :: dt, t_init
 !
 !
@@ -181,8 +183,8 @@
       use set_parallel_file_name
       use set_control_platform_data
 !
-      integer(kind=kint ), intent(inout) :: num_pe
-      integer(kind=kint ), intent(inout) :: kx_org, ky_org, iz_org
+      integer, intent(inout) :: num_pe
+      integer(kind = kint), intent(inout) :: kx_org, ky_org, iz_org
       type(field_IO_params),  intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: ucd_param
 !

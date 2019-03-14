@@ -27,7 +27,7 @@
 !
 !     read outline of mesh
 !
-       integer (kind=kint), intent(inout) :: num_pe, num_pe2
+       integer , intent(inout) :: num_pe, num_pe2
 !
 !
       nx_all = nnod_plane_ctl%intvalue(1)

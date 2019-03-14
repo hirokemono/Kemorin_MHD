@@ -51,7 +51,8 @@
       character(len=kchara), parameter                                  &
      &      :: new_rst_file_header = 'rst_new/rst'
 !
-      integer(kind=kint) :: istep, ip, id_rank, ierr, np, inod
+      integer :: id_rank
+      integer(kind=kint) :: istep, ip, ierr, np, inod
       integer(kind=kint) :: jst
 !
       type(node_data) :: node_plane
@@ -71,7 +72,7 @@
       call read_control_data_plane_mesh
       call s_set_ctl_data_plane_mesh
 !
-       mgd_mesh_pl%num_pe = ndx * ndy * ndz
+       mgd_mesh_pl%num_pe = int(ndx * ndy * ndz)
 !
 !
 !
@@ -86,7 +87,7 @@
       call set_file_fmt_prefix                                          &
      &   (izero, org_rst_f_header, plane_fld_file)
       call sel_read_alloc_FEM_fld_head                                  &
-     &   (mgd_mesh_pl%num_pe, izero, istep,                             &
+     &   (mgd_mesh_pl%num_pe, 0, istep,                                 &
      &    plane_fld_file, plane_t_IO, plane_fst_IO)
 !
       num_rst_org = plane_fst_IO%num_field_IO
@@ -120,7 +121,7 @@
       end do
 !
       do ip = 1, mgd_mesh_pl%num_pe
-        id_rank = ip-1
+        id_rank = int(ip-1)
 !
 !    read mesh file
 !

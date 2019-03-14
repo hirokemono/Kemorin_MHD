@@ -74,7 +74,7 @@
 !
       integer(kind = kint) :: ierr, iprint, ifield, icomp
       integer(kind = kint) :: icou
-      integer(kind = kint) :: num_pe
+      integer :: num_pe
 !
       type(time_data), save :: fem_time_IO
       type(ucd_data), save :: fem_ucd
@@ -117,7 +117,7 @@
       call set_control_4_merge(mgd_ctl_p, asbl_param_p, num_pe)
       call set_assemble_step_4_ucd(mgd_ctl_p%t_mge_ctl, asbl_param_p)
 !      call set_control_4_newudt                                        &
-!     &   (sec_mesh1%num_pe2, mgd_ctl5, asbl_param_p, ierr_MPI)
+!     &   (sec_mesh1%num_pe2, mgd_ctl5, asbl_param_p, ierr)
 
       call sel_read_udt_param(0, asbl_param_p%istep_start,              &
      &    asbl_param_p%org_fld_file, fem_time_IO, fem_ucd)

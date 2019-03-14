@@ -146,7 +146,8 @@
 
       type(gradient_model_data_type), save :: FEM_elen_c
 
-      integer(kind=kint)  ::  ipe    , jpe    , kpe    , pe_id, pe1
+      integer(kind=kint)  ::  ipe    , jpe    , kpe    , pe_id
+      integer :: id_rank
 
 !
       character(len= 8 )   ::  date
@@ -200,11 +201,11 @@
 !
 ! ***** open output file
 !
-             pe1 = pe_id - 1
-             write(penum,'(i4   )')  pe_id-1
+             id_rank = int(pe_id - 1)
+             write(penum,'(i4   )') id_rank
              penum_left = adjustl(penum)
 !
-             call open_mesh_file(pe1)
+             call open_mesh_file(id_rank)
 !
 ! ***** set and write basic local model parameters
 !                                       .. pe nod per 1 line
@@ -297,7 +298,7 @@
             write(*,*) 'filtering information', intnodtot
             call neighboring_node(pe_id, kpe, FEM_elen_c)
 !
-            call neighboring_edge(pe1, kpe)
+            call neighboring_edge(id_rank, kpe)
 !
             call deallocate_work_4_filter_ele
             call deallocate_work_4_filter_edge

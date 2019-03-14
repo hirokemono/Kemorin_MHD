@@ -33,7 +33,7 @@
 !
       implicit none
 !
-      integer(kind = kint), save :: ndomain_org
+      integer, save :: ndomain_org
       type(mesh_geometry), allocatable, save :: org_mesh(:)
       type(mesh_geometry), save :: new_mesh
       type(phys_data), save :: new_fld
@@ -62,7 +62,7 @@
       use share_field_data
       use load_mesh_data_4_merge
 !
-      integer(kind = kint) :: nnod_4_surf, nnod_4_edge
+      integer(kind = kint) :: nnod_4_surf, nnod_4_edge, ierr
       type(field_IO), save :: fld_IO_m
 !
 !
@@ -82,7 +82,7 @@
 !
       call set_control_4_merge(mgd_ctl_u, asbl_param_u, ndomain_org)
       call set_control_4_newudt                                         &
-     &   (nprocs, mgd_ctl_u, asbl_param_u, ierr_MPI)
+     &   (nprocs, mgd_ctl_u, asbl_param_u, ierr)
       call set_assemble_field_list(mgd_ctl_u, asbl_tbl_u)
       if(ierr_MPI .gt. 0) then
         write(e_message,'(a)')                                          &
@@ -119,7 +119,7 @@
 !   read field name and number of components
 !
       call sel_read_alloc_step_FEM_file                                 &
-     &   (ndomain_org, izero,  asbl_param_u%istep_start,                &
+     &   (ndomain_org, 0,  asbl_param_u%istep_start,                    &
      &    asbl_param_u%org_fld_file, t_IO_m, fld_IO_m)
 !
       if(my_rank .eq. 0) then

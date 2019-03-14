@@ -69,7 +69,7 @@
      &   (istep_start, psf_file_param, psf_u, psf_ucd)
       fix_psf_param%iflag_format = psf_file_param%iflag_format
 !
-      call sel_write_grd_file(iminus, fix_psf_param, psf_ucd)
+      call sel_write_grd_file(-1, fix_psf_param, psf_ucd)
 !
       ipsf_temp = 0
       do ifld = 1, psf_u%psf_phys%num_phys
@@ -103,7 +103,7 @@
         write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file                                          &
-     &     (iminus, istep, psf_file_param, psf_time, psf_ucd)
+     &     (-1, istep, psf_file_param, psf_time, psf_ucd)
 !
         do inod = 1, psf_u%psf_nod%numnod
           psf_u%psf_phys%d_fld(inod,ipsf_temp)                          &
@@ -112,7 +112,7 @@
         end do
 !
         call sel_write_udt_file                                         &
-     &     (iminus, istep, fix_psf_param, psf_time, psf_ucd)
+     &     (-1, istep, fix_psf_param, psf_time, psf_ucd)
       end do
       write(*,*)
 !

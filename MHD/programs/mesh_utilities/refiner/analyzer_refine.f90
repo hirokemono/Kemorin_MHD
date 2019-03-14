@@ -235,7 +235,7 @@
         org_ele_mesh%edge%nnod_4_edge = finer_elemesh%edge%nnod_4_edge
       end do
 !
-      call output_mesh(refined_mesh_file, izero,                        &
+      call output_mesh(refined_mesh_file, 0,                            &
      &                 refined_fem%mesh, refined_fem%group)
       call dealloc_mesh_infos(refined_fem%mesh, refined_fem%group)
 !

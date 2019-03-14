@@ -14,13 +14,13 @@
       implicit  none
 !
 !
-      integer (kind = kint) :: nprocs_fine = 1
+      integer :: nprocs_fine = 1
       type(mesh_data), pointer :: fine_mesh(:)
 !
-      integer (kind = kint) :: nprocs_course = 1
+      integer :: nprocs_course = 1
       type(mesh_data), pointer :: course_mesh(:)
 !
-      integer (kind = kint) :: nprocs_larger = 1
+      integer :: nprocs_larger = 1
       type(interpolate_table), pointer :: c2f_para(:)
       type(interpolate_table), pointer :: f2c_para(:)
       type(interpolate_table), pointer :: f2c_ele_para(:)

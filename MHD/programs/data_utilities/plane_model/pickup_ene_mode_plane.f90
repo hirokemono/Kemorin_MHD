@@ -18,7 +18,8 @@
       integer(kind=kint) :: nx_2, ny_2
       integer(kind=kint) :: kx, ky, kx_in, ky_in
       integer(kind=kint) :: num_ene_z
-      integer(kind=kint) :: ist, ied, iint, num_fft, num_pe
+      integer(kind=kint) :: ist, ied, iint, num_fft
+      integer :: num_pe
 
       real   (kind=kreal), dimension(:), allocatable  ::  ene_z
       character(len=kchara  ), dimension(:), allocatable :: fft_name

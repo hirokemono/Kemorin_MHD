@@ -76,9 +76,9 @@
      &   (istep_start, psf_file_param, psf_u, psf_ucd)
       call alloc_psf_averages(psf_u%psf_phys, psf_average)
 !
-      call sel_write_grd_file(iminus, ave_psf_param, psf_ucd)
-      call sel_write_grd_file(iminus, rms_psf_param, psf_ucd)
-      call sel_write_grd_file(iminus, sdev_psf_param, psf_ucd)
+      call sel_write_grd_file(-1, ave_psf_param, psf_ucd)
+      call sel_write_grd_file(-1, rms_psf_param, psf_ucd)
+      call sel_write_grd_file(-1, sdev_psf_param, psf_ucd)
 !
 !   Evaluate size of patches
 !
@@ -118,7 +118,7 @@
         write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file                                          &
-     &     (iminus, istep, psf_file_param, psf_time, psf_ucd)
+     &     (-1, istep, psf_file_param, psf_time, psf_ucd)
         call cal_rms_ave_4_psf(psf_u%psf_ele, psf_u%psf_phys,           &
      &     psf_normal, psf_average)
         call cal_minmax_psf                                             &
@@ -169,7 +169,7 @@
         write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file                                          &
-     &     (iminus, istep, psf_file_param, psf_time, psf_ucd)
+     &     (-1, istep, psf_file_param, psf_time, psf_ucd)
 !
 !$omp parallel
         do nd = 1, psf_u%psf_phys%ntot_phys
@@ -198,15 +198,15 @@
 !
       call copy_filed_to_phys_data(tave_psf, psf_u%psf_phys)
       call sel_write_udt_file                                           &
-     &   (iminus, istep_end, ave_psf_param, psf_time, psf_ucd)
+     &   (-1, istep_end, ave_psf_param, psf_time, psf_ucd)
 !
       call copy_filed_to_phys_data(trms_psf, psf_u%psf_phys)
       call sel_write_udt_file                                           &
-     &   (iminus, istep_end, rms_psf_param, psf_time, psf_ucd)
+     &   (-1, istep_end, rms_psf_param, psf_time, psf_ucd)
 !
       call copy_filed_to_phys_data(tsdev_psf, psf_u%psf_phys)
       call sel_write_udt_file                                           &
-     &   (iminus, istep_end, sdev_psf_param, psf_time, psf_ucd)
+     &   (-1, istep_end, sdev_psf_param, psf_time, psf_ucd)
 !
       stop ' //// program normally finished //// '
 !

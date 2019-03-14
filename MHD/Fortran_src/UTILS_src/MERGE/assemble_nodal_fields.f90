@@ -121,14 +121,14 @@
       use field_IO_select
       use share_field_data
 !
-      integer(kind = kint), intent(in) :: nprocs_org
+      integer, intent(in) :: nprocs_org
       type(comm_table_4_assemble), intent(in) :: asbl_comm
 !
       type(phys_data), intent(inout) :: new_fld
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: org_fIO(nprocs_org)
 !
-      integer(kind = kint) :: ip, ist, num
+      integer(kind = kint) :: ist, num, ip
 !
 !
       call share_time_step_data(t_IO)

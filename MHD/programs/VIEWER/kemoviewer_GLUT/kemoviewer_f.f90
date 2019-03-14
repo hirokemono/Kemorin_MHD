@@ -26,7 +26,7 @@
 !
       type(field_IO_params), save :: mesh_file_viewer
       type(single_make_vierwer_mesh), save :: sgl_viewer_s
-      integer(kind = kint) :: num_pe_s
+      integer(kind = kint) :: n_domain
 !
 !
       icount = iargc_kemo()
@@ -39,9 +39,9 @@
       mesh_file_viewer%file_prefix = file_head
 !
       call find_mesh_format_4_viewer(mesh_file_viewer)
-      call count_subdomains_4_viewer(mesh_file_viewer, num_pe_s)
+      call count_subdomains_4_viewer(mesh_file_viewer, n_domain)
       call choose_surface_mesh_sgl                                      &
-     &   (num_pe_s, mesh_file_viewer, sgl_viewer_s)
+     &   (n_domain, mesh_file_viewer, sgl_viewer_s)
 !
       write(*,*) 'will you draw mesh? (y/n)'
       read(*,*) chara_flag

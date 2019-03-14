@@ -33,7 +33,7 @@
 !
       implicit none
 !
-      integer(kind = kint), save :: ndomain_org
+      integer, save :: ndomain_org
       type(mesh_geometry), save :: mesh_m
       type(phys_data), save :: new_fld
 !

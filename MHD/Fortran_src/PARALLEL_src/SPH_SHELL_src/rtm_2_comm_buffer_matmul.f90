@@ -73,7 +73,7 @@
       integer(kind = kint) :: k_rtm, ip, nkr, kk, l_rtm, lo_rtm
       integer(kind = kint) :: i_rtm, m_rtm, inod, itmp, inum
       integer(kind = kint) :: imat_kt, imat_tk
-      integer(kind = kint) :: imat, in_rtm, is_rtm, in_recv, is_recv
+      integer(kind = kint) :: in_rtm, is_rtm, in_recv, is_recv
 !
 !
       do inum = 1, ntot_sr_rtm

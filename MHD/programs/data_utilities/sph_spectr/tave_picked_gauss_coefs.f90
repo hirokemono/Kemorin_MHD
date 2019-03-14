@@ -68,7 +68,7 @@
       deallocate(ave_gauss)
 !
       gauss_org%file_prefix = tave_pick_gauss_head
-      call write_gauss_coefs_4_monitor(izero, i_step, time, gauss_org)
+      call write_gauss_coefs_4_monitor(0, i_step, time, gauss_org)
 !
       write(*,*) '***** program finished *****'
       stop

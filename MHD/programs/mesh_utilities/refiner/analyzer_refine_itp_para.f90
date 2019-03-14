@@ -61,13 +61,13 @@
 !
 !
       table_file_header = course_2_fine_head
-      call load_interpolate_table(izero, c2f_single)
+      call load_interpolate_table(0, c2f_single)
 !
       table_file_header = fine_2_course_head
-      call load_interpolate_table(izero, f2c_single)
+      call load_interpolate_table(0, f2c_single)
 !
       table_file_header = refine_info_head
-      call load_interpolate_table(izero, f2c_ele_single)
+      call load_interpolate_table(0, f2c_ele_single)
 !
 !
 !

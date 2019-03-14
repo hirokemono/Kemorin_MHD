@@ -55,10 +55,10 @@
 !
       use t_mesh_data
 !
-      integer(kind=kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
 !
-      integer(kind=kint) :: ip
+      integer :: ip
 !
       call alloc_merged_field_stack(num_pe, pl_fld_IO)
 !
@@ -85,16 +85,15 @@
       use set_restart_data
 !
       integer(kind=kint), intent(in) :: ip, nnod
-      integer(kind=kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(phys_data), intent(in) :: merged_fld
 !
       type(time_data), intent(inout) :: t_IO
 !
-      integer(kind=kint) :: id_rank
+      integer :: id_rank
 !
 !
-      id_rank = ip - 1
-!
+      id_rank = int(ip - 1)
 !
       call simple_init_fld_name_to_rst(nnod, merged_fld, pl_fld_IO)
       call simple_copy_fld_dat_to_rst_IO                                &

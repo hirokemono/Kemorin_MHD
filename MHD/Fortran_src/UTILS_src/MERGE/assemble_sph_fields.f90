@@ -57,7 +57,7 @@
 !
       use share_spectr_index_data
 !
-      integer(kind = kint), intent(in) :: np_sph_org
+      integer, intent(in) :: np_sph_org
       type(sph_mesh_data), intent(inout) :: org_sph_mesh(np_sph_org)
 !
       integer(kind = kint) :: ip
@@ -76,10 +76,10 @@
 !
       use share_field_data
 !
-      integer(kind = kint), intent(in) :: np_sph_org
+      integer, intent(in) :: np_sph_org
       type(phys_data), intent(inout) :: org_sph_phys(np_sph_org)
 !
-      integer(kind = kint) :: ip, jp
+      integer(kind = kint) :: ip
 !
 !
       do ip = 1, np_sph_org
@@ -95,11 +95,11 @@
 !
       use share_field_data
 !
-      integer(kind = kint), intent(in) :: np_sph_new
+      integer, intent(in) :: np_sph_new
       type(sph_mesh_data), intent(in) :: new_sph_mesh(np_sph_new)
       type(phys_data), intent(inout) :: new_sph_phys(np_sph_new)
 !
-      integer(kind = kint) :: ip, jp
+      integer(kind = kint) :: jp
 !
 !
 !
@@ -125,7 +125,7 @@
 !
       use parallel_assemble_sph
 !
-      integer(kind = kint), intent(in) :: np_sph_org, np_sph_new
+      integer, intent(in) :: np_sph_org, np_sph_new
       type(sph_mesh_data), intent(in) :: org_sph_mesh(np_sph_org)
       type(sph_mesh_data), intent(in) :: new_sph_mesh(np_sph_new)
       type(rj_assemble_tbl), intent(inout)                              &
