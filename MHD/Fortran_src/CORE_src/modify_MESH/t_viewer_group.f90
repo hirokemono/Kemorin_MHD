@@ -61,7 +61,7 @@
 !
       subroutine alloc_domain_stack_4_surf(num_pe, domain_grps)
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(inout) :: domain_grps
 !
 !
@@ -114,7 +114,7 @@
 !
       subroutine alloc_merged_node_grps_stack(num_pe, view_nod_grps)
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_node_groups), intent(inout) :: view_nod_grps
 !
 !
@@ -129,7 +129,7 @@
 !
       subroutine alloc_merged_surf_grps_stack(num_pe, view_grps)
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(inout) :: view_grps
 !
 !
@@ -193,7 +193,8 @@
 !
       subroutine alloc_merged_group_stack(num_pe, ngrp, v_grp)
 !
-      integer(kind = kint), intent(in) :: num_pe, ngrp
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: ngrp
       type(viewer_group_data), intent(inout) :: v_grp
 !
 !

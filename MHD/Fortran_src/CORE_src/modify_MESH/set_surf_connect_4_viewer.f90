@@ -97,7 +97,7 @@
 !
       domain_grps%surf_grp%num_item = surf%numsurf_iso
 !       write(*,*) 'alloc_domain_stack_4_surf'
-      call alloc_domain_stack_4_surf(ione, domain_grps)
+      call alloc_domain_stack_4_surf(1, domain_grps)
       call alloc_merged_group_item(domain_grps%surf_grp)
 !
       call set_surf_domain_item_viewer(surf, domain_grps%surf_grp)
@@ -109,7 +109,7 @@
       view_ele_grps%num_grp = group%ele_grp%num_grp
       view_ele_grps%surf_grp%num_item                                   &
      &     = mgd_sf_grp%ntot_sf_iso_ele_grp
-      call alloc_merged_surf_grps_stack(ione, view_ele_grps)
+      call alloc_merged_surf_grps_stack(1, view_ele_grps)
       call alloc_merged_group_item(view_ele_grps%surf_grp)
 !
       view_ele_grps%grp_name(1:view_ele_grps%num_grp)                   &
@@ -125,7 +125,7 @@
       view_sf_grps%num_grp = group%surf_grp%num_grp
       view_sf_grps%surf_grp%num_item = group%surf_grp%num_item
 !
-      call alloc_merged_surf_grps_stack(ione, view_sf_grps)
+      call alloc_merged_surf_grps_stack(1, view_sf_grps)
       call alloc_merged_group_item(view_sf_grps%surf_grp)
 !
       view_sf_grps%grp_name(1:view_sf_grps%num_grp)                     &

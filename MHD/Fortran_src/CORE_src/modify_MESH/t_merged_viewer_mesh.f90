@@ -29,7 +29,7 @@
 !
 !
       type merged_viewer_mesh
-        integer(kind = kint)  :: num_pe_sf
+        integer :: num_pe_sf
 !
         integer(kind = kint), allocatable :: nnod_sf(:)
         integer(kind = kint), allocatable :: nedge_sf(:)
@@ -64,7 +64,7 @@
 !
       subroutine alloc_mpi_viewer_mesh_param(num_pe, mgd_view_prm)
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(mpi_viewer_mesh_param), intent(inout) :: mgd_view_prm
 !
 !
@@ -97,7 +97,7 @@
 !
       subroutine alloc_num_mesh_sf(num_pe, mgd_view_mesh)
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
 !

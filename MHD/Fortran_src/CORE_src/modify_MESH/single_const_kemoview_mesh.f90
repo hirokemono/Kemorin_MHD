@@ -35,7 +35,7 @@
         type(mesh_data) :: fem
         type(element_geometry) :: ele_mesh
 !
-        integer(kind = kint) :: nprocs_sf
+        integer :: nprocs_sf
         type(viewer_mesh_data), allocatable :: view_mesh(:)
         type(viewer_surface_groups), allocatable :: domain_grps(:)
 !
@@ -66,11 +66,12 @@ private :: collect_single_viewer_mesh
       type(single_make_vierwer_mesh), intent(inout) :: sgl_viewer
 !
 !
-      integer(kind = kint) :: ip, id_rank, ierr
+      integer(kind = kint) :: ierr
+      integer :: ip, id_rank
 !
 !  set mesh_information
 !
-      sgl_viewer%nprocs_sf = np
+      sgl_viewer%nprocs_sf = int(np)
       if(sgl_viewer%nprocs_sf .eq. 1) iflag_add_comm_tbl = 0
 !
       allocate(sgl_viewer%view_mesh(sgl_viewer%nprocs_sf))
@@ -138,7 +139,7 @@ private :: collect_single_viewer_mesh
       use viewer_mesh_IO_select
       use merge_viewer_mesh
 !
-      integer(kind = kint) :: nprocs_sf
+      integer, intent(in) :: nprocs_sf
       type(field_IO_params), intent(in) :: mesh_file
 !
       type(viewer_mesh_data), intent(in) :: view_mesh(nprocs_sf)
