@@ -22,7 +22,7 @@
 !!     &          id_neib_add, ntot_import_add, istack_import_add,      &
 !!     &          inod_recv_add, irank_recv_add, iflag_recv_2_del)
 !!      subroutine mark_added_ele_import_to_del                         &
-!!     &         (nprocs, numele, iele_local, irank_home,               &
+!!     &         (num_pe, numele, iele_local, irank_home,               &
 !!     &          num_neib_add, ntot_import_add, istack_import_add,     &
 !!     &          iele_recv_add, irank_recv_add, iflag_recv_2_del)
 !!@endverbatim
@@ -260,11 +260,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine mark_added_ele_import_to_del                           &
-     &         (nprocs, numele, iele_local, irank_home,                 &
+     &         (num_pe, numele, iele_local, irank_home,                 &
      &          num_neib_add, ntot_import_add, istack_import_add,       &
      &          iele_recv_add, irank_recv_add, iflag_recv_2_del)
 !
-      integer(kind = kint), intent(in) :: nprocs, numele
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: iele_local(numele)
       integer(kind = kint), intent(in) :: irank_home(numele)
 !
@@ -287,13 +288,13 @@
       integer(kind = kint) :: jst, jed, jnum, jele
 !
 !
-      allocate(istack_ele_ip(0:nprocs))
+      allocate(istack_ele_ip(0:num_pe))
       allocate(iele_by_ip(numele))
       istack_ele_ip = 0
       iele_by_ip =    0
 !
       icou = 0
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         do iele = 1, numele
           if(irank_home(iele) .eq. (ip-1)) then
             icou = icou + 1

@@ -62,9 +62,9 @@
       integer(kind = kint) :: iflag_ele_mesh
 !
 !
-      iflag_ele_mesh =  check_exist_ele_mesh(mesh_file, izero)          &
-     &                + check_exist_surf_mesh(mesh_file, izero)         &
-     &                + check_exist_edge_mesh(mesh_file, izero)
+      iflag_ele_mesh =  check_exist_ele_mesh(mesh_file, 0)              &
+     &                + check_exist_surf_mesh(mesh_file, 0)             &
+     &                + check_exist_edge_mesh(mesh_file, 0)
       if(iflag_ele_mesh .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'mpi_load_element_surface_edge'
         call mpi_load_element_surface_edge                              &

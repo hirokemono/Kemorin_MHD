@@ -31,9 +31,9 @@
 !>        Communicator for each level
         integer :: SOLVER_COMM
 !>        MPI rank for each level
-        integer(kind=kint) :: MG_rank
+        integer :: MG_rank
 !>        Total process count (1 to petot)
-        integer(kind=kint) :: nprocs
+        integer :: nprocs
 !>        Lavel for communicator
         integer(kind=kint) :: icolor_MG
       end type mpi_4_solver
@@ -58,14 +58,12 @@
       use calypso_mpi
 !
       type(mpi_4_solver), intent(inout) :: S_COMM
-      integer(kind = kint) :: my_rank_mg4
 !
 !
       S_COMM%icolor_MG = 0
 !
       call MPI_COMM_DUP(CALYPSO_COMM, S_COMM%SOLVER_COMM, ierr_MPI)
-      call MPI_COMM_RANK(S_COMM%SOLVER_COMM, my_rank_mg4, ierr_MPI)
-      S_COMM%MG_rank = my_rank_mg4
+      call MPI_COMM_RANK(S_COMM%SOLVER_COMM, S_COMM%MG_rank, ierr_MPI)
       S_COMM%nprocs =  nprocs
 !
       end subroutine copy_communicator_4_solver

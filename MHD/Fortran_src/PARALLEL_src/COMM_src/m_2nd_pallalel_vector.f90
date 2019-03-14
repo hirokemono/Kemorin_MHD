@@ -19,7 +19,7 @@
 !
       implicit  none
 !
-      integer(kind=kint) :: nprocs_2nd
+      integer :: nprocs_2nd
 !     total pe count (1 to petot)
 ! 
 !

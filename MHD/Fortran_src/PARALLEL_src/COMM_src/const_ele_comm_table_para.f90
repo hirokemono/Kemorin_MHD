@@ -58,7 +58,7 @@
       type(work_4_const_ele_comm_table) :: ecomm_wk
 !
 !
-      call alloc_const_ele_comm_tbl(nprocs, ecomm_wk)
+      call alloc_const_ele_comm_tbl(ecomm_wk)
 !
       ip = my_rank + 1
       call const_ele_import_table(my_rank, nprocs,                      &
@@ -79,9 +79,8 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine alloc_const_ele_comm_tbl(nprocs, ecomm_wk)
+      subroutine alloc_const_ele_comm_tbl(ecomm_wk)
 !
-      integer(kind = kint), intent(in) :: nprocs
       type(work_4_const_ele_comm_table), intent(inout) :: ecomm_wk
 !
 !
