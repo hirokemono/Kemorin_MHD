@@ -8,23 +8,23 @@
 !!
 !!@verbatim
 !!      subroutine sel_mpi_read_geom_rtp_file                           &
-!!     &         (nprocs_in, id_rank, sph_file)
+!!     &         (num_pe, id_rank, sph_file)
 !!      subroutine sel_mpi_read_spectr_rj_file                          &
-!!     &         (nprocs_in, id_rank, sph_file)
+!!     &         (num_pe, id_rank, sph_file)
 !!      subroutine sel_mpi_read_geom_rtm_file                           &
-!!     &         (nprocs_in, id_rank, sph_file)
+!!     &         (num_pe, id_rank, sph_file)
 !!      subroutine sel_mpi_read_modes_rlm_file                          &
-!!     &         (nprocs_in, id_rank, sph_file)
+!!     &         (num_pe, id_rank, sph_file)
 !!        type(sph_file_data_type), intent(inout) :: sph_file
 !!
 !!      subroutine sel_mpi_write_geom_rtp_file                          &
-!!     &         (nprocs_in, id_rank, sph_file)
+!!     &         (num_pe, id_rank, sph_file)
 !!      subroutine sel_mpi_write_spectr_rj_file                         &
-!!     &         (nprocs_in, id_rank, sph_file)
+!!     &         (num_pe, id_rank, sph_file)
 !!      subroutine sel_mpi_write_geom_rtm_file                          &
-!!     &         (nprocs_in, id_rank, sph_file)
+!!     &         (num_pe, id_rank, sph_file)
 !!      subroutine sel_mpi_write_modes_rlm_file                         &
-!!     &         (nprocs_in, id_rank, sph_file)
+!!     &         (num_pe, id_rank, sph_file)
 !!        type(sph_file_data_type), intent(in) :: sph_file
 !!@endverbatim
 !!
@@ -61,9 +61,9 @@
 !------------------------------------------------------------------
 !
       subroutine sel_mpi_read_geom_rtp_file                            &
-     &         (nprocs_in, id_rank, sph_file)
+     &         (num_pe, id_rank, sph_file)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
       integer(kind = kint) :: ierr = 0
@@ -74,24 +74,24 @@
 !
       if(iflag_sph_file_fmt .eq. iflag_single+id_binary_file_fmt) then
         call mpi_read_geom_rtp_file_b                                   &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call mpi_read_geom_rtp_file                                     &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_mpi_read_geom_rtp_file_b                                &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_geom_rtp_file                                  &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 #endif
 !
       else
-        if(id_rank .lt. nprocs_in) then
+        if(id_rank .lt. num_pe) then
           call sel_read_geom_rtp_file(id_rank, sph_file, ierr)
         end if
       end if
@@ -105,9 +105,9 @@
 !------------------------------------------------------------------
 !
       subroutine sel_mpi_read_spectr_rj_file                            &
-     &         (nprocs_in, id_rank, sph_file)
+     &         (num_pe, id_rank, sph_file)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
       integer(kind = kint) ::  ierr = 0
@@ -118,24 +118,24 @@
 !
       if(iflag_sph_file_fmt .eq. iflag_single+id_binary_file_fmt) then
         call mpi_read_spectr_rj_file_b                                  &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call mpi_read_spectr_rj_file                                    &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_mpi_read_spectr_rj_file_b                               &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_spectr_rj_file                                 &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 #endif
 !
       else
-        if(id_rank .lt. nprocs_in) then
+        if(id_rank .lt. num_pe) then
           call sel_read_spectr_rj_file(id_rank, sph_file, ierr)
         end if
       end if
@@ -149,9 +149,9 @@
 !------------------------------------------------------------------
 !
       subroutine sel_mpi_read_geom_rtm_file                             &
-     &         (nprocs_in, id_rank, sph_file)
+     &         (num_pe, id_rank, sph_file)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
       integer(kind = kint) ::  ierr = 0
@@ -162,24 +162,24 @@
 !
       if(iflag_sph_file_fmt .eq. iflag_single+id_binary_file_fmt) then
         call mpi_read_geom_rtm_file_b                                   &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call mpi_read_geom_rtm_file                                     &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_mpi_read_geom_rtm_file_b                                &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_geom_rtm_file                                  &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 #endif
 !
       else
-        if(id_rank .lt. nprocs_in) then
+        if(id_rank .lt. num_pe) then
           call sel_read_geom_rtm_file(id_rank, sph_file, ierr)
         end if
       end if
@@ -193,9 +193,9 @@
 !------------------------------------------------------------------
 !
       subroutine sel_mpi_read_modes_rlm_file                            &
-     &         (nprocs_in, id_rank, sph_file)
+     &         (num_pe, id_rank, sph_file)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
       integer(kind = kint) ::  ierr = 0
@@ -206,24 +206,24 @@
 !
       if(iflag_sph_file_fmt .eq. iflag_single+id_binary_file_fmt) then
         call mpi_read_modes_rlm_file_b                                  &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call mpi_read_modes_rlm_file                                    &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_mpi_read_modes_rlm_file_b                               &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_modes_rlm_file                                 &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 #endif
 !
       else
-        if(id_rank .lt. nprocs_in) then
+        if(id_rank .lt. num_pe) then
           call sel_read_modes_rlm_file(id_rank, sph_file, ierr)
         end if
       end if
@@ -238,9 +238,9 @@
 !------------------------------------------------------------------
 !
       subroutine sel_mpi_write_geom_rtp_file                            &
-     &         (nprocs_in, id_rank, sph_file)
+     &         (num_pe, id_rank, sph_file)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -252,7 +252,7 @@
      &     (sph_file_name, nprocs, id_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call mpi_write_geom_rtp_file                                    &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
@@ -262,11 +262,11 @@
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_write_geom_rtp_file                                 &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 #endif
 !
       else
-        if(id_rank .lt. nprocs_in) then
+        if(id_rank .lt. num_pe) then
           call sel_write_geom_rtp_file(id_rank, sph_file)
         end if
       end if
@@ -276,9 +276,9 @@
 !------------------------------------------------------------------
 !
       subroutine sel_mpi_write_spectr_rj_file                           &
-     &         (nprocs_in, id_rank, sph_file)
+     &         (num_pe, id_rank, sph_file)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -290,7 +290,7 @@
      &     (sph_file_name, nprocs, id_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call mpi_write_spectr_rj_file                                   &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
@@ -300,11 +300,11 @@
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_write_spectr_rj_file                                &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 #endif
 !
       else
-        if(id_rank .lt. nprocs_in) then
+        if(id_rank .lt. num_pe) then
           call sel_write_spectr_modes_rj_file(id_rank, sph_file)
         end if
       end if
@@ -314,9 +314,9 @@
 !------------------------------------------------------------------
 !
       subroutine sel_mpi_write_geom_rtm_file                            &
-     &         (nprocs_in, id_rank, sph_file)
+     &         (num_pe, id_rank, sph_file)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -328,7 +328,7 @@
      &     (sph_file_name, nprocs, id_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call mpi_write_geom_rtm_file                                    &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
@@ -338,11 +338,11 @@
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_write_geom_rtm_file                                 &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 #endif
 !
       else
-        if(id_rank .lt. nprocs_in) then
+        if(id_rank .lt. num_pe) then
           call sel_write_geom_rtm_file(id_rank, sph_file)
         end if
       end if
@@ -352,9 +352,9 @@
 !------------------------------------------------------------------
 !
       subroutine sel_mpi_write_modes_rlm_file                           &
-     &         (nprocs_in, id_rank, sph_file)
+     &         (num_pe, id_rank, sph_file)
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -366,7 +366,7 @@
      &     (sph_file_name, nprocs, id_rank, sph_file)
       else if(iflag_sph_file_fmt .eq. iflag_single) then
         call mpi_write_modes_rlm_file                                   &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt                                        &
@@ -376,11 +376,11 @@
       else if(iflag_sph_file_fmt                                        &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_write_modes_rlm_file                                &
-     &     (sph_file_name, nprocs_in, id_rank, sph_file)
+     &     (sph_file_name, num_pe, id_rank, sph_file)
 #endif
 !
       else
-        if(id_rank .lt. nprocs_in) then
+        if(id_rank .lt. num_pe) then
           call sel_write_modes_rlm_file(id_rank, sph_file)
         end if
       end if

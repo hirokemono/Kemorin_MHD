@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine open_write_mpi_file_b                                &
-!!     &         (file_name, nprocs_in, my_rank_IO, IO_param)
+!!     &         (file_name, num_pe, id_rank, IO_param)
 !!      subroutine open_read_mpi_file_b                                 &
-!!     &         (file_name, nprocs_in, my_rank_IO, IO_param)
+!!     &         (file_name, num_pe, id_rank, IO_param)
 !!
 !!      subroutine mpi_write_process_id_b(IO_param)
 !!      subroutine mpi_write_one_inthead_b(IO_param, int_dat)
@@ -62,15 +62,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine open_write_mpi_file_b                                  &
-     &         (file_name, nprocs_in, my_rank_IO, IO_param)
+     &         (file_name, num_pe, id_rank, IO_param)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: num_pe, id_rank
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
       call open_write_mpi_file                                          &
-     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
       call calypso_mpi_seek_write_endian                                &
      &   (IO_param%id_file, IO_param%ioff_gl)
 !
@@ -79,15 +79,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine open_read_mpi_file_b                                   &
-     &         (file_name, nprocs_in, my_rank_IO, IO_param)
+     &         (file_name, num_pe, id_rank, IO_param)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: num_pe, id_rank
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
       call open_read_mpi_file                                          &
-     &   (file_name, nprocs_in, my_rank_IO, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
       call calypso_mpi_seek_read_endian                                 &
      &   (IO_param%id_file, IO_param%iflag_bin_swap, IO_param%ioff_gl)
 !

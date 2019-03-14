@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine open_write_mpi_file                                  &
-!!     &         (file_name, nprocs_in, my_rank_IO, IO_param)
+!!     &         (file_name, num_pe, my_rank_IO, IO_param)
 !!        Substitution of open_wt_gzfile_b
 !!      subroutine open_append_mpi_file                                 &
-!!     &         (file_name, nprocs_in, my_rank_IO, IO_param)
+!!     &         (file_name, num_pe, my_rank_IO, IO_param)
 !!      subroutine open_read_mpi_file                                   &
-!!     &         (file_name, nprocs_in, my_rank_IO, IO_param)
+!!     &         (file_name, num_pe, my_rank_IO, IO_param)
 !!        Substitution of open_rd_gzfile_b
 !!      subroutine close_mpi_file(IO_param)
 !!
@@ -49,15 +49,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine open_write_mpi_file                                    &
-     &         (file_name, nprocs_in, my_rank_IO, IO_param)
+     &         (file_name, num_pe, my_rank_IO, IO_param)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: num_pe, my_rank_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
-      call alloc_istack_merge(my_rank_IO, nprocs_in, IO_param)
+      call alloc_istack_merge(my_rank_IO, num_pe, IO_param)
       call calypso_mpi_write_file_open                                  &
      &   (file_name, IO_param%nprocs_in, IO_param%id_file)
       IO_param%ioff_gl = izero
@@ -67,15 +67,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine open_append_mpi_file                                   &
-     &         (file_name, nprocs_in, my_rank_IO, IO_param)
+     &         (file_name, num_pe, my_rank_IO, IO_param)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: num_pe, my_rank_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
-      call alloc_istack_merge(my_rank_IO, nprocs_in, IO_param)
+      call alloc_istack_merge(my_rank_IO, num_pe, IO_param)
       call calypso_mpi_write_file_open                                  &
      &   (file_name, IO_param%nprocs_in, IO_param%id_file)
       call MPI_File_get_byte_offset(IO_param%id_file, IO_param%ioff_gl)
@@ -85,14 +85,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine open_read_mpi_file                                     &
-     &         (file_name, nprocs_in, my_rank_IO, IO_param)
+     &         (file_name, num_pe, my_rank_IO, IO_param)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: num_pe, my_rank_IO
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
-      call alloc_istack_merge(my_rank_IO, nprocs_in, IO_param)
+      call alloc_istack_merge(my_rank_IO, num_pe, IO_param)
       call calypso_mpi_read_file_open(file_name, IO_param%id_file)
       IO_param%ioff_gl = izero
 !

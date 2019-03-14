@@ -8,23 +8,23 @@
 !!
 !!@verbatim
 !!      subroutine gz_mpi_read_geom_rtp_file                            &
-!!     &         (file_name, nprocs_in, id_rank, sph_file)
+!!     &         (file_name, num_pe, id_rank, sph_file)
 !!      subroutine gz_mpi_read_spectr_rj_file                           &
-!!     &         (file_name, nprocs_in, id_rank, sph_file)
+!!     &         (file_name, num_pe, id_rank, sph_file)
 !!      subroutine gz_mpi_read_geom_rtm_file                            &
-!!     &         (file_name, nprocs_in, id_rank, sph_file)
+!!     &         (file_name, num_pe, id_rank, sph_file)
 !!      subroutine gz_mpi_read_modes_rlm_file                           &
-!!     &         (file_name, nprocs_in, id_rank, sph_file)
+!!     &         (file_name, num_pe, id_rank, sph_file)
 !!        type(sph_file_data_type), intent(inout) :: sph_file
 !!
 !!      subroutine gz_mpi_write_geom_rtp_file                           &
-!!     &         (file_name, nprocs_in, id_rank, sph_file)
+!!     &         (file_name, num_pe, id_rank, sph_file)
 !!      subroutine gz_mpi_write_spectr_rj_file                          &
-!!     &         (file_name, nprocs_in, id_rank, sph_file)
+!!     &         (file_name, num_pe, id_rank, sph_file)
 !!      subroutine gz_mpi_write_geom_rtm_file                           &
-!!     &         (file_name, nprocs_in, id_rank, sph_file)
+!!     &         (file_name, num_pe, id_rank, sph_file)
 !!      subroutine gz_mpi_write_modes_rlm_file                          &
-!!     &         (file_name, nprocs_in, id_rank, sph_file)
+!!     &         (file_name, num_pe, id_rank, sph_file)
 !!        type(sph_file_data_type), intent(in) :: sph_file
 !!@endverbatim
 !!
@@ -52,17 +52,17 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_read_geom_rtp_file                              &
-     &         (file_name, nprocs_in, id_rank, sph_file)
+     &         (file_name, num_pe, id_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read gzipped merged ascii grid file: ', trim(file_name)
       call open_read_mpi_file                                           &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_mpi_read_geom_rtp_data(IO_param,                          &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
@@ -74,10 +74,10 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_read_spectr_rj_file                             &
-     &         (file_name, nprocs_in, id_rank, sph_file)
+     &         (file_name, num_pe, id_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
@@ -85,7 +85,7 @@
      &     'Read gzipped merged ascii spectr modes file: ',             &
      &      trim(file_name)
       call open_read_mpi_file                                           &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_mpi_read_spectr_rj_data(IO_param,                         &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
@@ -97,17 +97,17 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_read_geom_rtm_file                              &
-     &         (file_name, nprocs_in, id_rank, sph_file)
+     &         (file_name, num_pe, id_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read gzipped merged ascii grid file: ', trim(file_name)
       call open_read_mpi_file                                           &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_mpi_read_geom_rtm_data(IO_param,                          &
      &    sph_file%comm_IO, sph_file%sph_IO)
@@ -119,10 +119,10 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_read_modes_rlm_file                             &
-     &         (file_name, nprocs_in, id_rank, sph_file)
+     &         (file_name, num_pe, id_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
@@ -130,7 +130,7 @@
      &     'Read gzipped merged ascii spectr modes file: ',             &
      &      trim(file_name)
       call open_read_mpi_file                                           &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_mpi_read_modes_rlm_data(IO_param,                         &
      &    sph_file%comm_IO, sph_file%sph_IO)
@@ -143,17 +143,17 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_write_geom_rtp_file                             &
-     &         (file_name, nprocs_in, id_rank, sph_file)
+     &         (file_name, num_pe, id_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write gzipped merged ascii grid file: ', trim(file_name)
       call open_write_mpi_file                                          &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_mpi_write_geom_rtp_data(IO_param,                         &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
@@ -165,10 +165,10 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_write_spectr_rj_file                            &
-     &         (file_name, nprocs_in, id_rank, sph_file)
+     &         (file_name, num_pe, id_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -176,7 +176,7 @@
      &     'Write gzipped merged ascii spectr modes file: ',            &
      &      trim(file_name)
       call open_write_mpi_file                                          &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_mpi_write_spectr_rj_data(IO_param,                        &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
@@ -188,17 +188,17 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_write_geom_rtm_file                             &
-     &         (file_name, nprocs_in, id_rank, sph_file)
+     &         (file_name, num_pe, id_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write gzipped merged ascii grid file: ', trim(file_name)
       call open_write_mpi_file                                          &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_mpi_write_geom_rtm_data(IO_param,                         &
      &    sph_file%comm_IO, sph_file%sph_IO)
@@ -210,10 +210,10 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_write_modes_rlm_file                            &
-     &         (file_name, nprocs_in, id_rank, sph_file)
+     &         (file_name, num_pe, id_rank, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -221,7 +221,7 @@
      &     'Write gzipped merged ascii spectr modes file: ',            &
      &      trim(file_name)
       call open_write_mpi_file                                          &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_mpi_write_modes_rlm_data(IO_param,                        &
      &    sph_file%comm_IO, sph_file%sph_IO)

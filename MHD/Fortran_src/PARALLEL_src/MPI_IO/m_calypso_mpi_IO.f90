@@ -10,7 +10,7 @@
 !!      subroutine deallocate_mpi_IO_status
 !!
 !!      subroutine calypso_mpi_write_file_open                          &
-!!     &         (file_name, nprocs_in, id_mpi_file)
+!!     &         (file_name, num_pe, id_mpi_file)
 !!      subroutine calypso_mpi_read_file_open(file_name, id_mpi_file)
 !!      subroutine calypso_close_mpi_file(id_mpi_file)
 !!
@@ -90,10 +90,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine calypso_mpi_write_file_open                            &
-     &         (file_name, nprocs_in, id_mpi_file)
+     &         (file_name, num_pe, id_mpi_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in
+      integer, intent(in) :: num_pe
       integer, intent(inout) :: id_mpi_file
 !
       integer(kind = MPI_OFFSET_KIND), parameter :: zerosize = 0
@@ -104,7 +104,7 @@
      &    MPI_MODE_RDWR+MPI_MODE_APPEND+MPI_MODE_CREATE,                &
      &    MPI_INFO_NULL, id_mpi_file, ierr_MPI)
 !
-     if(nprocs_in .le. nprocs) then
+     if(num_pe .le. nprocs) then
        call MPI_FILE_SET_SIZE(id_mpi_file, zerosize, ierr_MPI)
      end if
 !

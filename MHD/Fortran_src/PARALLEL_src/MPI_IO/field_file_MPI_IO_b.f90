@@ -8,14 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine write_step_field_file_mpi_b                          &
-!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+!!     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !!
 !!      subroutine read_step_field_file_mpi_b                           &
-!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+!!     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !!      subroutine read_alloc_stp_fld_file_mpi_b                        &
-!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+!!     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !!      subroutine read_alloc_stp_fld_head_mpi_b                        &
-!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+!!     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !!
 !!   Data format for the merged binary field data
 !!     1.   Number of process
@@ -56,13 +56,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine write_step_field_file_mpi_b                            &
-     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !
       use MPI_binary_head_IO
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
 !
       type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
@@ -71,9 +71,9 @@
       if(my_rank .eq. 0) write(*,*)                                     &
      &    'write binary data by MPI-IO: ', trim(file_name) 
       call open_write_mpi_file_b                                        &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
-      if(id_rank .lt. nprocs_in) then
+      if(id_rank .lt. num_pe) then
         call write_field_data_mpi_b(IO_param,                           &
      &      t_IO%i_time_step, t_IO%time, t_IO%dt,                       &
      &      fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,   &
@@ -88,7 +88,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_step_field_file_mpi_b                             &
-     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !
       use MPI_binary_data_IO
       use MPI_binary_head_IO
@@ -96,7 +96,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
-      integer, intent(in) :: nprocs_in
+      integer, intent(in) :: num_pe
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -109,7 +109,7 @@
 !
 !
       call open_read_mpi_file_b                                         &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
       call read_field_header_mpi_b(IO_param, t_IO, fld_IO)
 !
       num64 = fld_IO%num_field_IO
@@ -132,7 +132,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_alloc_stp_fld_file_mpi_b                          &
-     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !
       use MPI_binary_data_IO
       use MPI_binary_head_IO
@@ -140,7 +140,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
-      integer, intent(in) :: nprocs_in
+      integer, intent(in) :: num_pe
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -153,7 +153,7 @@
 !
 !
       call open_read_mpi_file_b                                         &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
       call read_field_header_mpi_b(IO_param, t_IO, fld_IO)
 !
       num64 = fld_IO%num_field_IO
@@ -174,7 +174,7 @@
       call close_mpi_file(IO_param)
 !
       call dealloc_merged_field_stack(fld_IO)
-      if(id_rank .ge. nprocs_in) then
+      if(id_rank .ge. num_pe) then
         call dealloc_phys_data_IO(fld_IO)
         call dealloc_phys_name_IO(fld_IO)
       end if
@@ -184,14 +184,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_alloc_stp_fld_head_mpi_b                          &
-     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
+     &         (file_name, num_pe, id_rank, t_IO, fld_IO)
 !
       use MPI_binary_head_IO
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
-      integer, intent(in) :: nprocs_in
+      integer, intent(in) :: num_pe
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -203,7 +203,7 @@
      &    'read binary data by MPI-IO: ', trim(file_name)
 !
       call open_read_mpi_file_b                                         &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
       call read_field_header_mpi_b(IO_param, t_IO, fld_IO)
 !
       num64 = fld_IO%num_field_IO
@@ -218,7 +218,7 @@
 !
       call cal_istack_phys_comp_IO(fld_IO)
       call dealloc_merged_field_stack(fld_IO)
-      if(id_rank .ge. nprocs_in) then
+      if(id_rank .ge. num_pe) then
         call dealloc_phys_name_IO(fld_IO)
       end if
 !
