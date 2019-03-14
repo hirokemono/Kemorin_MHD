@@ -64,15 +64,11 @@
 !
       subroutine calypso_MPI_init
 !
-      integer :: nprocs4, my_rank4
-!
 !
       call  MPI_INIT(ierr_MPI)
       call  MPI_COMM_DUP (MPI_COMM_WORLD, CALYPSO_COMM, ierr_MPI)
-      call  MPI_COMM_SIZE(CALYPSO_COMM, nprocs4, ierr_MPI)
-      call  MPI_COMM_RANK(CALYPSO_COMM, my_rank4, ierr_MPI)
-      nprocs =  nprocs4
-      my_rank = my_rank4
+      call  MPI_COMM_SIZE(CALYPSO_COMM, nprocs, ierr_MPI)
+      call  MPI_COMM_RANK(CALYPSO_COMM, my_rank, ierr_MPI)
 !
       CALYPSO_CHARACTER = MPI_CHARACTER
       CALYPSO_FOUR_INT =  MPI_INTEGER 
