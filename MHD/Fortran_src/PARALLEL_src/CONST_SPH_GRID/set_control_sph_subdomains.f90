@@ -56,7 +56,7 @@
       use m_error_IDs
       use skip_comment_f
 !
-      integer(kind = kint), intent(in) :: nprocs_check
+      integer, intent(in) :: nprocs_check
       type(sphere_domain_control), intent(in) :: sdctl
 !
       type(spheric_global_rank), intent(inout) :: s3d_ranks

@@ -75,7 +75,7 @@
       type(construct_spherical_grid), intent(inout) :: gen_sph
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: nprocs_check
+      integer :: nprocs_check
 !
 !
       call set_control_4_shell_files                                    &
@@ -102,12 +102,12 @@
       type(platform_data_control), intent(in) :: plt
       type(FEM_mesh_control), intent(in) :: Fmesh_ctl
       type(gen_sph_file_IO_params), intent(inout) ::  sph_files
-      integer(kind = kint), intent(inout) :: nprocs_check
+      integer, intent(inout) :: nprocs_check
 !
 !
       nprocs_check = 1
       if(plt%ndomain_ctl%iflag .gt. 0) then
-        nprocs_check = plt%ndomain_ctl%intvalue
+        nprocs_check = int(plt%ndomain_ctl%intvalue)
       end if
 !
       call turn_off_debug_flag_by_ctl(id_rank, plt)
@@ -132,7 +132,7 @@
       use set_control_sph_subdomains
       use skip_comment_f
 !
-      integer(kind = kint), intent(in) :: nprocs_check
+      integer, intent(in) :: nprocs_check
       type(FEM_mesh_control), intent(in) :: Fmesh_ctl
       type(sphere_data_control), intent(in) :: spctl
       type(sphere_domain_control), intent(in) :: sdctl

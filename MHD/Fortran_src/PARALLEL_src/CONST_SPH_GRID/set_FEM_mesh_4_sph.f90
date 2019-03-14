@@ -4,7 +4,7 @@
 !     Written by H. Matsui on March, 2013
 !
 !!      subroutine s_const_FEM_mesh_for_sph                             &
-!!     &         (ip_rank, nidx_rtp, r_global, gauss,                   &
+!!     &         (id_rank, nidx_rtp, r_global, gauss,                   &
 !!     &          s3d_ranks, stk_lc1d, sph_gl1d, sph_params, sph_rtp,   &
 !!     &          radial_rj_grp, mesh, group, ele_mesh, stbl)
 !!        type(gauss_points), intent(in) :: gauss
@@ -36,7 +36,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_const_FEM_mesh_for_sph                               &
-     &         (ip_rank, nidx_rtp, r_global, gauss, sph_params,         &
+     &         (id_rank, nidx_rtp, r_global, gauss, sph_params,         &
      &          sph_rtp, gen_sph, mesh, group, ele_mesh, stbl)
 !
       use t_spheric_parameter
@@ -58,7 +58,7 @@
       type(comm_table_make_sph), intent(inout) :: stbl
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
-      integer(kind = kint), intent(in) :: ip_rank
+      integer, intent(in) :: id_rank
       real(kind= kreal), intent(in)                                     &
      &            :: r_global(stbl%nidx_global_fem(1))
 !
@@ -78,8 +78,8 @@
       stbl%nidx_local_fem(3) =   sph_params%m_folding                   &
      &                         * stbl%nidx_local_fem(3)
 !
-      ip_r = gen_sph%s3d_ranks%iglobal_rank_rtp(1,ip_rank) + 1
-      ip_t = gen_sph%s3d_ranks%iglobal_rank_rtp(2,ip_rank) + 1
+      ip_r = gen_sph%s3d_ranks%iglobal_rank_rtp(1,id_rank) + 1
+      ip_t = gen_sph%s3d_ranks%iglobal_rank_rtp(2,id_rank) + 1
 !
 !  Construct element connectivity
       call const_FEM_geometry_for_sph(ip_r, ip_t, r_global,             &
@@ -90,7 +90,7 @@
      &   (ip_r, ip_t,  sph_params, gen_sph, stbl, group)
 !
 ! Set communication table
-      call const_nod_comm_table_for_sph(ip_rank, ip_r, ip_t,            &
+      call const_nod_comm_table_for_sph(id_rank, ip_r, ip_t,            &
      &    gen_sph%s3d_ranks, stbl, mesh%nod_comm)
 !
 ! Ordering to connect rtp data
@@ -233,7 +233,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_nod_comm_table_for_sph(ip_rank, ip_r, ip_t,      &
+      subroutine const_nod_comm_table_for_sph(id_rank, ip_r, ip_t,      &
      &          s3d_ranks, stbl, nod_comm)
 !
       use t_comm_table
@@ -241,24 +241,25 @@
       use t_sph_mesh_1d_connect
       use const_comm_tbl_4_sph_mesh
 !
-      integer(kind = kint), intent(in) :: ip_rank, ip_r, ip_t
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: ip_r, ip_t
 !
       type(spheric_global_rank), intent(in) :: s3d_ranks
       type(comm_table_make_sph), intent(inout) :: stbl
       type(communication_table), intent(inout) :: nod_comm
 !
 ! Count subdomain to communicate
-      call count_neib_4_sph_mesh(ip_rank, ip_r, ip_t,                   &
+      call count_neib_4_sph_mesh(id_rank, ip_r, ip_t,                   &
      &    s3d_ranks, stbl, nod_comm)
-      call count_neib_4_sph_center_mesh(ip_rank, ip_r, ip_t,            &
+      call count_neib_4_sph_center_mesh(id_rank, ip_r, ip_t,            &
      &    s3d_ranks, stbl, nod_comm)
 !
       call alloc_comm_table_num(nod_comm)
 !
 ! Set subdomain ID to communicate
-      call set_neib_4_sph_mesh(ip_rank, ip_r, ip_t,                     &
+      call set_neib_4_sph_mesh(id_rank, ip_r, ip_t,                     &
      &    s3d_ranks, stbl, nod_comm)
-      call set_neib_4_sph_center_mesh(ip_rank, ip_r, ip_t,              &
+      call set_neib_4_sph_center_mesh(id_rank, ip_r, ip_t,              &
      &    s3d_ranks, stbl, nod_comm)
 !
 ! Count number of nodes to communicate

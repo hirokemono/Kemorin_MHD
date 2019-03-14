@@ -189,7 +189,7 @@
 !
       use m_error_IDs
 !
-      integer(kind = kint), intent(in) :: nprocs_check
+      integer, intent(in) :: nprocs_check
 !
       integer(kind = kint), intent(inout) :: ierr
       character(len = kchara), intent(inout) :: e_message
