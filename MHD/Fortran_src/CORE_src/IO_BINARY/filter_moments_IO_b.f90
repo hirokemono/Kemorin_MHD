@@ -94,8 +94,8 @@
       subroutine read_filter_elen_head_b                                &
      &         (iflag_swap, nnod, nele, nf_type, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
-      integer (kind=kint), intent(inout) :: nnod, nele, nf_type
+      integer, intent(in) :: iflag_swap
+      integer(kind=kint), intent(inout) :: nnod, nele, nf_type
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -123,9 +123,9 @@
       subroutine read_filter_moms_head_b                                &
      &         (iflag_swap, nnod, nele, n_filter, nf_type, ierr)
 !
-      integer(kind = kint), intent(in) :: iflag_swap
-      integer (kind=kint), intent(inout) :: nnod, nele
-      integer (kind=kint), intent(inout) ::  n_filter, nf_type
+      integer, intent(in) :: iflag_swap
+      integer(kind=kint), intent(inout) :: nnod, nele
+      integer(kind=kint), intent(inout) ::  n_filter, nf_type
       integer(kind = kint), intent(inout) :: ierr
 !
 !

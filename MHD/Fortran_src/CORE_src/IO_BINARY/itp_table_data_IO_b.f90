@@ -61,9 +61,11 @@
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
       integer(kind = kint_gl) :: num64
+      integer(kind = kint) :: irank_write
 !
 !
-      call write_one_integer_b(id_rank)
+      irank_write = int(id_rank,KIND(irank_write))
+      call write_one_integer_b(irank_write)
       call write_one_integer_b(IO_itp_org%num_dest_domain)
 !
       if (IO_itp_org%num_dest_domain .le. 0) return
@@ -224,9 +226,11 @@
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !
       integer(kind = kint_gl) :: num64
+      integer(kind = kint) :: irank_write
 !
 !
-      call write_one_integer_b(id_rank)
+      irank_write = int(id_rank,KIND(irank_write))
+      call write_one_integer_b(irank_write)
       call write_one_integer_b(IO_itp_dest%num_org_domain)
 !
       if (IO_itp_dest%num_org_domain .le. 0) return

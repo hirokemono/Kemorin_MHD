@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine read_element_comm_table_b                            &
-!!     &         (my_rank_IO, bin_flags, comm_IO)
+!!     &         (id_rank, bin_flags, comm_IO)
 !!        type(file_IO_flags), intent(inout) :: bin_flags
 !!        type(communication_table), intent(inout) :: comm_IO
-!!      subroutine write_element_comm_table_b(my_rank_IO, comm_IO)
+!!      subroutine write_element_comm_table_b(id_rank, comm_IO)
 !!        type(communication_table), intent(in) :: comm_IO
 !!
 !!      subroutine read_element_geometry_b(bin_flags, nod_IO, sfed_IO)
@@ -42,18 +42,18 @@
 !------------------------------------------------------------------
 !
       subroutine read_element_comm_table_b                              &
-     &         (my_rank_IO, bin_flags, comm_IO)
+     &         (id_rank, bin_flags, comm_IO)
 !
       use m_fem_mesh_labels
       use domain_data_IO_b
 !
-      integer (kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
 !
       type(file_IO_flags), intent(inout) :: bin_flags
       type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call read_domain_info_b(my_rank_IO, bin_flags, comm_IO)
+      call read_domain_info_b(id_rank, bin_flags, comm_IO)
       if(bin_flags%ierr_IO .gt. 0) return
 !
 ! ----  import & export 
@@ -66,16 +66,16 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_element_comm_table_b(my_rank_IO, comm_IO)
+      subroutine write_element_comm_table_b(id_rank, comm_IO)
 !
       use m_fem_mesh_labels
       use domain_data_IO_b
 !
-      integer (kind = kint), intent(in) :: my_rank_IO
+      integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
 !
 !
-      call write_domain_info_b(my_rank_IO, comm_IO)
+      call write_domain_info_b(id_rank, comm_IO)
 !
 ! ----  import & export 
 !

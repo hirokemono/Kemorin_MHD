@@ -174,7 +174,7 @@
       use groups_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_rank
+      integer, intent(in) :: id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !

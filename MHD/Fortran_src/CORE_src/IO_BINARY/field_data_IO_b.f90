@@ -42,8 +42,11 @@
       integer(kind=kint), intent(in) :: i_time_step_IO
       real(kind = kreal), intent(in) :: time_IO, delta_t_IO
 !
+      integer(kind = kint) :: irank_write
 !
-      call write_one_integer_b(id_rank)
+!
+      irank_write = int(id_rank,KIND(irank_write))
+      call write_one_integer_b(irank_write)
       call write_one_integer_b(i_time_step_IO)
 !
       call write_one_real_b(time_IO)
@@ -94,11 +97,11 @@
       integer(kind=kint), intent(inout) :: num_field
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: id_rank
+      integer(kind = kint) :: irank_read
       integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
-      call read_one_integer_b(iflag_swap, id_rank, ierr)
+      call read_one_integer_b(iflag_swap, irank_read, ierr)
       if(ierr .gt. 0) return
       call read_one_integer_b(iflag_swap, i_time_step_IO, ierr)
       if(ierr .gt. 0) return
