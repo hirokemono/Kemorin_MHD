@@ -119,18 +119,18 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_parallel_mesh_in_1pe(nprocs, para_mesh)
+      subroutine dealloc_parallel_mesh_in_1pe(num_pe, para_mesh)
 !
       use t_mesh_data
       use t_mesh_data_with_pointer
 !
-      integer(kind = kint), intent(in) :: nprocs
-      type(mesh_data), intent(inout) :: para_mesh(nprocs)
+      integer, intent(in) :: num_pe
+      type(mesh_data), intent(inout) :: para_mesh(num_pe)
 !
       integer(kind = kint) :: ip
 !
 !
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         call deallocate_ele_geometry_type(para_mesh(ip)%mesh%ele)
         call deallocate_ele_param_smp_type(para_mesh(ip)%mesh%ele)
         call deallocate_node_param_smp_type(para_mesh(ip)%mesh%node)

@@ -205,7 +205,7 @@
       use t_mesh_data
       use t_merged_geometry_data
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(mesh_geometry), intent(in):: merged
       type(merged_stacks), intent(in) :: merge_tbl

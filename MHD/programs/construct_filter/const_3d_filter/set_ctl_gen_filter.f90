@@ -6,7 +6,7 @@
 !!      subroutine set_controls_gen_3dfilter                            &
 !!     &         (filter3d_ctl, FEM_elens, mesh_file)
 !!      subroutine set_controls_sort_3dfilter                           &
-!!     &         (filter3d_ctl, mesh_file, nprocs)
+!!     &         (filter3d_ctl, mesh_file, num_pe)
 !!        type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elens
 !!        type(field_IO_params), intent(inout) ::  mesh_file
@@ -60,13 +60,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_controls_sort_3dfilter                             &
-     &         (filter3d_ctl, mesh_file, nprocs)
+     &         (filter3d_ctl, mesh_file, num_pe)
 !
       use set_control_platform_data
 !
       type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
       type(field_IO_params), intent(inout) ::  mesh_file
-      integer(kind = kint), intent(inout) :: nprocs
+      integer, intent(inout) :: num_pe
 !
 !
       call set_control_mesh_def                                         &
@@ -74,7 +74,7 @@
       call set_file_heads_3d_comm_filter                                &
      &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl%ffile_3d_ctl)
       call set_numdomain_3d_comm_filter                                 &
-     &   (filter3d_ctl%fil3_ctl, nprocs)
+     &   (filter3d_ctl%fil3_ctl, num_pe)
 !
       end subroutine set_controls_sort_3dfilter
 !
@@ -483,19 +483,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_numdomain_3d_comm_filter(fil3_ctl, nprocs)
+      subroutine set_numdomain_3d_comm_filter(fil3_ctl, num_pe)
 !
       type(ctl_data_3d_filter), intent(in) :: fil3_ctl
-      integer(kind = kint), intent(inout) :: nprocs
+      integer, intent(inout) :: num_pe
 !
 !
       if(fil3_ctl%gen_filter_plt%ndomain_ctl%iflag .ne. 0) then
-        nprocs = fil3_ctl%gen_filter_plt%ndomain_ctl%intvalue
+        num_pe = int(fil3_ctl%gen_filter_plt%ndomain_ctl%intvalue)
       else
         write(*,*) 'set number of domains'
         stop
       end if
-      write(*,*) 'number of subdomain: ', nprocs
+      write(*,*) 'number of subdomain: ', num_pe
 !
       end subroutine set_numdomain_3d_comm_filter
 !

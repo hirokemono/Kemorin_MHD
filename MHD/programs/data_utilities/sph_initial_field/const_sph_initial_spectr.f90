@@ -196,7 +196,8 @@
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer ( kind = kint) :: inod, jj, k
+      integer :: jj, k
+      integer ( kind = kint) :: inod
 !      real (kind = kreal) :: rr
       real (kind = kreal) :: pi, xr, shell
 !      real(kind = kreal), parameter :: A_light = 0.1d0
@@ -247,7 +248,8 @@
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer ( kind = kint) :: inod, k, jj, i_center
+      integer :: jj, k
+      integer ( kind = kint) :: inod, i_center
       real (kind = kreal) :: pi, rr, xr, shell
       real(kind = kreal), parameter :: A_temp = 0.1d0
 !
@@ -324,7 +326,8 @@
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer (kind = kint) :: inod, k, jj, i_center
+      integer :: jj, k
+      integer (kind = kint) :: inod, i_center
       real (kind = kreal) :: pi, rr, xr, shell
       real(kind = kreal), parameter :: A_light = 0.1d0
 !
@@ -395,7 +398,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
       real (kind = kreal) :: pi, rr
-      integer(kind = kint) :: is, it, k, js, jt, is_ICB, is_CMB
+      integer(kind = kint) :: is, it, is_ICB, is_CMB
+      integer :: js, jt, k
 !
 !
       if(ipol%i_magne .eq. izero) return
@@ -472,7 +476,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
       real (kind = kreal) :: rr, q
-      integer(kind = kint) :: inod, k, jj, i_center
+      integer(kind = kint) :: inod, i_center
+      integer :: jj, k
 !
 !
       if(ipol%i_heat_source .eq. izero) return
@@ -519,7 +524,8 @@
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: k, jj, inod, i_center
+      integer(kind = kint) :: inod, i_center
+      integer :: jj, k
 !
 !
       if(ipol%i_light_source .eq. izero) return
@@ -564,7 +570,8 @@
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer ( kind = kint) :: inod, k, jj, i_center
+      integer ( kind = kint) :: inod, i_center
+      integer :: jj, k
       real (kind = kreal) :: temp_CMB = 0.0d0
 !
 !
@@ -608,7 +615,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
       real (kind = kreal) :: rr, q
-      integer(kind = kint) :: inod, k, jj
+      integer(kind = kint) :: inod
+      integer :: jj, k
 !
 !
       if(ipol%i_heat_source .eq. izero) return
@@ -650,7 +658,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
       real (kind = kreal) :: rr, q, T_ICB, f_ICB
-      integer(kind = kint) :: inod, k, jj, i_center
+      integer(kind = kint) :: inod, i_center
+      integer :: jj, k
 !
 !
       if(ipol%i_heat_source*ipol%i_temp .eq. izero) return
@@ -705,7 +714,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
       real (kind = kreal) :: rr, q, T_ICB, f_ICB
-      integer(kind = kint) :: inod, k, jj, i_center
+      integer(kind = kint) :: inod, i_center
+      integer :: jj, k
 !
 !
       if(ipol%i_heat_source .eq. izero) return
@@ -780,7 +790,7 @@
      &                            (sph, kr, j_lc)
 !
       type(sph_grids), intent(in) :: sph
-      integer(kind = kint), intent(in) :: kr, j_lc
+      integer, intent(in) :: kr, j_lc
 !
 !
       local_sph_data_address                                            &

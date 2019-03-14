@@ -72,7 +72,8 @@
       use read_filter_file_4_sorting
       use set_filter_geometry_4_IO
 !
-      integer(kind=kint ) :: ip, ierr
+      integer :: ip
+      integer(kind = kint) :: ierr
       type (filter_file_data), save :: filter_IO
 !
 !
