@@ -35,7 +35,7 @@
 !
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
-      integer(kind = kint) :: my_rank2
+      integer :: my_rank2
 !
 !     output node data with communication table
 !
@@ -69,14 +69,14 @@
       use t_comm_table
       use t_filter_file_data
 !
-      integer(kind = kint), intent(in) :: my_rank2
+      integer, intent(in) :: my_rank2
       type(internal_4_partitioner), intent(in) :: itl_nod_part
 !
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       type (filter_file_data), save :: filter_IO
-      integer(kind = kint) :: ip2
+      integer :: ip2
 !
 !
       ip2 = my_rank2 + 1

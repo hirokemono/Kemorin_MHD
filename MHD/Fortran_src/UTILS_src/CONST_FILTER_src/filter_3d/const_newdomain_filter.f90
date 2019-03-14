@@ -39,7 +39,8 @@
 !
       type(field_IO_params), intent(in) ::  mesh_file
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
-      integer(kind = kint), intent(in) :: ip2, ifile_type
+      integer, intent(in) :: ip2
+      integer(kind = kint), intent(in) :: ifile_type
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
 !
@@ -89,13 +90,14 @@
 !
       type(field_IO_params), intent(in) ::  mesh_file
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
-      integer(kind = kint), intent(in) :: ip2, ifile_type
+      integer, intent(in) :: ip2
+      integer(kind = kint), intent(in) :: ifile_type
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
 !
       type(mesh_geometry) :: mesh_IO_f
       integer(kind = kint) :: ierr, icou_st
-      integer(kind = kint) :: ip, id_rank
+      integer :: ip, id_rank
 !
 !
       icou_st = 0

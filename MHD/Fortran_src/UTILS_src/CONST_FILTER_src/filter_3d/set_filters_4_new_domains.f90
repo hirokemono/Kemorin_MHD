@@ -106,7 +106,7 @@
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !
-      integer(kind = kint), intent(in) :: ip2
+      integer, intent(in) :: ip2
       type(domain_group_4_partition), intent(in) :: nod_d_grp
 !
       integer(kind = kint) :: inod, jnod, inum
@@ -159,7 +159,7 @@
       use t_internal_4_partitioner
       use m_nod_filter_comm_table
 !
-      integer(kind = kint), intent(in) :: ip2
+      integer, intent(in) :: ip2
       type(domain_group_4_partition), intent(in) :: nod_d_grp
 !
       type(internal_4_partitioner), intent(inout) :: itl_nod_part
@@ -239,7 +239,7 @@
       use t_geometry_data
       use t_internal_4_partitioner
 !
-      integer(kind = kint), intent(in) :: ip2
+      integer, intent(in) :: ip2
       type(domain_group_4_partition), intent(in) :: nod_d_grp
 !
       type(internal_4_partitioner), intent(inout) :: itl_nod_part
@@ -277,7 +277,7 @@
       use m_nod_filter_comm_table
       use t_internal_4_partitioner
 !
-      integer(kind = kint), intent(in) :: ip2
+      integer, intent(in) :: ip2
       type(internal_4_partitioner), intent(in) :: itl_nod_part
 !
       integer(kind = kint) :: ist, inum
@@ -326,7 +326,7 @@
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
 !
-      integer(kind = kint), intent(in) :: ip2
+      integer, intent(in) :: ip2
 !
       integer(kind = kint), intent(inout) :: icou_st
       integer(kind = kint) :: icou_gl
@@ -411,7 +411,7 @@
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
 !
-      integer(kind = kint), intent(in) :: ip2
+      integer, intent(in) :: ip2
 !
       integer(kind = kint), intent(inout) :: icou_gl
 !
@@ -462,7 +462,7 @@
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
 !
-      integer(kind = kint), intent(in) :: ip2
+      integer, intent(in) :: ip2
 !
       integer(kind = kint), intent(inout) :: icou_gl
 !

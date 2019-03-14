@@ -50,7 +50,7 @@
       integer(kind = kint), intent(inout) :: ierr
 !
       type(mesh_geometry) :: mesh_IO_f
-      integer(kind = kint) :: ip2, my_rank2
+      integer :: ip2, my_rank2
 !
       do ip2 = 1, nprocs_2nd
         my_rank2 = ip2 - 1

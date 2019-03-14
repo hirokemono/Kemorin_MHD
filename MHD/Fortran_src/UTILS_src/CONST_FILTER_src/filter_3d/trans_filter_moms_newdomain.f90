@@ -86,7 +86,8 @@
       type(mesh_geometry), intent(inout) :: newmesh
       type(element_geometry), intent(inout) :: new_ele_mesh
 !
-      integer(kind = kint) :: ip2, my_rank_2nd, ierr
+      integer(kind = kint) :: ip2, my_rank_2nd
+      integer(kind = kint) :: ierr
 !
 !
       call count_nele_newdomain_single
@@ -112,7 +113,7 @@
 !
       use set_filter_moms_2_new_mesh
 !
-      integer(kind = kint), intent(in) :: my_rank_2nd
+      integer, intent(in) :: my_rank_2nd
       integer(kind = kint), intent(inout) :: ierr
 !
       type(mesh_geometry) :: mesh_IO_f
@@ -142,7 +143,8 @@
       use set_filter_moms_2_new_mesh
 !
       type(mesh_geometry) :: mesh_IO_f
-      integer(kind = kint) :: ip2, my_rank_2nd, ierr
+      integer :: ip2, my_rank_2nd
+      integer(kind = kint) :: ierr
 !
 !
       max_gl_ele_newdomain = 0
@@ -177,7 +179,7 @@
       use t_filter_elength
       use t_filter_moments
 !
-      integer(kind = kint), intent(in) :: my_rank_2nd
+      integer, intent(in) :: my_rank_2nd
 !
       type(mesh_geometry), intent(inout) :: orgmesh
       type(element_geometry), intent(inout) :: org_ele_mesh
@@ -218,7 +220,7 @@
         filter_file_head = org_filter_moms_head
         ierr = 0
         call sel_read_num_filter_mom_file                               &
-     &     (izero, FEM_elen_t, FEM_momenet1, ierr)
+     &     (0, FEM_elen_t, FEM_momenet1, ierr)
         if(ierr .gt. 0) stop "Error in sel_read_num_filter_mom_file"
 !
         allocate(moment2_ele(FEM_momenet1%num_filter_moms))
@@ -299,7 +301,7 @@
       use t_filter_moments
       use t_filter_elength
 !
-      integer(kind = kint), intent(in) :: norg_domain
+      integer, intent(in) :: norg_domain
       type(node_data), intent(in) :: new_node
 !
       type(node_data),    intent(inout) :: org_node
@@ -313,7 +315,8 @@
      &               :: mom2_ele(mom1%num_filter_moms)
 !
       type(mesh_geometry) :: mesh_IO_f
-      integer(kind = kint) :: ip, my_rank_org, ierr
+      integer :: ip, my_rank_org
+      integer(kind = kint) :: ierr
 !
 !
       do ip = 1, norg_domain

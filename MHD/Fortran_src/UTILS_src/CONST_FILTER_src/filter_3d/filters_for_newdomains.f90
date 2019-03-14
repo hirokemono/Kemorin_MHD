@@ -79,7 +79,8 @@
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
       type(mesh_geometry), intent(inout) :: newmesh
 !
-      integer(kind = kint) :: ip2, my_rank_2nd, ierr
+      integer :: ip2, my_rank_2nd
+      integer(kind = kint) ::  ierr
 !
 !
       do ip2 = 1, nprocs_2nd
