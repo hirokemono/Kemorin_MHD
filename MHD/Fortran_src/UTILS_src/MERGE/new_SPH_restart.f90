@@ -11,14 +11,14 @@
 !!      subroutine dealloc_sph_mesh_4_merge
 !!
 !!      subroutine set_local_rj_mesh_4_merge                            &
-!!     &         (sph_mesh_file, nprocs_in, sph_mesh)
+!!     &         (sph_mesh_file, num_pe, sph_mesh)
 !!        type(field_IO_params), intent(in) :: sph_mesh_file
-!!        type(sph_mesh_data), intent(inout) :: sph_mesh(nprocs_in)
+!!        type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
 !!      subroutine load_field_name_assemble_sph(istep_start, np_sph_org,&
 !!     &          org_fst_param, org_phys, new_phys, t_IO)
-!!      subroutine load_org_sph_data(irank, istep, np_sph_org,          &
+!!      subroutine load_org_sph_data(id_rank, istep, np_sph_org,        &
 !!     &          org_fst_param, org_sph, init_d, org_phys)
-!!      subroutine load_old_fmt_sph_data(irank, istep, np_sph_org,      &
+!!      subroutine load_old_fmt_sph_data(id_rank, istep, np_sph_org,    &
 !!     &          org_fst_param, org_sph, org_phys)
 !!        type(sph_grids), intent(in) :: org_sph
 !!        type(time_data), intent(inout) :: time_d
@@ -57,29 +57,29 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_local_rj_mesh_4_merge                              &
-     &         (sph_mesh_file, nprocs_in, sph_mesh)
+     &         (sph_mesh_file, num_pe, sph_mesh)
 !
       use sph_file_MPI_IO_select
       use sph_file_IO_select
       use load_data_for_sph_IO
 !
-      integer(kind = kint), intent(in) ::  nprocs_in
+      integer, intent(in) ::  num_pe
       type(field_IO_params), intent(in) :: sph_mesh_file
-      type(sph_mesh_data), intent(inout) :: sph_mesh(nprocs_in)
+      type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
 !
       type(sph_file_data_type) :: sph_file
-      integer(kind = kint) :: id_rank
-      integer(kind = kint) :: iloop, ip, ierr
+      integer :: id_rank, ip
+      integer(kind = kint) :: iloop, ierr
 !
 !
       sph_file_head = sph_mesh_file%file_prefix
       iflag_sph_file_fmt = sph_mesh_file%iflag_format
-      do iloop = 0, (nprocs_in-1) / nprocs
+      do iloop = 0, (num_pe-1) / nprocs
         id_rank = my_rank + iloop * nprocs
         ip = id_rank + 1
-        call sel_mpi_read_spectr_rj_file(nprocs_in, id_rank, sph_file)
+        call sel_mpi_read_spectr_rj_file(num_pe, id_rank, sph_file)
 !
-        if(id_rank .lt. nprocs_in) then
+        if(id_rank .lt. num_pe) then
           call input_modes_rj_sph_trans(sph_file,                       &
      &       sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,   &
      &       sph_mesh(ip)%sph_grps, sph_mesh(ip)%sph%sph_params, ierr)
@@ -100,7 +100,8 @@
       use copy_rj_phys_data_4_IO
       use field_IO_select
 !
-      integer(kind = kint),  intent(in) :: istep_start, np_sph_org
+      integer,  intent(in) :: np_sph_org
+      integer(kind = kint),  intent(in) :: istep_start
       type(field_IO_params), intent(in) :: org_fst_param
 !
       type(phys_data), intent(inout) :: org_phys(np_sph_org)
@@ -109,10 +110,10 @@
 !
 !>      Field data IO structure for original data
       type(field_IO) :: org_fst_IO
-      integer(kind = kint) :: ip
+      integer :: ip
 !
 !
-      call sel_read_alloc_step_SPH_file(np_sph_org, izero, istep_start, &
+      call sel_read_alloc_step_SPH_file(np_sph_org, 0, istep_start,     &
      &    org_fst_param, t_IO, org_fst_IO)
 !
       if(my_rank .eq. 0) then
@@ -133,15 +134,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine load_org_sph_data(irank, istep, np_sph_org,            &
+      subroutine load_org_sph_data(id_rank, istep, np_sph_org,          &
      &          org_fst_param, org_sph, init_d, org_phys)
 !
       use field_IO_select
       use copy_rj_phys_data_4_IO
 !
-      integer(kind=kint ), intent(in) :: np_sph_org
+      integer, intent(in) :: np_sph_org
+      integer, intent(in) :: id_rank
 !
-      integer(kind = kint), intent(in) :: irank, istep
+      integer(kind = kint), intent(in) :: istep
       type(sph_grids), intent(in) :: org_sph
       type(field_IO_params), intent(in) :: org_fst_param
 !
@@ -153,10 +155,10 @@
       type(field_IO) :: org_fst_IO
 !
 !
-      call sel_read_alloc_step_SPH_file(np_sph_org, irank, istep,       &
+      call sel_read_alloc_step_SPH_file(np_sph_org, id_rank, istep,     &
      &    org_fst_param, org_time_IO, org_fst_IO)
 !
-      if(irank .lt. np_sph_org) then
+      if(id_rank .lt. np_sph_org) then
         call copy_time_steps_from_restart(org_time_IO, init_d)
 !
         call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
@@ -170,15 +172,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_old_fmt_sph_data(irank, istep, np_sph_org,        &
+      subroutine load_old_fmt_sph_data(id_rank, istep, np_sph_org,      &
      &          org_fst_param, org_sph, org_phys)
 !
       use input_old_file_sel_4_zlib
       use copy_rj_phys_data_4_IO
 !
-      integer(kind=kint ), intent(in) :: np_sph_org
+      integer, intent(in) :: np_sph_org
+      integer, intent(in) :: id_rank
 !
-      integer(kind = kint), intent(in) :: irank, istep
+      integer(kind = kint), intent(in) :: istep
       type(sph_grids), intent(in) :: org_sph
       type(field_IO_params), intent(in) :: org_fst_param
 !
@@ -189,9 +192,9 @@
 !
 !
       call sel_read_alloc_field_file                                    &
-     &   (irank, istep, org_fst_param, org_fst_IO)
+     &   (id_rank, istep, org_fst_param, org_fst_IO)
 !
-      if(irank .lt. np_sph_org) then
+      if(id_rank .lt. np_sph_org) then
         call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
         call copy_rj_phys_data_from_IO(org_fst_IO, org_phys)
 !

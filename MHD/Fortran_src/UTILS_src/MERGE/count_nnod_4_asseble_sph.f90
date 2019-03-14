@@ -38,7 +38,7 @@
       subroutine s_count_nnod_4_asseble_sph                             &
      &         (np_sph_new, new_sph_mesh, new_fst_IO)
 !
-      integer(kind = kint), intent(in) :: np_sph_new
+      integer, intent(in) :: np_sph_new
       type(sph_mesh_data), intent(in) :: new_sph_mesh(np_sph_new)
 !
       type(field_IO), intent(inout) :: new_fst_IO

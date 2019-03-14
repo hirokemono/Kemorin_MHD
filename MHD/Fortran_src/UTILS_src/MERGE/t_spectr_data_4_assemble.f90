@@ -27,11 +27,11 @@
 !
 !
       type spectr_data_4_assemble
-        integer(kind = kint) :: np_sph_org
+        integer :: np_sph_org
         type(sph_mesh_data), allocatable :: org_sph_mesh(:)
         type(phys_data), allocatable ::     org_sph_phys(:)
 !
-        integer(kind = kint) :: np_sph_new
+        integer :: np_sph_new
         type(sph_mesh_data), allocatable :: new_sph_mesh(:)
         type(phys_data), allocatable ::     new_sph_phys(:)
 !

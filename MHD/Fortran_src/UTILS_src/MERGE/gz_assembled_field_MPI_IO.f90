@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine gz_write_step_asbl_fld_mpi                           &
-!!     &         (file_name, nprocs_in, nloop, fld_IO, t_IO)
+!!     &         (file_name, num_pe, nloop, fld_IO, t_IO)
 !!      subroutine gz_write_step_asbl_fld_mpi_b                         &
-!!     &         (file_name, nprocs_in, id_rank, nloop, fld_IO, t_IO)
+!!     &         (file_name, num_pe, id_rank, nloop, fld_IO, t_IO)
 !!        type(field_IO), intent(in) :: fld_IO(nloop)
 !!        type(time_data), intent(in) :: t_IO
 !!
@@ -85,15 +85,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_write_step_asbl_fld_mpi                             &
-     &         (file_name, nprocs_in, nloop, fld_IO, t_IO)
+     &         (file_name, num_pe, nloop, fld_IO, t_IO)
 !
       use field_data_IO
       use gz_field_file_MPI_IO
       use gz_field_data_MPI_IO
 !
       character(len=kchara), intent(in) :: file_name
-!
-      integer(kind = kint), intent(in) :: nprocs_in
+      integer, intent(in) :: num_pe
 !
       integer(kind = kint), intent(in) :: nloop
       type(time_data), intent(in) :: t_IO
@@ -109,18 +108,18 @@
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &      'Write compressed data by MPI-IO: ', trim(file_name)
-      call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
+      call calypso_mpi_write_file_open(file_name, num_pe, id_fld)
 !
       ioff_gl = 0
       call write_field_head_gz_mpi                                      &
-     &   (id_fld, nprocs_in, ioff_gl, t_IO, fld_IO(1)%num_field_IO,     &
+     &   (id_fld, num_pe, ioff_gl, t_IO, fld_IO(1)%num_field_IO,        &
      &    fld_IO(1)%num_comp_IO, fld_IO(1)%istack_numnod_IO)
 !
       icou = 1
       do j = 1, fld_IO(1)%num_field_IO
         call gz_write_fld_header_mpi(id_fld, ioff_gl,                   &
      &     each_field_name_buffer(fld_IO(1)%fld_name(j)))
-        call gz_write_asmbl_fld_mpi(id_fld, nprocs_in, ioff_gl,         &
+        call gz_write_asmbl_fld_mpi(id_fld, num_pe, ioff_gl,            &
      &      icou, fld_IO(1)%num_comp_IO(j), nloop, fld_IO, gz_bufs)
         icou = icou + fld_IO(1)%num_comp_IO(j)
       end do
@@ -133,7 +132,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_write_step_asbl_fld_mpi_b                           &
-     &         (file_name, nprocs_in, id_rank, nloop, fld_IO, t_IO)
+     &         (file_name, num_pe, id_rank, nloop, fld_IO, t_IO)
 !
       use gz_field_file_MPI_IO_b
       use gz_MPI_binary_head_IO
@@ -143,7 +142,7 @@
 !
       character(len=kchara), intent(in) :: file_name
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
 !
       integer(kind = kint), intent(in) :: nloop
       type(field_IO), intent(in) :: fld_IO(nloop)
@@ -157,7 +156,7 @@
       if(my_rank .eq. 0) write(*,*)                                     &
      &     'Write compressed binary data by MPI-IO: ', trim(file_name)
       call open_write_gz_mpi_file_b                                     &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call gz_write_field_head_mpi_b(IO_param,                          &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt,                         &
@@ -177,7 +176,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_asmbl_fld_mpi(id_mpi_file, nprocs_in,         &
+      subroutine gz_write_asmbl_fld_mpi(id_mpi_file, num_pe,            &
      &          ioff_gl, ist_fld, ndir, nloop, fld_IO, gz_bufs)
 !
       use field_data_IO
@@ -188,7 +187,7 @@
       use zlib_convert_ascii_vector
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint), intent(in) :: nprocs_in
+      integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: ist_fld, ndir
 !
       integer(kind = kint), intent(in) :: nloop
@@ -200,23 +199,23 @@
 !
       real(kind = kreal), pointer :: vector(:,:)
       real(kind = kreal) :: v1(ndir)
-      integer(kind = kint_gl) :: istack_gz_pe(0:nprocs_in)
-      integer(kind = kint_gl) :: len_gz_pe(nprocs_in)
-      integer(kind = kint_gl) :: len_gz_lc(nprocs_in)
+      integer(kind = kint_gl) :: istack_gz_pe(0:num_pe)
+      integer(kind = kint_gl) :: len_gz_pe(num_pe)
+      integer(kind = kint_gl) :: len_gz_lc(num_pe)
 !
       integer(kind = kint) :: id_rank
       integer(kind = kint) :: iloop, ip
       integer(kind = kint_gl) :: num64
 !
 !
-      len_gz_lc(1:nprocs_in) = 0
+      len_gz_lc(1:num_pe) = 0
       v1(1:ndir) = 0.0d0
 !
 !        deflate data
       do iloop = 1, nloop
         id_rank = my_rank + (iloop-1) * nprocs
  !
-        if(id_rank .lt. nprocs_in) then
+        if(id_rank .lt. num_pe) then
           vector => fld_IO(iloop)%d_IO(:,ist_fld:ist_fld+ndir-1)
           num64 = fld_IO(iloop)%nnod_IO
           call defleate_vector_txt                                      &
@@ -230,23 +229,23 @@
       end do
 !
 !        Count data size
-      num64 = int(nprocs_in,KIND(num64))
-      len_gz_pe(1:nprocs_in) = 0
+      num64 = int(num_pe,KIND(num64))
+      len_gz_pe(1:num_pe) = 0
       call calypso_mpi_allreduce_int8                                   &
      &   (len_gz_lc, len_gz_pe, num64, MPI_SUM)
       istack_gz_pe(0) = 0
-      do ip = 1, nprocs_in
+      do ip = 1, num_pe
         istack_gz_pe(ip) = istack_gz_pe(ip-1) + len_gz_pe(ip)
       end do
 !
 !       Write buffer size
       call gz_write_fld_header_mpi(id_mpi_file, ioff_gl,                &
-     &     buffer_istack_nod_buffer(nprocs_in, istack_gz_pe))
+     &     buffer_istack_nod_buffer(num_pe, istack_gz_pe))
 !
 !       Write to file
       do iloop = 1, nloop
         id_rank = my_rank + (iloop-1) * nprocs
-        if(id_rank .lt. nprocs_in) then
+        if(id_rank .lt. num_pe) then
           ioffset = int(ioff_gl) + istack_gz_pe(id_rank)
           call calypso_mpi_seek_write_chara (id_mpi_file, ioffset,      &
      &        int(gz_bufs(iloop)%ilen_gzipped),                         &
@@ -254,7 +253,7 @@
         end if
         call dealloc_zip_buffer(gz_bufs(iloop))
       end do
-      ioff_gl = ioff_gl + istack_gz_pe(nprocs_in)
+      ioff_gl = ioff_gl + istack_gz_pe(num_pe)
 !
       end subroutine gz_write_asmbl_fld_mpi
 !

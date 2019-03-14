@@ -83,6 +83,7 @@
 !
       subroutine set_control_4_newsph(mgd_ctl, asbl_param, sph_asbl)
 !
+      use m_error_IDs
       use t_control_data_4_merge
       use m_file_format_switch
       use set_control_platform_data
@@ -95,23 +96,25 @@
 !
 !
       if (mgd_ctl%source_plt%ndomain_ctl%iflag .gt. 0) then
-        sph_asbl%np_sph_org = mgd_ctl%source_plt%ndomain_ctl%intvalue
+        sph_asbl%np_sph_org                                             &
+     &      = int(mgd_ctl%source_plt%ndomain_ctl%intvalue)
       else
         write(e_message,'(a)') 'Set number of subdomains'
-        call calypso_mpi_abort(1, e_message)
+        call calypso_mpi_abort(ierr_file, e_message)
       end if
 !
       if (mgd_ctl%assemble_plt%ndomain_ctl%iflag .gt. 0) then
-        sph_asbl%np_sph_new = mgd_ctl%assemble_plt%ndomain_ctl%intvalue
+        sph_asbl%np_sph_new                                             &
+     &      = int(mgd_ctl%assemble_plt%ndomain_ctl%intvalue)
       else
         write(e_message,'(a)') 'Set number of subdomains for new grid'
-        call calypso_mpi_abort(1, e_message)
+        call calypso_mpi_abort(ierr_file, e_message)
       end if
 !
       if(sph_asbl%np_sph_new .ne. nprocs) then
         write(e_message,'(a,a)') 'Number of MPI prosesses should be ',  &
      &                           'the number of target subdomains.'
-        call calypso_mpi_abort(1, e_message)
+        call calypso_mpi_abort(ierr_P_MPI, e_message)
       end if
 !
       call set_parallel_file_ctl_params(def_org_sph_head,               &
