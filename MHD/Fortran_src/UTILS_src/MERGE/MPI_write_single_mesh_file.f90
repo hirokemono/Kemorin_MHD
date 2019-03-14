@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine mpi_write_merged_mesh_file                           &
-!!     &         (nprocs_in, id_rank, mesh_file, mesh, group, dbl_nod)
+!!     &         (num_pe, id_rank, mesh_file, mesh, group, dbl_nod)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
@@ -40,7 +40,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine mpi_write_merged_mesh_file                             &
-     &         (nprocs_in, id_rank, mesh_file, mesh, group, dbl_nod)
+     &         (num_pe, id_rank, mesh_file, mesh, group, dbl_nod)
 !
       use t_para_double_numbering
       use t_file_IO_parameter
@@ -50,7 +50,7 @@
       use set_mesh_file_names
       use MPI_ascii_data_IO
 !
-      integer, intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: num_pe, id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
@@ -66,7 +66,7 @@
      &   'Write ascii mesh file: ', trim(file_name)
 !
       call open_write_mpi_file                                          &
-     &   (file_name, nprocs_in, id_rank, IO_param)
+     &   (file_name, num_pe, id_rank, IO_param)
 !
       call mpi_write_merged_geometry_data(IO_param, mesh, dbl_nod)
       call mpi_write_merged_mesh_groups                                 &

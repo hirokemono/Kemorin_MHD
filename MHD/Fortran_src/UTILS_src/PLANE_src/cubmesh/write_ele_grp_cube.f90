@@ -28,7 +28,6 @@
 !
        integer(kind = kint) :: item_tot
        integer(kind = kint) :: item_pos
-       integer(kind = kint) :: k
 !
        item_tot = 0
        item_pos = 0

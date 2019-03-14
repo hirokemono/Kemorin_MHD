@@ -36,7 +36,7 @@
       use work_nod_comm_table_IO
       use set_parallel_file_name
 !
-      integer, intent(in) :: ip
+      integer(kind = kint), intent(in) :: ip
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
@@ -51,7 +51,7 @@
         call copy_import_table_type                                     &
      &     (new_comm, comm_part%nod_comm_tbl_part(ip))
       else
-        id_rank = ip - 1
+        id_rank = int(ip - 1)
         file_name = add_process_id(id_rank, comm_part%work_f_head)
         open (id_work_file,file=file_name, status='unknown',            &
      &       form='unformatted')
@@ -69,7 +69,7 @@
       use work_nod_comm_table_IO
       use set_parallel_file_name
 !
-      integer, intent(in) :: ip
+      integer(kind = kint), intent(in) :: ip
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
@@ -82,7 +82,7 @@
         call copy_export_table_type                                     &
      &     (new_comm, comm_part%nod_comm_tbl_part(ip))
       else
-        id_rank = ip - 1
+        id_rank = int(ip - 1)
         file_name = add_process_id(id_rank, comm_part%work_f_head)
         write(*,*) 'write export table: ', trim(file_name)
         open(id_work_file,file=file_name,status='unknown',              &
@@ -103,7 +103,7 @@
       use work_nod_comm_table_IO
       use set_parallel_file_name
 !
-      integer, intent(in) :: ip
+      integer(kind = kint), intent(in) :: ip
       type(partitioner_comm_tables), intent(in) :: comm_part
       type(communication_table), intent(inout) :: new_comm
 !
@@ -118,7 +118,7 @@
         call copy_import_table_type                                     &
      &     (comm_part%nod_comm_tbl_part(ip), new_comm)
       else
-        id_rank = ip - 1
+        id_rank = int(ip - 1)
         file_name = add_process_id(id_rank, comm_part%work_f_head)
         write(*,*) 'read import table: ', trim(file_name)
         open(id_work_file,file=file_name,status='unknown',              &
@@ -137,7 +137,7 @@
       use work_nod_comm_table_IO
       use set_parallel_file_name
 !
-      integer, intent(in) :: ip
+      integer(kind = kint), intent(in) :: ip
       type(partitioner_comm_tables), intent(in) :: comm_part
 !
       type(communication_table), intent(inout) :: new_comm
@@ -151,7 +151,7 @@
         call copy_comm_tbl_type                                         &
      &     (comm_part%nod_comm_tbl_part(ip), new_comm)
       else
-        id_rank = ip - 1
+        id_rank = int(ip - 1)
         file_name = add_process_id(id_rank, comm_part%work_f_head)
         open (id_work_file,file=file_name, status='unknown',            &
      &      form='unformatted')
@@ -170,7 +170,7 @@
 !
       use set_parallel_file_name
 !
-      integer, intent(in) :: jp
+      integer(kind = kint), intent(in) :: jp
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       integer :: id_rank
@@ -183,7 +183,7 @@
         call copy_node_import_num_tmp                                   &
      &     (comm_part%nod_comm_tbl_part(jp), comm_part%ipt_tmp)
       else
-        id_rank = jp - 1
+        id_rank = int(jp - 1)
         file_name = add_process_id(id_rank, comm_part%work_f_head)
         open(id_work_file,file=file_name,status='old',                  &
      &       form='unformatted')
@@ -200,7 +200,7 @@
 !
       use set_parallel_file_name
 !
-      integer, intent(in) :: jp
+      integer(kind = kint), intent(in) :: jp
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       integer :: id_rank
@@ -215,7 +215,7 @@
         call copy_node_import_item_tmp                                  &
      &     (comm_part%nod_comm_tbl_part(jp), comm_part%ipt_tmp)
       else
-        id_rank = jp - 1
+        id_rank = int(jp - 1)
         file_name = add_process_id(id_rank, comm_part%work_f_head)
         open(id_work_file,file=file_name,status='old',                  &
      &       form='unformatted')

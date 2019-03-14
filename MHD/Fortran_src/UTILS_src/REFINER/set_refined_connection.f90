@@ -417,8 +417,7 @@
      &   .or. iflag_refine .eq. iflag_five_z) then
         call s_copy_refined_nod_five(iflag_refine,                      &
      &      inod_refine_local, inod_refine_nod_local,                   &
-     &      inod_refine_ele_local, inod_refine_surf_local,              &
-     &      inod_refine_edge_local )
+     &      inod_refine_surf_local)
 !
         ist = istack_ele_refined(iele-1)
 !
@@ -447,8 +446,7 @@
      &   .or. iflag_refine .eq. iflag_five_s6) then
         call s_copy_refined_nod_five_sf(iflag_refine,                   &
      &      inod_refine_local, inod_refine_nod_local,                   &
-     &      inod_refine_ele_local, inod_refine_surf_local,              &
-     &      inod_refine_edge_local )
+     &      inod_refine_ele_local, inod_refine_surf_local)
 !
         ist = istack_ele_refined(iele-1)
 !

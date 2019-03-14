@@ -39,7 +39,7 @@
 !
       type(field_IO_params), intent(in) ::  mesh_file
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
-      integer, intent(in) :: ip2
+      integer(kind = kint), intent(in) :: ip2
       integer(kind = kint), intent(in) :: ifile_type
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
@@ -90,7 +90,7 @@
 !
       type(field_IO_params), intent(in) ::  mesh_file
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
-      integer, intent(in) :: ip2
+      integer(kind = kint), intent(in) :: ip2
       integer(kind = kint), intent(in) :: ifile_type
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node

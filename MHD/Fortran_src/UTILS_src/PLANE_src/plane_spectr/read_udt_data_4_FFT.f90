@@ -52,7 +52,7 @@
 !
 !
       ucd%nnod = ione
-      call sel_read_udt_param(izero, istep, ucd_param, t_IO, ucd)
+      call sel_read_udt_param(0, istep, ucd_param, t_IO, ucd)
 !
       call alloc_phys_name_type_by_output(ucd, plane_phys)
       call deallocate_ucd_phys_data(ucd)

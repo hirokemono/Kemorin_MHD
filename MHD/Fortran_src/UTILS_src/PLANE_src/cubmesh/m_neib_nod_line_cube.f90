@@ -16,10 +16,11 @@
 !
 !  ----------------------------------------------------------------------
 !
-!      subroutine allocate_neighboring_nod_line
-!      subroutine deallocate_neighboring_nod_line
-!      subroutine write_neighboring_nod_line(nf_type, FEM_elen))
-!        type(gradient_model_data_type), intent(inout) :: FEM_elen
+!!      subroutine allocate_neighboring_nod_line
+!!      subroutine deallocate_neighboring_nod_line
+!!      subroutine write_neighboring_nod_line                           &
+!!     &         (id_rank, nf_type, FEM_elen)
+!!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       module m_neib_nod_line_cube
 !
@@ -102,13 +103,14 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine write_neighboring_nod_line(pe1, nf_type, FEM_elen)
+      subroutine write_neighboring_nod_line                             &
+     &         (id_rank, nf_type, FEM_elen)
 !
       use t_filter_elength
       use filter_mom_type_data_IO
       use set_parallel_file_name
 !
-      integer, intent(in) :: pe1
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nf_type
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
@@ -130,7 +132,7 @@
        call order_fiilter_nod_line(fil_l1)
 !
 !
-       nb_name = add_process_id(pe1, filter_file_header)
+       nb_name = add_process_id(id_rank, filter_file_header)
        write(*,*) 'output ascii file: ', trim(nb_name)
        open (nb_out, file=nb_name)
 !

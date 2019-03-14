@@ -64,16 +64,16 @@
 !
       type(mesh_data), allocatable :: para_fem(:)
 !
-      integer :: ip, irank_subdomain
-      integer(kind=kint) :: i
+      integer :: irank_subdomain
+      integer(kind=kint) :: i, ip
 
 !C
 !C-- init.
 !
       allocate(para_fem(part_p%num_domain))
 !
-      do ip= 1, part_p%num_domain
-        irank_subdomain = ip-1
+      do ip = 1, part_p%num_domain
+        irank_subdomain = int(ip - 1)
 !
         if(mod(irank_subdomain,nprocs) .ne. id_rank) cycle
 !C
@@ -105,8 +105,8 @@
 !C | write FINAL LOCAL files |
 !C +-------------------------+
 !C===
-      do ip= 1, part_p%num_domain
-        irank_subdomain = ip-1
+      do ip = 1, part_p%num_domain
+        irank_subdomain = int(ip - 1)
         if(mod(irank_subdomain,nprocs) .ne. id_rank) cycle
 !
         call output_mesh(part_p%distribute_mesh_file, irank_subdomain,  &

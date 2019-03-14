@@ -53,7 +53,7 @@
       type(file_ctls_refine_para), intent(in) :: p_refine_ctl
 !
 !
-      call turn_off_debug_flag_by_ctl(izero, refine_ctl%source_plt)
+      call turn_off_debug_flag_by_ctl(0, refine_ctl%source_plt)
 !
       if(refine_ctl%source_plt%ndomain_ctl%iflag .gt. 0) then
         nprocs_fine = refine_ctl%source_plt%ndomain_ctl%intvalue

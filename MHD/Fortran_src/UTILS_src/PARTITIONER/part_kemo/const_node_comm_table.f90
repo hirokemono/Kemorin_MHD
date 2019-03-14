@@ -72,11 +72,10 @@
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: j
-      integer :: jp
+      integer(kind = kint) :: j, jp
 !
       do j = 1, new_comm%num_neib
-        jp = int(new_comm%id_neib(j))
+        jp = new_comm%id_neib(j)
 !
         call load_node_import_num_tmp(jp, comm_part)
         call count_each_nod_export_num_part                             &
@@ -103,12 +102,11 @@
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: j
-      integer :: jp
+      integer(kind = kint) :: j, jp
 !
 !
       do j = 1, new_comm%num_neib
-        jp = int(new_comm%id_neib(j))
+        jp = new_comm%id_neib(j)
 !
         call load_node_import_item_tmp(jp, comm_part)
         call each_nod_export_item_4_part(ip, j, nod_d_grp,              &
@@ -128,7 +126,8 @@
       use t_domain_group_4_partition
       use t_partitioner_comm_table
 !
-      integer(kind = kint), intent(in) :: ip, j
+      integer(kind = kint), intent(in) :: ip
+      integer(kind = kint), intent(in) :: j
       type(temporary_import_4_part), intent(in) :: ipt_tmp
 !
       type(communication_table), intent(inout) :: new_comm
@@ -155,7 +154,8 @@
       use t_domain_group_4_partition
       use sel_part_nod_comm_input
 !
-      integer(kind = kint), intent(in) :: ip, j
+      integer(kind = kint), intent(in) :: ip
+      integer(kind = kint), intent(in) :: j
       type(domain_group_4_partition), intent(in) :: nod_d_grp
       type(internal_4_partitioner), intent(in) :: itl_nod_part
 !

@@ -69,6 +69,8 @@
       type(near_mesh), intent(inout) :: included_ele
       type(domain_groups_4_partitioner), intent(inout) :: domain_grp
       type(partitioner_comm_tables), intent(inout) :: comm_part
+!
+      integer :: num_pe
 !C
 !C
 !C-- OVERLAPPED ELEMENTs
@@ -102,21 +104,20 @@
 !C +---------------------------------------+
 !C===
 !
-      call gen_node_import_tables                                       &
-     &   (part_p%num_domain, internals_part%itl_nod_part,               &
+      num_pe = int(part_p%num_domain)
+      call gen_node_import_tables(num_pe, internals_part%itl_nod_part,  &
      &    domain_grp%nod_d_grp, comm_part)
 !C
 !C +-------------------------------+
 !C | update FILE : EXPORT pointers |
 !C +-------------------------------+
 !C===
-      call gen_node_export_tables                                       &
-     &   (part_p%num_domain, internals_part%itl_nod_part,               &
+      call gen_node_export_tables(num_pe, internals_part%itl_nod_part,  &
      &    domain_grp%nod_d_grp, comm_part)
 !C
 !C-- distributed Local DATA
-      call local_fem_mesh(izero, ione, part_p,                          &
-     &    node_org, ele_org, group_org, internals_part,                 &
+      call local_fem_mesh                                               &
+     &   (0, 1, part_p, node_org, ele_org, group_org, internals_part,   &
      &    domain_grp%nod_d_grp, domain_grp%ele_d_grp, comm_part)
 !
       if(comm_part%iflag_memory_conserve .ne. 0) then

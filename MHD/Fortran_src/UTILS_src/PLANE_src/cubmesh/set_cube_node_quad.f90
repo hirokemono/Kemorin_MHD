@@ -98,7 +98,7 @@
 ! ***** set and write for sleeve area nodes for periodical boundary
 !
             write(*,*) 'set_sleeve_node_peri_quad', ipe, jpe, kpe
-            call set_sleeve_node_peri_quad(ipe, jpe, kpe, inod)
+            call set_sleeve_node_peri_quad(ipe, jpe, inod)
 !
 ! ***** set and write for sleeve area edge for periodical boundary
 !

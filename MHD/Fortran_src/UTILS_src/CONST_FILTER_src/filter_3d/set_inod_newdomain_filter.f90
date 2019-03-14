@@ -50,10 +50,11 @@
       integer(kind = kint), intent(inout) :: ierr
 !
       type(mesh_geometry) :: mesh_IO_f
-      integer :: ip2, my_rank2
+      integer(kind = kint) :: ip2
+      integer :: my_rank2
 !
-      do ip2 = 1, nprocs_2nd
-        my_rank2 = ip2 - 1
+      do my_rank2 = 0, nprocs_2nd-1
+        ip2 = int(my_rank2 + 1,KIND(ip2))
 !
         call sel_read_geometry_size                                     &
      &     (tgt_mesh_file, my_rank2, mesh_IO_f, ierr)

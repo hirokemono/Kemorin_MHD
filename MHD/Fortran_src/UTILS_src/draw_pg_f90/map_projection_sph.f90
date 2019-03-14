@@ -79,7 +79,7 @@
       real(kind = kreal), intent(in) ::    x, y, z
 !*
       integer(kind = kint) :: ix, iy
-      real(kind = kreal) :: xl2, den, xg, yg
+      real(kind = kreal) :: xg, yg
       real :: xg_real, yg_real
 !
 !

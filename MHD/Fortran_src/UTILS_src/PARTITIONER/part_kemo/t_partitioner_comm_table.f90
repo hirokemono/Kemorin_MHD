@@ -23,7 +23,7 @@
 !!      subroutine read_node_import_item_tmp(id_file, ipt_tmp)
 !!        type(temporary_import_4_part), intent(inout) :: ipt_tmp
 !!
-!!      subroutine alloc_nod_comm_tbl_part(nprocs, comm_part)
+!!      subroutine alloc_nod_comm_tbl_part(num_pe, comm_part)
 !!      subroutine dealloc_nod_comm_tbl_part(comm_part)
 !!        type(partitioner_comm_tables), intent(inout) :: comm_part
 !!
@@ -209,13 +209,13 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine alloc_nod_comm_tbl_part(nprocs, comm_part)
+      subroutine alloc_nod_comm_tbl_part(num_pe, comm_part)
 !
-      integer(kind = kint),  intent(in) :: nprocs 
+      integer,  intent(in) :: num_pe 
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
 !
-      comm_part%np_comm = nprocs
+      comm_part%np_comm = int(num_pe, KIND(comm_part%np_comm))
       allocate(comm_part%nod_comm_tbl_part(comm_part%np_comm))
 !
       end subroutine alloc_nod_comm_tbl_part

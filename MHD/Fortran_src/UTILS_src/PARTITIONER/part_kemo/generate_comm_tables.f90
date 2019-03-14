@@ -50,7 +50,8 @@
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       type(communication_table) :: new_comm
-      integer :: ip, id_rank
+      integer(kind = kint) :: ip
+      integer :: id_rank
 !
 !
       if(comm_part%iflag_memory_conserve .eq. 0) then
@@ -59,8 +60,8 @@
 !
       call allocate_wk_neib_domain(num_pe)
 !
-      do ip = 1, num_pe
-        id_rank = ip - 1
+      do id_rank = 0, num_pe-1
+        ip = int(id_rank+1, KIND(ip))
 !
         call count_neib_domain_by_node                                  &
      &     (nod_d_grp, itl_nod_part, ip, num_pe, new_comm%num_neib)
@@ -102,15 +103,16 @@
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       type(communication_table) :: new_comm
-      integer :: ip, id_rank
+      integer(kind = kint) :: ip
+      integer :: id_rank
 !
 !C
 !C +-------------------------------+
 !C | update FILE : EXPORT pointers |
 !C +-------------------------------+
 !C===
-      do ip = 1, num_pe
-        id_rank = ip - 1
+      do id_rank = 0, num_pe-1
+        ip = int(id_rank+1, KIND(ip))
 !C
 !C-- "marking" with GLOBAL NODE ID
 

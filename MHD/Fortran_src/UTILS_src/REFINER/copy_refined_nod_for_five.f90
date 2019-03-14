@@ -1,6 +1,10 @@
 !copy_refined_nod_for_five.f90
 !      module copy_refined_nod_for_five
 !
+!!      subroutine s_copy_refined_nod_five(iflag_refine,                &
+!!     &          inod_refine_local, inod_refine_nod_local,             &
+!!     &          inod_refine_surf_local)
+!
       module copy_refined_nod_for_five
 !
       use m_precision
@@ -11,11 +15,6 @@
       private :: s_copy_refined_nod_five_wy
       private :: s_copy_refined_nod_five_wx
 !
-!      subroutine s_copy_refined_nod_five(iflag_refine,                 &
-!     &          inod_refine_local, inod_refine_nod_local,              &
-!     &          inod_refine_ele_local, inod_refine_surf_local,         &
-!     &          inod_refine_edge_local)
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -24,34 +23,29 @@
 !
       subroutine s_copy_refined_nod_five(iflag_refine,                  &
      &          inod_refine_local, inod_refine_nod_local,               &
-     &          inod_refine_ele_local, inod_refine_surf_local,          &
-     &          inod_refine_edge_local)
+     &          inod_refine_surf_local)
 !
       use m_refine_flag_parameters
 !
       integer(kind = kint) :: iflag_refine
       integer(kind = kint), intent(in) :: inod_refine_nod_local(8)
-      integer(kind = kint), intent(in) :: inod_refine_ele_local(8)
       integer(kind = kint), intent(in) :: inod_refine_surf_local(6,4)
-      integer(kind = kint), intent(in) :: inod_refine_edge_local(12,2)
 !
       integer(kind = kint), intent(inout) :: inod_refine_local(64)
 !
 !
       if      (iflag_refine .eq. iflag_five_z) then
         call s_copy_refined_nod_five_wz(inod_refine_local,              &
-     &          inod_refine_nod_local, inod_refine_ele_local,           &
-     &          inod_refine_surf_local, inod_refine_edge_local)
+     &          inod_refine_nod_local, inod_refine_surf_local)
 !
       else if (iflag_refine .eq. iflag_five_y) then
         call s_copy_refined_nod_five_wy(inod_refine_local,              &
-     &          inod_refine_nod_local, inod_refine_ele_local,           &
-     &          inod_refine_surf_local, inod_refine_edge_local)
+     &          inod_refine_nod_local,           &
+     &          inod_refine_surf_local)
 !
       else if (iflag_refine .eq. iflag_five_x) then
         call s_copy_refined_nod_five_wx(inod_refine_local,              &
-     &          inod_refine_nod_local, inod_refine_ele_local,           &
-     &          inod_refine_surf_local, inod_refine_edge_local)
+     &          inod_refine_nod_local, inod_refine_surf_local)
 !
       end if
 !
@@ -61,13 +55,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_copy_refined_nod_five_wz(inod_refine_local,          &
-     &          inod_refine_nod_local, inod_refine_ele_local,           &
-     &          inod_refine_surf_local, inod_refine_edge_local)
+     &          inod_refine_nod_local, inod_refine_surf_local)
 !
       integer(kind = kint), intent(in) :: inod_refine_nod_local(8)
-      integer(kind = kint), intent(in) :: inod_refine_ele_local(8)
       integer(kind = kint), intent(in) :: inod_refine_surf_local(6,4)
-      integer(kind = kint), intent(in) :: inod_refine_edge_local(12,2)
 !
       integer(kind = kint), intent(inout) :: inod_refine_local(64)
 !
@@ -102,13 +93,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_copy_refined_nod_five_wy(inod_refine_local,          &
-     &          inod_refine_nod_local, inod_refine_ele_local,           &
-     &          inod_refine_surf_local, inod_refine_edge_local)
+     &          inod_refine_nod_local, inod_refine_surf_local)
 !
       integer(kind = kint), intent(in) :: inod_refine_nod_local(8)
-      integer(kind = kint), intent(in) :: inod_refine_ele_local(8)
       integer(kind = kint), intent(in) :: inod_refine_surf_local(6,4)
-      integer(kind = kint), intent(in) :: inod_refine_edge_local(12,2)
 !
       integer(kind = kint), intent(inout) :: inod_refine_local(64)
 !
@@ -144,14 +132,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_copy_refined_nod_five_wx(inod_refine_local,         &
-     &          inod_refine_nod_local, inod_refine_ele_local,           &
-     &          inod_refine_surf_local, inod_refine_edge_local)
+      subroutine s_copy_refined_nod_five_wx(inod_refine_local,          &
+     &          inod_refine_nod_local, inod_refine_surf_local)
 !
       integer(kind = kint), intent(in) :: inod_refine_nod_local(8)
-      integer(kind = kint), intent(in) :: inod_refine_ele_local(8)
       integer(kind = kint), intent(in) :: inod_refine_surf_local(6,4)
-      integer(kind = kint), intent(in) :: inod_refine_edge_local(12,2)
 !
       integer(kind = kint), intent(inout) :: inod_refine_local(64)
 !

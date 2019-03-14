@@ -64,7 +64,7 @@
             call set_sleeve_node(inod)
 !
 !
-            call set_sleeve_node_peri(ipe, jpe, kpe, inod)
+            call set_sleeve_node_peri(ipe, jpe, inod)
 !
 ! ***** set table from node id to x,y,z, positions
 !

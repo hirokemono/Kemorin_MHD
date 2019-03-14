@@ -60,7 +60,7 @@
       integer(kind = kint), intent(in) :: inod_refine_local(8)
       integer(kind = kint), intent(inout) :: ie_refine(nele_refine,8)
 !
-      integer(kind = kint) :: icou, k1
+      integer(kind = kint) :: k1
 !
       do k1 = 1, 8
         ie_refine(ist+1,k1) = inod_refine_local(k1)
@@ -78,7 +78,7 @@
       integer(kind = kint), intent(in) :: inod_refine_local(20)
       integer(kind = kint), intent(inout) :: ie_refine(nele_refine,20)
 !
-      integer(kind = kint) :: icou, k1, l1
+      integer(kind = kint) :: k1, l1
 !
       do k1 = 1, 20
         l1 = ie_new_quad20(k1)
@@ -97,7 +97,7 @@
       integer(kind = kint), intent(in) :: inod_refine_local(27)
       integer(kind = kint), intent(inout) :: ie_refine(nele_refine,27)
 !
-      integer(kind = kint) :: icou, k1, l1
+      integer(kind = kint) :: k1, l1
 !
       do k1 = 1, 27
         l1 = ie_new_quad27(k1)

@@ -11,10 +11,10 @@
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
 !!        type(internal_4_partitioner), intent(in) :: itl_nod_part
 !!
-!!      subroutine count_ele_import_item(ip, nproc, ntot_subd,          &
+!!      subroutine count_ele_import_item(id_rank, num_pe, ntot_subd,    &
 !!     &          istack_subd, item_subd, num, id_gl_org, IGROUP,       &
 !!     &          num_neib, id_neib, ntot_import, istack_import)
-!!      subroutine set_ele_import_item(ip, nproc, ntot_subd,            &
+!!      subroutine set_ele_import_item(id_rank, num_pe, ntot_subd,      &
 !!     &          istack_subd, item_subd, num, id_gl_org, IGROUP,       &
 !!     &          num_neib, id_neib, ntot_import, istack_import,        &
 !!     &          item_import)
@@ -39,28 +39,30 @@
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
       type(internal_4_partitioner), intent(in) :: itl_nod_part
-      integer(kind = kint), intent(in) :: ip, num_neib
+      integer(kind = kint), intent(in) :: ip
+      integer(kind = kint), intent(in) :: num_neib
       integer(kind = kint), intent(in) :: id_neib(num_neib)
 !
       integer(kind = kint), intent(inout) :: ntot_import
       integer(kind = kint), intent(inout) :: istack_import(0:num_neib)
 !
-      integer(kind= kint) :: j, jp, ist, ied, inum, inod, icou
-      integer(kind= kint_gl) :: jnod_org
+      integer(kind = kint) :: jd_rank
+      integer(kind = kint) :: j, ist, ied, inum, inod, icou
+      integer(kind = kint_gl) :: jnod_org
 !
 !
 !
       istack_import(0)= 0
       do j = 1, num_neib
         icou = 0
-        jp =  id_neib(j)
+        jd_rank = int(id_neib(j),KIND(jd_rank))
         ist = itl_nod_part%istack_4_subdomain(ip-1)                     &
      &       + itl_nod_part%num_inter_sub(ip) + 1
         ied = itl_nod_part%istack_4_subdomain(ip)
         do inum = ist, ied
           inod = itl_nod_part%id_4_subdomain(inum)
           jnod_org = nod_d_grp%id_global_org(inod)
-          if (nod_d_grp%IGROUP(jnod_org).eq.jp) icou = icou + 1
+          if(nod_d_grp%IGROUP(jnod_org) .eq. jd_rank) icou = icou + 1
         end do
         istack_import(j) = istack_import(j-1) + icou
       end do
@@ -79,27 +81,29 @@
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
       type(internal_4_partitioner), intent(in) :: itl_nod_part
-      integer(kind = kint), intent(in) :: ip, num_neib
+      integer(kind = kint), intent(in) :: ip
+      integer(kind = kint), intent(in) :: num_neib
       integer(kind = kint), intent(in) :: id_neib(num_neib)
       integer(kind = kint), intent(in) :: ntot_import
       integer(kind = kint), intent(in) :: istack_import(0:num_neib)
 !
       integer(kind = kint), intent(inout) :: item_import(ntot_import)
 !
-      integer(kind= kint) :: j, jp, ist, ied, inum, inod, icou
-      integer(kind= kint_gl) :: jnod_org
+      integer(kind = kint) :: jd_rank
+      integer(kind = kint) :: j, ist, ied, inum, inod, icou
+      integer(kind = kint_gl) :: jnod_org
 !
 !
       do j = 1, num_neib
         icou = istack_import(j-1)
-        jp =  id_neib(j)
+        jd_rank = int(id_neib(j),KIND(jd_rank))
         ist = itl_nod_part%istack_4_subdomain(ip-1)                     &
      &       + itl_nod_part%num_inter_sub(ip) + 1
         ied = itl_nod_part%istack_4_subdomain(ip)
         do inum = ist, ied
           inod = itl_nod_part%id_4_subdomain(inum)
           jnod_org = nod_d_grp%id_global_org(inod)
-          if (nod_d_grp%IGROUP(jnod_org).eq.jp) then
+          if (nod_d_grp%IGROUP(jnod_org) .eq. jd_rank) then
             icou = icou + 1
             item_import(icou)                                           &
      &           = inum - itl_nod_part%istack_4_subdomain(ip-1)
@@ -112,12 +116,12 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_ele_import_item(ip, nproc, ntot_subd,            &
+      subroutine count_ele_import_item(id_rank, num_pe, ntot_subd,      &
      &          istack_subd, item_subd, num, id_gl_org, IGROUP,         &
      &          num_neib, id_neib, ntot_import, istack_import)
 !
-      integer(kind = kint), intent(in) :: ip, nproc
-      integer(kind = kint), intent(in) :: istack_subd(0:nproc)
+      integer, intent(in) :: id_rank, num_pe
+      integer(kind = kint), intent(in) :: istack_subd(0:num_pe)
       integer(kind = kint), intent(in) :: ntot_subd
       integer(kind = kint), intent(in) :: item_subd(ntot_subd)
 !
@@ -131,7 +135,8 @@
       integer(kind = kint), intent(inout) :: ntot_import
       integer(kind = kint), intent(inout) :: istack_import(0:num_neib)
 !
-      integer(kind= kint) :: j, jp, ist, ied, inum, id, icou
+      integer(kind= kint) :: j, ist, ied, inum, id, icou
+      integer :: jd_rank
       integer(kind= kint_gl) :: jd_org
 !
 !
@@ -139,16 +144,16 @@
       istack_import(0)= 0
       do j = 1, num_neib
         icou = 0
-        jp =  id_neib(j)
-        ist = istack_subd(ip-1) + 1
-        ied = istack_subd(ip)
+        jd_rank = int(id_neib(j))
+        ist = istack_subd(id_rank) + 1
+        ied = istack_subd(id_rank+1)
         do inum = ist, ied
           id = item_subd(inum)
           jd_org = id_gl_org(id)
-          if (ip.ne.jp) then
-            if (IGROUP(jd_org).eq.jp) icou = icou + 1
+          if(id_rank .ne. jd_rank) then
+            if(IGROUP(jd_org).eq.jd_rank) icou = icou + 1
           else
-            if(IGROUP(id).eq.0 .and. IGROUP(jd_org).eq.jp)              &
+            if(IGROUP(id).eq.0 .and. IGROUP(jd_org).eq.jd_rank)         &
      &                                icou = icou + 1
           end if
         end do
@@ -160,13 +165,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ele_import_item(ip, nproc, ntot_subd,              &
+      subroutine set_ele_import_item(id_rank, num_pe, ntot_subd,        &
      &          istack_subd, item_subd, num, id_gl_org, IGROUP,         &
      &          num_neib, id_neib, ntot_import, istack_import,          &
      &          item_import)
 !
-      integer(kind = kint), intent(in) :: ip, nproc
-      integer(kind = kint), intent(in) :: istack_subd(0:nproc)
+      integer, intent(in) :: id_rank, num_pe
+      integer(kind = kint), intent(in) :: istack_subd(0:num_pe)
       integer(kind = kint), intent(in) :: ntot_subd
       integer(kind = kint), intent(in) :: item_subd(ntot_subd)
 !
@@ -181,28 +186,29 @@
 !
       integer(kind = kint), intent(inout) :: item_import(ntot_import)
 !
-      integer(kind= kint) :: j, jp, ist, ied, inum, id, icou
+      integer :: jd_rank
+      integer(kind= kint) :: j, ist, ied, inum, id, icou
       integer(kind= kint_gl) :: jd_org
 !
 !
 !
       do j = 1, num_neib
         icou = istack_import(j-1)
-        jp =  id_neib(j)
-        ist = istack_subd(ip-1) + 1
-        ied = istack_subd(ip)
+        jd_rank = int(id_neib(j))
+        ist = istack_subd(id_rank) + 1
+        ied = istack_subd(id_rank+1)
         do inum = ist, ied
           id = item_subd(inum)
           jd_org = id_gl_org(id)
-          if (ip.ne.jp) then
-            if (IGROUP(jd_org).eq.jp) then
+          if(id_rank .ne. jd_rank) then
+            if(IGROUP(jd_org) .eq. jd_rank) then
               icou = icou + 1
-              item_import(icou) = inum - istack_subd(ip-1)
+              item_import(icou) = inum - istack_subd(id_rank)
             end if
           else
-            if(IGROUP(id).eq.0 .and. IGROUP(jd_org).eq.jp) then
+            if(IGROUP(id).eq.0 .and. IGROUP(jd_org) .eq. jd_rank) then
               icou = icou + 1
-              item_import(icou) = inum - istack_subd(ip-1)
+              item_import(icou) = inum - istack_subd(id_rank)
             end if
           end if
         end do

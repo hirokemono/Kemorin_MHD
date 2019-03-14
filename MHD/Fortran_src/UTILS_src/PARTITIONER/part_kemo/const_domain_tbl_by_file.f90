@@ -59,7 +59,8 @@
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
       type(mesh_geometry) :: mesh_IO_p
-      integer(kind = kint) :: ip, my_rank2, ierr
+      integer :: ip, my_rank2
+      integer(kind = kint) :: ierr
 !
 !
       nod_d_grp%num_s_domin = 0
@@ -85,7 +86,7 @@
       type(field_IO_params), intent(in) :: mesh_file
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
-      integer(kind = kint) :: my_rank2
+      integer :: my_rank2
 !
 !
       do my_rank2 = 0, nprocs_2nd-1
@@ -99,13 +100,14 @@
       subroutine set_domain_grp_each_domain                             &
      &         (mesh_file, my_rank2, nod_d_grp)
 !
-      integer(kind = kint), intent(in)  :: my_rank2
+      integer, intent(in)  :: my_rank2
       type(field_IO_params), intent(in) :: mesh_file
 !
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
       type(mesh_geometry) :: mesh_IO_p
-      integer(kind = kint) :: ip2, inod, ierr
+      integer :: ip2
+      integer(kind = kint) :: inod, ierr
       integer(kind = kint_gl) :: inod_g
 !
 !

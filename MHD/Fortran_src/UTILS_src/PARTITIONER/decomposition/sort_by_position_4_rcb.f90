@@ -149,16 +149,16 @@
       integer(kind = kint), intent(inout) :: IS1(nnod)
       real(kind = kreal), intent(inout) :: VAL(nnod)
 !
-      integer(kind = kint) :: i, ist, ied, inum, inod
+      integer(kind = kint) :: i
       integer(kind = kint), parameter :: ione = 1
 !
       ncou = 0
-      do i= 1, nnod
-        if (IGROUP(inod) .eq. 0) then
+      do i = 1, nnod
+        if(IGROUP(i) .eq. 0) then
           ncou = ncou + 1
           IS1(ncou)= i
           VAL(ncou)= rr(i)
-          IGROUP(inod) = ione
+          IGROUP(i) = ione
         end if
       end do
 !

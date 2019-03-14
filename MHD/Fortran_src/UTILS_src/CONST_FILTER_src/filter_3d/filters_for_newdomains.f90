@@ -139,10 +139,10 @@
       type(mesh_geometry) :: mesh_IO_f
       type(filter_file_data) :: filter_IO
       character(len=kchara) :: file_name
-      integer :: ip2
+      integer(kind = kint) :: ip2
 !
 !
-        ip2 = my_rank2 + 1
+        ip2 = int(my_rank2 + 1, KIND(ip2))
 !
         call sel_read_geometry_size                                     &
      &     (tgt_mesh_file, my_rank2, mesh_IO_f, ierr)

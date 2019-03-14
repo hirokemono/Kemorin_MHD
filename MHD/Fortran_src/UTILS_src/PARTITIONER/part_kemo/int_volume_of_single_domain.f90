@@ -69,7 +69,7 @@
 !
       call alloc_vol_shape_func                                         &
      &   (mesh%ele%nnod_4_ele, jacs%g_FEM, spfs%spf_3d)
-      call const_jacobians_element(izero, ione, mesh%node, mesh%ele,    &
+      call const_jacobians_element(0, 1, mesh%node, mesh%ele,           &
      &    group%surf_grp, group%infty_grp, spfs%spf_3d, jacs)
 !
       call allocate_volume_4_smp

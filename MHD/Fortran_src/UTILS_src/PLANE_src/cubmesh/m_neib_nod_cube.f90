@@ -58,10 +58,10 @@
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: kpe, pe_id
-      integer(kind = kint) :: pe1
+      integer :: ied_rank
 !
 !
-        pe1 = pe_id - 1
+        ied_rank = int(pe_id - 1)
 !
         write(*,*) 'allocate_filters_nod'
        call allocate_filters_nod(FEM_elen%filter_conf%nf_type)
@@ -105,7 +105,7 @@
 !        call check_neib_node_z
 !
        call write_neighboring_nod_line                                  &
-     &    (pe1, FEM_elen%filter_conf%nf_type, FEM_elen)
+     &    (ied_rank, FEM_elen%filter_conf%nf_type, FEM_elen)
 !
        write(*,*) 'deallocate_filters_nod'
        call deallocate_filters_nod

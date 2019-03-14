@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine set_import_peri(ipe, jpe, kpe, inod)
+!      subroutine set_import_peri(ipe, jpe, inod)
 !      subroutine set_import_peri_quad(ipe, jpe, kpe, inod)
 !
       module set_import_peri_cube
@@ -26,9 +26,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_import_peri(ipe, jpe, kpe, inod)
+      subroutine set_import_peri(ipe, jpe, inod)
 !
-      integer (kind = kint) :: ipe, jpe, kpe
+      integer (kind = kint) :: ipe, jpe
       integer (kind = kint) :: inod
 !
       integer (kind = kint) :: inp, jnp, knp

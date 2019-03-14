@@ -35,7 +35,7 @@
 !
       integer(kind = kint), intent(inout) :: nrest_local(NP)
 !
-      integer(kind = kint) :: is, ip, NP_posi
+      integer(kind = kint) :: ip, NP_posi
       integer(kind = kint) :: nconvert, num1, irest1
 !
 !

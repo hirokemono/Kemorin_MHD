@@ -49,7 +49,7 @@
       integer(kind = kint) :: i
 !
 !
-      call turn_off_debug_flag_by_ctl(izero, part_ctl%part_plt)
+      call turn_off_debug_flag_by_ctl(0, part_ctl%part_plt)
       call set_control_mesh_def                                         &
      &   (part_ctl%part_plt, part_p%distribute_mesh_file)
 !

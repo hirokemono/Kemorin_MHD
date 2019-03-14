@@ -58,7 +58,7 @@
       end if
 !
       call write_element_refine_file                                    &
-     &   (izero, izero, IO_itp_e_org, IO_itp_e_dest, IO_e_ref)
+     &   (0, izero, IO_itp_e_org, IO_itp_e_dest, IO_e_ref)
 !
       end subroutine write_refinement_table
 !
@@ -78,7 +78,7 @@
 !
       IO_e_ref%file_head = refine_info_head
       call write_element_refine_file                                    &
-     &   (izero, izero, IO_itp_e_org, IO_itp_e_dest, IO_e_ref)
+     &   (0, izero, IO_itp_e_org, IO_itp_e_dest, IO_e_ref)
 !
       end subroutine write_merged_refinement_tbl
 !
@@ -95,7 +95,7 @@
 !
       IO_e_ref%file_head = refine_info_head
       call read_element_refine_file                                     &
-     &   (izero, izero, IO_itp_e_org, IO_itp_e_dest, IO_e_ref)
+     &   (0, izero, IO_itp_e_org, IO_itp_e_dest, IO_e_ref)
 !
       call dealloc_itp_num_org(IO_itp_e_org)
       call dealloc_itp_table_org(IO_itp_e_org)

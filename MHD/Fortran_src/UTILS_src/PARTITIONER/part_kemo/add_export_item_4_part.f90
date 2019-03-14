@@ -49,8 +49,8 @@
       type(communication_table), intent(inout) :: new_comm
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
-      integer(kind = kint) :: j, jg
-      integer :: jp
+      integer(kind = kint) :: j
+      integer(kind = kint) :: jp
 !
 !
       allocate( iflag_neib(num_pe) )

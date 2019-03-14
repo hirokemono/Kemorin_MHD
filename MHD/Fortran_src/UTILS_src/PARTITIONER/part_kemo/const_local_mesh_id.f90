@@ -163,7 +163,8 @@
       use t_geometry_data
       use t_surface_data
 !
-      integer(kind = kint), intent(in) :: ip, nnod_4_surf
+      integer(kind = kint), intent(in) :: ip
+      integer(kind = kint), intent(in) :: nnod_4_surf
       type(element_data), intent(in) :: new_ele
       type(internal_4_partitioner), intent(in) :: itl_surf_part
 !
@@ -188,7 +189,8 @@
       use t_surface_data
       use t_edge_data
 !
-      integer(kind = kint), intent(in) :: ip, nnod_4_edge
+      integer(kind = kint), intent(in) :: ip
+      integer(kind = kint), intent(in) :: nnod_4_edge
       type(element_data), intent(in) :: new_ele
       type(surface_data), intent(in) :: new_surf
       type(internal_4_partitioner), intent(in) :: itl_edge_part

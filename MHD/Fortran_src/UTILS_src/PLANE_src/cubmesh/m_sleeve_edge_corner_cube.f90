@@ -30,7 +30,7 @@
 
 !
        integer (kind = kint) :: ioff_gl
-       integer (kind = kint) :: kpe, jnp, knp
+       integer (kind = kint) :: kpe, knp
        integer (kind = kint) :: inod
        integer (kind = kint) :: nd
 !
@@ -90,7 +90,7 @@
 
 !
        integer (kind = kint) :: ioff_gl
-       integer (kind = kint) :: kpe, jnp, knp
+       integer (kind = kint) :: kpe, knp
        integer (kind = kint) :: inod
        integer (kind = kint) :: nd
 !
@@ -151,7 +151,7 @@
 
 !
        integer (kind = kint) :: ioff_gl
-       integer (kind = kint) :: kpe, jnp, knp
+       integer (kind = kint) :: kpe, knp
        integer (kind = kint) :: inod
        integer (kind = kint) :: nd
 
@@ -215,7 +215,7 @@
 !
 !
        integer (kind = kint) :: ioff_gl
-       integer (kind = kint) :: kpe, jnp, knp
+       integer (kind = kint) :: kpe, knp
        integer (kind = kint) :: inod
        integer (kind = kint) :: nd
 

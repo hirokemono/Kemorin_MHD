@@ -76,7 +76,7 @@
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       type (filter_file_data), save :: filter_IO
-      integer :: ip2
+      integer(kind = kint) :: ip2
 !
 !
       ip2 = my_rank2 + 1

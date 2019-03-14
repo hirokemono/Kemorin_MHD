@@ -3,13 +3,13 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!!      subroutine allocate_wk_neib_domain(nproc)
+!!      subroutine allocate_wk_neib_domain(num_pe)
 !!      subroutine deallocate_wk_neib_domain
 !!
 !!      subroutine count_neib_domain_by_node                            &
-!!     &         (nod_d_grp, itl_nod_part, ip, nproc, num_neib)
+!!     &        (nod_d_grp, itl_nod_part, ip, num_pe, num_neib)
 !!      subroutine set_neib_domain_by_node                              &
-!!     &         (nod_d_grp, itl_nod_part, ip, nproc, num_neib, id_neib)
+!!     &        (nod_d_grp, itl_nod_part, ip, num_pe, num_neib, id_neib)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
 !!        type(internal_4_partitioner), intent(in) :: itl_nod_part
 !
@@ -31,11 +31,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine allocate_wk_neib_domain(nproc)
+      subroutine allocate_wk_neib_domain(num_pe)
 !
-      integer(kind= kint), intent(in) :: nproc
+      integer, intent(in) :: num_pe
 !
-      allocate(imark_pe(0:nproc))
+      allocate(imark_pe(0:num_pe))
 !
       end subroutine allocate_wk_neib_domain
 !
@@ -51,17 +51,19 @@
 !   --------------------------------------------------------------------
 !
       subroutine count_neib_domain_by_node                              &
-     &         (nod_d_grp, itl_nod_part, ip, nproc, num_neib)
+     &         (nod_d_grp, itl_nod_part, ip, num_pe, num_neib)
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
       type(internal_4_partitioner), intent(in) :: itl_nod_part
-      integer(kind= kint), intent(in) :: ip, nproc
+      integer, intent(in) :: num_pe
+      integer(kind= kint), intent(in) :: ip
+!
       integer(kind= kint), intent(inout) :: num_neib
       integer(kind= kint) :: ist, ied, inum, inod, jp
       integer(kind= kint_gl) :: jnod_org
 !
 !
-      imark_pe(0:nproc) = 0
+      imark_pe(0:num_pe) = 0
       ist = itl_nod_part%istack_4_subdomain(ip-1)                       &
      &     + itl_nod_part%num_inter_sub(ip) + 1
       ied = itl_nod_part%istack_4_subdomain(ip)
@@ -73,7 +75,7 @@
       end do
 !
       num_neib = 0
-      do jp = 1, nproc
+      do jp = 1, num_pe
         num_neib = num_neib + imark_pe(jp)
       end do
 !
@@ -82,19 +84,21 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_neib_domain_by_node                                &
-     &         (nod_d_grp, itl_nod_part, ip, nproc, num_neib, id_neib)
+     &        (nod_d_grp, itl_nod_part, ip, num_pe, num_neib, id_neib)
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
       type(internal_4_partitioner), intent(in) :: itl_nod_part
-      integer(kind= kint), intent(in) :: ip, nproc
+      integer, intent(in) :: num_pe
+      integer(kind= kint), intent(in) :: ip
       integer(kind= kint), intent(in) :: num_neib
       integer(kind= kint), intent(inout) :: id_neib(num_neib)
+!
       integer(kind= kint) :: ist, ied, inum, inod, jp, icou
       integer(kind= kint_gl) :: jnod_org
 !
 !
       icou = 0
-      imark_pe(0:nproc) = 0
+      imark_pe(0:num_pe) = 0
       ist = itl_nod_part%istack_4_subdomain(ip-1)                       &
      &     + itl_nod_part%num_inter_sub(ip) + 1
       ied = itl_nod_part%istack_4_subdomain(ip)

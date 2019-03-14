@@ -45,7 +45,7 @@
 !
 !
       ucd%nnod = ione
-      call sel_read_udt_param(izero, istep, ucd_param, t_IO, ucd)
+      call sel_read_udt_param(0, istep, ucd_param, t_IO, ucd)
       call deallocate_ucd_phys_data(ucd)
 !
       nod_fld%num_phys =    ucd%num_field
