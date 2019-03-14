@@ -48,7 +48,7 @@
       use MPI_mesh_data_IO_b
       use MPI_groups_IO_b
 !
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       character(len=kchara), intent(in) :: file_name
 !
       type(mesh_data), intent(inout) :: fem_IO
@@ -74,7 +74,7 @@
 !
       use MPI_mesh_data_IO_b
 !
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       character(len=kchara), intent(in) :: file_name
 !
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -98,7 +98,7 @@
        use MPI_domain_data_IO_b
        use MPI_mesh_data_IO_b
 !
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       character(len=kchara), intent(in) :: file_name
 !
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -122,7 +122,7 @@
        use MPI_domain_data_IO_b
        use MPI_mesh_data_IO_b
 !
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       character(len=kchara), intent(in) :: file_name
 !
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -147,7 +147,7 @@
       use m_machine_parameter
       use MPI_mesh_data_IO_b
 !
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       character(len=kchara), intent(in) :: file_name
 !
       type(mesh_data), intent(in) :: fem_IO

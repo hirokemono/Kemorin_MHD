@@ -49,7 +49,7 @@
       use mesh_data_IO
       use groups_IO
 !
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       character(len=kchara), intent(in) :: file_name
 !
       type(mesh_data), intent(inout) :: fem_IO
@@ -74,7 +74,7 @@
 !
       use mesh_data_IO
 !
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       character(len=kchara), intent(in) :: file_name
 !
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -99,7 +99,7 @@
       use mesh_data_IO
       use node_geometry_IO
 !
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       character(len=kchara), intent(in) :: file_name
 !
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -124,7 +124,7 @@
       use mesh_data_IO
       use element_connect_IO
 !
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       character(len=kchara), intent(in) :: file_name
 !
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -150,7 +150,7 @@
       use m_fem_mesh_labels
       use mesh_data_IO
 !
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       character(len=kchara), intent(in) :: file_name
       type(mesh_data), intent(in) :: fem_IO
 !

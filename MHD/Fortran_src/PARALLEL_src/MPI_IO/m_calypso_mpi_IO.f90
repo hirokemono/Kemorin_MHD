@@ -93,8 +93,8 @@
      &         (file_name, nprocs_in, id_mpi_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in
-      integer, intent(inout) ::  id_mpi_file
+      integer, intent(in) :: nprocs_in
+      integer, intent(inout) :: id_mpi_file
 !
       integer(kind = MPI_OFFSET_KIND), parameter :: zerosize = 0
 !
@@ -166,7 +166,7 @@
 !
       integer, intent(in) ::  id_mpi_file
       integer(kind = MPI_OFFSET_KIND), intent(in) :: ioffset
-      integer(kind = kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
       integer(kind = kint_gl), intent(in) :: nline
       character(len=ilength), intent(in) :: textbuf(nline)
 !
@@ -302,7 +302,7 @@
       use binary_IO
 !
       integer, intent(in) ::  id_mpi_file
-      integer(kind = kint), intent(inout) :: iflag_bin_swap
+      integer, intent(inout) :: iflag_bin_swap
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -433,7 +433,7 @@
 !
       integer, intent(in) ::  id_mpi_file
       integer(kind = MPI_OFFSET_KIND), intent(in) :: ioffset
-      integer(kind = kint), intent(in) :: iflag_bin_swap
+      integer, intent(in) :: iflag_bin_swap
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: i8_vector(num)
 !

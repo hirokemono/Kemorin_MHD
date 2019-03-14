@@ -71,7 +71,7 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
       if(nnod .le. 0) then
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ione, char(10))
+     &     (IO_param%id_file, ioffset, 1, char(10))
       else
         do i = 1, nnod
           xx_tmp(1:numdir) = xx(i,1:numdir)
@@ -119,7 +119,7 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
       if(num .le. 0) then
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ione, char(10))
+     &     (IO_param%id_file, ioffset, 1, char(10))
       else if(num .gt. 0) then
         do i = 0, (num-1)/ncolumn - 1
           call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,  &
@@ -144,8 +144,9 @@
       integer(kind=kint_gl), intent(in) :: id_global(nele)
       integer(kind=kint), intent(in) :: ie(nele,nnod_4_ele)
 !
+      integer :: ilength
       integer(kind = kint_gl) :: led
-      integer(kind = kint) :: i, ilength
+      integer(kind = kint) :: i
       integer(kind = kint) :: ie_tmp(nnod_4_ele)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
@@ -169,7 +170,7 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
       if(nele .le. 0) then
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ione, char(10))
+     &     (IO_param%id_file, ioffset, 1, char(10))
       else
         do i = 1, nele
           ie_tmp(1:nnod_4_ele) = ie(i,1:nnod_4_ele)

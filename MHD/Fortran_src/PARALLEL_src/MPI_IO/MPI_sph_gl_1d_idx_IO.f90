@@ -214,8 +214,9 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
+      n_item = int(IO_param%nprocs_in, KIND(n_item))
       call mpi_skip_read                                                &
-     &   (IO_param, len_multi_int_textline(IO_param%nprocs_in))
+     &   (IO_param, len_multi_int_textline(n_item))
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
@@ -285,7 +286,7 @@
 !
       if(nnod .le. 0) then
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ione, char(10))
+     &     (IO_param%id_file, ioffset, 1, char(10))
       else
         do i = 1, nnod
           idx_tmp(1:numdir) = idx(i,1:numdir)

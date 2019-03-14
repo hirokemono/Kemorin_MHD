@@ -7,7 +7,7 @@
 !> @brief Base parameter structure for MPI-IO
 !!
 !!@verbatim
-!!      subroutine alloc_istack_merge(id_rank_IO, nprocs_IO, IO_param)
+!!      subroutine alloc_istack_merge(id_rank, nprocs_in, IO_param)
 !!      subroutine dealloc_istack_merge(IO_param)
 !!
 !!      subroutine mpi_write_chara_array_mul(id_file, nprocs_in, nloop, &
@@ -95,9 +95,9 @@
 !>        Byte swap flag for binary data
         integer ::  iflag_bin_swap = -1
 !>        process ID for MPI-IO
-        integer(kind=kint) ::  id_rank
+        integer ::  id_rank
 !>        number of subdomains (not equal to number of processes)
-        integer(kind=kint) ::  nprocs_in
+        integer ::  nprocs_in
 !>        maximum number of loops for subdomains in one process
         integer(kind=kint) ::  nloop = 1
 !
@@ -131,17 +131,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_istack_merge(id_rank_IO, nprocs_IO, IO_param)
+      subroutine alloc_istack_merge(id_rank, nprocs_in, IO_param)
 !
-      integer(kind = kint), intent(in) :: nprocs_IO, id_rank_IO
+      integer, intent(in) :: nprocs_in, id_rank
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
-      IO_param%id_rank =   id_rank_IO
-      IO_param%nprocs_in = nprocs_IO
+      IO_param%id_rank =   id_rank
+      IO_param%nprocs_in = nprocs_in
       IO_param%nloop = (IO_param%nprocs_in - 1) / nprocs
 
-      if( (IO_param%nloop*nprocs + my_rank) .lt. nprocs_IO) then
+      if( (IO_param%nloop*nprocs + my_rank) .lt. nprocs_in) then
         IO_param%nloop = IO_param%nloop + 1
       end if
       if(i_debug .gt. 0) write(*,*) 'IO_param%nloop',                   &
@@ -231,7 +231,7 @@
 !
       integer(kind = kint) function num_loop_4_multi_domain(nprocs_in)
 !
-      integer(kind = kint), intent(in) :: nprocs_in
+      integer, intent(in) :: nprocs_in
       integer(kind = kint) :: id_rank, nloop
 !
       nloop = (nprocs_in - 1) / nprocs
@@ -317,7 +317,8 @@
       subroutine set_istack_over_subdomains                             &
      &         (nprocs_in, nloop, num_local, istack_merged)
 !
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: num_local(nloop)
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
@@ -370,7 +371,8 @@
       subroutine set_istack_by_chara_length                             &
      &         (nprocs_in, nloop, c_array, istack_merged)
 !
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       type(charaarray_IO), intent(inout) ::  c_array(nloop)
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
@@ -389,7 +391,8 @@
       subroutine set_istack_by_i8_buffer                                &
      &         (nprocs_in, nloop, i8_array, istack_merged)
 !
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       type(int8array_IO), intent(inout) ::  i8_array(nloop)
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
@@ -408,7 +411,8 @@
       subroutine set_istack_by_int_buffer                               &
      &         (nprocs_in, nloop, i_array, istack_merged)
 !
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       type(intarray_IO), intent(inout) ::  i_array(nloop)
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
@@ -427,7 +431,8 @@
       subroutine set_istack_by_int2d_buffer                             &
      &         (nprocs_in, nloop, iv_array, istack_merged)
 !
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       type(ivecarray_IO), intent(inout) ::  iv_array(nloop)
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
@@ -447,7 +452,8 @@
       subroutine set_istack_by_real_buffer                              &
      &         (nprocs_in, nloop, r_array, istack_merged)
 !
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       type(realarray_IO), intent(inout) ::  r_array(nloop)
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
@@ -466,7 +472,8 @@
       subroutine set_istack_by_vector_buffer                            &
      &         (nprocs_in, nloop, v_array, istack_merged)
 !
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       type(vectarray_IO), intent(inout) ::  v_array(nloop)
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)

@@ -56,7 +56,7 @@
      &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
@@ -76,7 +76,7 @@
      &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
@@ -97,7 +97,7 @@
      &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
@@ -118,7 +118,7 @@
      &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(inout) :: sph_file
 !
 !
@@ -140,7 +140,7 @@
      &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -161,7 +161,7 @@
      &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -182,7 +182,7 @@
      &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -203,7 +203,7 @@
      &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !

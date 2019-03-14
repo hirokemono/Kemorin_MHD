@@ -385,7 +385,8 @@
         call gz_read_step_field_file_b                                  &
      &     (file_name, id_rank, t_IO, fld_IO)
       else if(file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call read_gz_step_field_file(file_name, id_rank, t_IO, fld_IO)
+        call read_gz_step_field_file                                    &
+     &     (file_name, id_rank, t_IO, fld_IO, ierr)
 #endif
 !
       else
@@ -441,7 +442,7 @@
      &     (file_name, id_rank, t_IO, fld_IO)
       else if(file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
         call read_alloc_gz_step_field_file                              &
-     &     (file_name, id_rank, t_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO, ierr)
 #endif
 !
       else
@@ -498,7 +499,7 @@
      &     (file_name, id_rank, t_IO, fld_IO)
       else if(file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
         call read_alloc_gz_step_field_head                              &
-     &     (file_name, id_rank, t_IO, fld_IO)
+     &     (file_name, id_rank, t_IO, fld_IO, ierr)
 #endif
 !
       else

@@ -68,8 +68,8 @@
 !
       use m_calypso_mpi_IO
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file, nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       type(charaarray_IO), intent(in) ::  c_array(nloop)
@@ -77,14 +77,14 @@
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: iloop, id_rank
-      integer(kind = kint) :: num32
+      integer :: num32
 !
 !
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         if(c_array(iloop)%num .gt. 0) then
           ioffset = ioff_gl + istack_merged(id_rank)
-          num32 = c_array(iloop)%num
+          num32 = int(c_array(iloop)%num)
           call calypso_mpi_seek_write_chara(id_file, ioffset,           &
      &        num32, c_array(iloop)%c_IO(1))
         end if
@@ -99,8 +99,8 @@
       subroutine mpi_write_i8_vect_mul_b(id_file, nprocs_in, nloop,     &
      &          ioff_gl, istack_merged, i8_array)
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file, nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       type(int8array_IO), intent(in) ::  i8_array(nloop)
@@ -127,8 +127,8 @@
 !
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file, nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       type(intarray_IO), intent(in) ::  i_array(nloop)
@@ -159,8 +159,8 @@
 !
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file, nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       type(ivecarray_IO), intent(in) ::  iv_array(nloop)
@@ -190,8 +190,8 @@
       subroutine mpi_write_realvect_mul_b(id_file, nprocs_in, nloop,    &
      &          ioff_gl, istack_merged, r_array)
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file, nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       type(realarray_IO), intent(in) ::  r_array(nloop)
@@ -216,8 +216,8 @@
       subroutine mpi_write_r2dvect_mul_b(id_file, nprocs_in, nloop,     &
      &          ioff_gl, istack_merged, v_array)
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file, nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       type(vectarray_IO), intent(in) ::  v_array(nloop)
@@ -247,8 +247,8 @@
 !
       use m_calypso_mpi_IO
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file, nprocs_in
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -267,7 +267,7 @@
 !
         allocate(c_array(iloop)%c_IO(c_array(iloop)%num))
         call calypso_mpi_seek_read_mul_chara(id_file, ioffset,          &
-     &      ione, c_array(iloop)%num, c_array(iloop)%c_IO(1))
+     &      1, c_array(iloop)%num, c_array(iloop)%c_IO(1))
       end do
       ioff_gl = ioff_gl + istack_merged(nprocs_in)
 !
@@ -279,9 +279,9 @@
       subroutine mpi_read_i8_vect_mul_b(id_file, iflag_bin_swap,        &
      &          nprocs_in, nloop, ioff_gl, istack_merged, i8_array)
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: iflag_bin_swap
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file, nprocs_in
+      integer, intent(in) :: iflag_bin_swap
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -308,9 +308,9 @@
 !
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: iflag_bin_swap
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file, nprocs_in
+      integer, intent(in) :: iflag_bin_swap
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -340,9 +340,9 @@
 !
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: iflag_bin_swap
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file, nprocs_in
+      integer, intent(in) :: iflag_bin_swap
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -372,9 +372,9 @@
       subroutine mpi_read_realvect_mul_b(id_file, iflag_bin_swap,       &
      &          nprocs_in, nloop, ioff_gl, istack_merged, r_array)
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: iflag_bin_swap
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file, nprocs_in
+      integer, intent(in) :: iflag_bin_swap
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -399,9 +399,9 @@
       subroutine mpi_read_r2dvect_mul_b(id_file, iflag_bin_swap,        &
      &          nprocs_in, nloop, ioff_gl, istack_merged, v_array)
 !
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: iflag_bin_swap
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
+      integer, intent(in) :: id_file, nprocs_in
+      integer, intent(in) :: iflag_bin_swap
+      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl

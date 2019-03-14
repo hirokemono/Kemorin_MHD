@@ -49,10 +49,7 @@
       integer(kind = kint_gl) :: num64
 !
 !
-      call mpi_read_one_inthead_b(IO_param, nprocs_read)
-      if(nprocs_read .ne. IO_param%nprocs_in) then
-        call calypso_mpi_abort(ierr_file, '#. of subdmain is wrong')
-      end if
+      call mpi_read_process_id_b(IO_param)
 !
       call mpi_read_one_integer_b(IO_param, comm_IO%num_neib)
 !
@@ -121,9 +118,9 @@
       integer (kind = kint_gl) :: num64
 !
 !
-      call mpi_write_one_inthead_b(IO_param, IO_param%nprocs_in)
-      call mpi_write_one_integer_b(IO_param, comm_IO%num_neib)
+      call mpi_write_process_id_b(IO_param)
 !
+      call mpi_write_one_integer_b(IO_param, comm_IO%num_neib)
 !
       num64 = comm_IO%num_neib
       call istack64_4_parallel_data(num64, IO_param)

@@ -52,7 +52,7 @@
      &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
@@ -70,7 +70,7 @@
      &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
@@ -88,7 +88,7 @@
      &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
@@ -142,8 +142,8 @@
 !
       call set_numbers_2_head_node(num, IO_param)
       call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
+     &    len_byte_stack_textline(IO_param%nprocs_in),                  &
+     &    byte_stack_textline(IO_param%nprocs_in,                       &
      &                        IO_param%istack_merged))
 !
       end subroutine mpi_write_num_of_data
@@ -158,8 +158,8 @@
 !
       call istack64_4_parallel_data(num, IO_param)
       call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
+     &    len_byte_stack_textline(IO_param%nprocs_in),                  &
+     &    byte_stack_textline(IO_param%nprocs_in,                       &
      &                        IO_param%istack_merged))
 !
       end subroutine mpi_write_stack_over_domain
@@ -172,11 +172,11 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind=kint), intent(inout) :: num
 !
-      integer(kind = kint) :: ilength
+      integer :: ilength
 !
 !
-      ilength = len_multi_int_textline(IO_param%nprocs_in)
-      call read_int8_stack_textline                                     &
+      ilength = len_byte_stack_textline(IO_param%nprocs_in)
+      call read_byte_stack_textline                                     &
          (mpi_read_charahead(IO_param, ilength),                        &
      &    IO_param%nprocs_in, IO_param%istack_merged)
 !
@@ -238,7 +238,7 @@
       subroutine mpi_skip_read(IO_param, ilength)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: ilength
+      integer, intent(in) :: ilength
 !
 !
       IO_param%ioff_gl = IO_param%ioff_gl + ilength

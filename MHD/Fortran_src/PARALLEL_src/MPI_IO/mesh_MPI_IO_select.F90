@@ -63,7 +63,7 @@
 !
       use set_mesh_file_names
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_data), intent(inout) :: fem_IO
 !
@@ -107,7 +107,7 @@
 !
       use set_mesh_file_names
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
@@ -153,7 +153,7 @@
 !
       use set_mesh_file_names
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
@@ -198,7 +198,7 @@
 !
       use set_mesh_file_names
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(inout) :: mesh_IO
 !
@@ -245,7 +245,7 @@
 !
       use set_mesh_file_names
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_data), intent(inout) :: fem_IO
 !

@@ -12,6 +12,7 @@
 !!      subroutine open_read_mpi_file_b                                 &
 !!     &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !!
+!!      subroutine mpi_write_process_id_b(IO_param)
 !!      subroutine mpi_write_one_inthead_b(IO_param, int_dat)
 !!      subroutine mpi_write_one_realhead_b(IO_param, real_dat)
 !!      subroutine mpi_write_one_integer_b(IO_param, int_dat)
@@ -25,6 +26,7 @@
 !!        Substitution of gz_write_mul_character_b
 !!      subroutine mpi_write_mul_realhead_b(IO_param, num, real_dat)
 !! 
+!!      subroutine mpi_read_process_id_b(IO_param)
 !!      subroutine mpi_read_one_inthead_b(IO_param, int_dat)
 !!      subroutine mpi_read_one_realhead_b(IO_param, real_dat)
 !!
@@ -63,7 +65,7 @@
      &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
@@ -80,7 +82,7 @@
      &         (file_name, nprocs_in, my_rank_IO, IO_param)
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
@@ -93,6 +95,21 @@
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
+!
+      subroutine mpi_write_process_id_b(IO_param)
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!
+      integer(kind = kint) :: itmp_IO(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
+!
+!
+      itmp_IO(1) = int(IO_param%nprocs_in,KIND(itmp_IO(1)))
+      call mpi_write_mul_inthead_b(IO_param, ione64, itmp_IO)
+!
+      end subroutine mpi_write_process_id_b
+!
+! -----------------------------------------------------------------------
 !
       subroutine mpi_write_one_inthead_b(IO_param, int_dat)
 !
@@ -221,6 +238,25 @@
       end subroutine mpi_write_mul_realhead_b
 !
 !  ---------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_read_process_id_b(IO_param)
+!
+      use m_error_IDs
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!
+      integer(kind = kint) :: itmp_IO(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
+!
+!
+      call mpi_read_mul_inthead_b(IO_param, ione64, itmp_IO)
+      if(int(itmp_IO(1)) .ne. IO_param%nprocs_in) then
+        call calypso_mpi_abort(ierr_file, '#. of subdmain is wrong')
+      end if
+!
+      end subroutine mpi_read_process_id_b
+!
 ! -----------------------------------------------------------------------
 !
       subroutine mpi_read_one_inthead_b(IO_param, int_dat)
@@ -359,7 +395,7 @@
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + num*kreal
 !
-      call calypso_mpi_bcast_real(real_dat, num, izero)
+      call calypso_mpi_bcast_real(real_dat, num, 0)
 !
       end subroutine mpi_read_mul_realhead_b
 !

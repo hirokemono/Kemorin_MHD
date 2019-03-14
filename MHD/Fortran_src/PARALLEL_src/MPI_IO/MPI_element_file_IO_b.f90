@@ -55,7 +55,7 @@
       use MPI_element_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -81,7 +81,7 @@
       use MPI_surface_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -108,7 +108,7 @@
       use MPI_edge_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -136,7 +136,7 @@
       use MPI_element_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(surf_edge_IO_file), intent(in) :: ele_mesh_IO
 !
 !
@@ -161,7 +161,7 @@
       use MPI_surface_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(surf_edge_IO_file), intent(in) :: surf_mesh_IO
 !
 !
@@ -187,7 +187,7 @@
       use MPI_edge_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
+      integer, intent(in) :: nprocs_in, my_rank_IO
       type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
 !
 !

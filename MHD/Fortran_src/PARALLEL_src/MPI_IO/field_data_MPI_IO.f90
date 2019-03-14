@@ -100,11 +100,11 @@
 !
       subroutine sync_field_name_mpi(ilength, field_name)
 !
-      integer(kind=kint), intent(inout) :: ilength
+      integer, intent(inout) :: ilength
       character(len=kchara), intent(inout) :: field_name
 !
 !
-      call MPI_BCAST(ilength, 1, CALYPSO_INTEGER, 0,                    &
+      call MPI_BCAST(ilength, 1, CALYPSO_FOUR_INT, 0,                   &
      &    CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(field_name, kchara, CALYPSO_CHARACTER, 0,          &
      &    CALYPSO_COMM, ierr_MPI)
@@ -152,7 +152,8 @@
       use field_data_IO
       use data_IO_to_textline
 !
-      integer(kind = kint), intent(in) :: nnod, id_rank, nprocs_in
+      integer, intent(in) :: id_rank, nprocs_in
+      integer(kind = kint), intent(in) :: nnod
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
@@ -244,10 +245,11 @@
       character(len=31+1+16+1) ::           textbuf_c
       character(len=25+1+nprocs_in*16+1) :: textbuf_d
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
+      integer :: ilength
+      integer(kind = kint_gl) :: num64
 !
 !
-      ilength = len(textbuf_d)
+      ilength = int(len(textbuf_d))
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
         call calypso_mpi_seek_read_lenchara                             &
@@ -266,8 +268,8 @@
       end if
       ioff_gl = ioff_gl + ilength
 !
-      call calypso_mpi_bcast_int8                                       &
-     &   (istack_merged, cast_long(nprocs_in+1), 0)
+      num64 = int(nprocs_in+1,KIND(num64))
+      call calypso_mpi_bcast_int8(istack_merged, num64 , 0)
       call MPI_BCAST(num_field, 1, CALYPSO_INTEGER, 0,                  &
      &    CALYPSO_COMM, ierr_MPI)
 !
@@ -330,7 +332,7 @@
 !
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
-        ilength = len(textbuf_c)
+        ilength = int(len(textbuf_c))
         call calypso_mpi_seek_read_lenchara                             &
      &     (id_fld, ioffset, ilength, textbuf_c)
         call read_each_field_name_buffer                                &
@@ -352,7 +354,8 @@
       use data_IO_to_textline
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank, nnod
+      integer, intent(in) :: nprocs_in, id_rank
+      integer(kind = kint), intent(in) :: nnod
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
       integer(kind = kint), intent(in) :: ncomp
       real(kind = kreal), intent(inout) :: vector(nnod,ncomp)
@@ -394,7 +397,7 @@
       use field_data_IO
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
       integer(kind = kint), intent(in) :: ncomp
 !

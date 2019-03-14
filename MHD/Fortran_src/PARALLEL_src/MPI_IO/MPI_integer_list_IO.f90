@@ -50,8 +50,9 @@
       integer :: ilength
 !
 !
+      n_item = int(IO_param%nprocs_in,KIND(n_item))
       call mpi_skip_read                                                &
-     &   (IO_param, len_multi_int_textline(IO_param%nprocs_in))
+     &   (IO_param, len_multi_int_textline(n_item))
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
@@ -59,7 +60,8 @@
         if(n_item .le. 0) then
           ilength = ione
         else if(n_item .gt. 0) then
-          ilength = len_int8_and_mul_int_textline(nnod_4_ele) * n_item
+          ilength                                                       &
+             = int(len_int8_and_mul_int_textline(nnod_4_ele) * n_item)
         end if
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
      &                             + ilength
@@ -100,8 +102,9 @@
       integer :: ilength
 !
 !
+      n_item = int(IO_param%nprocs_in,KIND(n_item))
       call mpi_skip_read                                                &
-     &   (IO_param, len_multi_int_textline(IO_param%nprocs_in))
+     &   (IO_param, len_multi_int_textline(n_item))
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
@@ -160,8 +163,9 @@
       integer :: ilength
 !
 !
+      n_item = int(IO_param%nprocs_in,KIND(n_item))
       call mpi_skip_read                                                &
-     &   (IO_param, len_multi_int_textline(IO_param%nprocs_in))
+     &   (IO_param, len_multi_int_textline(n_item))
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
@@ -169,7 +173,7 @@
         if(n_item .le. 0) then
           ilength = ione
         else if(n_item .gt. 0) then
-          ilength = len_multi_int_textline(ncomp) * n_item
+          ilength = int(len_multi_int_textline(ncomp) * n_item)
         end if
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
      &                             + ilength
@@ -207,7 +211,8 @@
       integer(kind=kint), intent(in) :: ie(nele,nnod_4_ele)
 !
       integer(kind = kint_gl) :: led
-      integer(kind = kint) :: i, ilength
+      integer(kind = kint) :: i
+      integer :: ilength
       integer(kind = kint) :: ie_tmp(nnod_4_ele)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
@@ -230,7 +235,7 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
       if(nele .le. 0) then
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ione, char(10))
+     &     (IO_param%id_file, ioffset, 1, char(10))
       else
         do i = 1, nele
           ie_tmp(1:nnod_4_ele) = ie(i,1:nnod_4_ele)
@@ -276,7 +281,7 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
       if(num .le. 0) then
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ione, char(10))
+     &     (IO_param%id_file, ioffset, 1, char(10))
       else if(num .gt. 0) then
         do i = 0, (num-1)/ncolumn - 1
           call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,  &
@@ -324,7 +329,7 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
       if(nele .le. 0) then
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ione, char(10))
+     &     (IO_param%id_file, ioffset, 1, char(10))
       else
         do i = 1, nele
           ie_tmp(1:ncomp) = ivect(i,1:ncomp)

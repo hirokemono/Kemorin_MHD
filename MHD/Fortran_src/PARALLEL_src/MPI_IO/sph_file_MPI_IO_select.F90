@@ -63,7 +63,7 @@
       subroutine sel_mpi_read_geom_rtp_file                            &
      &         (nprocs_in, id_rank, sph_file)
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
       integer(kind = kint) :: ierr = 0
@@ -107,7 +107,7 @@
       subroutine sel_mpi_read_spectr_rj_file                            &
      &         (nprocs_in, id_rank, sph_file)
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
       integer(kind = kint) ::  ierr = 0
@@ -151,7 +151,7 @@
       subroutine sel_mpi_read_geom_rtm_file                             &
      &         (nprocs_in, id_rank, sph_file)
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
       integer(kind = kint) ::  ierr = 0
@@ -195,7 +195,7 @@
       subroutine sel_mpi_read_modes_rlm_file                            &
      &         (nprocs_in, id_rank, sph_file)
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(inout) :: sph_file
 !
       integer(kind = kint) ::  ierr = 0
@@ -240,7 +240,7 @@
       subroutine sel_mpi_write_geom_rtp_file                            &
      &         (nprocs_in, id_rank, sph_file)
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -278,7 +278,7 @@
       subroutine sel_mpi_write_spectr_rj_file                           &
      &         (nprocs_in, id_rank, sph_file)
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -316,7 +316,7 @@
       subroutine sel_mpi_write_geom_rtm_file                            &
      &         (nprocs_in, id_rank, sph_file)
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !
@@ -354,7 +354,7 @@
       subroutine sel_mpi_write_modes_rlm_file                           &
      &         (nprocs_in, id_rank, sph_file)
 !
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
 !

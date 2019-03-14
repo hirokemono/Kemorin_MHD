@@ -130,9 +130,12 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(communication_table), intent(in) :: comm_IO
 !
+      integer(kind = kint) :: nlength
 !
+!
+      nlength = int(IO_param%nprocs_in,KIND(nlength))
       call mpi_write_charahead(IO_param, len_int_txt,                   &
-     &    integer_textline(IO_param%nprocs_in))
+     &    integer_textline(nlength))
 !
       call mpi_write_int_vector                                         &
      &   (IO_param, comm_IO%num_neib, comm_IO%id_neib)
@@ -193,7 +196,7 @@
       integer(kind=kint), intent(in) :: num
       integer(kind=kint), intent(in) :: int_dat(num)
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, nlength
       integer :: ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
@@ -203,13 +206,14 @@
       ilength = len_multi_int_textline(num)
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
+        nlength = int(IO_param%istack_merged(i),KIND(nlength))
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
-     &         + len_multi_int_textline(int(IO_param%istack_merged(i)))
+     &                             + len_multi_int_textline(nlength)
       end do
 !
       call mpi_write_charahead(IO_param,                                &
-     &    len_multi_int_textline(IO_param%nprocs_in),                   &
-     &    int_stack8_textline(IO_param%nprocs_in,                       &
+     &    len_byte_stack_textline(IO_param%nprocs_in),                  &
+     &    byte_stack_textline(IO_param%nprocs_in,                       &
      &                        IO_param%istack_merged))
 !
       ioffset = IO_param%ioff_gl                                        &
@@ -247,17 +251,18 @@
       integer(kind=kint), intent(in) :: num
       integer(kind=kint), intent(inout) :: int_dat(num)
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, nlength
       integer ::  ilength
 !
 !
       call mpi_skip_read                                               &
-     &   (IO_param, len_multi_int_textline(IO_param%nprocs_in))
+     &   (IO_param, len_byte_stack_textline(IO_param%nprocs_in))
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
+        nlength = int(IO_param%istack_merged(i),KIND(nlength))
         IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
-     &         + len_multi_int_textline(int(IO_param%istack_merged(i)))
+     &                             + len_multi_int_textline(nlength)
       end do
 !
       if(IO_param%id_rank .lt. IO_param%nprocs_in) then
@@ -285,7 +290,7 @@
 !
 !
       call mpi_skip_read                                                &
-     &   (IO_param, len_multi_int_textline(IO_param%nprocs_in))
+     &   (IO_param, len_byte_stack_textline(IO_param%nprocs_in))
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
@@ -365,7 +370,7 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
       if(num .le. 0) then
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ione, char(10))
+     &     (IO_param%id_file, ioffset, 1, char(10))
       else
         do i = 0, (num-1)/ncolumn - 1
           call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,  &

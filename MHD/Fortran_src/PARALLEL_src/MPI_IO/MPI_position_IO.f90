@@ -52,8 +52,9 @@
       integer :: ilength
 !
 !
+      n_item = int(IO_param%nprocs_in,KIND(n_item))
       call mpi_skip_read                                                &
-     &   (IO_param, len_multi_int_textline(IO_param%nprocs_in))
+     &   (IO_param, len_multi_int_textline(n_item))
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
@@ -104,8 +105,8 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
-      call mpi_skip_read                                                &
-     &   (IO_param, len_multi_int_textline(IO_param%nprocs_in))
+      n_item = int(IO_param%nprocs_in,KIND(led))
+      call mpi_skip_read(IO_param, len_multi_int_textline(n_item))
 !
       IO_param%istack_merged(0) = 0
       do i = 1, IO_param%nprocs_in
@@ -171,7 +172,7 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
       if(nnod .le. 0) then
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ione, char(10))
+     &     (IO_param%id_file, ioffset, 1, char(10))
       else
         do inod = 1, nnod
           xx_tmp(1:numdir) = xx(inod,1:numdir)
@@ -213,7 +214,7 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
       if(nri .le. 0) then
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ione, char(10))
+     &     (IO_param%id_file, ioffset, 1, char(10))
       else
         do i = 1, nri
           int8_tmp = id_r_global(i)

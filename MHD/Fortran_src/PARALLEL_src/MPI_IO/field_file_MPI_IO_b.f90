@@ -62,7 +62,7 @@
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      integer, intent(in) :: nprocs_in, id_rank
 !
       type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
@@ -251,7 +251,7 @@
       integer(kind = kint_gl) :: num64
 !
 !
-      call mpi_write_one_inthead_b(IO_param_l, IO_param_l%nprocs_in)
+      call mpi_write_process_id_b(IO_param_l)
       call mpi_write_one_inthead_b(IO_param_l, i_time_step_IO)
       call mpi_write_one_realhead_b(IO_param_l, time_IO)
       call mpi_write_one_realhead_b(IO_param_l, delta_t_IO)
@@ -284,11 +284,11 @@
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
-      integer(kind = kint) :: nprocs_tmp
       integer(kind = kint_gl) :: num64
 !
 !
-      call mpi_read_one_inthead_b(IO_param_l, nprocs_tmp)
+      call mpi_read_process_id_b(IO_param_l)
+!
       call mpi_read_one_inthead_b(IO_param_l, t_IO%i_time_step)
       call mpi_read_one_realhead_b(IO_param_l, t_IO%time)
       call mpi_read_one_realhead_b(IO_param_l, t_IO%dt)
@@ -296,7 +296,7 @@
       call alloc_merged_field_stack(IO_param_l%nprocs_in, fld_IO)
 !
       num64 = IO_param_l%nprocs_in
-      call mpi_read_i8stack_head_b                                     &
+      call mpi_read_i8stack_head_b                                      &
      &   (IO_param_l, num64, fld_IO%istack_numnod_IO)
       call sync_field_header_mpi                                        &
      &   (IO_param_l%nprocs_in, IO_param_l%id_rank,                     &
