@@ -34,8 +34,8 @@
       use itp_table_IO_select_4_zlib
       use const_interpolate_4_org
 !
-      integer(kind = kint) :: jp
-      integer(kind = kint) :: my_rank_2nd, ierr
+      integer :: jp, my_rank_2nd
+      integer(kind = kint) ::  ierr
       type(interpolate_table_org) :: itp_org_e
 !
 !

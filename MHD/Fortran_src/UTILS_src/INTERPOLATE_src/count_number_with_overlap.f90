@@ -104,7 +104,7 @@
 !
       use t_merged_geometry_data
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(merged_stacks), intent(in) :: table
 !
@@ -125,11 +125,11 @@
       use m_constants
       use t_merged_geometry_data
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(merged_stacks), intent(inout) :: table
 !
-      integer(kind = kint) :: ip
+      integer :: ip
 !
 !
       table%istack_nod(0) =    izero
@@ -161,12 +161,12 @@
 !
       use t_group_data
 !
-      integer (kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(group_data), intent(in) :: sub(num_pe)
 !
       integer (kind = kint), intent(inout) :: istack(0:num_pe)
 !
-      integer(kind = kint) :: ip
+      integer :: ip
 !
 !
       istack(0) = izero
@@ -182,12 +182,12 @@
 !
       use t_group_data
 !
-      integer (kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(surface_group_data), intent(in) :: sub_sf(num_pe)
 !
       integer (kind = kint), intent(inout) :: istack(0:num_pe)
 !
-      integer(kind = kint) :: ip
+      integer :: ip
 !
 !
       istack(0) = izero

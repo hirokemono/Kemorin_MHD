@@ -6,9 +6,9 @@
 !!      subroutine const_interpolate_table_4_orgin
 !!
 !!      subroutine count_interpolate_4_orgin                            &
-!!     &         (n_org_rank, nprocs_dest, itp_org)
+!!     &         (id_org_rank, nprocs_dest, itp_org)
 !!      subroutine search_interpolate_4_orgin                           &
-!!     &          (n_org_rank, nprocs_dest, itp_org)
+!!     &          (id_org_rank, nprocs_dest, itp_org)
 !
       module const_interpolate_4_org
 !
@@ -49,8 +49,8 @@
       use itp_table_IO_select_4_zlib
       use copy_interpolate_types
 !
-      integer(kind = kint) :: jp
-      integer(kind = kint) :: my_rank_2nd, ierr
+      integer :: jp, my_rank_2nd
+      integer(kind = kint) :: ierr
 !
 !    set domain ID to be searched
 !
@@ -128,12 +128,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine count_interpolate_4_orgin                              &
-     &         (n_org_rank, nprocs_dest, itp_org)
+     &         (id_org_rank, nprocs_dest, itp_org)
 !
       use itp_table_IO_select_4_zlib
       use set_itp_destIO_2_org
 !
-      integer(kind = kint), intent(in) :: n_org_rank, nprocs_dest
+      integer, intent(in) :: id_org_rank, nprocs_dest
       type(interpolate_table_org), intent(inout)  :: itp_org
 !
       integer(kind = kint) :: ip, n_dest_rank, ierr
@@ -143,7 +143,7 @@
       itp_org%istack_nod_tbl_org(0:nprocs_dest) = 0
       do ip = 1, nprocs_dest
 !
-        n_dest_rank = mod(n_org_rank+ip,nprocs_dest)
+        n_dest_rank = mod(id_org_rank+ip,nprocs_dest)
         table_file_header = work_header
 !
         call sel_read_itp_table_dest(n_dest_rank, IO_itp_dest, ierr)
@@ -151,7 +151,7 @@
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         call count_num_interpolation_4_orgin                            &
-     &     (n_org_rank, n_dest_rank, IO_itp_dest, itp_org)
+     &     (id_org_rank, n_dest_rank, IO_itp_dest, itp_org)
 !
       end do
       itp_org%ntot_table_org                                            &
@@ -162,14 +162,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine search_interpolate_4_orgin                             &
-     &          (n_org_rank, nprocs_dest, itp_org)
+     &          (id_org_rank, nprocs_dest, itp_org)
 !
       use itp_table_IO_select_4_zlib
       use set_itp_destIO_2_org
       use ordering_itp_org_tbl
       use m_work_const_itp_table
 !
-      integer(kind = kint), intent(in) :: n_org_rank, nprocs_dest
+      integer, intent(in) :: id_org_rank, nprocs_dest
       type(interpolate_table_org), intent(inout)  :: itp_org
 !
       integer(kind = kint) :: ip, n_dest_rank, ierr
@@ -178,14 +178,14 @@
 !
       itp_org%num_dest_domain = 0
       do ip = 1, nprocs_dest
-        n_dest_rank = mod(n_org_rank+ip,nprocs_dest)
+        n_dest_rank = mod(id_org_rank+ip,nprocs_dest)
         table_file_header = work_header
         call sel_read_itp_coefs_dest                                    &
      &     (n_dest_rank, IO_itp_dest, IO_itp_c_dest, ierr)
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         call set_interpolation_4_orgin                                  &
-     &     (n_org_rank, IO_itp_dest, IO_itp_c_dest, itp_org)
+     &     (id_org_rank, IO_itp_dest, IO_itp_c_dest, itp_org)
       end do
 !
       call ordering_itp_orgin_tbl_t(itp_org)

@@ -112,7 +112,7 @@
 !
       subroutine allocate_istack_org_ptype(num_dest_pe)
 !
-      integer(kind = kint), intent(in) :: num_dest_pe
+      integer, intent(in) :: num_dest_pe
 !
 !
       allocate( istack_org_para_type(0:4*num_dest_pe) )

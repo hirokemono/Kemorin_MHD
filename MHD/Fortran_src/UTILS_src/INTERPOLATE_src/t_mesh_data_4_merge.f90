@@ -52,7 +52,7 @@
 !
       type merged_mesh
 !>        number of subdomains
-        integer(kind = kint)  :: num_pe
+        integer :: num_pe
 !>        subdomain mesh data
         type(mesh_geometry), allocatable :: subdomain(:)
 !
@@ -75,7 +75,7 @@
 !
       type second_mesh
 !>        number of subdomains
-        integer(kind = kint) :: num_pe2
+        integer :: num_pe2
 !>        subdomain mesh data
         type(mesh_geometry), allocatable :: subdomains_2(:)
 !>        merged index table

@@ -20,7 +20,7 @@
       implicit    none
 !
       type merged_stacks
-        integer(kind=kint )  :: num_subdomain
+        integer :: num_subdomain
 !      number of node, element, internal node for each domain
         integer(kind=kint ), allocatable :: istack_nod(:)
         integer(kind=kint ), allocatable :: istack_ele(:)
@@ -51,7 +51,7 @@
 !
       subroutine alloc_subdomain_stack(num_pe, table)
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(merged_stacks), intent(inout) :: table
 !
 !
