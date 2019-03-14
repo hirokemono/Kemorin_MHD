@@ -56,10 +56,11 @@
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ierr, num_pe
 !
 !
-      call alloc_numbers_4_part(nprocs_2nd, itl_nod_part)
+      num_pe = int(nprocs_2nd,KIND(num_pe))
+      call alloc_numbers_4_part(num_pe, itl_nod_part)
       call allocate_imark_whole_nod(nod_d_grp%num_s_domin)
 !
 !   set each number of node (on rank 0)
@@ -119,10 +120,11 @@
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ierr, num_pe
 !
 !
-      call alloc_numbers_4_part(nprocs_2nd, itl_nod_part)
+      num_pe = int(nprocs_2nd,KIND(num_pe))
+      call alloc_numbers_4_part(num_pe, itl_nod_part)
       call allocate_imark_whole_nod(nod_d_grp%num_s_domin)
 !
       itl_nod_part%ntot_sub = itl_nod_part%istack_4_subdomain(0)

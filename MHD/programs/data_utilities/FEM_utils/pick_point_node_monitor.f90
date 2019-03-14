@@ -11,7 +11,7 @@
       real(kind = kreal) :: time
       real(kind = kreal) :: iflag_init = 0
       real(kind = kreal) :: xx(3)
-      integer(kind = kint) :: id_rank
+      integer :: id_rank
       integer(kind = kint) :: inod_2_pick, i_step_MHD
       integer(kind = kint) :: num_monitor_local
 !

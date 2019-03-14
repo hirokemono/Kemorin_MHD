@@ -137,7 +137,7 @@ call dealloc_ctl_data_gen_table(gtbl_ctl1)
       use copy_interpolate_types
       use delete_data_files
 !
-      integer(kind = kint) :: ierr_missing
+      integer(kind = kint) :: ierr_missing, num_pe
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
@@ -182,7 +182,8 @@ call dealloc_ctl_data_gen_table(gtbl_ctl1)
 !
 !
       if (my_rank .eq. 0) then
-        call delete_parallel_files(ione, nprocs, work_header)
+        num_pe = int(nprocs, KIND(num_pe))
+        call delete_parallel_files(ione, num_pe, work_header)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'

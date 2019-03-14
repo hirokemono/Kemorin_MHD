@@ -212,7 +212,7 @@
 !
         write(*,*) 's_const_refine_interpolate_tbl'
         call s_const_refine_interpolate_tbl                             &
-     &     (my_rank, org_fem%mesh, org_ele_mesh, refined_fem%mesh)
+     &     (org_fem%mesh, org_ele_mesh, refined_fem%mesh)
 !
         call deallocate_refine_flags
         call deallocate_refined_local_posi

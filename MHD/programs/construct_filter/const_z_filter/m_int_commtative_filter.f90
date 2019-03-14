@@ -173,7 +173,7 @@
 !
       integer :: id_rank
       integer(kind = kint) :: numnod_z
-      integer(kind = kint) :: i, j, k, i1
+      integer(kind = kint) :: i, j, k
 !
       write(50+id_rank,*) 'nneib_nod2'
       write(50+id_rank,'(10i16)') (nneib_nod2(i,1),i=1,numnod_z)
@@ -196,7 +196,7 @@
 !
       integer :: id_rank
       integer(kind = kint) ::  numele_z
-      integer(kind = kint) :: i, j, k, i1
+      integer(kind = kint) :: i, j, k
 !
       write(50+id_rank,*) 'nneib_ele2'
       write(50+id_rank,'(10i16)') (nneib_ele2(i,1),i=1,numele_z)

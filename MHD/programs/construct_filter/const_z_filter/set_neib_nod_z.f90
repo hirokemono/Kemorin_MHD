@@ -24,7 +24,7 @@
       integer(kind = kint) :: numnod, nsize, numfilter
       integer(kind = kint), dimension(numnod,2) :: nneib_nod
       integer(kind = kint), dimension(numnod,nsize,2) ::ineib_nod
-      integer(kind = kint) :: i, i1, j, inod
+      integer(kind = kint) :: i, j
 !
 !
       do j = 1, numfilter

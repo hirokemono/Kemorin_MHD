@@ -25,7 +25,7 @@
       integer(kind = kint) :: numele, numfilter, nsize
       integer(kind = kint), dimension(numele,2) :: nneib_ele
       integer(kind = kint), dimension(numele,nsize,2) :: ineib_ele
-      integer(kind = kint) :: i, j, j1
+      integer(kind = kint) :: i, j
 !
 !
       do j = 1, numfilter

@@ -63,7 +63,7 @@
        use m_commute_filter_z
 !
        integer :: id_rank
-       integer(kind = kint) :: k ,is, idx, i, kfact
+       integer(kind = kint) :: is, idx, i, kfact
        integer(kind = kint) :: iele, jele, idx1, ia
 !
 !
