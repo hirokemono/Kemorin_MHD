@@ -3,26 +3,26 @@
 !
 !      subroutine count_num_merged_grp(num_pe, sub, istack_grp,         &
 !     &          ntot_grp)
-!        integer (kind = kint), intent(in) :: num_pe
+!        integer, intent(in) :: num_pe
 !        integer (kind = kint), intent(in) :: istack_grp(0:num_pe)
 !        type(group_data), intent(in) :: sub(num_pe)
 !        integer (kind = kint), intent(inout) :: ntot_grp
 !      subroutine count_num_merged_sf_grp(num_pe, sub_sf, istack_grp,   &
 !     &          ntot_grp)
-!        integer (kind = kint), intent(in) :: num_pe
+!        integer, intent(in) :: num_pe
 !        integer (kind = kint), intent(in) :: istack_grp(0:num_pe)
 !        type(surface_group_data), intent(in) :: sub_sf(num_pe)
 !        integer (kind = kint), intent(inout) :: ntot_grp
 !
 !      subroutine set_merged_grp_name(num_pe, sub, istack_grp,          &
 !     &          merged_gp)
-!        integer (kind = kint), intent(in) :: num_pe
+!        integer, intent(in) :: num_pe
 !        integer (kind = kint), intent(in) :: istack_grp(0:num_pe)
 !        type(group_data), intent(in) :: sub(num_pe)
 !        type(group_data), intent(inout) :: merged_gp
 !      subroutine set_merged_grp_sf_name(num_pe, sub_sf, istack_grp,    &
 !     &          merged_gp)
-!        integer (kind = kint), intent(in) :: num_pe
+!        integer, intent(in) :: num_pe
 !        integer (kind = kint), intent(in) :: istack_grp(0:num_pe)
 !        type(surface_group_data), intent(in) :: sub_sf(num_pe)
 !        type(surface_group_data), intent(inout) :: merged_gp
@@ -50,7 +50,7 @@
 !
       use t_group_data
 !
-      integer (kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       integer (kind = kint), intent(in) :: istack_grp(0:num_pe)
       type(group_data), intent(in) :: sub(num_pe)
 !
@@ -94,7 +94,7 @@
 !
       use t_group_data
 !
-      integer (kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       integer (kind = kint), intent(in) :: istack_grp(0:num_pe)
       type(surface_group_data), intent(in) :: sub_sf(num_pe)
 !
@@ -139,7 +139,7 @@
 !
       use t_group_data
 !
-      integer (kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       integer (kind = kint), intent(in) :: istack_grp(0:num_pe)
       type(group_data), intent(in) :: sub(num_pe)
 !
@@ -188,7 +188,7 @@
 !
       use t_group_data
 !
-      integer (kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       integer (kind = kint), intent(in) :: istack_grp(0:num_pe)
       type(surface_group_data), intent(in) :: sub_sf(num_pe)
 !

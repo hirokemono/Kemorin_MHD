@@ -51,7 +51,7 @@
 !
 !
       itp_org%iflag_self_itp_send = ione
-      call set_num_dest_domain(ione, itp_org)
+      call set_num_dest_domain(1, itp_org)
       call alloc_itp_num_org(np_smp, itp_org)
 !
       itp_org%id_dest_domain(1) =             izero
@@ -188,7 +188,7 @@
 !
 !
       itp_org%iflag_self_itp_send = ione
-      call set_num_dest_domain(ione, itp_org)
+      call set_num_dest_domain(1, itp_org)
       call alloc_itp_num_org(np_smp, itp_org)
 !
       itp_org%id_dest_domain(1) = izero

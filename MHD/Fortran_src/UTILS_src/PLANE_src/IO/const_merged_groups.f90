@@ -47,7 +47,7 @@
 !
       subroutine allocate_subdomain_grp_stack(num_pe)
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
 !
        allocate( istack_bc_pe(0:num_pe) )
        allocate( istack_mat_pe(0:num_pe) )
@@ -77,7 +77,7 @@
       use t_group_data
       use count_number_with_overlap
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in)  :: num_pe
       type(group_data), intent(in) :: sub_nod_grp(num_pe)
       type(group_data), intent(in) :: sub_ele_grp(num_pe)
       type(surface_group_data), intent(in) :: sub_surf_grp(num_pe)
@@ -103,7 +103,7 @@
       use t_group_data
       use count_merged_groups
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in)  :: num_pe
       type(group_data), intent(in) :: sub_nod_grp(num_pe)
       type(group_data), intent(in) :: sub_ele_grp(num_pe)
       type(surface_group_data), intent(in) :: sub_surf_grp(num_pe)
@@ -152,7 +152,7 @@
       use count_merged_groups
       use set_merged_groups
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in)  :: num_pe
       type(mesh_geometry), intent(in) :: merged
       type(merged_stacks), intent(in) :: merge_tbl
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
@@ -202,7 +202,7 @@
       use count_merged_groups
       use set_overlap_groups
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in)  :: num_pe
       type(group_data), intent(in) :: sub_nod_grp(num_pe)
       type(group_data), intent(in) :: sub_ele_grp(num_pe)
       type(surface_group_data), intent(in) :: sub_surf_grp(num_pe)

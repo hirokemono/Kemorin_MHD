@@ -24,7 +24,7 @@
 !
       use t_group_data
 !
-      integer (kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(group_data), intent(in) :: sub_grp(num_pe)
       type(group_data), intent(inout) :: mgd_grp
 !
@@ -57,7 +57,7 @@
 !
       use t_group_data
 !
-      integer (kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(group_data), intent(in) :: sub_grp(num_pe)
       type(group_data), intent(inout) :: mgd_grp
 !
@@ -92,7 +92,7 @@
 !
       use t_group_data
 !
-      integer (kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(surface_group_data), intent(in) :: sub_grp(num_pe)
       type(surface_group_data), intent(inout) :: mgd_grp
 !
@@ -125,7 +125,7 @@
 !
       use t_group_data
 !
-      integer (kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(surface_group_data), intent(in) :: sub_grp(num_pe)
       type(surface_group_data), intent(inout) :: mgd_grp
 !

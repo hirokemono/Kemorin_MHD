@@ -79,7 +79,7 @@
 !
       use t_merged_geometry_data
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(merged_stacks), intent(in) :: merge_tbl
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(group_data), intent(in) :: sub_nod_grp(num_pe)
@@ -113,7 +113,7 @@
 !
       use t_merged_geometry_data
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(merged_stacks), intent(in) :: merge_tbl
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(group_data), intent(in) :: sub_nod_grp(num_pe)
@@ -147,7 +147,7 @@
 !
       use t_merged_geometry_data
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(merged_stacks), intent(in) :: merge_tbl
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(group_data), intent(in) :: sub_ele_grp(num_pe)
@@ -181,7 +181,7 @@
 !
       use t_merged_geometry_data
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(merged_stacks), intent(in) :: merge_tbl
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(group_data), intent(in) :: sub_ele_grp(num_pe)
@@ -215,7 +215,7 @@
 !
       use t_merged_geometry_data
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(merged_stacks), intent(in) :: merge_tbl
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(surface_group_data), intent(in) :: sub_surf_grp(num_pe)
@@ -252,7 +252,7 @@
 !
       use t_merged_geometry_data
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(merged_stacks), intent(in) :: merge_tbl
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(surface_group_data), intent(in) :: sub_surf_grp(num_pe)
@@ -295,7 +295,7 @@
 !
       character(len=kchara), intent(in) :: target_name
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(group_data), intent(in) :: sub_nod_grp(num_pe)
 !
@@ -328,7 +328,7 @@
 !
       character(len=kchara), intent(in) :: target_name
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(group_data), intent(in) :: sub_ele_grp(num_pe)
 !
@@ -361,7 +361,7 @@
 !
       character(len=kchara), intent(in) :: target_name
 !
-      integer(kind = kint), intent(in)  :: num_pe
+      integer, intent(in) :: num_pe
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(surface_group_data), intent(in) :: sub_surf_grp(num_pe)
 !

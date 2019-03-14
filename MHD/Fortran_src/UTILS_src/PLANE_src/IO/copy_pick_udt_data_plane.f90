@@ -74,7 +74,7 @@
       use t_ucd_data
       use ucd_IO_select
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: istep, nnod_max
       type(mesh_geometry), intent(in) :: mesh(num_pe)
       type(field_IO_params), intent(in) :: ucd_param
