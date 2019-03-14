@@ -145,7 +145,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_resolution_info                                  &
-     &         (nprocs, sph_params, sph_rtp, sph_rtm,                   &
+     &         (num_pe, sph_params, sph_rtp, sph_rtm,                   &
      &          nproc_rj_IO, nproc_rlm_IO, nproc_rtm_IO, nproc_rtp_IO)
 !
       use m_work_time
@@ -153,7 +153,7 @@
       use set_parallel_file_name
 !
       character(len=kchara) ::  file_name
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rtm_grid), intent(in) :: sph_rtm
@@ -180,7 +180,7 @@
       write(id_timer_file,*) 'N_phi:                 ',                 &
      &                      sph_rtp%nidx_rtp(3)
 !
-      write(id_timer_file,*) 'Total MPI processes: ',  nprocs
+      write(id_timer_file,*) 'Total MPI processes: ',  num_pe
       write(id_timer_file,*)                                            &
      &   'Processes for spetr (r, l and m):        ', nproc_rj_IO(1:2)
       write(id_timer_file,*)                                            &

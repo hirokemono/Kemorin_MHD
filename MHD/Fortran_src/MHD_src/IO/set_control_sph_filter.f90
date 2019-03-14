@@ -39,6 +39,7 @@
       subroutine set_control_SPH_SGS_filters                            &
      &         (sgs_ctl, SGS_param, dynamic_SPH)
 !
+      use m_error_IDs
       use t_SGS_control_parameter
       use t_ctl_data_SGS_MHD_model
       use t_sph_filtering
@@ -52,11 +53,11 @@
 !
 !
       if(sgs_ctl%num_sph_filter_ctl .le. 0) then
-        call calypso_mpi_abort(1, 'Set filter configrations')
+        call calypso_mpi_abort(ierr_SGS, 'Set filter configrations')
       else if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON            &
      &    .and. sgs_ctl%num_sph_filter_ctl .eq. 1) then
         call calypso_mpi_abort                                          &
-     &     (1, 'Set more than two filter configrations')
+     &     (ierr_SGS, 'Set more than two filter configrations')
       else
         call alloc_sph_filter_type                                      &
      &     (sgs_ctl%num_sph_filter_ctl, dynamic_SPH)
@@ -84,7 +85,7 @@
      &   .or. dynamic_SPH%sph_filters(i)%itype_radial_filter            &
      &                     .eq. iflag_recursive_filter) then
         call calypso_mpi_abort                                          &
-     &     (1, 'Do not set recursive filter for the first filter')
+     &   (ierr_SGS, 'Do not set recursive filter for the first filter')
       end if
 !
       end subroutine set_control_SPH_SGS_filters

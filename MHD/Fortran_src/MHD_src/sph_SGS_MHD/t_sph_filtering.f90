@@ -121,6 +121,7 @@
      &                        :: sph_filters(num_sph_filteres)
 !
       integer(kind = kint)  :: i, i1, i2
+      integer(kind = kint)  :: id_file
 !
 !
       do i = 1, num_sph_filteres
@@ -149,18 +150,19 @@
      &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
 !
         if(iflag_debug .gt. 0) then
-          write(50+my_rank,*) 'check_radial_filter for no. ', i
+          id_file = 50+my_rank
+          write(id_file,*) 'check_radial_filter for no. ', i
           call check_radial_filter                                      &
-     &      ((50+my_rank), sph%sph_rj, sph_filters(i)%r_filter)
-          write(50+my_rank,*) 'check_horiz_filter_weight for no. ', i
+     &      (id_file, sph%sph_rj, sph_filters(i)%r_filter)
+          write(id_file,*) 'check_horiz_filter_weight for no. ', i
           call check_horiz_filter_weight                                &
-     &       ((50+my_rank), sph_filters(i)%sph_filter)
+     &       (id_file, sph_filters(i)%sph_filter)
         end if
         if(i_debug .gt. 0) then
-          write(50+my_rank,*) 'check_sph_2nd_moments for no. ',         &
+          write(id_file,*) 'check_sph_2nd_moments for no. ',            &
      &         i, my_rank
           call check_sph_2nd_moments                                    &
-     &       ((50+my_rank), sph%sph_rtp, leg, sph_filters(i))
+     &       (id_file, sph%sph_rtp, leg, sph_filters(i))
         end if
         call calypso_mpi_barrier
       end do

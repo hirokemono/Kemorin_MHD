@@ -5,7 +5,7 @@
 !     Modified by H. Matsui on Sep., 2007
 !     Modified by H. Matsui on Apr., 2008
 !
-!      subroutine allocate_flags_reduced_comm(nprocs, numnod)
+!      subroutine allocate_flags_reduced_comm(num_pe, numnod)
 !      subroutine deallocate_flags_reduced_comm
 !
 !      subroutine mark_4_fluid_nod_by_ele(numele, nnod_4_ele, ie,       &
@@ -41,12 +41,13 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine allocate_flags_reduced_comm(nprocs, numnod)
+      subroutine allocate_flags_reduced_comm(num_pe, numnod)
 !
-      integer(kind = kint), intent(in) :: nprocs, numnod
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: numnod
 !
 !
-      allocate( iflag_pe(0:nprocs-1) )
+      allocate( iflag_pe(0:num_pe-1) )
       allocate( iflag_nod(numnod) )
 !
       iflag_pe =  0

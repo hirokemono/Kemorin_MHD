@@ -65,7 +65,7 @@
       use set_comm_table_fluid
       use solver_SR_type
 !
-      integer(kind = kint), intent(in) :: num_pe
+      integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: iele_fl_smp_stack(0:np_smp)
 !
       type(node_data), intent(in) :: node

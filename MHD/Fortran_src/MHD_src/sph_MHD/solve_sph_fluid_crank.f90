@@ -102,7 +102,7 @@
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: j
-      integer(kind = kint), parameter :: id_offset = 100
+      integer, parameter :: id_offset = 100
       integer(kind = kint), parameter :: id_file = 50 + id_offset
 !
 !
@@ -120,7 +120,7 @@
      &      band_p_poisson%lu(1:band_p_poisson%n_band_lu,               &
      &                        1:band_p_poisson%n_vect,j))
         write(id_file,*) 'RHS for average pressure'
-        call check_scalar_coefs(id_file, 0, 0, sph_rj,                  &
+        call check_scalar_coefs(id_file, izero, izero, sph_rj,          &
      &      is_press, n_point, ntot_phys_rj, d_rj)
       end if
 !
@@ -129,7 +129,7 @@
 !
       if(i_debug*j .gt. 0) then
         write(id_file,*) 'Solution of average pressure'
-        call check_scalar_coefs(id_file, 0, 0, sph_rj,                  &
+        call check_scalar_coefs(id_file, izero, izero, sph_rj,          &
      &      is_press, n_point, ntot_phys_rj, d_rj)
         close(id_file)
       end if
