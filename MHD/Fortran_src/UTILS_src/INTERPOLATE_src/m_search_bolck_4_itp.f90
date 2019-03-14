@@ -60,11 +60,12 @@
       use set_ele_list_4_itp_table
 !
       integer(kind = kint), intent(in) :: nblock_ref(3)
-      integer(kind = kint), intent(in) :: nnod, nprocs_org
+      integer, intent(in) :: nprocs_org
+      integer(kind = kint), intent(in) :: nnod
       real(kind = kreal), intent(in) :: xx(nnod,3)
       type(mesh_data), intent(inout) :: para_mesh(nprocs_org)
 !
-      integer(kind = kint) :: i
+      integer :: i
 !
 !
       call alloc_interpolate_blocks(nprocs_org)
@@ -163,9 +164,9 @@
 !
       subroutine dealloc_interpolate_blocks(nprocs_org)
 !
-      integer(kind = kint), intent(in) :: nprocs_org
+      integer, intent(in) :: nprocs_org
 !
-      integer(kind = kint) :: i
+      integer :: i
 !
 !
       do i = 1, nprocs_org
@@ -179,7 +180,8 @@
 !
       subroutine check_block_points_4_itp(id_file, nprocs_org)
 !
-      integer(kind = kint), intent(in) :: id_file, nprocs_org
+      integer(kind = kint), intent(in) :: id_file
+      integer, intent(in) :: nprocs_org
 !
       integer(kind = kint) :: i
 !
@@ -199,7 +201,7 @@
 !
       subroutine alloc_interpolate_blocks(nprocs_org)
 !
-      integer(kind = kint), intent(in) :: nprocs_org
+      integer, intent(in) :: nprocs_org
 !
 !
       allocate(org_blocks(nprocs_org))

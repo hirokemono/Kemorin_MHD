@@ -6,6 +6,7 @@
 !!      subroutine allocate_search_param
 !!      subroutine deallocate_search_param
 !!      subroutine set_ctl_params_4_gen_table(gtbl_ctl)
+!!      subroutine set_interpolate_domains_ctl(gtbl_ctl)
 !!        type(ctl_data_gen_table), intent(in) :: gtbl_ctl
 !
       module m_ctl_params_4_gen_table
@@ -41,8 +42,8 @@
 !
       integer(kind = kint) :: iflag_reverse_itp_tbl = 0
 !
-      integer(kind = kint) :: ndomain_org = 1
-      integer(kind = kint) :: ndomain_dest = 1
+      integer :: ndomain_org = 1
+      integer :: ndomain_dest = 1
 !
       character(len = kchara) :: ele_hash_type = "sphere"
       integer(kind = kint) :: id_ele_hash_type = 1
@@ -123,19 +124,7 @@
       end if
 !
 !
-      ndomain_org = 1
-      if (gtbl_ctl%src_plt%ndomain_ctl%iflag .gt. 0) then
-        ndomain_org = gtbl_ctl%src_plt%ndomain_ctl%intvalue
-      end if
-!
-      nprocs_2nd = ndomain_org
-      if (iflag_debug.eq.1)   write(*,*) 'ndomain_org', nprocs_2nd
-!
-      if (gtbl_ctl%dst_plt%ndomain_ctl%iflag .gt. 0) then
-        ndomain_dest = gtbl_ctl%dst_plt%ndomain_ctl%intvalue
-      else
-        ndomain_dest = 1
-      end if
+      call set_interpolate_domains_ctl(gtbl_ctl)
 !
       if (nprocs .ne. ndomain_dest) then
         write(e_message,*) 'Number of destination domains  ',           &
@@ -216,6 +205,32 @@
       end if
 !
       end subroutine set_ctl_params_4_gen_table
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_interpolate_domains_ctl(gtbl_ctl)
+!
+      use t_ctl_data_gen_table
+      use m_2nd_pallalel_vector
+!
+      type(ctl_data_gen_table), intent(in) :: gtbl_ctl
+!
+!
+      ndomain_org = 1
+      if (gtbl_ctl%src_plt%ndomain_ctl%iflag .gt. 0) then
+        ndomain_org = int(gtbl_ctl%src_plt%ndomain_ctl%intvalue)
+      end if
+!
+      nprocs_2nd = ndomain_org
+      if (iflag_debug.eq.1) write(*,*) 'ndomain_org', nprocs_2nd
+!
+      if (gtbl_ctl%dst_plt%ndomain_ctl%iflag .gt. 0) then
+        ndomain_dest = int(gtbl_ctl%dst_plt%ndomain_ctl%intvalue)
+      else
+        ndomain_dest = 1
+      end if
+!
+      end subroutine set_interpolate_domains_ctl
 !
 !  ---------------------------------------------------------------------
 !

@@ -51,20 +51,22 @@
 !
       integer :: jp, my_rank_2nd
       integer(kind = kint) :: ierr
+      integer(kind = kint) :: np
 !
 !    set domain ID to be searched
 !
+      np = int(nprocs,KIND(np))
       do jp = 1, nprocs_2nd
         my_rank_2nd = mod(my_rank+jp-1,nprocs_2nd)
 !
-        if (my_rank .eq. mod(my_rank_2nd,nprocs) ) then
-          call set_num_dest_domain(nprocs, itp_org_c)
+        if(my_rank .eq. mod(my_rank_2nd,nprocs)) then
+          call set_num_dest_domain(np, itp_org_c)
           call alloc_itp_num_org(np_smp, itp_org_c)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'count_interpolate_4_orgin', my_rank_2nd, nprocs
           call count_interpolate_4_orgin                                &
-     &       (my_rank_2nd, nprocs, itp_org_c)
+     &       (my_rank_2nd, np, itp_org_c)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'allocate_itp_table_org'
@@ -73,7 +75,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'search_interpolate_4_orgin'
           call search_interpolate_4_orgin                               &
-     &       (my_rank_2nd, nprocs, itp_org_c)
+     &       (my_rank_2nd, np, itp_org_c)
 !
 !
 !
@@ -107,7 +109,7 @@
       end do
 !
 !
-      if ( my_rank .ge. nprocs_2nd) then
+      if(my_rank .ge. nprocs_2nd) then
         table_file_header = work_header
 !
         call sel_read_itp_table_dest(my_rank, IO_itp_dest, ierr)
@@ -133,17 +135,19 @@
       use itp_table_IO_select_4_zlib
       use set_itp_destIO_2_org
 !
-      integer, intent(in) :: id_org_rank, nprocs_dest
+      integer, intent(in) :: id_org_rank
+      integer(kind = kint), intent(in) :: nprocs_dest
       type(interpolate_table_org), intent(inout)  :: itp_org
 !
-      integer(kind = kint) :: ip, n_dest_rank, ierr
+      integer :: n_dest_rank
+      integer(kind = kint) :: ip, ierr
 !
 !
       itp_org%num_dest_domain = 0
       itp_org%istack_nod_tbl_org(0:nprocs_dest) = 0
       do ip = 1, nprocs_dest
 !
-        n_dest_rank = mod(id_org_rank+ip,nprocs_dest)
+        n_dest_rank = int(mod(id_org_rank+ip,nprocs_dest))
         table_file_header = work_header
 !
         call sel_read_itp_table_dest(n_dest_rank, IO_itp_dest, ierr)
@@ -169,16 +173,19 @@
       use ordering_itp_org_tbl
       use m_work_const_itp_table
 !
-      integer, intent(in) :: id_org_rank, nprocs_dest
+      integer, intent(in) :: id_org_rank
+      integer(kind = kint), intent(in) :: nprocs_dest
       type(interpolate_table_org), intent(inout)  :: itp_org
 !
-      integer(kind = kint) :: ip, n_dest_rank, ierr
+      integer :: n_dest_rank
+      integer(kind = kint) :: ip, ierr
+!
 !
       call allocate_istack_org_ptype(nprocs_dest)
 !
       itp_org%num_dest_domain = 0
       do ip = 1, nprocs_dest
-        n_dest_rank = mod(id_org_rank+ip,nprocs_dest)
+        n_dest_rank = int(mod(id_org_rank+ip,nprocs_dest))
         table_file_header = work_header
         call sel_read_itp_coefs_dest                                    &
      &     (n_dest_rank, IO_itp_dest, IO_itp_c_dest, ierr)

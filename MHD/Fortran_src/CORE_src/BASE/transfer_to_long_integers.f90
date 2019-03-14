@@ -9,6 +9,7 @@
 !!@verbatim
 !!      integer(kind = kint_gl) function cast_long(i_in)
 !!      integer(kind = kint) function cast_short(i8_in)
+!!      integer(kind = kint) function cast_kint(i4_in)
 !!
 !!      subroutine alloc_1d_i8array(n1, tmp)
 !!      subroutine dealloc_1d_i8array(tmp)
@@ -63,6 +64,16 @@
       cast_short = i8_in
 !
       end function cast_short
+!
+!-----------------------------------------------------------------------
+!
+      integer(kind = kint) function cast_kint(i4_in)
+!
+      integer :: i4_in
+!
+      cast_kint = int(i4_in,KIND(cast_kint))
+!
+      end function cast_kint
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

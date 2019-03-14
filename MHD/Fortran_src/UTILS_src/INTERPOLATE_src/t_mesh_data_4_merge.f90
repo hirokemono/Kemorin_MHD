@@ -265,10 +265,10 @@
 !
       subroutine alloc_2nd_merged_geometry(num_pe2, subdomains_2)
 !
-      integer(kind = kint), intent(in) :: num_pe2
+      integer, intent(in) :: num_pe2
       type(mesh_geometry), intent(inout) :: subdomains_2(num_pe2)
 !
-      integer(kind = kint) :: ip
+      integer :: ip
 !
 !
       do ip = 1, num_pe2

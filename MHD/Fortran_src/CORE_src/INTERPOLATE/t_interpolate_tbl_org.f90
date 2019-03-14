@@ -67,7 +67,7 @@
 !
       subroutine set_num_dest_domain(num_dest_pe, tbl_org)
 !
-      integer, intent(in) :: num_dest_pe
+      integer(kind = kint), intent(in) :: num_dest_pe
       type(interpolate_table_org), intent(inout) :: tbl_org
 !
       tbl_org%num_dest_domain = num_dest_pe

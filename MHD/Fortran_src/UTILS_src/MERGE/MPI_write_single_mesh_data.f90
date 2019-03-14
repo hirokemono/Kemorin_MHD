@@ -73,7 +73,7 @@
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
       if(nnod .le. 0) then
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ione, char(10))
+     &     (IO_param%id_file, ioffset, 1, char(10))
       else
         do i = 1, nnod
           xx_tmp(1:numdir) = xx(i,1:numdir)

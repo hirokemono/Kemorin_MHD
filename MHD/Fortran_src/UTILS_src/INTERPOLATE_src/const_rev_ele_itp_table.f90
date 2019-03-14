@@ -35,23 +35,24 @@
       use const_interpolate_4_org
 !
       integer :: jp, my_rank_2nd
-      integer(kind = kint) ::  ierr
+      integer(kind = kint) :: np, ierr
       type(interpolate_table_org) :: itp_org_e
 !
 !
 !    set domain ID to be searched
 !
+      np = int(nprocs,KIND(np))
       do jp = 1, nprocs_2nd
         my_rank_2nd = mod(my_rank+jp-1,nprocs_2nd)
 !
         if (my_rank .eq. mod(my_rank_2nd,nprocs) ) then
-          call set_num_dest_domain(nprocs, itp_org_e)
+          call set_num_dest_domain(np, itp_org_e)
           call alloc_itp_num_org(np_smp, itp_org_e)
 !
           if (iflag_debug.eq.1)                                         &
-     &      write(*,*) 'count_interpolate_4_orgin', my_rank_2nd, nprocs
+     &      write(*,*) 'count_interpolate_4_orgin', my_rank_2nd, np
           call count_interpolate_4_orgin                                &
-     &       (my_rank_2nd, nprocs, itp_org_e)
+     &       (my_rank_2nd, np, itp_org_e)
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'allocate_itp_table_org'
@@ -60,7 +61,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'search_interpolate_4_orgin'
           call search_interpolate_4_orgin                               &
-     &       (my_rank_2nd, nprocs, itp_org_e)
+     &       (my_rank_2nd, np, itp_org_e)
 !
 !
 !

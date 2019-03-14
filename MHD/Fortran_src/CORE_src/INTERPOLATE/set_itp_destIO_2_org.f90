@@ -34,7 +34,7 @@
       type(interpolate_table_dest), intent(inout) :: IO_dest
       type(interpolate_table_org), intent(inout) :: itp_org
 !
-      integer :: i
+      integer(kind = kint) :: i
 !
       do i = 1, IO_dest%num_org_domain
 !
@@ -67,7 +67,7 @@
 !
       type(interpolate_table_org), intent(inout) :: itp_org
 !
-      integer :: i, j
+      integer(kind = kint) :: i, j
       integer(kind = kint) :: nnod, inum, iorg, idest
 !
 !

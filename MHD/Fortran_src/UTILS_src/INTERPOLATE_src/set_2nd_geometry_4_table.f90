@@ -36,7 +36,7 @@
 !
       subroutine alloc_org_mesh_type_itp_para(nprocs_2nd)
 !
-      integer(kind = kint), intent(in) :: nprocs_2nd
+      integer, intent(in) :: nprocs_2nd
 !
 !
       allocate( origin_mesh(nprocs_2nd) )
@@ -59,9 +59,10 @@
       use t_file_IO_parameter
       use m_ctl_params_4_gen_table
       use set_parallel_mesh_in_1pe
+      use transfer_to_long_integers
 !
       type(field_IO_params), intent(in) ::  mesh_file
-      integer(kind = kint), intent(in) :: nprocs_2nd
+      integer, intent(in) :: nprocs_2nd
 !
 !
       call alloc_org_mesh_type_itp_para(nprocs_2nd)
@@ -116,15 +117,19 @@
       use m_search_bolck_4_itp
 !
       use order_dest_table_by_type
+      use transfer_to_long_integers
 !
       type(node_data), intent(in) :: dest_node
       type(interpolate_table_dest), intent(inout) :: itp_dest
       type(interpolate_coefs_dest), intent(inout) :: itp_coef
 !
+      integer :: np2
 !
+!
+      np2 = int(nprocs_2nd,KIND(np2))
       call set_all_block_points_4_itp                                   &
      &   (num_xyz_block, dest_node%numnod, dest_node%xx,                &
-     &    nprocs_2nd, origin_mesh)
+     &    np2, origin_mesh)
 !      call check_block_points_4_itp(50+id_rank, nprocs_2nd)
 !
 !  -------------------------------
@@ -133,11 +138,11 @@
      &     write(*,*)  'allocate_interpolate_table'
 !
       itp_dest%ntot_table_dest = dest_node%internal_node
-      call set_num_org_domain(nprocs_2nd, itp_dest)
+      call set_num_org_domain(cast_kint(nprocs_2nd), itp_dest)
       call alloc_itp_num_dest(itp_dest)
       call alloc_itp_table_dest(itp_dest)
       call alloc_itp_coef_dest(itp_dest, itp_coef)
-      call allocate_itp_work_dest(nprocs_2nd)
+      call allocate_itp_work_dest(cast_kint(nprocs_2nd))
       call allocate_work_const_itp_tbl(dest_node%numnod, itp_dest)
 !
       end subroutine s_set_serach_data_4_dest

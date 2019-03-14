@@ -62,7 +62,7 @@
       type(mesh_geometry), intent(inout) :: subdomains_2(num_pe2)
 !
       type(mesh_geometry) :: mesh_IO_2
-      integer(kind = kint) :: ip, id_rank
+      integer :: ip, id_rank
       integer(kind = kint) :: ierr
 !
 !

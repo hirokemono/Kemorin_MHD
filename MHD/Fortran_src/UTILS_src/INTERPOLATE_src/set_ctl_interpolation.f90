@@ -86,19 +86,7 @@
      &    gtbl_ctl%dst_plt%field_file_prefix,                           &
      &    gtbl_ctl%dst_plt%field_file_fmt_ctl, itp_ucd_IO)
 !
-      ndomain_org = 1
-      if (gtbl_ctl%src_plt%ndomain_ctl%iflag .gt. 0) then
-        ndomain_org = gtbl_ctl%src_plt%ndomain_ctl%intvalue
-      end if
-!
-      nprocs_2nd = ndomain_org
-      if (iflag_debug.eq.1)   write(*,*) 'ndomain_org', nprocs_2nd
-!
-      if (gtbl_ctl%dst_plt%ndomain_ctl%iflag .gt. 0) then
-        ndomain_dest = gtbl_ctl%dst_plt%ndomain_ctl%intvalue
-      else
-        ndomain_dest = 1
-      end if
+      call set_interpolate_domains_ctl(gtbl_ctl)
 !
       itp_dest_mesh_file%iflag_format                                   &
      &   = choose_file_format(gtbl_ctl%dst_plt%mesh_file_fmt_ctl)

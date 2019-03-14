@@ -164,7 +164,7 @@
       subroutine search_node_in_all_element(my_rank_2nd, error_level,   &
      &          org_node, org_ele, dest_node, itp_coef_dest)
 !
-      integer(kind = kint), intent(in) :: my_rank_2nd
+      integer, intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level
 !
       type(node_data), intent(in) :: org_node
@@ -218,7 +218,7 @@
       integer(kind = kint), intent(in)                                  &
      &                 :: inod_next_stack_4_node(0:dest_node%numnod)
 !
-      integer(kind = kint), intent(in) :: my_rank_2nd
+      integer, intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level
 !
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest

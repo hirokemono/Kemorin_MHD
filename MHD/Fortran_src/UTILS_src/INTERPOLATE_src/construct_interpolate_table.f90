@@ -50,8 +50,8 @@
       type(mesh_groups_p) ::   org_grp
 !
       integer(kind = kint) :: ierr_local
-      integer(kind = kint) :: ilevel, jp
-      integer(kind = kint) :: my_rank_2nd
+      integer(kind = kint) :: ilevel
+      integer :: my_rank_2nd, jp
       real(kind = kreal) :: error_level_final
 !
 !

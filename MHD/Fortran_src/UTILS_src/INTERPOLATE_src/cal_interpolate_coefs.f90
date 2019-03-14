@@ -74,9 +74,10 @@
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
 !
-      integer (kind = kint), intent(in) :: my_rank_org, inod, jele
-      integer (kind = kint), intent(in) :: iflag_message
-      real (kind = kreal), intent(in) :: error_level
+      integer, intent(in) :: my_rank_org
+      integer(kind = kint), intent(in) :: inod, jele
+      integer(kind = kint), intent(in) :: iflag_message
+      real(kind = kreal), intent(in) :: error_level
 !
       integer (kind = kint), intent(inout) :: iflag_org_tmp
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
@@ -180,7 +181,8 @@
       type(element_data), intent(in) :: org_ele
       type(interpolate_coefs_dest), intent(in) :: itp_coef_dest
 !
-      integer(kind = kint), intent(in) :: id_file, my_rank_org
+       integer, intent(in) :: my_rank_org
+      integer(kind = kint), intent(in) :: id_file
 !
       integer(kind = kint) :: inod
       real(kind=kreal) :: xx_z(3), xi(3), diff(3)
