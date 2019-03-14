@@ -8,8 +8,8 @@
 !!  including node and element position, connectivities
 !!
 !!@verbatim
-!!      subroutine alloc_numnod_stack(nprocs, node)
-!!      subroutine alloc_numele_stack(nprocs, ele)
+!!      subroutine alloc_numnod_stack(num_pe, node)
+!!      subroutine alloc_numele_stack(num_pe, ele)
 !!      subroutine alloc_node_geometry_w_sph(node)
 !!      subroutine alloc_node_geometry_base(node)
 !!      subroutine alloc_sph_node_geometry(node)
@@ -168,14 +168,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_numnod_stack(nprocs, node)
+      subroutine alloc_numnod_stack(num_pe, node)
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(node_data), intent(inout) :: node
 !
 !
-      allocate(node%istack_numnod(0:nprocs))
-      allocate(node%istack_internod(0:nprocs))
+      allocate(node%istack_numnod(0:num_pe))
+      allocate(node%istack_internod(0:num_pe))
       node%istack_numnod =   0
       node%istack_internod = 0
 !
@@ -183,14 +183,14 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine alloc_numele_stack(nprocs, ele)
+      subroutine alloc_numele_stack(num_pe, ele)
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(element_data), intent(inout) :: ele
 !
 !
-      allocate(ele%istack_numele(0:nprocs))
-      allocate(ele%istack_interele(0:nprocs))
+      allocate(ele%istack_numele(0:num_pe))
+      allocate(ele%istack_interele(0:num_pe))
       ele%istack_numele =   0
       ele%istack_interele = 0
 !

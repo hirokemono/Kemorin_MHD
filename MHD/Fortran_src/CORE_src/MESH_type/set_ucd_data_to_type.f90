@@ -14,7 +14,7 @@
 !!      subroutine link_node_data_2_ucd(node, ucd)
 !!      subroutine link_ele_data_2_ucd(ele, ucd)
 !!      subroutine link_field_data_to_ucd(node, phys_nod, ucd)
-!!      subroutine link_nnod_stacks_2_ucd(nprocs, node, ele, m_ucd)
+!!      subroutine link_nnod_stacks_2_ucd(nprocs_in, node, ele, m_ucd)
 !!
 !!      subroutine alloc_phys_name_type_by_output(ucd, phys_nod)
 !!      subroutine alloc_phys_data_type_by_output(ucd, node, phys_nod)
@@ -155,17 +155,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine link_nnod_stacks_2_ucd(nprocs, node, ele, m_ucd)
+      subroutine link_nnod_stacks_2_ucd(nprocs_in, node, ele, m_ucd)
 !
       use set_ucd_data
 !
-      integer(kind = kint),  intent(in) :: nprocs
+      integer, intent(in) :: nprocs_in
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
-      call link_numnod_stacks_2_output(nprocs, node%istack_numnod,      &
+      call link_numnod_stacks_2_output(nprocs_in, node%istack_numnod,   &
      &    node%istack_internod, ele%istack_interele, m_ucd)
 !
       end subroutine link_nnod_stacks_2_ucd
@@ -221,7 +221,8 @@
       use set_and_cal_udt_data
       use ucd_IO_select
 !
-      integer(kind = kint),  intent(in) :: id_rank, istep_ucd
+      integer, intent(in) :: id_rank
+      integer(kind = kint),  intent(in) :: istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
@@ -244,7 +245,8 @@
       use ucd_IO_select
 !
       type(field_IO_params), intent(in) :: ucd_param
-      integer(kind = kint),  intent(in) :: id_rank, istep_ucd
+      integer, intent(in) :: id_rank
+      integer(kind = kint),  intent(in) :: istep_ucd
 !
       type(phys_data), intent(inout) :: nod_fld
       type(time_data), intent(inout) :: t_IO
@@ -270,7 +272,8 @@
       use set_and_cal_udt_data
       use ucd_IO_select
 !
-      integer(kind = kint),  intent(in) :: id_rank, istep_ucd
+      integer, intent(in) :: id_rank
+      integer(kind = kint),  intent(in) :: istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
 !
       type(phys_data), intent(inout) :: nod_fld
@@ -298,7 +301,8 @@
       use set_and_cal_udt_data
       use ucd_IO_select
 !
-      integer(kind = kint),  intent(in) :: id_rank, istep_ucd
+      integer, intent(in) :: id_rank
+      integer(kind = kint),  intent(in) :: istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
 !
       type(phys_data), intent(inout) :: nod_fld

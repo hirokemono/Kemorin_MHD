@@ -34,6 +34,8 @@
       type(phys_data), intent(inout) :: fld
       integer (kind = kint), intent(inout) :: ierr
 !
+      integer(kind = kint), parameter :: id_six = 6
+!
 !   set physical values
 !
       if(field_ctl%icou .le. 0) then
@@ -52,7 +54,7 @@
 !
         if(iflag_debug .ge. iflag_routine_msg) then
           write(*,*) 'check_nodal_field_name_type for fld'
-          call check_nodal_field_name_type(6, fld)
+          call check_nodal_field_name_type(id_six, fld)
         end if
       end if
 !

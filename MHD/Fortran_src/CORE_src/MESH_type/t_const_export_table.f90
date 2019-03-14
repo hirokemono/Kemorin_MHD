@@ -14,23 +14,23 @@
 !!        type(work_4_const_export), intent(inout) :: ele_comm_gl
 !!
 !!      subroutine count_ele_comm_neib                                  &
-!!     &         (id_rank, nprocs, ele_comm_tmp, num_neib)
-!!        integer, intent(in) :: id_rank, nprocs
-!!        type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
+!!     &         (id_rank, num_pe, ele_comm_tmp, num_neib)
+!!        integer, intent(in) :: id_rank, num_pe
+!!        type(communication_table), intent(in) :: ele_comm_tmp(num_pe)
 !!        integer(kind = kint), intent(inout) :: num_neib
 !!
 !!      subroutine set_ele_comm_neib                                    &
-!!     &         (id_rank, nprocs, ele_comm_tmp, num_neib, id_neib)
-!!        integer, intent(in) :: id_rank, nprocs
-!!        type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
+!!     &         (id_rank, num_pe, ele_comm_tmp, num_neib, id_neib)
+!!        integer, intent(in) :: id_rank, num_pe
+!!        type(communication_table), intent(in) :: ele_comm_tmp(num_pe)
 !!        integer(kind = kint), intent(in) :: num_neib
 !!        integer(kind = kint), intent(inout) :: id_neib(num_neib)
 !!
-!!      subroutine set_ele_comm_tbl_num(id_rank, nprocs, ele_comm_tmp,  &
+!!      subroutine set_ele_comm_tbl_num(id_rank, num_pe, ele_comm_tmp,  &
 !!     &          num_neib, id_neib, ntot_import, ntot_export,          &
 !!     &          num_import, num_export, istack_import, istack_export)
-!!        integer, intent(in) :: id_rank, nprocs
-!!        type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
+!!        integer, intent(in) :: id_rank, num_pe
+!!        type(communication_table), intent(in) :: ele_comm_tmp(num_pe)
 !!        integer, intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: num_neib
 !!        integer(kind = kint), intent(in) :: id_neib(num_neib)
@@ -40,11 +40,11 @@
 !!        integer(kind = kint), intent(inout) ::istack_import(0:num_neib)
 !!        integer(kind = kint), intent(inout) ::istack_export(0:num_neib)
 !!
-!!      subroutine set_ele_import_item(id_rank, nprocs, ele_comm_tmp,   &
+!!      subroutine set_ele_import_item(id_rank, num_pe, ele_comm_tmp,   &
 !!     &          num_neib, ntot_import, id_neib, num_import,           &
 !!     &          istack_import, item_import)
-!!        integer, intent(in) :: id_rank, nprocs
-!!        type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
+!!        integer, intent(in) :: id_rank, num_pe
+!!        type(communication_table), intent(in) :: ele_comm_tmp(num_pe)
 !!        integer, intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: num_neib, ntot_import
 !!        integer(kind = kint), intent(in) :: id_neib(num_neib)
@@ -54,16 +54,16 @@
 !!
 !!      subroutine set_ele_export_item(numnod, internal_node,           &
 !!     &          numele, nnod_4_ele, id_global, ie,                    &
-!!     &          nprocs, ele_comm_tmp, ele_comm_gl,                    &
+!!     &          num_pe, ele_comm_tmp, ele_comm_gl,                    &
 !!     &          num_neib, id_neib, ntot_export, num_export,           &
 !!     &          istack_export, item_export)
 !!        integer(kind = kint), intent(in) :: numnod, internal_node
 !!        integer(kind = kint), intent(in) :: numele, nnod_4_ele
 !!        integer(kind = kint), intent(in) :: id_global(numnod)
 !!        integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
-!!        integer(kind = kint), intent(in) :: nprocs
-!!        type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
-!!        type(work_4_const_export), intent(in) :: ele_comm_gl(nprocs)
+!!        integer, intent(in) :: num_pe
+!!        type(communication_table), intent(in) :: ele_comm_tmp(num_pe)
+!!        type(work_4_const_export), intent(in) :: ele_comm_gl(num_pe)
 !!        integer(kind = kint), intent(in) :: num_neib, ntot_export
 !!        integer(kind = kint), intent(in) :: id_neib(num_neib)
 !!        integer(kind = kint), intent(in) :: num_export(num_neib)
@@ -117,17 +117,17 @@
 !------------------------------------------------------------------
 !
       subroutine count_ele_comm_neib                                    &
-     &         (id_rank, nprocs, ele_comm_tmp, num_neib)
+     &         (id_rank, num_pe, ele_comm_tmp, num_neib)
 !
-      integer, intent(in) :: id_rank, nprocs
-      type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
+      integer, intent(in) :: id_rank, num_pe
+      type(communication_table), intent(in) :: ele_comm_tmp(num_pe)
       integer(kind = kint), intent(inout) :: num_neib
 !
       integer(kind = kint) :: ip, j
 !
 !
       num_neib = 0
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         do j = 1, ele_comm_tmp(ip)%num_neib
           if(ele_comm_tmp(ip)%id_neib(j) .eq. id_rank) then
             num_neib = num_neib + 1
@@ -140,10 +140,10 @@
 !------------------------------------------------------------------
 !
       subroutine set_ele_comm_neib                                      &
-     &         (id_rank, nprocs, ele_comm_tmp, num_neib, id_neib)
+     &         (id_rank, num_pe, ele_comm_tmp, num_neib, id_neib)
 !
-      integer, intent(in) :: id_rank, nprocs
-      type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
+      integer, intent(in) :: id_rank, num_pe
+      type(communication_table), intent(in) :: ele_comm_tmp(num_pe)
 !
       integer(kind = kint), intent(in) :: num_neib
       integer(kind = kint), intent(inout) :: id_neib(num_neib)
@@ -152,7 +152,7 @@
 !
 !
       i = 0
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         do j = 1, ele_comm_tmp(ip)%num_neib
           if(ele_comm_tmp(ip)%id_neib(j) .eq. id_rank) then
             i = i + 1
@@ -165,12 +165,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ele_comm_tbl_num(id_rank, nprocs, ele_comm_tmp,    &
+      subroutine set_ele_comm_tbl_num(id_rank, num_pe, ele_comm_tmp,    &
      &          num_neib, id_neib, ntot_import, ntot_export,            &
      &          num_import, num_export, istack_import, istack_export)
 !
-      integer, intent(in) :: id_rank, nprocs
-      type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
+      integer, intent(in) :: id_rank, num_pe
+      type(communication_table), intent(in) :: ele_comm_tmp(num_pe)
 !
       integer(kind = kint), intent(in) :: num_neib
       integer(kind = kint), intent(in) :: id_neib(num_neib)
@@ -218,12 +218,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ele_import_item(id_rank, nprocs, ele_comm_tmp,     &
+      subroutine set_ele_import_item(id_rank, num_pe, ele_comm_tmp,     &
      &          num_neib, ntot_import, id_neib, num_import,             &
      &          istack_import, item_import)
 !
-      integer, intent(in) :: id_rank, nprocs
-      type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
+      integer, intent(in) :: id_rank, num_pe
+      type(communication_table), intent(in) :: ele_comm_tmp(num_pe)
 !
       integer(kind = kint), intent(in) :: num_neib, ntot_import
       integer(kind = kint), intent(in) :: id_neib(num_neib)
@@ -255,7 +255,7 @@
 !
       subroutine set_ele_export_item(numnod, internal_node,             &
      &          numele, nnod_4_ele, id_global, ie,                      &
-     &          nprocs, ele_comm_tmp, ele_comm_gl,                      &
+     &          num_pe, ele_comm_tmp, ele_comm_gl,                      &
      &          num_neib, id_neib, ntot_export, num_export,             &
      &          istack_export, item_export)
 !
@@ -264,9 +264,9 @@
       integer(kind = kint), intent(in) :: id_global(numnod)
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
-      integer(kind = kint), intent(in) :: nprocs
-      type(communication_table), intent(in) :: ele_comm_tmp(nprocs)
-      type(work_4_const_export), intent(in) :: ele_comm_gl(nprocs)
+      integer, intent(in) :: num_pe
+      type(communication_table), intent(in) :: ele_comm_tmp(num_pe)
+      type(work_4_const_export), intent(in) :: ele_comm_gl(num_pe)
 !
       integer(kind = kint), intent(in) :: num_neib, ntot_export
       integer(kind = kint), intent(in) :: id_neib(num_neib)

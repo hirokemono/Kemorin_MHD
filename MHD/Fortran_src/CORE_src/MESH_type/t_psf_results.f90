@@ -78,7 +78,7 @@
 !
 !
       call sel_read_ucd_file                                            &
-     &   (iminus, istep, ithree, psf_file_param, read_psf)
+     &   (-1, istep, ithree, psf_file_param, read_psf)
 !
       call set_psf_udt_mesh                                             &
      &   (read_psf, psf_dat%psf_nod, psf_dat%psf_ele, psf_dat%psf_phys)

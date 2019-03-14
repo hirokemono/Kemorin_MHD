@@ -7,10 +7,10 @@
 !> @brief Routines to make import table
 !!
 !!@verbatim
-!!      subroutine count_import_domain(nprocs, num, id_org_domain,      &
+!!      subroutine count_import_domain(num_pe, num, id_org_domain,      &
 !!     &          num_neib)
 !!        integer(kind = kint), intent(inout) :: num_neib
-!!      subroutine set_import_domain(nprocs, num, id_org_domain,        &
+!!      subroutine set_import_domain(num_pe, num, id_org_domain,        &
 !!     &          num_neib, id_neib)
 !!        integer(kind = kint), intent(inout) :: id_neib(num_neib)
 !!      subroutine count_num_import(num, id_org_domain, num_neib,       &
@@ -35,10 +35,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_import_domain(nprocs, num, id_org_domain,        &
+      subroutine count_import_domain(num_pe, num, id_org_domain,        &
      &          num_neib)
 !
-      integer(kind = kint), intent(in) :: nprocs, num
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: id_org_domain(num)
 !
       integer(kind = kint), intent(inout) :: num_neib
@@ -46,7 +47,7 @@
       integer(kind = kint) :: ip, id_proc, ncou, i
 !
 !
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         id_proc = ip - 1
         ncou = 0
         do i = 1, num
@@ -63,10 +64,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_import_domain(nprocs, num, id_org_domain,          &
+      subroutine set_import_domain(num_pe, num, id_org_domain,          &
      &          num_neib, id_neib)
 !
-      integer(kind = kint), intent(in) :: nprocs, num
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: id_org_domain(num)
 !
       integer(kind = kint), intent(in) :: num_neib
@@ -76,7 +78,7 @@
 !
 !
       icou = 0
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         id_proc = ip - 1
         ncou = 0
         do i = 1, num

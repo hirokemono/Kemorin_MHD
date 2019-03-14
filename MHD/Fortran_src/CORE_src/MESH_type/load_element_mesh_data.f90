@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine load_element_surface_edge                            &
-!!     &         (mesh_file, mesh, ele_mesh, ele_mesh_IO)
+!!     &         (id_rank, mesh_file, mesh, ele_mesh, ele_mesh_IO)
 !!      subroutine output_element_surface_edge                          &
-!!     &         (mesh_file, mesh, ele_mesh, ele_mesh_IO)
+!!     &         (id_rank, mesh_file, mesh, ele_mesh, ele_mesh_IO)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
@@ -49,6 +49,8 @@
       use t_read_mesh_data
       use t_file_IO_parameter
 !
+      implicit none
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -56,30 +58,33 @@
 !  ---------------------------------------------------------------------
 !
       subroutine load_element_surface_edge                              &
-     &         (mesh_file, mesh, ele_mesh, ele_mesh_IO)
+     &         (id_rank, mesh_file, mesh, ele_mesh, ele_mesh_IO)
 !
       use element_mesh_IO_select
 !
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(in) :: mesh
       type(element_geometry), intent(inout) :: ele_mesh
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !
+      integer(kind = kint) :: ierr = 0
+!
 !
       call sel_read_ele_mesh                                            &
-     &   (mesh_file, my_rank_IO, ele_mesh_IO, ierr)
+     &   (mesh_file, id_rank, ele_mesh_IO, ierr)
       call set_ele_comm_tbl_from_IO                                     &
      &   (mesh%ele, ele_mesh%ele_comm, ele_mesh_IO)
 !
 !
       call sel_read_surf_mesh                                           &
-     &   (mesh_file, my_rank_IO, ele_mesh_IO, ierr)
+     &   (mesh_file, id_rank, ele_mesh_IO, ierr)
       call set_surface_mesh_from_IO                                     &
      &   (mesh%ele, ele_mesh%surf, ele_mesh%surf_comm, ele_mesh_IO)
 !
 !
       call sel_read_edge_mesh                                           &
-     &   (mesh_file, my_rank_IO, ele_mesh_IO, ierr)
+     &   (mesh_file, id_rank, ele_mesh_IO, ierr)
       call set_edge_mesh_from_IO(mesh%ele, ele_mesh%surf,               &
      &    ele_mesh%edge, ele_mesh%edge_comm, ele_mesh_IO)
 !
@@ -88,10 +93,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine output_element_surface_edge                            &
-     &         (mesh_file, mesh, ele_mesh, ele_mesh_IO)
+     &         (id_rank, mesh_file, mesh, ele_mesh, ele_mesh_IO)
 !
       use element_mesh_IO_select
 !
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(in) :: mesh
       type(element_geometry), intent(in) :: ele_mesh
@@ -101,7 +107,7 @@
       call set_ele_comm_tbl_to_IO                                       &
      &   (mesh%ele, ele_mesh%ele_comm, ele_mesh_IO)
       call sel_write_ele_mesh_file                                      &
-     &   (mesh_file, my_rank_IO, ele_mesh_IO)
+     &   (mesh_file, id_rank, ele_mesh_IO)
 !
       call dealloc_comm_table(ele_mesh_IO%comm)
 !      call dealloc_ele_geometry_data(ele_mesh_IO)
@@ -109,7 +115,7 @@
       call set_surface_mesh_to_IO                                       &
      &   (mesh%ele, ele_mesh%surf, ele_mesh%surf_comm, ele_mesh_IO)
       call sel_write_surf_mesh_file                                     &
-     &   (mesh_file, my_rank_IO, ele_mesh_IO)
+     &   (mesh_file, id_rank, ele_mesh_IO)
 !
       call dealloc_surface_mesh_IO(ele_mesh_IO)
 !      call dealloc_surf_geometry_data(ele_mesh_IO)
@@ -117,7 +123,7 @@
       call set_edge_mesh_to_IO(mesh%ele, ele_mesh%surf, ele_mesh%edge,  &
      &   ele_mesh%edge_comm, ele_mesh_IO)
       call sel_write_edge_mesh_file                                     &
-     &   (mesh_file, my_rank_IO, ele_mesh_IO)
+     &   (mesh_file, id_rank, ele_mesh_IO)
 !
       call dealloc_edge_mesh_IO(ele_mesh_IO)
 !      call dealloc_surf_geometry_data(ele_mesh_IO)

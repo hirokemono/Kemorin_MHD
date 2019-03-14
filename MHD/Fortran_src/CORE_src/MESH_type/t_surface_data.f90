@@ -7,7 +7,7 @@
 !> @brief structure of surface data (geometry and connectivity)
 !!
 !!@verbatim
-!!      subroutine alloc_numsurf_stack(nprocs, surf)
+!!      subroutine alloc_numsurf_stack(nprocs_in, surf)
 !!      subroutine allocate_inod_in_surf(surf)
 !!      subroutine allocate_surface_connect_type(surf, nele)
 !!      subroutine allocate_ext_surface_type(surf)
@@ -132,14 +132,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_numsurf_stack(nprocs, surf)
+      subroutine alloc_numsurf_stack(nprocs_in, surf)
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: nprocs_in
       type(surface_data), intent(inout) :: surf
 !
 !
-      allocate(surf%istack_numsurf(0:nprocs))
-      allocate(surf%istack_intersurf(0:nprocs))
+      allocate(surf%istack_numsurf(0:nprocs_in))
+      allocate(surf%istack_intersurf(0:nprocs_in))
       surf%istack_numsurf =   0
       surf%istack_intersurf = 0
 !

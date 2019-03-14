@@ -7,7 +7,7 @@
 !> @brief Structure of edge geometry data
 !!
 !!@verbatim
-!!      subroutine alloc_numedge_stack(nprocs, edge)
+!!      subroutine alloc_numedge_stack(nprocs_in, edge)
 !!      subroutine alloc_inod_in_edge(edge)
 !!      subroutine alloc_edge_connect(edge, nsurf)
 !!      subroutine alloc_edge_4_ele(edge, nele)
@@ -24,7 +24,7 @@
 !!      subroutine alloc_surf_4_edge_item_type(edge)
 !!
 !!
-!!      subroutine dealloc_numedge_stack(nprocs, edge)
+!!      subroutine dealloc_numedge_stack(edge)
 !!      subroutine dealloc_inod_in_edge(edge)
 !!      subroutine dealloc_edge_connect(edge)
 !!      subroutine dealloc_edge_4_ele(edge)
@@ -147,14 +147,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_numedge_stack(nprocs, edge)
+      subroutine alloc_numedge_stack(nprocs_in, edge)
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: nprocs_in
       type(edge_data), intent(inout) :: edge
 !
 !
-      allocate(edge%istack_numedge(0:nprocs))
-      allocate(edge%istack_interedge(0:nprocs))
+      allocate(edge%istack_numedge(0:nprocs_in))
+      allocate(edge%istack_interedge(0:nprocs_in))
       edge%istack_numedge =   0
       edge%istack_interedge = 0
 !

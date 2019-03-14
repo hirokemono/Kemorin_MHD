@@ -4,9 +4,9 @@
 !      Written by H. Matsui on May, 2010
 !
 !!      subroutine s_set_parallel_mesh_in_1pe                           &
-!!     &         (mesh_file, nprocs, para_mesh)
+!!     &         (mesh_file, num_pe, para_mesh)
 !!        type(field_IO_params), intent(in) ::  mesh_file
-!!        type(mesh_data), intent(inout) :: para_mesh(nprocs)
+!!        type(mesh_data), intent(inout) :: para_mesh(num_pe)
 !
       module set_parallel_mesh_in_1pe
 !
@@ -21,7 +21,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_parallel_mesh_in_1pe                             &
-     &         (mesh_file, nprocs, para_mesh)
+     &         (mesh_file, num_pe, para_mesh)
 !
       use t_mesh_data
       use t_geometry_data
@@ -31,15 +31,16 @@
       use load_mesh_data
       use const_mesh_information
 !
-      integer(kind = kint), intent(in) :: nprocs
+      integer, intent(in) :: num_pe
       type(field_IO_params), intent(in) ::  mesh_file
-      type(mesh_data), intent(inout) :: para_mesh(nprocs)
+      type(mesh_data), intent(inout) :: para_mesh(num_pe)
 !
-      integer(kind = kint) :: ip, id_rank, ierr
+      integer :: ip, id_rank
+      integer(kind = kint) :: ierr
       type(element_geometry) :: ele_mesh
 !
 !
-      do ip = 1, nprocs
+      do ip = 1, num_pe
         id_rank = ip - 1
         call input_mesh                                                 &
      &     (mesh_file, id_rank, para_mesh(ip), ele_mesh, ierr)
