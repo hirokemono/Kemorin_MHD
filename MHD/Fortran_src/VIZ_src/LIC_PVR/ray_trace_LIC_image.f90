@@ -220,7 +220,6 @@
       integer(kind = kint), intent(in) :: k_size
       real(kind = kreal), intent(in) :: k_ary(k_size)
 !
-      integer(kind = kint), parameter :: iflag_back = 0
       integer(kind = kint) :: iflag_notrace
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
       integer(kind = kint) :: iflag_hit
@@ -298,7 +297,7 @@
 !   find ray exit surface loacal id on current element isf_tgt
 !
         call find_line_end_in_1ele                                      &
-     &     (iflag_back, numnod, numele, numsurf, nnod_4_surf,           &
+     &     (iflag_backward_line, numnod, numele, numsurf, nnod_4_surf,  &
      &      isf_4_ele, ie_surf, x_nod_model, iele, isf_org,             &
      &      ray_vec, screen_st, isf_tgt, screen_tgt, xi)
 !        if(iflag_check .gt. 0) write(*,*) 'screen_tgt',                &
