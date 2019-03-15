@@ -155,7 +155,7 @@
 !
       integer(kind = kint_gl) :: inod, ist, nline
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
 !
       ilen_line = len(vtk_each_vector(zero, zero, zero))
@@ -244,7 +244,7 @@
       integer(kind = kint_gl) :: i, ist, nline
       integer(kind = kint_gl) :: ie0(nnod_ele)
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
 !
       ie0(1:nnod_ele) = 0
@@ -307,7 +307,7 @@
       integer(kind = kint) :: icellid
       integer(kind = kint_gl) :: i, ist, nline
       integer(kind = kint_gl) :: ilen_tmp
-      integer(kind = kint) :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_used, ilen_in
 !
 !
       icellid = vtk_cell_type(nnod_ele)
