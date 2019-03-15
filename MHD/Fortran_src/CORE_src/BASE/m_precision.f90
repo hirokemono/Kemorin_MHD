@@ -12,7 +12,7 @@
       implicit none
 !
 !>  kind parameter for integer type variable (  4 byte )
-      integer, parameter   ::  kint  =       8
+      integer, parameter   ::  kint  =       4
 !>  kind parameter for real    type variable (  8 byte )
       integer, parameter   ::  kreal =       8
 !>  character length for name               (  255 byte )
