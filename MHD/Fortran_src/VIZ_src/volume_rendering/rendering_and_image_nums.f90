@@ -81,9 +81,9 @@
      &          pvr_rgb)
 !
       integer, intent(in) :: num_pe
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
       integer(kind = kint), intent(in) :: num_pvr
       integer(kind = kint), intent(in) :: num_pvr_images
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
 !
       integer(kind = kint), intent(inout)                               &
      &              :: istack_pvr_render(0:num_pvr)
