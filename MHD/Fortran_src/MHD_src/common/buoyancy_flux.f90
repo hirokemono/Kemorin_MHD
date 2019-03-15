@@ -70,12 +70,12 @@
       subroutine cal_gravity_flux_self(numnod, inod_smp_stack, xx,      &
      &          coef_buo, ncomp_nod, i_scalar, i_velo, i_flux, d_nod)
 !
-      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      real (kind = kreal), intent(in) :: xx(numnod,3)
-      real (kind = kreal), intent(in) :: coef_buo
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
+      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
+      real(kind = kreal), intent(in) :: coef_buo
 !
-      integer (kind = kint), intent(in) :: numnod, ncomp_nod
-      integer (kind = kint), intent(in) :: i_scalar, i_velo, i_flux
+      integer(kind = kint), intent(in) :: i_scalar, i_velo, i_flux
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: inod, ip, ist, ied
@@ -101,12 +101,12 @@
      &          a_radius, coef_buo, ncomp_nod, i_scalar, i_velo,        &
      &          i_flux, d_nod)
 !
-      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      real (kind = kreal), intent(in) :: xx(numnod,3)
-      real (kind = kreal), intent(in) :: a_radius(numnod)
-      real (kind = kreal), intent(in) :: coef_buo
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
+      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
+      real(kind = kreal), intent(in) :: a_radius(numnod)
+      real(kind = kreal), intent(in) :: coef_buo
 !
-      integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: i_scalar, i_velo, i_flux
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
@@ -134,12 +134,12 @@
       subroutine cal_gravity_flux_const(numnod, inod_smp_stack, grav,   &
      &          coef_buo, ncomp_nod, i_scalar, i_velo, i_flux, d_nod)
 !
-      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      real (kind = kreal), intent(in) :: coef_buo
-      real (kind = kreal), intent(in) :: grav(3)
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
+      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: coef_buo
+      real(kind = kreal), intent(in) :: grav(3)
 !
-      integer (kind = kint), intent(in) :: numnod, ncomp_nod
-      integer (kind = kint), intent(in) :: i_scalar, i_velo, i_flux
+      integer(kind = kint), intent(in) :: i_scalar, i_velo, i_flux
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: inod, ip, ist, ied
