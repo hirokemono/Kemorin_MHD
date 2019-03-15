@@ -139,11 +139,12 @@ GTK3_LIBS=
 # SR24000 without FFTW3 (NIPR:sr1)
 # -------------------------------------------------------------------------------
 #
-# setenv PKG_CONFIG_PATH /home0/matsui/local/lib/pkgconfig
-#
-# ./configure --prefix='/home0/matsui/local' CC=cc FC=mpif90_r AR="ar -X64" RANLIB="ranlib -X64"\
-#  FCFLAGS="-64 -Oss -noifswpl -omp -pardiag=2 -autoinline=2 -model=L1" \
-#  MPICC=mpcc_r MPIFC=mpif90_r
+# ./configure --prefix='/home0/matsui/local' CC=cc FC=mpif90_r \
+# AR="ar -X64" RANLIB="ranlib -X64"  MPICC=mpcc_r MPIFC=mpif90_r \
+# FCFLAGS="-64 -Oss -noifswpl -omp -pardiag=2 -autoinline=2 -model=L1" \
+# CFLAGS='-q64 -O3'  PKG_CONFIG_PATH=/hsfs/home0/matsui/local/lib/pkgconfig \
+# --enable-fftw3 --enable-libpng --with-zlib=/hsfs/home0/matsui/local \
+# --with-blas=-lblas_p64  --without-pgplot -with-hdf5=no
 #
 #
 # -------------------------------------------------------------------------------
