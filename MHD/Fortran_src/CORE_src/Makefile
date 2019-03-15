@@ -7,7 +7,13 @@ CORE_SRCDIR = $$(F_SRCDIR)/CORE_src
 LIB_MESH =       -lkemo_core
 LIB_MESH_FILE = libkemo_core.a
 
-SUBDIRS = \
+ifdef 64BIT_INT
+  SUBDIRS = 64bit_Integer
+else
+  SUBDIRS = 32bit_Integer
+endif
+
+SUBDIRS += \
 BASE                 \
 MESH                 \
 MESH_type            \

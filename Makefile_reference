@@ -100,11 +100,13 @@ GTK3_LIBS=   `pkg-config --libs gtk+-2.0`
 #
 # Choose following Directries for simulation
 #
+64BIT_INT= 64BIT_INT
 MAKE_MOD_DEP= $(BUILDDIR)/make_f90depends
 #
 
-all: mpif.h makemake
-	cd $(MAKEDIR); $(GMAKE)
+all: mpif.h makemake makemake64
+	cd $(MAKEDIR);   $(GMAKE);
+	cd $(MAKE64DIR); $(GMAKE)
 
 
 $(MAKE_MOD_DEP): $(MHDDIR)/module_dependency/make_module_dependency.f90
@@ -160,7 +162,55 @@ makemake: mpif.h
 		MPICC="$(MPICC)"   \
 		AR="$(AR)" \
 		RANLIB="$(RANLIB)" \
-        XL_FORTRAN="$(XL_FORTRAN)" \
+		XL_FORTRAN="$(XL_FORTRAN)" \
+		makemake
+
+makemake64: $(MAKE_MOD_DEP)
+	echo "# Construct Makefile for 64-bit integer"; \
+	cd $(MHDDIR) ; \
+		$(GMAKE) \
+		GMAKE="$(GMAKE)" \
+		SRCDIR="$(SRCDIR)" \
+		INSTDIR="$(INSTDIR)" \
+		MAKEDIR="$(MAKE64DIR)" \
+		BUILDDIR="$(BUILD64DIR)" \
+		MHDDIR="$(MHDDIR)" \
+		MPICHDIR="$(MPICHDIR)" \
+		MPICHLIBDIR="$(MPICHLIBDIR)" \
+		MPILIBS="$(MPILIBS)" \
+		MPICHBINDIR="$(MPICHBINDIR)" \
+		MPICHINCDIR="$(MPICHINCDIR)" \
+		BLAS_LIBS="$(BLAS_LIBS)" \
+		ZLIB_CFLAGS="$(ZLIB_CFLAGS)" \
+		ZLIB_LIBS="$(ZLIB_LIBS)"     \
+		PNG_CFLAGS="$(PNG_CFLAGS)"   \
+		PNG_LIBS="$(PNG_LIBS)"       \
+		FFTW3_CFLAGS="$(FFTW3_CFLAGS)" \
+		FFTW3_LIBS="$(FFTW3_LIBS)" \
+		OPENGL_INC="$(OPENGL_INC)" \
+		OPENGL_LIBS="$(OPENGL_LIBS)" \
+		PGPLOT_LIBS="$(PGPLOT_LIBS)" \
+		GTK3_CFLAGS="$(GTK3_CFLAGS)" \
+		GTK3_LIBS="$(GTK3_LIBS)" \
+		HDF5_FFLAGS="$(HDF5_FFLAGS)" \
+		HDF5_LDFLAGS="$(HDF5_LDFLAGS)" \
+		HDF5_FLIBS="$(HDF5_FLIBS)" \
+		FC_NAME_MANGLE="$(FC_NAME_MANGLE)" \
+		COCOA_FLAG="$(COCOA_FLAG)" \
+		OPTFLAGS="$(OPTFLAGS)" \
+		F90OPTFLAGS="$(F90OPTFLAGS)" \
+		CXXFLAGS="$(CXXFLAGS)" \
+		F90LIB="$(F90LIB)" \
+		F90_LOCAL="$(F90_LOCAL)" \
+		CC="$(CC)" \
+		CXX="$(CXX)" \
+		MPIF90="$(MPIF90)" \
+		MPICC="$(MPICC)"   \
+		AR="$(AR)" \
+		RANLIB="$(RANLIB)" \
+		MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
+		XL_FORTRAN="$(XL_FORTRAN)" \
+		64BIT_INT="$(64BIT_INT)" \
 		makemake
 
 
@@ -170,9 +220,12 @@ mpif.h: $(MPICHINCDIR)/mpif.h
 install:
 	cd $(MAKEDIR) ; \
 		make install
+install64:
+	cd $(MAKE64DIR) ; \
+		make install
 
 clean:
-	for dir in $(MAKEDIR) $(MHDDIR) ; do \
+	for dir in $(MAKEDIR) $(MAKE64DIR) $(MHDDIR) ; do \
 	echo "# cleaning $${dir} directory..."; \
 		( cd $${dir}; \
 		make clean )\
@@ -181,4 +234,4 @@ clean:
 
 distclean:
 	echo "# Back to initial package"; \
-	rm -fr $(MAKEDIR) $(BUILDDIR) Makefile config.log
+	rm -fr $(MAKEDIR) $(MAKE64DIR) $(BUILDDIR) $(BUILD64DIR) Makefile config.log

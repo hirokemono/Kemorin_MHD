@@ -12,14 +12,11 @@ MPIBINDIR = $(MPICHDIR)/bin
 MPIINCDIR = $(MPICHDIR)/include
 #
 #
-MAKEDIR= 
+
 BUILDDIR= 
 MHDDIR =
 
 MAKENAME= $(MAKEDIR)/Makefile
-
-
-
 
 #
 # FC_NAME_MANGLE definition for Fortran-C connection
@@ -230,6 +227,7 @@ makemake:
 		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)'          \
 		MAKENAME='$(MAKENAME)'        \
+		64BIT_INT='$(64BIT_INT)'   \
 		dir_list; \
 		 ) \
 	done
@@ -284,6 +282,7 @@ makemake:
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
+		64BIT_INT='$(64BIT_INT)'   \
 		lib_name; \
 		 ) \
 	done
@@ -303,6 +302,7 @@ makemake:
         FFTW3_C='$(FFTW3_C)'   \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
 		mod_list; \
 		 ) \
 	done
@@ -335,6 +335,7 @@ makemake:
 		GTK3_LIBS='$(GTK3_LIBS)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
 		lib_tasks; \
 		 ) \
 	done
@@ -351,6 +352,7 @@ makemake:
 		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
 		module; \
 		) \
 	done

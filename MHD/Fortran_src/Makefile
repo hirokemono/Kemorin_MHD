@@ -31,6 +31,7 @@ dir_list:
 		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)'     \
 		MAKENAME='$(MAKENAME)'   \
+		64BIT_INT='$(64BIT_INT)'   \
 		dir_list; \
 		 ) \
 	done
@@ -49,6 +50,7 @@ lib_name:
 		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
 		lib_name; \
 		 ) \
 	done
@@ -60,6 +62,7 @@ lib_tasks: libtarget lib_archve
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
 		lib_tasks \
 		) \
 	done
@@ -74,6 +77,7 @@ lib_archve:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
 		lib_archve \
 		) \
 	done
@@ -90,6 +94,7 @@ mod_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
 		mod_list; \
 		) \
 	done
@@ -102,6 +107,7 @@ module:
 		GMAKE='$(GMAKE)' \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
 		module; \
 		) \
 	done
@@ -114,6 +120,7 @@ clean:
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
+		64BIT_INT='$(64BIT_INT)'   \
 		clean \
 		) \
 	done
