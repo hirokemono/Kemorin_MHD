@@ -220,12 +220,12 @@
 !
       type(commutation_control_params), intent(in) :: cmt_param
       integer(kind = kint), intent(in) :: nlayer_sgs, num_sgs_kind
+      integer(kind = kint), intent(in) :: nlayer_diff, num_diff_kind
       real(kind = kreal), intent(in)                                    &
      &                    :: sgs_f_coef(nlayer_SGS,num_sgs_kind)
       real(kind = kreal), intent(in)                                    &
      &                    :: coef_sgs_p(nlayer_diff,num_sgs_kind)
 !
-      integer(kind = kint), intent(in) :: nlayer_diff, num_diff_kind
       real(kind = kreal), intent(in)                                    &
      &                    :: diff_f_coef(nlayer_diff,num_diff_kind)
       real(kind = kreal), intent(in) :: diff_f_whole(num_diff_kind)
@@ -276,10 +276,10 @@
 !
       type(commutation_control_params), intent(in) :: cmt_param
       integer(kind = kint), intent(in) :: nlayer_sgs, num_sgs_kind
+      integer(kind = kint), intent(in) :: nlayer_diff, num_diff_kind
       real(kind = kreal), intent(in)                                    &
      &                    :: sgs_f_coef(nlayer_SGS,num_sgs_kind)
 !
-      integer(kind = kint), intent(in) :: nlayer_diff, num_diff_kind
       real(kind = kreal), intent(in)                                    &
      &                     :: diff_f_coef(nlayer_diff,num_diff_kind)
       real(kind = kreal), intent(in) :: diff_f_whole(num_diff_kind)
