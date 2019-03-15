@@ -29,6 +29,19 @@ PKG_CONFIG_PATH=$TACC_FFTW3_LIB/pkgconfig:/usr/lib64/pkgconfig:/home/hmatsui/loc
 
 #
 # -------------------------------------------------------------------------------
+# Intel XEON (UCSD Comet)
+# -------------------------------------------------------------------------------
+#
+./configure --prefix=/home/matsui/local CC=icc FC=ifort F77=ifort CXX=icc AR=xiar \
+MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
+CFLAGS='-Os -Wall -g -xHost' \
+FCFLAGS='-Os -xHost -warn all -g -nogen-interfaces ' \
+--with-blas=-mkl=sequential --enable-fftw3 --enable-libpng --with-hdf5 \
+--with-zlib=/usr/lib64 --without-pgplot --without-aquaterm \
+PKG_CONFIG=/usr/bin/pkg-config
+
+#
+# -------------------------------------------------------------------------------
 # SR24000 (NIPR:sr1)
 # -------------------------------------------------------------------------------
 #

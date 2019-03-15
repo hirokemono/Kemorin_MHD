@@ -181,13 +181,13 @@
       use t_psf_geometry_list
       use t_psf_case_table
 !
+      integer(kind=kint), intent(in) :: num_case_tbl
       type(edge_data), intent(in) :: edge
       type(sectioning_list), intent(in) :: psf_list
       type(psf_each_case), intent(in) :: psf_case_tbl(0:num_case_tbl)
       type(sect_search_list), intent(in) :: ele_search
 !
       integer(kind = kint_gl), intent(in) :: istack_numele
-      integer(kind=kint), intent(in) :: num_case_tbl
 !
       integer(kind = kint), intent(in)                                  &
      &              :: mark_ele(ele_search%num_search)
