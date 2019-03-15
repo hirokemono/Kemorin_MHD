@@ -54,7 +54,7 @@
 !
       integer(kind = kint) :: ip, iele, ist, ied, inum
       integer(kind = kint) ::  i1,  i2,  i3,  i4,  i5,  i6,  i7,  i8
-      integer :: mk1, mk2, mk3, mk4, mk5, mk6, mk7, mk8
+      integer(kind = kint) :: mk1, mk2, mk3, mk4, mk5, mk6, mk7, mk8
 !
 !
 !$omp parallel do private(iele,ist,ied,inum, i1,i2,i3,i4,               &
