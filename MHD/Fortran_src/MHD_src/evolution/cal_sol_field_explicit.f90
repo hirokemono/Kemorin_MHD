@@ -209,13 +209,14 @@
      &         (dt, numnod, inod_smp_stack, ml_o_fl, ff_nl,             &
      &          ncomp_nod, numdir, i_field, if_pre, d_nod, ff)
 !
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
+      integer (kind = kint), intent(in) :: numdir, i_field, if_pre
+!
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ml_o_fl(numnod)
       real(kind = kreal), intent(in) :: ff_nl(numnod,3)
 !
-      integer (kind = kint), intent(in) :: numnod, ncomp_nod
-      integer (kind = kint), intent(in) :: numdir, i_field, if_pre
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
       real(kind = kreal), intent(inout) :: ff(numnod,3)
 !
