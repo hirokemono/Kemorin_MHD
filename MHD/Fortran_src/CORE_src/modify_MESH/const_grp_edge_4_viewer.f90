@@ -3,8 +3,7 @@
 !
 !     Written by H. Matsui on Jan., 2007
 !
-!!      subroutine construct_edge_4_ele_grp                             &
-!!     &         (nnod_4_surf, nnod_4_edge, view_mesh,                  &
+!!      subroutine construct_edge_4_ele_grp(nnod_4_surf, view_mesh,     &
 !!     &          ngrp_ele_sf, ele_surf_grp, ele_edge_grp, edge_sf_tbl)
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
 !!        type(viewer_group_data), intent(in)  :: ele_surf_grp
@@ -42,14 +41,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine construct_edge_4_ele_grp                               &
-     &         (nnod_4_surf, nnod_4_edge, view_mesh,                    &
+      subroutine construct_edge_4_ele_grp(nnod_4_surf, view_mesh,       &
      &          ngrp_ele_sf, ele_surf_grp, ele_edge_grp, edge_sf_tbl)
 !
       use set_edge_hash_by_sf
       use set_edge_data_by_sf
 !
-      integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
+      integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: ngrp_ele_sf
       type(viewer_mesh_data), intent(in) :: view_mesh
       type(viewer_group_data), intent(in)  :: ele_surf_grp
@@ -73,12 +71,8 @@
 !
 !        write(*,*) 'const_part_edge_hash_4_sf', igrp
         call const_part_edge_hash_4_sf                                  &
-     &     (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,              &
-     &      ngrp, nnod_4_surf, nnod_4_edge,                             &
-     &      view_mesh%ie_sf_viewer, ele_surf_grp%item_sf(ist),          &
-     &      edge_sf_tbl%num_hash, edge_sf_tbl%istack_hash,              &
-     &      edge_sf_tbl%iend_hash, edge_sf_tbl%id_hash,                 &
-     &      edge_sf_tbl%iflag_hash)
+     &    (view_mesh%nsurf_viewer, nnod_4_surf, view_mesh%ie_sf_viewer, &
+     &     ngrp, ele_surf_grp%item_sf(ist), edge_sf_tbl)
 !
 !
         ist = ele_edge_grp%istack_sf(igrp-1)
@@ -89,9 +83,9 @@
         call dealloc_merged_group_item(ele_edge_grp)
 !
         call count_num_edges_by_sf                                      &
-     &     (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,              &
-     &      nnod_4_edge, edge_sf_tbl%istack_hash,                       &
-     &      edge_sf_tbl%iend_hash, edge_sf_tbl%iflag_hash, nedge_grp)
+     &     (edge_sf_tbl%ntot_id, edge_sf_tbl%ntot_list,                 &
+     &      edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,             &
+     &      edge_sf_tbl%iflag_hash, nedge_grp)
         ele_edge_grp%istack_sf(igrp)                                    &
      &        = ele_edge_grp%istack_sf(igrp-1) + nedge_grp
         ele_edge_grp%num_item = ele_edge_grp%istack_sf(igrp)
@@ -101,9 +95,9 @@
         call deallocate_ele_edge_item_tmp
 !
 !        write(*,*) 'set_part_edges_4_sf', igrp
-        call set_part_edges_4_sf                                        &
-     &     (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,              &
-     &      nnod_4_edge, nedge_grp, view_mesh%iedge_sf_viewer,          &
+        call set_part_edges_4_sf(view_mesh%nsurf_viewer,                &
+     &      nedge_grp, view_mesh%iedge_sf_viewer,                       &
+     &      edge_sf_tbl%ntot_id, edge_sf_tbl%ntot_list,                 &
      &      edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,             &
      &      edge_sf_tbl%id_hash, edge_sf_tbl%iflag_hash,                &
      &      ele_edge_grp%item_sf(ist+1) )
@@ -116,14 +110,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine construct_edge_4_surf_grp                              &
-     &         (nnod_4_surf, nnod_4_edge, view_mesh,                    &
+      subroutine construct_edge_4_surf_grp(nnod_4_surf, view_mesh,      &
      &          ngrp_surf_sf, sf_surf_grp, sf_edge_grp, edge_sf_tbl)
 !
       use set_edge_hash_by_sf
       use set_edge_data_by_sf
 !
-      integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
+      integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: ngrp_surf_sf
       type(viewer_mesh_data), intent(in) :: view_mesh
       type(viewer_group_data), intent(in)  :: sf_surf_grp
@@ -146,12 +139,8 @@
 !
 !        write(*,*) 'const_part_edge_hash_4_sf', igrp
         call const_part_edge_hash_4_sf                                  &
-     &     (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,              &
-     &      ngrp, nnod_4_surf, nnod_4_edge,                             &
-     &      view_mesh%ie_sf_viewer, sf_surf_grp%item_sf(ist),           &
-     &      edge_sf_tbl%num_hash, edge_sf_tbl%istack_hash,              &
-     &      edge_sf_tbl%iend_hash, edge_sf_tbl%id_hash,                 &
-     &      edge_sf_tbl%iflag_hash)
+     &    (view_mesh%nsurf_viewer, nnod_4_surf, view_mesh%ie_sf_viewer, &
+     &     ngrp, sf_surf_grp%item_sf(ist), edge_sf_tbl)
 !
 !
         call allocate_sf_edge_item_tmp(sf_edge_grp)
@@ -160,9 +149,9 @@
         call dealloc_merged_group_item(sf_edge_grp)
 !
         call count_num_edges_by_sf                                      &
-     &     (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,              &
-     &      nnod_4_edge, edge_sf_tbl%istack_hash,                       &
-     &      edge_sf_tbl%iend_hash, edge_sf_tbl%iflag_hash, nedge_grp)
+     &     (edge_sf_tbl%ntot_id, edge_sf_tbl%ntot_list,                 &
+     &      edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,             &
+     &      edge_sf_tbl%iflag_hash, nedge_grp)
         sf_edge_grp%istack_sf(igrp)                                     &
      &        = sf_edge_grp%istack_sf(igrp-1) + nedge_grp
         sf_edge_grp%num_item = sf_edge_grp%istack_sf(igrp)
@@ -173,9 +162,9 @@
         call deallocate_sf_edge_item_tmp
 !
 !        write(*,*) 'set_part_edges_4_sf', igrp
-        call set_part_edges_4_sf                                        &
-     &     (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,              &
-     &      nnod_4_edge, nedge_grp, view_mesh%iedge_sf_viewer,          &
+        call set_part_edges_4_sf(view_mesh%nsurf_viewer,                &
+     &      nedge_grp, view_mesh%iedge_sf_viewer,                       &
+     &      edge_sf_tbl%ntot_id, edge_sf_tbl%ntot_list,                 &
      &      edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,             &
      &      edge_sf_tbl%id_hash, edge_sf_tbl%iflag_hash,                &
      &      sf_edge_grp%item_sf(ist+1) )

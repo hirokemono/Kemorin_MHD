@@ -3,19 +3,17 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine mark_all_surfaces                                    &
-!!     &         (numnod, numele, nnod_4_ele, nnod_4_surf, ie,          &
-!!     &          istack_surf_hash, iend_surf_hash, isurf_hash,         &
-!!     &          isurf_flag)
+!!      subroutine mark_all_surfaces(numele, nnod_4_ele, ie,            &
+!!     &          ntot_id, ntot_list, istack_surf_hash,                 &
+!!     &          iend_surf_hash, isurf_hash, isurf_flag)
 !!
-!!      subroutine mark_independent_surface                             &
-!!     &         (numnod, numele, nnod_4_ele, nnod_4_surf, ie,          &
-!!     &          istack_surf_hash, iend_surf_hash, isurf_hash,         &
-!!     &          isurf_flag)
-!!      subroutine mark_external_surface(internal_node, numnod, numele, &
-!!     &          nnod_4_ele, nnod_4_surf, ie,                          &
-!!     &          istack_surf_hash, iend_surf_hash, isurf_hash,         &
-!!     &          isurf_flag)
+!!      subroutine mark_independent_surface(numele, nnod_4_ele, ie,     &
+!!     &          ntot_id, ntot_list, istack_surf_hash, iend_surf_hash, &
+!!     &          isurf_hash, isurf_flag)
+!!      subroutine mark_external_surface                                &
+!!     &         (internal_node, numele, nnod_4_ele, ie,                &
+!!     &          ntot_id, ntot_list, istack_surf_hash, iend_surf_hash, &
+!!     &          isurf_hash, isurf_flag)
 !
       module mark_surf_hash
 !
@@ -30,25 +28,22 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mark_all_surfaces                                      &
-     &         (numnod, numele, nnod_4_ele, nnod_4_surf, ie,            &
-     &          istack_surf_hash, iend_surf_hash, isurf_hash,           &
-     &          isurf_flag)
+      subroutine mark_all_surfaces(numele, nnod_4_ele, ie,              &
+     &          ntot_id, ntot_list, istack_surf_hash,                   &
+     &          iend_surf_hash, isurf_hash, isurf_flag)
 !
       use compare_indices
 !
-      integer(kind = kint), intent(in) :: numnod, numele
-      integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
+      integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
       integer(kind = kint_gl), intent(in) :: iend_surf_hash
-      integer(kind = kint), intent(in)                                  &
-     &                     :: istack_surf_hash(0:nnod_4_surf*numnod)
-      integer(kind = kint), intent(in)                                  &
-     &                     :: isurf_hash(nsurf_4_ele*numele,2)
+      integer(kind = kint), intent(in) :: istack_surf_hash(0:ntot_id)
+      integer(kind = kint), intent(in) :: isurf_hash(ntot_list,2)
 !
-      integer(kind = kint), intent(inout)                               &
-     &                     :: isurf_flag(nsurf_4_ele*numele)
+      integer(kind = kint), intent(inout) :: isurf_flag(ntot_list)
 !
       integer(kind = kint) :: inod(4), jnod(4)
       integer(kind = kint) :: iflag_inside
@@ -121,25 +116,22 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mark_independent_surface                               &
-     &         (numnod, numele, nnod_4_ele, nnod_4_surf, ie,            &
-     &          istack_surf_hash, iend_surf_hash, isurf_hash,           &
-     &          isurf_flag)
+      subroutine mark_independent_surface(numele, nnod_4_ele, ie,       &
+     &          ntot_id, ntot_list, istack_surf_hash, iend_surf_hash,   &
+     &          isurf_hash, isurf_flag)
 !
       use compare_indices
 !
-      integer(kind = kint), intent(in) :: numnod, numele
-      integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
+      integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
       integer(kind = kint_gl), intent(in) :: iend_surf_hash
-      integer(kind = kint), intent(in)                                  &
-     &                     :: istack_surf_hash(0:nnod_4_surf*numnod)
-      integer(kind = kint), intent(in)                                  &
-     &                     :: isurf_hash(nsurf_4_ele*numele,2)
+      integer(kind = kint), intent(in) :: istack_surf_hash(0:ntot_id)
+      integer(kind = kint), intent(in) :: isurf_hash(ntot_list,2)
 !
-      integer(kind = kint), intent(inout)                               &
-     &                     :: isurf_flag(nsurf_4_ele*numele)
+      integer(kind = kint), intent(inout) :: isurf_flag(ntot_list)
 !
       integer(kind = kint) :: inod(4), jnod(4)
       integer(kind = kint) :: iflag_inside
@@ -211,23 +203,21 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mark_external_surface(internal_node, numnod, numele,   &
-     &          nnod_4_ele, nnod_4_surf, ie,                            &
-     &          istack_surf_hash, iend_surf_hash, isurf_hash,           &
-     &          isurf_flag)
+      subroutine mark_external_surface                                  &
+     &         (internal_node, numele, nnod_4_ele, ie,                  &
+     &          ntot_id, ntot_list, istack_surf_hash, iend_surf_hash,   &
+     &          isurf_hash, isurf_flag)
 !
-      integer(kind = kint), intent(in) :: internal_node, numnod, numele
-      integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
+      integer(kind = kint), intent(in) :: internal_node, numele
+      integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
+      integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
       integer(kind = kint_gl), intent(in) :: iend_surf_hash
-      integer(kind = kint), intent(in)                                  &
-     &                     :: istack_surf_hash(0:nnod_4_surf*numnod)
-      integer(kind = kint), intent(in)                                  &
-     &                     :: isurf_hash(nsurf_4_ele*numele,2)
+      integer(kind = kint), intent(in) :: istack_surf_hash(0:ntot_id)
+      integer(kind = kint), intent(in) :: isurf_hash(ntot_list,2)
 !
-      integer(kind = kint), intent(inout)                               &
-     &                     :: isurf_flag(nsurf_4_ele*numele)
+      integer(kind = kint), intent(inout) :: isurf_flag(ntot_list)
 !
       integer(kind = kint) :: iele, is
       integer(kind = kint) :: inod(4)

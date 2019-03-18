@@ -3,22 +3,22 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine count_num_edges_by_sf(numnod, numsurf, nnod_4_edge,  &
+!!      subroutine count_num_edges_by_sf(ntot_id, ntot_list,            &
 !!     &          istack_edge_hash, iend_edge_hash, iedge_flag, numedge)
-!!      subroutine set_edges_connect_by_sf(numnod, numsurf, numedge,    &
-!!     &          nnod_4_surf, nnod_4_edge, ie_surf,                    &
-!!     &          istack_edge_hash, iend_edge_hash, iedge_hash,         &
-!!     &          iedge_flag, ie_edge, iedge_4_sf, node_on_edge_sf)
-!!      subroutine set_edges_connect_4_ele                              &
-!!     &         (numnod, numele, numsurf, numedge,                     &
+!!      subroutine set_edges_connect_by_sf                              &
+!!     &         (numsurf, numedge, nnod_4_surf, nnod_4_edge, ie_surf,  &
+!!     &          ntot_id, ntot_list, istack_edge_hash, iend_edge_hash, &
+!!     &          iedge_hash, iedge_flag, ie_edge, iedge_4_sf,          &
+!!     &          node_on_edge_sf)
+!!      subroutine set_edges_connect_4_ele(numele, numsurf, numedge,    &
 !!     &          nnod_4_ele, nnod_4_edge, ie, iedge_4_sf,              &
-!!     &          istack_edge_hash, iedge_hash, iedge_flag,             &
-!!     &          ie_edge, iedge_4_ele)
+!!     &          ntot_id, ntot_list, istack_edge_hash,                 &
+!!     &          iedge_hash, iedge_flag, ie_edge, iedge_4_ele)
 !!
-!!      subroutine set_part_edges_4_sf(numnod, numsurf, nnod_4_edge,    &
-!!     &          nunmedge_part, iedge_4_sf, istack_edge_hash,          &
-!!     &          iend_edge_hash, iedge_hash, iedge_flag,               &
-!!     &          iedge_part)
+!!      subroutine set_part_edges_4_sf                                  &
+!!     &         (numsurf, nunmedge_part, iedge_4_sf,                   &
+!!     &          ntot_id, ntot_list, istack_edge_hash, iend_edge_hash, &
+!!     &          iedge_hash, iedge_flag, iedge_part)
 !
       module set_edge_data_by_sf
 !
@@ -33,15 +33,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_num_edges_by_sf(numnod, numsurf, nnod_4_edge,    &
+      subroutine count_num_edges_by_sf(ntot_id, ntot_list,              &
      &          istack_edge_hash, iend_edge_hash, iedge_flag, numedge)
 !
-      integer(kind = kint), intent(in) :: numnod, numsurf, nnod_4_edge
+      integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
       integer(kind = kint_gl), intent(in) :: iend_edge_hash
-      integer(kind = kint), intent(in)                                  &
-     &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
-      integer(kind = kint), intent(inout)                               &
-     &                     :: iedge_flag(nedge_4_surf*numsurf)
+      integer(kind = kint), intent(in) :: istack_edge_hash(0:ntot_id)
+      integer(kind = kint), intent(in) :: iedge_flag(ntot_list)
       integer(kind = kint), intent(inout)  :: numedge
 !
       integer(kind = kint) ::  k1, ist, ied
@@ -62,22 +60,21 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_edges_connect_by_sf(numnod, numsurf, numedge,      &
-     &          nnod_4_surf, nnod_4_edge, ie_surf,                      &
-     &          istack_edge_hash, iend_edge_hash, iedge_hash,           &
-     &          iedge_flag, ie_edge, iedge_4_sf, node_on_edge_sf)
+      subroutine set_edges_connect_by_sf                                &
+     &         (numsurf, numedge, nnod_4_surf, nnod_4_edge, ie_surf,    &
+     &          ntot_id, ntot_list, istack_edge_hash, iend_edge_hash,   &
+     &          iedge_hash, iedge_flag, ie_edge, iedge_4_sf,            &
+     &          node_on_edge_sf)
 !
-      integer(kind = kint), intent(in) :: numnod, numsurf, numedge
+      integer(kind = kint), intent(in) :: numsurf, numedge
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_surf(numsurf, nnod_4_surf)
 !
+      integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
       integer(kind = kint_gl), intent(in) :: iend_edge_hash
-      integer(kind = kint), intent(in)                                  &
-     &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
-      integer(kind = kint), intent(in)                                  &
-     &                     :: iedge_hash(nedge_4_surf*numsurf,2)
-      integer(kind = kint), intent(inout)                               &
-     &                     :: iedge_flag(nedge_4_surf*numsurf)
+      integer(kind = kint), intent(in) :: istack_edge_hash(0:ntot_id)
+      integer(kind = kint), intent(in) :: iedge_hash(ntot_list,2)
+      integer(kind = kint), intent(in) :: iedge_flag(ntot_list)
 !
       integer(kind = kint), intent(inout)                               &
      &                     :: ie_edge(numedge,nnod_4_edge)
@@ -136,13 +133,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_edges_connect_4_ele                                &
-     &         (numnod, numele, numsurf, numedge,                       &
+      subroutine set_edges_connect_4_ele(numele, numsurf, numedge,      &
      &          nnod_4_ele, nnod_4_edge, ie, iedge_4_sf,                &
-     &          istack_edge_hash, iedge_hash, iedge_flag,               &
-     &          ie_edge, iedge_4_ele)
+     &          ntot_id, ntot_list, istack_edge_hash,                   &
+     &          iedge_hash, iedge_flag, ie_edge, iedge_4_ele)
 !
-      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: numsurf, numedge
       integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_edge
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -151,12 +147,10 @@
       integer(kind = kint), intent(in)                                  &
      &                     :: ie_edge(numedge,nnod_4_edge)
 !
-      integer(kind = kint), intent(in)                                  &
-     &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
-      integer(kind = kint), intent(in)                                  &
-     &                     :: iedge_hash(nedge_4_surf*numsurf,2)
-      integer(kind = kint), intent(inout)                               &
-     &                     :: iedge_flag(nedge_4_surf*numsurf)
+      integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
+      integer(kind = kint), intent(in) :: istack_edge_hash(0:ntot_id)
+      integer(kind = kint), intent(in) :: iedge_hash(ntot_list,2)
+      integer(kind = kint), intent(in) :: iedge_flag(ntot_list)
 !
       integer(kind = kint), intent(inout)                               &
      &                     :: iedge_4_ele(numele,nedge_4_ele)
@@ -196,26 +190,23 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_part_edges_4_sf(numnod, numsurf, nnod_4_edge,      &
-     &          nunmedge_part, iedge_4_sf, istack_edge_hash,            &
-     &          iend_edge_hash, iedge_hash, iedge_flag,                 &
-     &          iedge_part)
+      subroutine set_part_edges_4_sf                                    &
+     &         (numsurf, nunmedge_part, iedge_4_sf,                     &
+     &          ntot_id, ntot_list, istack_edge_hash, iend_edge_hash,   &
+     &          iedge_hash, iedge_flag, iedge_part)
 !
       integer(kind = kint), intent(in) :: nunmedge_part
-      integer(kind = kint), intent(in) :: numnod, numsurf, nnod_4_edge
+      integer(kind = kint), intent(in) :: numsurf
       integer(kind = kint), intent(in)                                  &
      &                     :: iedge_4_sf(numsurf,nedge_4_surf)
 !
+      integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
       integer(kind = kint_gl), intent(in) :: iend_edge_hash
-      integer(kind = kint), intent(in)                                  &
-     &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
-      integer(kind = kint), intent(in)                                  &
-     &                     :: iedge_hash(nedge_4_surf*numsurf,2)
-      integer(kind = kint), intent(inout)                               &
-     &                     :: iedge_flag(nedge_4_surf*numsurf)
+      integer(kind = kint), intent(in) :: istack_edge_hash(0:ntot_id)
+      integer(kind = kint), intent(in) :: iedge_hash(ntot_list,2)
+      integer(kind = kint), intent(in) :: iedge_flag(ntot_list)
 !
-      integer(kind = kint), intent(inout)                               &
-     &                     :: iedge_part(nunmedge_part)
+      integer(kind = kint), intent(inout) :: iedge_part(nunmedge_part)
 !
       integer(kind = kint) :: k1, k2, ist, ied, iedge
       integer(kind = kint) :: jsurf, js

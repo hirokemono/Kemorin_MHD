@@ -86,19 +86,21 @@
 !
         call alloc_sum_hash(node%numnod, ele%numele,                    &
      &      nsurf_4_ele, surf%nnod_4_surf, surf_ele_tbl)
+!         surf_ele_tbl%ntot_id = node%numnod * surf%nnod_4_surf
+!         surf_ele_tbl%ntot_list = nsurf_4_ele * ele%numele
 !
-        call const_part_surface_hash(nele_grp,                          &
-     &      group%ele_grp%item_grp(ist_grp:ied_grp),                    &
-     &      node, ele, surf, surf_ele_tbl)
+        call const_part_surface_hash                                    &
+     &     (ele, nele_grp, group%ele_grp%item_grp(ist_grp:ied_grp),     &
+     &      surf_ele_tbl)
 !
 !   mark independent surface
 !
 !        write(*,*) 'mark_independent_surface', igrp
-        call mark_independent_surface(node%numnod, ele%numele,          &
-     &      ele%nnod_4_ele, surf%nnod_4_surf,                           &
-     &      ele%ie, surf_ele_tbl%istack_hash,                           &
-     &      surf_ele_tbl%iend_hash, surf_ele_tbl%id_hash,               &
-     &      surf_ele_tbl%iflag_hash)
+        call mark_independent_surface                                   &
+     &     (ele%numele, ele%nnod_4_ele, ele%ie,                         &
+     &      surf_ele_tbl%ntot_id, surf_ele_tbl%ntot_list,               &
+     &      surf_ele_tbl%istack_hash, surf_ele_tbl%iend_hash,           &
+     &      surf_ele_tbl%id_hash, surf_ele_tbl%iflag_hash)
 !
 !    count independent surfaces for element group
 !
@@ -112,7 +114,7 @@
 !
 !        write(*,*) 'count_part_surface', igrp
         call count_part_surface                                         &
-     &     (ele%numele, nele_grp, surf_ele_tbl%iflag_hash,              &
+     &     (nele_grp, surf_ele_tbl%ntot_list, surf_ele_tbl%iflag_hash,  &
      &      mgd_sf_grp%num_sf_iso_ele_grp(igrp) )
         mgd_sf_grp%istack_sf_iso_ele_grp(igrp)                          &
      &      = mgd_sf_grp%istack_sf_iso_ele_grp(igrp-1)                  &
@@ -128,8 +130,9 @@
         call deallocate_iso_surf_4_egrp_tmp
 !
 !        write(*,*) 'set_part_surface', igrp
-        call set_part_surface(ele%numele, nele_grp,                     &
-     &      mgd_sf_grp%num_sf_iso_ele_grp(igrp), surf%isf_4_ele,        &
+        call set_part_surface(ele%numele,                               &
+     &       nele_grp, mgd_sf_grp%num_sf_iso_ele_grp(igrp),             &
+     &      surf%isf_4_ele,surf_ele_tbl%ntot_list,                      &
      &      surf_ele_tbl%id_hash, surf_ele_tbl%iflag_hash,              &
      &      mgd_sf_grp%isf_isolate_ele_grp(ist_grp+1))
 !
