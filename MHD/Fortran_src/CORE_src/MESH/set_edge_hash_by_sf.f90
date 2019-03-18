@@ -9,8 +9,7 @@
 !!@verbatim
 !!      subroutine const_edge_hash_4_sf                                 &
 !!     &         (numnod, numsurf, nnod_4_surf, nnod_4_edge, ie_surf,   &
-!!     &          inum_edge_hash, istack_edge_hash,                     &
-!!     &          iend_edge_hash, iedge_hash, iedge_flag)
+!!     &          ed_sf_tbl)
 !!
 !!      subroutine const_part_edge_hash_4_sf(numnod, numsurf,           &
 !!     &           numsurf_part, nnod_4_surf, nnod_4_edge, ie_surf,     &
@@ -37,31 +36,26 @@
 !
       subroutine const_edge_hash_4_sf                                   &
      &         (numnod, numsurf, nnod_4_surf, nnod_4_edge, ie_surf,     &
-     &          inum_edge_hash, istack_edge_hash,                       &
-     &          iend_edge_hash, iedge_hash, iedge_flag)
+     &          ed_sf_tbl)
+!
+      use t_sum_hash
 !
       integer(kind = kint), intent(in) :: numnod, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
 !
-      integer(kind = kint), intent(inout) :: iend_edge_hash
-      integer(kind = kint), intent(inout)                               &
-     &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
-      integer(kind = kint), intent(inout)                               &
-     &                     :: inum_edge_hash(nnod_4_edge*numnod)
-      integer(kind = kint), intent(inout)                               &
-     &                     :: iedge_hash(nedge_4_surf*numsurf,2)
-      integer(kind = kint), intent(inout)                               &
-     &                     :: iedge_flag(nedge_4_surf*numsurf)
+      type(sum_hash_tbl), intent(inout) :: ed_sf_tbl
 !
 !
       call set_edge_hash_4_sf                                           &
      &   (numnod, numsurf, nnod_4_surf, nnod_4_edge, ie_surf,           &
-     &    inum_edge_hash, istack_edge_hash, iend_edge_hash, iedge_hash)
+     &    ed_sf_tbl%num_hash, ed_sf_tbl%istack_hash,                    &
+     &    ed_sf_tbl%iend_hash, ed_sf_tbl%id_hash)
 !
       call mark_all_edges_by_sf                                         &
      &   (numnod, numsurf, nnod_4_surf, nnod_4_edge, ie_surf,           &
-     &    istack_edge_hash, iend_edge_hash, iedge_hash, iedge_flag)
+     &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
+     &    ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash)
 !
       end subroutine const_edge_hash_4_sf
 !
@@ -77,7 +71,7 @@
       integer(kind = kint), intent(in) :: isf_part(numsurf_part)
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
 !
-      integer(kind = kint), intent(inout) :: iend_edge_hash
+      integer(kind = kint_gl), intent(inout) :: iend_edge_hash
       integer(kind = kint), intent(inout)                               &
      &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
       integer(kind = kint), intent(inout)                               &
@@ -116,10 +110,11 @@
      &                     :: inum_edge_hash(nnod_4_edge*numnod)
       integer(kind = kint), intent(inout)                               &
      &                     :: iedge_hash(nedge_4_surf*numsurf,2)
-      integer(kind = kint), intent(inout) :: iend_edge_hash
+      integer(kind = kint_gl), intent(inout) :: iend_edge_hash
 !
       integer(kind = kint) :: isurf, is1, is2, k1
-      integer(kind = kint) :: ihash, icou
+      integer(kind = kint) :: icou
+      integer(kind = kint_gl) :: ihash
 !
 !
 ! Count numbers
@@ -127,7 +122,8 @@
         do k1 = 1, nedge_4_surf
           is1 = node_on_edge_sf_l(1,k1)
           is2 = node_on_edge_sf_l(2,k1)
-          ihash = ie_surf(isurf,is1) + ie_surf(isurf,is2)
+          ihash = int(ie_surf(isurf,is1) + ie_surf(isurf,is2),          &
+     &                KIND(ihash))
 !
           inum_edge_hash(ihash) = inum_edge_hash(ihash) + 1
         end do
@@ -149,7 +145,8 @@
         do k1 = 1, nedge_4_surf
           is1 = node_on_edge_sf_l(1,k1)
           is2 = node_on_edge_sf_l(2,k1)
-          ihash = ie_surf(isurf,is1) + ie_surf(isurf,is2)
+          ihash = int(ie_surf(isurf,is1) + ie_surf(isurf,is2),          &
+     &                KIND(ihash))
 !
           inum_edge_hash(ihash) = inum_edge_hash(ihash) + 1
           icou = istack_edge_hash(ihash-1) + inum_edge_hash(ihash)
@@ -179,10 +176,11 @@
      &                     :: inum_edge_hash(nnod_4_edge*numnod)
       integer(kind = kint), intent(inout)                               &
      &                     :: iedge_hash(nedge_4_surf*numsurf,2)
-      integer(kind = kint), intent(inout) :: iend_edge_hash
+      integer(kind = kint_gl), intent(inout) :: iend_edge_hash
 !
       integer(kind = kint) :: inum, isurf, is1, is2, k1
-      integer(kind = kint) :: ihash, icou
+      integer(kind = kint) :: icou
+      integer(kind = kint_gl) :: ihash
 !
 ! Count numbers
       do inum = 1, numsurf_part
@@ -190,7 +188,8 @@
         do k1 = 1, nedge_4_surf
           is1 = node_on_edge_sf_l(1,k1)
           is2 = node_on_edge_sf_l(2,k1)
-          ihash = ie_surf(isurf,is1) + ie_surf(isurf,is2)
+          ihash = int(ie_surf(isurf,is1) + ie_surf(isurf,is2),          &
+     &                 KIND(ihash))
 !
           inum_edge_hash(ihash) = inum_edge_hash(ihash) + 1
         end do
@@ -198,7 +197,7 @@
 !
 ! Set stacks
       istack_edge_hash = 0
-      do ihash = 1, nnod_4_edge*numnod
+      do ihash = 1, int(nnod_4_edge*numnod, KIND(ihash))
         istack_edge_hash(ihash) = istack_edge_hash(ihash-1)             &
      &                               + inum_edge_hash(ihash)
         if (istack_edge_hash(ihash) .le. (nedge_4_surf*numsurf_part) )  &
@@ -214,7 +213,8 @@
         do k1 = 1, nedge_4_surf
           is1 = node_on_edge_sf_l(1,k1)
           is2 = node_on_edge_sf_l(2,k1)
-          ihash = ie_surf(isurf,is1) + ie_surf(isurf,is2)
+          ihash = int(ie_surf(isurf,is1) + ie_surf(isurf,is2),          &
+     &                 KIND(ihash))
 !
           inum_edge_hash(ihash) = inum_edge_hash(ihash) + 1
           icou = istack_edge_hash(ihash-1) + inum_edge_hash(ihash)
@@ -239,14 +239,14 @@
      &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
       integer(kind = kint), intent(in)                                  &
      &                     :: iedge_hash(nedge_4_surf*numsurf,2)
-      integer(kind = kint), intent(in) :: iend_edge_hash
+      integer(kind = kint_gl), intent(in) :: iend_edge_hash
 !
       integer(kind = kint), intent(inout)                               &
      &                     :: iedge_flag(nedge_4_surf*numsurf)
 !
       integer(kind = kint) :: isurf, iedge, inod1, inod2, is1, is2
       integer(kind = kint) :: jsurf, jedge, jnod1, jnod2, js1, js2
-      integer(kind = kint) :: ihash
+      integer(kind = kint_gl) :: ihash
       integer(kind = kint) :: ist, ied, k1, k2
 !      integer(kind= kint_gl) :: i1_gl, i2_gl
 !

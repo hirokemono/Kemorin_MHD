@@ -105,8 +105,7 @@
       call const_edge_hash_4_sf                                         &
      &   (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,                &
      &    nnod_4_surf, edge%nnod_4_edge, view_mesh%ie_sf_viewer,        &
-     &    ed_sf_tbl%num_hash, ed_sf_tbl%istack_hash,                    &
-     &    ed_sf_tbl%iend_hash, ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash)
+     &    ed_sf_tbl)
 !
 !      write(*,*) 'count_num_edges_by_sf'
       call count_num_edges_by_sf                                        &

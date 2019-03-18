@@ -44,7 +44,7 @@
       integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_edge
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
-      integer(kind = kint), intent(inout) :: iend_edge_hash
+      integer(kind = kint_gl), intent(inout) :: iend_edge_hash
       integer(kind = kint), intent(inout)                               &
      &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
       integer(kind = kint), intent(inout)                               &
@@ -81,7 +81,7 @@
       integer(kind = kint), intent(in) :: iele_part(numele_part)
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
-      integer(kind = kint), intent(inout) :: iend_edge_hash
+      integer(kind = kint_gl), intent(inout) :: iend_edge_hash
       integer(kind = kint), intent(inout)                               &
      &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
       integer(kind = kint), intent(inout)                               &
@@ -117,14 +117,14 @@
       integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_edge
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
-      integer(kind = kint), intent(inout) :: iend_edge_hash
+      integer(kind = kint_gl), intent(inout) :: iend_edge_hash
       integer(kind = kint), intent(inout)                               &
      &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
       integer(kind = kint), intent(inout)                               &
      &                     :: inum_edge_hash(nnod_4_edge*numnod)
 !
       integer(kind = kint) :: iele, is1, is2, k1
-      integer(kind = kint) :: ihash
+      integer(kind = kint_gl) :: ihash
 !
 !
 ! Count numbers
@@ -132,7 +132,7 @@
         do k1 = 1, nedge_4_ele
           is1 = node_on_edge_l(1,k1)
           is2 = node_on_edge_l(2,k1)
-          ihash = ie(iele,is1) + ie(iele,is2)
+          ihash = int(ie(iele,is1)+ie(iele,is2), KIND(ihash))
 !
           inum_edge_hash(ihash) = inum_edge_hash(ihash) + 1
         end do
@@ -140,9 +140,9 @@
 !
 ! Set stacks
       istack_edge_hash = 0
-      do ihash = 1, nnod_4_edge*numnod
+      do ihash = 1, int(nnod_4_edge*numnod, KIND(ihash))
         istack_edge_hash(ihash) = istack_edge_hash(ihash-1)             &
-     &                               + inum_edge_hash(ihash)
+     &                           + inum_edge_hash(ihash)
         if (istack_edge_hash(ihash) .le. (nedge_4_ele*numele) ) then
           iend_edge_hash = ihash
         end if
@@ -205,10 +205,10 @@
      &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
       integer(kind = kint), intent(inout)                               &
      &                     :: inum_edge_hash(nnod_4_edge*numnod)
-      integer(kind = kint), intent(inout) :: iend_edge_hash
+      integer(kind = kint_gl), intent(inout) :: iend_edge_hash
 !
       integer(kind = kint) :: inum, iele, is1, is2, k1
-      integer(kind = kint) :: ihash
+      integer(kind = kint_gl) :: ihash
 !
 !
 ! Count numbers
@@ -217,7 +217,7 @@
         do k1 = 1, nedge_4_ele
           is1 = node_on_edge_l(1,k1)
           is2 = node_on_edge_l(2,k1)
-          ihash = ie(iele,is1) + ie(iele,is2)
+          ihash = int(ie(iele,is1) + ie(iele,is2), KIND(ihash))
 !
           inum_edge_hash(ihash) = inum_edge_hash(ihash) + 1
         end do
@@ -291,13 +291,13 @@
      &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
       integer(kind = kint), intent(in)                                  &
      &                     :: iedge_hash(nedge_4_ele*numele,2)
-      integer(kind = kint), intent(in) :: iend_edge_hash
+      integer(kind = kint_gl), intent(in) :: iend_edge_hash
 !
       integer(kind = kint), intent(inout)                               &
      &                     :: iedge_flag(nedge_4_surf*numele)
 !
       integer(kind = kint) :: inod(2), jnod(2)
-      integer(kind = kint) :: ihash
+      integer(kind = kint_gl) :: ihash
       integer(kind = kint) :: ist, ied, k1, k2
 !      integer(kind= kint_gl) :: i1_gl, i2_gl
 !

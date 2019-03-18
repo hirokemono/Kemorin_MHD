@@ -37,14 +37,15 @@
      &          istack_edge_hash, iend_edge_hash, iedge_flag, numedge)
 !
       integer(kind = kint), intent(in) :: numnod, numsurf, nnod_4_edge
-      integer(kind = kint), intent(in) :: iend_edge_hash
+      integer(kind = kint_gl), intent(in) :: iend_edge_hash
       integer(kind = kint), intent(in)                                  &
      &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
       integer(kind = kint), intent(inout)                               &
      &                     :: iedge_flag(nedge_4_surf*numsurf)
       integer(kind = kint), intent(inout)  :: numedge
 !
-      integer(kind = kint) :: ihash, k1, ist, ied
+      integer(kind = kint) ::  k1, ist, ied
+      integer(kind = kint_gl) :: ihash
 !
 !
       numedge = 0
@@ -70,7 +71,7 @@
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_surf(numsurf, nnod_4_surf)
 !
-      integer(kind = kint), intent(in) :: iend_edge_hash
+      integer(kind = kint_gl), intent(in) :: iend_edge_hash
       integer(kind = kint), intent(in)                                  &
      &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
       integer(kind = kint), intent(in)                                  &
@@ -85,9 +86,10 @@
       integer(kind = kint), intent(in)                                  &
      &                     :: node_on_edge_sf(nnod_4_edge,nedge_4_surf)
 !
-      integer(kind = kint) :: k1, k2, ihash, ist, ied
+      integer(kind = kint) :: k1, k2, ist, ied
       integer(kind = kint) :: i, isurf, is, iedge
       integer(kind = kint) :: j, jsurf, js
+      integer(kind = kint_gl) :: ihash
 !
 !
       iedge = 0
@@ -204,7 +206,7 @@
       integer(kind = kint), intent(in)                                  &
      &                     :: iedge_4_sf(numsurf,nedge_4_surf)
 !
-      integer(kind = kint), intent(in) :: iend_edge_hash
+      integer(kind = kint_gl), intent(in) :: iend_edge_hash
       integer(kind = kint), intent(in)                                  &
      &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
       integer(kind = kint), intent(in)                                  &
@@ -215,8 +217,9 @@
       integer(kind = kint), intent(inout)                               &
      &                     :: iedge_part(nunmedge_part)
 !
-      integer(kind = kint) :: k1, k2, ihash, ist, ied, iedge
+      integer(kind = kint) :: k1, k2, ist, ied, iedge
       integer(kind = kint) :: jsurf, js
+      integer(kind = kint_gl) :: ihash
 !
 !
       iedge = 0

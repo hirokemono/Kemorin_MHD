@@ -37,7 +37,7 @@
       integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
-      integer(kind = kint), intent(inout) :: iend_surf_hash
+      integer(kind = kint_gl), intent(inout) :: iend_surf_hash
       integer(kind = kint), intent(inout)                               &
      &                     :: inum_surf_hash(nnod_4_surf*numnod)
       integer(kind = kint), intent(inout)                               &
@@ -67,7 +67,7 @@
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(in) :: iele_part(numele_part)
 !
-      integer(kind = kint), intent(inout) :: iend_surf_hash
+      integer(kind = kint_gl), intent(inout) :: iend_surf_hash
       integer(kind = kint), intent(inout)                               &
      &                     :: inum_surf_hash(nnod_4_surf*numnod)
       integer(kind = kint), intent(inout)                               &
@@ -97,7 +97,7 @@
       integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
-      integer(kind = kint), intent(inout) :: iend_surf_hash
+      integer(kind = kint_gl), intent(inout) :: iend_surf_hash
       integer(kind = kint), intent(inout)                               &
      &                     :: inum_surf_hash(nnod_4_surf*numnod)
       integer(kind = kint), intent(inout)                               &
@@ -106,7 +106,7 @@
       integer(kind = kint) :: iele, is
       integer(kind = kint) :: i1, i2, i3, i4
       integer(kind = kint) :: is1, is2, is3, is4
-      integer(kind = kint) :: ihash
+      integer(kind = kint_gl) :: ihash
 !
 !
       inum_surf_hash = 0
@@ -121,7 +121,7 @@
           i3 = ie(iele,is3)
           i4 = ie(iele,is4)
 !
-          ihash = i1+i2+i3+i4
+          ihash = int(i1+i2+i3+i4,KIND(ihash))
           inum_surf_hash(ihash) = inum_surf_hash(ihash) + 1
 !
         end do
@@ -135,7 +135,6 @@
           iend_surf_hash = ihash
         end if
       end do
-!
 !
       end subroutine count_surface_hash
 !
@@ -198,7 +197,7 @@
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(in) :: iele_part(numele_part)
 !
-      integer(kind = kint), intent(inout) :: iend_surf_hash
+      integer(kind = kint_gl), intent(inout) :: iend_surf_hash
       integer(kind = kint), intent(inout)                               &
      &                     :: inum_surf_hash(nnod_4_surf*numnod)
       integer(kind = kint), intent(inout)                               &
@@ -207,7 +206,7 @@
       integer(kind = kint) :: inum, iele, is
       integer(kind = kint) :: i1, i2, i3, i4
       integer(kind = kint) :: is1, is2, is3, is4
-      integer(kind = kint) :: ihash
+      integer(kind = kint_gl) :: ihash
 !
 !
       inum_surf_hash = 0
@@ -223,7 +222,7 @@
           i3 = ie(iele,is3)
           i4 = ie(iele,is4)
 !
-          ihash = i1+i2+i3+i4
+          ihash = int(i1+i2+i3+i4, KIND(ihash))
           inum_surf_hash(ihash) = inum_surf_hash(ihash) + 1
 !
         end do

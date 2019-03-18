@@ -41,7 +41,7 @@
       integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
-      integer(kind = kint), intent(in) :: iend_surf_hash
+      integer(kind = kint_gl), intent(in) :: iend_surf_hash
       integer(kind = kint), intent(in)                                  &
      &                     :: istack_surf_hash(0:nnod_4_surf*numnod)
       integer(kind = kint), intent(in)                                  &
@@ -51,8 +51,9 @@
      &                     :: isurf_flag(nsurf_4_ele*numele)
 !
       integer(kind = kint) :: inod(4), jnod(4)
-      integer(kind = kint) :: ihash, iflag_inside
+      integer(kind = kint) :: iflag_inside
       integer(kind = kint) :: ist, ied, k1, k2
+      integer(kind = kint_gl) :: ihash
 !
 !
       isurf_flag = 0
@@ -131,7 +132,7 @@
       integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
-      integer(kind = kint), intent(in) :: iend_surf_hash
+      integer(kind = kint_gl), intent(in) :: iend_surf_hash
       integer(kind = kint), intent(in)                                  &
      &                     :: istack_surf_hash(0:nnod_4_surf*numnod)
       integer(kind = kint), intent(in)                                  &
@@ -141,8 +142,9 @@
      &                     :: isurf_flag(nsurf_4_ele*numele)
 !
       integer(kind = kint) :: inod(4), jnod(4)
-      integer(kind = kint) :: ihash, iflag_inside
+      integer(kind = kint) :: iflag_inside
       integer(kind = kint) :: ist, ied, k1, k2
+      integer(kind = kint_gl) :: ihash
 !
 !
       isurf_flag = 0
@@ -218,7 +220,7 @@
       integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
-      integer(kind = kint), intent(in) :: iend_surf_hash
+      integer(kind = kint_gl), intent(in) :: iend_surf_hash
       integer(kind = kint), intent(in)                                  &
      &                     :: istack_surf_hash(0:nnod_4_surf*numnod)
       integer(kind = kint), intent(in)                                  &
@@ -229,7 +231,7 @@
 !
       integer(kind = kint) :: iele, is
       integer(kind = kint) :: inod(4)
-      integer(kind = kint) :: ihash
+      integer(kind = kint_gl) :: ihash
       integer(kind = kint) :: ist, ied, k1
 !
 !
