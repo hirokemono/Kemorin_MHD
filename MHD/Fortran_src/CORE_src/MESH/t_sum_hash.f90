@@ -26,16 +26,16 @@
 !>        Maximum address of sum of node ID
         integer(kind = kint_gl) :: iend_hash
 !>        Number of items at each level
-        integer(kind = kint), allocatable :: num_hash(:)
+        integer(kind = kint_gl), allocatable :: num_hash(:)
 !>        Stack of items at each level
-        integer(kind = kint), allocatable :: istack_hash(:)
+        integer(kind = kint_gl), allocatable :: istack_hash(:)
 !
 !>        Total number of list
         integer(kind = kint_gl) :: ntot_list
 !>        item addresses
         integer(kind = kint), allocatable :: id_hash(:,:)
 !>        item flag
-        integer(kind = kint), allocatable :: iflag_hash(:)
+        integer(kind = kint_gl), allocatable :: iflag_hash(:)
       end type sum_hash_tbl
 !
 !------------------------------------------------------------------

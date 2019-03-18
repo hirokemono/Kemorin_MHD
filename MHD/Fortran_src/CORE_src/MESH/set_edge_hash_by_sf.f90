@@ -89,7 +89,7 @@
 !------------------------------------------------------------------
 !
       subroutine set_edge_hash_4_sf(numsurf, nnod_4_surf, ie_surf,      &
-     &          ntot_id, ntot_list, inum_edge_hash, istack_edge_hash,   &
+     &          ntot_id, ntot_list, num_edge_hash, istack_edge_hash,    &
      &          iend_edge_hash, iedge_hash)
 !
       integer(kind = kint), intent(in) :: numsurf
@@ -97,15 +97,14 @@
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
 !
-      integer(kind = kint), intent(inout)                               &
+      integer(kind = kint_gl), intent(inout)                            &
      &                     :: istack_edge_hash(0:ntot_id)
-      integer(kind = kint), intent(inout) :: inum_edge_hash(ntot_id)
+      integer(kind = kint_gl), intent(inout) :: num_edge_hash(ntot_id)
       integer(kind = kint), intent(inout) :: iedge_hash(ntot_list,2)
       integer(kind = kint_gl), intent(inout) :: iend_edge_hash
 !
       integer(kind = kint) :: isurf, is1, is2, k1
-      integer(kind = kint) :: icou
-      integer(kind = kint_gl) :: ihash
+      integer(kind = kint_gl) :: ihash, icou
 !
 !
 ! Count numbers
@@ -116,7 +115,7 @@
           ihash = int(ie_surf(isurf,is1) + ie_surf(isurf,is2),          &
      &                KIND(ihash))
 !
-          inum_edge_hash(ihash) = inum_edge_hash(ihash) + 1
+          num_edge_hash(ihash) = num_edge_hash(ihash) + 1
         end do
       end do
 !
@@ -124,14 +123,14 @@
       istack_edge_hash = 0
       do ihash = 1, ntot_id
         istack_edge_hash(ihash) = istack_edge_hash(ihash-1)             &
-     &                               + inum_edge_hash(ihash)
+     &                               + num_edge_hash(ihash)
         if (istack_edge_hash(ihash) .le. (nedge_4_surf*numsurf) ) then
           iend_edge_hash = ihash
         end if
       end do
 !
 ! Set ID
-      inum_edge_hash = 0
+      num_edge_hash = 0
       do isurf = 1, numsurf
         do k1 = 1, nedge_4_surf
           is1 = node_on_edge_sf_l(1,k1)
@@ -139,8 +138,8 @@
           ihash = int(ie_surf(isurf,is1) + ie_surf(isurf,is2),          &
      &                KIND(ihash))
 !
-          inum_edge_hash(ihash) = inum_edge_hash(ihash) + 1
-          icou = istack_edge_hash(ihash-1) + inum_edge_hash(ihash)
+          num_edge_hash(ihash) = num_edge_hash(ihash) + 1
+          icou = istack_edge_hash(ihash-1) + num_edge_hash(ihash)
           iedge_hash(icou,1) = isurf
           iedge_hash(icou,2) = k1
         end do
@@ -153,7 +152,7 @@
 !
       subroutine set_part_edge_hash_4_sf                                &
      &         (numsurf, nnod_4_surf, ie_surf, numsurf_part, isf_part,  &
-     &          ntot_id, ntot_list, inum_edge_hash, istack_edge_hash,   &
+     &          ntot_id, ntot_list, num_edge_hash, istack_edge_hash,    &
      &         iend_edge_hash, iedge_hash)
 !
       integer(kind = kint), intent(in) :: numsurf, numsurf_part
@@ -162,15 +161,14 @@
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
 !
-      integer(kind = kint), intent(inout)                               &
+      integer(kind = kint_gl), intent(inout)                            &
      &                     :: istack_edge_hash(0:ntot_id)
-      integer(kind = kint), intent(inout) :: inum_edge_hash(ntot_id)
+      integer(kind = kint_gl), intent(inout) :: num_edge_hash(ntot_id)
       integer(kind = kint), intent(inout) :: iedge_hash(ntot_list,2)
       integer(kind = kint_gl), intent(inout) :: iend_edge_hash
 !
       integer(kind = kint) :: inum, isurf, is1, is2, k1
-      integer(kind = kint) :: icou
-      integer(kind = kint_gl) :: ihash
+      integer(kind = kint_gl) :: ihash, icou
 !
 ! Count numbers
       do inum = 1, numsurf_part
@@ -181,7 +179,7 @@
           ihash = int(ie_surf(isurf,is1) + ie_surf(isurf,is2),          &
      &                 KIND(ihash))
 !
-          inum_edge_hash(ihash) = inum_edge_hash(ihash) + 1
+          num_edge_hash(ihash) = num_edge_hash(ihash) + 1
         end do
       end do
 !
@@ -189,7 +187,7 @@
       istack_edge_hash = 0
       do ihash = 1, ntot_id
         istack_edge_hash(ihash) = istack_edge_hash(ihash-1)             &
-     &                               + inum_edge_hash(ihash)
+     &                               + num_edge_hash(ihash)
         if (istack_edge_hash(ihash) .le. (nedge_4_surf*numsurf_part) )  &
      &   then
           iend_edge_hash = ihash
@@ -197,7 +195,7 @@
       end do
 !
 ! Set ID
-      inum_edge_hash = 0
+      num_edge_hash = 0
       do inum = 1, numsurf_part
         isurf = abs( isf_part(inum) )
         do k1 = 1, nedge_4_surf
@@ -206,8 +204,8 @@
           ihash = int(ie_surf(isurf,is1) + ie_surf(isurf,is2),          &
      &                 KIND(ihash))
 !
-          inum_edge_hash(ihash) = inum_edge_hash(ihash) + 1
-          icou = istack_edge_hash(ihash-1) + inum_edge_hash(ihash)
+          num_edge_hash(ihash) = num_edge_hash(ihash) + 1
+          icou = istack_edge_hash(ihash-1) + num_edge_hash(ihash)
           iedge_hash(icou,1) = isurf
           iedge_hash(icou,2) = k1
         end do
@@ -226,17 +224,17 @@
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
 !
-      integer(kind = kint), intent(in)                                  &
+      integer(kind = kint_gl), intent(in)                               &
      &                     :: istack_edge_hash(0:ntot_id)
       integer(kind = kint), intent(in) :: iedge_hash(ntot_list,2)
       integer(kind = kint_gl), intent(in) :: iend_edge_hash
 !
-      integer(kind = kint), intent(inout) :: iedge_flag(ntot_list)
+      integer(kind = kint_gl), intent(inout) :: iedge_flag(ntot_list)
 !
       integer(kind = kint) :: isurf, iedge, inod1, inod2, is1, is2
       integer(kind = kint) :: jsurf, jedge, jnod1, jnod2, js1, js2
       integer(kind = kint_gl) :: ihash
-      integer(kind = kint) :: ist, ied, k1, k2
+      integer(kind = kint_gl) :: ist, ied, k1, k2
 !      integer(kind= kint_gl) :: i1_gl, i2_gl
 !
 !

@@ -40,14 +40,15 @@
 !
       integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
       integer(kind = kint_gl), intent(in) :: iend_surf_hash
-      integer(kind = kint), intent(in) :: istack_surf_hash(0:ntot_id)
+      integer(kind = kint_gl), intent(in)                               &
+     &                        :: istack_surf_hash(0:ntot_id)
       integer(kind = kint), intent(in) :: isurf_hash(ntot_list,2)
 !
-      integer(kind = kint), intent(inout) :: isurf_flag(ntot_list)
+      integer(kind = kint_gl), intent(inout) :: isurf_flag(ntot_list)
 !
       integer(kind = kint) :: inod(4), jnod(4)
       integer(kind = kint) :: iflag_inside
-      integer(kind = kint) :: ist, ied, k1, k2
+      integer(kind = kint_gl) :: ist, ied, k1, k2
       integer(kind = kint_gl) :: ihash
 !
 !
@@ -128,14 +129,15 @@
 !
       integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
       integer(kind = kint_gl), intent(in) :: iend_surf_hash
-      integer(kind = kint), intent(in) :: istack_surf_hash(0:ntot_id)
+      integer(kind = kint_gl), intent(in)                               &
+     &                        :: istack_surf_hash(0:ntot_id)
       integer(kind = kint), intent(in) :: isurf_hash(ntot_list,2)
 !
-      integer(kind = kint), intent(inout) :: isurf_flag(ntot_list)
+      integer(kind = kint_gl), intent(inout) :: isurf_flag(ntot_list)
 !
       integer(kind = kint) :: inod(4), jnod(4)
       integer(kind = kint) :: iflag_inside
-      integer(kind = kint) :: ist, ied, k1, k2
+      integer(kind = kint_gl) :: ist, ied, k1, k2
       integer(kind = kint_gl) :: ihash
 !
 !
@@ -214,15 +216,16 @@
 !
       integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
       integer(kind = kint_gl), intent(in) :: iend_surf_hash
-      integer(kind = kint), intent(in) :: istack_surf_hash(0:ntot_id)
+      integer(kind = kint_gl), intent(in)                               &
+     &                        :: istack_surf_hash(0:ntot_id)
       integer(kind = kint), intent(in) :: isurf_hash(ntot_list,2)
 !
-      integer(kind = kint), intent(inout) :: isurf_flag(ntot_list)
+      integer(kind = kint_gl), intent(inout) :: isurf_flag(ntot_list)
 !
       integer(kind = kint) :: iele, is
       integer(kind = kint) :: inod(4)
       integer(kind = kint_gl) :: ihash
-      integer(kind = kint) :: ist, ied, k1
+      integer(kind = kint_gl) :: ist, ied, k1
 !
 !
 !!$omp parallel do private(ihash,ist,ied,k1,iele,is,inod)
@@ -231,7 +234,7 @@
         ied = istack_surf_hash(ihash)
 !
         do k1 = ist, ied
-          if( isurf_flag(k1) .ne. 0 ) cycle
+          if(isurf_flag(k1) .ne. 0) cycle
 !
           iele = isurf_hash(k1,1)
           is =   isurf_hash(k1,2)

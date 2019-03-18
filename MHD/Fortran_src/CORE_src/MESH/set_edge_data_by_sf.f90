@@ -38,11 +38,12 @@
 !
       integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
       integer(kind = kint_gl), intent(in) :: iend_edge_hash
-      integer(kind = kint), intent(in) :: istack_edge_hash(0:ntot_id)
-      integer(kind = kint), intent(in) :: iedge_flag(ntot_list)
+      integer(kind = kint_gl), intent(in)                               &
+     &                        :: istack_edge_hash(0:ntot_id)
+      integer(kind = kint_gl), intent(in) :: iedge_flag(ntot_list)
       integer(kind = kint), intent(inout)  :: numedge
 !
-      integer(kind = kint) ::  k1, ist, ied
+      integer(kind = kint_gl) ::  k1, ist, ied
       integer(kind = kint_gl) :: ihash
 !
 !
@@ -72,9 +73,10 @@
 !
       integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
       integer(kind = kint_gl), intent(in) :: iend_edge_hash
-      integer(kind = kint), intent(in) :: istack_edge_hash(0:ntot_id)
+      integer(kind = kint_gl), intent(in)                               &
+     &                        :: istack_edge_hash(0:ntot_id)
       integer(kind = kint), intent(in) :: iedge_hash(ntot_list,2)
-      integer(kind = kint), intent(in) :: iedge_flag(ntot_list)
+      integer(kind = kint_gl), intent(in) :: iedge_flag(ntot_list)
 !
       integer(kind = kint), intent(inout)                               &
      &                     :: ie_edge(numedge,nnod_4_edge)
@@ -83,10 +85,10 @@
       integer(kind = kint), intent(in)                                  &
      &                     :: node_on_edge_sf(nnod_4_edge,nedge_4_surf)
 !
-      integer(kind = kint) :: k1, k2, ist, ied
       integer(kind = kint) :: i, isurf, is, iedge
       integer(kind = kint) :: j, jsurf, js
       integer(kind = kint_gl) :: ihash
+      integer(kind = kint_gl) :: k1, k2, ist, ied
 !
 !
       iedge = 0
@@ -123,8 +125,8 @@
             is =   iedge_hash(k1,2)
             jsurf = iedge_hash(k2,1)
             js =   iedge_hash(k2,2)
-            iedge_4_sf(isurf,is)                                        &
-     &       = iedge_4_sf(jsurf,js) * (iedge_flag(k1) / k2)
+            iedge_4_sf(isurf,is) = iedge_4_sf(jsurf,js)                 &
+     &                        * int((iedge_flag(k1) / k2), KIND(iedge))
           end if
         end do
       end do
@@ -148,15 +150,18 @@
      &                     :: ie_edge(numedge,nnod_4_edge)
 !
       integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
-      integer(kind = kint), intent(in) :: istack_edge_hash(0:ntot_id)
+      integer(kind = kint_gl), intent(in)                               &
+     &                        :: istack_edge_hash(0:ntot_id)
       integer(kind = kint), intent(in) :: iedge_hash(ntot_list,2)
-      integer(kind = kint), intent(in) :: iedge_flag(ntot_list)
+      integer(kind = kint_gl), intent(in) :: iedge_flag(ntot_list)
 !
       integer(kind = kint), intent(inout)                               &
      &                     :: iedge_4_ele(numele,nedge_4_ele)
 !
       integer(kind = kint) :: iele, i, is1, is2, inod1, inod2
-      integer(kind = kint) :: ihash, ist, ied, k1, isurf, is, iedge
+      integer(kind = kint) :: isurf, is, iedge
+      integer(kind = kint_gl) :: ihash
+      integer(kind = kint_gl) :: k1, ist, ied
 !
 !
       do iele = 1, numele
@@ -202,15 +207,17 @@
 !
       integer(kind = kint_gl), intent(in) :: ntot_id, ntot_list
       integer(kind = kint_gl), intent(in) :: iend_edge_hash
-      integer(kind = kint), intent(in) :: istack_edge_hash(0:ntot_id)
+      integer(kind = kint_gl), intent(in)                               &
+     &                        :: istack_edge_hash(0:ntot_id)
       integer(kind = kint), intent(in) :: iedge_hash(ntot_list,2)
-      integer(kind = kint), intent(in) :: iedge_flag(ntot_list)
+      integer(kind = kint_gl), intent(in) :: iedge_flag(ntot_list)
 !
       integer(kind = kint), intent(inout) :: iedge_part(nunmedge_part)
 !
-      integer(kind = kint) :: k1, k2, ist, ied, iedge
+      integer(kind = kint) :: iedge
       integer(kind = kint) :: jsurf, js
       integer(kind = kint_gl) :: ihash
+      integer(kind = kint_gl) :: k1, k2, ist, ied
 !
 !
       iedge = 0
@@ -227,8 +234,8 @@
 !            is =   iedge_hash(k1,2)
             jsurf = iedge_hash(k2,1)
             js =   iedge_hash(k2,2)
-            iedge_part(iedge)                                        &
-     &       = iedge_4_sf(jsurf,js) * (iedge_flag(k1) / k2)
+            iedge_part(iedge) = iedge_4_sf(jsurf,js)                    &
+     &              * int((iedge_flag(k1) / k2),KIND(iedge))
 !
           end if
         end do

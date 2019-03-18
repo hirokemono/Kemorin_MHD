@@ -33,7 +33,7 @@
       subroutine count_all_surfaces(ntot_list, isurf_flag, numsurf)
 !
       integer(kind = kint_gl), intent(in) :: ntot_list
-      integer(kind = kint), intent(in) :: isurf_flag(ntot_list)
+      integer(kind = kint_gl), intent(in) :: isurf_flag(ntot_list)
 !
       integer(kind = kint), intent(inout) :: numsurf
 !
@@ -61,7 +61,7 @@
 !
       integer(kind = kint_gl), intent(in) :: ntot_list
       integer(kind = kint), intent(in) :: isurf_hash(ntot_list,2)
-      integer(kind = kint), intent(in) :: isurf_flag(ntot_list)
+      integer(kind = kint_gl), intent(in) :: isurf_flag(ntot_list)
 !
       integer(kind = kint), intent(inout)                               &
      &      :: ie_surf(numsurf,nnod_4_surf)
@@ -96,7 +96,7 @@
 !
         if (isurf_flag(k1) .lt. 0) then
 !
-          k2 = -isurf_flag(k1)
+          k2 = int(-isurf_flag(k1), KIND(k2))
           iele = isurf_hash(k1,1)
           is =   isurf_hash(k1,2)
           jele = isurf_hash(k2,1)
@@ -161,7 +161,7 @@
       integer(kind = kint), intent(in) :: nele_grp
 !
       integer(kind = kint_gl), intent(in) :: ntot_list
-      integer(kind = kint), intent(in) :: isurf_flag(ntot_list)
+      integer(kind = kint_gl), intent(in) :: isurf_flag(ntot_list)
 !
       integer(kind = kint), intent(inout) :: numsurf_part
 !
@@ -187,11 +187,11 @@
 !
       integer(kind = kint_gl), intent(in) :: ntot_list
       integer(kind = kint), intent(in) :: isurf_hash(ntot_list,2)
-      integer(kind = kint), intent(in) :: isurf_flag(ntot_list)
+      integer(kind = kint_gl), intent(in) :: isurf_flag(ntot_list)
 !
       integer(kind = kint), intent(inout) :: isf_part(numsurf_part)
 !
-      integer(kind = kint) :: k1
+      integer(kind = kint_gl) :: k1
       integer(kind = kint) :: iele, is, inum
 !
 !
