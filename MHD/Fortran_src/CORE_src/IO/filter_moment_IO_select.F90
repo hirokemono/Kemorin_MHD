@@ -96,6 +96,7 @@
       type(filter_file_data), intent(inout) :: filter_IO
 !
       character(len=kchara) :: file_name
+      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = add_process_id(id_rank, filter_file_head)
@@ -107,7 +108,7 @@
 #ifdef ZLIB_IO
       else if (ifmt_filter_file .eq. id_binary_file_fmt) then
         call write_sorted_filter_coef_file_b                            &
-     &     (file_name, id_rank, filter_IO)
+     &     (file_name, id_rank, filter_IO, ierr)
       else if(ifmt_filter_file .eq. id_gzip_txt_file_fmt) then
         call write_sort_filter_coef_file_gz                             &
      &     (file_name, id_rank, filter_IO)
@@ -174,6 +175,7 @@
       type(filter_file_data), intent(inout) :: filter_IO
 !
       character(len=kchara) :: file_name
+      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = add_process_id(id_rank, filter_file_head)
@@ -181,7 +183,7 @@
 #ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
         call write_filter_geometry_file_b                               &
-     &     (file_name, id_rank, filter_IO)
+     &     (file_name, id_rank, filter_IO, ierr)
         return
       else if(ifmt_filter_file .eq. id_gzip_txt_file_fmt) then
         call write_filter_geometry_file_gz                              &
@@ -284,6 +286,7 @@
       type(gradient_model_data_type), intent(inout) :: FEM_elens
 !
       character(len=kchara) :: file_name
+      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = add_process_id(id_rank, filter_file_head)
@@ -292,7 +295,7 @@
 #ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
         call write_filter_elen_type_file_b(file_name, id_rank,          &
-     &      FEM_elens)
+     &      FEM_elens, ierr)
         return
       else if(ifmt_filter_file .eq. id_gzip_txt_file_fmt) then
         call write_filter_elen_t_file_gz(file_name, id_rank, FEM_elens)
@@ -360,6 +363,7 @@
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
 !
       character(len=kchara) :: file_name
+      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = add_process_id(id_rank, filter_file_head)
@@ -367,7 +371,7 @@
 #ifdef ZLIB_IO
       if (ifmt_filter_file .eq. id_binary_file_fmt) then
         call write_filter_moms_type_file_b(file_name, id_rank,          &
-     &      FEM_elens, FEM_moms)
+     &      FEM_elens, FEM_moms, ierr)
         return
       else if(ifmt_filter_file .eq. id_gzip_txt_file_fmt) then
         call write_filter_moms_t_file_gz(file_name, id_rank,            &

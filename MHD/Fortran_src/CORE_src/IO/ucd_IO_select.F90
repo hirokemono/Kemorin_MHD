@@ -95,6 +95,7 @@
       type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
+      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = set_parallel_ucd_file_name(ucd_param%file_prefix,     &
@@ -117,7 +118,8 @@
 #endif
 !
       else if (ucd_param%iflag_format .eq. iflag_bin) then
-        call write_ucd_2_fld_file_b(id_rank, file_name, t_IO, ucd)
+        call write_ucd_2_fld_file_b                                     &
+     &     (id_rank, file_name, t_IO, ucd, ierr)
       else if(ucd_param%iflag_format .eq. iflag_vtd) then
         call write_udt_data_2_vtk_phys(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_ucd) then
@@ -144,6 +146,7 @@
       type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
+      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = set_parallel_ucd_file_name(ucd_param%file_prefix,     &
@@ -167,7 +170,8 @@
 #endif
 !
       else if (ucd_param%iflag_format .eq. iflag_bin) then
-        call write_ucd_2_fld_file_b(id_rank, file_name, t_IO, ucd)
+        call write_ucd_2_fld_file_b                                     &
+     &     (id_rank, file_name, t_IO, ucd, ierr)
       else if(ucd_param%iflag_format .eq. iflag_vtd) then
         call write_udt_data_2_vtk_phys(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_ucd) then

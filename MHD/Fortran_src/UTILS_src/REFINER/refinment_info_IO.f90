@@ -45,6 +45,7 @@
       integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: iref
 !
+      integer(kind = kint) :: ierr = 0
 !
       call set_element_refine_flags_2_IO(numele, IO_e_ref)
       call set_elem_refine_itp_tbl_2_IO                                 &
@@ -58,7 +59,7 @@
       end if
 !
       call write_element_refine_file                                    &
-     &   (0, izero, IO_itp_e_org, IO_itp_e_dest, IO_e_ref)
+     &   (0, izero, IO_itp_e_org, IO_itp_e_dest, IO_e_ref, ierr)
 !
       end subroutine write_refinement_table
 !
@@ -71,6 +72,8 @@
 !
       integer(kind = kint), intent(in) :: numele
 !
+      integer(kind = kint) :: ierr = 0
+!
 !
       call set_merged_refine_flags_2_IO(numele, IO_e_ref)
       call set_elem_refine_itp_tbl_2_IO                                 &
@@ -78,7 +81,7 @@
 !
       IO_e_ref%file_head = refine_info_head
       call write_element_refine_file                                    &
-     &   (0, izero, IO_itp_e_org, IO_itp_e_dest, IO_e_ref)
+     &   (0, izero, IO_itp_e_org, IO_itp_e_dest, IO_e_ref, ierr)
 !
       end subroutine write_merged_refinement_tbl
 !

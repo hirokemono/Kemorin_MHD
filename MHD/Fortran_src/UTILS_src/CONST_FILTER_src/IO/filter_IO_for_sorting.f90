@@ -10,11 +10,11 @@
 !!      subroutine write_filter_coef_4_each(id_file)
 !!      subroutine read_filter_coef_4_each(id_file)
 !!
-!!      subroutine read_filter_neib_4_sort_b(bin_flags)
-!!      subroutine read_filter_coef_4_sort_b(bin_flags, filter)
-!!      subroutine write_filter_coef_4_each_b
-!!      subroutine read_filter_coef_4_each_b(bin_flags)
-!!        type(file_IO_flags), intent(inout) :: bin_flags
+!!      subroutine read_filter_neib_4_sort_b(bflag)
+!!      subroutine read_filter_coef_4_sort_b(bflag, filter)
+!!      subroutine write_filter_coef_4_each_b(bflag)
+!!      subroutine read_filter_coef_4_each_b(bflag)
+!!        type(binary_IO_flags), intent(inout) :: bflag
 !
       module filter_IO_for_sorting
 !
@@ -169,9 +169,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_neib_4_sort_b(bin_flags)
+      subroutine read_filter_neib_4_sort_b(bflag)
 !
-      type(file_IO_flags), intent(inout) :: bin_flags
+      type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint) :: inod
       integer(kind = kint_gl) :: ioffset
@@ -184,13 +184,12 @@
       call allocate_fluid_filter_stack(inter_nod_3dfilter)
 !
       do inod = 1, inter_nod_3dfilter
-        call read_one_integer_b(bin_flags%iflag_bin_swap,               &
-     &      nnod_near_nod_w_filter(inod), bin_flags%ierr_IO)
-        if(bin_flags%ierr_IO .gt. 0) return
+        call read_one_integer_b                                         &
+     &     (bflag, nnod_near_nod_w_filter(inod))
+        if(bflag%ierr_IO .gt. 0) return
 !
-        call read_one_integer_b(bin_flags%iflag_bin_swap,               &
-     &      i_exp_level_whole_nod(inod), bin_flags%ierr_IO)
-        if(bin_flags%ierr_IO .gt. 0) return
+        call read_one_integer_b(bflag, i_exp_level_whole_nod(inod))
+        if(bflag%ierr_IO .gt. 0) return
 !
         ioffset = nnod_near_nod_w_filter(inod) * (kint + 2*kreal)
         call seek_forward_binary_file(ioffset)
@@ -199,13 +198,13 @@
       end do
 !
       do inod = 1, inter_nod_3dfilter
-        call read_one_integer_b(bin_flags%iflag_bin_swap,               &
-     &      nnod_near_nod_f_filter(inod), bin_flags%ierr_IO)
-        if(bin_flags%ierr_IO .gt. 0) return
+        call read_one_integer_b                                         &
+     &     (bflag, nnod_near_nod_f_filter(inod))
+        if(bflag%ierr_IO .gt. 0) return
 !
-        call read_one_integer_b(bin_flags%iflag_bin_swap,               &
-     &      i_exp_level_fluid_nod(inod), bin_flags%ierr_IO)
-        if(bin_flags%ierr_IO .gt. 0) return
+        call read_one_integer_b                                         &
+     &     (bflag, i_exp_level_fluid_nod(inod))
+        if(bflag%ierr_IO .gt. 0) return
 !
         ioffset = nnod_near_nod_f_filter(inod) * (kint + 2*kreal)
         call seek_forward_binary_file(ioffset)
@@ -217,19 +216,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_sort_b(bin_flags, filter)
+      subroutine read_filter_coef_4_sort_b(bflag, filter)
 !
       use t_filter_coefficients
 !
       type(filter_coefficients_type), intent(in) :: filter
-      type(file_IO_flags), intent(inout) :: bin_flags
+      type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint) :: inod, icou
 !
 !
       do inod = 1, inter_nod_3dfilter
-        call read_filter_coef_4_each_b(bin_flags)
-        if(bin_flags%ierr_IO .gt. 0) return
+        call read_filter_coef_4_each_b(bflag)
+        if(bflag%ierr_IO .gt. 0) return
 !
         icou = itbl_near_nod_whole(inod)
         call set_filtering_item_4_sorting(icou)
@@ -237,8 +236,8 @@
 !
       do inod = 1, inter_nod_3dfilter
         if (icou .le. filter%ntot_nod) then
-          call read_filter_coef_4_each_b(bin_flags)
-          if(bin_flags%ierr_IO .gt. 0) return
+          call read_filter_coef_4_each_b(bflag)
+          if(bflag%ierr_IO .gt. 0) return
 !
           icou = itbl_near_nod_fluid(inod)
           call set_filtering_item_4_sorting(icou)
@@ -249,48 +248,49 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_filter_coef_4_each_b
+      subroutine write_filter_coef_4_each_b(bflag)
+!
+      type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint_gl) :: num64
 !
 !
-      call write_one_integer_b(nnod_near_1nod_weight)
-      call write_one_integer_b(i_exp_level_1nod_weight)
+      call write_one_integer_b(nnod_near_1nod_weight, bflag)
+      if(bflag%ierr_IO .gt. 0) return
+      call write_one_integer_b(i_exp_level_1nod_weight, bflag)
+      if(bflag%ierr_IO .gt. 0) return
 !
       num64 = nnod_near_1nod_weight
-      call write_mul_integer_b(num64, inod_near_1nod_weight)
-      call write_1d_vector_b(num64, filter_1nod)
-      call write_1d_vector_b(num64, weight_1nod)
+      call write_mul_integer_b(num64, inod_near_1nod_weight, bflag)
+      if(bflag%ierr_IO .gt. 0) return
+      call write_1d_vector_b(num64, filter_1nod, bflag)
+      if(bflag%ierr_IO .gt. 0) return
+      call write_1d_vector_b(num64, weight_1nod, bflag)
+      if(bflag%ierr_IO .gt. 0) return
 !
       end subroutine write_filter_coef_4_each_b
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_each_b(bin_flags)
+      subroutine read_filter_coef_4_each_b(bflag)
 !
-      type(file_IO_flags), intent(inout) :: bin_flags
+      type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint_gl) :: num64
 !
-      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    nnod_near_1nod_weight, bin_flags%ierr_IO)
-      if(bin_flags%ierr_IO .gt. 0) return
+      call read_one_integer_b(bflag, nnod_near_1nod_weight)
+      if(bflag%ierr_IO .gt. 0) return
 !
-      call read_one_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    i_exp_level_1nod_weight, bin_flags%ierr_IO)
-      if(bin_flags%ierr_IO .gt. 0) return
+      call read_one_integer_b(bflag, i_exp_level_1nod_weight)
+      if(bflag%ierr_IO .gt. 0) return
 !
       num64 = nnod_near_1nod_weight
-      call read_mul_integer_b(bin_flags%iflag_bin_swap,                 &
-     &    num64, inod_near_1nod_weight, bin_flags%ierr_IO)
-      if(bin_flags%ierr_IO .gt. 0) return
-!
-      call read_1d_vector_b(bin_flags%iflag_bin_swap,                   &
-     &    num64, filter_1nod, bin_flags%ierr_IO)
-      if(bin_flags%ierr_IO .gt. 0) return
-!
-      call read_1d_vector_b(bin_flags%iflag_bin_swap,                   &
-     &    num64, weight_1nod, bin_flags%ierr_IO)
+      call read_mul_integer_b(bflag, num64, inod_near_1nod_weight)
+      if(bflag%ierr_IO .gt. 0) return
+      call read_1d_vector_b(bflag, num64, filter_1nod)
+      if(bflag%ierr_IO .gt. 0) return
+      call read_1d_vector_b(bflag, num64, weight_1nod)
+      if(bflag%ierr_IO .gt. 0) return
 !
       end subroutine read_filter_coef_4_each_b
 !

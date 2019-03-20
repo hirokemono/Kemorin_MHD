@@ -41,7 +41,7 @@
 !
       implicit none
 !
-      type(file_IO_flags) :: gz_meshflags
+      type(binary_IO_flags) :: gz_meshflags
 !
 !  ---------------------------------------------------------------------
 !
@@ -62,13 +62,12 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_b(file_name, id_rank,                         &
-     &    gz_meshflags%iflag_bin_swap, gz_meshflags%ierr_IO)
-      if(gz_meshflags%ierr_IO .gt. 0) goto 99
+      call open_rd_gzfile_b(file_name, id_rank, gz_meshflags)
+      if(gz_meshflags%ierr_IO .ne. 0) goto 99
 !
       call gz_read_geometry_data_b                                      &
      &   (id_rank, gz_meshflags, fem_IO%mesh)
-      if(gz_meshflags%ierr_IO .gt. 0) goto 99
+      if(gz_meshflags%ierr_IO .ne. 0) goto 99
       call gz_read_mesh_groups_b(gz_meshflags, fem_IO%group)
 !
   99  continue
@@ -92,9 +91,8 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_b(file_name, id_rank,                         &
-     &    gz_meshflags%iflag_bin_swap, gz_meshflags%ierr_IO)
-      if(gz_meshflags%ierr_IO .gt. 0) goto 99
+      call open_rd_gzfile_b(file_name, id_rank, gz_meshflags)
+      if(gz_meshflags%ierr_IO .ne. 0) goto 99
 !
       call gz_read_geometry_data_b(id_rank, gz_meshflags, mesh_IO)
 !
@@ -119,9 +117,8 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_b(file_name, id_rank,                         &
-     &    gz_meshflags%iflag_bin_swap, gz_meshflags%ierr_IO)
-      if(gz_meshflags%ierr_IO .gt. 0) goto 99
+      call open_rd_gzfile_b(file_name, id_rank, gz_meshflags)
+      if(gz_meshflags%ierr_IO .ne. 0) goto 99
 !
       call gz_read_num_node_b(id_rank, gz_meshflags, mesh_IO)
 !
@@ -146,9 +143,8 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped binary mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_b(file_name, id_rank,                         &
-     &    gz_meshflags%iflag_bin_swap, gz_meshflags%ierr_IO)
-      if(gz_meshflags%ierr_IO .gt. 0) goto 99
+      call open_rd_gzfile_b(file_name, id_rank, gz_meshflags)
+      if(gz_meshflags%ierr_IO .ne. 0) goto 99
 !
       call gz_read_num_node_ele_b(id_rank, gz_meshflags, mesh_IO)
 !
@@ -172,9 +168,9 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write gzipped binary mesh file: ', trim(file_name)
 !
-      call open_wt_gzfile_b(file_name)
-      call gz_write_geometry_data_b(id_rank, fem_IO%mesh)
-      call gz_write_mesh_groups_b(fem_IO%group)
+      call open_wt_gzfile_b(file_name, gz_meshflags)
+      call gz_write_geometry_data_b(id_rank, fem_IO%mesh, gz_meshflags)
+      call gz_write_mesh_groups_b(fem_IO%group, gz_meshflags)
       call close_gzfile_f
 !
       end subroutine gz_write_mesh_file_b

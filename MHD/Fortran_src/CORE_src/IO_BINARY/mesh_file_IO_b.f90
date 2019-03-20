@@ -18,7 +18,7 @@
 !!     &         (id_rank, file_name, mesh_IO, ierr)
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
 !!
-!!      subroutine write_mesh_file_b(id_rank, file_name, fem_IO)
+!!      subroutine write_mesh_file_b(id_rank, file_name, fem_IO, ierr)
 !!        type(mesh_data), intent(in) :: fem_IO
 !!@endverbatim
 !
@@ -33,7 +33,7 @@
 !
       implicit none
 !
-      type(file_IO_flags), private :: bin_meshflags
+      type(binary_IO_flags), private :: bin_meshflags
 !
 !  ---------------------------------------------------------------------
 !
@@ -53,11 +53,11 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary mesh file: ', trim(file_name)
 !
-      call open_read_binary_file                                        &
-     &   (file_name, id_rank, bin_meshflags%iflag_bin_swap)
+      call open_read_binary_file(file_name, id_rank, bin_meshflags)
+      if(bin_meshflags%ierr_IO .ne. 0) return
 !
       call read_geometry_data_b(id_rank, bin_meshflags, fem_IO%mesh)
-      if(bin_meshflags%ierr_IO .gt. 0) return
+      if(bin_meshflags%ierr_IO .ne. 0) return
 !
       call read_mesh_groups_b(bin_meshflags, fem_IO%group)
 !
@@ -81,9 +81,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary mesh file: ', trim(file_name)
 !
-      call open_read_binary_file                                        &
-     &   (file_name, id_rank, bin_meshflags%iflag_bin_swap)
+      call open_read_binary_file(file_name, id_rank, bin_meshflags)
+      if(bin_meshflags%ierr_IO .ne. 0) return
       call read_geometry_data_b(id_rank, bin_meshflags, mesh_IO)
+!
       call close_binary_file
       ierr = bin_meshflags%ierr_IO
 !
@@ -104,8 +105,7 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary mesh file: ', trim(file_name)
 !
-      call open_read_binary_file                                        &
-     &   (file_name, id_rank, bin_meshflags%iflag_bin_swap)
+      call open_read_binary_file(file_name, id_rank, bin_meshflags)
       call read_num_node_b(id_rank, bin_meshflags, mesh_IO)
       call close_binary_file
       ierr = bin_meshflags%ierr_IO
@@ -127,8 +127,7 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary mesh file: ', trim(file_name)
 !
-      call open_read_binary_file                                        &
-     &   (file_name, id_rank, bin_meshflags%iflag_bin_swap)
+      call open_read_binary_file(file_name, id_rank, bin_meshflags)
       call read_num_node_ele_b(id_rank, bin_meshflags, mesh_IO)
       call close_binary_file
       ierr = bin_meshflags%ierr_IO
@@ -138,20 +137,24 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_mesh_file_b(id_rank, file_name, fem_IO)
+      subroutine write_mesh_file_b(id_rank, file_name, fem_IO, ierr)
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
 !
       type(mesh_data), intent(in) :: fem_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write binary mesh file: ', trim(file_name)
 !
-      call open_write_binary_file(file_name)
-      call write_geometry_data_b(id_rank, fem_IO%mesh)
-      call write_mesh_groups_b(fem_IO%group)
+      call open_write_binary_file(file_name, bin_meshflags)
+      if(bin_meshflags%ierr_IO .ne. 0) ierr = ierr_file
+      call write_geometry_data_b(id_rank, fem_IO%mesh, bin_meshflags)
+      if(bin_meshflags%ierr_IO .ne. 0) ierr = ierr_file
+      call write_mesh_groups_b(fem_IO%group, bin_meshflags)
+      if(bin_meshflags%ierr_IO .ne. 0) ierr = ierr_file
       call close_binary_file
 !
       end subroutine write_mesh_file_b

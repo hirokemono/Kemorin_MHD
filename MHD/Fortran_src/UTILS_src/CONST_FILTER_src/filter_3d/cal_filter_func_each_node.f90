@@ -201,7 +201,7 @@
           end if
         end if
 !
-        call write_each_filter_stack_coef(file_name, inod)
+        call write_each_filter_stack_coef(file_name, inod, ierr)
 !
       end subroutine const_filter_func_nod_by_nod
 !
@@ -236,7 +236,7 @@
 !    no filtering
 !
         if (nnod_near_1nod_weight .eq. 0) then
-          call write_each_no_filter_coef(file_name, inod)
+          call write_each_no_filter_coef(file_name, inod, ierr)
         else
 !
           do i = 1, maximum_neighbour
@@ -251,7 +251,7 @@
           if (nnod_near_1nod_weight .eq. nnod_near_nod_weight(inod))    &
      &      then
             i_exp_level_1nod_weight = maximum_neighbour
-            call write_each_same_filter_coef(file_name, inod)
+            call write_each_same_filter_coef(file_name, inod, ierr)
           else
 !
 !    construct filter for fluid area
@@ -357,8 +357,7 @@
               end if
             end if
 !
-            call write_each_filter_stack_coef(file_name, inod)
-!
+            call write_each_filter_stack_coef(file_name, inod, ierr)
           end if
         end if
 !

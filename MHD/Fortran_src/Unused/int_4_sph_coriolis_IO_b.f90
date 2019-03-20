@@ -12,7 +12,7 @@
 !
       implicit none
 !
-      type(file_IO_flags), private :: bin_corflags
+      type(binary_IO_flags), private :: bin_corflags
 !
 ! -----------------------------------------------------------------------
 !
@@ -31,28 +31,42 @@
 !
       write(*,'(a,a)') 'Write tri-integration data file: ',             &
      &                trim(sph_cor_file_name)
-      call open_write_binary_file(sph_cor_file_name)
-      call write_one_integer_b(ltr_cor_IO)
+      call open_write_binary_file(sph_cor_file_name, bin_corflags)
+      if(bin_corflags%ierr_IO .gt. 0) ierr = ierr_file
+      call write_one_integer_b(ltr_cor_IO, bin_corflags)
+      if(bin_corflags%ierr_IO .gt. 0) ierr = ierr_file
 !
       num64 = jmax_cor_IO * itwo
-      call write_mul_integer_b(num64, jgl_kcor_IO(1,1,2))
+      call write_mul_integer_b(num64, jgl_kcor_IO(1,1,2), bin_corflags)
+      if(bin_corflags%ierr_IO .gt. 0) return
 !
       num64 = jmax_cor_IO
-      call write_2d_vector_b(num64, itwo, gk_cor_IO(1,1,2))
-!
-      call write_mul_integer_b(num64, jgl_lcor_IO(1,1,2))
-      call write_2d_vector_b(num64, ione, el_cor_IO(1,1,2))
+      call write_2d_vector_b                                            &
+     &   (num64, itwo, gk_cor_IO(1,1,2), bin_corflags)
+      if(bin_corflags%ierr_IO .gt. 0) return
+      call write_mul_integer_b(num64, jgl_lcor_IO(1,1,2), bin_corflags)
+      if(bin_corflags%ierr_IO .gt. 0) return
+      call write_2d_vector_b                                            &
+     &   (num64, ione, el_cor_IO(1,1,2), bin_corflags)
+      if(bin_corflags%ierr_IO .gt. 0) return
 !
       do j1 = 1, 3, 2
         num64 = jmax_cor_IO * ifour
-        call write_mul_integer_b(num64, jgl_kcor_IO(1,1,j1))
-        num64 = jmax_cor_IO
-        call write_2d_vector_b(num64, ifour, gk_cor_IO(1,1,j1))
+        call write_mul_integer_b                                        &
+     &     (num64, jgl_kcor_IO(1,1,j1), bin_corflags)
+        if(bin_corflags%ierr_IO .gt. 0) return
+!
+        call write_2d_vector_b(trim_long(jmax_cor_IO), ifour,           &
+     &      gk_cor_IO(1,1,j1), bin_corflags)
+        if(bin_corflags%ierr_IO .gt. 0) return
 !
         num64 = jmax_cor_IO * itwo
-        call write_mul_integer_b(num64, jgl_lcor_IO(1,1,j1))
-        num64 = jmax_cor_IO
-        call write_2d_vector_b(num64, itwo, el_cor_IO(1,1,j1))
+        call write_mul_integer_b                                        &
+     &     (num64, jgl_lcor_IO(1,1,j1), bin_corflags)
+        if(bin_corflags%ierr_IO .gt. 0) return
+!
+        call write_2d_vector_b(trim_long(jmax_cor_IO), itwo,            &
+     &      el_cor_IO(1,1,j1), bin_corflags)
       end do
       call close_binary_file
 !
@@ -78,55 +92,45 @@
       write(*,*) 'read integrals for coriolis: ',                       &
      &           trim(sph_cor_file_name)
       call open_read_binary_file                                        &
-     &   (sph_cor_file_name, my_rank, bin_corflags%iflag_bin_swap)
+     &   (sph_cor_file_name, my_rank, bin_corflags)
 !
-      call read_one_integer_b(bin_corflags%iflag_bin_swap,              &
-     &    ltr_cor_IO, bin_corflags%ierr_IO)
+      call read_one_integer_b(bin_corflags, ltr_cor_IO, bin_corflags)
       if(bin_corflags%ierr_IO .gt. 0) return
 !
       call allocate_int_sph_cor_IO
 !
       num64 = jmax_cor_IO*itwo
-      call read_mul_integer_b(bin_corflags%iflag_bin_swap,              &
-     &    num64, jgl_kcor_IO(1,1,2), bin_corflags%ierr_IO)
+      call read_mul_integer_b(bin_corflags, num64, jgl_kcor_IO(1,1,2))
       if(bin_corflags%ierr_IO .gt. 0) go to 99
 !
       num64 = jmax_cor_IO
-      call read_2d_vector_b(bin_corflags%iflag_bin_swap,                &
-     &    num64, itwo, gk_cor_IO(1,1,2), bin_corflags%ierr_IO)
+      call read_2d_vector_b                                             &
+     &   (bin_corflags, num64, itwo, gk_cor_IO(1,1,2))
       if(bin_corflags%ierr_IO .gt. 0) go to 99
-!
-      call read_mul_integer_b(bin_corflags%iflag_bin_swap,              &
-     &    num64, jgl_lcor_IO(1,1,2), bin_corflags%ierr_IO)
+      call read_mul_integer_b(bin_corflags, num64, jgl_lcor_IO(1,1,2))
       if(bin_corflags%ierr_IO .gt. 0) go to 99
-!
-      call read_2d_vector_b(bin_corflags%iflag_bin_swap,                &
-     &    num64, ione, el_cor_IO(1,1,2), bin_corflags%ierr_IO)
+      call read_2d_vector_b                                             &
+     &   (bin_corflags, num64, ione, el_cor_IO(1,1,2))
       if(bin_corflags%ierr_IO .gt. 0) goto 99
 !*
 !
       do j1 = 1, 3, 2
         num64 = jmax_cor_IO * ifour
-        call read_mul_integer_b(bin_corflags%iflag_bin_swap,            &
-     &      num64, jgl_kcor_IO(1,1,j1),                                 &
-     &      bin_corflags%ierr_IO)
+        call read_mul_integer_b                                         &
+     &     (bin_corflags, num64, jgl_kcor_IO(1,1,j1))
         if(bin_corflags%ierr_IO .gt. 0) go to 99
 !
-        num64 = jmax_cor_IO
-        call read_2d_vector_b(bin_corflags%iflag_bin_swap,              &
-     &      num64, ifour, gk_cor_IO(1,1,j1),                            &
-     &      bin_corflags%ierr_IO)
+        call read_2d_vector_b(bin_corflags,                             &
+     &      cast_long(jmax_cor_IO), ifour, gk_cor_IO(1,1,j1))
         if(bin_corflags%ierr_IO .gt. 0) goto 99
 !
         num64 = jmax_cor_IO * itwo
-        call read_mul_integer_b(bin_corflags%iflag_bin_swap,            &
-     &      num64, jgl_lcor_IO(1,1,j1),                                 &
-     &      bin_corflags%ierr_IO)
+        call read_mul_integer_b                                         &
+     &     (bin_corflags, num64, jgl_lcor_IO(1,1,j1))
         if(bin_corflags%ierr_IO .gt. 0) go to 99
 !
-        num64 = jmax_cor_IO
-        call read_2d_vector_b(bin_corflags%iflag_bin_swap,              &
-     &      num64, itwo, el_cor_IO(1,1,j1), bin_corflags%ierr_IO)
+        call read_2d_vector_b(bin_corflags,                             &
+     &      cast_long(jmax_cor_IO), itwo, el_cor_IO(1,1,j1))
         if(bin_corflags%ierr_IO .gt. 0) goto 99
       end do
 !

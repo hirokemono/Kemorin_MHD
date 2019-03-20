@@ -175,6 +175,7 @@
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(surf_edge_IO_file), intent(in) :: ele_mesh_IO
+      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = set_ele_comm_file_name                                &
@@ -182,7 +183,7 @@
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call output_element_file_b                                      &
-     &     (id_rank, file_name, ele_mesh_IO)
+     &     (id_rank, file_name, ele_mesh_IO, ierr)
 !
 #ifdef ZLIB_IO
       else if(mesh_file%iflag_format .eq. id_gzip_bin_file_fmt) then
@@ -211,6 +212,7 @@
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(surf_edge_IO_file), intent(in) :: surf_mesh_IO
+      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = set_surf_mesh_file_name                               &
@@ -218,7 +220,7 @@
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call output_surface_file_b                                      &
-     &     (id_rank, file_name, surf_mesh_IO)
+     &     (id_rank, file_name, surf_mesh_IO, ierr)
 !
 #ifdef ZLIB_IO
       else if(mesh_file%iflag_format .eq. id_gzip_bin_file_fmt) then
@@ -247,6 +249,7 @@
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
+      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = set_edge_mesh_file_name                               &
@@ -254,7 +257,7 @@
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
         call output_edge_file_b                                         &
-     &     (id_rank, file_name, edge_mesh_IO)
+     &     (id_rank, file_name, edge_mesh_IO, ierr)
 !
 #ifdef ZLIB_IO
       else if(mesh_file%iflag_format .eq. id_gzip_bin_file_fmt) then

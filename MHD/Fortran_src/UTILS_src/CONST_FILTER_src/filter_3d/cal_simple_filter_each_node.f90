@@ -68,7 +68,7 @@
       type(element_around_node), intent(inout) :: ele_4_nod
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, ierr
 !
 !
       call copy_next_nod_ele_4_each                                     &
@@ -128,7 +128,7 @@
       call normalize_each_filter_weight
 !
       call s_delete_small_weighting(node%numnod)
-      call write_each_filter_stack_coef(file_name, inod)
+      call write_each_filter_stack_coef(file_name, inod, ierr)
 !
       end subroutine set_simple_filter_nod_by_nod
 !
@@ -165,7 +165,7 @@
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
       type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, ierr
 !
 !
       call copy_next_nod_ele_4_each                                     &
@@ -174,7 +174,7 @@
 !    no filtering
 !
       if (nnod_near_1nod_weight .eq. 0) then
-        call write_each_no_filter_coef(file_name, inod)
+        call write_each_no_filter_coef(file_name, inod, ierr)
       else
 !
 !   set filter area for tophat filter
@@ -199,7 +199,7 @@
 !
         if (nnod_near_1nod_weight .eq. nnod_near_nod_weight(inod))      &
      &     then
-          call write_each_same_filter_coef(file_name, inod)
+          call write_each_same_filter_coef(file_name, inod, ierr)
           call copy_moments_each_point                                  &
      &       (inod, mom_nod(1)%moms, inod, mom_nod(2)%moms)
 !
@@ -234,7 +234,7 @@
           call normalize_each_filter_weight
 !
           call s_delete_small_weighting(node%numnod)
-          call write_each_filter_stack_coef(file_name, inod)
+          call write_each_filter_stack_coef(file_name, inod, ierr)
         end if
       end if
 !

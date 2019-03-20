@@ -5,10 +5,10 @@
 !
 !!      subroutine s_correct_wrong_filters                              &
 !!     &         (id_org_filter, fixed_file_name, mesh,                 &
-!!     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod, bin_flags)
+!!     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod)
 !!      subroutine correct_wrong_fluid_filters                          &
 !!     &         (id_org_filter, fixed_file_name, mesh,                 &
-!!     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod, bin_flags)
+!!     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod)
 !!       type(mesh_geometry), intent(in) :: mesh
 !!       type(jacobians_3d), intent(in) :: jac_3d
 !!       type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -56,7 +56,7 @@
 !
       subroutine s_correct_wrong_filters                                &
      &         (id_org_filter, fixed_file_name, mesh,                   &
-     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod, bin_flags)
+     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod)
 !
       use set_simple_filters
 !
@@ -70,7 +70,6 @@
 !
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
-      type(file_IO_flags), intent(inout) :: bin_flags
 !
       integer(kind = kint) :: inod, ierr2, ierr
 !
@@ -85,7 +84,7 @@
       write(70+my_rank,*) ' Best condition for filter'
 !
       do inod = inod_start_filter, inod_end_filter
-        call read_each_filter_stack_coef(bin_flags, id_org_filter)
+        call read_each_filter_stack_coef(id_org_filter, ierr)
 !
         call cal_rms_filter_coefs(min_rms_weight, ierr2)
 !
@@ -100,7 +99,8 @@
         end if
 !
         if( iflag_make_whole_filter(inod) .eq. 0) then
-          call write_each_filter_stack_coef(fixed_file_name, inod)
+          call write_each_filter_stack_coef                             &
+     &       (fixed_file_name, inod, ierr)
 !
           if(iflag_tgt_filter_type .ge. -4                              &
      &      .and. iflag_tgt_filter_type.le. -2) then
@@ -118,7 +118,7 @@
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
             call set_simple_filter_nod_by_nod(fixed_file_name,          &
-     &          mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen,          &
+     &          mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen,           &
      &          dxidxs%dx_nod, inod, ele_4_nod_f, neib_nod_f)
           end if
 !
@@ -137,7 +137,7 @@
 !
       subroutine correct_wrong_fluid_filters                            &
      &         (id_org_filter, fixed_file_name, mesh,                   &
-     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod, bin_flags)
+     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod)
 !
       character(len = kchara), intent(in) :: fixed_file_name
       integer(kind = kint), intent(in) :: id_org_filter
@@ -147,7 +147,6 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
 !
-      type(file_IO_flags), intent(inout) :: bin_flags
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !
@@ -160,8 +159,7 @@
       write(70+my_rank,*) ' Best condition for fluid filter'
 !
       do inod = inod_start_filter, inod_end_filter
-!
-        call read_each_filter_stack_coef(bin_flags, id_org_filter)
+        call read_each_filter_stack_coef(id_org_filter, ierr)
 !
         if ( nnod_near_1nod_weight .gt. 0) then
           call cal_rms_filter_coefs(min_rms_weight, ierr2)
@@ -169,7 +167,6 @@
           if (min_rms_weight .gt. max_rms_weight_limit) then
             iflag_make_fluid_filter(inod) = 1
           end if
-!
         end if
 !
 !     no correction
@@ -177,12 +174,15 @@
         if( iflag_make_fluid_filter(inod) .eq. 0) then
 !
           if (nnod_near_1nod_weight .eq. 0) then
-            call write_each_no_filter_coef(fixed_file_name, inod)
+            call write_each_no_filter_coef                              &
+     &         (fixed_file_name, inod, ierr)
           else if (nnod_near_1nod_weight .lt. 0) then
             nnod_near_1nod_weight = -nnod_near_1nod_weight
-            call write_each_same_filter_coef(fixed_file_name, inod)
+            call write_each_same_filter_coef                            &
+     &         (fixed_file_name, inod, ierr)
           else
-            call write_each_filter_stack_coef(fixed_file_name, inod)
+            call write_each_filter_stack_coef                           &
+     &         (fixed_file_name, inod, ierr)
           end if
 !
 !       correct fluid filter

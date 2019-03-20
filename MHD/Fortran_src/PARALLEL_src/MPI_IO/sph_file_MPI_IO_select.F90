@@ -243,6 +243,8 @@
       integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
 !
+      integer(kind = kint) ::  ierr = 0
+!
 !
       sph_file_name = set_sph_rtp_file_name                             &
      &            (sph_file_head, iflag_sph_file_fmt, id_rank)
@@ -267,7 +269,7 @@
 !
       else
         if(id_rank .lt. num_pe) then
-          call sel_write_geom_rtp_file(id_rank, sph_file)
+          call sel_write_geom_rtp_file(id_rank, sph_file, ierr)
         end if
       end if
 !
@@ -280,6 +282,8 @@
 !
       integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
+!
+      integer(kind = kint) ::  ierr = 0
 !
 !
       sph_file_name = set_sph_rj_file_name                              &
@@ -305,7 +309,7 @@
 !
       else
         if(id_rank .lt. num_pe) then
-          call sel_write_spectr_modes_rj_file(id_rank, sph_file)
+          call sel_write_spectr_modes_rj_file(id_rank, sph_file, ierr)
         end if
       end if
 !
@@ -318,6 +322,8 @@
 !
       integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
+!
+      integer(kind = kint) ::  ierr = 0
 !
 !
       sph_file_name = set_sph_rtm_file_name                             &
@@ -343,7 +349,7 @@
 !
       else
         if(id_rank .lt. num_pe) then
-          call sel_write_geom_rtm_file(id_rank, sph_file)
+          call sel_write_geom_rtm_file(id_rank, sph_file, ierr)
         end if
       end if
 !
@@ -356,6 +362,8 @@
 !
       integer, intent(in) :: num_pe, id_rank
       type(sph_file_data_type), intent(in) :: sph_file
+!
+      integer(kind = kint) ::  ierr = 0
 !
 !
       sph_file_name = set_sph_rlm_file_name                             &
@@ -381,7 +389,7 @@
 !
       else
         if(id_rank .lt. num_pe) then
-          call sel_write_modes_rlm_file(id_rank, sph_file)
+          call sel_write_modes_rlm_file(id_rank, sph_file, ierr)
         end if
       end if
 !

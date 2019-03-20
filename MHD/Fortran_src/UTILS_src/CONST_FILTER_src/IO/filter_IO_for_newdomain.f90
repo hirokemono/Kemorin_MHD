@@ -7,7 +7,7 @@
 !!      subroutine write_new_fluid_filter_coef(file_name)
 !!      subroutine read_filter_coef_4_newdomain(id_file)
 !!      subroutine read_filter_coef_4_newdomain_b(bin_flags)
-!!       type(file_IO_flags), intent(inout) :: bin_flags
+!!       type(binary_IO_flags), intent(inout) :: bin_flags
 !
       module filter_IO_for_newdomain
 !
@@ -42,12 +42,13 @@
       subroutine write_new_whole_filter_coef(file_name)
 !
       character(len = kchara), intent(in) :: file_name
-      integer(kind = kint) :: inod
+!
+      integer(kind = kint) :: inod, ierr
 !
 !
       do inod = 1, inter_nod_3dfilter
         call set_w_filter_item_4_IO(inod)
-        call write_each_filter_stack_coef(file_name, inod)
+        call write_each_filter_stack_coef(file_name, inod, ierr)
       end do
 !
       end subroutine write_new_whole_filter_coef
@@ -57,18 +58,19 @@
       subroutine write_new_fluid_filter_coef(file_name)
 !
       character(len = kchara), intent(in) :: file_name
-      integer(kind = kint) :: inod
+!
+      integer(kind = kint) :: inod, ierr
 !
 !
       do inod = 1, inter_nod_3dfilter
         call set_f_filter_item_4_IO(inod)
         if (nnod_near_1nod_weight .lt. 0) then
           nnod_near_1nod_weight = -nnod_near_1nod_weight
-          call write_each_same_filter_coef(file_name, inod)
+          call write_each_same_filter_coef(file_name, inod, ierr)
         else if (nnod_near_1nod_weight .eq. 0) then
-          call write_each_no_filter_coef(file_name, inod)
+          call write_each_no_filter_coef(file_name, inod, ierr)
         else
-          call write_each_filter_stack_coef(file_name, inod)
+          call write_each_filter_stack_coef(file_name, inod, ierr)
         end if
       end do
 !
@@ -109,7 +111,7 @@
 !
       subroutine read_filter_coef_4_newdomain_b(bin_flags)
 !
-      type(file_IO_flags), intent(inout) :: bin_flags
+      type(binary_IO_flags), intent(inout) :: bin_flags
 !
       integer(kind = kint) :: inod
 !

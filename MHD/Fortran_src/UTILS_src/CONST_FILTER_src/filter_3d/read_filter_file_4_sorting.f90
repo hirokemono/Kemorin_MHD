@@ -18,7 +18,7 @@
 !
       implicit none
 !
-      type(file_IO_flags), private :: bin_flflags
+      type(binary_IO_flags), private :: bin_flflags
 !
       private :: set_num_filter_group_4_sort
       private :: count_num_neib_4_filter_sort
@@ -71,8 +71,7 @@
         call read_filter_neib_4_sort(filter_coef_code)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
-        call open_read_binary_file                                      &
-     &     (file_name, id_rank, bin_flflags%iflag_bin_swap)
+        call open_read_binary_file(file_name, id_rank, bin_flflags)
         call read_filter_geometry_b                                     &
      &     (id_rank, bin_flflags, comm_IO, nod_IO)
         if(bin_flflags%ierr_IO .gt. 0) go to 99
@@ -128,8 +127,7 @@
         call read_filter_coef_4_sort(filter_coef_code)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
-        call open_read_binary_file                                      &
-     &     (file_name, id_rank, bin_flflags%iflag_bin_swap)
+        call open_read_binary_file(file_name, id_rank, bin_flflags)
         call read_filter_geometry_b                                     &
      &     (id_rank, bin_flflags, comm_IO, nod_IO)
         if(bin_flflags%ierr_IO .gt. 0) go to 98

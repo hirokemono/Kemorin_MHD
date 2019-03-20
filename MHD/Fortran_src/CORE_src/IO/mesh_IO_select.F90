@@ -191,13 +191,14 @@
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_data), intent(in) :: fem_IO
+      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = set_mesh_file_name                                    &
      &   (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
       if (mesh_file%iflag_format .eq. id_binary_file_fmt) then
-        call write_mesh_file_b(id_rank, file_name, fem_IO)
+        call write_mesh_file_b(id_rank, file_name, fem_IO, ierr)
 !
 #ifdef ZLIB_IO
       else if(mesh_file%iflag_format .eq. id_gzip_bin_file_fmt) then

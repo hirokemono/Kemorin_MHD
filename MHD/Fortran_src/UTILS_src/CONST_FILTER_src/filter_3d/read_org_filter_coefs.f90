@@ -17,7 +17,7 @@
 !
       implicit none
 !
-      type(file_IO_flags), private :: bin_flflags
+      type(binary_IO_flags), private :: bin_flflags
 !
 !  ---------------------------------------------------------------------
 !
@@ -65,8 +65,7 @@
         close(id_org_filter_coef)
       else if(ifile_type .eq. 1) then
         write(*,*) 'binary coefficients file name: ', trim(file_name)
-        call open_read_binary_file                                      &
-     &     (file_name, id_rank, bin_flflags%iflag_bin_swap)
+        call open_read_binary_file(file_name, id_rank, bin_flflags)
         call read_filter_geometry_b                                     &
      &     (id_rank, bin_flflags, comm_IO, nod_IO)
         if(bin_flflags%ierr_IO .gt. 0) go to 98

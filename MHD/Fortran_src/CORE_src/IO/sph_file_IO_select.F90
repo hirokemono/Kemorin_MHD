@@ -15,10 +15,11 @@
 !!      subroutine sel_read_modes_rlm_file(id_rank, sph_file, ierr)
 !!        type(sph_file_data_type), intent(inout) :: sph_file
 !!
-!!      subroutine sel_write_geom_rtp_file(id_rank, sph_file)
-!!      subroutine sel_write_spectr_modes_rj_file(id_rank, sph_file)
-!!      subroutine sel_write_geom_rtm_file(id_rank, sph_file)
-!!      subroutine sel_write_modes_rlm_file(id_rank, sph_file)
+!!      subroutine sel_write_geom_rtp_file(id_rank, sph_file, ierr)
+!!      subroutine sel_write_spectr_modes_rj_file                       &
+!!     &         (id_rank, sph_file, ierr)
+!!      subroutine sel_write_geom_rtm_file(id_rank, sph_file, ierr)
+!!      subroutine sel_write_modes_rlm_file(id_rank, sph_file, ierr)
 !!        type(sph_file_data_type), intent(in) :: sph_file
 !!
 !!      integer(kind = kint) function check_exsist_rtp_file(id_rank)
@@ -208,17 +209,19 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine sel_write_geom_rtp_file(id_rank, sph_file)
+      subroutine sel_write_geom_rtp_file(id_rank, sph_file, ierr)
 !
       integer, intent(in) :: id_rank
       type(sph_file_data_type), intent(in) :: sph_file
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       sph_file_name = set_sph_rtp_file_name                             &
      &            (sph_file_head, iflag_sph_file_fmt, id_rank)
 !
       if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
-        call write_geom_rtp_file_b(sph_file_name, id_rank, sph_file)
+        call write_geom_rtp_file_b                                      &
+     &     (sph_file_name, id_rank, sph_file, ierr)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt .eq. id_gzip_bin_file_fmt) then
@@ -236,10 +239,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_write_spectr_modes_rj_file(id_rank, sph_file)
+      subroutine sel_write_spectr_modes_rj_file                         &
+     &         (id_rank, sph_file, ierr)
 !
       integer, intent(in) :: id_rank
       type(sph_file_data_type), intent(in) :: sph_file
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       sph_file_name = set_sph_rj_file_name                              &
@@ -247,7 +252,7 @@
 !
       if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
         call write_spectr_modes_rj_file_b                               &
-     &     (sph_file_name, id_rank, sph_file)
+     &     (sph_file_name, id_rank, sph_file, ierr)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt .eq. id_gzip_bin_file_fmt) then
@@ -267,17 +272,19 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_write_geom_rtm_file(id_rank, sph_file)
+      subroutine sel_write_geom_rtm_file(id_rank, sph_file, ierr)
 !
       integer, intent(in) :: id_rank
       type(sph_file_data_type), intent(in) :: sph_file
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       sph_file_name = set_sph_rtm_file_name                             &
      &            (sph_file_head, iflag_sph_file_fmt, id_rank)
 !
       if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
-        call write_geom_rtm_file_b(sph_file_name, id_rank, sph_file)
+        call write_geom_rtm_file_b                                      &
+     &     (sph_file_name, id_rank, sph_file, ierr)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt .eq. id_gzip_bin_file_fmt) then
@@ -295,17 +302,19 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_write_modes_rlm_file(id_rank, sph_file)
+      subroutine sel_write_modes_rlm_file(id_rank, sph_file, ierr)
 !
       integer, intent(in) :: id_rank
       type(sph_file_data_type), intent(in) :: sph_file
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       sph_file_name = set_sph_rlm_file_name                             &
      &            (sph_file_head, iflag_sph_file_fmt,  id_rank)
 !
       if (iflag_sph_file_fmt .eq. id_binary_file_fmt) then
-        call write_modes_rlm_file_b(sph_file_name, id_rank, sph_file)
+        call write_modes_rlm_file_b                                     &
+     &     (sph_file_name, id_rank, sph_file, ierr)
 !
 #ifdef ZLIB_IO
       else if(iflag_sph_file_fmt .eq. id_gzip_bin_file_fmt) then

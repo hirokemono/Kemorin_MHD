@@ -53,6 +53,8 @@
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
+      integer(kind = kint) :: ierr = 0
+!
 !
       tbl_file_name = add_process_id(id_rank, table_file_header)
 !
@@ -66,7 +68,7 @@
 !
       if (ifmt_itp_table_file .eq. id_binary_file_fmt) then
         call write_itp_table_file_b                                     &
-     &     (tbl_file_name, id_rank, IO_itp_org, IO_itp_dest)
+     &     (tbl_file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
       else if(ifmt_itp_table_file .eq. id_ascii_file_fmt) then
         call write_itp_table_file_a                                     &
      &     (tbl_file_name, id_rank, IO_itp_org, IO_itp_dest)
@@ -115,6 +117,7 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
+      integer(kind = kint) :: ierr = 0
 !
       tbl_file_name = add_process_id(id_rank, work_header)
 !
@@ -128,7 +131,7 @@
 !
       if (ifmt_itp_table_file .eq. id_binary_file_fmt) then
         call  write_itp_coefs_dest_file_b                               &
-     &     (tbl_file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+     &     (tbl_file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
       else if(ifmt_itp_table_file .eq. id_ascii_file_fmt) then
         call  write_itp_coefs_dest_file_a                               &
      &     (tbl_file_name, id_rank, IO_itp_dest, IO_itp_c_dest)

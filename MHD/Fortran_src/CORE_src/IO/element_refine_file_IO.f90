@@ -10,7 +10,7 @@
 !!      subroutine read_element_refine_file(id_rank, ifile_type,        &
 !!    &           IO_itp_org, IO_itp_dest, e_ref_IO)
 !!      subroutine write_element_refine_file(id_rank, ifile_type,       &
-!!     &          IO_itp_org, IO_itp_dest, e_ref_IO)
+!!     &          IO_itp_org, IO_itp_dest, e_ref_IO, ierr)
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!        type(ele_refine_IO_type), intent(inout) :: e_ref_IO
@@ -30,7 +30,7 @@
       implicit  none
 !
       integer(kind = kint), parameter, private :: id_refine_table = 19
-      type(file_IO_flags), private :: bin_rfnflags
+      type(binary_IO_flags), private :: bin_rfnflags
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,27 +59,27 @@
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_fname)
-        call open_read_binary_file                                      &
-     &     (refine_fname, id_rank, bin_rfnflags%iflag_bin_swap)
+        call open_read_binary_file(refine_fname, id_rank, bin_rfnflags)
+        if(bin_rfnflags%ierr_IO .ne. 0) goto 99
 !
         call read_interpolate_table_dest_b(bin_rfnflags, IO_itp_dest)
-        if(bin_rfnflags%ierr_IO .gt. 0) goto 99
+        if(bin_rfnflags%ierr_IO .ne. 0) goto 99
 !
         call read_interpolate_domain_org_b                              &
      &     (bin_rfnflags, nrank_ref, IO_itp_org)
-        if(bin_rfnflags%ierr_IO .gt. 0) goto 99
+        if(bin_rfnflags%ierr_IO .ne. 0) goto 99
 !
         call read_interpolate_table_org_b(bin_rfnflags, IO_itp_org)
-        if(bin_rfnflags%ierr_IO .gt. 0) goto 99
+        if(bin_rfnflags%ierr_IO .ne. 0) goto 99
 !
         call read_interpolate_coefs_org_b(bin_rfnflags, IO_itp_org)
-        if(bin_rfnflags%ierr_IO .gt. 0) goto 99
+        if(bin_rfnflags%ierr_IO .ne. 0) goto 99
 !
         call read_element_refine_data_b(bin_rfnflags, e_ref_IO)
 !
   99    continue
         call close_binary_file
-        if(bin_rfnflags%ierr_IO .gt. 0) stop "Reading error"
+        if(bin_rfnflags%ierr_IO .ne. 0) stop "Reading error"
       else
         write(*,*) 'element refine information: ',                      &
      &            trim(refine_fname)
@@ -100,13 +100,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_element_refine_file(id_rank, ifile_type,         &
-     &          IO_itp_org, IO_itp_dest, e_ref_IO)
+     &          IO_itp_org, IO_itp_dest, e_ref_IO, ierr)
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ifile_type
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(ele_refine_IO_type), intent(inout) :: e_ref_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
       character(len = kchara) :: refine_fname
 !
@@ -116,13 +117,21 @@
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_fname)
-        call open_write_binary_file(refine_fname)
+        call open_write_binary_file(refine_fname, bin_rfnflags)
+        if(bin_rfnflags%ierr_IO .ne. 0) ierr = ierr_file
 !
-        call write_interpolate_table_dest_b(id_rank, IO_itp_dest)
-        call write_interpolate_table_org_b(id_rank, IO_itp_org)
-        call write_interpolate_coefs_org_b(IO_itp_org)
+        call write_interpolate_table_dest_b                             &
+     &     (id_rank, IO_itp_dest, bin_rfnflags)
+        if(bin_rfnflags%ierr_IO .ne. 0) ierr = ierr_file
 !
-        call write_element_refine_data_b(e_ref_IO)
+        call write_interpolate_table_org_b                              &
+     &     (id_rank, IO_itp_org, bin_rfnflags)
+        if(bin_rfnflags%ierr_IO .ne. 0) ierr = ierr_file
+        call write_interpolate_coefs_org_b(IO_itp_org, bin_rfnflags)
+        if(bin_rfnflags%ierr_IO .ne. 0) ierr = ierr_file
+!
+        call write_element_refine_data_b(e_ref_IO, bin_rfnflags)
+        if(bin_rfnflags%ierr_IO .ne. 0) ierr = ierr_file
         call close_binary_file
 !
       else

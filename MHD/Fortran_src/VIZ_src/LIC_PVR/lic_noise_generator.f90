@@ -25,6 +25,7 @@
       implicit  none
 !
 !>      Integer flag of endian swap
+      type(binary_IO_flags) :: bflag_noise
       integer, save, private :: iflag_endian
 !
 !  ---------------------------------------------------------------------
@@ -54,15 +55,18 @@
       call open_rd_rawfile(file_name, ierr)
       if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-        call read_mul_integer_b                                         &
-     &     (iflag_endian, ithree64, n_data_size, ierr)
+        call read_mul_integer_b(bflag_noise, ithree64, n_data_size)
+        if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
 !        write(*,*) d_size
         allocate(n_node_data(d_size))
         do i=1, d_size
 !  change 0 to any level to initial complex noise node tree
           call alloc_noise_node(n_node_data(i), itwo, izero)
-          call read_mul_one_character_b(ione64, noise_char, ierr)
+          call read_mul_one_character_b                                 &
+     &       (bflag_noise, ione64, noise_char)
+          if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
+!
           n_node_data(i)%n_value = ichar(noise_char(1)) / 255.0
 !          write(*,*) n_node_data(i)%n_value
         end do
@@ -96,16 +100,18 @@
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-          call read_mul_integer_b                                       &
-     &       (iendian_KEEP, ithree64, n_data_size, ierr)
+          bflag_noise%iflag_swap = iendian_KEEP
+          call read_mul_integer_b(bflag_noise, ithree64, n_data_size)
+          if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
+!
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
           write(*,*) 'd_size', d_size, n_data_size(1:3)
 !
           iflag_endian = iendian_KEEP
           call seek_forward_binary_file(d_size-1)
-          call read_mul_one_character_b(ione64, one_chara, ierr)
+          call read_mul_one_character_b(bflag_noise, ione64, one_chara)
           if(ierr .gt. 0) iflag_endian = iendian_FLIP
-          call read_mul_one_character_b(ione64, one_chara, ierr)
+          call read_mul_one_character_b(bflag_noise, ione64, one_chara)
           if(ierr .eq. 0) iflag_endian = iendian_FLIP
           write(*,*) 'iflag_endian', iflag_endian
         end if
@@ -114,13 +120,16 @@
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-          call read_mul_integer_b                                       &
-     &       (iflag_endian, ithree64, n_data_size, ierr)
+          call read_mul_integer_b(bflag_noise, ithree64, n_data_size)
+          if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
+!
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
           write(*,*) 'd_size again', d_size, n_data_size(1:3)
 !
           allocate( n_raw_data(d_size))  ! allocate space for noise data
-          call read_mul_one_character_b(d_size, n_raw_data, ierr)
+          call read_mul_one_character_b                                 &
+     &       (bflag_noise, d_size, n_raw_data)
+          if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
         end if
         call close_rawfile()
       end if
@@ -161,7 +170,9 @@
         if(ierr .eq. 0) then
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
           allocate( n_grad_data(d_size))  ! allocate space for noise data
-          call read_mul_one_character_b(d_size, n_grad_data, ierr)
+          call read_mul_one_character_b                                 &
+     &       (bflag_noise, d_size, n_grad_data)
+          if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
         end if
         call close_rawfile()
       end if

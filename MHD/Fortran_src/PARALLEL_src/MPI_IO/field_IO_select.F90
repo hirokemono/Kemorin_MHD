@@ -300,6 +300,8 @@
       type(time_data), intent(in) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint) :: ierr = 0
+!
 !
       if( (file_IO%iflag_format/iflag_single) .eq. 0) then
         if(id_rank .ge. num_pe)  return
@@ -316,7 +318,8 @@
 !
 #ifdef ZLIB_IO
       else if(file_IO%iflag_format .eq. id_binary_file_fmt) then
-        call write_step_field_file_b(file_name, id_rank, t_IO, fld_IO)
+        call write_step_field_file_b                                    &
+     &     (file_name, id_rank, t_IO, fld_IO, ierr)
       else if(file_IO%iflag_format                                      &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_write_step_fld_file_mpi_b                               &

@@ -43,7 +43,7 @@
 !
       implicit none
 !
-      type(file_IO_flags), save :: gz_flags
+      type(binary_IO_flags), save :: gz_flags
 !
 !------------------------------------------------------------------
 !
@@ -144,9 +144,10 @@
      &  'Write gzipped binary element comm file: ', trim(file_name)
 !
       call open_wt_gzfile_f(file_name)
-      call gz_write_element_comm_table_b(id_rank, ele_mesh_IO%comm)
+      call gz_write_element_comm_table_b                                &
+     &   (id_rank, ele_mesh_IO%comm, gz_flags)
 !      call gz_write_element_geometry_b                                 &
-!     &   (ele_mesh_IO%node, ele_mesh_IO%sfed)
+!     &   (ele_mesh_IO%node, ele_mesh_IO%sfed, gz_flags)
       call close_gzfile_f
 !
       end subroutine gz_output_element_file_b
@@ -168,9 +169,9 @@
 !
       call open_wt_gzfile_f(file_name)
       call gz_write_surface_connection_b(id_rank, surf_mesh_IO%comm,    &
-     &    surf_mesh_IO%ele, surf_mesh_IO%sfed)
+     &    surf_mesh_IO%ele, surf_mesh_IO%sfed, gz_flags)
 !      call gz_write_surface_geometry_b                                 &
-!     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
+!     &   (surf_mesh_IO%node, surf_mesh_IO%sfed, gz_flags)
       call close_gzfile_f
 !
       end subroutine gz_output_surface_file_b
@@ -192,9 +193,9 @@
 !
       call open_wt_gzfile_f(file_name)
       call gz_write_edge_connection_b(id_rank, edge_mesh_IO%comm,       &
-     &    edge_mesh_IO%ele, edge_mesh_IO%sfed)
+     &    edge_mesh_IO%ele, edge_mesh_IO%sfed, gz_flags)
 !      call gz_write_edge_geometry_b                                    &
-!     &   (edge_mesh_IO%node, edge_mesh_IO%sfed)
+!     &   (edge_mesh_IO%node, edge_mesh_IO%sfed, gz_flags)
       call close_gzfile_f
 !
       end subroutine gz_output_edge_file_b
