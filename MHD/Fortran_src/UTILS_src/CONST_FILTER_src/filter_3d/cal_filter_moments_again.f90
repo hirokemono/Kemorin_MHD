@@ -3,7 +3,9 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine s_cal_filter_moments_again(inod, mom_nod)
+!!     subroutine s_cal_filter_moments_again                           &
+!!    &         (node, ele, g_FEM, jac_3d, FEM_elen, ref_m, inod,      &
+!!    &          ele_4_nod, neib_nod, mom_nod)
 !
       module cal_filter_moments_again
 !
@@ -20,7 +22,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_cal_filter_moments_again                             &
-     &         (node, ele, g_FEM, jac_3d, FEM_elen, inod,               &
+     &         (node, ele, g_FEM, jac_3d, FEM_elen, ref_m, inod,        &
      &          ele_4_nod, neib_nod, mom_nod)
 !
       use m_ctl_params_4_gen_filter
@@ -34,6 +36,7 @@
       use t_jacobians
       use t_next_node_ele_4_node
       use t_filter_moments
+      use t_reference_moments
 !
       use expand_filter_area_4_1node
       use cal_3d_filter_4_each_node
@@ -46,6 +49,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(in) :: ref_m
 !
       integer(kind = kint), intent(in) :: inod
 !
@@ -74,7 +78,7 @@
 !    set nxn matrix
 !
       call int_node_filter_matrix                                       &
-     &   (node, ele, g_FEM, jac_3d, inod, num_int_points,               &
+     &   (node, ele, g_FEM, jac_3d, ref_m, inod, num_int_points,        &
      &    nele_near_1nod_weight, iele_near_1nod_weight(1),              &
      &    nnod_near_1nod_weight, inod_near_1nod_weight(1),              &
      &    nnod_near_1nod_filter)
@@ -84,7 +88,7 @@
 !      set filter function without normalization
 !
       nnod_near_nod_weight(inod) = nnod_near_1nod_weight
-      call cal_filter_moms_each_nod_type(inod, mom_nod)
+      call cal_filter_moms_each_nod_type(inod, ref_m, mom_nod)
 !
       end subroutine s_cal_filter_moments_again
 !

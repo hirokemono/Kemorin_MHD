@@ -3,17 +3,18 @@
 !
 !     Written by H. Matsui on Apr., 2008
 !
-!!      subroutine const_filter_func_nod_by_nod                         &
-!!     &         (file_name, inod, node, ele, ele_4_nod, neib_nod,      &
-!!     &          g_FEM, jac_3d, FEM_elen, ierr)
-!!      subroutine const_fluid_filter_nod_by_nod                        &
-!!     &         (file_name, inod, node, ele, ele_4_nod, neib_nod,      &
-!!     &          g_FEM, jac_3d, FEM_elen, ierr)
+!!      subroutine const_filter_func_nod_by_nod(file_name,              &
+!!     &          inod, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,      &
+!!     &          ele_4_nod, neib_nod, ierr)
+!!      subroutine const_fluid_filter_nod_by_nod(file_name, inod,       &
+!!     &          node, ele, g_FEM, jac_3d, FEM_elen, ref_m,            &
+!!     &          ele_4_nod, neib_nod, ierr)
 !!        type(node_data),           intent(in) :: node
 !!        type(element_data),        intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(reference_moments), intent(in) :: ref_m
 !!        type(element_around_node), intent(inout) :: ele_4_nod
 !!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
@@ -27,13 +28,13 @@
       use m_filter_coefs
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
-      use m_reference_moments
 !
       use t_geometry_data
       use t_next_node_ele_4_node
       use t_fem_gauss_int_coefs
       use t_jacobians
       use t_filter_elength
+      use t_reference_moments
 !
       use fem_const_filter_matrix
       use int_filter_functions
@@ -53,9 +54,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_filter_func_nod_by_nod                           &
-     &         (file_name, inod, node, ele, ele_4_nod, neib_nod,        &
-     &          g_FEM, jac_3d, FEM_elen, ierr)
+      subroutine const_filter_func_nod_by_nod(file_name,              &
+     &          inod, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,      &
+     &          ele_4_nod, neib_nod, ierr)
 !
       use cal_1d_moments_4_fliter
 !
@@ -65,8 +66,10 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(in) :: ref_m
 !
       integer(kind = kint), intent(in) :: inod
+!
       integer(kind = kint), intent(inout) :: ierr
       type(element_around_node), intent(inout) :: ele_4_nod
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
@@ -104,7 +107,7 @@
 !    set nxn matrix
 !
         call int_node_filter_matrix                                     &
-     &      (node, ele, g_FEM, jac_3d, inod, num_int_points,            &
+     &      (node, ele, g_FEM, jac_3d, ref_m, inod, num_int_points,     &
      &       nele_near_1nod_weight, iele_near_1nod_weight(1),           &
      &       nnod_near_1nod_weight, inod_near_1nod_weight(1),           &
      &       nnod_near_1nod_filter)
@@ -112,20 +115,20 @@
         if (ist_num_free .eq. -1) then
           if (iflag_tgt_filter_type .eq. -1) then
             ist = minimum_comp
-            ied = min(nnod_near_1nod_filter,num_order_3d)
+            ied = min(nnod_near_1nod_filter,ref_m%num_order_3d)
             iint =  1
           else
-            ist = min(nnod_near_1nod_filter,num_order_3d)
+            ist = min(nnod_near_1nod_filter,ref_m%num_order_3d)
             ied = minimum_comp
             iint = -1
           end if
         else
           if (iflag_tgt_filter_type .eq. -1) then
             ist = ist_num_free
-            ied = min(ied_num_free,num_order_3d)
+            ied = min(ied_num_free,ref_m%num_order_3d)
             iint =  1
           else
-            ist = min(ied_num_free,num_order_3d)
+            ist = min(ied_num_free,ref_m%num_order_3d)
             ied = ist_num_free
             iint = -1
           end if
@@ -134,7 +137,7 @@
         do num_free = ist, ied, iint
 !
           if (iflag_use_fixed_points .eq. 1) then
-            ntmp = min(nnod_near_1nod_filter, num_order_3d)
+            ntmp = min(nnod_near_1nod_filter, ref_m%num_order_3d)
           else
             ntmp = num_free
           end if
@@ -143,7 +146,7 @@
             num_fixed_point = mat_size - num_free
 !
             call const_filter_mat_each_nod                              &
-     &         (node, FEM_elen, inod, num_fixed_point, ierr)
+     &         (node, FEM_elen, ref_m, inod, num_fixed_point, ierr)
 !
             if (ierr .eq. 1) goto 20
 !
@@ -207,9 +210,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_fluid_filter_nod_by_nod                          &
-     &         (file_name, inod, node, ele, ele_4_nod, neib_nod,        &
-     &          g_FEM, jac_3d, FEM_elen, ierr)
+      subroutine const_fluid_filter_nod_by_nod(file_name, inod,         &
+     &          node, ele, g_FEM, jac_3d, FEM_elen, ref_m,              &
+     &          ele_4_nod, neib_nod, ierr)
 !
       character(len = kchara), intent(in) :: file_name
       type(node_data),    intent(in) :: node
@@ -217,6 +220,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(in) :: ref_m
 !
       integer(kind = kint), intent(in) :: inod
 !
@@ -265,7 +269,7 @@
             vec_mat = 0.0d0
 !
             call int_node_filter_matrix                                 &
-     &         (node, ele, g_FEM, jac_3d, inod, num_int_points,         &
+     &         (node, ele, g_FEM, jac_3d, ref_m, inod, num_int_points,  &
      &          nele_near_1nod_weight, iele_near_1nod_weight(1),        &
      &          nnod_near_1nod_weight, inod_near_1nod_weight(1),        &
      &          nnod_near_1nod_filter)
@@ -273,20 +277,20 @@
             if (ist_num_free .eq. -1) then
               if (iflag_tgt_filter_type .eq. -1) then
                 ist = minimum_comp
-                ied = min(nnod_near_1nod_filter,num_order_3d)
+                ied = min(nnod_near_1nod_filter,ref_m%num_order_3d)
                 iint = 1
               else
-                ist = min(nnod_near_1nod_filter,num_order_3d)
+                ist = min(nnod_near_1nod_filter,ref_m%num_order_3d)
                 ied = minimum_comp
                 iint = -1
               end if
             else
               if (iflag_tgt_filter_type .eq. -1) then
                 ist = ist_num_free
-                ied = min(ied_num_free,num_order_3d)
+                ied = min(ied_num_free,ref_m%num_order_3d)
                 iint = 1
               else
-                ist = min(ied_num_free,num_order_3d)
+                ist = min(ied_num_free,ref_m%num_order_3d)
                 ied = ist_num_free
                 iint = -1
               end if
@@ -295,7 +299,7 @@
             do num_free = ist, ied, iint
 !
               if (iflag_use_fixed_points .eq. 1) then
-                ntmp = min(nnod_near_1nod_filter,num_order_3d)
+                ntmp = min(nnod_near_1nod_filter,ref_m%num_order_3d)
               else
                 ntmp = num_free
               end if
@@ -304,7 +308,7 @@
                 num_fixed_point = mat_size - num_free
 !
                 call const_filter_mat_each_nod                          &
-     &             (node, FEM_elen, inod, num_fixed_point, ierr)
+     &             (node, FEM_elen, ref_m, inod, num_fixed_point, ierr)
                 if (ierr .eq. 1) goto 21
 !
                 call s_cal_sol_filter_func_nod(inod, ierr)

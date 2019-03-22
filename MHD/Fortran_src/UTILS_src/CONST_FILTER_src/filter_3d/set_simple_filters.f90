@@ -10,7 +10,9 @@
 !!     &          deidx_nod, deidy_nod, deidz_nod,                      &
 !!     &          dzidx_nod, dzidy_nod, dzidz_nod)
 !!      subroutine normalize_each_filter_weight
-!!      subroutine cal_filter_moms_each_nod_type(inod, mom_nod)
+!!      subroutine cal_filter_moms_each_nod_type(inod, ref_m, mom_nod)
+!!        type(reference_moments), intent(in) :: ref_m
+!!        type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
       module set_simple_filters
 !
@@ -153,31 +155,38 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_filter_moms_each_nod_type(inod, mom_nod)
+      subroutine cal_filter_moms_each_nod_type(inod, ref_m, mom_nod)
 !
       use t_filter_moments
+      use t_reference_moments
 !
       integer(kind = kint), intent(in) :: inod
+      type(reference_moments), intent(in) :: ref_m
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
 !
-      call cal_filter_moments_each_nod(mom_nod%moms%f_x(inod),          &
-     &       mom_nod%moms%f_y(inod),   mom_nod%moms%f_z(inod),          &
-     &       mom_nod%moms%f_x2(inod),  mom_nod%moms%f_y2(inod),         &
-     &       mom_nod%moms%f_z2(inod),  mom_nod%moms%f_xy(inod),         &
-     &       mom_nod%moms%f_yz(inod),  mom_nod%moms%f_zx(inod))
+      call cal_filter_moments_each_nod                                  &
+     &   (ref_m%num_order_3d, ref_m%iorder_mom_3d,                      &
+     &    mom_nod%moms%f_x(inod), mom_nod%moms%f_y(inod),               &
+     &    mom_nod%moms%f_z(inod), mom_nod%moms%f_x2(inod),              &
+     &    mom_nod%moms%f_y2(inod), mom_nod%moms%f_z2(inod),             &
+     &    mom_nod%moms%f_xy(inod),  mom_nod%moms%f_yz(inod),            &
+     &    mom_nod%moms%f_zx(inod))
 !
       end subroutine cal_filter_moms_each_nod_type
 !
 !-----------------------------------------------------------------------
 !
       subroutine cal_filter_moments_each_nod                            &
-     &         (filter_x_nod,  filter_y_nod,  filter_z_nod,             &
+     &         (num_order_3d, iorder_mom_3d,                            &
+     &          filter_x_nod,  filter_y_nod,  filter_z_nod,             &
      &          filter_x2_nod, filter_y2_nod, filter_z2_nod,            &
      &          filter_xy_nod, filter_yz_nod, filter_zx_nod)
 !
-      use m_reference_moments
       use m_matrix_4_filter
+!
+      integer(kind = kint), intent(in) :: num_order_3d
+      integer(kind = kint), intent(in) :: iorder_mom_3d(num_order_3d,3)
 !
       real(kind = kreal), intent(inout) :: filter_x_nod
       real(kind = kreal), intent(inout) :: filter_y_nod

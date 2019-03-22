@@ -29,6 +29,7 @@
       use t_filtering_data
       use t_filter_file_data
       use t_ctl_data_gen_3d_filter
+      use t_reference_moments
 !
       implicit none
 !
@@ -51,6 +52,7 @@
       type(dxdxi_data_type), save :: filter_dxi1
       type(dxidx_data_type), save :: dxidxs1
       type(gradient_filter_mom_type), save :: FEM_momenet1
+      type(reference_moments), save :: ref_m1
 !
       type(filtering_data_type), save :: filtering_gen
 !
@@ -98,7 +100,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_controls_gen_3dfilter'
       call set_controls_gen_3dfilter                                    &
-     &   (filter3d_ctl1, FEM_elen_f, mesh_filter_file)
+     &   (filter3d_ctl1, FEM_elen_f, mesh_filter_file, ref_m1)
       call dealloc_ctl_data_gen_3d_filter(filter3d_ctl1)
 !
 !  --  read geometry
@@ -212,7 +214,7 @@
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
       call s_cal_element_size(fem_f%mesh, ele_filter,                   &
      &    fem_f%group, tbl_crs_f, mat_tbl_f, rhs_mat_f, fem_int_f,      &
-     &    FEM_elen_f, filter_dxi1, dxidxs1)
+     &    FEM_elen_f, ref_m1, filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
 !  ---------------------------------------------------
@@ -241,8 +243,9 @@
         num_failed_whole = 0
         num_failed_fluid = 0
 !
-        call select_const_filter(file_name, fem_f%mesh, fem_int_f,     &
-    &       tbl_crs_f, rhs_mat_f, FEM_elen_f, dxidxs1, FEM_momenet1)
+        call select_const_filter                                        &
+     &      (file_name, fem_f%mesh, fem_int_f, tbl_crs_f, rhs_mat_f,    &
+     &       FEM_elen_f, ref_m1, dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !
 !

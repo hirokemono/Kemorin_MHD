@@ -4,7 +4,9 @@
 !     Written by H. Matsui on July, 2006
 !
 !      subroutine s_cal_1d_moments(FEM_elen)
-!      subroutine s_cal_1d_moments_4_filter(FEM_elen)
+!!      subroutine s_cal_1d_moments_4_filter(FEM_elen, ref_m)
+!!        type(gradient_model_data_type), intent(inout) :: FEM_elen
+!!        type(reference_moments), intent(inout) :: ref_m
 !
       module cal_1d_moments_4_fliter
 !
@@ -12,7 +14,6 @@
 !
       use m_constants
       use m_ctl_params_4_gen_filter
-      use m_reference_moments
 !
       use t_filter_elength
 !
@@ -63,23 +64,29 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_1d_moments_4_filter(FEM_elen)
+      subroutine s_cal_1d_moments_4_filter(FEM_elen, ref_m)
+!
+      use t_reference_moments
 !
       type(gradient_model_data_type), intent(inout) :: FEM_elen
+      type(reference_moments), intent(inout) :: ref_m
 !
       integer(kind = kint) :: num_moment3
 !
 !
-      num_moment3 = 3*max_num_order_1d
+      num_moment3 = 3 * ref_m%max_num_order_1d
 !
       if      (iref_filter_type(1) .eq. iflag_tophat_filter) then
-        call int_tophat_moment_infty(num_moment3, ref_moments_1d(0),    &
+        call int_tophat_moment_infty                                    &
+     &     (num_moment3, ref_m%ref_moments_1d(0),                       &
      &      FEM_elen%filter_conf%f_width(1) )
       else if (iref_filter_type(1) .eq. iflag_linear_filter) then
-        call int_linear_moment_infty(num_moment3, ref_moments_1d(0),    &
+        call int_linear_moment_infty                                    &
+     &     (num_moment3, ref_m%ref_moments_1d(0),                       &
      &      FEM_elen%filter_conf%f_width(1) )
       else if (iref_filter_type(1) .eq. iflag_gaussian_filter) then
-        call int_gaussian_moment_infty(num_moment3, ref_moments_1d(0),  &
+        call int_gaussian_moment_infty                                  &
+     &     (num_moment3, ref_m%ref_moments_1d(0),                       &
      &      FEM_elen%filter_conf%f_width(1) )
       end if
 !

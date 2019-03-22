@@ -49,7 +49,7 @@
 !
       num64 = filter_conf%nf_type
       call read_mul_character_b                                         &
-     &   (bflag, num64, filter_conf%filter_type)
+     &   (bflag, filter_conf%nf_type, filter_conf%filter_type)
       if(bflag%ierr_IO .ne. 0) return
       call read_1d_vector_b(bflag, num64, filter_conf%f_width)
       if(bflag%ierr_IO .ne. 0) return
@@ -228,7 +228,7 @@
       use t_filter_moments
       use filter_moments_IO_b
 !
-      integer(kind = kint), intent(in) :: nele_fmom
+      integer(kind = kint_gl), intent(in) :: nele_fmom
       type(ele_mom_diffs_type), intent(in) :: mom_ele
       type(binary_IO_flags), intent(inout) :: bflag
 !

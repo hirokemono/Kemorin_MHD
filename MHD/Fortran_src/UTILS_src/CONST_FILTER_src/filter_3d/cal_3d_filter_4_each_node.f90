@@ -3,8 +3,11 @@
 !
 !        programmed by H.Matsui on Mar., 2008
 !
-!      subroutine const_filter_mat_each_nod                             &
-!     &         (node, FEM_elen, inod, num_fixed_point, ierr)
+!!      subroutine const_filter_mat_each_nod                            &
+!!     &         (node, FEM_elen, ref_m, inod, num_fixed_point, ierr)
+!!        type(node_data), intent(in) :: node
+!!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(reference_moments), intent(in) :: ref_m
 !      subroutine cal_filter_and_coefficients(ele, g_FEM, jac_3d)
 !      subroutine cal_rms_filter_coefs(rms_weight, rms_filter)
 !
@@ -26,10 +29,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_filter_mat_each_nod                              &
-     &         (node, FEM_elen, inod, num_fixed_point, ierr)
+     &         (node, FEM_elen, ref_m, inod, num_fixed_point, ierr)
 !
       use t_geometry_data
       use t_filter_elength
+      use t_reference_moments
 !
       use m_matrix_4_filter
       use copy_moments_2_matrix
@@ -38,6 +42,7 @@
 !
       type(node_data), intent(in) :: node
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(in) :: ref_m
 !
       integer(kind = kint), intent(in) :: inod
       integer(kind = kint), intent(in) :: num_fixed_point
@@ -51,7 +56,7 @@
      &      inod, num_fixed_point)
       end if
 !
-      call set_filter_moments_on_node(inod, num_fixed_point )
+      call set_filter_moments_on_node(inod, ref_m, num_fixed_point)
       call copy_2_filter_matrix( num_fixed_point )
 !      call substitute_fixed_moments( num_fixed_point )
 !

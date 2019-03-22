@@ -24,6 +24,7 @@
       use m_precision
 !
       use t_filter_elength
+      use transfer_to_long_integers
 !
       implicit none
 !
@@ -53,8 +54,9 @@
         call write_base_filter_info_type_b                              &
      &     (FEM_elens%filter_conf, bflag)
         if(bflag%ierr_IO .ne. 0) return
-        call write_elen_ele_type_b(FEM_elens%nele_filter_mom,           &
-     &      FEM_elens%elen_ele, bflag)
+        call write_elen_ele_type_b                                      &
+     &     (cast_long(FEM_elens%nele_filter_mom), FEM_elens%elen_ele,   &
+     &      bflag)
         if(bflag%ierr_IO .ne. 0) return
       end if
 !
@@ -93,7 +95,8 @@
         if(bflag%ierr_IO .ne. 0) return
         do ifil = 1, FEM_moms%num_filter_moms
           call write_filter_moms_ele_type_b                             &
-     &       (FEM_moms%nele_fmom, FEM_moms%mom_ele(ifil), bflag)
+     &       (cast_long(FEM_moms%nele_fmom), FEM_moms%mom_ele(ifil),    &
+     &        bflag)
           if(bflag%ierr_IO .ne. 0) return
         end do
       end if
@@ -161,8 +164,8 @@
       if (FEM_elens%filter_conf%nf_type .gt. 0) then
         call read_base_filter_info_type_b(bflag, FEM_elens%filter_conf)
         if(bflag%ierr_IO .ne. 0) return
-        call read_elen_ele_type_b(bflag, FEM_elens%nele_filter_mom,     &
-     &      FEM_elens%elen_ele)
+        call read_elen_ele_type_b(bflag,                                &
+     &      cast_long(FEM_elens%nele_filter_mom), FEM_elens%elen_ele)
         if(bflag%ierr_IO .ne. 0) return
       end if
 !
@@ -209,8 +212,8 @@
         if(bflag%ierr_IO .ne. 0) return
 !
         do ifil = 1, FEM_moms%num_filter_moms
-          call read_filter_moms_ele_type_b                              &
-     &       (bflag, FEM_moms%nele_fmom, FEM_moms%mom_ele(ifil))
+          call read_filter_moms_ele_type_b(bflag,                       &
+     &        cast_long(FEM_moms%nele_fmom), FEM_moms%mom_ele(ifil))
           if(bflag%ierr_IO .ne. 0) return
         end do
 !

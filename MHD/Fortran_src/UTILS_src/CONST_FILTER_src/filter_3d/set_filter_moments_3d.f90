@@ -1,20 +1,29 @@
 !
 !      module set_filter_moments_3d
 !
-      module set_filter_moments_3d
-!
 !      modified by H. Matsui on July, 2006
 !      modified by H. Matsui on Mar, 2008
+!
+!!      subroutine s_set_moments_order(max_num_order_3d, num_order_3d,  &
+!!     &          id_moments, iorder_mom_3d)
+!!      subroutine s_set_seeds_moments(dxdxi, dxdei, dxdzi,             &
+!!     &          dydxi, dydei, dydzi, dzdxi, dzdei, dzdzi,             &
+!!     &          max_num_order_1d, istack_power, ntot_power,           &
+!!     &          itbl_power, num_order_3d, iorder_mom_3d,              &
+!!     &          ref_moments_1d, seed_moments, coef_x, coef_y, coef_z, &
+!!     &          ipower_x_xi, ipower_x_ei, ipower_x_zi,                &
+!!     &          ipower_y_xi, ipower_y_ei, ipower_y_zi,                &
+!!     &          ipower_z_xi, ipower_z_ei, ipower_z_zi)
+!!      subroutine cal_ref_rms_filter(rms_filter, dxdxi, dxdei, dxdzi,  &
+!!     &          dydxi, dydei, dydzi, dzdxi, dzdei, dzdzi)
+!!      subroutine s_set_seeds_moments_org(dx, dy, dz, num_order_3d,    &
+!!     &          id_moments, iorder_mom_3d, seed_moments)
+!
+      module set_filter_moments_3d
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine s_set_moments_order
-!      subroutine s_set_seeds_moments(dx, dy, dz)
-!      subroutine cal_ref_rms_filter(rms_filter, dxdxi, dxdei, dxdzi,   &
-!     &          dydxi, dydei, dydzi, dzdxi, dzdei, dzdzi)
-!      subroutine s_set_seeds_moments_org(dx, dy, dz)
 !
 !  ---------------------------------------------------------------------
 !
@@ -22,10 +31,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_moments_order
+      subroutine s_set_moments_order(max_num_order_3d, num_order_3d,    &
+     &          id_moments, iorder_mom_3d)
 !
       use m_ctl_params_4_gen_filter
-      use m_reference_moments
+!
+      integer(kind = kint), intent(in) :: max_num_order_3d
+      integer(kind = kint), intent(in) :: num_order_3d
+      integer(kind = kint), intent(inout) :: id_moments(num_order_3d,3)
+      integer(kind = kint), intent(inout)                               &
+     &                   :: iorder_mom_3d(num_order_3d,3)
 !
       integer(kind = kint) :: icou, iflag
       integer(kind = kint) :: n, i, ix, iy, iz
@@ -125,38 +140,52 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_table_4_moments
+      subroutine count_table_4_moments                                  &
+     &         (max_num_order_1d, istack_power, ntot_power)
 !
-      use m_ctl_params_4_gen_filter
-      use m_reference_moments
+      integer(kind = kint), intent(in) :: max_num_order_1d
+      integer(kind = kint), intent(inout)                               &
+     &                    :: istack_power(-1:max_num_order_1d)
+      integer(kind = kint), intent(inout) :: ntot_power
 !
+      integer(kind = kint) :: i
 !
-      integer(kind = kint) :: n, m, mcou, mst_pre, mst_cor
-      integer(kind = kint) :: mx, my, mz
-!
-!
-      call allocate_istack_power
 !
       istack_power(-1) = -1
       istack_power(0) =   0
-      do n = 1, max_num_order_1d
-        istack_power(n) = istack_power(n-1) + 3**n
+      do i = 1, max_num_order_1d
+        istack_power(i) = istack_power(i-1) + 3**i
       end do
       ntot_power = istack_power(max_num_order_1d)
 !
-      call allocate_itbl_power
+      end subroutine count_table_4_moments
+!
+! ----------------------------------------------------------------------
+!
+      subroutine s_set_table_4_moments(max_num_order_1d, istack_power,  &
+     &          ntot_power, itbl_power)
+!
+      integer(kind = kint), intent(in) :: max_num_order_1d
+      integer(kind = kint), intent(in)                                  &
+     &                    :: istack_power(-1:max_num_order_1d)
+      integer(kind = kint), intent(in) :: ntot_power
+      integer(kind = kint), intent(inout) :: itbl_power(3,0:ntot_power)
+!
+      integer(kind = kint) :: i, j, mcou, mst_pre, mst_cor
+      integer(kind = kint) :: mx, my, mz
+!
 !
       itbl_power(1,0) = 0
       itbl_power(2,0) = 0
       itbl_power(3,0) = 0
-      do n = 1, max_num_order_1d
-        mst_pre = istack_power(n-2)
-        mst_cor = istack_power(n-1)
-        do m = 1, 3**(n-1)
-          mcou = mst_pre + m
-          mx = mst_cor + 3*m-2
-          my = mst_cor + 3*m-1
-          mz = mst_cor + 3*m
+      do i = 1, max_num_order_1d
+        mst_pre = istack_power(i-2)
+        mst_cor = istack_power(i-1)
+        do j = 1, 3**(i-1)
+          mcou = mst_pre + j
+          mx = mst_cor + 3*j-2
+          my = mst_cor + 3*j-1
+          mz = mst_cor + 3*j
           itbl_power(1,mx) = itbl_power(1,mcou) + 1
           itbl_power(2,mx) = itbl_power(2,mcou)
           itbl_power(3,mx) = itbl_power(3,mcou)
@@ -169,21 +198,49 @@
         end do
       end do
 !
-      call allocate_coef_4_filter_moms
-!
       end subroutine s_set_table_4_moments
 !
 ! ----------------------------------------------------------------------
 !
       subroutine s_set_seeds_moments(dxdxi, dxdei, dxdzi,               &
-     &          dydxi, dydei, dydzi, dzdxi, dzdei, dzdzi)
+     &          dydxi, dydei, dydzi, dzdxi, dzdei, dzdzi,               &
+     &          max_num_order_1d, istack_power, ntot_power,             &
+     &          itbl_power, num_order_3d, iorder_mom_3d,                &
+     &          ref_moments_1d, seed_moments, coef_x, coef_y, coef_z,   &
+     &          ipower_x_xi, ipower_x_ei, ipower_x_zi,                  &
+     &          ipower_y_xi, ipower_y_ei, ipower_y_zi,                  &
+     &          ipower_z_xi, ipower_z_ei, ipower_z_zi)
 !
       use m_ctl_params_4_gen_filter
-      use m_reference_moments
 !
       real(kind = kreal), intent(in) :: dxdxi, dxdei, dxdzi
       real(kind = kreal), intent(in) :: dydxi, dydei, dydzi
       real(kind = kreal), intent(in) :: dzdxi, dzdei, dzdzi
+!
+      integer(kind = kint), intent(in) :: max_num_order_1d
+      integer(kind = kint), intent(in)                                  &
+     &                    :: istack_power(-1:max_num_order_1d)
+      integer(kind = kint), intent(in) :: ntot_power
+      integer(kind = kint), intent(in) :: itbl_power(3,0:ntot_power)
+      integer(kind = kint), intent(in) :: num_order_3d
+      integer(kind = kint), intent(in) :: iorder_mom_3d(num_order_3d,3)
+      real(kind = kreal), intent(in)                                    &
+     &                    :: ref_moments_1d(0:3*max_num_order_1d)
+!
+      integer(kind = kint), intent(inout) :: ipower_x_xi(0:ntot_power)
+      integer(kind = kint), intent(inout) :: ipower_x_ei(0:ntot_power)
+      integer(kind = kint), intent(inout) :: ipower_x_zi(0:ntot_power)
+      integer(kind = kint), intent(inout) :: ipower_y_xi(0:ntot_power)
+      integer(kind = kint), intent(inout) :: ipower_y_ei(0:ntot_power)
+      integer(kind = kint), intent(inout) :: ipower_y_zi(0:ntot_power)
+      integer(kind = kint), intent(inout) :: ipower_z_xi(0:ntot_power)
+      integer(kind = kint), intent(inout) :: ipower_z_ei(0:ntot_power)
+      integer(kind = kint), intent(inout) :: ipower_z_zi(0:ntot_power)
+      real(kind = kreal), intent(inout) :: coef_x(0:ntot_power)
+      real(kind = kreal), intent(inout) :: coef_y(0:ntot_power)
+      real(kind = kreal), intent(inout) :: coef_z(0:ntot_power)
+      real(kind = kreal), intent(inout) :: seed_moments(num_order_3d)
+!
 !
       integer(kind = kint) :: n, m, mcou, mst_pre, mst_cor
       integer(kind = kint) :: nmax_x, im_x, mst_x, med_x, mx, ip_xi
@@ -354,12 +411,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_seeds_moments_org(dx, dy, dz)
+      subroutine s_set_seeds_moments_org(dx, dy, dz, num_order_3d,      &
+     &          id_moments, iorder_mom_3d, seed_moments)
 !
       use m_ctl_params_4_gen_filter
-      use m_reference_moments
 !
       real(kind = kreal), intent(in) :: dx, dy, dz
+      integer(kind = kint), intent(in) :: num_order_3d
+      integer(kind = kint), intent(in) :: id_moments(num_order_3d,3)
+      integer(kind = kint), intent(in) :: iorder_mom_3d(num_order_3d,3)
+!
+      real(kind = kreal), intent(inout) :: seed_moments(num_order_3d)
 !
       integer(kind = kint) :: n, ix, iy, iz
 !

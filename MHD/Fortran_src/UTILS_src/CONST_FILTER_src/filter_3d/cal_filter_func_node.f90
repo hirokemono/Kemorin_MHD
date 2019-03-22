@@ -3,14 +3,14 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine const_commute_filter_coefs                           &
-!!     &         (file_name, mesh, g_FEM, jac_3d, FEM_elen, mom_nod)
+!!      subroutine const_commute_filter_coefs(file_name, mesh,          &
+!!     &          g_FEM, jac_3d, FEM_elen, ref_m, mom_nod)
 !!      subroutine const_fluid_filter_coefs                             &
-!!     &         (file_name, mesh, g_FEM, jac_3d, FEM_elen)
+!!     &         (file_name, mesh, g_FEM, jac_3d, FEM_elen, ref_m)
 !!      subroutine set_simple_filter (file_name, mesh,                  &
-!!     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod)
+!!     &          g_FEM, jac_3d, FEM_elen, ref_m, dxidxs, mom_nod)
 !!      subroutine set_simple_fluid_filter(file_name, mesh,             &
-!!     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod)
+!!     &          g_FEM, jac_3d, FEM_elen, ref_m, dxidxs, mom_nod)
 !!        type(mesh_geometry),       intent(in) :: mesh
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -29,6 +29,7 @@
       use t_jacobians
       use t_filter_elength
       use t_next_node_ele_4_node
+      use t_reference_moments
 !
       implicit none
 !
@@ -46,8 +47,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_commute_filter_coefs                             &
-     &         (file_name, mesh, g_FEM, jac_3d, FEM_elen, mom_nod)
+      subroutine const_commute_filter_coefs(file_name, mesh,            &
+     &          g_FEM, jac_3d, FEM_elen, ref_m, mom_nod)
 !
       use t_filter_moments
       use m_ctl_params_4_gen_filter
@@ -61,6 +62,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(in) :: ref_m
 !
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
@@ -73,12 +75,12 @@
       write(70+my_rank,*) ' Best condition for filter'
 !
       do inod = inod_start_filter, inod_end_filter
-        call const_filter_func_nod_by_nod                               &
-     &     (file_name, inod, mesh%node, mesh%ele,                       &
-     &      ele_4_nod_s, neib_nod_s, g_FEM, jac_3d, FEM_elen, ierr)
+        call const_filter_func_nod_by_nod(file_name, inod,              &
+     &      mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen, ref_m,        &
+     &      ele_4_nod_s, neib_nod_s, ierr)
 !
         nnod_near_nod_weight(inod) = nnod_near_1nod_weight
-        call cal_filter_moms_each_nod_type(inod, mom_nod)
+        call cal_filter_moms_each_nod_type(inod, ref_m, mom_nod)
       end do
 !
       call dealloc_iele_belonged(ele_4_nod_s)
@@ -89,7 +91,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_fluid_filter_coefs                               &
-     &         (file_name, mesh, g_FEM, jac_3d, FEM_elen)
+     &         (file_name, mesh, g_FEM, jac_3d, FEM_elen, ref_m)
 !
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
@@ -101,6 +103,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(in) :: ref_m
 !
       integer(kind = kint) :: inod, ierr
 !
@@ -110,9 +113,9 @@
       write(70+my_rank,*) ' Best condition for fluid filter'
 !
       do inod = inod_start_filter, inod_end_filter
-        call const_fluid_filter_nod_by_nod                              &
-     &     (file_name, inod, mesh%node, mesh%ele,                       &
-     &      ele_4_nod_s, neib_nod_s, g_FEM, jac_3d, FEM_elen, ierr)
+        call const_fluid_filter_nod_by_nod(file_name, inod,             &
+     &      mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen, ref_m,        &
+     &      ele_4_nod_s, neib_nod_s, ierr)
       end do
 !
       call dealloc_iele_belonged(ele_4_nod_s)
@@ -124,7 +127,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_simple_filter (file_name, mesh,                    &
-     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod)
+     &          g_FEM, jac_3d, FEM_elen, ref_m, dxidxs, mom_nod)
 !
       use t_filter_dxdxi
       use t_filter_moments
@@ -139,6 +142,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(in) :: ref_m
 !
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
@@ -153,10 +157,10 @@
       do inod = inod_start_filter, inod_end_filter
         call set_simple_filter_nod_by_nod                               &
      &     (file_name, mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen,    &
-     &      dxidxs%dx_nod, inod, ele_4_nod_s, neib_nod_s)
+     &      dxidxs%dx_nod, ref_m, inod, ele_4_nod_s, neib_nod_s)
 !
         nnod_near_nod_weight(inod) = nnod_near_1nod_weight
-        call cal_filter_moms_each_nod_type(inod, mom_nod)
+        call cal_filter_moms_each_nod_type(inod, ref_m, mom_nod)
       end do
 !
       call dealloc_iele_belonged(ele_4_nod_s)
@@ -167,7 +171,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_simple_fluid_filter(file_name, mesh,               &
-     &          g_FEM, jac_3d, FEM_elen, dxidxs, mom_nod)
+     &          g_FEM, jac_3d, FEM_elen, ref_m, dxidxs, mom_nod)
 !
       use t_filter_dxdxi
       use t_filter_moments
@@ -181,6 +185,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(in) :: ref_m
 !
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
@@ -196,7 +201,8 @@
       do inod = inod_start_filter, inod_end_filter
         call set_simple_fl_filter_nod_by_nod                            &
      &     (file_name, mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen,    &
-     &      dxidxs%dx_nod, inod, ele_4_nod_s, neib_nod_s, mom_nod)
+     &      dxidxs%dx_nod, ref_m, inod, ele_4_nod_s, neib_nod_s,        &
+     &      mom_nod)
       end do
 !
       call dealloc_iele_belonged(ele_4_nod_s)

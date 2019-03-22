@@ -3,11 +3,13 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine select_const_filter(file_name, mesh, fem_int,        &
-!!     &          tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+!!      subroutine select_const_filter                                  &
+!!     &         (file_name, mesh, fem_int, tbl_crs, rhs_mat, FEM_elen, &
+!!     &          ref_m, dxidxs, FEM_moments)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(reference_moments), intent(inout) :: ref_m
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
 !!        type(gradient_filter_mom_type), intent(inout) :: FEM_moments
@@ -20,7 +22,6 @@
       use calypso_mpi
       use m_machine_parameter
       use m_ctl_params_4_gen_filter
-      use m_reference_moments
       use m_crs_matrix_4_filter
 !
       use t_mesh_data
@@ -31,6 +32,7 @@
       use t_filter_elength
       use t_filter_moments
       use t_filter_dxdxi
+      use t_reference_moments
 !
       use cal_element_size
       use cal_filter_moms_ele_by_elen
@@ -51,14 +53,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine select_const_filter(file_name, mesh, fem_int,          &
-     &          tbl_crs,  rhs_mat, FEM_elen, dxidxs, FEM_moments)
+      subroutine select_const_filter                                    &
+     &         (file_name, mesh, fem_int, tbl_crs, rhs_mat, FEM_elen,   &
+     &          ref_m, dxidxs, FEM_moments)
 !
 !
       character(len=kchara), intent(in) :: file_name
       type(mesh_geometry), intent(in) :: mesh
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(inout) :: ref_m
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(dxidx_data_type), intent(inout) :: dxidxs
@@ -69,13 +73,15 @@
         if (iflag_debug.eq.1) write(*,*) 'const_commutative_filter'
         call const_commutative_filter(file_name, mesh,                  &
      &     fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, tbl_crs, rhs_mat,     &
-     &     FEM_elen, FEM_moments)
+     &     FEM_elen, ref_m, FEM_moments)
+        call finalize_4_cal_fileters(fil_tbl_crs, fil_mat_crs, ref_m)
 !
       else if (iflag_tgt_filter_type .eq. -1) then
         if (iflag_debug.eq.1) write(*,*) 'correct_commutative_filter'
         call correct_commutative_filter                                 &
      &     (mesh, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,                &
-     &      tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+     &      tbl_crs, rhs_mat, FEM_elen, ref_m, dxidxs, FEM_moments)
+        call finalize_4_cal_fileters(fil_tbl_crs, fil_mat_crs, ref_m)
 !
       else if (iflag_tgt_filter_type .ge. -4                            &
      &     .and. iflag_tgt_filter_type .le. -2) then
@@ -83,14 +89,15 @@
         call correct_by_simple_filter                                   &
      &     (mesh, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,                &
      &      fem_int%rhs_tbl, fem_int%m_lump, tbl_crs, rhs_mat,          &
-     &      FEM_elen, dxidxs, FEM_moments)
+     &      FEM_elen, ref_m, dxidxs, FEM_moments)
+        call finalize_4_cal_fileters(fil_tbl_crs, fil_mat_crs, ref_m)
 !
       else if (iflag_tgt_filter_type.ge.2                               &
      &     .and. iflag_tgt_filter_type.le.4) then
         if (iflag_debug.eq.1) write(*,*) 'const_simple_filter'
         call const_simple_filter(file_name, mesh, fem_int%jcs%g_FEM,    &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, fem_int%m_lump,        &
-     &      tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+     &      tbl_crs, rhs_mat, FEM_elen, ref_m, dxidxs, FEM_moments)
       end if
 !
       end subroutine select_const_filter
@@ -100,7 +107,7 @@
 !
       subroutine const_commutative_filter                               &
      &         (file_name, mesh, g_FEM, jac_3d_q,                       &
-     &          tbl_crs, rhs_mat, FEM_elen, FEM_moments)
+     &          tbl_crs, rhs_mat, FEM_elen, ref_m, FEM_moments)
 !
       use cal_filter_func_node
 !
@@ -112,6 +119,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(in) :: ref_m
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !
 !
@@ -133,23 +141,19 @@
 !
       if(iflag_debug.eq.1)  write(*,*) 'const_commute_filter_coefs'
       call const_commute_filter_coefs(file_name, mesh,                  &
-     &    g_FEM, jac_3d_q, FEM_elen, FEM_moments%mom_nod(1))
+     &    g_FEM, jac_3d_q, FEM_elen, ref_m, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*)'const_fluid_filter_coefs'
       call const_fluid_filter_coefs                                     &
-     &   (file_name, mesh, g_FEM, jac_3d_q, FEM_elen)
-!
-      call finalize_4_cal_fileters(fil_tbl_crs, fil_mat_crs)
-!
-      call deallocate_coef_4_filter_moms
+     &   (file_name, mesh, g_FEM, jac_3d_q, FEM_elen, ref_m)
 !
       end subroutine const_commutative_filter
 !
 ! ----------------------------------------------------------------------
 !
       subroutine const_simple_filter                                    &
-     &         (file_name, mesh, g_FEM, jac_3d_q, rhs_tbl, m_lump,     &
-     &          tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+     &         (file_name, mesh, g_FEM, jac_3d_q, rhs_tbl, m_lump,      &
+     &          tbl_crs, rhs_mat, FEM_elen, ref_m, dxidxs, FEM_moments)
 !
       use cal_1st_diff_deltax_4_nod
       use cal_filter_func_node
@@ -166,6 +170,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(in) :: ref_m
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !
@@ -183,7 +188,7 @@
 !
       if(iflag_debug.eq.1) write(*,*) 'set_simple_filter'
       call set_simple_filter(file_name, mesh, g_FEM, jac_3d_q,          &
-     &    FEM_elen, dxidxs, FEM_moments%mom_nod(1))
+     &    FEM_elen, ref_m, dxidxs, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
       call s_const_filter_mom_ele(mesh%nod_comm, mesh%node, mesh%ele,   &
@@ -194,8 +199,8 @@
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(1))
 !
       if(iflag_debug.eq.1)  write(*,*) 'set_simple_fluid_filter'
-      call set_simple_fluid_filter(file_name, mesh,                     &
-     &    g_FEM, jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod)
+      call set_simple_fluid_filter(file_name, mesh, g_FEM, jac_3d_q,    &
+     &    FEM_elen, ref_m, dxidxs, FEM_moments%mom_nod)
 !
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(2))
       if (itype_mass_matrix .eq. 1) then
@@ -208,7 +213,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine correct_commutative_filter(mesh, g_FEM, jac_3d_q,      &
-     &          tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+     &          tbl_crs, rhs_mat, FEM_elen, ref_m, dxidxs, FEM_moments)
 !
       use m_ctl_param_newdom_filter
       use m_filter_file_names
@@ -226,6 +231,8 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(in) :: ref_m
+!
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !
@@ -301,8 +308,8 @@
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
       call s_correct_wrong_filters                                      &
-     &   (org_filter_coef_code, fixed_file_name, mesh,                  &
-     &    g_FEM, jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod(1))
+     &   (org_filter_coef_code, fixed_file_name, mesh, g_FEM, jac_3d_q, &
+     &    FEM_elen, ref_m, dxidxs, FEM_moments%mom_nod(1))
       if(bin_flflags%ierr_IO .gt. 0) then
         call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
       end if
@@ -310,7 +317,7 @@
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
       call correct_wrong_fluid_filters                                  &
      &   (org_filter_coef_code, fixed_file_name, mesh, g_FEM, jac_3d_q, &
-     &    FEM_elen, dxidxs, FEM_moments%mom_nod)
+     &    FEM_elen, ref_m, dxidxs, FEM_moments%mom_nod)
       if(bin_flflags%ierr_IO .gt. 0) then
         call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
       end if
@@ -323,17 +330,13 @@
 !
       call deallocate_correct_filter_flag
 !
-      call deallocate_coef_4_filter_moms
-      call finalize_4_cal_fileters(fil_tbl_crs, fil_mat_crs)
-!
-!
       end subroutine correct_commutative_filter
 !
 ! ----------------------------------------------------------------------
 !
       subroutine correct_by_simple_filter                               &
      &         (mesh, g_FEM, jac_3d_q, rhs_tbl, m_lump, tbl_crs,        &
-     &          rhs_mat, FEM_elen, dxidxs, FEM_moments)
+     &          rhs_mat, FEM_elen, ref_m, dxidxs, FEM_moments)
 !
       use m_ctl_param_newdom_filter
       use m_filter_file_names
@@ -356,6 +359,8 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(reference_moments), intent(in) :: ref_m
+!
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !
@@ -426,8 +431,8 @@
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
       call s_correct_wrong_filters                                      &
-     &   (org_filter_coef_code, fixed_file_name, mesh,                  &
-     &    g_FEM, jac_3d_q, FEM_elen, dxidxs, FEM_moments%mom_nod(1))
+     &   (org_filter_coef_code, fixed_file_name, mesh, g_FEM, jac_3d_q, &
+     &    FEM_elen, ref_m, dxidxs, FEM_moments%mom_nod(1))
       if(bin_flflags%ierr_IO .gt. 0) then
         call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
       end if
@@ -447,7 +452,7 @@
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
       call correct_wrong_fluid_filters                                  &
      &   (org_filter_coef_code, fixed_file_name, mesh, g_FEM, jac_3d_q, &
-     &    FEM_elen, dxidxs, FEM_moments%mom_nod)
+     &    FEM_elen, ref_m, dxidxs, FEM_moments%mom_nod)
       if(bin_flflags%ierr_IO .gt. 0) then
         call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
       end if
@@ -459,10 +464,6 @@
       end if
 !
       call deallocate_correct_filter_flag
-!
-      call deallocate_coef_4_filter_moms
-      call finalize_4_cal_fileters(fil_tbl_crs, fil_mat_crs)
-!
 !
       end subroutine correct_by_simple_filter
 !

@@ -1,20 +1,22 @@
 !
 !      module copy_moments_2_matrix
 !
-      module copy_moments_2_matrix
-!
 !        programmed by H.Matsui on Aug., 2006
 !        Modified by H.Matsui on Mar., 2008
+!
+!!      subroutine set_filter_moments_on_node                           &
+!!     &         (inod, ref_m, num_fixed_point)
+!!        type(reference_moments), intent(in) :: ref_m
+!!      subroutine copy_filter_coefs(num_vect)
+!!
+!!      subroutine copy_filter_coefs_to_tmp
+!!      subroutine copy_filter_coefs_from_tmp
+!
+      module copy_moments_2_matrix
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine set_filter_moments_on_node(inod, num_fixed_point)
-!      subroutine copy_filter_coefs(num_vect)
-!
-!      subroutine copy_filter_coefs_to_tmp
-!      subroutine copy_filter_coefs_from_tmp
 !
 ! -----------------------------------------------------------------------
 !
@@ -22,18 +24,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_filter_moments_on_node(inod, num_fixed_point)
+      subroutine set_filter_moments_on_node                             &
+     &         (inod, ref_m, num_fixed_point)
 !
-      use m_reference_moments
+      use t_reference_moments
       use m_matrix_4_filter
 !
+      type(reference_moments), intent(in) :: ref_m
       integer(kind = kint), intent(in) :: num_fixed_point, inod
+!
       integer(kind = kint) :: inum
 !
 !
       if (num_fixed_point.eq. 0) vec_mat = 0.0d0
       do inum = 1, mat_size-num_fixed_point
-        vec_mat(inum+num_fixed_point) = seed_moments_nod(inod,inum)
+        vec_mat(inum+num_fixed_point)                                   &
+     &     = ref_m%seed_moments_nod(inod,inum)
       end do
 !
       end subroutine set_filter_moments_on_node

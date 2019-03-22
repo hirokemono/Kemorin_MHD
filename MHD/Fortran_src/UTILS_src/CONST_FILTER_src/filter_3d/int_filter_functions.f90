@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Aug., 2006
 !
 !!      subroutine int_node_filter_matrix                               &
-!!     &         (node, ele, g_FEM, jac_3d, inod, n_int,                &
+!!     &         (node, ele, g_FEM, jac_3d, ref_m, inod, n_int,         &
 !!     &          nele_grp, iele_grp, nnod_mat_tbl, inod_mat_tbl,       &
 !!     &          nnod_filter_mat)
 !!      subroutine int_node_filter_weights                              &
@@ -13,6 +13,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(reference_moments), intent(in) :: ref_m
 !
       module int_filter_functions
 !
@@ -29,13 +30,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_node_filter_matrix                                 &
-     &         (node, ele, g_FEM, jac_3d, inod, n_int,                  &
+     &         (node, ele, g_FEM, jac_3d, ref_m, inod, n_int,           &
      &          nele_grp, iele_grp, nnod_mat_tbl, inod_mat_tbl,         &
      &          nnod_filter_mat)
 !
       use t_geometry_data
       use t_fem_gauss_int_coefs
       use t_jacobians
+      use t_reference_moments
       use m_matrix_4_filter
       use set_int_point_position
       use fem_const_filter_matrix
@@ -44,6 +46,7 @@
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
+      type(reference_moments), intent(in) :: ref_m
 !
       integer(kind = kint), intent(in) :: inod, n_int
       integer(kind = kint), intent(in) :: nele_grp
@@ -72,8 +75,8 @@
 !
           call fem_sk_filter_moments                                    &
      &       (node%numnod, ele%numele, ele%nnod_4_ele, node%xx,         &
-     &        g_FEM%max_int_point, g_FEM%maxtot_int_3d,                 &
-     &        g_FEM%int_start3, g_FEM%owe3d,                            &
+     &        ref_m%num_order_3d, ref_m%iorder_mom_3d,                  &
+     &        g_FEM%maxtot_int_3d, g_FEM%owe3d,                         &
      &        jac_3d%ntot_int, jac_3d%xjac, jac_3d%an,                  &
      &        nele_grp, iele_grp, inod, ix, k_order)
 !

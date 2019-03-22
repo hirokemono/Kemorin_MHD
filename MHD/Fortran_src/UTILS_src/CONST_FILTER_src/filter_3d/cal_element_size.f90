@@ -6,13 +6,14 @@
 !
 !!      subroutine s_cal_element_size                                   &
 !!     &         (mesh, ele_mesh, group, tbl_crs, mat_tbl,              &
-!!     &          rhs_mat, fem_int, FEM_elen, filter_dxi, dxidxs)
+!!     &          rhs_mat, fem_int, FEM_elen, ref_m, filter_dxi, dxidxs)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(dxdxi_data_type), intent(inout) :: filter_dxi
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
+!!        type(reference_moments), intent(inout) :: ref_m
 !!
 !!      subroutine s_const_filter_mom_ele                               &
 !!     &         (nod_comm, node, ele, g_FEM, jac_3d_q, rhs_tbl,        &
@@ -62,12 +63,12 @@
 !
       subroutine s_cal_element_size                                     &
      &         (mesh, ele_mesh, group, tbl_crs, mat_tbl,                &
-     &          rhs_mat, fem_int, FEM_elen, filter_dxi, dxidxs)
+     &          rhs_mat, fem_int, FEM_elen, ref_m, filter_dxi, dxidxs)
 !
       use m_ctl_params_4_gen_filter
-      use m_reference_moments
 !
       use t_filter_elength
+      use t_reference_moments
       use t_filter_dxdxi
 !
       use set_table_4_RHS_assemble
@@ -91,6 +92,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(finite_element_integration), intent(inout) :: fem_int
       type(gradient_model_data_type), intent(inout) :: FEM_elen
+      type(reference_moments), intent(inout) :: ref_m
       type(dxdxi_data_type), intent(inout) :: filter_dxi
       type(dxidx_data_type), intent(inout) :: dxidxs
 !
@@ -181,19 +183,20 @@
 !        filter moments on each node
 !  ---------------------------------------------------
 !
-      call allocate_reference_moments
-      call allocate_seed_moms_ele(FEM_elen%nele_filter_mom)
-      call allocate_seed_moms_nod(FEM_elen%nnod_filter_mom)
+      call alloc_reference_moments(ref_m)
+      call alloc_seed_moms_ele(FEM_elen%nele_filter_mom, ref_m)
+      call alloc_seed_moms_nod(FEM_elen%nnod_filter_mom, ref_m)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_ele'
-      call cal_filter_moments_on_ele(filter_dxi%dxi_ele, FEM_elen)
+      call cal_filter_moments_on_ele                                    &
+     &   (filter_dxi%dxi_ele, FEM_elen, ref_m)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_node_1st'
       call cal_filter_moments_on_node_1st                               &
      &   (mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,                        &
      &    fem_int%rhs_tbl, tbl_crs, fem_int%m_lump, FEM_elen, mass1,    &
-     &    rhs_mat%fem_wk, rhs_mat%f_l)
+     &    rhs_mat%fem_wk, rhs_mat%f_l, ref_m)
 !
 !  ---------------------------------------------------
 !        differences of element size for each element
@@ -211,7 +214,7 @@
         call delete_x_products_of_elen(FEM_elen)
       end if
 !
-      call deallocate_seed_moms_ele
+      call dealloc_seed_moms_ele(ref_m)
 !
       call dealloc_next_nod_ele_table(next_tbl_f)
 !

@@ -111,7 +111,6 @@
 !
       use t_geometry_data
       use t_next_node_ele_4_node
-      use m_reference_moments
       use m_matrix_4_filter
       use m_filter_file_names
       use m_field_file_format
@@ -165,11 +164,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine finalize_4_cal_fileters(fil_tbl_crs, fil_mat_crs)
+      subroutine finalize_4_cal_fileters                                &
+     &         (fil_tbl_crs, fil_mat_crs, ref_m)
 !
+      use t_reference_moments
       use m_filter_file_names
       use m_matrix_4_filter
-      use m_reference_moments
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
       use fem_const_filter_matrix
@@ -177,6 +177,7 @@
 !
       type(CRS_matrix_connect), intent(inout) :: fil_tbl_crs
       type(CRS_matrix), intent(inout) :: fil_mat_crs
+      type(reference_moments), intent(inout) :: ref_m
 !
 !
       call deallocate_tmp_4_filter_sort
@@ -186,7 +187,10 @@
 !
       call dealloc_crs_mat_data(fil_mat_crs)
       call dealloc_crs_connect(fil_tbl_crs)
-      call deallocate_reference_moments
+!
+      call dealloc_reference_moments(ref_m)
+      call dealloc_coef_4_filter_moms(ref_m)
+!
       call deallocate_matrix_4_filter
       call deallocate_mat_num_weight
       call deallocate_sk_filter
@@ -202,7 +206,6 @@
       subroutine resize_matrix_size_gen_filter                          &
      &         (nnod_4_ele, fil_tbl_crs, fil_mat_crs)
 !
-      use m_reference_moments
       use m_matrix_4_filter
       use fem_const_filter_matrix
 !

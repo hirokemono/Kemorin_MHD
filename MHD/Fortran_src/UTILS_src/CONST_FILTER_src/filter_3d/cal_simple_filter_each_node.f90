@@ -3,16 +3,18 @@
 !
 !     Written by H. Matsui on Nov., 2008
 !
-!!      subroutine set_simple_filter_nod_by_nod                         &
-!!     &         (file_name, node, ele, g_FEM, jac_3d, FEM_elen, dx_nod,&
-!!     &          inod, ele_4_nod, neib_nod)
-!!      subroutine set_simple_fl_filter_nod_by_nod                      &
-!!     &         (file_name, node, ele, g_FEM, jac_3d, FEM_elen, dx_nod,&
-!!     &          inod, ele_4_nod, neib_nod, mom_nod)
+!!      subroutine set_simple_filter_nod_by_nod(file_name, node, ele,   &
+!!     &          g_FEM, jac_3d, FEM_elen, dx_nod, ref_m, inod,         &
+!!     &          ele_4_nod, neib_nod)
+!!      subroutine set_simple_fl_filter_nod_by_nod(file_name, node, ele,&
+!!     &          g_FEM, jac_3d, FEM_elen, dx_nod, ref_m, inod,         &
+!!     &          ele_4_nod, neib_nod, mom_nod)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(dxidx_direction_type), intent(in) :: dx_nod
+!!        type(reference_moments), intent(in) :: ref_m
 !!        type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !
 !
@@ -26,6 +28,7 @@
       use t_jacobians
       use t_filter_elength
       use t_filter_dxdxi
+      use t_reference_moments
       use t_next_node_ele_4_node
 !
       implicit none
@@ -39,9 +42,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_filter_nod_by_nod                           &
-     &         (file_name, node, ele, g_FEM, jac_3d, FEM_elen, dx_nod,  &
-     &          inod, ele_4_nod, neib_nod)
+      subroutine set_simple_filter_nod_by_nod(file_name, node, ele,     &
+     &          g_FEM, jac_3d, FEM_elen, dx_nod, ref_m, inod,           &
+     &          ele_4_nod, neib_nod)
 !
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
@@ -64,6 +67,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(dxidx_direction_type), intent(in) :: dx_nod
+      type(reference_moments), intent(in) :: ref_m
 !
       type(element_around_node), intent(inout) :: ele_4_nod
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
@@ -101,7 +105,7 @@
 !    set nxn matrix
 !
       call int_node_filter_matrix                                       &
-     &   (node, ele, g_FEM, jac_3d, inod, num_int_points,               &
+     &   (node, ele, g_FEM, jac_3d, ref_m, inod, num_int_points,        &
      &    nele_near_1nod_weight, iele_near_1nod_weight(1),              &
      &    nnod_near_1nod_weight, inod_near_1nod_weight(1),              &
      &    nnod_near_1nod_filter)
@@ -134,9 +138,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_fl_filter_nod_by_nod                        &
-     &         (file_name, node, ele, g_FEM, jac_3d, FEM_elen, dx_nod,  &
-     &          inod, ele_4_nod, neib_nod, mom_nod)
+      subroutine set_simple_fl_filter_nod_by_nod(file_name, node, ele,  &
+     &          g_FEM, jac_3d, FEM_elen, dx_nod, ref_m, inod,           &
+     &          ele_4_nod, neib_nod, mom_nod)
 !
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
@@ -160,6 +164,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(dxidx_direction_type), intent(in) :: dx_nod
+      type(reference_moments), intent(in) :: ref_m
 !
       type(element_around_node), intent(inout) :: ele_4_nod
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
@@ -207,7 +212,7 @@
 !
         else
           call int_node_filter_matrix                                   &
-     &       (node, ele, g_FEM, jac_3d, inod, num_int_points,           &
+     &       (node, ele, g_FEM, jac_3d, ref_m, inod, num_int_points,    &
      &        nele_near_1nod_weight, iele_near_1nod_weight(1),          &
      &        nnod_near_1nod_weight, inod_near_1nod_weight(1),          &
      &        nnod_near_1nod_filter)
