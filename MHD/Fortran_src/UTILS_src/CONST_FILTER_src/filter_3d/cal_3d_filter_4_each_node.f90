@@ -3,13 +3,15 @@
 !
 !        programmed by H.Matsui on Mar., 2008
 !
-!!      subroutine const_filter_mat_each_nod                            &
-!!     &         (node, FEM_elen, ref_m, inod, num_fixed_point, ierr)
+!!      subroutine const_filter_mat_each_nod (node, FEM_elen,           &
+!!     &          ref_m, fil_coef, inod, num_fixed_point, ierr)
 !!        type(node_data), intent(in) :: node
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(reference_moments), intent(in) :: ref_m
-!      subroutine cal_filter_and_coefficients(ele, g_FEM, jac_3d)
-!      subroutine cal_rms_filter_coefs(rms_weight, rms_filter)
+!!        type(each_filter_coef), intent(in) :: fil_coef
+!!      subroutine cal_filter_and_coefficients                          &
+!!     &         (ele, g_FEM, jac_3d, fil_coef)
+!!      subroutine cal_rms_filter_coefs(fil_coef, rms_weight, rms_filter)
 !
       module cal_3d_filter_4_each_node
 !
@@ -17,6 +19,7 @@
       use m_constants
 !
       use calypso_mpi
+      use t_filter_coefs
 !
       implicit none
 !
@@ -28,8 +31,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_filter_mat_each_nod                              &
-     &         (node, FEM_elen, ref_m, inod, num_fixed_point, ierr)
+      subroutine const_filter_mat_each_nod (node, FEM_elen,             &
+     &          ref_m, fil_coef, inod, num_fixed_point, ierr)
 !
       use t_geometry_data
       use t_filter_elength
@@ -43,6 +46,7 @@
       type(node_data), intent(in) :: node
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(reference_moments), intent(in) :: ref_m
+      type(each_filter_coef), intent(in) :: fil_coef
 !
       integer(kind = kint), intent(in) :: inod
       integer(kind = kint), intent(in) :: num_fixed_point
@@ -52,7 +56,7 @@
       ierr = 0
 !
       if ( num_fixed_point .gt. 0 ) then
-        call set_constant_filter_coefs(node, FEM_elen,                  &
+        call set_constant_filter_coefs(node, FEM_elen, fil_coef,        &
      &      inod, num_fixed_point)
       end if
 !
@@ -71,13 +75,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_filter_and_coefficients(ele, g_FEM, jac_3d)
+      subroutine cal_filter_and_coefficients                            &
+     &         (ele, g_FEM, jac_3d, fil_coef)
 !
       use t_geometry_data
       use t_fem_gauss_int_coefs
       use t_jacobians
       use m_ctl_params_4_gen_filter
-      use m_filter_coefs
       use copy_moments_2_matrix
       use int_filter_functions
 !
@@ -85,38 +89,39 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
 !
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
-      weight_1nod = 0.0d0
-      call copy_filter_coefs(nnod_near_1nod_weight)
 !
-      call int_node_filter_weights(ele, g_FEM, jac_3d, num_int_points,  &
-     &    nele_near_1nod_weight, iele_near_1nod_weight(1) )
+      fil_coef%weight_1nod = 0.0d0
+      call copy_filter_coefs(fil_coef)
+!
+      call int_node_filter_weights                                      &
+     &   (ele, g_FEM, jac_3d, fil_coef, num_int_points)
 !
       end subroutine cal_filter_and_coefficients
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rms_filter_coefs(rms_weight, ierr2)
+      subroutine cal_rms_filter_coefs(fil_coef, rms_weight, ierr2)
 !
-      use m_filter_coefs
-!
+      type(each_filter_coef), intent(inout) :: fil_coef
       real(kind = kreal), intent(inout) :: rms_weight
       integer(kind = kint), intent(inout) :: ierr2
       integer(kind = kint) :: i
 !
 !
       rms_weight = 0.0d0
-      do i = 1, nnod_near_1nod_weight
-        rms_weight = rms_weight + weight_1nod(i)**2
+      do i = 1, fil_coef%nnod_4_1nod_w
+        rms_weight = rms_weight + fil_coef%weight_1nod(i)**2
       end do
 !
-      if (weight_1nod(1) .lt. 0.0d0) then
+      if(fil_coef%weight_1nod(1) .lt. 0.0d0) then
         ierr2 = 1000
       else
         ierr2 = 0
       end if
 !
-      if (filter_1nod(1) .le. 0.0d0) then
+      if(fil_coef%filter_1nod(1) .le. 0.0d0) then
         ierr2 = -1
       else
         ierr2 = 0
@@ -127,18 +132,18 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_constant_filter_coefs                              &
-     &         (node, FEM_elen, inod, num_fixed)
+     &         (node, FEM_elen, fil_coef, inod, num_fixed)
 !
       use t_geometry_data
       use t_filter_elength
 !
       use m_ctl_params_4_gen_filter
-      use m_filter_coefs
       use m_matrix_4_filter
       use cal_gaussian_at_node
 !
       type(node_data), intent(in) :: node
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(each_filter_coef), intent(in) :: fil_coef
       integer(kind = kint), intent(in) :: inod, num_fixed
 !
       real(kind = kreal) :: g
@@ -150,7 +155,7 @@
       do i = 1, num_fixed
         j = i
 !        j = mat_size-i+1
-        jnod = inod_near_1nod_weight(i)
+        jnod = fil_coef%inod_4_1nod_w(i)
         call s_cal_gaussian_at_node(ref_filter_width(1),                &
      &      node%xx(jnod,1), node%xx(jnod,2), node%xx(jnod,3),          &
      &      node%xx(inod,1), node%xx(inod,2), node%xx(inod,3),          &

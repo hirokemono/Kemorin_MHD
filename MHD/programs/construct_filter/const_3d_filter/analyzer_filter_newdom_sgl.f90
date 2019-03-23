@@ -16,6 +16,7 @@
       use t_domain_group_4_partition
       use t_internal_4_partitioner
       use t_partitioner_comm_table
+      use m_filter_coefs
 !
       implicit none
 !
@@ -90,7 +91,7 @@
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_sngl'
       call local_newdomain_filter_sngl                                  &
      &   (org_mesh_file, itl_nod_part1, domain_grp1%nod_d_grp,          &
-     &    comm_part1, orgmesh%node, orgmesh%ele, newmesh)
+     &    comm_part1, orgmesh%node, orgmesh%ele, newmesh, fil_coef1)
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_sgl'
       if (iflag_set_filter_elen .gt. 0                                  &
@@ -103,7 +104,7 @@
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_single'
         call filters_4_newdomains_single(org_mesh_file,                 &
      &      filtering_nd, orgmesh%node, orgmesh%ele,                    &
-     &      domain_grp1%nod_d_grp, newmesh)
+     &      domain_grp1%nod_d_grp, newmesh, fil_coef1)
 !
         call dealloc_local_ne_id_tbl(domain_grp1)
       end if

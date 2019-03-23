@@ -245,7 +245,8 @@
 !
         call select_const_filter                                        &
      &      (file_name, fem_f%mesh, fem_int_f, tbl_crs_f, rhs_mat_f,    &
-     &       FEM_elen_f, ref_m1, dxidxs1, FEM_momenet1)
+     &       FEM_elen_f, ref_m1, dxidxs1, FEM_momenet1,                 &
+     &       fil_coef1, tmp_coef1)
         call dealloc_jacobians_node(filter_dxi1)
 !
 !

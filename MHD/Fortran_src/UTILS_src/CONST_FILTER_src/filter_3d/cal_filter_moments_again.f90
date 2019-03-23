@@ -5,7 +5,17 @@
 !
 !!     subroutine s_cal_filter_moments_again                           &
 !!    &         (node, ele, g_FEM, jac_3d, FEM_elen, ref_m, inod,      &
-!!    &          ele_4_nod, neib_nod, mom_nod)
+!!    &          ele_4_nod, neib_nod, mom_nod, fil_coef)
+!!       type(node_data), intent(in) :: node
+!!       type(element_data), intent(in) :: ele
+!!       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!       type(jacobians_3d), intent(in) :: jac_3d
+!!       type(gradient_model_data_type), intent(in) :: FEM_elen
+!!       type(reference_moments), intent(in) :: ref_m
+!!       type(element_around_node), intent(inout) :: ele_4_nod
+!!       type(next_nod_id_4_nod), intent(inout) :: neib_nod
+!!       type(nod_mom_diffs_type), intent(inout) :: mom_nod
+!!       type(each_filter_coef), intent(inout) :: fil_coef
 !
       module cal_filter_moments_again
 !
@@ -23,12 +33,12 @@
 !
       subroutine s_cal_filter_moments_again                             &
      &         (node, ele, g_FEM, jac_3d, FEM_elen, ref_m, inod,        &
-     &          ele_4_nod, neib_nod, mom_nod)
+     &          ele_4_nod, neib_nod, mom_nod, fil_coef)
 !
       use m_ctl_params_4_gen_filter
-      use m_filter_coefs
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
+      use m_filter_coefs
 !
       use t_filter_elength
       use t_geometry_data
@@ -37,6 +47,7 @@
       use t_next_node_ele_4_node
       use t_filter_moments
       use t_reference_moments
+      use t_filter_coefs
 !
       use expand_filter_area_4_1node
       use cal_3d_filter_4_each_node
@@ -56,39 +67,38 @@
       type(element_around_node), intent(inout) :: ele_4_nod
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint) :: num_fixed_point = 0
       integer(kind = kint) :: i
 !
 !
       call copy_next_nod_ele_4_each                                     &
-     &   (inod, node%numnod, ele_4_nod, neib_nod)
+     &   (inod, node%numnod, ele_4_nod, neib_nod, fil_coef)
       call resize_matrix_size_gen_filter(ele%nnod_4_ele,                &
-     &    fil_tbl_crs, fil_mat_crs)
+     &    fil_coef, fil_tbl_crs, fil_mat_crs)
 !
       do i = 1, maximum_neighbour
         call s_expand_filter_area_4_1node                               &
-     &     (inod, node, ele, ele_4_nod, FEM_elen)
+     &     (inod, node, ele, ele_4_nod, FEM_elen, fil_coef)
 
         call resize_matrix_size_gen_filter(ele%nnod_4_ele,              &
-     &      fil_tbl_crs, fil_mat_crs)
+     &      fil_coef, fil_tbl_crs, fil_mat_crs)
       end do
-      mat_size = nnod_near_1nod_weight
+      mat_size = fil_coef%nnod_4_1nod_w
 !
 !    set nxn matrix
 !
-      call int_node_filter_matrix                                       &
-     &   (node, ele, g_FEM, jac_3d, ref_m, inod, num_int_points,        &
-     &    nele_near_1nod_weight, iele_near_1nod_weight(1),              &
-     &    nnod_near_1nod_weight, inod_near_1nod_weight(1),              &
-     &    nnod_near_1nod_filter)
+      call int_node_filter_matrix(node, ele, g_FEM, jac_3d, ref_m,      &
+     &    fil_coef, inod, num_int_points)
 !
       call copy_2_filter_matrix(num_fixed_point)
 !
 !      set filter function without normalization
 !
-      nnod_near_nod_weight(inod) = nnod_near_1nod_weight
-      call cal_filter_moms_each_nod_type(inod, ref_m, mom_nod)
+      nnod_near_nod_weight(inod) = fil_coef%nnod_4_1nod_w
+      call cal_filter_moms_each_nod_type                                &
+     &    (inod, ref_m, fil_coef, mom_nod)
 !
       end subroutine s_cal_filter_moments_again
 !

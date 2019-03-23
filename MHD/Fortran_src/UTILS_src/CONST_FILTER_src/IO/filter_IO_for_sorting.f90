@@ -5,23 +5,28 @@
 !
 !!      subroutine read_filter_neib_4_sort(id_file)
 !!
-!!      subroutine read_filter_coef_4_sort(id_file)
+!!      subroutine read_filter_coef_4_sort(id_file, fil_coef)
+!!        type(each_filter_coef), intent(inout) :: fil_coef
 !!
-!!      subroutine write_filter_coef_4_each(id_file)
-!!      subroutine read_filter_coef_4_each(id_file)
+!!      subroutine write_filter_coef_4_each(id_file, fil_coef)
+!!        type(each_filter_coef), intent(in) :: fil_coef
+!!      subroutine read_filter_coef_4_each(id_file, fil_coef)
+!!        type(each_filter_coef), intent(inout) :: fil_coef
 !!
 !!      subroutine read_filter_neib_4_sort_b(bflag)
-!!      subroutine read_filter_coef_4_sort_b(bflag, filter)
-!!      subroutine write_filter_coef_4_each_b(bflag)
-!!      subroutine read_filter_coef_4_each_b(bflag)
+!!      subroutine read_filter_coef_4_sort_b(bflag, filter, fil_coef)
+!!      subroutine write_filter_coef_4_each_b(fil_coef, bflag)
+!!        type(each_filter_coef), intent(in) :: fil_coef
+!!      subroutine read_filter_coef_4_each_b(bflag, fil_coef)
 !!        type(binary_IO_flags), intent(inout) :: bflag
+!!        type(each_filter_coef), intent(inout) :: fil_coef
 !
       module filter_IO_for_sorting
 !
       use m_precision
 !
+      use t_filter_coefs
       use m_nod_filter_comm_table
-      use m_filter_coefs
       use m_filter_func_4_sorting
       use binary_IO
 !
@@ -40,6 +45,8 @@
       subroutine read_filter_neib_4_sort(id_file)
 !
       use skip_comment_f
+      use m_filter_coefs
+
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint) :: inod, itmp, jnod
@@ -78,26 +85,29 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_sort(id_file)
+      subroutine read_filter_coef_4_sort(id_file, fil_coef)
 !
       use skip_comment_f
+      use m_filter_coefs
 !
       integer(kind = kint), intent(in) :: id_file
+      type(each_filter_coef), intent(inout) :: fil_coef
+!
       integer(kind = kint) :: inod, icou
 !
 !
       do inod = 1, inter_nod_3dfilter
-        call read_filter_coef_4_each(id_file)
+        call read_filter_coef_4_each(id_file, fil_coef)
 !
         icou = itbl_near_nod_whole(inod)
-        call set_filtering_item_4_sorting(icou)
+        call set_filtering_item_4_sorting(icou, fil_coef)
       end do
 !
         do inod = 1, inter_nod_3dfilter
-          call read_filter_coef_4_each(id_file)
+          call read_filter_coef_4_each(id_file, fil_coef)
 !
           icou = itbl_near_nod_fluid(inod)
-          call set_filtering_item_4_sorting(icou)
+          call set_filtering_item_4_sorting(icou, fil_coef)
 !
         end do
 !
@@ -105,18 +115,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_filtering_item_4_sorting(icou)
+      subroutine set_filtering_item_4_sorting(icou, fil_coef)
+!
+      use m_filter_coefs
 !
       integer(kind = kint), intent(in) :: icou
+      type(each_filter_coef), intent(in) :: fil_coef
+!
       integer(kind = kint) :: i, j, ist_nod
 !
 !
         ist_nod = inod_stack_nod_all_w(icou-1)
-        do i = 1, nnod_near_1nod_weight
+        do i = 1, fil_coef%nnod_4_1nod_w
           j = ist_nod + i
-          inod_near_nod_all_w(j) = inod_near_1nod_weight(i)
-          filter_func(j) =   filter_1nod(i)
-          filter_weight(j) = weight_1nod(i)
+          inod_near_nod_all_w(j) = fil_coef%inod_4_1nod_w(i)
+          filter_func(j) =   fil_coef%filter_1nod(i)
+          filter_weight(j) = fil_coef%weight_1nod(i)
         end do
 !
       end subroutine set_filtering_item_4_sorting
@@ -124,17 +138,19 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine write_filter_coef_4_each(id_file)
+      subroutine write_filter_coef_4_each(id_file, fil_coef)
 !
       integer(kind = kint), intent(in) :: id_file
+      type(each_filter_coef), intent(in) :: fil_coef
+!
       integer(kind = kint) :: inum
 !
 !
-      if (nnod_near_1nod_weight .gt. 0) then
-        do inum = 1, nnod_near_1nod_weight
+      if (fil_coef%nnod_4_1nod_w .gt. 0) then
+        do inum = 1, fil_coef%nnod_4_1nod_w
           write(id_file,'(2i12,1p2E25.15e3)') inum,                     &
-     &      inod_near_1nod_weight(inum), filter_1nod(inum),             &
-     &      weight_1nod(inum)
+     &      fil_coef%inod_4_1nod_w(inum), fil_coef%filter_1nod(inum),   &
+     &      fil_coef%weight_1nod(inum)
         end do
       end if
 !
@@ -143,24 +159,25 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_each(id_file)
+      subroutine read_filter_coef_4_each(id_file, fil_coef)
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint) :: inum, itmp
       character(len=255) :: character_4_read = ''
 !
       call skip_comment(character_4_read, id_file)
-      read(character_4_read,*)  itmp, nnod_near_1nod_weight,            &
-     &                                  i_exp_level_1nod_weight
+      read(character_4_read,*)  itmp, fil_coef%nnod_4_1nod_w,           &
+     &                                fil_coef%ilevel_exp_1nod_w
 !
-      if (nnod_near_1nod_weight.gt. 0) then
-        do inum = 1, nnod_near_1nod_weight
+      if (fil_coef%nnod_4_1nod_w.gt. 0) then
+        do inum = 1, fil_coef%nnod_4_1nod_w
           read(id_file,*) itmp,                                         &
-     &      inod_near_1nod_weight(inum), filter_1nod(inum),             &
-     &      weight_1nod(inum)
+     &      fil_coef%inod_4_1nod_w(inum), fil_coef%filter_1nod(inum),   &
+     &      fil_coef%weight_1nod(inum)
         end do
       end if
 !
@@ -170,6 +187,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_filter_neib_4_sort_b(bflag)
+!
+      use m_filter_coefs
 !
       type(binary_IO_flags), intent(inout) :: bflag
 !
@@ -216,31 +235,33 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_sort_b(bflag, filter)
+      subroutine read_filter_coef_4_sort_b(bflag, filter, fil_coef)
 !
       use t_filter_coefficients
+      use m_filter_coefs
 !
       type(filter_coefficients_type), intent(in) :: filter
       type(binary_IO_flags), intent(inout) :: bflag
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint) :: inod, icou
 !
 !
       do inod = 1, inter_nod_3dfilter
-        call read_filter_coef_4_each_b(bflag)
+        call read_filter_coef_4_each_b(bflag, fil_coef)
         if(bflag%ierr_IO .gt. 0) return
 !
         icou = itbl_near_nod_whole(inod)
-        call set_filtering_item_4_sorting(icou)
+        call set_filtering_item_4_sorting(icou, fil_coef)
       end do
 !
       do inod = 1, inter_nod_3dfilter
         if (icou .le. filter%ntot_nod) then
-          call read_filter_coef_4_each_b(bflag)
+          call read_filter_coef_4_each_b(bflag, fil_coef)
           if(bflag%ierr_IO .gt. 0) return
 !
           icou = itbl_near_nod_fluid(inod)
-          call set_filtering_item_4_sorting(icou)
+          call set_filtering_item_4_sorting(icou, fil_coef)
         end if
       end do
 !
@@ -248,48 +269,50 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_filter_coef_4_each_b(bflag)
+      subroutine write_filter_coef_4_each_b(fil_coef, bflag)
 !
+      type(each_filter_coef), intent(in) :: fil_coef
       type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint_gl) :: num64
 !
 !
-      call write_one_integer_b(nnod_near_1nod_weight, bflag)
+      call write_one_integer_b(fil_coef%nnod_4_1nod_w, bflag)
       if(bflag%ierr_IO .gt. 0) return
-      call write_one_integer_b(i_exp_level_1nod_weight, bflag)
+      call write_one_integer_b(fil_coef%ilevel_exp_1nod_w, bflag)
       if(bflag%ierr_IO .gt. 0) return
 !
-      num64 = nnod_near_1nod_weight
-      call write_mul_integer_b(num64, inod_near_1nod_weight, bflag)
+      num64 = fil_coef%nnod_4_1nod_w
+      call write_mul_integer_b(num64, fil_coef%inod_4_1nod_w, bflag)
       if(bflag%ierr_IO .gt. 0) return
-      call write_1d_vector_b(num64, filter_1nod, bflag)
+      call write_1d_vector_b(num64, fil_coef%filter_1nod, bflag)
       if(bflag%ierr_IO .gt. 0) return
-      call write_1d_vector_b(num64, weight_1nod, bflag)
+      call write_1d_vector_b(num64, fil_coef%weight_1nod, bflag)
       if(bflag%ierr_IO .gt. 0) return
 !
       end subroutine write_filter_coef_4_each_b
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_each_b(bflag)
+      subroutine read_filter_coef_4_each_b(bflag, fil_coef)
 !
       type(binary_IO_flags), intent(inout) :: bflag
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint_gl) :: num64
 !
-      call read_one_integer_b(bflag, nnod_near_1nod_weight)
+      call read_one_integer_b(bflag, fil_coef%nnod_4_1nod_w)
       if(bflag%ierr_IO .gt. 0) return
 !
-      call read_one_integer_b(bflag, i_exp_level_1nod_weight)
+      call read_one_integer_b(bflag, fil_coef%ilevel_exp_1nod_w)
       if(bflag%ierr_IO .gt. 0) return
 !
-      num64 = nnod_near_1nod_weight
-      call read_mul_integer_b(bflag, num64, inod_near_1nod_weight)
+      num64 = fil_coef%nnod_4_1nod_w
+      call read_mul_integer_b(bflag, num64, fil_coef%inod_4_1nod_w)
       if(bflag%ierr_IO .gt. 0) return
-      call read_1d_vector_b(bflag, num64, filter_1nod)
+      call read_1d_vector_b(bflag, num64, fil_coef%filter_1nod)
       if(bflag%ierr_IO .gt. 0) return
-      call read_1d_vector_b(bflag, num64, weight_1nod)
+      call read_1d_vector_b(bflag, num64, fil_coef%weight_1nod)
       if(bflag%ierr_IO .gt. 0) return
 !
       end subroutine read_filter_coef_4_each_b

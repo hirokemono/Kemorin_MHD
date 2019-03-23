@@ -5,10 +5,10 @@
 !
 !!      subroutine const_filter_func_nod_by_nod(file_name,              &
 !!     &          inod, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,      &
-!!     &          ele_4_nod, neib_nod, ierr)
+!!     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, ierr)
 !!      subroutine const_fluid_filter_nod_by_nod(file_name, inod,       &
 !!     &          node, ele, g_FEM, jac_3d, FEM_elen, ref_m,            &
-!!     &          ele_4_nod, neib_nod, ierr)
+!!     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, ierr)
 !!        type(node_data),           intent(in) :: node
 !!        type(element_data),        intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -17,6 +17,7 @@
 !!        type(reference_moments), intent(in) :: ref_m
 !!        type(element_around_node), intent(inout) :: ele_4_nod
 !!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
+!!        type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
 !
       module cal_filter_func_each_node
 !
@@ -25,7 +26,6 @@
       use calypso_mpi
       use m_constants
       use m_ctl_params_4_gen_filter
-      use m_filter_coefs
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
 !
@@ -35,6 +35,7 @@
       use t_jacobians
       use t_filter_elength
       use t_reference_moments
+      use t_filter_coefs
 !
       use fem_const_filter_matrix
       use int_filter_functions
@@ -56,9 +57,10 @@
 !
       subroutine const_filter_func_nod_by_nod(file_name,              &
      &          inod, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,      &
-     &          ele_4_nod, neib_nod, ierr)
+     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, ierr)
 !
       use cal_1d_moments_4_fliter
+      use m_filter_coefs
 !
       character(len = kchara), intent(in) :: file_name
       type(node_data),    intent(in) :: node
@@ -73,6 +75,7 @@
       integer(kind = kint), intent(inout) :: ierr
       type(element_around_node), intent(inout) :: ele_4_nod
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
+      type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
 !
       integer(kind = kint) :: i, ist, ied, iint, ntmp, num_free
       integer(kind = kint) :: ibest_fixed_point, ibest_mat_size
@@ -81,7 +84,7 @@
 !
 !
       call copy_next_nod_ele_4_each                                     &
-     &     (inod, node%numnod, ele_4_nod, neib_nod)
+     &     (inod, node%numnod, ele_4_nod, neib_nod, fil_coef)
 !
         ibest_mat_size =   -1
         ibest_fixed_point = 0
@@ -91,13 +94,13 @@
           if (i .eq. 1) then
             num_previous_comp = minimum_comp
           else
-            num_previous_comp = nnod_near_1nod_filter
+            num_previous_comp = fil_coef%nnod_4_1nod_f
           end if
 !
           call s_expand_filter_area_4_1node                             &
-     &       (inod, node, ele, ele_4_nod, FEM_elen)
+     &       (inod, node, ele, ele_4_nod, FEM_elen, fil_coef)
           call resize_matrix_size_gen_filter(ele%nnod_4_ele,            &
-     &        fil_tbl_crs, fil_mat_crs)
+     &        fil_coef, fil_tbl_crs, fil_mat_crs)
 !
         end do
 !
@@ -106,19 +109,16 @@
 !
 !    set nxn matrix
 !
-        call int_node_filter_matrix                                     &
-     &      (node, ele, g_FEM, jac_3d, ref_m, inod, num_int_points,     &
-     &       nele_near_1nod_weight, iele_near_1nod_weight(1),           &
-     &       nnod_near_1nod_weight, inod_near_1nod_weight(1),           &
-     &       nnod_near_1nod_filter)
+        call int_node_filter_matrix(node, ele, g_FEM, jac_3d,           &
+     &      ref_m, fil_coef, inod, num_int_points)
 !
         if (ist_num_free .eq. -1) then
           if (iflag_tgt_filter_type .eq. -1) then
             ist = minimum_comp
-            ied = min(nnod_near_1nod_filter,ref_m%num_order_3d)
+            ied = min(fil_coef%nnod_4_1nod_f,ref_m%num_order_3d)
             iint =  1
           else
-            ist = min(nnod_near_1nod_filter,ref_m%num_order_3d)
+            ist = min(fil_coef%nnod_4_1nod_f,ref_m%num_order_3d)
             ied = minimum_comp
             iint = -1
           end if
@@ -137,7 +137,7 @@
         do num_free = ist, ied, iint
 !
           if (iflag_use_fixed_points .eq. 1) then
-            ntmp = min(nnod_near_1nod_filter, ref_m%num_order_3d)
+            ntmp = min(fil_coef%nnod_4_1nod_f, ref_m%num_order_3d)
           else
             ntmp = num_free
           end if
@@ -145,16 +145,17 @@
           do mat_size = num_free, ntmp
             num_fixed_point = mat_size - num_free
 !
-            call const_filter_mat_each_nod                              &
-     &         (node, FEM_elen, ref_m, inod, num_fixed_point, ierr)
+            call const_filter_mat_each_nod(node, FEM_elen,              &
+     &          ref_m, fil_coef, inod, num_fixed_point, ierr)
 !
             if (ierr .eq. 1) goto 20
 !
             call s_cal_sol_filter_func_nod(inod, ierr)
             if (ierr .gt. 0) goto 20
 
-            call cal_filter_and_coefficients(ele, g_FEM, jac_3d)
-            call cal_rms_filter_coefs(rms_weight, ierr)
+            call cal_filter_and_coefficients                            &
+     &         (ele, g_FEM, jac_3d, fil_coef)
+            call cal_rms_filter_coefs(fil_coef, rms_weight, ierr)
 !
 !              write(70+my_rank,*) 'det_mat', mat_size, num_fixed_point,&
 !     &                            det_mat, vec_norm, ratio_vec_mat
@@ -165,8 +166,8 @@
               ibest_fixed_point = num_fixed_point
               ibest_mat_size = mat_size
               det_mat_solution = det_mat
-              i_exp_level_1nod_weight = maximum_neighbour
-              call copy_filter_coefs_to_tmp
+              fil_coef%ilevel_exp_1nod_w = maximum_neighbour
+              call copy_each_filter_coefs(fil_coef, tmp_coef)
             end if
 !
   20        continue
@@ -190,21 +191,20 @@
      &    ibest_fixed_point, min_rms_weight, det_mat_solution
 !
         if (ibest_mat_size .gt. 0) then
-          call copy_filter_coefs_from_tmp
-          call s_delete_small_weighting(node%numnod)
+          call copy_each_filter_coefs(tmp_coef, fil_coef)
+          call s_delete_small_weighting(fil_coef)
         else
           if (iflag_tgt_filter_type .gt. 0) then
-            i_exp_level_1nod_weight = -maximum_neighbour
-            filter_1nod(1:nnod_near_1nod_weight) = 0.0e00
-            weight_1nod(1) = 1.0e00
-            weight_1nod(2:nnod_near_1nod_weight) = 0.0e00
+            call set_failed_filter_coefs                                &
+     &         (maximum_neighbour, fil_coef)
             num_failed_whole = num_failed_whole + 1
           else
-            call copy_filter_coefs_from_tmp
+            call copy_each_filter_coefs(tmp_coef, fil_coef)
           end if
         end if
 !
-        call write_each_filter_stack_coef(file_name, inod, ierr)
+        call write_each_filter_stack_coef                               &
+     &     (file_name, inod, fil_coef, ierr)
 !
       end subroutine const_filter_func_nod_by_nod
 !
@@ -212,7 +212,9 @@
 !
       subroutine const_fluid_filter_nod_by_nod(file_name, inod,         &
      &          node, ele, g_FEM, jac_3d, FEM_elen, ref_m,              &
-     &          ele_4_nod, neib_nod, ierr)
+     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, ierr)
+!
+      use m_filter_coefs
 !
       character(len = kchara), intent(in) :: file_name
       type(node_data),    intent(in) :: node
@@ -227,6 +229,7 @@
       integer(kind = kint), intent(inout) :: ierr
       type(element_around_node), intent(inout) :: ele_4_nod
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
+      type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
 !
       integer(kind = kint) :: i, ist, ied, iint, ntmp, num_free
       integer(kind = kint) :: ibest_fixed_point, ibest_mat_size
@@ -235,27 +238,29 @@
 !
 !
       call copy_next_nod_ele_4_each                                     &
-     &     (inod, node%numnod, ele_4_nod, neib_nod)
+     &     (inod, node%numnod, ele_4_nod, neib_nod, fil_coef)
 !
 !    no filtering
 !
-        if (nnod_near_1nod_weight .eq. 0) then
-          call write_each_no_filter_coef(file_name, inod, ierr)
+        if (fil_coef%nnod_4_1nod_w .eq. 0) then
+          call write_each_no_filter_coef                                &
+     &       (file_name, inod, fil_coef, ierr)
         else
 !
           do i = 1, maximum_neighbour
             call s_expand_filter_area_4_1node                           &
-     &         (inod, node, ele, ele_4_nod, FEM_elen)
+     &         (inod, node, ele, ele_4_nod, FEM_elen, fil_coef)
             call resize_matrix_size_gen_filter(ele%nnod_4_ele,          &
-     &          fil_tbl_crs, fil_mat_crs)
+     &          fil_coef, fil_tbl_crs, fil_mat_crs)
           end do
 !
 !    use same filter for fluid area
 !
-          if (nnod_near_1nod_weight .eq. nnod_near_nod_weight(inod))    &
+          if(fil_coef%nnod_4_1nod_w .eq. nnod_near_nod_weight(inod))    &
      &      then
-            i_exp_level_1nod_weight = maximum_neighbour
-            call write_each_same_filter_coef(file_name, inod, ierr)
+            fil_coef%ilevel_exp_1nod_w = maximum_neighbour
+            call write_each_same_filter_coef                            &
+     &         (file_name, inod, fil_coef, ierr)
           else
 !
 !    construct filter for fluid area
@@ -268,19 +273,16 @@
             a_mat = 0.0d0
             vec_mat = 0.0d0
 !
-            call int_node_filter_matrix                                 &
-     &         (node, ele, g_FEM, jac_3d, ref_m, inod, num_int_points,  &
-     &          nele_near_1nod_weight, iele_near_1nod_weight(1),        &
-     &          nnod_near_1nod_weight, inod_near_1nod_weight(1),        &
-     &          nnod_near_1nod_filter)
+            call int_node_filter_matrix(node, ele, g_FEM, jac_3d,       &
+     &          ref_m, fil_coef, inod, num_int_points)
 !
             if (ist_num_free .eq. -1) then
               if (iflag_tgt_filter_type .eq. -1) then
                 ist = minimum_comp
-                ied = min(nnod_near_1nod_filter,ref_m%num_order_3d)
+                ied = min(fil_coef%nnod_4_1nod_f,ref_m%num_order_3d)
                 iint = 1
               else
-                ist = min(nnod_near_1nod_filter,ref_m%num_order_3d)
+                ist = min(fil_coef%nnod_4_1nod_f,ref_m%num_order_3d)
                 ied = minimum_comp
                 iint = -1
               end if
@@ -299,7 +301,7 @@
             do num_free = ist, ied, iint
 !
               if (iflag_use_fixed_points .eq. 1) then
-                ntmp = min(nnod_near_1nod_filter,ref_m%num_order_3d)
+                ntmp = min(fil_coef%nnod_4_1nod_f,ref_m%num_order_3d)
               else
                 ntmp = num_free
               end if
@@ -307,15 +309,16 @@
               do mat_size = num_free, ntmp
                 num_fixed_point = mat_size - num_free
 !
-                call const_filter_mat_each_nod                          &
-     &             (node, FEM_elen, ref_m, inod, num_fixed_point, ierr)
+                call const_filter_mat_each_nod(node, FEM_elen,          &
+     &              ref_m, fil_coef, inod, num_fixed_point, ierr)
                 if (ierr .eq. 1) goto 21
 !
                 call s_cal_sol_filter_func_nod(inod, ierr)
                 if (ierr .gt. 0) goto 21
 !
-                call cal_filter_and_coefficients(ele, g_FEM, jac_3d)
-                call cal_rms_filter_coefs(rms_weight, ierr)
+                call cal_filter_and_coefficients                        &
+     &             (ele, g_FEM, jac_3d, fil_coef)
+                call cal_rms_filter_coefs(fil_coef, rms_weight, ierr)
 !
                 if ( rms_weight .lt. min_rms_weight                     &
      &            .and. (iflag_negative_center*ierr).eq.0) then
@@ -323,8 +326,8 @@
                   ibest_fixed_point = num_fixed_point
                   ibest_mat_size = mat_size
                   det_mat_solution = det_mat
-                  i_exp_level_1nod_weight = maximum_neighbour
-                  call copy_filter_coefs_to_tmp
+                  fil_coef%ilevel_exp_1nod_w = maximum_neighbour
+                  call copy_each_filter_coefs(fil_coef, tmp_coef)
                 end if
 !
   21            continue
@@ -347,21 +350,20 @@
 !
 !
             if (ibest_mat_size .gt. 0) then
-              call copy_filter_coefs_from_tmp
-              call s_delete_small_weighting(node%numnod)
+              call copy_each_filter_coefs(tmp_coef, fil_coef)
+              call s_delete_small_weighting(fil_coef)
             else
               if (iflag_tgt_filter_type .gt. 0) then
-                i_exp_level_1nod_weight = -maximum_neighbour
-                filter_1nod(1:nnod_near_1nod_weight) = 0.0e00
-                weight_1nod(1) = 1.0e00
-                weight_1nod(2:nnod_near_1nod_weight) = 0.0e00
+                call set_failed_filter_coefs                            &
+     &            (maximum_neighbour, fil_coef)
                 num_failed_fluid = num_failed_fluid + 1
               else
-                call copy_filter_coefs_from_tmp
+                call copy_each_filter_coefs(tmp_coef, fil_coef)
               end if
             end if
 !
-            call write_each_filter_stack_coef(file_name, inod, ierr)
+            call write_each_filter_stack_coef                           &
+     &         (file_name, inod, fil_coef, ierr)
           end if
         end if
 !

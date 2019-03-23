@@ -5,7 +5,9 @@
 !     Written by H. Matsui on Mar., 2008
 !
 !!      subroutine s_read_filter_file_4_sorting                         &
-!!     &          (ifile_type, id_rank, filter)
+!!     &          (ifile_type, id_rank, filter, fil_coef)
+!!       type(filtering_data_type), intent(inout) :: filtering
+!!       type(each_filter_coef), intent(inout) :: fil_coef
 !
       module read_filter_file_4_sorting
 !
@@ -31,10 +33,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_read_filter_file_4_sorting                           &
-     &          (ifile_type, id_rank, filtering)
+     &          (ifile_type, id_rank, filtering, fil_coef)
 !
-      use m_filter_file_names
+      use t_filter_coefs
       use m_filter_coefs
+      use m_filter_file_names
       use m_filter_func_4_sorting
       use filter_IO_for_sorting
       use set_parallel_file_name
@@ -48,6 +51,7 @@
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ifile_type
       type(filtering_data_type), intent(inout) :: filtering
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint) :: ierr
       character(len=kchara) :: file_name
@@ -111,7 +115,7 @@
       write(*,*) 'allocate_nod_ele_near_1nod',                          &
      &          nmax_nod_near_all_w, nmax_ele_near_all_w
       call allocate_nod_ele_near_1nod(nmax_nod_near_all_w,              &
-     &                                nmax_ele_near_all_w)
+     &                                nmax_ele_near_all_w, fil_coef)
 !
       call allocate_filter_coefs
       call allocate_nod_ele_near_all_w
@@ -124,7 +128,7 @@
         call read_filter_geometry                                       &
      &     (filter_coef_code, id_rank, comm_IO, nod_IO, ierr)
         write(*,*) 'read_filter_coef_4_sort'
-        call read_filter_coef_4_sort(filter_coef_code)
+        call read_filter_coef_4_sort(filter_coef_code, fil_coef)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
         call open_read_binary_file(file_name, id_rank, bin_flflags)
@@ -135,7 +139,8 @@
         call read_filter_neib_4_sort_b(bin_flflags)
         if(bin_flflags%ierr_IO .gt. 0) goto 98
 !
-        call read_filter_coef_4_sort_b(bin_flflags, filtering%filter)
+        call read_filter_coef_4_sort_b                                  &
+     &     (bin_flflags, filtering%filter, fil_coef)
 !
   98    continue
         call close_binary_file
@@ -144,7 +149,7 @@
 !
       call dealloc_node_geometry_base(nod_IO)
       call dealloc_comm_table(comm_IO)
-      call deallocate_nod_ele_near_1nod
+      call deallocate_nod_ele_near_1nod(fil_coef)
 !
       end subroutine s_read_filter_file_4_sorting
 !

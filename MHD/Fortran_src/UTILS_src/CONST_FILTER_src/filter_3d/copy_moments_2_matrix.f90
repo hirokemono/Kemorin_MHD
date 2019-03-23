@@ -7,10 +7,14 @@
 !!      subroutine set_filter_moments_on_node                           &
 !!     &         (inod, ref_m, num_fixed_point)
 !!        type(reference_moments), intent(in) :: ref_m
-!!      subroutine copy_filter_coefs(num_vect)
+!!      subroutine copy_filter_coefs(fil_coef)
+!!        type(each_filter_coef), intent(inout) :: fil_coef
 !!
-!!      subroutine copy_filter_coefs_to_tmp
-!!      subroutine copy_filter_coefs_from_tmp
+!!      subroutine copy_each_filter_coefs(org_coef, new_coef)
+!!        type(each_filter_coef), intent(in) :: org_coef
+!!        type(each_filter_coef), intent(inout) :: new_coef
+!!      subroutine set_failed_filter_coefs(maximum_neighbour, fil_coef)
+!!        type(each_filter_coef), intent(inout) :: fil_coef
 !
       module copy_moments_2_matrix
 !
@@ -46,20 +50,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_filter_coefs(num_vect)
+      subroutine copy_filter_coefs(fil_coef)
 !
-      use m_filter_coefs
+      use t_filter_coefs
       use m_matrix_4_filter
 !
-      integer(kind = kint), intent(in) :: num_vect
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint) :: i
 !
-      do i = mat_size+1, num_vect
-        filter_1nod(i) = 0.0d0
+      do i = mat_size+1, fil_coef%nnod_4_1nod_w
+        fil_coef%filter_1nod(i) = 0.0d0
       end do
       do i = 1, mat_size
-        filter_1nod(i) = x_sol(i)
+        fil_coef%filter_1nod(i) = x_sol(i)
       end do
 !
       end subroutine copy_filter_coefs
@@ -67,47 +71,49 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_filter_coefs_to_tmp
+      subroutine copy_each_filter_coefs(org_coef, new_coef)
 !
-      use m_filter_coefs
+      use t_filter_coefs
 !
-      i_exp_level_1nod_tmp = i_exp_level_1nod_weight
-      nnod_near_1nod_tmp = nnod_near_1nod_weight
-      nele_near_1nod_tmp = nele_near_1nod_weight
+      type(each_filter_coef), intent(in) :: org_coef
+      type(each_filter_coef), intent(inout) :: new_coef
 !
-      inod_near_1nod_tmp(1:nnod_near_1nod_weight)                       &
-     &      = inod_near_1nod_weight(1:nnod_near_1nod_weight)
-      iele_near_1nod_tmp(1:nele_near_1nod_weight)                       &
-     &      = iele_near_1nod_weight(1:nele_near_1nod_weight)
+      new_coef%ilevel_exp_1nod_w =  org_coef%ilevel_exp_1nod_w
+      new_coef%nnod_4_1nod_w = org_coef%nnod_4_1nod_w
+      new_coef%nele_4_1nod_w = org_coef%nele_4_1nod_w
 !
-      weight_tmp(1:nnod_near_1nod_weight)                               &
-     &      = weight_1nod(1:nnod_near_1nod_weight)
-      filter_tmp(1:nnod_near_1nod_weight)                               &
-     &      = filter_1nod(1:nnod_near_1nod_weight)
+      new_coef%inod_4_1nod_w(1:org_coef%nnod_4_1nod_w)                  &
+     &      = org_coef%inod_4_1nod_w(1:org_coef%nnod_4_1nod_w)
+      new_coef%idist_from_1nod(1:org_coef%nnod_4_1nod_w)                &
+     &      = org_coef%idist_from_1nod(1:org_coef%nnod_4_1nod_w)
+      new_coef%iweight_for_1nod(1:org_coef%nnod_4_1nod_w)               &
+     &      = org_coef%iweight_for_1nod(1:org_coef%nnod_4_1nod_w)
 !
-      end subroutine copy_filter_coefs_to_tmp
+      new_coef%iele_4_1nod_w(1:org_coef%nele_4_1nod_w)                  &
+     &      = org_coef%iele_4_1nod_w(1:org_coef%nele_4_1nod_w)
+!
+      new_coef%weight_1nod(1:org_coef%nnod_4_1nod_w)                    &
+     &      = org_coef%weight_1nod(1:org_coef%nnod_4_1nod_w)
+      new_coef%filter_1nod(1:org_coef%nnod_4_1nod_w)                    &
+     &      = org_coef%filter_1nod(1:org_coef%nnod_4_1nod_w)
+!
+      end subroutine copy_each_filter_coefs
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_filter_coefs_from_tmp
+      subroutine set_failed_filter_coefs(maximum_neighbour, fil_coef)
 !
-      use m_filter_coefs
+      use t_filter_coefs
 !
-      i_exp_level_1nod_weight = i_exp_level_1nod_tmp
-      nnod_near_1nod_weight = nnod_near_1nod_tmp
-      nele_near_1nod_weight = nele_near_1nod_tmp
+      integer(kind = kint), intent(in) :: maximum_neighbour
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
-      inod_near_1nod_weight(1:nnod_near_1nod_weight)                    &
-     &      = inod_near_1nod_tmp(1:nnod_near_1nod_weight)
-      iele_near_1nod_weight(1:nele_near_1nod_weight)                    &
-     &      = iele_near_1nod_tmp(1:nele_near_1nod_weight)
+      fil_coef%ilevel_exp_1nod_w = -maximum_neighbour
+      fil_coef%filter_1nod(1:fil_coef%nnod_4_1nod_w) = 0.0e0
+      fil_coef%weight_1nod(1) = 1.0e00
+      fil_coef%weight_1nod(2:fil_coef%nnod_4_1nod_w) = 0.0e0
 !
-      weight_1nod(1:nnod_near_1nod_weight)                              &
-     &      = weight_tmp(1:nnod_near_1nod_weight)
-      filter_1nod(1:nnod_near_1nod_weight)                              &
-     &      = filter_tmp(1:nnod_near_1nod_weight)
-!
-      end subroutine copy_filter_coefs_from_tmp
+      end subroutine set_failed_filter_coefs
 !
 !-----------------------------------------------------------------------
 !

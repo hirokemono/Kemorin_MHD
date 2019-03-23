@@ -4,9 +4,11 @@
 !      Written by H. Matsui on May, 2008
 !
 !!      subroutine local_newdomain_filter_para(mesh_file, itl_nod_part, &
-!!     &          nod_d_grp, comm_part, org_node, org_ele, newmesh)
+!!     &          nod_d_grp, comm_part, org_node, org_ele, newmesh,     &
+!!     &          fil_coef)
 !!      subroutine local_newdomain_filter_sngl(mesh_file, itl_nod_part, &
-!!     &          nod_d_grp, comm_part, org_node, org_ele, newmesh)
+!!     &          nod_d_grp, comm_part, org_node, org_ele, newmesh,     &
+!!     &          fil_coef)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(internal_4_partitioner), intent(inout)  :: itl_nod_part
 !!        type(domain_group_4_partition), intent(inout)  :: nod_d_grp
@@ -30,6 +32,7 @@
       use t_domain_group_4_partition
       use t_internal_4_partitioner
       use t_partitioner_comm_table
+      use t_filter_coefs
 !
       implicit none
 !
@@ -40,7 +43,8 @@
 !   --------------------------------------------------------------------
 !
       subroutine local_newdomain_filter_para(mesh_file, itl_nod_part,   &
-     &          nod_d_grp, comm_part, org_node, org_ele, newmesh)
+     &          nod_d_grp, comm_part, org_node, org_ele, newmesh,       &
+     &          fil_coef)
 !
       use m_2nd_pallalel_vector
 !
@@ -55,6 +59,7 @@
       type(node_data),    intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint) :: ierr, num_pe
 !
@@ -71,7 +76,8 @@
 !
         write(*,*) 'set_inod_4_newdomain_filter'
         call set_inod_4_newdomain_filter(mesh_file, nod_d_grp,          &
-     &      org_node, org_ele, newmesh%node, itl_nod_part, ierr)
+     &      org_node, org_ele, newmesh%node, itl_nod_part,              &
+     &      fil_coef, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Fileter is wrong!!')
         end if
@@ -107,7 +113,8 @@
 !   --------------------------------------------------------------------
 !
       subroutine local_newdomain_filter_sngl(mesh_file, itl_nod_part,   &
-     &          nod_d_grp, comm_part, org_node, org_ele, newmesh)
+     &          nod_d_grp, comm_part, org_node, org_ele, newmesh,       &
+     &          fil_coef)
 !
       use set_inod_newdomain_filter
       use generate_comm_tables
@@ -119,6 +126,7 @@
       type(node_data),    intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint) :: ierr, num_pe
 !
@@ -133,7 +141,7 @@
 !      write(*,*) 'set_inod_4_newdomain_filter'
       call set_inod_4_newdomain_filter                                  &
      &   (mesh_file, nod_d_grp, org_node, org_ele,                      &
-     &    newmesh%node, itl_nod_part, ierr)
+     &    newmesh%node, itl_nod_part, fil_coef, ierr)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Fileter is wrong!!')
       end if

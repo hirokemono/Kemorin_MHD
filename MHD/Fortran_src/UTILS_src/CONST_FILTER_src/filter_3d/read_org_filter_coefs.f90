@@ -4,7 +4,8 @@
 !      Written by H. Matsui on May, 2008
 !
 !!      subroutine read_original_filter_coefs                           &
-!!     &         (ifile_type, id_rank, numnod, numele)
+!!     &         (ifile_type, id_rank, numnod, numele, fil_coef)
+!!        type(each_filter_coef), intent(inout) :: fil_coef
 !
       module read_org_filter_coefs
 !
@@ -26,10 +27,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_original_filter_coefs                             &
-     &         (ifile_type, id_rank, numnod, numele)
+     &         (ifile_type, id_rank, numnod, numele, fil_coef)
 !
       use m_filter_file_names
       use m_filter_coefs
+      use t_filter_coefs
       use t_comm_table
       use t_geometry_data
 !
@@ -43,6 +45,8 @@
       integer(kind = kint), intent(in) :: ifile_type
       integer(kind = kint), intent(in) :: numnod, numele
 !
+      type(each_filter_coef), intent(inout) :: fil_coef
+!
       integer(kind = kint):: ierr
       character(len=kchara) :: file_name
 !
@@ -50,7 +54,7 @@
       type(node_data) :: nod_IO
 !
 !
-      call allocate_nod_ele_near_1nod(numnod, numele)
+      call allocate_nod_ele_near_1nod(numnod, numele, fil_coef)
 !
       file_name = add_process_id(id_rank, org_filter_coef_head)
 !
@@ -61,7 +65,8 @@
      &     (id_org_filter_coef, id_rank, comm_IO, nod_IO, ierr)
 !
         inter_nod_3dfilter = nod_IO%internal_node
-        call read_filter_coef_4_newdomain(id_org_filter_coef)
+        call read_filter_coef_4_newdomain                               &
+     &     (id_org_filter_coef, fil_coef)
         close(id_org_filter_coef)
       else if(ifile_type .eq. 1) then
         write(*,*) 'binary coefficients file name: ', trim(file_name)
@@ -71,14 +76,14 @@
         if(bin_flflags%ierr_IO .gt. 0) go to 98
 !
         inter_nod_3dfilter = nod_IO%internal_node
-        call read_filter_coef_4_newdomain_b(bin_flflags)
+        call read_filter_coef_4_newdomain_b(bin_flflags, fil_coef)
 !
   98    continue
         call close_binary_file
         if(bin_flflags%ierr_IO .gt. 0) stop "Error rading"
       end if
 !
-      call deallocate_nod_ele_near_1nod
+      call deallocate_nod_ele_near_1nod(fil_coef)
 !
       call dealloc_node_geometry_base(nod_IO)
       call dealloc_comm_table(comm_IO)

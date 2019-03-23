@@ -10,12 +10,10 @@
 !      subroutine allocate_num_near_all_w(filter)
 !      subroutine allocate_nod_ele_near_all_w
 !      subroutine allocate_nod_ele_near_1nod(numnod, numele)
-!      subroutine allocate_nod_ele_1nod_tmp(numnod, numele)
 !
 !      subroutine deallocate_num_near_all_w
 !      subroutine deallocate_nod_ele_near_all_w
 !      subroutine deallocate_nod_ele_near_1nod
-!      subroutine deallocate_nod_ele_1nod_tmp
 !
 !      subroutine check_num_near_all_f(id_rank)
 !      subroutine check_near_nod_all_filter(id_rank)
@@ -24,6 +22,7 @@
       module m_filter_coefs
 !
       use m_precision
+      use t_filter_coefs
 !
       implicit none
 !
@@ -48,28 +47,15 @@
       integer(kind = kint), allocatable :: iele_near_nod_all_w(:)
 !
 !
-!
-      integer(kind = kint) :: nnod_near_1nod_weight
-      integer(kind = kint) :: nnod_near_1nod_filter
-      integer(kind = kint), allocatable :: inod_near_1nod_weight(:)
-      integer(kind = kint), allocatable :: idist_from_center_1nod(:)
-      integer(kind = kint), allocatable :: iweight_1nod_weight(:)
-      integer(kind = kint) :: i_exp_level_1nod_weight
-!
-      integer(kind = kint) :: nele_near_1nod_weight
-      integer(kind = kint) :: nele_near_1nod_filter
-      integer(kind = kint), allocatable :: iele_near_1nod_weight(:)
-!
       integer(kind = kint), allocatable :: nnod_near_nod_weight(:)
 !
-      real(kind = kreal), allocatable :: weight_1nod(:)
-      real(kind = kreal), allocatable :: filter_1nod(:)
-!
       integer(kind = kint), allocatable :: i_exp_level_whole_nod(:)
-      integer(kind = kint), allocatable :: i_exp_level_fluid_nod(:)
-!
       integer(kind = kint), allocatable :: itbl_near_nod_whole(:)
+      integer(kind = kint) :: num_failed_whole
+!
+      integer(kind = kint), allocatable :: i_exp_level_fluid_nod(:)
       integer(kind = kint), allocatable :: itbl_near_nod_fluid(:)
+      integer(kind = kint) :: num_failed_fluid
 !
       integer(kind = kint), allocatable :: iflag_make_whole_filter(:)
       integer(kind = kint), allocatable :: iflag_make_fluid_filter(:)
@@ -78,17 +64,9 @@
       integer(kind = kint) :: nele_make_moment_again
 !
 !
-      integer(kind = kint) :: nnod_near_1nod_tmp
-      integer(kind = kint) :: i_exp_level_1nod_tmp
-      integer(kind = kint), allocatable :: inod_near_1nod_tmp(:)
-      real(kind = kreal), allocatable :: weight_tmp(:)
-      real(kind = kreal), allocatable :: filter_tmp(:)
+      type(each_filter_coef), save :: fil_coef1
+      type(each_filter_coef), save :: tmp_coef1
 !
-      integer(kind = kint) :: nele_near_1nod_tmp
-      integer(kind = kint), allocatable :: iele_near_1nod_tmp(:)
-!
-      integer(kind = kint) :: num_failed_whole
-      integer(kind = kint) :: num_failed_fluid
 !
 ! ----------------------------------------------------------------------
 !
@@ -153,53 +131,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_nod_ele_near_1nod(numnod, numele)
+      subroutine allocate_nod_ele_near_1nod(numnod, numele, fil_coef)
 !
       integer(kind = kint), intent(in) :: numnod, numele
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
-      allocate(inod_near_1nod_weight(numnod))
-      allocate(idist_from_center_1nod(numnod))
-      allocate(iweight_1nod_weight(numnod))
 !
-      allocate(iele_near_1nod_weight(numele))
+      call alloc_each_filter_coef(numnod, numele, fil_coef)
 !
       allocate(nnod_near_nod_weight(numnod))
-!
-      allocate( weight_1nod(numnod) )
-      allocate( filter_1nod(numnod) )
-!
-      inod_near_1nod_weight =   0
-      idist_from_center_1nod = -1
-      iweight_1nod_weight =    -1
-!
-      iele_near_1nod_weight = 0
-!
       nnod_near_nod_weight = 0
 !
-      weight_1nod =  0.0d0
-      filter_1nod =  0.0d0
-!
       end subroutine allocate_nod_ele_near_1nod
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_nod_ele_1nod_tmp(numnod, numele)
-!
-      integer(kind = kint), intent(in) :: numnod, numele
-!
-      allocate(inod_near_1nod_tmp(numnod))
-      allocate(iele_near_1nod_tmp(numele))
-!
-      allocate( weight_tmp(numnod) )
-      allocate( filter_tmp(numnod) )
-!
-      inod_near_1nod_tmp =   0
-      iele_near_1nod_tmp = 0
-!
-      weight_tmp =  0.0d0
-      filter_tmp =  0.0d0
-!
-      end subroutine allocate_nod_ele_1nod_tmp
 !
 ! -----------------------------------------------------------------------
 !
@@ -267,18 +210,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocate_nod_ele_near_1nod
+      subroutine deallocate_nod_ele_near_1nod(fil_coef)
 !
-      deallocate(inod_near_1nod_weight)
-      deallocate(idist_from_center_1nod)
-      deallocate(iweight_1nod_weight)
-!
-      deallocate(iele_near_1nod_weight)
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       deallocate(nnod_near_nod_weight)
 !
-      deallocate( filter_1nod )
-      deallocate( weight_1nod )
+      call dealloc_each_filter_coef(fil_coef)
 !
       end subroutine deallocate_nod_ele_near_1nod
 !
@@ -303,18 +241,6 @@
       deallocate(iele_make_moment_again)
 !
       end subroutine deallocate_correct_filter_flag
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_nod_ele_1nod_tmp
-!
-      deallocate(inod_near_1nod_tmp)
-      deallocate(iele_near_1nod_tmp)
-!
-      deallocate( weight_tmp )
-      deallocate( filter_tmp )
-!
-      end subroutine deallocate_nod_ele_1nod_tmp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -4,9 +4,11 @@
 !      modified by H. Matsui on Apr., 2008
 !
 !!      subroutine marking_used_node_4_filtering                        &
-!!     &         (ip2, ifile_type, mesh_file, nod_d_grp, node, numele)
+!!     &         (ip2, ifile_type, mesh_file, nod_d_grp,                &
+!!     &          node, numele, fil_coef)
 !!      subroutine trans_filter_4_new_domains                           &
-!!     &         (ip2, ifile_type, mesh_file, nod_d_grp, node, numele)
+!!     &         (ip2, ifile_type, mesh_file, nod_d_grp,                &
+!!     &          node, numele, fil_coef)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(node_data), intent(inout) :: node
 !
@@ -18,8 +20,8 @@
       use t_geometry_data
       use t_file_IO_parameter
       use t_domain_group_4_partition
+      use t_filter_coefs
       use m_filter_func_4_sorting
-      use m_filter_coefs
       use set_parallel_file_name
       use mesh_IO_select
       use read_org_filter_coefs
@@ -35,14 +37,17 @@
 !------------------------------------------------------------------
 !
       subroutine marking_used_node_4_filtering                          &
-     &         (ip2, ifile_type, mesh_file, nod_d_grp, node, numele)
+     &         (ip2, ifile_type, mesh_file, nod_d_grp,                  &
+     &          node, numele, fil_coef)
 !
       type(field_IO_params), intent(in) ::  mesh_file
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
       integer(kind = kint), intent(in) :: ip2
       integer(kind = kint), intent(in) :: ifile_type
+!
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       type(mesh_geometry) :: mesh_IO_f
       integer(kind = kint) :: ierr
@@ -69,7 +74,7 @@
 !     read filtering information
 !
         call read_original_filter_coefs(ifile_type, id_rank,            &
-     &      node%numnod, numele)
+     &      node%numnod, numele, fil_coef)
 !
         call nod_marking_by_filtering_data                              &
      &     (node%numnod, node%internal_node, node%inod_global, node%xx, &
@@ -86,14 +91,17 @@
 !------------------------------------------------------------------
 !
       subroutine trans_filter_4_new_domains                             &
-     &         (ip2, ifile_type, mesh_file, nod_d_grp, node, numele)
+     &         (ip2, ifile_type, mesh_file, nod_d_grp,                  &
+     &          node, numele, fil_coef)
 !
       type(field_IO_params), intent(in) ::  mesh_file
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
       integer(kind = kint), intent(in) :: ip2
       integer(kind = kint), intent(in) :: ifile_type
+!
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       type(mesh_geometry) :: mesh_IO_f
       integer(kind = kint) :: ierr, icou_st
@@ -119,7 +127,7 @@
 !     read filtering information
 !
         call read_original_filter_coefs(ifile_type, id_rank,            &
-     &      node%numnod, numele)
+     &      node%numnod, numele, fil_coef)
 !
         call set_filter_for_new_each_domain                             &
      &     (node%numnod, node%internal_node, node%inod_global,          &

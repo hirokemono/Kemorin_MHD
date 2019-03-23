@@ -17,9 +17,11 @@
 !!     &          inod, ix, k_order)
 !!      subroutine fem_sk_filter_weights(numele, nnod_4_ele,            &
 !!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
-!!     &          ntot_int_3d, n_int, xjac, aw, nele_grp, iele_grp)
+!!     &          ntot_int_3d, n_int, xjac, aw, nele_grp, iele_grp,     &
+!!     &          nnod_f, filter_1nod)
 !!      subroutine sum_sk_2_filter_mat(nnod_4_ele, nele_grp, k_order)
-!!      subroutine sum_sk_2_filter_weight(nnod_4_ele, nele_grp)
+!!      subroutine sum_sk_2_filter_weight                               &
+!!     &         (nnod_4_ele, nele_grp, nnod_f, weight_1nod)
 !
       module fem_const_filter_matrix
 !
@@ -199,9 +201,8 @@
 !
       subroutine fem_sk_filter_weights(numele, nnod_4_ele,              &
      &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
-     &          ntot_int_3d, n_int, xjac, aw, nele_grp, iele_grp)
-!
-      use m_filter_coefs
+     &          ntot_int_3d, n_int, xjac, aw, nele_grp, iele_grp,       &
+     &          nnod_f, filter_1nod)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_ele
 !
@@ -215,6 +216,9 @@
 !
       integer(kind = kint), intent(in) :: nele_grp
       integer(kind = kint), intent(in) :: iele_grp(nele_grp)
+!
+      integer(kind = kint), intent(in) :: nnod_f
+      real(kind = kreal), intent(in) :: filter_1nod(nnod_f)
 !
       integer(kind = kint) :: inum, iele, ii, ix, k1, k2, jnum
 !
@@ -305,11 +309,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sum_sk_2_filter_weight(nnod_4_ele, nele_grp)
-!
-      use m_filter_coefs
+      subroutine sum_sk_2_filter_weight                                 &
+     &         (nnod_4_ele, nele_grp, nnod_f, weight_1nod)
 !
       integer(kind = kint), intent(in) :: nnod_4_ele, nele_grp
+      integer(kind = kint), intent(in) :: nnod_f
+      real(kind = kreal), intent(inout) :: weight_1nod(nnod_f)
 !
       integer(kind = kint) :: inum, k2, jnum
 !

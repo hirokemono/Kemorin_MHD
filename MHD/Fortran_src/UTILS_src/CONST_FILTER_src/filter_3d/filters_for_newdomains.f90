@@ -5,10 +5,10 @@
 !
 !!      subroutine filters_4_newdomains_para                            &
 !!     &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,   &
-!!     &          newmesh)
+!!     &          newmesh, fil_coef)
 !!      subroutine filters_4_newdomains_single                          &
 !!     &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,   &
-!!     &          newmesh)
+!!     &          newmesh, fil_coef)
 !!       type(field_IO_params), intent(in) :: mesh_file
 !!       type(filtering_data_type), intent(inout) :: filtering
 !!       type(node_data), intent(inout) :: org_node
@@ -25,6 +25,7 @@
       use t_geometry_data
       use t_filtering_data
       use t_file_IO_parameter
+      use t_filter_coefs
 !
       use set_filters_4_new_domains
 !
@@ -40,7 +41,7 @@
 !
       subroutine filters_4_newdomains_para                              &
      &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,     &
-     &          newmesh)
+     &          newmesh, fil_coef)
 !
       use calypso_mpi
       use t_domain_group_4_partition
@@ -51,12 +52,14 @@
       type(element_data), intent(inout) :: org_ele
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
       type(mesh_geometry), intent(inout) :: newmesh
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint) :: ierr
 !
 !
       call filters_4_each_newdomain(my_rank, mesh_file, filtering,      &
-     &   org_node, org_ele, nod_d_grp, newmesh%node, newmesh%ele, ierr)
+     &    org_node, org_ele, nod_d_grp, newmesh%node, newmesh%ele,      &
+     &    fil_coef, ierr)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Mesh or filter data is wrong!!')
       end if
@@ -67,7 +70,7 @@
 !
       subroutine filters_4_newdomains_single                            &
      &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,     &
-     &          newmesh)
+     &          newmesh, fil_coef)
 !
       use m_2nd_pallalel_vector
       use t_domain_group_4_partition
@@ -78,6 +81,7 @@
       type(element_data), intent(inout) :: org_ele
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
       type(mesh_geometry), intent(inout) :: newmesh
+      type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer :: ip2, my_rank_2nd
       integer(kind = kint) ::  ierr
@@ -87,7 +91,7 @@
         my_rank_2nd = ip2 - 1
         call filters_4_each_newdomain                                   &
      &     (my_rank_2nd, mesh_file, filtering, org_node, org_ele,       &
-     &      nod_d_grp, newmesh%node, newmesh%ele, ierr)
+     &      nod_d_grp, newmesh%node, newmesh%ele, fil_coef, ierr)
         if(ierr .gt. 0) stop 'Mesh or filter data is wrong!!'
       end do
 !
@@ -98,7 +102,7 @@
 !
       subroutine filters_4_each_newdomain                               &
      &         (my_rank2, mesh_file, filtering, org_node, org_ele,      &
-     &          nod_d_grp, new_node, new_ele, ierr)
+     &          nod_d_grp, new_node, new_ele, fil_coef, ierr)
 !
       use m_ctl_param_newdom_filter
       use m_2nd_pallalel_vector
@@ -106,8 +110,8 @@
       use m_filter_func_4_sorting
       use m_new_filter_func_4_sorting
       use m_filter_file_names
-      use m_filter_coefs
       use m_field_file_format
+      use m_filter_coefs
       use mesh_IO_select
       use copy_filters_4_sorting
       use const_newdomain_filter
@@ -134,6 +138,7 @@
 !
       type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
+      type(each_filter_coef), intent(inout) :: fil_coef
       integer(kind = kint), intent(inout) :: ierr
 !
       type(mesh_geometry) :: mesh_IO_f
@@ -183,18 +188,18 @@
 !        write(*,*) 'trans_filter_4_new_domains'
         call trans_filter_4_new_domains                                 &
      &     (ip2, ifmt_3d_filter, mesh_file, nod_d_grp,                  &
-     &      org_node, org_ele%numele)
+     &      org_node, org_ele%numele, fil_coef)
 !        write(*,*) 'reorder_filter_new_domain'
         call reorder_filter_new_domain
 !
         call allocate_nod_ele_near_1nod                                 &
-     &     (new_node%numnod, new_ele%numele)
+     &     (new_node%numnod, new_ele%numele, fil_coef)
 !
-        call write_new_whole_filter_coef(file_name)
-        call write_new_fluid_filter_coef(file_name)
+        call write_new_whole_filter_coef(file_name, fil_coef)
+        call write_new_fluid_filter_coef(file_name, fil_coef)
 !
 !
-        call deallocate_nod_ele_near_1nod
+        call deallocate_nod_ele_near_1nod(fil_coef)
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs
 !
