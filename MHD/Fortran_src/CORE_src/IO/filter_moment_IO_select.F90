@@ -120,7 +120,7 @@
       end if
 !
       call dealloc_3d_filter_weight(filter_IO%filters)
-      call dealloc_3d_filter_function(filter_IO%filters)
+      call dealloc_3d_filter_func(filter_IO%filters)
       call dealloc_inod_filter_weights(filter_IO%filters)
       call dealloc_num_filtering_comb(filter_IO%filters)
 !

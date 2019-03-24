@@ -3,21 +3,9 @@
 !
 !     Written by H. Matsui on Nov., 2006
 !
-!      subroutine allocate_filter_coefs
-!      subroutine deallocate_filter_coefs
-!
-!      subroutine allocate_num_near_all_f
-!      subroutine allocate_num_near_all_w(filter)
-!      subroutine allocate_nod_ele_near_all_w
-!      subroutine allocate_nod_ele_near_1nod(numnod, numele)
-!
-!      subroutine deallocate_num_near_all_w
-!      subroutine deallocate_nod_ele_near_all_w
-!      subroutine deallocate_nod_ele_near_1nod
-!
-!      subroutine check_num_near_all_f(id_rank)
-!      subroutine check_near_nod_all_filter(id_rank)
-!      subroutine check_filter_functions(id_rank, id_base)
+!!      subroutine alloc_each_filter_coef(numnod, numele, fil_coef)
+!!      subroutine dealloc_each_filter_coef(fil_coef)
+!!        type(each_filter_coef), intent(inout) :: fil_coef
 !
       module t_filter_coefs
 !

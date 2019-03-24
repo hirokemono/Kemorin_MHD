@@ -109,7 +109,7 @@
       call copy_3d_filter_weights(filter_IO_t%filters, filtering%filter)
 !
       call dealloc_filter_geometry_data(filter_IO_t)
-      call dealloc_3d_filter_function(filter_IO_t%filters)
+      call dealloc_3d_filter_func(filter_IO_t%filters)
 !
       call deallocate_globalnod_filter
 !

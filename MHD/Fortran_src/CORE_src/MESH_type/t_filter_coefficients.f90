@@ -17,7 +17,7 @@
 !!
 !!      subroutine dealloc_num_filtering_comb(filters)
 !!      subroutine dealloc_inod_filter_weights(filters)
-!!      subroutine dealloc_3d_filter_function(filters)
+!!      subroutine dealloc_3d_filter_func(filters)
 !!      subroutine dealloc_3d_filter_weight(filters)
 !!
 !!      subroutine dealloc_stack_vec_filter(filters)
@@ -29,6 +29,10 @@
 !!        type(filter_coefficients_type), intent(inout) :: org_filter
 !!        type(filter_coefficients_type), intent(inout) :: new_filter
 !!
+!!      subroutine check_num_near_all_f(id_rank)
+!!      subroutine check_near_nod_all_filter(id_rank)
+!!      subroutine check_filter_functions(id_rank, id_base)
+!!        type(filter_coefficients_type), intent(in) :: filters
 !!@endverbatim
 !
       module t_filter_coefficients
@@ -191,14 +195,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_3d_filter_function(filters)
+      subroutine dealloc_3d_filter_func(filters)
 !
       type(filter_coefficients_type), intent(inout) :: filters
 !
 !
       deallocate(filters%func)
 !
-      end subroutine dealloc_3d_filter_function
+      end subroutine dealloc_3d_filter_func
 !
 !  ---------------------------------------------------------------------
 !
@@ -281,10 +285,12 @@
       new_filter%ntot_near_nod = org_filter%ntot_near_nod
       call alloc_3d_filter_comb(new_filter)
 !
+!$omp parallel workshare
       new_filter%inod_near(1:new_filter%ntot_near_nod)                  &
      &      = org_filter%inod_near(1:new_filter%ntot_near_nod)
       new_filter%weight(1:new_filter%ntot_near_nod)                     &
      &      = org_filter%weight(1:new_filter%ntot_near_nod)
+!$omp end parallel workshare
 !
       call dealloc_3d_filter_weight(org_filter)
 !
@@ -305,10 +311,70 @@
       new_filter%func(1:org_filter%ntot_near_nod)                       &
      &      = org_filter%func(1:org_filter%ntot_near_nod)
 !
-      call dealloc_3d_filter_function(org_filter)
+      call dealloc_3d_filter_func(org_filter)
 !
       end subroutine copy_3d_filter_weight_func
 !
 !  ---------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine check_num_near_all_f(id_rank, filters)
+!
+      integer, intent(in) :: id_rank
+      type(filter_coefficients_type), intent(in) :: filters
+!
+      integer(kind = kint) :: inum
+!
+      write(50+id_rank,*) 'near node ID for filter and entire'
+      do inum = 1, filters%ntot_nod
+        write(50+id_rank,*) inum, filters%nnod_near(inum)
+      end do
+!
+      end subroutine check_num_near_all_f
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_near_nod_all_filter(id_rank, filters)
+!
+      integer, intent(in) :: id_rank
+      type(filter_coefficients_type), intent(in) :: filters
+!
+      integer(kind = kint) :: inum, ist, ied
+!
+      do inum = 1, filters%ntot_nod
+        ist = filters%istack_near_nod(inum-1) + 1
+        ied = filters%istack_near_nod(inum)
+        write(50+id_rank,*) 'near node ID filters%inod_near',           &
+     &     inum, filters%inod_filter(inum), ist, ied,                   &
+     &     filters%nnod_near(inum)
+        write(50+id_rank,'(8i16)') filters%inod_near(ist:ied)
+      end do
+!
+      end subroutine check_near_nod_all_filter
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_filter_functions(id_rank, id_base, filters)
+!
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: id_base
+      type(filter_coefficients_type), intent(in) :: filters
+!
+      integer(kind = kint) :: inum, ist, ied, i
+!
+      do inum = 1, filters%ntot_nod
+        ist = filters%istack_near_nod(inum-1)
+        ied = filters%istack_near_nod(inum)
+        write(id_base+id_rank,*) 'filter',                              &
+     &     inum, filters%inod_filter(inum), filters%nnod_near(inum)
+        do i = 1, (ied-ist)
+          write(id_base+id_rank,*) i, filters%inod_near(ist+i),         &
+     &         filters%func(ist+i), filters%weight(ist+i)
+        end do
+      end do
+!
+      end subroutine check_filter_functions
+!
+! ----------------------------------------------------------------------
 !
       end module t_filter_coefficients

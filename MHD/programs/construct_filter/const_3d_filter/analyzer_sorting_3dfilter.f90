@@ -99,7 +99,8 @@
 !     read filtering information
 !
         call s_read_filter_file_4_sorting                               &
-     &     (ifmt_3d_filter, my_rank, filtering_gen, fil_coef1)
+     &     (ifmt_3d_filter, my_rank, filtering_gen,                     &
+     &      filter_d1, fil_coef1)
 !
 !
         call deallocate_whole_filter_coefs
@@ -110,9 +111,12 @@
 !  ---------------------------------------------------
 !
          if(iflag_debug.eq.1)  write(*,*) 's_sorting_by_filtering_area'
-        call s_sorting_by_filtering_area(filtering_gen%filter)
+        call s_sorting_by_filtering_area                                &
+     &     (filter_d1, filtering_gen%filter)
 !
-        call deallocate_num_near_all_w
+        call dealloc_3d_filter_func(filter_d1)
+        call dealloc_3d_filter_weight(filter_d1)
+        call dealloc_inod_filter_weights(filter_d1)
         call deallocate_ele_connect_type(mesh_filter%ele)
 !
 !  ---------------------------------------------------
