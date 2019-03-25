@@ -180,10 +180,11 @@
       use m_array_for_send_recv
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
-      use m_filter_coefs
       use m_nod_filter_comm_table
       use m_filter_file_names
       use m_file_format_switch
+!
+      use t_filter_coefs
 !
       use cal_element_size
       use set_parallel_file_name
@@ -201,6 +202,7 @@
 !
       character(len=kchara) :: file_name
       type(filter_file_data) :: filter_IO
+      type(const_filter_coefs) :: fil_gen1
 !
 !  ---------------------------------------------------
 !       set element size for each node
@@ -240,17 +242,14 @@
         filter_file_head = filter_coef_head
         call sel_write_filter_geometry_file(my_rank, filter_IO)
 !
-        num_failed_whole = 0
-        num_failed_fluid = 0
-!
         call select_const_filter                                        &
      &      (file_name, fem_f%mesh, fem_int_f, tbl_crs_f, rhs_mat_f,    &
-     &       FEM_elen_f, ref_m1, dxidxs1, FEM_momenet1,                 &
-     &       fil_coef1, tmp_coef1)
+     &       FEM_elen_f, ref_m1, dxidxs1, FEM_momenet1, fil_gen1)
         call dealloc_jacobians_node(filter_dxi1)
 !
 !
-        call s_check_num_fail_nod_commute
+        call s_check_num_fail_nod_commute                               &
+     &     (fil_gen1%whole_area, fil_gen1%fluid_area)
 !
 !  ---------------------------------------------------
 !       output filter moments

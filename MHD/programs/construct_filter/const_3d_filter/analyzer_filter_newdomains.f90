@@ -14,7 +14,7 @@
       use m_work_time
       use calypso_mpi
       use m_2nd_pallalel_vector
-      use m_filter_coefs
+      use t_filter_coefs
       use filters_for_newdomains
       use t_mesh_data
       use t_filtering_data
@@ -34,6 +34,7 @@
       type(domain_groups_4_partitioner), save :: domain_grp1
       type(internal_4_partitioner), save :: itl_nod_part1
       type(partitioner_comm_tables), save :: comm_part1
+      type(each_filter_coef), save :: fil_coef1
 !
 ! ----------------------------------------------------------------------
 !

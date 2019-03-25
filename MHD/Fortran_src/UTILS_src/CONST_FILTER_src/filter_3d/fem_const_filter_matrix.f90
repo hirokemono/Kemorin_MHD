@@ -54,7 +54,6 @@
 !
       subroutine allocate_sk_filter(nnod_4_ele)
 !
-      use m_filter_coefs
       use m_matrix_4_filter
 !
       integer(kind = kint), intent(in) :: nnod_4_ele

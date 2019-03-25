@@ -5,10 +5,12 @@
 !
 !!      subroutine const_filter_func_nod_by_nod(file_name,              &
 !!     &          inod, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,      &
-!!     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, ierr)
+!!     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, whole_area,  &
+!!     &          ierr)
 !!      subroutine const_fluid_filter_nod_by_nod(file_name, inod,       &
 !!     &          node, ele, g_FEM, jac_3d, FEM_elen, ref_m,            &
-!!     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, ierr)
+!!     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, fluid_area,  &
+!!     &          ierr)
 !!        type(node_data),           intent(in) :: node
 !!        type(element_data),        intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -18,6 +20,8 @@
 !!        type(element_around_node), intent(inout) :: ele_4_nod
 !!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !!        type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
+!!        type(filter_area_flag), intent(inout) :: whole_area
+!!        type(filter_area_flag), intent(inout) :: fluid_area
 !
       module cal_filter_func_each_node
 !
@@ -57,10 +61,10 @@
 !
       subroutine const_filter_func_nod_by_nod(file_name,              &
      &          inod, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,      &
-     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, ierr)
+     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, whole_area,  &
+     &          ierr)
 !
       use cal_1d_moments_4_fliter
-      use m_filter_coefs
 !
       character(len = kchara), intent(in) :: file_name
       type(node_data),    intent(in) :: node
@@ -76,6 +80,7 @@
       type(element_around_node), intent(inout) :: ele_4_nod
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
       type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
+      type(filter_area_flag), intent(inout) :: whole_area
 !
       integer(kind = kint) :: i, ist, ied, iint, ntmp, num_free
       integer(kind = kint) :: ibest_fixed_point, ibest_mat_size
@@ -197,7 +202,7 @@
           if (iflag_tgt_filter_type .gt. 0) then
             call set_failed_filter_coefs                                &
      &         (maximum_neighbour, fil_coef)
-            num_failed_whole = num_failed_whole + 1
+            whole_area%num_failed = whole_area%num_failed + 1
           else
             call copy_each_filter_coefs(tmp_coef, fil_coef)
           end if
@@ -212,9 +217,8 @@
 !
       subroutine const_fluid_filter_nod_by_nod(file_name, inod,         &
      &          node, ele, g_FEM, jac_3d, FEM_elen, ref_m,              &
-     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, ierr)
-!
-      use m_filter_coefs
+     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, fluid_area,    &
+     &          ierr)
 !
       character(len = kchara), intent(in) :: file_name
       type(node_data),    intent(in) :: node
@@ -230,6 +234,7 @@
       type(element_around_node), intent(inout) :: ele_4_nod
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
       type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
+      type(filter_area_flag), intent(inout) :: fluid_area
 !
       integer(kind = kint) :: i, ist, ied, iint, ntmp, num_free
       integer(kind = kint) :: ibest_fixed_point, ibest_mat_size
@@ -256,8 +261,8 @@
 !
 !    use same filter for fluid area
 !
-          if(fil_coef%nnod_4_1nod_w .eq. nnod_near_nod_weight(inod))    &
-     &      then
+          if(fil_coef%nnod_4_1nod_w                                     &
+     &        .eq. fil_coef%nnod_near_nod_w(inod)) then
             fil_coef%ilevel_exp_1nod_w = maximum_neighbour
             call write_each_same_filter_coef                            &
      &         (file_name, inod, fil_coef, ierr)
@@ -356,7 +361,7 @@
               if (iflag_tgt_filter_type .gt. 0) then
                 call set_failed_filter_coefs                            &
      &            (maximum_neighbour, fil_coef)
-                num_failed_fluid = num_failed_fluid + 1
+                fluid_area%num_failed = fluid_area%num_failed + 1
               else
                 call copy_each_filter_coefs(tmp_coef, fil_coef)
               end if

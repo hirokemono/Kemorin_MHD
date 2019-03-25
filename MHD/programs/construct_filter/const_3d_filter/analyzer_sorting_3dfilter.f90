@@ -59,12 +59,12 @@
 !
       use m_ctl_params_4_gen_filter
       use m_filter_file_names
-      use m_filter_coefs
       use m_nod_filter_comm_table
       use m_filter_func_4_sorting
 !
       use t_filter_file_data
       use t_filter_coefficients
+      use t_filter_coefs
 !
       use load_mesh_data
       use sorting_by_filtering_area
@@ -74,7 +74,8 @@
 !
       integer :: ip
       integer(kind = kint) :: ierr
-      type (filter_file_data), save :: filter_IO
+      type (filter_file_data) :: filter_IO
+      type(const_filter_coefs) :: fil_gen1
 !
 !
 !  ---------------------------------------------------
@@ -99,8 +100,7 @@
 !     read filtering information
 !
         call s_read_filter_file_4_sorting                               &
-     &     (ifmt_3d_filter, my_rank, filtering_gen,                     &
-     &      filter_d1, fil_coef1)
+     &     (ifmt_3d_filter, my_rank, filtering_gen, fil_gen1)
 !
 !
         call deallocate_whole_filter_coefs
@@ -112,11 +112,12 @@
 !
          if(iflag_debug.eq.1)  write(*,*) 's_sorting_by_filtering_area'
         call s_sorting_by_filtering_area                                &
-     &     (filter_d1, filtering_gen%filter)
+     &     (fil_gen1%nmin_nod_near_all_w, fil_gen1%nmax_nod_near_all_w, &
+     &      fil_gen1%fil_sorted, filtering_gen%filter)
 !
-        call dealloc_3d_filter_func(filter_d1)
-        call dealloc_3d_filter_weight(filter_d1)
-        call dealloc_inod_filter_weights(filter_d1)
+        call dealloc_3d_filter_func(fil_gen1%fil_sorted)
+        call dealloc_3d_filter_weight(fil_gen1%fil_sorted)
+        call dealloc_inod_filter_weights(fil_gen1%fil_sorted)
         call deallocate_ele_connect_type(mesh_filter%ele)
 !
 !  ---------------------------------------------------
@@ -142,7 +143,8 @@
 !       output filter moment
 !  ---------------------------------------------------
 !
-        call deallocate_filter_num_sort_IO
+        call dealloc_filter_num_sort(fil_gen1%whole_area)
+        call dealloc_filter_num_sort(fil_gen1%fluid_area)
       end do
 !
 !      if (iflag_debug.eq.1) write(*,*) 'exit sort_3dfilter_analyze'

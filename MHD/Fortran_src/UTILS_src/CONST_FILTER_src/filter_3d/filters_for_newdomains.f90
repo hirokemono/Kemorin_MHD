@@ -111,7 +111,6 @@
       use m_new_filter_func_4_sorting
       use m_filter_file_names
       use m_field_file_format
-      use m_filter_coefs
       use mesh_IO_select
       use copy_filters_4_sorting
       use const_newdomain_filter
@@ -192,14 +191,15 @@
 !        write(*,*) 'reorder_filter_new_domain'
         call reorder_filter_new_domain
 !
-        call allocate_nod_ele_near_1nod                                 &
-     &     (new_node%numnod, new_ele%numele, fil_coef)
+        call alloc_each_filter_coef(new_node%numnod, fil_coef)
+        call alloc_each_ele_filter_coef(new_ele%numele, fil_coef)
 !
         call write_new_whole_filter_coef(file_name, fil_coef)
         call write_new_fluid_filter_coef(file_name, fil_coef)
 !
 !
-        call deallocate_nod_ele_near_1nod(fil_coef)
+        call dealloc_each_ele_filter_coef(fil_coef)
+        call dealloc_each_filter_coef(fil_coef)
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs
 !

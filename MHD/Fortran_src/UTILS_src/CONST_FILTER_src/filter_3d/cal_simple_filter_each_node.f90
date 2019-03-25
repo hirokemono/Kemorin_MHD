@@ -144,7 +144,6 @@
 !
       use m_ctl_params_4_gen_filter
       use m_matrix_4_filter
-      use m_filter_coefs
       use t_filter_moments
 !
       use expand_filter_area_4_1node
@@ -203,7 +202,7 @@
 !
 !    use same filter for fluid area
 !
-        if (fil_coef%nnod_4_1nod_w .eq. nnod_near_nod_weight(inod))     &
+        if (fil_coef%nnod_4_1nod_w .eq. fil_coef%nnod_near_nod_w(inod)) &
      &     then
           call write_each_same_filter_coef                              &
      &       (file_name, inod, fil_coef, ierr)

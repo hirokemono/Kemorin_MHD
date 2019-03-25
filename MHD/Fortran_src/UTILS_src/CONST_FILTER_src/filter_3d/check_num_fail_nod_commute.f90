@@ -3,6 +3,8 @@
 !
 !     Written by H. Matsui on Nov., 2006
 !
+!!      subroutine s_check_num_fail_nod_commute(whole_area, fluid_area)
+!
       module check_num_fail_nod_commute
 !
       use m_precision
@@ -33,7 +35,6 @@
       private :: izero, itwo
       private :: allocate_num_failed_nodes, deallocate_num_failed_nodes
 !
-!      subroutine s_check_num_fail_nod_commute
 !
 ! -----------------------------------------------------------------------
 !
@@ -73,9 +74,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine s_check_num_fail_nod_commute
+      subroutine s_check_num_fail_nod_commute(whole_area, fluid_area)
 !
-      use m_filter_coefs
+      use t_filter_coefs
+!
+      type(filter_area_flag), intent(in) :: whole_area, fluid_area
 !
       integer(kind = kint) :: ip
       integer :: id_dest, nneib_recv, nneib_send
@@ -88,8 +91,8 @@
       nneib_recv = 0
       if (my_rank .ne. izero) then
         nneib_send = 1
-        isend_failed(1) = num_failed_whole
-        isend_failed(2) = num_failed_fluid
+        isend_failed(1) = whole_area%num_failed
+        isend_failed(2) = fluid_area%num_failed
         call MPI_ISEND (isend_failed(1), 2, CALYPSO_INTEGER,            &
      &      0, 0, CALYPSO_COMM, i_req1, ierr_MPI)
       end if
@@ -114,8 +117,8 @@
           num_failed_fluid_gl(ip) = irecv_failed(2,id_dest)
         end do
 !
-        num_failed_whole_gl(1) = num_failed_whole
-        num_failed_fluid_gl(1) = num_failed_fluid
+        num_failed_whole_gl(1) = whole_area%num_failed
+        num_failed_fluid_gl(1) = fluid_area%num_failed
       end if
 !
       call MPI_WAITALL(nneib_send, i_req1, i_sta1(1), ierr_MPI)

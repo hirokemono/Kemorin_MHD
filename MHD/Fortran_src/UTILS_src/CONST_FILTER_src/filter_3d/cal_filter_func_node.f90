@@ -5,10 +5,11 @@
 !
 !!      subroutine const_commute_filter_coefs(file_name, mesh,          &
 !!     &          g_FEM, jac_3d, FEM_elen, ref_m, mom_nod,              &
-!!     &          fil_coef, tmp_coef)
+!!     &          fil_coef, tmp_coef, whole_area)
 !!      subroutine const_fluid_filter_coefs                             &
 !!     &         (file_name, mesh, g_FEM, jac_3d, FEM_elen, ref_m,      &
-!!     &          fil_coef, tmp_coef)
+!!     &          fil_coef, tmp_coef, fluid_area)
+!!        type(filter_area_flag), intent(inout) :: fluid_area
 !!      subroutine set_simple_filter (file_name, mesh,                  &
 !!     &          g_FEM, jac_3d, FEM_elen, ref_m, dxidxs,               &
 !!     &          mom_nod, fil_coef, tmp_coef)
@@ -54,11 +55,10 @@
 !
       subroutine const_commute_filter_coefs(file_name, mesh,            &
      &          g_FEM, jac_3d, FEM_elen, ref_m, mom_nod,                &
-     &          fil_coef, tmp_coef)
+     &          fil_coef, tmp_coef, whole_area)
 !
       use t_filter_moments
       use m_ctl_params_4_gen_filter
-      use m_filter_coefs
       use cal_filter_func_each_node
       use expand_filter_area_4_1node
       use set_simple_filters
@@ -71,6 +71,7 @@
       type(reference_moments), intent(in) :: ref_m
 !
       type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
+      type(filter_area_flag), intent(inout) :: whole_area
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
       integer(kind = kint) :: inod, ierr
@@ -84,9 +85,10 @@
       do inod = inod_start_filter, inod_end_filter
         call const_filter_func_nod_by_nod(file_name, inod,              &
      &      mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen, ref_m,        &
-     &      ele_4_nod_s, neib_nod_s, fil_coef, tmp_coef, ierr)
+     &      ele_4_nod_s, neib_nod_s, fil_coef, tmp_coef, whole_area,    &
+     &      ierr)
 !
-        nnod_near_nod_weight(inod) = fil_coef%nnod_4_1nod_w
+        fil_coef%nnod_near_nod_w(inod) = fil_coef%nnod_4_1nod_w
         call cal_filter_moms_each_nod_type                              &
      &     (inod, ref_m, fil_coef, mom_nod)
       end do
@@ -100,10 +102,9 @@
 !
       subroutine const_fluid_filter_coefs                               &
      &         (file_name, mesh, g_FEM, jac_3d, FEM_elen, ref_m,        &
-     &          fil_coef, tmp_coef)
+     &          fil_coef, tmp_coef, fluid_area)
 !
       use m_ctl_params_4_gen_filter
-      use m_filter_coefs
       use cal_filter_func_each_node
       use expand_filter_area_4_1node
 !
@@ -115,6 +116,7 @@
       type(reference_moments), intent(in) :: ref_m
 !
       type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
+      type(filter_area_flag), intent(inout) :: fluid_area
 !
       integer(kind = kint) :: inod, ierr
 !
@@ -126,7 +128,8 @@
       do inod = inod_start_filter, inod_end_filter
         call const_fluid_filter_nod_by_nod(file_name, inod,             &
      &      mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen, ref_m,        &
-     &      ele_4_nod_s, neib_nod_s, fil_coef, tmp_coef, ierr)
+     &      ele_4_nod_s, neib_nod_s, fil_coef, tmp_coef, fluid_area,    &
+     &      ierr)
       end do
 !
       call dealloc_iele_belonged(ele_4_nod_s)
@@ -144,7 +147,6 @@
       use t_filter_dxdxi
       use t_filter_moments
       use m_ctl_params_4_gen_filter
-      use m_filter_coefs
       use cal_simple_filter_each_node
       use expand_filter_area_4_1node
       use set_simple_filters
@@ -173,7 +175,7 @@
      &      dxidxs%dx_nod, ref_m, inod, ele_4_nod_s, neib_nod_s,        &
      &      fil_coef)
 !
-        nnod_near_nod_weight(inod) = fil_coef%nnod_4_1nod_w
+        fil_coef%nnod_near_nod_w(inod) = fil_coef%nnod_4_1nod_w
         call cal_filter_moms_each_nod_type                              &
      &     (inod, ref_m, fil_coef, mom_nod)
       end do

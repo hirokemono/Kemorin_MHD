@@ -16,7 +16,7 @@
       use t_domain_group_4_partition
       use t_internal_4_partitioner
       use t_partitioner_comm_table
-      use m_filter_coefs
+      use t_filter_coefs
 !
       implicit none
 !
@@ -30,6 +30,7 @@
       type(domain_groups_4_partitioner), save :: domain_grp1
       type(internal_4_partitioner), save :: itl_nod_part1
       type(partitioner_comm_tables), save :: comm_part1
+      type(each_filter_coef), save :: fil_coef1
 !
 ! ----------------------------------------------------------------------
 !

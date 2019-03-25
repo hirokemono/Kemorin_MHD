@@ -30,7 +30,6 @@
      &         (ifile_type, id_rank, numnod, numele, fil_coef)
 !
       use m_filter_file_names
-      use m_filter_coefs
       use t_filter_coefs
       use t_comm_table
       use t_geometry_data
@@ -54,7 +53,8 @@
       type(node_data) :: nod_IO
 !
 !
-      call allocate_nod_ele_near_1nod(numnod, numele, fil_coef)
+      call alloc_each_filter_coef(numnod, fil_coef)
+      call alloc_each_ele_filter_coef(numele, fil_coef)
 !
       file_name = add_process_id(id_rank, org_filter_coef_head)
 !
@@ -83,7 +83,7 @@
         if(bin_flflags%ierr_IO .gt. 0) stop "Error rading"
       end if
 !
-      call deallocate_nod_ele_near_1nod(fil_coef)
+      call dealloc_each_filter_coef(fil_coef)
 !
       call dealloc_node_geometry_base(nod_IO)
       call dealloc_comm_table(comm_IO)

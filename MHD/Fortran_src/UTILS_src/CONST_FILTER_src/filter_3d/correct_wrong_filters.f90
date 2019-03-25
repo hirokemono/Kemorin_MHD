@@ -5,10 +5,12 @@
 !
 !!      subroutine s_correct_wrong_filters                              &
 !!     &         (id_org_filter, fixed_file_name, mesh, g_FEM, jac_3d,  &
-!!     &          FEM_elen, ref_m, dxidxs, mom_nod, fil_coef, tmp_coef)
+!!     &          FEM_elen, ref_m, dxidxs, mom_nod, fil_coef, tmp_coef, &
+!!     &          whole_area, fluid_area)
 !!      subroutine correct_wrong_fluid_filters                          &
 !!     &         (id_org_filter, fixed_file_name, mesh, g_FEM, jac_3d,  &
-!!     &          FEM_elen, ref_m, dxidxs, mom_nod, fil_coef, tmp_coef)
+!!     &          FEM_elen, ref_m, dxidxs, mom_nod, fil_coef, tmp_coef, &
+!!     &          fluid_area)
 !!       type(mesh_geometry), intent(in) :: mesh
 !!       type(jacobians_3d), intent(in) :: jac_3d
 !!       type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -23,7 +25,6 @@
       use m_constants
       use m_ctl_params_4_gen_filter
       use m_crs_matrix_4_filter
-      use m_filter_coefs
 !
       use t_mesh_data
       use t_fem_gauss_int_coefs
@@ -59,7 +60,8 @@
 !
       subroutine s_correct_wrong_filters                                &
      &         (id_org_filter, fixed_file_name, mesh, g_FEM, jac_3d,    &
-     &          FEM_elen, ref_m, dxidxs, mom_nod, fil_coef, tmp_coef)
+     &          FEM_elen, ref_m, dxidxs, mom_nod, fil_coef, tmp_coef,   &
+     &          whole_area, fluid_area)
 !
       use set_simple_filters
 !
@@ -75,6 +77,7 @@
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
       type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
+      type(filter_area_flag), intent(inout) :: whole_area, fluid_area
 !
       integer(kind = kint) :: inod, ierr2, ierr
 !
@@ -95,16 +98,16 @@
         call cal_rms_filter_coefs(fil_coef, min_rms_weight, ierr2)
 !
         if (min_rms_weight .gt. max_rms_weight_limit) then
-          iflag_make_whole_filter(inod) = 1
-          iflag_make_fluid_filter(inod) = 1
+          whole_area%iflag_make_filter(inod) = 1
+          fluid_area%iflag_make_filter(inod) = 1
         end if
 !
         if (ierr2 .eq. -1) then
-          iflag_make_whole_filter(inod) = 1
-          iflag_make_fluid_filter(inod) = 1
+          whole_area%iflag_make_filter(inod) = 1
+          fluid_area%iflag_make_filter(inod) = 1
         end if
 !
-        if( iflag_make_whole_filter(inod) .eq. 0) then
+        if(whole_area%iflag_make_filter(inod) .eq. 0) then
           call write_each_filter_stack_coef                             &
      &       (fixed_file_name, inod, fil_coef, ierr)
 !
@@ -120,7 +123,8 @@
             call copy_each_filter_coefs(fil_coef, tmp_coef)
             call const_filter_func_nod_by_nod(fixed_file_name, inod,    &
      &          mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen, ref_m,    &
-     &          ele_4_nod_f, neib_nod_f, fil_coef, tmp_coef, ierr)
+     &          ele_4_nod_f, neib_nod_f, fil_coef, tmp_coef,            &
+     &          whole_area, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
             call set_simple_filter_nod_by_nod(fixed_file_name,          &
@@ -129,7 +133,7 @@
      &          fil_coef)
           end if
 !
-          nnod_near_nod_weight(inod) = fil_coef%nnod_4_1nod_w
+          fil_coef%nnod_near_nod_w(inod) = fil_coef%nnod_4_1nod_w
           call cal_filter_moms_each_nod_type                            &
      &       (inod, ref_m, fil_coef, mom_nod)
         end if
@@ -145,7 +149,8 @@
 !
       subroutine correct_wrong_fluid_filters                            &
      &         (id_org_filter, fixed_file_name, mesh, g_FEM, jac_3d,    &
-     &          FEM_elen, ref_m, dxidxs, mom_nod, fil_coef, tmp_coef)
+     &          FEM_elen, ref_m, dxidxs, mom_nod,                       &
+     &          fil_coef, tmp_coef, fluid_area)
 !
       character(len = kchara), intent(in) :: fixed_file_name
       integer(kind = kint), intent(in) :: id_org_filter
@@ -159,6 +164,7 @@
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
       type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
+      type(filter_area_flag), intent(inout) :: fluid_area
 !
       integer(kind = kint) :: inod, ierr2, ierr
 !
@@ -176,14 +182,13 @@
           call cal_rms_filter_coefs(fil_coef, min_rms_weight, ierr2)
 !
           if (min_rms_weight .gt. max_rms_weight_limit) then
-            iflag_make_fluid_filter(inod) = 1
+            fluid_area%iflag_make_filter(inod) = 1
           end if
         end if
 !
 !     no correction
 !
-        if( iflag_make_fluid_filter(inod) .eq. 0) then
-!
+        if( fluid_area%iflag_make_filter(inod) .eq. 0) then
           if (fil_coef%nnod_4_1nod_w .eq. 0) then
             call write_each_no_filter_coef                              &
      &         (fixed_file_name, inod, fil_coef, ierr)
@@ -204,7 +209,8 @@
             call copy_each_filter_coefs(fil_coef, tmp_coef)
             call const_fluid_filter_nod_by_nod(fixed_file_name, inod,   &
      &          mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen, ref_m,    &
-     &          ele_4_nod_f, neib_nod_f, fil_coef, tmp_coef, ierr)
+     &          ele_4_nod_f, neib_nod_f, fil_coef, tmp_coef,            &
+     &          fluid_area, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
             call set_simple_fl_filter_nod_by_nod(fixed_file_name,       &

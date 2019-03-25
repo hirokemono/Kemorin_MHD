@@ -4,6 +4,9 @@
 !     Written by H. Matsui on Nov., 2006
 !
 !!      subroutine s_sorting_by_filtering_area(filter)
+!!     &         (nmin_nod_near_all, nmax_nod_near_all, fil_org, filter)
+!!        type(filter_coefficients_type), intent(in) :: fil_org
+!!        type(filter_coefficients_type), intent(inout) :: filter
 !
       module sorting_by_filtering_area
 !
@@ -20,11 +23,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_sorting_by_filtering_area(fil_org, filter)
+      subroutine s_sorting_by_filtering_area                            &
+     &         (nmin_nod_near_all, nmax_nod_near_all, fil_org, filter)
 !
-      use m_filter_coefs
       use cal_minmax_and_stacks
 !
+      integer(kind = kint), intent(in) :: nmin_nod_near_all
+      integer(kind = kint), intent(in) :: nmax_nod_near_all
       type(filter_coefficients_type), intent(in) :: fil_org
       type(filter_coefficients_type), intent(inout) :: filter
 !
@@ -45,7 +50,7 @@
         icou = filter%istack_node(i-1)
         ist = filter%istack_node(i-1) + 1
         ied = filter%istack_node(i)
-        do j = nmin_nod_near_all_w, nmax_nod_near_all_w
+        do j = nmin_nod_near_all, nmax_nod_near_all
           do inum = ist, ied
             if(fil_org%nnod_near(inum) .eq. j) then
               icou = icou+1

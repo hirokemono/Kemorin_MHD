@@ -118,7 +118,6 @@
       use m_matrix_4_filter
       use m_filter_file_names
       use m_field_file_format
-      use m_filter_coefs
       use fem_const_filter_matrix
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
@@ -137,9 +136,10 @@
       end if
       nnod_filetering = inod_end_filter - inod_start_filter + 1
 !
-      call allocate_nod_ele_near_1nod                                   &
-     &   (node%numnod, ele%numele, fil_coef)
-      call alloc_each_filter_coef(node%numnod, ele%numele, tmp_coef)
+      call alloc_each_filter_coef(node%numnod, fil_coef)
+      call alloc_each_filter_coef(node%numnod, tmp_coef)
+      call alloc_each_ele_filter_coef(ele%numele, fil_coef)
+      call alloc_each_ele_filter_coef(ele%numele, tmp_coef)
       call allocate_wk_exp_ele_nod_each(node%numnod, ele%numele)
 !
       max_mat_size =      0
@@ -175,7 +175,6 @@
      &         (fil_coef, fil_tbl_crs, fil_mat_crs, ref_m)
 !
       use t_reference_moments
-      use m_filter_coefs
       use m_filter_file_names
       use m_matrix_4_filter
       use add_nodes_elems_4_each_nod
@@ -206,7 +205,8 @@
 !
       call deallocate_wk_exp_ele_nod_each
 !
-      call deallocate_nod_ele_near_1nod(fil_coef)
+      call dealloc_each_ele_filter_coef(fil_coef)
+      call dealloc_each_filter_coef(fil_coef)
 !
       end subroutine finalize_4_cal_fileters
 !

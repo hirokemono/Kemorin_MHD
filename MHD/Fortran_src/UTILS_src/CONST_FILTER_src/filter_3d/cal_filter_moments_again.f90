@@ -38,7 +38,6 @@
       use m_ctl_params_4_gen_filter
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
-      use m_filter_coefs
 !
       use t_filter_elength
       use t_geometry_data
@@ -96,7 +95,7 @@
 !
 !      set filter function without normalization
 !
-      nnod_near_nod_weight(inod) = fil_coef%nnod_4_1nod_w
+      fil_coef%nnod_near_nod_w(inod) = fil_coef%nnod_4_1nod_w
       call cal_filter_moms_each_nod_type                                &
      &    (inod, ref_m, fil_coef, mom_nod)
 !

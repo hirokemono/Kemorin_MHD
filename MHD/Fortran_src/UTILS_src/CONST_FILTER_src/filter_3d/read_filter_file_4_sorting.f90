@@ -5,9 +5,9 @@
 !     Written by H. Matsui on Mar., 2008
 !
 !!      subroutine s_read_filter_file_4_sorting                         &
-!!     &         (ifile_type, id_rank, filtering, fil_sorted, fil_coef)
-!!       type(filtering_data_type), intent(inout) :: filtering
-!!       type(each_filter_coef), intent(inout) :: fil_coef
+!!     &          (ifile_type, id_rank, filtering, fil_gen)
+!!        type(filtering_data_type), intent(inout) :: filtering
+!!        type(const_filter_coefs), intent(inout) :: fil_gen
 !
       module read_filter_file_4_sorting
 !
@@ -35,9 +35,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_read_filter_file_4_sorting                           &
-     &          (ifile_type, id_rank, filtering, fil_sorted, fil_coef)
+     &          (ifile_type, id_rank, filtering, fil_gen)
 !
-      use m_filter_coefs
       use m_filter_file_names
       use m_filter_func_4_sorting
       use filter_IO_for_sorting
@@ -45,6 +44,7 @@
       use filter_coefs_file_IO
       use filter_coefs_file_IO_b
       use set_filter_geometry_4_IO
+      use cal_minmax_and_stacks
       use mesh_data_IO
       use mesh_data_IO_b
       use binary_IO
@@ -52,8 +52,7 @@
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ifile_type
       type(filtering_data_type), intent(inout) :: filtering
-      type(filter_coefficients_type), intent(inout) :: fil_sorted
-      type(each_filter_coef), intent(inout) :: fil_coef
+      type(const_filter_coefs), intent(inout) :: fil_gen
 !
       integer(kind = kint) :: ierr
       character(len=kchara) :: file_name
@@ -74,7 +73,9 @@
         call dealloc_comm_table(comm_IO)
 !
         write(*,*) 'read_filter_neib_4_sort', inter_nod_3dfilter
-        call read_filter_neib_4_sort(filter_coef_code)
+        call read_filter_neib_4_sort(filter_coef_code,                  &
+     &      fil_gen%whole_area, fil_gen%fluid_area,                     &
+     &      fil_gen%nmax_nod_near_all_w)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
         call open_read_binary_file(file_name, id_rank, bin_flflags)
@@ -88,7 +89,9 @@
         call dealloc_node_geometry_base(nod_IO)
         call dealloc_comm_table(comm_IO)
 !
-        call read_filter_neib_4_sort_b(bin_flflags)
+        call read_filter_neib_4_sort_b                                  &
+     &     (bin_flflags, fil_gen%whole_area, fil_gen%fluid_area,        &
+     &      fil_gen%nmax_nod_near_all_w)
 
   99    continue
         call close_binary_file
@@ -110,18 +113,21 @@
       call count_num_neib_4_filter_sort(filtering%filter)
 !
       write(*,*) 'alloc_inod_filter_comb'
-      fil_sorted%ntot_nod = filtering%filter%ntot_nod
-      call alloc_inod_filter_comb(fil_sorted)
+      fil_gen%fil_sorted%ntot_nod = filtering%filter%ntot_nod
+      call alloc_inod_filter_comb(fil_gen%fil_sorted)
 !
       write(*,*) 'set_num_of_neib_4_filter_sort'
-      call set_num_of_neib_4_filter_sort(filtering%filter, fil_sorted)
-      write(*,*) 'allocate_nod_ele_near_1nod',                          &
-     &          nmax_nod_near_all_w, nmax_ele_near_all_w
-      call allocate_nod_ele_near_1nod(nmax_nod_near_all_w,              &
-     &                                nmax_ele_near_all_w, fil_coef)
+      call set_num_of_neib_4_filter_sort(filtering%filter,              &
+     &    fil_gen%fil_sorted, fil_gen%whole_area, fil_gen%fluid_area,   &
+     &    fil_gen%nmax_nod_near_all_w, fil_gen%nmin_nod_near_all_w)
 !
-      call alloc_3d_filter_comb(fil_sorted)
-      call alloc_3d_filter_func(fil_sorted)
+!
+      write(*,*) 'alloc_each_filter_coef', fil_gen%nmax_nod_near_all_w
+      call alloc_each_filter_coef                                       &
+     &   (fil_gen%nmax_nod_near_all_w, fil_gen%fil_coef)
+!
+      call alloc_3d_filter_comb(fil_gen%fil_sorted)
+      call alloc_3d_filter_func(fil_gen%fil_sorted)
 !
       file_name = add_process_id(id_rank, filter_coef_head)
       if ( ifile_type .eq. 0) then
@@ -130,8 +136,9 @@
         call read_filter_geometry                                       &
      &     (filter_coef_code, id_rank, comm_IO, nod_IO, ierr)
         write(*,*) 'read_filter_coef_4_sort'
-        call read_filter_coef_4_sort                                    &
-     &     (filter_coef_code, fil_coef, fil_sorted)
+        call read_filter_coef_4_sort(filter_coef_code,                  &
+     &      fil_gen%whole_area, fil_gen%fluid_area,                     &
+     &      fil_gen%fil_coef, fil_gen%fil_sorted)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
         call open_read_binary_file(file_name, id_rank, bin_flflags)
@@ -139,11 +146,14 @@
      &     (id_rank, bin_flflags, comm_IO, nod_IO)
         if(bin_flflags%ierr_IO .gt. 0) go to 98
 !
-        call read_filter_neib_4_sort_b(bin_flflags)
+        call read_filter_neib_4_sort_b                                  &
+     &     (bin_flflags, fil_gen%whole_area, fil_gen%fluid_area,        &
+     &      fil_gen%nmax_nod_near_all_w)
         if(bin_flflags%ierr_IO .gt. 0) goto 98
 !
-        call read_filter_coef_4_sort_b                                  &
-     &     (bin_flflags, filtering%filter, fil_coef, fil_sorted)
+        call read_filter_coef_4_sort_b(bin_flflags, filtering%filter,   &
+     &      fil_gen%whole_area, fil_gen%fluid_area,                     &
+     &      fil_gen%fil_coef, fil_gen%fil_sorted)
 !
   98    continue
         call close_binary_file
@@ -152,7 +162,7 @@
 !
       call dealloc_node_geometry_base(nod_IO)
       call dealloc_comm_table(comm_IO)
-      call deallocate_nod_ele_near_1nod(fil_coef)
+      call dealloc_each_filter_coef(fil_gen%fil_coef)
 !
       end subroutine s_read_filter_file_4_sorting
 !
@@ -161,7 +171,6 @@
       subroutine set_num_filter_group_4_sort(filter)
 !
       use m_nod_filter_comm_table
-      use m_filter_coefs
       use m_filter_func_4_sorting
 !
       type(filter_coefficients_type), intent(inout) :: filter
@@ -183,7 +192,6 @@
 !
       use m_constants
       use m_nod_filter_comm_table
-      use m_filter_coefs
       use m_filter_func_4_sorting
       use cal_minmax_and_stacks
 !
@@ -220,16 +228,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_num_of_neib_4_filter_sort(filter, fil_sorted)
+      subroutine set_num_of_neib_4_filter_sort                          &
+     &         (filter, fil_sorted, whole_area, fluid_area,             &
+     &          nmax_nod_near_all_w, nmin_nod_near_all_w)
 !
       use m_constants
       use m_nod_filter_comm_table
-      use m_filter_coefs
       use m_filter_func_4_sorting
       use cal_minmax_and_stacks
 !
       type(filter_coefficients_type), intent(in) :: filter
       type(filter_coefficients_type), intent(inout) :: fil_sorted
+      type(filter_area_flag), intent(inout) :: whole_area, fluid_area
+      integer(kind = kint), intent(inout) :: nmax_nod_near_all_w
+      integer(kind = kint), intent(inout) :: nmin_nod_near_all_w
 !
       integer(kind = kint) :: inod, icou, jcou, kcou
 !
@@ -238,7 +250,7 @@
         do inod = 1, inter_nod_3dfilter
           fil_sorted%inod_filter(inod) = inod
           fil_sorted%nnod_near(inod) = nnod_near_nod_w_filter(inod)
-          itbl_near_nod_whole(inod) = inod
+          whole_area%itbl_near_nod(inod) = inod
         end do
       else if ( filter%ngrp_node .eq. 3) then
         icou = filter%istack_node(0)
@@ -249,15 +261,15 @@
             icou = icou + 1
             fil_sorted%inod_filter(icou) = inod
             fil_sorted%nnod_near(icou) = nnod_near_nod_w_filter(inod)
-            itbl_near_nod_whole(inod) = icou
-            itbl_near_nod_fluid(inod) = filter%ntot_nod + 1
+            whole_area%itbl_near_nod(inod) = icou
+            fluid_area%itbl_near_nod(inod) = filter%ntot_nod + 1
             nnod_near_nod_f_filter(inod) = 0
           else if(nnod_near_nod_f_filter(inod) .eq. 0) then
             jcou = jcou + 1
             fil_sorted%inod_filter(jcou) = inod
             fil_sorted%nnod_near(jcou) = nnod_near_nod_w_filter(inod)
-            itbl_near_nod_whole(inod) = jcou
-            itbl_near_nod_fluid(inod) = filter%ntot_nod + 1
+            whole_area%itbl_near_nod(inod) = jcou
+            fluid_area%itbl_near_nod(inod) = filter%ntot_nod + 1
             nnod_near_nod_f_filter(inod) = 0
           else if(nnod_near_nod_f_filter(inod) .gt. 0) then
             jcou = jcou + 1
@@ -266,8 +278,8 @@
             fil_sorted%inod_filter(kcou) = inod
             fil_sorted%nnod_near(jcou) = nnod_near_nod_w_filter(inod)
             fil_sorted%nnod_near(kcou) = nnod_near_nod_f_filter(inod)
-            itbl_near_nod_whole(inod) = jcou
-            itbl_near_nod_fluid(inod) = kcou
+            whole_area%itbl_near_nod(inod) = jcou
+            fluid_area%itbl_near_nod(inod) = kcou
           end if
         end do
       end if
