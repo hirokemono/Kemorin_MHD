@@ -5,7 +5,7 @@
 !
 !!      subroutine set_inod_4_newdomain_filter(mesh_file, nod_d_grp,    &
 !!     &          org_node, org_ele, new_node, itl_nod_part,            &
-!!     &          fil_coef, ierr)
+!!     &          fil_coef, whole_fil_sort, fluid_fil_sort, ierr)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(domain_group_4_partition), intent(in)  :: nod_d_grp
 !!        type(node_data),    intent(inout) :: org_node
@@ -13,6 +13,8 @@
 !!        type(node_data), intent(inout) :: new_node
 !!        type(internal_4_partitioner), intent(inout) :: itl_nod_part
 !!        type(each_filter_coef), intent(inout) :: fil_coef
+!!        type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
+!!        type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
 !
       module set_inod_newdomain_filter
 !
@@ -34,12 +36,13 @@
 !
       subroutine set_inod_4_newdomain_filter(mesh_file, nod_d_grp,      &
      &          org_node, org_ele, new_node, itl_nod_part,              &
-     &          fil_coef, ierr)
+     &          fil_coef, whole_fil_sort, fluid_fil_sort, ierr)
 !
       use t_mesh_data
       use t_file_IO_parameter
       use t_internal_4_partitioner
       use t_filter_coefs
+      use t_filter_func_4_sorting
 !
       use m_filter_file_names
       use m_field_file_format
@@ -52,6 +55,8 @@
       type(node_data), intent(inout) :: new_node
       type(internal_4_partitioner), intent(inout) :: itl_nod_part
       type(each_filter_coef), intent(inout) :: fil_coef
+      type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
+      type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
       integer(kind = kint), intent(inout) :: ierr
 !
       type(mesh_geometry) :: mesh_IO_f
@@ -70,8 +75,8 @@
         call dealloc_node_geometry_IO(mesh_IO_f)
 !
         call marking_used_node_4_filtering                              &
-     &     (ip2, ifmt_3d_filter, mesh_file, nod_d_grp,                  &
-     &      org_node, org_ele%numele, fil_coef)
+     &     (ip2, ifmt_3d_filter, mesh_file, nod_d_grp, org_node,        &
+     &      org_ele%numele, fil_coef, whole_fil_sort, fluid_fil_sort)
 !
         call set_num_globalnod_4_newdomain                              &
      &     (ip2, nod_d_grp, itl_nod_part, new_node)

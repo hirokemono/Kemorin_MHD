@@ -5,16 +5,17 @@
 !
 !!      subroutine filters_4_newdomains_para                            &
 !!     &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,   &
-!!     &          newmesh, fil_coef)
+!!     &          newmesh, fil_coef, fils_sort)
 !!      subroutine filters_4_newdomains_single                          &
 !!     &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,   &
-!!     &          newmesh, fil_coef)
+!!     &          newmesh, fil_coef, fils_sort)
 !!       type(field_IO_params), intent(in) :: mesh_file
 !!       type(filtering_data_type), intent(inout) :: filtering
 !!       type(node_data), intent(inout) :: org_node
 !!       type(element_data), intent(inout) :: org_ele
 !!       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !!       type(mesh_geometry), intent(inout) :: newmesh
+!!       type(filters_4_sorting), intent(inout) :: fils_sort
 !
       module filters_for_newdomains
 !
@@ -26,6 +27,7 @@
       use t_filtering_data
       use t_file_IO_parameter
       use t_filter_coefs
+      use t_filter_func_4_sorting
 !
       use set_filters_4_new_domains
 !
@@ -41,7 +43,7 @@
 !
       subroutine filters_4_newdomains_para                              &
      &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,     &
-     &          newmesh, fil_coef)
+     &          newmesh, fil_coef, fils_sort)
 !
       use calypso_mpi
       use t_domain_group_4_partition
@@ -53,13 +55,14 @@
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
       type(mesh_geometry), intent(inout) :: newmesh
       type(each_filter_coef), intent(inout) :: fil_coef
+      type(filters_4_sorting), intent(inout) :: fils_sort
 !
       integer(kind = kint) :: ierr
 !
 !
       call filters_4_each_newdomain(my_rank, mesh_file, filtering,      &
      &    org_node, org_ele, nod_d_grp, newmesh%node, newmesh%ele,      &
-     &    fil_coef, ierr)
+     &    fil_coef, fils_sort, ierr)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Mesh or filter data is wrong!!')
       end if
@@ -70,7 +73,7 @@
 !
       subroutine filters_4_newdomains_single                            &
      &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,     &
-     &          newmesh, fil_coef)
+     &          newmesh, fil_coef, fils_sort)
 !
       use m_2nd_pallalel_vector
       use t_domain_group_4_partition
@@ -82,6 +85,7 @@
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
       type(mesh_geometry), intent(inout) :: newmesh
       type(each_filter_coef), intent(inout) :: fil_coef
+      type(filters_4_sorting), intent(inout) :: fils_sort
 !
       integer :: ip2, my_rank_2nd
       integer(kind = kint) ::  ierr
@@ -91,7 +95,8 @@
         my_rank_2nd = ip2 - 1
         call filters_4_each_newdomain                                   &
      &     (my_rank_2nd, mesh_file, filtering, org_node, org_ele,       &
-     &      nod_d_grp, newmesh%node, newmesh%ele, fil_coef, ierr)
+     &      nod_d_grp, newmesh%node, newmesh%ele, fil_coef, fils_sort,  &
+     &      ierr)
         if(ierr .gt. 0) stop 'Mesh or filter data is wrong!!'
       end do
 !
@@ -102,15 +107,17 @@
 !
       subroutine filters_4_each_newdomain                               &
      &         (my_rank2, mesh_file, filtering, org_node, org_ele,      &
-     &          nod_d_grp, new_node, new_ele, fil_coef, ierr)
+     &          nod_d_grp, new_node, new_ele, fil_coef, fils_sort,      &
+     &          ierr)
+!
+      use t_filter_func_4_sorting
 !
       use m_ctl_param_newdom_filter
       use m_2nd_pallalel_vector
       use m_nod_filter_comm_table
-      use m_filter_func_4_sorting
-      use m_new_filter_func_4_sorting
       use m_filter_file_names
       use m_field_file_format
+!
       use mesh_IO_select
       use copy_filters_4_sorting
       use const_newdomain_filter
@@ -138,6 +145,7 @@
       type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
       type(each_filter_coef), intent(inout) :: fil_coef
+      type(filters_4_sorting), intent(inout) :: fils_sort
       integer(kind = kint), intent(inout) :: ierr
 !
       type(mesh_geometry) :: mesh_IO_f
@@ -175,33 +183,28 @@
         call set_global_nodid_4_newfilter(nod_d_grp)
 !
 !        write(*,*) 'inter_nod_3dfilter', inter_nod_3dfilter
-        intnod_w_fliter2 = inter_nod_3dfilter
-        ntot_nod_near_w_filter2 = 0
-        ntot_nod_near_f_filter2 = 0
-        call allocate_whole_filter_stack2
-        call allocate_fluid_filter_stack2
+        call alloc_whole_filter_stack2(inter_nod_3dfilter, fils_sort)
+        call trans_filter_4_new_domains(ip2, ifmt_3d_filter, mesh_file, &
+     &      nod_d_grp, org_node, org_ele%numele, fil_coef, fils_sort)
+        call reorder_filter_new_domain(fils_sort)
 !
-        call allocate_whole_filter_coefs2
-        call allocate_fluid_filter_coefs2
-!
-!        write(*,*) 'trans_filter_4_new_domains'
-        call trans_filter_4_new_domains                                 &
-     &     (ip2, ifmt_3d_filter, mesh_file, nod_d_grp,                  &
-     &      org_node, org_ele%numele, fil_coef)
-!        write(*,*) 'reorder_filter_new_domain'
-        call reorder_filter_new_domain
+        call dealloc_whole_filter_stack2(fils_sort)
 !
         call alloc_each_filter_coef(new_node%numnod, fil_coef)
         call alloc_each_ele_filter_coef(new_ele%numele, fil_coef)
 !
-        call write_new_whole_filter_coef(file_name, fil_coef)
-        call write_new_fluid_filter_coef(file_name, fil_coef)
+        call write_new_whole_filter_coef                                &
+     &     (file_name, fils_sort%whole_fil_sort, fil_coef)
+        call write_new_fluid_filter_coef                                &
+     &     (file_name, fils_sort%fluid_fil_sort, fil_coef)
 !
 !
         call dealloc_each_ele_filter_coef(fil_coef)
         call dealloc_each_filter_coef(fil_coef)
-        call deallocate_whole_filter_coefs
-        call deallocate_fluid_filter_coefs
+        call dealloc_filter_func_4_sort(fils_sort%whole_fil_sort)
+        call dealloc_filter_num_4_sort(fils_sort%whole_fil_sort)
+        call dealloc_filter_func_4_sort(fils_sort%fluid_fil_sort)
+        call dealloc_filter_num_4_sort(fils_sort%fluid_fil_sort)
 !
         call deallocate_globalnod_filter
         call dealloc_comm_table(filtering%comm)

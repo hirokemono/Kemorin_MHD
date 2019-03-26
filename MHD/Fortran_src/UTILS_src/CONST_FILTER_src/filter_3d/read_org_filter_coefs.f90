@@ -4,8 +4,11 @@
 !      Written by H. Matsui on May, 2008
 !
 !!      subroutine read_original_filter_coefs                           &
-!!     &         (ifile_type, id_rank, numnod, numele, fil_coef)
+!!     &         (ifile_type, id_rank, numnod, numele,                  &
+!!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !!        type(each_filter_coef), intent(inout) :: fil_coef
+!!        type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
+!!        type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
 !
       module read_org_filter_coefs
 !
@@ -27,12 +30,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_original_filter_coefs                             &
-     &         (ifile_type, id_rank, numnod, numele, fil_coef)
+     &         (ifile_type, id_rank, numnod, numele,                    &
+     &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !
       use m_filter_file_names
       use t_filter_coefs
       use t_comm_table
       use t_geometry_data
+      use t_filter_func_4_sorting
 !
       use filter_coefs_file_IO
       use filter_coefs_file_IO_b
@@ -45,6 +50,8 @@
       integer(kind = kint), intent(in) :: numnod, numele
 !
       type(each_filter_coef), intent(inout) :: fil_coef
+      type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
+      type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
 !
       integer(kind = kint):: ierr
       character(len=kchara) :: file_name
@@ -65,8 +72,8 @@
      &     (id_org_filter_coef, id_rank, comm_IO, nod_IO, ierr)
 !
         inter_nod_3dfilter = nod_IO%internal_node
-        call read_filter_coef_4_newdomain                               &
-     &     (id_org_filter_coef, fil_coef)
+        call read_filter_coef_4_newdomain(id_org_filter_coef, fil_coef, &
+     &      whole_fil_sort, fluid_fil_sort)
         close(id_org_filter_coef)
       else if(ifile_type .eq. 1) then
         write(*,*) 'binary coefficients file name: ', trim(file_name)
@@ -76,7 +83,8 @@
         if(bin_flflags%ierr_IO .gt. 0) go to 98
 !
         inter_nod_3dfilter = nod_IO%internal_node
-        call read_filter_coef_4_newdomain_b(bin_flflags, fil_coef)
+        call read_filter_coef_4_newdomain_b                             &
+     &     (bin_flflags, fil_coef, whole_fil_sort, fluid_fil_sort)
 !
   98    continue
         call close_binary_file

@@ -14,6 +14,7 @@
       use t_filter_coefficients
       use t_file_IO_parameter
       use t_ctl_data_gen_3d_filter
+      use t_filter_func_4_sorting
 !
       implicit none
 !
@@ -21,6 +22,8 @@
       type(field_IO_params), save ::  mesh_filter_file
       type(mesh_geometry), save :: mesh_filter
       type(filtering_data_type), save :: filtering_gen
+      type(filter_func_4_sorting), save :: whole_fil_sort1
+      type(filter_func_4_sorting), save :: fluid_fil_sort1
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,7 +63,6 @@
       use m_ctl_params_4_gen_filter
       use m_filter_file_names
       use m_nod_filter_comm_table
-      use m_filter_func_4_sorting
 !
       use t_filter_file_data
       use t_filter_coefficients
@@ -100,11 +102,13 @@
 !     read filtering information
 !
         call s_read_filter_file_4_sorting                               &
-     &     (ifmt_3d_filter, my_rank, filtering_gen, fil_gen1)
+     &     (ifmt_3d_filter, my_rank, filtering_gen, fil_gen1,           &
+     &      whole_fil_sort1, fluid_fil_sort1)
 !
-!
-        call deallocate_whole_filter_coefs
-        call deallocate_fluid_filter_coefs
+        call dealloc_filter_func_4_sort(whole_fil_sort1)
+        call dealloc_filter_num_4_sort(whole_fil_sort1)
+        call dealloc_filter_func_4_sort(fluid_fil_sort1)
+        call dealloc_filter_num_4_sort(fluid_fil_sort1)
 !
 !  ---------------------------------------------------
 !     construct filter function

@@ -7,8 +7,12 @@
 !!      subroutine deallocate_imark_whole_nod
 !!      subroutine clear_imark_whole_nod
 !!
-!!      subroutine nod_marking_by_filtering_data(ip2, nod_d_grp)
+!!      subroutine nod_marking_by_filtering_data                        &
+!!     &         (numnod, internal_node, inod_global, xx,               &
+!!     &          ip2, nod_d_grp, whole_fil_sort, fluid_fil_sort)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!        type(filter_func_4_sorting), intent(in) :: whole_fil_sort
+!!        type(filter_func_4_sorting), intent(in) :: fluid_fil_sort
 !!      subroutine set_global_nodid_4_newfilter(nod_d_grp)
 !!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !!
@@ -21,9 +25,15 @@
 !!        type(internal_4_partitioner), intent(in) :: itl_nod_part
 !!
 !!      subroutine set_filter_for_new_each_domain                       &
-!!     &         (numnod, internal_node, inod_global, ip2, nod_d_grp,   &
+!!     &         (numnod, internal_node, inod_global, ip2, inter_nod_f, &
+!!     &          nod_d_grp, whole_fil_sort, fluid_fil_sort,            &
+!!     &          whole_fil_sort2, fluid_fil_sort2, inod_filter_new_2,  &
 !!     &          icou_st)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!        type(filter_func_4_sorting), intent(in) :: whole_fil_sort
+!!        type(filter_func_4_sorting), intent(in) :: fluid_fil_sort
+!!        type(filter_func_4_sorting), intent(inout) :: whole_fil_sort2
+!!        type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort2
 !
       module set_filters_4_new_domains
 !
@@ -31,6 +41,7 @@
 !
       use m_constants
       use t_domain_group_4_partition
+      use t_filter_func_4_sorting
 !
       implicit none
 !
@@ -39,23 +50,12 @@
 !
       integer(kind = kint), allocatable :: inod_4_subdomain_tmp(:)
 !
-      integer(kind = kint), allocatable :: inod_near_nod_w_fil_tmp(:)
-      real(kind = kreal), allocatable :: whole_filter_func_tmp(:)
-      real(kind = kreal), allocatable :: whole_filter_weight_tmp(:)
-!
-      integer(kind = kint), allocatable :: inod_near_nod_f_fil_tmp(:)
-      real(kind = kreal), allocatable :: fluid_filter_func_tmp(:)
-      real(kind = kreal), allocatable :: fluid_filter_weight_tmp(:)
-!
-      private :: inod_near_nod_w_fil_tmp, inod_near_nod_f_fil_tmp
-      private :: whole_filter_func_tmp,   fluid_filter_func_tmp
-      private :: whole_filter_weight_tmp, fluid_filter_weight_tmp
+      type(filter_func_4_sorting), save :: wtmp_fil_sort
+      type(filter_func_4_sorting), save :: ftmp_fil_sort
 !
       private :: imark_whole_nod, inod_4_subdomain_tmp
       private :: set_globalnod_4_newdomain
 !
-      private :: allocate_newdomian_ftr_tmp
-      private :: deallocate_newdomian_ftr_tmp
       private :: count_num_ftr_new_each_domain
       private :: copy_filter_new_each_domain
 !
@@ -97,10 +97,9 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine nod_marking_by_filtering_data(numnod, internal_node,   &
-     &          inod_global, xx, ip2, nod_d_grp)
-!
-      use m_filter_func_4_sorting
+      subroutine nod_marking_by_filtering_data                          &
+     &         (numnod, internal_node, inod_global, xx,                 &
+     &          ip2, nod_d_grp, whole_fil_sort, fluid_fil_sort)
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
@@ -108,6 +107,8 @@
 !
       integer(kind = kint), intent(in) :: ip2
       type(domain_group_4_partition), intent(in) :: nod_d_grp
+      type(filter_func_4_sorting), intent(in) :: whole_fil_sort
+      type(filter_func_4_sorting), intent(in) :: fluid_fil_sort
 !
       integer(kind = kint) :: inod, jnod, inum
       integer(kind = kint_gl) :: inod_g, jnod_g
@@ -117,19 +118,19 @@
       do inod = 1, internal_node
         inod_g = inod_global(inod)
         if (nod_d_grp%IGROUP(inod_g) .eq. ip2) then
-          ist = istack_near_nod_w_filter(inod-1) + 1
-          ied = istack_near_nod_w_filter(inod)
+          ist = whole_fil_sort%istack_near_nod_filter(inod-1) + 1
+          ied = whole_fil_sort%istack_near_nod_filter(inod)
           do inum = ist, ied
-            jnod = inod_near_nod_w_filter(inum)
+            jnod = whole_fil_sort%inod_near_nod_filter(inum)
             if (jnod .gt. numnod) write(*,*) 'jnod', jnod, inum
             if (jnod .lt. 1) write(*,*) 'jnod', jnod, inum
             jnod_g = inod_global(jnod)
             imark_whole_nod(jnod_g) = 1
           end do
-          ist = istack_near_nod_f_filter(inod-1) + 1
-          ied = istack_near_nod_f_filter(inod)
+          ist = fluid_fil_sort%istack_near_nod_filter(inod-1) + 1
+          ied = fluid_fil_sort%istack_near_nod_filter(inod)
           do inum = ist, ied
-            jnod = inod_near_nod_f_filter(inum)
+            jnod = fluid_fil_sort%inod_near_nod_filter(inum)
             if (jnod .gt. numnod) write(*,*) 'jnod', jnod, inum
             if (jnod .lt. 1) write(*,*) 'jnod', jnod, inum
             jnod_g = inod_global(jnod)
@@ -317,102 +318,93 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_filter_for_new_each_domain                         &
-     &         (numnod, internal_node, inod_global, ip2, nod_d_grp,     &
+     &         (numnod, internal_node, inod_global, ip2, inter_nod_f,   &
+     &          nod_d_grp, whole_fil_sort, fluid_fil_sort,              &
+     &          whole_fil_sort2, fluid_fil_sort2, inod_filter_new_2,    &
      &          icou_st)
-!
-      use m_new_filter_func_4_sorting
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
+      type(filter_func_4_sorting), intent(in) :: whole_fil_sort
+      type(filter_func_4_sorting), intent(in) :: fluid_fil_sort
 !
       integer(kind = kint), intent(in) :: ip2
+      integer(kind = kint), intent(in) :: inter_nod_f
 !
       integer(kind = kint), intent(inout) :: icou_st
+      type(filter_func_4_sorting), intent(inout) :: whole_fil_sort2
+      type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort2
+      integer(kind = kint), intent(inout)                               &
+     &            :: inod_filter_new_2(inter_nod_f)
+!
       integer(kind = kint) :: icou_gl
 !
 !
       icou_gl = icou_st
       call count_num_ftr_new_each_domain                                &
-     &    (numnod, internal_node, inod_global, ip2, nod_d_grp, icou_gl)
+     &    (numnod, internal_node, inod_global, ip2, inter_nod_f,        &
+     &     nod_d_grp, whole_fil_sort, fluid_fil_sort,                   &
+     &     whole_fil_sort2, fluid_fil_sort2, inod_filter_new_2,         &
+     &     icou_gl)
 !
-      call allocate_newdomian_ftr_tmp
+      wtmp_fil_sort%ntot_nod_near_filter                                &
+     &    = whole_fil_sort2%ntot_nod_near_filter
+      ftmp_fil_sort%ntot_nod_near_filter                                &
+     &     = fluid_fil_sort2%ntot_nod_near_filter
+      call alloc_filter_func_4_sort(wtmp_fil_sort)
+      call alloc_filter_func_4_sort(ftmp_fil_sort)
 !
-      call deallocate_fluid_filter_func2
-      call deallocate_whole_filter_func2
+      call copy_filter_func_4_sort                                      &
+     &   (ione, whole_fil_sort2%ntot_nod_near_filter,                   &
+     &    whole_fil_sort2, wtmp_fil_sort)
+      call copy_filter_func_4_sort                                      &
+     &   (ione, fluid_fil_sort2%ntot_nod_near_filter,                   &
+     &    fluid_fil_sort2, ftmp_fil_sort)
 !
-      ntot_nod_near_w_filter2 = istack_near_nod_w_filter2(icou_gl)
-      ntot_nod_near_f_filter2 = istack_near_nod_f_filter2(icou_gl)
+      call dealloc_filter_num_4_sort(fluid_fil_sort2)
+      call dealloc_filter_num_4_sort(whole_fil_sort2)
 !
-      call allocate_whole_filter_coefs2
-      call allocate_fluid_filter_coefs2
+      whole_fil_sort2%ntot_nod_near_filter                              &
+     &       = whole_fil_sort2%istack_near_nod_filter(icou_gl)
+      fluid_fil_sort2%ntot_nod_near_filter                              &
+     &       = fluid_fil_sort2%istack_near_nod_filter(icou_gl)
+!
+      call alloc_filter_func_4_sort(whole_fil_sort2)
+      call alloc_filter_func_4_sort(fluid_fil_sort2)
 !
       call copy_filter_new_each_domain                                  &
-     &   (numnod, internal_node, inod_global, ip2, nod_d_grp, icou_st)
+     &   (numnod, internal_node, inod_global,                           &
+     &    ip2, nod_d_grp, whole_fil_sort, fluid_fil_sort,               &
+     &    whole_fil_sort2, fluid_fil_sort2, icou_st)
 !
-      call deallocate_newdomian_ftr_tmp
+      call dealloc_filter_num_4_sort(wtmp_fil_sort)
+      call dealloc_filter_num_4_sort(ftmp_fil_sort)
 !
       end subroutine set_filter_for_new_each_domain
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine allocate_newdomian_ftr_tmp
-!
-      use m_new_filter_func_4_sorting
-!
-      integer(kind = kint) :: inum
-!
-!
-      allocate(inod_near_nod_w_fil_tmp(ntot_nod_near_w_filter2))
-      allocate(whole_filter_func_tmp(ntot_nod_near_w_filter2) )
-      allocate(whole_filter_weight_tmp(ntot_nod_near_w_filter2))
-!
-      allocate(inod_near_nod_f_fil_tmp(ntot_nod_near_f_filter2))
-      allocate(fluid_filter_func_tmp(ntot_nod_near_f_filter2) )
-      allocate(fluid_filter_weight_tmp(ntot_nod_near_f_filter2))
-!
-      do inum = 1, ntot_nod_near_w_filter2
-        inod_near_nod_w_fil_tmp(inum) = inod_near_nod_w_filter2(inum)
-        whole_filter_func_tmp(inum) =   whole_filter_func2(inum)
-        whole_filter_weight_tmp(inum) = whole_filter_weight2(inum)
-      end do
-      do inum = 1, ntot_nod_near_f_filter2
-        inod_near_nod_f_fil_tmp(inum) = inod_near_nod_f_filter2(inum)
-        fluid_filter_func_tmp(inum) =   fluid_filter_func2(inum)
-        fluid_filter_weight_tmp(inum) = fluid_filter_weight2(inum)
-      end do
-!
-      end subroutine allocate_newdomian_ftr_tmp
-!
-!   --------------------------------------------------------------------
-!
-      subroutine deallocate_newdomian_ftr_tmp
-!
-!
-      deallocate(inod_near_nod_w_fil_tmp)
-      deallocate(whole_filter_func_tmp, whole_filter_weight_tmp)
-!
-      deallocate(inod_near_nod_f_fil_tmp)
-      deallocate(fluid_filter_func_tmp, fluid_filter_weight_tmp)
-!
-      end subroutine deallocate_newdomian_ftr_tmp
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine count_num_ftr_new_each_domain(numnod, internal_node,   &
-     &          inod_global, ip2, nod_d_grp, icou_gl)
-!
-      use m_filter_func_4_sorting
-      use m_new_filter_func_4_sorting
+      subroutine count_num_ftr_new_each_domain                          &
+     &         (numnod, internal_node, inod_global, ip2, inter_nod_f,   &
+     &          nod_d_grp, whole_fil_sort, fluid_fil_sort,              &
+     &          whole_fil_sort2, fluid_fil_sort2, inod_filter_new_2,    &
+     &          icou_gl)
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
+      type(filter_func_4_sorting), intent(in) :: whole_fil_sort
+      type(filter_func_4_sorting), intent(in) :: fluid_fil_sort
 !
       integer(kind = kint), intent(in) :: ip2
+      integer(kind = kint), intent(in) :: inter_nod_f
 !
+      type(filter_func_4_sorting), intent(inout) :: whole_fil_sort2
+      type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort2
+      integer(kind = kint), intent(inout)                               &
+     &            :: inod_filter_new_2(inter_nod_f)
       integer(kind = kint), intent(inout) :: icou_gl
 !
       integer(kind = kint) :: inod
@@ -425,24 +417,26 @@
           icou_gl = icou_gl + 1
           inod_filter_new_2(icou_gl) = nod_d_grp%id_local_part(inod_g)
 !
-          i_exp_level_w_filter2(icou_gl) = i_exp_level_w_filter(inod)
-          i_exp_level_f_filter2(icou_gl) = i_exp_level_f_filter(inod)
+          whole_fil_sort2%i_exp_level_filter(icou_gl)                   &
+     &       = whole_fil_sort%i_exp_level_filter(inod)
+          fluid_fil_sort2%i_exp_level_filter(icou_gl)                   &
+     &       = fluid_fil_sort%i_exp_level_filter(inod)
 !
-          nnod_near_nod_w_filter2(icou_gl)                              &
-     &          = nnod_near_nod_w_filter(inod)
-          nnod_near_nod_f_filter2(icou_gl)                              &
-     &          = nnod_near_nod_f_filter(inod)
+          whole_fil_sort2%nnod_near_nod_filter(icou_gl)                 &
+     &          = whole_fil_sort%nnod_near_nod_filter(inod)
+          fluid_fil_sort2%nnod_near_nod_filter(icou_gl)                 &
+     &          = fluid_fil_sort%nnod_near_nod_filter(inod)
 !
-          istack_near_nod_w_filter2(icou_gl)                            &
-     &          = istack_near_nod_w_filter2(icou_gl-1)                  &
-     &           + nnod_near_nod_w_filter2(icou_gl)
-          if( nnod_near_nod_f_filter2(icou_gl) .le. 0) then
-            istack_near_nod_f_filter2(icou_gl)                          &
-     &          = istack_near_nod_f_filter2(icou_gl-1)
+          whole_fil_sort2%istack_near_nod_filter(icou_gl)               &
+     &          = whole_fil_sort2%istack_near_nod_filter(icou_gl-1)     &
+     &           + whole_fil_sort2%nnod_near_nod_filter(icou_gl)
+          if(fluid_fil_sort2%nnod_near_nod_filter(icou_gl) .le. 0) then
+            fluid_fil_sort2%istack_near_nod_filter(icou_gl)             &
+     &          = fluid_fil_sort2%istack_near_nod_filter(icou_gl-1)
           else
-            istack_near_nod_f_filter2(icou_gl)                          &
-     &          = istack_near_nod_f_filter2(icou_gl-1)                  &
-     &           + nnod_near_nod_f_filter2(icou_gl)
+            fluid_fil_sort2%istack_near_nod_filter(icou_gl)             &
+     &          = fluid_fil_sort2%istack_near_nod_filter(icou_gl-1)     &
+     &           + fluid_fil_sort2%nnod_near_nod_filter(icou_gl)
           end if
         end if
       end do
@@ -451,20 +445,25 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine copy_filter_new_each_domain(numnod, internal_node,     &
-     &          inod_global, ip2, nod_d_grp, icou_gl)
+      subroutine copy_filter_new_each_domain                            &
+     &         (numnod, internal_node, inod_global,                     &
+     &          ip2, nod_d_grp, whole_fil_sort, fluid_fil_sort,         &
+     &          whole_fil_sort2, fluid_fil_sort2, icou_gl)
 !
-      use m_filter_func_4_sorting
       use m_nod_filter_comm_table
-      use m_new_filter_func_4_sorting
+      use t_filter_func_4_sorting
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
+      type(filter_func_4_sorting), intent(in) :: whole_fil_sort
+      type(filter_func_4_sorting), intent(in) :: fluid_fil_sort
 !
       integer(kind = kint), intent(in) :: ip2
 !
       integer(kind = kint), intent(inout) :: icou_gl
+      type(filter_func_4_sorting), intent(inout) :: whole_fil_sort2
+      type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort2
 !
       integer(kind = kint) :: inod, inum, jnod, jnod_l
       integer(kind = kint_gl) :: inod_g, jnod_g
@@ -472,16 +471,12 @@
       integer(kind = kint) :: ist_org, ist_new
 !
 !
-      do inum = 1, istack_near_nod_w_filter2(icou_gl)
-        inod_near_nod_w_filter2(inum) = inod_near_nod_w_fil_tmp(inum)
-        whole_filter_func2(inum) =      whole_filter_func_tmp(inum)
-        whole_filter_weight2(inum) =    whole_filter_weight_tmp(inum)
-      end do
-      do inum = 1, istack_near_nod_f_filter2(icou_gl)
-        inod_near_nod_f_filter2(inum) = inod_near_nod_f_fil_tmp(inum)
-        fluid_filter_func2(inum) =      fluid_filter_func_tmp(inum)
-        fluid_filter_weight2(inum) =    fluid_filter_weight_tmp(inum)
-      end do
+      call copy_filter_func_4_sort                                      &
+     &   (ione, whole_fil_sort2%ntot_nod_near_filter,                   &
+     &    wtmp_fil_sort, whole_fil_sort2)
+      call copy_filter_func_4_sort                                      &
+     &   (ione, fluid_fil_sort2%ntot_nod_near_filter,                   &
+     &    ftmp_fil_sort, fluid_fil_sort2)
 !
 !
       do inod = 1, internal_node
@@ -489,37 +484,37 @@
 !
         if (nod_d_grp%IGROUP(inod_g) .eq. ip2) then
           icou_gl = icou_gl + 1
-          ist_org = istack_near_nod_w_filter(inod-1)
-          ist_new = istack_near_nod_w_filter2(icou_gl-1)
-          do inum = 1, nnod_near_nod_w_filter(inod)
+          ist_org = whole_fil_sort%istack_near_nod_filter(inod-1)
+          ist_new = whole_fil_sort2%istack_near_nod_filter(icou_gl-1)
+          do inum = 1, whole_fil_sort%nnod_near_nod_filter(inod)
             jnum_org = inum + ist_org
             jnum_new = inum + ist_new
-            jnod = inod_near_nod_w_filter(jnum_org)
+            jnod = whole_fil_sort%inod_near_nod_filter(jnum_org)
             jnod_g = inod_global(jnod)
             jnod_l = nod_d_grp%id_local_part(jnod_g)
 !
-            inod_near_nod_w_filter2(jnum_new) = jnod_l
-            whole_filter_func2(jnum_new)                                &
-     &             = whole_filter_func(jnum_org)
-            whole_filter_weight2(jnum_new)                              &
-     &             = whole_filter_weight(jnum_org)
+            whole_fil_sort2%inod_near_nod_filter(jnum_new) = jnod_l
+            whole_fil_sort2%filter_func(jnum_new)                       &
+     &             = whole_fil_sort%filter_func(jnum_org)
+            whole_fil_sort2%filter_weight(jnum_new)                     &
+     &             = whole_fil_sort%filter_weight(jnum_org)
 !
           end do
 !
-          ist_org = istack_near_nod_f_filter(inod-1)
-          ist_new = istack_near_nod_f_filter2(icou_gl-1)
-          do inum = 1, nnod_near_nod_f_filter(inod)
+          ist_org = fluid_fil_sort%istack_near_nod_filter(inod-1)
+          ist_new = fluid_fil_sort2%istack_near_nod_filter(icou_gl-1)
+          do inum = 1, fluid_fil_sort%nnod_near_nod_filter(inod)
             jnum_org = inum + ist_org
             jnum_new = inum + ist_new
-            jnod = inod_near_nod_f_filter(jnum_org)
+            jnod = fluid_fil_sort%inod_near_nod_filter(jnum_org)
             jnod_g = inod_global(jnod)
             jnod_l = nod_d_grp%id_local_part(jnod_g)
 !
-            inod_near_nod_f_filter2(jnum_new) = jnod_l
-            fluid_filter_func2(jnum_new)                                &
-     &             = fluid_filter_func(jnum_org)
-            fluid_filter_weight2(jnum_new)                              &
-     &             = fluid_filter_weight(jnum_org)
+            fluid_fil_sort2%inod_near_nod_filter(jnum_new) = jnod_l
+            fluid_fil_sort2%filter_func(jnum_new)                       &
+     &             = fluid_fil_sort%filter_func(jnum_org)
+            fluid_fil_sort2%filter_weight(jnum_new)                     &
+     &             = fluid_fil_sort%filter_weight(jnum_org)
 !
           end do
         end if

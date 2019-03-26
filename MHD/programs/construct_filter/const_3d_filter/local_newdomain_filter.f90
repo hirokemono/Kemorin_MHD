@@ -5,10 +5,10 @@
 !
 !!      subroutine local_newdomain_filter_para(mesh_file, itl_nod_part, &
 !!     &          nod_d_grp, comm_part, org_node, org_ele, newmesh,     &
-!!     &          fil_coef)
+!!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !!      subroutine local_newdomain_filter_sngl(mesh_file, itl_nod_part, &
 !!     &          nod_d_grp, comm_part, org_node, org_ele, newmesh,     &
-!!     &          fil_coef)
+!!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(internal_4_partitioner), intent(inout)  :: itl_nod_part
 !!        type(domain_group_4_partition), intent(inout)  :: nod_d_grp
@@ -16,6 +16,9 @@
 !!        type(node_data),    intent(inout) :: org_node
 !!        type(element_data), intent(inout) :: org_ele
 !!        type(mesh_geometry), intent(inout) :: newmesh
+!!        type(each_filter_coef), intent(inout) :: fil_coef
+!!        type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
+!!        type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
 !
       module local_newdomain_filter
 !
@@ -33,6 +36,7 @@
       use t_internal_4_partitioner
       use t_partitioner_comm_table
       use t_filter_coefs
+      use t_filter_func_4_sorting
 !
       implicit none
 !
@@ -44,7 +48,7 @@
 !
       subroutine local_newdomain_filter_para(mesh_file, itl_nod_part,   &
      &          nod_d_grp, comm_part, org_node, org_ele, newmesh,       &
-     &          fil_coef)
+     &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !
       use m_2nd_pallalel_vector
 !
@@ -60,6 +64,8 @@
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
       type(each_filter_coef), intent(inout) :: fil_coef
+      type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
+      type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
 !
       integer(kind = kint) :: ierr, num_pe
 !
@@ -77,7 +83,7 @@
         write(*,*) 'set_inod_4_newdomain_filter'
         call set_inod_4_newdomain_filter(mesh_file, nod_d_grp,          &
      &      org_node, org_ele, newmesh%node, itl_nod_part,              &
-     &      fil_coef, ierr)
+     &      fil_coef, whole_fil_sort, fluid_fil_sort, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Fileter is wrong!!')
         end if
@@ -114,7 +120,7 @@
 !
       subroutine local_newdomain_filter_sngl(mesh_file, itl_nod_part,   &
      &          nod_d_grp, comm_part, org_node, org_ele, newmesh,       &
-     &          fil_coef)
+     &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !
       use set_inod_newdomain_filter
       use generate_comm_tables
@@ -127,6 +133,8 @@
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
       type(each_filter_coef), intent(inout) :: fil_coef
+      type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
+      type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
 !
       integer(kind = kint) :: ierr, num_pe
 !
@@ -140,8 +148,8 @@
 !
 !      write(*,*) 'set_inod_4_newdomain_filter'
       call set_inod_4_newdomain_filter                                  &
-     &   (mesh_file, nod_d_grp, org_node, org_ele,                      &
-     &    newmesh%node, itl_nod_part, fil_coef, ierr)
+     &   (mesh_file, nod_d_grp, org_node, org_ele, newmesh%node,        &
+     &    itl_nod_part, fil_coef, whole_fil_sort, fluid_fil_sort, ierr)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Fileter is wrong!!')
       end if
