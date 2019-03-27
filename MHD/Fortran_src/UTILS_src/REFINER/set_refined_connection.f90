@@ -1,18 +1,17 @@
 !set_refined_connection.f90
 !      module set_refined_connection
 !
-      module set_refined_connection
-!
 !      Writen by H. Matsui on Sep., 2007
 !
 !      subroutine count_refined_connection(iele, iflag_refine)
 !      subroutine s_set_refined_connection(iele, iflag_refine)
 !
+      module set_refined_connection
+!
       use m_precision
 !
       use m_refine_flag_parameters
       use m_refined_element_data
-      use m_refined_node_id
 !
       implicit none
 !

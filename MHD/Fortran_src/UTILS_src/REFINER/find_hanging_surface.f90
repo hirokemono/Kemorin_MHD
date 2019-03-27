@@ -5,14 +5,17 @@
 !      subroutine allocate_iflag_hangings(numsurf, numedge)
 !      subroutine deallocate_iflag_hangings
 !
-!      subroutine check_hanging_surface(numele, numsurf, numedge,       &
-!     &          isf_4_ele, iele_4_surf, iedge_4_ele)
-!      subroutine set_hanging_nodes(numsurf, nnod_4_surf,               &
-!     &          numedge, nnod_4_edge, ie_surf, ie_edge)
-!
-!      subroutine add_hanging_node_group_num(new_nod_grp)
-!      subroutine add_hanging_node_group_name(num_bc, new_nod_grp)
-!      subroutine add_hanging_node_group_item(num_bc, new_nod_grp)
+!!      subroutine check_hanging_surface(numele, numsurf, numedge,      &
+!!     &          isf_4_ele, iele_4_surf, iedge_4_ele)
+!!      subroutine set_hanging_nodes                                    &
+!!     &         (surf, edge, refine_surf, refine_edge)
+!!        type(surface_data), intent(in) :: surf
+!!        type(edge_data), intent(in) :: edge
+!!        type(table_4_refine), intent(in) :: refine_surf, refine_edge
+!!
+!!      subroutine add_hanging_node_group_num(new_nod_grp)
+!!      subroutine add_hanging_node_group_name(num_bc, new_nod_grp)
+!!      subroutine add_hanging_node_group_item(num_bc, new_nod_grp)
 !
 !
       module find_hanging_surface
@@ -132,29 +135,30 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_hanging_nodes(numsurf, nnod_4_surf,                &
-     &          numedge, nnod_4_edge, ie_surf, ie_edge)
+      subroutine set_hanging_nodes                                      &
+     &         (surf, edge, refine_surf, refine_edge)
 !
       use m_geometry_constants
       use m_refine_flag_parameters
       use m_refined_element_data
-      use m_refined_node_id
+      use t_surface_data
+      use t_edge_data
+      use t_refined_node_id
 !
-      integer(kind = kint), intent(in) :: numsurf, nnod_4_surf
-      integer(kind = kint), intent(in) :: numedge, nnod_4_edge
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
+      type(table_4_refine), intent(in) :: refine_surf, refine_edge
 !
       integer(kind = kint) :: isurf, iedge
       integer(kind = kint) :: icou, ist, k1
 !
 !
       nnod_hang_4 = 0
-      do isurf = 1, numsurf
+      do isurf = 1, surf%numsurf
         nnod_hang_4 = nnod_hang_4 + iflag_hang_sf(isurf)
       end do
       nnod_hang_2 = 0
-      do iedge = 1, numedge
+      do iedge = 1, edge%numedge
         nnod_hang_2 = nnod_hang_2 + iflag_hang_ed(iedge)
       end do
 !
@@ -162,26 +166,26 @@
       allocate(inod_hang_2(3,nnod_hang_2))
 !
       icou = 0
-      do isurf = 1, numsurf
+      do isurf = 1, surf%numsurf
         if(iflag_hang_sf(isurf) .eq. 1) then
           icou = icou + 1
-          ist = istack_nod_refine_surf(isurf-1)
-          inod_hang_4(1,icou) = inod_refine_surf(ist+1)
+          ist = refine_surf%istack_nod_refine(isurf-1)
+          inod_hang_4(1,icou) = refine_surf%inod_refine(ist+1)
           do k1 = 1, 4
-            inod_hang_4(k1+1,icou) = ie_surf(isurf,k1)
+            inod_hang_4(k1+1,icou) = surf%ie_surf(isurf,k1)
           end do
         end if
       end do
 !
 !
       icou = 0
-      do iedge = 1, numedge
+      do iedge = 1, edge%numedge
         if(iflag_hang_ed(iedge) .eq. 1) then
           icou = icou + 1
-          ist = istack_nod_refine_edge(iedge-1)
-          inod_hang_2(1,icou) = inod_refine_edge(ist+1)
+          ist = refine_edge%istack_nod_refine(iedge-1)
+          inod_hang_2(1,icou) = refine_edge%inod_refine(ist+1)
           do k1 = 1, 2
-            inod_hang_2(k1+1,icou) = ie_edge(iedge,k1)
+            inod_hang_2(k1+1,icou) = edge%ie_edge(iedge,k1)
           end do
         end if
       end do

@@ -3,7 +3,10 @@
 !
 !   Written by H. Matsui on Oct., 2007
 !
-!      subroutine s_const_refined_connectivity(ele, surf, edge)
+!!      subroutine s_const_refined_connectivity                         &
+!!     &         (ele, surf, edge, refine_ele, refine_surf, refine_edge)
+!!        type(table_4_refine), intent(inout) :: refine_ele
+!!        type(table_4_refine), intent(inout) :: refine_surf, refine_edge
 !
       module   const_refined_connectivity
 !
@@ -14,6 +17,7 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+      use t_refined_node_id
 !
       implicit  none
 !
@@ -23,7 +27,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_refined_connectivity(ele, surf, edge)
+      subroutine s_const_refined_connectivity                           &
+     &         (ele, surf, edge, refine_ele, refine_surf, refine_edge)
 !
       use m_refine_flag_parameters
       use m_control_param_4_refiner
@@ -36,6 +41,9 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
+!
+      type(table_4_refine), intent(inout) :: refine_ele
+      type(table_4_refine), intent(inout) :: refine_surf, refine_edge
 !
       integer(kind = kint) :: iele
 !
@@ -65,9 +73,15 @@
 !
 !         write(*,*) 'iflag_refine_ele', iele, iflag_refine_ele(iele)
 !
-        call refined_node_on_ele_2_local(iele, ele)
-        call refined_node_on_surf_2_local(iele, surf)
-        call refined_node_on_edge_2_local(iele, edge)
+        call refined_node_on_ele_2_local(iele, ele,                     &
+     &      refine_ele%ntot_nod_refine, refine_ele%num_nod_refine,      &
+     &      refine_ele%istack_nod_refine, refine_ele%inod_refine)
+        call refined_node_on_surf_2_local(iele, surf,                   &
+     &      refine_surf%ntot_nod_refine, refine_surf%num_nod_refine,    &
+     &      refine_surf%istack_nod_refine, refine_surf%inod_refine)
+        call refined_node_on_edge_2_local(iele, edge,                   &
+     &      refine_edge%ntot_nod_refine, refine_edge%num_nod_refine,    &
+     &      refine_edge%istack_nod_refine, refine_edge%inod_refine)
 !
         call s_set_refined_connection(iele, iflag_refine_ele(iele) )
 !

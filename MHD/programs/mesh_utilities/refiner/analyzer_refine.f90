@@ -87,7 +87,7 @@
       subroutine analyze_refine
 !
       use m_geometry_constants
-      use m_refined_node_id
+      use t_refined_node_id
       use m_refined_element_data
       use m_work_merge_refine_itp
       use set_nnod_4_ele_by_type
@@ -108,6 +108,7 @@
       use const_mesh_information
 !
       character(len=kchara), parameter :: tmp_mesh_head = 'work'
+      type(refined_node_id) :: ref_ids
 !
 !
 !    construct element and surface data
@@ -151,27 +152,28 @@
 !
 !   set refined nodes
 !
-        call allocate_num_refine_node                                   &
-     &     (org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,          &
-     &      org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge)
+        call alloc_num_refine_node(org_fem%mesh%node, org_fem%mesh%ele, &
+     &      org_ele_mesh%surf, org_ele_mesh%edge, ref_ids)
         write(*,*) 's_count_nnod_for_refine'
-        call s_count_nnod_for_refine                                    &
-     &     (org_fem%mesh%node, org_fem%mesh%ele,                        &
-     &      org_ele_mesh%surf, org_ele_mesh%edge)
+        call s_count_nnod_for_refine(org_fem%mesh%node,                 &
+     &      org_fem%mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge,     &
+     &      ref_ids%refine_nod, ref_ids%refine_ele,                     &
+     &      ref_ids%refine_surf, ref_ids%refine_edge)
 !
-        call allocate_item_refine_node
+        call alloc_item_refine_node(ref_ids)
         write(*,*) 's_set_refined_node_id'
-        call s_set_refined_node_id                                      &
-     &     (org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,          &
-     &      org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge)
+        call s_set_refined_node_id(org_fem%mesh%node, org_fem%mesh%ele, &
+     &    org_ele_mesh%surf, org_ele_mesh%edge, ref_ids%refine_nod,     &
+     &    ref_ids%refine_ele, ref_ids%refine_surf, ref_ids%refine_edge)
 !
         write(*,*) 's_set_local_position_4_refine'
-        call s_set_local_position_4_refine(org_fem%mesh%ele%numele,     &
-      &    org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge)
+        call s_set_local_position_4_refine(org_fem%mesh%ele,            &
+      &   org_ele_mesh%surf, org_ele_mesh%edge,                         &
+      &   ref_ids%refine_ele, ref_ids%refine_surf, ref_ids%refine_edge)
 !
-!      call check_refine_items                                          &
+!      call check_all_refine_items                                      &
 !     &   (org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,           &
-!     &    org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge)
+!     &    org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge, ref_ids)
 !
          refined_fem%mesh%nod_comm%num_neib                             &
      &        = org_fem%mesh%nod_comm%num_neib
@@ -179,19 +181,23 @@
         call alloc_comm_table_item(refined_fem%mesh%nod_comm)
 !
         write(*,*) 's_set_refined_position'
-        call s_set_refined_position                                     &
-     &     (org_fem%mesh%node, org_fem%mesh%ele,                        &
-     &      org_ele_mesh%surf, org_ele_mesh%edge)
+        call s_set_refined_position(org_fem%mesh%node,                  &
+     &      org_fem%mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge,     &
+     &    ref_ids%refine_ele, ref_ids%refine_surf, ref_ids%refine_edge)
 !
         refined_fem%mesh%nod_comm%num_neib = 0
 !
         write(*,*) 's_refined_nod_2_mesh_data'
-        call s_refined_nod_2_mesh_data                                  &
-     &     (org_fem%mesh%node, refined_fem%mesh%node)
+        call s_refined_nod_2_mesh_data(org_fem%mesh%node,               &
+     &      ref_ids%refine_nod, ref_ids%refine_ele,                     &
+     &      ref_ids%refine_surf, ref_ids%refine_edge,                   &
+     &      refined_fem%mesh%node)
 !
 !
         call s_const_refined_connectivity                               &
-     &     (org_fem%mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge)
+     &     (org_fem%mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge,     &
+     &      ref_ids%refine_ele, ref_ids%refine_surf,                    &
+     &      ref_ids%refine_edge)
 !
         call s_refined_ele_2_mesh_data(refined_fem%mesh%ele)
         call set_3D_nnod_4_sfed_by_ele                                  &
@@ -201,24 +207,21 @@
         refined_fem%mesh%ele%first_ele_type                             &
      &     = set_cube_eletype_from_num(refined_fem%mesh%ele%nnod_4_ele)
 !
-        call set_hanging_nodes                                          &
-     &     (org_ele_mesh%surf%numsurf, org_ele_mesh%surf%nnod_4_surf,   &
-     &      org_ele_mesh%edge%numedge, org_ele_mesh%edge%nnod_4_edge,   &
-     &      org_ele_mesh%surf%ie_surf, org_ele_mesh%edge%ie_edge)
+        call set_hanging_nodes(org_ele_mesh%surf, org_ele_mesh%edge,    &
+     &      ref_ids%refine_surf, ref_ids%refine_edge)
 !
         call s_const_refined_group                                      &
-     &     (org_fem%mesh, org_ele_mesh, org_fem%group,                  &
+     &     (org_fem%mesh, org_ele_mesh, org_fem%group, ref_ids,         &
      &      refined_fem%mesh, refined_fem%group)
 !
         write(*,*) 's_const_refine_interpolate_tbl'
         call s_const_refine_interpolate_tbl                             &
-     &     (org_fem%mesh, org_ele_mesh, refined_fem%mesh)
+     &     (org_fem%mesh, org_ele_mesh, refined_fem%mesh, ref_ids)
 !
         call deallocate_refine_flags
-        call deallocate_refined_local_posi
         call deallocate_refined_ele_connect
         call deallocate_refined_num_element
-        call deallocate_num_refine_node
+        call dealloc_refine_node_id(ref_ids)
 !
         if (iflag_tmp_tri_refine .eq. 0) exit
 !

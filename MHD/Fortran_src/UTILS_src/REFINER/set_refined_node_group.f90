@@ -5,10 +5,20 @@
 !
 !      subroutine deallocate_mark_refine_nod_grp
 !
-!      subroutine count_refined_node_group                              &
-!     &         (node, ele, surf, edge, nod_grp, new_nod_grp)
-!      subroutine s_set_refined_node_group                              &
-!     &         (node, ele, surf, edge, nod_grp, new_nod_grp)
+!!      subroutine count_refined_node_group                             &
+!!     &         (node, ele, surf, edge, nod_grp,                       &
+!!     &          refine_ele, refine_surf, refine_edge, new_nod_grp)
+!!      subroutine s_set_refined_node_group                             &
+!!     &         (node, ele, surf, edge, nod_grp,                       &
+!!     &          refine_ele, refine_surf, refine_edge, new_nod_grp)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(edge_data), intent(in) :: edge
+!!        type(group_data), intent(in) :: nod_grp
+!!        type(table_4_refine), intent(in) :: refine_ele
+!!        type(table_4_refine), intent(in) :: refine_surf, refine_edge
+!!        type(group_data), intent(inout) :: new_nod_grp
 !
       module set_refined_node_group
 !
@@ -45,19 +55,22 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_refined_node_group                               &
-     &        (node, ele, surf, edge, nod_grp, new_nod_grp)
+     &        (node, ele, surf, edge, nod_grp,                          &
+     &         refine_ele, refine_surf, refine_edge, new_nod_grp)
 !
       use t_geometry_data
       use t_surface_data
       use t_edge_data
       use t_group_data
-      use m_refined_node_id
+      use t_refined_node_id
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
       type(group_data), intent(in) :: nod_grp
+      type(table_4_refine), intent(in) :: refine_ele
+      type(table_4_refine), intent(in) :: refine_surf, refine_edge
 !
       type(group_data), intent(inout) :: new_nod_grp
 !
@@ -90,7 +103,7 @@
 !
           if(iflag .eq. 1) then
             new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i)       &
-     &                        + num_nod_refine_edge(iedge)
+     &                        + refine_edge%num_nod_refine(iedge)
           end if
         end do
 !
@@ -101,7 +114,7 @@
 !
           if(iflag .eq. 1) then
             new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i)       &
-     &                        + num_nod_refine_surf(isurf)
+     &                        + refine_surf%num_nod_refine(isurf)
           end if
         end do
 !
@@ -112,7 +125,7 @@
 !
           if(iflag .eq. 1) then
             new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i)       &
-     &                        + num_nod_refine_ele(iele)
+     &                        + refine_ele%num_nod_refine(iele)
           end if
         end do
 !
@@ -124,19 +137,22 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_refined_node_group                               &
-     &         (node, ele, surf, edge, nod_grp, new_nod_grp)
+     &         (node, ele, surf, edge, nod_grp,                         &
+     &          refine_ele, refine_surf, refine_edge, new_nod_grp)
 !
-      use m_refined_node_id
       use t_geometry_data
       use t_surface_data
       use t_edge_data
       use t_group_data
+      use t_refined_node_id
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
       type(group_data), intent(in) :: nod_grp
+      type(table_4_refine), intent(in) :: refine_ele
+      type(table_4_refine), intent(in) :: refine_surf, refine_edge
 !
       type(group_data), intent(inout) :: new_nod_grp
 !
@@ -163,9 +179,11 @@
      &        edge%numedge, edge%nnod_4_edge, edge%ie_edge, iflag)
 !
           if(iflag .eq. 1) then
-            call set_new_nod_grp_item(icou, ntot_nod_refine_edge,       &
-     &          istack_nod_refine_edge(iedge-1), inod_refine_edge,      &
-     &          new_nod_grp%num_item, new_nod_grp%item_grp)
+            call set_new_nod_grp_item(icou,                             &
+     &          refine_edge%ntot_nod_refine,                            &
+     &          refine_edge%istack_nod_refine(iedge-1),                 &
+     &          refine_edge%inod_refine, new_nod_grp%num_item,          &
+     &          new_nod_grp%item_grp)
           end if
         end do
 !
@@ -175,8 +193,10 @@
      &       surf%numsurf, surf%nnod_4_surf, surf%ie_surf, iflag)
 !
           if(iflag .eq. 1) then
-            call set_new_nod_grp_item(icou, ntot_nod_refine_surf,       &
-     &          istack_nod_refine_surf(isurf-1), inod_refine_surf,      &
+            call set_new_nod_grp_item(icou,                             &
+     &          refine_surf%ntot_nod_refine,                            &
+     &          refine_surf%istack_nod_refine(isurf-1),                 &
+     &          refine_surf%inod_refine,                                &
      &          new_nod_grp%num_item, new_nod_grp%item_grp)
           end if
         end do
@@ -187,8 +207,10 @@
      &       (iele, ele%numele, ele%nnod_4_ele, ele%ie, iflag)
 !
           if(iflag .eq. 1) then
-            call set_new_nod_grp_item(icou, ntot_nod_refine_ele,        &
-     &          istack_nod_refine_ele(iele-1), inod_refine_ele,         &
+            call set_new_nod_grp_item(icou,                             &
+     &          refine_ele%ntot_nod_refine,                             &
+     &          refine_ele%istack_nod_refine(iele-1),                   &
+     &          refine_ele%inod_refine,                                 &
      &          new_nod_grp%num_item, new_nod_grp%item_grp)
           end if
         end do

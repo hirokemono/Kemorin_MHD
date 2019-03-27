@@ -1,8 +1,15 @@
 !set_refined_node_id.f90
 !      module set_refined_node_id
 !
-!      subroutine s_set_refined_node_id                                 &
-!     &         (numnod, numele, numsurf, numedge)
+!!      subroutine s_set_refined_node_id                                &
+!!     &         (numnod, numele, numsurf, numedge,                     &
+!!     &          refine_nod, refine_ele, refine_surf, refine_edge)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(edge_data), intent(in) :: edge
+!!        type(table_4_refine), intent(inout) :: refine_nod, refine_ele
+!!        type(table_4_refine), intent(inout) :: refine_surf, refine_edge
 !
       module set_refined_node_id
 !
@@ -20,52 +27,65 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_refined_node_id                                  &
-     &         (numnod, numele, numsurf, numedge)
+      subroutine s_set_refined_node_id(node, ele, surf, edge,           &
+     &          refine_nod, refine_ele, refine_surf, refine_edge)
+!
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
+      use t_refined_node_id
 !
       use m_refined_element_data
-      use m_refined_node_id
 !
-      integer(kind = kint), intent(in) :: numnod, numele
-      integer(kind = kint), intent(in) :: numsurf, numedge
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
+      type(table_4_refine), intent(inout) :: refine_nod, refine_ele
+      type(table_4_refine), intent(inout) :: refine_surf, refine_edge
 !
       integer(kind = kint) :: inod, iedge, isurf, iele
       integer(kind = kint) :: ist, jst, jed
 !
-      do inod = 1, numnod
-        inod_refine_nod(inod) = inod
+!
+      do inod = 1, node%numnod
+        refine_nod%inod_refine(inod) = inod
       end do
 !
-      do iedge = 1, numedge
-        ist = ntot_nod_refine_nod + istack_nod_refine_edge(iedge-1)
-        jst = istack_nod_refine_edge(iedge-1) + 1
-        jed = istack_nod_refine_edge(iedge)
+      do iedge = 1, edge%numedge
+        ist = refine_nod%ntot_nod_refine                                &
+     &       + refine_edge%istack_nod_refine(iedge-1)
+        jst = refine_edge%istack_nod_refine(iedge-1) + 1
+        jed = refine_edge%istack_nod_refine(iedge)
 !
         call set_inod_refine_edge(iflag_refine_edge(iedge), ist,        &
-     &      num_nod_refine_edge(iedge), inod_refine_edge(jst) )
-!
+     &      refine_edge%num_nod_refine(iedge),                          &
+     &      refine_edge%inod_refine(jst))
       end do
 !
-      do isurf = 1, numsurf
-        ist = ntot_nod_refine_nod + ntot_nod_refine_edge                &
-     &       + istack_nod_refine_surf(isurf-1)
-        jst = istack_nod_refine_surf(isurf-1) + 1
-        jed = istack_nod_refine_surf(isurf)
+      do isurf = 1, surf%numsurf
+        ist = refine_nod%ntot_nod_refine                                &
+     &       + refine_edge%ntot_nod_refine                              &
+     &       + refine_surf%istack_nod_refine(isurf-1)
+        jst = refine_surf%istack_nod_refine(isurf-1) + 1
+        jed = refine_surf%istack_nod_refine(isurf)
 !
         call set_inod_refine_surf(iflag_refine_surf(isurf), ist,        &
-     &      num_nod_refine_surf(isurf), inod_refine_surf(jst) )
-!
+     &      refine_surf%num_nod_refine(isurf),                          &
+     &      refine_surf%inod_refine(jst) )
       end do
 !
-      do iele = 1, numele
-        ist = ntot_nod_refine_nod + ntot_nod_refine_edge                &
-     &       + ntot_nod_refine_surf + istack_nod_refine_ele(iele-1)
-        jst = istack_nod_refine_ele(iele-1) + 1
-        jed = istack_nod_refine_ele(iele)
+      do iele = 1, ele%numele
+        ist = refine_nod%ntot_nod_refine                                &
+     &       + refine_edge%ntot_nod_refine                              &
+     &       + refine_surf%ntot_nod_refine                              &
+     &       + refine_ele%istack_nod_refine(iele-1)
+        jst = refine_ele%istack_nod_refine(iele-1) + 1
+        jed = refine_ele%istack_nod_refine(iele)
 !
         call set_inod_refine_ele(iflag_refine_ele(iele), ist,           &
-     &      num_nod_refine_ele(iele), inod_refine_ele(jst) )
-!
+     &      refine_ele%num_nod_refine(iele),                            &
+     &      refine_ele%inod_refine(jst))
       end do
 !
       end subroutine s_set_refined_node_id

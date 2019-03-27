@@ -4,9 +4,12 @@
 !      subroutine allocate_mesh_refine_org
 !      subroutine deallocate_mesh_refine_org
 !
-!      subroutine copy_original_mesh_conn_refine(node, ele)
-!        type(node_data), intent(in) :: node
-!        type(element_data), intent(in) :: ele
+!!      subroutine copy_original_mesh_conn_refine(node, ele,            &
+!!     &          refine_nod, refine_ele, refine_surf, refine_edge)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(table_4_refine), intent(in) :: refine_nod, refine_ele
+!!        type(table_4_refine), intent(in) :: refine_surf, refine_edge
 !
 !
       module m_work_merge_refine_itp
@@ -100,14 +103,17 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine copy_original_mesh_conn_refine(node, ele)
+      subroutine copy_original_mesh_conn_refine(node, ele,              &
+     &          refine_nod, refine_ele, refine_surf, refine_edge)
 !
-      use m_refined_node_id
+      use t_refined_node_id
       use m_refined_element_data
       use copy_mesh_structures
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(table_4_refine), intent(in) :: refine_nod, refine_ele
+      type(table_4_refine), intent(in) :: refine_surf, refine_edge
 !
       integer(kind = kint) :: inum, ist, num, iele, i
 !
@@ -128,8 +134,10 @@
       nele_1st = istack_ele_refine_org(ele_org_refine%numele)
 !
 !
-      nnod_1st = ntot_nod_refine_nod + ntot_nod_refine_ele              &
-     &           + ntot_nod_refine_surf + ntot_nod_refine_edge
+      nnod_1st =  refine_nod%ntot_nod_refine                            &
+     &          + refine_ele%ntot_nod_refine                            &
+     &          + refine_surf%ntot_nod_refine                           &
+     &          + refine_edge%ntot_nod_refine
       call allocate_1st_refine_info
 !
       do inum = 1, ele_org_refine%numele

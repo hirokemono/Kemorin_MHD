@@ -3,8 +3,14 @@
 !
 !     Written by H. Matsui on Oct., 2007
 !
-!      subroutine s_refined_nod_2_mesh_data(org_node, new_node)
-!      subroutine s_refined_ele_2_mesh_data
+!!      subroutine s_refined_nod_2_mesh_data(org_node,                  &
+!!     &          refine_nod, refine_ele, refine_surf, refine_edge,     &
+!!     &          new_node)
+!!        type(node_data), intent(in) :: org_node
+!!        type(table_4_refine), intent(in) :: refine_nod, refine_ele
+!!        type(table_4_refine), intent(in) :: refine_surf, refine_edge
+!!        type(node_data), intent(inout) :: new_node
+!!      subroutine s_refined_ele_2_mesh_data
 !
       module refined_nod_2_mesh_data
 !
@@ -20,18 +26,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_refined_nod_2_mesh_data(org_node, new_node)
+      subroutine s_refined_nod_2_mesh_data(org_node,                    &
+     &          refine_nod, refine_ele, refine_surf, refine_edge,       &
+     &          new_node)
 !
-      use m_refined_node_id
+      use t_refined_node_id
 !
       type(node_data), intent(in) :: org_node
+      type(table_4_refine), intent(in) :: refine_nod, refine_ele
+      type(table_4_refine), intent(in) :: refine_surf, refine_edge
+!
       type(node_data), intent(inout) :: new_node
 !
       integer(kind = kint) :: inod, icou
 !
 !
-      new_node%numnod = ntot_nod_refine_nod + ntot_nod_refine_edge      &
-     &          + ntot_nod_refine_surf + ntot_nod_refine_ele
+      new_node%numnod =  refine_nod%ntot_nod_refine                     &
+     &                 + refine_edge%ntot_nod_refine                    &
+     &                 + refine_surf%ntot_nod_refine                    &
+     &                 + refine_ele%ntot_nod_refine
       new_node%internal_node = new_node%numnod
 !
       call alloc_node_geometry_w_sph(new_node)
@@ -47,32 +60,30 @@
         new_node%xx(inod,3) = org_node%xx(inod,3)
       end do
 !
-      icou = ntot_nod_refine_nod
-      do inod = 1, ntot_nod_refine_edge
+      icou = refine_nod%ntot_nod_refine
+      do inod = 1, refine_edge%ntot_nod_refine
         icou = icou + 1
-        new_node%xx(icou,1) =  x_refine_edge(inod,1)
-        new_node%xx(icou,2) =  x_refine_edge(inod,2)
-        new_node%xx(icou,3) =  x_refine_edge(inod,3)
+        new_node%xx(icou,1) =  refine_edge%x_refine(inod,1)
+        new_node%xx(icou,2) =  refine_edge%x_refine(inod,2)
+        new_node%xx(icou,3) =  refine_edge%x_refine(inod,3)
       end do
 !
-      icou = ntot_nod_refine_nod + ntot_nod_refine_edge
-      do inod = 1, ntot_nod_refine_surf
+      icou = refine_nod%ntot_nod_refine + refine_edge%ntot_nod_refine
+      do inod = 1, refine_surf%ntot_nod_refine
         icou = icou + 1
-        new_node%xx(icou,1) =  x_refine_surf(inod,1)
-        new_node%xx(icou,2) =  x_refine_surf(inod,2)
-        new_node%xx(icou,3) =  x_refine_surf(inod,3)
+        new_node%xx(icou,1) =  refine_surf%x_refine(inod,1)
+        new_node%xx(icou,2) =  refine_surf%x_refine(inod,2)
+        new_node%xx(icou,3) =  refine_surf%x_refine(inod,3)
       end do
 !
-      icou = ntot_nod_refine_nod + ntot_nod_refine_edge                 &
-     &      + ntot_nod_refine_surf
-      do inod = 1, ntot_nod_refine_ele
+      icou = refine_nod%ntot_nod_refine + refine_edge%ntot_nod_refine   &
+     &      + refine_surf%ntot_nod_refine
+      do inod = 1, refine_ele%ntot_nod_refine
         icou = icou + 1
-        new_node%xx(icou,1) =  x_refine_ele(inod,1)
-        new_node%xx(icou,2) =  x_refine_ele(inod,2)
-        new_node%xx(icou,3) =  x_refine_ele(inod,3)
+        new_node%xx(icou,1) =  refine_ele%x_refine(inod,1)
+        new_node%xx(icou,2) =  refine_ele%x_refine(inod,2)
+        new_node%xx(icou,3) =  refine_ele%x_refine(inod,3)
       end do
-!
-      call deallocate_refined_xyz
 !
       end subroutine s_refined_nod_2_mesh_data
 !
