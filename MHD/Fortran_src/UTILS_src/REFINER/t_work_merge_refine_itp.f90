@@ -1,12 +1,14 @@
 !t_work_merge_refine_itp.f90
 !     Written by H. Matsui on Oct., 2007
 !
+!!      subroutine dealloc_org_refine_tbl                               &
+!!     &         (node_org_refine, ele_org_refine)
 !!      subroutine dealloc_mesh_refine_org(ref_org)
 !!      subroutine dealloc_1st_refine_info(elist_1st)
 !!
 !!      subroutine copy_original_mesh_conn_refine(node, ele, refine_tbl,&
 !!     &          refine_nod, refine_ele, refine_surf, refine_edge,     &
-!!     &          ref_org, elist_1st)
+!!     &          node_org_refine, ele_org_refine, ref_org, elist_1st)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(element_refine_table), intent(in) :: refine_tbl
@@ -54,8 +56,6 @@
         type(first_element_list) :: elist_1st
       end type work_merge_refine_itp
 !
-      type(work_merge_refine_itp), save :: ref_itp_wk
-!
       private :: alloc_mesh_refine_org
       private :: alloc_1st_refine_info
 !
@@ -65,8 +65,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine alloc_mesh_refine_org(ref_org)
+      subroutine alloc_mesh_refine_org                                  &
+     &         (node_org_refine, ele_org_refine, ref_org)
 !
+      type(node_data), intent(in) :: node_org_refine
+      type(element_data), intent(in) :: ele_org_refine
       type(orginal_refine_level), intent(inout) :: ref_org
 !
 !
@@ -96,14 +99,27 @@
       end subroutine alloc_1st_refine_info
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_org_refine_tbl                                 &
+     &         (node_org_refine, ele_org_refine)
+!
+        type(node_data), intent(inout) :: node_org_refine
+        type(element_data), intent(inout) :: ele_org_refine
+!
+!
+      deallocate( node_org_refine%inod_global, node_org_refine%xx )
+      deallocate( ele_org_refine%iele_global, ele_org_refine%ie )
+!
+!
+      end subroutine dealloc_org_refine_tbl
+!
+!   --------------------------------------------------------------------
 !
       subroutine dealloc_mesh_refine_org(ref_org)
 !
       type(orginal_refine_level), intent(inout) :: ref_org
 !
-!
-      deallocate( node_org_refine%inod_global, node_org_refine%xx )
-      deallocate( ele_org_refine%iele_global, ele_org_refine%ie )
 !
       deallocate( ref_org%xi_org )
       deallocate( ref_org%istack_ele_refine_org )
@@ -126,7 +142,7 @@
 !
       subroutine copy_original_mesh_conn_refine(node, ele, refine_tbl,  &
      &          refine_nod, refine_ele, refine_surf, refine_edge,       &
-     &          ref_org, elist_1st)
+     &          node_org_refine, ele_org_refine, ref_org, elist_1st)
 !
       use t_refined_node_id
       use t_refined_element_data
@@ -138,6 +154,8 @@
       type(table_4_refine), intent(in) :: refine_nod, refine_ele
       type(table_4_refine), intent(in) :: refine_surf, refine_edge
 !
+      type(node_data), intent(inout) :: node_org_refine
+      type(element_data), intent(inout) :: ele_org_refine
       type(orginal_refine_level), intent(inout) :: ref_org
       type(first_element_list), intent(inout) :: elist_1st
 !
@@ -148,7 +166,8 @@
       call copy_element_connect_types(ele, ele_org_refine)
       call alloc_sph_node_geometry(node_org_refine)
 !
-      call alloc_mesh_refine_org(ref_org)
+      call alloc_mesh_refine_org                                        &
+     &   (node_org_refine, ele_org_refine, ref_org)
 !
 !
       ref_org%ilevel_refine_org(1:ele_org_refine%numele)                &
