@@ -3,7 +3,11 @@
 !
 !      Written by Kemorin on Oct., 2007
 !
-!      subroutine s_set_element_refine_flag(ele, surf, ele_grp)
+!!      subroutine s_set_element_refine_flag                            &
+!!     &         (ele, surf, ele_grp, iflag_refine_ele)
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(group_data), intent(in) :: ele_grp
 !
       module set_element_refine_flag
 !
@@ -27,7 +31,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_element_refine_flag(ele, surf, ele_grp)
+      subroutine s_set_element_refine_flag                              &
+     &         (ele, surf, ele_grp, iflag_refine_ele)
 !
       use t_geometry_data
       use t_surface_data
@@ -38,16 +43,20 @@
       type(surface_data), intent(in) :: surf
       type(group_data), intent(in) :: ele_grp
 !
+      integer(kind = kint), intent(inout)                               &
+     &                    :: iflag_refine_ele(ele%numele)
 !
-      call set_refine_flag_by_ele_grp(ele%numele, ele_grp)
+!
+      call set_refine_flag_by_ele_grp                                   &
+     &   (ele%numele, ele_grp, iflag_refine_ele)
       if (id_refined_ele_grp(1) .eq. -1) return
 !
 !
-      call const_triple_refine_table(ele%numele)
+      call const_triple_refine_table(ele%numele, iflag_refine_ele)
 !
       write(*,*) 's_find_boundary_4_tri_refine'
       call s_find_boundary_4_tri_refine(ele%numele, surf%numsurf,       &
-     &    surf%isf_4_ele, nele_tri, iele_tri)
+     &    surf%isf_4_ele, nele_tri, iele_tri, iflag_refine_ele)
 !
       deallocate(iele_tri)
 !
@@ -56,13 +65,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_refine_flag_by_ele_grp(numele, ele_grp)
+      subroutine set_refine_flag_by_ele_grp                             &
+     &         (numele, ele_grp, iflag_refine_ele)
 !
-      use m_refined_element_data
       use t_group_data
 !
       integer(kind = kint), intent(in) :: numele
       type(group_data), intent(in) :: ele_grp
+!
+      integer(kind = kint), intent(inout) :: iflag_refine_ele(numele)
 !
       integer(kind = kint) :: j, i, ist, ied, inum, iele
 !
@@ -92,29 +103,31 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_triple_refine_table(numele)
+      subroutine const_triple_refine_table(numele, iflag_refine_ele)
 !
       integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: iflag_refine_ele(numele)
 !
 !
-      call count_triple_refine_table(numele)
+      call count_triple_refine_table(numele, iflag_refine_ele)
 !
       allocate(iele_tri(nele_tri))
       iele_tri = 0
 !
-      call set_triple_refine_table(numele)
+      call set_triple_refine_table(numele, iflag_refine_ele)
 !
       end subroutine const_triple_refine_table
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_triple_refine_table(numele)
+      subroutine count_triple_refine_table(numele, iflag_refine_ele)
 !
-      use m_refined_element_data
       use m_refine_flag_parameters
 !
       integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: iflag_refine_ele(numele)
+!
       integer(kind = kint) :: iele
 !
 !
@@ -129,12 +142,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_triple_refine_table(numele)
+      subroutine set_triple_refine_table(numele, iflag_refine_ele)
 !
-      use m_refined_element_data
       use m_refine_flag_parameters
 !
       integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: iflag_refine_ele(numele)
+!
       integer(kind = kint) :: iele, icou
 !
 !

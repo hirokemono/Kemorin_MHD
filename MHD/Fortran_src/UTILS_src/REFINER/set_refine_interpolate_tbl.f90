@@ -15,7 +15,7 @@
 !!      subroutine set_itp_course_to_fine_dest(nnod_2, itp_dest)
 !!
 !!      subroutine set_itp_fine_to_course_origin                        &
-!!     &         (nnod_4_ele, refine_nod, itp_org)
+!!     &         (nnod_4_ele, refine_nod, refine_tbl, itp_org)
 !!      subroutine set_itp_fine_to_course_dest(refine_nod, itp_dest)
 !!        type(table_4_refine), intent(in) :: refine_nod
 !!        type(interpolate_table_org), intent(inout) :: itp_org
@@ -194,12 +194,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_itp_fine_to_course_origin                          &
-     &         (nnod_4_ele, refine_nod, itp_org)
+     &         (nnod_4_ele, refine_nod, refine_tbl, itp_org)
 !
-      use m_refined_element_data
+      use t_refined_element_data
 !
       integer(kind = kint), intent(in) :: nnod_4_ele
       type(table_4_refine), intent(in) :: refine_nod
+      type(element_refine_table), intent(in) :: refine_tbl
+!
       type(interpolate_table_org), intent(inout) :: itp_org
 !
       integer(kind = kint) :: iele, k1, inod
@@ -223,10 +225,10 @@
       call alloc_itp_table_org(itp_org)
       itp_org%itype_inter_org(1:itp_org%ntot_table_org) = -1
 !
-      do iele = 1, ntot_ele_refined
+      do iele = 1, refine_tbl%ntot_ele_refined
 !
         do k1 = 1, nnod_4_ele
-          inod = ie_refined(iele,k1)
+          inod = refine_tbl%ie_refined(iele,k1)
 !
           if(inod.le.refine_nod%ntot_nod_refine) then
             if(itp_org%itype_inter_org(inod).eq.-1) then

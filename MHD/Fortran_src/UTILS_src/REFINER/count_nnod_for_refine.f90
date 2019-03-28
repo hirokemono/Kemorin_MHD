@@ -1,12 +1,14 @@
 !count_nnod_for_refine.f90
 !      module count_nnod_for_refine
 !
-!!      subroutine s_count_nnod_for_refine(node, ele, surf, edge,       &
+!!      subroutine s_count_nnod_for_refine                              &
+!!     &         (node, ele, surf, edge, refine_tbl,                    &
 !!     &          refine_nod, refine_ele, refine_surf, refine_edge)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
+!!        type(element_refine_table), intent(in) :: refine_tbl
 !!        type(table_4_refine), intent(inout) :: refine_nod, refine_ele
 !!        type(table_4_refine), intent(inout) :: refine_surf, refine_edge
 !
@@ -27,20 +29,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_count_nnod_for_refine(node, ele, surf, edge,         &
+      subroutine s_count_nnod_for_refine                                &
+     &         (node, ele, surf, edge, refine_tbl,                      &
      &          refine_nod, refine_ele, refine_surf, refine_edge)
 !
       use t_geometry_data
       use t_surface_data
       use t_edge_data
       use t_refined_node_id
-      use m_refined_element_data
+      use t_refined_element_data
       use cal_minmax_and_stacks
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
+      type(element_refine_table), intent(in) :: refine_tbl
       type(table_4_refine), intent(inout) :: refine_nod, refine_ele
       type(table_4_refine), intent(inout) :: refine_surf, refine_edge
 !
@@ -50,17 +54,20 @@
       refine_nod%num_nod_refine(1:node%numnod) = 1
 !
       do iedge = 1, edge%numedge
-        call count_num_nod_refine_edge(iflag_refine_edge(iedge),        &
+        call count_num_nod_refine_edge                                  &
+     &     (refine_tbl%iflag_refine_edge(iedge),                        &
      &      refine_edge%num_nod_refine(iedge))
       end do
 !
       do isurf = 1, surf%numsurf
-        call count_num_nod_refine_surf(iflag_refine_surf(isurf),        &
+        call count_num_nod_refine_surf                                  &
+     &     (refine_tbl%iflag_refine_surf(isurf),                        &
      &      refine_surf%num_nod_refine(isurf) )
       end do
 !
       do iele = 1, ele%numele
-        call count_num_nod_refine_ele(iflag_refine_ele(iele),           &
+        call count_num_nod_refine_ele                                   &
+     &     (refine_tbl%iflag_refine_ele(iele),                          &
      &      refine_ele%num_nod_refine(iele) )
       end do
 !

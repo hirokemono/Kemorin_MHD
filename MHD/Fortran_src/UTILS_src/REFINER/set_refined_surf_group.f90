@@ -7,13 +7,14 @@
 !      subroutine deallocate_mark_refine_sf_grp
 !
 !!      subroutine count_refined_surf_group                             &
-!!     &         (surf, edge, sf_grp, ref_ids, new_sf_grp)
+!!     &         (surf, edge, sf_grp, ref_ids, refine_tbl, new_sf_grp)
 !!      subroutine s_set_refined_surf_group                             &
-!!     &         (surf, edge, sf_grp, ref_ids, new_sf_grp)
+!!     &         (surf, edge, sf_grp, ref_ids, refine_tbl, new_sf_grp)
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(refined_node_id), intent(in) :: ref_ids
+!!        type(element_refine_table), intent(in) :: refine_tbl
 !!        type(surface_group_data), intent(inout) :: new_sf_grp
 !
  !
@@ -60,14 +61,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_refined_surf_group                               &
-     &         (surf, edge, sf_grp, ref_ids, new_sf_grp)
+     &         (surf, edge, sf_grp, ref_ids, refine_tbl, new_sf_grp)
 !
-      use m_refined_element_data
+      use t_refined_element_data
 !
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
       type(surface_group_data), intent(in) :: sf_grp
       type(refined_node_id), intent(in) :: ref_ids
+      type(element_refine_table), intent(in) :: refine_tbl
 !
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
@@ -96,15 +98,15 @@
      &       (surf, edge, iele, isf, ione, ref_ids%refine_nod,          &
      &        ref_ids%refine_surf, ref_ids%refine_edge)
 !
-          jst = istack_ele_refined(iele-1) + 1
-          jed = istack_ele_refined(iele)
+          jst = refine_tbl%istack_ele_refined(iele-1) + 1
+          jed = refine_tbl%istack_ele_refined(iele)
           do jele = jst, jed
             do k1 = 1, nsurf_4_ele
 !
               iflag = 1
               do k2 = 1, surf%nnod_4_surf
                 k = surf%node_on_sf(k2,k1)
-                jnod = ie_refined(jele,k)
+                jnod = refine_tbl%ie_refined(jele,k)
                 iflag = iflag * inod_mark_2(jnod)
               end do
 !
@@ -128,14 +130,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_refined_surf_group                               &
-     &         (surf, edge, sf_grp, ref_ids, new_sf_grp)
+     &         (surf, edge, sf_grp, ref_ids, refine_tbl, new_sf_grp)
 !
-      use m_refined_element_data
+      use t_refined_element_data
 !
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
       type(surface_group_data), intent(in) :: sf_grp
       type(refined_node_id), intent(in) :: ref_ids
+      type(element_refine_table), intent(in) :: refine_tbl
 !
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
@@ -159,15 +162,15 @@
      &       (surf, edge, iele, isf, ione, ref_ids%refine_nod,          &
      &        ref_ids%refine_surf, ref_ids%refine_edge)
 !
-          jst = istack_ele_refined(iele-1) + 1
-          jed = istack_ele_refined(iele)
+          jst = refine_tbl%istack_ele_refined(iele-1) + 1
+          jed = refine_tbl%istack_ele_refined(iele)
           do jele = jst, jed
             do k1 = 1, nsurf_4_ele
 !
               iflag = 1
               do k2 = 1, surf%nnod_4_surf
                 k = surf%node_on_sf(k2,k1)
-                jnod = ie_refined(jele,k)
+                jnod = refine_tbl%ie_refined(jele,k)
                 iflag = iflag * inod_mark_2(jnod)
               end do
 !

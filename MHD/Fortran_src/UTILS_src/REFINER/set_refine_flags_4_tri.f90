@@ -3,11 +3,15 @@
 !
 !      Writen by H. Matsui on Oct., 2007
 !
-!      subroutine s_set_refine_flags_4_tri(node, ele)
+!!      subroutine s_set_refine_flags_4_tri(node, ele, refine_tbl)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(element_refine_table), intent(inout) :: refine_tbl
 !
       module set_refine_flags_4_tri
 !
       use m_precision
+      use m_machine_parameter
 !
       implicit none
 !
@@ -29,25 +33,33 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_refine_flags_4_tri(node, ele)
+      subroutine s_set_refine_flags_4_tri(node, ele, refine_tbl)
 !
       use t_geometry_data
-      use m_machine_parameter
+      use t_refined_element_data
       use m_refine_flag_parameters
-      use m_refined_element_data
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(element_refine_table), intent(inout) :: refine_tbl
 !
       integer(kind = kint) :: inum, iele, icou, iflag
 !
 !
       allocate(imark_ele(ele%numele))
-      imark_ele = 0
+!$omp parallel workshare
+      imark_ele(1:ele%numele) = 0
+!$omp end parallel workshare
 !
-      if(iflag_tmp_tri_refine .eq. 0) then
+      allocate(imark_nod(node%numnod))
+!$omp parallel workshare
+      imark_nod(1:node%numnod) = 0
+!$omp end parallel workshare
+!
+      if(refine_tbl%iflag_tmp_tri_refine .eq. 0) then
         write(*,*) 'mark_refine_node_flag '
-        call mark_refine_node_flag(node%numnod, ele%numele, ele%ie)
+        call mark_refine_node_flag                                      &
+     &     (ele%numele, ele%ie, refine_tbl%iflag_refine_ele)
       else
         write(*,*) 'redefine_refine_node_flag '
         call redefine_refine_node_flag(node%numnod)
@@ -56,7 +68,9 @@
       icou = 0
       iflag = 1
       do while (iflag .gt. 0)
-        call remark_refine_data(ele, iflag)
+        call remark_refine_data                                         &
+     &     (ele, iflag, refine_tbl%iflag_tmp_tri_refine,                &
+     &      refine_tbl%iflag_refine_ele)
         icou = icou + 1
         write(*,*) 'remark_refine_data end ', icou, iflag
       end do
@@ -69,10 +83,10 @@
         do iele = 1, ele%numele
           if(imark_ele(iele) .eq. 0) then
             icou = icou + 1
-            if( iflag_refine_ele(iele) .ne. 0) then
+            if(refine_tbl%iflag_refine_ele(iele) .ne. 0) then
               write(50,'(i16,8i3,i6)')                                  &
      &                            iele, imark_nod(ele%ie(iele,1:8)),    &
-     &                            iflag_refine_ele(iele)
+     &                            refine_tbl%iflag_refine_ele(iele)
             end if
           end if
         end do
@@ -83,7 +97,7 @@
           if(imark_ele(iele) .eq. inum) then
             write(50,'(i16,8i3,i6)')                                    &
      &                          iele, imark_nod(ele%ie(iele,1:8)),      &
-     &                          iflag_refine_ele(iele)
+     &                          refine_tbl%iflag_refine_ele(iele)
           end if
         end do
 !
@@ -93,7 +107,7 @@
             if(imark_ele(iele) .eq. inum) then
                write(50,'(i16,8i3,i6)')                                 &
      &                            iele, imark_nod(ele%ie(iele,1:8)),    &
-     &                            iflag_refine_ele(iele)
+     &                            refine_tbl%iflag_refine_ele(iele)
             end if
           end do
         end do
@@ -103,10 +117,10 @@
         do iele = 1, ele%numele
           if(imark_ele(iele) .eq. 8) then
             icou = icou + 1
-            if( iflag_refine_ele(iele) .ne. 300) then
+            if(refine_tbl%iflag_refine_ele(iele) .ne. 300) then
               write(50,'(i16,8i3,i6)')                                  &
      &                            iele, imark_nod(ele%ie(iele,1:8)),    &
-     &                            iflag_refine_ele(iele)
+     &                            refine_tbl%iflag_refine_ele(iele)
             end if
           end if
         end do
@@ -121,15 +135,20 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine remark_refine_data(ele, iflag_retry)
+      subroutine remark_refine_data(ele, iflag_retry,                   &
+     &          iflag_tmp_tri_refine, iflag_refine_ele)
 !
       use t_geometry_data
       use m_control_param_4_refiner
       use m_refine_flag_parameters
-      use m_refined_element_data
 !
       type(element_data), intent(in) :: ele
+!
+      integer(kind = kint), intent(inout) :: iflag_tmp_tri_refine
+      integer(kind = kint), intent(inout)                               &
+     &              :: iflag_refine_ele(ele%numele)
       integer(kind = kint), intent(inout) :: iflag_retry
+!
       integer(kind = kint) :: iele, k1, inod
 !
 !
@@ -753,19 +772,17 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine mark_refine_node_flag(numnod, numele, ie)
+      subroutine mark_refine_node_flag(numele, ie, iflag_refine_ele)
 !
       use m_geometry_constants
       use m_refine_flag_parameters
-      use m_refined_element_data
 !
-      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
+      integer(kind = kint), intent(in) :: iflag_refine_ele(numele)
 !
       integer(kind = kint) :: iele, k1, inod
 !
-      allocate(imark_nod(numnod))
-      imark_nod = 0
 !
       do iele = 1, numele
         if(iflag_refine_ele(iele) .eq. iflag_tri_full) then

@@ -3,15 +3,19 @@
 !
 !      Writen by H. Matsui on Sep., 2007
 !
-!      subroutine count_refined_connection(iele, iflag_refine)
-!      subroutine s_set_refined_connection(iele, iflag_refine)
+!!      subroutine count_refined_connection                             &
+!!     &         (iele, iflag_refine, numele, num_ele_refined)
+!!      subroutine s_set_refined_connection(iele, iflag_refine, numele, &
+!!     &          num_ele_refined, istack_ele_refined, ntot_ele_refined,&
+!!     &          nnod_4_ele_refined, inod_refine_ele_local,            &
+!!     &          inod_refine_surf_local, inod_refine_edge_local,       &
+!!     &          inod_refine_nod_local, inod_refine_local, ie_refined)
 !
       module set_refined_connection
 !
       use m_precision
 !
       use m_refine_flag_parameters
-      use m_refined_element_data
 !
       implicit none
 !
@@ -21,10 +25,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_refined_connection(iele, iflag_refine)
+      subroutine count_refined_connection                               &
+     &         (iele, iflag_refine, numele, num_ele_refined)
 !
       integer(kind = kint), intent(in) :: iele
       integer(kind = kint), intent(in) :: iflag_refine
+      integer(kind = kint), intent(in) :: numele
+!
+      integer(kind = kint), intent(inout) :: num_ele_refined(numele)
 !
 !
       if(iflag_refine .eq. iflag_nothing) then
@@ -128,7 +136,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_refined_connection(iele, iflag_refine)
+      subroutine s_set_refined_connection(iele, iflag_refine, numele,   &
+     &          num_ele_refined, istack_ele_refined, ntot_ele_refined,  &
+     &          nnod_4_ele_refined, inod_refine_ele_local,              &
+     &          inod_refine_surf_local, inod_refine_edge_local,         &
+     &          inod_refine_nod_local, inod_refine_local, ie_refined)
 !
       use copy_refined_nod_quad
       use copy_refined_nod_dbl
@@ -149,6 +161,21 @@
 !
       integer(kind = kint), intent(in) :: iele
       integer(kind = kint), intent(in) :: iflag_refine
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: num_ele_refined(numele)
+      integer(kind = kint), intent(in) :: ntot_ele_refined
+      integer(kind = kint), intent(in) :: nnod_4_ele_refined
+      integer(kind = kint), intent(in) :: inod_refine_nod_local(8)
+      integer(kind = kint), intent(in) :: inod_refine_ele_local(8)
+      integer(kind = kint), intent(in) :: inod_refine_surf_local(6,4)
+      integer(kind = kint), intent(in) :: inod_refine_edge_local(12,2)
+!
+      integer(kind = kint), intent(inout) :: inod_refine_local(64)
+      integer(kind = kint), intent(inout)                               &
+     &            :: istack_ele_refined(0:numele)
+      integer(kind = kint),intent(inout)                                &
+     &            :: ie_refined(ntot_ele_refined,nnod_4_ele_refined)
+!
       integer(kind = kint) :: ist
 !
 !

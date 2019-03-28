@@ -3,21 +3,24 @@
 !
 !      Writen by H. Matsui on Oct., 2007
 !
-!!      subroutine refined_node_on_ele_2_local(iele, ele,               &
+!!      subroutine refined_node_on_ele_2_local                          &
+!!     &         (iele, ele, iflag_refine_ele,                          &
 !!     &          ntot_nod_refine_ele, num_nod_refine_ele,              &
-!!     &          istack_nod_refine_ele, inod_refine_ele)
-!!      subroutine refined_node_on_surf_2_local(iele, surf,             &
+!!     &          istack_nod_refine_ele, inod_refine_ele,               &
+!!     &          inod_refine_nod_local, inod_refine_ele_local)
+!!      subroutine refined_node_on_surf_2_local                         &
+!!     &         (iele, surf, iflag_refine_surf,                        &
 !!     &          ntot_nod_refine_surf, num_nod_refine_surf,            &
-!!     &          istack_nod_refine_surf, inod_refine_surf)
+!!     &          istack_nod_refine_surf, inod_refine_surf,             &
+!!     &          inod_refine_surf_local)
 !!      subroutine refined_node_on_edge_2_local(iele, edge,             &
 !!     &          ntot_nod_refine_edge, num_nod_refine_edge,            &
-!!     &          istack_nod_refine_edge, inod_refine_edge)
+!!     &          istack_nod_refine_edge, inod_refine_edge,             &
+!!     &          inod_refine_edge_local)
 !
       module set_local_refined_node
 !
       use m_precision
-!
-      use m_refined_element_data
       use m_refine_flag_parameters
 !
       implicit none
@@ -32,15 +35,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine refined_node_on_ele_2_local(iele, ele,                 &
+      subroutine refined_node_on_ele_2_local                            &
+     &         (iele, ele, iflag_refine_ele,                            &
      &          ntot_nod_refine_ele, num_nod_refine_ele,                &
-     &          istack_nod_refine_ele, inod_refine_ele)
+     &          istack_nod_refine_ele, inod_refine_ele,                 &
+     &          inod_refine_nod_local, inod_refine_ele_local)
 !
       use t_geometry_data
 !
       integer(kind = kint), intent(in) :: iele
       type(element_data), intent(in) :: ele
 !
+      integer(kind = kint), intent(in)                                  &
+     &           :: iflag_refine_ele(ele%numele)
       integer(kind = kint), intent(in) :: ntot_nod_refine_ele
       integer(kind = kint), intent(in)                                  &
      &           :: num_nod_refine_ele(ele%numele)
@@ -48,6 +55,9 @@
      &           :: istack_nod_refine_ele(0:ele%numele)
       integer(kind = kint), intent(in)                                  &
      &           :: inod_refine_ele(ntot_nod_refine_ele)
+!
+      integer(kind = kint), intent(inout) :: inod_refine_nod_local(8)
+      integer(kind = kint), intent(inout) :: inod_refine_ele_local(8)
 !
       integer(kind = kint) :: k1, icou
 !
@@ -244,15 +254,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine refined_node_on_surf_2_local(iele, surf,               &
+      subroutine refined_node_on_surf_2_local                           &
+     &         (iele, surf, iflag_refine_surf,                          &
      &          ntot_nod_refine_surf, num_nod_refine_surf,              &
-     &          istack_nod_refine_surf, inod_refine_surf)
+     &          istack_nod_refine_surf, inod_refine_surf,               &
+     &          inod_refine_surf_local)
 !
       use m_geometry_constants
       use t_surface_data
 !
       integer(kind = kint), intent(in) :: iele
       type(surface_data), intent(in) :: surf
+      integer(kind = kint), intent(in)                                  &
+     &           :: iflag_refine_surf(surf%numsurf)
       integer(kind = kint), intent(in) :: ntot_nod_refine_surf
       integer(kind = kint), intent(in)                                  &
      &           :: num_nod_refine_surf(surf%numsurf)
@@ -260,6 +274,9 @@
      &           :: istack_nod_refine_surf(0:surf%numsurf)
       integer(kind = kint), intent(in)                                  &
      &           :: inod_refine_surf(ntot_nod_refine_surf)
+!
+      integer(kind = kint), intent(inout)                               &
+     &           :: inod_refine_surf_local(6,4)
 !
       integer(kind = kint) :: isurf, k1, icou
 !
@@ -334,7 +351,8 @@
 !
       subroutine refined_node_on_edge_2_local(iele, edge,               &
      &          ntot_nod_refine_edge, num_nod_refine_edge,              &
-     &          istack_nod_refine_edge, inod_refine_edge)
+     &          istack_nod_refine_edge, inod_refine_edge,               &
+     &          inod_refine_edge_local)
 !
       use m_geometry_constants
       use t_edge_data
@@ -348,6 +366,9 @@
      &           :: istack_nod_refine_edge(0:edge%numedge)
       integer(kind = kint), intent(in)                                  &
      &           :: inod_refine_edge(ntot_nod_refine_edge)
+!
+      integer(kind = kint), intent(inout)                               &
+     &           :: inod_refine_edge_local(12,2)
 !
       integer(kind = kint) :: iedge, k1, icou
 !

@@ -4,10 +4,11 @@
 !      subroutine allocate_mesh_refine_org
 !      subroutine deallocate_mesh_refine_org
 !
-!!      subroutine copy_original_mesh_conn_refine(node, ele,            &
+!!      subroutine copy_original_mesh_conn_refine(node, ele, refine_tbl,&
 !!     &          refine_nod, refine_ele, refine_surf, refine_edge)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(element_refine_table), intent(in) :: refine_tbl
 !!        type(table_4_refine), intent(in) :: refine_nod, refine_ele
 !!        type(table_4_refine), intent(in) :: refine_surf, refine_edge
 !
@@ -103,15 +104,16 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine copy_original_mesh_conn_refine(node, ele,              &
+      subroutine copy_original_mesh_conn_refine(node, ele, refine_tbl,  &
      &          refine_nod, refine_ele, refine_surf, refine_edge)
 !
       use t_refined_node_id
-      use m_refined_element_data
+      use t_refined_element_data
       use copy_mesh_structures
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(element_refine_table), intent(in) :: refine_tbl
       type(table_4_refine), intent(in) :: refine_nod, refine_ele
       type(table_4_refine), intent(in) :: refine_surf, refine_edge
 !
@@ -126,12 +128,13 @@
 !
 !
       ilevel_refine_org(1:ele_org_refine%numele)                        &
-     &       =   ilevel_refine(1:ele_org_refine%numele)
+     &       = refine_tbl%ilevel_refine(1:ele_org_refine%numele)
       iflag_refine_ele_org(1:ele_org_refine%numele)                     &
-     &       =  iflag_refine_ele(1:ele_org_refine%numele)
+     &       = refine_tbl%iflag_refine_ele(1:ele_org_refine%numele)
       istack_ele_refine_org(0:ele_org_refine%numele)                    &
-     &        = istack_ele_refined(0:ele_org_refine%numele)
-      nele_1st = istack_ele_refine_org(ele_org_refine%numele)
+     &       = refine_tbl%istack_ele_refined(0:ele_org_refine%numele)
+      nele_1st                                                          &
+     &       = istack_ele_refine_org(ele_org_refine%numele)
 !
 !
       nnod_1st =  refine_nod%ntot_nod_refine                            &
@@ -145,7 +148,8 @@
         num = istack_ele_refine_org(inum) - ist
         do i = 1, num
           iele = i + ist
-          iflag_refine_ele_1st(iele) = iflag_refine_ele(inum)
+          iflag_refine_ele_1st(iele)                                    &
+     &         = refine_tbl%iflag_refine_ele(inum)
           iele_org_1st(iele,1) = inum
           iele_org_1st(iele,2) = i
         end do

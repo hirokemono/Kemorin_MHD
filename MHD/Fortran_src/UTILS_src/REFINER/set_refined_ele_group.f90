@@ -3,8 +3,10 @@
 !
 !      Writen by H. Matsui on Oct., 2007
 !
-!      subroutine count_refined_ele_group(org_ele_grp, new_ele_grp)
-!      subroutine s_set_refined_ele_group(org_ele_grp, new_ele_grp)
+!!      subroutine count_refined_ele_group                              &
+!!     &         (refine_tbl, org_ele_grp, new_ele_grp)
+!!      subroutine s_set_refined_ele_group                              &
+!!     &         (refine_tbl, org_ele_grp, new_ele_grp)
 !
       module set_refined_ele_group
 !
@@ -18,11 +20,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_refined_ele_group(org_ele_grp, new_ele_grp)
+      subroutine count_refined_ele_group                                &
+     &         (refine_tbl, org_ele_grp, new_ele_grp)
 !
       use t_group_data
-      use m_refined_element_data
+      use t_refined_element_data
 !
+      type(element_refine_table), intent(in) :: refine_tbl
       type(group_data), intent(in) :: org_ele_grp
       type(group_data), intent(inout) :: new_ele_grp
 !
@@ -42,7 +46,7 @@
         do inum = ist, ied
           iele = org_ele_grp%item_grp(inum)
           new_ele_grp%istack_grp(i) = new_ele_grp%istack_grp(i)         &
-     &                               + num_ele_refined(iele)
+     &                               + refine_tbl%num_ele_refined(iele)
         end do
       end do
       new_ele_grp%num_item                                              &
@@ -52,11 +56,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_refined_ele_group(org_ele_grp, new_ele_grp)
+      subroutine s_set_refined_ele_group                                &
+     &         (refine_tbl, org_ele_grp, new_ele_grp)
 !
       use t_group_data
-      use m_refined_element_data
+      use t_refined_element_data
 !
+      type(element_refine_table), intent(in) :: refine_tbl
       type(group_data), intent(in) :: org_ele_grp
       type(group_data), intent(inout) :: new_ele_grp
 !
@@ -71,8 +77,8 @@
         ied = org_ele_grp%istack_grp(i)
         do inum = ist, ied
           iele = org_ele_grp%item_grp(inum)
-          jst = istack_ele_refined(iele-1) + 1
-          jed = istack_ele_refined(iele)
+          jst = refine_tbl%istack_ele_refined(iele-1) + 1
+          jed = refine_tbl%istack_ele_refined(iele)
           do jnum = jst, jed
             icou = icou + 1
             new_ele_grp%item_grp(icou) = jnum

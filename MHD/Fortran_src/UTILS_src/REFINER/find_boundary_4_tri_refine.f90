@@ -4,7 +4,8 @@
 !      Writen by H. Matsui on Oct., 2007
 !
 !!      subroutine s_find_boundary_4_tri_refine                         &
-!!     &          (numele, numsurf, isf_4_ele, nele_tri, iele_tri)
+!!     &          (numele, numsurf, isf_4_ele, nele_tri, iele_tri,      &
+!!     &           iflag_refine_ele)
 !
       module find_boundary_4_tri_refine
 !
@@ -27,16 +28,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_find_boundary_4_tri_refine                           &
-     &          (numele, numsurf, isf_4_ele, nele_tri, iele_tri)
+     &          (numele, numsurf, isf_4_ele, nele_tri, iele_tri,        &
+     &           iflag_refine_ele)
 !
       use m_refine_flag_parameters
-      use m_refined_element_data
 !
       integer(kind = kint), intent(in) :: numele, numsurf
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
 !
       integer(kind = kint), intent(in) :: nele_tri
       integer(kind = kint), intent(in) :: iele_tri(nele_tri)
+!
+      integer(kind = kint), intent(inout) :: iflag_refine_ele(numele)
 !
       integer(kind = kint) :: inum, iele, isurf, icou, iflag
       integer(kind = kint) :: isf1, isf2, isf3, isf4, isf5, isf6
@@ -78,7 +81,7 @@
       icou = 0
       do
         call set_triple_refine_by_surf(numele, isf_4_ele,               &
-     &      nele_tri, iele_tri, iflag)
+     &      nele_tri, iele_tri, iflag_refine_ele, iflag)
         if(iflag .eq. 0) exit
         icou = icou + 1
       end do
@@ -90,17 +93,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_triple_refine_by_surf                              &
-     &         (numele, isf_4_ele, nele_tri, iele_tri, iflag)
+      subroutine set_triple_refine_by_surf(numele, isf_4_ele,           &
+     &          nele_tri, iele_tri, iflag_refine_ele, iflag)
 !
       use m_refine_flag_parameters
-      use m_refined_element_data
 !
       integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
 !
       integer(kind = kint), intent(in) :: nele_tri
       integer(kind = kint), intent(in) :: iele_tri(nele_tri)
+!
+      integer(kind = kint), intent(inout) :: iflag_refine_ele(numele)
       integer(kind = kint), intent(inout) :: iflag
 !
       integer(kind = kint) :: inum, iele, isig

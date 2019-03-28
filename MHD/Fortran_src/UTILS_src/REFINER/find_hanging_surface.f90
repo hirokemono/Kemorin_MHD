@@ -2,11 +2,15 @@
 !      module find_hanging_surface
 !
 !
-!      subroutine allocate_iflag_hangings(numsurf, numedge)
-!      subroutine deallocate_iflag_hangings
-!
-!!      subroutine check_hanging_surface(numele, numsurf, numedge,      &
-!!     &          isf_4_ele, iele_4_surf, iedge_4_ele)
+!!      subroutine allocate_iflag_hangings(numsurf, numedge)
+!!      subroutine deallocate_iflag_hangings
+!!
+!!      subroutine check_hanging_surface(ele, surf, edge,               &
+!!     &          iflag_refine_sf_lcl, iflag_refine_ed_lcl,             &
+!!     &          iflag_refine_surf, iflag_refine_edge)
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(edge_data), intent(in) :: edge
 !!      subroutine set_hanging_nodes                                    &
 !!     &         (surf, edge, refine_surf, refine_edge)
 !!        type(surface_data), intent(in) :: surf
@@ -62,27 +66,40 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_hanging_surface(numele, numsurf, numedge,        &
-     &          isf_4_ele, iele_4_surf, iedge_4_ele)
+      subroutine check_hanging_surface(ele, surf, edge,                 &
+     &          iflag_refine_sf_lcl, iflag_refine_ed_lcl,               &
+     &          iflag_refine_surf, iflag_refine_edge)
 !
       use m_geometry_constants
-      use m_refine_flag_parameters
-      use m_refined_element_data
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
 !
-      integer(kind = kint), intent(in) :: numele, numsurf, numedge
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      integer(kind = kint), intent(in) :: iedge_4_ele(numele,nedge_4_ele)
+      use m_refine_flag_parameters
+!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
+!
+      integer(kind = kint), intent(in)                                  &
+     &            :: iflag_refine_sf_lcl(nsurf_4_ele,ele%numele)
+      integer(kind = kint), intent(in)                                  &
+     &            :: iflag_refine_ed_lcl(nedge_4_ele,ele%numele)
+!
+      integer(kind = kint), intent(inout)                               &
+     &            :: iflag_refine_surf(surf%numsurf)
+      integer(kind = kint), intent(inout)                               &
+     &            :: iflag_refine_edge(edge%numedge)
 !
       integer(kind = kint) :: iele, isurf, iedge, iflag1, iflag2
       integer(kind = kint) :: iele1,  iele2, k1, k2
 !
 !
-      call allocate_iflag_hangings(numsurf, numedge)
+      call allocate_iflag_hangings(surf%numsurf, edge%numedge)
 !
-      do iele = 1, numele
+      do iele = 1, ele%numele
         do k1 = 1, nsurf_4_ele
-          isurf = abs( isf_4_ele(iele,k1) )
+          isurf = abs( surf%isf_4_ele(iele,k1) )
           if(iflag_refine_sf_lcl(k1,iele) .eq. iflag_dbl_sf             &
      &      .and.  iflag_refine_surf(isurf) .eq. iflag_nothing_sf) then
             iflag_refine_surf(isurf) = iflag_refine_sf_lcl(k1,iele)
@@ -90,9 +107,9 @@
         end do
       end do
 !
-      do iele = 1, numele
+      do iele = 1, ele%numele
         do k1 = 1, nedge_4_ele
-          iedge = abs(iedge_4_ele(iele,k1))
+          iedge = abs(edge%iedge_4_ele(iele,k1))
           if(iflag_refine_ed_lcl(k1,iele) .eq. iflag_dbl_ed             &
      &      .and.  iflag_refine_edge(iedge) .eq. iflag_nothing_ed) then
             iflag_refine_edge(iedge) = iflag_dbl_ed
@@ -101,12 +118,12 @@
       end do
 !
 !
-      do isurf = 1, numsurf
-        if(iele_4_surf(isurf,2,1) .gt. 0) then
-          iele1 = iele_4_surf(isurf,1,1)
-          k1 =    iele_4_surf(isurf,1,2)
-          iele2 = iele_4_surf(isurf,2,1)
-          k2 =    iele_4_surf(isurf,2,2)
+      do isurf = 1, surf%numsurf
+        if(surf%iele_4_surf(isurf,2,1) .gt. 0) then
+          iele1 = surf%iele_4_surf(isurf,1,1)
+          k1 =    surf%iele_4_surf(isurf,1,2)
+          iele2 = surf%iele_4_surf(isurf,2,1)
+          k2 =    surf%iele_4_surf(isurf,2,2)
           iflag1 = iflag_refine_sf_lcl(k1,iele1)
           iflag2 = iflag_refine_sf_lcl(k2,iele2)
           if(     (iflag1.eq.iflag_dbl_sf                               &
@@ -119,9 +136,9 @@
         end if
       end do
 !
-      do iele = 1, numele
+      do iele = 1, ele%numele
         do k1 = 1, nedge_4_ele
-          iedge = abs(iedge_4_ele(iele,k1))
+          iedge = abs(edge%iedge_4_ele(iele,k1))
           if(iflag_refine_edge(iedge) .eq. iflag_dbl_sf                 &
      &       .and. iflag_refine_ed_lcl(k1,iele).eq.iflag_nothing_ed)    &
      &       then
@@ -140,7 +157,6 @@
 !
       use m_geometry_constants
       use m_refine_flag_parameters
-      use m_refined_element_data
       use t_surface_data
       use t_edge_data
       use t_refined_node_id

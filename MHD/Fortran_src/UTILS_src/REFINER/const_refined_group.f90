@@ -4,8 +4,9 @@
 !      Writen by H. Matsui on Oct., 2007
 !
 !!      subroutine s_const_refined_group(org_mesh, org_e_mesh, org_grp, &
-!!     &          ref_ids, newmesh, newgroup)
+!!     &          ref_ids, refine_tbl, newmesh, newgroup)
 !!        type(refined_node_id), intent(in) :: ref_ids
+!!        type(element_refine_table), intent(in) :: refine_tbl
 !!        type(mesh_geometry), intent(in) :: org_mesh
 !!        type(element_geometry), intent(in) :: org_e_mesh
 !!        type(mesh_groups), intent(inout) :: org_grp
@@ -22,6 +23,7 @@
       use t_edge_data
       use t_group_data
       use t_refined_node_id
+      use t_refined_element_data
 !
       implicit none
 !
@@ -35,9 +37,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_const_refined_group(org_mesh, org_e_mesh, org_grp,   &
-     &          ref_ids, newmesh, newgroup)
+     &          ref_ids, refine_tbl, newmesh, newgroup)
 !
       type(refined_node_id), intent(in) :: ref_ids
+      type(element_refine_table), intent(in) :: refine_tbl
       type(mesh_geometry), intent(in) :: org_mesh
       type(element_geometry), intent(in) :: org_e_mesh
       type(mesh_groups), intent(inout) :: org_grp
@@ -50,11 +53,12 @@
      &   (org_mesh%node, org_mesh%ele, org_e_mesh%surf,                 &
      &    org_e_mesh%edge, org_grp%nod_grp, ref_ids, newgroup%nod_grp)
 !
-      call const_refined_ele_group(org_grp%ele_grp, newgroup%ele_grp)
+      call const_refined_ele_group                                      &
+     &   (org_grp%ele_grp, refine_tbl, newgroup%ele_grp)
 !
       call const_refined_surf_group                                     &
      &   (org_e_mesh%surf, org_e_mesh%edge, org_grp%surf_grp,           &
-     &    ref_ids, newmesh%node%numnod, newgroup%surf_grp)
+     &    ref_ids, refine_tbl, newmesh%node%numnod, newgroup%surf_grp)
 !
       end subroutine s_const_refined_group
 !
@@ -99,28 +103,31 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_refined_ele_group(ele_grp, new_ele_grp)
+      subroutine const_refined_ele_group                                &
+     &         (ele_grp, refine_tbl, new_ele_grp)
 !
       use set_refined_ele_group
 !
       type(group_data), intent(in) :: ele_grp
+      type(element_refine_table), intent(in) :: refine_tbl
+!
       type(group_data), intent(inout) :: new_ele_grp
 !
 !
       new_ele_grp%num_grp = ele_grp%num_grp
       call allocate_grp_type_num(new_ele_grp)
 !
-      call count_refined_ele_group(ele_grp, new_ele_grp)
+      call count_refined_ele_group(refine_tbl, ele_grp, new_ele_grp)
       call allocate_grp_type_item(new_ele_grp)
 !
-      call s_set_refined_ele_group(ele_grp, new_ele_grp)
+      call s_set_refined_ele_group(refine_tbl, ele_grp, new_ele_grp)
 !
       end subroutine const_refined_ele_group
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_refined_surf_group                               &
-     &         (surf, edge, sf_grp, ref_ids, nnod_2nd, new_sf_grp)
+      subroutine const_refined_surf_group(surf, edge, sf_grp,           &
+     &          ref_ids, refine_tbl, nnod_2nd, new_sf_grp)
 !
       use set_refined_surf_group
 !
@@ -129,6 +136,7 @@
       integer(kind = kint), intent(in) :: nnod_2nd
       type(surface_group_data), intent(in) :: sf_grp
       type(refined_node_id), intent(in) :: ref_ids
+      type(element_refine_table), intent(in) :: refine_tbl
 !
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
@@ -139,11 +147,11 @@
       call allocate_sf_grp_type_num(new_sf_grp)
 !
       call count_refined_surf_group                                     &
-     &   (surf, edge, sf_grp, ref_ids, new_sf_grp)
+     &   (surf, edge, sf_grp, ref_ids, refine_tbl, new_sf_grp)
       call allocate_sf_grp_type_item(new_sf_grp)
 !
       call s_set_refined_surf_group                                     &
-     &   (surf, edge, sf_grp, ref_ids, new_sf_grp)
+     &   (surf, edge, sf_grp, ref_ids, refine_tbl, new_sf_grp)
       call deallocate_mark_refine_sf_grp
 !
       end subroutine const_refined_surf_group

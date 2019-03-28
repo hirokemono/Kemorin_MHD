@@ -4,7 +4,8 @@
 !!      subroutine set_merged_itp_course_to_fine                        &
 !!     &          (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2,              &
 !!     &           itp_org, itp_dest)
-!      subroutine set_merged_itp_fine_to_course(nnod_4_ele, itp_org)
+!!      subroutine set_merged_itp_fine_to_course                        &
+!!     &         (nnod_4_ele, ntot_ele_refined, ie_refined, itp_org)
 !
       module set_merged_refine_itp
 !
@@ -91,12 +92,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_merged_itp_fine_to_course(nnod_4_ele, itp_org)
+      subroutine set_merged_itp_fine_to_course                          &
+     &         (nnod_4_ele, ntot_ele_refined, ie_refined, itp_org)
 !
-      use m_refined_element_data
       use copy_local_position_2_ele
 !
-      integer(kind = kint), intent(in) :: nnod_4_ele
+      integer(kind = kint), intent(in) :: ntot_ele_refined, nnod_4_ele
+      integer(kind = kint), intent(in)                                  &
+     &             :: ie_refined(ntot_ele_refined,nnod_4_ele)
+!
       type(interpolate_table_org), intent(inout) :: itp_org
 !
       integer(kind = kint) :: iele, k1, inod

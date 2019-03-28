@@ -3,11 +3,12 @@
 !
 !      Written by H. Matsui on Oct., 2007
 !
-!!      subroutine s_set_local_position_4_refine                        &
-!!     &         (ele, surf, edge, refine_ele, refine_surf, refine_edge)
+!!      subroutine s_set_local_position_4_refine(ele, surf, edge,       &
+!!     &          refine_tbl, refine_ele, refine_surf, refine_edge)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
+!!        type(element_refine_table), intent(in) :: refine_tbl
 !!        type(table_4_refine), intent(inout) :: refine_ele
 !!        type(table_4_refine), intent(inout) :: refine_surf, refine_edge
 !
@@ -17,7 +18,6 @@
 !
       use m_refine_flag_parameters
       use m_local_refiened_position
-      use m_refined_element_data
 !
       implicit none
 !
@@ -30,17 +30,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_local_position_4_refine                          &
-     &         (ele, surf, edge, refine_ele, refine_surf, refine_edge)
+      subroutine s_set_local_position_4_refine(ele, surf, edge,         &
+     &          refine_tbl, refine_ele, refine_surf, refine_edge)
 !
       use t_geometry_data
       use t_surface_data
       use t_edge_data
       use t_refined_node_id
+      use t_refined_element_data
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
+      type(element_refine_table), intent(in) :: refine_tbl
 !
       type(table_4_refine), intent(inout) :: refine_ele
       type(table_4_refine), intent(inout) :: refine_surf, refine_edge
@@ -50,19 +52,22 @@
 !
       do iedge = 1, edge%numedge
         ist = refine_edge%istack_nod_refine(iedge-1)
-        call set_local_posi_refine_edge(iedge, ist,                     &
+        call set_local_posi_refine_edge                                 &
+     &     (iedge, ist, edge%numedge, refine_tbl%iflag_refine_edge,     &
      &      refine_edge%ntot_nod_refine, refine_edge%xi_refine)
       end do
 !
       do isurf = 1, surf%numsurf
         ist = refine_surf%istack_nod_refine(isurf-1)
-        call set_local_posi_refine_surf(isurf, ist,                     &
+        call set_local_posi_refine_surf                                 &
+     &     (isurf, ist, surf%numsurf, refine_tbl%iflag_refine_surf,     &
      &      refine_surf%ntot_nod_refine, refine_surf%xi_refine)
       end do
 !
       do iele = 1, ele%numele
         ist = refine_ele%istack_nod_refine(iele-1)
-        call set_local_posi_refine_ele(iele, ist,                       &
+        call set_local_posi_refine_ele                                  &
+     &     (iele, ist, ele%numele, refine_tbl%iflag_refine_ele,         &
      &      refine_ele%ntot_nod_refine, refine_ele%xi_refine)
       end do
 !
@@ -70,12 +75,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_local_posi_refine_edge(iedge, ist,                 &
-     &          ntot_nod_refine_edge, xi_refine_edge)
+      subroutine set_local_posi_refine_edge(iedge, ist, numedge,        &
+     &         iflag_refine_edge, ntot_nod_refine_edge, xi_refine_edge)
 !
       use m_refine_flag_parameters
 !
       integer(kind = kint), intent(in) :: iedge, ist
+      integer(kind = kint), intent(in) :: numedge
+      integer(kind = kint), intent(in) :: iflag_refine_edge(numedge)
       integer(kind = kint), intent(in) :: ntot_nod_refine_edge
 !
       real(kind = kreal), intent(inout)                                 &
@@ -101,12 +108,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_local_posi_refine_surf(isurf, ist,                 &
-     &          ntot_nod_refine_surf, xi_refine_surf)
+      subroutine set_local_posi_refine_surf(isurf, ist, numsurf,        &
+     &        iflag_refine_surf, ntot_nod_refine_surf, xi_refine_surf)
 !
       use m_refine_flag_parameters
 !
       integer(kind = kint), intent(in) :: isurf, ist
+      integer(kind = kint), intent(in) :: numsurf
+      integer(kind = kint), intent(in) :: iflag_refine_surf(numsurf)
       integer(kind = kint), intent(in) :: ntot_nod_refine_surf
 !
       real(kind = kreal), intent(inout)                                 &
@@ -183,12 +192,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_local_posi_refine_ele(iele, ist,                   &
-     &          ntot_nod_refine_ele, xi_refine_ele)
+      subroutine set_local_posi_refine_ele(iele, ist, numele,           &
+     &          iflag_refine_ele, ntot_nod_refine_ele, xi_refine_ele)
 !
       use m_refine_flag_parameters
 !
       integer(kind = kint), intent(in) :: iele, ist
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: iflag_refine_ele(numele)
       integer(kind = kint), intent(in) :: ntot_nod_refine_ele
 !
       real(kind = kreal), intent(inout)                                 &

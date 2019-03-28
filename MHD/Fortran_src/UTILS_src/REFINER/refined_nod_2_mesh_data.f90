@@ -10,7 +10,9 @@
 !!        type(table_4_refine), intent(in) :: refine_nod, refine_ele
 !!        type(table_4_refine), intent(in) :: refine_surf, refine_edge
 !!        type(node_data), intent(inout) :: new_node
-!!      subroutine s_refined_ele_2_mesh_data
+!!      subroutine s_refined_ele_2_mesh_data(refine_tbl, new_ele)
+!!        type(element_refine_table), intent(in) :: refine_tbl
+!!        type(element_data), intent(inout) :: new_ele
 !
       module refined_nod_2_mesh_data
 !
@@ -89,20 +91,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_refined_ele_2_mesh_data(new_ele)
+      subroutine s_refined_ele_2_mesh_data(refine_tbl, new_ele)
 !
       use m_geometry_constants
-      use m_refined_element_data
+      use t_refined_element_data
 !
+      type(element_refine_table), intent(in) :: refine_tbl
       type(element_data), intent(inout) :: new_ele
 !
       integer(kind = kint) :: elmtyp_2
       integer(kind = kint) :: iele, k1
 !
 !
-      new_ele%numele =       ntot_ele_refined
+      new_ele%numele =       refine_tbl%ntot_ele_refined
       new_ele%internal_ele = new_ele%numele
-      new_ele%nnod_4_ele =   nnod_4_ele_refined
+      new_ele%nnod_4_ele =   refine_tbl%nnod_4_ele_refined
       if (new_ele%nnod_4_ele .eq. num_t_lag) then
         elmtyp_2 = 333
       else if (new_ele%nnod_4_ele .eq. num_t_quad) then
@@ -113,15 +116,15 @@
 !
       call allocate_ele_connect_type(new_ele)
 !
-      do iele = 1, ntot_ele_refined
+      do iele = 1, new_ele%numele
         new_ele%iele_global(iele) = iele
         new_ele%nodelm(iele) = new_ele%nnod_4_ele
         new_ele%elmtyp(iele) = elmtyp_2
       end do
 !
       do k1 = 1, new_ele%nnod_4_ele
-        new_ele%ie(1:ntot_ele_refined,k1)                               &
-     &          = ie_refined(1:ntot_ele_refined,k1)
+        new_ele%ie(1:new_ele%numele,k1)                                 &
+     &          = refine_tbl%ie_refined(1:new_ele%numele,k1)
       end do
 !
       end subroutine s_refined_ele_2_mesh_data

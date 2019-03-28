@@ -1,10 +1,14 @@
 !
 !      module refinment_info_IO
 !
-!      subroutine write_refinement_table(numele, iref)
-!      subroutine write_merged_refinement_tbl(numele)
-!
-!      subroutine read_refinement_table(numele)
+!!      subroutine write_refinement_table(iref, ele, refine_tbl)
+!!      subroutine write_merged_refinement_tbl(ele, refine_tbl)
+!!        type(element_data), intent(in) :: ele
+!!        type(element_refine_table), intent(inout) :: refine_tbl
+!!
+!!      subroutine read_refinement_table(ele, refine_tbl)
+!!        type(element_data), intent(in) :: ele
+!!        type(element_refine_table), intent(inout) :: refine_tbl
 !
 !
       module refinment_info_IO
@@ -13,7 +17,8 @@
       use m_machine_parameter
 !
       use m_constants
-      use m_refined_element_data
+      use t_geometry_data
+      use t_refined_element_data
       use t_element_refinement_IO
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
@@ -37,22 +42,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_refinement_table(numele, iref)
+      subroutine write_refinement_table(iref, ele, refine_tbl)
 !
       use m_control_param_4_refiner
       use element_refine_file_IO
 !
-      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: iref
+      type(element_data), intent(in) :: ele
+      type(element_refine_table), intent(in) :: refine_tbl
 !
       integer(kind = kint) :: ierr = 0
 !
-      call set_element_refine_flags_2_IO(numele, IO_e_ref)
+      call set_element_refine_flags_2_IO                                &
+     &   (ele%numele, refine_tbl, IO_e_ref)
       call set_elem_refine_itp_tbl_2_IO                                 &
      &   (IO_e_ref, IO_itp_e_org, IO_itp_e_dest)
 !
 !
-      if (iflag_tmp_tri_refine .eq. 1) then
+      if(refine_tbl%iflag_tmp_tri_refine .eq. 1) then
         IO_e_ref%file_head = add_int_suffix(iref, refine_info_head)
       else
         IO_e_ref%file_head = refine_info_head
@@ -65,17 +72,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_merged_refinement_tbl(numele)
+      subroutine write_merged_refinement_tbl(ele, refine_tbl)
 !
       use m_control_param_4_refiner
       use element_refine_file_IO
 !
-      integer(kind = kint), intent(in) :: numele
+      type(element_data), intent(in) :: ele
+      type(element_refine_table), intent(inout) :: refine_tbl
 !
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_merged_refine_flags_2_IO(numele, IO_e_ref)
+      call set_merged_refine_flags_2_IO                                 &
+     &   (ele%numele, refine_tbl, IO_e_ref)
       call set_elem_refine_itp_tbl_2_IO                                 &
      &   (IO_e_ref, IO_itp_e_org, IO_itp_e_dest)
 !
@@ -88,12 +97,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine read_refinement_table(numele)
+      subroutine read_refinement_table(ele, refine_tbl)
 !
       use m_control_param_4_refiner
       use element_refine_file_IO
 !
-      integer(kind = kint), intent(in) :: numele
+      type(element_data), intent(in) :: ele
+      type(element_refine_table), intent(inout) :: refine_tbl
 !
 !
       IO_e_ref%file_head = refine_info_head
@@ -106,38 +116,42 @@
       call dealloc_itp_table_dest(IO_itp_e_dest)
       call dealloc_itp_num_dest(IO_itp_e_dest)
 !
-      call set_ele_refine_flags_from_IO(numele, IO_e_ref)
+      call set_ele_refine_flags_from_IO(ele, IO_e_ref, refine_tbl)
 !
       end subroutine read_refinement_table
 !
 ! ----------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_element_refine_flags_2_IO(numele, e_ref_IO)
+      subroutine set_element_refine_flags_2_IO                          &
+     &         (numele, refine_tbl, e_ref_IO)
 !
       integer(kind = kint), intent(in) :: numele
+      type(element_refine_table), intent(in) :: refine_tbl
+!
       type(ele_refine_IO_type), intent(inout) :: e_ref_IO
 !
       integer(kind = kint) :: iele_org, ist, iele_neo, icou
 !
 !
-      e_ref_IO%max_refine_level = max_refine_level
-      e_ref_IO%nele_org =  numele
-      e_ref_IO%nele_ref =  istack_ele_refined(numele)
+      e_ref_IO%max_refine_level = refine_tbl%max_refine_level
+      e_ref_IO%nele_org =         numele
+      e_ref_IO%nele_ref =         refine_tbl%istack_ele_refined(numele)
 !
       call alloc_element_refine_IO(e_ref_IO)
 !
       do iele_org = 1, numele
-        ist = istack_ele_refined(iele_org-1)
-        do icou = 1, num_ele_refined(iele_org)
-          iele_neo = icou + istack_ele_refined(iele_org-1)
+        ist = refine_tbl%istack_ele_refined(iele_org-1)
+        do icou = 1, refine_tbl%num_ele_refined(iele_org)
+          iele_neo = icou + refine_tbl%istack_ele_refined(iele_org-1)
           e_ref_IO%iele_gl_new(iele_neo) =  iele_neo
           e_ref_IO%iele_gl_org(iele_neo) =  iele_org
           e_ref_IO%icou_gl_org(iele_neo) =  icou
           e_ref_IO%iflag_refine_ele(iele_neo)                           &
-     &                               =  iflag_refine_ele(iele_org)
+     &        = refine_tbl%iflag_refine_ele(iele_org)
           e_ref_IO%ilevel_refine(iele_neo)                              &
-     &        = ilevel_refine_old(iele_org) + ilevel_refine(iele_org)
+     &        = refine_tbl%ilevel_refine_old(iele_org)                  &
+     &         + refine_tbl%ilevel_refine(iele_org)
         end do
       end do
 !
@@ -145,12 +159,15 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_merged_refine_flags_2_IO(numele, e_ref_IO)
+      subroutine set_merged_refine_flags_2_IO                           &
+     &         (numele, refine_tbl, e_ref_IO)
 !
       use m_refine_flag_parameters
       use m_work_merge_refine_itp
 !
       integer(kind = kint), intent(in) :: numele
+!
+      type(element_refine_table), intent(inout) :: refine_tbl
       type(ele_refine_IO_type), intent(inout) :: e_ref_IO
 !
       integer(kind = kint) :: iele_org, ist, icou
@@ -158,9 +175,9 @@
       integer(kind = kint) :: iele_2nd, iflag_2nd, icou_2nd
 !
 !
-      e_ref_IO%max_refine_level = max_refine_level
-      e_ref_IO%nele_org =  numele
-      e_ref_IO%nele_ref =  istack_ele_refined(numele)
+      e_ref_IO%max_refine_level = refine_tbl%max_refine_level
+      e_ref_IO%nele_org =         numele
+      e_ref_IO%nele_ref =         refine_tbl%istack_ele_refined(numele)
 !
       call alloc_element_refine_IO(e_ref_IO)
 !
@@ -169,15 +186,16 @@
         iele_org =  iele_org_1st(iele_1st,1)
         icou_1st =  iele_org_1st(iele_1st,2)
 !
-        ist = istack_ele_refined(iele_1st-1)
-        do icou = 1, num_ele_refined(iele_1st)
-          iele_2nd = icou + istack_ele_refined(iele_1st-1)
+        ist = refine_tbl%istack_ele_refined(iele_1st-1)
+        do icou = 1, refine_tbl%num_ele_refined(iele_1st)
+          iele_2nd = icou + refine_tbl%istack_ele_refined(iele_1st-1)
 !
           if( iflag_1st .ne. iflag_nothing) then
-            iflag_2nd = iflag_refine_ele(iele_1st) + iflag_1st*1000
+            iflag_2nd = refine_tbl%iflag_refine_ele(iele_1st)           &
+     &                 + iflag_1st*1000
             icou_2nd =  icou + icou_1st * 100
           else
-            iflag_2nd = iflag_refine_ele(iele_1st)
+            iflag_2nd = refine_tbl%iflag_refine_ele(iele_1st)
             icou_2nd =  icou
           end if
 !
@@ -186,12 +204,13 @@
           e_ref_IO%icou_gl_org(iele_2nd) =   icou_2nd
           e_ref_IO%iflag_refine_ele(iele_2nd) =  iflag_2nd
           e_ref_IO%ilevel_refine(iele_2nd)                              &
-     &        =  ilevel_refine_old(iele_org)                            &
-     &         + ilevel_refine_org(iele_org) + ilevel_refine(iele_1st)
+     &        =  refine_tbl%ilevel_refine_old(iele_org)                 &
+     &         + ilevel_refine_org(iele_org)                            &
+     &         + refine_tbl%ilevel_refine(iele_1st)
         end do
       end do
 !
-      call deallocate_old_refine_level
+      call dealloc_old_refine_level(refine_tbl)
 !
       end subroutine set_merged_refine_flags_2_IO
 !
@@ -248,19 +267,22 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ele_refine_flags_from_IO(numele, e_ref_IO)
+      subroutine set_ele_refine_flags_from_IO                           &
+     &         (ele, e_ref_IO, refine_tbl)
 !
-      integer(kind = kint), intent(in) :: numele
+      type(element_data), intent(in) :: ele
       type(ele_refine_IO_type), intent(inout) :: e_ref_IO
+      type(element_refine_table), intent(inout) :: refine_tbl
 !
       integer(kind = kint) :: iele
 !
 !
-      call allocate_old_refine_level(numele)
+      call alloc_old_refine_level(ele, refine_tbl)
 !
-      max_refine_level = e_ref_IO%max_refine_level
+      refine_tbl%max_refine_level = e_ref_IO%max_refine_level
       do iele = 1, e_ref_IO%nele_ref
-        ilevel_refine_old(iele) = e_ref_IO%ilevel_refine(iele)
+        refine_tbl%ilevel_refine_old(iele)                              &
+     &        = e_ref_IO%ilevel_refine(iele)
       end do
 !
       call dealloc_element_refine_IO(e_ref_IO)
