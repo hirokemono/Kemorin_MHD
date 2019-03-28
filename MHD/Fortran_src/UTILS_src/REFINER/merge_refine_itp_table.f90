@@ -2,8 +2,16 @@
 !      module merge_refine_itp_table
 !
 !!      subroutine set_merged_refine_data_org                           &
-!!     &         (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2)
-!!      subroutine sort_merge_itp_table_refine(itp_org, itp_dest)
+!!     &         (node_org_refine, ele_org_refine, c2f_2nd, elist_1st,  &
+!!     &          nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2, c2f_mgd)
+!!        type(node_data), intent(in) :: node_org_refine
+!!        type(element_data), intent(in) :: ele_org_refine
+!!        type(interpolate_table), intent(in) :: c2f_2nd
+!!        type(first_element_list), intent(in) :: elist_1st
+!!        type(interpolate_table), intent(inout) :: c2f_mgd
+!!      subroutine sort_merge_itp_table_refine                          &
+!!     &         (c2f_mgd, itp_org, itp_dest)
+!!        type(interpolate_table), intent(inout) :: c2f_mgd
 !!        type(interpolate_table_org), intent(inout) :: itp_org
 !!        type(interpolate_table_dest), intent(inout) :: itp_dest
 !
@@ -13,7 +21,7 @@
 !
       use m_machine_parameter
       use m_constants
-      use m_work_merge_refine_itp
+      use t_work_merge_refine_itp
 !
       implicit none
 !
@@ -22,6 +30,8 @@
       real(kind = kreal), private :: xi_local_one(8,3)
       integer(kind = kint), parameter, private :: maxitr = 100
       real(kind = kreal), parameter, private :: eps_iter = 1.0e-11
+!
+      real(kind = kreal), private :: xi_refine_local_tri(3,64)
 !
       private :: copy_each_merge_itp_tbl_refine
       private :: set_5_refined_elements_local_posi
@@ -34,16 +44,23 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_merged_refine_data_org                             &
-     &         (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2)
+     &         (node_org_refine, ele_org_refine, c2f_2nd, elist_1st,    &
+     &          nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2, c2f_mgd)
 !
       use t_interpolate_tbl_org
       use m_refine_flag_parameters
       use copy_local_position_2_ele
       use modify_local_positions
 !
+      type(node_data), intent(in) :: node_org_refine
+      type(element_data), intent(in) :: ele_org_refine
+      type(interpolate_table), intent(in) :: c2f_2nd
+      type(first_element_list), intent(in) :: elist_1st
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(in) :: nnod_2, nnod_4_ele_2
       real(kind = kreal), intent(in) :: xx_2(nnod_2,3)
+!
+      type(interpolate_table), intent(inout) :: c2f_mgd
 !
       integer(kind = kint) :: iele_org, inod_org, k1
       integer(kind = kint) :: iele_1st
@@ -78,9 +95,9 @@
         xi_ele(1:3) = c2f_2nd%tbl_org%coef_inter_org(inod_2nd,1:3)
         iele_1st = c2f_2nd%tbl_org%iele_org_4_org(inod_2nd)
 !
-        iref_flag_org = iflag_refine_ele_1st(iele_1st)
-        iele_org = iele_org_1st(iele_1st,1)
-        iref_org = iele_org_1st(iele_1st,2)
+        iref_flag_org = elist_1st%iflag_ref_1st(iele_1st)
+        iele_org = elist_1st%iele_1st(iele_1st,1)
+        iref_org = elist_1st%iele_1st(iele_1st,2)
 !
         c2f_mgd%tbl_org%inod_gl_dest_4_org(inod_2nd) = inod_2nd
         c2f_mgd%tbl_org%iele_org_4_org(inod_2nd) =     iele_org
@@ -130,11 +147,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sort_merge_itp_table_refine(itp_org, itp_dest)
+      subroutine sort_merge_itp_table_refine                            &
+     &         (c2f_mgd, itp_org, itp_dest)
 !
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
 !
+      type(interpolate_table), intent(inout) :: c2f_mgd
       type(interpolate_table_org), intent(inout) :: itp_org
       type(interpolate_table_dest), intent(inout) :: itp_dest
 !
@@ -147,7 +166,7 @@
         if( iflag .ge. 1 .and. iflag .le. 8) then
           icou = icou + 1
           call copy_each_merge_itp_tbl_refine                           &
-     &       (inod_2nd, icou, itp_org, itp_dest)
+     &       (inod_2nd, icou, c2f_mgd, itp_org, itp_dest)
         end if
       end do
       itp_org%istack_itp_type_org(1) =  icou
@@ -157,7 +176,7 @@
         if( iflag .ge. 101 .and. iflag .le. 112) then
           icou = icou + 1
           call copy_each_merge_itp_tbl_refine                           &
-     &       (inod_2nd, icou, itp_org, itp_dest)
+     &       (inod_2nd, icou, c2f_mgd, itp_org, itp_dest)
         end if
       end do
       itp_org%istack_itp_type_org(2) =  icou
@@ -167,7 +186,7 @@
         if( iflag .ge. 201 .and. iflag .le. 206) then
           icou = icou + 1
           call copy_each_merge_itp_tbl_refine                           &
-     &       (inod_2nd, icou, itp_org, itp_dest)
+     &       (inod_2nd, icou, c2f_mgd, itp_org, itp_dest)
         end if
       end do
       itp_org%istack_itp_type_org(3) =  icou
@@ -177,7 +196,7 @@
         if( iflag .eq. 0) then
           icou = icou + 1
           call copy_each_merge_itp_tbl_refine                           &
-     &       (inod_2nd, icou, itp_org, itp_dest)
+     &       (inod_2nd, icou, c2f_mgd, itp_org, itp_dest)
         end if
       end do
       itp_org%istack_itp_type_org(4) =  icou
@@ -189,12 +208,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_each_merge_itp_tbl_refine                         &
-     &         (inod_2nd, icou, itp_org, itp_dest)
+     &         (inod_2nd, icou, c2f_mgd, itp_org, itp_dest)
 !
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
 !
       integer(kind = kint), intent(in) :: inod_2nd, icou
+      type(interpolate_table), intent(inout) :: c2f_mgd
       type(interpolate_table_org), intent(inout) :: itp_org
       type(interpolate_table_dest), intent(inout) :: itp_dest
 !
@@ -220,7 +240,6 @@
 !
       use m_refine_flag_parameters
       use m_refined_connection_tbl
-      use m_work_merge_refine_itp
 !
       integer(kind = kint), intent(in) :: iflag_refine
       integer(kind = kint) :: nnod_5
@@ -268,6 +287,40 @@
       end subroutine set_5_refined_elements_local_posi
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine set_local_position_full_tri
+!
+      use m_constants
+!
+      integer(kind = kint) :: i, k
+!
+!
+      do i = 1, 16
+        xi_refine_local_tri(1,4*i-3) = -one
+        xi_refine_local_tri(1,4*i-2) = -third
+        xi_refine_local_tri(1,4*i-1) =  third
+        xi_refine_local_tri(1,4*i  ) =  one
+      end do
+!
+      do k = 1, 4
+        do i = 1, 4
+          xi_refine_local_tri(2,16*k+i-16) = -one
+          xi_refine_local_tri(2,16*k+i-12) = -third
+          xi_refine_local_tri(2,16*k+i-8 ) =  third
+          xi_refine_local_tri(2,16*k+i-4 ) =  one
+        end do
+      end do
+!
+      do k = 1, 16
+        xi_refine_local_tri(3,k   ) = -one
+        xi_refine_local_tri(3,k+16) = -third
+        xi_refine_local_tri(3,k+32) =  third
+        xi_refine_local_tri(3,k+48) =  one
+      end do
+!
+      end subroutine set_local_position_full_tri
+!
+!   --------------------------------------------------------------------
 !
       subroutine pick_local_positions_one_for_5(i_refine)
 !

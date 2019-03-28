@@ -3,9 +3,15 @@
 !
 !!      subroutine set_merged_itp_course_to_fine                        &
 !!     &          (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2,              &
-!!     &           itp_org, itp_dest)
+!!     &           ref_itp_wk, itp_org, itp_dest)
+!!        type(work_merge_refine_itp), intent(inout) :: ref_itp_wk
+!!        type(interpolate_table_org), intent(inout) :: itp_org
+!!        type(interpolate_table_dest), intent(inout) :: itp_dest
 !!      subroutine set_merged_itp_fine_to_course                        &
-!!     &         (nnod_4_ele, ntot_ele_refined, ie_refined, itp_org)
+!!     &         (nnod_4_ele, ntot_ele_refined, ie_refined,             &
+!!     &          node_org_refine, itp_org)
+!!        type(node_data), intent(in) :: node_org_refine
+!!        type(interpolate_table_org), intent(inout) :: itp_org
 !
       module set_merged_refine_itp
 !
@@ -13,10 +19,10 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_work_merge_refine_itp
 !
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
+      use t_work_merge_refine_itp
 !
       implicit none
 !
@@ -30,7 +36,7 @@
 !
       subroutine set_merged_itp_course_to_fine                          &
      &          (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2,                &
-     &           itp_org, itp_dest)
+     &           ref_itp_wk, itp_org, itp_dest)
 !
       use set_refine_interpolate_tbl
       use merge_refine_itp_table
@@ -38,35 +44,40 @@
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(in) :: nnod_2, nnod_4_ele_2
       real(kind = kreal), intent(in) :: xx_2(nnod_2,3)
+!
+      type(work_merge_refine_itp), intent(inout) :: ref_itp_wk
       type(interpolate_table_org), intent(inout) :: itp_org
       type(interpolate_table_dest), intent(inout) :: itp_dest
 !
 !
       write(*,*) 'set_merged_refine_data_org'
       call set_merged_refine_data_org                                   &
-     &   (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2)
+     &   (ref_itp_wk%node_org_refine, ref_itp_wk%ele_org_refine,        &
+     &    ref_itp_wk%c2f_2nd, ref_itp_wk%elist_1st,                     &
+     &    nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2, ref_itp_wk%c2f_mgd)
       write(*,*) 'set_itp_course_to_fine_dest'
       call set_itp_course_to_fine_dest(nnod_2, itp_dest)
 !
       write(*,*) 'copy_merge_itp_table_refine'
-      call copy_merge_itp_table_refine                                  &
-     &   (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2, itp_org)
+      call copy_merge_itp_table_refine(ref_itp_wk%c2f_mgd, itp_org)
 !
-      call dealloc_itp_table_org(c2f_mgd%tbl_org)
-      call dealloc_itp_num_org(c2f_mgd%tbl_org)
+      call dealloc_itp_table_org(ref_itp_wk%c2f_mgd%tbl_org)
+      call dealloc_itp_num_org(ref_itp_wk%c2f_mgd%tbl_org)
+!
+      write(*,*) 'set_merged_refine_data_org 2nd'
+      call set_merged_refine_data_org                                   &
+     &   (ref_itp_wk%node_org_refine, ref_itp_wk%ele_org_refine,        &
+     &    ref_itp_wk%c2f_2nd, ref_itp_wk%elist_1st,                     &
+     &    nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2, ref_itp_wk%c2f_mgd)
 !
       end subroutine set_merged_itp_course_to_fine
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_merge_itp_table_refine                            &
-     &         (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2, itp_org)
+      subroutine copy_merge_itp_table_refine(c2f_mgd, itp_org)
 !
-      use merge_refine_itp_table
+      type(interpolate_table), intent(in) :: c2f_mgd
 !
-      integer(kind = kint), intent(in) :: nnod_4_ele
-      integer(kind = kint), intent(in) :: nnod_2, nnod_4_ele_2
-      real(kind = kreal), intent(in) :: xx_2(nnod_2,3)
       type(interpolate_table_org), intent(inout) :: itp_org
 !
 !
@@ -85,21 +96,20 @@
 !
       itp_org%istack_itp_type_org(0) = izero
 !
-      call set_merged_refine_data_org                                   &
-     &   (nnod_4_ele, nnod_2, nnod_4_ele_2, xx_2)
-!
       end subroutine copy_merge_itp_table_refine
 !
 ! ----------------------------------------------------------------------
 !
       subroutine set_merged_itp_fine_to_course                          &
-     &         (nnod_4_ele, ntot_ele_refined, ie_refined, itp_org)
+     &         (nnod_4_ele, ntot_ele_refined, ie_refined,               &
+     &          node_org_refine, itp_org)
 !
       use copy_local_position_2_ele
 !
       integer(kind = kint), intent(in) :: ntot_ele_refined, nnod_4_ele
       integer(kind = kint), intent(in)                                  &
      &             :: ie_refined(ntot_ele_refined,nnod_4_ele)
+      type(node_data), intent(in) :: node_org_refine
 !
       type(interpolate_table_org), intent(inout) :: itp_org
 !

@@ -1,8 +1,8 @@
 !const_refine_interpolate.f90
 !     Written by H. Matsui on Oct., 2007
 !
-!!      subroutine s_const_refine_interpolate_tbl                       &
-!!     &         (org_mesh, org_e_mesh, newmesh, ref_ids, refine_tbl)
+!!      subroutine s_const_refine_interpolate_tbl(org_mesh, org_e_mesh, &
+!!     &          newmesh, ref_ids, refine_tbl)
 !!        type(mesh_geometry), intent(in) :: org_mesh
 !!        type(element_geometry), intent(in) :: org_e_mesh
 !!        type(mesh_geometry), intent(in) :: newmesh
@@ -24,6 +24,7 @@
       use t_interpolate_table
       use t_refined_node_id
       use t_refined_element_data
+      use t_work_merge_refine_itp
 !
       use itp_table_IO_select_4_zlib
       use set_parallel_file_name
@@ -42,14 +43,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine s_const_refine_interpolate_tbl                         &
-     &         (org_mesh, org_e_mesh, newmesh, ref_ids, refine_tbl)
+      subroutine s_const_refine_interpolate_tbl(org_mesh, org_e_mesh,   &
+     &          newmesh, ref_ids, refine_tbl)
 !
       use t_mesh_data
       use t_geometry_data
 !
-      use m_work_merge_refine_itp
       use refinment_info_IO
+      use merge_refine_itp_table
 !
       type(mesh_geometry), intent(in) :: org_mesh
       type(element_geometry), intent(in) :: org_e_mesh
@@ -58,6 +59,7 @@
 !
       type(element_refine_table), intent(inout) :: refine_tbl
 !
+      type(work_merge_refine_itp) :: ref_itp_wk
       type(interpolate_table)  :: itp_refine
 !
 !
@@ -74,7 +76,10 @@
         call copy_original_mesh_conn_refine                             &
      &     (org_mesh%node, org_mesh%ele, refine_tbl,                    &
      &      ref_ids%refine_nod, ref_ids%refine_ele,                     &
-     &      ref_ids%refine_surf, ref_ids%refine_edge)
+     &      ref_ids%refine_surf, ref_ids%refine_edge,                   &
+     &      ref_itp_wk%node_org_refine, ref_itp_wk%ele_org_refine,      &
+     &      ref_itp_wk%ref_org, ref_itp_wk%elist_1st)
+        call set_local_position_full_tri
 !
         iflag_merge = 1
 !
@@ -82,15 +87,15 @@
         write(*,*) 'const_second_refine_itp_tbl'
         call const_second_refine_itp_tbl                                &
      &     (org_mesh%ele, org_e_mesh%surf, org_e_mesh%edge,             &
-     &      newmesh%node, ref_ids, itp_refine)
+     &      newmesh%node, ref_ids, itp_refine, ref_itp_wk%c2f_2nd)
         write(*,*) 'const_merged_refine_itp_tbl'
         call const_merged_refine_itp_tbl                                &
      &     (org_mesh%ele, newmesh%node, newmesh%ele,                    &
-     &      ref_ids, refine_tbl)
+     &      ref_ids, refine_tbl, ref_itp_wk)
 !
         write(*,*) 'write_merged_refinement_tbl'
-        call write_merged_refinement_tbl(org_mesh%ele, refine_tbl)
-!
+        call write_merged_refinement_tbl                                &
+     &     (org_mesh%ele, ref_itp_wk, refine_tbl)
       end if
 !
       end subroutine s_const_refine_interpolate_tbl
@@ -100,7 +105,6 @@
       subroutine const_single_refine_itp_tbl(ele, surf, edge, new_node, &
      &          ref_ids, refine_tbl, itp_info)
 !
-      use m_work_merge_refine_itp
       use m_interpolate_table_IO
       use set_refine_interpolate_tbl
       use copy_interpolate_types
@@ -144,9 +148,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_second_refine_itp_tbl                            &
-     &         (ele, surf, edge, new_node, ref_ids, itp_info)
+     &         (ele, surf, edge, new_node, ref_ids, itp_info, c2f_2nd)
 !
-      use m_work_merge_refine_itp
       use set_refine_interpolate_tbl
       use copy_interpolate_types
 !
@@ -157,6 +160,7 @@
       type(refined_node_id), intent(in) :: ref_ids
 !
       type(interpolate_table), intent(inout) :: itp_info
+      type(interpolate_table), intent(inout) :: c2f_2nd
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
@@ -174,10 +178,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_merged_refine_itp_tbl                            &
-     &         (ele, new_node, new_ele, ref_ids, refine_tbl)
+      subroutine const_merged_refine_itp_tbl(ele, new_node, new_ele,    &
+     &          ref_ids, refine_tbl, ref_itp_wk)
 !
-      use m_work_merge_refine_itp
       use m_interpolate_table_IO
 !
       use set_refine_interpolate_tbl
@@ -188,6 +191,8 @@
       type(refined_node_id), intent(in) :: ref_ids
       type(element_refine_table), intent(in) :: refine_tbl
 !
+      type(work_merge_refine_itp), intent(inout) :: ref_itp_wk
+!
       type(interpolate_table) :: itp_r
 !
 !
@@ -196,7 +201,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'set_merged_itp_course_to_fine'
       call set_merged_itp_course_to_fine(ele%nnod_4_ele,                &
      &    new_node%numnod, new_ele%nnod_4_ele, new_node%xx,             &
-     &    itp_r%tbl_org, itp_r%tbl_dest)
+     &    ref_itp_wk, itp_r%tbl_org, itp_r%tbl_dest)
 !
 !
       ifmt_itp_table_file = id_ascii_file_fmt
@@ -207,7 +212,7 @@
       write(*,*) 'set_merged_itp_fine_to_course'
       call set_merged_itp_fine_to_course(ele%nnod_4_ele,                &
      &    refine_tbl%ntot_ele_refined, refine_tbl%ie_refined,           &
-     &    itp_r%tbl_org)
+     &    ref_itp_wk%node_org_refine, itp_r%tbl_org)
       call set_itp_fine_to_course_dest                                  &
      &   (ref_ids%refine_nod, itp_r%tbl_dest)
 !

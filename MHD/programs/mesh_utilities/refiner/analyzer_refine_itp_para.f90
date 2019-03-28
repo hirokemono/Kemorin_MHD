@@ -13,20 +13,21 @@
       use m_constants
 !
       use m_machine_parameter
-      use m_para_refine_itp_tables
       use m_control_param_refine_para
       use t_mesh_data_4_merge
       use t_control_data_refine_para
+      use t_para_refine_itp_tables
       use set_parallel_mesh_in_1pe
 !
       implicit none
 !
       integer(kind = kint), parameter, private :: ifile_type = 0
 !
-      type(control_data_refine_para), save, private :: para__refine_c1
+      type(control_data_refine_para), save, private :: para_refine_c1
 !
       type(merged_mesh), save, private :: mgd_mesh_rf
       type(second_mesh), save, private :: sec_mesh_rf
+      type(para_refine_itp_tables), save, private :: para_ref_itp
 !
       private :: refine_interpolation_table
 !
@@ -45,43 +46,48 @@
 !
 !
       if(iflag_debug.gt.0) write(*,*) 'read_control_data_ref_para_itp'
-      call read_control_data_ref_para_itp(para__refine_c1)
+      call read_control_data_ref_para_itp(para_refine_c1)
       if(iflag_debug.gt.0) write(*,*) 'set_control_param_refine_para'
       call set_control_param_refine_para                                &
-     &   (para__refine_c1%refine_ctl, para__refine_c1%p_refine_ctl)
+     &   (para_refine_c1%refine_ctl, para_refine_c1%p_refine_ctl,       &
+     &    para_ref_itp)
 !
-      call alloc_para_fine_mesh_type
-      call s_set_parallel_mesh_in_1pe                                   &
-     &   (para_fine_mesh_file, nprocs_fine, fine_mesh)
+      call alloc_para_fine_mesh_type(para_ref_itp)
+      call s_set_parallel_mesh_in_1pe(para_fine_mesh_file,              &
+     &    para_ref_itp%nprocs_fine, para_ref_itp%fine_mesh)
 !
-      call alloc_para_course_mesh_type
-      call s_set_parallel_mesh_in_1pe                                   &
-     &   (para_course_mesh_file, nprocs_course, course_mesh)
+      call alloc_para_course_mesh_type(para_ref_itp)
+      call s_set_parallel_mesh_in_1pe(para_course_mesh_file,            &
+     &    para_ref_itp%nprocs_course, para_ref_itp%course_mesh)
 !
 !
 !
       table_file_header = course_2_fine_head
-      call load_interpolate_table(0, c2f_single)
+      call load_interpolate_table(0, para_ref_itp%c2f_single)
 !
       table_file_header = fine_2_course_head
-      call load_interpolate_table(0, f2c_single)
+      call load_interpolate_table(0, para_ref_itp%f2c_single)
 !
       table_file_header = refine_info_head
-      call load_interpolate_table(0, f2c_ele_single)
+      call load_interpolate_table(0, para_ref_itp%f2c_ele_single)
 !
 !
 !
       write(*,*) 'set_num_nod_ele_merge_type1'
       call set_num_nod_ele_merge_type1                                  &
-     &   (nprocs_fine, fine_mesh, mgd_mesh_rf)
+     &   (para_ref_itp%nprocs_fine, para_ref_itp%fine_mesh,             &
+     &    mgd_mesh_rf)
       call set_num_nod_ele_merge_type2                                  &
-     &   (nprocs_course, course_mesh, sec_mesh_rf)
+     &   (para_ref_itp%nprocs_course, para_ref_itp%course_mesh,         &
+     &    sec_mesh_rf)
 !
       write(*,*) 'set_domain_local_id_by_type1'
       call set_domain_local_id_by_type1                                 &
-     &   (nprocs_fine, fine_mesh, mgd_mesh_rf%merge_tbl)
+     &   (para_ref_itp%nprocs_fine, para_ref_itp%fine_mesh,             &
+     &    mgd_mesh_rf%merge_tbl)
       call set_domain_local_id_by_type2                                 &
-     &   (nprocs_course, course_mesh, sec_mesh_rf%merge_tbl_2)
+     &   (para_ref_itp%nprocs_course, para_ref_itp%course_mesh,         &
+     &    sec_mesh_rf%merge_tbl_2)
 !
 !
 !
@@ -95,25 +101,27 @@
       use m_interpolate_table_IO
 !
 !
-      call alloc_para_refine_itp_type
+      call alloc_para_refine_itp_type(para_ref_itp)
 !
 !
       call refine_interpolation_table                                   &
      &   (mgd_mesh_rf%merge_tbl, sec_mesh_rf%merge_tbl_2)
 !
-      call dealloc_para_refine_itp_type
+      call dealloc_para_refine_itp_type(para_ref_itp)
 !
       call dealloc_number_of_2nd_mesh(sec_mesh_rf)
       call dealloc_2nd_merge_table(sec_mesh_rf)
       call dealloc_array_4_merge(mgd_mesh_rf)
 !
-      call dealloc_interpolate_tbl_type(f2c_single)
-      call dealloc_interpolate_tbl_type(c2f_single)
+      call dealloc_interpolate_tbl_type(para_ref_itp%f2c_single)
+      call dealloc_interpolate_tbl_type(para_ref_itp%c2f_single)
 !
-      call dealloc_parallel_mesh_in_1pe(nprocs_fine, fine_mesh)
-      call dealloc_parallel_mesh_in_1pe(nprocs_course, course_mesh)
-      call dealloc_para_fine_mesh_type
-      call dealloc_para_course_mesh_type
+      call dealloc_parallel_mesh_in_1pe                                 &
+     &   (para_ref_itp%nprocs_fine, para_ref_itp%fine_mesh)
+      call dealloc_parallel_mesh_in_1pe                                 &
+     &   (para_ref_itp%nprocs_course, para_ref_itp%course_mesh)
+      call dealloc_para_fine_mesh_type(para_ref_itp)
+      call dealloc_para_course_mesh_type(para_ref_itp)
 !
       end subroutine analyze_refine_itp_para
 !
@@ -162,40 +170,46 @@
 !
 !
       write(*,*) 's_const_parallel_itp_table course_2_fine'
-      call s_const_parallel_itp_table(nprocs_course, nprocs_fine,       &
-     &    nprocs_larger, c2f_single, c2f_para,                          &
+      call s_const_parallel_itp_table(para_ref_itp%nprocs_course,       &
+     &    para_ref_itp%nprocs_fine, para_ref_itp%nprocs_larger,         &
+     &    para_ref_itp%c2f_single, para_ref_itp%c2f_para,               &
      &    merge_tbl_2%nele_overlap, merge_tbl_2%iele_local,             &
      &    merge_tbl_2%idomain_ele, merge_tbl%nnod_overlap,              &
      &    merge_tbl%inod_local, merge_tbl%idomain_nod)
 !
 !
       write(*,*) 's_const_parallel_itp_table fine_2_course'
-      call s_const_parallel_itp_table(nprocs_fine, nprocs_course,       &
-     &    nprocs_larger, f2c_single, f2c_para,                          &
+      call s_const_parallel_itp_table(para_ref_itp%nprocs_fine,         &
+     &    para_ref_itp%nprocs_course, para_ref_itp%nprocs_larger,       &
+     &    para_ref_itp%f2c_single, para_ref_itp%f2c_para,               &
      &    merge_tbl%nele_overlap, merge_tbl%iele_local,                 &
      &    merge_tbl%idomain_ele,  merge_tbl_2%nnod_overlap,             &
      &    merge_tbl_2%inod_local,  merge_tbl_2%idomain_nod)
 !
 !
       write(*,*) 's_const_parallel_itp_table fine_2_course_ele'
-      call s_const_parallel_itp_table(nprocs_fine, nprocs_course,       &
-     &    nprocs_larger, f2c_ele_single, f2c_ele_para,                  &
+      call s_const_parallel_itp_table(para_ref_itp%nprocs_fine,         &
+     &    para_ref_itp%nprocs_course, para_ref_itp%nprocs_larger,       &
+     &    para_ref_itp%f2c_ele_single, para_ref_itp%f2c_ele_para,       &
      &    merge_tbl%nele_overlap, merge_tbl%iele_local,                 &
      &    merge_tbl%idomain_ele, merge_tbl_2%nele_overlap,              &
      &    merge_tbl_2%iele_local, merge_tbl_2%idomain_ele)
 !
 !
-      do ip = 1, nprocs_larger
+      do ip = 1, para_ref_itp%nprocs_larger
         id_rank = ip - 1
 !
         table_file_header = c2f_para_head
-        call output_interpolate_table(id_rank, c2f_para(ip) )
+        call output_interpolate_table                                   &
+     &     (id_rank, para_ref_itp%c2f_para(ip))
 !
         table_file_header = f2c_para_head
-        call output_interpolate_table(id_rank, f2c_para(ip) )
+        call output_interpolate_table                                   &
+     &     (id_rank, para_ref_itp%f2c_para(ip))
 !
         table_file_header = f2c_ele_para_head
-        call output_interpolate_table(id_rank, f2c_ele_para(ip) )
+        call output_interpolate_table                                   &
+     &     (id_rank, para_ref_itp%f2c_ele_para(ip))
       end do
 !
       end subroutine refine_interpolation_table

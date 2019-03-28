@@ -4,9 +4,10 @@
 !      Written by Kemorin on May, 2010
 !
 !!      subroutine set_control_param_refine_para                        &
-!!     &         (refine_ctl, p_refine_ctl)
+!!     &         (refine_ctl, p_refine_ctl, para_ref_itp)
 !!        type(control_data_4_refine), intent(in) :: refine_ctl
 !!        type(file_ctls_refine_para), intent(in) :: p_refine_ctl
+!!        type(para_refine_itp_tables), intent(inout) :: para_ref_itp
 !
       module m_control_param_refine_para
 !
@@ -39,12 +40,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_param_refine_para                          &
-     &         (refine_ctl, p_refine_ctl)
+     &         (refine_ctl, p_refine_ctl, para_ref_itp)
 !
       use m_constants
       use m_machine_parameter
       use m_file_format_switch
-      use m_para_refine_itp_tables
+      use t_para_refine_itp_tables
       use t_control_data_refine_para
       use t_control_data_4_refine
       use set_control_platform_data
@@ -52,11 +53,14 @@
       type(control_data_4_refine), intent(in) :: refine_ctl
       type(file_ctls_refine_para), intent(in) :: p_refine_ctl
 !
+      type(para_refine_itp_tables), intent(inout) :: para_ref_itp
+!
 !
       call turn_off_debug_flag_by_ctl(0, refine_ctl%source_plt)
 !
       if(refine_ctl%source_plt%ndomain_ctl%iflag .gt. 0) then
-        nprocs_fine = refine_ctl%source_plt%ndomain_ctl%intvalue
+        para_ref_itp%nprocs_fine                                        &
+     &          = refine_ctl%source_plt%ndomain_ctl%intvalue
       end if
 !
       if(refine_ctl%source_plt%mesh_file_prefix%iflag .gt. 0) then
@@ -83,9 +87,10 @@
       end if
 !
 !
-      nprocs_course = 1
+      para_ref_itp%nprocs_course = 1
       if(p_refine_ctl%nprocs_course_ctl%iflag .gt. 0) then
-        nprocs_course = p_refine_ctl%nprocs_course_ctl%intvalue
+        para_ref_itp%nprocs_course                                      &
+     &         = p_refine_ctl%nprocs_course_ctl%intvalue
       end if
 !
       para_course_mesh_file%file_prefix = def_para_course_mesh_head
@@ -107,12 +112,14 @@
      &     = p_refine_ctl%refine_info_para_head_ctl%charavalue
       end if
 !
-      nprocs_larger = max(nprocs_fine, nprocs_course)
+      para_ref_itp%nprocs_larger                                        &
+     &      = max(para_ref_itp%nprocs_fine, para_ref_itp%nprocs_course)
 !
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'nprocs_fine, nprocs_course, nprocs_larger'
-        write(*,*)  nprocs_fine, nprocs_course, nprocs_larger
+        write(*,*)  para_ref_itp%nprocs_fine,                           &
+     &        para_ref_itp%nprocs_course, para_ref_itp%nprocs_larger
         write(*,*) 'para_fine_mesh_head:   ',                           &
      &            trim(para_fine_mesh_file%file_prefix)
         write(*,*) 'para_course_mesh_head: ',                           &
