@@ -4,16 +4,15 @@
 !      Written by Kemorin on Oct., 2007
 !
 !!      subroutine s_set_element_refine_flag                            &
-!!     &         (ele, surf, ele_grp, iflag_refine_ele)
+!!     &         (ele, surf, ele_grp, refine_p, iflag_refine_ele)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(group_data), intent(in) :: ele_grp
+!!        type(ctl_param_4_refiner), intent(in) :: refine_p
 !
       module set_element_refine_flag
 !
       use m_precision
-!
-      use m_control_param_4_refiner
 !
       implicit    none
 !
@@ -21,6 +20,7 @@
       integer(kind = kint) :: nele_tri
       integer(kind = kint), allocatable :: iele_tri(:)
 !
+      private :: nele_tri, iele_tri
       private :: set_refine_flag_by_ele_grp
       private :: count_triple_refine_table, set_triple_refine_table
       private :: const_triple_refine_table
@@ -32,24 +32,27 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_element_refine_flag                              &
-     &         (ele, surf, ele_grp, iflag_refine_ele)
+     &         (ele, surf, ele_grp, refine_p, iflag_refine_ele)
 !
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use t_control_param_4_refiner
       use find_boundary_4_tri_refine
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(group_data), intent(in) :: ele_grp
+      type(ctl_param_4_refiner), intent(in) :: refine_p
 !
       integer(kind = kint), intent(inout)                               &
      &                    :: iflag_refine_ele(ele%numele)
 !
 !
-      call set_refine_flag_by_ele_grp                                   &
-     &   (ele%numele, ele_grp, iflag_refine_ele)
-      if (id_refined_ele_grp(1) .eq. -1) return
+      call set_refine_flag_by_ele_grp(ele%numele, ele_grp,              &
+     &    refine_p%num_refine_type, refine_p%id_refined_ele_grp,        &
+     &    refine_p%iflag_refine_type, iflag_refine_ele)
+      if (refine_p%id_refined_ele_grp(1) .eq. -1) return
 !
 !
       call const_triple_refine_table(ele%numele, iflag_refine_ele)
@@ -65,13 +68,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_refine_flag_by_ele_grp                             &
-     &         (numele, ele_grp, iflag_refine_ele)
+      subroutine set_refine_flag_by_ele_grp(numele, ele_grp,            &
+     &          num_refine_type, id_refined_ele_grp, iflag_refine_type, &
+     &          iflag_refine_ele)
 !
       use t_group_data
 !
       integer(kind = kint), intent(in) :: numele
       type(group_data), intent(in) :: ele_grp
+!
+      integer(kind = kint), intent(in) :: num_refine_type
+      integer(kind = kint), intent(in)                                  &
+     &                      :: id_refined_ele_grp(num_refine_type)
+      integer(kind = kint), intent(in)                                  &
+     &                      :: iflag_refine_type(num_refine_type)
 !
       integer(kind = kint), intent(inout) :: iflag_refine_ele(numele)
 !

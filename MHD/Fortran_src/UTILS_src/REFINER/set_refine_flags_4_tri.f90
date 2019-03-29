@@ -3,7 +3,8 @@
 !
 !      Writen by H. Matsui on Oct., 2007
 !
-!!      subroutine s_set_refine_flags_4_tri(node, ele, refine_tbl)
+!!      subroutine s_set_refine_flags_4_tri(iflag_small_tri_refine,     &
+!!     &          node, ele, refine_tbl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(element_refine_table), intent(inout) :: refine_tbl
@@ -33,12 +34,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_refine_flags_4_tri(node, ele, refine_tbl)
+      subroutine s_set_refine_flags_4_tri(iflag_small_tri_refine,       &
+     &          node, ele, refine_tbl)
 !
       use t_geometry_data
       use t_refined_element_data
       use m_refine_flag_parameters
 !
+      integer(kind = kint), intent(in) :: iflag_small_tri_refine
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_refine_table), intent(inout) :: refine_tbl
@@ -68,8 +71,8 @@
       icou = 0
       iflag = 1
       do while (iflag .gt. 0)
-        call remark_refine_data                                         &
-     &     (ele, iflag, refine_tbl%iflag_tmp_tri_refine,                &
+        call remark_refine_data(ele, iflag_small_tri_refine,            &
+     &      iflag, refine_tbl%iflag_tmp_tri_refine,                     &
      &      refine_tbl%iflag_refine_ele)
         icou = icou + 1
         write(*,*) 'remark_refine_data end ', icou, iflag
@@ -135,13 +138,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine remark_refine_data(ele, iflag_retry,                   &
-     &          iflag_tmp_tri_refine, iflag_refine_ele)
+      subroutine remark_refine_data(ele, iflag_small_tri_refine,        &
+     &          iflag_retry, iflag_tmp_tri_refine, iflag_refine_ele)
 !
       use t_geometry_data
-      use m_control_param_4_refiner
       use m_refine_flag_parameters
 !
+      integer(kind = kint), intent(in) :: iflag_small_tri_refine
       type(element_data), intent(in) :: ele
 !
       integer(kind = kint), intent(inout) :: iflag_tmp_tri_refine

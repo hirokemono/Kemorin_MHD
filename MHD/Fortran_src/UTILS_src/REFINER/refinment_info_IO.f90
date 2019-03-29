@@ -1,14 +1,16 @@
 !
 !      module refinment_info_IO
 !
-!!      subroutine write_refinement_table(iref, ele, refine_tbl)
+!!      subroutine write_refinement_table                               &
+!!     &         (iref, refine_info_head, ele, refine_tbl)
 !!      subroutine write_merged_refinement_tbl                          &
-!!     &         (ele, ref_itp_wk, refine_tbl)
+!!     &         (refine_info_head, ele, ref_itp_wk, refine_tbl)
 !!        type(element_data), intent(in) :: ele
 !!        type(work_merge_refine_itp), intent(in) :: ref_itp_wk
 !!        type(element_refine_table), intent(inout) :: refine_tbl
 !!
-!!      subroutine read_refinement_table(ele, refine_tbl)
+!!      subroutine read_refinement_table                                &
+!!     &         (refine_info_head, ele, refine_tbl)
 !!        type(element_data), intent(in) :: ele
 !!        type(element_refine_table), intent(inout) :: refine_tbl
 !
@@ -45,12 +47,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_refinement_table(iref, ele, refine_tbl)
+      subroutine write_refinement_table                                 &
+     &         (iref, refine_info_head, ele, refine_tbl)
 !
-      use m_control_param_4_refiner
       use element_refine_file_IO
 !
       integer(kind = kint), intent(in) :: iref
+      character(len = kchara), intent(in) :: refine_info_head
       type(element_data), intent(in) :: ele
       type(element_refine_table), intent(in) :: refine_tbl
 !
@@ -76,11 +79,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_merged_refinement_tbl                            &
-     &         (ele, ref_itp_wk, refine_tbl)
+     &         (refine_info_head, ele, ref_itp_wk, refine_tbl)
 !
-      use m_control_param_4_refiner
       use element_refine_file_IO
 !
+      character(len = kchara), intent(in) :: refine_info_head
       type(element_data), intent(in) :: ele
       type(work_merge_refine_itp), intent(in) :: ref_itp_wk
       type(element_refine_table), intent(inout) :: refine_tbl
@@ -103,11 +106,12 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine read_refinement_table(ele, refine_tbl)
+      subroutine read_refinement_table                                  &
+     &         (refine_info_head, ele, refine_tbl)
 !
-      use m_control_param_4_refiner
       use element_refine_file_IO
 !
+      character(len = kchara), intent(in) :: refine_info_head
       type(element_data), intent(in) :: ele
       type(element_refine_table), intent(inout) :: refine_tbl
 !

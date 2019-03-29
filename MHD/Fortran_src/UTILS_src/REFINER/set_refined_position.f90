@@ -2,17 +2,20 @@
 !      module set_refined_position
 !
 !!      subroutine s_set_refined_position(node, ele, surf, edge,        &
-!!     &          refine_ele, refine_surf, refine_edge)
+!!     &          refine_p, refine_ele, refine_surf, refine_edge)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
+!!        type(ctl_param_4_refiner), intent(in) :: refine_p
 !!        type(table_4_refine), intent(inout) :: refine_ele
 !!        type(table_4_refine), intent(inout) :: refine_surf, refine_edge
 !
 !     Written by H. Matsui on Oct., 2007
 !
       module set_refined_position
+!
+      implicit    none
 !
 !  ---------------------------------------------------------------------
 !
@@ -21,15 +24,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_refined_position(node, ele, surf, edge,          &
-     &          refine_ele, refine_surf, refine_edge)
+     &          refine_p, refine_ele, refine_surf, refine_edge)
 !
       use t_mesh_data
       use t_geometry_data
       use t_surface_data
       use t_edge_data
       use t_refined_node_id
-!
-      use m_control_param_4_refiner
+      use t_control_param_4_refiner
 !
       use cal_xyz_4_refine
       use cal_sph_4_refine
@@ -42,11 +44,12 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
+      type(ctl_param_4_refiner), intent(in) :: refine_p
       type(table_4_refine), intent(inout) :: refine_ele
       type(table_4_refine), intent(inout) :: refine_surf, refine_edge
 !
 !
-      if (iflag_interpolate_type .eq. 1) then
+      if(refine_p%iflag_interpolate_type .eq. iflag_div_rtp) then
         call cal_sph_on_edge_4_refine(node%numnod, edge%numedge,        &
      &      edge%ie_edge, node%rr, node%theta, node%phi,                &
      &      refine_edge%ntot_nod_refine, refine_edge%istack_nod_refine, &
@@ -79,7 +82,7 @@
      &      refine_edge%x_refine(1,1), refine_edge%x_refine(1,2),       &
      &      refine_edge%x_refine(1,3))
 !
-      else if (iflag_interpolate_type .eq. 2) then
+      else if(refine_p%iflag_interpolate_type .eq. iflag_proj_sph) then
 !
         call cal_xyz_on_edge_4_refine                                   &
      &     (node%numnod, edge%numedge, edge%ie_edge, node%xx,           &

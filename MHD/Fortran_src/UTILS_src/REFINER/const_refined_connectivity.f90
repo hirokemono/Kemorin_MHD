@@ -3,8 +3,14 @@
 !
 !   Written by H. Matsui on Oct., 2007
 !
-!!      subroutine s_const_refined_connectivity(ele, surf, edge,        &
-!!     &          refine_tbl, refine_ele, refine_surf, refine_edge)
+!!      subroutine s_const_refined_connectivity                         &
+!!     &         (ele, surf, edge, refine_p, refine_tbl, refine_ele,    &
+!!     &          refine_surf, refine_edge)
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(edge_data), intent(in) :: edge
+!!        type(ctl_param_4_refiner), intent(in) :: refine_p
+!!        type(element_refine_table), intent(inout) :: refine_tbl
 !!        type(table_4_refine), intent(inout) :: refine_ele
 !!        type(table_4_refine), intent(inout) :: refine_surf, refine_edge
 !
@@ -17,6 +23,7 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+      use t_control_param_4_refiner
       use t_refined_node_id
       use t_refined_element_data
 !
@@ -28,11 +35,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_refined_connectivity(ele, surf, edge,          &
-     &          refine_tbl, refine_ele, refine_surf, refine_edge)
+      subroutine s_const_refined_connectivity                           &
+     &         (ele, surf, edge, refine_p, refine_tbl, refine_ele,      &
+     &          refine_surf, refine_edge)
 !
       use m_refine_flag_parameters
-      use m_control_param_4_refiner
 !
       use set_refined_connection
       use set_local_refined_node
@@ -41,6 +48,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
+      type(ctl_param_4_refiner), intent(in) :: refine_p
 !
       type(element_refine_table), intent(inout) :: refine_tbl
       type(table_4_refine), intent(inout) :: refine_ele
@@ -63,9 +71,9 @@
 !
 !      call check_refine_stack(ele%numele)
 !
-      if (iflag_refine_type(1) .eq. iflag_8_to_20) then
+      if (refine_p%iflag_refine_type(1) .eq. iflag_8_to_20) then
         refine_tbl%nnod_4_ele_refined = num_t_quad
-      else if (iflag_refine_type(1) .eq. iflag_8_to_27) then
+      else if (refine_p%iflag_refine_type(1) .eq. iflag_8_to_27) then
         refine_tbl%nnod_4_ele_refined = num_t_lag
       else
         refine_tbl%nnod_4_ele_refined = num_t_linear

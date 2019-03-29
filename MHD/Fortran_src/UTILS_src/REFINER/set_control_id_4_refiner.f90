@@ -3,14 +3,14 @@
 !
 !      Written by Kemorin on Oct., 2007
 !
-!      subroutine set_ele_grp_id_4_refine(ele_grp)
-!      subroutine set_refine_type_to_id
+!!      subroutine set_ele_grp_id_4_refine(ele_grp, num_refine_type,    &
+!!     &          refined_ele_grp, id_refined_ele_grp)
+!!      subroutine set_refine_type_to_id(iflag_redefine_tri,            &
+!!     &          num_refine_type, refined_ele_type, iflag_refine_type)
 !
       module set_control_id_4_refiner
 !
       use m_precision
-!
-      use m_control_param_4_refiner
 !
       implicit none
 !
@@ -20,12 +20,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ele_grp_id_4_refine(ele_grp)
+      subroutine set_ele_grp_id_4_refine(ele_grp, num_refine_type,      &
+     &          refined_ele_grp, id_refined_ele_grp)
 !
       use t_group_data
       use skip_comment_f
 !
       type(group_data), intent(in) :: ele_grp
+!
+      integer(kind = kint), intent(in) :: num_refine_type
+      character(len = kchara), intent(in)                               &
+     &              :: refined_ele_grp(num_refine_type)
+      integer(kind = kint), intent(inout)                               &
+     &              :: id_refined_ele_grp(num_refine_type)
+!
       integer(kind = kint) :: i, j
 !
 !
@@ -44,16 +52,22 @@
 !
       end if
 !
-      call deallocate_refine_param_chara
-!
       end subroutine set_ele_grp_id_4_refine
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_refine_type_to_id
+      subroutine set_refine_type_to_id(iflag_redefine_tri,              &
+     &          num_refine_type, refined_ele_type, iflag_refine_type)
 !
       use m_refine_flag_parameters
       use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: iflag_redefine_tri
+      integer(kind = kint), intent(in) :: num_refine_type
+      character(len = kchara), intent(in)                               &
+     &              :: refined_ele_type(num_refine_type)
+      integer(kind = kint), intent(inout)                               &
+     &              :: iflag_refine_type(num_refine_type)
 !
       integer(kind = kint) :: j
 !
