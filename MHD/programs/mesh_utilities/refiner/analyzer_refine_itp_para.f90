@@ -13,10 +13,11 @@
       use m_constants
 !
       use m_machine_parameter
-      use m_control_param_refine_para
+      use t_control_param_refine_para
       use t_mesh_data_4_merge
       use t_control_data_refine_para
       use t_para_refine_itp_tables
+!
       use set_parallel_mesh_in_1pe
 !
       implicit none
@@ -24,6 +25,7 @@
       integer(kind = kint), parameter, private :: ifile_type = 0
 !
       type(control_data_refine_para), save, private :: para_refine_c1
+      type(ctl_param_paraa_refiner), save, private :: p_refine_p1
 !
       type(merged_mesh), save, private :: mgd_mesh_rf
       type(second_mesh), save, private :: sec_mesh_rf
@@ -50,25 +52,26 @@
       if(iflag_debug.gt.0) write(*,*) 'set_control_param_refine_para'
       call set_control_param_refine_para                                &
      &   (para_refine_c1%refine_ctl, para_refine_c1%p_refine_ctl,       &
-     &    para_ref_itp)
+     &    p_refine_p1, para_ref_itp)
 !
       call alloc_para_fine_mesh_type(para_ref_itp)
-      call s_set_parallel_mesh_in_1pe(para_fine_mesh_file,              &
+      call s_set_parallel_mesh_in_1pe(p_refine_p1%para_fine_mesh_file,  &
      &    para_ref_itp%nprocs_fine, para_ref_itp%fine_mesh)
 !
       call alloc_para_course_mesh_type(para_ref_itp)
-      call s_set_parallel_mesh_in_1pe(para_course_mesh_file,            &
+      call s_set_parallel_mesh_in_1pe                                   &
+     &   (p_refine_p1%para_course_mesh_file,                            &
      &    para_ref_itp%nprocs_course, para_ref_itp%course_mesh)
 !
 !
 !
-      table_file_header = course_2_fine_head
+      table_file_header = p_refine_p1%course_2_fine_head
       call load_interpolate_table(0, para_ref_itp%c2f_single)
 !
-      table_file_header = fine_2_course_head
+      table_file_header = p_refine_p1%fine_2_course_head
       call load_interpolate_table(0, para_ref_itp%f2c_single)
 !
-      table_file_header = refine_info_head
+      table_file_header = p_refine_p1%refine_info_head
       call load_interpolate_table(0, para_ref_itp%f2c_ele_single)
 !
 !
@@ -199,15 +202,15 @@
       do ip = 1, para_ref_itp%nprocs_larger
         id_rank = ip - 1
 !
-        table_file_header = c2f_para_head
+        table_file_header = p_refine_p1%c2f_para_head
         call output_interpolate_table                                   &
      &     (id_rank, para_ref_itp%c2f_para(ip))
 !
-        table_file_header = f2c_para_head
+        table_file_header = p_refine_p1%f2c_para_head
         call output_interpolate_table                                   &
      &     (id_rank, para_ref_itp%f2c_para(ip))
 !
-        table_file_header = f2c_ele_para_head
+        table_file_header = p_refine_p1%f2c_ele_para_head
         call output_interpolate_table                                   &
      &     (id_rank, para_ref_itp%f2c_ele_para(ip))
       end do
