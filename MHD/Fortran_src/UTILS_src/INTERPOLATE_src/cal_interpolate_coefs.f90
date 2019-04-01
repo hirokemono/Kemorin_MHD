@@ -6,9 +6,11 @@
 !      subroutine allocate_work_4_interpolate(nnod_4_ele_2)
 !      subroutine deallocate_work_4_interpolate
 !
-!!      subroutine s_cal_interpolate_coefs(org_node, org_ele,           &
+!!      subroutine s_cal_interpolate_coefs                              &
+!!     &         (gen_itp_p, new_node, org_node, org_ele,               &
 !!     &          my_rank_org, inod, jele, error_level, iflag_message,  &
 !!     &          iflag_org_tmp, iflag_org_domain, itp_coef_dest)
+!!        type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
 !!        type(node_data), intent(in) :: new_node
 !!        type(node_data), intent(in) :: org_node
 !!        type(element_data), intent(in) :: org_ele
@@ -62,12 +64,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_interpolate_coefs(new_node, org_node, org_ele,   &
+      subroutine s_cal_interpolate_coefs                                &
+     &         (gen_itp_p, new_node, org_node, org_ele,                 &
      &          my_rank_org, inod, jele, error_level, iflag_message,    &
      &          iflag_org_tmp, iflag_org_domain, itp_coef_dest)
 !
       use calypso_mpi
-      use m_ctl_params_4_gen_table
+      use t_ctl_params_4_gen_table
       use m_connect_hexa_2_tetra
       use subroutines_4_search_table
       use cal_local_position_by_tetra
@@ -77,6 +80,7 @@
       use t_geometry_data
       use t_interpolate_coefs_dest
 !
+      type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
       type(node_data), intent(in) :: new_node
 !
       type(node_data), intent(in) :: org_node
@@ -140,15 +144,16 @@
 !
 !     improve solution
 !
-          call s_modify_local_positions(maxitr, eps_iter, xi, x_target, &
+          call s_modify_local_positions                                 &
+     &       (gen_itp_p%maxitr, gen_itp_p%eps_iter, xi, x_target,       &
      &        org_ele%nnod_4_ele, x_local_ele, iflag_message,           &
      &        differ_res, ierr_inter)
 !
 !     finish improvement
 !
-          if (ierr_inter.gt.0 .and. ierr_inter.le.maxitr) then
-             call set_results_2_array(my_rank_org, inod, jele,          &
-     &           xi, iflag_org_domain(inod), itp_coef_dest)
+          if (ierr_inter.gt.0 .and. ierr_inter.le.gen_itp_p%maxitr) then
+             call set_results_2_array(my_rank_org, gen_itp_p,           &
+     &           inod, jele, xi, iflag_org_domain(inod), itp_coef_dest)
              go to 10
           else
             if (iflag_message .eq. 1) then

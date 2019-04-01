@@ -23,10 +23,12 @@
       use t_ctl_data_gen_table
       use t_work_const_itp_table
       use t_search_block_4_itp
+      use t_ctl_params_4_gen_table
 !
       implicit none
 !
       type(ctl_data_gen_table), save :: gtbl_ctl1
+      type(ctl_params_4_gen_table), save :: gen_itp_p1
 !
       type(mesh_data), save :: org_femmesh
       type(element_geometry), save :: org_ele_mesh
@@ -50,7 +52,6 @@
 !
       subroutine init_make_interpolate_table
 !
-      use m_ctl_params_4_gen_table
       use m_2nd_pallalel_vector
       use t_shape_functions
 !
@@ -71,13 +72,13 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_itp_table'
       call read_control_4_gen_itp_table(gtbl_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_gen_table'
-      call set_ctl_params_4_gen_table(gtbl_ctl1, itp_blks1)
+      call set_ctl_params_4_gen_table(gtbl_ctl1, gen_itp_p1, itp_blks1)
       call dealloc_ctl_data_gen_table(gtbl_ctl1)
 !
 !     ----- construct mesh informations for target mesh
 !
-      call mpi_input_mesh                                               &
-     &   (itp_dest_mesh_file, nprocs, org_femmesh, org_ele_mesh)
+      call mpi_input_mesh(gen_itp_p1%itp_dest_mesh_file,                &
+     &    nprocs, org_femmesh, org_ele_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos                                             &
@@ -87,7 +88,8 @@
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'set_2nd_geometry_type_itp_tbl', nprocs_2nd
-      call set_2nd_geometry_type_itp_tbl(itp_org_mesh_file, nprocs_2nd)
+      call set_2nd_geometry_type_itp_tbl                                &
+     &   (gen_itp_p1%itp_org_mesh_file, nprocs_2nd)
 !
 !  -------------------------------
 !  -------------------------------
@@ -138,9 +140,10 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
-      call s_construct_interpolate_table(org_femmesh%mesh%node,         &
-     &    next_tbl_i%neib_nod, itp_blks1%org_blocks,                    &
-     &    itp_n_coef, cst_itp_wk1%iflag_org_domain, ierr_missing)
+      call s_construct_interpolate_table                                &
+    &    (gen_itp_p1, org_femmesh%mesh%node, next_tbl_i%neib_nod,       &
+     &    itp_blks1%org_blocks, itp_n_coef,                             &
+     &    cst_itp_wk1%iflag_org_domain, ierr_missing)
 !
 !   ordering destination table by domain
 !
@@ -170,7 +173,7 @@
 !
       if (iflag_debug.eq.1)                                             &
      &   write(*,*) 'const_interpolate_table_4_orgin'
-      call const_interpolate_table_4_orgin(cst_itp_wk1)
+      call const_interpolate_table_4_orgin(gen_itp_p1, cst_itp_wk1)
 !
 !
       if (my_rank .eq. 0) then

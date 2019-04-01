@@ -20,10 +20,12 @@
       use t_interpolate_table
       use t_IO_step_parameter
       use t_ctl_data_gen_table
+      use t_ctl_params_4_gen_table
 !
       implicit none
 !
       type(ctl_data_gen_table), save :: gtbl_ctl1
+      type(ctl_params_4_gen_table), save :: gen_itp_p1
 !
       type(mesh_data), save :: org_femmesh
       type(element_geometry), save :: org_ele_mesh
@@ -43,8 +45,6 @@
 !
       subroutine init_analyzer
 !
-      use m_ctl_params_4_gen_table
-!
       use input_control_interpolate
       use const_mesh_information
       use set_size_4_smp_types
@@ -62,7 +62,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_itp_mesh'
-      call s_input_control_interpolate(gtbl_ctl1,                       &
+      call s_input_control_interpolate(gen_itp_p1, gtbl_ctl1,           &
      &    org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,         &
      &    itp_ele_t, t_ITP, ierr)
 !
@@ -72,7 +72,7 @@
 !
 !     --------------------- 
 !
-      if (my_rank .lt. ndomain_dest) then
+      if (my_rank .lt. gen_itp_p1%ndomain_dest) then
         call count_size_4_smp_mesh_type                                 &
      &     (new_femmesh%mesh%node, new_femmesh%mesh%ele)
         if(i_debug.eq.iflag_full_msg) then

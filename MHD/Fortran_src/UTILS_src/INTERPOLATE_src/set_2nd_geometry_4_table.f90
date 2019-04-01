@@ -59,7 +59,6 @@
       subroutine set_2nd_geometry_type_itp_tbl(mesh_file, nprocs_2nd)
 !
       use t_file_IO_parameter
-      use m_ctl_params_4_gen_table
       use set_parallel_mesh_in_1pe
       use transfer_to_long_integers
 !
@@ -116,7 +115,6 @@
       use t_search_block_4_itp
 !
       use m_2nd_pallalel_vector
-      use m_ctl_params_4_gen_table
 !
       use order_dest_table_by_type
       use transfer_to_long_integers

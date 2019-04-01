@@ -22,10 +22,12 @@
       use t_interpolate_table
       use t_IO_step_parameter
       use t_ctl_data_gen_table
+      use t_ctl_params_4_gen_table
 !
       implicit none
 !
       type(ctl_data_gen_table), save :: gtbl_ctl1
+      type(ctl_params_4_gen_table), save :: gen_itp_p1
 !
       type(time_step_param), save :: t_ITP
 !
@@ -55,8 +57,6 @@
 !
       subroutine initialize_itp_udt
 !
-      use m_ctl_params_4_gen_table
-!
       use init_nodal_field_address
       use input_control_interpolate
       use const_mesh_information
@@ -71,7 +71,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
-      call s_input_control_interpolate(gtbl_ctl1,                       &
+      call s_input_control_interpolate(gen_itp_p1, gtbl_ctl1,           &
      &    org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,         &
      &    itp_udt, t_ITP, ierr)
 !
@@ -85,7 +85,7 @@
 !
 !     --------------------- 
 !
-      if (my_rank .lt. ndomain_dest) then
+      if (my_rank .lt. gen_itp_p1%ndomain_dest) then
         call count_size_4_smp_mesh_type                                 &
      &     (new_femmesh%mesh%node, new_femmesh%mesh%ele)
         if (i_debug.eq.iflag_full_msg) then
@@ -111,7 +111,6 @@
 !
       subroutine analyze_itp_udt
 !
-      use m_ctl_params_4_gen_table
       use ucd_IO_select
       use set_ucd_data_to_type
       use nod_phys_send_recv
@@ -122,9 +121,9 @@
 !
       do istep = t_ITP%init_d%i_time_step, t_ITP%finish_d%i_end_step,   &
      &          t_ITP%ucd_step%increment
-        if (my_rank .lt. ndomain_org) then
+        if (my_rank .lt. gen_itp_p1%ndomain_org) then
           call set_data_by_read_ucd_once(my_rank, istep,                &
-     &        org_ucd_IO, nod_fld_ITP, itp_time_IO)
+     &        gen_itp_p1%org_ucd_IO, nod_fld_ITP, itp_time_IO)
 !
           call nod_fields_send_recv(org_femmesh%mesh, nod_fld_ITP)
         end if
@@ -138,12 +137,12 @@
 !
 !    output udt data
 !
-        if (my_rank .lt. ndomain_dest) then
+        if (my_rank .lt. gen_itp_p1%ndomain_dest) then
           call link_field_data_type_2_IO(new_femmesh%mesh%node,         &
      &        new_phys, fem_ucd)
 !
-          call sel_write_udt_file                                       &
-     &       (my_rank, istep, itp_ucd_IO, itp_time_IO, fem_ucd)
+          call sel_write_udt_file(my_rank, istep,                       &
+     &        gen_itp_p1%itp_ucd_IO, itp_time_IO, fem_ucd)
           call disconnect_ucd_data(fem_ucd)
           call disconnect_ucd_node(fem_ucd)
         end if

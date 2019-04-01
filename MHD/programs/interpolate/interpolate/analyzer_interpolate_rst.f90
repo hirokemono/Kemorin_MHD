@@ -23,10 +23,12 @@
       use t_interpolate_table
       use t_IO_step_parameter
       use t_ctl_data_gen_table
+      use t_ctl_params_4_gen_table
 !
       implicit none
 !
       type(ctl_data_gen_table), save :: gtbl_ctl1
+      type(ctl_params_4_gen_table), save :: gen_itp_p1
 !
       type(time_step_param), save :: t_ITP
 !
@@ -57,8 +59,6 @@
 !
       subroutine initialize_itp_rst
 !
-      use m_ctl_params_4_gen_table
-!
       use init_nodal_field_address
       use input_control_interpolate
       use const_mesh_information
@@ -76,7 +76,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
-      call s_input_control_interpolate(gtbl_ctl1,                       &
+      call s_input_control_interpolate(gen_itp_p1, gtbl_ctl1,           &
      &    org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,         &
      &    itp_rst, t_ITP, ierr)
 !
@@ -86,7 +86,7 @@
 !
 !     ---------------------
 !
-      if (my_rank .lt. ndomain_dest) then
+      if (my_rank .lt. gen_itp_p1%ndomain_dest) then
         call count_size_4_smp_mesh_type                                 &
      &     (new_femmesh%mesh%node, new_femmesh%mesh%ele)
         if (i_debug.eq.iflag_full_msg) then
@@ -98,8 +98,9 @@
 !
       i_step = int(t_ITP%init_d%i_time_step / t_ITP%rst_step%increment, &
      &        KIND(i_step))
-      call sel_read_alloc_step_FEM_file(ndomain_org, 0, i_step,         &
-     &    org_fst_IO, itp_time_IO, itp_fld_IO)
+      call sel_read_alloc_step_FEM_file                                 &
+     &   (gen_itp_p1%ndomain_org, 0, i_step,                            &
+     &    gen_itp_p1%org_fst_IO, itp_time_IO, itp_fld_IO)
       if (iflag_debug.eq.1) write(*,*) 'init_field_name_by_restart'
       call init_field_name_by_restart(itp_fld_IO, nod_fld_ITP)
       call dealloc_phys_data_IO(itp_fld_IO)
@@ -123,7 +124,6 @@
       subroutine analyze_itp_rst
 !
       use calypso_mpi
-      use m_ctl_params_4_gen_table
 !
       use field_IO_select
       use set_parallel_file_name
@@ -144,12 +144,12 @@
      &     KIND(i_rst_end))
       do i_step = i_rst_start, i_rst_end
 !
-        if (my_rank .lt. ndomain_org) then
+        if (my_rank .lt. gen_itp_p1%ndomain_org) then
           itp_fld_IO%nnod_IO = org_femmesh%mesh%node%numnod
           call alloc_phys_data_IO(itp_fld_IO)
 !
           call sel_read_step_FEM_field_file(nprocs, my_rank, i_step,    &
-     &        org_fst_IO, itp_time_IO, itp_fld_IO)
+     &        gen_itp_p1%org_fst_IO, itp_time_IO, itp_fld_IO)
 !
           call copy_field_data_from_restart                             &
      &       (org_femmesh%mesh%node, itp_fld_IO, nod_fld_ITP)
@@ -169,7 +169,7 @@
      &      new_femmesh%mesh%nod_comm, itp_rst,                         &
      &      new_femmesh%mesh%node, new_phys)
 !
-        if (my_rank .lt. ndomain_dest) then
+        if (my_rank .lt. gen_itp_p1%ndomain_dest) then
           call copy_time_step_size_data(t_ITP%init_d, itp_time_IO)
 !
           itp_fld_IO%nnod_IO = new_femmesh%mesh%node%numnod
@@ -182,7 +182,7 @@
      &       (itp_fld_IO%nnod_IO, itp_fld_IO%istack_numnod_IO)
 !
           call sel_write_step_FEM_field_file(nprocs, my_rank, i_step,   &
-     &        itp_fst_IO, itp_time_IO, itp_fld_IO)
+     &        gen_itp_p1%itp_fst_IO, itp_time_IO, itp_fld_IO)
 !
           call dealloc_phys_data_IO(itp_fld_IO)
           call dealloc_merged_field_stack(itp_fld_IO)

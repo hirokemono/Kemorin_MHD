@@ -3,8 +3,9 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!!      subroutine set_ctl_params_interpolation(gtbl_ctl)
+!!      subroutine set_ctl_params_interpolation(gtbl_ctl, gen_itp_p)
 !!        type(ctl_data_gen_table), intent(in) :: gtbl_ctl
+!!        type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
 !
       module set_ctl_interpolation
 !
@@ -24,47 +25,50 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_interpolation(gtbl_ctl)
+      subroutine set_ctl_params_interpolation(gtbl_ctl, gen_itp_p)
 !
       use m_machine_parameter
       use m_2nd_pallalel_vector
-      use m_ctl_params_4_gen_table
       use m_file_format_switch
       use m_field_file_format
+      use t_ctl_params_4_gen_table
       use t_ctl_data_gen_table
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
       use parallel_ucd_IO_select
 !
       type(ctl_data_gen_table), intent(in) :: gtbl_ctl
+      type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
 !
+      integer(kind = kint) :: nmax
 !
       call turn_off_debug_flag_by_ctl(my_rank, gtbl_ctl%src_plt)
       call set_control_smp_def(my_rank, gtbl_ctl%src_plt)
 !
-      call set_control_mesh_def(gtbl_ctl%src_plt, itp_org_mesh_file)
+      call set_control_mesh_def                                         &
+     &   (gtbl_ctl%src_plt, gen_itp_p%itp_org_mesh_file)
 !
       if (gtbl_ctl%dst_plt%mesh_file_prefix%iflag .ne. 0) then
-        itp_dest_mesh_file%file_prefix                                  &
+        gen_itp_p%itp_dest_mesh_file%file_prefix                        &
      &     = gtbl_ctl%dst_plt%mesh_file_prefix%charavalue
       end if
 !
       if (gtbl_ctl%table_head_ctl%iflag .ne. 0) then
-        table_file_head = gtbl_ctl%table_head_ctl%charavalue
+        gen_itp_p%table_file_head = gtbl_ctl%table_head_ctl%charavalue
       end if
 !
       if (gtbl_ctl%single_itp_tbl_head_ctl%iflag .ne. 0) then
-        sgl_table_file_head                                             &
+        gen_itp_p%sgl_table_file_head                                   &
      &     = gtbl_ctl%single_itp_tbl_head_ctl%charavalue
       end if
 !
       if (iflag_debug.eq.1) then
         write(*,*) 'np_smp', np_smp, np_smp
         write(*,*) 'org_mesh_head: ',                                   &
-     &            trim(itp_org_mesh_file%file_prefix)
+     &            trim(gen_itp_p%itp_org_mesh_file%file_prefix)
         write(*,*) 'dest_mesh_head: ',                                  &
-     &            trim(itp_dest_mesh_file%file_prefix)
-        write(*,*) 'table_file_head: ', trim(table_file_head)
+     &            trim(gen_itp_p%itp_dest_mesh_file%file_prefix)
+        write(*,*) 'table_file_head: ', trim(gen_itp_p%table_file_head)
       end if
 !
       if (gtbl_ctl%itp_node_head_ctl%iflag .ne. 0) then
@@ -76,25 +80,27 @@
 !
       call set_parallel_file_ctl_params(def_org_rst_prefix,             &
      &    gtbl_ctl%src_plt%restart_file_prefix,                         &
-     &    gtbl_ctl%src_plt%restart_file_fmt_ctl, org_fst_IO)
+     &    gtbl_ctl%src_plt%restart_file_fmt_ctl, gen_itp_p%org_fst_IO)
       call set_parallel_file_ctl_params(def_itp_rst_prefix,             &
      &    gtbl_ctl%dst_plt%restart_file_prefix,                         &
-     &    gtbl_ctl%dst_plt%restart_file_fmt_ctl, itp_fst_IO)
+     &    gtbl_ctl%dst_plt%restart_file_fmt_ctl, gen_itp_p%itp_fst_IO)
 !
-      call set_merged_ucd_file_define(gtbl_ctl%src_plt, org_ucd_IO)
+      call set_merged_ucd_file_define                                   &
+     &   (gtbl_ctl%src_plt, gen_itp_p%org_ucd_IO)
       call set_merged_ucd_file_ctl(itp_udt_file_head,                   &
      &    gtbl_ctl%dst_plt%field_file_prefix,                           &
-     &    gtbl_ctl%dst_plt%field_file_fmt_ctl, itp_ucd_IO)
+     &    gtbl_ctl%dst_plt%field_file_fmt_ctl, gen_itp_p%itp_ucd_IO)
 !
-      call set_interpolate_domains_ctl(gtbl_ctl)
+      call set_interpolate_domains_ctl(gtbl_ctl, gen_itp_p)
 !
-      itp_dest_mesh_file%iflag_format                                   &
+      gen_itp_p%itp_dest_mesh_file%iflag_format                         &
      &   = choose_file_format(gtbl_ctl%dst_plt%mesh_file_fmt_ctl)
 !
       ifmt_itp_table_file                                               &
      &   = choose_file_format(gtbl_ctl%fmt_itp_table_file_ctl)
 !
-      if (nprocs .ne. max(ndomain_org,ndomain_dest) ) then
+      nmax = max(gen_itp_p%ndomain_org,gen_itp_p%ndomain_dest)
+      if(nprocs .ne. nmax) then
         write(e_message,*)                                              &
      &     'Num. of rank is larger num. of orgin or destinate dom.'
         call  calypso_MPI_abort(ierr_P_MPI, e_message)

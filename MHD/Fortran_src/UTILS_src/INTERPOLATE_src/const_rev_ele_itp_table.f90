@@ -2,7 +2,9 @@
 !      module const_rev_ele_itp_table
 !
 !
-!!      subroutine const_rev_ele_interpolate_table(cst_itp_wk)
+!!      subroutine const_rev_ele_interpolate_table                      &
+!!     &         (gen_itp_p, cst_itp_wk)
+!!        type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
 !!        type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       module const_rev_ele_itp_table
@@ -25,20 +27,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_rev_ele_interpolate_table(cst_itp_wk)
+      subroutine const_rev_ele_interpolate_table                        &
+     &         (gen_itp_p, cst_itp_wk)
 !
       use calypso_mpi
 !
       use t_interpolate_tbl_org
+      use t_ctl_params_4_gen_table
 !
       use m_2nd_pallalel_vector
-      use m_ctl_params_4_gen_table
       use m_interpolate_table_IO
 !
       use copy_interpolate_types
       use itp_table_IO_select_4_zlib
       use const_interpolate_4_org
 !
+      type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
       type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       integer :: jp, my_rank_2nd
@@ -95,7 +99,7 @@
           call reverse_ele_itp_table_type                               &
      &       (itp_ele_c2f, itp_ele_f2c, cst_itp_wk)
 !
-          table_file_header = table_file_head
+          table_file_header = gen_itp_p%table_file_head
           call output_interpolate_table(my_rank, itp_ele_f2c)
         end if
       end do
@@ -113,7 +117,7 @@
         call reverse_ele_itp_table_type                                 &
      &     (itp_ele_c2f, itp_ele_f2c, cst_itp_wk)
 !
-        table_file_header = table_file_head
+        table_file_header = gen_itp_p%table_file_head
         call output_interpolate_table(my_rank, itp_ele_f2c)
       end if
 !

@@ -23,10 +23,12 @@
       use t_ctl_data_gen_table
       use t_work_const_itp_table
       use t_search_block_4_itp
+      use t_ctl_params_4_gen_table
 !
       implicit none
 !
       type(ctl_data_gen_table), save :: gtbl_ctl1
+      type(ctl_params_4_gen_table), save :: gen_itp_p1
 !
       type(mesh_data), save :: org_femmesh
       type(element_geometry), save :: org_ele_mesh
@@ -49,7 +51,6 @@
 !
       subroutine init_analyzer
 !
-      use m_ctl_params_4_gen_table
       use t_shape_functions
 !
       use const_mesh_information
@@ -69,15 +70,15 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_itp_table'
       call read_control_4_gen_itp_table(gtbl_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_gen_table'
-      call set_ctl_params_4_gen_table(gtbl_ctl1, itp_blks1)
+      call set_ctl_params_4_gen_table(gtbl_ctl1, gen_itp_p1, itp_blks1)
       
 call dealloc_ctl_data_gen_table(gtbl_ctl1)
 !
 !  --  read geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh                                               &
-     &   (itp_dest_mesh_file, nprocs, org_femmesh, org_ele_mesh)
+      call mpi_input_mesh(gen_itp_p1%itp_dest_mesh_file,                &
+     &    nprocs, org_femmesh, org_ele_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
       call set_nod_and_ele_infos                                        &
@@ -87,7 +88,8 @@ call dealloc_ctl_data_gen_table(gtbl_ctl1)
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'set_2nd_geometry_type_itp_tbl', nprocs_2nd
-      call set_2nd_geometry_type_itp_tbl(itp_org_mesh_file, nprocs_2nd)
+      call set_2nd_geometry_type_itp_tbl                                &
+     &   (gen_itp_p1%itp_org_mesh_file, nprocs_2nd)
 !
 !  -------------------------------
 !  -------------------------------
@@ -130,7 +132,6 @@ call dealloc_ctl_data_gen_table(gtbl_ctl1)
 !
       use calypso_mpi
       use m_interpolate_table_IO
-      use m_ctl_params_4_gen_table
 !
       use construct_interpolate_table
       use const_interpolate_4_org
@@ -145,9 +146,10 @@ call dealloc_ctl_data_gen_table(gtbl_ctl1)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
-      call s_construct_interpolate_table(org_femmesh%mesh%node,         &
-     &    next_tbl_i%neib_nod, itp_blks1%org_blocks,                    &
-     &    itp_e_coef, cst_itp_wke%iflag_org_domain, ierr_missing)
+      call s_construct_interpolate_table                                &
+     &   (gen_itp_p1, org_femmesh%mesh%node, next_tbl_i%neib_nod,       &
+     &    itp_blks1%org_blocks, itp_e_coef,                             &
+     &    cst_itp_wke%iflag_org_domain, ierr_missing)
 !
 !   ordering destination table by domain
 !
@@ -174,14 +176,14 @@ call dealloc_ctl_data_gen_table(gtbl_ctl1)
 !
 !   construct table for originate domain
 !
-      if(iflag_reverse_itp_tbl .eq. 1) then
+      if(gen_itp_p1%iflag_reverse_itp_tbl .eq. 1) then
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'const_rev_ele_interpolate_table'
-        call const_rev_ele_interpolate_table(cst_itp_wke)
+        call const_rev_ele_interpolate_table(gen_itp_p1, cst_itp_wke)
       else
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'const_interpolate_table_4_orgin'
-        call const_interpolate_table_4_orgin(cst_itp_wke)
+        call const_interpolate_table_4_orgin(gen_itp_p1, cst_itp_wke)
       end if
 !
 !

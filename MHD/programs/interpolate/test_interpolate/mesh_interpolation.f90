@@ -33,7 +33,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_ctl_params_4_gen_table
       use interpolate_position
       use t_interpolate_table
       use t_mesh_data

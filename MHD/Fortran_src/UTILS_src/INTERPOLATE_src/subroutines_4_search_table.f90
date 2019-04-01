@@ -3,15 +3,17 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine copy_target_local_vector(node, inod, x_target)
-!      subroutine copy_position_2_2nd_local_ele(new_node, new_ele,      &
-!     &          iele, x_local)
-!      subroutine cal_3vector_4_tet_2nd(nnod_4_ele_2, itet,             &
-!     &          v_target, v_tetra, x_target, x_local)
-!      subroutine init_coefs_on_tet(nnod_4_ele_2, itet, coefs_by_tet, s)
-!      subroutine check_solution_in_tet(ref_error, s_coef)
-!!      subroutine set_results_2_array(id_rank_org, inod, jele,         &
-!!     &          xi, iflag_org_domain, itp_coef_dest)
+!!      subroutine copy_target_local_vector(node, inod, x_target)
+!!      subroutine copy_position_2_2nd_local_ele(new_node, new_ele,     &
+!!     &          iele, x_local)
+!!      subroutine cal_3vector_4_tet_2nd(nnod_4_ele_2, itet,            &
+!!     &          v_target, v_tetra, x_target, x_local)
+!!      subroutine init_coefs_on_tet(nnod_4_ele_2, itet, coefs_by_tet, s)
+!!      subroutine check_solution_in_tet(ref_error, s_coef)
+!!      subroutine set_results_2_array(id_rank_org, gen_itp_p,          &
+!!     &          inod, jele, xi, iflag_org_domain, itp_coef_dest)
+!!        type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
+!!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
 !!      subroutine set_results_2_array_fin(id_rank_org, inod, jele, xi, &
 !!     &          differ_tmp, differ_res, iflag_org_tmp, itp_coef_dest)
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
@@ -164,14 +166,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_results_2_array(id_rank_org, inod, jele,           &
-     &          xi, iflag_org_domain, itp_coef_dest)
+      subroutine set_results_2_array(id_rank_org, gen_itp_p,            &
+     &          inod, jele, xi, iflag_org_domain, itp_coef_dest)
 !
-      use m_ctl_params_4_gen_table
+      use t_ctl_params_4_gen_table
       use t_interpolate_coefs_dest
 !
       integer, intent(in) :: id_rank_org
       integer(kind = kint), intent(in) :: inod, jele
+      type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
 !
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
       real(kind = kreal), intent(inout) :: xi(3)
@@ -181,9 +184,9 @@
 !
 !
       do nd = 1, 3
-        if ( abs(xi(nd) - one) .lt. eps_iter) then
+        if ( abs(xi(nd) - one) .lt. gen_itp_p%eps_iter) then
           xi(nd) = one
-        else if ( abs(xi(nd) + one) .lt. eps_iter) then
+        else if ( abs(xi(nd) + one) .lt. gen_itp_p%eps_iter) then
           xi(nd) = -one
         end if
       end do
@@ -200,7 +203,6 @@
      &          differ_tmp, differ_res, iflag_org_tmp, itp_coef_dest)
 !
       use m_constants
-      use m_ctl_params_4_gen_table
       use t_interpolate_coefs_dest
 !
       integer, intent(in) :: id_rank_org

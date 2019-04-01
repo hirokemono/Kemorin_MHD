@@ -4,16 +4,17 @@
 !     Written by H. Matsui on Sep., 2006
 !
 !!      subroutine search_node_in_element_1st                           &
-!!     &         (id_rank, org_node, org_ele, org_blk,                  &
+!!     &         (id_rank, gen_itp_p, org_node, org_ele, org_blk,       &
 !!     &          dest_node, itp_coef_dest, iflag_org_domain)
 !!      subroutine search_node_in_element_2nd                           &
-!!     &         (iinc, id_rank, org_node, org_ele, org_blk,            &
+!!     &         (iinc, id_rank, gen_itp_p, org_node, org_ele, org_blk, &
 !!     &          dest_node, itp_coef_dest, iflag_org_domain)
 !!      subroutine search_node_in_all_element                           &
-!!     &         (my_rank_2nd, error_level, org_node, org_ele,          &
-!!     &          dest_node, itp_coef_dest, iflag_org_domain)
-!!      subroutine giveup_to_search_element(my_rank_2nd, error_level,   &
-!!     &          inod_next_stack_4_node, org_node, org_ele, dest_node, &
+!!     &         (my_rank_2nd, error_level, gen_itp_p, org_node,        &
+!!     &          org_ele, dest_node, itp_coef_dest, iflag_org_domain)
+!!      subroutine giveup_to_search_element                             &
+!!     &         (my_rank_2nd, error_level, inod_next_stack_4_node,     &
+!!     &          gen_itp_p, org_node, org_ele, dest_node,              &
 !!     &          itp_coef_dest, iflag_org_domain)
 !!       type(node_data), intent(in) :: org_node
 !!       type(element_data), intent(in) :: org_ele
@@ -32,6 +33,7 @@
       use t_search_block_4_itp
       use t_geometry_data
       use t_interpolate_coefs_dest
+      use t_ctl_params_4_gen_table
 !
       implicit none
 !
@@ -45,11 +47,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine search_node_in_element_1st                             &
-     &         (id_rank, org_node, org_ele, org_blk,                    &
+     &         (id_rank, gen_itp_p, org_node, org_ele, org_blk,         &
      &          dest_node, itp_coef_dest, iflag_org_domain)
 !
       integer, intent(in) :: id_rank
 !
+      type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
       type(block_4_interpolate), intent(in) :: org_blk
@@ -87,7 +90,7 @@
      &              ) then
 !
                  call s_cal_interpolate_coefs                           &
-     &              (dest_node, org_node, org_ele, id_rank,             &
+     &              (gen_itp_p, dest_node, org_node, org_ele, id_rank,  &
      &               inod, jele, zero, iflag_nomessage,                 &
      &               iflag_org_tmp, iflag_org_domain, itp_coef_dest)
                  if ( iflag_org_domain(inod) .gt. 0) go to 10
@@ -105,12 +108,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine search_node_in_element_2nd                             &
-     &         (iinc, id_rank, org_node, org_ele, org_blk,              &
+     &         (iinc, id_rank, gen_itp_p, org_node, org_ele, org_blk,   &
      &          dest_node, itp_coef_dest, iflag_org_domain)
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: iinc
 !
+      type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
       type(block_4_interpolate), intent(in) :: org_blk
@@ -150,7 +154,7 @@
               jele = org_blk%ele_list_by_rng%item_grp(jnum)
 !
                 call s_cal_interpolate_coefs                            &
-     &              (dest_node, org_node, org_ele, id_rank,             &
+     &              (gen_itp_p, dest_node, org_node, org_ele, id_rank,  &
      &               inod, jele, zero, iflag_nomessage,                 &
      &               iflag_org_tmp, iflag_org_domain, itp_coef_dest)
                 if ( iflag_org_domain(inod) .gt. 0) go to 10
@@ -170,12 +174,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine search_node_in_all_element                             &
-     &         (my_rank_2nd, error_level, org_node, org_ele,            &
-     &          dest_node, itp_coef_dest, iflag_org_domain)
+     &         (my_rank_2nd, error_level, gen_itp_p, org_node,          &
+     &          org_ele, dest_node, itp_coef_dest, iflag_org_domain)
 !
       integer, intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level
 !
+      type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
 !
@@ -201,7 +206,7 @@
             do jele = 1, org_ele%numele
 !
               call s_cal_interpolate_coefs                              &
-     &           (dest_node, org_node, org_ele, my_rank_2nd,            &
+     &           (gen_itp_p, dest_node, org_node, org_ele, my_rank_2nd, &
      &            inod, jele,  error_level, iflag_message,              &
      &            iflag_org_tmp, iflag_org_domain, itp_coef_dest)
               if ( iflag_org_domain(inod) .gt. 0) go to  10
@@ -217,10 +222,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine giveup_to_search_element(my_rank_2nd, error_level,     &
-     &          inod_next_stack_4_node, org_node, org_ele, dest_node,   &
+      subroutine giveup_to_search_element                               &
+     &         (my_rank_2nd, error_level, inod_next_stack_4_node,       &
+     &          gen_itp_p, org_node, org_ele, dest_node,                &
      &          itp_coef_dest, iflag_org_domain)
 !
+      type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
 !
@@ -258,7 +265,7 @@
             do jele = 1, org_ele%numele
 !
               call s_cal_interpolate_coefs                              &
-     &           (dest_node, org_node, org_ele, my_rank_2nd,            &
+     &           (gen_itp_p, dest_node, org_node, org_ele, my_rank_2nd, &
      &            inod, jele, error_level, iflag_message,               &
      &            iflag_org_tmp, iflag_org_domain, itp_coef_dest)
               if ( iflag_org_domain(inod) .gt. 0) go to  10

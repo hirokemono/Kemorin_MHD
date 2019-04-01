@@ -3,9 +3,10 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!!      subroutine s_input_control_interpolate(gtbl_ctl,                &
+!!      subroutine s_input_control_interpolate(gen_itp_p, gtbl_ctl,     &
 !!     &          org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh, &
 !!     &          itp_info, t_param, ierr)
+!!        type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
 !!        type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !!        type(mesh_data), intent(inout) :: org_femmesh
 !!        type(element_geometry), intent(inout) :: org_ele_mesh
@@ -32,7 +33,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_interpolate(gtbl_ctl,                  &
+      subroutine s_input_control_interpolate(gen_itp_p, gtbl_ctl,       &
      &          org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,   &
      &          itp_info, t_param, ierr)
 !
@@ -41,9 +42,9 @@
       use t_step_parameter
       use t_IO_step_parameter
       use t_ctl_data_gen_table
+      use t_ctl_params_4_gen_table
 !
       use m_2nd_pallalel_vector
-      use m_ctl_params_4_gen_table
       use m_interpolate_table_IO
 !
       use set_ctl_interpolation
@@ -55,6 +56,7 @@
       use copy_interpolate_types
       use interpolate_nod_field_2_type
 !
+      type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
       type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
       type(mesh_data), intent(inout) :: org_femmesh
       type(element_geometry), intent(inout) :: org_ele_mesh
@@ -71,15 +73,15 @@
       call read_control_4_interpolate(gtbl_ctl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_interpolation'
-      call set_ctl_params_interpolation(gtbl_ctl)
+      call set_ctl_params_interpolation(gtbl_ctl, gen_itp_p)
 !
       call set_fixed_time_step_params                                   &
      &   (gtbl_ctl%t_gt_ctl, t_param, ierr, e_message)
 !
 !  --  read geometry for origin (if exist)
 !
-      if (my_rank .lt. ndomain_org) then
-        call input_mesh(itp_org_mesh_file, my_rank,                     &
+      if (my_rank .lt. gen_itp_p%ndomain_org) then
+        call input_mesh(gen_itp_p%itp_org_mesh_file, my_rank,           &
      &     org_femmesh, org_ele_mesh, ierr)
 !
         if(ierr .gt. 0) then
@@ -94,8 +96,8 @@
 !  --  read 2nd mesh for target (if exist)
 !
 !
-      if (my_rank .lt. ndomain_dest) then
-        call input_mesh(itp_dest_mesh_file, my_rank,                    &
+      if (my_rank .lt. gen_itp_p%ndomain_dest) then
+        call input_mesh(gen_itp_p%itp_dest_mesh_file, my_rank,          &
      &      new_femmesh, new_ele_mesh, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Target mesh data is wrong!!')
@@ -111,7 +113,7 @@
 !  --  read interpolate table
 !
       if (iflag_debug.eq.1) write(*,*) 'load_interpolate_table'
-      table_file_header = table_file_head
+      table_file_header = gen_itp_p%table_file_head
       call load_interpolate_table(my_rank, itp_info)
 !
       if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
