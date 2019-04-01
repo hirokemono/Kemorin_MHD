@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Aug., 2006
 !
 !!      subroutine int_node_filter_matrix(node, ele, g_FEM, jac_3d,     &
-!!     &          ref_m, fil_coef, inod, n_int)
+!!     &          ref_m, fil_coef, inod, n_int, fil_mat)
 !!      subroutine int_node_filter_weights                              &
 !!     &         (ele, g_FEM, jac_3d, fil_coef, n_int)
 !!        type(node_data), intent(in) :: node
@@ -12,6 +12,8 @@
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(reference_moments), intent(in) :: ref_m
+!!        type(each_filter_coef), intent(in) :: fil_coef
+!!        type(matrix_4_filter), intent(inout) :: fil_mat
 !
       module int_filter_functions
 !
@@ -28,14 +30,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_node_filter_matrix(node, ele, g_FEM, jac_3d,       &
-     &          ref_m, fil_coef, inod, n_int)
+     &          ref_m, fil_coef, inod, n_int, fil_mat)
 !
       use t_geometry_data
       use t_fem_gauss_int_coefs
       use t_jacobians
       use t_reference_moments
       use t_filter_coefs
-      use m_matrix_4_filter
+      use t_matrix_4_filter
       use set_int_point_position
       use fem_const_filter_matrix
 !
@@ -48,6 +50,8 @@
 !
       integer(kind = kint), intent(in) :: inod, n_int
 !
+      type(matrix_4_filter), intent(inout) :: fil_mat
+!
       integer(kind = kint) :: ii, ix
       integer(kind = kint) :: k_order
 !
@@ -58,7 +62,7 @@
      &    fil_coef%nnod_4_1nod_w, fil_coef%inod_4_1nod_w,               &
      &    fil_coef%nnod_4_1nod_f)
 !
-      mat_work = 0.0d0
+      fil_mat%mat_work = 0.0d0
 !
       do ii = 1, n_int*n_int*n_int
         ix = g_FEM%int_start3(n_int) + ii
@@ -78,7 +82,8 @@
      &        inod, ix, k_order)
 !
           call sum_sk_2_filter_mat                                      &
-     &       (ele%nnod_4_ele, fil_coef%nele_4_1nod_w, k_order)
+     &       (ele%nnod_4_ele, fil_coef%nele_4_1nod_w, k_order,          &
+     &        fil_mat%max_mat_size, fil_mat%num_work, fil_mat%mat_work)
         end do
       end do
 !

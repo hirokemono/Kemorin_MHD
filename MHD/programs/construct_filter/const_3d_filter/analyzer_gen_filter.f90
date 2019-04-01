@@ -178,7 +178,6 @@
       subroutine generate_filter_analyze
 !
       use m_array_for_send_recv
-      use m_matrix_4_filter
       use m_crs_matrix_4_filter
       use m_nod_filter_comm_table
       use m_filter_file_names

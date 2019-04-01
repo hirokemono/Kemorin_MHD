@@ -3,20 +3,22 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine set_tophat_filter_4_each_nod(nnod)
-!!      subroutine set_linear_filter_4_each_nod(nnod, idist, max_neib)
+!!      subroutine set_tophat_filter_4_each_nod(nnod, max_size, x_sol)
+!!      subroutine set_linear_filter_4_each_nod                         &
+!!     &         (nnod, idist, max_neib, max_size, x_sol)
 !!      subroutine set_gaussian_filter_each_nod                         &
-!!     &         (numnod, xx, inod, nnod, fil_coef,                     &
+!!     &         (numnod, xx, inod, nnod, max_size, x_sol, fil_coef,    &
 !!     &          dxidx_nod, dxidy_nod, dxidz_nod,                      &
 !!     &          deidx_nod, deidy_nod, deidz_nod,                      &
 !!     &          dzidx_nod, dzidy_nod, dzidz_nod)
 !!      subroutine normalize_each_filter_weight(fil_coef)
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!      subroutine cal_filter_moms_each_nod_type                        &
-!!     &         (inod, ref_m, fil_coef, mom_nod)
+!!     &         (inod, ref_m, fil_coef, fil_mat, mom_nod)
 !!        type(reference_moments), intent(in) :: ref_m
 !!        type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !!        type(each_filter_coef), intent(in) :: fil_coef
+!!        type(matrix_4_filter), intent(in) :: fil_mat
 !
       module set_simple_filters
 !
@@ -37,11 +39,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_tophat_filter_4_each_nod(nnod)
-!
-      use m_matrix_4_filter
+      subroutine set_tophat_filter_4_each_nod(nnod, max_size, x_sol)
 !
       integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: max_size
+      real(kind = kreal), intent(inout) :: x_sol(max_size)
 !
 !$omp parallel workshare
       x_sol(1:nnod) = one
@@ -51,12 +53,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_linear_filter_4_each_nod(nnod, idist, max_neib)
-!
-      use m_matrix_4_filter
+      subroutine set_linear_filter_4_each_nod                           &
+     &         (nnod, idist, max_neib, max_size, x_sol)
 !
       integer(kind = kint), intent(in) :: nnod, max_neib
       integer(kind = kint), intent(in) :: idist(nnod)
+      integer(kind = kint), intent(in) :: max_size
+      real(kind = kreal), intent(inout) :: x_sol(max_size)
 !
       integer(kind = kint) :: i
 !
@@ -72,13 +75,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_gaussian_filter_each_nod                           &
-     &         (numnod, xx, inod, nnod, fil_coef,                       &
+     &         (numnod, xx, inod, nnod, max_size, x_sol, fil_coef,      &
      &          dxidx_nod, dxidy_nod, dxidz_nod,                        &
      &          deidx_nod, deidy_nod, deidz_nod,                        &
      &          dzidx_nod, dzidy_nod, dzidz_nod)
 !
       use m_ctl_params_4_gen_filter
-      use m_matrix_4_filter
 !
       integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: xx(numnod,3)
@@ -94,6 +96,8 @@
       real(kind=kreal), intent(in) :: deidz_nod(nnod)
       real(kind=kreal), intent(in) :: dzidz_nod(nnod)
 !
+      integer(kind = kint), intent(in) :: max_size
+      real(kind = kreal), intent(inout) :: x_sol(max_size)
       type(each_filter_coef), intent(inout) :: fil_coef
 !
 !
@@ -164,20 +168,22 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_filter_moms_each_nod_type                          &
-     &         (inod, ref_m, fil_coef, mom_nod)
+     &         (inod, ref_m, fil_coef, fil_mat, mom_nod)
 !
       use t_filter_moments
       use t_reference_moments
+      use t_matrix_4_filter
 !
       integer(kind = kint), intent(in) :: inod
       type(reference_moments), intent(in) :: ref_m
       type(each_filter_coef), intent(in) :: fil_coef
+      type(matrix_4_filter), intent(in) :: fil_mat
 !
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
 !
       call cal_filter_moments_each_nod                                  &
-     &   (fil_coef, ref_m%num_order_3d, ref_m%iorder_mom_3d,            &
+     &   (fil_coef, fil_mat, ref_m%num_order_3d, ref_m%iorder_mom_3d,   &
      &    mom_nod%moms%f_x(inod), mom_nod%moms%f_y(inod),               &
      &    mom_nod%moms%f_z(inod), mom_nod%moms%f_x2(inod),              &
      &    mom_nod%moms%f_y2(inod), mom_nod%moms%f_z2(inod),             &
@@ -189,14 +195,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_filter_moments_each_nod                            &
-     &         (fil_coef, num_order_3d, iorder_mom_3d,                  &
+     &         (fil_coef, fil_mat, num_order_3d, iorder_mom_3d,         &
      &          filter_x_nod,  filter_y_nod,  filter_z_nod,             &
      &          filter_x2_nod, filter_y2_nod, filter_z2_nod,            &
      &          filter_xy_nod, filter_yz_nod, filter_zx_nod)
 !
-      use m_matrix_4_filter
+      use t_filter_moments
+      use t_matrix_4_filter
 !
       type(each_filter_coef), intent(in) :: fil_coef
+      type(matrix_4_filter), intent(in) :: fil_mat
       integer(kind = kint), intent(in) :: num_order_3d
       integer(kind = kint), intent(in) :: iorder_mom_3d(num_order_3d,3)
 !
@@ -214,30 +222,39 @@
       integer(kind = kint) :: j, icou, kx, ky, kz
 !
       icou = 0
-      do j = 1, max_mat_size
+      do j = 1, fil_mat%max_mat_size
         kx = iorder_mom_3d(j,1)
         ky = iorder_mom_3d(j,2)
         kz = iorder_mom_3d(j,3)
         if ( (kx+ky+kz).eq.1 .or. (kx+ky+kz).eq.2) then
           icou = icou + 1
           if     (kx.eq.1 .and. ky.eq.0 .and. kz.eq.0) then
-            call cal_moments_from_matrix(fil_coef, j, filter_x_nod )
+            call cal_moments_from_matrix(fil_coef, j,                   &
+     &          fil_mat%max_mat_size, fil_mat%a_mat, filter_x_nod )
           else if(kx.eq.0 .and. ky.eq.1 .and. kz.eq.0) then
-            call cal_moments_from_matrix(fil_coef, j, filter_y_nod )
+            call cal_moments_from_matrix(fil_coef, j,                   &
+     &          fil_mat%max_mat_size, fil_mat%a_mat, filter_y_nod )
           else if(kx.eq.0 .and. ky.eq.0 .and. kz.eq.1) then
-            call cal_moments_from_matrix(fil_coef, j, filter_z_nod )
+            call cal_moments_from_matrix(fil_coef, j,                   &
+     &          fil_mat%max_mat_size, fil_mat%a_mat, filter_z_nod )
           else if(kx.eq.1 .and. ky.eq.1 .and. kz.eq.0) then
-            call cal_moments_from_matrix(fil_coef, j, filter_xy_nod)
+            call cal_moments_from_matrix(fil_coef, j,                   &
+     &          fil_mat%max_mat_size, fil_mat%a_mat, filter_xy_nod)
           else if(kx.eq.0 .and. ky.eq.1 .and. kz.eq.1) then
-            call cal_moments_from_matrix(fil_coef, j, filter_yz_nod)
+            call cal_moments_from_matrix(fil_coef, j,                   &
+     &          fil_mat%max_mat_size, fil_mat%a_mat, filter_yz_nod)
           else if(kx.eq.1 .and. ky.eq.0 .and. kz.eq.1) then
-            call cal_moments_from_matrix(fil_coef, j, filter_zx_nod)
+            call cal_moments_from_matrix(fil_coef, j,                   &
+     &          fil_mat%max_mat_size, fil_mat%a_mat, filter_zx_nod)
           else if(kx.eq.2 .and. ky.eq.0 .and. kz.eq.0) then
-            call cal_moments_from_matrix(fil_coef, j, filter_x2_nod)
+            call cal_moments_from_matrix(fil_coef, j,                   &
+     &          fil_mat%max_mat_size, fil_mat%a_mat, filter_x2_nod)
           else if(kx.eq.0 .and. ky.eq.2 .and. kz.eq.0) then
-            call cal_moments_from_matrix(fil_coef, j, filter_y2_nod)
+            call cal_moments_from_matrix(fil_coef, j,                   &
+     &          fil_mat%max_mat_size, fil_mat%a_mat, filter_y2_nod)
           else if(kx.eq.0 .and. ky.eq.0 .and. kz.eq.2) then
-            call cal_moments_from_matrix(fil_coef, j, filter_z2_nod)
+            call cal_moments_from_matrix(fil_coef, j,                   &
+     &          fil_mat%max_mat_size, fil_mat%a_mat, filter_z2_nod)
           end if
         else if(icou .eq. 9) then
           exit
@@ -248,12 +265,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_moments_from_matrix(fil_coef, j, filter_moment)
-!
-      use m_matrix_4_filter
+      subroutine cal_moments_from_matrix                                &
+     &         (fil_coef, j, max_size, a_mat, filter_moment)
 !
       type(each_filter_coef), intent(in) :: fil_coef
       integer(kind = kint), intent(in) :: j
+      integer(kind = kint), intent(in) :: max_size
+      real(kind = kreal), intent(in) :: a_mat(max_size,max_size)
+!
       real(kind = kreal), intent(inout) :: filter_moment
 !
       integer(kind = kint) :: i

@@ -19,9 +19,14 @@
 !!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
 !!     &          ntot_int_3d, n_int, xjac, aw, nele_grp, iele_grp,     &
 !!     &          nnod_f, filter_1nod)
-!!      subroutine sum_sk_2_filter_mat(nnod_4_ele, nele_grp, k_order)
+!!      subroutine sum_sk_2_filter_mat(nnod_4_ele, nele_grp, k_order,   &
+!!     &          max_size, num_work, mat_work)
+!!      subroutine copy_2_filter_matrix(num_fixed_point,                &
+!!     &          max_size, num_work, mat_work, a_mat)
 !!      subroutine sum_sk_2_filter_weight                               &
 !!     &         (nnod_4_ele, nele_grp, nnod_f, weight_1nod)
+!!      subroutine substitute_fixed_moments(num_fixed_point,            &
+!!     &          max_size, vec_mat, a_mat)
 !
       module fem_const_filter_matrix
 !
@@ -44,7 +49,6 @@
 !
       private :: mat_num_filter, sk_filter
       private :: mat_num_weight
-
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,8 +57,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine allocate_sk_filter(nnod_4_ele)
-!
-      use m_matrix_4_filter
 !
       integer(kind = kint), intent(in) :: nnod_4_ele
 !
@@ -247,19 +249,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sum_sk_2_filter_mat(nnod_4_ele, nele_grp, k_order)
-!
-      use m_matrix_4_filter
+      subroutine sum_sk_2_filter_mat(nnod_4_ele, nele_grp, k_order,     &
+     &          max_size, num_work, mat_work)
 !
       integer(kind = kint), intent(in) :: nnod_4_ele, nele_grp
       integer(kind = kint), intent(in) :: k_order
+      integer(kind = kint), intent(in) :: max_size
+!
+      integer(kind = kint), intent(in) :: num_work
+      real(kind = kreal), intent(inout) :: mat_work(num_work)
 !
       integer(kind = kint) :: inum, k1, jnum
 !
 !
       do inum = 1, nele_grp
         do k1 = 1, nnod_4_ele
-          jnum = k_order + mat_num_filter(inum,k1)*max_mat_size
+          jnum = k_order + mat_num_filter(inum,k1) * max_size
           mat_work(jnum) = mat_work(jnum) + sk_filter(inum,k1)
         end do
       end do
@@ -268,17 +273,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_2_filter_matrix(num_fixed_point)
-!
-      use m_matrix_4_filter
+      subroutine copy_2_filter_matrix(num_fixed_point,                  &
+     &          max_size, num_work, mat_work, a_mat)
 !
       integer(kind = kint), intent(in) :: num_fixed_point
+      integer(kind = kint), intent(in) :: max_size, num_work
+      real(kind = kreal), intent(in) :: mat_work(num_work)
+!
+      real(kind = kreal), intent(inout) :: a_mat(max_size,max_size)
+!
       integer(kind = kint) :: k_order, inum, jnum
 !
 !
-      do k_order = 1, (max_mat_size-num_fixed_point)
-        do inum = 1, max_mat_size
-          jnum = k_order + inum*max_mat_size
+      do k_order = 1, (max_size-num_fixed_point)
+        do inum = 1, max_size
+          jnum = k_order + inum*max_size
           a_mat(k_order+num_fixed_point,inum) = mat_work(jnum)
         end do
       end do
@@ -287,15 +296,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine substitute_fixed_moments(num_fixed_point)
-!
-      use m_matrix_4_filter
+      subroutine substitute_fixed_moments(num_fixed_point,              &
+     &          max_size, vec_mat, a_mat)
 !
       integer(kind = kint), intent(in) :: num_fixed_point
+      integer(kind = kint), intent(in) :: max_size
+!
+      real(kind = kreal), intent(inout) :: vec_mat(max_size)
+      real(kind = kreal), intent(inout) :: a_mat(max_size,max_size)
+!
       integer(kind = kint) :: l_order, k_order, knum
 !
 !
-      do k_order = 1, (max_mat_size-num_fixed_point)
+      do k_order = 1, (max_size-num_fixed_point)
         do l_order = 1, num_fixed_point
           knum = k_order+num_fixed_point
           vec_mat(knum) = vec_mat(knum)                                 &

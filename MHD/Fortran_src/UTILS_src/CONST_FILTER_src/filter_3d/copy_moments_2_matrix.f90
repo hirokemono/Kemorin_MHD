@@ -4,10 +4,11 @@
 !        programmed by H.Matsui on Aug., 2006
 !        Modified by H.Matsui on Mar., 2008
 !
-!!      subroutine set_filter_moments_on_node                           &
-!!     &         (inod, ref_m, num_fixed_point)
+!!      subroutine set_filter_moments_on_node(inod, ref_m,              &
+!!     &          num_fixed_point, max_size, mat_size, vec_mat)
 !!        type(reference_moments), intent(in) :: ref_m
-!!      subroutine copy_filter_coefs(fil_coef)
+!!      subroutine copy_filter_coefs(fil_mat, fil_coef)
+!!        type(matrix_4_filter), intent(in) :: fil_mat
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!
 !!      subroutine copy_each_filter_coefs(org_coef, new_coef)
@@ -28,20 +29,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_filter_moments_on_node                             &
-     &         (inod, ref_m, num_fixed_point)
+      subroutine set_filter_moments_on_node(inod, ref_m,                &
+     &          num_fixed_point, max_size, mat_size, vec_mat)
 !
       use t_reference_moments
-      use m_matrix_4_filter
 !
       type(reference_moments), intent(in) :: ref_m
       integer(kind = kint), intent(in) :: num_fixed_point, inod
+      integer(kind = kint), intent(in) :: max_size, mat_size
+!
+      real(kind = kreal), intent(inout) :: vec_mat(max_size)
 !
       integer(kind = kint) :: inum
 !
 !
       if (num_fixed_point.eq. 0) vec_mat = 0.0d0
-      do inum = 1, mat_size-num_fixed_point
+      do inum = 1, mat_size - num_fixed_point
         vec_mat(inum+num_fixed_point)                                   &
      &     = ref_m%seed_moments_nod(inod,inum)
       end do
@@ -50,20 +53,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_filter_coefs(fil_coef)
+      subroutine copy_filter_coefs(fil_mat, fil_coef)
 !
       use t_filter_coefs
-      use m_matrix_4_filter
+      use t_matrix_4_filter
 !
+      type(matrix_4_filter), intent(in) :: fil_mat
       type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint) :: i
 !
-      do i = mat_size+1, fil_coef%nnod_4_1nod_w
+      do i = fil_mat%mat_size+1, fil_coef%nnod_4_1nod_w
         fil_coef%filter_1nod(i) = 0.0d0
       end do
-      do i = 1, mat_size
-        fil_coef%filter_1nod(i) = x_sol(i)
+      do i = 1, fil_mat%mat_size
+        fil_coef%filter_1nod(i) = fil_mat%x_sol(i)
       end do
 !
       end subroutine copy_filter_coefs

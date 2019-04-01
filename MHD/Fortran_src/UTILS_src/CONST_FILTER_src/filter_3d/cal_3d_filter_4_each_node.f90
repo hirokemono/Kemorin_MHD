@@ -3,14 +3,19 @@
 !
 !        programmed by H.Matsui on Mar., 2008
 !
-!!      subroutine const_filter_mat_each_nod (node, FEM_elen,           &
-!!     &          ref_m, fil_coef, inod, num_fixed_point, ierr)
+!!      subroutine const_filter_mat_each_nod(node, FEM_elen, ref_m,     &
+!!     &          fil_coef, inod, num_fixed_point, fil_mat, ierr)
 !!        type(node_data), intent(in) :: node
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(reference_moments), intent(in) :: ref_m
 !!        type(each_filter_coef), intent(in) :: fil_coef
 !!      subroutine cal_filter_and_coefficients                          &
-!!     &         (ele, g_FEM, jac_3d, fil_coef)
+!!     &         (ele, g_FEM, jac_3d, fil_mat, fil_coef)
+!!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(matrix_4_filter), intent(in) :: fil_mat
+!!        type(each_filter_coef), intent(inout) :: fil_coef
 !!      subroutine cal_rms_filter_coefs(fil_coef, rms_weight, rms_filter)
 !
       module cal_3d_filter_4_each_node
@@ -20,6 +25,7 @@
 !
       use calypso_mpi
       use t_filter_coefs
+      use t_matrix_4_filter
 !
       implicit none
 !
@@ -31,14 +37,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_filter_mat_each_nod (node, FEM_elen,             &
-     &          ref_m, fil_coef, inod, num_fixed_point, ierr)
+      subroutine const_filter_mat_each_nod(node, FEM_elen, ref_m,       &
+     &          fil_coef, inod, num_fixed_point, fil_mat, ierr)
 !
       use t_geometry_data
       use t_filter_elength
       use t_reference_moments
 !
-      use m_matrix_4_filter
       use copy_moments_2_matrix
       use fem_const_filter_matrix
       use modify_matrix_and_rhs
@@ -50,6 +55,8 @@
 !
       integer(kind = kint), intent(in) :: inod
       integer(kind = kint), intent(in) :: num_fixed_point
+!
+      type(matrix_4_filter), intent(inout) :: fil_mat
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -57,26 +64,31 @@
 !
       if ( num_fixed_point .gt. 0 ) then
         call set_constant_filter_coefs(node, FEM_elen, fil_coef,        &
-     &      inod, num_fixed_point)
+     &      inod, num_fixed_point, fil_mat)
       end if
 !
-      call set_filter_moments_on_node(inod, ref_m, num_fixed_point)
-      call copy_2_filter_matrix( num_fixed_point )
-!      call substitute_fixed_moments( num_fixed_point )
+      call set_filter_moments_on_node(inod, ref_m, num_fixed_point,     &
+     &    fil_mat%max_mat_size, fil_mat%mat_size, fil_mat%vec_mat)
+      call copy_2_filter_matrix(num_fixed_point, fil_mat%max_mat_size,  &
+     &   fil_mat%num_work, fil_mat%mat_work, fil_mat%a_mat)
+!      call substitute_fixed_moments(num_fixed_point,                   &
+!    &     fil_mat%max_mat_size, fil_mat%vec_mat, fil_mat%a_mat)
 !
-      call swap_matrix_by_diag_size(mat_size, max_mat_size,             &
-     &         vec_mat, a_mat)
-      call check_diagonal(mat_size, max_mat_size, a_mat, ierr)
+      call swap_matrix_by_diag_size(fil_mat%mat_size,                   &
+     &    fil_mat%max_mat_size, fil_mat%vec_mat, fil_mat%a_mat)
+      call check_diagonal(fil_mat%mat_size, fil_mat%max_mat_size,       &
+     &    fil_mat%a_mat, ierr)
       if (ierr .eq. 1) return
 !
-      call scaling_by_diagonal(mat_size, max_mat_size, vec_mat, a_mat)
+      call scaling_by_diagonal(fil_mat%mat_size, fil_mat%max_mat_size,  &
+     &    fil_mat%vec_mat, fil_mat%a_mat)
 !
       end subroutine const_filter_mat_each_nod
 !
 !-----------------------------------------------------------------------
 !
       subroutine cal_filter_and_coefficients                            &
-     &         (ele, g_FEM, jac_3d, fil_coef)
+     &         (ele, g_FEM, jac_3d, fil_mat, fil_coef)
 !
       use t_geometry_data
       use t_fem_gauss_int_coefs
@@ -88,12 +100,13 @@
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
+      type(matrix_4_filter), intent(in) :: fil_mat
 !
       type(each_filter_coef), intent(inout) :: fil_coef
 !
 !
       fil_coef%weight_1nod = 0.0d0
-      call copy_filter_coefs(fil_coef)
+      call copy_filter_coefs(fil_mat, fil_coef)
 !
       call int_node_filter_weights                                      &
      &   (ele, g_FEM, jac_3d, fil_coef, num_int_points)
@@ -132,13 +145,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_constant_filter_coefs                              &
-     &         (node, FEM_elen, fil_coef, inod, num_fixed)
+     &         (node, FEM_elen, fil_coef, inod, num_fixed, fil_mat)
 !
       use t_geometry_data
       use t_filter_elength
 !
       use m_ctl_params_4_gen_filter
-      use m_matrix_4_filter
       use cal_gaussian_at_node
 !
       type(node_data), intent(in) :: node
@@ -146,12 +158,14 @@
       type(each_filter_coef), intent(in) :: fil_coef
       integer(kind = kint), intent(in) :: inod, num_fixed
 !
+      type(matrix_4_filter), intent(inout) :: fil_mat
+!
       real(kind = kreal) :: g
       integer(kind = kint) :: i, j, jnod
 !
 !
-      vec_mat = 0.0d0
-      a_mat = 0.0d0
+      fil_mat%vec_mat = 0.0d0
+      fil_mat%a_mat = 0.0d0
       do i = 1, num_fixed
         j = i
 !        j = mat_size-i+1
@@ -163,8 +177,8 @@
      &      FEM_elen%elen_nod%moms%f_y2(inod),                          &
      &      FEM_elen%elen_nod%moms%f_z2(inod), g)
 !
-        vec_mat(i) = g
-        a_mat(i,j) = one
+        fil_mat%vec_mat(i) = g
+        fil_mat%a_mat(i,j) = one
       end do
 !
       end subroutine set_constant_filter_coefs
