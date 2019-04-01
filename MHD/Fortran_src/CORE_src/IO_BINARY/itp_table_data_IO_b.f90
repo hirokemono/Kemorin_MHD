@@ -110,7 +110,7 @@
       if(bflag%ierr_IO .ne. 0) return
 !
       num64 = IO_itp_org%ntot_table_org
-      call write_mul_integer_b                                          &
+      call write_mul_int8_b                                             &
      &  (num64, IO_itp_org%inod_gl_dest_4_org, bflag)
       if(bflag%ierr_IO .ne. 0) return
       call write_mul_integer_b                                          &
@@ -200,7 +200,7 @@
       if(bflag%ierr_IO .ne. 0) return
 !
       num64 = IO_itp_org%ntot_table_org
-      call read_mul_integer_b                                           &
+      call read_mul_int8_b                                              &
      &   (bflag, num64, IO_itp_org%inod_gl_dest_4_org)
       if(bflag%ierr_IO .ne. 0) return
       call read_mul_integer_b                                           &
@@ -277,7 +277,7 @@
       if(bflag%ierr_IO .ne. 0) return
 !
       num64 = IO_itp_dest%ntot_table_dest
-      call write_mul_integer_b                                          &
+      call write_mul_int8_b                                             &
      &   (num64, IO_itp_c_dest%inod_gl_dest, bflag)
       if(bflag%ierr_IO .ne. 0) return
       call write_mul_integer_b                                          &
@@ -378,7 +378,7 @@
       call alloc_itp_coef_dest(IO_itp_dest, IO_itp_c_dest)
 !
       num64 = IO_itp_dest%ntot_table_dest
-      call read_mul_integer_b                                           &
+      call read_mul_int8_b                                              &
      &   (bflag, num64, IO_itp_c_dest%inod_gl_dest)
       if(bflag%ierr_IO .ne. 0) return
       call read_mul_integer_b                                           &

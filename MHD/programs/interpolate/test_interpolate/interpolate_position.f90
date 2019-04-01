@@ -4,13 +4,13 @@
 !     Written by H. Matsui on Sep., 2006
 !
 !!      subroutine s_interpolate_position                               &
-!!     &         (node, NP_dest, comm_dest, itp_info)
+!!     &         (node, NP_dest, comm_dest, itp_info, xx_interpolate)
 !!      subroutine s_interpolate_position_by_N                          &
-!!     &         (node, NP_dest, comm_dest, itp_info)
+!!     &         (node, NP_dest, comm_dest, itp_info, xx_interpolate)
 !!      subroutine s_interpolate_position_by_s                          &
-!!     &         (node, NP_dest, comm_dest, itp_info)
+!!     &         (node, NP_dest, comm_dest, itp_info, xx_interpolate)
 !!      subroutine s_interpolate_global_node                            &
-!!     &         (NP_dest, comm_dest, itp_org, itp_dest)
+!!     &        (NP_dest, comm_dest, itp_org, itp_dest, inod_global_itp)
 !
       module interpolate_position
 !
@@ -32,11 +32,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_position                                 &
-     &         (node, NP_dest, comm_dest, itp_info)
+     &         (node, NP_dest, comm_dest, itp_info, xx_interpolate)
 !
       use m_constants
       use m_2nd_pallalel_vector
-      use m_interpolated_geometry
 !
       use m_array_for_send_recv
 !
@@ -46,6 +45,8 @@
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
       type(interpolate_table), intent(in) :: itp_info
+!
+      real(kind = kreal), intent(inout) :: xx_interpolate(NP_dest,3)
 !
       integer(kind = kint) :: inod
 !
@@ -76,11 +77,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_position_by_N                            &
-     &         (node, NP_dest, comm_dest, itp_info)
+     &         (node, NP_dest, comm_dest, itp_info, xx_interpolate)
 !
       use m_constants
       use m_2nd_pallalel_vector
-      use m_interpolated_geometry
 !
       use m_array_for_send_recv
 !
@@ -90,6 +90,8 @@
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
       type(interpolate_table), intent(in) :: itp_info
+!
+      real(kind = kreal), intent(inout) :: xx_interpolate(NP_dest,3)
 !
       integer(kind = kint) :: inod
 !
@@ -120,11 +122,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_position_by_s                            &
-     &         (node, NP_dest, comm_dest, itp_info)
+     &         (node, NP_dest, comm_dest, itp_info, xx_interpolate)
 !
       use m_constants
       use m_2nd_pallalel_vector
-      use m_interpolated_geometry
 !
       use m_array_for_send_recv
 !
@@ -135,6 +136,8 @@
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
       type(interpolate_table), intent(in) :: itp_info
+!
+      real(kind = kreal), intent(inout) :: xx_interpolate(NP_dest,3)
 !
       integer(kind = kint) :: inod, nd
 !
@@ -163,13 +166,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_global_node                              &
-     &         (NP_dest, comm_dest, itp_org, itp_dest)
+     &        (NP_dest, comm_dest, itp_org, itp_dest, inod_global_itp)
 !
       use m_solver_SR
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
 !
-      use m_interpolated_geometry
       use m_2nd_pallalel_vector
 !
       use calypso_SR_int
@@ -181,13 +183,16 @@
       type(interpolate_table_org), intent(in) :: itp_org
       type(interpolate_table_dest), intent(in) :: itp_dest
 !
-      call verify_2nd_iccg_int_mat(NP_dest)
+      integer(kind = kint_gl), intent(inout)                            &
+     &                         :: inod_global_itp(NP_dest)
+!
+      call verify_2nd_iccg_int8_mat(NP_dest)
 !
 !     communication
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'calypso_send_recv_int'
-      call calypso_send_recv_int                                        &
+      call calypso_send_recv_int8                                       &
      &   (iflag_import_item, itp_org%ntot_table_org, NP_dest,           &
      &    itp_org%num_dest_domain, itp_org%iflag_self_itp_send,         &
      &    itp_org%id_dest_domain, itp_org%istack_nod_tbl_org,           &
@@ -195,16 +200,16 @@
      &    itp_dest%num_org_domain, itp_dest%iflag_self_itp_recv,        &
      &    itp_dest%id_org_domain, itp_dest%istack_nod_tbl_dest,         &
      &    itp_dest%inod_dest_4_dest, itp_dest%irev_dest_4_dest,         &
-     &    itp_org%inod_gl_dest_4_org, ivec_2nd(1) )
+     &    itp_org%inod_gl_dest_4_org, ivec8_2nd(1) )
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'solver_send_recv_i'
       if (comm_dest%num_neib.gt.0) then
-        call SOLVER_SEND_RECV_int_type                                  &
-     &                (NP_dest, comm_dest, ivec_2nd(1) )
+        call SOLVER_SEND_RECV_int8_type                                 &
+     &                (NP_dest, comm_dest, ivec8_2nd(1) )
       end if
 !
-      inod_global_itp(1:NP_dest) = ivec_2nd(1:NP_dest)
+      inod_global_itp(1:NP_dest) = ivec8_2nd(1:NP_dest)
 !
       end subroutine s_interpolate_global_node
 !

@@ -4,14 +4,17 @@
 !
 !     Writen by H. Matsui on Aug., 2006
 !
-!       subroutine verify_2nd_iccg_matrix(NB, numnod)
-!       subroutine allocate_2nd_iccg_matrix(NB, numnod)
-!       subroutine deallocate_2nd_iccg_matrix
-!
-!       subroutine verify_2nd_iccg_int_mat(numnod)
-!       subroutine allocate_2nd_iccg_int_mat(numnod)
-!       subroutine deallocate_2nd_iccg_int_mat
-!
+!!       subroutine verify_2nd_iccg_matrix(NB, numnod)
+!!       subroutine allocate_2nd_iccg_matrix(NB, numnod)
+!!       subroutine deallocate_2nd_iccg_matrix
+!!
+!!       subroutine verify_2nd_iccg_int_mat(numnod)
+!!       subroutine allocate_2nd_iccg_int_mat(numnod)
+!!       subroutine deallocate_2nd_iccg_int_mat
+!!
+!!       subroutine verify_2nd_iccg_int8_mat(numnod)
+!!       subroutine allocate_2nd_iccg_int8_mat(numnod)
+!!       subroutine deallocate_2nd_iccg_int8_mat
 !
       module   m_2nd_pallalel_vector
 !
@@ -29,6 +32,9 @@
 !
       integer(kind = kint), allocatable :: ivec_2nd(:)
       integer(kind = kint) :: isize_solver_int2 = -1
+! 
+      integer(kind = kint_gl), allocatable :: ivec8_2nd(:)
+      integer(kind = kint) :: isize_solver_i8_2 = -1
 ! 
 ! ----------------------------------------------------------------------
 !
@@ -83,6 +89,23 @@
        end subroutine verify_2nd_iccg_int_mat
 !
 !  ---------------------------------------------------------------------
+!
+       subroutine verify_2nd_iccg_int8_mat(numnod)
+!
+       integer(kind = kint), intent(in) :: numnod
+!
+       if (isize_solver_int2 .lt. 0) then
+         call allocate_2nd_iccg_int8_mat(numnod)
+       else
+         if (isize_solver_int2 .lt. numnod) then
+           call deallocate_2nd_iccg_int8_mat
+         call allocate_2nd_iccg_int8_mat(numnod)
+         end if
+       end if
+!
+       end subroutine verify_2nd_iccg_int8_mat
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
        subroutine allocate_2nd_iccg_matrix(NB, numnod)
@@ -134,6 +157,31 @@
        isize_solver_int2 = 0
 !
        end subroutine deallocate_2nd_iccg_int_mat
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+       subroutine allocate_2nd_iccg_int8_mat(numnod)
+!
+       integer(kind = kint), intent(in) :: numnod
+!
+!
+       allocate(ivec8_2nd(numnod))
+       ivec8_2nd  = 0
+!
+       isize_solver_i8_2 = numnod
+!
+       end subroutine allocate_2nd_iccg_int8_mat
+!
+!  ---------------------------------------------------------------------
+!
+       subroutine deallocate_2nd_iccg_int8_mat
+!
+!
+       deallocate(ivec8_2nd)
+       isize_solver_i8_2 = 0
+!
+       end subroutine deallocate_2nd_iccg_int8_mat
 !
 !  ---------------------------------------------------------------------
 !

@@ -25,7 +25,7 @@
 !> Structure of interpolation coefficients for target grid
       type interpolate_coefs_dest
 !>   global node ID for target domain
-        integer(kind = kint), allocatable :: inod_gl_dest(:)
+        integer(kind = kint_gl), allocatable :: inod_gl_dest(:)
 !>   local element ID to make interpolation
         integer(kind = kint), allocatable :: iele_org_4_dest(:)
 !>   interpolation type ID

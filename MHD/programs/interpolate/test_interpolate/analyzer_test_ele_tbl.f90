@@ -86,15 +86,10 @@
 !
       subroutine analyze
 !
-      use m_interpolated_geometry
       use mesh_interpolation
 !
 !
-       if (iflag_debug.eq.1) write(*,*) 'allocate_interpolate_geometry'
-      call allocate_interpolate_geometry                                &
-     &   (new_femmesh%mesh%node%numnod)
-!
-       if (iflag_debug.eq.1) write(*,*) 'interpolation_4_mesh_test'
+      if (iflag_debug.eq.1) write(*,*) 'interpolation_4_mesh_test'
       call interpolation_4_mesh_test                                    &
      &   (org_femmesh%mesh, new_femmesh%mesh, itp_ele_t)
 !

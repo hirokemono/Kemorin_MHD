@@ -124,7 +124,7 @@
 !
       do i = 1, node%internal_node
         itp_coef_dest%inod_gl_dest(i)                                   &
-     &     = int(node%inod_global(itp_dest%inod_dest_4_dest(i)))
+     &     = node%inod_global(itp_dest%inod_dest_4_dest(i))
       end do
 !
       deallocate(nnod_table_wtype_dest)

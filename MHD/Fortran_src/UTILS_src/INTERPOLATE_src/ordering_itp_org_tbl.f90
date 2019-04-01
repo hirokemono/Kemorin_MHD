@@ -65,7 +65,7 @@
       integer(kind = kint), intent(inout) :: istack_itp_type_org(0:4)
       integer(kind = kint), intent(inout)                               &
      &                     :: inod_itp_send(ntot_table_org)
-      integer(kind = kint), intent(inout)                               &
+      integer(kind = kint_gl), intent(inout)                             &
      &                     :: inod_gl_dest_4_org(ntot_table_org)
       integer(kind = kint), intent(inout)                               &
      &                     :: iele_org_4_org(ntot_table_org)

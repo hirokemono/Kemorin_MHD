@@ -44,7 +44,7 @@
 !>   export table for interpolation
         integer(kind = kint), allocatable :: inod_itp_send(:)
 !>   global node ID for target domain
-        integer(kind = kint), allocatable :: inod_gl_dest_4_org(:)
+        integer(kind = kint_gl), allocatable :: inod_gl_dest_4_org(:)
 !>   local element ID to make interpolation
         integer(kind = kint), allocatable :: iele_org_4_org(:)
 !>   interpolation type ID

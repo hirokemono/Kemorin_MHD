@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!      subroutine s_check_ineterppolated_mesh(my_rank)
+!!      subroutine s_check_ineterppolated_mesh                          &
+!!     &         (dest_node, inod_global_itp, xx_interpolate)
 !
       module check_ineterppolated_mesh
 !
@@ -17,15 +18,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_check_ineterppolated_mesh(dest_node)
+      subroutine s_check_ineterppolated_mesh                            &
+     &         (dest_node, inod_global_itp, xx_interpolate)
 !
       use calypso_mpi
       use m_2nd_pallalel_vector
-      use m_interpolated_geometry
 !
       use t_geometry_data
 !
       type(node_data), intent(in) :: dest_node
+!
+      integer(kind = kint_gl), intent(in)                               &
+     &               :: inod_global_itp(dest_node%numnod)
+      real(kind = kreal), intent(in)                                    &
+     &               :: xx_interpolate(dest_node%numnod,3)
 !
       integer(kind = kint) :: ip, inod, iflag
       real(kind = kreal) :: rflag
@@ -59,8 +65,6 @@
         end if
         call calypso_MPI_barrier
       end do
-!
-      call deallocate_interpolate_geometry
 !
       end subroutine s_check_ineterppolated_mesh
 !
