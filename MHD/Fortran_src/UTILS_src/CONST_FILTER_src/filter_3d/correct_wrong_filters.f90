@@ -9,11 +9,13 @@
 !!     &          whole_area, fluid_area, fil_mat)
 !!      subroutine correct_wrong_fluid_filters                          &
 !!     &         (id_org_filter, fixed_file_name, mesh, g_FEM, jac_3d,  &
-!!     &          FEM_elen, ref_m, dxidxs, mom_nod, fil_coef, tmp_coef, &
-!!     &          fluid_area, fil_mat)
+!!     &          FEM_elen, ref_m, fil_elist, dxidxs, mom_nod,          &
+!!     &          fil_coef, tmp_coef, fluid_area, fil_mat)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(reference_moments), intent(in) :: ref_m
+!!        type(element_list_4_filter), intent(in) :: fil_elist
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
 !!        type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !!        type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
@@ -37,6 +39,7 @@
       use t_reference_moments
       use t_filter_coefs
       use t_matrix_4_filter
+      use t_element_list_4_filter
 !
       use binary_IO
       use expand_filter_area_4_1node
@@ -153,7 +156,7 @@
 !
       subroutine correct_wrong_fluid_filters                            &
      &         (id_org_filter, fixed_file_name, mesh, g_FEM, jac_3d,    &
-     &          FEM_elen, ref_m, dxidxs, mom_nod,                       &
+     &          FEM_elen, ref_m, fil_elist, dxidxs, mom_nod,            &
      &          fil_coef, tmp_coef, fluid_area, fil_mat)
 !
       character(len = kchara), intent(in) :: fixed_file_name
@@ -164,6 +167,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(reference_moments), intent(in) :: ref_m
+      type(element_list_4_filter), intent(in) :: fil_elist
 !
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
@@ -174,7 +178,8 @@
       integer(kind = kint) :: inod, ierr2, ierr
 !
 !
-      call init_4_cal_fluid_fileters(mesh, ele_4_nod_f, neib_nod_f)
+      call init_4_cal_fluid_fileters                                    &
+     &   (mesh, fil_elist, ele_4_nod_f, neib_nod_f)
 !
       write(70+my_rank,*) ' Best condition for fluid filter'
 !

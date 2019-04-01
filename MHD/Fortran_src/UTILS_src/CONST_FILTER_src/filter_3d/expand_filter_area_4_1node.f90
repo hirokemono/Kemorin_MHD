@@ -5,8 +5,10 @@
 !
 !!      subroutine init_4_cal_fileters(mesh, ele_4_nod, neib_nod,       &
 !!     &          fil_coef, tmp_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
-!!      subroutine init_4_cal_fluid_fileters(mesh, ele_4_nod, neib_nod)
+!!      subroutine init_4_cal_fluid_fileters                            &
+!!     &         (mesh, fil_elist, ele_4_nod, neib_nod)
 !!        type(mesh_geometry),       intent(in) :: mesh
+!!        type(element_list_4_filter), intent(in) :: fil_elist
 !!
 !!      subroutine finalize_4_cal_fileters                              &
 !!     &         (fil_coef, fil_tbl_crs, fil_mat_crs, fil_mat, ref_m)
@@ -81,17 +83,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_4_cal_fluid_fileters(mesh, ele_4_nod, neib_nod)
+      subroutine init_4_cal_fluid_fileters                              &
+     &         (mesh, fil_elist, ele_4_nod, neib_nod)
 !
       use t_mesh_data
       use t_next_node_ele_4_node
+      use t_element_list_4_filter
 !
       use m_filter_file_names
       use m_field_file_format
       use set_ele_id_4_node_type
-      use set_element_list_4_filter
 !
       type(mesh_geometry),       intent(in) :: mesh
+      type(element_list_4_filter), intent(in) :: fil_elist
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
       type(element_around_node), intent(inout) :: ele_4_nod
 !
@@ -102,7 +106,8 @@
         write(filter_coef_code,'(a)') '!'
       end if
 !
-      call set_grouped_ele_id_4_node(nele_4_filter, iele_4_filter,      &
+      call set_grouped_ele_id_4_node                                    &
+     &   (fil_elist%nele_4_filter, fil_elist%iele_4_filter,             &
      &    mesh%node, mesh%ele, ele_4_nod)
 !
       call const_next_nod_id_4_node                                     &

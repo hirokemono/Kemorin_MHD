@@ -30,6 +30,7 @@
       use t_filter_file_data
       use t_ctl_data_gen_3d_filter
       use t_reference_moments
+      use t_element_list_4_filter
 !
       implicit none
 !
@@ -53,6 +54,7 @@
       type(dxidx_data_type), save :: dxidxs1
       type(gradient_filter_mom_type), save :: FEM_momenet1
       type(reference_moments), save :: ref_m1
+      type(element_list_4_filter), save :: fil_elist1
 !
       type(filtering_data_type), save :: filtering_gen
 !
@@ -79,7 +81,6 @@
       use check_surface_groups
       use set_normal_vectors
       use set_edge_vectors
-      use set_element_list_4_filter
       use sum_normal_4_surf_group
       use const_jacobians_3d
       use set_ctl_gen_filter
@@ -115,7 +116,7 @@
       call s_cal_1d_moments(FEM_elen_f)
 !
       call s_set_element_list_4_filter                                  &
-     &   (fem_f%mesh%ele, fem_f%group%ele_grp)
+     &   (fem_f%mesh%ele, fem_f%group%ele_grp, fil_elist1)
 !
 !     --------------------- 
 !
@@ -213,8 +214,8 @@
       call init_nod_send_recv(fem_f%mesh)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
-      call s_cal_element_size(fem_f%mesh, ele_filter,                   &
-     &    fem_f%group, tbl_crs_f, mat_tbl_f, rhs_mat_f, fem_int_f,      &
+      call s_cal_element_size(fem_f%mesh, ele_filter, fem_f%group,      &
+     &    fil_elist1, tbl_crs_f, mat_tbl_f, rhs_mat_f, fem_int_f,       &
      &    FEM_elen_f, ref_m1, filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
@@ -243,7 +244,8 @@
 !
         call select_const_filter                                        &
      &      (file_name, fem_f%mesh, fem_int_f, tbl_crs_f, rhs_mat_f,    &
-     &       FEM_elen_f, ref_m1, dxidxs1, FEM_momenet1, fil_gen1)
+     &       FEM_elen_f, fil_elist1, ref_m1, dxidxs1,                   &
+     &       FEM_momenet1, fil_gen1)
         call dealloc_jacobians_node(filter_dxi1)
 !
 !

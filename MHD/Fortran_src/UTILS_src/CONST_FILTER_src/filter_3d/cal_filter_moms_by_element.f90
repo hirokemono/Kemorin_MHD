@@ -5,7 +5,7 @@
 !
 !!      subroutine cal_filter_moments_on_node_1st                       &
 !!     &         (nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl, tbl_crs, &
-!!     &          m_lump, FEM_elen, mass, fem_wk, f_l, ref_m)
+!!     &          m_lump, fil_elist, FEM_elen, mass, fem_wk, f_l, ref_m)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data),    intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -14,6 +14,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(CRS_matrix_connect), intent(in) :: tbl_crs
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
+!!        type(element_list_4_filter), intent(in) :: fil_elist
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(CRS_matrix), intent(inout) :: mass
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -35,6 +36,7 @@
       use t_finite_element_mat
       use t_fem_gauss_int_coefs
       use t_reference_moments
+      use t_element_list_4_filter
 !
       implicit none
 !
@@ -148,7 +150,7 @@
 !
       subroutine cal_filter_moments_on_node_1st                         &
      &         (nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl, tbl_crs,   &
-     &          m_lump, FEM_elen, mass, fem_wk, f_l, ref_m)
+     &          m_lump, fil_elist, FEM_elen, mass, fem_wk, f_l, ref_m)
 !
       use t_geometry_data
       use t_jacobians
@@ -165,6 +167,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(lumped_mass_matrices), intent(in) :: m_lump
+      type(element_list_4_filter), intent(in) :: fil_elist
       type(gradient_model_data_type), intent(in) :: FEM_elen
 !
       type(CRS_matrix), intent(inout) :: mass
@@ -173,8 +176,9 @@
       type(reference_moments), intent(inout) :: ref_m
 !
 !
-      call cal_filter_moments_on_node(nod_comm, node, ele, g_FEM,       &
-     &    jac_3d, rhs_tbl, tbl_crs, m_lump, FEM_elen%nnod_filter_mom,   &
+      call cal_filter_moments_on_node                                   &
+     &   (nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl,                  &
+     &    tbl_crs, m_lump, fil_elist, FEM_elen%nnod_filter_mom,         &
      &    FEM_elen%nele_filter_mom, ref_m%max_num_order_1d,             &
      &    ref_m%num_order_3d, ref_m%iorder_mom_3d,                      &
      &    ref_m%ref_moments_1d, ref_m%seed_moments_ele,                 &
@@ -249,7 +253,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_filter_moments_on_node(nod_comm, node, ele,        &
-     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump,                &
+     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, fil_elist,     &
      &          nnod_filter_mom, nele_filter_mom,                       &
      &          max_num_order_1d, num_order_3d, iorder_mom_3d,          &
      &          ref_moments_1d, seed_moments_ele,                       &
@@ -276,6 +280,7 @@
       type(CRS_matrix_connect), intent(in) :: tbl_crs
 !
       type(lumped_mass_matrices), intent(in) :: m_lump
+      type(element_list_4_filter), intent(in) :: fil_elist
 !
       integer(kind = kint), intent(in) :: nnod_filter_mom
       integer(kind = kint), intent(in) :: nele_filter_mom
@@ -349,9 +354,9 @@
         else
 !
           call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,     &
-     &        rhs_tbl, tbl_crs, m_lump, itype_mass_matrix,              &
-     &        mass, seed_moments_ele(1,n),                              &
-     &        seed_moments_nod(1,n), fem_wk, f_l)
+     &        rhs_tbl, tbl_crs, m_lump, fil_elist, itype_mass_matrix,   &
+     &        mass, seed_moments_ele(1,n), seed_moments_nod(1,n),       &
+     &        fem_wk, f_l)
           call nod_scalar_send_recv                                     &
      &       (node%numnod, nod_comm, seed_moments_nod(1,n) )
         end if

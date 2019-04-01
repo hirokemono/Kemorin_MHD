@@ -5,11 +5,12 @@
 !      Modified by H. Matsui on Mar., 2008
 !
 !!      subroutine s_cal_element_size                                   &
-!!     &         (mesh, ele_mesh, group, tbl_crs, mat_tbl,              &
+!!     &         (mesh, ele_mesh, group, fil_elist, tbl_crs, mat_tbl,   &
 !!     &          rhs_mat, fem_int, FEM_elen, ref_m, filter_dxi, dxidxs)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_groups), intent(in) ::   group
+!!        type(element_list_4_filter), intent(in) :: fil_elist
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(dxdxi_data_type), intent(inout) :: filter_dxi
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
@@ -62,7 +63,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_element_size                                     &
-     &         (mesh, ele_mesh, group, tbl_crs, mat_tbl,                &
+     &         (mesh, ele_mesh, group, fil_elist, tbl_crs, mat_tbl,     &
      &          rhs_mat, fem_int, FEM_elen, ref_m, filter_dxi, dxidxs)
 !
       use m_ctl_params_4_gen_filter
@@ -70,6 +71,7 @@
       use t_filter_elength
       use t_reference_moments
       use t_filter_dxdxi
+      use t_element_list_4_filter
 !
       use set_table_4_RHS_assemble
       use cal_diff_elesize_on_ele
@@ -86,6 +88,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_groups), intent(in) ::   group
+      type(element_list_4_filter), intent(in) :: fil_elist
 !
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(table_mat_const), intent(inout) :: mat_tbl
@@ -145,11 +148,11 @@
 !
       call cal_dx2_on_node(mesh%nod_comm, mesh%node, mesh%ele,          &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    tbl_crs, fem_int%m_lump, itype_mass_matrix, mass1,            &
+     &    tbl_crs, fem_int%m_lump, fil_elist, itype_mass_matrix, mass1, &
      &    FEM_elen, rhs_mat%fem_wk, rhs_mat%f_l)
       call cal_dxi_dxes_node(mesh%nod_comm, mesh%node, mesh%ele,        &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    tbl_crs, fem_int%m_lump, itype_mass_matrix, mass1,            &
+     &    tbl_crs, fem_int%m_lump, fil_elist, itype_mass_matrix, mass1, &
      &    dxidxs, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call elength_nod_send_recv                                        &
@@ -195,8 +198,8 @@
       call cal_filter_moments_on_node_1st                               &
      &   (mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,                        &
-     &    fem_int%rhs_tbl, tbl_crs, fem_int%m_lump, FEM_elen, mass1,    &
-     &    rhs_mat%fem_wk, rhs_mat%f_l, ref_m)
+     &    fem_int%rhs_tbl, tbl_crs, fem_int%m_lump, fil_elist,          &
+     &    FEM_elen, mass1, rhs_mat%fem_wk, rhs_mat%f_l, ref_m)
 !
 !  ---------------------------------------------------
 !        differences of element size for each element

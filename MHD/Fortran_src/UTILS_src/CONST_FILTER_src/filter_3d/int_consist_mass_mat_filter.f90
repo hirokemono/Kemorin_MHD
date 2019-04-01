@@ -94,6 +94,7 @@
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl
+!      type(element_list_4_filter), intent(in) :: fil_elist
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(CRS_matrix), intent(inout) :: mass
@@ -113,8 +114,8 @@
 !      else
 !        if (iflag_debug.eq.1)                                          &
 !     &    write(*,*) 'int_group_consist_mass_matrix'
-!        call int_group_consist_mass_matrix                             &
-!     &     (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
+!        call int_group_consist_mass_matrix(ele, g_FEM, jac_3d,         &
+!     &      rhs_tbl, mat_tbl, fil_elist, fem_wk, mass)
 !      end if
 !
       end subroutine int_vol_consist_mass_matrix
@@ -145,10 +146,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_group_consist_mass_matrix                          &
-     &         (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
+      subroutine int_group_consist_mass_matrix(ele, g_FEM, jac_3d,      &
+     &          rhs_tbl, mat_tbl, fil_elist, fem_wk, mass)
 !
-      use m_element_list_4_filter
+      use t_element_list_4_filter
       use int_grouped_mass_matrix
 !
       type(element_data), intent(in) :: ele
@@ -156,14 +157,16 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl
+      type(element_list_4_filter), intent(in) :: fil_elist
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(CRS_matrix), intent(inout) :: mass
 !
 !
       call int_grp_consist_mass_matrix                                  &
-     &   (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, iele_filter_smp_stack,  &
-     &    nele_4_filter, iele_4_filter, num_int_points,                 &
+     &   (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl,                         &
+     &    fil_elist%iele_filter_smp_stack, fil_elist%nele_4_filter,     &
+     &    fil_elist%iele_4_filter, num_int_points,                      &
      &    fem_wk, mass%ntot_A, mass%A_crs)
 !
       end subroutine int_group_consist_mass_matrix

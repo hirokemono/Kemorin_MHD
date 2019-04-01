@@ -8,10 +8,22 @@
 !      subroutine deallocate_scalar_ele_4_int
 !
 !!      subroutine int_dx_ele2_node(nod_comm, node, ele,                &
-!!     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, itype_mass,  &
-!!     &          mass, elen_ele, elen_nod, fem_wk, f_l)
+!!     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, fil_elist,   &
+!!     &          itype_mass, mass, elen_ele, elen_nod, fem_wk, f_l)
 !!      subroutine int_vol_diff_dxs(node, ele, g_FEM, jac_3d,           &
 !!     &          rhs_tbl, fem_wk, f_nl, elen_org_nod)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data),    intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(CRS_matrix_connect), intent(in) :: tbl_crs
+!!        type(lumped_mass_matrices), intent(in) :: m_lump
+!!        type(element_list_4_filter), intent(in) :: fil_elist
+!!        type(CRS_matrix), intent(inout) :: mass
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l
 !
       module int_vol_elesize_on_node
 !
@@ -54,10 +66,8 @@
 !---------------------------------------------------------------------
 !
       subroutine int_dx_ele2_node(nod_comm, node, ele,                  &
-     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, itype_mass,    &
-     &          mass, elen_ele, elen_nod, fem_wk, f_l)
-!
-      use m_element_list_4_filter
+     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, fil_elist,     &
+     &          itype_mass, mass, elen_ele, elen_nod, fem_wk, f_l)
 !
       use t_comm_table
       use t_geometry_data
@@ -65,6 +75,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_crs_matrix
+      use t_element_list_4_filter
 !
       use int_element_field_2_node
       use cal_ff_smp_to_ffs
@@ -78,6 +89,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(lumped_mass_matrices), intent(in) :: m_lump
+      type(element_list_4_filter), intent(in) :: fil_elist
 !
       integer(kind = kint), intent(in) :: itype_mass
       real(kind = kreal), intent(in) :: elen_ele(ele%numele)
@@ -90,12 +102,13 @@
 !
       if (id_filter_area_grp(1) .eq. -1) then
         call int_area_ele_scalar_2_node                                 &
-     &     (node, ele, g_FEM, jac_3d, rhs_tbl,  ele%istack_ele_smp,     &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, ele%istack_ele_smp,      &
      &      elen_ele, fem_wk, f_l)
       else
-        call int_grp_ele_scalar_2_node                                  &
-     &     (node, ele, g_FEM, jac_3d, rhs_tbl, iele_filter_smp_stack,   &
-     &      nele_4_filter, iele_4_filter, elen_ele, fem_wk, f_l)
+        call int_grp_ele_scalar_2_node(node, ele, g_FEM, jac_3d,        &
+     &      rhs_tbl, fil_elist%iele_filter_smp_stack,                   &
+     &      fil_elist%nele_4_filter, fil_elist%iele_4_filter,           &
+     &      elen_ele, fem_wk, f_l)
       end if
 !
 !

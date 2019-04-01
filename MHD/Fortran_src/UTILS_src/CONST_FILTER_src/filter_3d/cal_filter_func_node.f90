@@ -8,18 +8,20 @@
 !!     &          fil_coef, tmp_coef, whole_area, fil_mat)
 !!      subroutine const_fluid_filter_coefs                             &
 !!     &         (file_name, mesh, g_FEM, jac_3d, FEM_elen, ref_m,      &
-!!     &          fil_coef, tmp_coef, fluid_area, fil_mat)
+!!     &          fil_elist, fil_coef, tmp_coef, fluid_area, fil_mat)
 !!        type(filter_area_flag), intent(inout) :: fluid_area
 !!      subroutine set_simple_filter (file_name, mesh,                  &
 !!     &          g_FEM, jac_3d, FEM_elen, ref_m, dxidxs,               &
 !!     &          mom_nod, fil_coef, tmp_coef, fil_mat)
 !!      subroutine set_simple_fluid_filter(file_name, mesh,             &
-!!     &          g_FEM, jac_3d, FEM_elen, ref_m, dxidxs,               &
+!!     &          g_FEM, jac_3d, FEM_elen, ref_m, fil_elist, dxidxs,    &
 !!     &          mom_nod, fil_coef, fil_mat)
 !!        type(mesh_geometry),       intent(in) :: mesh
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(reference_moments), intent(in) :: ref_m
+!!        type(element_list_4_filter), intent(in) :: fil_elist
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
 !!        type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !!        type(each_filter_coef), intent(inout) :: fil_coef
@@ -39,6 +41,7 @@
       use t_reference_moments
       use t_filter_coefs
       use t_matrix_4_filter
+      use t_element_list_4_filter
 !
       implicit none
 !
@@ -106,7 +109,7 @@
 !
       subroutine const_fluid_filter_coefs                               &
      &         (file_name, mesh, g_FEM, jac_3d, FEM_elen, ref_m,        &
-     &          fil_coef, tmp_coef, fluid_area, fil_mat)
+     &          fil_elist, fil_coef, tmp_coef, fluid_area, fil_mat)
 !
       use m_ctl_params_4_gen_filter
       use cal_filter_func_each_node
@@ -118,6 +121,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(reference_moments), intent(in) :: ref_m
+      type(element_list_4_filter), intent(in) :: fil_elist
 !
       type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
       type(filter_area_flag), intent(inout) :: fluid_area
@@ -126,7 +130,8 @@
       integer(kind = kint) :: inod, ierr
 !
 !
-      call init_4_cal_fluid_fileters(mesh, ele_4_nod_s, neib_nod_s)
+      call init_4_cal_fluid_fileters                                    &
+     &   (mesh, fil_elist, ele_4_nod_s, neib_nod_s)
 !
       write(70+my_rank,*) ' Best condition for fluid filter'
 !
@@ -194,7 +199,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_simple_fluid_filter(file_name, mesh,               &
-     &          g_FEM, jac_3d, FEM_elen, ref_m, dxidxs,                 &
+     &          g_FEM, jac_3d, FEM_elen, ref_m, fil_elist, dxidxs,      &
      &          mom_nod, fil_coef, fil_mat)
 !
       use t_filter_dxdxi
@@ -209,6 +214,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(reference_moments), intent(in) :: ref_m
+      type(element_list_4_filter), intent(in) :: fil_elist
 !
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
@@ -218,7 +224,8 @@
       integer(kind = kint) :: inod
 !
 !
-      call init_4_cal_fluid_fileters(mesh, ele_4_nod_s, neib_nod_s)
+      call init_4_cal_fluid_fileters                                    &
+     &   (mesh, fil_elist, ele_4_nod_s, neib_nod_s)
 !
       write(80+my_rank,*) ' Best condition for filter'
 !

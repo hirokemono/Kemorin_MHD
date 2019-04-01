@@ -41,6 +41,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!      type(element_list_4_filter), intent(in) :: fil_elist
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -52,7 +53,8 @@
      &    num_int_points, fem_wk, f_l, m_lump)
 !      else
 !        call int_grped_mass_matrix_filter                              &
-!     &     (node, ele, g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
+!     &     (node, ele, g_FEM, jac_3d, rhs_tbl, fil_elist,              &
+!     &      fem_wk, f_l, m_lump)
 !      end if
 !
 !      call check_mass_martix(my_rank, node%numnod, m_lump)
@@ -63,9 +65,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_grped_mass_matrix_filter                           &
-     &         (node, ele, g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, fil_elist,           &
+     &          fem_wk, f_l, m_lump)
 !
-      use m_element_list_4_filter
+      use t_element_list_4_filter
       use int_grouped_mass_matrix
       use cal_ff_smp_to_ffs
 !
@@ -74,6 +77,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(element_list_4_filter), intent(in) :: fil_elist
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -83,14 +87,16 @@
       if     (ele%nnod_4_ele.eq.num_t_quad                              &
      &   .or. ele%nnod_4_ele.eq.num_t_lag) then
         call int_grp_mass_matrix_HRZ_full                               &
-     &     (node, ele, g_FEM, jac_3d, rhs_tbl, iele_filter_smp_stack,   &
-     &      nele_4_filter, iele_4_filter, num_int_points,               &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl,                          &
+     &      fil_elist%iele_filter_smp_stack, fil_elist%nele_4_filter,   &
+     &      fil_elist%iele_4_filter, num_int_points,                    &
      &      fem_wk, f_l, m_lump)
       else
         call int_grp_mass_matrix_diag                                   &
-     &    (node, ele, g_FEM, jac_3d, rhs_tbl,                           &
-     &     iele_filter_smp_stack, nele_4_filter, iele_4_filter,         &
-     &     num_int_points, fem_wk, f_l, m_lump)
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl,                          &
+     &      fil_elist%iele_filter_smp_stack, fil_elist%nele_4_filter,   &
+     &      fil_elist%iele_4_filter, num_int_points,                    &
+     &      fem_wk, f_l, m_lump)
       end if
 !
       end subroutine int_grped_mass_matrix_filter
