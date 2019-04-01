@@ -5,7 +5,7 @@
 !
 !!      subroutine allocate_search_param
 !!      subroutine deallocate_search_param
-!!      subroutine set_ctl_params_4_gen_table(gtbl_ctl)
+!!      subroutine set_ctl_params_4_gen_table(gtbl_ctl, itp_blks)
 !!      subroutine set_interpolate_domains_ctl(gtbl_ctl)
 !!        type(ctl_data_gen_table), intent(in) :: gtbl_ctl
 !
@@ -83,21 +83,22 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_4_gen_table(gtbl_ctl)
+      subroutine set_ctl_params_4_gen_table(gtbl_ctl, itp_blks)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
       use m_2nd_pallalel_vector
-      use m_search_bolck_4_itp
       use m_file_format_switch
       use m_default_file_prefix
       use t_ctl_data_gen_table
+      use t_search_block_4_itp
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
       use skip_comment_f
 !
       type(ctl_data_gen_table), intent(in) :: gtbl_ctl
+      type(para_block_4_interpolate), intent(inout) :: itp_blks
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, gtbl_ctl%src_plt)
@@ -143,35 +144,41 @@
       if (iflag_debug.eq.1)                                             &
      &   write(*,*) 'id_ele_hash_type', id_ele_hash_type
 !
-      num_xyz_block(1:3) = 1
+      itp_blks%num_xyz_block(1:3) = 1
       if (id_ele_hash_type .eq. 1) then
         if(gtbl_ctl%num_radial_divide_ctl%iflag .gt. 0) then
-          num_xyz_block(1) = gtbl_ctl%num_radial_divide_ctl%intvalue
+          itp_blks%num_xyz_block(1)                                     &
+     &         = gtbl_ctl%num_radial_divide_ctl%intvalue
         end if
         if(gtbl_ctl%num_theta_divide_ctl%iflag .gt. 0) then
-          num_xyz_block(2) = gtbl_ctl%num_theta_divide_ctl%intvalue
+          itp_blks%num_xyz_block(2)                                     &
+     &         = gtbl_ctl%num_theta_divide_ctl%intvalue
         end if
         if(gtbl_ctl%num_phi_divide_ctl%iflag .gt. 0) then
-          num_xyz_block(3) = gtbl_ctl%num_phi_divide_ctl%intvalue
+          itp_blks%num_xyz_block(3)                                     &
+     &         = gtbl_ctl%num_phi_divide_ctl%intvalue
         end if
         if (iflag_debug.eq.1) then
-          write(*,*) 'num_xyz_block',  num_xyz_block
+          write(*,*) 'num_xyz_block',  itp_blks%num_xyz_block
         end if
       else
         if(gtbl_ctl%num_x_divide_ctl%iflag .gt. 0) then
-          num_xyz_block(1) = gtbl_ctl%num_x_divide_ctl%intvalue
+          itp_blks%num_xyz_block(1)                                     &
+     &         = gtbl_ctl%num_x_divide_ctl%intvalue
         end if
         if(gtbl_ctl%num_y_divide_ctl%iflag .gt. 0) then
-          num_xyz_block(2) = gtbl_ctl%num_y_divide_ctl%intvalue
+          itp_blks%num_xyz_block(2)                                     &
+     &         = gtbl_ctl%num_y_divide_ctl%intvalue
         end if
         if(gtbl_ctl%num_z_divide_ctl%iflag .gt. 0) then
-          num_xyz_block(3) = gtbl_ctl%num_z_divide_ctl%intvalue
+          itp_blks%num_xyz_block(3)                                     &
+     &         = gtbl_ctl%num_z_divide_ctl%intvalue
         end if
       end if
 !
       if (iflag_debug.eq.1) then
         write(*,*) 'id_ele_hash_type',  id_ele_hash_type
-        write(*,*) 'num_xyz_block',  num_xyz_block
+        write(*,*) 'num_xyz_block',  itp_blks%num_xyz_block
       end if
 !
 !

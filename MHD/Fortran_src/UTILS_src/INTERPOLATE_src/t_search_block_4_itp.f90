@@ -1,22 +1,23 @@
-!m_search_bolck_4_itp.f90
-!     module m_search_bolck_4_itp
+!t_search_block_4_itp.f90
+!     module t_search_block_4_itp
 !
 !     Written by H. Matsui on March, 2015
 !
+!!      subroutine alloc_interpolate_blocks(nprocs_org, itp_blks)
 !!      subroutine set_all_block_points_4_itp                           &
-!!     &         (nblock_ref, nnod, xx, nprocs_org, para_mesh)
-!!      subroutine dealloc_interpolate_blocks(nprocs_org)
-!!      subroutine check_block_points_4_itp(id_file, nprocs_org)
+!!     &         (nblock_ref, nnod, xx, para_mesh, nprocs_org,          &
+!!     &          org_blocks, dest_block)
+!!      subroutine dealloc_interpolate_blocks(itp_blks)
+!!      subroutine check_block_points_4_itp                             &
+!!     &         (id_file, nprocs_org, itp_blks)
 !
-      module m_search_bolck_4_itp
+      module t_search_block_4_itp
 !
       use m_precision
       use m_constants
       use t_group_data
 !
       implicit none
-!
-      integer(kind = kint) :: num_xyz_block(3) = (/1, 1, 1/)
 !
       type block_4_interpolate
         integer(kind = kint) :: ntot_itp_block
@@ -38,10 +39,15 @@
       end type block_4_interpolate
 !
 !
-      type(block_4_interpolate), save, allocatable :: org_blocks(:)
-      type(block_4_interpolate), save :: dest_block
+      type para_block_4_interpolate
+        integer :: np_org
+        integer(kind = kint) :: num_xyz_block(3) = (/1, 1, 1/)
 !
-      private :: alloc_interpolate_blocks, allocate_block_points
+        type(block_4_interpolate), allocatable :: org_blocks(:)
+        type(block_4_interpolate) :: dest_block
+      end type para_block_4_interpolate
+!
+      private :: allocate_block_points
       private :: deallocate_block_points, set_block_points_4_itp
       private :: check_block_points
 !
@@ -51,8 +57,22 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine alloc_interpolate_blocks(nprocs_org, itp_blks)
+!
+      integer, intent(in) :: nprocs_org
+      type(para_block_4_interpolate), intent(inout) :: itp_blks
+!
+!
+      itp_blks%np_org = nprocs_org
+      allocate(itp_blks%org_blocks(nprocs_org))
+!
+      end subroutine alloc_interpolate_blocks
+!
+!  ---------------------------------------------------------------------
+!
       subroutine set_all_block_points_4_itp                             &
-     &         (nblock_ref, nnod, xx, nprocs_org, para_mesh)
+     &         (nblock_ref, nnod, xx, para_mesh, nprocs_org,            &
+     &          org_blocks, dest_block)
 !
       use t_mesh_data
       use t_geometry_data
@@ -63,12 +83,14 @@
       integer, intent(in) :: nprocs_org
       integer(kind = kint), intent(in) :: nnod
       real(kind = kreal), intent(in) :: xx(nnod,3)
+!
       type(mesh_data), intent(inout) :: para_mesh(nprocs_org)
+      type(block_4_interpolate), intent(inout)                          &
+     &                          :: org_blocks(nprocs_org)
+      type(block_4_interpolate), intent(inout) :: dest_block
 !
       integer :: i
 !
-!
-      call alloc_interpolate_blocks(nprocs_org)
 !
       call set_block_points_4_itp(nblock_ref, nnod, xx, dest_block)
       do i = 1, nprocs_org
@@ -162,52 +184,43 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_interpolate_blocks(nprocs_org)
+      subroutine dealloc_interpolate_blocks(itp_blks)
 !
-      integer, intent(in) :: nprocs_org
+      type(para_block_4_interpolate), intent(inout) :: itp_blks
 !
       integer :: i
 !
 !
-      do i = 1, nprocs_org
-        call deallocate_block_points(org_blocks(i))
+      do i = 1, itp_blks%np_org
+        call deallocate_block_points(itp_blks%org_blocks(i))
       end do
-      deallocate(org_blocks)
+      deallocate(itp_blks%org_blocks)
 !
       end subroutine dealloc_interpolate_blocks
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_block_points_4_itp(id_file, nprocs_org)
+      subroutine check_block_points_4_itp                               &
+     &         (id_file, nprocs_org, itp_blks)
 !
       integer(kind = kint), intent(in) :: id_file
       integer, intent(in) :: nprocs_org
+      type(para_block_4_interpolate), intent(in) :: itp_blks
 !
       integer(kind = kint) :: i
 !
 !
       write(id_file,*) '#  Block for destination grid'
-      call check_block_points(id_file, dest_block)
+      call check_block_points(id_file, itp_blks%dest_block)
 
       do i = 1, nprocs_org
         write(id_file,*) '#  Block for original mesh for ', i
-        call check_block_points(id_file, org_blocks(i))
+        call check_block_points(id_file, itp_blks%org_blocks(i))
       end do
 !
       end subroutine check_block_points_4_itp
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_interpolate_blocks(nprocs_org)
-!
-      integer, intent(in) :: nprocs_org
-!
-!
-      allocate(org_blocks(nprocs_org))
-!
-      end subroutine alloc_interpolate_blocks
-!
 !  ---------------------------------------------------------------------
 !
       subroutine allocate_block_points(block, nblock_ref)
@@ -342,4 +355,4 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      end module m_search_bolck_4_itp
+      end module t_search_block_4_itp

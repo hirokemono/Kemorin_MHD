@@ -3,11 +3,13 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!!      subroutine s_construct_interpolate_table(node, neib_nod,        &
+!!      subroutine s_construct_interpolate_table                        &
+!!     &         (node, neib_nod, org_blocks,                           &
 !!     &          itp_coef_dest, iflag_org_domain, ierr_missing)
 !!        type(node_data), intent(in) :: node
 !!        type(next_nod_id_4_nod), intent(in)  :: neib_nod
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+!!        type(block_4_interpolate), intent(in) :: org_blocks(nprocs_2nd)
 !
       module construct_interpolate_table
 !
@@ -22,18 +24,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_construct_interpolate_table(node, neib_nod,          &
+      subroutine s_construct_interpolate_table                          &
+     &         (node, neib_nod, org_blocks,                             &
      &          itp_coef_dest, iflag_org_domain, ierr_missing)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_ctl_params_4_gen_table
       use m_2nd_pallalel_vector
-      use m_search_bolck_4_itp
 !
       use t_mesh_data
       use t_next_node_ele_4_node
       use t_interpolate_coefs_dest
+      use t_search_block_4_itp
 !
       use set_2nd_geometry_4_table
       use search_node_in_element
@@ -41,6 +44,7 @@
 !
       type(node_data), intent(in) :: node
       type(next_nod_id_4_nod), intent(in)  :: neib_nod
+      type(block_4_interpolate), intent(in) :: org_blocks(nprocs_2nd)
 !
       integer(kind = kint), intent(inout) :: ierr_missing
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest

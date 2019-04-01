@@ -29,7 +29,7 @@
       use m_machine_parameter
       use cal_interpolate_coefs
 !
-      use m_search_bolck_4_itp
+      use t_search_block_4_itp
       use t_geometry_data
       use t_interpolate_coefs_dest
 !

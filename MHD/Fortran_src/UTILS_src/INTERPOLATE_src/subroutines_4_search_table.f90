@@ -235,8 +235,6 @@
      &         (id_rank, node, iflag_org_domain, ierr)
 !
       use t_geometry_data
-      use m_search_bolck_4_itp
-!
       use set_parallel_file_name
 !
       integer, intent(in) :: id_rank

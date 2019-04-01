@@ -9,11 +9,12 @@
 !!     &          newmesh, newgroup)
 !!      subroutine unlink_2nd_geometry_4_table(newmesh, newgroup)
 !!      subroutine s_set_serach_data_4_dest                             &
-!!     &         (dest_node, itp_dest, itp_coef, cst_itp_wk)
+!!     &         (dest_node, itp_dest, itp_coef, cst_itp_wk, itp_blks)
 !!        type(node_data), intent(in) :: dest_node
 !!        type(interpolate_table_dest), intent(in) :: itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef
 !!        type(work_const_itp_table), intent(inout) :: cst_itp_wk
+!!        type(para_block_4_interpolate), intent(inout) :: itp_blks
 !
       module set_2nd_geometry_4_table
 !
@@ -106,16 +107,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_set_serach_data_4_dest                               &
-     &         (dest_node, itp_dest, itp_coef, cst_itp_wk)
+     &         (dest_node, itp_dest, itp_coef, cst_itp_wk, itp_blks)
 !
       use t_geometry_data
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
       use t_work_const_itp_table
+      use t_search_block_4_itp
 !
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
-      use m_search_bolck_4_itp
 !
       use order_dest_table_by_type
       use transfer_to_long_integers
@@ -124,15 +125,17 @@
       type(interpolate_table_dest), intent(inout) :: itp_dest
       type(interpolate_coefs_dest), intent(inout) :: itp_coef
       type(work_const_itp_table), intent(inout) :: cst_itp_wk
+      type(para_block_4_interpolate), intent(inout) :: itp_blks
 !
       integer :: np2
 !
 !
       np2 = int(nprocs_2nd,KIND(np2))
-      call set_all_block_points_4_itp                                   &
-     &   (num_xyz_block, dest_node%numnod, dest_node%xx,                &
-     &    np2, origin_mesh)
-!      call check_block_points_4_itp(50+id_rank, nprocs_2nd)
+      call alloc_interpolate_blocks(np2, itp_blks)
+      call set_all_block_points_4_itp(itp_blks%num_xyz_block,           &
+    &     dest_node%numnod, dest_node%xx, origin_mesh,                  &
+     &    itp_blks%np_org, itp_blks%org_blocks, itp_blks%dest_block)
+!      call check_block_points_4_itp(50+id_rank, nprocs_2nd, itp_blks)
 !
 !  -------------------------------
 !

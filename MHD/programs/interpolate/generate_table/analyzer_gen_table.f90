@@ -22,6 +22,7 @@
       use t_interpolate_coefs_dest
       use t_ctl_data_gen_table
       use t_work_const_itp_table
+      use t_search_block_4_itp
 !
       implicit none
 !
@@ -38,6 +39,7 @@
       type(interpolate_table), save :: itp_nod
       type(interpolate_coefs_dest), save :: itp_n_coef
 !
+      type(para_block_4_interpolate) :: itp_blks1
       type(work_const_itp_table), save :: cst_itp_wk1
 !
 ! ----------------------------------------------------------------------
@@ -69,7 +71,7 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_itp_table'
       call read_control_4_gen_itp_table(gtbl_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_gen_table'
-      call set_ctl_params_4_gen_table(gtbl_ctl1)
+      call set_ctl_params_4_gen_table(gtbl_ctl1, itp_blks1)
       call dealloc_ctl_data_gen_table(gtbl_ctl1)
 !
 !     ----- construct mesh informations for target mesh
@@ -113,7 +115,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_serach_data_4_dest'
       call s_set_serach_data_4_dest(org_femmesh%mesh%node,              &
-     &    itp_nod%tbl_dest, itp_n_coef, cst_itp_wk1)
+     &    itp_nod%tbl_dest, itp_n_coef, cst_itp_wk1, itp_blks1)
 !
       end subroutine init_make_interpolate_table
 !
@@ -136,8 +138,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
-      call s_construct_interpolate_table                                &
-     &   (org_femmesh%mesh%node, next_tbl_i%neib_nod,                   &
+      call s_construct_interpolate_table(org_femmesh%mesh%node,         &
+     &    next_tbl_i%neib_nod, itp_blks1%org_blocks,                    &
      &    itp_n_coef, cst_itp_wk1%iflag_org_domain, ierr_missing)
 !
 !   ordering destination table by domain
