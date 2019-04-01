@@ -3,7 +3,11 @@
 !
 !     written by H. Matsui on Aug., 2006
 !
-!      subroutine s_set_minmax_sph_each_2nd_ele(new_node, new_ele)
+!!      subroutine s_set_minmax_sph_each_2nd_ele                        &
+!!     &         (new_node, new_ele, nele_2, iflag_meridian_x,          &
+!!     &          min_sph_each_ele, max_sph_each_ele)
+!!        type(node_data), intent(in) :: new_node
+!!        type(element_data), intent(in) :: new_ele
 !
       module set_minmax_4_each_2nd_ele
 !
@@ -17,16 +21,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_minmax_sph_each_2nd_ele(new_node, new_ele)
+      subroutine s_set_minmax_sph_each_2nd_ele                          &
+     &         (new_node, new_ele, nele_2, iflag_meridian_x,            &
+     &          min_sph_each_ele, max_sph_each_ele)
 !
       use m_constants
       use m_machine_parameter
-      use m_data_4_interpolate_org
 !
       use t_geometry_data
 !
       type(node_data), intent(in) :: new_node
       type(element_data), intent(in) :: new_ele
+      integer(kind = kint), intent(in) :: nele_2
+!
+      integer(kind = kint), intent(inout) :: iflag_meridian_x(nele_2)
+      real(kind = kreal), intent(inout) :: min_sph_each_ele(nele_2,3)
+      real(kind = kreal), intent(inout) :: max_sph_each_ele(nele_2,3)
 !
       integer(kind = kint) :: ip, ist, ied, iele, inod, k1
       real(kind = kreal) :: rtmp

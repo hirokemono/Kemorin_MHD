@@ -1,12 +1,17 @@
 !const_rev_ele_itp_table.f90
 !      module const_rev_ele_itp_table
 !
+!
+!!      subroutine const_rev_ele_interpolate_table(cst_itp_wk)
+!!        type(work_const_itp_table), intent(inout) :: cst_itp_wk
+!
       module const_rev_ele_itp_table
 !
       use m_precision
 !
       use m_machine_parameter
       use t_interpolate_table
+      use t_work_const_itp_table
 !
       implicit none
 !
@@ -20,7 +25,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_rev_ele_interpolate_table
+      subroutine const_rev_ele_interpolate_table(cst_itp_wk)
 !
       use calypso_mpi
 !
@@ -33,6 +38,8 @@
       use copy_interpolate_types
       use itp_table_IO_select_4_zlib
       use const_interpolate_4_org
+!
+      type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       integer :: jp, my_rank_2nd
       integer(kind = kint) :: np, ierr
@@ -61,7 +68,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'search_interpolate_4_orgin'
           call search_interpolate_4_orgin                               &
-     &       (my_rank_2nd, np, itp_org_e)
+     &       (my_rank_2nd, np, itp_org_e, cst_itp_wk)
 !
 !
 !
@@ -85,7 +92,8 @@
 !
           call load_interpolate_table(my_rank_2nd, itp_ele_c2f)
 !
-          call reverse_ele_itp_table_type(itp_ele_c2f, itp_ele_f2c)
+          call reverse_ele_itp_table_type                               &
+     &       (itp_ele_c2f, itp_ele_f2c, cst_itp_wk)
 !
           table_file_header = table_file_head
           call output_interpolate_table(my_rank, itp_ele_f2c)
@@ -102,7 +110,8 @@
         IO_itp_org%ntot_table_org =  0
         call load_interpolate_table(my_rank, itp_ele_c2f)
 !
-        call reverse_ele_itp_table_type(itp_ele_c2f, itp_ele_f2c)
+        call reverse_ele_itp_table_type                                 &
+     &     (itp_ele_c2f, itp_ele_f2c, cst_itp_wk)
 !
         table_file_header = table_file_head
         call output_interpolate_table(my_rank, itp_ele_f2c)
@@ -112,19 +121,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reverse_ele_itp_table_type(itp_tbl, itp_rev)
+      subroutine reverse_ele_itp_table_type                             &
+     &         (itp_tbl, itp_rev, cst_itp_wk)
 !
       use t_interpolate_table
-      use m_work_const_itp_table
 !
       type(interpolate_table), intent(inout) :: itp_tbl
       type(interpolate_table), intent(inout) :: itp_rev
+      type(work_const_itp_table), intent(inout) :: cst_itp_wk
+!
       integer(kind = kint) :: num, i
 !
 !
       itp_rev%tbl_org%num_dest_domain = itp_tbl%tbl_dest%num_org_domain
       itp_rev%tbl_org%ntot_table_org = itp_tbl%tbl_dest%ntot_table_dest
-      call allocate_istack_org_ptype(itp_rev%tbl_org%num_dest_domain)
+      call alloc_istack_org_ptype                                       &
+     &   (itp_rev%tbl_org%num_dest_domain, cst_itp_wk)
 !
       if(itp_rev%tbl_org%num_dest_domain .gt. 0) then
         call alloc_itp_num_org(np_smp, itp_rev%tbl_org)
@@ -137,13 +149,13 @@
      &    = itp_tbl%tbl_dest%istack_nod_tbl_dest(0:num)
 !
         do i = 1, num
-          istack_org_para_type(4*i-3)                                   &
+          cst_itp_wk%istack_org_para_type(4*i-3)                        &
      &      = itp_rev%tbl_org%istack_nod_tbl_org(i)
-          istack_org_para_type(4*i-2)                                   &
+          cst_itp_wk%istack_org_para_type(4*i-2)                        &
      &      = itp_rev%tbl_org%istack_nod_tbl_org(i)
-          istack_org_para_type(4*i-1)                                   &
+          cst_itp_wk%istack_org_para_type(4*i-1)                        &
      &      = itp_rev%tbl_org%istack_nod_tbl_org(i)
-          istack_org_para_type(4*i  )                                   &
+          cst_itp_wk%istack_org_para_type(4*i  )                        &
      &      = itp_rev%tbl_org%istack_nod_tbl_org(i)
         end do
 !
@@ -186,7 +198,7 @@
         call dealloc_itp_table_org(itp_tbl%tbl_org)
       end if
 !
-      call deallocate_istack_org_ptype
+      call dealloc_istack_org_ptype(cst_itp_wk)
 !
       end subroutine reverse_ele_itp_table_type
 !

@@ -79,7 +79,7 @@
      &          nprocs_table, para_tbl)
 !
       use m_machine_parameter
-      use m_work_const_itp_table
+      use t_work_const_itp_table
       use ordering_itp_org_tbl
 !
       type(interpolate_table), intent(in) :: single_tbl
@@ -89,6 +89,7 @@
       type(interpolate_table), intent(inout)                            &
                               :: para_tbl(nprocs_table)
 !
+      type(work_const_itp_table) :: cst_itp_wk
       type(itp_stack_dest_wk_para), allocatable :: dest_wk(:)
 !
       integer(kind = kint) :: ip, jp
@@ -131,13 +132,13 @@
 !
 !
       do jp = 1, wk_dist_itp%nprocs_itp_org
-        call allocate_istack_org_ptype                                  &
-     &     (para_tbl((jp))%tbl_org%num_dest_domain)
+        call alloc_istack_org_ptype                                     &
+     &     (para_tbl(jp)%tbl_org%num_dest_domain, cst_itp_wk)
         call alloc_itp_table_org(para_tbl(jp)%tbl_org)
         call set_itp_org_tbl_4_para(jp, wk_dist_itp,                    &
-     &      single_tbl%tbl_org, para_tbl(jp)%tbl_org)
-        call ordering_itp_orgin_tbl_t(para_tbl(jp)%tbl_org)
-        call deallocate_istack_org_ptype
+     &      single_tbl%tbl_org, para_tbl(jp)%tbl_org,                   &
+     &      cst_itp_wk%istack_org_para_type)
+        call ordering_itp_orgin_tbl_t(cst_itp_wk, para_tbl(jp)%tbl_org)
       end do
 !
       do ip = wk_dist_itp%nprocs_itp_dest+1, nprocs_table
@@ -354,15 +355,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_itp_org_tbl_4_para                                 &
-     &         (jp, wk_dist_itp, sgl_tbl_org, para_tbl_org)
-!
-      use m_work_const_itp_table
+      subroutine set_itp_org_tbl_4_para(jp, wk_dist_itp, sgl_tbl_org,   &
+     &          para_tbl_org, istack_org_para_type)
 !
       integer(kind = kint), intent(in) :: jp
       type(work_ditribute_itp), intent(in) :: wk_dist_itp
       type(interpolate_table_org), intent(in) ::    sgl_tbl_org
+!
       type(interpolate_table_org), intent(inout) :: para_tbl_org
+      integer(kind = kint), intent(inout)                               &
+     &        :: istack_org_para_type(0:4*para_tbl_org%num_dest_domain)
 !
       integer(kind = kint) :: ip0, ip, i, i4, k, ist, ied, ic, inum, k4
       integer(kind = kint) :: inod_gl, iele_gl, irev_gl

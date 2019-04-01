@@ -9,10 +9,11 @@
 !!     &          newmesh, newgroup)
 !!      subroutine unlink_2nd_geometry_4_table(newmesh, newgroup)
 !!      subroutine s_set_serach_data_4_dest                             &
-!!     &         (dest_node, itp_dest, itp_coef)
+!!     &         (dest_node, itp_dest, itp_coef, cst_itp_wk)
 !!        type(node_data), intent(in) :: dest_node
 !!        type(interpolate_table_dest), intent(in) :: itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef
+!!        type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       module set_2nd_geometry_4_table
 !
@@ -105,15 +106,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_set_serach_data_4_dest                               &
-     &         (dest_node, itp_dest, itp_coef)
+     &         (dest_node, itp_dest, itp_coef, cst_itp_wk)
 !
       use t_geometry_data
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
+      use t_work_const_itp_table
 !
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
-      use m_work_const_itp_table
       use m_search_bolck_4_itp
 !
       use order_dest_table_by_type
@@ -122,6 +123,7 @@
       type(node_data), intent(in) :: dest_node
       type(interpolate_table_dest), intent(inout) :: itp_dest
       type(interpolate_coefs_dest), intent(inout) :: itp_coef
+      type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       integer :: np2
 !
@@ -142,8 +144,8 @@
       call alloc_itp_num_dest(itp_dest)
       call alloc_itp_table_dest(itp_dest)
       call alloc_itp_coef_dest(itp_dest, itp_coef)
-      call allocate_itp_work_dest(cast_kint(nprocs_2nd))
-      call allocate_work_const_itp_tbl(dest_node%numnod, itp_dest)
+      call alloc_work_const_itp_tbl(itp_dest, cst_itp_wk%orderd)
+      call alloc_iflag_org_domain(dest_node%numnod, cst_itp_wk)
 !
       end subroutine s_set_serach_data_4_dest
 !

@@ -3,15 +3,28 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!      subroutine s_count_num_org_ele_4_each_bin(new_node, new_ele)
-!      subroutine s_set_org_ele_4_each_bin(new_node, new_ele)
-!      subroutine s_set_bin_stack_4_org_ele
+!!      subroutine s_count_num_org_ele_4_each_bin                       &
+!!     &         (new_node, new_ele, sph_bin, nele_2,                   &
+!!     &          min_sph_each_ele, max_sph_each_ele, nele_bin_smp)
+!!      subroutine s_set_org_ele_4_each_bin(new_node, new_ele,          &
+!!     &          nele_2, min_sph_each_ele, max_sph_each_ele,           &
+!!     &          ntot_org_ele_in_bin, iele_stack_bin_smp,              &
+!!     &          iele_in_bin, nele_bin_smp)
+!!      subroutine s_set_bin_stack_4_org_ele(ntot_sph_bin, nele_bin_smp,&
+!!     &          nele_bin, iele_stack_bin, iele_stack_bin_smp,         &
+!!     &          ntot_org_ele_in_bin)
+!!        type(node_data), intent(in) :: new_node
+!!        type(element_data), intent(in) :: new_ele
+!!        type(sphere_bin_4_table), intent(in) :: sph_bin
 !
       module set_org_ele_4_each_bin
 !
       use m_precision
       use m_constants
       use m_machine_parameter
+!
+      use t_geometry_data
+      use t_sphere_bin_4_table
 !
       implicit none
 !
@@ -23,15 +36,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_count_num_org_ele_4_each_bin(new_node, new_ele)
-!
-      use t_geometry_data
-!
-      use m_sphere_bin_4_table
-      use m_data_4_interpolate_org
+      subroutine s_count_num_org_ele_4_each_bin                         &
+     &         (new_node, new_ele, sph_bin, nele_2,                     &
+     &          min_sph_each_ele, max_sph_each_ele, nele_bin_smp)
 !
       type(node_data), intent(in) :: new_node
       type(element_data), intent(in) :: new_ele
+      type(sphere_bin_4_table), intent(in) :: sph_bin
+!
+      integer(kind = kint), intent(in) :: nele_2
+      real(kind = kreal), intent(in) :: min_sph_each_ele(nele_2,3)
+      real(kind = kreal), intent(in) :: max_sph_each_ele(nele_2,3)
+!
+      integer(kind = kint), intent(inout)                               &
+     &                     :: nele_bin_smp(np_smp,sph_bin%ntot_sph_bin)
 !
       integer(kind = kint) :: ip, ist, ied, iele, itmp, ihash
       integer(kind = kint) :: jr_bin, jt_bin, jp_bin
@@ -51,16 +69,19 @@
 !
             x_min(1:3) = min_sph_each_ele(iele,1:3)
             x_max(1:3) = max_sph_each_ele(iele,1:3)
-            call s_set_start_and_end_3d_bin(num_sph_grid(1),            &
-     &          num_sph_grid(2), num_sph_grid(3), isph_st, isph_ed,     &
-     &          x_min, x_max, r_divide, theta_divide, phi_divide)
+            call s_set_start_and_end_3d_bin(sph_bin%num_sph_grid(1),    &
+     &          sph_bin%num_sph_grid(2), sph_bin%num_sph_grid(3),       &
+     &          isph_st, isph_ed, x_min, x_max, sph_bin%r_divide,       &
+     &          sph_bin%theta_divide, sph_bin%phi_divide)
 !
             do jr_bin = isph_st(1), isph_ed(1)
               do jt_bin = isph_st(2), isph_ed(2)
                 do jp_bin = isph_st(3), isph_ed(3)
-                  itmp = mod(jp_bin-ione,num_sph_grid(3)) + ione
-                  ihash = jr_bin + (itmp - 1) * num_sph_bin(1)          &
-     &                 + (jt_bin-1) * num_sph_bin(1) * num_sph_bin(3)
+                  itmp = mod(jp_bin-ione,sph_bin%num_sph_grid(3))       &
+     &                  + ione
+                  ihash = jr_bin + (itmp - 1) * sph_bin%num_sph_bin(1)  &
+     &                           + (jt_bin-1) * sph_bin%num_sph_bin(1)  &
+     &                                        * sph_bin%num_sph_bin(3)
                   nele_bin_smp(ip,ihash) = nele_bin_smp(ip,ihash) + 1
                 end do
               end do
@@ -76,15 +97,27 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_org_ele_4_each_bin(new_node, new_ele)
-!
-      use t_geometry_data
-!
-      use m_sphere_bin_4_table
-      use m_data_4_interpolate_org
+      subroutine s_set_org_ele_4_each_bin(new_node, new_ele, sph_bin,   &
+     &          nele_2, min_sph_each_ele, max_sph_each_ele,             &
+     &          ntot_org_ele_in_bin, iele_stack_bin_smp,                &
+     &          iele_in_bin, nele_bin_smp)
 !
       type(node_data), intent(in) :: new_node
       type(element_data), intent(in) :: new_ele
+      type(sphere_bin_4_table), intent(in) :: sph_bin
+!
+      integer(kind = kint), intent(in) :: nele_2
+      real(kind = kreal), intent(in) :: min_sph_each_ele(nele_2,3)
+      real(kind = kreal), intent(in) :: max_sph_each_ele(nele_2,3)
+!
+      integer(kind = kint), intent(in)                                  &
+     &            :: iele_stack_bin_smp(0:sph_bin%ntot_sph_bin*np_smp)
+      integer(kind = kint), intent(in) :: ntot_org_ele_in_bin
+!
+      integer(kind = kint), intent(inout)                               &
+     &            :: iele_in_bin(ntot_org_ele_in_bin)
+      integer(kind = kint), intent(inout)                               &
+     &            :: nele_bin_smp(np_smp,sph_bin%ntot_sph_bin)
 !
       integer(kind = kint) :: ip, ist, ied, iele, i, j, ihash
       integer(kind = kint) :: jr_bin, jt_bin, jp_bin, itmp
@@ -106,17 +139,20 @@
 !
             x_min(1:3) = min_sph_each_ele(iele,1:3)
             x_max(1:3) = max_sph_each_ele(iele,1:3)
-            call s_set_start_and_end_3d_bin(num_sph_grid(1),            &
-     &          num_sph_grid(2), num_sph_grid(3), isph_st, isph_ed,     &
-     &          x_min, x_max, r_divide, theta_divide, phi_divide)
+            call s_set_start_and_end_3d_bin(sph_bin%num_sph_grid(1),    &
+     &          sph_bin%num_sph_grid(2), sph_bin%num_sph_grid(3),       &
+     &          isph_st, isph_ed, x_min, x_max, sph_bin%r_divide,       &
+     &          sph_bin%theta_divide, sph_bin%phi_divide)
 !
             do jr_bin = isph_st(1), isph_ed(1)
               do jt_bin = isph_st(2), isph_ed(2)
                 do jp_bin = isph_st(3), isph_ed(3)
 !
-                  itmp = mod(jp_bin-ione,num_sph_grid(3)) + ione
-                  ihash = jr_bin + (itmp - 1) * num_sph_bin(1)         &
-     &                 + (jt_bin-1) * num_sph_bin(1) * num_sph_bin(3)
+                  itmp = mod(jp_bin-ione,sph_bin%num_sph_grid(3))       &
+     &                  + ione
+                  ihash = jr_bin + (itmp - 1) * sph_bin%num_sph_bin(1)  &
+     &                           + (jt_bin-1) * sph_bin%num_sph_bin(1)  &
+     &                                        * sph_bin%num_sph_bin(3)
                  i = (ihash-1) * np_smp + ip
                   nele_bin_smp(ip,ihash) = nele_bin_smp(ip,ihash) + 1
                   j = iele_stack_bin_smp(i-1) + nele_bin_smp(ip,ihash)
@@ -136,10 +172,20 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_bin_stack_4_org_ele
+      subroutine s_set_bin_stack_4_org_ele(ntot_sph_bin, nele_bin_smp,  &
+     &          nele_bin, iele_stack_bin, iele_stack_bin_smp,           &
+     &          ntot_org_ele_in_bin)
 !
-      use m_sphere_bin_4_table
-      use m_data_4_interpolate_org
+      integer(kind = kint), intent(in) :: ntot_sph_bin
+      integer(kind = kint), intent(in)                                  &
+     &                     :: nele_bin_smp(np_smp,ntot_sph_bin)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: nele_bin(ntot_sph_bin)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: iele_stack_bin(0:ntot_sph_bin)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: iele_stack_bin_smp(0:ntot_sph_bin*np_smp)
+      integer(kind = kint), intent(inout) :: ntot_org_ele_in_bin
 !
       integer(kind = kint) :: ihash, ip, i
 !

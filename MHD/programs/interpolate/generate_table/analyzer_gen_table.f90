@@ -21,6 +21,7 @@
       use t_interpolate_table
       use t_interpolate_coefs_dest
       use t_ctl_data_gen_table
+      use t_work_const_itp_table
 !
       implicit none
 !
@@ -36,6 +37,8 @@
 !
       type(interpolate_table), save :: itp_nod
       type(interpolate_coefs_dest), save :: itp_n_coef
+!
+      type(work_const_itp_table), save :: cst_itp_wk1
 !
 ! ----------------------------------------------------------------------
 !
@@ -109,8 +112,8 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_serach_data_4_dest'
-      call s_set_serach_data_4_dest                                     &
-     &   (org_femmesh%mesh%node, itp_nod%tbl_dest, itp_n_coef)
+      call s_set_serach_data_4_dest(org_femmesh%mesh%node,              &
+     &    itp_nod%tbl_dest, itp_n_coef, cst_itp_wk1)
 !
       end subroutine init_make_interpolate_table
 !
@@ -135,14 +138,14 @@
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
       call s_construct_interpolate_table                                &
      &   (org_femmesh%mesh%node, next_tbl_i%neib_nod,                   &
-     &    itp_n_coef, ierr_missing)
+     &    itp_n_coef, cst_itp_wk1%iflag_org_domain, ierr_missing)
 !
 !   ordering destination table by domain
 !
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_domain'
-      call s_order_dest_table_by_domain                                 &
-     &   (org_femmesh%mesh%node%internal_node,                          &
-     &    ierr_missing, itp_nod%tbl_dest, itp_n_coef)
+      call s_order_dest_table_by_domain(org_femmesh%mesh%node,          &
+     &    cst_itp_wk1%iflag_org_domain, ierr_missing,                   &
+     &    itp_nod%tbl_dest, itp_n_coef, cst_itp_wk1%orderd)
 !
 !      call check_table_in_org_2(13, itp_nod%tbl_dest, itp_n_coef)
 !
@@ -151,7 +154,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_type'
       call s_order_dest_table_by_type                                   &
      &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
-     &    itp_nod%tbl_dest, itp_n_coef)
+     &    itp_nod%tbl_dest, itp_n_coef, cst_itp_wk1%orderd)
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_coefs_dest'
       call copy_itp_coefs_dest(my_rank,                                 &
@@ -165,7 +168,7 @@
 !
       if (iflag_debug.eq.1)                                             &
      &   write(*,*) 'const_interpolate_table_4_orgin'
-      call const_interpolate_table_4_orgin
+      call const_interpolate_table_4_orgin(cst_itp_wk1)
 !
 !
       if (my_rank .eq. 0) then

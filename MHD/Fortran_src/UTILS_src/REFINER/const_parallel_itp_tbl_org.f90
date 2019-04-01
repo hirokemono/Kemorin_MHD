@@ -3,24 +3,26 @@
 !
 !      Written by Kemorin on May, 2010
 !
-!      subroutine count_num_dest_domain_para_itp(ip_org, nprocs_tgt,   &
-!     &        itp_sgl, nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe, &
-!     &        ipe_nod_local_tgt, num_dest_domain)
-!        integer(kind = kint), intent(inout) :: num_dest_domain
-!
-!      subroutine set_id_dest_domain_para_itp(ip_org, nprocs_tgt,      &
-!     &        itp_sgl, nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe, &
-!     &        ipe_nod_local_tgt, itp_org_para)
-!        type(interpolate_table_org), intent(inout) :: itp_org_para
-!
-!      subroutine set_num_nod_tbl_org_para_itp(ip_org, itp_sgl,        &
-!     &          nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,        &
-!     &          ipe_nod_local_tgt, itp_org_para)
-!        type(interpolate_table_org), intent(inout) :: itp_org_para
-!
-!      subroutine set_elem_tbl_org_para_itp(ip_org, itp_sgl,           &
-!     &          nele_org_1pe, iele_local_org, ipe_ele_local_org,      &
-!     &          nnod_tgt_1pe, ipe_nod_local_tgt, itp_org_para)
+!!      subroutine count_num_dest_domain_para_itp(ip_org, nprocs_tgt,   &
+!!     &        itp_sgl, nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe, &
+!!     &        ipe_nod_local_tgt, num_dest_domain)
+!!        integer(kind = kint), intent(inout) :: num_dest_domain
+!!
+!!      subroutine set_id_dest_domain_para_itp(ip_org, nprocs_tgt,      &
+!!     &        itp_sgl, nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe, &
+!!     &        ipe_nod_local_tgt, itp_org_para)
+!!        type(interpolate_table_org), intent(inout) :: itp_org_para
+!!
+!!      subroutine set_num_nod_tbl_org_para_itp(ip_org, itp_sgl,        &
+!!     &          nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,        &
+!!     &          ipe_nod_local_tgt, num_dest_pe, istack_org_para_type, &
+!!     &          itp_org_para)
+!!        type(interpolate_table_org), intent(inout) :: itp_org_para
+!!
+!!      subroutine set_elem_tbl_org_para_itp(ip_org, itp_sgl,           &
+!!     &          nele_org_1pe, iele_local_org, ipe_ele_local_org,      &
+!!     &          nnod_tgt_1pe, ipe_nod_local_tgt,                      &
+!!     &          num_dest_pe, istack_org_para_type, itp_org_para)
 !        type(interpolate_table_org), intent(inout) :: itp_org_para
 !
       module const_parallel_itp_tbl_org
@@ -121,9 +123,8 @@
 !
       subroutine set_num_nod_tbl_org_para_itp(ip_org, itp_sgl,          &
      &          nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,          &
-     &          ipe_nod_local_tgt, itp_org_para)
-!
-      use m_work_const_itp_table
+     &          ipe_nod_local_tgt, num_dest_pe, istack_org_para_type,   &
+     &          itp_org_para)
 !
       type(interpolate_table), intent(in) :: itp_sgl
       integer(kind = kint), intent(in) :: ip_org
@@ -133,7 +134,10 @@
       integer(kind = kint), intent(in) :: nnod_tgt_1pe
       integer(kind = kint), intent(in)                                  &
      &              :: ipe_nod_local_tgt(nnod_tgt_1pe)
+      integer(kind = kint), intent(in) :: num_dest_pe
 !
+      integer(kind = kint), intent(inout)                               &
+     &              :: istack_org_para_type(0:4*num_dest_pe)
       type(interpolate_table_org), intent(inout) :: itp_org_para
 !
       integer(kind = kint) :: ip_tgt, jp, jnum, ncou
@@ -177,9 +181,8 @@
 !
       subroutine set_elem_tbl_org_para_itp(ip_org, itp_sgl,             &
      &          nele_org_1pe, iele_local_org, ipe_ele_local_org,        &
-     &          nnod_tgt_1pe, ipe_nod_local_tgt, itp_org_para)
-!
-      use m_work_const_itp_table
+     &          nnod_tgt_1pe, ipe_nod_local_tgt,                        &
+     &          num_dest_pe, istack_org_para_type, itp_org_para)
 !
       type(interpolate_table), intent(in) :: itp_sgl
       integer(kind = kint), intent(in) :: ip_org
@@ -191,6 +194,10 @@
       integer(kind = kint), intent(in) :: nnod_tgt_1pe
       integer(kind = kint), intent(in)                                  &
      &              :: ipe_nod_local_tgt(nnod_tgt_1pe)
+!
+      integer(kind = kint), intent(in) :: num_dest_pe
+      integer(kind = kint), intent(in)                                  &
+     &              :: istack_org_para_type(0:4*num_dest_pe)
 !
       type(interpolate_table_org), intent(inout) :: itp_org_para
 !

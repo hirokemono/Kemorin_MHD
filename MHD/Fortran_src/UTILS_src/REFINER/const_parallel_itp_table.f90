@@ -3,11 +3,12 @@
 !
 !      Written by Kemorin on May, 2010
 !
-!      subroutine s_const_parallel_itp_table(nprocs_org, nprocs_tgt,    &
-!     &          nprocs_larger, itp_sgl, itp_para, nele_org_1pe,        &
-!     &          iele_local_org, ipe_ele_local_org, nnod_tgt_1pe,       &
-!     &          inod_local_tgt,  ipe_nod_local_tgt)
-!       type(interpolate_table), intent(inout) :: itp_para(nprocs_larger)
+!!      subroutine s_const_parallel_itp_table(nprocs_org, nprocs_tgt,   &
+!!     &          nprocs_larger, itp_sgl, itp_para, cst_itp_wk,         &
+!!     &          nele_org_1pe, iele_local_org, ipe_ele_local_org,      &
+!!     &          nnod_tgt_1pe, inod_local_tgt,  ipe_nod_local_tgt)
+!!      type(interpolate_table), intent(inout) :: itp_para(nprocs_larger)
+!!      type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       module const_parallel_itp_table
 !
@@ -18,6 +19,7 @@
       use t_interpolate_table
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
+      use t_work_const_itp_table
       use const_parallel_itp_tbl_dest
 !
       implicit    none
@@ -32,9 +34,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_const_parallel_itp_table(nprocs_org, nprocs_tgt,     &
-     &          nprocs_larger, itp_sgl, itp_para, nele_org_1pe,         &
-     &          iele_local_org, ipe_ele_local_org, nnod_tgt_1pe,        &
-     &          inod_local_tgt,  ipe_nod_local_tgt)
+     &          nprocs_larger, itp_sgl, itp_para, cst_itp_wk,           &
+     &          nele_org_1pe, iele_local_org, ipe_ele_local_org,        &
+     &          nnod_tgt_1pe, inod_local_tgt,  ipe_nod_local_tgt)
 !
 
       integer, intent(in) :: nprocs_org
@@ -51,6 +53,7 @@
       integer(kind = kint), intent(in) :: ipe_nod_local_tgt(nnod_tgt_1pe)
 !
       type(interpolate_table), intent(inout) :: itp_para(nprocs_larger)
+      type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       type(itp_stack_dest_wk_refine) :: dest_sgl
 !
@@ -65,9 +68,9 @@
      &    ipe_ele_local_org, nnod_tgt_1pe, inod_local_tgt,              &
      &    ipe_nod_local_tgt)
       call s_const_parallel_itp_tbl_org(nprocs_tgt,                     &
-     &          nprocs_larger, itp_sgl, itp_para,                       &
-     &          nele_org_1pe, iele_local_org, ipe_ele_local_org,        &
-     &          nnod_tgt_1pe, ipe_nod_local_tgt)
+     &    nprocs_larger, itp_sgl, itp_para, cst_itp_wk,                 &
+     &    nele_org_1pe, iele_local_org, ipe_ele_local_org,              &
+     &    nnod_tgt_1pe, ipe_nod_local_tgt)
 !
       call dealloc_itp_stack_dest_wk_rfne(dest_sgl)
 !
@@ -132,11 +135,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_const_parallel_itp_tbl_org(nprocs_tgt,               &
-     &          nprocs_larger, itp_sgl, itp_para,                       &
+     &          nprocs_larger, itp_sgl, itp_para, cst_itp_wk,           &
      &          nele_org_1pe, iele_local_org, ipe_ele_local_org,        &
      &          nnod_tgt_1pe, ipe_nod_local_tgt)
 !
-      use m_work_const_itp_table
       use const_parallel_itp_tbl_org
       use ordering_itp_org_tbl
 !
@@ -152,6 +154,7 @@
       integer(kind = kint), intent(in) :: ipe_nod_local_tgt(nnod_tgt_1pe)
 !
       type(interpolate_table), intent(inout) :: itp_para(nprocs_larger)
+      type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       integer(kind = kint) :: ip
 !
@@ -162,24 +165,25 @@
      &      ipe_nod_local_tgt, itp_para(ip)%tbl_org%num_dest_domain)
 !
         call alloc_itp_num_org(np_smp, itp_para(ip)%tbl_org)
-        call allocate_istack_org_ptype                                  &
-     &     (itp_para(ip)%tbl_org%num_dest_domain)
+        call alloc_istack_org_ptype                                     &
+     &     (itp_para(ip)%tbl_org%num_dest_domain, cst_itp_wk)
 !
         call set_id_dest_domain_para_itp(ip, nprocs_tgt, itp_sgl,       &
      &      nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,              &
      &      ipe_nod_local_tgt, itp_para(ip)%tbl_org)
         call set_num_nod_tbl_org_para_itp(ip, itp_sgl,                  &
      &      nele_org_1pe, ipe_ele_local_org, nnod_tgt_1pe,              &
-     &      ipe_nod_local_tgt, itp_para(ip)%tbl_org)
+     &      ipe_nod_local_tgt, nprocs_tgt,                              &
+     &      cst_itp_wk%istack_org_para_type, itp_para(ip)%tbl_org)
 !
         call alloc_itp_table_org(itp_para(ip)%tbl_org)
 !
         call set_elem_tbl_org_para_itp(ip, itp_sgl,                     &
      &      nele_org_1pe, iele_local_org, ipe_ele_local_org,            &
-     &      nnod_tgt_1pe, ipe_nod_local_tgt, itp_para(ip)%tbl_org)
+     &      nnod_tgt_1pe, ipe_nod_local_tgt, nprocs_tgt,                &
+     &      cst_itp_wk%istack_org_para_type, itp_para(ip)%tbl_org)
 !
-        call ordering_itp_orgin_tbl_t(itp_para(ip)%tbl_org)
-        call deallocate_istack_org_ptype
+        call ordering_itp_orgin_tbl_t(cst_itp_wk, itp_para(ip)%tbl_org)
       end do
 !
       end subroutine s_const_parallel_itp_tbl_org

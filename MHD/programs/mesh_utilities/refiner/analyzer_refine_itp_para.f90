@@ -17,6 +17,7 @@
       use t_mesh_data_4_merge
       use t_control_data_refine_para
       use t_para_refine_itp_tables
+      use t_work_const_itp_table
 !
       use set_parallel_mesh_in_1pe
 !
@@ -30,6 +31,8 @@
       type(merged_mesh), save, private :: mgd_mesh_rf
       type(second_mesh), save, private :: sec_mesh_rf
       type(para_refine_itp_tables), save, private :: para_ref_itp
+!
+      type(work_const_itp_table), save :: cst_itp_wk_r
 !
       private :: refine_interpolation_table
 !
@@ -103,12 +106,11 @@
       use t_interpolate_table
       use m_interpolate_table_IO
 !
-!
       call alloc_para_refine_itp_type(para_ref_itp)
 !
 !
       call refine_interpolation_table                                   &
-     &   (mgd_mesh_rf%merge_tbl, sec_mesh_rf%merge_tbl_2)
+     &   (mgd_mesh_rf%merge_tbl, sec_mesh_rf%merge_tbl_2, cst_itp_wk_r)
 !
       call dealloc_para_refine_itp_type(para_ref_itp)
 !
@@ -158,7 +160,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine refine_interpolation_table(merge_tbl, merge_tbl_2)
+      subroutine refine_interpolation_table                             &
+     &         (merge_tbl, merge_tbl_2, cst_itp_wk)
 !
       use t_interpolate_table
       use t_merged_geometry_data
@@ -168,6 +171,7 @@
 !
       type(merged_stacks), intent(inout) :: merge_tbl
       type(merged_stacks), intent(inout) :: merge_tbl_2
+      type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       integer :: ip, id_rank
 !
@@ -175,7 +179,7 @@
       write(*,*) 's_const_parallel_itp_table course_2_fine'
       call s_const_parallel_itp_table(para_ref_itp%nprocs_course,       &
      &    para_ref_itp%nprocs_fine, para_ref_itp%nprocs_larger,         &
-     &    para_ref_itp%c2f_single, para_ref_itp%c2f_para,               &
+     &    para_ref_itp%c2f_single, para_ref_itp%c2f_para, cst_itp_wk,   &
      &    merge_tbl_2%nele_overlap, merge_tbl_2%iele_local,             &
      &    merge_tbl_2%idomain_ele, merge_tbl%nnod_overlap,              &
      &    merge_tbl%inod_local, merge_tbl%idomain_nod)
@@ -184,7 +188,7 @@
       write(*,*) 's_const_parallel_itp_table fine_2_course'
       call s_const_parallel_itp_table(para_ref_itp%nprocs_fine,         &
      &    para_ref_itp%nprocs_course, para_ref_itp%nprocs_larger,       &
-     &    para_ref_itp%f2c_single, para_ref_itp%f2c_para,               &
+     &    para_ref_itp%f2c_single, para_ref_itp%f2c_para, cst_itp_wk,   &
      &    merge_tbl%nele_overlap, merge_tbl%iele_local,                 &
      &    merge_tbl%idomain_ele,  merge_tbl_2%nnod_overlap,             &
      &    merge_tbl_2%inod_local,  merge_tbl_2%idomain_nod)
@@ -194,7 +198,7 @@
       call s_const_parallel_itp_table(para_ref_itp%nprocs_fine,         &
      &    para_ref_itp%nprocs_course, para_ref_itp%nprocs_larger,       &
      &    para_ref_itp%f2c_ele_single, para_ref_itp%f2c_ele_para,       &
-     &    merge_tbl%nele_overlap, merge_tbl%iele_local,                 &
+     &    cst_itp_wk, merge_tbl%nele_overlap, merge_tbl%iele_local,     &
      &    merge_tbl%idomain_ele, merge_tbl_2%nele_overlap,              &
      &    merge_tbl_2%iele_local, merge_tbl_2%idomain_ele)
 !

@@ -3,7 +3,10 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine s_set_bin_id_4_destination(dest_node, id_search_area)
+!!      subroutine s_set_bin_id_4_destination                           &
+!!     &         (dest_node, sph_bin, id_search_area)
+!!        type(node_data), intent(in) :: dest_node
+!!        type(sphere_bin_4_table), intent(in) :: sph_bin
 !
       module set_bin_id_4_destination
 !
@@ -19,12 +22,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_bin_id_4_destination(dest_node, id_search_area)
+      subroutine s_set_bin_id_4_destination                             &
+     &         (dest_node, sph_bin, id_search_area)
 !
       use t_geometry_data
-      use m_sphere_bin_4_table
+      use t_sphere_bin_4_table
 !
       type(node_data), intent(in) :: dest_node
+      type(sphere_bin_4_table), intent(in) :: sph_bin
+!
       integer(kind = kint), intent(inout)                               &
      &           :: id_search_area(dest_node%internal_node,3)
 !
@@ -46,45 +52,48 @@
         jr_st = 0
         do inod = ist, ied
 !
-          do j = 1, num_sph_grid(3)
-            jp = mod( (jp_st+j-ione), num_sph_grid(3) ) + ione
-            if (    dest_node%phi(inod) .ge. phi_divide(jp-1)           &
-     &        .and. dest_node%phi(inod) .lt. phi_divide(jp) ) then
+          do j = 1, sph_bin%num_sph_grid(3)
+            jp = mod( (jp_st+j-ione), sph_bin%num_sph_grid(3) ) + ione
+            if (    dest_node%phi(inod) .ge. sph_bin%phi_divide(jp-1)   &
+     &        .and. dest_node%phi(inod) .lt. sph_bin%phi_divide(jp) )   &
+     &       then
               jp_bin = jp
               jp_st = jp - 1
               exit
             end if
-            if (j .eq. num_sph_grid(3)) then
+            if (j .eq. sph_bin%num_sph_grid(3)) then
               jp_bin = jp
               jp_st = jp - 1
             end if
           end do
 !
-          do j = 1, num_sph_grid(2)
-            jt = mod( (jt_st+j-ione), num_sph_grid(2) ) + ione
-            if (    dest_node%theta(inod) .ge. theta_divide(jt-1)       &
-     &        .and. dest_node%theta(inod) .lt. theta_divide(jt) ) then
+          do j = 1, sph_bin%num_sph_grid(2)
+            jt = mod( (jt_st+j-ione), sph_bin%num_sph_grid(2) ) + ione
+            if (dest_node%theta(inod) .ge. sph_bin%theta_divide(jt-1)   &
+     &       .and. dest_node%theta(inod) .lt. sph_bin%theta_divide(jt)) &
+     &       then
               jt_bin = jt
               jt_st = jt - 1
               exit
             end if
-            if (j .eq. num_sph_grid(2)) then
+            if (j .eq. sph_bin%num_sph_grid(2)) then
               jt_bin = jt
               jt_st = jt - 1
             end if
           end do
 !
-          do j = 1, num_sph_grid(1)+1
-            jr = mod( (jr_st+j-ione), (num_sph_grid(1)+1) ) + ione
-            if ( jr.eq. num_sph_grid(1)+1 ) then
-              if (dest_node%rr(inod) .ge. r_divide(num_sph_grid(1)))    &
-     &         then
+          do j = 1, sph_bin%num_sph_grid(1)+1
+            jr = mod( (jr_st+j-ione), (sph_bin%num_sph_grid(1)+1) )     &
+     &          + ione
+            if ( jr.eq. sph_bin%num_sph_grid(1)+1 ) then
+              if (dest_node%rr(inod)                                    &
+     &          .ge. sph_bin%r_divide(sph_bin%num_sph_grid(1))) then
                 jr_bin = jr
                 jr_st = jr - 1
                 exit
               end if
-            else if ( dest_node%rr(inod) .ge. r_divide(jr-1)            &
-     &          .and. dest_node%rr(inod) .lt. r_divide(jr) ) then
+            else if ( dest_node%rr(inod) .ge. sph_bin%r_divide(jr-1)    &
+     &       .and. dest_node%rr(inod) .lt. sph_bin%r_divide(jr) ) then
                 jr_bin = jr
                 jr_st = jr - 1
                 exit
@@ -95,10 +104,11 @@
           id_search_area(inod,2) = jt_bin
           id_search_area(inod,3) = jp_bin
           ihash = jr_bin                                                &
-     &           + (jp_bin - 1) * num_sph_bin(1)                        &
-     &           + (jt_bin - 1) * num_sph_bin(1) * num_sph_bin(3)
+     &           + (jp_bin - 1) * sph_bin%num_sph_bin(1)                &
+     &           + (jt_bin - 1) * sph_bin%num_sph_bin(1)                &
+     &                          * sph_bin%num_sph_bin(3)
 !
-          if (ihash.le.0 .or. ihash.gt.ntot_sph_bin) then
+          if (ihash.le.0 .or. ihash.gt.sph_bin%ntot_sph_bin) then
              write(*,*) 'inod, jr_bin, jt_bin, jp_bin'
              write(*,*) inod, jr_bin, jt_bin, jp_bin
              write(*,*) 'position'

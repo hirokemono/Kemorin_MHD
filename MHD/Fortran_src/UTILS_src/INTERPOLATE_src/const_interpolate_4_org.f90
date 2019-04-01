@@ -8,7 +8,9 @@
 !!      subroutine count_interpolate_4_orgin                            &
 !!     &         (id_org_rank, nprocs_dest, itp_org)
 !!      subroutine search_interpolate_4_orgin                           &
-!!     &          (id_org_rank, nprocs_dest, itp_org)
+!!     &          (id_org_rank, nprocs_dest, itp_org, cst_itp_wk)
+!!  v      type(interpolate_table_org), intent(inout)  :: itp_org
+!!        type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       module const_interpolate_4_org
 !
@@ -19,6 +21,7 @@
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
+      use t_work_const_itp_table
 !
       implicit none
 !
@@ -40,7 +43,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_interpolate_table_4_orgin
+      subroutine const_interpolate_table_4_orgin(cst_itp_wk)
 !
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
@@ -52,6 +55,8 @@
       integer :: jp, my_rank_2nd
       integer(kind = kint) :: ierr
       integer(kind = kint) :: np
+!
+      type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
 !    set domain ID to be searched
 !
@@ -75,7 +80,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'search_interpolate_4_orgin'
           call search_interpolate_4_orgin                               &
-     &       (my_rank_2nd, np, itp_org_c)
+     &       (my_rank_2nd, np, itp_org_c, cst_itp_wk)
 !
 !
 !
@@ -166,22 +171,22 @@
 !-----------------------------------------------------------------------
 !
       subroutine search_interpolate_4_orgin                             &
-     &          (id_org_rank, nprocs_dest, itp_org)
+     &          (id_org_rank, nprocs_dest, itp_org, cst_itp_wk)
 !
       use itp_table_IO_select_4_zlib
       use set_itp_destIO_2_org
       use ordering_itp_org_tbl
-      use m_work_const_itp_table
 !
       integer, intent(in) :: id_org_rank
       integer(kind = kint), intent(in) :: nprocs_dest
       type(interpolate_table_org), intent(inout)  :: itp_org
+      type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       integer :: n_dest_rank
       integer(kind = kint) :: ip, ierr
 !
 !
-      call allocate_istack_org_ptype(nprocs_dest)
+      call alloc_istack_org_ptype(nprocs_dest, cst_itp_wk)
 !
       itp_org%num_dest_domain = 0
       do ip = 1, nprocs_dest
@@ -192,11 +197,11 @@
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         call set_interpolation_4_orgin                                  &
-     &     (id_org_rank, IO_itp_dest, IO_itp_c_dest, itp_org)
+     &     (id_org_rank, IO_itp_dest, IO_itp_c_dest, itp_org,           &
+     &      cst_itp_wk%istack_org_para_type)
       end do
 !
-      call ordering_itp_orgin_tbl_t(itp_org)
-      call deallocate_istack_org_ptype
+      call ordering_itp_orgin_tbl_t(cst_itp_wk, itp_org)
 !
       end subroutine search_interpolate_4_orgin
 !

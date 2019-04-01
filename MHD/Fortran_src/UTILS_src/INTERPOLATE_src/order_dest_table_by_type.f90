@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine s_order_dest_table_by_type                           &
-!!     &         (node, ele, itp_dest, itp_coef_dest)
+!!     &         (node, ele, itp_dest, itp_coef_dest, orderd)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(interpolate_table_dest), intent(inout) :: itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+!!        type(ordered_list), intent(inout) :: orderd
 !!@endverbatim
 !
       module order_dest_table_by_type
@@ -21,6 +22,11 @@
 !
       implicit none
 !
+!>   number of node to be interpolated in each original domain and type
+      integer(kind = kint), allocatable :: nnod_table_wtype_dest(:)
+!
+      private :: nnod_table_wtype_dest
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -28,16 +34,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_order_dest_table_by_type                             &
-     &         (node, ele, itp_dest, itp_coef_dest)
+     &         (node, ele, itp_dest, itp_coef_dest, orderd)
 !
       use calypso_mpi
 !
       use t_geometry_data
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
+      use t_work_const_itp_table
 !
       use m_geometry_constants
-      use m_work_const_itp_table
 !
       use count_interpolate_type_8
       use count_interpolate_type_20
@@ -51,9 +57,13 @@
       type(element_data), intent(in) :: ele
       type(interpolate_table_dest), intent(inout) :: itp_dest
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+      type(ordered_list), intent(inout) :: orderd
 !
       integer(kind = kint) :: i, j, k, ist, ied, ist_type, ied_type
 !
+!
+      allocate(nnod_table_wtype_dest(4*itp_dest%num_org_domain))
+      if(itp_dest%num_org_domain .gt. 0) nnod_table_wtype_dest = 0
 !
       do i = 1, itp_dest%num_org_domain
         ist = itp_dest%istack_nod_tbl_dest(i-1) + 1
@@ -95,19 +105,19 @@
         if (ele%nnod_4_ele .eq. num_t_linear) then
           call s_order_interpolate_type_8(my_rank, ist, ied, itp_dest,  &
      &      itp_coef_dest%istack_nod_tbl_wtype_dest(ist_type:ied_type), &
-     &      nnod_table_wtype_dest(ist_type+1), itp_coef_dest)
+     &      nnod_table_wtype_dest(ist_type+1), itp_coef_dest, orderd)
         else if (ele%nnod_4_ele .eq. num_t_quad) then
           call s_order_interpolate_type_20(my_rank, ist, ied, itp_dest, &
      &      itp_coef_dest%istack_nod_tbl_wtype_dest(ist_type:ied_type), &
-     &      nnod_table_wtype_dest(ist_type+1), itp_coef_dest)
+     &      nnod_table_wtype_dest(ist_type+1), itp_coef_dest, orderd)
         else if (ele%nnod_4_ele .eq. num_t_lag) then
           call s_order_interpolate_type_27(my_rank, ist, ied, itp_dest, &
      &      itp_coef_dest%istack_nod_tbl_wtype_dest(ist_type:ied_type), &
-     &      nnod_table_wtype_dest(ist_type+1),  itp_coef_dest)
+     &      nnod_table_wtype_dest(ist_type+1), itp_coef_dest, orderd)
         end if
       end do
 !
-      call copy_table_2_order(itp_dest, itp_coef_dest)
+      call copy_table_2_order(orderd, itp_dest, itp_coef_dest)
 !
       itp_dest%ntot_table_dest                                          &
      &   = itp_dest%istack_nod_tbl_dest(itp_dest%num_org_domain)
@@ -116,6 +126,8 @@
         itp_coef_dest%inod_gl_dest(i)                                   &
      &     = int(node%inod_global(itp_dest%inod_dest_4_dest(i)))
       end do
+!
+      deallocate(nnod_table_wtype_dest)
 !
       end subroutine s_order_dest_table_by_type
 !

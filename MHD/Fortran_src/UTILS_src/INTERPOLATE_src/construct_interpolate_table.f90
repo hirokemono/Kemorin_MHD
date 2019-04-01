@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!!      subroutine s_construct_interpolate_table                        &
-!!     &         (node, neib_nod, itp_coef_dest, ierr_missing)
+!!      subroutine s_construct_interpolate_table(node, neib_nod,        &
+!!     &          itp_coef_dest, iflag_org_domain, ierr_missing)
 !!        type(node_data), intent(in) :: node
 !!        type(next_nod_id_4_nod), intent(in)  :: neib_nod
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
@@ -22,14 +22,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_construct_interpolate_table                          &
-     &         (node, neib_nod, itp_coef_dest, ierr_missing)
+      subroutine s_construct_interpolate_table(node, neib_nod,          &
+     &          itp_coef_dest, iflag_org_domain, ierr_missing)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_ctl_params_4_gen_table
       use m_2nd_pallalel_vector
-      use m_work_const_itp_table
       use m_search_bolck_4_itp
 !
       use t_mesh_data
@@ -45,6 +44,8 @@
 !
       integer(kind = kint), intent(inout) :: ierr_missing
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+      integer(kind = kint), intent(inout)                               &
+     &                    :: iflag_org_domain(node%numnod)
 !
       type(mesh_geometry_p) :: org_mesh
       type(mesh_groups_p) ::   org_grp
@@ -75,32 +76,34 @@
      &        write(*,*) 'search_node_in_element_1st', ilevel, my_rank
             call search_node_in_element_1st(my_rank_2nd,                &
      &          org_mesh%node, org_mesh%ele, org_blocks(my_rank_2nd+1), &
-     &          node, itp_coef_dest)
+     &          node, itp_coef_dest, iflag_org_domain)
           else if (ilevel .eq. (num_search_times+1)) then
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'search_node_in_all_element', ilevel, my_rank
             error_level_final = search_error_level(num_search_times)*2
             call search_node_in_all_element(my_rank_2nd,                &
      &          error_level_final, org_mesh%node, org_mesh%ele, node,   &
-     &          itp_coef_dest)
+     &          itp_coef_dest, iflag_org_domain)
           else if (ilevel .eq. (num_search_times+2)) then
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'giveup_to_search_element', ilevel, my_rank
             error_level_final = search_error_level(num_search_times)*2
             call giveup_to_search_element(my_rank_2nd,                  &
      &          error_level_final, neib_nod%istack_next,                &
-     &          org_mesh%node, org_mesh%ele, node, itp_coef_dest)
+     &          org_mesh%node, org_mesh%ele, node, itp_coef_dest,       &
+     &          iflag_org_domain)
           else
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'search_node_in_element_2nd', ilevel, my_rank
             call search_node_in_element_2nd                             &
      &         ((ilevel-1), my_rank_2nd, org_mesh%node, org_mesh%ele,   &
-     &          org_blocks(my_rank_2nd+1), node, itp_coef_dest)
+     &          org_blocks(my_rank_2nd+1), node, itp_coef_dest,         &
+     &          iflag_org_domain)
           end if
 !
 !          if (ilevel.eq.3) call check_interpolation                    &
 !     &     (node, org_mesh%node, org_mesh%ele, itp_coef_dest,          &
-!     &      14, my_rank_2nd)
+!     &      14, my_rank_2nd, iflag_org_domain)
 !
           call deallocate_work_4_interpolate
 !
@@ -108,7 +111,8 @@
           call unlink_pointer_mesh(org_mesh, org_grp)
         end do
 !
-        call check_missing_nodes(ierr_local, my_rank, node)
+        call check_missing_nodes                                        &
+     &     (my_rank, node, iflag_org_domain, ierr_local)
 !
   1     continue
 !

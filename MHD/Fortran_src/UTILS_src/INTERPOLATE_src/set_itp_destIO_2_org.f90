@@ -6,7 +6,8 @@
 !!      subroutine count_num_interpolation_4_orgin                      &
 !!     &         (n_org_rank, n_dest_rank, IO_dest, itp_org)
 !!      subroutine set_interpolation_4_orgin                            &
-!!     &          (n_org_rank, IO_dest, IO_coef_dest, itp_org)
+!!     &         (n_org_rank, IO_dest, IO_coef_dest, itp_org,           &
+!!     &          istack_org_para_type)
 !!        type(interpolate_table_dest), intent(inout) :: IO_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: IO_coef_dest
 !!        type(interpolate_table_org), intent(inout) :: itp_org
@@ -57,15 +58,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_interpolation_4_orgin                              &
-     &          (n_org_rank, IO_dest, IO_coef_dest, itp_org)
-!
-      use m_work_const_itp_table
+     &         (n_org_rank, IO_dest, IO_coef_dest, itp_org,             &
+     &          istack_org_para_type)
 !
       integer, intent(in) :: n_org_rank
       type(interpolate_table_dest), intent(inout) :: IO_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_coef_dest
 !
       type(interpolate_table_org), intent(inout) :: itp_org
+      integer(kind = kint), intent(inout)                               &
+     &          :: istack_org_para_type(0:itp_org%num_dest_domain)
 !
       integer(kind = kint) :: i, j
       integer(kind = kint) :: nnod, inum, iorg, idest

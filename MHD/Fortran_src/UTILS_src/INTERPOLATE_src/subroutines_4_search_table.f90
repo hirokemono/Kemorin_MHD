@@ -10,12 +10,13 @@
 !     &          v_target, v_tetra, x_target, x_local)
 !      subroutine init_coefs_on_tet(nnod_4_ele_2, itet, coefs_by_tet, s)
 !      subroutine check_solution_in_tet(ref_error, s_coef)
-!!      subroutine set_results_2_array                                  &
-!!     &         (id_rank_org, inod, jele, xi, itp_coef_dest)
+!!      subroutine set_results_2_array(id_rank_org, inod, jele,         &
+!!     &          xi, iflag_org_domain, itp_coef_dest)
 !!      subroutine set_results_2_array_fin(id_rank_org, inod, jele, xi, &
 !!     &          differ_tmp, differ_res, iflag_org_tmp, itp_coef_dest)
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
-!      subroutine check_missing_nodes(ierr, id_rank, node)
+!!      subroutine check_missing_nodes                                  &
+!!     &         (id_rank, node, iflag_org_domain, ierr)
 !
       module subroutines_4_search_table
 !
@@ -163,18 +164,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_results_2_array                                    &
-     &         (id_rank_org, inod, jele, xi, itp_coef_dest)
+      subroutine set_results_2_array(id_rank_org, inod, jele,           &
+     &          xi, iflag_org_domain, itp_coef_dest)
 !
       use m_ctl_params_4_gen_table
       use t_interpolate_coefs_dest
-      use m_work_const_itp_table
 !
       integer, intent(in) :: id_rank_org
       integer(kind = kint), intent(in) :: inod, jele
 !
-      real(kind = kreal), intent(inout) ::   xi(3)
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest
+      real(kind = kreal), intent(inout) :: xi(3)
+      integer(kind = kint), intent(inout) :: iflag_org_domain
 !
       integer(kind = kint) :: nd
 !
@@ -186,9 +187,8 @@
           xi(nd) = -one
         end if
       end do
-
 !
-      iflag_org_domain(inod) = id_rank_org + 1
+      iflag_org_domain = id_rank_org + 1
       itp_coef_dest%iele_org_4_dest(inod) =  jele
       itp_coef_dest%coef_inter_dest(inod,1:3) = xi(1:3)
 !
@@ -231,10 +231,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_missing_nodes(ierr, id_rank, node)
+      subroutine check_missing_nodes                                    &
+     &         (id_rank, node, iflag_org_domain, ierr)
 !
       use t_geometry_data
-      use m_work_const_itp_table
       use m_search_bolck_4_itp
 !
       use set_parallel_file_name
@@ -242,6 +242,7 @@
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(inout) ::ierr
       type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: iflag_org_domain(node%numnod)
 !
       integer(kind= kint), parameter :: id_miss_file = 12
       character(len=kchara) :: miss_file_name
