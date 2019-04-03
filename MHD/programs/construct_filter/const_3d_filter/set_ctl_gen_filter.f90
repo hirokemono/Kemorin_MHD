@@ -3,14 +3,15 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!!      subroutine set_controls_gen_3dfilter                            &
-!!     &         (filter3d_ctl, FEM_elens, mesh_file, gfil_p, ref_m)
+!!      subroutine set_controls_gen_3dfilter(filter3d_ctl, FEM_elens,   &
+!!     &          mesh_file, gfil_p, newfil_p, ref_m)
 !!      subroutine set_controls_sort_3dfilter                           &
 !!     &         (filter3d_ctl, mesh_file, gfil_p, num_pe)
 !!        type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elens
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
+!!        type(ctl_param_newdom_filter), intent(inout) :: newfil_p
 !!        type(reference_moments), intent(inout) :: ref_m
 !
       module set_ctl_gen_filter
@@ -35,18 +36,20 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_controls_gen_3dfilter                              &
-     &         (filter3d_ctl, FEM_elens, mesh_file, gfil_p, ref_m)
+      subroutine set_controls_gen_3dfilter(filter3d_ctl, FEM_elens,     &
+     &          mesh_file, gfil_p, newfil_p, ref_m)
 !
       use m_crs_matrix_4_filter
       use t_reference_moments
       use t_filter_elength
+      use t_ctl_param_newdom_filter
       use set_control_platform_data
 !
       type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(field_IO_params), intent(inout) ::  mesh_file
       type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
+      type(ctl_param_newdom_filter), intent(inout) :: newfil_p
       type(reference_moments), intent(inout) :: ref_m
 !
 !
@@ -59,8 +62,9 @@
      &    gfil_p)
       call set_ctl_params_gen_filter                                    &
      &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl,                &
-     &    filter3d_ctl%org_fil_files_ctl, gfil_p, FEM_elens,            &
-     &    fil_mat_crs, ref_m)
+     &    filter3d_ctl%org_fil_files_ctl,                               &
+     &    newfil_p%org_filter_coef_head,                                &
+     &    gfil_p, FEM_elens, fil_mat_crs, ref_m)
 !
       end subroutine set_controls_gen_3dfilter
 !
@@ -91,9 +95,9 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_gen_filter                              &
-     &         (gen_f_ctl, fil3_ctl, org_fil_files_ctl,                 &
-     &          gfil_p, FEM_elens, fil_mat_crs, ref_m)
+      subroutine set_ctl_params_gen_filter(gen_f_ctl, fil3_ctl,         &
+     &          org_fil_files_ctl, org_filter_coef_head, gfil_p,        &
+     &          FEM_elens, fil_mat_crs, ref_m)
 !
       use calypso_mpi
       use m_error_IDs
@@ -109,6 +113,7 @@
       type(ctl_data_3d_filter), intent(in) :: fil3_ctl
       type(org_filter_prefix_ctls), intent(in) :: org_fil_files_ctl
 !
+      character(len=kchara), intent(inout) :: org_filter_coef_head
       type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(CRS_matrix), intent(inout) :: fil_mat_crs

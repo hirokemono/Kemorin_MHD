@@ -4,18 +4,18 @@
 !      Written by H. Matsui on May, 2008
 !
 !!      subroutine filters_4_newdomains_para                            &
-!!     &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,   &
-!!     &          newmesh, fil_coef, fils_sort)
+!!     &         (newfil_p, filtering, org_node, org_ele,               &
+!!     &          nod_d_grp, newmesh, fil_coef, fils_sort)
 !!      subroutine filters_4_newdomains_single                          &
-!!     &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,   &
-!!     &          newmesh, fil_coef, fils_sort)
-!!       type(field_IO_params), intent(in) :: mesh_file
-!!       type(filtering_data_type), intent(inout) :: filtering
-!!       type(node_data), intent(inout) :: org_node
-!!       type(element_data), intent(inout) :: org_ele
-!!       type(domain_group_4_partition), intent(inout) :: nod_d_grp
-!!       type(mesh_geometry), intent(inout) :: newmesh
-!!       type(filters_4_sorting), intent(inout) :: fils_sort
+!!     &         (newfil_p, filtering, org_node, org_ele,               &
+!!     &          nod_d_grp, newmesh, fil_coef, fils_sort)
+!!        type(ctl_param_newdom_filter), intent(in) :: newfil_p
+!!        type(filtering_data_type), intent(inout) :: filtering
+!!        type(node_data), intent(inout) :: org_node
+!!        type(element_data), intent(inout) :: org_ele
+!!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
+!!        type(mesh_geometry), intent(inout) :: newmesh
+!!        type(filters_4_sorting), intent(inout) :: fils_sort
 !
       module filters_for_newdomains
 !
@@ -28,6 +28,7 @@
       use t_file_IO_parameter
       use t_filter_coefs
       use t_filter_func_4_sorting
+      use t_ctl_param_newdom_filter
 !
       use set_filters_4_new_domains
 !
@@ -42,13 +43,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine filters_4_newdomains_para                              &
-     &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,     &
-     &          newmesh, fil_coef, fils_sort)
+     &         (newfil_p, filtering, org_node, org_ele,                 &
+     &          nod_d_grp, newmesh, fil_coef, fils_sort)
 !
       use calypso_mpi
       use t_domain_group_4_partition
 !
-      type(field_IO_params), intent(in) :: mesh_file
+      type(ctl_param_newdom_filter), intent(in) :: newfil_p
       type(filtering_data_type), intent(inout) :: filtering
       type(node_data), intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
@@ -60,9 +61,9 @@
       integer(kind = kint) :: ierr
 !
 !
-      call filters_4_each_newdomain(my_rank, mesh_file, filtering,      &
-     &    org_node, org_ele, nod_d_grp, newmesh%node, newmesh%ele,      &
-     &    fil_coef, fils_sort, ierr)
+      call filters_4_each_newdomain(my_rank, newfil_p,                  &
+     &    filtering, org_node, org_ele, nod_d_grp, newmesh%node,        &
+     &    newmesh%ele, fil_coef, fils_sort, ierr)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Mesh or filter data is wrong!!')
       end if
@@ -72,13 +73,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine filters_4_newdomains_single                            &
-     &         (mesh_file, filtering, org_node, org_ele, nod_d_grp,     &
-     &          newmesh, fil_coef, fils_sort)
+     &         (newfil_p, filtering, org_node, org_ele,                 &
+     &          nod_d_grp, newmesh, fil_coef, fils_sort)
 !
       use m_2nd_pallalel_vector
       use t_domain_group_4_partition
 !
-      type(field_IO_params), intent(in) :: mesh_file
+      type(ctl_param_newdom_filter), intent(in) :: newfil_p
       type(filtering_data_type), intent(inout) :: filtering
       type(node_data), intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
@@ -93,10 +94,9 @@
 !
       do ip2 = 1, nprocs_2nd
         my_rank_2nd = ip2 - 1
-        call filters_4_each_newdomain                                   &
-     &     (my_rank_2nd, mesh_file, filtering, org_node, org_ele,       &
-     &      nod_d_grp, newmesh%node, newmesh%ele, fil_coef, fils_sort,  &
-     &      ierr)
+        call filters_4_each_newdomain(my_rank_2nd, newfil_p,            &
+     &      filtering, org_node, org_ele, nod_d_grp,                    &
+     &      newmesh%node, newmesh%ele, fil_coef, fils_sort, ierr)
         if(ierr .gt. 0) stop 'Mesh or filter data is wrong!!'
       end do
 !
@@ -105,14 +105,12 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine filters_4_each_newdomain                               &
-     &         (my_rank2, mesh_file, filtering, org_node, org_ele,      &
-     &          nod_d_grp, new_node, new_ele, fil_coef, fils_sort,      &
-     &          ierr)
+      subroutine filters_4_each_newdomain(my_rank2,                     &
+     &          newfil_p, filtering, org_node, org_ele, nod_d_grp,      &
+     &          new_node, new_ele, fil_coef, fils_sort, ierr)
 !
       use t_filter_func_4_sorting
 !
-      use m_ctl_param_newdom_filter
       use m_2nd_pallalel_vector
       use m_nod_filter_comm_table
       use m_filter_file_names
@@ -135,7 +133,7 @@
       use t_filter_file_data
 !
       integer, intent(in) :: my_rank2
-      type(field_IO_params), intent(in) :: mesh_file
+      type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !
       type(node_data), intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
@@ -157,7 +155,7 @@
         ip2 = int(my_rank2 + 1, KIND(ip2))
 !
         call sel_read_geometry_size                                     &
-     &     (tgt_mesh_file, my_rank2, mesh_IO_f, ierr)
+     &     (newfil_p%tgt_mesh_file, my_rank2, mesh_IO_f, ierr)
         if(ierr .gt. 0) return
 !
         new_node%internal_node = mesh_IO_f%node%internal_node
@@ -166,10 +164,11 @@
 !
         call dealloc_node_geometry_IO(mesh_IO_f)
 !
-        file_name = add_process_id(my_rank2, new_filter_coef_head)
+        file_name = add_process_id(my_rank2,                            &
+     &                             newfil_p%new_filter_coef_head)
 !
         ifmt_filter_file = ifmt_3d_filter
-        filter_file_head = new_filter_coef_head
+        filter_file_head = newfil_p%new_filter_coef_head
         call sel_read_filter_geometry_file(my_rank2, filter_IO, ierr)
         if(ierr .gt. 0) return
 !
@@ -184,7 +183,8 @@
 !
 !        write(*,*) 'inter_nod_3dfilter', inter_nod_3dfilter
         call alloc_whole_filter_stack2(inter_nod_3dfilter, fils_sort)
-        call trans_filter_4_new_domains(ip2, ifmt_3d_filter, mesh_file, &
+        call trans_filter_4_new_domains(ip2, ifmt_3d_filter,            &
+     &      newfil_p%org_filter_coef_head, newfil_p%org_mesh_file,      &
      &      nod_d_grp, org_node, org_ele%numele, fil_coef, fils_sort)
         call reorder_filter_new_domain(fils_sort)
 !

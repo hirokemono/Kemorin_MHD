@@ -13,8 +13,11 @@
       use m_machine_parameter
       use calypso_mpi
       use m_work_time
+      use t_ctl_param_newdom_filter
 !
       implicit none
+!
+      type(ctl_param_newdom_filter), save :: newfil_p1
 !
 ! ----------------------------------------------------------------------
 !
@@ -27,7 +30,7 @@
       use m_2nd_pallalel_vector
       use t_ctl_data_newdomain_filter
       use t_domain_group_4_partition
-      use m_ctl_param_newdom_filter
+      use t_ctl_param_newdom_filter
       use bcast_nodes_for_trans
 !
       type(ctl_data_newdomain_filter) :: newd_fil_ctl1
@@ -50,13 +53,13 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
       call set_control_filter_newdomain(newd_fil_ctl1%org_filter_plt,   &
      &    newd_fil_ctl1%new_filter_plt, newd_fil_ctl1%ffile_ndom_ctl,   &
-     &    newd_fil_ctl1%org_filter_file_ctls, ierr)
+     &    newd_fil_ctl1%org_filter_file_ctls, newfil_p1, ierr)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'
       call bcast_parallel_domain_tbl                                    &
-     &   (tgt_mesh_file, domain_grp1%nod_d_grp)
+     &   (newfil_p1%tgt_mesh_file, domain_grp1%nod_d_grp)
 !
       call output_elapsed_times
 !

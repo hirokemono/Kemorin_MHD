@@ -3,9 +3,10 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine select_const_filter(file_name, mesh, fem_int,        &
-!!     &          tbl_crs, rhs_mat, FEM_elen, fil_elist, gfil_p, ref_m, &
-!!     &          dxidxs, FEM_moments, fil_gen)
+!!      subroutine select_const_filter(file_name, newfil_p, mesh,       &
+!!     &          fem_int, tbl_crs, rhs_mat, FEM_elen, fil_elist,       &
+!!     &          gfil_p, ref_m, dxidxs, FEM_moments, fil_gen)
+!!        type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -39,6 +40,7 @@
       use t_matrix_4_filter
       use t_element_list_4_filter
       use t_ctl_params_4_gen_filter
+      use t_ctl_param_newdom_filter
 !
       use cal_element_size
       use cal_filter_moms_ele_by_elen
@@ -51,6 +53,9 @@
       type(binary_IO_flags), private :: bin_flflags
       type(matrix_4_filter), private :: fil_mat1
 !
+      integer(kind = kint), parameter, private                          &
+     &                                :: id_new_filter_coef = 33
+!
       private :: const_commutative_filter, const_simple_filter
       private :: correct_commutative_filter, correct_by_simple_filter
 !
@@ -60,11 +65,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine select_const_filter(file_name, mesh, fem_int,          &
-     &          tbl_crs, rhs_mat, FEM_elen, fil_elist, gfil_p, ref_m,   &
-     &          dxidxs, FEM_moments, fil_gen)
+      subroutine select_const_filter(file_name, newfil_p, mesh,         &
+     &          fem_int, tbl_crs, rhs_mat, FEM_elen, fil_elist,         &
+     &          gfil_p, ref_m, dxidxs, FEM_moments, fil_gen)
 !
       character(len=kchara), intent(in) :: file_name
+      type(ctl_param_newdom_filter), intent(in) :: newfil_p
       type(mesh_geometry), intent(in) :: mesh
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -95,8 +101,8 @@
       else if(gfil_p%iflag_tgt_filter_type                              &
      &                    .eq. -iflag_commutative) then
         if (iflag_debug.eq.1) write(*,*) 'correct_commutative_filter'
-        call correct_commutative_filter                                 &
-     &     (mesh, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, tbl_crs,       &
+        call correct_commutative_filter(newfil_p, mesh,                 &
+     &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, tbl_crs,             &
      &      rhs_mat, FEM_elen, ref_m, fil_elist, gfil_p, dxidxs,        &
      &      FEM_moments, fil_gen, fil_mat1)
         call finalize_4_cal_fileters(gfil_p%iflag_ordering_list,        &
@@ -106,7 +112,7 @@
      &     .and. gfil_p%iflag_tgt_filter_type .le. -iflag_tophat) then
         if (iflag_debug.eq.1) write(*,*) 'correct_by_simple_filter'
         call correct_by_simple_filter                                   &
-     &     (mesh, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,                &
+     &     (mesh, newfil_p, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,      &
      &      fem_int%rhs_tbl, fem_int%m_lump, tbl_crs, rhs_mat,          &
      &      FEM_elen, ref_m, fil_elist, gfil_p, dxidxs, FEM_moments,    &
      &      fil_gen, fil_mat1)
@@ -254,11 +260,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine correct_commutative_filter(mesh, g_FEM, jac_3d_q,      &
-     &          tbl_crs, rhs_mat, FEM_elen, ref_m, fil_elist,           &
-     &          gfil_p, dxidxs, FEM_moments, fil_gen, fil_mat)
+      subroutine correct_commutative_filter                             &
+     &         (newfil_p, mesh, g_FEM, jac_3d_q, tbl_crs, rhs_mat,      &
+     &          FEM_elen, ref_m, fil_elist, gfil_p, dxidxs,             &
+     &          FEM_moments, fil_gen, fil_mat)
 !
-      use m_ctl_param_newdom_filter
       use m_filter_file_names
       use set_parallel_file_name
       use correct_wrong_filters
@@ -267,15 +273,16 @@
       use mesh_data_IO
       use mesh_data_IO_b
 !
-      type(CRS_matrix_connect), intent(inout) :: tbl_crs
-      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
-!
+      type(ctl_param_newdom_filter), intent(in) :: newfil_p
       type(mesh_geometry), intent(in) :: mesh
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(reference_moments), intent(in) :: ref_m
       type(element_list_4_filter), intent(in) :: fil_elist
+!
+      type(CRS_matrix_connect), intent(inout) :: tbl_crs
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
       type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
       type(dxidx_data_type), intent(inout) :: dxidxs
@@ -304,8 +311,10 @@
 !     check filter function
 !  ---------------------------------------------------
 !
-      file_name =       add_process_id(my_rank, org_filter_coef_head)
-      fixed_file_name = add_process_id(my_rank, new_filter_coef_head)
+      file_name                                                         &
+     &      = add_process_id(my_rank, newfil_p%org_filter_coef_head)
+      fixed_file_name                                                   &
+     &      = add_process_id(my_rank, newfil_p%new_filter_coef_head)
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         open(org_filter_coef_code, file=file_name, form='formatted')
@@ -387,12 +396,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine correct_by_simple_filter                               &
-     &         (mesh, g_FEM, jac_3d_q, rhs_tbl, m_lump, tbl_crs,        &
+      subroutine correct_by_simple_filter(mesh, newfil_p,               &
+     &          g_FEM, jac_3d_q, rhs_tbl, m_lump, tbl_crs,              &
      &          rhs_mat, FEM_elen, ref_m, fil_elist, gfil_p, dxidxs,    &
      &          FEM_moments, fil_gen, fil_mat)
 !
-      use m_ctl_param_newdom_filter
       use m_filter_file_names
       use m_field_file_format
       use set_parallel_file_name
@@ -403,6 +411,7 @@
       use mesh_data_IO_b
 !
       type(mesh_geometry), intent(in) :: mesh
+      type(ctl_param_newdom_filter), intent(in) :: newfil_p
 
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q
@@ -438,9 +447,10 @@
 !     check filter function
 !  ---------------------------------------------------
 !
-      write(*,*) 'org_filter_coef_head', org_filter_coef_head
-      file_name =        add_process_id(my_rank, org_filter_coef_head)
-      fixed_file_name =  add_process_id(my_rank, new_filter_coef_head)
+      file_name                                                         &
+     &      = add_process_id(my_rank, newfil_p%org_filter_coef_head)
+      fixed_file_name                                                   &
+     &      = add_process_id(my_rank, newfil_p%new_filter_coef_head)
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         open(org_filter_coef_code, file=file_name, form='formatted')

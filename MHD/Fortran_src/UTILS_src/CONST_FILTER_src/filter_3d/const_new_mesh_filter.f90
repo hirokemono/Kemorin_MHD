@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on May., 2008
 !
-!!      subroutine const_mesh_newdomain_filter                          &
-!!     &         (itl_nod_part, new_comm, comm_part)
+!!      subroutine const_mesh_newdomain_filter(new_filter_coef_head,    &
+!!     &          itl_nod_part, new_comm, comm_part)
 !!      subroutine const_mesh_each_filter_domain                        &
 !!     &         (my_rank2, itl_nod_part, new_comm, comm_part)
 !!        type(internal_4_partitioner), intent(in) :: itl_nod_part
@@ -24,13 +24,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_mesh_newdomain_filter                            &
-     &         (itl_nod_part, new_comm, comm_part)
+      subroutine const_mesh_newdomain_filter(new_filter_coef_head,      &
+     &          itl_nod_part, new_comm, comm_part)
 !
       use m_2nd_pallalel_vector
       use t_comm_table
       use t_partitioner_comm_table
 !
+      character(len=kchara), intent(in) :: new_filter_coef_head
       type(internal_4_partitioner), intent(in) :: itl_nod_part
 !
       type(communication_table), intent(inout) :: new_comm
@@ -41,7 +42,8 @@
 !
       do my_rank2 = 0, nprocs_2nd-1
         call const_mesh_each_filter_domain                              &
-     &     (my_rank2, itl_nod_part, new_comm, comm_part)
+     &     (my_rank2, new_filter_coef_head, itl_nod_part,               &
+     &      new_comm, comm_part)
       end do
 !
       end subroutine const_mesh_newdomain_filter
@@ -49,10 +51,10 @@
 !   --------------------------------------------------------------------
 !
       subroutine const_mesh_each_filter_domain                          &
-     &         (my_rank2, itl_nod_part, new_comm, comm_part)
+     &         (my_rank2, new_filter_coef_head, itl_nod_part,           &
+     &          new_comm, comm_part)
 !
       use calypso_mpi
-      use m_ctl_param_newdom_filter
       use m_nod_filter_comm_table
       use m_filter_file_names
       use m_file_format_switch
@@ -70,6 +72,7 @@
       use t_filter_file_data
 !
       integer, intent(in) :: my_rank2
+      character(len=kchara), intent(in) :: new_filter_coef_head
       type(internal_4_partitioner), intent(in) :: itl_nod_part
 !
       type(communication_table), intent(inout) :: new_comm

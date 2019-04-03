@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on May, 2008
 !
-!!      subroutine read_original_filter_coefs                           &
-!!     &         (ifile_type, id_rank, numnod, numele,                  &
+!!      subroutine read_original_filter_coefs(org_filter_coef_head,     &
+!!     &          ifile_type, id_rank, numnod, numele,                  &
 !!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!        type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
@@ -15,12 +15,13 @@
       use m_precision
 !
       use t_geometry_data
-      use m_ctl_param_newdom_filter
       use set_parallel_file_name
       use filter_IO_for_newdomain
 !
       implicit none
 !
+      integer(kind = kint), parameter, private                          &
+      &                               :: id_org_filter_coef = 23
       type(binary_IO_flags), private :: bin_flflags
 !
 !  ---------------------------------------------------------------------
@@ -29,8 +30,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_original_filter_coefs                             &
-     &         (ifile_type, id_rank, numnod, numele,                    &
+      subroutine read_original_filter_coefs(org_filter_coef_head,       &
+     &          ifile_type, id_rank, numnod, numele,                    &
      &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !
       use m_filter_file_names
@@ -45,6 +46,7 @@
       use mesh_data_IO_b
       use binary_IO
 !
+      character(len=kchara), intent(in) :: org_filter_coef_head
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ifile_type
       integer(kind = kint), intent(in) :: numnod, numele

@@ -10,9 +10,9 @@
 !!      subroutine dealloc_comm_table_4_assemble(asbl_comm)
 !!      subroutine s_search_original_domain_node(nprocs_org, org_mesh,  &
 !!     &          new_node, irank_from_org, inod_from_org)
-!!        type(field_IO_params), intent(in) :: org_mesh_file
 !!        type(node_data), intent(in) :: new_node
-!!        type(mesh_geometry), intent(inout) :: org_mesh
+!!        type(mesh_geometry), intent(inout) :: org_mesh(nprocs_org)
+!!        type(comm_table_4_assemble), intent(inout) :: asbl_comm
 !!@endverbatim
 !!
       module t_comm_table_4_assemble

@@ -3,13 +3,12 @@
 !
 !      Written by H. Matsui on May, 2008
 !
-!!      subroutine local_newdomain_filter_para(mesh_file, itl_nod_part, &
+!!      subroutine local_newdomain_filter_para(newfil_p,                &
+!!     &          itl_nod_part, nod_d_grp, comm_part, org_node, org_ele,&
+!!     &          newmesh, fil_coef, whole_fil_sort, fluid_fil_sort)
+!!      subroutine local_newdomain_filter_sngl(newfil_p, itl_nod_part,  &
 !!     &          nod_d_grp, comm_part, org_node, org_ele, newmesh,     &
 !!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
-!!      subroutine local_newdomain_filter_sngl(mesh_file, itl_nod_part, &
-!!     &          nod_d_grp, comm_part, org_node, org_ele, newmesh,     &
-!!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
-!!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(internal_4_partitioner), intent(inout)  :: itl_nod_part
 !!        type(domain_group_4_partition), intent(inout)  :: nod_d_grp
 !!        type(partitioner_comm_tables), intent(inout) :: comm_part
@@ -29,6 +28,7 @@
       use set_filters_4_new_domains
       use const_new_mesh_filter
 !
+      use t_ctl_param_newdom_filter
       use t_file_IO_parameter
       use t_mesh_data
       use t_geometry_data
@@ -46,9 +46,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine local_newdomain_filter_para(mesh_file, itl_nod_part,   &
-     &          nod_d_grp, comm_part, org_node, org_ele, newmesh,       &
-     &          fil_coef, whole_fil_sort, fluid_fil_sort)
+      subroutine local_newdomain_filter_para(newfil_p,                  &
+     &          itl_nod_part, nod_d_grp, comm_part, org_node, org_ele,  &
+     &          newmesh, fil_coef, whole_fil_sort, fluid_fil_sort)
 !
       use m_2nd_pallalel_vector
 !
@@ -56,7 +56,7 @@
       use generate_comm_tables
       use bcast_nodes_for_trans
 !
-      type(field_IO_params), intent(in) :: mesh_file
+      type(ctl_param_newdom_filter), intent(in) :: newfil_p
       type(internal_4_partitioner), intent(inout)  :: itl_nod_part
       type(domain_group_4_partition), intent(inout)  :: nod_d_grp
       type(partitioner_comm_tables), intent(inout) :: comm_part
@@ -81,9 +81,9 @@
         call alloc_id_4_subdomain(itl_nod_part)
 !
         write(*,*) 'set_inod_4_newdomain_filter'
-        call set_inod_4_newdomain_filter(mesh_file, nod_d_grp,          &
-     &      org_node, org_ele, newmesh%node, itl_nod_part,              &
-     &      fil_coef, whole_fil_sort, fluid_fil_sort, ierr)
+        call set_inod_4_newdomain_filter(newfil_p, nod_d_grp,           &
+     &      org_node, org_ele, newmesh%node, itl_nod_part, fil_coef,    &
+     &      whole_fil_sort, fluid_fil_sort, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Fileter is wrong!!')
         end if
@@ -104,7 +104,8 @@
       call bcast_xx_whole_nod(nod_d_grp%num_s_domin, itl_nod_part)
 !
       write(*,*) 'const_mesh_each_filter_domain', my_rank
-      call const_mesh_each_filter_domain(my_rank,                       &
+      call const_mesh_each_filter_domain                                &
+     &   (my_rank, newfil_p%new_filter_coef_head,                       &
      &    itl_nod_part, newmesh%nod_comm, comm_part)
 !
       call dealloc_internal_4_part(itl_nod_part)
@@ -118,14 +119,14 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine local_newdomain_filter_sngl(mesh_file, itl_nod_part,   &
+      subroutine local_newdomain_filter_sngl(newfil_p, itl_nod_part,    &
      &          nod_d_grp, comm_part, org_node, org_ele, newmesh,       &
      &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !
       use set_inod_newdomain_filter
       use generate_comm_tables
 !
-      type(field_IO_params), intent(in) :: mesh_file
+      type(ctl_param_newdom_filter), intent(in) :: newfil_p
       type(internal_4_partitioner), intent(inout)  :: itl_nod_part
       type(domain_group_4_partition), intent(inout)  :: nod_d_grp
       type(partitioner_comm_tables), intent(inout) :: comm_part
@@ -147,9 +148,9 @@
       call alloc_id_4_subdomain(itl_nod_part)
 !
 !      write(*,*) 'set_inod_4_newdomain_filter'
-      call set_inod_4_newdomain_filter                                  &
-     &   (mesh_file, nod_d_grp, org_node, org_ele, newmesh%node,        &
-     &    itl_nod_part, fil_coef, whole_fil_sort, fluid_fil_sort, ierr)
+      call set_inod_4_newdomain_filter(newfil_p, nod_d_grp,             &
+     &    org_node, org_ele, newmesh%node, itl_nod_part, fil_coef,      &
+     &    whole_fil_sort, fluid_fil_sort, ierr)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Fileter is wrong!!')
       end if
@@ -164,8 +165,8 @@
       call alloc_internal_4_part(itl_nod_part)
 !
       write(*,*) 'const_mesh_newdomain_filter'
-      call const_mesh_newdomain_filter                                  &
-     &   (itl_nod_part, newmesh%nod_comm, comm_part)
+      call const_mesh_newdomain_filter(newfil_p%new_filter_coef_head,   &
+     &    itl_nod_part, newmesh%nod_comm, comm_part)
 !
       call dealloc_internal_4_part(itl_nod_part)
       call dealloc_num_4_subdomain(itl_nod_part)

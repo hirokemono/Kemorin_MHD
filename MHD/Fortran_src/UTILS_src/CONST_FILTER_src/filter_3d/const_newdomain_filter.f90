@@ -4,11 +4,12 @@
 !      modified by H. Matsui on Apr., 2008
 !
 !!      subroutine marking_used_node_4_filtering                        &
-!!     &         (ip2, ifile_type, mesh_file, nod_d_grp, node, numele,  &
-!!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
+!!     &         (ip2, ifile_type, org_filter_coef_head, mesh_file,     &
+!!     &          nod_d_grp, node, numele, fil_coef, whole_fil_sort,    &
+!!     &          fluid_fil_sort)
 !!      subroutine trans_filter_4_new_domains                           &
-!!     &         (ip2, ifile_type, mesh_file, nod_d_grp, node, numele,  &
-!!     &          fil_coef, fils_sort)
+!!     &         (ip2, ifile_type, org_filter_coef_head, mesh_file,     &
+!!     &          nod_d_grp, node, numele, fil_coef, fils_sort)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(node_data), intent(inout) :: node
 !!        type(filters_4_sorting), intent(inout) :: fils_sort
@@ -38,13 +39,15 @@
 !------------------------------------------------------------------
 !
       subroutine marking_used_node_4_filtering                          &
-     &         (ip2, ifile_type, mesh_file, nod_d_grp, node, numele,    &
-     &          fil_coef, whole_fil_sort, fluid_fil_sort)
+     &         (ip2, ifile_type, org_filter_coef_head, mesh_file,       &
+     &          nod_d_grp, node, numele, fil_coef, whole_fil_sort,      &
+     &          fluid_fil_sort)
 !
       type(field_IO_params), intent(in) ::  mesh_file
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
       integer(kind = kint), intent(in) :: ip2
       integer(kind = kint), intent(in) :: ifile_type
+      character(len=kchara), intent(in) :: org_filter_coef_head
 !
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
@@ -76,8 +79,8 @@
 !
 !     read filtering information
 !
-        call read_original_filter_coefs                                 &
-     &     (ifile_type, id_rank, node%numnod, numele,                   &
+        call read_original_filter_coefs(org_filter_coef_head,           &
+     &      ifile_type, id_rank, node%numnod, numele,                   &
      &      fil_coef, whole_fil_sort, fluid_fil_sort)
 !
         call nod_marking_by_filtering_data                              &
@@ -97,13 +100,14 @@
 !------------------------------------------------------------------
 !
       subroutine trans_filter_4_new_domains                             &
-     &         (ip2, ifile_type, mesh_file, nod_d_grp, node, numele,    &
-     &          fil_coef, fils_sort)
+     &         (ip2, ifile_type, org_filter_coef_head, mesh_file,       &
+     &          nod_d_grp, node, numele, fil_coef, fils_sort)
 !
-      type(field_IO_params), intent(in) ::  mesh_file
+      type(field_IO_params), intent(in) :: mesh_file
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
       integer(kind = kint), intent(in) :: ip2
       integer(kind = kint), intent(in) :: ifile_type
+      character(len=kchara), intent(in) :: org_filter_coef_head
 !
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
@@ -133,8 +137,8 @@
 !
 !     read filtering information
 !
-        call read_original_filter_coefs                                 &
-     &     (ifile_type, id_rank, node%numnod, numele, fil_coef,         &
+        call read_original_filter_coefs(org_filter_coef_head,           &
+     &      ifile_type, id_rank, node%numnod, numele, fil_coef,         &
      &      fils_sort%whole_fil_sort, fils_sort%fluid_fil_sort)
 !
         call set_filter_for_new_each_domain                             &

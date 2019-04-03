@@ -14,8 +14,11 @@
       use calypso_mpi
       use m_2nd_pallalel_vector
       use t_mesh_data
+      use t_ctl_param_newdom_filter
 !
       implicit none
+!
+      type(ctl_param_newdom_filter), save :: newfil_p1
 !
       type(mesh_geometry), save ::    orgmesh
       type(element_geometry), save :: org_ele_mesh
@@ -32,7 +35,7 @@
       subroutine moments_to_newdomain_init
 !
       use t_ctl_data_newdomain_filter
-      use m_ctl_param_newdom_filter
+      use t_ctl_param_newdom_filter
       use const_domain_tbl_by_file
 !
       type(ctl_data_newdomain_filter) :: newd_fil_ctl1
@@ -61,7 +64,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
       call set_control_filter_newdomain(newd_fil_ctl1%org_filter_plt,   &
      &    newd_fil_ctl1%new_filter_plt, newd_fil_ctl1%ffile_ndom_ctl,   &
-     &    newd_fil_ctl1%org_filter_file_ctls, ierr)
+     &    newd_fil_ctl1%org_filter_file_ctls, newfil_p1, ierr)
 !
       end subroutine moments_to_newdomain_init
 !
@@ -73,10 +76,10 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_para'
-      if (iflag_set_filter_elen .gt. 0                                  &
-     &  .or. iflag_set_filter_moms.gt.0) then
+      if (newfil_p1%iflag_set_filter_elen .gt. 0                        &
+     &  .or. newfil_p1%iflag_set_filter_moms.gt.0) then
         call trans_filter_moms_newmesh_para                             &
-     &     (orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
+     &     (newfil_p1, orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
       end if
 !
       end subroutine moments_to_newdomain_analyze

@@ -1,38 +1,37 @@
-!m_ctl_param_newdom_filter.f90
-!      module m_ctl_param_newdom_filter
+!t_ctl_param_newdom_filter.f90
+!      module t_ctl_param_newdom_filter
 !
 !      modified by H. Matsui on Apr., 2008
 !
-!!      subroutine set_control_filter_newdomain                         &
-!!     &         (org_plt, new_plt, ffile_ctl, org_fil_files_ctl, ierr)
+!!      subroutine set_control_filter_newdomain(org_plt, new_plt,       &
+!!     &          ffile_ctl, org_fil_files_ctl, newfil_p, ierr)
 !!        type(platform_data_control), intent(in) :: org_plt, new_plt
 !!        type(filter_file_control), intent(in) :: ffile_ctl
+!!        type(ctl_param_newdom_filter), intent(inout) :: newfil_p
 !
-      module m_ctl_param_newdom_filter
+      module t_ctl_param_newdom_filter
 !
       use m_precision
       use t_file_IO_parameter
 !
       implicit none
 !
-      type(field_IO_params), save :: org_mesh_file
-      type(field_IO_params), save :: tgt_mesh_file
+      type ctl_param_newdom_filter
+        type(field_IO_params) :: org_mesh_file
+        type(field_IO_params) :: tgt_mesh_file
 !
-      character(len=kchara) :: org_filter_elen_head
-      character(len=kchara) :: org_filter_coef_head
-      character(len=kchara) :: org_filter_moms_head
+        character(len=kchara) :: org_filter_elen_head
+        character(len=kchara) :: org_filter_coef_head
+        character(len=kchara) :: org_filter_moms_head
 !
-      character(len=kchara) :: new_filter_elen_head
-      character(len=kchara) :: new_filter_coef_head
-      character(len=kchara) :: new_filter_moms_head
+        character(len=kchara) :: new_filter_elen_head
+        character(len=kchara) :: new_filter_coef_head
+        character(len=kchara) :: new_filter_moms_head
 !
-      integer(kind = kint) :: iflag_set_filter_elen
-      integer(kind = kint) :: iflag_set_filter_coef
-      integer(kind = kint) :: iflag_set_filter_moms
-!
-      integer(kind = kint), parameter :: id_org_filter_coef = 23
-      integer(kind = kint), parameter :: id_org_filter_elen = 25
-      integer(kind = kint), parameter :: id_new_filter_coef = 33
+        integer(kind = kint) :: iflag_set_filter_elen
+        integer(kind = kint) :: iflag_set_filter_coef
+        integer(kind = kint) :: iflag_set_filter_moms
+      end type ctl_param_newdom_filter
 !
 !  ---------------------------------------------------------------------
 !
@@ -40,8 +39,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_filter_newdomain                           &
-     &         (org_plt, new_plt, ffile_ctl, org_fil_files_ctl, ierr)
+      subroutine set_control_filter_newdomain(org_plt, new_plt,         &
+     &          ffile_ctl, org_fil_files_ctl, newfil_p, ierr)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -58,6 +57,8 @@
       type(platform_data_control), intent(in) :: org_plt, new_plt
       type(filter_file_control), intent(in) :: ffile_ctl
       type(org_filter_prefix_ctls), intent(in) :: org_fil_files_ctl
+!
+      type(ctl_param_newdom_filter), intent(inout) :: newfil_p
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -87,38 +88,38 @@
       end if
 !
 !
-      call set_control_mesh_def(org_plt, org_mesh_file)
+      call set_control_mesh_def(org_plt, newfil_p%org_mesh_file)
       call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, new_plt, tgt_mesh_file)
+     &   (def_new_mesh_head, new_plt, newfil_p%tgt_mesh_file)
 !
 !
-      org_filter_elen_head = "org/filter_elength"
-      iflag_set_filter_elen                                             &
+      newfil_p%org_filter_elen_head = "org/filter_elength"
+      newfil_p%iflag_set_filter_elen                                    &
      &      = org_fil_files_ctl%org_filter_elen_head_ctl%iflag
-      if(iflag_set_filter_elen .gt. 0) then
-        org_filter_elen_head                                            &
+      if(newfil_p%iflag_set_filter_elen .gt. 0) then
+        newfil_p%org_filter_elen_head                                   &
      &      = org_fil_files_ctl%org_filter_elen_head_ctl%charavalue
       end if
 !
-      org_filter_coef_head = "org/filter_coef"
-      iflag_set_filter_coef                                             &
+      newfil_p%org_filter_coef_head = "org/filter_coef"
+      newfil_p%iflag_set_filter_coef                                    &
      &      = org_fil_files_ctl%org_filter_coef_head_ctl%iflag
-      if(iflag_set_filter_coef .gt. 0) then
-        org_filter_coef_head                                            &
+      if(newfil_p%iflag_set_filter_coef .gt. 0) then
+        newfil_p%org_filter_coef_head                                   &
      &      = org_fil_files_ctl%org_filter_coef_head_ctl%charavalue
       end if
 !
-      org_filter_moms_head = "org/filter_moms"
-      iflag_set_filter_moms                                             &
+      newfil_p%org_filter_moms_head = "org/filter_moms"
+      newfil_p%iflag_set_filter_moms                                    &
      &      = org_fil_files_ctl%org_filter_moms_head_ctl%iflag
-      if (iflag_set_filter_moms .gt. 0) then
-        org_filter_moms_head                                            &
+      if(newfil_p%iflag_set_filter_moms .gt. 0) then
+        newfil_p%org_filter_moms_head                                   &
      &      = org_fil_files_ctl%org_filter_moms_head_ctl%charavalue
       end if
 !
 !
       if(ffile_ctl%filter_elen_head_ctl%iflag .gt. 0) then
-        new_filter_elen_head                                            &
+        newfil_p%new_filter_elen_head                                   &
      &         = ffile_ctl%filter_elen_head_ctl%charavalue
       else
         write(*,*) 'set target filter length file name'
@@ -126,17 +127,17 @@
       end if
 !
       if(ffile_ctl%filter_coef_head_ctl%iflag .gt. 0) then
-        new_filter_coef_head                                            &
+        newfil_p%new_filter_coef_head                                   &
      &         = ffile_ctl%filter_coef_head_ctl%charavalue
-      else if(iflag_set_filter_coef .gt. 0) then
+      else if(newfil_p%iflag_set_filter_coef .gt. 0) then
         write(*,*) 'set target filter coefficient file name'
         stop
       end if
 !
       if(ffile_ctl%filter_moms_head_ctl%iflag .gt. 0) then
-        new_filter_moms_head                                            &
+        newfil_p%new_filter_moms_head                                   &
      &         = ffile_ctl%filter_moms_head_ctl%charavalue
-      else if(iflag_set_filter_moms .gt. 0) then
+      else if(newfil_p%iflag_set_filter_moms .gt. 0) then
         write(*,*) 'set target filter moment file name'
         stop
       end if
@@ -145,4 +146,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_ctl_param_newdom_filter
+      end module t_ctl_param_newdom_filter

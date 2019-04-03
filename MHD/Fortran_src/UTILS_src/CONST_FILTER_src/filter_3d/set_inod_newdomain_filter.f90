@@ -3,9 +3,9 @@
 !
 !     Written by H. Matsui on May., 2008
 !
-!!      subroutine set_inod_4_newdomain_filter(mesh_file, nod_d_grp,    &
-!!     &          org_node, org_ele, new_node, itl_nod_part,            &
-!!     &          fil_coef, whole_fil_sort, fluid_fil_sort, ierr)
+!!      subroutine set_inod_4_newdomain_filter(newfil_p, nod_d_grp,     &
+!!     &          org_node, org_ele, new_node, itl_nod_part, fil_coef,  &
+!!     &          whole_fil_sort, fluid_fil_sort, ierr)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(domain_group_4_partition), intent(in)  :: nod_d_grp
 !!        type(node_data),    intent(inout) :: org_node
@@ -25,6 +25,7 @@
       use mesh_IO_select
       use const_newdomain_filter
       use set_filters_4_new_domains
+      use t_ctl_param_newdom_filter
 !
       implicit none
 !
@@ -34,9 +35,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_inod_4_newdomain_filter(mesh_file, nod_d_grp,      &
-     &          org_node, org_ele, new_node, itl_nod_part,              &
-     &          fil_coef, whole_fil_sort, fluid_fil_sort, ierr)
+      subroutine set_inod_4_newdomain_filter(newfil_p, nod_d_grp,       &
+     &          org_node, org_ele, new_node, itl_nod_part, fil_coef,    &
+     &          whole_fil_sort, fluid_fil_sort, ierr)
 !
       use t_mesh_data
       use t_file_IO_parameter
@@ -48,7 +49,7 @@
       use m_field_file_format
       use copy_mesh_structures
 !
-      type(field_IO_params), intent(in) :: mesh_file
+      type(ctl_param_newdom_filter), intent(in) :: newfil_p
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
       type(node_data),    intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
@@ -67,7 +68,7 @@
         ip2 = int(my_rank2 + 1,KIND(ip2))
 !
         call sel_read_geometry_size                                     &
-     &     (tgt_mesh_file, my_rank2, mesh_IO_f, ierr)
+     &     (newfil_p%tgt_mesh_file, my_rank2, mesh_IO_f, ierr)
         if(ierr .gt. 0) return
 !
         call copy_node_geometry_types(mesh_IO_f%node, new_node)
@@ -75,7 +76,8 @@
         call dealloc_node_geometry_IO(mesh_IO_f)
 !
         call marking_used_node_4_filtering                              &
-     &     (ip2, ifmt_3d_filter, mesh_file, nod_d_grp, org_node,        &
+     &     (ip2, ifmt_3d_filter, newfil_p%org_filter_coef_head,         &
+     &      newfil_p%org_mesh_file, nod_d_grp, org_node,                &
      &      org_ele%numele, fil_coef, whole_fil_sort, fluid_fil_sort)
 !
         call set_num_globalnod_4_newdomain                              &

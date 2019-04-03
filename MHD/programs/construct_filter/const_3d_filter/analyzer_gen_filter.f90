@@ -15,6 +15,7 @@
       use calypso_mpi
 !
       use t_ctl_params_4_gen_filter
+      use t_ctl_param_newdom_filter
       use t_file_IO_parameter
       use t_mesh_data
       use t_shape_functions
@@ -37,6 +38,7 @@
       type(ctl_data_gen_3d_filter), save :: filter3d_ctl1
       type(field_IO_params), save ::  mesh_filter_file
       type(ctl_params_4_gen_filter), save :: gfil_p1
+      type(ctl_param_newdom_filter), save :: newfil_p1
 !
       type(mesh_data), save :: fem_f
       type(element_geometry), save :: ele_filter
@@ -100,8 +102,8 @@
       call read_control_4_gen_filter(filter3d_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_controls_gen_3dfilter'
-      call set_controls_gen_3dfilter                                    &
-     &   (filter3d_ctl1, FEM_elen_f, mesh_filter_file, gfil_p1, ref_m1)
+      call set_controls_gen_3dfilter(filter3d_ctl1, FEM_elen_f,         &
+     &    mesh_filter_file, gfil_p1, newfil_p1, ref_m1)
       call dealloc_ctl_data_gen_3d_filter(filter3d_ctl1)
 !
 !  --  read geometry
@@ -244,9 +246,9 @@
         call sel_write_filter_geometry_file(my_rank, filter_IO)
 !
         call select_const_filter                                        &
-     &      (file_name, fem_f%mesh, fem_int_f, tbl_crs_f, rhs_mat_f,    &
-     &       FEM_elen_f, fil_elist1, gfil_p1, ref_m1, dxidxs1,          &
-     &       FEM_momenet1, fil_gen1)
+     &      (file_name, newfil_p1, fem_f%mesh, fem_int_f, tbl_crs_f,    &
+     &       rhs_mat_f, FEM_elen_f, fil_elist1, gfil_p1, ref_m1,        &
+     &       dxidxs1, FEM_momenet1, fil_gen1)
         call dealloc_jacobians_node(filter_dxi1)
 !
 !

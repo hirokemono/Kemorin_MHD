@@ -18,6 +18,7 @@
       use t_partitioner_comm_table
       use t_filter_coefs
       use t_filter_func_4_sorting
+      use t_ctl_param_newdom_filter
 !
       implicit none
 !
@@ -27,6 +28,7 @@
       type(mesh_geometry), save ::    newmesh
       type(element_geometry), save :: new_ele_mesh
 !
+      type(ctl_param_newdom_filter), save :: newfil_p1
       type(filtering_data_type), save :: filtering_nd
       type(domain_groups_4_partitioner), save :: domain_grp1
       type(internal_4_partitioner), save :: itl_nod_part1
@@ -44,7 +46,7 @@
 !
       use calypso_mpi
       use t_ctl_data_newdomain_filter
-      use m_ctl_param_newdom_filter
+      use t_ctl_param_newdom_filter
       use const_domain_tbl_by_file
 !
       type(ctl_data_newdomain_filter) :: newd_fil_ctl1
@@ -68,13 +70,13 @@
       nprocs_2nd = 0
       call set_control_filter_newdomain(newd_fil_ctl1%org_filter_plt,   &
      &    newd_fil_ctl1%new_filter_plt, newd_fil_ctl1%ffile_ndom_ctl,   &
-     &    newd_fil_ctl1%org_filter_file_ctls, ierr)
+     &    newd_fil_ctl1%org_filter_file_ctls, newfil_p1, ierr)
       if(ierr .gt. 0) stop
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_const_domain_tbl_by_file'
       call s_const_domain_tbl_by_file                                   &
-     &   (tgt_mesh_file, domain_grp1%nod_d_grp)
+     &   (newfil_p1%tgt_mesh_file, domain_grp1%nod_d_grp)
 !
       domain_grp1%ele_d_grp%num_s_domin = 0
       call alloc_domain_group(domain_grp1%ele_d_grp)
@@ -93,21 +95,21 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_sngl'
       call local_newdomain_filter_sngl                                  &
-     &   (org_mesh_file, itl_nod_part1, domain_grp1%nod_d_grp,          &
+     &   (newfil_p1, itl_nod_part1, domain_grp1%nod_d_grp,              &
      &    comm_part1, orgmesh%node, orgmesh%ele, newmesh, fil_coef1,    &
      &    fils_sort1%whole_fil_sort, fils_sort1%fluid_fil_sort)
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_sgl'
-      if (iflag_set_filter_elen .gt. 0                                  &
-     &  .or. iflag_set_filter_moms.gt.0) then
+      if (newfil_p1%iflag_set_filter_elen .gt. 0                        &
+     &  .or. newfil_p1%iflag_set_filter_moms.gt.0) then
         call trans_filter_moms_newmesh_sgl                              &
-     &     (orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
+     &     (newfil_p1, orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
       end if
 !
-      if (iflag_set_filter_coef .gt. 0) then
+      if (newfil_p1%iflag_set_filter_coef .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_single'
-        call filters_4_newdomains_single(org_mesh_file,                 &
-     &      filtering_nd, orgmesh%node, orgmesh%ele,                    &
+        call filters_4_newdomains_single                                &
+     &     (newfil_p1, filtering_nd, orgmesh%node, orgmesh%ele,         &
      &      domain_grp1%nod_d_grp, newmesh, fil_coef1, fils_sort1)
 !
         call dealloc_local_ne_id_tbl(domain_grp1)
