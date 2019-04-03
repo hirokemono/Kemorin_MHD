@@ -3,13 +3,14 @@
 !
 !        programmed by H.Matsui on Mar., 2008
 !
-!!      subroutine const_filter_mat_each_nod(node, FEM_elen, ref_m,     &
+!!      subroutine const_filter_mat_each_nod                            &
+!!     &         (ref_filter_width, node, FEM_elen, ref_m,              &
 !!     &          fil_coef, inod, num_fixed_point, fil_mat, ierr)
 !!        type(node_data), intent(in) :: node
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(reference_moments), intent(in) :: ref_m
 !!        type(each_filter_coef), intent(in) :: fil_coef
-!!      subroutine cal_filter_and_coefficients                          &
+!!      subroutine cal_filter_and_coefficients(num_int_points,          &
 !!     &         (ele, g_FEM, jac_3d, fil_mat, fil_coef)
 !!        type(element_data), intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -37,7 +38,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_filter_mat_each_nod(node, FEM_elen, ref_m,       &
+      subroutine const_filter_mat_each_nod                              &
+     &         (ref_filter_width, node, FEM_elen, ref_m,                &
      &          fil_coef, inod, num_fixed_point, fil_mat, ierr)
 !
       use t_geometry_data
@@ -48,6 +50,7 @@
       use fem_const_filter_matrix
       use modify_matrix_and_rhs
 !
+      real(kind = kreal), intent(in) :: ref_filter_width
       type(node_data), intent(in) :: node
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(reference_moments), intent(in) :: ref_m
@@ -63,7 +66,8 @@
       ierr = 0
 !
       if ( num_fixed_point .gt. 0 ) then
-        call set_constant_filter_coefs(node, FEM_elen, fil_coef,        &
+        call set_constant_filter_coefs                                 &
+     &     (ref_filter_width, node, FEM_elen, fil_coef,                &
      &      inod, num_fixed_point, fil_mat)
       end if
 !
@@ -87,16 +91,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_filter_and_coefficients                            &
-     &         (ele, g_FEM, jac_3d, fil_mat, fil_coef)
+      subroutine cal_filter_and_coefficients(num_int_points,            &
+     &          ele, g_FEM, jac_3d, fil_mat, fil_coef)
 !
       use t_geometry_data
       use t_fem_gauss_int_coefs
       use t_jacobians
-      use m_ctl_params_4_gen_filter
       use copy_moments_2_matrix
       use int_filter_functions
 !
+      integer(kind = kint) :: num_int_points
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -144,15 +148,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_constant_filter_coefs                              &
-     &         (node, FEM_elen, fil_coef, inod, num_fixed, fil_mat)
+      subroutine set_constant_filter_coefs(ref_filter_width,            &
+     &          node, FEM_elen, fil_coef, inod, num_fixed, fil_mat)
 !
       use t_geometry_data
       use t_filter_elength
 !
-      use m_ctl_params_4_gen_filter
       use cal_gaussian_at_node
 !
+      real(kind = kreal), intent(in) :: ref_filter_width
       type(node_data), intent(in) :: node
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(each_filter_coef), intent(in) :: fil_coef
@@ -170,7 +174,7 @@
         j = i
 !        j = mat_size-i+1
         jnod = fil_coef%inod_4_1nod_w(i)
-        call s_cal_gaussian_at_node(ref_filter_width(1),                &
+        call s_cal_gaussian_at_node(ref_filter_width,                   &
      &      node%xx(jnod,1), node%xx(jnod,2), node%xx(jnod,3),          &
      &      node%xx(inod,1), node%xx(inod,2), node%xx(inod,3),          &
      &      FEM_elen%elen_nod%moms%f_x2(inod),                          &

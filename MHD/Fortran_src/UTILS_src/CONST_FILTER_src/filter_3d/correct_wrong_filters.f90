@@ -5,17 +5,18 @@
 !
 !!      subroutine s_correct_wrong_filters                              &
 !!     &         (id_org_filter, fixed_file_name, mesh, g_FEM, jac_3d,  &
-!!     &          FEM_elen, ref_m, dxidxs, mom_nod, fil_coef, tmp_coef, &
-!!     &          whole_area, fluid_area, fil_mat)
+!!     &          FEM_elen, ref_m, gfil_p, dxidxs, mom_nod, fil_coef,   &
+!!     &          tmp_coef, whole_area, fluid_area, fil_mat)
 !!      subroutine correct_wrong_fluid_filters                          &
-!!     &         (id_org_filter, fixed_file_name, mesh, g_FEM, jac_3d,  &
-!!     &          FEM_elen, ref_m, fil_elist, dxidxs, mom_nod,          &
+!!     &         (id_org_filter, fixed_file_name, gfil_p, mesh, g_FEM,  &
+!!     &          jac_3d, FEM_elen, ref_m, fil_elist, dxidxs, mom_nod,  &
 !!     &          fil_coef, tmp_coef, fluid_area, fil_mat)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(reference_moments), intent(in) :: ref_m
 !!        type(element_list_4_filter), intent(in) :: fil_elist
+!!        type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
 !!        type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !!        type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
@@ -26,7 +27,6 @@
       use m_precision
 !
       use m_constants
-      use m_ctl_params_4_gen_filter
       use m_crs_matrix_4_filter
 !
       use t_mesh_data
@@ -40,6 +40,7 @@
       use t_filter_coefs
       use t_matrix_4_filter
       use t_element_list_4_filter
+      use t_ctl_params_4_gen_filter
 !
       use binary_IO
       use expand_filter_area_4_1node
@@ -65,8 +66,8 @@
 !
       subroutine s_correct_wrong_filters                                &
      &         (id_org_filter, fixed_file_name, mesh, g_FEM, jac_3d,    &
-     &          FEM_elen, ref_m, dxidxs, mom_nod, fil_coef, tmp_coef,   &
-     &          whole_area, fluid_area, fil_mat)
+     &          FEM_elen, ref_m, gfil_p, dxidxs, mom_nod, fil_coef,     &
+     &          tmp_coef, whole_area, fluid_area, fil_mat)
 !
       use set_simple_filters
 !
@@ -79,6 +80,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(reference_moments), intent(in) :: ref_m
 !
+      type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
       type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
@@ -88,22 +90,22 @@
       integer(kind = kint) :: inod, ierr2, ierr
 !
 !
-      if (inod_end_filter .eq. -1) then
-        inod_end_filter = mesh%node%internal_node
+      if(gfil_p%inod_end_filter .eq. -1) then
+        gfil_p%inod_end_filter = mesh%node%internal_node
       end if
 !
-      call init_4_cal_fileters(mesh, ele_4_nod_f, neib_nod_f,           &
+      call init_4_cal_fileters(mesh, gfil_p, ele_4_nod_f, neib_nod_f,   &
      &    fil_coef, tmp_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
 !
       write(70+my_rank,*) ' Best condition for filter'
 !
-      do inod = inod_start_filter, inod_end_filter
+      do inod = gfil_p%inod_start_filter, gfil_p%inod_end_filter
         call read_each_filter_stack_coef                                &
      &     (id_org_filter, fil_coef, ierr)
 !
         call cal_rms_filter_coefs(fil_coef, min_rms_weight, ierr2)
 !
-        if (min_rms_weight .gt. max_rms_weight_limit) then
+        if (min_rms_weight .gt. gfil_p%max_rms_weight_limit) then
           whole_area%iflag_make_filter(inod) = 1
           fluid_area%iflag_make_filter(inod) = 1
         end if
@@ -117,25 +119,25 @@
           call write_each_filter_stack_coef                             &
      &       (fixed_file_name, inod, fil_coef, ierr)
 !
-          if(iflag_tgt_filter_type .ge. -4                              &
-     &      .and. iflag_tgt_filter_type.le. -2) then
+          if(gfil_p%iflag_tgt_filter_type .ge. -iflag_gaussian          &
+     &      .and. gfil_p%iflag_tgt_filter_type.le. -iflag_tophat) then
             call s_cal_filter_moments_again                             &
-     &         (mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen, ref_m,    &
-     &          inod, ele_4_nod_f, neib_nod_f, mom_nod,                 &
+     &         (gfil_p, mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen,   &
+     &          ref_m, inod, ele_4_nod_f, neib_nod_f, mom_nod,          &
      &          fil_coef, fil_mat)
           end if
         else
 !
-          if (iflag_tgt_filter_type .eq. -1) then
+          if(gfil_p%iflag_tgt_filter_type .eq. -iflag_commutative) then
             call copy_each_filter_coefs(fil_coef, tmp_coef)
             call const_filter_func_nod_by_nod(fixed_file_name, inod,    &
-     &          mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen, ref_m,    &
-     &          ele_4_nod_f, neib_nod_f, fil_coef, tmp_coef,            &
+     &          gfil_p, mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen,   &
+     &          ref_m, ele_4_nod_f, neib_nod_f, fil_coef, tmp_coef,     &
      &          whole_area, fil_mat, ierr)
-          else if(iflag_tgt_filter_type .ge. -4                         &
-     &      .and. iflag_tgt_filter_type.le. -2) then
+          else if(gfil_p%iflag_tgt_filter_type .ge. -iflag_gaussian     &
+     &      .and. gfil_p%iflag_tgt_filter_type.le. -iflag_tophat) then
             call set_simple_filter_nod_by_nod(fixed_file_name,          &
-     &          mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen,           &
+     &          gfil_p, mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen,   &
      &          dxidxs%dx_nod, ref_m, inod, ele_4_nod_f, neib_nod_f,    &
      &          fil_coef, fil_mat)
           end if
@@ -155,13 +157,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine correct_wrong_fluid_filters                            &
-     &         (id_org_filter, fixed_file_name, mesh, g_FEM, jac_3d,    &
-     &          FEM_elen, ref_m, fil_elist, dxidxs, mom_nod,            &
+     &         (id_org_filter, fixed_file_name, gfil_p, mesh, g_FEM,    &
+     &          jac_3d, FEM_elen, ref_m, fil_elist, dxidxs, mom_nod,    &
      &          fil_coef, tmp_coef, fluid_area, fil_mat)
 !
       character(len = kchara), intent(in) :: fixed_file_name
       integer(kind = kint), intent(in) :: id_org_filter
 !
+      type(ctl_params_4_gen_filter), intent(in) :: gfil_p
       type(mesh_geometry), intent(in) :: mesh
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -183,14 +186,14 @@
 !
       write(70+my_rank,*) ' Best condition for fluid filter'
 !
-      do inod = inod_start_filter, inod_end_filter
+      do inod = gfil_p%inod_start_filter, gfil_p%inod_end_filter
         call read_each_filter_stack_coef                                &
      &     (id_org_filter, fil_coef, ierr)
 !
         if ( fil_coef%nnod_4_1nod_w .gt. 0) then
           call cal_rms_filter_coefs(fil_coef, min_rms_weight, ierr2)
 !
-          if (min_rms_weight .gt. max_rms_weight_limit) then
+          if (min_rms_weight .gt. gfil_p%max_rms_weight_limit) then
             fluid_area%iflag_make_filter(inod) = 1
           end if
         end if
@@ -214,16 +217,16 @@
 !
         else
 !
-          if (iflag_tgt_filter_type .eq. -1) then
+          if(gfil_p%iflag_tgt_filter_type .eq. -iflag_commutative) then
             call copy_each_filter_coefs(fil_coef, tmp_coef)
             call const_fluid_filter_nod_by_nod(fixed_file_name, inod,   &
-     &          mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen, ref_m,    &
-     &          ele_4_nod_f, neib_nod_f, fil_coef, tmp_coef,            &
+     &          gfil_p, mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen,   &
+     &          ref_m, ele_4_nod_f, neib_nod_f, fil_coef, tmp_coef,     &
      &          fluid_area, fil_mat, ierr)
-          else if(iflag_tgt_filter_type .ge. -4                         &
-     &      .and. iflag_tgt_filter_type.le. -2) then
+          else if(gfil_p%iflag_tgt_filter_type .ge. -iflag_gaussian     &
+     &      .and. gfil_p%iflag_tgt_filter_type.le. -iflag_tophat) then
             call set_simple_fl_filter_nod_by_nod(fixed_file_name,       &
-     &          mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen,           &
+     &          gfil_p, mesh%node, mesh%ele, g_FEM, jac_3d, FEM_elen,   &
      &          dxidxs%dx_nod, ref_m, inod, ele_4_nod_f, neib_nod_f,    &
      &          mom_nod, fil_coef, fil_mat)
           end if

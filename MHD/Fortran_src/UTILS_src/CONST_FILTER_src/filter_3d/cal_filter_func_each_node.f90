@@ -3,12 +3,12 @@
 !
 !     Written by H. Matsui on Apr., 2008
 !
-!!      subroutine const_filter_func_nod_by_nod(file_name,              &
-!!     &          inod, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,      &
+!!      subroutine const_filter_func_nod_by_nod(file_name, inod,        &
+!!     &          gfil_p, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,    &
 !!     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, whole_area,  &
 !!     &          fil_mat, ierr)
 !!      subroutine const_fluid_filter_nod_by_nod(file_name, inod,       &
-!!     &          node, ele, g_FEM, jac_3d, FEM_elen, ref_m,            &
+!!     &          gfil_p, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,    &
 !!     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, fluid_area,  &
 !!     &          fil_mat, ierr)
 !!        type(node_data),           intent(in) :: node
@@ -30,7 +30,6 @@
 !
       use calypso_mpi
       use m_constants
-      use m_ctl_params_4_gen_filter
       use m_crs_matrix_4_filter
 !
       use t_geometry_data
@@ -41,6 +40,7 @@
       use t_reference_moments
       use t_filter_coefs
       use t_matrix_4_filter
+      use t_ctl_params_4_gen_filter
 !
       use fem_const_filter_matrix
       use int_filter_functions
@@ -60,14 +60,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_filter_func_nod_by_nod(file_name,              &
-     &          inod, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,      &
-     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, whole_area,  &
+      subroutine const_filter_func_nod_by_nod(file_name, inod,          &
+     &          gfil_p, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,      &
+     &          ele_4_nod, neib_nod, fil_coef, tmp_coef, whole_area,    &
      &          fil_mat, ierr)
 !
       use cal_1d_moments_4_fliter
 !
       character(len = kchara), intent(in) :: file_name
+      type(ctl_params_4_gen_filter), intent(in) :: gfil_p
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -95,17 +96,17 @@
 !
         ibest_mat_size =   -1
         ibest_fixed_point = 0
-        if (iflag_tgt_filter_type .gt. 0) min_rms_weight = 1.0d30
-        do i = 1, maximum_neighbour
-!
+        if(gfil_p%iflag_tgt_filter_type .gt. iflag_undefined)           &
+     &                                      min_rms_weight = 1.0d30
+        do i = 1, gfil_p%maximum_neighbour
           if (i .eq. 1) then
-            num_previous_comp = minimum_comp
+            num_previous_comp = gfil_p%minimum_comp
           else
             num_previous_comp = fil_coef%nnod_4_1nod_f
           end if
 !
           call s_expand_filter_area_4_1node                             &
-     &       (inod, node, ele, ele_4_nod, FEM_elen, fil_coef)
+     &       (inod, gfil_p, node, ele, ele_4_nod, FEM_elen, fil_coef)
           call resize_matrix_size_gen_filter(ele%nnod_4_ele,            &
      &        fil_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
 !
@@ -117,33 +118,33 @@
 !    set nxn matrix
 !
         call int_node_filter_matrix(node, ele, g_FEM, jac_3d,           &
-     &      ref_m, fil_coef, inod, num_int_points, fil_mat)
+     &      ref_m, fil_coef, inod, gfil_p%num_int_points, fil_mat)
 !
-        if (ist_num_free .eq. -1) then
-          if (iflag_tgt_filter_type .eq. -1) then
-            ist = minimum_comp
+        if (gfil_p%ist_num_free .eq. -1) then
+          if(gfil_p%iflag_tgt_filter_type .eq. -iflag_commutative) then
+            ist = gfil_p%minimum_comp
             ied = min(fil_coef%nnod_4_1nod_f,ref_m%num_order_3d)
             iint =  1
           else
             ist = min(fil_coef%nnod_4_1nod_f,ref_m%num_order_3d)
-            ied = minimum_comp
+            ied = gfil_p%minimum_comp
             iint = -1
           end if
         else
-          if (iflag_tgt_filter_type .eq. -1) then
-            ist = ist_num_free
-            ied = min(ied_num_free,ref_m%num_order_3d)
+          if(gfil_p%iflag_tgt_filter_type .eq. -iflag_commutative) then
+            ist = gfil_p%ist_num_free
+            ied = min(gfil_p%ied_num_free,ref_m%num_order_3d)
             iint =  1
           else
-            ist = min(ied_num_free,ref_m%num_order_3d)
-            ied = ist_num_free
+            ist = min(gfil_p%ied_num_free,ref_m%num_order_3d)
+            ied = gfil_p%ist_num_free
             iint = -1
           end if
         end if
 !
         do num_free = ist, ied, iint
 !
-          if (iflag_use_fixed_points .eq. 1) then
+          if(gfil_p%iflag_use_fixed_points .eq. 1) then
             ntmp = min(fil_coef%nnod_4_1nod_f, ref_m%num_order_3d)
           else
             ntmp = num_free
@@ -152,58 +153,61 @@
           do imat = num_free, ntmp
             num_fixed_point = imat - num_free
 !
-            call const_filter_mat_each_nod(node, FEM_elen,              &
-     &          ref_m, fil_coef, inod, num_fixed_point, fil_mat, ierr)
+            call const_filter_mat_each_nod(gfil_p%ref_filter_width(1),  &
+     &          node, FEM_elen, ref_m, fil_coef, inod, num_fixed_point, &
+     &          fil_mat, ierr)
 !
             if (ierr .eq. 1) goto 20
 !
-            call s_cal_sol_filter_func_nod(inod, fil_mat, ierr)
+            call s_cal_sol_filter_func_nod                              &
+     &         (inod, gfil_p, fil_mat, ierr)
             if (ierr .gt. 0) goto 20
 
-            call cal_filter_and_coefficients                            &
-     &         (ele, g_FEM, jac_3d, fil_mat, fil_coef)
+            call cal_filter_and_coefficients(gfil_p%num_int_points,     &
+     &          ele, g_FEM, jac_3d, fil_mat, fil_coef)
             call cal_rms_filter_coefs(fil_coef, rms_weight, ierr)
 !
 !              write(70+my_rank,*) 'det_mat', imat, num_fixed_point,    &
 !     &                            det_mat, vec_norm, ratio_vec_mat
 !
             if ( rms_weight .lt. min_rms_weight                         &
-     &            .and. (iflag_negative_center*ierr).eq.0) then
+     &            .and. (gfil_p%iflag_negative_center*ierr).eq.0) then
               min_rms_weight = rms_weight
               ibest_fixed_point = num_fixed_point
               ibest_mat_size =   imat
               det_mat_solution = fil_mat%det_mat
-              fil_coef%ilevel_exp_1nod_w = maximum_neighbour
+              fil_coef%ilevel_exp_1nod_w = gfil_p%maximum_neighbour
               call copy_each_filter_coefs(fil_coef, tmp_coef)
             end if
 !
   20        continue
-            if (iflag_err_level_filter.eq.3) write(*,*) my_rank,        &
+            if(gfil_p%iflag_err_level_filter.eq.3) write(*,*) my_rank,  &
      &          inod, imat, num_fixed_point, rms_weight,                &
      &          fil_mat%det_mat, ierr
 !
-            if (min_rms_weight.lt. (max_rms_weight_limit/10.0d0)        &
+            if (min_rms_weight.lt. (gfil_p%max_rms_weight_limit/10.0d0) &
      &          .and. imat.eq.ist .and. num_fixed_point.eq.0) exit
           end do
-          if (min_rms_weight .lt. max_rms_weight_limit) exit
+          if (min_rms_weight .lt. gfil_p%max_rms_weight_limit) exit
         end do
 !
 !     cal filter functions
 !
         write(70+my_rank,'(4i16,1p2e23.12)')                            &
-     &    inod, maximum_neighbour, ibest_mat_size,                      &
+     &    inod, gfil_p%maximum_neighbour, ibest_mat_size,               &
      &    ibest_fixed_point, min_rms_weight, det_mat_solution
-        if (iflag_err_level_filter.ge.2) write(*,'(5i16,1p2e23.12)')    &
-     &    my_rank, inod, maximum_neighbour, ibest_mat_size,             &
+        if(gfil_p%iflag_err_level_filter.ge.2)                          &
+     &   write(*,'(5i16,1p2e23.12)')                                    &
+     &    my_rank, inod, gfil_p%maximum_neighbour, ibest_mat_size,      &
      &    ibest_fixed_point, min_rms_weight, det_mat_solution
 !
         if (ibest_mat_size .gt. 0) then
           call copy_each_filter_coefs(tmp_coef, fil_coef)
-          call s_delete_small_weighting(fil_coef)
+          call s_delete_small_weighting(gfil_p%omitted_ratio, fil_coef)
         else
-          if (iflag_tgt_filter_type .gt. 0) then
+          if (gfil_p%iflag_tgt_filter_type .gt. iflag_undefined) then
             call set_failed_filter_coefs                                &
-     &         (maximum_neighbour, fil_coef)
+     &         (gfil_p%maximum_neighbour, fil_coef)
             whole_area%num_failed = whole_area%num_failed + 1
           else
             call copy_each_filter_coefs(tmp_coef, fil_coef)
@@ -218,11 +222,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_fluid_filter_nod_by_nod(file_name, inod,         &
-     &          node, ele, g_FEM, jac_3d, FEM_elen, ref_m,              &
+     &          gfil_p, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,      &
      &          ele_4_nod, neib_nod, fil_coef, tmp_coef, fluid_area,    &
      &          fil_mat, ierr)
 !
       character(len = kchara), intent(in) :: file_name
+      type(ctl_params_4_gen_filter), intent(in) :: gfil_p
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -255,9 +260,9 @@
      &       (file_name, inod, fil_coef, ierr)
         else
 !
-          do i = 1, maximum_neighbour
+          do i = 1, gfil_p%maximum_neighbour
             call s_expand_filter_area_4_1node                           &
-     &         (inod, node, ele, ele_4_nod, FEM_elen, fil_coef)
+     &         (inod, gfil_p, node, ele, ele_4_nod, FEM_elen, fil_coef)
             call resize_matrix_size_gen_filter(ele%nnod_4_ele,          &
      &          fil_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
           end do
@@ -266,7 +271,7 @@
 !
           if(fil_coef%nnod_4_1nod_w                                     &
      &        .eq. fil_coef%nnod_near_nod_w(inod)) then
-            fil_coef%ilevel_exp_1nod_w = maximum_neighbour
+            fil_coef%ilevel_exp_1nod_w = gfil_p%maximum_neighbour
             call write_each_same_filter_coef                            &
      &         (file_name, inod, fil_coef, ierr)
           else
@@ -276,39 +281,42 @@
             max_det_mat = 0.0d0
             ibest_mat_size =   -1
             ibest_fixed_point = 0
-            if (iflag_tgt_filter_type .gt. 0) min_rms_weight = 1.0d30
+            if(gfil_p%iflag_tgt_filter_type .gt. iflag_undefined)       &
+     &                          min_rms_weight = 1.0d30
 !
             fil_mat%a_mat = 0.0d0
             fil_mat%vec_mat = 0.0d0
 !
             call int_node_filter_matrix(node, ele, g_FEM, jac_3d,       &
-     &          ref_m, fil_coef, inod, num_int_points, fil_mat)
+     &          ref_m, fil_coef, inod, gfil_p%num_int_points, fil_mat)
 !
-            if (ist_num_free .eq. -1) then
-              if (iflag_tgt_filter_type .eq. -1) then
-                ist = minimum_comp
+            if (gfil_p%ist_num_free .eq. -1) then
+              if (gfil_p%iflag_tgt_filter_type                          &
+     &                    .eq. -iflag_commutative) then
+                ist = gfil_p%minimum_comp
                 ied = min(fil_coef%nnod_4_1nod_f,ref_m%num_order_3d)
                 iint = 1
               else
                 ist = min(fil_coef%nnod_4_1nod_f,ref_m%num_order_3d)
-                ied = minimum_comp
+                ied = gfil_p%minimum_comp
                 iint = -1
               end if
             else
-              if (iflag_tgt_filter_type .eq. -1) then
-                ist = ist_num_free
-                ied = min(ied_num_free,ref_m%num_order_3d)
+              if (gfil_p%iflag_tgt_filter_type                          &
+     &                     .eq. -iflag_commutative) then
+                ist = gfil_p%ist_num_free
+                ied = min(gfil_p%ied_num_free,ref_m%num_order_3d)
                 iint = 1
               else
-                ist = min(ied_num_free,ref_m%num_order_3d)
-                ied = ist_num_free
+                ist = min(gfil_p%ied_num_free,ref_m%num_order_3d)
+                ied = gfil_p%ist_num_free
                 iint = -1
               end if
             end if
 !
             do num_free = ist, ied, iint
 !
-              if (iflag_use_fixed_points .eq. 1) then
+              if(gfil_p%iflag_use_fixed_points .eq. 1) then
                 ntmp = min(fil_coef%nnod_4_1nod_f,ref_m%num_order_3d)
               else
                 ntmp = num_free
@@ -317,53 +325,58 @@
               do imat = num_free, ntmp
                 num_fixed_point = imat - num_free
 !
-                call const_filter_mat_each_nod(node, FEM_elen, ref_m,   &
+                call const_filter_mat_each_nod                          &
+     &             (gfil_p%ref_filter_width(1), node, FEM_elen, ref_m,  &
      &              fil_coef, inod, num_fixed_point, fil_mat, ierr)
                 if (ierr .eq. 1) goto 21
 !
-                call s_cal_sol_filter_func_nod(inod, fil_mat, ierr)
+                call s_cal_sol_filter_func_nod                          &
+     &             (inod, gfil_p, fil_mat, ierr)
                 if (ierr .gt. 0) goto 21
 !
-                call cal_filter_and_coefficients                        &
-     &             (ele, g_FEM, jac_3d, fil_mat, fil_coef)
+                call cal_filter_and_coefficients(gfil_p%num_int_points, &
+     &              ele, g_FEM, jac_3d, fil_mat, fil_coef)
                 call cal_rms_filter_coefs(fil_coef, rms_weight, ierr)
 !
                 if ( rms_weight .lt. min_rms_weight                     &
-     &            .and. (iflag_negative_center*ierr).eq.0) then
+     &            .and. (gfil_p%iflag_negative_center*ierr).eq.0) then
                   min_rms_weight = rms_weight
                   ibest_fixed_point = num_fixed_point
                   ibest_mat_size =    imat
                   det_mat_solution =  fil_mat%det_mat
-                  fil_coef%ilevel_exp_1nod_w = maximum_neighbour
+                  fil_coef%ilevel_exp_1nod_w = gfil_p%maximum_neighbour
                   call copy_each_filter_coefs(fil_coef, tmp_coef)
                 end if
 !
   21            continue
-                if (iflag_err_level_filter.eq.3) write(*,*)             &
+                if(gfil_p%iflag_err_level_filter.eq.3) write(*,*)       &
      &              my_rank, inod, imat, num_fixed_point,               &
      &              rms_weight, fil_mat%det_mat, ierr
-                if (min_rms_weight.lt. (max_rms_weight_limit/10.0d0)    &
+                if(min_rms_weight                                       &
+     &             .lt. (gfil_p%max_rms_weight_limit/10.0d0)            &
      &               .and. imat.eq.ist                                  &
      &               .and. num_fixed_point.eq.0) exit
               end do
-              if (min_rms_weight .lt. max_rms_weight_limit) exit
+              if (min_rms_weight .lt. gfil_p%max_rms_weight_limit) exit
             end do
 !
             write(70+my_rank,'(4i16,1p2e23.12)')                        &
-     &        inod, maximum_neighbour, ibest_mat_size,                  &
+     &        inod, gfil_p%maximum_neighbour, ibest_mat_size,           &
      &        ibest_fixed_point, min_rms_weight, det_mat_solution
-            if (iflag_err_level_filter.ge.2) write(*,*) my_rank, inod,  &
-     &        ibest_mat_size, ibest_fixed_point, min_rms_weight,        &
-     &        det_mat_solution
+            if (gfil_p%iflag_err_level_filter.ge.2) write(*,*)          &
+     &        my_rank, inod, ibest_mat_size, ibest_fixed_point,         &
+     &        min_rms_weight, det_mat_solution
 !
 !
             if (ibest_mat_size .gt. 0) then
               call copy_each_filter_coefs(tmp_coef, fil_coef)
-              call s_delete_small_weighting(fil_coef)
+              call s_delete_small_weighting                             &
+     &           (gfil_p%omitted_ratio, fil_coef)
             else
-              if (iflag_tgt_filter_type .gt. 0) then
+              if(gfil_p%iflag_tgt_filter_type                           &
+     &                           .gt. iflag_undefined) then
                 call set_failed_filter_coefs                            &
-     &            (maximum_neighbour, fil_coef)
+     &            (gfil_p%maximum_neighbour, fil_coef)
                 fluid_area%num_failed = fluid_area%num_failed + 1
               else
                 call copy_each_filter_coefs(tmp_coef, fil_coef)

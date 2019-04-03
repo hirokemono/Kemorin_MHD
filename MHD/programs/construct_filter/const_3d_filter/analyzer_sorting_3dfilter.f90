@@ -15,10 +15,12 @@
       use t_file_IO_parameter
       use t_ctl_data_gen_3d_filter
       use t_filter_func_4_sorting
+      use t_ctl_params_4_gen_filter
 !
       implicit none
 !
       type(ctl_data_gen_3d_filter), save :: filter3d_ctl1
+      type(ctl_params_4_gen_filter), save :: gfil_p1
       type(field_IO_params), save ::  mesh_filter_file
       type(mesh_geometry), save :: mesh_filter
       type(filtering_data_type), save :: filtering_gen
@@ -32,8 +34,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sort_3dfilter_init
-!
-      use m_ctl_params_4_gen_filter
 !
       use set_ctl_gen_filter
       use set_control_platform_data
@@ -51,7 +51,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_controls_sort_3dfilter'
       call set_controls_sort_3dfilter                                   &
-     &   (filter3d_ctl1, mesh_filter_file, nprocs)
+     &   (filter3d_ctl1, mesh_filter_file, gfil_p1, nprocs)
       call dealloc_ctl_data_gen_3d_filter(filter3d_ctl1)
 !
       end subroutine sort_3dfilter_init
@@ -60,7 +60,6 @@
 !
       subroutine sort_3dfilter_analyze
 !
-      use m_ctl_params_4_gen_filter
       use m_filter_file_names
       use m_nod_filter_comm_table
 !

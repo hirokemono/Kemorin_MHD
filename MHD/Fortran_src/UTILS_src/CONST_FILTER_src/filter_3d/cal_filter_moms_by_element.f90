@@ -3,9 +3,9 @@
 !
 !     Written by H. Matsui on Apr., 2008
 !
-!!      subroutine cal_filter_moments_on_node_1st                       &
-!!     &         (nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl, tbl_crs, &
-!!     &          m_lump, fil_elist, FEM_elen, mass, fem_wk, f_l, ref_m)
+!!      subroutine cal_filter_moments_on_node_1st(nod_comm, node, ele,  &
+!!     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, fil_elist,   &
+!!     &          FEM_elen, gfil_p, mass, fem_wk, f_l, ref_m)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data),    intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -16,11 +16,14 @@
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(element_list_4_filter), intent(in) :: fil_elist
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
 !!        type(CRS_matrix), intent(inout) :: mass
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(reference_moments), intent(inout) :: ref_m
-!!      subroutine cal_filter_moments_on_ele(dxi_ele, FEM_elen, ref_m)
+!!      subroutine cal_filter_moments_on_ele                            &
+!!     &         (gfil_p, dxi_ele, FEM_elen, ref_m)
+!!        type(ctl_params_4_gen_filter), intent(in) :: gfil_p
 !!        type(dxdxi_direction_type), intent(in) :: dxi_ele
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !!        type(reference_moments), intent(inout) :: ref_m
@@ -30,6 +33,7 @@
 !
       use m_precision
 !
+      use m_machine_parameter
       use m_phys_constants
 !
       use t_table_FEM_const
@@ -37,10 +41,9 @@
       use t_fem_gauss_int_coefs
       use t_reference_moments
       use t_element_list_4_filter
+      use t_ctl_params_4_gen_filter
 !
       implicit none
-!
-      private :: cal_filter_moments_on_node
 !
       type work_for_moment_calc
         integer(kind = kint) :: ntot_power
@@ -64,6 +67,7 @@
 !
       private :: alloc_istack_power, alloc_work_4_filter_moms
       private :: dealloc_work_4_filter_moms
+      private :: cal_filter_moments_on_node
 !
 !-----------------------------------------------------------------------
 !
@@ -148,9 +152,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_filter_moments_on_node_1st                         &
-     &         (nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl, tbl_crs,   &
-     &          m_lump, fil_elist, FEM_elen, mass, fem_wk, f_l, ref_m)
+      subroutine cal_filter_moments_on_node_1st(nod_comm, node, ele,    &
+     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, fil_elist,     &
+     &          FEM_elen, gfil_p, mass, fem_wk, f_l, ref_m)
 !
       use t_geometry_data
       use t_jacobians
@@ -170,6 +174,7 @@
       type(element_list_4_filter), intent(in) :: fil_elist
       type(gradient_model_data_type), intent(in) :: FEM_elen
 !
+      type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
       type(CRS_matrix), intent(inout) :: mass
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -185,21 +190,22 @@
      &    FEM_elen%elen_nod%moms%f_x2, FEM_elen%elen_nod%moms%f_y2,     &
      &    FEM_elen%elen_nod%moms%f_z2, FEM_elen%elen_nod%moms%f_xy,     &
      &    FEM_elen%elen_nod%moms%f_yz, FEM_elen%elen_nod%moms%f_zx,     &
-     &    mass, fem_wk, f_l, ref_m%seed_moments_nod)
+     &    gfil_p, mass, fem_wk, f_l, ref_m%seed_moments_nod)
 !
       end subroutine cal_filter_moments_on_node_1st
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_filter_moments_on_ele(dxi_ele, FEM_elen, ref_m)
+      subroutine cal_filter_moments_on_ele                              &
+     &         (gfil_p, dxi_ele, FEM_elen, ref_m)
 !
-      use m_machine_parameter
       use t_filter_elength
       use t_filter_dxdxi
       use cal_1d_moments_4_fliter
       use set_filter_moments_3d
 !
+      type(ctl_params_4_gen_filter), intent(in) :: gfil_p
       type(dxdxi_direction_type), intent(in) :: dxi_ele
       type(gradient_model_data_type), intent(inout) :: FEM_elen
       type(reference_moments), intent(inout) :: ref_m
@@ -210,8 +216,10 @@
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 's_set_moments_order'
-      call s_set_moments_order(ref_m%max_num_order_3d,                  &
-     &    ref_m%num_order_3d, ref_m%id_moments, ref_m%iorder_mom_3d)
+      call s_set_moments_order                                          &
+     &   (gfil_p%num_moments_order, gfil_p%mom_order,                   &
+     &    ref_m%max_num_order_3d, ref_m%num_order_3d,                   &
+     &    ref_m%id_moments, ref_m%iorder_mom_3d)
 !
       if (iflag_debug.eq.1)  write(*,*) 's_set_table_4_moments'
       call alloc_istack_power(ref_m%max_num_order_1d, ref_wk)
@@ -223,7 +231,9 @@
       call alloc_coef_4_filter_moms(ref_m)
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_1d_moments_4_filter'
-      call s_cal_1d_moments_4_filter(FEM_elen, ref_m)
+      call s_cal_1d_moments_4_filter                                    &
+     &   (gfil_p%num_ref_filter, gfil_p%iref_filter_type,               &
+     &    FEM_elen, ref_m)
 !
 !      if (iflag_debug.eq.1)                                            &
 !     & write(*,*) 's_set_seeds_moments', FEM_elen%nele_filter_mom,     &
@@ -259,9 +269,8 @@
      &          ref_moments_1d, seed_moments_ele,                       &
      &          elen_dx2_nod,  elen_dy2_nod,  elen_dz2_nod,             &
      &          elen_dxdy_nod, elen_dydz_nod, elen_dzdx_nod,            &
-     &          mass, fem_wk, f_l, seed_moments_nod)
+     &          gfil_p, mass, fem_wk, f_l, seed_moments_nod)
 !
-      use m_ctl_params_4_gen_filter
       use filter_moments_send_recv
       use int_vol_elesize_on_node
       use nod_phys_send_recv
@@ -298,6 +307,7 @@
       real(kind=kreal), intent(in) :: elen_dydz_nod(nnod_filter_mom)
       real(kind=kreal), intent(in) :: elen_dzdx_nod(nnod_filter_mom)
 !
+      type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
       type(CRS_matrix), intent(inout) :: mass
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -354,7 +364,7 @@
         else
 !
           call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,     &
-     &        rhs_tbl, tbl_crs, m_lump, fil_elist, itype_mass_matrix,   &
+     &        rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p,              &
      &        mass, seed_moments_ele(1,n), seed_moments_nod(1,n),       &
      &        fem_wk, f_l)
           call nod_scalar_send_recv                                     &

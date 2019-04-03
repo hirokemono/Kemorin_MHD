@@ -3,12 +3,12 @@
 !
 !     Written by H. Matsui on Nov., 2008
 !
-!!      subroutine set_simple_filter_nod_by_nod(file_name, node, ele,   &
-!!     &          g_FEM, jac_3d, FEM_elen, dx_nod, ref_m, inod,         &
-!!     &          ele_4_nod, neib_nod, fil_coef, fil_mat)
-!!      subroutine set_simple_fl_filter_nod_by_nod(file_name, node, ele,&
-!!     &          g_FEM, jac_3d, FEM_elen, dx_nod, ref_m, inod,         &
-!!     &          ele_4_nod, neib_nod, mom_nod, fil_coef, fil_mat)
+!!      subroutine set_simple_filter_nod_by_nod(file_name, gfil_p,      &
+!!     &          node, ele, g_FEM, jac_3d, FEM_elen, dx_nod, ref_m,    &
+!!     &          inod, ele_4_nod, neib_nod, fil_coef, fil_mat)
+!!      subroutine set_simple_fl_filter_nod_by_nod(file_name, gfil_p,   &
+!!     &          node, ele, g_FEM, jac_3d, FEM_elen, dx_nod, ref_m,    &
+!!     &          inod, ele_4_nod, neib_nod, mom_nod, fil_coef, fil_mat)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -34,6 +34,7 @@
       use t_next_node_ele_4_node
       use t_filter_coefs
       use t_matrix_4_filter
+      use t_ctl_params_4_gen_filter
 !
       implicit none
 !
@@ -46,11 +47,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_filter_nod_by_nod(file_name, node, ele,     &
-     &          g_FEM, jac_3d, FEM_elen, dx_nod, ref_m, inod,           &
-     &          ele_4_nod, neib_nod, fil_coef, fil_mat)
+      subroutine set_simple_filter_nod_by_nod(file_name, gfil_p,        &
+     &          node, ele, g_FEM, jac_3d, FEM_elen, dx_nod, ref_m,      &
+     &          inod, ele_4_nod, neib_nod, fil_coef, fil_mat)
 !
-      use m_ctl_params_4_gen_filter
       use m_crs_matrix_4_filter
 !
       use expand_filter_area_4_1node
@@ -63,6 +63,8 @@
 !
       character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: inod
+!
+      type(ctl_params_4_gen_filter), intent(in) :: gfil_p
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -85,10 +87,10 @@
      &    fil_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
 !
 !   set filter area for tophat filter
-      if ( abs(iflag_tgt_filter_type) .eq. 2) then
-        do i = 2, maximum_neighbour
+      if ( abs(gfil_p%iflag_tgt_filter_type) .eq. iflag_tophat) then
+        do i = 2, gfil_p%maximum_neighbour
           call s_expand_filter_area_4_1node                             &
-     &       (inod, node, ele, ele_4_nod, FEM_elen, fil_coef)
+     &       (inod, gfil_p, node, ele, ele_4_nod, FEM_elen, fil_coef)
           fil_coef%nnod_4_1nod_f = fil_coef%nnod_4_1nod_w
           fil_coef%nele_4_1nod_f = fil_coef%nele_4_1nod_w
           call resize_matrix_size_gen_filter(ele%nnod_4_ele,            &
@@ -97,9 +99,9 @@
 !
 !   set filter area for other filters
       else
-        do i = 1, maximum_neighbour
+        do i = 1, gfil_p%maximum_neighbour
           call s_expand_filter_area_4_1node                             &
-     &       (inod, node, ele, ele_4_nod, FEM_elen, fil_coef)
+     &       (inod, gfil_p, node, ele, ele_4_nod, FEM_elen, fil_coef)
           call resize_matrix_size_gen_filter(ele%nnod_4_ele,            &
      &        fil_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
         end do
@@ -109,7 +111,7 @@
 !    set nxn matrix
 !
       call int_node_filter_matrix(node, ele, g_FEM, jac_3d,             &
-     &    ref_m, fil_coef, inod, num_int_points, fil_mat)
+     &    ref_m, fil_coef, inod, gfil_p%num_int_points, fil_mat)
 !
       call copy_2_filter_matrix                                         &
      &   (num_fixed_point, fil_mat%max_mat_size, fil_mat%num_work,      &
@@ -117,27 +119,29 @@
 !
 !      set filter function without normalization
 !
-      if      ( abs(iflag_tgt_filter_type) .eq. 2) then
+      if(abs(gfil_p%iflag_tgt_filter_type) .eq. iflag_tophat) then
         call set_tophat_filter_4_each_nod(fil_coef%nnod_4_1nod_f,       &
      &      fil_mat%max_mat_size, fil_mat%x_sol)
-      else if ( abs(iflag_tgt_filter_type) .eq. 3) then
+      else if(abs(gfil_p%iflag_tgt_filter_type) .eq. iflag_linear) then
         call set_linear_filter_4_each_nod                               &
      &     (fil_coef%nnod_4_1nod_f, fil_coef%idist_from_1nod,           &
-     &      maximum_neighbour, fil_mat%max_mat_size, fil_mat%x_sol)
-      else if ( abs(iflag_tgt_filter_type) .eq. 4) then
-        call set_gaussian_filter_each_nod                               &
-     &     (node%numnod, node%xx, inod, node%numnod,                    &
+     &      gfil_p%maximum_neighbour, fil_mat%max_mat_size,             &
+     &      fil_mat%x_sol)
+      else if ( abs(gfil_p%iflag_tgt_filter_type)                       &
+     &                            .eq. iflag_gaussian) then
+        call set_gaussian_filter_each_nod(gfil_p%ref_filter_width(1),   &
+     &      node%numnod, node%xx, inod, node%numnod,                    &
      &      fil_mat%max_mat_size, fil_mat%x_sol, fil_coef,              &
      &      dx_nod%dxi%df_dx, dx_nod%dxi%df_dy, dx_nod%dxi%df_dz,       &
      &      dx_nod%dei%df_dx, dx_nod%dei%df_dy, dx_nod%dei%df_dz,       &
      &      dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)
       end if
 !
-      call cal_filter_and_coefficients                                  &
-     &   (ele, g_FEM, jac_3d, fil_mat, fil_coef)
+      call cal_filter_and_coefficients(gfil_p%num_int_points,           &
+     &    ele, g_FEM, jac_3d, fil_mat, fil_coef)
       call normalize_each_filter_weight(fil_coef)
 !
-      call s_delete_small_weighting(fil_coef)
+      call s_delete_small_weighting(gfil_p%omitted_ratio, fil_coef)
       call write_each_filter_stack_coef                                 &
      &   (file_name, inod, fil_coef, ierr)
 !
@@ -145,11 +149,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_fl_filter_nod_by_nod(file_name, node, ele,  &
-     &          g_FEM, jac_3d, FEM_elen, dx_nod, ref_m, inod,           &
-     &          ele_4_nod, neib_nod, mom_nod, fil_coef, fil_mat)
+      subroutine set_simple_fl_filter_nod_by_nod(file_name, gfil_p,     &
+     &          node, ele, g_FEM, jac_3d, FEM_elen, dx_nod, ref_m,      &
+     &          inod, ele_4_nod, neib_nod, mom_nod, fil_coef, fil_mat)
 !
-      use m_ctl_params_4_gen_filter
       use t_filter_moments
 !
       use expand_filter_area_4_1node
@@ -163,6 +166,7 @@
       character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: inod
 !
+      type(ctl_params_4_gen_filter), intent(in) :: gfil_p
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -190,19 +194,19 @@
       else
 !
 !   set filter area for tophat filter
-        if ( abs(iflag_tgt_filter_type) .eq. 2) then
-          do i = 2, maximum_neighbour
+        if ( abs(gfil_p%iflag_tgt_filter_type) .eq. iflag_tophat) then
+          do i = 2, gfil_p%maximum_neighbour
             call s_expand_filter_area_4_1node                           &
-     &         (inod, node, ele, ele_4_nod, FEM_elen, fil_coef)
+     &         (inod, gfil_p, node, ele, ele_4_nod, FEM_elen, fil_coef)
             fil_coef%nnod_4_1nod_f = fil_coef%nnod_4_1nod_w
             fil_coef%nele_4_1nod_f = fil_coef%nele_4_1nod_w
           end do
 !
 !   set filter area for other filters
         else
-          do i = 1, maximum_neighbour
+          do i = 1, gfil_p%maximum_neighbour
             call s_expand_filter_area_4_1node                           &
-     &         (inod, node, ele, ele_4_nod, FEM_elen, fil_coef)
+     &         (inod, gfil_p, node, ele, ele_4_nod, FEM_elen, fil_coef)
           end do
         end if
         fil_mat%mat_size = fil_coef%nnod_4_1nod_w
@@ -220,7 +224,7 @@
 !
         else
           call int_node_filter_matrix(node, ele, g_FEM, jac_3d,         &
-     &        ref_m, fil_coef, inod, num_int_points, fil_mat)
+     &        ref_m, fil_coef, inod, gfil_p%num_int_points, fil_mat)
 !
           call copy_2_filter_matrix                                     &
      &       (num_fixed_point, fil_mat%max_mat_size, fil_mat%num_work,  &
@@ -228,27 +232,31 @@
 !
 !      set filter function without normalization
 !
-          if      ( abs(iflag_tgt_filter_type) .eq. 2) then
+          if(abs(gfil_p%iflag_tgt_filter_type) .eq. iflag_tophat) then
             call set_tophat_filter_4_each_nod(fil_coef%nnod_4_1nod_f,   &
      &          fil_mat%max_mat_size, fil_mat%x_sol)
-          else if ( abs(iflag_tgt_filter_type) .eq. 3) then
+          else if(abs(gfil_p%iflag_tgt_filter_type)                     &
+     &                               .eq. iflag_linear) then
             call set_linear_filter_4_each_nod                           &
      &         (fil_coef%nnod_4_1nod_f, fil_coef%idist_from_1nod,       &
-     &          maximum_neighbour, fil_mat%max_mat_size, fil_mat%x_sol)
-          else if ( abs(iflag_tgt_filter_type) .eq. 4) then
+     &          gfil_p%maximum_neighbour, fil_mat%max_mat_size,         &
+     &          fil_mat%x_sol)
+          else if ( abs(gfil_p%iflag_tgt_filter_type)                   &
+     &                                  .eq. iflag_gaussian) then
             call set_gaussian_filter_each_nod                           &
-     &         (node%numnod, node%xx, inod, node%numnod,                &
+     &         (gfil_p%ref_filter_width(1),                             &
+     &          node%numnod, node%xx, inod, node%numnod,                &
      &          fil_mat%max_mat_size, fil_mat%x_sol, fil_coef,          &
      &          dx_nod%dxi%df_dx, dx_nod%dxi%df_dy, dx_nod%dxi%df_dz,   &
      &          dx_nod%dei%df_dx, dx_nod%dei%df_dy, dx_nod%dei%df_dz,   &
      &          dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)
           end if
 !
-          call cal_filter_and_coefficients                              &
-     &       (ele, g_FEM, jac_3d, fil_mat, fil_coef)
+          call cal_filter_and_coefficients(gfil_p%num_int_points,       &
+     &        ele, g_FEM, jac_3d, fil_mat, fil_coef)
           call normalize_each_filter_weight(fil_coef)
 !
-          call s_delete_small_weighting(fil_coef)
+          call s_delete_small_weighting(gfil_p%omitted_ratio, fil_coef)
           call write_each_filter_stack_coef                             &
      &       (file_name, inod, fil_coef, ierr)
         end if

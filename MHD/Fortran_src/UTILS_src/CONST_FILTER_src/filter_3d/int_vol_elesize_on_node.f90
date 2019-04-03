@@ -7,11 +7,11 @@
 !      subroutine allocate_scalar_ele_4_int
 !      subroutine deallocate_scalar_ele_4_int
 !
-!!      subroutine int_dx_ele2_node(nod_comm, node, ele,                &
-!!     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, fil_elist,   &
-!!     &          itype_mass, mass, elen_ele, elen_nod, fem_wk, f_l)
-!!      subroutine int_vol_diff_dxs(node, ele, g_FEM, jac_3d,           &
-!!     &          rhs_tbl, fem_wk, f_nl, elen_org_nod)
+!!      subroutine int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d, &
+!!     &          rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,    &
+!!     &          elen_ele, elen_nod, fem_wk, f_l)
+!!      subroutine int_vol_diff_dxs(num_int_points, node, ele,          &
+!!     &          g_FEM, jac_3d, rhs_tbl, fem_wk, f_nl, elen_org_nod)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data),    intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -21,6 +21,7 @@
 !!        type(CRS_matrix_connect), intent(in) :: tbl_crs
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(element_list_4_filter), intent(in) :: fil_elist
+!!        type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
 !!        type(CRS_matrix), intent(inout) :: mass
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
@@ -31,7 +32,6 @@
       use m_constants
 !
       use m_machine_parameter
-      use m_ctl_params_4_gen_filter
       use m_phys_constants
 !
       implicit none
@@ -65,9 +65,9 @@
 !---------------------------------------------------------------------
 !---------------------------------------------------------------------
 !
-      subroutine int_dx_ele2_node(nod_comm, node, ele,                  &
-     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, fil_elist,     &
-     &          itype_mass, mass, elen_ele, elen_nod, fem_wk, f_l)
+      subroutine int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,   &
+     &          rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,      &
+     &          elen_ele, elen_nod, fem_wk, f_l)
 !
       use t_comm_table
       use t_geometry_data
@@ -76,6 +76,7 @@
       use t_finite_element_mat
       use t_crs_matrix
       use t_element_list_4_filter
+      use t_ctl_params_4_gen_filter
 !
       use int_element_field_2_node
       use cal_ff_smp_to_ffs
@@ -91,16 +92,16 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(element_list_4_filter), intent(in) :: fil_elist
 !
-      integer(kind = kint), intent(in) :: itype_mass
       real(kind = kreal), intent(in) :: elen_ele(ele%numele)
 !
+      type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
       type(CRS_matrix), intent(inout) :: mass
       real(kind = kreal), intent(inout) :: elen_nod(node%numnod)
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if (id_filter_area_grp(1) .eq. -1) then
+      if(gfil_p%id_filter_area_grp(1) .eq. -1) then
         call int_area_ele_scalar_2_node                                 &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, ele%istack_ele_smp,      &
      &      elen_ele, fem_wk, f_l)
@@ -112,7 +113,7 @@
       end if
 !
 !
-      if (itype_mass .eq. 1) then
+      if (gfil_p%itype_mass_matrix .eq. 1) then
         call cal_ff_smp_2_scalar(node, rhs_tbl, f_l%ff_smp,             &
      &      m_lump%ml, n_scalar, ione, elen_nod)
       else
@@ -120,7 +121,7 @@
         call cal_ff_smp_2_ff                                            &
      &     (node, rhs_tbl, n_scalar, f_l%ff_smp, f_l%ff)
         call cal_sol_dx_by_consist                                      &
-     &     (ione, node, nod_comm, tbl_crs, f_l, mass, elen_nod)
+     &     (ione, node, nod_comm, tbl_crs, f_l, gfil_p, mass, elen_nod)
       end if
 !
       end subroutine int_dx_ele2_node
@@ -128,8 +129,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_diff_dxs(node, ele, g_FEM, jac_3d,             &
-     &          rhs_tbl, fem_wk, f_nl, elen_org_nod)
+      subroutine int_vol_diff_dxs(num_int_points, node, ele,            &
+     &          g_FEM, jac_3d, rhs_tbl, fem_wk, f_nl, elen_org_nod)
 !
       use t_geometry_data
       use t_fem_gauss_int_coefs
@@ -142,6 +143,7 @@
       use cal_skv_to_ff_smp
       use fem_skv_vector_diff_type
 !
+      integer(kind = kint), intent(in) :: num_int_points
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -158,13 +160,14 @@
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do k2 = 1, ele%nnod_4_ele
-        call scalar_2_each_element(node, ele,                          &
+        call scalar_2_each_element(node, ele,                           &
      &      k2, elen_org_nod, scalar_ele)
-        call fem_skv_gradient(ele%istack_ele_smp, num_int_points,      &
+        call fem_skv_gradient                                           &
+     &     (ele%istack_ele_smp, num_int_points,                         &
      &      k2, ele, g_FEM, jac_3d, scalar_ele, fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                    &
+      call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_diff_dxs

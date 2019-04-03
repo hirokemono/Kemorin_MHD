@@ -3,8 +3,10 @@
 !
 !     Written by H. Matsui on Oct., 2006
 !
-!!      subroutine set_consist_mass_matrix(node, ele, g_FEM, jac_3d,    &
-!!     &          tbl_crs, rhs_tbl, mat_tbl, fem_wk, mass)
+!!      subroutine set_consist_mass_matrix                              &
+!!     &         (gfil_p, node, ele, g_FEM, jac_3d, neib_nod, rhs_tbl,  &
+!!     &          tbl_crs, mat_tbl, fem_wk, mass)
+!!        type(ctl_params_4_gen_filter), intent(in) :: gfil_p
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -20,7 +22,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_ctl_params_4_gen_filter
 !
       use t_geometry_data
       use t_fem_gauss_int_coefs
@@ -29,6 +30,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_crs_matrix
+      use t_ctl_params_4_gen_filter
 !
       implicit none
 !
@@ -42,9 +44,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_consist_mass_matrix(node, ele, g_FEM, jac_3d,      &
-     &          neib_nod, rhs_tbl, tbl_crs, mat_tbl, fem_wk, mass)
+      subroutine set_consist_mass_matrix                                &
+     &         (gfil_p, node, ele, g_FEM, jac_3d, neib_nod, rhs_tbl,    &
+     &          tbl_crs, mat_tbl, fem_wk, mass)
 !
+      type(ctl_params_4_gen_filter), intent(in) :: gfil_p
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -74,19 +78,21 @@
 !  ---------------------------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_consist_mass_matrix'
-      call int_vol_consist_mass_matrix(node, ele, g_FEM, jac_3d,        &
-     &    tbl_crs, rhs_tbl, mat_tbl, fem_wk, mass)
+      call int_vol_consist_mass_matrix(gfil_p, node, ele,               &
+     &    g_FEM, jac_3d, tbl_crs, rhs_tbl, mat_tbl, fem_wk, mass)
 !
       end subroutine set_consist_mass_matrix
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_consist_mass_matrix(node, ele, g_FEM, jac_3d,  &
-     &          tbl_crs, rhs_tbl, mat_tbl, fem_wk, mass)
+      subroutine int_vol_consist_mass_matrix                            &
+     &         (gfil_p, node, ele, g_FEM, jac_3d, tbl_crs, rhs_tbl,     &
+     &          mat_tbl, fem_wk, mass)
 !
       use matrix_initialization
 !
+      type(ctl_params_4_gen_filter), intent(in) :: gfil_p
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -106,15 +112,16 @@
       call iccg_matrix_init(node, ele, rhs_tbl, mat_tbl,                &
      &    mass%ntot_A, mass%A_crs)
 !
-!      if (id_filter_area_grp(1) .eq. -1) then
+!      if(gfil_p%id_filter_area_grp(1) .eq. -1) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'int_whole_consist_mass_matrix'
-        call int_whole_consist_mass_matrix                              &
-     &     (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
+        call int_whole_consist_mass_matrix(gfil_p%num_int_points,       &
+     &      ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
 !      else
 !        if (iflag_debug.eq.1)                                          &
 !     &    write(*,*) 'int_group_consist_mass_matrix'
-!        call int_group_consist_mass_matrix(ele, g_FEM, jac_3d,         &
+!        call int_group_consist_mass_matrix                             &
+!     &     (gfil_p%num_int_points, ele, g_FEM, jac_3d,                 &
 !     &      rhs_tbl, mat_tbl, fil_elist, fem_wk, mass)
 !      end if
 !
@@ -122,11 +129,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_whole_consist_mass_matrix                          &
-     &         (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
+      subroutine int_whole_consist_mass_matrix(num_int_points,          &
+     &          ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
 !
       use int_vol_mass_matrix
 !
+      integer(kind = kint), intent(in) :: num_int_points
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -146,12 +154,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_group_consist_mass_matrix(ele, g_FEM, jac_3d,      &
-     &          rhs_tbl, mat_tbl, fil_elist, fem_wk, mass)
+      subroutine int_group_consist_mass_matrix                          &
+     &         (num_int_points, ele, g_FEM, jac_3d, rhs_tbl, mat_tbl,   &
+     &          fil_elist, fem_wk, mass)
 !
       use t_element_list_4_filter
       use int_grouped_mass_matrix
 !
+      integer(kind = kint), intent(in) :: num_int_points
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d

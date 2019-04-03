@@ -4,12 +4,13 @@
 !     Written by H. Matsui on Nov., 2006
 !     Modified by H. Matsui on Apr., 2008
 !
-!!      subroutine cal_sol_dx_by_consist                                &
-!!     &         (nd_dx, node, nod_comm, tbl_crs, f_l, mass, dx_nod)
+!!      subroutine cal_sol_dx_by_consist(nd_dx, node, nod_comm,         &
+!!     &          tbl_crs, f_l, gfil_p, mass, dx_nod)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(CRS_matrix_connect), intent(in) :: tbl_crs
 !!        type(finite_ele_mat_node), intent(in) :: f_l
+!!        type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
 !!        type(CRS_matrix), intent(inout) :: mass
 !
 !
@@ -35,11 +36,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sol_dx_by_consist                                  &
-     &         (nd_dx, node, nod_comm, tbl_crs, f_l, mass, dx_nod)
+      subroutine cal_sol_dx_by_consist(nd_dx, node, nod_comm,           &
+     &          tbl_crs, f_l, gfil_p, mass, dx_nod)
 !
       use calypso_mpi
-      use m_ctl_params_4_gen_filter
+      use t_ctl_params_4_gen_filter
       use m_array_for_send_recv
       use m_crs_matrix_4_filter
 !
@@ -52,6 +53,7 @@
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(finite_ele_mat_node), intent(in) :: f_l
 !
+      type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
       type(CRS_matrix), intent(inout) :: mass
       real(kind= kreal), intent(inout) :: dx_nod(node%numnod)
 !
@@ -61,10 +63,10 @@
 !
       call init_solver(ierr)
 !
-      mass%INTARRAY_crs(1) = itr_elesize
-      mass%REALARRAY_crs(1) = eps_elesize
-      mass%REALARRAY_crs(2) = sigma_diag_elesize
-      mass%REALARRAY_crs(3) = sigma_elesize
+      mass%INTARRAY_crs(1) =  gfil_p%itr_elesize
+      mass%REALARRAY_crs(1) = gfil_p%eps_elesize
+      mass%REALARRAY_crs(2) = gfil_p%sigma_diag_elesize
+      mass%REALARRAY_crs(3) = gfil_p%sigma_elesize
 !
 !
       imonitor_solve = i_debug
@@ -81,7 +83,7 @@
 !
       if (my_rank .eq. 0 ) then
           write(*,*) 'solver_in', nd_dx,                                &
-     &              method_elesize, precond_elesize
+     &              gfil_p%method_elesize, gfil_p%precond_elesize
       end if
 !
       call solve(node%internal_node, node%numnod,                       &
@@ -93,7 +95,7 @@
      &             nod_comm%istack_import, nod_comm%item_import,        &
      &             nod_comm%istack_export, nod_comm%item_export,        &
      &             itr_res, imonitor_solve,                             &
-     &             method_elesize, precond_elesize,                     &
+     &             gfil_p%method_elesize, gfil_p%precond_elesize,       &
      &    mass%INTARRAY_crs, mass%REALARRAY_crs)
 !
       if (my_rank .eq. 0 ) then

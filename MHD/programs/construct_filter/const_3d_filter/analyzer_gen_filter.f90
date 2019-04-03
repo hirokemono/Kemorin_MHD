@@ -14,8 +14,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_ctl_params_4_gen_filter
-!
+      use t_ctl_params_4_gen_filter
       use t_file_IO_parameter
       use t_mesh_data
       use t_shape_functions
@@ -37,6 +36,7 @@
 !
       type(ctl_data_gen_3d_filter), save :: filter3d_ctl1
       type(field_IO_params), save ::  mesh_filter_file
+      type(ctl_params_4_gen_filter), save :: gfil_p1
 !
       type(mesh_data), save :: fem_f
       type(element_geometry), save :: ele_filter
@@ -101,7 +101,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_controls_gen_3dfilter'
       call set_controls_gen_3dfilter                                    &
-     &   (filter3d_ctl1, FEM_elen_f, mesh_filter_file, ref_m1)
+     &   (filter3d_ctl1, FEM_elen_f, mesh_filter_file, gfil_p1, ref_m1)
       call dealloc_ctl_data_gen_3d_filter(filter3d_ctl1)
 !
 !  --  read geometry
@@ -113,10 +113,11 @@
 !     --------------------- 
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_1d_moments'
-      call s_cal_1d_moments(FEM_elen_f)
+      call s_cal_1d_moments                                             &
+     &   (gfil_p1%num_ref_filter, gfil_p1%iref_filter_type, FEM_elen_f)
 !
       call s_set_element_list_4_filter                                  &
-     &   (fem_f%mesh%ele, fem_f%group%ele_grp, fil_elist1)
+     &   (fem_f%mesh%ele, fem_f%group%ele_grp, gfil_p1, fil_elist1)
 !
 !     --------------------- 
 !
@@ -144,7 +145,7 @@
       if (iflag_debug.eq.1)  write(*,*)  'const_jacobian_and_volume'
       allocate(fem_int_f%jcs%g_FEM)
       call set_max_integration_points                                   &
-     &   (num_int_points, fem_int_f%jcs%g_FEM)
+     &   (gfil_p1%num_int_points, fem_int_f%jcs%g_FEM)
       call initialize_FEM_integration(fem_int_f%jcs%g_FEM,              &
      &    spfs_f%spf_3d, spfs_f%spf_2d, spfs_f%spf_1d)
 !
@@ -215,8 +216,8 @@
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
       call s_cal_element_size(fem_f%mesh, ele_filter, fem_f%group,      &
-     &    fil_elist1, tbl_crs_f, mat_tbl_f, rhs_mat_f, fem_int_f,       &
-     &    FEM_elen_f, ref_m1, filter_dxi1, dxidxs1)
+     &    fil_elist1, gfil_p1, tbl_crs_f, mat_tbl_f, rhs_mat_f,         &
+     &    fem_int_f, FEM_elen_f, ref_m1, filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
 !  ---------------------------------------------------
@@ -231,7 +232,7 @@
 !       copy node and communication table
 !  ---------------------------------------------------
 !
-      if (iflag_tgt_filter_type .gt. -10)  then
+      if(gfil_p1%iflag_tgt_filter_type .gt. iflag_no_filter)  then
         call copy_node_data_to_filter(fem_f%mesh%node)
         call copy_comm_tbl_types                                        &
      &     (fem_f%mesh%nod_comm, filtering_gen%comm)
@@ -244,7 +245,7 @@
 !
         call select_const_filter                                        &
      &      (file_name, fem_f%mesh, fem_int_f, tbl_crs_f, rhs_mat_f,    &
-     &       FEM_elen_f, fil_elist1, ref_m1, dxidxs1,                   &
+     &       FEM_elen_f, fil_elist1, gfil_p1, ref_m1, dxidxs1,          &
      &       FEM_momenet1, fil_gen1)
         call dealloc_jacobians_node(filter_dxi1)
 !

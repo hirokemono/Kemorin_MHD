@@ -3,9 +3,11 @@
 !
 !     Written by H. Matsui on Oct., 2006
 !
-!!      subroutine s_set_element_list_4_filter(ele, ele_grp, fil_elist)
+!!      subroutine s_set_element_list_4_filter                          &
+!!     &         (ele, ele_grp, gfil_p, fil_elist)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: ele_grp
+!!        type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
 !!        type(element_list_4_filter), intent(inout) :: fil_elist
 !!      subroutine dealloc_ele_liset_4_filter(fil_elist)
 !!      subroutine dealloc_ele_smp_stk_filter(fil_elist)
@@ -18,6 +20,7 @@
       use m_machine_parameter
 !
       use t_geometry_data
+      use t_ctl_params_4_gen_filter
 !
       implicit none
 !
@@ -45,19 +48,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_element_list_4_filter(ele, ele_grp, fil_elist)
+      subroutine s_set_element_list_4_filter                            &
+     &         (ele, ele_grp, gfil_p, fil_elist)
 !
       use t_group_data
       use cal_minmax_and_stacks
 !
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
+      type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
       type(element_list_4_filter), intent(inout) :: fil_elist
 !
 !
       call allocate_mark_list_4_filter(ele)
 !
-      call mark_ele_list_4_filter(ele, ele_grp)
+      call mark_ele_list_4_filter(ele, ele_grp, gfil_p)
 !
       call count_ele_list_4_filter(ele, fil_elist%nele_4_filter)
 !
@@ -147,26 +152,28 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine mark_ele_list_4_filter(ele, ele_grp)
+      subroutine mark_ele_list_4_filter(ele, ele_grp, gfil_p)
 !
       use t_group_data
-      use m_ctl_params_4_gen_filter
       use skip_comment_f
 !
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
+      type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
+!
       integer(kind = kint) :: i, igrp, inum, ist, ied, iele
 !
 !
-      if (cmp_no_case(filter_area_name(1), 'all')) then
-        id_filter_area_grp(1) = -1
+      if (cmp_no_case(gfil_p%filter_area_name(1), 'all')) then
+        gfil_p%id_filter_area_grp(1) = -1
         imark_ele_filter(1:ele%numele) = 1
       else
 !
-        do igrp = 1, num_filtering_grp
+        do igrp = 1, gfil_p%num_filtering_grp
           do i = 1, ele_grp%num_grp
-            if(filter_area_name(igrp) .eq. ele_grp%grp_name(i)) then
-              id_filter_area_grp(igrp) = i
+            if(gfil_p%filter_area_name(igrp)                            &
+     &                 .eq. ele_grp%grp_name(i)) then
+              gfil_p%id_filter_area_grp(igrp) = i
               ist = ele_grp%istack_grp(i-1) + 1
               ied = ele_grp%istack_grp(i)
               do inum = ist, ied

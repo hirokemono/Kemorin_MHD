@@ -132,7 +132,7 @@
       else
         i_int_z_filter = 6
       end if
-      write(*,*) 'num_int_points', i_int_z_filter
+      write(*,*) 'i_int_z_filter', i_int_z_filter
 !
 !   set filter types
 !

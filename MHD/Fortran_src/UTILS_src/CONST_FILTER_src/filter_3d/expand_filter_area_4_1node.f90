@@ -3,14 +3,23 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine init_4_cal_fileters(mesh, ele_4_nod, neib_nod,       &
-!!     &          fil_coef, tmp_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
+!!      subroutine init_4_cal_fileters                                  &
+!!     &         (mesh, gfil_p, ele_4_nod, neib_nod, fil_coef, tmp_coef,&
+!!     &          fil_tbl_crs, fil_mat_crs, fil_mat)
+!!        type(mesh_geometry),       intent(in) :: mesh
+!!        type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
+!!        type(element_around_node), intent(inout) :: ele_4_nod
+!!        type(next_nod_id_4_nod),   intent(inout) :: neib_nod
+!!        type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
+!!        type(CRS_matrix_connect), intent(inout) :: fil_tbl_crs
+!!        type(CRS_matrix), intent(inout) :: fil_mat_crs
+!!        type(matrix_4_filter), intent(inout) :: fil_mat
 !!      subroutine init_4_cal_fluid_fileters                            &
 !!     &         (mesh, fil_elist, ele_4_nod, neib_nod)
 !!        type(mesh_geometry),       intent(in) :: mesh
 !!        type(element_list_4_filter), intent(in) :: fil_elist
 !!
-!!      subroutine finalize_4_cal_fileters                              &
+!!      subroutine finalize_4_cal_fileters(iflag_ordering_list,         &
 !!     &         (fil_coef, fil_tbl_crs, fil_mat_crs, fil_mat, ref_m)
 !!      subroutine resize_matrix_size_gen_filter(nnod_4_ele,            &
 !!     &          fil_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
@@ -19,10 +28,11 @@
 !!        type(CRS_matrix), intent(inout) :: fil_mat_crs
 !!        type(matrix_4_filter), intent(inout) :: fil_mat
 !!
-!!      subroutine s_expand_filter_area_4_1node                         &
-!!     &         (inod, node, ele, ele_4_nod, FEM_elen, fil_coef)
+!!      subroutine s_expand_filter_area_4_1node(inod, gfil_p, node, ele,&
+!!     &          ele_4_nod, FEM_elen, fil_coef)
 !!      subroutine copy_next_nod_ele_4_each                             &
 !!     &         (inod, numnod, ele_4_nod, neib_nod, fil_coef)
+!!        type(ctl_params_4_gen_filter), intent(in) :: gfil_p
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -34,7 +44,7 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_ctl_params_4_gen_filter
+      use t_ctl_params_4_gen_filter
       use t_filter_coefs
       use t_crs_connect
       use t_crs_matrix
@@ -52,14 +62,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_4_cal_fileters(mesh, ele_4_nod, neib_nod,         &
-     &          fil_coef, tmp_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
+      subroutine init_4_cal_fileters                                    &
+     &         (mesh, gfil_p, ele_4_nod, neib_nod, fil_coef, tmp_coef,  &
+     &          fil_tbl_crs, fil_mat_crs, fil_mat)
 !
       use t_mesh_data
       use t_next_node_ele_4_node
       use set_table_4_RHS_assemble
 !
       type(mesh_geometry),       intent(in) :: mesh
+      type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
       type(element_around_node), intent(inout) :: ele_4_nod
       type(next_nod_id_4_nod),   intent(inout) :: neib_nod
 !
@@ -69,7 +81,7 @@
       type(matrix_4_filter), intent(inout) :: fil_mat
 !
 !
-      call allocate_work_4_fileters(mesh%node, mesh%ele,                &
+      call allocate_work_4_fileters(mesh%node, mesh%ele, gfil_p,        &
      &    fil_coef, tmp_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
 !
 !  ---------------------------------------------------
@@ -118,7 +130,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_work_4_fileters(node, ele,                    &
+      subroutine allocate_work_4_fileters(node, ele, gfil_p,            &
      &          fil_coef, tmp_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
 !
       use t_geometry_data
@@ -133,16 +145,18 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
 !
+      type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
       type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
       type(CRS_matrix_connect), intent(inout) :: fil_tbl_crs
       type(CRS_matrix), intent(inout) :: fil_mat_crs
       type(matrix_4_filter), intent(inout) :: fil_mat
 !
 !
-      if (inod_end_filter .eq. -1) then
-        inod_end_filter = node%internal_node
+      if(gfil_p%inod_end_filter .eq. -1) then
+        gfil_p%inod_end_filter = node%internal_node
       end if
-      nnod_filetering = inod_end_filter - inod_start_filter + 1
+      nnod_filetering                                                   &
+     &     = gfil_p%inod_end_filter - gfil_p%inod_start_filter + 1
 !
       call alloc_each_filter_coef(node%numnod, fil_coef)
       call alloc_each_filter_coef(node%numnod, tmp_coef)
@@ -165,7 +179,7 @@
       call alloc_crs_connect(fil_tbl_crs)
       call alloc_crs_mat_data(fil_tbl_crs, fil_mat_crs)
 !
-      if (iflag_ordering_list .gt. 0) then
+      if(gfil_p%iflag_ordering_list .gt. 0) then
         call allocate_dist_ratio(node%numnod)
       end if
 !
@@ -181,8 +195,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine finalize_4_cal_fileters                                &
-     &         (fil_coef, fil_tbl_crs, fil_mat_crs, fil_mat, ref_m)
+      subroutine finalize_4_cal_fileters(iflag_ordering_list,           &
+     &          fil_coef, fil_tbl_crs, fil_mat_crs, fil_mat, ref_m)
 !
       use t_reference_moments
       use m_filter_file_names
@@ -191,6 +205,7 @@
       use fem_const_filter_matrix
       use delete_small_weighting
 !
+      integer(kind = kint), intent(in) :: iflag_ordering_list
       type(each_filter_coef), intent(inout) :: fil_coef
       type(CRS_matrix_connect), intent(inout) :: fil_tbl_crs
       type(CRS_matrix), intent(inout) :: fil_mat_crs
@@ -200,7 +215,6 @@
 !
       call deallocate_tmp_4_filter_sort
 !
-
       if (iflag_ordering_list .gt. 0) call deallocate_dist_ratio
 !
       call dealloc_crs_mat_data(fil_mat_crs)
@@ -273,8 +287,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_expand_filter_area_4_1node                           &
-     &         (inod, node, ele, ele_4_nod, FEM_elen, fil_coef)
+      subroutine s_expand_filter_area_4_1node(inod, gfil_p, node, ele,  &
+     &          ele_4_nod, FEM_elen, fil_coef)
 !
       use t_filter_elength
       use t_geometry_data
@@ -282,6 +296,7 @@
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
 !
+      type(ctl_params_4_gen_filter), intent(in) :: gfil_p
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: ele_4_nod
@@ -309,13 +324,13 @@
      &    fil_coef%inod_4_1nod_w, fil_coef%iweight_for_1nod,            &
      &    fil_coef%idist_from_1nod)
 !
-      if     (iflag_ordering_list .eq. 0) then
+      if     (gfil_p%iflag_ordering_list .eq. 0) then
         call sort_added_nod_4_each_nod(node%numnod,                     &
      &      fil_coef%nnod_4_1nod_f, fil_coef%nnod_4_1nod_w,             &
      &      fil_coef%inod_4_1nod_w, fil_coef%iweight_for_1nod)
-      else if(iflag_ordering_list .eq. 1) then
+      else if(gfil_p%iflag_ordering_list .eq. 1) then
         call filter_ordering_by_distance(node, inod, fil_coef)
-      else if(iflag_ordering_list .eq. 2) then
+      else if(gfil_p%iflag_ordering_list .eq. 2) then
         call filter_ordering_by_dist_ratio                              &
      &     (node, FEM_elen, inod, fil_coef)
       end if

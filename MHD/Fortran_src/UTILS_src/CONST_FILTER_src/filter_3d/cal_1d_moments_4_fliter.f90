@@ -3,20 +3,21 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine s_cal_1d_moments(FEM_elen)
-!!      subroutine s_cal_1d_moments_4_filter(FEM_elen, ref_m)
+!!      subroutine s_cal_1d_moments                                     &
+!!     &         (num_ref_filter, iref_filter_type, FEM_elen)
+!!      subroutine s_cal_1d_moments_4_filter                            &
+!!     &         (num_ref_filter, iref_filter_type, FEM_elen, ref_m)
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !!        type(reference_moments), intent(inout) :: ref_m
 !
       module cal_1d_moments_4_fliter
 !
       use m_precision
-!
       use m_constants
-      use m_ctl_params_4_gen_filter
 !
       use t_filter_elength
 !
+      use t_ctl_params_4_gen_filter
       use int_tophat_moments
       use int_linear_moments
       use int_gaussian_moments
@@ -32,8 +33,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_1d_moments(FEM_elen)
+      subroutine s_cal_1d_moments                                       &
+     &         (num_ref_filter, iref_filter_type, FEM_elen)
 !
+      integer(kind = kint), intent(in) :: num_ref_filter
+      integer(kind = kint), intent(in)                                  &
+     &                      :: iref_filter_type(num_ref_filter)
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i
@@ -42,7 +47,6 @@
       allocate( f_mom(0:itwo) )
 !
       do i = 1, num_ref_filter
-!
         if      (iref_filter_type(i) .eq. iflag_tophat_filter) then
           call int_tophat_moment_infty                                  &
      &       (itwo, f_mom, FEM_elen%filter_conf%f_width(i) )
@@ -64,10 +68,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_1d_moments_4_filter(FEM_elen, ref_m)
+      subroutine s_cal_1d_moments_4_filter                              &
+     &         (num_ref_filter, iref_filter_type, FEM_elen, ref_m)
 !
       use t_reference_moments
 !
+      integer(kind = kint), intent(in) :: num_ref_filter
+      integer(kind = kint), intent(in)                                  &
+     &                      :: iref_filter_type(num_ref_filter)
       type(gradient_model_data_type), intent(inout) :: FEM_elen
       type(reference_moments), intent(inout) :: ref_m
 !

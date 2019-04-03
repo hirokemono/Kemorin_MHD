@@ -3,7 +3,10 @@
 !
 !     Written by H. Matsui on Nov., 2006
 !
-!!      subroutine s_cal_sol_filter_func_nod(inod, fil_mat, ierr)
+!!      subroutine s_cal_sol_filter_func_nod                            &
+!!     &         (inod, gfil_p, fil_mat, ierr)
+!!        type(ctl_params_4_gen_filter), intent(in) :: gfil_p
+!!        type(matrix_4_filter), intent(inout) :: fil_mat
 !!      subroutine cal_det_4_filter_func_nod(fil_mat, fil_mat, ierr)
 !!        type(matrix_4_filter), intent(inout) :: fil_mat
 !
@@ -29,29 +32,33 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_sol_filter_func_nod(inod, fil_mat, ierr)
+      subroutine s_cal_sol_filter_func_nod                              &
+     &         (inod, gfil_p, fil_mat, ierr)
 !
       use m_crs_matrix_4_filter
-      use m_ctl_params_4_gen_filter
+      use t_ctl_params_4_gen_filter
       use copy_2_crs_matrix_4_filter
 !
       integer(kind= kint), intent(in) :: inod
+      type(ctl_params_4_gen_filter), intent(in) :: gfil_p
 !
       type(matrix_4_filter), intent(inout) :: fil_mat
       integer(kind = kint), intent(inout) :: ierr
 !
       call s_copy_2_crs_matrix_4_filter                                 &
      &   (fil_mat, fil_tbl_crs, fil_mat_crs)
-      call cal_filter_func_nod_lu(fil_mat, ierr)
+      call cal_filter_func_nod_lu                                       &
+     &   (gfil_p%minimum_det_mat, fil_mat, ierr)
 !
       if (ierr .gt. 0) return
 !
-      if (id_solver_type.eq.1) then
-        call cal_sol_filter_func_CG(inod, fil_tbl_crs,                 &
+      if(gfil_p%id_solver_type .eq. 1) then
+        call cal_sol_filter_func_CG(inod, gfil_p, fil_tbl_crs,         &
      &      fil_mat%max_mat_size, fil_mat%mat_size, fil_mat%vec_mat,   &
      &      fil_mat%x_sol, fil_mat_crs)
 !      else
-!        call cal_filter_func_nod_lu(fil_mat, ierr)
+!        call cal_filter_func_nod_lu                                   &
+!     &     (gfil_p%minimum_det_mat, fil_mat, ierr)
       end if
 !
       end subroutine s_cal_sol_filter_func_nod
@@ -80,14 +87,15 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sol_filter_func_CG(inod, fil_tbl_crs,              &
+      subroutine cal_sol_filter_func_CG(inod, gfil_p, fil_tbl_crs,      &
      &          max_size, mat_size, vec_mat, x_sol, fil_mat_crs)
 !
-      use m_ctl_params_4_gen_filter
+      use t_ctl_params_4_gen_filter
       use copy_2_crs_matrix_4_filter
       use solver_single
 !
       integer(kind = kint), intent(in) :: inod
+      type(ctl_params_4_gen_filter), intent(in) :: gfil_p
       type(CRS_matrix_connect), intent(in) :: fil_tbl_crs
 !
       integer(kind = kint), intent(in) :: mat_size, max_size
@@ -100,10 +108,10 @@
 !
 !
       fil_mat_crs%PRESET_crs = 1
-      fil_mat_crs%INTARRAY_crs(1) = itr
-      fil_mat_crs%REALARRAY_crs(1) = eps
-      fil_mat_crs%REALARRAY_crs(2) = sigma_diag
-      fil_mat_crs%REALARRAY_crs(3) = sigma
+      fil_mat_crs%INTARRAY_crs(1) =  gfil_p%itr
+      fil_mat_crs%REALARRAY_crs(1) = gfil_p%eps
+      fil_mat_crs%REALARRAY_crs(2) = gfil_p%sigma_diag
+      fil_mat_crs%REALARRAY_crs(3) = gfil_p%sigma
       imonitor_solve = i_debug
 !
 !
@@ -135,13 +143,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_filter_func_nod_lu(fil_mat, ierr2)
+      subroutine cal_filter_func_nod_lu                                 &
+     &         (minimum_det_mat, fil_mat, ierr2)
 !
       use calypso_mpi
-      use m_ctl_params_4_gen_filter
 !
       use m_ludcmp
 !
+      real(kind = kreal), intent(in) ::  minimum_det_mat
       type(matrix_4_filter), intent(inout) :: fil_mat
       integer(kind = kint), intent(inout) :: ierr2
 !
@@ -166,8 +175,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_det_4_filter_func_lu(fil_mat, ierr)
-!
-      use m_ctl_params_4_gen_filter
 !
       use m_ludcmp
 !

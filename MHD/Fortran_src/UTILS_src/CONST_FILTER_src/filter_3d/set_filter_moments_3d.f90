@@ -4,8 +4,9 @@
 !      modified by H. Matsui on July, 2006
 !      modified by H. Matsui on Mar, 2008
 !
-!!      subroutine s_set_moments_order(max_num_order_3d, num_order_3d,  &
-!!     &          id_moments, iorder_mom_3d)
+!!      subroutine s_set_moments_order(num_moments_order, mom_order,    &
+!!     &          max_num_order_3d, num_order_3d, id_moments,           &
+!!     &          iorder_mom_3d)
 !!      subroutine s_set_seeds_moments(dxdxi, dxdei, dxdzi,             &
 !!     &          dydxi, dydei, dydzi, dzdxi, dzdei, dzdzi,             &
 !!     &          max_num_order_1d, istack_power, ntot_power,           &
@@ -16,8 +17,9 @@
 !!     &          ipower_z_xi, ipower_z_ei, ipower_z_zi)
 !!      subroutine cal_ref_rms_filter(rms_filter, dxdxi, dxdei, dxdzi,  &
 !!     &          dydxi, dydei, dydzi, dzdxi, dzdei, dzdzi)
-!!      subroutine s_set_seeds_moments_org(dx, dy, dz, num_order_3d,    &
-!!     &          id_moments, iorder_mom_3d, seed_moments)
+!!      subroutine s_set_seeds_moments_org                              &
+!!     &         (dx, dy, dz, num_order_3d, id_moments, iorder_mom_3d,  &
+!!     &          num_moments_order, mom_value, seed_moments)
 !
       module set_filter_moments_3d
 !
@@ -31,13 +33,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_moments_order(max_num_order_3d, num_order_3d,    &
-     &          id_moments, iorder_mom_3d)
-!
-      use m_ctl_params_4_gen_filter
+      subroutine s_set_moments_order(num_moments_order, mom_order,      &
+     &          max_num_order_3d, num_order_3d, id_moments,             &
+     &          iorder_mom_3d)
 !
       integer(kind = kint), intent(in) :: max_num_order_3d
       integer(kind = kint), intent(in) :: num_order_3d
+      integer(kind = kint), intent(in) :: num_moments_order
+      integer(kind = kint), intent(in) :: mom_order(num_moments_order)
+!
       integer(kind = kint), intent(inout) :: id_moments(num_order_3d,3)
       integer(kind = kint), intent(inout)                               &
      &                   :: iorder_mom_3d(num_order_3d,3)
@@ -210,8 +214,6 @@
      &          ipower_x_xi, ipower_x_ei, ipower_x_zi,                  &
      &          ipower_y_xi, ipower_y_ei, ipower_y_zi,                  &
      &          ipower_z_xi, ipower_z_ei, ipower_z_zi)
-!
-      use m_ctl_params_4_gen_filter
 !
       real(kind = kreal), intent(in) :: dxdxi, dxdei, dxdzi
       real(kind = kreal), intent(in) :: dydxi, dydei, dydzi
@@ -411,15 +413,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_seeds_moments_org(dx, dy, dz, num_order_3d,      &
-     &          id_moments, iorder_mom_3d, seed_moments)
-!
-      use m_ctl_params_4_gen_filter
+      subroutine s_set_seeds_moments_org                                &
+     &         (dx, dy, dz, num_order_3d, id_moments, iorder_mom_3d,    &
+     &          num_moments_order, mom_value, seed_moments)
 !
       real(kind = kreal), intent(in) :: dx, dy, dz
       integer(kind = kint), intent(in) :: num_order_3d
       integer(kind = kint), intent(in) :: id_moments(num_order_3d,3)
       integer(kind = kint), intent(in) :: iorder_mom_3d(num_order_3d,3)
+      integer(kind = kint), intent(in) :: num_moments_order
+      real(kind = kreal), intent(in) :: mom_value(num_moments_order)
 !
       real(kind = kreal), intent(inout) :: seed_moments(num_order_3d)
 !
@@ -430,13 +433,14 @@
         ix = id_moments(n,1)
         iy = id_moments(n,2)
         iz = id_moments(n,3)
-        seed_moments(n) =  (dx**iorder_mom_3d(n,1) )*mom_value(ix)      &
-     &                   * (dy**iorder_mom_3d(n,2) )*mom_value(iy)      &
-     &                   * (dz**iorder_mom_3d(n,3) )*mom_value(iz)
+        seed_moments(n) =  (dx**iorder_mom_3d(n,1) ) * mom_value(ix)    &
+     &                   * (dy**iorder_mom_3d(n,2) ) * mom_value(iy)    &
+     &                   * (dz**iorder_mom_3d(n,3) ) * mom_value(iz)
       end do
 !
 !      write(70+my_rank,*) 'dx, dy, dz', dx, dy, dz
-!      write(70+my_rank,*) 'mom_value', mom_value(ix), mom_value(iy), mom_value(iz)
+!      write(70+my_rank,*) 'mom_value',                                 &
+!     &                   mom_value(ix), mom_value(iy), mom_value(iz)
 !      do n = 1, num_order_3d
 !        write(70+my_rank,1000)  n, iorder_mom_3d(n,1:3), seed_moments(n)
 !      end do

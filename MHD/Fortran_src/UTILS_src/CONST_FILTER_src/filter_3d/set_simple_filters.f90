@@ -6,8 +6,8 @@
 !!      subroutine set_tophat_filter_4_each_nod(nnod, max_size, x_sol)
 !!      subroutine set_linear_filter_4_each_nod                         &
 !!     &         (nnod, idist, max_neib, max_size, x_sol)
-!!      subroutine set_gaussian_filter_each_nod                         &
-!!     &         (numnod, xx, inod, nnod, max_size, x_sol, fil_coef,    &
+!!      subroutine set_gaussian_filter_each_nod(ref_filter_width,       &
+!!     &          numnod, xx, inod, nnod, max_size, x_sol, fil_coef,    &
 !!     &          dxidx_nod, dxidy_nod, dxidz_nod,                      &
 !!     &          deidx_nod, deidy_nod, deidz_nod,                      &
 !!     &          dzidx_nod, dzidy_nod, dzidz_nod)
@@ -74,16 +74,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_gaussian_filter_each_nod                           &
-     &         (numnod, xx, inod, nnod, max_size, x_sol, fil_coef,      &
+      subroutine set_gaussian_filter_each_nod(ref_filter_width,         &
+     &          numnod, xx, inod, nnod, max_size, x_sol, fil_coef,      &
      &          dxidx_nod, dxidy_nod, dxidz_nod,                        &
      &          deidx_nod, deidy_nod, deidz_nod,                        &
      &          dzidx_nod, dzidy_nod, dzidz_nod)
 !
-      use m_ctl_params_4_gen_filter
-!
       integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: xx(numnod,3)
+      real(kind = kreal), intent(in) :: ref_filter_width
 !
       integer(kind = kint), intent(in) :: inod, nnod
       real(kind=kreal), intent(in) :: dxidx_nod(nnod)
@@ -109,7 +108,7 @@
 !
 !
       pi = four * atan(one)
-      a_filter_w = one / ref_filter_width(1)
+      a_filter_w = one / ref_filter_width
       do i = 1, fil_coef%nnod_4_1nod_f
         inod_n = fil_coef%inod_4_1nod_w(i)
         dx2 =  dxidx_nod(inod_n)*dxidx_nod(inod_n)                      &

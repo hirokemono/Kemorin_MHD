@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Nov., 2006
 !
-!!      subroutine s_delete_small_weighting(fil_coef)
+!!      subroutine s_delete_small_weighting(omitted_ratio, fil_coef)
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!      subroutine allocate_tmp_4_filter_sort(nnod)
 !!      subroutine deallocate_tmp_4_filter_sort
@@ -30,14 +30,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_delete_small_weighting(fil_coef)
+      subroutine s_delete_small_weighting(omitted_ratio, fil_coef)
 !
       use t_filter_coefs
 !
+      real(kind = kreal), intent(in) :: omitted_ratio
       type(each_filter_coef), intent(inout) :: fil_coef
 !
       call sorting_by_filter_weights(fil_coef)
-      call truncate_tiny_weighting(fil_coef)
+      call truncate_tiny_weighting(omitted_ratio, fil_coef)
 !
       end subroutine s_delete_small_weighting
 !
@@ -126,11 +127,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine truncate_tiny_weighting(fil_coef)
+      subroutine truncate_tiny_weighting(omitted_ratio, fil_coef)
 !
-      use m_ctl_params_4_gen_filter
       use t_filter_coefs
 !
+      real(kind = kreal), intent(in) :: omitted_ratio
       type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint) :: i, new_number

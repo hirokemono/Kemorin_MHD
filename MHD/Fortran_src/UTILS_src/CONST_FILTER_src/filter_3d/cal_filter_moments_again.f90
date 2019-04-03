@@ -3,9 +3,10 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!     subroutine s_cal_filter_moments_again                           &
-!!    &         (node, ele, g_FEM, jac_3d, FEM_elen, ref_m, inod,      &
-!!    &          ele_4_nod, neib_nod, mom_nod, fil_coef, fil_mat)
+!!      subroutine s_cal_filter_moments_again                           &
+!!     &         (gfil_p, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,    &
+!!     &          inod, ele_4_nod, neib_nod, mom_nod, fil_coef, fil_mat)
+!!       type(ctl_params_4_gen_filter), intent(in) :: gfil_p
 !!       type(node_data), intent(in) :: node
 !!       type(element_data), intent(in) :: ele
 !!       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -33,10 +34,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_cal_filter_moments_again                             &
-     &         (node, ele, g_FEM, jac_3d, FEM_elen, ref_m, inod,        &
-     &          ele_4_nod, neib_nod, mom_nod, fil_coef, fil_mat)
+     &         (gfil_p, node, ele, g_FEM, jac_3d, FEM_elen, ref_m,      &
+     &          inod, ele_4_nod, neib_nod, mom_nod, fil_coef, fil_mat)
 !
-      use m_ctl_params_4_gen_filter
       use m_crs_matrix_4_filter
 !
       use t_filter_elength
@@ -48,6 +48,7 @@
       use t_reference_moments
       use t_filter_coefs
       use t_matrix_4_filter
+      use t_ctl_params_4_gen_filter
 !
       use expand_filter_area_4_1node
       use cal_3d_filter_4_each_node
@@ -55,6 +56,7 @@
       use fem_const_filter_matrix
       use set_simple_filters
 !
+      type(ctl_params_4_gen_filter), intent(in) :: gfil_p
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -79,9 +81,9 @@
       call resize_matrix_size_gen_filter(ele%nnod_4_ele,                &
      &    fil_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
 !
-      do i = 1, maximum_neighbour
+      do i = 1, gfil_p%maximum_neighbour
         call s_expand_filter_area_4_1node                               &
-     &     (inod, node, ele, ele_4_nod, FEM_elen, fil_coef)
+     &     (inod, gfil_p, node, ele, ele_4_nod, FEM_elen, fil_coef)
 
         call resize_matrix_size_gen_filter(ele%nnod_4_ele,              &
      &      fil_coef, fil_tbl_crs, fil_mat_crs, fil_mat)
@@ -91,7 +93,7 @@
 !    set nxn matrix
 !
       call int_node_filter_matrix(node, ele, g_FEM, jac_3d, ref_m,      &
-     &    fil_coef, inod, num_int_points, fil_mat)
+     &    fil_coef, inod, gfil_p%num_int_points, fil_mat)
 !
       call copy_2_filter_matrix(num_fixed_point, fil_mat%max_mat_size,  &
      &   fil_mat%num_work, fil_mat%mat_work, fil_mat%a_mat)
