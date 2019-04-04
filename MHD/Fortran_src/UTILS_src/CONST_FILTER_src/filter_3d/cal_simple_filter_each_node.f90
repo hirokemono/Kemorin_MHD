@@ -5,7 +5,8 @@
 !
 !!      subroutine set_simple_filter_nod_by_nod(file_name, gfil_p,      &
 !!     &          node, ele, g_FEM, jac_3d, FEM_elen, dx_nod, ref_m,    &
-!!     &          inod, ele_4_nod, neib_nod, fil_coef, fil_mat)
+!!     &          inod, ele_4_nod, neib_nod, fil_coef,                  &
+!!     &          fil_tbl_crs, fil_mat_crs, fil_mat)
 !!      subroutine set_simple_fl_filter_nod_by_nod(file_name, gfil_p,   &
 !!     &          node, ele, g_FEM, jac_3d, FEM_elen, dx_nod, ref_m,    &
 !!     &          inod, ele_4_nod, neib_nod, mom_nod, fil_coef, fil_mat)
@@ -17,6 +18,8 @@
 !!        type(reference_moments), intent(in) :: ref_m
 !!        type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !!        type(each_filter_coef), intent(inout) :: fil_coef
+!!        type(matrix_4_filter), intent(inout) :: fil_mat
+!!        type(CRS_matrix), intent(inout) :: fil_mat_crs
 !!        type(matrix_4_filter), intent(inout) :: fil_mat
 !
 !
@@ -49,9 +52,8 @@
 !
       subroutine set_simple_filter_nod_by_nod(file_name, gfil_p,        &
      &          node, ele, g_FEM, jac_3d, FEM_elen, dx_nod, ref_m,      &
-     &          inod, ele_4_nod, neib_nod, fil_coef, fil_mat)
-!
-      use m_crs_matrix_4_filter
+     &          inod, ele_4_nod, neib_nod, fil_coef,                    &
+     &          fil_tbl_crs, fil_mat_crs, fil_mat)
 !
       use expand_filter_area_4_1node
       use set_simple_filters
@@ -76,6 +78,8 @@
       type(element_around_node), intent(inout) :: ele_4_nod
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
       type(each_filter_coef), intent(inout) :: fil_coef
+      type(CRS_matrix_connect), intent(inout) :: fil_tbl_crs
+      type(CRS_matrix), intent(inout) :: fil_mat_crs
       type(matrix_4_filter), intent(inout) :: fil_mat
 !
       integer(kind = kint) :: i, ierr

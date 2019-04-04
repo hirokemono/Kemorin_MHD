@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Nov., 2006
 !
 !!      subroutine s_cal_sol_filter_func_nod                            &
-!!     &         (inod, gfil_p, fil_mat, ierr)
+!!     &         (inod, gfil_p, fil_mat, fil_tbl_crs, fil_mat_crs, ierr)
 !!        type(ctl_params_4_gen_filter), intent(in) :: gfil_p
 !!        type(matrix_4_filter), intent(inout) :: fil_mat
 !!      subroutine cal_det_4_filter_func_nod(fil_mat, fil_mat, ierr)
@@ -33,16 +33,19 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_sol_filter_func_nod                              &
-     &         (inod, gfil_p, fil_mat, ierr)
+     &         (inod, gfil_p, fil_mat, fil_tbl_crs, fil_mat_crs, ierr)
 !
-      use m_crs_matrix_4_filter
       use t_ctl_params_4_gen_filter
+      use t_crs_connect
+      use t_crs_matrix
       use copy_2_crs_matrix_4_filter
 !
       integer(kind= kint), intent(in) :: inod
       type(ctl_params_4_gen_filter), intent(in) :: gfil_p
 !
       type(matrix_4_filter), intent(inout) :: fil_mat
+      type(CRS_matrix_connect), intent(inout) :: fil_tbl_crs
+      type(CRS_matrix), intent(inout) :: fil_mat_crs
       integer(kind = kint), intent(inout) :: ierr
 !
       call s_copy_2_crs_matrix_4_filter                                 &

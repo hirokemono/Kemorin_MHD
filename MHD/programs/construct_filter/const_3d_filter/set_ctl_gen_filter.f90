@@ -4,7 +4,7 @@
 !     Written by H. Matsui on July, 2006
 !
 !!      subroutine set_controls_gen_3dfilter(filter3d_ctl, FEM_elens,   &
-!!     &          mesh_file, gfil_p, newfil_p, ref_m)
+!!     &          mesh_file, gfil_p, newfil_p, ref_m, f_matrices)
 !!      subroutine set_controls_sort_3dfilter                           &
 !!     &         (filter3d_ctl, mesh_file, gfil_p, num_pe)
 !!        type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
@@ -12,6 +12,7 @@
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
 !!        type(ctl_param_newdom_filter), intent(inout) :: newfil_p
+!!        type(matrices_4_filter), intent(inout) :: f_matrices
 !!        type(reference_moments), intent(inout) :: ref_m
 !
       module set_ctl_gen_filter
@@ -37,9 +38,9 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_controls_gen_3dfilter(filter3d_ctl, FEM_elens,     &
-     &          mesh_file, gfil_p, newfil_p, ref_m)
+     &          mesh_file, gfil_p, newfil_p, ref_m, f_matrices)
 !
-      use m_crs_matrix_4_filter
+      use t_matrix_4_filter
       use t_reference_moments
       use t_filter_elength
       use t_ctl_param_newdom_filter
@@ -51,6 +52,7 @@
       type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
       type(ctl_param_newdom_filter), intent(inout) :: newfil_p
       type(reference_moments), intent(inout) :: ref_m
+      type(matrices_4_filter), intent(inout) :: f_matrices
 !
 !
 !
@@ -64,7 +66,7 @@
      &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl,                &
      &    filter3d_ctl%org_fil_files_ctl,                               &
      &    newfil_p%org_filter_coef_head,                                &
-     &    gfil_p, FEM_elens, fil_mat_crs, ref_m)
+     &    gfil_p, FEM_elens, f_matrices%fil_mat_crs, ref_m)
 !
       end subroutine set_controls_gen_3dfilter
 !

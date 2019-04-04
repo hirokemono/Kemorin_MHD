@@ -17,6 +17,8 @@
       module t_matrix_4_filter
 !
       use m_precision
+      use t_crs_connect
+      use t_crs_matrix
 !
       implicit none
 !
@@ -38,6 +40,13 @@
         integer(kind = kint) :: num_work
         real(kind = kreal), allocatable :: mat_work(:)
       end type matrix_4_filter
+!
+      type matrices_4_filter
+        type(matrix_4_filter) :: fil_mat
+!
+        type(CRS_matrix_connect) :: fil_tbl_crs
+        type(CRS_matrix) :: fil_mat_crs
+      end type matrices_4_filter
 !
 !-----------------------------------------------------------------------
 !

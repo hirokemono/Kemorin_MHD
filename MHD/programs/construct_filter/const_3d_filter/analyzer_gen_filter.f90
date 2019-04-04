@@ -31,6 +31,7 @@
       use t_ctl_data_gen_3d_filter
       use t_reference_moments
       use t_element_list_4_filter
+      use t_matrix_4_filter
 !
       implicit none
 !
@@ -58,6 +59,7 @@
       type(reference_moments), save :: ref_m1
       type(element_list_4_filter), save :: fil_elist1
 !
+      type(matrices_4_filter), save :: f_matrices1
       type(filtering_data_type), save :: filtering_gen
 !
 ! ----------------------------------------------------------------------
@@ -103,7 +105,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_controls_gen_3dfilter'
       call set_controls_gen_3dfilter(filter3d_ctl1, FEM_elen_f,         &
-     &    mesh_filter_file, gfil_p1, newfil_p1, ref_m1)
+     &    mesh_filter_file, gfil_p1, newfil_p1, ref_m1, f_matrices1)
       call dealloc_ctl_data_gen_3d_filter(filter3d_ctl1)
 !
 !  --  read geometry
@@ -182,7 +184,6 @@
       subroutine generate_filter_analyze
 !
       use m_array_for_send_recv
-      use m_crs_matrix_4_filter
       use m_nod_filter_comm_table
       use m_filter_file_names
       use m_file_format_switch
@@ -248,7 +249,7 @@
         call select_const_filter                                        &
      &      (file_name, newfil_p1, fem_f%mesh, fem_int_f, tbl_crs_f,    &
      &       rhs_mat_f, FEM_elen_f, fil_elist1, gfil_p1, ref_m1,        &
-     &       dxidxs1, FEM_momenet1, fil_gen1)
+     &       dxidxs1, FEM_momenet1, fil_gen1, f_matrices1)
         call dealloc_jacobians_node(filter_dxi1)
 !
 !

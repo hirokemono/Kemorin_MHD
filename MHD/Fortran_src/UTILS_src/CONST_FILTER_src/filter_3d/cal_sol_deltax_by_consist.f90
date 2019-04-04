@@ -42,7 +42,6 @@
       use calypso_mpi
       use t_ctl_params_4_gen_filter
       use m_array_for_send_recv
-      use m_crs_matrix_4_filter
 !
       use   solver
 !
