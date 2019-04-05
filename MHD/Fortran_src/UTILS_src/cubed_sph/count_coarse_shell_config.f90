@@ -4,8 +4,12 @@
 !        programmed by H.Matsui on Apr., 2006
 !
 !
-!!      subroutine count_coarse_cubed_shell(c_sphere, csph_mesh)
-!!      subroutine count_coarse_rect_shell(c_sphere, csph_mesh)
+!!      subroutine count_coarse_cubed_shell                             &
+!!     &         (csph_p, course_p, c_sphere, csph_mesh)
+!!      subroutine count_coarse_rect_shell                              &
+!!     &         (csph_p, course_p, c_sphere, csph_mesh)
+!!        type(numref_cubed_sph), intent(in) :: csph_p
+!!        type(coarse_cubed_sph), intent(in) :: course_p
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !!        type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
@@ -17,6 +21,7 @@
 !
       implicit  none
 !
+      private :: count_nmax_merge_sf
       private :: count_coarse_cubed_shell_nums
       private :: count_coarse_rect_shell_nums
       private :: count_coarse_radial_nums
@@ -27,39 +32,65 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_coarse_cubed_shell(c_sphere, csph_mesh)
+      subroutine count_coarse_cubed_shell                               &
+     &         (csph_p, course_p, c_sphere, csph_mesh)
+!
+      use t_numref_cubed_sph
+!
+      type(numref_cubed_sph), intent(in) :: csph_p
+      type(coarse_cubed_sph), intent(in) :: course_p
 !
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
 !
-      call count_coarse_cubed_shell_nums(c_sphere)
-      call count_nmax_merge_sf(c_sphere)
-      call count_coarse_radial_nums(c_sphere, csph_mesh)
+      call count_coarse_cubed_shell_nums(csph_p%num_hemi,               &
+     &    course_p%max_coarse_level, course_p%nstep_coarse, c_sphere)
+      call count_nmax_merge_sf                                          &
+     &   (course_p%max_coarse_level, course_p%icoarse_level, c_sphere)
+      call count_coarse_radial_nums                                     &
+     &   (course_p%max_coarse_level, course_p%nstep_coarse,             &
+     &    c_sphere, csph_mesh)
 !
       end subroutine count_coarse_cubed_shell
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_coarse_rect_shell(c_sphere, csph_mesh)
+      subroutine count_coarse_rect_shell                                &
+     &         (csph_p, course_p, c_sphere, csph_mesh)
+!
+      use t_numref_cubed_sph
+!
+      type(numref_cubed_sph), intent(in) :: csph_p
+      type(coarse_cubed_sph), intent(in) :: course_p
 !
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
 !
-      call count_coarse_rect_shell_nums(c_sphere)
-      call count_nmax_merge_sf(c_sphere)
-      call count_coarse_radial_nums(c_sphere, csph_mesh)
+      call count_coarse_rect_shell_nums                                 &
+     &   (csph_p%num_hemi, csph_p%ncube_vertical,                       &
+     &    course_p%max_coarse_level, course_p%nstep_coarse, c_sphere)
+      call count_nmax_merge_sf                                          &
+     &   (course_p%max_coarse_level, course_p%icoarse_level, c_sphere)
+      call count_coarse_radial_nums                                     &
+     &   (course_p%max_coarse_level, course_p%nstep_coarse,             &
+     &    c_sphere, csph_mesh)
 !
       end subroutine count_coarse_rect_shell
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_coarse_cubed_shell_nums(c_sphere)
+      subroutine count_coarse_cubed_shell_nums(num_hemi,                &
+     &          max_coarse_level, nstep_coarse, c_sphere)
 !
-      use m_numref_cubed_sph
       use count_shell_configration
+!
+      integer(kind = kint), intent(in) :: num_hemi
+      integer(kind = kint), intent(in) :: max_coarse_level
+      integer(kind = kint), intent(in)                                  &
+     &              :: nstep_coarse(0:max_coarse_level,2)
 !
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -125,10 +156,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_coarse_rect_shell_nums(c_sphere)
+      subroutine count_coarse_rect_shell_nums(num_hemi, ncube_vertical, &
+     &          max_coarse_level, nstep_coarse, c_sphere)
 !
-      use m_numref_cubed_sph
       use count_shell_configration
+!
+      integer(kind = kint), intent(in) :: num_hemi, ncube_vertical
+      integer(kind = kint), intent(in) :: max_coarse_level
+      integer(kind = kint), intent(in)                                  &
+     &              :: nstep_coarse(0:max_coarse_level,2)
 !
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -195,10 +231,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_nmax_merge_sf(c_sphere)
+      subroutine count_nmax_merge_sf                                    &
+     &         (max_coarse_level, icoarse_level, c_sphere)
 !
-      use m_numref_cubed_sph
-!
+      integer(kind = kint), intent(in) :: max_coarse_level
+      integer(kind = kint), intent(in)                                  &
+     &              :: icoarse_level(max_coarse_level,2)
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: icoarse, num
@@ -215,10 +253,14 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_coarse_radial_nums(c_sphere, csph_mesh)
+      subroutine count_coarse_radial_nums                               &
+     &         (max_coarse_level, nstep_coarse, c_sphere, csph_mesh)
 !
-      use m_numref_cubed_sph
       use count_shell_configration
+!
+      integer(kind = kint), intent(in) :: max_coarse_level
+      integer(kind = kint), intent(in)                                  &
+     &              :: nstep_coarse(0:max_coarse_level,2)
 !
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh

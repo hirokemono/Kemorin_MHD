@@ -4,14 +4,16 @@
 !        programmed by H.Matsui on Apr., 2006
 !
 !!     subroutine allocate_prei_cube_surf_tmp(c_sphere)
-!!     subroutine allocate_coarse_cube_surf_tmp(c_sphere)
+!!      subroutine allocate_coarse_cube_surf_tmp                        &
+!!     &         (max_coarse_level, c_sphere)
 !!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !!      subroutine deallocate_prei_cube_surf_tmp
 !!
 !!      subroutine cover_peri_cube(ifile, ifile_q, c_sphere, inod)
 !!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
-!!
-!!      subroutine cover_coarse_cube(is_level, ifile, id_f2c, c_sphere)
+!!      subroutine cover_coarse_cube                                    &
+!!     &         (is_level, ifile, id_f2c, course_p, c_sphere)
+!!        type(coarse_cubed_sph), intent(in) :: course_p
 !!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
       module peri_cube_shell_position
@@ -55,10 +57,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine allocate_coarse_cube_surf_tmp(c_sphere)
+      subroutine allocate_coarse_cube_surf_tmp                          &
+     &         (max_coarse_level, c_sphere)
 !
-      use m_numref_cubed_sph
-!
+      integer(kind = kint), intent(in) :: max_coarse_level
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
       integer(kind = kint) :: num
 !
@@ -119,12 +121,14 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine cover_coarse_cube(is_level, ifile, id_f2c, c_sphere)
+      subroutine cover_coarse_cube                                      &
+     &         (is_level, ifile, id_f2c, course_p, c_sphere)
 !
-      use m_numref_cubed_sph
+      use t_numref_cubed_sph
       use coordinate_converter
 !
       integer(kind = kint), intent(in) :: ifile, id_f2c, is_level
+      type(coarse_cubed_sph), intent(in) :: course_p
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
       integer(kind = kint) :: inod0, inod, jnod, knod, num
@@ -152,8 +156,10 @@
 !
           inod = i_sf + c_sphere%numnod_cube                            &
      &          + c_sphere%numnod_sf * (1-1)
-          jnod = j_sf + nnod_cube_c + nnod_sf_c*((1-1)/nskip_r)
-          knod = k_sf + nnod_cube_fc + nnod_sf_fc*((1-1)/nskip_fr)
+          jnod = j_sf + course_p%nnod_cube_c                            &
+     &          + course_p%nnod_sf_c * ((1-1) / course_p%nskip_r)
+          knod = k_sf + course_p%nnod_cube_fc                           &
+     &          + course_p%nnod_sf_fc * ((1-1) / course_p%nskip_fr)
 !
           write (ifile,'(i16,1p3E25.15e3)')                             &
      &         jnod, x(inod0), y(inod0), z(inod0)

@@ -5,10 +5,11 @@
 !
 !
 !!      subroutine count_cubed_shell_size                               &
-!!     &         (rprm_csph, c_sphere, csph_mesh)
+!!     &         (csph_p, rprm_csph, c_sphere, csph_mesh)
 !!      subroutine count_rectangle_shell_size                           &
-!!     &         (rprm_csph, c_sphere, csph_mesh)
+!!     &         (csph_p, rprm_csph, c_sphere, csph_mesh)
 !!      subroutine count_rectangle_shell_size(r1, c_sphere, csph_mesh)
+!!        type(numref_cubed_sph), intent(inout) :: csph_p
 !!        type(cubed_sph_radius), intent(inout) :: rprm_csph
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !!        type(cubed_sph_mesh), intent(inout) :: csph_mesh
@@ -23,6 +24,7 @@
       module count_shell_configration
 !
       use m_precision
+      use m_constants
       use t_cubed_sph_radius
       use t_cubed_sph_surf_mesh
       use t_cubed_sph_mesh
@@ -38,10 +40,11 @@
 !   --------------------------------------------------------------------
 !
       subroutine count_cubed_shell_size                                 &
-     &         (rprm_csph, c_sphere, csph_mesh)
+     &         (csph_p, rprm_csph, c_sphere, csph_mesh)
 !
-      use m_numref_cubed_sph
+      use t_numref_cubed_sph
 !
+      type(numref_cubed_sph), intent(inout) :: csph_p
       type(cubed_sph_radius), intent(inout) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
@@ -55,22 +58,24 @@
 !       (except for surface of cube for number of node)
 !
       call count_center_cube_size                                       &
-     &   (num_hemi, c_sphere%numnod_cube,                               &
+     &   (csph_p%num_hemi, c_sphere%numnod_cube,                        &
      &    c_sphere%numele_cube, c_sphere%numedge_cube,                  &
      &    c_sphere%numsurf_cube, c_sphere%numnod_cube20,                &
      &    c_sphere%numnod_sf, c_sphere%numele_sf, c_sphere%numedge_sf)
 !
-      call count_shell_numbers(rprm_csph%r_nod(1), c_sphere, csph_mesh)
+      call count_shell_numbers(rprm_csph%r_nod(1),                      &
+     &    csph_p%cube_size, c_sphere, csph_mesh)
 !
       end subroutine count_cubed_shell_size
 !
 !   --------------------------------------------------------------------
 !
       subroutine count_rectangle_shell_size                             &
-     &         (rprm_csph, c_sphere, csph_mesh)
+     &         (csph_p, rprm_csph, c_sphere, csph_mesh)
 !
-      use m_numref_cubed_sph
+      use t_numref_cubed_sph
 !
+      type(numref_cubed_sph), intent(inout) :: csph_p
       type(cubed_sph_radius), intent(inout) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
@@ -84,12 +89,13 @@
 !       (except for surface of cube for number of node)
 !
       call count_center_rect_size                                       &
-     &   (num_hemi, ncube_vertical, c_sphere%numnod_cube,               &
+     &   (csph_p%num_hemi, csph_p%ncube_vertical, c_sphere%numnod_cube, &
      &    c_sphere%numele_cube, c_sphere%numedge_cube,                  &
      &    c_sphere%numsurf_cube, c_sphere%numnod_cube20,                &
      &    c_sphere%numnod_sf, c_sphere%numele_sf, c_sphere%numedge_sf)
 !
-      call count_shell_numbers(rprm_csph%r_nod(1), c_sphere, csph_mesh)
+      call count_shell_numbers(rprm_csph%r_nod(1),                      &
+     &    csph_p%cube_size, c_sphere, csph_mesh)
 !
       end subroutine count_rectangle_shell_size
 !
@@ -180,12 +186,12 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_shell_numbers(r1, c_sphere, csph_mesh)
-!
-      use m_constants
-      use m_numref_cubed_sph
+      subroutine count_shell_numbers                                    &
+     &         (r1, cube_size, c_sphere, csph_mesh)
 !
       real(kind = kreal), intent(in) :: r1
+!
+      real(kind = kreal), intent(inout) :: cube_size
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !

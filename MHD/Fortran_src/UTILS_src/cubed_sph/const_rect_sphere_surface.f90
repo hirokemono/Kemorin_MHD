@@ -2,10 +2,18 @@
 !      module const_rect_sphere_surface
 !      Written by Kemorin on Apr., 2006
 !
-!!      subroutine const_rect_sphere_surf_node(rad_edge, c_sphere)
-!!      subroutine const_rect_sphere_surf_data(c_sphere)
-!!      subroutine const_coarse_rect_surf_data(csph_mesh, c_sphere)
+!!      subroutine const_rect_sphere_surf_node                          &
+!!     &         (rad_edge, csph_p, c_sphere)
+!!        type(numref_cubed_sph), intent(inout) :: csph_p
+!!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+!!      subroutine const_rect_sphere_surf_data(csph_p, c_sphere)
+!!        type(numref_cubed_sph), intent(in) :: csph_p
+!!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
+!!      subroutine const_coarse_rect_surf_data                          &
+!!     &         (csph_mesh, csph_p, course_p, c_sphere)
 !!        type(cubed_sph_mesh), intent(in) :: csph_mesh
+!!        type(numref_cubed_sph), intent(in) :: csph_p
+!!        type(coarse_cubed_sph), intent(inout) :: course_p
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
 !
@@ -23,9 +31,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_rect_sphere_surf_node(rad_edge, c_sphere)
+      subroutine const_rect_sphere_surf_node                            &
+     &         (rad_edge, csph_p, c_sphere)
 !
-      use m_numref_cubed_sph
+      use t_numref_cubed_sph
       use set_cube_surface
       use set_surface_rods_sphere
       use set_surf_connect_cubed_sph
@@ -33,20 +42,22 @@
       use output_shell_surface_data
 !
       real(kind = kreal), intent(in) :: rad_edge
+      type(numref_cubed_sph), intent(inout) :: csph_p
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind= kint) :: inod_sf_end, irod_sf_end
 !
 !
-      call set_rect_skin(rad_edge, inod_sf_end, c_sphere)
+      call set_rect_skin(rad_edge, inod_sf_end, csph_p, c_sphere)
 !
       if (inod_sf_end .ne. c_sphere%numnod_sf) then
        write(*,*) 'check the number of node in a sphere'
        stop
       end if
 !
-      call set_rect_rods(num_hemi, ncube_vertical, x_edge, v_edge,      &
-     &    inod_sf_end, irod_sf_end, c_sphere)
+      call set_rect_rods(csph_p%num_hemi, csph_p%ncube_vertical,        &
+     &    csph_p%x_edge, csph_p%v_edge, inod_sf_end, irod_sf_end,       &
+     &    c_sphere)
 !
       if (irod_sf_end .ne. c_sphere%numedge_sf) then
         write(*,*) 'check the number of edge in a sphere'
@@ -65,15 +76,16 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_rect_sphere_surf_data(c_sphere)
+      subroutine const_rect_sphere_surf_data(csph_p, c_sphere)
 !
-      use m_numref_cubed_sph
+      use t_numref_cubed_sph
       use set_cube_surface
       use set_surface_rods_sphere
       use set_surf_connect_cubed_sph
       use coordinate_converter
       use output_shell_surface_data
 !
+      type(numref_cubed_sph), intent(in) :: csph_p
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind= kint) :: iele_sf_end
@@ -82,7 +94,8 @@
 !
        write(*,*) 'connectivity construction for surface'
        call set_rect_surf_connect                                       &
-    &     (num_hemi, ncube_vertical, iele_sf_end, c_sphere)
+    &     (csph_p%num_hemi, csph_p%ncube_vertical,                      &
+    &      iele_sf_end, c_sphere)
 !
       if (iele_sf_end .ne. c_sphere%numele_sf) then
         write(*,*) 'check the number of element in a sphere'
@@ -92,7 +105,7 @@
       write(*,*) 'output_surface_data'
       call output_surface_data(c_sphere)
 !
-      if(iflag_quad .gt. 0) then
+      if(csph_p%iflag_quad .gt. 0) then
         write(*,*) 'output_surface_data_quad'
         call output_surface_data_quad(c_sphere)
       end if
@@ -101,9 +114,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_coarse_rect_surf_data(csph_mesh, c_sphere)
+      subroutine const_coarse_rect_surf_data                            &
+     &         (csph_mesh, csph_p, course_p, c_sphere)
 !
-      use m_numref_cubed_sph
+      use t_numref_cubed_sph
 !
       use output_shell_surface_data
       use count_coarse_parameters
@@ -112,6 +126,9 @@
       use set_surf_connect_cubed_sph
 !
       type(cubed_sph_mesh), intent(in) :: csph_mesh
+      type(numref_cubed_sph), intent(in) :: csph_p
+!
+      type(coarse_cubed_sph), intent(inout) :: course_p
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind= kint) :: inod_sf_end, num
@@ -123,11 +140,13 @@
       inod_sf_end = 0
       irod_sf_end = c_sphere%numedge_sf
       iele_sf_end = c_sphere%numele_sf
-      do icoarse = 1, max_coarse_level
-        call cal_coarse_rect_params(icoarse, c_sphere, csph_mesh)
+      do icoarse = 1, course_p%max_coarse_level
+        call cal_coarse_rect_params                                     &
+     &     (icoarse, c_sphere, csph_mesh, csph_p, course_p)
 !
-        call set_coarse_rect_skin(num_hemi, ncube_vertical,             &
-     &      nskip_s, nskip_fs, inod_sf_end, c_sphere)
+        call set_coarse_rect_skin                                       &
+     &     (csph_p%num_hemi, csph_p%ncube_vertical,                     &
+     &      course_p%nskip_s, course_p%nskip_fs, inod_sf_end, c_sphere)
         if(inod_sf_end .ne. c_sphere%inod_stack_sf(icoarse)) then
           write(*,*) 'check the number of node in a sphere... level:',  &
      &       icoarse, inod_sf_end, c_sphere%inod_stack_sf(icoarse)
@@ -136,7 +155,8 @@
         write(*,*) 'inod_sf_end!!!', inod_sf_end
 !
         call set_coarse_rect_surf_connect                               &
-     &     (n_hemi_c, n_vert_c, iele_sf_end, c_sphere)
+     &     (course_p%n_hemi_c, course_p%n_vert_c, iele_sf_end,          &
+     &      c_sphere)
         num = c_sphere%iele_stack_sf(icoarse) + c_sphere%numele_sf
         if (iele_sf_end .ne. num) then
          write(*,*)                                                     &
@@ -146,13 +166,15 @@
         end if
 !
        write(*,*) 'set_merged_element_rect_surf'
-       call set_merged_element_rect_surf(icoarse, c_sphere)
+       call set_merged_element_rect_surf                                &
+     &    (icoarse, csph_p, course_p, c_sphere)
 !
       end do
 !
-      if (max_coarse_level .gt. 0) then
+      if (course_p%max_coarse_level .gt. 0) then
         write(*,*) 'output_surface_data_full'
-        call output_surface_data_full(max_coarse_level, c_sphere)
+        call output_surface_data_full                                   &
+     &     (course_p%max_coarse_level, c_sphere)
       end if
 !
       end subroutine const_coarse_rect_surf_data

@@ -3,9 +3,11 @@
 !
 !      Written by Kemorin on Apr., 2006
 !
-!!      subroutine construct_circle_mesh(rprm_csph, csph_mesh, c_sphere)
+!!      subroutine construct_circle_mesh                                &
+!!     &         (rprm_csph, csph_mesh, csph_p, c_sphere)
 !!        type(cubed_sph_radius), intent(in) :: rprm_csph
 !!        type(cubed_sph_mesh), intent(in) :: csph_mesh
+!!        type(numref_cubed_sph), intent(in) :: csph_p
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       module construct_circle_data
@@ -24,10 +26,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine construct_circle_mesh(rprm_csph, csph_mesh, c_sphere)
+      subroutine construct_circle_mesh                                  &
+     &         (rprm_csph, csph_mesh, csph_p, c_sphere)
 !
       use m_geometry_constants
-      use m_numref_cubed_sph
+      use t_numref_cubed_sph
 !
       use cal_circle_position
       use set_center_rect_cube_quad
@@ -40,6 +43,7 @@
 !
       type(cubed_sph_radius), intent(in) :: rprm_csph
       type(cubed_sph_mesh), intent(in) :: csph_mesh
+      type(numref_cubed_sph), intent(in) :: csph_p
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind = kint) :: inod_start, iele_start, id_flag_quad
@@ -52,7 +56,7 @@
       call write_header_4_mesh(id_l_mesh, id_l_connect, id_l_group,     &
      &    csph_mesh%nnod_cb_sph, csph_mesh%nele_cb_sph, num_t_linear)
 !
-      if (iflag_quad .gt. 0) then
+      if(csph_p%iflag_quad .gt. 0) then
         write(*,*) 'set_quad_mesh_file_names'
         call set_quad_mesh_file_names
         call write_header_4_mesh(id_q_mesh, id_q_connect, id_q_group,   &
@@ -62,11 +66,11 @@
 !  construct center cube
 !
       inod_start = 0
-      id_flag_quad = iflag_quad * id_q_mesh
+      id_flag_quad = csph_p%iflag_quad * id_q_mesh
 !
       write(*,*) 'set_center_cube'
       call set_center_square(inod_start, id_l_mesh, id_flag_quad,       &
-     &    num_hemi, x_node)
+     &    csph_p%num_hemi, csph_p%x_node)
 !
       if(inod_start .ne. c_sphere%numnod_cube) then
         write (*,*) 'number of node of center is wrong',                &
@@ -100,11 +104,11 @@
 !
 !  construct center cube for quadrature mesh
 !
-      if (iflag_quad .gt. 0) then
+      if(csph_p%iflag_quad .gt. 0) then
         write(*,*) 'set_center_square_quad',                            &
      &            csph_mesh%nnod_cb_sph, inod_start
-        call set_center_square_quad(id_q_mesh, num_hemi,                &
-     &      x_node, x_edge, inod_start, c_sphere)
+        call set_center_square_quad(id_q_mesh, csph_p%num_hemi,         &
+     &      csph_p%x_node, csph_p%x_edge, inod_start, c_sphere)
 !
         num = csph_mesh%nnod_cb_sph + c_sphere%numedge_cube
         if(inod_start .ne. num) then
@@ -137,11 +141,11 @@
 !   construct element connectivity
 !
        iele_start = 0
-       id_flag_quad = iflag_quad * id_q_connect
+       id_flag_quad = csph_p%iflag_quad * id_q_connect
 !
       write(*,*) 'set connectivity for center square'
       call square_center_connect_quad(iele_start, id_l_connect,         &
-     &    id_flag_quad, csph_mesh%nnod_cb_sph, num_hemi)
+     &    id_flag_quad, csph_mesh%nnod_cb_sph, csph_p%num_hemi)
       if(iele_start .ne. c_sphere%numele_cube) then
         write (*,*) 'number of quadrature element of center is wrong'
         stop
@@ -156,18 +160,19 @@
       end if
 !
       close(id_l_connect)
-      if (iflag_quad .gt. 0) close(id_q_connect)
+      if (csph_p%iflag_quad .gt. 0) close(id_q_connect)
 !
       return
 !
 !  output group data
 !
-      if (iflag_quad .gt. 0) then
-        call output_group_data_quad(c_sphere, csph_mesh)
+      if (csph_p%iflag_quad .gt. 0) then
+        call output_group_data_quad                                     &
+     &     (csph_p%num_hemi, c_sphere, csph_mesh)
         close(id_q_group)
       end if
 !
-      call output_group_data(c_sphere)
+      call output_group_data(csph_p%num_hemi, c_sphere)
       close(id_l_group)
 !
       write(*,*) 'finish!!'

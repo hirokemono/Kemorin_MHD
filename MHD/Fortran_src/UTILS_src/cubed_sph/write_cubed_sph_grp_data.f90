@@ -3,20 +3,21 @@
 !
 !      Written by Kemorin on Apr., 2006
 !
-!!      subroutine output_group_data(c_sphere)
-!!      subroutine output_group_data_quad(c_sphere, csph_mesh)
+!!      subroutine output_group_data(num_hemi, c_sphere)
+!!      subroutine output_group_data_quad(num_hemi, c_sphere, csph_mesh)
 !!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !!        type(cubed_sph_mesh), intent(in) :: csph_mesh
-!!      subroutine output_coarse_group_data
+!!      subroutine output_coarse_group_data(course_p)
+!!        type(coarse_cubed_sph), intent(in) :: course_p
 !
       module write_cubed_sph_grp_data
 !
       use m_precision
 !
       use m_constants
-      use m_numref_cubed_sph
       use m_cubed_sph_grp_param
 !
+      use t_numref_cubed_sph
       use t_mesh_data
       use t_group_data
       use t_cubed_sph_surf_mesh
@@ -37,8 +38,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine output_group_data(c_sphere)
+      subroutine output_group_data(num_hemi, c_sphere)
 !
+      integer(kind = kint), intent(in) :: num_hemi
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
 !   set groups
@@ -106,8 +108,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine output_group_data_quad(c_sphere, csph_mesh)
+      subroutine output_group_data_quad(num_hemi, c_sphere, csph_mesh)
 !
+      integer(kind = kint), intent(in) :: num_hemi
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
       type(cubed_sph_mesh), intent(in) :: csph_mesh
 !
@@ -128,8 +131,8 @@
       call allocate_grp_type_item(group_csph%nod_grp)
       call set_nodal_item_quad(csph_mesh%nnod_cb_sph,                   &
      &    c_sphere%numnod_cube, c_sphere%numedge_cube,                  &
-     &    c_sphere%numnod_sf, c_sphere%numedge_sf, num_hemi, ione,      &
-     &    group_csph%nod_grp)
+     &    c_sphere%numnod_sf, c_sphere%numedge_sf, num_hemi,            &
+     &    ione, group_csph%nod_grp)
 !
       call write_cubed_sph_nod_grp(id_q_group, group_csph%nod_grp)
 !
@@ -175,21 +178,26 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine output_coarse_group_data
+      subroutine output_coarse_group_data(course_p)
+!
+      type(coarse_cubed_sph), intent(in) :: course_p
 !
 !   set groups
 !
       call count_node_groups_linear                                     &
-     &   (nnod_cube_c, nnod_sf_c, nskip_r, group_csph%nod_grp)
+     &   (course_p%nnod_cube_c, course_p%nnod_sf_c, course_p%nskip_r,   &
+     &    group_csph%nod_grp)
 !
       call allocate_grp_type_num(group_csph%nod_grp)
       call set_node_group_names(group_csph%nod_grp)
       call set_node_istack_linear                                       &
-     &   (nnod_cube_c, nnod_sf_c, nskip_r, group_csph%nod_grp)
+     &   (course_p%nnod_cube_c, course_p%nnod_sf_c, course_p%nskip_r,   &
+     &    group_csph%nod_grp)
 !
       call allocate_grp_type_item(group_csph%nod_grp)
-      call set_nodal_item_linear(nnod_cube_c, nnod_sf_c, n_hemi_c,      &
-     &    nskip_r, group_csph%nod_grp)
+      call set_nodal_item_linear                                        &
+     &   (course_p%nnod_cube_c, course_p%nnod_sf_c, course_p%n_hemi_c,  &
+     &    course_p%nskip_r, group_csph%nod_grp)
 !
       call write_cubed_sph_nod_grp(id_l_group, group_csph%nod_grp)
 !
@@ -197,31 +205,37 @@
 !   set element group
 !
       call count_ele_groups                                             &
-     &   (nele_cube_c, nele_sf_c, nskip_r, group_csph%ele_grp)
+     &   (course_p%nele_cube_c, course_p%nele_sf_c, course_p%nskip_r,   &
+     &    group_csph%ele_grp)
 !
       call allocate_grp_type_num(group_csph%ele_grp)
       call set_element_group_names(group_csph%ele_grp)
       call set_ele_grp_istack                                           &
-     &   (nele_cube_c, nele_sf_c, nskip_r, group_csph%ele_grp)
+     &   (course_p%nele_cube_c, course_p%nele_sf_c, course_p%nskip_r,   &
+     &    group_csph%ele_grp)
 !
       call allocate_grp_type_item(group_csph%ele_grp)
       call set_ele_item                                                 &
-     &   (nele_cube_c, nele_sf_c, nskip_r, group_csph%ele_grp)
+     &   (course_p%nele_cube_c, course_p%nele_sf_c, course_p%nskip_r,   &
+     &    group_csph%ele_grp)
 !
       call write_element_group(id_l_group, group_csph%ele_grp)
 !
 !
 ! surface group
 !
-      call count_surf_groups(nele_sf_c, nskip_r, group_csph%surf_grp)
+      call count_surf_groups(course_p%nele_sf_c, course_p%nskip_r,      &
+     &    group_csph%surf_grp)
 !
       call allocate_sf_grp_type_num(group_csph%surf_grp)
       call set_surface_group_names(group_csph%surf_grp)
-      call set_surf_istack(nele_sf_c, nskip_r, group_csph%surf_grp)
+      call set_surf_istack(course_p%nele_sf_c, course_p%nskip_r,        &
+     &    group_csph%surf_grp)
 !
       call allocate_sf_grp_type_item(group_csph%surf_grp)
       call set_surf_item                                                &
-     &   (nele_cube_c, nele_sf_c, nskip_r, group_csph%surf_grp)
+     &   (course_p%nele_cube_c, course_p%nele_sf_c, course_p%nskip_r,   &
+     &    group_csph%surf_grp)
 !
       call write_surf_grp_shell(id_l_group, group_csph%surf_grp)
 !

@@ -3,13 +3,15 @@
 !
 !      Written by H. Matsui on Apr., 2006
 !
-!!      subroutine alloc_1d_position(csph_param)
-!!      subroutine alloc_coarsing_parameter(csph_param)
-!!        type(numref_cubed_sph), intent(inout) :: csph_param
+!!      subroutine alloc_1d_position(csph_p)
+!!        type(numref_cubed_sph), intent(inout) :: csph_p
+!!      subroutine alloc_coarsing_parameter(course_p)
+!!        type(coarse_cubed_sph), intent(inout) :: course_p
 !!
-!!      subroutine dealloc_1d_position(csph_param)
-!!      subroutine dealloc_coarsing_parameter(csph_param)
-!!        type(numref_cubed_sph), intent(inout) :: csph_param
+!!      subroutine dealloc_1d_position(csph_p)
+!!        type(numref_cubed_sph), intent(inout) :: csph_p
+!!      subroutine dealloc_coarsing_parameter(course_p)
+!!        type(coarse_cubed_sph), intent(inout) :: course_p
 !!
 !
       module t_numref_cubed_sph
@@ -23,6 +25,7 @@
       integer(kind = kint), parameter :: id_sphere_spacing = 2
 !
       type numref_cubed_sph
+        integer(kind = kint) :: iflag_domain_shell = 1
         integer(kind = kint) :: iflag_mesh =         id_sphere_spacing
         integer(kind = kint) :: iflag_quad =         num_t_linear
 !
@@ -35,9 +38,11 @@
         real(kind = kreal), allocatable :: x_edge(:)
         real(kind = kreal), allocatable :: v_node(:)
         real(kind = kreal), allocatable :: v_edge(:)
+      end type numref_cubed_sph
 !
 !
-        integer(kind = kint) :: max_csph_level
+      type coarse_cubed_sph
+        integer(kind = kint) :: max_coarse_level
         integer(kind = kint), allocatable :: icoarse_level(:,:)
         integer(kind = kint), allocatable :: nstep_coarse(:,:)
 !
@@ -67,7 +72,7 @@
         integer(kind = kint) :: nele_sf_fc
 !
         integer(kind = kint) :: n_vert_c
-      end type numref_cubed_sph
+      end type coarse_cubed_sph
 !
 !   --------------------------------------------------------------------
 !
@@ -75,59 +80,59 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine alloc_1d_position(csph_param)
+      subroutine alloc_1d_position(csph_p)
 !
-      type(numref_cubed_sph), intent(inout) :: csph_param
+      type(numref_cubed_sph), intent(inout) :: csph_p
 !
 !
-      allocate(csph_param%x_node(csph_param%num_hemi+1))
-      allocate(csph_param%x_edge(csph_param%num_hemi))
-      allocate(csph_param%v_node(csph_param%ncube_vertical+1))
-      allocate(csph_param%v_edge(csph_param%ncube_vertical))
+      allocate(csph_p%x_node(csph_p%num_hemi+1))
+      allocate(csph_p%x_edge(csph_p%num_hemi))
+      allocate(csph_p%v_node(csph_p%ncube_vertical+1))
+      allocate(csph_p%v_edge(csph_p%ncube_vertical))
 !
-      csph_param%x_node = 0.0d0
-      csph_param%x_edge = 0.0d0
-      csph_param%v_node = 0.0d0
-      csph_param%v_edge = 0.0d0
+      csph_p%x_node = 0.0d0
+      csph_p%x_edge = 0.0d0
+      csph_p%v_node = 0.0d0
+      csph_p%v_edge = 0.0d0
 !
       end subroutine alloc_1d_position
 !
 !   --------------------------------------------------------------------
 !
-      subroutine alloc_coarsing_parameter(csph_param)
+      subroutine alloc_coarsing_parameter(course_p)
 !
-      type(numref_cubed_sph), intent(inout) :: csph_param
+      type(coarse_cubed_sph), intent(inout) :: course_p
 !
 !
-      allocate(csph_param%icoarse_level(csph_param%max_csph_level,2))
-      allocate(csph_param%nstep_coarse(0:csph_param%max_csph_level,2))
-      csph_param%icoarse_level = 1
-      csph_param%nstep_coarse = 1
+      allocate(course_p%icoarse_level(course_p%max_coarse_level,2))
+      allocate(course_p%nstep_coarse(0:course_p%max_coarse_level,2))
+      course_p%icoarse_level = 1
+      course_p%nstep_coarse = 1
 !
       end subroutine alloc_coarsing_parameter
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_1d_position(csph_param)
+      subroutine dealloc_1d_position(csph_p)
 !
-      type(numref_cubed_sph), intent(inout) :: csph_param
+      type(numref_cubed_sph), intent(inout) :: csph_p
 !
 !
-      deallocate(csph_param%x_node, csph_param%v_node)
-      deallocate(csph_param%x_edge, csph_param%v_edge)
+      deallocate(csph_p%x_node, csph_p%v_node)
+      deallocate(csph_p%x_edge, csph_p%v_edge)
 !
       end subroutine dealloc_1d_position
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_coarsing_parameter(csph_param)
+      subroutine dealloc_coarsing_parameter(course_p)
 !
-      type(numref_cubed_sph), intent(inout) :: csph_param
+      type(coarse_cubed_sph), intent(inout) :: course_p
 !
 !
-      deallocate(csph_param%icoarse_level)
-      deallocate(csph_param%nstep_coarse)
+      deallocate(course_p%icoarse_level)
+      deallocate(course_p%nstep_coarse)
 !
       end subroutine dealloc_coarsing_parameter
 !
