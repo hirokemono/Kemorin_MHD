@@ -169,9 +169,9 @@
         ele_grp%num_grp = num_grp_g(2)
         sf_grp%num_grp =  num_grp_g(3)
 !
-        call allocate_grp_type_num(nod_grp)
-        call allocate_grp_type_num(ele_grp)
-        call allocate_sf_grp_type_num(sf_grp)
+        call alloc_group_num(nod_grp)
+        call alloc_group_num(ele_grp)
+        call alloc_sf_group_num(sf_grp)
       end if
 !
       write(*,*) 'num_grp_g', my_rank, num_grp_g
@@ -203,9 +203,9 @@
         ied = nod_grp%num_grp + ele_grp%num_grp + sf_grp%num_grp
         sf_grp%grp_name(1:sf_grp%num_grp) =   grp_name_g(ist:ied)
 !
-        call allocate_grp_type_item(nod_grp)
-        call allocate_grp_type_item(ele_grp)
-        call allocate_sf_grp_type_item(sf_grp)
+        call alloc_group_item(nod_grp)
+        call alloc_group_item(ele_grp)
+        call alloc_sf_group_item(sf_grp)
       end if
 !
       deallocate(grp_name_g)

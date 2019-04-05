@@ -47,7 +47,7 @@
 !
 !
       call mpi_read_one_inthead_b(IO_param, group_IO%num_grp)
-      call allocate_grp_type_num(group_IO)
+      call alloc_group_num(group_IO)
 !
       call mpi_read_mul_charahead_b                                     &
      &     (IO_param, group_IO%num_grp, group_IO%grp_name)
@@ -56,7 +56,7 @@
       call mpi_read_integer_stack_b(IO_param, num64,                    &
      &    group_IO%istack_grp, group_IO%num_item)
 !
-      call allocate_grp_type_item(group_IO)
+      call alloc_group_item(group_IO)
 !
       num64 = group_IO%num_item
       call mpi_read_int_vector_b(IO_param, num64, group_IO%item_grp)
@@ -74,7 +74,7 @@
 !
 !
       call mpi_read_one_inthead_b(IO_param, surf_grp_IO%num_grp)
-      call allocate_sf_grp_type_num(surf_grp_IO)
+      call alloc_sf_group_num(surf_grp_IO)
 !
       call mpi_read_mul_charahead_b                                     &
      &     (IO_param, surf_grp_IO%num_grp, surf_grp_IO%grp_name)
@@ -83,7 +83,7 @@
       call mpi_read_integer_stack_b(IO_param, num64,                    &
      &      surf_grp_IO%istack_grp, surf_grp_IO%num_item)
 !
-      call allocate_sf_grp_type_item(surf_grp_IO)
+      call alloc_sf_group_item(surf_grp_IO)
 !
         num64 = 2 * surf_grp_IO%num_item
         call mpi_read_int_vector_b                                      &

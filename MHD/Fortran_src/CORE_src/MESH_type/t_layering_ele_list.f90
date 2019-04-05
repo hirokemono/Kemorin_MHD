@@ -69,8 +69,8 @@
 !
 !
       layer_tbl%e_grp%num_grp_smp = layer_tbl%e_grp%num_grp * np_smp
-      call allocate_grp_type_num(layer_tbl%e_grp)
-      call allocate_grp_type_smp(layer_tbl%e_grp)
+      call alloc_group_num(layer_tbl%e_grp)
+      call alloc_group_smp(layer_tbl%e_grp)
 !
       allocate (layer_tbl%istack_item_layer_d_smp(0:np_smp) )
 !
@@ -87,7 +87,7 @@
       type(layering_tbl), intent(inout) :: layer_tbl
 !
 !
-      call allocate_grp_type_item(layer_tbl%e_grp)
+      call alloc_group_item(layer_tbl%e_grp)
 !
       end subroutine alloc_layer_items_type
 !
@@ -116,9 +116,9 @@
       type(layering_tbl), intent(inout) :: layer_tbl
 !
 !
-      call deallocate_grp_type_smp(layer_tbl%e_grp)
-      call deallocate_grp_type_item(layer_tbl%e_grp)
-      call deallocate_grp_type_num(layer_tbl%e_grp)
+      call dealloc_group_smp(layer_tbl%e_grp)
+      call dealloc_group_item(layer_tbl%e_grp)
+      call dealloc_group_num(layer_tbl%e_grp)
 !
       deallocate (layer_tbl%istack_item_layer_d_smp )
 !

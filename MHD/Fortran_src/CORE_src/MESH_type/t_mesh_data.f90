@@ -170,9 +170,9 @@
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call deallocate_sf_grp_type_smp(group%surf_grp)
-      call deallocate_grp_type_smp(group%ele_grp)
-      call deallocate_grp_type_smp(group%nod_grp)
+      call dealloc_sf_group_smp(group%surf_grp)
+      call dealloc_group_smp(group%ele_grp)
+      call dealloc_group_smp(group%nod_grp)
 !
       call dealloc_inod_in_edge(ele_mesh%edge)
       call deallocate_inod_in_surf_type(ele_mesh%surf)
@@ -206,9 +206,9 @@
       type(mesh_groups), intent(inout) :: group
 !
 !
-      call deallocate_grp_type(group%nod_grp)
-      call deallocate_grp_type(group%ele_grp)
-      call deallocate_sf_grp_type(group%surf_grp)
+      call dealloc_group(group%nod_grp)
+      call dealloc_group(group%ele_grp)
+      call dealloc_sf_group(group%surf_grp)
 !
       end subroutine dealloc_groups_data
 !

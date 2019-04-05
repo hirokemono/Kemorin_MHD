@@ -77,19 +77,19 @@
 !
 !
       call count_ngrp_ele_grps(ele_grp%num_grp, new_elegrp%num_grp)
-      call allocate_grp_type_num(new_elegrp)
+      call alloc_group_num(new_elegrp)
 !
       call set_2d_ele_grp_names(num_ele_grp1, ele_grp_name1,            &
      &    num_ele_grp2, ele_grp_name2, ele_grp, new_elegrp)
 !
-      call allocate_grp_type_item(new_elegrp)
+      call alloc_group_item(new_elegrp)
 !
       call add_ele_grp_item_by_2d(numele, ref_ele1, ref_ele2,           &
      &    num_ele_grp1, dminmax_grp_1, num_ele_grp2, dminmax_grp_2,     &
      &    ele_grp, new_elegrp)
 !
       call ordering_each_added_egrp(new_elegrp, ele_grp)
-      call deallocate_grp_type(new_elegrp)
+      call dealloc_group(new_elegrp)
 !
       end subroutine const_ele_grp_item_by_2d
 !
@@ -290,18 +290,18 @@
      &      ist, ied)
       end do
 !
-      call deallocate_grp_type(ele_grp)
+      call dealloc_group(ele_grp)
 !
       ele_grp%num_grp =    new_elegrp%num_grp
       ele_grp%num_item = new_elegrp%num_item
-      call allocate_grp_type_num(ele_grp)
+      call alloc_group_num(ele_grp)
 !
       ele_grp%grp_name(1:ele_grp%num_grp)                               &
      &        =    new_elegrp%grp_name(1:ele_grp%num_grp)
       ele_grp%istack_grp(0:ele_grp%num_grp)                             &
      &        =  new_elegrp%istack_grp(0:ele_grp%num_grp)
 !
-      call allocate_grp_type_item(ele_grp)
+      call alloc_group_item(ele_grp)
       ele_grp%item_grp(1:ele_grp%num_item)                              &
      &        = new_elegrp%item_grp(1:ele_grp%num_item)
 !

@@ -29,10 +29,10 @@
 !
 !
       new_ele_grp%num_grp =  ele_grp%num_grp
-      call allocate_grp_type_num(new_ele_grp)
+      call alloc_group_num(new_ele_grp)
 !
       call count_new_ele_group(ele_grp, new_ele_grp)
-      call allocate_grp_type_item(new_ele_grp)
+      call alloc_group_item(new_ele_grp)
 !
       call set_new_ele_group(ele_grp, new_ele_grp)
 !

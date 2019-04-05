@@ -51,9 +51,9 @@
       call add_comm_table_in_node_group(num_pe,                         &
      &    mesh%nod_comm, group%nod_grp, new_nod_grp)
 !
-      call deallocate_grp_type(group%nod_grp)
+      call dealloc_group(group%nod_grp)
       call copy_group_data(new_nod_grp, group%nod_grp)
-      call deallocate_grp_type(new_nod_grp)
+      call dealloc_group(new_nod_grp)
 !
       end subroutine add_comm_tbl_in_node_grp_mesh
 !
@@ -82,7 +82,7 @@
       new_nod_grp%num_item = old_nod_grp%num_item                       &
      &                    + new_comm%ntot_import + new_comm%ntot_export
 !
-      call allocate_grp_type_num(new_nod_grp)
+      call alloc_group_num(new_nod_grp)
 !
 !
       if (new_nod_grp%num_grp .gt. 0) then
@@ -122,7 +122,7 @@
      &                                + n_export(ip)
       end do
 !
-      call allocate_grp_type_item(new_nod_grp)
+      call alloc_group_item(new_nod_grp)
 !
 !
       if (old_nod_grp%num_item .gt. 0) then

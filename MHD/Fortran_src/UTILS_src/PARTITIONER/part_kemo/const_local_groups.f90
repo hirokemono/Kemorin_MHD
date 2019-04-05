@@ -66,10 +66,10 @@
 !
 !
       new_nod_grp%num_grp = nod_grp%num_grp
-      call allocate_grp_type_num(new_nod_grp)
+      call alloc_group_num(new_nod_grp)
       call count_local_node_group(nod_grp, nod_d_grp, new_nod_grp)
 !
-      call allocate_grp_type_item(new_nod_grp)
+      call alloc_group_item(new_nod_grp)
       call set_local_node_group(nod_grp, nod_d_grp, new_nod_grp)
 !
       end subroutine const_local_nod_group
@@ -87,10 +87,10 @@
 !
 !
       new_ele_grp%num_grp = ele_grp%num_grp
-      call allocate_grp_type_num(new_ele_grp)
+      call alloc_group_num(new_ele_grp)
       call count_local_ele_group(ele_grp, ele_d_grp, new_ele_grp)
 !
-      call allocate_grp_type_item(new_ele_grp)
+      call alloc_group_item(new_ele_grp)
       call set_local_ele_group(ele_grp, ele_d_grp, new_ele_grp)
 !
       end subroutine const_local_ele_group
@@ -108,10 +108,10 @@
 !
 !
       new_sf_grp%num_grp = sf_grp%num_grp
-      call allocate_sf_grp_type_num(new_sf_grp)
+      call alloc_sf_group_num(new_sf_grp)
       call count_local_surf_group(sf_grp, ele_d_grp, new_sf_grp)
 !
-      call allocate_sf_grp_type_item(new_sf_grp)
+      call alloc_sf_group_item(new_sf_grp)
       call set_local_surf_group(sf_grp, ele_d_grp, new_sf_grp)
 !
       end subroutine const_local_surf_group

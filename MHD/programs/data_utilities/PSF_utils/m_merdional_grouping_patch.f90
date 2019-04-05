@@ -67,7 +67,7 @@
       file_name = add_dat_extension(file_head)
       open(id_gname,file=file_name)
       read(id_gname,*) ele_grp%num_grp
-      call allocate_grp_type_num(ele_grp)
+      call alloc_group_num(ele_grp)
 !
       do igrp = 1, ele_grp%num_grp
         read(id_gname,*) itmp, ele_grp%grp_name(igrp)

@@ -123,9 +123,9 @@
 !
 !     allocate group names
 !
-       call allocate_grp_type_num(merged_grp%nod_grp)
-       call allocate_grp_type_num(merged_grp%ele_grp)
-       call allocate_sf_grp_type_num(merged_grp%surf_grp)
+       call alloc_group_num(merged_grp%nod_grp)
+       call alloc_group_num(merged_grp%ele_grp)
+       call alloc_sf_group_num(merged_grp%surf_grp)
 !
 !    set merged group names
 !
@@ -175,9 +175,9 @@
 !
 !    allocate merged group items
 !
-       call allocate_grp_type_item(merged_grp%nod_grp)
-       call allocate_grp_type_item(merged_grp%ele_grp)
-       call allocate_sf_grp_type_item(merged_grp%surf_grp)
+       call alloc_group_item(merged_grp%nod_grp)
+       call alloc_group_item(merged_grp%ele_grp)
+       call alloc_sf_group_item(merged_grp%surf_grp)
 !
 !    set merged group data
 !
@@ -224,9 +224,9 @@
 !
 !    allocate merged group items
 !
-       call allocate_grp_type_item(merged_grp%nod_grp)
-       call allocate_grp_type_item(merged_grp%ele_grp)
-       call allocate_sf_grp_type_item(merged_grp%surf_grp)
+       call alloc_group_item(merged_grp%nod_grp)
+       call alloc_group_item(merged_grp%ele_grp)
+       call alloc_sf_group_item(merged_grp%surf_grp)
 !
 !    set merged group data
 !
