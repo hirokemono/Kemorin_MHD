@@ -4,9 +4,10 @@
 !        programmed by H.Matsui on Apr., 2006
 !
 !!      subroutine set_peri_cube_paramteres                             &
-!!     &         (cubed_sph_c, rprm_csph, csph_p, course_p)
+!!     &         (cubed_sph_c, rprm_csph, csph_grp, csph_p, course_p)
 !!        type(control_data_cubed_sph), intent(in) :: cubed_sph_c
 !!        type(cubed_sph_radius), intent(inout) :: rprm_csph
+!!        type(cubed_sph_group), intent(inout) :: csph_grp
 !!        type(numref_cubed_sph), intent(inout) :: csph_p
 !!        type(coarse_cubed_sph), intent(inout) :: course_p
 !
@@ -23,16 +24,17 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_peri_cube_paramteres                               &
-     &         (cubed_sph_c, rprm_csph, csph_p, course_p)
+     &         (cubed_sph_c, rprm_csph, csph_grp, csph_p, course_p)
 !
       use t_numref_cubed_sph
       use t_control_data_cubed_sph
       use t_cubed_sph_radius
-      use m_cubed_sph_grp_param
+      use t_cubed_sph_grp_param
       use set_cubed_sph_control
 !
       type(control_data_cubed_sph), intent(in) :: cubed_sph_c
       type(cubed_sph_radius), intent(inout) :: rprm_csph
+      type(cubed_sph_group), intent(inout) :: csph_grp
       type(numref_cubed_sph), intent(inout) :: csph_p
       type(coarse_cubed_sph), intent(inout) :: course_p
 !
@@ -78,37 +80,12 @@
 !
 !
       call set_cubed_sph_radius_ctl(cubed_sph_c, rprm_csph)
-      call set_cubed_sph_grid_ctl(cubed_sph_c, rprm_csph, csph_p)
+      call set_cubed_sph_grid_ctl                                       &
+     &   (cubed_sph_c, rprm_csph, csph_p, csph_grp)
 !
-!   set node group table
+!   set empty group table
 !
-      num_node_grp_csp =  0
-      num_nod_layer_csp = 0
-      call allocate_nod_grp_name_csp
-      call allocate_nod_grp_layer_csp
-!
-      do j = 1, num_node_grp_csp
-        jst = istack_nod_grp_layer_csp(j-1) + 1
-        jed = istack_nod_grp_layer_csp(j)
-        write(*,*) j, istack_nod_grp_layer_csp(j),                      &
-     &      trim(nod_grp_name_csp(j))
-        write(*,*) id_nod_grp_layer_csp(jst:jed)
-      end do
-!
-!   set element group table
-!
-      num_ele_grp_csp =   0
-      num_ele_layer_csp = 0
-      call allocate_ele_grp_name_csp
-      call allocate_ele_grp_layer_csp
-!
-!   set surface group table
-!
-      num_surf_grp_csp =   0
-      num_surf_layer_csp = 0
-      call allocate_surf_grp_name_csp
-      call allocate_surf_grp_layer_csp
-!
+      call set_empty_cubed_sph_group(csph_grp)
 !
       course_p%max_coarse_level = cubed_sph_c%sph_coarsing_ctl%num
       call alloc_coarsing_parameter(course_p)

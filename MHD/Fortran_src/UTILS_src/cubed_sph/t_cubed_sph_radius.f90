@@ -49,11 +49,9 @@
 !
       subroutine set_cubed_sph_radius_ctl(cubed_sph_c, rprm_csph)
 !
-      use m_cubed_sph_grp_param
       use t_numref_cubed_sph
       use t_control_data_cubed_sph
       use skip_comment_f
-      use set_cubed_sph_group_ctl
 !
       type(control_data_cubed_sph), intent(in) :: cubed_sph_c
       type(cubed_sph_radius), intent(inout) :: rprm_csph
@@ -92,7 +90,6 @@
       subroutine set_cubed_rect_adjusting_ctl                           &
      &         (edge_latitude_ctl, rprm_csph)
 !
-      use m_cubed_sph_grp_param
       use t_numref_cubed_sph
       use t_read_control_arrays
       use skip_comment_f

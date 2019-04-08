@@ -36,7 +36,7 @@
       use skip_comment_f
 !
       type(ctl_array_ci), intent(in) :: elem_grp_name_ctl
-      integer(kind = kint), intent(in) :: if_CMB, if_ICB, if_EXT
+      integer(kind = kint), intent(inout) :: if_CMB, if_ICB, if_EXT
 !
       type(group_data), intent(inout) :: csp_ele_grp
 !
@@ -114,12 +114,12 @@
       csp_ele_grp%istack_grp(0) = 0
       do j = 1, csp_ele_grp%num_grp
         csp_ele_grp%istack_grp(j) = csp_ele_grp%istack_grp(j-1)         &
-     &                             + csp_ele_grp%istack_grp(j)
+     &                             + csp_ele_grp%nitem_grp(j)
       end do
       csp_ele_grp%num_item                                              &
      &      = csp_ele_grp%istack_grp(csp_ele_grp%num_grp)
 !
-      subroutine set_cubed_sph_element_grp_name
+      end subroutine set_cubed_sph_element_grp_name
 !
 !   --------------------------------------------------------------------
 !

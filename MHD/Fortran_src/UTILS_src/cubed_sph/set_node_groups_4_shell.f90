@@ -4,29 +4,33 @@
 !     Written by H. Matsui on Apr, 2006
 !
 !!      subroutine write_cubed_sph_nod_grp(id_file, nod_grp)
-!!      subroutine set_node_group_names(nod_grp)
+!!      subroutine set_cubed_sph_node_grp_names(csp_nod_grp, nod_grp)
 !!
-!!      subroutine count_node_groups_linear(numnod_cube, numnod_sf,     &
-!!     &          nskip_r, nod_grp)
-!!      subroutine count_node_groups_quad(numnod_cube, numedge_cube,    &
-!!     &          numnod_sf, numedge_sf, nod_grp)
+!!      subroutine count_cubed_sph_node_grp_l(numnod_cube, numnod_sf,   &
+!!     &          nskip_r, csp_nod_grp, nod_grp)
+!!      subroutine count_cubed_sph_node_grp_q(numnod_cube, numedge_cube,&
+!!     &          numnod_sf, numedge_sf, csp_nod_grp, nod_grp)
 !
-!!      subroutine set_node_istack_linear(numnod_cube, numnod_sf,       &
-!!     &          nskip_r, nod_grp)
-!!      subroutine set_node_istack_quad(numnod_cube, numedge_cube,      &
-!!     &          numnod_sf, numedge_sf, nod_grp)
-!
-!!      subroutine set_nodal_item_linear(numnod_cube, numnod_sf,        &
-!!     &          num_hemi, nskip_r, nod_grp)
-!!      subroutine set_nodal_item_quad                                  &
+!!      subroutine set_cubed_sph_node_istack_l(numnod_cube, numnod_sf,  &
+!!     &          nskip_r, csp_nod_grp, nod_grp)
+!!      subroutine set_cubed_sph_node_istack_q                          &
+!!     &         (numnod_cube, numedge_cube, numnod_sf, numedge_sf,     &
+!!     &          csp_nod_grp, nod_grp)
+!!
+!!      subroutine set_cubed_sph_nodal_item_l                           &
+!!     &         (numnod_cube, numnod_sf, num_hemi, nskip_r, nr_cmb,    &
+!!     &          csp_nod_grp, nod_grp)
+!!      subroutine set_cubed_sph_nodal_item_q                           &
 !!     &         (numnod, numnod_cube, numedge_cube,                    &
-!!     &          numnod_sf, numedge_sf, num_hemi, nskip_r, nod_grp)
+!!     &          numnod_sf, numedge_sf, num_hemi, nskip_r, nr_cmb,     &
+!!     &          csp_nod_grp, nod_grp)
+!!        type(group_data), intent(in) :: csp_nod_grp
+!!        type(group_data), intent(inout) :: nod_grp
 !
       module set_node_groups_4_shell
 !
       use m_precision
 !
-      use m_cubed_sph_grp_param
       use t_group_data
 !
       implicit  none
@@ -67,82 +71,90 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_node_group_names(nod_grp)
+      subroutine set_cubed_sph_node_grp_names(csp_nod_grp, nod_grp)
 !
+      type(group_data), intent(in) :: csp_nod_grp
       type(group_data), intent(inout) :: nod_grp
+!
       integer(kind = kint) :: i
 !
       nod_grp%grp_name(1) = 'Center'
       nod_grp%grp_name(2) = 'Press'
-      do i = 1, num_node_grp_csp
-        nod_grp%grp_name(i+2) = nod_grp_name_csp(i)
+      do i = 1, csp_nod_grp%num_grp
+        nod_grp%grp_name(i+2) = csp_nod_grp%grp_name(i)
       end do
 !
-      end subroutine set_node_group_names
+      end subroutine set_cubed_sph_node_grp_names
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_node_groups_linear(numnod_cube, numnod_sf,       &
-     &          nskip_r, nod_grp)
+      subroutine count_cubed_sph_node_grp_l(numnod_cube, numnod_sf,     &
+     &          nskip_r, csp_nod_grp, nod_grp)
 !
       integer(kind = kint), intent(in) :: numnod_cube, numnod_sf
       integer(kind = kint), intent(in) :: nskip_r
+      type(group_data), intent(in) :: csp_nod_grp
+!
       type(group_data), intent(inout) :: nod_grp
 !
       integer(kind = kint) :: i
 !
 !
-      nod_grp%num_grp = 2 + num_node_grp_csp
+      nod_grp%num_grp = 2 + csp_nod_grp%num_grp
 !
       nod_grp%num_item = 2
-      do i = 1, num_nod_layer_csp
-        if      ( id_nod_grp_layer_csp(i) .eq. 0 ) then
+      do i = 1, csp_nod_grp%num_item
+        if      ( csp_nod_grp%item_grp(i) .eq. 0 ) then
           nod_grp%num_item = nod_grp%num_item + numnod_cube
-        else if ( id_nod_grp_layer_csp(i) .gt. 0 ) then
-          if ( mod(id_nod_grp_layer_csp(i),nskip_r) .eq. 0 ) then
+        else if ( csp_nod_grp%item_grp(i) .gt. 0 ) then
+          if ( mod(csp_nod_grp%item_grp(i),nskip_r) .eq. 0 ) then
             nod_grp%num_item = nod_grp%num_item + numnod_sf
           end if
         end if
       end do
 !
-      end subroutine count_node_groups_linear
+      end subroutine count_cubed_sph_node_grp_l
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_node_groups_quad(numnod_cube, numedge_cube,      &
-     &          numnod_sf, numedge_sf, nod_grp)
+      subroutine count_cubed_sph_node_grp_q(numnod_cube, numedge_cube,  &
+     &          numnod_sf, numedge_sf, csp_nod_grp, nod_grp)
 !
       integer(kind = kint), intent(in) :: numnod_cube, numedge_cube
       integer(kind = kint), intent(in) :: numnod_sf, numedge_sf
+      type(group_data), intent(in) :: csp_nod_grp
+!
       type(group_data), intent(inout) :: nod_grp
 !
       integer(kind = kint) :: i
 !
       nod_grp%num_item = 2
-      do i = 1, num_nod_layer_csp
-        if      ( id_nod_grp_layer_csp(i) .eq. 0 ) then
+      do i = 1, csp_nod_grp%num_item
+        if      ( csp_nod_grp%item_grp(i) .eq. 0 ) then
           nod_grp%num_item = nod_grp%num_item                           &
      &                       + numnod_cube + numedge_cube
-        else if ( id_nod_grp_layer_csp(i) .gt. 0 ) then
+        else if ( csp_nod_grp%item_grp(i) .gt. 0 ) then
           nod_grp%num_item = nod_grp%num_item                           &
      &                       + numnod_sf + numedge_sf
-        else if ( id_nod_grp_layer_csp(i) .lt. 0 ) then
+        else if ( csp_nod_grp%item_grp(i) .lt. 0 ) then
           nod_grp%num_item = nod_grp%num_item + numnod_sf
         end if
       end do
 !
-      nod_grp%num_grp = 2 + num_node_grp_csp
+      nod_grp%num_grp = 2 + csp_nod_grp%num_grp
 !
-      end subroutine count_node_groups_quad
+      end subroutine count_cubed_sph_node_grp_q
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_node_istack_linear(numnod_cube, numnod_sf,         &
-     &          nskip_r, nod_grp)
+      subroutine set_cubed_sph_node_istack_l(numnod_cube, numnod_sf,    &
+     &          nskip_r, csp_nod_grp, nod_grp)
 !
       integer(kind = kint), intent(in) :: numnod_cube, numnod_sf
       integer(kind = kint), intent(in) :: nskip_r
+      type(group_data), intent(in) :: csp_nod_grp
+!
       type(group_data), intent(inout) :: nod_grp
 !
       integer(kind = kint) :: i, inum, ist, ied
@@ -151,16 +163,16 @@
       nod_grp%istack_grp(0) = 0
       nod_grp%istack_grp(1) = 1
       nod_grp%istack_grp(2) = nod_grp%istack_grp(1) + 1
-      do i = 1, num_node_grp_csp
+      do i = 1, csp_nod_grp%num_grp
         nod_grp%istack_grp(i+2) = nod_grp%istack_grp(i+1)
-        ist = istack_nod_grp_layer_csp(i-1) + 1
-        ied = istack_nod_grp_layer_csp(i)
+        ist = csp_nod_grp%istack_grp(i-1) + 1
+        ied = csp_nod_grp%istack_grp(i)
         do inum = ist, ied
-          if      ( id_nod_grp_layer_csp(inum) .eq. 0 ) then
+          if      ( csp_nod_grp%item_grp(inum) .eq. 0 ) then
             nod_grp%istack_grp(i+2) = nod_grp%istack_grp(i+2)           &
      &                                + numnod_cube
-          else if ( id_nod_grp_layer_csp(inum) .gt. 0 ) then
-            if ( mod(id_nod_grp_layer_csp(inum),nskip_r) .eq. 0 ) then
+          else if ( csp_nod_grp%item_grp(inum) .gt. 0 ) then
+            if ( mod(csp_nod_grp%item_grp(inum),nskip_r) .eq. 0 ) then
               nod_grp%istack_grp(i+2) = nod_grp%istack_grp(i+2)         &
      &                                  + numnod_sf
             end if
@@ -168,15 +180,18 @@
         end do
       end do
 !
-      end subroutine set_node_istack_linear
+      end subroutine set_cubed_sph_node_istack_l
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_node_istack_quad(numnod_cube, numedge_cube,        &
-     &          numnod_sf, numedge_sf, nod_grp)
+      subroutine set_cubed_sph_node_istack_q                            &
+     &         (numnod_cube, numedge_cube, numnod_sf, numedge_sf,       &
+     &          csp_nod_grp, nod_grp)
 !
       integer(kind = kint), intent(in) :: numnod_cube, numedge_cube
       integer(kind = kint), intent(in) :: numnod_sf, numedge_sf
+      type(group_data), intent(in) :: csp_nod_grp
+!
       type(group_data), intent(inout) :: nod_grp
 !
       integer(kind = kint) :: i, inum, ist, ied
@@ -184,73 +199,82 @@
       nod_grp%istack_grp(0) = 0
       nod_grp%istack_grp(1) = 1
       nod_grp%istack_grp(2) = nod_grp%istack_grp(1) + 1
-      do i = 1, num_node_grp_csp
+      do i = 1, csp_nod_grp%num_grp
         nod_grp%istack_grp(i+2) = nod_grp%istack_grp(i+1)
-        ist = istack_nod_grp_layer_csp(i-1) + 1
-        ied = istack_nod_grp_layer_csp(i)
+        ist = csp_nod_grp%istack_grp(i-1) + 1
+        ied = csp_nod_grp%istack_grp(i)
         do inum = ist, ied
-          if      ( id_nod_grp_layer_csp(inum) .eq. 0 ) then
+          if      ( csp_nod_grp%item_grp(inum) .eq. 0 ) then
             nod_grp%istack_grp(i+2) = nod_grp%istack_grp(i+2)           &
      &                                + numnod_cube + numedge_cube
-          else if ( id_nod_grp_layer_csp(inum) .gt. 0 ) then
+          else if ( csp_nod_grp%item_grp(inum) .gt. 0 ) then
             nod_grp%istack_grp(i+2) = nod_grp%istack_grp(i+2)           &
      &                                + numnod_sf + numedge_sf
-          else if ( id_nod_grp_layer_csp(inum) .lt. 0 ) then
+          else if ( csp_nod_grp%item_grp(inum) .lt. 0 ) then
             nod_grp%istack_grp(i+2) = nod_grp%istack_grp(i+2)           &
      &                                + numnod_sf
           end if
         end do
       end do
 !
-      end subroutine set_node_istack_quad
+      end subroutine set_cubed_sph_node_istack_q
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_nodal_item_linear(numnod_cube, numnod_sf,          &
-     &          num_hemi, nskip_r, nod_grp)
+      subroutine set_cubed_sph_nodal_item_l                             &
+     &         (numnod_cube, numnod_sf, num_hemi, nskip_r, nr_cmb,      &
+     &          csp_nod_grp, nod_grp)
 !
       integer(kind = kint), intent(in) :: numnod_cube, numnod_sf
       integer(kind = kint), intent(in) :: num_hemi
       integer(kind = kint), intent(in) :: nskip_r
+      type(group_data), intent(in) :: csp_nod_grp
+      integer(kind = kint), intent(in) :: nr_cmb
       type(group_data), intent(inout) :: nod_grp
 !
 !
       call set_nodal_item_center(numnod_cube, numnod_sf, nskip_r,       &
-     &    num_hemi, nod_grp)
+     &    num_hemi, nr_cmb, nod_grp)
       call set_nodal_item_sphere_l                                      &
-     &   (numnod_cube, numnod_sf, nskip_r, nod_grp)
+     &   (numnod_cube, numnod_sf, nskip_r, csp_nod_grp, nod_grp)
 !
-      end subroutine set_nodal_item_linear
+      end subroutine set_cubed_sph_nodal_item_l
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_nodal_item_quad                                    &
+      subroutine set_cubed_sph_nodal_item_q                             &
      &         (numnod, numnod_cube, numedge_cube,                      &
-     &          numnod_sf, numedge_sf, num_hemi, nskip_r, nod_grp)
+     &          numnod_sf, numedge_sf, num_hemi, nskip_r, nr_cmb,       &
+     &          csp_nod_grp, nod_grp)
 !
       integer(kind = kint), intent(in) :: numnod_cube, numnod_sf
       integer(kind = kint), intent(in) :: numedge_cube, numedge_sf
       integer(kind = kint), intent(in) :: numnod, num_hemi
       integer(kind = kint), intent(in) :: nskip_r
+      integer(kind = kint), intent(in) :: nr_cmb
+      type(group_data), intent(in) :: csp_nod_grp
+!
       type(group_data), intent(inout) :: nod_grp
 !
 !
       call set_nodal_item_center(numnod_cube, numnod_sf, nskip_r,       &
-     &    num_hemi, nod_grp)
+     &    num_hemi, nr_cmb, nod_grp)
       call set_nodal_item_sphere_q(numnod, numnod_cube, numedge_cube,   &
-     &    numnod_sf, numedge_sf, nod_grp)
+     &    numnod_sf, numedge_sf, csp_nod_grp, nod_grp)
 !
-      end subroutine set_nodal_item_quad
+      end subroutine set_cubed_sph_nodal_item_q
 !
 !  ---------------------------------------------------------------------
 !
       subroutine set_nodal_item_center(numnod_cube, numnod_sf, nskip_r, &
-     &          num_hemi, nod_grp)
+     &          num_hemi, nr_cmb, nod_grp)
 !
       integer(kind = kint), intent(in) :: numnod_cube, numnod_sf
       integer(kind = kint), intent(in) :: num_hemi
       integer(kind = kint), intent(in) :: nskip_r
+      integer(kind = kint), intent(in) :: nr_cmb
+!
       type(group_data), intent(inout) :: nod_grp
 !
       integer(kind = kint) :: i
@@ -276,36 +300,38 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_nodal_item_sphere_l(numnod_cube, numnod_sf,        &
-     &          nskip_r, nod_grp)
+     &          nskip_r, csp_nod_grp, nod_grp)
 !
       integer(kind = kint), intent(in) :: numnod_cube, numnod_sf
       integer(kind = kint), intent(in) :: nskip_r
+      type(group_data), intent(in) :: csp_nod_grp
+!
       type(group_data), intent(inout) :: nod_grp
 !
       integer(kind = kint) :: i, j, icou, inum, ist, ied
       integer(kind = kint) :: inod0
 !
 !
-      do i = 1, num_node_grp_csp
+      do i = 1, csp_nod_grp%num_grp
 !
         icou = nod_grp%istack_grp(i+1)
-        ist = istack_nod_grp_layer_csp(i-1) + 1
-        ied = istack_nod_grp_layer_csp(i)
+        ist = csp_nod_grp%istack_grp(i-1) + 1
+        ied = csp_nod_grp%istack_grp(i)
 !
         do inum = ist, ied
 !
-          if      (id_nod_grp_layer_csp(inum) .eq. 0) then
+          if      (csp_nod_grp%item_grp(inum) .eq. 0) then
 !
             do j = 1, numnod_cube
               icou = icou + 1
               nod_grp%item_grp(icou) = j
             end do
 !
-          else if (id_nod_grp_layer_csp(inum) .gt. 0) then
+          else if (csp_nod_grp%item_grp(inum) .gt. 0) then
 !
-            if ( mod(id_nod_grp_layer_csp(inum),nskip_r) .eq. 0 ) then
+            if ( mod(csp_nod_grp%item_grp(inum),nskip_r) .eq. 0 ) then
               inod0 = numnod_cube + numnod_sf                           &
-     &               * (id_nod_grp_layer_csp(inum)/nskip_r - 1)
+     &               * (csp_nod_grp%item_grp(inum)/nskip_r - 1)
               do j = 1, numnod_sf
                 icou = icou + 1
                 nod_grp%item_grp(icou) = inod0 + j
@@ -322,26 +348,29 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_nodal_item_sphere_q(numnod, numnod_cube,           &
-     &          numedge_cube, numnod_sf, numedge_sf, nod_grp)
+     &          numedge_cube, numnod_sf, numedge_sf, csp_nod_grp,       &
+     &          nod_grp)
 !
       integer(kind = kint), intent(in) :: numnod_cube, numedge_cube
       integer(kind = kint), intent(in) :: numnod_sf, numedge_sf
       integer(kind = kint), intent(in) :: numnod
+      type(group_data), intent(in) :: csp_nod_grp
+!
       type(group_data), intent(inout) :: nod_grp
 !
       integer(kind = kint) :: i, j, icou, inum, ist, ied
       integer(kind = kint) :: inod0, inod9, inod17
 !
 !
-      do i = 1, num_node_grp_csp
+      do i = 1, csp_nod_grp%num_grp
 !
         icou = nod_grp%istack_grp(i+1)
-        ist = istack_nod_grp_layer_csp(i-1) + 1
-        ied = istack_nod_grp_layer_csp(i)
+        ist = csp_nod_grp%istack_grp(i-1) + 1
+        ied = csp_nod_grp%istack_grp(i)
 !
         do inum = ist, ied
 !
-          if      (id_nod_grp_layer_csp(inum) .eq. 0) then
+          if      (csp_nod_grp%item_grp(inum) .eq. 0) then
 !
             do j = 1, numnod_cube
               icou = icou + 1
@@ -352,13 +381,13 @@
               nod_grp%item_grp(icou) = numnod + j
             end do
 !
-          else if (id_nod_grp_layer_csp(inum) .gt. 0) then
+          else if (csp_nod_grp%item_grp(inum) .gt. 0) then
 !
             inod0 = numnod_cube                                         &
-     &             + numnod_sf * (id_nod_grp_layer_csp(inum)-1)
+     &             + numnod_sf * (csp_nod_grp%item_grp(inum)-1)
             inod9 = numnod + numedge_cube + numnod_sf                   &
      &                     + (numnod_sf+numedge_sf)                     &
-     &                      * (id_nod_grp_layer_csp(inum)-2)
+     &                      * (csp_nod_grp%item_grp(inum)-2)
             do j = 1, numnod_sf
               icou = icou + 1
               nod_grp%item_grp(icou) = inod0 + j
@@ -368,11 +397,11 @@
               nod_grp%item_grp(icou) = inod9 + j
             end do
 !
-          else if (id_nod_grp_layer_csp(inum) .lt. 0) then
+          else if (csp_nod_grp%item_grp(inum) .lt. 0) then
 !
             inod17 = numnod + numedge_cube                              &
      &                      + (numnod_sf+numedge_sf)                    &
-     &                      * (-id_nod_grp_layer_csp(inum)-1)
+     &                      * (-csp_nod_grp%item_grp(inum)-1)
             do j = 1, numnod_sf
               icou = icou + 1
               nod_grp%item_grp(icou) = inod17 + j

@@ -23,7 +23,7 @@
       use t_ctl_data_gen_filter
       use t_ctl_data_gen_3d_filter
       use t_ctl_params_4_gen_filter
-      use m_ctl_param_newdom_filter
+      use t_ctl_param_newdom_filter
 !
       implicit none
 !

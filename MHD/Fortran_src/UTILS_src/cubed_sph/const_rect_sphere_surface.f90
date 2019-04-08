@@ -6,7 +6,8 @@
 !!     &         (rad_edge, csph_p, c_sphere)
 !!        type(numref_cubed_sph), intent(inout) :: csph_p
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
-!!      subroutine const_rect_sphere_surf_data(csph_p, c_sphere)
+!!      subroutine const_rect_sphere_surf_data                          &
+!!     &         (csph_p, csph_grp, c_sphere)
 !!        type(numref_cubed_sph), intent(in) :: csph_p
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !!      subroutine const_coarse_rect_surf_data                          &
@@ -76,8 +77,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_rect_sphere_surf_data(csph_p, c_sphere)
+      subroutine const_rect_sphere_surf_data                            &
+     &         (csph_p, csph_grp, c_sphere)
 !
+      use t_cubed_sph_grp_param
       use t_numref_cubed_sph
       use set_cube_surface
       use set_surface_rods_sphere
@@ -86,6 +89,7 @@
       use output_shell_surface_data
 !
       type(numref_cubed_sph), intent(in) :: csph_p
+      type(cubed_sph_group), intent(in) :: csph_grp
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
       integer(kind= kint) :: iele_sf_end
@@ -103,11 +107,13 @@
       end if
 !
       write(*,*) 'output_surface_data'
-      call output_surface_data(c_sphere)
+      call output_surface_data                                          &
+     &   (csph_grp%nr_icb, csph_grp%nr_cmb, c_sphere)
 !
       if(csph_p%iflag_quad .gt. 0) then
         write(*,*) 'output_surface_data_quad'
-        call output_surface_data_quad(c_sphere)
+        call output_surface_data_quad                                   &
+     &     (csph_grp%nr_icb, csph_grp%nr_cmb, c_sphere)
       end if
 !
       end subroutine const_rect_sphere_surf_data
