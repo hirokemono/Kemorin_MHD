@@ -33,24 +33,22 @@
       integer(kind = kint) :: inod
 !
 !
-            neibpetot = 0
-            inod   = 0
-
-            call count_import_inside(inod)
-
-            call count_import_peri_linear(ipe, jpe, inod)
-!
-            num_import = stack_import(neibpetot)
+      neibpetot = 0
+      inod   = 0
+      call count_import_inside(nb_rng1, neibpetot, inod)
+      call count_import_peri_linear                                   &
+     &   (nb_rng1, ipe, jpe, neibpetot, inod)
+      num_import = stack_import(neibpetot)
 !
 !                                     .... write nodes 
-            neibpetot = 0
-            inod = 0
+      neibpetot = 0
+      inod = 0
 
-            call set_import_inside(inod)
+      call set_import_inside(inod)
 
-            call set_import_peri(ipe, jpe, inod)
+      call set_import_peri(ipe, jpe, inod)
 !
-          end subroutine set_import_data
+      end subroutine set_import_data
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,27 +60,27 @@
 !
 !
 !                                     .... count nodes 
-            inod = 0
-            neibpetot = 0
+      inod = 0
+      neibpetot = 0
 !
-            call count_import_inside_quad(kpe, inod)
+      call count_import_inside_quad(nb_rng1, kpe, neibpetot, inod)
+      call count_import_peri_quad                                     &
+     &   (nb_rng1, ipe, jpe, kpe, neibpetot, inod)
 !
-            call count_import_peri_quad(ipe, jpe, kpe, inod)
-!
-            num_import = stack_import(neibpetot)
-            write(*,*) ipe, jpe, kpe, 'num_import', num_import
+      num_import = stack_import(neibpetot)
+      write(*,*) ipe, jpe, kpe, 'num_import', num_import
 !
 !
 !                                     .... write nodes 
-            inod = 0
-            neibpetot = 0
+      inod = 0
+      neibpetot = 0
 !
 !
-            call set_import_inside_quad(kpe, inod)
+      call set_import_inside_quad(kpe, inod)
 !
-            call set_import_peri_quad(ipe, jpe, kpe, inod)
+      call set_import_peri_quad(ipe, jpe, kpe, inod)
 !
-            write(*,*) ipe, jpe, kpe, 'import res.', inod
+      write(*,*) ipe, jpe, kpe, 'import res.', inod
 !
       end subroutine set_import_data_quad
 !

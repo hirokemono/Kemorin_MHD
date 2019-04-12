@@ -4,17 +4,20 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine count_export_peri_linear(ipe, jpe, inod)
-!      subroutine count_export_peri_quad(ipe, jpe, kpe, inod)
+!!      subroutine count_export_peri_linear                             &
+!!     &         (nb_rng, ipe, jpe, icou, inod)
+!!      subroutine count_export_peri_quad                               &
+!!     &          (nb_rng, ipe, jpe, kpe, icou, inod)
+!!        type(neib_range_cube), intent(in) :: nb_rng
 !
       module count_export_peri
 !
       use m_precision
 !
+      use t_neib_range_cube
       use m_size_4_plane
       use m_size_of_cube
       use m_comm_data_cube_kemo
-      use m_neighb_range_cube
       use m_sleeve_cube
       use set_comm_nod_4_cube
 !
@@ -26,10 +29,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_export_peri_linear(ipe, jpe, inod)
+      subroutine count_export_peri_linear                               &
+     &         (nb_rng, ipe, jpe, icou, inod)
 !
-      integer (kind = kint) :: ipe, jpe
-      integer (kind = kint) :: inod
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer (kind = kint), intent(in) :: ipe, jpe
+!
+      integer (kind = kint), intent(inout) :: icou, inod
 !
       integer (kind = kint) :: inp, jnp, knp
 !
@@ -40,17 +46,17 @@
 !
             if (ipe .eq. ndx) then
              inp = 1
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 !
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                is = nxi+1
                ie = nxi+ndepth
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                call count_node_id(inod)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
              enddo
@@ -61,17 +67,17 @@
 !
 !                                     .... count nodes 
             if (ipe .eq. 1) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                is = ndepth+1
                ie = 2*ndepth
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                call count_node_id(inod)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
              enddo
@@ -82,17 +88,17 @@
 !                                     .... count nodes 
             if ( jpe .eq. ndy ) then
              jnp = 1
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do inp = nb_rng1%inp_st, nb_rng1%inp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do inp = nb_rng%inp_st, nb_rng%inp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                js = nyi+1
                je = nyi+ndepth
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                call count_node_id(inod)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
              enddo
@@ -102,17 +108,17 @@
 !
 !                                     .... count nodes 
             if ( jpe .eq. 1 ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do inp = nb_rng1%inp_st, nb_rng1%inp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do inp = nb_rng%inp_st, nb_rng%inp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                js = ndepth+1
                je = 2*ndepth
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                call count_node_id(inod)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
              enddo
@@ -123,18 +129,18 @@
             if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
              inp = 1
              jnp = 1
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                is = nxi+1
                ie = nxi+ndepth
                js = nyi+1
                je = nyi+ndepth
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                call count_node_id(inod)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
             endif
@@ -144,18 +150,18 @@
 !
             if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
              jnp = 1
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                is = ndepth+1
                ie = 2*ndepth
                js = nyi+1
                je = nyi+ndepth
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                call count_node_id(inod)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
             endif
@@ -163,18 +169,18 @@
 !  outdside (x<xmin, y<ymin)
 !
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                is = ndepth+1
                ie = 2*ndepth
                js = ndepth+1
                je = 2*ndepth
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                call count_node_id(inod)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
             endif
@@ -184,18 +190,18 @@
 !
             if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
              inp = 1
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                is = nxi+1
                ie = nxi+ndepth
                js = ndepth+1
                je = 2*ndepth
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                call count_node_id(inod)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
             endif
@@ -204,12 +210,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_export_peri_quad(ipe, jpe, kpe, inod)
+      subroutine count_export_peri_quad                                 &
+     &          (nb_rng, ipe, jpe, kpe, icou, inod)
 !
       use set_comm_edge_4_cube
 !
-      integer (kind = kint) :: ipe, jpe, kpe
-      integer (kind = kint) :: inod
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer (kind = kint), intent(in) :: ipe, jpe, kpe
+!
+      integer (kind = kint), intent(inout) :: icou, inod
 !
       integer (kind = kint) :: nd
       integer (kind = kint) :: inp, jnp, knp
@@ -220,14 +229,14 @@
 !
             if (ipe .eq. ndx) then
              inp = 1
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 !
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                is = nxi+1
                ie = nxi+ndepth
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                call count_node_id(inod)
 
                nd = 1
@@ -239,7 +248,7 @@
                nd = 3
                call count_ex_edge(kpe, inp, jnp, knp, inod, nd)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
              enddo
@@ -248,13 +257,13 @@
 !    ---   outside wall (x<xmin)
 !                                     .... count nodes 
             if (ipe .eq. 1) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                is = ndepth+1
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                ie = 2*ndepth
                call count_node_id(inod)
 
@@ -270,7 +279,7 @@
                ie = 2*ndepth
                call count_ex_edge(kpe, inp, jnp, knp, inod, nd)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
              enddo
@@ -280,14 +289,14 @@
 !                                     .... count nodes 
             if ( jpe .eq. ndy ) then
              jnp = 1
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do inp = nb_rng1%inp_st, nb_rng1%inp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do inp = nb_rng%inp_st, nb_rng%inp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                js = nyi+1
                je = nyi+ndepth
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                call count_node_id(inod)
 
                nd = 1
@@ -299,7 +308,7 @@
                nd = 3
                call count_ex_edge(kpe, inp, jnp, knp, inod, nd)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
                 enddo
               enddo
@@ -308,13 +317,13 @@
 !  outdside (y<ymin)
 !                                     .... count nodes 
             if ( jpe .eq. 1 ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do inp = nb_rng1%inp_st, nb_rng1%inp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do inp = nb_rng%inp_st, nb_rng%inp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                js = ndepth+1
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                je = 2*ndepth
                call count_node_id(inod)
 
@@ -330,7 +339,7 @@
                je = 2*ndepth
                call count_ex_edge(kpe, inp, jnp, knp, inod, nd)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
                 enddo
               enddo
@@ -341,15 +350,15 @@
             if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
              inp = 1
              jnp = 1
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                is = nxi+1
                ie = nxi+ndepth
                js = nyi+1
                je = nyi+ndepth
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                call count_node_id(inod)
 
                nd = 1
@@ -361,7 +370,7 @@
                nd = 3
                call count_ex_edge(kpe, inp, jnp, knp, inod, nd)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
             endif
@@ -370,14 +379,14 @@
 !
             if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
              jnp = 1
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                is = ndepth+1
                js = nyi+1
                je = nyi+ndepth
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                ie = 2*ndepth
                call count_node_id(inod)
 
@@ -393,7 +402,7 @@
                ie = 2*ndepth
                call count_ex_edge(kpe, inp, jnp, knp, inod, nd)
 !
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
             endif
@@ -401,13 +410,13 @@
 !  outdside (x<xmin, y<ymin)
 !
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                is = ndepth+1
                js = ndepth+1
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                ie = 2*ndepth
                je = 2*ndepth
                call count_node_id(inod)
@@ -427,7 +436,7 @@
                je = 2*ndepth
                call count_ex_edge(kpe, inp, jnp, knp, inod, nd)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
             endif
@@ -436,14 +445,14 @@
 !
             if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
              inp = 1
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng1)
+               call set_boundary_size(inp, jnp, knp, nb_rng)
                is = nxi+1
                ie = nxi+ndepth
                js = ndepth+1
 
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
                je = 2*ndepth
                call count_node_id(inod)
 
@@ -459,7 +468,7 @@
                je = 2*ndepth
                call count_ex_edge(kpe, inp, jnp, knp, inod, nd)
 
-               stack_export(neibpetot) = inod
+               stack_export(icou) = inod
 
               enddo
             endif

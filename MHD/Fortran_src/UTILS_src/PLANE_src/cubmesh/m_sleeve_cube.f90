@@ -6,7 +6,7 @@
       module m_sleeve_cube
 !
       use m_precision
-       use t_neib_range_cube
+      use t_neib_range_cube
 !
       implicit none
 !
@@ -25,7 +25,7 @@
       use m_size_of_cube
 !
       integer (kind = kint), intent(in) :: inp, jnp, knp
-      type(neib_range_cube), intent(inout) :: nb_rng
+      type(neib_range_cube), intent(in) :: nb_rng
 !
 !                                       .. start side
 
@@ -64,7 +64,7 @@
       use m_size_of_cube
 !
       integer (kind = kint), intent(in) :: inp, jnp, knp
-      type(neib_range_cube), intent(inout) :: nb_rng
+      type(neib_range_cube), intent(in) :: nb_rng
 !
 !                                       .. start side
 
@@ -100,7 +100,7 @@
 !
        subroutine set_internal_size(nb_rng)
 !
-      type(neib_range_cube), intent(inout) :: nb_rng
+      type(neib_range_cube), intent(in) :: nb_rng
 !
             is = nb_rng%i_st
             js = nb_rng%j_st
@@ -117,7 +117,7 @@
 !
        implicit none
        integer (kind = kint), intent(in) :: nd
-      type(neib_range_cube), intent(inout) :: nb_rng
+      type(neib_range_cube), intent(in) :: nb_rng
 !
        call set_internal_size(nb_rng)
 !
