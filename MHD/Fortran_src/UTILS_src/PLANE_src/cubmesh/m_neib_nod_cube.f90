@@ -78,7 +78,7 @@
        write(*,*) 'k_st, k_end', k_st2, k_end2, nz
 !
        write(*,*) 'set_range_4_nodeloop'
-       call set_range_4_nodeloop(kpe)
+       call s_set_range_4_nodeloop(kpe)
 !
        FEM_elen%nnod_filter_mom = nodtot
        FEM_elen%nele_filter_mom = elmtot

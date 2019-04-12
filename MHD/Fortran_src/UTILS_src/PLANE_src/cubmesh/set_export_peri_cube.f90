@@ -36,8 +36,8 @@
 !
             if (ipe .eq. ndx) then
              inp = 1
-             do knp=knp_st,knp_end
-              do jnp=jnp_st,jnp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 
                call set_boundary_size(inp, jnp, knp)
                is = nxi+1
@@ -53,8 +53,8 @@
 !    ---   outside wall (x<xmin)
 !!
             if (ipe .eq. 1) then
-             do knp=knp_st,knp_end
-              do jnp=jnp_st,jnp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 
                call set_boundary_size(inp, jnp, knp)
                is = ndepth+1
@@ -72,8 +72,8 @@
 !
             if ( jpe .eq. ndy ) then
              jnp = 1
-             do knp=knp_st,knp_end
-              do inp=inp_st,inp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
                call set_boundary_size(inp, jnp, knp)
                js = nyi+1
@@ -90,8 +90,8 @@
 !  outdside (y<ymin)
 !
             if ( jpe .eq. 1 ) then
-             do knp=knp_st,knp_end
-              do inp=inp_st,inp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
                call set_boundary_size(inp, jnp, knp)
                js = ndepth+1
@@ -110,7 +110,7 @@
             if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
              inp = 1
              jnp = 1
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_boundary_size(inp, jnp, knp)
                is = nxi+1
@@ -129,7 +129,7 @@
 !
             if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
              jnp = 1
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_boundary_size(inp, jnp, knp)
                is = ndepth+1
@@ -146,7 +146,7 @@
 !  outdside (x<xmin, y<ymin)
 !
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_boundary_size(inp, jnp, knp)
                is = ndepth+1
@@ -165,7 +165,7 @@
 !
             if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
              inp = 1
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_boundary_size(inp, jnp, knp)
                is = nxi+1
@@ -197,8 +197,8 @@
 !
             if (ipe .eq. ndx) then
              inp = 1
-             do knp=knp_st,knp_end
-              do jnp=jnp_st,jnp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 !
                call set_boundary_size(inp, jnp, knp)
                is = nxi+1
@@ -225,8 +225,8 @@
 !    ---   outside wall (x<xmin)
 !!
             if (ipe .eq. 1) then
-              do knp=knp_st,knp_end
-                do jnp=jnp_st,jnp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+                do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 
                  call set_boundary_size(inp, jnp, knp)
                  is = ndepth+1
@@ -258,8 +258,8 @@
 !
             if ( jpe .eq. ndy ) then
              jnp = 1
-              do knp=knp_st,knp_end
-                do inp=inp_st,inp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+                do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
                  call set_boundary_size(inp, jnp, knp)
                  js = nyi+1
@@ -287,8 +287,8 @@
 !  outdside (y<ymin)
 !
             if ( jpe .eq. 1 ) then
-              do knp=knp_st,knp_end
-                do inp=inp_st,inp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+                do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
                  call set_boundary_size(inp, jnp, knp)
                   js = ndepth+1
@@ -321,7 +321,7 @@
             if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
              inp = 1
              jnp = 1
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_boundary_size(inp, jnp, knp)
                is = nxi+1
@@ -351,7 +351,7 @@
 !
             if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
              jnp = 1
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                  call set_boundary_size(inp, jnp, knp)
                  js = nyi+1
@@ -382,7 +382,7 @@
 !  outdside (x<xmin, y<ymin)
 !
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                  call set_boundary_size(inp, jnp, knp)
                  is = ndepth+1
@@ -418,7 +418,7 @@
 !
             if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
              inp = 1
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                  call set_boundary_size(inp, jnp, knp)
                  is = nxi+1

@@ -52,7 +52,7 @@
 !
 ! ***** set and write coordinate for internal nodes
 !
-            call set_range_4_nodeloop(kpe)
+            call s_set_range_4_nodeloop(kpe)
 
             inod = 0
 !

@@ -31,9 +31,9 @@
       integer (kind = kint) :: inp, jnp, knp
 !
 !
-            do knp=knp_st,knp_end
-             do jnp=jnp_st,jnp_end
-              do inp=inp_st,inp_end
+            do knp = nb_rng1%knp_st, nb_rng1%knp_end
+             do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
+              do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
                if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
@@ -64,9 +64,9 @@
       integer (kind = kint) :: nd
 !
 !
-            do knp=knp_st,knp_end
-             do jnp=jnp_st,jnp_end
-              do inp=inp_st,inp_end
+            do knp = nb_rng1%knp_st, nb_rng1%knp_end
+             do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
+              do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
                if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 

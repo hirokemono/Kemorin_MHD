@@ -6,8 +6,11 @@
 !     written by Kemorin
 !
       use m_precision
+      use t_neib_range_cube
 !
       implicit  none
+!
+      type(neib_range_cube), save :: nb_rng1
 !
       integer(kind=kint )  ::  inp_st , jnp_st , knp_st
       integer(kind=kint )  ::  inp_end, jnp_end, knp_end
@@ -21,34 +24,31 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_range_4_neighbour(ipe, jpe, kpe)
+      subroutine s_set_range_4_neighbour(ipe, jpe, kpe)
 !
       use m_size_4_plane
       use m_size_of_cube
 !
       integer (kind = kint) :: ipe, jpe, kpe
 !
-!                                       .. search neighbor pe
-                            inp_st  = -1
-            if (ipe ==   1) inp_st  =  0
-                            inp_end =  1
-            if (ipe == ndx) inp_end =  0
-
-                            jnp_st  = -1
-            if (jpe ==   1) jnp_st  =  0
-                            jnp_end =  1
-            if (jpe == ndy) jnp_end =  0
-
-                            knp_st  = -1
-            if (kpe ==   1) knp_st  =  0
-                            knp_end =  1
-            if (kpe == ndz) knp_end =  0
 !
-      end subroutine set_range_4_neighbour
+      call set_range_4_neighbour(ipe, jpe, kpe, nb_rng1)
+!
+      inp_st =  nb_rng1%inp_st 
+      inp_end = nb_rng1%inp_end
+
+      jnp_st =  nb_rng1%jnp_st 
+      jnp_end = nb_rng1%jnp_end
+
+      knp_st =  nb_rng1%knp_st 
+      knp_end = nb_rng1%knp_end
+!
+!
+      end subroutine s_set_range_4_neighbour
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine set_range_4_nodeloop(kpe)
+       subroutine s_set_range_4_nodeloop(kpe)
 !
        use m_size_of_cube
 !
@@ -56,17 +56,18 @@
 !
        integer(kind = kint) :: kpe
 !
-                            i_st  =     1         + ndepth
-                            i_end =  i_st + nxi-1
-
-                            j_st  =     1         + ndepth
-                            j_end =  j_st + nyi-1
-
-                            k_st  =     1         + ndepth
-            if (kpe ==   1) k_st  =     1
-                            k_end =  k_st + nzi-1
+      call set_range_4_nodeloop(kpe, nb_rng1)
 !
-       end subroutine set_range_4_nodeloop
+      i_st =  nb_rng1%i_st 
+      i_end = nb_rng1%i_end
+
+      j_st =  nb_rng1%j_st 
+      j_end = nb_rng1%j_end
+
+      k_st =  nb_rng1%k_st 
+      k_end = nb_rng1%k_end
+!
+       end subroutine s_set_range_4_nodeloop
 !
 ! ----------------------------------------------------------------------
 !

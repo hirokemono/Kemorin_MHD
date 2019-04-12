@@ -212,7 +212,7 @@
 
             write(*,*) 'set_size_of_domain', ipe, jpe, kpe
             call set_size_of_domain(elm_type, kpe)
-            call set_range_4_neighbour(ipe, jpe, kpe)
+            call s_set_range_4_neighbour(ipe, jpe, kpe)
 
 !                                       .. set neighbor pe
             neibpetot = 0

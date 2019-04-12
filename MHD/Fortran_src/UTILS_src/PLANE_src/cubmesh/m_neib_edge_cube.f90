@@ -46,7 +46,7 @@
         integer(kind = kint), intent(in) :: kpe
 !
 !
-      call set_range_4_nodeloop(kpe)
+      call s_set_range_4_nodeloop(kpe)
 !
 !       for edge on y=const and z=const
 !       xi direction

@@ -8,6 +8,7 @@
       implicit none
 !
 !
+!      type(neib_range_cube), save :: nb_rng1
       integer(kind = kint) :: is, js, ks
       integer(kind = kint) :: ie, je, ke
 !

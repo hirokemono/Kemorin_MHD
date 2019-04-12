@@ -36,8 +36,8 @@
 !    ---   outside wall (x<xmin)
 !                                     .... count nodes 
             if (ipe .eq. 1) then
-             do knp=knp_st,knp_end
-              do jnp=jnp_st,jnp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 
                call set_sleeve_size(inp, jnp, knp)
                is = 1
@@ -55,8 +55,8 @@
 !  outdside (x>xmax)
 !                                     .... count nodes 
             if (ipe .eq. ndx) then
-             do knp=knp_st,knp_end
-              do jnp=jnp_st,jnp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 !
                call set_sleeve_size(inp, jnp, knp)
                 is = nxi+ndepth+1
@@ -74,8 +74,8 @@
 !  outdside (y<ymin)
 !                                     .... count nodes 
             if ( jpe .eq. 1 ) then
-             do knp=knp_st,knp_end
-              do inp=inp_st,inp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
                call set_sleeve_size(inp, jnp, knp)
                js = 1
@@ -93,8 +93,8 @@
 !  outdside (y<ymax)
 !                                     .... count nodes 
             if ( jpe .eq. ndy ) then
-             do knp=knp_st,knp_end
-              do inp=inp_st,inp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
                call set_sleeve_size(inp, jnp, knp)
                js = nyi+ndepth+1
@@ -112,7 +112,7 @@
 !  outdside (x<xmin, y<ymin)
 !
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_sleeve_size(inp, jnp, knp)
                is = 1
@@ -131,7 +131,7 @@
 !  outdside (x>xmax, y<ymin)
 !
             if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_sleeve_size(inp, jnp, knp)
                is = nxi+ndepth+1
@@ -150,7 +150,7 @@
 !  outdside (x>xmax, y<ymax)
 !
             if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_sleeve_size(inp, jnp, knp)
                is = nxi+ndepth+1
@@ -169,7 +169,7 @@
 !  outdside (x>xmin, y<ymax)
 !
             if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_sleeve_size(inp, jnp, knp)
                is = 1
@@ -203,8 +203,8 @@
 !                                     .... count nodes 
             if (ipe .eq. 1) then
              inp = -1
-             do knp=knp_st,knp_end
-              do jnp=jnp_st,jnp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 
                call set_sleeve_size(inp, jnp, knp)
                is = 1
@@ -232,8 +232,8 @@
 !                                     .... count nodes 
 !
             if (ipe .eq. ndx) then
-             do knp=knp_st,knp_end
-              do jnp=jnp_st,jnp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 !
                call set_sleeve_size(inp, jnp, knp)
                is = nxi+ndepth+1
@@ -264,8 +264,8 @@
 !                                     .... count nodes 
             if ( jpe .eq. 1 ) then
              jnp = -1
-             do knp=knp_st,knp_end
-              do inp=inp_st,inp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
                call set_sleeve_size(inp, jnp, knp)
                js = 1
@@ -292,8 +292,8 @@
 !  outdside (y>ymax)
 !                                     .... count nodes 
             if ( jpe .eq. ndy ) then
-             do knp=knp_st,knp_end
-              do inp=inp_st,inp_end
+             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
                call set_sleeve_size(inp, jnp, knp)
                js = nyi+ndepth+1
@@ -325,7 +325,7 @@
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
              inp = -1
              jnp = -1
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_sleeve_size(inp, jnp, knp)
                is = 1
@@ -354,7 +354,7 @@
 !
             if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
              jnp = -1
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_sleeve_size(inp, jnp, knp)
                js = 1
@@ -385,7 +385,7 @@
 !  outdside (x>xmax, y<ymax)
 !
             if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_sleeve_size(inp, jnp, knp)
                is = nxi+ndepth+1
@@ -420,7 +420,7 @@
 !
             if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
              inp = -1
-              do knp=knp_st,knp_end
+              do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
                call set_sleeve_size(inp, jnp, knp)
                is = 1
