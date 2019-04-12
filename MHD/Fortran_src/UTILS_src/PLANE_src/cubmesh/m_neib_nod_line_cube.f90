@@ -57,10 +57,6 @@
      &      :: coef_l_filter_0
 !
 !
-      integer(kind = kint) :: i_st2, i_end2
-      integer(kind = kint) :: j_st2, j_end2
-      integer(kind = kint) :: k_st2, k_end2
-      private :: i_st2, i_end2, j_st2, j_end2, k_st2, k_end2
       private :: set_fiilter_nod_line, order_fiilter_nod_line
 !
 !  ----------------------------------------------------------------------
@@ -116,13 +112,6 @@
 !
       integer(kind = kint) :: i
 !
-!
-       i_st2 =  max(i_st-ndepth,1)
-       i_end2 = min(i_end+ndepth,nx)
-       j_st2 =  max(j_st-ndepth,1)
-       j_end2 = min(j_end+ndepth,ny)
-       k_st2 =  max(k_st-ndepth,1)
-       k_end2 = min(k_end+ndepth,nz)
 !
        call allocate_neighboring_nod_line
 !

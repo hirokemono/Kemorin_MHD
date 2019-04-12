@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine count_import_peri_linear(ipe, jpe, kpe, inod)
+!      subroutine count_import_peri_linear(ipe, jpe, inod)
 !      subroutine count_import_peri_quad(ipe, jpe, kpe, inod)
 !
       module count_import_peri
@@ -26,10 +26,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_import_peri_linear(ipe, jpe, kpe, inod)
+      subroutine count_import_peri_linear(ipe, jpe, inod)
 !
-      integer (kind = kint) :: ipe, jpe, kpe
-      integer (kind = kint) :: inod
+      integer (kind = kint), intent(in) :: ipe, jpe
+      integer (kind = kint), intent(inout) :: inod
 !
       integer (kind = kint) :: inp, jnp, knp
 !
@@ -39,7 +39,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                is = 1
                ie = ndepth
 
@@ -58,7 +58,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 !
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                 is = nxi+ndepth+1
                 ie = nxi+2*ndepth
 
@@ -77,7 +77,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                js = 1
                je = ndepth
 
@@ -96,7 +96,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                js = nyi+ndepth+1
                je = nyi+2*ndepth
 
@@ -114,7 +114,7 @@
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                is = 1
                ie = ndepth
                js = 1
@@ -133,7 +133,7 @@
             if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                is = nxi+ndepth+1
                ie = nxi+2*ndepth
                js = 1
@@ -152,7 +152,7 @@
             if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                is = nxi+ndepth+1
                ie = nxi+2*ndepth
                js = nyi+ndepth+1
@@ -171,7 +171,7 @@
             if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                is = 1
                ie = ndepth
                js = nyi+ndepth+1
@@ -193,8 +193,8 @@
 !
       use set_comm_edge_4_cube
 !
-      integer (kind = kint) :: ipe, jpe, kpe
-      integer (kind = kint) :: inod
+      integer (kind = kint), intent(in) :: ipe, jpe, kpe
+      integer (kind = kint), intent(inout) :: inod
 !
       integer (kind = kint) :: inp, jnp, knp
       integer (kind = kint) :: nd
@@ -206,7 +206,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                is = 1
                ie = ndepth
 
@@ -235,7 +235,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 !
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                is = nxi+ndepth+1
 
                neibpetot = neibpetot  + 1
@@ -267,7 +267,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                js = 1
                je = ndepth
 
@@ -295,7 +295,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                js = nyi+ndepth+1
 
                neibpetot = neibpetot  + 1
@@ -327,7 +327,7 @@
              jnp = -1
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                is = 1
                ie = ndepth
                js = 1
@@ -356,7 +356,7 @@
              jnp = -1
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                js = 1
                je = ndepth
                is = nxi+ndepth+1
@@ -387,7 +387,7 @@
             if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                is = nxi+ndepth+1
                js = nyi+ndepth+1
 
@@ -422,7 +422,7 @@
              inp = -1
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_sleeve_size(inp, jnp, knp)
+               call set_sleeve_size(inp, jnp, knp, nb_rng1)
                is = 1
                ie = ndepth
                js = nyi+ndepth+1

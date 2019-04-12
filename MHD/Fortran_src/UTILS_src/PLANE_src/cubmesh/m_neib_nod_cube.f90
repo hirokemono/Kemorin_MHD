@@ -16,7 +16,7 @@
 !
 !  ----------------------------------------------------------------------
 !
-!      subroutine neighboring_node(pe_id, kpe, FEM_elen)
+!      subroutine neighboring_node(pe_id, FEM_elen)
 !       subroutine check_neib_node_xy(FEM_elen)
 !       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
@@ -53,11 +53,11 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine neighboring_node(pe_id, kpe, FEM_elen)
+      subroutine neighboring_node(pe_id, FEM_elen)
 !
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
-      integer(kind = kint) :: kpe, pe_id
+      integer(kind = kint), intent(in) :: pe_id
       integer :: ied_rank
 !
 !
@@ -66,19 +66,16 @@
         write(*,*) 'allocate_filters_nod'
        call allocate_filters_nod(FEM_elen%filter_conf%nf_type)
 !
-       i_st2 =  max(i_st-ndepth,1)
-       i_end2 = min(i_end+ndepth,nx)
-       j_st2 =  max(j_st-ndepth,1)
-       j_end2 = min(j_end+ndepth,ny)
-       k_st2 =  max(k_st-ndepth,1)
-       k_end2 = min(k_end+ndepth,nz)
+       i_st2 =  max(nb_rng1%i_st -  ndepth,1)
+       i_end2 = min(nb_rng1%i_end + ndepth,nx)
+       j_st2 =  max(nb_rng1%j_st -  ndepth,1)
+       j_end2 = min(nb_rng1%j_end + ndepth,ny)
+       k_st2 =  max(nb_rng1%k_st -  ndepth,1)
+       k_end2 = min(nb_rng1%k_end + ndepth,nz)
 !
-       write(*,*) 'i_st, i_end', i_st2, i_end2, nx
-       write(*,*) 'j_st, j_end', j_st2, j_end2, ny
-       write(*,*) 'k_st, k_end', k_st2, k_end2, nz
-!
-       write(*,*) 'set_range_4_nodeloop'
-       call s_set_range_4_nodeloop(kpe)
+       write(*,*) 'i_st2, i_end2', i_st2, i_end2, nx
+       write(*,*) 'j_st2, j_end2', j_st2, j_end2, ny
+       write(*,*) 'k_st2, k_end2', k_st2, k_end2, nz
 !
        FEM_elen%nnod_filter_mom = nodtot
        FEM_elen%nele_filter_mom = elmtot

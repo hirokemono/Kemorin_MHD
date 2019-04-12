@@ -38,7 +38,7 @@
 
             if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 !
-            call set_sleeve_size(inp, jnp, knp)
+            call set_sleeve_size(inp, jnp, knp, nb_rng1)
             call set_internal_node(inod)
           enddo
         enddo
@@ -65,7 +65,7 @@
 
             if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 !
-            call set_sleeve_size(inp,jnp,knp)
+            call set_sleeve_size(inp, jnp, knp, nb_rng1)
 
             call set_internal_node(inod)
 !

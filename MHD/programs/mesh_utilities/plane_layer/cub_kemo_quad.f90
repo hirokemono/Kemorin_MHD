@@ -104,12 +104,11 @@
       use m_grp_data_cub_kemo
       use m_cube_files_data
       use m_local_node_id_cube
-      use m_neib_range_edge_cube
       use m_neighb_range_cube
       use m_offset_size_cube
       use m_sleeve_cube
       use m_neib_nod_cube
-      use m_neib_edge_cube
+      use neib_edge_cube
       use m_filtering_nod_4_cubmesh
       use m_filtering_ele_4_cubmesh
       use m_ctl_data_4_cub_kemo
@@ -212,7 +211,7 @@
 
             write(*,*) 'set_size_of_domain', ipe, jpe, kpe
             call set_size_of_domain(elm_type, kpe)
-            call s_set_range_4_neighbour(ipe, jpe, kpe)
+            call set_range_4_neighbour(ipe, jpe, kpe, nb_rng1)
 
 !                                       .. set neighbor pe
             neibpetot = 0
@@ -237,6 +236,8 @@
 !
 ! ..... write 2.mesh information (nodes and elements in partition)
 !
+            call set_range_4_nodeloop(kpe, nb_rng1)
+            call set_edge_para_4_each_pe(kpe, ndz, nb_rng1)
             call set_node_quad(ipe, jpe, kpe)
 !
 ! ..... write 2.2 element (connection)
@@ -296,9 +297,8 @@
             call allocate_work_4_filter_edge
 !
             write(*,*) 'filtering information', intnodtot
-            call neighboring_node(pe_id, kpe, FEM_elen_c)
-!
-            call neighboring_edge(id_rank, kpe)
+            call neighboring_node(pe_id, FEM_elen_c)
+            call neighboring_edge(id_rank, nb_rng1)
 !
             call deallocate_work_4_filter_ele
             call deallocate_work_4_filter_edge

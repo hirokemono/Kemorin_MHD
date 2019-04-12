@@ -31,7 +31,7 @@
 !
       subroutine set_node(ipe, jpe, kpe)
 !
-      integer (kind = kint) :: ipe, jpe, kpe
+      integer (kind = kint), intent(in) :: ipe, jpe, kpe
       integer (kind = kint) :: inod
 !
 ! ..... write 2.mesh information (nodes and elements in partition)
@@ -51,12 +51,10 @@
             call set_offset_of_domain(ipe, jpe, kpe)
 !
 ! ***** set and write coordinate for internal nodes
-!
-            call s_set_range_4_nodeloop(kpe)
 
             inod = 0
 !
-            call set_internal_size
+            call set_internal_size(nb_rng1)
             call set_internal_node(inod)
 !
 ! ***** set and write coordinate for sleeve area nodes

@@ -39,7 +39,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 
-               call set_boundary_size(inp, jnp, knp)
+               call set_boundary_size(inp, jnp, knp, nb_rng1)
                is = nxi+1
                ie = nxi+ndepth
 
@@ -56,7 +56,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 
-               call set_boundary_size(inp, jnp, knp)
+               call set_boundary_size(inp, jnp, knp, nb_rng1)
                is = ndepth+1
                ie = 2*ndepth
 
@@ -75,7 +75,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
-               call set_boundary_size(inp, jnp, knp)
+               call set_boundary_size(inp, jnp, knp, nb_rng1)
                js = nyi+1
                je = nyi+ndepth
 
@@ -93,7 +93,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
-               call set_boundary_size(inp, jnp, knp)
+               call set_boundary_size(inp, jnp, knp, nb_rng1)
                js = ndepth+1
                je = 2*ndepth
 
@@ -112,7 +112,7 @@
              jnp = 1
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_boundary_size(inp, jnp, knp)
+               call set_boundary_size(inp, jnp, knp, nb_rng1)
                is = nxi+1
                ie = nxi+ndepth
                js = nyi+1
@@ -131,7 +131,7 @@
              jnp = 1
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_boundary_size(inp, jnp, knp)
+               call set_boundary_size(inp, jnp, knp, nb_rng1)
                is = ndepth+1
                ie = 2*ndepth
                js = nyi+1
@@ -148,7 +148,7 @@
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_boundary_size(inp, jnp, knp)
+               call set_boundary_size(inp, jnp, knp, nb_rng1)
                is = ndepth+1
                ie = 2*ndepth
                js = ndepth+1
@@ -167,7 +167,7 @@
              inp = 1
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_boundary_size(inp, jnp, knp)
+               call set_boundary_size(inp, jnp, knp, nb_rng1)
                is = nxi+1
                ie = nxi+ndepth
                js = ndepth+1
@@ -200,7 +200,7 @@
              do knp = nb_rng1%knp_st, nb_rng1%knp_end
               do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 !
-               call set_boundary_size(inp, jnp, knp)
+               call set_boundary_size(inp, jnp, knp, nb_rng1)
                is = nxi+1
                ie = nxi+ndepth
 
@@ -228,7 +228,7 @@
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
                 do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
 
-                 call set_boundary_size(inp, jnp, knp)
+                 call set_boundary_size(inp, jnp, knp, nb_rng1)
                  is = ndepth+1
 
                   neibpetot = neibpetot  + 1
@@ -261,7 +261,7 @@
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
                 do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
-                 call set_boundary_size(inp, jnp, knp)
+                 call set_boundary_size(inp, jnp, knp, nb_rng1)
                  js = nyi+1
                  je = nyi+ndepth
 
@@ -290,7 +290,7 @@
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
                 do inp = nb_rng1%inp_st, nb_rng1%inp_end
 
-                 call set_boundary_size(inp, jnp, knp)
+                 call set_boundary_size(inp, jnp, knp, nb_rng1)
                   js = ndepth+1
 
                   neibpetot = neibpetot  + 1
@@ -323,7 +323,7 @@
              jnp = 1
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-               call set_boundary_size(inp, jnp, knp)
+               call set_boundary_size(inp, jnp, knp, nb_rng1)
                is = nxi+1
                ie = nxi+ndepth
                js = nyi+1
@@ -353,7 +353,7 @@
              jnp = 1
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-                 call set_boundary_size(inp, jnp, knp)
+                 call set_boundary_size(inp, jnp, knp, nb_rng1)
                  js = nyi+1
                  je = nyi+ndepth
                  is = ndepth+1
@@ -384,7 +384,7 @@
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-                 call set_boundary_size(inp, jnp, knp)
+                 call set_boundary_size(inp, jnp, knp, nb_rng1)
                  is = ndepth+1
                  js = ndepth+1
 
@@ -420,7 +420,7 @@
              inp = 1
               do knp = nb_rng1%knp_st, nb_rng1%knp_end
 
-                 call set_boundary_size(inp, jnp, knp)
+                 call set_boundary_size(inp, jnp, knp, nb_rng1)
                  is = nxi+1
                  ie = nxi+ndepth
                  js = ndepth+1

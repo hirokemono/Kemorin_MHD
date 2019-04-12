@@ -1,38 +1,37 @@
 !
-!      module m_neib_edge_cube
+!      module neib_edge_cube
 !
 !     written by H. Matsui
 !
-!  ----------------------------------------------------------------------
-!
-!      binary data data format
-!        Number of node
-!        Number of depth, max. number of nodes for filtering
-!        Stack for filtering (1 to num. of node)
-!        Local node ID for filtering
-!        distance in xi-direction
-!        distance in eta-direction
-!        distance in zta-direction
-!
-!  ----------------------------------------------------------------------
-!
-      module m_neib_edge_cube
+!!  ---------------------------------------------------------------------
+!!
+!!      binary data data format
+!!        Number of node
+!!        Number of depth, max. number of nodes for filtering
+!!        Stack for filtering (1 to num. of node)
+!!        Local node ID for filtering
+!!        distance in xi-direction
+!!        distance in eta-direction
+!!        distance in zta-direction
+!!
+!!  ---------------------------------------------------------------------
+!!
+!!      subroutine neighboring_edge(id_rank, nb_rng)
+!!        type(neib_range_cube), intent(in) :: nb_rng
+!!
+      module neib_edge_cube
 !
       use m_precision
-!
       use m_constants
+!
       use m_size_4_plane
       use m_size_of_cube
       use m_local_node_id_cube
-      use m_neib_range_edge_cube
-      use m_neighb_range_cube
       use m_cube_files_data
       use m_filtering_edge_4_cubmesh
       use m_neib_edge_line_cube
 !
       implicit none
-!
-      integer(kind = kint), parameter :: ione_n = -1
 !
 !  ----------------------------------------------------------------------
 !
@@ -40,65 +39,66 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine neighboring_edge(id_rank, kpe)
+       subroutine neighboring_edge(id_rank, nb_rng)
+!
+      use t_neib_range_cube
 !
       integer, intent(in) :: id_rank
-        integer(kind = kint), intent(in) :: kpe
+      type(neib_range_cube), intent(in) :: nb_rng
 !
-!
-      call s_set_range_4_nodeloop(kpe)
 !
 !       for edge on y=const and z=const
 !       xi direction
 !
-      call count_neib_edge_x(ione, ione, iedge_st, iedge_end,           &
-     &       j_st, j_end, k_st, k_end)
+      call count_neib_edge_x                                            &
+     &   (ione, ione, nb_rng%iedge_st, nb_rng%iedge_end,                &
+     &    nb_rng%j_st, nb_rng%j_end, nb_rng%k_st, nb_rng%k_end)
 !
 !       eta direction
 !
-      call count_neib_edge_y(ione, izero, iedge_st, iedge_end,          &
-     &    j_st, j_end,  k_st, k_end)
+      call count_neib_edge_y                                            &
+     &   (ione, izero, nb_rng%iedge_st, nb_rng%iedge_end,               &
+     &    nb_rng%j_st, nb_rng%j_end, nb_rng%k_st, nb_rng%k_end)
 !
 !       zeta direction
 !
-      call count_neib_edge_z(ione, iedge_st, iedge_end,                 &
-     &     j_st, j_end, k_st, k_end)
+      call count_neib_edge_z(ione, nb_rng%iedge_st, nb_rng%iedge_end,   &
+     &    nb_rng%j_st, nb_rng%j_end, nb_rng%k_st, nb_rng%k_end)
 !
 !       for edge on z=const and x=const
 !
-      call count_neib_edge_x(itwo, izero, i_st, i_end,                  &
-     &       jedge_st, jedge_end, k_st, k_end)
+      call count_neib_edge_x(itwo, izero, nb_rng%i_st, nb_rng%i_end,    &
+     &    nb_rng%jedge_st, nb_rng%jedge_end, nb_rng%k_st, nb_rng%k_end)
 !
-      call count_neib_edge_y(itwo, ione, i_st, i_end,                   &
-     &    jedge_st, jedge_end, k_st, k_end)
+      call count_neib_edge_y(itwo, ione, nb_rng%i_st, nb_rng%i_end,     &
+     &    nb_rng%jedge_st, nb_rng%jedge_end, nb_rng%k_st, nb_rng%k_end)
 !
-      call count_neib_edge_z(itwo, i_st, i_end,                         &
-     &     jedge_st, jedge_end, k_st, k_end)
+      call count_neib_edge_z(itwo, nb_rng%i_st, nb_rng%i_end,           &
+     &    nb_rng%jedge_st, nb_rng%jedge_end, nb_rng%k_st, nb_rng%k_end)
 !
 !       for edge on x=const and y=const
 !
-      call count_neib_edge_x(ithree, izero, i_st, i_end,                &
-     &       j_st, j_end, kedge_st, kedge_end)
+      call count_neib_edge_x(ithree, izero, nb_rng%i_st, nb_rng%i_end,  &
+     &    nb_rng%j_st, nb_rng%j_end, nb_rng%kedge_st, nb_rng%kedge_end)
 !
-      call count_neib_edge_y(ithree, izero, i_st, i_end,                &
-     &    j_st, j_end, kedge_st, kedge_end)
+      call count_neib_edge_y(ithree, izero, nb_rng%i_st, nb_rng%i_end,  &
+     &    nb_rng%j_st, nb_rng%j_end, nb_rng%kedge_st, nb_rng%kedge_end)
 !
-      call count_neib_edge_z(ithree, i_st, i_end, j_st, j_end,          &
-     &     kedge_st, kedge_end)
+      call count_neib_edge_z(ithree, nb_rng%i_st, nb_rng%i_end,         &
+     &    nb_rng%j_st, nb_rng%j_end, nb_rng%kedge_st, nb_rng%kedge_end)
 !
       call neib_edge_line(id_rank)
 !
        end subroutine neighboring_edge
-!
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
        subroutine count_neib_edge_x(nd,nid,ist,ied,jst,jed, kst,ked)
 !
-       integer(kind = kint) :: nd, nid
-       integer(kind = kint) :: ist,jst,kst
-       integer(kind = kint) :: ied,jed,ked
+       integer(kind = kint), intent(in) :: nd, nid
+       integer(kind = kint), intent(in) :: ist,jst,kst
+       integer(kind = kint), intent(in) :: ied,jed,ked
 !
        integer(kind = kint), dimension(0:1) :: ndepth_x
        integer(kind = kint) :: i, j, k
@@ -140,9 +140,9 @@
 !
        subroutine count_neib_edge_y(nd,nid,ist,ied,jst,jed,kst,ked)
 !
-       integer(kind = kint) :: nd, nid
-       integer(kind = kint) :: ist,jst,kst
-       integer(kind = kint) :: ied,jed,ked
+       integer(kind = kint), intent(in) :: nd, nid
+       integer(kind = kint), intent(in) :: ist,jst,kst
+       integer(kind = kint), intent(in) :: ied,jed,ked
 !
        integer(kind = kint), dimension(0:1) :: ndepth_y
        integer(kind = kint) :: i, j, k
@@ -184,9 +184,9 @@
 !
        subroutine count_neib_edge_z(nd,ist,ied,jst,jed,kst,ked)
 !
-       integer(kind = kint) :: nd
-       integer(kind = kint) :: ist,jst,kst
-       integer(kind = kint) :: ied,jed,ked
+       integer(kind = kint), intent(in) :: nd
+       integer(kind = kint), intent(in) :: ist,jst,kst
+       integer(kind = kint), intent(in) :: ied,jed,ked
 !
        integer(kind = kint), dimension(-1:1) :: ndepth_z
        integer(kind = kint) :: i, j, k
@@ -230,4 +230,4 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-       end module m_neib_edge_cube
+       end module neib_edge_cube

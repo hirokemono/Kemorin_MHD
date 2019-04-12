@@ -32,10 +32,9 @@
 !
       subroutine set_node_quad(ipe, jpe, kpe)
 !
-      use m_neib_range_edge_cube
       use set_sleeve_edge_peri_cube
 !
-      integer (kind = kint) :: ipe, jpe, kpe
+      integer (kind = kint), intent(in) :: ipe, jpe, kpe
 !
       integer (kind = kint) :: inod, nd
       integer (kind = kint) :: inp,  jnp,  knp
@@ -56,38 +55,29 @@
             call init_node_para_4_each_pe(ipe, jpe, kpe)
             call set_offset_of_domain(ipe, jpe, kpe)
 !
-! ***** set and write coordinate for internal nodes
-!
-            call s_set_range_4_nodeloop(kpe)
-!
-! *****  initialization to construct edge information
-!
-            write(*,*) 'init_edge_para_4_each_pe', ipe, jpe, kpe
-            call init_edge_para_4_each_pe( kpe, ndz )
-!
 ! *****   set position of internal node
 !
             inod = 0
 !
-            call set_internal_size
+            call set_internal_size(nb_rng1)
             call set_internal_node(inod)
 !
 !     set position of internal edge
 !
             nd = 1
             inp = 0
-            call set_internal_edge_size(nd)
+            call set_internal_edge_size(nd, nb_rng1)
             write(*,*) 'set_internal_edge', ipe, jpe, kpe
             call set_internal_edge(kpe, inp, jnp, knp, inod, nd)
 !
             nd = 2
             jnp = 0
-            call set_internal_edge_size(nd)
+            call set_internal_edge_size(nd, nb_rng1)
             call set_internal_edge(kpe, inp, jnp, knp, inod, nd)
 !
             nd = 3
             knp = -1
-            call set_internal_edge_size(nd)
+            call set_internal_edge_size(nd, nb_rng1)
             call set_internal_edge(kpe, inp, jnp, knp, inod, nd)
 !
 ! ***** set and write coordinate for sleeve area nodes

@@ -220,7 +220,7 @@
 !                                       .. pe nod per 1 line
 
             call set_size_of_domain(elm_type, kpe)
-            call s_set_range_4_neighbour(ipe, jpe, kpe)
+            call set_range_4_neighbour(ipe, jpe, kpe, nb_rng1)
 !
 !                                       .. set neighbor pe
             neibpetot = 0
@@ -242,7 +242,7 @@
 !
 ! ..... write 2.mesh information (nodes and elements in partition)
 !
-
+            call set_range_4_nodeloop(kpe, nb_rng1)
             call set_node(ipe, jpe, kpe)
 !
 ! ..... write 2.2 element (connection)
@@ -253,11 +253,11 @@
 !
 ! ***** set and write import nodes
 !                                     .... count nodes 
-            call set_import_data(ipe, jpe, kpe )
+            call set_import_data(ipe, jpe)
 !
 ! ***** set and write export nodes
 !                                     .... count nodes 
-            call set_export_data(ipe, jpe, kpe)
+            call set_export_data(ipe, jpe)
 !
             call sort_communication_table
 !
@@ -294,7 +294,7 @@
               call allocate_work_4_filter_ele
 !
               write(*,*) 'neighboring_node'
-              call neighboring_node(pe_id, kpe, FEM_elen_c)
+              call neighboring_node(pe_id, FEM_elen_c)
 !
               write(*,*) 'deallocate_work_4_filter_ele'
               call deallocate_work_4_filter_ele

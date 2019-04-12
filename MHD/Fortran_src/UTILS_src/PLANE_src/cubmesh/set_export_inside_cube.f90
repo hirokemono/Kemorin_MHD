@@ -37,7 +37,7 @@
 
                if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
-               call set_boundary_size(inp, jnp, knp)
+               call set_boundary_size(inp, jnp, knp, nb_rng1)
 
                neibpetot = neibpetot  + 1
 
@@ -70,7 +70,7 @@
 
                if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
-               call set_boundary_size(inp, jnp, knp)
+               call set_boundary_size(inp, jnp, knp, nb_rng1)
 
                neibpetot = neibpetot  + 1
 

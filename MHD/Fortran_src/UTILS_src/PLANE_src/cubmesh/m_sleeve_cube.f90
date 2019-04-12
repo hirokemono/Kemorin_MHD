@@ -1,14 +1,16 @@
 !
 !     module m_sleeve_cube
 !
+!      Written by Kemorin
+!
       module m_sleeve_cube
 !
       use m_precision
+       use t_neib_range_cube
 !
       implicit none
 !
 !
-!      type(neib_range_cube), save :: nb_rng1
       integer(kind = kint) :: is, js, ks
       integer(kind = kint) :: ie, je, ke
 !
@@ -18,19 +20,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-!
-!       subroutine set_sleeve_size
-!
-       subroutine set_sleeve_size(inp, jnp, knp)
-!
-!      Written by Kemorin
+       subroutine set_sleeve_size(inp, jnp, knp, nb_rng)
 !
       use m_size_of_cube
-      use m_neighb_range_cube
 !
-      implicit none
-!
-      integer (kind = kint) :: inp,jnp,knp
+      integer (kind = kint), intent(in) :: inp, jnp, knp
+      type(neib_range_cube), intent(inout) :: nb_rng
 !
 !                                       .. start side
 
@@ -43,112 +38,98 @@
 
 !                                       .. finish side
 
-       if ( inp ==  1 )  is=i_end+1
-       if ( inp ==  1 )  ie=i_end+ndepth
-       if ( jnp ==  1 )  js=j_end+1
-       if ( jnp ==  1 )  je=j_end+ndepth
-       if ( knp ==  1 )  ks=k_end+1
-       if ( knp ==  1 )  ke=k_end+ndepth
+       if ( inp ==  1 )  is = nb_rng%i_end + 1
+       if ( inp ==  1 )  ie = nb_rng%i_end+ndepth
+       if ( jnp ==  1 )  js = nb_rng%j_end + 1
+       if ( jnp ==  1 )  je = nb_rng%j_end+ndepth
+       if ( knp ==  1 )  ks = nb_rng%k_end + 1
+       if ( knp ==  1 )  ke = nb_rng%k_end + ndepth
 
 !                                       .. line pattern
 
-       if ( inp ==  0 )  is=i_st
-       if ( inp ==  0 )  ie=i_end
-       if ( jnp ==  0 )  js=j_st
-       if ( jnp ==  0 )  je=j_end
-       if ( knp ==  0 )  ks=k_st
-       if ( knp ==  0 )  ke=k_end
+       if ( inp ==  0 )  is = nb_rng%i_st
+       if ( inp ==  0 )  ie = nb_rng%i_end
+       if ( jnp ==  0 )  js = nb_rng%j_st
+       if ( jnp ==  0 )  je = nb_rng%j_end
+       if ( knp ==  0 )  ks = nb_rng%k_st
+       if ( knp ==  0 )  ke = nb_rng%k_end
 !
        return
        end subroutine set_sleeve_size
 !
 ! ----------------------------------------------------------------------
 !
-!       subroutine set_boundary_size
-!
-       subroutine set_boundary_size(inp, jnp, knp)
-!
-!      Written by Kemorin
+       subroutine set_boundary_size(inp, jnp, knp, nb_rng)
 !
       use m_size_of_cube
-      use m_neighb_range_cube
 !
-      implicit none
-!
-      integer (kind = kint) :: inp, jnp, knp
+      integer (kind = kint), intent(in) :: inp, jnp, knp
+      type(neib_range_cube), intent(inout) :: nb_rng
 !
 !                                       .. start side
 
-       if ( inp == -1 )  is=i_st
-       if ( inp == -1 )  ie=i_st+ndepth-1
-       if ( jnp == -1 )  js=j_st
-       if ( jnp == -1 )  je=j_st+ndepth-1
-       if ( knp == -1 )  ks=k_st
-       if ( knp == -1 )  ke=k_st+ndepth-1
+       if ( inp == -1 )  is = nb_rng%i_st
+       if ( inp == -1 )  ie = nb_rng%i_st + ndepth - 1
+       if ( jnp == -1 )  js = nb_rng%j_st
+       if ( jnp == -1 )  je = nb_rng%j_st + ndepth - 1
+       if ( knp == -1 )  ks = nb_rng%k_st
+       if ( knp == -1 )  ke = nb_rng%k_st + ndepth - 1
 
 !                                       .. finish side
 
-       if ( inp ==  1 )  is=i_end-ndepth+1
-       if ( inp ==  1 )  ie=i_end
-       if ( jnp ==  1 )  js=j_end-ndepth+1
-       if ( jnp ==  1 )  je=j_end
-       if ( knp ==  1 )  ks=k_end-ndepth+1
-       if ( knp ==  1 )  ke=k_end
+       if ( inp ==  1 )  is = nb_rng%i_end - ndepth + 1
+       if ( inp ==  1 )  ie = nb_rng%i_end
+       if ( jnp ==  1 )  js = nb_rng%j_end - ndepth + 1
+       if ( jnp ==  1 )  je = nb_rng%j_end
+       if ( knp ==  1 )  ks = nb_rng%k_end - ndepth + 1
+       if ( knp ==  1 )  ke = nb_rng%k_end
 
 !                                       .. line pattern
 
-       if ( inp ==  0 )  is=i_st
-       if ( inp ==  0 )  ie=i_end
-       if ( jnp ==  0 )  js=j_st
-       if ( jnp ==  0 )  je=j_end
-       if ( knp ==  0 )  ks=k_st
-       if ( knp ==  0 )  ke=k_end
+       if ( inp ==  0 )  is = nb_rng%i_st
+       if ( inp ==  0 )  ie = nb_rng%i_end
+       if ( jnp ==  0 )  js = nb_rng%j_st
+       if ( jnp ==  0 )  je = nb_rng%j_end
+       if ( knp ==  0 )  ks = nb_rng%k_st
+       if ( knp ==  0 )  ke = nb_rng%k_end
 !
        return
        end subroutine set_boundary_size
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine set_internal_size
+       subroutine set_internal_size(nb_rng)
 !
-       use m_neighb_range_cube
+      type(neib_range_cube), intent(inout) :: nb_rng
 !
-            is = i_st
-            js = j_st
-            ks = k_st
-            ie = i_end
-            je = j_end
-            ke = k_end
+            is = nb_rng%i_st
+            js = nb_rng%j_st
+            ks = nb_rng%k_st
+            ie = nb_rng%i_end
+            je = nb_rng%j_end
+            ke = nb_rng%k_end
 !
        end subroutine set_internal_size
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine set_internal_edge_size(nd)
-!
-       use m_neighb_range_cube
-       use m_neib_range_edge_cube
+       subroutine set_internal_edge_size(nd, nb_rng)
 !
        implicit none
-       integer (kind = kint) :: nd
+       integer (kind = kint), intent(in) :: nd
+      type(neib_range_cube), intent(inout) :: nb_rng
 !
-
-       is = i_st
-       js = j_st
-       ks = k_st
-       ie = i_end
-       je = j_end
-       ke = k_end
+       call set_internal_size(nb_rng)
 !
        if (nd .eq. 1) then
-        is = iedge_st
-        ie = iedge_end
+        is = nb_rng%iedge_st
+        ie = nb_rng%iedge_end
        else if (nd .eq. 2) then
-        js = jedge_st
-        je = jedge_end
+        js = nb_rng%jedge_st
+        je = nb_rng%jedge_end
        else if (nd .eq. 3) then
-        ks = kedge_st
-        ke = kedge_end
+        ks = nb_rng%kedge_st
+        ke = nb_rng%kedge_end
        end if
 !
        end subroutine set_internal_edge_size

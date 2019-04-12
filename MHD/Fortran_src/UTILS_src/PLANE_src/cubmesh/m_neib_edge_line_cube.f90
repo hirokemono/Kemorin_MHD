@@ -22,7 +22,6 @@
 !
       use m_size_of_cube
       use m_local_node_id_cube
-      use m_neib_range_edge_cube
       use m_neighb_range_cube
       use m_cube_files_data
       use m_filtering_edge_4_cubmesh
@@ -84,12 +83,12 @@
 !
        call allocate_neighbour_edge_line
 !
-       call set_neib_edge_line(ione, iedge_st, iedge_end, j_st, j_end,  &
-     &       k_st, k_end)
-       call set_neib_edge_line(itwo, i_st, i_end, jedge_st, jedge_end,  &
-     &       k_st, k_end)
-       call set_neib_edge_line(ithree, i_st, i_end, j_st, j_end,        &
-     &       kedge_st, kedge_end)
+       call set_neib_edge_line(ione, nb_rng1%iedge_st, nb_rng1%iedge_end, &
+     &     nb_rng1%j_st, nb_rng1%j_end, nb_rng1%k_st, nb_rng1%k_end)
+       call set_neib_edge_line(itwo, nb_rng1%i_st, nb_rng1%i_end,       &
+     &     nb_rng1%jedge_st, nb_rng1%jedge_end, nb_rng1%k_st, nb_rng1%k_end)
+       call set_neib_edge_line(ithree, nb_rng1%i_st, nb_rng1%i_end,     &
+     &     nb_rng1%j_st, nb_rng1%j_end, nb_rng1%kedge_st, nb_rng1%kedge_end)
 !
        call write_neib_edge_line(id_rank)
 !

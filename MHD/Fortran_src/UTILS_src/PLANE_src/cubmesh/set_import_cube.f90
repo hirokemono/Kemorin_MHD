@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine set_import_data(ipe, jpe, kpe )
+!      subroutine set_import_data(ipe, jpe)
 !      subroutine set_import_data_quad(ipe, jpe, kpe)
 !
       module set_import_cube
@@ -26,11 +26,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_import_data(ipe, jpe, kpe )
+      subroutine set_import_data(ipe, jpe)
 !
-      integer (kind = kint) :: ipe, jpe, kpe
+      integer(kind = kint), intent(in) :: ipe, jpe
 !
-      integer (kind = kint) :: inod
+      integer(kind = kint) :: inod
 !
 !
             neibpetot = 0
@@ -38,7 +38,7 @@
 
             call count_import_inside(inod)
 
-            call count_import_peri_linear(ipe, jpe, kpe, inod)
+            call count_import_peri_linear(ipe, jpe, inod)
 !
             num_import = stack_import(neibpetot)
 !
@@ -56,7 +56,8 @@
 !
       subroutine set_import_data_quad(ipe, jpe, kpe)
 !
-      integer (kind = kint) :: ipe, jpe, kpe
+      integer (kind = kint), intent(in) :: ipe, jpe, kpe
+!
       integer (kind = kint) :: inod
 !
 !

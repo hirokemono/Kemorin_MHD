@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine set_export_data(ipe, jpe, kpe)
+!      subroutine set_export_data(ipe, jpe)
 !      subroutine set_export_data_quad(ipe, jpe, kpe)
 !
       module set_export_cube
@@ -26,9 +26,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine set_export_data(ipe, jpe, kpe)
+       subroutine set_export_data(ipe, jpe)
 !
-      integer (kind = kint) :: ipe, jpe, kpe
+      integer (kind = kint), intent(in) :: ipe, jpe
+!
       integer (kind = kint) :: inod
 !
 !
@@ -55,7 +56,8 @@
 !
       subroutine set_export_data_quad(ipe, jpe, kpe)
 !
-      integer (kind = kint) :: ipe, jpe, kpe
+      integer (kind = kint), intent(in) :: ipe, jpe, kpe
+!
       integer (kind = kint) :: inod
 !
 ! ***** set and write export nodes
