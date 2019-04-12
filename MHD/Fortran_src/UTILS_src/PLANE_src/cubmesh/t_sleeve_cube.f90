@@ -3,8 +3,10 @@
 !
 !!     written by H. Matsui
 !
-!!      subroutine set_sleeve_size(nb_rng, inp, jnp, knp, sl_rng)
-!!      subroutine set_boundary_size(nb_rng, inp, jnp, knp, sl_rng)
+!!      subroutine set_sleeve_size                                      &
+!!     &         (nb_rng, ndepth, inp, jnp, knp, sl_rng)
+!!      subroutine s_set_boundary_size                                  &
+!!     &         (nb_rng, ndepth, inp, jnp, knp, sl_rng)
 !!      subroutine set_internal_size(nb_rng, sl_rng)
 !!      subroutine set_internal_edge_size(nb_rng, nd, sl_rng)
 !!        type(neib_range_cube), intent(in) :: nb_rng
@@ -35,11 +37,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_sleeve_size(nb_rng, inp, jnp, knp, sl_rng)
-!
-      use m_size_of_cube
+      subroutine s_set_sleeve_size                                      &
+     &         (nb_rng, ndepth, inp, jnp, knp, sl_rng)
 !
       integer (kind = kint), intent(in) :: inp, jnp, knp
+      integer(kind = kint), intent(in) :: ndepth
       type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(inout) :: sl_rng
 !
@@ -71,15 +73,15 @@
        if ( knp ==  0 )  sl_rng%ke = nb_rng%k_end
 !
        return
-       end subroutine set_sleeve_size
+       end subroutine s_set_sleeve_size
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_boundary_size(nb_rng, inp, jnp, knp, sl_rng)
-!
-      use m_size_of_cube
+      subroutine s_set_boundary_size                                    &
+     &         (nb_rng, ndepth, inp, jnp, knp, sl_rng)
 !
       type(neib_range_cube), intent(in) :: nb_rng
+      integer(kind = kint), intent(in) :: ndepth
       integer (kind = kint), intent(in) :: inp, jnp, knp
       type(slleve_range), intent(inout) :: sl_rng
 !
@@ -111,11 +113,11 @@
        if ( knp ==  0 )  sl_rng%ke = nb_rng%k_end
 !
        return
-       end subroutine set_boundary_size
+       end subroutine s_set_boundary_size
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_internal_size(nb_rng, sl_rng)
+      subroutine s_set_internal_size(nb_rng, sl_rng)
 !
       type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(inout) :: sl_rng
@@ -127,23 +129,18 @@
       sl_rng%je = nb_rng%j_end
       sl_rng%ke = nb_rng%k_end
 !
-      end subroutine set_internal_size
+      end subroutine s_set_internal_size
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_internal_edge_size(nb_rng, nd, sl_rng)
+      subroutine s_set_internal_edge_size(nb_rng, nd, sl_rng)
 !
       integer(kind = kint), intent(in) :: nd
       type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(inout) :: sl_rng
 !
-
-      sl_rng%is = nb_rng%i_st
-      sl_rng%js = nb_rng%j_st
-      sl_rng%ks = nb_rng%k_st
-      sl_rng%ie = nb_rng%i_end
-      sl_rng%je = nb_rng%j_end
-      sl_rng%ke = nb_rng%k_end
+!
+      call s_set_internal_size(nb_rng, sl_rng)
 !
       if (nd .eq. 1) then
         sl_rng%is = nb_rng%iedge_st
@@ -156,7 +153,7 @@
         sl_rng%ke = nb_rng%kedge_end
       end if
 !
-      end subroutine set_internal_edge_size
+      end subroutine s_set_internal_edge_size
 !
 ! ----------------------------------------------------------------------
 !

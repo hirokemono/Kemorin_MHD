@@ -48,7 +48,7 @@
                 is = 1
                 ie = ndepth
 
-                neibpetot = neibpetot  + 1
+                icou = icou  + 1
                 call set_im_node(inod)
 
                 enddo
@@ -67,7 +67,7 @@
                 is = nxi+ndepth+1
                 ie = nxi+2*ndepth
 
-                neibpetot = neibpetot  + 1
+                icou = icou  + 1
                 call set_im_node(inod)
 
                 enddo
@@ -86,7 +86,7 @@
                 js = 1
                 je = ndepth
 
-                neibpetot = neibpetot  + 1
+                icou = icou  + 1
                 call set_im_node(inod)
 
                 enddo
@@ -105,7 +105,7 @@
                 js = nyi+ndepth+1
                 je = nyi+2*ndepth
 
-                neibpetot = neibpetot  + 1
+                icou = icou  + 1
                 call set_im_node(inod)
 
                 enddo
@@ -124,7 +124,7 @@
                  js = 1
                  je = ndepth
 
-                  neibpetot = neibpetot  + 1
+                  icou = icou  + 1
                 call set_im_node(inod)
 
               enddo
@@ -142,7 +142,7 @@
                  js = 1
                  je = ndepth
 
-                  neibpetot = neibpetot  + 1
+                  icou = icou  + 1
                 call set_im_node(inod)
 
               enddo
@@ -160,7 +160,7 @@
                  js = nyi+ndepth+1
                  je = nyi+2*ndepth
 
-                  neibpetot = neibpetot  + 1
+                  icou = icou  + 1
                 call set_im_node(inod)
 
               enddo
@@ -178,7 +178,7 @@
                  js = nyi+ndepth+1
                  je = nyi+2*ndepth
 
-                  neibpetot = neibpetot  + 1
+                  icou = icou  + 1
                 call set_im_node(inod)
 
               enddo
@@ -211,7 +211,7 @@
                  is = 1
                  ie = ndepth
 
-                 neibpetot = neibpetot  + 1
+                 icou = icou  + 1
                  call set_im_node(inod)
 
                  nd = 1
@@ -223,7 +223,7 @@
                  nd = 3
                  call set_im_edge(kpe, inp, jnp, knp, inod, nd)
                  write(*,*) 'import  1 from',                           &
-     &                     (neibpe(neibpetot)-1), inp, jnp, knp, inod
+     &                     (neibpe(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -238,7 +238,7 @@
                call set_sleeve_size(inp, jnp, knp, nb_rng)
                 is = nxi+ndepth+1
 
-                 neibpetot = neibpetot  + 1
+                 icou = icou  + 1
                  ie = nxi+2*ndepth
                  call set_im_node(inod)
 
@@ -254,7 +254,7 @@
                 ie = nxi+2*ndepth
                  call set_im_edge(kpe, inp, jnp, knp, inod, nd)
                  write(*,*) 'import 2 from',                            &
-     &                      (neibpe(neibpetot)-1), inp, jnp, knp, inod
+     &                      (neibpe(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -271,7 +271,7 @@
                 js = 1
                 je = ndepth
 
-                 neibpetot = neibpetot  + 1
+                 icou = icou  + 1
                  call set_im_node(inod)
 
                  nd = 1
@@ -283,7 +283,7 @@
                  nd = 3
                  call set_im_edge(kpe, inp, jnp, knp, inod, nd)
                  write(*,*) 'import 3 from',                            &
-     &                      (neibpe(neibpetot)-1), inp, jnp, knp, inod
+     &                      (neibpe(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -298,7 +298,7 @@
                  call set_sleeve_size(inp, jnp, knp, nb_rng)
                  js = nyi+ndepth+1
 
-                 neibpetot = neibpetot  + 1
+                 icou = icou  + 1
                  je = nyi+2*ndepth
                  call set_im_node(inod)
 
@@ -314,7 +314,7 @@
                  je = nyi+2*ndepth
                  call set_im_edge(kpe, inp, jnp, knp, inod, nd)
                  write(*,*) 'import 4 from',                            &
-     &                      (neibpe(neibpetot)-1), inp, jnp, knp, inod
+     &                      (neibpe(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -333,7 +333,7 @@
                  js = 1
                  je = ndepth
 
-                 neibpetot = neibpetot  + 1
+                 icou = icou  + 1
                  call set_im_node(inod)
 
                  nd = 1
@@ -345,7 +345,7 @@
                  nd = 3
                  call set_im_edge(kpe, inp, jnp, knp, inod, nd)
                  write(*,*) 'import 5 from',                            &
-     &                      (neibpe(neibpetot)-1), inp, jnp, knp, inod
+     &                      (neibpe(icou)-1), inp, jnp, knp, inod
 
               enddo
             endif
@@ -361,7 +361,7 @@
                  je = ndepth
                  is = nxi+ndepth+1
 
-                 neibpetot = neibpetot  + 1
+                 icou = icou  + 1
                  ie = nxi+2*ndepth
                  call set_im_node(inod)
 
@@ -377,7 +377,7 @@
                  ie = nxi+2*ndepth
                  call set_im_edge(kpe, inp, jnp, knp, inod, nd)
                  write(*,*) 'import 6 from',                            &
-     &                      (neibpe(neibpetot)-1), inp, jnp, knp, inod
+     &                      (neibpe(icou)-1), inp, jnp, knp, inod
 
               enddo
             endif
@@ -391,7 +391,7 @@
                  is = nxi+ndepth+1
                  js = nyi+ndepth+1
 
-                 neibpetot = neibpetot  + 1
+                 icou = icou  + 1
                  ie = nxi+2*ndepth
                  je = nyi+2*ndepth
                  call set_im_node(inod)
@@ -411,7 +411,7 @@
                  je = nyi+2*ndepth
                  call set_im_edge(kpe, inp, jnp, knp, inod, nd)
                  write(*,*) 'import 7 from',                            &
-     &                      (neibpe(neibpetot)-1), inp, jnp, knp, inod
+     &                      (neibpe(icou)-1), inp, jnp, knp, inod
 
               enddo
             endif
@@ -427,7 +427,7 @@
                  ie = ndepth
                  js = nyi+ndepth+1
 
-                 neibpetot = neibpetot  + 1
+                 icou = icou  + 1
                  je = nyi+2*ndepth
                  call set_im_node(inod)
 
@@ -443,7 +443,7 @@
                  je = nyi+2*ndepth
                  call set_im_edge(kpe, inp, jnp, knp, inod, nd)
                  write(*,*) 'import 8 from',                            &
-     &                      (neibpe(neibpetot)-1), inp, jnp, knp, inod
+     &                      (neibpe(icou)-1), inp, jnp, knp, inod
 
               enddo
             endif
