@@ -4,16 +4,17 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine set_import_inside(inod)
-!      subroutine set_import_inside_quad(kpe, inod)
+!!      subroutine set_import_inside(nb_rng, icou, inod)
+!!      subroutine set_import_inside_quad(nb_rng, kpe, icou, inod)
+!!        type(neib_range_cube), intent(in) :: nb_rng
 !
       module set_import_inside_cube
 !
       use m_precision
 !
+      use t_neib_range_cube
       use m_size_of_cube
       use m_comm_data_cube_kemo
-      use m_neighb_range_cube
       use m_sleeve_cube
       use set_comm_nod_4_cube
 !
@@ -25,19 +26,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_import_inside(inod)
+      subroutine set_import_inside(nb_rng, icou, inod)
 !
-      integer (kind = kint) :: inod
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer (kind = kint), intent(inout) :: icou, inod
+!
       integer (kind = kint) :: inp, jnp, knp
 !
 !
-            do knp = nb_rng1%knp_st, nb_rng1%knp_end
-             do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
-              do inp = nb_rng1%inp_st, nb_rng1%inp_end
+            do knp = nb_rng%knp_st, nb_rng%knp_end
+             do jnp = nb_rng%jnp_st, nb_rng%jnp_end
+              do inp = nb_rng%inp_st, nb_rng%inp_end
 
                if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                neibpetot = neibpetot  + 1
 
                call set_im_node(inod)
@@ -50,23 +53,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_import_inside_quad(kpe, inod)
+      subroutine set_import_inside_quad(nb_rng, kpe, icou, inod)
 !
       use set_comm_edge_4_cube
 !
-      integer (kind = kint) :: kpe
-      integer (kind = kint) :: inod
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer (kind = kint), intent(in) :: kpe
+      integer (kind = kint), intent(inout) :: icou, inod
 !
       integer (kind = kint) :: inp, jnp, knp
       integer (kind = kint) :: nd
 !
-            do knp = nb_rng1%knp_st, nb_rng1%knp_end
-             do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
-              do inp = nb_rng1%inp_st, nb_rng1%inp_end
+            do knp = nb_rng%knp_st, nb_rng%knp_end
+             do jnp = nb_rng%jnp_st, nb_rng%jnp_end
+              do inp = nb_rng%inp_st, nb_rng%inp_end
 
                if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                   neibpetot = neibpetot  + 1
 
                  call set_im_node(inod)

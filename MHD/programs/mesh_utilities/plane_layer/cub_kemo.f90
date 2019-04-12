@@ -253,11 +253,11 @@
 !
 ! ***** set and write import nodes
 !                                     .... count nodes 
-            call set_import_data(ipe, jpe)
+            call set_import_data(nb_rng1, ipe, jpe)
 !
 ! ***** set and write export nodes
 !                                     .... count nodes 
-            call set_export_data(ipe, jpe)
+            call set_export_data(nb_rng1, ipe, jpe)
 !
             call sort_communication_table
 !

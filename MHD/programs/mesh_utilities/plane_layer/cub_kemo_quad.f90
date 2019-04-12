@@ -251,10 +251,10 @@
 ! ***** set and write import nodes
 !
             write(*,*) 'set_import_data_quad', ipe, jpe, kpe
-            call set_import_data_quad(ipe, jpe, kpe)
+            call set_import_data_quad(nb_rng1, ipe, jpe, kpe)
 !
             write(*,*) 'set_export_data_quad', ipe, jpe, kpe
-            call set_export_data_quad(ipe, jpe, kpe)
+            call set_export_data_quad(nb_rng1, ipe, jpe, kpe)
 !
             write(*,*) 'write_org_communication_data', ipe, jpe, kpe
             call write_org_communication_data(pe_id)
