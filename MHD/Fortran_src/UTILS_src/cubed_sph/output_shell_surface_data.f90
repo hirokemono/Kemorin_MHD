@@ -3,22 +3,21 @@
 !
 !        programmed by H.Matsui on Apr., 2006
 !
-!!      subroutine output_surface_data(c_sphere)
-!!      subroutine output_surface_data_quad(c_sphere)
+!!      subroutine output_surface_data(nr_icb, nr_cmb, c_sphere)
+!!      subroutine output_surface_data_quad(nr_icb, nr_cmb, c_sphere)
 !!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !!
 !!      subroutine output_surface_data_full(max_coarse_level, c_sphere)
 !!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !!
-!!      subroutine output_circle_data(c_sphere)
-!!      subroutine output_circle_data_quad(c_sphere)
+!!      subroutine output_circle_data(nr_icb, nr_cmb, c_sphere)
+!!      subroutine output_circle_data_quad(nr_icb, nr_cmb, c_sphere)
 !!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
       module output_shell_surface_data
 !
       use m_precision
 !
-      use m_cubed_sph_grp_param
       use t_cubed_sph_surf_mesh
 !
       implicit  none
@@ -35,8 +34,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine output_surface_data(c_sphere)
+      subroutine output_surface_data(nr_icb, nr_cmb, c_sphere)
 !
+      integer(kind = kint), intent(in) :: nr_icb, nr_cmb
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
       integer(kind = kint) :: inod, iele
@@ -78,8 +78,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine output_surface_data_quad(c_sphere)
+      subroutine output_surface_data_quad(nr_icb, nr_cmb, c_sphere)
 !
+      integer(kind = kint), intent(in) :: nr_icb, nr_cmb
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
       integer(kind = kint) :: inod, iele
@@ -128,7 +129,7 @@
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
       integer(kind = kint), intent(in) :: max_coarse_level
-      integer(kind = kint) :: ic, ist, ied, inod, iele, iele0, i, num
+      integer(kind = kint) :: ic, ist, ied, inod, iele, iele0, num
 !
 !
        open (id_sf_coarsing,file='surf_connectivity_m.dat')
@@ -198,11 +199,12 @@
 !   --------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine output_circle_data(c_sphere)
+      subroutine output_circle_data(nr_icb, nr_cmb, c_sphere)
 !
+      integer(kind = kint), intent(in) :: nr_icb, nr_cmb
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
-      integer(kind = kint) :: i, inod, iele
+      integer(kind = kint) :: inod, iele
 !
 !
       open (id_sf_linear_mesh,file='edge_connectivity.dat')
@@ -241,8 +243,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine output_circle_data_quad(c_sphere)
+      subroutine output_circle_data_quad(nr_icb, nr_cmb, c_sphere)
 !
+      integer(kind = kint), intent(in) :: nr_icb, nr_cmb
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !
       integer(kind = kint) :: inod, iele

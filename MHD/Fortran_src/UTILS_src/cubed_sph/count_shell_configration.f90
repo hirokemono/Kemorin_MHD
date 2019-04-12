@@ -5,14 +5,17 @@
 !
 !
 !!      subroutine count_cubed_shell_size                               &
-!!     &         (csph_p, rprm_csph, c_sphere, csph_mesh)
+!!     &         (csph_p, rprm_csph, c_sphere, csph_mesh, csph_grp)
 !!      subroutine count_rectangle_shell_size                           &
-!!     &         (csph_p, rprm_csph, c_sphere, csph_mesh)
+!!     &         (csph_p, rprm_csph, c_sphere, csph_mesh, csph_grp)
 !!      subroutine count_rectangle_shell_size(r1, c_sphere, csph_mesh)
 !!        type(numref_cubed_sph), intent(inout) :: csph_p
 !!        type(cubed_sph_radius), intent(inout) :: rprm_csph
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !!        type(cubed_sph_mesh), intent(inout) :: csph_mesh
+!!        type(cubed_sph_group, intent(inout) :: csph_grp
+!!      subroutine count_radial_layer_size                              &
+!!     &         (nele_shell, rprm_csph, csph_grp)
 !!
 !!      subroutine count_center_cube_size(num_hemi,                     &
 !!     &          nnod_cube, nele_cube, nedge_cube, nsurf_cube,         &
@@ -28,6 +31,7 @@
       use t_cubed_sph_radius
       use t_cubed_sph_surf_mesh
       use t_cubed_sph_mesh
+      use t_cubed_sph_grp_param
 !
       implicit  none
 !
@@ -40,7 +44,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine count_cubed_shell_size                                 &
-     &         (csph_p, rprm_csph, c_sphere, csph_mesh)
+     &         (csph_p, rprm_csph, c_sphere, csph_mesh, csph_grp)
 !
       use t_numref_cubed_sph
 !
@@ -48,11 +52,13 @@
       type(cubed_sph_radius), intent(inout) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
+      type(cubed_sph_group, intent(inout) :: csph_grp
 !
 !    count number of node & element
 !      number of radius direction
 !
-      call count_radial_layer_size(c_sphere%nele_shell, rprm_csph)
+      call count_radial_layer_size                                      &
+     &   (c_sphere%nele_shell, rprm_csph, csph_grp)
 !
 !   numbers for center cube
 !       (except for surface of cube for number of node)
@@ -71,7 +77,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine count_rectangle_shell_size                             &
-     &         (csph_p, rprm_csph, c_sphere, csph_mesh)
+     &         (csph_p, rprm_csph, c_sphere, csph_mesh, csph_grp)
 !
       use t_numref_cubed_sph
 !
@@ -79,11 +85,13 @@
       type(cubed_sph_radius), intent(inout) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
+      type(cubed_sph_group, intent(inout) :: csph_grp
 !
 !    count number of node & element
 !      number of radius direction
 !
-      call count_radial_layer_size(c_sphere%nele_shell, rprm_csph)
+      call count_radial_layer_size                                      &
+     &   (c_sphere%nele_shell, rprm_csph, csph_grp)
 !
 !   numbers for center cube
 !       (except for surface of cube for number of node)
@@ -102,22 +110,22 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_radial_layer_size(nele_shell, rprm_csph)
-!
-      use m_cubed_sph_grp_param
+      subroutine count_radial_layer_size                                &
+     &         (nele_shell, rprm_csph, csph_grp)
 !
       integer(kind= kint), intent(inout) :: nele_shell
       type(cubed_sph_radius), intent(inout) :: rprm_csph
+      type(cubed_sph_group, intent(inout) :: csph_grp
 !
 !    count number of node & element
 !      number of radius direction
 !
       nele_shell =   rprm_csph%n_shell - 1
 !
-      nr_icb =   nlayer_ICB - 1 
-      nr_cmb =   nlayer_CMB - 1
-      rprm_csph%nr_ocore = nlayer_CMB - nlayer_ICB
-      rprm_csph%nr_exter = rprm_csph%n_shell - nlayer_CMB
+      csph_grp%nr_icb =   csph_grp%nlayer_ICB - 1 
+      csph_grp%nr_cmb =   csph_grp%nlayer_CMB - 1
+      rprm_csph%nr_ocore = csph_grp%nlayer_CMB - csph_grp%nlayer_ICB
+      rprm_csph%nr_exter = rprm_csph%n_shell - csph_grp%nlayer_CMB
 !
       end subroutine count_radial_layer_size
 !

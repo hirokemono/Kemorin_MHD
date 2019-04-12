@@ -4,7 +4,8 @@
 !
 !      Written by Kemorin on Apr., 2006
 !
-!!      subroutine const_cube_surface_data(csph_p, c_sphere)
+!!      subroutine const_cube_surface_data(csph_grp, csph_p, c_sphere)
+!!        type(cubed_sph_group), intent(in) :: csph_grp
 !!        type(numref_cubed_sph), intent(inout) :: csph_p
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !!      subroutine const_coarse_cube_surf_data                          &
@@ -30,8 +31,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_cube_surface_data(csph_p, c_sphere)
+      subroutine const_cube_surface_data(csph_grp, csph_p, c_sphere)
 !
+      use t_cubed_sph_grp_param
       use t_numref_cubed_sph
 !
       use output_shell_surface_data
@@ -41,6 +43,7 @@
       use set_surface_rods_sphere
       use set_surf_connect_cubed_sph
 !
+      type(cubed_sph_group), intent(in) :: csph_grp
       type(numref_cubed_sph), intent(inout) :: csph_p
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -84,11 +87,13 @@
       end if
 !
       write(*,*) 'output_surface_data'
-      call output_surface_data(c_sphere)
+      call output_surface_data                                          &
+     &   (csph_grp%nr_icb, csph_grp%nr_cmb, c_sphere)
 !
       if(csph_p%iflag_quad .gt. 0) then
         write(*,*) 'output_surface_data_quad'
-        call output_surface_data_quad(c_sphere)
+        call output_surface_data_quad                                   &
+     &     (csph_grp%nr_icb, csph_grp%nr_cmb, c_sphere)
       end if
 !
       end subroutine const_cube_surface_data

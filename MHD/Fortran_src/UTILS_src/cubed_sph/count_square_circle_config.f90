@@ -4,9 +4,10 @@
 !        programmed by H.Matsui on Apr., 2006
 !
 !!      subroutine count_square_circle_size                             &
-!!     &         (csph_p, rprm_csph, c_sphere, csph_mesh)
+!!     &         (csph_p, rprm_csph, csph_grp, c_sphere, csph_mesh)
 !!        type(numref_cubed_sph), intent(inout) :: csph_p
 !!        type(cubed_sph_radius), intent(inout) :: rprm_csph
+!!        type(cubed_sph_group, intent(inout) :: csph_grp
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !!        type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
@@ -28,20 +29,23 @@
 !   --------------------------------------------------------------------
 !
       subroutine count_square_circle_size                               &
-     &         (csph_p, rprm_csph, c_sphere, csph_mesh)
+     &         (csph_p, rprm_csph, csph_grp, c_sphere, csph_mesh)
 !
+      use t_cubed_sph_grp_param
       use t_numref_cubed_sph
       use count_shell_configration
 !
       type(numref_cubed_sph), intent(inout) :: csph_p
       type(cubed_sph_radius), intent(inout) :: rprm_csph
+      type(cubed_sph_group, intent(inout) :: csph_grp
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
 !    count number of node & element
 !      number of radius direction
 !
-      call count_radial_layer_size(c_sphere%nele_shell, rprm_csph)
+      call count_radial_layer_size                                      &
+     &   (c_sphere%nele_shell, rprm_csph, csph_grp)
 !
 !   numbers for center cube
 !       (except for surface of cube for number of node)

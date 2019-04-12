@@ -4,9 +4,10 @@
 !      Written by Kemorin on Apr., 2006
 !
 !!      subroutine construct_circle_mesh                                &
-!!     &         (rprm_csph, csph_mesh, csph_p, c_sphere)
+!!     &         (rprm_csph, csph_mesh, csph_grp, csph_p, c_sphere)
 !!        type(cubed_sph_radius), intent(in) :: rprm_csph
 !!        type(cubed_sph_mesh), intent(in) :: csph_mesh
+!!        type(cubed_sph_group), intent(in) :: csph_grp
 !!        type(numref_cubed_sph), intent(in) :: csph_p
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -27,10 +28,11 @@
 !   --------------------------------------------------------------------
 !
       subroutine construct_circle_mesh                                  &
-     &         (rprm_csph, csph_mesh, csph_p, c_sphere)
+     &         (rprm_csph, csph_mesh, csph_grp, csph_p, c_sphere)
 !
       use m_geometry_constants
       use t_numref_cubed_sph
+      use t_cubed_sph_grp_param
 !
       use cal_circle_position
       use set_center_rect_cube_quad
@@ -43,6 +45,7 @@
 !
       type(cubed_sph_radius), intent(in) :: rprm_csph
       type(cubed_sph_mesh), intent(in) :: csph_mesh
+      type(cubed_sph_group), intent(in) :: csph_grp
       type(numref_cubed_sph), intent(in) :: csph_p
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -168,11 +171,11 @@
 !
       if (csph_p%iflag_quad .gt. 0) then
         call output_group_data_quad                                     &
-     &     (csph_p%num_hemi, c_sphere, csph_mesh)
+     &     (csph_p%num_hemi, c_sphere, csph_mesh, csph_grp)
         close(id_q_group)
       end if
 !
-      call output_group_data(csph_p%num_hemi, c_sphere)
+      call output_group_data(csph_p%num_hemi, c_sphere, csph_grp)
       close(id_l_group)
 !
       write(*,*) 'finish!!'

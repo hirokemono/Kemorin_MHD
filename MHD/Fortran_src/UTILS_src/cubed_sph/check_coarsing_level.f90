@@ -4,9 +4,9 @@
 !        programmed by H.Matsui on Apr., 2006
 !
 !!      subroutine check_cube_coarsing_level                            &
-!!     &         (rprm_csph, csph_p, course_p, c_sphere)
+!!     &         (nr_icb, rprm_csph, csph_p, course_p, c_sphere)
 !!      subroutine check_rect_coarsing_level                            &
-!!     &         (rprm_csph, csph_p, course_p, c_sphere)
+!!     &         (nr_icb, rprm_csph, csph_p, course_p, c_sphere)
 !!        type(cubed_sph_radius), intent(in) :: rprm_csph
 !!        type(numref_cubed_sph), intent(in) :: csph_p
 !!        type(coarse_cubed_sph), intent(inout) :: course_p
@@ -29,10 +29,9 @@
 !   --------------------------------------------------------------------
 !
       subroutine check_cube_coarsing_level                              &
-     &         (rprm_csph, csph_p, course_p, c_sphere)
+     &         (nr_icb, rprm_csph, csph_p, course_p, c_sphere)
 !
-      use m_cubed_sph_grp_param
-!
+      integer(kind = kint), intent(in) :: nr_icb
       type(cubed_sph_radius), intent(in) :: rprm_csph
       type(numref_cubed_sph), intent(in) :: csph_p
       type(coarse_cubed_sph), intent(inout) :: course_p
@@ -87,10 +86,9 @@
 !   --------------------------------------------------------------------
 !
       subroutine check_rect_coarsing_level                              &
-     &         (rprm_csph, csph_p, course_p, c_sphere)
+     &         (nr_icb, rprm_csph, csph_p, course_p, c_sphere)
 !
-      use m_cubed_sph_grp_param
-!
+      integer(kind = kint), intent(in) :: nr_icb
       type(cubed_sph_radius), intent(in) :: rprm_csph
       type(numref_cubed_sph), intent(in) :: csph_p
       type(coarse_cubed_sph), intent(inout) :: course_p

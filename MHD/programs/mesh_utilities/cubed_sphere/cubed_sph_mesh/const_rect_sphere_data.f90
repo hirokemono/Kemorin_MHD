@@ -4,15 +4,17 @@
 !      Written by Kemorin on Apr., 2006
 !
 !!      subroutine construct_rect_sphere_mesh                           &
-!!     &         (rprm_csph, csph_mesh, csph_p, c_sphere)
+!!     &         (rprm_csph, csph_mesh, csph_grp, csph_p, c_sphere)
 !!        type(cubed_sph_radius), intent(in) :: rprm_csph
 !!        type(cubed_sph_mesh), intent(in) :: csph_mesh
+!!        type(cubed_sph_group), intent(in) :: csph_grp
 !!        type(numref_cubed_sph), intent(inout) :: csph_p
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
-!!      subroutine construct_coarse_rect_mesh                           &
-!!     &         (rprm_csph, csph_mesh, csph_p, course_p, c_sphere)
+!!      subroutine construct_coarse_rect_mesh(rprm_csph,                &
+!!     &          csph_mesh, csph_grp, csph_p, course_p, c_sphere)
 !!        type(cubed_sph_radius), intent(in) :: rprm_csph
 !!        type(cubed_sph_mesh), intent(in) :: csph_mesh
+!!        type(cubed_sph_group), intent(in) :: csph_grp
 !!        type(numref_cubed_sph), intent(in) :: csph_p
 !!        type(coarse_cubed_sph), intent(inout) :: course_p
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
@@ -24,6 +26,7 @@
       use t_cubed_sph_radius
       use t_cubed_sph_surf_mesh
       use t_cubed_sph_mesh
+      use t_cubed_sph_grp_param
 !
       implicit none
 !
@@ -34,7 +37,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine construct_rect_sphere_mesh                             &
-     &         (rprm_csph, csph_mesh, csph_p, c_sphere)
+     &         (rprm_csph, csph_mesh, csph_grp, csph_p, c_sphere)
 !
       use m_geometry_constants
       use t_numref_cubed_sph
@@ -50,6 +53,7 @@
 !
       type(cubed_sph_radius), intent(in) :: rprm_csph
       type(cubed_sph_mesh), intent(in) :: csph_mesh
+      type(cubed_sph_group), intent(in) :: csph_grp
       type(numref_cubed_sph), intent(inout) :: csph_p
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -181,11 +185,11 @@
 !
       if (csph_p%iflag_quad .gt. 0) then
         call output_group_data_quad                                     &
-     &     (csph_p%num_hemi, c_sphere, csph_mesh)
+     &     (csph_p%num_hemi, c_sphere, csph_mesh, csph_grp)
         close(id_q_group)
       end if
 !
-      call output_group_data(csph_p%num_hemi, c_sphere)
+      call output_group_data(csph_p%num_hemi, c_sphere, csph_grp)
       close(id_l_group)
 !
       write(*,*) 'finish!!'
@@ -194,8 +198,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine construct_coarse_rect_mesh                             &
-     &         (rprm_csph, csph_mesh, csph_p, course_p, c_sphere)
+      subroutine construct_coarse_rect_mesh(rprm_csph,                  &
+     &          csph_mesh, csph_grp, csph_p, course_p, c_sphere)
 !
       use m_constants
       use m_geometry_constants
@@ -213,6 +217,7 @@
 !
       type(cubed_sph_radius), intent(in) :: rprm_csph
       type(cubed_sph_mesh), intent(in) :: csph_mesh
+      type(cubed_sph_group), intent(in) :: csph_grp
       type(numref_cubed_sph), intent(in) :: csph_p
       type(coarse_cubed_sph), intent(inout) :: course_p
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
@@ -286,7 +291,7 @@
 !      construct groups
 !
         write(*,*) 'output_coarse_group_data'
-        call output_coarse_group_data(course_p)
+        call output_coarse_group_data(course_p, csph_grp)
 !
       end do
       call deallocate_wall_latitude_ratio
