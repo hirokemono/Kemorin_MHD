@@ -29,7 +29,9 @@
       integer (kind = kint), intent(inout)  :: inod
 !
 !
-      inod = inod + (ie-is+1)*(je-js+1)*(ke-ks+1)
+      inod = inod + (sl_rng1%ie - sl_rng1%is + 1)                       &
+     &             * (sl_rng1%je - sl_rng1%js + 1)                      &
+     &             * (sl_rng1%ke - sl_rng1%ks + 1)
 !
       end subroutine count_node_id
 !
@@ -44,9 +46,9 @@
       integer (kind = kint) :: i, j, k
 !
 !
-      do k=ks,ke
-        do j=js,je
-          do i=is,ie
+      do k = sl_rng1%ks, sl_rng1%ke
+        do j = sl_rng1%js, sl_rng1%je
+          do i = sl_rng1%is, sl_rng1%ie
 
             inod = inod + 1
             item_import(inod) =  node_id_lc(i,j,k)
@@ -68,9 +70,9 @@
       integer (kind = kint) :: i, j, k
 !
 !
-      do k=ks,ke
-        do j=js,je
-          do i=is,ie
+      do k = sl_rng1%ks, sl_rng1%ke
+        do j = sl_rng1%js, sl_rng1%je
+          do i = sl_rng1%is, sl_rng1%ie
 
             inod = inod + 1
             item_export(inod) =  node_id_lc(i,j,k)

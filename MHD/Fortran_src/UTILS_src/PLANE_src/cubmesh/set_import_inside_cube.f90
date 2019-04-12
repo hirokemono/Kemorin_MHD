@@ -11,6 +11,7 @@
       module set_import_inside_cube
 !
       use m_precision
+      use m_constants
 !
       use t_neib_range_cube
       use m_size_of_cube
@@ -40,7 +41,8 @@
 
                if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng)
+               call set_sleeve_size                                     &
+     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
                icou = icou  + 1
 
                call set_im_node(inod)
@@ -62,7 +64,6 @@
       integer (kind = kint), intent(inout) :: icou, inod
 !
       integer (kind = kint) :: inp, jnp, knp
-      integer (kind = kint) :: nd
 !
             do knp = nb_rng%knp_st, nb_rng%knp_end
              do jnp = nb_rng%jnp_st, nb_rng%jnp_end
@@ -70,27 +71,25 @@
 
                if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng)
-                  icou = icou  + 1
+               call set_sleeve_size                                     &
+     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+               icou = icou  + 1
 
-                 call set_im_node(inod)
-                 write(*,*) 'import node 0 from',                       &
+               call set_im_node(inod)
+               write(*,*) 'import node 0 from',                         &
      &                     (neibpe(icou)-1), inp, jnp, knp, inod
 
-                 nd = 1
-                 call set_im_edge(kpe, inp, jnp, knp, inod, nd)
-                 write(*,*) 'import edge1 0 from',                      &
+               call set_im_edge(kpe, inp, jnp, knp, inod, ione)
+               write(*,*) 'import edge1 0 from',                        &
      &                     (neibpe(icou)-1), inp, jnp, knp, inod
 
-                 nd = 2
-                 call set_im_edge(kpe, inp, jnp, knp, inod, nd)
-                 write(*,*) 'import edge2 0 from',                      &
+               call set_im_edge(kpe, inp, jnp, knp, inod, itwo)
+               write(*,*) 'import edge2 0 from',                        &
      &                     (neibpe(icou)-1), inp, jnp, knp, inod
 
-                 nd = 3
-                 call set_im_edge(kpe, inp, jnp, knp, inod, nd)
+               call set_im_edge(kpe, inp, jnp, knp, inod, ithree)
 
-                 write(*,*) 'import edge3 0 from',                      &
+               write(*,*) 'import edge3 0 from',                        &
      &                     (neibpe(icou)-1), inp, jnp, knp, inod
 
                 enddo

@@ -36,26 +36,32 @@
 !
        integer (kind = kint) :: node_id_gl
        integer (kind = kint) :: i, j, k
-       integer (kind = kint) ::je1, ke1
+       integer (kind = kint) :: is1, js1, ks1
+       integer (kind = kint) :: ie1, je1, ke1
        real (kind = kreal) :: x, y, z
        real (kind = kreal), parameter :: half = 0.5d0
 !
 !
-       je1 = je
-       ke1 = ke
+       is1 = sl_rng1%is
+       js1 = sl_rng1%js
+       ks1 = sl_rng1%ks
+       ie1 = sl_rng1%ie
+       je1 = sl_rng1%je
+       ke1 = sl_rng1%ke
        if ( nd.eq.2 .and. jnp.gt.0 ) je1 = je1 - 1
        if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
        if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
 
-       do k = ks, ke1
-        do j = js, je1
-         do i = is, ie
+       do k = ks1, ke1
+        do j = js1, je1
+         do i = is1, ie1
 
           inod = inod + 1
 
           edge_id_lc(i,j,k,nd) =  inod
-          node_id_gl = ioff_gl + i + (joff+j)*(ie-is+1)                 &
-     &               + (koff+k-1)*(ie-is+1)*ny_all
+          node_id_gl = ioff_gl + i                                      &
+     &                + (joff+j) * (ie1 - is1 + 1)                      &
+     &                + (koff+k-1)*(ie1 - is1 + 1)*ny_all
 
           if (nd .eq. 1) then
            x = xmin + ( dble(i)-half )*xsize / dble(nx_all)
@@ -95,29 +101,34 @@
        integer (kind = kint) :: nd
 !
        integer (kind = kint) :: node_id_gl
-       integer (kind = kint) ::ie1, je1, ke1
+       integer (kind = kint) :: is1, js1, ks1
+       integer (kind = kint) :: ie1, je1, ke1
        integer (kind = kint) :: i, j, k
        real (kind = kreal) :: x, y, z
        real (kind = kreal), parameter :: half = 0.5d0
 !
 !
-       ie1 = ie
-       je1 = je
-       ke1 = ke
+       is1 = sl_rng1%is
+       js1 = sl_rng1%js
+       ks1 = sl_rng1%ks
+       ie1 = sl_rng1%ie
+       je1 = sl_rng1%je
+       ke1 = sl_rng1%ke
        if ( nd.eq.1 ) ie1 = ie1 - 1
        if ( nd.eq.2 .and. jnp.gt.0 ) je1 = je1 - 1
        if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
        if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
 
-       do k = ks, ke1
-        do j = js, je1
-         do i = is, ie1
+       do k = ks1, ke1
+        do j = js1, je1
+         do i = is1, ie1
 
           inod = inod + 1
 
           edge_id_lc(nxi+ndepth+i,j,k,nd) =  inod
-          node_id_gl = ioff_gl + i + (joff+j)*(ie1-is+1)                &
-     &               + (koff+k-1)*(ie1-is+1)*ny_all
+          node_id_gl = ioff_gl + i                                      &
+     &                + (joff+j) * (ie1 - is1 + 1)                      &
+     &                + (koff+k-1) * (ie1 - is1 + 1)*ny_all
 
           if (nd .eq. 1) then
            x = xmax + ( dble(i+ndepth)-half )*xsize / dble(nx_all)
@@ -157,27 +168,32 @@
        integer (kind = kint) :: nd
 !
        integer (kind= kint) :: node_id_gl
-       integer (kind = kint) ::ie1, ke1
+       integer (kind = kint) :: is1, js1, ks1
+       integer (kind = kint) :: ie1, je1, ke1
        integer (kind= kint) :: i, j, k
        real (kind= kreal) :: x, y, z
        real (kind = kreal), parameter :: half = 0.5d0
 !
 !
-       ie1 = ie
-       ke1 = ke
+       is1 = sl_rng1%is
+       js1 = sl_rng1%js
+       ks1 = sl_rng1%ks
+       ie1 = sl_rng1%ie
+       je1 = sl_rng1%je
+       ke1 = sl_rng1%ke
        if ( nd.eq.1 .and. inp.gt.0 ) ie1 = ie1 - 1
        if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
        if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
 
-       do k = ks, ke1
-        do j = js, je
-         do i = is, ie1
+       do k = ks1, ke1
+        do j = js1, je1
+         do i = is1, ie1
 
           inod = inod + 1
 
           edge_id_lc(i,j,k,nd) =  inod
           node_id_gl = ioff_gl + (ioff+i) + (j-1)*nx_all                &
-     &               + (koff+k-1)*(je-js+1)*nx_all
+     &               + (koff+k-1)*(je1 - js1 + 1)*nx_all
 
           if (nd .eq. 1) then
            x = xoff + ( dble(i)-half )*xsize / dble(nx_all)
@@ -217,29 +233,33 @@
        integer (kind = kint) :: nd
 !
        integer (kind = kint) :: node_id_gl
-       integer (kind = kint) ::ie1, je1, ke1
+       integer (kind = kint) :: is1, js1, ks1
+       integer (kind = kint) :: ie1, je1, ke1
        integer (kind = kint) :: i, j, k
        real (kind = kreal) :: x, y, z
        real (kind = kreal), parameter :: half = 0.5d0
 !
 !
-       ie1 = ie
-       je1 = je
-       ke1 = ke
+       is1 = sl_rng1%is
+       js1 = sl_rng1%js
+       ks1 = sl_rng1%ks
+       ie1 = sl_rng1%ie
+       je1 = sl_rng1%je
+       ke1 = sl_rng1%ke
        if ( nd.eq.1 .and. inp.gt.0 ) ie1 = ie1 - 1
        if ( nd.eq.2 ) je1 = je1-1
        if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
        if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
 
-       do k = ks, ke1
-        do j = js, je1
-         do i = is, ie1
+       do k = ks1, ke1
+        do j = js1, je1
+         do i = is1, ie1
 
           inod = inod + 1
 
           edge_id_lc(i,nyi+ndepth+j,k,nd) =  inod
           node_id_gl = ioff_gl + (ioff+i) + (j-1)*nx_all                &
-     &               + (koff+k-1)*(je1-js+1)*nx_all
+     &               + (koff+k-1)*(je1 - js1 + 1)*nx_all
 
           if (nd .eq. 1) then
            x = xoff + ( dble(i)-half )*         xsize / dble(nx_all)

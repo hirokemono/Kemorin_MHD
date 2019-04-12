@@ -6,6 +6,7 @@
 !      Written by Kemorin
 !
       use m_precision
+      use m_constants
 !
       use m_size_of_cube
       use m_size_4_plane
@@ -40,17 +41,17 @@
        real (kind = kreal) :: x, y, z
        real (kind = kreal), parameter :: half = 0.5d0
 !
-       is = 1
-       ie = ndepth
-       js = 1
-       je = ndepth
-       ke1 = ke
+       sl_rng1%is = 1
+       sl_rng1%ie = ndepth
+       sl_rng1%js = 1
+       sl_rng1%je = ndepth
+       ke1 = sl_rng1%ke
        if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
        if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
 !
-       do k = ks, ke1
-        do j = js, je
-         do i = is, ie
+       do k = sl_rng1%ks, ke1
+        do j = sl_rng1%js, sl_rng1%je
+         do i = sl_rng1%is, sl_rng1%ie
 
           inod = inod + 1
 
@@ -100,25 +101,25 @@
        real (kind = kreal) :: x, y, z
        real (kind = kreal), parameter :: half = 0.5d0
 !
-       is = 1
-       ie = ndepth
-       js = 1
-       je = ndepth
-       ie1 = ie
-       ke1 = ke
+       sl_rng1%is = 1
+       sl_rng1%ie = ndepth
+       sl_rng1%js = 1
+       sl_rng1%je = ndepth
+       ie1 = sl_rng1%ie
+       ke1 = sl_rng1%ke
        if ( nd.eq.1 ) ie1 = ie1 - 1
        if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
        if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
 !
-       do k = ks, ke1
-        do j = js, je
-         do i = is, ie1
+       do k = sl_rng1%ks, ke1
+        do j = sl_rng1%js, sl_rng1%je
+         do i = sl_rng1%is, ie1
 
           inod = inod + 1
 
           edge_id_lc(nxi+ndepth+i,j,k,nd) =  inod
-          node_id_gl = ioff_gl + i + (j-1) * (ie1-is+1)                 &
-     &                + (koff+k-1) * (ie1-is+1) * ndepth
+          node_id_gl = ioff_gl + i + (j-1) * (ie1 - sl_rng1%is + 1)     &
+     &                + (koff+k-1) * (ie1 - sl_rng1%is + 1) * ndepth
 
           if (nd .eq. 1) then
            x = xmax + ( dble(i+ndepth)-half )*xsize / dble(nx_all)
@@ -162,27 +163,28 @@
        real (kind = kreal) :: x, y, z
        real (kind = kreal), parameter :: half = 0.5d0
 !
-       is = 1
-       ie = ndepth
-       js = 1
-       je = ndepth
-       ie1 = ie
-       je1 = je
-       ke1 = ke
+       sl_rng1%is = 1
+       sl_rng1%ie = ndepth
+       sl_rng1%js = 1
+       sl_rng1%je = ndepth
+       ie1 = sl_rng1%ie
+       je1 = sl_rng1%je
+       ke1 = sl_rng1%ke
        if ( nd.eq.1 ) ie1 = ie1 - 1
        if ( nd.eq.2 ) je1 = je1 - 1
        if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
        if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
 !
-       do k = ks, ke1
-        do j = js, je1
-         do i = is, ie1
+       do k = sl_rng1%ks, ke1
+        do j = sl_rng1%js, je1
+         do i = sl_rng1%is, ie1
 
           inod = inod + 1
 
           edge_id_lc(nxi+ndepth+i,nyi+ndepth+j,k,nd) =  inod
-          node_id_gl = ioff_gl + i + (j-1) * (ie1-is+1)                 &
-     &                + (koff+k-1) * (ie1-is+1) * (je1-js+1)
+          node_id_gl = ioff_gl + i + (j-1) * (ie1 - sl_rng1%is + 1)     &
+     &                + (koff+k-1) * (ie1 - sl_rng1%is + 1)             &
+     &                             * (je1 - sl_rng1%js + 1)
 
           if (nd .eq. 1) then
            x = xmax + ( dble(i+ndepth)-half ) * xsize / dble(nx_all)
@@ -226,25 +228,25 @@
        real (kind = kreal) :: x, y, z
        real (kind = kreal), parameter :: half = 0.5d0
 !
-       is = 1
-       ie = ndepth
-       js = 1
-       je = ndepth
-       je1 = je
-       ke1 = ke
+       sl_rng1%is = 1
+       sl_rng1%ie = ndepth
+       sl_rng1%js = 1
+       sl_rng1%je = ndepth
+       je1 = sl_rng1%je
+       ke1 = sl_rng1%ke
        if ( nd.eq.2 ) je1 = je1 - 1
        if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
        if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
 !
-       do k = ks, ke1
-        do j = js, je1
-         do i = is, ie
+       do k = sl_rng1%ks, ke1
+        do j = sl_rng1%js, je1
+         do i = sl_rng1%is, sl_rng1%ie
 
           inod = inod + 1
 
           edge_id_lc(i,nyi+ndepth+j,k,nd) =  inod
           node_id_gl = ioff_gl + i + (j-1) * ndepth                     &
-     &                + (koff+k-1) * ndepth * (je1-js+1)
+     &                + (koff+k-1) * ndepth * (je1 - sl_rng1%js + 1)
 
           if (nd .eq. 1) then
            x = xmin + ( dble(i)-half ) *        xsize / dble(nx_all)
@@ -268,5 +270,6 @@
 !
        end subroutine set_sleeve_edge_xmin_ymax
 !
-      end module m_sleeve_edge_corner_cube
+!  ---------------------------------------------------------------------
 !
+      end module m_sleeve_edge_corner_cube

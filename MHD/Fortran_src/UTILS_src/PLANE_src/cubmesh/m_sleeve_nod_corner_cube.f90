@@ -36,9 +36,9 @@
       real (kind = kreal) :: x, y, z
 !
 !
-      do k=ks,ke
-       do j=1, ndepth
-        do i=1, ndepth
+      do k = sl_rng1%ks, sl_rng1%ke
+       do j = 1, ndepth
+        do i = 1, ndepth
 
          inod = inod + 1
 
@@ -76,9 +76,9 @@
       real (kind = kreal) :: x, y, z
 !
 !
-      do k=ks,ke
-       do j=1, ndepth
-        do i=1, ndepth
+      do k = sl_rng1%ks, sl_rng1%ke
+       do j = 1, ndepth
+        do i = 1, ndepth
 
          inod = inod + 1
 
@@ -116,9 +116,9 @@
       real (kind= kreal) :: x, y, z
 !
 !
-      do k=ks,ke
-       do j=1, ndepth
-        do i=1, ndepth
+      do k = sl_rng1%ks, sl_rng1%ke
+       do j = 1, ndepth
+        do i = 1, ndepth
 
          inod = inod + 1
 
@@ -156,9 +156,9 @@
       real (kind= kreal) :: x, y, z
 !
 !
-      do k=ks,ke
-       do j=1, ndepth
-        do i=1, ndepth
+      do k = sl_rng1%ks, sl_rng1%ke
+       do j = 1, ndepth
+        do i = 1, ndepth
 
          inod = inod + 1
 

@@ -57,7 +57,7 @@
 
             inod = 0
 !
-            call set_internal_size(nb_rng)
+            call set_internal_size(nb_rng, sl_rng1)
             call set_internal_node(inod)
 !
 ! ***** set and write coordinate for sleeve area nodes

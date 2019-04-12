@@ -35,15 +35,25 @@
 !
 !
       if (nd.eq.1 .and. inp.eq. 1 ) then
-        inod = inod + (ie-is  )*(je-js+1)*(ke-ks+1)
+        inod = inod + (sl_rng1%ie - sl_rng1%is    )                     &
+     &               * (sl_rng1%je - sl_rng1%js + 1)                    &
+     &               * (sl_rng1%ke - sl_rng1%ks + 1)
       else if (nd.eq.2 .and. jnp.eq. 1 ) then
-        inod = inod + (ie-is+1)*(je-js  )*(ke-ks+1)
+        inod = inod + (sl_rng1%ie - sl_rng1%is + 1)                     &
+     &               * (sl_rng1%je - sl_rng1%js    )                    &
+     &               * (sl_rng1%ke - sl_rng1%ks + 1)
       else if (nd.eq.3 .and. kpe.eq.ndz .and. knp.eq. 0) then
-        inod = inod + (ie-is+1)*(je-js+1)*(ke-ks  )
+        inod = inod + (sl_rng1%ie - sl_rng1%is + 1)                     &
+     &               * (sl_rng1%je - sl_rng1%js + 1)                    &
+     &               * (sl_rng1%ke - sl_rng1%ks  )
       else if (nd.eq.3 .and.  knp.eq. 1 ) then
-        inod = inod + (ie-is+1)*(je-js+1)*(ke-ks  )
+        inod = inod + (sl_rng1%ie - sl_rng1%is + 1)                     &
+     &               * (sl_rng1%je - sl_rng1%js + 1)                    &
+     &               * (sl_rng1%ke - sl_rng1%ks  )
       else
-        inod = inod + (ie-is+1)*(je-js+1)*(ke-ks+1)
+        inod = inod + (sl_rng1%ie - sl_rng1%is + 1)                     &
+     &               * (sl_rng1%je - sl_rng1%js + 1)                    &
+     &               * (sl_rng1%ke - sl_rng1%ks + 1)
       end if
 !
       end subroutine count_im_edge
@@ -62,17 +72,17 @@
       integer (kind = kint) :: i, j, k
 !
 !
-      ie1 = ie
-      je1 = je
-      ke1 = ke
+      ie1 = sl_rng1%ie
+      je1 = sl_rng1%je
+      ke1 = sl_rng1%ke
       if ( nd.eq.1 .and. inp.eq. 1 ) ie1 = ie1-1
       if ( nd.eq.2 .and. jnp.eq. 1 ) je1 = je1-1
       if ( nd.eq.3 .and. knp.eq. 1 ) ke1 = ke1-1
       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq. 0) ke1 = ke1-1
 !
-      do k=ks,ke1
-        do j=js,je1
-          do i=is,ie1
+      do k = sl_rng1%ks, ke1
+        do j = sl_rng1%js, je1
+          do i = sl_rng1%is, ie1
 
             inod = inod + 1
             item_import(inod) =  edge_id_lc(i,j,k,nd)
@@ -94,15 +104,25 @@
 !
 !
       if (nd.eq.1 .and. inp.eq. -1 ) then
-       inod = inod + (ie-is  )*(je-js+1)*(ke-ks+1)
+        inod = inod + (sl_rng1%ie - sl_rng1%is    )                     &
+     &               * (sl_rng1%je - sl_rng1%js + 1)                    &
+     &               * (sl_rng1%ke - sl_rng1%ks + 1)
       else if (nd.eq.2 .and. jnp.eq. -1 ) then
-       inod = inod + (ie-is+1)*(je-js  )*(ke-ks+1)
+        inod = inod + (sl_rng1%ie - sl_rng1%is + 1)                     &
+     &               * (sl_rng1%je - sl_rng1%js    )                    &
+     &               * (sl_rng1%ke - sl_rng1%ks + 1)
       else if (nd.eq.3 .and. kpe.eq.ndz .and. knp.eq. 0) then
-       inod = inod + (ie-is+1)*(je-js+1)*(ke-ks  )
+        inod = inod + (sl_rng1%ie - sl_rng1%is + 1)                     &
+     &               * (sl_rng1%je - sl_rng1%js + 1)                    &
+     &               * (sl_rng1%ke - sl_rng1%ks  )
       else if (nd.eq.3 .and.  knp.eq. -1 ) then
-       inod = inod + (ie-is+1)*(je-js+1)*(ke-ks  )
+        inod = inod + (sl_rng1%ie - sl_rng1%is + 1)                     &
+     &               * (sl_rng1%je - sl_rng1%js + 1)                    &
+     &               * (sl_rng1%ke - sl_rng1%ks  )
       else
-       inod = inod + (ie-is+1)*(je-js+1)*(ke-ks+1)
+        inod = inod + (sl_rng1%ie - sl_rng1%is + 1)                     &
+     &               * (sl_rng1%je - sl_rng1%js + 1)                    &
+     &               * (sl_rng1%ke - sl_rng1%ks + 1)
       end if
 !
       end subroutine count_ex_edge
@@ -121,16 +141,16 @@
       integer (kind = kint) :: i, j, k
 !
 !
-      ie1 = ie
-      je1 = je
-      ke1 = ke
+      ie1 = sl_rng1%ie
+      je1 = sl_rng1%je
+      ke1 = sl_rng1%ke
       if ( nd.eq.1 .and. inp.eq. -1 ) ie1 = ie1-1
       if ( nd.eq.2 .and. jnp.eq. -1 ) je1 = je1-1
       if ( nd.eq.3 .and. knp.eq. -1 ) ke1 = ke1-1
       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq. 0) ke1 = ke1-1
-      do k=ks,ke1
-        do j=js,je1
-          do i=is,ie1
+      do k = sl_rng1%ks, ke1
+        do j = sl_rng1%js, je1
+          do i = sl_rng1%is, ie1
 
             inod = inod + 1
             item_export(inod) =  edge_id_lc(i,j,k,nd)

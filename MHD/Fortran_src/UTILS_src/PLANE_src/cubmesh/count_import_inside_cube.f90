@@ -41,7 +41,8 @@
 
                if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng)
+               call set_sleeve_size                                     &
+     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
 
                icou = icou  + 1
                call count_node_id(inod)
@@ -74,7 +75,8 @@
 
          if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
-         call set_sleeve_size(inp, jnp, knp, nb_rng)
+         call set_sleeve_size                                           &
+     &      (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
 !
          icou = icou  + 1
 

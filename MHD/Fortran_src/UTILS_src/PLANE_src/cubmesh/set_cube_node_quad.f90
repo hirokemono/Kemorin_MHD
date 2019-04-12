@@ -61,25 +61,25 @@
 !
             inod = 0
 !
-            call set_internal_size(nb_rng)
+            call set_internal_size(nb_rng, sl_rng1)
             call set_internal_node(inod)
 !
 !     set position of internal edge
 !
             nd = 1
             inp = 0
-            call set_internal_edge_size(nb_rng, nd)
+            call set_internal_edge_size(nb_rng, nd, sl_rng1)
             write(*,*) 'set_internal_edge', ipe, jpe, kpe
             call set_internal_edge(kpe, inp, jnp, knp, inod, nd)
 !
             nd = 2
             jnp = 0
-            call set_internal_edge_size(nb_rng, nd)
+            call set_internal_edge_size(nb_rng, nd, sl_rng1)
             call set_internal_edge(kpe, inp, jnp, knp, inod, nd)
 !
             nd = 3
             knp = -1
-            call set_internal_edge_size(nb_rng, nd)
+            call set_internal_edge_size(nb_rng, nd, sl_rng1)
             call set_internal_edge(kpe, inp, jnp, knp, inod, nd)
 !
 ! ***** set and write coordinate for sleeve area nodes

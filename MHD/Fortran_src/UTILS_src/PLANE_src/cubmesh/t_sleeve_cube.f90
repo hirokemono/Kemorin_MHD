@@ -37,7 +37,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_sleeve_size                                      &
+      subroutine set_sleeve_size                                        &
      &         (nb_rng, ndepth, inp, jnp, knp, sl_rng)
 !
       integer (kind = kint), intent(in) :: inp, jnp, knp
@@ -73,11 +73,11 @@
        if ( knp ==  0 )  sl_rng%ke = nb_rng%k_end
 !
        return
-       end subroutine s_set_sleeve_size
+       end subroutine set_sleeve_size
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_boundary_size                                    &
+      subroutine set_boundary_size                                      &
      &         (nb_rng, ndepth, inp, jnp, knp, sl_rng)
 !
       type(neib_range_cube), intent(in) :: nb_rng
@@ -112,12 +112,11 @@
        if ( knp ==  0 )  sl_rng%ks = nb_rng%k_st
        if ( knp ==  0 )  sl_rng%ke = nb_rng%k_end
 !
-       return
-       end subroutine s_set_boundary_size
+       end subroutine set_boundary_size
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_internal_size(nb_rng, sl_rng)
+      subroutine set_internal_size(nb_rng, sl_rng)
 !
       type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(inout) :: sl_rng
@@ -129,18 +128,18 @@
       sl_rng%je = nb_rng%j_end
       sl_rng%ke = nb_rng%k_end
 !
-      end subroutine s_set_internal_size
+      end subroutine set_internal_size
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_internal_edge_size(nb_rng, nd, sl_rng)
+      subroutine set_internal_edge_size(nb_rng, nd, sl_rng)
 !
       integer(kind = kint), intent(in) :: nd
       type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(inout) :: sl_rng
 !
 !
-      call s_set_internal_size(nb_rng, sl_rng)
+      call set_internal_size(nb_rng, sl_rng)
 !
       if (nd .eq. 1) then
         sl_rng%is = nb_rng%iedge_st
@@ -153,7 +152,7 @@
         sl_rng%ke = nb_rng%kedge_end
       end if
 !
-      end subroutine s_set_internal_edge_size
+      end subroutine set_internal_edge_size
 !
 ! ----------------------------------------------------------------------
 !

@@ -37,9 +37,9 @@
 !
 ! *****   set position of internal node
 !
-            do k=ks, ke
-              do j=js, je
-                do i=is, ie
+            do k = sl_rng1%ks, sl_rng1%ke
+              do j = sl_rng1%js, sl_rng1%je
+                do i = sl_rng1%is, sl_rng1%ie
 
                   inod = inod + 1
 
@@ -78,16 +78,16 @@
 !
 !       for edge on y=const and z=const
 !
-      ie1 = ie
-      je1 = je
-      ke1 = ke
+      ie1 = sl_rng1%ie
+      je1 = sl_rng1%je
+      ke1 = sl_rng1%ke
       if (nd.eq.1 .and. inp.gt.0) ie1 = ie1-1
       if (nd.eq.2 .and. jnp.gt.0) je1 = je1-1
       if (nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
       if (nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0) ke1 = ke1-1
-      do k=ks,ke1
-       do j=js,je1
-        do i=is,ie1
+      do k = sl_rng1%ks, ke1
+       do j = sl_rng1%js, je1
+        do i = sl_rng1%is, ie1
 
          inod = inod + 1
 

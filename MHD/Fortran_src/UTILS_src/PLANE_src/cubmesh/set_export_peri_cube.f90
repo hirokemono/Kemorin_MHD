@@ -12,6 +12,7 @@
       module set_export_peri_cube
 !
       use m_precision
+      use m_constants
 !
       use t_neib_range_cube
       use m_size_4_plane
@@ -42,9 +43,10 @@
              do knp = nb_rng%knp_st, nb_rng%knp_end
               do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng)
-               is = nxi+1
-               ie = nxi+ndepth
+               call set_boundary_size                                   &
+     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+               sl_rng1%is = nxi+1
+               sl_rng1%ie = nxi+ndepth
 
                icou = icou  + 1
                call set_ex_node(inod)
@@ -59,9 +61,10 @@
              do knp = nb_rng%knp_st, nb_rng%knp_end
               do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng)
-               is = ndepth+1
-               ie = 2*ndepth
+               call set_boundary_size                                   &
+     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+               sl_rng1%is = ndepth+1
+               sl_rng1%ie = 2*ndepth
 
                icou = icou  + 1
                call set_ex_node(inod)
@@ -78,9 +81,10 @@
              do knp = nb_rng%knp_st, nb_rng%knp_end
               do inp = nb_rng%inp_st, nb_rng%inp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng)
-               js = nyi+1
-               je = nyi+ndepth
+               call set_boundary_size                                   &
+     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+               sl_rng1%js = nyi+1
+               sl_rng1%je = nyi+ndepth
 
                   icou = icou  + 1
                call set_ex_node(inod)
@@ -96,9 +100,10 @@
              do knp = nb_rng%knp_st, nb_rng%knp_end
               do inp = nb_rng%inp_st, nb_rng%inp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng)
-               js = ndepth+1
-               je = 2*ndepth
+               call set_boundary_size                                   &
+     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+               sl_rng1%js = ndepth+1
+               sl_rng1%je = 2*ndepth
 
                icou = icou  + 1
                call set_ex_node(inod)
@@ -115,11 +120,12 @@
              jnp = 1
               do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng)
-               is = nxi+1
-               ie = nxi+ndepth
-               js = nyi+1
-               je = nyi+ndepth
+               call set_boundary_size                                   &
+     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+               sl_rng1%is = nxi+1
+               sl_rng1%ie = nxi+ndepth
+               sl_rng1%js = nyi+1
+               sl_rng1%je = nyi+ndepth
 
                icou = icou  + 1
                call set_ex_node(inod)
@@ -134,11 +140,12 @@
              jnp = 1
               do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng)
-               is = ndepth+1
-               ie = 2*ndepth
-               js = nyi+1
-               je = nyi+ndepth
+               call set_boundary_size                                   &
+     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+               sl_rng1%is = ndepth+1
+               sl_rng1%ie = 2*ndepth
+               sl_rng1%js = nyi+1
+               sl_rng1%je = nyi+ndepth
 
                icou = icou  + 1
                call set_ex_node(inod)
@@ -151,11 +158,12 @@
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
               do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng)
-               is = ndepth+1
-               ie = 2*ndepth
-               js = ndepth+1
-               je = 2*ndepth
+               call set_boundary_size                                   &
+     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+               sl_rng1%is = ndepth+1
+               sl_rng1%ie = 2*ndepth
+               sl_rng1%js = ndepth+1
+               sl_rng1%je = 2*ndepth
 
                icou = icou  + 1
                call set_ex_node(inod)
@@ -170,11 +178,12 @@
              inp = 1
               do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng)
-               is = nxi+1
-               ie = nxi+ndepth
-               js = ndepth+1
-               je = 2*ndepth
+               call set_boundary_size                                   &
+     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+               sl_rng1%is = nxi+1
+               sl_rng1%ie = nxi+ndepth
+               sl_rng1%js = ndepth+1
+               sl_rng1%je = 2*ndepth
 
                icou = icou  + 1
                call set_ex_node(inod)
@@ -196,7 +205,6 @@
       integer (kind = kint), intent(inout) :: icou, inod
 !
       integer (kind = kint) :: inp, jnp, knp
-      integer (kind = kint) :: nd
 !
 !  outdside (x>xmax)
 !
@@ -205,21 +213,17 @@
              do knp = nb_rng%knp_st, nb_rng%knp_end
               do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 !
-               call set_boundary_size(inp, jnp, knp, nb_rng)
-               is = nxi+1
-               ie = nxi+ndepth
+               call set_boundary_size                                   &
+     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+               sl_rng1%is = nxi+1
+               sl_rng1%ie = nxi+ndepth
 
                icou = icou  + 1
                call set_ex_node(inod)
 
-               nd = 1
-               call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
-
-               nd = 2
-               call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
-
-               nd = 3
-               call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+               call set_ex_edge(kpe, inp, jnp, knp, inod, ione)
+               call set_ex_edge(kpe, inp, jnp, knp, inod, itwo)
+               call set_ex_edge(kpe, inp, jnp, knp, inod, ithree)
                write(*,*) 'export 1 from',                              &
      &             (neibpe(icou)-1), inp, jnp, knp, inod
 
@@ -233,24 +237,22 @@
               do knp = nb_rng%knp_st, nb_rng%knp_end
                 do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
-                 call set_boundary_size(inp, jnp, knp, nb_rng)
-                 is = ndepth+1
+                 call set_boundary_size                                 &
+     &              (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+                 sl_rng1%is = ndepth+1
 
-                  icou = icou  + 1
-                 ie = 2*ndepth
+                 icou = icou  + 1
+                 sl_rng1%ie = 2*ndepth
                  call set_ex_node(inod)
 
-                 nd = 1
-                 ie = 2*ndepth - 1
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%ie = 2*ndepth - 1
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ione)
 
-                 nd = 2
-                 ie = 2*ndepth
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%ie = 2*ndepth
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, itwo)
 
-                 nd = 3
-                 ie = 2*ndepth
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%ie = 2*ndepth
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ithree)
                  write(*,*) 'export 2 from',                            &
      &               (neibpe(icou)-1), inp, jnp, knp, inod
 
@@ -266,21 +268,17 @@
               do knp = nb_rng%knp_st, nb_rng%knp_end
                 do inp = nb_rng%inp_st, nb_rng%inp_end
 
-                 call set_boundary_size(inp, jnp, knp, nb_rng)
-                 js = nyi+1
-                 je = nyi+ndepth
+                 call set_boundary_size                                 &
+     &              (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+                 sl_rng1%js = nyi+1
+                 sl_rng1%je = nyi+ndepth
 
                  icou = icou  + 1
                  call set_ex_node(inod)
 
-                 nd = 1
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
-
-                 nd = 2
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
-
-                 nd = 3
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ione)
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, itwo)
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ithree)
                  write(*,*) 'export 3 from',                            &
      &               (neibpe(icou)-1), inp, jnp, knp, inod
 
@@ -295,24 +293,22 @@
               do knp = nb_rng%knp_st, nb_rng%knp_end
                 do inp = nb_rng%inp_st, nb_rng%inp_end
 
-                 call set_boundary_size(inp, jnp, knp, nb_rng)
-                  js = ndepth+1
+                 call set_boundary_size                                 &
+     &              (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+                 sl_rng1%js = ndepth+1
 
-                  icou = icou  + 1
-                  je = 2*ndepth
+                 icou = icou  + 1
+                 sl_rng1%je = 2*ndepth
                  call set_ex_node(inod)
 
-                 nd = 1
-                 je = 2*ndepth
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%je = 2*ndepth
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ione)
 
-                 nd = 2
-                 je = 2*ndepth - 1
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%je = 2*ndepth - 1
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, itwo)
 
-                 nd = 3
-                 je = 2*ndepth
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%je = 2*ndepth
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ithree)
                  write(*,*) 'export 4 from',                            &
      &               (neibpe(icou)-1), inp, jnp, knp, inod
 
@@ -328,23 +324,19 @@
              jnp = 1
               do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_boundary_size(inp, jnp, knp, nb_rng)
-               is = nxi+1
-               ie = nxi+ndepth
-               js = nyi+1
-               je = nyi+ndepth
+                 call set_boundary_size                                 &
+     &              (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+                 sl_rng1%is = nxi+1
+                 sl_rng1%ie = nxi+ndepth
+                 sl_rng1%js = nyi+1
+                 sl_rng1%je = nyi+ndepth
 
-                  icou = icou  + 1
+                 icou = icou  + 1
                  call set_ex_node(inod)
 
-                 nd = 1
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
-
-                 nd = 2
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
-
-                 nd = 3
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ione)
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, itwo)
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ithree)
                  write(*,*) 'export 5 from',                            &
      &                (neibpe(icou)-1), inp, jnp, knp, inod
 
@@ -358,26 +350,24 @@
              jnp = 1
               do knp = nb_rng%knp_st, nb_rng%knp_end
 
-                 call set_boundary_size(inp, jnp, knp, nb_rng)
-                 js = nyi+1
-                 je = nyi+ndepth
-                 is = ndepth+1
+                 call set_boundary_size                                 &
+     &              (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+                 sl_rng1%js = nyi+1
+                 sl_rng1%je = nyi+ndepth
+                 sl_rng1%is = ndepth+1
 
                  icou = icou  + 1
-                 ie = 2*ndepth
+                 sl_rng1%ie = 2*ndepth
                  call set_ex_node(inod)
 
-                 nd = 1
-                 ie = 2*ndepth - 1
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%ie = 2*ndepth - 1
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ione)
 
-                 nd = 2
-                 ie = 2*ndepth
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%ie = 2*ndepth
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, itwo)
 
-                 nd = 3
-                 ie = 2*ndepth
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%ie = 2*ndepth
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ithree)
                  write(*,*) 'export 6 from',                            &
      &               (neibpe(icou)-1), inp, jnp, knp, inod
 
@@ -389,29 +379,27 @@
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
               do knp = nb_rng%knp_st, nb_rng%knp_end
 
-                 call set_boundary_size(inp, jnp, knp, nb_rng)
-                 is = ndepth+1
-                 js = ndepth+1
+                 call set_boundary_size                                 &
+     &              (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+                 sl_rng1%is = ndepth+1
+                 sl_rng1%js = ndepth+1
 
                  icou = icou  + 1
-                 ie = 2*ndepth
-                 je = 2*ndepth
+                 sl_rng1%ie = 2*ndepth
+                 sl_rng1%je = 2*ndepth
                  call set_ex_node(inod)
 
-                 nd = 1
-                 ie = 2*ndepth - 1
-                 je = 2*ndepth
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%ie = 2*ndepth - 1
+                 sl_rng1%je = 2*ndepth
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ione)
 
-                 nd = 2
-                 ie = 2*ndepth
-                 je = 2*ndepth - 1
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%ie = 2*ndepth
+                 sl_rng1%je = 2*ndepth - 1
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, itwo)
 
-                 nd = 3
-                 ie = 2*ndepth
-                 je = 2*ndepth
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%ie = 2*ndepth
+                 sl_rng1%je = 2*ndepth
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ithree)
                  write(*,*) 'export 7 from',                            &
      &               (neibpe(icou)-1), inp, jnp, knp, inod
 
@@ -425,26 +413,24 @@
              inp = 1
               do knp = nb_rng%knp_st, nb_rng%knp_end
 
-                 call set_boundary_size(inp, jnp, knp, nb_rng)
-                 is = nxi+1
-                 ie = nxi+ndepth
-                 js = ndepth+1
+                 call set_boundary_size                                 &
+     &              (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+                 sl_rng1%is = nxi+1
+                 sl_rng1%ie = nxi+ndepth
+                 sl_rng1%js = ndepth+1
 
                  icou = icou  + 1
-                 je = 2*ndepth
+                 sl_rng1%je = 2*ndepth
                  call set_ex_node(inod)
 
-                 nd = 1
-                 je = 2*ndepth
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%je = 2*ndepth
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ione)
 
-                 nd = 2
-                 je = 2*ndepth - 1
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%je = 2*ndepth - 1
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, itwo)
 
-                 nd = 3
-                 je = 2*ndepth
-                 call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+                 sl_rng1%je = 2*ndepth
+                 call set_ex_edge(kpe, inp, jnp, knp, inod, ithree)
                  write(*,*) 'export 8 to',                              &
      &              (neibpe(icou)-1), inp, jnp, knp, inod
 
