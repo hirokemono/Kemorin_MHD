@@ -6,17 +6,18 @@
 !
 ! ***** set and write for sleeve edges for periodical boundary
 !
-!      subroutine set_neighboring_pes(pe_id)
-!      subroutine set_neighboring_pes_peri(pe_id, ipe, jpe)
+!!      subroutine set_neighboring_pes(nb_rng, pe_id)
+!!      subroutine set_neighboring_pes_peri(nb_rng, pe_id, ipe, jpe)
+!!        type(neib_range_cube), intent(in) :: nb_rng
 !
       module set_neib_pe_cube
 !
       use m_precision
 !
+      use t_neib_range_cube
       use m_size_4_plane
       use m_size_of_cube
       use m_comm_data_cube_kemo
-      use m_neighb_range_cube
 !
       implicit none
 !
@@ -26,17 +27,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_neighboring_pes(pe_id)
+      subroutine set_neighboring_pes(nb_rng, pe_id)
 !
-       integer (kind = kint), intent(in) :: pe_id
-       integer (kind = kint) :: inp, jnp, knp
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer (kind = kint), intent(in) :: pe_id
+!
+      integer (kind = kint) :: inp, jnp, knp
 !
 !                                       .. set neighbor pe
 !      inside cube
 !
-      do knp = nb_rng1%knp_st, nb_rng1%knp_end
-        do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
-          do inp = nb_rng1%inp_st, nb_rng1%inp_end
+      do knp = nb_rng%knp_st, nb_rng%knp_end
+        do jnp = nb_rng%jnp_st, nb_rng%jnp_end
+          do inp = nb_rng%inp_st, nb_rng%inp_end
 
             if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
@@ -51,20 +54,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_neighboring_pes_peri(pe_id, ipe, jpe)
+      subroutine set_neighboring_pes_peri(nb_rng, pe_id, ipe, jpe)
 !
-       integer (kind = kint), intent(in) :: pe_id
-       integer (kind = kint), intent(in) :: ipe, jpe
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer (kind = kint), intent(in) :: pe_id
+      integer (kind = kint), intent(in) :: ipe, jpe
 !
-       integer (kind = kint) :: inp, jnp, knp
+      integer (kind = kint) :: inp, jnp, knp
 !
 !
 !
 !      edge for x < xmin
 !
             if( ipe == 1 ) then
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
-                do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
+                do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
                   neibpetot = neibpetot  + 1
                   neibpe     (neibpetot) = pe_id +                      &
@@ -77,8 +81,8 @@
 !      edge for x > xmax
 !
             if( ipe == ndx ) then
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
-                do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
+                do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
                   neibpetot = neibpetot  + 1
                   neibpe     (neibpetot) =  pe_id +                     &
@@ -91,8 +95,8 @@
 !      edge for y > ymin
 !
             if( jpe == 1 ) then
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
-                do inp = nb_rng1%inp_st, nb_rng1%inp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
+                do inp = nb_rng%inp_st, nb_rng%inp_end
 
                   neibpetot = neibpetot  + 1
                   neibpe     (neibpetot) =  pe_id +                    &
@@ -106,8 +110,8 @@
 !
 !
             if( jpe == ndy ) then
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
-                do inp = nb_rng1%inp_st, nb_rng1%inp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
+                do inp = nb_rng%inp_st, nb_rng%inp_end
 
                   neibpetot = neibpetot  + 1
                   neibpe     (neibpetot) = pe_id +                      &
@@ -121,7 +125,7 @@
 !      edge for x < xmin, y<ymin
 !
             if( ipe == 1 .and. jpe == 1) then
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
 
                   neibpetot = neibpetot  + 1
                   neibpe     (neibpetot) = pe_id +                      &
@@ -133,7 +137,7 @@
 !      edge for x > xmax, y<ymin
 !
             if( ipe == ndx .and. jpe == 1 ) then
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
 
                   neibpetot = neibpetot  + 1
                   neibpe     (neibpetot) =  pe_id +                     &
@@ -145,7 +149,7 @@
 !      edge for x>xmax, y > ymax
 !
             if( ipe == ndx .and. jpe == ndy ) then
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
 
                   neibpetot = neibpetot  + 1
                   neibpe     (neibpetot) =  pe_id +                    &
@@ -158,7 +162,7 @@
 !
 !
             if( ipe == 1 .and. jpe == ndy ) then
-              do knp = nb_rng1%knp_st, nb_rng1%knp_end
+              do knp = nb_rng%knp_st, nb_rng%knp_end
 
                   neibpetot = neibpetot  + 1
                   neibpe     (neibpetot) = pe_id +                      &

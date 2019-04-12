@@ -227,11 +227,11 @@
 
 !      inside cube
 !
-            call set_neighboring_pes(pe_id)
+            call set_neighboring_pes(nb_rng1, pe_id)
 !
 !      neiboring information for periodical boundaries
 !
-            call set_neighboring_pes_peri(pe_id, ipe, jpe)
+            call set_neighboring_pes_peri(nb_rng1, pe_id, ipe, jpe)
 !
 !
             call sort_neighboring_pes
@@ -243,7 +243,7 @@
 ! ..... write 2.mesh information (nodes and elements in partition)
 !
             call set_range_4_nodeloop(kpe, nb_rng1)
-            call set_node(ipe, jpe, kpe)
+            call set_node(nb_rng1, ipe, jpe, kpe)
 !
 ! ..... write 2.2 element (connection)
 !

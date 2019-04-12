@@ -113,7 +113,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine set_internal_edge_size(nd, nb_rng)
+       subroutine set_internal_edge_size(nb_rng, nd)
 !
        implicit none
        integer (kind = kint), intent(in) :: nd

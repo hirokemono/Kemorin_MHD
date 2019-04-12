@@ -4,16 +4,17 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine set_node(ipe, jpe, kpe)
+!!      subroutine set_node(nb_rng, ipe, jpe, kpe)
+!!        type(neib_range_cube), intent(in) :: nb_rng
 !
       module set_cube_node
 !
       use m_precision
 !
+      use t_neib_range_cube
       use m_size_of_cube
       use m_offset_size_cube
       use m_cube_position
-      use m_neighb_range_cube
       use m_sleeve_cube
       use m_cube_files_data
       use m_local_node_id_cube
@@ -29,9 +30,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_node(ipe, jpe, kpe)
+      subroutine set_node(nb_rng, ipe, jpe, kpe)
 !
+      type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: ipe, jpe, kpe
+!
       integer (kind = kint) :: inod
 !
 ! ..... write 2.mesh information (nodes and elements in partition)
@@ -54,15 +57,13 @@
 
             inod = 0
 !
-            call set_internal_size(nb_rng1)
+            call set_internal_size(nb_rng)
             call set_internal_node(inod)
 !
 ! ***** set and write coordinate for sleeve area nodes
 !
-            call set_sleeve_node(inod)
-!
-!
-            call set_sleeve_node_peri(ipe, jpe, inod)
+            call set_sleeve_node(nb_rng, inod)
+            call set_sleeve_node_peri(nb_rng, ipe, jpe, inod)
 !
 ! ***** set table from node id to x,y,z, positions
 !

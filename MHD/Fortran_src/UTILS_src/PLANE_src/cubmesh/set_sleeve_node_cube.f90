@@ -6,15 +6,16 @@
 !
 ! ***** set and write coordinate for sleeve area nodes
 !
-!       subroutine set_sleeve_node(inod)
-!       subroutine set_sleeve_node_quad(kpe, inod)
+!!       subroutine set_sleeve_node(nb_rng, inod)
+!!       subroutine set_sleeve_node_quad(nb_rng, kpe, inod)
+!!        type(neib_range_cube), intent(in) :: nb_rng
 !
       module set_sleeve_node_cube
 !
       use m_precision
 !
+      use t_neib_range_cube
       use m_size_of_cube
-      use m_neighb_range_cube
       use m_sleeve_cube
       use set_internal_nod_cube
 !
@@ -26,19 +27,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine set_sleeve_node(inod)
+       subroutine set_sleeve_node(nb_rng, inod)
 !
+      type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(inout) :: inod
+!
       integer (kind = kint) :: inp, jnp, knp
 !
 !
-      do knp = nb_rng1%knp_st, nb_rng1%knp_end
-        do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
-          do inp = nb_rng1%inp_st, nb_rng1%inp_end
+      do knp = nb_rng%knp_st, nb_rng%knp_end
+        do jnp = nb_rng%jnp_st, nb_rng%jnp_end
+          do inp = nb_rng%inp_st, nb_rng%inp_end
 
             if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 !
-            call set_sleeve_size(inp, jnp, knp, nb_rng1)
+            call set_sleeve_size(inp, jnp, knp, nb_rng)
             call set_internal_node(inod)
           enddo
         enddo
@@ -48,8 +51,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine set_sleeve_node_quad(kpe, inod)
+       subroutine set_sleeve_node_quad(nb_rng, kpe, inod)
 !
+      type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: kpe
       integer (kind = kint), intent(inout) :: inod
 
@@ -59,13 +63,13 @@
 !
 ! ***** set and write coordinate for sleeve area nodes
 !
-      do knp = nb_rng1%knp_st, nb_rng1%knp_end
-        do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
-          do inp = nb_rng1%inp_st, nb_rng1%inp_end
+      do knp = nb_rng%knp_st, nb_rng%knp_end
+        do jnp = nb_rng%jnp_st, nb_rng%jnp_end
+          do inp = nb_rng%inp_st, nb_rng%inp_end
 
             if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 !
-            call set_sleeve_size(inp, jnp, knp, nb_rng1)
+            call set_sleeve_size(inp, jnp, knp, nb_rng)
 
             call set_internal_node(inod)
 !

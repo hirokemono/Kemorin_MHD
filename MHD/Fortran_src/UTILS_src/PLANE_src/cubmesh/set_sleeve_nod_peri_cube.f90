@@ -4,16 +4,17 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine set_sleeve_node_peri(ipe, jpe, inod)
-!      subroutine set_sleeve_node_peri_quad(ipe, jpe, inod)
+!!      subroutine set_sleeve_node_peri(nb_rng, ipe, jpe, inod)
+!!      subroutine set_sleeve_node_peri_quad(nb_rng, ipe, jpe, inod)
+!!        type(neib_range_cube), intent(in) :: nb_rng
 !
       module set_sleeve_nod_peri_cube
 !
       use m_precision
 !
+      use t_neib_range_cube
       use m_size_4_plane
       use m_size_of_cube
-      use m_neighb_range_cube
       use m_sleeve_cube
       use m_sleeve_nod_side_cube
       use m_sleeve_nod_corner_cube
@@ -26,10 +27,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_sleeve_node_peri(ipe, jpe, inod)
+      subroutine set_sleeve_node_peri(nb_rng, ipe, jpe, inod)
 !
-      integer (kind = kint) :: ipe, jpe
-      integer (kind = kint) :: inod
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer (kind = kint), intent(in) :: ipe, jpe
+      integer (kind = kint), intent(inout) :: inod
 !
       integer (kind = kint) :: ioff_gl
       integer (kind = kint) :: inp, jnp, knp
@@ -38,10 +40,10 @@
 !
             ioff_gl = nod_gltot
             if (ipe .eq. 1 ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                is = 1
                ie = ndepth
 !
@@ -56,10 +58,10 @@
 !
             ioff_gl = nod_gltot + ndepth*ny_all*nz_all
             if (ipe .eq. ndx ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                is = 1
                ie = ndepth
 
@@ -74,10 +76,10 @@
 !
             ioff_gl = nod_gltot + 2*ndepth*ny_all*nz_all
             if ( jpe .eq. 1 ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do inp = nb_rng1%inp_st, nb_rng1%inp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do inp = nb_rng%inp_st, nb_rng%inp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                js = 1
                je = ndepth
 
@@ -92,10 +94,10 @@
             ioff_gl = nod_gltot                                         &
      &               + 2*ndepth*ny_all*nz_all + ndepth*nx_all*nz_all 
             if ( jpe .eq. ndy ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do inp = nb_rng1%inp_st, nb_rng1%inp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do inp = nb_rng%inp_st, nb_rng%inp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                js = 1
                je = ndepth
 
@@ -110,9 +112,9 @@
             ioff_gl = nod_gltot                                         &
      &               + 2*ndepth*ny_all*nz_all + 2*ndepth*nx_all*nz_all 
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
 
                call set_sleeve_node_xmin_ymin(inod, ioff_gl)
 
@@ -125,9 +127,9 @@
      &               + 2*ndepth*ny_all*nz_all + 2*ndepth*nx_all*nz_all  &
      &               + ndepth*ndepth*nz_all
             if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
 
                call set_sleeve_node_xmax_ymin(inod, ioff_gl)
 
@@ -140,10 +142,10 @@
      &               + 2*ndepth*ny_all*nz_all + 2*ndepth*nx_all*nz_all  &
      &               + 2*ndepth*ndepth*nz_all
             if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
 !                                       .. start side
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
 
                call set_sleeve_node_xmax_ymax(inod, ioff_gl)
 
@@ -156,9 +158,9 @@
      &               + 2*ndepth*ny_all*nz_all + 2*ndepth*nx_all*nz_all  &
      &               + 3*ndepth*ndepth*nz_all
             if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
 
                call set_sleeve_node_xmin_ymax(inod, ioff_gl)
 
@@ -169,10 +171,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_sleeve_node_peri_quad(ipe, jpe, inod)
+      subroutine set_sleeve_node_peri_quad(nb_rng, ipe, jpe, inod)
 !
-      integer (kind = kint) :: ipe, jpe
-      integer (kind = kint) :: inod
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer (kind = kint), intent(in) :: ipe, jpe
+      integer (kind = kint), intent(inout) :: inod
 !
       integer (kind = kint) :: ioff_gl
       integer (kind = kint) :: inp, jnp, knp
@@ -182,10 +185,10 @@
 !
             ioff_gl = nod_gltot + edge_gltot
             if (ipe .eq. 1 ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 !
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                is = 1
                ie = ndepth
                call set_sleeve_node_xmin(inod, ioff_gl)
@@ -198,10 +201,10 @@
 !
             ioff_gl = nod_gltot + edge_gltot + ndepth*ny_all*nz_all
             if (ipe .eq. ndx ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do jnp = nb_rng1%jnp_st, nb_rng1%jnp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                is = 1
                ie = ndepth
                call set_sleeve_node_xmax(inod, ioff_gl)
@@ -214,10 +217,10 @@
 !
             ioff_gl = nod_gltot + edge_gltot + 2*ndepth*ny_all*nz_all
             if ( jpe .eq. 1 ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do inp = nb_rng1%inp_st, nb_rng1%inp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do inp = nb_rng%inp_st, nb_rng%inp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                js = 1
                je = ndepth
                call set_sleeve_node_ymin(inod, ioff_gl)
@@ -231,10 +234,10 @@
             ioff_gl = nod_gltot + edge_gltot                            &
      &               + 2*ndepth*ny_all*nz_all + ndepth*nx_all*nz_all 
             if ( jpe .eq. ndy ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
-              do inp = nb_rng1%inp_st, nb_rng1%inp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
+              do inp = nb_rng%inp_st, nb_rng%inp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                js = 1
                je = ndepth
                call set_sleeve_node_ymax(inod, ioff_gl)
@@ -248,9 +251,9 @@
             ioff_gl = nod_gltot + edge_gltot                            &
      &               + 2*ndepth*ny_all*nz_all + 2*ndepth*nx_all*nz_all 
             if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                call set_sleeve_node_xmin_ymin(inod, ioff_gl)
 
              enddo
@@ -262,9 +265,9 @@
      &               + 2*ndepth*ny_all*nz_all + 2*ndepth*nx_all*nz_all  &
      &               + ndepth*ndepth*nz_all
             if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                call set_sleeve_node_xmax_ymin(inod, ioff_gl)
 
             enddo
@@ -276,10 +279,10 @@
      &               + 2*ndepth*ny_all*nz_all + 2*ndepth*nx_all*nz_all  &
      &               + 2*ndepth*ndepth*nz_all
             if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
 !                                       .. start side
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                call set_sleeve_node_xmax_ymax(inod, ioff_gl)
 
              enddo
@@ -291,9 +294,9 @@
      &               + 2*ndepth*ny_all*nz_all + 2*ndepth*nx_all*nz_all  &
      &               + 3*ndepth*ndepth*nz_all
             if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
-             do knp = nb_rng1%knp_st, nb_rng1%knp_end
+             do knp = nb_rng%knp_st, nb_rng%knp_end
 
-               call set_sleeve_size(inp, jnp, knp, nb_rng1)
+               call set_sleeve_size(inp, jnp, knp, nb_rng)
                call set_sleeve_node_xmin_ymax(inod, ioff_gl)
 
              enddo

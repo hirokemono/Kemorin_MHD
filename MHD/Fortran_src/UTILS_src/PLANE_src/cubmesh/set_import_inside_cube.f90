@@ -41,7 +41,7 @@
                if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
                call set_sleeve_size(inp, jnp, knp, nb_rng)
-               neibpetot = neibpetot  + 1
+               icou = icou  + 1
 
                call set_im_node(inod)
 
@@ -71,27 +71,27 @@
                if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
                call set_sleeve_size(inp, jnp, knp, nb_rng)
-                  neibpetot = neibpetot  + 1
+                  icou = icou  + 1
 
                  call set_im_node(inod)
                  write(*,*) 'import node 0 from',                       &
-     &                     (neibpe(neibpetot)-1), inp, jnp, knp, inod
+     &                     (neibpe(icou)-1), inp, jnp, knp, inod
 
                  nd = 1
                  call set_im_edge(kpe, inp, jnp, knp, inod, nd)
                  write(*,*) 'import edge1 0 from',                      &
-     &                     (neibpe(neibpetot)-1), inp, jnp, knp, inod
+     &                     (neibpe(icou)-1), inp, jnp, knp, inod
 
                  nd = 2
                  call set_im_edge(kpe, inp, jnp, knp, inod, nd)
                  write(*,*) 'import edge2 0 from',                      &
-     &                     (neibpe(neibpetot)-1), inp, jnp, knp, inod
+     &                     (neibpe(icou)-1), inp, jnp, knp, inod
 
                  nd = 3
                  call set_im_edge(kpe, inp, jnp, knp, inod, nd)
 
                  write(*,*) 'import edge3 0 from',                      &
-     &                     (neibpe(neibpetot)-1), inp, jnp, knp, inod
+     &                     (neibpe(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo

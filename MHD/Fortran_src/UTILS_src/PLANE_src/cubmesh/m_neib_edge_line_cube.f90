@@ -3,18 +3,21 @@
 !
 !     written by H. Matsui
 !
-!  ----------------------------------------------------------------------
-!
-!      binary data data format
-!        Number of node
-!        Number of depth, max. number of nodes for filtering
-!        Stack for filtering (1 to num. of node)
-!        Local node ID for filtering
-!        distance in xi-direction
-!        distance in eta-direction
-!        distance in zta-direction
-!
-!  ----------------------------------------------------------------------
+!!  ---------------------------------------------------------------------
+!!
+!!      binary data data format
+!!        Number of node
+!!        Number of depth, max. number of nodes for filtering
+!!        Stack for filtering (1 to num. of node)
+!!        Local node ID for filtering
+!!        distance in xi-direction
+!!        distance in eta-direction
+!!        distance in zta-direction
+!!
+!!  ---------------------------------------------------------------------
+!!
+!!      subroutine neib_edge_line(id_rank, nb_rng)
+!!        type(neib_range_cube), intent(in) :: nb_rng
 !
       module m_neib_edge_line_cube
 !
@@ -22,7 +25,6 @@
 !
       use m_size_of_cube
       use m_local_node_id_cube
-      use m_neighb_range_cube
       use m_cube_files_data
       use m_filtering_edge_4_cubmesh
       use set_parallel_file_name
@@ -74,27 +76,29 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine neib_edge_line(id_rank)
+      subroutine neib_edge_line(id_rank, nb_rng)
 !
-       use m_constants
+      use t_neib_range_cube
+      use m_constants
 !
-       integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank
+      type(neib_range_cube), intent(in) :: nb_rng
 !
 !
-       call allocate_neighbour_edge_line
+      call allocate_neighbour_edge_line
 !
-       call set_neib_edge_line(ione, nb_rng1%iedge_st, nb_rng1%iedge_end, &
-     &     nb_rng1%j_st, nb_rng1%j_end, nb_rng1%k_st, nb_rng1%k_end)
-       call set_neib_edge_line(itwo, nb_rng1%i_st, nb_rng1%i_end,       &
-     &     nb_rng1%jedge_st, nb_rng1%jedge_end, nb_rng1%k_st, nb_rng1%k_end)
-       call set_neib_edge_line(ithree, nb_rng1%i_st, nb_rng1%i_end,     &
-     &     nb_rng1%j_st, nb_rng1%j_end, nb_rng1%kedge_st, nb_rng1%kedge_end)
+      call set_neib_edge_line(ione, nb_rng%iedge_st, nb_rng%iedge_end,  &
+     &    nb_rng%j_st, nb_rng%j_end, nb_rng%k_st, nb_rng%k_end)
+      call set_neib_edge_line(itwo, nb_rng%i_st, nb_rng%i_end,          &
+     &    nb_rng%jedge_st, nb_rng%jedge_end, nb_rng%k_st, nb_rng%k_end)
+      call set_neib_edge_line(ithree, nb_rng%i_st, nb_rng%i_end,        &
+     &    nb_rng%j_st, nb_rng%j_end, nb_rng%kedge_st, nb_rng%kedge_end)
 !
-       call write_neib_edge_line(id_rank)
+      call write_neib_edge_line(id_rank)
 !
-       call deallocate_neighbour_edge_line
+      call deallocate_neighbour_edge_line
 !
-       end subroutine neib_edge_line
+      end subroutine neib_edge_line
 !
 !  ----------------------------------------------------------------------
 !
@@ -107,6 +111,7 @@
        integer(kind = kint) :: i, j, k, iedge, iedge0
        integer(kind = kint) :: i1, ii, jj, kk
 !
+       iedge = 0
        if (nd.eq.1) then
          iedge = 0
        else if (nd.eq.2) then

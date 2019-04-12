@@ -87,7 +87,7 @@
       call count_neib_edge_z(ithree, nb_rng%i_st, nb_rng%i_end,         &
      &    nb_rng%j_st, nb_rng%j_end, nb_rng%kedge_st, nb_rng%kedge_end)
 !
-      call neib_edge_line(id_rank)
+      call neib_edge_line(id_rank, nb_rng)
 !
        end subroutine neighboring_edge
 !

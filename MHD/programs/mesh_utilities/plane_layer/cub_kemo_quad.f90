@@ -219,12 +219,12 @@
 !      inside cube
 !
             write(*,*) 'set_neighboring_pes', ipe, jpe, kpe
-            call set_neighboring_pes(pe_id)
+            call set_neighboring_pes(nb_rng1, pe_id)
 !
 !      neiboring information for periodical boundaries
 !
             write(*,*) 'set_neighboring_pes_peri', ipe, jpe, kpe
-            call set_neighboring_pes_peri(pe_id, ipe, jpe)
+            call set_neighboring_pes_peri(nb_rng1, pe_id, ipe, jpe)
 !
 !
             write(*,*) 'sort_neighboring_pes', ipe, jpe, kpe
@@ -238,7 +238,7 @@
 !
             call set_range_4_nodeloop(kpe, nb_rng1)
             call set_edge_para_4_each_pe(kpe, ndz, nb_rng1)
-            call set_node_quad(ipe, jpe, kpe)
+            call set_node_quad(nb_rng1, ipe, jpe, kpe)
 !
 ! ..... write 2.2 element (connection)
 !
