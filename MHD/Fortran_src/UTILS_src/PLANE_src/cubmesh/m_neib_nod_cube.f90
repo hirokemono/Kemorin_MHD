@@ -16,18 +16,19 @@
 !
 !  ----------------------------------------------------------------------
 !
-!      subroutine neighboring_node(pe_id, FEM_elen)
-!       subroutine check_neib_node_xy(FEM_elen)
-!       type(gradient_model_data_type), intent(inout) :: FEM_elen
+!!      subroutine neighboring_node(pe_id, nb_rng, FEM_elen)
+!!      subroutine check_neib_node_xy(FEM_elen)
+!!        type(neib_range_cube), intent(in) :: nb_rng
+!!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       module m_neib_nod_cube
 !
       use m_precision
 !
+      use t_neib_range_cube
       use m_size_of_cube
       use m_offset_size_cube
       use m_local_node_id_cube
-      use m_neighb_range_cube
       use m_cube_files_data
       use m_filtering_nod_4_cubmesh
       use m_neib_nod_line_cube
@@ -53,8 +54,9 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine neighboring_node(pe_id, FEM_elen)
+      subroutine neighboring_node(pe_id, nb_rng, FEM_elen)
 !
+      type(neib_range_cube), intent(in) :: nb_rng
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint), intent(in) :: pe_id
@@ -66,12 +68,12 @@
         write(*,*) 'allocate_filters_nod'
        call allocate_filters_nod(FEM_elen%filter_conf%nf_type)
 !
-       i_st2 =  max(nb_rng1%i_st -  ndepth,1)
-       i_end2 = min(nb_rng1%i_end + ndepth,nx)
-       j_st2 =  max(nb_rng1%j_st -  ndepth,1)
-       j_end2 = min(nb_rng1%j_end + ndepth,ny)
-       k_st2 =  max(nb_rng1%k_st -  ndepth,1)
-       k_end2 = min(nb_rng1%k_end + ndepth,nz)
+       i_st2 =  max(nb_rng%i_st -  ndepth,1)
+       i_end2 = min(nb_rng%i_end + ndepth,nx)
+       j_st2 =  max(nb_rng%j_st -  ndepth,1)
+       j_end2 = min(nb_rng%j_end + ndepth,ny)
+       k_st2 =  max(nb_rng%k_st -  ndepth,1)
+       k_end2 = min(nb_rng%k_end + ndepth,nz)
 !
        write(*,*) 'i_st2, i_end2', i_st2, i_end2, nx
        write(*,*) 'j_st2, j_end2', j_st2, j_end2, ny

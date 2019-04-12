@@ -102,7 +102,7 @@
       use m_grp_data_cub_kemo
       use m_cube_files_data
       use m_local_node_id_cube
-      use m_neighb_range_cube
+      use t_neib_range_cube
       use m_offset_size_cube
       use m_sleeve_cube
       use m_neib_nod_cube
@@ -141,6 +141,7 @@
 ! ----------------------------------------------------------------------
 !  * variables
 
+      type(neib_range_cube), save :: nb_rng1
       type(gradient_model_data_type), save :: FEM_elen_c
 !
       integer(kind=kint)  ::  ipe    , jpe    , kpe    , pe_id
@@ -294,7 +295,7 @@
               call allocate_work_4_filter_ele
 !
               write(*,*) 'neighboring_node'
-              call neighboring_node(pe_id, FEM_elen_c)
+              call neighboring_node(pe_id, nb_rng1, FEM_elen_c)
 !
               write(*,*) 'deallocate_work_4_filter_ele'
               call deallocate_work_4_filter_ele
