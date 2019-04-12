@@ -11,6 +11,7 @@
       module count_import_inside_cube
 !
       use m_precision
+      use m_constants
 !
       use t_neib_range_cube
       use m_size_of_cube
@@ -45,7 +46,7 @@
      &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
 
                icou = icou  + 1
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                stack_import(icou) = inod
 
@@ -67,7 +68,6 @@
       integer (kind = kint), intent(inout) :: icou, inod
 !
       integer (kind = kint) :: inp, jnp, knp
-      integer (kind = kint) :: nd
 !
       do knp = nb_rng%knp_st, nb_rng%knp_end
        do jnp = nb_rng%jnp_st, nb_rng%jnp_end
@@ -80,16 +80,11 @@
 !
          icou = icou  + 1
 
-         call count_node_id(inod)
-
-         nd = 1
-         call count_im_edge(kpe, inp, jnp, knp, inod, nd)
-
-         nd = 2
-         call count_im_edge(kpe, inp, jnp, knp, inod, nd)
-
-         nd = 3
-         call count_im_edge(kpe, inp, jnp, knp, inod, nd)
+         call count_node_id(sl_rng1, inod)
+!
+         call count_im_edge(sl_rng1, kpe, inp, jnp, knp, inod, ione)
+         call count_im_edge(sl_rng1, kpe, inp, jnp, knp, inod, itwo)
+         call count_im_edge(sl_rng1, kpe, inp, jnp, knp, inod, ithree)
 
          stack_import(icou) = inod
 

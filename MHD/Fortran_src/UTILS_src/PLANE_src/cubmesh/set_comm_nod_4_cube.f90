@@ -1,22 +1,22 @@
 !set_comm_nod_4_cube.f90
 !     module set_comm_nod_4_cube
 !
-      module set_comm_nod_4_cube
-!
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
+!
+!      subroutine count_node_id(sl_rng, inod)
+!      subroutine set_im_node(sl_rng, inod)
+!      subroutine set_ex_node(sl_rng, inod)
+!
+      module set_comm_nod_4_cube
 !
       use m_precision
 !
       use m_size_of_cube
       use m_comm_data_cube_kemo
-      use m_sleeve_cube
+      use t_sleeve_cube
 !
       implicit none
-!
-!      subroutine count_node_id(inod)
-!      subroutine set_im_node(inod)
-!      subroutine set_ex_node(inod)
 !
 ! ----------------------------------------------------------------------
 !
@@ -24,31 +24,33 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_node_id(inod)
+      subroutine count_node_id(sl_rng, inod)
 !
+      type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(inout)  :: inod
 !
 !
-      inod = inod + (sl_rng1%ie - sl_rng1%is + 1)                       &
-     &             * (sl_rng1%je - sl_rng1%js + 1)                      &
-     &             * (sl_rng1%ke - sl_rng1%ks + 1)
+      inod = inod + (sl_rng%ie - sl_rng%is + 1)                         &
+     &             * (sl_rng%je - sl_rng%js + 1)                        &
+     &             * (sl_rng%ke - sl_rng%ks + 1)
 !
       end subroutine count_node_id
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_im_node(inod)
+      subroutine set_im_node(sl_rng, inod)
 !
       use m_local_node_id_cube
 !
+      type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(inout) :: inod
 !
       integer (kind = kint) :: i, j, k
 !
 !
-      do k = sl_rng1%ks, sl_rng1%ke
-        do j = sl_rng1%js, sl_rng1%je
-          do i = sl_rng1%is, sl_rng1%ie
+      do k = sl_rng%ks, sl_rng%ke
+        do j = sl_rng%js, sl_rng%je
+          do i = sl_rng%is, sl_rng%ie
 
             inod = inod + 1
             item_import(inod) =  node_id_lc(i,j,k)
@@ -61,18 +63,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ex_node(inod)
+      subroutine set_ex_node(sl_rng, inod)
 !
       use m_local_node_id_cube
 !
+      type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(inout) :: inod
 !
       integer (kind = kint) :: i, j, k
 !
 !
-      do k = sl_rng1%ks, sl_rng1%ke
-        do j = sl_rng1%js, sl_rng1%je
-          do i = sl_rng1%is, sl_rng1%ie
+      do k = sl_rng%ks, sl_rng%ke
+        do j = sl_rng%js, sl_rng%je
+          do i = sl_rng%is, sl_rng%ie
 
             inod = inod + 1
             item_export(inod) =  node_id_lc(i,j,k)

@@ -45,7 +45,7 @@
 
                icou = icou  + 1
 
-               call set_ex_node(inod)
+               call set_ex_node(sl_rng1, inod)
 !               write(*,*) 'inod', inod
 
               enddo
@@ -80,22 +80,22 @@
 
                icou = icou  + 1
 
-               call set_ex_node(inod)
+               call set_ex_node(sl_rng1, inod)
                write(*,*) 'export node 0 to',                           &
      &                   (neibpe(icou)-1), inp, jnp, knp, inod
 
                nd = 1
-               call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+               call set_ex_edge(sl_rng1, kpe, inp, jnp, knp, inod, nd)
                write(*,*) 'export edge1 0 to',                          &
      &                   (neibpe(icou)-1), inp, jnp, knp, inod
 
                nd = 2
-               call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+               call set_ex_edge(sl_rng1, kpe, inp, jnp, knp, inod, nd)
                write(*,*) 'export edge2 0 to',                          &
      &                   (neibpe(icou)-1), inp, jnp, knp, inod
 
                nd = 3
-               call set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+               call set_ex_edge(sl_rng1, kpe, inp, jnp, knp, inod, nd)
                write(*,*) 'export edge3 0 to',                          &
      &                   (neibpe(icou)-1), inp, jnp, knp, inod
 

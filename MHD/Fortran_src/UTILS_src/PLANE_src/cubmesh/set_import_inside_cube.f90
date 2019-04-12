@@ -45,7 +45,7 @@
      &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
                icou = icou  + 1
 
-               call set_im_node(inod)
+               call set_im_node(sl_rng1, inod)
 
               enddo
              enddo
@@ -75,19 +75,22 @@
      &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
                icou = icou  + 1
 
-               call set_im_node(inod)
+               call set_im_node(sl_rng1, inod)
                write(*,*) 'import node 0 from',                         &
      &                     (neibpe(icou)-1), inp, jnp, knp, inod
 
-               call set_im_edge(kpe, inp, jnp, knp, inod, ione)
+               call set_im_edge                                         &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
                write(*,*) 'import edge1 0 from',                        &
      &                     (neibpe(icou)-1), inp, jnp, knp, inod
 
-               call set_im_edge(kpe, inp, jnp, knp, inod, itwo)
+               call set_im_edge                                         &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
                write(*,*) 'import edge2 0 from',                        &
      &                     (neibpe(icou)-1), inp, jnp, knp, inod
 
-               call set_im_edge(kpe, inp, jnp, knp, inod, ithree)
+               call set_im_edge                                         &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
 
                write(*,*) 'import edge3 0 from',                        &
      &                     (neibpe(icou)-1), inp, jnp, knp, inod

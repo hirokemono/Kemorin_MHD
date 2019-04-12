@@ -11,6 +11,9 @@
 !!      subroutine set_internal_edge_size(nb_rng, nd, sl_rng)
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !!        type(slleve_range), intent(inout) :: sl_rng
+!!      subroutine copy_slleve_size(sl_rng_org, sl_rng_new)
+!!        type(slleve_range), intent(in) :: sl_rng_org
+!!        type(slleve_range), intent(inout) :: sl_rng_new
 !!
       module t_sleeve_cube
 !
@@ -153,6 +156,22 @@
       end if
 !
       end subroutine set_internal_edge_size
+!
+! ----------------------------------------------------------------------
+!
+      subroutine copy_slleve_size(sl_rng_org, sl_rng_new)
+!
+      type(slleve_range), intent(in) :: sl_rng_org
+      type(slleve_range), intent(inout) :: sl_rng_new
+!
+      sl_rng_new%is = sl_rng_org%is
+      sl_rng_new%js = sl_rng_org%js
+      sl_rng_new%ks = sl_rng_org%ks
+      sl_rng_new%ie = sl_rng_org%ie
+      sl_rng_new%je = sl_rng_org%je
+      sl_rng_new%ke = sl_rng_org%ke
+!
+      end subroutine copy_slleve_size
 !
 ! ----------------------------------------------------------------------
 !

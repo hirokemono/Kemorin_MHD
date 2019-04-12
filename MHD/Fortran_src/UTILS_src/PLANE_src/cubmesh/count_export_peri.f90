@@ -56,7 +56,7 @@
                sl_rng1%ie = nxi+ndepth
 
                icou = icou  + 1
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                stack_export(icou) = inod
 
@@ -78,7 +78,7 @@
                sl_rng1%ie = 2*ndepth
 
                icou = icou  + 1
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                stack_export(icou) = inod
 
@@ -100,7 +100,7 @@
                sl_rng1%je = nyi+ndepth
 
                icou = icou  + 1
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                stack_export(icou) = inod
 
@@ -121,7 +121,7 @@
                sl_rng1%je = 2*ndepth
 
                icou = icou  + 1
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                stack_export(icou) = inod
 
@@ -144,7 +144,7 @@
                sl_rng1%je = nyi+ndepth
 
                icou = icou  + 1
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                stack_export(icou) = inod
 
@@ -166,7 +166,7 @@
                sl_rng1%je = nyi+ndepth
 
                icou = icou  + 1
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                stack_export(icou) = inod
 
@@ -186,7 +186,7 @@
                sl_rng1%je = 2*ndepth
 
                icou = icou  + 1
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                stack_export(icou) = inod
 
@@ -208,7 +208,7 @@
                sl_rng1%je = 2*ndepth
 
                icou = icou  + 1
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                stack_export(icou) = inod
 
@@ -246,11 +246,14 @@
                sl_rng1%ie = nxi+ndepth
 
                icou = icou  + 1
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ione)
-               call count_ex_edge(kpe, inp, jnp, knp, inod, itwo)
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
@@ -270,16 +273,19 @@
 
                icou = icou  + 1
                sl_rng1%ie = 2*ndepth
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                sl_rng1%ie = 2*ndepth - 1
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
 
                sl_rng1%ie = 2*ndepth
-               call count_ex_edge(kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
 
                sl_rng1%ie = 2*ndepth
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
@@ -300,11 +306,14 @@
                sl_rng1%je = nyi+ndepth
 
                icou = icou  + 1
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ione)
-               call count_ex_edge(kpe, inp, jnp, knp, inod, itwo)
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
@@ -324,16 +333,19 @@
 
                icou = icou  + 1
                sl_rng1%je = 2*ndepth
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                sl_rng1%je = 2*ndepth
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
 
                sl_rng1%je = 2*ndepth - 1
-               call count_ex_edge(kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
 
                sl_rng1%je = 2*ndepth
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
@@ -356,11 +368,14 @@
                sl_rng1%je = nyi+ndepth
 
                icou = icou  + 1
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ione)
-               call count_ex_edge(kpe, inp, jnp, knp, inod, itwo)
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
@@ -381,16 +396,19 @@
 
                icou = icou  + 1
                sl_rng1%ie = 2*ndepth
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                sl_rng1%ie = 2*ndepth - 1
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
 
                sl_rng1%ie = 2*ndepth
-               call count_ex_edge(kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
 
                sl_rng1%ie = 2*ndepth
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
 !
                stack_export(icou) = inod
 
@@ -410,19 +428,22 @@
                icou = icou  + 1
                sl_rng1%ie = 2*ndepth
                sl_rng1%je = 2*ndepth
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                sl_rng1%ie = 2*ndepth - 1
                sl_rng1%je = 2*ndepth
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
 
                sl_rng1%ie = 2*ndepth
                sl_rng1%je = 2*ndepth - 1
-               call count_ex_edge(kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
 
                sl_rng1%ie = 2*ndepth
                sl_rng1%je = 2*ndepth
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
@@ -443,16 +464,19 @@
 
                icou = icou  + 1
                sl_rng1%je = 2*ndepth
-               call count_node_id(inod)
+               call count_node_id(sl_rng1, inod)
 
                sl_rng1%je = 2*ndepth
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
 
                sl_rng1%je = 2*ndepth - 1
-               call count_ex_edge(kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
 
                sl_rng1%je = 2*ndepth
-               call count_ex_edge(kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge                                       &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
