@@ -12,9 +12,6 @@
 !
       type(neib_range_cube), save :: nb_rng1
 !
-      integer(kind=kint )  ::  inp_st , jnp_st , knp_st
-      integer(kind=kint )  ::  inp_end, jnp_end, knp_end
-!
       integer(kind=kint )  ::  i_st   , j_st   , k_st
       integer(kind=kint )  ::  i_end  , j_end  , k_end
 !
@@ -33,16 +30,6 @@
 !
 !
       call set_range_4_neighbour(ipe, jpe, kpe, nb_rng1)
-!
-      inp_st =  nb_rng1%inp_st 
-      inp_end = nb_rng1%inp_end
-
-      jnp_st =  nb_rng1%jnp_st 
-      jnp_end = nb_rng1%jnp_end
-
-      knp_st =  nb_rng1%knp_st 
-      knp_end = nb_rng1%knp_end
-!
 !
       end subroutine s_set_range_4_neighbour
 !
