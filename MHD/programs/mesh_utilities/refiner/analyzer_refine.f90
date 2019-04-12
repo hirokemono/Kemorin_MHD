@@ -97,7 +97,6 @@
 !
       use m_geometry_constants
       use t_refined_node_id
-      use m_work_merge_refine_itp
       use set_nnod_4_ele_by_type
       use set_element_refine_flag
       use set_all_refine_flags

@@ -162,7 +162,7 @@
        integer(kind = kint) :: i
 !
 
-       write(pe_id,'(a)', advance='NO') hd_fem_para()
+       write(l_out,'(a)', advance='NO') hd_fem_para()
 
        write(l_out,'(i16)')  pe_id-1
        write(l_out,'(i16)')  neibpetot_new
