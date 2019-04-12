@@ -52,17 +52,17 @@
 !
       call read_integer_textline                                        &
      &   (mpi_read_charahead(IO_param, len_int_txt), group_IO%num_grp)
-      call allocate_grp_type_num(group_IO)
+      call alloc_group_num(group_IO)
 !
       if(group_IO%num_grp .le. 0) then
         group_IO%num_item = 0
-        call allocate_grp_type_item(group_IO)
+        call alloc_group_item(group_IO)
       else
         call mpi_read_num_of_data(IO_param, num_tmp)
         call mpi_read_int_stack(IO_param, group_IO%num_grp,             &
      &      group_IO%istack_grp, group_IO%num_item)
 !
-        call allocate_grp_type_item(group_IO)
+        call alloc_group_item(group_IO)
 !
         do i = 1, group_IO%num_grp
           call read_field_name_mpi                                      &
@@ -91,18 +91,18 @@
       call read_integer_textline                                        &
      &   (mpi_read_charahead(IO_param, len_int_txt),                    &
      &    surf_grp_IO%num_grp)
-      call allocate_sf_grp_type_num(surf_grp_IO)
+      call alloc_sf_group_num(surf_grp_IO)
 !
       if(surf_grp_IO%num_grp .le. 0) then
-        call allocate_sf_grp_type_num(surf_grp_IO)
+        call alloc_sf_group_num(surf_grp_IO)
         surf_grp_IO%num_item = 0
-        call allocate_sf_grp_type_item(surf_grp_IO)
+        call alloc_sf_group_item(surf_grp_IO)
       else
         call mpi_read_num_of_data(IO_param, num_tmp)
         call mpi_read_int_stack(IO_param, surf_grp_IO%num_grp,          &
      &      surf_grp_IO%istack_grp, surf_grp_IO%num_item)
 !
-        call allocate_sf_grp_type_item(surf_grp_IO)
+        call alloc_sf_group_item(surf_grp_IO)
 !
         do i = 1, surf_grp_IO%num_grp
           call read_field_name_mpi(IO_param%id_file, IO_param%ioff_gl,  &

@@ -35,14 +35,14 @@
 !
 !
       new_nod_grp%num_grp =  nod_grp%num_grp + 1
-      call allocate_grp_type_num(new_nod_grp)
+      call alloc_group_num(new_nod_grp)
 !
       call count_new_nod_group(nod_grp, new_nod_grp)
       call count_equator_nod_group                                      &
      &   (nod_grp%num_grp, new_node, new_nod_grp)
 !
 !
-      call allocate_grp_type_item(new_nod_grp)
+      call alloc_group_item(new_nod_grp)
 !
       call set_new_nod_group(nod_grp, new_nod_grp)
       call set_equator_nod_group                                        &
@@ -59,11 +59,11 @@
 !
 !
       new_nod_grp%num_grp =  nod_grp%num_grp
-      call allocate_grp_type_num(new_nod_grp)
+      call alloc_group_num(new_nod_grp)
 !
       call count_new_nod_group(nod_grp, new_nod_grp)
 !
-      call allocate_grp_type_item(new_nod_grp)
+      call alloc_group_item(new_nod_grp)
       call set_new_nod_group(nod_grp, new_nod_grp)
 !
       end subroutine s_set_new_node_grp

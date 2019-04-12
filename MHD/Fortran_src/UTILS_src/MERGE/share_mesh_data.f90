@@ -175,8 +175,8 @@
      &    irank_org, CALYPSO_COMM, ierr_MPI)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
-        call allocate_grp_type_num(group)
-        call allocate_grp_type_item(group)
+        call alloc_group_num(group)
+        call alloc_group_item(group)
       end if
 !
       if(group%num_grp .gt. 0) then
@@ -215,8 +215,8 @@
      &    irank_org, CALYPSO_COMM, ierr_MPI)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
-        call allocate_sf_grp_type_num(sf_group)
-        call allocate_sf_grp_type_item(sf_group)
+        call alloc_sf_group_num(sf_group)
+        call alloc_sf_group_item(sf_group)
       end if
 !
       if(sf_group%num_grp .gt. 0) then

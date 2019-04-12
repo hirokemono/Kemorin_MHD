@@ -47,7 +47,7 @@
       call read_one_integer_b(bflag, group_IO%num_grp)
       if(bflag%ierr_IO .ne. 0) return
 !
-      call allocate_grp_type_num(group_IO)
+      call alloc_group_num(group_IO)
 !
       if (group_IO%num_grp .gt. 0) then
         call read_integer_stack_b(bflag, cast_long(group_IO%num_grp),   &
@@ -58,14 +58,14 @@
      &     (bflag, group_IO%num_grp, group_IO%grp_name)
         if(bflag%ierr_IO .ne. 0) return
 !
-        call allocate_grp_type_item(group_IO)
+        call alloc_group_item(group_IO)
 !
         call read_mul_integer_b                                         &
      &     (bflag, cast_long(group_IO%num_item), group_IO%item_grp)
         if(bflag%ierr_IO .ne. 0) return
       else
         group_IO%num_item = 0
-        call allocate_grp_type_item(group_IO)
+        call alloc_group_item(group_IO)
       end if
 !
       end subroutine read_group_data_b
@@ -83,7 +83,7 @@
       call read_one_integer_b(bflag, surf_grp_IO%num_grp)
       if(bflag%ierr_IO .ne. 0) return
 !
-      call allocate_sf_grp_type_num(surf_grp_IO)
+      call alloc_sf_group_num(surf_grp_IO)
 !
       if (surf_grp_IO%num_grp .gt. 0) then
         call read_integer_stack_b                                       &
@@ -95,13 +95,13 @@
      &     (bflag, surf_grp_IO%num_grp, surf_grp_IO%grp_name)
         if(bflag%ierr_IO .ne. 0) return
 !
-        call allocate_sf_grp_type_item(surf_grp_IO)
+        call alloc_sf_group_item(surf_grp_IO)
 !
         num64 = 2 * surf_grp_IO%num_item
         call read_mul_integer_b(bflag, num64, surf_grp_IO%item_sf_grp)
         if(bflag%ierr_IO .ne. 0) return
       else
-        call allocate_sf_grp_type_item(surf_grp_IO)
+        call alloc_sf_group_item(surf_grp_IO)
       end if
 !
       end subroutine read_surf_grp_data_b

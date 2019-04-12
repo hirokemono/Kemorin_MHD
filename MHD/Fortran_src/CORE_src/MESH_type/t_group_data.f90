@@ -7,22 +7,22 @@
 !> @brief Structure of group data
 !
 !!@verbatim
-!!      subroutine allocate_grp_type_num(grp)
-!!      subroutine allocate_grp_type_item(grp)
-!!      subroutine allocate_grp_type_smp(grp)
-!!      subroutine allocate_sf_grp_type_num(sf_grp)
-!!      subroutine allocate_sf_grp_type_item(sf_grp)
-!!      subroutine allocate_sf_grp_type_smp(grp)
+!!      subroutine alloc_group_num(grp)
+!!      subroutine alloc_group_item(grp)
+!!      subroutine alloc_group_smp(grp)
+!!      subroutine alloc_sf_group_num(sf_grp)
+!!      subroutine alloc_sf_group_item(sf_grp)
+!!      subroutine alloc_sf_group_smp(grp)
 !!
-!!      subroutine deallocate_grp_type(grp)
-!!      subroutine deallocate_grp_type_num(grp)
-!!      subroutine deallocate_grp_type_item(grp)
-!!      subroutine deallocate_grp_type_smp(grp)
+!!      subroutine dealloc_group(grp)
+!!      subroutine dealloc_group_num(grp)
+!!      subroutine dealloc_group_item(grp)
+!!      subroutine dealloc_group_smp(grp)
 !!
-!!      subroutine deallocate_sf_grp_type(sf_grp)
-!!      subroutine deallocate_sf_grp_type_num(sf_grp)
-!!      subroutine deallocate_sf_grp_type_item(sf_grp)
-!!      subroutine deallocate_sf_grp_type_smp(grp)
+!!      subroutine dealloc_sf_group(sf_grp)
+!!      subroutine dealloc_sf_group_num(sf_grp)
+!!      subroutine dealloc_sf_group_item(sf_grp)
+!!      subroutine dealloc_sf_group_smp(grp)
 !!
 !!      subroutine check_group_type_data(id_rank, grp)
 !!      subroutine check_surf_grp_type_data(id_rank, sf_grp)
@@ -101,7 +101,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_grp_type_num(grp)
+      subroutine alloc_group_num(grp)
 !
       type(group_data), intent(inout) :: grp
 !
@@ -112,11 +112,11 @@
       if (grp%num_grp .gt. 0) grp%nitem_grp =  0
       grp%istack_grp = 0
 !
-      end subroutine allocate_grp_type_num
+      end subroutine alloc_group_num
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_grp_type_item(grp)
+      subroutine alloc_group_item(grp)
 !
       type(group_data), intent(inout) :: grp
 !
@@ -125,23 +125,23 @@
       allocate(grp%item_grp(grp%num_item))
       if (grp%num_item .gt. 0) grp%item_grp =  0
 !
-      end subroutine allocate_grp_type_item
+      end subroutine alloc_group_item
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_grp_type_smp(grp)
+      subroutine alloc_group_smp(grp)
 !
       type(group_data), intent(inout) :: grp
 !
       allocate(grp%istack_grp_smp(0:grp%num_grp_smp))
       grp%istack_grp_smp =  0
 !
-      end subroutine allocate_grp_type_smp
+      end subroutine alloc_group_smp
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_sf_grp_type_num(sf_grp)
+      subroutine alloc_sf_group_num(sf_grp)
 !
       type(surface_group_data), intent(inout) :: sf_grp
 !
@@ -152,11 +152,11 @@
       if (sf_grp%num_grp .gt. 0) sf_grp%nitem_grp =  0
       sf_grp%istack_grp = 0
 !
-      end subroutine allocate_sf_grp_type_num
+      end subroutine alloc_sf_group_num
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_sf_grp_type_item(sf_grp)
+      subroutine alloc_sf_group_item(sf_grp)
 !
       type(surface_group_data), intent(inout) :: sf_grp
 !
@@ -165,34 +165,34 @@
       allocate(sf_grp%item_sf_grp(2,sf_grp%num_item))
       if (sf_grp%num_item .gt. 0) sf_grp%item_sf_grp =  0
 !
-      end subroutine allocate_sf_grp_type_item
+      end subroutine alloc_sf_group_item
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_sf_grp_type_smp(sf_grp)
+      subroutine alloc_sf_group_smp(sf_grp)
 !
       type(surface_group_data), intent(inout) :: sf_grp
 !
       allocate(sf_grp%istack_grp_smp(0:sf_grp%num_grp_smp))
       sf_grp%istack_grp_smp =  0
 !
-      end subroutine allocate_sf_grp_type_smp
+      end subroutine alloc_sf_group_smp
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_grp_type(grp)
+      subroutine dealloc_group(grp)
 !
       type(group_data), intent(inout) :: grp
 !
-      call deallocate_grp_type_item(grp)
-      call deallocate_grp_type_num(grp)
+      call dealloc_group_item(grp)
+      call dealloc_group_num(grp)
 !
-      end subroutine deallocate_grp_type
+      end subroutine dealloc_group
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_grp_type_num(grp)
+      subroutine dealloc_group_num(grp)
 !
       type(group_data), intent(inout) :: grp
 !
@@ -200,43 +200,43 @@
       deallocate(grp%nitem_grp)
       deallocate(grp%istack_grp)
 !
-      end subroutine deallocate_grp_type_num
+      end subroutine dealloc_group_num
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_grp_type_item(grp)
+      subroutine dealloc_group_item(grp)
 !
       type(group_data), intent(inout) :: grp
 !
       deallocate(grp%item_grp)
 !
-      end subroutine deallocate_grp_type_item
+      end subroutine dealloc_group_item
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_grp_type_smp(grp)
+      subroutine dealloc_group_smp(grp)
 !
       type(group_data), intent(inout) :: grp
 !
       deallocate(grp%istack_grp_smp)
 !
-      end subroutine deallocate_grp_type_smp
+      end subroutine dealloc_group_smp
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_sf_grp_type(sf_grp)
+      subroutine dealloc_sf_group(sf_grp)
 !
       type(surface_group_data), intent(inout) :: sf_grp
 !
-      call deallocate_sf_grp_type_num(sf_grp)
-      call deallocate_sf_grp_type_item(sf_grp)
+      call dealloc_sf_group_num(sf_grp)
+      call dealloc_sf_group_item(sf_grp)
 !
-      end subroutine deallocate_sf_grp_type
+      end subroutine dealloc_sf_group
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_sf_grp_type_num(sf_grp)
+      subroutine dealloc_sf_group_num(sf_grp)
 !
       type(surface_group_data), intent(inout) :: sf_grp
 !
@@ -244,27 +244,27 @@
       deallocate(sf_grp%nitem_grp)
       deallocate(sf_grp%istack_grp)
 !
-      end subroutine deallocate_sf_grp_type_num
+      end subroutine dealloc_sf_group_num
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_sf_grp_type_item(sf_grp)
+      subroutine dealloc_sf_group_item(sf_grp)
 !
       type(surface_group_data), intent(inout) :: sf_grp
 !
       deallocate(sf_grp%item_sf_grp)
 !
-      end subroutine deallocate_sf_grp_type_item
+      end subroutine dealloc_sf_group_item
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_sf_grp_type_smp(sf_grp)
+      subroutine dealloc_sf_group_smp(sf_grp)
 !
       type(surface_group_data), intent(inout) :: sf_grp
 !
       deallocate(sf_grp%istack_grp_smp)
 !
-      end subroutine deallocate_sf_grp_type_smp
+      end subroutine dealloc_sf_group_smp
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

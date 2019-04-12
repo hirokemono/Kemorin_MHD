@@ -91,9 +91,9 @@
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
 !
-     call deallocate_grp_type(gen_sph%radial_rj_grp_lc)
-     call deallocate_grp_type(gen_sph%radial_rtp_grp_lc)
-     call deallocate_grp_type(gen_sph%theta_rtp_grp_lc)
+     call dealloc_group(gen_sph%radial_rj_grp_lc)
+     call dealloc_group(gen_sph%radial_rtp_grp_lc)
+     call dealloc_group(gen_sph%theta_rtp_grp_lc)
 !
       end subroutine dealloc_gen_sph_fem_mesh_param
 !

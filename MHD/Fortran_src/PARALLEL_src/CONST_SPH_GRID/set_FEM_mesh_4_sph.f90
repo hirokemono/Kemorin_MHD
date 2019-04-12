@@ -179,7 +179,7 @@
       call count_sph_local_node_group                                   &
      &   (sph_params, gen_sph%radial_rj_grp_lc, group%nod_grp)
 !
-      call allocate_grp_type_num(group%nod_grp)
+      call alloc_group_num(group%nod_grp)
       call count_sph_local_node_grp_item                                &
      &   (ip_r, ip_t, sph_params, gen_sph%radial_rj_grp_lc,             &
      &    stbl, group%nod_grp)
@@ -188,7 +188,7 @@
      &    group%nod_grp%nitem_grp, izero, group%nod_grp%istack_grp,     &
      &    group%nod_grp%num_item)
 !
-      call allocate_grp_type_item(group%nod_grp)
+      call alloc_group_item(group%nod_grp)
       call set_sph_local_node_grp_item                                  &
      &   (ip_r, ip_t, sph_params, gen_sph%radial_rj_grp_lc,             &
      &    stbl, group%nod_grp)
@@ -198,7 +198,7 @@
       call count_sph_local_ele_group                                    &
      &   (group%ele_grp, gen_sph%radial_rj_grp_lc)
 !
-      call allocate_grp_type_num(group%ele_grp)
+      call alloc_group_num(group%ele_grp)
       call count_sph_local_ele_grp_item                                 &
      &   (ip_r, ip_t, sph_params, stbl, gen_sph%radial_rj_grp_lc,       &
      &    group%ele_grp)
@@ -207,7 +207,7 @@
      &    group%ele_grp%nitem_grp, izero, group%ele_grp%istack_grp,     &
      &    group%ele_grp%num_item)
 !
-      call allocate_grp_type_item(group%ele_grp)
+      call alloc_group_item(group%ele_grp)
       call set_sph_local_ele_grp_item(ip_r, ip_t, sph_params, stbl,     &
      &    gen_sph%radial_rj_grp_lc, group%ele_grp)
 !
@@ -217,7 +217,7 @@
       call count_sph_local_surf_group                                   &
      &   (gen_sph%radial_rj_grp_lc, group%surf_grp)
 !
-      call allocate_sf_grp_type_num(group%surf_grp)
+      call alloc_sf_group_num(group%surf_grp)
       call count_sph_local_surf_grp_item(ip_r, ip_t, sph_params,        &
      &    gen_sph%radial_rj_grp_lc, stbl, group%surf_grp)
 !
@@ -225,7 +225,7 @@
      &    group%surf_grp%nitem_grp, izero, group%surf_grp%istack_grp,   &
      &    group%surf_grp%num_item)
 !
-      call allocate_sf_grp_type_item(group%surf_grp)
+      call alloc_sf_group_item(group%surf_grp)
       call set_sph_local_surf_grp_item(ip_r, ip_t, sph_params,          &
      &    gen_sph%radial_rj_grp_lc, stbl, group%surf_grp)
 !

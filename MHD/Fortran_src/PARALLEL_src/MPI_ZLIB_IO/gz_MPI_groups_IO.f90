@@ -58,16 +58,16 @@
      &    group_IO%num_grp)
 !
       if(group_IO%num_grp .le. 0) then
-        call allocate_grp_type_num(group_IO)
+        call alloc_group_num(group_IO)
         group_IO%num_item = 0
-        call allocate_grp_type_item(group_IO)
+        call alloc_group_item(group_IO)
       else
         call gz_mpi_read_num_of_data(IO_param, num_tmp)
-        call allocate_grp_type_num(group_IO)
+        call alloc_group_num(group_IO)
 !
         call gz_mpi_read_int_stack(IO_param, group_IO%num_grp,          &
      &      group_IO%istack_grp, group_IO%num_item)
-        call allocate_grp_type_item(group_IO)
+        call alloc_group_item(group_IO)
 !
         do i = 1, group_IO%num_grp
           call gz_read_fld_1word_mpi                                    &
@@ -99,16 +99,16 @@
      &    surf_grp_IO%num_grp)
 !
       if(surf_grp_IO%num_grp .le. 0) then
-        call allocate_sf_grp_type_num(surf_grp_IO)
+        call alloc_sf_group_num(surf_grp_IO)
         surf_grp_IO%num_item = 0
-        call allocate_sf_grp_type_item(surf_grp_IO)
+        call alloc_sf_group_item(surf_grp_IO)
       else
         call gz_mpi_read_num_of_data(IO_param, num_tmp)
-        call allocate_sf_grp_type_num(surf_grp_IO)
+        call alloc_sf_group_num(surf_grp_IO)
 !
         call gz_mpi_read_int_stack(IO_param, surf_grp_IO%num_grp,       &
      &      surf_grp_IO%istack_grp, surf_grp_IO%num_item)
-        call allocate_sf_grp_type_item(surf_grp_IO)
+        call alloc_sf_group_item(surf_grp_IO)
 !
         do i = 1, surf_grp_IO%num_grp
           call gz_read_fld_1word_mpi                                    &

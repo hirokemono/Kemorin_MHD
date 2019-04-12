@@ -224,9 +224,9 @@
 !
 !
       do ip = 1, mgd_mesh%num_pe
-        call deallocate_grp_type( mgd_mesh%sub_nod_grp(ip) )
-        call deallocate_grp_type( mgd_mesh%sub_ele_grp(ip) )
-        call deallocate_sf_grp_type( mgd_mesh%sub_surf_grp(ip) )
+        call dealloc_group( mgd_mesh%sub_nod_grp(ip) )
+        call dealloc_group( mgd_mesh%sub_ele_grp(ip) )
+        call dealloc_sf_group( mgd_mesh%sub_surf_grp(ip) )
       end do
 !
       deallocate( mgd_mesh%sub_nod_grp )

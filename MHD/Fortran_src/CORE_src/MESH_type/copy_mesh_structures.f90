@@ -273,7 +273,7 @@
       new_grp%num_grp =     org_grp%num_grp
       new_grp%num_item = org_grp%num_item
 !
-      call allocate_grp_type_num(new_grp)
+      call alloc_group_num(new_grp)
 !
       if (new_grp%num_grp .gt. 0) then
         new_grp%grp_name(1:new_grp%num_grp)                             &
@@ -282,7 +282,7 @@
      &          =  org_grp%istack_grp(0:new_grp%num_grp)
       end if
 !
-      call allocate_grp_type_item(new_grp)
+      call alloc_group_item(new_grp)
 !
       if (new_grp%num_item .gt. 0) then
         new_grp%item_grp(1:new_grp%num_item)                            &
@@ -304,7 +304,7 @@
       new_sf_grp%num_grp = org_sf_grp%num_grp
       new_sf_grp%num_item = org_sf_grp%num_item
 !
-      call allocate_sf_grp_type_num(new_sf_grp)
+      call alloc_sf_group_num(new_sf_grp)
 !
       if(new_sf_grp%num_grp .gt. 0) then
         new_sf_grp%grp_name(1:new_sf_grp%num_grp)                       &
@@ -313,7 +313,7 @@
      &     =  org_sf_grp%istack_grp(0:new_sf_grp%num_grp)
       end if
 !
-      call allocate_sf_grp_type_item(new_sf_grp)
+      call alloc_sf_group_item(new_sf_grp)
 !
       if(new_sf_grp%num_item .gt. 0) then
         new_sf_grp%item_sf_grp(1,1:new_sf_grp%num_item)                 &

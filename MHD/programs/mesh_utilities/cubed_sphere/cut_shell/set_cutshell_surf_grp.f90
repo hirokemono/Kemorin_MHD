@@ -35,14 +35,14 @@
 !
 !
       new_sf_grp%num_grp =  sf_grp%num_grp + 1
-      call allocate_sf_grp_type_num(new_sf_grp)
+      call alloc_sf_group_num(new_sf_grp)
 !
       call count_new_surf_group(sf_grp, new_sf_grp)
       call count_equator_surface                                        &
      &   (sf_grp%num_grp, newmesh%node, newmesh%ele, new_sf_grp)
 !
 !
-      call allocate_sf_grp_type_item(new_sf_grp)
+      call alloc_sf_group_item(new_sf_grp)
 !
       call set_new_surf_group(sf_grp, new_sf_grp)
       call set_equator_surface                                          &
@@ -59,11 +59,11 @@
 !
 !
       new_sf_grp%num_grp =  sf_grp%num_grp
-      call allocate_sf_grp_type_num(new_sf_grp)
+      call alloc_sf_group_num(new_sf_grp)
 !
       call count_new_surf_group(sf_grp, new_sf_grp)
 !
-      call allocate_sf_grp_type_item(new_sf_grp)
+      call alloc_sf_group_item(new_sf_grp)
       call set_new_surf_group(sf_grp, new_sf_grp)
 !
       end subroutine s_set_new_surface_grp

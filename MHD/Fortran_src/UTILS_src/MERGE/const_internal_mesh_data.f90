@@ -135,34 +135,34 @@
 !
 !  Node greoup
       new_group%nod_grp%num_grp = group%nod_grp%num_grp
-      call allocate_grp_type_num(new_group%nod_grp)
+      call alloc_group_num(new_group%nod_grp)
 !
       call count_internal_node_grp                                      &
      &   (node%internal_node, group%nod_grp, new_group%nod_grp)
 !
-      call allocate_grp_type_item(new_group%nod_grp)
+      call alloc_group_item(new_group%nod_grp)
       call set_internal_node_grp                                        &
      &   (node%internal_node, group%nod_grp, new_group%nod_grp)
 !
 !
 !  element greoup
       new_group%ele_grp%num_grp = group%ele_grp%num_grp
-      call allocate_grp_type_num(new_group%ele_grp)
+      call alloc_group_num(new_group%ele_grp)
       call count_internal_element_grp                                   &
      &   (ele%numele, iele_to_new, group%ele_grp, new_group%ele_grp)
 !
-      call allocate_grp_type_item(new_group%ele_grp)
+      call alloc_group_item(new_group%ele_grp)
       call set_internal_element_grp(ele%numele, iele_to_new,            &
      &    group%ele_grp, new_group%ele_grp)
 !
 !
 !  surface greoup
       new_group%surf_grp%num_grp = group%surf_grp%num_grp
-      call allocate_sf_grp_type_num(new_group%surf_grp)
+      call alloc_sf_group_num(new_group%surf_grp)
       call count_internal_surface_grp                                   &
      &   (ele%numele, iele_to_new, group%surf_grp, new_group%surf_grp)
 !
-      call allocate_sf_grp_type_item(new_group%surf_grp)
+      call alloc_sf_group_item(new_group%surf_grp)
       call set_internal_surface_grp(ele%numele, iele_to_new,            &
      &    group%surf_grp, new_group%surf_grp)
 !

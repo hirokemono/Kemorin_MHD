@@ -115,7 +115,7 @@
 !
         org_blocks(i)%ele_list_by_ctr%num_grp                           &
      &      = org_blocks(i)%ntot_itp_block
-        call allocate_grp_type_num(org_blocks(i)%ele_list_by_ctr)
+        call alloc_group_num(org_blocks(i)%ele_list_by_ctr)
 !
 !        write(*,*) 'org_blocks(i)%ele_list_by_ctr%num_grp', i,         &
 !       &   org_blocks(i)%ele_list_by_ctr%num_grp
@@ -135,7 +135,7 @@
 !       &   org_blocks(i)%ele_list_by_ctr%num_item,                     &
 !       &   maxval(org_blocks(i)%ele_list_by_ctr%nitem_grp)
 !
-        call allocate_grp_type_item(org_blocks(i)%ele_list_by_ctr)
+        call alloc_group_item(org_blocks(i)%ele_list_by_ctr)
 !        write(*,*) 'set_ele_list_by_center'
         call set_ele_list_by_center                                     &
      &     (para_mesh(i)%mesh%ele%numele, para_mesh(i)%mesh%ele%x_ele,  &
@@ -150,7 +150,7 @@
 !
         org_blocks(i)%ele_list_by_rng%num_grp                           &
      &      = org_blocks(i)%ntot_itp_block
-        call allocate_grp_type_num(org_blocks(i)%ele_list_by_rng)
+        call alloc_group_num(org_blocks(i)%ele_list_by_rng)
 !
 !        write(*,*) 'count_ele_list_with_range'
         call count_ele_list_with_range(para_mesh(i)%mesh%ele%numele,    &
@@ -165,7 +165,7 @@
      &      org_blocks(i)%ele_list_by_rng%istack_grp,                   &
      &      org_blocks(i)%ele_list_by_rng%num_item)
 !
-        call allocate_grp_type_item(org_blocks(i)%ele_list_by_rng)
+        call alloc_group_item(org_blocks(i)%ele_list_by_rng)
 !        write(*,*) 'set_ele_list_with_range', i, &
 !       & org_blocks(i)%ele_list_by_rng%num_item, &
 !       & maxval(org_blocks(i)%ele_list_by_rng%nitem_grp)

@@ -149,8 +149,8 @@
 !
       ele_grp_l%num_grp = ele_grp%num_grp
       ele_grp_l%num_item = 8 * ele_grp%num_item
-      call allocate_grp_type_num(ele_grp_l)
-      call allocate_grp_type_item(ele_grp_l)
+      call alloc_group_num(ele_grp_l)
+      call alloc_group_item(ele_grp_l)
 !
       call convert_ele_group_2_linear                                   &
      &   (ele_grp%num_grp, ele_grp%num_item, ele_grp%grp_name,          &
@@ -160,8 +160,8 @@
 !
       surf_grp_l%num_grp = sf_grp%num_grp
       surf_grp_l%num_item = 4 * sf_grp%num_item
-      call allocate_sf_grp_type_num(surf_grp_l)
-      call allocate_sf_grp_type_item(surf_grp_l)
+      call alloc_sf_group_num(surf_grp_l)
+      call alloc_sf_group_item(surf_grp_l)
 !
       call convert_surf_group_2_linear(sf_grp%num_grp, sf_grp%num_item, &
      &    sf_grp%grp_name, sf_grp%istack_grp, sf_grp%item_sf_grp,       &

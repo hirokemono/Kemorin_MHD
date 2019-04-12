@@ -85,13 +85,13 @@
 !
       new_nod_grp%num_grp = nod_grp%num_grp
       call add_hanging_node_group_num(new_nod_grp)
-      call allocate_grp_type_num(new_nod_grp)
+      call alloc_group_num(new_nod_grp)
 !
       call count_refined_node_group(node, ele, surf, edge, nod_grp,     &
      &    ref_ids%refine_ele, ref_ids%refine_surf, ref_ids%refine_edge, &
      &    new_nod_grp)
       call add_hanging_node_group_name(nod_grp%num_grp, new_nod_grp)
-      call allocate_grp_type_item(new_nod_grp)
+      call alloc_group_item(new_nod_grp)
 !
       call s_set_refined_node_group(node, ele, surf, edge, nod_grp,     &
      &    ref_ids%refine_ele, ref_ids%refine_surf, ref_ids%refine_edge, &
@@ -115,10 +115,10 @@
 !
 !
       new_ele_grp%num_grp = ele_grp%num_grp
-      call allocate_grp_type_num(new_ele_grp)
+      call alloc_group_num(new_ele_grp)
 !
       call count_refined_ele_group(refine_tbl, ele_grp, new_ele_grp)
-      call allocate_grp_type_item(new_ele_grp)
+      call alloc_group_item(new_ele_grp)
 !
       call s_set_refined_ele_group(refine_tbl, ele_grp, new_ele_grp)
 !
@@ -144,11 +144,11 @@
       call allocate_mark_refine_sf_grp(nnod_2nd)
 !
       new_sf_grp%num_grp = sf_grp%num_grp
-      call allocate_sf_grp_type_num(new_sf_grp)
+      call alloc_sf_group_num(new_sf_grp)
 !
       call count_refined_surf_group                                     &
      &   (surf, edge, sf_grp, ref_ids, refine_tbl, new_sf_grp)
-      call allocate_sf_grp_type_item(new_sf_grp)
+      call alloc_sf_group_item(new_sf_grp)
 !
       call s_set_refined_surf_group                                     &
      &   (surf, edge, sf_grp, ref_ids, refine_tbl, new_sf_grp)
