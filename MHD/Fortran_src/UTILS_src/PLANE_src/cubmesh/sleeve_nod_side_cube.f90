@@ -1,15 +1,25 @@
 !
-      module m_sleeve_nod_side_cube
+!     module sleeve_nod_side_cube
+!
+!      Written by Kemorin
+!
+!!      subroutine set_sleeve_node_xmin(sl_rng, inod, ioff_gl)
+!!      subroutine set_sleeve_node_xmax(sl_rng, inod, ioff_gl)
+!!      subroutine set_sleeve_node_ymin(sl_rng, inod, ioff_gl)
+!!      subroutine set_sleeve_node_ymax(sl_rng, inod, ioff_gl)
+!!        type(slleve_range), intent(in) :: sl_rng
+!
+      module sleeve_nod_side_cube
 !
       use m_precision
 !
+      use t_sleeve_cube
       use m_size_of_cube
       use m_size_4_plane
       use m_cube_position
       use m_local_node_id_cube
       use m_offset_size_cube
       use m_cube_files_data
-      use m_sleeve_cube
 !
       implicit none
 !
@@ -19,27 +29,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-!      subroutine set_sleeve_node_xmin
+      subroutine set_sleeve_node_xmin(sl_rng, inod, ioff_gl)
 !
-      subroutine set_sleeve_node_xmin(inod, ioff_gl)
-
-!
-!      Written by Kemorin
-!
-      use m_precision
-!
-      implicit none
-!
-      integer (kind = kint) :: ioff_gl
-      integer (kind = kint) :: inod
+      type(slleve_range), intent(in) :: sl_rng
+      integer (kind = kint), intent(in) :: ioff_gl
+      integer (kind = kint), intent(inout) :: inod
 !
       integer (kind= kint) :: node_id_gl
       integer (kind= kint) :: i, j, k
       real (kind= kreal) :: x, y, z
 !
 !
-      do k = sl_rng1%ks, sl_rng1%ke
-       do j = sl_rng1%js, sl_rng1%je
+      do k = sl_rng%ks, sl_rng%ke
+       do j = sl_rng%js, sl_rng%je
         do i = 1, ndepth
 
          inod = inod + 1
@@ -61,14 +63,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_sleeve_node_xmax(inod, ioff_gl)
-
+      subroutine set_sleeve_node_xmax(sl_rng, inod, ioff_gl)
 !
-!      Written by Kemorin
-!
-!
-      integer (kind = kint) :: ioff_gl
-      integer (kind = kint) :: inod
+      type(slleve_range), intent(in) :: sl_rng
+      integer (kind = kint), intent(in) :: ioff_gl
+      integer (kind = kint), intent(inout) :: inod
 
 !
       integer (kind= kint) :: node_id_gl
@@ -76,8 +75,8 @@
       real (kind= kreal) :: x, y, z
 !
 !
-      do k = sl_rng1%ks, sl_rng1%ke
-       do j = sl_rng1%js, sl_rng1%je
+      do k = sl_rng%ks, sl_rng%ke
+       do j = sl_rng%js, sl_rng%je
         do i = 1, ndepth
 
          inod = inod + 1
@@ -99,13 +98,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_sleeve_node_ymin(inod, ioff_gl)
-
+      subroutine set_sleeve_node_ymin(sl_rng, inod, ioff_gl)
 !
-!      Written by Kemorin
-!
-      integer (kind = kint) :: ioff_gl
-      integer (kind = kint) :: inod
+      type(slleve_range), intent(in) :: sl_rng
+      integer (kind = kint), intent(in) :: ioff_gl
+      integer (kind = kint), intent(inout) :: inod
 
 !
       integer (kind= kint) :: node_id_gl
@@ -113,9 +110,9 @@
       real (kind= kreal) :: x, y, z
 !
 !
-      do k = sl_rng1%ks, sl_rng1%ke
+      do k = sl_rng%ks, sl_rng%ke
        do j = 1, ndepth
-        do i = sl_rng1%is, sl_rng1%ie
+        do i = sl_rng%is, sl_rng%ie
 
          inod = inod + 1
 
@@ -136,24 +133,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_sleeve_node_ymax(inod, ioff_gl)
-
+      subroutine set_sleeve_node_ymax(sl_rng, inod, ioff_gl)
 !
-!      Written by Kemorin
-!
-!
-      integer (kind = kint) :: ioff_gl
-      integer (kind = kint) :: inod
-
+      type(slleve_range), intent(in) :: sl_rng
+      integer (kind = kint), intent(in) :: ioff_gl
+      integer (kind = kint), intent(inout) :: inod
 !
       integer (kind= kint) :: node_id_gl
       integer (kind= kint) :: i, j, k
       real (kind= kreal) :: x, y, z
 !
 !
-      do k = sl_rng1%ks, sl_rng1%ke
+      do k = sl_rng%ks, sl_rng%ke
        do j = 1, ndepth
-        do i = sl_rng1%is, sl_rng1%ie
+        do i = sl_rng%is, sl_rng%ie
 
          inod = inod + 1
 
@@ -174,4 +167,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_sleeve_nod_side_cube
+      end module sleeve_nod_side_cube

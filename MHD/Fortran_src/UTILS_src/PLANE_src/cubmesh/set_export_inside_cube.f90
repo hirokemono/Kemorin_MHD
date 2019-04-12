@@ -11,11 +11,12 @@
       module set_export_inside_cube
 !
       use m_precision
+      use m_constants
 !
       use t_neib_range_cube
+      use t_sleeve_cube
       use m_size_of_cube
       use m_comm_data_cube_kemo
-      use m_sleeve_cube
       use set_comm_nod_4_cube
 !
       implicit none
@@ -31,6 +32,7 @@
       type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(inout) :: icou, inod
 !
+      type(slleve_range) :: sl_rng1
       integer (kind = kint) :: inp, jnp, knp
 !
 !
@@ -65,8 +67,8 @@
       integer (kind = kint), intent(in) :: kpe
       integer (kind = kint), intent(inout) :: icou, inod
 !
+      type(slleve_range) :: sl_rng1
       integer (kind = kint) :: inp, jnp, knp
-      integer (kind = kint) :: nd
 !
 !
             do knp = nb_rng%knp_st, nb_rng%knp_end
@@ -84,18 +86,18 @@
                write(*,*) 'export node 0 to',                           &
      &                   (neibpe(icou)-1), inp, jnp, knp, inod
 
-               nd = 1
-               call set_ex_edge(sl_rng1, kpe, inp, jnp, knp, inod, nd)
+               call set_ex_edge                                         &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
                write(*,*) 'export edge1 0 to',                          &
      &                   (neibpe(icou)-1), inp, jnp, knp, inod
 
-               nd = 2
-               call set_ex_edge(sl_rng1, kpe, inp, jnp, knp, inod, nd)
+               call set_ex_edge                                         &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
                write(*,*) 'export edge2 0 to',                          &
      &                   (neibpe(icou)-1), inp, jnp, knp, inod
 
-               nd = 3
-               call set_ex_edge(sl_rng1, kpe, inp, jnp, knp, inod, nd)
+               call set_ex_edge                                         &
+     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
                write(*,*) 'export edge3 0 to',                          &
      &                   (neibpe(icou)-1), inp, jnp, knp, inod
 

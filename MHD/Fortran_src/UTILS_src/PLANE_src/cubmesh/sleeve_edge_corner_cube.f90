@@ -1,17 +1,27 @@
-!m_sleeve_edge_corner_cube.f90
-!     module m_sleeve_edge_corner_cube
-!
-      module m_sleeve_edge_corner_cube
+!sleeve_edge_corner_cube.f90
+!     module sleeve_edge_corner_cube
 !
 !      Written by Kemorin
+!
+!!       subroutine set_sleeve_edge_xmin_ymin(sl_rng, kpe, knp,         &
+!!     &           inod, ioff_gl, nd)
+!!       subroutine set_sleeve_edge_xmax_ymin(sl_rng, kpe, knp,         &
+!!     &           inod, ioff_gl, nd)
+!!       subroutine set_sleeve_edge_xmax_ymax(sl_rng, kpe, knp,         &
+!!     &           inod, ioff_gl, nd)
+!!       subroutine set_sleeve_edge_xmin_ymax(sl_rng, kpe, knp,         &
+!!     &           inod, ioff_gl, nd)
+!!         type(slleve_range), intent(in) :: sl_rng
+!
+      module sleeve_edge_corner_cube
 !
       use m_precision
       use m_constants
 !
+      use t_sleeve_cube
       use m_size_of_cube
       use m_size_4_plane
       use m_offset_size_cube
-      use m_sleeve_cube
       use m_local_node_id_cube
       use m_cube_position
       use m_cube_files_data
@@ -24,34 +34,33 @@
 !
 !  ---------------------------------------------------------------------
 !
-!      subroutine set_sleeve_edge_xmin_ymin
+       subroutine set_sleeve_edge_xmin_ymin(sl_rng, kpe, knp,           &
+     &           inod, ioff_gl, nd)
 !
-       subroutine set_sleeve_edge_xmin_ymin(kpe, knp,                   &
-     &          inod, ioff_gl, nd)
-
-!
-       integer (kind = kint) :: ioff_gl
-       integer (kind = kint) :: kpe, knp
-       integer (kind = kint) :: inod
-       integer (kind = kint) :: nd
+       type(slleve_range), intent(in) :: sl_rng
+       integer (kind = kint), intent(in) :: ioff_gl
+       integer (kind = kint), intent(in) :: kpe, knp
+       integer (kind = kint), intent(in) :: nd
+       integer (kind = kint), intent(inout) :: inod
 !
        integer (kind = kint) :: node_id_gl
        integer (kind = kint) :: i, j, k
-       integer (kind = kint) :: ke1
+       integer (kind = kint) ::is0, js0, ks0
+       integer (kind = kint) ::ie0, je0, ke0
        real (kind = kreal) :: x, y, z
-       real (kind = kreal), parameter :: half = 0.5d0
 !
-       sl_rng1%is = 1
-       sl_rng1%ie = ndepth
-       sl_rng1%js = 1
-       sl_rng1%je = ndepth
-       ke1 = sl_rng1%ke
-       if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
+       is0 = 1
+       ie0 = ndepth
+       js0 = 1
+       je0 = ndepth
+       ks0 = sl_rng%ks
+       ke0 = sl_rng%ke
+       if ( nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
+       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke0 = ke0-1
 !
-       do k = sl_rng1%ks, ke1
-        do j = sl_rng1%js, sl_rng1%je
-         do i = sl_rng1%is, sl_rng1%ie
+       do k = ks0, ke0
+        do j = js0, je0
+         do i = is0, ie0
 
           inod = inod + 1
 
@@ -83,43 +92,40 @@
 !
 !  ---------------------------------------------------------------------
 !
+       subroutine set_sleeve_edge_xmax_ymin(sl_rng, kpe, knp,           &
+     &           inod, ioff_gl, nd)
 !
-!      subroutine set_sleeve_edge_xmax_ymin
-!
-       subroutine set_sleeve_edge_xmax_ymin(kpe, knp,                   &
-     &          inod, ioff_gl, nd)
-
-!
-       integer (kind = kint) :: ioff_gl
-       integer (kind = kint) :: kpe, knp
-       integer (kind = kint) :: inod
-       integer (kind = kint) :: nd
+       type(slleve_range), intent(in) :: sl_rng
+       integer (kind = kint), intent(in) :: ioff_gl
+       integer (kind = kint), intent(in) :: kpe, knp
+       integer (kind = kint), intent(in) :: nd
+       integer (kind = kint), intent(inout) :: inod
 !
        integer (kind = kint) :: node_id_gl
        integer (kind = kint) :: i, j, k
-       integer (kind = kint) :: ie1, ke1
+       integer (kind = kint) :: is0, js0, ks0
+       integer (kind = kint) :: ie0, je0, ke0
        real (kind = kreal) :: x, y, z
-       real (kind = kreal), parameter :: half = 0.5d0
 !
-       sl_rng1%is = 1
-       sl_rng1%ie = ndepth
-       sl_rng1%js = 1
-       sl_rng1%je = ndepth
-       ie1 = sl_rng1%ie
-       ke1 = sl_rng1%ke
-       if ( nd.eq.1 ) ie1 = ie1 - 1
-       if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
+       is0 = 1
+       ie0 = ndepth
+       js0 = 1
+       je0 = ndepth
+       ks0 = sl_rng%ks
+       ke0 = sl_rng%ke
+       if ( nd.eq.1 ) ie0 = ie0 - 1
+       if ( nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
+       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke0 = ke0-1
 !
-       do k = sl_rng1%ks, ke1
-        do j = sl_rng1%js, sl_rng1%je
-         do i = sl_rng1%is, ie1
+       do k = ks0, ke0
+        do j = js0, je0
+         do i = is0, ie0
 
           inod = inod + 1
 
           edge_id_lc(nxi+ndepth+i,j,k,nd) =  inod
-          node_id_gl = ioff_gl + i + (j-1) * (ie1 - sl_rng1%is + 1)     &
-     &                + (koff+k-1) * (ie1 - sl_rng1%is + 1) * ndepth
+          node_id_gl = ioff_gl + i + (j-1) * (ie0 - is0 + 1)            &
+     &                + (koff+k-1) * (ie0 - is0 + 1) * ndepth
 
           if (nd .eq. 1) then
            x = xmax + ( dble(i+ndepth)-half )*xsize / dble(nx_all)
@@ -145,46 +151,42 @@
 !
 !  ---------------------------------------------------------------------
 !
-!      subroutine set_sleeve_edge_xmax_ymax
+       subroutine set_sleeve_edge_xmax_ymax(sl_rng, kpe, knp,           &
+     &           inod, ioff_gl, nd)
 !
-       subroutine set_sleeve_edge_xmax_ymax(kpe, knp,                   &
-     &          inod, ioff_gl, nd)
-
-!
-       integer (kind = kint) :: ioff_gl
-       integer (kind = kint) :: kpe, knp
-       integer (kind = kint) :: inod
-       integer (kind = kint) :: nd
-
+       type(slleve_range), intent(in) :: sl_rng
+       integer (kind = kint), intent(in) :: ioff_gl
+       integer (kind = kint), intent(in) :: kpe, knp
+       integer (kind = kint), intent(in) :: nd
+       integer (kind = kint), intent(inout) :: inod
 !
        integer (kind = kint) :: node_id_gl
        integer (kind = kint) :: i, j, k
-       integer (kind = kint) ::ie1, je1, ke1
+       integer (kind = kint) :: is0, js0, ks0
+       integer (kind = kint) :: ie0, je0, ke0
        real (kind = kreal) :: x, y, z
-       real (kind = kreal), parameter :: half = 0.5d0
 !
-       sl_rng1%is = 1
-       sl_rng1%ie = ndepth
-       sl_rng1%js = 1
-       sl_rng1%je = ndepth
-       ie1 = sl_rng1%ie
-       je1 = sl_rng1%je
-       ke1 = sl_rng1%ke
-       if ( nd.eq.1 ) ie1 = ie1 - 1
-       if ( nd.eq.2 ) je1 = je1 - 1
-       if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
+       is0 = 1
+       ie0 = ndepth
+       js0 = 1
+       je0 = ndepth
+       ks0 = sl_rng%ks
+       ke0 = sl_rng%ke
+       if ( nd.eq.1 ) ie0 = ie0 - 1
+       if ( nd.eq.2 ) je0 = je0 - 1
+       if ( nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
+       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke0 = ke0-1
 !
-       do k = sl_rng1%ks, ke1
-        do j = sl_rng1%js, je1
-         do i = sl_rng1%is, ie1
+       do k = ks0, ke0
+        do j = js0, je0
+         do i = is0, ie0
 
           inod = inod + 1
 
           edge_id_lc(nxi+ndepth+i,nyi+ndepth+j,k,nd) =  inod
-          node_id_gl = ioff_gl + i + (j-1) * (ie1 - sl_rng1%is + 1)     &
-     &                + (koff+k-1) * (ie1 - sl_rng1%is + 1)             &
-     &                             * (je1 - sl_rng1%js + 1)
+          node_id_gl = ioff_gl + i + (j-1) * (ie0 - is0 + 1)            &
+     &                + (koff+k-1) * (ie0 - is0 + 1)                    &
+     &                             * (je0 - js0 + 1)
 
           if (nd .eq. 1) then
            x = xmax + ( dble(i+ndepth)-half ) * xsize / dble(nx_all)
@@ -210,43 +212,40 @@
 !
 !  ---------------------------------------------------------------------
 !
-!      subroutine set_sleeve_edge_xmin_ymax
-!
-       subroutine set_sleeve_edge_xmin_ymax(kpe, knp,                   &
+       subroutine set_sleeve_edge_xmin_ymax(sl_rng, kpe, knp,           &
      &           inod, ioff_gl, nd)
 !
-!
-       integer (kind = kint) :: ioff_gl
-       integer (kind = kint) :: kpe, knp
-       integer (kind = kint) :: inod
-       integer (kind = kint) :: nd
-
+       type(slleve_range), intent(in) :: sl_rng
+       integer (kind = kint), intent(in) :: ioff_gl
+       integer (kind = kint), intent(in) :: kpe, knp
+       integer (kind = kint), intent(in) :: nd
+       integer (kind = kint), intent(inout) :: inod
 !
        integer (kind = kint) :: node_id_gl
        integer (kind = kint) :: i, j, k
-       integer (kind = kint) ::je1, ke1
+       integer (kind = kint) :: is0, js0, ks0
+       integer (kind = kint) :: ie0, je0, ke0
        real (kind = kreal) :: x, y, z
-       real (kind = kreal), parameter :: half = 0.5d0
 !
-       sl_rng1%is = 1
-       sl_rng1%ie = ndepth
-       sl_rng1%js = 1
-       sl_rng1%je = ndepth
-       je1 = sl_rng1%je
-       ke1 = sl_rng1%ke
-       if ( nd.eq.2 ) je1 = je1 - 1
-       if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
+       is0 = 1
+       ie0 = ndepth
+       js0 = 1
+       je0 = ndepth
+       ks0 = sl_rng%ks
+       ke0 = sl_rng%ke
+       if ( nd.eq.2 ) je0 = je0 - 1
+       if ( nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
+       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke0 = ke0-1
 !
-       do k = sl_rng1%ks, ke1
-        do j = sl_rng1%js, je1
-         do i = sl_rng1%is, sl_rng1%ie
+       do k = ks0, ke0
+        do j = js0, je0
+         do i = is0, ie0
 
           inod = inod + 1
 
           edge_id_lc(i,nyi+ndepth+j,k,nd) =  inod
           node_id_gl = ioff_gl + i + (j-1) * ndepth                     &
-     &                + (koff+k-1) * ndepth * (je1 - sl_rng1%js + 1)
+     &                + (koff+k-1) * ndepth * (je0 - js0 + 1)
 
           if (nd .eq. 1) then
            x = xmin + ( dble(i)-half ) *        xsize / dble(nx_all)
@@ -272,4 +271,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_sleeve_edge_corner_cube
+      end module sleeve_edge_corner_cube

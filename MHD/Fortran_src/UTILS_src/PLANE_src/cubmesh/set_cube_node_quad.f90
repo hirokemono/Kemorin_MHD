@@ -10,13 +10,14 @@
       module set_cube_node_quad
 !
       use m_precision
+      use m_constants
 !
       use t_neib_range_cube
+      use t_sleeve_cube
       use m_size_4_plane
       use m_size_of_cube
       use m_offset_size_cube
       use m_cube_position
-      use m_sleeve_cube
       use m_cube_files_data
       use m_local_node_id_cube
       use set_internal_nod_cube
@@ -38,7 +39,8 @@
       type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: ipe, jpe, kpe
 !
-      integer (kind = kint) :: inod, nd
+      type(slleve_range) :: sl_rng1
+      integer (kind = kint) :: inod
       integer (kind = kint) :: inp,  jnp,  knp
 !
 ! ..... write 2.mesh information (nodes and elements in partition)
@@ -62,25 +64,25 @@
             inod = 0
 !
             call set_internal_size(nb_rng, sl_rng1)
-            call set_internal_node(inod)
+            call set_internal_node(sl_rng1, inod)
 !
 !     set position of internal edge
 !
-            nd = 1
             inp = 0
-            call set_internal_edge_size(nb_rng, nd, sl_rng1)
+            call set_internal_edge_size(nb_rng, ione, sl_rng1)
             write(*,*) 'set_internal_edge', ipe, jpe, kpe
-            call set_internal_edge(kpe, inp, jnp, knp, inod, nd)
+            call set_internal_edge                                      &
+     &         (sl_rng1, kpe, inp, jnp, knp, inod, ione)
 !
-            nd = 2
             jnp = 0
-            call set_internal_edge_size(nb_rng, nd, sl_rng1)
-            call set_internal_edge(kpe, inp, jnp, knp, inod, nd)
+            call set_internal_edge_size(nb_rng, itwo, sl_rng1)
+            call set_internal_edge                                      &
+     &         (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
 !
-            nd = 3
             knp = -1
-            call set_internal_edge_size(nb_rng, nd, sl_rng1)
-            call set_internal_edge(kpe, inp, jnp, knp, inod, nd)
+            call set_internal_edge_size(nb_rng, ithree, sl_rng1)
+            call set_internal_edge                                      &
+     &         (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
 !
 ! ***** set and write coordinate for sleeve area nodes
 !

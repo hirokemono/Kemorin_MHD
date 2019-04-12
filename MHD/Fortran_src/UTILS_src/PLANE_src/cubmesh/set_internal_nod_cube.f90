@@ -4,17 +4,19 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine set_internal_node(inod)
-!      subroutine set_internal_edge(kpe, inp, jnp, knp, inod, nd)
+!!      subroutine set_internal_node(sl_rng, inod)
+!!      subroutine set_internal_edge                                    &
+!!     &          (sl_rng, kpe, inp, jnp, knp, inod, nd)
+!!        type(slleve_range), intent(in) :: sl_rng
 !
       module set_internal_nod_cube
 !
       use m_precision
 !
+      use t_sleeve_cube
       use m_size_4_plane
       use m_size_of_cube
       use m_offset_size_cube
-      use m_sleeve_cube
       use m_cube_position
       use m_local_node_id_cube
       use m_cube_files_data
@@ -27,8 +29,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_internal_node(inod)
+      subroutine set_internal_node(sl_rng, inod)
 !
+      type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(inout) :: inod
 !
       integer (kind= kint) :: node_id_gl
@@ -37,9 +40,9 @@
 !
 ! *****   set position of internal node
 !
-            do k = sl_rng1%ks, sl_rng1%ke
-              do j = sl_rng1%js, sl_rng1%je
-                do i = sl_rng1%is, sl_rng1%ie
+            do k = sl_rng%ks, sl_rng%ke
+              do j = sl_rng%js, sl_rng%je
+                do i = sl_rng%is, sl_rng%ie
 
                   inod = inod + 1
 
@@ -62,8 +65,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_internal_edge(kpe, inp, jnp, knp, inod, nd)
+      subroutine set_internal_edge                                      &
+     &          (sl_rng, kpe, inp, jnp, knp, inod, nd)
 !
+      type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(in) :: kpe
       integer (kind = kint), intent(in) :: nd
       integer (kind = kint), intent(in) :: inp, jnp, knp
@@ -78,16 +83,16 @@
 !
 !       for edge on y=const and z=const
 !
-      ie1 = sl_rng1%ie
-      je1 = sl_rng1%je
-      ke1 = sl_rng1%ke
+      ie1 = sl_rng%ie
+      je1 = sl_rng%je
+      ke1 = sl_rng%ke
       if (nd.eq.1 .and. inp.gt.0) ie1 = ie1-1
       if (nd.eq.2 .and. jnp.gt.0) je1 = je1-1
       if (nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
       if (nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0) ke1 = ke1-1
-      do k = sl_rng1%ks, ke1
-       do j = sl_rng1%js, je1
-        do i = sl_rng1%is, ie1
+      do k = sl_rng%ks, ke1
+       do j = sl_rng%js, je1
+        do i = sl_rng%is, ie1
 
          inod = inod + 1
 

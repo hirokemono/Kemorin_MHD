@@ -15,8 +15,8 @@
       use m_precision
 !
       use t_neib_range_cube
+      use t_sleeve_cube
       use m_size_of_cube
-      use m_sleeve_cube
       use set_internal_nod_cube
 !
       implicit none
@@ -32,6 +32,7 @@
       type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(inout) :: inod
 !
+      type(slleve_range) :: sl_rng1
       integer (kind = kint) :: inp, jnp, knp
 !
 !
@@ -43,7 +44,7 @@
 !
             call set_sleeve_size                                        &
      &         (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
-            call set_internal_node(inod)
+            call set_internal_node(sl_rng1, inod)
           enddo
         enddo
       enddo
@@ -58,6 +59,7 @@
       integer (kind = kint), intent(in) :: kpe
       integer (kind = kint), intent(inout) :: inod
 
+      type(slleve_range) :: sl_rng1
       integer (kind = kint) :: inp, jnp, knp
       integer (kind = kint) :: nd
 !
@@ -72,13 +74,14 @@
 !
             call set_sleeve_size                                        &
      &         (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
-            call set_internal_node(inod)
 !
 !     nd = 1: for edge on y = const, z = const
 !     nd = 2: for edge on y = const, z = const
 !     nd = 3: for edge on x = const, y = const
+            call set_internal_node(sl_rng1, inod)
             do nd = 1, 3
-              call set_internal_edge(kpe, inp, jnp, knp, inod, nd)
+              call set_internal_edge                                    &
+     &           (sl_rng1, kpe, inp, jnp, knp, inod, nd)
             end do
 !
           enddo

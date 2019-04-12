@@ -1,16 +1,27 @@
-!m_sleeve_edge_side_cube.f90
-!     module m_sleeve_edge_side_cube
-!
-      module m_sleeve_edge_side_cube
+!sleeve_edge_side_cube.f90
+!     module sleeve_edge_side_cube
 !
 !      Written by Kemorin
 !
-      use m_precision
+!!       subroutine set_sleeve_edge_xmin(sl_rng, kpe, jnp, knp,         &
+!!     &          inod, ioff_gl, nd)
+!!       subroutine set_sleeve_edge_xmax(sl_rng, kpe, jnp, knp,         &
+!!     &          inod, ioff_gl, nd)
+!!       subroutine set_sleeve_edge_ymin(sl_rng, kpe, inp, knp,         &
+!!     &          inod, ioff_gl, nd)
+!!       subroutine set_sleeve_edge_ymax(sl_rng, kpe, inp, knp,         &
+!!     &          inod, ioff_gl, nd)
+!!        type(slleve_range), intent(in) :: sl_rng
 !
+      module sleeve_edge_side_cube
+!
+      use m_precision
+      use m_constants
+!
+      use t_sleeve_cube
       use m_size_of_cube
       use m_size_4_plane
       use m_offset_size_cube
-      use m_sleeve_cube
       use m_cube_position
       use m_local_node_id_cube
       use m_cube_files_data
@@ -23,45 +34,38 @@
 !
 !  ---------------------------------------------------------------------
 !
-!      subroutine set_sleeve_edge_xmin
-!
-       subroutine set_sleeve_edge_xmin(kpe, jnp, knp,                   &
+       subroutine set_sleeve_edge_xmin(sl_rng, kpe, jnp, knp,           &
      &          inod, ioff_gl, nd)
 !
-       integer (kind = kint) :: ioff_gl
-       integer (kind = kint) :: kpe, jnp, knp
-       integer (kind = kint) :: inod
-       integer (kind = kint) :: nd
-
+      type(slleve_range), intent(in) :: sl_rng
+       integer (kind = kint), intent(in) :: ioff_gl
+       integer (kind = kint), intent(in) :: kpe, jnp, knp
+       integer (kind = kint), intent(in) :: nd
+       integer (kind = kint), intent(inout) :: inod
 !
+      type(slleve_range) :: sl_rng_2
        integer (kind = kint) :: node_id_gl
        integer (kind = kint) :: i, j, k
-       integer (kind = kint) :: is1, js1, ks1
-       integer (kind = kint) :: ie1, je1, ke1
        real (kind = kreal) :: x, y, z
-       real (kind = kreal), parameter :: half = 0.5d0
 !
 !
-       is1 = sl_rng1%is
-       js1 = sl_rng1%js
-       ks1 = sl_rng1%ks
-       ie1 = sl_rng1%ie
-       je1 = sl_rng1%je
-       ke1 = sl_rng1%ke
-       if ( nd.eq.2 .and. jnp.gt.0 ) je1 = je1 - 1
-       if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
+       call copy_slleve_size(sl_rng, sl_rng_2)
+       if ( nd.eq.2 .and. jnp.gt.0) sl_rng_2%je = sl_rng_2%je - 1
+       if ( nd.eq.3 .and. knp.gt.0) sl_rng_2%ke = sl_rng_2%ke - 1
+       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 )                   &
+     &                              sl_rng_2%ke = sl_rng_2%ke-1
 
-       do k = ks1, ke1
-        do j = js1, je1
-         do i = is1, ie1
+       do k = sl_rng_2%ks, sl_rng_2%ke
+        do j = sl_rng_2%js, sl_rng_2%je
+         do i = sl_rng_2%is, sl_rng_2%ie
 
           inod = inod + 1
 
           edge_id_lc(i,j,k,nd) =  inod
           node_id_gl = ioff_gl + i                                      &
-     &                + (joff+j) * (ie1 - is1 + 1)                      &
-     &                + (koff+k-1)*(ie1 - is1 + 1)*ny_all
+     &                + (joff+j) * (sl_rng_2%ie - sl_rng_2%is + 1)      &
+     &                + (koff+k-1)*(sl_rng_2%ie - sl_rng_2%is + 1)      &
+     &                            * ny_all
 
           if (nd .eq. 1) then
            x = xmin + ( dble(i)-half )*xsize / dble(nx_all)
@@ -87,48 +91,39 @@
 !
 !  ---------------------------------------------------------------------
 !
-!      subroutine set_sleeve_edge_xmax
-!
-       subroutine set_sleeve_edge_xmax(kpe, jnp, knp,                   &
+       subroutine set_sleeve_edge_xmax(sl_rng, kpe, jnp, knp,           &
      &          inod, ioff_gl, nd)
-
 !
-!      Written by Kemorin
+      type(slleve_range), intent(in) :: sl_rng
+       integer (kind = kint), intent(in) :: kpe, jnp, knp
+       integer (kind = kint), intent(in) :: ioff_gl
+       integer (kind = kint), intent(in) :: nd
+       integer (kind = kint), intent(inout) :: inod
 !
-       integer (kind = kint) :: kpe, jnp, knp
-       integer (kind = kint) :: ioff_gl
-       integer (kind = kint) :: inod
-       integer (kind = kint) :: nd
-!
+      type(slleve_range) :: sl_rng_2
        integer (kind = kint) :: node_id_gl
-       integer (kind = kint) :: is1, js1, ks1
-       integer (kind = kint) :: ie1, je1, ke1
        integer (kind = kint) :: i, j, k
        real (kind = kreal) :: x, y, z
-       real (kind = kreal), parameter :: half = 0.5d0
 !
 !
-       is1 = sl_rng1%is
-       js1 = sl_rng1%js
-       ks1 = sl_rng1%ks
-       ie1 = sl_rng1%ie
-       je1 = sl_rng1%je
-       ke1 = sl_rng1%ke
-       if ( nd.eq.1 ) ie1 = ie1 - 1
-       if ( nd.eq.2 .and. jnp.gt.0 ) je1 = je1 - 1
-       if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
+       call copy_slleve_size(sl_rng, sl_rng_2)
+       if ( nd.eq.1 ) sl_rng_2%ie = sl_rng_2%ie - 1
+       if ( nd.eq.2 .and. jnp.gt.0) sl_rng_2%je = sl_rng_2%je - 1
+       if ( nd.eq.3 .and. knp.gt.0) sl_rng_2%ke = sl_rng_2%ke-1
+       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 )                   &
+     &                              sl_rng_2%ke = sl_rng_2%ke-1
 
-       do k = ks1, ke1
-        do j = js1, je1
-         do i = is1, ie1
+       do k = sl_rng_2%ks, sl_rng_2%ke
+        do j = sl_rng_2%js, sl_rng_2%je
+         do i = sl_rng_2%is, sl_rng_2%ie
 
           inod = inod + 1
 
           edge_id_lc(nxi+ndepth+i,j,k,nd) =  inod
           node_id_gl = ioff_gl + i                                      &
-     &                + (joff+j) * (ie1 - is1 + 1)                      &
-     &                + (koff+k-1) * (ie1 - is1 + 1)*ny_all
+     &                + (joff+j) * (sl_rng_2%ie - sl_rng_2%is + 1)      &
+     &                + (koff+k-1) * (sl_rng_2%ie - sl_rng_2%is + 1)    &
+     &                             * ny_all
 
           if (nd .eq. 1) then
            x = xmax + ( dble(i+ndepth)-half )*xsize / dble(nx_all)
@@ -154,46 +149,36 @@
 !
 !  ---------------------------------------------------------------------
 !
-!      subroutine set_sleeve_edge_ymin
-!
-       subroutine set_sleeve_edge_ymin(kpe, inp, knp,                   &
+       subroutine set_sleeve_edge_ymin(sl_rng, kpe, inp, knp,           &
      &          inod, ioff_gl, nd)
 !
-!      Written by Kemorin
+      type(slleve_range), intent(in) :: sl_rng
+       integer (kind = kint), intent(in) :: kpe, inp, knp
+       integer (kind = kint), intent(in) :: ioff_gl
+       integer (kind = kint), intent(in) :: nd
+       integer (kind = kint), intent(inout) :: inod
 !
-!
-       integer (kind = kint) :: kpe, inp, knp
-       integer (kind = kint) :: ioff_gl
-       integer (kind = kint) :: inod
-       integer (kind = kint) :: nd
-!
+      type(slleve_range) :: sl_rng_2
        integer (kind= kint) :: node_id_gl
-       integer (kind = kint) :: is1, js1, ks1
-       integer (kind = kint) :: ie1, je1, ke1
        integer (kind= kint) :: i, j, k
        real (kind= kreal) :: x, y, z
-       real (kind = kreal), parameter :: half = 0.5d0
 !
 !
-       is1 = sl_rng1%is
-       js1 = sl_rng1%js
-       ks1 = sl_rng1%ks
-       ie1 = sl_rng1%ie
-       je1 = sl_rng1%je
-       ke1 = sl_rng1%ke
-       if ( nd.eq.1 .and. inp.gt.0 ) ie1 = ie1 - 1
-       if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
+       call copy_slleve_size(sl_rng, sl_rng_2)
+       if ( nd.eq.1 .and. inp.gt.0) sl_rng_2%ie = sl_rng_2%ie - 1
+       if ( nd.eq.3 .and. knp.gt.0) sl_rng_2%ke = sl_rng_2%ke - 1
+       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0)                    &
+     &                              sl_rng_2%ke = sl_rng_2%ke - 1
 
-       do k = ks1, ke1
-        do j = js1, je1
-         do i = is1, ie1
+       do k = sl_rng_2%ks, sl_rng_2%ke
+        do j = sl_rng_2%js, sl_rng_2%je
+         do i = sl_rng_2%is, sl_rng_2%ie
 
           inod = inod + 1
 
           edge_id_lc(i,j,k,nd) =  inod
           node_id_gl = ioff_gl + (ioff+i) + (j-1)*nx_all                &
-     &               + (koff+k-1)*(je1 - js1 + 1)*nx_all
+     &             + (koff+k-1)*(sl_rng_2%je - sl_rng_2%js + 1)*nx_all
 
           if (nd .eq. 1) then
            x = xoff + ( dble(i)-half )*xsize / dble(nx_all)
@@ -219,47 +204,37 @@
 !
 !  ---------------------------------------------------------------------
 !
-!      subroutine set_sleeve_edge_ymax
-!
-       subroutine set_sleeve_edge_ymax(kpe, inp, knp,                   &
+       subroutine set_sleeve_edge_ymax(sl_rng, kpe, inp, knp,           &
      &          inod, ioff_gl, nd)
-
 !
-!      Written by Kemorin
+      type(slleve_range), intent(in) :: sl_rng
+       integer (kind = kint), intent(in) :: kpe, inp, knp
+       integer (kind = kint), intent(in) :: ioff_gl
+       integer (kind = kint), intent(in) :: nd
+       integer (kind = kint), intent(inout) :: inod
 !
-       integer (kind = kint) :: kpe, inp, knp
-       integer (kind = kint) :: ioff_gl
-       integer (kind = kint) :: inod
-       integer (kind = kint) :: nd
-!
+      type(slleve_range) :: sl_rng_2
        integer (kind = kint) :: node_id_gl
-       integer (kind = kint) :: is1, js1, ks1
-       integer (kind = kint) :: ie1, je1, ke1
        integer (kind = kint) :: i, j, k
        real (kind = kreal) :: x, y, z
-       real (kind = kreal), parameter :: half = 0.5d0
 !
 !
-       is1 = sl_rng1%is
-       js1 = sl_rng1%js
-       ks1 = sl_rng1%ks
-       ie1 = sl_rng1%ie
-       je1 = sl_rng1%je
-       ke1 = sl_rng1%ke
-       if ( nd.eq.1 .and. inp.gt.0 ) ie1 = ie1 - 1
-       if ( nd.eq.2 ) je1 = je1-1
-       if ( nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke1 = ke1-1
+       call copy_slleve_size(sl_rng, sl_rng_2)
+       if ( nd.eq.1 .and. inp.gt.0) sl_rng_2%ie = sl_rng_2%ie - 1
+       if ( nd.eq.2)                sl_rng_2%je = sl_rng_2%je-1
+       if ( nd.eq.3 .and. knp.gt.0) sl_rng_2%ke = sl_rng_2%ke - 1
+       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0)                    &
+     &                              sl_rng_2%ke = sl_rng_2%ke-1
 
-       do k = ks1, ke1
-        do j = js1, je1
-         do i = is1, ie1
+       do k = sl_rng_2%ks, sl_rng_2%ke
+        do j = sl_rng_2%js, sl_rng_2%je
+         do i = sl_rng_2%is, sl_rng_2%ie
 
           inod = inod + 1
 
           edge_id_lc(i,nyi+ndepth+j,k,nd) =  inod
           node_id_gl = ioff_gl + (ioff+i) + (j-1)*nx_all                &
-     &               + (koff+k-1)*(je1 - js1 + 1)*nx_all
+     &              + (koff+k-1)*(sl_rng_2%je - sl_rng_2%js + 1)*nx_all
 
           if (nd .eq. 1) then
            x = xoff + ( dble(i)-half )*         xsize / dble(nx_all)
@@ -285,4 +260,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_sleeve_edge_side_cube
+      end module sleeve_edge_side_cube

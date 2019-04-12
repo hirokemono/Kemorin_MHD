@@ -14,9 +14,9 @@
       use m_constants
 !
       use t_neib_range_cube
+      use t_sleeve_cube
       use m_size_of_cube
       use m_comm_data_cube_kemo
-      use m_sleeve_cube
       use set_comm_nod_4_cube
 !
       implicit none
@@ -33,6 +33,7 @@
 !
       integer (kind = kint), intent(inout) :: icou, inod
 !
+      type(slleve_range) :: sl_rng1
       integer (kind = kint) :: inp, jnp, knp
 !
 !
@@ -67,6 +68,7 @@
 !
       integer (kind = kint), intent(inout) :: icou, inod
 !
+      type(slleve_range) :: sl_rng1
       integer (kind = kint) :: inp, jnp, knp
 !
       do knp = nb_rng%knp_st, nb_rng%knp_end
