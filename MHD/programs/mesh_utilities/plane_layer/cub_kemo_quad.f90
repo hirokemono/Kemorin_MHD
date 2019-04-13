@@ -238,6 +238,11 @@
 !
             call set_range_4_nodeloop(kpe, nb_rng1)
             call set_edge_para_4_each_pe(kpe, ndz, nb_rng1)
+
+! *****  initialization to construct node information
+!
+            call init_node_para_4_each_pe(ipe, jpe, kpe)
+            call set_offset_of_domain(ipe, jpe, kpe)
             call set_node_quad(nb_rng1, ipe, jpe, kpe)
 !
 ! ..... write 2.2 element (connection)

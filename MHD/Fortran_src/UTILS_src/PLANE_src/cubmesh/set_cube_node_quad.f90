@@ -53,12 +53,6 @@
 
             write(l_out,'(10i16)')  nodtot,intnodtot
 !
-! *****  initialization to construct node information
-!
-            write(*,*) 'init_node_parameter_4_each_pe', ipe, jpe, kpe
-            call init_node_para_4_each_pe(ipe, jpe, kpe)
-            call set_offset_of_domain(ipe, jpe, kpe)
-!
 ! *****   set position of internal node
 !
             inod = 0

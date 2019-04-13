@@ -48,12 +48,6 @@
 
             write(l_out,'(10i16)')  nodtot,intnodtot
 !
-! ***** set coordinate off set (starting corner for pe node)
-! ***** set nodal position off set (i,j,k starting position -1)
-!
-            call init_node_para_4_each_pe(ipe, jpe, kpe)
-            call set_offset_of_domain(ipe, jpe, kpe)
-!
 ! ***** set and write coordinate for internal nodes
 
             inod = 0

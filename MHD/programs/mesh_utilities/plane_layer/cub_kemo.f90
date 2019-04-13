@@ -243,6 +243,11 @@
 ! ..... write 2.mesh information (nodes and elements in partition)
 !
             call set_range_4_nodeloop(kpe, nb_rng1)
+!
+! ***** set coordinate off set (starting corner for pe node)
+! ***** set nodal position off set (i,j,k starting position -1)
+            call init_node_para_4_each_pe(ipe, jpe, kpe)
+            call set_offset_of_domain(ipe, jpe, kpe)
             call set_node(nb_rng1, ipe, jpe, kpe)
 !
 ! ..... write 2.2 element (connection)
