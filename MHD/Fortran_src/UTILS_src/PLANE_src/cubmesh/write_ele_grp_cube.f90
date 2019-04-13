@@ -5,7 +5,7 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !       subroutine count_element_group
-!       subroutine write_cube_ele_group(kpe)
+!       subroutine write_cube_ele_group(kpe, koff)
 !
       module write_ele_grp_cube
 !
@@ -49,20 +49,20 @@
 !
 !-----------------------------------------------------------------------
 !
-       subroutine write_cube_ele_group(kpe)
+      subroutine write_cube_ele_group(kpe, koff)
 !
-       use m_size_4_plane
-       use m_size_of_cube
-       use m_offset_size_cube
-       use m_cube_files_data
-       use m_fem_mesh_labels
+      use m_size_4_plane
+      use m_size_of_cube
+      use m_cube_files_data
+      use m_fem_mesh_labels
 !
-       integer(kind = kint) :: kpe
+      integer(kind = kint), intent(in) :: kpe
+      integer(kind=kint), intent(in) :: koff
 !
-       integer(kind = kint) :: iele, element_id
-       integer(kind = kint) :: i, j, k, item_pos, item_tot
+      integer(kind = kint) :: iele, element_id
+      integer(kind = kint) :: i, j, k, item_pos, item_tot
 !
-       character(len=kchara) :: group_name
+      character(len=kchara) :: group_name
 !
        iele = 0
 !
@@ -70,7 +70,7 @@
        do k = 1, nz_all-1
         iele = iele + 1
         iele_group_id(iele) = element_id
-        if ( k.gt.koff .and. k.le.(koff+nz-1) ) then
+        if(k.gt.koff .and. k.le.(koff+nz-1) ) then
          element_id = element_id + (nx-1)*(ny-1)
         end if
        end do

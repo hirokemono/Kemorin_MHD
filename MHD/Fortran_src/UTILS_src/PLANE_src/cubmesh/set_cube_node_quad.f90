@@ -16,7 +16,6 @@
       use t_sleeve_cube
       use m_size_4_plane
       use m_size_of_cube
-      use m_offset_size_cube
       use m_cube_position
       use m_cube_files_data
       use m_local_node_id_cube
@@ -58,7 +57,7 @@
             inod = 0
 !
             call set_internal_size(nb_rng, sl_rng1)
-            call set_internal_node(sl_rng1, inod)
+            call set_internal_node(nb_rng, sl_rng1, inod)
 !
 !     set position of internal edge
 !
@@ -66,17 +65,17 @@
             call set_internal_edge_size(nb_rng, ione, sl_rng1)
             write(*,*) 'set_internal_edge', ipe, jpe, kpe
             call set_internal_edge                                      &
-     &         (sl_rng1, kpe, inp, jnp, knp, inod, ione)
+     &         (nb_rng, sl_rng1, kpe, inp, jnp, knp, inod, ione)
 !
             jnp = 0
             call set_internal_edge_size(nb_rng, itwo, sl_rng1)
             call set_internal_edge                                      &
-     &         (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
+     &         (nb_rng, sl_rng1, kpe, inp, jnp, knp, inod, itwo)
 !
             knp = -1
             call set_internal_edge_size(nb_rng, ithree, sl_rng1)
             call set_internal_edge                                      &
-     &         (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
+     &         (nb_rng, sl_rng1, kpe, inp, jnp, knp, inod, ithree)
 !
 ! ***** set and write coordinate for sleeve area nodes
 !

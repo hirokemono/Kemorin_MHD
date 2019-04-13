@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine set_node(nb_rng, ipe, jpe, kpe)
+!!      subroutine set_node(nb_rng, ipe, jpe)
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !
       module set_cube_node
@@ -14,7 +14,6 @@
       use t_neib_range_cube
       use t_sleeve_cube
       use m_size_of_cube
-      use m_offset_size_cube
       use m_cube_position
       use m_cube_files_data
       use m_local_node_id_cube
@@ -30,10 +29,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_node(nb_rng, ipe, jpe, kpe)
+      subroutine set_node(nb_rng, ipe, jpe)
 !
       type(neib_range_cube), intent(in) :: nb_rng
-      integer (kind = kint), intent(in) :: ipe, jpe, kpe
+      integer (kind = kint), intent(in) :: ipe, jpe
 !
       type(slleve_range) :: sl_rng1
       integer (kind = kint) :: inod
@@ -53,7 +52,7 @@
             inod = 0
 !
             call set_internal_size(nb_rng, sl_rng1)
-            call set_internal_node(sl_rng1, inod)
+            call set_internal_node(nb_rng, sl_rng1, inod)
 !
 ! ***** set and write coordinate for sleeve area nodes
 !

@@ -50,7 +50,7 @@
             sl_rng1%is = 1
             sl_rng1%ie = ndepth
 !
-            call set_sleeve_node_xmin(sl_rng1, inod, ioff_gl)
+            call set_sleeve_node_xmin(nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -68,8 +68,7 @@
             sl_rng1%is = 1
             sl_rng1%ie = ndepth
 
-            call set_sleeve_node_xmax(sl_rng1, inod, ioff_gl)
-!
+            call set_sleeve_node_xmax(nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -87,8 +86,7 @@
             sl_rng1%js = 1
             sl_rng1%je = ndepth
 
-            call set_sleeve_node_ymin(sl_rng1, inod, ioff_gl)
-
+            call set_sleeve_node_ymin(nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -106,8 +104,7 @@
             sl_rng1%js = 1
             sl_rng1%je = ndepth
 
-            call set_sleeve_node_ymax(sl_rng1, inod, ioff_gl)
-
+            call set_sleeve_node_ymax(nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -121,7 +118,8 @@
 
           call set_sleeve_size                                          &
      &       (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
-          call set_sleeve_node_xmin_ymin(sl_rng1, inod, ioff_gl)
+          call set_sleeve_node_xmin_ymin                                &
+     &       (sl_rng1, ioff_gl, nb_rng%koff, inod)
         enddo
       endif
 !
@@ -135,7 +133,8 @@
 
           call set_sleeve_size                                          &
      &       (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
-          call set_sleeve_node_xmax_ymin(sl_rng1, inod, ioff_gl)
+          call set_sleeve_node_xmax_ymin                                &
+     &       (sl_rng1, ioff_gl, nb_rng%koff, inod)
 
         enddo
       end if
@@ -150,7 +149,8 @@
 !                                       .. start side
           call set_sleeve_size                                          &
      &       (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
-          call set_sleeve_node_xmax_ymax(sl_rng1, inod, ioff_gl)
+          call set_sleeve_node_xmax_ymax                                &
+     &       (sl_rng1, ioff_gl, nb_rng%koff, inod)
         enddo
       end if
 !
@@ -164,7 +164,8 @@
 
           call set_sleeve_size                                          &
      &       (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
-          call set_sleeve_node_xmin_ymax(sl_rng1, inod, ioff_gl)
+          call set_sleeve_node_xmin_ymax                                &
+     &       (sl_rng1, ioff_gl, nb_rng%koff, inod)
         enddo
       end if
 !
@@ -198,7 +199,7 @@
             sl_rng1%is = 1
             sl_rng1%ie = ndepth
 !
-            call set_sleeve_node_xmin(sl_rng1, inod, ioff_gl)
+            call set_sleeve_node_xmin(nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -214,7 +215,7 @@
      &         (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
             sl_rng1%is = 1
             sl_rng1%ie = ndepth
-            call set_sleeve_node_xmax(sl_rng1, inod, ioff_gl)
+            call set_sleeve_node_xmax(nb_rng, sl_rng1, ioff_gl, inod)
 
           enddo
         enddo
@@ -232,7 +233,7 @@
             sl_rng1%js = 1
             sl_rng1%je = ndepth
 !
-            call set_sleeve_node_ymin(sl_rng1, inod, ioff_gl)
+            call set_sleeve_node_ymin(nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -250,23 +251,24 @@
             sl_rng1%js = 1
             sl_rng1%je = ndepth
 
-            call set_sleeve_node_ymax(sl_rng1, inod, ioff_gl)
+            call set_sleeve_node_ymax(nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
 !
 !  outdside (x<xmin, y<ymin)
 !
-      ioff_gl = nod_gltot + edge_gltot                            &
+      ioff_gl = nod_gltot + edge_gltot                                  &
      &         + 2*ndepth*ny_all*nz_all + 2*ndepth*nx_all*nz_all 
       if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
-       do knp = nb_rng%knp_st, nb_rng%knp_end
+        do knp = nb_rng%knp_st, nb_rng%knp_end
 
-      call set_sleeve_size                                        &
-     &         (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
-         call set_sleeve_node_xmin_ymin(sl_rng1, inod, ioff_gl)
+          call set_sleeve_size                                          &
+     &       (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+          call set_sleeve_node_xmin_ymin                                &
+     &       (sl_rng1, ioff_gl, nb_rng%koff, inod)
 
-       enddo
+        enddo
       endif
 !
 !  outdside (x>xmax, y<ymin)
@@ -279,7 +281,8 @@
 
           call set_sleeve_size                                          &
      &       (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
-          call set_sleeve_node_xmax_ymin(sl_rng1, inod, ioff_gl)
+          call set_sleeve_node_xmax_ymin                                &
+     &       (sl_rng1, ioff_gl, nb_rng%koff, inod)
 
         enddo
       end if
@@ -295,7 +298,8 @@
 
           call set_sleeve_size                                          &
      &       (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
-          call set_sleeve_node_xmax_ymax(sl_rng1, inod, ioff_gl)
+          call set_sleeve_node_xmax_ymax                                &
+     &       (sl_rng1, ioff_gl, nb_rng%koff, inod)
         enddo
       end if
 !
@@ -309,7 +313,8 @@
 
           call set_sleeve_size                                          &
      &       (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
-          call set_sleeve_node_xmin_ymax(sl_rng1, inod, ioff_gl)
+          call set_sleeve_node_xmin_ymax                                &
+     &       (sl_rng1, ioff_gl, nb_rng%koff, inod)
 
         enddo
       end if

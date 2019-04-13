@@ -4,13 +4,13 @@
 !      Written by Kemorin
 !
 !!       subroutine set_sleeve_edge_xmin_ymin(sl_rng, kpe, knp,         &
-!!     &           inod, ioff_gl, nd)
+!!     &          ioff_gl, koff, nd, inod)
 !!       subroutine set_sleeve_edge_xmax_ymin(sl_rng, kpe, knp,         &
-!!     &           inod, ioff_gl, nd)
+!!     &          ioff_gl, koff, nd, inod)
 !!       subroutine set_sleeve_edge_xmax_ymax(sl_rng, kpe, knp,         &
-!!     &           inod, ioff_gl, nd)
+!!     &          ioff_gl, koff, nd, inod)
 !!       subroutine set_sleeve_edge_xmin_ymax(sl_rng, kpe, knp,         &
-!!     &           inod, ioff_gl, nd)
+!!     &          ioff_gl, koff, nd, inod)
 !!         type(slleve_range), intent(in) :: sl_rng
 !
       module sleeve_edge_corner_cube
@@ -21,7 +21,6 @@
       use t_sleeve_cube
       use m_size_of_cube
       use m_size_4_plane
-      use m_offset_size_cube
       use m_local_node_id_cube
       use m_cube_position
       use m_cube_files_data
@@ -34,20 +33,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine set_sleeve_edge_xmin_ymin(sl_rng, kpe, knp,           &
-     &           inod, ioff_gl, nd)
+      subroutine set_sleeve_edge_xmin_ymin(sl_rng, kpe, knp,            &
+     &          ioff_gl, koff, nd, inod)
 !
-       type(slleve_range), intent(in) :: sl_rng
-       integer (kind = kint), intent(in) :: ioff_gl
-       integer (kind = kint), intent(in) :: kpe, knp
-       integer (kind = kint), intent(in) :: nd
-       integer (kind = kint), intent(inout) :: inod
+      type(slleve_range), intent(in) :: sl_rng
+      integer (kind = kint), intent(in) :: ioff_gl
+      integer (kind = kint), intent(in) :: koff
+      integer (kind = kint), intent(in) :: kpe, knp
+      integer (kind = kint), intent(in) :: nd
+      integer (kind = kint), intent(inout) :: inod
 !
-       integer (kind = kint) :: node_id_gl
-       integer (kind = kint) :: i, j, k
-       integer (kind = kint) ::is0, js0, ks0
-       integer (kind = kint) ::ie0, je0, ke0
-       real (kind = kreal) :: x, y, z
+      integer (kind = kint) :: node_id_gl
+      integer (kind = kint) :: i, j, k
+      integer (kind = kint) ::is0, js0, ks0
+      integer (kind = kint) ::ie0, je0, ke0
+      real (kind = kreal) :: x, y, z
 !
        is0 = 1
        ie0 = ndepth
@@ -92,20 +92,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine set_sleeve_edge_xmax_ymin(sl_rng, kpe, knp,           &
-     &           inod, ioff_gl, nd)
+      subroutine set_sleeve_edge_xmax_ymin(sl_rng, kpe, knp,            &
+     &          ioff_gl, koff, nd, inod)
 !
-       type(slleve_range), intent(in) :: sl_rng
-       integer (kind = kint), intent(in) :: ioff_gl
-       integer (kind = kint), intent(in) :: kpe, knp
-       integer (kind = kint), intent(in) :: nd
-       integer (kind = kint), intent(inout) :: inod
+      type(slleve_range), intent(in) :: sl_rng
+      integer (kind = kint), intent(in) :: ioff_gl
+      integer (kind = kint), intent(in) :: koff
+      integer (kind = kint), intent(in) :: kpe, knp
+      integer (kind = kint), intent(in) :: nd
+      integer (kind = kint), intent(inout) :: inod
 !
-       integer (kind = kint) :: node_id_gl
-       integer (kind = kint) :: i, j, k
-       integer (kind = kint) :: is0, js0, ks0
-       integer (kind = kint) :: ie0, je0, ke0
-       real (kind = kreal) :: x, y, z
+      integer (kind = kint) :: node_id_gl
+      integer (kind = kint) :: i, j, k
+      integer (kind = kint) :: is0, js0, ks0
+      integer (kind = kint) :: ie0, je0, ke0
+      real (kind = kreal) :: x, y, z
 !
        is0 = 1
        ie0 = ndepth
@@ -151,20 +152,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine set_sleeve_edge_xmax_ymax(sl_rng, kpe, knp,           &
-     &           inod, ioff_gl, nd)
+      subroutine set_sleeve_edge_xmax_ymax(sl_rng, kpe, knp,            &
+     &          ioff_gl, koff, nd, inod)
 !
-       type(slleve_range), intent(in) :: sl_rng
-       integer (kind = kint), intent(in) :: ioff_gl
-       integer (kind = kint), intent(in) :: kpe, knp
-       integer (kind = kint), intent(in) :: nd
-       integer (kind = kint), intent(inout) :: inod
+      type(slleve_range), intent(in) :: sl_rng
+      integer (kind = kint), intent(in) :: ioff_gl
+      integer (kind = kint), intent(in) :: koff
+      integer (kind = kint), intent(in) :: kpe, knp
+      integer (kind = kint), intent(in) :: nd
+      integer (kind = kint), intent(inout) :: inod
 !
-       integer (kind = kint) :: node_id_gl
-       integer (kind = kint) :: i, j, k
-       integer (kind = kint) :: is0, js0, ks0
-       integer (kind = kint) :: ie0, je0, ke0
-       real (kind = kreal) :: x, y, z
+      integer (kind = kint) :: node_id_gl
+      integer (kind = kint) :: i, j, k
+      integer (kind = kint) :: is0, js0, ks0
+      integer (kind = kint) :: ie0, je0, ke0
+      real (kind = kreal) :: x, y, z
 !
        is0 = 1
        ie0 = ndepth
@@ -212,32 +214,33 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine set_sleeve_edge_xmin_ymax(sl_rng, kpe, knp,           &
-     &           inod, ioff_gl, nd)
+      subroutine set_sleeve_edge_xmin_ymax(sl_rng, kpe, knp,            &
+     &          ioff_gl, koff, nd, inod)
 !
-       type(slleve_range), intent(in) :: sl_rng
-       integer (kind = kint), intent(in) :: ioff_gl
-       integer (kind = kint), intent(in) :: kpe, knp
-       integer (kind = kint), intent(in) :: nd
-       integer (kind = kint), intent(inout) :: inod
+      type(slleve_range), intent(in) :: sl_rng
+      integer (kind = kint), intent(in) :: ioff_gl
+      integer (kind = kint), intent(in) :: koff
+      integer (kind = kint), intent(in) :: kpe, knp
+      integer (kind = kint), intent(in) :: nd
+      integer (kind = kint), intent(inout) :: inod
 !
-       integer (kind = kint) :: node_id_gl
-       integer (kind = kint) :: i, j, k
-       integer (kind = kint) :: is0, js0, ks0
-       integer (kind = kint) :: ie0, je0, ke0
-       real (kind = kreal) :: x, y, z
+      integer (kind = kint) :: node_id_gl
+      integer (kind = kint) :: i, j, k
+      integer (kind = kint) :: is0, js0, ks0
+      integer (kind = kint) :: ie0, je0, ke0
+      real (kind = kreal) :: x, y, z
 !
-       is0 = 1
-       ie0 = ndepth
-       js0 = 1
-       je0 = ndepth
-       ks0 = sl_rng%ks
-       ke0 = sl_rng%ke
-       if ( nd.eq.2 ) je0 = je0 - 1
-       if ( nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke0 = ke0-1
+      is0 = 1
+      ie0 = ndepth
+      js0 = 1
+      je0 = ndepth
+      ks0 = sl_rng%ks
+      ke0 = sl_rng%ke
+      if ( nd.eq.2 ) je0 = je0 - 1
+      if ( nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
+      if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke0 = ke0-1
 !
-       do k = ks0, ke0
+      do k = ks0, ke0
         do j = js0, je0
          do i = is0, ie0
 
@@ -261,13 +264,13 @@
            z = zz_edge(koff+k)
           end if
 
-           write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
+          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
 
          end do
         end do
-       end do
+      end do
 !
-       end subroutine set_sleeve_edge_xmin_ymax
+      end subroutine set_sleeve_edge_xmin_ymax
 !
 !  ---------------------------------------------------------------------
 !

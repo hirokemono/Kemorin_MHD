@@ -1,10 +1,14 @@
 !sleeve_nod_corner_cube.f90
 !      module sleeve_nod_corner_cube
 !
-!!      subroutine set_sleeve_node_xmin_ymin(sl_rng, inod, ioff_gl)
-!!      subroutine set_sleeve_node_xmax_ymin(sl_rng, inod, ioff_gl)
-!!      subroutine set_sleeve_node_xmax_ymax(sl_rng, inod, ioff_gl)
-!!      subroutine set_sleeve_node_xmin_ymax(sl_rng, inod, ioff_gl)
+!!      subroutine set_sleeve_node_xmin_ymin                            &
+!!     &         (sl_rng, ioff_gl, koff, inod)
+!!      subroutine set_sleeve_node_xmax_ymin                            &
+!!     &         (sl_rng, ioff_gl, koff, inod)
+!!      subroutine set_sleeve_node_xmax_ymax                            &
+!!     &         (sl_rng, ioff_gl, koff, inod)
+!!      subroutine set_sleeve_node_xmin_ymax                            &
+!!     &         (sl_rng, ioff_gl, koff, inod)
 !!        type(slleve_range), intent(in) :: sl_rng
 !
       module sleeve_nod_corner_cube
@@ -15,7 +19,6 @@
       use m_local_node_id_cube
       use m_size_of_cube
       use m_size_4_plane
-      use m_offset_size_cube
       use m_cube_position
       use m_cube_files_data
 !
@@ -27,10 +30,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_sleeve_node_xmin_ymin(sl_rng, inod, ioff_gl)
+      subroutine set_sleeve_node_xmin_ymin                              &
+     &         (sl_rng, ioff_gl, koff, inod)
 !
       type(slleve_range), intent(in) :: sl_rng
-      integer (kind = kint), intent(in) :: ioff_gl
+      integer (kind = kint), intent(in) :: ioff_gl, koff
       integer (kind = kint), intent(inout) :: inod
 !
       integer (kind = kint) :: node_id_gl
@@ -62,10 +66,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_sleeve_node_xmax_ymin(sl_rng, inod, ioff_gl)
+      subroutine set_sleeve_node_xmax_ymin                              &
+     &         (sl_rng, ioff_gl, koff, inod)
 !
       type(slleve_range), intent(in) :: sl_rng
-      integer (kind = kint), intent(in) :: ioff_gl
+      integer (kind = kint), intent(in) :: ioff_gl, koff
       integer (kind = kint), intent(inout) :: inod
 
 !
@@ -98,10 +103,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_sleeve_node_xmax_ymax(sl_rng, inod, ioff_gl)
+      subroutine set_sleeve_node_xmax_ymax                              &
+     &         (sl_rng, ioff_gl, koff, inod)
 !
       type(slleve_range), intent(in) :: sl_rng
-      integer (kind = kint), intent(in) :: ioff_gl
+      integer (kind = kint), intent(in) :: ioff_gl, koff
       integer (kind = kint), intent(inout) :: inod
 
 !
@@ -134,10 +140,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_sleeve_node_xmin_ymax(sl_rng, inod, ioff_gl)
+      subroutine set_sleeve_node_xmin_ymax                              &
+     &         (sl_rng, ioff_gl, koff, inod)
 !
       type(slleve_range), intent(in) :: sl_rng
-      integer (kind = kint), intent(in) :: ioff_gl
+      integer (kind = kint), intent(in) :: ioff_gl, koff
       integer (kind = kint), intent(inout) :: inod
 
 !

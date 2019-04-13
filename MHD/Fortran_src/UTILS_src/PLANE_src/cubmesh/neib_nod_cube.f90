@@ -1,5 +1,5 @@
 !
-!      module m_neib_nod_cube
+!      module neib_nod_cube
 !
 !     written by H. Matsui
 !
@@ -21,17 +21,16 @@
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
-      module m_neib_nod_cube
+      module neib_nod_cube
 !
       use m_precision
 !
       use t_neib_range_cube
       use m_size_of_cube
-      use m_offset_size_cube
       use m_local_node_id_cube
       use m_cube_files_data
       use m_filtering_nod_4_cubmesh
-      use m_neib_nod_line_cube
+      use neib_nod_line_cube
       use m_filter_data_4_plane
 !
       use t_filter_elength
@@ -87,7 +86,7 @@
 !
        write(*,*) 'set_element_size_on_nod'
        call set_element_size_on_nod(FEM_elen)
-       call set_element_size_on_ele(FEM_elen)
+       call set_element_size_on_ele(nb_rng%koff, FEM_elen)
 !
        write(*,*) 'count_neib_node_x'
        call count_neib_node_x(FEM_elen)
@@ -96,7 +95,7 @@
        call count_neib_node_y(FEM_elen)
 !        call check_neib_node_y
        write(*,*) 'count_neib_node_z'
-       call count_neib_node_z(FEM_elen)
+       call count_neib_node_z(nb_rng%koff, FEM_elen)
        if (iflag_z_filter.eq.0)  then
          write(*,*) 'norm_z_coefs'
          call norm_z_coefs(FEM_elen)
@@ -146,11 +145,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine set_element_size_on_ele(FEM_elen)
+      subroutine set_element_size_on_ele(koff, FEM_elen)
 !
+      integer (kind = kint), intent(in) :: koff
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
-       integer(kind = kint) :: i, j, k, iele, k_gl
+      integer(kind = kint) :: i, j, k, iele, k_gl
 !
 !
        if (FEM_elen%filter_conf%nf_type .eq. 0) return
@@ -163,10 +163,10 @@
       &   (FEM_elen%nele_filter_mom, FEM_elen%elen_ele%diff2)
 !
        iele = 0
-       do k=1,nz-1
+       do k = 1, nz-1
          k_gl = k + koff
-         do j=1,ny-1
-           do i=1,nx-1
+         do j = 1, ny-1
+           do i = 1, nx-1
              iele = iele + 1
 !
              FEM_elen%elen_ele%moms%f_x2(iele)                          &
@@ -304,18 +304,18 @@
         enddo
        enddo
 !
-!
-       end subroutine count_neib_node_y
+      end subroutine count_neib_node_y
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine count_neib_node_z(FEM_elen)
+      subroutine count_neib_node_z(koff, FEM_elen)
 !
+      integer (kind = kint), intent(in) :: koff
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
-       integer(kind = kint) :: i, j, k
-       integer(kind = kint) :: kk, k1, ifil, k2, k_gl
-       integer(kind = kint),dimension(-1:1) :: ndepth_z
+      integer(kind = kint) :: i, j, k
+      integer(kind = kint) :: kk, k1, ifil, k2, k_gl
+      integer(kind = kint),dimension(-1:1) :: ndepth_z
 !
        nnod_neib_z = 0
 !
@@ -557,4 +557,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_neib_nod_cube
+      end module neib_nod_cube

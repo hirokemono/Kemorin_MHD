@@ -4,19 +4,20 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine set_internal_node(sl_rng, inod)
+!!      subroutine set_internal_node(nb_rng, sl_rng, inod)
 !!      subroutine set_internal_edge                                    &
-!!     &          (sl_rng, kpe, inp, jnp, knp, inod, nd)
+!!     &         (nb_rng, sl_rng, kpe, inp, jnp, knp, inod, nd)
+!!        type(neib_range_cube), intent(in) :: nb_rng
 !!        type(slleve_range), intent(in) :: sl_rng
 !
       module set_internal_nod_cube
 !
       use m_precision
 !
+      use t_neib_range_cube
       use t_sleeve_cube
       use m_size_4_plane
       use m_size_of_cube
-      use m_offset_size_cube
       use m_cube_position
       use m_local_node_id_cube
       use m_cube_files_data
@@ -29,8 +30,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_internal_node(sl_rng, inod)
+      subroutine set_internal_node(nb_rng, sl_rng, inod)
 !
+      type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(inout) :: inod
 !
@@ -40,34 +42,34 @@
 !
 ! *****   set position of internal node
 !
-            do k = sl_rng%ks, sl_rng%ke
-              do j = sl_rng%js, sl_rng%je
-                do i = sl_rng%is, sl_rng%ie
+      do k = sl_rng%ks, sl_rng%ke
+        do j = sl_rng%js, sl_rng%je
+          do i = sl_rng%is, sl_rng%ie
+            inod = inod + 1
 
-                  inod = inod + 1
+            node_id_lc(i,j,k) =  inod
+            node_id_gl        = (nb_rng%ioff + i  )                     &
+     &                         + (nb_rng%joff + j-1)*nx_all             &
+     &                         + (nb_rng%koff + k-1)*nx_all*ny_all
 
-                  node_id_lc(i,j,k) =  inod
-                  node_id_gl        = (ioff+i  ) +                      &
-     &                                (joff+j-1)*nx_all +               &
-     &                                (koff+k-1)*nx_all*ny_all 
+            x = xoff + (i-1) * xsize/(nx_all)
+            y = yoff + (j-1) * ysize/(ny_all)
+            z = zz(nb_rng%koff + k)
 
-                  x = xoff + (i-1)*xsize/(nx_all)
-                  y = yoff + (j-1)*ysize/(ny_all)
-                  z = zz(koff+k)
-
-                  write(l_out,'(i15,3(1pe21.11))')                      &
-     &                    node_id_gl, x, y, z
-                enddo
-              enddo
-            enddo
+            write(l_out,'(i15,3(1pe21.11))')                      &
+     &              node_id_gl, x, y, z
+          enddo
+        enddo
+      enddo
 !
       end subroutine set_internal_node
 !
 ! ----------------------------------------------------------------------
 !
       subroutine set_internal_edge                                      &
-     &          (sl_rng, kpe, inp, jnp, knp, inod, nd)
+     &         (nb_rng, sl_rng, kpe, inp, jnp, knp, inod, nd)
 !
+      type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(in) :: kpe
       integer (kind = kint), intent(in) :: nd
@@ -98,22 +100,22 @@
 
          edge_id_lc(i,j,k,nd) =  inod
          node_id_gl        =  nd*nod_gltot                              &
-                             + (ioff+i  )                               &
-     &                       + (joff+j-1)*nx_all                        &
-     &                       + (koff+k-1)*nx_all*ny_all 
+                             + (nb_rng%ioff + i  )                      &
+     &                       + (nb_rng%joff + j-1)*nx_all               &
+     &                       + (nb_rng%koff + k-1)*nx_all*ny_all 
 
          if (nd .eq. 1) then
-          x = xoff + (i-1)*xsize/(nx_all) + half*xsize/(nx_all)
-          y = yoff + (j-1)*ysize/(ny_all)
-          z = zz(koff+k)
+          x = xoff + (i-1) * xsize/(nx_all) + half*xsize/(nx_all)
+          y = yoff + (j-1) * ysize/(ny_all)
+          z = zz(nb_rng%koff + k)
          else if (nd .eq. 2) then
-          x = xoff + (i-1)*xsize/(nx_all)
-          y = yoff + (j-1)*ysize/(ny_all) + half*ysize/(ny_all)
-          z = zz(koff+k)
+          x = xoff + (i-1) * xsize/(nx_all)
+          y = yoff + (j-1) * ysize/(ny_all) + half*ysize/(ny_all)
+          z = zz(nb_rng%koff + k)
          else if (nd .eq. 3) then
-          x = xoff + (i-1)*xsize/(nx_all)
-          y = yoff + (j-1)*ysize/(ny_all)
-          z = zz_edge(koff+k)
+          x = xoff + (i-1) * xsize/(nx_all)
+          y = yoff + (j-1) * ysize/(ny_all)
+          z = zz_edge(nb_rng%koff + k)
          end if
 
          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z

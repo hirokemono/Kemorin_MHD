@@ -1,5 +1,5 @@
 !
-!      module m_neib_nod_line_cube
+!      module neib_nod_line_cube
 !
 !     written by H. Matsui
 !
@@ -22,7 +22,7 @@
 !!     &         (id_rank, nf_type, FEM_elen)
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
-      module m_neib_nod_line_cube
+      module neib_nod_line_cube
 !
       use m_precision
 !
@@ -40,21 +40,19 @@
 !
       type(line_filtering_type), save :: fil_l1
 !
-      integer(kind = kint), dimension(:,:), allocatable                 &
-     &      :: inod_f_dist_l
+      integer(kind = kint), allocatable :: inod_f_dist_l(:,:)
 !
-      integer(kind = kint), dimension(:,:), allocatable                 &
-     &      :: inod_4_l_filter_0
-      integer(kind = kint), dimension(:,:), allocatable                 &
-     &      :: istack_l_filter_0
+      integer(kind = kint), allocatable :: inod_4_l_filter_0(:,:)
+      integer(kind = kint), allocatable :: istack_l_filter_0(:,:)
 !
-      integer(kind = kint), dimension(:,:), allocatable                 &
-     &      :: item_l_filter_0
-      integer(kind = kint), dimension(:,:), allocatable                 &
-     &      :: inod_f_dist_l_0
-      real(kind = kreal), dimension(:,:), allocatable                   &
-     &      :: coef_l_filter_0
+      integer(kind = kint), allocatable :: item_l_filter_0(:,:)
+      integer(kind = kint), allocatable :: inod_f_dist_l_0(:,:)
+      real(kind = kreal), allocatable :: coef_l_filter_0(:,:)
 !
+      private ::  fil_l1
+      private ::  inod_f_dist_l
+      private ::  inod_4_l_filter_0, istack_l_filter_0
+      private ::  item_l_filter_0, inod_f_dist_l_0, coef_l_filter_0
 !
       private :: set_fiilter_nod_line, order_fiilter_nod_line
 !
@@ -312,5 +310,5 @@
 !
 !  ----------------------------------------------------------------------
 !
-      end module m_neib_nod_line_cube
+      end module neib_nod_line_cube
 

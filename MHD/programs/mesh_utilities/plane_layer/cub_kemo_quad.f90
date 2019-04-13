@@ -105,9 +105,6 @@
       use m_cube_files_data
       use m_local_node_id_cube
       use t_neib_range_cube
-      use m_offset_size_cube
-      use m_neib_nod_cube
-      use neib_edge_cube
       use m_filtering_nod_4_cubmesh
       use m_filtering_ele_4_cubmesh
       use m_ctl_data_4_cub_kemo
@@ -124,6 +121,8 @@
       use write_surf_grp_cube
       use set_plane_geometries
       use set_ctl_data_plane_mesh
+      use neib_nod_cube
+      use neib_edge_cube
 !
       implicit  none
 
@@ -241,14 +240,14 @@
 
 ! *****  initialization to construct node information
 !
-            call init_node_para_4_each_pe(ipe, jpe, kpe)
+            call init_node_para_4_each_pe(ipe, jpe, kpe, nb_rng1)
             call set_offset_of_domain(ipe, jpe, kpe)
             call set_node_quad(nb_rng1, ipe, jpe, kpe)
 !
 ! ..... write 2.2 element (connection)
 !
             write(*,*) 'set_ele_connect_quad', ipe, jpe, kpe
-            call set_ele_connect_quad(elm_type, ipe, jpe, kpe)
+            call set_ele_connect_quad(nb_rng1, elm_type, ipe, jpe, kpe)
 
 !
 ! ..... write 3.import / export information
@@ -287,7 +286,7 @@
 !                                     .. count element group and stack
             call count_element_group
 !
-            call write_cube_ele_group(kpe)
+            call write_cube_ele_group(kpe, nb_rng1%koff)
 !
 
 !    output surface group

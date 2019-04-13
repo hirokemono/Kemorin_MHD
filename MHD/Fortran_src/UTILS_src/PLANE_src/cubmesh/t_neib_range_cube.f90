@@ -3,6 +3,7 @@
 !
 !     written by Kemorin
 !
+!!      subroutine init_node_para_4_each_pe(ipe, jpe, kpe, nb_rng)
 !!      subroutine set_range_4_neighbour(ipe, jpe, kpe, nb_rng)
 !!      subroutine set_range_4_nodeloop(kpe, nb_rng)
 !!      subroutine set_edge_para_4_each_pe(kpe, ndz, nb_rng)
@@ -15,6 +16,11 @@
       implicit  none
 !
       type neib_range_cube
+        integer(kind = kint)  ::  ioff
+        integer(kind = kint)  ::  joff
+        integer(kind = kint)  ::  koff
+!
+!
         integer(kind = kint)  ::  inp_st
         integer(kind = kint)  ::  inp_end
 !
@@ -49,6 +55,24 @@
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine init_node_para_4_each_pe(ipe, jpe, kpe, nb_rng)
+!
+      use m_size_of_cube
+!
+      integer(kind=kint), intent(in)  ::  ipe, jpe, kpe
+      type(neib_range_cube), intent(inout) :: nb_rng
+!
+!
+                     nb_rng%ioff = (ipe-1)*nxi - ndepth
+                     nb_rng%joff = (jpe-1)*nyi - ndepth
+                     nb_rng%koff = (kpe-1)*nzi
+      if(kpe .ne. 1) nb_rng%koff = nb_rng%koff - ndepth
+!
+      end subroutine init_node_para_4_each_pe
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_range_4_neighbour(ipe, jpe, kpe, nb_rng)

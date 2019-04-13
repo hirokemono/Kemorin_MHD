@@ -4,13 +4,15 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!     subroutine set_ele_connect(elm_type, ipe, jpe, kpe)
-!     subroutine set_ele_connect_quad(elm_type, ipe, jpe, kpe)
+!!     subroutine set_ele_connect(nb_rng, elm_type, ipe, jpe, kpe)
+!!     subroutine set_ele_connect_quad(nb_rng, elm_type, ipe, jpe, kpe)
+!!       type(neib_range_cube), intent(in) :: nb_rng
 !
       module set_cube_ele_connect
 !
       use m_precision
 !
+      use t_neib_range_cube
       use m_size_of_cube
       use m_local_node_id_cube
       use m_cube_files_data
@@ -24,12 +26,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ele_connect(elm_type, ipe, jpe, kpe)
+      subroutine set_ele_connect(nb_rng, elm_type, ipe, jpe, kpe)
 !
       use m_fem_mesh_labels
 !
-      integer (kind = kint) :: elm_type
-      integer (kind = kint) :: ipe, jpe, kpe
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer (kind = kint), intent(in) :: elm_type
+      integer (kind = kint), intent(in) :: ipe, jpe, kpe
 !
       integer (kind = kint) :: element_id
       integer (kind = kint) :: element_id_gl
@@ -52,8 +55,8 @@
        do j=1,ny-1
         do i=1,nx-1
 
-         call set_element_id_periodic(ipe, jpe, kpe, i, j, k,           &
-     &          element_id, element_id_gl)
+         call set_element_id_periodic(nb_rng, ipe, jpe, kpe, i, j, k,   &
+     &       element_id, element_id_gl)
 !
          i1 = node_id_lc( i  , j  , k   )
          i2 = node_id_lc( i+1, j  , k   )
@@ -75,10 +78,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ele_connect_quad(elm_type, ipe, jpe, kpe)
+      subroutine set_ele_connect_quad(nb_rng, elm_type, ipe, jpe, kpe)
 !
-      integer (kind = kint) :: elm_type
-      integer (kind = kint) :: ipe, jpe, kpe
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer (kind = kint), intent(in) :: elm_type
+      integer (kind = kint), intent(in) :: ipe, jpe, kpe
 !
       integer (kind = kint) :: element_id
       integer (kind = kint) :: element_id_gl
@@ -103,8 +107,8 @@
        do j=1,ny-1
         do i=1,nx-1
 !
-         call set_element_id_periodic(ipe, jpe, kpe, i, j, k,           &
-     &          element_id, element_id_gl)
+         call set_element_id_periodic(nb_rng, ipe, jpe, kpe, i, j, k,   &
+     &       element_id, element_id_gl)
 !
 !
          i1  = node_id_lc( i  , j  , k   )
