@@ -37,29 +37,14 @@
       mesh_type_plane = elm_type
 !
       neib = ndepth
-      ndep_1 = (2*ndepth+1)
-      ndep_2 = ndep_1 * ndep_1
-      ndep_3 = ndep_2 * ndep_1
 !
       xmin = xmin - ndepth*xsize / dble(nx_all)
       xmax = xmax - ndepth*xsize / dble(nx_all)
       ymin = ymin - ndepth*ysize / dble(ny_all)
       ymax = ymax - ndepth*ysize / dble(ny_all)
 !
-      nod_gltot  = nx_all*ny_all*nz_all
-      edge_gltot = nx_all*ny_all*(3*nz_all-1)
-!
-! ***** set internal node count
-!
-      nxi = nx_all / ndx
-      nyi = ny_all / ndy
-      nzi = nz_all / ndz
-!
-      numnod_x = nxi+2*ndepth
-      numnod_y = nyi+2*ndepth
-      numnod_z = nzi+2*ndepth
-!
-      nnod_cubmesh = numnod_x*numnod_y*numnod_z
+      call set_plane_resolution(ndepth, c_size1)
+      call copy_plane_resolution(c_size1)
 !
       end subroutine s_set_plane_geometries
 !

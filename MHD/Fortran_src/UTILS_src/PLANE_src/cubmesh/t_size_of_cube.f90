@@ -5,7 +5,7 @@
 !
 !!      subroutine set_plane_resolution(c_size)
 !!      subroutine set_each_cube_resolution(elm_type, kpe, c_size)
-!!        type(size_of_cube), intent(inout) :: c_size
+!!        type(size_of_each_cube), intent(inout) :: c_size
 !
       module t_size_of_cube
 !
@@ -20,8 +20,12 @@
         integer(kind=kint )   ::  ndep_1 = 3
         integer(kind=kint )   ::  ndep_2 = 9
         integer(kind=kint )   ::  ndep_3 = 27
-!  * variables
-
+!
+!>        number of node in the domain without sleeves
+        integer(kind=kint )  ::  nod_gltot
+!>        number of edge in the domain without sleeves
+        integer(kind=kint )  ::  edge_gltot
+!
 !>        nxi:     internal node count at x direction line
         integer(kind=kint )  ::  nxi
 !>        nyi:     internal node count at y direction line
@@ -29,6 +33,18 @@
 !>        nzi:     internal node count at z direction line
         integer(kind=kint )  ::  nzi
 
+!>        numnod_x:      array size for x direction
+        integer(kind=kint )  ::  numnod_x
+!>        numnod_y:      array size for y direction
+        integer(kind=kint )  ::  numnod_y 
+!>        numnod_z:      array size for z direction
+        integer(kind=kint )  ::  numnod_z 
+!
+!>        nnod_cubmesh:      array size direction
+        integer(kind=kint )  ::  nnod_cubmesh
+      end type size_of_cube
+!
+      type size_of_each_cube
 !>        nx:      nodal count for x direction
         integer(kind=kint )  ::  nx
 !>        ny:      nodal count for y direction
@@ -43,21 +59,6 @@
 !>        nz1:      nodal count with 1 fill-in for z direction
         integer(kind=kint )  ::  nz1
 
-!>        numnod_x:      array size for x direction
-        integer(kind=kint )  ::  numnod_x
-!>        numnod_y:      array size for y direction
-        integer(kind=kint )  ::  numnod_y 
-!>        numnod_z:      array size for z direction
-        integer(kind=kint )  ::  numnod_z 
-!
-!>        nnod_cubmesh:      array size direction
-        integer(kind=kint )  ::  nnod_cubmesh
-
-!>        number of node in the domain without sleeves
-        integer(kind=kint )  ::  nod_gltot
-!>        number of edge in the domain without sleeves
-        integer(kind=kint )  ::  edge_gltot
-!
 !>        Total number node
         integer(kind=kint )  ::  nodtot
 !>        Total number internal node
@@ -76,7 +77,7 @@
 !
 !>        Filtering flag
         integer(kind = kint) :: iflag_filter = -1
-      end type size_of_cube
+      end type size_of_each_cube
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,15 +85,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_plane_resolution(c_size)
+      subroutine set_plane_resolution(ndepth, c_size)
 !
       use m_size_4_plane
 !
       implicit none
 !
+      integer(kind = kint), intent(in) :: ndepth
       type(size_of_cube), intent(inout) :: c_size
 !
 !
+      c_size%ndepth = ndepth
       c_size%ndep_1 = (2*c_size%ndepth+1)
       c_size%ndep_2 = c_size%ndep_1 * c_size%ndep_1
       c_size%ndep_3 = c_size%ndep_2 * c_size%ndep_1
@@ -117,48 +120,50 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_each_cube_resolution(elm_type, kpe, c_size)
+      subroutine set_each_cube_resolution                               &
+     &         (elm_type, kpe, c_size, c_each)
 !
       use m_size_4_plane
 !
       integer (kind = kint), intent(in) :: elm_type, kpe
-      type(size_of_cube), intent(inout) :: c_size
+      type(size_of_cube), intent(in) :: c_size
+      type(size_of_each_cube), intent(inout) :: c_each
 !
 !
 !                                       .. pe nod per 1 line
 
-                       c_size%nx  = c_size%nxi + 2*c_size%ndepth
-                       c_size%nx1 = c_size%nxi + 2
+                       c_each%nx  = c_size%nxi + 2*c_size%ndepth
+                       c_each%nx1 = c_size%nxi + 2
 
-                       c_size%ny  = c_size%nyi + 2*c_size%ndepth
-                       c_size%ny1 = c_size%nyi + 2
+                       c_each%ny  = c_size%nyi + 2*c_size%ndepth
+                       c_each%ny1 = c_size%nyi + 2
 
-                       c_size%nz  = c_size%nzi
-                       c_size%nz1 = c_size%nzi
-      if (kpe /=   1)  c_size%nz  = c_size%nz  + c_size%ndepth
-      if (kpe /=   1)  c_size%nz1 = c_size%nz1 + 1
-      if (kpe /= ndz)  c_size%nz  = c_size%nz  + c_size%ndepth
-      if (kpe /= ndz)  c_size%nz1 = c_size%nz1 + 1
+                       c_each%nz  = c_size%nzi
+                       c_each%nz1 = c_size%nzi
+      if (kpe /=   1)  c_each%nz  = c_each%nz  + c_size%ndepth
+      if (kpe /=   1)  c_each%nz1 = c_each%nz1 + 1
+      if (kpe /= ndz)  c_each%nz  = c_each%nz  + c_size%ndepth
+      if (kpe /= ndz)  c_each%nz1 = c_each%nz1 + 1
 
 !                                       .. total node
-      c_size%nodtot    = c_size%nx  * c_size%ny  * c_size%nz
+      c_each%nodtot    = c_each%nx  * c_each%ny  * c_each%nz
 !                                       .. internal nodes
-      c_size%intnodtot = c_size%nxi * c_size%nyi * c_size%nzi
+      c_each%intnodtot = c_size%nxi * c_size%nyi * c_size%nzi
 !
-      c_size%edgetot   = (c_size%nx-1) * c_size%ny  * c_size%nz
-      c_size%edgetot   = c_size%edgetot                                 &
-     &                  + c_size%nx * (c_size%ny-1)  * c_size%nz
-      c_size%edgetot   = c_size%edgetot                                 &
-     &                  + c_size%nx * c_size%ny  * (c_size%nz-1)
+      c_each%edgetot   = (c_each%nx-1) * c_each%ny  * c_each%nz
+      c_each%edgetot   = c_each%edgetot                                 &
+     &                  + c_each%nx * (c_each%ny-1)  * c_each%nz
+      c_each%edgetot   = c_each%edgetot                                 &
+     &                  + c_each%nx * c_each%ny  * (c_each%nz-1)
 !
-      c_size%intedgetot = 3 * c_size%nxi * c_size%nyi * c_size%nzi
+      c_each%intedgetot = 3 * c_size%nxi * c_size%nyi * c_size%nzi
       if (kpe == ndz) then
-        c_size%intedgetot = c_size%intedgetot - c_size%nxi * c_size%nyi
+        c_each%intedgetot = c_each%intedgetot - c_size%nxi * c_size%nyi
       end if
 !
       if (elm_type .eq. 332) then
-        c_size%nodtot    = c_size%nodtot + c_size%edgetot
-        c_size%intnodtot = c_size%intnodtot + c_size%intedgetot
+        c_each%nodtot    = c_each%nodtot + c_each%edgetot
+        c_each%intnodtot = c_each%intnodtot + c_each%intedgetot
       end if
 !
       end subroutine set_each_cube_resolution
