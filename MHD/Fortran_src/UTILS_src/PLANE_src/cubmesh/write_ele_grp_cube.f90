@@ -5,7 +5,7 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !       subroutine count_element_group
-!       subroutine write_cube_ele_group(kpe, koff)
+!       subroutine write_cube_ele_group(nx, ny, nz, kpe, koff)
 !
       module write_ele_grp_cube
 !
@@ -21,10 +21,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine count_element_group
+      subroutine count_element_group(elm_fil1_tot)
 !
-       use m_size_4_plane
-       use m_size_of_cube
+      use m_size_4_plane
+!
+      integer (kind=kint), intent(in) :: elm_fil1_tot
 !
        integer(kind = kint) :: item_tot
        integer(kind = kint) :: item_pos
@@ -42,20 +43,21 @@
        index(item_pos) = item_tot
 !
        item_pos = 3
-       item_tot = item_tot + c_each1%elm_fil1_tot
+       item_tot = item_tot + elm_fil1_tot
        index(item_pos) = item_tot
 !
        end subroutine count_element_group
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_cube_ele_group(kpe, koff)
+      subroutine write_cube_ele_group(ndepth, nx, ny, nz, kpe, koff)
 !
       use m_size_4_plane
-      use m_size_of_cube
       use m_cube_files_data
       use m_fem_mesh_labels
 !
+      integer (kind=kint), intent(in) :: ndepth
+      integer (kind=kint), intent(in) :: nx, ny, nz
       integer(kind = kint), intent(in) :: kpe
       integer(kind=kint), intent(in) :: koff
 !

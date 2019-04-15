@@ -208,8 +208,9 @@
 ! ***** set and write basic local model parameters
 !                                       .. pe nod per 1 line
 
-            write(*,*) 'set_size_of_domain', ipe, jpe, kpe
-            call set_size_of_domain(elm_type, kpe)
+            write(*,*) 'set_each_cube_resolution', ipe, jpe, kpe
+            call set_each_cube_resolution                               &
+     &         (elm_type, kpe, c_size1, c_each1)
             call set_range_4_neighbour(ipe, jpe, kpe, nb_rng1)
 
 !                                       .. set neighbor pe
@@ -279,22 +280,28 @@
 !                                       ... node    group
 !
 !                                        .. count node group and stack
-            call count_node_group(elm_type, ipe, jpe, kpe)
-            call write_node_group_quad(c_size1, ipe, jpe, kpe)
+            call count_node_group                                       &
+     &         (elm_type, c_each1%nx, c_each1%ny, ipe, jpe, kpe)
+            call write_node_group_quad                                  &
+     &         (c_size1, c_each1%nx, c_each1%ny, c_each1%nz,            &
+     &          ipe, jpe, kpe)
 !
 !    output element group
 !
 !                                     .. count element group and stack
-            call count_element_group
+            call count_element_group(c_each1%elm_fil1_tot)
 !
-            call write_cube_ele_group(kpe, nb_rng1%koff)
+            call write_cube_ele_group                                   &
+     &         (c_size1%ndepth, c_each1%nx, c_each1%ny, c_each1%nz,     &
+     &          kpe, nb_rng1%koff)
 !
 
 !    output surface group
 !
 !                                     .. count element group and stack
-            call count_surface_group(kpe)
-            call write_surface_group(kpe)
+            call count_surface_group(c_each1%nx, c_each1%ny, kpe)
+            call write_surface_group                                    &
+     &         (c_each1%nx, c_each1%ny, c_each1%nz, kpe)
 !                                       ... to next pe 
 !   construct filtering information
 !

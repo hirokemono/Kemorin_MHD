@@ -360,17 +360,17 @@
 !     &            + (ndepth-1)*(nx_all+ny_all+4*ndepth)*nz_all         &
 !     &            + ndepth*ndepth*(8*nz_all-4)                         &
 !
-!              do k = 1, nz
-!               do j = 1, ny
-!                do i = 1, nx
+!              do k = 1, c_each%nz
+!               do j = 1, c_each%ny
+!                do i = 1, c_each%nx
 !                 write(*,'(7i7)') ipe, jpe, kpe, i, j, k, node_id_lc(i,j,k)
 !                end do
 !               end do
 !              end do
 !
-!              do k = 1, nz
-!               do j = 1, ny
-!                do i = 1, nx
+!              do k = 1, c_each%nz
+!               do j = 1, c_each%ny
+!                do i = 1, c_each%nx
 !                 write(*,'(9i7)') ipe, jpe, kpe, i, j, k, edge_id_lc(i,j,k,1:3)
 !                end do
 !               end do

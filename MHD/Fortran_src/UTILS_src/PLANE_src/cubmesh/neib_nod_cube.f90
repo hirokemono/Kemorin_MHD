@@ -68,15 +68,15 @@
        call allocate_filters_nod(FEM_elen%filter_conf%nf_type)
 !
        i_st2 =  max(nb_rng%i_st -  ndepth,1)
-       i_end2 = min(nb_rng%i_end + ndepth,nx)
+       i_end2 = min(nb_rng%i_end + ndepth,c_each1%nx)
        j_st2 =  max(nb_rng%j_st -  ndepth,1)
-       j_end2 = min(nb_rng%j_end + ndepth,ny)
+       j_end2 = min(nb_rng%j_end + ndepth,c_each1%ny)
        k_st2 =  max(nb_rng%k_st -  ndepth,1)
-       k_end2 = min(nb_rng%k_end + ndepth,nz)
+       k_end2 = min(nb_rng%k_end + ndepth,c_each1%nz)
 !
-       write(*,*) 'i_st2, i_end2', i_st2, i_end2, nx
-       write(*,*) 'j_st2, j_end2', j_st2, j_end2, ny
-       write(*,*) 'k_st2, k_end2', k_st2, k_end2, nz
+       write(*,*) 'i_st2, i_end2', i_st2, i_end2, c_each1%nx
+       write(*,*) 'j_st2, j_end2', j_st2, j_end2, c_each1%ny
+       write(*,*) 'k_st2, k_end2', k_st2, k_end2, c_each1%nz
 !
        FEM_elen%nnod_filter_mom = c_each1%nodtot
        FEM_elen%nele_filter_mom = c_each1%elmtot
@@ -164,10 +164,10 @@
       &   (FEM_elen%nele_filter_mom, FEM_elen%elen_ele%diff2)
 !
        iele = 0
-       do k = 1, nz-1
+       do k = 1, c_each1%nz-1
          k_gl = k + koff
-         do j = 1, ny-1
-           do i = 1, nx-1
+         do j = 1, c_each1%ny-1
+           do i = 1, c_each1%nx-1
              iele = iele + 1
 !
              FEM_elen%elen_ele%moms%f_x2(iele)                          &
@@ -206,7 +206,7 @@
          do i=i_st2, i_end2
           ndepth_x(-1) = i - max(i-ndepth,1)
           ndepth_x( 0) = 1
-          ndepth_x( 1) = min(i+ndepth,nx) - i
+          ndepth_x( 1) = min(i+ndepth,c_each1%nx) - i
 !          if ( ndepth_x(-1) .lt. ndepth) then
 !           ndepth_x( 1) = 2*ndepth - ndepth_x(-1)
 !          end if
@@ -250,13 +250,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine count_neib_node_y(FEM_elen)
+      subroutine count_neib_node_y(FEM_elen)
 !
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
-       integer(kind = kint) :: i, j, k
-       integer(kind = kint) :: jj, j1, ifil, j2
-       integer(kind = kint),dimension(-1:1) :: ndepth_y
+      integer(kind = kint) :: i, j, k
+      integer(kind = kint) :: jj, j1, ifil, j2
+      integer(kind = kint),dimension(-1:1) :: ndepth_y
+!
 !
        nnod_neib_y = 0
 !
@@ -264,7 +265,7 @@
         do j=j_st2, j_end2
          ndepth_y(-1) = j - max(j-ndepth,1)
          ndepth_y( 0) = 1
-         ndepth_y( 1) = min(j+ndepth,ny) - j
+         ndepth_y( 1) = min(j+ndepth,c_each1%ny) - j
  !        if ( ndepth_y(-1) .lt. ndepth) then
  !          ndepth_y( 1) = 2*ndepth - ndepth_y(-1)
  !        end if
@@ -324,7 +325,7 @@
         k_gl = k + koff
         ndepth_z(-1) = k - max(k-ndepth,1)
         ndepth_z( 0) = 1
-        ndepth_z( 1) = min(k+ndepth,nz) - k
+        ndepth_z( 1) = min(k+ndepth,c_each1%nz) - k
 !        if ( ndepth_z(-1) .lt. ndepth) then
 !          ndepth_z( 1) = 2*ndepth - ndepth_z(-1)
 !        end if

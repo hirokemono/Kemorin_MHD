@@ -20,14 +20,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_element_id_periodic(nb_rng, ipe, jpe, kpe,        &
+      subroutine set_element_id_periodic                                &
+     &         (ndepth, nb_rng, nx, ny, ipe, jpe, kpe,                  &
      &          i, j, k, element_id, element_id_gl)
 !
       use t_neib_range_cube
       use m_size_4_plane
-      use m_size_of_cube
 !
       type(neib_range_cube), intent(in) :: nb_rng
+      integer (kind=kint), intent(in) :: ndepth
+      integer (kind=kint), intent(in) :: nx, ny
       integer(kind = kint), intent(in) :: ipe, jpe, kpe
       integer(kind = kint), intent(in) :: i, j, k
       integer(kind = kint), intent(inout) :: element_id, element_id_gl

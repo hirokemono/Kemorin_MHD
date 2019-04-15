@@ -4,16 +4,17 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine write_node_group(c_size, ipe, jpe, kpe)
-!!      subroutine write_node_group_quad(c_size, ipe, jpe, kpe)
+!!      subroutine write_node_group(c_size, nx, ny, nz, ipe, jpe, kpe)
+!!      subroutine write_node_group_quad                                &
+!!     &         (c_size, nx, ny, nz, ipe, jpe, kpe)
 !!        type(size_of_cube), intent(in) :: c_size
 !
       module write_nod_grp_cube
 !
       use m_precision
 !
+      use t_size_of_cube
       use m_size_4_plane
-      use m_size_of_cube
       use m_grp_data_cub_kemo
       use m_local_node_id_cube
       use m_cube_files_data
@@ -26,9 +27,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_node_group(c_size, ipe, jpe, kpe)
+      subroutine write_node_group(c_size, nx, ny, nz, ipe, jpe, kpe)
 !
       type(size_of_cube), intent(in) :: c_size
+      integer (kind=kint), intent(in) :: nx, ny, nz
       integer (kind=kint), intent(in) :: ipe, jpe, kpe
 !
       integer (kind=kint) :: i, j, i1, j1
@@ -86,9 +88,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_node_group_quad(c_size, ipe, jpe, kpe)
+      subroutine write_node_group_quad                                  &
+     &         (c_size, nx, ny, nz, ipe, jpe, kpe)
 !
       type(size_of_cube), intent(in) :: c_size
+      integer (kind=kint), intent(in) :: nx, ny, nz
       integer (kind=kint), intent(in) :: ipe, jpe, kpe
 !
        integer (kind=kint) :: ia, ja, ib, jb

@@ -1,9 +1,12 @@
 !
 !      module m_grp_data_cub_kemo
 !
-      module m_grp_data_cub_kemo
-!
 !      written by Kemorin
+!
+!      subroutine count_node_group(elm_type, nx, ny, ipe, jpe, kpe)
+!      subroutine count_surface_group(nx, ny, kpe)
+!
+      module m_grp_data_cub_kemo
 !
       use m_precision
 !
@@ -70,16 +73,16 @@
 !
 ! ---------------------------------------------------------------------
 !
-       subroutine count_node_group(elm_type, ipe, jpe, kpe)
+      subroutine count_node_group(elm_type, nx, ny, ipe, jpe, kpe)
 !
-       use m_size_4_plane
-       use m_size_of_cube
+      use m_size_4_plane
 !
-       integer(kind = kint) :: elm_type
-       integer(kind = kint) :: ipe, jpe, kpe
+      integer(kind = kint), intent(in)  :: elm_type
+      integer (kind=kint), intent(in) :: nx, ny
+      integer(kind = kint), intent(in)  :: ipe, jpe, kpe
 !
-       integer(kind = kint) :: item_tot
-       integer(kind = kint) :: item_pos
+      integer(kind = kint) :: item_tot
+      integer(kind = kint) :: item_pos
 !
             item_tot = 0
             item_pos = 0
@@ -126,18 +129,16 @@
 
 
 !
-       end subroutine count_node_group
+      end subroutine count_node_group
 !
 ! ---------------------------------------------------------------------
 !
-       subroutine count_surface_group(kpe)
+      subroutine count_surface_group(nx, ny, kpe)
 !
-       use m_size_4_plane
-       use m_size_of_cube
+      use m_size_4_plane
 !
-       implicit none
-!
-       integer(kind = kint) :: kpe
+      integer (kind=kint), intent(in) :: nx, ny
+      integer(kind = kint), intent(in) :: kpe
 !
        integer(kind = kint) :: ibd
        integer(kind = kint) :: item_tot

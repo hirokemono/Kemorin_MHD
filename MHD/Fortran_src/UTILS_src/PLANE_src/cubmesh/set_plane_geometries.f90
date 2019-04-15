@@ -44,7 +44,6 @@
       ymax = ymax - ndepth*ysize / dble(ny_all)
 !
       call set_plane_resolution(ndepth, c_size1)
-      call copy_plane_resolution(c_size1)
 !
       end subroutine s_set_plane_geometries
 !

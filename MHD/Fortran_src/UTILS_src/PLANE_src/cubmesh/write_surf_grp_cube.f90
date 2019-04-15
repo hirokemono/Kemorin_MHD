@@ -4,14 +4,13 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!       subroutine write_surface_group(kpe)
+!!       subroutine write_surface_group(nx, ny, nz, kpe)
 !
       module write_surf_grp_cube
 !
       use m_precision
 !
       use m_size_4_plane
-      use m_size_of_cube
       use m_grp_data_cub_kemo
       use m_cube_files_data
 !
@@ -23,11 +22,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_surface_group(kpe)
+      subroutine write_surface_group(nx, ny, nz, kpe)
 !
       use m_fem_mesh_labels
 !
-      integer(kind = kint) :: kpe
+      integer(kind = kint), intent(in) :: nx, ny, nz
+      integer(kind = kint), intent(in) :: kpe
 !
       integer(kind = kint) :: ibd
       integer(kind = kint) :: i, j, istart

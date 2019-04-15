@@ -48,12 +48,13 @@
 
       element_id = 0
 
-      do k=1,nz-1
-       do j=1,ny-1
-        do i=1,nx-1
+      do k = 1, c_each1%nz-1
+       do j = 1, c_each1%ny-1
+        do i = 1, c_each1%nx-1
 
-         call set_element_id_periodic(nb_rng, ipe, jpe, kpe, i, j, k,   &
-     &       element_id, element_id_gl)
+         call set_element_id_periodic                                   &
+     &      (ndepth, nb_rng, c_each1%nx, c_each1%ny,                    &
+     &       ipe, jpe, kpe, i, j, k, element_id, element_id_gl)
 !
          i1 = node_id_lc( i  , j  , k   )
          i2 = node_id_lc( i+1, j  , k   )
@@ -97,12 +98,13 @@
 
       element_id = 0
 
-      do k=1,nz-1
-       do j=1,ny-1
-        do i=1,nx-1
+      do k = 1, c_each1%nz-1
+       do j = 1, c_each1%ny-1
+        do i = 1, c_each1%nx-1
 !
-         call set_element_id_periodic(nb_rng, ipe, jpe, kpe, i, j, k,   &
-     &       element_id, element_id_gl)
+         call set_element_id_periodic                                   &
+     &      (ndepth, nb_rng, c_each1%nx, c_each1%ny,                    &
+     &       ipe, jpe, kpe, i, j, k, element_id, element_id_gl)
 !
 !
          i1  = node_id_lc( i  , j  , k   )
