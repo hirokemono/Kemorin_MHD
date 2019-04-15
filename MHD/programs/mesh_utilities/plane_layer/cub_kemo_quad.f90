@@ -241,7 +241,7 @@
 ! *****  initialization to construct node information
 !
             call init_node_para_4_each_pe(ipe, jpe, kpe, nb_rng1)
-            call set_offset_of_domain(ipe, jpe, kpe)
+            call set_offset_of_domain(ipe, jpe, kpe, nb_rng1)
             call set_node_quad(nb_rng1, ipe, jpe, kpe)
 !
 ! ..... write 2.2 element (connection)

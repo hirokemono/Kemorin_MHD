@@ -52,8 +52,8 @@
      &                         + (nb_rng%joff + j-1)*nx_all             &
      &                         + (nb_rng%koff + k-1)*nx_all*ny_all
 
-            x = xoff + (i-1) * xsize/(nx_all)
-            y = yoff + (j-1) * ysize/(ny_all)
+            x = nb_rng%xoff + (i-1) * xsize/(nx_all)
+            y = nb_rng%yoff + (j-1) * ysize/(ny_all)
             z = zz(nb_rng%koff + k)
 
             write(l_out,'(i15,3(1pe21.11))')                      &
@@ -105,16 +105,18 @@
      &                       + (nb_rng%koff + k-1)*nx_all*ny_all 
 
          if (nd .eq. 1) then
-          x = xoff + (i-1) * xsize/(nx_all) + half*xsize/(nx_all)
-          y = yoff + (j-1) * ysize/(ny_all)
+          x = nb_rng%xoff + (i-1) * xsize/(nx_all)                      &
+     &                    + half*xsize/(nx_all)
+          y = nb_rng%yoff + (j-1) * ysize/(ny_all)
           z = zz(nb_rng%koff + k)
          else if (nd .eq. 2) then
-          x = xoff + (i-1) * xsize/(nx_all)
-          y = yoff + (j-1) * ysize/(ny_all) + half*ysize/(ny_all)
+          x = nb_rng%xoff + (i-1) * xsize/(nx_all)
+          y = nb_rng%yoff + (j-1) * ysize/(ny_all)                      &
+     &                     + half*ysize/(ny_all)
           z = zz(nb_rng%koff + k)
          else if (nd .eq. 3) then
-          x = xoff + (i-1) * xsize/(nx_all)
-          y = yoff + (j-1) * ysize/(ny_all)
+          x = nb_rng%xoff + (i-1) * xsize/(nx_all)
+          y = nb_rng%yoff + (j-1) * ysize/(ny_all)
           z = zz_edge(nb_rng%koff + k)
          end if
 

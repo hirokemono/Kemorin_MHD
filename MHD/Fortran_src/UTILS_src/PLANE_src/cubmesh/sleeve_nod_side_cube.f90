@@ -53,7 +53,7 @@
      &                + (k + nb_rng%koff-1) * ndepth * ny_all 
 
          x = xmin + (i-1)*xsize/(nx_all)
-         y = yoff + (j-1)*ysize/(ny_all)
+         y = nb_rng%yoff + (j-1)*ysize/(ny_all)
          z = zz(nb_rng%koff + k)
 
          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
@@ -89,7 +89,7 @@
      &                + (k + nb_rng%koff-1) * ndepth * ny_all 
 
          x = xmax + (i+ndepth-1)*xsize/(nx_all)
-         y = yoff + (j-1)*ysize/(ny_all)
+         y = nb_rng%yoff + (j-1)*ysize/(ny_all)
          z = zz(nb_rng%koff + k)
 
          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
@@ -124,7 +124,7 @@
          node_id_gl = ioff_gl + (nb_rng%ioff + i) + (j-1) * nx_all      &
      &               + (nb_rng%koff + k-1)*nx_all*ndepth 
 
-         x = xoff + (i-1)*xsize/(nx_all)
+         x = nb_rng%xoff + (i-1)*xsize/(nx_all)
          y = ymin + (j-1)*ysize/(ny_all)
          z = zz(nb_rng%koff + k)
 
@@ -159,7 +159,7 @@
          node_id_gl = ioff_gl + (nb_rng%ioff + i) + (j-1) * nx_all      &
      &               + (nb_rng%koff + k-1)*nx_all*ndepth 
 
-         x = xoff + (i-1)*xsize/(nx_all)
+         x = nb_rng%xoff + (i-1)*xsize/(nx_all)
          y = ymax + (j+ndepth-1)*ysize/(ny_all)
          z = zz(nb_rng%koff + k)
 

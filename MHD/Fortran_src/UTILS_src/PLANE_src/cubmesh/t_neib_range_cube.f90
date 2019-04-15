@@ -16,6 +16,10 @@
       implicit  none
 !
       type neib_range_cube
+        real(kind=kreal)  ::  xoff
+        real(kind=kreal)  ::  yoff
+!        real(kind=kreal)  ::  zoff
+!
         integer(kind = kint)  ::  ioff
         integer(kind = kint)  ::  joff
         integer(kind = kint)  ::  koff
@@ -54,6 +58,29 @@
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_offset_of_domain(ipe, jpe, kpe, nb_rng)
+!
+      use m_size_of_cube
+      use m_size_4_plane
+      use m_cube_position
+!
+      type(neib_range_cube), intent(inout) :: nb_rng
+!
+      integer(kind=kint)  ::  ipe, jpe, kpe
+!
+! ***** set coordinate off set (starting corner for pe node)
+!
+      nb_rng%xoff = xmin + (ipe-1)*xsize*nxi /(nx_all)
+      nb_rng%yoff = ymin + (jpe-1)*ysize*nyi /(ny_all)
+!
+!      zoff = zmin + (kpe-1)*zsize*nzi /(nz_all)
+!     if (kpe/=1) zoff =  zoff - zsize/(nz_all-1)*ndepth
+!
+!
+       end subroutine set_offset_of_domain
 !
 ! ----------------------------------------------------------------------
 !
