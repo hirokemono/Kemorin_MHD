@@ -3,6 +3,9 @@
 !
 !      Written by Kemorin
 !
+!!      subroutine allocate_communication_data(elm_type, c_size)
+!!        type(size_of_cube), intent(in) :: c_size
+!
       module m_comm_data_cube_kemo
 !
       use m_precision
@@ -43,24 +46,38 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine allocate_communication_data(elm_type)
+      subroutine allocate_communication_data(elm_type, c_size)
 !
-       use m_size_of_cube
+      use t_size_of_cube
+      use m_size_of_cube
 !
-       integer (kind = kint) :: elm_type
-       integer (kind = kint) :: inum0
+      type(size_of_cube), intent(in) :: c_size
+      integer (kind = kint) :: elm_type
+      integer (kind = kint) :: inum0
 !
 !
        if (elm_type.eq.331) then
-        inum0 = (nxi+2*ndepth)*(nyi+2*ndepth)*(nzi+2*ndepth)            &
-     &         - nxi*nyi*nzi
+        inum0 = (c_size%nxi + 2*c_size%ndepth)                          &
+     &          * (c_size%nyi + 2*c_size%ndepth)                        &
+     &          * (c_size%nzi + 2*c_size%ndepth)                        &
+     &         - c_size%nxi * c_size%nyi * c_size%nzi
        else if (elm_type.eq.332) then
-        inum0 = (nxi+2*ndepth)*(nyi+2*ndepth)*(nzi+2*ndepth)            &
-     &        + (nxi+2*ndepth-1)*(nyi+2*ndepth)*(nzi+2*ndepth)          &
-     &        + (nxi+2*ndepth)*(nyi+2*ndepth-1)*(nzi+2*ndepth)          &
-     &        + (nxi+2*ndepth)*(nyi+2*ndepth)*(nzi+2*ndepth-1)          &
-     &         - nxi*nyi*nzi     - (nxi-1)*nyi*nzi                      &
-     &         - nxi*(nyi-1)*nzi - nxi*nyi*(nzi-1)
+        inum0 = (c_size%nxi + 2*c_size%ndepth)                          &
+     &         * (c_size%nyi + 2*c_size%ndepth)                         &
+     &         * (c_size%nzi + 2*c_size%ndepth)                         &
+     &        + (c_size%nxi+2*c_size%ndepth - 1)                        &
+     &         * (c_size%nyi + 2*c_size%ndepth)                         &
+     &         * (c_size%nzi + 2*c_size%ndepth)                         &
+     &        + (c_size%nxi + 2*c_size%ndepth)                          &
+     &         * (c_size%nyi + 2*c_size%ndepth - 1)                     &
+     &         * (c_size%nzi + 2*c_size%ndepth)                         &
+     &        + (c_size%nxi + 2*c_size%ndepth)                          &
+     &         * (c_size%nyi + 2*c_size%ndepth)                         &
+     &         * (c_size%nzi + 2*c_size%ndepth - 1)                     &
+     &        - c_size%nxi * c_size%nyi * c_size%nzi                    &
+     &        - (c_size%nxi - 1) * c_size%nyi * c_size%nzi              &
+     &        - c_size%nxi * (c_size%nyi - 1) * c_size%nzi              &
+     &        - c_size%nxi * c_size%nyi * (c_size%nzi - 1)
        else
          inum0 = 0
        end if

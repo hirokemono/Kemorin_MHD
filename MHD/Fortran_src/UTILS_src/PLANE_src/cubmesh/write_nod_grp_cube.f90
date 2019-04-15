@@ -4,8 +4,9 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!       subroutine write_node_group(ipe, jpe, kpe)
-!       subroutine write_node_group_quad(ipe, jpe, kpe)
+!!      subroutine write_node_group(c_size, ipe, jpe, kpe)
+!!      subroutine write_node_group_quad(c_size, ipe, jpe, kpe)
+!!        type(size_of_cube), intent(in) :: c_size
 !
       module write_nod_grp_cube
 !
@@ -25,12 +26,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine write_node_group(ipe, jpe, kpe)
+      subroutine write_node_group(c_size, ipe, jpe, kpe)
 !
-       integer (kind=kint) :: ipe, jpe, kpe
+      type(size_of_cube), intent(in) :: c_size
+      integer (kind=kint), intent(in) :: ipe, jpe, kpe
 !
-       integer (kind=kint) :: i, j
-       integer (kind=kint) :: num0
+      integer (kind=kint) :: i, j, i1, j1
+      integer (kind=kint) :: num0
 !
 !
             write(l_out,'(10i16)')   nodgrptot
@@ -58,18 +60,22 @@
               num0 = 1
             endif
             if (kpe ==ndz .and. ipe==ndx .and. jpe==1 ) then
+              i1 = c_size%nxi + c_size%ndepth
               write(l_out,'(i16)')                                      &
-     &          node_id_lc(nxi+ndepth,1,nz)
+     &          node_id_lc(i1,1,nz)
               num0 = 1
             endif
             if (kpe ==ndz .and. ipe==ndx .and. jpe==ndy ) then
+              i1 = c_size%nxi + c_size%ndepth
+              j1 = c_size%nyi + c_size%ndepth
               write(l_out,'(i16)')                                      &
-     &          node_id_lc(nxi+ndepth,nyi+ndepth,nz)
+     &          node_id_lc(i1,j1,nz)
               num0 = 1
             endif
             if (kpe ==ndz .and. ipe==1 .and. jpe==ndy ) then
+              j1 = c_size%nyi + c_size%ndepth
               write(l_out,'(i16)')                                      &
-     &          node_id_lc(1,nyi+ndepth,nz)
+     &          node_id_lc(1,j1,nz)
               num0 = 1
             endif
             if ( num0 .eq. 0 ) then
@@ -80,12 +86,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine write_node_group_quad(ipe, jpe, kpe)
+      subroutine write_node_group_quad(c_size, ipe, jpe, kpe)
 !
-       integer (kind=kint) :: ipe, jpe, kpe
+      type(size_of_cube), intent(in) :: c_size
+      integer (kind=kint), intent(in) :: ipe, jpe, kpe
 !
        integer (kind=kint) :: ia, ja, ib, jb
-       integer (kind=kint) :: i, j
+       integer (kind=kint) :: i, j, i1, j1
        integer (kind=kint) :: num0
 !
 !
@@ -121,18 +128,22 @@
               num0 = 1
             endif
             if (kpe ==ndz .and. ipe==ndx .and. jpe==1 ) then
+              i1 = c_size%nxi + c_size%ndepth
               write(l_out,'(i16)')                                      &
-     &          node_id_lc(nxi+ndepth,1,nz)
+     &          node_id_lc(i1,1,nz)
               num0 = 1
             endif
             if (kpe ==ndz .and. ipe==ndx .and. jpe==ndy ) then
+              i1 = c_size%nxi + c_size%ndepth
+              j1 = c_size%nyi + c_size%ndepth
               write(l_out,'(i16)')                                      &
-     &          node_id_lc(nxi+ndepth,nyi+ndepth,nz)
+     &          node_id_lc(i1,j1,nz)
               num0 = 1
             endif
             if (kpe ==ndz .and. ipe==1 .and. jpe==ndy ) then
+              j1 = c_size%nyi + c_size%ndepth
               write(l_out,'(i16)')                                      &
-     &          node_id_lc(1,nyi+ndepth,nz)
+     &          node_id_lc(1,j1,nz)
               num0 = 1
             endif
             if ( num0 .eq. 0 ) then

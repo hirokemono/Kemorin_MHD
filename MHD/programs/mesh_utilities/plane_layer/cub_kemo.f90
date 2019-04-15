@@ -183,7 +183,7 @@
 !
       call allocate_node_informations(c_size1)
 !
-      call allocate_communication_data(elm_type)
+      call allocate_communication_data(elm_type, c_size1)
 !
       call allocate_cube_ele_group_id(c_size1)
 !
@@ -241,12 +241,13 @@
 !
 ! ..... write 2.mesh information (nodes and elements in partition)
 !
-            call set_range_4_nodeloop(kpe, nb_rng1)
+            call set_range_4_nodeloop(c_size1, kpe, nb_rng1)
 !
 ! ***** set coordinate off set (starting corner for pe node)
 ! ***** set nodal position off set (i,j,k starting position -1)
-            call init_node_para_4_each_pe(ipe, jpe, kpe, nb_rng1)
-            call set_offset_of_domain(ipe, jpe, kpe, nb_rng1)
+            call init_node_para_4_each_pe                               &
+     &         (c_size1, ipe, jpe, kpe, nb_rng1)
+            call set_offset_of_domain(c_size1, ipe, jpe, kpe, nb_rng1)
             call set_node(nb_rng1, ipe, jpe)
 !
 ! ..... write 2.2 element (connection)
@@ -275,7 +276,7 @@
 !                                        .. count node group and stack
 !
             call count_node_group(elm_type, ipe, jpe, kpe)
-            call write_node_group(ipe, jpe, kpe)
+            call write_node_group(c_size1, ipe, jpe, kpe)
 !
 !    output element group
 !

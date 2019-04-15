@@ -12,7 +12,6 @@
 !
       use m_precision
 !
-      use m_size_of_cube
       use m_comm_data_cube_kemo
       use t_sleeve_cube
 !

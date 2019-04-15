@@ -3,10 +3,13 @@
 !
 !     written by Kemorin
 !
-!!      subroutine init_node_para_4_each_pe(ipe, jpe, kpe, nb_rng)
+!!      subroutine set_offset_of_domain(c_size, ipe, jpe, kpe, nb_rng)
+!!      subroutine init_node_para_4_each_pe                             &
+!!     &         (c_size, ipe, jpe, kpe, nb_rng)
 !!      subroutine set_range_4_neighbour(ipe, jpe, kpe, nb_rng)
-!!      subroutine set_range_4_nodeloop(kpe, nb_rng)
+!!      subroutine set_range_4_nodeloop(c_size, kpe, nb_rng)
 !!      subroutine set_edge_para_4_each_pe(kpe, ndz, nb_rng)
+!!        type(size_of_cube), intent(in) :: c_size
 !!        type(neib_range_cube), intent(inout) :: nb_rng
 !
       module t_neib_range_cube
@@ -61,41 +64,44 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_offset_of_domain(ipe, jpe, kpe, nb_rng)
+      subroutine set_offset_of_domain(c_size, ipe, jpe, kpe, nb_rng)
 !
-      use m_size_of_cube
+      use t_size_of_cube
       use m_size_4_plane
       use m_cube_position
 !
+      type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(inout) :: nb_rng
 !
       integer(kind=kint)  ::  ipe, jpe, kpe
 !
 ! ***** set coordinate off set (starting corner for pe node)
 !
-      nb_rng%xoff = xmin + (ipe-1)*xsize*nxi /(nx_all)
-      nb_rng%yoff = ymin + (jpe-1)*ysize*nyi /(ny_all)
+      nb_rng%xoff = xmin + (ipe-1) * xsize * c_size%nxi /(nx_all)
+      nb_rng%yoff = ymin + (jpe-1) * ysize * c_size%nyi /(ny_all)
 !
-!      zoff = zmin + (kpe-1)*zsize*nzi /(nz_all)
-!     if (kpe/=1) zoff =  zoff - zsize/(nz_all-1)*ndepth
+!      zoff = zmin + (kpe-1) * zsize * c_size%nzi /(nz_all)
+!     if (kpe/=1) zoff =  zoff - zsize/(nz_all-1) * c_size%ndepth
 !
 !
        end subroutine set_offset_of_domain
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_node_para_4_each_pe(ipe, jpe, kpe, nb_rng)
+      subroutine init_node_para_4_each_pe                               &
+     &         (c_size, ipe, jpe, kpe, nb_rng)
 !
-      use m_size_of_cube
+      use t_size_of_cube
 !
       integer(kind=kint), intent(in)  ::  ipe, jpe, kpe
+      type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(inout) :: nb_rng
 !
 !
-                     nb_rng%ioff = (ipe-1)*nxi - ndepth
-                     nb_rng%joff = (jpe-1)*nyi - ndepth
-                     nb_rng%koff = (kpe-1)*nzi
-      if(kpe .ne. 1) nb_rng%koff = nb_rng%koff - ndepth
+                     nb_rng%ioff = (ipe-1)*c_size%nxi - c_size%ndepth
+                     nb_rng%joff = (jpe-1)*c_size%nyi - c_size%ndepth
+                     nb_rng%koff = (kpe-1)*c_size%nzi
+      if(kpe .ne. 1) nb_rng%koff = nb_rng%koff - c_size%ndepth
 !
       end subroutine init_node_para_4_each_pe
 !
@@ -105,7 +111,6 @@
       subroutine set_range_4_neighbour(ipe, jpe, kpe, nb_rng)
 !
       use m_size_4_plane
-      use m_size_of_cube
 !
       integer(kind = kint), intent(in) :: ipe, jpe, kpe
       type(neib_range_cube), intent(inout) :: nb_rng
@@ -130,25 +135,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_range_4_nodeloop(kpe, nb_rng)
+      subroutine set_range_4_nodeloop(c_size, kpe, nb_rng)
 !
       use m_size_of_cube
 !
       implicit none
 !
       integer(kind = kint), intent(in) :: kpe
+      type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(inout) :: nb_rng
 !
 !
-                     nb_rng%i_st  =     1         + ndepth
-                     nb_rng%i_end =  nb_rng%i_st + nxi - 1
+                     nb_rng%i_st  =     1         + c_size%ndepth
+                     nb_rng%i_end =  nb_rng%i_st + c_size%nxi - 1
 
-                     nb_rng%j_st  =     1         + ndepth
-                     nb_rng%j_end =  nb_rng%j_st + nyi - 1
+                     nb_rng%j_st  =     1         + c_size%ndepth
+                     nb_rng%j_end =  nb_rng%j_st + c_size%nyi - 1
 
-                     nb_rng%k_st  =     1         + ndepth
+                     nb_rng%k_st  =     1         + c_size%ndepth
       if(kpe .eq. 1) nb_rng%k_st  =     1
-                     nb_rng%k_end =  nb_rng%k_st + nzi - 1
+                     nb_rng%k_end =  nb_rng%k_st + c_size%nzi - 1
 !
       end subroutine set_range_4_nodeloop
 !

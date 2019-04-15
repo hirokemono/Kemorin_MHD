@@ -40,13 +40,14 @@
       inod   = 0
       call count_export_inside(nb_rng, neibpetot, inod)
       call count_export_peri_linear                                     &
-     &   (nb_rng, ipe, jpe, neibpetot, inod)
+     &   (c_size1, nb_rng, ipe, jpe, neibpetot, inod)
       num_export = stack_export(neibpetot)
 !
       inod = 0
       neibpetot = 0
       call set_export_inside(nb_rng, neibpetot, inod)
-      call set_export_peri(nb_rng, ipe, jpe, neibpetot, inod)
+      call set_export_peri                                              &
+     &   (c_size1, nb_rng, ipe, jpe, neibpetot, inod)
 !
       end subroutine set_export_data
 !
@@ -65,7 +66,7 @@
       neibpetot = 0
       call count_export_inside_quad(nb_rng, kpe, neibpetot, inod)
       call count_export_peri_quad                                       &
-     &   (nb_rng, ipe, jpe, kpe, neibpetot, inod)
+     &   (c_size1, nb_rng, ipe, jpe, kpe, neibpetot, inod)
 
       num_export = stack_export(neibpetot)
 !
@@ -73,7 +74,7 @@
       neibpetot = 0
       call set_export_inside_quad(nb_rng, kpe, neibpetot, inod)
       call set_export_peri_quad                                         &
-     &   (nb_rng, ipe, jpe, kpe, neibpetot, inod)
+     &   (c_size1, nb_rng, ipe, jpe, kpe, neibpetot, inod)
 !
       end subroutine set_export_data_quad
 !
