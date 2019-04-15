@@ -175,7 +175,7 @@
            inod_4_l_filter_0(inod,nd) = inod
          end do
 !
-!         if ( inod .le. intnodtot) then
+!         if ( inod .le. c_each1%intnodtot) then
            i = inod_table(inod,1)
            j = inod_table(inod,2)
            k = inod_table(inod,3)

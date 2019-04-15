@@ -8,10 +8,17 @@
       implicit none
 !
 
-      integer(kind=kint ), dimension(:,:,:), allocatable  :: node_id_lc
-      integer(kind=kint ), dimension(:,:,:,:), allocatable :: edge_id_lc
+!>        numnod_x:      array size for x direction
+        integer(kind=kint )  ::  numnod_x
+!>        numnod_y:      array size for y direction
+        integer(kind=kint )  ::  numnod_y 
+!>        numnod_z:      array size for z direction
+        integer(kind=kint )  ::  numnod_z 
 !
-      integer(kind=kint ), dimension(:,:), allocatable  :: inod_table
+        integer(kind=kint ), allocatable  :: node_id_lc(:,:,:)
+        integer(kind=kint ), allocatable :: edge_id_lc(:,:,:,:)
+!
+        integer(kind=kint ), allocatable  :: inod_table(:,:)
 !
 ! ----------------------------------------------------------------------
 !
@@ -19,16 +26,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine allocate_node_informations
+       subroutine allocate_node_informations(c_size)
 !
-       use m_size_of_cube
+       use t_size_of_cube
 !
-       implicit none
+      type(size_of_cube), intent(inout) :: c_size
 !
 ! ***** allocate nodal id table
 !
+      numnod_x  = c_size%numnod_x
+      numnod_y  = c_size%numnod_y
+      numnod_z  = c_size%numnod_z
+!
       allocate ( node_id_lc(numnod_x,numnod_y,numnod_z) )
-      allocate ( inod_table(numnod_x*numnod_y*numnod_z,4) )
+      allocate ( inod_table(c_size%nnod_cubmesh,4) )
 !
       call reset_node_info
 !

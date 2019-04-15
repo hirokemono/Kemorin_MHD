@@ -26,14 +26,17 @@
 !
 !-----------------------------------------------------------------------
 !
-       subroutine allocate_cube_ele_group_id
+      subroutine allocate_cube_ele_group_id(c_size)
 !
-       use m_size_of_cube
+      use t_size_of_cube
 !
-       allocate(iele_group_id(2*nnod_cubmesh))
-       call reset_cube_ele_group_id
+      type(size_of_cube), intent(in) :: c_size
 !
-       end subroutine allocate_cube_ele_group_id
+!
+      allocate(iele_group_id(2*c_size%nnod_cubmesh))
+      call reset_cube_ele_group_id
+!
+      end subroutine allocate_cube_ele_group_id
 !
 !-----------------------------------------------------------------------
 !

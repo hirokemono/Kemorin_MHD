@@ -42,7 +42,7 @@
        index(item_pos) = item_tot
 !
        item_pos = 3
-       item_tot = item_tot + elm_fil1_tot
+       item_tot = item_tot + c_each1%elm_fil1_tot
        index(item_pos) = item_tot
 !
        end subroutine count_element_group

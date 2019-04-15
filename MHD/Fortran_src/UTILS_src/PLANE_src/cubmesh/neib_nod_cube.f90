@@ -78,8 +78,8 @@
        write(*,*) 'j_st2, j_end2', j_st2, j_end2, ny
        write(*,*) 'k_st2, k_end2', k_st2, k_end2, nz
 !
-       FEM_elen%nnod_filter_mom = nodtot
-       FEM_elen%nele_filter_mom = elmtot
+       FEM_elen%nnod_filter_mom = c_each1%nodtot
+       FEM_elen%nele_filter_mom = c_each1%elmtot
        call alloc_ref_1d_mom_type(FEM_elen%filter_conf)
        call alloc_elen_ele_type                                         &
       &   (FEM_elen%nele_filter_mom, FEM_elen%elen_ele)

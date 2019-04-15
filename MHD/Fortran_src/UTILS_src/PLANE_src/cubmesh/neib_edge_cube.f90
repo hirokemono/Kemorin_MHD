@@ -29,7 +29,6 @@
       use m_local_node_id_cube
       use m_cube_files_data
       use m_filtering_edge_4_cubmesh
-      use m_neib_edge_line_cube
 !
       implicit none
 !
@@ -42,6 +41,7 @@
        subroutine neighboring_edge(id_rank, nb_rng)
 !
       use t_neib_range_cube
+      use neib_edge_line_cube
 !
       integer, intent(in) :: id_rank
       type(neib_range_cube), intent(in) :: nb_rng
@@ -87,7 +87,7 @@
       call count_neib_edge_z(ithree, nb_rng%i_st, nb_rng%i_end,         &
      &    nb_rng%j_st, nb_rng%j_end, nb_rng%kedge_st, nb_rng%kedge_end)
 !
-      call neib_edge_line(id_rank, nb_rng)
+      call neib_edge_line(id_rank, c_size1, c_each1, nb_rng)
 !
        end subroutine neighboring_edge
 !

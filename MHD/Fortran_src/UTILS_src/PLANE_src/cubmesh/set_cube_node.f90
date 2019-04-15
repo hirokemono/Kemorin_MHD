@@ -45,7 +45,7 @@
             write(l_out,'( a )')                                        &
      &        '! 2.1 node'
 
-            write(l_out,'(10i16)')  nodtot,intnodtot
+            write(l_out,'(10i16)')  c_each1%nodtot, c_each1%intnodtot
 !
 ! ***** set and write coordinate for internal nodes
 

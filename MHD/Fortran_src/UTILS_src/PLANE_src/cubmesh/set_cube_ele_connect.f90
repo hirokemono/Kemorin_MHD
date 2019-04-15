@@ -40,14 +40,11 @@
       integer (kind = kint) :: i1, i2, i3, i4, i5, i6, i7, i8
 !
 !
-      elmtot =       (nx-1)*(ny-1)*(nz-1)
-      elm_fil1_tot = (nx1-1)*(ny1-1)*(nz1-1)
-!
 ! ..... write 2.2 element (connection)
 !
       write(l_out,'(a)', advance='NO') hd_fem_elem()
-      write(l_out,'(10i16)')   elmtot
-      write(l_out,'(10i16)')  (elm_type,i=1,elmtot)
+      write(l_out,'(10i16)')   c_each1%elmtot
+      write(l_out,'(10i16)')  (elm_type,i=1,c_each1%elmtot)
 
       element_id = 0
 
@@ -92,14 +89,11 @@
       integer (kind = kint) :: i17, i18, i19, i20
 !
 !
-      elmtot =       (nx-1)*(ny-1)*(nz-1)
-      elm_fil1_tot = (nx1-1)*(ny1-1)*(nz1-1)
-!
 ! ..... write 2.2 element (connection)
 !
       write(l_out,'( a )') '! 2.2 element (connection)'
-      write(l_out,'(10i16)')   elmtot
-      write(l_out,'(10i16)')  (elm_type,i=1,elmtot)
+      write(l_out,'(10i16)')   c_each1%elmtot
+      write(l_out,'(10i16)')  (elm_type,i=1,c_each1%elmtot)
 
       element_id = 0
 

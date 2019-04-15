@@ -172,16 +172,16 @@
 !
 ! ***** allocate nodal id table
 !
-      call allocate_node_informations
+      call allocate_node_informations(c_size1)
       call allocate_edge_informations
 !
       call allocate_communication_data(elm_type)
 !
-      call allocate_cube_ele_group_id
+      call allocate_cube_ele_group_id(c_size1)
 !
 !    allocate work array
 !
-      call allocate_work_4_filter_nod
+      call allocate_work_4_filter_nod(c_size1)
 !
 !      if (iflag_filter .ge.0) then
 !         nf_type = iflag_filter
@@ -298,9 +298,9 @@
 !   construct filtering information
 !
             call allocate_work_4_filter_ele
-            call allocate_work_4_filter_edge
+            call allocate_work_4_filter_edge(c_size1)
 !
-            write(*,*) 'filtering information', intnodtot
+            write(*,*) 'filtering information', c_each1%intnodtot
             call neighboring_node(pe_id, nb_rng1, FEM_elen_c)
             call neighboring_edge(id_rank, nb_rng1)
 !

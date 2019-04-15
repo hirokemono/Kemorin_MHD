@@ -13,6 +13,10 @@
       integer (kind = kint) :: iedge_f_total
 !
 !
+      integer(kind = kint), private ::  nnod_x
+      integer(kind = kint), private ::  nnod_y
+      integer(kind = kint), private ::  nnod_z
+!
       real (kind = kreal), allocatable :: iedge_filter_order0(:,:)
       real (kind = kreal), allocatable :: iedge_filter_order1(:,:,:)
       real (kind = kreal), allocatable :: iedge_filter_order2(:,:,:)
@@ -43,35 +47,40 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine allocate_work_4_filter_edge
+       subroutine allocate_work_4_filter_edge(c_size)
 !
-       use m_size_of_cube
+       use t_size_of_cube
        use m_comm_data_cube_kemo
 !
+      type(size_of_cube), intent(in) :: c_size
        integer (kind = kint) :: nsize, nsize2, nsize3
 !
-       nsize = 2*ndepth+1
+       nsize = 2 * c_size%ndepth + 1
        nsize2 = nsize*nsize
        nsize3 = nsize2*nsize
 !
-       allocate( nedge_neib_x (numnod_x,numnod_y,numnod_z,3)    )
-       allocate( nedge_neib_y (numnod_x,numnod_y,numnod_z,3)    )
-       allocate( nedge_neib_z (numnod_x,numnod_y,numnod_z,3)    )
-       allocate( nedge_neib_xy(numnod_x,numnod_y,numnod_z,3)    )
-       allocate( nedge_neib   (numnod_x,numnod_y,numnod_z,3)    )
+      nnod_x = c_size%numnod_x
+      nnod_y = c_size%numnod_y
+      nnod_z = c_size%numnod_z
 !
-       allocate( iedge_f_item_x(nsize,numnod_x,numnod_y,numnod_z,3)  )
-       allocate( iedge_f_dist_x(nsize,numnod_x,numnod_y,numnod_z,3)  )
-       allocate( iedge_f_item_y(nsize,numnod_x,numnod_y,numnod_z,3)  )
-       allocate( iedge_f_dist_y(nsize,numnod_x,numnod_y,numnod_z,3)  )
-       allocate( iedge_f_item_z(nsize,numnod_x,numnod_y,numnod_z,3)  )
-       allocate( iedge_f_dist_z(nsize,numnod_x,numnod_y,numnod_z,3)  )
+       allocate( nedge_neib_x (nnod_x,nnod_y,nnod_z,3)    )
+       allocate( nedge_neib_y (nnod_x,nnod_y,nnod_z,3)    )
+       allocate( nedge_neib_z (nnod_x,nnod_y,nnod_z,3)    )
+       allocate( nedge_neib_xy(nnod_x,nnod_y,nnod_z,3)    )
+       allocate( nedge_neib   (nnod_x,nnod_y,nnod_z,3)    )
 !
-       allocate( iedge_f_item_xy(nsize2,numnod_x,numnod_y,numnod_z,3,2) )
-       allocate( iedge_f_dist_xy(nsize2,numnod_x,numnod_y,numnod_z,3,2) )
+       allocate( iedge_f_item_x(nsize,nnod_x,nnod_y,nnod_z,3)  )
+       allocate( iedge_f_dist_x(nsize,nnod_x,nnod_y,nnod_z,3)  )
+       allocate( iedge_f_item_y(nsize,nnod_x,nnod_y,nnod_z,3)  )
+       allocate( iedge_f_dist_y(nsize,nnod_x,nnod_y,nnod_z,3)  )
+       allocate( iedge_f_item_z(nsize,nnod_x,nnod_y,nnod_z,3)  )
+       allocate( iedge_f_dist_z(nsize,nnod_x,nnod_y,nnod_z,3)  )
 !
-       allocate( iedge_f_item_3d(nsize3,numnod_x,numnod_y,numnod_z,3,3) )
-       allocate( iedge_f_dist_3d(nsize3,numnod_x,numnod_y,numnod_z,3,3) )
+       allocate( iedge_f_item_xy(nsize2,nnod_x,nnod_y,nnod_z,3,2) )
+       allocate( iedge_f_dist_xy(nsize2,nnod_x,nnod_y,nnod_z,3,2) )
+!
+       allocate( iedge_f_item_3d(nsize3,nnod_x,nnod_y,nnod_z,3,3) )
+       allocate( iedge_f_dist_3d(nsize3,nnod_x,nnod_y,nnod_z,3,3) )
 !
        nedge_neib =    0
        nedge_neib_x =  0

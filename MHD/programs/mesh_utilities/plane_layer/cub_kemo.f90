@@ -181,15 +181,15 @@
 !
 ! ***** allocate nodal id table
 !
-      call allocate_node_informations
+      call allocate_node_informations(c_size1)
 !
       call allocate_communication_data(elm_type)
 !
-      call allocate_cube_ele_group_id
+      call allocate_cube_ele_group_id(c_size1)
 !
 !    allocate work array
 !
-      call allocate_work_4_filter_nod
+      call allocate_work_4_filter_nod(c_size1)
 !
 !     set one-dimensional moments
 !
