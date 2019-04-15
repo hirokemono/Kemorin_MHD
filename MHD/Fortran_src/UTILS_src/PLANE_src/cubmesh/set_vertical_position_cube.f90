@@ -36,15 +36,16 @@
 !
       if (iradi .eq. igrid_equidistance) then
        do k = 1, nz_all
-         zz(k) = zmin + zsize * dble(k-1) / dble(nz_all-1)
+         zz(k) = c_size1%zmin + zsize * dble(k-1) / dble(nz_all-1)
        end do
       else if (iradi .eq. igrid_half_Chebyshev) then
        do k = 1, nz_all
-         zz(k) = zmax - zsize * cos ( pi*dble(k-1)/dble(2*nz_all-2) )
+         zz(k) = c_size1%zmax                                           &
+     &          - zsize * cos ( pi*dble(k-1)/dble(2*nz_all-2) )
        end do
       else if (iradi .eq. igrid_Chebyshev) then
        do k = 1, nz_all
-         zz(k) = 0.5d0 * ( zmax + zmin                                  &
+         zz(k) = 0.5d0 * ( c_size1%zmax + c_size1%zmin                  &
      &          - zsize * cos ( pi * dble(k-1) / dble(nz_all-1) ) )
        end do
       end if
@@ -60,12 +61,12 @@
         end do
        else if (iradi .eq. igrid_half_Chebyshev) then
         do k = 1, nz_all-1
-         zz_edge(k) = zmax - zsize                                      &
+         zz_edge(k) = c_size1%zmax - zsize                              &
      &               * cos ( pi*dble(2*k-1)/dble(4*(nz_all-1)) )
         end do
        else if (iradi .eq. igrid_Chebyshev) then
         do k = 1, nz_all-1
-         zz_edge(k) = 0.5d0 * ( zmax + zmin                             &
+         zz_edge(k) = 0.5d0 * ( c_size1%zmax + c_size1%zmin             &
      &      - zsize * cos ( pi * dble(2*k-1) / dble(2*nz_all-2) ) )
         end do
        end if

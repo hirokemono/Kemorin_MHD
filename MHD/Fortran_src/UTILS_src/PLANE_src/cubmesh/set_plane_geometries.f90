@@ -38,10 +38,10 @@
 !
       neib = ndepth
 !
-      xmin = xmin - ndepth*xsize / dble(nx_all)
-      xmax = xmax - ndepth*xsize / dble(nx_all)
-      ymin = ymin - ndepth*ysize / dble(ny_all)
-      ymax = ymax - ndepth*ysize / dble(ny_all)
+      c_size1%xmin = c_size1%xmin - ndepth * xsize / dble(nx_all)
+      c_size1%xmax = c_size1%xmax - ndepth * xsize / dble(nx_all)
+      c_size1%ymin = c_size1%ymin - ndepth * ysize / dble(ny_all)
+      c_size1%ymax = c_size1%ymax - ndepth * ysize / dble(ny_all)
 !
       call set_plane_resolution(ndepth, c_size1)
 !

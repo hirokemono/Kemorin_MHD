@@ -25,6 +25,7 @@
       use m_constants
       use m_phys_labels
       use m_size_4_plane
+      use m_size_of_cube
       use m_cube_position
       use m_setting_4_ini
       use m_ctl_data_4_cub_kemo
@@ -173,14 +174,14 @@
             do inod = 1, mgd_mesh_pl%merged%node%numnod
               mgd_mesh_pl%merged_fld%d_fld(inod,jst+1)                  &
      &                = 0.01d0*sin( pi*node_plane%xx(inod,3)            &
-     &                 / (zmax-zmin))
+     &                 / (c_size1%zmax - c_size1%zmin))
             end do
           else if(mgd_mesh_pl%merged_fld%phys_name(np) .eq. fhd_magne)  &
      &        then
             do inod = 1, mgd_mesh_pl%merged%node%numnod
               mgd_mesh_pl%merged_fld%d_fld(inod,jst+2)                  &
      &              = (0.01d0*pi/two) * cos( pi*node_plane%xx(inod,3)   &
-     &               / (zmax-zmin))
+     &               / (c_size1%zmax - c_size1%zmin))
             end do
           end if
         end do

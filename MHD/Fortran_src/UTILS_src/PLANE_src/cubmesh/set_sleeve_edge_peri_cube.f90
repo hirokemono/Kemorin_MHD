@@ -59,21 +59,20 @@
 !
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2*(nx_all+ny_all+2*ndepth)*ndepth*nz_all
-          call set_sleeve_edge_xmin(nb_rng, sl_rng1, kpe, jnp, knp,     &
-     &        ioff_gl, ione, inod)
+          call set_sleeve_edge_xmin(c_size, nb_rng, sl_rng1,            &
+     &        kpe, jnp, knp, ioff_gl, ione, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &             + 2*(nx_all+ny_all+2*ndepth)*ndepth*nz_all           &
      &             +   ndepth*ny_all*nz_all
-          call set_sleeve_edge_xmin(nb_rng, sl_rng1, kpe, jnp, knp,     &
-     &        ioff_gl, itwo, inod)
+          call set_sleeve_edge_xmin(c_size, nb_rng, sl_rng1,            &
+     &        kpe, jnp, knp, ioff_gl, itwo, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &             + 2*(nx_all+ny_all+2*ndepth)*ndepth*nz_all           &
      &             + 2*ndepth*ny_all*nz_all
-          call set_sleeve_edge_xmin(nb_rng, sl_rng1, kpe, jnp, knp,     &
-     &        ioff_gl, ithree, inod)
-
+          call set_sleeve_edge_xmin(c_size, nb_rng, sl_rng1,            &
+     &        kpe, jnp, knp, ioff_gl, ithree, inod)
         enddo
        enddo
       endif
@@ -131,24 +130,24 @@
      &            + 2*(nx_all+ny_all+2*ndepth)*ndepth*nz_all            &
      &            + ndepth*ny_all*(5*nz_all-2)                          &
      &            + (ndepth-1)*ny_all*nz_all
-          call set_sleeve_edge_ymin(nb_rng, sl_rng1, kpe, inp, knp,     &
-     &        ioff_gl, ione, inod)
+          call set_sleeve_edge_ymin(c_size, nb_rng, sl_rng1,            &
+     &        kpe, inp, knp, ioff_gl, ione, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2*(nx_all+ny_all+2*ndepth)*ndepth*nz_all            &
      &            + ndepth*ny_all*(5*nz_all-2)                          &
      &            + (ndepth-1)*ny_all*nz_all                            &
      &            + ndepth*nx_all*nz_all
-          call set_sleeve_edge_ymin(nb_rng, sl_rng1, kpe, inp, knp,     &
-     &        ioff_gl, itwo, inod)
+          call set_sleeve_edge_ymin(c_size, nb_rng, sl_rng1,            &
+     &        kpe, inp, knp, ioff_gl, itwo, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2*(nx_all+ny_all+2*ndepth)*ndepth*nz_all            &
      &            + ndepth*ny_all*(5*nz_all-2)                          &
      &            + (ndepth-1)*ny_all*nz_all                            &
      &            + 2*ndepth*nx_all*nz_all
-          call set_sleeve_edge_ymin(nb_rng, sl_rng1, kpe, inp, knp,     &
-     &        ioff_gl, ithree, inod)
+          call set_sleeve_edge_ymin(c_size, nb_rng, sl_rng1,            &
+     &        kpe, inp, knp, ioff_gl, ithree, inod)
 
          enddo
         enddo

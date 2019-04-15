@@ -9,9 +9,6 @@
 !
       implicit    none
 !
-      real   (kind=kreal) :: xmin, ymin, zmin
-      real   (kind=kreal) :: xmax, ymax, zmax
-!
       integer(kind=kint ) :: nx_all, ny_all, nz_all
 !  nodal count at x direction line for all model
 !  nodal count at y direction line for all model

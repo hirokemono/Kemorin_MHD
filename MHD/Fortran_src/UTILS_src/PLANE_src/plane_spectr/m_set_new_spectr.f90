@@ -247,7 +247,7 @@
         do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (nx_all) * nz_all + iz
-          i3   = i3 + nz_all
+          i3   = i1 + nz_all
           new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
         end do
 !

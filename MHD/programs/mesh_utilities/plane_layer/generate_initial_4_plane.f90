@@ -23,6 +23,7 @@
       use m_constants
       use m_phys_labels
       use m_size_4_plane
+      use m_size_of_cube
       use m_cube_position
       use m_setting_4_ini
       use m_ctl_data_4_cub_kemo
@@ -99,7 +100,7 @@
 !   set up of physical values
 !
         call initial_field_on_plane                                     &
-     &     (mgd_mesh_pl%merged, mgd_mesh_pl%merged_fld)
+     &     (c_size1, mgd_mesh_pl%merged, mgd_mesh_pl%merged_fld)
 !
 !     write data
 !
@@ -134,11 +135,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine initial_field_on_plane(merged, merged_fld)
+      subroutine initial_field_on_plane(c_size, merged, merged_fld)
 !
+      use t_size_of_cube
       use t_mesh_data
       use t_phys_data
 !
+      type(size_of_cube), intent(in) :: c_size
       type(mesh_geometry), intent(in) :: merged
       type(phys_data), intent(inout) :: merged_fld
 !
@@ -152,16 +155,20 @@
           if (merged_fld%phys_name(ip) .eq. fhd_temp) then
 !
             do inod = 1, merged%node%numnod
-              if (node_plane%xx(inod,3).eq.zmin) then
+              if (node_plane%xx(inod,3) .eq. c_size%zmin) then
                 merged_fld%d_fld(inod,jst+1) = 1.0d0
-              else if (node_plane%xx(inod,3).eq.zmax) then
+              else if (node_plane%xx(inod,3) .eq. c_size%zmax) then
                 merged_fld%d_fld(inod,jst+1) = 0.0d0
               else
                 merged_fld%d_fld(inod,jst+1)                            &
-     &              = -(node_plane%xx(inod,3)-zmax)/(zmax-zmin)         &
-     &               + 0.5*(node_plane%xx(inod,3)-zmin)/(zmax-zmin)     &
-     &                * sin(2.0d0*pi*node_plane%xx(inod,1)/(xmax-xmin)) &
-     &                * sin(2.0d0*pi*node_plane%xx(inod,2)/(xmax-xmin))
+     &              = -(node_plane%xx(inod,3) - c_size%zmax)            &
+     &                 / (c_size%zmax - c_size%zmin)                    &
+     &               + 0.5*(node_plane%xx(inod,3) - c_size%zmin)        &
+     &                 / (c_size%zmax - c_size%zmin)                    &
+     &                * sin(2.0d0*pi*node_plane%xx(inod,1)              &
+     &                 / (c_size%xmax - c_size%xmin))                   &
+     &                * sin(2.0d0*pi*node_plane%xx(inod,2               &
+     &                ) /(c_size%xmax - c_size%xmin))
               end if
             end do
 !
@@ -169,14 +176,16 @@
 !
             do inod = 1, merged%node%numnod
               merged_fld%d_fld(inod,jst+1)                              &
-     &            = 0.01d0*sin(pi*node_plane%xx(inod,3) / (zmax-zmin))
+     &            = 0.01d0*sin(pi*node_plane%xx(inod,3)                 &
+     &             / (c_size%zmax - c_size%zmin))
             end do
 !
           else if (merged_fld%phys_name(ip) .eq. fhd_magne) then
 !
             do inod = 1, merged%node%numnod
               merged_fld%d_fld(inod,jst+2) = (0.01d0*pi/two)            &
-     &                * cos( pi*node_plane%xx(inod,3) / (zmax-zmin))
+     &                * cos( pi*node_plane%xx(inod,3)                   &
+     &                 / (c_size%zmax - c_size%zmin))
             end do
           end if
         end do

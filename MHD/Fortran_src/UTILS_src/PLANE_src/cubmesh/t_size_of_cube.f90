@@ -3,6 +3,7 @@
 !
 !     modified by Kemorin
 !
+!!      subroutine set_plane_size(c_size)
 !!      subroutine set_plane_resolution(c_size)
 !!      subroutine set_each_cube_resolution(elm_type, kpe, c_size)
 !!        type(size_of_each_cube), intent(inout) :: c_size
@@ -10,6 +11,7 @@
       module t_size_of_cube
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -40,6 +42,16 @@
 !
 !>        nnod_cubmesh:      array size direction
         integer(kind=kint )  ::  nnod_cubmesh
+!
+!
+        real(kind=kreal) :: xmin
+        real(kind=kreal) :: xmax
+!
+        real(kind=kreal) :: ymin
+        real(kind=kreal) :: ymax
+!
+        real(kind=kreal) :: zmin
+        real(kind=kreal) :: zmax
       end type size_of_cube
 !
       type size_of_each_cube
@@ -73,6 +85,23 @@
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_plane_size(c_size)
+!
+      use m_cube_position
+!
+      type(size_of_cube), intent(inout) :: c_size
+!
+      c_size%xmax = xsize / two
+      c_size%ymax = ysize / two
+      c_size%zmax = zsize / two
+      c_size%xmin = -c_size%xmax
+      c_size%ymin = -c_size%ymax
+      c_size%zmin = -c_size%zmax
+!
+      end subroutine set_plane_size
 !
 ! ----------------------------------------------------------------------
 !

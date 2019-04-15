@@ -77,10 +77,12 @@
 !
 ! ***** set coordinate off set (starting corner for pe node)
 !
-      nb_rng%xoff = xmin + (ipe-1) * xsize * c_size%nxi /(nx_all)
-      nb_rng%yoff = ymin + (jpe-1) * ysize * c_size%nyi /(ny_all)
+      nb_rng%xoff = c_size%xmin                                         &
+     &           + (ipe-1) * xsize * c_size%nxi /(nx_all)
+      nb_rng%yoff = c_size%ymin                                         &
+     &           + (jpe-1) * ysize * c_size%nyi /(ny_all)
 !
-!      zoff = zmin + (kpe-1) * zsize * c_size%nzi /(nz_all)
+!      zoff = c_size%zmin + (kpe-1) * zsize * c_size%nzi /(nz_all)
 !     if (kpe/=1) zoff =  zoff - zsize/(nz_all-1) * c_size%ndepth
 !
 !

@@ -162,13 +162,13 @@
 !     read ( 20  , * )   nx_all, ny_all, nz_all,                        &
 !    &                   ndx   , ndy,    ndz
 !      write(*,*) ' input range of x-direction ( xmin, xmax) '
-!      read (  *  , * )   xmin, xmax
+!      read (  *  , * )   c_size1%xmin, c_size1%xmax
 !
 !      write(*,*) ' input range of y-direction ( ymin, ymax) '
-!      read (  *  , * )   ymin, ymax
+!      read (  *  , * )   c_size1%ymin, c_size1%ymax
 !
 !      write(*,*) ' input range of z-direction ( zmin, zmax) '
-!      read (  *  , * )   zmin, zmax
+!      read (  *  , * )   c_size1%zmin, c_size1%zmax
 !
       call read_control_data_plane_mesh
       call s_set_ctl_data_plane_mesh

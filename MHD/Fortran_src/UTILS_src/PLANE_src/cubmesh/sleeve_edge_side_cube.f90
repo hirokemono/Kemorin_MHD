@@ -3,11 +3,11 @@
 !
 !      Written by Kemorin
 !
-!!       subroutine set_sleeve_edge_xmin(nb_rng, sl_rng, kpe,           &
+!!       subroutine set_sleeve_edge_xmin(c_size, nb_rng, sl_rng, kpe,   &
 !!     &           jnp, knp, ioff_gl, nd, inod)
 !!       subroutine set_sleeve_edge_xmax(c_size, nb_rng, sl_rng, kpe,   &
 !!     &           jnp, knp, ioff_gl, nd, inod)
-!!       subroutine set_sleeve_edge_ymin(nb_rng, sl_rng, kpe,           &
+!!       subroutine set_sleeve_edge_ymin(c_size, nb_rng, sl_rng, kpe,   &
 !!     &           inp, knp, ioff_gl, nd, inod)
 !!      subroutine set_sleeve_edge_ymax(c_size, nb_rng, sl_rng, kpe,    &
 !!     &          inp, knp, ioff_gl, nd, inod)
@@ -36,9 +36,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine set_sleeve_edge_xmin(nb_rng, sl_rng, kpe,             &
+       subroutine set_sleeve_edge_xmin(c_size, nb_rng, sl_rng, kpe,     &
      &           jnp, knp, ioff_gl, nd, inod)
 !
+      type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(in) :: ioff_gl
@@ -71,15 +72,15 @@
      &             * ny_all
 
           if (nd .eq. 1) then
-           x = xmin + ( dble(i)-half ) * xsize / dble(nx_all)
+           x = c_size%xmin + ( dble(i)-half ) * xsize / dble(nx_all)
            y = nb_rng%yoff + dble(j-1) * ysize / dble(ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 2) then
-           x = xmin + dble(i-1) * xsize / dble(nx_all)
+           x = c_size%xmin + dble(i-1) * xsize / dble(nx_all)
            y = nb_rng%yoff + (dble(j) - half) * ysize / dble(ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 3) then
-           x = xmin + dble(i-1) * xsize / dble(nx_all)
+           x = c_size%xmin + dble(i-1) * xsize / dble(nx_all)
            y = nb_rng%yoff + dble(j-1) * ysize / dble(ny_all)
            z = zz_edge(nb_rng%koff + k)
           end if
@@ -132,16 +133,18 @@
      &           * ny_all
 
           if (nd .eq. 1) then
-           x = xmax + ( dble(i+c_size%ndepth)-half )                    &
-     &               * xsize / dble(nx_all)
+           x = c_size%xmax + ( dble(i+c_size%ndepth)-half )             &
+     &                       * xsize / dble(nx_all)
            y = nb_rng%yoff + dble(j-1) * ysize / dble(ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 2) then
-           x = xmax + dble(i+c_size%ndepth-1) * xsize / dble(nx_all)
+           x = c_size%xmax + dble(i+c_size%ndepth-1)                    &
+     &                      * xsize / dble(nx_all)
            y = nb_rng%yoff + (dble(j)-half) * ysize / dble(ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 3) then
-           x = xmax + dble(i+c_size%ndepth-1) * xsize / dble(nx_all)
+           x = c_size%xmax + dble(i+c_size%ndepth-1)                    &
+     &                      * xsize / dble(nx_all)
            y = nb_rng%yoff + dble(j-1) * ysize / dble(ny_all)
            z = zz_edge(nb_rng%koff + k)
           end if
@@ -156,9 +159,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine set_sleeve_edge_ymin(nb_rng, sl_rng, kpe,             &
+       subroutine set_sleeve_edge_ymin(c_size, nb_rng, sl_rng, kpe,     &
      &           inp, knp, ioff_gl, nd, inod)
 !
+      type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(in) :: kpe, inp, knp
@@ -191,15 +195,15 @@
 
           if (nd .eq. 1) then
            x = nb_rng%xoff + (dble(i) - half)*xsize / dble(nx_all)
-           y = ymin + dble(j-1) *        ysize / dble(ny_all)
+           y = c_size%ymin + dble(j-1) * ysize / dble(ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 2) then
            x = nb_rng%xoff + dble(i-1) * xsize / dble(nx_all)
-           y = ymin + ( dble(j)-half ) * ysize / dble(ny_all)
+           y = c_size%ymin + ( dble(j)-half ) * ysize / dble(ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 3) then
            x = nb_rng%xoff + dble(i-1) * xsize / dble(nx_all)
-           y = ymin + dble(j-1) * ysize / dble(ny_all)
+           y = c_size%ymin + dble(j-1) * ysize / dble(ny_all)
            z = zz_edge(nb_rng%koff + k)
           end if
 
@@ -251,16 +255,18 @@
 
           if (nd .eq. 1) then
            x = nb_rng%xoff + (dble(i) - half) * xsize / dble(nx_all)
-           y = ymax + dble(c_size%ndepth+j-1) * ysize / dble(ny_all)
+           y = c_size%ymax + dble(c_size%ndepth+j-1)                    &
+     &                      * ysize / dble(ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 2) then
            x = nb_rng%xoff + dble(i-1) * xsize / dble(nx_all)
-           y = ymax + ( dble(c_size%ndepth+j)-half )                    &
-     &               * ysize / dble(ny_all)
+           y = c_size%ymax + ( dble(c_size%ndepth+j)-half )             &
+     &                      * ysize / dble(ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 3) then
            x = nb_rng%xoff + dble(i-1) * xsize / dble(nx_all)
-           y = ymax + dble(c_size%ndepth+j-1) * ysize / dble(ny_all)
+           y = c_size%ymax + dble(c_size%ndepth+j-1)                    &
+     &                      * ysize / dble(ny_all)
            z = zz_edge(nb_rng%koff + k)
           end if
 

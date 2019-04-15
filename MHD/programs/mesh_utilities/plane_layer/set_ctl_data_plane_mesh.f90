@@ -75,12 +75,7 @@
         zsize = plane_size_ctl%realvalue(3)
       end if
 !
-      xmax = xsize / two
-      ymax = ysize / two
-      zmax = zsize / two
-      xmin = -xmax
-      ymin = -ymax
-      zmin = -zmax
+      call set_plane_size(c_size1)
 !
       if      (cmp_no_case(horizontal_grid_ctl%charavalue,              &
      &                     label_Chebyshev)) then
