@@ -103,7 +103,8 @@
 !        call check_neib_node_z
 !
        call write_neighboring_nod_line                                  &
-     &    (ied_rank, FEM_elen%filter_conf%nf_type, FEM_elen)
+     &    (ied_rank, FEM_elen%filter_conf%nf_type,                      &
+     &     c_size1, c_each1, FEM_elen)
 !
        write(*,*) 'deallocate_filters_nod'
        call deallocate_filters_nod

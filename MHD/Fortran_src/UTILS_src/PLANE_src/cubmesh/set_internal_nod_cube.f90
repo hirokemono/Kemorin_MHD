@@ -6,7 +6,7 @@
 !
 !!      subroutine set_internal_node(nb_rng, sl_rng, inod)
 !!      subroutine set_internal_edge                                    &
-!!     &         (nb_rng, sl_rng, kpe, inp, jnp, knp, inod, nd)
+!!     &         (c_size, nb_rng, sl_rng, kpe, inp, jnp, knp, inod, nd)
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !!        type(slleve_range), intent(in) :: sl_rng
 !
@@ -14,6 +14,7 @@
 !
       use m_precision
 !
+      use t_size_of_cube
       use t_neib_range_cube
       use t_sleeve_cube
       use m_size_4_plane
@@ -67,8 +68,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_internal_edge                                      &
-     &         (nb_rng, sl_rng, kpe, inp, jnp, knp, inod, nd)
+     &         (c_size, nb_rng, sl_rng, kpe, inp, jnp, knp, inod, nd)
 !
+      type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(in) :: kpe
@@ -99,7 +101,7 @@
          inod = inod + 1
 
          edge_id_lc(i,j,k,nd) =  inod
-         node_id_gl        =  nd*nod_gltot                              &
+         node_id_gl        =  nd * c_size%nod_gltot                     &
                              + (nb_rng%ioff + i  )                      &
      &                       + (nb_rng%joff + j-1)*nx_all               &
      &                       + (nb_rng%koff + k-1)*nx_all*ny_all 

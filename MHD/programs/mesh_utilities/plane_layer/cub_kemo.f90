@@ -295,7 +295,7 @@
 !   construct filtering information
 !
             if(iflag_filter .gt. 0) then
-              call allocate_work_4_filter_ele
+              call allocate_work_4_filter_ele(c_size1, c_each1)
 !
               write(*,*) 'neighboring_node'
               call neighboring_node(pe_id, nb_rng1, FEM_elen_c)

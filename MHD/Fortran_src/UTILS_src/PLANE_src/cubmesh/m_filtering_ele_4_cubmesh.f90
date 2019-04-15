@@ -3,6 +3,10 @@
 !
 !     Written by H. Matsui
 !
+!!      subroutine allocate_work_4_filter_ele(c_size, c_each)
+!!        type(size_of_cube), intent(in) :: c_size
+!!        type(size_of_each_cube), intent(in) :: c_each
+!
       module m_filtering_ele_4_cubmesh
 !
       use m_precision
@@ -40,35 +44,44 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine allocate_work_4_filter_ele
+      subroutine allocate_work_4_filter_ele(c_size, c_each)
 !
-       use m_size_of_cube
-       use m_comm_data_cube_kemo
+      use t_size_of_cube
+      use m_comm_data_cube_kemo
 !
-       integer (kind = kint) :: nsize, nsize2, nsize3
+      type(size_of_cube), intent(in) :: c_size
+      type(size_of_each_cube), intent(in) :: c_each
 !
-       nsize = 2*ndepth+1
+      integer(kind = kint) :: nsize, nsize2, nsize3
+      integer(kind = kint) :: nx1, ny1, nz1
+!
+!
+       nsize = 2*c_size%ndepth + 1
        nsize2 = nsize*nsize
        nsize3 = nsize2*nsize
 !
-       allocate( nele_neib_x (nx-1,ny-1,nz-1)    )
-       allocate( nele_neib_y (nx-1,ny-1,nz-1)    )
-       allocate( nele_neib_z (nx-1,ny-1,nz-1)    )
-       allocate( nele_neib_xy(nx-1,ny-1,nz-1)    )
-       allocate( nele_neib   (nx-1,ny-1,nz-1)    )
+       nx1 = c_each%nx - 1
+       ny1 = c_each%ny - 1
+       nz1 = c_each%nz - 1
 !
-       allocate( iele_f_item_x(nsize,nx-1,ny-1,nz-1)    )
-       allocate( iele_f_dist_x(nsize,nx-1,ny-1,nz-1)    )
-       allocate( iele_f_item_y(nsize,nx-1,ny-1,nz-1)    )
-       allocate( iele_f_dist_y(nsize,nx-1,ny-1,nz-1)    )
-       allocate( iele_f_item_z(nsize,nx-1,ny-1,nz-1)    )
-       allocate( iele_f_dist_z(nsize,nx-1,ny-1,nz-1)    )
+       allocate( nele_neib_x (nx1,ny1,nz1)    )
+       allocate( nele_neib_y (nx1,ny1,nz1)    )
+       allocate( nele_neib_z (nx1,ny1,nz1)    )
+       allocate( nele_neib_xy(nx1,ny1,nz1)    )
+       allocate( nele_neib   (nx1,ny1,nz1)    )
 !
-       allocate( iele_f_item_xy(nsize2,nx-1,ny-1,nz-1,2) )
-       allocate( iele_f_dist_xy(nsize2,nx-1,ny-1,nz-1,2) )
+       allocate( iele_f_item_x(nsize,nx1,ny1,nz1)    )
+       allocate( iele_f_dist_x(nsize,nx1,ny1,nz1)    )
+       allocate( iele_f_item_y(nsize,nx1,ny1,nz1)    )
+       allocate( iele_f_dist_y(nsize,nx1,ny1,nz1)    )
+       allocate( iele_f_item_z(nsize,nx1,ny1,nz1)    )
+       allocate( iele_f_dist_z(nsize,nx1,ny1,nz1)    )
 !
-       allocate( iele_f_item_3d(nsize3,nx-1,ny-1,nz-1,3) )
-       allocate( iele_f_dist_3d(nsize3,nx-1,ny-1,nz-1,3) )
+       allocate( iele_f_item_xy(nsize2,nx1,ny1,nz1,2) )
+       allocate( iele_f_dist_xy(nsize2,nx1,ny1,nz1,2) )
+!
+       allocate( iele_f_item_3d(nsize3,nx1,ny1,nz1,3) )
+       allocate( iele_f_dist_3d(nsize3,nx1,ny1,nz1,3) )
 !
        nele_neib =    0
        nele_neib_x =  0

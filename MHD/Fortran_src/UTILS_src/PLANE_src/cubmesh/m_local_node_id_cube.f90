@@ -4,6 +4,7 @@
       module m_local_node_id_cube
 !
       use m_precision
+      use t_size_of_cube
 !
       implicit none
 !
@@ -80,10 +81,9 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine set_inod_table
+      subroutine set_inod_table(c_each)
 !
-       use m_size_of_cube
-!
+      type(size_of_each_cube), intent(in) :: c_each
       integer (kind = kint) :: i, j, k, inod
 !
 !
@@ -93,9 +93,9 @@
        do j = 1, numnod_y
         do i = 1, numnod_x
          inod = node_id_lc(i,j,k)
-         if (inod.gt.nodtot ) then
+         if (inod .gt. c_each%nodtot) then
           write(*,*) 'node id is larger than number of node!',          &
-     &              i, j, k, inod, nodtot
+     &              i, j, k, inod, c_each%nodtot
           stop
          else if(inod.gt.0) then
           inod_table(inod,1) = i
@@ -110,10 +110,9 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine set_iedge_table
+      subroutine set_iedge_table(c_each)
 !
-       use m_size_of_cube
-!
+      type(size_of_each_cube), intent(in) :: c_each
       integer (kind = kint) :: i, j, k, nd, iedge
 !
 !
@@ -122,7 +121,7 @@
         do j = 1, numnod_y
          do i = 1, numnod_x
           iedge = edge_id_lc(i,j,k,nd)
-          if (iedge.gt.nodtot ) then
+          if(iedge .gt. c_each%nodtot) then
            write(*,*) 'edge id is larger than number of node!'
            stop
           else if(iedge.gt.0) then
@@ -140,14 +139,13 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine check_inod_table
+      subroutine check_inod_table(c_each)
 !
-       use m_size_of_cube
-!
+      type(size_of_each_cube), intent(in) :: c_each
       integer (kind = kint) :: inod
 !
 !
-      do inod = 1, nodtot
+      do inod = 1, c_each%nodtot
         if ( inod_table(inod,1).lt.1                                    &
      &     .or. inod_table(inod,1).gt.numnod_x ) then
          write(*,*) 'x direction of node table is wrong!',              &

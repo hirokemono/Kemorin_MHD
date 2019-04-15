@@ -297,7 +297,7 @@
 !                                       ... to next pe 
 !   construct filtering information
 !
-            call allocate_work_4_filter_ele
+            call allocate_work_4_filter_ele(c_size1, c_each1)
             call allocate_work_4_filter_edge(c_size1)
 !
             write(*,*) 'filtering information', c_each1%intnodtot

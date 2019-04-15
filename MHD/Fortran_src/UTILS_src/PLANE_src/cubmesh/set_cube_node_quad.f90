@@ -64,18 +64,18 @@
             inp = 0
             call set_internal_edge_size(nb_rng, ione, sl_rng1)
             write(*,*) 'set_internal_edge', ipe, jpe, kpe
-            call set_internal_edge                                      &
-     &         (nb_rng, sl_rng1, kpe, inp, jnp, knp, inod, ione)
+            call set_internal_edge(c_size1, nb_rng, sl_rng1,            &
+     &          kpe, inp, jnp, knp, inod, ione)
 !
             jnp = 0
             call set_internal_edge_size(nb_rng, itwo, sl_rng1)
-            call set_internal_edge                                      &
-     &         (nb_rng, sl_rng1, kpe, inp, jnp, knp, inod, itwo)
+            call set_internal_edge(c_size1, nb_rng, sl_rng1,            &
+     &          kpe, inp, jnp, knp, inod, itwo)
 !
             knp = -1
             call set_internal_edge_size(nb_rng, ithree, sl_rng1)
-            call set_internal_edge                                      &
-     &         (nb_rng, sl_rng1, kpe, inp, jnp, knp, inod, ithree)
+            call set_internal_edge(c_size1, nb_rng, sl_rng1,            &
+     &          kpe, inp, jnp, knp, inod, ithree)
 !
 ! ***** set and write coordinate for sleeve area nodes
 !
@@ -85,18 +85,20 @@
 ! ***** set and write for sleeve area nodes for periodical boundary
 !
             write(*,*) 'set_sleeve_node_peri_quad', ipe, jpe, kpe
-            call set_sleeve_node_peri_quad(nb_rng, ipe, jpe, inod)
+            call set_sleeve_node_peri_quad                              &
+     &         (c_size1, nb_rng, ipe, jpe, inod)
 !
 ! ***** set and write for sleeve area edge for periodical boundary
 !
             write(*,*) 'set_sleeve_edge_peri', ipe, jpe, kpe
-            call set_sleeve_edge_peri(nb_rng, ipe, jpe, kpe, inod)
+            call set_sleeve_edge_peri                                   &
+     &         (c_size1, nb_rng, ipe, jpe, kpe, inod)
 !
 ! ***** set table from node id to x,y,z, positions
 !
-            call set_inod_table
-            call set_iedge_table
-            call check_inod_table
+            call set_inod_table(c_each1)
+            call set_iedge_table(c_each1)
+            call check_inod_table(c_each1)
 !
 !
       end subroutine set_node_quad

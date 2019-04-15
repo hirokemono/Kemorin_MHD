@@ -19,15 +19,17 @@
 !!      subroutine allocate_neighboring_nod_line
 !!      subroutine deallocate_neighboring_nod_line
 !!      subroutine write_neighboring_nod_line                           &
-!!     &         (id_rank, nf_type, FEM_elen)
+!!     &         (id_rank, nf_type, c_size, c_each, FEM_elen)
+!!        type(size_of_cube), intent(in) :: c_size
+!!        type(size_of_each_cube), intent(in) :: c_each
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       module neib_nod_line_cube
 !
       use m_precision
-!
       use m_constants
-      use m_size_of_cube
+!
+      use t_size_of_cube
       use m_local_node_id_cube
       use m_cube_files_data
       use m_filtering_nod_4_cubmesh
@@ -54,50 +56,18 @@
       private ::  inod_4_l_filter_0, istack_l_filter_0
       private ::  item_l_filter_0, inod_f_dist_l_0, coef_l_filter_0
 !
+      private :: allocate_neighboring_nod_line
+      private :: deallocate_neighboring_nod_line
       private :: set_fiilter_nod_line, order_fiilter_nod_line
+      private :: write_filter_nod_line
 !
 !  ----------------------------------------------------------------------
 !
       contains
 !
 !  ----------------------------------------------------------------------!
-       subroutine allocate_neighboring_nod_line
-!
-       allocate( inod_f_dist_l(ndep_1*nodtot,3) )
-!
-       allocate( istack_l_filter_0(0:nodtot,3) )
-       allocate( inod_4_l_filter_0(nodtot,3) )
-       allocate( item_l_filter_0(ndep_1*nodtot,3) )
-       allocate( inod_f_dist_l_0(ndep_1*nodtot,3) )
-       allocate( coef_l_filter_0(ndep_1*nodtot,3) )
-!
-       inod_f_dist_l = 0
-!
-       inod_4_l_filter_0 = 0
-       istack_l_filter_0 = 0
-       item_l_filter_0 = 0
-       inod_f_dist_l_0 = 0
-       coef_l_filter_0 = 0.0d0
-!
-       end subroutine allocate_neighboring_nod_line
-!
-!  ----------------------------------------------------------------------!
-       subroutine deallocate_neighboring_nod_line
-!
-       deallocate( inod_f_dist_l )
-!
-       deallocate( istack_l_filter_0 )
-       deallocate( inod_4_l_filter_0 )
-       deallocate( item_l_filter_0 )
-       deallocate( inod_f_dist_l_0 )
-       deallocate( coef_l_filter_0 )
-!
-       end subroutine deallocate_neighboring_nod_line
-!
-!  ----------------------------------------------------------------------
-!
       subroutine write_neighboring_nod_line                             &
-     &         (id_rank, nf_type, FEM_elen)
+     &         (id_rank, nf_type, c_size, c_each, FEM_elen)
 !
       use t_filter_elength
       use filter_mom_type_data_IO
@@ -105,17 +75,20 @@
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nf_type
+      type(size_of_cube), intent(in) :: c_size
+      type(size_of_each_cube), intent(in) :: c_each
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i
 !
 !
-       call allocate_neighboring_nod_line
+       call allocate_neighboring_nod_line(c_size, c_each)
 !
-       call set_fiilter_nod_line(nf_type, fil_l1)
+       call set_fiilter_nod_line(nf_type, c_size, c_each, fil_l1)
 !
-       call alloc_l_filtering_data(nodtot, ndepth, ndep_1, fil_l1)
-       call order_fiilter_nod_line(fil_l1)
+       call alloc_l_filtering_data                                      &
+     &    (c_each%nodtot, c_size%ndepth, c_size%ndep_1, fil_l1)
+       call order_fiilter_nod_line(c_each, fil_l1)
 !
 !
        nb_name = add_process_id(id_rank, filter_file_header)
@@ -129,11 +102,11 @@
 !   for debugging
 !
 !       write(nb_out,*) '!  xi direction'
-!       call write_filter_nod_line(ione, fil_l1)
+!       call write_filter_nod_line(ione, c_each, fil_l1)
 !       write(nb_out,*) '!  eta direction'
-!       call write_filter_nod_line(itwo, fil_l1)
+!       call write_filter_nod_line(itwo, c_each, fil_l1)
 !       write(nb_out,*) '!   zi direction'
-!       call write_filter_nod_line(ithree, fil_l1)
+!       call write_filter_nod_line(ithree, c_each, fil_l1)
 !
           write(nb_out,*) '! distance in x-direction'
           write(nb_out,'(10i16)')                                       &
@@ -153,10 +126,56 @@
        end subroutine write_neighboring_nod_line
 !
 !  ----------------------------------------------------------------------
+!  ----------------------------------------------------------------------!
+       subroutine allocate_neighboring_nod_line(c_size, c_each)
 !
-      subroutine set_fiilter_nod_line(nf_type, fil_l)
+      type(size_of_cube), intent(in) :: c_size
+      type(size_of_each_cube), intent(in) :: c_each
+!
+       integer(kind = kint) :: num
+!
+!
+       num = c_size%ndep_1 * c_each%nodtot
+       allocate( inod_f_dist_l(num,3) )
+!
+       allocate( istack_l_filter_0(0:c_each%nodtot,3) )
+       allocate( inod_4_l_filter_0(c_each%nodtot,3) )
+       allocate( item_l_filter_0(num,3) )
+       allocate( inod_f_dist_l_0(num,3) )
+       allocate( coef_l_filter_0(num,3) )
+!
+       inod_f_dist_l = 0
+!
+       inod_4_l_filter_0 = 0
+       istack_l_filter_0 = 0
+       item_l_filter_0 = 0
+       inod_f_dist_l_0 = 0
+       coef_l_filter_0 = 0.0d0
+!
+       end subroutine allocate_neighboring_nod_line
+!
+!  ----------------------------------------------------------------------
+!
+       subroutine deallocate_neighboring_nod_line
+!
+       deallocate( inod_f_dist_l )
+!
+       deallocate( istack_l_filter_0 )
+       deallocate( inod_4_l_filter_0 )
+       deallocate( item_l_filter_0 )
+       deallocate( inod_f_dist_l_0 )
+       deallocate( coef_l_filter_0 )
+!
+       end subroutine deallocate_neighboring_nod_line
+!
+!  ----------------------------------------------------------------------
+!  ----------------------------------------------------------------------
+!
+      subroutine set_fiilter_nod_line(nf_type, c_size, c_each, fil_l)
 !
       integer(kind = kint), intent(in) :: nf_type
+      type(size_of_cube), intent(in) :: c_size
+      type(size_of_each_cube), intent(in) :: c_each
       type(line_filtering_type), intent(inout) :: fil_l
 !
        integer(kind = kint) :: i, j, k, inod, nd
@@ -170,7 +189,7 @@
        do nd = 1, 3
          istack_l_filter_0(0,nd) = 0
        end do
-       do inod = 1, nodtot
+       do inod = 1, c_each%nodtot
          do nd = 1, 3
            inod_4_l_filter_0(inod,nd) = inod
          end do
@@ -179,7 +198,7 @@
            i = inod_table(inod,1)
            j = inod_table(inod,2)
            k = inod_table(inod,3)
-           do i1 = 1, ndep_1
+           do i1 = 1, c_size%ndep_1
 !
              do nd = 1, 3
                iflag(nd) = 1
@@ -227,14 +246,14 @@
        end do
 !
        do nd = 1, 3
-         fil_l%num_lf(nd) = istack_l_filter_0(nodtot,nd)
+         fil_l%num_lf(nd) = istack_l_filter_0(c_each%nodtot,nd)
          fil_l%nmax_lf(nd) = 0
-         do inod = 1, nodtot
+         do inod = 1, c_each%nodtot
            ii = istack_l_filter_0(inod,nd) - istack_l_filter_0(inod-1,nd)
            fil_l%nmax_lf(nd) = max(fil_l%nmax_lf(nd),ii)
          end do
          fil_l%nmin_lf(nd) = fil_l%nmax_lf(nd)
-         do inod = 1, nodtot
+         do inod = 1, c_each%nodtot
            ii = istack_l_filter_0(inod,nd) - istack_l_filter_0(inod-1,nd)
            fil_l%nmin_lf(nd) = min(fil_l%nmin_lf(nd),ii)
          end do
@@ -244,8 +263,9 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine order_fiilter_nod_line(fil_l)
+      subroutine order_fiilter_nod_line(c_each, fil_l)
 !
+      type(size_of_each_cube), intent(in) :: c_each
       type(line_filtering_type), intent(inout) :: fil_l
 !
        integer(kind = kint) :: j, inod, jnod, nd
@@ -258,7 +278,7 @@
         fil_l%istack_lf(0,nd) = 0
         do kk = fil_l%nmax_lf(nd), fil_l%nmin_lf(nd), -1
 !
-         do inod = 1, nodtot
+         do inod = 1, c_each%nodtot
            jj = istack_l_filter_0(inod,nd) - istack_l_filter_0(inod-1,nd)
            if ( jj .eq. kk) then
              jnod = jnod + 1
@@ -282,7 +302,9 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine write_filter_nod_line(nd, fil_l)
+      subroutine write_filter_nod_line(nd, c_each, fil_l)
+!
+      type(size_of_each_cube), intent(in) :: c_each
 !
       integer(kind = kint), intent(in) :: nd
       type(line_filtering_type), intent(in) :: fil_l
@@ -293,7 +315,7 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      do inod = 1, nodtot
+      do inod = 1, c_each%nodtot
         ist = fil_l%istack_lf(inod-1,nd) + 1
         ied = fil_l%istack_lf(inod,nd)
         num = ied - ist + 1

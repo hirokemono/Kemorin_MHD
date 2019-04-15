@@ -57,12 +57,12 @@
 ! ***** set and write coordinate for sleeve area nodes
 !
             call set_sleeve_node(nb_rng, inod)
-            call set_sleeve_node_peri(nb_rng, ipe, jpe, inod)
+            call set_sleeve_node_peri(c_size1, nb_rng, ipe, jpe, inod)
 !
 ! ***** set table from node id to x,y,z, positions
 !
-            call set_inod_table
-            call check_inod_table
+            call set_inod_table(c_each1)
+            call check_inod_table(c_each1)
 !
       end subroutine set_node
 !

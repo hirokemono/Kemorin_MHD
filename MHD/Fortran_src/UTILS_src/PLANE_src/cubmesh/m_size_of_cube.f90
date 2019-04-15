@@ -17,7 +17,6 @@
 !  * parameters for depth of sleeve area
 !      ndepth     : depth of sleeve area
       integer(kind=kint )   ::  ndepth = 1
-      integer(kind=kint )   ::  ndep_1 = 3
 !  * variables
 
       integer(kind=kint )  ::  nxi, nyi, nzi
@@ -29,13 +28,6 @@
 ! \beginLOCALVARS[nx]      nodal count for x direction
 !       \LOCALVAR[ny]      nodal count for y direction
 !       \LOCALVAR[nz]      nodal count for z direction
-
-      integer(kind=kint )  ::  nod_gltot
-!   number of node in the domain without sleeves
-      integer(kind=kint )  ::  edge_gltot
-!   number of edge in the domain without sleeves
-!
-      integer(kind=kint )  ::  nodtot
 !
 !
       integer(kind = kint) :: iflag_filter = -1
@@ -64,10 +56,6 @@
       type(size_of_cube), intent(in) :: c_size
 !
 !      ndepth = c_size%ndepth
-      ndep_1 = c_size%ndep_1
-!
-      nod_gltot = c_size%nod_gltot
-      edge_gltot = c_size%edge_gltot
 !
       nxi = c_size%nxi
       nyi = c_size%nyi
@@ -86,8 +74,6 @@
       nx  = c_each%nx
       ny  = c_each%ny
       nz  = c_each%nz
-
-      nodtot = c_each%nodtot
 !
       end subroutine copy_each_cube_resolution
 !

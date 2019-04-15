@@ -80,8 +80,8 @@
 !     nd = 3: for edge on x = const, y = const
             call set_internal_node(nb_rng, sl_rng1, inod)
             do nd = 1, 3
-              call set_internal_edge                                    &
-     &           (nb_rng, sl_rng1, kpe, inp, jnp, knp, inod, nd)
+              call set_internal_edge(c_size1, nb_rng, sl_rng1,          &
+     &            kpe, inp, jnp, knp, inod, nd)
             end do
 !
           enddo
