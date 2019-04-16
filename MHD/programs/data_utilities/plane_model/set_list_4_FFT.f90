@@ -3,16 +3,20 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_parameters_4_FFT(num_pe, ist, ied, iint)
-!!      subroutine set_parameters_data_by_spec(num_pe,                  &
-!!     &          kx_org, ky_org, iz_org, ucd_param)
-!!      type(field_IO_params), intent(inout) :: ucd_param
+!!      subroutine set_parameters_4_FFT(c_size, num_pe, ist, ied, iint)
+!!      subroutine set_parameters_rst_by_spec(c_size, num_pe, ist, ied, &
+!!     &          ifactor_step, ifactor_rst, dt, t_init,                &
+!!     &          kx_org, ky_org, iz_org, mesh_file)
+!!      subroutine set_parameters_data_by_spec(c_size, num_pe,          &
+!!     &          kx_org, ky_org, iz_org, mesh_file, ucd_param)
+!!        type(size_of_cube), intent(inout) :: c_size
+!!        type(field_IO_params), intent(inout) :: ucd_param
 !
       module set_list_4_FFT
 !
       use m_precision
       use t_file_IO_parameter
-      use m_size_of_cube
+      use t_size_of_cube
 !
       implicit none
 !
@@ -38,24 +42,25 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_parameters_4_FFT(num_pe, ist, ied, iint)
+      subroutine set_parameters_4_FFT(c_size, num_pe, ist, ied, iint)
 !
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
       use m_spectr_4_ispack
 !
+      type(size_of_cube), intent(inout) :: c_size
       integer, intent(inout) :: num_pe
       integer(kind = kint), intent(inout) :: ist, ied, iint
 !
 !
-      c_size1%nx_all = nnod_plane_ctl%intvalue(1)
-      c_size1%ny_all = nnod_plane_ctl%intvalue(2)
-      c_size1%nz_all = nnod_plane_ctl%intvalue(3)
-      num_pe =  c_size1%nx_all * c_size1%ny_all * c_size1%nz_all
+      c_size%nx_all = nnod_plane_ctl%intvalue(1)
+      c_size%ny_all = nnod_plane_ctl%intvalue(2)
+      c_size%nz_all = nnod_plane_ctl%intvalue(3)
+      num_pe =  c_size%nx_all * c_size%ny_all * c_size%nz_all
 !
-      kx_max = c_size1%nx_all
-      ky_max = c_size1%ny_all
-      iz_max = c_size1%nz_all
+      kx_max = c_size%nx_all
+      ky_max = c_size%ny_all
+      iz_max = c_size%nz_all
       num_spectr = kx_max*ky_max*iz_max
 !
       ist = 0
@@ -77,7 +82,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_parameters_rst_by_spec(num_pe, ist, ied,           &
+      subroutine set_parameters_rst_by_spec(c_size, num_pe, ist, ied,   &
      &          ifactor_step, ifactor_rst, dt, t_init,                  &
      &          kx_org, ky_org, iz_org, mesh_file)
 !
@@ -89,7 +94,8 @@
       use m_set_new_spectr
       use set_control_platform_data
 !
-      type(field_IO_params),  intent(inout) ::  mesh_file
+      type(size_of_cube), intent(inout) :: c_size
+      type(field_IO_params), intent(inout) ::  mesh_file
       integer, intent(inout) :: num_pe
       integer(kind = kint), intent(inout) :: ist, ied
       integer(kind = kint), intent(inout) :: ifactor_step, ifactor_rst
@@ -123,11 +129,11 @@
       ky_org = ky_max
       iz_org = ky_max
 !
-      c_size1%nx_all = nnod_plane2_ctl%intvalue(1)
-      c_size1%ny_all = nnod_plane2_ctl%intvalue(2)
-      c_size1%nz_all = nnod_plane2_ctl%intvalue(3)
+      c_size%nx_all = nnod_plane2_ctl%intvalue(1)
+      c_size%ny_all = nnod_plane2_ctl%intvalue(2)
+      c_size%nz_all = nnod_plane2_ctl%intvalue(3)
 !
-      nnod_new_k_org_z = kx_max*ky_max*c_size1%nz_all
+      nnod_new_k_org_z = kx_max * ky_max * c_size%nz_all
 !
       num_pe =  ndomain_plane2_ctl%intvalue(1)                          &
      &        * ndomain_plane2_ctl%intvalue(2)                          &
@@ -167,7 +173,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_parameters_data_by_spec(num_pe,                    &
+      subroutine set_parameters_data_by_spec(c_size, num_pe,            &
      &          kx_org, ky_org, iz_org, mesh_file, ucd_param)
 !
       use m_control_plane_fft
@@ -181,6 +187,7 @@
       use set_parallel_file_name
       use set_control_platform_data
 !
+      type(size_of_cube), intent(inout) :: c_size
       integer, intent(inout) :: num_pe
       integer(kind = kint), intent(inout) :: kx_org, ky_org, iz_org
       type(field_IO_params),  intent(inout) ::  mesh_file
@@ -207,14 +214,14 @@
       ky_org = nnod_plane_ctl%intvalue(2)
       iz_org = nnod_plane_ctl%intvalue(3)
 !
-      c_size1%nx_all = nnod_plane2_ctl%intvalue(1)
-      c_size1%ny_all = nnod_plane2_ctl%intvalue(2)
-      c_size1%nz_all = nnod_plane2_ctl%intvalue(3)
+      c_size%nx_all = nnod_plane2_ctl%intvalue(1)
+      c_size%ny_all = nnod_plane2_ctl%intvalue(2)
+      c_size%nz_all = nnod_plane2_ctl%intvalue(3)
 
       num_pe =  ndomain_plane2_ctl%intvalue(1)                          &
      &        * ndomain_plane2_ctl%intvalue(2)                          &
      &        * ndomain_plane2_ctl%intvalue(3)
-      nnod_new_k_org_z = kx_max*ky_max*c_size1%nz_all
+      nnod_new_k_org_z = kx_max * ky_max * c_size%nz_all
 !
       end subroutine set_parameters_data_by_spec
 !

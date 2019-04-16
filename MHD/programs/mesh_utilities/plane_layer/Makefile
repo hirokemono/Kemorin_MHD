@@ -15,25 +15,25 @@ MOD_CUBMESH311 = \
 cub_kemo.o \
 \
 m_ctl_data_4_cub_kemo.o \
-set_ctl_data_plane_mesh.o
+t_control_param_plane_mesh.o
 
 MOD_CUBMESH322 = \
 cub_kemo_quad.o \
 \
 m_ctl_data_4_cub_kemo.o \
-set_ctl_data_plane_mesh.o
+t_control_param_plane_mesh.o
 
 MOD_INI_T_CUBE = \
 generate_initial_4_plane.o \
 \
 m_ctl_data_4_cub_kemo.o \
-set_ctl_data_plane_mesh.o
+t_control_param_plane_mesh.o
 
 MOD_INI_B_CUBE = \
 add_magne_ini_4_plane.o \
 \
 m_ctl_data_4_cub_kemo.o \
-set_ctl_data_plane_mesh.o
+t_control_param_plane_mesh.o
 
 #
 #  -------------------------------------------------------------------------

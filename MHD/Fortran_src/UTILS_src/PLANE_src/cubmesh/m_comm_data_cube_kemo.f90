@@ -34,11 +34,11 @@
       integer(kind=kint ), dimension(0:neibpetot_max)                   &
      &      :: stack_export_new = 0
 !
-      integer(kind=kint ), dimension(:), allocatable :: item_import
-      integer(kind=kint ), dimension(:), allocatable :: item_import_new
+      integer(kind=kint ), allocatable :: item_import(:)
+      integer(kind=kint ), allocatable :: item_import_new(:)
 !
-      integer(kind=kint ), dimension(:), allocatable :: item_export
-      integer(kind=kint ), dimension(:), allocatable :: item_export_new
+      integer(kind=kint ), allocatable :: item_export(:)
+      integer(kind=kint ), allocatable :: item_export_new(:)
 !
 ! ----------------------------------------------------------------------
 !
@@ -98,129 +98,129 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine reset_communication_data
+      subroutine reset_communication_data
 !
-             item_import = 0
-             item_import_new = 0
-             item_export = 0
-             item_export_new = 0
+      item_import = 0
+      item_import_new = 0
+      item_export = 0
+      item_export_new = 0
 !
-       end subroutine reset_communication_data
+      end subroutine reset_communication_data
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine sort_neighboring_pes
+      subroutine sort_neighboring_pes
 !
-       integer(kind = kint) :: inum0, inum1, iflag
+      integer(kind = kint) :: inum0, inum1, iflag
 !
 !
-             neibpetot_new = 0
-             do inum0 = 1, neibpetot
-              iflag = 0
-              do inum1 = 1, inum0-1
-               if ( neibpe(inum0) .eq. neibpe(inum1) ) iflag = 1
-              end do
-              if (iflag .eq. 0 ) then
-               neibpetot_new = neibpetot_new+1
-               neibpe_new(neibpetot_new) = neibpe(inum0)
-              end if
-             end do
+      neibpetot_new = 0
+      do inum0 = 1, neibpetot
+        iflag = 0
+        do inum1 = 1, inum0-1
+         if ( neibpe(inum0) .eq. neibpe(inum1) ) iflag = 1
+        end do
+        if (iflag .eq. 0 ) then
+          neibpetot_new = neibpetot_new+1
+          neibpe_new(neibpetot_new) = neibpe(inum0)
+        end if
+      end do
 !
-       end subroutine sort_neighboring_pes
+      end subroutine sort_neighboring_pes
 !
 ! ---------------------------------------------------------------------
 !
-       subroutine sort_communication_table
+      subroutine sort_communication_table
 !
-       integer(kind = kint) :: inum0, inod, node_id, n0, n1
-!
-!
-            node_id = 0
-            inum0 = 0
-            do n0 = 1, neibpetot_new
-             inum0 = inum0 + 1
-             do n1 = 1, neibpetot
-              if ( neibpe_new(n0) .eq. neibpe(n1) ) then
-               do inod = stack_import(n1-1)+1, stack_import(n1)
-                node_id = node_id + 1
-                item_import_new(node_id) = item_import(inod)
-               end do
-              end if
-             end do
-             stack_import_new(n0) = node_id
-            end do
-!
-            node_id = 0
-            inum0 = 0
-            do n0 = 1, neibpetot_new
-             inum0 = inum0 + 1
-             do n1 = 1, neibpetot
-              if ( neibpe_new(n0) .eq. neibpe(n1) ) then
-               do inod = stack_export(n1-1)+1, stack_export(n1)
-                node_id = node_id + 1
-                item_export_new(node_id) = item_export(inod)
-              end do
-              end if
-             end do
-             stack_export_new(n0) = node_id
-            end do
-!
-       end subroutine sort_communication_table
-!
-! ----------------------------------------------------------------------
-!
-       subroutine write_pe_data(pe_id)
-!
-       use m_cube_files_data
-       use m_fem_mesh_labels
-!
-       integer(kind = kint) :: pe_id
-       integer(kind = kint) :: i
-!
-
-       write(l_out,'(a)', advance='NO') hd_fem_para()
-
-       write(l_out,'(i16)')  pe_id-1
-       write(l_out,'(i16)')  neibpetot_new
-       write(l_out,'(10i16)') (neibpe_new(i)-1,i=1,neibpetot_new)
-!
-       end subroutine write_pe_data
-!
-! ----------------------------------------------------------------------
-!
-       subroutine write_communication_data
-!
-       use m_fem_mesh_labels
-       use m_cube_files_data
-!
-       integer(kind = kint) :: inod
+      integer(kind = kint) :: inum0, inod, node_id, n0, n1
 !
 !
-       write(l_out,'(a)', advance='NO') hd_fem_import()
-       write(l_out,'(10i16)') stack_import_new(1:neibpetot_new)
-
-       do inod = 1, num_import
-         write(l_out,'(10i16)') item_import_new(inod)
+      node_id = 0
+      inum0 = 0
+      do n0 = 1, neibpetot_new
+       inum0 = inum0 + 1
+       do n1 = 1, neibpetot
+        if ( neibpe_new(n0) .eq. neibpe(n1) ) then
+         do inod = stack_import(n1-1)+1, stack_import(n1)
+          node_id = node_id + 1
+          item_import_new(node_id) = item_import(inod)
+         end do
+        end if
        end do
+       stack_import_new(n0) = node_id
+      end do
 !
-       write(l_out,'(a)', advance='NO') hd_fem_export()
-       write(l_out,'(10i16)') stack_export_new(1:neibpetot_new)
+      node_id = 0
+      inum0 = 0
+      do n0 = 1, neibpetot_new
+        inum0 = inum0 + 1
+        do n1 = 1, neibpetot
+          if ( neibpe_new(n0) .eq. neibpe(n1) ) then
+            do inod = stack_export(n1-1)+1, stack_export(n1)
+              node_id = node_id + 1
+              item_export_new(node_id) = item_export(inod)
+           end do
+          end if
+        end do
+        stack_export_new(n0) = node_id
+      end do
+!
+      end subroutine sort_communication_table
+!
+! ----------------------------------------------------------------------
+!
+      subroutine write_pe_data(pe_id)
+!
+      use m_cube_files_data
+      use m_fem_mesh_labels
+!
+      integer(kind = kint) :: pe_id
+      integer(kind = kint) :: i
+!
+!
+      write(l_out,'(a)', advance='NO') hd_fem_para()
 
-       do inod = 1, num_export
-         write(l_out,'(10i16)') item_export_new(inod)
-       end do
+      write(l_out,'(i16)')  pe_id-1
+      write(l_out,'(i16)')  neibpetot_new
+      write(l_out,'(10i16)') (neibpe_new(i)-1,i=1,neibpetot_new)
 !
-       end subroutine write_communication_data
+      end subroutine write_pe_data
+!
+! ----------------------------------------------------------------------
+!
+      subroutine write_communication_data
+!
+      use m_fem_mesh_labels
+      use m_cube_files_data
+!
+      integer(kind = kint) :: inod
+!
+!
+      write(l_out,'(a)', advance='NO') hd_fem_import()
+      write(l_out,'(10i16)') stack_import_new(1:neibpetot_new)
+
+      do inod = 1, num_import
+        write(l_out,'(10i16)') item_import_new(inod)
+      end do
+!
+      write(l_out,'(a)', advance='NO') hd_fem_export()
+      write(l_out,'(10i16)') stack_export_new(1:neibpetot_new)
+
+      do inod = 1, num_export
+        write(l_out,'(10i16)') item_export_new(inod)
+      end do
+!
+      end subroutine write_communication_data
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-       subroutine write_org_communication_data(pe_id)
+      subroutine write_org_communication_data(pe_id)
 !
-       use m_fem_mesh_labels
-       use m_cube_files_data
+      use m_fem_mesh_labels
+      use m_cube_files_data
 !
-       integer(kind = kint) :: i, inod, pe_id, ifile
+      integer(kind = kint) :: inod, pe_id, ifile
 !
        ifile = 29 + pe_id
        write(ifile,'(a)', advance='NO') hd_fem_import()
@@ -237,7 +237,7 @@
         write(ifile,'(10i16)') item_export(inod)
       end do
 !
-       end subroutine write_org_communication_data
+      end subroutine write_org_communication_data
 !
 ! ----------------------------------------------------------------------
 !

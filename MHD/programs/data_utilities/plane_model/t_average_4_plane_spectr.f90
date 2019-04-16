@@ -11,6 +11,7 @@
       use set_parallel_file_name
 !
       use t_mesh_data_4_merge
+      use t_size_of_cube
       use m_control_plane_fft
       use set_list_4_FFT
       use set_spectr_file_name
@@ -20,6 +21,7 @@
 !
       type(field_IO_params), save ::  plane_mesh_file
       type(merged_mesh), save :: mgd_mesh_pm
+      type(size_of_cube), save :: c_size1
 !
       character(len=kchara) :: xz_stacked_name
       character(len=kchara) :: yz_stacked_name
@@ -72,7 +74,7 @@
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_4_FFT(num_pe, ist, ied, iint)
+      call set_parameters_4_FFT(c_size1, num_pe, ist, ied, iint)
 !
 !
       call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)

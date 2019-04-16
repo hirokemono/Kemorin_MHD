@@ -1,12 +1,12 @@
-!
-!      module set_ctl_data_plane_mesh
+!t_control_param_plane_mesh.f90
+!      module t_control_param_plane_mesh
 !
 !        programmed by H.Matsui on Aug., 2007
 !
 !!      subroutine s_set_ctl_data_plane_mesh(c_size)
 !!        type(size_of_cube), intent(inout) :: c_size
 !
-      module set_ctl_data_plane_mesh
+      module t_control_param_plane_mesh
 !
       use m_precision
       use m_constants
@@ -34,6 +34,10 @@
 !
       type(size_of_cube), intent(inout) :: c_size
 !
+      real(kind = kreal) :: pi
+!
+!
+      pi = four * atan(one)
 !
       if (cubmesh_plt%mesh_file_prefix%iflag .gt. 0) then
         mesh_file_header = cubmesh_plt%mesh_file_prefix%charavalue
@@ -59,7 +63,6 @@
         plane_size_ctl%realvalue(1:3) = 1.0d0
       end if
 !
-      pi = 4.0d0 * atan(1.0d0)
       if (cmp_no_case(unit_len_plane_ctl%charavalue(1),'pi')) then
         c_size%xsize = pi*plane_size_ctl%realvalue(1)
       else
@@ -171,4 +174,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module set_ctl_data_plane_mesh
+      end module t_control_param_plane_mesh

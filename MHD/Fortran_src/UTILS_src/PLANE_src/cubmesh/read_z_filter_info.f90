@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine read_filter_info(c_size, nf_type)
+!!      subroutine read_filter_info(nf_type, c_size, nf_type)
 !!        type(size_of_cube), intent(in) :: c_size
 !
       module read_z_filter_info
@@ -19,10 +19,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_filter_info(c_size, nf_type)
+      subroutine read_filter_info(iflag_ztype, c_size, nf_type)
 !
       use t_size_of_cube
-      use m_cube_position
       use m_filter_data_4_plane
       use m_filtering_nod_4_cubmesh
       use m_cube_files_data
@@ -31,7 +30,8 @@
       use skip_comment_f
 !
       type(size_of_cube), intent(in) :: c_size
-      integer (kind = kint), intent(in) :: nf_type
+      integer(kind = kint), intent(in) :: iflag_ztype
+      integer(kind = kint), intent(in) :: nf_type
 !
       integer (kind = kint) :: kf, ifil, ifil0, i, j, itmp
 !
@@ -71,9 +71,9 @@
 !
          call skip_comment(tmpchara,filter_id)
          read(tmpchara,*) i_grid
-         if ( i_grid .ne. iradi ) then
+         if ( i_grid .ne. iflag_ztype ) then
           write(*,*) 'check grid spacing'
-          write(*,*)  i_grid, iradi
+          write(*,*)  i_grid, iflag_ztype
           stop
          end if
 !

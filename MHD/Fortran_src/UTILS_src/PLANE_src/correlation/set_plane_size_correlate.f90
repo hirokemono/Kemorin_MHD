@@ -3,8 +3,9 @@
 !
 !     Written by H. Matsui
 !
-!       subroutine s_set_plane_size_correlate(num_pe2)
-!       subroutine check_dominsize_data_2
+!!      subroutine s_set_plane_size_correlate(c_size, num_pe, num_pe2)
+!!        type(size_of_cube), intent(inout) :: c_size
+!!       subroutine check_dominsize_data_2
 !
       module set_plane_size_correlate
 !
@@ -18,26 +19,27 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_plane_size_correlate(num_pe, num_pe2)
+      subroutine s_set_plane_size_correlate(c_size, num_pe, num_pe2)
 !
-      use m_size_of_cube
+      use t_size_of_cube
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
       use m_correlate_4_plane
 !
 !     read outline of mesh
 !
-       integer , intent(inout) :: num_pe, num_pe2
+      type(size_of_cube), intent(inout) :: c_size
+      integer , intent(inout) :: num_pe, num_pe2
 !
 !
-      c_size1%nx_all = nnod_plane_ctl%intvalue(1)
-      c_size1%ny_all = nnod_plane_ctl%intvalue(2)
-      c_size1%nz_all = nnod_plane_ctl%intvalue(3)
+      c_size%nx_all = nnod_plane_ctl%intvalue(1)
+      c_size%ny_all = nnod_plane_ctl%intvalue(2)
+      c_size%nz_all = nnod_plane_ctl%intvalue(3)
 
-      kx_max = c_size1%nx_all
-      ky_max = c_size1%ny_all
-      iz_max = c_size1%nz_all
-      num_domain_c =  c_size1%nx_all * c_size1%ny_all * c_size1%nz_all
+      kx_max = c_size%nx_all
+      ky_max = c_size%ny_all
+      iz_max = c_size%nz_all
+      num_domain_c =  c_size%nx_all * c_size%ny_all * c_size%nz_all
        num_pe =   ndomain_plane_ctl%intvalue(1)                         &
      &          * ndomain_plane_ctl%intvalue(2)                         &
      &          * ndomain_plane_ctl%intvalue(3)

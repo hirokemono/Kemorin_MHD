@@ -4,9 +4,10 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine set_sleeve_node_peri(c_size, nb_rng, ipe, jpe, inod)
+!!      subroutine set_sleeve_node_peri                                 &
+!!     &         (c_size, c_vert, nb_rng, ipe, jpe, inod)
 !!      subroutine set_sleeve_node_peri_quad                            &
-!!     &         (c_size, nb_rng, ipe, jpe, inod)
+!!     &         (c_size, c_vert, nb_rng, ipe, jpe, inod)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !
@@ -18,6 +19,7 @@
       use t_size_of_cube
       use t_neib_range_cube
       use t_sleeve_cube
+      use t_cube_position
 !
       implicit none
 !
@@ -27,13 +29,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_sleeve_node_peri(c_size, nb_rng, ipe, jpe, inod)
+      subroutine set_sleeve_node_peri                                   &
+     &         (c_size, c_vert, nb_rng, ipe, jpe, inod)
 !
       use sleeve_nod_side_cube
       use sleeve_nod_corner_cube
 !
       type(size_of_cube), intent(in) :: c_size
-      type(neib_range_cube), intent(in) :: nb_rng
+      type(vertical_position_cube), intent(in) :: c_vert
+       type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: ipe, jpe
       integer (kind = kint), intent(inout) :: inod
 !
@@ -54,7 +58,7 @@
             sl_rng1%ie = c_size%ndepth
 !
             call set_sleeve_node_xmin                                   &
-     &         (c_size, nb_rng, sl_rng1, ioff_gl, inod)
+     &         (c_size, c_vert, nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -73,7 +77,7 @@
             sl_rng1%is = 1
             sl_rng1%ie = c_size%ndepth
             call set_sleeve_node_xmax                                   &
-     &         (c_size, nb_rng, sl_rng1, ioff_gl, inod)
+     &         (c_size, c_vert, nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -92,7 +96,7 @@
             sl_rng1%js = 1
             sl_rng1%je = c_size%ndepth
             call set_sleeve_node_ymin                                   &
-     &         (c_size, nb_rng, sl_rng1, ioff_gl, inod)
+     &         (c_size, c_vert, nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -111,7 +115,7 @@
             sl_rng1%js = 1
             sl_rng1%je = c_size%ndepth
             call set_sleeve_node_ymax                                   &
-     &         (c_size, nb_rng, sl_rng1, ioff_gl, inod)
+     &         (c_size, c_vert, nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -127,7 +131,7 @@
           call set_sleeve_size                                          &
      &       (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
           call set_sleeve_node_xmin_ymin                                &
-     &       (c_size, sl_rng1, ioff_gl, nb_rng%koff, inod)
+     &       (c_size, c_vert, sl_rng1, ioff_gl, nb_rng%koff, inod)
         enddo
       endif
 !
@@ -143,7 +147,7 @@
           call set_sleeve_size                                          &
      &       (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
           call set_sleeve_node_xmax_ymin                                &
-     &       (c_size, sl_rng1, ioff_gl, nb_rng%koff, inod)
+     &       (c_size, c_vert, sl_rng1, ioff_gl, nb_rng%koff, inod)
 
         enddo
       end if
@@ -160,7 +164,7 @@
           call set_sleeve_size                                          &
      &       (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
           call set_sleeve_node_xmax_ymax                                &
-     &       (c_size, sl_rng1, ioff_gl, nb_rng%koff, inod)
+     &       (c_size, c_vert, sl_rng1, ioff_gl, nb_rng%koff, inod)
         enddo
       end if
 !
@@ -176,7 +180,7 @@
           call set_sleeve_size                                          &
      &       (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
           call set_sleeve_node_xmin_ymax                                &
-     &       (c_size, sl_rng1, ioff_gl, nb_rng%koff, inod)
+     &       (c_size, c_vert, sl_rng1, ioff_gl, nb_rng%koff, inod)
         enddo
       end if
 !
@@ -185,12 +189,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_sleeve_node_peri_quad                              &
-     &         (c_size, nb_rng, ipe, jpe, inod)
+     &         (c_size, c_vert, nb_rng, ipe, jpe, inod)
 !
       use sleeve_nod_side_cube
       use sleeve_nod_corner_cube
 !
       type(size_of_cube), intent(in) :: c_size
+      type(vertical_position_cube), intent(in) :: c_vert
       type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: ipe, jpe
       integer (kind = kint), intent(inout) :: inod
@@ -213,7 +218,7 @@
             sl_rng1%ie = c_size%ndepth
 !
             call set_sleeve_node_xmin                                   &
-     &         (c_size, nb_rng, sl_rng1, ioff_gl, inod)
+     &         (c_size, c_vert, nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -231,7 +236,7 @@
             sl_rng1%is = 1
             sl_rng1%ie = c_size%ndepth
             call set_sleeve_node_xmax                                   &
-     &         (c_size, nb_rng, sl_rng1, ioff_gl, inod)
+     &         (c_size, c_vert, nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -249,7 +254,7 @@
             sl_rng1%js = 1
             sl_rng1%je = c_size%ndepth
             call set_sleeve_node_ymin                                   &
-     &         (c_size, nb_rng, sl_rng1, ioff_gl, inod)
+     &         (c_size, c_vert, nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -268,7 +273,7 @@
             sl_rng1%js = 1
             sl_rng1%je = c_size%ndepth
             call set_sleeve_node_ymax                                   &
-     &         (c_size, nb_rng, sl_rng1, ioff_gl, inod)
+     &         (c_size, c_vert, nb_rng, sl_rng1, ioff_gl, inod)
           enddo
         enddo
       endif
@@ -284,7 +289,7 @@
           call set_sleeve_size                                          &
      &       (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
           call set_sleeve_node_xmin_ymin                                &
-     &       (c_size, sl_rng1, ioff_gl, nb_rng%koff, inod)
+     &       (c_size, c_vert, sl_rng1, ioff_gl, nb_rng%koff, inod)
 
         enddo
       endif
@@ -301,7 +306,7 @@
           call set_sleeve_size                                          &
      &       (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
           call set_sleeve_node_xmax_ymin                                &
-     &       (c_size, sl_rng1, ioff_gl, nb_rng%koff, inod)
+     &       (c_size, c_vert, sl_rng1, ioff_gl, nb_rng%koff, inod)
 
         enddo
       end if
@@ -319,7 +324,7 @@
           call set_sleeve_size                                          &
      &       (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
           call set_sleeve_node_xmax_ymax                                &
-     &       (c_size, sl_rng1, ioff_gl, nb_rng%koff, inod)
+     &       (c_size, c_vert, sl_rng1, ioff_gl, nb_rng%koff, inod)
         enddo
       end if
 !
@@ -335,7 +340,7 @@
           call set_sleeve_size                                          &
      &       (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
           call set_sleeve_node_xmin_ymax                                &
-     &       (c_size, sl_rng1, ioff_gl, nb_rng%koff, inod)
+     &       (c_size, c_vert, sl_rng1, ioff_gl, nb_rng%koff, inod)
 
         enddo
       end if

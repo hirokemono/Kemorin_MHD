@@ -96,18 +96,20 @@
 !
       use t_filter_elength
 !
-      use m_size_of_cube
-      use m_cube_position
       use m_comm_data_cube_kemo
       use m_grp_data_cub_kemo
       use m_cube_files_data
       use m_local_node_id_cube
+
+      use t_size_of_cube
       use t_neib_range_cube
+      use t_cube_position
+      use t_control_param_plane_mesh
+
       use m_filtering_nod_4_cubmesh
       use m_filtering_ele_4_cubmesh
       use m_ctl_data_4_cub_kemo
 !
-      use set_vertical_position_cube
       use set_neib_pe_cube
       use set_cube_node_quad
       use set_cube_ele_connect
@@ -117,7 +119,6 @@
       use write_ele_grp_cube
       use write_surf_grp_cube
       use set_plane_geometries
-      use set_ctl_data_plane_mesh
       use neib_nod_cube
       use neib_edge_cube
 !
@@ -138,7 +139,10 @@
 ! ----------------------------------------------------------------------
 !  * variables
 
+      type(ctl_param_plane_mesh), save :: cube_p1
+      type(size_of_cube), save :: c_size1
       type(size_of_each_cube), save :: c_each1
+      type(vertical_position_cube), save :: c_vert1
       type(neib_range_cube), save :: nb_rng1
       type(gradient_model_data_type), save :: FEM_elen_c
 
@@ -159,7 +163,7 @@
 ! ***** read nodal and subdomain division count
 !
       call read_control_data_plane_mesh
-      call s_set_ctl_data_plane_mesh(c_size1)
+      call s_set_ctl_data_plane_mesh(cube_p1, c_size1)
 !
       call set_plane_range_w_sleeve(elm_type, c_size1)
       call set_plane_resolution(c_size1)
@@ -167,7 +171,8 @@
 ! ***** allocate position of node at z-component
 !
       write(*,*) 'set_position_4_vartical'
-      call set_position_4_vartical(elm_type, c_size1)
+      call set_position_4_vartical                                      &
+     &   (elm_type, cube_p1%iflag_ztype, c_size1, c_vert1)
 !
 ! ***** allocate nodal id table
 !
@@ -182,12 +187,13 @@
 !
       call allocate_work_4_filter_nod(c_size1)
 !
-!      if (iflag_filter .ge.0) then
-!         nf_type = iflag_filter
+!      if(cube_p1%iflag_filter .ge.0) then
+!         nf_type = cube_p1%iflag_filter
 !         call allocate_filter_4_plane                                  &
 !    &       (c_size1%ndepth, c_size1%nz_all,                           &
 !    &        FEM_elen_c%filter_conf%nf_type)
-!         call read_filter_info(c_size1, FEM_elen_c%filter_conf%nf_type)
+!         call read_filter_info(cube_p1%iflag_ztype, c_size1,           &
+!    &        FEM_elen_c%filter_conf%nf_type)
 !      end if
 !
 ! **********   domain loop for each pe   **********
@@ -247,14 +253,14 @@
             call init_node_para_4_each_pe                               &
      &         (c_size1, ipe, jpe, kpe, nb_rng1)
             call set_offset_of_domain(c_size1, ipe, jpe, kpe, nb_rng1)
-            call set_node_quad(c_size1, c_each1, nb_rng1,               &
+            call set_node_quad(c_size1, c_each1, c_vert1, nb_rng1,      &
      &          ipe, jpe, kpe)
 !
 ! ..... write 2.2 element (connection)
 !
             write(*,*) 'set_ele_connect_quad', ipe, jpe, kpe
             call set_ele_connect_quad(c_size1, c_each1, nb_rng1,        &
-     &          elm_type, ipe, jpe, kpe)
+     &          elm_type, ipe, jpe)
 
 !
 ! ..... write 3.import / export information

@@ -38,8 +38,6 @@
       integer, intent(in) :: id_rank
       type(size_of_cube), intent(in) :: c_size
 !
-      character(len=kchara) ::  fname_tmp
-!
 ! ***** open output file
 !
       fname = set_mesh_file_name(mesh_file_header, id_ascii_file_fmt,   &

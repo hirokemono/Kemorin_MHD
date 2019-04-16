@@ -21,31 +21,31 @@
 !***********************************************************
 !
       use m_precision
-!
       use m_constants
-      use m_phys_labels
-      use m_size_of_cube
-      use m_cube_position
+!
       use m_setting_4_ini
+      use m_phys_labels
       use m_ctl_data_4_cub_kemo
       use m_cube_files_data
-      use t_field_data_IO
-      use set_ctl_data_plane_mesh
       use set_parallel_file_name
       use mesh_IO_select
       use field_IO_select
       use set_field_to_restart
       use copy_mesh_structures
 !
+      use t_size_of_cube
+      use t_field_data_IO
       use t_mesh_data
       use t_geometry_data
       use t_time_data
       use t_field_data_IO
       use t_file_IO_parameter
       use t_mesh_data_4_merge
+      use t_control_param_plane_mesh
 !
       implicit none
 !
+      real(kind = kreal) :: pi
       character(len=kchara), parameter                                  &
      &      :: org_rst_f_header = 'restart/rst'
       character(len=kchara), parameter                                  &
@@ -55,9 +55,11 @@
       integer(kind=kint) :: istep, ip, ierr, np, inod
       integer(kind=kint) :: jst
 !
-      type(node_data) :: node_plane
+      type(ctl_param_plane_mesh), save :: cube_p1
+      type(size_of_cube), save :: c_size1
+      type(node_data), save :: node_plane
       type(time_data), save :: plane_t_IO
-      type(field_IO) :: plane_fst_IO
+      type(field_IO), save :: plane_fst_IO
       type(mesh_geometry) :: mesh_IO_p
       type(field_IO_params), save :: cube_mesh_file
       type(field_IO_params), save :: plane_fld_file
@@ -70,7 +72,7 @@
 !     read outline of mesh
 !
       call read_control_data_plane_mesh
-      call s_set_ctl_data_plane_mesh(c_size1)
+      call s_set_ctl_data_plane_mesh(cube_p1, c_size1)
 !
        mgd_mesh_pl%num_pe                                               &
      &      = int(c_size1%ndx * c_size1%ndy * c_size1%ndz)

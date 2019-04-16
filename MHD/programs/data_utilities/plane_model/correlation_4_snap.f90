@@ -10,9 +10,9 @@
       use m_precision
 !
       use m_correlate_4_plane
-      use m_size_of_cube
       use m_control_plane_correlate
 !
+      use t_size_of_cube
       use t_phys_data
       use t_time_data
       use t_ucd_data
@@ -35,6 +35,7 @@
 ! . for local 
 !  ===========
 
+      type(size_of_cube), save :: c_size1
       type(phys_data), save :: cor_phys
       type(phys_data), save :: ref_phys
 
@@ -71,7 +72,7 @@
 !     read outline of mesh
 !
       call s_set_plane_size_correlate                                   &
-     &   (mgd_mesh_pm%num_pe, sec_mesh_pm%num_pe2)
+     &   (c_size1, mgd_mesh_pm%num_pe, sec_mesh_pm%num_pe2)
 !
       write(*,*) 'set_merged_node_and_element'
       call set_merged_node_and_element(cor_mesh_file, mgd_mesh_pm)

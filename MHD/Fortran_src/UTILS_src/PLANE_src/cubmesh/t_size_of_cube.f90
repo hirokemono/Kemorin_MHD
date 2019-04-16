@@ -104,8 +104,6 @@
 !
       subroutine set_plane_size(c_size)
 !
-      use m_cube_position
-!
       type(size_of_cube), intent(inout) :: c_size
 !
       c_size%xmax = c_size%xsize / two

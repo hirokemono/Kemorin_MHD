@@ -22,12 +22,9 @@
 !
       use m_constants
       use m_phys_labels
-      use m_size_of_cube
-      use m_cube_position
       use m_setting_4_ini
       use m_ctl_data_4_cub_kemo
       use m_cube_files_data
-      use set_ctl_data_plane_mesh
       use set_parallel_file_name
       use mesh_IO_select
       use field_IO_select
@@ -40,12 +37,18 @@
       use t_field_data_IO
       use t_file_IO_parameter
       use t_mesh_data_4_merge
+      use t_control_param_plane_mesh
+      use t_size_of_cube
 !
       implicit none
 !
       integer :: id_rank
       integer(kind=kint) :: ip, ierr, inod
       integer(kind=kint) :: np, jst, jed
+
+      type(ctl_param_plane_mesh), save :: cube_p1
+      type(size_of_cube), save :: c_size1
+
       type(node_data) :: node_plane
       type(time_data), save :: plane_t_IO
       type(field_IO) :: plane_fst_IO
@@ -54,6 +57,8 @@
       type(field_IO_params), save :: plane_fld_file
       type(merged_mesh), save :: mgd_mesh_pl
 !
+!
+      real(kind = kreal) :: pi
       character(len=kchara), parameter                                  &
      &      :: org_rst_f_header = 'restart/rst'
 !
@@ -62,7 +67,7 @@
 !     read outline of mesh
 !
       call read_control_data_plane_mesh
-      call s_set_ctl_data_plane_mesh(c_size1)
+      call s_set_ctl_data_plane_mesh(cube_p1, c_size1)
 !
       call set_initial_components(mgd_mesh_pl%merged_fld)
       call reset_time_data(plane_t_IO)

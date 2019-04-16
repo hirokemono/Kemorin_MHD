@@ -5,9 +5,9 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine set_ele_connect                                      &
-!!     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe, kpe)
+!!     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe)
 !!      subroutine set_ele_connect_quad                                 &
-!!     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe, kpe)
+!!     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(size_of_each_cube), intent(in) :: c_each
 !!        type(neib_range_cube), intent(in) :: nb_rng
@@ -31,7 +31,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ele_connect                                        &
-     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe, kpe)
+     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe)
 !
       use m_fem_mesh_labels
 !
@@ -39,7 +39,7 @@
       type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: elm_type
-      integer (kind = kint), intent(in) :: ipe, jpe, kpe
+      integer (kind = kint), intent(in) :: ipe, jpe
 !
       integer (kind = kint) :: element_id
       integer (kind = kint) :: element_id_gl
@@ -61,7 +61,7 @@
 
          call set_element_id_periodic                                   &
      &      (c_size, nb_rng, c_each%nx, c_each%ny,                      &
-     &       ipe, jpe, kpe, i, j, k, element_id, element_id_gl)
+     &       ipe, jpe, i, j, k, element_id, element_id_gl)
 !
          i1 = node_id_lc( i  , j  , k   )
          i2 = node_id_lc( i+1, j  , k   )
@@ -84,13 +84,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ele_connect_quad                                   &
-     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe, kpe)
+     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe)
 !
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: elm_type
-      integer (kind = kint), intent(in) :: ipe, jpe, kpe
+      integer (kind = kint), intent(in) :: ipe, jpe
 !
       integer (kind = kint) :: element_id
       integer (kind = kint) :: element_id_gl
@@ -114,7 +114,7 @@
 !
          call set_element_id_periodic                                   &
      &      (c_size, nb_rng, c_each%nx, c_each%ny,                      &
-     &       ipe, jpe, kpe, i, j, k, element_id, element_id_gl)
+     &       ipe, jpe, i, j, k, element_id, element_id_gl)
 !
 !
          i1  = node_id_lc( i  , j  , k   )

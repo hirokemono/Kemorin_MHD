@@ -12,6 +12,7 @@
 !
       use t_time_data
       use t_mesh_data_4_merge
+      use t_size_of_cube
 !
       use m_constants
       use m_file_format_switch
@@ -36,6 +37,7 @@
 !
       type(field_IO_params), save ::  plane_mesh_file
       type(merged_mesh), save :: mgd_mesh_pm
+      type(size_of_cube), save :: c_size1
 !
       integer(kind=kint ) ::  istep_udt, n_comp, i_time_step
 !
@@ -78,9 +80,9 @@
       call read_control_data_fft_plane
 !
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_rst_by_spec(mgd_mesh_pm%num_pe, ist, ied,     &
-     &          ifactor_step, ifactor_rst, dt_init, t_init,             &
-     &          kx_org, ky_org, iz_org, plane_mesh_file)
+      call set_parameters_rst_by_spec(c_size1, mgd_mesh_pm%num_pe,      &
+     &    ist, ied, ifactor_step, ifactor_rst, dt_init, t_init,         &
+     &    kx_org, ky_org, iz_org, plane_mesh_file)
 !
 !     read outline of mesh
 !

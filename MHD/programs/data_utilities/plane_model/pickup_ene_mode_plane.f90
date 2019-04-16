@@ -5,6 +5,7 @@
 !
       use set_spectr_file_name
 !
+      use t_size_of_cube
       use m_control_plane_fft
       use set_list_4_FFT
       use set_plane_spectr_file_head
@@ -13,6 +14,7 @@
 !
 !
       type(field_IO_params), save ::  plane_mesh_file
+      type(size_of_cube), save :: c_size1
 !
       integer(kind=kint) :: nx_2, ny_2
       integer(kind=kint) :: kx, ky, kx_in, ky_in
@@ -44,7 +46,7 @@
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_4_FFT(num_pe, ist, ied, iint)
+      call set_parameters_4_FFT(c_size1, num_pe, ist, ied, iint)
 !
 !
        nx_2 = c_size1%nx_all/2 + 1

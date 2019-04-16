@@ -17,6 +17,7 @@
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
 !
+      use t_size_of_cube
       use t_time_data
       use t_ucd_data
       use t_mesh_data_4_merge
@@ -35,6 +36,7 @@
 !
        implicit none
 !
+      type(size_of_cube), save :: c_size1
       type(field_IO_params), save ::  plane_mesh_file, ucd_file_param
       type(ucd_data) :: fft_ucd
       type(time_data), save :: fft_t_IO
@@ -74,9 +76,10 @@
       call read_control_data_fft_plane
 !
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_4_FFT(mgd_mesh_pm%num_pe, ist, ied, iint)
+      call set_parameters_4_FFT                                         &
+     &   (c_size1, mgd_mesh_pm%num_pe, ist, ied, iint)
       call set_parameters_data_by_spec                                  &
-     &   (mgd_mesh_pm%num_pe, kx_org, ky_org, iz_org,                   &
+     &   (c_size1, mgd_mesh_pm%num_pe, kx_org, ky_org, iz_org,          &
      &    plane_mesh_file, ucd_file_param)
       call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)
 !

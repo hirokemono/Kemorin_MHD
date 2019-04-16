@@ -4,9 +4,11 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine set_internal_node(c_size, nb_rng, sl_rng, inod)
-!!      subroutine set_internal_edge                                    &
-!!     &         (c_size, nb_rng, sl_rng, kpe, inp, jnp, knp, inod, nd)
+!!      subroutine set_internal_node                                    &
+!!     &         (c_size, c_vert, nb_rng, sl_rng, inod)
+!!      subroutine set_internal_edge(c_size, c_vert, nb_rng, sl_rng,    &
+!!     &          kpe, inp, jnp, knp, inod, nd)
+!!        type(vertical_position_cube), intent(in) :: c_vert
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !!        type(slleve_range), intent(in) :: sl_rng
 !
@@ -17,7 +19,7 @@
       use t_size_of_cube
       use t_neib_range_cube
       use t_sleeve_cube
-      use m_cube_position
+      use t_cube_position
       use m_local_node_id_cube
       use m_cube_files_data
 !
@@ -29,9 +31,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_internal_node(c_size, nb_rng, sl_rng, inod)
+      subroutine set_internal_node                                      &
+     &         (c_size, c_vert, nb_rng, sl_rng, inod)
 !
       type(size_of_cube), intent(in) :: c_size
+      type(vertical_position_cube), intent(in) :: c_vert
       type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(inout) :: inod
@@ -55,7 +59,7 @@
 
             x = nb_rng%xoff + (i-1) * c_size%xsize / (c_size%nx_all)
             y = nb_rng%yoff + (j-1) * c_size%ysize / (c_size%ny_all)
-            z = zz(nb_rng%koff + k)
+            z = c_vert%zz(nb_rng%koff + k)
 
             write(l_out,'(i15,3(1pe21.11))')                      &
      &              node_id_gl, x, y, z
@@ -67,10 +71,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_internal_edge                                      &
-     &         (c_size, nb_rng, sl_rng, kpe, inp, jnp, knp, inod, nd)
+      subroutine set_internal_edge(c_size, c_vert, nb_rng, sl_rng,      &
+     &          kpe, inp, jnp, knp, inod, nd)
 !
       type(size_of_cube), intent(in) :: c_size
+      type(vertical_position_cube), intent(in) :: c_vert
       type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(in) :: kpe
@@ -111,16 +116,16 @@
           x = nb_rng%xoff + (i-1) * c_size%xsize / dble(c_size%nx_all)  &
      &                    + half * c_size%xsize / dble(c_size%nx_all)
           y = nb_rng%yoff + (j-1) * c_size%ysize / dble(c_size%ny_all)
-          z = zz(nb_rng%koff + k)
+          z = c_vert%zz(nb_rng%koff + k)
          else if (nd .eq. 2) then
           x = nb_rng%xoff + (i-1) * c_size%xsize / dble(c_size%nx_all)
           y = nb_rng%yoff + (j-1) * c_size%ysize / dble(c_size%ny_all)  &
      &                     + half * c_size%ysize / dble(c_size%ny_all)
-          z = zz(nb_rng%koff + k)
+          z = c_vert%zz(nb_rng%koff + k)
          else if (nd .eq. 3) then
           x = nb_rng%xoff + (i-1) * c_size%xsize / dble(c_size%nx_all)
           y = nb_rng%yoff + (j-1) * c_size%ysize / dble(c_size%ny_all)
-          z = zz_edge(nb_rng%koff + k)
+          z = c_vert%zz_edge(nb_rng%koff + k)
          end if
 
          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z

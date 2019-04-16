@@ -67,8 +67,6 @@
 !
       subroutine set_offset_of_domain(c_size, ipe, jpe, kpe, nb_rng)
 !
-      use m_cube_position
-!
       type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(inout) :: nb_rng
 !
