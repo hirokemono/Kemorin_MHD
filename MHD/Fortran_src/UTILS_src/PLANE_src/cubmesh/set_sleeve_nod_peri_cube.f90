@@ -18,7 +18,6 @@
       use t_size_of_cube
       use t_neib_range_cube
       use t_sleeve_cube
-      use m_size_4_plane
 !
       implicit none
 !
@@ -65,7 +64,7 @@
 !
       ioff_gl = c_size%nod_gltot                                        &
      &       + c_size%ndepth * c_size%ny_all * c_size%nz_all
-      if (ipe .eq. ndx ) then
+      if (ipe .eq. c_size%ndx) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
@@ -103,7 +102,7 @@
       ioff_gl = c_size%nod_gltot                                        &
      &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
      &         + c_size%ndepth * c_size%nx_all * c_size%nz_all 
-      if ( jpe .eq. ndy ) then
+      if(jpe .eq. c_size%ndy) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do inp = nb_rng%inp_st, nb_rng%inp_end
 
@@ -138,7 +137,7 @@
      &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
      &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all        &
      &         + c_size%ndepth * c_size%ndepth * c_size%nz_all
-      if( ipe .eq. ndx  .and. jpe .eq. 1 ) then
+      if(ipe .eq. c_size%ndx  .and. jpe .eq. 1) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
           call set_sleeve_size                                          &
@@ -155,7 +154,7 @@
      &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
      &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all        &
      &         + 2*c_size%ndepth * c_size%ndepth * c_size%nz_all
-      if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
+      if ( ipe .eq. c_size%ndx  .and. jpe .eq. c_size%ndy) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 !                                       .. start side
           call set_sleeve_size                                          &
@@ -171,7 +170,7 @@
      &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
      &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all        &
      &         + 3*c_size%ndepth * c_size%ndepth * c_size%nz_all
-      if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
+      if(ipe .eq. 1  .and. jpe .eq. c_size%ndy) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
           call set_sleeve_size                                          &
@@ -223,7 +222,7 @@
 !
       ioff_gl = c_size%nod_gltot + c_size%edge_gltot                    &
      &         + c_size%ndepth * c_size%ny_all * c_size%nz_all
-      if (ipe .eq. ndx ) then
+      if (ipe .eq. c_size%ndx) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
@@ -260,7 +259,7 @@
       ioff_gl = c_size%nod_gltot + c_size%edge_gltot                    &
      &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
      &         + c_size%ndepth * c_size%nx_all * c_size%nz_all 
-      if ( jpe .eq. ndy ) then
+      if(jpe .eq. c_size%ndy) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do inp = nb_rng%inp_st, nb_rng%inp_end
 
@@ -279,7 +278,7 @@
       ioff_gl = c_size%nod_gltot + c_size%edge_gltot                    &
      &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
      &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all
-      if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
+      if(ipe .eq. 1  .and. jpe .eq. 1 ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
           call set_sleeve_size                                          &
@@ -296,7 +295,7 @@
      &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
      &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all        &
      &         + c_size%ndepth * c_size%ndepth * c_size%nz_all
-      if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
+      if(ipe .eq. c_size%ndx  .and. jpe .eq. 1 ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
           call set_sleeve_size                                          &
@@ -313,7 +312,7 @@
      &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
      &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all        &
      &         + 2*c_size%ndepth * c_size%ndepth * c_size%nz_all
-      if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
+      if(ipe .eq. c_size%ndx  .and. jpe .eq. c_size%ndy) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 !                                       .. start side
 
@@ -330,7 +329,7 @@
      &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
      &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all        &
      &         + 3*c_size%ndepth * c_size%ndepth * c_size%nz_all
-       if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
+       if(ipe .eq. 1  .and. jpe .eq. c_size%ndy) then
          do knp = nb_rng%knp_st, nb_rng%knp_end
 
           call set_sleeve_size                                          &

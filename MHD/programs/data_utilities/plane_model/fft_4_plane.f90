@@ -8,7 +8,6 @@
 !
       use m_precision
 !
-      use m_size_4_plane
       use m_spectr_4_ispack
       use m_control_plane_fft
       use m_ctl_data_4_plane_model

@@ -24,7 +24,6 @@
 !
       use m_cube_files_data
       use m_size_of_cube
-      use m_size_4_plane
       use m_cube_position
       use m_grp_data_cub_kemo
       use m_filtering_nod_4_cubmesh
@@ -35,10 +34,8 @@
       type(size_of_cube), intent(inout) :: c_size
 !
 !
-      mesh_type_plane = elm_type
-!
       neib = ndepth
-      c_size%ndepth = ndepth
+      c_size%ndepth =  ndepth
 !
       c_size%xmin = c_size%xmin                                         &
      &             - c_size%ndepth * c_size%xsize / dble(c_size%nx_all)

@@ -6,7 +6,7 @@
 !!      subroutine set_offset_of_domain(c_size, ipe, jpe, kpe, nb_rng)
 !!      subroutine init_node_para_4_each_pe                             &
 !!     &         (c_size, ipe, jpe, kpe, nb_rng)
-!!      subroutine set_range_4_neighbour(ipe, jpe, kpe, nb_rng)
+!!      subroutine set_range_4_neighbour(ipe, jpe, kpe, c_size, nb_rng)
 !!      subroutine set_range_4_nodeloop(c_size, kpe, nb_rng)
 !!      subroutine set_edge_para_4_each_pe(kpe, ndz, nb_rng)
 !!        type(size_of_cube), intent(in) :: c_size
@@ -15,6 +15,7 @@
       module t_neib_range_cube
 !
       use m_precision
+      use t_size_of_cube
 !
       implicit  none
 !
@@ -66,8 +67,6 @@
 !
       subroutine set_offset_of_domain(c_size, ipe, jpe, kpe, nb_rng)
 !
-      use t_size_of_cube
-      use m_size_4_plane
       use m_cube_position
 !
       type(size_of_cube), intent(in) :: c_size
@@ -95,8 +94,6 @@
       subroutine init_node_para_4_each_pe                               &
      &         (c_size, ipe, jpe, kpe, nb_rng)
 !
-      use t_size_of_cube
-!
       integer(kind=kint), intent(in)  ::  ipe, jpe, kpe
       type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(inout) :: nb_rng
@@ -112,28 +109,27 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_range_4_neighbour(ipe, jpe, kpe, nb_rng)
-!
-      use m_size_4_plane
+      subroutine set_range_4_neighbour(ipe, jpe, kpe, c_size, nb_rng)
 !
       integer(kind = kint), intent(in) :: ipe, jpe, kpe
+      type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(inout) :: nb_rng
 !
 !                                       .. search neighbor pe
-                       nb_rng%inp_st  = -1
-      if(ipe .eq.   1) nb_rng%inp_st  =  0
-                       nb_rng%inp_end =  1
-      if(ipe .eq. ndx) nb_rng%inp_end =  0
+                              nb_rng%inp_st  = -1
+      if(ipe .eq.          1) nb_rng%inp_st  =  0
+                              nb_rng%inp_end =  1
+      if(ipe .eq. c_size%ndx) nb_rng%inp_end =  0
 
-                       nb_rng%jnp_st  = -1
-      if(jpe .eq.   1) nb_rng%jnp_st  =  0
-                       nb_rng%jnp_end =  1
-      if(jpe .eq. ndy) nb_rng%jnp_end =  0
+                              nb_rng%jnp_st  = -1
+      if(jpe .eq.          1) nb_rng%jnp_st  =  0
+                              nb_rng%jnp_end =  1
+      if(jpe .eq. c_size%ndy) nb_rng%jnp_end =  0
 
-                       nb_rng%knp_st  = -1
-      if(kpe .eq.   1) nb_rng%knp_st  =  0
-                       nb_rng%knp_end =  1
-      if(kpe .eq. ndz) nb_rng%knp_end =  0
+                              nb_rng%knp_st  = -1
+      if(kpe .eq.          1) nb_rng%knp_st  =  0
+                              nb_rng%knp_end =  1
+      if(kpe .eq. c_size%ndz) nb_rng%knp_end =  0
 !
       end subroutine set_range_4_neighbour
 !

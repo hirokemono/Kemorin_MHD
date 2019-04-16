@@ -20,7 +20,6 @@
 !
       use t_merged_geometry_data
       use m_size_of_cube
-      use m_size_4_plane
 !
       type(merged_stacks), intent(inout) :: merge_tbl
 !

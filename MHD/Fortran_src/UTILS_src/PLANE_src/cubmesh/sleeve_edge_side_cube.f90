@@ -23,7 +23,6 @@
       use t_size_of_cube
       use t_sleeve_cube
       use t_neib_range_cube
-      use m_size_4_plane
       use m_cube_position
       use m_local_node_id_cube
       use m_cube_files_data
@@ -56,7 +55,7 @@
        call copy_slleve_size(sl_rng, sl_rng_2)
        if ( nd.eq.2 .and. jnp.gt.0) sl_rng_2%je = sl_rng_2%je - 1
        if ( nd.eq.3 .and. knp.gt.0) sl_rng_2%ke = sl_rng_2%ke - 1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 )                   &
+       if ( nd.eq.3 .and. kpe.eq.c_size%ndz .and. knp.eq.0 )            &
      &                              sl_rng_2%ke = sl_rng_2%ke-1
 
        do k = sl_rng_2%ks, sl_rng_2%ke
@@ -122,7 +121,7 @@
        if ( nd.eq.1 ) sl_rng_2%ie = sl_rng_2%ie - 1
        if ( nd.eq.2 .and. jnp.gt.0) sl_rng_2%je = sl_rng_2%je - 1
        if ( nd.eq.3 .and. knp.gt.0) sl_rng_2%ke = sl_rng_2%ke-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 )                   &
+       if ( nd.eq.3 .and. kpe.eq.c_size%ndz .and. knp.eq.0 )            &
      &                              sl_rng_2%ke = sl_rng_2%ke-1
 
        do k = sl_rng_2%ks, sl_rng_2%ke
@@ -188,7 +187,7 @@
        call copy_slleve_size(sl_rng, sl_rng_2)
        if ( nd.eq.1 .and. inp.gt.0) sl_rng_2%ie = sl_rng_2%ie - 1
        if ( nd.eq.3 .and. knp.gt.0) sl_rng_2%ke = sl_rng_2%ke - 1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0)                    &
+       if ( nd.eq.3 .and. kpe.eq.c_size%ndz .and. knp.eq.0)             &
      &                              sl_rng_2%ke = sl_rng_2%ke - 1
 
        do k = sl_rng_2%ks, sl_rng_2%ke
@@ -254,7 +253,7 @@
        if ( nd.eq.1 .and. inp.gt.0) sl_rng_2%ie = sl_rng_2%ie - 1
        if ( nd.eq.2)                sl_rng_2%je = sl_rng_2%je-1
        if ( nd.eq.3 .and. knp.gt.0) sl_rng_2%ke = sl_rng_2%ke - 1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0)                    &
+       if ( nd.eq.3 .and. kpe.eq.c_size%ndz .and. knp.eq.0)             &
      &                              sl_rng_2%ke = sl_rng_2%ke-1
 
        do k = sl_rng_2%ks, sl_rng_2%ke

@@ -24,8 +24,6 @@
 !
       subroutine count_element_group(c_size, elm_fil1_tot)
 !
-      use m_size_4_plane
-!
       type(size_of_cube), intent(in) :: c_size
       integer (kind=kint), intent(in) :: elm_fil1_tot
 !
@@ -54,7 +52,6 @@
 !
       subroutine write_cube_ele_group(c_size, nx, ny, nz, kpe, koff)
 !
-      use m_size_4_plane
       use m_cube_files_data
       use m_fem_mesh_labels
 !
@@ -94,15 +91,15 @@
          do i=1,nx-1
 
            element_id    =  element_id + 1
-           if(i.ge.c_size%ndepth .and. i.le.(nx-c_size%ndepth) ) then
-            if(j.ge.c_size%ndepth .and. j.le.(ny-c_size%ndepth) ) then
+           if(i.ge.c_size%ndepth .and. i.le.(nx-c_size%ndepth)) then
+            if(j.ge.c_size%ndepth .and. j.le.(ny-c_size%ndepth)) then
              if(kpe.eq.1 .and. k.le.(nz-c_size%ndepth) ) then
               iele = iele + 1
               iele_group_id(iele) = element_id
-             else if ( kpe.eq.ndz .and. k.ge.c_size%ndepth ) then
+             else if(kpe.eq.c_size%ndz .and. k.ge.c_size%ndepth) then
               iele = iele + 1
               iele_group_id(iele) = element_id
-             else if ( k.ge.c_size%ndepth                               &
+             else if(k.ge.c_size%ndepth                                 &
      &              .and. k.le.(nz-c_size%ndepth) ) then
               iele = iele + 1
               iele_group_id(iele) = element_id

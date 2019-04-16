@@ -4,8 +4,10 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine count_import_inside(nb_rng, icou, inod)
-!!      subroutine count_import_inside_quad(nb_rng, kpe, icou, inod)
+!!      subroutine count_import_inside(c_size, nb_rng, icou, inod)
+!!      subroutine count_import_inside_quad                             &
+!!     &         (c_size, nb_rng, kpe, icou, inod)
+!!        type(size_of_cube), intent(in) :: c_size
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !
       module count_import_inside_cube
@@ -27,8 +29,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_import_inside(nb_rng, icou, inod)
+      subroutine count_import_inside(c_size, nb_rng, icou, inod)
 !
+      type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
 !
       integer (kind = kint), intent(inout) :: icou, inod
@@ -44,7 +47,7 @@
                if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
                call set_sleeve_size                                     &
-     &            (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+     &            (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
 
                icou = icou  + 1
                call count_node_id(sl_rng1, inod)
@@ -59,10 +62,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_import_inside_quad(nb_rng, kpe, icou, inod)
+      subroutine count_import_inside_quad                               &
+     &         (c_size, nb_rng, kpe, icou, inod)
 !
       use set_comm_edge_4_cube
 !
+      type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in)  :: kpe
 !
@@ -78,15 +83,18 @@
          if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
          call set_sleeve_size                                           &
-     &      (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
+     &      (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
 !
          icou = icou  + 1
 
          call count_node_id(sl_rng1, inod)
 !
-         call count_im_edge(sl_rng1, kpe, inp, jnp, knp, inod, ione)
-         call count_im_edge(sl_rng1, kpe, inp, jnp, knp, inod, itwo)
-         call count_im_edge(sl_rng1, kpe, inp, jnp, knp, inod, ithree)
+         call count_im_edge(sl_rng1, c_size%ndz,                        &
+     &       kpe, inp, jnp, knp, inod, ione)
+         call count_im_edge(sl_rng1, c_size%ndz,                        &
+     &       kpe, inp, jnp, knp, inod, itwo)
+         call count_im_edge(sl_rng1, c_size%ndz,                        &
+     &       kpe, inp, jnp, knp, inod, ithree)
 
          stack_import(icou) = inod
 

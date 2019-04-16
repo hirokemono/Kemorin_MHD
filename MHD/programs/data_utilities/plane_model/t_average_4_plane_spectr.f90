@@ -7,7 +7,6 @@
 !
       use m_precision
 !
-      use m_size_4_plane
       use set_numnod_4_plane
       use set_parallel_file_name
 !

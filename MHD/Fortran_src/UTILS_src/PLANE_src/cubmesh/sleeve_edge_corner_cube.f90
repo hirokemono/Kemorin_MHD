@@ -20,7 +20,6 @@
 !
       use t_size_of_cube
       use t_sleeve_cube
-      use m_size_4_plane
       use m_local_node_id_cube
       use m_cube_position
       use m_cube_files_data
@@ -56,8 +55,8 @@
        je0 = c_size%ndepth
        ks0 = sl_rng%ks
        ke0 = sl_rng%ke
-       if ( nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke0 = ke0-1
+       if(nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
+       if(nd.eq.3 .and. kpe.eq.c_size%ndz .and. knp.eq.0) ke0 = ke0-1
 !
        do k = ks0, ke0
         do j = js0, je0
@@ -122,9 +121,9 @@
        je0 = c_size%ndepth
        ks0 = sl_rng%ks
        ke0 = sl_rng%ke
-       if ( nd.eq.1 ) ie0 = ie0 - 1
-       if ( nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke0 = ke0-1
+       if(nd.eq.1 ) ie0 = ie0 - 1
+       if(nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
+       if(nd.eq.3 .and. kpe.eq.c_size%ndz .and. knp.eq.0) ke0 = ke0-1
 !
        do k = ks0, ke0
         do j = js0, je0
@@ -190,10 +189,10 @@
        je0 = c_size%ndepth
        ks0 = sl_rng%ks
        ke0 = sl_rng%ke
-       if ( nd.eq.1 ) ie0 = ie0 - 1
-       if ( nd.eq.2 ) je0 = je0 - 1
-       if ( nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
-       if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke0 = ke0-1
+       if(nd.eq.1 ) ie0 = ie0 - 1
+       if(nd.eq.2 ) je0 = je0 - 1
+       if(nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
+       if(nd.eq.3 .and. kpe.eq.c_size%ndz .and. knp.eq.0) ke0 = ke0-1
 !
        do k = ks0, ke0
         do j = js0, je0
@@ -260,9 +259,9 @@
       je0 = c_size%ndepth
       ks0 = sl_rng%ks
       ke0 = sl_rng%ke
-      if ( nd.eq.2 ) je0 = je0 - 1
-      if ( nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
-      if ( nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0 ) ke0 = ke0-1
+      if(nd.eq.2) je0 = je0 - 1
+      if(nd.eq.3 .and. knp.gt.0) ke0 = ke0-1
+      if(nd.eq.3 .and. kpe.eq.c_size%ndz .and. knp.eq.0) ke0 = ke0-1
 !
       do k = ks0, ke0
         do j = js0, je0

@@ -42,7 +42,6 @@
 !
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
-      use m_size_4_plane
       use m_spectr_4_ispack
 !
       integer, intent(inout) :: num_pe
@@ -86,7 +85,6 @@
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
       use m_default_file_prefix
-      use m_size_4_plane
       use m_spectr_4_ispack
       use m_set_new_spectr
       use set_control_platform_data
@@ -176,7 +174,6 @@
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
       use m_default_file_prefix
-      use m_size_4_plane
       use m_spectr_4_ispack
       use m_set_new_spectr
       use m_field_file_format

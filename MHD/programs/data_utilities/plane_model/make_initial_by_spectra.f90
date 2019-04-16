@@ -16,7 +16,6 @@
       use m_constants
       use m_file_format_switch
       use m_phys_labels
-      use m_size_4_plane
       use m_setting_4_ini
       use m_set_new_spectr
       use m_spectr_4_ispack

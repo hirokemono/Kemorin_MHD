@@ -21,7 +21,6 @@
       subroutine output_correlate_plane(istep)
 !
       use m_correlate_4_plane
-      use m_size_4_plane
 !
       integer(kind = kint), intent(in) :: istep
       integer(kind = kint) :: iz, j
@@ -45,7 +44,6 @@
       subroutine output_correlate_snap(istep, ix, iy)
 !
       use m_correlate_4_plane
-      use m_size_4_plane
 !
       integer(kind = kint), intent(in) :: istep, ix, iy
       integer(kind = kint) :: iz, j

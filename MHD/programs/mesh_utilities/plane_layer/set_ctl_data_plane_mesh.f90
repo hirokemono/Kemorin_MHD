@@ -20,7 +20,6 @@
 !
       subroutine s_set_ctl_data_plane_mesh
 !
-      use m_size_4_plane
       use m_size_of_cube
       use m_cube_position
       use m_grp_data_cub_kemo
@@ -99,23 +98,23 @@
       end if
 !
       if (ndomain_plane_ctl%iflag .gt. 0) then
-        ndx = ndomain_plane_ctl%intvalue(1)
-        ndy = ndomain_plane_ctl%intvalue(2)
-        ndz = ndomain_plane_ctl%intvalue(3)
+        c_size1%ndx = ndomain_plane_ctl%intvalue(1)
+        c_size1%ndy = ndomain_plane_ctl%intvalue(2)
+        c_size1%ndz = ndomain_plane_ctl%intvalue(3)
       else
-        ndx = 1
-        ndy = 1
-        ndz = 1
+        c_size1%ndx = 1
+        c_size1%ndy = 1
+        c_size1%ndz = 1
       end if
 !
-      if ( ( mod(c_size1%nx_all,ndx) /= 0 ) .or.                        &
-     &     ( mod(c_size1%ny_all,ndy) /= 0 ) .or.                        &
-     &     ( mod(c_size1%nz_all,ndz) /= 0 )      ) then
+      if ( ( mod(c_size1%nx_all,c_size1%ndx) .ne. 0 ) .or.              &
+     &     ( mod(c_size1%ny_all,c_size1%ndy) .ne. 0 ) .or.              &
+     &     ( mod(c_size1%nz_all,c_size1%ndz) .ne. 0 )) then
         stop ' ***** error : illegal input '
       endif
-      if (neib .ge. (c_size1%nz_all / ndz) ) then
+      if (neib .ge. (c_size1%nz_all / c_size1%ndz) ) then
         write(*,*) 'neighbouring should be less than',                  &
-    &        (c_size1%nz_all / ndz)
+    &        (c_size1%nz_all / c_size1%ndz)
         stop ' ***** error : illegal input '
       end if
 !
@@ -157,7 +156,8 @@
 !
       write(*,*) 'num. of grid: ',                                      &
      &          c_size1%nx_all, c_size1%ny_all, c_size1%nz_all
-      write(*,*) 'num. of domain: ', ndx, ndy, ndz
+      write(*,*) 'num. of domain: ',                                    &
+     &          c_size1%ndx, c_size1%ndy, c_size1%ndz
       write(*,*) 'num. of sleeve: ', ndepth
 !
       write(*,*) 'num. of filter: ', iflag_filter

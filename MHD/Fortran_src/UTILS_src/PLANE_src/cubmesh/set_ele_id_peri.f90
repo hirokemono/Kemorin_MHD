@@ -28,7 +28,6 @@
 !
       use t_size_of_cube
       use t_neib_range_cube
-      use m_size_4_plane
 !
       type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
@@ -46,7 +45,7 @@
      &               + (nb_rng%koff + k-1) * (c_size%nx_all - 1)        &
      &                * (c_size%ny_all - 1)
 !
-      if (ipe .eq. 1 .and. i.le.c_size%ndepth ) then
+      if(ipe .eq. 1 .and. i.le.c_size%ndepth ) then
         element_id_gl = (c_size%nx_all - 1) * (c_size%ny_all - 1)       &
      &                  * (c_size%nz_all - 1)                           &
      &                 + i                                              &
@@ -55,7 +54,7 @@
      &                  * c_size%ndepth
       end if
 !
-      if (ipe .eq. ndx .and. i.ge. nx-c_size%ndepth ) then
+      if(ipe .eq. c_size%ndx .and. i.ge. nx-c_size%ndepth ) then
         element_id_gl =  ( (c_size%nx_all - 1) * (c_size%ny_all - 1)    &
      &                    + c_size%ndepth * (c_size%ny_all - 1))        &
      &                   * (c_size%nz_all - 1)                          &
@@ -65,7 +64,7 @@
      &                  * c_size%ndepth
       end if
 !
-      if (jpe .eq. 1 .and. j.le. c_size%ndepth ) then
+      if(jpe .eq. 1 .and. j .le. c_size%ndepth) then
         element_id_gl =  ( (c_size%nx_all - 1) * (c_size%ny_all - 1)    &
      &                    + 2 * c_size%ndepth * (c_size%ny_all - 1))    &
      &                   * (c_size%nz_all - 1)                          &
@@ -75,7 +74,7 @@
      &                  * c_size%ndepth
       end if
 !
-      if (jpe .eq. ndy .and. j.ge. ny-c_size%ndepth ) then
+      if(jpe .eq. c_size%ndy .and. j .ge. ny-c_size%ndepth) then
         element_id_gl =  ((c_size%nx_all - 1) * (c_size%ny_all - 1)     &
      &                 + 2 * c_size%ndepth * (c_size%ny_all - 1)        &
      &                     + c_size%ndepth * (c_size%nx_all - 1) )      &
@@ -86,7 +85,7 @@
      &                  * c_size%ndepth
       end if
 !
-      if (ipe .eq. 1 .and. jpe .eq. 1) then
+      if(ipe .eq. 1 .and. jpe .eq. 1) then
         if ( i.le. c_size%ndepth .and. j .le. c_size%ndepth ) then
           element_id_gl =  ((c_size%nx_all - 1) * (c_size%ny_all - 1)   &
      &                       + 2 * c_size%ndepth * (c_size%ny_all - 1)  &
@@ -97,7 +96,7 @@
         end if
       end if
 !
-      if (ipe .eq. ndx .and. jpe .eq. 1) then
+      if(ipe .eq. c_size%ndx .and. jpe .eq. 1) then
         if ( i.ge. nx-c_size%ndepth .and. j .le. c_size%ndepth ) then
           element_id_gl =  ( (c_size%nx_all - 1) * (c_size%ny_all - 1)  &
      &               + 2 * c_size%ndepth * (c_size%ny_all - 1)          &
@@ -108,7 +107,7 @@
         end if
       end if
 !
-      if (ipe .eq. ndx .and. jpe .eq. ndy) then
+      if(ipe .eq. c_size%ndx .and. jpe .eq. c_size%ndy) then
         if ( i.ge. nx-c_size%ndepth .and. j .ge. ny-c_size%ndepth ) then
           element_id_gl =  ( (c_size%nx_all - 1) * (c_size%ny_all - 1)  &
      &                 + 2 * c_size%ndepth * (c_size%ny_all - 1)        &
@@ -120,7 +119,7 @@
         end if
       end if
 !
-      if (ipe .eq. 1 .and. jpe .eq. ndy) then
+      if (ipe .eq. 1 .and. jpe .eq. c_size%ndy) then
         if ( i.le. c_size%ndepth .and. j .ge. ny-c_size%ndepth ) then
           element_id_gl =  ( (c_size%nx_all - 1) * (c_size%ny_all - 1)  &
      &                 + 2 * c_size%ndepth * (c_size%ny_all - 1)        &

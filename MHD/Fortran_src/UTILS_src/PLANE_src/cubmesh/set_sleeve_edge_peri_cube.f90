@@ -29,7 +29,6 @@
       use t_size_of_cube
       use t_neib_range_cube
       use t_sleeve_cube
-      use m_size_4_plane
       use sleeve_edge_side_cube
       use sleeve_edge_corner_cube
 !
@@ -115,7 +114,7 @@
 !
 !  outdside (x>xmax)
 !
-      if (ipe .eq. ndx ) then
+      if(ipe .eq. c_size%ndx) then
        do knp = nb_rng%knp_st, nb_rng%knp_end
         do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
@@ -146,7 +145,7 @@
 !
 !  outdside (y<ymin)
 !
-      if ( jpe .eq. 1 ) then
+      if(jpe .eq. 1) then
        do knp = nb_rng%knp_st, nb_rng%knp_end
         do inp = nb_rng%inp_st, nb_rng%inp_end
 
@@ -176,7 +175,7 @@
 !
 !  outdside (y>ymax)
 !
-       if ( jpe .eq. ndy ) then
+       if(jpe .eq. c_size%ndy) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
          do inp = nb_rng%inp_st, nb_rng%inp_end
 
@@ -237,7 +236,7 @@
 !
 !  outdside (x>xmax, y<ymin)
 !
-      if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
+      if(ipe .eq. c_size%ndx  .and. jpe .eq. 1) then
        do knp = nb_rng%knp_st, nb_rng%knp_end
 
          call set_sleeve_size                                           &
@@ -265,7 +264,7 @@
 !
 !  outdside (x>xmax, y>ymax)
 !
-       if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
+       if(ipe .eq. c_size%ndx  .and. jpe .eq. c_size%ndy) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 !                                       .. start side
          call set_sleeve_size                                           &
@@ -294,7 +293,7 @@
 !
 !  outdside (x<xmin, y>ymax)
 !
-      if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
+      if(ipe .eq. 1  .and. jpe .eq. c_size%ndy) then
        do knp = nb_rng%knp_st, nb_rng%knp_end
 
           call set_sleeve_size                                          &
@@ -318,8 +317,8 @@
           call set_sleeve_edge_xmin_ymax(c_size, sl_rng1, kpe, knp,     &
      &        ioff_gl, nb_rng%koff, ithree, inod)
 
-                enddo
-              end if
+        enddo
+      end if
 !
 !          ioff_gl = ncube_in + ncube_3                                 &
 !     &            + 2 * nwall_z + nwall_y5 + nwall_c1 + nwall_z8       &

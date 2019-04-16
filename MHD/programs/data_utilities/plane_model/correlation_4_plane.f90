@@ -10,7 +10,6 @@
       use m_precision
 !
       use m_correlate_4_plane
-      use m_size_4_plane
       use m_size_of_cube
       use m_control_plane_correlate
 !

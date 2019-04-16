@@ -28,6 +28,13 @@
 !>        nodal count at z direction line for all model
         integer(kind=kint ) :: nz_all
 !
+!>        subdomain division count at x direction line
+        integer(kind=kint ) :: ndx
+!>        subdomain division count at y direction line
+        integer(kind=kint ) :: ndy
+!>        subdomain division count at z direction line
+        integer(kind=kint ) :: ndz
+!
 !>        number of node in the domain without sleeves
         integer(kind=kint )  ::  nod_gltot
 !>        number of edge in the domain without sleeves
@@ -117,10 +124,6 @@
 !
       subroutine set_plane_resolution(ndepth, c_size)
 !
-      use m_size_4_plane
-!
-      implicit none
-!
       integer(kind = kint), intent(in) :: ndepth
       type(size_of_cube), intent(inout) :: c_size
 !
@@ -134,9 +137,9 @@
 !
 ! ***** set internal node count
 !
-      c_size%nxi = c_size%nx_all / ndx
-      c_size%nyi = c_size%ny_all / ndy
-      c_size%nzi = c_size%nz_all / ndz
+      c_size%nxi = c_size%nx_all / c_size%ndx
+      c_size%nyi = c_size%ny_all / c_size%ndy
+      c_size%nzi = c_size%nz_all / c_size%ndz
 !
       c_size%numnod_x = c_size%nxi + 2*c_size%ndepth
       c_size%numnod_y = c_size%nyi + 2*c_size%ndepth
@@ -152,8 +155,6 @@
       subroutine set_each_cube_resolution                               &
      &         (elm_type, kpe, c_size, c_each)
 !
-      use m_size_4_plane
-!
       integer (kind = kint), intent(in) :: elm_type, kpe
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(inout) :: c_each
@@ -168,9 +169,9 @@
 
                        c_each%ny  = c_size%nyi + 2*c_size%ndepth
 
-                       c_each%nz  = c_size%nzi
-      if (kpe /=   1)  c_each%nz  = c_each%nz  + c_size%ndepth
-      if (kpe /= ndz)  c_each%nz  = c_each%nz  + c_size%ndepth
+                            c_each%nz  = c_size%nzi
+      if(kpe .ne.          1) c_each%nz = c_each%nz + c_size%ndepth
+      if(kpe .ne. c_size%ndz) c_each%nz = c_each%nz + c_size%ndepth
 !
 !                                       .. total node
       c_each%nodtot    = c_each%nx  * c_each%ny  * c_each%nz
@@ -180,11 +181,11 @@
       c_each%elmtot =       (c_each%nx-1)*(c_each%ny-1)*(c_each%nz-1)
 !
 !
-                       nx1 = c_size%nxi + 2
-                       ny1 = c_size%nyi + 2
-                       nz1 = c_size%nzi
-      if (kpe /=   1)  nz1 = nz1 + 1
-      if (kpe /= ndz)  nz1 = nz1 + 1
+                                 nx1 = c_size%nxi + 2
+                                 ny1 = c_size%nyi + 2
+                                 nz1 = c_size%nzi
+      if (kpe .ne.          1)  nz1 = nz1 + 1
+      if (kpe .ne. c_size%ndz)  nz1 = nz1 + 1
       c_each%elm_fil1_tot = (nx1-1)*(ny1-1)*(nz1-1)
 !
 !
@@ -195,7 +196,7 @@
      &                  + c_each%nx * c_each%ny  * (c_each%nz-1)
 !
       c_each%intedgetot = 3 * c_size%nxi * c_size%nyi * c_size%nzi
-      if (kpe == ndz) then
+      if (kpe == c_size%ndz) then
         c_each%intedgetot = c_each%intedgetot - c_size%nxi * c_size%nyi
       end if
 !

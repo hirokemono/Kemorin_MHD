@@ -22,7 +22,6 @@
 !
       use m_constants
       use m_size_of_cube
-      use m_size_4_plane
       use m_spectr_4_ispack
       use m_set_new_spectr
 !

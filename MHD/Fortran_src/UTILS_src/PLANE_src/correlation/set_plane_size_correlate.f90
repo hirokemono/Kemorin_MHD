@@ -24,7 +24,6 @@
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
       use m_correlate_4_plane
-      use m_size_4_plane
 !
 !     read outline of mesh
 !

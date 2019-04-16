@@ -24,7 +24,6 @@
 !
       use m_constants
       use m_phys_labels
-      use m_size_4_plane
       use m_size_of_cube
       use m_cube_position
       use m_setting_4_ini
@@ -73,7 +72,8 @@
       call read_control_data_plane_mesh
       call s_set_ctl_data_plane_mesh
 !
-       mgd_mesh_pl%num_pe = int(ndx * ndy * ndz)
+       mgd_mesh_pl%num_pe                                               &
+     &      = int(c_size1%ndx * c_size1%ndy * c_size1%ndz)
 !
 !
 !

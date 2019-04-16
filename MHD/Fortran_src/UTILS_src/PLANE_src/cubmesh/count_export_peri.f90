@@ -19,7 +19,6 @@
       use t_size_of_cube
       use t_neib_range_cube
       use t_sleeve_cube
-      use m_size_4_plane
       use m_comm_data_cube_kemo
       use set_comm_nod_4_cube
 !
@@ -34,8 +33,8 @@
       subroutine count_export_peri_linear                               &
      &         (c_size, nb_rng, ipe, jpe, icou, inod)
 !
-      type(neib_range_cube), intent(in) :: nb_rng
       type(size_of_cube), intent(in) :: c_size
+      type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: ipe, jpe
 !
       integer (kind = kint), intent(inout) :: icou, inod
@@ -48,7 +47,7 @@
 !
 !                                     .... count nodes 
 !
-            if (ipe .eq. ndx) then
+            if (ipe .eq. c_size%ndx) then
              inp = 1
              do knp = nb_rng%knp_st, nb_rng%knp_end
               do jnp = nb_rng%jnp_st, nb_rng%jnp_end
@@ -92,7 +91,7 @@
 !  outdside (y<ymax)
 !
 !                                     .... count nodes 
-            if ( jpe .eq. ndy ) then
+            if ( jpe .eq. c_size%ndy) then
              jnp = 1
              do knp = nb_rng%knp_st, nb_rng%knp_end
               do inp = nb_rng%inp_st, nb_rng%inp_end
@@ -134,7 +133,7 @@
 !
 !  outdside (x>xmax, y>ymax)
 !
-            if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
+            if ( ipe .eq. c_size%ndx  .and. jpe .eq. c_size%ndy) then
              inp = 1
              jnp = 1
               do knp = nb_rng%knp_st, nb_rng%knp_end
@@ -157,7 +156,7 @@
 !
 !  outdside (x<xmin, y>ymax)
 !
-            if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
+            if ( ipe .eq. 1  .and. jpe .eq. c_size%ndy) then
              jnp = 1
               do knp = nb_rng%knp_st, nb_rng%knp_end
 
@@ -199,7 +198,7 @@
 
 !  outdside (x>xmax, y<ymin)
 !
-            if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
+            if ( ipe .eq. c_size%ndx  .and. jpe .eq. 1 ) then
              inp = 1
               do knp = nb_rng%knp_st, nb_rng%knp_end
 
@@ -227,8 +226,8 @@
 !
       use set_comm_edge_4_cube
 !
-      type(neib_range_cube), intent(in) :: nb_rng
       type(size_of_cube), intent(in) :: c_size
+      type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: ipe, jpe, kpe
 !
       integer (kind = kint), intent(inout) :: icou, inod
@@ -240,7 +239,7 @@
 !  outdside (x>xmax)
 !                                     .... count nodes 
 !
-            if (ipe .eq. ndx) then
+            if (ipe .eq. c_size%ndx) then
              inp = 1
              do knp = nb_rng%knp_st, nb_rng%knp_end
               do jnp = nb_rng%jnp_st, nb_rng%jnp_end
@@ -253,12 +252,12 @@
                icou = icou  + 1
                call count_node_id(sl_rng1, inod)
 
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
@@ -281,16 +280,16 @@
                call count_node_id(sl_rng1, inod)
 
                sl_rng1%ie = 2 * c_size%ndepth - 1
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ione)
 
                sl_rng1%ie = 2 * c_size%ndepth
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, itwo)
 
                sl_rng1%ie = 2 * c_size%ndepth
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
@@ -300,7 +299,7 @@
 !
 !  outdside (y>ymax)
 !                                     .... count nodes 
-            if ( jpe .eq. ndy ) then
+            if ( jpe .eq. c_size%ndy) then
              jnp = 1
              do knp = nb_rng%knp_st, nb_rng%knp_end
               do inp = nb_rng%inp_st, nb_rng%inp_end
@@ -313,12 +312,12 @@
                icou = icou  + 1
                call count_node_id(sl_rng1, inod)
 
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
@@ -341,16 +340,16 @@
                call count_node_id(sl_rng1, inod)
 
                sl_rng1%je = 2 * c_size%ndepth
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ione)
 
                sl_rng1%je = 2 * c_size%ndepth - 1
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, itwo)
 
                sl_rng1%je = 2 * c_size%ndepth
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
@@ -360,7 +359,7 @@
 !
 !  outdside (x>xmax, y>ymax)
 !
-            if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
+            if ( ipe .eq. c_size%ndx  .and. jpe .eq. c_size%ndy) then
              inp = 1
              jnp = 1
               do knp = nb_rng%knp_st, nb_rng%knp_end
@@ -375,12 +374,12 @@
                icou = icou  + 1
                call count_node_id(sl_rng1, inod)
 
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
@@ -389,7 +388,7 @@
 !
 !  outdside (x<xmin, y>ymax)
 !
-            if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
+            if ( ipe .eq. 1  .and. jpe .eq. c_size%ndy) then
              jnp = 1
               do knp = nb_rng%knp_st, nb_rng%knp_end
 
@@ -404,16 +403,16 @@
                call count_node_id(sl_rng1, inod)
 
                sl_rng1%ie = 2 * c_size%ndepth - 1
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ione)
 
                sl_rng1%ie = 2 * c_size%ndepth
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, itwo)
 
                sl_rng1%ie = 2 * c_size%ndepth
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ithree)
 !
                stack_export(icou) = inod
 
@@ -437,18 +436,18 @@
 
                sl_rng1%ie = 2 * c_size%ndepth - 1
                sl_rng1%je = 2 * c_size%ndepth
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ione)
 
                sl_rng1%ie = 2 * c_size%ndepth
                sl_rng1%je = 2 * c_size%ndepth - 1
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, itwo)
 
                sl_rng1%ie = 2 * c_size%ndepth
                sl_rng1%je = 2 * c_size%ndepth
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 
@@ -457,7 +456,7 @@
 !
 !  outdside (x>xmax, y<ymin)
 !
-            if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
+            if ( ipe .eq. c_size%ndx  .and. jpe .eq. 1 ) then
              inp = 1
               do knp = nb_rng%knp_st, nb_rng%knp_end
 
@@ -472,16 +471,16 @@
                call count_node_id(sl_rng1, inod)
 
                sl_rng1%je = 2 * c_size%ndepth
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ione)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ione)
 
                sl_rng1%je = 2 * c_size%ndepth - 1
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, itwo)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, itwo)
 
                sl_rng1%je = 2 * c_size%ndepth
-               call count_ex_edge                                       &
-     &            (sl_rng1, kpe, inp, jnp, knp, inod, ithree)
+               call count_ex_edge(sl_rng1, c_size%ndz,                  &
+     &             kpe, inp, jnp, knp, inod, ithree)
 
                stack_export(icou) = inod
 

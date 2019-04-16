@@ -3,7 +3,6 @@
 !
       use m_precision
 !
-      use m_size_4_plane
       use set_spectr_file_name
 !
       use m_control_plane_fft

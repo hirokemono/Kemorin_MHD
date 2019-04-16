@@ -17,7 +17,6 @@
       use t_size_of_cube
       use t_neib_range_cube
       use t_sleeve_cube
-      use m_size_4_plane
       use m_size_of_cube
       use m_cube_position
       use m_local_node_id_cube
@@ -92,10 +91,10 @@
       ie1 = sl_rng%ie
       je1 = sl_rng%je
       ke1 = sl_rng%ke
-      if (nd.eq.1 .and. inp.gt.0) ie1 = ie1-1
-      if (nd.eq.2 .and. jnp.gt.0) je1 = je1-1
-      if (nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
-      if (nd.eq.3 .and. kpe.eq.ndz .and. knp.eq.0) ke1 = ke1-1
+      if(nd.eq.1 .and. inp.gt.0) ie1 = ie1-1
+      if(nd.eq.2 .and. jnp.gt.0) je1 = je1-1
+      if(nd.eq.3 .and. knp.gt.0) ke1 = ke1-1
+      if(nd.eq.3 .and. kpe.eq.c_size%ndz .and. knp.eq.0) ke1 = ke1-1
       do k = sl_rng%ks, ke1
        do j = sl_rng%js, je1
         do i = sl_rng%is, ie1

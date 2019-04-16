@@ -32,7 +32,6 @@
 !
       subroutine open_mesh_file(id_rank)
 !
-      use m_size_4_plane
       use m_size_of_cube
       use set_mesh_file_names
 !
@@ -50,7 +49,8 @@
       write(l_out,'(a,i4,2(a,i4),a,i3,2(a,i3),a)')                      &
      &   '! mesh data for unit cube model, n_all=(',                    &
      &       c_size1%nx_all,',',c_size1%ny_all,',',c_size1%nz_all,      &
-     &   '), nd=(', ndx   ,',',ndy   ,',',ndz   ,')'
+     &   '), nd=(', c_size1%ndx   ,',', c_size1%ndy   ,',',             &
+     &       c_size1%ndz   ,')'
 !
        end subroutine open_mesh_file
 !

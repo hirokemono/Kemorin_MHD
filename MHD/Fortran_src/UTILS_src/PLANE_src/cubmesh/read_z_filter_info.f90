@@ -20,7 +20,6 @@
 !
        subroutine read_filter_info(nf_type)
 !
-       use m_size_4_plane
        use m_size_of_cube
        use m_cube_position
        use m_filter_data_4_plane

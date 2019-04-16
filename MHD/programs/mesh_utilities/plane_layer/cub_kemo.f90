@@ -94,7 +94,6 @@
 !
       use t_filter_elength
 !
-      use m_size_4_plane
       use m_size_of_cube
       use m_cube_position
       use m_comm_data_cube_kemo
@@ -158,8 +157,8 @@
 !
 !
 !     open ( 20,file='inp.dat',form='formatted')
-!     read ( 20  , * )   nx_all, ny_all, nz_all,                        &
-!    &                   ndx   , ndy,    ndz
+!     read ( 20  , * ) c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,  &
+!    &                 c_size1%ndx   , c_size1%ndy,    c_size1%ndz
 !      write(*,*) ' input range of x-direction ( xmin, xmax) '
 !      read (  *  , * )   c_size1%xmin, c_size1%xmax
 !
@@ -203,9 +202,9 @@
 !
       pe_id = 1
 
-      do kpe=1,ndz
-        do jpe=1,ndy
-          do ipe=1,ndx
+      do kpe = 1, c_size1%ndz
+        do jpe = 1, c_size1%ndy
+          do ipe = 1, c_size1%ndx
 !
 ! ***** open output file
 !
@@ -220,18 +219,20 @@
 
             call set_each_cube_resolution                               &
      &         (elm_type, kpe, c_size1, c_each1)
-            call set_range_4_neighbour(ipe, jpe, kpe, nb_rng1)
+            call set_range_4_neighbour(ipe, jpe, kpe, c_size1, nb_rng1)
 !
 !                                       .. set neighbor pe
             neibpetot = 0
 
 !      inside cube
 !
-            call set_neighboring_pes(nb_rng1, pe_id)
+            call set_neighboring_pes                                    &
+     &         (nb_rng1, c_size1%ndx, c_size1%ndy, pe_id)
 !
 !      neiboring information for periodical boundaries
 !
-            call set_neighboring_pes_peri(nb_rng1, pe_id, ipe, jpe)
+            call set_neighboring_pes_peri                               &
+     &         (nb_rng1, c_size1%ndx, c_size1%ndy, pe_id, ipe, jpe)
 !
 !
             call sort_neighboring_pes
@@ -277,7 +278,7 @@
 !                                        .. count node group and stack
 !
             call count_node_group                                       &
-     &         (elm_type, c_each1%nx, c_each1%ny, ipe, jpe, kpe)
+     &       (c_size1, elm_type, c_each1%nx, c_each1%ny, ipe, jpe, kpe)
             call write_node_group                                       &
      &         (c_size1, c_each1%nx, c_each1%ny, c_each1%nz,            &
      &          ipe, jpe, kpe)
@@ -296,9 +297,10 @@
 !    output surface group
 !
 !                                     .. count element group and stack
-            call count_surface_group(c_each1%nx, c_each1%ny, kpe)
+            call count_surface_group                                    &
+     &         (c_size1, c_each1%nx, c_each1%ny, kpe)
             call write_surface_group                                    &
-     &         (c_each1%nx, c_each1%ny, c_each1%nz, kpe)
+     &         (c_size1%ndz, c_each1%nx, c_each1%ny, c_each1%nz, kpe)
 !
 !   construct filtering information
 !

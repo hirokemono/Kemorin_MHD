@@ -10,7 +10,6 @@
       use m_constants
 !
       use m_phys_labels
-      use m_size_4_plane
       use m_control_plane_fft
 !
       use t_mesh_data_4_merge

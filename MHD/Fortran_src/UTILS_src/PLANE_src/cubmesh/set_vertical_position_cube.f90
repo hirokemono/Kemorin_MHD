@@ -24,7 +24,6 @@
       subroutine  set_position_4_vartical(elm_type, c_size)
 !
       use t_size_of_cube
-      use m_size_4_plane
       use m_cube_position
       use m_spheric_constants
 !

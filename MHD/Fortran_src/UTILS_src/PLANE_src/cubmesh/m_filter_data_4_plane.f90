@@ -56,7 +56,6 @@
 !
        subroutine allocate_filter_4_plane(nz_all, nf_type)
 !
-       use m_size_4_plane
        use m_size_of_cube
        use m_filtering_nod_4_cubmesh
 !

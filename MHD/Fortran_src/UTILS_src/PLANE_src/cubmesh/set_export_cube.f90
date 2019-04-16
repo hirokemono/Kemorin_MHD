@@ -38,14 +38,14 @@
 !
       neibpetot = 0
       inod   = 0
-      call count_export_inside(nb_rng, neibpetot, inod)
+      call count_export_inside(c_size1, nb_rng, neibpetot, inod)
       call count_export_peri_linear                                     &
      &   (c_size1, nb_rng, ipe, jpe, neibpetot, inod)
       num_export = stack_export(neibpetot)
 !
       inod = 0
       neibpetot = 0
-      call set_export_inside(nb_rng, neibpetot, inod)
+      call set_export_inside(c_size1, nb_rng, neibpetot, inod)
       call set_export_peri                                              &
      &   (c_size1, nb_rng, ipe, jpe, neibpetot, inod)
 !
@@ -64,7 +64,8 @@
 !                                     .... count nodes 
       inod = 0
       neibpetot = 0
-      call count_export_inside_quad(nb_rng, kpe, neibpetot, inod)
+      call count_export_inside_quad                                     &
+     &   (c_size1, nb_rng, kpe, neibpetot, inod)
       call count_export_peri_quad                                       &
      &   (c_size1, nb_rng, ipe, jpe, kpe, neibpetot, inod)
 
@@ -72,7 +73,8 @@
 !
       inod = 0
       neibpetot = 0
-      call set_export_inside_quad(nb_rng, kpe, neibpetot, inod)
+      call set_export_inside_quad                                       &
+     &   (c_size1, nb_rng, kpe, neibpetot, inod)
       call set_export_peri_quad                                         &
      &   (c_size1, nb_rng, ipe, jpe, kpe, neibpetot, inod)
 !
