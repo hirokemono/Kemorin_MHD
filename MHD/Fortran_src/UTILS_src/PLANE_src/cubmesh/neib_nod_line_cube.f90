@@ -205,12 +205,12 @@
              end do
 !
              do ifil = 1, nf_type
-               if ( abs(filter_c_x(i1,i,j,k,ifil)) .lt. eps_filter )  &
-     &              iflag(1) = iflag(1)*0
-               if ( abs(filter_c_y(i1,i,j,k,ifil)) .lt. eps_filter )  &
-     &              iflag(2) = iflag(2)*0
-               if ( abs(filter_c_z(i1,i,j,k,ifil)) .lt. eps_filter )  &
-     &              iflag(3) = iflag(3)*0
+               if(abs(c_fil_nod%filter_c_x(i1,i,j,k,ifil))              &
+     &            .lt. eps_filter) iflag(1) = iflag(1)*0
+               if(abs(c_fil_nod%filter_c_y(i1,i,j,k,ifil))              &
+     &            .lt. eps_filter) iflag(2) = iflag(2)*0
+               if(abs(c_fil_nod%filter_c_z(i1,i,j,k,ifil))              &
+     &            .lt. eps_filter) iflag(3) = iflag(3)*0
              end do
       
 !
@@ -219,21 +219,24 @@
                ii = inod_f_item_x(i1,i,j,k)
                item_l_filter_0(idx1,1) = node_id_lc(ii,j,k)
                inod_f_dist_l_0(idx1,1) = inod_f_dist_x(i1,i,j,k)
-               coef_l_filter_0(idx1,1) = filter_c_x(i1,i,j,k,1)
+               coef_l_filter_0(idx1,1)                                  &
+     &              = c_fil_nod%filter_c_x(i1,i,j,k,1)
              end if
              if ( iflag(2).eq.1 ) then
                idx2 = idx2 + 1
                jj = inod_f_item_y(i1,i,j,k)
                item_l_filter_0(idx2,2) = node_id_lc(i,jj,k)
                inod_f_dist_l_0(idx2,2) = inod_f_dist_y(i1,i,j,k)
-               coef_l_filter_0(idx2,2) = filter_c_y(i1,i,j,k,1)
+               coef_l_filter_0(idx2,2)                                  &
+     &              = c_fil_nod%filter_c_y(i1,i,j,k,1)
              end if
              if ( iflag(3).eq.1 ) then
                idx3 = idx3 + 1
                kk = inod_f_item_z(i1,i,j,k)
                item_l_filter_0(idx3,3) = node_id_lc(i,j,kk)
                inod_f_dist_l_0(idx3,3) = inod_f_dist_z(i1,i,j,k)
-               coef_l_filter_0(idx3,3) = filter_c_z(i1,i,j,k,1)
+               coef_l_filter_0(idx3,3)                                  &
+     &              = c_fil_nod%filter_c_z(i1,i,j,k,1)
              end if
 !
            end do

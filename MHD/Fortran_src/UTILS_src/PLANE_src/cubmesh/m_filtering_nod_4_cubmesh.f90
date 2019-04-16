@@ -12,9 +12,11 @@
       module m_filtering_nod_4_cubmesh
 !
       use m_precision
+      use t_filtering_nod_4_cubmesh
 !
       implicit none
 !
+      type(filtering_nod_4_cubmesh), save :: c_fil_nod
 !
       integer(kind = kint) :: inod_f_total
 !
@@ -75,14 +77,6 @@
 !
       real(kind = kreal), dimension(:,:), allocatable :: f_mom_1d
       real(kind = kreal), dimension(:,:), allocatable :: df_mom_1d
-!
-      real(kind = kreal), dimension(:,:,:,:,:), allocatable             &
-     &      :: filter_c_x, filter_c_y, filter_c_z
-      real(kind = kreal), dimension(:,:,:,:,:), allocatable             &
-     &      :: filter_c_xy, filter_c_3d
-!
-      integer (kind = kint), dimension (:,:), allocatable               &
-     &      :: inod_f_dist_new
 !
 !  ----------------------------------------------------------------------
 !
@@ -160,17 +154,7 @@
 !
        integer(kind = kint), intent(in) :: nf_type
 !
-       allocate(filter_c_x(ndp1,nnod_x,nnod_y,nnod_z,nf_type))
-       allocate(filter_c_y(ndp1,nnod_x,nnod_y,nnod_z,nf_type))
-       allocate(filter_c_z(ndp1,nnod_x,nnod_y,nnod_z,nf_type))
-       allocate(filter_c_xy(ndp2,nnod_x,nnod_y,nnod_z,nf_type))
-       allocate(filter_c_3d(ndp3,nnod_x,nnod_y,nnod_z,nf_type))
-!
-       filter_c_x = 0.0d0
-       filter_c_y = 0.0d0
-       filter_c_z = 0.0d0
-       filter_c_xy = 0.0d0
-       filter_c_3d = 0.0d0
+       call alloc_filters_nod(nf_type, c_fil_nod)
 !
        end subroutine allocate_filters_nod
 !
@@ -203,11 +187,7 @@
 !
        subroutine deallocate_filters_nod
 !
-       deallocate (filter_c_x)
-       deallocate (filter_c_y)
-       deallocate (filter_c_z)
-       deallocate (filter_c_xy)
-       deallocate (filter_c_3d)
+       call dealloc_filters_nod(c_fil_nod)
 !
        end subroutine deallocate_filters_nod
 !

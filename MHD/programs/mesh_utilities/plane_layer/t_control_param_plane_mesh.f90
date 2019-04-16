@@ -13,17 +13,21 @@
 !
       implicit  none
 !
+      type ctl_param_plane_mesh
+        integer(kind = kint) :: iflag_filter = -1
+
+        integer(kind = kint) :: iflag_ztype
+      end type ctl_param_plane_mesh
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_ctl_data_plane_mesh(c_size)
+      subroutine s_set_ctl_data_plane_mesh(cube_p, c_size)
 !
       use t_size_of_cube
-      use m_size_of_cube
-      use m_cube_position
       use m_grp_data_cub_kemo
       use m_filtering_nod_4_cubmesh
       use m_cube_files_data
@@ -33,6 +37,7 @@
       use skip_comment_f
 !
       type(size_of_cube), intent(inout) :: c_size
+      type(ctl_param_plane_mesh), intent(inout) :: cube_p
 !
       real(kind = kreal) :: pi
 !
@@ -85,12 +90,12 @@
 !
       if      (cmp_no_case(horizontal_grid_ctl%charavalue,              &
      &                     label_Chebyshev)) then
-        iradi = igrid_Chebyshev
+        cube_p%iflag_ztype = igrid_Chebyshev
       else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
      &                     label_half_Cbyv)) then
-        iradi = igrid_half_Chebyshev
+        cube_p%iflag_ztype = igrid_half_Chebyshev
       else
-        iradi = igrid_equidistance
+        cube_p%iflag_ztype = igrid_equidistance
       end if
 !
 !
@@ -133,9 +138,9 @@
 !
 !
       if (num_z_filter_ctl%iflag .gt. 0) then
-        iflag_filter = num_z_filter_ctl%intvalue
+        cube_p%iflag_filter = num_z_filter_ctl%intvalue
       else
-        iflag_filter = 0
+        cube_p%iflag_filter = 0
       end if
 !
       iflag_z_filter = 0
@@ -159,7 +164,7 @@
 !
       write(*,'(a,1p3E25.15e3)') 'size of domain: ',                    &
      &         c_size%xsize, c_size%ysize, c_size%zsize
-      write(*,*) 'grid type: ', iradi
+      write(*,*) 'grid type: ', cube_p%iflag_ztype
 !
       write(*,*) 'num. of grid: ',                                      &
      &          c_size%nx_all, c_size%ny_all, c_size%nz_all
@@ -167,7 +172,7 @@
      &          c_size%ndx, c_size%ndy, c_size%ndz
       write(*,*) 'num. of sleeve: ', c_size%ndepth
 !
-      write(*,*) 'num. of filter: ', iflag_filter
+      write(*,*) 'num. of filter: ', cube_p%iflag_filter
       write(*,*) 'omitting parameter: ', eps_filter
 !
       end subroutine s_set_ctl_data_plane_mesh

@@ -6,8 +6,9 @@
 !
 ! ***** allocate position of node at z-component
 !
-!!      subroutine set_position_4_vartical(elm_type, c_size, c_vert)
-!!      subroutine dealloc_vertical_4_cube(c_vert)
+!!      subroutine set_position_4_vartical                              &
+!!     &         (iflag_eletype, iflag_ztype, c_size, c_vert)
+!!      subroutine dealloc_vertical_4_cube(iflag_eletype, c_vert)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(vertical_position_cube), intent(inout) :: c_vert
 !
@@ -35,12 +36,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_position_4_vartical(elm_type, c_size, c_vert)
+      subroutine set_position_4_vartical                                &
+     &         (iflag_eletype, iflag_ztype, c_size, c_vert)
 !
       use t_size_of_cube
       use m_spheric_constants
 !
-      integer(kind = kint), intent(in)  ::  elm_type
+      integer(kind = kint), intent(in)  ::  iflag_eletype, iflag_ztype
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(inout) :: c_vert
 !
@@ -52,17 +54,17 @@
 !
       call alloc_vertical_node(c_size%nz_all, c_vert)
 !
-      if (iradi .eq. igrid_equidistance) then
+      if (iflag_ztype .eq. igrid_equidistance) then
        do k = 1, c_size%nz_all
          c_vert%zz(k) = c_size%zmin                                     &
      &          + c_size%zsize * dble(k-1) / dble(c_size%nz_all - 1)
        end do
-      else if (iradi .eq. igrid_half_Chebyshev) then
+      else if (iflag_ztype .eq. igrid_half_Chebyshev) then
        do k = 1, c_size%nz_all
          c_vert%zz(k) = c_size%zmax - c_size%zsize                      &
      &          * cos(pi*dble(k-1) / dble(2*c_size%nz_all-2))
        end do
-      else if (iradi .eq. igrid_Chebyshev) then
+      else if (iflag_ztype .eq. igrid_Chebyshev) then
        do k = 1, c_size%nz_all
          c_vert%zz(k)                                                   &
      &         = half * (c_size%zmax + c_size%zmin- c_size%zsize        &
@@ -71,19 +73,19 @@
       end if
 !
 !
-      if(elm_type.eq.332) then
+      if(iflag_eletype.eq.332) then
         call alloc_vertical_edge(c_vert)
 !
-        if (iradi .eq. igrid_equidistance) then
+        if (iflag_ztype .eq. igrid_equidistance) then
           do k = 1, c_size%nz_all-1
             c_vert%zz_edge(k) = (c_vert%zz(k) + c_vert%zz(k+1)) / 2.0d0
           end do
-        else if (iradi .eq. igrid_half_Chebyshev) then
+        else if (iflag_ztype .eq. igrid_half_Chebyshev) then
           do k = 1, c_size%nz_all-1
             c_vert%zz_edge(k) = c_size%zmax - c_size%zsize              &
      &               * cos ( pi*dble(2*k-1)/dble(4*(c_size%nz_all-1)) )
           end do
-        else if (iradi .eq. igrid_Chebyshev) then
+        else if (iflag_ztype .eq. igrid_Chebyshev) then
           do k = 1, c_size%nz_all-1
             c_vert%zz_edge(k) = 0.5d0 * ( c_size%zmax + c_size%zmin     &
      &          - c_size%zsize                                          &
@@ -97,10 +99,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_vertical_4_cube(c_vert)
+      subroutine dealloc_vertical_4_cube(iflag_eletype, c_vert)
+!
+      integer(kind = kint), intent(in)  ::  iflag_eletype
+      type(vertical_position_cube), intent(inout) :: c_vert
 !
       call dealloc_vertical_node(c_vert)
-      if(elm_type.eq.332) call dealloc_vertical_edge(c_vert)
+      if(iflag_eletype.eq.332) call dealloc_vertical_edge(c_vert)
 !
       end subroutine dealloc_vertical_4_cube
 !

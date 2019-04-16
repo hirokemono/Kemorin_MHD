@@ -231,7 +231,8 @@
             inod_f_item_x(i1,i,j,k) = i - ii
             inod_f_dist_x(i1,i,j,k) = - ii
             do ifil = 1, FEM_elen%filter_conf%nf_type
-             filter_c_x(i1,i,j,k,ifil) = coef_nod_x(i2,0,ifil)
+              c_fil_nod%filter_c_x(i1,i,j,k,ifil)                       &
+     &             = coef_nod_x(i2,0,ifil)
             end do
           end do
           i1 = ndepth_x(-1) + 1
@@ -239,7 +240,8 @@
           inod_f_item_x(i1,i,j,k) = i
           inod_f_dist_x(i1,i,j,k) = 0
           do ifil = 1, FEM_elen%filter_conf%nf_type
-            filter_c_x(i1,i,j,k,ifil) = coef_nod_x(i2,0,ifil)
+            c_fil_nod%filter_c_x(i1,i,j,k,ifil)                         &
+     &           = coef_nod_x(i2,0,ifil)
           end do
           do ii = 1, ndepth_x( 1)
             i1 = ii + ndepth_x(-1) + 1
@@ -247,7 +249,8 @@
             inod_f_item_x(i1,i,j,k) = i + ii
             inod_f_dist_x(i1,i,j,k) = ii
             do ifil = 1, FEM_elen%filter_conf%nf_type
-             filter_c_x(i1,i,j,k,ifil) = coef_nod_x(i2,0,ifil)
+              c_fil_nod%filter_c_x(i1,i,j,k,ifil)                       &
+     &             = coef_nod_x(i2,0,ifil)
             end do
           end do
 !
@@ -293,7 +296,8 @@
             inod_f_item_y(j1,i,j,k) = j - jj
             inod_f_dist_y(j1,i,j,k) = -jj
             do ifil = 1, FEM_elen%filter_conf%nf_type
-              filter_c_y(j1,i,j,k,ifil) = coef_nod_y(j2,0,ifil)
+              c_fil_nod%filter_c_y(j1,i,j,k,ifil)                       &
+    &              = coef_nod_y(j2,0,ifil)
             end do
           end do
           j1 = ndepth_y(-1) + 1
@@ -301,7 +305,8 @@
           inod_f_item_y(j1,i,j,k) = j
           inod_f_dist_y(j1,i,j,k) = 0
           do ifil = 1, FEM_elen%filter_conf%nf_type
-            filter_c_y(j1,i,j,k,ifil) = coef_nod_y(j2,0,ifil)
+            c_fil_nod%filter_c_y(j1,i,j,k,ifil)                         &
+     &           = coef_nod_y(j2,0,ifil)
           end do
           do jj = 1, ndepth_y( 1)
             j1 = jj + ndepth_y(-1) + 1
@@ -309,7 +314,8 @@
             inod_f_item_y(j1,i,j,k) = j + jj
             inod_f_dist_y(j1,i,j,k) = jj
             do ifil = 1, FEM_elen%filter_conf%nf_type
-              filter_c_y(j1,i,j,k,ifil) = coef_nod_y(j2,0,ifil)
+              c_fil_nod%filter_c_y(j1,i,j,k,ifil)                       &
+     &             = coef_nod_y(j2,0,ifil)
             end do
           end do
 !
@@ -357,9 +363,11 @@
             do ifil = 1, FEM_elen%filter_conf%nf_type
               k2 = nneib_z(k_gl,1,ifil) - kk + 1
               if (iflag_z_filter.eq.0) then
-                filter_c_z(k1,i,j,k,ifil) = coef_nod_x(k2,0,ifil)
+                c_fil_nod%filter_c_z(k1,i,j,k,ifil)                     &
+     &               = coef_nod_x(k2,0,ifil)
               else
-               filter_c_z(k1,i,j,k,ifil) = coef_nod_z(k_gl,k2,0,ifil)
+                c_fil_nod%filter_c_z(k1,i,j,k,ifil)                     &
+     &               = coef_nod_z(k_gl,k2,0,ifil)
               end if
             end do
           end do
@@ -369,9 +377,11 @@
           do ifil = 1, FEM_elen%filter_conf%nf_type
             k2 = nneib_z(k_gl,1,ifil) + 1
               if (iflag_z_filter.eq.0) then
-                filter_c_z(k1,i,j,k,ifil) = coef_nod_x(k2,0,ifil)
+                c_fil_nod%filter_c_z(k1,i,j,k,ifil)                     &
+     &               = coef_nod_x(k2,0,ifil)
               else
-               filter_c_z(k1,i,j,k,ifil) = coef_nod_z(k_gl,k2,0,ifil)
+                c_fil_nod%filter_c_z(k1,i,j,k,ifil)                     &
+     &               = coef_nod_z(k_gl,k2,0,ifil)
               end if
           end do
           do kk = 1, ndepth_z( 1)
@@ -381,9 +391,11 @@
             do ifil = 1, FEM_elen%filter_conf%nf_type
               k2 = nneib_z(k_gl,1,ifil) + kk + 1
               if (iflag_z_filter.eq.0) then
-                filter_c_z(k1,i,j,k,ifil) = coef_nod_x(k2,0,ifil)
+                c_fil_nod%filter_c_z(k1,i,j,k,ifil)                     &
+     &               = coef_nod_x(k2,0,ifil)
               else
-               filter_c_z(k1,i,j,k,ifil) = coef_nod_z(k_gl,k2,0,ifil)
+                c_fil_nod%filter_c_z(k1,i,j,k,ifil)                     &
+     &               = coef_nod_z(k_gl,k2,0,ifil)
               end if
             end do
           end do
@@ -414,11 +426,12 @@
 !
            total_mom = 0.0d0
            do k1 = 1, nnod_neib_z(i,j,k)
-             total_mom = total_mom + filter_c_z(k1,i,j,k,ifil)
+             total_mom = total_mom                                      &
+     &                  + c_fil_nod%filter_c_z(k1,i,j,k,ifil)
            end do
            do k1 = 1, nnod_neib_z(i,j,k)
-             filter_c_z(k1,i,j,k,ifil)                                  &
-     &         = filter_c_z(k1,i,j,k,ifil) / total_mom
+             c_fil_nod%filter_c_z(k1,i,j,k,ifil)                        &
+     &            = c_fil_nod%filter_c_z(k1,i,j,k,ifil) / total_mom
            end do
 !
           end do
@@ -532,7 +545,7 @@
      &         node_id_lc(i1,j1,k), inod_f_dist_xy(ij,i,j,k,1),         &
      &         inod_f_dist_xy(ij,i,j,k,2)
           write(50,'(1p10E25.15e3)')                                    &
-     &        (filter_c_xy(ij,i,j,k,ifil),ifil=1,                       &
+     &        (c_fil_nod%filter_c_xy(ij,i,j,k,ifil),ifil=1,             &
      &            FEM_elen%filter_conf%nf_type)
           end do
          enddo
