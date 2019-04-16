@@ -4,16 +4,20 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!     subroutine set_ele_connect(nb_rng, elm_type, ipe, jpe, kpe)
-!!     subroutine set_ele_connect_quad(nb_rng, elm_type, ipe, jpe, kpe)
-!!       type(neib_range_cube), intent(in) :: nb_rng
+!!      subroutine set_ele_connect                                      &
+!!     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe, kpe)
+!!      subroutine set_ele_connect_quad                                 &
+!!     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe, kpe)
+!!        type(size_of_cube), intent(in) :: c_size
+!!        type(size_of_each_cube), intent(in) :: c_each
+!!        type(neib_range_cube), intent(in) :: nb_rng
 !
       module set_cube_ele_connect
 !
       use m_precision
 !
+      use t_size_of_cube
       use t_neib_range_cube
-      use m_size_of_cube
       use m_local_node_id_cube
       use m_cube_files_data
       use set_ele_id_peri
@@ -26,10 +30,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ele_connect(nb_rng, elm_type, ipe, jpe, kpe)
+      subroutine set_ele_connect                                        &
+     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe, kpe)
 !
       use m_fem_mesh_labels
 !
+      type(size_of_cube), intent(in) :: c_size
+      type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: elm_type
       integer (kind = kint), intent(in) :: ipe, jpe, kpe
@@ -43,17 +50,17 @@
 ! ..... write 2.2 element (connection)
 !
       write(l_out,'(a)', advance='NO') hd_fem_elem()
-      write(l_out,'(10i16)')   c_each1%elmtot
-      write(l_out,'(10i16)')  (elm_type,i=1,c_each1%elmtot)
+      write(l_out,'(10i16)')   c_each%elmtot
+      write(l_out,'(10i16)')  (elm_type,i=1,c_each%elmtot)
 
       element_id = 0
 
-      do k = 1, c_each1%nz-1
-       do j = 1, c_each1%ny-1
-        do i = 1, c_each1%nx-1
+      do k = 1, c_each%nz-1
+       do j = 1, c_each%ny-1
+        do i = 1, c_each%nx-1
 
          call set_element_id_periodic                                   &
-     &      (c_size1, nb_rng, c_each1%nx, c_each1%ny,                   &
+     &      (c_size, nb_rng, c_each%nx, c_each%ny,                      &
      &       ipe, jpe, kpe, i, j, k, element_id, element_id_gl)
 !
          i1 = node_id_lc( i  , j  , k   )
@@ -76,8 +83,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ele_connect_quad(nb_rng, elm_type, ipe, jpe, kpe)
+      subroutine set_ele_connect_quad                                   &
+     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe, kpe)
 !
+      type(size_of_cube), intent(in) :: c_size
+      type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: elm_type
       integer (kind = kint), intent(in) :: ipe, jpe, kpe
@@ -93,17 +103,17 @@
 ! ..... write 2.2 element (connection)
 !
       write(l_out,'( a )') '! 2.2 element (connection)'
-      write(l_out,'(10i16)')   c_each1%elmtot
-      write(l_out,'(10i16)')  (elm_type,i=1,c_each1%elmtot)
+      write(l_out,'(10i16)')   c_each%elmtot
+      write(l_out,'(10i16)')  (elm_type,i=1,c_each%elmtot)
 
       element_id = 0
 
-      do k = 1, c_each1%nz-1
-       do j = 1, c_each1%ny-1
-        do i = 1, c_each1%nx-1
+      do k = 1, c_each%nz-1
+       do j = 1, c_each%ny-1
+        do i = 1, c_each%nx-1
 !
          call set_element_id_periodic                                   &
-     &      (c_size1, nb_rng, c_each1%nx, c_each1%ny,                   &
+     &      (c_size, nb_rng, c_each%nx, c_each%ny,                      &
      &       ipe, jpe, kpe, i, j, k, element_id, element_id_gl)
 !
 !

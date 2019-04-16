@@ -50,9 +50,6 @@
 !
        subroutine allocate_edge_informations
 !
-       use m_size_of_cube
-!
-       implicit none
 !
 ! ***** allocate nodal id table
 !

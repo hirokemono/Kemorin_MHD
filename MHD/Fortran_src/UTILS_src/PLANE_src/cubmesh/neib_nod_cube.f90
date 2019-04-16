@@ -16,7 +16,8 @@
 !
 !  ----------------------------------------------------------------------
 !
-!!      subroutine neighboring_node(pe_id, nb_rng, FEM_elen)
+!!      subroutine neighboring_node                                     &
+!!     &         (pe_id, c_size, c_each, nb_rng, FEM_elen)
 !!      subroutine check_neib_node_xy(FEM_elen)
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elen
@@ -26,7 +27,7 @@
       use m_precision
 !
       use t_neib_range_cube
-      use m_size_of_cube
+      use t_size_of_cube
       use m_local_node_id_cube
       use m_cube_files_data
       use m_filtering_nod_4_cubmesh
@@ -53,8 +54,11 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine neighboring_node(pe_id, nb_rng, FEM_elen)
+      subroutine neighboring_node                                       &
+     &         (pe_id, c_size, c_each, nb_rng, FEM_elen)
 !
+      type(size_of_cube), intent(in) :: c_size
+      type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
@@ -64,38 +68,40 @@
 !
         ied_rank = int(pe_id - 1)
 !
-        write(*,*) 'allocate_filters_nod'
+       write(*,*) 'allocate_filters_nod'
        call allocate_filters_nod(FEM_elen%filter_conf%nf_type)
 !
-       i_st2 =  max(nb_rng%i_st -  ndepth,1)
-       i_end2 = min(nb_rng%i_end + ndepth,c_each1%nx)
-       j_st2 =  max(nb_rng%j_st -  ndepth,1)
-       j_end2 = min(nb_rng%j_end + ndepth,c_each1%ny)
-       k_st2 =  max(nb_rng%k_st -  ndepth,1)
-       k_end2 = min(nb_rng%k_end + ndepth,c_each1%nz)
+       i_st2 =  max(nb_rng%i_st -  c_size%ndepth,1)
+       i_end2 = min(nb_rng%i_end + c_size%ndepth,c_each%nx)
+       j_st2 =  max(nb_rng%j_st -  c_size%ndepth,1)
+       j_end2 = min(nb_rng%j_end + c_size%ndepth,c_each%ny)
+       k_st2 =  max(nb_rng%k_st -  c_size%ndepth,1)
+       k_end2 = min(nb_rng%k_end + c_size%ndepth,c_each%nz)
 !
-       write(*,*) 'i_st2, i_end2', i_st2, i_end2, c_each1%nx
-       write(*,*) 'j_st2, j_end2', j_st2, j_end2, c_each1%ny
-       write(*,*) 'k_st2, k_end2', k_st2, k_end2, c_each1%nz
+       write(*,*) 'i_st2, i_end2', i_st2, i_end2, c_each%nx
+       write(*,*) 'j_st2, j_end2', j_st2, j_end2, c_each%ny
+       write(*,*) 'k_st2, k_end2', k_st2, k_end2, c_each%nz
 !
-       FEM_elen%nnod_filter_mom = c_each1%nodtot
-       FEM_elen%nele_filter_mom = c_each1%elmtot
+       FEM_elen%nnod_filter_mom = c_each%nodtot
+       FEM_elen%nele_filter_mom = c_each%elmtot
        call alloc_ref_1d_mom_type(FEM_elen%filter_conf)
        call alloc_elen_ele_type                                         &
-      &   (FEM_elen%nele_filter_mom, FEM_elen%elen_ele)
+     &    (FEM_elen%nele_filter_mom, FEM_elen%elen_ele)
 !
        write(*,*) 'set_element_size_on_nod'
        call set_element_size_on_nod(FEM_elen)
-       call set_element_size_on_ele(nb_rng%koff, FEM_elen)
+       call set_element_size_on_ele                                     &
+     &    (c_each%nx, c_each%ny, c_each%nz, nb_rng%koff, FEM_elen)
 !
        write(*,*) 'count_neib_node_x'
-       call count_neib_node_x(FEM_elen)
+       call count_neib_node_x(c_size%ndepth, c_each%nx, FEM_elen)
 !        call check_neib_node_x
        write(*,*) 'count_neib_node_y'
-       call count_neib_node_y(FEM_elen)
+       call count_neib_node_y(c_size%ndepth, c_each%ny, FEM_elen)
 !        call check_neib_node_y
        write(*,*) 'count_neib_node_z'
-       call count_neib_node_z(nb_rng%koff, FEM_elen)
+       call count_neib_node_z                                           &
+     &    (c_size%ndepth, c_each%nz, nb_rng%koff, FEM_elen)
        if (iflag_z_filter.eq.0)  then
          write(*,*) 'norm_z_coefs'
          call norm_z_coefs(FEM_elen)
@@ -104,7 +110,7 @@
 !
        call write_neighboring_nod_line                                  &
      &    (ied_rank, FEM_elen%filter_conf%nf_type,                      &
-     &     c_size1, c_each1, FEM_elen)
+     &     c_size, c_each, FEM_elen)
 !
        write(*,*) 'deallocate_filters_nod'
        call deallocate_filters_nod
@@ -146,8 +152,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_element_size_on_ele(koff, FEM_elen)
+      subroutine set_element_size_on_ele(nx, ny, nz, koff, FEM_elen)
 !
+      integer(kind = kint), intent(in) :: nx, ny, nz
       integer (kind = kint), intent(in) :: koff
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
@@ -164,10 +171,10 @@
       &   (FEM_elen%nele_filter_mom, FEM_elen%elen_ele%diff2)
 !
        iele = 0
-       do k = 1, c_each1%nz-1
+       do k = 1, nz-1
          k_gl = k + koff
-         do j = 1, c_each1%ny-1
-           do i = 1, c_each1%nx-1
+         do j = 1, ny-1
+           do i = 1, nx-1
              iele = iele + 1
 !
              FEM_elen%elen_ele%moms%f_x2(iele)                          &
@@ -192,8 +199,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine count_neib_node_x(FEM_elen)
+       subroutine count_neib_node_x(ndepth, nx, FEM_elen)
 !
+      integer(kind = kint), intent(in) :: ndepth
+      integer(kind = kint), intent(in) :: nx
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
        integer(kind = kint) :: i, j, k
@@ -201,12 +210,12 @@
        integer(kind = kint),dimension(-1:1) :: ndepth_x
 !
 !
-       do k=k_st2,k_end2
-        do j=j_st2,j_end2
-         do i=i_st2, i_end2
+       do k = k_st2, k_end2
+        do j = j_st2, j_end2
+         do i = i_st2, i_end2
           ndepth_x(-1) = i - max(i-ndepth,1)
           ndepth_x( 0) = 1
-          ndepth_x( 1) = min(i+ndepth,c_each1%nx) - i
+          ndepth_x( 1) = min(i+ndepth,nx) - i
 !          if ( ndepth_x(-1) .lt. ndepth) then
 !           ndepth_x( 1) = 2*ndepth - ndepth_x(-1)
 !          end if
@@ -250,8 +259,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_neib_node_y(FEM_elen)
+      subroutine count_neib_node_y(ndepth, ny, FEM_elen)
 !
+      integer(kind = kint), intent(in) :: ndepth
+      integer(kind = kint), intent(in) :: ny
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i, j, k
@@ -261,18 +272,18 @@
 !
        nnod_neib_y = 0
 !
-       do k=k_st2, k_end2
-        do j=j_st2, j_end2
+       do k = k_st2, k_end2
+        do j = j_st2, j_end2
          ndepth_y(-1) = j - max(j-ndepth,1)
          ndepth_y( 0) = 1
-         ndepth_y( 1) = min(j+ndepth,c_each1%ny) - j
+         ndepth_y( 1) = min(j+ndepth,ny) - j
  !        if ( ndepth_y(-1) .lt. ndepth) then
  !          ndepth_y( 1) = 2*ndepth - ndepth_y(-1)
  !        end if
  !        if ( ndepth_y( 1) .lt. ndepth) then
  !          ndepth_y(-1) = 2*ndepth - ndepth_y( 1)
  !        end if
-         do i=i_st2, i_end2
+         do i = i_st2, i_end2
 !
           nnod_neib_y(i,j,k) = ndepth_y(-1) + ndepth_y(0) + ndepth_y(1)
 !
@@ -310,9 +321,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_neib_node_z(koff, FEM_elen)
+      subroutine count_neib_node_z(ndepth, nz, koff, FEM_elen)
 !
-      integer (kind = kint), intent(in) :: koff
+      integer(kind = kint), intent(in) :: ndepth
+      integer(kind = kint), intent(in) :: nz
+      integer(kind = kint), intent(in) :: koff
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i, j, k
@@ -325,7 +338,7 @@
         k_gl = k + koff
         ndepth_z(-1) = k - max(k-ndepth,1)
         ndepth_z( 0) = 1
-        ndepth_z( 1) = min(k+ndepth,c_each1%nz) - k
+        ndepth_z( 1) = min(k+ndepth,nz) - k
 !        if ( ndepth_z(-1) .lt. ndepth) then
 !          ndepth_z( 1) = 2*ndepth - ndepth_z(-1)
 !        end if

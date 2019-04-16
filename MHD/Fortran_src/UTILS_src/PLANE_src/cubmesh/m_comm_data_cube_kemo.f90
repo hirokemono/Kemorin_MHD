@@ -49,7 +49,6 @@
       subroutine allocate_communication_data(elm_type, c_size)
 !
       use t_size_of_cube
-      use m_size_of_cube
 !
       type(size_of_cube), intent(in) :: c_size
       integer (kind = kint) :: elm_type

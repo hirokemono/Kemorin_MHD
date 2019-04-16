@@ -156,7 +156,6 @@
 !
        subroutine allocate_filters_nod(nf_type)
 !
-       use m_size_of_cube
        use m_comm_data_cube_kemo
 !
        integer(kind = kint), intent(in) :: nf_type

@@ -112,7 +112,6 @@
       use set_cube_node
       use set_cube_ele_connect
       use set_import_cube
-      use set_export_cube
       use read_z_filter_info
       use write_nod_grp_cube
       use write_ele_grp_cube
@@ -137,6 +136,7 @@
 ! ----------------------------------------------------------------------
 !  * variables
 
+      type(size_of_each_cube), save :: c_each1
       type(neib_range_cube), save :: nb_rng1
       type(gradient_model_data_type), save :: FEM_elen_c
 !
@@ -169,9 +169,10 @@
 !      read (  *  , * )   c_size1%zmin, c_size1%zmax
 !
       call read_control_data_plane_mesh
-      call s_set_ctl_data_plane_mesh
+      call s_set_ctl_data_plane_mesh(c_size1)
 !
-      call s_set_plane_geometries(elm_type, c_size1)
+      call set_plane_range_w_sleeve(elm_type, c_size1)
+      call set_plane_resolution(c_size1)
 !
 ! ***** allocate position of node at z-component
 !
@@ -194,8 +195,9 @@
 !      if (iflag_filter .ge.0) then
          FEM_elen_c%filter_conf%nf_type = iflag_filter
          call allocate_filter_4_plane                                   &
-     &      (c_size1%nz_all, FEM_elen_c%filter_conf%nf_type)
-         call read_filter_info(FEM_elen_c%filter_conf%nf_type)
+     &      (c_size1%ndepth, c_size1%nz_all,                            &
+     &       FEM_elen_c%filter_conf%nf_type)
+         call read_filter_info(c_size1, FEM_elen_c%filter_conf%nf_type)
 !      end if
 !
 ! **********   domain loop for each pe   **********
@@ -212,7 +214,7 @@
              write(penum,'(i4   )')  id_rank
              penum_left = adjustl(penum)
 !
-             call open_mesh_file(id_rank)
+             call open_mesh_file(id_rank, c_size1)
 !
 ! ***** set and write basic local model parameters
 !                                       .. pe nod per 1 line
@@ -250,21 +252,22 @@
             call init_node_para_4_each_pe                               &
      &         (c_size1, ipe, jpe, kpe, nb_rng1)
             call set_offset_of_domain(c_size1, ipe, jpe, kpe, nb_rng1)
-            call set_node(nb_rng1, ipe, jpe)
+            call set_node(c_size1, c_each1, nb_rng1, ipe, jpe)
 !
 ! ..... write 2.2 element (connection)
 !
-            call set_ele_connect(nb_rng1, elm_type, ipe, jpe, kpe)
+            call set_ele_connect(c_size1, c_each1, nb_rng1,             &
+     &          elm_type, ipe, jpe, kpe)
 !
 ! ..... write 3.import / export information
 !
 ! ***** set and write import nodes
 !                                     .... count nodes 
-            call set_import_data(nb_rng1, ipe, jpe)
+            call set_import_data(c_size1, nb_rng1, ipe, jpe)
 !
 ! ***** set and write export nodes
 !                                     .... count nodes 
-            call set_export_data(nb_rng1, ipe, jpe)
+            call set_export_data(c_size1, nb_rng1, ipe, jpe)
 !
             call sort_communication_table
 !
@@ -273,7 +276,7 @@
 !
 ! ..... write 4.group information
 !
-            call write_labels_4_group
+            call write_labels_4_group(c_size1)
 !                                       ... node    group
 !                                        .. count node group and stack
 !
@@ -308,7 +311,8 @@
               call allocate_work_4_filter_ele(c_size1, c_each1)
 !
               write(*,*) 'neighboring_node'
-              call neighboring_node(pe_id, nb_rng1, FEM_elen_c)
+              call neighboring_node                                     &
+     &            (pe_id, c_size1, c_each1, nb_rng1, FEM_elen_c)
 !
               write(*,*) 'deallocate_work_4_filter_ele'
               call deallocate_work_4_filter_ele

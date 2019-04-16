@@ -137,7 +137,7 @@
 !
       subroutine set_range_4_nodeloop(c_size, kpe, nb_rng)
 !
-      use m_size_of_cube
+      use t_size_of_cube
 !
       implicit none
 !

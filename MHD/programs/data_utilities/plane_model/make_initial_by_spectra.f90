@@ -84,7 +84,7 @@
 !
 !     read outline of mesh
 !
-      call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
+      call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)
 !
       call allocate_z_compliment_info(c_size1%nz_all)
 !
@@ -165,7 +165,7 @@
 !     interpolate in radial direction
 !
         write(*,*) 's_radial_interpolate'
-        call s_radial_interpolate
+        call s_radial_interpolate(c_size1)
 !
 !  set new spectr
 !

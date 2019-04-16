@@ -70,7 +70,7 @@
 !     read outline of mesh
 !
       call read_control_data_plane_mesh
-      call s_set_ctl_data_plane_mesh
+      call s_set_ctl_data_plane_mesh(c_size1)
 !
        mgd_mesh_pl%num_pe                                               &
      &      = int(c_size1%ndx * c_size1%ndy * c_size1%ndz)

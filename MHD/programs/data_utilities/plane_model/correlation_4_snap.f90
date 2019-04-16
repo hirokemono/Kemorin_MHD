@@ -79,7 +79,7 @@
 !
       call s_set_2nd_geometry_4_serial(ref_mesh_file, sec_mesh_pm)
 !
-      call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
+      call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)
 !
 !   read field name and number of components
 !

@@ -3,7 +3,7 @@
 !
 !     Written by Kemorin
 !
-!     subroutine allocate_filter_4_plane(nz_all, nf_type)
+!!       subroutine allocate_filter_4_plane(ndepth, nz_all, nf_type)
 !
       module m_filter_data_4_plane
 !
@@ -54,12 +54,11 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine allocate_filter_4_plane(nz_all, nf_type)
+       subroutine allocate_filter_4_plane(ndepth, nz_all, nf_type)
 !
-       use m_size_of_cube
        use m_filtering_nod_4_cubmesh
 !
-       integer(kind = kint), intent(in) :: nz_all
+       integer(kind = kint), intent(in) :: ndepth, nz_all
        integer(kind = kint), intent(in) :: nf_type
 !
 !

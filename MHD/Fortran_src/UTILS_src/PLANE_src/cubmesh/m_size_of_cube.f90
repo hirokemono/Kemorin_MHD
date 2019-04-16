@@ -11,13 +11,6 @@
       implicit none
 !
       type(size_of_cube) :: c_size1
-      type(size_of_each_cube) :: c_each1
-!
-! ......................................................................
-!  * parameters for depth of sleeve area
-!      ndepth     : depth of sleeve area
-      integer(kind=kint )   ::  ndepth = 1
-!
 !
       integer(kind = kint) :: iflag_filter = -1
 !

@@ -78,7 +78,7 @@
       call set_parameters_data_by_spec                                  &
      &   (mgd_mesh_pm%num_pe, kx_org, ky_org, iz_org,                   &
      &    plane_mesh_file, ucd_file_param)
-      call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
+      call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)
 !
       call allocate_z_compliment_info(c_size1%nz_all)
 !
@@ -149,7 +149,7 @@
 !     interpolate in radial direction
 !
         write(*,*) 's_radial_interpolate'
-        call s_radial_interpolate
+        call s_radial_interpolate(c_size1)
 !
 !  set new spectr
 !

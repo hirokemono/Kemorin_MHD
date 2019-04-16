@@ -16,7 +16,9 @@
 !!
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine neighboring_edge(id_rank, nb_rng)
+!!      subroutine neighboring_edge(id_rank, c_size, c_each, nb_rng)
+!!        type(size_of_cube), intent(in) :: c_size
+!!        type(size_of_each_cube), intent(in) :: c_each
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !!
       module neib_edge_cube
@@ -24,7 +26,6 @@
       use m_precision
       use m_constants
 !
-      use m_size_of_cube
       use m_local_node_id_cube
       use m_cube_files_data
       use m_filtering_edge_4_cubmesh
@@ -37,64 +38,76 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine neighboring_edge(id_rank, nb_rng)
+       subroutine neighboring_edge(id_rank, c_size, c_each, nb_rng)
 !
+      use t_size_of_cube
       use t_neib_range_cube
       use neib_edge_line_cube
 !
       integer, intent(in) :: id_rank
+      type(size_of_cube), intent(in) :: c_size
+      type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
 !
 !
 !       for edge on y=const and z=const
 !       xi direction
 !
-      call count_neib_edge_x                                            &
-     &   (ione, ione, nb_rng%iedge_st, nb_rng%iedge_end,                &
-     &    nb_rng%j_st, nb_rng%j_end, nb_rng%k_st, nb_rng%k_end)
+      call count_neib_edge_x(ione, ione, c_size%ndepth,                 &
+     &    nb_rng%iedge_st, nb_rng%iedge_end, nb_rng%j_st, nb_rng%j_end, &
+     &    nb_rng%k_st, nb_rng%k_end)
 !
 !       eta direction
 !
-      call count_neib_edge_y                                            &
-     &   (ione, izero, nb_rng%iedge_st, nb_rng%iedge_end,               &
-     &    nb_rng%j_st, nb_rng%j_end, nb_rng%k_st, nb_rng%k_end)
+      call count_neib_edge_y(ione, izero, c_size%ndepth,                &
+     &    nb_rng%iedge_st, nb_rng%iedge_end, nb_rng%j_st, nb_rng%j_end, &
+     &    nb_rng%k_st, nb_rng%k_end)
 !
 !       zeta direction
 !
-      call count_neib_edge_z(ione, nb_rng%iedge_st, nb_rng%iedge_end,   &
-     &    nb_rng%j_st, nb_rng%j_end, nb_rng%k_st, nb_rng%k_end)
+      call count_neib_edge_z(ione, c_size%ndepth, c_size%nz_all,        &
+     &    nb_rng%iedge_st, nb_rng%iedge_end, nb_rng%j_st, nb_rng%j_end, &
+     &    nb_rng%k_st, nb_rng%k_end)
 !
 !       for edge on z=const and x=const
 !
-      call count_neib_edge_x(itwo, izero, nb_rng%i_st, nb_rng%i_end,    &
-     &    nb_rng%jedge_st, nb_rng%jedge_end, nb_rng%k_st, nb_rng%k_end)
+      call count_neib_edge_x(itwo, izero, c_size%ndepth,                &
+     &    nb_rng%i_st, nb_rng%i_end, nb_rng%jedge_st, nb_rng%jedge_end, &
+     &    nb_rng%k_st, nb_rng%k_end)
 !
-      call count_neib_edge_y(itwo, ione, nb_rng%i_st, nb_rng%i_end,     &
-     &    nb_rng%jedge_st, nb_rng%jedge_end, nb_rng%k_st, nb_rng%k_end)
+      call count_neib_edge_y(itwo, ione, c_size%ndepth,                 &
+     &    nb_rng%i_st, nb_rng%i_end, nb_rng%jedge_st, nb_rng%jedge_end, &
+     &    nb_rng%k_st, nb_rng%k_end)
 !
-      call count_neib_edge_z(itwo, nb_rng%i_st, nb_rng%i_end,           &
-     &    nb_rng%jedge_st, nb_rng%jedge_end, nb_rng%k_st, nb_rng%k_end)
+      call count_neib_edge_z(itwo, c_size%ndepth, c_size%nz_all,        &
+     &    nb_rng%i_st, nb_rng%i_end, nb_rng%jedge_st, nb_rng%jedge_end, &
+     &    nb_rng%k_st, nb_rng%k_end)
 !
 !       for edge on x=const and y=const
 !
-      call count_neib_edge_x(ithree, izero, nb_rng%i_st, nb_rng%i_end,  &
-     &    nb_rng%j_st, nb_rng%j_end, nb_rng%kedge_st, nb_rng%kedge_end)
+      call count_neib_edge_x(ithree, izero, c_size%ndepth,              &
+     &    nb_rng%i_st, nb_rng%i_end, nb_rng%j_st, nb_rng%j_end,         &
+     &    nb_rng%kedge_st, nb_rng%kedge_end)
 !
-      call count_neib_edge_y(ithree, izero, nb_rng%i_st, nb_rng%i_end,  &
-     &    nb_rng%j_st, nb_rng%j_end, nb_rng%kedge_st, nb_rng%kedge_end)
+      call count_neib_edge_y(ithree, izero, c_size%ndepth,              &
+     &    nb_rng%i_st, nb_rng%i_end, nb_rng%j_st, nb_rng%j_end,         &
+     &    nb_rng%kedge_st, nb_rng%kedge_end)
 !
-      call count_neib_edge_z(ithree, nb_rng%i_st, nb_rng%i_end,         &
-     &    nb_rng%j_st, nb_rng%j_end, nb_rng%kedge_st, nb_rng%kedge_end)
+      call count_neib_edge_z(ithree, c_size%ndepth, c_size%nz_all,      &
+     &    nb_rng%i_st, nb_rng%i_end, nb_rng%j_st, nb_rng%j_end,         &
+     &    nb_rng%kedge_st, nb_rng%kedge_end)
 !
-      call neib_edge_line(id_rank, c_size1, c_each1, nb_rng)
+      call neib_edge_line(id_rank, c_size, c_each, nb_rng)
 !
        end subroutine neighboring_edge
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-       subroutine count_neib_edge_x(nd,nid,ist,ied,jst,jed, kst,ked)
+      subroutine count_neib_edge_x                                      &
+     &         (nd, nid, ndepth, ist, ied, jst, jed, kst, ked)
 !
+       integer(kind = kint), intent(in) :: ndepth
        integer(kind = kint), intent(in) :: nd, nid
        integer(kind = kint), intent(in) :: ist,jst,kst
        integer(kind = kint), intent(in) :: ied,jed,ked
@@ -137,8 +150,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine count_neib_edge_y(nd,nid,ist,ied,jst,jed,kst,ked)
+      subroutine count_neib_edge_y                                      &
+     &         (nd, nid, ndepth, ist, ied, jst, jed, kst ,ked)
 !
+       integer(kind = kint), intent(in) :: ndepth
        integer(kind = kint), intent(in) :: nd, nid
        integer(kind = kint), intent(in) :: ist,jst,kst
        integer(kind = kint), intent(in) :: ied,jed,ked
@@ -181,8 +196,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine count_neib_edge_z(nd,ist,ied,jst,jed,kst,ked)
+      subroutine count_neib_edge_z                                      &
+     &         (nd, ndepth, nz_all, ist, ied, jst, jed, kst, ked)
 !
+       integer(kind = kint), intent(in) :: ndepth, nz_all
        integer(kind = kint), intent(in) :: nd
        integer(kind = kint), intent(in) :: ist,jst,kst
        integer(kind = kint), intent(in) :: ied,jed,ked
@@ -194,7 +211,7 @@
 !
        do k=kst,ked
         ndepth_z(-1) = k - max(k-ndepth,1)
-        ndepth_z( 1) = min(k+ndepth, c_size1%nz_all) - k
+        ndepth_z( 1) = min(k+ndepth, nz_all) - k
         if ( ndepth_z(-1) .lt. ndepth) then
           ndepth_z( 1) = 2*ndepth - ndepth_z(-1)
         end if

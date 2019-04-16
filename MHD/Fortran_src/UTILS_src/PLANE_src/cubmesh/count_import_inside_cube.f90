@@ -15,9 +15,9 @@
       use m_precision
       use m_constants
 !
+      use t_size_of_cube
       use t_neib_range_cube
       use t_sleeve_cube
-      use m_size_of_cube
       use m_comm_data_cube_kemo
       use set_comm_nod_4_cube
 !

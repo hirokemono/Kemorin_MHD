@@ -62,7 +62,7 @@
       call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT(mgd_mesh_pm%num_pe, ist, ied, iint)
 !
-      call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
+      call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)
 !
 !
       call alloc_number_of_mesh(mgd_mesh_pm)

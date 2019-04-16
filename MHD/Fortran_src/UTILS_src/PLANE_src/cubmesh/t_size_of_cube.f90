@@ -94,9 +94,6 @@
 !
 !>        Total number elmement for filtering
         integer(kind=kint )  ::  elm_fil1_tot
-!
-!>        Filtering flag
-        integer(kind = kint) :: iflag_filter = -1
       end type size_of_each_cube
 !
 ! ----------------------------------------------------------------------
@@ -122,13 +119,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_plane_resolution(ndepth, c_size)
+      subroutine set_plane_resolution(c_size)
 !
-      integer(kind = kint), intent(in) :: ndepth
       type(size_of_cube), intent(inout) :: c_size
 !
 !
-      c_size%ndepth = ndepth
       c_size%ndep_1 = (2*c_size%ndepth+1)
 !
       c_size%nod_gltot  = c_size%nx_all * c_size%ny_all * c_size%nz_all

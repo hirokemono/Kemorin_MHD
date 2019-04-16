@@ -112,7 +112,6 @@
       use set_cube_node_quad
       use set_cube_ele_connect
       use set_import_cube
-      use set_export_cube
       use read_z_filter_info
       use write_nod_grp_cube
       use write_ele_grp_cube
@@ -139,6 +138,7 @@
 ! ----------------------------------------------------------------------
 !  * variables
 
+      type(size_of_each_cube), save :: c_each1
       type(neib_range_cube), save :: nb_rng1
       type(gradient_model_data_type), save :: FEM_elen_c
 
@@ -159,9 +159,10 @@
 ! ***** read nodal and subdomain division count
 !
       call read_control_data_plane_mesh
-      call s_set_ctl_data_plane_mesh
+      call s_set_ctl_data_plane_mesh(c_size1)
 !
-      call s_set_plane_geometries(elm_type, c_size1)
+      call set_plane_range_w_sleeve(elm_type, c_size1)
+      call set_plane_resolution(c_size1)
 !
 ! ***** allocate position of node at z-component
 !
@@ -184,8 +185,9 @@
 !      if (iflag_filter .ge.0) then
 !         nf_type = iflag_filter
 !         call allocate_filter_4_plane                                  &
-!    &       (c_size1%nz_all, FEM_elen_c%filter_conf%nf_type)
-!         call read_filter_info(FEM_elen_c%filter_conf%nf_type)
+!    &       (c_size1%ndepth, c_size1%nz_all,                           &
+!    &        FEM_elen_c%filter_conf%nf_type)
+!         call read_filter_info(c_size1, FEM_elen_c%filter_conf%nf_type)
 !      end if
 !
 ! **********   domain loop for each pe   **********
@@ -202,7 +204,7 @@
              write(penum,'(i4   )') id_rank
              penum_left = adjustl(penum)
 !
-             call open_mesh_file(id_rank)
+             call open_mesh_file(id_rank, c_size1)
 !
 ! ***** set and write basic local model parameters
 !                                       .. pe nod per 1 line
@@ -245,12 +247,14 @@
             call init_node_para_4_each_pe                               &
      &         (c_size1, ipe, jpe, kpe, nb_rng1)
             call set_offset_of_domain(c_size1, ipe, jpe, kpe, nb_rng1)
-            call set_node_quad(nb_rng1, ipe, jpe, kpe)
+            call set_node_quad(c_size1, c_each1, nb_rng1,               &
+     &          ipe, jpe, kpe)
 !
 ! ..... write 2.2 element (connection)
 !
             write(*,*) 'set_ele_connect_quad', ipe, jpe, kpe
-            call set_ele_connect_quad(nb_rng1, elm_type, ipe, jpe, kpe)
+            call set_ele_connect_quad(c_size1, c_each1, nb_rng1,        &
+     &          elm_type, ipe, jpe, kpe)
 
 !
 ! ..... write 3.import / export information
@@ -258,10 +262,10 @@
 ! ***** set and write import nodes
 !
             write(*,*) 'set_import_data_quad', ipe, jpe, kpe
-            call set_import_data_quad(nb_rng1, ipe, jpe, kpe)
+            call set_import_data_quad(c_size1, nb_rng1, ipe, jpe, kpe)
 !
             write(*,*) 'set_export_data_quad', ipe, jpe, kpe
-            call set_export_data_quad(nb_rng1, ipe, jpe, kpe)
+            call set_export_data_quad(c_size1, nb_rng1, ipe, jpe, kpe)
 !
             write(*,*) 'write_org_communication_data', ipe, jpe, kpe
             call write_org_communication_data(pe_id)
@@ -276,7 +280,7 @@
 !
 ! ..... write 4.group information
 !
-            call write_labels_4_group
+            call write_labels_4_group(c_size1)
 !
 !                                       ... node    group
 !
@@ -311,8 +315,9 @@
             call allocate_work_4_filter_edge(c_size1)
 !
             write(*,*) 'filtering information', c_each1%intnodtot
-            call neighboring_node(pe_id, nb_rng1, FEM_elen_c)
-            call neighboring_edge(id_rank, nb_rng1)
+            call neighboring_node                                       &
+     &          (pe_id, c_size1, c_each1, nb_rng1, FEM_elen_c)
+            call neighboring_edge(id_rank, c_size1, c_each1, nb_rng1)
 !
             call deallocate_work_4_filter_ele
             call deallocate_work_4_filter_edge

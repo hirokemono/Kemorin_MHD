@@ -4,7 +4,8 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!       subroutine read_filter_info(nf_type)
+!!      subroutine read_filter_info(c_size, nf_type)
+!!        type(size_of_cube), intent(in) :: c_size
 !
       module read_z_filter_info
 !
@@ -18,17 +19,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine read_filter_info(nf_type)
+      subroutine read_filter_info(c_size, nf_type)
 !
-       use m_size_of_cube
-       use m_cube_position
-       use m_filter_data_4_plane
-       use m_filtering_nod_4_cubmesh
-       use m_cube_files_data
+      use t_size_of_cube
+      use m_cube_position
+      use m_filter_data_4_plane
+      use m_filtering_nod_4_cubmesh
+      use m_cube_files_data
 !
-       use set_parallel_file_name
-       use skip_comment_f
+      use set_parallel_file_name
+      use skip_comment_f
 !
+      type(size_of_cube), intent(in) :: c_size
       integer (kind = kint), intent(in) :: nf_type
 !
       integer (kind = kint) :: kf, ifil, ifil0, i, j, itmp
@@ -49,20 +51,20 @@
 !
          call skip_comment(tmpchara,filter_id)
          read(tmpchara,*) (numnod_f(i), i=1, 3)
-         if ( numnod_f(1) .ne. c_size1%nx_all                           &
-     &   .or. numnod_f(2) .ne. c_size1%ny_all                           &
-     &   .or. numnod_f(3) .ne. c_size1%nz_all ) then
+         if ( numnod_f(1) .ne. c_size%nx_all                            &
+     &   .or. numnod_f(2) .ne. c_size%ny_all                            &
+     &   .or. numnod_f(3) .ne. c_size%nz_all ) then
           write(*,*) 'check spatial resolution'
-          write(*,*) c_size1%nx_all, c_size1%ny_all, c_size1%nz_all
+          write(*,*) c_size%nx_all, c_size%ny_all, c_size%nz_all
           write(*,*) numnod_f
           stop
          end if
 !
          call skip_comment(tmpchara,filter_id)
          read(tmpchara,*) (size_f(i), i=1, 3)
-         if ( size_f(1) .ne. c_size1%xsize                              &
-     &   .or. size_f(2) .ne. c_size1%ysize                              &
-     &   .or. size_f(3) .ne. c_size1%zsize ) then
+         if ( size_f(1) .ne. c_size%xsize                               &
+     &   .or. size_f(2) .ne. c_size%ysize                               &
+     &   .or. size_f(3) .ne. c_size%zsize ) then
           write(*,*) 'check size of simulation domain'
           stop
          end if
@@ -105,37 +107,37 @@
            read(tmpchara,*) itmp, (coef_nod_y(i,kf,ifil), kf=0,2)
          end do
 !
-         do i = 1, c_size1%nz_all
+         do i = 1, c_size%nz_all
            call skip_comment(tmpchara,filter_id)
            read(tmpchara,*) itmp, z_filter(i), delta_z(i),              &
      &           diff_deltaz(i), d2_deltaz(i)
          end do
 !
-         do i = 1, c_size1%nz_all-1
+         do i = 1, c_size%nz_all-1
            call skip_comment(tmpchara,filter_id)
            read(tmpchara,*) itmp, itmp, itmp, delta_z_e(i),             &
      &           diff_deltaz_e(i), d2_deltaz_e(i)
          end do
 !
-         do i = 1, c_size1%nz_all
+         do i = 1, c_size%nz_all
            call skip_comment(tmpchara,filter_id)
            read(tmpchara,*) itmp, (nneib_z(i,j,ifil),j=1,2),            &
      &           (ineib_z(i,j,ifil), j=1,inod_width(3))
          end do
 !
-         do i = 1, c_size1%nz_all
+         do i = 1, c_size%nz_all
            call skip_comment(tmpchara,filter_id)
            read(tmpchara,*) itmp,                                       &
      &           (coef_4_filter(i,j,ifil), j=1,iwidth_1d)
          end do
 !
-         do i = 1, c_size1%nz_all
+         do i = 1, c_size%nz_all
            call skip_comment(tmpchara,filter_id)
            read(tmpchara,*) itmp,                                       &
      &           (mom_1d_z(i,kf,ifil), kf=0,2)
          end do
 !
-         do i = 1, c_size1%nz_all
+         do i = 1, c_size%nz_all
            call skip_comment(tmpchara,filter_id)
            read(tmpchara,*) itmp,                                       &
      &           (dmom_1d_z(i,kf,ifil), kf=0,2)
@@ -143,7 +145,7 @@
 !
          do kf = 0, 2
           read(filter_id,*) 
-          do i = 1, c_size1%nz_all
+          do i = 1, c_size%nz_all
            read(filter_id,*) itmp, itmp,                                &
      &           (coef_nod_z(i,j,kf,ifil), j=1,inod_width(3))
           end do
@@ -153,8 +155,8 @@
 !
        end do
 !
-       delta_h(1) = c_size1%xsize / dble(2*(c_size1%nx_all - 1))
-       delta_h(2) = c_size1%ysize / dble(2*(c_size1%ny_all - 1))
+       delta_h(1) = c_size%xsize / dble(2*(c_size%nx_all - 1))
+       delta_h(2) = c_size%ysize / dble(2*(c_size%ny_all - 1))
        diff_deltah(1) = 0.0d0
        diff_deltah(2) = 0.0d0
        nneib_h(1) = (inod_width(1)-1)/2

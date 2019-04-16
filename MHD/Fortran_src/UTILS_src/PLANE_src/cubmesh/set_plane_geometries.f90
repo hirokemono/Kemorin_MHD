@@ -18,15 +18,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_plane_geometries(elm_type, c_size)
+      subroutine set_plane_range_w_sleeve(elm_type, c_size)
 !
-      use m_precision
-!
-      use m_cube_files_data
-      use m_size_of_cube
-      use m_cube_position
+      use t_size_of_cube
       use m_grp_data_cub_kemo
-      use m_filtering_nod_4_cubmesh
 !
       implicit none
 !
@@ -34,8 +29,7 @@
       type(size_of_cube), intent(inout) :: c_size
 !
 !
-      neib = ndepth
-      c_size%ndepth =  ndepth
+      neib = c_size%ndepth
 !
       c_size%xmin = c_size%xmin                                         &
      &             - c_size%ndepth * c_size%xsize / dble(c_size%nx_all)
@@ -46,9 +40,7 @@
       c_size%ymax = c_size%ymax                                         &
      &             - c_size%ndepth * c_size%ysize / dble(c_size%ny_all)
 !
-      call set_plane_resolution(ndepth, c_size)
-!
-      end subroutine s_set_plane_geometries
+      end subroutine set_plane_range_w_sleeve
 !
 ! ----------------------------------------------------------------------
 !

@@ -62,7 +62,7 @@
 !     read outline of mesh
 !
       call read_control_data_plane_mesh
-      call s_set_ctl_data_plane_mesh
+      call s_set_ctl_data_plane_mesh(c_size1)
 !
       call set_initial_components(mgd_mesh_pl%merged_fld)
       call reset_time_data(plane_t_IO)
