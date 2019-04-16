@@ -57,7 +57,7 @@
             inod = 0
 !
             call set_internal_size(nb_rng, sl_rng1)
-            call set_internal_node(nb_rng, sl_rng1, inod)
+            call set_internal_node(c_size1, nb_rng, sl_rng1, inod)
 !
 !     set position of internal edge
 !

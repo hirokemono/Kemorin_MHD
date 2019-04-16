@@ -75,13 +75,13 @@
 !
       call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
 !
-       nx_2 = nx_all/2+1
-       ny_2 = ny_all/2+1
+       nx_2 = c_size1%nx_all/2 + 1
+       ny_2 = c_size1%ny_all/2 + 1
 !
        write(*,*) 'Truncation levels', (nx_2-1), (ny_2-1)
 !
        num_ene_z = nx_2*ny_2
-       num_ene   = nx_2*ny_2*nz_all
+       num_ene   = nx_2*ny_2 * c_size1%nz_all
 !
 !
       istep = ist
@@ -97,7 +97,7 @@
 !
 !       write(*,*) num_ene, num_fft
 !
-       allocate( zz(nz_all) )
+       allocate( zz(c_size1%nz_all) )
 !
        allocate( fft_name(num_fft) )
        allocate( fft_comp(num_fft) )
@@ -116,10 +116,10 @@
      &                       form='formatted', status ='unknown')
 !
       read(spectr_grid_code,*)
-      do iy = 1, nx_all/2
-        do ix = 1, ny_all/2
-          do iz = 1, nz_all
-            iii = iz*nx_all*ny_all
+      do iy = 1, c_size1%nx_all/2
+        do ix = 1, c_size1%ny_all/2
+          do iz = 1, c_size1%nz_all
+            iii = iz * c_size1%nx_all * c_size1%ny_all
             read(spectr_grid_code,*) i1, i2, i3, zz(iz)
           end do
          end do
@@ -142,8 +142,9 @@
 !
         do iy = 1, ny_2
           do ix = 1, nx_2
-            do iz = 1, nz_all
-              iii   = (iy-1)*(nz_all*nx_2) + (ix-1)*nz_all + iz
+            do iz = 1, c_size1%nz_all
+              iii   = (iy-1)*(c_size1%nz_all*nx_2)                      &
+     &               + (ix-1)*c_size1%nz_all + iz
 !          write(*,*) 'tako', j, iy, ix, iz, iii
               read(spectr_data_code,'(1p4e20.11)')                      &
      &                  phys_cxcy(iii,j), phys_sxcy(iii,j),             &
@@ -218,8 +219,9 @@
 !
             do iy = 1, ny_2
               do ix = 1, nx_2
-                do iz = 1, nz_all
-                  iii   = (iy-1)*(nz_all*nx_2) + (ix-1)*nz_all + iz
+                do iz = 1, c_size1%nz_all
+                  iii   = (iy-1)*(c_size1%nz_all*nx_2)                  &
+     &                   + (ix-1)*c_size1%nz_all + iz
 !          write(*,*) 'tako', j, iy, ix, iz, iii
                   read(spectr_data_code,'(1p4e20.11)')                  &
      &                  phys_cxcy(iii,j), phys_sxcy(iii,j),             &
@@ -233,32 +235,36 @@
 !
 !
           if (kx_out .eq. 0  .and.  ky_out .eq. 0) then
-            do iz = 1, nz_all
-              iii   = ky_out*(nz_all*nx_2) + kx_out*nz_all + iz
+            do iz = 1, c_size1%nz_all
+              iii   = ky_out*(c_size1%nz_all*nx_2)                      &
+     &               + kx_out*c_size1%nz_all + iz
               write(picked_data_code,'(2i16,1p256e20.11)')              &
      &           istep, iz, zz(iz),                                     &
      &           phys_cxcy(iii,1:num_fft)
             end do
 !
           else if (ky_out .eq. 0) then
-            do iz = 1, nz_all
-              iii   = ky_out*(nz_all*nx_2) + kx_out*nz_all + iz
+            do iz = 1, c_size1%nz_all
+              iii   = ky_out*(c_size1%nz_all*nx_2)                      &
+     &               + kx_out*c_size1%nz_all + iz
               write(picked_data_code,'(2i16,1p256e20.11)')              &
      &           istep, iz, zz(iz),                                     &
      &           phys_cxcy(iii,1:num_fft), phys_sxcy(iii,1:num_fft)
             end do
 !
           else if (kx_out .eq. 0) then
-            do iz = 1, nz_all
-              iii   = ky_out*(nz_all*nx_2) + kx_out*nz_all + iz
+            do iz = 1, c_size1%nz_all
+              iii   = ky_out*(c_size1%nz_all*nx_2)                      &
+     &               + kx_out*c_size1%nz_all + iz
               write(picked_data_code,'(2i16,1p256e20.11)')              &
      &           istep, iz, zz(iz),                                     &
      &           phys_cxcy(iii,1:num_fft),                              &
      &           phys_cxsy(iii,1:num_fft)
             end do
           else
-            do iz = 1, nz_all
-              iii   = ky_out*(nz_all*nx_2) + kx_out*nz_all + iz
+            do iz = 1, c_size1%nz_all
+              iii   = ky_out*(c_size1%nz_all*nx_2)                      &
+     &               + kx_out*c_size1%nz_all + iz
               write(picked_data_code,'(2i16,1p256e20.11)')              &
      &           istep, iz, zz(iz),                                     &
      &           phys_cxcy(iii,1:num_fft), phys_sxcy(iii,1:num_fft),    &

@@ -70,16 +70,22 @@
      &                + (koff+k-1) * c_size%ndepth**2
 
           if (nd .eq. 1) then
-           x = c_size%xmin + ( dble(i)-half )*xsize / dble(nx_all)
-           y = c_size%ymin + dble(j-1) *      ysize / dble(ny_all)
+           x = c_size%xmin + ( dble(i)-half )                           &
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = c_size%ymin + dble(j-1)                                  &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(koff+k)
           else if (nd .eq. 2) then
-           x = c_size%xmin + dble(i-1) *      xsize / dble(nx_all)
-           y = c_size%ymin + ( dble(j)-half )*ysize / dble(ny_all)
+           x = c_size%xmin + dble(i-1)                                  &
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = c_size%ymin + ( dble(j)-half )                           &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(koff+k)
           else if (nd .eq. 3) then
-           x = c_size%xmin + dble(i-1) *      xsize / dble(nx_all)
-           y = c_size%ymin + dble(j-1) *      ysize / dble(ny_all)
+           x = c_size%xmin + dble(i-1)                                  &
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = c_size%ymin + dble(j-1)                                  &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz_edge(koff+k)
           end if
 !
@@ -133,18 +139,21 @@
 
           if (nd .eq. 1) then
            x = c_size%xmax + ( dble(i+c_size%ndepth)-half )             &
-     &                       * xsize / dble(nx_all)
-           y = c_size%ymin + dble(j-1) * ysize / dble(ny_all)
+     &                       * c_size%xsize / dble(c_size%nx_all)
+           y = c_size%ymin + dble(j-1)                                  &
+     &                       * c_size%ysize / dble(c_size%ny_all)
            z = zz(koff+k)
           else if (nd .eq. 2) then
            x = c_size%xmax + ( dble(i+c_size%ndepth-1) )                &
-     &                      * xsize / dble(nx_all)
-           y = c_size%ymin + ( dble(j)-half ) * ysize / dble(ny_all)
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = c_size%ymin + ( dble(j)-half )                           &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(koff+k)
           else if (nd .eq. 3) then
            x = c_size%xmax + ( dble(i+c_size%ndepth-1) )                &
-     &                      * xsize / dble(nx_all)
-           y = c_size%ymin + dble(j-1) * ysize / dble(ny_all)
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = c_size%ymin + dble(j-1)                                  &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz_edge(koff+k)
           end if
 
@@ -200,21 +209,21 @@
 
           if (nd .eq. 1) then
            x = c_size%xmax + ( dble(i+c_size%ndepth)-half )             &
-     &               * xsize / dble(nx_all)
+     &               * c_size%xsize / dble(c_size%nx_all)
            y = c_size%ymax + dble(c_size%ndepth+j-1)                    &
-     &               * ysize / dble(ny_all)
+     &               * c_size%ysize / dble(c_size%ny_all)
            z = zz(koff+k)
           else if (nd .eq. 2) then
            x = c_size%xmax + dble(i+c_size%ndepth-1)                    &
-     &               * xsize / dble(nx_all)
+     &               * c_size%xsize / dble(c_size%nx_all)
            y = c_size%ymax + ( dble(c_size%ndepth+j)-half )             &
-     &               * ysize / dble(ny_all)
+     &               * c_size%ysize / dble(c_size%ny_all)
            z = zz(koff+k)
           else if (nd .eq. 3) then
            x = c_size%xmax + dble(i+c_size%ndepth-1)                    &
-     &                      * xsize / dble(nx_all)
+     &                      * c_size%xsize / dble(c_size%nx_all)
            y = c_size%ymax + dble(c_size%ndepth+j-1)                    &
-     &                      * ysize / dble(ny_all)
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz_edge(koff+k)
           end if
 
@@ -267,19 +276,22 @@
      &                + (koff+k-1) * c_size%ndepth * (je0 - js0 + 1)
 
           if (nd .eq. 1) then
-           x = c_size%xmin + ( dble(i)-half ) * xsize / dble(nx_all)
+           x = c_size%xmin + ( dble(i)-half )                           &
+     &                      * c_size%xsize / dble(c_size%nx_all)
            y = c_size%ymax + dble(c_size%ndepth+j-1)                    &
-     &                      * ysize / dble(ny_all)
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(koff+k)
           else if (nd .eq. 2) then
-           x = c_size%xmin + dble(i-1) * xsize / dble(nx_all)
+           x = c_size%xmin + dble(i-1)                                  &
+     &                      * c_size%xsize / dble(c_size%nx_all)
            y = c_size%ymax + ( dble(c_size%ndepth+j)-half )             &
-     &                       * ysize / dble(ny_all)
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(koff+k)
           else if (nd .eq. 3) then
-           x = c_size%xmin + dble(i-1) * xsize / dble(nx_all)
+           x = c_size%xmin + dble(i-1)                                  &
+     &                      * c_size%xsize / dble(c_size%nx_all)
            y = c_size%ymax + dble(c_size%ndepth+j-1)                    &
-     &                      * ysize / dble(ny_all)
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz_edge(koff+k)
           end if
 

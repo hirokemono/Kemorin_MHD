@@ -48,9 +48,9 @@
 ! ..... write 0. header lines
 !
       write(l_out,'(a,i4,2(a,i4),a,i3,2(a,i3),a)')                      &
-     &         '! mesh data for unit cube model, n_all=(',              &
-     &          nx_all,',',ny_all,',',nz_all,'), nd=(',                 &
-     &          ndx   ,',',ndy   ,',',ndz   ,')'
+     &   '! mesh data for unit cube model, n_all=(',                    &
+     &       c_size1%nx_all,',',c_size1%ny_all,',',c_size1%nz_all,      &
+     &   '), nd=(', ndx   ,',',ndy   ,',',ndz   ,')'
 !
        end subroutine open_mesh_file
 !

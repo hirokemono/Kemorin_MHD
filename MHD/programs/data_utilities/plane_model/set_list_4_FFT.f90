@@ -12,6 +12,7 @@
 !
       use m_precision
       use t_file_IO_parameter
+      use m_size_of_cube
 !
       implicit none
 !
@@ -48,14 +49,14 @@
       integer(kind = kint), intent(inout) :: ist, ied, iint
 !
 !
-      nx_all = nnod_plane_ctl%intvalue(1)
-      ny_all = nnod_plane_ctl%intvalue(2)
-      nz_all = nnod_plane_ctl%intvalue(3)
-      num_pe =  nx_all * ny_all * nz_all
+      c_size1%nx_all = nnod_plane_ctl%intvalue(1)
+      c_size1%ny_all = nnod_plane_ctl%intvalue(2)
+      c_size1%nz_all = nnod_plane_ctl%intvalue(3)
+      num_pe =  c_size1%nx_all * c_size1%ny_all * c_size1%nz_all
 !
-      kx_max = nx_all
-      ky_max = ny_all
-      iz_max = nz_all
+      kx_max = c_size1%nx_all
+      ky_max = c_size1%ny_all
+      iz_max = c_size1%nz_all
       num_spectr = kx_max*ky_max*iz_max
 !
       ist = 0
@@ -124,11 +125,11 @@
       ky_org = ky_max
       iz_org = ky_max
 !
-      nx_all = nnod_plane2_ctl%intvalue(1)
-      ny_all = nnod_plane2_ctl%intvalue(2)
-      nz_all = nnod_plane2_ctl%intvalue(3)
+      c_size1%nx_all = nnod_plane2_ctl%intvalue(1)
+      c_size1%ny_all = nnod_plane2_ctl%intvalue(2)
+      c_size1%nz_all = nnod_plane2_ctl%intvalue(3)
 !
-      nnod_new_k_org_z = kx_max*ky_max*nz_all
+      nnod_new_k_org_z = kx_max*ky_max*c_size1%nz_all
 !
       num_pe =  ndomain_plane2_ctl%intvalue(1)                          &
      &        * ndomain_plane2_ctl%intvalue(2)                          &
@@ -209,13 +210,14 @@
       ky_org = nnod_plane_ctl%intvalue(2)
       iz_org = nnod_plane_ctl%intvalue(3)
 !
-      nx_all = nnod_plane2_ctl%intvalue(1)
-      ny_all = nnod_plane2_ctl%intvalue(2)
-      nz_all = nnod_plane2_ctl%intvalue(3)
+      c_size1%nx_all = nnod_plane2_ctl%intvalue(1)
+      c_size1%ny_all = nnod_plane2_ctl%intvalue(2)
+      c_size1%nz_all = nnod_plane2_ctl%intvalue(3)
+
       num_pe =  ndomain_plane2_ctl%intvalue(1)                          &
      &        * ndomain_plane2_ctl%intvalue(2)                          &
      &        * ndomain_plane2_ctl%intvalue(3)
-      nnod_new_k_org_z = kx_max*ky_max*nz_all
+      nnod_new_k_org_z = kx_max*ky_max*c_size1%nz_all
 !
       end subroutine set_parameters_data_by_spec
 !

@@ -65,7 +65,7 @@
 ! 
 ! ***** write boundary condition (x,y,z=0 plane sym., x-force)
 !
-       elmgrptot = 3 + (nz_all-1)
+       elmgrptot = 3 + (c_size1%nz_all-1)
        nodgrptot = 3
        sufgrptot = 2*neib
 !

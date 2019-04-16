@@ -48,8 +48,8 @@
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
 !
 !
-       nx_2 = nx_all/2+1
-       ny_2 = ny_all/2+1
+       nx_2 = c_size1%nx_all/2 + 1
+       ny_2 = c_size1%ny_all/2 + 1
        num_ene_z = nx_2*ny_2
 !
        write(*,*) 'nx_2, ny_2', nx_2, ny_2

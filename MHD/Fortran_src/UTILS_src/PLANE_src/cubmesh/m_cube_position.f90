@@ -9,8 +9,6 @@
 !
       implicit none
 !
-      real   (kind=kreal)  ::  xsize  , ysize  , zsize
-!
       real   (kind=kreal), dimension(:), allocatable :: zz
       real   (kind=kreal), dimension(:), allocatable :: zz_edge
 !

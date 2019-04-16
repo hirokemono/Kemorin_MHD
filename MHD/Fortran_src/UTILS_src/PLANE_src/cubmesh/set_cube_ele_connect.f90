@@ -53,7 +53,7 @@
         do i = 1, c_each1%nx-1
 
          call set_element_id_periodic                                   &
-     &      (ndepth, nb_rng, c_each1%nx, c_each1%ny,                    &
+     &      (c_size1, nb_rng, c_each1%nx, c_each1%ny,                   &
      &       ipe, jpe, kpe, i, j, k, element_id, element_id_gl)
 !
          i1 = node_id_lc( i  , j  , k   )
@@ -103,7 +103,7 @@
         do i = 1, c_each1%nx-1
 !
          call set_element_id_periodic                                   &
-     &      (ndepth, nb_rng, c_each1%nx, c_each1%ny,                    &
+     &      (c_size1, nb_rng, c_each1%nx, c_each1%ny,                   &
      &       ipe, jpe, kpe, i, j, k, element_id, element_id_gl)
 !
 !

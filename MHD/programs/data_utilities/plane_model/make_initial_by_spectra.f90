@@ -87,7 +87,7 @@
 !
       call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
 !
-      call allocate_z_compliment_info(nz_all)
+      call allocate_z_compliment_info(c_size1%nz_all)
 !
 !    setting for initial values
 !
@@ -120,9 +120,9 @@
      call check_plane_horiz_position                                    &
     &   (mgd_mesh_pm%merged, mgd_mesh_pm%merged_fld)
 !
-      kx_new = nx_all
-      ky_new = ny_all
-      iz_new = nz_all
+      kx_new = c_size1%nx_all
+      ky_new = c_size1%ny_all
+      iz_new = c_size1%nz_all
       num_spectr = mgd_mesh_pm%merge_tbl%inter_nod_m
       nfft_new =   mgd_mesh_pm%merged_fld%ntot_phys
 !
@@ -137,7 +137,7 @@
 !
       call allocate_work_array_4_r(mgd_mesh_pm%merge_tbl%inter_nod_m)
 !
-!      do iz = 1, nz_all
+!      do iz = 1, c_size1%nz_all
 !       write(*,*) iz, iz_1(iz), z_1(iz)
 !      end do
 !
@@ -171,7 +171,8 @@
 !  set new spectr
 !
         write(*,*) 'set_new_spectr'
-        call set_new_spectr
+        call set_new_spectr                                             &
+     &     (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all)
 !
 !    deallocate old spectram data
 !
@@ -191,8 +192,10 @@
 !
 !      call allocate_spectr_name
 !
-        call s_inverse_fft_4_plane
-        call copy_2_inverted_data
+        call s_inverse_fft_4_plane                                      &
+     &     (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all)
+        call copy_2_inverted_data                                       &
+     &     (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all)
 !
 !   read mesh data
 !
@@ -247,8 +250,8 @@
       integer(kind=kint ) :: iflag
 !
 !
-      do iz = 1, nz_all
-       i1 = iz*nx_all*ny_all
+      do iz = 1, c_size1%nz_all
+       i1 = iz * c_size1%nx_all * c_size1%ny_all
        if(merged%node%xx(i1,3) .eq. zz(1)) then
         iz_1(iz) = 1
         z_1(iz) = 1.0d0

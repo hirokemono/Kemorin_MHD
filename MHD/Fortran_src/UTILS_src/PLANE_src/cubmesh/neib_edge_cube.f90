@@ -195,7 +195,7 @@
 !
        do k=kst,ked
         ndepth_z(-1) = k - max(k-ndepth,1)
-        ndepth_z( 1) = min(k+ndepth,nz_all) - k
+        ndepth_z( 1) = min(k+ndepth, c_size1%nz_all) - k
         if ( ndepth_z(-1) .lt. ndepth) then
           ndepth_z( 1) = 2*ndepth - ndepth_z(-1)
         end if

@@ -77,13 +77,15 @@
 !
 ! ***** set coordinate off set (starting corner for pe node)
 !
-      nb_rng%xoff = c_size%xmin                                         &
-     &           + (ipe-1) * xsize * c_size%nxi /(nx_all)
-      nb_rng%yoff = c_size%ymin                                         &
-     &           + (jpe-1) * ysize * c_size%nyi /(ny_all)
+      nb_rng%xoff = c_size%xmin + (ipe-1) * c_size%xsize                &
+     &                           * c_size%nxi / dble(c_size%nx_all)
+      nb_rng%yoff = c_size%ymin + (jpe-1) * c_size%ysize                &
+     &                           * c_size%nyi / dble(c_size%ny_all)
 !
-!      zoff = c_size%zmin + (kpe-1) * zsize * c_size%nzi /(nz_all)
-!     if (kpe/=1) zoff =  zoff - zsize/(nz_all-1) * c_size%ndepth
+!      zoff = c_size%zmin                                               &
+!     &      + (kpe-1) * c_size%zsize * c_size%nzi /(c_size%nz_all)
+!      if (kpe/=1) zoff =  zoff - zsize/(c_size%nz_all-1)               &
+!     &                          * c_size%ndepth
 !
 !
        end subroutine set_offset_of_domain

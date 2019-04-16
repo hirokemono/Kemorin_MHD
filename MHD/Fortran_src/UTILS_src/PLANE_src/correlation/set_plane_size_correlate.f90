@@ -20,6 +20,7 @@
 !
       subroutine s_set_plane_size_correlate(num_pe, num_pe2)
 !
+      use m_size_of_cube
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
       use m_correlate_4_plane
@@ -30,13 +31,14 @@
        integer , intent(inout) :: num_pe, num_pe2
 !
 !
-      nx_all = nnod_plane_ctl%intvalue(1)
-      ny_all = nnod_plane_ctl%intvalue(2)
-      nz_all = nnod_plane_ctl%intvalue(3)
-      kx_max = nx_all
-      ky_max = ny_all
-      iz_max = nz_all
-      num_domain_c =  nx_all * ny_all * nz_all
+      c_size1%nx_all = nnod_plane_ctl%intvalue(1)
+      c_size1%ny_all = nnod_plane_ctl%intvalue(2)
+      c_size1%nz_all = nnod_plane_ctl%intvalue(3)
+
+      kx_max = c_size1%nx_all
+      ky_max = c_size1%ny_all
+      iz_max = c_size1%nz_all
+      num_domain_c =  c_size1%nx_all * c_size1%ny_all * c_size1%nz_all
        num_pe =   ndomain_plane_ctl%intvalue(1)                         &
      &          * ndomain_plane_ctl%intvalue(2)                         &
      &          * ndomain_plane_ctl%intvalue(3)

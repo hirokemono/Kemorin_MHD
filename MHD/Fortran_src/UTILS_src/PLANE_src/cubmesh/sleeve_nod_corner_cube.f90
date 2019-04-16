@@ -54,8 +54,8 @@
          node_id_gl        = ioff_gl + i + (j-1) * c_size%ndepth        &
      &                      + (koff+k-1)*c_size%ndepth**2
 
-         x = c_size%xmin + (i-1)*xsize/(nx_all)
-         y = c_size%ymin + (j-1)*ysize/(ny_all)
+         x = c_size%xmin + (i-1) * c_size%xsize / dble(c_size%nx_all)
+         y = c_size%ymin + (j-1) * c_size%ysize / dble(c_size%ny_all)
          z = zz(koff+k)
 
          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
@@ -93,8 +93,9 @@
          node_id_gl        = ioff_gl + i + (j-1) * c_size%ndepth        &
      &                      + (koff+k-1)*c_size%ndepth**2
 
-         x = c_size%xmax + (i+c_size%ndepth-1)*xsize/(nx_all)
-         y = c_size%ymin + (j-1)*ysize/(ny_all)
+         x = c_size%xmax + (i+c_size%ndepth-1)                          &
+     &                    * c_size%xsize / dble(c_size%nx_all)
+         y = c_size%ymin + (j-1) * c_size%ysize / dble(c_size%ny_all)
          z = zz(koff+k)
 
           write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
@@ -133,8 +134,10 @@
          node_id_gl        = ioff_gl + i + (j-1) * c_size%ndepth        &
      &                      + (koff+k-1)*c_size%ndepth**2
 
-         x = c_size%xmax + (i+c_size%ndepth-1)*xsize/(nx_all)
-         y = c_size%ymax + (j+c_size%ndepth-1)*ysize/(ny_all)
+         x = c_size%xmax + (i+c_size%ndepth-1)                          &
+     &                    * c_size%xsize / dble(c_size%nx_all)
+         y = c_size%ymax + (j+c_size%ndepth-1)                          &
+     &                    * c_size%ysize / dble(c_size%ny_all)
          z = zz(koff+k)
 
          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
@@ -172,8 +175,9 @@
          node_id_gl        = ioff_gl + i + (j-1) * c_size%ndepth        &
      &                      + (koff+k-1)*c_size%ndepth**2
 
-         x = c_size%xmin + (i-1)*xsize/(nx_all)
-         y = c_size%ymax + (j+c_size%ndepth-1)*ysize/(ny_all)
+         x = c_size%xmin + (i-1) * c_size%xsize / dble(c_size%nx_all)
+         y = c_size%ymax + (j+c_size%ndepth-1)                          &
+     &                    * c_size%ysize / dble(c_size%ny_all)
          z = zz(koff+k)
 
          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z

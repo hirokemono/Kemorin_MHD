@@ -56,10 +56,11 @@
 
          node_id_lc(i,j,k) =  inod
          node_id_gl = ioff_gl + i + (j + nb_rng%joff-1) * c_size%ndepth &
-     &               + (k + nb_rng%koff-1) * c_size%ndepth * ny_all
+     &               + (k + nb_rng%koff-1) * c_size%ndepth              &
+     &                * c_size%ny_all
 
-         x = c_size%xmin + (i-1)*xsize/(nx_all)
-         y = nb_rng%yoff + (j-1)*ysize/(ny_all)
+         x = c_size%xmin + (i-1) * c_size%xsize / dble(c_size%nx_all)
+         y = nb_rng%yoff + (j-1) * c_size%ysize / dble(c_size%ny_all)
          z = zz(nb_rng%koff + k)
 
          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
@@ -95,10 +96,11 @@
          i1 = c_size%nxi + c_size%ndepth + i
          node_id_lc(i1,j,k) =  inod
          node_id_gl = ioff_gl + i + (j + nb_rng%joff-1) * c_size%ndepth &
-     &                + (k + nb_rng%koff-1) * c_size%ndepth * ny_all
+     &            + (k + nb_rng%koff-1) * c_size%ndepth * c_size%ny_all
 
-         x = c_size%xmax + (i+c_size%ndepth-1) * xsize/(nx_all)
-         y = nb_rng%yoff + (j-1) * ysize/(ny_all)
+         x = c_size%xmax + (i+c_size%ndepth-1)                          &
+     &                    * c_size%xsize / dble(c_size%nx_all)
+         y = nb_rng%yoff + (j-1) * c_size%ysize / dble(c_size%ny_all)
          z = zz(nb_rng%koff + k)
 
          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
@@ -132,11 +134,13 @@
          inod = inod + 1
 
          node_id_lc(i,j,k) =  inod
-         node_id_gl = ioff_gl + (nb_rng%ioff + i) + (j-1) * nx_all      &
-     &               + (nb_rng%koff + k-1)*nx_all*c_size%ndepth
+         node_id_gl = ioff_gl                                           &
+     &               + (nb_rng%ioff + i) + (j-1) * c_size%nx_all        &
+     &               + (nb_rng%koff + k-1) * c_size%nx_all              &
+     &                * c_size%ndepth
 
-         x = nb_rng%xoff + (i-1)*xsize/(nx_all)
-         y = c_size%ymin + (j-1)*ysize/(ny_all)
+         x = nb_rng%xoff + (i-1) * c_size%xsize / dble(c_size%nx_all)
+         y = c_size%ymin + (j-1) * c_size%ysize / dble(c_size%ny_all)
          z = zz(nb_rng%koff + k)
 
          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
@@ -170,11 +174,14 @@
          j1 = c_size%nyi + c_size%ndepth + j
 
          node_id_lc(i,j1,k) =  inod
-         node_id_gl = ioff_gl + (nb_rng%ioff + i) + (j-1) * nx_all      &
-     &               + (nb_rng%koff + k-1)*nx_all*c_size%ndepth 
+         node_id_gl = ioff_gl                                           &
+     &               + (nb_rng%ioff + i) + (j-1) * c_size%nx_all        &
+     &               + (nb_rng%koff + k-1) * c_size%nx_all              &
+     &                * c_size%ndepth 
 
-         x = nb_rng%xoff + (i-1)*xsize/(nx_all)
-         y = c_size%ymax + (j+c_size%ndepth-1)*ysize/(ny_all)
+         x = nb_rng%xoff + (i-1) * c_size%xsize / dble(c_size%nx_all)
+         y = c_size%ymax + (j+c_size%ndepth-1)                          &
+     &                    * c_size%ysize / dble(c_size%ny_all)
          z = zz(nb_rng%koff + k)
 
          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z

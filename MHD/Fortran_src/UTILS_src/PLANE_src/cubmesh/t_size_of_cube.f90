@@ -21,6 +21,13 @@
         integer(kind=kint )   ::  ndepth = 1
         integer(kind=kint )   ::  ndep_1 = 3
 !
+!>        nodal count at x direction line for all model
+        integer(kind=kint ) :: nx_all
+!>        nodal count at y direction line for all model
+        integer(kind=kint ) :: ny_all
+!>        nodal count at z direction line for all model
+        integer(kind=kint ) :: nz_all
+!
 !>        number of node in the domain without sleeves
         integer(kind=kint )  ::  nod_gltot
 !>        number of edge in the domain without sleeves
@@ -43,6 +50,9 @@
 !>        nnod_cubmesh:      array size direction
         integer(kind=kint )  ::  nnod_cubmesh
 !
+        real(kind = kreal)  ::  xsize
+        real(kind = kreal)  ::  ysize
+        real(kind = kreal)  ::  zsize
 !
         real(kind=kreal) :: xmin
         real(kind=kreal) :: xmax
@@ -94,9 +104,9 @@
 !
       type(size_of_cube), intent(inout) :: c_size
 !
-      c_size%xmax = xsize / two
-      c_size%ymax = ysize / two
-      c_size%zmax = zsize / two
+      c_size%xmax = c_size%xsize / two
+      c_size%ymax = c_size%ysize / two
+      c_size%zmax = c_size%zsize / two
       c_size%xmin = -c_size%xmax
       c_size%ymin = -c_size%ymax
       c_size%zmin = -c_size%zmax
@@ -118,14 +128,15 @@
       c_size%ndepth = ndepth
       c_size%ndep_1 = (2*c_size%ndepth+1)
 !
-      c_size%nod_gltot  = nx_all*ny_all*nz_all
-      c_size%edge_gltot = nx_all*ny_all*(3*nz_all-1)
+      c_size%nod_gltot  = c_size%nx_all * c_size%ny_all * c_size%nz_all
+      c_size%edge_gltot = c_size%nx_all * c_size%ny_all                 &
+     &                   * (3*c_size%nz_all - 1)
 !
 ! ***** set internal node count
 !
-      c_size%nxi = nx_all / ndx
-      c_size%nyi = ny_all / ndy
-      c_size%nzi = nz_all / ndz
+      c_size%nxi = c_size%nx_all / ndx
+      c_size%nyi = c_size%ny_all / ndy
+      c_size%nzi = c_size%nz_all / ndz
 !
       c_size%numnod_x = c_size%nxi + 2*c_size%ndepth
       c_size%numnod_y = c_size%nyi + 2*c_size%ndepth

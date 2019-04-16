@@ -14,8 +14,7 @@
 !                         control ver 2.1  on aug. 1999 (ver 3.3)
 ! ----------------------------------------------------------------------
 !  * input  files
-!      standard input   :  nx_all, ny_all, nz_all,  ndx, ndy, ndz
-!          nodal count and subdomain division for x,y,z-direction line
+!     ctl_cubed_sphere
 !
 ! ----------------------------------------------------------------------
 !  * output files
@@ -173,11 +172,11 @@
       call read_control_data_plane_mesh
       call s_set_ctl_data_plane_mesh
 !
-      call s_set_plane_geometries(elm_type)
+      call s_set_plane_geometries(elm_type, c_size1)
 !
 ! ***** allocate position of node at z-component
 !
-      call set_position_4_vartical(elm_type)
+      call set_position_4_vartical(elm_type, c_size1)
 !
 ! ***** allocate nodal id table
 !
@@ -195,7 +194,8 @@
 !
 !      if (iflag_filter .ge.0) then
          FEM_elen_c%filter_conf%nf_type = iflag_filter
-         call allocate_filter_4_plane(FEM_elen_c%filter_conf%nf_type)
+         call allocate_filter_4_plane                                   &
+     &      (c_size1%nz_all, FEM_elen_c%filter_conf%nf_type)
          call read_filter_info(FEM_elen_c%filter_conf%nf_type)
 !      end if
 !
@@ -286,10 +286,10 @@
 !
 !                                     .. count element group and stack
 !
-            call count_element_group(c_each1%elm_fil1_tot)
+            call count_element_group(c_size1, c_each1%elm_fil1_tot)
 !
             call write_cube_ele_group                                   &
-     &         (c_size1%ndepth, c_each1%nx, c_each1%ny, c_each1%nz,     &
+     &         (c_size1, c_each1%nx, c_each1%ny, c_each1%nz,            &
      &          kpe, nb_rng1%koff)
 !
 !

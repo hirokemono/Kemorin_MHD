@@ -4,14 +4,15 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!       subroutine count_element_group
-!       subroutine write_cube_ele_group(nx, ny, nz, kpe, koff)
+!!      subroutine count_element_group(c_size, elm_fil1_tot)
+!!      subroutine write_cube_ele_group(c_size, nx, ny, nz, kpe, koff)
 !
       module write_ele_grp_cube
 !
       use m_precision
 !
       use m_grp_data_cub_kemo
+      use t_size_of_cube
 !
       implicit none
 !
@@ -21,10 +22,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_element_group(elm_fil1_tot)
+      subroutine count_element_group(c_size, elm_fil1_tot)
 !
       use m_size_4_plane
 !
+      type(size_of_cube), intent(in) :: c_size
       integer (kind=kint), intent(in) :: elm_fil1_tot
 !
        integer(kind = kint) :: item_tot
@@ -36,10 +38,10 @@
 !                                                 .. all
 !
        item_pos = 1
-       item_tot = item_tot + (nz_all-1)
+       item_tot = item_tot + (c_size%nz_all - 1)
        index(item_pos) = item_tot
        item_pos = 2
-       item_tot = item_tot + (nz_all-1)
+       item_tot = item_tot + (c_size%nz_all - 1)
        index(item_pos) = item_tot
 !
        item_pos = 3
@@ -50,13 +52,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_cube_ele_group(ndepth, nx, ny, nz, kpe, koff)
+      subroutine write_cube_ele_group(c_size, nx, ny, nz, kpe, koff)
 !
       use m_size_4_plane
       use m_cube_files_data
       use m_fem_mesh_labels
 !
-      integer (kind=kint), intent(in) :: ndepth
+      type(size_of_cube), intent(in) :: c_size
       integer (kind=kint), intent(in) :: nx, ny, nz
       integer(kind = kint), intent(in) :: kpe
       integer(kind=kint), intent(in) :: koff
@@ -69,7 +71,7 @@
        iele = 0
 !
        element_id = 1
-       do k = 1, nz_all-1
+       do k = 1, c_size%nz_all-1
         iele = iele + 1
         iele_group_id(iele) = element_id
         if(k.gt.koff .and. k.le.(koff+nz-1) ) then
@@ -78,7 +80,7 @@
        end do
 !
        element_id = 0
-       do k = 1, nz_all-1
+       do k = 1, c_size%nz_all-1
         if ( k.gt.koff .and. k.le.(koff+nz-1) ) then
          element_id = element_id + (nx-1)*(ny-1)
         end if
@@ -92,15 +94,16 @@
          do i=1,nx-1
 
            element_id    =  element_id + 1
-           if ( i.ge.ndepth .and. i.le.(nx-ndepth) ) then
-            if ( j.ge.ndepth .and. j.le.(ny-ndepth) ) then
-             if ( kpe.eq.1 .and. k.le.(nz-ndepth) ) then
+           if(i.ge.c_size%ndepth .and. i.le.(nx-c_size%ndepth) ) then
+            if(j.ge.c_size%ndepth .and. j.le.(ny-c_size%ndepth) ) then
+             if(kpe.eq.1 .and. k.le.(nz-c_size%ndepth) ) then
               iele = iele + 1
               iele_group_id(iele) = element_id
-             else if ( kpe.eq.ndz .and. k.ge.ndepth ) then
+             else if ( kpe.eq.ndz .and. k.ge.c_size%ndepth ) then
               iele = iele + 1
               iele_group_id(iele) = element_id
-             else if ( k.ge.ndepth .and. k.le.(nz-ndepth) ) then
+             else if ( k.ge.c_size%ndepth                               &
+     &              .and. k.le.(nz-c_size%ndepth) ) then
               iele = iele + 1
               iele_group_id(iele) = element_id
              end if
@@ -113,17 +116,18 @@
 !
 !
 !
-!       write(*,*) 'nz_all gc', nx_all, ny_all, nz_all
+!       write(*,*) 'nz_all gc',                                         &
+!     &           c_size%nx_all, c_size%ny_all, c_size%nz_all
 !       write(*,*) 'index', size(index)
        item_tot = index(3)
-       do k = 1, (nz_all-1)
+       do k = 1, (c_size%nz_all-1)
          item_pos = 3 + k
          item_tot = item_tot + 1                                        &
      &                  + iele_group_id(k+index(1)) - iele_group_id(k)
          index(item_pos) = item_tot
        end do
 !
-       do k = 1, (nz_all-1)
+       do k = 1, (c_size%nz_all-1)
          do i = iele_group_id(k), iele_group_id(k+index(1))
            iele = iele + 1
            iele_group_id(iele) = i
@@ -146,8 +150,8 @@
          write(l_out,'(6i16)')                                          &
      &            (iele_group_id(i),i=index(2)+1, index(3))
 !
-        do k = 1, (nz_all-1)
-!          write(*,*) 'layering group', k, nz_all
+        do k = 1, (c_size%nz_all-1)
+!          write(*,*) 'layering group', k, c_size%nz_all
           if      (k.lt.10) then
             write(group_name,1001) k
           else if (k.lt.100) then

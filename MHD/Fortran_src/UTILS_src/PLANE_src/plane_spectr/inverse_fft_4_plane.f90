@@ -3,9 +3,9 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine s_inverse_fft_4_plane
-!!      subroutine copy_2_inverted_data
-!!      subroutine copy_2_inverted_udt(merged_fld)
+!!      subroutine s_inverse_fft_4_plane(nx_all, ny_all, nz_all)
+!!      subroutine copy_2_inverted_data(nx_all, ny_all, nz_all)
+!!      subroutine copy_2_inverted_udt(nx_all, ny_all, merged_fld)
 !!        type(phys_data), intent(inout) :: merged_fld
 !
       module inverse_fft_4_plane
@@ -26,10 +26,12 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine s_inverse_fft_4_plane
+      subroutine s_inverse_fft_4_plane(nx_all, ny_all, nz_all)
 !
       use m_spectr_4_ispack
       use t_FFT_selector
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       type(working_FFTs) :: WK_FFTS
       integer(kind=kint ) :: n1
@@ -37,7 +39,7 @@
 !
       Nstacksmp(0) = 0
 !
-      call copy_4_inversse_fft_y
+      call copy_4_inversse_fft_y(nx_all, ny_all, nz_all)
 !
       n1 = num_fft*iz_max*kx_max
       Nstacksmp(1) = n1
@@ -61,11 +63,12 @@
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine copy_4_inversse_fft_y
+      subroutine copy_4_inversse_fft_y(nx_all, ny_all, nz_all)
 !
       use m_spectr_4_ispack
-      use m_size_4_plane
       use m_set_new_spectr
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       integer(kind = kint) :: inod, j, ix, iy, iz, i1, i2
 !
@@ -165,10 +168,11 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine copy_2_inverted_data
+      subroutine copy_2_inverted_data(nx_all, ny_all, nz_all)
 !
       use m_spectr_4_ispack
-      use m_size_4_plane
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       integer(kind = kint) :: j, ix, iy, iz, i1, i2
 !
@@ -209,12 +213,12 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine copy_2_inverted_udt(merged_fld)
+      subroutine copy_2_inverted_udt(nx_all, ny_all, merged_fld)
 !
       use m_spectr_4_ispack
-      use m_size_4_plane
       use t_phys_data
 !
+      integer(kind=kint), intent(in) :: nx_all, ny_all
       type(phys_data), intent(inout) :: merged_fld
 !
       integer(kind = kint) :: j, ix, iy, iz, i1, i2

@@ -11,6 +11,7 @@
 !
       use m_correlate_4_plane
       use m_size_4_plane
+      use m_size_of_cube
       use m_control_plane_correlate
 !
       use t_phys_data
@@ -99,14 +100,15 @@
 !
 !  open result file
 !
-       do ix = 1, nz_all
+       do ix = 1, c_size1%nx_all
         x_out(ix) = mgd_mesh_pm%merged%node%xx(ix,1)
        end do
-       do iy = 1, ny_all
-        y_out(iy) = mgd_mesh_pm%merged%node%xx(nx_all*iy,2)
+       do iy = 1, c_size1%ny_all
+        y_out(iy) = mgd_mesh_pm%merged%node%xx(c_size1%nx_all*iy,2)
        end do
-       do iz = 1, nz_all
-        z_out(iz) = mgd_mesh_pm%merged%node%xx(nx_all*ny_all*iz,3)
+       do iz = 1, c_size1%nz_all
+        z_out(iz) = mgd_mesh_pm%merged%node%xx                          &
+     &            (c_size1%nx_all*c_size1%ny_all*iz,3)
        end do
 !
        call deallocate_ioverlap_nod

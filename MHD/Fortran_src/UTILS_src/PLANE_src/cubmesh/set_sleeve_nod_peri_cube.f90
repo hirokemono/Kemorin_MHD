@@ -63,7 +63,8 @@
 !
 !  outdside (x>xmax)
 !
-      ioff_gl = c_size%nod_gltot + c_size%ndepth * ny_all * nz_all
+      ioff_gl = c_size%nod_gltot                                        &
+     &       + c_size%ndepth * c_size%ny_all * c_size%nz_all
       if (ipe .eq. ndx ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do jnp = nb_rng%jnp_st, nb_rng%jnp_end
@@ -81,7 +82,8 @@
 !
 !  outdside (y<ymin)
 !
-      ioff_gl = c_size%nod_gltot + 2*c_size%ndepth * ny_all * nz_all
+      ioff_gl = c_size%nod_gltot                                        &
+     &       + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all
       if ( jpe .eq. 1 ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do inp = nb_rng%inp_st, nb_rng%inp_end
@@ -99,8 +101,8 @@
 !  outdside (y<ymax)
 !
       ioff_gl = c_size%nod_gltot                                        &
-     &         + 2*c_size%ndepth * ny_all * nz_all                      &
-     &         + c_size%ndepth * nx_all * nz_all 
+     &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
+     &         + c_size%ndepth * c_size%nx_all * c_size%nz_all 
       if ( jpe .eq. ndy ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do inp = nb_rng%inp_st, nb_rng%inp_end
@@ -118,8 +120,8 @@
 !  outdside (x<xmin, y<ymin)
 !
       ioff_gl = c_size%nod_gltot                                        &
-     &         + 2*c_size%ndepth * ny_all * nz_all                      &
-     &         + 2*c_size%ndepth * nx_all * nz_all
+     &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
+     &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all
       if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
@@ -133,9 +135,9 @@
 !  outdside (x>xmax, y<ymin)
 !
       ioff_gl = c_size%nod_gltot                                        &
-     &         + 2*c_size%ndepth * ny_all * nz_all                      &
-     &         + 2*c_size%ndepth * nx_all * nz_all                      &
-     &         + c_size%ndepth * c_size%ndepth * nz_all
+     &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
+     &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all        &
+     &         + c_size%ndepth * c_size%ndepth * c_size%nz_all
       if( ipe .eq. ndx  .and. jpe .eq. 1 ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
@@ -150,9 +152,9 @@
 !  outdside (x>xmax, y>ymax)
 !
       ioff_gl = c_size%nod_gltot                                        &
-     &         + 2*c_size%ndepth * ny_all * nz_all                      &
-     &         + 2*c_size%ndepth * nx_all * nz_all                      &
-     &         + 2*c_size%ndepth * c_size%ndepth * nz_all
+     &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
+     &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all        &
+     &         + 2*c_size%ndepth * c_size%ndepth * c_size%nz_all
       if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 !                                       .. start side
@@ -166,9 +168,9 @@
 !  outdside (x<xmax, y<ymax)
 !
       ioff_gl = c_size%nod_gltot                                        &
-     &         + 2*c_size%ndepth * ny_all * nz_all                      &
-     &         + 2*c_size%ndepth * nx_all * nz_all                      &
-     &         + 3*c_size%ndepth * c_size%ndepth * nz_all
+     &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
+     &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all        &
+     &         + 3*c_size%ndepth * c_size%ndepth * c_size%nz_all
       if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
@@ -220,7 +222,7 @@
 !  outdside (x>xmax)
 !
       ioff_gl = c_size%nod_gltot + c_size%edge_gltot                    &
-     &         + c_size%ndepth * ny_all * nz_all
+     &         + c_size%ndepth * c_size%ny_all * c_size%nz_all
       if (ipe .eq. ndx ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do jnp = nb_rng%jnp_st, nb_rng%jnp_end
@@ -238,7 +240,7 @@
 !  outdside (y<ymin)
 !
       ioff_gl = c_size%nod_gltot + c_size%edge_gltot                    &
-     &         + 2*c_size%ndepth * ny_all * nz_all
+     &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all
       if ( jpe .eq. 1 ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do inp = nb_rng%inp_st, nb_rng%inp_end
@@ -256,8 +258,8 @@
 !  outdside (y<ymax)
 !
       ioff_gl = c_size%nod_gltot + c_size%edge_gltot                    &
-     &         + 2*c_size%ndepth * ny_all * nz_all                      &
-     &         + c_size%ndepth * nx_all * nz_all 
+     &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
+     &         + c_size%ndepth * c_size%nx_all * c_size%nz_all 
       if ( jpe .eq. ndy ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do inp = nb_rng%inp_st, nb_rng%inp_end
@@ -275,8 +277,8 @@
 !  outdside (x<xmin, y<ymin)
 !
       ioff_gl = c_size%nod_gltot + c_size%edge_gltot                    &
-     &         + 2*c_size%ndepth * ny_all * nz_all                      &
-     &         + 2*c_size%ndepth * nx_all * nz_all 
+     &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
+     &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all
       if ( ipe .eq. 1  .and. jpe .eq. 1 ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
@@ -291,9 +293,9 @@
 !  outdside (x>xmax, y<ymin)
 !
       ioff_gl = c_size%nod_gltot + c_size%edge_gltot                    &
-     &         + 2*c_size%ndepth * ny_all * nz_all                      &
-     &         + 2*c_size%ndepth * nx_all * nz_all                      &
-     &         + c_size%ndepth * c_size%ndepth * nz_all
+     &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
+     &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all        &
+     &         + c_size%ndepth * c_size%ndepth * c_size%nz_all
       if ( ipe .eq. ndx  .and. jpe .eq. 1 ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
@@ -308,9 +310,9 @@
 !  outdside (x>xmax, y>ymax)
 !
       ioff_gl = c_size%nod_gltot + c_size%edge_gltot                    &
-     &         + 2*c_size%ndepth * ny_all * nz_all                      &
-     &         + 2*c_size%ndepth * nx_all * nz_all                      &
-     &         + 2*c_size%ndepth * c_size%ndepth * nz_all
+     &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
+     &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all        &
+     &         + 2*c_size%ndepth * c_size%ndepth * c_size%nz_all
       if ( ipe .eq. ndx  .and. jpe .eq. ndy ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 !                                       .. start side
@@ -325,9 +327,9 @@
 !  outdside (x<xmax, y<ymax)
 !
       ioff_gl = c_size%nod_gltot + c_size%edge_gltot                    &
-     &         + 2*c_size%ndepth * ny_all * nz_all                      &
-     &         + 2*c_size%ndepth * nx_all * nz_all                      &
-     &         + 3*c_size%ndepth * c_size%ndepth * nz_all
+     &         + 2*c_size%ndepth * c_size%ny_all * c_size%nz_all        &
+     &         + 2*c_size%ndepth * c_size%nx_all * c_size%nz_all        &
+     &         + 3*c_size%ndepth * c_size%ndepth * c_size%nz_all
        if ( ipe .eq. 1  .and. jpe .eq. ndy ) then
          do knp = nb_rng%knp_st, nb_rng%knp_end
 

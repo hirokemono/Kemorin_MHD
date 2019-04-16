@@ -86,13 +86,13 @@
 !
       call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
 !
-       nx_2 = nx_all/2+1
-       ny_2 = ny_all/2+1
+       nx_2 = c_size1%nx_all/2 + 1
+       ny_2 = c_size1%ny_all/2 + 1
 !
        write(*,*) 'nx_2, ny_2', nx_2, ny_2
 !
        num_ene_z = nx_2*ny_2
-       num_ene   = nx_2*ny_2*nz_all
+       num_ene   = nx_2*ny_2 * c_size1%nz_all
 !
 !
       istep = ist
@@ -108,7 +108,7 @@
 !
 !       write(*,*) num_ene, num_fft
 !
-       allocate( zz(nz_all) )
+       allocate( zz(c_size1%nz_all) )
 !
        allocate( fft_name(num_fft) )
        allocate( fft_comp(num_fft) )
@@ -140,10 +140,10 @@
      &                       form='formatted',  status ='unknown')
 !
        read(spectr_grid_code,*)
-       do iy = 1, nx_all/2
-        do ix = 1, ny_all/2
-         do iz = 1, nz_all
-          iii = iz*nx_all*ny_all
+       do iy = 1, c_size1%nx_all/2
+        do ix = 1, c_size1%ny_all/2
+         do iz = 1, c_size1%nz_all
+          iii = iz * c_size1%nx_all * c_size1%ny_all
           read(spectr_grid_code,*) i1, i2, i3, zz(iz)
          end do
         end do
@@ -155,7 +155,7 @@
 !
        write(*,*) 'input number of layer'
        read(*,*) jz
-       if ( jz.lt.1 .or. jz.gt.nz_all) exit
+       if ( jz.lt.1 .or. jz .gt. c_size1%nz_all) exit
 !
        call set_ene_spec_plane_name(jz, yz_stacked_name,                &
      &          xz_stacked_name, xyz_stacked_name)
@@ -186,8 +186,9 @@
 !
        do iy = 1, ny_2
         do ix = 1, nx_2
-         do iz = 1, nz_all
-          iii   = (iy-1)*(nz_all*nx_2) + (ix-1)*nz_all + iz
+         do iz = 1, c_size1%nz_all
+          iii   = (iy-1)*(c_size1%nz_all*nx_2)                          &
+     &           + (ix-1)*c_size1%nz_all + iz
 !          write(*,*) 'tako', j, iy, ix, iz, iii
           read(spectr_data_code,'(1p4e20.11)')                          &
      &                  phys_cxcy(iii,j), phys_sxcy(iii,j),             &
@@ -203,7 +204,7 @@
 !
       do j = 1, num_fft
 
-         do iz = 1, nz_all
+         do iz = 1, c_size1%nz_all
 !          write(*,*) j, iz
           iii = iz
           phys_ene(iii,j) =        ( phys_cxcy(iii,j)*phys_cxcy(iii,j)  &
@@ -212,16 +213,16 @@
      &                            + phys_sxsy(iii,j)*phys_sxsy(iii,j) )
          end do
         do ix = 2, nx_2 - 1
-         do iz = 1, nz_all
-          iii = (ix-1)*nz_all + iz
+         do iz = 1, c_size1%nz_all
+          iii = (ix-1)*c_size1%nz_all + iz
           phys_ene(iii,j) = half * ( phys_cxcy(iii,j)*phys_cxcy(iii,j)  &
      &                            + phys_sxcy(iii,j)*phys_sxcy(iii,j)   &
      &                            + phys_cxsy(iii,j)*phys_cxsy(iii,j)   &
      &                            + phys_sxsy(iii,j)*phys_sxsy(iii,j) )
          end do
         end do
-         do iz = 1, nz_all
-          iii = (nx_2-1)*nz_all + iz
+         do iz = 1, c_size1%nz_all
+          iii = (nx_2-1)*c_size1%nz_all + iz
           phys_ene(iii,j) =       ( phys_cxcy(iii,j)*phys_cxcy(iii,j)   &
      &                            + phys_sxcy(iii,j)*phys_sxcy(iii,j)   &
      &                            + phys_cxsy(iii,j)*phys_cxsy(iii,j)   &
@@ -229,24 +230,26 @@
          end do
 
        do iy = 2, ny_2-1
-         do iz = 1, nz_all
-          iii   = (iy-1)*(nz_all*nx_2) + iz
+         do iz = 1, c_size1%nz_all
+          iii   = (iy-1)*(c_size1%nz_all*nx_2) + iz
           phys_ene(iii,j) = half * ( phys_cxcy(iii,j)*phys_cxcy(iii,j)  &
      &                            + phys_sxcy(iii,j)*phys_sxcy(iii,j)   &
      &                            + phys_cxsy(iii,j)*phys_cxsy(iii,j)   &
      &                            + phys_sxsy(iii,j)*phys_sxsy(iii,j) )
          end do
         do ix = 2, nx_2 - 1
-         do iz = 1, nz_all
-          iii   = (iy-1)*(nz_all*nx_2) + (ix-1)*nz_all + iz
+         do iz = 1, c_size1%nz_all
+          iii   = (iy-1)*(c_size1%nz_all*nx_2)                          &
+     &           + (ix-1)*c_size1%nz_all + iz
           phys_ene(iii,j) = quata * ( phys_cxcy(iii,j)*phys_cxcy(iii,j) &
      &                            + phys_sxcy(iii,j)*phys_sxcy(iii,j)   &
      &                            + phys_cxsy(iii,j)*phys_cxsy(iii,j)   &
      &                            + phys_sxsy(iii,j)*phys_sxsy(iii,j) )
          end do
         end do
-         do iz = 1, nz_all
-          iii   = (iy-1)*(nz_all*nx_2) + (nx_2-1)*nz_all + iz
+         do iz = 1, c_size1%nz_all
+          iii   = (iy-1)*(c_size1%nz_all*nx_2)                          &
+     &           + (nx_2-1)*c_size1%nz_all + iz
           phys_ene(iii,j) = half * ( phys_cxcy(iii,j)*phys_cxcy(iii,j)  &
      &                            + phys_sxcy(iii,j)*phys_sxcy(iii,j)   &
      &                            + phys_cxsy(iii,j)*phys_cxsy(iii,j)   &
@@ -254,24 +257,26 @@
          end do
        end do
 
-         do iz = 1, nz_all
-          iii   = (ny_2-1)*(nz_all*nx_2) + iz
+         do iz = 1, c_size1%nz_all
+          iii   = (ny_2-1)*(c_size1%nz_all*nx_2) + iz
           phys_ene(iii,j) =       ( phys_cxcy(iii,j)*phys_cxcy(iii,j)   &
      &                            + phys_sxcy(iii,j)*phys_sxcy(iii,j)   &
      &                            + phys_cxsy(iii,j)*phys_cxsy(iii,j)   &
      &                            + phys_sxsy(iii,j)*phys_sxsy(iii,j) )
          end do
         do ix = 2, nx_2 - 1
-         do iz = 1, nz_all
-          iii   = (ny_2-1)*(nz_all*nx_2) + (ix-1)*nz_all + iz
+         do iz = 1, c_size1%nz_all
+          iii   = (ny_2-1)*(c_size1%nz_all*nx_2)                        &
+     &            + (ix-1)*c_size1%nz_all + iz
           phys_ene(iii,j) = half * ( phys_cxcy(iii,j)*phys_cxcy(iii,j)  &
      &                            + phys_sxcy(iii,j)*phys_sxcy(iii,j)   &
      &                            + phys_cxsy(iii,j)*phys_cxsy(iii,j)   &
      &                            + phys_sxsy(iii,j)*phys_sxsy(iii,j) )
          end do
         end do
-         do iz = 1, nz_all
-          iii   = (ny_2-1)*(nz_all*nx_2) + (nx_2-1)*nz_all + iz
+         do iz = 1, c_size1%nz_all
+          iii   = (ny_2-1)*(c_size1%nz_all*nx_2)                        &
+     &           + (nx_2-1)*c_size1%nz_all + iz
           phys_ene(iii,j) =       ( phys_cxcy(iii,j)*phys_cxcy(iii,j)   &
      &                            + phys_sxcy(iii,j)*phys_sxcy(iii,j)   &
      &                            + phys_cxsy(iii,j)*phys_cxsy(iii,j)   &
@@ -291,7 +296,8 @@
         do iy = 1, ny_2
          do ix = 1, nx_2
           i1    = (iy-1)*(nx_2) + ix
-          iii   = (iy-1)*(nz_all*nx_2) + (ix-1)*nz_all + jz
+          iii   = (iy-1)*(c_size1%nz_all*nx_2)                          &
+     &           + (ix-1)*c_size1%nz_all + jz
           ene_z(i1,j) = phys_ene(iii,j)
          end do
         end do
@@ -319,8 +325,9 @@
      &     ) then
          do iy = 1, ny_2
           do ix = 1, nx_2
-           do iz = 1, nz_all
-            iii   = (iy-1)*(nz_all*nx_2) + (ix-1)*nz_all + iz
+           do iz = 1, c_size1%nz_all
+            iii   = (iy-1)*(c_size1%nz_all*nx_2)                        &
+     &             + (ix-1)*c_size1%nz_all + iz
             phys_ene(iii,j) = half * phys_ene(iii,j)
            end do
           end do
@@ -343,8 +350,9 @@
         else
          do iy = 1, ny_2
           do ix = 1, nx_2
-           do iz = 1, nz_all
-            iii   = (iy-1)*(nz_all*nx_2) + (ix-1)*nz_all + iz
+           do iz = 1, c_size1%nz_all
+            iii   = (iy-1)*(c_size1%nz_all*nx_2)                        &
+     &             + (ix-1)*c_size1%nz_all + iz
             phys_ene(iii,j) = sqrt(phys_ene(iii,j))
            end do
           end do

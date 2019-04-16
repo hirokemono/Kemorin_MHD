@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine set_internal_node(nb_rng, sl_rng, inod)
+!!      subroutine set_internal_node(c_size, nb_rng, sl_rng, inod)
 !!      subroutine set_internal_edge                                    &
 !!     &         (c_size, nb_rng, sl_rng, kpe, inp, jnp, knp, inod, nd)
 !!        type(neib_range_cube), intent(in) :: nb_rng
@@ -31,8 +31,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_internal_node(nb_rng, sl_rng, inod)
+      subroutine set_internal_node(c_size, nb_rng, sl_rng, inod)
 !
+      type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(in) :: sl_rng
       integer (kind = kint), intent(inout) :: inod
@@ -50,11 +51,12 @@
 
             node_id_lc(i,j,k) =  inod
             node_id_gl        = (nb_rng%ioff + i  )                     &
-     &                         + (nb_rng%joff + j-1)*nx_all             &
-     &                         + (nb_rng%koff + k-1)*nx_all*ny_all
+     &                         + (nb_rng%joff + j-1) * c_size%nx_all    &
+     &                         + (nb_rng%koff + k-1) * c_size%nx_all    &
+     &                          * c_size%ny_all
 
-            x = nb_rng%xoff + (i-1) * xsize/(nx_all)
-            y = nb_rng%yoff + (j-1) * ysize/(ny_all)
+            x = nb_rng%xoff + (i-1) * c_size%xsize / (c_size%nx_all)
+            y = nb_rng%yoff + (j-1) * c_size%ysize / (c_size%ny_all)
             z = zz(nb_rng%koff + k)
 
             write(l_out,'(i15,3(1pe21.11))')                      &
@@ -103,22 +105,23 @@
          edge_id_lc(i,j,k,nd) =  inod
          node_id_gl        =  nd * c_size%nod_gltot                     &
                              + (nb_rng%ioff + i  )                      &
-     &                       + (nb_rng%joff + j-1)*nx_all               &
-     &                       + (nb_rng%koff + k-1)*nx_all*ny_all 
+     &                       + (nb_rng%joff + j-1) * c_size%nx_all      &
+     &                       + (nb_rng%koff + k-1) * c_size%nx_all      &
+     &                        * c_size%ny_all 
 
          if (nd .eq. 1) then
-          x = nb_rng%xoff + (i-1) * xsize/(nx_all)                      &
-     &                    + half*xsize/(nx_all)
-          y = nb_rng%yoff + (j-1) * ysize/(ny_all)
+          x = nb_rng%xoff + (i-1) * c_size%xsize / dble(c_size%nx_all)  &
+     &                    + half * c_size%xsize / dble(c_size%nx_all)
+          y = nb_rng%yoff + (j-1) * c_size%ysize / dble(c_size%ny_all)
           z = zz(nb_rng%koff + k)
          else if (nd .eq. 2) then
-          x = nb_rng%xoff + (i-1) * xsize/(nx_all)
-          y = nb_rng%yoff + (j-1) * ysize/(ny_all)                      &
-     &                     + half*ysize/(ny_all)
+          x = nb_rng%xoff + (i-1) * c_size%xsize / dble(c_size%nx_all)
+          y = nb_rng%yoff + (j-1) * c_size%ysize / dble(c_size%ny_all)  &
+     &                     + half * c_size%ysize / dble(c_size%ny_all)
           z = zz(nb_rng%koff + k)
          else if (nd .eq. 3) then
-          x = nb_rng%xoff + (i-1) * xsize/(nx_all)
-          y = nb_rng%yoff + (j-1) * ysize/(ny_all)
+          x = nb_rng%xoff + (i-1) * c_size%xsize / dble(c_size%nx_all)
+          y = nb_rng%yoff + (j-1) * c_size%ysize / dble(c_size%ny_all)
           z = zz_edge(nb_rng%koff + k)
          end if
 

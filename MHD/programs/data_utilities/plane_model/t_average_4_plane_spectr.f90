@@ -78,8 +78,8 @@
 !
       call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
 !
-      nx_2 = nx_all/2+1
-      ny_2 = ny_all/2+1
+      nx_2 = c_size1%nx_all/2 + 1
+      ny_2 = c_size1%ny_all/2 + 1
 !
       if (i_layer .eq. -1) then
         xz_stacked_name =  add_dat_extension(ene_spec_y_head)
@@ -145,11 +145,11 @@
         read(horiz_rms_code,*)
         read(horiz_rms_code,*)   itmp
 !
-        allocate ( zz(nz_all) )
-        allocate ( phys_cxcy(nz_all,num_fft) )
-        allocate ( horiz_sq(nz_all,num_fft) )
-        allocate ( phys_cxcy_tave (nz_all,num_fft) )
-        allocate ( horiz_sq_tave(nz_all,num_fft) )
+        allocate ( zz(c_size1%nz_all) )
+        allocate ( phys_cxcy(c_size1%nz_all,num_fft) )
+        allocate ( horiz_sq(c_size1%nz_all,num_fft) )
+        allocate ( phys_cxcy_tave (c_size1%nz_all,num_fft) )
+        allocate ( horiz_sq_tave(c_size1%nz_all,num_fft) )
         phys_cxcy =      0.0d0
         phys_cxcy_tave = 0.0d0
         horiz_sq =       0.0d0
@@ -168,7 +168,7 @@
       do
 !
         if (i_layer .eq. -1) then
-          do iz = 1, nz_all
+          do iz = 1, c_size1%nz_all
             read(horiz_ave_code,*,err=99,end=99) istep, itmp, zz(iz),   &
      &              phys_cxcy(iz,1:num_fft)
             read(horiz_rms_code,*,err=99,end=99) itmp, itmp, rtmp,      &
@@ -209,10 +209,12 @@
 !
           if (i_layer .eq. -1) then
             do nd = 1, num_fft
-              phys_cxcy_tave(1:nz_all,nd) = phys_cxcy_tave(1:nz_all,nd) &
-     &                                     + phys_cxcy(1:nz_all,nd)
-              horiz_sq_tave(1:nz_all,nd) = horiz_sq_tave(1:nz_all,nd)   &
-     &                                     + horiz_sq(1:nz_all,nd)
+              phys_cxcy_tave(1:c_size1%nz_all,nd)                       &
+     &                = phys_cxcy_tave(1:c_size1%nz_all,nd)             &
+     &                 + phys_cxcy(1:c_size1%nz_all,nd)
+              horiz_sq_tave(1:c_size1%nz_all,nd)                        &
+     &                = horiz_sq_tave(1:c_size1%nz_all,nd)              &
+     &                 + horiz_sq(1:c_size1%nz_all,nd)
             end do
           end if
 !
@@ -243,10 +245,10 @@
 !
       if (i_layer .eq. -1) then
         do nd = 1, num_fft
-          phys_cxcy_tave(1:nz_all,nd) = phys_cxcy_tave(1:nz_all,nd)     &
-     &                               / dble(icou)
-          horiz_sq_tave(1:nz_all,nd) = horiz_sq_tave(1:nz_all,nd)       &
-     &                                / dble(icou)
+          phys_cxcy_tave(1:c_size1%nz_all,nd)                           &
+     &          = phys_cxcy_tave(1:c_size1%nz_all,nd) / dble(icou)
+          horiz_sq_tave(1:c_size1%nz_all,nd)                            &
+     &          = horiz_sq_tave(1:c_size1%nz_all,nd) / dble(icou)
         end do
       end if
 !
@@ -333,7 +335,7 @@
           write(horiz_rms_code,*)  trim(fft_name(j))
         end do
 !
-        do iz = 1, nz_all
+        do iz = 1, c_size1%nz_all
           write(horiz_ave_code,'(i16,1p120e20.11)') iz, zz(iz),         &
      &            phys_cxcy_tave(iz,1:num_fft)
           write(horiz_rms_code,'(i16,1p120e20.11)') iz, zz(iz),         &

@@ -81,7 +81,7 @@
      &    plane_mesh_file, ucd_file_param)
       call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
 !
-      call allocate_z_compliment_info(nz_all)
+      call allocate_z_compliment_info(c_size1%nz_all)
 !
 !    setting for spectr
 !
@@ -154,7 +154,8 @@
 !
 !  set new spectr
 !
-        call set_new_spectr
+        call set_new_spectr                                             &
+     &     (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all)
 !
 !    deallocate old spectram data
 !
@@ -163,9 +164,9 @@
 !
 !    set new array size for spectr
 !
-        kx_max = nx_all
-        ky_max = ny_all
-        iz_max = nz_all
+        kx_max = c_size1%nx_all
+        ky_max = c_size1%ny_all
+        iz_max = c_size1%nz_all
         num_spectr = mgd_mesh_pm%merge_tbl%inter_nod_m
 !
 !           write(*,*) 'num_spectr 0', num_spectr
@@ -176,8 +177,10 @@
 !
 !   reset spectr data
 !
-        call s_inverse_fft_4_plane
-        call copy_2_inverted_udt(mgd_mesh_pm%merged_fld)
+        call s_inverse_fft_4_plane                                      &
+    &      (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all)
+        call copy_2_inverted_udt                                        &
+    &      (c_size1%nx_all, c_size1%ny_all, mgd_mesh_pm%merged_fld)
 !
 !    output data
 !
@@ -240,8 +243,8 @@
 !
 !  check positions in z-direction
 !
-      do iz = 1, nz_all
-        i1 = iz*nx_all*ny_all
+      do iz = 1, c_size1%nz_all
+        i1 = iz * c_size1%nx_all * c_size1%ny_all
         if(merged%node%xx(i1,3) .eq. zz(1) ) then
           iz_1(iz) = 1
           z_1(iz) = 1.0d0
@@ -256,7 +259,7 @@
        end do
       end do
 !
-!      do iz = 1, nz_all
+!      do iz = 1, c_size1%nz_all
 !       write(*,*) iz, iz_1(iz), z_1(iz)
 !      end do
 !

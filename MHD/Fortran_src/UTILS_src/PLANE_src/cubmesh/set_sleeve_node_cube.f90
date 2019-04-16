@@ -44,7 +44,7 @@
 !
             call set_sleeve_size                                        &
      &         (nb_rng, ndepth, inp, jnp, knp, sl_rng1)
-            call set_internal_node(nb_rng, sl_rng1, inod)
+            call set_internal_node(c_size1, nb_rng, sl_rng1, inod)
           enddo
         enddo
       enddo
@@ -78,7 +78,7 @@
 !     nd = 1: for edge on y = const, z = const
 !     nd = 2: for edge on y = const, z = const
 !     nd = 3: for edge on x = const, y = const
-            call set_internal_node(nb_rng, sl_rng1, inod)
+            call set_internal_node(c_size1, nb_rng, sl_rng1, inod)
             do nd = 1, 3
               call set_internal_edge(c_size1, nb_rng, sl_rng1,          &
      &            kpe, inp, jnp, knp, inod, nd)

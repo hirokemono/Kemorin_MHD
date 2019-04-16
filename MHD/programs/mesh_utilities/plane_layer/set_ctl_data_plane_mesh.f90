@@ -58,21 +58,21 @@
 !
       pi = 4.0d0 * atan(1.0d0)
       if (cmp_no_case(unit_len_plane_ctl%charavalue(1),'pi')) then
-        xsize = pi*plane_size_ctl%realvalue(1)
+        c_size1%xsize = pi*plane_size_ctl%realvalue(1)
       else
-        xsize = plane_size_ctl%realvalue(1)
+        c_size1%xsize = plane_size_ctl%realvalue(1)
       end if
 !
       if (cmp_no_case(unit_len_plane_ctl%charavalue(2),'pi')) then
-        ysize = pi*plane_size_ctl%realvalue(2)
+        c_size1%ysize = pi*plane_size_ctl%realvalue(2)
       else
-        ysize = plane_size_ctl%realvalue(2)
+        c_size1%ysize = plane_size_ctl%realvalue(2)
       end if
 !
       if (cmp_no_case(unit_len_plane_ctl%charavalue(3),'pi')) then
-        zsize = pi*plane_size_ctl%realvalue(3)
+        c_size1%zsize = pi*plane_size_ctl%realvalue(3)
       else
-        zsize = plane_size_ctl%realvalue(3)
+        c_size1%zsize = plane_size_ctl%realvalue(3)
       end if
 !
       call set_plane_size(c_size1)
@@ -89,15 +89,14 @@
 !
 !
       if (nnod_plane_ctl%iflag .gt. 0) then
-        nx_all = nnod_plane_ctl%intvalue(1)
-        ny_all = nnod_plane_ctl%intvalue(2)
-        nz_all = nnod_plane_ctl%intvalue(3)
+        c_size1%nx_all = nnod_plane_ctl%intvalue(1)
+        c_size1%ny_all = nnod_plane_ctl%intvalue(2)
+        c_size1%nz_all = nnod_plane_ctl%intvalue(3)
       else
-        nx_all = 2
-        ny_all = 2
-        nz_all = 2
+        c_size1%nx_all = 2
+        c_size1%ny_all = 2
+        c_size1%nz_all = 2
       end if
-!
 !
       if (ndomain_plane_ctl%iflag .gt. 0) then
         ndx = ndomain_plane_ctl%intvalue(1)
@@ -109,13 +108,14 @@
         ndz = 1
       end if
 !
-      if ( ( mod(nx_all,ndx) /= 0 ) .or.                                &
-     &     ( mod(ny_all,ndy) /= 0 ) .or.                                &
-     &     ( mod(nz_all,ndz) /= 0 )      ) then
+      if ( ( mod(c_size1%nx_all,ndx) /= 0 ) .or.                        &
+     &     ( mod(c_size1%ny_all,ndy) /= 0 ) .or.                        &
+     &     ( mod(c_size1%nz_all,ndz) /= 0 )      ) then
         stop ' ***** error : illegal input '
       endif
-      if (neib .ge. (nz_all/ndz) ) then
-        write(*,*) 'neighbouring should be less than', (nz_all/ndz)
+      if (neib .ge. (c_size1%nz_all / ndz) ) then
+        write(*,*) 'neighbouring should be less than',                  &
+    &        (c_size1%nz_all / ndz)
         stop ' ***** error : illegal input '
       end if
 !
@@ -151,10 +151,12 @@
       write(*,*) 'filter_file_header: ', trim(filter_file_header)
       write(*,*) 'z_filter_header:    ', trim(z_filter_header)
 !
-      write(*,'(a,1p3E25.15e3)') 'size of domain: ', xsize,ysize,zsize
+      write(*,'(a,1p3E25.15e3)') 'size of domain: ',                    &
+     &         c_size1%xsize, c_size1%ysize, c_size1%zsize
       write(*,*) 'grid type: ', iradi
 !
-      write(*,*) 'num. of grid: ',   nx_all, ny_all, nz_all
+      write(*,*) 'num. of grid: ',                                      &
+     &          c_size1%nx_all, c_size1%ny_all, c_size1%nz_all
       write(*,*) 'num. of domain: ', ndx, ndy, ndz
       write(*,*) 'num. of sleeve: ', ndepth
 !

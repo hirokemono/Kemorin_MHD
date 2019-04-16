@@ -1,4 +1,15 @@
 !
+!!      module m_set_new_spectr
+!!
+!!       subroutine allocate_z_compliment_info(nz_all)
+!!       subroutine allocate_work_array_4_r(num)
+!!       subroutine allocate_index_4_trans
+!!
+!!       subroutine set_new_spectr(nx_all, ny_all, nz_all)
+!!
+!!       subroutine deallocate_work_array_4_r
+!!       subroutine deallocate_index_4_trans
+!
       module m_set_new_spectr
 !
       use m_precision
@@ -24,15 +35,6 @@
       private :: set_new_spectr_xeye, set_new_spectr_xeyl
       private :: set_new_spectr_xlys, set_new_spectr_xlye
       private :: set_new_spectr_xlyl
-!
-!       subroutine allocate_z_compliment_info(nz_all)
-!       subroutine allocate_work_array_4_r(num)
-!       subroutine allocate_index_4_trans
-!
-!       subroutine set_new_spectr
-!
-!       subroutine deallocate_work_array_4_r
-!       subroutine deallocate_index_4_trans
 !
 !  --------------------------------------------------------------------
 !
@@ -83,42 +85,43 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr
+      subroutine set_new_spectr(nx_all, ny_all, nz_all)
 !
-      use m_size_4_plane
       use m_spectr_4_ispack
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       if (nx_all .lt. kx_max) then
        if (ny_all .lt. ky_max) then
-        call set_new_spectr_xsys
+        call set_new_spectr_xsys(nx_all, ny_all, nz_all)
         write(*,*) 'set_new_spectr_xsys finish'
        else if (ny_all .eq. ky_max) then
-        call set_new_spectr_xsye
+        call set_new_spectr_xsye(nx_all, ny_all, nz_all)
         write(*,*) 'set_new_spectr_xsye finish'
        else
-        call set_new_spectr_xsyl
+        call set_new_spectr_xsyl(nx_all, ny_all, nz_all)
         write(*,*) 'set_new_spectr_xsyl finish'
        end if
       else if (nx_all .eq. kx_max) then
        if (ny_all .lt. ky_max) then
-        call set_new_spectr_xeys
+        call set_new_spectr_xeys(nx_all, ny_all, nz_all)
         write(*,*) 'set_new_spectr_xeys finish'
        else if (ny_all .eq. ky_max) then
-        call set_new_spectr_xeye
+        call set_new_spectr_xeye(nx_all, ny_all, nz_all)
         write(*,*) 'set_new_spectr_xeye finish'
        else
-        call set_new_spectr_xeyl
+        call set_new_spectr_xeyl(nx_all, ny_all, nz_all)
         write(*,*) 'set_new_spectr_xeyl finish'
        end if
       else
        if (ny_all .lt. ky_max) then
-        call set_new_spectr_xlys
+        call set_new_spectr_xlys(nx_all, ny_all, nz_all)
         write(*,*) 'set_new_spectr_xlys finish'
        else if (ny_all .eq. ky_max) then
-        call set_new_spectr_xlye
+        call set_new_spectr_xlye(nx_all, ny_all, nz_all)
         write(*,*) 'set_new_spectr_xlye finish'
        else
-        call set_new_spectr_xlyl
+        call set_new_spectr_xlyl(nx_all, ny_all, nz_all)
         write(*,*) 'set_new_spectr_xlyl finish'
        end if
       end if
@@ -127,10 +130,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xsys
+      subroutine set_new_spectr_xsys(nx_all, ny_all, nz_all)
 !
-      use m_size_4_plane
       use m_spectr_4_ispack
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -222,10 +226,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xsye
+      subroutine set_new_spectr_xsye(nx_all, ny_all, nz_all)
 !
-      use m_size_4_plane
       use m_spectr_4_ispack
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -266,10 +271,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xsyl
+      subroutine set_new_spectr_xsyl(nx_all, ny_all, nz_all)
 !
-      use m_size_4_plane
       use m_spectr_4_ispack
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -369,10 +375,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xeys
+      subroutine set_new_spectr_xeys(nx_all, ny_all, nz_all)
 !
-      use m_size_4_plane
       use m_spectr_4_ispack
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -418,10 +425,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xeye
+      subroutine set_new_spectr_xeye(nx_all, ny_all, nz_all)
 !
-      use m_size_4_plane
       use m_spectr_4_ispack
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -450,10 +458,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xeyl
+      subroutine set_new_spectr_xeyl(nx_all, ny_all, nz_all)
 !
-      use m_size_4_plane
       use m_spectr_4_ispack
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -517,10 +526,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xlys
+      subroutine set_new_spectr_xlys(nx_all, ny_all, nz_all)
 !
-      use m_size_4_plane
       use m_spectr_4_ispack
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -641,10 +651,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xlye
+      subroutine set_new_spectr_xlye(nx_all, ny_all, nz_all)
 !
-      use m_size_4_plane
       use m_spectr_4_ispack
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -696,10 +707,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xlyl
+      subroutine set_new_spectr_xlyl(nx_all, ny_all, nz_all)
 !
-      use m_size_4_plane
       use m_spectr_4_ispack
+!
+      integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod

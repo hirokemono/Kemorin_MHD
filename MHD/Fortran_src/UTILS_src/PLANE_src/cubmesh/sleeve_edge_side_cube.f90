@@ -69,19 +69,25 @@
           node_id_gl = ioff_gl + i                                      &
      &            + (nb_rng%joff + j) * (sl_rng_2%ie - sl_rng_2%is + 1) &
      &            + (nb_rng%koff + k-1)*(sl_rng_2%ie - sl_rng_2%is + 1) &
-     &             * ny_all
+     &             * c_size%ny_all
 
           if (nd .eq. 1) then
-           x = c_size%xmin + ( dble(i)-half ) * xsize / dble(nx_all)
-           y = nb_rng%yoff + dble(j-1) * ysize / dble(ny_all)
+           x = c_size%xmin + ( dble(i)-half )                           &
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = nb_rng%yoff + dble(j-1)                                  &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 2) then
-           x = c_size%xmin + dble(i-1) * xsize / dble(nx_all)
-           y = nb_rng%yoff + (dble(j) - half) * ysize / dble(ny_all)
+           x = c_size%xmin + dble(i-1)                                  &
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = nb_rng%yoff + (dble(j) - half)                           &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 3) then
-           x = c_size%xmin + dble(i-1) * xsize / dble(nx_all)
-           y = nb_rng%yoff + dble(j-1) * ysize / dble(ny_all)
+           x = c_size%xmin + dble(i-1)                                  &
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = nb_rng%yoff + dble(j-1)                                  &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz_edge(nb_rng%koff + k)
           end if
 
@@ -130,22 +136,25 @@
           node_id_gl = ioff_gl + i                                      &
      &          + (nb_rng%joff + j) * (sl_rng_2%ie - sl_rng_2%is + 1)   &
      &          + (nb_rng%koff + k-1) * (sl_rng_2%ie - sl_rng_2%is + 1) &
-     &           * ny_all
+     &           * c_size%ny_all
 
           if (nd .eq. 1) then
            x = c_size%xmax + ( dble(i+c_size%ndepth)-half )             &
-     &                       * xsize / dble(nx_all)
-           y = nb_rng%yoff + dble(j-1) * ysize / dble(ny_all)
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = nb_rng%yoff + dble(j-1)                                  &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 2) then
            x = c_size%xmax + dble(i+c_size%ndepth-1)                    &
-     &                      * xsize / dble(nx_all)
-           y = nb_rng%yoff + (dble(j)-half) * ysize / dble(ny_all)
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = nb_rng%yoff + (dble(j)-half)                             &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 3) then
            x = c_size%xmax + dble(i+c_size%ndepth-1)                    &
-     &                      * xsize / dble(nx_all)
-           y = nb_rng%yoff + dble(j-1) * ysize / dble(ny_all)
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = nb_rng%yoff + dble(j-1)                                  &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz_edge(nb_rng%koff + k)
           end if
 
@@ -189,21 +198,28 @@
           inod = inod + 1
 
           edge_id_lc(i,j,k,nd) =  inod
-          node_id_gl = ioff_gl + (nb_rng%ioff + i) + (j-1)*nx_all       &
+          node_id_gl                                                    &
+     &        = ioff_gl + (nb_rng%ioff + i) + (j-1)*c_size%nx_all       &
      &            + (nb_rng%koff + k-1)*(sl_rng_2%je - sl_rng_2%js + 1) &
-     &             * nx_all
+     &             * c_size%nx_all
 
           if (nd .eq. 1) then
-           x = nb_rng%xoff + (dble(i) - half)*xsize / dble(nx_all)
-           y = c_size%ymin + dble(j-1) * ysize / dble(ny_all)
+           x = nb_rng%xoff + (dble(i) - half)                           &
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = c_size%ymin + dble(j-1)                                  &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 2) then
-           x = nb_rng%xoff + dble(i-1) * xsize / dble(nx_all)
-           y = c_size%ymin + ( dble(j)-half ) * ysize / dble(ny_all)
+           x = nb_rng%xoff + dble(i-1)                                  &
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = c_size%ymin + ( dble(j)-half )                           &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 3) then
-           x = nb_rng%xoff + dble(i-1) * xsize / dble(nx_all)
-           y = c_size%ymin + dble(j-1) * ysize / dble(ny_all)
+           x = nb_rng%xoff + dble(i-1)                                  &
+     &                      * c_size%xsize / dble(c_size%nx_all)
+           y = c_size%ymin + dble(j-1)                                  &
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz_edge(nb_rng%koff + k)
           end if
 
@@ -249,24 +265,28 @@
 
           j1 = c_size%nyi + c_size%ndepth + j
           edge_id_lc(i,j1,k,nd) =  inod
-          node_id_gl = ioff_gl + (nb_rng%ioff + i) + (j-1)*nx_all       &
+          node_id_gl                                                    &
+     &        = ioff_gl + (nb_rng%ioff + i) + (j-1)*c_size%nx_all       &
      &            + (nb_rng%koff + k-1)*(sl_rng_2%je - sl_rng_2%js + 1) &
-     &             * nx_all
+     &             * c_size%nx_all
 
           if (nd .eq. 1) then
-           x = nb_rng%xoff + (dble(i) - half) * xsize / dble(nx_all)
+           x = nb_rng%xoff + (dble(i) - half)                           &
+     &                      * c_size%xsize / dble(c_size%nx_all)
            y = c_size%ymax + dble(c_size%ndepth+j-1)                    &
-     &                      * ysize / dble(ny_all)
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 2) then
-           x = nb_rng%xoff + dble(i-1) * xsize / dble(nx_all)
+           x = nb_rng%xoff + dble(i-1)                                  &
+     &                      * c_size%xsize / dble(c_size%nx_all)
            y = c_size%ymax + ( dble(c_size%ndepth+j)-half )             &
-     &                      * ysize / dble(ny_all)
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz(nb_rng%koff + k)
           else if (nd .eq. 3) then
-           x = nb_rng%xoff + dble(i-1) * xsize / dble(nx_all)
+           x = nb_rng%xoff + dble(i-1)                                  &
+     &                      * c_size%xsize / dble(c_size%nx_all)
            y = c_size%ymax + dble(c_size%ndepth+j-1)                    &
-     &                      * ysize / dble(ny_all)
+     &                      * c_size%ysize / dble(c_size%ny_all)
            z = zz_edge(nb_rng%koff + k)
           end if
 

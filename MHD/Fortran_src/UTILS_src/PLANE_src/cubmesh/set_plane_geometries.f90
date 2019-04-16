@@ -18,7 +18,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_plane_geometries(elm_type)
+      subroutine s_set_plane_geometries(elm_type, c_size)
 !
       use m_precision
 !
@@ -32,18 +32,24 @@
       implicit none
 !
       integer(kind = kint), intent(in) :: elm_type
+      type(size_of_cube), intent(inout) :: c_size
 !
 !
       mesh_type_plane = elm_type
 !
       neib = ndepth
+      c_size%ndepth = ndepth
 !
-      c_size1%xmin = c_size1%xmin - ndepth * xsize / dble(nx_all)
-      c_size1%xmax = c_size1%xmax - ndepth * xsize / dble(nx_all)
-      c_size1%ymin = c_size1%ymin - ndepth * ysize / dble(ny_all)
-      c_size1%ymax = c_size1%ymax - ndepth * ysize / dble(ny_all)
+      c_size%xmin = c_size%xmin                                         &
+     &             - c_size%ndepth * c_size%xsize / dble(c_size%nx_all)
+      c_size%xmax = c_size%xmax                                         &
+     &             - c_size%ndepth * c_size%xsize / dble(c_size%nx_all)
+      c_size%ymin = c_size%ymin                                         &
+     &             - c_size%ndepth * c_size%ysize / dble(c_size%ny_all)
+      c_size%ymax = c_size%ymax                                         &
+     &             - c_size%ndepth * c_size%ysize / dble(c_size%ny_all)
 !
-      call set_plane_resolution(ndepth, c_size1)
+      call set_plane_resolution(ndepth, c_size)
 !
       end subroutine s_set_plane_geometries
 !
