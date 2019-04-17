@@ -16,11 +16,6 @@
 !
       implicit none
 !
-      integer(kind=kint )  :: neib
-!
-      integer(kind=kint ), parameter            ::  nindex = 10000
-      integer(kind=kint ), dimension(0:nindex)  ::   index
-!
 !>     Structure for node group
         type (group_data), save ::         cube_nod_grp
 !>     Structure for element group
@@ -51,7 +46,7 @@
 !
        cube_nod_grp%num_grp = 3
        cube_ele_grp%num_grp = 3 + (c_size%nz_all-1)
-       cube_surf_grp%num_grp = 2*neib
+       cube_surf_grp%num_grp = 2*c_size%ndepth
 !
        call alloc_group_num(cube_nod_grp)
        call alloc_group_num(cube_ele_grp)
@@ -74,7 +69,7 @@
 !
       item_tot = 0
       item_pos = 0
-      index = 0
+      cube_nod_grp%istack_grp = 0
 !                                                 .. zmin
       item_pos = 1
       if (kpe == 1) then 
@@ -82,10 +77,10 @@
         if ( elm_type.eq.332) then
          item_tot = item_tot +  (nx-1)*ny + nx*(ny-1)
         end if
-        index(item_pos) = item_tot
+        cube_nod_grp%istack_grp(item_pos) = item_tot
       else
         item_tot = item_tot
-        index(item_pos) = item_tot
+        cube_nod_grp%istack_grp(item_pos) = item_tot
       endif
 !                                                 .. zmax
       item_pos = 2
@@ -94,10 +89,10 @@
         if ( elm_type.eq.332) then
          item_tot = item_tot +  (nx-1)*ny + nx*(ny-1)
         end if
-        index(item_pos) = item_tot
+        cube_nod_grp%istack_grp(item_pos) = item_tot
       else
         item_tot = item_tot
-        index(item_pos) = item_tot
+        cube_nod_grp%istack_grp(item_pos) = item_tot
       endif
 !
       item_pos = 3
@@ -117,7 +112,7 @@
      &                       .and. jpe .eq. c_size%ndy) then
         item_tot = item_tot+1
       endif
-      index(item_pos) = item_tot
+      cube_nod_grp%istack_grp(item_pos) = item_tot
 !
       end subroutine count_node_group
 !

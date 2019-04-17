@@ -111,7 +111,6 @@
       use write_nod_grp_cube
       use write_ele_grp_cube
       use write_surf_grp_cube
-      use set_plane_geometries
       use neib_nod_cube
       use merge_periodic_comm_table
 !

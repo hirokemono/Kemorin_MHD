@@ -39,8 +39,8 @@
      &      = cube_surf_grp%istack_grp(cube_surf_grp%num_grp)
        call alloc_sf_group_item(cube_surf_grp)
 !
-       call set_surface_group                                           &
-     &    (c_size%ndz, c_each%nx, c_each%ny, c_each%nz, kpe)
+       call set_surface_group(c_size%ndepth, c_size%ndz,                &
+     &     c_each%nx, c_each%ny, c_each%nz, kpe)
        call write_surface_group
 !
       end subroutine const_surface_group
@@ -64,7 +64,7 @@
       item_pos = 0
       cube_surf_grp%istack_grp = 0
 !                                                 .. zmin
-      do ibd = 1, neib
+      do ibd = 1, c_size%ndepth
         item_pos = 2*(ibd-1)+1
         if (kpe == 1) then 
           item_tot = item_tot +  (nx-1)*(ny-1)
@@ -103,9 +103,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_surface_group(ndz, nx, ny, nz, kpe)
+      subroutine set_surface_group(ndepth, ndz, nx, ny, nz, kpe)
 !
-      integer(kind = kint), intent(in) :: ndz
+      integer(kind = kint), intent(in) :: ndepth, ndz
       integer(kind = kint), intent(in) :: nx, ny, nz
       integer(kind = kint), intent(in) :: kpe
 !
@@ -113,7 +113,7 @@
       integer(kind = kint) :: i, j, istart
 !
 !
-       do ibd = 1, neib
+       do ibd = 1, ndepth
 !                                                 .. zmin_surf
          item_pos = 2*(ibd-1)+1
          icou = cube_surf_grp%istack_grp(item_pos-1)

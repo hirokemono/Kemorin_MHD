@@ -41,7 +41,8 @@
 !
 !
        write(l_out,'(10i16)')  cube_nod_grp%num_grp
-       write(l_out,'(10i16)')  index(1:cube_nod_grp%num_grp)
+       write(l_out,'(10i16)')                                           &
+     &         cube_nod_grp%istack_grp(1:cube_nod_grp%num_grp)
 !                                                 ..zmin
        write(l_out,'(a)'  )  'zmin'
        if (kpe == 1) then 
@@ -102,7 +103,8 @@
 !
 !
       write(l_out,'(10i16)')  cube_nod_grp%num_grp
-      write(l_out,'(10i16)')  index(1:cube_nod_grp%num_grp)
+      write(l_out,'(10i16)')                                            &
+     &         cube_nod_grp%istack_grp(1:cube_nod_grp%num_grp)
 !                                                 ..zmin
       write(l_out,'(a)'  )  'zmin'
 !

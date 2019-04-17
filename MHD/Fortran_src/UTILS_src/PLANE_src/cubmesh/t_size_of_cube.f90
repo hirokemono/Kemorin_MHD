@@ -4,6 +4,7 @@
 !     modified by Kemorin
 !
 !!      subroutine set_plane_size(c_size)
+!!      subroutine set_plane_range_w_sleeve(elm_type, c_size)
 !!      subroutine set_plane_resolution(c_size)
 !!      subroutine set_each_cube_resolution(elm_type, kpe, c_size)
 !!        type(size_of_each_cube), intent(inout) :: c_size
@@ -114,6 +115,25 @@
       c_size%zmin = -c_size%zmax
 !
       end subroutine set_plane_size
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_plane_range_w_sleeve(elm_type, c_size)
+!
+      integer(kind = kint), intent(in) :: elm_type
+      type(size_of_cube), intent(inout) :: c_size
+!
+!
+      c_size%xmin = c_size%xmin                                         &
+     &             - c_size%ndepth * c_size%xsize / dble(c_size%nx_all)
+      c_size%xmax = c_size%xmax                                         &
+     &             - c_size%ndepth * c_size%xsize / dble(c_size%nx_all)
+      c_size%ymin = c_size%ymin                                         &
+     &             - c_size%ndepth * c_size%ysize / dble(c_size%ny_all)
+      c_size%ymax = c_size%ymax                                         &
+     &             - c_size%ndepth * c_size%ysize / dble(c_size%ny_all)
+!
+      end subroutine set_plane_range_w_sleeve
 !
 ! ----------------------------------------------------------------------
 !

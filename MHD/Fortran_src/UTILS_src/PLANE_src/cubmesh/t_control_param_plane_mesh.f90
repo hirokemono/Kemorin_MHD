@@ -126,7 +126,7 @@
      &     ( mod(c_size%nz_all,c_size%ndz) .ne. 0 )) then
         stop ' ***** error : illegal input '
       endif
-      if (neib .ge. (c_size%nz_all / c_size%ndz) ) then
+      if (c_size%ndepth .ge. (c_size%nz_all / c_size%ndz) ) then
         write(*,*) 'neighbouring should be less than',                  &
     &        (c_size%nz_all / c_size%ndz)
         stop ' ***** error : illegal input '
