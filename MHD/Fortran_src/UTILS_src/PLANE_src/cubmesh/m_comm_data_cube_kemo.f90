@@ -17,9 +17,6 @@
 !
       integer(kind=kint ), parameter  ::  neibpetot_max = 26
 !
-      integer(kind=kint )                            ::  neibpetot
-      integer(kind=kint ), dimension(neibpetot_max)  ::  neibpe
-!
       type(communication_table), save :: comm
       type(communication_table), save :: comm_new
 !
@@ -64,6 +61,7 @@
          inum0 = 0
        end if
 !
+       allocate ( comm%id_neib(neibpetot_max) )
        allocate ( comm%istack_import(0:neibpetot_max) )
        allocate ( comm%istack_export(0:neibpetot_max) )
 !
@@ -106,14 +104,14 @@
 !
 !
       comm_new%num_neib = 0
-      do inum0 = 1, neibpetot
+      do inum0 = 1, comm%num_neib
         iflag = 0
         do inum1 = 1, inum0-1
-         if ( neibpe(inum0) .eq. neibpe(inum1) ) iflag = 1
+         if(comm%id_neib(inum0) .eq. comm%id_neib(inum1)) iflag = 1
         end do
         if (iflag .eq. 0 ) then
           comm_new%num_neib = comm_new%num_neib + 1
-          comm_new%id_neib(comm_new%num_neib) = neibpe(inum0)
+          comm_new%id_neib(comm_new%num_neib) = comm%id_neib(inum0)
         end if
       end do
 !
@@ -131,8 +129,8 @@
       inum0 = 0
       do n0 = 1, comm_new%num_neib
         inum0 = inum0 + 1
-        do n1 = 1, neibpetot
-          if(comm_new%id_neib(n0) .eq. neibpe(n1) ) then
+        do n1 = 1, comm%num_neib
+          if(comm_new%id_neib(n0) .eq. comm%id_neib(n1)) then
             ist = comm%istack_import(n1-1)+1
             ied = comm%istack_import(n1)
             do inod = ist, ied
@@ -149,8 +147,8 @@
       inum0 = 0
       do n0 = 1, comm_new%num_neib
         inum0 = inum0 + 1
-        do n1 = 1, neibpetot
-          if ( comm_new%id_neib(n0) .eq. neibpe(n1) ) then
+        do n1 = 1, comm%num_neib
+          if ( comm_new%id_neib(n0) .eq. comm%id_neib(n1)) then
             ist = comm%istack_export(n1-1)+1
             ied = comm%istack_export(n1)
             do inod = ist, ied

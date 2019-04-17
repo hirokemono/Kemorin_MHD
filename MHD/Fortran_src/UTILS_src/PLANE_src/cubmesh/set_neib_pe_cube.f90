@@ -6,9 +6,10 @@
 !
 ! ***** set and write for sleeve edges for periodical boundary
 !
-!!      subroutine set_neighboring_pes(nb_rng, ndx, ndy, pe_id)
-!!      subroutine set_neighboring_pes_peri                             &
-!!     &         (nb_rng, ndx, ndy, pe_id, ipe, jpe)
+!!      subroutine set_neighboring_pes                                  &
+!!     &         (nb_rng, ndx, ndy, pe_id, num_neib, id_neib, icou)
+!!      subroutine set_neighboring_pes_peri(nb_rng, ndx, ndy, pe_id,    &
+!!     &          ipe, jpe, num_neib, id_neib, icou)
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !
       module set_neib_pe_cube
@@ -26,11 +27,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_neighboring_pes(nb_rng, ndx, ndy, pe_id)
+      subroutine set_neighboring_pes                                    &
+     &         (nb_rng, ndx, ndy, pe_id, num_neib, id_neib, icou)
 !
       type(neib_range_cube), intent(in) :: nb_rng
       integer(kind = kint), intent(in) :: ndx, ndy
       integer(kind = kint), intent(in) :: pe_id
+      integer(kind = kint), intent(in) :: num_neib
+!
+      integer(kind = kint), intent(inout) :: id_neib(num_neib)
+      integer(kind = kint), intent(inout) :: icou
 !
       integer (kind = kint) :: inp, jnp, knp
 !
@@ -43,8 +49,8 @@
 
             if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
-            neibpetot = neibpetot  + 1
-            neibpe(neibpetot) =  pe_id + inp + jnp*ndx + knp*ndx*ndy
+            icou = icou  + 1
+            id_neib(icou) =  pe_id + inp + jnp*ndx + knp*ndx*ndy
 !
           enddo
         enddo
@@ -54,13 +60,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_neighboring_pes_peri                               &
-     &         (nb_rng, ndx, ndy, pe_id, ipe, jpe)
+      subroutine set_neighboring_pes_peri(nb_rng, ndx, ndy, pe_id,      &
+     &          ipe, jpe, num_neib, id_neib, icou)
 !
       type(neib_range_cube), intent(in) :: nb_rng
       integer(kind = kint), intent(in) :: ndx, ndy
       integer(kind = kint), intent(in) :: pe_id
       integer(kind = kint), intent(in) :: ipe, jpe
+      integer(kind = kint), intent(in) :: num_neib
+!
+      integer(kind = kint), intent(inout) :: id_neib(num_neib)
+      integer(kind = kint), intent(inout) :: icou
 !
       integer(kind = kint) :: inp, jnp, knp
 !
@@ -72,9 +82,8 @@
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
-            neibpetot = neibpetot  + 1
-            neibpe     (neibpetot) = pe_id                              &
-     &                              + ndx-1 + jnp*ndx + knp*ndx*ndy
+            icou = icou  + 1
+            id_neib(icou) = pe_id + ndx-1 + jnp*ndx + knp*ndx*ndy
 !
            enddo
          enddo
@@ -86,9 +95,8 @@
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do jnp = nb_rng%jnp_st, nb_rng%jnp_end
 
-            neibpetot = neibpetot  + 1
-            neibpe     (neibpetot) =  pe_id                             &
-     &                               + 1-ndx + jnp*ndx + knp*ndx*ndy
+            icou = icou  + 1
+            id_neib(icou) =  pe_id + 1-ndx + jnp*ndx + knp*ndx*ndy
 !
            enddo
          enddo
@@ -100,9 +108,8 @@
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do inp = nb_rng%inp_st, nb_rng%inp_end
 
-            neibpetot = neibpetot  + 1
-            neibpe     (neibpetot) =  pe_id                             &
-     &                              + inp + (ndy-1)*ndx +  knp*ndx*ndy
+            icou = icou  + 1
+            id_neib(icou) =  pe_id + inp + (ndy-1)*ndx + knp*ndx*ndy
 !
            enddo
          enddo
@@ -115,9 +122,8 @@
         do knp = nb_rng%knp_st, nb_rng%knp_end
           do inp = nb_rng%inp_st, nb_rng%inp_end
 
-            neibpetot = neibpetot  + 1
-            neibpe     (neibpetot) = pe_id                              &
-     &                              + inp + (1-ndy)*ndx + knp*ndx*ndy
+            icou = icou  + 1
+            id_neib(icou) = pe_id + inp + (1-ndy)*ndx + knp*ndx*ndy
 !
            enddo
          enddo
@@ -129,9 +135,8 @@
       if( ipe == 1 .and. jpe == 1) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
-            neibpetot = neibpetot  + 1
-            neibpe     (neibpetot) = pe_id                              &
-     &                              + ndx-1 + (ndy-1)*ndx + knp*ndx*ndy
+            icou = icou  + 1
+            id_neib(icou) = pe_id + ndx-1 + (ndy-1)*ndx + knp*ndx*ndy
 !
          enddo
        end if
@@ -141,9 +146,8 @@
       if( ipe == ndx .and. jpe == 1 ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
-            neibpetot = neibpetot  + 1
-            neibpe     (neibpetot) =  pe_id                             &
-     &                            + 1-ndx + (ndy-1)*ndx + knp*ndx*ndy
+            icou = icou  + 1
+            id_neib(icou) = pe_id + 1-ndx + (ndy-1)*ndx + knp*ndx*ndy
 !
          enddo
        end if
@@ -153,9 +157,8 @@
       if( ipe == ndx .and. jpe == ndy ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
-            neibpetot = neibpetot  + 1
-            neibpe     (neibpetot) =  pe_id                             &
-     &                         + 1-ndx + (1-ndy)*ndx +  knp*ndx*ndy
+            icou = icou  + 1
+            id_neib(icou) = pe_id + 1-ndx + (1-ndy)*ndx +  knp*ndx*ndy
 !
          enddo
        end if
@@ -166,9 +169,8 @@
       if( ipe == 1 .and. jpe == ndy ) then
         do knp = nb_rng%knp_st, nb_rng%knp_end
 
-            neibpetot = neibpetot  + 1
-            neibpe     (neibpetot) = pe_id                              &
-     &                            + ndx-1 + (1-ndy)*ndx + knp*ndx*ndy
+            icou = icou  + 1
+            id_neib(icou) = pe_id + ndx-1 + (1-ndy)*ndx + knp*ndx*ndy
 !
          enddo
        end if

@@ -106,7 +106,6 @@
       use m_cube_files_data
       use m_ctl_data_4_cub_kemo
 !
-      use set_neib_pe_cube
       use set_cube_node
       use set_cube_ele_connect
       use set_import_cube
@@ -227,17 +226,8 @@
             call set_range_4_neighbour(ipe, jpe, kpe, c_size1, nb_rng1)
 !
 !                                       .. set neighbor pe
-            neibpetot = 0
-
-!      inside cube
-!
-            call set_neighboring_pes                                    &
-     &         (nb_rng1, c_size1%ndx, c_size1%ndy, pe_id)
-!
-!      neiboring information for periodical boundaries
-!
-            call set_neighboring_pes_peri                               &
-     &         (nb_rng1, c_size1%ndx, c_size1%ndy, pe_id, ipe, jpe)
+            call set_neigbouring_plane                                  &
+     &         (c_size1, nb_rng1, pe_id, ipe, jpe)
 !
 !
             call sort_neighboring_pes

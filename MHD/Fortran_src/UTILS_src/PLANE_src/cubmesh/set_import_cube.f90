@@ -31,6 +31,34 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine set_neigbouring_plane                                  &
+     &         (c_size, nb_rng, pe_id, ipe, jpe)
+!
+      use set_neib_pe_cube
+!
+      type(size_of_cube), intent(in) :: c_size
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer(kind = kint), intent(in) :: pe_id, ipe, jpe
+!
+!
+      comm%num_neib = 0
+
+!      inside cube
+!
+      call set_neighboring_pes                                          &
+     &         (nb_rng, c_size%ndx, c_size%ndy, pe_id,                  &
+     &          comm%num_neib, comm%id_neib, comm%num_neib)
+!
+!      neiboring information for periodical boundaries
+!
+      call set_neighboring_pes_peri                                     &
+     &         (nb_rng, c_size%ndx, c_size%ndy, pe_id, ipe, jpe,        &
+     &          comm%num_neib, comm%id_neib, comm%num_neib)
+!
+      end subroutine set_neigbouring_plane
+!
+! ----------------------------------------------------------------------
+!
       subroutine set_import_data(c_size, nb_rng, loc_id, ipe, jpe)
 !
       use count_import_inside_cube
@@ -43,24 +71,23 @@
       type(local_node_id_cube), intent(in) :: loc_id
       integer(kind = kint), intent(in) :: ipe, jpe
 !
-      integer(kind = kint) :: inod
+      integer (kind = kint) :: inod, icou_pe
 !
 !
-      neibpetot = 0
+      icou_pe = 0
       inod   = 0
       call count_import_inside(c_size, nb_rng,                          &
-     &    comm%num_neib, comm%istack_import, neibpetot, inod)
+     &    comm%num_neib, comm%istack_import, icou_pe, inod)
       call count_import_peri_linear(c_size, nb_rng, ipe, jpe,           &
-     &    comm%num_neib, comm%istack_import, neibpetot, inod)
-      comm%ntot_import = comm%istack_import(neibpetot)
-      write(*,*) 'neibpetot ntot_import', neibpetot
+     &    comm%num_neib, comm%istack_import, icou_pe, inod)
+      comm%ntot_import = comm%istack_import(comm%num_neib)
 !
 !                                     .... write nodes 
-      neibpetot = 0
+      icou_pe = 0
       inod = 0
-      call set_import_inside(c_size, nb_rng, loc_id, neibpetot, inod)
+      call set_import_inside(c_size, nb_rng, loc_id, icou_pe, inod)
       call set_import_peri                                              &
-     &   (c_size, nb_rng, loc_id, ipe, jpe, neibpetot, inod)
+     &   (c_size, nb_rng, loc_id, ipe, jpe, icou_pe, inod)
 !
       end subroutine set_import_data
 !
@@ -79,28 +106,28 @@
       type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: ipe, jpe, kpe
 !
-      integer (kind = kint) :: inod
+      integer (kind = kint) :: inod, icou_pe
 !
 !
 !                                     .... count nodes 
       inod = 0
-      neibpetot = 0
+      icou_pe = 0
       call count_import_inside_quad(c_size, nb_rng, kpe,                &
-     &    comm%num_neib, comm%istack_import, neibpetot, inod)
+     &    comm%num_neib, comm%istack_import, icou_pe, inod)
       call count_import_peri_quad(c_size, nb_rng, ipe, jpe, kpe,        &
-     &    comm%num_neib, comm%istack_import, neibpetot, inod)
+     &    comm%num_neib, comm%istack_import, icou_pe, inod)
 !
-      comm%ntot_import = comm%istack_import(neibpetot)
+      comm%ntot_import = comm%istack_import(comm%num_neib)
       write(*,*) ipe, jpe, kpe, 'ntot_import', comm%ntot_import
 !
 !
 !                                     .... write nodes 
       inod = 0
-      neibpetot = 0
+      icou_pe = 0
       call set_import_inside_quad                                       &
-     &   (c_size, nb_rng, loc_id, kpe, neibpetot, inod)
+     &   (c_size, nb_rng, loc_id, kpe, icou_pe, inod)
       call set_import_peri_quad                                         &
-     &   (c_size, nb_rng, loc_id, ipe, jpe, kpe, neibpetot, inod)
+     &   (c_size, nb_rng, loc_id, ipe, jpe, kpe, icou_pe, inod)
 !
       write(*,*) ipe, jpe, kpe, 'import res.', inod
 !
@@ -121,23 +148,22 @@
       type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: ipe, jpe
 !
-      integer (kind = kint) :: inod
+      integer (kind = kint) :: inod, icou_pe
 !
 !
-      neibpetot = 0
+      icou_pe = 0
       inod   = 0
       call count_export_inside(c_size, nb_rng,                          &
-     &    comm%num_neib, comm%istack_export, neibpetot, inod)
+     &    comm%num_neib, comm%istack_export, icou_pe, inod)
       call count_export_peri_linear(c_size, nb_rng, ipe, jpe,           &
-     &    comm%num_neib, comm%istack_export, neibpetot, inod)
-      comm%ntot_export = comm%istack_export(neibpetot)
-      write(*,*) 'neibpetot ntot_export', neibpetot
+     &    comm%num_neib, comm%istack_export, icou_pe, inod)
+      comm%ntot_export = comm%istack_export(comm%num_neib)
 !
       inod = 0
-      neibpetot = 0
-      call set_export_inside(c_size, nb_rng, loc_id, neibpetot, inod)
+      icou_pe = 0
+      call set_export_inside(c_size, nb_rng, loc_id, icou_pe, inod)
       call set_export_peri                                              &
-     &   (c_size, nb_rng, loc_id, ipe, jpe, neibpetot, inod)
+     &   (c_size, nb_rng, loc_id, ipe, jpe, icou_pe, inod)
 !
       end subroutine set_export_data
 !
@@ -156,24 +182,24 @@
       type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: ipe, jpe, kpe
 !
-      integer (kind = kint) :: inod
+      integer (kind = kint) :: inod, icou_pe
 !
 ! ***** set and write export nodes
 !                                     .... count nodes 
       inod = 0
-      neibpetot = 0
+      icou_pe = 0
       call count_export_inside_quad(c_size, nb_rng, kpe,                &
-     &    comm%num_neib, comm%istack_export, neibpetot, inod)
+     &    comm%num_neib, comm%istack_export, icou_pe, inod)
       call count_export_peri_quad(c_size, nb_rng, ipe, jpe, kpe,        &
-     &    comm%num_neib, comm%istack_export, neibpetot, inod)
-      comm%ntot_export = comm%istack_export(neibpetot)
+     &    comm%num_neib, comm%istack_export, icou_pe, inod)
+      comm%ntot_export = comm%istack_export(comm%num_neib)
 !
       inod = 0
-      neibpetot = 0
+      icou_pe = 0
       call set_export_inside_quad                                       &
-     &   (c_size, nb_rng, loc_id, kpe, neibpetot, inod)
+     &   (c_size, nb_rng, loc_id, kpe, icou_pe, inod)
       call set_export_peri_quad                                         &
-     &   (c_size, nb_rng, loc_id, ipe, jpe, kpe, neibpetot, inod)
+     &   (c_size, nb_rng, loc_id, ipe, jpe, kpe, icou_pe, inod)
 !
       end subroutine set_export_data_quad
 !
