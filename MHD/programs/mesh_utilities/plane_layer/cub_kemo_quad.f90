@@ -118,6 +118,7 @@
       use neib_edge_cube
       use merge_periodic_comm_table
       use mesh_data_IO
+use m_fem_mesh_labels
 !
       implicit  none
 
@@ -147,7 +148,8 @@
       type(filter_data_4_plane), save :: cube_fil1
 
 !>     Structure of group
-      type (mesh_groups), save :: cube_groups
+      type(mesh_geometry), save :: mesh
+      type(mesh_groups), save :: cube_groups
       type(communication_table), save :: comm
       type(communication_table), save :: comm_IO
 !
@@ -247,9 +249,10 @@
 !
 ! ..... write 2.2 element (connection)
 !
-            write(*,*) 'set_ele_connect_quad', ipe, jpe, kpe
             call set_ele_connect_quad(c_size1, c_each1, nb_rng1,        &
-     &          loc_id1, elm_type, ipe, jpe)
+     &          loc_id1, elm_type, ipe, jpe, mesh%ele)
+            write(l_out,'(a)', advance='NO') hd_fem_elem()
+            call write_element_info(l_out, mesh%ele)
 
 !
 ! ..... write 3.import / export information
@@ -278,9 +281,11 @@
             call const_surface_group                                    &
      &         (c_size1, c_each1, kpe, cube_groups%surf_grp)
 
+
             write(*,*) 'write_communication_data', ipe, jpe, kpe
             call write_communication_data(l_out, comm_IO)
             call dealloc_comm_table(comm_IO)
+            call deallocate_ele_connect_type(mesh%ele)
 !
             call write_mesh_groups(l_out, cube_groups)
             call dealloc_groups_data(cube_groups)

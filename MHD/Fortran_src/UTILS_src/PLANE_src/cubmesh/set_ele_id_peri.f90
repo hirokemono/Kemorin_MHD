@@ -6,7 +6,7 @@
 !
 !!      subroutine set_element_id_periodic                              &
 !!     &         (c_size, nb_rng, nx, ny, ipe, jpe,                     &
-!!     &          i, j, k, element_id, element_id_gl)
+!!     &          i, j, k, icou, element_id_gl)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !
@@ -24,7 +24,7 @@
 !
       subroutine set_element_id_periodic                                &
      &         (c_size, nb_rng, nx, ny, ipe, jpe,                       &
-     &          i, j, k, element_id, element_id_gl)
+     &          i, j, k, icou, element_id_gl)
 !
       use t_size_of_cube
       use t_neib_range_cube
@@ -34,11 +34,10 @@
       integer (kind=kint), intent(in) :: nx, ny
       integer(kind = kint), intent(in) :: ipe, jpe
       integer(kind = kint), intent(in) :: i, j, k
-      integer(kind = kint), intent(inout) :: element_id, element_id_gl
+      integer(kind = kint), intent(inout) :: icou, element_id_gl
 !
 !
-      element_id    =  element_id + 1
-!
+      icou =  icou + 1
 !
       element_id_gl =  (nb_rng%ioff + i  )                              &
      &               + (nb_rng%joff + j-1) * (c_size%nx_all - 1)        &
