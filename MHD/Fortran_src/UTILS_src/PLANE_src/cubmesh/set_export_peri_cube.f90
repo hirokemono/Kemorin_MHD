@@ -250,7 +250,7 @@
      &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
      &             ithree, comm%ntot_export, comm%item_export, inod)
                write(*,*) 'export 1 from',                              &
-     &             (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &             comm%id_neib(icou), inp, jnp, knp, inod
 
               enddo
              enddo
@@ -286,7 +286,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 2 from',                            &
-     &               (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &               comm%id_neib(icou), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -319,7 +319,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 3 from',                            &
-     &               (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &               comm%id_neib(icou), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -356,7 +356,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 4 from',                            &
-     &               (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &               comm%id_neib(icou), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -391,7 +391,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 5 from',                            &
-     &                (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                comm%id_neib(icou), inp, jnp, knp, inod
 
               enddo
             endif
@@ -429,7 +429,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 6 from',                            &
-     &               (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &               comm%id_neib(icou), inp, jnp, knp, inod
 
               enddo
             endif
@@ -468,7 +468,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 7 from',                            &
-     &               (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &               comm%id_neib(icou), inp, jnp, knp, inod
 
               enddo
             endif
@@ -506,7 +506,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 8 to',                              &
-     &              (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &              comm%id_neib(icou), inp, jnp, knp, inod
 
               enddo
             endif

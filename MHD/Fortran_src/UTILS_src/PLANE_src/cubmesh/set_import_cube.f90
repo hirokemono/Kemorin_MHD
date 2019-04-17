@@ -55,6 +55,8 @@
      &         (nb_rng, c_size%ndx, c_size%ndy, pe_id, ipe, jpe,        &
      &          comm%num_neib, comm%id_neib, comm%num_neib)
 !
+      comm%id_neib(1:comm%num_neib) = comm%id_neib(1:comm%num_neib) - 1
+!
       end subroutine set_neigbouring_plane
 !
 ! ----------------------------------------------------------------------

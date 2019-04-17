@@ -89,26 +89,26 @@
                call set_im_node(sl_rng1, loc_id,                        &
      &             comm%ntot_import, comm%item_import, inod)
                write(*,*) 'import node 0 from',                         &
-     &                     (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                     comm%id_neib(icou), inp, jnp, knp, inod
 
                call set_im_edge                                         &
      &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
      &             ione, comm%ntot_import, comm%item_import, inod)
                write(*,*) 'import edge1 0 from',                        &
-     &                     (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                     comm%id_neib(icou), inp, jnp, knp, inod
 
                call set_im_edge                                         &
      &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
      &             itwo, comm%ntot_import, comm%item_import, inod)
                write(*,*) 'import edge2 0 from',                        &
-     &                     (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                     comm%id_neib(icou), inp, jnp, knp, inod
 
                call set_im_edge                                         &
      &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
      &             ithree, comm%ntot_import, comm%item_import, inod)
 
                write(*,*) 'import edge3 0 from',                        &
-     &                     (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                     comm%id_neib(icou), inp, jnp, knp, inod
 
                 enddo
               enddo

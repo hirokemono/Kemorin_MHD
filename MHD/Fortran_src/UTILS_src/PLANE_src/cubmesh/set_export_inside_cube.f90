@@ -94,25 +94,25 @@
                call set_ex_node(sl_rng1, loc_id,                        &
      &             comm%ntot_export, comm%item_export, inod)
                write(*,*) 'export node 0 to',                           &
-     &                   (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                   comm%id_neib(icou), inp, jnp, knp, inod
 
                call set_ex_edge                                         &
      &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
      &             ione, comm%ntot_export, comm%item_export, inod)
                write(*,*) 'export edge1 0 to',                          &
-     &                   (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                   comm%id_neib(icou), inp, jnp, knp, inod
 
                call set_ex_edge                                         &
      &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
      &             itwo, comm%ntot_export, comm%item_export, inod)
                write(*,*) 'export edge2 0 to',                          &
-     &                   (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                   comm%id_neib(icou), inp, jnp, knp, inod
 
                call set_ex_edge                                         &
      &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
      &             ithree, comm%ntot_export, comm%item_export, inod)
                write(*,*) 'export edge3 0 to',                          &
-     &                   (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                   comm%id_neib(icou), inp, jnp, knp, inod
 
               enddo
              enddo

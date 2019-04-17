@@ -174,12 +174,8 @@
       integer(kind = kint), intent(in) :: pe_id
 !
 !
-      comm_new%id_neib(1:comm_new%num_neib)    &
-     &     = comm_new%id_neib(1:comm_new%num_neib) - 1
       write(l_out,'(a)', advance='NO') hd_fem_para()
       call write_domain_info(l_out, pe_id-1, comm_new)
-      comm_new%id_neib(1:comm_new%num_neib)    &
-     &     = comm_new%id_neib(1:comm_new%num_neib) + 1
 !
       end subroutine write_pe_data
 !

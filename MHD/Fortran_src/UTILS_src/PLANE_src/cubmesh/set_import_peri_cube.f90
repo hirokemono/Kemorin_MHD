@@ -252,7 +252,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import  1 from',                           &
-     &                     (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                     comm%id_neib(icou), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -288,7 +288,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 2 from',                            &
-     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                      comm%id_neib(icou), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -320,7 +320,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 3 from',                            &
-     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                      comm%id_neib(icou), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -356,7 +356,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 4 from',                            &
-     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                      comm%id_neib(icou), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -390,7 +390,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 5 from',                            &
-     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                      comm%id_neib(icou), inp, jnp, knp, inod
 
               enddo
             endif
@@ -427,7 +427,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 6 from',                            &
-     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                      comm%id_neib(icou), inp, jnp, knp, inod
 
               enddo
             endif
@@ -466,7 +466,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 7 from',                            &
-     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                      comm%id_neib(icou), inp, jnp, knp, inod
 
               enddo
             endif
@@ -503,7 +503,7 @@
      &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
      &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 8 from',                            &
-     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
+     &                      comm%id_neib(icou), inp, jnp, knp, inod
 
               enddo
             endif
