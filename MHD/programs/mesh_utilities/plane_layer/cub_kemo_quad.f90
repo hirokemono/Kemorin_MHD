@@ -183,8 +183,6 @@
       call alloc_node_informations(c_size1, loc_id1)
       call alloc_edge_informations(loc_id1)
 !
-      call allocate_cube_ele_group_id(c_size1)
-!
 !    allocate work array
 !
       call alloc_work_4_filter_nod(c_size1, c_fils%c_fil_nod)
@@ -292,13 +290,9 @@
 !    output element group
 !
 !                                     .. count element group and stack
-            call count_element_group(c_size1, c_each1%elm_fil1_tot)
+            call const_element_group                                    &
+     &         (c_size1, c_each1, nb_rng1, kpe)
 !
-            call write_cube_ele_group                                   &
-     &         (c_size1, c_each1%nx, c_each1%ny, c_each1%nz,            &
-     &          kpe, nb_rng1%koff)
-!
-
 !    output surface group
 !
 !                                     .. count element group and stack
@@ -306,7 +300,11 @@
      &         (c_size1, c_each1%nx, c_each1%ny, kpe)
             call write_surface_group                                    &
      &         (c_size1%ndz, c_each1%nx, c_each1%ny, c_each1%nz, kpe)
-!                                       ... to next pe 
+
+            call dealloc_group_num(cube_nod_grp)
+            call dealloc_group(cube_ele_grp)
+            call dealloc_sf_group_num(cube_surf_grp)
+!
 !   construct filtering information
 !
             call alloc_work_4_filter_ele                                &
@@ -329,7 +327,6 @@
 !
             call reset_node_info(loc_id1)
             call reset_edge_info(loc_id1)
-            call reset_cube_ele_group_id
             call reset_work_4_filter_nod(c_fils%c_fil_nod)
 !
           enddo

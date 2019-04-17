@@ -36,8 +36,8 @@
 !
 !
        write(l_out,'(a)', advance='NO') hd_fem_sfgrp()
-       write(l_out,'(10i16)') sufgrptot
-       write(l_out,'(10i16)') (index(i),i=1,sufgrptot)
+       write(l_out,'(10i16)') cube_surf_grp%num_grp
+       write(l_out,'(10i16)') index(1:cube_surf_grp%num_grp)
 !
        do ibd = 1, neib
 !                                                 .. zmin_surf

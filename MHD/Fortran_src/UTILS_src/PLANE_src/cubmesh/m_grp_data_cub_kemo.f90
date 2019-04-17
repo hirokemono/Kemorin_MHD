@@ -11,46 +11,28 @@
       module m_grp_data_cub_kemo
 !
       use m_precision
+      use t_group_data
       use t_size_of_cube
 !
       implicit none
 !
-      integer(kind=kint )  ::  nodgrptot
-      integer(kind=kint )  ::  elmgrptot
-      integer(kind=kint )  ::  sufgrptot
-!
       integer(kind=kint )  :: neib
-!
-      integer(kind=kint ), dimension(:), allocatable  :: iele_group_id
 !
       integer(kind=kint ), parameter            ::  nindex = 10000
       integer(kind=kint ), dimension(0:nindex)  ::   index
+!
+!>     Structure for node group
+        type (group_data), save ::         cube_nod_grp
+!>     Structure for element group
+        type (group_data), save ::         cube_ele_grp
+!>     Structure for surface group
+        type (surface_group_data), save :: cube_surf_grp
 !
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
-!
-      subroutine allocate_cube_ele_group_id(c_size)
-!
-      type(size_of_cube), intent(in) :: c_size
-!
-!
-      allocate(iele_group_id(2*c_size%nnod_cubmesh))
-      call reset_cube_ele_group_id
-!
-      end subroutine allocate_cube_ele_group_id
-!
-!-----------------------------------------------------------------------
-!
-       subroutine reset_cube_ele_group_id
-!
-       iele_group_id = 0
-!
-       end subroutine reset_cube_ele_group_id
-!
-! ---------------------------------------------------------------------
 !
        subroutine write_labels_4_group(c_size)
 !
@@ -67,9 +49,13 @@
 ! 
 ! ***** write boundary condition (x,y,z=0 plane sym., x-force)
 !
-       elmgrptot = 3 + (c_size%nz_all-1)
-       nodgrptot = 3
-       sufgrptot = 2*neib
+       cube_nod_grp%num_grp = 3
+       cube_ele_grp%num_grp = 3 + (c_size%nz_all-1)
+       cube_surf_grp%num_grp = 2*neib
+!
+       call alloc_group_num(cube_nod_grp)
+       call alloc_group_num(cube_ele_grp)
+       call alloc_sf_group_num(cube_surf_grp)
 !
        end subroutine write_labels_4_group
 !

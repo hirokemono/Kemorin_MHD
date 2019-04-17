@@ -13,14 +13,66 @@
 !
       use m_grp_data_cub_kemo
       use t_size_of_cube
+      use t_neib_range_cube
 !
       implicit none
+!
+      character(len=kchara), parameter :: group_head = 'fluid_layer_'
+      integer(kind=kint), allocatable  :: iele_group_id(:)
+!
+      private :: group_head, iele_group_id
+      private :: allocate_cube_ele_group_id
+      private :: deallocate_cube_ele_group_id
+      private :: count_element_group, set_cube_ele_group
+      private :: write_cube_ele_group
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine const_element_group(c_size, c_each, nb_rng, kpe)
+!
+      type(size_of_cube), intent(in) :: c_size
+      type(size_of_each_cube), intent(in) :: c_each
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer(kind = kint), intent(in) :: kpe
+!
+!
+      call allocate_cube_ele_group_id(c_size)
+      call count_element_group(c_size, c_each%elm_fil1_tot)
+!
+      call set_cube_ele_group                                           &
+     &   (c_size, c_each%nx, c_each%ny, c_each%nz, kpe, nb_rng%koff)
+      call deallocate_cube_ele_group_id
+!
+      call write_cube_ele_group(c_size)
+!
+      end subroutine const_element_group
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine allocate_cube_ele_group_id(c_size)
+!
+      type(size_of_cube), intent(in) :: c_size
+!
+!
+      allocate(iele_group_id(2*c_size%nnod_cubmesh))
+      if(c_size%nnod_cubmesh .gt. 0) iele_group_id = 0
+!
+      end subroutine allocate_cube_ele_group_id
+!
+!-----------------------------------------------------------------------
+!
+       subroutine deallocate_cube_ele_group_id
+!
+       deallocate(iele_group_id)
+!
+       end subroutine deallocate_cube_ele_group_id
+!
+! ---------------------------------------------------------------------
 !
       subroutine count_element_group(c_size, elm_fil1_tot)
 !
@@ -32,28 +84,31 @@
 !
        item_tot = 0
        item_pos = 0
-       index = 0
+       cube_ele_grp%istack_grp = 0
 !                                                 .. all
 !
        item_pos = 1
        item_tot = item_tot + (c_size%nz_all - 1)
-       index(item_pos) = item_tot
+       cube_ele_grp%istack_grp(item_pos) = item_tot
+       cube_ele_grp%grp_name(item_pos) = 'layer_start'
+!
        item_pos = 2
        item_tot = item_tot + (c_size%nz_all - 1)
-       index(item_pos) = item_tot
+       cube_ele_grp%istack_grp(item_pos) = item_tot
+       cube_ele_grp%grp_name(item_pos) = 'layer_end'
 !
        item_pos = 3
        item_tot = item_tot + elm_fil1_tot
-       index(item_pos) = item_tot
+       cube_ele_grp%istack_grp(item_pos) = item_tot
+       cube_ele_grp%grp_name(item_pos) = 'conductive_fluid'
 !
        end subroutine count_element_group
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_cube_ele_group(c_size, nx, ny, nz, kpe, koff)
+      subroutine set_cube_ele_group(c_size, nx, ny, nz, kpe, koff)
 !
-      use m_cube_files_data
-      use m_fem_mesh_labels
+      use set_parallel_file_name
 !
       type(size_of_cube), intent(in) :: c_size
       integer (kind=kint), intent(in) :: nx, ny, nz
@@ -63,10 +118,8 @@
       integer(kind = kint) :: iele, element_id
       integer(kind = kint) :: i, j, k, item_pos, item_tot
 !
-      character(len=kchara) :: group_name
 !
        iele = 0
-!
        element_id = 1
        do k = 1, c_size%nz_all-1
         iele = iele + 1
@@ -107,73 +160,56 @@
             end if
            end if
 !
-           enddo
-         enddo
-       enddo
-!
-!
+           end do
+         end do
+       end do
 !
 !       write(*,*) 'nz_all gc',                                         &
 !     &           c_size%nx_all, c_size%ny_all, c_size%nz_all
-!       write(*,*) 'index', size(index)
-       item_tot = index(3)
+       item_tot = cube_ele_grp%istack_grp(3)
        do k = 1, (c_size%nz_all-1)
+         j = k + cube_ele_grp%istack_grp(1)
          item_pos = 3 + k
          item_tot = item_tot + 1                                        &
-     &                  + iele_group_id(k+index(1)) - iele_group_id(k)
-         index(item_pos) = item_tot
+     &             + iele_group_id(j) - iele_group_id(k)
+         cube_ele_grp%istack_grp(item_pos) = item_tot
+!
+         call add_index_after_name                                      &
+      &     (k, group_head, cube_ele_grp%grp_name(k+3))
        end do
 !
        do k = 1, (c_size%nz_all-1)
-         do i = iele_group_id(k), iele_group_id(k+index(1))
+         j = k + cube_ele_grp%istack_grp(1)
+         do i = iele_group_id(k), iele_group_id(j)
            iele = iele + 1
            iele_group_id(iele) = i
          end do
        end do
 !
+       cube_ele_grp%num_item                                            &
+      &      = cube_ele_grp%istack_grp(cube_ele_grp%num_grp)
+       call alloc_group_item(cube_ele_grp)
 !
-         write(l_out,'(a)', advance='NO') hd_fem_elegrp()
-         write(l_out,'(10i16)') elmgrptot
-         write(l_out,'(10i16)') (index(i),i=1,elmgrptot)
+!$omp parallel workshare
+       cube_ele_grp%item_grp(1:cube_ele_grp%num_item)                   &
+      &      =  iele_group_id(1:cube_ele_grp%num_item)
+!$omp end parallel workshare
 !
-         write(l_out,'(  a  )') 'layer_start'
-         write(l_out,'(6i16)') (iele_group_id(i),i=1, index(1))
+       end subroutine set_cube_ele_group
 !
-         write(l_out,'(  a  )') 'layer_end'
-         write(l_out,'(6i16)')                                          &
-     &            (iele_group_id(i),i=index(1)+1, index(2))
+! ----------------------------------------------------------------------
 !
-         write(l_out,'(  a  )') 'conductive_fluid'
-         write(l_out,'(6i16)')                                          &
-     &            (iele_group_id(i),i=index(2)+1, index(3))
+      subroutine write_cube_ele_group(c_size)
 !
-        do k = 1, (c_size%nz_all-1)
-!          write(*,*) 'layering group', k, c_size%nz_all
-          if      (k.lt.10) then
-            write(group_name,1001) k
-          else if (k.lt.100) then
-            write(group_name,1002) k
-          else if (k.lt.1000) then
-            write(group_name,1003) k
-          else if (k.lt.10000) then
-            write(group_name,1004) k
-          else if (k.lt.100000) then
-             write(group_name,1005) k
-          else if (k.lt.1000000) then
-            write(group_name,1006) k
-          end if
+      use m_cube_files_data
+      use m_fem_mesh_labels
+      use groups_IO
 !
-          write(l_out,'(a)') trim(group_name)
-          write(l_out,'(6i16)')                                         &
-     &            (iele_group_id(i),i=index(2+k)+1, index(3+k))
-        end do
+      type(size_of_cube), intent(in) :: c_size
 !
- 1001 format('fluid_layer_',i1)
- 1002 format('fluid_layer_',i2)
- 1003 format('fluid_layer_',i3)
- 1004 format('fluid_layer_',i4)
- 1005 format('fluid_layer_',i5)
- 1006 format('fluid_layer_',i6)
+!
+       write(l_out,'(a)', advance='NO') hd_fem_elegrp()
+       call write_grp_data(l_out, cube_ele_grp)
 !
        end subroutine write_cube_ele_group
 !

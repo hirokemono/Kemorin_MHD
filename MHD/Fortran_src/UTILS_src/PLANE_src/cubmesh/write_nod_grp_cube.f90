@@ -36,12 +36,12 @@
       integer (kind=kint), intent(in) :: nx, ny, nz
       integer (kind=kint), intent(in) :: ipe, jpe, kpe
 !
-      integer (kind=kint) :: i, j, i1, j1
+      integer (kind=kint) :: j, i1, j1
       integer (kind=kint) :: num0
 !
 !
-       write(l_out,'(10i16)')   nodgrptot
-       write(l_out,'(10i16)')  (index(i),i=1,nodgrptot)
+       write(l_out,'(10i16)')  cube_nod_grp%num_grp
+       write(l_out,'(10i16)')  index(1:cube_nod_grp%num_grp)
 !                                                 ..zmin
        write(l_out,'(a)'  )  'zmin'
        if (kpe == 1) then 
@@ -96,13 +96,13 @@
       integer (kind=kint), intent(in) :: nx, ny, nz
       integer (kind=kint), intent(in) :: ipe, jpe, kpe
 !
-      integer (kind=kint) :: ia, ja, ib, jb
-      integer (kind=kint) :: i, j, i1, j1
+      integer (kind=kint) :: ja, jb
+      integer (kind=kint) :: j, i1, j1
       integer (kind=kint) :: num0
 !
 !
-      write(l_out,'(10i16)')   nodgrptot
-      write(l_out,'(10i16)')  (index(i),i=1,nodgrptot)
+      write(l_out,'(10i16)')  cube_nod_grp%num_grp
+      write(l_out,'(10i16)')  index(1:cube_nod_grp%num_grp)
 !                                                 ..zmin
       write(l_out,'(a)'  )  'zmin'
 !
