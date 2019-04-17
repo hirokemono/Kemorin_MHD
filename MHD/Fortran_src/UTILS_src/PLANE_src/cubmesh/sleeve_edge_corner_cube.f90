@@ -4,17 +4,18 @@
 !      Written by Kemorin
 !
 !!      subroutine set_sleeve_edge_xmin_ymin(c_size, c_vert, sl_rng,    &
-!!     &          kpe, knp, ioff_gl, koff, nd, loc_id, inod)
+!!     &          kpe, knp, ioff_gl, koff, nd, loc_id, node, inod)
 !!      subroutine set_sleeve_edge_xmax_ymin(c_size, c_vert, sl_rng,    &
-!!     &          kpe, knp, ioff_gl, koff, nd, loc_id, inod)
+!!     &          kpe, knp, ioff_gl, koff, nd, loc_id, node, inod)
 !!      subroutine set_sleeve_edge_xmax_ymax(c_size, c_vert, sl_rng,    &
-!!     &          kpe, knp, ioff_gl, koff, nd, loc_id, inod)
+!!     &          kpe, knp, ioff_gl, koff, nd, loc_id, node, inod)
 !!      subroutine set_sleeve_edge_xmin_ymax(c_size, c_vert, sl_rng,    &
-!!     &          kpe, knp, ioff_gl, koff, nd, loc_id, inod)
+!!     &          kpe, knp, ioff_gl, koff, nd, loc_id, node, inod)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(vertical_position_cube), intent(in) :: c_vert
 !!        type(slleve_range), intent(in) :: sl_rng
 !!        type(local_node_id_cube), intent(inout) :: loc_id
+!!        type(node_data), intent(inout) :: node
 !
       module sleeve_edge_corner_cube
 !
@@ -25,7 +26,7 @@
       use t_sleeve_cube
       use t_cube_position
       use t_local_node_id_cube
-      use m_cube_files_data
+      use t_geometry_data
 !
       implicit none
 !
@@ -36,7 +37,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_sleeve_edge_xmin_ymin(c_size, c_vert, sl_rng,      &
-     &          kpe, knp, ioff_gl, koff, nd, loc_id, inod)
+     &          kpe, knp, ioff_gl, koff, nd, loc_id, node, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(in) :: c_vert
@@ -48,12 +49,11 @@
 !
       integer (kind = kint), intent(inout) :: inod
       type(local_node_id_cube), intent(inout) :: loc_id
+      type(node_data), intent(inout) :: node
 !
-      integer (kind = kint) :: node_id_gl
       integer (kind = kint) :: i, j, k
       integer (kind = kint) ::is0, js0, ks0
       integer (kind = kint) ::ie0, je0, ke0
-      real (kind = kreal) :: x, y, z
 !
        is0 = 1
        ie0 = c_size%ndepth
@@ -71,31 +71,28 @@
           inod = inod + 1
 
           loc_id%edge_id_lc(i,j,k,nd) =  inod
-          node_id_gl = ioff_gl + i + (j-1) * c_size%ndepth              &
+          node%inod_global(inod) = ioff_gl + i + (j-1) * c_size%ndepth  &
      &                + (koff+k-1) * c_size%ndepth**2
 
           if (nd .eq. 1) then
-           x = c_size%xmin + ( dble(i)-half )                           &
+           node%xx(inod,1) = c_size%xmin + ( dble(i)-half )             &
      &                      * c_size%xsize / dble(c_size%nx_all)
-           y = c_size%ymin + dble(j-1)                                  &
+           node%xx(inod,2) = c_size%ymin + dble(j-1)                    &
      &                      * c_size%ysize / dble(c_size%ny_all)
-           z = c_vert%zz(koff+k)
+           node%xx(inod,3) = c_vert%zz(koff+k)
           else if (nd .eq. 2) then
-           x = c_size%xmin + dble(i-1)                                  &
+           node%xx(inod,1) = c_size%xmin + dble(i-1)                    &
      &                      * c_size%xsize / dble(c_size%nx_all)
-           y = c_size%ymin + ( dble(j)-half )                           &
+           node%xx(inod,2) = c_size%ymin + ( dble(j)-half )             &
      &                      * c_size%ysize / dble(c_size%ny_all)
-           z = c_vert%zz(koff+k)
+           node%xx(inod,3) = c_vert%zz(koff+k)
           else if (nd .eq. 3) then
-           x = c_size%xmin + dble(i-1)                                  &
+           node%xx(inod,1) = c_size%xmin + dble(i-1)                    &
      &                      * c_size%xsize / dble(c_size%nx_all)
-           y = c_size%ymin + dble(j-1)                                  &
+           node%xx(inod,2) = c_size%ymin + dble(j-1)                    &
      &                      * c_size%ysize / dble(c_size%ny_all)
-           z = c_vert%zz_edge(koff+k)
+           node%xx(inod,3) = c_vert%zz_edge(koff+k)
           end if
-!
-           write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
-!
          end do
         end do
        end do
@@ -105,7 +102,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_sleeve_edge_xmax_ymin(c_size, c_vert, sl_rng,      &
-     &          kpe, knp, ioff_gl, koff, nd, loc_id, inod)
+     &          kpe, knp, ioff_gl, koff, nd, loc_id, node, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(in) :: c_vert
@@ -117,12 +114,11 @@
 !
       integer (kind = kint), intent(inout) :: inod
       type(local_node_id_cube), intent(inout) :: loc_id
+      type(node_data), intent(inout) :: node
 !
-      integer (kind = kint) :: node_id_gl
       integer (kind = kint) :: i, j, k, i1
       integer (kind = kint) :: is0, js0, ks0
       integer (kind = kint) :: ie0, je0, ke0
-      real (kind = kreal) :: x, y, z
 !
        is0 = 1
        ie0 = c_size%ndepth
@@ -142,31 +138,28 @@
           i1 = c_size%nxi + c_size%ndepth + i
 
           loc_id%edge_id_lc(i1,j,k,nd) =  inod
-          node_id_gl = ioff_gl + i + (j-1) * (ie0 - is0 + 1)            &
+          node%inod_global(inod) = ioff_gl + i + (j-1) * (ie0-is0+1)    &
      &                + (koff+k-1) * (ie0 - is0 + 1) * c_size%ndepth
 
           if (nd .eq. 1) then
-           x = c_size%xmax + ( dble(i+c_size%ndepth)-half )             &
+           node%xx(inod,1) = c_size%xmax + (dble(i+c_size%ndepth)-half) &
      &                       * c_size%xsize / dble(c_size%nx_all)
-           y = c_size%ymin + dble(j-1)                                  &
+           node%xx(inod,2) = c_size%ymin + dble(j-1)                    &
      &                       * c_size%ysize / dble(c_size%ny_all)
-           z = c_vert%zz(koff+k)
+           node%xx(inod,3) = c_vert%zz(koff+k)
           else if (nd .eq. 2) then
-           x = c_size%xmax + ( dble(i+c_size%ndepth-1) )                &
+           node%xx(inod,1) = c_size%xmax + ( dble(i+c_size%ndepth-1) )  &
      &                      * c_size%xsize / dble(c_size%nx_all)
-           y = c_size%ymin + ( dble(j)-half )                           &
+           node%xx(inod,2) = c_size%ymin + ( dble(j)-half )             &
      &                      * c_size%ysize / dble(c_size%ny_all)
-           z = c_vert%zz(koff+k)
+           node%xx(inod,3) = c_vert%zz(koff+k)
           else if (nd .eq. 3) then
-           x = c_size%xmax + ( dble(i+c_size%ndepth-1) )                &
+           node%xx(inod,1) = c_size%xmax + ( dble(i+c_size%ndepth-1) )  &
      &                      * c_size%xsize / dble(c_size%nx_all)
-           y = c_size%ymin + dble(j-1)                                  &
+           node%xx(inod,2) = c_size%ymin + dble(j-1)                    &
      &                      * c_size%ysize / dble(c_size%ny_all)
-           z = c_vert%zz_edge(koff+k)
+           node%xx(inod,3) = c_vert%zz_edge(koff+k)
           end if
-
-          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
-
          end do
         end do
        end do
@@ -176,7 +169,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_sleeve_edge_xmax_ymax(c_size, c_vert, sl_rng,      &
-     &          kpe, knp, ioff_gl, koff, nd, loc_id, inod)
+     &          kpe, knp, ioff_gl, koff, nd, loc_id, node, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(in) :: c_vert
@@ -188,12 +181,11 @@
 !
       integer (kind = kint), intent(inout) :: inod
       type(local_node_id_cube), intent(inout) :: loc_id
+      type(node_data), intent(inout) :: node
 !
-      integer (kind = kint) :: node_id_gl
       integer (kind = kint) :: i, j, k, i1, j1
       integer (kind = kint) :: is0, js0, ks0
       integer (kind = kint) :: ie0, je0, ke0
-      real (kind = kreal) :: x, y, z
 !
        is0 = 1
        ie0 = c_size%ndepth
@@ -214,32 +206,29 @@
           i1 = c_size%nxi + c_size%ndepth + i
           j1 = c_size%nyi + c_size%ndepth + j
           loc_id%edge_id_lc(i1,j1,k,nd) =  inod
-          node_id_gl = ioff_gl + i + (j-1) * (ie0 - is0 + 1)            &
+          node%inod_global(inod) = ioff_gl + i + (j-1) * (ie0-is0+1)    &
      &                + (koff+k-1) * (ie0 - is0 + 1)                    &
      &                             * (je0 - js0 + 1)
 
           if (nd .eq. 1) then
-           x = c_size%xmax + ( dble(i+c_size%ndepth)-half )             &
+           node%xx(inod,1) = c_size%xmax + (dble(i+c_size%ndepth)-half) &
      &               * c_size%xsize / dble(c_size%nx_all)
-           y = c_size%ymax + dble(c_size%ndepth+j-1)                    &
+           node%xx(inod,2) = c_size%ymax + dble(c_size%ndepth+j-1)      &
      &               * c_size%ysize / dble(c_size%ny_all)
-           z = c_vert%zz(koff+k)
+           node%xx(inod,3) = c_vert%zz(koff+k)
           else if (nd .eq. 2) then
-           x = c_size%xmax + dble(i+c_size%ndepth-1)                    &
+           node%xx(inod,1) = c_size%xmax + dble(i+c_size%ndepth-1)      &
      &               * c_size%xsize / dble(c_size%nx_all)
-           y = c_size%ymax + ( dble(c_size%ndepth+j)-half )             &
+           node%xx(inod,2) = c_size%ymax + (dble(c_size%ndepth+j)-half) &
      &               * c_size%ysize / dble(c_size%ny_all)
-           z = c_vert%zz(koff+k)
+           node%xx(inod,3) = c_vert%zz(koff+k)
           else if (nd .eq. 3) then
-           x = c_size%xmax + dble(i+c_size%ndepth-1)                    &
+           node%xx(inod,1) = c_size%xmax + dble(i+c_size%ndepth-1)      &
      &                      * c_size%xsize / dble(c_size%nx_all)
-           y = c_size%ymax + dble(c_size%ndepth+j-1)                    &
+           node%xx(inod,2) = c_size%ymax + dble(c_size%ndepth+j-1)      &
      &                      * c_size%ysize / dble(c_size%ny_all)
-           z = c_vert%zz_edge(koff+k)
+           node%xx(inod,3) = c_vert%zz_edge(koff+k)
           end if
-
-           write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
-
          end do
         end do
        end do
@@ -249,7 +238,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_sleeve_edge_xmin_ymax(c_size, c_vert, sl_rng,      &
-     &          kpe, knp, ioff_gl, koff, nd, loc_id, inod)
+     &          kpe, knp, ioff_gl, koff, nd, loc_id, node, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(in) :: c_vert
@@ -261,12 +250,11 @@
 !
       integer (kind = kint), intent(inout) :: inod
       type(local_node_id_cube), intent(inout) :: loc_id
+      type(node_data), intent(inout) :: node
 !
-      integer (kind = kint) :: node_id_gl
       integer (kind = kint) :: i, j, k, j1
       integer (kind = kint) :: is0, js0, ks0
       integer (kind = kint) :: ie0, je0, ke0
-      real (kind = kreal) :: x, y, z
 !
       is0 = 1
       ie0 = c_size%ndepth
@@ -286,31 +274,28 @@
           j1 = c_size%nyi + c_size%ndepth + j
 
           loc_id%edge_id_lc(i,c_size%nyi+c_size%ndepth+j,k,nd) =  inod
-          node_id_gl = ioff_gl + i + (j-1) * c_size%ndepth              &
+          node%inod_global(inod) = ioff_gl + i + (j-1) * c_size%ndepth  &
      &                + (koff+k-1) * c_size%ndepth * (je0 - js0 + 1)
 
           if (nd .eq. 1) then
-           x = c_size%xmin + ( dble(i)-half )                           &
+           node%xx(inod,1) = c_size%xmin + ( dble(i)-half )             &
      &                      * c_size%xsize / dble(c_size%nx_all)
-           y = c_size%ymax + dble(c_size%ndepth+j-1)                    &
+           node%xx(inod,2) = c_size%ymax + dble(c_size%ndepth+j-1)      &
      &                      * c_size%ysize / dble(c_size%ny_all)
-           z = c_vert%zz(koff+k)
+           node%xx(inod,3) = c_vert%zz(koff+k)
           else if (nd .eq. 2) then
-           x = c_size%xmin + dble(i-1)                                  &
+           node%xx(inod,1) = c_size%xmin + dble(i-1)                    &
      &                      * c_size%xsize / dble(c_size%nx_all)
-           y = c_size%ymax + ( dble(c_size%ndepth+j)-half )             &
+           node%xx(inod,2) = c_size%ymax + (dble(c_size%ndepth+j)-half) &
      &                      * c_size%ysize / dble(c_size%ny_all)
-           z = c_vert%zz(koff+k)
+           node%xx(inod,3) = c_vert%zz(koff+k)
           else if (nd .eq. 3) then
-           x = c_size%xmin + dble(i-1)                                  &
+           node%xx(inod,1) = c_size%xmin + dble(i-1)                    &
      &                      * c_size%xsize / dble(c_size%nx_all)
-           y = c_size%ymax + dble(c_size%ndepth+j-1)                    &
+           node%xx(inod,2) = c_size%ymax + dble(c_size%ndepth+j-1)      &
      &                      * c_size%ysize / dble(c_size%ny_all)
-           z = c_vert%zz_edge(koff+k)
+           node%xx(inod,3) = c_vert%zz_edge(koff+k)
           end if
-
-          write(l_out,'(i15,3(1pe21.11))') node_id_gl, x, y, z
-
          end do
         end do
       end do

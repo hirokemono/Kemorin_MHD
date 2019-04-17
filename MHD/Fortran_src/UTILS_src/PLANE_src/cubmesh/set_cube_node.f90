@@ -4,13 +4,14 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine set_node                                             &
-!!     &         (c_size, c_each, c_vert, nb_rng, ipe, jpe, loc_id)
+!!      subroutine set_node(c_size, c_each, c_vert, nb_rng, ipe, jpe,   &
+!!     &          loc_id, node)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(size_of_each_cube), intent(in) :: c_each
 !!        type(vertical_position_cube), intent(in) :: c_vert
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !!        type(local_node_id_cube), intent(inout) :: loc_id
+!!        type(node_data), intent(inout) :: node
 !
       module set_cube_node
 !
@@ -21,7 +22,7 @@
       use t_size_of_cube
       use t_cube_position
       use t_local_node_id_cube
-      use m_cube_files_data
+      use t_geometry_data
       use set_internal_nod_cube
       use set_sleeve_node_cube
       use set_sleeve_nod_peri_cube
@@ -34,8 +35,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_node                                               &
-     &         (c_size, c_each, c_vert, nb_rng, ipe, jpe, loc_id)
+      subroutine set_node(c_size, c_each, c_vert, nb_rng, ipe, jpe,     &
+     &          loc_id, node)
 !
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
@@ -44,19 +45,15 @@
       integer (kind = kint), intent(in) :: ipe, jpe
 !
       type(local_node_id_cube), intent(inout) :: loc_id
+      type(node_data), intent(inout) :: node
 !
       type(slleve_range) :: sl_rng1
       integer (kind = kint) :: inod
 !
-! ..... write 2.mesh information (nodes and elements in partition)
 !
-      write(l_out,'( a )') '!'
-      write(l_out,'( a )')                                              &
-     &        '! 2.mesh information (nodes and elements in partition)'
-      write(l_out,'( a )')                                              &
-     &        '! 2.1 node'
-
-      write(l_out,'(10i16)')  c_each%nodtot, c_each%intnodtot
+      node%numnod =        c_each%nodtot
+      node%internal_node = c_each%intnodtot
+      call alloc_node_geometry_base(node)
 !
 ! ***** set and write coordinate for internal nodes
 
@@ -64,13 +61,13 @@
 !
       call set_internal_size(nb_rng, sl_rng1)
       call set_internal_node                                            &
-     &   (c_size, c_vert, nb_rng, sl_rng1, loc_id, inod)
+     &   (c_size, c_vert, nb_rng, sl_rng1, loc_id, node, inod)
 !
 ! ***** set and write coordinate for sleeve area nodes
 !
-      call set_sleeve_node(c_size, c_vert, nb_rng, loc_id, inod)
+      call set_sleeve_node(c_size, c_vert, nb_rng, loc_id, node, inod)
       call set_sleeve_node_peri(c_size, c_vert, nb_rng, ipe, jpe,       &
-     &    loc_id, inod)
+     &    loc_id, node, inod)
 !
 ! ***** set table from node id to x,y,z, positions
 !

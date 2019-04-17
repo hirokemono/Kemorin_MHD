@@ -6,9 +6,10 @@
 !
 ! ***** set and write coordinate for sleeve area nodes
 !
-!!      subroutine set_sleeve_node(c_size, c_vert, nb_rng, loc_id, inod)
+!!      subroutine set_sleeve_node                                      &
+!!     &         (c_size, c_vert, nb_rng, loc_id, node, inod)
 !!      subroutine set_sleeve_node_quad                                 &
-!!     &         (c_size, c_vert, nb_rng, kpe, loc_id, inod)
+!!     &         (c_size, c_vert, nb_rng, kpe, loc_id, node, inod)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(vertical_position_cube), intent(in) :: c_vert
 !!        type(neib_range_cube), intent(in) :: nb_rng
@@ -23,6 +24,7 @@
       use t_sleeve_cube
       use t_cube_position
       use t_local_node_id_cube
+      use t_geometry_data
       use set_internal_nod_cube
 !
       implicit none
@@ -33,13 +35,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_sleeve_node(c_size, c_vert, nb_rng, loc_id, inod)
+      subroutine set_sleeve_node                                        &
+     &         (c_size, c_vert, nb_rng, loc_id, node, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(in) :: c_vert
       type(neib_range_cube), intent(in) :: nb_rng
 
       type(local_node_id_cube), intent(inout) :: loc_id
+      type(node_data), intent(inout) :: node
       integer (kind = kint), intent(inout) :: inod
 !
       type(slleve_range) :: sl_rng1
@@ -55,7 +59,7 @@
             call set_sleeve_size                                        &
      &         (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
             call set_internal_node                                      &
-     &         (c_size, c_vert, nb_rng, sl_rng1, loc_id, inod)
+     &         (c_size, c_vert, nb_rng, sl_rng1, loc_id, node, inod)
           enddo
         enddo
       enddo
@@ -65,7 +69,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_sleeve_node_quad                                   &
-     &         (c_size, c_vert, nb_rng, kpe, loc_id, inod)
+     &         (c_size, c_vert, nb_rng, kpe, loc_id, node, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(in) :: c_vert
@@ -73,6 +77,7 @@
       integer (kind = kint), intent(in) :: kpe
 
       type(local_node_id_cube), intent(inout) :: loc_id
+      type(node_data), intent(inout) :: node
       integer (kind = kint), intent(inout) :: inod
 
       type(slleve_range) :: sl_rng1
@@ -95,10 +100,10 @@
 !     nd = 2: for edge on y = const, z = const
 !     nd = 3: for edge on x = const, y = const
             call set_internal_node                                      &
-     &         (c_size, c_vert, nb_rng, sl_rng1, loc_id, inod)
+     &         (c_size, c_vert, nb_rng, sl_rng1, loc_id, node, inod)
             do nd = 1, 3
               call set_internal_edge(c_size, c_vert, nb_rng, sl_rng1,   &
-     &            kpe, inp, jnp, knp, nd, loc_id, inod)
+     &            kpe, inp, jnp, knp, nd, loc_id, node, inod)
             end do
 !
           enddo

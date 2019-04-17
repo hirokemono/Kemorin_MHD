@@ -248,8 +248,11 @@ use m_fem_mesh_labels
             call init_node_para_4_each_pe                               &
      &         (c_size1, ipe, jpe, kpe, nb_rng1)
             call set_offset_of_domain(c_size1, ipe, jpe, kpe, nb_rng1)
-            call set_node                                               &
-     &         (c_size1, c_each1, c_vert1, nb_rng1, ipe, jpe, loc_id1)
+            call set_node(c_size1, c_each1, c_vert1, nb_rng1,           &
+     &          ipe, jpe, loc_id1, mesh%node)
+!
+            write(l_out,'(a)', advance='NO') hd_fem_node()
+            call write_geometry_info(l_out, mesh%node)
 !
 ! ..... write 2.2 element (connection)
 !
@@ -280,6 +283,7 @@ use m_fem_mesh_labels
             call write_communication_data(l_out, comm_IO)
             call dealloc_comm_table(comm_IO)
             call deallocate_ele_connect_type(mesh%ele)
+            call dealloc_node_geometry_base(mesh%node)
 !
             call write_mesh_groups(l_out, cube_groups)
             call dealloc_groups_data(cube_groups)
