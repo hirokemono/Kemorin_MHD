@@ -180,8 +180,6 @@
       call alloc_node_informations(c_size1, loc_id1)
       call alloc_edge_informations(loc_id1)
 !
-      call allocate_communication_data(elm_type, c_size1)
-!
       call allocate_cube_ele_group_id(c_size1)
 !
 !    allocate work array
@@ -326,7 +324,6 @@
 
             close(l_out)
 !
-            call reset_communication_data
             call reset_node_info(loc_id1)
             call reset_edge_info(loc_id1)
             call reset_cube_ele_group_id

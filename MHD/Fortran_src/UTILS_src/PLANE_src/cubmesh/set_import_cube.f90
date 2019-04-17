@@ -40,21 +40,27 @@
       type(neib_range_cube), intent(in) :: nb_rng
       integer(kind = kint), intent(in) :: pe_id, ipe, jpe
 !
+      integer (kind = kint) :: icou_pe
 !
-      comm%num_neib = 0
-
+!
+      call count_neighboring_pes(nb_rng, comm%num_neib)
+      call count_neighboring_pes_peri                                   &
+     &   (nb_rng, c_size%ndx, c_size%ndy, ipe, jpe, comm%num_neib)
+!
+      call alloc_comm_table_num(comm)
+!
 !      inside cube
 !
+      icou_pe = 0
       call set_neighboring_pes                                          &
      &         (nb_rng, c_size%ndx, c_size%ndy, pe_id,                  &
-     &          comm%num_neib, comm%id_neib, comm%num_neib)
+     &          comm%num_neib, comm%id_neib, icou_pe)
 !
 !      neiboring information for periodical boundaries
 !
       call set_neighboring_pes_peri                                     &
      &         (nb_rng, c_size%ndx, c_size%ndy, pe_id, ipe, jpe,        &
-     &          comm%num_neib, comm%id_neib, comm%num_neib)
-!
+     &          comm%num_neib, comm%id_neib, icou_pe)
       comm%id_neib(1:comm%num_neib) = comm%id_neib(1:comm%num_neib) - 1
 !
       end subroutine set_neigbouring_plane
@@ -82,9 +88,10 @@
      &    comm%num_neib, comm%istack_import, icou_pe, inod)
       call count_import_peri_linear(c_size, nb_rng, ipe, jpe,           &
      &    comm%num_neib, comm%istack_import, icou_pe, inod)
-      comm%ntot_import = comm%istack_import(comm%num_neib)
 !
-!                                     .... write nodes 
+      comm%ntot_import = comm%istack_import(comm%num_neib)
+      call alloc_import_item(comm)
+!
       icou_pe = 0
       inod = 0
       call set_import_inside(c_size, nb_rng, loc_id, icou_pe, inod)
@@ -120,8 +127,7 @@
      &    comm%num_neib, comm%istack_import, icou_pe, inod)
 !
       comm%ntot_import = comm%istack_import(comm%num_neib)
-      write(*,*) ipe, jpe, kpe, 'ntot_import', comm%ntot_import
-!
+      call alloc_import_item(comm)
 !
 !                                     .... write nodes 
       inod = 0
@@ -159,7 +165,9 @@
      &    comm%num_neib, comm%istack_export, icou_pe, inod)
       call count_export_peri_linear(c_size, nb_rng, ipe, jpe,           &
      &    comm%num_neib, comm%istack_export, icou_pe, inod)
+!
       comm%ntot_export = comm%istack_export(comm%num_neib)
+      call alloc_export_item(comm)
 !
       inod = 0
       icou_pe = 0
@@ -194,7 +202,9 @@
      &    comm%num_neib, comm%istack_export, icou_pe, inod)
       call count_export_peri_quad(c_size, nb_rng, ipe, jpe, kpe,        &
      &    comm%num_neib, comm%istack_export, icou_pe, inod)
+!
       comm%ntot_export = comm%istack_export(comm%num_neib)
+      call alloc_export_item(comm)
 !
       inod = 0
       icou_pe = 0

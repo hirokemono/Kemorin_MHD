@@ -13,88 +13,12 @@
 !
        implicit none
 !
-! ......................................................................
-!
-      integer(kind=kint ), parameter  ::  neibpetot_max = 26
-!
       type(communication_table), save :: comm
-      type(communication_table), save :: comm_new
+      type(communication_table), save :: comm_IO
 !
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_communication_data(elm_type, c_size)
-!
-      use t_size_of_cube
-!
-      type(size_of_cube), intent(in) :: c_size
-      integer (kind = kint) :: elm_type
-      integer (kind = kint) :: inum0
-!
-!
-       if (elm_type.eq.331) then
-        inum0 = (c_size%nxi + 2*c_size%ndepth)                          &
-     &          * (c_size%nyi + 2*c_size%ndepth)                        &
-     &          * (c_size%nzi + 2*c_size%ndepth)                        &
-     &         - c_size%nxi * c_size%nyi * c_size%nzi
-       else if (elm_type.eq.332) then
-        inum0 = (c_size%nxi + 2*c_size%ndepth)                          &
-     &         * (c_size%nyi + 2*c_size%ndepth)                         &
-     &         * (c_size%nzi + 2*c_size%ndepth)                         &
-     &        + (c_size%nxi+2*c_size%ndepth - 1)                        &
-     &         * (c_size%nyi + 2*c_size%ndepth)                         &
-     &         * (c_size%nzi + 2*c_size%ndepth)                         &
-     &        + (c_size%nxi + 2*c_size%ndepth)                          &
-     &         * (c_size%nyi + 2*c_size%ndepth - 1)                     &
-     &         * (c_size%nzi + 2*c_size%ndepth)                         &
-     &        + (c_size%nxi + 2*c_size%ndepth)                          &
-     &         * (c_size%nyi + 2*c_size%ndepth)                         &
-     &         * (c_size%nzi + 2*c_size%ndepth - 1)                     &
-     &        - c_size%nxi * c_size%nyi * c_size%nzi                    &
-     &        - (c_size%nxi - 1) * c_size%nyi * c_size%nzi              &
-     &        - c_size%nxi * (c_size%nyi - 1) * c_size%nzi              &
-     &        - c_size%nxi * c_size%nyi * (c_size%nzi - 1)
-       else
-         inum0 = 0
-       end if
-!
-       allocate ( comm%id_neib(neibpetot_max) )
-       allocate ( comm%istack_import(0:neibpetot_max) )
-       allocate ( comm%istack_export(0:neibpetot_max) )
-!
-       allocate ( comm_new%id_neib(neibpetot_max) )
-       allocate ( comm_new%istack_import(0:neibpetot_max) )
-       allocate ( comm_new%istack_export(0:neibpetot_max) )
-!
-       allocate ( comm%item_import(inum0) )
-       allocate ( comm%item_export(inum0) )
-!
-       comm%item_import = 0
-       comm%item_export = 0
-!
-       allocate ( comm_new%item_import(inum0) )
-       allocate ( comm_new%item_export(inum0) )
-!
-       comm_new%item_import = 0
-       comm_new%item_export = 0
-!
-       call reset_communication_data
-!
-       end subroutine allocate_communication_data
-!
-! ----------------------------------------------------------------------
-!
-      subroutine reset_communication_data
-!
-      comm%item_import = 0
-      comm_new%item_import = 0
-      comm%item_export = 0
-      comm_new%item_export = 0
-!
-      end subroutine reset_communication_data
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,15 +27,28 @@
       integer(kind = kint) :: inum0, inum1, iflag
 !
 !
-      comm_new%num_neib = 0
+      comm_IO%num_neib = 0
       do inum0 = 1, comm%num_neib
         iflag = 0
         do inum1 = 1, inum0-1
          if(comm%id_neib(inum0) .eq. comm%id_neib(inum1)) iflag = 1
         end do
         if (iflag .eq. 0 ) then
-          comm_new%num_neib = comm_new%num_neib + 1
-          comm_new%id_neib(comm_new%num_neib) = comm%id_neib(inum0)
+          comm_IO%num_neib = comm_IO%num_neib + 1
+        end if
+      end do
+!
+      call alloc_comm_table_num(comm_IO)
+!
+      comm_IO%num_neib = 0
+      do inum0 = 1, comm%num_neib
+        iflag = 0
+        do inum1 = 1, inum0-1
+         if(comm%id_neib(inum0) .eq. comm%id_neib(inum1)) iflag = 1
+        end do
+        if (iflag .eq. 0 ) then
+          comm_IO%num_neib = comm_IO%num_neib + 1
+          comm_IO%id_neib(comm_IO%num_neib) = comm%id_neib(inum0)
         end if
       end do
 !
@@ -121,45 +58,53 @@
 !
       subroutine sort_communication_table
 !
-      integer(kind = kint) :: inum0, inod, node_id, n0, n1
-      integer(kind = kint) :: ist, ied
+      integer(kind = kint) :: inod, n0, n1
+      integer(kind = kint) :: ist, ied, icou_in, icou_ex
 !
 !
-      node_id = 0
-      inum0 = 0
-      do n0 = 1, comm_new%num_neib
-        inum0 = inum0 + 1
+      icou_in = 0
+      icou_ex = 0
+      do n0 = 1, comm_IO%num_neib
         do n1 = 1, comm%num_neib
-          if(comm_new%id_neib(n0) .eq. comm%id_neib(n1)) then
+          if(comm_IO%id_neib(n0) .eq. comm%id_neib(n1)) then
+            icou_in = icou_in                                           &
+     &             + comm%istack_import(n1) - comm%istack_import(n1-1)
+            icou_ex = icou_ex                                           &
+     &             + comm%istack_export(n1) - comm%istack_export(n1-1)
+          end if
+        end do
+        comm_IO%istack_import(n0) = icou_in
+        comm_IO%istack_export(n0) = icou_ex
+      end do
+      comm_IO%ntot_import = comm_IO%istack_import(comm_IO%num_neib)
+      comm_IO%ntot_export = comm_IO%istack_export(comm_IO%num_neib)
+!
+      call alloc_import_item(comm_IO)
+      call alloc_export_item(comm_IO)
+!
+      icou_in = 0
+      icou_ex = 0
+      do n0 = 1, comm_IO%num_neib
+        do n1 = 1, comm%num_neib
+          if(comm_IO%id_neib(n0) .eq. comm%id_neib(n1)) then
             ist = comm%istack_import(n1-1)+1
             ied = comm%istack_import(n1)
             do inod = ist, ied
-              node_id = node_id + 1
-              comm_new%item_import(node_id) = comm%item_import(inod)
+              icou_in = icou_in + 1
+              comm_IO%item_import(icou_in) = comm%item_import(inod)
             end do
-          end if
-        end do
-        comm_new%istack_import(n0) = node_id
-      end do
-      comm_new%ntot_import = comm_new%istack_import(comm_new%num_neib)
 !
-      node_id = 0
-      inum0 = 0
-      do n0 = 1, comm_new%num_neib
-        inum0 = inum0 + 1
-        do n1 = 1, comm%num_neib
-          if ( comm_new%id_neib(n0) .eq. comm%id_neib(n1)) then
             ist = comm%istack_export(n1-1)+1
             ied = comm%istack_export(n1)
             do inod = ist, ied
-              node_id = node_id + 1
-              comm_new%item_export(node_id) = comm%item_export(inod)
+              icou_ex = icou_ex + 1
+              comm_IO%item_export(icou_ex) = comm%item_export(inod)
            end do
           end if
         end do
-        comm_new%istack_export(n0) = node_id
       end do
-      comm_new%ntot_export = comm_new%istack_export(comm_new%num_neib)
+!
+      call dealloc_comm_table(comm)
 !
       end subroutine sort_communication_table
 !
@@ -175,7 +120,7 @@
 !
 !
       write(l_out,'(a)', advance='NO') hd_fem_para()
-      call write_domain_info(l_out, pe_id-1, comm_new)
+      call write_domain_info(l_out, pe_id-1, comm_IO)
 !
       end subroutine write_pe_data
 !
@@ -189,10 +134,12 @@
 !
 !
       write(l_out,'(a)', advance='NO') hd_fem_import()
-      call write_import_data(l_out, comm_new)
+      call write_import_data(l_out, comm_IO)
 !
       write(l_out,'(a)', advance='NO') hd_fem_export()
-      call write_export_data(l_out, comm_new)
+      call write_export_data(l_out, comm_IO)
+!
+      call dealloc_comm_table(comm_IO)
 !
       end subroutine write_communication_data
 !

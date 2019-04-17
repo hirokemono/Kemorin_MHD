@@ -6,6 +6,10 @@
 !
 ! ***** set and write for sleeve edges for periodical boundary
 !
+!!      subroutine count_neighboring_pes(nb_rng, num_neib)
+!!      subroutine count_neighboring_pes_peri                           &
+!!     &         (nb_rng, ndx, ndy, ipe, jpe, num_neib)
+!!
 !!      subroutine set_neighboring_pes                                  &
 !!     &         (nb_rng, ndx, ndy, pe_id, num_neib, id_neib, icou)
 !!      subroutine set_neighboring_pes_peri(nb_rng, ndx, ndy, pe_id,    &
@@ -25,6 +29,84 @@
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine count_neighboring_pes(nb_rng, num_neib)
+!
+      type(neib_range_cube), intent(in) :: nb_rng
+!
+      integer(kind = kint), intent(inout) :: num_neib
+!
+!                                       .. set neighbor pe
+!      inside cube
+!
+      num_neib =  (nb_rng%inp_end - nb_rng%inp_st + 1)                  &
+     &          * (nb_rng%jnp_end - nb_rng%jnp_st + 1)                  &
+     &          * (nb_rng%knp_end - nb_rng%knp_st + 1)                  &
+     &          - 1
+!
+      end subroutine  count_neighboring_pes
+!
+! ----------------------------------------------------------------------
+!
+      subroutine count_neighboring_pes_peri                             &
+     &         (nb_rng, ndx, ndy, ipe, jpe, num_neib)
+!
+      type(neib_range_cube), intent(in) :: nb_rng
+      integer(kind = kint), intent(in) :: ndx, ndy
+      integer(kind = kint), intent(in) :: ipe, jpe
+!
+      integer(kind = kint), intent(inout) :: num_neib
+!
+!
+!      edge for x < xmin
+      if( ipe == 1 ) then
+        num_neib = num_neib + (nb_rng%knp_end - nb_rng%knp_st + 1)      &
+     &                       * (nb_rng%jnp_end - nb_rng%jnp_st + 1)
+       end if
+!
+!      edge for x > xmax
+      if( ipe == ndx ) then
+        num_neib = num_neib + (nb_rng%knp_end - nb_rng%knp_st + 1)      &
+     &                       * (nb_rng%jnp_end - nb_rng%jnp_st + 1)
+       end if
+!
+!      edge for y > ymin
+      if( jpe == 1 ) then
+        num_neib = num_neib + (nb_rng%knp_end - nb_rng%knp_st + 1)      &
+     &                       * (nb_rng%inp_end - nb_rng%inp_st + 1)
+       end if
+!
+!      edge for y > ymax
+      if( jpe == ndy ) then
+        num_neib = num_neib + (nb_rng%knp_end - nb_rng%knp_st + 1)      &
+     &                       * (nb_rng%inp_end - nb_rng%inp_st + 1)
+       end if
+!
+!
+!      edge for x < xmin, y<ymin
+      if( ipe == 1 .and. jpe == 1) then
+        num_neib = num_neib + (nb_rng%knp_end - nb_rng%knp_st + 1)
+      end if
+!
+!      edge for x > xmax, y<ymin
+      if( ipe == ndx .and. jpe == 1 ) then
+        num_neib = num_neib + (nb_rng%knp_end - nb_rng%knp_st + 1)
+      end if
+!
+!      edge for x>xmax, y > ymax
+      if( ipe == ndx .and. jpe == ndy ) then
+        num_neib = num_neib + (nb_rng%knp_end - nb_rng%knp_st + 1)
+      end if
+!
+!      edge for x<xmin, y > ymax
+      if( ipe == 1 .and. jpe == ndy ) then
+        num_neib = num_neib + (nb_rng%knp_end - nb_rng%knp_st + 1)
+      end if
+!
+      end subroutine count_neighboring_pes_peri
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_neighboring_pes                                    &
