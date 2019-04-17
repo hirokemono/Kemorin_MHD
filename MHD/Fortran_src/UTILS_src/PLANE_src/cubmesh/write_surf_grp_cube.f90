@@ -14,7 +14,6 @@
       use m_precision
       use m_constants
 !
-      use m_grp_data_cub_kemo
       use t_group_data
       use t_size_of_cube
 !
@@ -32,10 +31,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_surface_group(c_size, c_each, kpe, surf_grp)
-!
-      use m_cube_files_data
-      use m_fem_mesh_labels
-      use groups_IO
 !
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
@@ -55,9 +50,6 @@
 !
       call set_surface_group(c_size%ndepth, c_size%ndz,                &
      &    c_each%nx, c_each%ny, c_each%nz, kpe, surf_grp)
-!
-      write(l_out,'(a)', advance='NO') hd_fem_sfgrp()
-      call write_surf_grp_data(l_out, surf_grp)
 !
       end subroutine const_surface_group
 !

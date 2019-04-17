@@ -92,6 +92,7 @@
 !
       use m_precision
 !
+      use t_mesh_data
       use t_size_of_cube
       use t_filter_elength
       use t_neib_range_cube
@@ -101,7 +102,6 @@
       use t_filter_work_cubmesh
       use t_filter_data_4_plane
 !
-      use m_grp_data_cub_kemo
       use m_cube_files_data
       use m_ctl_data_4_cub_kemo
 !
@@ -113,6 +113,7 @@
       use write_surf_grp_cube
       use neib_nod_cube
       use merge_periodic_comm_table
+      use mesh_data_IO
 !
       implicit  none
 
@@ -140,6 +141,8 @@
       type(filterings_4_cubmesh), save :: c_fils
       type(filter_data_4_plane), save :: cube_fil1
 !
+!>     Structure of group
+      type (mesh_groups), save :: cube_groups
       type(communication_table), save :: comm
       type(communication_table), save :: comm_IO
 !
@@ -267,16 +270,15 @@
 !
 !
 ! ..... write 4.group information
-            call const_node_group                                       &
-     &         (c_size1, c_each1, loc_id1, ipe, jpe, kpe, cube_nod_grp)
+            call const_node_group(c_size1, c_each1, loc_id1,            &
+     &          ipe, jpe, kpe, cube_groups%nod_grp)
             call const_element_group                                    &
-     &         (c_size1, c_each1, nb_rng1, kpe, cube_ele_grp)
+     &         (c_size1, c_each1, nb_rng1, kpe, cube_groups%ele_grp)
             call const_surface_group                                    &
-     &         (c_size1, c_each1, kpe, cube_surf_grp)
+     &         (c_size1, c_each1, kpe, cube_groups%surf_grp)
 !
-            call dealloc_group(cube_nod_grp)
-            call dealloc_group(cube_ele_grp)
-            call dealloc_sf_group(cube_surf_grp)
+            call write_mesh_groups(l_out, cube_groups)
+            call dealloc_groups_data(cube_groups)
 !
 !   construct filtering information
 !

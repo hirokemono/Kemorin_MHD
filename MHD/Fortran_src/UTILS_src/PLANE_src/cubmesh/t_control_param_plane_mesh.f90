@@ -31,7 +31,6 @@
       subroutine s_set_ctl_data_plane_mesh(cube_p, c_size)
 !
       use t_size_of_cube
-      use m_grp_data_cub_kemo
       use m_cube_files_data
       use m_ctl_data_4_plane_model
       use m_ctl_data_4_cub_kemo

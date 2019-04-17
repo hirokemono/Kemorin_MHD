@@ -34,9 +34,6 @@
       subroutine const_node_group(c_size, c_each, loc_id,               &
      &          ipe, jpe, kpe, nod_grp)
 !
-      use m_fem_mesh_labels
-      use groups_IO
-!
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
       type(local_node_id_cube), intent(in) :: loc_id
@@ -56,9 +53,6 @@
 !
       call set_node_group(c_size, loc_id,                               &
      &    c_each%nx, c_each%ny, c_each%nz, ipe, jpe, kpe, nod_grp)
-!
-      write(l_out,'(a)', advance='NO') hd_fem_nodgrp()
-      call write_grp_data(l_out, nod_grp)
 !
       end subroutine const_node_group
 !
