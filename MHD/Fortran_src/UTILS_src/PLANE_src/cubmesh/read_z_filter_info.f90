@@ -23,7 +23,6 @@
 !
       use t_size_of_cube
       use m_filter_data_4_plane
-      use m_filtering_nod_4_cubmesh
       use m_cube_files_data
 !
       use set_parallel_file_name

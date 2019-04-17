@@ -105,9 +105,8 @@
       use t_neib_range_cube
       use t_cube_position
       use t_control_param_plane_mesh
+      use t_filtering_nod_4_cubmesh
 
-      use m_filtering_nod_4_cubmesh
-      use m_filtering_ele_4_cubmesh
       use m_ctl_data_4_cub_kemo
 !
       use set_neib_pe_cube
@@ -145,6 +144,7 @@
       type(vertical_position_cube), save :: c_vert1
       type(neib_range_cube), save :: nb_rng1
       type(gradient_model_data_type), save :: FEM_elen_c
+      type(filterings_4_cubmesh), save :: c_fils
 
       integer(kind=kint)  ::  ipe    , jpe    , kpe    , pe_id
       integer :: id_rank
@@ -185,7 +185,7 @@
 !
 !    allocate work array
 !
-      call allocate_work_4_filter_nod(c_size1)
+      call alloc_work_4_filter_nod(c_size1, c_fils%c_fil_nod)
 !
 !      if(cube_p1%iflag_filter .ge.0) then
 !         nf_type = cube_p1%iflag_filter
@@ -317,16 +317,18 @@
 !                                       ... to next pe 
 !   construct filtering information
 !
-            call allocate_work_4_filter_ele(c_size1, c_each1)
-            call allocate_work_4_filter_edge(c_size1)
+            call alloc_work_4_filter_ele                                &
+     &         (c_size1, c_each1, c_fils%c_fil_ele)
+            call alloc_work_4_filter_edge(c_size1, c_fils%c_fil_edge)
 !
             write(*,*) 'filtering information', c_each1%intnodtot
-            call neighboring_node                                       &
-     &          (pe_id, c_size1, c_each1, nb_rng1, FEM_elen_c)
-            call neighboring_edge(id_rank, c_size1, c_each1, nb_rng1)
+            call neighboring_node(pe_id, cube_p1, c_size1, c_each1,     &
+     &          nb_rng1, FEM_elen_c, c_fils%c_fil_nod)
+            call neighboring_edge                                       &
+     &         (id_rank, c_size1, c_each1, nb_rng1, c_fils%c_fil_edge)
 !
-            call deallocate_work_4_filter_ele
-            call deallocate_work_4_filter_edge
+            call dealloc_work_4_filter_nod(c_fils%c_fil_ele)
+            call dealloc_work_4_filter_edge(c_fils%c_fil_edge)
 !                                       ... to next pe 
             pe_id = pe_id + 1
 
@@ -336,7 +338,7 @@
             call reset_node_info
             call reset_edge_info
             call reset_cube_ele_group_id
-            call reset_work_4_filter_nod
+            call reset_work_4_filter_nod(c_fils%c_fil_nod)
 !
           enddo
         enddo

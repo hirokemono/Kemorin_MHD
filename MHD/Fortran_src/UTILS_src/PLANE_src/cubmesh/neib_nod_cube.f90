@@ -16,11 +16,15 @@
 !
 !  ----------------------------------------------------------------------
 !
-!!      subroutine neighboring_node                                     &
-!!     &         (pe_id, c_size, c_each, nb_rng, FEM_elen)
-!!      subroutine check_neib_node_xy(FEM_elen)
+!!      subroutine neighboring_node(pe_id, cube_p, c_size, c_each,      &
+!!     &          nb_rng, FEM_elen, c_fil_nod)
+!!      subroutine check_neib_node_xy(FEM_elen, c_fil_nod)
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elen
+!!        type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
+!!
+!!      subroutine check_neib_node_3d(c_fil_nod)
+!!        type(filtering_nod_4_cubmesh), intent(in) :: c_fil_nod
 !
       module neib_nod_cube
 !
@@ -30,10 +34,11 @@
       use t_size_of_cube
       use m_local_node_id_cube
       use m_cube_files_data
-      use m_filtering_nod_4_cubmesh
       use neib_nod_line_cube
       use m_filter_data_4_plane
 !
+      use t_control_param_plane_mesh
+      use t_filtering_nod_4_cubmesh
       use t_filter_elength
       use set_parallel_file_name
 !
@@ -54,13 +59,15 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine neighboring_node                                       &
-     &         (pe_id, c_size, c_each, nb_rng, FEM_elen)
+      subroutine neighboring_node(pe_id, cube_p, c_size, c_each,        &
+     &          nb_rng, FEM_elen, c_fil_nod)
 !
+      type(ctl_param_plane_mesh), intent(in) :: cube_p
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
       type(gradient_model_data_type), intent(inout) :: FEM_elen
+      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
 !
       integer(kind = kint), intent(in) :: pe_id
       integer :: ied_rank
@@ -69,7 +76,7 @@
         ied_rank = int(pe_id - 1)
 !
        write(*,*) 'allocate_filters_nod'
-       call allocate_filters_nod(FEM_elen%filter_conf%nf_type)
+       call alloc_filters_nod(FEM_elen%filter_conf%nf_type, c_fil_nod)
 !
        i_st2 =  max(nb_rng%i_st -  c_size%ndepth,1)
        i_end2 = min(nb_rng%i_end + c_size%ndepth,c_each%nx)
@@ -89,31 +96,33 @@
      &    (FEM_elen%nele_filter_mom, FEM_elen%elen_ele)
 !
        write(*,*) 'set_element_size_on_nod'
-       call set_element_size_on_nod(FEM_elen)
+       call set_element_size_on_nod(cube_p%iflag_z_filter, FEM_elen)
        call set_element_size_on_ele                                     &
      &    (c_each%nx, c_each%ny, c_each%nz, nb_rng%koff, FEM_elen)
 !
        write(*,*) 'count_neib_node_x'
-       call count_neib_node_x(c_size%ndepth, c_each%nx, FEM_elen)
-!        call check_neib_node_x
+       call count_neib_node_x                                           &
+     &    (c_size%ndepth, c_each%nx, FEM_elen, c_fil_nod)
+!        call check_neib_node_x(c_fil_nod)
        write(*,*) 'count_neib_node_y'
-       call count_neib_node_y(c_size%ndepth, c_each%ny, FEM_elen)
-!        call check_neib_node_y
+       call count_neib_node_y                                           &
+     &    (c_size%ndepth, c_each%ny, FEM_elen, c_fil_nod)
+!        call check_neib_node_y(c_fil_nod)
        write(*,*) 'count_neib_node_z'
-       call count_neib_node_z                                           &
-     &    (c_size%ndepth, c_each%nz, nb_rng%koff, FEM_elen)
-       if (iflag_z_filter.eq.0)  then
+       call count_neib_node_z(cube_p%iflag_z_filter,                    &
+     &     c_size%ndepth, c_each%nz, nb_rng%koff, FEM_elen, c_fil_nod)
+       if(cube_p%iflag_z_filter.eq.0)  then
          write(*,*) 'norm_z_coefs'
-         call norm_z_coefs(FEM_elen)
+         call norm_z_coefs(FEM_elen, c_fil_nod)
        end if
-!        call check_neib_node_z
+!        call check_neib_node_z(c_fil_nod)
 !
        call write_neighboring_nod_line                                  &
-     &    (ied_rank, FEM_elen%filter_conf%nf_type,                      &
-     &     c_size, c_each, FEM_elen)
+     &    (ied_rank, cube_p%eps_filter, FEM_elen%filter_conf%nf_type,   &
+     &     c_size, c_each, c_fil_nod, FEM_elen)
 !
-       write(*,*) 'deallocate_filters_nod'
-       call deallocate_filters_nod
+       write(*,*) 'dealloc_filters_nod'
+       call dealloc_filters_nod(c_fil_nod)
 !
        call dealloc_elen_type(FEM_elen%elen_ele)
        call dealloc_ref_1d_mom_type(FEM_elen%filter_conf)
@@ -122,8 +131,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_element_size_on_nod(FEM_elen)
+      subroutine set_element_size_on_nod(iflag_z_filter, FEM_elen)
 !
+      integer(kind = kint), intent(in) :: iflag_z_filter
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
        integer(kind = kint) :: ifil, kf
@@ -199,11 +209,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine count_neib_node_x(ndepth, nx, FEM_elen)
+       subroutine count_neib_node_x(ndepth, nx, FEM_elen, c_fil_nod)
 !
       integer(kind = kint), intent(in) :: ndepth
       integer(kind = kint), intent(in) :: nx
-      type(gradient_model_data_type), intent(inout) :: FEM_elen
+      type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
 !
        integer(kind = kint) :: i, j, k
        integer(kind = kint) :: ii, i1, ifil, i2
@@ -223,13 +234,14 @@
 !           ndepth_x(-1) = 2*ndepth - ndepth_x( 1)
 !          end if
 !
-          nnod_neib_x(i,j,k) = ndepth_x(-1) + ndepth_x(0) + ndepth_x(1)
+          c_fil_nod%nnod_neib_x(i,j,k)                                  &
+     &         = ndepth_x(-1) + ndepth_x(0) + ndepth_x(1)
 !
           do ii = ndepth_x(-1), 1, -1
             i1 = ndepth_x(-1) - ii + 1
             i2 = nneib_h(1) - ii + 1
-            inod_f_item_x(i1,i,j,k) = i - ii
-            inod_f_dist_x(i1,i,j,k) = - ii
+            c_fil_nod%inod_f_item_x(i1,i,j,k) = i - ii
+            c_fil_nod%inod_f_dist_x(i1,i,j,k) = - ii
             do ifil = 1, FEM_elen%filter_conf%nf_type
               c_fil_nod%filter_c_x(i1,i,j,k,ifil)                       &
      &             = coef_nod_x(i2,0,ifil)
@@ -237,8 +249,8 @@
           end do
           i1 = ndepth_x(-1) + 1
           i2 = nneib_h(1)+1
-          inod_f_item_x(i1,i,j,k) = i
-          inod_f_dist_x(i1,i,j,k) = 0
+          c_fil_nod%inod_f_item_x(i1,i,j,k) = i
+          c_fil_nod%inod_f_dist_x(i1,i,j,k) = 0
           do ifil = 1, FEM_elen%filter_conf%nf_type
             c_fil_nod%filter_c_x(i1,i,j,k,ifil)                         &
      &           = coef_nod_x(i2,0,ifil)
@@ -246,8 +258,8 @@
           do ii = 1, ndepth_x( 1)
             i1 = ii + ndepth_x(-1) + 1
             i2 = nneib_h(1) + ii + 1
-            inod_f_item_x(i1,i,j,k) = i + ii
-            inod_f_dist_x(i1,i,j,k) = ii
+            c_fil_nod%inod_f_item_x(i1,i,j,k) = i + ii
+            c_fil_nod%inod_f_dist_x(i1,i,j,k) = ii
             do ifil = 1, FEM_elen%filter_conf%nf_type
               c_fil_nod%filter_c_x(i1,i,j,k,ifil)                       &
      &             = coef_nod_x(i2,0,ifil)
@@ -262,18 +274,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_neib_node_y(ndepth, ny, FEM_elen)
+      subroutine count_neib_node_y(ndepth, ny, FEM_elen, c_fil_nod)
 !
       integer(kind = kint), intent(in) :: ndepth
       integer(kind = kint), intent(in) :: ny
-      type(gradient_model_data_type), intent(inout) :: FEM_elen
+      type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
 !
       integer(kind = kint) :: i, j, k
       integer(kind = kint) :: jj, j1, ifil, j2
       integer(kind = kint),dimension(-1:1) :: ndepth_y
 !
 !
-       nnod_neib_y = 0
+      c_fil_nod%nnod_neib_y = 0
 !
        do k = k_st2, k_end2
         do j = j_st2, j_end2
@@ -288,13 +301,14 @@
  !        end if
          do i = i_st2, i_end2
 !
-          nnod_neib_y(i,j,k) = ndepth_y(-1) + ndepth_y(0) + ndepth_y(1)
+          c_fil_nod%nnod_neib_y(i,j,k)                                  &
+     &        = ndepth_y(-1) + ndepth_y(0) + ndepth_y(1)
 !
           do jj = ndepth_y(-1), 1, -1
             j1 = ndepth_y(-1) - jj + 1
             j2 = nneib_h(2) - jj + 1
-            inod_f_item_y(j1,i,j,k) = j - jj
-            inod_f_dist_y(j1,i,j,k) = -jj
+            c_fil_nod%inod_f_item_y(j1,i,j,k) = j - jj
+            c_fil_nod%inod_f_dist_y(j1,i,j,k) = -jj
             do ifil = 1, FEM_elen%filter_conf%nf_type
               c_fil_nod%filter_c_y(j1,i,j,k,ifil)                       &
     &              = coef_nod_y(j2,0,ifil)
@@ -302,8 +316,8 @@
           end do
           j1 = ndepth_y(-1) + 1
           j2 = nneib_h(2) + 1
-          inod_f_item_y(j1,i,j,k) = j
-          inod_f_dist_y(j1,i,j,k) = 0
+          c_fil_nod%inod_f_item_y(j1,i,j,k) = j
+          c_fil_nod%inod_f_dist_y(j1,i,j,k) = 0
           do ifil = 1, FEM_elen%filter_conf%nf_type
             c_fil_nod%filter_c_y(j1,i,j,k,ifil)                         &
      &           = coef_nod_y(j2,0,ifil)
@@ -311,8 +325,8 @@
           do jj = 1, ndepth_y( 1)
             j1 = jj + ndepth_y(-1) + 1
             j2 = nneib_h(2) + jj + 1
-            inod_f_item_y(j1,i,j,k) = j + jj
-            inod_f_dist_y(j1,i,j,k) = jj
+            c_fil_nod%inod_f_item_y(j1,i,j,k) = j + jj
+            c_fil_nod%inod_f_dist_y(j1,i,j,k) = jj
             do ifil = 1, FEM_elen%filter_conf%nf_type
               c_fil_nod%filter_c_y(j1,i,j,k,ifil)                       &
      &             = coef_nod_y(j2,0,ifil)
@@ -327,18 +341,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_neib_node_z(ndepth, nz, koff, FEM_elen)
+      subroutine count_neib_node_z                                      &
+     &         (iflag_z_filter, ndepth, nz, koff, FEM_elen, c_fil_nod)
 !
+      integer(kind = kint), intent(in) :: iflag_z_filter
       integer(kind = kint), intent(in) :: ndepth
       integer(kind = kint), intent(in) :: nz
       integer(kind = kint), intent(in) :: koff
-      type(gradient_model_data_type), intent(inout) :: FEM_elen
+      type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
 !
       integer(kind = kint) :: i, j, k
       integer(kind = kint) :: kk, k1, ifil, k2, k_gl
       integer(kind = kint),dimension(-1:1) :: ndepth_z
 !
-       nnod_neib_z = 0
+      c_fil_nod%nnod_neib_z = 0
 !
        do k=k_st2,k_end2
         k_gl = k + koff
@@ -354,15 +371,16 @@
         do j=j_st2,j_end2
          do i=i_st2,i_end2
 
-          nnod_neib_z(i,j,k) = ndepth_z(-1) + ndepth_z(0) + ndepth_z(1)
+          c_fil_nod%nnod_neib_z(i,j,k)                                  &
+     &         = ndepth_z(-1) + ndepth_z(0) + ndepth_z(1)
 !
           do kk = ndepth_z(-1), 1, -1
             k1 = ndepth_z(-1) - kk + 1
-            inod_f_item_z(k1,i,j,k) = k - kk
-            inod_f_dist_z(k1,i,j,k) = -kk
+            c_fil_nod%inod_f_item_z(k1,i,j,k) = k - kk
+            c_fil_nod%inod_f_dist_z(k1,i,j,k) = -kk
             do ifil = 1, FEM_elen%filter_conf%nf_type
               k2 = nneib_z(k_gl,1,ifil) - kk + 1
-              if (iflag_z_filter.eq.0) then
+              if(iflag_z_filter.eq.0) then
                 c_fil_nod%filter_c_z(k1,i,j,k,ifil)                     &
      &               = coef_nod_x(k2,0,ifil)
               else
@@ -372,11 +390,11 @@
             end do
           end do
           k1 = ndepth_z(-1) + 1
-          inod_f_item_z(k1,i,j,k) = k
-          inod_f_dist_z(k1,i,j,k) = 0
+          c_fil_nod%inod_f_item_z(k1,i,j,k) = k
+          c_fil_nod%inod_f_dist_z(k1,i,j,k) = 0
           do ifil = 1, FEM_elen%filter_conf%nf_type
             k2 = nneib_z(k_gl,1,ifil) + 1
-              if (iflag_z_filter.eq.0) then
+              if(iflag_z_filter.eq.0) then
                 c_fil_nod%filter_c_z(k1,i,j,k,ifil)                     &
      &               = coef_nod_x(k2,0,ifil)
               else
@@ -386,11 +404,11 @@
           end do
           do kk = 1, ndepth_z( 1)
             k1 = kk + ndepth_z(-1) + 1
-            inod_f_item_z(k1,i,j,k) = k + kk
-            inod_f_dist_z(k1,i,j,k) = kk
+            c_fil_nod%inod_f_item_z(k1,i,j,k) = k + kk
+            c_fil_nod%inod_f_dist_z(k1,i,j,k) = kk
             do ifil = 1, FEM_elen%filter_conf%nf_type
               k2 = nneib_z(k_gl,1,ifil) + kk + 1
-              if (iflag_z_filter.eq.0) then
+              if(iflag_z_filter.eq.0) then
                 c_fil_nod%filter_c_z(k1,i,j,k,ifil)                     &
      &               = coef_nod_x(k2,0,ifil)
               else
@@ -410,9 +428,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine norm_z_coefs(FEM_elen)
+       subroutine norm_z_coefs(FEM_elen, c_fil_nod)
 !
-      type(gradient_model_data_type), intent(inout) :: FEM_elen
+      type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
 !
        integer(kind = kint) :: i, j, k
        integer(kind = kint) :: k1, ifil
@@ -425,11 +444,11 @@
           do ifil = 1, FEM_elen%filter_conf%nf_type
 !
            total_mom = 0.0d0
-           do k1 = 1, nnod_neib_z(i,j,k)
+           do k1 = 1, c_fil_nod%nnod_neib_z(i,j,k)
              total_mom = total_mom                                      &
      &                  + c_fil_nod%filter_c_z(k1,i,j,k,ifil)
            end do
-           do k1 = 1, nnod_neib_z(i,j,k)
+           do k1 = 1, c_fil_nod%nnod_neib_z(i,j,k)
              c_fil_nod%filter_c_z(k1,i,j,k,ifil)                        &
      &            = c_fil_nod%filter_c_z(k1,i,j,k,ifil) / total_mom
            end do
@@ -444,23 +463,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine check_neib_node_x
+       subroutine check_neib_node_x(c_fil_nod)
+!
+      type(filtering_nod_4_cubmesh), intent(in) :: c_fil_nod
 !
        integer(kind = kint) :: i, j, k
        integer(kind = kint) :: ii, i1
 !
        write(50,*) 'nnod_neib_x'
-       write(50,'(10i16)') nnod_neib_x
+       write(50,'(10i16)') c_fil_nod%nnod_neib_x
 !
        write(50,*) 'filter information for x-direction'
        do k=k_st2,k_end2
         do j=j_st2,j_end2
          do i=i_st2, i_end2
-          do ii = 1, nnod_neib_x(i,j,k)
-           i1 = inod_f_item_x(ii,i,j,k)
+          do ii = 1, c_fil_nod%nnod_neib_x(i,j,k)
+           i1 = c_fil_nod%inod_f_item_x(ii,i,j,k)
           write(50,'(4i5,10i6)') k, j, i, ii,                           &
-     &         node_id_lc(i,j,k), inod_f_item_x(ii,i,j,k),              &
-     &         node_id_lc(i1,j,k), inod_f_dist_x(ii,i,j,k)
+     &         node_id_lc(i,j,k), c_fil_nod%inod_f_item_x(ii,i,j,k),    &
+     &         node_id_lc(i1,j,k), c_fil_nod%inod_f_dist_x(ii,i,j,k)
           end do
          enddo
         enddo
@@ -470,23 +491,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine check_neib_node_y
+       subroutine check_neib_node_y(c_fil_nod)
+!
+      type(filtering_nod_4_cubmesh), intent(in) :: c_fil_nod
 !
        integer(kind = kint) :: i, j, k
        integer(kind = kint) :: jj, j1
 !
        write(50,*) 'nnod_neib_y'
-       write(50,'(10i16)') nnod_neib_y
+       write(50,'(10i16)') c_fil_nod%nnod_neib_y
 !
        write(50,*) 'filter information for y-direction'
        do k=k_st2,k_end2
         do j=j_st2,j_end2
          do i=i_st2, i_end2
-          do jj = 1, nnod_neib_y(i,j,k)
-           j1 = inod_f_item_y(jj,i,j,k)
+          do jj = 1, c_fil_nod%nnod_neib_y(i,j,k)
+           j1 = c_fil_nod%inod_f_item_y(jj,i,j,k)
           write(50,'(4i5,10i6)') k, j, i, jj,                           &
-     &         node_id_lc(i,j,k), inod_f_item_y(jj,i,j,k),              &
-     &         node_id_lc(i,j1,k), inod_f_dist_y(jj,i,j,k)
+     &         node_id_lc(i,j,k), c_fil_nod%inod_f_item_y(jj,i,j,k),    &
+     &         node_id_lc(i,j1,k), c_fil_nod%inod_f_dist_y(jj,i,j,k)
           end do
          enddo
         enddo
@@ -497,23 +520,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine check_neib_node_z
+      subroutine check_neib_node_z(c_fil_nod)
+!
+      type(filtering_nod_4_cubmesh), intent(in) :: c_fil_nod
 !
        integer(kind = kint) :: i, j, k
        integer(kind = kint) :: kk, k1
 !
        write(50,*) 'nnod_neib_z'
-       write(50,'(10i16)') nnod_neib_z
+       write(50,'(10i16)') c_fil_nod%nnod_neib_z
 !
        write(50,*) 'filter information for z-direction'
        do k=k_st2,k_end2
         do j=j_st2,j_end2
          do i=i_st2, i_end2
-          do kk = 1, nnod_neib_z(i,j,k)
-           k1 = inod_f_item_z(kk,i,j,k)
+          do kk = 1, c_fil_nod%nnod_neib_z(i,j,k)
+           k1 = c_fil_nod%inod_f_item_z(kk,i,j,k)
           write(50,'(4i5,10i6)') k, j, i, kk,                           &
-     &         node_id_lc(i,j,k), inod_f_item_z(kk,i,j,k),              &
-     &         node_id_lc(i,j,k1), inod_f_dist_z(kk,i,j,k)
+     &         node_id_lc(i,j,k), c_fil_nod%inod_f_item_z(kk,i,j,k),    &
+     &         node_id_lc(i,j,k1), c_fil_nod%inod_f_dist_z(kk,i,j,k)
           end do
          enddo
         enddo
@@ -523,27 +548,28 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine check_neib_node_xy(FEM_elen)
+       subroutine check_neib_node_xy(FEM_elen, c_fil_nod)
 !
-      type(gradient_model_data_type), intent(inout) :: FEM_elen
+      type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(filtering_nod_4_cubmesh), intent(in) :: c_fil_nod
 !
        integer(kind = kint) :: i, j, k, ifil
        integer(kind = kint) :: ij, i1, j1
 !
        write(50,*) 'nnod_neib_xy'
-       write(50,'(10i16)') nnod_neib_xy
+       write(50,'(10i16)') c_fil_nod%nnod_neib_xy
 !
        write(50,*) 'filter information for each plane'
        do k=k_st2,k_end2
         do j=j_st2,j_end2
          do i=i_st2, i_end2
-          do ij = 1, nnod_neib_xy(i,j,k)
-           i1 = inod_f_item_xy(ij,i,j,k,1)
-           j1 = inod_f_item_xy(ij,i,j,k,2)
+          do ij = 1, c_fil_nod%nnod_neib_xy(i,j,k)
+           i1 = c_fil_nod%inod_f_item_xy(ij,i,j,k,1)
+           j1 = c_fil_nod%inod_f_item_xy(ij,i,j,k,2)
           write(50,'(4i5,10i6)') k, j, i, ij, node_id_lc(i,j,k),        &
-     &         inod_f_item_xy(ij,i,j,k,1), inod_f_item_xy(ij,i,j,k,2),  &
-     &         node_id_lc(i1,j1,k), inod_f_dist_xy(ij,i,j,k,1),         &
-     &         inod_f_dist_xy(ij,i,j,k,2)
+     &         c_fil_nod%inod_f_item_xy(ij,i,j,k,1:2),                  &
+     &         node_id_lc(i1,j1,k),                                     &
+     &         c_fil_nod%inod_f_dist_xy(ij,i,j,k,1:2)
           write(50,'(1p10E25.15e3)')                                    &
      &        (c_fil_nod%filter_c_xy(ij,i,j,k,ifil),ifil=1,             &
      &            FEM_elen%filter_conf%nf_type)
@@ -556,26 +582,28 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine check_neib_node_3d
+       subroutine check_neib_node_3d(c_fil_nod)
+!
+      type(filtering_nod_4_cubmesh), intent(in) :: c_fil_nod
 !
        integer(kind = kint) :: i, j, k
        integer(kind = kint) :: ijk, i1, j1, k1, nd
 !
        write(50,*) 'nnod_neib'
-       write(50,'(10i16)') nnod_neib
+       write(50,'(10i16)') c_fil_nod%nnod_neib
 !
        write(50,*) 'filter information for all direction'
        do k=k_st2,k_end2
         do j=j_st2,j_end2
          do i=i_st2, i_end2
-          do ijk = 1, nnod_neib(i,j,k)
-           i1 = inod_f_item_3d(ijk,i,j,k,1)
-           j1 = inod_f_item_3d(ijk,i,j,k,2)
-           k1 = inod_f_item_3d(ijk,i,j,k,3)
+          do ijk = 1, c_fil_nod%nnod_neib(i,j,k)
+           i1 = c_fil_nod%inod_f_item_3d(ijk,i,j,k,1)
+           j1 = c_fil_nod%inod_f_item_3d(ijk,i,j,k,2)
+           k1 = c_fil_nod%inod_f_item_3d(ijk,i,j,k,3)
           write(50,'(4i5,10i6)') k, j, i, ijk, node_id_lc(i,j,k),       &
-     &         (inod_f_item_3d(ijk,i,j,k,nd), nd = 1, 3),               &
+     &         c_fil_nod%inod_f_item_3d(ijk,i,j,k,1:3),                 &
      &         node_id_lc(i1,j1,k1),                                    &
-     &         (inod_f_dist_3d(ijk,i,j,k,nd), nd= 1,3)
+     &         c_fil_nod%inod_f_dist_3d(ijk,i,j,k,1:3)
           end do
          enddo
         enddo

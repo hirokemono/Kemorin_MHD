@@ -16,10 +16,12 @@
 !!
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine neib_edge_line(id_rank, c_size, c_each, nb_rng)
+!!      subroutine neib_edge_line                                       &
+!!     &         (id_rank, c_size, c_each, nb_rng, c_fil_edge)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(size_of_each_cube), intent(in) :: c_each
 !!        type(neib_range_cube), intent(in) :: nb_rng
+!!        type(filtering_nod_4_cubmesh), intent(in) :: c_fil_edge(3)
 !
       module neib_edge_line_cube
 !
@@ -28,7 +30,7 @@
       use t_size_of_cube
       use m_local_node_id_cube
       use m_cube_files_data
-      use m_filtering_edge_4_cubmesh
+      use t_filtering_nod_4_cubmesh
       use set_parallel_file_name
 !
       implicit none
@@ -55,7 +57,8 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine neib_edge_line(id_rank, c_size, c_each, nb_rng)
+      subroutine neib_edge_line                                         &
+     &         (id_rank, c_size, c_each, nb_rng, c_fil_edge)
 !
       use t_neib_range_cube
       use m_constants
@@ -64,19 +67,20 @@
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
+      type(filtering_nod_4_cubmesh), intent(in) :: c_fil_edge(3)
 !
 !
       call allocate_neighbour_edge_line(c_size, c_each)
 !
-      call set_neib_edge_line                                           &
-     &   (c_size, c_each, ione, nb_rng%iedge_st, nb_rng%iedge_end,      &
-     &    nb_rng%j_st, nb_rng%j_end, nb_rng%k_st, nb_rng%k_end)
-      call set_neib_edge_line                                           &
-     &   (c_size, c_each, itwo, nb_rng%i_st, nb_rng%i_end,              &
-     &    nb_rng%jedge_st, nb_rng%jedge_end, nb_rng%k_st, nb_rng%k_end)
-      call set_neib_edge_line                                           &
-     &   (c_size, c_each, ithree, nb_rng%i_st, nb_rng%i_end,            &
-     &    nb_rng%j_st, nb_rng%j_end, nb_rng%kedge_st, nb_rng%kedge_end)
+      call set_neib_edge_line(c_size, c_each, c_fil_edge, ione,         &
+     &    nb_rng%iedge_st, nb_rng%iedge_end, nb_rng%j_st, nb_rng%j_end, &
+     &    nb_rng%k_st, nb_rng%k_end)
+      call set_neib_edge_line(c_size, c_each, c_fil_edge, itwo,         &
+     &    nb_rng%i_st, nb_rng%i_end, nb_rng%jedge_st, nb_rng%jedge_end, &
+     &    nb_rng%k_st, nb_rng%k_end)
+      call set_neib_edge_line(c_size, c_each, c_fil_edge, ithree,       &
+     &    nb_rng%i_st, nb_rng%i_end, nb_rng%j_st, nb_rng%j_end,         &
+     &    nb_rng%kedge_st, nb_rng%kedge_end)
 !
       call write_neib_edge_line(c_size, c_each, id_rank)
 !
@@ -125,28 +129,29 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine set_neib_edge_line(c_size, c_each,                    &
+       subroutine set_neib_edge_line(c_size, c_each, c_fil_edge,        &
       &          nd, ist, ied, jst, jed, kst, ked)
 !
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
+      type(filtering_nod_4_cubmesh), intent(in) :: c_fil_edge(3)
 !
-       integer(kind = kint), intent(in) :: nd
-       integer(kind = kint), intent(in) :: ist,jst,kst
-       integer(kind = kint), intent(in) :: ied,jed,ked
+      integer(kind = kint), intent(in) :: nd
+      integer(kind = kint), intent(in) :: ist,jst,kst
+      integer(kind = kint), intent(in) :: ied,jed,ked
 !
-       integer(kind = kint) :: i, j, k, iedge, iedge0
-       integer(kind = kint) :: i1, ii, jj, kk
+      integer(kind = kint) :: i, j, k, iedge, iedge0
+      integer(kind = kint) :: i1, ii, jj, kk
 !
-       iedge = 0
-       if (nd.eq.1) then
-         iedge = 0
-       else if (nd.eq.2) then
-         iedge = (c_each%nx-1) * c_each%ny  * c_each%nz
-       else if (nd.eq.3) then
-         iedge = (c_each%nx-1) * c_each%ny  * c_each%nz                 &
-     &          + c_each%nx * (c_each%ny-1)  * c_each%nz
-       end if
+      iedge = 0
+      if (nd.eq.1) then
+        iedge = 0
+      else if (nd.eq.2) then
+        iedge = (c_each%nx-1) * c_each%ny  * c_each%nz
+      else if (nd.eq.3) then
+        iedge = (c_each%nx-1) * c_each%ny  * c_each%nz                 &
+     &         + c_each%nx * (c_each%ny-1)  * c_each%nz
+      end if
 !
        do k=kst,ked
         do j=jst,jed
@@ -154,14 +159,14 @@
 !
           do i1 = 1, c_size%ndep_1
            iedge0 = c_size%ndep_1*(iedge-1) + i1
-           ii = iedge_f_item_x(i1,i,j,k,nd)
-           jj = iedge_f_item_y(i1,i,j,k,nd)
-           kk = iedge_f_item_z(i1,i,j,k,nd)
-           iedge_f_d_x(iedge0) = iedge_f_dist_x(i1,i,j,k,nd)
+           ii = c_fil_edge(nd)%inod_f_item_x(i1,i,j,k)
+           jj = c_fil_edge(nd)%inod_f_item_y(i1,i,j,k)
+           kk = c_fil_edge(nd)%inod_f_item_z(i1,i,j,k)
+           iedge_f_d_x(iedge0) = c_fil_edge(nd)%inod_f_dist_x(i1,i,j,k)
            iedge_neib_x(iedge0) = edge_id_lc(ii,j,k,nd)
-           iedge_f_d_y(iedge0) = iedge_f_dist_y(i1,i,j,k,nd)
+           iedge_f_d_y(iedge0) = c_fil_edge(nd)%inod_f_dist_y(i1,i,j,k)
            iedge_neib_y(iedge0) = edge_id_lc(i,jj,k,nd)
-           iedge_f_d_z(iedge0) = iedge_f_dist_z(i1,i,j,k,nd)
+           iedge_f_d_z(iedge0) = c_fil_edge(nd)%inod_f_dist_z(i1,i,j,k)
            iedge_neib_z(iedge0) = edge_id_lc(i,j,kk,nd)
           end do
 !

@@ -56,7 +56,6 @@
 !
        subroutine allocate_filter_4_plane(ndepth, nz_all, nf_type)
 !
-       use m_filtering_nod_4_cubmesh
 !
        integer(kind = kint), intent(in) :: ndepth, nz_all
        integer(kind = kint), intent(in) :: nf_type

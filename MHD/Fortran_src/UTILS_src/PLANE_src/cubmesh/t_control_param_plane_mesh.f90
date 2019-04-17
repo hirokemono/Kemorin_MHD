@@ -17,6 +17,9 @@
         integer(kind = kint) :: iflag_filter = -1
 
         integer(kind = kint) :: iflag_ztype
+!
+        integer (kind = kint) :: iflag_z_filter
+        real(kind = kreal) :: eps_filter
       end type ctl_param_plane_mesh
 !
 !  ---------------------------------------------------------------------
@@ -29,7 +32,6 @@
 !
       use t_size_of_cube
       use m_grp_data_cub_kemo
-      use m_filtering_nod_4_cubmesh
       use m_cube_files_data
       use m_ctl_data_4_plane_model
       use m_ctl_data_4_cub_kemo
@@ -143,18 +145,18 @@
         cube_p%iflag_filter = 0
       end if
 !
-      iflag_z_filter = 0
+      cube_p%iflag_z_filter = 0
 !      write(*,*) ' Setting of vertical filter'
 !      call skip_comment(character_4_read, l_in)
-!      read (character_4_read, * )   iflag_z_filter
-!      write(*,*) ' iflag_z_filter    = ',  iflag_z_filter
+!      read (character_4_read, * )   cube_p%iflag_z_filter
+!      write(*,*) ' iflag_z_filter    = ',  cube_p%iflag_z_filter
 !
 !
 !
       if (omitting_value_ctl%iflag .gt. 0) then
-        eps_filter = omitting_value_ctl%realvalue
+        cube_p%eps_filter = omitting_value_ctl%realvalue
       else
-        eps_filter = 0.0d0
+        cube_p%eps_filter = 0.0d0
       end if
 !
 !
@@ -173,7 +175,7 @@
       write(*,*) 'num. of sleeve: ', c_size%ndepth
 !
       write(*,*) 'num. of filter: ', cube_p%iflag_filter
-      write(*,*) 'omitting parameter: ', eps_filter
+      write(*,*) 'omitting parameter: ', cube_p%eps_filter
 !
       end subroutine s_set_ctl_data_plane_mesh
 !

@@ -12,28 +12,17 @@ TARGET_INI_B_CUBE = add_magne_ini_4_plane
 SOURCES = $(shell ls *.f90)
 
 MOD_CUBMESH311 = \
-cub_kemo.o \
-\
-m_ctl_data_4_cub_kemo.o \
-t_control_param_plane_mesh.o
+cub_kemo.o
 
 MOD_CUBMESH322 = \
-cub_kemo_quad.o \
-\
-m_ctl_data_4_cub_kemo.o \
-t_control_param_plane_mesh.o
+cub_kemo_quad.o
 
 MOD_INI_T_CUBE = \
-generate_initial_4_plane.o \
-\
-m_ctl_data_4_cub_kemo.o \
-t_control_param_plane_mesh.o
+generate_initial_4_plane.o
 
 MOD_INI_B_CUBE = \
-add_magne_ini_4_plane.o \
-\
-m_ctl_data_4_cub_kemo.o \
-t_control_param_plane_mesh.o
+add_magne_ini_4_plane.o
+
 
 #
 #  -------------------------------------------------------------------------

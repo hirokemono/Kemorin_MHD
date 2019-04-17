@@ -97,13 +97,12 @@
       use t_neib_range_cube
       use t_cube_position
       use t_control_param_plane_mesh
+      use t_filtering_nod_4_cubmesh
 !
       use m_comm_data_cube_kemo
       use m_grp_data_cub_kemo
       use m_cube_files_data
       use m_local_node_id_cube
-      use m_filtering_nod_4_cubmesh
-      use m_filtering_ele_4_cubmesh
 !
       use m_filter_data_4_plane
       use m_ctl_data_4_cub_kemo
@@ -141,6 +140,7 @@
       type(vertical_position_cube), save :: c_vert1
       type(neib_range_cube), save :: nb_rng1
       type(gradient_model_data_type), save :: FEM_elen_c
+      type(filterings_4_cubmesh), save :: c_fils
 !
       integer(kind=kint)  ::  ipe    , jpe    , kpe    , pe_id
       integer :: id_rank
@@ -191,7 +191,7 @@
 !
 !    allocate work array
 !
-      call allocate_work_4_filter_nod(c_size1)
+      call alloc_work_4_filter_nod(c_size1, c_fils%c_fil_nod)
 !
 !     set one-dimensional moments
 !
@@ -312,14 +312,15 @@
 !   construct filtering information
 !
             if(cube_p1%iflag_filter .gt. 0) then
-              call allocate_work_4_filter_ele(c_size1, c_each1)
+              call alloc_work_4_filter_ele                              &
+     &           (c_size1, c_each1, c_fils%c_fil_ele)
 !
               write(*,*) 'neighboring_node'
-              call neighboring_node                                     &
-     &            (pe_id, c_size1, c_each1, nb_rng1, FEM_elen_c)
+              call neighboring_node(pe_id, cube_p1, c_size1, c_each1,   &
+     &            nb_rng1, FEM_elen_c, c_fils%c_fil_nod)
 !
               write(*,*) 'deallocate_work_4_filter_ele'
-              call deallocate_work_4_filter_ele
+              call dealloc_work_4_filter_nod(c_fils%c_fil_ele)
             end if
 !                                       ... to next pe 
             write(*,*) 'change domain'
@@ -331,7 +332,7 @@
             call reset_communication_data
             call reset_node_info
             call reset_cube_ele_group_id
-            call reset_work_4_filter_nod
+            call reset_work_4_filter_nod(c_fils%c_fil_nod)
 !
           enddo
         enddo
