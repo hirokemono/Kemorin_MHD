@@ -265,9 +265,6 @@
      &         (c_size1, nb_rng1, loc_id1, ipe, jpe, comm)
 !
             call sort_communication_table(comm, comm_IO)
-            call write_communication_data(l_out, comm_IO)
-            call dealloc_comm_table(comm_IO)
-!
 !
 ! ..... write 4.group information
             call const_node_group(c_size1, c_each1, loc_id1,            &
@@ -276,6 +273,9 @@
      &         (c_size1, c_each1, nb_rng1, kpe, cube_groups%ele_grp)
             call const_surface_group                                    &
      &         (c_size1, c_each1, kpe, cube_groups%surf_grp)
+!
+            call write_communication_data(l_out, comm_IO)
+            call dealloc_comm_table(comm_IO)
 !
             call write_mesh_groups(l_out, cube_groups)
             call dealloc_groups_data(cube_groups)
