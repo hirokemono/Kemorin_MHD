@@ -4,10 +4,11 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine count_import_peri_linear                             &
-!!     &         (c_size, nb_rng, ipe, jpe, icou, inod)
-!!      subroutine count_import_peri_quad                               &
-!!     &         (c_size, nb_rng, ipe, jpe, kpe, icou, inod)
+!!      subroutine count_import_peri_linear(c_size, nb_rng, ipe, jpe,   &
+!!     &          num_neib, istack_import, icou, inod)
+!!      subroutine count_import_peri_quad(c_size, nb_rng, ipe, jpe, kpe,&
+!!     &          num_neib, istack_import, icou, inod)
+!!        type(size_of_cube), intent(in) :: c_size
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !
       module count_import_peri
@@ -18,7 +19,6 @@
       use t_size_of_cube
       use t_neib_range_cube
       use t_sleeve_cube
-      use m_comm_data_cube_kemo
       use set_comm_nod_4_cube
 !
       implicit none
@@ -29,12 +29,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_import_peri_linear                               &
-     &         (c_size, nb_rng, ipe, jpe, icou, inod)
+      subroutine count_import_peri_linear(c_size, nb_rng, ipe, jpe,     &
+     &          num_neib, istack_import, icou, inod)
 !
       type(neib_range_cube), intent(in) :: nb_rng
       type(size_of_cube), intent(in) :: c_size
       integer (kind = kint), intent(in) :: ipe, jpe
+      integer (kind = kint), intent(in) :: num_neib
+!
+      integer (kind = kint), intent(inout) :: istack_import(0:num_neib)
       integer (kind = kint), intent(inout) :: icou, inod
 !
       type(slleve_range) :: sl_rng1
@@ -54,7 +57,7 @@
                icou = icou  + 1
                call count_node_id(sl_rng1, inod)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
              enddo
@@ -74,7 +77,7 @@
                icou = icou  + 1
                call count_node_id(sl_rng1, inod)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
              enddo
@@ -94,7 +97,7 @@
                icou = icou  + 1
                call count_node_id(sl_rng1, inod)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
              enddo
@@ -114,7 +117,7 @@
                icou = icou  + 1
                call count_node_id(sl_rng1, inod)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
              enddo
@@ -135,7 +138,7 @@
                icou = icou  + 1
                call count_node_id(sl_rng1, inod)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
             endif
@@ -155,7 +158,7 @@
                icou = icou  + 1
                call count_node_id(sl_rng1, inod)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
             endif
@@ -175,7 +178,7 @@
                icou = icou  + 1
                call count_node_id(sl_rng1, inod)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
             endif
@@ -195,7 +198,7 @@
                icou = icou  + 1
                call count_node_id(sl_rng1, inod)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
             endif
@@ -204,14 +207,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_import_peri_quad                                 &
-     &         (c_size, nb_rng, ipe, jpe, kpe, icou, inod)
+      subroutine count_import_peri_quad(c_size, nb_rng, ipe, jpe, kpe,  &
+     &          num_neib, istack_import, icou, inod)
 !
       use set_comm_edge_4_cube
 !
       type(neib_range_cube), intent(in) :: nb_rng
       type(size_of_cube), intent(in) :: c_size
       integer (kind = kint), intent(in) :: ipe, jpe, kpe
+      integer (kind = kint), intent(in) :: num_neib
+!
+      integer (kind = kint), intent(inout) :: istack_import(0:num_neib)
       integer (kind = kint), intent(inout) :: icou, inod
 !
       type(slleve_range) :: sl_rng1
@@ -239,7 +245,7 @@
                call count_im_edge(sl_rng1, c_size%ndz,                  &
      &             kpe, inp, jnp, knp, inod, ithree)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
              enddo
@@ -272,7 +278,7 @@
                call count_im_edge(sl_rng1, c_size%ndz,                  &
      &             kpe, inp, jnp, knp, inod, ithree)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
              enddo
@@ -300,7 +306,7 @@
                call count_im_edge(sl_rng1, c_size%ndz,                  &
      &             kpe, inp, jnp, knp, inod, ithree)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
              enddo
@@ -332,7 +338,7 @@
                call count_im_edge(sl_rng1, c_size%ndz,                  &
      &             kpe, inp, jnp, knp, inod, ithree)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
              enddo
@@ -362,7 +368,7 @@
                call count_im_edge(sl_rng1, c_size%ndz,                  &
      &             kpe, inp, jnp, knp, inod, ithree)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
             endif
@@ -395,7 +401,7 @@
                call count_im_edge(sl_rng1, c_size%ndz,                  &
      &             kpe, inp, jnp, knp, inod, ithree)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
             endif
@@ -430,7 +436,7 @@
                call count_im_edge(sl_rng1, c_size%ndz,                  &
      &             kpe, inp, jnp, knp, inod, ithree)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
             endif
@@ -463,7 +469,7 @@
                call count_im_edge(sl_rng1, c_size%ndz,                  &
      &             kpe, inp, jnp, knp, inod, ithree)
 
-               stack_import(icou) = inod
+               istack_import(icou) = inod
 
               enddo
             endif

@@ -23,11 +23,6 @@
       integer(kind=kint ) :: num_import
       integer(kind=kint ) :: num_export
 !
-      integer(kind=kint ), dimension(0:neibpetot_max)                   &
-     &      :: stack_import = 0
-      integer(kind=kint ), dimension(0:neibpetot_max)                   &
-     &      :: stack_export = 0
-!
 !
       type(communication_table), save :: comm
       type(communication_table), save :: comm_new
@@ -72,6 +67,9 @@
        else
          inum0 = 0
        end if
+!
+       allocate ( comm%istack_import(0:neibpetot_max) )
+       allocate ( comm%istack_export(0:neibpetot_max) )
 !
        allocate ( comm_new%id_neib(neibpetot_max) )
        allocate ( comm_new%istack_import(0:neibpetot_max) )
@@ -139,8 +137,8 @@
         inum0 = inum0 + 1
         do n1 = 1, neibpetot
           if(comm_new%id_neib(n0) .eq. neibpe(n1) ) then
-            ist = stack_import(n1-1)+1
-            ied = stack_import(n1)
+            ist = comm%istack_import(n1-1)+1
+            ied = comm%istack_import(n1)
             do inod = ist, ied
               node_id = node_id + 1
               comm_new%item_import(node_id) = comm%item_import(inod)
@@ -157,8 +155,8 @@
         inum0 = inum0 + 1
         do n1 = 1, neibpetot
           if ( comm_new%id_neib(n0) .eq. neibpe(n1) ) then
-            ist = stack_export(n1-1)+1
-            ied = stack_export(n1)
+            ist = comm%istack_export(n1-1)+1
+            ied = comm%istack_export(n1)
             do inod = ist, ied
               node_id = node_id + 1
               comm_new%item_export(node_id) = comm%item_export(inod)
@@ -221,18 +219,10 @@
 !
        ifile = 29 + pe_id
        write(ifile,'(a)', advance='NO') hd_fem_import()
-       write(ifile,'(10i16)') stack_import(1:neibpetot)
-
-      do inod = 1, num_import
-        write(ifile,'(10i16)') comm%item_import(inod)
-      end do
+       call write_import_data(ifile, comm)
 !
       write(ifile,'(a)', advance='NO') hd_fem_export()
-      write(ifile,'(10i16)') stack_export(1:neibpetot)
-
-      do inod = 1, num_export
-        write(ifile,'(10i16)') comm%item_export(inod)
-      end do
+      call write_export_data(ifile, comm)
 !
       end subroutine write_org_communication_data
 !

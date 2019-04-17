@@ -4,9 +4,10 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine count_export_inside(c_size, nb_rng, icou, inod)
-!!      subroutine count_export_inside_quad                             &
-!!     &         (c_size, nb_rng, kpe, icou, inod)
+!!      subroutine count_export_inside(c_size, nb_rng,                  &
+!!     &          num_neib, istack_export, icou, inod)
+!!      subroutine count_export_inside_quad(c_size, nb_rng, kpe,        &
+!!     &          num_neib, istack_export, icou, inod)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !
@@ -29,11 +30,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_export_inside(c_size, nb_rng, icou, inod)
+      subroutine count_export_inside(c_size, nb_rng,                    &
+     &          num_neib, istack_export, icou, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
+      integer (kind = kint), intent(in) :: num_neib
 !
+      integer (kind = kint), intent(inout) :: istack_export(0:num_neib)
       integer (kind = kint), intent(inout) :: icou, inod
 !
       type(slleve_range) :: sl_rng1
@@ -52,7 +56,7 @@
                   icou = icou  + 1
                   call count_node_id(sl_rng1, inod)
 
-                  stack_export(icou) = inod
+                  istack_export(icou) = inod
 
                 enddo
               enddo
@@ -62,15 +66,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_export_inside_quad                               &
-     &         (c_size, nb_rng, kpe, icou, inod)
+      subroutine count_export_inside_quad(c_size, nb_rng, kpe,          &
+     &          num_neib, istack_export, icou, inod)
 !
       use set_comm_edge_4_cube
 !
       type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: kpe
+      integer (kind = kint), intent(in) :: num_neib
 !
+      integer (kind = kint), intent(inout) :: istack_export(0:num_neib)
       integer (kind = kint), intent(inout) :: icou, inod
 !
       type(slleve_range) :: sl_rng1
@@ -97,7 +103,7 @@
          call count_ex_edge(sl_rng1, c_size%ndz,                        &
      &       kpe, inp, jnp, knp, inod, ithree)
 
-         stack_export(icou) = inod
+         istack_export(icou) = inod
 !
         end do
        end do

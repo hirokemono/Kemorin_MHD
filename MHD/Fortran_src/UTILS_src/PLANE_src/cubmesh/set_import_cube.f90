@@ -48,10 +48,12 @@
 !
       neibpetot = 0
       inod   = 0
-      call count_import_inside(c_size, nb_rng, neibpetot, inod)
-      call count_import_peri_linear                                     &
-     &   (c_size, nb_rng, ipe, jpe, neibpetot, inod)
-      num_import = stack_import(neibpetot)
+      call count_import_inside(c_size, nb_rng,                          &
+     &    comm%num_neib, comm%istack_import, neibpetot, inod)
+      call count_import_peri_linear(c_size, nb_rng, ipe, jpe,           &
+     &    comm%num_neib, comm%istack_import, neibpetot, inod)
+      comm%ntot_import = comm%istack_import(neibpetot)
+      write(*,*) 'neibpetot ntot_import', neibpetot
 !
 !                                     .... write nodes 
       neibpetot = 0
@@ -83,13 +85,13 @@
 !                                     .... count nodes 
       inod = 0
       neibpetot = 0
-      call count_import_inside_quad                                     &
-     &   (c_size, nb_rng, kpe, neibpetot, inod)
-      call count_import_peri_quad                                       &
-     &   (c_size, nb_rng, ipe, jpe, kpe, neibpetot, inod)
+      call count_import_inside_quad(c_size, nb_rng, kpe,                &
+     &    comm%num_neib, comm%istack_import, neibpetot, inod)
+      call count_import_peri_quad(c_size, nb_rng, ipe, jpe, kpe,        &
+     &    comm%num_neib, comm%istack_import, neibpetot, inod)
 !
-      num_import = stack_import(neibpetot)
-      write(*,*) ipe, jpe, kpe, 'num_import', num_import
+      comm%ntot_import = comm%istack_import(neibpetot)
+      write(*,*) ipe, jpe, kpe, 'ntot_import', comm%ntot_import
 !
 !
 !                                     .... write nodes 
@@ -124,10 +126,12 @@
 !
       neibpetot = 0
       inod   = 0
-      call count_export_inside(c_size, nb_rng, neibpetot, inod)
-      call count_export_peri_linear                                     &
-     &   (c_size, nb_rng, ipe, jpe, neibpetot, inod)
-      num_export = stack_export(neibpetot)
+      call count_export_inside(c_size, nb_rng,                          &
+     &    comm%num_neib, comm%istack_export, neibpetot, inod)
+      call count_export_peri_linear(c_size, nb_rng, ipe, jpe,           &
+     &    comm%num_neib, comm%istack_export, neibpetot, inod)
+      comm%ntot_export = comm%istack_export(neibpetot)
+      write(*,*) 'neibpetot ntot_export', neibpetot
 !
       inod = 0
       neibpetot = 0
@@ -158,12 +162,11 @@
 !                                     .... count nodes 
       inod = 0
       neibpetot = 0
-      call count_export_inside_quad                                     &
-     &   (c_size, nb_rng, kpe, neibpetot, inod)
-      call count_export_peri_quad                                       &
-     &   (c_size, nb_rng, ipe, jpe, kpe, neibpetot, inod)
-
-      num_export = stack_export(neibpetot)
+      call count_export_inside_quad(c_size, nb_rng, kpe,                &
+     &    comm%num_neib, comm%istack_export, neibpetot, inod)
+      call count_export_peri_quad(c_size, nb_rng, ipe, jpe, kpe,        &
+     &    comm%num_neib, comm%istack_export, neibpetot, inod)
+      comm%ntot_export = comm%istack_export(neibpetot)
 !
       inod = 0
       neibpetot = 0
