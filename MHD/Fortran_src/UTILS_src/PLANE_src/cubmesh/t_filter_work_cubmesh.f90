@@ -87,7 +87,6 @@
       subroutine alloc_work_4_filter_ele(c_size, c_each, c_fil_ele)
 !
       use t_size_of_cube
-      use m_comm_data_cube_kemo
 !
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
@@ -139,7 +138,6 @@
       subroutine set_work_size_4_filter_nod(c_size, c_fil_nod)
 !
       use t_size_of_cube
-      use m_comm_data_cube_kemo
 !
       type(size_of_cube), intent(in) :: c_size
       type(filter_work_cubmesh), intent(inout) :: c_fil_nod
@@ -262,8 +260,6 @@
 !  ----------------------------------------------------------------------
 !
       subroutine alloc_filters_nod(nf_type, c_fil_nod)
-!
-      use m_comm_data_cube_kemo
 !
       integer(kind = kint), intent(in) :: nf_type
       type(filter_work_cubmesh), intent(inout) :: c_fil_nod

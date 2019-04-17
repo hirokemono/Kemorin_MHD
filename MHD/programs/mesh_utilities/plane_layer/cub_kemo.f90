@@ -101,7 +101,6 @@
       use t_filter_work_cubmesh
       use t_filter_data_4_plane
 !
-      use m_comm_data_cube_kemo
       use m_grp_data_cub_kemo
       use m_cube_files_data
       use m_ctl_data_4_cub_kemo
@@ -114,6 +113,7 @@
       use write_surf_grp_cube
       use set_plane_geometries
       use neib_nod_cube
+      use merge_periodic_comm_table
 !
       implicit  none
 
@@ -140,6 +140,9 @@
       type(gradient_model_data_type), save :: FEM_elen_c
       type(filterings_4_cubmesh), save :: c_fils
       type(filter_data_4_plane), save :: cube_fil1
+!
+      type(communication_table), save :: comm
+      type(communication_table), save :: comm_IO
 !
       integer(kind=kint)  ::  ipe    , jpe    , kpe    , pe_id
       integer :: id_rank
@@ -225,14 +228,14 @@
 !
 !                                       .. set neighbor pe
             call set_neigbouring_plane                                  &
-     &         (c_size1, nb_rng1, pe_id, ipe, jpe)
+     &         (c_size1, nb_rng1, pe_id, ipe, jpe, comm)
 !
 !
-            call sort_neighboring_pes
+            call sort_neighboring_pes(comm, comm_IO)
 !
 ! ..... write 1.parallel information (pe_id start from 0, not 1)
 !
-            call write_pe_data(pe_id)
+            call write_pe_data(l_out, pe_id, comm_IO)
 !
 ! ..... write 2.mesh information (nodes and elements in partition)
 !
@@ -254,16 +257,16 @@
 ! ..... write 3.import / export information
 !
 ! ***** set and write import nodes
-!                                     .... count nodes 
-            call set_import_data(c_size1, nb_rng1, loc_id1, ipe, jpe)
+            call set_import_data                                        &
+     &         (c_size1, nb_rng1, loc_id1, ipe, jpe, comm)
 !
 ! ***** set and write export nodes
-!                                     .... count nodes 
-            call set_export_data(c_size1, nb_rng1, loc_id1, ipe, jpe)
+            call set_export_data                                        &
+     &         (c_size1, nb_rng1, loc_id1, ipe, jpe, comm)
 !
-            call sort_communication_table
-!
-            call write_communication_data
+            call sort_communication_table(comm, comm_IO)
+            call write_communication_data(l_out, comm_IO)
+            call dealloc_comm_table(comm_IO)
 !
 !
 ! ..... write 4.group information
@@ -273,7 +276,8 @@
 !                                        .. count node group and stack
 !
             call count_node_group                                       &
-     &       (c_size1, elm_type, c_each1%nx, c_each1%ny, ipe, jpe, kpe)
+     &         (c_size1, elm_type, c_each1%nx, c_each1%ny,              &
+     &          ipe, jpe, kpe)
             call write_node_group                                       &
      &         (c_size1, loc_id1, c_each1%nx, c_each1%ny, c_each1%nz,   &
      &          ipe, jpe, kpe)

@@ -21,7 +21,6 @@
       use m_precision
 !
       use t_neib_range_cube
-      use m_comm_data_cube_kemo
 !
       implicit none
 !

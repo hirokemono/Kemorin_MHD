@@ -4,12 +4,14 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine set_export_inside(c_size, nb_rng, loc_id, icou, inod)
+!!      subroutine set_export_inside                                    &
+!!     &         (c_size, nb_rng, loc_id, comm, icou, inod)
 !!      subroutine set_export_inside_quad                               &
-!!     &         (c_size, nb_rng, loc_id, kpe, icou, inod)
+!!     &         (c_size, nb_rng, loc_id, kpe, comm, icou, inod)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !!        type(local_node_id_cube), intent(in) :: loc_id
+!!        type(communication_table), intent(inout) :: comm
 !
       module set_export_inside_cube
 !
@@ -19,7 +21,7 @@
       use t_neib_range_cube
       use t_sleeve_cube
       use t_size_of_cube
-      use m_comm_data_cube_kemo
+      use t_comm_table
       use set_comm_nod_4_cube
 !
       implicit none
@@ -30,11 +32,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_export_inside(c_size, nb_rng, loc_id, icou, inod)
+      subroutine set_export_inside                                      &
+     &         (c_size, nb_rng, loc_id, comm, icou, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
       type(local_node_id_cube), intent(in) :: loc_id
+!
+      type(communication_table), intent(inout) :: comm
       integer (kind = kint), intent(inout) :: icou, inod
 !
       type(slleve_range) :: sl_rng1
@@ -66,7 +71,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_export_inside_quad                                 &
-     &         (c_size, nb_rng, loc_id, kpe, icou, inod)
+     &         (c_size, nb_rng, loc_id, kpe, comm, icou, inod)
 !
       use set_comm_edge_4_cube
 !
@@ -74,6 +79,8 @@
       type(neib_range_cube), intent(in) :: nb_rng
       type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: kpe
+!
+      type(communication_table), intent(inout) :: comm
       integer (kind = kint), intent(inout) :: icou, inod
 !
       type(slleve_range) :: sl_rng1

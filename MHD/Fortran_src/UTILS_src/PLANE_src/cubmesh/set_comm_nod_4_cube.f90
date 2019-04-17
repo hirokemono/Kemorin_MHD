@@ -16,7 +16,6 @@
 !
       use m_precision
 !
-      use m_comm_data_cube_kemo
       use t_sleeve_cube
       use t_local_node_id_cube
 !

@@ -4,15 +4,21 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine set_import_data(c_size, nb_rng, loc_id, ipe, jpe)
-!!      subroutine set_import_data_quad                                 &
-!!     &         (c_size, nb_rng, loc_id, ipe, jpe, kpe)
+!!      subroutine set_neigbouring_plane                                &
+!!     &         (c_size, nb_rng, pe_id, ipe, jpe, comm)
 !!
-!!      subroutine set_export_data(c_size, nb_rng, loc_id, ipe, jpe)
+!!      subroutine set_import_data                                      &
+!!     &         (c_size, nb_rng, loc_id, ipe, jpe, comm)
+!!      subroutine set_import_data_quad                                 &
+!!     &         (c_size, nb_rng, loc_id, ipe, jpe, kpe, comm)
+!!
+!!      subroutine set_export_data                                      &
+!!     &         (c_size, nb_rng, loc_id, ipe, jpe, comm)
 !!      subroutine set_export_data_quad                                 &
-!!     &         (c_size, nb_rng, loc_id, ipe, jpe, kpe)
+!!     &         (c_size, nb_rng, loc_id, ipe, jpe, kpe, comm)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(neib_range_cube), intent(in) :: nb_rng
+!!        type(communication_table), intent(inout) :: comm
 !
       module set_import_cube
 !
@@ -21,7 +27,7 @@
       use t_neib_range_cube
       use t_size_of_cube
       use t_local_node_id_cube
-      use m_comm_data_cube_kemo
+      use t_comm_table
 !
       implicit none
 !
@@ -32,13 +38,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_neigbouring_plane                                  &
-     &         (c_size, nb_rng, pe_id, ipe, jpe)
+     &         (c_size, nb_rng, pe_id, ipe, jpe, comm)
 !
       use set_neib_pe_cube
 !
       type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
       integer(kind = kint), intent(in) :: pe_id, ipe, jpe
+!
+      type(communication_table), intent(inout) :: comm
 !
       integer (kind = kint) :: icou_pe
 !
@@ -66,8 +74,10 @@
       end subroutine set_neigbouring_plane
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
-      subroutine set_import_data(c_size, nb_rng, loc_id, ipe, jpe)
+      subroutine set_import_data                                        &
+     &         (c_size, nb_rng, loc_id, ipe, jpe, comm)
 !
       use count_import_inside_cube
       use set_import_inside_cube
@@ -78,6 +88,8 @@
       type(neib_range_cube), intent(in) :: nb_rng
       type(local_node_id_cube), intent(in) :: loc_id
       integer(kind = kint), intent(in) :: ipe, jpe
+!
+      type(communication_table), intent(inout) :: comm
 !
       integer (kind = kint) :: inod, icou_pe
 !
@@ -94,16 +106,17 @@
 !
       icou_pe = 0
       inod = 0
-      call set_import_inside(c_size, nb_rng, loc_id, icou_pe, inod)
+      call set_import_inside                                            &
+     &   (c_size, nb_rng, loc_id, comm, icou_pe, inod)
       call set_import_peri                                              &
-     &   (c_size, nb_rng, loc_id, ipe, jpe, icou_pe, inod)
+     &   (c_size, nb_rng, loc_id, ipe, jpe, comm, icou_pe, inod)
 !
       end subroutine set_import_data
 !
 ! ----------------------------------------------------------------------
 !
       subroutine set_import_data_quad                                   &
-     &         (c_size, nb_rng, loc_id, ipe, jpe, kpe)
+     &         (c_size, nb_rng, loc_id, ipe, jpe, kpe, comm)
 !
       use count_import_inside_cube
       use set_import_inside_cube
@@ -114,6 +127,8 @@
       type(neib_range_cube), intent(in) :: nb_rng
       type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: ipe, jpe, kpe
+!
+      type(communication_table), intent(inout) :: comm
 !
       integer (kind = kint) :: inod, icou_pe
 !
@@ -133,9 +148,9 @@
       inod = 0
       icou_pe = 0
       call set_import_inside_quad                                       &
-     &   (c_size, nb_rng, loc_id, kpe, icou_pe, inod)
+     &   (c_size, nb_rng, loc_id, kpe, comm, icou_pe, inod)
       call set_import_peri_quad                                         &
-     &   (c_size, nb_rng, loc_id, ipe, jpe, kpe, icou_pe, inod)
+     &   (c_size, nb_rng, loc_id, ipe, jpe, kpe, comm, icou_pe, inod)
 !
       write(*,*) ipe, jpe, kpe, 'import res.', inod
 !
@@ -144,7 +159,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_export_data(c_size, nb_rng, loc_id, ipe, jpe)
+      subroutine set_export_data                                        &
+     &         (c_size, nb_rng, loc_id, ipe, jpe, comm)
 !
       use count_export_inside_cube
       use set_export_inside_cube
@@ -155,6 +171,8 @@
       type(neib_range_cube), intent(in) :: nb_rng
       type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: ipe, jpe
+!
+      type(communication_table), intent(inout) :: comm
 !
       integer (kind = kint) :: inod, icou_pe
 !
@@ -171,16 +189,17 @@
 !
       inod = 0
       icou_pe = 0
-      call set_export_inside(c_size, nb_rng, loc_id, icou_pe, inod)
+      call set_export_inside                                            &
+     &   (c_size, nb_rng, loc_id, comm, icou_pe, inod)
       call set_export_peri                                              &
-     &   (c_size, nb_rng, loc_id, ipe, jpe, icou_pe, inod)
+     &   (c_size, nb_rng, loc_id, ipe, jpe, comm, icou_pe, inod)
 !
       end subroutine set_export_data
 !
 ! ----------------------------------------------------------------------
 !
       subroutine set_export_data_quad                                   &
-     &         (c_size, nb_rng, loc_id, ipe, jpe, kpe)
+     &         (c_size, nb_rng, loc_id, ipe, jpe, kpe, comm)
 !
       use count_export_inside_cube
       use set_export_inside_cube
@@ -191,6 +210,8 @@
       type(neib_range_cube), intent(in) :: nb_rng
       type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: ipe, jpe, kpe
+!
+      type(communication_table), intent(inout) :: comm
 !
       integer (kind = kint) :: inod, icou_pe
 !
@@ -209,9 +230,9 @@
       inod = 0
       icou_pe = 0
       call set_export_inside_quad                                       &
-     &   (c_size, nb_rng, loc_id, kpe, icou_pe, inod)
+     &   (c_size, nb_rng, loc_id, kpe, comm, icou_pe, inod)
       call set_export_peri_quad                                         &
-     &   (c_size, nb_rng, loc_id, ipe, jpe, kpe, icou_pe, inod)
+     &   (c_size, nb_rng, loc_id, ipe, jpe, kpe, comm, icou_pe, inod)
 !
       end subroutine set_export_data_quad
 !

@@ -5,12 +5,13 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine set_import_peri                                      &
-!!     &         (c_size, nb_rng, loc_id, ipe, jpe, icou, inod)
-!!      subroutine set_import_peri_quad                                 &
-!!     &         (c_size, nb_rng, loc_id, ipe, jpe, kpe, icou, inod)
+!!     &         (c_size, nb_rng, loc_id, ipe, jpe, comm, icou, inod)
+!!      subroutine set_import_peri_quad(c_size, nb_rng, loc_id,         &
+!!     &          ipe, jpe, kpe, comm, icou, inod)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !!        type(local_node_id_cube), intent(in) :: loc_id
+!!        type(communication_table), intent(inout) :: comm
 !
       module set_import_peri_cube
 !
@@ -21,7 +22,7 @@
       use t_neib_range_cube
       use t_sleeve_cube
       use t_local_node_id_cube
-      use m_comm_data_cube_kemo
+      use t_comm_table
       use set_comm_nod_4_cube
 !
       implicit none
@@ -33,12 +34,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_import_peri                                        &
-     &         (c_size, nb_rng, loc_id, ipe, jpe, icou, inod)
+     &         (c_size, nb_rng, loc_id, ipe, jpe, comm, icou, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
       type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: ipe, jpe
+!
+      type(communication_table), intent(inout) :: comm
       integer (kind = kint), intent(inout) :: icou, inod
 !
       type(slleve_range) :: sl_rng1
@@ -212,8 +215,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_import_peri_quad                                   &
-     &         (c_size, nb_rng, loc_id, ipe, jpe, kpe, icou, inod)
+      subroutine set_import_peri_quad(c_size, nb_rng, loc_id,           &
+     &          ipe, jpe, kpe, comm, icou, inod)
 !
       use set_comm_edge_4_cube
 !
@@ -221,6 +224,8 @@
       type(neib_range_cube), intent(in) :: nb_rng
       type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: ipe, jpe, kpe
+!
+      type(communication_table), intent(inout) :: comm
       integer (kind = kint), intent(inout) :: icou, inod
 !
       type(slleve_range) :: sl_rng1
