@@ -5,8 +5,10 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine count_node_id(sl_rng, inod)
-!!      subroutine set_im_node(sl_rng, loc_id, inod)
-!!      subroutine set_ex_node(sl_rng, loc_id, inod)
+!!      subroutine set_im_node                                          &
+!!     &         (sl_rng, loc_id, ntot_import, item_import, inod)
+!!      subroutine set_ex_node                                          &
+!!     &         (sl_rng, loc_id, ntot_export, item_export, inod)
 !!        type(slleve_range), intent(in) :: sl_rng
 !!        type(local_node_id_cube), intent(in) :: loc_id
 !
@@ -40,10 +42,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_im_node(sl_rng, loc_id, inod)
+      subroutine set_im_node                                            &
+     &         (sl_rng, loc_id, ntot_import, item_import, inod)
 !
       type(slleve_range), intent(in) :: sl_rng
       type(local_node_id_cube), intent(in) :: loc_id
+      integer(kind = kint), intent(in) :: ntot_import
+!
+      integer(kind = kint), intent(inout) :: item_import(ntot_import)
       integer (kind = kint), intent(inout) :: inod
 !
       integer (kind = kint) :: i, j, k
@@ -64,11 +70,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ex_node(sl_rng, loc_id, inod)
+      subroutine set_ex_node                                            &
+     &         (sl_rng, loc_id, ntot_export, item_export, inod)
 !
 !
       type(slleve_range), intent(in) :: sl_rng
       type(local_node_id_cube), intent(in) :: loc_id
+      integer(kind = kint), intent(in) :: ntot_export
+!
+      integer(kind = kint), intent(inout) :: item_export(ntot_export)
       integer (kind = kint), intent(inout) :: inod
 !
       integer (kind = kint) :: i, j, k

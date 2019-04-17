@@ -41,21 +41,22 @@
       integer (kind = kint) :: inp, jnp, knp
 !
 !
-            do knp = nb_rng%knp_st, nb_rng%knp_end
-             do jnp = nb_rng%jnp_st, nb_rng%jnp_end
-              do inp = nb_rng%inp_st, nb_rng%inp_end
+      do knp = nb_rng%knp_st, nb_rng%knp_end
+        do jnp = nb_rng%jnp_st, nb_rng%jnp_end
+          do inp = nb_rng%inp_st, nb_rng%inp_end
 
-               if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
+            if ((inp==0).and.(jnp==0).and.(knp==0)) cycle
 
-               call set_sleeve_size                                     &
-     &            (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
-               icou = icou  + 1
+            call set_sleeve_size                                        &
+     &         (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
+            icou = icou  + 1
 
-               call set_im_node(sl_rng1, loc_id, inod)
+            call set_im_node(sl_rng1, loc_id,                           &
+     &          comm%ntot_import, comm%item_import, inod)
 
-              enddo
-             enddo
-            enddo
+          enddo
+        enddo
+      enddo
 !
       end subroutine set_import_inside
 !
@@ -85,25 +86,29 @@
      &            (nb_rng, c_size%ndepth, inp, jnp, knp, sl_rng1)
                icou = icou  + 1
 
-               call set_im_node(sl_rng1, loc_id, inod)
+               call set_im_node(sl_rng1, loc_id,                        &
+     &             comm%ntot_import, comm%item_import, inod)
                write(*,*) 'import node 0 from',                         &
-     &                     (neibpe(icou)-1), inp, jnp, knp, inod
+     &                     (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
-               call set_im_edge(sl_rng1, loc_id, c_size%ndz,            &
-     &             kpe, inp, jnp, knp, inod, ione)
+               call set_im_edge                                         &
+     &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
+     &             ione, comm%ntot_import, comm%item_import, inod)
                write(*,*) 'import edge1 0 from',                        &
-     &                     (neibpe(icou)-1), inp, jnp, knp, inod
+     &                     (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
-               call set_im_edge(sl_rng1, loc_id, c_size%ndz,            &
-     &              kpe, inp, jnp, knp, inod, itwo)
+               call set_im_edge                                         &
+     &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
+     &             itwo, comm%ntot_import, comm%item_import, inod)
                write(*,*) 'import edge2 0 from',                        &
-     &                     (neibpe(icou)-1), inp, jnp, knp, inod
+     &                     (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
-               call set_im_edge(sl_rng1, loc_id, c_size%ndz,            &
-     &             kpe, inp, jnp, knp, inod, ithree)
+               call set_im_edge                                         &
+     &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
+     &             ithree, comm%ntot_import, comm%item_import, inod)
 
                write(*,*) 'import edge3 0 from',                        &
-     &                     (neibpe(icou)-1), inp, jnp, knp, inod
+     &                     (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo

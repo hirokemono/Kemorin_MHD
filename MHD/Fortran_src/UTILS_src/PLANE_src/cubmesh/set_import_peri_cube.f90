@@ -58,7 +58,8 @@
                 sl_rng1%ie = c_size%ndepth
 
                 icou = icou  + 1
-                call set_im_node(sl_rng1, loc_id, inod)
+                call set_im_node(sl_rng1, loc_id,                       &
+     &              comm%ntot_import, comm%item_import, inod)
 
                 enddo
               enddo
@@ -78,7 +79,8 @@
                 sl_rng1%ie = c_size%nxi + 2*c_size%ndepth
 
                 icou = icou  + 1
-                call set_im_node(sl_rng1, loc_id, inod)
+                call set_im_node(sl_rng1, loc_id,                       &
+     &              comm%ntot_import, comm%item_import, inod)
 
                 enddo
               enddo
@@ -98,7 +100,8 @@
                 sl_rng1%je = c_size%ndepth
 
                 icou = icou  + 1
-                call set_im_node(sl_rng1, loc_id, inod)
+                call set_im_node(sl_rng1, loc_id,                       &
+     &              comm%ntot_import, comm%item_import, inod)
 
                 enddo
               enddo
@@ -118,7 +121,8 @@
                 sl_rng1%je = c_size%nyi + 2*c_size%ndepth
 
                 icou = icou  + 1
-                call set_im_node(sl_rng1, loc_id, inod)
+                call set_im_node(sl_rng1, loc_id,                       &
+     &              comm%ntot_import, comm%item_import, inod)
 
                 enddo
               enddo
@@ -138,7 +142,8 @@
                 sl_rng1%je = c_size%ndepth
 
                   icou = icou  + 1
-                call set_im_node(sl_rng1, loc_id, inod)
+                call set_im_node(sl_rng1, loc_id,                       &
+     &              comm%ntot_import, comm%item_import, inod)
 
               enddo
             endif
@@ -157,7 +162,8 @@
                 sl_rng1%je = c_size%ndepth
 
                   icou = icou  + 1
-                call set_im_node(sl_rng1, loc_id, inod)
+                call set_im_node(sl_rng1, loc_id,                       &
+     &              comm%ntot_import, comm%item_import, inod)
 
               enddo
             endif
@@ -176,7 +182,8 @@
                 sl_rng1%je = c_size%nyi + 2*c_size%ndepth
 
                   icou = icou  + 1
-                call set_im_node(sl_rng1, loc_id, inod)
+                call set_im_node(sl_rng1, loc_id,                       &
+     &              comm%ntot_import, comm%item_import, inod)
 
               enddo
             endif
@@ -195,7 +202,8 @@
                 sl_rng1%je = c_size%nyi + 2*c_size%ndepth
 
                   icou = icou  + 1
-                call set_im_node(sl_rng1, loc_id, inod)
+                call set_im_node(sl_rng1, loc_id,                       &
+     &              comm%ntot_import, comm%item_import, inod)
 
               enddo
             endif
@@ -231,16 +239,20 @@
                  sl_rng1%ie = c_size%ndepth
 
                  icou = icou  + 1
-                 call set_im_node(sl_rng1, loc_id, inod)
+                 call set_im_node(sl_rng1, loc_id,                      &
+     &              comm%ntot_import, comm%item_import, inod)
 
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_import, comm%item_import, inod)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_import, comm%item_import, inod)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import  1 from',                           &
-     &                     (neibpe(icou)-1), inp, jnp, knp, inod
+     &                     (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -258,21 +270,25 @@
 
                  icou = icou  + 1
                  sl_rng1%ie = c_size%nxi + 2*c_size%ndepth
-                 call set_im_node(sl_rng1, loc_id, inod)
+                 call set_im_node(sl_rng1, loc_id,                      &
+     &              comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%ie = c_size%nxi + 2*c_size%ndepth - 1
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%ie = c_size%nxi + 2*c_size%ndepth
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%ie = c_size%nxi + 2*c_size%ndepth
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 2 from',                            &
-     &                      (neibpe(icou)-1), inp, jnp, knp, inod
+     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -291,16 +307,20 @@
                 sl_rng1%je = c_size%ndepth
 
                  icou = icou  + 1
-                 call set_im_node(sl_rng1, loc_id, inod)
+                 call set_im_node(sl_rng1, loc_id,                      &
+     &              comm%ntot_import, comm%item_import, inod)
 
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_import, comm%item_import, inod)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_import, comm%item_import, inod)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 3 from',                            &
-     &                      (neibpe(icou)-1), inp, jnp, knp, inod
+     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -318,21 +338,25 @@
 
                  icou = icou  + 1
                  sl_rng1%je = c_size%nyi + 2*c_size%ndepth
-                 call set_im_node(sl_rng1, loc_id, inod)
+                 call set_im_node(sl_rng1, loc_id,                      &
+     &              comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%je = c_size%nyi + 2*c_size%ndepth
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%je = c_size%nyi + 2*c_size%ndepth - 1
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%je = c_size%nyi + 2*c_size%ndepth
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 4 from',                            &
-     &                      (neibpe(icou)-1), inp, jnp, knp, inod
+     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -353,16 +377,20 @@
                  sl_rng1%je = c_size%ndepth
 
                  icou = icou  + 1
-                 call set_im_node(sl_rng1, loc_id, inod)
+                 call set_im_node(sl_rng1, loc_id,                      &
+     &              comm%ntot_import, comm%item_import, inod)
 
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_import, comm%item_import, inod)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_import, comm%item_import, inod)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 5 from',                            &
-     &                      (neibpe(icou)-1), inp, jnp, knp, inod
+     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
               enddo
             endif
@@ -381,21 +409,25 @@
 
                  icou = icou  + 1
                  sl_rng1%ie = c_size%nxi + 2*c_size%ndepth
-                 call set_im_node(sl_rng1, loc_id, inod)
+                 call set_im_node(sl_rng1, loc_id,                      &
+     &              comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%ie = c_size%nxi + 2*c_size%ndepth - 1
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%ie = c_size%nxi + 2*c_size%ndepth
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%ie = c_size%nxi + 2*c_size%ndepth
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 6 from',                            &
-     &                      (neibpe(icou)-1), inp, jnp, knp, inod
+     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
               enddo
             endif
@@ -413,24 +445,28 @@
                  icou = icou  + 1
                  sl_rng1%ie = c_size%nxi + 2*c_size%ndepth
                  sl_rng1%je = c_size%nyi + 2*c_size%ndepth
-                 call set_im_node(sl_rng1, loc_id, inod)
+                 call set_im_node(sl_rng1, loc_id,                      &
+     &              comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%ie = c_size%nxi + 2*c_size%ndepth - 1
                  sl_rng1%je = c_size%nyi + 2*c_size%ndepth
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%ie = c_size%nxi + 2*c_size%ndepth
                  sl_rng1%je = c_size%nyi + 2*c_size%ndepth - 1
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%ie = c_size%nxi + 2*c_size%ndepth
                  sl_rng1%je = c_size%nyi + 2*c_size%ndepth
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 7 from',                            &
-     &                      (neibpe(icou)-1), inp, jnp, knp, inod
+     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
               enddo
             endif
@@ -449,21 +485,25 @@
 
                  icou = icou  + 1
                  sl_rng1%je = c_size%nyi + 2*c_size%ndepth
-                 call set_im_node(sl_rng1, loc_id, inod)
+                 call set_im_node(sl_rng1, loc_id,                      &
+     &              comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%je = c_size%nyi + 2*c_size%ndepth
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%je = c_size%nyi + 2*c_size%ndepth - 1
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_import, comm%item_import, inod)
 
                  sl_rng1%je = c_size%nyi + 2*c_size%ndepth
-                 call set_im_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_im_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_import, comm%item_import, inod)
                  write(*,*) 'import 8 from',                            &
-     &                      (neibpe(icou)-1), inp, jnp, knp, inod
+     &                      (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
               enddo
             endif

@@ -56,7 +56,8 @@
                sl_rng1%ie = c_size%nxi + c_size%ndepth
 
                icou = icou  + 1
-               call set_ex_node(sl_rng1, loc_id, inod)
+               call set_ex_node(sl_rng1, loc_id,                        &
+     &             comm%ntot_export, comm%item_export, inod)
 
               enddo
              enddo
@@ -74,7 +75,8 @@
                sl_rng1%ie = 2*c_size%ndepth
 
                icou = icou  + 1
-               call set_ex_node(sl_rng1, loc_id, inod)
+               call set_ex_node(sl_rng1, loc_id,                        &
+     &             comm%ntot_export, comm%item_export, inod)
 
               enddo
              enddo
@@ -93,8 +95,9 @@
                sl_rng1%js = c_size%nyi + 1
                sl_rng1%je = c_size%nyi + c_size%ndepth
 
-                  icou = icou  + 1
-               call set_ex_node(sl_rng1, loc_id, inod)
+               icou = icou  + 1
+               call set_ex_node(sl_rng1, loc_id,                        &
+     &             comm%ntot_export, comm%item_export, inod)
 
               enddo
              enddo
@@ -113,7 +116,8 @@
                sl_rng1%je = 2*c_size%ndepth
 
                icou = icou  + 1
-               call set_ex_node(sl_rng1, loc_id, inod)
+               call set_ex_node(sl_rng1, loc_id,                        &
+     &             comm%ntot_export, comm%item_export, inod)
 
               enddo
              enddo
@@ -135,7 +139,8 @@
                sl_rng1%je = c_size%nyi + c_size%ndepth
 
                icou = icou  + 1
-               call set_ex_node(sl_rng1, loc_id, inod)
+               call set_ex_node(sl_rng1, loc_id,                        &
+     &             comm%ntot_export, comm%item_export, inod)
 
               enddo
             endif
@@ -155,7 +160,8 @@
                sl_rng1%je = c_size%nyi + c_size%ndepth
 
                icou = icou  + 1
-               call set_ex_node(sl_rng1, loc_id, inod)
+               call set_ex_node(sl_rng1, loc_id,                        &
+     &             comm%ntot_export, comm%item_export, inod)
 
               enddo
             endif
@@ -173,7 +179,8 @@
                sl_rng1%je = 2*c_size%ndepth
 
                icou = icou  + 1
-               call set_ex_node(sl_rng1, loc_id, inod)
+               call set_ex_node(sl_rng1, loc_id,                        &
+     &             comm%ntot_export, comm%item_export, inod)
 
               enddo
             endif
@@ -193,7 +200,8 @@
                sl_rng1%je = 2*c_size%ndepth
 
                icou = icou  + 1
-               call set_ex_node(sl_rng1, loc_id, inod)
+               call set_ex_node(sl_rng1, loc_id,                        &
+     &             comm%ntot_export, comm%item_export, inod)
 
               enddo
             endif
@@ -229,16 +237,20 @@
                sl_rng1%ie = c_size%nxi + c_size%ndepth
 
                icou = icou  + 1
-               call set_ex_node(sl_rng1, loc_id, inod)
+               call set_ex_node(sl_rng1, loc_id,                        &
+     &             comm%ntot_export, comm%item_export, inod)
 
-               call set_ex_edge(sl_rng1, loc_id, c_size%ndz,            &
-     &             kpe, inp, jnp, knp, inod, ione)
-               call set_ex_edge(sl_rng1, loc_id, c_size%ndz,            &
-     &             kpe, inp, jnp, knp, inod, itwo)
-               call set_ex_edge(sl_rng1, loc_id, c_size%ndz,            &
-     &             kpe, inp, jnp, knp, inod, ithree)
+               call set_ex_edge                                         &
+     &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
+     &             ione, comm%ntot_export, comm%item_export, inod)
+               call set_ex_edge                                         &
+     &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
+     &             itwo, comm%ntot_export, comm%item_export, inod)
+               call set_ex_edge                                         &
+     &            (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,     &
+     &             ithree, comm%ntot_export, comm%item_export, inod)
                write(*,*) 'export 1 from',                              &
-     &             (neibpe(icou)-1), inp, jnp, knp, inod
+     &             (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
               enddo
              enddo
@@ -256,21 +268,25 @@
 
                  icou = icou  + 1
                  sl_rng1%ie = 2*c_size%ndepth
-                 call set_ex_node(sl_rng1, loc_id, inod)
+                 call set_ex_node(sl_rng1, loc_id,                      &
+     &             comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%ie = 2*c_size%ndepth - 1
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%ie = 2*c_size%ndepth
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%ie = 2*c_size%ndepth
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 2 from',                            &
-     &               (neibpe(icou)-1), inp, jnp, knp, inod
+     &               (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -290,16 +306,20 @@
                  sl_rng1%je = c_size%nyi + c_size%ndepth
 
                  icou = icou  + 1
-                 call set_ex_node(sl_rng1, loc_id, inod)
+                 call set_ex_node(sl_rng1, loc_id,                      &
+     &             comm%ntot_export, comm%item_export, inod)
 
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_export, comm%item_export, inod)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_export, comm%item_export, inod)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 3 from',                            &
-     &               (neibpe(icou)-1), inp, jnp, knp, inod
+     &               (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -318,21 +338,25 @@
 
                  icou = icou  + 1
                  sl_rng1%je = 2*c_size%ndepth
-                 call set_ex_node(sl_rng1, loc_id, inod)
+                 call set_ex_node(sl_rng1, loc_id,                      &
+     &             comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%je = 2*c_size%ndepth
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%je = 2*c_size%ndepth - 1
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%je = 2*c_size%ndepth
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 4 from',                            &
-     &               (neibpe(icou)-1), inp, jnp, knp, inod
+     &               (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
                 enddo
               enddo
@@ -354,16 +378,20 @@
                  sl_rng1%je = c_size%nyi + c_size%ndepth
 
                  icou = icou  + 1
-                 call set_ex_node(sl_rng1, loc_id, inod)
+                 call set_ex_node(sl_rng1, loc_id,                      &
+     &             comm%ntot_export, comm%item_export, inod)
 
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_export, comm%item_export, inod)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_export, comm%item_export, inod)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 5 from',                            &
-     &                (neibpe(icou)-1), inp, jnp, knp, inod
+     &                (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
               enddo
             endif
@@ -383,21 +411,25 @@
 
                  icou = icou  + 1
                  sl_rng1%ie = 2*c_size%ndepth
-                 call set_ex_node(sl_rng1, loc_id, inod)
+                 call set_ex_node(sl_rng1, loc_id,                      &
+     &             comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%ie = 2*c_size%ndepth - 1
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%ie = 2*c_size%ndepth
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%ie = 2*c_size%ndepth
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 6 from',                            &
-     &               (neibpe(icou)-1), inp, jnp, knp, inod
+     &               (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
               enddo
             endif
@@ -415,24 +447,28 @@
                  icou = icou  + 1
                  sl_rng1%ie = 2*c_size%ndepth
                  sl_rng1%je = 2*c_size%ndepth
-                 call set_ex_node(sl_rng1, loc_id, inod)
+                 call set_ex_node(sl_rng1, loc_id,                      &
+     &             comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%ie = 2*c_size%ndepth - 1
                  sl_rng1%je = 2*c_size%ndepth
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%ie = 2*c_size%ndepth
                  sl_rng1%je = 2*c_size%ndepth - 1
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%ie = 2*c_size%ndepth
                  sl_rng1%je = 2*c_size%ndepth
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 7 from',                            &
-     &               (neibpe(icou)-1), inp, jnp, knp, inod
+     &               (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
               enddo
             endif
@@ -452,21 +488,25 @@
 
                  icou = icou  + 1
                  sl_rng1%je = 2*c_size%ndepth
-                 call set_ex_node(sl_rng1, loc_id, inod)
+                 call set_ex_node(sl_rng1, loc_id,                      &
+     &             comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%je = 2*c_size%ndepth
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ione)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ione, comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%je = 2*c_size%ndepth - 1
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, itwo)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               itwo, comm%ntot_export, comm%item_export, inod)
 
                  sl_rng1%je = 2*c_size%ndepth
-                 call set_ex_edge(sl_rng1, loc_id, c_size%ndz,          &
-     &               kpe, inp, jnp, knp, inod, ithree)
+                 call set_ex_edge                                       &
+     &              (sl_rng1, loc_id, c_size%ndz, kpe, inp, jnp, knp,   &
+     &               ithree, comm%ntot_export, comm%item_export, inod)
                  write(*,*) 'export 8 to',                              &
-     &              (neibpe(icou)-1), inp, jnp, knp, inod
+     &              (comm%id_neib(icou)-1), inp, jnp, knp, inod
 
               enddo
             endif
