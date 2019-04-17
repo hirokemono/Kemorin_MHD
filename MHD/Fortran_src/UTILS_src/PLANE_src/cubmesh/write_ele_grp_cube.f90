@@ -4,8 +4,12 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine count_element_group(c_size, elm_fil1_tot)
-!!      subroutine write_cube_ele_group(c_size, nx, ny, nz, kpe, koff)
+!!      subroutine const_element_group                                  &
+!!     &         (c_size, c_each, nb_rng, kpe, ele_grp)
+!!        type(size_of_cube), intent(in) :: c_size
+!!        type(size_of_each_cube), intent(in) :: c_each
+!!        type(neib_range_cube), intent(in) :: nb_rng
+!!        type (group_data), intent(inout) :: ele_grp
 !
       module write_ele_grp_cube
 !
@@ -24,7 +28,6 @@
       private :: allocate_cube_ele_group_id
       private :: deallocate_cube_ele_group_id
       private :: count_element_group, set_cube_ele_group
-      private :: write_cube_ele_group
 !
 ! ----------------------------------------------------------------------
 !
@@ -32,22 +35,33 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_element_group(c_size, c_each, nb_rng, kpe)
+      subroutine const_element_group                                    &
+     &         (c_size, c_each, nb_rng, kpe, ele_grp)
+!
+      use m_cube_files_data
+      use m_fem_mesh_labels
+      use groups_IO
 !
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
       integer(kind = kint), intent(in) :: kpe
 !
+      type (group_data), intent(inout) :: ele_grp
+!
+!
+      ele_grp%num_grp = 3 + (c_size%nz_all-1)
+      call alloc_group_num(ele_grp)
 !
       call allocate_cube_ele_group_id(c_size)
-      call count_element_group(c_size, c_each%elm_fil1_tot)
+      call count_element_group(c_size, c_each%elm_fil1_tot, ele_grp)
 !
-      call set_cube_ele_group                                           &
-     &   (c_size, c_each%nx, c_each%ny, c_each%nz, kpe, nb_rng%koff)
+      call set_cube_ele_group(c_size, c_each%nx, c_each%ny, c_each%nz,  &
+     &    kpe, nb_rng%koff, ele_grp)
       call deallocate_cube_ele_group_id
 !
-      call write_cube_ele_group(c_size)
+       write(l_out,'(a)', advance='NO') hd_fem_elegrp()
+       call write_grp_data(l_out, ele_grp)
 !
       end subroutine const_element_group
 !
@@ -74,39 +88,42 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine count_element_group(c_size, elm_fil1_tot)
+      subroutine count_element_group(c_size, elm_fil1_tot, ele_grp)
 !
       type(size_of_cube), intent(in) :: c_size
       integer (kind=kint), intent(in) :: elm_fil1_tot
+!
+      type (group_data), intent(inout) :: ele_grp
 !
        integer(kind = kint) :: item_tot
        integer(kind = kint) :: item_pos
 !
        item_tot = 0
        item_pos = 0
-       cube_ele_grp%istack_grp = 0
+       ele_grp%istack_grp = 0
 !                                                 .. all
 !
        item_pos = 1
        item_tot = item_tot + (c_size%nz_all - 1)
-       cube_ele_grp%istack_grp(item_pos) = item_tot
-       cube_ele_grp%grp_name(item_pos) = 'layer_start'
+       ele_grp%istack_grp(item_pos) = item_tot
+       ele_grp%grp_name(item_pos) = 'layer_start'
 !
        item_pos = 2
        item_tot = item_tot + (c_size%nz_all - 1)
-       cube_ele_grp%istack_grp(item_pos) = item_tot
-       cube_ele_grp%grp_name(item_pos) = 'layer_end'
+       ele_grp%istack_grp(item_pos) = item_tot
+       ele_grp%grp_name(item_pos) = 'layer_end'
 !
        item_pos = 3
        item_tot = item_tot + elm_fil1_tot
-       cube_ele_grp%istack_grp(item_pos) = item_tot
-       cube_ele_grp%grp_name(item_pos) = 'conductive_fluid'
+       ele_grp%istack_grp(item_pos) = item_tot
+       ele_grp%grp_name(item_pos) = 'conductive_fluid'
 !
        end subroutine count_element_group
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_cube_ele_group(c_size, nx, ny, nz, kpe, koff)
+      subroutine set_cube_ele_group                                     &
+     &         (c_size, nx, ny, nz, kpe, koff, ele_grp)
 !
       use set_parallel_file_name
 !
@@ -114,6 +131,8 @@
       integer (kind=kint), intent(in) :: nx, ny, nz
       integer(kind = kint), intent(in) :: kpe
       integer(kind=kint), intent(in) :: koff
+!
+      type (group_data), intent(inout) :: ele_grp
 !
       integer(kind = kint) :: iele, element_id
       integer(kind = kint) :: i, j, k, item_pos, item_tot
@@ -166,52 +185,35 @@
 !
 !       write(*,*) 'nz_all gc',                                         &
 !     &           c_size%nx_all, c_size%ny_all, c_size%nz_all
-       item_tot = cube_ele_grp%istack_grp(3)
+       item_tot = ele_grp%istack_grp(3)
        do k = 1, (c_size%nz_all-1)
-         j = k + cube_ele_grp%istack_grp(1)
+         j = k + ele_grp%istack_grp(1)
          item_pos = 3 + k
          item_tot = item_tot + 1                                        &
      &             + iele_group_id(j) - iele_group_id(k)
-         cube_ele_grp%istack_grp(item_pos) = item_tot
+         ele_grp%istack_grp(item_pos) = item_tot
 !
          call add_index_after_name                                      &
-      &     (k, group_head, cube_ele_grp%grp_name(k+3))
+      &     (k, group_head, ele_grp%grp_name(k+3))
        end do
 !
        do k = 1, (c_size%nz_all-1)
-         j = k + cube_ele_grp%istack_grp(1)
+         j = k + ele_grp%istack_grp(1)
          do i = iele_group_id(k), iele_group_id(j)
            iele = iele + 1
            iele_group_id(iele) = i
          end do
        end do
 !
-       cube_ele_grp%num_item                                            &
-      &      = cube_ele_grp%istack_grp(cube_ele_grp%num_grp)
-       call alloc_group_item(cube_ele_grp)
+       ele_grp%num_item = ele_grp%istack_grp(ele_grp%num_grp)
+       call alloc_group_item(ele_grp)
 !
 !$omp parallel workshare
-       cube_ele_grp%item_grp(1:cube_ele_grp%num_item)                   &
-      &      =  iele_group_id(1:cube_ele_grp%num_item)
+       ele_grp%item_grp(1:ele_grp%num_item)                             &
+      &      =  iele_group_id(1:ele_grp%num_item)
 !$omp end parallel workshare
 !
        end subroutine set_cube_ele_group
-!
-! ----------------------------------------------------------------------
-!
-      subroutine write_cube_ele_group(c_size)
-!
-      use m_cube_files_data
-      use m_fem_mesh_labels
-      use groups_IO
-!
-      type(size_of_cube), intent(in) :: c_size
-!
-!
-       write(l_out,'(a)', advance='NO') hd_fem_elegrp()
-       call write_grp_data(l_out, cube_ele_grp)
-!
-       end subroutine write_cube_ele_group
 !
 ! ----------------------------------------------------------------------
 !

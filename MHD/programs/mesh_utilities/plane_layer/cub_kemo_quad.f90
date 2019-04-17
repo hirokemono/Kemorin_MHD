@@ -274,30 +274,14 @@
 !
 !
 ! ..... write 4.group information
-!
-            call write_labels_4_group(c_size1)
-!
-!                                       ... node    group
-!
-!                                        .. count node group and stack
-            call count_node_group                                       &
-     &       (c_size1, elm_type, c_each1%nx, c_each1%ny, ipe, jpe, kpe)
-            call write_node_group_quad                                  &
-     &         (c_size1, loc_id1, c_each1%nx, c_each1%ny, c_each1%nz,   &
-     &          ipe, jpe, kpe)
-!
-!    output element group
-!
-!                                     .. count element group and stack
+            call const_node_group_quad                                  &
+     &         (c_size1, c_each1, loc_id1, ipe, jpe, kpe, cube_nod_grp)
             call const_element_group                                    &
-     &         (c_size1, c_each1, nb_rng1, kpe)
-!
-!    output surface group
-!
-!                                     .. count element group and stack
-            call const_surface_group(c_size1, c_each1, kpe)
+     &         (c_size1, c_each1, nb_rng1, kpe, cube_ele_grp)
+            call const_surface_group                                    &
+     &         (c_size1, c_each1, kpe, cube_surf_grp)
 
-            call dealloc_group_num(cube_nod_grp)
+            call dealloc_group(cube_nod_grp)
             call dealloc_group(cube_ele_grp)
             call dealloc_sf_group(cube_surf_grp)
 !
