@@ -20,10 +20,6 @@
       integer(kind=kint )                            ::  neibpetot
       integer(kind=kint ), dimension(neibpetot_max)  ::  neibpe
 !
-      integer(kind=kint ) :: num_import
-      integer(kind=kint ) :: num_export
-!
-!
       type(communication_table), save :: comm
       type(communication_table), save :: comm_new
 !
