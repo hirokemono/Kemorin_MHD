@@ -1,5 +1,5 @@
 !
-!      module t_filtering_nod_4_cubmesh
+!      module t_filter_work_cubmesh
 !
 !     Written by H. Matsui
 !
@@ -9,14 +9,14 @@
 !       subroutine dealloc_work_4_filter_nod(c_fil_nod)
 !       subroutine dealloc_filters_nod(c_fil_nod)
 !
-      module t_filtering_nod_4_cubmesh
+      module t_filter_work_cubmesh
 !
       use m_precision
 !
       implicit none
 !
 !
-      type filtering_nod_4_cubmesh
+      type filter_work_cubmesh
         integer(kind = kint) ::  ndp1 = 3
         integer(kind = kint) ::  ndp2 = 9
         integer(kind = kint) ::  ndp3 = 27
@@ -52,13 +52,13 @@
 !
         real(kind = kreal), allocatable :: filter_c_xy(:,:,:,:,:)
         real(kind = kreal), allocatable :: filter_c_3d(:,:,:,:,:)
-      end type filtering_nod_4_cubmesh
+      end type filter_work_cubmesh
 !
 !
       type filterings_4_cubmesh
-        type(filtering_nod_4_cubmesh) :: c_fil_nod
-        type(filtering_nod_4_cubmesh) :: c_fil_ele
-        type(filtering_nod_4_cubmesh) :: c_fil_edge(3)
+        type(filter_work_cubmesh) :: c_fil_nod
+        type(filter_work_cubmesh) :: c_fil_ele
+        type(filter_work_cubmesh) :: c_fil_edge(3)
       end type filterings_4_cubmesh
 !
 !
@@ -73,7 +73,7 @@
       use t_size_of_cube
 !
       type(size_of_cube), intent(in) :: c_size
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
+      type(filter_work_cubmesh), intent(inout) :: c_fil_nod
 !
 !
       call set_work_size_4_filter_nod(c_size, c_fil_nod)
@@ -91,7 +91,7 @@
 !
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_ele
+      type(filter_work_cubmesh), intent(inout) :: c_fil_ele
 !
 !
       call set_work_size_4_filter_ele(c_size, c_each, c_fil_ele)
@@ -107,7 +107,7 @@
       use t_size_of_cube
 !
       type(size_of_cube), intent(in) :: c_size
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_edge(3)
+      type(filter_work_cubmesh), intent(inout) :: c_fil_edge(3)
 !
       integer(kind = kint) :: nd
 !
@@ -123,7 +123,7 @@
 !
       subroutine dealloc_work_4_filter_edge(c_fil_edge)
 !
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_edge(3)
+      type(filter_work_cubmesh), intent(inout) :: c_fil_edge(3)
 !
       integer(kind = kint) :: nd
 !
@@ -142,7 +142,7 @@
       use m_comm_data_cube_kemo
 !
       type(size_of_cube), intent(in) :: c_size
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
+      type(filter_work_cubmesh), intent(inout) :: c_fil_nod
 !
 !
       c_fil_nod%nnod_x = c_size%numnod_x
@@ -163,7 +163,7 @@
 !
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_ele
+      type(filter_work_cubmesh), intent(inout) :: c_fil_ele
 !
 !
       c_fil_ele%nnod_x = c_each%nx - 1
@@ -183,7 +183,7 @@
       use t_size_of_cube
 !
       type(size_of_cube), intent(in) :: c_size
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_edge
+      type(filter_work_cubmesh), intent(inout) :: c_fil_edge
 !
 !
       c_fil_edge%nnod_x = c_size%numnod_x
@@ -200,7 +200,7 @@
 !
       subroutine alloc_work_4_plane_filter(c_fil_nod)
 !
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
+      type(filter_work_cubmesh), intent(inout) :: c_fil_nod
 !
       integer(kind = kint) ::  ndp1, ndp2, ndp3
       integer(kind = kint) :: nnod_x, nnod_y, nnod_z
@@ -238,7 +238,7 @@
 !
        subroutine reset_work_4_filter_nod(c_fil_nod)
 !
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
+      type(filter_work_cubmesh), intent(inout) :: c_fil_nod
 !
        c_fil_nod%nnod_neib =    0
        c_fil_nod%nnod_neib_x =  0
@@ -266,7 +266,7 @@
       use m_comm_data_cube_kemo
 !
       integer(kind = kint), intent(in) :: nf_type
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
+      type(filter_work_cubmesh), intent(inout) :: c_fil_nod
 !
       integer(kind = kint) :: nnod_x, nnod_y, nnod_z
       integer(kind = kint) :: ndp1, ndp2, ndp3
@@ -296,7 +296,7 @@
 !
        subroutine dealloc_work_4_filter_nod(c_fil_nod)
 !
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
+      type(filter_work_cubmesh), intent(inout) :: c_fil_nod
 !
        deallocate( c_fil_nod%nnod_neib_x     )
        deallocate( c_fil_nod%nnod_neib_y     )
@@ -323,7 +323,7 @@
 !
        subroutine dealloc_filters_nod(c_fil_nod)
 !
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_nod
+      type(filter_work_cubmesh), intent(inout) :: c_fil_nod
 !
        deallocate (c_fil_nod%filter_c_x)
        deallocate (c_fil_nod%filter_c_y)
@@ -335,4 +335,4 @@
 !
 !  ----------------------------------------------------------------------
 !
-      end module t_filtering_nod_4_cubmesh
+      end module t_filter_work_cubmesh

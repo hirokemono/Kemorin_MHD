@@ -21,7 +21,7 @@
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(size_of_each_cube), intent(in) :: c_each
 !!        type(neib_range_cube), intent(in) :: nb_rng
-!!        type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_edge(3)
+!!        type(filter_work_cubmesh), intent(inout) :: c_fil_edge(3)
 !!
       module neib_edge_cube
 !
@@ -30,7 +30,7 @@
 !
       use m_local_node_id_cube
       use m_cube_files_data
-      use t_filtering_nod_4_cubmesh
+      use t_filter_work_cubmesh
 !
       implicit none
 !
@@ -51,7 +51,7 @@
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_edge(3)
+      type(filter_work_cubmesh), intent(inout) :: c_fil_edge(3)
 !
 !
 !       for edge on y=const and z=const
@@ -116,7 +116,7 @@
        integer(kind = kint), intent(in) :: ist,jst,kst
        integer(kind = kint), intent(in) :: ied,jed,ked
 !
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_edge
+      type(filter_work_cubmesh), intent(inout) :: c_fil_edge
 !
        integer(kind = kint), dimension(0:1) :: ndepth_x
        integer(kind = kint) :: i, j, k
@@ -165,7 +165,7 @@
        integer(kind = kint), intent(in) :: ist,jst,kst
        integer(kind = kint), intent(in) :: ied,jed,ked
 !
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_edge
+      type(filter_work_cubmesh), intent(inout) :: c_fil_edge
 !
        integer(kind = kint), dimension(0:1) :: ndepth_y
        integer(kind = kint) :: i, j, k
@@ -213,7 +213,7 @@
       integer(kind = kint), intent(in) :: ist,jst,kst
       integer(kind = kint), intent(in) :: ied,jed,ked
 !
-      type(filtering_nod_4_cubmesh), intent(inout) :: c_fil_edge
+      type(filter_work_cubmesh), intent(inout) :: c_fil_edge
 !
       integer(kind = kint), dimension(-1:1) :: ndepth_z
       integer(kind = kint) :: i, j, k

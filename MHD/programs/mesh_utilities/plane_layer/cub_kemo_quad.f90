@@ -105,7 +105,8 @@
       use t_neib_range_cube
       use t_cube_position
       use t_control_param_plane_mesh
-      use t_filtering_nod_4_cubmesh
+      use t_filter_work_cubmesh
+      use t_filter_data_4_plane
 
       use m_ctl_data_4_cub_kemo
 !
@@ -113,7 +114,6 @@
       use set_cube_node_quad
       use set_cube_ele_connect
       use set_import_cube
-      use read_z_filter_info
       use write_nod_grp_cube
       use write_ele_grp_cube
       use write_surf_grp_cube
@@ -145,6 +145,7 @@
       type(neib_range_cube), save :: nb_rng1
       type(gradient_model_data_type), save :: FEM_elen_c
       type(filterings_4_cubmesh), save :: c_fils
+      type(filter_data_4_plane), save :: cube_fil1
 
       integer(kind=kint)  ::  ipe    , jpe    , kpe    , pe_id
       integer :: id_rank
@@ -188,12 +189,11 @@
       call alloc_work_4_filter_nod(c_size1, c_fils%c_fil_nod)
 !
 !      if(cube_p1%iflag_filter .ge.0) then
-!         nf_type = cube_p1%iflag_filter
-!         call allocate_filter_4_plane                                  &
-!    &       (c_size1%ndepth, c_size1%nz_all,                           &
-!    &        FEM_elen_c%filter_conf%nf_type)
-!         call read_filter_info(cube_p1%iflag_ztype, c_size1,           &
-!    &        FEM_elen_c%filter_conf%nf_type)
+         FEM_elen_c%filter_conf%nf_type = cube_p1%iflag_filter
+         call alloc_filter_4_plane(c_size1%ndepth, c_size1%nz_all,      &
+    &        FEM_elen_c%filter_conf%nf_type, cube_fil1)
+         call read_z_filter_info(cube_p1%iflag_ztype, c_size1,          &
+    &        FEM_elen_c%filter_conf%nf_type, cube_fil1)
 !      end if
 !
 ! **********   domain loop for each pe   **********
@@ -323,7 +323,7 @@
 !
             write(*,*) 'filtering information', c_each1%intnodtot
             call neighboring_node(pe_id, cube_p1, c_size1, c_each1,     &
-     &          nb_rng1, FEM_elen_c, c_fils%c_fil_nod)
+     &          nb_rng1, cube_fil1, FEM_elen_c, c_fils%c_fil_nod)
             call neighboring_edge                                       &
      &         (id_rank, c_size1, c_each1, nb_rng1, c_fils%c_fil_edge)
 !
@@ -344,6 +344,7 @@
         enddo
       enddo
 !
+      call dealloc_filter_4_plane(cube_fil1)
 
       stop ' //// program normally finished //// '
 !

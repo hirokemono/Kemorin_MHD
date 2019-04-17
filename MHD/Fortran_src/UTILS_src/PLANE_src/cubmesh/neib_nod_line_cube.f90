@@ -32,8 +32,8 @@
       use t_size_of_cube
       use m_local_node_id_cube
       use m_cube_files_data
-      use t_filtering_nod_4_cubmesh
-      use m_filter_data_4_plane
+      use t_filter_work_cubmesh
+      use t_filter_data_4_plane
 !
       use t_l_filtering_data
 !
@@ -79,7 +79,7 @@
       integer(kind = kint), intent(in) :: nf_type
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
-      type(filtering_nod_4_cubmesh), intent(in) :: c_fil_nod
+      type(filter_work_cubmesh), intent(in) :: c_fil_nod
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i
@@ -182,7 +182,7 @@
       real(kind = kreal), intent(in) :: eps_filter
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
-      type(filtering_nod_4_cubmesh), intent(in) :: c_fil_nod
+      type(filter_work_cubmesh), intent(in) :: c_fil_nod
       type(line_filtering_type), intent(inout) :: fil_l
 !
        integer(kind = kint) :: i, j, k, inod, nd
