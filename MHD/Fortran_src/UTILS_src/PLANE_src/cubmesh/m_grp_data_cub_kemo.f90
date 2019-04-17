@@ -123,43 +123,4 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine count_surface_group(c_size, nx, ny, kpe)
-!
-      type(size_of_cube), intent(in) :: c_size
-      integer (kind=kint), intent(in) :: nx, ny
-      integer(kind = kint), intent(in) :: kpe
-!
-      integer(kind = kint) :: ibd
-      integer(kind = kint) :: item_tot
-      integer(kind = kint) :: item_pos
-!
-      item_tot = 0
-      item_pos = 0
-      index = 0
-!                                                 .. zmin
-      do ibd = 1, neib
-        item_pos = 2*(ibd-1)+1
-        if (kpe == 1) then 
-          item_tot = item_tot +  (nx-1)*(ny-1)
-          index(item_pos) = item_tot
-        else
-          item_tot = item_tot
-         index(item_pos) = item_tot
-        endif
-!                                                 .. zmax
-        item_pos = 2*ibd
-        if (kpe == c_size%ndz) then 
-          item_tot = item_tot +  (nx-1)*(ny-1)
-          index(item_pos) = item_tot
-        else
-          item_tot = item_tot
-          index(item_pos) = item_tot
-        endif
-!
-      end do
-!
-       end subroutine count_surface_group
-!
-!-----------------------------------------------------------------------
-!
       end module m_grp_data_cub_kemo

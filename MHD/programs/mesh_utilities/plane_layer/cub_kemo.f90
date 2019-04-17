@@ -290,14 +290,11 @@
 !    output surface group
 !
 !                                     .. count element group and stack
-            call count_surface_group                                    &
-     &         (c_size1, c_each1%nx, c_each1%ny, kpe)
-            call write_surface_group                                    &
-     &         (c_size1%ndz, c_each1%nx, c_each1%ny, c_each1%nz, kpe)
+            call const_surface_group(c_size1, c_each1, kpe)
 !
             call dealloc_group_num(cube_nod_grp)
             call dealloc_group(cube_ele_grp)
-            call dealloc_sf_group_num(cube_surf_grp)
+            call dealloc_sf_group(cube_surf_grp)
 !
 !   construct filtering information
 !
