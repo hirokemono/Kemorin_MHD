@@ -7,14 +7,15 @@
 !!       subroutine count_im_edge                                       &
 !!      &         (sl_rng, ndz, kpe, inp, jnp, knp, inod, nd)
 !!       subroutine set_im_edge                                         &
-!!      &         (sl_rng, ndz, kpe, inp, jnp, knp, inod, nd)
+!!      &         (sl_rng, loc_id, ndz, kpe, inp, jnp, knp, inod, nd)
 !!        type(slleve_range), intent(in) :: sl_rng
 !!
 !!       subroutine count_ex_edge                                       &
 !!      &        (sl_rng, ndz, kpe, inp, jnp, knp, inod, nd)
 !!       subroutine set_ex_edge                                         &
-!!      &         (sl_rng, ndz, kpe, inp, jnp, knp, inod, nd)
+!!      &         (sl_rng, loc_id, ndz, kpe, inp, jnp, knp, inod, nd)
 !!        type(slleve_range), intent(in) :: sl_rng
+!!        type(local_node_id_cube), intent(in) :: loc_id
 !
       module set_comm_edge_4_cube
 !
@@ -22,6 +23,7 @@
 !
       use m_comm_data_cube_kemo
       use t_sleeve_cube
+      use t_local_node_id_cube
 !
       implicit none
 !
@@ -68,14 +70,14 @@
 ! ----------------------------------------------------------------------
 !
        subroutine set_im_edge                                           &
-      &         (sl_rng, ndz, kpe, inp, jnp, knp, inod, nd)
-!
-      use m_local_node_id_cube
+      &         (sl_rng, loc_id, ndz, kpe, inp, jnp, knp, inod, nd)
 !
       type(slleve_range), intent(in) :: sl_rng
+      type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: kpe, inp, jnp, knp
       integer (kind = kint), intent(in) :: ndz
       integer (kind = kint), intent(in) :: nd
+!
       integer (kind = kint), intent(inout) :: inod
 !
       type(slleve_range) :: sl_rng_1
@@ -94,7 +96,7 @@
           do i = sl_rng_1%is, sl_rng_1%ie
 
             inod = inod + 1
-            item_import(inod) =  edge_id_lc(i,j,k,nd)
+            item_import(inod) =  loc_id%edge_id_lc(i,j,k,nd)
 
           enddo
         enddo
@@ -142,14 +144,14 @@
 ! ----------------------------------------------------------------------
 !
        subroutine set_ex_edge                                           &
-      &         (sl_rng, ndz, kpe, inp, jnp, knp, inod, nd)
-
-      use m_local_node_id_cube
+      &         (sl_rng, loc_id, ndz, kpe, inp, jnp, knp, inod, nd)
 !
       type(slleve_range), intent(in) :: sl_rng
+      type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: ndz
       integer (kind = kint), intent(in) :: kpe, inp, jnp, knp
       integer (kind = kint), intent(in) :: nd
+!
       integer (kind = kint), intent(inout) :: inod
 !
       type(slleve_range) :: sl_rng_1
@@ -167,7 +169,7 @@
           do i = sl_rng_1%is, sl_rng_1%ie
 
             inod = inod + 1
-            item_export(inod) =  edge_id_lc(i,j,k,nd)
+            item_export(inod) =  loc_id%edge_id_lc(i,j,k,nd)
 
           enddo
         enddo

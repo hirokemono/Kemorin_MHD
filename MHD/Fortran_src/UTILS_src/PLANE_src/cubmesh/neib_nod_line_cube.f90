@@ -19,9 +19,10 @@
 !!      subroutine allocate_neighboring_nod_line
 !!      subroutine deallocate_neighboring_nod_line
 !!      subroutine write_neighboring_nod_line(id_rank, eps_filter,      &
-!!     &          nf_type, c_size, c_each, c_fil_nod, FEM_elen)
+!!     &          nf_type, c_size, c_each, loc_id, c_fil_nod, FEM_elen)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(size_of_each_cube), intent(in) :: c_each
+!!        type(local_node_id_cube), intent(in) :: loc_id
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       module neib_nod_line_cube
@@ -30,8 +31,8 @@
       use m_constants
 !
       use t_size_of_cube
-      use m_local_node_id_cube
       use m_cube_files_data
+      use t_local_node_id_cube
       use t_filter_work_cubmesh
       use t_filter_data_4_plane
 !
@@ -68,7 +69,7 @@
 !  ----------------------------------------------------------------------
 !
       subroutine write_neighboring_nod_line(id_rank, eps_filter,        &
-     &          nf_type, c_size, c_each, c_fil_nod, FEM_elen)
+     &          nf_type, c_size, c_each, loc_id, c_fil_nod, FEM_elen)
 !
       use t_filter_elength
       use filter_mom_type_data_IO
@@ -79,6 +80,7 @@
       integer(kind = kint), intent(in) :: nf_type
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
+      type(local_node_id_cube), intent(in) :: loc_id
       type(filter_work_cubmesh), intent(in) :: c_fil_nod
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
@@ -87,8 +89,8 @@
 !
        call allocate_neighboring_nod_line(c_size, c_each)
 !
-       call set_fiilter_nod_line                                        &
-     &    (nf_type, eps_filter, c_size, c_each, c_fil_nod, fil_l1)
+       call set_fiilter_nod_line(nf_type, eps_filter,                   &
+     &     c_size, c_each, loc_id, c_fil_nod, fil_l1)
 !
        call alloc_l_filtering_data                                      &
      &    (c_each%nodtot, c_size%ndepth, c_size%ndep_1, fil_l1)
@@ -175,13 +177,14 @@
 !  ----------------------------------------------------------------------
 !  ----------------------------------------------------------------------
 !
-      subroutine set_fiilter_nod_line                                   &
-     &         (nf_type, eps_filter, c_size, c_each, c_fil_nod, fil_l)
+      subroutine set_fiilter_nod_line(nf_type, eps_filter,              &
+     &          c_size, c_each, loc_id, c_fil_nod, fil_l)
 !
       integer(kind = kint), intent(in) :: nf_type
       real(kind = kreal), intent(in) :: eps_filter
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
+      type(local_node_id_cube), intent(in) :: loc_id
       type(filter_work_cubmesh), intent(in) :: c_fil_nod
       type(line_filtering_type), intent(inout) :: fil_l
 !
@@ -202,9 +205,9 @@
          end do
 !
 !         if ( inod .le. c_each%intnodtot) then
-           i = inod_table(inod,1)
-           j = inod_table(inod,2)
-           k = inod_table(inod,3)
+           i = loc_id%inod_table(inod,1)
+           j = loc_id%inod_table(inod,2)
+           k = loc_id%inod_table(inod,3)
            do i1 = 1, c_size%ndep_1
 !
              do nd = 1, 3
@@ -224,7 +227,7 @@
              if ( iflag(1).eq.1 ) then
                idx1 = idx1 + 1
                ii = c_fil_nod%inod_f_item_x(i1,i,j,k)
-               item_l_filter_0(idx1,1) = node_id_lc(ii,j,k)
+               item_l_filter_0(idx1,1) = loc_id%node_id_lc(ii,j,k)
                inod_f_dist_l_0(idx1,1)                                  &
      &              = c_fil_nod%inod_f_dist_x(i1,i,j,k)
                coef_l_filter_0(idx1,1)                                  &
@@ -233,7 +236,7 @@
              if ( iflag(2).eq.1 ) then
                idx2 = idx2 + 1
                jj = c_fil_nod%inod_f_item_y(i1,i,j,k)
-               item_l_filter_0(idx2,2) = node_id_lc(i,jj,k)
+               item_l_filter_0(idx2,2) = loc_id%node_id_lc(i,jj,k)
                inod_f_dist_l_0(idx2,2)                                  &
      &              = c_fil_nod%inod_f_dist_y(i1,i,j,k)
                coef_l_filter_0(idx2,2)                                  &
@@ -242,7 +245,7 @@
              if ( iflag(3).eq.1 ) then
                idx3 = idx3 + 1
                kk = c_fil_nod%inod_f_item_z(i1,i,j,k)
-               item_l_filter_0(idx3,3) = node_id_lc(i,j,kk)
+               item_l_filter_0(idx3,3) = loc_id%node_id_lc(i,j,kk)
                inod_f_dist_l_0(idx3,3)                                  &
      &              = c_fil_nod%inod_f_dist_z(i1,i,j,k)
                coef_l_filter_0(idx3,3)                                  &

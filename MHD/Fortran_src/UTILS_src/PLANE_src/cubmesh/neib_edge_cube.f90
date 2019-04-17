@@ -17,10 +17,11 @@
 !!  ---------------------------------------------------------------------
 !!
 !!      subroutine neighboring_edge                                     &
-!!     &         (id_rank, c_size, c_each, nb_rng, c_fil_edge)
+!!     &         (id_rank, c_size, c_each, nb_rng, loc_id, c_fil_edge)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(size_of_each_cube), intent(in) :: c_each
 !!        type(neib_range_cube), intent(in) :: nb_rng
+!!        type(local_node_id_cube), intent(in) :: loc_id
 !!        type(filter_work_cubmesh), intent(inout) :: c_fil_edge(3)
 !!
       module neib_edge_cube
@@ -28,9 +29,9 @@
       use m_precision
       use m_constants
 !
-      use m_local_node_id_cube
       use m_cube_files_data
       use t_filter_work_cubmesh
+      use t_local_node_id_cube
 !
       implicit none
 !
@@ -41,7 +42,7 @@
 !  ----------------------------------------------------------------------
 !
       subroutine neighboring_edge                                       &
-     &         (id_rank, c_size, c_each, nb_rng, c_fil_edge)
+     &         (id_rank, c_size, c_each, nb_rng, loc_id, c_fil_edge)
 !
       use t_size_of_cube
       use t_neib_range_cube
@@ -51,6 +52,7 @@
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
+      type(local_node_id_cube), intent(in) :: loc_id
       type(filter_work_cubmesh), intent(inout) :: c_fil_edge(3)
 !
 !
@@ -101,7 +103,8 @@
      &    nb_rng%i_st, nb_rng%i_end, nb_rng%j_st, nb_rng%j_end,         &
      &    nb_rng%kedge_st, nb_rng%kedge_end, c_fil_edge(3))
 !
-      call neib_edge_line(id_rank, c_size, c_each, nb_rng, c_fil_edge)
+      call neib_edge_line                                               &
+     &   (id_rank, c_size, c_each, nb_rng, loc_id, c_fil_edge)
 !
        end subroutine neighboring_edge
 !

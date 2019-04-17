@@ -17,10 +17,11 @@
 !!  ---------------------------------------------------------------------
 !!
 !!      subroutine neib_edge_line                                       &
-!!     &         (id_rank, c_size, c_each, nb_rng, c_fil_edge)
+!!     &         (id_rank, c_size, c_each, nb_rng, loc_id, c_fil_edge)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(size_of_each_cube), intent(in) :: c_each
 !!        type(neib_range_cube), intent(in) :: nb_rng
+!!        type(local_node_id_cube), intent(in) :: loc_id
 !!        type(filter_work_cubmesh), intent(in) :: c_fil_edge(3)
 !
       module neib_edge_line_cube
@@ -28,7 +29,7 @@
       use m_precision
 !
       use t_size_of_cube
-      use m_local_node_id_cube
+      use t_local_node_id_cube
       use m_cube_files_data
       use t_filter_work_cubmesh
       use set_parallel_file_name
@@ -58,7 +59,7 @@
 !  ----------------------------------------------------------------------
 !
       subroutine neib_edge_line                                         &
-     &         (id_rank, c_size, c_each, nb_rng, c_fil_edge)
+     &         (id_rank, c_size, c_each, nb_rng, loc_id, c_fil_edge)
 !
       use t_neib_range_cube
       use m_constants
@@ -67,18 +68,22 @@
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
+      type(local_node_id_cube), intent(in) :: loc_id
       type(filter_work_cubmesh), intent(in) :: c_fil_edge(3)
 !
 !
       call allocate_neighbour_edge_line(c_size, c_each)
 !
-      call set_neib_edge_line(c_size, c_each, c_fil_edge, ione,         &
+      call set_neib_edge_line                                           &
+     &   (c_size, c_each, loc_id, c_fil_edge, ione,                     &
      &    nb_rng%iedge_st, nb_rng%iedge_end, nb_rng%j_st, nb_rng%j_end, &
      &    nb_rng%k_st, nb_rng%k_end)
-      call set_neib_edge_line(c_size, c_each, c_fil_edge, itwo,         &
+      call set_neib_edge_line                                           &
+     &   (c_size, c_each, loc_id, c_fil_edge, itwo,                     &
      &    nb_rng%i_st, nb_rng%i_end, nb_rng%jedge_st, nb_rng%jedge_end, &
      &    nb_rng%k_st, nb_rng%k_end)
-      call set_neib_edge_line(c_size, c_each, c_fil_edge, ithree,       &
+      call set_neib_edge_line                                           &
+     &   (c_size, c_each, loc_id, c_fil_edge, ithree,                   &
      &    nb_rng%i_st, nb_rng%i_end, nb_rng%j_st, nb_rng%j_end,         &
      &    nb_rng%kedge_st, nb_rng%kedge_end)
 !
@@ -129,11 +134,13 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine set_neib_edge_line(c_size, c_each, c_fil_edge,        &
+       subroutine set_neib_edge_line                                    &
+      &         (c_size, c_each, loc_id, c_fil_edge,                    &
       &          nd, ist, ied, jst, jed, kst, ked)
 !
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
+      type(local_node_id_cube), intent(in) :: loc_id
       type(filter_work_cubmesh), intent(in) :: c_fil_edge(3)
 !
       integer(kind = kint), intent(in) :: nd
@@ -163,11 +170,11 @@
            jj = c_fil_edge(nd)%inod_f_item_y(i1,i,j,k)
            kk = c_fil_edge(nd)%inod_f_item_z(i1,i,j,k)
            iedge_f_d_x(iedge0) = c_fil_edge(nd)%inod_f_dist_x(i1,i,j,k)
-           iedge_neib_x(iedge0) = edge_id_lc(ii,j,k,nd)
+           iedge_neib_x(iedge0) = loc_id%edge_id_lc(ii,j,k,nd)
            iedge_f_d_y(iedge0) = c_fil_edge(nd)%inod_f_dist_y(i1,i,j,k)
-           iedge_neib_y(iedge0) = edge_id_lc(i,jj,k,nd)
+           iedge_neib_y(iedge0) = loc_id%edge_id_lc(i,jj,k,nd)
            iedge_f_d_z(iedge0) = c_fil_edge(nd)%inod_f_dist_z(i1,i,j,k)
-           iedge_neib_z(iedge0) = edge_id_lc(i,j,kk,nd)
+           iedge_neib_z(iedge0) = loc_id%edge_id_lc(i,j,kk,nd)
           end do
 !
          enddo

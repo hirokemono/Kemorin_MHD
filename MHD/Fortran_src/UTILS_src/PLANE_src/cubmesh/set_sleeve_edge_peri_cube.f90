@@ -7,10 +7,11 @@
 ! ***** set and write for sleeve edges for periodical boundary
 !
 !!      subroutine set_sleeve_edge_peri                                 &
-!!     &         (c_size, c_vert, nb_rng, ipe, jpe, kpe, inod)
+!!     &         (c_size, c_vert, nb_rng, ipe, jpe, kpe, loc_id, inod)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(vertical_position_cube), intent(in) :: c_vert
 !!        type(neib_range_cube), intent(in) :: nb_rng
+!!        type(local_node_id_cube), intent(inout) :: loc_id
 !
       module set_sleeve_edge_peri_cube
 !
@@ -25,12 +26,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_sleeve_edge_peri                                   &
-     &         (c_size, c_vert, nb_rng, ipe, jpe, kpe, inod)
+     &         (c_size, c_vert, nb_rng, ipe, jpe, kpe, loc_id, inod)
 !
       use t_size_of_cube
       use t_neib_range_cube
       use t_sleeve_cube
       use t_cube_position
+      use t_local_node_id_cube
       use sleeve_edge_side_cube
       use sleeve_edge_corner_cube
 !
@@ -38,7 +40,9 @@
       type(vertical_position_cube), intent(in) :: c_vert
       type(neib_range_cube), intent(in) :: nb_rng
       integer (kind = kint), intent(in) :: ipe, jpe, kpe
+!
       integer (kind = kint), intent(inout) :: inod
+      type(local_node_id_cube), intent(inout) :: loc_id
 !
       type(slleve_range) :: sl_rng1
       integer (kind = kint) :: ioff_gl
@@ -98,17 +102,17 @@
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z
           call set_sleeve_edge_xmin(c_size, c_vert, nb_rng, sl_rng1,    &
-     &        kpe, jnp, knp, ioff_gl, ione, inod)
+     &        kpe, jnp, knp, ioff_gl, ione, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &             + 2 * nwall_z + nwall_x
           call set_sleeve_edge_xmin(c_size, c_vert, nb_rng, sl_rng1,   &
-     &        kpe, jnp, knp, ioff_gl, itwo, inod)
+     &        kpe, jnp, knp, ioff_gl, itwo, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &             + 2 * nwall_z + 2 * nwall_x
           call set_sleeve_edge_xmin(c_size, c_vert, nb_rng, sl_rng1,    &
-     &        kpe, jnp, knp, ioff_gl, ithree, inod)
+     &        kpe, jnp, knp, ioff_gl, ithree, loc_id, inod)
         enddo
        enddo
       endif
@@ -129,17 +133,17 @@
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_xy
           call set_sleeve_edge_xmax(c_size, c_vert, nb_rng, sl_rng1,    &
-     &        kpe, jnp, knp, ioff_gl, ione, inod)
+     &        kpe, jnp, knp, ioff_gl, ione, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_xy + nwall_x2
           call set_sleeve_edge_xmax(c_size, c_vert, nb_rng, sl_rng1,    &
-     &        kpe, jnp, knp, ioff_gl, itwo, inod)
+     &        kpe, jnp, knp, ioff_gl, itwo, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_x4 + nwall_x2
           call set_sleeve_edge_xmax(c_size, c_vert, nb_rng, sl_rng1,    &
-     &        kpe, jnp, knp, ioff_gl, ithree, inod)
+     &        kpe, jnp, knp, ioff_gl, ithree, loc_id, inod)
 
          enddo
         enddo
@@ -160,17 +164,17 @@
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_x5 + nwall_x2
           call set_sleeve_edge_ymin(c_size, c_vert, nb_rng, sl_rng1,    &
-     &        kpe, inp, knp, ioff_gl, ione, inod)
+     &        kpe, inp, knp, ioff_gl, ione, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_x5 + nwall_x2 + nwall_y
           call set_sleeve_edge_ymin(c_size, c_vert, nb_rng, sl_rng1,    &
-     &        kpe, inp, knp, ioff_gl, itwo, inod)
+     &        kpe, inp, knp, ioff_gl, itwo, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_x5 + nwall_x2 + 2 * nwall_y
           call set_sleeve_edge_ymin(c_size, c_vert, nb_rng, sl_rng1,    &
-     &        kpe, inp, knp, ioff_gl, ithree, inod)
+     &        kpe, inp, knp, ioff_gl, ithree, loc_id, inod)
 
          enddo
         enddo
@@ -190,18 +194,18 @@
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_x5 + nwall_x2 + nwall_y3
           call set_sleeve_edge_ymax(c_size, c_vert, nb_rng, sl_rng1,    &
-     &        kpe, inp, knp, ioff_gl, ione, inod)
+     &        kpe, inp, knp, ioff_gl, ione, loc_id, inod)
 !
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_x5 + nwall_x2 + nwall_y4
           call set_sleeve_edge_ymax(c_size, c_vert, nb_rng, sl_rng1,    &
-     &        kpe, inp, knp, ioff_gl, itwo, inod)
+     &        kpe, inp, knp, ioff_gl, itwo, loc_id, inod)
 !
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_x5 + nwall_x2 + nwall_y4        &
      &            + nwall_y2
           call set_sleeve_edge_ymax(c_size, c_vert, nb_rng, sl_rng1,    &
-     &        kpe, inp, knp, ioff_gl, ithree, inod)
+     &        kpe, inp, knp, ioff_gl, ithree, loc_id, inod)
 
         enddo
        enddo
@@ -222,17 +226,17 @@
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_y5 + nwall_c1
           call set_sleeve_edge_xmin_ymin(c_size, c_vert, sl_rng1,       &
-     &        kpe, knp, ioff_gl, nb_rng%koff, ione, inod)
+     &        kpe, knp, ioff_gl, nb_rng%koff, ione, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_y5 + nwall_c1 + nwall_cn
           call set_sleeve_edge_xmin_ymin(c_size, c_vert, sl_rng1,       &
-     &        kpe, knp, ioff_gl, nb_rng%koff, itwo, inod)
+     &        kpe, knp, ioff_gl, nb_rng%koff, itwo, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_y5 + nwall_c1 + 2 * nwall_cn
           call set_sleeve_edge_xmin_ymin(c_size, c_vert, sl_rng1,       &
-     &        kpe, knp, ioff_gl, nb_rng%koff, ithree, inod)
+     &        kpe, knp, ioff_gl, nb_rng%koff, ithree, loc_id, inod)
 
        enddo
       endif
@@ -248,19 +252,19 @@
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_y5 + nwall_c1 + nwall_c3
           call set_sleeve_edge_xmax_ymin(c_size, c_vert, sl_rng1,       &
-     &        kpe, knp, ioff_gl, nb_rng%koff, ione, inod)
+     &        kpe, knp, ioff_gl, nb_rng%koff, ione, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_y5 + nwall_c1 + nwall_c3        &
      &            + nwall_xz
           call set_sleeve_edge_xmax_ymin(c_size, c_vert, sl_rng1,       &
-     &        kpe, knp, ioff_gl, nb_rng%koff, itwo, inod)
+     &        kpe, knp, ioff_gl, nb_rng%koff, itwo, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_y5 + nwall_c1 + nwall_c4        &
      &            + nwall_xz
           call set_sleeve_edge_xmax_ymin(c_size, c_vert, sl_rng1,       &
-     &        kpe, knp, ioff_gl, nb_rng%koff, ithree, inod)
+     &        kpe, knp, ioff_gl, nb_rng%koff, ithree, loc_id, inod)
 
         enddo
        end if
@@ -277,19 +281,19 @@
      &            + 2 * nwall_z + nwall_y5 + nwall_c1 + nwall_z5        &
      &            + nwall_xz
           call set_sleeve_edge_xmax_ymax(c_size, c_vert, sl_rng1,       &
-     &        kpe, knp, ioff_gl, nb_rng%koff, ione, inod)
+     &        kpe, knp, ioff_gl, nb_rng%koff, ione, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_y5 + nwall_c1 + nwall_z5        &
      &            + 2*nwall_xz
           call set_sleeve_edge_xmax_ymax(c_size, c_vert, sl_rng1,       &
-     &        kpe, knp, ioff_gl, nb_rng%koff, itwo, inod)
+     &        kpe, knp, ioff_gl, nb_rng%koff, itwo, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_y5 + nwall_c1 + nwall_z5        &
      &            + 3*nwall_xz
           call set_sleeve_edge_xmax_ymax(c_size, c_vert, sl_rng1,       &
-     &        kpe, knp, ioff_gl, nb_rng%koff, ithree, inod)
+     &        kpe, knp, ioff_gl, nb_rng%koff, ithree, loc_id, inod)
 
        enddo
       end if
@@ -306,19 +310,19 @@
      &            + 2 * nwall_z + nwall_y5 + nwall_c1 + nwall_z6        &
      &            + 3*nwall_xz
           call set_sleeve_edge_xmin_ymax(c_size, c_vert, sl_rng1,       &
-     &        kpe, knp, ioff_gl, nb_rng%koff, ione, inod)
+     &        kpe, knp, ioff_gl, nb_rng%koff, ione, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_y5 + nwall_c1 + nwall_z7        &
      &            + 3*nwall_xz
           call set_sleeve_edge_xmin_ymax(c_size, c_vert, sl_rng1,       &
-     &        kpe, knp, ioff_gl, nb_rng%koff, itwo, inod)
+     &        kpe, knp, ioff_gl, nb_rng%koff, itwo, loc_id, inod)
 
           ioff_gl = c_size%nod_gltot + c_size%edge_gltot                &
      &            + 2 * nwall_z + nwall_y5 + nwall_c1 + nwall_z7        &
      &            + 4*nwall_xz
           call set_sleeve_edge_xmin_ymax(c_size, c_vert, sl_rng1,       &
-     &        kpe, knp, ioff_gl, nb_rng%koff, ithree, inod)
+     &        kpe, knp, ioff_gl, nb_rng%koff, ithree, loc_id, inod)
 
         enddo
       end if
@@ -333,7 +337,8 @@
 !              do k = 1, c_each%nz
 !               do j = 1, c_each%ny
 !                do i = 1, c_each%nx
-!                 write(*,'(7i7)') ipe, jpe, kpe, i, j, k, node_id_lc(i,j,k)
+!                 write(*,'(7i7)') ipe, jpe, kpe,                       &
+!     &                            i, j, k, loc_id%node_id_lc(i,j,k)
 !                end do
 !               end do
 !              end do
@@ -341,7 +346,8 @@
 !              do k = 1, c_each%nz
 !               do j = 1, c_each%ny
 !                do i = 1, c_each%nx
-!                 write(*,'(9i7)') ipe, jpe, kpe, i, j, k, edge_id_lc(i,j,k,1:3)
+!                 write(*,'(9i7)') ipe, jpe, kpe,                       &
+!     &                            i, j, k, loc_id%edge_id_lc(i,j,k,1:3)
 !                end do
 !               end do
 !              end do

@@ -5,12 +5,13 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine set_ele_connect                                      &
-!!     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe)
+!!     &         (c_size, c_each, nb_rng, loc_id, elm_type, ipe, jpe)
 !!      subroutine set_ele_connect_quad                                 &
-!!     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe)
+!!     &         (c_size, c_each, nb_rng, loc_id, elm_type, ipe, jpe)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(size_of_each_cube), intent(in) :: c_each
 !!        type(neib_range_cube), intent(in) :: nb_rng
+!!        type(local_node_id_cube), intent(in) :: loc_id
 !
       module set_cube_ele_connect
 !
@@ -18,7 +19,7 @@
 !
       use t_size_of_cube
       use t_neib_range_cube
-      use m_local_node_id_cube
+      use t_local_node_id_cube
       use m_cube_files_data
       use set_ele_id_peri
 !
@@ -31,13 +32,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ele_connect                                        &
-     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe)
+     &         (c_size, c_each, nb_rng, loc_id, elm_type, ipe, jpe)
 !
       use m_fem_mesh_labels
 !
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
+      type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: elm_type
       integer (kind = kint), intent(in) :: ipe, jpe
 !
@@ -63,14 +65,14 @@
      &      (c_size, nb_rng, c_each%nx, c_each%ny,                      &
      &       ipe, jpe, i, j, k, element_id, element_id_gl)
 !
-         i1 = node_id_lc( i  , j  , k   )
-         i2 = node_id_lc( i+1, j  , k   )
-         i3 = node_id_lc( i+1, j+1, k   )
-         i4 = node_id_lc( i  , j+1, k   )
-         i5 = node_id_lc( i  , j  , k+1 )
-         i6 = node_id_lc( i+1, j  , k+1 )
-         i7 = node_id_lc( i+1, j+1, k+1 )
-         i8 = node_id_lc( i  , j+1, k+1 )
+         i1 = loc_id%node_id_lc( i  , j  , k   )
+         i2 = loc_id%node_id_lc( i+1, j  , k   )
+         i3 = loc_id%node_id_lc( i+1, j+1, k   )
+         i4 = loc_id%node_id_lc( i  , j+1, k   )
+         i5 = loc_id%node_id_lc( i  , j  , k+1 )
+         i6 = loc_id%node_id_lc( i+1, j  , k+1 )
+         i7 = loc_id%node_id_lc( i+1, j+1, k+1 )
+         i8 = loc_id%node_id_lc( i  , j+1, k+1 )
 
          write(l_out,'(9i16)')  element_id_gl,                          &
      &                          i1, i2, i3, i4, i5, i6, i7, i8
@@ -84,11 +86,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ele_connect_quad                                   &
-     &         (c_size, c_each, nb_rng, elm_type, ipe, jpe)
+     &         (c_size, c_each, nb_rng, loc_id, elm_type, ipe, jpe)
 !
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
+      type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: elm_type
       integer (kind = kint), intent(in) :: ipe, jpe
 !
@@ -117,29 +120,29 @@
      &       ipe, jpe, i, j, k, element_id, element_id_gl)
 !
 !
-         i1  = node_id_lc( i  , j  , k   )
-         i2  = node_id_lc( i+1, j  , k   )
-         i3  = node_id_lc( i+1, j+1, k   )
-         i4  = node_id_lc( i  , j+1, k   )
-         i5  = node_id_lc( i  , j  , k+1 )
-         i6  = node_id_lc( i+1, j  , k+1 )
-         i7  = node_id_lc( i+1, j+1, k+1 )
-         i8  = node_id_lc( i  , j+1, k+1 )
+         i1  = loc_id%node_id_lc( i  , j  , k   )
+         i2  = loc_id%node_id_lc( i+1, j  , k   )
+         i3  = loc_id%node_id_lc( i+1, j+1, k   )
+         i4  = loc_id%node_id_lc( i  , j+1, k   )
+         i5  = loc_id%node_id_lc( i  , j  , k+1 )
+         i6  = loc_id%node_id_lc( i+1, j  , k+1 )
+         i7  = loc_id%node_id_lc( i+1, j+1, k+1 )
+         i8  = loc_id%node_id_lc( i  , j+1, k+1 )
 
-         i9  = edge_id_lc( i  , j  , k  , 1 )
-         i10 = edge_id_lc( i+1, j  , k  , 2 )
-         i11 = edge_id_lc( i  , j+1, k  , 1 )
-         i12 = edge_id_lc( i  , j  , k  , 2 )
+         i9  = loc_id%edge_id_lc( i  , j  , k  , 1 )
+         i10 = loc_id%edge_id_lc( i+1, j  , k  , 2 )
+         i11 = loc_id%edge_id_lc( i  , j+1, k  , 1 )
+         i12 = loc_id%edge_id_lc( i  , j  , k  , 2 )
 
-         i13 = edge_id_lc( i  , j  , k+1, 1 )
-         i14 = edge_id_lc( i+1, j  , k+1, 2 )
-         i15 = edge_id_lc( i  , j+1, k+1, 1 )
-         i16 = edge_id_lc( i  , j  , k+1, 2 )
+         i13 = loc_id%edge_id_lc( i  , j  , k+1, 1 )
+         i14 = loc_id%edge_id_lc( i+1, j  , k+1, 2 )
+         i15 = loc_id%edge_id_lc( i  , j+1, k+1, 1 )
+         i16 = loc_id%edge_id_lc( i  , j  , k+1, 2 )
 
-         i17 = edge_id_lc( i  , j  , k  , 3 )
-         i18 = edge_id_lc( i+1, j  , k  , 3 )
-         i19 = edge_id_lc( i+1, j+1, k  , 3 )
-         i20 = edge_id_lc( i  , j+1, k  , 3 )
+         i17 = loc_id%edge_id_lc( i  , j  , k  , 3 )
+         i18 = loc_id%edge_id_lc( i+1, j  , k  , 3 )
+         i19 = loc_id%edge_id_lc( i+1, j+1, k  , 3 )
+         i20 = loc_id%edge_id_lc( i  , j+1, k  , 3 )
 
          write(l_out,'(21i16)')  element_id_gl,                         &
      &               i1 , i2 , i3 , i4 , i5 , i6 , i7 , i8 , i9 , i10,  &

@@ -4,11 +4,12 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine set_export_inside(c_size, nb_rng, icou, inod)
+!!      subroutine set_export_inside(c_size, nb_rng, loc_id, icou, inod)
 !!      subroutine set_export_inside_quad                               &
-!!     &         (c_size, nb_rng, kpe, icou, inod)
+!!     &         (c_size, nb_rng, loc_id, kpe, icou, inod)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(neib_range_cube), intent(in) :: nb_rng
+!!        type(local_node_id_cube), intent(in) :: loc_id
 !
       module set_export_inside_cube
 !
@@ -29,10 +30,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_export_inside(c_size, nb_rng, icou, inod)
+      subroutine set_export_inside(c_size, nb_rng, loc_id, icou, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
+      type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(inout) :: icou, inod
 !
       type(slleve_range) :: sl_rng1
@@ -50,7 +52,7 @@
 
                icou = icou  + 1
 
-               call set_ex_node(sl_rng1, inod)
+               call set_ex_node(sl_rng1, loc_id, inod)
 !               write(*,*) 'inod', inod
 
               enddo
@@ -63,12 +65,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_export_inside_quad                                 &
-     &         (c_size, nb_rng, kpe, icou, inod)
+     &         (c_size, nb_rng, loc_id, kpe, icou, inod)
 !
       use set_comm_edge_4_cube
 !
       type(size_of_cube), intent(in) :: c_size
       type(neib_range_cube), intent(in) :: nb_rng
+      type(local_node_id_cube), intent(in) :: loc_id
       integer (kind = kint), intent(in) :: kpe
       integer (kind = kint), intent(inout) :: icou, inod
 !
@@ -87,21 +90,21 @@
 
                icou = icou  + 1
 
-               call set_ex_node(sl_rng1, inod)
+               call set_ex_node(sl_rng1, loc_id, inod)
                write(*,*) 'export node 0 to',                           &
      &                   (neibpe(icou)-1), inp, jnp, knp, inod
 
-               call set_ex_edge(sl_rng1, c_size%ndz,                    &
+               call set_ex_edge(sl_rng1, loc_id, c_size%ndz,            &
      &             kpe, inp, jnp, knp, inod, ione)
                write(*,*) 'export edge1 0 to',                          &
      &                   (neibpe(icou)-1), inp, jnp, knp, inod
 
-               call set_ex_edge(sl_rng1, c_size%ndz,                    &
+               call set_ex_edge(sl_rng1, loc_id, c_size%ndz,            &
      &             kpe, inp, jnp, knp, inod, itwo)
                write(*,*) 'export edge2 0 to',                          &
      &                   (neibpe(icou)-1), inp, jnp, knp, inod
 
-               call set_ex_edge(sl_rng1, c_size%ndz,                    &
+               call set_ex_edge(sl_rng1, loc_id, c_size%ndz,            &
      &             kpe, inp, jnp, knp, inod, ithree)
                write(*,*) 'export edge3 0 to',                          &
      &                   (neibpe(icou)-1), inp, jnp, knp, inod

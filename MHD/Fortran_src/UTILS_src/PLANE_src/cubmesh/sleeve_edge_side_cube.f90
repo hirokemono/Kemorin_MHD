@@ -4,17 +4,18 @@
 !      Written by Kemorin
 !
 !!      subroutine set_sleeve_edge_xmin(c_size, c_vert, nb_rng, sl_rng, &
-!!     &          kpe, jnp, knp, ioff_gl, nd, inod)
+!!     &          kpe, jnp, knp, ioff_gl, nd, loc_id, inod)
 !!      subroutine set_sleeve_edge_xmax(c_size, c_vert, nb_rng, sl_rng, &
-!!     &          kpe, jnp, knp, ioff_gl, nd, inod)
+!!     &          kpe, jnp, knp, ioff_gl, nd, loc_id, inod)
 !!      subroutine set_sleeve_edge_ymin(c_size, c_vert, nb_rng, sl_rng, &
-!!     &          kpe, inp, knp, ioff_gl, nd, inod)
+!!     &          kpe, inp, knp, ioff_gl, nd, loc_id, inod)
 !!      subroutine set_sleeve_edge_ymax(c_size, c_vert, nb_rng, sl_rng, &
-!!     &          kpe, inp, knp, ioff_gl, nd, inod)
+!!     &          kpe, inp, knp, ioff_gl, nd, loc_id, inod)
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(vertical_position_cube), intent(in) :: c_vert
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !!        type(slleve_range), intent(in) :: sl_rng
+!!        type(local_node_id_cube), intent(inout) :: loc_id
 !
       module sleeve_edge_side_cube
 !
@@ -25,7 +26,7 @@
       use t_sleeve_cube
       use t_neib_range_cube
       use t_cube_position
-      use m_local_node_id_cube
+      use t_local_node_id_cube
       use m_cube_files_data
 !
       implicit none
@@ -37,7 +38,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_sleeve_edge_xmin(c_size, c_vert, nb_rng, sl_rng,   &
-     &          kpe, jnp, knp, ioff_gl, nd, inod)
+     &          kpe, jnp, knp, ioff_gl, nd, loc_id, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(in) :: c_vert
@@ -46,7 +47,9 @@
       integer (kind = kint), intent(in) :: ioff_gl
       integer (kind = kint), intent(in) :: kpe, jnp, knp
       integer (kind = kint), intent(in) :: nd
+!
       integer (kind = kint), intent(inout) :: inod
+      type(local_node_id_cube), intent(inout) :: loc_id
 !
       type(slleve_range) :: sl_rng_2
       integer (kind = kint) :: node_id_gl
@@ -66,7 +69,7 @@
 
           inod = inod + 1
 
-          edge_id_lc(i,j,k,nd) =  inod
+          loc_id%edge_id_lc(i,j,k,nd) =  inod
           node_id_gl = ioff_gl + i                                      &
      &            + (nb_rng%joff + j) * (sl_rng_2%ie - sl_rng_2%is + 1) &
      &            + (nb_rng%koff + k-1)*(sl_rng_2%ie - sl_rng_2%is + 1) &
@@ -103,7 +106,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_sleeve_edge_xmax(c_size, c_vert, nb_rng, sl_rng,   &
-     &          kpe, jnp, knp, ioff_gl, nd, inod)
+     &          kpe, jnp, knp, ioff_gl, nd, loc_id, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(in) :: c_vert
@@ -112,7 +115,9 @@
       integer (kind = kint), intent(in) :: kpe, jnp, knp
       integer (kind = kint), intent(in) :: ioff_gl
       integer (kind = kint), intent(in) :: nd
+!
       integer (kind = kint), intent(inout) :: inod
+      type(local_node_id_cube), intent(inout) :: loc_id
 !
       type(slleve_range) :: sl_rng_2
       integer (kind = kint) :: node_id_gl
@@ -134,7 +139,7 @@
           inod = inod + 1
 
           i1 = c_size%nxi + c_size%ndepth + i
-          edge_id_lc(i1,j,k,nd) =  inod
+          loc_id%edge_id_lc(i1,j,k,nd) =  inod
           node_id_gl = ioff_gl + i                                      &
      &          + (nb_rng%joff + j) * (sl_rng_2%ie - sl_rng_2%is + 1)   &
      &          + (nb_rng%koff + k-1) * (sl_rng_2%ie - sl_rng_2%is + 1) &
@@ -171,7 +176,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_sleeve_edge_ymin(c_size, c_vert, nb_rng, sl_rng,   &
-     &          kpe, inp, knp, ioff_gl, nd, inod)
+     &          kpe, inp, knp, ioff_gl, nd, loc_id, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(in) :: c_vert
@@ -180,7 +185,9 @@
       integer (kind = kint), intent(in) :: kpe, inp, knp
       integer (kind = kint), intent(in) :: ioff_gl
       integer (kind = kint), intent(in) :: nd
+!
       integer (kind = kint), intent(inout) :: inod
+      type(local_node_id_cube), intent(inout) :: loc_id
 !
       type(slleve_range) :: sl_rng_2
       integer (kind= kint) :: node_id_gl
@@ -200,7 +207,7 @@
 
           inod = inod + 1
 
-          edge_id_lc(i,j,k,nd) =  inod
+          loc_id%edge_id_lc(i,j,k,nd) =  inod
           node_id_gl                                                    &
      &        = ioff_gl + (nb_rng%ioff + i) + (j-1)*c_size%nx_all       &
      &            + (nb_rng%koff + k-1)*(sl_rng_2%je - sl_rng_2%js + 1) &
@@ -237,7 +244,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_sleeve_edge_ymax(c_size, c_vert, nb_rng, sl_rng,   &
-     &          kpe, inp, knp, ioff_gl, nd, inod)
+     &          kpe, inp, knp, ioff_gl, nd, loc_id, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(in) :: c_vert
@@ -246,7 +253,9 @@
       integer (kind = kint), intent(in) :: kpe, inp, knp
       integer (kind = kint), intent(in) :: ioff_gl
       integer (kind = kint), intent(in) :: nd
+!
       integer (kind = kint), intent(inout) :: inod
+      type(local_node_id_cube), intent(inout) :: loc_id
 !
       type(slleve_range) :: sl_rng_2
       integer (kind = kint) :: node_id_gl
@@ -268,7 +277,7 @@
           inod = inod + 1
 
           j1 = c_size%nyi + c_size%ndepth + j
-          edge_id_lc(i,j1,k,nd) =  inod
+          loc_id%edge_id_lc(i,j1,k,nd) =  inod
           node_id_gl                                                    &
      &        = ioff_gl + (nb_rng%ioff + i) + (j-1)*c_size%nx_all       &
      &            + (nb_rng%koff + k-1)*(sl_rng_2%je - sl_rng_2%js + 1) &

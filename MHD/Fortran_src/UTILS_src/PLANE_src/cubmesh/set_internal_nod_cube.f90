@@ -5,12 +5,13 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine set_internal_node                                    &
-!!     &         (c_size, c_vert, nb_rng, sl_rng, inod)
+!!     &         (c_size, c_vert, nb_rng, sl_rng, loc_id, inod)
 !!      subroutine set_internal_edge(c_size, c_vert, nb_rng, sl_rng,    &
-!!     &          kpe, inp, jnp, knp, inod, nd)
+!!     &          kpe, inp, jnp, knp, nd, loc_id, inod)
 !!        type(vertical_position_cube), intent(in) :: c_vert
 !!        type(neib_range_cube), intent(in) :: nb_rng
 !!        type(slleve_range), intent(in) :: sl_rng
+!!        type(local_node_id_cube), intent(inout) :: loc_id
 !
       module set_internal_nod_cube
 !
@@ -20,7 +21,7 @@
       use t_neib_range_cube
       use t_sleeve_cube
       use t_cube_position
-      use m_local_node_id_cube
+      use t_local_node_id_cube
       use m_cube_files_data
 !
       implicit none
@@ -32,12 +33,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_internal_node                                      &
-     &         (c_size, c_vert, nb_rng, sl_rng, inod)
+     &         (c_size, c_vert, nb_rng, sl_rng, loc_id, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(in) :: c_vert
       type(neib_range_cube), intent(in) :: nb_rng
       type(slleve_range), intent(in) :: sl_rng
+!
+      type(local_node_id_cube), intent(inout) :: loc_id
       integer (kind = kint), intent(inout) :: inod
 !
       integer (kind= kint) :: node_id_gl
@@ -51,7 +54,7 @@
           do i = sl_rng%is, sl_rng%ie
             inod = inod + 1
 
-            node_id_lc(i,j,k) =  inod
+            loc_id%node_id_lc(i,j,k) =  inod
             node_id_gl        = (nb_rng%ioff + i  )                     &
      &                         + (nb_rng%joff + j-1) * c_size%nx_all    &
      &                         + (nb_rng%koff + k-1) * c_size%nx_all    &
@@ -61,8 +64,7 @@
             y = nb_rng%yoff + (j-1) * c_size%ysize / (c_size%ny_all)
             z = c_vert%zz(nb_rng%koff + k)
 
-            write(l_out,'(i15,3(1pe21.11))')                      &
-     &              node_id_gl, x, y, z
+            write(l_out,'(i15,3(1pe21.11))')  node_id_gl, x, y, z
           enddo
         enddo
       enddo
@@ -72,7 +74,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_internal_edge(c_size, c_vert, nb_rng, sl_rng,      &
-     &          kpe, inp, jnp, knp, inod, nd)
+     &          kpe, inp, jnp, knp, nd, loc_id, inod)
 !
       type(size_of_cube), intent(in) :: c_size
       type(vertical_position_cube), intent(in) :: c_vert
@@ -81,7 +83,9 @@
       integer (kind = kint), intent(in) :: kpe
       integer (kind = kint), intent(in) :: nd
       integer (kind = kint), intent(in) :: inp, jnp, knp
+!
       integer (kind = kint), intent(inout) :: inod
+      type(local_node_id_cube), intent(inout) :: loc_id
 !
       integer (kind= kint) :: node_id_gl
       integer (kind= kint) :: i, j, k
@@ -105,7 +109,7 @@
 
          inod = inod + 1
 
-         edge_id_lc(i,j,k,nd) =  inod
+         loc_id%edge_id_lc(i,j,k,nd) =  inod
          node_id_gl        =  nd * c_size%nod_gltot                     &
                              + (nb_rng%ioff + i  )                      &
      &                       + (nb_rng%joff + j-1) * c_size%nx_all      &

@@ -17,15 +17,14 @@
 !  ----------------------------------------------------------------------
 !
 !!      subroutine neighboring_node(pe_id, cube_p, c_size, c_each,      &
-!!     &          nb_rng, cube_fil, FEM_elen, c_fil_nod)
-!!      subroutine check_neib_node_xy(FEM_elen, c_fil_nod)
+!!     &          nb_rng, loc_id, cube_fil, FEM_elen, c_fil_nod)
+!!      subroutine check_neib_node_xy(loc_id, FEM_elen, c_fil_nod)
+!!      subroutine check_neib_node_3d(loc_id, c_fil_nod)
 !!        type(neib_range_cube), intent(in) :: nb_rng
+!!        type(local_node_id_cube), intent(in) :: loc_id
 !!        type(filter_data_4_plane), intent(in) :: cube_fil
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !!        type(filter_work_cubmesh), intent(inout) :: c_fil_nod
-!!
-!!      subroutine check_neib_node_3d(c_fil_nod)
-!!        type(filter_work_cubmesh), intent(in) :: c_fil_nod
 !
       module neib_nod_cube
 !
@@ -33,7 +32,7 @@
 !
       use t_neib_range_cube
       use t_size_of_cube
-      use m_local_node_id_cube
+      use t_local_node_id_cube
       use m_cube_files_data
       use neib_nod_line_cube
       use t_filter_data_4_plane
@@ -61,12 +60,13 @@
 !  ----------------------------------------------------------------------
 !
       subroutine neighboring_node(pe_id, cube_p, c_size, c_each,        &
-     &          nb_rng, cube_fil, FEM_elen, c_fil_nod)
+     &          nb_rng, loc_id, cube_fil, FEM_elen, c_fil_nod)
 !
       type(ctl_param_plane_mesh), intent(in) :: cube_p
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
       type(neib_range_cube), intent(in) :: nb_rng
+      type(local_node_id_cube), intent(in) :: loc_id
       type(filter_data_4_plane), intent(in) :: cube_fil
       type(gradient_model_data_type), intent(inout) :: FEM_elen
       type(filter_work_cubmesh), intent(inout) :: c_fil_nod
@@ -107,11 +107,11 @@
        write(*,*) 'count_neib_node_x'
        call count_neib_node_x                                           &
      &    (c_size%ndepth, c_each%nx, cube_fil, FEM_elen, c_fil_nod)
-!        call check_neib_node_x(c_fil_nod)
+!        call check_neib_node_x(loc_id, c_fil_nod)
        write(*,*) 'count_neib_node_y'
        call count_neib_node_y                                           &
      &    (c_size%ndepth, c_each%ny, cube_fil, FEM_elen, c_fil_nod)
-!        call check_neib_node_y(c_fil_nod)
+!        call check_neib_node_y(loc_id, c_fil_nod)
        write(*,*) 'count_neib_node_z'
        call count_neib_node_z                                           &
      &    (cube_p%iflag_z_filter, c_size%ndepth, c_each%nz,             &
@@ -120,11 +120,11 @@
          write(*,*) 'norm_z_coefs'
          call norm_z_coefs(FEM_elen, c_fil_nod)
        end if
-!        call check_neib_node_z(c_fil_nod)
+!        call check_neib_node_z(loc_id, c_fil_nod)
 !
        call write_neighboring_nod_line                                  &
      &    (ied_rank, cube_p%eps_filter, FEM_elen%filter_conf%nf_type,   &
-     &     c_size, c_each, c_fil_nod, FEM_elen)
+     &     c_size, c_each, loc_id, c_fil_nod, FEM_elen)
 !
        write(*,*) 'dealloc_filters_nod'
        call dealloc_filters_nod(c_fil_nod)
@@ -478,8 +478,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine check_neib_node_x(c_fil_nod)
+       subroutine check_neib_node_x(loc_id, c_fil_nod)
 !
+      type(local_node_id_cube), intent(in) :: loc_id
       type(filter_work_cubmesh), intent(in) :: c_fil_nod
 !
        integer(kind = kint) :: i, j, k
@@ -495,8 +496,8 @@
           do ii = 1, c_fil_nod%nnod_neib_x(i,j,k)
            i1 = c_fil_nod%inod_f_item_x(ii,i,j,k)
           write(50,'(4i5,10i6)') k, j, i, ii,                           &
-     &         node_id_lc(i,j,k), c_fil_nod%inod_f_item_x(ii,i,j,k),    &
-     &         node_id_lc(i1,j,k), c_fil_nod%inod_f_dist_x(ii,i,j,k)
+     &     loc_id%node_id_lc(i,j,k), c_fil_nod%inod_f_item_x(ii,i,j,k), &
+     &     loc_id%node_id_lc(i1,j,k), c_fil_nod%inod_f_dist_x(ii,i,j,k)
           end do
          enddo
         enddo
@@ -506,8 +507,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine check_neib_node_y(c_fil_nod)
+       subroutine check_neib_node_y(loc_id, c_fil_nod)
 !
+      type(local_node_id_cube), intent(in) :: loc_id
       type(filter_work_cubmesh), intent(in) :: c_fil_nod
 !
        integer(kind = kint) :: i, j, k
@@ -523,8 +525,8 @@
           do jj = 1, c_fil_nod%nnod_neib_y(i,j,k)
            j1 = c_fil_nod%inod_f_item_y(jj,i,j,k)
           write(50,'(4i5,10i6)') k, j, i, jj,                           &
-     &         node_id_lc(i,j,k), c_fil_nod%inod_f_item_y(jj,i,j,k),    &
-     &         node_id_lc(i,j1,k), c_fil_nod%inod_f_dist_y(jj,i,j,k)
+     &     loc_id%node_id_lc(i,j,k), c_fil_nod%inod_f_item_y(jj,i,j,k), &
+     &     loc_id%node_id_lc(i,j1,k), c_fil_nod%inod_f_dist_y(jj,i,j,k)
           end do
          enddo
         enddo
@@ -535,8 +537,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_neib_node_z(c_fil_nod)
+      subroutine check_neib_node_z(loc_id, c_fil_nod)
 !
+      type(local_node_id_cube), intent(in) :: loc_id
       type(filter_work_cubmesh), intent(in) :: c_fil_nod
 !
        integer(kind = kint) :: i, j, k
@@ -552,8 +555,8 @@
           do kk = 1, c_fil_nod%nnod_neib_z(i,j,k)
            k1 = c_fil_nod%inod_f_item_z(kk,i,j,k)
           write(50,'(4i5,10i6)') k, j, i, kk,                           &
-     &         node_id_lc(i,j,k), c_fil_nod%inod_f_item_z(kk,i,j,k),    &
-     &         node_id_lc(i,j,k1), c_fil_nod%inod_f_dist_z(kk,i,j,k)
+     &     loc_id%node_id_lc(i,j,k), c_fil_nod%inod_f_item_z(kk,i,j,k), &
+     &     loc_id%node_id_lc(i,j,k1), c_fil_nod%inod_f_dist_z(kk,i,j,k)
           end do
          enddo
         enddo
@@ -563,8 +566,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine check_neib_node_xy(FEM_elen, c_fil_nod)
+       subroutine check_neib_node_xy(loc_id, FEM_elen, c_fil_nod)
 !
+      type(local_node_id_cube), intent(in) :: loc_id
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(filter_work_cubmesh), intent(in) :: c_fil_nod
 !
@@ -581,9 +585,9 @@
           do ij = 1, c_fil_nod%nnod_neib_xy(i,j,k)
            i1 = c_fil_nod%inod_f_item_xy(ij,i,j,k,1)
            j1 = c_fil_nod%inod_f_item_xy(ij,i,j,k,2)
-          write(50,'(4i5,10i6)') k, j, i, ij, node_id_lc(i,j,k),        &
+          write(50,'(4i5,10i6)') k, j, i, ij, loc_id%node_id_lc(i,j,k), &
      &         c_fil_nod%inod_f_item_xy(ij,i,j,k,1:2),                  &
-     &         node_id_lc(i1,j1,k),                                     &
+     &         loc_id%node_id_lc(i1,j1,k),                              &
      &         c_fil_nod%inod_f_dist_xy(ij,i,j,k,1:2)
           write(50,'(1p10E25.15e3)')                                    &
      &        (c_fil_nod%filter_c_xy(ij,i,j,k,ifil),ifil=1,             &
@@ -597,8 +601,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine check_neib_node_3d(c_fil_nod)
+       subroutine check_neib_node_3d(loc_id, c_fil_nod)
 !
+      type(local_node_id_cube), intent(in) :: loc_id
       type(filter_work_cubmesh), intent(in) :: c_fil_nod
 !
        integer(kind = kint) :: i, j, k
@@ -615,9 +620,10 @@
            i1 = c_fil_nod%inod_f_item_3d(ijk,i,j,k,1)
            j1 = c_fil_nod%inod_f_item_3d(ijk,i,j,k,2)
            k1 = c_fil_nod%inod_f_item_3d(ijk,i,j,k,3)
-          write(50,'(4i5,10i6)') k, j, i, ijk, node_id_lc(i,j,k),       &
+           write(50,'(4i5,10i6)')                                       &
+     &         k, j, i, ijk, loc_id%node_id_lc(i,j,k),                  &
      &         c_fil_nod%inod_f_item_3d(ijk,i,j,k,1:3),                 &
-     &         node_id_lc(i1,j1,k1),                                    &
+     &         loc_id%node_id_lc(i1,j1,k1),                             &
      &         c_fil_nod%inod_f_dist_3d(ijk,i,j,k,1:3)
           end do
          enddo

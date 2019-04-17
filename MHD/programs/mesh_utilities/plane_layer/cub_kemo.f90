@@ -96,6 +96,7 @@
       use t_filter_elength
       use t_neib_range_cube
       use t_cube_position
+      use t_local_node_id_cube
       use t_control_param_plane_mesh
       use t_filter_work_cubmesh
       use t_filter_data_4_plane
@@ -103,7 +104,6 @@
       use m_comm_data_cube_kemo
       use m_grp_data_cub_kemo
       use m_cube_files_data
-      use m_local_node_id_cube
       use m_ctl_data_4_cub_kemo
 !
       use set_neib_pe_cube
@@ -137,6 +137,7 @@
       type(size_of_each_cube), save :: c_each1
       type(vertical_position_cube), save :: c_vert1
       type(neib_range_cube), save :: nb_rng1
+      type(local_node_id_cube), save :: loc_id1
       type(gradient_model_data_type), save :: FEM_elen_c
       type(filterings_4_cubmesh), save :: c_fils
       type(filter_data_4_plane), save :: cube_fil1
@@ -182,7 +183,7 @@
 !
 ! ***** allocate nodal id table
 !
-      call allocate_node_informations(c_size1)
+      call alloc_node_informations(c_size1, loc_id1)
 !
       call allocate_communication_data(elm_type, c_size1)
 !
@@ -254,22 +255,23 @@
             call init_node_para_4_each_pe                               &
      &         (c_size1, ipe, jpe, kpe, nb_rng1)
             call set_offset_of_domain(c_size1, ipe, jpe, kpe, nb_rng1)
-            call set_node(c_size1, c_each1, c_vert1, nb_rng1, ipe, jpe)
+            call set_node                                               &
+     &         (c_size1, c_each1, c_vert1, nb_rng1, ipe, jpe, loc_id1)
 !
 ! ..... write 2.2 element (connection)
 !
-            call set_ele_connect(c_size1, c_each1, nb_rng1,             &
+            call set_ele_connect(c_size1, c_each1, nb_rng1, loc_id1,    &
      &          elm_type, ipe, jpe)
 !
 ! ..... write 3.import / export information
 !
 ! ***** set and write import nodes
 !                                     .... count nodes 
-            call set_import_data(c_size1, nb_rng1, ipe, jpe)
+            call set_import_data(c_size1, nb_rng1, loc_id1, ipe, jpe)
 !
 ! ***** set and write export nodes
 !                                     .... count nodes 
-            call set_export_data(c_size1, nb_rng1, ipe, jpe)
+            call set_export_data(c_size1, nb_rng1, loc_id1, ipe, jpe)
 !
             call sort_communication_table
 !
@@ -285,7 +287,7 @@
             call count_node_group                                       &
      &       (c_size1, elm_type, c_each1%nx, c_each1%ny, ipe, jpe, kpe)
             call write_node_group                                       &
-     &         (c_size1, c_each1%nx, c_each1%ny, c_each1%nz,            &
+     &         (c_size1, loc_id1, c_each1%nx, c_each1%ny, c_each1%nz,   &
      &          ipe, jpe, kpe)
 !
 !    output element group
@@ -314,8 +316,9 @@
      &           (c_size1, c_each1, c_fils%c_fil_ele)
 !
               write(*,*) 'neighboring_node'
-              call neighboring_node(pe_id, cube_p1, c_size1, c_each1,   &
-     &            nb_rng1, cube_fil1, FEM_elen_c, c_fils%c_fil_nod)
+              call neighboring_node                                     &
+     &           (pe_id, cube_p1, c_size1, c_each1, nb_rng1, loc_id1,   &
+     &            cube_fil1, FEM_elen_c, c_fils%c_fil_nod)
 !
               write(*,*) 'deallocate_work_4_filter_ele'
               call dealloc_work_4_filter_nod(c_fils%c_fil_ele)
@@ -328,7 +331,7 @@
 !
             write(*,*) 'reset_communication_data'
             call reset_communication_data
-            call reset_node_info
+            call reset_node_info(loc_id1)
             call reset_cube_ele_group_id
             call reset_work_4_filter_nod(c_fils%c_fil_nod)
 !
