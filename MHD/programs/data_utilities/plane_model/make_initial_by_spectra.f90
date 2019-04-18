@@ -13,6 +13,7 @@
       use t_time_data
       use t_mesh_data_4_merge
       use t_size_of_cube
+      use t_ctl_data_plane_fft
 !
       use m_constants
       use m_file_format_switch
@@ -20,7 +21,6 @@
       use m_setting_4_ini
       use m_set_new_spectr
       use m_spectr_4_ispack
-      use m_control_plane_fft
       use count_number_with_overlap
       use set_plane_spectr_file_head
       use set_list_4_FFT
@@ -35,6 +35,7 @@
       implicit    none
 !
 !
+      type(ctl_data_plane_fft), save :: pfft_c1
       type(field_IO_params), save ::  plane_mesh_file
       type(merged_mesh), save :: mgd_mesh_pm
       type(size_of_cube), save :: c_size1
@@ -77,11 +78,12 @@
 !  set parameters for FFT
 !
       write(*,*) 'read_control_data_fft_plane'
-      call read_control_data_fft_plane
+      call read_control_data_fft_plane(pfft_c1)
 !
-      call s_set_plane_spectr_file_head(plane_mesh_file)
+      call s_set_plane_spectr_file_head(pfft_c1, plane_mesh_file)
       call set_parameters_rst_by_spec                                   &
-     &   (cube_c_fft, cube2nd_cf, c_size1, mgd_mesh_pm%num_pe,          &
+     &   (pfft_c1%new_p_plt, pfft_c1%t_zfft_ctl, pfft_c1%cube_c_fft,    &
+     &    pfft_c1%cube2nd_cf, c_size1, mgd_mesh_pm%num_pe,              &
      &    ist, ied, ifactor_step, ifactor_rst, dt_init, t_init,         &
      &    kx_org, ky_org, iz_org, plane_mesh_file)
 !

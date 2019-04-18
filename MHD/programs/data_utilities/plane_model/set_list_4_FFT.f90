@@ -4,13 +4,13 @@
 !      Written by H. Matsui
 !
 !!      subroutine set_parameters_4_FFT                                 &
-!!     &         (cube_c, c_size, num_pe, ist, ied, iint)
+!!     &         (t_zfft_ctl, cube_c, c_size, num_pe, ist, ied, iint)
 !!      subroutine set_parameters_rst_by_spec                           &
-!!     &          (cube_c, cube2nd_c, c_size, num_pe,                   &
-!!     &          ist, ied, ifactor_step, ifactor_rst, dt, t_init,      &
-!!     &          kx_org, ky_org, iz_org, mesh_file)
+!!     &         (new_p_plt, t_zfft_ctl, cube_c, cube2nd_c, c_size,     &
+!!     &          num_pe, ist, ied, ifactor_step, ifactor_rst,          &
+!!     &          dt, t_init, kx_org, ky_org, iz_org, mesh_file)
 !!      subroutine set_parameters_data_by_spec                          &
-!!     &         (cube_c, cube2nd_c, c_size, num_pe,                    &
+!!     &         (new_p_plt, cube_c, cube2nd_c, c_size, num_pe,         &
 !!     &          kx_org, ky_org, iz_org, mesh_file, ucd_param)
 !!        type(ctl_data_4_plane_model), intent(in) :: cube_c, cube2nd_c
 !!        type(size_of_cube), intent(inout) :: c_size
@@ -22,6 +22,8 @@
       use t_file_IO_parameter
       use t_size_of_cube
       use t_ctl_data_4_plane_model
+      use t_ctl_data_4_platforms
+      use t_ctl_data_4_time_steps
 !
       implicit none
 !
@@ -48,11 +50,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_parameters_4_FFT                                   &
-     &         (cube_c, c_size, num_pe, ist, ied, iint)
+     &         (t_zfft_ctl, cube_c, c_size, num_pe, ist, ied, iint)
 !
-      use m_control_plane_fft
       use m_spectr_4_ispack
 !
+      type(time_data_control), intent(in) :: t_zfft_ctl
       type(ctl_data_4_plane_model), intent(in) :: cube_c
 !
       type(size_of_cube), intent(inout) :: c_size
@@ -90,16 +92,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_parameters_rst_by_spec                             &
-     &          (cube_c, cube2nd_c, c_size, num_pe,                     &
-     &          ist, ied, ifactor_step, ifactor_rst, dt, t_init,        &
-     &          kx_org, ky_org, iz_org, mesh_file)
+     &          (new_p_plt, t_zfft_ctl, cube_c, cube2nd_c, c_size,      &
+     &          num_pe, ist, ied, ifactor_step, ifactor_rst,            &
+     &          dt, t_init, kx_org, ky_org, iz_org, mesh_file)
 !
-      use m_control_plane_fft
       use m_default_file_prefix
       use m_spectr_4_ispack
       use m_set_new_spectr
       use set_control_platform_data
 !
+      type(platform_data_control), intent(in) :: new_p_plt
+      type(time_data_control), intent(in) :: t_zfft_ctl
       type(ctl_data_4_plane_model), intent(in) :: cube_c, cube2nd_c
 !
       type(size_of_cube), intent(inout) :: c_size
@@ -184,10 +187,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_parameters_data_by_spec                            &
-     &         (cube_c, cube2nd_c, c_size, num_pe,                      &
+     &         (new_p_plt, cube_c, cube2nd_c, c_size, num_pe,           &
      &          kx_org, ky_org, iz_org, mesh_file, ucd_param)
 !
-      use m_control_plane_fft
       use m_default_file_prefix
       use m_spectr_4_ispack
       use m_set_new_spectr
@@ -196,6 +198,7 @@
       use set_parallel_file_name
       use set_control_platform_data
 !
+      type(platform_data_control), intent(in) :: new_p_plt
       type(ctl_data_4_plane_model), intent(in) :: cube_c, cube2nd_c
 !
       type(size_of_cube), intent(inout) :: c_size

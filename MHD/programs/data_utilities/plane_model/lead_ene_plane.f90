@@ -10,10 +10,10 @@
       use m_constants
 !
       use m_phys_labels
-      use m_control_plane_fft
 !
       use t_size_of_cube
       use t_mesh_data_4_merge
+      use t_ctl_data_plane_fft
 !
       use set_numnod_4_plane
       use set_spectr_file_name
@@ -22,6 +22,7 @@
 !
       implicit none
 !
+      type(ctl_data_plane_fft), save :: pfft_c1
       type(field_IO_params), save ::  plane_mesh_file
       type(merged_mesh), save :: mgd_mesh_pm
       type(size_of_cube), save :: c_size1
@@ -81,10 +82,10 @@
 !     read outline of mesh
 !
       write(*,*) 'read_control_data_fft_plane'
-      call read_control_data_fft_plane
-      call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_4_FFT                                         &
-     &   (cube_c_fft, c_size1, num_pe, ist, ied, iint)
+      call read_control_data_fft_plane(pfft_c1)
+      call s_set_plane_spectr_file_head(pfft_c1, plane_mesh_file)
+      call set_parameters_4_FFT(pfft_c1%t_zfft_ctl, pfft_c1%cube_c_fft, &
+     &    c_size1, mgd_mesh_pm%num_pe, ist, ied, iint)
 !
       call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)
 !

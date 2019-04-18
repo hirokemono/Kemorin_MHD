@@ -9,12 +9,12 @@
       use m_precision
 !
       use m_spectr_4_ispack
-      use m_control_plane_fft
 !
       use t_size_of_cube
       use t_time_data
       use t_ucd_data
       use t_mesh_data_4_merge
+      use t_ctl_data_plane_fft
 !
       use set_geometry_to_merge
       use set_numnod_4_plane
@@ -30,6 +30,7 @@
 ! . for local 
 !  ===========
 
+      type(ctl_data_plane_fft), save :: pfft_c1
       type(field_IO_params), save ::  plane_mesh_file, ucd_file_param
 !
       type(size_of_cube), save :: c_size1
@@ -56,13 +57,13 @@
 !  set parameters for results
 !
       write(*,*) 'read_control_data_fft_plane'
-      call read_control_data_fft_plane
+      call read_control_data_fft_plane(pfft_c1)
 !
 !     read outline of mesh
 !
-      call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_4_FFT                                         &
-     &   (cube_c_fft, c_size1, mgd_mesh_pm%num_pe, ist, ied, iint)
+      call s_set_plane_spectr_file_head(pfft_c1, plane_mesh_file)
+      call set_parameters_4_FFT(pfft_c1%t_zfft_ctl, pfft_c1%cube_c_fft, &
+     &    c_size1, mgd_mesh_pm%num_pe, ist, ied, iint)
 !
       call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)
 !
@@ -74,7 +75,7 @@
       write(*,*) 'init_ucd_data_4_FFT'
       call init_ucd_data_4_FFT(ist, ucd_file_param, fft_t_IO, fft_ucd)
 !
-      call set_fields_4_FFT(fld_zfft_ctl%field_ctl)
+      call set_fields_4_FFT(pfft_c1%fld_zfft_ctl%field_ctl)
 !
       write(*,*) 'internal_node, ele',                                  &
      &           mgd_mesh_pm%merge_tbl%inter_nod_m,                     &

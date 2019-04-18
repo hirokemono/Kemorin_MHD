@@ -6,13 +6,14 @@
       use set_spectr_file_name
 !
       use t_size_of_cube
-      use m_control_plane_fft
+      use t_ctl_data_plane_fft
       use set_list_4_FFT
       use set_plane_spectr_file_head
 !
       implicit none
 !
 !
+      type(ctl_data_plane_fft), save :: pfft_c1
       type(field_IO_params), save ::  plane_mesh_file
       type(size_of_cube), save :: c_size1
 !
@@ -44,10 +45,10 @@
 !     read outline of mesh
 !
       write(*,*) 'read_control_data_fft_plane'
-      call read_control_data_fft_plane
-      call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_4_FFT                                         &
-     &   (cube_c_fft, c_size1, num_pe, ist, ied, iint)
+      call read_control_data_fft_plane(pfft_c1)
+      call s_set_plane_spectr_file_head(pfft_c1, plane_mesh_file)
+      call set_parameters_4_FFT(pfft_c1%t_zfft_ctl, pfft_c1%cube_c_fft, &
+     &    c_size1, num_pe, ist, ied, iint)
 !
 !
        nx_2 = c_size1%nx_all/2 + 1

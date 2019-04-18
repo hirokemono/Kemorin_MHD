@@ -36,6 +36,7 @@
       use t_file_IO_parameter
       use t_mesh_data_4_merge
       use t_ctl_data_4_cub_kemo
+      use t_ctl_data_plane_fft
       use t_control_param_plane_mesh
       use t_size_of_cube
 !
