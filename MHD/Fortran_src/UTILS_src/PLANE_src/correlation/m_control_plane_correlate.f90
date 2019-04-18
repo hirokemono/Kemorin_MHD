@@ -29,6 +29,7 @@
       type(time_data_control), save :: t_pc_ctl
 !>        Structure for cube domain
       type(ctl_data_4_plane_model) :: cube_c_corr
+      type(ctl_data_4_plane_model) :: cube2nd_c
 !
       type(read_character_item), save :: cor_mesh_head_ctl
       type(read_character_item), save :: cor_mesh_fmt_ctl
@@ -52,6 +53,9 @@
       character(len=kchara), parameter :: hd_control = 'control'
       character(len=kchara), parameter                                  &
      &         :: hd_ref_plane_mesh_ctl = 'reference_plane_mesh_ctl'
+!
+      character(len=kchara), parameter                                  &
+     &             :: hd_plane_def = 'plane_mesh_ctl'
 !
       integer (kind=kint) :: i_hard =    0
       integer (kind=kint) :: i_model = 0
@@ -89,7 +93,7 @@
       private :: hd_udt_head_ctl,  hd_ref_udt_head_ctl
       private :: hd_model, hd_control, i_model, i_control
       private :: hd_phys_values, i_phys_values
-      private :: hd_time_step, i_tstep
+      private :: hd_time_step, i_tstep, hd_plane_def
 !
       private :: read_cor_plane_control_data
       private :: read_correlate_file_heads
@@ -118,13 +122,8 @@
 !
        subroutine read_cor_plane_control_data
 !
-      use m_ctl_data_2nd_plane
-!
-!
       if(right_begin_flag(hd_cor_plane_ctl) .eq. 0) return
       if (i_cor_plane_ctl .gt. 0) return
-!
-      hd_2nd_plane_def = hd_ref_plane_mesh_ctl
 !
       do
         call load_ctl_label_and_line
@@ -138,8 +137,9 @@
         call read_merge_field_data
         call read_merge_step_data
 !
-        call read_plane_model_param_ctl(cube_c_corr)
-        call read_2nd_plane_model_param_ctl
+        call read_plane_model_param_ctl(hd_plane_def, cube_c_corr)
+        call read_plane_model_param_ctl                                 &
+     &     (hd_ref_plane_mesh_ctl, cube2nd_c)
       end do
 !
       end subroutine read_cor_plane_control_data

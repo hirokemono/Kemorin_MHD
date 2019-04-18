@@ -32,6 +32,7 @@
 !
 !>      Structure for cube domain
       type(ctl_data_4_plane_model) :: cube_c_fft
+      type(ctl_data_4_plane_model) :: cube2nd_cf
 !
       type(read_character_item), save :: plane_spectr_mode_head_ctl
       type(read_character_item), save :: plane_spectr_data_head_ctl
@@ -48,6 +49,12 @@
       integer (kind=kint) :: i_model = 0
 !
 !  label for entry for control section
+!
+      character(len=kchara), parameter                                  &
+     &             :: hd_plane_def = 'plane_mesh_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_2nd_plane_def = 'new_plane_mesh_ctl'
+
       character(len=kchara), parameter :: hd_control = 'control'
       integer (kind=kint) :: i_control = 0
 !
@@ -91,7 +98,7 @@
       private :: hd_model, hd_control, i_model, i_control
       private :: hd_new_data, i_new_data
       private :: hd_phys_values, i_phys_values
-      private :: hd_time_step, i_tstep
+      private :: hd_time_step, i_tstep, hd_plane_def
 !
       private :: read_fft_plane_control_data
       private :: read_merge_field_data, read_merge_step_data
@@ -121,9 +128,6 @@
 !
       subroutine read_fft_plane_control_data
 !
-      use m_ctl_data_2nd_plane
-!
-!
       if(right_begin_flag(hd_fft_plane_ctl) .eq. 0) return
       if (i_fft_plane_ctl .gt. 0) return
       do
@@ -140,8 +144,8 @@
         call read_merge_field_data
         call read_merge_step_data
 !
-        call read_plane_model_param_ctl(cube_c_fft)
-        call read_2nd_plane_model_param_ctl
+        call read_plane_model_param_ctl(hd_plane_def, cube_c_fft)
+        call read_plane_model_param_ctl(hd_2nd_plane_def, cube2nd_cf)
       end do
 !
       end subroutine read_fft_plane_control_data

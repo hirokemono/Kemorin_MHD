@@ -87,6 +87,8 @@
      &                    :: hd_platform = 'data_files_def'
       character(len=kchara), parameter                                  &
      &                    :: hd_l_filter_ctl = 'line_filter_ctl'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_plane_def = 'plane_mesh_ctl'
 !
 !   2nd level for filter data
 !
@@ -111,7 +113,7 @@
 !
       private :: read_plane_mesh_ctl_data, read_z_filter_mesh_ctl
 !
-      private :: hd_filter_fnames, i_filter_fnames
+      private :: hd_filter_fnames, i_filter_fnames, hd_plane_def
 !
 !  ---------------------------------------------------------------------
 !
@@ -162,7 +164,7 @@
         call read_filter_fnames_control                                 &
      &     (hd_filter_fnames, i_filter_fnames, cubmesh_c%ffile_cub_ctl)
 !
-        call read_plane_model_param_ctl(cubmesh_c%cube_c)
+        call read_plane_model_param_ctl(hd_plane_def, cubmesh_c%cube_c)
         call read_z_filter_mesh_ctl(cubmesh_c)
       end do
 !

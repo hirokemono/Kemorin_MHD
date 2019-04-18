@@ -40,10 +40,6 @@
         integer(kind=kint) :: i_plane_def = 0
       end type ctl_data_4_plane_model
 !
-!   label for entry
-!
-      character(len=kchara), parameter :: hd_plane_def = 'plane_mesh_ctl'
-!
 !   4th level for grids
 !
       character(len=kchara), parameter                                  &
@@ -59,7 +55,6 @@
       character(len=kchara), parameter                                  &
      &       :: hd_horizontal_grid_ctl = 'horizontal_grid_ctl'
 !
-      private :: hd_plane_def
       private :: hd_nnod_plane_ctl, hd_ndomain_plane_ctl
       private :: hd_num_of_sleeve_ctl, hd_plane_size_ctl
       private :: hd_unit_len_plane_ctl, hd_horizontal_grid_ctl
@@ -70,21 +65,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_plane_model_param_ctl(cube_c)
+      subroutine read_plane_model_param_ctl(hd_block, cube_c)
 !
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f
 !
+      character(len=kchara), intent(in) :: hd_block
       type(ctl_data_4_plane_model), intent(inout) :: cube_c
 !
 !
-      if(right_begin_flag(hd_plane_def) .eq. 0) return
+      if(right_begin_flag(hd_block) .eq. 0) return
       if(cube_c%i_plane_def .gt. 0) return
       do
         call load_ctl_label_and_line
 !
-        cube_c%i_plane_def = find_control_end_flag(hd_plane_def)
+        cube_c%i_plane_def = find_control_end_flag(hd_block)
         if(cube_c%i_plane_def .gt. 0) exit
 !
 !

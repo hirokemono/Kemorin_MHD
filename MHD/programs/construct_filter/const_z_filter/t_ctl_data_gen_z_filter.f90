@@ -48,9 +48,11 @@
      &         :: hd_filter_head_ctl =  'filter_file_header'
       character(len=kchara), parameter                                  &
      &         :: hd_ip_smp_z_ctl =     'num_smp_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_plane_def = 'plane_mesh_ctl'
 !
 !
-      private :: hd_ip_smp_z_ctl, hd_filter_head_ctl
+      private :: hd_ip_smp_z_ctl, hd_filter_head_ctl, hd_plane_def
       private :: read_ctl_z_filter_ctl_data
 !
 !  ---------------------------------------------------------------------
@@ -100,7 +102,8 @@
         if(i_filter_control .gt. 0) exit
 !
 !
-        call read_plane_model_param_ctl(z_filter_ctl%cube_c)
+        call read_plane_model_param_ctl                                 &
+     &     (hd_plane_def, z_filter_ctl%cube_c)
         call read_filter_param_ctl(z_filter_ctl%gen_f_ctl)
 !
 !

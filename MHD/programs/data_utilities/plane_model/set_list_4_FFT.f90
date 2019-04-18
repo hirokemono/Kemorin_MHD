@@ -5,12 +5,14 @@
 !
 !!      subroutine set_parameters_4_FFT                                 &
 !!     &         (cube_c, c_size, num_pe, ist, ied, iint)
-!!      subroutine set_parameters_rst_by_spec(cube_c, c_size, num_pe,   &
+!!      subroutine set_parameters_rst_by_spec                           &
+!!     &          (cube_c, cube2nd_c, c_size, num_pe,                   &
 !!     &          ist, ied, ifactor_step, ifactor_rst, dt, t_init,      &
 !!     &          kx_org, ky_org, iz_org, mesh_file)
-!!      subroutine set_parameters_data_by_spec(cube_c, c_size, num_pe,  &
+!!      subroutine set_parameters_data_by_spec                          &
+!!     &         (cube_c, cube2nd_c, c_size, num_pe,                    &
 !!     &          kx_org, ky_org, iz_org, mesh_file, ucd_param)
-!!        type(ctl_data_4_plane_model), intent(in) :: cube_c
+!!        type(ctl_data_4_plane_model), intent(in) :: cube_c, cube2nd_c
 !!        type(size_of_cube), intent(inout) :: c_size
 !!        type(field_IO_params), intent(inout) :: ucd_param
 !
@@ -87,18 +89,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_parameters_rst_by_spec(cube_c, c_size, num_pe,     &
+      subroutine set_parameters_rst_by_spec                             &
+     &          (cube_c, cube2nd_c, c_size, num_pe,                     &
      &          ist, ied, ifactor_step, ifactor_rst, dt, t_init,        &
      &          kx_org, ky_org, iz_org, mesh_file)
 !
       use m_control_plane_fft
-      use m_ctl_data_2nd_plane
       use m_default_file_prefix
       use m_spectr_4_ispack
       use m_set_new_spectr
       use set_control_platform_data
 !
-      type(ctl_data_4_plane_model), intent(in) :: cube_c
+      type(ctl_data_4_plane_model), intent(in) :: cube_c, cube2nd_c
 !
       type(size_of_cube), intent(inout) :: c_size
       type(field_IO_params), intent(inout) ::  mesh_file
@@ -115,8 +117,10 @@
       write(*,*) 'nnod_plane_ctl     ', cube_c%nnod_plane_ctl%intvalue
       write(*,*) 'ndomain_plane_ctl  ',                                 &
      &          cube_c%ndomain_plane_ctl%intvalue
-      write(*,*) 'nnod_plane2_ctl    ', nnod_plane2_ctl%intvalue
-      write(*,*) 'ndomain_plane2_ctl ', ndomain_plane2_ctl%intvalue
+      write(*,*) 'nnod_plane2_ctl    ',                                 &
+     &          cube2nd_c%nnod_plane_ctl%intvalue
+      write(*,*) 'ndomain_plane2_ctl ',                                 &
+     &          cube2nd_c%ndomain_plane_ctl%intvalue
 !
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, new_p_plt, mesh_file)
@@ -135,15 +139,15 @@
       ky_org = ky_max
       iz_org = ky_max
 !
-      c_size%nx_all = nnod_plane2_ctl%intvalue(1)
-      c_size%ny_all = nnod_plane2_ctl%intvalue(2)
-      c_size%nz_all = nnod_plane2_ctl%intvalue(3)
+      c_size%nx_all = cube2nd_c%nnod_plane_ctl%intvalue(1)
+      c_size%ny_all = cube2nd_c%nnod_plane_ctl%intvalue(2)
+      c_size%nz_all = cube2nd_c%nnod_plane_ctl%intvalue(3)
 !
       nnod_new_k_org_z = kx_max * ky_max * c_size%nz_all
 !
-      num_pe =  ndomain_plane2_ctl%intvalue(1)                          &
-     &        * ndomain_plane2_ctl%intvalue(2)                          &
-     &        * ndomain_plane2_ctl%intvalue(3)
+      num_pe =  cube2nd_c%ndomain_plane_ctl%intvalue(1)                 &
+     &        * cube2nd_c%ndomain_plane_ctl%intvalue(2)                 &
+     &        * cube2nd_c%ndomain_plane_ctl%intvalue(3)
 !
       ist = 0
       if(t_zfft_ctl%i_step_init_ctl%iflag .gt. 0) then
@@ -179,11 +183,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_parameters_data_by_spec(cube_c, c_size, num_pe,    &
+      subroutine set_parameters_data_by_spec                            &
+     &         (cube_c, cube2nd_c, c_size, num_pe,                      &
      &          kx_org, ky_org, iz_org, mesh_file, ucd_param)
 !
       use m_control_plane_fft
-      use m_ctl_data_2nd_plane
       use m_default_file_prefix
       use m_spectr_4_ispack
       use m_set_new_spectr
@@ -192,7 +196,7 @@
       use set_parallel_file_name
       use set_control_platform_data
 !
-      type(ctl_data_4_plane_model), intent(in) :: cube_c
+      type(ctl_data_4_plane_model), intent(in) :: cube_c, cube2nd_c
 !
       type(size_of_cube), intent(inout) :: c_size
       integer, intent(inout) :: num_pe
@@ -204,8 +208,10 @@
       write(*,*) 'nnod_plane_ctl:     ', cube_c%nnod_plane_ctl%intvalue
       write(*,*) 'ndomain_plane_ctl:  ',                                &
      &          cube_c%ndomain_plane_ctl%intvalue
-      write(*,*) 'nnod_plane2_ctl:    ', nnod_plane2_ctl%intvalue
-      write(*,*) 'ndomain_plane2_ctl: ', ndomain_plane2_ctl%intvalue
+      write(*,*) 'nnod_plane2_ctl:    ',                                &
+     &           cube2nd_c%nnod_plane_ctl%intvalue
+      write(*,*) 'ndomain_plane2_ctl: ',                                &
+     &          cube2nd_c%ndomain_plane_ctl%intvalue
 !
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, new_p_plt, mesh_file)
@@ -221,13 +227,13 @@
       ky_org = cube_c%nnod_plane_ctl%intvalue(2)
       iz_org = cube_c%nnod_plane_ctl%intvalue(3)
 !
-      c_size%nx_all = nnod_plane2_ctl%intvalue(1)
-      c_size%ny_all = nnod_plane2_ctl%intvalue(2)
-      c_size%nz_all = nnod_plane2_ctl%intvalue(3)
+      c_size%nx_all = cube2nd_c%nnod_plane_ctl%intvalue(1)
+      c_size%ny_all = cube2nd_c%nnod_plane_ctl%intvalue(2)
+      c_size%nz_all = cube2nd_c%nnod_plane_ctl%intvalue(3)
 
-      num_pe =  ndomain_plane2_ctl%intvalue(1)                          &
-     &        * ndomain_plane2_ctl%intvalue(2)                          &
-     &        * ndomain_plane2_ctl%intvalue(3)
+      num_pe =  cube2nd_c%ndomain_plane_ctl%intvalue(1)                 &
+     &        * cube2nd_c%ndomain_plane_ctl%intvalue(2)                 &
+     &        * cube2nd_c%ndomain_plane_ctl%intvalue(3)
       nnod_new_k_org_z = kx_max * ky_max * c_size%nz_all
 !
       end subroutine set_parameters_data_by_spec
