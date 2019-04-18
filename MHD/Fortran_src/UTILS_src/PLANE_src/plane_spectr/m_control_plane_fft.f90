@@ -14,6 +14,7 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
       use t_ctl_data_4_fields
+      use t_ctl_data_4_plane_model
       use t_control_elements
       use skip_comment_f
 !
@@ -28,6 +29,9 @@
       type(field_control), save :: fld_zfft_ctl
 !>      Structure for time stepping control
       type(time_data_control), save :: t_zfft_ctl
+!
+!>      Structure for cube domain
+      type(ctl_data_4_plane_model) :: cube_c_fft
 !
       type(read_character_item), save :: plane_spectr_mode_head_ctl
       type(read_character_item), save :: plane_spectr_data_head_ctl
@@ -117,7 +121,6 @@
 !
       subroutine read_fft_plane_control_data
 !
-      use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
 !
 !
@@ -137,7 +140,7 @@
         call read_merge_field_data
         call read_merge_step_data
 !
-        call read_plane_model_param_ctl
+        call read_plane_model_param_ctl(cube_c_fft)
         call read_2nd_plane_model_param_ctl
       end do
 !

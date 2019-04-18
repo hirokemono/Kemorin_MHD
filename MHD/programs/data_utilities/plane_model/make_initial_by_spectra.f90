@@ -80,7 +80,8 @@
       call read_control_data_fft_plane
 !
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_rst_by_spec(c_size1, mgd_mesh_pm%num_pe,      &
+      call set_parameters_rst_by_spec                                   &
+     &   (cube_c_fft, c_size1, mgd_mesh_pm%num_pe,                      &
      &    ist, ied, ifactor_step, ifactor_rst, dt_init, t_init,         &
      &    kx_org, ky_org, iz_org, plane_mesh_file)
 !

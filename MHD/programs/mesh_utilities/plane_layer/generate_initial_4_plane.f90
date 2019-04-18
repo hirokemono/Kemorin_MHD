@@ -23,7 +23,6 @@
       use m_constants
       use m_phys_labels
       use m_setting_4_ini
-      use m_ctl_data_4_cub_kemo
       use set_parallel_file_name
       use mesh_IO_select
       use field_IO_select
@@ -36,6 +35,7 @@
       use t_field_data_IO
       use t_file_IO_parameter
       use t_mesh_data_4_merge
+      use t_ctl_data_4_cub_kemo
       use t_control_param_plane_mesh
       use t_size_of_cube
 !
@@ -45,6 +45,7 @@
       integer(kind=kint) :: ip, ierr, inod
       integer(kind=kint) :: np, jst, jed
 
+      type(ctl_data_4_cub_kemo), save :: cubmesh_c1
       type(ctl_param_plane_mesh), save :: cube_p1
       type(size_of_cube), save :: c_size1
 
@@ -65,8 +66,8 @@
 !
 !     read outline of mesh
 !
-      call read_control_data_plane_mesh
-      call s_set_ctl_data_plane_mesh(cube_p1, c_size1)
+      call read_control_data_plane_mesh(cubmesh_c1)
+      call s_set_ctl_data_plane_mesh(cubmesh_c1, cube_p1, c_size1)
 !
       call set_initial_components(mgd_mesh_pl%merged_fld)
       call reset_time_data(plane_t_IO)

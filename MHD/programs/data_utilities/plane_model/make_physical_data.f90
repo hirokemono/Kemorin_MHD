@@ -14,7 +14,6 @@
       use m_set_new_spectr
       use m_spectr_4_ispack
       use m_control_plane_fft
-      use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
 !
       use t_size_of_cube
@@ -77,9 +76,9 @@
 !
       call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT                                         &
-     &   (c_size1, mgd_mesh_pm%num_pe, ist, ied, iint)
-      call set_parameters_data_by_spec                                  &
-     &   (c_size1, mgd_mesh_pm%num_pe, kx_org, ky_org, iz_org,          &
+     &   (cube_c_fft, c_size1, mgd_mesh_pm%num_pe, ist, ied, iint)
+      call set_parameters_data_by_spec(cube_c_fft, c_size1,             &
+     &    mgd_mesh_pm%num_pe, kx_org, ky_org, iz_org,                   &
      &    plane_mesh_file, ucd_file_param)
       call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)
 !

@@ -46,7 +46,8 @@
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_4_FFT(c_size1, num_pe, ist, ied, iint)
+      call set_parameters_4_FFT                                         &
+     &   (cube_c_fft, c_size1, num_pe, ist, ied, iint)
 !
 !
        nx_2 = c_size1%nx_all/2 + 1

@@ -101,12 +101,11 @@
       use t_neib_range_cube
       use t_cube_position
       use t_local_node_id_cube
+      use t_ctl_data_4_cub_kemo
       use t_control_param_plane_mesh
       use t_filter_work_cubmesh
       use t_filter_data_4_plane
       use t_filter_elength
-
-      use m_ctl_data_4_cub_kemo
 !
       use set_cube_node_quad
       use set_cube_ele_connect
@@ -118,7 +117,7 @@
       use neib_edge_cube
       use merge_periodic_comm_table
       use mesh_data_IO
-use m_fem_mesh_labels
+      use m_fem_mesh_labels
 !
       implicit  none
 
@@ -137,6 +136,7 @@ use m_fem_mesh_labels
 ! ----------------------------------------------------------------------
 !  * variables
 
+      type(ctl_data_4_cub_kemo), save :: cubmesh_c1
       type(ctl_param_plane_mesh), save :: cube_p1
       type(size_of_cube), save :: c_size1
       type(size_of_each_cube), save :: c_each1
@@ -169,8 +169,8 @@ use m_fem_mesh_labels
 !
 ! ***** read nodal and subdomain division count
 !
-      call read_control_data_plane_mesh
-      call s_set_ctl_data_plane_mesh(cube_p1, c_size1)
+      call read_control_data_plane_mesh(cubmesh_c1)
+      call s_set_ctl_data_plane_mesh(cubmesh_c1, cube_p1, c_size1)
 !
       call set_plane_range_w_sleeve(elm_type, c_size1)
       call set_plane_resolution(c_size1)

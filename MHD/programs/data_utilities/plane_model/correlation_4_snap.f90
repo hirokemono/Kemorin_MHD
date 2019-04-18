@@ -71,8 +71,8 @@
 !
 !     read outline of mesh
 !
-      call s_set_plane_size_correlate                                   &
-     &   (c_size1, mgd_mesh_pm%num_pe, sec_mesh_pm%num_pe2)
+      call s_set_plane_size_correlate(cube_c_corr, c_size1,             &
+     &    mgd_mesh_pm%num_pe, sec_mesh_pm%num_pe2)
 !
       write(*,*) 'set_merged_node_and_element'
       call set_merged_node_and_element(cor_mesh_file, mgd_mesh_pm)

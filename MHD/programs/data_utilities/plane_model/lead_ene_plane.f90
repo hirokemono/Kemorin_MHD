@@ -84,7 +84,7 @@
       call read_control_data_fft_plane
       call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT                                         &
-     &   (c_size1, num_pe, ist, ied, iint)
+     &   (cube_c_fft, c_size1, num_pe, ist, ied, iint)
 !
       call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)
 !

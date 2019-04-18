@@ -16,6 +16,7 @@
       use m_precision
       use t_ctl_data_gen_filter
       use t_control_elements
+      use t_ctl_data_4_plane_model
 !
       implicit  none
 !
@@ -27,11 +28,11 @@
       type ctl_data_gen_z_filter
 !>        File  prefix for filter file
         type(read_character_item) :: z_filter_head_ctl
-!
 !>        Number of SMP
         type(read_integer_item) :: ip_smp_z_ctl
-!
         type(ctl_data_gen_filter) :: gen_f_ctl
+
+        type(ctl_data_4_plane_model) :: cube_c
       end type ctl_data_gen_z_filter
 !
 !
@@ -85,7 +86,6 @@
       use m_read_control_elements
 !
       use m_machine_parameter
-      use m_ctl_data_4_plane_model
       use skip_comment_f
 !
       type(ctl_data_gen_z_filter), intent(inout) :: z_filter_ctl
@@ -100,7 +100,7 @@
         if(i_filter_control .gt. 0) exit
 !
 !
-        call read_plane_model_param_ctl
+        call read_plane_model_param_ctl(z_filter_ctl%cube_c)
         call read_filter_param_ctl(z_filter_ctl%gen_f_ctl)
 !
 !

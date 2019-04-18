@@ -59,25 +59,27 @@
       write(*,*) 'np_smp', np_smp
 !
       call set_ctl_parameters_z_filter                                  &
-     &   (z_filter_ctl%gen_f_ctl, mat_crs, CG_param, DJDS_param)
+     &   (z_filter_ctl%cube_c, z_filter_ctl%gen_f_ctl,                  &
+     &    mat_crs, CG_param, DJDS_param)
 !
       end subroutine set_ctl_params_4_gen_z_filter
 !
 !   --------------------------------------------------------------------
 !
       subroutine set_ctl_parameters_z_filter                            &
-     &         (gen_f_ctl, mat_crs, CG_param, DJDS_param)
+     &         (cube_c, gen_f_ctl, mat_crs, CG_param, DJDS_param)
 !
       use m_constants
       use m_machine_parameter
       use m_commute_filter_z
-      use m_ctl_data_4_plane_model
       use m_spheric_constants
+      use t_ctl_data_4_plane_model
       use t_ctl_data_gen_filter
 !
       use set_parallel_file_name
       use skip_comment_f
 !
+      type(ctl_data_4_plane_model), intent(in) :: cube_c
       type(ctl_data_gen_filter), intent(in) :: gen_f_ctl
 !
       type(CRS_matrix), intent(inout) :: mat_crs
@@ -86,41 +88,45 @@
 !
       integer(kind = kint) :: i
       real(kind = kreal) :: pi
+      character(len = kchara) :: tmpchara
 !
 !
       pi = four * atan(one)
 !
 !    set plane layer parameters
 !
-      totalnod_x = nnod_plane_ctl%intvalue(1)
-      totalnod_y = nnod_plane_ctl%intvalue(2)
-      totalnod =   nnod_plane_ctl%intvalue(3)
+      totalnod_x = cube_c%nnod_plane_ctl%intvalue(1)
+      totalnod_y = cube_c%nnod_plane_ctl%intvalue(2)
+      totalnod =   cube_c%nnod_plane_ctl%intvalue(3)
 !
-      if(cmp_no_case(unit_len_plane_ctl%charavalue(1),'pi')) then
-        xsize = pi * plane_size_ctl%realvalue(1)
+      tmpchara = cube_c%unit_len_plane_ctl%charavalue(1)
+      if(cmp_no_case(tmpchara,'pi')) then
+        xsize = pi * cube_c%plane_size_ctl%realvalue(1)
       else
-        xsize = plane_size_ctl%realvalue(1)
+        xsize = cube_c%plane_size_ctl%realvalue(1)
       end if
 !
-      if(cmp_no_case(unit_len_plane_ctl%charavalue(2),'pi')) then
-        ysize = pi * plane_size_ctl%realvalue(2)
+      tmpchara = cube_c%unit_len_plane_ctl%charavalue(2)
+      if(cmp_no_case(tmpchara,'pi')) then
+        ysize = pi * cube_c%plane_size_ctl%realvalue(2)
       else
-        ysize = plane_size_ctl%realvalue(2)
+        ysize = cube_c%plane_size_ctl%realvalue(2)
       end if
 !
-      if(cmp_no_case(unit_len_plane_ctl%charavalue(3),'pi')) then
-        zsize = pi * plane_size_ctl%realvalue(3)
+      tmpchara = cube_c%unit_len_plane_ctl%charavalue(3)
+      if(cmp_no_case(tmpchara,'pi')) then
+        zsize = pi * cube_c%plane_size_ctl%realvalue(3)
       else
-        zsize = plane_size_ctl%realvalue(3)
+        zsize = cube_c%plane_size_ctl%realvalue(3)
       end if
 !
-      if      (cmp_no_case(horizontal_grid_ctl%charavalue,              &
+      if      (cmp_no_case(cube_c%horizontal_grid_ctl%charavalue,       &
      &                     label_equi     )) then
         iflag_grid = igrid_equidistance
-      else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
+      else if (cmp_no_case(cube_c%horizontal_grid_ctl%charavalue,       &
      &                     label_half_Cbyv)) then
         iflag_grid = igrid_half_Chebyshev
-      else if (cmp_no_case(horizontal_grid_ctl%charavalue,              &
+      else if (cmp_no_case(cube_c%horizontal_grid_ctl%charavalue,       &
      &                     label_Chebyshev)) then
         iflag_grid = igrid_Chebyshev
       end if
