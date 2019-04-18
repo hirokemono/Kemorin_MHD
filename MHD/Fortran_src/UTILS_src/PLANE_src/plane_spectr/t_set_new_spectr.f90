@@ -1,34 +1,36 @@
 !
-!!      module m_set_new_spectr
+!!      module t_set_new_spectr
 !!
-!!       subroutine allocate_z_compliment_info(nz_all)
-!!       subroutine allocate_work_array_4_r(num)
-!!       subroutine allocate_index_4_trans
+!!       subroutine alloc_z_compliment_info(nz_all)
+!!       subroutine alloc_work_array_4_r(num)
+!!       subroutine alloc_index_4_trans(npl_spec)
 !!
-!!       subroutine set_new_spectr(nx_all, ny_all, nz_all)
+!!       subroutine set_new_spectr(nx_all, ny_all, nz_all, npl_spec)
 !!
-!!       subroutine deallocate_work_array_4_r
-!!       subroutine deallocate_index_4_trans
+!!       subroutine dealloc_work_array_4_r(npl_spec)
+!!       subroutine dealloc_index_4_trans(npl_spec)
 !
-      module m_set_new_spectr
+      module t_set_new_spectr
 !
       use m_precision
       use m_constants
 !
       implicit none
 !
-      integer(kind=kint ) :: ncomp_nsp
+      type new_plane_spectr
+        integer(kind=kint ) :: ncomp_nsp
 !
-      integer(kind=kint ) :: nnod_new_k_org_z
+        integer(kind=kint ) :: nnod_new_k_org_z
 !
-      real(kind=kreal), dimension(:,:), allocatable:: work_array
-      real(kind=kreal), dimension(:,:), allocatable:: new_spectr
+        real(kind=kreal), allocatable:: work_array(:,:)
+        real(kind=kreal), allocatable:: new_spectr(:,:)
 !
-      integer(kind=kint), dimension(:)  , allocatable  ::  idx_field
-      integer(kind=kint), dimension(:)  , allocatable  ::  idx_adams
+        integer(kind=kint), allocatable  ::  idx_field(:)
+        integer(kind=kint), allocatable  ::  idx_adams(:)
 !
-      real   (kind=kreal), dimension(:), allocatable    ::  z_1
-      integer(kind=kint ), dimension(:), allocatable    ::  iz_1
+        real   (kind=kreal), allocatable    ::  z_1(:)
+        integer(kind=kint ), allocatable    ::  iz_1(:)
+      end type new_plane_spectr
 !
       private :: set_new_spectr_xsys, set_new_spectr_xsye
       private :: set_new_spectr_xsyl, set_new_spectr_xeys
@@ -42,86 +44,93 @@
 !
 !  --------------------------------------------------------------------
 !
-       subroutine allocate_z_compliment_info(nz_all)
+       subroutine alloc_z_compliment_info(nz_all, npl_spec)
 !
-       integer(kind=kint ) :: nz_all
+       integer(kind=kint), intent(in) :: nz_all
+       type(new_plane_spectr), intent(inout) :: npl_spec
 !
-       allocate( z_1(nz_all) )
-       allocate( iz_1(nz_all) )
+       allocate( npl_spec%z_1(nz_all) )
+       allocate( npl_spec%iz_1(nz_all) )
 !
-       z_1 =  zero
-       iz_1 = 0
+       npl_spec%z_1 =  zero
+       npl_spec%iz_1 = 0
 !
-       end subroutine allocate_z_compliment_info
+       end subroutine alloc_z_compliment_info
 !
 !  --------------------------------------------------------------------
 !
-       subroutine allocate_work_array_4_r(num)
+       subroutine alloc_work_array_4_r(num, npl_spec)
 !
-       integer(kind=kint ) :: num
+       integer(kind = kint), intent(in) :: num
+       type(new_plane_spectr), intent(inout) :: npl_spec
 !
-!       write(*,*) 'numnod, ncomp_nsp', numnod, ncomp_nsp
+       integer(kind = kint) :: n1
 !
-       allocate ( new_spectr(num, ncomp_nsp) )
-       allocate ( work_array(nnod_new_k_org_z,ncomp_nsp) )
+!       write(*,*) 'numnod, ncomp_nsp', numnod, npl_spec%ncomp_nsp
 !
-       new_spectr = zero
-       work_array = zero
+       allocate ( npl_spec%new_spectr(num, npl_spec%ncomp_nsp) )
+       n1 = npl_spec%nnod_new_k_org_z
+       allocate ( npl_spec%work_array(n1,npl_spec%ncomp_nsp) )
 !
-       end subroutine allocate_work_array_4_r
+       npl_spec%new_spectr = zero
+       npl_spec%work_array = zero
 !
-!  ---------------------------------------------------------------------
-!
-       subroutine allocate_index_4_trans
-!
-!
-       allocate ( idx_field(ncomp_nsp) )
-       allocate ( idx_adams(ncomp_nsp) )
-!
-       idx_field = 0
-       idx_adams = 0
-!
-       end subroutine allocate_index_4_trans
+       end subroutine alloc_work_array_4_r
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr(nx_all, ny_all, nz_all)
+       subroutine alloc_index_4_trans(npl_spec)
+!
+       type(new_plane_spectr), intent(inout) :: npl_spec
+!
+       allocate ( npl_spec%idx_field(npl_spec%ncomp_nsp) )
+       allocate ( npl_spec%idx_adams(npl_spec%ncomp_nsp) )
+!
+       npl_spec%idx_field = 0
+       npl_spec%idx_adams = 0
+!
+       end subroutine alloc_index_4_trans
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_new_spectr(nx_all, ny_all, nz_all, npl_spec)
 !
       use m_spectr_4_ispack
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+      type(new_plane_spectr), intent(inout) :: npl_spec
 !
       if (nx_all .lt. kx_max) then
        if (ny_all .lt. ky_max) then
-        call set_new_spectr_xsys(nx_all, ny_all, nz_all)
+        call set_new_spectr_xsys(nx_all, ny_all, nz_all, npl_spec)
         write(*,*) 'set_new_spectr_xsys finish'
        else if (ny_all .eq. ky_max) then
-        call set_new_spectr_xsye(nx_all, ny_all, nz_all)
+        call set_new_spectr_xsye(nx_all, ny_all, nz_all, npl_spec)
         write(*,*) 'set_new_spectr_xsye finish'
        else
-        call set_new_spectr_xsyl(nx_all, ny_all, nz_all)
+        call set_new_spectr_xsyl(nx_all, ny_all, nz_all, npl_spec)
         write(*,*) 'set_new_spectr_xsyl finish'
        end if
       else if (nx_all .eq. kx_max) then
        if (ny_all .lt. ky_max) then
-        call set_new_spectr_xeys(nx_all, ny_all, nz_all)
+        call set_new_spectr_xeys(nx_all, ny_all, nz_all, npl_spec)
         write(*,*) 'set_new_spectr_xeys finish'
        else if (ny_all .eq. ky_max) then
-        call set_new_spectr_xeye(nx_all, ny_all, nz_all)
+        call set_new_spectr_xeye(nx_all, ny_all, nz_all, npl_spec)
         write(*,*) 'set_new_spectr_xeye finish'
        else
-        call set_new_spectr_xeyl(nx_all, ny_all, nz_all)
+        call set_new_spectr_xeyl(nx_all, ny_all, nz_all, npl_spec)
         write(*,*) 'set_new_spectr_xeyl finish'
        end if
       else
        if (ny_all .lt. ky_max) then
-        call set_new_spectr_xlys(nx_all, ny_all, nz_all)
+        call set_new_spectr_xlys(nx_all, ny_all, nz_all, npl_spec)
         write(*,*) 'set_new_spectr_xlys finish'
        else if (ny_all .eq. ky_max) then
-        call set_new_spectr_xlye(nx_all, ny_all, nz_all)
+        call set_new_spectr_xlye(nx_all, ny_all, nz_all, npl_spec)
         write(*,*) 'set_new_spectr_xlye finish'
        else
-        call set_new_spectr_xlyl(nx_all, ny_all, nz_all)
+        call set_new_spectr_xlyl(nx_all, ny_all, nz_all, npl_spec)
         write(*,*) 'set_new_spectr_xlyl finish'
        end if
       end if
@@ -130,11 +139,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xsys(nx_all, ny_all, nz_all)
+      subroutine set_new_spectr_xsys(nx_all, ny_all, nz_all, npl_spec)
 !
       use m_spectr_4_ispack
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+       type(new_plane_spectr), intent(inout) :: npl_spec
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -143,28 +153,29 @@
 !
 !
       write(*,*) 'total_spectr', num_spectr*num_fft
-      write(*,*) 'total_grid', ncomp_nsp, nx_all*ny_all*nz_all
+      write(*,*) 'total_grid', npl_spec%ncomp_nsp, nx_all*ny_all*nz_all
 !
-      do i = 1, ncomp_nsp
+      do i = 1, npl_spec%ncomp_nsp
 !
         do iz = 1, nz_all
           inod = iz
           i1   = iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
         end do
 !
         do iz = 1, nz_all
           inod = nz_all + iz
           i1   = nx_all * nz_all + iz
           i3   = i1 + nz_all
-          new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)       &
+     &                                  - npl_spec%work_array(i3,i)
         end do
 !
         do ix = 3, nx_all
          do iz = 1, nz_all
           inod = (ix-1) * nz_all + iz
           i1   = (ix-1) * nz_all + iz
-          new_spectr(inod,i) =work_array(i1,i)
+          npl_spec%new_spectr(inod,i) =npl_spec%work_array(i1,i)
          end do
         end do
 !
@@ -172,7 +183,8 @@
           inod = (nx_all*nz_all) + iz
           i1   = (ny_all) * (ky_max*nz_all) + iz
           i3   = i1 + (ky_max*nz_all)
-          new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)       &
+     &                                  - npl_spec%work_array(i3,i)
         end do
 !
         do iz = 1, nz_all
@@ -181,8 +193,10 @@
           i3   = i1 + nz_all
           i5   = i1 + (ky_max*nz_all)
           i7   = i1 + (ky_max*nz_all) + nz_all
-          new_spectr(inod,i) =  work_array(i1,i) - work_array(i3,i)     &
-     &                        - work_array(i5,i) + work_array(i7,i)
+          npl_spec%new_spectr(inod,i) =  npl_spec%work_array(i1,i)      &
+     &                                  - npl_spec%work_array(i3,i)     &
+     &                                  - npl_spec%work_array(i5,i)     &
+     &                                  + npl_spec%work_array(i7,i)
         end do
 !
         do ix = 3, nx_all
@@ -190,7 +204,8 @@
           inod = (nx_all*nz_all) + (ix-1)*nz_all + iz
           i1   = (ny_all) * (ky_max*nz_all) + (ix-1) * nz_all + iz
           i3   = i1 + (ky_max*nz_all)
-          new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)       &
+     &                                  - npl_spec%work_array(i3,i)
          end do
         end do
 !
@@ -199,21 +214,22 @@
         do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + iz
           i1   = (iy-1) * (kx_max*nz_all) + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
         end do
 !
         do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (nx_all) * nz_all + iz
           i3   = i1 + nz_all
-          new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)       &
+     &                                  - npl_spec%work_array(i3,i)
         end do
 !
         do ix = 3, nx_all
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + (ix-1) * nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
@@ -226,11 +242,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xsye(nx_all, ny_all, nz_all)
+      subroutine set_new_spectr_xsye(nx_all, ny_all, nz_all, npl_spec)
 !
       use m_spectr_4_ispack
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+       type(new_plane_spectr), intent(inout) :: npl_spec
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -239,28 +256,29 @@
 !
 !
 !
-      do i = 1, ncomp_nsp
+      do i = 1, npl_spec%ncomp_nsp
 !
        do iy = 1, ny_all
 !
         do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + iz
           i1   = (iy-1) * (kx_max*nz_all) + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
         end do
 !
         do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (nx_all) * nz_all + iz
           i3   = i1 + nz_all
-          new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)       &
+     &                                  - npl_spec%work_array(i3,i)
         end do
 !
         do ix = 3, nx_all
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + (ix-1) * nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) =work_array(i1,i)
+          npl_spec%new_spectr(inod,i) =npl_spec%work_array(i1,i)
          end do
         end do
 !
@@ -271,11 +289,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xsyl(nx_all, ny_all, nz_all)
+      subroutine set_new_spectr_xsyl(nx_all, ny_all, nz_all, npl_spec)
 !
       use m_spectr_4_ispack
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+       type(new_plane_spectr), intent(inout) :: npl_spec
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -283,33 +302,34 @@
       integer(kind=kint) :: i1, i3
 !
 !
-      do i = 1, ncomp_nsp
+      do i = 1, npl_spec%ncomp_nsp
 !
         do iz = 1, nz_all
           inod = iz
           i1   = iz
-          new_spectr(inod,i) =work_array(i1,i)
+          npl_spec%new_spectr(inod,i) =npl_spec%work_array(i1,i)
         end do
 !
         do iz = 1, nz_all
           inod = nz_all + iz
           i1   = nx_all * nz_all + iz
           i3   = i1 + nz_all
-          new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)       &
+     &                                  - npl_spec%work_array(i3,i)
         end do
 !
         do ix = 3, nx_all
          do iz = 1, nz_all
           inod = (ix-1) * nz_all + iz
           i1   = (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
         do ix = 1, nx_all
          do iz = 1, nz_all
           inod = (nx_all*nz_all) + (ix-1)*nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
         end do
 !
@@ -318,21 +338,22 @@
         do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + iz
           i1   = (iy-1) * (kx_max*nz_all) + iz
-          new_spectr(inod,i) =work_array(i1,i)
+          npl_spec%new_spectr(inod,i) =npl_spec%work_array(i1,i)
         end do
 !
         do iz = 1, nz_all
           inod = (iy-1)*(nx_all*nz_all) + nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (nx_all) * nz_all + iz
           i3   = i1 + nz_all
-          new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)       &
+     &                                  - npl_spec%work_array(i3,i)
         end do
 !
         do ix = 3, nx_all
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + (ix-1) * nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
@@ -341,21 +362,22 @@
         do iz = 1, nz_all
           inod = (ky_max) * (nx_all*nz_all) + iz
           i1   =            (kx_max*nz_all) + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
         end do
 !
         do iz = 1, nz_all
           inod = (ky_max) * (nx_all*nz_all) + nz_all + iz
           i1   = (kx_max*nz_all) + (nx_all) * nz_all + iz
           i3   = i1 + nz_all
-          new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)       &
+     &                                  - npl_spec%work_array(i3,i)
         end do
 !
         do ix = 3, nx_all
          do iz = 1, nz_all
           inod = (ky_max)*(nx_all*nz_all) + (ix-1)*nz_all + iz
           i1   = (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
@@ -363,7 +385,7 @@
         do ix = 1, nx_all
          do iz = 1, nz_all
           inod = (iy-1)*(nx_all*nz_all) + (ix-1)*nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
         end do
        end do
@@ -375,11 +397,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xeys(nx_all, ny_all, nz_all)
+      subroutine set_new_spectr_xeys(nx_all, ny_all, nz_all, npl_spec)
 !
       use m_spectr_4_ispack
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+       type(new_plane_spectr), intent(inout) :: npl_spec
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -387,13 +410,13 @@
       integer(kind=kint) :: i1, i3
 !
 !
-      do i = 1, ncomp_nsp
+      do i = 1, npl_spec%ncomp_nsp
 !
         do ix = 1, nx_all
          do iz = 1, nz_all
           inod = (ix-1) * nz_all + iz
           i1   = (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
@@ -402,7 +425,8 @@
           inod = (nx_all*nz_all) + (ix-1)*nz_all + iz
           i1   = (ny_all) * (kx_max*nz_all) + (ix-1) * nz_all + iz
           i3   = i1 + (kx_max*nz_all)
-          new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)       &
+     &                                  - npl_spec%work_array(i3,i)
          end do
         end do
 !
@@ -412,7 +436,7 @@
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + (ix-1) * nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
 !
         end do
@@ -425,11 +449,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xeye(nx_all, ny_all, nz_all)
+      subroutine set_new_spectr_xeye(nx_all, ny_all, nz_all, npl_spec)
 !
       use m_spectr_4_ispack
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+       type(new_plane_spectr), intent(inout) :: npl_spec
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -437,7 +462,7 @@
       integer(kind=kint) :: i1
 !
 !
-      do i = 1, ncomp_nsp
+      do i = 1, npl_spec%ncomp_nsp
 !
        do iy = 1, ny_all
         do ix = 1, nx_all
@@ -445,7 +470,7 @@
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + (ix-1) * nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
 !
         end do
@@ -458,11 +483,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xeyl(nx_all, ny_all, nz_all)
+      subroutine set_new_spectr_xeyl(nx_all, ny_all, nz_all, npl_spec)
 !
       use m_spectr_4_ispack
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+       type(new_plane_spectr), intent(inout) :: npl_spec
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -470,20 +496,20 @@
       integer(kind=kint) :: i1
 !
 !
-      do i = 1, ncomp_nsp
+      do i = 1, npl_spec%ncomp_nsp
 !
         do ix = 1, nx_all
          do iz = 1, nz_all
           inod = (ix-1) * nz_all + iz
           i1   = (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
         do ix = 1, nx_all
          do iz = 1, nz_all
           inod = (nx_all*nz_all) + (ix-1)*nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
         end do
 !
@@ -493,7 +519,7 @@
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + (ix-1) * nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
 !
         end do
@@ -503,7 +529,7 @@
          do iz = 1, nz_all
           inod = ky_max*(nx_all*nz_all) + (ix-1)*nz_all + iz
           i1   = (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
@@ -513,7 +539,7 @@
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + (ix-1)*nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
 !
         end do
@@ -526,11 +552,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xlys(nx_all, ny_all, nz_all)
+      subroutine set_new_spectr_xlys(nx_all, ny_all, nz_all, npl_spec)
 !
       use m_spectr_4_ispack
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+       type(new_plane_spectr), intent(inout) :: npl_spec
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -538,37 +565,37 @@
       integer(kind=kint) :: i1, i3
 !
 !
-      do i = 1, ncomp_nsp
+      do i = 1, npl_spec%ncomp_nsp
 !
         do iz = 1, nz_all
           inod = iz
           i1   = iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
         end do
 !
         do iz = 1, nz_all
           inod = nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
         end do
 !
         do ix = 3, kx_max
          do iz = 1, nz_all
           inod = (ix-1)*nz_all + iz
           i1   = (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
          do iz = 1, nz_all
           inod = kx_max*nz_all + iz
           i1   =  nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
 !
         do ix = kx_max+2, nx_all
          do iz = 1, nz_all
           inod = (ix-1)*nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
         end do
 !
@@ -577,12 +604,13 @@
           inod = (nx_all*nz_all) + iz
           i1   = (ny_all) * (kx_max*nz_all) + iz
           i3   = i1 + (kx_max*nz_all)
-          new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)       &
+     &                                  - npl_spec%work_array(i3,i)
         end do
 !
         do iz = 1, nz_all
           inod = (nx_all*nz_all) + nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
         end do
 !
         do ix = 3, kx_max
@@ -590,7 +618,8 @@
           inod = (nx_all*nz_all) + (ix-1)*nz_all + iz
           i1   = (ny_all) * (kx_max*nz_all) + (ix-1) * nz_all + iz
           i3   = i1 + (kx_max*nz_all)
-          new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)       &
+     &                                 - npl_spec%work_array(i3,i)
          end do
         end do
 !
@@ -598,13 +627,14 @@
           inod = (nx_all*nz_all) + kx_max*nz_all + iz
           i1   = (ny_all) * (kx_max*nz_all) + nz_all + iz
           i3   = i1 + (kx_max*nz_all)
-          new_spectr(inod,i) = work_array(i1,i) - work_array(i3,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)       &
+     &                                 - npl_spec%work_array(i3,i)
          end do
 !
         do ix = kx_max+2, nx_all
          do iz = 1, nz_all
           inod = (nx_all*nz_all) + (ix-1)*nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
         end do
 !
@@ -613,32 +643,32 @@
         do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + iz
           i1   = (iy-1) * (kx_max*nz_all) + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
         end do
 !
         do iz = 1, nz_all
           inod = (iy-1)*(nx_all*nz_all) + nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
         end do
 !
         do ix = 3, kx_max
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + (ix-1) * nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + kx_max*nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
 !
         do ix = kx_max+2, nx_all
          do iz = 1, nz_all
           inod = (iy-1)*(nx_all*nz_all) + (ix-1)*nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
         end do
        end do
@@ -651,11 +681,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xlye(nx_all, ny_all, nz_all)
+      subroutine set_new_spectr_xlye(nx_all, ny_all, nz_all, npl_spec)
 !
       use m_spectr_4_ispack
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+       type(new_plane_spectr), intent(inout) :: npl_spec
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -663,39 +694,39 @@
       integer(kind=kint) :: i1
 !
 !
-      do i = 1, ncomp_nsp
+      do i = 1, npl_spec%ncomp_nsp
 !
        do iy = 1, ny_all
 !
         do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + iz
           i1   = (iy-1) * (kx_max*nz_all) + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
         end do
 !
         do iz = 1, nz_all
           inod = (iy-1)*(nx_all*nz_all) + nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
         end do
 !
         do ix = 3, kx_max
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + (ix-1)*nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + kx_max*nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
 !
         do ix = kx_max+2, nx_all
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
         end do
        end do
@@ -707,11 +738,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_spectr_xlyl(nx_all, ny_all, nz_all)
+      subroutine set_new_spectr_xlyl(nx_all, ny_all, nz_all, npl_spec)
 !
       use m_spectr_4_ispack
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+       type(new_plane_spectr), intent(inout) :: npl_spec
 !
       integer(kind=kint) :: i
       integer(kind=kint) :: inod
@@ -719,44 +751,44 @@
       integer(kind=kint) :: i1
 !
 !
-      do i = 1, ncomp_nsp
+      do i = 1, npl_spec%ncomp_nsp
 !
         do iz = 1, nz_all
           inod = iz
           i1   = iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
         end do
 !
         do iz = 1, nz_all
           inod = nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
         end do
 !
         do ix = 3, kx_max
          do iz = 1, nz_all
           inod = (ix-1) * nz_all + iz
           i1   = (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
          do iz = 1, nz_all
           inod = kx_max*nz_all + iz
           i1   = nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
 !
         do ix = kx_max+2, nx_all
          do iz = 1, nz_all
           inod = (ix-1)*nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
         end do
 !
         do ix = 1, nx_all
          do iz = 1, nz_all
           inod = (nx_all*nz_all) + (ix-1)*nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
         end do
 !
@@ -765,32 +797,32 @@
         do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + iz
           i1   = (iy-1) * (kx_max*nz_all) + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
         end do
 !
         do iz = 1, nz_all
           inod = (iy-1)*(nx_all*nz_all) + nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
         end do
 !
         do ix = 3, kx_max
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + (ix-1) * nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + kx_max*nz_all + iz
           i1   = (iy-1) * (kx_max*nz_all) + nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
 !
         do ix = kx_max+2, nx_all
          do iz = 1, nz_all
           inod = (iy-1) * (nx_all*nz_all) + (ix-1)*nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
         end do
        end do
@@ -798,32 +830,32 @@
         do iz = 1, nz_all
           inod = ky_max*(nx_all*nz_all) + iz
           i1   = (kx_max*nz_all) + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
         end do
 !
         do iz = 1, nz_all
           inod = ky_max*(nx_all*nz_all) + nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
         end do
 !
         do ix = 3, kx_max
          do iz = 1, nz_all
           inod = ky_max*(nx_all*nz_all) + (ix-1)*nz_all + iz
           i1   = (kx_max*nz_all) + (ix-1) * nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
         end do
 !
          do iz = 1, nz_all
           inod = ky_max * (nx_all*nz_all) + kx_max*nz_all + iz
           i1   = (kx_max*nz_all) + nz_all + iz
-          new_spectr(inod,i) = work_array(i1,i)
+          npl_spec%new_spectr(inod,i) = npl_spec%work_array(i1,i)
          end do
 !
         do ix = kx_max+2, nx_all
          do iz = 1, nz_all
           inod = (iy-1)*(nx_all*nz_all) + (ix-1)*nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
         end do
 !
@@ -832,7 +864,7 @@
         do ix = 1, nx_all
          do iz = 1, nz_all
           inod = (iy-1)*(nx_all*nz_all) + (ix-1)*nz_all + iz
-          new_spectr(inod,i) = zero
+          npl_spec%new_spectr(inod,i) = zero
          end do
         end do
        end do
@@ -844,24 +876,26 @@
 !
 !  --------------------------------------------------------------------
 !
-       subroutine deallocate_work_array_4_r
+       subroutine dealloc_work_array_4_r(npl_spec)
 !
+       type(new_plane_spectr), intent(inout) :: npl_spec
 !
-       deallocate ( new_spectr )
-       deallocate ( work_array )
+       deallocate ( npl_spec%new_spectr )
+       deallocate ( npl_spec%work_array )
 !
-       end subroutine deallocate_work_array_4_r
-!
-!  ---------------------------------------------------------------------
-!
-       subroutine deallocate_index_4_trans
-!
-!
-       deallocate ( idx_field )
-       deallocate ( idx_adams )
-!
-       end subroutine deallocate_index_4_trans
+       end subroutine dealloc_work_array_4_r
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_set_new_spectr
+       subroutine dealloc_index_4_trans(npl_spec)
+!
+       type(new_plane_spectr), intent(inout) :: npl_spec
+!
+       deallocate ( npl_spec%idx_field )
+       deallocate ( npl_spec%idx_adams )
+!
+       end subroutine dealloc_index_4_trans
+!
+!  ---------------------------------------------------------------------
+!
+      end module t_set_new_spectr
