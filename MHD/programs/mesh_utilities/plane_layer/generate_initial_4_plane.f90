@@ -24,7 +24,6 @@
       use m_phys_labels
       use m_setting_4_ini
       use m_ctl_data_4_cub_kemo
-      use m_cube_files_data
       use set_parallel_file_name
       use mesh_IO_select
       use field_IO_select
@@ -89,8 +88,8 @@
 !
 !    read mesh file
 !
-        call copy_mesh_format_and_prefix                                &
-     &     (mesh_file_header, id_ascii_file_fmt, cube_mesh_file)
+        call copy_mesh_format_and_prefix(cube_p1%mesh_file_prefix,      &
+     &      id_ascii_file_fmt, cube_mesh_file)
         call sel_read_geometry_size                                     &
      &     (cube_mesh_file, id_rank, mesh_IO_p, ierr)
         if(ierr .gt. 0) stop 'Mesh is wrong!!'

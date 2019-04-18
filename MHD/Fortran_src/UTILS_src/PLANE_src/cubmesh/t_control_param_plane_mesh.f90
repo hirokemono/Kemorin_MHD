@@ -5,6 +5,7 @@
 !
 !!      subroutine s_set_ctl_data_plane_mesh(c_size)
 !!        type(size_of_cube), intent(inout) :: c_size
+!!        type(ctl_param_plane_mesh), intent(inout) :: cube_p
 !
       module t_control_param_plane_mesh
 !
@@ -14,6 +15,10 @@
       implicit  none
 !
       type ctl_param_plane_mesh
+        character(len=kchara) :: mesh_file_prefix
+        character(len=kchara) :: filter_file_prefix
+        character(len=kchara) :: z_filter_prefix
+
         integer(kind = kint) :: iflag_filter = -1
 
         integer(kind = kint) :: iflag_ztype
@@ -31,7 +36,6 @@
       subroutine s_set_ctl_data_plane_mesh(cube_p, c_size)
 !
       use t_size_of_cube
-      use m_cube_files_data
       use m_ctl_data_4_plane_model
       use m_ctl_data_4_cub_kemo
       use m_spheric_constants
@@ -46,21 +50,23 @@
       pi = four * atan(one)
 !
       if (cubmesh_plt%mesh_file_prefix%iflag .gt. 0) then
-        mesh_file_header = cubmesh_plt%mesh_file_prefix%charavalue
+        cube_p%mesh_file_prefix                                         &
+     &     = cubmesh_plt%mesh_file_prefix%charavalue
       else
-        mesh_file_header = 'mesh/in'
+        cube_p%mesh_file_prefix = 'mesh/in'
       end if
 !
       if (ffile_cub_ctl%filter_head_ctl%iflag .eq. 1) then
-        filter_file_header = ffile_cub_ctl%filter_head_ctl%charavalue
+        cube_p%filter_file_prefix                                       &
+     &           = ffile_cub_ctl%filter_head_ctl%charavalue
       else
-        filter_file_header = 'mesh/filter_node_l'
+        cube_p%filter_file_prefix = 'mesh/filter_node_l'
       end if
 !
-      if (z_filter_head_ctl%iflag .eq. 1) then
-        z_filter_header = z_filter_head_ctl%charavalue
+      if(z_filter_head_ctl%iflag .eq. 1) then
+        cube_p%z_filter_prefix = z_filter_head_ctl%charavalue
       else
-        z_filter_header = 'filter_info'
+        cube_p%z_filter_prefix = 'filter_info'
       end if
 !
 !
@@ -145,12 +151,7 @@
       end if
 !
       cube_p%iflag_z_filter = 0
-!      write(*,*) ' Setting of vertical filter'
-!      call skip_comment(character_4_read, l_in)
-!      read (character_4_read, * )   cube_p%iflag_z_filter
-!      write(*,*) ' iflag_z_filter    = ',  cube_p%iflag_z_filter
-!
-!
+
 !
       if (omitting_value_ctl%iflag .gt. 0) then
         cube_p%eps_filter = omitting_value_ctl%realvalue
@@ -159,9 +160,10 @@
       end if
 !
 !
-      write(*,*) 'mesh_file_header:   ', trim(mesh_file_header)
-      write(*,*) 'filter_file_header: ', trim(filter_file_header)
-      write(*,*) 'z_filter_header:    ', trim(z_filter_header)
+      write(*,*) 'mesh_file_prefix:   ', trim(cube_p%mesh_file_prefix)
+      write(*,*) 'filter_file_prefix: ',                                &
+     &          trim(cube_p%filter_file_prefix)
+      write(*,*) 'z_filter_prefix:    ', trim(cube_p%z_filter_prefix)
 !
       write(*,'(a,1p3E25.15e3)') 'size of domain: ',                    &
      &         c_size%xsize, c_size%ysize, c_size%zsize

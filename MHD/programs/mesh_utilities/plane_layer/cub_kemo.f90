@@ -102,7 +102,7 @@
       use t_filter_work_cubmesh
       use t_filter_data_4_plane
 !
-      use m_cube_files_data
+      use cube_mesh_fiile_IO
       use m_ctl_data_4_cub_kemo
 !
       use set_cube_node
@@ -146,10 +146,10 @@ use m_fem_mesh_labels
       type(mesh_geometry), save :: mesh
       type(mesh_groups), save :: cube_groups
       type(communication_table), save :: comm
-      type(communication_table), save :: comm_IO
 !
       integer(kind=kint)  ::  ipe    , jpe    , kpe    , pe_id
       integer :: id_rank
+      integer(kind=kint ), parameter  ::  l_out = 10
 
       character(len= 8 )   ::  date
       character(len=10 )   ::  time
@@ -201,7 +201,7 @@ use m_fem_mesh_labels
          FEM_elen_c%filter_conf%nf_type = cube_p1%iflag_filter
          call alloc_filter_4_plane(c_size1%ndepth, c_size1%nz_all,      &
      &       FEM_elen_c%filter_conf%nf_type, cube_fil1)
-         call read_z_filter_info(cube_p1%iflag_ztype, c_size1,          &
+         call read_z_filter_info(cube_p1, c_size1,                      &
      &       FEM_elen_c%filter_conf%nf_type, cube_fil1)
 !      end if
 !
@@ -216,10 +216,6 @@ use m_fem_mesh_labels
 ! ***** open output file
 !
              id_rank = int(pe_id - 1)
-             write(penum,'(i4   )')  id_rank
-             penum_left = adjustl(penum)
-!
-             call open_mesh_file(id_rank, c_size1)
 !
 ! ***** set and write basic local model parameters
 !                                       .. pe nod per 1 line
@@ -228,18 +224,15 @@ use m_fem_mesh_labels
      &         (elm_type, kpe, c_size1, c_each1)
             call set_range_4_neighbour(ipe, jpe, kpe, c_size1, nb_rng1)
 !
+!
+! .....  1.parallel information (pe_id start from 0, not 1)
 !                                       .. set neighbor pe
             call set_neigbouring_plane                                  &
      &         (c_size1, nb_rng1, pe_id, ipe, jpe, comm)
 !
+            call sort_neighboring_pes(comm, mesh%nod_comm)
 !
-            call sort_neighboring_pes(comm, comm_IO)
-!
-! ..... write 1.parallel information (pe_id start from 0, not 1)
-!
-            call write_pe_data(l_out, pe_id, comm_IO)
-!
-! ..... write 2.mesh information (nodes and elements in partition)
+! .....  2.mesh information (nodes and elements in partition)
 !
             call set_range_4_nodeloop(c_size1, kpe, nb_rng1)
 !
@@ -251,17 +244,12 @@ use m_fem_mesh_labels
             call set_node(c_size1, c_each1, c_vert1, nb_rng1,           &
      &          ipe, jpe, loc_id1, mesh%node)
 !
-            write(l_out,'(a)', advance='NO') hd_fem_node()
-            call write_geometry_info(l_out, mesh%node)
-!
-! ..... write 2.2 element (connection)
+! .....  2.2 element (connection)
 !
             call set_ele_connect(c_size1, c_each1, nb_rng1, loc_id1,    &
      &          elm_type, ipe, jpe, mesh%ele)
-            write(l_out,'(a)', advance='NO') hd_fem_elem()
-            call write_element_info(l_out, mesh%ele)
 !
-! ..... write 3.import / export information
+! .....  3.import / export information
 ! ***** set and write import nodes
             call set_import_data                                        &
      &         (c_size1, nb_rng1, loc_id1, ipe, jpe, comm)
@@ -270,9 +258,9 @@ use m_fem_mesh_labels
             call set_export_data                                        &
      &         (c_size1, nb_rng1, loc_id1, ipe, jpe, comm)
 !
-            call sort_communication_table(comm, comm_IO)
+            call sort_communication_table(comm, mesh%nod_comm)
 !
-! ..... write 4.group information
+! .....  4.group information
             call const_node_group(c_size1, c_each1, loc_id1,            &
      &          ipe, jpe, kpe, cube_groups%nod_grp)
             call const_element_group                                    &
@@ -280,12 +268,14 @@ use m_fem_mesh_labels
             call const_surface_group                                    &
      &         (c_size1, c_each1, kpe, cube_groups%surf_grp)
 !
-            call write_communication_data(l_out, comm_IO)
-            call dealloc_comm_table(comm_IO)
-            call deallocate_ele_connect_type(mesh%ele)
-            call dealloc_node_geometry_base(mesh%node)
-!
+!       Mesh file output
+            call open_mesh_file(cube_p1%mesh_file_prefix,               &
+     &          l_out, id_rank, c_size1)
+            call write_geometry_data(l_out, pe_id-1, mesh)
             call write_mesh_groups(l_out, cube_groups)
+            close(l_out)
+!
+            call dealloc_mesh_geometry_base(mesh)
             call dealloc_groups_data(cube_groups)
 !
 !   construct filtering information
@@ -305,8 +295,6 @@ use m_fem_mesh_labels
 !                                       ... to next pe 
             write(*,*) 'change domain'
             pe_id = pe_id + 1
-
-            close(l_out)
 !
             call reset_node_info(loc_id1)
             call reset_work_4_filter_nod(c_fils%c_fil_nod)

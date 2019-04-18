@@ -4,13 +4,16 @@
 !     Written by Kemorin
 !
 !!      subroutine read_z_filter_info                                   &
-!!     &          (iflag_ztype, c_size, nf_type, cube_fil)
-!!       subroutine alloc_filter_4_plane                                &
-!!      &         (ndepth, nz_all, nf_type, cube_fil)
+!!     &         (cube_p, c_size, nf_type, cube_fil)
+!!         type(ctl_param_plane_mesh), intent(in) :: cube_p
+!!         type(size_of_cube), intent(in) :: c_size
+!!      subroutine alloc_filter_4_plane                                 &
+!!     &         (ndepth, nz_all, nf_type, cube_fil)
 !
       module t_filter_data_4_plane
 !
       use m_precision
+      use t_control_param_plane_mesh
 !
       implicit none
 !
@@ -166,23 +169,22 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_z_filter_info                                     &
-     &          (iflag_ztype, c_size, nf_type, cube_fil)
+     &         (cube_p, c_size, nf_type, cube_fil)
 !
       use t_size_of_cube
-      use m_cube_files_data
 !
       use set_parallel_file_name
       use skip_comment_f
 !
+      type(ctl_param_plane_mesh), intent(in) :: cube_p
       type(size_of_cube), intent(in) :: c_size
-      integer(kind = kint), intent(in) :: iflag_ztype
       integer(kind = kint), intent(in) :: nf_type
 !
       type(filter_data_4_plane), intent(inout) :: cube_fil
 !
       integer (kind = kint) :: kf, ifil, ifil0, i, j, itmp
 !
-      character(len=kchara) :: filtername
+      character(len=kchara) :: filtername, fname_tmp
       character(len=255) :: tmpchara
       integer (kind = kint), dimension(3) :: numnod_f
       real (kind = kreal), dimension(3) :: size_f
@@ -192,8 +194,8 @@
        do ifil = 1, nf_type
          ifil0 = ifil-1
 !
-         nb_name =    add_int_suffix(ifil0, z_filter_header)
-         filtername = add_dat_extension(nb_name)
+         fname_tmp =    add_int_suffix(ifil0, cube_p%z_filter_prefix)
+         filtername = add_dat_extension(fname_tmp)
          write(*,*) 'filter filte name: ', filtername
          open (filter_id, file=filtername)
 !
@@ -219,9 +221,9 @@
 !
          call skip_comment(tmpchara,filter_id)
          read(tmpchara,*) i_grid
-         if ( i_grid .ne. iflag_ztype ) then
+         if ( i_grid .ne. cube_p%iflag_ztype) then
           write(*,*) 'check grid spacing'
-          write(*,*)  i_grid, iflag_ztype
+          write(*,*)  i_grid, cube_p%iflag_ztype
           stop
          end if
 !

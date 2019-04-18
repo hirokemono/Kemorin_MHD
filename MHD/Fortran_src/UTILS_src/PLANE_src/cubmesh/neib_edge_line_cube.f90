@@ -30,11 +30,14 @@
 !
       use t_size_of_cube
       use t_local_node_id_cube
-      use m_cube_files_data
       use t_filter_work_cubmesh
       use set_parallel_file_name
 !
       implicit none
+!
+      integer(kind=kint ), parameter  ::  id_file = 19
+      character(len=kchara), parameter                                  &
+     &                      :: filter_edge_header = 'filter_edge_l'
 !
       integer(kind = kint) :: nneib_1d
       integer(kind = kint), allocatable :: iedge_neib_x(:)
@@ -45,7 +48,7 @@
       integer(kind = kint), allocatable :: iedge_f_d_y(:)
       integer(kind = kint), allocatable :: iedge_f_d_z(:)
 !
-      private :: nneib_1d
+      private :: nneib_1d, id_file, filter_edge_header
       private :: iedge_neib_x, iedge_neib_y, iedge_neib_z
       private :: iedge_f_d_x, iedge_f_d_y, iedge_f_d_z
 !
@@ -192,48 +195,48 @@
       type(size_of_each_cube), intent(in) :: c_each
 !
       integer (kind = kint) :: ist, ied, iedge, i
+      character(len=kchara) ::  fname
 !
 !
        fname = add_process_id(id_rank, filter_edge_header)
-       open (nb_out, file=nb_name)
+       open (id_file, file = fname)
 !
-       write(nb_out,'(a12)') '! num_edge:  '
-       write(nb_out,'(i16)') c_each%edgetot
-       write(nb_out,'(i16)')                                            &
+       write(id_file,'(a12)') '! num_edge:  '
+       write(id_file,'(i16)') c_each%edgetot
+       write(id_file,'(i16)')                                           &
      &        c_each%edgetot, c_each%edgetot, c_each%edgetot
-       write(nb_out,'(a12)') '! num_depth: '
-       write(nb_out,'(2i16)') c_size%ndep_1
+       write(id_file,'(a12)') '! num_depth: '
+       write(id_file,'(2i16)') c_size%ndep_1
 !
-       write(nb_out,'(a16)') '!  xi direction'
+       write(id_file,'(a16)') '!  xi direction'
        do iedge = 1, c_each%edgetot
          ist = c_size%ndep_1*(iedge- 1) + 1
          ied = c_size%ndep_1*iedge
 !
-         write(nb_out,'(10i16)') (iedge_f_d_x(i),  i = ist, ied)
-         write(nb_out,'(10i16)') (iedge_neib_x(i), i = ist, ied)
+         write(id_file,'(10i16)') (iedge_f_d_x(i),  i = ist, ied)
+         write(id_file,'(10i16)') (iedge_neib_x(i), i = ist, ied)
        end do
 !
-       write(nb_out,'(a16)') '!  eta direction'
+       write(id_file,'(a16)') '!  eta direction'
        do iedge = 1, c_each%edgetot
         ist = c_size%ndep_1*(iedge- 1) + 1
         ied = c_size%ndep_1*iedge
 !
-          write(nb_out,'(10i16)') (iedge_f_d_y(i),  i = ist, ied)
-          write(nb_out,'(10i16)') (iedge_neib_y(i), i = ist, ied)
+          write(id_file,'(10i16)') (iedge_f_d_y(i),  i = ist, ied)
+          write(id_file,'(10i16)') (iedge_neib_y(i), i = ist, ied)
 !
        end do
 !
-       write(nb_out,'(a16)') '!   zi direction'
+       write(id_file,'(a16)') '!   zi direction'
        do iedge = 1, c_each%edgetot
         ist = c_size%ndep_1*(iedge- 1) + 1
         ied = c_size%ndep_1*iedge
 !
-          write(nb_out,'(10i16)') (iedge_f_d_z(i),  i = ist, ied)
-          write(nb_out,'(10i16)') (iedge_neib_z(i), i = ist, ied)
+          write(id_file,'(10i16)') (iedge_f_d_z(i),  i = ist, ied)
+          write(id_file,'(10i16)') (iedge_neib_z(i), i = ist, ied)
 !
        end do
-!
-        close(nb_out)
+       close(id_file)
 !
        end subroutine write_neib_edge_line
 !

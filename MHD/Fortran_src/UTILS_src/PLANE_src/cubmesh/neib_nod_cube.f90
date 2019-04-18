@@ -33,7 +33,6 @@
       use t_neib_range_cube
       use t_size_of_cube
       use t_local_node_id_cube
-      use m_cube_files_data
       use neib_nod_line_cube
       use t_filter_data_4_plane
 !
@@ -124,7 +123,7 @@
 !
        call write_neighboring_nod_line                                  &
      &    (ied_rank, cube_p%eps_filter, FEM_elen%filter_conf%nf_type,   &
-     &     c_size, c_each, loc_id, c_fil_nod, FEM_elen)
+     &     cube_p, c_size, c_each, loc_id, c_fil_nod, FEM_elen)
 !
        write(*,*) 'dealloc_filters_nod'
        call dealloc_filters_nod(c_fil_nod)

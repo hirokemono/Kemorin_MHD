@@ -51,23 +51,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_pe_data(id_file, pe_id, comm_IO)
-!
-      use m_fem_mesh_labels
-      use domain_data_IO
-!
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: pe_id
-      type(communication_table), intent(in) :: comm_IO
-!
-!
-      write(id_file,'(a)', advance='NO') hd_fem_para()
-      call write_domain_info(id_file, pe_id-1, comm_IO)
-!
-      end subroutine write_pe_data
-!
-! ----------------------------------------------------------------------
-!
       subroutine write_communication_data(id_file, comm_IO)
 !
       use m_fem_mesh_labels

@@ -19,7 +19,9 @@
 !!      subroutine allocate_neighboring_nod_line
 !!      subroutine deallocate_neighboring_nod_line
 !!      subroutine write_neighboring_nod_line(id_rank, eps_filter,      &
-!!     &          nf_type, c_size, c_each, loc_id, c_fil_nod, FEM_elen)
+!!     &          nf_type, cube_p, c_size, c_each, loc_id, c_fil_nod,   &
+!!     &          FEM_elen)
+!!        type(ctl_param_plane_mesh), intent(in) :: cube_p
 !!        type(size_of_cube), intent(in) :: c_size
 !!        type(size_of_each_cube), intent(in) :: c_each
 !!        type(local_node_id_cube), intent(in) :: loc_id
@@ -31,7 +33,7 @@
       use m_constants
 !
       use t_size_of_cube
-      use m_cube_files_data
+      use t_control_param_plane_mesh
       use t_local_node_id_cube
       use t_filter_work_cubmesh
       use t_filter_data_4_plane
@@ -40,6 +42,8 @@
 !
       implicit none
 !
+!
+      integer(kind=kint), parameter  ::  id_filter = 18
 !
       type(line_filtering_type), save :: fil_l1
 !
@@ -69,15 +73,17 @@
 !  ----------------------------------------------------------------------
 !
       subroutine write_neighboring_nod_line(id_rank, eps_filter,        &
-     &          nf_type, c_size, c_each, loc_id, c_fil_nod, FEM_elen)
+     &          nf_type, cube_p, c_size, c_each, loc_id, c_fil_nod,     &
+     &          FEM_elen)
 !
       use t_filter_elength
       use filter_mom_type_data_IO
       use set_parallel_file_name
-!
+! 
       integer, intent(in) :: id_rank
       real(kind = kreal), intent(in) :: eps_filter
       integer(kind = kint), intent(in) :: nf_type
+      type(ctl_param_plane_mesh), intent(in) :: cube_p
       type(size_of_cube), intent(in) :: c_size
       type(size_of_each_cube), intent(in) :: c_each
       type(local_node_id_cube), intent(in) :: loc_id
@@ -85,6 +91,7 @@
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i
+      character(len=kchara) ::  fname
 !
 !
        call allocate_neighboring_nod_line(c_size, c_each)
@@ -97,33 +104,33 @@
        call order_fiilter_nod_line(c_each, fil_l1)
 !
 !
-       nb_name = add_process_id(id_rank, filter_file_header)
-       write(*,*) 'output ascii file: ', trim(nb_name)
-       open (nb_out, file=nb_name)
+       fname = add_process_id(id_rank, cube_p%filter_file_prefix)
+       write(*,*) 'output ascii file: ', trim(fname)
+       open (id_filter, file = fname)
 !
-       call write_filter_elen_data_type(nb_out, FEM_elen)
+       call write_filter_elen_data_type(id_filter, FEM_elen)
 !
-       call write_line_filter_data_a(nb_out, fil_l1)
+       call write_line_filter_data_a(id_filter, fil_l1)
 !
 !   for debugging
 !
-!       write(nb_out,*) '!  xi direction'
+!       write(id_filter,*) '!  xi direction'
 !       call write_filter_nod_line(ione, c_each, fil_l1)
-!       write(nb_out,*) '!  eta direction'
+!       write(id_filter,*) '!  eta direction'
 !       call write_filter_nod_line(itwo, c_each, fil_l1)
-!       write(nb_out,*) '!   zi direction'
+!       write(id_filter,*) '!   zi direction'
 !       call write_filter_nod_line(ithree, c_each, fil_l1)
 !
-          write(nb_out,*) '! distance in x-direction'
-          write(nb_out,'(10i16)')                                       &
+          write(id_filter,*) '! distance in x-direction'
+          write(id_filter,'(10i16)')                                    &
      &               (inod_f_dist_l(i,1),i = 1, fil_l1%num_lf(1))
-          write(nb_out,*) '! distance in y-direction'
-          write(nb_out,'(10i16)')                                       &
+          write(id_filter,*) '! distance in y-direction'
+          write(id_filter,'(10i16)')                                    &
      &               (inod_f_dist_l(i,2),i = 1, fil_l1%num_lf(2))
-          write(nb_out,*) '! distance in z-direction'
-          write(nb_out,'(10i16)')                                       &
+          write(id_filter,*) '! distance in z-direction'
+          write(id_filter,'(10i16)')                                    &
      &               (inod_f_dist_l(i,3),i = 1, fil_l1%num_lf(3))
-       close(nb_out)
+       close(id_filter)
 !
 !
        call deallocate_neighboring_nod_line

@@ -23,7 +23,6 @@
       use t_size_of_cube
       use t_neib_range_cube
       use t_local_node_id_cube
-      use m_cube_files_data
       use set_ele_id_peri
 !
       implicit none
