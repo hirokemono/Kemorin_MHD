@@ -14,11 +14,11 @@
       use t_mesh_data_4_merge
       use t_size_of_cube
       use t_ctl_data_plane_fft
+      use t_setting_4_ini
 !
       use m_constants
       use m_file_format_switch
       use m_phys_labels
-      use m_setting_4_ini
       use m_set_new_spectr
       use m_spectr_4_ispack
       use count_number_with_overlap

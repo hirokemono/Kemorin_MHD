@@ -23,7 +23,6 @@
       use m_precision
       use m_constants
 !
-      use m_setting_4_ini
       use m_phys_labels
       use set_parallel_file_name
       use mesh_IO_select
@@ -42,6 +41,7 @@
       use t_ctl_data_4_cub_kemo
       use t_ctl_data_plane_fft
       use t_control_param_plane_mesh
+      use t_setting_4_ini
 !
       implicit none
 !
@@ -65,6 +65,7 @@
       type(field_IO_params), save :: cube_mesh_file
       type(field_IO_params), save :: plane_fld_file
       type(merged_mesh), save :: mgd_mesh_pl
+      type(plane_initial_setting), save :: pini_p1
 !
 !
       pi = four*atan(one)
@@ -94,23 +95,23 @@
      &   (mgd_mesh_pl%num_pe, 0, istep,                                 &
      &    plane_fld_file, plane_t_IO, plane_fst_IO)
 !
-      num_rst_org = plane_fst_IO%num_field_IO
+      pini_p1%num_rst_org = plane_fst_IO%num_field_IO
 !
-      call add_initial_num_comp_mhd(mgd_mesh_pl%merged_fld)
+      call add_initial_num_comp_mhd(mgd_mesh_pl%merged_fld, pini_p1)
 !
-      mgd_mesh_pl%merged_fld%num_phys = num_rst_new
+      mgd_mesh_pl%merged_fld%num_phys = pini_p1%num_rst_new
       call alloc_phys_name_type(mgd_mesh_pl%merged_fld)
 !
-      ntot_rst_org =  plane_fst_IO%ntot_comp_IO
-      mgd_mesh_pl%merged_fld%phys_name(1:num_rst_org)                   &
-     &             =    plane_fst_IO%fld_name(1:num_rst_org)
-      mgd_mesh_pl%merged_fld%num_component(1:num_rst_org)               &
-     &             = plane_fst_IO%num_comp_IO(1:num_rst_org)
-      mgd_mesh_pl%merged_fld%istack_component(0:num_rst_org)            &
-     &             = plane_fst_IO%istack_comp_IO(0:num_rst_org)
+      pini_p1%ntot_rst_org =  plane_fst_IO%ntot_comp_IO
+      mgd_mesh_pl%merged_fld%phys_name(1:pini_p1%num_rst_org)           &
+     &             =    plane_fst_IO%fld_name(1:pini_p1%num_rst_org)
+      mgd_mesh_pl%merged_fld%num_component(1:pini_p1%num_rst_org)       &
+     &             = plane_fst_IO%num_comp_IO(1:pini_p1%num_rst_org)
+      mgd_mesh_pl%merged_fld%istack_component(0:pini_p1%num_rst_org)    &
+     &             = plane_fst_IO%istack_comp_IO(0:pini_p1%num_rst_org)
 !
-      call add_initial_comp_mhd(mgd_mesh_pl%merged_fld)
-      mgd_mesh_pl%merged_fld%ntot_phys =  ntot_rst_org
+      call add_initial_comp_mhd(mgd_mesh_pl%merged_fld, pini_p1)
+      mgd_mesh_pl%merged_fld%ntot_phys =  pini_p1%ntot_rst_org
 !
 !    construct new data
 !
@@ -141,8 +142,8 @@
 !
 !     allocate added restart data
 !
-        mgd_mesh_pl%merged_fld%num_phys =  num_rst_new
-        mgd_mesh_pl%merged_fld%ntot_phys = ntot_rst_new
+        mgd_mesh_pl%merged_fld%num_phys =  pini_p1%num_rst_new
+        mgd_mesh_pl%merged_fld%ntot_phys = pini_p1%ntot_rst_new
         call alloc_phys_data_type                                       &
      &     (mgd_mesh_pl%merged%node%numnod, mgd_mesh_pl%merged_fld)
 !
@@ -150,8 +151,8 @@
 !
         plane_fst_IO%nnod_IO = mgd_mesh_pl%merged%node%numnod
 !
-        plane_fst_IO%num_field_IO =  num_rst_org
-        plane_fst_IO%ntot_comp_IO = ntot_rst_org
+        plane_fst_IO%num_field_IO = pini_p1%num_rst_org
+        plane_fst_IO%ntot_comp_IO = pini_p1%ntot_rst_org
 !
         call set_file_fmt_prefix                                        &
      &     (izero, org_rst_f_header, plane_fld_file)
@@ -159,7 +160,7 @@
      &     (mgd_mesh_pl%num_pe, id_rank, istep,                         &
      &      plane_fld_file, plane_t_IO, plane_fst_IO)
 !
-        do np = 1, ntot_rst_org
+        do np = 1, pini_p1%ntot_rst_org
           do inod = 1, mgd_mesh_pl%merged%node%numnod
             mgd_mesh_pl%merged_fld%d_fld(inod,np)                      &
      &           = plane_fst_IO%d_IO(inod,np)
@@ -171,7 +172,7 @@
 !
 !     construct added data
 !
-        do np = num_rst_org+1, num_rst_new
+        do np = pini_p1%num_rst_org+1, pini_p1%num_rst_new
           jst = mgd_mesh_pl%merged_fld%istack_component(np-1)
           if (mgd_mesh_pl%merged_fld%phys_name(np) .eq. fhd_vecp) then
             do inod = 1, mgd_mesh_pl%merged%node%numnod

@@ -22,7 +22,6 @@
 !
       use m_constants
       use m_phys_labels
-      use m_setting_4_ini
       use set_parallel_file_name
       use mesh_IO_select
       use field_IO_select
@@ -39,6 +38,7 @@
       use t_ctl_data_plane_fft
       use t_control_param_plane_mesh
       use t_size_of_cube
+      use t_setting_4_ini
 !
       implicit none
 !
