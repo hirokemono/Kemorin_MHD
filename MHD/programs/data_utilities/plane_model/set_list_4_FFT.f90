@@ -3,17 +3,20 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_parameters_4_FFT                                 &
+!!      subroutine set_parameters_plane_ene                             &
 !!     &         (t_zfft_ctl, cube_c, c_size, num_pe, ist, ied, iint)
+!!      subroutine set_parameters_4_FFT                                 &
+!!     &         (t_zfft_ctl, cube_c, c_size, plane_fft_wk,             &
+!!     &          num_pe, ist, ied, iint)
 !!      subroutine set_parameters_rst_by_spec                           &
 !!     &         (new_p_plt, t_zfft_ctl, cube_c, cube2nd_c, c_size,     &
 !!     &          num_pe, ist, ied, ifactor_step, ifactor_rst,          &
 !!     &          dt, t_init, kx_org, ky_org, iz_org, nnod_new_k_org_z, &
-!!     &          mesh_file)
+!!     &          mesh_file, plane_fft_wk)
 !!      subroutine set_parameters_data_by_spec                          &
 !!     &         (new_p_plt, cube_c, cube2nd_c, c_size, num_pe,         &
 !!     &          kx_org, ky_org, iz_org, nnod_new_k_org_z,             &
-!!     &          mesh_file, ucd_param)
+!!     &          mesh_file, plane_fft_wk, ucd_param)
 !!        type(ctl_data_4_plane_model), intent(in) :: cube_c, cube2nd_c
 !!        type(size_of_cube), intent(inout) :: c_size
 !!        type(field_IO_params), intent(inout) :: ucd_param
@@ -51,10 +54,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_parameters_4_FFT                                   &
+      subroutine set_parameters_plane_ene                               &
      &         (t_zfft_ctl, cube_c, c_size, num_pe, ist, ied, iint)
 !
-      use m_spectr_4_ispack
+      use t_spectr_4_ispack
 !
       type(time_data_control), intent(in) :: t_zfft_ctl
       type(ctl_data_4_plane_model), intent(in) :: cube_c
@@ -68,11 +71,6 @@
       c_size%ny_all = cube_c%nnod_plane_ctl%intvalue(2)
       c_size%nz_all = cube_c%nnod_plane_ctl%intvalue(3)
       num_pe =  c_size%nx_all * c_size%ny_all * c_size%nz_all
-!
-      kx_max = c_size%nx_all
-      ky_max = c_size%ny_all
-      iz_max = c_size%nz_all
-      num_spectr = kx_max*ky_max*iz_max
 !
       ist = 0
       if(t_zfft_ctl%i_step_init_ctl%iflag .gt. 0) then
@@ -89,6 +87,34 @@
         iint = t_zfft_ctl%i_step_ucd_ctl%intvalue
       end if
 !
+      end subroutine set_parameters_plane_ene
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_parameters_4_FFT                                   &
+     &         (t_zfft_ctl, cube_c, c_size, plane_fft_wk,               &
+     &          num_pe, ist, ied, iint)
+!
+      use t_spectr_4_ispack
+!
+      type(time_data_control), intent(in) :: t_zfft_ctl
+      type(ctl_data_4_plane_model), intent(in) :: cube_c
+!
+      type(size_of_cube), intent(inout) :: c_size
+      type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
+      integer, intent(inout) :: num_pe
+      integer(kind = kint), intent(inout) :: ist, ied, iint
+!
+!
+      call set_parameters_plane_ene                                     &
+     &   (t_zfft_ctl, cube_c, c_size, num_pe, ist, ied, iint)
+!
+      plane_fft_wk%kx_max = c_size%nx_all
+      plane_fft_wk%ky_max = c_size%ny_all
+      plane_fft_wk%iz_max = c_size%nz_all
+      plane_fft_wk%num_spectr = plane_fft_wk%kx_max                     &
+     &         * plane_fft_wk%ky_max * plane_fft_wk%iz_max
+!
       end subroutine set_parameters_4_FFT
 !
 ! -----------------------------------------------------------------------
@@ -97,10 +123,10 @@
      &          (new_p_plt, t_zfft_ctl, cube_c, cube2nd_c, c_size,      &
      &          num_pe, ist, ied, ifactor_step, ifactor_rst,            &
      &          dt, t_init, kx_org, ky_org, iz_org, nnod_new_k_org_z,   &
-     &          mesh_file)
+     &          mesh_file, plane_fft_wk)
 !
       use m_default_file_prefix
-      use m_spectr_4_ispack
+      use t_spectr_4_ispack
       use set_control_platform_data
 !
       type(platform_data_control), intent(in) :: new_p_plt
@@ -109,6 +135,7 @@
 !
       type(size_of_cube), intent(inout) :: c_size
       type(field_IO_params), intent(inout) ::  mesh_file
+      type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
       integer, intent(inout) :: num_pe
       integer(kind = kint), intent(inout) :: ist, ied
       integer(kind = kint), intent(inout) :: ifactor_step, ifactor_rst
@@ -138,19 +165,21 @@
         rst_head_plane = def_newrst_head
       end if
 !
-      kx_max = cube_c%nnod_plane_ctl%intvalue(1)
-      ky_max = cube_c%nnod_plane_ctl%intvalue(2)
-      iz_max = cube_c%nnod_plane_ctl%intvalue(3)
-      num_spectr =  kx_max * ky_max * iz_max
-      kx_org = kx_max
-      ky_org = ky_max
-      iz_org = ky_max
+      plane_fft_wk%kx_max = c_size%nx_all
+      plane_fft_wk%ky_max = c_size%ny_all
+      plane_fft_wk%iz_max = c_size%nz_all
+      plane_fft_wk%num_spectr = plane_fft_wk%kx_max                     &
+     &         * plane_fft_wk%ky_max * plane_fft_wk%iz_max
+      kx_org = plane_fft_wk%kx_max
+      ky_org = plane_fft_wk%ky_max
+      iz_org = plane_fft_wk%ky_max
 !
       c_size%nx_all = cube2nd_c%nnod_plane_ctl%intvalue(1)
       c_size%ny_all = cube2nd_c%nnod_plane_ctl%intvalue(2)
       c_size%nz_all = cube2nd_c%nnod_plane_ctl%intvalue(3)
 !
-      nnod_new_k_org_z = kx_max * ky_max * c_size%nz_all
+      nnod_new_k_org_z = plane_fft_wk%kx_max * plane_fft_wk%ky_max      &
+     &                  * c_size%nz_all
 !
       num_pe =  cube2nd_c%ndomain_plane_ctl%intvalue(1)                 &
      &        * cube2nd_c%ndomain_plane_ctl%intvalue(2)                 &
@@ -193,10 +222,10 @@
       subroutine set_parameters_data_by_spec                            &
      &         (new_p_plt, cube_c, cube2nd_c, c_size, num_pe,           &
      &          kx_org, ky_org, iz_org, nnod_new_k_org_z,               &
-     &          mesh_file, ucd_param)
+     &          mesh_file, plane_fft_wk, ucd_param)
 !
       use m_default_file_prefix
-      use m_spectr_4_ispack
+      use t_spectr_4_ispack
       use m_field_file_format
       use t_ucd_data
       use set_parallel_file_name
@@ -210,6 +239,7 @@
       integer(kind = kint), intent(inout) :: kx_org, ky_org, iz_org
       type(field_IO_params),  intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: ucd_param
+      type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
 !
       integer(kind = kint), intent(inout) :: nnod_new_k_org_z
 !
@@ -243,7 +273,8 @@
       num_pe =  cube2nd_c%ndomain_plane_ctl%intvalue(1)                 &
      &        * cube2nd_c%ndomain_plane_ctl%intvalue(2)                 &
      &        * cube2nd_c%ndomain_plane_ctl%intvalue(3)
-      nnod_new_k_org_z = kx_max * ky_max * c_size%nz_all
+      nnod_new_k_org_z = plane_fft_wk%kx_max * plane_fft_wk%ky_max      &
+     &        * c_size%nz_all
 !
       end subroutine set_parameters_data_by_spec
 !

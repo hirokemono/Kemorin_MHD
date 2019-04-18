@@ -2,8 +2,18 @@
 !
 !   work array for FFT
 !
-!!      subroutine write_size_of_spectr(merged)
-!!        type(mesh_geometry), intent(in) :: merged
+!!      subroutine alloc_spectr_name(plane_fft_wk)
+!!      subroutine alloc_horiz_spectr(plane_fft_wk)
+!!      subroutine alloc_spectr_4_io(plane_fft_wk)
+!!      subroutine dealloc_spectr_name(plane_fft_wk)
+!!      subroutine dealloc_horiz_spectr(plane_fft_wk)
+!!        type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
+!!
+!!      subroutine write_spectr_data(istep, plane_fft_wk)
+!!      subroutine read_number_of_field(istep, plane_fft_wk)
+!!      subroutine read_spectr_data(istep, plane_fft_wk)
+!!      subroutine read_size_of_spectr(plane_fft_wk)
+!!      subroutine write_size_of_spectr(merged, plane_fft_wk)
 !
       module t_spectr_4_ispack
 !
@@ -39,7 +49,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_spectr_name(plane_fft_wk)
+      subroutine alloc_spectr_name(plane_fft_wk)
 !
       type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
 !
@@ -51,11 +61,11 @@
        plane_fft_wk%ifield_fft = 0
        plane_fft_wk%icomp_fft = 0
 !
-      end subroutine allocate_spectr_name
+      end subroutine alloc_spectr_name
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_horiz_spectr(plane_fft_wk)
+       subroutine alloc_horiz_spectr(plane_fft_wk)
 !
       type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
       integer(kind = kint) :: num
@@ -71,11 +81,11 @@
        plane_fft_wk%phys_d = 0.0d0
        plane_fft_wk%wk_pfft = 0.0d0
 !
-       end subroutine allocate_horiz_spectr
+       end subroutine alloc_horiz_spectr
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_spectr_4_io(plane_fft_wk)
+       subroutine alloc_spectr_4_io(plane_fft_wk)
 !
       type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
       integer(kind = kint) :: num
@@ -89,11 +99,11 @@
 !
       plane_fft_wk%phys_io = 0.0d0
 !
-      end subroutine allocate_spectr_4_io
+      end subroutine alloc_spectr_4_io
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_spectr_name(plane_fft_wk)
+      subroutine dealloc_spectr_name(plane_fft_wk)
 !
       type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
 !
@@ -104,19 +114,20 @@
         deallocate( plane_fft_wk%icomp_fft )
 !
 !
-       end subroutine deallocate_spectr_name
+       end subroutine dealloc_spectr_name
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine deallocate_horiz_spectr(plane_fft_wk)
+       subroutine dealloc_horiz_spectr(plane_fft_wk)
 !
       type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
 !
        deallocate ( plane_fft_wk%phys_d )
        deallocate ( plane_fft_wk%wk_pfft )
 !
-       end subroutine deallocate_horiz_spectr
+       end subroutine dealloc_horiz_spectr
 !
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine write_spectr_data(istep, plane_fft_wk)

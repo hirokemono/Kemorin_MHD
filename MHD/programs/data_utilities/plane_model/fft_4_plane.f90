@@ -8,8 +8,7 @@
 !
       use m_precision
 !
-      use m_spectr_4_ispack
-!
+      use t_spectr_4_ispack
       use t_size_of_cube
       use t_time_data
       use t_ucd_data
@@ -31,6 +30,7 @@
 !  ===========
 
       type(ctl_data_plane_fft), save :: pfft_c1
+      type(plane_spectr_by_ispack), save :: plane_fft_wk1
       type(field_IO_params), save ::  plane_mesh_file, ucd_file_param
 !
       type(size_of_cube), save :: c_size1
@@ -63,7 +63,7 @@
 !
       call s_set_plane_spectr_file_head(pfft_c1, plane_mesh_file)
       call set_parameters_4_FFT(pfft_c1%t_zfft_ctl, pfft_c1%cube_c_fft, &
-     &    c_size1, mgd_mesh_pm%num_pe, ist, ied, iint)
+     &    c_size1, plane_fft_wk1, mgd_mesh_pm%num_pe, ist, ied, iint)
 !
       call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)
 !
@@ -75,7 +75,8 @@
       write(*,*) 'init_ucd_data_4_FFT'
       call init_ucd_data_4_FFT(ist, ucd_file_param, fft_t_IO, fft_ucd)
 !
-      call set_fields_4_FFT(pfft_c1%fld_zfft_ctl%field_ctl)
+      call const_fields_4_FFT                                           &
+     &   (pfft_c1%fld_zfft_ctl%field_ctl, plane_fft_wk1)
 !
       write(*,*) 'internal_node, ele',                                  &
      &           mgd_mesh_pm%merge_tbl%inter_nod_m,                     &
@@ -85,9 +86,8 @@
 !
       call alloc_geometry_data_4_merge(mgd_mesh_pm)
 !
-      call allocate_horiz_spectr
-!
-      call allocate_spectr_4_io
+      call alloc_horiz_spectr(plane_fft_wk1)
+      call alloc_spectr_4_io(plane_fft_wk1)
 !
 !  set mesh_information
 !
@@ -99,13 +99,17 @@
       do istep = ist, ied, iint
 !
        call s_read_udt_data_4_FFT                                       &
-     &    (istep, ucd_file_param, mgd_mesh_pm, fft_t_IO, fft_ucd)
+     &    (istep, ucd_file_param, mgd_mesh_pm, plane_fft_wk1,           &
+     &     fft_t_IO, fft_ucd)
 !
 !  -------   Fourier Transform
 !
-       call s_cal_fft_for_horizontal(kx_max, ky_max, iz_max,            &
-     &          num_spectr, num_io, num_fft, icomp_fft,                 &
-     &          phys_d, wk_pfft, phys_io)
+       call s_cal_fft_for_horizontal(plane_fft_wk1%kx_max,              &
+     &     plane_fft_wk1%ky_max, plane_fft_wk1%iz_max,                  &
+     &     plane_fft_wk1%num_spectr, plane_fft_wk1%num_io,              &
+     &     plane_fft_wk1%num_fft, plane_fft_wk1%icomp_fft,              &
+     &     plane_fft_wk1%phys_d, plane_fft_wk1%wk_pfft,                 &
+     &     plane_fft_wk1%phys_io)
 !
 !
 !     ======================
@@ -113,12 +117,10 @@
 !     ======================
 
       if (istep .eq. ist) then
-        call write_size_of_spectr(mgd_mesh_pm%merged)
+        call write_size_of_spectr(mgd_mesh_pm%merged, plane_fft_wk1)
       end if
 !
-       call write_spectr_data(istep)
-!
-      close(  spectr_data_code )
+      call write_spectr_data(istep, plane_fft_wk1)
 !
       write(*,*) 'step', istep, 'finish '
       end do

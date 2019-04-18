@@ -84,7 +84,8 @@
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane(pfft_c1)
       call s_set_plane_spectr_file_head(pfft_c1, plane_mesh_file)
-      call set_parameters_4_FFT(pfft_c1%t_zfft_ctl, pfft_c1%cube_c_fft, &
+      call set_parameters_plane_ene                                     &
+     &   (pfft_c1%t_zfft_ctl, pfft_c1%cube_c_fft,                       &
      &    c_size1, mgd_mesh_pm%num_pe, ist, ied, iint)
 !
       call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)

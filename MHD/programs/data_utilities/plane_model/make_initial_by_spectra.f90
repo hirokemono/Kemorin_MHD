@@ -8,6 +8,7 @@
       program make_initial_by_spectra
 !
       use m_precision
+      use m_constants
       use calypso_mpi
 !
       use t_time_data
@@ -15,12 +16,11 @@
       use t_size_of_cube
       use t_ctl_data_plane_fft
       use t_setting_4_ini
+      use t_set_new_spectr
+      use t_spectr_4_ispack
 !
-      use m_constants
       use m_file_format_switch
       use m_phys_labels
-      use t_set_new_spectr
-      use m_spectr_4_ispack
       use count_number_with_overlap
       use set_plane_spectr_file_head
       use set_list_4_FFT
@@ -36,6 +36,7 @@
 !
 !
       type(ctl_data_plane_fft), save :: pfft_c1
+      type(plane_spectr_by_ispack), save :: plane_fft_wk1
       type(new_plane_spectr), save :: npl_spec1
       type(field_IO_params), save ::  plane_mesh_file
       type(merged_mesh), save :: mgd_mesh_pm
@@ -87,7 +88,7 @@
      &    pfft_c1%cube2nd_cf, c_size1, mgd_mesh_pm%num_pe,              &
      &    ist, ied, ifactor_step, ifactor_rst, dt_init, t_init,         &
      &    kx_org, ky_org, iz_org, npl_spec1%nnod_new_k_org_z,           &
-     &    plane_mesh_file)
+     &    plane_mesh_file, plane_fft_wk1)
 !
 !     read outline of mesh
 !
@@ -99,18 +100,18 @@
 !
       call set_initial_components(mgd_mesh_pm%merged_fld)
 !
-      call read_size_of_spectr
+      call read_size_of_spectr(plane_fft_wk1)
 !
-      allocate( zz(0:iz_max) )
+      allocate( zz(0:plane_fft_wk1%iz_max) )
       zz = 0.0d0
 !
-      call s_read_positions_of_spectr(iz_max, zz(1))
+      call s_read_positions_of_spectr(plane_fft_wk1%iz_max, zz(1))
       istep_udt = ist / ifactor_step
-      call read_number_of_field(istep_udt)
-      nfft_org = num_fft
+      call read_number_of_field(istep_udt, plane_fft_wk1)
+      nfft_org = plane_fft_wk1%num_fft
 !
-      call allocate_spectr_name
-      call allocate_spectr_4_io
+      call alloc_spectr_name(plane_fft_wk1)
+      call alloc_spectr_4_io(plane_fft_wk1)
 !
 !   read mesh data for initial values
 !
@@ -124,23 +125,24 @@
 !  check positions in z-direction
 !
      call check_plane_horiz_position                                    &
-    &   (mgd_mesh_pm%merged, mgd_mesh_pm%merged_fld, npl_spec1)
+    &   (mgd_mesh_pm%merged, mgd_mesh_pm%merged_fld,                    &
+    &    plane_fft_wk1%iz_max, plane_fft_wk1%num_fft,                   &
+    &    plane_fft_wk1%fft_name, plane_fft_wk1%fft_comp, npl_spec1)
 !
       kx_new = c_size1%nx_all
       ky_new = c_size1%ny_all
       iz_new = c_size1%nz_all
-      num_spectr = mgd_mesh_pm%merge_tbl%inter_nod_m
       nfft_new =   mgd_mesh_pm%merged_fld%ntot_phys
+      plane_fft_wk1%num_spectr = mgd_mesh_pm%merge_tbl%inter_nod_m
 !
-      kx_max = kx_new
-      ky_max = ky_new
-      iz_max = iz_new
-      num_fft = nfft_new
+      plane_fft_wk1%kx_max = kx_new
+      plane_fft_wk1%ky_max = ky_new
+      plane_fft_wk1%iz_max = iz_new
+      plane_fft_wk1%num_fft = nfft_new
 !
 !
 !
-      call allocate_horiz_spectr
-!
+      call alloc_horiz_spectr(plane_fft_wk1)
       call alloc_work_array_4_r                                         &
     &    (mgd_mesh_pm%merge_tbl%inter_nod_m, npl_spec1)
 !
@@ -162,20 +164,21 @@
 !
 !    read spectral data
 !
-        kx_max = kx_org
-        ky_max = ky_org
-        iz_max = iz_org
-        num_spectr = kx_org*ky_org*iz_org
-        num_fft = nfft_org
+        plane_fft_wk1%kx_max = kx_org
+        plane_fft_wk1%ky_max = ky_org
+        plane_fft_wk1%iz_max = iz_org
+        plane_fft_wk1%num_spectr = kx_org*ky_org*iz_org
+        plane_fft_wk1%num_fft = nfft_org
 !
-        call read_spectr_data(istep_udt)
+        call read_spectr_data(istep_udt, plane_fft_wk1)
 !
 !     interpolate in radial direction
 !
         write(*,*) 's_radial_interpolate'
-        call s_radial_interpolate                                       &
-     &     (c_size1, kx_max, ky_max, iz_max,                            &
-     &      num_fft, num_io, num_spectr, phys_io,                       &
+        call s_radial_interpolate(c_size1, plane_fft_wk1%kx_max,        &
+     &      plane_fft_wk1%ky_max, plane_fft_wk1%iz_max,                 &
+     &      plane_fft_wk1%num_fft, plane_fft_wk1%num_io,                &
+     &      plane_fft_wk1%num_spectr, plane_fft_wk1%phys_io,            &
      &      npl_spec1%z_1, npl_spec1%iz_1, npl_spec1%nnod_new_k_org_z,  &
      &      npl_spec1%ncomp_nsp, npl_spec1%idx_field,                   &
      &      npl_spec1%work_array)
@@ -185,34 +188,38 @@
         write(*,*) 'set_new_spectr'
         call set_new_spectr                                             &
      &     (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,             &
-     &      kx_max, ky_max, npl_spec1)
+     &      plane_fft_wk1%kx_max, plane_fft_wk1%ky_max, npl_spec1)
 !
 !    deallocate old spectram data
 !
 !      write(*,*) 'deallocate_spectr_name'
-!      call deallocate_spectr_name
+!      call dealloc_spectr_name(plane_fft_wk11)
 !
 !    set new array size for spectr
 !
-       kx_max = kx_new
-       ky_max = ky_new
-       iz_max = iz_new
-       num_spectr = mgd_mesh_pm%merge_tbl%inter_nod_m
-       num_fft = nfft_new
+       plane_fft_wk1%kx_max = kx_new
+       plane_fft_wk1%ky_max = ky_new
+       plane_fft_wk1%iz_max = iz_new
+       plane_fft_wk1%num_spectr = mgd_mesh_pm%merge_tbl%inter_nod_m
+       plane_fft_wk1%num_fft = nfft_new
 !
-           write(*,*) 'num_spectr 0', num_spectr
+           write(*,*) 'num_spectr 0', plane_fft_wk1%num_spectr
 !    allocate new spectr
 !
 !      call allocate_spectr_name
 !
         call s_inverse_fft_4_plane                                      &
      &     (npl_spec1, c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,  &
-     &          kx_max, ky_max, iz_max, num_spectr,                     &
-     &          num_fft, wk_pfft, phys_d)
+     &      plane_fft_wk1%kx_max, plane_fft_wk1%ky_max,                 &
+     &      plane_fft_wk1%iz_max, plane_fft_wk1%num_spectr,             &
+     &      plane_fft_wk1%num_fft, plane_fft_wk1%wk_pfft,               &
+     &      plane_fft_wk1%phys_d)
         call copy_2_inverted_data                                       &
      &     (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,             &
-     &          kx_max, ky_max, iz_max, num_spectr, num_fft,            &
-     &          wk_pfft, phys_d)
+     &      plane_fft_wk1%kx_max, plane_fft_wk1%ky_max,                 &
+     &      plane_fft_wk1%iz_max, plane_fft_wk1%num_spectr,             &
+     &      plane_fft_wk1%num_fft, plane_fft_wk1%wk_pfft,               &
+     &      plane_fft_wk1%phys_d)
 !
 !   read mesh data
 !
@@ -226,13 +233,13 @@
 !
         do ip =1, mgd_mesh_pm%num_pe
 !
-          do j = 1, num_fft
+          do j = 1, plane_fft_wk1%num_fft
             do i = 1, mgd_mesh_pm%subdomain(ip)%node%numnod
               inod = int(mgd_mesh_pm%subdomain(ip)%node%inod_global(i), &
      &              KIND(inod))
               if (inod .le. mgd_mesh_pm%merge_tbl%inter_nod_m) then
-                i1 = (j-1)*num_spectr + inod
-                rst_from_sp(i,j) = phys_d(i1)
+                i1 = (j-1) * plane_fft_wk1%num_spectr + inod
+                rst_from_sp(i,j) = plane_fft_wk1%phys_d(i1)
               else
               rst_from_sp(i,j) = 0.0d0
             end if
@@ -256,11 +263,16 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine check_plane_horiz_position                             &
-     &         (merged, merged_fld, npl_spec)
+      subroutine check_plane_horiz_position(merged, merged_fld,         &
+     &          iz_max, num_fft, fft_name, fft_comp, npl_spec)
 !
       type(mesh_geometry), intent(in) :: merged
       type(phys_data), intent(in) :: merged_fld
+!
+      integer(kind = kint), intent(in) :: iz_max
+      integer(kind = kint), intent(in) :: num_fft
+      character(len=kchara), intent(in) :: fft_name(num_fft)
+      character(len=kchara), intent(in) :: fft_comp(num_fft)
 !
       type(new_plane_spectr), intent(inout) :: npl_spec
 !
@@ -286,7 +298,7 @@
        end do
       end do
 !
-      call read_spectr_data(istep_udt)
+      call read_spectr_data(istep_udt, plane_fft_wk1)
 !
 !   check components of spectr
 !

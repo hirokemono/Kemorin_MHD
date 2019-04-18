@@ -5,12 +5,12 @@
 !
 !!      subroutine init_ucd_data_4_FFT(istep, ucd_param, t_IO, ucd)
 !!      subroutine s_read_udt_data_4_FFT                                &
-!!     &         (istep, ucd_param, mgd_mesh, t_IO, ucd)
+!!     &         (istep, ucd_param, mgd_mesh, plane_fft_wk, t_IO, ucd)
 !!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(merged_mesh), intent(in) :: mgd_mesh
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
-!!      subroutine set_fields_4_FFT(field_ctl)
+!!      subroutine const_fields_4_FFT(field_ctl, plane_fft_wk)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !
       module read_udt_data_4_FFT
@@ -62,10 +62,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_read_udt_data_4_FFT                                  &
-     &         (istep, ucd_param, mgd_mesh, t_IO, ucd)
+     &         (istep, ucd_param, mgd_mesh, plane_fft_wk, t_IO, ucd)
 !
-      use m_spectr_4_ispack
       use m_file_format_switch
+      use t_spectr_4_ispack
       use t_mesh_data_4_merge
       use t_file_IO_parameter
 !
@@ -77,6 +77,7 @@
       integer (kind = kint), intent(in) :: istep
       type(field_IO_params), intent(in) :: ucd_param
       type(merged_mesh), intent(in) :: mgd_mesh
+      type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
@@ -84,23 +85,55 @@
 ! * PES loops 
 ! ========================
 !
-      call read_udt_data_4_plane_model(mgd_mesh%num_pe, istep,          &
-     &    num_spectr, num_fft, icomp_fft, ifield_fft, phys_d,           &
+      call read_udt_data_4_plane_model                                  &
+     &   (mgd_mesh%num_pe, istep, plane_fft_wk%num_spectr,              &
+     &    plane_fft_wk%num_fft, plane_fft_wk%icomp_fft,                 &
+     &    plane_fft_wk%ifield_fft, plane_fft_wk%phys_d,                 &
      &    mgd_mesh%merge_tbl%nnod_max, mgd_mesh%subdomain,              &
      &    ucd_param, t_IO, ucd)
 !
        end subroutine s_read_udt_data_4_FFT
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
-      subroutine set_fields_4_FFT(field_ctl)
+      subroutine const_fields_4_FFT(field_ctl, plane_fft_wk)
 !
-      use m_spectr_4_ispack
+      use t_spectr_4_ispack
       use t_read_control_arrays
       use skip_comment_f
 !
       type(ctl_array_c3), intent(in) :: field_ctl
+      type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
+!
+      integer (kind = kint) :: i, j, ii, jj, icomp
+!
+!
+      call count_fields_4_FFT(field_ctl, plane_fft_wk%num_fft)
+      call alloc_spectr_name(plane_fft_wk)
+      call set_fields_4_FFT(field_ctl, plane_fft_wk%num_fft,            &
+     &    plane_fft_wk%fft_name, plane_fft_wk%fft_comp,                 &
+     &    plane_fft_wk%ifield_fft, plane_fft_wk%icomp_fft)
+!
+      write(*,*) 'ifield_fft', plane_fft_wk%ifield_fft
+      write(*,*) 'icomp_fft', plane_fft_wk%icomp_fft
+!
+      do ii = 1, plane_fft_wk%num_fft
+       write(*,'(i3,1x,2a30)') ii,                                      &
+     &    plane_fft_wk%fft_name(ii), plane_fft_wk%fft_comp(ii)
+      end do
+!
+      end subroutine const_fields_4_FFT
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine count_fields_4_FFT(field_ctl, num_fft)
+!
+      use t_read_control_arrays
+      use skip_comment_f
+!
+      type(ctl_array_c3), intent(in) :: field_ctl
+      integer(kind = kint), intent(inout) :: num_fft
 !
       integer (kind = kint) :: i, j, ii, jj, icomp
 !
@@ -122,7 +155,26 @@
         end do
       end do
 !
-      call allocate_spectr_name
+      end subroutine count_fields_4_FFT
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_fields_4_FFT(field_ctl, num_fft,                   &
+     &          fft_name, fft_comp, ifield_fft, icomp_fft)
+!
+      use t_read_control_arrays
+      use skip_comment_f
+!
+      type(ctl_array_c3), intent(in) :: field_ctl
+      integer(kind = kint), intent(in) :: num_fft
+!
+      character(len=kchara), intent(inout) :: fft_name(num_fft)
+      character(len=kchara), intent(inout) :: fft_comp(num_fft)
+      integer(kind = kint), intent(inout) :: ifield_fft(num_fft)
+      integer(kind = kint), intent(inout) :: icomp_fft(num_fft)
+!
+      integer (kind = kint) :: i, j, ii, jj, icomp
+!
 !
       icomp = 1
       ii = 1
@@ -168,13 +220,6 @@
 !
         end do
         icomp = icomp + plane_phys%num_component(i)
-      end do
-!
-      write(*,*) 'ifield_fft', ifield_fft
-      write(*,*) 'icomp_fft', icomp_fft
-!
-      do ii = 1, num_fft
-       write(*,'(i3,1x,2a30)') ii, fft_name(ii), fft_comp(ii)
       end do
 !
       end subroutine set_fields_4_FFT
