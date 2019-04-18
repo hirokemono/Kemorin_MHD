@@ -4,7 +4,8 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_set_plane_size_correlate                           &
-!!     &         (cube_c, cube2nd_c, c_size, num_pe, num_pe2)
+!!     &         (cube_c, cube2nd_c, c_size, num_pe, num_pe2,           &
+!!     &          kx_max, ky_max, iz_max, num_domain_c)
 !!       subroutine check_dominsize_data_2(cube_c, cube2nd_c)
 !!        type(size_of_cube), intent(inout) :: c_size, cube2nd_c
 !
@@ -22,14 +23,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_plane_size_correlate                             &
-     &         (cube_c, cube2nd_c, c_size, num_pe, num_pe2)
+     &         (cube_c, cube2nd_c, c_size, num_pe, num_pe2,             &
+     &          kx_max, ky_max, iz_max, num_domain_c)
 !
       use t_size_of_cube
-      use m_correlate_4_plane
 !
       type(ctl_data_4_plane_model), intent(in) :: cube_c, cube2nd_c
 !
       type(size_of_cube), intent(inout) :: c_size
+      integer(kind=kint ), intent(inout) :: kx_max, ky_max
+      integer(kind=kint ), intent(inout) :: iz_max, num_domain_c
       integer , intent(inout) :: num_pe, num_pe2
 !
 !

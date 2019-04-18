@@ -3,7 +3,10 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine set_ctl_params_correlate(pcor_c, ist, ied, iint)
+!!      subroutine set_ctl_params_correlate                             &
+!!     &         (pcor_c, cor_udt_header, ref_udt_header,               &
+!!     &          cor_mesh_file, ref_mesh_file,                         &
+!!     &          cor_ucd_param, ref_ucd_param, ist, ied, iint)
 !!      subroutine s_set_list_4_correlate(field_ctl, ref_phys, cor_phys)
 !!        type(ctl_data_plane_correlate), intent(in) :: pcor_c
 !!        type(ctl_array_c3), intent(in) :: field_ctl
@@ -22,15 +25,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_ctl_params_correlate(pcor_c, ist, ied, iint)
+      subroutine set_ctl_params_correlate                               &
+     &         (pcor_c, cor_udt_header, ref_udt_header,                 &
+     &          cor_mesh_file, ref_mesh_file,                           &
+     &          cor_ucd_param, ref_ucd_param, ist, ied, iint)
 !
       use m_default_file_prefix
       use t_ctl_data_plane_correlate
-      use m_correlate_4_plane
+      use t_file_IO_parameter
       use set_control_platform_data
 !
       type(ctl_data_plane_correlate), intent(in) :: pcor_c
+      character(len=kchara), intent(in) :: cor_udt_header
+      character(len=kchara), intent(in) :: ref_udt_header
+!
       integer(kind=kint ), intent(inout) :: ist, ied, iint
+      type(field_IO_params), intent(inout) :: cor_mesh_file
+      type(field_IO_params), intent(inout) :: ref_mesh_file
+      type(field_IO_params), intent(inout) :: cor_ucd_param
+      type(field_IO_params), intent(inout) :: ref_ucd_param
 !
       type(read_character_item) :: ucd_format_ctl
 !
@@ -66,19 +79,52 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_list_4_correlate(field_ctl, ref_phys, cor_phys)
+      subroutine const_list_4_correlate                                 &
+     &         (field_ctl, ref_phys, cor_phys, pcor)
 !
-      use m_correlate_4_plane
+      use t_correlate_4_plane
+      use t_read_control_arrays
+      use t_phys_data
+      use skip_comment_f
+!
+      type(ctl_array_c3), intent(in) :: field_ctl
+      type(phys_data), intent(in) :: cor_phys
+      type(phys_data), intent(in) :: ref_phys
+!
+      type(correlate_4_plane), intent(inout) :: pcor
+!
+!
+      call count_list_4_correlate                                       &
+     &   (field_ctl, ref_phys, cor_phys, pcor%num_crt)
+!
+      call alloc_correlate_name(pcor)
+!
+      call s_set_list_4_correlate(field_ctl, ref_phys, cor_phys,        &
+     &    pcor%num_crt, pcor%crt_name, pcor%crt_comp, pcor%ifield_crt,  &
+     &    pcor%ifield_crt2, pcor%icomp_crt)
+!
+      write(*,*) 'ifield_crt ', pcor%ifield_crt
+      write(*,*) 'ifield_crt2', pcor%ifield_crt2
+      write(*,*) 'icomp_crt', pcor%icomp_crt
+!
+      end subroutine const_list_4_correlate
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine count_list_4_correlate                                 &
+     &         (field_ctl, ref_phys, cor_phys, num_crt)
 !
       use t_read_control_arrays
       use t_phys_data
       use skip_comment_f
 !
       type(ctl_array_c3), intent(in) :: field_ctl
-      type(phys_data), intent(inout) :: cor_phys
-      type(phys_data), intent(inout) :: ref_phys
+      type(phys_data), intent(in) :: cor_phys
+      type(phys_data), intent(in) :: ref_phys
 !
-      integer (kind = kint) :: i, j, k, ii, jj, icomp, icomp2
+      integer(kind=kint ), intent(inout) :: num_crt
+!
+      integer (kind = kint) :: i, j, k
 !
 !
       num_crt = 0
@@ -97,7 +143,31 @@
         end do
       end do
 !
-      call allocate_correlate_name
+      end subroutine count_list_4_correlate
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine s_set_list_4_correlate(field_ctl, ref_phys, cor_phys,  &
+     &          num_crt, crt_name, crt_comp, ifield_crt,                &
+     &          ifield_crt2, icomp_crt)
+!
+      use t_read_control_arrays
+      use t_phys_data
+      use skip_comment_f
+!
+      type(ctl_array_c3), intent(in) :: field_ctl
+      type(phys_data), intent(in) :: cor_phys
+      type(phys_data), intent(in) :: ref_phys
+!
+      integer(kind=kint ), intent(in) :: num_crt
+      character(len=kchara), intent(inout) :: crt_name(num_crt)
+      character(len=kchara), intent(inout) :: crt_comp(num_crt)
+      integer(kind=kint ), intent(inout) :: ifield_crt(num_crt)
+      integer(kind=kint ), intent(inout) :: ifield_crt2(num_crt)
+      integer(kind=kint ), intent(inout) :: icomp_crt(num_crt)
+!
+      integer (kind = kint) :: i, j, k, ii, jj, icomp, icomp2
+!
 !
       icomp = 1
       ii = 1
@@ -139,10 +209,6 @@
         end do
         icomp = icomp + cor_phys%num_component(i)
       end do
-!
-      write(*,*) 'ifield_crt ', ifield_crt
-      write(*,*) 'ifield_crt2', ifield_crt2
-      write(*,*) 'icomp_crt', icomp_crt
 !
       end subroutine s_set_list_4_correlate
 !

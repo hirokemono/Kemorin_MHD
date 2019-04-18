@@ -4,13 +4,15 @@
 !      Written by Kemorin
 !
 !!      subroutine s_cal_x_correlate_4_plane                            &
-!!     &         (istep, num_crt, num_domain_c, kx_max, ky_max, iz_max, &
+!!     &         (crt_data_code, rms_data_code, istep, num_crt,         &
+!!     &          num_domain_c, kx_max, ky_max, iz_max, z_out,          &
 !!     &          phys_d1, ave_data, rms_data, sig_data,                &
 !!     &          phys_d2, ave_data2, rms_data2, sig_data2,             &
 !!     &          crt_data, rms_ratio)
 !!      subroutine s_cal_x_correlate_4_snap                             &
-!!     &         (istep, num_crt, num_domain_c, kx_max, ky_max, iz_max, &
-!!     &          phys_d1, ave_data, rms_data, sig_data,                &
+!!     &         (crt_data_code, rms_data_code, istep, num_crt,         &
+!!     &          num_domain_c, kx_max, ky_max, iz_max, x_out, y_out,   &
+!!     &          z_out, phys_d1, ave_data, rms_data, sig_data,         &
 !!     &          phys_d2, ave_data2, rms_data2, sig_data2,             &
 !!     &          crt_data, rms_ratio)
 !
@@ -28,7 +30,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_cal_x_correlate_4_plane                              &
-     &         (istep, num_crt, num_domain_c, kx_max, ky_max, iz_max,   &
+     &         (crt_data_code, rms_data_code, istep, num_crt,           &
+     &          num_domain_c, kx_max, ky_max, iz_max, z_out,            &
      &          phys_d1, ave_data, rms_data, sig_data,                  &
      &          phys_d2, ave_data2, rms_data2, sig_data2,               &
      &          crt_data, rms_ratio)
@@ -36,11 +39,14 @@
       use cal_horizontal_rms_ave
       use output_correlation_data
 !
+      integer(kind = kint), intent(in) :: crt_data_code
+      integer(kind = kint), intent(in) :: rms_data_code
       integer(kind = kint), intent(in) :: istep
       integer(kind=kint ), intent(in) :: num_crt, num_domain_c
       integer(kind=kint ), intent(in) :: kx_max, ky_max, iz_max
-      real   (kind=kreal), intent(in) :: phys_d1(num_domain_c*num_crt) 
-      real   (kind=kreal), intent(in) :: phys_d2(num_domain_c*num_crt) 
+      real(kind=kreal), intent(in)  ::  z_out(iz_max)
+      real(kind=kreal), intent(in) :: phys_d1(num_domain_c*num_crt) 
+      real(kind=kreal), intent(in) :: phys_d2(num_domain_c*num_crt) 
 !
       real(kind=kreal), intent(inout) :: ave_data(iz_max*num_crt)
       real(kind=kreal), intent(inout) :: ave_data2(iz_max*num_crt)
@@ -82,26 +88,34 @@
 !     ======================
 !
       write(*,*) 'write data (output_correlate_plane)'
-      call output_correlate_plane(istep)
+      call output_correlate_plane(crt_data_code, rms_data_code,         &
+     &    istep, iz_max, num_crt, z_out, crt_data, rms_ratio)
 !
       end subroutine s_cal_x_correlate_4_plane
 !
 !  ---------------------------------------------------------------------
 !
       subroutine s_cal_x_correlate_4_snap                               &
-     &         (istep, num_crt, num_domain_c, kx_max, ky_max, iz_max,   &
-     &          phys_d1, ave_data, rms_data, sig_data,                  &
+     &         (crt_data_code, rms_data_code, istep, num_crt,           &
+     &          num_domain_c, kx_max, ky_max, iz_max, x_out, y_out,     &
+     &          z_out, phys_d1, ave_data, rms_data, sig_data,           &
      &          phys_d2, ave_data2, rms_data2, sig_data2,               &
      &          crt_data, rms_ratio)
 !
       use cal_horizontal_rms_ave
       use output_correlation_data
 !
+      integer(kind = kint), intent(in) :: crt_data_code
+      integer(kind = kint), intent(in) :: rms_data_code
       integer(kind = kint), intent(in) :: istep
       integer(kind=kint ), intent(in) :: num_crt, num_domain_c
       integer(kind=kint ), intent(in) :: kx_max, ky_max, iz_max
-      real   (kind=kreal), intent(in) :: phys_d1(num_domain_c*num_crt) 
-      real   (kind=kreal), intent(in) :: phys_d2(num_domain_c*num_crt) 
+      real(kind=kreal), intent(in)  ::  x_out(kx_max)
+      real(kind=kreal), intent(in)  ::  y_out(ky_max)
+      real(kind=kreal), intent(in)  ::  z_out(iz_max)
+      real(kind=kreal), intent(in) :: phys_d1(num_domain_c*num_crt) 
+      real(kind=kreal), intent(in) :: phys_d2(num_domain_c*num_crt) 
+!
       real(kind=kreal), intent(inout) :: ave_data(iz_max*num_crt)
       real(kind=kreal), intent(inout) :: ave_data2(iz_max*num_crt)
       real(kind=kreal), intent(inout) :: rms_data(iz_max*num_crt)
@@ -151,8 +165,9 @@
 !      data output
 !     ======================
 !
-          call output_correlate_snap(istep, jx, jy)
-!
+          call output_correlate_snap(crt_data_code, rms_data_code,      &
+     &        istep, jx, jy, kx_max, ky_max, iz_max, num_crt,           &
+     &        x_out, y_out, z_out, crt_data, rms_ratio)
         end do
       end do
 !

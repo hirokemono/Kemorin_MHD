@@ -69,13 +69,17 @@
       write(*,*) 'read_control_data_cor_plane'
       call read_control_data_cor_plane(pcor_c1)
 !
-      call set_ctl_params_correlate(pcor_c1, ist, ied, iint)
+      call set_ctl_params_correlate                                     &
+     &   (pcor_c1, cor_udt_header, ref_udt_header,                      &
+     &    cor_mesh_file, ref_mesh_file,                                 &
+     &    cor_ucd_param, ref_ucd_param, ist, ied, iint)
 !
 !     read outline of mesh
 !
       call s_set_plane_size_correlate                                   &
      &   (pcor_c1%cube_c_corr, pcor_c1%cube2nd_c, c_size1,              &
-     &    mgd_mesh_pm%num_pe, sec_mesh_pm%num_pe2)
+     &    mgd_mesh_pm%num_pe, sec_mesh_pm%num_pe2,                      &
+     &    pcor1%kx_max, pcor1%ky_max, pcor1%iz_max, pcor1%num_domain_c)
 !
       write(*,*) 'set_merged_node_and_element'
       call set_merged_node_and_element(cor_mesh_file, mgd_mesh_pm)
@@ -86,10 +90,11 @@
 !
 !   read field name and number of components
 !
-      call init_udt_4_correlate(ist, cor_phys, plane_t_IO, plane_ucd)
+      call init_udt_4_correlate(ist, cor_ucd_param, ref_ucd_param,      &
+     &    cor_phys, plane_t_IO, plane_ucd)
 !
-      call s_set_list_4_correlate                                       &
-     &   (pcor_c1%fld_pc_ctl%field_ctl, ref_phys, cor_phys)
+      call const_list_4_correlate                                       &
+     &   (pcor_c1%fld_pc_ctl%field_ctl, ref_phys, cor_phys, pcor1)
 !
       write(*,*) 'internal_node, ele',                                  &
      &           mgd_mesh_pm%merge_tbl%inter_nod_m,                     &
@@ -97,13 +102,13 @@
 !
 !     array allocation
 !
-      call allocate_correlate_4_plane
-      call allocate_correlate_4_evo
+      call alloc_correlate_4_plane(pcor1)
+      call alloc_correlate_4_evo(pcor1)
 !
 !  open result file
 !
        do iz = 1, c_size1%nz_all
-        z_out(iz) = mgd_mesh_pm%merged%node%xx                          &
+        pcor1%z_out(iz) = mgd_mesh_pm%merged%node%xx                    &
      &            (c_size1%nx_all*c_size1%ny_all*iz,3)
        end do
 !
@@ -119,17 +124,19 @@
       do istep = ist, ied, iint
 !
        write(*,*) 'read_udt_4_correlate'
-       call read_udt_4_correlate                                        &
-     &    (istep, mgd_mesh_pm, sec_mesh_pm, plane_t_IO, plane_ucd)
+       call read_udt_4_correlate(istep, cor_ucd_param, ref_ucd_param,   &
+     &     mgd_mesh_pm, sec_mesh_pm, pcor1, plane_t_IO, plane_ucd)
 !
 !  -------  Cross correlatiion
 !
        write(*,*) 's_cal_x_correlate_4_plane'
        call s_cal_x_correlate_4_plane                                   &
-     &         (istep, num_crt, num_domain_c, kx_max, ky_max, iz_max,   &
-     &          phys_d1, ave_data, rms_data, sig_data,                  &
-     &          phys_d2, ave_data2, rms_data2, sig_data2,               &
-     &          crt_data, rms_ratio)
+     &   (crt_data_code, rms_data_code, istep, pcor1%num_crt,           &
+     &    pcor1%num_domain_c, pcor1%kx_max, pcor1%ky_max, pcor1%iz_max, &
+     &    pcor1%z_out, pcor1%phys_d1, pcor1%ave_data, pcor1%rms_data,   &
+     &    pcor1%sig_data, pcor1%phys_d2, pcor1%ave_data2,               &
+     &    pcor1%rms_data2, pcor1%sig_data2, pcor1%crt_data,             &
+     &    pcor1%rms_ratio)
 !
        write(*,*) 'step', istep, 'finish '
       end do

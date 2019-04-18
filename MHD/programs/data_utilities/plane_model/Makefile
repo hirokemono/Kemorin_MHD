@@ -75,10 +75,12 @@ set_list_4_FFT.o \
 pickup_mode_plane.o
 
 MOD_COR_PLANE_SNAP = \
-correlation_4_snap.o
+correlation_4_snap.o \
+m_correlate_4_plane.o
 
 MOD_COR_PLANE = \
-correlation_4_plane.o
+correlation_4_plane.o \
+m_correlate_4_plane.o
 
 
 #
