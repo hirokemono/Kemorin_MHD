@@ -10,13 +10,13 @@
       use m_precision
 !
       use m_correlate_4_plane
-      use m_control_plane_correlate
 !
       use t_size_of_cube
       use t_phys_data
       use t_time_data
       use t_ucd_data
       use t_mesh_data_4_merge
+      use t_ctl_data_plane_correlate
 !
       use set_plane_size_correlate
       use set_numnod_4_plane
@@ -35,6 +35,7 @@
 ! . for local 
 !  ===========
 
+      type(ctl_data_plane_correlate), save :: pcor_c1
       type(size_of_cube), save :: c_size1
       type(phys_data), save :: cor_phys
       type(phys_data), save :: ref_phys
@@ -65,13 +66,14 @@
 
 !  set parameters for results
 !
-      call read_control_data_cor_plane
+      call read_control_data_cor_plane(pcor_c1)
 !
-      call set_ctl_params_correlate(ist, ied, iint)
+      call set_ctl_params_correlate(pcor_c1, ist, ied, iint)
 !
 !     read outline of mesh
 !
-      call s_set_plane_size_correlate(cube_c_corr, cube2nd_c, c_size1,  &
+      call s_set_plane_size_correlate                                   &
+     &   (pcor_c1%cube_c_corr, pcor_c1%cube2nd_c, c_size1,              &
      &    mgd_mesh_pm%num_pe, sec_mesh_pm%num_pe2)
 !
       write(*,*) 'set_merged_node_and_element'
@@ -87,7 +89,7 @@
       call init_udt_4_correlate(ist, cor_phys, plane_t_IO, plane_ucd)
 !
        call s_set_list_4_correlate                                      &
-     &    (fld_pc_ctl%field_ctl, ref_phys, cor_phys)
+     &    (pcor_c1%fld_pc_ctl%field_ctl, ref_phys, cor_phys)
 !
       write(*,*) 'internal_node, ele',                                  &
      &          mgd_mesh_pm%merge_tbl%inter_nod_m,                      &

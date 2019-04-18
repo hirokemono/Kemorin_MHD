@@ -3,11 +3,12 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine set_ctl_params_correlate(ist, ied, iint)
-!      subroutine s_set_list_4_correlate(field_ctl, ref_phys, cor_phys)
-!!       type(ctl_array_c3), intent(in) :: field_ctl
-!!       type(phys_data), intent(inout) :: cor_phys
-!!       type(phys_data), intent(inout) :: ref_phys
+!!      subroutine set_ctl_params_correlate(pcor_c, ist, ied, iint)
+!!      subroutine s_set_list_4_correlate(field_ctl, ref_phys, cor_phys)
+!!        type(ctl_data_plane_correlate), intent(in) :: pcor_c
+!!        type(ctl_array_c3), intent(in) :: field_ctl
+!!        type(phys_data), intent(inout) :: cor_phys
+!!        type(phys_data), intent(inout) :: ref_phys
 !
       module set_list_4_correlate
 !
@@ -21,41 +22,45 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_ctl_params_correlate(ist, ied, iint)
+      subroutine set_ctl_params_correlate(pcor_c, ist, ied, iint)
 !
       use m_default_file_prefix
-      use m_control_plane_correlate
+      use t_ctl_data_plane_correlate
       use m_correlate_4_plane
       use set_control_platform_data
 !
+      type(ctl_data_plane_correlate), intent(in) :: pcor_c
       integer(kind=kint ), intent(inout) :: ist, ied, iint
+!
       type(read_character_item) :: ucd_format_ctl
 !
 !
       ist = 1
-      if(t_pc_ctl%i_step_init_ctl%iflag .gt. 0) then
-        ist = t_pc_ctl%i_step_init_ctl%intvalue
+      if(pcor_c%t_pc_ctl%i_step_init_ctl%iflag .gt. 0) then
+        ist = pcor_c%t_pc_ctl%i_step_init_ctl%intvalue
       end if
 !
       ied = 1
-      if(t_pc_ctl%i_step_number_ctl%iflag .gt. 0) then
-        ied = t_pc_ctl%i_step_number_ctl%intvalue
+      if(pcor_c%t_pc_ctl%i_step_number_ctl%iflag .gt. 0) then
+        ied = pcor_c%t_pc_ctl%i_step_number_ctl%intvalue
       end if
 !
       iint = 1
-      if (t_pc_ctl%i_step_ucd_ctl%iflag .gt. 0) then
-        iint = t_pc_ctl%i_step_ucd_ctl%intvalue
+      if (pcor_c%t_pc_ctl%i_step_ucd_ctl%iflag .gt. 0) then
+        iint = pcor_c%t_pc_ctl%i_step_ucd_ctl%intvalue
       end if
 !
       call set_file_control_params(def_mesh_file_head,                  &
-     &    cor_mesh_head_ctl, cor_mesh_fmt_ctl, cor_mesh_file)
+     &    pcor_c%cor_mesh_head_ctl, pcor_c%cor_mesh_fmt_ctl,            &
+     &    cor_mesh_file)
       call set_file_control_params(def_mesh_file_head,                  &
-     &    ref_mesh_head_ctl, ref_mesh_fmt_ctl, ref_mesh_file)
+     &    pcor_c%ref_mesh_head_ctl, pcor_c%ref_mesh_fmt_ctl,            &
+     &    ref_mesh_file)
 !
       call set_parallel_file_ctl_params(cor_udt_header,                 &
-     &    cor_udt_head_ctl, ucd_format_ctl, cor_ucd_param)
+     &    pcor_c%cor_udt_head_ctl, ucd_format_ctl, cor_ucd_param)
       call set_parallel_file_ctl_params(ref_udt_header,                 &
-     &    ref_udt_head_ctl, ucd_format_ctl, ref_ucd_param)
+     &    pcor_c%ref_udt_head_ctl, ucd_format_ctl, ref_ucd_param)
 !
       end subroutine set_ctl_params_correlate
 !
