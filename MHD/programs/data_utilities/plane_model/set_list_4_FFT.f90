@@ -8,10 +8,12 @@
 !!      subroutine set_parameters_rst_by_spec                           &
 !!     &         (new_p_plt, t_zfft_ctl, cube_c, cube2nd_c, c_size,     &
 !!     &          num_pe, ist, ied, ifactor_step, ifactor_rst,          &
-!!     &          dt, t_init, kx_org, ky_org, iz_org, mesh_file)
+!!     &          dt, t_init, kx_org, ky_org, iz_org, nnod_new_k_org_z, &
+!!     &          mesh_file)
 !!      subroutine set_parameters_data_by_spec                          &
 !!     &         (new_p_plt, cube_c, cube2nd_c, c_size, num_pe,         &
-!!     &          kx_org, ky_org, iz_org, mesh_file, ucd_param)
+!!     &          kx_org, ky_org, iz_org, nnod_new_k_org_z,             &
+!!     &          mesh_file, ucd_param)
 !!        type(ctl_data_4_plane_model), intent(in) :: cube_c, cube2nd_c
 !!        type(size_of_cube), intent(inout) :: c_size
 !!        type(field_IO_params), intent(inout) :: ucd_param
@@ -94,11 +96,11 @@
       subroutine set_parameters_rst_by_spec                             &
      &          (new_p_plt, t_zfft_ctl, cube_c, cube2nd_c, c_size,      &
      &          num_pe, ist, ied, ifactor_step, ifactor_rst,            &
-     &          dt, t_init, kx_org, ky_org, iz_org, mesh_file)
+     &          dt, t_init, kx_org, ky_org, iz_org, nnod_new_k_org_z,   &
+     &          mesh_file)
 !
       use m_default_file_prefix
       use m_spectr_4_ispack
-      use m_set_new_spectr
       use set_control_platform_data
 !
       type(platform_data_control), intent(in) :: new_p_plt
@@ -112,6 +114,8 @@
       integer(kind = kint), intent(inout) :: ifactor_step, ifactor_rst
       integer(kind = kint), intent(inout) :: kx_org, ky_org, iz_org
       real(kind = kreal), intent(inout) :: dt, t_init
+!
+      integer(kind = kint), intent(inout) :: nnod_new_k_org_z
 !
 !
       write(*,*) 'new_mesh_prefix    ', new_p_plt%mesh_file_prefix
@@ -188,11 +192,11 @@
 !
       subroutine set_parameters_data_by_spec                            &
      &         (new_p_plt, cube_c, cube2nd_c, c_size, num_pe,           &
-     &          kx_org, ky_org, iz_org, mesh_file, ucd_param)
+     &          kx_org, ky_org, iz_org, nnod_new_k_org_z,               &
+     &          mesh_file, ucd_param)
 !
       use m_default_file_prefix
       use m_spectr_4_ispack
-      use m_set_new_spectr
       use m_field_file_format
       use t_ucd_data
       use set_parallel_file_name
@@ -206,6 +210,8 @@
       integer(kind = kint), intent(inout) :: kx_org, ky_org, iz_org
       type(field_IO_params),  intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: ucd_param
+!
+      integer(kind = kint), intent(inout) :: nnod_new_k_org_z
 !
 !
       write(*,*) 'nnod_plane_ctl:     ', cube_c%nnod_plane_ctl%intvalue

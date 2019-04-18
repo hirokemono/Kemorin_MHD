@@ -4,12 +4,15 @@
 !      Written by H.Matsui
 !      Modified by H.Matsui on June, 2007
 !
-!!      subroutine s_radial_interpolate(c_size)
+!!      subroutine s_radial_interpolate(c_size, kx_max, ky_max, iz_max,&
+!!     &          num_fft, num_io, num_spectr, phys_io, z_1, iz_1,     &
+!!     &          nnod_new_k_org_z, ncomp_nsp, idx_field, work_array)
 !!        type(size_of_cube), intent(in) :: c_size
 !
       module radial_interpolate
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -19,14 +22,23 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_radial_interpolate(c_size)
+      subroutine s_radial_interpolate(c_size, kx_max, ky_max, iz_max,  &
+     &          num_fft, num_io, num_spectr, phys_io, z_1, iz_1,       &
+     &          nnod_new_k_org_z, ncomp_nsp, idx_field, work_array)
 !
       use t_size_of_cube
-      use m_constants
-      use m_spectr_4_ispack
-      use m_set_new_spectr
 !
       type(size_of_cube), intent(in) :: c_size
+      integer(kind=kint ), intent(in) :: kx_max, ky_max, iz_max
+      integer(kind=kint ), intent(in) :: num_fft, num_io, num_spectr
+      real   (kind=kreal), intent(in) ::  phys_io(num_io*num_fft)
+      real   (kind=kreal), intent(in) ::  z_1(c_size%nz_all)
+      integer(kind=kint ), intent(in) ::  iz_1(c_size%nz_all)
+      integer(kind=kint ), intent(in) :: nnod_new_k_org_z, ncomp_nsp
+      integer(kind=kint), intent(in)  ::  idx_field(ncomp_nsp)
+!
+      real(kind=kreal), intent(inout)                                   &
+     &                  :: work_array(nnod_new_k_org_z,ncomp_nsp)
 !
       integer(kind=kint) :: i, j, ixy, iz, inod, i1, i2
 !

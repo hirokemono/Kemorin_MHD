@@ -3,14 +3,22 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine s_inverse_fft_4_plane(nx_all, ny_all, nz_all)
-!!      subroutine copy_2_inverted_data(nx_all, ny_all, nz_all)
-!!      subroutine copy_2_inverted_udt(nx_all, ny_all, merged_fld)
+!!      subroutine s_inverse_fft_4_plane                                &
+!!     &         (npl_spec, nx_all, ny_all, nz_all,                     &
+!!     &          kx_max, ky_max, iz_max, num_spectr,                   &
+!!     &          num_fft, wk_pfft, phys_d)
+!!      subroutine copy_2_inverted_data(nx_all, ny_all, nz_all,         &
+!!     &          kx_max, ky_max, iz_max, num_spectr, num_fft,          &
+!!     &          wk_pfft, phys_d)
+!!      subroutine copy_2_inverted_udt(nx_all, ny_all,                  &
+!!     &          kx_max, ky_max, iz_max, num_spectr, num_fft,          &
+!!     &          wk_pfft, merged_fld)
 !!        type(phys_data), intent(inout) :: merged_fld
 !
       module inverse_fft_4_plane
 !
       use m_precision
+      use t_set_new_spectr
 !
       implicit none
 !
@@ -26,12 +34,20 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine s_inverse_fft_4_plane(nx_all, ny_all, nz_all)
+      subroutine s_inverse_fft_4_plane                                  &
+     &         (npl_spec, nx_all, ny_all, nz_all,                       &
+     &          kx_max, ky_max, iz_max, num_spectr,                     &
+     &          num_fft, wk_pfft, phys_d)
 !
-      use m_spectr_4_ispack
       use t_FFT_selector
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+      integer(kind = kint), intent(in) :: kx_max, ky_max, iz_max
+      integer(kind = kint), intent(in) :: num_spectr, num_fft
+      type(new_plane_spectr), intent(in) :: npl_spec
+!
+      real(kind=kreal), intent(inout)  ::  wk_pfft(num_spectr*num_fft)
+      real(kind=kreal), intent(inout)  ::  phys_d(num_spectr*num_fft)
 !
       type(working_FFTs) :: WK_FFTS
       integer(kind=kint ) :: n1
@@ -39,16 +55,19 @@
 !
       Nstacksmp(0) = 0
 !
-      call copy_4_inversse_fft_y(nx_all, ny_all, nz_all)
+      call copy_4_inversse_fft_y(npl_spec, nx_all, ny_all, nz_all,      &
+     &          kx_max, ky_max, iz_max, num_spectr, num_fft,            &
+     &          wk_pfft, phys_d)
 !
       n1 = num_fft*iz_max*kx_max
       Nstacksmp(1) = n1
 !
       call verify_FFT_select(Nsmp, Nstacksmp, ky_max, WK_FFTS)
       call backward_FFT_select                                          &
-     &   (Nsmp, Nstacksmp, n1, ky_max, work, WK_FFTS)
+     &   (Nsmp, Nstacksmp, n1, ky_max, wk_pfft, WK_FFTS)
 !
-      call copy_4_inversse_fft_x
+      call copy_4_inversse_fft_x(kx_max, ky_max, iz_max,                &
+     &    num_spectr, num_fft, wk_pfft, phys_d)
 !
       n1 = num_fft*iz_max*ky_max
       Nstacksmp(1) = n1
@@ -56,19 +75,25 @@
 !      write(*,*) 'start FFT', n1, kx_max
       call verify_FFT_select(Nsmp, Nstacksmp, kx_max, WK_FFTS)
       call backward_FFT_select                                          &
-     &   (Nsmp, Nstacksmp, n1, kx_max, work, WK_FFTS)
+     &   (Nsmp, Nstacksmp, n1, kx_max, wk_pfft, WK_FFTS)
 !
       end subroutine s_inverse_fft_4_plane
 !
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine copy_4_inversse_fft_y(nx_all, ny_all, nz_all)
-!
-      use m_spectr_4_ispack
-      use m_set_new_spectr
+      subroutine copy_4_inversse_fft_y                                  &
+     &         (npl_spec, nx_all, ny_all, nz_all,                       &
+     &          kx_max, ky_max, iz_max, num_spectr, num_fft,            &
+     &          wk_pfft, phys_d)
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+      integer(kind = kint), intent(in) :: kx_max, ky_max, iz_max
+      integer(kind = kint), intent(in) :: num_spectr, num_fft
+      type(new_plane_spectr), intent(in) :: npl_spec
+!
+      real(kind=kreal), intent(inout)  ::  wk_pfft(num_spectr*num_fft)
+      real(kind=kreal), intent(inout)  ::  phys_d(num_spectr*num_fft)
 !
       integer(kind = kint) :: inod, j, ix, iy, iz, i1, i2
 !
@@ -80,7 +105,7 @@
             do iz = 1, nz_all
               inod = (iy-1)*(nx_all*nz_all) + (ix-1)*nz_all + iz
               i1   = (j-1)*num_spectr + inod
-              phys_d(i1) = new_spectr(inod,j)
+              phys_d(i1) = npl_spec%new_spectr(inod,j)
             end do
           end do
         end do
@@ -102,7 +127,7 @@
               i1 = (j-1)*num_spectr                                     &
      &            + (iy-1)*(nx_all*nz_all) + (ix-1)*nz_all + iz
 !
-              work(i2) = phys_d(i1)
+              wk_pfft(i2) = phys_d(i1)
 !
             end do
           end do
@@ -114,9 +139,14 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine copy_4_inversse_fft_x
+      subroutine copy_4_inversse_fft_x(kx_max, ky_max, iz_max,          &
+     &          num_spectr, num_fft, wk_pfft, phys_d)
 !
-      use m_spectr_4_ispack
+      integer(kind = kint), intent(in) :: kx_max, ky_max, iz_max
+      integer(kind = kint), intent(in) :: num_spectr, num_fft
+!
+      real(kind=kreal), intent(inout)  ::  wk_pfft(num_spectr*num_fft)
+      real(kind=kreal), intent(inout)  ::  phys_d(num_spectr*num_fft)
 !
       integer(kind = kint) :: inod, i, j, ix, iy, iz, i1, i2
 !
@@ -125,7 +155,7 @@
       do j = 1, num_fft
         do inod = 1, num_spectr
           i = (j-1)*num_spectr + inod
-          phys_d(i) = work(i)
+          phys_d(i) = wk_pfft(i)
         end do
       end do
 !$omp end parallel do
@@ -156,7 +186,7 @@
               i1 = (iy-1)*(num_fft*iz_max*kx_max)                       &
      &            + (j-1)*(iz_max*kx_max) + (iz-1)*kx_max + ix
 !
-              work(i2) = phys_d(i1)
+              wk_pfft(i2) = phys_d(i1)
 !
             end do
           end do
@@ -168,11 +198,16 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine copy_2_inverted_data(nx_all, ny_all, nz_all)
-!
-      use m_spectr_4_ispack
+      subroutine copy_2_inverted_data(nx_all, ny_all, nz_all,           &
+     &          kx_max, ky_max, iz_max, num_spectr, num_fft,            &
+     &          wk_pfft, phys_d)
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+      integer(kind = kint), intent(in) :: kx_max, ky_max, iz_max
+      integer(kind = kint), intent(in) :: num_spectr, num_fft
+      real(kind=kreal), intent(in)  ::  wk_pfft(num_spectr*num_fft)
+!
+      real(kind=kreal), intent(inout)  ::  phys_d(num_spectr*num_fft)
 !
       integer(kind = kint) :: j, ix, iy, iz, i1, i2
 !
@@ -187,7 +222,7 @@
               i2 = (ix-1)*(num_fft*iz_max*ky_max)                       &
      &            + (j-1)*(iz_max*ky_max)  + (iz-1)*ky_max + iy
 !
-              phys_d(i1) = work(i2)
+              phys_d(i1) = wk_pfft(i2)
 !
             end do
           end do
@@ -213,12 +248,17 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine copy_2_inverted_udt(nx_all, ny_all, merged_fld)
+      subroutine copy_2_inverted_udt(nx_all, ny_all,                    &
+     &          kx_max, ky_max, iz_max, num_spectr, num_fft,            &
+     &          wk_pfft, merged_fld)
 !
-      use m_spectr_4_ispack
       use t_phys_data
 !
       integer(kind=kint), intent(in) :: nx_all, ny_all
+      integer(kind = kint), intent(in) :: kx_max, ky_max, iz_max
+      integer(kind = kint), intent(in) :: num_spectr, num_fft
+      real(kind=kreal), intent(in)  ::  wk_pfft(num_spectr*num_fft)
+!
       type(phys_data), intent(inout) :: merged_fld
 !
       integer(kind = kint) :: j, ix, iy, iz, i1, i2
@@ -233,7 +273,7 @@
               i2 = (ix-1)*(num_fft*iz_max*ky_max)                       &
      &            + (j-1)*(iz_max*ky_max) + (iz-1)*ky_max + iy
 !
-              merged_fld%d_fld(i1,j) = work(i2)
+              merged_fld%d_fld(i1,j) = wk_pfft(i2)
 !
             end do
           end do

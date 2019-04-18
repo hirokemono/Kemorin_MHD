@@ -24,7 +24,7 @@
       integer(kind=kint ), allocatable :: icomp_fft(:)
 
 
-      real   (kind=kreal), allocatable  ::  work(:)
+      real   (kind=kreal), allocatable  ::  wk_pfft(:)
 !
       character(len=kchara  )               ::  spectr_data_head
       character(len=kchara  )               ::  spectr_data_name
@@ -58,10 +58,10 @@
        num_spectr = kx_max*ky_max*iz_max
 !
        allocate ( phys_d(num_spectr*num_fft) )
-       allocate ( work(num_spectr*num_fft) )
+       allocate ( wk_pfft(num_spectr*num_fft) )
 
        phys_d = 0.0d0
-       work = 0.0d0
+       wk_pfft = 0.0d0
 !
        end subroutine allocate_horiz_spectr
 !
@@ -95,7 +95,7 @@
        subroutine deallocate_horiz_spectr
 !
        deallocate ( phys_d )
-       deallocate ( work )
+       deallocate ( wk_pfft )
 !
        end subroutine deallocate_horiz_spectr
 !

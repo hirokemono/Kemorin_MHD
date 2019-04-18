@@ -4,7 +4,9 @@
 !      Written by H.Matsui
 !      Modified by H.Matsui on June, 2006
 !
-!      subroutine s_cal_fft_for_horizontal
+!!      subroutine s_cal_fft_for_horizontal(kx_max, ky_max, iz_max,     &
+!!     &          num_spectr, num_io, num_fft, icomp_fft,               &
+!!     &          phys_d, wk_pfft, phys_io)
 !
       module cal_fft_for_horizontal
 !
@@ -18,10 +20,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_fft_for_horizontal
+      subroutine s_cal_fft_for_horizontal(kx_max, ky_max, iz_max,       &
+     &          num_spectr, num_io, num_fft, icomp_fft,                 &
+     &          phys_d, wk_pfft, phys_io)
 !
-      use m_spectr_4_ispack
       use t_FFT_selector
+!
+      integer(kind = kint), intent(in) :: kx_max, ky_max, iz_max
+      integer(kind = kint), intent(in) :: num_spectr, num_io, num_fft
+      integer(kind = kint), intent(in) :: icomp_fft(num_fft)
+!
+      real(kind=kreal), intent(inout)  ::  phys_d(num_spectr*num_fft)
+      real(kind=kreal), intent(inout)  ::  wk_pfft(num_spectr*num_fft)
+      real(kind=kreal), intent(inout)  ::  phys_io(num_io*num_fft)
 !
       integer(kind = kint) :: Nsmp
       integer(kind = kint), allocatable :: Nstacksmp(:)
@@ -63,7 +74,7 @@
           i = (ix-1)*(num_fft*iz_max*ky_max) + (j-1)*(iz_max*ky_max)    &
      &          + (iz-1)*ky_max + iy
 !
-           work(i) = phys_d (i_org)
+           wk_pfft(i) = phys_d (i_org)
 !
           end do
          end do
@@ -78,14 +89,14 @@
 !
       call verify_FFT_select(num_fft, Nstacksmp, kx_max, WK_FFTS)
       call forward_FFT_select                                           &
-     &   (Nsmp, Nstacksmp, n1, kx_max, work, WK_FFTS)
+     &   (Nsmp, Nstacksmp, n1, kx_max, wk_pfft, WK_FFTS)
 !
 !    swap array
 !
       do j = 1, num_fft
         do inod = 1, num_spectr
           i = (j-1)*num_spectr + inod
-          phys_d(i) = work(i)
+          phys_d(i) = wk_pfft(i)
         end do
       end do
 !
@@ -114,7 +125,7 @@
           i = (iy-1)*(num_fft*iz_max*kx_max) + (j-1)*(iz_max*kx_max)    &
      &          + (iz-1)*kx_max + ix
 !
-          work(i) = phys_d(i_org)
+          wk_pfft(i) = phys_d(i_org)
 !
          end do
         end do
@@ -129,7 +140,7 @@
 !
       call verify_FFT_select(num_fft, Nstacksmp, ky_max, WK_FFTS)
       call forward_FFT_select                                           &
-     &   (Nsmp, Nstacksmp, n1, ky_max, work, WK_FFTS)
+     &   (Nsmp, Nstacksmp, n1, ky_max, wk_pfft, WK_FFTS)
 !
 !    swap array
 !
@@ -144,7 +155,7 @@
           i     = (j-1)*num_spectr + (iy-1)*(iz_max*kx_max)             &
      &           + (ix-1)*iz_max + iz
 !
-          phys_io(i) = work(i_org)
+          phys_io(i) = wk_pfft(i_org)
 !
          end do
         end do

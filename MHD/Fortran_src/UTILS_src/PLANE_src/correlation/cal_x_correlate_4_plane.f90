@@ -1,16 +1,25 @@
 !
 !      module cal_x_correlate_4_plane
 !
+!      Written by Kemorin
+!
+!!      subroutine s_cal_x_correlate_4_plane                            &
+!!     &         (istep, num_crt, num_domain_c, kx_max, ky_max, iz_max, &
+!!     &          phys_d1, ave_data, rms_data, sig_data,                &
+!!     &          phys_d2, ave_data2, rms_data2, sig_data2,             &
+!!     &          crt_data, rms_ratio)
+!!      subroutine s_cal_x_correlate_4_snap                             &
+!!     &         (istep, num_crt, num_domain_c, kx_max, ky_max, iz_max, &
+!!     &          phys_d1, ave_data, rms_data, sig_data,                &
+!!     &          phys_d2, ave_data2, rms_data2, sig_data2,             &
+!!     &          crt_data, rms_ratio)
+!
       module cal_x_correlate_4_plane
 !
-!      Written by Kemorin
 !
       use m_precision
 !
       implicit    none
-!
-!      subroutine s_cal_x_correlate_4_plane(istep)
-!      subroutine s_cal_x_correlate_4_snap(istep)
 !
 !  ---------------------------------------------------------------------
 !
@@ -18,17 +27,38 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_x_correlate_4_plane(istep)
+      subroutine s_cal_x_correlate_4_plane                              &
+     &         (istep, num_crt, num_domain_c, kx_max, ky_max, iz_max,   &
+     &          phys_d1, ave_data, rms_data, sig_data,                  &
+     &          phys_d2, ave_data2, rms_data2, sig_data2,               &
+     &          crt_data, rms_ratio)
 !
-      use m_correlate_4_plane
       use cal_horizontal_rms_ave
       use output_correlation_data
 !
       integer(kind = kint), intent(in) :: istep
+      integer(kind=kint ), intent(in) :: num_crt, num_domain_c
+      integer(kind=kint ), intent(in) :: kx_max, ky_max, iz_max
+      real   (kind=kreal), intent(in) :: phys_d1(num_domain_c*num_crt) 
+      real   (kind=kreal), intent(in) :: phys_d2(num_domain_c*num_crt) 
+!
+      real(kind=kreal), intent(inout) :: ave_data(iz_max*num_crt)
+      real(kind=kreal), intent(inout) :: ave_data2(iz_max*num_crt)
+      real(kind=kreal), intent(inout) :: rms_data(iz_max*num_crt)
+      real(kind=kreal), intent(inout) :: rms_data2(iz_max*num_crt)
+      real(kind=kreal), intent(inout) :: sig_data(iz_max*num_crt)
+      real(kind=kreal), intent(inout) :: sig_data2(iz_max*num_crt)
+      real(kind=kreal), intent(inout)  ::  rms_ratio(iz_max*num_crt)
+!
+      real   (kind=kreal), intent(inout)  ::  crt_data(iz_max*num_crt)
+!
       integer (kind = kint) :: ix, iy, iz, j, ii, i0
 !
 !
-      call s_cal_horizontal_rms_ave
+      call s_cal_horizontal_rms_ave                                     &
+     &         (kx_max, ky_max, iz_max, num_crt, num_domain_c,          &
+     &          phys_d1, phys_d2, ave_data, rms_data, sig_data,         &
+     &          ave_data2, rms_data2, sig_data2, crt_data, rms_ratio)
 !
       do j = 1, num_crt
        do iz = 1, iz_max
@@ -58,17 +88,37 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_x_correlate_4_snap(istep)
+      subroutine s_cal_x_correlate_4_snap                               &
+     &         (istep, num_crt, num_domain_c, kx_max, ky_max, iz_max,   &
+     &          phys_d1, ave_data, rms_data, sig_data,                  &
+     &          phys_d2, ave_data2, rms_data2, sig_data2,               &
+     &          crt_data, rms_ratio)
 !
-      use m_correlate_4_plane
       use cal_horizontal_rms_ave
       use output_correlation_data
 !
       integer(kind = kint), intent(in) :: istep
+      integer(kind=kint ), intent(in) :: num_crt, num_domain_c
+      integer(kind=kint ), intent(in) :: kx_max, ky_max, iz_max
+      real   (kind=kreal), intent(in) :: phys_d1(num_domain_c*num_crt) 
+      real   (kind=kreal), intent(in) :: phys_d2(num_domain_c*num_crt) 
+      real(kind=kreal), intent(inout) :: ave_data(iz_max*num_crt)
+      real(kind=kreal), intent(inout) :: ave_data2(iz_max*num_crt)
+      real(kind=kreal), intent(inout) :: rms_data(iz_max*num_crt)
+      real(kind=kreal), intent(inout) :: rms_data2(iz_max*num_crt)
+      real(kind=kreal), intent(inout) :: sig_data(iz_max*num_crt)
+      real(kind=kreal), intent(inout) :: sig_data2(iz_max*num_crt)
+      real(kind=kreal), intent(inout)  ::  rms_ratio(iz_max*num_crt)
+!
+      real   (kind=kreal), intent(inout)  ::  crt_data(iz_max*num_crt)
+!
       integer (kind = kint) :: ix, iy, iz, j, ii, i0, jx, jy, j0
 !
 !
-      call s_cal_horizontal_rms_ave
+      call s_cal_horizontal_rms_ave                                     &
+     &         (kx_max, ky_max, iz_max, num_crt, num_domain_c,          &
+     &          phys_d1, phys_d2, ave_data, rms_data, sig_data,         &
+     &          ave_data2, rms_data2, sig_data2, crt_data, rms_ratio)
 !
       do jy = 1, ky_max
         write(*,*) 'offset of y: ', jy, ' of ', ky_max

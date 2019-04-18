@@ -1,9 +1,14 @@
 !
 !      module cal_horizontal_rms_ave
 !
-      module cal_horizontal_rms_ave
-!
 !     Written by H. Matsui
+!
+!!      subroutine s_cal_horizontal_rms_ave                             &
+!!     &         (kx_max, ky_max, iz_max, num_crt, num_domain_c,        &
+!!     &          phys_d1, phys_d2, ave_data, rms_data, sig_data,       &
+!!     &          ave_data2, rms_data2, sig_data2, crt_data, rms_ratio)
+!
+      module cal_horizontal_rms_ave
 !
       use m_precision
 !
@@ -11,17 +16,30 @@
 !
       private :: cal_rms
 !
-!      subroutine s_cal_horizontal_rms_ave
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_horizontal_rms_ave
+      subroutine s_cal_horizontal_rms_ave                               &
+     &         (kx_max, ky_max, iz_max, num_crt, num_domain_c,          &
+     &          phys_d1, phys_d2, ave_data, rms_data, sig_data,         &
+     &          ave_data2, rms_data2, sig_data2, crt_data, rms_ratio)
 !
-      use m_correlate_4_plane
+      integer(kind=kint), intent(in) :: kx_max, ky_max, iz_max
+      integer(kind=kint), intent(in) :: num_crt, num_domain_c
+      real(kind=kreal), intent(in) ::  phys_d1(num_domain_c*num_crt)
+      real(kind=kreal), intent(in) ::  phys_d2(num_domain_c*num_crt)
+!
+      real(kind=kreal), intent(inout)  ::  ave_data(iz_max*num_crt)
+      real(kind=kreal), intent(inout)  ::  ave_data2(iz_max*num_crt)
+      real(kind=kreal), intent(inout)  ::  rms_data(iz_max*num_crt)
+      real(kind=kreal), intent(inout)  ::  rms_data2(iz_max*num_crt)
+      real(kind=kreal), intent(inout)  ::  sig_data(iz_max*num_crt)
+      real(kind=kreal), intent(inout)  ::  sig_data2(iz_max*num_crt)
+      real(kind=kreal), intent(inout)  ::  crt_data(iz_max*num_crt)
+      real(kind=kreal), intent(inout)  ::  rms_ratio(iz_max*num_crt)
 !
       integer (kind = kint) :: ix, iy, iz, j, ii, i0
 !

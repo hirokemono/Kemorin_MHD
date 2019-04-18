@@ -130,7 +130,11 @@
 !  -------  Cross correlatiion
 !
        write(*,*) 's_cal_x_correlate_4_snap'
-       call s_cal_x_correlate_4_snap(istep)
+       call s_cal_x_correlate_4_snap                                    &
+     &         (istep, num_crt, num_domain_c, kx_max, ky_max, iz_max,   &
+     &          phys_d1, ave_data, rms_data, sig_data,                  &
+     &          phys_d2, ave_data2, rms_data2, sig_data2,               &
+     &          crt_data, rms_ratio)
 !
       call close_results_4_correlate
 !

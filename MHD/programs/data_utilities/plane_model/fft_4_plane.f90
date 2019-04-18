@@ -103,7 +103,9 @@
 !
 !  -------   Fourier Transform
 !
-       call s_cal_fft_for_horizontal
+       call s_cal_fft_for_horizontal(kx_max, ky_max, iz_max,            &
+     &          num_spectr, num_io, num_fft, icomp_fft,                 &
+     &          phys_d, wk_pfft, phys_io)
 !
 !
 !     ======================

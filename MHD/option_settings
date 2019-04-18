@@ -7,7 +7,7 @@ Settings for Makefiles
 #
 ./configure --prefix=/Users/matsui/local \
 CFLAGS='-O4 -Wall -g' FCFLAGS='-O4 -Wall -g -march=westmere  -ffpe-trap=invalid,underflow,denormal -ffpe-summary=invalid,underflow,denormal' \
-F77=gfortran-mp-5 FC=gfortran-mp-7 CC=gcc-mp-7 CXX=g++-mp-7 \
+F77=gfortran-mp-7 FC=gfortran-mp-7 CC=gcc-mp-7 CXX=g++-mp-7 \
 RANLIB='ranlib -c' --enable-cocoa --with-blas=yes --enable-fftw3 \
 --enable-gl --enable-glui --enable-gtk --enable-libpng \
 --with-zlib=/opt/local --with-hdf5=/opt/local/bin/h5pcc \

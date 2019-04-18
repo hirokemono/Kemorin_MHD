@@ -19,7 +19,7 @@
       use m_constants
       use m_file_format_switch
       use m_phys_labels
-      use m_set_new_spectr
+      use t_set_new_spectr
       use m_spectr_4_ispack
       use count_number_with_overlap
       use set_plane_spectr_file_head
@@ -36,6 +36,7 @@
 !
 !
       type(ctl_data_plane_fft), save :: pfft_c1
+      type(new_plane_spectr), save :: npl_spec1
       type(field_IO_params), save ::  plane_mesh_file
       type(merged_mesh), save :: mgd_mesh_pm
       type(size_of_cube), save :: c_size1
@@ -85,13 +86,14 @@
      &   (pfft_c1%new_p_plt, pfft_c1%t_zfft_ctl, pfft_c1%cube_c_fft,    &
      &    pfft_c1%cube2nd_cf, c_size1, mgd_mesh_pm%num_pe,              &
      &    ist, ied, ifactor_step, ifactor_rst, dt_init, t_init,         &
-     &    kx_org, ky_org, iz_org, plane_mesh_file)
+     &    kx_org, ky_org, iz_org, npl_spec1%nnod_new_k_org_z,           &
+     &    plane_mesh_file)
 !
 !     read outline of mesh
 !
       call s_set_numnod_4_plane(c_size1, mgd_mesh_pm%merge_tbl)
 !
-      call allocate_z_compliment_info(c_size1%nz_all)
+      call alloc_z_compliment_info(c_size1%nz_all, npl_spec1)
 !
 !    setting for initial values
 !
@@ -122,7 +124,7 @@
 !  check positions in z-direction
 !
      call check_plane_horiz_position                                    &
-    &   (mgd_mesh_pm%merged, mgd_mesh_pm%merged_fld)
+    &   (mgd_mesh_pm%merged, mgd_mesh_pm%merged_fld, npl_spec1)
 !
       kx_new = c_size1%nx_all
       ky_new = c_size1%ny_all
@@ -139,10 +141,11 @@
 !
       call allocate_horiz_spectr
 !
-      call allocate_work_array_4_r(mgd_mesh_pm%merge_tbl%inter_nod_m)
+      call alloc_work_array_4_r                                         &
+    &    (mgd_mesh_pm%merge_tbl%inter_nod_m, npl_spec1)
 !
 !      do iz = 1, c_size1%nz_all
-!       write(*,*) iz, iz_1(iz), z_1(iz)
+!       write(*,*) iz, npl_spec%iz_1(iz), npl_spec%z_1(iz)
 !      end do
 !
 !       write(*,*) 'numnod tako', mgd_mesh_pm%merge_tbl%nnod_merged
@@ -170,13 +173,19 @@
 !     interpolate in radial direction
 !
         write(*,*) 's_radial_interpolate'
-        call s_radial_interpolate(c_size1)
+        call s_radial_interpolate                                       &
+     &     (c_size1, kx_max, ky_max, iz_max,                            &
+     &      num_fft, num_io, num_spectr, phys_io,                       &
+     &      npl_spec1%z_1, npl_spec1%iz_1, npl_spec1%nnod_new_k_org_z,  &
+     &      npl_spec1%ncomp_nsp, npl_spec1%idx_field,                   &
+     &      npl_spec1%work_array)
 !
 !  set new spectr
 !
         write(*,*) 'set_new_spectr'
         call set_new_spectr                                             &
-     &     (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all)
+     &     (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,             &
+     &      kx_max, ky_max, npl_spec1)
 !
 !    deallocate old spectram data
 !
@@ -197,9 +206,13 @@
 !      call allocate_spectr_name
 !
         call s_inverse_fft_4_plane                                      &
-     &     (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all)
+     &     (npl_spec1, c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,  &
+     &          kx_max, ky_max, iz_max, num_spectr,                     &
+     &          num_fft, wk_pfft, phys_d)
         call copy_2_inverted_data                                       &
-     &     (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all)
+     &     (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,             &
+     &          kx_max, ky_max, iz_max, num_spectr, num_fft,            &
+     &          wk_pfft, phys_d)
 !
 !   read mesh data
 !
@@ -243,10 +256,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine check_plane_horiz_position(merged, merged_fld)
+      subroutine check_plane_horiz_position                             &
+     &         (merged, merged_fld, npl_spec)
 !
       type(mesh_geometry), intent(in) :: merged
       type(phys_data), intent(in) :: merged_fld
+!
+      type(new_plane_spectr), intent(inout) :: npl_spec
 !
       integer(kind=kint ) :: i1, iz
       integer(kind=kint ) :: i, j
@@ -257,14 +273,14 @@
       do iz = 1, c_size1%nz_all
        i1 = iz * c_size1%nx_all * c_size1%ny_all
        if(merged%node%xx(i1,3) .eq. zz(1)) then
-        iz_1(iz) = 1
-        z_1(iz) = 1.0d0
+        npl_spec%iz_1(iz) = 1
+        npl_spec%z_1(iz) = 1.0d0
        end if
        do j = 2, iz_max
         if (merged%node%xx(i1,3).gt.zz(j-1)                             &
      &       .and. merged%node%xx(i1,3).le.zz(j)) then
-         iz_1(iz) = j
-         z_1(iz)  = (merged%node%xx(i1,3) - zz(j-1))                    &
+         npl_spec%iz_1(iz) = j
+         npl_spec%z_1(iz)  = (merged%node%xx(i1,3) - zz(j-1))           &
      &             / ( zz(j) - zz(j-1) )
         end if
        end do
@@ -310,8 +326,8 @@
 !
 !  set restart data
 !
-      ncomp_nsp = merged_fld%ntot_phys
-      call allocate_index_4_trans
+      npl_spec%ncomp_nsp = merged_fld%ntot_phys
+      call alloc_index_4_trans(npl_spec)
 !
 !
 !  set index for transfer
@@ -322,14 +338,14 @@
           if (merged_fld%phys_name(i) .eq. fft_name(j)) then
             if (merged_fld%num_component(i) .eq. 3) then
               if (fft_comp(j) .eq.'x' .or. fft_comp(j) .eq.'X') then
-                idx_field(icomp) = j
+                npl_spec%idx_field(icomp) = j
               else if (fft_comp(j) .eq.'y' .or. fft_comp(j) .eq.'Y') then
-                idx_field(icomp+1) = j
+                npl_spec%idx_field(icomp+1) = j
               else if (fft_comp(j) .eq.'z' .or. fft_comp(j) .eq.'Z') then
-                idx_field(icomp+2) = j
+                npl_spec%idx_field(icomp+2) = j
               end if
             else
-              idx_field(icomp) = j
+              npl_spec%idx_field(icomp) = j
             end if
           end if
         end do
