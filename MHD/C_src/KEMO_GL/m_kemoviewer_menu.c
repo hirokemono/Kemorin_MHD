@@ -285,6 +285,7 @@ void init_psf_parameters(struct psf_menu_val *psf_m){
 
 	psf_m->polygon_mode_psf = INIT_POLYGON_MODE;
 	psf_m->ivect_tangential = INIT_TANGENTIAL_VECT;
+    psf_m->vector_thick = INIT_VECTOR_WIDTH;
 
 	psf_m->draw_psf_solid = IONE;
 	psf_m->draw_psf_grid = IZERO;

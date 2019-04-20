@@ -51,6 +51,7 @@
 @synthesize PSFVectorMenuAcrive;
 @synthesize DrawPSFVectorFlag;
 @synthesize ScaleVector;
+@synthesize VectorThickness;
 @synthesize PSFVectorIncrement;
 - (id)init;
 {
@@ -177,6 +178,7 @@
 	self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
 	self.ScaleVector =       kemoview_get_PSF_vector_scale();
 	self.PSFVectorIncrement = kemoview_get_PSF_vector_increment();
+    self.VectorThickness = kemoview_get_PSF_vector_thickness();
 	
 	self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
 	self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
@@ -224,6 +226,7 @@
      self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
      self.ScaleVector =       kemoview_get_PSF_vector_scale();
      self.PSFVectorIncrement = kemoview_get_PSF_vector_increment();
+     self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
      
      self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
      self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
@@ -617,6 +620,12 @@
 	[_kemoviewer UpdateImage];
 }
 
+- (IBAction)SetVectorThickness:(id)pSender {
+    kemoview_set_PSF_vector_thickness((double) self.VectorThickness);
+    
+    [_kemoviewer UpdateImage];
+}
+    
 - (IBAction)ChoosePsfPatchDirection:(id)sender;
 {
 	self.psfPatchDirectionTag = [[_psfPatchDirMatrix selectedCell] tag];

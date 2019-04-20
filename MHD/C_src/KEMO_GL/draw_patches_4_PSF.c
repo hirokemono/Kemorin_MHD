@@ -227,7 +227,6 @@ void draw_patches_4_map(int shading_mode, int ist_psf, int ied_psf,
 
 void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m, struct buffer_for_gl *gl_buf) {
     int ncorner = 20;
-    float radius = 0.05;
     float x_line[6], dir_line[6], color_line[8];
     float xyz[18*ncorner], nor[18*ncorner], col[24*ncorner];
     GLdouble dcolor[4];
@@ -240,6 +239,7 @@ void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m, struct
 	int icomp = psf_s->istack_comp[psf_m->if_draw_psf];
 	int iflag_coord = psf_s->id_coord[psf_m->if_draw_psf];
 	int iflag_tangential = psf_m->ivect_tangential;
+    float radius = (float) psf_m->vector_thick;
 	double ascale = ONE / psf_m->scale_vect;
 	
 	glPushMatrix();
@@ -297,6 +297,8 @@ void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m, struct
                 d_mag = sqrt(v_xyz[0]*v_xyz[0]+v_xyz[1]*v_xyz[1]+v_xyz[2]*v_xyz[2]);
                 if(psf_m->vector_patch_color == RAINBOW_SURFACE){
                     set_rainbow_color_code(psf_m->cmap_psf, d_mag, dcolor);
+                } else {
+                    for(nd=0;nd<4;nd++){dcolor[nd] = 0.9;}
                 }
                 
                 for (k=0; k<3; k++){

@@ -102,7 +102,7 @@
 	NSInteger DrawPSFVectorFlag;
 	NSInteger PSFVectorIncrement;
 	CGFloat ScaleVector;
-    
+    CGFloat VectorThickness;    
 }
 @property NSInteger psfMoreOpenFlag;
 @property NSInteger EvolutionStartStep;
@@ -144,6 +144,7 @@
 @property NSInteger DrawPSFVectorFlag;
 @property NSInteger PSFVectorIncrement;
 @property CGFloat ScaleVector;
+@property CGFloat VectorThickness;
 
 
 - (id)init;
@@ -187,6 +188,7 @@
 - (IBAction)DrawPSFVectorAction:(id)sender;
 - (IBAction)SetReferenceVector:(id)pSender;
 - (IBAction)SetVectorIncrement:(id)pSender;
+- (IBAction)SetVectorThickness:(id)pSender;
 
 - (IBAction)ChoosePsfPatchDirection:(id)sender;
 
