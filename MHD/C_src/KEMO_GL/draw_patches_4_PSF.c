@@ -298,7 +298,7 @@ void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m, struct
                 if(psf_m->vector_patch_color == RAINBOW_SURFACE){
                     set_rainbow_color_code(psf_m->cmap_psf, d_mag, dcolor);
                 } else {
-                    for(nd=0;nd<4;nd++){dcolor[nd] = 0.9;}
+                    for(nd=0;nd<4;nd++){dcolor[nd] = white[nd];}
                 }
                 
                 for (k=0; k<3; k++){

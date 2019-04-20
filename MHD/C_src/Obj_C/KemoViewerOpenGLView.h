@@ -95,8 +95,6 @@ typedef struct {
 - (void) otherMouseDragged:(NSEvent *)theEvent;
 - (void) magnifyWithEvent:(NSEvent *)theEvent;
 
-- (void) drawRect:(NSRect)rect;
-
 - (BOOL) acceptsFirstResponder;
 - (BOOL) becomeFirstResponder;
 - (BOOL) resignFirstResponder;

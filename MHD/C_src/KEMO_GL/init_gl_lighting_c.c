@@ -58,8 +58,7 @@ void kemo_gl_initial_lighting_c(struct view_element *view_s){
 	init_kemoview_perspective(view_s);
 	
 	glMatrixMode(GL_PROJECTION);
-	gluPerspective(view_s->aperture, view_s->aspect, 
-				   view_s->near, view_s->far);
+	perspectiveGL(view_s->aperture, view_s->aspect, view_s->near, view_s->far);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();

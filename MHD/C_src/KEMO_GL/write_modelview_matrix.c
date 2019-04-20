@@ -122,13 +122,13 @@ void copy_GL_modelview_params_from_ctl(struct modeview_ctl_c *mat_c, struct view
 		view->ny_window = set_from_int_ctl_item_c(mat_c->img_size_c->num_ypixel_ctl);
 	};
 	
-	copy_vector_from_ctl(&mat_c->viewpt_in_viewer_list, viewpt_in_view);
+	copy_vector_from_ctl(&mat_c->viewpt_in_viewer_list->cr_item_head, viewpt_in_view);
     
     set_from_real_ctl_item_c(mat_c->scale_factor_ctl, &view->iso_scale);
     
-	copy_vector_from_ctl(&mat_c->lookpoint_list, lookat_in_view);
+	copy_vector_from_ctl(&mat_c->lookpoint_list->cr_item_head, lookat_in_view);
 	
-	copy_vector_from_ctl(&mat_c->view_rot_vec_list, drotation);
+	copy_vector_from_ctl(&mat_c->view_rot_vec_list->cr_item_head, drotation);
     set_from_real_ctl_item_c(mat_c->view_rotation_deg_ctl, &view->rotation[0]);
 	
     if(mat_c->iflag_projection_mat_ctl > 0){

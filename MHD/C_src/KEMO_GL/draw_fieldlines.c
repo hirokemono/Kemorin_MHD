@@ -4,8 +4,9 @@
 
 #include "draw_fieldlines.h"
 
+/*
 static const GLfloat black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
-
+*/
 
 
 void draw_fieldtubes_c(struct psf_data *fline_s, struct fline_menu_val *fline_m,

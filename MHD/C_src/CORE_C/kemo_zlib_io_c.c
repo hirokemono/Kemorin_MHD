@@ -66,9 +66,9 @@ void rawseek_go_fwd_f(int *ioffset, int *ierr){
 }
 
 void rawread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara){
-    int i;
     *lenchara =  fread(textbuf, sizeof(char), *ilength, fp);
     /*
+    int i;
     printf("iflag_swap %d\n", *iflag_swap);
     printf("original_32:\n");
     for(i=0;i<*ilength;i++){printf("%x ", textbuf[i]);};
@@ -84,9 +84,9 @@ void rawread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara
 }
 
 void rawread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara){
-    int i;
     *lenchara =  fread(textbuf, sizeof(char), *ilength, fp);
     /*
+     int i;
     printf("iflag_swap %d\n", *iflag_swap);
     printf("original_64:\n");
     for(i=0;i<*ilength;i++){printf("%x ", textbuf[i]);};

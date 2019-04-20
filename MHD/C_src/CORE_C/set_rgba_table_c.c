@@ -152,9 +152,7 @@ void set_full_opacitymap(struct colormap_params *cmap_s,
 
 
 void copy_colormap_to_ctl(struct colormap_params *cmap_s, 
-			struct colormap_ctl_c *cmap_c){
-	double color;
-	
+			struct colormap_ctl_c *cmap_c){	
 	copy_to_chara_ctl_item(cmap_s->colormap_mode->c_tbl, cmap_c->colormap_mode_ctl);
 	copy_to_chara_ctl_item("colormap_list", cmap_c->data_mapping_ctl);
 	

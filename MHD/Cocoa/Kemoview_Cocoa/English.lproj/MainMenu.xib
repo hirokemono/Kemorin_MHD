@@ -902,30 +902,6 @@
                                                 <rect key="frame" x="1" y="1" width="178" height="110"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <form verticalHuggingPriority="750" mode="track" selectionByRect="NO" autosizesCells="NO" id="3643">
-                                                        <rect key="frame" x="17" y="14" width="122" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="122" height="22"/>
-                                                        <size key="intercellSpacing" width="1" height="8"/>
-                                                        <formCell key="prototype" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="justified" title="Field:" id="3649">
-                                                            <font key="font" metaFont="system"/>
-                                                            <font key="titleFont" metaFont="system"/>
-                                                        </formCell>
-                                                        <cells>
-                                                            <column>
-                                                                <formCell scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="Radius:" titleAlignment="left" id="3650">
-                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="2" maximumFractionDigits="4" id="9du-1M-DwD"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <font key="titleFont" metaFont="system"/>
-                                                                    <connections>
-                                                                        <action selector="SphRadiusAction:" target="964" id="3692"/>
-                                                                        <binding destination="964" name="value" keyPath="self.coastlineRadius" id="3688"/>
-                                                                    </connections>
-                                                                </formCell>
-                                                            </column>
-                                                        </cells>
-                                                    </form>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="3645">
                                                         <rect key="frame" x="144" y="11" width="19" height="27"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -979,6 +955,28 @@
                                                             <action selector="CoastSwitchAction:" target="964" id="3686"/>
                                                         </connections>
                                                     </button>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="6yM-q0-3eA">
+                                                        <rect key="frame" x="65" y="13" width="74" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="9Ek-gb-cx2">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="rVS-78-JTA"/>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <binding destination="964" name="value" keyPath="self.coastlineRadius" id="MSg-dz-cGW"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="5L5-DZ-jkK">
+                                                        <rect key="frame" x="15" y="15" width="63" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Radius" id="1BT-8O-jsi">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
                                                 </subviews>
                                             </view>
                                         </box>
@@ -1180,7 +1178,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="Meu-5Y-hVs">
                                                 <rect key="frame" x="1" y="0.0" width="322" height="177"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="760" id="761">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="160"/>
@@ -2832,7 +2830,7 @@
                                                     <textField verticalHuggingPriority="750" misplaced="YES" id="yUa-MZ-FE9">
                                                         <rect key="frame" x="15" y="15" width="82" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Increment" id="Eqv-Hu-AYr">
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Width" id="Eqv-Hu-AYr">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -3504,7 +3502,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ChU-hG-Nc0">
                         <rect key="frame" x="0.0" y="0.0" width="224" height="615"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <view id="3791">
                                 <rect key="frame" x="0.0" y="0.0" width="224" height="615"/>
@@ -3517,30 +3515,29 @@
                                             <rect key="frame" x="1" y="1" width="176" height="46"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <form verticalHuggingPriority="750" mode="track" allowsEmptySelection="NO" autosizesCells="NO" id="2372">
-                                                    <rect key="frame" x="18" y="14" width="140" height="22"/>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="WXi-7J-QLx">
+                                                    <rect key="frame" x="9" y="19" width="80" height="14"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                    <size key="cellSize" width="140" height="22"/>
-                                                    <size key="intercellSpacing" width="1" height="8"/>
-                                                    <formCell key="prototype" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="justified" title="Field:" id="2375">
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Aperture: " id="Tun-9g-src">
                                                         <font key="font" metaFont="smallSystem"/>
-                                                        <font key="titleFont" metaFont="smallSystem"/>
-                                                    </formCell>
-                                                    <cells>
-                                                        <column>
-                                                            <formCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="Aperture: " stringValue="1.234" id="2377">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2378"/>
-                                                                <font key="font" metaFont="smallSystem"/>
-                                                                <font key="titleFont" metaFont="smallSystem"/>
-                                                                <connections>
-                                                                    <action selector="ChangeViewByInpit:" target="964" id="3556"/>
-                                                                    <binding destination="2679" name="value" keyPath="self.ProjentionAperture" id="2703"/>
-                                                                </connections>
-                                                            </formCell>
-                                                        </column>
-                                                    </cells>
-                                                </form>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="NmX-HR-NCd">
+                                                    <rect key="frame" x="95" y="15" width="63" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="ml3-p1-19A">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="qd0-E1-1rB"/>
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <action selector="ChangeViewByInpit:" target="964" id="qlR-Wy-js6"/>
+                                                            <binding destination="2679" name="value" keyPath="self.ProjentionAperture" id="UIC-vy-nU7"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                </textField>
                                             </subviews>
                                         </view>
                                     </box>
@@ -3551,57 +3548,106 @@
                                             <rect key="frame" x="1" y="1" width="176" height="136"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <form verticalHuggingPriority="750" mode="track" allowsEmptySelection="NO" autosizesCells="NO" id="2249">
-                                                    <rect key="frame" x="18" y="14" width="140" height="112"/>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="fis-OJ-q5W">
+                                                    <rect key="frame" x="95" y="104" width="63" height="22"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                    <size key="cellSize" width="140" height="22"/>
-                                                    <size key="intercellSpacing" width="1" height="8"/>
-                                                    <formCell key="prototype" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="justified" title="Field:" id="2252">
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="1NV-BY-nRx">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="1Z2-Mn-e31"/>
                                                         <font key="font" metaFont="smallSystem"/>
-                                                        <font key="titleFont" metaFont="smallSystem"/>
-                                                    </formCell>
-                                                    <cells>
-                                                        <column>
-                                                            <formCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="X-axis:" id="2254">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2255"/>
-                                                                <font key="font" metaFont="smallSystem"/>
-                                                                <font key="titleFont" metaFont="smallSystem"/>
-                                                                <connections>
-                                                                    <action selector="ChangeViewByInpit:" target="964" id="3552"/>
-                                                                    <binding destination="2679" name="value" keyPath="self.RotationAxisX" id="2699"/>
-                                                                </connections>
-                                                            </formCell>
-                                                            <formCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" tag="1" title="Y-axis: " id="2253">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2256"/>
-                                                                <font key="font" metaFont="smallSystem"/>
-                                                                <font key="titleFont" metaFont="smallSystem"/>
-                                                                <connections>
-                                                                    <action selector="ChangeViewByInpit:" target="964" id="3553"/>
-                                                                    <binding destination="2679" name="value" keyPath="self.RotationAxisY" id="2700"/>
-                                                                </connections>
-                                                            </formCell>
-                                                            <formCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="Z-axis:" id="2251">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2257"/>
-                                                                <font key="font" metaFont="smallSystem"/>
-                                                                <font key="titleFont" metaFont="smallSystem"/>
-                                                                <connections>
-                                                                    <action selector="ChangeViewByInpit:" target="964" id="3554"/>
-                                                                    <binding destination="2679" name="value" keyPath="self.RotationAxisZ" id="2701"/>
-                                                                </connections>
-                                                            </formCell>
-                                                            <formCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="Angle (Deg.):" id="2250">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2258"/>
-                                                                <font key="font" metaFont="smallSystem"/>
-                                                                <font key="titleFont" metaFont="smallSystem"/>
-                                                                <connections>
-                                                                    <action selector="ChangeViewByInpit:" target="964" id="3555"/>
-                                                                    <binding destination="2679" name="value" keyPath="self.RotationAngle" id="3820"/>
-                                                                </connections>
-                                                            </formCell>
-                                                        </column>
-                                                    </cells>
-                                                </form>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <binding destination="2679" name="value" keyPath="self.RotationAxisX" id="7Xg-F3-dUI"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                    <connections>
+                                                        <action selector="ChangeViewByInpit:" target="964" id="rlB-6J-4tE"/>
+                                                    </connections>
+                                                </textField>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="AhC-Yc-veX">
+                                                    <rect key="frame" x="95" y="74" width="63" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="TzL-Vo-0Q2">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="MBo-Pd-Q56"/>
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <binding destination="2679" name="value" keyPath="self.RotationAxisY" id="f74-AU-LOg"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                    <connections>
+                                                        <action selector="ChangeViewByInpit:" target="964" id="k0j-uU-EqU"/>
+                                                    </connections>
+                                                </textField>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="UW2-dz-fqK">
+                                                    <rect key="frame" x="95" y="44" width="63" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="54w-yD-ZHn">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="XB0-Ql-Klj"/>
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <binding destination="2679" name="value" keyPath="self.RotationAxisZ" id="CEW-01-88e"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                    <connections>
+                                                        <action selector="ChangeViewByInpit:" target="964" id="iqY-oU-sqW"/>
+                                                    </connections>
+                                                </textField>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="TTe-yH-VFV">
+                                                    <rect key="frame" x="95" y="14" width="63" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="Gt5-Xo-xmW">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="eT0-JK-6JD"/>
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <binding destination="2679" name="value" keyPath="self.RotationAngle" id="uGW-fV-AjG"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                    <connections>
+                                                        <action selector="ChangeViewByInpit:" target="964" id="EJs-z7-uXt"/>
+                                                    </connections>
+                                                </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="qaA-ce-1Ra">
+                                                    <rect key="frame" x="14" y="19" width="80" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Angle (Deg.):" id="GiE-TW-rGK">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="6Yx-wg-s1u">
+                                                    <rect key="frame" x="14" y="49" width="80" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Z-axis:" id="VfP-yF-rv0">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="RH7-Ln-OHg">
+                                                    <rect key="frame" x="14" y="79" width="80" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Y-axis:" id="5Ng-Ws-Ije">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="aqv-Gi-XQ2">
+                                                    <rect key="frame" x="14" y="109" width="80" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="X-axis:" id="KXC-ik-0gi">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
                                             </subviews>
                                         </view>
                                     </box>
@@ -3612,48 +3658,81 @@
                                             <rect key="frame" x="1" y="1" width="176" height="106"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <form verticalHuggingPriority="750" mode="track" allowsEmptySelection="NO" autosizesCells="NO" id="2353">
-                                                    <rect key="frame" x="18" y="14" width="140" height="82"/>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="42o-D0-NPL">
+                                                    <rect key="frame" x="97" y="74" width="63" height="22"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                    <size key="cellSize" width="140" height="22"/>
-                                                    <size key="intercellSpacing" width="1" height="8"/>
-                                                    <formCell key="prototype" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="justified" title="Field:" id="2356">
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="zb6-CD-JUq">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="8oW-5T-NM3"/>
                                                         <font key="font" metaFont="smallSystem"/>
-                                                        <font key="titleFont" metaFont="smallSystem"/>
-                                                    </formCell>
-                                                    <cells>
-                                                        <column>
-                                                            <formCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="X-position:" id="2354">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2360"/>
-                                                                <font key="font" metaFont="smallSystem"/>
-                                                                <font key="titleFont" metaFont="smallSystem"/>
-                                                                <connections>
-                                                                    <action selector="ChangeViewByInpit:" target="964" id="3548"/>
-                                                                    <binding destination="2679" name="value" keyPath="self.ViewPointX" id="2776"/>
-                                                                </connections>
-                                                            </formCell>
-                                                            <formCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" tag="1" title="Y-position: " id="2355">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2359"/>
-                                                                <font key="font" metaFont="smallSystem"/>
-                                                                <font key="titleFont" metaFont="smallSystem"/>
-                                                                <connections>
-                                                                    <action selector="ChangeViewByInpit:" target="964" id="3549"/>
-                                                                    <binding destination="2679" name="value" keyPath="self.ViewPointY" id="2693"/>
-                                                                </connections>
-                                                            </formCell>
-                                                            <formCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="Z-position:" id="2357">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2358"/>
-                                                                <font key="font" metaFont="smallSystem"/>
-                                                                <font key="titleFont" metaFont="smallSystem"/>
-                                                                <connections>
-                                                                    <action selector="ChangeViewByInpit:" target="964" id="3550"/>
-                                                                    <binding destination="2679" name="value" keyPath="self.ViewPointZ" id="2694"/>
-                                                                </connections>
-                                                            </formCell>
-                                                        </column>
-                                                    </cells>
-                                                </form>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <binding destination="2679" name="value" keyPath="self.ViewPointX" id="5o9-Zr-cTJ"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                    <connections>
+                                                        <action selector="ChangeViewByInpit:" target="964" id="eQS-My-cGQ"/>
+                                                    </connections>
+                                                </textField>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="uay-SF-ZH4">
+                                                    <rect key="frame" x="97" y="44" width="63" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="duz-wA-MOH">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="5qA-Ln-z06"/>
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <binding destination="2679" name="value" keyPath="self.ViewPointY" id="Oqv-OI-yz2"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                    <connections>
+                                                        <action selector="ChangeViewByInpit:" target="964" id="aia-gs-zEJ"/>
+                                                    </connections>
+                                                </textField>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="YkQ-zh-Npb">
+                                                    <rect key="frame" x="97" y="14" width="63" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="cju-ry-UEY">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="kVF-4M-VGv"/>
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <binding destination="2679" name="value" keyPath="self.ViewPointZ" id="aqr-A3-yuJ"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                    <connections>
+                                                        <action selector="ChangeViewByInpit:" target="964" id="xC4-OE-NTF"/>
+                                                    </connections>
+                                                </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="iWn-yk-Zis">
+                                                    <rect key="frame" x="16" y="19" width="80" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Z-position:" id="lKW-h5-I1x">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="kbR-yo-CCf">
+                                                    <rect key="frame" x="16" y="49" width="80" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Y-position:" id="69x-q8-hh5">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="3Ou-0R-xAW">
+                                                    <rect key="frame" x="16" y="79" width="80" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="X-position:" id="fnT-ba-0Mm">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
                                             </subviews>
                                         </view>
                                     </box>
@@ -3664,30 +3743,31 @@
                                             <rect key="frame" x="1" y="1" width="176" height="46"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <form verticalHuggingPriority="750" mode="track" allowsEmptySelection="NO" autosizesCells="NO" id="2271">
-                                                    <rect key="frame" x="18" y="14" width="140" height="22"/>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="V1q-ID-036">
+                                                    <rect key="frame" x="14" y="19" width="80" height="14"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                    <size key="cellSize" width="140" height="22"/>
-                                                    <size key="intercellSpacing" width="1" height="8"/>
-                                                    <formCell key="prototype" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="justified" title="Field:" id="2274">
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Scale: " id="JGZ-FG-P5Z">
                                                         <font key="font" metaFont="smallSystem"/>
-                                                        <font key="titleFont" metaFont="smallSystem"/>
-                                                    </formCell>
-                                                    <cells>
-                                                        <column>
-                                                            <formCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="Scale:" id="2272">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2278"/>
-                                                                <font key="font" metaFont="smallSystem"/>
-                                                                <font key="titleFont" metaFont="smallSystem"/>
-                                                                <connections>
-                                                                    <action selector="ChangeViewByInpit:" target="964" id="3551"/>
-                                                                    <binding destination="2679" name="value" keyPath="self.ScaleFactor" id="2698"/>
-                                                                </connections>
-                                                            </formCell>
-                                                        </column>
-                                                    </cells>
-                                                </form>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="8dN-nh-2nX">
+                                                    <rect key="frame" x="95" y="14" width="63" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="4V2-wd-tNJ">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="Mab-O0-Bd1"/>
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <binding destination="2679" name="value" keyPath="self.ScaleFactor" id="VrC-Hc-kkI"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                    <connections>
+                                                        <action selector="ChangeViewByInpit:" target="964" id="Vg1-1l-VAx"/>
+                                                    </connections>
+                                                </textField>
                                             </subviews>
                                         </view>
                                     </box>
@@ -3698,38 +3778,43 @@
                                             <rect key="frame" x="1" y="1" width="178" height="76"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <form verticalHuggingPriority="750" mode="track" allowsEmptySelection="NO" autosizesCells="NO" id="3282">
-                                                    <rect key="frame" x="18" y="14" width="121" height="52"/>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="eia-eU-Ysd">
+                                                    <rect key="frame" x="11" y="47" width="60" height="14"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                    <size key="cellSize" width="121" height="22"/>
-                                                    <size key="intercellSpacing" width="1" height="8"/>
-                                                    <formCell key="prototype" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="justified" title="Field:" id="3284">
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Focus:" id="ehy-7e-8Pm">
                                                         <font key="font" metaFont="smallSystem"/>
-                                                        <font key="titleFont" metaFont="smallSystem"/>
-                                                    </formCell>
-                                                    <cells>
-                                                        <column>
-                                                            <formCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="Forcus:" titleAlignment="left" id="3283">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="3285"/>
-                                                                <font key="font" metaFont="smallSystem"/>
-                                                                <font key="titleFont" metaFont="smallSystem"/>
-                                                                <connections>
-                                                                    <action selector="ChangeViewByInpit:" target="964" id="3545"/>
-                                                                    <binding destination="2679" name="value" keyPath="self.FocusPoint" id="3315"/>
-                                                                </connections>
-                                                            </formCell>
-                                                            <formCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="Eye Sep.:" titleAlignment="left" id="3511">
-                                                                <font key="font" metaFont="smallSystem"/>
-                                                                <font key="titleFont" metaFont="smallSystem"/>
-                                                                <connections>
-                                                                    <action selector="ChangeViewByInpit:" target="964" id="3547"/>
-                                                                    <binding destination="2679" name="value" keyPath="self.eyeRatio" id="3516"/>
-                                                                </connections>
-                                                            </formCell>
-                                                        </column>
-                                                    </cells>
-                                                </form>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="Lex-te-otp">
+                                                    <rect key="frame" x="76" y="43" width="63" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="Sf6-BA-mlu">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="rRm-3m-hkm"/>
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <action selector="ChangeViewByInpit:" target="964" id="4tm-H0-l0R"/>
+                                                            <binding destination="2679" name="value" keyPath="self.FocusPoint" id="Kc1-GW-i4N"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="WnQ-wr-SAd">
+                                                    <rect key="frame" x="76" y="13" width="63" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" drawsBackground="YES" id="VO1-QX-oKA">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="ngd-EK-Kf0"/>
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <action selector="ChangeViewByInpit:" target="964" id="m4k-19-LfA"/>
+                                                            <binding destination="2679" name="value" keyPath="self.eyeRatio" id="2md-Ff-EFT"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                </textField>
                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="3346">
                                                     <rect key="frame" x="144" y="41" width="19" height="27"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -3755,6 +3840,15 @@
                                                         <action selector="ChangeViewByInpit:" target="964" id="3546"/>
                                                     </connections>
                                                 </stepper>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="5hg-C9-56l">
+                                                    <rect key="frame" x="11" y="19" width="60" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Eye sep.: " id="N7D-Tk-Jz6">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
                                             </subviews>
                                         </view>
                                         <connections>
@@ -3772,45 +3866,81 @@
                                             <rect key="frame" x="1" y="1" width="176" height="79"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <form verticalHuggingPriority="750" mode="track" selectionByRect="NO" allowsEmptySelection="NO" autosizesCells="NO" id="3665">
-                                                    <rect key="frame" x="18" y="14" width="140" height="55"/>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="Zef-ys-Jfe">
+                                                    <rect key="frame" x="93" y="54" width="67" height="22"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                    <size key="cellSize" width="140" height="13"/>
-                                                    <size key="intercellSpacing" width="1" height="8"/>
-                                                    <formCell key="prototype" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="justified" title="Field:" id="3668">
-                                                        <font key="font" metaFont="miniSystem"/>
-                                                        <font key="titleFont" metaFont="miniSystem"/>
-                                                    </formCell>
-                                                    <cells>
-                                                        <column>
-                                                            <formCell controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" title="X-position:" id="3666">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="3672"/>
-                                                                <font key="font" metaFont="miniSystem"/>
-                                                                <font key="titleFont" metaFont="miniSystem"/>
-                                                                <connections>
-                                                                    <binding destination="2679" name="value" keyPath="self.ViewPointX" id="3673"/>
-                                                                </connections>
-                                                            </formCell>
-                                                            <formCell controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" tag="1" title="Y-position: " id="3667">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="3671"/>
-                                                                <font key="font" metaFont="miniSystem"/>
-                                                                <font key="titleFont" metaFont="miniSystem"/>
-                                                                <connections>
-                                                                    <binding destination="2679" name="value" keyPath="self.ViewPointY" id="3674"/>
-                                                                </connections>
-                                                            </formCell>
-                                                            <formCell controlSize="mini" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" title="Z-position:" id="3669">
-                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="3670"/>
-                                                                <font key="font" metaFont="miniSystem"/>
-                                                                <font key="titleFont" metaFont="miniSystem"/>
-                                                                <connections>
-                                                                    <binding destination="2679" name="value" keyPath="self.LookPointZ" id="3675"/>
-                                                                </connections>
-                                                            </formCell>
-                                                        </column>
-                                                    </cells>
-                                                </form>
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="flF-1u-tIj">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="yNG-eq-jBg"/>
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <binding destination="2679" name="value" keyPath="self.LookPointZ" id="DAU-6C-GyL"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                    <connections>
+                                                        <action selector="ChangeViewByInpit:" target="964" id="hzd-ac-rHH"/>
+                                                    </connections>
+                                                </textField>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="bRn-GQ-kXY">
+                                                    <rect key="frame" x="93" y="30" width="67" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="Xqh-UK-6zs">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="wdR-VC-Cfj"/>
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <binding destination="2679" name="value" keyPath="self.LookPointZ" id="bAR-fc-MDk"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                    <connections>
+                                                        <action selector="ChangeViewByInpit:" target="964" id="NQP-IE-Psi"/>
+                                                    </connections>
+                                                </textField>
+                                                <textField verticalHuggingPriority="750" misplaced="YES" id="GDQ-l9-I4D">
+                                                    <rect key="frame" x="93" y="6" width="67" height="22"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="gvf-re-Roo">
+                                                        <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="n9P-HH-URI"/>
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <connections>
+                                                            <binding destination="2679" name="value" keyPath="self.LookPointZ" id="AdK-mp-JYD"/>
+                                                        </connections>
+                                                    </textFieldCell>
+                                                    <connections>
+                                                        <action selector="ChangeViewByInpit:" target="964" id="YLd-97-XnS"/>
+                                                    </connections>
+                                                </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="jOW-y5-PE5">
+                                                    <rect key="frame" x="14" y="56" width="80" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="X-position:" id="ODz-fo-odL">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="bvc-sJ-wro">
+                                                    <rect key="frame" x="14" y="34" width="80" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Y-position:" id="Nm1-au-wOw">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="WWc-hx-AEQ">
+                                                    <rect key="frame" x="14" y="12" width="80" height="14"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Z-position:" id="jcQ-CY-4gO">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
                                             </subviews>
                                         </view>
                                     </box>
@@ -3839,7 +3969,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                     <clipView key="contentView" id="zjy-Ve-9jn">
                         <rect key="frame" x="0.0" y="0.0" width="194" height="707"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <view id="3767">
                                 <rect key="frame" x="0.0" y="0.0" width="192" height="705"/>
@@ -3854,7 +3984,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="sgn-Z0-9rw">
                                             <rect key="frame" x="1" y="0.0" width="153" height="144"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" rowHeight="14" headerView="2597" id="2596">
                                                     <rect key="frame" x="0.0" y="0.0" width="153" height="127"/>
@@ -3940,7 +4070,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="xhk-53-bjR">
                                             <rect key="frame" x="1" y="0.0" width="153" height="144"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" rowHeight="14" headerView="2584" id="2585">
                                                     <rect key="frame" x="0.0" y="0.0" width="153" height="127"/>

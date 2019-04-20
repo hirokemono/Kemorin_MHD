@@ -13,6 +13,7 @@
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_color_table_c.h"
 #include "skip_comment_c.h"
+#include "set_rgba_table_c.h"
 
 
 #define VIEW_3D        0

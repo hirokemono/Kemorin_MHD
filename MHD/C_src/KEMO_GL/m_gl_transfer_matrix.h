@@ -72,6 +72,8 @@ struct view_element{
 
 /* prototypes */
 
+void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar);
+
 void modify_view_by_struct(struct view_element *view);
 void modify_left_view_by_struct(struct view_element *view);
 void modify_right_view_by_struct(struct view_element *view);
