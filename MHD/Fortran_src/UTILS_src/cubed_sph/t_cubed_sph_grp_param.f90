@@ -44,7 +44,7 @@
       use t_control_data_cubed_sph
 !
       type(control_data_cubed_sph), intent(in) :: cubed_sph_c
-      type(cubed_sph_group, intent(inout) :: csph_grp
+      type(cubed_sph_group), intent(inout) :: csph_grp
 !
 !   set node group table
       call set_cubed_sph_node_grp_ctl                                   &
