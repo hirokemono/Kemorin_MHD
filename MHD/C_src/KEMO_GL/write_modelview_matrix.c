@@ -178,7 +178,7 @@ void read_GL_modelview_file(const char *file_name, int iflag_view, struct view_e
 	copy_GL_modelview_params_from_ctl(mat_c0, view);
 	if(mat_c0->iflag_streo_view_ctl > 0){
 		copy_GL_stereo_params_from_ctl(mat_c0->streo_view_c, view);
-		iflag_view == VIEW_STEREO;
+		iflag_view = VIEW_STEREO;
 	};
 	
 	/*

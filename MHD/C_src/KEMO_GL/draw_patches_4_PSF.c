@@ -225,10 +225,18 @@ void draw_patches_4_map(int shading_mode, int ist_psf, int ied_psf,
 	return;	
 }
 
-void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m) {
+void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m, struct buffer_for_gl *gl_buf) {
+    int ncorner = 20;
+    float radius = 0.05;
+    float x_line[6], dir_line[6], color_line[8];
+    float xyz[18*ncorner], nor[18*ncorner], col[24*ncorner];
+    GLdouble dcolor[4];
+    int num_wall, inum_buf;
+
 	GLfloat arrow_c[4] =   {0.8, 0.7, 0.6, 1.0};
-	double v_tmp[3], v_xyz[3], d_tri[3], x_rtp[3], d_mag;
-	int inod, k;
+	double v_tmp[3], v_xyz[3], x_rtp[3], d_mag;
+    
+	int inod, i, k, nd;
 	int icomp = psf_s->istack_comp[psf_m->if_draw_psf];
 	int iflag_coord = psf_s->id_coord[psf_m->if_draw_psf];
 	int iflag_tangential = psf_m->ivect_tangential;
@@ -246,6 +254,20 @@ void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m) {
 		glColor4fv(arrow_c);
 	};
 	
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glVertexPointer(ITHREE, GL_FLOAT, IZERO, gl_buf->xyz);
+    glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
+    glNormalPointer(GL_FLOAT, IZERO, gl_buf->norm);
+    
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glShadeModel(GL_SMOOTH);
+    glDisable(GL_CULL_FACE);
+
+    
+    inum_buf = 0;
 	for (inod = 0; inod < psf_s->nnod_viz; inod++) {
 		if (inod % psf_m->increment_vect == 0) {
             if(psf_s->norm_nod[inod][0] != 0.0
@@ -272,21 +294,47 @@ void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m) {
                     };
                 };
             
-                for (k=0; k<3; k++) {d_tri[k] = psf_s->xx_viz[inod][k] + v_xyz[k]*ascale;};
-
                 d_mag = sqrt(v_xyz[0]*v_xyz[0]+v_xyz[1]*v_xyz[1]+v_xyz[2]*v_xyz[2]);
                 if(psf_m->vector_patch_color == RAINBOW_SURFACE){
-                    set_rainbow_PSF_c(d_mag, psf_m->cmap_psf);
+                    set_rainbow_color_code(psf_m->cmap_psf, d_mag, dcolor);
                 }
-			
-                glDrawArrowf((GLfloat) psf_s->xx_viz[inod][0],
-                             (GLfloat) psf_s->xx_viz[inod][1],
-                             (GLfloat) psf_s->xx_viz[inod][2],
-                             (GLfloat) d_tri[0], (GLfloat) d_tri[1], (GLfloat) d_tri[2],
-                             (d_mag*ascale*0.01) );
+                
+                for (k=0; k<3; k++){
+                    x_line[k  ] = psf_s->xx_viz[inod][k];
+                    x_line[k+3] = psf_s->xx_viz[inod][k] + v_xyz[k]*ascale;
+                    dir_line[k  ] =  v_xyz[k];
+                    dir_line[k+3] =  v_xyz[k];
+                };
+                for (k=0; k<4; k++){
+                    color_line[k  ] =  dcolor[k];
+                    color_line[k+4] =  dcolor[k];
+                };
+                
+                num_wall = set_cone_vertex(ncorner, radius, x_line, dir_line, color_line,
+                                           xyz, nor, col);
+
+                
+                for (i=0; i<3*num_wall; i++) {
+                    for(nd=0;nd<3;nd++){gl_buf->xyz[3*inum_buf+i][nd] =  xyz[3*i+nd];};
+                    for(nd=0;nd<3;nd++){gl_buf->norm[3*inum_buf+i][nd] = nor[3*i+nd];};
+                    for(nd=0;nd<4;nd++){gl_buf->rgba[3*inum_buf+i][nd] = col[4*i+nd];};
+                };
+                inum_buf = inum_buf + num_wall;
+
+                if(inum_buf >= (NSIZE_GL_BUFFER - num_wall) ){
+                    glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*inum_buf));
+                    inum_buf = 0;
+                };
             };
 		};
 	};
+    if(inum_buf > 0){glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*inum_buf));};
+
+    glEnable(GL_CULL_FACE);
+    
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
 	
 	return;	
 }

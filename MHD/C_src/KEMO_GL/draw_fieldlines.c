@@ -11,10 +11,10 @@ static const GLfloat black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 void draw_fieldtubes_c(struct psf_data *fline_s, struct fline_menu_val *fline_m,
 					   struct buffer_for_gl *gl_buf) {
 	int num_wall, inum_buf;
-	int inod, iele, i, k, nd, jcou;
+	int inod, iele, i, k, nd;
 	int ncorner = ISIX;
-	double xyz[18*ncorner], nor[18*ncorner], col[24*ncorner];
-	double x_line[6], dir_line[6], color_line[8];
+	float xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
+	float x_line[6], dir_line[6], color_line[8];
 	
 	set_color_code_for_fieldlines(fline_s, fline_m);
 	
@@ -31,30 +31,28 @@ void draw_fieldtubes_c(struct psf_data *fline_s, struct fline_menu_val *fline_m,
 	glDisable(GL_CULL_FACE);
 	glShadeModel(GL_SMOOTH);
 	
-	jcou = 0;
 	inum_buf = 0;
 	for (iele = 0; iele < fline_s->nele_viz; iele++) {
 		for (k = 0; k < 2; k++) {
 			inod = fline_s->ie_viz[iele][k] - 1;
 			for (nd=0; nd<3; nd++) {
-				x_line[3*k+nd] = (GLfloat) fline_s->xx_viz[inod][nd];
-				dir_line[3*k+nd] =  fline_s->dir_nod[inod][nd];
+				x_line[3*k+nd] = (float) fline_s->xx_viz[inod][nd];
+				dir_line[3*k+nd] = (float) fline_s->dir_nod[inod][nd];
 			};
-			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = fline_s->color_nod[inod][nd];};
+			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_s->color_nod[inod][nd];};
 		};
 		
 		num_wall = set_tube_vertex(ncorner, fline_m->fieldline_thick, x_line, dir_line, color_line,
 								   xyz, nor, col);
 		
-		for (i=0; i<6*ncorner; i++) {
-/*			jcou = jcou + 1;*/
+		for (i=0; i<3*num_wall; i++) {
 			for(nd=0;nd<3;nd++){gl_buf->xyz[3*inum_buf+i][nd] =  xyz[3*i+nd];};
 			for(nd=0;nd<3;nd++){gl_buf->norm[3*inum_buf+i][nd] = nor[3*i+nd];};
 			for(nd=0;nd<4;nd++){gl_buf->rgba[3*inum_buf+i][nd] = col[4*i+nd];};
 		};
-		inum_buf = inum_buf + 2*ncorner;
+		inum_buf = inum_buf + num_wall;
 
-		if(inum_buf >= (NSIZE_GL_BUFFER-2*ncorner) ){
+		if(inum_buf >= (NSIZE_GL_BUFFER - num_wall) ){
 			glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*inum_buf));
 			inum_buf = 0;
 		};

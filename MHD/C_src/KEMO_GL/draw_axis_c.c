@@ -188,55 +188,66 @@ static void set_vertexs_for_axis(struct view_element *view_s, GLfloat dist,
 
 static void draw_axis_gl(GLfloat x_arrowx[6], GLfloat x_arrowy[6], GLfloat x_arrowz[6], GLfloat w_ratio[3],
                          GLfloat x_charax[12], GLfloat x_charay[18], GLfloat x_charaz[18]){
-	GLfloat xyz_buf[16][3];
-	GLfloat rgba_buf[16][4];
-	int k, nd;
-	
-	glPushMatrix();
-	glLoadIdentity();
-	glPopMatrix();
+    float xyz_buf[22][3];
+	float rgba_buf[22][4];
+    int icou, k, nd;
     
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDisable(GL_CULL_FACE);
-	glShadeModel(GL_SMOOTH);
-    
-	glColor4fv(red);
-	glDrawArrowf(x_arrowx[0], x_arrowx[1], x_arrowx[2],
-				 x_arrowx[3], x_arrowx[4], x_arrowx[5], w_ratio[0]);
-	glColor4fv(blue);
-	glShadeModel(GL_SMOOTH);
-	glDrawArrowf(x_arrowy[0], x_arrowy[1], x_arrowy[2],
-				 x_arrowy[3], x_arrowy[4], x_arrowy[5], w_ratio[1]);
-	glColor4fv(green);
-	glShadeModel(GL_SMOOTH);
-	glDrawArrowf(x_arrowz[0], x_arrowz[1], x_arrowz[2],
-				 x_arrowz[3], x_arrowz[4], x_arrowz[5], w_ratio[2]);
-	glEnable(GL_CULL_FACE);
-	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 	glVertexPointer(ITHREE, GL_FLOAT, IZERO, xyz_buf);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, rgba_buf);
     
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glLineWidth(4.0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glEnable(GL_CULL_FACE);
+    glShadeModel(GL_SMOOTH);
+    
+    icou = 0;
+    /*draw x axis */
+    for (k=0; k<2; k++) {
+        for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_arrowx[3*k+nd];
+        for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = red[nd];
+        icou = icou + 1;
+    }
+    /*draw y axis */
+    for (k=0; k<2; k++) {
+        for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_arrowy[3*k+nd];
+        for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = green[nd];
+        icou = icou + 1;
+    }
+    /*draw z axis */
+    for (k=0; k<2; k++) {
+        for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_arrowz[3*k+nd];
+        for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = blue[nd];
+        icou = icou + 1;
+    }
+    
+    
 	/*draw 'X" */
 	for (k=0; k<4; k++) {
-		for(nd=0;nd<3;nd++) xyz_buf[k][nd] =  x_charax[3*k+nd];
-		for(nd=0;nd<4;nd++) rgba_buf[k][nd] = red[nd];
+		for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_charax[3*k+nd];
+		for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = red[nd];
+        icou = icou + 1;
 	}
 	/*draw 'Y" */
 	for (k=0; k<6; k++) {
-		for(nd=0;nd<3;nd++) xyz_buf[4+k][nd] =  x_charay[3*k+nd];
-		for(nd=0;nd<4;nd++) rgba_buf[4+k][nd] = blue[nd];
+		for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_charay[3*k+nd];
+		for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = blue[nd];
+        icou = icou + 1;
 	}
 	/*draw 'Z' */
 	for (k=0; k<6; k++) {
-		for(nd=0;nd<3;nd++) xyz_buf[10+k][nd] =  x_charaz[3*k+nd];
-		for(nd=0;nd<4;nd++) rgba_buf[10+k][nd] = green[nd];
+		for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_charaz[3*k+nd];
+		for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = green[nd];
+        icou = icou + 1;
 	}
-	glDrawArrays(GL_LINES, IZERO, (ITWO*8));
+	glDrawArrays(GL_LINES, IZERO, (ITWO*11));
     
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);	
+	glDisableClientState(GL_COLOR_ARRAY);
+    glLineWidth(1.0);
     
 	return;
 }

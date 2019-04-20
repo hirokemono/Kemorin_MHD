@@ -27,7 +27,7 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(-xwin, xwin, -ywin, ywin);
+	glOrtho(-xwin, xwin, -ywin, ywin, -1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();

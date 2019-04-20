@@ -17,7 +17,7 @@
 
 /* prptotypes */
 
-void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m);
+void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m, struct buffer_for_gl *gl_bufs);
 
 void draw_patch_4_PSF(int shading_mode, int ist_psf, int ied_psf, 
                       struct psf_data **psf_s, struct psf_menu_val **psf_m,

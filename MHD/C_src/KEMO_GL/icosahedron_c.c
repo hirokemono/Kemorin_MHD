@@ -103,10 +103,10 @@ int set_icosahedron_patch(double size, double x_draw[3],
 	return icou;
 }
 
-static void set_circle_of_tube(int ncorner, double radius, double xx_line[3], double norm_nod[3], 
-					  double dir_nod[3], double *xx_wall, double *norm_wall) {
+static void set_circle_of_tube(int ncorner, float radius, float xx_line[3], float norm_nod[3], 
+					  float dir_nod[3], float *xx_wall, float *norm_wall) {
 	int k, nd;
-	double norm_2nd[3], angle, len, len2, pi;
+	float norm_2nd[3], angle, len, len2, pi;
 	
 	pi = FOUR * atan(ONE);
 	norm_2nd[0] = dir_nod[1] * norm_nod[2]
@@ -122,7 +122,7 @@ static void set_circle_of_tube(int ncorner, double radius, double xx_line[3], do
 		norm_nod[nd] = norm_nod[nd]/len2;
 	};		
 	for(k=0;k<ncorner;k++){
-		angle = TWO * pi * (double)k / (double)ncorner;
+		angle = TWO * pi * (float)k / (float)ncorner;
 		for (nd=0; nd<3; nd++) {
 			norm_wall[3*k+nd] = norm_nod[nd] * cos(angle)
 							  + norm_2nd[nd] * sin(angle);
@@ -132,11 +132,11 @@ static void set_circle_of_tube(int ncorner, double radius, double xx_line[3], do
 	return;
 }
 
-int set_tube_vertex(int ncorner, double radius, double x_line[6], double dir_line[6],
-					double color_line[8], double *xyz, double *nor, double *col) {
-	double norm_line[6];
-	double xx_w1[3*ncorner], norm_w1[3*ncorner];
-	double xx_w2[3*ncorner], norm_w2[3*ncorner];
+int set_tube_vertex(int ncorner, float radius, float x_line[6], float dir_line[6],
+					float color_line[8], float *xyz, float *nor, float *col) {
+	float norm_line[6];
+	float xx_w1[3*ncorner], norm_w1[3*ncorner];
+	float xx_w2[3*ncorner], norm_w2[3*ncorner];
 	int num = 0;
 	int k, nd;
 	
@@ -175,9 +175,9 @@ int set_tube_vertex(int ncorner, double radius, double x_line[6], double dir_lin
 		xyz[18*(ncorner-1)+  nd] = xx_w1[3*(ncorner-1)+nd];
 		xyz[18*(ncorner-1)+3+nd] = xx_w1[nd];
 		xyz[18*(ncorner-1)+6+nd] = xx_w2[nd];
-		nor[18*(ncorner-1)+  nd] = norm_w2[3*(ncorner-1)+nd];
-		nor[18*(ncorner-1)+3+nd] = norm_w2[nd];
-		nor[18*(ncorner-1)+6+nd] = norm_w1[nd];
+		nor[18*(ncorner-1)+  nd] = norm_w1[3*(ncorner-1)+nd];
+		nor[18*(ncorner-1)+3+nd] = norm_w1[nd];
+		nor[18*(ncorner-1)+6+nd] = norm_w2[nd];
 		
 		xyz[18*(ncorner-1)+ 9+nd] = xx_w2[nd];
 		xyz[18*(ncorner-1)+12+nd] = xx_w2[3*(ncorner-1)+nd];
@@ -201,74 +201,52 @@ int set_tube_vertex(int ncorner, double radius, double x_line[6], double dir_lin
 	return num;
 }
 
-void glDrawArrowf(GLfloat x0, GLfloat y0, GLfloat z0,
-				  GLfloat x1, GLfloat y1, GLfloat z1,
-				  GLfloat ratio)
-{
-	GLUquadricObj *arrows[2];
-	GLfloat x2, y2, z2, len, ang, width;
-	
-	x2 = x1-x0; y2 = y1-y0; z2 = z1-z0;
-	len = sqrt(x2*x2 + y2*y2 + z2*z2);
-	width = len * ratio;
-	if(len != 0.0){
-		if(x2==ZERO && y2==ZERO && z2 >= ZERO){
-			ang = ZERO;
-		} else if(x2==ZERO && y2==ZERO && z2 < ZERO){
-			ang = 180.0;
-		} else {
-			ang = acos(z2*len/(sqrt(x2*x2+y2*y2+z2*z2)*len))/M_PI*180.0;
-		};
-		
-		glPushMatrix();
-		glTranslatef( x0, y0, z0);
-		glRotatef( ang, -y2*len, x2*len, 0.0);
-		arrows[0] = gluNewQuadric();
-		gluQuadricDrawStyle(arrows[0], GLU_FILL);
-		gluCylinder(arrows[0], width, width, len*0.9, 8, 8);
-		glPushMatrix();
-		glTranslatef( 0.0, 0.0, len*0.9);
-		arrows[1] = gluNewQuadric();
-		gluQuadricDrawStyle(arrows[1], GLU_FILL);
-		gluCylinder(arrows[1], (width*3.0), 0.0f, len/20, 8, 8);
-		glPopMatrix();
-		glPopMatrix();
-	}
+int set_cone_vertex(int ncorner, float radius, float x_line[6], float dir_line[6],
+                    float color_line[8], float *xyz, float *nor, float *col){
+    float norm_line[6];
+    float xx_w1[3*ncorner], norm_w1[3*ncorner];
+    int num = 0;
+    int k, nd;
+    
+    for(k=0;k<2;k++){
+        norm_line[3*k ] =  -dir_line[3*k+2];
+        norm_line[3*k+1] =  dir_line[3*k+2];
+        norm_line[3*k+2] =  dir_line[3*k  ]*dir_line[3*k+2]
+        - dir_line[3*k+1]*dir_line[3*k+2];
+    };
+    
+    set_circle_of_tube(ncorner, radius, &x_line[0], &norm_line[0], &dir_line[0],
+                       xx_w1, norm_w1);
+    
+    for(k=0;k<ncorner-1;k++){
+        for (nd=0; nd<3; nd++) {
+            xyz[9*k+  nd] = xx_w1[3*k+  nd];
+            xyz[9*k+3+nd] = xx_w1[3*k+3+nd];
+            xyz[9*k+6+nd] = x_line[nd+3];
+            nor[9*k+  nd] = norm_w1[3*k+  nd];
+            nor[9*k+3+nd] = norm_w1[3*k+3+nd];
+            nor[9*k+6+nd] = 0.5 * (norm_w1[3*k+  nd] + norm_w1[3*k+3+nd]);
+        };
+    };
+    
+    for (nd=0; nd<3; nd++) {
+        xyz[9*(ncorner-1)+  nd] = xx_w1[3*(ncorner-1)+nd];
+        xyz[9*(ncorner-1)+3+nd] = xx_w1[nd];
+        xyz[9*(ncorner-1)+6+nd] = x_line[nd+3];
+        nor[9*(ncorner-1)+  nd] = norm_w1[3*(ncorner-1)+nd];
+        nor[9*(ncorner-1)+3+nd] = norm_w1[nd];
+        nor[9*(ncorner-1)+6+nd] = 0.5 * (norm_w1[3*(ncorner-1)+nd] + norm_w1[nd]);
+    };
+    for(k=0;k<ncorner;k++){
+        for (nd=0; nd<3; nd++) {
+            col[12*k+   nd] = color_line[  nd];
+            col[12*k+ 4+nd] = color_line[  nd];
+            col[12*k+ 8+nd] = color_line[4+nd];
+        };
+    };
+    
+    num = ncorner;
+    return num;
 }
 
-void glDrawPipef(GLfloat x0, GLfloat y0, GLfloat z0,
-				 GLfloat x1, GLfloat y1, GLfloat z1,
-				 GLfloat width)
-{
-	GLUquadricObj *arrow;
-	double x2, y2, z2, len, ang;
-	
-	x2 = x1-x0; y2 = y1-y0; z2 = z1-z0;
-	len = sqrt(x2*x2 + y2*y2 + z2*z2);
-/*	width = len*ratio;*/
-	
-	if(len != 0.0){
-		if(x2==ZERO && y2==ZERO && z2 >= ZERO){
-			ang = ZERO;
-		} else if(x2==ZERO && y2==ZERO && z2 < ZERO){
-			ang = 180.0;
-		} else {
-			ang = acos(z2*len/(sqrt(x2*x2+y2*y2+z2*z2)*len))/M_PI*180.0;
-		};
-		
-		glPushMatrix();
-		glTranslatef( x0, y0, z0);
-		glRotatef( ang, -y2*len, x2*len, 0.0f);
-		arrow = gluNewQuadric();
-		gluQuadricDrawStyle(arrow, GLU_FILL);
-		gluCylinder(arrow, width, width, len, 8, 8);
-		glPopMatrix();
-	}
-}
 
-void glDrawPipefv(GLfloat xx[6], GLfloat width){
-	
-	glDrawPipef(xx[0], xx[1 ], xx[2 ],
-				xx[3], xx[4 ], xx[5 ], width);
-	return;
-};

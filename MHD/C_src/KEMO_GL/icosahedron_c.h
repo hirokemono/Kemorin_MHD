@@ -13,16 +13,8 @@ void init_icosahedron_c();
 int set_icosahedron_patch(double size, double x_draw[3], 
 						  double *xyz_draw, double *norm_draw);
 
-int set_tube_vertex(int ncorner, double radius, double x_line[6], double dir_line[6],
-					double color_line[8], double *xyz, double *nor, double *col);
-
-void glDrawArrowf(GLfloat x0, GLfloat y0, GLfloat z0,
-				  GLfloat x1, GLfloat y1, GLfloat z1,
-				  GLfloat ratio);
-void glDrawPipef(GLfloat x0, GLfloat y0, GLfloat z0,
-				 GLfloat x1, GLfloat y1, GLfloat z1,
-				 GLfloat r);
-
-void glDrawPipefv(GLfloat xx[6], GLfloat thickness);
-
+int set_tube_vertex(int ncorner, float radius, float x_line[6], float dir_line[6],
+					float color_line[8], float *xyz, float *nor, float *col);
+int set_cone_vertex(int ncorner, float radius, float x_line[6], float dir_line[6],
+                    float color_line[8], float *xyz, float *nor, float *col);
 #endif

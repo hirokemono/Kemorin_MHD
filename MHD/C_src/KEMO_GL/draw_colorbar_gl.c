@@ -100,7 +100,7 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0.0, xwin, 0.0, ywin);
+	glOrtho(0.0, xwin, 0.0, ywin, -1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
