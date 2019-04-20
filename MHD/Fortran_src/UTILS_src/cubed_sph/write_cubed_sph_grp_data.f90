@@ -8,7 +8,7 @@
 !!     &         (num_hemi, c_sphere, csph_mesh, csph_grp)
 !!        type(cubed_sph_surf_mesh), intent(in) :: c_sphere
 !!        type(cubed_sph_mesh), intent(in) :: csph_mesh
-!!        type(cubed_sph_group, intent(in) :: csph_grp
+!!        type(cubed_sph_group), intent(in) :: csph_grp
 !!      subroutine output_coarse_group_data(course_p, csph_grp)
 !!        type(coarse_cubed_sph), intent(in) :: course_p
 !
@@ -44,7 +44,7 @@
 !
       integer(kind = kint), intent(in) :: num_hemi
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
-      type(cubed_sph_group, intent(in) :: csph_grp
+      type(cubed_sph_group), intent(in) :: csph_grp
 !
 !   set groups
 !
@@ -120,7 +120,7 @@
       integer(kind = kint), intent(in) :: num_hemi
       type(cubed_sph_surf_mesh), intent(in) :: c_sphere
       type(cubed_sph_mesh), intent(in) :: csph_mesh
-      type(cubed_sph_group, intent(in) :: csph_grp
+      type(cubed_sph_group), intent(in) :: csph_grp
 !
 !   set groups
 !
@@ -194,7 +194,7 @@
       subroutine output_coarse_group_data(course_p, csph_grp)
 !
       type(coarse_cubed_sph), intent(in) :: course_p
-      type(cubed_sph_group, intent(in) :: csph_grp
+      type(cubed_sph_group), intent(in) :: csph_grp
 !
 !   set groups
 !

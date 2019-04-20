@@ -7,7 +7,7 @@
 !!     &         (csph_p, rprm_csph, csph_grp, c_sphere, csph_mesh)
 !!        type(numref_cubed_sph), intent(inout) :: csph_p
 !!        type(cubed_sph_radius), intent(inout) :: rprm_csph
-!!        type(cubed_sph_group, intent(inout) :: csph_grp
+!!        type(cubed_sph_group), intent(inout) :: csph_grp
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !!        type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !
@@ -37,7 +37,7 @@
 !
       type(numref_cubed_sph), intent(inout) :: csph_p
       type(cubed_sph_radius), intent(inout) :: rprm_csph
-      type(cubed_sph_group, intent(inout) :: csph_grp
+      type(cubed_sph_group), intent(inout) :: csph_grp
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
 !

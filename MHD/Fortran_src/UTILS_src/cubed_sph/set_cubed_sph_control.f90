@@ -9,13 +9,13 @@
 !!        type(cubed_sph_radius), intent(inout) :: rprm_csph
 !!        type(numref_cubed_sph), intent(inout) :: csph_p
 !!        type(coarse_cubed_sph), intent(inout) :: course_p
-!!        type(cubed_sph_group, intent(inout) :: csph_grp
+!!        type(cubed_sph_group), intent(inout) :: csph_grp
 !!      subroutine set_cubed_sph_grid_ctl                               &
 !!     &         (cubed_sph_c, rprm_csph, csph_p, csph_grp)
 !!        type(control_data_cubed_sph), intent(in) :: cubed_sph_c
 !!        type(cubed_sph_radius), intent(in) :: rprm_csph
 !!        type(numref_cubed_sph), intent(inout) :: csph_p
-!!        type(cubed_sph_group, intent(inout) :: csph_grp
+!!        type(cubed_sph_group), intent(inout) :: csph_grp
 !
       module set_cubed_sph_control
 !
@@ -44,7 +44,7 @@
       type(cubed_sph_radius), intent(inout) :: rprm_csph
       type(numref_cubed_sph), intent(inout) :: csph_p
       type(coarse_cubed_sph), intent(inout) :: course_p
-      type(cubed_sph_group, intent(inout) :: csph_grp
+      type(cubed_sph_group), intent(inout) :: csph_grp
 !
       character(len=kchara) :: tmpchara
 !
@@ -115,7 +115,7 @@
       type(control_data_cubed_sph), intent(in) :: cubed_sph_c
       type(cubed_sph_radius), intent(in) :: rprm_csph
       type(numref_cubed_sph), intent(inout) :: csph_p
-      type(cubed_sph_group, intent(inout) :: csph_grp
+      type(cubed_sph_group), intent(inout) :: csph_grp
 !
 !
       csph_p%num_hemi = 4

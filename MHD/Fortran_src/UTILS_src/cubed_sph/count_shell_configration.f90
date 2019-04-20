@@ -13,7 +13,7 @@
 !!        type(cubed_sph_radius), intent(inout) :: rprm_csph
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !!        type(cubed_sph_mesh), intent(inout) :: csph_mesh
-!!        type(cubed_sph_group, intent(inout) :: csph_grp
+!!        type(cubed_sph_group), intent(inout) :: csph_grp
 !!      subroutine count_radial_layer_size                              &
 !!     &         (nele_shell, rprm_csph, csph_grp)
 !!
@@ -52,7 +52,7 @@
       type(cubed_sph_radius), intent(inout) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
-      type(cubed_sph_group, intent(inout) :: csph_grp
+      type(cubed_sph_group), intent(inout) :: csph_grp
 !
 !    count number of node & element
 !      number of radius direction
@@ -85,7 +85,7 @@
       type(cubed_sph_radius), intent(inout) :: rprm_csph
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
       type(cubed_sph_mesh), intent(inout) :: csph_mesh
-      type(cubed_sph_group, intent(inout) :: csph_grp
+      type(cubed_sph_group), intent(inout) :: csph_grp
 !
 !    count number of node & element
 !      number of radius direction
@@ -115,7 +115,7 @@
 !
       integer(kind= kint), intent(inout) :: nele_shell
       type(cubed_sph_radius), intent(inout) :: rprm_csph
-      type(cubed_sph_group, intent(inout) :: csph_grp
+      type(cubed_sph_group), intent(inout) :: csph_grp
 !
 !    count number of node & element
 !      number of radius direction

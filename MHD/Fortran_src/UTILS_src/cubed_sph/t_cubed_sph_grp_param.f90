@@ -7,7 +7,7 @@
 !!      subroutine set_empty_cubed_sph_group(csph_grp)
 !!      subroutine dealloc_cubed_sph_group(csph_grp)
 !!        type(control_data_cubed_sph), intent(in) :: cubed_sph_c
-!!        type(cubed_sph_group, intent(inout) :: csph_grp
+!!        type(cubed_sph_group), intent(inout) :: csph_grp
 !
       module t_cubed_sph_grp_param
 !
@@ -70,7 +70,7 @@
 !
       subroutine set_empty_cubed_sph_group(csph_grp)
 !
-      type(cubed_sph_group, intent(inout) :: csph_grp
+      type(cubed_sph_group), intent(inout) :: csph_grp
 !
 !   set node group table
 !
@@ -102,7 +102,7 @@
 !
       subroutine dealloc_cubed_sph_group(csph_grp)
 !
-      type(cubed_sph_group, intent(inout) :: csph_grp
+      type(cubed_sph_group), intent(inout) :: csph_grp
 !
       call dealloc_group(csph_grp%csp_nod_grp)
       call dealloc_group(csph_grp%csp_ele_grp)
