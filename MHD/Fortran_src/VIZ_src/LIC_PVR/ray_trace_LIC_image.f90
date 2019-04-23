@@ -468,7 +468,7 @@
             end if
           end if
         end if
-!       write(*,*) 'rgba_ray end', rgba_ray
+       write(*,*) 'rgba_ray end', rgba_ray
 !
         if(isurf_org(1).eq.0) then
           iflag_comm = 0
