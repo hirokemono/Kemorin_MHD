@@ -21,6 +21,7 @@
       use m_constants
       use binary_IO
       use calypso_mpi
+      use m_machine_parameter
 !
       implicit  none
 !
@@ -88,7 +89,7 @@
       character(len=1), allocatable, intent(inout) :: n_raw_data(:)
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint_gl) :: d_size
+      integer(kind = kint_gl) :: d_size, i
       character(len=kchara) :: file_name
       character(len=1) :: one_chara(1)
       integer(kind = kint_gl), parameter :: ione64 = 1
@@ -106,15 +107,20 @@
           if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
 !
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
-          write(*,*) 'd_size', d_size, n_data_size(1:3)
+          if(iflag_debug .gt. 0) write(*,*) 'd_size',                   &
+     &                           d_size, n_data_size(1:3)
 !
           bflag_noise%iflag_swap = iendian_KEEP
           call seek_forward_binary_file(d_size-1)
           call read_mul_one_character_b(bflag_noise, ione64, one_chara)
-          if(ierr .gt. 0) bflag_noise%iflag_swap = iendian_FLIP
+          if(bflag_noise%ierr_IO .gt. 0)                                &
+     &                          bflag_noise%iflag_swap = iendian_FLIP
+!          write(*,*) 'iflag_swap a', bflag_noise%iflag_swap
           call read_mul_one_character_b(bflag_noise, ione64, one_chara)
-          if(ierr .eq. 0) bflag_noise%iflag_swap = iendian_FLIP
-          write(*,*) 'iflag_swap', bflag_noise%iflag_swap
+          if(bflag_noise%ierr_IO .eq. 0)                                &
+     &                          bflag_noise%iflag_swap = iendian_FLIP
+          if(iflag_debug .gt. 0) write(*,*)                             &
+     &                       'iflag_swap', bflag_noise%iflag_swap
         end if
         call close_rawfile()
 !
@@ -126,7 +132,8 @@
           if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
 !
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
-          write(*,*) 'd_size again', d_size, n_data_size(1:3)
+          if(iflag_debug .gt. 0) write(*,*) 'd_size again',             &
+     &                                     d_size, n_data_size(1:3)
 !
           allocate( n_raw_data(d_size))  ! allocate space for noise data
           call read_mul_one_character_b                                 &
@@ -134,9 +141,19 @@
           if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
         end if
         call close_rawfile()
+!
+        if(iflag_debug .gt. 0) then
+          open(111, file='noise_text.dat')
+          do i = 1, d_size
+            write(111,'(2i6)') iachar(n_raw_data(i))
+          end do
+          close(111)
+        end if
       end if
 !
       call MPI_BCAST(ierr, 1,                                           &
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(bflag_noise%ierr_IO, 1,                            &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(bflag_noise%iflag_swap, 1,                         &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
@@ -171,7 +188,9 @@
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
-          allocate( n_grad_data(d_size))  ! allocate space for noise data
+!
+! allocate space for noise data
+          allocate( n_grad_data(d_size)) 
           call read_mul_one_character_b                                 &
      &       (bflag_noise, d_size, n_grad_data)
           if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
