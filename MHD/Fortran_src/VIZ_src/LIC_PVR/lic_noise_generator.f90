@@ -109,13 +109,13 @@
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
           write(*,*) 'd_size', d_size, n_data_size(1:3)
 !
-          iflag_endian = iendian_KEEP
+          bflag_noise%iflag_endian = iendian_KEEP
           call seek_forward_binary_file(d_size-1)
           call read_mul_one_character_b(bflag_noise, ione64, one_chara)
-          if(ierr .gt. 0) iflag_endian = iendian_FLIP
+          if(ierr .gt. 0) bflag_noise%iflag_endian = iendian_FLIP
           call read_mul_one_character_b(bflag_noise, ione64, one_chara)
-          if(ierr .eq. 0) iflag_endian = iendian_FLIP
-          write(*,*) 'iflag_endian', iflag_endian
+          if(ierr .eq. 0) bflag_noise%iflag_endian = iendian_FLIP
+          write(*,*) 'iflag_endian', bflag_noise%iflag_endian
         end if
         call close_rawfile()
 !
@@ -139,7 +139,7 @@
 !
       call MPI_BCAST(ierr, 1,                                           &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(iflag_endian, 1,                                   &
+      call MPI_BCAST(bflag_noise%iflag_endian, 1,                       &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(n_data_size, 3,                                    &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
