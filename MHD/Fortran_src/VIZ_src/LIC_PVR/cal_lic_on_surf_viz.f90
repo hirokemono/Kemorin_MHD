@@ -88,7 +88,7 @@
 
 
         iflag_comm = 1
-        iflag_debug = 1
+        iflag_debug = 0
         k_area = 0.0
 
         !   initial convolution integration at origin point
@@ -128,7 +128,6 @@
         end if
         o_tgt = o_tgt + n_v * kernal_node(kernal_size/2.0)
         n_grad = n_grad + n_grad * kernal_node(kernal_size/2.0)
-        write(*,*) 'o_tgt', o_tgt, n_v, kernal_node(kernal_size/2.0)
 
         if(iflag_debug .eq. 1) write(50+my_rank,*)                      &
      &     "--------------------Forward iter begin----------------"
@@ -283,7 +282,7 @@
       g_v(1:3) = 0.0
       nv_sum = 0.0
       lic_v = 0.0
-      iflag_debug = 1
+      iflag_debug = 0
       step_len = 0.0
       avg_stepsize = 0.01
       len_sum = 0.0
