@@ -64,8 +64,11 @@
      &         (FEM_mesh_flags, sph, comms_sph, sph_grps,               &
      &          fem, ele_mesh, mesh_file, gen_sph)
 !
+      use calypso_mpi
       use t_mesh_data
       use copy_mesh_structures
+      use mesh_file_name_by_param
+      use mpi_load_mesh_data
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(sph_grids), intent(inout) :: sph
@@ -88,9 +91,18 @@
       call copy_group_data                                              &
      &   (sph_grps%radial_rj_grp, gen_sph%radial_rj_grp_lc)
 !
-      call load_FEM_mesh_4_SPH(FEM_mesh_flags,                          &
-     &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
-     &    fem, ele_mesh, mesh_file, gen_sph)
+!  --  load FEM mesh data
+      if(check_exist_mesh(mesh_file, my_rank) .eq. 0) then
+        if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
+        call mpi_input_mesh(mesh_file, nprocs, fem, ele_mesh)
+        call set_fem_center_mode_4_SPH                                  &
+     &     (fem%mesh%node%internal_node, sph%sph_rtp, sph%sph_params)
+      else
+!  --  Construct FEM mesh
+        call load_FEM_mesh_4_SPH(FEM_mesh_flags,                        &
+     &      sph%sph_params, sph%sph_rtp, sph%sph_rj,                    &
+     &      fem, ele_mesh, mesh_file, gen_sph)
+      end if
 !
       end subroutine load_para_SPH_and_FEM_mesh
 !
@@ -122,12 +134,10 @@
       use t_group_data
 !
       use m_spheric_constants
-      use mpi_load_mesh_data
       use copy_mesh_structures
       use const_FEM_mesh_sph_mhd
       use gen_sph_grids_modes
       use mesh_IO_select
-      use mesh_file_name_by_param
       use set_nnod_4_ele_by_type
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
@@ -143,15 +153,6 @@
 !
       type(mesh_data) :: femmesh_s
 !
-!
-!  --  load FEM mesh data
-      if(check_exist_mesh(mesh_file, my_rank) .eq. 0) then
-        if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-        call mpi_input_mesh(mesh_file, nprocs, fem, ele_mesh)
-        call set_fem_center_mode_4_SPH                                  &
-     &     (fem%mesh%node%internal_node, sph_rtp, sph_params)
-        return
-      end if
 !
 !  --  Construct FEM mesh
       if(sph_params%iflag_shell_mode .eq. iflag_no_FEMMESH) then

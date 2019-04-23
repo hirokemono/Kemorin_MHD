@@ -10,12 +10,16 @@
 !!      subroutine const_FEM_mesh_4_sph_mhd                             &
 !!     &         (FEM_mesh_flags, sph_params, sph_rtp, sph_rj,          &
 !!     &          mesh, group, mesh_file, gen_sph)
+!!      subroutine base_FEM_mesh_sph_mhd                                &
+!!     &         (FEM_mesh_flags, sph_params, sph_rtp, sph_rj,          &
+!!     &          mesh, group, ele_mesh, gen_sph)
 !!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::  group
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!@endverbatim
@@ -57,11 +61,6 @@
      &          mesh, group, mesh_file, gen_sph)
 !
       use calypso_mpi
-      use set_FEM_mesh_4_sph
-      use const_1d_ele_connect_4_sph
-      use set_sph_groups
-      use gen_sph_grids_modes
-      use set_FEM_mesh_4_sph
       use mpi_load_mesh_data
       use sph_file_IO_select
       use para_const_kemoview_mesh
@@ -83,21 +82,8 @@
       integer(kind = kint) :: i_level
 !
 !
-      call const_global_sph_FEM                                         &
-     &   (sph_rtp, sph_rj, gen_sph%radial_rtp_grp_lc, gen_sph)
-!
-      call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_SF)
-!
-      call s_const_1d_ele_connect_4_sph                                 &
-     &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp,   &
-     &    gen_sph%s3d_ranks, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
-     &    stbl_SF)
-!
-!      write(*,*) 's_const_FEM_mesh_for_sph',                           &
-!     &          sph_params%iflag_shell_mode, iflag_MESH_w_center
-      call s_const_FEM_mesh_for_sph                                     &
-     &   (my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r, gauss_SF,   &
-     &    sph_params, sph_rtp, gen_sph, mesh, group, ele_mesh, stbl_SF)
+      call base_FEM_mesh_sph_mhd(sph_params, sph_rtp, sph_rj,           &
+     &    mesh, group, ele_mesh, gen_sph)
 !
 ! Increase sleeve size
       do i_level = 2, gen_sph%num_FEM_sleeve
@@ -118,10 +104,50 @@
       end if
       call calypso_mpi_barrier
 !
+      end subroutine const_FEM_mesh_4_sph_mhd
+!
+!-----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine base_FEM_mesh_sph_mhd(sph_params, sph_rtp, sph_rj,     &
+     &          mesh, group, ele_mesh, gen_sph)
+!
+      use calypso_mpi
+      use set_FEM_mesh_4_sph
+      use const_1d_ele_connect_4_sph
+      use set_nnod_4_ele_by_type
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rj_grid), intent(in) :: sph_rj
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::  group
+      type(element_geometry), intent(inout) :: ele_mesh
+!
+      type(construct_spherical_grid), intent(inout) :: gen_sph
+!
+!
+      call const_global_sph_FEM                                         &
+     &   (sph_rtp, sph_rj, gen_sph%radial_rtp_grp_lc, gen_sph)
+!
+      call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_SF)
+!
+      call s_const_1d_ele_connect_4_sph                                 &
+     &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp,   &
+     &    gen_sph%s3d_ranks, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
+     &    stbl_SF)
+!
+!      write(*,*) 's_const_FEM_mesh_for_sph',                           &
+!     &          sph_params%iflag_shell_mode, iflag_MESH_w_center
+      call s_const_FEM_mesh_for_sph                                     &
+     &   (my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r, gauss_SF,   &
+     &    sph_params, sph_rtp, gen_sph, mesh, group, ele_mesh, stbl_SF)
+!
       call dealloc_nnod_nele_sph_mesh(stbl_SF)
       call dealloc_gauss_colatitude(gauss_SF)
 !
-      end subroutine const_FEM_mesh_4_sph_mhd
+      end subroutine base_FEM_mesh_sph_mhd
 !
 !-----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
