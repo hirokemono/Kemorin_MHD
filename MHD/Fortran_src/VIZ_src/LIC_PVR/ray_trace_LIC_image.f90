@@ -333,6 +333,7 @@
      &      ie_surf, isurf_end, xi, field_pvr%v_lic, vec_tgt)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf_end, xi, field_pvr%d_pvr, scl_tgt)
+        write(*,*) 'vec_tgt', vec_tgt
 
         do i = 1, lic_p%num_masking
           if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
