@@ -88,7 +88,7 @@
 
 
         iflag_comm = 1
-        iflag_debug = 0
+        iflag_debug = 1
         k_area = 0.0
 
         !   initial convolution integration at origin point
@@ -283,7 +283,7 @@
       g_v(1:3) = 0.0
       nv_sum = 0.0
       lic_v = 0.0
-      iflag_debug = 0
+      iflag_debug = 1
       step_len = 0.0
       avg_stepsize = 0.01
       len_sum = 0.0
