@@ -63,8 +63,8 @@
       use calypso_mpi
       use mpi_load_mesh_data
       use sph_file_IO_select
-      use para_const_kemoview_mesh
-      use parallel_sleeve_extension
+!      use para_const_kemoview_mesh
+!      use parallel_sleeve_extension
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -78,18 +78,18 @@
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
       type(element_geometry) :: ele_mesh
-      type(parallel_make_vierwer_mesh) :: par_view
-      integer(kind = kint) :: i_level
+!      type(parallel_make_vierwer_mesh) :: par_view
+!      integer(kind = kint) :: i_level
 !
 !
       call base_FEM_mesh_sph_mhd(sph_params, sph_rtp, sph_rj,           &
      &    mesh, group, ele_mesh, gen_sph)
 !
-! Increase sleeve size
-      do i_level = 2, gen_sph%num_FEM_sleeve
-        if(my_rank .eq. 0) write(*,*) 'extend sleeve:', i_level
-        call para_sleeve_extension(mesh, group, ele_mesh)
-      end do
+!! Increase sleeve size
+!      do i_level = 2, gen_sph%num_FEM_sleeve
+!        if(my_rank .eq. 0) write(*,*) 'extend sleeve:', i_level
+!        call para_sleeve_extension(mesh, group, ele_mesh)
+!      end do
 !
 ! Output mesh data
       if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then
@@ -97,10 +97,10 @@
         call mpi_output_mesh(mesh_file, mesh, group)
         write(*,'(a,i6,a)')                                             &
      &          'FEM mesh for domain', my_rank, ' is done.'
-!
-        if(FEM_mesh_flags%iflag_output_VMESH .gt. 0) then
-          call pickup_surface_mesh_para(mesh_file, par_view)
-        end if
+!!
+!        if(FEM_mesh_flags%iflag_output_VMESH .gt. 0) then
+!          call pickup_surface_mesh_para(mesh_file, par_view)
+!        end if
       end if
       call calypso_mpi_barrier
 !

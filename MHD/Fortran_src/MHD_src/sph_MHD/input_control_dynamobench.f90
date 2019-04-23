@@ -114,10 +114,10 @@
      &    DMHD_ctl%smonitor_ctl%meq_ctl, cdat%circle, cdat%d_circle,    &
      &    bench)
 !
-      call dealloc_sph_mhd_ctl_data(DMHD_ctl)
-!
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
+!
+      call dealloc_sph_mhd_ctl_data(DMHD_ctl)
 !
       end subroutine input_control_SPH_dynamobench
 !

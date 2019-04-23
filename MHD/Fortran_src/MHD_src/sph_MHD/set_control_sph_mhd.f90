@@ -183,7 +183,7 @@
       type(mhd_DNS_model_control), intent(in) :: Dmodel_ctl
       type(sph_mhd_control_control), intent(in) :: smctl_ctl
       type(node_monitor_control), intent(in) :: nmtr_ctl
-      type(parallel_sph_shell_control), intent(inout) :: psph_ctl
+      type(parallel_sph_shell_control), intent(in) :: psph_ctl
       type(sph_grids), intent(inout) :: sph_gen
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
@@ -219,7 +219,6 @@
         call set_control_4_shell_grids                                  &
      &     (nprocs, psph_ctl%Fmesh_ctl, psph_ctl%spctl, psph_ctl%sdctl, &
      &      sph_gen, gen_sph, ierr)
-        call dealloc_parallel_shell_ctl(psph_ctl)
       end if
 !
 !   set forces

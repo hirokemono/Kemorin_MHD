@@ -68,6 +68,7 @@
       use set_control_sph_SGS_MHD
       use sph_file_IO_select
       use set_control_4_SPH_to_FEM
+      use sel_make_SPH_mesh_w_LIC
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
@@ -98,7 +99,7 @@
      &    SPH_MHD%fld, FEM_dat%field, monitor)
 !
 !
-      call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
+      call select_make_SPH_mesh_w_LIC(MHD_ctl%psph_ctl%iflag_sph_shell, &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, sph_maker2,       &
      &    FEM_dat%geofem, FEM_dat%ele_mesh, MHD_files)
 !
