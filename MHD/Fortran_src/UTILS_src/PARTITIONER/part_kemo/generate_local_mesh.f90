@@ -46,6 +46,8 @@
       use t_partitioner_comm_table
       use t_ctl_param_partitioner
 !
+      use m_work_time
+      use m_elapsed_labels_4_PART
       use check_domain_prop_4_part
       use find_local_elements
       use increase_overlap
@@ -80,8 +82,11 @@
 !
       call CRE_LOCAL_DATA(part_p%num_domain, node_org%numnod,           &
      &    ele_org, domain_grp%nod_d_grp, included_ele)
+
+      call start_elapsed_time(ist_elapsed_PART+1)
       call increase_overlapping(part_p, node_org, ele_org,              &
      &    surf_org, field_org, domain_grp%nod_d_grp, included_ele)
+      call end_elapsed_time(ist_elapsed_PART+1)
 !
 !C
 !C-- INTERFACE info.
@@ -105,6 +110,7 @@
 !C===
 !
       num_pe = int(part_p%num_domain)
+      call start_elapsed_time(ist_elapsed_PART+4)
       call gen_node_import_tables(num_pe, internals_part%itl_nod_part,  &
      &    domain_grp%nod_d_grp, comm_part)
 !C
@@ -114,6 +120,7 @@
 !C===
       call gen_node_export_tables(num_pe, internals_part%itl_nod_part,  &
      &    domain_grp%nod_d_grp, comm_part)
+      call end_elapsed_time(ist_elapsed_PART+4)
 !C
 !C-- distributed Local DATA
       call local_fem_mesh                                               &

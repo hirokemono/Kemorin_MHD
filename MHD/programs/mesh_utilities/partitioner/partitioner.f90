@@ -1,8 +1,13 @@
 !
       program patitioner
 !
+      use calypso_mpi
+!
       use m_precision
       use m_constants
+!
+      use m_work_time
+      use m_elapsed_labels_4_PART
 !
       use t_mesh_data
       use t_geometry_data
@@ -69,7 +74,6 @@
       type(internals_4_part), save :: internals_part1
       type(partitioner_comm_tables), save :: comm_part1
 !
-      integer, parameter :: my_rank = izero
 !      type(mesh_data) :: fem_IO_i
 !
       integer(kind = kint) :: ierr, iprint, ifield, icomp
@@ -91,9 +95,18 @@
       integer(kind = kint) :: num_particle
       integer(kind = kint) :: iflag_part_debug, iflag_part_detail
       real(kind = kreal), pointer :: node_volume(:)
+!
+!
+      call calypso_MPI_init
+!
 ! initial debug flag
       iflag_part_debug = 1
       iflag_part_detail = 0
+!
+      call init_elapse_time_by_TOTAL
+      call elapsed_label_4_PARTITIONER
+      call reset_elapse_4_PARTITIONER
+!
 !
 !  read control file
 !
@@ -133,26 +146,28 @@
 
 !  ========= Estimate load for each subdomain based on field data ====
 !  Load one field data from ucd file
-      data_field_vec%nnod = fem_ucd%nnod
-      icou = 0
-      do ifield = 1, fem_ucd%num_field
-        write(*,*) fem_ucd%phys_name(ifield)
-        if(cmp_no_case(fem_ucd%phys_name(ifield),                       &
+      if(part_p1%iflag_LIC_partition .eq. 1) then
+        data_field_vec%nnod = fem_ucd%nnod
+        icou = 0
+        do ifield = 1, fem_ucd%num_field
+          write(*,*) fem_ucd%phys_name(ifield)
+          if(cmp_no_case(fem_ucd%phys_name(ifield),                     &
     &                  def_magnetic_field_name)) then
           !write(*,*) 'is ', def_magnetic_field_name
-          data_field_vec%ncomp = fem_ucd%num_comp(ifield)
+            data_field_vec%ncomp = fem_ucd%num_comp(ifield)
           !write(*,*) 'num of node', data_field_vec%nnod,'num of comp', data_field_vec%ncomp
-          data_field_vec%phys_name = fem_ucd%phys_name(ifield)
-          call alloc_vector_field(data_field_vec)
+            data_field_vec%phys_name = fem_ucd%phys_name(ifield)
+            call alloc_vector_field(data_field_vec)
           !write(*,*) 'field:', data_field_vec%phys_name, 'component idx is ', icou + 1
-          do icomp = 1, fem_ucd%num_comp(ifield)
-            !write(*,*) 'read from idx:', icou+icomp
-            data_field_vec%d_ucd(:,icomp) = fem_ucd%d_ucd(:,icomp + icou)
-          end do
-        end if
-        icou = icou + fem_ucd%num_comp(ifield)
-      end do
-
+            do icomp = 1, fem_ucd%num_comp(ifield)
+              !write(*,*) 'read from idx:', icou+icomp
+              data_field_vec%d_ucd(:,icomp)                             &
+     &              = fem_ucd%d_ucd(:,icomp + icou)
+            end do
+          end if
+          icou = icou + fem_ucd%num_comp(ifield)
+        end do
+      end if
 ! org_mesh output test
       if(iflag_part_debug .gt. 0) then
         write(*,*) 'mesh data info test'
@@ -292,6 +307,9 @@
      &      sgl_viewer_p)
       end if
 !
+      call output_elapsed_times
+!
+      call calypso_MPI_finalize
       stop ' * Partitioning finished'
 !
       end program patitioner
