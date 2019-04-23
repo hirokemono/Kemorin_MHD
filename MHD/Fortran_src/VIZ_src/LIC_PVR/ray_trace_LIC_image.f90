@@ -454,7 +454,7 @@
               grad_tgt(1:3) = grad_tgt(1:3) / grad_len
             endif
 
-            write(*,*) 'lic_tgt', lic_tgt
+!            write(*,*) 'lic_tgt', lic_tgt
             if(lic_p%iflag_color_mode .eq. iflag_from_control) then
               scl_mid(1) = half*(scl_org(1) + scl_tgt(1))
               call s_lic_rgba_4_each_pixel                              &
@@ -469,7 +469,7 @@
             end if
           end if
         end if
-       write(*,*) 'rgba_ray end', rgba_ray
+!       write(*,*) 'rgba_ray end', rgba_ray
 !
         if(isurf_org(1).eq.0) then
           iflag_comm = 0
