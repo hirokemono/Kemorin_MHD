@@ -97,7 +97,6 @@
         n_grad(1:3) = 0.0
         icur_sf = isurf
         n_v = 0.0
-        write(*,*) 'Tako'
         do i = 1, 2
           iele = isurf_orgs(i,1)
           isf_org = isurf_orgs(i,2)
@@ -129,6 +128,7 @@
         end if
         o_tgt = o_tgt + n_v * kernal_node(kernal_size/2.0)
         n_grad = n_grad + n_grad * kernal_node(kernal_size/2.0)
+        write(*,*) 'o_tgt', o_tgt, n_v, kernal_node(kernal_size/2.0)
 
         if(iflag_debug .eq. 1) write(50+my_rank,*)                      &
      &     "--------------------Forward iter begin----------------"
