@@ -357,6 +357,7 @@
           ray_len = sqrt( (xx_tgt(1) - xx_st(1))**2                     &
        &                + (xx_tgt(2) - xx_st(2))**2                     &
        &                + (xx_tgt(3) - xx_st(3))**2)
+          write(*,*) 'iflag_vr_sample_mode', lic_p%iflag_vr_sample_mode
           if(lic_p%iflag_vr_sample_mode .eq. 0) then
             ray_len_left = ray_left + ray_len
 
@@ -389,6 +390,7 @@
      &            xyz_min_gl, xyz_max_gl, iflag_lic,                    &
      &            lic_tgt(1), grad_tgt)
 !
+               write(*,*) 'lic_tgt', lic_tgt
 
   !   normalize gradient
               grad_len = sqrt(grad_tgt(1)*grad_tgt(1)                   &
