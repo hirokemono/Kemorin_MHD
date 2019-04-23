@@ -97,7 +97,7 @@
         n_grad(1:3) = 0.0
         icur_sf = isurf
         n_v = 0.0
-
+        write(*,*) 'Tako'
         do i = 1, 2
           iele = isurf_orgs(i,1)
           isf_org = isurf_orgs(i,2)
