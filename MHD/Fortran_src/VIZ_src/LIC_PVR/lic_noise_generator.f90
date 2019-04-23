@@ -55,7 +55,8 @@
       call open_rd_rawfile(file_name, ierr)
       if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-        call read_mul_integer_b(bflag_noise, ithree64, n_data_size)
+        call read_mul_int_from_32bit                                    &
+     &     (bflag_noise, ithree64, n_data_size)
         if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
 !        write(*,*) d_size
@@ -101,7 +102,8 @@
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
           bflag_noise%iflag_swap = iendian_KEEP
-          call read_mul_integer_b(bflag_noise, ithree64, n_data_size)
+          call read_mul_int_from_32bit                                  &
+     &       (bflag_noise, ithree64, n_data_size)
           if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
 !
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
@@ -120,7 +122,8 @@
         call open_rd_rawfile(file_name, ierr)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
-          call read_mul_integer_b(bflag_noise, ithree64, n_data_size)
+          call read_mul_int_from_32bit                                  &
+     &       (bflag_noise, ithree64, n_data_size)
           if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
 !
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
@@ -336,6 +339,7 @@
       xyz = xyz_norm * dim
       xyz_i = int(xyz_norm * dim + 0.5)
       xyz_d = xyz + 0.5 - xyz_i
+
       idx000 = get_offset_vol(xyz_i(1), xyz_i(2), xyz_i(3), dim)
       idx001 = get_offset_vol(xyz_i(1), xyz_i(2), xyz_i(3)+1, dim)
       idx010 = get_offset_vol(xyz_i(1), xyz_i(2)+1, xyz_i(3), dim)

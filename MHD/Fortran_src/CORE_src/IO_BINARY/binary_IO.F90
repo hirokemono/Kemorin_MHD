@@ -14,8 +14,10 @@
 !!      subroutine seek_forward_binary_file(len_byte)
 !!
 !!      subroutine write_endian_flag(bflag)
+!!      subroutine write_one_integer_to_32bit(int_dat, bflag)
 !!      subroutine write_one_integer_b(int_dat, bflag)
 !!      subroutine write_one_real_b(real_dat, bflag)
+!!      subroutine write_mul_int_to_32bit(num, int4_dat, bflag)
 !!      subroutine write_mul_int8_b(num, int_gl_dat, bflag)
 !!      subroutine write_mul_integer_b(num, int_dat, bflag)
 !!      subroutine write_integer_stack_b(num, istack, bflag)
@@ -27,8 +29,10 @@
 !!
 !!      integer function endian_check(id_rank, int_dat)
 !!      integer(kind = kint) function read_endian_flag(id_rank)
+!!      subroutine read_one_integer_from_32bit(bflag, int_dat)
 !!      subroutine read_one_integer_b(bflag, int_dat)
 !!      subroutine read_one_real_b(bflag, real_dat)
+!!      subroutine read_mul_int_from_32bit(bflag, num, int_dat)
 !!      subroutine read_mul_int8_b(bflag, num, int_gl_dat)
 !!      subroutine read_mul_integer_b(bflag, num, int_dat)
 !!      subroutine read_integer_stack_b(bflag, num, istack, ntot)
@@ -55,6 +59,7 @@
         integer(kind = kint) :: ierr_IO = 0
       end type binary_IO_flags
 !
+      integer(kind = kint), parameter, private :: len_4byte = 4
       integer(kind = kint), parameter, private :: id_binary = 19
 !
       private :: write_endian_flag, read_endian_flag
@@ -194,6 +199,25 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine write_one_integer_to_32bit(int_dat, bflag)
+!
+      use transfer_to_long_integers
+!
+      integer(kind = len_4byte), intent(in) :: int_dat
+      type(binary_IO_flags), intent(inout) :: bflag
+!
+!
+#ifdef ZLIB_IO
+      call rawwrite_f(kint_gl, int_dat, bflag%ierr_IO)
+      bflag%ierr_IO = bflag%ierr_IO - len_4byte
+#else
+      write(id_binary)  int_dat
+#endif
+!
+      end subroutine write_one_integer_to_32bit
+!
+! -----------------------------------------------------------------------
+!
       subroutine write_one_integer_b(int_dat, bflag)
 !
       use transfer_to_long_integers
@@ -229,6 +253,37 @@
       end subroutine write_one_real_b
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine write_mul_int_to_32bit(num, int4_dat, bflag)
+!
+      integer(kind = kint_gl), intent(in) :: num
+      integer(kind = len_4byte), intent(in) :: int4_dat(num)
+      type(binary_IO_flags), intent(inout) :: bflag
+!
+      integer(kind = kint) :: ist
+      integer:: lbyte, ilength
+!
+!
+      if(num .le. 0) return
+#ifdef ZLIB_IO
+      ist = 0
+      do
+        ilength = int(min((num - ist), huge_20))
+        lbyte = ilength *  len_4byte
+!
+        call rawwrite_f(lbyte, int4_dat(ist+1), bflag%ierr_IO)
+        ist = ist + ilength
+        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        if(bflag%ierr_IO .ne. 0) return
+        if(ist .ge. num) exit
+      end do
+#else
+      write(id_binary)  int4_dat(1:num)
+#endif
+!
+      end subroutine write_mul_int_to_32bit
+!
 ! -----------------------------------------------------------------------
 !
       subroutine write_mul_int8_b(num, int_gl_dat, bflag)
@@ -462,6 +517,31 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine read_one_integer_from_32bit(bflag, int_dat)
+!
+      type(binary_IO_flags), intent(inout) :: bflag
+      integer(kind = len_4byte), intent(inout) :: int_dat
+!
+!
+#ifdef ZLIB_IO
+      call rawread_32bit_f                                              &
+     &    (bflag%iflag_swap, len_4byte, int_dat, bflag%ierr_IO)
+      if(bflag%ierr_IO .ne. len_4byte) goto 99
+#else
+      read(id_binary, err=99, end=99)  int_dat
+#endif
+!
+      bflag%ierr_IO = 0
+      return
+!
+  99  continue
+      bflag%ierr_IO = ierr_file
+      return
+!
+      end subroutine read_one_integer_from_32bit
+!
+! -----------------------------------------------------------------------
+!
       subroutine read_one_integer_b(bflag, int_dat)
 !
       type(binary_IO_flags), intent(inout) :: bflag
@@ -513,6 +593,39 @@
       end subroutine read_one_real_b
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine read_mul_int_from_32bit(bflag, num, int_dat)
+!
+      integer(kind = kint_gl), intent(in) :: num
+      integer(kind = len_4byte), intent(inout) :: int_dat(num)
+      type(binary_IO_flags), intent(inout) :: bflag
+!
+      integer(kind = kint) :: ist
+      integer:: lbyte, ilength
+!
+!
+      if(num .le. 0) return
+#ifdef ZLIB_IO
+      ist = 0
+      do
+        ilength = int(min((num - ist), huge_20))
+        lbyte = ilength * len_4byte
+!
+        call rawread_32bit_f                                            &
+     &     (bflag%iflag_swap, lbyte, int_dat(ist+1), bflag%ierr_IO)
+        ist = ist + ilength
+        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        if(bflag%ierr_IO .ne. 0) return
+        if(ist .ge. num) exit
+      end do
+#else
+      read(id_binary, err=99, end=99)  int_dat(1:num)
+#endif
+      return
+!
+      end subroutine read_mul_int_from_32bit
+!
 ! -----------------------------------------------------------------------
 !
       subroutine read_mul_int8_b(bflag, num, int_gl_dat)
