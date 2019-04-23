@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/SOLVER_src/send_recv/collect_to_rank0.f90
