@@ -15,6 +15,7 @@
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      begin masking_control
+!!        masking_type         field or geometry
 !!        masking_field        magnetic_field
 !!        masking_component    magnetic_field
 !!        array masking_range      1
