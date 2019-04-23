@@ -445,6 +445,7 @@
      &          k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,      &
      &          xyz_min_gl, xyz_max_gl, iflag_lic,                      &
      &          lic_tgt(1), grad_tgt)
+           write(*,*) 'lic_tgt', lic_tgt, lic_p%factor_normal, 
 !
             ave_ray_len = ray_total_len / icount_line_cur_ray
 !
@@ -456,7 +457,6 @@
               grad_tgt(1:3) = grad_tgt(1:3) / grad_len
             endif
 
-            write(*,*) 'lic_tgt', lic_tgt
             if(lic_p%iflag_color_mode .eq. iflag_from_control) then
               scl_mid(1) = half*(scl_org(1) + scl_tgt(1))
               call s_lic_rgba_4_each_pixel                              &
