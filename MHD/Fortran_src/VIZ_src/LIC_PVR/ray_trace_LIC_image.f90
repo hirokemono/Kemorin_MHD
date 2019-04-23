@@ -445,7 +445,7 @@
      &          k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,      &
      &          xyz_min_gl, xyz_max_gl, iflag_lic,                      &
      &          lic_tgt(1), grad_tgt)
-           write(*,*) 'lic_tgt', lic_tgt, lic_p%factor_normal, 
+           write(*,*) 'lic_tgt', lic_tgt, lic_p%factor_normal
 !
             ave_ray_len = ray_total_len / icount_line_cur_ray
 !
