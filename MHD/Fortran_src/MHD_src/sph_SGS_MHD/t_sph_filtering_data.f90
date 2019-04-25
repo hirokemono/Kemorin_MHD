@@ -24,8 +24,7 @@
 !!      subroutine dealloc_sph_2nd_filter_moments(sph_filters)
 !!        type(sph_filters_type), intent(inout) :: sph_filters
 !!
-!!      subroutine check_radial_filter(id_file, sph_rj, r_filter)
-!!      subroutine check_radial_filter_func(id_file, sph_rj, r_filter)
+!!      subroutine check_radial_filter(file_name, sph_rj, r_filter)
 !!      subroutine check_horiz_filter_weight(id_file, sph_filter)
 !!      subroutine check_sph_2nd_moments                                &
 !!     &         (id_file, sph_rtp, leg, sph_filters)
@@ -102,6 +101,8 @@
 !>        second filter moments in phi direction
         real(kind = kreal) :: phi_2nd_moment
       end type sph_filters_type
+!
+      integer(kind = kint), parameter :: ifile_r_filter = 49
 !
 ! ----------------------------------------------------------------------
 !
@@ -195,9 +196,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_radial_filter(id_file, sph_rj, r_filter)
+      subroutine check_radial_filter(file_name, sph_rj, r_filter)
 !
-      integer(kind = kint), intent(in) :: id_file
+      character(len=kchara), intent(in) :: file_name
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(filter_coefficients_type), intent(inout) :: r_filter
 !
@@ -205,37 +206,25 @@
 !
 !
       if(my_rank .ne. 0) return
-        write(id_file,*)  'r_filter%inod_filter(i)',                    &
+!
+        open(ifile_r_filter, file = file_name)
+        write(ifile_r_filter,*)  'r_filter%inod_filter(i)',             &
      &                   r_filter%istack_node
         do i = r_filter%istack_node(0)+1, r_filter%istack_node(1)
           ist = r_filter%istack_near_nod(i-1) + 1
           ied = r_filter%istack_near_nod(i)
-          write(id_file,*) i, r_filter%inod_filter(i),                  &
+          write(ifile_r_filter,*) i, r_filter%inod_filter(i),           &
      &                  r_filter%inod_near(ist:ied)
         end do
-        write(id_file,*)  'r_filter%weight(i)'
+        write(ifile_r_filter,*)  'r_filter%weight(i)'
         do i = r_filter%istack_node(0)+1, r_filter%istack_node(1)
           ist = r_filter%istack_near_nod(i-1) + 1
           ied = r_filter%istack_near_nod(i)
-          write(id_file,*)                                              &
+          write(ifile_r_filter,*)                                       &
      &         sph_rj%radius_1d_rj_r(r_filter%inod_filter(i)),          &
      &         i, r_filter%inod_filter(i),  r_filter%weight(ist:ied)
         end do
 !
-      end subroutine check_radial_filter
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_radial_filter_func(id_file, sph_rj, r_filter)
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(filter_coefficients_type), intent(inout) :: r_filter
-!
-      integer(kind = kint) :: i, ist, ied
-!
-!
-      if(my_rank .ne. 0) return
         write(id_file,*)  'r_filter%func(i)'
         do i = r_filter%istack_node(0)+1, r_filter%istack_node(1)
           ist = r_filter%istack_near_nod(i-1) + 1
@@ -244,8 +233,9 @@
      &           sph_rj%radius_1d_rj_r(r_filter%inod_filter(i)),        &
      &           i, r_filter%inod_filter(i), r_filter%func(ist:ied)
         end do
+        close(file_name)
 !
-      end subroutine check_radial_filter_func
+      end subroutine check_radial_filter
 !
 ! ----------------------------------------------------------------------
 !

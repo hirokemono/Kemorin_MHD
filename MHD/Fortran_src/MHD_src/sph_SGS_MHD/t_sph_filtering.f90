@@ -73,6 +73,8 @@
         type(sph_dynamic_model_group) :: sph_d_grp
       end type dynamic_SGS_data_4_sph
 !
+      character(len=kchara), parameter :: filter_head = 'radial_filter'
+!
       private :: const_sph_radial_filter, const_radial_filter
       private :: const_filter_on_sphere
 !
@@ -112,6 +114,7 @@
 !
       use calypso_mpi
       use wider_radial_filter_data
+      use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: num_sph_filteres
       type(sph_grids), intent(in) ::  sph
@@ -122,6 +125,7 @@
 !
       integer(kind = kint)  :: i, i1, i2
       integer(kind = kint)  :: id_file
+      character(len=kchara) :: fname_tmp, file_name
 !
 !
       do i = 1, num_sph_filteres
@@ -150,10 +154,12 @@
      &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
 !
         if(iflag_debug .gt. 0) then
-          id_file = 50+my_rank
-          write(id_file,*) 'check_radial_filter for no. ', i
+          fname_tmp = add_int_suffix(i, filter_head)
+          file_name = add_dat_extension(fname_tmp)
           call check_radial_filter                                      &
-     &      (id_file, sph%sph_rj, sph_filters(i)%r_filter)
+     &       (file_name, sph%sph_rj, sph_filters(i)%r_filter)
+!
+          id_file = 50+my_rank
           write(id_file,*) 'check_horiz_filter_weight for no. ', i
           call check_horiz_filter_weight                                &
      &       (id_file, sph_filters(i)%sph_filter)
