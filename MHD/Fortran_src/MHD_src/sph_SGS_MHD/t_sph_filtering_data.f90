@@ -225,15 +225,15 @@
      &         i, r_filter%inod_filter(i),  r_filter%weight(ist:ied)
         end do
 !
-        write(id_file,*)  'r_filter%func(i)'
+        write(ifile_r_filter,*)  'r_filter%func(i)'
         do i = r_filter%istack_node(0)+1, r_filter%istack_node(1)
           ist = r_filter%istack_near_nod(i-1) + 1
           ied = r_filter%istack_near_nod(i)
-          write(id_file,*)                                              &
+          write(ifile_r_filter,*)                                       &
      &           sph_rj%radius_1d_rj_r(r_filter%inod_filter(i)),        &
      &           i, r_filter%inod_filter(i), r_filter%func(ist:ied)
         end do
-        close(file_name)
+        close(ifile_r_filter)
 !
       end subroutine check_radial_filter
 !
