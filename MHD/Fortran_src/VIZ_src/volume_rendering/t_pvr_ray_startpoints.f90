@@ -27,6 +27,9 @@
 !
 !>  Structure for start points of ray tracing
       type pvr_ray_start_type
+!>    Reference process to composit
+        integer :: irank_composit_ref = 0
+
 !>    Total number of ray tracing
         integer(kind = kint) :: ntot_pvr_ray = 0
 !

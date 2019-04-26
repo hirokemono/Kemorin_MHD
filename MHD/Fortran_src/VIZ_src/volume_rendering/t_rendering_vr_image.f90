@@ -96,6 +96,7 @@
      &          pvr_param, pvr_rgb, pvr_proj)
 !
       use cal_pvr_modelview_mat
+      use t_pvr_stencil_buffer
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -111,6 +112,8 @@
      &    group%surf_grp, group%surf_grp_geom, pvr_param%field,         &
      &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
      &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
+      call set_pvr_stencil_buffer                                       &
+     &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt)
       call set_subimages                                                &
      &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%image)
 !
@@ -173,6 +176,7 @@
       use cal_pvr_modelview_mat
       use composite_pvr_images
       use write_PVR_image
+      use t_pvr_stencil_buffer
 !
       integer(kind = kint), intent(in) :: istep_pvr
       type(node_data), intent(in) :: node
@@ -193,6 +197,8 @@
      &    pvr_param%field, pvr_param%view, pvr_proj%projection_mat,      &
      &    pvr_param%pixel,  pvr_proj%bound, pvr_proj%screen,            &
      &    pvr_proj%start_pt)
+      call set_pvr_stencil_buffer                                       &
+     &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt)
       call set_subimages                                                &
      &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%image)
 !
