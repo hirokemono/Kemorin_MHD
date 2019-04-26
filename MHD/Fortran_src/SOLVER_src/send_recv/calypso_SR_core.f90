@@ -102,7 +102,9 @@
         end do
       end if
 !
-      call MPI_WAITALL (ncomm_recv, req2, sta2, ierr_MPI)
+      if(ncomm_recv .gt. 0) then
+        call MPI_WAITALL(ncomm_recv, req2, sta2, ierr_MPI)
+      end if
 !
       if (isend_self .eq. 0) return
       ist_send= NB * istack_send(npe_send-1)
@@ -161,7 +163,9 @@
         end do
       end if
 !
-      call MPI_WAITALL(ncomm_recv, req2, sta2, ierr_MPI)
+      if(ncomm_recv .gt. 0) then
+        call MPI_WAITALL(ncomm_recv, req2, sta2, ierr_MPI)
+      end if
 !
       if (isend_self .eq. 0) return
 !
@@ -221,7 +225,9 @@
         end do
       end if
 !
-      call MPI_WAITALL (ncomm_recv, req2, sta2, ierr_MPI)
+      if(ncomm_recv .gt. 0) then
+        call MPI_WAITALL(ncomm_recv, req2, sta2, ierr_MPI)
+      end if
 !
       if (isend_self .eq. 0) return
 !
@@ -249,7 +255,9 @@
 !
 !
       ncomm_send = int(npe_send - isend_self)
-      call MPI_WAITALL (ncomm_send, req1, sta1, ierr_MPI)
+      if(ncomm_send .gt. 0) then
+        call MPI_WAITALL(ncomm_send, req1, sta1, ierr_MPI)
+      end if
 !
       end subroutine calypso_send_recv_fin
 !
