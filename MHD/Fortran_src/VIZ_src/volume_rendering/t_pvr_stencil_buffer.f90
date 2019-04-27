@@ -50,8 +50,18 @@
       integer(kind = kint), allocatable :: item_4_composit(:)
       integer(kind = kint), allocatable :: istack_composition(:)
 !
-      integer(kind = kint), allocatable :: num_send_pixel_composit(:)
-      real(kind = kreal), allocatable :: depth_send_pixel_composit(:)
+      integer(kind = kint) :: ncomm_send_pixel_output
+      integer(kind = kint) :: ncomm_recv_pixel_output
+      integer(kind = kint) :: iself_send_pixel_output
+      integer(kind = kint) :: iself_recv_pixel_output
+      integer(kind = kint) :: ntot_send_pixel_output
+      integer(kind = kint) :: ntot_recv_pixel_output
+      integer(kind = kint), allocatable :: irank_send_pixel_output(:)
+      integer(kind = kint), allocatable :: istack_send_pixel_output(:)
+      integer(kind = kint), allocatable :: item_send_pixel_output(:)
+      integer(kind = kint), allocatable :: irank_recv_pixel_output(:)
+      integer(kind = kint), allocatable :: istack_recv_pixel_output(:)
+      integer(kind = kint), allocatable :: item_recv_pixel_output(:)
 !
       integer(kind = kint), allocatable :: num_send_pixel_tmp(:)
       integer(kind = kint), allocatable :: num_recv_pixel_tmp(:)
@@ -189,8 +199,68 @@
           exit
         end if
       end do
-!      write(*,*) 'istack_recv_image', istack_recv_image
-!      write(*,*) 'npixel_4_composit', npixel_4_composit
+!
+      if(npixel_4_composit .gt. 0) ncomm_send_pixel_output = 1
+!
+      allocate(irank_send_pixel_output(ncomm_send_pixel_output))
+      allocate(istack_send_pixel_output(0:ncomm_send_pixel_output))
+
+      iself_send_pixel_output = 0
+      istack_send_pixel_output(0) = 0
+      if(ncomm_send_pixel_output .eq. 1) then
+        irank_send_pixel_output(1) = image_out
+        istack_send_pixel_output(1) = npixel_4_composit
+        if(my_rank .eq. image_out) iself_send_pixel_output = 1
+      end if
+      ntot_send_pixel_output = istack_send_pixel_output(1)
+!
+      allocate(item_send_pixel_output(ntot_send_pixel_output))
+!
+      do inum = 1, ntot_send_pixel_output
+        item_send_pixel_output(inum) = inum
+      end do
+!
+!
+      ncomm_recv_pixel_output = 0
+      if(my_rank .eq. image_out) then
+        do ip = 1, nprocs
+          num = istack_recv_image(ip) - istack_recv_image(ip-1)
+          if(num .gt. 0) then
+            ncomm_recv_pixel_output = ncomm_recv_pixel_output + 1
+          end if
+        end do
+      end if
+      allocate(irank_recv_pixel_output(ncomm_recv_pixel_output))
+      allocate(istack_recv_pixel_output(0:ncomm_recv_pixel_output))
+!
+      istack_recv_pixel_output(0) = 0
+      if(my_rank .eq. image_out) then
+        icou = 0
+        do ip = 1, nprocs
+          ist = istack_recv_image(ip-1)
+          num = istack_recv_image(ip) - istack_recv_image(ip-1)
+          ipix = item_recv_image(ist+1)
+!
+          if(num .gt. 0) then
+            icou = icou + 1
+            write(*,*) 'icou', icou, ncomm_recv_pixel_output
+            istack_recv_pixel_output(icou) = istack_recv_image(ip)
+            irank_recv_pixel_output(icou) = irank_4_composit(ipix)
+          end if
+          if(irank_4_composit(ipix) .eq. image_out) then
+            iself_send_pixel_output = 1
+          end if
+        end do
+      end if
+!
+      ntot_recv_pixel_output                                      &
+     &      = istack_recv_pixel_output(ncomm_recv_pixel_output)
+!
+      allocate(item_recv_pixel_output(ntot_recv_pixel_output))
+!
+      do inum = 1, ntot_recv_pixel_output
+        item_recv_pixel_output(inum) = item_recv_image(inum)
+      end do
 !
       allocate(ipixel_4_composit(npixel_4_composit))
       allocate(item_4_composit(num_pixel_xy))
@@ -211,8 +281,6 @@
         end if
       end do
 !
-
-
 
       allocate(index(pvr_start%num_pvr_ray))
       allocate(iref(pvr_start%num_pvr_ray))
@@ -498,69 +566,7 @@
       end do
       close(50+my_rank)
 !
-!
       return
-!
-      do inum = 1, pvr_start%num_pvr_ray
-        ipix = pvr_start%id_pixel_start(inum)
-        ip = irank_4_composit(ipix) + 1
-        num_send_pixel_composit(ip) = num_send_pixel_composit(ip) + 1
-      end do
-!
-      istack_send_pixel_composit(0) = 0
-      do ip = 1, nprocs
-        id_rank = mod(ip + my_rank,nprocs)
-        irank_send_pixel_composit(ip) = id_rank
-        istack_send_pixel_composit(ip)                                  &
-     &             = istack_send_pixel_composit(ip-1)                   &
-     &              + num_send_pixel_composit(id_rank+1)
-      end do
-      ntot_send_pixel_composit = istack_send_pixel_composit(nprocs)
-!
-      allocate(item_send_pixel_composit(ntot_send_pixel_composit))
-      allocate(ipix_send_pixel_composit(ntot_send_pixel_composit))
-      allocate(depth_send_pixel_composit(ntot_send_pixel_composit))
-!
-!$omp parallel workshare
-      num_send_pixel_composit(1:nprocs) = 0
-!$omp end parallel workshare
-      do inum = 1, pvr_start%num_pvr_ray
-        ipix = pvr_start%id_pixel_start(inum)
-        ip = irank_4_composit(ipix)
-        do jp = 1, nprocs
-          if(irank_send_pixel_composit(jp) .eq. ip) then
-            num_send_pixel_composit(ip)                                 &
-     &             = num_send_pixel_composit(ip) + 1
-            icou = istack_send_pixel_composit(ip-1)                     &
-     &              + num_send_pixel_composit(ip)
-            item_send_pixel_composit(icou) = inum
-            ipix_send_pixel_composit(icou) = ipix
-            depth_send_pixel_composit(icou)                             &
-     &              = pvr_start%xx_pvr_ray_start(inum,3)
-            exit
-          end if
-        end do
-      end do
-!
-      deallocate(item_send_pixel_composit)
-      deallocate(ipix_send_pixel_composit)
-      deallocate(depth_send_pixel_composit)
-!
-      deallocate(istack_send_pixel_composit)
-      deallocate(num_send_pixel_composit)
-!
-      deallocate(ipixel_4_composit)
-!
-      deallocate(irank_4_composit)
-      deallocate(irev_recv_image, item_recv_image)
-      deallocate(istack_recv_image)
-      if(my_rank .eq. image_out)  then
-        deallocate(irank_image_stack, istack_ray_start_gl)
-      end if
-!
-      deallocate(num_ray_start_lc)
-      if(my_rank .eq. image_out)  deallocate(num_ray_start_gl)
-!
 !
       end subroutine set_pvr_stencil_buffer
 !
