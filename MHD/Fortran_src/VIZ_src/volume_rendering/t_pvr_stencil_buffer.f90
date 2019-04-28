@@ -40,58 +40,27 @@
       integer(kind = kint), intent(in) :: num_pixel_xy
       type(pvr_ray_start_type), intent(in) :: pvr_start
 !
-      integer(kind = kint_gl) :: num_pvr_ray_gl
-!
-      integer(kind = kint_gl), allocatable :: num_ray_start_lc(:)
-      integer(kind = kint_gl), allocatable :: num_ray_start_gl(:)
-!
+      integer(kind = kint) :: num_pixel_recv
+      type(calypso_comm_table) :: img_output_tbl
+      type(calypso_comm_table) :: img_composit_tbl
+      type(pvr_image_stack_table) :: img_stack
       type(stencil_buffer_work)  :: stencil_wk
 !
       integer(kind = kint), allocatable :: ipixel_4_composit(:)
       integer(kind = kint), allocatable :: item_4_composit(:)
 !
-      integer(kind = kint) :: num_pixel_recv
-      type(calypso_comm_table) :: img_output_tbl
-      type(calypso_comm_table) :: img_composit_tbl
-!
-      type(pvr_image_stack_table) :: img_stack
       integer(kind = kint), allocatable :: ipix_recv_pixel_composit(:)
       real(kind = kreal), allocatable :: depth_recv_pixel_composit(:)
-!
-      integer(kind = kint), allocatable :: ipixel_check(:)
 !!
-      integer :: num32
       integer :: ip
       integer :: irank_image_file
       integer(kind = kint) :: inum, ipix, icou, ist, num
-      integer(kind = kint_gl) :: num64
 !
 !
       irank_image_file = pvr_start%irank_composit_ref
 !
-      allocate(num_ray_start_lc(num_pixel_xy))
-      if(my_rank .eq. irank_image_file) then
-        allocate(num_ray_start_gl(num_pixel_xy))
-      end if
-!
-      num64 = pvr_start%num_pvr_ray
-      call MPI_REDUCE(num64, num_pvr_ray_gl, 1, CALYPSO_GLOBAL_INT,     &
-     &    MPI_SUM, irank_image_file, CALYPSO_COMM, ierr_MPI)
-      if(my_rank .eq. irank_image_file) write(*,*)                      &
-     &      'num_pvr_ray_gl', num_pvr_ray_gl, num_pixel_xy
-!
-      call count_local_ray_4_each_pixel(num_pixel_xy,                   &
-     &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
-     &    num_ray_start_lc)
-!
-      num32 = num_pixel_xy
-      call MPI_REDUCE(num_ray_start_lc, num_ray_start_gl, num32,        &
-     &    CALYPSO_GLOBAL_INT, MPI_SUM, irank_image_file,                &
-     &    CALYPSO_COMM, ierr_MPI)
-!
-      call alloc_stencil_buffer_work(num_pixel_xy, stencil_wk)
-      call set_global_stencil_buffer(irank_image_file,            &
-     &    num_pixel_xy, num_pvr_ray_gl, num_ray_start_gl, stencil_wk)
+      call const_stencil_buffer_work                                    &
+     &   (irank_image_file, num_pixel_xy, pvr_start, stencil_wk)
 !
       call count_parallel_stencil_buffer                                &
      &   (stencil_wk, img_stack%npixel_4_composit)
@@ -108,18 +77,10 @@
      &         (stencil_wk, img_stack%npixel_4_composit, num_pixel_xy,  &
      &          ipixel_4_composit, item_4_composit)
 !
-      allocate(ipixel_check(num_pixel_recv))
-      call calypso_SR_type_int(0, img_output_tbl,                       &
-     &    img_stack%npixel_4_composit, num_pixel_recv,                  &
-     &    ipixel_4_composit, ipixel_check)
 !
-      write(50+my_rank,*) 'ipixel_check', num_pixel_recv, num_pixel_xy
-      do ipix = 1, num_pixel_recv
-        write(50+my_rank,*) ipix,                                       &
-     &            ipixel_check(ipix), stencil_wk%irev_recv_image(ipix)
-      end do
-      deallocate(ipixel_check)
-!
+      call check_img_output_communication                               &
+     &   (img_stack, img_output_tbl, num_pixel_xy, num_pixel_recv,      &
+     &    stencil_wk%irev_recv_image, ipixel_4_composit)
 !
 !
       call s_const_comm_tbl_img_composit                                &
@@ -181,6 +142,92 @@
       return
 !
       end subroutine set_pvr_stencil_buffer
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine check_composit_communication                           &
+     &         (pvr_start, img_composit_tbl, img_stack,                 &
+     &          ipix_recv_pixel_composit, depth_recv_pixel_composit)
+!
+      type(pvr_ray_start_type), intent(in) :: pvr_start
+      type(calypso_comm_table), intent(in) :: img_composit_tbl
+      type(pvr_image_stack_table), intent(in) :: img_stack
+      integer(kind = kint), intent(in)                                  &
+     &      :: ipix_recv_pixel_composit(img_composit_tbl%ntot_import)
+      real(kind = kreal), intent(in)                                    &
+     &      :: depth_recv_pixel_composit(img_composit_tbl%ntot_import)
+!
+      integer(kind = kint) :: inum, ipix, icou, ist, num, ip
+      integer(kind = kint), parameter :: id_file = 49
+      character(len=kchara) :: file_name = 'aho.dat'
+!
+!
+      open(id_file, file=file_name)
+      write(id_file,*) 'nrank_export', img_composit_tbl%nrank_export
+      do ip = 1, img_composit_tbl%nrank_export
+        ist = img_composit_tbl%istack_export(ip-1)
+        num = img_composit_tbl%istack_export(ip) - ist
+        write(id_file,*) 'img_composit_tbl%irank_export',               &
+     &        ip, img_composit_tbl%irank_export(ip), ist, num
+        do inum = 1, num
+          icou = img_composit_tbl%item_export(ist+inum)
+          write(id_file,*) inum, icou,   &
+     &                pvr_start%id_pixel_start(icou), &
+     &                pvr_start%xx_pvr_ray_start(icou,3)
+        end do
+      end do
+!
+      write(id_file,*) 'img_composit_tbl%ntot_import',                  &
+     &   img_composit_tbl%istack_import(img_composit_tbl%nrank_import), &
+     &   img_stack%npixel_4_composit
+      do ipix = 1, img_stack%npixel_4_composit
+        ist = img_stack%istack_composition(ipix-1)
+        num = img_stack%istack_composition(ipix) - ist
+        write(id_file,*) 'idx_recv_pixel_composit', ist, num
+        do inum = 1, num
+          icou = img_stack%idx_recv_pixel_composit(ist+inum)
+          write(id_file,*) inum, ipix, icou,                            &
+     &                ipix_recv_pixel_composit(icou),                   &
+     &                depth_recv_pixel_composit(icou)
+        end do
+      end do
+      close(id_file)
+!
+      end subroutine check_composit_communication
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine check_img_output_communication                         &
+     &       (img_stack, img_output_tbl, num_pixel_xy, num_pixel_recv,  &
+     &        irev_recv_image, ipixel_4_composit)
+!
+      use calypso_SR_type
+!
+      type(pvr_image_stack_table), intent(in) :: img_stack
+      type(calypso_comm_table), intent(in) :: img_output_tbl
+      integer(kind = kint), intent(in) :: num_pixel_xy, num_pixel_recv
+      integer(kind = kint), intent(in) :: irev_recv_image(num_pixel_xy)
+      integer(kind = kint), intent(in)                                  &
+     &               :: ipixel_4_composit(img_stack%npixel_4_composit)
+!
+      integer(kind = kint), allocatable :: ipixel_check(:)
+      integer(kind = kint) :: ipix
+!
+!
+      allocate(ipixel_check(num_pixel_recv))
+      call calypso_SR_type_int(0, img_output_tbl,                       &
+     &    img_stack%npixel_4_composit, num_pixel_recv,                  &
+     &    ipixel_4_composit, ipixel_check)
+!
+      write(50+my_rank,*) 'ipixel_check', num_pixel_recv, num_pixel_xy
+      do ipix = 1, num_pixel_recv
+        write(50+my_rank,*) ipix,                                       &
+     &            ipixel_check(ipix), irev_recv_image(ipix)
+      end do
+      deallocate(ipixel_check)
+!
+      end subroutine check_img_output_communication
 !
 !  ---------------------------------------------------------------------
 !
