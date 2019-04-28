@@ -30,6 +30,7 @@
       use calypso_SR_core
       use calypso_SR
       use calypso_SR_int
+      use const_comm_tbl_img_output
 !
       integer(kind = kint), intent(in) :: num_pixel_xy
       type(pvr_ray_start_type), intent(in) :: pvr_start
@@ -55,8 +56,7 @@
       integer(kind = kint) :: num_pixel_recv
       integer(kind = kint) :: ncomm_send_pixel_output
       integer(kind = kint) :: ncomm_recv_pixel_output
-      integer(kind = kint) :: iself_send_pixel_output
-      integer(kind = kint) :: iself_recv_pixel_output
+      integer(kind = kint) :: iself_pixel_output
       integer(kind = kint) :: ntot_send_pixel_output
       integer(kind = kint) :: ntot_recv_pixel_output
       integer(kind = kint), allocatable :: irank_send_pixel_output(:)
@@ -98,23 +98,23 @@
 !!
       integer :: num32
       integer :: ip, jp, i_rank, id_rank
-      integer :: image_out
+      integer :: irank_image_file
       integer(kind = kint) :: inum, ipix, icou, ist, ied, isrt, jst, num
       integer(kind = kint) :: icou1, icou2
       integer(kind = kint_gl) :: num64
 !
 !
-      image_out = pvr_start%irank_composit_ref
+      irank_image_file = pvr_start%irank_composit_ref
 !
       allocate(num_ray_start_lc(num_pixel_xy))
-      if(my_rank .eq. image_out) then
+      if(my_rank .eq. irank_image_file) then
         allocate(num_ray_start_gl(num_pixel_xy))
       end if
 !
       num64 = pvr_start%num_pvr_ray
       call MPI_REDUCE(num64, num_pvr_ray_gl, 1, CALYPSO_GLOBAL_INT,     &
-     &    MPI_SUM, image_out, CALYPSO_COMM, ierr_MPI)
-      if(my_rank .eq. image_out) write(*,*)                             &
+     &    MPI_SUM, irank_image_file, CALYPSO_COMM, ierr_MPI)
+      if(my_rank .eq. irank_image_file) write(*,*)                      &
      &      'num_pvr_ray_gl', num_pvr_ray_gl, num_pixel_xy
 !
 !$omp parallel workshare
@@ -127,7 +127,7 @@
 !
       num32 = num_pixel_xy
       call MPI_REDUCE(num_ray_start_lc, num_ray_start_gl, num32,        &
-     &    CALYPSO_GLOBAL_INT, MPI_SUM, image_out,                       &
+     &    CALYPSO_GLOBAL_INT, MPI_SUM, irank_image_file,                &
      &    CALYPSO_COMM, ierr_MPI)
 !
       allocate(istack_recv_image(0:nprocs))
@@ -135,7 +135,7 @@
       allocate(irank_4_composit(num_pixel_xy))
       allocate(irev_recv_image(num_pixel_xy))
       allocate(item_recv_image(num_pixel_xy))
-      if(my_rank .eq. image_out) then
+      if(my_rank .eq. irank_image_file) then
         allocate(irank_image_stack(0:num_pixel_xy))
         allocate(istack_ray_start_gl(num_pixel_xy))
 !
@@ -154,7 +154,7 @@
             icou = icou + 1
             ip = int((istack_ray_start_gl(ipix) - 1)                    &
      &              * nprocs / num_pvr_ray_gl + 1)
-            i_rank = int(mod(image_out+ip,nprocs))
+            i_rank = int(mod(irank_image_file+ip,nprocs))
             irank_4_composit(ipix) = i_rank
             istack_recv_image(ip) = icou
             irev_recv_image(ipix) = icou
@@ -180,19 +180,19 @@
       end if
 !
       call mpi_Bcast(istack_recv_image, (nprocs+1),                     &
-     &    CALYPSO_INTEGER, image_out, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, irank_image_file, CALYPSO_COMM, ierr_MPI)
 !
       num32 = num_pixel_xy
       call mpi_Bcast(irank_4_composit, num32,                           &
-     &    CALYPSO_INTEGER, image_out, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, irank_image_file, CALYPSO_COMM, ierr_MPI)
       call mpi_Bcast(irev_recv_image, num32,                            &
-     &    CALYPSO_INTEGER, image_out, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, irank_image_file, CALYPSO_COMM, ierr_MPI)
 !
       call mpi_Bcast(ntot_recv_image, 1,                                &
-     &    CALYPSO_INTEGER, image_out, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, irank_image_file, CALYPSO_COMM, ierr_MPI)
       num32 = ntot_recv_image
       call mpi_Bcast(item_recv_image(1), num32,                         &
-     &    CALYPSO_INTEGER, image_out, CALYPSO_COMM, ierr_MPI)
+     &    CALYPSO_INTEGER, irank_image_file, CALYPSO_COMM, ierr_MPI)
 !
       npixel_4_composit = 0
       do ip = 1, nprocs
@@ -206,75 +206,43 @@
         end if
       end do
 !
+      ncomm_send_pixel_output = 0
       if(npixel_4_composit .gt. 0) ncomm_send_pixel_output = 1
 !
       allocate(irank_send_pixel_output(ncomm_send_pixel_output))
       allocate(istack_send_pixel_output(0:ncomm_send_pixel_output))
 
-      iself_send_pixel_output = 0
-      istack_send_pixel_output(0) = 0
-      if(ncomm_send_pixel_output .eq. 1) then
-        irank_send_pixel_output(1) = image_out
-        istack_send_pixel_output(1) = npixel_4_composit
-        if(my_rank .eq. image_out) iself_send_pixel_output = 1
-      end if
-      ntot_send_pixel_output = istack_send_pixel_output(1)
+      call count_export_item_pvr_output                           &
+     &         (irank_image_file, npixel_4_composit,                    &
+     &          ncomm_send_pixel_output, ntot_send_pixel_output,        &
+     &          irank_send_pixel_output, istack_send_pixel_output)
 !
       allocate(item_send_pixel_output(ntot_send_pixel_output))
 !
-      do inum = 1, ntot_send_pixel_output
-        item_send_pixel_output(inum) = inum
-      end do
+      call set_export_item_pvr_output                             &
+     &         (ntot_send_pixel_output, item_send_pixel_output)
 !
 !
-      ncomm_recv_pixel_output = 0
-      if(my_rank .eq. image_out) then
-        do ip = 1, nprocs
-          num = istack_recv_image(ip) - istack_recv_image(ip-1)
-          if(num .gt. 0) then
-            ncomm_recv_pixel_output = ncomm_recv_pixel_output + 1
-          end if
-        end do
-      end if
+      call count_import_pe_pvr_output                             &
+     &         (irank_image_file, istack_recv_image,                    &
+     &          ncomm_recv_pixel_output)
       allocate(irank_recv_pixel_output(ncomm_recv_pixel_output))
       allocate(istack_recv_pixel_output(0:ncomm_recv_pixel_output))
 !
-      num_pixel_recv = 0
-      istack_recv_pixel_output(0) = 0
-      if(my_rank .eq. image_out) then
-        num_pixel_recv = num_pixel_xy
-!
-        icou = 0
-        do ip = 1, nprocs
-          ist = istack_recv_image(ip-1)
-          num = istack_recv_image(ip) - istack_recv_image(ip-1)
-          ipix = item_recv_image(ist+1)
-!
-          if(num .gt. 0) then
-            icou = icou + 1
-            write(*,*) 'icou', icou, ncomm_recv_pixel_output
-            istack_recv_pixel_output(icou) = istack_recv_image(ip)
-            irank_recv_pixel_output(icou) = irank_4_composit(ipix)
-          end if
-          if(irank_4_composit(ipix) .eq. image_out) then
-            iself_send_pixel_output = 1
-          end if
-        end do
-      end if
-      ntot_recv_pixel_output                                      &
-     &      = istack_recv_pixel_output(ncomm_recv_pixel_output)
+      call count_import_item_pvr_output                           &
+     &         (irank_image_file, istack_recv_image,                    &
+     &          num_pixel_xy, irank_4_composit, item_recv_image,        &
+     &          ncomm_recv_pixel_output, ntot_recv_pixel_output,        &
+     &          irank_recv_pixel_output, istack_recv_pixel_output,      &
+     &          iself_pixel_output, num_pixel_recv)
 !
       allocate(item_recv_pixel_output(ntot_recv_pixel_output))
       allocate(irev_recv_pixel_output(num_pixel_recv))
 !
-!$omp parallel workshare
-      irev_recv_pixel_output(1:num_pixel_recv) = 0
-!$omp end parallel workshare
-      do inum = 1, ntot_recv_pixel_output
-        ipix = item_recv_image(inum)
-        item_recv_pixel_output(inum) = ipix
-        irev_recv_pixel_output(ipix) = inum
-      end do
+      call set_import_item_pvr_output                             &
+     &         (num_pixel_xy, item_recv_image,                          &
+     &          ntot_recv_pixel_output, num_pixel_recv,                 &
+     &          item_recv_pixel_output, irev_recv_pixel_output)
 !
       allocate(ipixel_4_composit(npixel_4_composit))
       allocate(item_4_composit(num_pixel_xy))
@@ -298,10 +266,10 @@
       allocate(ipixel_check(num_pixel_recv))
       call calypso_send_recv_int       &
      &    (0, npixel_4_composit, num_pixel_recv,    &
-     &     ncomm_send_pixel_output, iself_send_pixel_output,        &
+     &     ncomm_send_pixel_output, iself_pixel_output,        &
      &     irank_send_pixel_output, istack_send_pixel_output,      &
      &     item_send_pixel_output,      &
-     &     ncomm_recv_pixel_output, iself_send_pixel_output,       &
+     &     ncomm_recv_pixel_output, iself_pixel_output,       &
      &     irank_recv_pixel_output, istack_recv_pixel_output,    &
      &     item_recv_pixel_output, irev_recv_pixel_output,      &
      &     ipixel_4_composit, ipixel_check)
