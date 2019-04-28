@@ -42,6 +42,7 @@
       use t_surf_grp_4_pvr_domain
       use t_pvr_ray_startpoints
       use t_pvr_image_array
+      use t_pvr_stencil_buffer
       use generate_vr_image
 !
       implicit  none
@@ -80,6 +81,8 @@
         type(pvr_projected_position) :: screen
 !>        Start point structure for volume rendering
         type(pvr_ray_start_type) :: start_pt
+!>        Parallel stencil buffer
+        type(pvr_stencil_buffer) :: stencil
 !>        Work area of  point structure for volume rendering
         type(pvr_ray_start_type) :: start_save
 !>        Pixel data structure for volume rendering
@@ -113,7 +116,7 @@
      &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
      &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
       call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt)
+     &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%stencil)
       call set_subimages                                                &
      &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%image)
 !
@@ -163,6 +166,7 @@
       call dealloc_projected_position(pvr_proj%screen)
       call deallocate_pvr_ray_start(pvr_proj%start_pt)
       call deallocate_pvr_ray_start(pvr_proj%start_save)
+      call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
       call dealloc_pvr_local_subimage(pvr_proj%image)
 !
       end subroutine flush_rendering_4_fixed_view
@@ -191,6 +195,7 @@
 !
       call dealloc_pvr_local_subimage(pvr_proj%image)
       call deallocate_pvr_ray_start(pvr_proj%start_pt)
+      call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
 !
       call transfer_to_screen                                           &
      &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
@@ -198,7 +203,7 @@
      &    pvr_param%pixel,  pvr_proj%bound, pvr_proj%screen,            &
      &    pvr_proj%start_pt)
       call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt)
+     &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%stencil)
       call set_subimages                                                &
      &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%image)
 !

@@ -12,12 +12,15 @@
 !!      subroutine collect_rendering_image(pvr_stencil,                 &
 !!     &          num_pvr_ray, rgba_ray)
 !!      subroutine dealloc_pvr_stencil_buffer(pvr_stencil)
+!!        type(pvr_ray_start_type), intent(in) :: pvr_start
+!!        type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
 !!@endverbatim
 !!
       module t_pvr_stencil_buffer
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use calypso_mpi
 !
       use t_calypso_comm_table
@@ -40,6 +43,10 @@
         real(kind = kreal), allocatable :: rgba_composit(:,:)
       end type pvr_stencil_buffer
 !
+      character(len=kchara), parameter, private                         &
+     &                      :: check_fhead = 'pvr_composition_check'
+      integer(kind = kint), parameter, private :: id_file = 49
+!
       private :: set_pvr_stencil_buffer
       private :: alloc_pvr_stencil_buffer, reset_pvr_stencil_buffer
       private :: check_composit_communication
@@ -52,15 +59,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_pvr_stencil_buffer                               &
-     &         (num_pixel_xy, pvr_start)
+     &         (num_pixel_xy, pvr_start, pvr_stencil)
 !
       integer(kind = kint), intent(in) :: num_pixel_xy
       type(pvr_ray_start_type), intent(in) :: pvr_start
 !
-      integer(kind = kint) :: num_pixel_recv
-      type(calypso_comm_table) :: img_output_tbl
-      type(calypso_comm_table) :: img_composit_tbl
-      type(pvr_image_stack_table) :: img_stack
+      type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
 !
       type(stencil_buffer_work) :: stencil_wk
 !
@@ -74,9 +78,11 @@
 !
       call set_pvr_stencil_buffer                                       &
      &   (irank_image_file, num_pixel_xy, pvr_start, stencil_wk,        &
-     &    num_pixel_recv, img_output_tbl, img_composit_tbl,             &
-     &    img_stack)
+     &    pvr_stencil%num_pixel_recv, pvr_stencil%img_output_tbl,       &
+     &    pvr_stencil%img_composit_tbl, pvr_stencil%img_stack)
       call dealloc_stencil_buffer_work(stencil_wk)
+!
+      call alloc_pvr_stencil_buffer(pvr_stencil)
 !
       end subroutine const_pvr_stencil_buffer
 !
@@ -187,6 +193,7 @@
       use calypso_SR_type
       use const_comm_tbl_img_output
       use const_comm_tbl_img_composit
+      use set_parallel_file_name
 !
       integer, intent(in) :: irank_image_file
       integer(kind = kint), intent(in) :: num_pixel_xy
@@ -203,6 +210,8 @@
 !
       integer(kind = kint), allocatable :: ipix_recv_pixel_composit(:)
       real(kind = kreal), allocatable :: depth_recv_pixel_composit(:)
+!
+      character(len=kchara) :: fname_tmp, file_name
 !
 !
       call count_parallel_stencil_buffer                                &
@@ -247,15 +256,18 @@
      &    img_stack%idx_recv_pixel_composit)
 !
 !
-
-      call check_img_output_communication(50+my_rank,                   &
+      if(i_debug .le. 0) return
+      fname_tmp = add_int_suffix(my_rank, check_fhead)
+      file_name = add_dat_extension(fname_tmp)
+      open(id_file, file = file_name)
+      call check_img_output_communication(id_file,                      &
      &    img_stack, img_output_tbl, num_pixel_xy, num_pixel_recv,      &
      &    stencil_wk%irev_recv_image, ipixel_4_composit)
 !
-      call check_composit_communication(50+my_rank,                     &
+      call check_composit_communication(id_file,                        &
      &    pvr_start, img_composit_tbl, img_stack,                       &
      &    ipix_recv_pixel_composit, depth_recv_pixel_composit)
-      close(50+my_rank)
+      close(id_file)
 !
       end subroutine set_pvr_stencil_buffer
 !
@@ -276,7 +288,6 @@
      &      :: depth_recv_pixel_composit(img_composit_tbl%ntot_import)
 !
       integer(kind = kint) :: inum, ipix, icou, ist, num, ip
-      character(len=kchara) :: file_name = 'aho.dat'
 !
 !
       write(id_file,*) 'nrank_export', img_composit_tbl%nrank_export
