@@ -31,6 +31,7 @@
       use calypso_SR
       use calypso_SR_int
       use const_comm_tbl_img_output
+      use const_comm_tbl_img_composit
 !
       integer(kind = kint), intent(in) :: num_pixel_xy
       type(pvr_ray_start_type), intent(in) :: pvr_start
@@ -69,12 +70,10 @@
 !
       integer(kind = kint), allocatable :: num_send_pixel_tmp(:)
       integer(kind = kint), allocatable :: num_recv_pixel_tmp(:)
-      integer(kind = kint), allocatable :: id_send_pixel_tmp(:)
 !
       integer(kind = kint) :: ncomm_send_pixel_composit
       integer(kind = kint) :: ncomm_recv_pixel_composit
-      integer(kind = kint) :: iself_send_pixel_composit
-      integer(kind = kint) :: iself_recv_pixel_composit
+      integer(kind = kint) :: iself_pixel_composit
       integer(kind = kint) :: ntot_send_pixel_composit
       integer(kind = kint) :: ntot_recv_pixel_composit
       integer(kind = kint), allocatable :: irank_send_pixel_composit(:)
@@ -92,8 +91,7 @@
       real(kind = kreal), allocatable :: depth_recv_pixel_composit(:)
       real(kind = kreal), allocatable :: rwork_recv_pixel_composit(:)
 !
-      integer(kind = kint), allocatable :: index(:)
-      integer(kind = kint), allocatable :: iref(:)
+      integer(kind = kint), allocatable :: index_pvr_start(:)
       integer(kind = kint), allocatable :: ipixel_check(:)
 !!
       integer :: num32
@@ -283,139 +281,52 @@
 !
 !
 !
-      allocate(index(pvr_start%num_pvr_ray))
-      allocate(iref(pvr_start%num_pvr_ray))
-!
-      do inum = 1,  pvr_start%num_pvr_ray
-        index(inum) = inum
-        iref(inum) = pvr_start%id_pixel_start(inum)
-      end do
-!
-      call quicksort_w_index(pvr_start%num_pvr_ray, iref,               &
-     &    ione, pvr_start%num_pvr_ray, index)
+      allocate(index_pvr_start(pvr_start%num_pvr_ray))
+      call sort_index_pvr_start                                         &
+     &   (pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
+     &    index_pvr_start)
 !
       allocate(num_send_pixel_tmp(nprocs))
       allocate(num_recv_pixel_tmp(nprocs))
-      allocate(id_send_pixel_tmp(nprocs))
 !
-!$omp parallel do
-      do ip = 1, nprocs
-        id_send_pixel_tmp(ip) = ip - 1
-      end do
-!$omp end parallel do
-!$omp parallel workshare
-      num_send_pixel_tmp(1:nprocs) = 0
-!$omp end parallel workshare
-      do inum = 1, pvr_start%num_pvr_ray
-        isrt = index(inum)
-        ipix =  pvr_start%id_pixel_start(isrt)
-        ip = irank_4_composit(ipix) + 1
-        num_send_pixel_tmp(ip) = num_send_pixel_tmp(ip) + 1
-      end do
+      call count_num_send_pixel_tmp                                     &
+     &   (num_pixel_xy, irank_4_composit, pvr_start%num_pvr_ray,        &
+     &    pvr_start%id_pixel_start, index_pvr_start, num_send_pixel_tmp)
 !
       call MPI_Alltoall(num_send_pixel_tmp, 1, CALYPSO_INTEGER,         &
      &                  num_recv_pixel_tmp, 1, CALYPSO_INTEGER,         &
      &                  CALYPSO_COMM, ierr_MPI)
 !
 !
-      icou1 = 0
-      icou2 = 0
-      do ip = 1, nprocs
-        if(num_send_pixel_tmp(ip) .gt. 0) icou1 = icou1 + 1
-        if(num_recv_pixel_tmp(ip) .gt. 0) icou2 = icou2 + 1
-      end do
-      ncomm_send_pixel_composit = icou1
-      ncomm_recv_pixel_composit = icou2
-      write(*,*) my_rank, 'num_send_pixel_tmp', num_send_pixel_tmp
-      write(*,*) my_rank, 'num_recv_pixel_tmp', num_recv_pixel_tmp
-      write(*,*) my_rank, 'ncomm_send_pixel_composit', ncomm_send_pixel_composit
-      write(*,*) my_rank, 'ncomm_recv_pixel_composit', ncomm_recv_pixel_composit
+      call count_comm_pe_pvr_composition                          &
+     &         (num_send_pixel_tmp, num_recv_pixel_tmp,                 &
+     &          ncomm_send_pixel_composit, ncomm_recv_pixel_composit)
 !
       allocate(irank_send_pixel_composit(ncomm_send_pixel_composit))
       allocate(istack_send_pixel_composit(0:ncomm_send_pixel_composit))
       allocate(irank_recv_pixel_composit(ncomm_recv_pixel_composit))
       allocate(istack_recv_pixel_composit(0:ncomm_recv_pixel_composit))
 !
-      icou1 = 0
-      icou2 = 0
-      iself_send_pixel_composit = 0
-      iself_recv_pixel_composit = 0
-      istack_send_pixel_composit(icou1) = 0
-      istack_recv_pixel_composit(icou2) = 0
-      do ip = 1, nprocs
-        i_rank = mod(my_rank+ip,nprocs)
-        if(num_send_pixel_tmp(i_rank+1) .gt. 0) then
-          icou1 = icou1 + 1
-          irank_send_pixel_composit(icou1) = i_rank
-          istack_send_pixel_composit(icou1)                             &
-     &          = istack_send_pixel_composit(icou1-1)                   &
-     &           + num_send_pixel_tmp(i_rank+1)
-          if(i_rank .eq. my_rank) iself_send_pixel_composit = 1
-        end if
-        if(num_recv_pixel_tmp(i_rank+1) .gt. 0) then
-          icou2 = icou2 + 1
-          irank_recv_pixel_composit(icou2) = i_rank
-          istack_recv_pixel_composit(icou2)                             &
-     &          = istack_recv_pixel_composit(icou2-1)                   &
-     &           + num_recv_pixel_tmp(i_rank+1)
-          if(i_rank .eq. my_rank) iself_recv_pixel_composit = 1
-        end if
-      end do
-!
-      ntot_send_pixel_composit                                          &
-     &       = istack_send_pixel_composit(ncomm_send_pixel_composit)
-      ntot_recv_pixel_composit                                          &
-     &       = istack_recv_pixel_composit(ncomm_recv_pixel_composit)
-!
-!      write(50+my_rank,*) 'irank_send_pixel_composit',  &
-!     & ncomm_send_pixel_composit
-!      do ip = 1, ncomm_send_pixel_composit
-!        write(50+my_rank,*) ip, irank_send_pixel_composit(ip),   &
-!     & istack_send_pixel_composit(ip) - istack_send_pixel_composit(ip-1)
-!      end do
-!      write(50+my_rank,*) 'irank_recv_pixel_composit', &
-!     &    ncomm_recv_pixel_composit
-!      do ip = 1, ncomm_recv_pixel_composit
-!        write(50+my_rank,*) ip, irank_recv_pixel_composit(ip),   &
-!     & istack_recv_pixel_composit(ip) - istack_recv_pixel_composit(ip-1)
-!      end do
-!      close(50+my_rank)
+      call count_comm_tbl_pvr_composition                         &
+     &         (num_send_pixel_tmp, num_recv_pixel_tmp,                 &
+     &          ncomm_send_pixel_composit, ncomm_recv_pixel_composit,   &
+     &          ntot_send_pixel_composit, irank_send_pixel_composit,    &
+     &          istack_send_pixel_composit, ntot_recv_pixel_composit,   &
+     &          irank_recv_pixel_composit, istack_recv_pixel_composit,  &
+     &          iself_pixel_composit)
 !
 !
       allocate(item_send_pixel_composit(ntot_send_pixel_composit))
       allocate(item_recv_pixel_composit(ntot_recv_pixel_composit))
       allocate(irev_recv_pixel_composit(ntot_recv_pixel_composit))
 !
-      icou = 0
-      do 
-        isrt = index(icou+1)
-        ipix =  pvr_start%id_pixel_start(isrt)
-        i_rank = irank_4_composit(ipix)
-        do ip = 1, ncomm_send_pixel_composit
-          if(irank_send_pixel_composit(ip) .eq. i_rank) then
-            jst = istack_send_pixel_composit(ip-1)
-            num = istack_send_pixel_composit(ip) - jst
-            do inum = 1, num
-              icou = icou + 1
-              isrt = index(icou)
-              item_send_pixel_composit(inum+jst) = isrt
-            end do
-            exit
-          end if
-        end do
-        if(icou .ge. pvr_start%num_pvr_ray) then
-          write(*,*) 'cout', my_rank, pvr_start%num_pvr_ray, &
-     &        ntot_send_pixel_composit
-          exit
-        end if
-      end do
-!
-!$omp parallel do
-      do inum = 1, ntot_recv_pixel_composit
-        item_recv_pixel_composit(inum) = inum
-        irev_recv_pixel_composit(inum) = inum
-      end do
-!$omp end parallel do
+      call set_comm_tbl_pvr_composition                           &
+     &         (pvr_start%num_pvr_ray, pvr_start%id_pixel_start, index_pvr_start,           &
+     &          num_pixel_xy, irank_4_composit,                         &
+     &          ncomm_send_pixel_composit, ntot_send_pixel_composit,    &
+     &          irank_send_pixel_composit, istack_send_pixel_composit,  &
+     &          item_send_pixel_composit, ntot_recv_pixel_composit,     &
+     &          item_recv_pixel_composit, irev_recv_pixel_composit)
 !
       allocate(idx_recv_pixel_composit(ntot_recv_pixel_composit))
       allocate(ipix_recv_pixel_composit(ntot_recv_pixel_composit))
@@ -431,20 +342,20 @@
 !
       call calypso_send_recv_int       &
      &    (0, pvr_start%num_pvr_ray, ntot_recv_pixel_composit,    &
-     &     ncomm_send_pixel_composit, iself_send_pixel_composit,        &
+     &     ncomm_send_pixel_composit, iself_pixel_composit,        &
      &     irank_send_pixel_composit, istack_send_pixel_composit,      &
      &     item_send_pixel_composit,      &
-     &     ncomm_recv_pixel_composit, iself_send_pixel_composit,       &
+     &     ncomm_recv_pixel_composit, iself_pixel_composit,       &
      &     irank_recv_pixel_composit, istack_recv_pixel_composit,    &
      &     item_recv_pixel_composit, irev_recv_pixel_composit,      &
      &     pvr_start%id_pixel_start, ipix_recv_pixel_composit)
 !
       call calypso_send_recv       &
      &    (0, pvr_start%num_pvr_ray, ntot_recv_pixel_composit,    &
-     &     ncomm_send_pixel_composit, iself_send_pixel_composit,        &
+     &     ncomm_send_pixel_composit, iself_pixel_composit,        &
      &     irank_send_pixel_composit, istack_send_pixel_composit,      &
      &     item_send_pixel_composit,      &
-     &     ncomm_recv_pixel_composit, iself_send_pixel_composit,       &
+     &     ncomm_recv_pixel_composit, iself_pixel_composit,       &
      &     irank_recv_pixel_composit, istack_recv_pixel_composit,    &
      &     item_recv_pixel_composit, irev_recv_pixel_composit,      &
      &     pvr_start%xx_pvr_ray_start(1,3), depth_recv_pixel_composit)

@@ -28,7 +28,6 @@
      &          id_pixel_start, img_composit_tbl)
 !
       use t_calypso_comm_table
-      use quicksort
 !
       integer(kind = kint), intent(in) :: num_pixel_xy
       integer(kind = kint), intent(in)                                  &
@@ -40,36 +39,20 @@
       type(calypso_comm_table), intent(inout) :: img_composit_tbl
 !
       integer(kind = kint), allocatable :: index_pvr_start(:)
-      integer(kind = kint), allocatable :: iref_pvr_start(:)
       integer(kind = kint), allocatable :: num_send_pixel_tmp(:)
       integer(kind = kint), allocatable :: num_recv_pixel_tmp(:)
-      integer(kind = kint) :: inum, isrt, ipix, ip
 !
 !
       allocate(index_pvr_start(num_pvr_ray))
-      allocate(iref_pvr_start(num_pvr_ray))
-!
-      do inum = 1, num_pvr_ray
-        index_pvr_start(inum) = inum
-        iref_pvr_start(inum) = id_pixel_start(inum)
-      end do
-!
-      call quicksort_w_index(num_pvr_ray, iref_pvr_start,               &
-     &    ione, num_pvr_ray, index_pvr_start)
-      deallocate(iref_pvr_start)
+      call sort_index_pvr_start                                         &
+     &   (num_pvr_ray, id_pixel_start, index_pvr_start)
 !
       allocate(num_send_pixel_tmp(nprocs))
       allocate(num_recv_pixel_tmp(nprocs))
 !
-!$omp parallel workshare
-      num_send_pixel_tmp(1:nprocs) = 0
-!$omp end parallel workshare
-      do inum = 1, num_pvr_ray
-        isrt = index_pvr_start(inum)
-        ipix =  id_pixel_start(isrt)
-        ip = irank_4_composit(ipix) + 1
-        num_send_pixel_tmp(ip) = num_send_pixel_tmp(ip) + 1
-      end do
+      call count_num_send_pixel_tmp                                     &
+     &   (num_pixel_xy, irank_4_composit, num_pvr_ray,                  &
+     &    id_pixel_start, index_pvr_start, num_send_pixel_tmp)
 !
       call MPI_Alltoall(num_send_pixel_tmp, 1, CALYPSO_INTEGER,         &
      &                  num_recv_pixel_tmp, 1, CALYPSO_INTEGER,         &
@@ -105,6 +88,67 @@
       deallocate(index_pvr_start)
 !
       end subroutine s_const_comm_tbl_img_composit
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine sort_index_pvr_start                                   &
+     &         (num_pvr_ray, id_pixel_start, index_pvr_start)
+!
+      use quicksort
+!
+      integer(kind = kint), intent(in) :: num_pvr_ray
+      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
+      integer(kind = kint), intent(inout)                               &
+     &              :: index_pvr_start(num_pvr_ray)
+!
+      integer(kind = kint), allocatable :: iref_pvr_start(:)
+      integer(kind = kint) :: inum
+!
+!
+      allocate(iref_pvr_start(num_pvr_ray))
+!
+      do inum = 1, num_pvr_ray
+        index_pvr_start(inum) = inum
+        iref_pvr_start(inum) = id_pixel_start(inum)
+      end do
+!
+      call quicksort_w_index(num_pvr_ray, iref_pvr_start,               &
+     &    ione, num_pvr_ray, index_pvr_start)
+      deallocate(iref_pvr_start)
+!
+      end subroutine sort_index_pvr_start
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine count_num_send_pixel_tmp                               &
+     &         (num_pixel_xy, irank_4_composit, num_pvr_ray,            &
+     &          id_pixel_start, index_pvr_start, num_send_pixel_tmp)
+!
+      integer(kind = kint), intent(in) :: num_pixel_xy
+      integer(kind = kint), intent(in)                                  &
+     &                     :: irank_4_composit(num_pixel_xy)
+!
+      integer(kind = kint), intent(in) :: num_pvr_ray
+      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
+      integer(kind = kint), intent(in) :: index_pvr_start(num_pvr_ray)
+!
+      integer(kind = kint), intent(inout) :: num_send_pixel_tmp(nprocs)
+!
+      integer(kind = kint) :: inum, isrt, ipix, ip
+!
+!
+!$omp parallel workshare
+      num_send_pixel_tmp(1:nprocs) = 0
+!$omp end parallel workshare
+      do inum = 1, num_pvr_ray
+        isrt = index_pvr_start(inum)
+        ipix =  id_pixel_start(isrt)
+        ip = irank_4_composit(ipix) + 1
+        num_send_pixel_tmp(ip) = num_send_pixel_tmp(ip) + 1
+      end do
+!
+      end subroutine count_num_send_pixel_tmp
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
