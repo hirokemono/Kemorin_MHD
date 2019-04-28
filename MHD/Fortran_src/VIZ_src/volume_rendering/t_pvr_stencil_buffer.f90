@@ -78,12 +78,11 @@
       integer(kind = kint), allocatable :: item_send_pixel_composit(:)
       integer(kind = kint), allocatable :: irank_recv_pixel_composit(:)
       integer(kind = kint), allocatable :: istack_recv_pixel_composit(:)
-      integer(kind = kint), allocatable :: item_recv_pixel_composit(:)
+      integer(kind = kint), allocatable :: itmp_recv_pixel_composit(:)
 !
       integer(kind = kint), allocatable :: ipix_send_pixel_composit(:)
       integer(kind = kint), allocatable :: idx_recv_pixel_composit(:)
       integer(kind = kint), allocatable :: ipix_recv_pixel_composit(:)
-      integer(kind = kint), allocatable :: iwork_recv_pixel_composit(:)
       real(kind = kreal), allocatable :: depth_recv_pixel_composit(:)
       real(kind = kreal), allocatable :: rwork_recv_pixel_composit(:)
 !
@@ -382,14 +381,11 @@
 !
 !
       allocate(item_send_pixel_composit(ntot_send_pixel_composit))
-      allocate(ipix_send_pixel_composit(ntot_send_pixel_composit))
 !
       allocate(idx_recv_pixel_composit(ntot_recv_pixel_composit))
-      allocate(item_recv_pixel_composit(ntot_recv_pixel_composit))
       allocate(ipix_recv_pixel_composit(ntot_recv_pixel_composit))
       allocate(depth_recv_pixel_composit(ntot_recv_pixel_composit))
 !
-      allocate(iwork_recv_pixel_composit(ntot_recv_pixel_composit))
       allocate(rwork_recv_pixel_composit(ntot_recv_pixel_composit))
 !
       icou = 0
@@ -405,8 +401,6 @@
               icou = icou + 1
               isrt = index(icou)
               item_send_pixel_composit(inum+jst) = isrt
-              ipix_send_pixel_composit(inum+jst)                        &
-     &                       = pvr_start%id_pixel_start(isrt)
             end do
             exit
           end if
@@ -416,6 +410,12 @@
      &        ntot_send_pixel_composit
           exit
         end if
+      end do
+!
+      allocate(ipix_send_pixel_composit(ntot_send_pixel_composit))
+      do inum = 1, ntot_send_pixel_composit
+        isrt = item_send_pixel_composit(inum)
+        ipix_send_pixel_composit(inum) = pvr_start%id_pixel_start(isrt)
       end do
 !
       call resize_iwork_4_SR           &
@@ -451,10 +451,10 @@
      &   (ione, ncomm_send_pixel_composit, ncomm_recv_pixel_composit,   &
      &    istack_send_pixel_composit(ncomm_send_pixel_composit),        &
      &    istack_recv_pixel_composit(ncomm_recv_pixel_composit))
-      call set_to_send_buf_1(pvr_start%num_pvr_ray,                 &
-     &    istack_send_pixel_composit(ncomm_send_pixel_composit),    &
+      call set_to_send_buf_1(pvr_start%num_pvr_ray,                     &
+     &    istack_send_pixel_composit(ncomm_send_pixel_composit),        &
      &    item_send_pixel_composit, pvr_start%xx_pvr_ray_start(1,3), WS)
-      call calypso_send_recv_core                                    &
+      call calypso_send_recv_core                                       &
      &   (ione, ncomm_send_pixel_composit, iself_send_pixel_composit,   &
      &    irank_send_pixel_composit, istack_send_pixel_composit,        &
      &    ncomm_recv_pixel_composit, iself_recv_pixel_composit,         &
@@ -476,17 +476,17 @@
      &    = WR(1:ntot_recv_pixel_composit)
 !$omp end parallel workshare
 !
+      allocate(itmp_recv_pixel_composit(ntot_recv_pixel_composit))
 !$omp parallel do
       do inum = 1, ntot_recv_pixel_composit
         ipix = ipix_recv_pixel_composit(inum)
-        item_recv_pixel_composit(inum) = item_4_composit(ipix)
+        itmp_recv_pixel_composit(inum) = item_4_composit(ipix)
         idx_recv_pixel_composit(inum) = inum
-        iwork_recv_pixel_composit(inum) = item_recv_pixel_composit(inum)
       end do
 !$omp end parallel do
 !
       call quicksort_w_index                                            &
-     &   (ntot_recv_pixel_composit, iwork_recv_pixel_composit,          &
+     &   (ntot_recv_pixel_composit, itmp_recv_pixel_composit,           &
      &    ione, ntot_recv_pixel_composit, idx_recv_pixel_composit)
 !
       do inum = 1, ntot_recv_pixel_composit
@@ -497,7 +497,7 @@
       allocate(istack_composition(0:npixel_4_composit))
       istack_composition(0:npixel_4_composit) = 0
       do inum = 1, ntot_recv_pixel_composit
-        ipix = iwork_recv_pixel_composit(inum)
+        ipix = itmp_recv_pixel_composit(inum)
         istack_composition(ipix) = istack_composition(ipix) +1
       end do
       do ipix = 1, npixel_4_composit
@@ -533,22 +533,6 @@
      &                pvr_start%xx_pvr_ray_start(icou,3)
         end do
       end do
-!
-!      write(50+my_rank,*) 'ncomm_recv_pixel_composit',  &
-!     &                    ncomm_recv_pixel_composit
-!      do ip = 1, ncomm_recv_pixel_composit
-!        ist = istack_recv_pixel_composit(ip-1)
-!        num = istack_recv_pixel_composit(ip) - ist
-!        write(50+my_rank,*) 'irank_recv_pixel_composit',  &
-!     &        ip, irank_recv_pixel_composit(ip), ist, num
-!        do inum = 1, num
-!          icou = item_recv_pixel_composit(ist+inum)
-!          write(50+my_rank,*) inum, icou,   &
-!     &                ipix_recv_pixel_composit(ist+inum), &
-!     &                ipixel_4_composit(icou),   &
-!     &                depth_recv_pixel_composit(ist+inum)
-!        end do
-!      end do
 !
       write(50+my_rank,*) 'ntot_recv_pixel_composit',  &
      &       istack_recv_pixel_composit(ncomm_recv_pixel_composit),   &
