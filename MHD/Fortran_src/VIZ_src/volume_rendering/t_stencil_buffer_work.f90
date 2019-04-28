@@ -32,9 +32,9 @@
         integer(kind = kint), allocatable :: irev_recv_image(:)
       end type stencil_buffer_work
 !
-      private :: alloc_stencil_buffer_work
-      private :: count_local_ray_4_each_pixel
-      private :: set_global_stencil_buffer
+!      private :: alloc_stencil_buffer_work
+!      private :: count_local_ray_4_each_pixel
+!      private :: set_global_stencil_buffer
 !
 !  ---------------------------------------------------------------------
 !
