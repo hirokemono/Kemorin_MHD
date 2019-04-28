@@ -52,6 +52,7 @@
       integer(kind = kint), allocatable :: item_4_composit(:)
       integer(kind = kint), allocatable :: istack_composition(:)
 !
+      integer(kind = kint) :: num_pixel_recv
       integer(kind = kint) :: ncomm_send_pixel_output
       integer(kind = kint) :: ncomm_recv_pixel_output
       integer(kind = kint) :: iself_send_pixel_output
@@ -64,6 +65,7 @@
       integer(kind = kint), allocatable :: irank_recv_pixel_output(:)
       integer(kind = kint), allocatable :: istack_recv_pixel_output(:)
       integer(kind = kint), allocatable :: item_recv_pixel_output(:)
+      integer(kind = kint), allocatable :: irev_recv_pixel_output(:)
 !
       integer(kind = kint), allocatable :: num_send_pixel_tmp(:)
       integer(kind = kint), allocatable :: num_recv_pixel_tmp(:)
@@ -92,7 +94,8 @@
 !
       integer(kind = kint), allocatable :: index(:)
       integer(kind = kint), allocatable :: iref(:)
-!
+      integer(kind = kint), allocatable :: ipixel_check(:)
+!!
       integer :: num32
       integer :: ip, jp, i_rank, id_rank
       integer :: image_out
@@ -236,8 +239,11 @@
       allocate(irank_recv_pixel_output(ncomm_recv_pixel_output))
       allocate(istack_recv_pixel_output(0:ncomm_recv_pixel_output))
 !
+      num_pixel_recv = 0
       istack_recv_pixel_output(0) = 0
       if(my_rank .eq. image_out) then
+        num_pixel_recv = num_pixel_xy
+!
         icou = 0
         do ip = 1, nprocs
           ist = istack_recv_image(ip-1)
@@ -255,14 +261,19 @@
           end if
         end do
       end if
-!
       ntot_recv_pixel_output                                      &
      &      = istack_recv_pixel_output(ncomm_recv_pixel_output)
 !
       allocate(item_recv_pixel_output(ntot_recv_pixel_output))
+      allocate(irev_recv_pixel_output(num_pixel_recv))
 !
+!$omp parallel workshare
+      irev_recv_pixel_output(1:num_pixel_recv) = 0
+!$omp end parallel workshare
       do inum = 1, ntot_recv_pixel_output
-        item_recv_pixel_output(inum) = item_recv_image(inum)
+        ipix = item_recv_image(inum)
+        item_recv_pixel_output(inum) = ipix
+        irev_recv_pixel_output(ipix) = inum
       end do
 !
       allocate(ipixel_4_composit(npixel_4_composit))
@@ -284,7 +295,26 @@
         end if
       end do
 !
-
+      allocate(ipixel_check(num_pixel_recv))
+      call calypso_send_recv_int       &
+     &    (0, npixel_4_composit, num_pixel_recv,    &
+     &     ncomm_send_pixel_output, iself_send_pixel_output,        &
+     &     irank_send_pixel_output, istack_send_pixel_output,      &
+     &     item_send_pixel_output,      &
+     &     ncomm_recv_pixel_output, iself_send_pixel_output,       &
+     &     irank_recv_pixel_output, istack_recv_pixel_output,    &
+     &     item_recv_pixel_output, irev_recv_pixel_output,      &
+     &     ipixel_4_composit, ipixel_check)
+!
+      write(50+my_rank,*) 'ipixel_check', num_pixel_recv, num_pixel_xy
+      do ipix = 1, num_pixel_recv
+        write(50+my_rank,*) ipix,                                       &
+     &            ipixel_check(ipix), irev_recv_image(ipix)
+      end do
+      deallocate(ipixel_check)
+!
+!
+!
       allocate(index(pvr_start%num_pvr_ray))
       allocate(iref(pvr_start%num_pvr_ray))
 !
