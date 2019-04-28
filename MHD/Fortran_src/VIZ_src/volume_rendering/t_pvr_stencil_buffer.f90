@@ -28,6 +28,8 @@
       use m_solver_SR
       use set_to_send_buffer
       use calypso_SR_core
+      use calypso_SR
+      use calypso_SR_int
 !
       integer(kind = kint), intent(in) :: num_pixel_xy
       type(pvr_ray_start_type), intent(in) :: pvr_start
@@ -78,8 +80,10 @@
       integer(kind = kint), allocatable :: item_send_pixel_composit(:)
       integer(kind = kint), allocatable :: irank_recv_pixel_composit(:)
       integer(kind = kint), allocatable :: istack_recv_pixel_composit(:)
-      integer(kind = kint), allocatable :: itmp_recv_pixel_composit(:)
+      integer(kind = kint), allocatable :: item_recv_pixel_composit(:)
+      integer(kind = kint), allocatable :: irev_recv_pixel_composit(:)
 !
+      integer(kind = kint), allocatable :: itmp_recv_pixel_composit(:)
       integer(kind = kint), allocatable :: ipix_send_pixel_composit(:)
       integer(kind = kint), allocatable :: idx_recv_pixel_composit(:)
       integer(kind = kint), allocatable :: ipix_recv_pixel_composit(:)
@@ -381,12 +385,8 @@
 !
 !
       allocate(item_send_pixel_composit(ntot_send_pixel_composit))
-!
-      allocate(idx_recv_pixel_composit(ntot_recv_pixel_composit))
-      allocate(ipix_recv_pixel_composit(ntot_recv_pixel_composit))
-      allocate(depth_recv_pixel_composit(ntot_recv_pixel_composit))
-!
-      allocate(rwork_recv_pixel_composit(ntot_recv_pixel_composit))
+      allocate(item_recv_pixel_composit(ntot_recv_pixel_composit))
+      allocate(irev_recv_pixel_composit(ntot_recv_pixel_composit))
 !
       icou = 0
       do 
@@ -412,69 +412,44 @@
         end if
       end do
 !
+!$omp parallel do
+      do inum = 1, ntot_recv_pixel_composit
+        item_recv_pixel_composit(inum) = inum
+        irev_recv_pixel_composit(inum) = inum
+      end do
+!$omp end parallel do
+!
+      allocate(idx_recv_pixel_composit(ntot_recv_pixel_composit))
+      allocate(ipix_recv_pixel_composit(ntot_recv_pixel_composit))
+      allocate(depth_recv_pixel_composit(ntot_recv_pixel_composit))
+!
+      allocate(rwork_recv_pixel_composit(ntot_recv_pixel_composit))
+!
       allocate(ipix_send_pixel_composit(ntot_send_pixel_composit))
       do inum = 1, ntot_send_pixel_composit
         isrt = item_send_pixel_composit(inum)
         ipix_send_pixel_composit(inum) = pvr_start%id_pixel_start(isrt)
       end do
 !
-      call resize_iwork_4_SR           &
-     &   (ncomm_send_pixel_composit, ncomm_recv_pixel_composit,         &
-     &    istack_send_pixel_composit(ncomm_send_pixel_composit),        &
-     &    istack_recv_pixel_composit(ncomm_recv_pixel_composit))
-      call set_to_send_buf_int(pvr_start%num_pvr_ray,               &
-     &    istack_send_pixel_composit(ncomm_send_pixel_composit),    &
-     &    item_send_pixel_composit, pvr_start%id_pixel_start, iWS)
-      call calypso_send_recv_intcore                                    &
-     &   (ncomm_send_pixel_composit, iself_send_pixel_composit,         &
-     &    irank_send_pixel_composit, istack_send_pixel_composit,        &
-     &    ncomm_recv_pixel_composit, iself_recv_pixel_composit,         &
-     &    irank_recv_pixel_composit, istack_recv_pixel_composit)
+      call calypso_send_recv_int       &
+     &    (0, pvr_start%num_pvr_ray, ntot_recv_pixel_composit,    &
+     &     ncomm_send_pixel_composit, iself_send_pixel_composit,        &
+     &     irank_send_pixel_composit, istack_send_pixel_composit,      &
+     &     item_send_pixel_composit,      &
+     &     ncomm_recv_pixel_composit, iself_send_pixel_composit,       &
+     &     irank_recv_pixel_composit, istack_recv_pixel_composit,    &
+     &     item_recv_pixel_composit, irev_recv_pixel_composit,      &
+     &     pvr_start%id_pixel_start, ipix_recv_pixel_composit)
 !
-      if(iself_send_pixel_composit .gt. 0) then
-        ist = istack_send_pixel_composit(ncomm_send_pixel_composit-1)
-        jst = istack_recv_pixel_composit(ncomm_recv_pixel_composit-1)
-        num = istack_send_pixel_composit(ncomm_send_pixel_composit)     &
-     &       - ist
-        iWR(jst+1:jst+num) = iWS(ist+1:ist+num)
-      end if
-!
-      call calypso_send_recv_fin                                     &
-     &    (ncomm_send_pixel_composit, iself_send_pixel_composit)
-!
-!$omp parallel workshare
-      ipix_recv_pixel_composit(1:ntot_recv_pixel_composit)  &
-     &    = iWR(1:ntot_recv_pixel_composit)
-!$omp end parallel workshare
-!
-      call resize_work_4_SR           &
-     &   (ione, ncomm_send_pixel_composit, ncomm_recv_pixel_composit,   &
-     &    istack_send_pixel_composit(ncomm_send_pixel_composit),        &
-     &    istack_recv_pixel_composit(ncomm_recv_pixel_composit))
-      call set_to_send_buf_1(pvr_start%num_pvr_ray,                     &
-     &    istack_send_pixel_composit(ncomm_send_pixel_composit),        &
-     &    item_send_pixel_composit, pvr_start%xx_pvr_ray_start(1,3), WS)
-      call calypso_send_recv_core                                       &
-     &   (ione, ncomm_send_pixel_composit, iself_send_pixel_composit,   &
-     &    irank_send_pixel_composit, istack_send_pixel_composit,        &
-     &    ncomm_recv_pixel_composit, iself_recv_pixel_composit,         &
-     &    irank_recv_pixel_composit, istack_recv_pixel_composit)
-!
-      if(iself_send_pixel_composit .gt. 0) then
-        ist = istack_send_pixel_composit(ncomm_send_pixel_composit-1)
-        jst = istack_recv_pixel_composit(ncomm_recv_pixel_composit-1)
-        num = istack_send_pixel_composit(ncomm_send_pixel_composit)     &
-     &       - ist
-        WR(jst+1:jst+num) = WS(ist+1:ist+num)
-      end if
-!
-      call calypso_send_recv_fin                                     &
-     &    (ncomm_send_pixel_composit, iself_send_pixel_composit)
-!
-!$omp parallel workshare
-      depth_recv_pixel_composit(1:ntot_recv_pixel_composit)  &
-     &    = WR(1:ntot_recv_pixel_composit)
-!$omp end parallel workshare
+      call calypso_send_recv       &
+     &    (0, pvr_start%num_pvr_ray, ntot_recv_pixel_composit,    &
+     &     ncomm_send_pixel_composit, iself_send_pixel_composit,        &
+     &     irank_send_pixel_composit, istack_send_pixel_composit,      &
+     &     item_send_pixel_composit,      &
+     &     ncomm_recv_pixel_composit, iself_send_pixel_composit,       &
+     &     irank_recv_pixel_composit, istack_recv_pixel_composit,    &
+     &     item_recv_pixel_composit, irev_recv_pixel_composit,      &
+     &     pvr_start%xx_pvr_ray_start(1,3), depth_recv_pixel_composit)
 !
       allocate(itmp_recv_pixel_composit(ntot_recv_pixel_composit))
 !$omp parallel do
