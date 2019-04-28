@@ -236,10 +236,12 @@
      &       = depth_recv_pixel_composit(icou)
       end do
 !
-      istack_composition(0) = 0
+!$omp parallel workshare
+      istack_composition(0:npixel_4_composit) = 0
+!$omp end parallel workshare
       do inum = 1, ntot_recv_pixel_composit
         ipix = itmp_recv_pixel_composit(inum)
-        istack_composition(ipix) = istack_composition(ipix) +1
+        istack_composition(ipix) = istack_composition(ipix) + 1
       end do
       do ipix = 1, npixel_4_composit
         istack_composition(ipix) = istack_composition(ipix-1)           &
