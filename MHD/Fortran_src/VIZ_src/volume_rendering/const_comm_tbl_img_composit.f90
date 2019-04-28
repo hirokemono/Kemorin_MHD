@@ -76,6 +76,7 @@
 !
       call alloc_calypso_import_item                                    &
      &   (img_composit_tbl%ntot_import, img_composit_tbl)
+      call alloc_calypso_export_item(img_composit_tbl)
 !
       call set_comm_tbl_pvr_composition(num_pvr_ray, id_pixel_start,    &
      &   index_pvr_start, num_pixel_xy, irank_4_composit,               &
