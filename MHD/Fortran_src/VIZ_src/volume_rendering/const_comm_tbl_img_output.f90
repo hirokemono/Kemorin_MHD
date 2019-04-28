@@ -5,9 +5,9 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine s_const_comm_tbl_img_output                          &
-!!     &         (irank_image_file, istack_recv_image, num_pixel_xy,    &
-!!     &          irank_4_composit, item_recv_image, npixel_4_composit, &
-!!     &          num_pixel_recv, img_output_tbl)
+!!     &         (stencil_wk, irank_image_file, num_pixel_xy,           &
+!!     &          npixel_4_composit, num_pixel_recv, img_output_tbl)
+!!        type(stencil_buffer_work), intent(in) :: stencil_wk
 !!        type(calypso_comm_table), intent(inout) :: img_output_tbl
 !!
       module const_comm_tbl_img_output
@@ -25,19 +25,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_const_comm_tbl_img_output                            &
-     &         (irank_image_file, istack_recv_image, num_pixel_xy,      &
-     &          irank_4_composit, item_recv_image, npixel_4_composit,   &
-     &          num_pixel_recv, img_output_tbl)
+     &         (stencil_wk, irank_image_file, num_pixel_xy,             &
+     &          npixel_4_composit, num_pixel_recv, img_output_tbl)
 !
       use t_calypso_comm_table
+      use t_stencil_buffer_work
 !
       integer(kind = kint), intent(in) :: irank_image_file
-      integer(kind = kint), intent(in) :: istack_recv_image(0:nprocs)
       integer(kind = kint), intent(in) :: num_pixel_xy
-      integer(kind = kint), intent(in)                                  &
-     &                     :: irank_4_composit(num_pixel_xy)
-      integer(kind = kint), intent(in) :: item_recv_image(num_pixel_xy)
       integer(kind = kint), intent(in) :: npixel_4_composit
+      type(stencil_buffer_work), intent(in) :: stencil_wk
 !
       integer(kind = kint), intent(inout) :: num_pixel_recv
       type(calypso_comm_table), intent(inout) :: img_output_tbl
@@ -58,20 +55,20 @@
 !
 !
       call count_import_pe_pvr_output                                   &
-     &   (irank_image_file, istack_recv_image,                          &
+     &   (irank_image_file, stencil_wk%istack_recv_image,               &
      &    img_output_tbl%nrank_import)
 !
       call alloc_calypso_import_num(img_output_tbl)
       call count_import_item_pvr_output                                 &
-     &   (irank_image_file, istack_recv_image,                          &
-     &    num_pixel_xy, irank_4_composit, item_recv_image,              &
+     &   (irank_image_file, stencil_wk%istack_recv_image, num_pixel_xy, &
+     &    stencil_wk%irank_4_composit, stencil_wk%item_recv_image,      &
      &    img_output_tbl%nrank_import, img_output_tbl%ntot_import,      &
      &    img_output_tbl%irank_import, img_output_tbl%istack_import,    &
      &    img_output_tbl%iflag_self_copy, num_pixel_recv)
 !
       call alloc_calypso_import_item(num_pixel_recv, img_output_tbl)
       call set_import_item_pvr_output                                   &
-     &    (num_pixel_xy, item_recv_image,                               &
+     &    (num_pixel_xy, stencil_wk%item_recv_image,                    &
      &     img_output_tbl%ntot_import, num_pixel_recv,                  &
      &     img_output_tbl%item_import, img_output_tbl%irev_import)
 !
