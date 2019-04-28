@@ -112,7 +112,7 @@
      &    group%surf_grp, group%surf_grp_geom, pvr_param%field,         &
      &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
      &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
-      call set_pvr_stencil_buffer                                       &
+      call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt)
       call set_subimages                                                &
      &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%image)
@@ -194,10 +194,10 @@
 !
       call transfer_to_screen                                           &
      &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
-     &    pvr_param%field, pvr_param%view, pvr_proj%projection_mat,      &
+     &    pvr_param%field, pvr_param%view, pvr_proj%projection_mat,     &
      &    pvr_param%pixel,  pvr_proj%bound, pvr_proj%screen,            &
      &    pvr_proj%start_pt)
-      call set_pvr_stencil_buffer                                       &
+      call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt)
       call set_subimages                                                &
      &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%image)
