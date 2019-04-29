@@ -106,7 +106,8 @@
       write(*,*) 'istack_pvr_images', istack_pvr_images
       do i_pvr = 1, num_pvr_images
         write(*,*) 'irank_image_file', pvr_rgb(i_pvr)%irank_image_file, &
-     &            trim(pvr_rgb(i_pvr)%pvr_prefix)
+     &                                 pvr_rgb(i_pvr)%irank_stack_end,  &
+     &                                 trim(pvr_rgb(i_pvr)%pvr_prefix)
       end do
 !
       end subroutine s_num_rendering_and_images
@@ -158,20 +159,24 @@
       integer(kind = kint), intent(in) :: num_pvr_images
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
-      integer(kind = kint) :: i_pvr, icou, nstep
-      integer(kind = kint) :: np
+      integer(kind = kint) :: i_pvr
+      real(kind = kreal) :: address
 !
 !
-      if(num_pvr_images .gt. num_pe) then
-        nstep = 1
-      else
-        np = int(num_pe,KIND(np))
-        call cal_divide_and_rest(nstep, icou, np, num_pvr_images)
-      end if
-!
-      do i_pvr = 1, num_pvr_images
-        icou = (i_pvr-1) * nstep
-        pvr_rgb(i_pvr)%irank_image_file = mod(icou, num_pe)
+      address = dble((num_pvr_images-1) * num_pe)                       &
+     &         / dble(num_pvr_images)
+      pvr_rgb(num_pvr_images)%irank_image_file = aint(address)
+      pvr_rgb(num_pvr_images)%irank_stack_end = num_pe - 1
+      do i_pvr = num_pvr_images-1, 1, -1
+        address = dble((i_pvr-1) * num_pe) / dble(num_pvr_images)
+        pvr_rgb(i_pvr)%irank_image_file = aint(address)
+        pvr_rgb(i_pvr)%irank_stack_end                                  &
+     &                    = pvr_rgb(i_pvr+1)%irank_image_file - 1
+        if(pvr_rgb(i_pvr)%irank_stack_end                               &
+     &     .lt. pvr_rgb(i_pvr)%irank_image_file) then
+          pvr_rgb(i_pvr)%irank_stack_end                                &
+     &                    = pvr_rgb(i_pvr)%irank_image_file
+        end if
       end do
 !
       end subroutine set_rank_to_write_images
