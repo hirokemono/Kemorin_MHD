@@ -1,13 +1,24 @@
-!const_comm_tbl_img_composit.f90
+!>@file   const_comm_tbl_img_composit.f90
+!!@brief  module const_comm_tbl_img_composit
+!!
+!!@author H. Matsui
+!!@date Programmed on  Oct., 2016
 !
-!      module const_comm_tbl_img_composit
-!
-!      Written by H. Matsui on Aug., 2011
-!
+!>@brief  Routies to construct communication table for volume rendering
+!!
+!!@verbatim
+!!      subroutine s_const_comm_tbl_img_output                          &
+!!     &         (stencil_wk, irank_image_file, num_pixel_xy,           &
+!!     &          npixel_4_composit, num_pixel_recv, img_output_tbl)
 !!      subroutine s_const_comm_tbl_img_composit                        &
 !!     &         (num_pixel_xy, irank_4_composit, num_pvr_ray,          &
 !!     &          id_pixel_start, img_composit_tbl)
+!!      subroutine set_image_stacking_and_recv(num_pixel_xy,            &
+!!     &          item_4_composit, npixel_4_composit, ipix_4_composit,  &
+!!     &          depth_pixel_composit, istack_composition,             &
+!!     &          img_composit_tbl)
 !!        type(calypso_comm_table), intent(inout) :: img_composit_tbl
+!!@endverbatim
 !!
       module const_comm_tbl_img_composit
 !
@@ -15,7 +26,11 @@
       use m_constants
       use calypso_mpi
 !
+      use t_calypso_comm_table
+!
       implicit  none
+!
+      private :: sort_index_pvr_start, count_num_send_pixel_tmp
 !
 !  ---------------------------------------------------------------------
 !
@@ -23,11 +38,71 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine s_const_comm_tbl_img_output                            &
+     &         (stencil_wk, irank_image_file, num_pixel_xy,             &
+     &          npixel_4_composit, num_pixel_recv, img_output_tbl)
+!
+      use t_calypso_comm_table
+      use t_stencil_buffer_work
+      use comm_tbl_4_img_output
+!
+      integer(kind = kint), intent(in) :: irank_image_file
+      integer(kind = kint), intent(in) :: num_pixel_xy
+      integer(kind = kint), intent(in) :: npixel_4_composit
+      type(stencil_buffer_work), intent(in) :: stencil_wk
+!
+      integer(kind = kint), intent(inout) :: num_pixel_recv
+      type(calypso_comm_table), intent(inout) :: img_output_tbl
+!
+!
+!      write(*,*) 'count_export_pe_pvr_output'
+      call count_export_pe_pvr_output                                   &
+     &   (npixel_4_composit, img_output_tbl%nrank_export)
+!
+      call alloc_calypso_export_num(img_output_tbl)
+!      write(*,*) 'count_export_item_pvr_output'
+      call count_export_item_pvr_output                                 &
+     &   (irank_image_file, npixel_4_composit,                          &
+     &    img_output_tbl%nrank_export, img_output_tbl%ntot_export,      &
+     &    img_output_tbl%irank_export, img_output_tbl%istack_export)
+!
+      call alloc_calypso_export_item(img_output_tbl)
+!      write(*,*) 'set_export_item_pvr_output'
+      call set_export_item_pvr_output                                   &
+     &   (img_output_tbl%ntot_export, img_output_tbl%item_export)
+!
+!
+!      write(*,*) 'count_import_pe_pvr_output'
+      call count_import_pe_pvr_output                                   &
+     &   (nprocs, my_rank, irank_image_file,                            &
+     &    stencil_wk%istack_recv_image, img_output_tbl%nrank_import)
+!
+      call alloc_calypso_import_num(img_output_tbl)
+!      write(*,*) 'count_import_item_pvr_output'
+      call count_import_item_pvr_output(nprocs, my_rank,                &
+     &    irank_image_file, stencil_wk%istack_recv_image, num_pixel_xy, &
+     &    stencil_wk%irank_4_composit, stencil_wk%item_recv_image,      &
+     &    img_output_tbl%nrank_import, img_output_tbl%ntot_import,      &
+     &    img_output_tbl%irank_import, img_output_tbl%istack_import,    &
+     &    img_output_tbl%iflag_self_copy, num_pixel_recv)
+!
+      call alloc_calypso_import_item(num_pixel_recv, img_output_tbl)
+!      write(*,*) 'set_import_item_pvr_output'
+      call set_import_item_pvr_output                                   &
+     &    (num_pixel_xy, stencil_wk%item_recv_image,                    &
+     &     img_output_tbl%ntot_import, num_pixel_recv,                  &
+     &     img_output_tbl%item_import, img_output_tbl%irev_import)
+!
+      end subroutine s_const_comm_tbl_img_output
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       subroutine s_const_comm_tbl_img_composit                          &
      &         (num_pixel_xy, irank_4_composit, num_pvr_ray,            &
      &          id_pixel_start, img_composit_tbl)
 !
-      use t_calypso_comm_table
+      use comm_tbl_4_img_composit
 !
       integer(kind = kint), intent(in) :: num_pixel_xy
       integer(kind = kint), intent(in)                                  &
@@ -60,35 +135,72 @@
 !
 !
       call count_comm_pe_pvr_composition                                &
-     &   (num_send_pixel_tmp, num_recv_pixel_tmp,                       &
+     &   (nprocs, num_send_pixel_tmp, num_recv_pixel_tmp,               &
      &    img_composit_tbl%nrank_export, img_composit_tbl%nrank_import)
 !
       call alloc_calypso_import_num(img_composit_tbl)
       call alloc_calypso_export_num(img_composit_tbl)
 !
-      call count_comm_tbl_pvr_composition                               &
-     &  (num_send_pixel_tmp, num_recv_pixel_tmp,                        &
+      call count_comm_tbl_pvr_composition(nprocs, my_rank,              &
+     &   num_send_pixel_tmp, num_recv_pixel_tmp,                        &
      &   img_composit_tbl%nrank_export, img_composit_tbl%nrank_import,  &
      &   img_composit_tbl%ntot_export, img_composit_tbl%irank_export,   &
      &   img_composit_tbl%istack_export, img_composit_tbl%ntot_import,  &
      &   img_composit_tbl%irank_import, img_composit_tbl%istack_import, &
      &   img_composit_tbl%iflag_self_copy)
 !
-      call alloc_calypso_import_item                                    &
-     &   (img_composit_tbl%ntot_import, img_composit_tbl)
       call alloc_calypso_export_item(img_composit_tbl)
-!
       call set_comm_tbl_pvr_composition(num_pvr_ray, id_pixel_start,    &
      &   index_pvr_start, num_pixel_xy, irank_4_composit,               &
      &   img_composit_tbl%nrank_export, img_composit_tbl%ntot_export,   &
      &   img_composit_tbl%irank_export, img_composit_tbl%istack_export, &
-     &   img_composit_tbl%item_export, img_composit_tbl%ntot_import,    &
+     &   img_composit_tbl%item_export)
+!
+      call alloc_calypso_import_item                                    &
+     &   (img_composit_tbl%ntot_import, img_composit_tbl)
+      call set_item_recv_tmp_composit(img_composit_tbl%ntot_import,     &
      &   img_composit_tbl%item_import, img_composit_tbl%irev_import)
 !
       deallocate(num_send_pixel_tmp, num_recv_pixel_tmp)
       deallocate(index_pvr_start)
 !
       end subroutine s_const_comm_tbl_img_composit
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_image_stacking_and_recv(num_pixel_xy,              &
+     &          item_4_composit, npixel_4_composit, ipix_4_composit,    &
+     &          depth_pixel_composit, istack_composition,               &
+     &          img_composit_tbl)
+!
+      use comm_tbl_4_img_composit
+!
+      integer(kind = kint), intent(in) :: num_pixel_xy
+      integer(kind = kint), intent(in) :: item_4_composit(num_pixel_xy)
+!
+      type(calypso_comm_table), intent(inout) :: img_composit_tbl
+!
+      integer(kind = kint), intent(in)                                  &
+     &      :: ipix_4_composit(img_composit_tbl%ntot_import)
+      real(kind = kreal), intent(in)                                    &
+     &      :: depth_pixel_composit(img_composit_tbl%ntot_import)
+      integer(kind = kint), intent(in) :: npixel_4_composit
+!
+      integer(kind = kint), intent(inout)                               &
+     &      :: istack_composition(0:npixel_4_composit)
+!
+!
+      call set_image_composition_stack                                  &
+     &   (num_pixel_xy, item_4_composit, npixel_4_composit,             &
+     &    img_composit_tbl%ntot_import, ipix_4_composit,                &
+     &    istack_composition, img_composit_tbl%item_import)
+!
+      call sort_recv_pixel_by_depth                                     &
+     &    (npixel_4_composit, img_composit_tbl%ntot_import,             &
+     &     depth_pixel_composit, istack_composition,                    &
+     &     img_composit_tbl%item_import, img_composit_tbl%irev_import)
+!
+      end subroutine set_image_stacking_and_recv
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -150,164 +262,6 @@
       end do
 !
       end subroutine count_num_send_pixel_tmp
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine count_comm_pe_pvr_composition                          &
-     &         (num_send_pixel_tmp, num_recv_pixel_tmp,                 &
-     &          ncomm_send_pixel_composit, ncomm_recv_pixel_composit)
-!
-      integer(kind = kint), intent(in) :: num_send_pixel_tmp(nprocs)
-      integer(kind = kint), intent(in) :: num_recv_pixel_tmp(nprocs)
-!
-      integer(kind = kint), intent(inout) :: ncomm_send_pixel_composit
-      integer(kind = kint), intent(inout) :: ncomm_recv_pixel_composit
-!
-      integer(kind = kint) :: ip, icou1, icou2
-!
-!
-      icou1 = 0
-      icou2 = 0
-      do ip = 1, nprocs
-        if(num_send_pixel_tmp(ip) .gt. 0) icou1 = icou1 + 1
-        if(num_recv_pixel_tmp(ip) .gt. 0) icou2 = icou2 + 1
-      end do
-      ncomm_send_pixel_composit = icou1
-      ncomm_recv_pixel_composit = icou2
-!
-      end subroutine count_comm_pe_pvr_composition
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_comm_tbl_pvr_composition                         &
-     &         (num_send_pixel_tmp, num_recv_pixel_tmp,                 &
-     &          ncomm_send_pixel_composit, ncomm_recv_pixel_composit,   &
-     &          ntot_send_pixel_composit, irank_send_pixel_composit,    &
-     &          istack_send_pixel_composit, ntot_recv_pixel_composit,   &
-     &          irank_recv_pixel_composit, istack_recv_pixel_composit,  &
-     &          iself_pixel_composit)
-!
-      integer(kind = kint), intent(in) :: num_send_pixel_tmp(nprocs)
-      integer(kind = kint), intent(in) :: num_recv_pixel_tmp(nprocs)
-!
-      integer(kind = kint), intent(in) :: ncomm_send_pixel_composit
-      integer(kind = kint), intent(in) :: ncomm_recv_pixel_composit
-!
-      integer(kind = kint), intent(inout) :: iself_pixel_composit
-      integer(kind = kint), intent(inout) :: ntot_send_pixel_composit
-      integer(kind = kint), intent(inout)                               &
-     &      :: irank_send_pixel_composit(ncomm_send_pixel_composit)
-      integer(kind = kint), intent(inout)                               &
-     &      :: istack_send_pixel_composit(0:ncomm_send_pixel_composit)
-!
-      integer(kind = kint), intent(inout) :: ntot_recv_pixel_composit
-      integer(kind = kint), intent(inout)                               &
-     &      :: irank_recv_pixel_composit(ncomm_recv_pixel_composit)
-      integer(kind = kint), intent(inout)                               &
-     &      :: istack_recv_pixel_composit(0:ncomm_recv_pixel_composit)
-!
-      integer(kind = kint) :: ip, icou1, icou2, i_rank
-!
-!
-      icou1 = 0
-      icou2 = 0
-      iself_pixel_composit = 0
-      istack_send_pixel_composit(icou1) = 0
-      istack_recv_pixel_composit(icou2) = 0
-      do ip = 1, nprocs
-        i_rank = mod(my_rank+ip,nprocs)
-        if(num_send_pixel_tmp(i_rank+1) .gt. 0) then
-          icou1 = icou1 + 1
-          irank_send_pixel_composit(icou1) = i_rank
-          istack_send_pixel_composit(icou1)                             &
-     &          = istack_send_pixel_composit(icou1-1)                   &
-     &           + num_send_pixel_tmp(i_rank+1)
-          if(i_rank .eq. my_rank) iself_pixel_composit = 1
-        end if
-        if(num_recv_pixel_tmp(i_rank+1) .gt. 0) then
-          icou2 = icou2 + 1
-          irank_recv_pixel_composit(icou2) = i_rank
-          istack_recv_pixel_composit(icou2)                             &
-     &          = istack_recv_pixel_composit(icou2-1)                   &
-     &           + num_recv_pixel_tmp(i_rank+1)
-          if(i_rank .eq. my_rank) iself_pixel_composit = 1
-        end if
-      end do
-!
-      ntot_send_pixel_composit                                          &
-     &       = istack_send_pixel_composit(ncomm_send_pixel_composit)
-      ntot_recv_pixel_composit                                          &
-     &       = istack_recv_pixel_composit(ncomm_recv_pixel_composit)
-!
-      end subroutine count_comm_tbl_pvr_composition
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_comm_tbl_pvr_composition                           &
-     &         (num_pvr_ray, id_pixel_start, index_pvr_start,           &
-     &          num_pixel_xy, irank_4_composit,                         &
-     &          ncomm_send_pixel_composit, ntot_send_pixel_composit,    &
-     &          irank_send_pixel_composit, istack_send_pixel_composit,  &
-     &          item_send_pixel_composit, ntot_recv_pixel_composit,     &
-     &          item_recv_pixel_composit, irev_recv_pixel_composit)
-!
-      integer(kind = kint), intent(in) :: num_pixel_xy
-      integer(kind = kint), intent(in)                                  &
-     &                     :: irank_4_composit(num_pixel_xy)
-!
-      integer(kind = kint), intent(in) :: num_pvr_ray
-      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
-      integer(kind = kint), intent(in) :: index_pvr_start(num_pvr_ray)
-!
-      integer(kind = kint), intent(in) :: ncomm_send_pixel_composit
-      integer(kind = kint), intent(in) :: ntot_send_pixel_composit
-      integer(kind = kint), intent(in) :: ntot_recv_pixel_composit
-      integer(kind = kint), intent(in)                                  &
-     &      :: irank_send_pixel_composit(ncomm_send_pixel_composit)
-      integer(kind = kint), intent(in)                                  &
-     &      :: istack_send_pixel_composit(0:ncomm_send_pixel_composit)
-!
-      integer(kind = kint), intent(inout)                               &
-     &      :: item_send_pixel_composit(ntot_send_pixel_composit)
-!
-      integer(kind = kint), intent(inout)                               &
-     &      :: item_recv_pixel_composit(ntot_recv_pixel_composit)
-      integer(kind = kint), intent(inout)                               &
-     &      :: irev_recv_pixel_composit(ntot_recv_pixel_composit)
-!
-      integer(kind = kint) :: ip, jst, num
-      integer(kind = kint) :: inum, icou, isrt, ipix, i_rank
-!
-!
-      icou = 0
-      do 
-        isrt = index_pvr_start(icou+1)
-        ipix =  id_pixel_start(isrt)
-        i_rank = irank_4_composit(ipix)
-        do ip = 1, ncomm_send_pixel_composit
-          if(irank_send_pixel_composit(ip) .eq. i_rank) then
-            jst = istack_send_pixel_composit(ip-1)
-            num = istack_send_pixel_composit(ip) - jst
-            do inum = 1, num
-              icou = icou + 1
-              isrt = index_pvr_start(icou)
-              item_send_pixel_composit(inum+jst) = isrt
-            end do
-            exit
-          end if
-        end do
-        if(icou .ge. num_pvr_ray) exit
-      end do
-!
-!$omp parallel do
-      do inum = 1, ntot_recv_pixel_composit
-        item_recv_pixel_composit(inum) = inum
-        irev_recv_pixel_composit(inum) = inum
-      end do
-!$omp end parallel do
-!
-      end subroutine set_comm_tbl_pvr_composition
 !
 !  ---------------------------------------------------------------------
 !

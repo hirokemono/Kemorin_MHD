@@ -1,20 +1,41 @@
-!const_comm_tbl_img_output.f90
-!
-!      module const_comm_tbl_img_output
-!
-!      Written by H. Matsui on Aug., 2011
-!
-!!      subroutine s_const_comm_tbl_img_output                          &
-!!     &         (stencil_wk, irank_image_file, num_pixel_xy,           &
-!!     &          npixel_4_composit, num_pixel_recv, img_output_tbl)
-!!        type(stencil_buffer_work), intent(in) :: stencil_wk
-!!        type(calypso_comm_table), intent(inout) :: img_output_tbl
+!>@file   comm_tbl_4_img_output.f90
+!!@brief  module comm_tbl_4_img_output
 !!
-      module const_comm_tbl_img_output
+!!@author H. Matsui
+!!@date Programmed on  Oct., 2016
+!
+!>@brief  Routies to construct communication table for image output
+!!
+!!@verbatim
+!!      subroutine count_export_pe_pvr_output                           &
+!!     &         (npixel_4_composit, ncomm_send_pixel_output)
+!!      subroutine count_export_item_pvr_output                         &
+!!     &         (irank_image_file, npixel_4_composit,                  &
+!!     &          ncomm_send_pixel_output, ntot_send_pixel_output,      &
+!!     &          irank_send_pixel_output, istack_send_pixel_output)
+!!      subroutine set_export_item_pvr_output                           &
+!!     &         (ntot_send_pixel_output, item_send_pixel_output)
+!!
+!!      subroutine count_import_pe_pvr_output                           &
+!!     &         (nprocs, my_rank, irank_image_file, istack_recv_image, &
+!!     &          ncomm_recv_pixel_output)
+!!      subroutine count_import_item_pvr_output                         &
+!!     &         (nprocs, my_rank, irank_image_file, istack_recv_image, &
+!!     &          num_pixel_xy, irank_4_composit, item_recv_image,      &
+!!     &          ncomm_recv_pixel_output, ntot_recv_pixel_output,      &
+!!     &          irank_recv_pixel_output, istack_recv_pixel_output,    &
+!!     &          iself_pixel_output, num_pixel_recv)
+!!      subroutine set_import_item_pvr_output                           &
+!!     &         (num_pixel_xy, item_recv_image,                        &
+!!     &          ntot_recv_pixel_output, num_pixel_recv,               &
+!!     &          item_recv_pixel_output, irev_recv_pixel_output)
+!!@endverbatim
+!!
+      module comm_tbl_4_img_output
 !
       use m_precision
       use m_constants
-      use calypso_mpi
+!      use calypso_mpi
 !
       implicit  none
 !
@@ -22,65 +43,6 @@
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine s_const_comm_tbl_img_output                            &
-     &         (stencil_wk, irank_image_file, num_pixel_xy,             &
-     &          npixel_4_composit, num_pixel_recv, img_output_tbl)
-!
-      use t_calypso_comm_table
-      use t_stencil_buffer_work
-!
-      integer(kind = kint), intent(in) :: irank_image_file
-      integer(kind = kint), intent(in) :: num_pixel_xy
-      integer(kind = kint), intent(in) :: npixel_4_composit
-      type(stencil_buffer_work), intent(in) :: stencil_wk
-!
-      integer(kind = kint), intent(inout) :: num_pixel_recv
-      type(calypso_comm_table), intent(inout) :: img_output_tbl
-!
-!
-!      write(*,*) 'count_export_pe_pvr_output'
-      call count_export_pe_pvr_output                                   &
-     &   (npixel_4_composit, img_output_tbl%nrank_export)
-!
-      call alloc_calypso_export_num(img_output_tbl)
-!      write(*,*) 'count_export_item_pvr_output'
-      call count_export_item_pvr_output                                 &
-     &   (irank_image_file, npixel_4_composit,                          &
-     &    img_output_tbl%nrank_export, img_output_tbl%ntot_export,      &
-     &    img_output_tbl%irank_export, img_output_tbl%istack_export)
-!
-      call alloc_calypso_export_item(img_output_tbl)
-!      write(*,*) 'set_export_item_pvr_output'
-      call set_export_item_pvr_output                                   &
-     &   (img_output_tbl%ntot_export, img_output_tbl%item_export)
-!
-!
-!      write(*,*) 'count_import_pe_pvr_output'
-      call count_import_pe_pvr_output                                   &
-     &   (irank_image_file, stencil_wk%istack_recv_image,               &
-     &    img_output_tbl%nrank_import)
-!
-      call alloc_calypso_import_num(img_output_tbl)
-!      write(*,*) 'count_import_item_pvr_output'
-      call count_import_item_pvr_output                                 &
-     &   (irank_image_file, stencil_wk%istack_recv_image, num_pixel_xy, &
-     &    stencil_wk%irank_4_composit, stencil_wk%item_recv_image,      &
-     &    img_output_tbl%nrank_import, img_output_tbl%ntot_import,      &
-     &    img_output_tbl%irank_import, img_output_tbl%istack_import,    &
-     &    img_output_tbl%iflag_self_copy, num_pixel_recv)
-!
-      call alloc_calypso_import_item(num_pixel_recv, img_output_tbl)
-!      write(*,*) 'set_import_item_pvr_output'
-      call set_import_item_pvr_output                                   &
-     &    (num_pixel_xy, stencil_wk%item_recv_image,                    &
-     &     img_output_tbl%ntot_import, num_pixel_recv,                  &
-     &     img_output_tbl%item_import, img_output_tbl%irev_import)
-!
-      end subroutine s_const_comm_tbl_img_output
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine count_export_pe_pvr_output                             &
@@ -146,11 +108,13 @@
       end subroutine set_export_item_pvr_output
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       subroutine count_import_pe_pvr_output                             &
-     &         (irank_image_file, istack_recv_image,                    &
+     &         (nprocs, my_rank, irank_image_file, istack_recv_image,   &
      &          ncomm_recv_pixel_output)
 !
+      integer, intent(in) :: nprocs, my_rank
       integer(kind = kint), intent(in) :: irank_image_file
       integer(kind = kint), intent(in) :: istack_recv_image(0:nprocs)
 !
@@ -174,12 +138,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_import_item_pvr_output                           &
-     &         (irank_image_file, istack_recv_image,                    &
+     &         (nprocs, my_rank, irank_image_file, istack_recv_image,   &
      &          num_pixel_xy, irank_4_composit, item_recv_image,        &
      &          ncomm_recv_pixel_output, ntot_recv_pixel_output,        &
      &          irank_recv_pixel_output, istack_recv_pixel_output,      &
      &          iself_pixel_output, num_pixel_recv)
 !
+      integer, intent(in) :: nprocs, my_rank
       integer(kind = kint), intent(in) :: irank_image_file
       integer(kind = kint), intent(in) :: istack_recv_image(0:nprocs)
       integer(kind = kint), intent(in) :: num_pixel_xy
@@ -260,4 +225,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module const_comm_tbl_img_output
+      end module comm_tbl_4_img_output

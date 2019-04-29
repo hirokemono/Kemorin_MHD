@@ -79,12 +79,12 @@
       type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
 !
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+ 1)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
       call SECTIONING_initialize(geofem, ele_mesh, nod_fld,             &
      &    zm_ctls%zm_psf_ctls, zmeans%zm_psf)
       call SECTIONING_initialize(geofem, ele_mesh, nod_fld,             &
      &   zm_ctls%zRMS_psf_ctls, zmeans%zrms_psf)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+ 1)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
       end subroutine init_zonal_mean_sections
 !

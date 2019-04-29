@@ -33,9 +33,9 @@
         integer(kind = kint), allocatable :: irev_recv_image(:)
       end type stencil_buffer_work
 !
-!      private :: alloc_stencil_buffer_work
-!      private :: count_local_ray_4_each_pixel
-!      private :: set_global_stencil_buffer
+      private :: alloc_stencil_buffer_work
+      private :: count_local_ray_4_each_pixel
+      private :: set_global_stencil_buffer
 !
 !  ---------------------------------------------------------------------
 !
@@ -57,6 +57,7 @@
       type(stencil_buffer_work), intent(inout) :: stencil_wk
 !
       integer(kind = kint_gl) :: num_pvr_ray_gl
+      integer(kind = kint_gl) :: max_ray_start_lc, max_ray_start_gl
       integer(kind = kint_gl), allocatable :: num_ray_start_lc(:)
       integer(kind = kint_gl), allocatable :: num_ray_start_gl(:)
 !
@@ -72,15 +73,16 @@
       num64 = pvr_start%num_pvr_ray
       call MPI_REDUCE(num64, num_pvr_ray_gl, 1, CALYPSO_GLOBAL_INT,     &
      &    MPI_SUM, int(irank_image_file), CALYPSO_COMM, ierr_MPI)
-      if(my_rank .eq. irank_image_file) write(*,*)                      &
-     &      'num_pvr_ray_gl', num_pvr_ray_gl, num_pixel_xy
 !
       call count_local_ray_4_each_pixel(num_pixel_xy,                   &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
-     &    num_ray_start_lc)
+     &    num_ray_start_lc, max_ray_start_lc)
 !
       num32 = num_pixel_xy
       call MPI_REDUCE(num_ray_start_lc, num_ray_start_gl, num32,        &
+     &    CALYPSO_GLOBAL_INT, MPI_SUM, int(irank_image_file),           &
+     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_REDUCE(max_ray_start_lc, max_ray_start_gl, 1,            &
      &    CALYPSO_GLOBAL_INT, MPI_SUM, int(irank_image_file),           &
      &    CALYPSO_COMM, ierr_MPI)
 !
@@ -88,6 +90,12 @@
       call set_global_stencil_buffer                                    &
      &   (irank_image_file, npe_img_composit,                           &
      &    num_pixel_xy, num_pvr_ray_gl, num_ray_start_gl, stencil_wk)
+!
+      if(my_rank .eq. irank_image_file) then
+        write(*,*) 'Stencil buffer size, num. of segmented image: ',    &
+     &            stencil_wk%ntot_recv_image, max_ray_start_gl
+        write(*,*) 'Number of total ray trace: ', num_pvr_ray_gl
+      end if
 !
       deallocate(num_ray_start_lc)
       if(my_rank .eq. irank_image_file) deallocate(num_ray_start_gl)
@@ -126,8 +134,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_local_ray_4_each_pixel(num_pixel_xy,             &
-     &          num_pvr_ray, id_pixel_start, num_ray_start_lc)
+      subroutine count_local_ray_4_each_pixel                           &
+     &         (num_pixel_xy, num_pvr_ray, id_pixel_start,              &
+     &          num_ray_start_lc, max_ray_start_lc)
 !
       integer(kind = kint), intent(in) :: num_pixel_xy
       integer(kind = kint), intent(in) :: num_pvr_ray
@@ -135,6 +144,7 @@
 !
       integer(kind = kint_gl), intent(inout)                            &
      &            :: num_ray_start_lc(num_pixel_xy)
+      integer(kind = kint_gl), intent(inout) :: max_ray_start_lc
 !
       integer(kind = kint) :: inum, ipix
 !
@@ -147,6 +157,7 @@
         ipix = id_pixel_start(inum)
         num_ray_start_lc(ipix) = num_ray_start_lc(ipix) + 1
       end do
+      max_ray_start_lc = MAXVAL(num_ray_start_lc)
 !
       end subroutine count_local_ray_4_each_pixel
 !
@@ -201,6 +212,7 @@
         end do
         stencil_wk%ntot_recv_image                                      &
      &         = stencil_wk%istack_recv_image(nprocs)
+!
 !        write(50+my_rank,*) 'ipix, stencil_wk%irank_4_composit'
 !        do ipix = 1, num_pixel_xy
 !          write(50+my_rank,*) ipix, stencil_wk%irank_4_composit(ipix)

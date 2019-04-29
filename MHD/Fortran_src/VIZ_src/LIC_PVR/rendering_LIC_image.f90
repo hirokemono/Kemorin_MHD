@@ -112,8 +112,7 @@
      &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
      &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
       call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb%irank_image_file, pvr_rgb%npe_img_composit,           &
-     &    pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%stencil)
+     &   (pvr_rgb, pvr_proj%start_pt, pvr_proj%stencil)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, node, ele, surf, lic_p,     &

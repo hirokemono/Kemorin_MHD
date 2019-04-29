@@ -93,21 +93,26 @@
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
      &    pvr_start%xx_pvr_ray_start, pvr_start%rgba_ray)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+3)
 !
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+4)
       if(iflag_debug .gt. 0) write(*,*) 'collect_rendering_image'
       call collect_rendering_image(pvr_start,                           &
      &    pvr_rgb%num_pixel_actual, pvr_rgb%rgba_real_gl, pvr_stencil)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+4)
 !
 !      call composit_by_segmentad_image                                 &
 !     &   (istep_pvr, iflag_PVR_time, ist_elapsed_PVR,                  &
 !     &    pvr_start, pvr_stencil, pvr_img, pvr_rgb)
 !
       if(my_rank .eq. pvr_rgb%irank_image_file) then
+        if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+3)
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
      &      color_param, cbar_param, pvr_rgb%rgba_real_gl)
         call set_pvr_axislabel(cbar_param%iflag_pvr_axis,               &
      &      pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                   &
      &      pvr_screen, pvr_rgb%rgba_real_gl)
+        if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+3)
       end if
       call calypso_mpi_barrier
 !
