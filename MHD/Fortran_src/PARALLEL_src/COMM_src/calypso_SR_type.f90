@@ -9,6 +9,8 @@
 !!@verbatim
 !!      subroutine calypso_SR_type_1(iflag_SR, cps_tbl,                 &
 !!     &          nnod_org, nnod_new, X_org, X_new)
+!!      subroutine calypso_SR_type_3(iflag_SR, cps_tbl,                 &
+!!     &          nnod_org, nnod_new, X_org, X_new)
 !!      subroutine calypso_SR_type_N(iflag_SR, NB, cps_tbl,             &
 !!     &          nnod_org, nnod_new, X_org, X_new)
 !!      subroutine calypso_SR_type_3xN(iflag_SR, NB, cps_tbl,           &
@@ -75,6 +77,31 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine calypso_SR_type_3(iflag_SR, cps_tbl,                   &
+     &          nnod_org, nnod_new, X_org, X_new)
+!
+      use calypso_SR_3
+!
+      type(calypso_comm_table), intent(in) :: cps_tbl
+      integer(kind = kint), intent(in) :: iflag_SR
+      integer(kind = kint), intent(in) :: nnod_org, nnod_new
+      real (kind=kreal), intent(in)::    X_org(3*nnod_org)
+!
+      real (kind=kreal), intent(inout):: X_new(3*nnod_new)
+!
+!
+      call calypso_send_recv_3(iflag_SR, nnod_org, nnod_new,            &
+     &    cps_tbl%nrank_export, cps_tbl%iflag_self_copy,                &
+     &    cps_tbl%irank_export, cps_tbl%istack_export,                  &
+     &    cps_tbl%item_export,                                          &
+     &    cps_tbl%nrank_import, cps_tbl%iflag_self_copy,                &
+     &    cps_tbl%irank_import, cps_tbl%istack_import,                  &
+     &    cps_tbl%item_import, cps_tbl%irev_import,  X_org, X_new)
+!
+      end subroutine calypso_SR_type_3
+!
+!-----------------------------------------------------------------------
+!
       subroutine calypso_SR_type_N(iflag_SR, NB, cps_tbl,               &
      &          nnod_org, nnod_new, X_org, X_new)
 !
@@ -98,6 +125,9 @@
      &    cps_tbl%nrank_import, cps_tbl%iflag_self_copy,                &
      &    cps_tbl%irank_import, cps_tbl%istack_import,                  &
      &    cps_tbl%item_import, cps_tbl%irev_import,  X_org, X_new)
+!
+      call finish_calypso_send_recv                                     &
+     &   (cps_tbl%nrank_export, cps_tbl%iflag_self_copy)
 !
       end subroutine calypso_SR_type_N
 !

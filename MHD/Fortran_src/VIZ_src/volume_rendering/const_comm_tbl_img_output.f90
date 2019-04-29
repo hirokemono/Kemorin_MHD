@@ -206,7 +206,6 @@
 !
           if(num .gt. 0) then
             icou = icou + 1
-            write(*,*) 'icou', icou, ncomm_recv_pixel_output
             istack_recv_pixel_output(icou) = istack_recv_image(ip)
             irank_recv_pixel_output(icou) = irank_4_composit(ipix)
           end if
