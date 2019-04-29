@@ -193,12 +193,12 @@
       call set_image_composition_stack                                  &
      &   (num_pixel_xy, item_4_composit, npixel_4_composit,             &
      &    img_composit_tbl%ntot_import, ipix_4_composit,                &
-     &    istack_composition, img_composit_tbl%item_import)
+     &    istack_composition, img_composit_tbl%irev_import)
 !
       call sort_recv_pixel_by_depth                                     &
      &    (npixel_4_composit, img_composit_tbl%ntot_import,             &
      &     depth_pixel_composit, istack_composition,                    &
-     &     img_composit_tbl%item_import, img_composit_tbl%irev_import)
+     &     img_composit_tbl%irev_import, img_composit_tbl%item_import)
 !
       end subroutine set_image_stacking_and_recv
 !

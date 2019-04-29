@@ -29,11 +29,11 @@
 !!      subroutine set_image_composition_stack(num_pixel_xy,            &
 !!     &          item_4_composit, npixel_4_composit,                   &
 !!     &          ntot_recv_pixel_composit, ipix_4_composit,            &
-!!     &          istack_composition, item_recv_pixel_composit)
+!!     &          istack_composition, idx_recv_pixel_composit)
 !!      subroutine sort_recv_pixel_by_depth                             &
 !!     &         (npixel_4_composit, ntot_recv_pixel_composit,          &
 !!     &          depth_pixel_composit, istack_composition,             &
-!!     &          item_recv_pixel_composit, irev_recv_pixel_composit)
+!!     &          idx_recv_pixel_composit, item_recv_pixel_composit)
 !!@endverbatim
 !!
       module comm_tbl_4_img_composit
@@ -195,7 +195,6 @@
       end subroutine set_comm_tbl_pvr_composition
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
       subroutine set_item_recv_tmp_composit(ntot_recv_pixel_composit,   &
      &          item_recv_pixel_composit, irev_recv_pixel_composit)
@@ -220,11 +219,12 @@
       end subroutine set_item_recv_tmp_composit
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       subroutine set_image_composition_stack(num_pixel_xy,              &
      &          item_4_composit, npixel_4_composit,                     &
      &          ntot_recv_pixel_composit, ipix_4_composit,              &
-     &          istack_composition, item_recv_pixel_composit)
+     &          istack_composition, idx_recv_pixel_composit)
 !
       use quicksort
 !
@@ -239,7 +239,7 @@
       integer(kind = kint), intent(inout)                               &
      &      :: istack_composition(0:npixel_4_composit)
       integer(kind = kint), intent(inout)                               &
-     &      :: item_recv_pixel_composit(ntot_recv_pixel_composit)
+     &      :: idx_recv_pixel_composit(ntot_recv_pixel_composit)
 !
       integer(kind = kint), allocatable :: itmp_recv_pixel_composit(:)
       integer(kind = kint) :: inum, ipix
@@ -251,13 +251,13 @@
       do inum = 1, ntot_recv_pixel_composit
         ipix = ipix_4_composit(inum)
         itmp_recv_pixel_composit(inum) = item_4_composit(ipix)
-        item_recv_pixel_composit(inum) = inum
+        idx_recv_pixel_composit(inum) = inum
       end do
 !$omp end parallel do
 !
       call quicksort_w_index                                            &
      &   (ntot_recv_pixel_composit, itmp_recv_pixel_composit,           &
-     &    ione, ntot_recv_pixel_composit, item_recv_pixel_composit)
+     &    ione, ntot_recv_pixel_composit, idx_recv_pixel_composit)
 !
 !$omp parallel workshare
       istack_composition(0:npixel_4_composit) = 0
@@ -280,7 +280,7 @@
       subroutine sort_recv_pixel_by_depth                               &
      &         (npixel_4_composit, ntot_recv_pixel_composit,            &
      &          depth_pixel_composit, istack_composition,               &
-     &          item_recv_pixel_composit, irev_recv_pixel_composit)
+     &          idx_recv_pixel_composit, item_recv_pixel_composit)
 !
       use quicksort
 !
@@ -293,9 +293,9 @@
      &      :: istack_composition(0:npixel_4_composit)
 !
       integer(kind = kint), intent(inout)                               &
-     &      :: item_recv_pixel_composit(ntot_recv_pixel_composit)
+     &      :: idx_recv_pixel_composit(ntot_recv_pixel_composit)
       integer(kind = kint), intent(inout)                               &
-     &      :: irev_recv_pixel_composit(ntot_recv_pixel_composit)
+     &      :: item_recv_pixel_composit(ntot_recv_pixel_composit)
 !
       real(kind = kreal), allocatable :: rwork_recv_pixel_composit(:)
       integer(kind = kint) :: inum, ipix, ist, ied, num, icou
@@ -305,7 +305,7 @@
 !
 !$omp parallel do private(inum,icou)
       do inum = 1, ntot_recv_pixel_composit
-        icou = item_recv_pixel_composit(inum)
+        icou = idx_recv_pixel_composit(inum)
         rwork_recv_pixel_composit(inum) = depth_pixel_composit(icou)
       end do
 !$omp end parallel do
@@ -318,15 +318,15 @@
         if(num .gt. 1) then
           call quicksort_real_w_index                                   &
      &       (num, rwork_recv_pixel_composit(ist+1),                    &
-     &        ione, num, item_recv_pixel_composit(ist+1))
+     &        ione, num, idx_recv_pixel_composit(ist+1))
         end if
       end do
 !$omp end parallel do
 !
 !$omp parallel do private(inum,icou)
       do inum = 1, ntot_recv_pixel_composit
-        icou = item_recv_pixel_composit(inum)
-        irev_recv_pixel_composit(icou) = inum
+        icou = idx_recv_pixel_composit(inum)
+        item_recv_pixel_composit(icou) = inum
       end do
 !$omp end parallel do
 !
