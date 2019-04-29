@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine const_stencil_buffer_work                            &
-!!     &         (irank_image_file, num_pixel_xy, pvr_start, stencil_wk)
+!!     &         (irank_image_file, npe_img_composit,                   &
+!!     &          num_pixel_xy, pvr_start, stencil_wk)
 !!      subroutine dealloc_stencil_buffer_work(stencil_wk)
 !!        type(pvr_ray_start_type), intent(in) :: pvr_start
 !!        type(stencil_buffer_work), intent(inout) :: stencil_wk
@@ -43,11 +44,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_stencil_buffer_work                              &
-     &         (irank_image_file, num_pixel_xy, pvr_start, stencil_wk)
+     &         (irank_image_file, npe_img_composit,                     &
+     &          num_pixel_xy, pvr_start, stencil_wk)
 !
       use t_pvr_ray_startpoints
 !
-      integer, intent(in) :: irank_image_file
+      integer(kind = kint), intent(in) :: irank_image_file
+      integer(kind = kint), intent(in) :: npe_img_composit
       integer(kind = kint), intent(in) :: num_pixel_xy
       type(pvr_ray_start_type), intent(in) :: pvr_start
 !
@@ -62,13 +65,13 @@
 !
 !
       allocate(num_ray_start_lc(num_pixel_xy))
-      if(my_rank .eq. irank_image_file) then
+      if(my_rank .eq. int(irank_image_file)) then
         allocate(num_ray_start_gl(num_pixel_xy))
       end if
 !
       num64 = pvr_start%num_pvr_ray
       call MPI_REDUCE(num64, num_pvr_ray_gl, 1, CALYPSO_GLOBAL_INT,     &
-     &    MPI_SUM, irank_image_file, CALYPSO_COMM, ierr_MPI)
+     &    MPI_SUM, int(irank_image_file), CALYPSO_COMM, ierr_MPI)
       if(my_rank .eq. irank_image_file) write(*,*)                      &
      &      'num_pvr_ray_gl', num_pvr_ray_gl, num_pixel_xy
 !
@@ -78,11 +81,12 @@
 !
       num32 = num_pixel_xy
       call MPI_REDUCE(num_ray_start_lc, num_ray_start_gl, num32,        &
-     &    CALYPSO_GLOBAL_INT, MPI_SUM, irank_image_file,                &
+     &    CALYPSO_GLOBAL_INT, MPI_SUM, int(irank_image_file),           &
      &    CALYPSO_COMM, ierr_MPI)
 !
       call alloc_stencil_buffer_work(num_pixel_xy, stencil_wk)
-      call set_global_stencil_buffer(irank_image_file,                  &
+      call set_global_stencil_buffer                                    &
+     &   (irank_image_file, npe_img_composit,                           &
      &    num_pixel_xy, num_pvr_ray_gl, num_ray_start_gl, stencil_wk)
 !
       deallocate(num_ray_start_lc)
@@ -148,11 +152,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_global_stencil_buffer(irank_image_file,            &
+      subroutine set_global_stencil_buffer                              &
+     &         (irank_image_file, npe_img_composit,                     &
      &          num_pixel_xy, num_pvr_ray_gl, num_ray_start_gl,         &
      &          stencil_wk)
 !
-      integer, intent(in) :: irank_image_file
+      integer, intent(in) :: irank_image_file, npe_img_composit
       integer(kind = kint), intent(in) :: num_pixel_xy
       integer(kind = kint_gl), intent(in) :: num_pvr_ray_gl
       integer(kind = kint_gl), intent(in)                               &
@@ -182,13 +187,17 @@
           if(num_ray_start_gl(ipix) .gt. 0) then
             icou = icou + 1
             ip = int((istack_ray_start_gl(ipix) - 1)                    &
-     &              * nprocs / num_pvr_ray_gl + 1)
+     &              * npe_img_composit / num_pvr_ray_gl + 1)
             i_rank = int(mod(irank_image_file+ip,nprocs))
             stencil_wk%irank_4_composit(ipix) = i_rank
             stencil_wk%istack_recv_image(ip) = icou
             stencil_wk%irev_recv_image(ipix) = icou
             stencil_wk%item_recv_image(icou) = ipix
           end if
+        end do
+        do ip = npe_img_composit+1, nprocs
+          stencil_wk%istack_recv_image(ip)                              &
+     &                   = stencil_wk%istack_recv_image(ip-1)
         end do
         stencil_wk%ntot_recv_image                                      &
      &         = stencil_wk%istack_recv_image(nprocs)

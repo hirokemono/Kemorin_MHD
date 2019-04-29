@@ -27,6 +27,9 @@
 !!      subroutine blend_image_over_segments                            &
 !!     &         (ntot_overlap, npixel_img_local, ip_closer,            &
 !!     &          rgba_part, rgba_whole)
+!!      subroutine check_image_over_segments(id_file, iref,             &
+!!     &           ntot_overlap, npixel_img_local, istack_pixel,        &
+!!     &          num_pixel_xy, iflag_img_pe, rip_closer, gba_part)
 !!@endverbatim
 !
       module composite_pvr_images
@@ -279,23 +282,32 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_image_over_segments                              &
-     &         (id_file, ntot_overlap, npixel_img_local, ip_closer,     &
-     &          rgba_part, iref, iwrite)
+      subroutine check_image_over_segments(id_file, iref,               &
+     &           ntot_overlap, npixel_img_local, istack_pixel,          &
+     &           num_pixel_xy, iflag_img_pe, ip_closer, rgba_part)
 !
       use set_rgba_4_each_pixel
 !
-      integer(kind = kint), intent(in) :: id_file, iwrite, iref
+      integer(kind = kint), intent(in) :: id_file, iref
       integer(kind = kint), intent(in) :: ntot_overlap
       integer(kind = kint), intent(in) :: npixel_img_local
+      integer(kind = kint), intent(in) :: istack_pixel(0:nprocs)
+      integer(kind = kint), intent(in) :: num_pixel_xy
+      integer(kind = kint), intent(in) :: iflag_img_pe(num_pixel_xy)
 !
       integer(kind = kint), intent(in)                                  &
      &             :: ip_closer(ntot_overlap,npixel_img_local)
       real(kind = kreal), intent(in)                                    &
      &             :: rgba_part(4,ntot_overlap,npixel_img_local)
 !
-      integer(kind = kint) :: ip, ipix, inum
+      integer(kind = kint) :: ip, ipix, inum, itmp, iwrite
       real(kind = kreal) :: rgb_test(4)
+!
+!
+      if(iflag_img_pe(iref) .le. 0) return
+
+      iwrite = (iflag_img_pe(iref) - istack_pixel(my_rank))
+      if(iwrite .le. 0 .or. iwrite .gt. npixel_img_local) return
 !
       rgb_test(1:4) = 0.0d0
 !
@@ -307,14 +319,15 @@
 !
            if(ipix .eq. iwrite) then
 !
-              call composite_alpha_blending(rgba_part(1:4,ip,ipix),    &
+              call composite_alpha_blending(rgba_part(1:4,ip,ipix),     &
      &            rgb_test(1:4))
-             write(id_file,*) 'blend', iref, inum, ip, rgba_part(1:4,ip,ipix)
+             write(id_file,*) 'blend', iref, inum, ip,                  &
+     &                        rgba_part(1:4,ip,ipix)
            end if
         end do
       end do
 !$omp end parallel do
-      write(id_file,*) 'all', rgb_test
+      write(id_file,*) 'tested RGB', rgb_test
 !
       end subroutine check_image_over_segments
 !
