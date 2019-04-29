@@ -97,7 +97,8 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'collect_rendering_image'
-      call collect_rendering_image(pvr_start, pvr_stencil)
+      call collect_rendering_image(pvr_start,                           &
+     &    pvr_rgb%num_pixel_actual, pvr_rgb%rgba_real_gl, pvr_stencil)
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'copy_segmented_image'

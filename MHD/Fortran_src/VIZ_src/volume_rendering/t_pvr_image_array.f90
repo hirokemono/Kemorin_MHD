@@ -48,9 +48,12 @@
 !>        Number of MPI rank to composit image
         integer(kind = kint) :: npe_img_composit =  0
 !
-        integer(kind = kint) :: num_pixel_xy
-!>    Number of pixels in each direction
+!>        Number of pixels in each direction
         integer(kind = kint) :: num_pixels(2)
+!>        Number of pixels (same value in all processes)
+        integer(kind = kint) :: num_pixel_xy
+!>        Number of pixels in each process
+        integer(kind = kint) :: num_pixel_actual
 !
 !>    Global real image data
         real(kind = kreal), allocatable :: rgba_real_gl(:,:)
@@ -142,23 +145,19 @@
 !
 !
       if(my_rank .eq. pvr_rgb%irank_image_file) then
-        allocate(pvr_rgb%rgb_chara_gl(3,pvr_rgb%num_pixel_xy))
-        allocate(pvr_rgb%rgba_chara_gl(4,pvr_rgb%num_pixel_xy))
-!
-        allocate(pvr_rgb%rgba_left_gl(4,pvr_rgb%num_pixel_xy))
-        allocate(pvr_rgb%rgba_right_gl(4,pvr_rgb%num_pixel_xy))
-!
-        allocate(pvr_rgb%rgba_real_gl(4,pvr_rgb%num_pixel_xy))
-!
+        pvr_rgb%num_pixel_actual = pvr_rgb%num_pixel_xy
       else
-        allocate(pvr_rgb%rgb_chara_gl(3,1))
-        allocate(pvr_rgb%rgba_chara_gl(4,1))
-!
-        allocate(pvr_rgb%rgba_left_gl(4,1))
-        allocate(pvr_rgb%rgba_right_gl(4,1))
-!
-        allocate(pvr_rgb%rgba_real_gl(4,1))
+        pvr_rgb%num_pixel_actual = 1
       end if
+!
+      allocate(pvr_rgb%rgb_chara_gl(3,pvr_rgb%num_pixel_actual))
+      allocate(pvr_rgb%rgba_chara_gl(4,pvr_rgb%num_pixel_actual))
+!
+      allocate(pvr_rgb%rgba_left_gl(4,pvr_rgb%num_pixel_actual))
+      allocate(pvr_rgb%rgba_right_gl(4,pvr_rgb%num_pixel_actual))
+!
+      allocate(pvr_rgb%rgba_real_gl(4,pvr_rgb%num_pixel_actual))
+!
       pvr_rgb%rgba_real_gl =  0.0d0
       pvr_rgb%rgba_left_gl =  0.0d0
       pvr_rgb%rgba_right_gl = 0.0d0

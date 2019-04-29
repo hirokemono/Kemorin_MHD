@@ -36,7 +36,6 @@
         type(calypso_comm_table) :: img_composit_tbl
 !
         integer(kind = kint) :: num_pixel_recv
-        real(kind = kreal), allocatable :: rgba_gl(:,:)
         integer(kind = kint) :: npixel_recved
         real(kind = kreal), allocatable :: rgba_subdomain(:,:)
         integer(kind = kint) :: npixel_stacked
@@ -91,12 +90,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine collect_rendering_image(pvr_start, pvr_stencil)
+      subroutine collect_rendering_image(pvr_start,                     &
+     &          num_pixel_actual, rgba_real_gl, pvr_stencil)
 !
       use calypso_SR_type
 !
       type(pvr_ray_start_type), intent(in) :: pvr_start
+      integer(kind = kint), intent(in) :: num_pixel_actual
+!
       type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
+      real(kind = kreal), intent(inout)                                 &
+     &                    :: rgba_real_gl(4,num_pixel_actual)
 !
 !
       call reset_pvr_stencil_buffer(pvr_stencil)
@@ -109,9 +113,15 @@
      &    pvr_stencil%npixel_stacked, pvr_stencil%rgba_composit)
 !
 !
+      if(num_pixel_actual .gt. 0) then
+!$omp parallel workshare
+        rgba_real_gl(1:4,1:num_pixel_actual) = 0.0d0
+!$omp end parallel workshare
+      end if
+!
       call calypso_SR_type_N(0, ifour, pvr_stencil%img_output_tbl,      &
-     &    pvr_stencil%npixel_stacked, pvr_stencil%num_pixel_recv,       &
-     &    pvr_stencil%rgba_composit(1,1), pvr_stencil%rgba_gl(1,1))
+     &    pvr_stencil%npixel_stacked, num_pixel_actual,                 &
+     &    pvr_stencil%rgba_composit(1,1), rgba_real_gl(1,1))
 !
       end subroutine collect_rendering_image
 !
@@ -122,7 +132,6 @@
       type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
 !
 !
-      deallocate(pvr_stencil%rgba_gl)
       deallocate(pvr_stencil%rgba_subdomain)
       deallocate(pvr_stencil%rgba_composit)
 !
@@ -148,8 +157,6 @@
      &      = pvr_stencil%img_stack%npixel_4_composit
       allocate(pvr_stencil%rgba_composit(4,pvr_stencil%npixel_stacked))
 !
-      allocate(pvr_stencil%rgba_gl(4,pvr_stencil%num_pixel_recv))
-!
       end subroutine alloc_pvr_stencil_buffer
 !
 !  ---------------------------------------------------------------------
@@ -173,13 +180,6 @@
 !$omp end parallel workshare
       end if
 !
-      if(pvr_stencil%num_pixel_recv .gt. 0) then
-!$omp parallel workshare
-        pvr_stencil%rgba_gl(1:4,1:pvr_stencil%num_pixel_recv) = 0.0d0
-!$omp end parallel workshare
-      end if
-!
-!
       end subroutine reset_pvr_stencil_buffer
 !
 !  ---------------------------------------------------------------------
@@ -196,7 +196,7 @@
       use const_comm_tbl_img_composit
       use set_parallel_file_name
 !
-      integer, intent(in) :: irank_image_file
+      integer(kind = kint), intent(in) :: irank_image_file
       integer(kind = kint), intent(in) :: num_pixel_xy
       type(pvr_ray_start_type), intent(in) :: pvr_start
       type(stencil_buffer_work), intent(in)  :: stencil_wk
