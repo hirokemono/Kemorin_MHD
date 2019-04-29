@@ -279,4 +279,45 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine check_image_over_segments                              &
+     &         (id_file, ntot_overlap, npixel_img_local, ip_closer,     &
+     &          rgba_part, iref, iwrite)
+!
+      use set_rgba_4_each_pixel
+!
+      integer(kind = kint), intent(in) :: id_file, iwrite, iref
+      integer(kind = kint), intent(in) :: ntot_overlap
+      integer(kind = kint), intent(in) :: npixel_img_local
+!
+      integer(kind = kint), intent(in)                                  &
+     &             :: ip_closer(ntot_overlap,npixel_img_local)
+      real(kind = kreal), intent(in)                                    &
+     &             :: rgba_part(4,ntot_overlap,npixel_img_local)
+!
+      integer(kind = kint) :: ip, ipix, inum
+      real(kind = kreal) :: rgb_test(4)
+!
+      rgb_test(1:4) = 0.0d0
+!
+!$omp parallel do private(ipix,inum,ip)
+      do ipix = 1, npixel_img_local
+        do inum = ntot_overlap, 1, -1
+          ip = ip_closer(inum,ipix)
+          if(ip .le. 0) exit
+!
+           if(ipix .eq. iwrite) then
+!
+              call composite_alpha_blending(rgba_part(1:4,ip,ipix),    &
+     &            rgb_test(1:4))
+             write(id_file,*) 'blend', iref, inum, ip, rgba_part(1:4,ip,ipix)
+           end if
+        end do
+      end do
+!$omp end parallel do
+      write(id_file,*) 'all', rgb_test
+!
+      end subroutine check_image_over_segments
+!
+!  ---------------------------------------------------------------------
+!
       end module composite_pvr_images

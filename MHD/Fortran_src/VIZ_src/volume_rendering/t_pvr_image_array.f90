@@ -45,6 +45,8 @@
 !
 !>        MPI rank to putput each PVR image
         integer(kind = kint) :: irank_image_file = 0
+!>        Number of MPI rank to composit image
+        integer(kind = kint) :: npe_img_composit =  0
 !
         integer(kind = kint) :: num_pixel_xy
 !>    Number of pixels in each direction

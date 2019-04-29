@@ -106,7 +106,7 @@
       write(*,*) 'istack_pvr_images', istack_pvr_images
       do i_pvr = 1, num_pvr_images
         write(*,*) 'irank_image_file', pvr_rgb(i_pvr)%irank_image_file, &
-     &                                 pvr_rgb(i_pvr)%irank_stack_end,  &
+     &                                 pvr_rgb(i_pvr)%npe_img_composit, &
      &                                 trim(pvr_rgb(i_pvr)%pvr_prefix)
       end do
 !
@@ -163,20 +163,10 @@
       real(kind = kreal) :: address
 !
 !
-      address = dble((num_pvr_images-1) * num_pe)                       &
-     &         / dble(num_pvr_images)
-      pvr_rgb(num_pvr_images)%irank_image_file = aint(address)
-      pvr_rgb(num_pvr_images)%irank_stack_end = num_pe - 1
-      do i_pvr = num_pvr_images-1, 1, -1
+      do i_pvr = num_pvr_images, 1, -1
         address = dble((i_pvr-1) * num_pe) / dble(num_pvr_images)
         pvr_rgb(i_pvr)%irank_image_file = aint(address)
-        pvr_rgb(i_pvr)%irank_stack_end                                  &
-     &                    = pvr_rgb(i_pvr+1)%irank_image_file - 1
-        if(pvr_rgb(i_pvr)%irank_stack_end                               &
-     &     .lt. pvr_rgb(i_pvr)%irank_image_file) then
-          pvr_rgb(i_pvr)%irank_stack_end                                &
-     &                    = pvr_rgb(i_pvr)%irank_image_file
-        end if
+        pvr_rgb(i_pvr)%npe_img_composit = num_pe
       end do
 !
       end subroutine set_rank_to_write_images

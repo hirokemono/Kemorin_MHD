@@ -78,7 +78,7 @@
       call rendering_image_4_lic(istep_pvr, node, ele, surf, lic_p,     &
      &    pvr_param%color, pvr_param%colorbar, pvr_param%field,         &
      &    pvr_param%view, pvr_proj%screen, pvr_proj%start_pt,           &
-     &    pvr_proj%image, pvr_rgb)
+     &    pvr_proj%stencil, pvr_proj%image, pvr_rgb)
 !
       end subroutine lic_rendering_with_fixed_view
 !
@@ -115,7 +115,8 @@
      &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
      &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
       call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%stencil)
+     &   (pvr_rgb%irank_image_file, pvr_rgb%npe_img_composit,           &
+     &    pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%stencil)
       call set_subimages                                                &
      &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%image)
 !
@@ -123,7 +124,7 @@
       call rendering_image_4_lic(istep_pvr, node, ele, surf, lic_p,     &
      &    pvr_param%color, pvr_param%colorbar, pvr_param%field,         &
      &    pvr_param%view, pvr_proj%screen, pvr_proj%start_pt,           &
-     &    pvr_proj%image, pvr_rgb)
+     &    pvr_proj%stencil, pvr_proj%image, pvr_rgb)
 !
       end subroutine rendering_lic_at_once
 !

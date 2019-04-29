@@ -10,7 +10,7 @@
 !!      subroutine rendering_image_4_lic                                &
 !!     &         (istep_pvr,  node, ele, surf, lic_p, color_param,      &
 !!     &          cbar_param, field_pvr, view_param, pvr_screen,        &
-!!     &          pvr_start, pvr_img, pvr_rgb)
+!!     &          pvr_start, pvr_stencil, pvr_img, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -20,6 +20,8 @@
 !!        type(pvr_view_parameter), intent(in) :: view_param
 !!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
+!!        type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
+!!        type(pvr_segmented_img), intent(inout) :: pvr_img
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
@@ -43,7 +45,7 @@
       subroutine rendering_image_4_lic                                  &
      &         (istep_pvr,  node, ele, surf, lic_p, color_param,        &
      &          cbar_param, field_pvr, view_param, pvr_screen,          &
-     &          pvr_start, pvr_img, pvr_rgb)
+     &          pvr_start, pvr_stencil, pvr_img, pvr_rgb)
 !
       use m_geometry_constants
       use m_elapsed_labels_4_VIZ
@@ -54,6 +56,7 @@
       use t_geometries_in_pvr_screen
       use t_pvr_image_array
       use t_pvr_ray_startpoints
+      use t_pvr_stencil_buffer
       use ray_trace_LIC_image
       use composite_pvr_images
       use draw_pvr_colorbar
@@ -75,6 +78,7 @@
       type(pvr_projected_position), intent(in) :: pvr_screen
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
+      type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
       type(pvr_segmented_img), intent(inout) :: pvr_img
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
@@ -90,6 +94,11 @@
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
      &    pvr_start%xx_pvr_ray_start, pvr_start%rgba_ray)
+!
+!
+      if(iflag_debug .gt. 0) write(*,*) 'collect_rendering_image'
+      call collect_rendering_image(pvr_start, pvr_stencil)
+!
 !
       if(iflag_debug .gt. 0) write(*,*) 'copy_segmented_image'
       call copy_segmented_image(pvr_start%num_pvr_ray,                  &

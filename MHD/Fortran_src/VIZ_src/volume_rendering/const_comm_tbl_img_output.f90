@@ -40,25 +40,30 @@
       type(calypso_comm_table), intent(inout) :: img_output_tbl
 !
 !
+!      write(*,*) 'count_export_pe_pvr_output'
       call count_export_pe_pvr_output                                   &
      &   (npixel_4_composit, img_output_tbl%nrank_export)
 !
       call alloc_calypso_export_num(img_output_tbl)
+!      write(*,*) 'count_export_item_pvr_output'
       call count_export_item_pvr_output                                 &
      &   (irank_image_file, npixel_4_composit,                          &
      &    img_output_tbl%nrank_export, img_output_tbl%ntot_export,      &
      &    img_output_tbl%irank_export, img_output_tbl%istack_export)
 !
       call alloc_calypso_export_item(img_output_tbl)
+!      write(*,*) 'set_export_item_pvr_output'
       call set_export_item_pvr_output                                   &
      &   (img_output_tbl%ntot_export, img_output_tbl%item_export)
 !
 !
+!      write(*,*) 'count_import_pe_pvr_output'
       call count_import_pe_pvr_output                                   &
      &   (irank_image_file, stencil_wk%istack_recv_image,               &
      &    img_output_tbl%nrank_import)
 !
       call alloc_calypso_import_num(img_output_tbl)
+!      write(*,*) 'count_import_item_pvr_output'
       call count_import_item_pvr_output                                 &
      &   (irank_image_file, stencil_wk%istack_recv_image, num_pixel_xy, &
      &    stencil_wk%irank_4_composit, stencil_wk%item_recv_image,      &
@@ -67,6 +72,7 @@
      &    img_output_tbl%iflag_self_copy, num_pixel_recv)
 !
       call alloc_calypso_import_item(num_pixel_recv, img_output_tbl)
+!      write(*,*) 'set_import_item_pvr_output'
       call set_import_item_pvr_output                                   &
      &    (num_pixel_xy, stencil_wk%item_recv_image,                    &
      &     img_output_tbl%ntot_import, num_pixel_recv,                  &
