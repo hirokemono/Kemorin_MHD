@@ -11,8 +11,6 @@
 !!      subroutine alloc_pvr_image_comm_status(PVR_COMM)
 !!      subroutine dealloc_pvr_image_comm_status(PVR_COMM)
 !!
-!!      subroutine count_pixel_with_image(num_pixel_xy, npixel_img,     &
-!!     &          iflag_img_pe, iflag_mapped)
 !!      subroutine share_num_images_to_compose                          &
 !!     &         (num_overlap, istack_overlap, ntot_overlap)
 !!
@@ -87,34 +85,6 @@
       end subroutine dealloc_pvr_image_comm_status
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine count_pixel_with_image(num_pixel_xy, npixel_img,       &
-     &          iflag_img_pe, iflag_mapped)
-!
-      use cal_minmax_and_stacks
-      use transfer_to_long_integers
-!
-      integer(kind = kint), intent(in) :: num_pixel_xy
-!
-      integer(kind = kint), intent(inout) :: npixel_img
-      integer(kind = kint), intent(inout) :: iflag_img_pe(num_pixel_xy)
-      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
-!
-      integer(kind = kint) :: ipix
-!
-!
-      call calypso_mpi_allreduce_int                                    &
-     &   (iflag_img_pe, iflag_mapped, cast_long(num_pixel_xy), MPI_MAX)
-!
-      npixel_img = 0
-      do ipix = 1, num_pixel_xy
-        iflag_img_pe(ipix) = iflag_mapped(ipix)
-        npixel_img = npixel_img + iflag_img_pe(ipix)
-      end do
-!
-      end subroutine count_pixel_with_image
-!
 !  ---------------------------------------------------------------------
 !
       subroutine share_num_images_to_compose                            &

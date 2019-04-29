@@ -57,7 +57,6 @@
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
-      use composite_pvr_images
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr

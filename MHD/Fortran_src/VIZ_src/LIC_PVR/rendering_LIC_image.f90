@@ -57,7 +57,6 @@
      &         (istep_pvr, node, ele, surf, lic_p, pvr_param,           &
      &          pvr_proj, pvr_rgb)
 !
-      use composite_pvr_images
       use write_LIC_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
@@ -78,7 +77,7 @@
       call rendering_image_4_lic(istep_pvr, node, ele, surf, lic_p,     &
      &    pvr_param%color, pvr_param%colorbar, pvr_param%field,         &
      &    pvr_param%view, pvr_proj%screen, pvr_proj%start_pt,           &
-     &    pvr_proj%stencil, pvr_proj%image, pvr_rgb)
+     &    pvr_proj%stencil, pvr_rgb)
 !
       end subroutine lic_rendering_with_fixed_view
 !
@@ -90,7 +89,6 @@
      &          pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
-      use composite_pvr_images
       use write_LIC_image
       use t_pvr_stencil_buffer
 !
@@ -106,7 +104,6 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      call dealloc_pvr_local_subimage(pvr_proj%image)
       call deallocate_pvr_ray_start(pvr_proj%start_pt)
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
 !
@@ -117,14 +114,12 @@
       call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb%irank_image_file, pvr_rgb%npe_img_composit,           &
      &    pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%stencil)
-      call set_subimages                                                &
-     &   (pvr_rgb%num_pixel_xy, pvr_proj%start_pt, pvr_proj%image)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, node, ele, surf, lic_p,     &
      &    pvr_param%color, pvr_param%colorbar, pvr_param%field,         &
      &    pvr_param%view, pvr_proj%screen, pvr_proj%start_pt,           &
-     &    pvr_proj%stencil, pvr_proj%image, pvr_rgb)
+     &    pvr_proj%stencil, pvr_rgb)
 !
       end subroutine rendering_lic_at_once
 !

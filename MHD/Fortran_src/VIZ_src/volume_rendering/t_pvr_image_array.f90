@@ -9,13 +9,8 @@
 !!@verbatim
 !!      subroutine alloc_pvr_image_array_type(n_pvr_pixel, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
-!!      subroutine alloc_pvr_subimage_flags(num_pixel_xy, pvr_img)
-!!      subroutine alloc_pvr_local_subimage(pvr_img)
-!!      subroutine alloc_pvr_subimage_array(pvr_img)
 !!
 !!      subroutine dealloc_pvr_image_array_type(pvr_rgb)
-!!      subroutine dealloc_pvr_local_subimage(pvr_img)
-!!        type(pvr_segmented_img), intent(inout) :: pvr_img
 !!
 !!      subroutine store_left_eye_image(pvr_rgb)
 !!      subroutine add_left_eye_image(pvr_rgb)
@@ -27,7 +22,6 @@
 !
       use calypso_mpi
       use m_constants
-      use PVR_image_transfer
 !
       implicit  none
 !
@@ -74,58 +68,6 @@
         real(kind = kreal), allocatable :: rgba_right_gl(:,:)
       end type pvr_image_type
 !
-!>  Structure for PVR images
-      type pvr_segmented_img
-        type(PVR_MPI_FLAGS) :: COMM
-!
-!>    Number of pixels
-        integer(kind = kint) :: num_pixel_xy
-!>    Order of image data with respect to distance
-        integer(kind = kint), allocatable :: iflag_img_pe(:)
-!>    Interger flag if image is exist
-        integer(kind = kint), allocatable :: iflag_mapped(:)
-!
-!
-!>    Number of overlapped domain (requered number of image)
-        integer(kind = kint) :: num_overlap
-!>    Number of overlapped domain (requered number of image)
-        integer(kind = kint) :: ntot_overlap
-!>    Number of overlapped domain (requered number of image)
-        integer(kind = kint), allocatable :: istack_overlap(:)
-!
-!
-!>    Order of image data with respect to distance
-        integer(kind = kint), allocatable :: ip_closer(:,:)
-!>    Segmented real image data to be blended
-        real(kind = kreal), allocatable :: depth_part(:,:)
-!>    Segmented real image data to be blended
-        real(kind = kreal), allocatable :: rgba_part(:,:,:)
-!>    Segmented real image data to be blended
-        real(kind = kreal), allocatable :: rgba_whole(:,:)
-!
-!>    Segmented real image data to be blended
-        real(kind = kreal), allocatable :: depth_recv(:)
-!>    Segmented real image data to be blended
-        real(kind = kreal), allocatable :: rgba_recv(:,:)
-!
-!>    Number of pixels with image
-        integer(kind = kint) :: npixel_img
-!>    Number of distoributed pixels with image
-        integer(kind = kint) :: npixel_img_local
-!>    Stack of distoributed pixels with image
-        integer(kind = kint), allocatable :: istack_pixel(:)
-!>    list of position of pixel for reduced data
-        integer(kind = kint), allocatable :: ipixel_small(:)
-!>    Order of image data with respect to distance
-        integer(kind = kint), allocatable :: iflag_img_lc(:,:)
-!>    Local depth of image excluding overlap
-        real(kind = kreal), allocatable :: depth_lc(:,:)
-!>    Local real image data excluding overlap
-        real(kind = kreal), allocatable :: rgba_lc(:,:,:)
-!>    Segmented real image data to be blended
-        real(kind = kreal), allocatable :: rgba_rank0(:,:)
-      end type pvr_segmented_img
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -169,86 +111,6 @@
       end subroutine alloc_pvr_image_array_type
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine alloc_pvr_subimage_flags(num_pixel_xy, pvr_img)
-!
-      integer(kind = kint), intent(in) :: num_pixel_xy
-      type(pvr_segmented_img), intent(inout) :: pvr_img
-!
-!
-      call alloc_pvr_image_comm_status(pvr_img%COMM)
-!
-      pvr_img%num_pixel_xy = num_pixel_xy
-      allocate(pvr_img%iflag_img_pe(pvr_img%num_pixel_xy))
-      allocate(pvr_img%iflag_mapped(pvr_img%num_pixel_xy))
-      pvr_img%iflag_img_pe = 0
-      pvr_img%iflag_mapped = 0
-!
-      end subroutine alloc_pvr_subimage_flags
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_pvr_local_subimage(pvr_img)
-!
-      type(pvr_segmented_img), intent(inout) :: pvr_img
-!
-      integer(kind = kint) :: npix, nolp
-!
-!
-      allocate(pvr_img%istack_pixel(0:nprocs))
-      allocate(pvr_img%istack_overlap(0:nprocs))
-      pvr_img%istack_pixel =   0
-      pvr_img%istack_overlap = 0
-!
-      allocate(pvr_img%ipixel_small(pvr_img%npixel_img))
-      pvr_img%ipixel_small = 0
-!
-      npix = pvr_img%npixel_img
-      nolp = pvr_img%num_overlap
-!
-      allocate(pvr_img%iflag_img_lc(nolp,npix))
-      allocate(pvr_img%depth_lc(nolp,npix))
-      allocate(pvr_img%rgba_lc(4,nolp,npix))
-      allocate(pvr_img%rgba_rank0(4,npix))
-!
-      pvr_img%iflag_img_lc = 0
-      pvr_img%rgba_lc =   0.0d0
-      pvr_img%depth_lc =  0.0d0
-      pvr_img%rgba_rank0 = 0.0d0
-!
-      end subroutine alloc_pvr_local_subimage
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_pvr_subimage_array(pvr_img)
-!
-      type(pvr_segmented_img), intent(inout) :: pvr_img
-!
-      integer(kind = kint) :: npix, nolp
-!
-!
-      nolp = pvr_img%ntot_overlap
-      npix = pvr_img%npixel_img_local
-!
-      allocate(pvr_img%ip_closer(nolp,npix))
-!
-      allocate(pvr_img%depth_part(nolp,npix))
-      allocate(pvr_img%depth_recv(nolp*npix))
-!
-      allocate(pvr_img%rgba_recv(4,nolp*npix))
-      allocate(pvr_img%rgba_part(4,nolp,npix))
-      allocate(pvr_img%rgba_whole(4,npix))
-!
-      pvr_img%ip_closer =  -1
-      pvr_img%depth_part = 0.0d0
-      pvr_img%rgba_part =  0.0d0
-      pvr_img%rgba_whole =  0.0d0
-!
-      pvr_img%depth_recv =  0.0d0
-      pvr_img%rgba_recv =   0.0d0
-!
-      end subroutine alloc_pvr_subimage_array
-!
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_pvr_image_array_type(pvr_rgb)
@@ -263,26 +125,6 @@
       deallocate(pvr_rgb%rgba_real_lc, pvr_rgb%rgb_chara_lc)
 !
       end subroutine dealloc_pvr_image_array_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_pvr_local_subimage(pvr_img)
-!
-      type(pvr_segmented_img), intent(inout) :: pvr_img
-!
-!
-      call dealloc_pvr_image_comm_status(pvr_img%COMM)
-!
-      deallocate(pvr_img%depth_part, pvr_img%ip_closer)
-      deallocate(pvr_img%depth_recv, pvr_img%rgba_recv)
-      deallocate(pvr_img%rgba_part, pvr_img%rgba_whole)
-      deallocate(pvr_img%depth_lc, pvr_img%rgba_lc, pvr_img%rgba_rank0)
-      deallocate(pvr_img%iflag_img_lc)
-      deallocate(pvr_img%istack_overlap)
-      deallocate(pvr_img%istack_pixel, pvr_img%ipixel_small)
-      deallocate(pvr_img%iflag_mapped, pvr_img%iflag_img_pe)
-!
-      end subroutine dealloc_pvr_local_subimage
 !
 !  ---------------------------------------------------------------------
 !

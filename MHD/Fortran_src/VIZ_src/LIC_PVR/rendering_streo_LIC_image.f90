@@ -59,7 +59,6 @@
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
-      use composite_pvr_images
       use rendering_LIC_image
       use write_LIC_image
       use write_PVR_image

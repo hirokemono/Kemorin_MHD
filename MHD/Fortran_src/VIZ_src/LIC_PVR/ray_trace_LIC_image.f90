@@ -132,46 +132,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine blend_overlapped_area(num_pvr_ray,                     &
-     &         id_pixel_start, xx_pvr_ray_start, rgba_ray,              &
-     &         num_pixel_xy, iflag_mapped, rgba_lc, depth_lc)
-!
-      integer(kind = kint), intent(in) :: num_pvr_ray
-      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
-      real(kind = kreal), intent(in)                                    &
-     &                    ::  xx_pvr_ray_start(3,num_pvr_ray)
-      real(kind = kreal), intent(in)                                    &
-     &                    ::  rgba_ray(4,num_pvr_ray)
-!
-      integer(kind = kint), intent(in) :: num_pixel_xy
-      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
-      real(kind = kreal), intent(inout) :: rgba_lc(4,num_pixel_xy)
-      real(kind = kreal), intent(inout) :: depth_lc(num_pixel_xy)
-!
-      integer(kind = kint) :: inum, id_pixel
-!
-!
-      iflag_mapped = 0
-      rgba_lc =      0.0d0
-      depth_lc =     0.0d0
-      do inum = 1, num_pvr_ray
-        id_pixel = id_pixel_start(inum)
-        call composite_lic_alpha_blending                               &
-     &     (rgba_ray(1,inum), rgba_lc(1,id_pixel) )
-!
-        if(iflag_mapped(id_pixel) .eq. 0) then
-          depth_lc(id_pixel)  = xx_pvr_ray_start(3,inum)
-          iflag_mapped(id_pixel) = 1
-        else
-          depth_lc(id_pixel)                                            &
-     &      = min(depth_lc(id_pixel),xx_pvr_ray_start(3,inum))
-        end if
-      end do
-!
-      end subroutine blend_overlapped_area
-!
-!  ---------------------------------------------------------------------
-!
       subroutine lic_ray_trace_each_pixel                               &
      &       (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
      &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &

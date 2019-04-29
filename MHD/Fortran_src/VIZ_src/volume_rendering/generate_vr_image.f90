@@ -11,7 +11,6 @@
 !!     &        (node, ele, surf, surf_grp, surf_grp_v,                 &
 !!     &         field_pvr, view_param, projection_mat, pixel_xy,       &
 !!     &         pvr_bound, pvr_screen, pvr_start)
-!!      subroutine set_subimages(num_pixel_xy, pvr_start, pvr_img)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -24,7 +23,6 @@
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
-!!        type(pvr_segmented_img), intent(inout) :: pvr_img
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
@@ -195,64 +193,6 @@
 !     &      pvr_start%id_pixel_check)
 !
       end subroutine s_set_pvr_ray_start_point
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_subimages(num_pixel_xy, pvr_start, pvr_img)
-!
-      use ray_trace_4_each_image
-      use composite_pvr_images
-      use PVR_image_transfer
-!
-      integer(kind = kint), intent(in) :: num_pixel_xy
-      type(pvr_ray_start_type), intent(inout) :: pvr_start
-      type(pvr_segmented_img), intent(inout) :: pvr_img
-!
-!
-      call alloc_pvr_subimage_flags(num_pixel_xy, pvr_img)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'count_overlap_in_each_domain'
-      call count_overlap_in_each_domain(pvr_start%num_pvr_ray,          &
-     &    pvr_start%id_pixel_start,  pvr_img%num_pixel_xy,              &
-     &    pvr_img%iflag_img_pe, pvr_img%iflag_mapped,                   &
-     &    pvr_img%num_overlap)
-!
-      call count_pixel_with_image                                       &
-     &   (pvr_img%num_pixel_xy, pvr_img%npixel_img,                     &
-     &    pvr_img%iflag_img_pe, pvr_img%iflag_mapped)
-!
-      call alloc_pvr_local_subimage(pvr_img)
-!
-      call share_num_images_to_compose(pvr_img%num_overlap,             &
-     &    pvr_img%istack_overlap, pvr_img%ntot_overlap)
-!
-      call count_pixel_for_composit(pvr_img%num_pixel_xy,               &
-     &    pvr_img%npixel_img, pvr_img%npixel_img_local,                 &
-     &    pvr_img%istack_pixel, pvr_img%ipixel_small,                   &
-     &    pvr_img%iflag_img_pe)
-!
-      call alloc_pvr_subimage_array(pvr_img)
-!
-      call cal_image_pixel_depth(pvr_start%num_pvr_ray,                 &
-     &    pvr_start%id_pixel_start, pvr_start%xx_pvr_ray_start,         &
-     &    pvr_img%num_overlap, pvr_img%num_pixel_xy,                    &
-     &    pvr_img%npixel_img, pvr_img%iflag_img_pe,                     &
-     &    pvr_img%iflag_mapped, pvr_img%iflag_img_lc, pvr_img%depth_lc)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'distribute_pixel_depth'
-      call distribute_pixel_depth                                       &
-     &   (pvr_img%num_overlap, pvr_img%istack_overlap,                  &
-     &    pvr_img%ntot_overlap, pvr_img%npixel_img,                     &
-     &    pvr_img%istack_pixel, pvr_img%npixel_img_local,               &
-     &    pvr_img%depth_lc, pvr_img%depth_recv, pvr_img%depth_part,     &
-     &    pvr_img%COMM)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'sort_subimage_pixel_depth'
-      call sort_subimage_pixel_depth                                    &
-     &   (pvr_img%ntot_overlap, pvr_img%npixel_img_local,               &
-     &    pvr_img%depth_part, pvr_img%ip_closer)
-!
-      end subroutine set_subimages
 !
 !  ---------------------------------------------------------------------
 !
