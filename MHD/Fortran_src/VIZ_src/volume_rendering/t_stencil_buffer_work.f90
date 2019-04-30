@@ -209,6 +209,8 @@
             ip = int((istack_ray_start_gl(ipix) - 1)                    &
      &              * npe_img_composit / num_pvr_ray_gl + 1)
             i_rank = int(mod(irank_image_file+ip,nprocs))
+            if(ip .gt. nprocs) write(*,*) 'aho ', ipix, nprocs
+            if(i_rank .gt. nprocs-1) write(*,*) 'aho ', ipix, i_rank
             stencil_wk%irank_4_composit(ipix) = i_rank
             stencil_wk%istack_recv_image(ip) = icou
             stencil_wk%irev_recv_image(ipix) = icou
@@ -218,15 +220,17 @@
 !
         write(*,*) 'npe_img_composit+1', npe_img_composit, nprocs, &
      &            size(stencil_wk%istack_recv_image)
-        if(npe_img_composit .lt. nprocs) then
-          do ip = npe_img_composit+1, nprocs
-            stencil_wk%istack_recv_image(ip)                            &
+        do ip = npe_img_composit+1, nprocs
+          stencil_wk%istack_recv_image(ip)                              &
      &                   = stencil_wk%istack_recv_image(ip-1)
-          end do
-        end if
+        end do
+        write(*,*) 'stencil_wk%istack_recv_image(nprocs)', &
+     &           stencil_wk%istack_recv_image(nprocs)
         stencil_wk%ntot_recv_image                                      &
      &         = stencil_wk%istack_recv_image(nprocs)
 !
+        write(*,*) 'stencil_wk%ntot_recv_image', &
+     &           stencil_wk%ntot_recv_image
 !        write(50+my_rank,*) 'ipix, stencil_wk%irank_4_composit'
 !        do ipix = 1, num_pixel_xy
 !          write(50+my_rank,*) ipix, stencil_wk%irank_4_composit(ipix)
