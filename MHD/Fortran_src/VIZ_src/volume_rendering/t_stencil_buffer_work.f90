@@ -191,6 +191,7 @@
 !$omp end parallel workshare
 
         istack_ray_start_gl(0) = 0
+        stencil_wk%istack_recv_image(0) = 0
         icou = 0
         do ipix = 1, num_pixel_xy
           istack_ray_start_gl(ipix) = istack_ray_start_gl(ipix-1)       &
