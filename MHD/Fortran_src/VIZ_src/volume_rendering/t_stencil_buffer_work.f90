@@ -216,7 +216,8 @@
           end if
         end do
 !
-        write(*,*) 'npe_img_composit+1'
+        write(*,*) 'npe_img_composit+1', npe_img_composit, nprocs, &
+     &            size(stencil_wk%istack_recv_image)
         do ip = npe_img_composit+1, nprocs
           stencil_wk%istack_recv_image(ip)                              &
      &                   = stencil_wk%istack_recv_image(ip-1)
