@@ -71,7 +71,16 @@
 !
 !
       call calypso_mpi_barrier
+      write(*,*) 'istack_recv_image', stencil_wk%istack_recv_image
+      call calypso_mpi_barrier
+      write(*,*) 'item_recv_image', size(stencil_wk%item_recv_image)
+      call calypso_mpi_barrier
+      write(*,*) 'irank_4_composit', size(stencil_wk%irank_4_composit)
+      call calypso_mpi_barrier
+      write(*,*) 'npixel_4_composit', size(img_stack%npixel_4_composit)
+      call calypso_mpi_barrier
       write(*,*) 'count_parallel_stencil_buffer'
+      call calypso_mpi_barrier
       call count_parallel_stencil_buffer                                &
      &   (stencil_wk, img_stack%npixel_4_composit)
 !

@@ -74,13 +74,9 @@
       call MPI_REDUCE(num64, num_pvr_ray_gl, 1, CALYPSO_GLOBAL_INT,     &
      &    MPI_SUM, int(irank_image_file), CALYPSO_COMM, ierr_MPI)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'count_local_ray_4_each_pixel'
       call count_local_ray_4_each_pixel(num_pixel_xy,                   &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
      &    num_ray_start_lc, max_ray_start_lc)
-      call calypso_mpi_barrier
-      write(*,*) 'MPI_REDUCE num_ray_start_lc'
 !
       num32 = num_pixel_xy
       call MPI_REDUCE(num_ray_start_lc, num_ray_start_gl, num32,        &
@@ -90,8 +86,6 @@
      &    CALYPSO_GLOBAL_INT, MPI_SUM, int(irank_image_file),           &
      &    CALYPSO_COMM, ierr_MPI)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'set_global_stencil_buffer'
       call alloc_stencil_buffer_work(num_pixel_xy, stencil_wk)
       call set_global_stencil_buffer                                    &
      &   (irank_image_file, npe_img_composit,                           &
