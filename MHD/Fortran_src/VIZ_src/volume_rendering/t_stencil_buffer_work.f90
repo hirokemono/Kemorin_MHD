@@ -192,12 +192,14 @@
       if(my_rank .eq. irank_image_file) then
         allocate(istack_ray_start_gl(num_pixel_xy))
 !
+        write(*,*) 'irank_4_composit'
 !$omp parallel workshare
         stencil_wk%irank_4_composit(1:num_pixel_xy) = -1
 !$omp end parallel workshare
 
         istack_ray_start_gl(0) = 0
         icou = 0
+        write(*,*) 'istack_ray_start_gl'
         do ipix = 1, num_pixel_xy
           istack_ray_start_gl(ipix) = istack_ray_start_gl(ipix-1)       &
      &                               + num_ray_start_gl(ipix)
@@ -213,6 +215,8 @@
             stencil_wk%item_recv_image(icou) = ipix
           end if
         end do
+!
+        write(*,*) 'npe_img_composit+1'
         do ip = npe_img_composit+1, nprocs
           stencil_wk%istack_recv_image(ip)                              &
      &                   = stencil_wk%istack_recv_image(ip-1)
@@ -228,6 +232,8 @@
         deallocate(istack_ray_start_gl)
       end if
 !
+      call calypso_mpi_barrier
+      write(*,*) 'mpi_Bcast  istack_recv_image'
       call mpi_Bcast(stencil_wk%istack_recv_image, (nprocs+1),          &
      &    CALYPSO_INTEGER, irank_image_file, CALYPSO_COMM, ierr_MPI)
 !
