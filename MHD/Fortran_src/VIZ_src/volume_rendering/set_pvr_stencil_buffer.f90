@@ -77,7 +77,7 @@
       call calypso_mpi_barrier
       write(*,*) 'irank_4_composit', size(stencil_wk%irank_4_composit)
       call calypso_mpi_barrier
-      write(*,*) 'npixel_4_composit', size(img_stack%npixel_4_composit)
+      write(*,*) 'npixel_4_composit', img_stack%npixel_4_composit
       call calypso_mpi_barrier
       write(*,*) 'count_parallel_stencil_buffer'
       call calypso_mpi_barrier
