@@ -6,12 +6,12 @@ Settings for Makefiles
 # -------------------------------------------------------------------------------
 #
 ./configure --prefix=/Users/matsui/local \
-CFLAGS='-O4 -Wall -g' FCFLAGS='-O4 -Wall -g -march=westmere  -ffpe-trap=invalid,underflow,denormal -ffpe-summary=invalid,underflow,denormal' \
-F77=gfortran-mp-7 FC=gfortran-mp-7 CC=gcc-mp-7 CXX=g++-mp-7 \
+CFLAGS='-O3 -Wall -g' FCFLAGS='-O3 -Wall -g -ffpe-trap=invalid,underflow,denormal -ffpe-summary=invalid,underflow,denormal' \
+F77=gfortran-mp-8 FC=gfortran-mp-8 CC=gcc-mp-8 CXX=g++-mp-8 \
 RANLIB='ranlib -c' --enable-cocoa --with-blas=yes --enable-fftw3 \
 --enable-gl --enable-glui --enable-gtk --enable-libpng \
 --with-zlib=/opt/local --with-hdf5=/opt/local/bin/h5pcc \
---with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/Library/Frameworks \
+--with-pgplot=/Users/matsui/local --with-aquaterm=/Library/Frameworks \
 PKG_CONFIG_PATH=/usr/lib/pkgconfig:/opt/local/lib/pkgconfig
 #
 # -------------------------------------------------------------------------------
