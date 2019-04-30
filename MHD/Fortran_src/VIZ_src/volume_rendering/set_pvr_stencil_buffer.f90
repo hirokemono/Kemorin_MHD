@@ -165,6 +165,10 @@
       do ip = 1, nprocs
         ist = stencil_wk%istack_recv_image(ip-1)
         ipix = stencil_wk%item_recv_image(ist+1)
+        write(*,*) 'stencil_wk%irank_4_composit', &
+     &            ip, ist, ipix, size(stencil_wk%item_recv_image), &
+     &            stencil_wk%irank_4_composit(ipix),  &
+     &            size(stencil_wk%irank_4_composit(ipix))
         if(stencil_wk%irank_4_composit(ipix) .eq. my_rank) then
           npixel_4_composit = stencil_wk%istack_recv_image(ip)          &
      &                       - stencil_wk%istack_recv_image(ip-1)
