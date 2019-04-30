@@ -190,7 +190,7 @@
 !
 !
       if(my_rank .eq. irank_image_file) then
-        allocate(istack_ray_start_gl(num_pixel_xy))
+        allocate(istack_ray_start_gl(0:num_pixel_xy))
 !
         write(*,*) 'irank_4_composit'
 !$omp parallel workshare
