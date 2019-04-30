@@ -218,10 +218,12 @@
 !
         write(*,*) 'npe_img_composit+1', npe_img_composit, nprocs, &
      &            size(stencil_wk%istack_recv_image)
-        do ip = npe_img_composit+1, nprocs
-          stencil_wk%istack_recv_image(ip)                              &
+        if(npe_img_composit .lt. nprocs) then
+          do ip = npe_img_composit+1, nprocs
+            stencil_wk%istack_recv_image(ip)                            &
      &                   = stencil_wk%istack_recv_image(ip-1)
-        end do
+          end do
+        end if
         stencil_wk%ntot_recv_image                                      &
      &         = stencil_wk%istack_recv_image(nprocs)
 !
