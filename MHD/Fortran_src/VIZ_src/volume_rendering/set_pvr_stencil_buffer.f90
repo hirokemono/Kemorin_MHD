@@ -70,30 +70,18 @@
       character(len=kchara) :: fname_tmp, file_name
 !
 !
-      call calypso_mpi_barrier
-      write(*,*) 'istack_recv_image', stencil_wk%istack_recv_image
-      call calypso_mpi_barrier
-      write(*,*) 'item_recv_image', size(stencil_wk%item_recv_image)
-      call calypso_mpi_barrier
-      write(*,*) 'irank_4_composit', size(stencil_wk%irank_4_composit)
-      call calypso_mpi_barrier
-      write(*,*) 'npixel_4_composit', img_stack%npixel_4_composit
-      call calypso_mpi_barrier
-      write(*,*) 'count_parallel_stencil_buffer'
-      call calypso_mpi_barrier
+!      write(*,*) 'count_parallel_stencil_buffer'
       call count_parallel_stencil_buffer                                &
      &   (stencil_wk, img_stack%npixel_4_composit)
 !
 !
-      call calypso_mpi_barrier
-      write(*,*) 's_const_comm_tbl_img_output'
+!      write(*,*) 's_const_comm_tbl_img_output'
       call s_const_comm_tbl_img_output                                  &
      &   (stencil_wk, irank_image_file, num_pixel_xy,                   &
      &    img_stack%npixel_4_composit, num_pixel_recv, img_output_tbl)
 !
 !
-      call calypso_mpi_barrier
-      write(*,*) 'set_global_pixel_4_composit'
+!      write(*,*) 'set_global_pixel_4_composit'
       call alloc_pvr_ipixel_4_composit(num_pixel_xy, img_stack)
       call set_global_pixel_4_composit                                  &
      &   (stencil_wk, img_stack%npixel_4_composit, num_pixel_xy,        &
@@ -101,8 +89,7 @@
 !
 !
 !
-      call calypso_mpi_barrier
-      write(*,*) 's_const_comm_tbl_img_composit'
+!      write(*,*) 's_const_comm_tbl_img_composit'
       call s_const_comm_tbl_img_composit                                &
      &   (num_pixel_xy, stencil_wk%irank_4_composit,                    &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
@@ -111,27 +98,19 @@
       call alloc_depth_pixel_composit(pvr_start%num_pvr_ray,            &
      &    img_composit_tbl%ntot_import, img_stack)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'depth_pvr_ray_start'
 !$omp parallel workshare
       img_stack%depth_pvr_ray_start(1:pvr_start%num_pvr_ray)            &
      &      = - pvr_start%xx_pvr_ray_start(3,1:pvr_start%num_pvr_ray)
 !$omp end parallel workshare
 !
-      call calypso_mpi_barrier
-      write(*,*) 'calypso_SR_type_int'
       call calypso_SR_type_int(0, img_composit_tbl,                     &
      &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
      &    pvr_start%id_pixel_start, img_stack%ipix_4_composit)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'calypso_SR_type_1'
       call calypso_SR_type_1(0, img_composit_tbl,                       &
      &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
      &    img_stack%depth_pvr_ray_start, img_stack%depth_pixel_composit)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'set_image_stacking_and_recv'
       call alloc_pvr_image_stack_table(img_stack)
       call set_image_stacking_and_recv                                  &
      &   (num_pixel_xy, img_stack%item_4_composit,                      &
@@ -174,10 +153,6 @@
       do ip = 1, nprocs
         ist = stencil_wk%istack_recv_image(ip-1)
         ipix = stencil_wk%item_recv_image(ist+1)
-        write(*,*) 'stencil_wk%irank_4_composit', &
-     &            ip, ist, ipix, size(stencil_wk%item_recv_image), &
-     &            stencil_wk%irank_4_composit(ipix),  &
-     &            size(stencil_wk%irank_4_composit)
         if(stencil_wk%irank_4_composit(ipix) .eq. my_rank) then
           npixel_4_composit = stencil_wk%istack_recv_image(ip)          &
      &                       - stencil_wk%istack_recv_image(ip-1)

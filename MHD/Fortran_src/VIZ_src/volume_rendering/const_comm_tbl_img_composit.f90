@@ -55,34 +55,24 @@
       type(calypso_comm_table), intent(inout) :: img_output_tbl
 !
 !
-      call calypso_mpi_barrier
-      write(*,*) 'count_export_pe_pvr_output'
       call count_export_pe_pvr_output                                   &
      &   (npixel_4_composit, img_output_tbl%nrank_export)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'count_export_item_pvr_output'
       call alloc_calypso_export_num(img_output_tbl)
       call count_export_item_pvr_output                                 &
      &   (irank_image_file, npixel_4_composit,                          &
      &    img_output_tbl%nrank_export, img_output_tbl%ntot_export,      &
      &    img_output_tbl%irank_export, img_output_tbl%istack_export)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'set_export_item_pvr_output'
       call alloc_calypso_export_item(img_output_tbl)
       call set_export_item_pvr_output                                   &
      &   (img_output_tbl%ntot_export, img_output_tbl%item_export)
 !
 !
-      call calypso_mpi_barrier
-      write(*,*) 'count_import_pe_pvr_output'
       call count_import_pe_pvr_output                                   &
      &   (nprocs, my_rank, irank_image_file,                            &
      &    stencil_wk%istack_recv_image, img_output_tbl%nrank_import)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'count_import_item_pvr_output'
       call alloc_calypso_import_num(img_output_tbl)
       call count_import_item_pvr_output(nprocs, my_rank,                &
      &    irank_image_file, stencil_wk%istack_recv_image, num_pixel_xy, &
@@ -91,8 +81,6 @@
      &    img_output_tbl%irank_import, img_output_tbl%istack_import,    &
      &    img_output_tbl%iflag_self_copy, num_pixel_recv)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'set_import_item_pvr_output'
       call alloc_calypso_import_item(num_pixel_recv, img_output_tbl)
       call set_import_item_pvr_output                                   &
      &    (num_pixel_xy, stencil_wk%item_recv_image,                    &
@@ -124,8 +112,6 @@
       integer(kind = kint), allocatable :: num_recv_pixel_tmp(:)
 !
 !
-      call calypso_mpi_barrier
-      write(*,*) 'sort_index_pvr_start'
       allocate(index_pvr_start(num_pvr_ray))
       call sort_index_pvr_start                                         &
      &   (num_pvr_ray, id_pixel_start, index_pvr_start)
@@ -133,8 +119,6 @@
       allocate(num_send_pixel_tmp(nprocs))
       allocate(num_recv_pixel_tmp(nprocs))
 !
-      call calypso_mpi_barrier
-      write(*,*) 'count_num_send_pixel_tmp'
       call count_num_send_pixel_tmp                                     &
      &   (num_pixel_xy, irank_4_composit, num_pvr_ray,                  &
      &    id_pixel_start, index_pvr_start, num_send_pixel_tmp)
@@ -144,8 +128,6 @@
      &                  CALYPSO_COMM, ierr_MPI)
 !
 !
-      call calypso_mpi_barrier
-      write(*,*) 'count_comm_pe_pvr_composition'
       call count_comm_pe_pvr_composition                                &
      &   (nprocs, num_send_pixel_tmp, num_recv_pixel_tmp,               &
      &    img_composit_tbl%nrank_export, img_composit_tbl%nrank_import)
@@ -153,8 +135,6 @@
       call alloc_calypso_import_num(img_composit_tbl)
       call alloc_calypso_export_num(img_composit_tbl)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'count_comm_tbl_pvr_composition'
       call count_comm_tbl_pvr_composition(nprocs, my_rank,              &
      &   num_send_pixel_tmp, num_recv_pixel_tmp,                        &
      &   img_composit_tbl%nrank_export, img_composit_tbl%nrank_import,  &
@@ -163,8 +143,6 @@
      &   img_composit_tbl%irank_import, img_composit_tbl%istack_import, &
      &   img_composit_tbl%iflag_self_copy)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'set_comm_tbl_pvr_composition'
       call alloc_calypso_export_item(img_composit_tbl)
       call set_comm_tbl_pvr_composition(num_pvr_ray, id_pixel_start,    &
      &   index_pvr_start, num_pixel_xy, irank_4_composit,               &
@@ -172,8 +150,6 @@
      &   img_composit_tbl%irank_export, img_composit_tbl%istack_export, &
      &   img_composit_tbl%item_export)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'set_item_recv_tmp_composit'
       call alloc_calypso_import_item                                    &
      &   (img_composit_tbl%ntot_import, img_composit_tbl)
       call set_item_recv_tmp_composit(img_composit_tbl%ntot_import,     &
@@ -208,15 +184,11 @@
      &      :: istack_composition(0:npixel_4_composit)
 !
 !
-      call calypso_mpi_barrier
-      write(*,*) 'set_image_composition_stack'
       call set_image_composition_stack                                  &
      &   (num_pixel_xy, item_4_composit, npixel_4_composit,             &
      &    img_composit_tbl%ntot_import, ipix_4_composit,                &
      &    istack_composition, img_composit_tbl%irev_import)
 !
-      call calypso_mpi_barrier
-      write(*,*) 'sort_recv_pixel_by_depth'
       call sort_recv_pixel_by_depth                                     &
      &    (npixel_4_composit, img_composit_tbl%ntot_import,             &
      &     depth_pixel_composit, istack_composition,                    &
