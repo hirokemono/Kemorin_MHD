@@ -182,13 +182,12 @@ static void read_psf_vtk_field_data(struct psf_data *viz_s){
     vtk_fields_t *last_fld;
     int iflag_end;
     long offset;
-	char tmpchara[8];
+	char tmpchara[200];
 	char buf[LENGTHBUF];    /* array for reading line */
 	
     offset = skip_comment_c(fp);
     fgets(buf, LENGTHBUF, fp);     /* POINT_DATA  nnod_viz */
 	sscanf(buf, "%10s %d", tmpchara, &vtk_tmp.nnod_vtk);
-    
     vtk_tmp.vtk_fields = (vtk_fields_t *) malloc(sizeof(vtk_fields_t));
     last_fld = vtk_tmp.vtk_fields;
 	
@@ -210,7 +209,7 @@ static void read_psf_vtk_field_data(struct psf_data *viz_s){
     
     dealloc_vtk_fields_list_c(&vtk_tmp);
     alloc_psf_data_s(viz_s);
-    
+    printf("ahoaho\n");
 	return;
 };
 
@@ -262,7 +261,7 @@ int read_kemoview_vtk(const char *file_head, struct psf_data *viz_s){
 	char file_name[LENGTHBUF];
 	
 	sprintf(file_name, "%s.vtk",file_head);
-	printf("UCD file name: %s \n",file_name);
+	printf("VTK file name: %s \n",file_name);
 	
 	/* Error for failed file*/
 	if ((fp = fopen(file_name, "r")) == NULL) {
@@ -274,6 +273,7 @@ int read_kemoview_vtk(const char *file_head, struct psf_data *viz_s){
 	iflag_datatype = read_psf_vtk_connect_data(viz_s);
 	
 	read_psf_vtk_field_data(viz_s);
+    printf("TAkoTAko");
 	fclose(fp);
 	return iflag_datatype;
 }

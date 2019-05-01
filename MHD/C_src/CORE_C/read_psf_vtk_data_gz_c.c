@@ -184,7 +184,7 @@ static void read_psf_vtk_field_data_gz(struct psf_data *viz_s){
     vtk_fields_t *last_fld;
     int iflag_end;
 
-	char tmpchara[8];
+	char tmpchara[200];
 	int num_word, lbuf = LENGTHBUF;
 	char buf[LENGTHBUF];    /* array for reading line */
 	
