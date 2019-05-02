@@ -408,6 +408,10 @@
  Kemoviewer_t: Structure to run kemoviewer in one window.
  */
 
+struct kv_string{
+    char *string;
+};
+
 struct kemoviewer_type;
 struct mul_kemoviewer_type;
 

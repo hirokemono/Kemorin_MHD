@@ -4,64 +4,64 @@
 
 #include "m_kemoviewer_menu.h"
 
-void alloc_copy_string(struct ucd_file_menu_val *ucd_copied,
-			struct ucd_file_menu_val *ucd_org){
+void alloc_copy_string(struct kv_string *ucd_copied,
+			struct kv_string *ucd_org){
 	int length;
-	length = strlen(ucd_org->ucd_filename);
-	ucd_copied->ucd_filename = (char *)calloc(length+1, sizeof(char));
+	length = strlen(ucd_org->string);
+	ucd_copied->string = (char *)calloc(length+1, sizeof(char));
 	
-	strngcopy(ucd_copied->ucd_filename, ucd_org->ucd_filename);
+	strngcopy(ucd_copied->string, ucd_org->string);
 	return;
 };
 
 void alloc_set_ucd_field_file_name(int iformat_ucd_file, int istep, const char *ucd_header,
-			struct ucd_file_menu_val *ucd_m){
+			struct kv_string *ucd_m){
 	int length;
 	length = strlen(ucd_header);
-	ucd_m->ucd_filename = (char *)calloc(length+25, sizeof(char));
+	ucd_m->string = (char *)calloc(length+25, sizeof(char));
 	
 	if (iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
-		sprintf(ucd_m->ucd_filename, "%s.%d.udt.gz",ucd_header, istep);
+		sprintf(ucd_m->string, "%s.%d.udt.gz",ucd_header, istep);
 	} else if(iformat_ucd_file == IFLAG_SURF_VTD_GZ){
-		sprintf(ucd_m->ucd_filename, "%s.%d.vtd.gz",ucd_header, istep);
+		sprintf(ucd_m->string, "%s.%d.vtd.gz",ucd_header, istep);
 	} else if (iformat_ucd_file == IFLAG_SURF_UCD_GZ) {
-		sprintf(ucd_m->ucd_filename, "%s.%d.inp.gz",ucd_header, istep);
+		sprintf(ucd_m->string, "%s.%d.inp.gz",ucd_header, istep);
 	} else if(iformat_ucd_file == IFLAG_SURF_VTK_GZ){
-		sprintf(ucd_m->ucd_filename, "%s.%d.vtk.gz",ucd_header, istep);
+		sprintf(ucd_m->string, "%s.%d.vtk.gz",ucd_header, istep);
 	} else if(iformat_ucd_file == IFLAG_SURF_VTD){
-		sprintf(ucd_m->ucd_filename, "%s.%d.vtd",ucd_header, istep);
+		sprintf(ucd_m->string, "%s.%d.vtd",ucd_header, istep);
 	} else if(iformat_ucd_file == IFLAG_SURF_UDT){
-		sprintf(ucd_m->ucd_filename, "%s.%d.udt",ucd_header, istep);
+		sprintf(ucd_m->string, "%s.%d.udt",ucd_header, istep);
 	} else if(iformat_ucd_file == IFLAG_SURF_VTK){
-		sprintf(ucd_m->ucd_filename, "%s.%d.vtk",ucd_header, istep);
+		sprintf(ucd_m->string, "%s.%d.vtk",ucd_header, istep);
 	} else {
-		sprintf(ucd_m->ucd_filename, "%s.%d.inp",ucd_header, istep);
+		sprintf(ucd_m->string, "%s.%d.inp",ucd_header, istep);
 	};
 	return;
 };
 
 void alloc_set_grd_field_file_name(int iformat_ucd_file, const char *ucd_header, 
-			struct ucd_file_menu_val *ucd_m){
+			struct kv_string *ucd_m){
 	int length;
 	length = strlen(ucd_header);
-	ucd_m->ucd_filename = (char *)calloc(length+25, sizeof(char));
+	ucd_m->string = (char *)calloc(length+25, sizeof(char));
 	
 	if (iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
-		sprintf(ucd_m->ucd_filename, "%s.0.grd.gz",ucd_header);
+		sprintf(ucd_m->string, "%s.0.grd.gz",ucd_header);
 	} else if(iformat_ucd_file == IFLAG_SURF_VTD_GZ){
-		sprintf(ucd_m->ucd_filename, "%s.0.vtg.gz",ucd_header);
+		sprintf(ucd_m->string, "%s.0.vtg.gz",ucd_header);
 	} else if(iformat_ucd_file == IFLAG_SURF_UDT){
-		sprintf(ucd_m->ucd_filename, "%s.0.grd",ucd_header);
+		sprintf(ucd_m->string, "%s.0.grd",ucd_header);
 	} else if(iformat_ucd_file == IFLAG_SURF_VTD){
-		sprintf(ucd_m->ucd_filename, "%s.0.vtg",ucd_header);
+		sprintf(ucd_m->string, "%s.0.vtg",ucd_header);
 	} else {
-		sprintf(ucd_m->ucd_filename, "%s.0.inp",ucd_header);
+		sprintf(ucd_m->string, "%s.0.inp",ucd_header);
 	};
 	return;
 };
 
-void dealloc_ucd_m_file_name(struct ucd_file_menu_val *ucd_m){
-	free(ucd_m->ucd_filename);
+void dealloc_ucd_m_file_name(struct kv_string *ucd_m){
+	free(ucd_m->string);
 	return;
 };
 
