@@ -196,12 +196,8 @@ static void read_gz_viz_phys_data(struct psf_data *viz_s){
 };
 
 
-int read_psf_grd_gz(const char *file_head, struct psf_data *viz_s){
-	char file_name[LENGTHBUF];
+int read_psf_grd_gz(const char *file_name, struct psf_data *viz_s){
 	int iflag_datatype;
-	
-	/* printf("file header in: %s \n", file_head); */
-	sprintf(file_name, "%s.0.grd.gz",file_head);
 	printf("gzipped grd file name: %s \n",file_name);
 	iflag_datatype = open_rd_gzfile_w_flag(file_name);
 	if (iflag_datatype == 1){
@@ -219,11 +215,8 @@ int read_psf_grd_gz(const char *file_head, struct psf_data *viz_s){
 	return IFLAG_SURFACES;
 }
 
-int read_psf_udt_gz(const char *file_head, int istep, struct psf_data *viz_s){
-	char file_name[LENGTHBUF];
+int read_psf_udt_gz(const char *file_name, struct psf_data *viz_s){
 	int ierr;
-	
-	sprintf(file_name, "%s.%d.udt.gz",file_head,istep);
 	printf("gzipped udt file name: %s \n",file_name);
 	ierr = open_rd_gzfile_w_flag(file_name);
 	if (ierr == 1){
@@ -235,11 +228,9 @@ int read_psf_udt_gz(const char *file_head, int istep, struct psf_data *viz_s){
 	return 0;
 }
 
-int read_kemoview_ucd_gz(const char *file_head, struct psf_data *viz_s){
-	char file_name[LENGTHBUF];
+int read_kemoview_ucd_gz(const char *file_name, struct psf_data *viz_s){
 	int iflag_datatype;
 	
-	sprintf(file_name, "%s.inp.gz",file_head);
 	printf("gzipped UCD file name: %s \n",file_name);
 	iflag_datatype = open_rd_gzfile_w_flag(file_name);
 	if (iflag_datatype == 1) return -1;

@@ -90,7 +90,7 @@ static struct chara2_ctl_list *add_chara2_ctl_list_before(struct chara2_ctl_list
     struct chara2_ctl_list *old_prev;
     
     if ((added = (struct chara2_ctl_list *) malloc(sizeof(struct chara2_ctl_list))) == NULL) {
-        printf("malloc error\n");
+        printf("malloc error for chara2_ctl_list\n");
         exit(0);
     }
     if ((added->c2_item = (struct chara2_ctl_item *) malloc(sizeof(struct chara2_ctl_item))) == NULL) {

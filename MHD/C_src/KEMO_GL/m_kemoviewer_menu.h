@@ -214,6 +214,7 @@ struct psf_menu_val{
 struct fline_menu_val{
 	char fline_header[LENGTHBUF];
 	int fline_step;
+	int iformat_fline_file;
 	
 	int iflag_draw_fline;
 	
@@ -231,13 +232,19 @@ struct fline_menu_val{
 };
 
 struct ucd_file_menu_val{
-	char ucd_header[LENGTHBUF];
-    int iformat_ucd_file;
-    int iformat_viz_type;
-	int ucd_step;
+	char *ucd_filename;
 };
 
 /* Prototypes */
+
+void alloc_copy_string(struct ucd_file_menu_val *ucd_copied,
+			struct ucd_file_menu_val *ucd_org);
+void alloc_set_ucd_field_file_name(int iformat_ucd_file, int istep, const char *ucd_header,
+			struct ucd_file_menu_val *ucd_m);
+void alloc_set_grd_field_file_name(int iformat_ucd_file, const char *ucd_header, 
+			struct ucd_file_menu_val *ucd_m);
+void dealloc_ucd_m_file_name(struct ucd_file_menu_val *ucd_m);
+
 void alloc_psfs_sorting_list(struct kemo_array_control *psf_a);
 void dealloc_psfs_sorting_list(struct kemo_array_control *psf_a);
 

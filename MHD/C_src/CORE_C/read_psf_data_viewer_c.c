@@ -162,12 +162,8 @@ static void read_viz_phys_data(struct psf_data *viz_s){
 };
 
 
-int read_psf_grd(const char *file_head, struct psf_data *viz_s){
-	char file_name[LENGTHBUF];
+int read_psf_grd(const char *file_name, struct psf_data *viz_s){
 	int iflag_datatype;
-	
-	/* printf("file header in: %s \n", file_head); */
-	sprintf(file_name, "%s.0.grd",file_head);
 	printf("grid file name: %s \n",file_name);
 	
 	/* Error for failed file*/ 	
@@ -186,10 +182,7 @@ int read_psf_grd(const char *file_head, struct psf_data *viz_s){
 	return iflag_datatype;
 }
 
-int read_psf_udt(const char *file_head, int istep, struct psf_data *viz_s){
-	char file_name[LENGTHBUF];
-	
-	sprintf(file_name, "%s.%d.udt",file_head,istep);
+int read_psf_udt(const char *file_name, struct psf_data *viz_s){
 	printf("UDT file name: %s \n",file_name);
 	
 	/* Error for failed file*/ 	
@@ -204,11 +197,8 @@ int read_psf_udt(const char *file_head, int istep, struct psf_data *viz_s){
 	return 0;
 }
 
-int read_kemoview_ucd(const char *file_head, struct psf_data *viz_s){
+int read_kemoview_ucd(const char *file_name, struct psf_data *viz_s){
 	int iflag_datatype;
-	char file_name[LENGTHBUF];
-	
-	sprintf(file_name, "%s.inp",file_head);
 	printf("UCD file name: %s \n",file_name);
 	
 	/* Error for failed file*/ 	

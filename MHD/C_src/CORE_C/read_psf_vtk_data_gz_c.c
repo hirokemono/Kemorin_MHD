@@ -217,12 +217,8 @@ static void read_psf_vtk_field_data_gz(struct psf_data *viz_s){
 };
 
 
-int read_psf_vtg_gz(const char *file_head, struct psf_data *viz_s){
-	char file_name[LENGTHBUF];
+int read_psf_vtg_gz(const char *file_name, struct psf_data *viz_s){
 	int ierr, iflag_datatype;
-	
-	/* printf("file header in: %s \n", file_head); */
-	sprintf(file_name, "%s.0.vtg.gz",file_head);
 	printf("gzipped grid file name: %s \n",file_name);
 	
 	/* Error for failed file*/
@@ -241,11 +237,8 @@ int read_psf_vtg_gz(const char *file_head, struct psf_data *viz_s){
 	return iflag_datatype;
 }
 
-int read_psf_vtd_gz(const char *file_head, int istep, struct psf_data *viz_s){
+int read_psf_vtd_gz(const char *file_name, struct psf_data *viz_s){
     int ierr;
-	char file_name[LENGTHBUF];
-	
-	sprintf(file_name, "%s.%d.vtd.gz",file_head,istep);
 	printf("UDT file name: %s \n",file_name);
 	
 	/* Error for failed file*/
@@ -260,11 +253,8 @@ int read_psf_vtd_gz(const char *file_head, int istep, struct psf_data *viz_s){
 	return 0;
 }
 
-int read_kemoview_vtk_gz(const char *file_head, struct psf_data *viz_s){
+int read_kemoview_vtk_gz(const char *file_name, struct psf_data *viz_s){
 	int iflag_datatype, ierr;
-	char file_name[LENGTHBUF];
-	
-	sprintf(file_name, "%s.vtk.gz",file_head);
 	printf("UCD file name: %s \n",file_name);
 	
 	/* Error for failed file*/

@@ -87,34 +87,28 @@ static void set_fline_data_by_UCD(struct psf_data *fline_s, struct psf_data *ucd
 	return;
 }
 
-void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp,
-                        struct psf_menu_val *psf_m, struct ucd_file_menu_val *ucd_m){
+void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct psf_menu_val *psf_m){
 	int iflag_datatype;
 	
-    strngcopy(ucd_m->ucd_header, psf_m->psf_header);
-    ucd_m->ucd_step = psf_m->psf_step;
-    
     if(   psf_m->iflag_psf_file == IFLAG_SURF_UDT || psf_m->iflag_psf_file == IFLAG_SURF_UDT_GZ
        || psf_m->iflag_psf_file == IFLAG_SURF_VTD || psf_m->iflag_psf_file == IFLAG_SURF_VTD_GZ){
-		iflag_datatype = check_gzip_psf_grd_first(ucd_m, ucd_tmp);
-		check_gzip_psf_udt_first(ucd_m, ucd_tmp);
+		iflag_datatype = check_gzip_psf_grd_first(psf_m->iflag_psf_file, psf_m->psf_header, 
+					ucd_tmp);
+		check_gzip_psf_udt_first(psf_m->iflag_psf_file, psf_m->psf_step, psf_m->psf_header, 
+					ucd_tmp);
 	} else if(psf_m->iflag_psf_file == IFLAG_SURF_UCD || psf_m->iflag_psf_file == IFLAG_SURF_UCD_GZ
               || psf_m->iflag_psf_file == IFLAG_SURF_VTK || psf_m->iflag_psf_file == IFLAG_SURF_VTK_GZ){
-		iflag_datatype = check_gzip_kemoview_ucd_first(ucd_m, ucd_tmp);
+		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iflag_psf_file, psf_m->psf_step, psf_m->psf_header, ucd_tmp);
 	}
     deallc_all_psf_data(psf_s);
     set_psf_data_by_UCD(psf_s, ucd_tmp);
     return;
 }
 
-int refresh_FLINE_data(struct psf_data *fline_s, struct psf_data *ucd_tmp,
-                       struct fline_menu_val *fline_m, struct ucd_file_menu_val *ucd_m){
+int refresh_FLINE_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, struct fline_menu_val *fline_m){
 	int iflag_datatype;
 	
-    strngcopy(ucd_m->ucd_header, fline_m->fline_header);
-    ucd_m->ucd_step = fline_m->fline_step;
-    
-	iflag_datatype = check_gzip_kemoview_ucd_first(ucd_m, ucd_tmp);
+	iflag_datatype = check_gzip_kemoview_ucd_first(fline_m->iformat_fline_file, fline_m->fline_step, fline_m->fline_header, ucd_tmp);
 	if (iflag_datatype == IFLAG_SURFACES){
 		dealloc_psf_data_s(ucd_tmp);
 		dealloc_psf_mesh_c(ucd_tmp);

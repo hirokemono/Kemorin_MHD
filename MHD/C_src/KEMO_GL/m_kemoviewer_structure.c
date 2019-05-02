@@ -21,8 +21,6 @@ struct kemoviewer_type{
 	
 	struct psf_menu_val       *psf_current_menu;
 	struct psf_data           *psf_current_data;
-	
-	struct ucd_file_menu_val  *ucd_menu;
 	struct psf_data           *psf_ucd_tmp;
 	
 	struct kemoviewer_type    *next;
@@ -60,7 +58,6 @@ void kemoview_allocate_pointers(){
 	}
 	
 	kemo_sgl->psf_ucd_tmp =    (struct psf_data *)          malloc(sizeof(struct psf_data));
-	kemo_sgl->ucd_menu =   (struct ucd_file_menu_val *) malloc(sizeof(struct ucd_file_menu_val));
 	return;
 }
 
@@ -114,7 +111,6 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	free(kemoviewer_data->view_s);
 	
 	free(kemoviewer_data->psf_ucd_tmp);
-	free(kemoviewer_data->ucd_menu);
 	
 	return;
 }
@@ -178,7 +174,7 @@ int kemoview_open_data(const char *file_name){
 	iflag_datatype = kemoviewer_open_data(file_name, kemo_sgl->mesh_d, kemo_sgl->mesh_m,
 				kemo_sgl->psf_a, kemo_sgl->psf_d, kemo_sgl->psf_m,
 				kemo_sgl->fline_d, kemo_sgl->fline_m,
-				kemo_sgl->psf_ucd_tmp, kemo_sgl->ucd_menu,kemo_sgl->view_s);
+				kemo_sgl->psf_ucd_tmp,kemo_sgl->view_s);
     
 	if (kemo_sgl->psf_a->id_current >= IZERO) {
 		kemo_sgl->psf_current_data = kemo_sgl->psf_d[kemo_sgl->psf_a->id_current];
@@ -239,8 +235,7 @@ static void evolution_psf_viewer(){
 			printf("Loaded PSF file %d %d %s\n",id_load, kemo_sgl->psf_m[id_load]->iflag_psf_file,
                    kemo_sgl->psf_m[id_load]->psf_header);
 			kemo_sgl->psf_m[id_load]->psf_step = kemo_sgl->psf_a->istep_sync;
-			evolution_PSF_data(kemo_sgl->psf_d[id_load], kemo_sgl->psf_ucd_tmp,
-                               kemo_sgl->psf_m[id_load], kemo_sgl->ucd_menu);
+			evolution_PSF_data(kemo_sgl->psf_d[id_load], kemo_sgl->psf_ucd_tmp, kemo_sgl->psf_m[id_load]);
 		};
 	}
 	
@@ -251,8 +246,7 @@ int evolution_fline_viewer(){
 	int ierr;
 	if (kemo_sgl->fline_m->iflag_draw_fline > 0) {
 		kemo_sgl->fline_m->fline_step = kemo_sgl->psf_a->istep_sync;
-		ierr = refresh_FLINE_data(kemo_sgl->fline_d, kemo_sgl->psf_ucd_tmp,
-                                  kemo_sgl->fline_m, kemo_sgl->ucd_menu);
+		ierr = refresh_FLINE_data(kemo_sgl->fline_d, kemo_sgl->psf_ucd_tmp, kemo_sgl->fline_m);
 	}
 	return ierr;
 }
