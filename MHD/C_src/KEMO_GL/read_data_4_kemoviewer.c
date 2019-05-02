@@ -108,7 +108,7 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
 int refresh_FLINE_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, struct fline_menu_val *fline_m){
 	int iflag_datatype;
 	
-	iflag_datatype = check_gzip_kemoview_ucd_first(fline_m->iformat_fline_file, fline_m->fline_step, fline_m->fline_header, ucd_tmp);
+	iflag_datatype = check_gzip_kemoview_ucd_first(fline_m->iformat_fline_file, fline_m->fline_step, fline_m->fline_header->string, ucd_tmp);
 	if (iflag_datatype == IFLAG_SURFACES){
 		dealloc_psf_data_s(ucd_tmp);
 		dealloc_psf_mesh_c(ucd_tmp);
@@ -192,7 +192,7 @@ void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string
 	return;
 }
 void alloc_set_ucd_file_name_by_fline(struct fline_menu_val *fline_m, struct kv_string *ucd_m){
-	alloc_set_ucd_field_file_name(fline_m->iformat_fline_file, fline_m->fline_step, fline_m->fline_header, ucd_m);
+	alloc_set_ucd_field_file_name(fline_m->iformat_fline_file, fline_m->fline_step, fline_m->fline_header->string, ucd_m);
 	return;
 }
 

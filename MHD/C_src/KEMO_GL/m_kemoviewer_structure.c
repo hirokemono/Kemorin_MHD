@@ -839,7 +839,7 @@ void kemoview_get_fline_full_path_file_name(struct kv_string *ucd_m){
 	return;
 }
 int kemoview_get_fline_file_step_prefix(char *file_head){
-	strngcopy(file_head, kemo_sgl->fline_m->fline_header);
+	strngcopy(file_head, kemo_sgl->fline_m->fline_header->string);
 	return kemo_sgl->fline_m->fline_step;
 };
 void kemoview_set_fline_file_step(int istep){kemo_sgl->fline_m->fline_step = istep;};

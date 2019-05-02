@@ -17,10 +17,9 @@ void dealloc_kvstring(struct kv_string *ucd_m){
 	return;
 };
 
-void alloc_copy_string(struct kv_string *ucd_copied,
-			struct kv_string *ucd_org){
-	alloc_kvstring(strlen(ucd_org->string), ucd_copied);
-	strngcopy(ucd_copied->string, ucd_org->string);
+void alloc_copy_string(const char *org_string, struct kv_string *ucd_copied){
+	alloc_kvstring(strlen(org_string), ucd_copied);
+	strngcopy(ucd_copied->string, org_string);
 	return;
 };
 
@@ -164,6 +163,14 @@ void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	return;
 }
 
+void alloc_fline_file_param(struct fline_menu_val *fline_m){
+    if ((fline_m->fline_header = (struct kv_string *) malloc(sizeof(struct kv_string))) == NULL) {
+        printf("malloc error for ucd_m\n");
+        exit(0);
+    }
+	return;
+};
+
 void alloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m){
 	int i;
 	fline_m->cmap_fline_comp =  (struct colormap_params **) malloc(fline_s->ncomptot*sizeof(struct colormap_params *));
@@ -264,6 +271,9 @@ void dealloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *f
 		free(fline_m->cmap_fline_comp[i]);
 	};
 	free(fline_m->cmap_fline_comp);
+	
+	dealloc_kvstring(fline_m->fline_header);
+	free(fline_m->fline_header);
 	return;
 }
 

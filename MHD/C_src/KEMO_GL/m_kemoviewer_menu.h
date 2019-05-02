@@ -212,7 +212,7 @@ struct psf_menu_val{
 };
 
 struct fline_menu_val{
-	char fline_header[LENGTHBUF];
+	struct kv_string *fline_header;
 	int fline_step;
 	int iformat_fline_file;
 	
@@ -236,8 +236,7 @@ struct fline_menu_val{
 void alloc_kvstring(int length, struct kv_string *ucd_m);
 void dealloc_kvstring(struct kv_string *ucd_m);
 
-void alloc_copy_string(struct kv_string *ucd_copied,
-			struct kv_string *ucd_org);
+void alloc_copy_string(const char *org_string, struct kv_string *ucd_copied);
 void alloc_set_ucd_field_file_name(int iformat_ucd_file, int istep, const char *ucd_header,
 			struct kv_string *ucd_m);
 void alloc_set_grd_field_file_name(int iformat_ucd_file, const char *ucd_header, 
@@ -252,6 +251,7 @@ void alloc_draw_mesh_flags(struct viewer_mesh *mesh_s,
 void dealloc_draw_mesh_flags(struct mesh_menu_val *mesh_m);
 
 void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m);
+void alloc_fline_file_param(struct fline_menu_val *fline_m);
 void alloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m);
 void dealloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m);
 void dealloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m);

@@ -158,10 +158,11 @@ static void init_draw_psf(struct mesh_menu_val *mesh_m, struct kemo_array_contro
 static void init_draw_fline(struct mesh_menu_val *mesh_m,
 			struct psf_data *fline_d, struct fline_menu_val *fline_m, struct psf_data *ucd_tmp,
 			int iformat_ucd_file, int istep, const char *ucd_header){
-    
-	strngcopy(fline_m->fline_header, ucd_header);
+    alloc_fline_file_param(fline_m);
+    alloc_copy_string(ucd_header, fline_m->fline_header);
 	fline_m->fline_step = istep;
 	fline_m->iformat_fline_file = iformat_ucd_file;
+    
 	set_kemoview_fline_data(fline_d, ucd_tmp, mesh_m, fline_m);
     return;
 };
