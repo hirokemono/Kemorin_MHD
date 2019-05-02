@@ -628,6 +628,7 @@ extern "C" {
     int kemoview_get_PSF_loaded_flag(int id_psf);
     int kemoview_get_curent_PSF_ID();
     
+    void kemoview_get_PSF_full_path_file_name(struct kv_string *ucd_m);
     int kemoview_get_PSF_full_path_file_prefix(char *file_head, int *iflag);
     int kemoview_get_PSF_file_prefix(char *file_head);
     
@@ -710,6 +711,7 @@ extern "C" {
     
     /* Subroutines for field lines */
     
+    void kemoview_get_fline_full_path_file_name(struct kv_string *ucd_m);
     int kemoview_get_fline_file_step_prefix(char *file_head);
     void kemoview_set_fline_file_step(int istep);
     

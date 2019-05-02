@@ -213,9 +213,10 @@ int kemoviewer_open_data(const char *file_name, struct viewer_mesh *mesh_d, stru
 	} else if( iflag_fileformat == IFLAG_SURF_UCD || iflag_fileformat == IFLAG_SURF_UCD_GZ
               || iflag_fileformat == IFLAG_SURF_VTK || iflag_fileformat == IFLAG_SURF_VTK_GZ){
 		istep = get_index_from_file_head(file_head_w_step, ucd_header);
+		
 		iflag_datatype = check_gzip_kemoview_ucd_first(iflag_fileformat, istep, ucd_header, ucd_tmp);
-        
-		if(iflag_datatype == IFLAG_SURFACES){
+
+        if(iflag_datatype == IFLAG_SURFACES){
 			init_draw_psf(mesh_m, psf_a, psf_d, psf_m, ucd_tmp, 
 						iflag_fileformat, istep, ucd_header);
 		} else if(iflag_datatype == IFLAG_LINES){

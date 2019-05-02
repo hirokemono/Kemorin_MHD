@@ -186,3 +186,13 @@ void set_kemoview_fline_data(struct psf_data *fline_s, struct psf_data *ucd_tmp,
 	
 	return;
 }
+
+void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string *ucd_m){
+	alloc_set_ucd_field_file_name(psf_m->iflag_psf_file, psf_m->psf_step, psf_m->psf_header, ucd_m);
+	return;
+}
+void alloc_set_ucd_file_name_by_fline(struct fline_menu_val *fline_m, struct kv_string *ucd_m){
+	alloc_set_ucd_field_file_name(fline_m->iformat_fline_file, fline_m->fline_step, fline_m->fline_header, ucd_m);
+	return;
+}
+

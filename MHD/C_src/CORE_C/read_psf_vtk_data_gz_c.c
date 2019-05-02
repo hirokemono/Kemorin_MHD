@@ -98,7 +98,7 @@ static int read_psf_vtk_connect_data_gz(struct psf_data *viz_s){
 static int read_psf_vtk_field_list_gz(vtk_fields_t *fld_list){
 	int i;
     double rtmp;
-	char fieldtype[7];
+	char fieldtype[8];
 	char buf[LENGTHBUF];    /* array for reading line */
 	int num_word, nchara, lbuf = LENGTHBUF;
     
@@ -110,7 +110,7 @@ static int read_psf_vtk_field_list_gz(vtk_fields_t *fld_list){
     
     sscanf(buf, "%7s %s", fieldtype, fld_list->field_name);
     
-    if(          fieldtype[0] == 'T'
+    if(   fieldtype[0] == 'T'
        && fieldtype[1] == 'E'
        && fieldtype[2] == 'N'
        && fieldtype[3] == 'S'
@@ -187,29 +187,30 @@ static void read_psf_vtk_field_data_gz(struct psf_data *viz_s){
 	char tmpchara[200];
 	int num_word, lbuf = LENGTHBUF;
 	char buf[LENGTHBUF];    /* array for reading line */
-	
+
     num_word = skip_comment_gz_c(&lbuf, buf);  /* POINT_DATA  nnod_viz */
 	sscanf(buf, "%10s %d", tmpchara, &vtk_tmp.nnod_vtk);
 
     vtk_tmp.vtk_fields = (vtk_fields_t *) malloc(sizeof(vtk_fields_t));
     last_fld = vtk_tmp.vtk_fields;
-	
     vtk_tmp.nfld_vtk = -1;
     iflag_end = 0;
+
     while (iflag_end == 0) {
         last_fld->nnod_fld = vtk_tmp.nnod_vtk;
         iflag_end = read_psf_vtk_field_list_gz(last_fld);
         vtk_tmp.nfld_vtk = vtk_tmp.nfld_vtk + 1;
         last_fld = last_fld->next_fld;
     }
-    
+
     viz_s->nfield = vtk_tmp.nfld_vtk;
     alloc_psf_field_name_c(viz_s);
     copy_vtk_list_2_udt_name(viz_s, &vtk_tmp);
     
     alloc_psf_field_data_c(viz_s);
     copy_vtk_list_2_udt_data(viz_s, &vtk_tmp);
-    
+
+
     dealloc_vtk_fields_list_c(&vtk_tmp);
     alloc_psf_data_s(viz_s);
     
@@ -239,7 +240,7 @@ int read_psf_vtg_gz(const char *file_name, struct psf_data *viz_s){
 
 int read_psf_vtd_gz(const char *file_name, struct psf_data *viz_s){
     int ierr;
-	printf("UDT file name: %s \n",file_name);
+	printf("gzipped VTD file name: %s \n",file_name);
 	
 	/* Error for failed file*/
 	ierr = open_rd_gzfile_w_flag(file_name);
@@ -255,7 +256,7 @@ int read_psf_vtd_gz(const char *file_name, struct psf_data *viz_s){
 
 int read_kemoview_vtk_gz(const char *file_name, struct psf_data *viz_s){
 	int iflag_datatype, ierr;
-	printf("UCD file name: %s \n",file_name);
+	printf("gzipped VTK file name: %s \n",file_name);
 	
 	/* Error for failed file*/
 	ierr = open_rd_gzfile_w_flag(file_name);
@@ -266,8 +267,9 @@ int read_kemoview_vtk_gz(const char *file_name, struct psf_data *viz_s){
 	
 	read_psf_vtk_node_data_gz(viz_s);
 	iflag_datatype = read_psf_vtk_connect_data_gz(viz_s);
-	
-	read_psf_vtk_field_data_gz(viz_s);
-	close_gzfile();
+
+    read_psf_vtk_field_data_gz(viz_s);
+
+    close_gzfile();
 	return iflag_datatype;
 }

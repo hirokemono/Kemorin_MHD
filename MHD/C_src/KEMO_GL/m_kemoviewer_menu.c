@@ -4,21 +4,29 @@
 
 #include "m_kemoviewer_menu.h"
 
+void alloc_kvstring(int length, struct kv_string *ucd_m){
+	if((ucd_m->string = (char *)calloc(length+1, sizeof(char))) == NULL){
+		printf("malloc error for string in kv_string\n");
+		exit(0);
+	};
+	return;
+};
+
+void dealloc_kvstring(struct kv_string *ucd_m){
+	free(ucd_m->string);
+	return;
+};
+
 void alloc_copy_string(struct kv_string *ucd_copied,
 			struct kv_string *ucd_org){
-	int length;
-	length = strlen(ucd_org->string);
-	ucd_copied->string = (char *)calloc(length+1, sizeof(char));
-	
+	alloc_kvstring(strlen(ucd_org->string), ucd_copied);
 	strngcopy(ucd_copied->string, ucd_org->string);
 	return;
 };
 
 void alloc_set_ucd_field_file_name(int iformat_ucd_file, int istep, const char *ucd_header,
 			struct kv_string *ucd_m){
-	int length;
-	length = strlen(ucd_header);
-	ucd_m->string = (char *)calloc(length+25, sizeof(char));
+	alloc_kvstring(strlen(ucd_header)+25, ucd_m);
 	
 	if (iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
 		sprintf(ucd_m->string, "%s.%d.udt.gz",ucd_header, istep);
@@ -42,9 +50,7 @@ void alloc_set_ucd_field_file_name(int iformat_ucd_file, int istep, const char *
 
 void alloc_set_grd_field_file_name(int iformat_ucd_file, const char *ucd_header, 
 			struct kv_string *ucd_m){
-	int length;
-	length = strlen(ucd_header);
-	ucd_m->string = (char *)calloc(length+25, sizeof(char));
+	alloc_kvstring(strlen(ucd_header)+25, ucd_m);
 	
 	if (iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
 		sprintf(ucd_m->string, "%s.0.grd.gz",ucd_header);
@@ -60,10 +66,7 @@ void alloc_set_grd_field_file_name(int iformat_ucd_file, const char *ucd_header,
 	return;
 };
 
-void dealloc_ucd_m_file_name(struct kv_string *ucd_m){
-	free(ucd_m->string);
-	return;
-};
+
 
 void alloc_psfs_sorting_list(struct kemo_array_control *psf_a){
     psf_a->z_ele_viz =    (double *)calloc(psf_a->ntot_psf_patch,sizeof(double));

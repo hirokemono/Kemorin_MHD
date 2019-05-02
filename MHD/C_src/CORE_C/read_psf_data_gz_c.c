@@ -30,7 +30,7 @@ static void read_gz_viz_node_data(struct psf_data *viz_s){
 static int read_gz_kemoview_connect_data(struct psf_data *viz_s){
 	int i, iflag_datatype;
 	int itmp;
-	char celllabel[4];    /* array for cell label */
+	char celllabel[5];    /* array for cell label */
 	char buf[LENGTHBUF];    /* array for reading line */
 	int num_word[1], nchara[1], lbuf[1];
 	
@@ -102,7 +102,7 @@ static int read_gz_kemoview_connect_data(struct psf_data *viz_s){
 static int read_gz_psf_connect_data(struct psf_data *viz_s){
 	int i;
 	int itmp;
-	char celllabel[3];    /* array for cell label */
+	char celllabel[4];    /* array for cell label */
 	char buf[LENGTHBUF];    /* array for reading line */
 	int num_word[1], nchara[1], lbuf[1];
 	
@@ -148,15 +148,16 @@ static void read_gz_viz_phys_data(struct psf_data *viz_s){
 		j = j+1;
 		iread = iread + nread;
 	}
-	
-	while (j < viz_s->nfield-1) {
+
+    while (j < viz_s->nfield-1) {
 		iread = 0;
 		get_one_line_from_gz(lbuf, num_word, nchara, buf);
+        
 		for (i = 0; i < num_word[0]; i++) {
 			sscanf(&buf[iread], "%d%n", &viz_s->ncomp[j], &nread);
 			j = j+1;
 			iread = iread + nread;
-			/*printf("ncomp: %d \n", viz_s->ncomp[i]);*/
+			/*printf("ncomp: %d \n", viz_s->ncomp[i]); */
 		};
 	};
 	
@@ -175,15 +176,16 @@ static void read_gz_viz_phys_data(struct psf_data *viz_s){
 	
 	for (i = 0; i < viz_s->nfield; i++) {
 		get_one_line_from_gz(lbuf, num_word, nchara, buf);
-		iflag = read_field_name_from_buffer(lbuf[0], buf, viz_s->data_name[i]);
+        
+		iflag = read_field_name_from_buffer(lbuf[0]+1, buf, viz_s->data_name[i]);
 		viz_s->id_coord[i] = iflag;
 /*		printf("%d, %s coordinate: %d \n", i, viz_s->data_name[i], viz_s->id_coord[i]);*/
 	};
-	
 	/*  read field */
 	
 	for (i = 0; i < viz_s->nnod_viz; i++) {
 		get_one_line_from_gz(lbuf, num_word, nchara, buf);
+        
 		iread = 0;
 		sscanf(buf, "%d%n", &itmp, &nread); 
 		iread = iread + nread;
@@ -192,6 +194,7 @@ static void read_gz_viz_phys_data(struct psf_data *viz_s){
 			iread = iread + nread;
 		};
 	};
+    
 	return;
 };
 
@@ -230,7 +233,6 @@ int read_psf_udt_gz(const char *file_name, struct psf_data *viz_s){
 
 int read_kemoview_ucd_gz(const char *file_name, struct psf_data *viz_s){
 	int iflag_datatype;
-	
 	printf("gzipped UCD file name: %s \n",file_name);
 	iflag_datatype = open_rd_gzfile_w_flag(file_name);
 	if (iflag_datatype == 1) return -1;
@@ -241,8 +243,9 @@ int read_kemoview_ucd_gz(const char *file_name, struct psf_data *viz_s){
 		dealloc_psf_mesh_c(viz_s);
 		return iflag_datatype;
 	}
-	
-	read_gz_viz_phys_data(viz_s);
+
+    read_gz_viz_phys_data(viz_s);
 	close_gzfile();
+    
 	return iflag_datatype;
 }

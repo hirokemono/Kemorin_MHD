@@ -14,7 +14,6 @@ int check_gzip_kemoview_ucd_first(int iformat_ucd_file, int istep, const char *u
 			struct psf_data *viz_s){
 	struct kv_string *ucd_m;
 	int iflag_datatype;
-	char step_file_head[LENGTHBUF];
 	
     if ((ucd_m = (struct kv_string *) malloc(sizeof(struct kv_string))) == NULL) {
         printf("malloc error for ucd_m\n");
@@ -32,7 +31,7 @@ int check_gzip_kemoview_ucd_first(int iformat_ucd_file, int istep, const char *u
         iflag_datatype = read_kemoview_ucd(ucd_m->string, viz_s);
 	};
 	
-	dealloc_ucd_m_file_name(ucd_m);
+	dealloc_kvstring(ucd_m);
 	free(ucd_m);
 	return iflag_datatype;
 }
@@ -60,7 +59,7 @@ int check_gzip_psf_grd_first(int iformat_ucd_file, const char *ucd_header,
     
     if (iflag_datatype < 0) printf("Read error for grid data %s \n", ucd_m->string);
 	
-	dealloc_ucd_m_file_name(ucd_m);
+	dealloc_kvstring(ucd_m);
 	free(ucd_m);
 	return iflag_datatype;
 }
@@ -91,7 +90,7 @@ void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, const char *ucd_h
         exit(1);
     };
     
-	dealloc_ucd_m_file_name(ucd_m);
+	dealloc_kvstring(ucd_m);
 	free(ucd_m);
 	return;
 }

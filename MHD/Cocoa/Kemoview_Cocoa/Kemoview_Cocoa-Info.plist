@@ -110,13 +110,13 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.02</string>
+	<string>2.03</string>
 	<key>CFBundleSignature</key>
 	<string>KMVW</string>
 	<key>CFBundleVersion</key>
-	<string>Build 2017, Nov. 30</string>
+	<string>Build 2019, May, 2</string>
 	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.graphics-design</string>
+	<string>public.app-category.productivity</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>${MACOSX_DEPLOYMENT_TARGET}</string>
 	<key>NSMainNibFile</key>

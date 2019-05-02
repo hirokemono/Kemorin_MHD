@@ -17,6 +17,7 @@
     IBOutlet NSWindow*  window;
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
 	IBOutlet KemoviewerController*  _kemoviewControl;
+    IBOutlet NSPathControl *_psfPathControl;
     IBOutlet NSColorWell *PSFPatchColorWell;
     
 	RGBAMapController * rgbaMapObject;
@@ -157,6 +158,7 @@
 
 - (void) ChooseTextureFile;
 - (void) SetCurrentPsfMenu;
+- (void) SetCurrentPSFFile;
 - (void) SetPsfFieldMenu;
 - (void) UpdateCurrentPsfMenu;
 - (void) ResetCurrentPsfParam;

@@ -377,3 +377,4 @@ int toggle_value_c(int current){
 	int toggle = (current+1)%2;
 	return toggle;
 }
+

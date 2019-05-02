@@ -285,6 +285,23 @@
 	[self UpdateCurrentPsfMenu];
 }
 
+- (void) SetCurrentPSFFile
+{
+    struct kv_string *ucd_m;
+    
+    if ((ucd_m = (struct kv_string *) malloc(sizeof(struct kv_string))) == NULL) {
+        printf("malloc error for ucd_m\n");
+        exit(0);
+    }
+
+    kemoview_get_PSF_full_path_file_name(ucd_m);
+    NSString *str = [NSString stringWithCString:ucd_m->string encoding:NSUTF8StringEncoding];
+    NSURL *urlReadPSF = [NSURL fileURLWithPath:str]; 
+    [_psfPathControl setURL:urlReadPSF];
+    free(ucd_m->string);
+    free(ucd_m);
+}
+
 - (void) SetPsfFieldMenu{
 	int i;
 	[_psfFieldMenu removeAllItems];
@@ -399,6 +416,8 @@
 	}else {
 		self.psfMoreOpenFlag = 0;
 	}
+    
+    [self SetCurrentPSFFile];
 };
 
 - (void) ReadTextureFile:(NSString *) PsfOpenFilename
@@ -496,7 +515,7 @@
 	
 	id_current = [[LoadedPsfID objectAtIndex:self.currentPSFID] intValue];
 	kemoview_set_current_PSF(id_current);
-    
+    [self SetCurrentPSFFile];
 	[self UpdateCurrentPsfMenu];
 }
 

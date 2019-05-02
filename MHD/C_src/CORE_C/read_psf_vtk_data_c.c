@@ -99,7 +99,7 @@ static int read_psf_vtk_connect_data(struct psf_data *viz_s){
 static int read_psf_vtk_field_list(vtk_fields_t *fld_list){
 	int i;
     double rtmp;
-	char fieldtype[7];
+	char fieldtype[8];
 	char buf[LENGTHBUF];    /* array for reading line */
     
     if(fgets(buf, LENGTHBUF, fp) == NULL){
@@ -209,7 +209,6 @@ static void read_psf_vtk_field_data(struct psf_data *viz_s){
     
     dealloc_vtk_fields_list_c(&vtk_tmp);
     alloc_psf_data_s(viz_s);
-    printf("ahoaho\n");
 	return;
 };
 

@@ -665,8 +665,13 @@ int kemoview_get_PSF_num_loaded(){return kemo_sgl->psf_a->num_loaded;};
 int kemoview_get_PSF_max_loaded(){return kemo_sgl->psf_a->nmax_loaded;};
 int kemoview_get_PSF_loaded_flag(int id_psf){return kemo_sgl->psf_a->iflag_loaded[id_psf];};
 int kemoview_get_curent_PSF_ID(){return kemo_sgl->psf_a->id_current;};
+int kemoview_get_curent_PSF_filename(){return kemo_sgl->psf_a->id_current;};
 
 
+void kemoview_get_PSF_full_path_file_name(struct kv_string *ucd_m){
+	alloc_set_ucd_file_name_by_psf(kemo_sgl->psf_current_menu, ucd_m);
+	return;
+}
 int kemoview_get_PSF_full_path_file_prefix(char *file_head, int *iflag){
     return send_each_psf_file_header_full(kemo_sgl->psf_current_menu, file_head, iflag);
 }
@@ -829,6 +834,10 @@ void kemoview_check_PSF_colormap_control(){
 
 /* Subroutines for field lines */
 
+void kemoview_get_fline_full_path_file_name(struct kv_string *ucd_m){
+	alloc_set_ucd_file_name_by_fline(kemo_sgl->fline_m, ucd_m);
+	return;
+}
 int kemoview_get_fline_file_step_prefix(char *file_head){
 	strngcopy(file_head, kemo_sgl->fline_m->fline_header);
 	return kemo_sgl->fline_m->fline_step;
