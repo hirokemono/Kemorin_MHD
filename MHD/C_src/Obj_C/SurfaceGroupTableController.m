@@ -35,7 +35,7 @@
 - (void) SetSurfaceGroupLabels:(id)pId
 {
 	int i;
-	char name[4096];
+    struct kv_string *groupname;
 	NSString *stname;
 	
 	[SurfaceGroupDisplayNames removeAllObjects];
@@ -44,9 +44,12 @@
 	[SurfaceGroupDisplayNodeFlags removeAllObjects];
 	NumSurfaceGroup = kemoview_get_num_surf_grp();
 	for(i=0;i<NumSurfaceGroup;i++){
-		kemoview_get_surf_grp_name(name,i);
-		stname = [[NSString alloc] initWithUTF8String:name];
-		[SurfaceGroupDisplayNames      addObject:stname];
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_surf_grp_name(groupname,i);
+		stname = [[NSString alloc] initWithUTF8String:groupname->string];
+        kemoview_free_kvstring(groupname);
+
+        [SurfaceGroupDisplayNames      addObject:stname];
 		[SurfaceGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
 		[SurfaceGroupDisplayWireFlags  addObject:[[NSNumber alloc ] initWithInt:0] ];
 		[SurfaceGroupDisplayNodeFlags  addObject:[[NSNumber alloc ] initWithInt:0] ];
@@ -173,7 +176,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (void) UpdateSurfaceTable
 {
 	int i, iflag;
-	char name[4096];
+    struct kv_string *groupname;
 	NSString *stname;
 	
 	[SurfaceGroupDisplayNames removeAllObjects];
@@ -182,9 +185,12 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	[SurfaceGroupDisplayNodeFlags removeAllObjects];
 	NumSurfaceGroup = kemoview_get_num_surf_grp();
 	for(i=0;i<NumSurfaceGroup;i++){
-		kemoview_get_surf_grp_name(name,i);
-		stname = [[NSString alloc] initWithUTF8String:name];
-		[SurfaceGroupDisplayNames      addObject:stname];
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_surf_grp_name(groupname,i);
+		stname = [[NSString alloc] initWithUTF8String:groupname->string];
+        kemoview_free_kvstring(groupname);
+
+        [SurfaceGroupDisplayNames      addObject:stname];
 		iflag = kemoview_get_draw_surfgrp_patch(i);
 		[SurfaceGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:iflag] ];
 		iflag = kemoview_get_draw_surfgrp_grid(i);

@@ -35,7 +35,7 @@
 - (void) SetElementGroupLabels;
 {
 	int i;
-	char name[4096];
+    struct kv_string *groupname;
 	NSString *stname;
 	
 	[ElementGroupDisplayNames removeAllObjects];
@@ -44,9 +44,12 @@
 	[ElementGroupDisplayNodeFlags removeAllObjects];
 	NumElementGroup = kemoview_get_num_ele_grp();
 	for(i=0;i<NumElementGroup;i++){
-		kemoview_get_ele_grp_name(name,i);
-		stname = [[NSString alloc] initWithUTF8String:name];
-		[ElementGroupDisplayNames      addObject:stname];
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_ele_grp_name(groupname,i);
+		stname = [[NSString alloc] initWithUTF8String:groupname->string];
+        kemoview_free_kvstring(groupname);
+
+        [ElementGroupDisplayNames      addObject:stname];
 		[ElementGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
 		[ElementGroupDisplayWireFlags  addObject:[[NSNumber alloc ] initWithInt:0] ];
 		[ElementGroupDisplayNodeFlags  addObject:[[NSNumber alloc ] initWithInt:0] ];
@@ -175,7 +178,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (void) UpdateElementTable
 {
 	int i, iflag;
-	char name[4096];
+    struct kv_string *groupname;
 	NSString *stname;
 	
 	// printf("Update Element group map\n");
@@ -185,9 +188,12 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	[ElementGroupDisplayNodeFlags removeAllObjects];
 	NumElementGroup = kemoview_get_num_ele_grp();
 	for(i=0;i<NumElementGroup;i++){
-		kemoview_get_ele_grp_name(name,i);
-		stname = [[NSString alloc] initWithUTF8String:name];
-		[ElementGroupDisplayNames      addObject:stname];
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_ele_grp_name(groupname,i);
+		stname = [[NSString alloc] initWithUTF8String:groupname->string];
+        kemoview_free_kvstring(groupname);
+
+        [ElementGroupDisplayNames      addObject:stname];
 		iflag = kemoview_get_draw_elegrp_patch(i);
 		[ElementGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:iflag] ];
 		iflag = kemoview_get_draw_elegrp_grid(i);

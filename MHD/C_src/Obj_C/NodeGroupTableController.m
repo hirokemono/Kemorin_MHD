@@ -106,7 +106,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (void) UpdateNodeTable
 {
 	int i, iflag;
-	char name[4096];
+    struct kv_string *groupname;
 	NSString *stname;
 	
 //	printf("Update Node group map\n");
@@ -114,8 +114,11 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	[NodeGroupDisplayNodeFlags removeAllObjects];
 	NumNodeGroup = kemoview_get_num_node_grp();
 	for(i=0;i<NumNodeGroup;i++){
-		kemoview_get_node_grp_name(name,i);
-		stname = [[NSString alloc] initWithUTF8String:name];
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_node_grp_name(groupname,i);
+		stname = [[NSString alloc] initWithUTF8String:groupname->string];
+        kemoview_free_kvstring(groupname);
+    
 		[NodeGroupDisplayNames      addObject:stname];
 		iflag = kemoview_get_draw_nodgrp_node(i);
 		[NodeGroupDisplayNodeFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];

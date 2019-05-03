@@ -52,7 +52,7 @@
 		NSLog(@" ColormapDirectory = %@", ColormapDirectory);
 		NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
 		
-        struct kv_string *filename = init_kvstring_by_string([ColormapFilename UTF8String]);
+        struct kv_string *filename = kemoview_init_kvstring_by_string([ColormapFilename UTF8String]);
 		kemoview_write_PSF_colormap_file(filename);
         kemoview_free_kvstring(filename);
 	};
@@ -76,7 +76,7 @@
                                            NSLog(@" ColormapDirectory = %@", ColormapDirectory);
                                            NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
                                            
-                                           struct kv_string *filename = init_kvstring_by_string([ColormapFilename UTF8String]);
+                                           struct kv_string *filename = kemoview_init_kvstring_by_string([ColormapFilename UTF8String]);
                                            kemoview_read_PSF_colormap_file(filename);
                                            kemoview_free_kvstring(filename);
                                            

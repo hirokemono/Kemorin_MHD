@@ -122,6 +122,9 @@ void kemoview_alloc_kvstringitem(int length, struct kv_string *kvstring){
 	return;
 };
 struct kv_string* kemoview_alloc_kvstring(){return alloc_kvstring();};
+struct kv_string* kemoview_init_kvstring_by_string(const char *org_string){
+	return init_kvstring_by_string(org_string);
+};
 void kemoview_free_kvstring(struct kv_string *kvstring){
 	dealloc_kvstring(kvstring);
 	return;
@@ -518,9 +521,15 @@ int kemoview_get_num_ele_grp() {return kemo_sgl->mesh_d->ngrp_ele_sf;};
 int kemoview_get_num_surf_grp(){return kemo_sgl->mesh_d->ngrp_surf_sf;};
 
 
-void kemoview_get_node_grp_name(char *name, int i){ strngcopy(name, kemo_sgl->mesh_d->nod_gp_name_sf[i]); };
-void kemoview_get_ele_grp_name(char *name, int i){ strngcopy(name, kemo_sgl->mesh_d->ele_gp_name_sf[i]); };
-void kemoview_get_surf_grp_name(char *name, int i){ strngcopy(name, kemo_sgl->mesh_d->surf_gp_name_sf[i]); };
+void kemoview_get_node_grp_name(struct kv_string *groupname, int i){
+    alloc_copy_string(kemo_sgl->mesh_d->nod_gp_name_sf[i], groupname);
+};
+void kemoview_get_ele_grp_name(struct kv_string *groupname, int i){ 
+    alloc_copy_string(kemo_sgl->mesh_d->ele_gp_name_sf[i], groupname);
+};
+void kemoview_get_surf_grp_name(struct kv_string *groupname, int i){
+    alloc_copy_string(kemo_sgl->mesh_d->surf_gp_name_sf[i], groupname); 
+};
 
 int kemoview_get_draw_type_flag(){return kemo_sgl->mesh_m->iflag_draw_type;};
 int kemoview_get_view_type_flag(){return kemo_sgl->mesh_m->iflag_view_type;};
@@ -557,8 +566,8 @@ void kemoview_get_fliped_img(int npixel_x, int npixel_y,
     return;
 }
 
-void kemoview_write_window_to_vector_file(int iflag_img, const char *fhead){
-	sel_gl_buffer_2_vector_img(iflag_img, fhead);
+void kemoview_write_window_to_vector_file(int iflag_img, struct kv_string *file_prefix){
+	sel_gl_buffer_2_vector_img(iflag_img, file_prefix->string);
 }
 
 void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char *bgra_in){

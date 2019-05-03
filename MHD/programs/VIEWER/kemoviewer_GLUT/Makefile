@@ -85,6 +85,7 @@ module:
 	kemoviewer_glut.o:  \
 	'$$(KEMOVIEW_GLUTDIR)'/kemoviewer_glut.c  \
 	kemo_mesh_viewer_glut.o \
+	kemoviewer.h \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE)' \
 	'$$(KEMOVIEW_GLUTDIR)'/kemoviewer_glut.c  \

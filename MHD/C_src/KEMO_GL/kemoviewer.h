@@ -550,9 +550,9 @@ extern "C" {
     int kemoview_get_num_ele_grp();
     int kemoview_get_num_surf_grp();
     
-    void kemoview_get_node_grp_name(char *name, int i);
-    void kemoview_get_ele_grp_name(char *name, int i);
-    void kemoview_get_surf_grp_name(char *name, int i);
+    void kemoview_get_node_grp_name(struct kv_string *groupname, int i);
+    void kemoview_get_ele_grp_name(struct kv_string *groupname, int i);
+    void kemoview_get_surf_grp_name(struct kv_string *groupname, int i);
     
     
     int kemoview_get_draw_type_flag();
@@ -576,7 +576,7 @@ extern "C" {
     
     void kemoview_get_fliped_img(int npixel_x, int npixel_y,
                                  unsigned char *glimage, unsigned char *fliped_img);
-	void kemoview_write_window_to_vector_file(int iflag_img, const char *fhead);
+	void kemoview_write_window_to_vector_file(int iflag_img, struct kv_string *file_prefix);
 
     void kemoview_modify_view();
     void kemoview_rotate();

@@ -45,7 +45,7 @@ static void save_image_handler(){
 	
 	input_file_header(image_head);
     id_image = input_image_format();
-    image_prefix = init_kvstring_by_string(image_head);
+    image_prefix = kemoview_init_kvstring_by_string(image_head);
 	
 	glutSetWindow(winid);
 	draw_mesh_keep_menu();
@@ -60,7 +60,7 @@ static void load_texture_handler(){
     struct kv_string *image_prefix;
     
 	input_file_header(image_head);
-    image_prefix = init_kvstring_by_string(image_head);
+    image_prefix = kemoview_init_kvstring_by_string(image_head);
     id_image = input_image_format();
 	
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
@@ -90,7 +90,7 @@ static void save_evolution_handler(){
 };
 
 void draw_rot_image_handler(int id_rot){
-    struct kv_string *image_prefix = init_kvstring_by_string("Kemoviewer");
+    struct kv_string *image_prefix = kemoview_init_kvstring_by_string("Kemoviewer");
 	write_rotate_views_glut(NO_SAVE_FILE, image_prefix, id_rot);
     kemoview_free_kvstring(image_prefix);
 };
@@ -100,7 +100,7 @@ void save_rot_image_handler(int id_rot){
     struct kv_string *image_prefix;
 	
 	input_file_header(image_head);
-    image_prefix = init_kvstring_by_string(image_head);
+    image_prefix = kemoview_init_kvstring_by_string(image_head);
 	int id_image = input_image_format();
 	write_rotate_views_glut(id_image, image_prefix, id_rot);
     kemoview_free_kvstring(image_prefix);

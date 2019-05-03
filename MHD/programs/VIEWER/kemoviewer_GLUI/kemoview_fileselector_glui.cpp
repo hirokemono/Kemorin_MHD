@@ -112,13 +112,13 @@ static void fileBrowerCB(int val)
 	currentDir->update_and_draw_text();
 	glui_fwin->sync_live();
 	
-    kv_filename = init_kvstring_by_string(text_fname.c_str());
+    kv_filename = kemoview_init_kvstring_by_string(text_fname.c_str());
 }
 
 static void input_image_file_panel(int val)
 {
 	text_fname = editText_filename->get_text();
-    kv_filename = init_kvstring_by_string(text_fname.c_str());
+    kv_filename = kemoview_init_kvstring_by_string(text_fname.c_str());
 	glui_fwin->sync_live();
 	return;
 }

@@ -338,56 +338,65 @@ static void glut_add_each_grp_menu_item(int i_item, int iflag_draw, char *grp_na
 void glut_nod_grp_menu_item(){
 	int i;
 	int iflag_draw;
-	char name_tmp[80];
+    struct kv_string *groupname;
 	int ngrp = kemoview_get_num_node_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_nodgrp_node(i);
-		kemoview_get_node_grp_name(name_tmp, i);
-		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_node_grp_name(groupname, i);
+		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
+        kemoview_free_kvstring(groupname);
 	};
 	glutAddMenuEntry("Show all",ngrp);
 }
 
 void glut_surf_grp_patch_menu(){
 	int i, iflag_draw;
-	char name_tmp[80];
+    struct kv_string *groupname;
 	int ngrp = kemoview_get_num_surf_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_surfgrp_patch(i);
-		kemoview_get_surf_grp_name(name_tmp, i);
-		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_surf_grp_name(groupname, i);
+        
+		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
+        kemoview_free_kvstring(groupname);
 	};
 	glutAddMenuEntry("Show all",ngrp);
 	return;
 }
 void glut_surf_grp_edge_menu(){
 	int i, iflag_draw;
-	char name_tmp[80];
+    struct kv_string *groupname;
 	int ngrp = kemoview_get_num_surf_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_surfgrp_grid(i);
-		kemoview_get_surf_grp_name(name_tmp, i);
-		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_surf_grp_name(groupname, i);
+		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
+        kemoview_free_kvstring(groupname);
 	};
 	glutAddMenuEntry("Show all",ngrp);
 	return;
 }
 void glut_surf_grp_node_menu(){
 	int i, iflag_draw;
-	char name_tmp[80];
+    struct kv_string *groupname;
 	int ngrp = kemoview_get_num_surf_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_surfgrp_node(i);
-		kemoview_get_surf_grp_name(name_tmp, i);
-		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_surf_grp_name(groupname, i);
+		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
+        kemoview_free_kvstring(groupname);
 	};
 	glutAddMenuEntry("Show all",ngrp);
 	return;
@@ -395,42 +404,48 @@ void glut_surf_grp_node_menu(){
 
 void glut_ele_grp_patch_menu(){
 	int i, iflag_draw;
-	char name_tmp[80];
+    struct kv_string *groupname;
 	int ngrp = kemoview_get_num_ele_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_elegrp_patch(i);
-		kemoview_get_ele_grp_name(name_tmp, i);
-		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_ele_grp_name(groupname, i);
+		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
+        kemoview_free_kvstring(groupname);
 	};
 	glutAddMenuEntry("Show all",ngrp);
 	return;
 }
 void glut_ele_grp_edge_menu(){
 	int i, iflag_draw;
-	char name_tmp[80];
+    struct kv_string *groupname;
 	int ngrp = kemoview_get_num_ele_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_elegrp_grid(i);
-		kemoview_get_ele_grp_name(name_tmp, i);
-		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_ele_grp_name(groupname, i);
+		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
+        kemoview_free_kvstring(groupname);
 	};
 	glutAddMenuEntry("Show all",ngrp);
 	return;
 }
 void glut_ele_grp_node_menu(){
 	int i, iflag_draw;
-	char name_tmp[80];
+    struct kv_string *groupname;
 	int ngrp = kemoview_get_num_ele_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
-		kemoview_get_ele_grp_name(name_tmp, i);
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_ele_grp_name(groupname, i);
 		iflag_draw = kemoview_get_draw_elegrp_node(i);
-		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
+		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
+        kemoview_free_kvstring(groupname);
 	};
 	glutAddMenuEntry("Show all",ngrp);
 	return;

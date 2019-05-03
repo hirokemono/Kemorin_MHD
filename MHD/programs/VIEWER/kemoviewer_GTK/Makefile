@@ -51,6 +51,7 @@ module:
 	@echo \
 	kemoviewer_gtk.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/kemoviewer_gtk.c  \
+	kemoviewer.h \
 	kemo_mesh_viewer_gtk.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
@@ -60,6 +61,7 @@ module:
 	@echo \
 	kemo_mesh_viewer_gtk.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/kemo_mesh_viewer_gtk.c  \
+	kemoviewer.h \
 	kemo_mesh_viewer_gtk.h \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_window_input.o \
@@ -74,6 +76,7 @@ module:
 	@echo \
 	kemoview_fileselector_gtk.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/kemoview_fileselector_gtk.c  \
+	kemoviewer.h \
 	kemoview_fileselector_gtk.h \
 	kemoview_glut_routines.o \
 	>> $(MAKENAME)
@@ -84,6 +87,7 @@ module:
 	@echo \
 	kemoview_gtk_window_input.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/kemoview_gtk_window_input.c  \
+	kemoviewer.h \
 	kemoview_gtk_window_input.h \
 	kemoview_glut_routines.o \
 	tree_view_4_pvr_colormap.o \

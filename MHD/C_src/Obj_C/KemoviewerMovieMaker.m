@@ -294,7 +294,9 @@ NSData *SnapshotData;
             } else if (CurrentMovieFormat == SAVE_BMP) {
                 [self SaveKemoviewBMPFile:ImageFilehead];
             } else {
-                kemoview_write_window_to_vector_file((int) CurrentMovieFormat, [ImageFilehead UTF8String]);
+                struct kv_string *file_prefix = kemoview_init_kvstring_by_string([ImageFilehead UTF8String]);
+                kemoview_write_window_to_vector_file((int) CurrentMovieFormat, file_prefix);
+                kemoview_free_kvstring(file_prefix);
             }
 		}
         
@@ -343,7 +345,9 @@ NSData *SnapshotData;
                 } else if (CurrentMovieFormat == SAVE_BMP) {
                     [self SaveKemoviewBMPFile:ImageFilehead];
                 } else {
-                    kemoview_write_window_to_vector_file((int) CurrentMovieFormat, [ImageFilehead UTF8String]);
+                    struct kv_string *file_prefix = kemoview_init_kvstring_by_string([ImageFilehead UTF8String]);
+                    kemoview_write_window_to_vector_file((int) CurrentMovieFormat, file_prefix);
+                    kemoview_free_kvstring(file_prefix);
                 }
 			}
 

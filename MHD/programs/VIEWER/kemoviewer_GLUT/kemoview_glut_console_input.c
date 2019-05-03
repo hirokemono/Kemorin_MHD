@@ -62,7 +62,7 @@ int input_image_format(){
 	
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
-    stripped_ext = init_kvstring_by_string(buf);
+    stripped_ext = kemoview_init_kvstring_by_string(buf);
 	
 	id_img = kemoview_set_image_file_format_id(stripped_ext);
     kemoview_free_kvstring(stripped_ext);
@@ -484,7 +484,7 @@ void save_PSF_colormap_file_glut(){
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
 
-    filename = init_kvstring_by_string(buf);
+    filename = kemoview_init_kvstring_by_string(buf);
 	kemoview_write_PSF_colormap_file(filename);
     kemoview_free_kvstring(filename);
 	return;
@@ -500,7 +500,7 @@ void load_PSF_colormap_file_glut(){
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
 
-    filename = init_kvstring_by_string(buf);
+    filename = kemoview_init_kvstring_by_string(buf);
 	kemoview_read_PSF_colormap_file(filename);
     kemoview_free_kvstring(filename);
 	return;

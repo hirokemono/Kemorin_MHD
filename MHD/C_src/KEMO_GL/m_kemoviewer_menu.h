@@ -236,6 +236,7 @@ struct fline_menu_val{
 
 void alloc_kvstringitem(int length, struct kv_string *ucd_m);
 struct kv_string* alloc_kvstring();
+struct kv_string* init_kvstring_by_string(const char *org_string);
 void dealloc_kvstring(struct kv_string *kvstring);
 
 void alloc_copy_string(const char *org_string, struct kv_string *ucd_copied);
