@@ -40,25 +40,28 @@ static void draw_mesh_w_menu(){
 };
 
 static void save_image_handler(){
-	char image_head[LENGTHBUF];
 	int id_image;
-	id_image = output_image_file_gtk(image_head);
+    struct kv_string *image_prefix = kemoview_alloc_kvstring();
+    
+	id_image = output_image_file_gtk(image_prefix);
 	
 	glutSetWindow(winid);
 	draw_mesh_keep_menu();
-    kemoview_write_window_to_file(id_image, image_head);
+    kemoview_write_window_to_file(id_image, image_prefix->string);
+    kemoview_free_kvstring(image_prefix);
 	return;
 };
 
 static void load_texture_handler(){
-	char image_head[LENGTHBUF];
 	int id_image;
-	id_image = input_texture_file_gtk(image_head);
+    struct kv_string *image_prefix;
+	id_image = input_texture_file_gtk(image_prefix);
 	
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
-	
-		kemoview_set_texture_to_PSF(id_image, image_head);
+        image_prefix = kemoview_alloc_kvstring();
+		kemoview_set_texture_to_PSF(id_image, image_prefix->string);
 		kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE);
+        kemoview_free_kvstring(image_prefix);
 	};
 	
 	
@@ -74,8 +77,7 @@ static void save_evolution_handler(){
     struct kv_string *psf_filehead = kemoview_alloc_kvstring();
 	
 	ist_udt = kemoview_get_PSF_full_path_file_prefix(psf_filehead, &iflag);
-	id_image = output_evolution_file_gtk(psf_filehead->string,
-			&ist_udt, &ied_udt, &inc_udt);
+	id_image = output_evolution_file_gtk(psf_filehead, &ist_udt, &ied_udt, &inc_udt);
 	
 	printf("header: %s\n", psf_filehead->string);
 	printf("steps: %d %d %d\n", ist_udt, ied_udt, inc_udt);
@@ -90,11 +92,12 @@ void draw_rot_image_handler(int id_rot){
 };
 
 void save_rot_image_handler(int id_rot){
-	char image_head[LENGTHBUF];
 	int id_image;
+    struct kv_string *image_prefix = kemoview_alloc_kvstring();
 	
-	id_image = output_image_file_gtk(image_head);
-	write_rotate_views_glut(id_image, image_head, id_rot);
+	id_image = output_image_file_gtk(image_prefix);
+	write_rotate_views_glut(id_image, image_prefix->string, id_rot);
+    kemoview_free_kvstring(image_prefix);
 };
 
 

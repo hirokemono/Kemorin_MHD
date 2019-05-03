@@ -69,23 +69,30 @@ static void SetPickSurfaceCB(int val)
 
 static void init_kemoview_data_glui(int val){
 	char current[LENGTHBUF];
-	char file_name[LENGTHBUF];
-	char file_head[LENGTHBUF];
-	char file_ext[LENGTHBUF];
+    int length;
 	int iflag_datatype;
+    struct kv_string *filename = kemoview_alloc_kvstring();
+    struct kv_string *file_prefix = kemoview_alloc_kvstring();
+    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	
 	getcwd(current, sizeof(current));
+    printf("tako: %s\n", current);
+
+    length = strlen(current) + strlen(text_fname.c_str()) + 5;
+    kemoview_alloc_kvstringitem(length, filename);
+	strcpy(filename->string, current);
+	strcat(filename->string, "/");
+	strcat(filename->string, text_fname.c_str());
 	
-	strcpy(file_name, current);
-	strcat(file_name, "/");
-	strcat(file_name, text_fname.c_str());
+	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
+	printf("file name: %s\n", filename->string);
+	printf("file_prefix %s\n", file_prefix->string);
+	printf("stripped_ext %s\n", stripped_ext->string);
+    kemoview_free_kvstring(stripped_ext);
+    kemoview_free_kvstring(file_prefix);
 	
-	kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
-	printf("file name: %s\n", file_name);
-	printf("file_head %s\n", file_head);
-	printf("file_ext %s\n", file_ext);
-	
-	iflag_datatype = kemoview_open_data(file_name);
+	iflag_datatype = kemoview_open_data(filename->string);
+    kemoview_free_kvstring(filename);
 	
 	GLUI_Master.close_all();
 	draw_mesh_w_menu();
@@ -94,24 +101,30 @@ static void init_kemoview_data_glui(int val){
 
 static void load_psf_texture_glui(int sel){
 	char current[LENGTHBUF];
-	char file_name[LENGTHBUF];
-	char file_head[LENGTHBUF];
-	char img_ext[LENGTHBUF];
+    int length;
 	int ext_fmt;
+    struct kv_string *filename = kemoview_alloc_kvstring();
+    struct kv_string *file_prefix = kemoview_alloc_kvstring();
+    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	
 	getcwd(current, sizeof(current));
 	
-	strcpy(file_name, current);
-	strcat(file_name, "/");
-	strcat(file_name, text_fname.c_str());
+    length = strlen(current) + strlen(text_fname.c_str()) + 5;
+    kemoview_alloc_kvstringitem(length, filename);
+    strcpy(filename->string, current);
+	strcat(filename->string, "/");
+	strcat(filename->string, text_fname.c_str());
 	
-	kemoview_get_ext_from_file_name(file_name, file_head, img_ext);
-	ext_fmt = kemoview_set_image_file_format_id(img_ext);
+	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
+	ext_fmt = kemoview_set_image_file_format_id(stripped_ext->string);
+    kemoview_free_kvstring(filename);
+    kemoview_free_kvstring(file_prefix);
 	
 	if(ext_fmt == SAVE_PNG || ext_fmt == SAVE_BMP){
-		kemoview_set_texture_to_PSF(ext_fmt, file_head);
+		kemoview_set_texture_to_PSF(ext_fmt, stripped_ext->string);
 		kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE);
 	};
+    kemoview_free_kvstring(stripped_ext);
 	
 	draw_mesh_w_menu();
 	

@@ -449,6 +449,8 @@ extern "C" {
     
     void kemoview_write_modelview_file(const char *file_name);
     void kemoview_load_modelview_file(const char *file_name);
+    
+    int kemoview_set_data_format_flag(const char *file_name, char *file_head, char *file_ext);  
     int kemoview_open_data(const char *file_name);
     
     void kemoview_close_mesh_view();
@@ -561,8 +563,10 @@ extern "C" {
     double kemoview_get_domain_distance();
     
     
-    void kemoview_get_ext_from_file_name(const char *file_head, char *stripped_fhead, char *stripped_ext);
-    void kemoview_add_ext_to_file_name(const char *file_head, const char *added_ext, char *file_name);
+    void kemoview_get_ext_from_file_name(struct kv_string *filename,
+                                         struct kv_string *stripped_prefix, struct kv_string *stripped_ext);
+    void kemoview_add_ext_to_file_name(struct kv_string *file_prefix, struct kv_string *added_ext,
+                                       struct kv_string *file_name);
     
     
     void kemoview_set_text_color_code(float c_code[4]);
@@ -716,7 +720,7 @@ extern "C" {
     /* Subroutines for field lines */
     
     void kemoview_get_fline_full_path_file_name(struct kv_string *ucd_m);
-    int kemoview_get_fline_file_step_prefix(char *file_head);
+    int kemoview_get_fline_file_step_prefix(struct kv_string *fline_filehead);
     void kemoview_set_fline_file_step(int istep);
     
     void kemoview_set_fline_switch(int iflag);

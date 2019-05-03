@@ -88,10 +88,11 @@ NSData *SnapshotData;
 
 -(void) InitEvolutionStepByFline;
 {
-	char image_head[LENGTHBUF];
-	self.CurrentStep = kemoview_get_fline_file_step_prefix(image_head);
+    struct kv_string *fline_filehead = kemoview_alloc_kvstring();
+	self.CurrentStep = kemoview_get_fline_file_step_prefix(fline_filehead);
 	self.EvolutionStartStep = self.CurrentStep;
 	self.EvolutionEndStep =   self.CurrentStep;
+    kemoview_free_kvstring(fline_filehead);
 }
 
 -(void) OpenQTMovieFile:(NSString *)movieFileName{

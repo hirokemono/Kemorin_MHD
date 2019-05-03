@@ -381,7 +381,6 @@ static void set_pickup_command(char *file_name){
 void read_kemoview_data_gtk(){
 	char file_name[LENGTHBUF];
 	char file_head[LENGTHBUF];
-	char file_head2[LENGTHBUF];
 	char file_ext[LENGTHBUF];
 	char pick_command[LENGTHBUF];
 	int iflag_datatype;
@@ -391,48 +390,47 @@ void read_kemoview_data_gtk(){
 	if(iflag_set == IZERO) return;
 	strcpy(file_name, gtk_selected_filename);
 	
-	kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
+	iflag_datatype = kemoview_set_data_format_flag(file_name, file_head, file_ext);
 	printf("file name: %s\n", file_name);
 	printf("file_head %s\n", file_head);
 	printf("file_ext %s\n", file_ext);
-	
-	if (		  (file_ext[0] == 'g' && file_ext[1] == 'z')
-		||	  (file_ext[0] == 'G' && file_ext[1] == 'Z') ){
-		kemoview_get_ext_from_file_name(file_head, file_head2, file_ext);
-		
-		if (file_ext[0] == '0' && file_ext[1] == '\0') {
-			return;
-		}
-	} else if (file_ext[0] == '0' && file_ext[1] == '\0') {
-		set_pickup_command(pick_command);
-		if(iflag_set == IZERO) return;
-		kemoview_set_pick_surface_command(pick_command);
-	}
-	
+    
+    if(iflag_datatype == IFLAG_FULL_MESH_GZ || iflag_datatype == IFLAG_FULL_MESH){
+        set_pickup_command(pick_command);
+        if(iflag_set == IZERO) return;
+        kemoview_set_pick_surface_command(pick_command);
+        strcat(file_name, ".ksm");
+        if(iflag_datatype == IFLAG_FULL_MESH_GZ){strcat(file_name, ".gz");};
+    };
+
 	iflag_datatype = kemoview_open_data(file_name);
 	return;
 };
 
 
-int input_texture_file_gtk(char *file_head){
-	char file_name[LENGTHBUF];
-	char file_ext[LENGTHBUF];
+int input_texture_file_gtk(struct kv_string *file_prefix){
+    struct kv_string *filename;
+    struct kv_string *stripped_ext;
 	int id_img;
 	
 	gtk_read_file_window("Select texture file");
 	if(iflag_set == IZERO) return 0;
 	
-	strcpy(file_name, gtk_selected_filename);
-	kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
+    stripped_ext = kemoview_alloc_kvstring();
+    filename = kemoview_alloc_kvstring();
+    kemoview_alloc_copy_string(gtk_selected_filename, filename);
+	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
 	
-	id_img = kemoview_set_image_file_format_id(file_ext);
+	id_img = kemoview_set_image_file_format_id(stripped_ext->string);
+    kemoview_free_kvstring(stripped_ext);
+    kemoview_free_kvstring(filename);
 	return id_img;
 }
 
-int output_image_file_gtk(char *file_head){
+int output_image_file_gtk(struct kv_string *file_prefix){
 	char image_fmt[LENGTHBUF];
-	char file_name[LENGTHBUF];
-	char file_ext[LENGTHBUF];
+    struct kv_string *filename;
+    struct kv_string *stripped_ext;
 	int id_img;
 	
 	gtk_image_fmt_menu();
@@ -445,18 +443,22 @@ int output_image_file_gtk(char *file_head){
 		gtk_save_file_window("Save Image file");
 		if(iflag_set == IZERO) return 0;
 		
-		strcpy(file_name, gtk_selected_filename);
-		kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
+        stripped_ext = kemoview_alloc_kvstring();
+        filename =     kemoview_alloc_kvstring();
+		kemoview_alloc_copy_string(gtk_selected_filename, filename);
+		kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
+        kemoview_free_kvstring(stripped_ext);
+        kemoview_free_kvstring(filename);
 	};
 	
 	return id_img;
 }
 
-int output_evolution_file_gtk(char *file_head,
+int output_evolution_file_gtk(struct kv_string *file_prefix,
 			int *ist_udt, int *ied_udt, int *inc_udt){
 	char image_fmt[LENGTHBUF];
-	char file_name[LENGTHBUF];
-	char file_ext[LENGTHBUF];
+    struct kv_string *filename;
+    struct kv_string *stripped_ext;
 	int id_img;
 	
 	printf("ist_udt %d \n",*ist_udt);
@@ -472,9 +474,14 @@ int output_evolution_file_gtk(char *file_head,
 		gtk_save_file_window("Save Image files");
 		if(iflag_set == IZERO) return 0;
 		
-		strcpy(image_fmt, gtk_selected_filefmt);
-		strcpy(file_name, gtk_selected_filename);
-		kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
+        strcpy(image_fmt, gtk_selected_filefmt);
+        
+        stripped_ext = kemoview_alloc_kvstring();
+        filename =     kemoview_alloc_kvstring();
+        kemoview_alloc_copy_string(gtk_selected_filename, filename);
+		kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
+        kemoview_free_kvstring(stripped_ext);
+        kemoview_free_kvstring(filename);
 	};
 	
 	return id_img;

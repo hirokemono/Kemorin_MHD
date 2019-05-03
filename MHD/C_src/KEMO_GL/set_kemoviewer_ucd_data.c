@@ -10,28 +10,20 @@
 #include "set_kemoviewer_ucd_data.h"
 
 static void run_pick_surface_c(struct mesh_menu_val *mesh_m){
-	int length;
-	char *file_head;
-	char *file_tmp;
-	char *file_ext;
-	char *command;
-	
-	length = strlen(mesh_m->mesh_file_name);
-	file_head = (char *)calloc(length+1, sizeof(char));
-	length = strlen(mesh_m->mesh_file_name);
-	file_tmp = (char *)calloc(length+1, sizeof(char));
-	length = strlen(mesh_m->mesh_file_name);
-	file_ext = (char *)calloc(length+1, sizeof(char));
-	length = strlen(mesh_m->pick_surface_command) + strlen(file_head);
-	command = (char *)calloc(length+10, sizeof(char));
+	int length = strlen(mesh_m->pick_surface_command) 
+                + strlen(mesh_m->mesh_file_name) + 10;
+	char *file_head = alloc_string(strlen(mesh_m->mesh_file_name));
+	char *file_tmp = alloc_string(strlen(mesh_m->mesh_file_name));
+	char *file_ext = alloc_string(strlen(mesh_m->mesh_file_name));
+	char *command = alloc_string(length);
 	
 	if (mesh_m->iformat_surface_mesh == IFLAG_FULL_MESH_GZ) {
-        kemoview_get_ext_from_file_name(mesh_m->mesh_file_name, file_head, file_ext);
+        get_ext_from_file_name_c(mesh_m->mesh_file_name, file_head, file_ext);
     } else {
         strngcopy(file_head, mesh_m->mesh_file_name);
     };
-    kemoview_get_ext_from_file_name(file_head, file_tmp, file_ext);
-    kemoview_get_ext_from_file_name(file_tmp, file_head, file_ext);
+    get_ext_from_file_name_c(file_head, file_tmp, file_ext);
+    get_ext_from_file_name_c(file_tmp, file_head, file_ext);
     
 	strcpy(command,mesh_m->pick_surface_command);
 	strcat(command, "    ");
@@ -54,23 +46,16 @@ static void run_pick_surface_c(struct mesh_menu_val *mesh_m){
 	return;
 }
 
-static int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
+int set_data_format_flag(const char *file_name, char *file_head, char *file_ext){
 	int ifile_type;
 	
-	int length;
-	char *file_head2;
-	char *file_ext;
+	char *file_head2 = alloc_string(strlen(file_name));
 	
-	length = strlen(file_name);
-	file_head2 = (char *)calloc(length+1, sizeof(char));
-	length = strlen(file_name);
-	file_ext = (char *)calloc(length+1, sizeof(char));
-	
-	kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
+	get_ext_from_file_name_c(file_name, file_head, file_ext);
 	
 	if((file_ext[0] == 'g' && file_ext[1] == 'z') 
        || (file_ext[0] == 'G' && file_ext[1] == 'Z') ){
-        kemoview_get_ext_from_file_name(file_head, file_head2, file_ext);
+        get_ext_from_file_name_c(file_head, file_head2, file_ext);
 
         if((file_ext[0] == 'k' && file_ext[1] == 's' && file_ext[2] == 'm')
            || (file_ext[0] == 'K' && file_ext[1] == 'S' && file_ext[2] == 'M') ){
@@ -78,7 +63,7 @@ static int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
         } else if((file_ext[0] == 'g' && file_ext[1] == 'f' && file_ext[2] == 'm')
                   || (file_ext[0] == 'G' && file_ext[1] == 'F' && file_ext[2] == 'M') ){
             ifile_type = IFLAG_FULL_MESH_GZ;
-            kemoview_get_ext_from_file_name(file_head2, file_head, file_ext);
+            get_ext_from_file_name_c(file_head2, file_head, file_ext);
             strngcopy(file_head2, file_head);
         } else if((file_ext[0] == 'u' && file_ext[1] == 'd' && file_ext[2] == 't')
                   || (file_ext[0] == 'U' && file_ext[1] == 'D' && file_ext[2] == 'T') ){
@@ -105,7 +90,7 @@ static int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
                   ||	  (file_ext[0] == 'G' && file_ext[1] == 'F' && file_ext[2] == 'M') ){
             ifile_type = IFLAG_FULL_MESH;
 
-            kemoview_get_ext_from_file_name(file_head, file_head2, file_ext);
+            get_ext_from_file_name_c(file_head, file_head2, file_ext);
             strngcopy(file_head, file_head2);
         } else if(	  (file_ext[0] == 'u' && file_ext[1] == 'd' && file_ext[2] == 't')
                   ||	  (file_ext[0] == 'U' && file_ext[1] == 'D' && file_ext[2] == 'T') ){
@@ -123,7 +108,6 @@ static int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
             ifile_type = 99;
 	};
 	free(file_head2);
-	free(file_ext);
 	return ifile_type;
 }
 
@@ -178,15 +162,17 @@ int kemoviewer_open_data(const char *file_name, struct viewer_mesh *mesh_d, stru
 	int length;
 	char *file_head_w_step;
 	char *ucd_header;
+    char *file_ext = alloc_string(strlen(file_name));
 	
 	length = strlen(file_name);
 	file_head_w_step = (char *)calloc(length+1, sizeof(char));
 	length = strlen(file_name);
 	ucd_header = (char *)calloc(length+1, sizeof(char));
 	
-	iflag_fileformat = set_kemoview_data_fmt_flag(file_name, file_head_w_step);
+	iflag_fileformat = set_data_format_flag(file_name, file_head_w_step, file_ext);
 	printf("iflag_fileformat %d\n", iflag_fileformat);
 	printf("file_name %s\n", file_name);
+    free(file_ext);
 	if(   iflag_fileformat == IFLAG_SURF_MESH || iflag_fileformat == IFLAG_SURF_MESH_GZ
        || iflag_fileformat == IFLAG_FULL_MESH || iflag_fileformat == IFLAG_FULL_MESH_GZ){
         mesh_m->iformat_surface_mesh = iflag_fileformat;

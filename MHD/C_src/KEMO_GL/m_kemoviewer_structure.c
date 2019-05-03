@@ -182,6 +182,10 @@ void kemoview_get_background_color(GLfloat color[4]){copy_rgba_color_c(kemo_sgl-
 
 
 /* Routines for menu selection */
+int kemoview_set_data_format_flag(const char *file_name, char *file_head, char *file_ext){
+    return set_data_format_flag(file_name, file_head, file_ext);
+}
+
 int kemoview_open_data(const char *file_name){
 	int iflag_datatype;
 	iflag_datatype = kemoviewer_open_data(file_name, kemo_sgl->mesh_d, kemo_sgl->mesh_m,
@@ -524,11 +528,17 @@ double kemoview_get_node_diamater()   {return kemo_sgl->mesh_m->node_diam;};
 double kemoview_get_domain_distance(){return kemo_sgl->mesh_m->dist_domains;};
 
 
-void kemoview_get_ext_from_file_name(const char *file_head, char *stripped_fhead, char *stripped_ext){
-	get_ext_from_file_name_c(file_head, stripped_fhead, stripped_ext);
+void kemoview_get_ext_from_file_name(struct kv_string *filename,
+                                     struct kv_string *stripped_prefix, struct kv_string *stripped_ext){
+    alloc_kvstringitem(strlen(filename->string), stripped_prefix);
+    alloc_kvstringitem(strlen(filename->string), stripped_ext);
+	get_ext_from_file_name_c(filename->string, stripped_prefix->string, stripped_ext->string);
 }
-void kemoview_add_ext_to_file_name(const char *file_head, const char *added_ext, char *file_name){
-	add_ext_to_file_name_c(file_head, added_ext, file_name);
+void kemoview_add_ext_to_file_name(struct kv_string *file_prefix, struct kv_string *added_ext,
+                                   struct kv_string *file_name){
+    int lentgh = strlen(file_prefix->string) + strlen(added_ext->string);
+    alloc_kvstringitem(lentgh+2, file_name);
+    add_ext_to_file_name_c(file_prefix->string, added_ext->string, file_name->string);
 }
 
 void kemoview_set_text_color_code(float c_code[4]){copy_rgba_color_c(c_code, kemo_sgl->mesh_m->text_color);};
@@ -853,8 +863,8 @@ void kemoview_get_fline_full_path_file_name(struct kv_string *ucd_m){
 	alloc_set_ucd_file_name_by_fline(kemo_sgl->fline_m, ucd_m);
 	return;
 }
-int kemoview_get_fline_file_step_prefix(char *file_head){
-	strngcopy(file_head, kemo_sgl->fline_m->fline_header->string);
+int kemoview_get_fline_file_step_prefix(struct kv_string *fline_filehead){
+	alloc_copy_string(kemo_sgl->fline_m->fline_header->string, fline_filehead);
 	return kemo_sgl->fline_m->fline_step;
 };
 void kemoview_set_fline_file_step(int istep){kemo_sgl->fline_m->fline_step = istep;};

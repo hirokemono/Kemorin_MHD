@@ -78,22 +78,17 @@ void read_kemoview_data_glut(){
 	int iflag_datatype;
 	
 	input_file_name(file_name);
-	kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
+	iflag_datatype = kemoview_set_data_format_flag(file_name, file_head, file_ext);
 	printf("file name: %s\n", file_name);
 	printf("file_head %s\n", file_head);
 	printf("file_ext %s\n", file_ext);
 	
-	if (		  (file_ext[0] == 'g' && file_ext[1] == 'z')
-		||	  (file_ext[0] == 'G' && file_ext[1] == 'Z') ){
-		kemoview_get_ext_from_file_name(file_head, file_head2, file_ext);
-		
-		if (file_ext[0] == '0' && file_ext[1] == '\0') {
-			return;
-		}
-	} else if (file_ext[0] == '0' && file_ext[1] == '\0') {
-		set_pickup_command(pick_command);
-		kemoview_set_pick_surface_command(pick_command);
-	}
+    if(iflag_datatype == IFLAG_FULL_MESH_GZ || iflag_datatype == IFLAG_FULL_MESH){
+        set_pickup_command(pick_command);
+        kemoview_set_pick_surface_command(pick_command);
+        strcat(file_name, ".ksm");
+        if(iflag_datatype == IFLAG_FULL_MESH_GZ){strcat(file_name, ".gz");};
+    };
 	
 	iflag_datatype = kemoview_open_data(file_name);
 	return;
