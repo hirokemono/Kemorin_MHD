@@ -116,12 +116,12 @@ static void load_psf_texture_glui(int sel){
 	strcat(filename->string, text_fname.c_str());
 	
 	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
-	ext_fmt = kemoview_set_image_file_format_id(stripped_ext->string);
+	ext_fmt = kemoview_set_image_file_format_id(stripped_ext);
     kemoview_free_kvstring(filename);
     kemoview_free_kvstring(file_prefix);
 	
 	if(ext_fmt == SAVE_PNG || ext_fmt == SAVE_BMP){
-		kemoview_set_texture_to_PSF(ext_fmt, stripped_ext->string);
+		kemoview_set_texture_to_PSF(ext_fmt, stripped_ext);
 		kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE);
 	};
     kemoview_free_kvstring(stripped_ext);
@@ -134,19 +134,19 @@ static void load_psf_texture_glui(int sel){
 
 static void load_psf_colormap_glui(int sel){
 	char current[LENGTHBUF];
-	char file_name[LENGTHBUF];
-	char file_head[LENGTHBUF];
-	char img_ext[LENGTHBUF];
-	int ext_fmt;
+    int length;
+    struct kv_string *filename = kemoview_alloc_kvstring();
 	
 	getcwd(current, sizeof(current));
+    length = strlen(current) + strlen(text_fname.c_str()) + 5;
+    
+    kemoview_alloc_kvstringitem(length, filename);
+	strcpy(filename->string, current);
+	strcat(filename->string, "/");
+	strcat(filename->string, text_fname.c_str());
 	
-	strcpy(file_name, current);
-	strcat(file_name, "/");
-	strcat(file_name, text_fname.c_str());
-	
-	kemoview_read_PSF_colormap_file(file_name);
-	
+	kemoview_read_PSF_colormap_file(filename);
+	kemoview_free_kvstring(filename);
 	draw_mesh_w_menu();
 	
 	GLUI_Master.close_all();
@@ -310,7 +310,9 @@ static void load_viewmatrix_file_glui(int winid){
 /* ---------  Action for selected menu -----------   */ 
 
 void draw_rot_image_handler(int id_rot){
-	write_rotate_views_glut(NO_SAVE_FILE, (char*)  "Kemoviewer", id_rot);
+    struct kv_string *image_prefix = init_kvstring_by_string("Kemoviewer");
+	write_rotate_views_glut(NO_SAVE_FILE, image_prefix, id_rot);
+    kemoview_free_kvstring(image_prefix);
 };
 
 static void kemoview_psf_draw_input_setting(int selected){
@@ -853,15 +855,17 @@ static void make_2nd_level_fline_menu(){
 	int ic_fline = kemoview_get_fline_color_component();
 	int num_comp = kemoview_get_fline_color_num_comps(if_fline);
 	int itype_fline = kemoview_get_fline_type();
+    struct kv_string *colorname = kemoview_alloc_kvstring();
 	
 	glut_menu_id->fline_root_menu = glutCreateMenu(fline_handler);
 	
-	kemoview_get_fline_color_data_name(tmp_menu, if_fline);
+	kemoview_get_fline_color_data_name(colorname, if_fline);
 	if(num_fld > 1){
-		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_fline_c_menu);
+		glutAddSubMenu(colorname->string, glut_menu_id->ichoose_fline_c_menu);
 	} else {
-		glutAddMenuEntry(tmp_menu, PSF_NOTHING_TODO);
+		glutAddMenuEntry(colorname->string, PSF_NOTHING_TODO);
 	};
+    kemoview_free_kvstring(colorname);
 	
 	if (num_comp > 1) {
 		sprintf(tmp_menu, "Current component: %d", (ic_fline+1) ); 

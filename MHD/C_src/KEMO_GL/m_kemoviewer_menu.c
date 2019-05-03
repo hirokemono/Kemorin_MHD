@@ -13,6 +13,11 @@ void alloc_kvstringitem(int length, struct kv_string *ucd_m){
     };
 	return;
 };
+void alloc_copy_string(const char *org_string, struct kv_string *ucd_copied){
+	alloc_kvstringitem(strlen(org_string), ucd_copied);
+	strngcopy(ucd_copied->string, org_string);
+	return;
+};
 
 struct kv_string* alloc_kvstring(){
 	struct kv_string *kvstring;
@@ -23,17 +28,18 @@ struct kv_string* alloc_kvstring(){
     }
 	return kvstring;
 };
+
+struct kv_string* init_kvstring_by_string(const char *org_string){
+	struct kv_string *kvstring = alloc_kvstring();
+	alloc_copy_string(org_string, kvstring);
+	return kvstring;
+};
 void dealloc_kvstring(struct kv_string *kvstring){
 	free(kvstring->string);
 	free(kvstring);
 	return;
 };
 
-void alloc_copy_string(const char *org_string, struct kv_string *ucd_copied){
-	alloc_kvstringitem(strlen(org_string), ucd_copied);
-	strngcopy(ucd_copied->string, org_string);
-	return;
-};
 
 void alloc_set_ucd_field_file_name(int iformat_ucd_file, int istep, const char *ucd_header,
 			struct kv_string *ucd_m){

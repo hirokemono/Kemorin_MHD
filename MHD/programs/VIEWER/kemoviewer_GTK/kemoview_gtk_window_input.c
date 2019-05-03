@@ -537,15 +537,18 @@ void set_psf_range_gtk(){
 
 void set_fline_range_gtk(){
 	double range_min, range_max;
-	char name[1024];
 	
 	int ifield = kemoview_get_fline_color_field();
 	int icomp = kemoview_get_fline_color_data_adress();
-	range_min = kemoview_get_fline_data_min(icomp);
+    struct kv_string *colorname = kemoview_alloc_kvstring();
+
+    range_min = kemoview_get_fline_data_min(icomp);
 	range_max = kemoview_get_fline_data_max(icomp);
-	kemoview_get_fline_color_data_name(name, ifield);
+	kemoview_get_fline_color_data_name(colorname, ifield);
 	
-	gtk_range_menu(range_min, range_max, name);
+	gtk_range_menu(range_min, range_max, colorname->string);
+    kemoview_free_kvstring(colorname);
+
 	if(iflag_set == IZERO) return; 
 	
 	kemoview_set_fline_linear_colormap(gtk_min, gtk_max);

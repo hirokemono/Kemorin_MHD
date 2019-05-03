@@ -421,9 +421,10 @@ struct mul_kemoviewer_type;
 extern "C" {
 #endif
 	void kemoview_alloc_kvstringitem(int length, struct kv_string *kvstring);
-	struct kv_string* kemoview_alloc_kvstring();
-	void kemoview_free_kvstring(struct kv_string *kvstring);
 	void kemoview_alloc_copy_string(const char *org_string, struct kv_string *kvstring);
+	struct kv_string* kemoview_alloc_kvstring();
+	struct kv_string* init_kvstring_by_string(const char *org_string);
+	void kemoview_free_kvstring(struct kv_string *kvstring);
 
     void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, int iflag_dmesh);
     void kemoview_allocate_single_viwewer_struct(struct kemoviewer_type *kemoviewer_data);
@@ -714,7 +715,7 @@ extern "C" {
     void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity);
     
     void kemoview_write_PSF_colormap_file(const char *file_name);
-    void kemoview_read_PSF_colormap_file(const char *file_name);
+    void kemoview_read_PSF_colormap_file(struct kv_string *filename);
 	void kemoview_check_PSF_colormap_control();
     
     
@@ -727,14 +728,14 @@ extern "C" {
     void kemoview_set_fline_switch(int iflag);
     void kemoview_set_fline_color_type(int iflag);
     void kemoview_set_fline_color_field(int sel);
-    void kemoview_set_fline_color_component(int sel);    
+    void kemoview_set_fline_color_component(int sel);
     
     int kemoview_get_fline_switch();
     int kemoview_get_fline_color_num_field();
     int kemoview_get_fline_color_ncomptot();
     int kemoview_get_fline_color_num_comps(int i);
     int kemoview_get_fline_color_istack(int i);
-    void kemoview_get_fline_color_data_name(char *name, int i);
+    void kemoview_get_fline_color_data_name(struct kv_string *colorname, int i);
     int kemoview_get_fline_color_field();
     int kemoview_get_fline_color_component();
     int kemoview_get_fline_color_data_adress();
@@ -770,19 +771,19 @@ extern "C" {
     void kemoview_get_fline_color_item(int i_point, double *value, double *color);
     void kemoview_get_fline_opacity_item(int i_point, double *value, double *opacity);
     
-    void kemoview_write_fline_colormap_file(const char *file_name);
-    void kemoview_read_fline_colormap_file(const char *file_name);
+    void kemoview_write_fline_colormap_file(struct kv_string *filename);
+    void kemoview_read_fline_colormap_file(struct kv_string *filename);
 
     
 /** Load texture onto current sectioning image */
-    void kemoview_set_texture_to_PSF(int img_fmt, const char *img_head);
+    void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix);
 
 /** Set Image file format by ID */
-    int kemoview_set_image_file_format_id(char *image_fmt);
+    int kemoview_set_image_file_format_id(struct kv_string *image_ext);
 /** Write Kemoviwer window image to file without step number */
-    void kemoview_write_window_to_file(int iflag_img, const char *fhead);
+    void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix);
 /** Write Kemoviwer window image to file with step number */
-    void kemoview_write_window_to_file_w_step(int iflag_img, int istep, const char *fhead);
+    void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix);
 #ifdef __cplusplus
 }
 #endif

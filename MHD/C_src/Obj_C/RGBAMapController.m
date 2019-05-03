@@ -74,7 +74,10 @@
                                            NSLog(@" ColormapDirectory = %@", ColormapDirectory);
                                            NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
                                            
-                                           kemoview_read_PSF_colormap_file((char *) [ColormapFilename UTF8String]);
+                                           struct kv_string *filename = init_kvstring_by_string([ColormapFilename UTF8String]);
+                                           kemoview_read_PSF_colormap_file(filename);
+                                           kemoview_free_kvstring(filename);
+                                           
                                            [_kemoviewer UpdateImage];
                                            [_colorMapObject SetColorTables];
                                            [_opacityMapObject SetOpacityTables];

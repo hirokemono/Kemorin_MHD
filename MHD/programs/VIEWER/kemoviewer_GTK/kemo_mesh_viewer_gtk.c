@@ -47,7 +47,7 @@ static void save_image_handler(){
 	
 	glutSetWindow(winid);
 	draw_mesh_keep_menu();
-    kemoview_write_window_to_file(id_image, image_prefix->string);
+    kemoview_write_window_to_file(id_image, image_prefix);
     kemoview_free_kvstring(image_prefix);
 	return;
 };
@@ -59,7 +59,7 @@ static void load_texture_handler(){
 	
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
         image_prefix = kemoview_alloc_kvstring();
-		kemoview_set_texture_to_PSF(id_image, image_prefix->string);
+		kemoview_set_texture_to_PSF(id_image, image_prefix);
 		kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE);
         kemoview_free_kvstring(image_prefix);
 	};
@@ -74,21 +74,22 @@ static void save_evolution_handler(){
 	int id_image;
 	int ist_udt, ied_udt, inc_udt;
 	int iflag;
-    struct kv_string *psf_filehead = kemoview_alloc_kvstring();
+    struct kv_string *image_prefix = kemoview_alloc_kvstring();
 	
-	ist_udt = kemoview_get_PSF_full_path_file_prefix(psf_filehead, &iflag);
-	id_image = output_evolution_file_gtk(psf_filehead, &ist_udt, &ied_udt, &inc_udt);
+	ist_udt = kemoview_get_PSF_full_path_file_prefix(image_prefix, &iflag);
+	id_image = output_evolution_file_gtk(image_prefix, &ist_udt, &ied_udt, &inc_udt);
 	
-	printf("header: %s\n", psf_filehead->string);
+	printf("header: %s\n", image_prefix->string);
 	printf("steps: %d %d %d\n", ist_udt, ied_udt, inc_udt);
-	write_evolution_views_glut(id_image, psf_filehead->string, 
-							   ist_udt, ied_udt, inc_udt);
-    kemoview_free_kvstring(psf_filehead);
+	write_evolution_views_glut(id_image, image_prefix, ist_udt, ied_udt, inc_udt);
+    kemoview_free_kvstring(image_prefix);
 	return;
 };
 
 void draw_rot_image_handler(int id_rot){
-	write_rotate_views_glut(NO_SAVE_FILE, (char*)  "Kemoviewer", id_rot);
+    struct kv_string *image_prefix = init_kvstring_by_string("Kemoviewer");
+	write_rotate_views_glut(NO_SAVE_FILE, image_prefix, id_rot);
+    kemoview_free_kvstring(image_prefix);
 };
 
 void save_rot_image_handler(int id_rot){
@@ -96,7 +97,7 @@ void save_rot_image_handler(int id_rot){
     struct kv_string *image_prefix = kemoview_alloc_kvstring();
 	
 	id_image = output_image_file_gtk(image_prefix);
-	write_rotate_views_glut(id_image, image_prefix->string, id_rot);
+	write_rotate_views_glut(id_image, image_prefix, id_rot);
     kemoview_free_kvstring(image_prefix);
 };
 
@@ -643,15 +644,17 @@ static void make_2nd_level_fline_menu(){
 	int ic_fline = kemoview_get_fline_color_component();
 	int num_comp = kemoview_get_fline_color_num_comps(if_fline);
 	int itype_fline = kemoview_get_fline_type();
+    struct kv_string *colorname = kemoview_alloc_kvstring();
 	
 	glut_menu_id->fline_root_menu = glutCreateMenu(fline_handler);
 	
-	kemoview_get_fline_color_data_name(tmp_menu, if_fline);
+	kemoview_get_fline_color_data_name(colorname, if_fline);
 	if(num_fld > 1){
-		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_fline_c_menu);
+		glutAddSubMenu(colorname->string, glut_menu_id->ichoose_fline_c_menu);
 	} else {
-		glutAddMenuEntry(tmp_menu, PSF_NOTHING_TODO);
+		glutAddMenuEntry(colorname->string, PSF_NOTHING_TODO);
 	};
+    kemoview_free_kvstring(colorname);
 	
 	if (num_comp > 1) {
 		sprintf(tmp_menu, "Current component: %d", (ic_fline+1) ); 

@@ -47,24 +47,25 @@ void set_pickup_command(char *file_name){
 
 int input_image_format(){
 	char buf[LENGTHBUF];
-	char image_fmt[LENGTHBUF];
 	char *delchara;
 	int id_img;
+    struct kv_string *stripped_ext;
 	
 	printf("Input Image format\n");
-	printf("	 0:  NO: No Image\n");
-	printf("	 1: PNG: PNG Images\n");
-	printf("	 2: BMP: Bitmap Images\n");
-	printf("	10: EPS: Encapsulated PostScript\n");
-	printf("	11:  PS: PostScript\n");
-	printf("	20: PDF:  Portable Document Format\n");
+	printf("   NO: No Image\n");
+	printf("  PNG: PNG Images\n");
+	printf("  BMP: Bitmap Images\n");
+	printf("  EPS: Encapsulated PostScript\n");
+	printf("   PS: PostScript\n");
+	printf("  PDF:  Portable Document Format\n");
 	fgets(buf,sizeof(buf),stdin);
 	
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
-	strcpy(image_fmt, buf);
+    stripped_ext = init_kvstring_by_string(buf);
 	
-	id_img = kemoview_set_image_file_format_id(image_fmt);
+	id_img = kemoview_set_image_file_format_id(stripped_ext);
+    kemoview_free_kvstring(stripped_ext);
 	return id_img;
 }
 
@@ -160,16 +161,17 @@ void set_psf_range_console(){
 
 void set_fline_range_console(){
 	float range_min, range_max;
-	char name[1024];
 	
 	int ifield = kemoview_get_fline_color_field();
 	int icomp = kemoview_get_fline_color_data_adress();
 	float data_min = (float) kemoview_get_fline_data_min(icomp);
 	float data_max = (float) kemoview_get_fline_data_max(icomp);
-	kemoview_get_fline_color_data_name(name, ifield);
+    struct kv_string *colorname = kemoview_alloc_kvstring();
+	kemoview_get_fline_color_data_name(colorname, ifield);
 	
-	input_range_from_console(name, &range_min, &range_max, data_min, data_max);	
+	input_range_from_console(colorname->string, &range_min, &range_max, data_min, data_max);	
 	kemoview_set_fline_linear_colormap((double) range_min, (double) range_max);
+    kemoview_free_kvstring(colorname);
 	return;
 }
 
@@ -484,16 +486,18 @@ void save_PSF_colormap_file_glut(){
 };
 
 void load_PSF_colormap_file_glut(){
-	char file_name[LENGTHBUF];
 	char buf[LENGTHBUF];
 	char *delchara;
+    struct kv_string *filename;
 	
 	printf("Input colormap file name\n");
 	fgets(buf,sizeof(buf),stdin);
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
-	strcpy(file_name, buf);
-	kemoview_read_PSF_colormap_file(file_name);
+
+    filename = init_kvstring_by_string(buf);
+	kemoview_read_PSF_colormap_file(filename);
+    kemoview_free_kvstring(filename);
 	return;
 };
 

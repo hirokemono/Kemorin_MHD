@@ -19,7 +19,7 @@ void draw_mesh_keep_menu(){
 	return;
 };
 
-void write_rotate_views_glut(int iflag_img, char *image_head, int i_axis) {
+void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, int i_axis) {
 	int i, int_degree;
 	int int_deg = 2;
 	int ied_deg = 360/int_deg;
@@ -36,13 +36,13 @@ void write_rotate_views_glut(int iflag_img, char *image_head, int i_axis) {
 		kemoview_rotate();
 		glutSwapBuffers();
 		
-        kemoview_write_window_to_file_w_step(iflag_img, i, image_head);
+        kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);
 	};
 	draw_mesh_keep_menu();
 	return;
 }
 
-void write_evolution_views_glut(int iflag_img, char *image_head, 
+void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt){
 	int i;
 
@@ -56,7 +56,7 @@ void write_evolution_views_glut(int iflag_img, char *image_head,
 			draw_mesh_keep_menu();
 			glutSwapBuffers();
             
-            kemoview_write_window_to_file_w_step(iflag_img, i, image_head);
+            kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);
 		}
 	}
 	return;

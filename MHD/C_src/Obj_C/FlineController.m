@@ -73,8 +73,8 @@
 {
 	int i, iflag;
 	double minmax;
-	char name[4096];
-	NSString *stname;
+    struct kv_string *colorname = kemoview_alloc_kvstring();
+    NSString *stname;
 	NSNumber *stnum;
 	
 	FlineNumberOfField =  kemoview_get_fline_color_num_field();
@@ -90,8 +90,8 @@
 	[FlineMinimum removeAllObjects];
 	[FlineMaximum removeAllObjects];
 	for(i = 0; i < FlineNumberOfField; i++){
-		kemoview_get_fline_color_data_name(name,i);
-		stname = [[NSString alloc] initWithUTF8String:name];
+		kemoview_get_fline_color_data_name(colorname,i);
+		stname = [[NSString alloc] initWithUTF8String:colorname->string];
 		[FlineFieldName      addObject:stname];
 		[stname release];
 		
@@ -100,6 +100,8 @@
 		[FlineNumberOfComponent addObject:stnum];
 		[stnum release];	
 	}
+    kemoview_free_kvstring(colorname);
+    
 	for(i = 0; i < FlineTotalComponent; i++){
 		minmax = kemoview_get_fline_data_min(i);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];

@@ -389,8 +389,7 @@ void read_kemoview_data_gtk(){
 	gtk_read_file_window("Input data file");
 	if(iflag_set == IZERO) return;
     
-    filename = kemoview_alloc_kvstring();
-	kemoview_alloc_copy_string(gtk_selected_filename, filename);
+    filename = init_kvstring_by_string(gtk_selected_filename);
 	
     stripped_ext = kemoview_alloc_kvstring();
     file_prefix = kemoview_alloc_kvstring();
@@ -433,11 +432,10 @@ int input_texture_file_gtk(struct kv_string *file_prefix){
 	if(iflag_set == IZERO) return 0;
 	
     stripped_ext = kemoview_alloc_kvstring();
-    filename = kemoview_alloc_kvstring();
-    kemoview_alloc_copy_string(gtk_selected_filename, filename);
+    filename = init_kvstring_by_string(gtk_selected_filename);
 	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
 	
-	id_img = kemoview_set_image_file_format_id(stripped_ext->string);
+	id_img = kemoview_set_image_file_format_id(stripped_ext);
     kemoview_free_kvstring(stripped_ext);
     kemoview_free_kvstring(filename);
 	return id_img;
@@ -452,16 +450,16 @@ int output_image_file_gtk(struct kv_string *file_prefix){
 	gtk_image_fmt_menu();
 	if(iflag_set == IZERO) return 0;
 	
-	strcpy(image_fmt, gtk_selected_filefmt);
-	id_img = kemoview_set_image_file_format_id(image_fmt);
+    stripped_ext = init_kvstring_by_string(gtk_selected_filefmt);
+	id_img = kemoview_set_image_file_format_id(stripped_ext);
+    kemoview_free_kvstring(stripped_ext);
 	
 	if(id_img != 0){
 		gtk_save_file_window("Save Image file");
 		if(iflag_set == IZERO) return 0;
 		
         stripped_ext = kemoview_alloc_kvstring();
-        filename =     kemoview_alloc_kvstring();
-		kemoview_alloc_copy_string(gtk_selected_filename, filename);
+        filename =     init_kvstring_by_string(gtk_selected_filename);
 		kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
         kemoview_free_kvstring(stripped_ext);
         kemoview_free_kvstring(filename);
@@ -484,21 +482,21 @@ int output_evolution_file_gtk(struct kv_string *file_prefix,
 	*ist_udt = gtk_istart;
 	*ied_udt = gtk_iend;
 	*inc_udt = gtk_inc;
-	id_img = kemoview_set_image_file_format_id(image_fmt);
+	id_img = kemoview_set_image_file_format_id(stripped_ext);
 	
 	if(id_img != 0){
 		gtk_save_file_window("Save Image files");
 		if(iflag_set == IZERO) return 0;
 		
-        strcpy(image_fmt, gtk_selected_filefmt);
+        strcpy(stripped_ext->string, gtk_selected_filefmt);
         
         stripped_ext = kemoview_alloc_kvstring();
-        filename =     kemoview_alloc_kvstring();
-        kemoview_alloc_copy_string(gtk_selected_filename, filename);
+        filename =     init_kvstring_by_string(gtk_selected_filename);
 		kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
         kemoview_free_kvstring(stripped_ext);
         kemoview_free_kvstring(filename);
 	};
+    kemoview_free_kvstring(stripped_ext);
 	
 	return id_img;
 }
@@ -516,14 +514,14 @@ void save_PSF_colormap_file_gtk(){
 };
 
 void load_PSF_colormap_file_gtk(){
-	char file_name[LENGTHBUF];
-	
+    struct kv_string *filename;
+    
 	gtk_read_file_window("Load colormap file");
 	if(iflag_set == IZERO) return;
 	
-	strcpy(file_name, gtk_selected_filename);
-	kemoview_read_PSF_colormap_file(file_name);
-	
+    filename = init_kvstring_by_string(gtk_selected_filename);
+	kemoview_read_PSF_colormap_file(filename);
+	kemoview_free_kvstring(filename);
 	return;
 };
 

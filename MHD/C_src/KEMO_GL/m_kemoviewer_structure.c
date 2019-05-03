@@ -852,8 +852,8 @@ void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity)
 void kemoview_write_PSF_colormap_file(const char *file_name){
     write_each_PSF_colormap_control_file(kemo_sgl->psf_current_menu, file_name);
 }
-void kemoview_read_PSF_colormap_file(const char *file_name){
-    read_each_PSF_colormap_control_file(kemo_sgl->psf_current_menu, file_name);
+void kemoview_read_PSF_colormap_file(struct kv_string *filename){
+    read_each_PSF_colormap_control_file(kemo_sgl->psf_current_menu, filename->string);
 }
 void kemoview_check_PSF_colormap_control(){
     check_each_PSF_colormap_control(kemo_sgl->psf_current_menu);
@@ -887,7 +887,9 @@ int kemoview_get_fline_color_num_field(){return kemo_sgl->fline_d->nfield;};
 int kemoview_get_fline_color_ncomptot(){return kemo_sgl->fline_d->ncomptot;};
 int kemoview_get_fline_color_num_comps(int i){return kemo_sgl->fline_d->ncomp[i];};
 int kemoview_get_fline_color_istack(int i){return kemo_sgl->fline_d->istack_comp[i];};
-void kemoview_get_fline_color_data_name(char *name, int i){ strngcopy(name, kemo_sgl->fline_d->data_name[i]); };
+void kemoview_get_fline_color_data_name(struct kv_string *colorname, int i){
+    alloc_copy_string(kemo_sgl->fline_d->data_name[i], colorname);
+};
 int kemoview_get_fline_color_field(){return kemo_sgl->fline_m->if_draw_fline;};
 int kemoview_get_fline_color_component(){return kemo_sgl->fline_m->ic_draw_fline;};
 int kemoview_get_fline_color_data_adress(){return kemo_sgl->fline_m->icomp_draw_fline;};
@@ -962,26 +964,30 @@ void kemoview_get_fline_opacity_item(int i_point, double *value, double *opacity
 	send_opacity_table_items_s(kemo_sgl->fline_m->cmap_fline, i_point, value, opacity);
 }
 
-void kemoview_write_fline_colormap_file(const char *file_name){
-	write_colormap_control_file_s(file_name, kemo_sgl->fline_m->cmap_fline);
+void kemoview_write_fline_colormap_file(struct kv_string *filename){
+	write_colormap_control_file_s(filename->string, kemo_sgl->fline_m->cmap_fline);
 }
-void kemoview_read_fline_colormap_file(const char *file_name){
-	read_colormap_control_file_s(file_name, kemo_sgl->fline_m->cmap_fline);
+void kemoview_read_fline_colormap_file(struct kv_string *filename){
+	read_colormap_control_file_s(filename->string, kemo_sgl->fline_m->cmap_fline);
 }
 
 /*  Routines using libpng */
 #ifdef PNG_OUTPUT
-int kemoview_set_image_file_format_id(char *image_fmt){return set_image_format_id_by_ext(image_fmt);}
-
-void kemoview_write_window_to_file(int iflag_img, const char *fhead){
-    write_gl_window_to_file(iflag_img, fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
-}
-void kemoview_write_window_to_file_w_step(int iflag_img, int istep, const char *fhead){
-    write_gl_window_step_file(iflag_img, istep, fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
+int kemoview_set_image_file_format_id(struct kv_string *image_ext){
+    return set_image_format_id_by_ext(image_ext->string);
 }
 
-void kemoview_set_texture_to_PSF(int img_fmt, const char *img_head){
-    set_texture_to_psf(img_fmt, img_head, kemo_sgl->psf_current_menu);
+void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix){
+    write_gl_window_to_file(iflag_img, image_prefix->string, 
+                            kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
+}
+void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix){
+    write_gl_window_step_file(iflag_img, istep, image_prefix->string, 
+                              kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
+}
+
+void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix){
+    set_texture_to_psf(img_fmt, image_prefix->string, kemo_sgl->psf_current_menu);
 };
 #endif
 
