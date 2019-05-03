@@ -648,7 +648,7 @@ extern "C" {
     int kemoview_get_PSF_num_field();
     int kemoview_get_PSF_ncomptot();
     int kemoview_get_PSF_num_component(int i);
-    void kemoview_get_PSF_field_name(char *name, int i);
+	void kemoview_get_PSF_field_name(struct kv_string *colorname, int i);
     
     int kemoview_get_PSF_draw_switch();
     

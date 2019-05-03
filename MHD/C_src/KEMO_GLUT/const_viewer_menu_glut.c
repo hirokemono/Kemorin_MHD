@@ -50,14 +50,15 @@ void glut_PSF_field_select() {
 	int i;
 	int num_field = kemoview_get_PSF_num_field();
 	int if_psf = kemoview_get_PSF_field_id();
-	char field_name[80];
+    struct kv_string *colorname = kemoview_alloc_kvstring();
 	
 	for ( i = 0; i< num_field; i++) {
 		if( i != if_psf){
-			kemoview_get_PSF_field_name(field_name, i);
-			glutAddMenuEntry(field_name,i);
+			kemoview_get_PSF_field_name(colorname, i);
+			glutAddMenuEntry(colorname->string,i);
 		}
 	};
+    kemoview_free_kvstring(colorname);
 	return;
 }
 
@@ -65,14 +66,16 @@ void glut_fline_color_select(){
 	int i;
 	int num_field = kemoview_get_fline_color_num_field();
 	int if_fline = kemoview_get_fline_color_field();
-	char field_name[80];
+    struct kv_string *colorname = kemoview_alloc_kvstring();
 	
 	for ( i = 0; i< num_field; i++) {
 		if( i != if_fline) {
-			kemoview_get_PSF_field_name(field_name, i);
-			glutAddMenuEntry(field_name,i);
+			kemoview_get_PSF_field_name(colorname, i);
+			glutAddMenuEntry(colorname->string,i);
 		}
 	};
+    kemoview_free_kvstring(colorname);
+
 	return;
 }
 

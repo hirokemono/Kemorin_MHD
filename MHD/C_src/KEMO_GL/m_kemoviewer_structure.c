@@ -720,8 +720,8 @@ void kemoview_set_PSF_component(int sel){
 int kemoview_get_PSF_num_field()         {return send_nfield_each_psf(kemo_sgl->psf_current_data);};
 int kemoview_get_PSF_ncomptot()          {return send_ncomptot_each_psf(kemo_sgl->psf_current_data);};
 int kemoview_get_PSF_num_component(int i){return send_ncomp_each_psf(kemo_sgl->psf_current_data, i);};
-void kemoview_get_PSF_field_name(char *name, int i){
-    send_each_psf_data_name(kemo_sgl->psf_current_data, name, i);
+void kemoview_get_PSF_field_name(struct kv_string *colorname, int i){
+    send_each_psf_data_name(kemo_sgl->psf_current_data, colorname, i);
 };
 
 int kemoview_get_PSF_draw_switch(){return kemo_sgl->psf_a->iflag_loaded[kemo_sgl->psf_a->id_current];};

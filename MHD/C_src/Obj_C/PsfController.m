@@ -123,9 +123,9 @@
 {
 	int i, iflag;
 	double minmax;
-	char name[4096];
 	NSString *stname;
 	NSNumber *stnum;
+    struct kv_string *colorname;
 	
 	PsfNumberOfField =  kemoview_get_PSF_num_field();
 	PsfTotalComponent = kemoview_get_PSF_ncomptot();
@@ -133,9 +133,11 @@
 	[PsfNumberOfComponent removeAllObjects];
 	[PsfMinimum removeAllObjects];
 	[PsfMaximum removeAllObjects];
+    
+    colorname = kemoview_alloc_kvstring();
 	for(i = 0; i < PsfNumberOfField; i++){
-		kemoview_get_PSF_field_name(name,i);
-		stname = [[NSString alloc] initWithUTF8String:name];
+		kemoview_get_PSF_field_name(colorname,i);
+		stname = [[NSString alloc] initWithUTF8String:colorname->string];
 		[PsfFieldName      addObject:stname];
 		[stname release];	
         
@@ -144,6 +146,7 @@
 		[PsfNumberOfComponent addObject:stnum];
 		[stnum release];	
 	}
+    kemoview_free_kvstring(colorname);
 	for(i = 0; i < PsfTotalComponent; i++){
 		minmax = kemoview_get_PSF_min_data(i);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];

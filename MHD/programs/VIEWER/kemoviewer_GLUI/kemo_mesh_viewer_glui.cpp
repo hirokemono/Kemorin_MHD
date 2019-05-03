@@ -799,6 +799,7 @@ static void make_2nd_level_psf_menu(){
 	char tmp_menu[1024];
     int istep;
     struct kv_string *stripped_filehead;
+    struct kv_string *colorname;
 	
 	int num_psf =     kemoview_get_PSF_num_loaded();
 	int num_fld =     kemoview_get_PSF_num_field();
@@ -820,12 +821,14 @@ static void make_2nd_level_psf_menu(){
 	};
 	
 	
-	kemoview_get_PSF_field_name(tmp_menu,if_psf);
+    colorname = kemoview_alloc_kvstring();
+	kemoview_get_PSF_field_name(colorname,if_psf);
 	if (num_fld > 1) {
-		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_field_menu);
+		glutAddSubMenu(colorname->string, glut_menu_id->ichoose_field_menu);
 	} else {
-		glutAddMenuEntry(tmp_menu, PSF_NOTHING_TODO);
+		glutAddMenuEntry(colorname->string, PSF_NOTHING_TODO);
 	};
+    kemoview_free_kvstring(colorname);
 	
 	if (num_comp > 1) {
 		set_PSF_component_name(num_comp,ic_psf,tmp_menu); 

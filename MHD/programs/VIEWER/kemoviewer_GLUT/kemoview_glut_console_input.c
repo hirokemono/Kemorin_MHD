@@ -145,17 +145,20 @@ static float set_opacity_console(float opacity_org){
 }
 
 void set_psf_range_console(){
+    struct kv_string *colorname;
 	float range_min, range_max;
-	char name[1024];
 	
 	int ifield = kemoview_get_PSF_field_id();
 	int icomp = kemoview_get_PSF_draw_data_address();
 	float data_min = (float) kemoview_get_PSF_min_data(icomp);
 	float data_max = (float) kemoview_get_PSF_max_data(icomp);
-	kemoview_get_PSF_field_name(name, ifield);
+
+    colorname = kemoview_alloc_kvstring();
+	kemoview_get_PSF_field_name(colorname, ifield);
 	
-	input_range_from_console(name, &range_min, &range_max, data_min, data_max);
+	input_range_from_console(colorname->string, &range_min, &range_max, data_min, data_max);
 	kemoview_set_PSF_linear_colormap((double) range_min, (double) range_max);
+    kemoview_free_kvstring(colorname);
 	return;
 }
 

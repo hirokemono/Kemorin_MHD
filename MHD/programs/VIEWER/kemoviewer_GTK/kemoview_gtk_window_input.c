@@ -494,17 +494,19 @@ void set_psf_single_color_gtk(){
 }
 
 void edit_psf_colormap_gtk(){
-	char name[1024];
 	double range_min, range_max;
+    struct kv_string *colorname;
 	
 	int ifield = kemoview_get_PSF_field_id();
 	int icomp = kemoview_get_PSF_draw_data_address();
 	
-	kemoview_get_PSF_field_name(name, ifield);
+    colorname = kemoview_alloc_kvstring();
+	kemoview_get_PSF_field_name(colorname, ifield);
 	range_min = kemoview_get_PSF_min_data(icomp);
 	range_max = kemoview_get_PSF_max_data(icomp);
 	
-	gtk_colormap_menu(range_min, range_max, name);
+	gtk_colormap_menu(range_min, range_max, colorname->string);
+    kemoview_free_kvstring(colorname);
 	/*
 	if(iflag_set == MODIFY_POINT){
 		kemoview_set_PSF_color_data(i_selected, gtk_value, gtk_color);}
@@ -519,17 +521,20 @@ void edit_psf_colormap_gtk(){
 
 void set_psf_range_gtk(){
 	double range_min, range_max;
-	char name[1024];
+    struct kv_string *colorname;
 	
 	int ifield = kemoview_get_PSF_field_id();
 	int icomp = kemoview_get_PSF_draw_data_address();
 	
-	kemoview_get_PSF_field_name(name, ifield);
+    colorname = kemoview_alloc_kvstring();
+	kemoview_get_PSF_field_name(colorname, ifield);
 	range_min = kemoview_get_PSF_min_data(icomp);
 	range_max = kemoview_get_PSF_max_data(icomp);
 	
-	gtk_range_menu(range_min, range_max, name);
-	if(iflag_set == IZERO) return; 
+	gtk_range_menu(range_min, range_max, colorname->string);
+    kemoview_free_kvstring(colorname);
+
+    if(iflag_set == IZERO) return; 
 	
 	kemoview_set_PSF_linear_colormap(gtk_min, gtk_max);
 	return;
