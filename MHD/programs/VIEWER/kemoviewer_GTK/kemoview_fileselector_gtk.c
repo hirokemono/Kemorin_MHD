@@ -92,7 +92,7 @@ static void kemoview_gtk_read_file_select(GtkButton *button, gpointer data){
 	if (response == GTK_RESPONSE_ACCEPT){
 		chooser = GTK_FILE_CHOOSER (filew);
 		gtk_selected_filename = gtk_file_chooser_get_filename (chooser);
-		g_print ("%s\n", gtk_selected_filename);
+        g_print ("file name: %s\n", gtk_selected_filename);
 		gtk_entry_set_text(entry, gtk_selected_filename);
 		iflag_set = IONE;
 	}
@@ -102,6 +102,7 @@ static void kemoview_gtk_read_file_select(GtkButton *button, gpointer data){
 	else{
     g_print( "Another response was received.\n" );
 	}
+    
  	gtk_widget_destroy(filew);
 	return;
 }
@@ -146,8 +147,8 @@ static void kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
 
 static void gtk_read_file_window(const char *title){
 	GtkWidget *hbox;
-  GtkWidget *label;
-  GtkWidget *entry;
+    GtkWidget *label;
+    GtkWidget *entry;
 	GtkWidget *button, *button2;
 	
 	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -379,8 +380,7 @@ void read_kemoview_data_gtk(){
 	
 	gtk_read_file_window("Input data file");
 	if(iflag_set == IZERO) return;
-	
-	strcpy(file_name, gtk_selected_filename);
+//	strcpy(file_name, gtk_selected_filename);
 	
 	kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
 	printf("file name: %s\n", file_name);

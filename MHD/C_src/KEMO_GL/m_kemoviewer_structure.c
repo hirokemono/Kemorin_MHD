@@ -681,9 +681,8 @@ int kemoview_get_PSF_full_path_file_prefix(char *file_head, int *iflag){
     return send_each_psf_file_header_full(kemo_sgl->psf_current_menu, file_head, iflag);
 }
 
-int kemoview_get_PSF_file_prefix(char *file_head){
-	int istep;
-	istep = send_each_psf_file_header(kemo_sgl->psf_current_menu, file_head);
+int kemoview_get_PSF_file_prefix(struct kv_string *stripped_filehead){
+	int istep = send_each_psf_file_header(kemo_sgl->psf_current_menu, stripped_filehead);
 	return istep;
 }
 

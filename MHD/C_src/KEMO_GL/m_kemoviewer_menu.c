@@ -5,11 +5,12 @@
 #include "m_kemoviewer_menu.h"
 
 
-static void alloc_kvstringitem(int length, struct kv_string *ucd_m){
-	if((ucd_m->string = (char *)calloc(length+1, sizeof(char))) == NULL){
-		printf("malloc error for string in kv_string\n");
-		exit(0);
-	};
+void alloc_kvstringitem(int length, struct kv_string *ucd_m){
+/*	ucd_m->string = alloc_string(length);*/
+    if((ucd_m->string = (char *)calloc(length+1, sizeof(char))) == NULL){
+        printf("malloc error for string\n");
+        exit(0);
+    };
 	return;
 };
 

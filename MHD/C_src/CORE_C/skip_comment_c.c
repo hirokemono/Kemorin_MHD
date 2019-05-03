@@ -362,16 +362,18 @@ void split_dir_and_file_name_c(const char *file_name,
 }
 
 void get_dir_name_from_full_path_c(const char *file_name, char *stripped_dir){
-    char stripped_fname[LENGTHBUF];
+	char *stripped_fname = alloc_string(strlen(file_name));
 	
-    split_dir_and_file_name_c(file_name, stripped_dir, stripped_fname);
+	split_dir_and_file_name_c(file_name, stripped_dir, stripped_fname);
+	free(stripped_fname);
 	return;
 }
 
 void get_file_name_from_full_path_c(const char *file_name, char *stripped_fname){
-    char stripped_dir[LENGTHBUF];
+	char *stripped_dir = alloc_string(strlen(file_name));
 	
-    split_dir_and_file_name_c(file_name, stripped_dir, stripped_fname);
+	split_dir_and_file_name_c(file_name, stripped_dir, stripped_fname);
+	free(stripped_dir);
 	return;
 }
 

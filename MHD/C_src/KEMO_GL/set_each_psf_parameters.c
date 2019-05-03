@@ -1,10 +1,10 @@
-//
+/*
 //  set_each_psf_parameters.c
 //  Kemoview_Cocoa
 //
 //  Created by Hiroaki Matsui on 12/08/13.
 //
-//
+*/
 
 #include <stdio.h>
 #include "set_each_psf_parameters.h"
@@ -14,8 +14,9 @@ int send_each_psf_file_header_full(struct psf_menu_val *psf_menu, char *file_hea
 	strngcopy(file_head, psf_menu->psf_header);
 	return psf_menu->psf_step;
 };
-int send_each_psf_file_header(struct psf_menu_val *psf_menu, char *file_head){
-	get_file_name_from_full_path_c(psf_menu->psf_header, file_head);
+int send_each_psf_file_header(struct psf_menu_val *psf_menu, struct kv_string *stripped_filehead){
+	alloc_kvstringitem(strlen(psf_menu->psf_header), stripped_filehead);
+	get_file_name_from_full_path_c(psf_menu->psf_header, stripped_filehead->string);
 	return psf_menu->psf_step;
 };
 

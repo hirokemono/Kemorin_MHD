@@ -29,14 +29,16 @@ void glut_current_PSF_select() {
 	int i, istep;
 	int id_current;
 	char title[LENGTHBUF];
-	char psf_name[LENGTHBUF];
+    struct kv_string *stripped_filehead;
 	
 	id_current = kemoview_get_curent_PSF_ID();
 	for (i=0; i< kemoview_get_PSF_max_loaded(); i++) {
 		if(i != id_current && kemoview_get_PSF_loaded_flag(i) > 0){
 			kemoview_set_current_PSF(i);
-			istep = kemoview_get_PSF_file_prefix(psf_name);
-			sprintf(title, "%d: %s", i, psf_name);
+            stripped_filehead = kemoview_alloc_kvstring();
+			istep = kemoview_get_PSF_file_prefix(stripped_filehead);
+			sprintf(title, "%d: %s", i, stripped_filehead->string);
+            kemoview_free_kvstring(stripped_filehead);
 			glutAddMenuEntry(title,i);
 		}
 	};

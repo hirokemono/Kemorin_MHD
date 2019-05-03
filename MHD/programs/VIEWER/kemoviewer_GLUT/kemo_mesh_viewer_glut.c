@@ -673,7 +673,7 @@ static void make_3rd_level_fline_menu(){
 
 static void make_2nd_level_psf_menu(){
 	char tmp_menu[1024];
-	char psf_name[LENGTHBUF];
+    struct kv_string *stripped_filehead;
     int istep;
 	
 	int num_psf =     kemoview_get_PSF_num_loaded();
@@ -687,8 +687,10 @@ static void make_2nd_level_psf_menu(){
 	glut_menu_id->psf_root_menu = glutCreateMenu(psf_handler);
 	
 	if(num_psf > 1){
-		istep = kemoview_get_PSF_file_prefix(psf_name);
-		sprintf(tmp_menu, "Current: %s", psf_name);
+        stripped_filehead = kemoview_alloc_kvstring();
+		istep = kemoview_get_PSF_file_prefix(stripped_filehead);
+		sprintf(tmp_menu, "Current: %s", stripped_filehead->string);
+        kemoview_free_kvstring(stripped_filehead);
 		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_current_psf_menu);
 	}
     
@@ -716,8 +718,7 @@ static void make_2nd_level_psf_menu(){
     }
 	
 	glutAddMenuEntry("Close Current PSF data", PSF_OFF);
-	
-	return;
+    return;
 };
 
 static void make_2nd_level_fline_menu(){

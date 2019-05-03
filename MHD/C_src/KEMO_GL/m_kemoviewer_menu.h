@@ -234,6 +234,7 @@ struct fline_menu_val{
 
 /* Prototypes */
 
+void alloc_kvstringitem(int length, struct kv_string *ucd_m);
 struct kv_string* alloc_kvstring();
 void dealloc_kvstring(struct kv_string *kvstring);
 

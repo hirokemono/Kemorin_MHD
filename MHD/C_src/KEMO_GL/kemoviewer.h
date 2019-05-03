@@ -632,7 +632,7 @@ extern "C" {
     
     void kemoview_get_PSF_full_path_file_name(struct kv_string *ucd_m);
     int kemoview_get_PSF_full_path_file_prefix(char *file_head, int *iflag);
-    int kemoview_get_PSF_file_prefix(char *file_head);
+    int kemoview_get_PSF_file_prefix(struct kv_string *stripped_filehead);
     
     void kemoview_set_PSF_field(int sel);
     void kemoview_set_PSF_component(int sel);
