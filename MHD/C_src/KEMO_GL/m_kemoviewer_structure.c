@@ -182,8 +182,11 @@ void kemoview_get_background_color(GLfloat color[4]){copy_rgba_color_c(kemo_sgl-
 
 
 /* Routines for menu selection */
-int kemoview_set_data_format_flag(const char *file_name, char *file_head, char *file_ext){
-    return set_data_format_flag(file_name, file_head, file_ext);
+int kemoview_set_data_format_flag(struct kv_string *filename, 
+                                  struct kv_string *stripped_prefix, struct kv_string *stripped_ext){
+    alloc_kvstringitem(strlen(filename->string), stripped_prefix);
+    alloc_kvstringitem(strlen(filename->string), stripped_ext);
+    return set_data_format_flag(filename->string, stripped_prefix->string, stripped_ext->string);
 }
 
 int kemoview_open_data(const char *file_name){

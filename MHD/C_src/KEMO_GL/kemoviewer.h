@@ -450,7 +450,8 @@ extern "C" {
     void kemoview_write_modelview_file(const char *file_name);
     void kemoview_load_modelview_file(const char *file_name);
     
-    int kemoview_set_data_format_flag(const char *file_name, char *file_head, char *file_ext);  
+    int kemoview_set_data_format_flag(struct kv_string *filename, 
+                                      struct kv_string *stripped_prefix, struct kv_string *stripped_ext);
     int kemoview_open_data(const char *file_name);
     
     void kemoview_close_mesh_view();

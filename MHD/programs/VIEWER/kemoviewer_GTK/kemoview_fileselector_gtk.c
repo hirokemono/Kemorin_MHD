@@ -379,31 +379,47 @@ static void set_pickup_command(char *file_name){
 }
 
 void read_kemoview_data_gtk(){
-	char file_name[LENGTHBUF];
-	char file_head[LENGTHBUF];
-	char file_ext[LENGTHBUF];
 	char pick_command[LENGTHBUF];
 	int iflag_datatype;
+    struct kv_string *filename;
+    struct kv_string *file_prefix;
+    struct kv_string *stripped_ext;
 	
 	
 	gtk_read_file_window("Input data file");
 	if(iflag_set == IZERO) return;
-	strcpy(file_name, gtk_selected_filename);
+    
+    filename = kemoview_alloc_kvstring();
+	kemoview_alloc_copy_string(gtk_selected_filename, filename);
 	
-	iflag_datatype = kemoview_set_data_format_flag(file_name, file_head, file_ext);
-	printf("file name: %s\n", file_name);
-	printf("file_head %s\n", file_head);
-	printf("file_ext %s\n", file_ext);
+    stripped_ext = kemoview_alloc_kvstring();
+    file_prefix = kemoview_alloc_kvstring();
+	iflag_datatype = kemoview_set_data_format_flag(filename, file_prefix, stripped_ext);
+	printf("file name: %s\n", filename->string);
+	printf("file_prefix %s\n", file_prefix->string);
+	printf("stripped_ext %s\n", stripped_ext->string);
+    kemoview_free_kvstring(stripped_ext);
     
     if(iflag_datatype == IFLAG_FULL_MESH_GZ || iflag_datatype == IFLAG_FULL_MESH){
         set_pickup_command(pick_command);
-        if(iflag_set == IZERO) return;
+        if(iflag_set == IZERO){
+            kemoview_free_kvstring(file_prefix);
+            kemoview_free_kvstring(filename);
+            return;
+        };
+        kemoview_free_kvstring(filename);
         kemoview_set_pick_surface_command(pick_command);
-        strcat(file_name, ".ksm");
-        if(iflag_datatype == IFLAG_FULL_MESH_GZ){strcat(file_name, ".gz");};
+        
+        filename = kemoview_alloc_kvstring();
+        kemoview_alloc_kvstringitem(strlen(stripped_ext->string)+10, filename);
+        strcpy(filename->string, file_prefix->string);
+        strcat(filename->string, ".ksm");
+        if(iflag_datatype == IFLAG_FULL_MESH_GZ){strcat(filename->string, ".gz");};
     };
 
-	iflag_datatype = kemoview_open_data(file_name);
+	iflag_datatype = kemoview_open_data(filename->string);
+    kemoview_free_kvstring(file_prefix);
+    kemoview_free_kvstring(filename);
 	return;
 };
 
