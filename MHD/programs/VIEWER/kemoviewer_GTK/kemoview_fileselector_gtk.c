@@ -372,18 +372,18 @@ static void gtk_evolution_fmt_menu(int istep){
    GLUT callback routines for file IO
 */
 
-static void set_pickup_command(char *file_name){
+static void set_pickup_command_gtk(struct kv_string *filename){
 	gtk_read_file_window("Select pickup surface program");
-	strcpy(file_name, gtk_selected_filename);
+	kemoview_alloc_copy_string(gtk_selected_filename, filename);
 	return;
 }
 
 void read_kemoview_data_gtk(){
-	char pick_command[LENGTHBUF];
 	int iflag_datatype;
     struct kv_string *filename;
     struct kv_string *file_prefix;
     struct kv_string *stripped_ext;
+    struct kv_string *command;
 	
 	
 	gtk_read_file_window("Input data file");
@@ -400,14 +400,17 @@ void read_kemoview_data_gtk(){
     kemoview_free_kvstring(stripped_ext);
     
     if(iflag_datatype == IFLAG_FULL_MESH_GZ || iflag_datatype == IFLAG_FULL_MESH){
-        set_pickup_command(pick_command);
+        command = kemoview_alloc_kvstring();
+        set_pickup_command_gtk(command);
         if(iflag_set == IZERO){
             kemoview_free_kvstring(file_prefix);
             kemoview_free_kvstring(filename);
+            kemoview_free_kvstring(command);
             return;
         };
+        kemoview_set_pick_surface_command(command);
+        kemoview_free_kvstring(command);
         kemoview_free_kvstring(filename);
-        kemoview_set_pick_surface_command(pick_command);
         
         filename = kemoview_alloc_kvstring();
         kemoview_alloc_kvstringitem(strlen(stripped_ext->string)+10, filename);

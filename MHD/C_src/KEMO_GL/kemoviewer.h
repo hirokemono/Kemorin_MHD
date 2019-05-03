@@ -423,7 +423,7 @@ extern "C" {
 	void kemoview_alloc_kvstringitem(int length, struct kv_string *kvstring);
 	void kemoview_alloc_copy_string(const char *org_string, struct kv_string *kvstring);
 	struct kv_string* kemoview_alloc_kvstring();
-	struct kv_string* init_kvstring_by_string(const char *org_string);
+	struct kv_string* kemoview_init_kvstring_by_string(const char *org_string);
 	void kemoview_free_kvstring(struct kv_string *kvstring);
 
     void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, int iflag_dmesh);
@@ -459,8 +459,8 @@ extern "C" {
     int  kemoview_close_PSF_view();
     void kemoview_close_fieldline_view();
     
-    void kemoview_set_pick_surface_command(const char *command);
-    void kemoview_get_pick_surface_command(char *command);
+    void kemoview_set_pick_surface_command(struct kv_string *command);
+    void kemoview_get_pick_surface_command(struct kv_string *command);
     
     void kemoview_set_viewtype(int sel);
     

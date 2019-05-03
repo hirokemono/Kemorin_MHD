@@ -60,11 +60,15 @@ GLUI_Button *bottunToGo;
 
 static void SetPickSurfaceCB(int val)
 {
+    struct kv_string *command;
 	gi_pick_surf = editText_pick_sf->get_text();
 	sprintf(pick_surf_command, "%s",editText_pick_sf->get_text());
-	printf("command name: %s\n", pick_surf_command);
-	kemoview_set_pick_surface_command(pick_surf_command);
-	glui->sync_live();
+    command = kemoview_init_kvstring_by_string(pick_surf_command);
+    printf("command name: %s\n", command->string);
+	kemoview_set_pick_surface_command(command);
+    kemoview_free_kvstring(command);
+
+    glui->sync_live();
 }
 
 static void init_kemoview_data_glui(int val){
@@ -1019,6 +1023,7 @@ static void make_1st_level_menu(){
 
 
 void draw_mesh_kemo_glui(int iflag_streo_shutter, int iflag_dmesh) {
+    struct kv_string *command;
 	int narg_glut = 0;
 	char **arg_glut;
 	
@@ -1043,7 +1048,9 @@ void draw_mesh_kemo_glui(int iflag_streo_shutter, int iflag_dmesh) {
 		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH|GLUT_MULTISAMPLE);
 	};
 	
-	kemoview_set_pick_surface_command(pick_surf_command);
+    command = kemoview_init_kvstring_by_string(pick_surf_command);
+	kemoview_set_pick_surface_command(command);
+    kemoview_free_kvstring(command);
 	
 	/*! Create viewer window*/
     kemoview_set_retinamode(IZERO);

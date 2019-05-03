@@ -157,9 +157,9 @@
 {
 	NSUserDefaults* defaults = [_user_defaults_controller defaults];
 	PickSurfaceCommand = [defaults stringForKey:@"PickSurfaceCommand"];
-	char command[LENGTHBUF];
-	sprintf(command,"%s",[PickSurfaceCommand UTF8String]);
+    struct kv_string *command = kemoview_init_kvstring_by_string([PickSurfaceCommand UTF8String]);
 	kemoview_set_pick_surface_command(command);
+    kemoview_free_kvstring(command);
 }
 
 @end

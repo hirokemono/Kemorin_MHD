@@ -469,12 +469,14 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	NSString *pickSurfName = [defaults stringForKey:@"PickSurfaceCommand"];
 	int anaglyphFlag = [[defaults stringForKey:@"AnaglyphFlag"] intValue];
 	
+    struct kv_string *command = kemoview_alloc_kvstring();
 	if(!pickSurfName){
-		printf("Empty default pick surface\n");
-        kemoview_set_pick_surface_command("pick_surface");
+        kemoview_alloc_copy_string("pick_surface", command);
 	} else {
-        kemoview_set_pick_surface_command([pickSurfName UTF8String]);
+        kemoview_alloc_copy_string([pickSurfName UTF8String], command);
 	};
+    kemoview_set_pick_surface_command(command);
+    kemoview_free_kvstring(command);
 
 	kemoview_set_stereo_shutter(SHUTTER_OFF);
 	kemoview_set_anaglyph_flag(anaglyphFlag);

@@ -33,16 +33,19 @@ void input_file_header(char *file_head){
 	strcpy(file_head, buf);
 }
 
-void set_pickup_command(char *file_name){
+void set_pickup_command(struct kv_string *filename){
 	char buf[LENGTHBUF];
 	char *delchara;
 	
-	sprintf(file_name,"%s","pick_surface");
 	printf("Input pickup surface command\n");
 	fgets(buf,sizeof(buf),stdin);
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
-	strcpy(file_name, buf);
+    if(strlen(buf) > 0){
+        kemoview_alloc_copy_string(buf, filename);
+    } else {
+        kemoview_alloc_copy_string("pick_surface", filename);
+    }
 }
 
 int input_image_format(){
@@ -71,11 +74,11 @@ int input_image_format(){
 
 
 void read_kemoview_data_glut(){
-	char pick_command[LENGTHBUF];
 	int iflag_datatype;
     struct kv_string *filename;
     struct kv_string *file_prefix;
     struct kv_string *stripped_ext;
+    struct kv_string *command;
 	
     filename = kemoview_alloc_kvstring();
     kemoview_alloc_kvstringitem(LENGTHBUF, filename);
@@ -92,8 +95,10 @@ void read_kemoview_data_glut(){
     if(iflag_datatype == IFLAG_FULL_MESH_GZ || iflag_datatype == IFLAG_FULL_MESH){
         kemoview_free_kvstring(filename);
 
-        set_pickup_command(pick_command);
-        kemoview_set_pick_surface_command(pick_command);
+        command = kemoview_alloc_kvstring();
+        set_pickup_command(command);
+        kemoview_set_pick_surface_command(command);
+        kemoview_free_kvstring(command);
         
         filename = kemoview_alloc_kvstring();
         kemoview_alloc_kvstringitem(strlen(stripped_ext->string)+10, filename);

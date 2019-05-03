@@ -18,7 +18,7 @@
 /* Routines for inout from console */
 
 void input_file_name(char *file_name);
-void set_pickup_command(char *file_name);
+void set_pickup_command(struct kv_string *filename);
 void input_file_header(char *file_head);
 int input_image_format();
 void read_kemoview_data_glut();
