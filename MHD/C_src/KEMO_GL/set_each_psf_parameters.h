@@ -19,8 +19,10 @@
 
 /* prototypes */
 
-int send_each_psf_file_header_full(struct psf_menu_val *psf_menu, char *file_head, int *iflag);
-int send_each_psf_file_header(struct psf_menu_val *psf_menu, struct kv_string *stripped_filehead);
+int send_each_psf_file_header_full(struct psf_menu_val *psf_menu, 
+			struct kv_string *psf_filehead, int *iflag);
+int send_each_psf_file_dir_head(struct psf_menu_val *psf_menu
+			, struct kv_string *stripped_dir, struct kv_string *stripped_filehead);
 
 
 int send_nfield_each_psf(struct psf_data *psf_d);

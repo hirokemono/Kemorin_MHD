@@ -76,11 +76,14 @@ NSData *SnapshotData;
 
 -(void) InitEvolutionStepByPSF;
 {
-	char image_head[LENGTHBUF];
 	int iflag;
-	self.CurrentStep = kemoview_get_PSF_full_path_file_prefix(image_head, &iflag);
+    struct kv_string *psf_filehead = kemoview_alloc_kvstring();
+    
+	self.CurrentStep = kemoview_get_PSF_full_path_file_prefix(psf_filehead, &iflag);
 	self.EvolutionStartStep = self.CurrentStep;
 	self.EvolutionEndStep =   self.CurrentStep;
+    
+    kemoview_free_kvstring(psf_filehead);
 };
 
 -(void) InitEvolutionStepByFline;

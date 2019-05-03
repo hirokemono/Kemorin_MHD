@@ -253,7 +253,7 @@
 
 - (void) SetCurrentPsfMenu{
 	int i, j, istep, ifmt;
-	char file_head[4096];
+    struct kv_string *psf_filehead;
 	NSString *PsfNumberTxt;
 	NSString *PsfFileHeader;
     
@@ -263,13 +263,17 @@
 	for(i = 0; i < PsfNumberOfdata; i++){
 		if(kemoview_get_PSF_loaded_flag(i) > 0){
 			kemoview_set_current_PSF(i);
-			istep = kemoview_get_PSF_full_path_file_prefix(file_head, &ifmt);
+
+            psf_filehead = kemoview_alloc_kvstring();
+			istep = kemoview_get_PSF_full_path_file_prefix(psf_filehead, &ifmt);
 			PsfNumberTxt = [[NSString alloc] initWithFormat:@"%d: ",i+1];
-			PsfFileHeader = [[[NSString alloc] initWithUTF8String:file_head] lastPathComponent];
+			PsfFileHeader = [[[NSString alloc] initWithUTF8String:psf_filehead->string] lastPathComponent];
 			PsfFileHeader = [PsfNumberTxt stringByAppendingString:PsfFileHeader];
 			self.currentPSFStep = istep;
 			[LoadedPsfFileHead addObject:PsfFileHeader];
 			[LoadedPsfID addObject:[[NSNumber alloc] initWithInt:i]];
+            
+            kemoview_free_kvstring(psf_filehead);
 		}
 	}
     

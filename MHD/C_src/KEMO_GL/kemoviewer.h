@@ -420,8 +420,10 @@ struct mul_kemoviewer_type;
 #ifdef __cplusplus
 extern "C" {
 #endif
+	void kemoview_alloc_kvstringitem(int length, struct kv_string *kvstring);
 	struct kv_string* kemoview_alloc_kvstring();
 	void kemoview_free_kvstring(struct kv_string *kvstring);
+	void kemoview_alloc_copy_string(const char *org_string, struct kv_string *kvstring);
 
     void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, int iflag_dmesh);
     void kemoview_allocate_single_viwewer_struct(struct kemoviewer_type *kemoviewer_data);
@@ -631,7 +633,7 @@ extern "C" {
     int kemoview_get_curent_PSF_ID();
     
     void kemoview_get_PSF_full_path_file_name(struct kv_string *ucd_m);
-    int kemoview_get_PSF_full_path_file_prefix(char *file_head, int *iflag);
+    int kemoview_get_PSF_full_path_file_prefix(struct kv_string *psf_filehead, int *iflag);
     int kemoview_get_PSF_file_prefix(struct kv_string *stripped_filehead);
     
     void kemoview_set_PSF_field(int sel);

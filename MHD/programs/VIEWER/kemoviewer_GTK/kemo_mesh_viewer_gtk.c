@@ -68,19 +68,20 @@ static void load_texture_handler(){
 };
 
 static void save_evolution_handler(){
-	char image_head[LENGTHBUF];
 	int id_image;
 	int ist_udt, ied_udt, inc_udt;
 	int iflag;
+    struct kv_string *psf_filehead = kemoview_alloc_kvstring();
 	
-	ist_udt = kemoview_get_PSF_full_path_file_prefix(image_head, &iflag);
-	id_image = output_evolution_file_gtk(image_head,
+	ist_udt = kemoview_get_PSF_full_path_file_prefix(psf_filehead, &iflag);
+	id_image = output_evolution_file_gtk(psf_filehead->string,
 			&ist_udt, &ied_udt, &inc_udt);
 	
-	printf("header: %s\n", image_head);
+	printf("header: %s\n", psf_filehead->string);
 	printf("steps: %d %d %d\n", ist_udt, ied_udt, inc_udt);
-	write_evolution_views_glut(id_image, image_head, 
+	write_evolution_views_glut(id_image, psf_filehead->string, 
 							   ist_udt, ied_udt, inc_udt);
+    kemoview_free_kvstring(psf_filehead);
 	return;
 };
 

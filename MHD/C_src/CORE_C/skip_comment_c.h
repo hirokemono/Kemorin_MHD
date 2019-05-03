@@ -38,8 +38,6 @@ void get_ext_from_file_name_c(const char *file_name,
 
 void split_dir_and_file_name_c(const char *file_name,
                                char *stripped_dir, char *stripped_fname);
-void get_dir_name_from_full_path_c(const char *file_name, char *stripped_dir);
-void get_file_name_from_full_path_c(const char *file_name, char *stripped_fname);
 
 void add_ext_to_file_name_c(const char *file_head,
 							 const char *added_ext, char *file_name);

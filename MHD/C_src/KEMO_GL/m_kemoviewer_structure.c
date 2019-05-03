@@ -122,6 +122,10 @@ void kemoview_free_kvstring(struct kv_string *kvstring){
 	dealloc_kvstring(kvstring);
 	return;
 };
+void kemoview_alloc_copy_string(const char *org_string, struct kv_string *kvstring){
+	alloc_copy_string(org_string, kvstring);
+	return;
+};
 
 
 /* Routines for Kemoviewer arrays */
@@ -677,12 +681,15 @@ void kemoview_get_PSF_full_path_file_name(struct kv_string *ucd_m){
 	alloc_set_ucd_file_name_by_psf(kemo_sgl->psf_current_menu, ucd_m);
 	return;
 }
-int kemoview_get_PSF_full_path_file_prefix(char *file_head, int *iflag){
-    return send_each_psf_file_header_full(kemo_sgl->psf_current_menu, file_head, iflag);
+int kemoview_get_PSF_full_path_file_prefix(struct kv_string *psf_filehead, int *iflag){
+    return send_each_psf_file_header_full(kemo_sgl->psf_current_menu, psf_filehead, iflag);
 }
 
 int kemoview_get_PSF_file_prefix(struct kv_string *stripped_filehead){
-	int istep = send_each_psf_file_header(kemo_sgl->psf_current_menu, stripped_filehead);
+	struct kv_string* stripped_dir = alloc_kvstring();
+	int istep = send_each_psf_file_dir_head(kemo_sgl->psf_current_menu,
+				stripped_dir, stripped_filehead);
+	dealloc_kvstring(stripped_dir);
 	return istep;
 }
 

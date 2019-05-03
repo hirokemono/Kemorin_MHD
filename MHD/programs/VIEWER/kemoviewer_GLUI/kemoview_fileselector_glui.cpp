@@ -27,7 +27,7 @@ static GLUI_Button *bottunToGo;
 static GLUI_RadioGroup *imgfmt_radio;
 static GLUI_String glui_name;
 
-static char image_head[LENGTHBUF];
+struct kv_string *kv_filename;
 static int int_box;
 static int image_fmt;
 static int ist_udt, ied_udt, inc_udt;
@@ -110,13 +110,16 @@ static void fileBrowerCB(int val)
 	currentDir->update_and_draw_text();
 	glui_fwin->sync_live();
 	
-	sprintf(image_head, "%s",text_fname.c_str());
+    kv_filename = kemoview_alloc_kvstring();
+    kemoview_alloc_copy_string(text_fname.c_str), kv_filename);
 }
 
 static void input_image_file_panel(int val)
 {
 	text_fname = editText_filename->get_text();
-	sprintf(image_head, "%s",text_fname.c_str());
+    
+    kv_filename = kemoview_alloc_kvstring();
+    kemoview_alloc_copy_string(text_fname.c_str), kv_filename);
 	glui_fwin->sync_live();
 	return;
 }
@@ -163,21 +166,24 @@ static void input_evolution_increment_panel(int val){
 
 static void save_image_handler(int sel){
 	draw_mesh_keep_menu();
-    kemoview_write_window_to_file(image_fmt, image_head);
+    kemoview_write_window_to_file(image_fmt, kv_filename->string);
+    kemoview_free_kvstring(kv_filename);
 	GLUI_Master.close_all();
 	return;
 };
 
 static void save_evolution_handler(int sel){
-	write_evolution_views_glut(image_fmt, image_head, 
+	write_evolution_views_glut(image_fmt, kv_filename->string, 
 							   ist_udt, ied_udt, inc_udt);
+    kemoview_free_kvstring(kv_filename);
 	GLUI_Master.close_all();
 	return;
 };
 
 
 static void save_rotation_views_handler(int rot_dir){
-	write_rotate_views_glut(image_fmt, image_head, rot_dir);
+	write_rotate_views_glut(image_fmt, kv_filename->string, rot_dir);
+    kemoview_free_kvstring(kv_filename);
 	GLUI_Master.close_all();
 };
 
@@ -238,7 +244,8 @@ void set_saveimage_menu_glui(int winid){
 	int iflag, istep;
 	
 	int_box = 0;
-	istep = kemoview_get_PSF_full_path_file_prefix(image_head, &iflag);
+    kv_filename = kemoview_alloc_kvstring();
+	istep = kemoview_get_PSF_full_path_file_prefix(kv_filename, &iflag);
 	
 	glui_fwin = GLUI_Master.create_glui("Set file name for image", 0, 100, 100);
 	set_imagefile_brouser_glui();
@@ -257,7 +264,8 @@ void set_evolution_menu_glui(int winid){
 	int iflag;
 	
 	int_box = 0;
-	ist_udt = kemoview_get_PSF_full_path_file_prefix(image_head, &iflag);
+    kv_filename = kemoview_alloc_kvstring();
+	ist_udt = kemoview_get_PSF_full_path_file_prefix(kv_filename, &iflag);
 	ied_udt = ist_udt;
 	inc_udt = 1;
 	
@@ -279,7 +287,8 @@ void set_rotateimages_menu_glui(int winid){
 	int iflag, istep;
 	
 	int_box = 0;
-	istep = kemoview_get_PSF_full_path_file_prefix(image_head, &iflag);
+    kv_filename = kemoview_alloc_kvstring();
+	istep = kemoview_get_PSF_full_path_file_prefix(kv_filename, &iflag);
 	
 	glui_fwin = GLUI_Master.create_glui("Set file name for image", 0, 100, 100);
 	set_imagefile_brouser_glui();
