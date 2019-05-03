@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "kemoviewer.h"
 #include "kemosrc_param_c.h"
 #include "kemoviewer_param_c.h"
 #include "m_psf_data_4_viewer_c.h"
@@ -233,8 +234,8 @@ struct fline_menu_val{
 
 /* Prototypes */
 
-void alloc_kvstring(int length, struct kv_string *ucd_m);
-void dealloc_kvstring(struct kv_string *ucd_m);
+struct kv_string* alloc_kvstring();
+void dealloc_kvstring(struct kv_string *kvstring);
 
 void alloc_copy_string(const char *org_string, struct kv_string *ucd_copied);
 void alloc_set_ucd_field_file_name(int iformat_ucd_file, int istep, const char *ucd_header,

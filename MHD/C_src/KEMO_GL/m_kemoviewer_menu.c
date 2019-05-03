@@ -4,7 +4,8 @@
 
 #include "m_kemoviewer_menu.h"
 
-void alloc_kvstring(int length, struct kv_string *ucd_m){
+
+static void alloc_kvstringitem(int length, struct kv_string *ucd_m){
 	if((ucd_m->string = (char *)calloc(length+1, sizeof(char))) == NULL){
 		printf("malloc error for string in kv_string\n");
 		exit(0);
@@ -12,20 +13,30 @@ void alloc_kvstring(int length, struct kv_string *ucd_m){
 	return;
 };
 
-void dealloc_kvstring(struct kv_string *ucd_m){
-	free(ucd_m->string);
+struct kv_string* alloc_kvstring(){
+	struct kv_string *kvstring;
+	
+    if ((kvstring = (struct kv_string *) malloc(sizeof(struct kv_string))) == NULL) {
+        printf("malloc error for kvstring\n");
+        exit(0);
+    }
+	return kvstring;
+};
+void dealloc_kvstring(struct kv_string *kvstring){
+	free(kvstring->string);
+	free(kvstring);
 	return;
 };
 
 void alloc_copy_string(const char *org_string, struct kv_string *ucd_copied){
-	alloc_kvstring(strlen(org_string), ucd_copied);
+	alloc_kvstringitem(strlen(org_string), ucd_copied);
 	strngcopy(ucd_copied->string, org_string);
 	return;
 };
 
 void alloc_set_ucd_field_file_name(int iformat_ucd_file, int istep, const char *ucd_header,
 			struct kv_string *ucd_m){
-	alloc_kvstring(strlen(ucd_header)+25, ucd_m);
+	alloc_kvstringitem(strlen(ucd_header)+25, ucd_m);
 	
 	if (iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
 		sprintf(ucd_m->string, "%s.%d.udt.gz",ucd_header, istep);
@@ -49,7 +60,7 @@ void alloc_set_ucd_field_file_name(int iformat_ucd_file, int istep, const char *
 
 void alloc_set_grd_field_file_name(int iformat_ucd_file, const char *ucd_header, 
 			struct kv_string *ucd_m){
-	alloc_kvstring(strlen(ucd_header)+25, ucd_m);
+	alloc_kvstringitem(strlen(ucd_header)+25, ucd_m);
 	
 	if (iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
 		sprintf(ucd_m->string, "%s.0.grd.gz",ucd_header);
@@ -273,7 +284,6 @@ void dealloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *f
 	free(fline_m->cmap_fline_comp);
 	
 	dealloc_kvstring(fline_m->fline_header);
-	free(fline_m->fline_header);
 	return;
 }
 

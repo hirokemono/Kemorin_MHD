@@ -12,13 +12,9 @@
 
 int check_gzip_kemoview_ucd_first(int iformat_ucd_file, int istep, const char *ucd_header,
 			struct psf_data *viz_s){
-	struct kv_string *ucd_m;
 	int iflag_datatype;
+	struct kv_string *ucd_m = alloc_kvstring();
 	
-    if ((ucd_m = (struct kv_string *) malloc(sizeof(struct kv_string))) == NULL) {
-        printf("malloc error for ucd_m\n");
-        exit(0);
-    }
 	alloc_set_ucd_field_file_name(iformat_ucd_file, istep, ucd_header, ucd_m);
 	
     if (iformat_ucd_file == IFLAG_SURF_UCD_GZ) {
@@ -32,19 +28,14 @@ int check_gzip_kemoview_ucd_first(int iformat_ucd_file, int istep, const char *u
 	};
 	
 	dealloc_kvstring(ucd_m);
-	free(ucd_m);
 	return iflag_datatype;
 }
 
 int check_gzip_psf_grd_first(int iformat_ucd_file, const char *ucd_header, 
 			struct psf_data *viz_s){
-	struct kv_string *ucd_m;
 	int iflag_datatype;
-    
-    if ((ucd_m = (struct kv_string *) malloc(sizeof(struct kv_string))) == NULL) {
-        printf("malloc error for ucd_m\n");
-        exit(0);
-    }
+	struct kv_string *ucd_m = alloc_kvstring();
+	
 	alloc_set_grd_field_file_name(iformat_ucd_file, ucd_header, ucd_m);
 	
     if (iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
@@ -60,19 +51,14 @@ int check_gzip_psf_grd_first(int iformat_ucd_file, const char *ucd_header,
     if (iflag_datatype < 0) printf("Read error for grid data %s \n", ucd_m->string);
 	
 	dealloc_kvstring(ucd_m);
-	free(ucd_m);
 	return iflag_datatype;
 }
 
 void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, const char *ucd_header,
 			struct psf_data *viz_s){
-	struct kv_string *ucd_m;
 	int ierr;
+	struct kv_string *ucd_m = alloc_kvstring();
 	
-    if ((ucd_m = (struct kv_string *) malloc(sizeof(struct kv_string))) == NULL) {
-        printf("malloc error for ucd_m\n");
-        exit(0);
-    }
 	alloc_set_ucd_field_file_name(iformat_ucd_file, istep, ucd_header, ucd_m);
 	
     if (iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
@@ -91,6 +77,5 @@ void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, const char *ucd_h
     };
     
 	dealloc_kvstring(ucd_m);
-	free(ucd_m);
 	return;
 }

@@ -287,19 +287,15 @@
 
 - (void) SetCurrentPSFFile
 {
-    struct kv_string *ucd_m;
-    
-    if ((ucd_m = (struct kv_string *) malloc(sizeof(struct kv_string))) == NULL) {
-        printf("malloc error for ucd_m\n");
-        exit(0);
-    }
+    struct kv_string *ucd_m = kemoview_alloc_kvstring();
 
     kemoview_get_PSF_full_path_file_name(ucd_m);
     NSString *str = [NSString stringWithCString:ucd_m->string encoding:NSUTF8StringEncoding];
     NSURL *urlReadPSF = [NSURL fileURLWithPath:str]; 
     [_psfPathControl setURL:urlReadPSF];
-    free(ucd_m->string);
-    free(ucd_m);
+
+    kemoview_free_kvstring(ucd_m);
+    return;
 }
 
 - (void) SetPsfFieldMenu{

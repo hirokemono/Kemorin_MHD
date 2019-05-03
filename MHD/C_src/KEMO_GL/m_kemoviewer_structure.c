@@ -117,6 +117,11 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 
 int kemoview_get_PSF_maximum_load(){return kemo_sgl->psf_a->nlimit_loaded;};
 
+struct kv_string* kemoview_alloc_kvstring(){return alloc_kvstring();};
+void kemoview_free_kvstring(struct kv_string *kvstring){
+	dealloc_kvstring(kvstring);
+	return;
+};
 
 
 /* Routines for Kemoviewer arrays */

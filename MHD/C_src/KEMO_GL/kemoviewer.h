@@ -420,6 +420,8 @@ struct mul_kemoviewer_type;
 #ifdef __cplusplus
 extern "C" {
 #endif
+	struct kv_string* kemoview_alloc_kvstring();
+	void kemoview_free_kvstring(struct kv_string *kvstring);
 
     void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, int iflag_dmesh);
     void kemoview_allocate_single_viwewer_struct(struct kemoviewer_type *kemoviewer_data);

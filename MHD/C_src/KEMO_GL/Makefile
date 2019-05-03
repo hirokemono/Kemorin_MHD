@@ -288,9 +288,10 @@ module:
 	@echo \
 	m_kemoviewer_menu.o: \
 	'$$(KEMO_C_GLDIR)'/m_kemoviewer_menu.c \
+	kemoviewer.h \
+	m_kemoviewer_menu.h \
 	kemosrc_param_c.o \
 	kemoviewer_param_c.o \
-	m_kemoviewer_menu.h \
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
 	m_color_table_c.o \
