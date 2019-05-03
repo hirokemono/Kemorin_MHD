@@ -472,16 +472,18 @@ void modify_psf_opacitymap_point_console(int i_point){
 }
 
 void save_PSF_colormap_file_glut(){
-	char file_name[LENGTHBUF];
 	char buf[LENGTHBUF];
 	char *delchara;
+    struct kv_string *filename;
 	
 	printf("Input colormap file name\n");
 	fgets(buf,sizeof(buf),stdin);
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
-	strcpy(file_name, buf);
-	kemoview_write_PSF_colormap_file(file_name);
+
+    filename = init_kvstring_by_string(buf);
+	kemoview_write_PSF_colormap_file(filename);
+    kemoview_free_kvstring(filename);
 	return;
 };
 

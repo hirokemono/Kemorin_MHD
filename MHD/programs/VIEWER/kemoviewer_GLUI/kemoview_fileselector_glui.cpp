@@ -38,19 +38,20 @@ static int counter = 0;
 
 
 static void save_psf_colormap_glui(int sel){
+    int length;
 	char current[LENGTHBUF];
-	char file_name[LENGTHBUF];
-	char file_head[LENGTHBUF];
-	char img_ext[LENGTHBUF];
-	int ext_fmt;
+    struct kv_string *filename = kemoview_alloc_kvstring();
 	
 	getcwd(current, sizeof(current));
+    length = strlen(current) + strlen(text_fname.c_str()) + 5;
 	
-	strcpy(file_name, current);
-	strcat(file_name, "/");
-	strcat(file_name, text_fname.c_str());
+    kemoview_alloc_kvstringitem(length, filename);
+	strcpy(filename->string, current);
+	strcat(filename->string, "/");
+	strcat(filename->string, text_fname.c_str());
 	
-	kemoview_write_PSF_colormap_file(file_name);
+	kemoview_write_PSF_colormap_file(filename);
+    kemoview_free_kvstring(filename);
 	GLUI_Master.close_all();
 	return;
 };

@@ -50,7 +50,7 @@ static void fmt_changed(GtkWidget *combo, gpointer data)
 {
 	gtk_selected_filefmt = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
 	
-	printf("Format: %s\n",gtk_selected_filefmt);
+	printf("Format: %s\n", gtk_selected_filefmt);
 /*	printf("index: %d\n",idx_menu);*/
 	
 }
@@ -442,7 +442,6 @@ int input_texture_file_gtk(struct kv_string *file_prefix){
 }
 
 int output_image_file_gtk(struct kv_string *file_prefix){
-	char image_fmt[LENGTHBUF];
     struct kv_string *filename;
     struct kv_string *stripped_ext;
 	int id_img;
@@ -470,11 +469,11 @@ int output_image_file_gtk(struct kv_string *file_prefix){
 
 int output_evolution_file_gtk(struct kv_string *file_prefix,
 			int *ist_udt, int *ied_udt, int *inc_udt){
-	char image_fmt[LENGTHBUF];
     struct kv_string *filename;
     struct kv_string *stripped_ext;
 	int id_img;
 	
+    stripped_ext = init_kvstring_by_string(gtk_selected_filefmt);
 	printf("ist_udt %d \n",*ist_udt);
 	gtk_evolution_fmt_menu(*ist_udt);
 	if(iflag_set == IZERO) return 0;
@@ -502,14 +501,14 @@ int output_evolution_file_gtk(struct kv_string *file_prefix,
 }
 
 void save_PSF_colormap_file_gtk(){
-	char file_name[LENGTHBUF];
+    struct kv_string *filename;
 	
 	gtk_save_file_window("Save colormap file");
 	if(iflag_set == IZERO) return;
 	
-	strcpy(file_name, gtk_selected_filename);
-	kemoview_write_PSF_colormap_file(file_name);
-	
+    filename = init_kvstring_by_string(gtk_selected_filename);
+	kemoview_write_PSF_colormap_file(filename);
+    kemoview_free_kvstring(filename);
 	return;
 };
 

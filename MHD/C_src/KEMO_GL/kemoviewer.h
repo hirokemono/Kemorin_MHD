@@ -714,7 +714,7 @@ extern "C" {
     void kemoview_get_PSF_color_items(int i_point, double *value, double *color);
     void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity);
     
-    void kemoview_write_PSF_colormap_file(const char *file_name);
+    void kemoview_write_PSF_colormap_file(struct kv_string *filename);
     void kemoview_read_PSF_colormap_file(struct kv_string *filename);
 	void kemoview_check_PSF_colormap_control();
     

@@ -849,8 +849,8 @@ void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity)
     send_each_PSF_opacity_table_items(kemo_sgl->psf_current_menu, i_point, value, opacity);
 }
 
-void kemoview_write_PSF_colormap_file(const char *file_name){
-    write_each_PSF_colormap_control_file(kemo_sgl->psf_current_menu, file_name);
+void kemoview_write_PSF_colormap_file(struct kv_string *filename){
+    write_each_PSF_colormap_control_file(kemo_sgl->psf_current_menu, filename->string);
 }
 void kemoview_read_PSF_colormap_file(struct kv_string *filename){
     read_each_PSF_colormap_control_file(kemo_sgl->psf_current_menu, filename->string);
