@@ -111,7 +111,7 @@ static void fileBrowerCB(int val)
 	glui_fwin->sync_live();
 	
     kv_filename = kemoview_alloc_kvstring();
-    kemoview_alloc_copy_string(text_fname.c_str), kv_filename);
+    kemoview_alloc_copy_string(text_fname.c_str(), kv_filename);
 }
 
 static void input_image_file_panel(int val)
@@ -119,7 +119,7 @@ static void input_image_file_panel(int val)
 	text_fname = editText_filename->get_text();
     
     kv_filename = kemoview_alloc_kvstring();
-    kemoview_alloc_copy_string(text_fname.c_str), kv_filename);
+    kemoview_alloc_copy_string(text_fname.c_str(), kv_filename);
 	glui_fwin->sync_live();
 	return;
 }
