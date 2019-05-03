@@ -3,6 +3,16 @@
 
 #include "skip_comment_c.h"
 
+/* Allocate string with lengthchara */
+char* alloc_string(int lengthchara){
+    char *string;
+    if((string = (char *)calloc(lengthchara+1, sizeof(char))) == NULL){
+        printf("malloc error for string\n");
+        exit(0);
+    };
+    return string;
+};
+
 /* trim tail */
 char *ltrim(char *s)
 {
@@ -243,10 +253,10 @@ void strip_cautation_marks(char *string){
 }
 
 int get_index_from_file_head(const char *file_head, char *stripped_fhead){
-	char buf[100];    /* buffer for reading line */
 	int int_stripped;
 	int len_fhead, len_fhead_stripped;
 	int j, num;
+    char *buf = alloc_string(strlen(file_head));
 	
 	/*	printf("file_head: %s \n", file_head);*/
 	len_fhead = (int) strlen(file_head);
@@ -271,7 +281,7 @@ int get_index_from_file_head(const char *file_head, char *stripped_fhead){
 	}
 	buf[num] = '\0';
 	sscanf(buf, "%d", &int_stripped);
-	
+    free(buf);
 	return int_stripped;
 }
 
