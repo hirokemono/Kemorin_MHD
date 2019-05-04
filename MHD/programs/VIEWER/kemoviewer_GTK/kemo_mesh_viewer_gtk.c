@@ -80,6 +80,7 @@ static void save_evolution_handler(){
 	
 	ist_udt = kemoview_get_PSF_full_path_file_prefix(image_prefix, &iflag);
 	id_image = output_evolution_file_gtk(image_prefix, &ist_udt, &ied_udt, &inc_udt);
+	if(id_image == 0) return;
 	
 	printf("header: %s\n", image_prefix->string);
 	printf("steps: %d %d %d\n", ist_udt, ied_udt, inc_udt);
@@ -89,17 +90,21 @@ static void save_evolution_handler(){
 };
 
 void draw_rot_image_handler(int id_rot){
+    int inc_deg = 2;
     struct kv_string *image_prefix = kemoview_init_kvstring_by_string("Kemoviewer");
-	write_rotate_views_glut(NO_SAVE_FILE, image_prefix, id_rot);
+    
+    write_rotate_views_glut(NO_SAVE_FILE, image_prefix, id_rot, inc_deg);
     kemoview_free_kvstring(image_prefix);
 };
 
-void save_rot_image_handler(int id_rot){
-	int id_image;
+void save_rot_image_handler_gtk(){
+	int id_image, idir_rot, inc_rot;
     struct kv_string *image_prefix = kemoview_alloc_kvstring();
 	
-	id_image = output_image_file_gtk(image_prefix);
-	write_rotate_views_glut(id_image, image_prefix, id_rot);
+	id_image = output_rotation_file_gtk(image_prefix, &idir_rot, &inc_rot);
+	write_rotate_views_glut(id_image, image_prefix, idir_rot, inc_rot);
+	if(id_image == 0) return;
+	
     kemoview_free_kvstring(image_prefix);
 };
 
@@ -149,6 +154,7 @@ static void main_menu_handler(int sel){
 	else if(sel == FILE_OPEN)  { read_draw_kemoview_data_gtk(); }
 	else if(sel == SAVE_SNAPSHOT)  { save_image_handler(); }
 	else if(sel == SAVE_EVOLUTION) { save_evolution_handler(); }
+	else if(sel == SAVE_ROTATION) { save_rot_image_handler_gtk(); }
     else if(sel == SET_BACKGROUND) { set_background_color_gtk(); };
     return;
 };
@@ -713,11 +719,6 @@ static void make_2nd_level_image_menu(){
 	glutAddMenuEntry("Output transfer matrices",OUTPUT_V_MATRIX);
 	glutAddMenuEntry("Load transfer matrices", INPUT_V_MATRIX);
 	
-	glut_menu_id->save_rot_image_menu = glutCreateMenu(save_rot_image_handler);
-	glutAddMenuEntry("x-axis",ROTATE_X);
-	glutAddMenuEntry("y-axis",ROTATE_Y);
-	glutAddMenuEntry("z-axis",ROTATE_Z);
-	
 	glut_menu_id->draw_rot_image_menu = glutCreateMenu(draw_rot_image_handler);
 	glutAddMenuEntry("x-axis",ROTATE_X);
 	glutAddMenuEntry("y-axis",ROTATE_Y);
@@ -800,7 +801,7 @@ static void make_1st_level_menu(){
 	};
 	
 	if (iflag_any_objects_on > 0) {
-		glutAddSubMenu("Save rotate images", glut_menu_id->save_rot_image_menu);
+		glutAddMenuEntry("Save rotate images", SAVE_ROTATION);
 		glutAddSubMenu("Rotate on Window",   glut_menu_id->draw_rot_image_menu);
 	};
     glutAddMenuEntry("Background color",SET_BACKGROUND);

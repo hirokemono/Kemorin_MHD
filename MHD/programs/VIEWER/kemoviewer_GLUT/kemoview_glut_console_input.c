@@ -85,7 +85,7 @@ void read_kemoview_data_glut(){
 	input_file_name(filename->string);
 
     file_prefix = kemoview_alloc_kvstring();
-    file_prefix = kemoview_alloc_kvstring();
+    stripped_ext = kemoview_alloc_kvstring();
     iflag_datatype = kemoview_set_data_format_flag(filename, file_prefix, stripped_ext);
 	printf("file name: %s\n", filename->string);
 	printf("file_prefix %s\n", file_prefix->string);

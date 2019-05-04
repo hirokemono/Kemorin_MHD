@@ -18,7 +18,8 @@ extern "C" {
 void set_main_window_id_glut(int winid);
 
 void draw_mesh_keep_menu();
-void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, int i_axis);
+void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, 
+                             int i_axis, int inc_deg);
 void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt);
 

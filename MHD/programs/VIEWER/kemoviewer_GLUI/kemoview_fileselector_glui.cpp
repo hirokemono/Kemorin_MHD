@@ -181,7 +181,8 @@ static void save_evolution_handler(int sel){
 
 
 static void save_rotation_views_handler(int rot_dir){
-	write_rotate_views_glut(image_fmt, image_prefix, rot_dir);
+    int inc_deg = 2;
+	write_rotate_views_glut(image_fmt, image_prefix, rot_dir, inc_deg);
     kemoview_free_kvstring(image_prefix);
 	GLUI_Master.close_all();
 };

@@ -19,17 +19,18 @@ void draw_mesh_keep_menu(){
 	return;
 };
 
-void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, int i_axis) {
-	int i, int_degree;
-	int int_deg = 2;
-	int ied_deg = 360/int_deg;
-	
-	glutSetWindow(id_window);
+void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, 
+                             int i_axis, int inc_deg) {
+    int i, int_degree, ied_deg;
+    if(inc_deg <= 0) inc_deg = 1;
+    ied_deg = 360/inc_deg;
+
+    glutSetWindow(id_window);
 	
 	kemoview_set_animation_rot_axis(i_axis);
 	for (i = 0; i< ied_deg; i++) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-		int_degree =  i*int_deg;
+		int_degree =  i*inc_deg;
 		
 		kemoview_set_animation_rot_angle(int_degree);
 		kemoview_draw_objects_c();

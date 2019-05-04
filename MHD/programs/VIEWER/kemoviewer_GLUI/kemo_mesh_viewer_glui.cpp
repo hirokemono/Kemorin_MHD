@@ -316,8 +316,10 @@ static void load_viewmatrix_file_glui(int winid){
 /* ---------  Action for selected menu -----------   */ 
 
 void draw_rot_image_handler(int id_rot){
+    int inc_deg = 2;
     struct kv_string *image_prefix = kemoview_init_kvstring_by_string("Kemoviewer");
-	write_rotate_views_glut(NO_SAVE_FILE, image_prefix, id_rot);
+    
+	write_rotate_views_glut(NO_SAVE_FILE, image_prefix, id_rot, inc_deg);
     kemoview_free_kvstring(image_prefix);
 };
 
