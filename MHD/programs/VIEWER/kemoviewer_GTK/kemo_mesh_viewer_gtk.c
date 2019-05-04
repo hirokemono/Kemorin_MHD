@@ -47,6 +47,8 @@ static void save_image_handler(){
 	
 	glutSetWindow(winid);
 	draw_mesh_keep_menu();
+	
+	if(id_image == 0) return;
     kemoview_write_window_to_file(id_image, image_prefix);
     kemoview_free_kvstring(image_prefix);
 	return;
