@@ -102,6 +102,7 @@ void save_rot_image_handler(int id_rot){
 	char image_head[LENGTHBUF];
     struct kv_string *image_prefix;
 	
+	inc_deg = read_psf_rotation_increment();
 	input_file_header(image_head);
     image_prefix = kemoview_init_kvstring_by_string(image_head);
 	int id_image = input_image_format();

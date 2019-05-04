@@ -41,6 +41,7 @@ void set_background_color_console();
 void set_num_color_loop_console();
 void set_node_size_console();
 void read_psf_evolution_steps(int *ist_udt, int *ied_udt, int *inc_udt);
+int read_psf_rotation_increment();
 
 void set_psf_single_color_console();
 void add_psf_colormap_point_console();

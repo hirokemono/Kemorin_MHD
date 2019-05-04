@@ -403,14 +403,30 @@ void read_psf_evolution_steps(int *ist_udt, int *ied_udt, int *inc_udt){
 	char buf[LENGTHBUF];
 	char *delchara;
 	
-	ist_udt[2] = 1;
-	
+	*inc_udt = 1;
 	printf("Input start and end step and interval.\n");
 	fgets(buf,sizeof(buf),stdin);
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
 	sscanf(buf, "%d %d %d", ist_udt, ied_udt, inc_udt);
-	printf("start # %d, end # %d, interval # %d\n",*ist_udt, *ied_udt,*inc_udt);
+	printf("start # %d, end # %d, increment # %d\n",*ist_udt, *ied_udt,*inc_udt);
+};
+
+int read_psf_rotation_increment(){
+	int inc_rot;
+	char buf[LENGTHBUF];
+	char *delchara;
+	int i;
+	
+	inc_rot = 2;
+	
+	printf("Input step of rotation in integer (Degree).\n");
+	fgets(buf,sizeof(buf),stdin);
+	delchara=strrchr(buf,'\n');
+	*delchara='\0';
+	sscanf(buf, "%d", &inc_rot);
+	printf("increment (Deg.) %d\n", inc_rot);
+	return inc_rot;
 };
 
 static void read_psf_colormap_data(float *new_value, float *new_color){
