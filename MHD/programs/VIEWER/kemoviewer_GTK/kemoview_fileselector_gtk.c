@@ -39,13 +39,6 @@ static void fmt_clicked2(GtkWidget *widget, gpointer data)
 	gtk_main_quit();
 }
 
-static void cancel_file(GtkWidget *widget, gpointer data)
-{
-/*	iflag_set = IONE;*/
-	gtk_widget_destroy(ftmpw);
-	gtk_main_quit();
-}
-
 static void fmt_changed(GtkWidget *combo, gpointer data)
 {
 	gtk_selected_filefmt = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
@@ -75,7 +68,8 @@ static void IncChange(GtkWidget *entry, gpointer data)
    Constract input windows
 */
 
-static void kemoview_gtk_read_file_select(GtkButton *button, gpointer data){
+/* static void kemoview_gtk_read_file_select(GtkButton *button, gpointer data){ */
+static void kemoview_gtk_read_file_select(gpointer data){
 	int response;
 	GtkWidget *parent;
 	GtkEntry *entry;
@@ -109,7 +103,6 @@ static void kemoview_gtk_read_file_select(GtkButton *button, gpointer data){
 	else{
     g_print( "Another response was received.\n" );
 	}
- 	gtk_widget_destroy(filew);
 	return;
 }
 
@@ -153,43 +146,17 @@ static void kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
 
 static void gtk_read_file_window(const char *title){
 	GtkWidget *hbox;
-    GtkWidget *label;
     GtkWidget *entry;
-	GtkWidget *button, *button2, *button3;
 	
+	/*  Set empty window to make file dialog */
 	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	
-	gtk_window_set_title(GTK_WINDOW(ftmpw), title);
-	gtk_widget_set_size_request(ftmpw, 300, -1);
-	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
-	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
-	
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	
-	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
-	
-	
-	label = gtk_label_new("File:");
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-
-  /*  Generate entry  */
-  entry = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
+	/*  Generate entry  */
+	entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw);
-
-  /* Set buttons   */
-	button = gtk_button_new_with_label("_Select");
-	button2 = gtk_button_new_with_label("_Open");
-    button3 = gtk_button_new_with_label("_Cancel");
-	g_signal_connect(G_OBJECT(button), "clicked", 
-				G_CALLBACK(kemoview_gtk_read_file_select), (gpointer)entry);
-	g_signal_connect(G_OBJECT(button2), "clicked", G_CALLBACK(fmt_clicked2), NULL);
-    g_signal_connect(G_OBJECT(button3), "clicked", G_CALLBACK(cancel_file), NULL);
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), button2, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), button3, FALSE, FALSE, 0);
-	gtk_widget_show_all(ftmpw);
-	gtk_main();
+	
+	kemoview_gtk_read_file_select(entry);
+ 	gtk_widget_destroy(filew);
 	return;
 	
 }
