@@ -25,12 +25,14 @@ static GLUI_EditText   *editText_ic;
 static GLUI_Button *bottunToGo;
 
 static GLUI_RadioGroup *imgfmt_radio;
+static GLUI_RadioGroup *rotdir_radio;
 static GLUI_String glui_name;
 
 struct kv_string *kv_filename;
 struct kv_string *image_prefix;
 static int int_box;
 static int image_fmt;
+static int rot_dir;
 static int ist_udt, ied_udt, inc_udt;
 
 static int counter = 0;
@@ -71,6 +73,11 @@ static void save_viewmatrix_glui(int sel){
 	
 	kemoview_write_modelview_file(filename);
     kemoview_free_kvstring(filename);
+	GLUI_Master.close_all();
+	return;
+};
+
+static void Cancel_filemenu_glui(int sel){
 	GLUI_Master.close_all();
 	return;
 };
@@ -124,24 +131,22 @@ static void input_image_file_panel(int val)
 	return;
 }
 
-static void imgfmt_list_CB( int int_CV )
+
+static void ritdir_list_CB( int int_CV )
 {
-	printf( "list, imege_fmt: %d\n", image_fmt);
+	printf( "list, imege_fmt: %d\n", rot_dir);
 	return;
 }
 
-static void imgfmt_CB( int int_CV )
+static void rotdir_CB( int int_CV )
 {
-	int_box = imgfmt_radio->get_int_val();
+	int_box = rotdir_radio->get_int_val();
 	
-	if     (int_box == 1) {image_fmt = SAVE_PNG;}
-	else if(int_box == 2) {image_fmt = SAVE_BMP;}
-	else if(int_box == 3) {image_fmt = SAVE_EPS;}
-	else if(int_box == 4) {image_fmt = SAVE_PDF;}
-	else if(int_box == 5) {image_fmt = SAVE_PS;}
-	else {image_fmt = NO_SAVE_FILE;};
+	if     (int_box == 1) {rot_dir = ROTATE_X;}
+	else if(int_box == 2) {rot_dir = ROTATE_Y;}
+	else {rot_dir = ROTATE_Z;};
 	
-	/*	printf( "checkbox, imege_fmt: %d %d\n", int_box, image_fmt);*/
+		printf( "checkbox, imege_fmt: %d %d\n", int_box, rot_dir);
 	return;
 }
 
@@ -180,9 +185,10 @@ static void save_evolution_handler(int sel){
 };
 
 
-static void save_rotation_views_handler(int rot_dir){
-    int inc_deg = 2;
-	write_rotate_views_glut(image_fmt, image_prefix, rot_dir, inc_deg);
+static void save_rotation_views_handler(int sel){
+	if(inc_udt < 1) inc_udt = 1;
+	if(image_fmt == NO_SAVE_FILE) inc_udt = 2;
+	write_rotate_views_glut(image_fmt, image_prefix, rot_dir, inc_udt);
     kemoview_free_kvstring(image_prefix);
 	GLUI_Master.close_all();
 };
@@ -203,9 +209,8 @@ static void set_imagefile_brouser_glui(){
 }
 
 static void set_imageformat_listbox_glui(){
-	GLUI_Listbox *imgfmt_list = new GLUI_Listbox( glui_fwin, "Image format", 
+	GLUI_Listbox *imgfmt_list = new GLUI_Listbox( glui_fwin, "Image format:  ", 
 			&image_fmt);
-/*			&image_fmt, 4, imgfmt_list_CB);*/
 	imgfmt_list->add_item(NO_SAVE_FILE, "No File" );
 	imgfmt_list->add_item(SAVE_PNG, "PNG" );
 	imgfmt_list->add_item(SAVE_BMP, "BMP" );
@@ -214,23 +219,24 @@ static void set_imageformat_listbox_glui(){
 	imgfmt_list->add_item(SAVE_PS, "PS" );
 }
 
-/*static void set_imageformat_buttuns_glui(){
-	GLUI_Panel *imgfmt_panel = new GLUI_Panel( glui_fwin, "Image format" );
-	imgfmt_radio = new GLUI_RadioGroup(imgfmt_panel, &int_box,4, imgfmt_CB );
-	new GLUI_RadioButton( imgfmt_radio, "No File" );
-	new GLUI_RadioButton( imgfmt_radio, "PNG" );
-	new GLUI_RadioButton( imgfmt_radio, "BMP" );
-	new GLUI_RadioButton( imgfmt_radio, "EPS" );
-	new GLUI_RadioButton( imgfmt_radio, "PDF" );
-	new GLUI_RadioButton( imgfmt_radio, "PS" );
+static void set_rot_dir_listbox_glui(){
+	GLUI_Listbox *imgfmt_list = new GLUI_Listbox( glui_fwin, "Rotatio axis:  ", 
+			&rot_dir);
+	imgfmt_list->add_item(ROTATE_X, "X" );
+	imgfmt_list->add_item(ROTATE_Y, "Y" );
+	imgfmt_list->add_item(ROTATE_Z, "Z" );
 }
-*/
 
 static void set_evolution_panel_glui(){
 	editText_st = new GLUI_EditText( glui_fwin, "Start step:	", GLUI_EDITTEXT_INT,
 									&ist_udt, -1, input_evolution_start_panel );
 	editText_ed = new GLUI_EditText( glui_fwin, "End step:	", GLUI_EDITTEXT_INT,
 									&ied_udt, -1, input_evolution_end_panel );
+	editText_ic = new GLUI_EditText( glui_fwin, "Increment:	", GLUI_EDITTEXT_INT,
+									&inc_udt, -1, input_evolution_increment_panel );
+}
+
+static void set_increment_panel_glui(){
 	editText_ic = new GLUI_EditText( glui_fwin, "Increment:	", GLUI_EDITTEXT_INT,
 									&inc_udt, -1, input_evolution_increment_panel );
 }
@@ -251,6 +257,7 @@ void set_saveimage_menu_glui(int winid){
 	set_imagefile_brouser_glui();
 	set_imageformat_listbox_glui();
 	glui_fwin->add_button("Save!", 0, save_image_handler);
+	glui_fwin->add_button("Cancel", 0, Cancel_filemenu_glui);
 
 	glutSetWindow(winid);
 	glui_fwin->set_main_gfx_window(winid);
@@ -274,6 +281,7 @@ void set_evolution_menu_glui(int winid){
 	set_evolution_panel_glui();
 	set_imageformat_listbox_glui();
 	glui_fwin->add_button("Go!", 0, save_evolution_handler);
+	glui_fwin->add_button("Cancel", 0, Cancel_filemenu_glui);
 
 	glutSetWindow(winid);
 	glui_fwin->set_main_gfx_window(winid);
@@ -293,9 +301,10 @@ void set_rotateimages_menu_glui(int winid){
 	glui_fwin = GLUI_Master.create_glui("Set file name for image", 0, 100, 100);
 	set_imagefile_brouser_glui();
 	set_imageformat_listbox_glui();
-	glui_fwin->add_button("Rotate X-axis!", IONE, save_rotation_views_handler);
-	glui_fwin->add_button("Rotate Y-axis!", ITWO, save_rotation_views_handler);
-	glui_fwin->add_button("Rotate Z-axis!", ITHREE, save_rotation_views_handler);
+	set_rot_dir_listbox_glui();
+	set_increment_panel_glui();
+	glui_fwin->add_button("Save", 0, save_rotation_views_handler);
+	glui_fwin->add_button("Cancel", 0, Cancel_filemenu_glui);
 	
 	
 	glutSetWindow(winid);
@@ -343,6 +352,7 @@ void save_viewmatrix_file_glui(int winid){
 	file_brouser = new GLUI_FileBrowser(glui_fwin, "Select file", GLUI_PANEL_RAISED, 
 										0,fileBrowerCB);
 	glui_fwin->add_button("Save", 0, save_viewmatrix_glui);
+	glui_fwin->add_button("Cancel", 0, Cancel_filemenu_glui);
 	
 	editText_filename->set_w(240);
 	file_brouser->set_w(240);

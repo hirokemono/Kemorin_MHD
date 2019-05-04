@@ -14,6 +14,7 @@
 #include <GL/glui.h>
 
 #include "kemoviewer.h"
+#include "const_viewer_menu_glut.h"
 #include "kemoview_glut_routines.h"
 
 /* prototypes */

@@ -57,6 +57,7 @@ GLUI_EditText   *editText_filename;
 GLUI_String text_fname;
 
 GLUI_Button *bottunToGo;
+GLUI_Button *bottunToCancel;
 
 static void SetPickSurfaceCB(int val)
 {
@@ -98,6 +99,12 @@ static void init_kemoview_data_glui(int val){
 	iflag_datatype = kemoview_open_data(filename);
     kemoview_free_kvstring(filename);
 	
+	GLUI_Master.close_all();
+	draw_mesh_w_menu();
+	return;
+};
+
+static void cancel_open_file_glui(int val){
 	GLUI_Master.close_all();
 	draw_mesh_w_menu();
 	return;
@@ -231,7 +238,8 @@ static void set_open_file_menu_glui(){
 										0,openFileBrowerCB);
 	editText_pick_sf = new GLUI_EditText( glui, "Pickup surface command: ", 
 										 pick_surf_command, -1, SetPickSurfaceCB);
-	bottunToGo =  new GLUI_Button(glui, "Open", -1, init_kemoview_data_glui);
+	bottunToGo =      new GLUI_Button(glui, "Open", -1, init_kemoview_data_glui);
+	bottunToCancel =  new GLUI_Button(glui, "Cancel", -1, cancel_open_file_glui);
 	
 	editText_filename->set_w(240);
 	file_brouser->set_w(240);
