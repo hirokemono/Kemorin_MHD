@@ -107,7 +107,7 @@ void read_kemoview_data_glut(){
         if(iflag_datatype == IFLAG_FULL_MESH_GZ){strcat(filename->string, ".gz");};
     };
 	
-	iflag_datatype = kemoview_open_data(filename->string);
+	iflag_datatype = kemoview_open_data(filename);
     kemoview_free_kvstring(file_prefix);
     kemoview_free_kvstring(filename);
 	return;
@@ -512,7 +512,7 @@ void load_PSF_colormap_file_glut(){
 };
 
 void save_viewmatrix_file(){
-	char file_name[LENGTHBUF];
+    struct kv_string *filename;
 	char buf[LENGTHBUF];
 	char *delchara;
 	
@@ -520,13 +520,15 @@ void save_viewmatrix_file(){
 	fgets(buf,sizeof(buf),stdin);
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
-	strcpy(file_name, buf);
-	kemoview_write_modelview_file(file_name);
+
+    filename = kemoview_init_kvstring_by_string(buf);
+	kemoview_write_modelview_file(filename);
+    kemoview_free_kvstring(filename);
 	return;
 };
 
 void load_viewmatrix_file(){
-	char file_name[LENGTHBUF];
+    struct kv_string *filename;
 	char buf[LENGTHBUF];
 	char *delchara;
 	
@@ -534,8 +536,10 @@ void load_viewmatrix_file(){
 	fgets(buf,sizeof(buf),stdin);
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
-	strcpy(file_name, buf);
-	kemoview_load_modelview_file(file_name);
+
+    filename = kemoview_init_kvstring_by_string(buf);
+	kemoview_load_modelview_file(filename);
+    kemoview_free_kvstring(filename);
 	return;
 };
 

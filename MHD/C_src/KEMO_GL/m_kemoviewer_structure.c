@@ -192,9 +192,9 @@ int kemoview_set_data_format_flag(struct kv_string *filename,
     return set_data_format_flag(filename->string, stripped_prefix->string, stripped_ext->string);
 }
 
-int kemoview_open_data(const char *file_name){
+int kemoview_open_data(struct kv_string *filename){
 	int iflag_datatype;
-	iflag_datatype = kemoviewer_open_data(file_name, kemo_sgl->mesh_d, kemo_sgl->mesh_m,
+	iflag_datatype = kemoviewer_open_data(filename->string, kemo_sgl->mesh_d, kemo_sgl->mesh_m,
 				kemo_sgl->psf_a, kemo_sgl->psf_d, kemo_sgl->psf_m,
 				kemo_sgl->fline_d, kemo_sgl->fline_m,
 				kemo_sgl->psf_ucd_tmp,kemo_sgl->view_s);
@@ -241,11 +241,11 @@ void kemoview_get_pick_surface_command(struct kv_string *command){
 	alloc_kvstringitem(kemo_sgl->mesh_m->pick_surface_command, command);
 };
 
-void kemoview_write_modelview_file(const char *file_name){
-	write_GL_modelview_file(file_name, kemo_sgl->mesh_m->iflag_view_type, kemo_sgl->view_s);
+void kemoview_write_modelview_file(struct kv_string *filename){
+	write_GL_modelview_file(filename->string, kemo_sgl->mesh_m->iflag_view_type, kemo_sgl->view_s);
 }
-void kemoview_load_modelview_file(const char *file_name){
-	read_GL_modelview_file(file_name, kemo_sgl->mesh_m->iflag_view_type, kemo_sgl->view_s);
+void kemoview_load_modelview_file(struct kv_string *filename){
+	read_GL_modelview_file(filename->string, kemo_sgl->mesh_m->iflag_view_type, kemo_sgl->view_s);
 }
 
 

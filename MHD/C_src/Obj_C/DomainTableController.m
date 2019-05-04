@@ -79,7 +79,10 @@
         MeshOpenFilehead =   [MeshOpenFilehead stringByDeletingPathExtension];
     };
     
-    int iflag_datatype = kemoview_open_data([MeshOpenFilehead UTF8String]);
+    struct kv_string *filename = kemoview_init_kvstring_by_string([MeshOpenFilehead UTF8String]);
+    int iflag_datatype = kemoview_open_data(filename);
+    kemoview_free_kvstring(filename);
+    
     if(iflag_datatype==IFLAG_MESH ) [self OpenSurfaceMeshFile:MeshOpenFilehead];
 }
 

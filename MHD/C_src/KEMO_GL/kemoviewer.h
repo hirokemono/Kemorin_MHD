@@ -448,12 +448,12 @@ extern "C" {
     
     void kemoview_viewer_evolution(int istep);
     
-    void kemoview_write_modelview_file(const char *file_name);
-    void kemoview_load_modelview_file(const char *file_name);
+    void kemoview_write_modelview_file(struct kv_string *filename);
+    void kemoview_load_modelview_file(struct kv_string *filename);
     
     int kemoview_set_data_format_flag(struct kv_string *filename, 
                                       struct kv_string *stripped_prefix, struct kv_string *stripped_ext);
-    int kemoview_open_data(const char *file_name);
+    int kemoview_open_data(struct kv_string *filename);
     
     void kemoview_close_mesh_view();
     int  kemoview_close_PSF_view();

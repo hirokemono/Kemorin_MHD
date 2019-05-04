@@ -419,7 +419,7 @@ void read_kemoview_data_gtk(){
         if(iflag_datatype == IFLAG_FULL_MESH_GZ){strcat(filename->string, ".gz");};
     };
 
-	iflag_datatype = kemoview_open_data(filename->string);
+	iflag_datatype = kemoview_open_data(filename);
     kemoview_free_kvstring(file_prefix);
     kemoview_free_kvstring(filename);
 	return;
@@ -528,25 +528,26 @@ void load_PSF_colormap_file_gtk(){
 };
 
 void save_viewmatrix_file_gtk(){
-	char file_name[LENGTHBUF];
+    struct kv_string *filename;
 	
 	gtk_save_file_window("Save view matrix file");
 	if(iflag_set == IZERO) return;
 	
-	strcpy(file_name, gtk_selected_filename);
-	kemoview_write_modelview_file(file_name);
-	
+    filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
+	kemoview_write_modelview_file(filename);
+    kemoview_free_kvstring(filename);
 	return;
 };
 
 void load_viewmatrix_file_gtk(){
-	char file_name[LENGTHBUF];
-	
+    struct kv_string *filename;
+    
 	gtk_read_file_window("Load view matrix file");
 	if(iflag_set == IZERO) return;
 	
-	strcpy(file_name, gtk_selected_filename);
-	kemoview_load_modelview_file(file_name);
+    filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
+	kemoview_load_modelview_file(filename);
+    kemoview_free_kvstring(filename);
 	
 	return;
 };

@@ -163,7 +163,10 @@
         FlineOpenFilehead =   [FlineOpenFilehead stringByDeletingPathExtension];
     };
     
-    int iflag_datatype =  kemoview_open_data([FlineFileName UTF8String]);
+    struct kv_string *filename = kemoview_init_kvstring_by_string([FlineFileName UTF8String]);
+    int iflag_datatype =  kemoview_open_data(filename);
+    kemoview_free_kvstring(filename);
+    
     if(iflag_datatype == IFLAG_LINES) [self OpenFieldlineFile:(NSString *)FlineOpenFilehead];
 }
 

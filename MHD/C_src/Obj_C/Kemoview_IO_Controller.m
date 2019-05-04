@@ -25,7 +25,9 @@
 		if([KemoviewOpenFileext isEqualToString:@"0"]) return;
 	};
 
-	iflag_datatype = kemoview_open_data((char *) [kemoviewOpenFilename UTF8String]);
+    struct kv_string *filename = kemoview_init_kvstring_by_string([kemoviewOpenFilename UTF8String]);
+	iflag_datatype = kemoview_open_data(filename);
+    kemoview_free_kvstring(filename);
 	
 	if(iflag_datatype==IFLAG_MESH) {
 		[_domainTableController OpenSurfaceMeshFile:kemoviewOpenFilehead];
@@ -71,7 +73,9 @@
 		NSLog(@" ViewMatrixDirectory = %@", ViewMatrixDirectory);
 		NSLog(@" ViewMatrixFilehead = %@",  ViewMatrixFilehead);
 
-		kemoview_write_modelview_file((char *) [ViewMatrixFilename UTF8String]);
+        struct kv_string *filename = kemoview_init_kvstring_by_string([ViewMatrixFilename UTF8String]);
+		kemoview_write_modelview_file(filename);
+        kemoview_free_kvstring(filename);
 	};
                                    }];
 }
@@ -94,7 +98,9 @@
 		NSLog(@" ViewMatrixDirectory = %@", ViewMatrixDirectory);
 		NSLog(@" ViewMatrixFilehead = %@",  ViewMatrixFilehead);
         
-		kemoview_load_modelview_file((char *) [ViewMatrixFilename UTF8String]);
+        struct kv_string *filename = kemoview_init_kvstring_by_string([ViewMatrixFilename UTF8String]);
+		kemoview_load_modelview_file(filename);
+        kemoview_free_kvstring(filename);
 		[_kemoviewer UpdateImage];
 	};
                                  }];

@@ -95,7 +95,7 @@ static void init_kemoview_data_glui(int val){
     kemoview_free_kvstring(stripped_ext);
     kemoview_free_kvstring(file_prefix);
 	
-	iflag_datatype = kemoview_open_data(filename->string);
+	iflag_datatype = kemoview_open_data(filename);
     kemoview_free_kvstring(filename);
 	
 	GLUI_Master.close_all();
@@ -159,18 +159,20 @@ static void load_psf_colormap_glui(int sel){
 
 static void load_viewmatrix_glui(int sel){
 	char current[LENGTHBUF];
-	char file_name[LENGTHBUF];
-	char file_head[LENGTHBUF];
-	char img_ext[LENGTHBUF];
-	int ext_fmt;
+    int length;
+    struct kv_string *filename;
 	
 	getcwd(current, sizeof(current));
+    length = strlen(current) + strlen(text_fname.c_str()) + 5;
 	
-	strcpy(file_name, current);
-	strcat(file_name, "/");
-	strcat(file_name, text_fname.c_str());
+    filename = kemoview_alloc_kvstring();
+    kemoview_alloc_kvstringitem(length, filename);
+	strcpy(filename->string, current);
+	strcat(filename->string, "/");
+	strcat(filename->string, text_fname.c_str());
 	
-	kemoview_load_modelview_file(file_name);
+	kemoview_load_modelview_file(filename);
+    kemoview_free_kvstring(filename);
 	
 	draw_mesh_w_menu();
 	
