@@ -181,14 +181,6 @@ void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	return;
 }
 
-void alloc_fline_file_param(struct fline_menu_val *fline_m){
-    if ((fline_m->fline_header = (struct kv_string *) malloc(sizeof(struct kv_string))) == NULL) {
-        printf("malloc error for ucd_m\n");
-        exit(0);
-    }
-	return;
-};
-
 void alloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m){
 	int i;
 	fline_m->cmap_fline_comp =  (struct colormap_params **) malloc(fline_s->ncomptot*sizeof(struct colormap_params *));
@@ -251,6 +243,9 @@ void dealloc_draw_mesh_flags(struct mesh_menu_val *mesh_m){
 	free(mesh_m->draw_domains_solid);
 	free(mesh_m->draw_domains_grid);
 	free(mesh_m->draw_domains_nod);
+	
+	dealloc_kvstring(mesh_m->pick_surface_command);
+	dealloc_kvstring(mesh_m->mesh_file_name);
 	return;
 }
 
@@ -270,6 +265,7 @@ void dealloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 		free(psf_m->cmap_psf_comp[i]);
 	};
 	free(psf_m->cmap_psf_comp);
+	dealloc_kvstring(psf_m->psf_header);
 	return;
 }
 

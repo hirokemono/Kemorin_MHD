@@ -145,7 +145,7 @@ void copy_GL_modelview_params_from_ctl(struct modeview_ctl_c *mat_c, struct view
 }
 
 
-void write_GL_modelview_file(const char *file_name, int iflag_view, struct view_element *view){
+void write_GL_modelview_file(struct kv_string *filename, int iflag_view, struct view_element *view){
 	
 	mat_c0 = (struct modeview_ctl_c *) malloc(sizeof(struct modeview_ctl_c));
 	alloc_modeview_ctl_c(mat_c0);
@@ -161,19 +161,19 @@ void write_GL_modelview_file(const char *file_name, int iflag_view, struct view_
     copy_mat44_to_ctl(view->mat_eye_2_clip, mat_c0->projection_mat_ctl);
     */
     
-	write_modeview_file_c(file_name, mat_c0);
+	write_modeview_file_c(filename->string, mat_c0);
 	free(mat_c0);
 	return;
 }
 
 
-void read_GL_modelview_file(const char *file_name, int iflag_view, struct view_element *view){
+void read_GL_modelview_file(struct kv_string *filename, int iflag_view, struct view_element *view){
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	
 	mat_c0 = (struct modeview_ctl_c *) malloc(sizeof(struct modeview_ctl_c));
 	alloc_modeview_ctl_c(mat_c0);
 	
-	read_modeview_file_c(file_name, buf, mat_c0);
+	read_modeview_file_c(filename->string, buf, mat_c0);
     
 	copy_GL_modelview_params_from_ctl(mat_c0, view);
 	if(mat_c0->iflag_streo_view_ctl > 0){

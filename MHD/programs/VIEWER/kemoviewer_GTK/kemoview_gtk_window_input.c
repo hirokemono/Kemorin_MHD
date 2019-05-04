@@ -124,12 +124,12 @@ static void cb_close_window(GtkButton *button, gpointer user_data){
     gtk_widget_destroy(window);
 };
 
-static void gtk_colormap_menu(double range_min, double range_max, const char *title){
+static void gtk_colormap_menu(double range_min, double range_max, struct kv_string *title){
     struct colormap_view *color_vws;
 	GtkWidget *box;
 	
 	rangew = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(rangew), title);
+	gtk_window_set_title(GTK_WINDOW(rangew), title->string);
 	
 	g_signal_connect(rangew, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
@@ -156,7 +156,7 @@ static void gtk_colormap_menu(double range_min, double range_max, const char *ti
 
 
 static void gtk_range_menu(double range_min, double range_max, 
-			const char *title){
+            struct kv_string *title){
 	GtkWidget *box;
 	GtkWidget *box1, *box2, *box3, *box5;
 	GtkWidget *lavel0, *lavel1, *lavel2, *lavel3;
@@ -171,7 +171,7 @@ static void gtk_range_menu(double range_min, double range_max,
 	sprintf(max_text, "    %e    ", range_max);
 	
 	rangew = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(rangew), title);
+	gtk_window_set_title(GTK_WINDOW(rangew), title->string);
 
 	g_signal_connect(rangew, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
@@ -505,7 +505,7 @@ void edit_psf_colormap_gtk(){
 	range_min = kemoview_get_PSF_min_data(icomp);
 	range_max = kemoview_get_PSF_max_data(icomp);
 	
-	gtk_colormap_menu(range_min, range_max, colorname->string);
+	gtk_colormap_menu(range_min, range_max, colorname);
     kemoview_free_kvstring(colorname);
 	/*
 	if(iflag_set == MODIFY_POINT){
@@ -531,7 +531,7 @@ void set_psf_range_gtk(){
 	range_min = kemoview_get_PSF_min_data(icomp);
 	range_max = kemoview_get_PSF_max_data(icomp);
 	
-	gtk_range_menu(range_min, range_max, colorname->string);
+	gtk_range_menu(range_min, range_max, colorname);
     kemoview_free_kvstring(colorname);
 
     if(iflag_set == IZERO) return; 
@@ -551,7 +551,7 @@ void set_fline_range_gtk(){
 	range_max = kemoview_get_fline_data_max(icomp);
 	kemoview_get_fline_color_data_name(colorname, ifield);
 	
-	gtk_range_menu(range_min, range_max, colorname->string);
+	gtk_range_menu(range_min, range_max, colorname);
     kemoview_free_kvstring(colorname);
 
 	if(iflag_set == IZERO) return; 

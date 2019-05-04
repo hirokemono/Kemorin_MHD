@@ -489,13 +489,9 @@ int output_evolution_file_gtk(struct kv_string *file_prefix,
 	if(id_img != 0){
 		gtk_save_file_window("Save Image files");
 		if(iflag_set == IZERO) return 0;
-		
-        strcpy(stripped_ext->string, gtk_selected_filefmt);
-        
-        stripped_ext = kemoview_alloc_kvstring();
+
         filename =     kemoview_init_kvstring_by_string(gtk_selected_filename);
 		kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
-        kemoview_free_kvstring(stripped_ext);
         kemoview_free_kvstring(filename);
 	};
     kemoview_free_kvstring(stripped_ext);

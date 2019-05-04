@@ -115,12 +115,12 @@ void read_kemoview_data_glut(){
 
 /* Routines for values from console input */
 
-static void input_range_from_console(char *name, float *range_min, float *range_max,
+static void input_range_from_console(struct kv_string *name, float *range_min, float *range_max,
 							  double data_min, double data_max)
 {
 	char buf[1024];
 	printf("Input minimum value and maximum value. \n");
-	printf("min. and max. of %s \n",name);
+	printf("min. and max. of %s \n",name->string);
 	printf("minimum value: %.7e \n", data_min);
 	printf("maximum value: %.7e \n", data_max);
 	printf("Current minimum range: %.7e \n", *range_min);
@@ -161,7 +161,7 @@ void set_psf_range_console(){
     colorname = kemoview_alloc_kvstring();
 	kemoview_get_PSF_field_name(colorname, ifield);
 	
-	input_range_from_console(colorname->string, &range_min, &range_max, data_min, data_max);
+	input_range_from_console(colorname, &range_min, &range_max, data_min, data_max);
 	kemoview_set_PSF_linear_colormap((double) range_min, (double) range_max);
     kemoview_free_kvstring(colorname);
 	return;
@@ -177,7 +177,7 @@ void set_fline_range_console(){
     struct kv_string *colorname = kemoview_alloc_kvstring();
 	kemoview_get_fline_color_data_name(colorname, ifield);
 	
-	input_range_from_console(colorname->string, &range_min, &range_max, data_min, data_max);	
+	input_range_from_console(colorname, &range_min, &range_max, data_min, data_max);	
 	kemoview_set_fline_linear_colormap((double) range_min, (double) range_max);
     kemoview_free_kvstring(colorname);
 	return;

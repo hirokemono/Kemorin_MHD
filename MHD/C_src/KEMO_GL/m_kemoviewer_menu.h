@@ -73,8 +73,8 @@
 #define ON  1
 
 struct mesh_menu_val{
-	char mesh_file_name[LENGTHBUF];
-	char pick_surface_command[LENGTHBUF];
+	struct kv_string *mesh_file_name;
+	struct kv_string *pick_surface_command;
     int iformat_surface_mesh;
 
 	int iflag_streo_stutter;
@@ -172,7 +172,7 @@ struct kemo_array_control{
 };
 
 struct psf_menu_val{
-	char psf_header[LENGTHBUF];
+	struct kv_string *psf_header;
 	int psf_step;
 	int iflag_psf_file;
 	
@@ -254,7 +254,6 @@ void alloc_draw_mesh_flags(struct viewer_mesh *mesh_s,
 void dealloc_draw_mesh_flags(struct mesh_menu_val *mesh_m);
 
 void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m);
-void alloc_fline_file_param(struct fline_menu_val *fline_m);
 void alloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m);
 void dealloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m);
 void dealloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m);

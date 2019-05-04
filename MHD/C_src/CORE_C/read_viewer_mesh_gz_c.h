@@ -14,6 +14,6 @@
 
 /* Prototypes */ 
 
-int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s);
+int read_viewer_mesh_gz_c(const char *filename, struct viewer_mesh *mesh_s);
 
 #endif

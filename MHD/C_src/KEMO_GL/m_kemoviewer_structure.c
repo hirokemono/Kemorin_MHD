@@ -194,7 +194,7 @@ int kemoview_set_data_format_flag(struct kv_string *filename,
 
 int kemoview_open_data(struct kv_string *filename){
 	int iflag_datatype;
-	iflag_datatype = kemoviewer_open_data(filename->string, kemo_sgl->mesh_d, kemo_sgl->mesh_m,
+	iflag_datatype = kemoviewer_open_data(filename, kemo_sgl->mesh_d, kemo_sgl->mesh_m,
 				kemo_sgl->psf_a, kemo_sgl->psf_d, kemo_sgl->psf_m,
 				kemo_sgl->fline_d, kemo_sgl->fline_m,
 				kemo_sgl->psf_ucd_tmp,kemo_sgl->view_s);
@@ -235,17 +235,19 @@ void kemoview_close_fieldline_view(){
 }
 
 void kemoview_set_pick_surface_command(struct kv_string *command){
-	strngcopy(kemo_sgl->mesh_m->pick_surface_command, command->string);
+    dealloc_kvstring(kemo_sgl->mesh_m->pick_surface_command);
+    kemo_sgl->mesh_m->pick_surface_command = alloc_kvstring();
+	alloc_kvstringitem(command->string, kemo_sgl->mesh_m->pick_surface_command);
 };
 void kemoview_get_pick_surface_command(struct kv_string *command){
-	alloc_kvstringitem(kemo_sgl->mesh_m->pick_surface_command, command);
+	alloc_kvstringitem(kemo_sgl->mesh_m->pick_surface_command->string, command);
 };
 
 void kemoview_write_modelview_file(struct kv_string *filename){
-	write_GL_modelview_file(filename->string, kemo_sgl->mesh_m->iflag_view_type, kemo_sgl->view_s);
+	write_GL_modelview_file(filename, kemo_sgl->mesh_m->iflag_view_type, kemo_sgl->view_s);
 }
 void kemoview_load_modelview_file(struct kv_string *filename){
-	read_GL_modelview_file(filename->string, kemo_sgl->mesh_m->iflag_view_type, kemo_sgl->view_s);
+	read_GL_modelview_file(filename, kemo_sgl->mesh_m->iflag_view_type, kemo_sgl->view_s);
 }
 
 
@@ -256,7 +258,7 @@ static void evolution_psf_viewer(){
 	for(id_load=0; id_load<kemo_sgl->psf_a->nmax_loaded; id_load++){
 		if(kemo_sgl->psf_a->iflag_loaded[id_load] > 0){
 			printf("Loaded PSF file %d %d %s\n",id_load, kemo_sgl->psf_m[id_load]->iflag_psf_file,
-                   kemo_sgl->psf_m[id_load]->psf_header);
+                   kemo_sgl->psf_m[id_load]->psf_header->string);
 			kemo_sgl->psf_m[id_load]->psf_step = kemo_sgl->psf_a->istep_sync;
 			evolution_PSF_data(kemo_sgl->psf_d[id_load], kemo_sgl->psf_ucd_tmp, kemo_sgl->psf_m[id_load]);
 		};

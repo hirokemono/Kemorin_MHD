@@ -25,13 +25,13 @@ static void set_kemoviewer_mesh(struct viewer_mesh *mesh_s,
 	int ierr;
     
     if (mesh_m->iformat_surface_mesh == IFLAG_SURF_MESH_GZ) {
-        ierr = read_viewer_mesh_gz_c(mesh_m->mesh_file_name, mesh_s);
+        ierr = read_viewer_mesh_gz_c(mesh_m->mesh_file_name->string, mesh_s);
     } else {
-        ierr = read_viewer_mesh(mesh_m->mesh_file_name, mesh_s);
+        ierr = read_viewer_mesh(mesh_m->mesh_file_name->string, mesh_s);
     };
 	
     if (ierr != 0) {
-        printf("File %s is not found.\n", mesh_m->mesh_file_name);
+        printf("File %s is not found.\n", mesh_m->mesh_file_name->string);
         exit(1);
     }
 	set_viewer_mesh(mesh_s);
@@ -48,8 +48,10 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
     view->iflag_retina = IONE;
     view->iflag_write_ps = OFF;
     
-    strngcopy(mesh_m->mesh_file_name, "in_surface.ksm");
-    mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH;
+    mesh_m->mesh_file_name = init_kvstring_by_string("in_surface.ksm");
+    mesh_m->pick_surface_command = init_kvstring_by_string("pick_surface");
+	
+	mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH;
 	mesh_m->iflag_draw_mesh = iflag_dmesh;
 	mesh_m->iflag_view_type = VIEW_3D;
 	
@@ -92,13 +94,13 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
 	
     if(   psf_m->iflag_psf_file == IFLAG_SURF_UDT || psf_m->iflag_psf_file == IFLAG_SURF_UDT_GZ
        || psf_m->iflag_psf_file == IFLAG_SURF_VTD || psf_m->iflag_psf_file == IFLAG_SURF_VTD_GZ){
-		iflag_datatype = check_gzip_psf_grd_first(psf_m->iflag_psf_file, psf_m->psf_header, 
+		iflag_datatype = check_gzip_psf_grd_first(psf_m->iflag_psf_file, psf_m->psf_header->string, 
 					ucd_tmp);
-		check_gzip_psf_udt_first(psf_m->iflag_psf_file, psf_m->psf_step, psf_m->psf_header, 
+		check_gzip_psf_udt_first(psf_m->iflag_psf_file, psf_m->psf_step, psf_m->psf_header->string, 
 					ucd_tmp);
 	} else if(psf_m->iflag_psf_file == IFLAG_SURF_UCD || psf_m->iflag_psf_file == IFLAG_SURF_UCD_GZ
               || psf_m->iflag_psf_file == IFLAG_SURF_VTK || psf_m->iflag_psf_file == IFLAG_SURF_VTK_GZ){
-		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iflag_psf_file, psf_m->psf_step, psf_m->psf_header, ucd_tmp);
+		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iflag_psf_file, psf_m->psf_step, psf_m->psf_header->string, ucd_tmp);
 	}
     deallc_all_psf_data(psf_s);
     set_psf_data_by_UCD(psf_s, ucd_tmp);
@@ -188,7 +190,7 @@ void set_kemoview_fline_data(struct psf_data *fline_s, struct psf_data *ucd_tmp,
 }
 
 void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string *ucd_m){
-	alloc_set_ucd_field_file_name(psf_m->iflag_psf_file, psf_m->psf_step, psf_m->psf_header, ucd_m);
+	alloc_set_ucd_field_file_name(psf_m->iflag_psf_file, psf_m->psf_step, psf_m->psf_header->string, ucd_m);
 	return;
 }
 void alloc_set_ucd_file_name_by_fline(struct fline_menu_val *fline_m, struct kv_string *ucd_m){
