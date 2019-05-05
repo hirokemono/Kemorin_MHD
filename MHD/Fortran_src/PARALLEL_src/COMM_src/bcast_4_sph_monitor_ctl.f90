@@ -111,10 +111,29 @@
       type(volume_spectr_control), intent(inout) :: v_pwr
 !
 !
+      write(*,*) my_rank, 'v_pwr%volume_spec_file_ctl pre',        &
+     &            trim(v_pwr%volume_spec_file_ctl%charavalue)
       call bcast_ctl_type_c1(v_pwr%volume_spec_file_ctl)
+      write(*,*) my_rank, 'v_pwr%volume_spec_file_ctl result',        &
+     &            trim(v_pwr%volume_spec_file_ctl%charavalue)
+!
+      write(*,*) my_rank, 'v_pwr%volume_ave_file_ctl pre',         &
+     &            trim(v_pwr%volume_ave_file_ctl%charavalue)
       call bcast_ctl_type_c1(v_pwr%volume_ave_file_ctl)
+      write(*,*) my_rank, 'v_pwr%volume_ave_file_ctl result',         &
+     &            trim(v_pwr%volume_ave_file_ctl%charavalue)
+! 
+      write(*,*) my_rank, 'v_pwr%inner_radius_ctl pre',            &
+     &            v_pwr%inner_radius_ctl%realvalue
       call bcast_ctl_type_r1(v_pwr%inner_radius_ctl)
+      write(*,*) my_rank, 'v_pwr%inner_radius_ctl result',            &
+     &            v_pwr%inner_radius_ctl%realvalue
+!
+      write(*,*) my_rank, 'v_pwr%outer_radius_ctl pre',            &
+     &            v_pwr%outer_radius_ctl%realvalue
       call bcast_ctl_type_r1(v_pwr%outer_radius_ctl)
+      write(*,*) my_rank, 'v_pwr%outer_radius_ctl result',            &
+     &            v_pwr%outer_radius_ctl%realvalue
 !
       end subroutine bcast_each_vol_spectr_ctl
 !
