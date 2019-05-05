@@ -62,7 +62,7 @@
       do i = 1, smonitor_ctl%num_vspec_ctl
         call bcast_each_vol_spectr_ctl(smonitor_ctl%v_pwr(i))
         write(*,*) my_rank, 'bcast_each_vol_spectr_ctl result', i,  &
-     &            smonitor_ctl%v_pwr(i)%inner_radius_ctl%realvalue
+     &            smonitor_ctl%v_pwr(i)%inner_radius_ctl%realvalue,  &
      &            smonitor_ctl%v_pwr(i)%outer_radius_ctl%realvalue
       end do
 !
