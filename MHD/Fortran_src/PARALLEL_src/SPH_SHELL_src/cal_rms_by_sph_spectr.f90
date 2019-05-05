@@ -50,7 +50,7 @@
       type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: ncomp_rj, icomp_rj
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real (kind=kreal), intent(in) :: d_rj(n_point,ntot_phys_rj)
+      real(kind = kreal), intent(in) :: d_rj(n_point,ntot_phys_rj)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       real(kind = kreal), intent(inout)                                 &
