@@ -135,25 +135,25 @@
         end if
       end do
 !
-!      if(my_rank .gt. 0) then
+      if(iflag_debug .gt. 0) then
         write(*,*) 'volume mean square file area:'
         do i = 1, pwr%num_vol_spectr
           write(*,*) i, pwr%v_spectr(i)%iflag_volume_rms_spec,          &
      &                  trim(pwr%v_spectr(i)%fhead_rms_v),              &
-     &                  pwr%v_spectr(i)%avol, my_rank
+     &                  pwr%v_spectr(i)%avol
         end do
         write(*,*) 'volume mean square file area:'
         do i = 1, pwr%num_vol_spectr
           write(*,*) i, pwr%v_spectr(i)%iflag_volume_ave_sph,           &
-     &                  trim(pwr%v_spectr(i)%fhead_ave), my_rank
+     &                  trim(pwr%v_spectr(i)%fhead_ave)
         end do
         write(*,*) 'Integration area:'
         do i = 1, pwr%num_vol_spectr
           write(*,*) i,                                                 &
      &        pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
-     &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside, my_rank
+     &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside
         end do
-!      end if
+     end if
 !
       end subroutine init_rms_4_sph_spectr
 !

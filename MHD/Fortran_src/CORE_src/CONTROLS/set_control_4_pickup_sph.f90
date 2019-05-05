@@ -51,6 +51,7 @@
       use t_rms_4_sph_spectr
       use output_sph_m_square_file
       use skip_comment_f
+      use calypso_mpi
 !
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(sph_mean_squares), intent(inout) :: pwr
@@ -81,6 +82,9 @@
       pwr%v_spectr(1)%r_inside =  -1.0
       pwr%v_spectr(1)%r_outside = -1.0
 !
+      write(*,*) my_rank, 'smonitor_ctl%num_vspec_ctl',     &
+     &                    smonitor_ctl%num_vspec_ctl
+!
       do j = 2, num_vspec
         i = j - 1
         pwr%v_spectr(j)%iflag_volume_rms_spec                           &
@@ -110,6 +114,10 @@
         else
           pwr%v_spectr(j)%r_outside = -1.0
         end if
+        write(*,*) my_rank, 'smonitor_ctl%v_pwr(i)%inner_radius_ctl%realvalue',     &
+     &                    smonitor_ctl%v_pwr(i)%inner_radius_ctl%realvalue
+        write(*,*) my_rank, 'smonitor_ctl%v_pwr(i)%outer_radius_ctl%realvalue',     &
+     &                    smonitor_ctl%v_pwr(i)%outer_radius_ctl%realvalue
       end do
 !
       end subroutine set_ctl_params_sph_spectr
