@@ -204,6 +204,10 @@
      &        WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_lm,       &
      &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
      &        WK_pwr%vol_lm_local(0,jcomp_st,inum))
+!
+           write(*,*)    'radial_integration', inum, jcomp_st,          &
+     &        v_pwr(inum)%kr_inside, v_pwr(inum)%kr_outside,   &
+     &        WK_pwr%vol_l_local(0,jcomp_st:jcomp_st+num-1,inum)
         end do
 !
         if(nri_rms .le. 0) cycle
