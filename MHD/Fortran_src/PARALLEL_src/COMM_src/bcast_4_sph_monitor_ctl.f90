@@ -38,8 +38,6 @@
 !
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !
-      integer(kind = kint) :: i
-!
 !
       call bcast_ctl_type_c1(smonitor_ctl%volume_average_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%volume_pwr_spectr_prefix)
@@ -62,11 +60,11 @@
       call bcast_each_vol_spectr_ctl                                    &
      &   (smonitor_ctl%num_vspec_ctl, smonitor_ctl%v_pwr)
 !
-      do i = 1, smonitor_ctl%num_vspec_ctl
-        write(*,*) my_rank, 'bcast_each_vol_spectr_ctl result', i,  &
-     &            smonitor_ctl%v_pwr(i)%inner_radius_ctl%realvalue,  &
-     &            smonitor_ctl%v_pwr(i)%outer_radius_ctl%realvalue
-      end do
+!      do i = 1, smonitor_ctl%num_vspec_ctl
+!        write(*,*) my_rank, 'bcast_each_vol_spectr_ctl result', i,   &
+!     &            smonitor_ctl%v_pwr(i)%inner_radius_ctl%realvalue,  &
+!     &            smonitor_ctl%v_pwr(i)%outer_radius_ctl%realvalue
+!      end do
 !
       end subroutine bcast_sph_monitoring_ctl
 !

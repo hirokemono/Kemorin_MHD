@@ -72,9 +72,6 @@
 !
 
       do i = 1, pwr%num_vol_spectr
-        write(*,*) my_rank, 'find_radial_grid_index', i,  &
-     &         pwr%v_spectr(i)%r_inside,   &
-     &         pwr%v_spectr(i)%r_outside
         call find_radial_grid_index(sph_rj, sph_params%nlayer_ICB,      &
      &      pwr%v_spectr(i)%r_inside, pwr%v_spectr(i)%kr_inside)
         call find_radial_grid_index(sph_rj, sph_params%nlayer_CMB,      &
