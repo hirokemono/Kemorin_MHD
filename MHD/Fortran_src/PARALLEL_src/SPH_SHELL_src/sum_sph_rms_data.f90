@@ -138,7 +138,6 @@
       use t_phys_data
       use t_rms_4_sph_spectr
       use t_sum_sph_rms_data
-      use calypso_mpi
 !
       use cal_rms_by_sph_spectr
       use cal_ave_4_rms_vector_sph
@@ -205,10 +204,6 @@
      &        WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_lm,       &
      &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
      &        WK_pwr%vol_lm_local(0,jcomp_st,inum))
-!
-           write(50+my_rank,*)    'radial_integration', inum, jcomp_st, &
-     &        v_pwr(inum)%kr_inside, v_pwr(inum)%kr_outside,   &
-     &        WK_pwr%vol_l_local(0:sph_rj%nidx_rj(2),jcomp_st,inum)
         end do
 !
         if(nri_rms .le. 0) cycle

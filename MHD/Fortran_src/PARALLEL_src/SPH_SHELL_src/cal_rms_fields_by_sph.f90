@@ -131,7 +131,7 @@
         end if
       end do
 !
-      if(iflag_debug .gt. 0) then
+      if(my_rank .gt. 0) then
         write(*,*) 'volume mean square file area:'
         do i = 1, pwr%num_vol_spectr
           write(*,*) i, pwr%v_spectr(i)%iflag_volume_rms_spec,          &
