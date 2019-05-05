@@ -70,7 +70,11 @@
         end do
       end if
 !
+
       do i = 1, pwr%num_vol_spectr
+        write(*,*) my_rank, 'find_radial_grid_index', i,  &
+     &         pwr%v_spectr(i)%r_inside,   &
+     &         pwr%v_spectr(i)%r_outside
         call find_radial_grid_index(sph_rj, sph_params%nlayer_ICB,      &
      &      pwr%v_spectr(i)%r_inside, pwr%v_spectr(i)%kr_inside)
         call find_radial_grid_index(sph_rj, sph_params%nlayer_CMB,      &
@@ -131,25 +135,25 @@
         end if
       end do
 !
-      if(my_rank .gt. 0) then
+!      if(my_rank .gt. 0) then
         write(*,*) 'volume mean square file area:'
         do i = 1, pwr%num_vol_spectr
           write(*,*) i, pwr%v_spectr(i)%iflag_volume_rms_spec,          &
      &                  trim(pwr%v_spectr(i)%fhead_rms_v),              &
-     &                  pwr%v_spectr(i)%avol
+     &                  pwr%v_spectr(i)%avol, my_rank
         end do
         write(*,*) 'volume mean square file area:'
         do i = 1, pwr%num_vol_spectr
           write(*,*) i, pwr%v_spectr(i)%iflag_volume_ave_sph,           &
-     &                  trim(pwr%v_spectr(i)%fhead_ave)
+     &                  trim(pwr%v_spectr(i)%fhead_ave), my_rank
         end do
         write(*,*) 'Integration area:'
         do i = 1, pwr%num_vol_spectr
           write(*,*) i,                                                 &
      &        pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
-     &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside
+     &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside, my_rank
         end do
-      end if
+!      end if
 !
       end subroutine init_rms_4_sph_spectr
 !
