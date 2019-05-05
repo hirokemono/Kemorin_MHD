@@ -58,6 +58,7 @@
       if(smonitor_ctl%num_vspec_ctl .gt. 0 .and. my_rank .gt. 0) then
         allocate(smonitor_ctl%v_pwr(smonitor_ctl%num_vspec_ctl))
       end if
+      call calypso_mpi_barrier
 !
       do i = 1, smonitor_ctl%num_vspec_ctl
         call bcast_each_vol_spectr_ctl(smonitor_ctl%v_pwr(i))
