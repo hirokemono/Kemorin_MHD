@@ -58,10 +58,11 @@
       if(smonitor_ctl%num_vspec_ctl .gt. 0 .and. my_rank .gt. 0) then
         allocate(smonitor_ctl%v_pwr(smonitor_ctl%num_vspec_ctl))
       end if
-      call calypso_mpi_barrier
+!
+      call bcast_each_vol_spectr_ctl                                    &
+     &   (smonitor_ctl%num_vspec_ctl, smonitor_ctl%v_pwr)
 !
       do i = 1, smonitor_ctl%num_vspec_ctl
-        call bcast_each_vol_spectr_ctl(smonitor_ctl%v_pwr(i))
         write(*,*) my_rank, 'bcast_each_vol_spectr_ctl result', i,  &
      &            smonitor_ctl%v_pwr(i)%inner_radius_ctl%realvalue,  &
      &            smonitor_ctl%v_pwr(i)%outer_radius_ctl%realvalue
@@ -106,34 +107,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine bcast_each_vol_spectr_ctl(v_pwr)
+      subroutine bcast_each_vol_spectr_ctl(num_vspec_ctl, v_pwr)
 !
-      type(volume_spectr_control), intent(inout) :: v_pwr
+      integer(kind = kint), intent(in) :: num_vspec_ctl
+      type(volume_spectr_control), intent(inout)                        &
+     &                            :: v_pwr(num_vspec_ctl)
 !
+      integer(kind = kint) :: i
 !
-      write(*,*) my_rank, 'v_pwr%volume_spec_file_ctl pre',        &
-     &            trim(v_pwr%volume_spec_file_ctl%charavalue)
-      call bcast_ctl_type_c1(v_pwr%volume_spec_file_ctl)
-      write(*,*) my_rank, 'v_pwr%volume_spec_file_ctl result',        &
-     &            trim(v_pwr%volume_spec_file_ctl%charavalue)
-!
-      write(*,*) my_rank, 'v_pwr%volume_ave_file_ctl pre',         &
-     &            trim(v_pwr%volume_ave_file_ctl%charavalue)
-      call bcast_ctl_type_c1(v_pwr%volume_ave_file_ctl)
-      write(*,*) my_rank, 'v_pwr%volume_ave_file_ctl result',         &
-     &            trim(v_pwr%volume_ave_file_ctl%charavalue)
-! 
-      write(*,*) my_rank, 'v_pwr%inner_radius_ctl pre',            &
-     &            v_pwr%inner_radius_ctl%realvalue
-      call bcast_ctl_type_r1(v_pwr%inner_radius_ctl)
-      write(*,*) my_rank, 'v_pwr%inner_radius_ctl result',            &
-     &            v_pwr%inner_radius_ctl%realvalue
-!
-      write(*,*) my_rank, 'v_pwr%outer_radius_ctl pre',            &
-     &            v_pwr%outer_radius_ctl%realvalue
-      call bcast_ctl_type_r1(v_pwr%outer_radius_ctl)
-      write(*,*) my_rank, 'v_pwr%outer_radius_ctl result',            &
-     &            v_pwr%outer_radius_ctl%realvalue
+      do i = 1, num_vspec_ctl
+        call bcast_ctl_type_c1(v_pwr(i)%volume_spec_file_ctl)
+        call bcast_ctl_type_c1(v_pwr(i)%volume_ave_file_ctl)
+        call bcast_ctl_type_r1(v_pwr(i)%inner_radius_ctl)
+        call bcast_ctl_type_r1(v_pwr(i)%outer_radius_ctl)
+      end do
 !
       end subroutine bcast_each_vol_spectr_ctl
 !
