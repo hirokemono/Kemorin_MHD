@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "kemosrc_param_c.h"
 
-#define NUM_FIELD 255
+#define NUM_FIELD 262
 #define NCHARA_FIELD 30
 
 struct field_def{

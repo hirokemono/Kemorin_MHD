@@ -39,6 +39,16 @@ const struct field_def field_props[NUM_FIELD] = {
 			{3, "grad_part_composition", "$$  \\nabla \\left(\\Delta C\\right)  $$"},
 			{3, "grad_reference_composition", "$$  \\nabla C_{0}  $$"},
 			
+			/* Square of fields */
+			{1, "square_velocity", "$$  u^{2}  $$"},
+			{1, "square_vorticity", "$$  \omega^{2}  $$"},
+			{1, "square_magne", "$$  B^{2}  $$"},
+			{1, "square_vector_p", "$$  A^{2}  $$"},
+			{1, "square_current", "$$  J^{2}  $$"},
+			{1, "square_temperature", "$$  T^{2}  $$"},
+			{1, "square_composition", "$$  C^{2} $$"},
+			
+			/* Gradients */
 			{3, "grad_v_1", "$$  \\nabla u_{1}  $$"},
 			{3, "grad_v_2", "$$  \\nabla u_{2}  $$"},
 			{3, "grad_v_3", "$$  \\nabla u_{3}  $$"},
@@ -67,7 +77,7 @@ const struct field_def field_props[NUM_FIELD] = {
 			{1, "composition_diffusion", "$$    $$"},
 			{1, "thermal_diffusion", "$$    $$"},
 			
-			
+			/* Fluxes */
 			{6, "momentum_flux", "$$    $$"},
 			{6, "maxwell_tensor", "$$    $$"},
 			{3, "heat_flux", "$$    $$"},
