@@ -7,9 +7,9 @@
 !>@brief Copy FEM mesh data from IO structure
 !!
 !!@verbatim
-!!      subroutine load_element_surface_edge                            &
+!!      subroutine load_element_surface_mesh                            &
 !!     &         (id_rank, mesh_file, mesh, ele_mesh, ele_mesh_IO)
-!!      subroutine output_element_surface_edge                          &
+!!      subroutine output_element_surface_mesh                          &
 !!     &         (id_rank, mesh_file, mesh, ele_mesh, ele_mesh_IO)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -19,15 +19,13 @@
 !!     &         (ele, ele_comm, ele_mesh_IO)
 !!      subroutine set_surface_mesh_from_IO                             &
 !!     &         (ele, surf, surf_comm, surf_mesh_IO)
-!!      subroutine set_edge_mesh_from_IO                                &
-!!     &         (ele, surf, edge, edge_comm, edge_mesh_IO)
+!!      subroutine set_edge_mesh_from_IO(ele, surf, edge, edge_mesh_IO)
 !!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_data), intent(inout) :: surf
 !!        type(edge_data), intent(inout) :: edge
 !!        type(communication_table), intent(inout) :: ele_comm
 !!        type(communication_table), intent(inout) :: surf_comm
-!!        type(communication_table), intent(inout) :: edge_comm
 !!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
@@ -36,7 +34,7 @@
 !!      subroutine set_surface_mesh_to_IO                               &
 !!     &         (ele, surf, surf_comm, surf_mesh_IO)
 !!      subroutine set_edge_mesh_to_IO                                  &
-!!     &         (ele, surf, edge, edge_comm, edge_mesh_IO)
+!!     &         (ele, surf, edge, edge_mesh_IO)
 !!@endverbatim
 !
       module load_element_mesh_data
@@ -57,7 +55,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine load_element_surface_edge                              &
+      subroutine load_element_surface_mesh                              &
      &         (id_rank, mesh_file, mesh, ele_mesh, ele_mesh_IO)
 !
       use element_mesh_IO_select
@@ -82,17 +80,11 @@
       call set_surface_mesh_from_IO                                     &
      &   (mesh%ele, ele_mesh%surf, ele_mesh%surf_comm, ele_mesh_IO)
 !
-!
-      call sel_read_edge_mesh                                           &
-     &   (mesh_file, id_rank, ele_mesh_IO, ierr)
-      call set_edge_mesh_from_IO(mesh%ele, ele_mesh%surf,               &
-     &    ele_mesh%edge, ele_mesh%edge_comm, ele_mesh_IO)
-!
-      end subroutine load_element_surface_edge
+      end subroutine load_element_surface_mesh
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_element_surface_edge                            &
+      subroutine output_element_surface_mesh                            &
      &         (id_rank, mesh_file, mesh, ele_mesh, ele_mesh_IO)
 !
       use element_mesh_IO_select
@@ -120,15 +112,7 @@
       call dealloc_surface_mesh_IO(ele_mesh_IO)
 !      call dealloc_surf_geometry_data(ele_mesh_IO)
 !
-      call set_edge_mesh_to_IO(mesh%ele, ele_mesh%surf, ele_mesh%edge,  &
-     &   ele_mesh%edge_comm, ele_mesh_IO)
-      call sel_write_edge_mesh_file                                     &
-     &   (mesh_file, id_rank, ele_mesh_IO)
-!
-      call dealloc_edge_mesh_IO(ele_mesh_IO)
-!      call dealloc_surf_geometry_data(ele_mesh_IO)
-!
-      end subroutine output_element_surface_edge
+      end subroutine output_element_surface_mesh
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -203,8 +187,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_edge_mesh_from_IO                                  &
-     &         (ele, surf, edge, edge_comm, edge_mesh_IO)
+      subroutine set_edge_mesh_from_IO(ele, surf, edge, edge_mesh_IO)
 !
       use set_edge_data_4_IO
 !
@@ -212,12 +195,11 @@
       type(surface_data), intent(in) :: surf
 !
       type(edge_data), intent(inout) :: edge
-      type(communication_table), intent(inout) :: edge_comm
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !
 !
 !       Subsittuiton of const_edge_comm_table
-      call copy_comm_tbl_type(edge_mesh_IO%comm, edge_comm)
+!      call copy_comm_tbl_type(edge_mesh_IO%comm, edge_comm)
 !
 !       Subsittuiton of construct_edge_data
 !            and const_global_edge_id
@@ -283,19 +265,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_edge_mesh_to_IO                                    &
-     &         (ele, surf, edge, edge_comm, edge_mesh_IO)
+     &         (ele, surf, edge, edge_mesh_IO)
 !
       use set_edge_data_4_IO
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
-      type(communication_table), intent(in) :: edge_comm
 !
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !
 !
-      call copy_comm_tbl_type(edge_comm, edge_mesh_IO%comm)
+      call empty_comm_table(edge_mesh_IO%comm)
       call copy_edge_connect_to_IO(edge, ele%numele, surf%numsurf,      &
      &    edge_mesh_IO%ele, edge_mesh_IO%sfed)
 !

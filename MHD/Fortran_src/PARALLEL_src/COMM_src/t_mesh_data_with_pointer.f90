@@ -25,7 +25,7 @@
 !!        type(mesh_data_p), intent(inout) :: femmesh_p
 !!
 !!      subroutine const_mesh_infos_p(id_rank, femmesh_p, ele_mesh)
-!!      subroutine const_element_comm_tbls_p(femmesh_p, ele_mesh)
+!!      subroutine const_ele_surf_comm_tbls_p(femmesh_p, ele_mesh)
 !!        type(mesh_data_p), intent(inout) :: femmesh_p
 !!        type(element_geometry_p), intent(inout) :: ele_mesh
 !!@endverbatim
@@ -92,8 +92,6 @@
 !>     Structure for surface position and connectivity
         type(surface_data), pointer :: surf
 !
-!>     Structure for edge communication
-        type(communication_table) :: edge_comm
 !>     Structure for edge position and connectivity
         type(edge_data),  pointer :: edge
       end type element_geometry_p
@@ -389,7 +387,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_element_comm_tbls_p(femmesh_p, ele_mesh)
+      subroutine const_ele_surf_comm_tbls_p(femmesh_p, ele_mesh)
 !
       use t_next_node_ele_4_node
       use t_mesh_data
@@ -421,12 +419,7 @@
      &   (femmesh_p%mesh%node, femmesh_p%mesh%nod_comm,                 &
      &    blng_tbl, ele_mesh%surf_comm, ele_mesh%surf)
 !
-      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
-      call const_edge_comm_table                                        &
-     &   (femmesh_p%mesh%node, femmesh_p%mesh%nod_comm,                 &
-     &    blng_tbl, ele_mesh%edge_comm, ele_mesh%edge)
-!
-      end subroutine const_element_comm_tbls_p
+      end subroutine const_ele_surf_comm_tbls_p
 !
 !-----------------------------------------------------------------------
 !

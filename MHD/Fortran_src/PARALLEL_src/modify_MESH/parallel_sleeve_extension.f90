@@ -59,7 +59,7 @@
       if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
       call const_mesh_infos(my_rank, mesh, group, ele_mesh)
 !
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbl_only'
       call const_element_comm_tbl_only(mesh, ele_mesh)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'

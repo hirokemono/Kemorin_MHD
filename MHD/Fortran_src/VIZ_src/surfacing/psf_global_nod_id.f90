@@ -47,7 +47,7 @@
       end do
 !
       call SOLVER_SEND_RECV_int8_type(psf_list%totalnod_on_edge,        &
-     &    psf_list$edge_comm_4_psf, psf_list%id_global_psf)
+     &    psf_list%edge_comm_4_psf, psf_list%id_global_psf)
 !
 !
 !$omp parallel workshare

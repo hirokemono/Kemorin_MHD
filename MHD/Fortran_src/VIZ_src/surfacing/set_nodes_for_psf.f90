@@ -185,7 +185,7 @@
       type(grp_section_list), intent(inout) :: psf_grp_list(num_psf)
       type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
 !
-      integer(kind = kint) :: i, ist, num, igrp
+      integer(kind = kint) :: i, ist, num, igrp, inod
 !
 !
       do i = 1, num_psf

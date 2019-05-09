@@ -128,7 +128,7 @@
      &        MGCG_FEM%MG_mesh(i_level)%group,                          &
      &        MGCG_FEM%MG_ele_mesh(i_level))
 !
-          call const_element_comm_tbls                                  &
+          call const_ele_surf_comm_tbls                                 &
      &       (MGCG_FEM%MG_mesh(i_level)%mesh,                           &
      &        MGCG_FEM%MG_ele_mesh(i_level))
         else
@@ -138,7 +138,7 @@
      &       (MGCG_FEM%MG_mesh(i_level)%mesh,                           &
      &        MGCG_FEM%MG_mesh(i_level)%group,                          &
      &        MGCG_FEM%MG_ele_mesh(i_level))
-          call empty_element_comm_tbls(MGCG_FEM%MG_ele_mesh(i_level))
+          call empty_ele_surf_comm_tbls(MGCG_FEM%MG_ele_mesh(i_level))
         end if
 !
         call dealloc_edge_geometory(MGCG_FEM%MG_ele_mesh(i_level)%edge)

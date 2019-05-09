@@ -7,8 +7,8 @@
 !> @brief Belonged element list for each node
 !!
 !!@verbatim
-!!      subroutine empty_element_comm_tbls(ele_mesh)
-!!      subroutine const_element_comm_tbls(mesh, ele_mesh)
+!!      subroutine empty_ele_surf_comm_tbls(ele_mesh)
+!!      subroutine const_ele_surf_comm_tbls(mesh, ele_mesh)
 !!      subroutine const_element_comm_tbl_only(mesh, ele_mesh)
 !!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh, ele_mesh)
 !!      subroutine dealloc_ele_comm_tbl_only(mesh, ele_mesh)
@@ -73,20 +73,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine empty_element_comm_tbls(ele_mesh)
+      subroutine empty_ele_surf_comm_tbls(ele_mesh)
 !
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       call empty_comm_table(ele_mesh%ele_comm)
       call empty_comm_table(ele_mesh%surf_comm)
-      call empty_comm_table(ele_mesh%edge_comm)
 !
-      end subroutine empty_element_comm_tbls
+      end subroutine empty_ele_surf_comm_tbls
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_element_comm_tbls(mesh, ele_mesh)
+      subroutine const_ele_surf_comm_tbls(mesh, ele_mesh)
 !
       use set_ele_id_4_node_type
       use const_global_element_ids
@@ -124,19 +123,7 @@
       end if
       call calypso_mpi_barrier
 !
-      if(associated(ele_mesh%edge_comm%id_neib)) then
-        if(iflag_debug.gt.0) write(*,*)                                 &
-     &     ' Edge communication table exsists'
-        call check_element_position(txt_ele, ele_mesh%edge%numedge,     &
-     &      ele_mesh%edge%x_edge, ele_mesh%edge_comm)
-      else
-        if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
-        call const_edge_comm_table(mesh%node, mesh%nod_comm,            &
-     &      blng_tbl, ele_mesh%edge_comm, ele_mesh%edge)
-      end if
-      call calypso_mpi_barrier
-!
-      end subroutine const_element_comm_tbls
+      end subroutine const_ele_surf_comm_tbls
 !
 !-----------------------------------------------------------------------
 !
@@ -164,7 +151,6 @@
 !
       call dealloc_comm_table(ele_mesh%ele_comm)
       call dealloc_comm_table(ele_mesh%surf_comm)
-      call dealloc_comm_table(ele_mesh%edge_comm)
 !
       call dealloc_numnod_stack(mesh%node)
       call dealloc_numele_stack(mesh%ele)

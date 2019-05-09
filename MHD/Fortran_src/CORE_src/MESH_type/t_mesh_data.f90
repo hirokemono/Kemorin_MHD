@@ -96,8 +96,6 @@
 !>     Structure for surface position and connectivity
         type(surface_data) ::        surf
 !
-!>     Structure for edge communication
-        type(communication_table) :: edge_comm
 !>     Structure for edge position and connectivity
         type(edge_data) ::           edge
       end type element_geometry
@@ -284,7 +282,6 @@
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call dealloc_comm_table(ele_mesh%edge_comm)
       call dealloc_edge_connect(ele_mesh%edge)
       call dealloc_edge_4_ele(ele_mesh%edge)
 !

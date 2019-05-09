@@ -71,20 +71,6 @@
       call output_element_xyz_file                                      &
      &   (id_rank, def_ele_mesh_head, ele_mesh_IO)
 !
-      if (iflag_debug.gt.0) write(*,*) 'copy_ele_sph_geom_to_IO'
-      call copy_comm_tbl_type(ele_mesh%ele_comm, ele_mesh_IO%comm)
-      call copy_ele_sph_geom_to_IO                                      &
-     &   (mesh%ele, ele_mesh_IO%node, ele_mesh_IO%sfed)
-      call output_element_sph_file                                      &
-     &   (id_rank, def_ele_mesh_head, ele_mesh_IO)
-!
-      if (iflag_debug.gt.0) write(*,*) 'copy_ele_cyl_geom_to_IO'
-      call copy_comm_tbl_type(ele_mesh%ele_comm, ele_mesh_IO%comm)
-      call copy_ele_cyl_geom_to_IO                                      &
-     &    (mesh%ele, ele_mesh_IO%node, ele_mesh_IO%sfed)
-      call output_element_cyl_file                                      &
-     &   (id_rank, def_ele_mesh_head, ele_mesh_IO)
-!
 !  -------------------------------
 !     output surface data
 !  -------------------------------
@@ -99,31 +85,11 @@
       call output_surface_xyz_file                                      &
      &   (id_rank, def_surf_mesh_head, ele_mesh_IO)
 !
-      if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO_sph'
-      call copy_comm_tbl_type(ele_mesh%surf_comm, ele_mesh_IO%comm)
-      call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele,      &
-     &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
-      call copy_surf_geometry_to_IO_sph                                 &
-     &   (ele_mesh%surf, ele_mesh_IO%node, ele_mesh_IO%sfed)
-      if (iflag_debug.gt.0) write(*,*) 'output_surface_sph_file'
-      call output_surface_sph_file                                      &
-     &   (id_rank, def_surf_mesh_head, ele_mesh_IO)
-!
-      if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO_cyl'
-      call copy_comm_tbl_type(ele_mesh%surf_comm, ele_mesh_IO%comm)
-      call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele,      &
-     &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
-      call copy_surf_geometry_to_IO_cyl                                 &
-     &   (ele_mesh%surf, ele_mesh_IO%node, ele_mesh_IO%sfed)
-      if (iflag_debug.gt.0) write(*,*) 'output_surface_cyl_file'
-      call output_surface_cyl_file                                      &
-      &  (id_rank, def_surf_mesh_head, ele_mesh_IO)
-!
 !  -------------------------------
 !     output edge data
 !  -------------------------------
 !
-      call copy_comm_tbl_type(ele_mesh%edge_comm, ele_mesh_IO%comm)
+      call empty_comm_table(ele_mesh_IO%comm)
       call copy_edge_connect_to_IO                                      &
      &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf,        &
      &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
@@ -131,28 +97,6 @@
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       if (iflag_debug.gt.0) write(*,*) 'output_edge_sph_file'
       call output_edge_xyz_file                                         &
-     &   (id_rank, def_edge_mesh_head, ele_mesh_IO)
-!
-      if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO_sph'
-      call copy_comm_tbl_type(ele_mesh%edge_comm, ele_mesh_IO%comm)
-      call copy_edge_connect_to_IO                                      &
-     &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf,        &
-     &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
-      call copy_edge_geometry_to_IO_sph(ele_mesh%edge,                  &
-     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
-      if (iflag_debug.gt.0) write(*,*) 'output_edge_sph_file'
-      call output_edge_sph_file                                         &
-     &   (id_rank, def_edge_mesh_head, ele_mesh_IO)
-!
-      if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO_cyl'
-      call copy_comm_tbl_type(ele_mesh%edge_comm, ele_mesh_IO%comm)
-      call copy_edge_connect_to_IO                                      &
-     &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf,        &
-     &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
-      call copy_edge_geometry_to_IO_cyl(ele_mesh%edge,                  &
-     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
-      if (iflag_debug.gt.0) write(*,*) 'output_edge_cyl_file'
-      call output_edge_cyl_file                                         &
      &   (id_rank, def_edge_mesh_head, ele_mesh_IO)
 !
        end subroutine output_test_mesh_informations

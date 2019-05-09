@@ -66,8 +66,8 @@
      &                + check_exist_surf_mesh(mesh_file, 0)             &
      &                + check_exist_edge_mesh(mesh_file, 0)
       if(iflag_ele_mesh .eq. 0) then
-        if(iflag_debug.gt.0) write(*,*) 'mpi_load_element_surface_edge'
-        call mpi_load_element_surface_edge                              &
+        if(iflag_debug.gt.0) write(*,*) 'mpi_load_element_surface'
+        call mpi_load_element_surface                                   &
      &     (mesh_file, mesh, ele_mesh, ele_mesh_IO)
       end if
       call calypso_mpi_barrier
@@ -120,8 +120,8 @@
       if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos tako'
       call const_mesh_infos(my_rank, mesh, group, ele_mesh)
 !
-      if(iflag_debug.gt.0) write(*,*) ' const_element_comm_tbls'
-      call const_element_comm_tbls(mesh, ele_mesh)
+      if(iflag_debug.gt.0) write(*,*) ' const_ele_surf_comm_tbls'
+      call const_ele_surf_comm_tbls(mesh, ele_mesh)
 !
       if(i_debug .eq. iflag_full_msg) then
         call check_whole_num_of_elements(mesh%ele)
@@ -132,7 +132,7 @@
 !-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine mpi_load_element_surface_edge                          &
+      subroutine mpi_load_element_surface                               &
      &         (mesh_file, mesh, ele_mesh, ele_mesh_IO)
 !
       use t_file_IO_parameter
@@ -155,12 +155,7 @@
       call set_surface_mesh_from_IO                                     &
      &   (mesh%ele, ele_mesh%surf, ele_mesh%surf_comm, ele_mesh_IO)
 !
-!
-      call sel_mpi_read_edge_mesh(mesh_file, ele_mesh_IO)
-      call set_edge_mesh_from_IO(mesh%ele, ele_mesh%surf,               &
-     &    ele_mesh%edge, ele_mesh%edge_comm, ele_mesh_IO)
-!
-      end subroutine mpi_load_element_surface_edge
+      end subroutine mpi_load_element_surface
 !
 !  ---------------------------------------------------------------------
 !
@@ -189,7 +184,7 @@
 !
 !
       call set_edge_mesh_to_IO(mesh%ele, ele_mesh%surf, ele_mesh%edge,  &
-     &   ele_mesh%edge_comm, ele_mesh_IO)
+     &    ele_mesh_IO)
       call sel_mpi_write_edge_mesh_file(mesh_file, ele_mesh_IO)
 !
       end subroutine mpi_output_element_surface_edge
