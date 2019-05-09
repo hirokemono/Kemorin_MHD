@@ -13,6 +13,13 @@ RANLIB='ranlib -c' --enable-cocoa --with-blas=yes --enable-fftw3 \
 --with-zlib=/opt/local --with-hdf5=/opt/local/bin/h5pcc \
 --with-pgplot=/Users/matsui/local --with-aquaterm=/Library/Frameworks \
 PKG_CONFIG_PATH=/usr/lib/pkgconfig:/opt/local/lib/pkgconfig
+
+./configure --prefix=/Users/matsui/local FC=mpif90 CC=mpicc \
+CFLAGS='-O3 -Wall -g' FCFLAGS='-O3 -Wall -g' \
+--with-blas --enable-fftw3 --enable-cocoa --enable-libpng \
+--enable-gl --enable-glui --enable-gtk --with-zlib \
+--with-hdf5=/opt/local/bin/h5pcc \
+PKG_CONFIG_PATH=/Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig
 #
 # -------------------------------------------------------------------------------
 # Intel KNL (TACC:stampede2)

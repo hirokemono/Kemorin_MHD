@@ -93,7 +93,7 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_init_with_IO'
       call FEM_mesh_init_with_IO                                        &
      &   (MHD_files%FEM_mesh_flags%iflag_output_SURF,                   &
      &    MHD_files%mesh_file_IO, geofem%mesh, geofem%group, ele_mesh)

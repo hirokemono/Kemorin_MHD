@@ -35,15 +35,13 @@
 !
       integer(kind = kint_gl), intent(inout) :: id_n_on_e(numedge)
 !
-      integer(kind = kint) :: iedge, icou
+      integer(kind = kint) :: iedge
 !
 !
-      icou = 0
       do iedge = 1, numedge
         if(id_n_on_e(iedge) .gt. 0) then
           id_n_on_e(iedge) = id_n_on_e(iedge)                           &
      &                      + istack_internod(my_rank)
-          icou = icou + 1
         else
           id_n_on_e(iedge) = 0
         end if
