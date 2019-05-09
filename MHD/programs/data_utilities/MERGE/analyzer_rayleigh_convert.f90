@@ -157,31 +157,31 @@
         init_t%time =        ra_rst_s%time_org
 !
         call calypso_mpi_barrier
-        if(my_rnak .eq. 0) write(*,*) 'share_time_step_data'
+        if(my_rank .eq. 0) write(*,*) 'share_time_step_data'
         call share_time_step_data(init_t)
 !
         call calypso_mpi_barrier
-        if(my_rnak .eq. 0) write(*,*) 'convert_fields_from_rayleigh'
+        if(my_rank .eq. 0) write(*,*) 'convert_fields_from_rayleigh'
         call convert_fields_from_rayleigh                               &
      &     (istep, asbl_param_s%org_fld_file,                           &
      &      sph_asbl_s%new_sph_mesh(my_rank+1), sph_asbl_s%r_itp,       &
      &      ra_rst_s, sph_asbl_s%new_sph_phys(my_rank+1))
 !
         call calypso_mpi_barrier
-        if(my_rnak .eq. 0) write(*,*) 'const_assembled_sph_data'
+        if(my_rank .eq. 0) write(*,*) 'const_assembled_sph_data'
         call const_assembled_sph_data(asbl_param_s%b_ratio, init_t,     &
      &      sph_asbl_s%new_sph_mesh(my_rank+1)%sph, sph_asbl_s%r_itp,   &
      &      sph_asbl_s%new_sph_phys(my_rank+1),                         &
      &      sph_asbl_s%new_fst_IO, sph_asbl_s%fst_time_IO)
 !
         call calypso_mpi_barrier
-        if(my_rnak .eq. 0) write(*,*) 'sel_write_step_SPH_field_file'
+        if(my_rank .eq. 0) write(*,*) 'sel_write_step_SPH_field_file'
         call sel_write_step_SPH_field_file                              &
      &     (nprocs, my_rank, istep_out, asbl_param_s%new_fld_file,      &
      &      sph_asbl_s%fst_time_IO, sph_asbl_s%new_fst_IO)
 !
         call calypso_mpi_barrier
-        if(my_rnak .eq. 0) write(*,*) 'dealloc_phys_data_IO'
+        if(my_rank .eq. 0) write(*,*) 'dealloc_phys_data_IO'
         call dealloc_phys_data_IO(sph_asbl_s%new_fst_IO)
         call dealloc_phys_name_IO(sph_asbl_s%new_fst_IO)
       end do
