@@ -79,8 +79,7 @@
       integer (kind=kint), intent(inout)                                &
      &                    :: iconn_4_node(ntot_ele_4_node)
 !
-      integer (kind = kint) :: inod, iele, icou, k
-      integer (kind = kint) :: ist, num
+      integer (kind = kint) :: inod, iele, icou, k, ist
 !
 !
 !$omp parallel workshare
@@ -97,12 +96,13 @@
         end do
       end do
 !
-!$omp parallel do private(inod,ist,num)
+!$omp parallel do private(inod,ist)
       do inod = 1, numnod
         ist = iele_stack_4_node(inod-1) + 1
-        num = nele_4_node(inod)
-        call quicksort_w_index                                          &
-     &     (num, iele_4_node(ist), ione, num, iconn_4_node(ist))
+        if(nele_4_node(inod) .gt. 0) then
+          call quicksort_w_index(nele_4_node(inod), iele_4_node(ist),   &
+     &        ione, nele_4_node(inod), iconn_4_node(ist))
+        end if
       end do
 !$omp end parallel do
 !
