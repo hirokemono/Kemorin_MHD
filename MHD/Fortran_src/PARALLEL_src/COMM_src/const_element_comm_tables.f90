@@ -393,6 +393,7 @@
      &    edge%interior_edge, edge%x_edge, node, nod_comm,              &
      &    belongs%blng_edge, belongs%x_ref_edge, belongs%host_edge,     &
      &    edge_comm)
+!
       call dealloc_iele_belonged(belongs%host_edge)
       call dealloc_x_ref_edge(belongs)
       call dealloc_iele_belonged(belongs%blng_edge)

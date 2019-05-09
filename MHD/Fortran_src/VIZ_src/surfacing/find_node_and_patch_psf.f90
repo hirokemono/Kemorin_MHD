@@ -20,7 +20,6 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(communication_table), intent(in) :: nod_comm
-!!        type(communication_table), intent(in) :: edge_comm
 !!        type(psf_cases), intent(in) :: psf_case_tbls
 !!        type(psf_search_lists), intent(inout) :: psf_search(num_psf)
 !!        type(sectioning_list), intent(inout) :: psf_list(num_psf)
@@ -133,8 +132,8 @@
       end do
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_nodes_4_psf'
-      call set_nodes_4_psf(num_psf, mesh%node, ele_mesh%edge,           &
-     &    mesh%nod_comm, ele_mesh%edge_comm,                            &
+      call set_nodes_4_psf                                              &
+     &   (num_psf, mesh%node, ele_mesh%edge, mesh%nod_comm,             &
      &    group%surf_grp, group%surf_nod_grp, psf_def, psf_search,      &
      &    psf_list, psf_grp_list, psf_mesh)
 !
@@ -197,9 +196,8 @@
       call count_nodes_4_iso                                            &
      &   (num_iso, ele_mesh%edge, iso_search, iso_list, iso_mesh)
 !
-      call set_nodes_4_iso                                              &
-     &   (num_iso, mesh%node, ele_mesh%edge, ele_mesh%edge_comm,        &
-     &    iso_search, iso_list, iso_mesh)
+      call set_nodes_4_iso(num_iso, mesh%node, ele_mesh%edge,           &
+     &    mesh%nod_comm, iso_search, iso_list, iso_mesh)
 !
 !
       do i_iso = 1, num_iso
