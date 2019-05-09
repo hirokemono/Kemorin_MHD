@@ -128,9 +128,7 @@
      &        MGCG_FEM%MG_mesh(i_level)%group,                          &
      &        MGCG_FEM%MG_ele_mesh(i_level))
 !
-          call const_ele_surf_comm_tbls                                 &
-     &       (MGCG_FEM%MG_mesh(i_level)%mesh,                           &
-     &        MGCG_FEM%MG_ele_mesh(i_level))
+          call const_global_mesh_infos(MGCG_FEM%MG_mesh(i_level)%mesh)
         else
           call set_empty_layers_type_4_MHD                              &
      &       (MGCG_MHD_FEM%MG_MHD_mesh(i_level) )
@@ -138,7 +136,6 @@
      &       (MGCG_FEM%MG_mesh(i_level)%mesh,                           &
      &        MGCG_FEM%MG_mesh(i_level)%group,                          &
      &        MGCG_FEM%MG_ele_mesh(i_level))
-          call empty_ele_surf_comm_tbls(MGCG_FEM%MG_ele_mesh(i_level))
         end if
 !
         call dealloc_edge_geometory(MGCG_FEM%MG_ele_mesh(i_level)%edge)

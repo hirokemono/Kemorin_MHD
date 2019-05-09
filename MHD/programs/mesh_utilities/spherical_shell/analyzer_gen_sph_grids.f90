@@ -120,10 +120,9 @@
       if(sph_files1%FEM_mesh_flags%iflag_output_SURF .eq. 0) goto 99
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+4)
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_init_with_IO'
-      call FEM_mesh_init_with_IO                                        &
-     &   (sph_files1%FEM_mesh_flags%iflag_output_SURF,                  &
-     &    sph_files1%mesh_file_IO, geofem%mesh, geofem%group, ele_mesh)
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization                                      &
+     &   (geofem%mesh, geofem%group, ele_mesh)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+4)
       call end_elapsed_time(ied_total_elapsed)
 !

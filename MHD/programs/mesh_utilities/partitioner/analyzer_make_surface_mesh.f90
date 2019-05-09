@@ -90,10 +90,8 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_init_with_IO'
-      T_meshes%iflag_output_SURF = 1
-      call FEM_mesh_init_with_IO(T_meshes%iflag_output_SURF,            &
-     &    T_meshes%mesh_file_IO, fem_T%mesh, fem_T%group, ele_mesh)
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization(fem_T%mesh, fem_T%group, ele_mesh)
       call end_elapsed_time(ied_total_elapsed)
 !
       end subroutine initialize_make_surface_mesh

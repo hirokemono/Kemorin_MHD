@@ -91,7 +91,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos_p(my_rank, femmesh_p_FUT, elemesh_FUT)
-      call const_ele_surf_comm_tbls_p(femmesh_p_FUT, elemesh_FUT)
+      call const_global_numnod_list(femmesh_p_FUT%mesh%node)
 !
 !     --------------------- 
 !

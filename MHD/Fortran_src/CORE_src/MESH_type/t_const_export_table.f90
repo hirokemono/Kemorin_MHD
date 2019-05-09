@@ -7,9 +7,8 @@
 !> @brief Routines to make export table
 !!
 !!@verbatim
-!!      subroutine const_ele_global_import_table                        &
-!!     &         (numnod, numele, nnod_4_ele, inod_global, ie,          &
-!!     &          ele_comm, ele_comm_gl)
+!!      subroutine alloc_ie_gl_import                                   &
+!!     &         (nnod_4_ele, ntot_import, ele_comm_gl)
 !!      subroutine dealloc_ie_gl_import(ele_comm_gl)
 !!        type(work_4_const_export), intent(inout) :: ele_comm_gl
 !!

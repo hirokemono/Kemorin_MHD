@@ -7,11 +7,11 @@
 !> @brief Belonged element list for each node
 !!
 !!@verbatim
-!!      subroutine empty_ele_surf_comm_tbls(ele_mesh)
-!!      subroutine const_ele_surf_comm_tbls(mesh, ele_mesh)
-!!      subroutine const_element_comm_tbl_only(mesh, ele_mesh)
+!!      subroutine const_global_mesh_infos(mesh)
+!!      subroutine const_element_comm_tbl_only(mesh, ele_comm)
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(communication_table), intent(inout) :: ele_comm
 !!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh, ele_mesh)
-!!      subroutine dealloc_ele_comm_tbl_only(mesh, ele_mesh)
 !!        type(mesh_geometry), intent(inout) ::    mesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!
@@ -73,25 +73,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine empty_ele_surf_comm_tbls(ele_mesh)
-!
-      type(element_geometry), intent(inout) :: ele_mesh
-!
-!
-      call empty_comm_table(ele_mesh%ele_comm)
-      call empty_comm_table(ele_mesh%surf_comm)
-!
-      end subroutine empty_ele_surf_comm_tbls
-!
-!-----------------------------------------------------------------------
-!
-      subroutine const_ele_surf_comm_tbls(mesh, ele_mesh)
+      subroutine const_global_mesh_infos(mesh)
 !
       use set_ele_id_4_node_type
       use const_global_element_ids
 !
       type(mesh_geometry), intent(inout) :: mesh
-      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       if(iflag_debug.gt.0) write(*,*)' const_global_numnod_list'
@@ -100,44 +87,21 @@
       if(iflag_debug.gt.0) write(*,*) ' find_position_range'
       call find_position_range(mesh%node)
 !
-      if(associated(ele_mesh%ele_comm%id_neib)) then
-        if(iflag_debug.gt.0) write(*,*)                                 &
-     &     ' Element communication table exsists'
-        call check_element_position(txt_ele, mesh%ele%numele,           &
-     &      mesh%ele%x_ele, ele_mesh%ele_comm)
-      else
-        if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
-        call const_ele_comm_tbl(mesh%node, mesh%nod_comm,               &
-     &      blng_tbl, ele_mesh%ele_comm, mesh%ele)
-      end if
-!
-      if(associated(ele_mesh%surf_comm%id_neib)) then
-        if(iflag_debug.gt.0) write(*,*)                                 &
-     &     ' Surface communication table exsists'
-        call check_element_position(txt_ele, ele_mesh%surf%numsurf,     &
-     &      ele_mesh%surf%x_surf, ele_mesh%surf_comm)
-      else
-        if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
-        call const_surf_comm_table(mesh%node, mesh%nod_comm,            &
-     &      blng_tbl, ele_mesh%surf_comm, ele_mesh%surf)
-      end if
-      call calypso_mpi_barrier
-!
-      end subroutine const_ele_surf_comm_tbls
+      end subroutine const_global_mesh_infos
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_element_comm_tbl_only(mesh, ele_mesh)
+      subroutine const_element_comm_tbl_only(mesh, ele_comm)
 !
       use set_ele_id_4_node_type
 !
       type(mesh_geometry), intent(inout) :: mesh
-      type(element_geometry), intent(inout) :: ele_mesh
+      type(communication_table), intent(inout) :: ele_comm
 !
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
       call const_ele_comm_tbl(mesh%node, mesh%nod_comm,                 &
-     &    blng_tbl, ele_mesh%ele_comm, mesh%ele)
+     &    blng_tbl, ele_comm, mesh%ele)
 !
       end subroutine const_element_comm_tbl_only
 !
@@ -149,27 +113,11 @@
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call dealloc_comm_table(ele_mesh%ele_comm)
-      call dealloc_comm_table(ele_mesh%surf_comm)
-!
       call dealloc_numnod_stack(mesh%node)
       call dealloc_numele_stack(mesh%ele)
       call dealloc_numedge_stack(ele_mesh%edge)
 !
       end subroutine dealloc_ele_comm_tbls_gl_nele
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_ele_comm_tbl_only(mesh, ele_mesh)
-!
-      type(mesh_geometry), intent(inout) :: mesh
-      type(element_geometry), intent(inout) :: ele_mesh
-!
-!
-      call dealloc_comm_table(ele_mesh%ele_comm)
-      call dealloc_numele_stack(mesh%ele)
-!
-      end subroutine dealloc_ele_comm_tbl_only
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

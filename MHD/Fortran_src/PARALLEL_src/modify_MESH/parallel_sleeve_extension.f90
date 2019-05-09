@@ -22,6 +22,7 @@
 !
       use t_mesh_data
       use t_group_data
+      use t_comm_table
 !
       implicit none
 !
@@ -49,9 +50,10 @@
       type(mesh_groups), intent(inout) :: group
       type(element_geometry), intent(inout) :: ele_mesh
 !
+      type(communication_table), save :: ele_comm
+      type(communication_table), save :: new_ele_comm
       type(mesh_geometry), save :: newmesh
       type(mesh_groups), save :: newgroup
-      type(element_geometry), save :: new_ele_mesh
       type(next_nod_ele_table), save :: next_tbl
       type(parallel_double_numbering), save :: dbl_id1
 !
@@ -60,7 +62,7 @@
       call const_mesh_infos(my_rank, mesh, group, ele_mesh)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbl_only'
-      call const_element_comm_tbl_only(mesh, ele_mesh)
+      call const_element_comm_tbl_only(mesh, ele_comm)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
       call set_belonged_ele_and_next_nod                                &
@@ -78,7 +80,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'extend_ele_connectivity'
       call extend_ele_connectivity                                      &
-     &   (mesh%nod_comm, ele_mesh%ele_comm, mesh%node, mesh%ele,        &
+     &   (mesh%nod_comm, ele_comm, mesh%node, mesh%ele,                 &
      &    dbl_id1, next_tbl%neib_ele, newmesh%nod_comm, newmesh%node,   &
      &    newmesh%ele)
       newmesh%ele%first_ele_type                                        &
@@ -88,16 +90,17 @@
 !
       call alloc_sph_node_geometry(newmesh%node)
       call set_nod_and_ele_infos(newmesh%node, newmesh%ele)
-      call const_element_comm_tbl_only(newmesh, new_ele_mesh)
+      call const_element_comm_tbl_only(newmesh, new_ele_comm)
 !
 !
       if (iflag_debug.gt.0) write(*,*) 's_extend_group_table'
       call s_extend_group_table                                         &
-     &   (nprocs, newmesh%nod_comm, new_ele_mesh%ele_comm,              &
+     &   (nprocs, newmesh%nod_comm, new_ele_comm,                       &
      &    newmesh%node, newmesh%ele, group, newgroup)
 !
       call dealloc_next_nod_ele_table(next_tbl)
-      call dealloc_ele_comm_tbl_only(mesh, ele_mesh)
+      call dealloc_comm_table(ele_comm)
+      call dealloc_numele_stack(mesh%ele)
       call dealloc_mesh_infomations(mesh, group, ele_mesh)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type'
@@ -105,7 +108,8 @@
      &   (newmesh, newgroup, mesh, ele_mesh, group)
 !
       call deallocate_sph_node_geometry(newmesh%node)
-      call dealloc_ele_comm_tbl_only(newmesh, new_ele_mesh)
+      call dealloc_comm_table(new_ele_comm)
+      call dealloc_numele_stack(newmesh%ele)
       call deallocate_ele_geometry_type(newmesh%ele)
       call deallocate_ele_param_smp_type(newmesh%ele)
       call deallocate_node_param_smp_type(newmesh%node)

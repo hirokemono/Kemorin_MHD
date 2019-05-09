@@ -25,7 +25,6 @@
 !!        type(mesh_data_p), intent(inout) :: femmesh_p
 !!
 !!      subroutine const_mesh_infos_p(id_rank, femmesh_p, ele_mesh)
-!!      subroutine const_ele_surf_comm_tbls_p(femmesh_p, ele_mesh)
 !!        type(mesh_data_p), intent(inout) :: femmesh_p
 !!        type(element_geometry_p), intent(inout) :: ele_mesh
 !!@endverbatim
@@ -87,8 +86,6 @@
 !>     Structure for element communication
         type(communication_table) :: ele_comm
 !
-!>     Structure for surface communication
-        type(communication_table) :: surf_comm
 !>     Structure for surface position and connectivity
         type(surface_data), pointer :: surf
 !
@@ -386,41 +383,5 @@
       end subroutine const_mesh_infos_p
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine const_ele_surf_comm_tbls_p(femmesh_p, ele_mesh)
-!
-      use t_next_node_ele_4_node
-      use t_mesh_data
-      use t_geometry_data
-      use t_surface_data
-      use t_edge_data
-      use t_comm_table
-      use t_belonged_element_4_node
-      use t_next_node_ele_4_node
-      use const_element_comm_tables
-      use set_ele_id_4_node_type
-!
-      type(mesh_data_p), intent(inout) :: femmesh_p
-      type(element_geometry_p), intent(inout) :: ele_mesh
-!
-      type(belonged_table) :: blng_tbl
-!
-!
-      if(iflag_debug.gt.0) write(*,*)' const_global_numnod_list'
-      call const_global_numnod_list(femmesh_p%mesh%node)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
-      call const_ele_comm_tbl                                           &
-     &   (femmesh_p%mesh%node, femmesh_p%mesh%nod_comm,                 &
-     &    blng_tbl, ele_mesh%ele_comm, femmesh_p%mesh%ele)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
-      call const_surf_comm_table                                        &
-     &   (femmesh_p%mesh%node, femmesh_p%mesh%nod_comm,                 &
-     &    blng_tbl, ele_mesh%surf_comm, ele_mesh%surf)
-!
-      end subroutine const_ele_surf_comm_tbls_p
-!
-!-----------------------------------------------------------------------
 !
       end module t_mesh_data_with_pointer

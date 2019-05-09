@@ -65,7 +65,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_geometry_to_IO'
-      call copy_comm_tbl_type(ele_mesh%ele_comm, ele_mesh_IO%comm)
+      call empty_comm_table(ele_mesh_IO%comm)
       call copy_ele_geometry_to_IO                                      &
      &   (mesh%ele, ele_mesh_IO%node, ele_mesh_IO%sfed)
       call output_element_xyz_file                                      &
@@ -76,7 +76,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
-      call copy_comm_tbl_type(ele_mesh%surf_comm, ele_mesh_IO%comm)
+      call empty_comm_table(ele_mesh_IO%comm)
       call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele,      &
      &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
       call copy_surf_geometry_to_IO                                     &

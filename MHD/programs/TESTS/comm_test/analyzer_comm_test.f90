@@ -28,7 +28,9 @@
       type(mesh_data), save :: test_fem
       type(element_geometry), save :: test_ele_mesh
 !
-      type(communication_table):: T_edge_comm
+      type(communication_table), save :: T_ele_comm
+      type(communication_table), save :: T_surf_comm
+      type(communication_table), save :: T_edge_comm
       type(belonged_table), save :: blng
 !
 ! ----------------------------------------------------------------------
@@ -85,13 +87,22 @@
       call allocate_iccg_int8_matrix(test_fem%mesh%node%numnod)
       call allocate_cflag_collect_diff
 !
-      call FEM_mesh_init_with_IO                                        &
-     &   (T_files%iflag_output_SURF, T_files%mesh_file_IO,              &
-     &    test_fem%mesh, test_fem%group, test_ele_mesh)
+      call FEM_mesh_initialization                                      &
+     &   (test_fem%mesh, test_fem%group, test_ele_mesh)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
+      call const_ele_comm_tbl                                           &
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, blng,             &
+     &    T_ele_comm, mesh%ele)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
+      call const_surf_comm_table                                        &
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, blng,             &
+     &    T_surf_comm, test_ele_mesh%surf)
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
       call const_edge_comm_table                                        &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, blng    ,         &
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, blng,             &
      &    T_edge_comm, test_ele_mesh%edge)
 !
       end subroutine initialize_communication_test
@@ -144,17 +155,17 @@
       if (iflag_debug.gt.0) write(*,*) 's_mesh_send_recv_test'
       call s_mesh_send_recv_test(test_fem%mesh%ele,                     &
      &    test_ele_mesh%surf, test_ele_mesh%edge,                       &
-     &    test_ele_mesh%ele_comm, test_ele_mesh%surf_comm, T_edge_comm)
+     &    T_ele_comm, T_surf_comm, T_edge_comm)
       if (iflag_debug.gt.0) write(*,*) 's_count_diff_geom_comm_test'
       call s_count_diff_geom_comm_test                                  &
      &   (test_fem%mesh%ele, test_ele_mesh%surf, test_ele_mesh%edge,    &
-     &    test_ele_mesh%ele_comm, test_ele_mesh%surf_comm, T_edge_comm)
+     &    T_ele_comm, T_surf_comm, T_edge_comm)
 !
       call allocate_diff_geom_comm_test
       if (iflag_debug.gt.0) write(*,*) 's_set_diff_geom_comm_test'
       call s_set_diff_geom_comm_test(test_fem%mesh%ele,                 &
      &   test_ele_mesh%surf, test_ele_mesh%edge,                        &
-     &   test_ele_mesh%ele_comm, test_ele_mesh%surf_comm, T_edge_comm)
+     &   T_ele_comm, T_surf_comm, T_edge_comm)
       call deallocate_geom_4_comm_test
 !
       call allocate_geom_stack_ctest_IO
