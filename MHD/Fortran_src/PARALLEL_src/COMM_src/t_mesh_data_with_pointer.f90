@@ -81,11 +81,8 @@
       end type mesh_data_p
 !
 !>     Structure for element, surface, and edge mesh
-!!        (position, connectivity, and communication)
+!!        (position and connectivity)
       type element_geometry_p
-!>     Structure for element communication
-        type(communication_table) :: ele_comm
-!
 !>     Structure for surface position and connectivity
         type(surface_data), pointer :: surf
 !
