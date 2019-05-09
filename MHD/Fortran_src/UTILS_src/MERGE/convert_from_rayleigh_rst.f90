@@ -84,12 +84,18 @@
         call set_rayleigh_rst_file_name                                 &
      &     (org_fld_file%file_prefix, istep,                            &
      &      new_sph_phys%phys_name(i_fld), iflag_ncomp, file_name(1))
+        call calypso_mpi_barrier
+        if(my_rank .eq. 0) write(*,*) 'set_rayleigh_rst_file_name:   ', &
+     &         trim(file_name(1))
 !
         do nd = 1, iflag_ncomp
           i_comp = 2*nd - 1 + new_sph_phys%istack_component(i_fld-1)
 !
 !          call check_rayleigh_restart_reading(file_name(nd), i_comp,   &
 !     &        ra_rst, rayleigh_WK%rayleigh_in)
+          call calypso_mpi_barrier
+          if(my_rank .eq. 0) write(*,*) 'cvt_each_field_from_rayleigh', &
+     &         i_comp
           call cvt_each_field_from_rayleigh(file_name(nd),              &
      &        i_fld, i_comp, new_sph_mesh,                              &
      &        r_itp, ra_rst, fcheby_WK, rayleigh_WK, new_sph_phys)
