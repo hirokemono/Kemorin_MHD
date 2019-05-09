@@ -20,7 +20,10 @@
 !!        type(work_fftpack_chebyshev), intent(inout) :: fcheby_WK
 !!
 !!      subroutine init_rayleigh_restart_params                         &
-!!     &         (istep_start, org_fld_file, ra_rst, org_sph_mesh)
+!!     &         (istep_start, org_fld_file, ra_rst)
+!!      subroutine copy_rayleigh_radial_data(ra_rst, org_sph_mesh)
+!!        type(rayleigh_restart), intent(in) :: ra_rst
+!!        type(sph_mesh_data), intent(inout) :: org_sph_mesh
 !!      subroutine chebyshev_fwd_mat_4_rayleigh                         &
 !!     &         (new_sph_mesh, r_itp, ra_rst)
 !!        type(sph_mesh_data), intent(in) :: new_sph_mesh
@@ -148,33 +151,67 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_rayleigh_restart_params                           &
-     &         (istep_start, org_fld_file, ra_rst, org_sph_mesh)
+     &         (istep_start, org_fld_file, ra_rst)
 !
       integer(kind = kint), intent(in) :: istep_start
       type(field_IO_params), intent(in) :: org_fld_file
 !
       type(rayleigh_restart), intent(inout) :: ra_rst
-      type(sph_mesh_data), intent(inout) :: org_sph_mesh
 !
       integer(kind = kint) :: k, kr
 !
 !
       if(my_rank .eq. 0) then
         call read_rayleigh_restart_params                               &
-     &       (org_fld_file%file_prefix, istep_start, ra_rst)
-!
-        org_sph_mesh%sph%sph_rj%nidx_rj(1) = ra_rst%nri_org
-        org_sph_mesh%sph%sph_rj%nidx_rj(2) = 1
-        call alloc_type_sph_1d_index_rj(org_sph_mesh%sph%sph_rj)
-        do k = 1, org_sph_mesh%sph%sph_rj%nidx_rj(1)
-          kr = ra_rst%nri_org-k+1
-          org_sph_mesh%sph%sph_rj%radius_1d_rj_r(k) = ra_rst%r_org(kr)
-        end do
-!
+     &     (org_fld_file%file_prefix, istep_start, ra_rst)
       end if
-      call bcast_rayleigh_rst_params(ra_rst)
+      call calypso_mpi_barrier
+!
+      call MPI_Bcast(ra_rst%iflag_swap, 1,                              &
+     &    CALYPSO_FOUR_INT, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(ra_rst%ltr_org, 1,                                 &
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(ra_rst%iflag_rtype, 1,                             &
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
+      call MPI_Bcast(ra_rst%nri_org, 1,                                 &
+     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      if(my_rank .ne. 0) call alloc_rayleigh_radial_grid(ra_rst)
+      call calypso_mpi_barrier
+!
+      call MPI_Bcast(ra_rst%r_org, ra_rst%nri_org,                      &
+     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+!
+      call MPI_Bcast(ra_rst%time_org, 1,                                &
+     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(ra_rst%dt_org, 1,                                  &
+     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(ra_rst%dt_new, 1,                                  &
+     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(ra_rst%new_dt_org, 1,                              &
+     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine init_rayleigh_restart_params
+!
+! -----------------------------------------------------------------------
+!
+      subroutine copy_rayleigh_radial_data(ra_rst, org_sph_mesh)
+!
+      type(rayleigh_restart), intent(in) :: ra_rst
+      type(sph_mesh_data), intent(inout) :: org_sph_mesh
+!
+      integer(kind = kint) :: k, kr
+!
+!
+      org_sph_mesh%sph%sph_rj%nidx_rj(1) = ra_rst%nri_org
+      org_sph_mesh%sph%sph_rj%nidx_rj(2) = 1
+      call alloc_type_sph_1d_index_rj(org_sph_mesh%sph%sph_rj)
+      do k = 1, org_sph_mesh%sph%sph_rj%nidx_rj(1)
+        kr = ra_rst%nri_org-k+1
+        org_sph_mesh%sph%sph_rj%radius_1d_rj_r(k) = ra_rst%r_org(kr)
+      end do
+!
+      end subroutine copy_rayleigh_radial_data
 !
 ! -----------------------------------------------------------------------
 !

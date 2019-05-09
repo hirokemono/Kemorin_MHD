@@ -79,12 +79,12 @@
 !
 !  set original spectr data
 !
-      if(asbl_param_s%org_fld_file%iflag_format .eq. id_rayleigh) then
-        call init_rayleigh_restart_params                               &
-     &     (asbl_param_s%istep_start, asbl_param_s%org_fld_file,        &
-     &      ra_rst_s, sph_asbl_s%org_sph_mesh(1))
+      call init_rayleigh_restart_params(asbl_param_s%istep_start,       &
+     &    asbl_param_s%org_fld_file, ra_rst_s)
         if(my_rank .eq. 0) call check_rayleigh_rst_params(6, ra_rst_s)
-      end if
+!
+      call copy_rayleigh_radial_data                                    &
+     &   (ra_rst_s, sph_asbl_s%org_sph_mesh(1))
 !
 !  set new spectr data
 !
@@ -148,12 +148,8 @@
       do istep = asbl_param_s%istep_start, asbl_param_s%istep_end,      &
      &          asbl_param_s%increment_step
 !
-        if(my_rank .eq. 0) then
-          call read_rayleigh_restart_params                             &
-     &       (asbl_param_s%org_fld_file%file_prefix,                    &
-     &        istep, ra_rst_s)
-        end if
-        call bcast_rayleigh_rst_params(ra_rst_s)
+        call init_rayleigh_restart_params(istep,                        &
+     &      asbl_param_s%org_fld_file, ra_rst_s)
         call dealloc_rayleigh_radial_grid(ra_rst_s)
 !
         istep_out =          istep/ asbl_param_s%increment_step

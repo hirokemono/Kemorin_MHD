@@ -279,7 +279,7 @@
      &  (edge%numedge, edge%istack_numedge)
 !
       if(iflag_debug.gt.0) write(*,*)                                   &
-     &          ' count_number_of_node_stack in edge'
+     &          ' count_number_of_node_stack in internal edge'
       call count_number_of_node_stack                                   &
      &  (edge%internal_edge, edge%istack_interedge)
 !

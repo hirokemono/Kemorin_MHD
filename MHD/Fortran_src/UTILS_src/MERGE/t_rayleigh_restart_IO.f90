@@ -9,7 +9,6 @@
 !!@verbatim
 !!      subroutine alloc_rayleigh_radial_grid(ra_rst)
 !!      subroutine dealloc_rayleigh_radial_grid(ra_rst)
-!!      subroutine bcast_rayleigh_rst_params(ra_rst)
 !!      subroutine read_rayleigh_restart_params                         &
 !!     &         (dir, i_step, ra_rst)
 !!        type(rayleigh_restart), intent(inout) :: ra_rst
@@ -101,38 +100,6 @@
       deallocate(ra_rst%r_org)
 !
       end subroutine dealloc_rayleigh_radial_grid
-!
-!-----------------------------------------------------------------------
-!
-      subroutine bcast_rayleigh_rst_params(ra_rst)
-!
-      use calypso_mpi
-!
-      type(rayleigh_restart), intent(inout) :: ra_rst
-!
-      call MPI_Bcast(ra_rst%iflag_swap, 1,                              &
-     &    CALYPSO_FOUR_INT, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ra_rst%ltr_org, 1,                                 &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ra_rst%iflag_rtype, 1,                             &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ra_rst%nri_org, 1,                                 &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-!
-      if(my_rank .ne. 0) call alloc_rayleigh_radial_grid(ra_rst)
-      call MPI_Bcast(ra_rst%r_org, ra_rst%nri_org,                      &
-     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
-!
-      call MPI_Bcast(ra_rst%time_org, 1,                                &
-     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ra_rst%dt_org, 1,                                  &
-     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ra_rst%dt_new, 1,                                  &
-     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ra_rst%new_dt_org, 1,                              &
-     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
-!
-      end subroutine bcast_rayleigh_rst_params
 !
 !-----------------------------------------------------------------------
 !
