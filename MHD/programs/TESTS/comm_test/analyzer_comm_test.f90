@@ -93,7 +93,7 @@
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
       call const_ele_comm_tbl                                           &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm, blng,             &
-     &    T_ele_comm, mesh%ele)
+     &    T_ele_comm, test_fem%mesh%ele)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table                                        &
