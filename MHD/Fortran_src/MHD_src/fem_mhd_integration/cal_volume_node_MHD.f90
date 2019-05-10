@@ -7,9 +7,8 @@
 !        Modified by H. Matsui on Aug., 2007
 !
 !!      subroutine const_MHD_jacobian_and_volumes                       &
-!!     &         (SGS_param, ele_mesh, group, ifld_msq, mesh, layer_tbl,&
+!!     &         (SGS_param, group, ifld_msq, mesh, layer_tbl,          &
 !!     &          spfs, jacs, MHD_mesh, fem_msq)
-!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(mean_square_address), intent(in) :: ifld_msq
 !!        type(mesh_geometry), intent(inout) :: mesh
@@ -48,7 +47,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_MHD_jacobian_and_volumes                         &
-     &         (SGS_param, ele_mesh, group, ifld_msq, mesh, layer_tbl,  &
+     &         (SGS_param, group, ifld_msq, mesh, layer_tbl,            &
      &          spfs, jacs, MHD_mesh, fem_msq)
 !
       use t_mean_square_values
@@ -62,7 +61,6 @@
       use sum_volume_of_domain
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(element_geometry), intent(in) :: ele_mesh
       type(mesh_groups), intent(in) ::   group
       type(mean_square_address), intent(in) :: ifld_msq
 !
@@ -89,9 +87,9 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
       call alloc_surf_shape_func                                        &
-     &   (ele_mesh%surf%nnod_4_surf, jacs%g_FEM, spfs%spf_2d)
+     &   (mesh%surf%nnod_4_surf, jacs%g_FEM, spfs%spf_2d)
       call const_jacobians_surf_group(my_rank, nprocs,                  &
-     &    mesh%node, mesh%ele, ele_mesh%surf, group%surf_grp,           &
+     &    mesh%node, mesh%ele, mesh%surf, group%surf_grp,               &
      &    spfs%spf_2d, jacs)
       call dealloc_surf_shape_func(spfs%spf_2d)
 !

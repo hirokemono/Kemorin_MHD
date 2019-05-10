@@ -6,14 +6,14 @@
 !        modified by H.Matsui on July, 2006
 !
 !!      subroutine cal_vector_potential                                 &
-!!     &         (dt, FEM_prm, SGS_par, mesh, group, surf, conduct,     &
+!!     &         (dt, FEM_prm, SGS_par, mesh, group, conduct,           &
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,&
 !!     &          ele_fld, fem_int, icomp_sgs, ifld_diff, iphys_elediff,&
 !!     &          sgs_coefs, diff_coefs, FEM_filters, mk_MHD,           &
 !!     &          Bmatrix, Fmatrix, ak_d_magne, MGCG_WK, FEM_SGS_wk,    &
 !!     &          mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
 !!      subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,           &
-!!     &          mesh, group, surf, conduct, cd_prop, Bnod_bcs,        &
+!!     &          mesh, group, conduct, cd_prop, Bnod_bcs,              &
 !!     &          Asf_bcs, Bsf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          fem_int, icomp_sgs, ifld_diff, iphys_elediff,         &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,    &
@@ -23,7 +23,6 @@
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
@@ -91,7 +90,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_vector_potential                                   &
-     &         (dt, FEM_prm, SGS_par, mesh, group, surf, conduct,       &
+     &         (dt, FEM_prm, SGS_par, mesh, group, conduct,             &
      &          cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,  &
      &          ele_fld, fem_int, icomp_sgs, ifld_diff, iphys_elediff,  &
      &          sgs_coefs, diff_coefs, FEM_filters, mk_MHD,             &
@@ -110,7 +109,6 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
@@ -155,7 +153,7 @@
       call cal_vector_p_pre(ifld_diff%i_magne, icomp_sgs%i_induction,   &
      &    iphys_elediff%i_velo, ak_d_magne, dt, FEM_prm,                &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
-     &    mesh%nod_comm, mesh%node, mesh%ele, surf, conduct,            &
+     &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
      &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &    sgs_coefs, diff_coefs, FEM_filters%filtering,                 &
@@ -183,7 +181,7 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_electric_potential'
         call cal_electric_potential(ifld_diff%i_magne,                  &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      mesh%node, mesh%ele, surf, group%surf_grp, Bnod_bcs,        &
+     &      mesh%node, mesh%ele, mesh%surf, group%surf_grp, Bnod_bcs,   &
      &      Asf_bcs, Fsf_bcs, iphys, fem_int%jcs, fem_int%rhs_tbl,      &
      &      FEM_filters%FEM_elens, diff_coefs, Fmatrix,                 &
      &      MGCG_WK%MG_vector, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
@@ -198,7 +196,7 @@
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
         call cal_vector_p_co(ifld_diff%i_magne, ak_d_magne, dt,         &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      mesh%nod_comm, mesh%node, mesh%ele, surf, conduct,          &
+     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,     &
      &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs, iphys,          &
      &      iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,           &
      &      FEM_filters%FEM_elens, diff_coefs, fem_int%m_lump, Bmatrix, &
@@ -232,7 +230,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,             &
-     &          mesh, group, surf, conduct, cd_prop, Bnod_bcs,          &
+     &          mesh, group, conduct, cd_prop, Bnod_bcs,                &
      &          Asf_bcs, Bsf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,   &
      &          fem_int, icomp_sgs, ifld_diff, iphys_elediff,           &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,      &
@@ -252,7 +250,6 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
@@ -306,7 +303,7 @@
      &    ifld_diff%i_induction, iphys_elediff%i_velo,                  &
      &    iphys_elediff%i_magne, ak_d_magne, dt, FEM_prm,               &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
-     &    mesh%nod_comm, mesh%node, mesh%ele, surf, conduct,            &
+     &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
      &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,          &
      &    iphys, iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,      &
      &    FEM_filters%FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,  &
@@ -326,7 +323,7 @@
       do iloop = 0, FEM_prm%maxiter_coulomb
         call cal_mag_potential(ifld_diff%i_magne,                       &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      mesh%node, mesh%ele, surf, group%surf_grp, Bnod_bcs,        &
+     &      mesh%node, mesh%ele, mesh%surf, group%surf_grp, Bnod_bcs,   &
      &      Bsf_bcs, Fsf_bcs, iphys, fem_int%jcs, fem_int%rhs_tbl,      &
      &      FEM_filters%FEM_elens, diff_coefs, Fmatrix,                 &
      &      MGCG_WK%MG_vector, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
@@ -341,7 +338,7 @@
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
         call cal_magnetic_co(ifld_diff%i_magne, ak_d_magne, dt,         &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      mesh%nod_comm, mesh%node, mesh%ele, surf, conduct,          &
+     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,     &
      &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs, iphys,          &
      &      iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,           &
      &      FEM_filters%FEM_elens, diff_coefs, fem_int%m_lump, Bmatrix, &

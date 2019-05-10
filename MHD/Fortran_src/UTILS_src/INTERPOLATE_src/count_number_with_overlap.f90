@@ -81,7 +81,8 @@
 !
       do ip = 1, num_pe
         id_rank = ip - 1
-        call sel_read_mesh(mesh_file, id_rank, fem_IO_o, ierr)
+        call sel_read_mesh                                              &
+     &     (mesh_file, id_rank, fem_IO_o%mesh, fem_IO_o%group, ierr)
         if(ierr .gt. 0) stop 'Error in Mesh data'
 !
         call set_mesh_geometry_data(fem_IO_o%mesh,                      &

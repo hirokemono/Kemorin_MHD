@@ -126,8 +126,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos                                             &
-     &   (my_rank, fem_f%mesh, fem_f%group, ele_filter)
+      call const_mesh_infos(my_rank, fem_f%mesh, fem_f%group)
 !
 !  -------------------------------
 !

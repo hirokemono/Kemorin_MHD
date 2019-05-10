@@ -66,7 +66,7 @@
 !
 !  Generate field lines
         call FLINE_visualize                                            &
-     &     (viz_step_V%FLINE_t%istep_file, femmesh_VIZ, elemesh_VIZ,    &
+     &     (viz_step_V%FLINE_t%istep_file, femmesh_VIZ,                 &
      &      ele_4_nod_VIZ, field_VIZ, fline_v)
       end do
 !

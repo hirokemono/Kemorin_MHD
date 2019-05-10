@@ -92,7 +92,7 @@
      &   (isix, femmesh_p_FUT%mesh%node%numnod)
       call init_send_recv(femmesh_p_FUT%mesh%nod_comm)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos_p'
       call const_mesh_infos_p(my_rank, femmesh_p_FUT, elemesh_FUT)
       call const_global_numnod_list(femmesh_p_FUT%mesh%node)
 !

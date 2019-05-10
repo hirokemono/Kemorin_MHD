@@ -117,12 +117,11 @@
 !  read global mesh
 !
       call input_mesh(part_p1%global_mesh_file, my_rank,                &
-     &    org_fem, org_ele_mesh, ierr)
+     &    org_fem%mesh, org_fem%group, ierr)
       if(ierr .gt. 0) stop 'Global mesh is wrong!'
 !
 !      write(*,*) 'const_mesh_infos'
-      call const_mesh_infos                                             &
-     &   (my_rank, org_fem%mesh, org_fem%group, org_ele_mesh)
+      call const_mesh_infos(my_rank, org_fem%mesh, org_fem%group)
 !
 !  ========= Read global field data for load balance partition =======
       write(*,*) 'read control_merge'
@@ -295,8 +294,7 @@
 !C
 !C-- Finalize
 !      write(*,*) 'dealloc_nod_ele_infos'
-      call dealloc_nod_ele_infos                                        &
-     &   (org_fem%mesh, org_fem%group, org_ele_mesh)
+      call dealloc_nod_ele_infos(org_fem%mesh, org_fem%group)
 !
 !  ========= Construct subdomain information for viewer ==============
 !

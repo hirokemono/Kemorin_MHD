@@ -66,8 +66,7 @@
      &    FEM_MHD1%field, FEM_model1, MHD_CG1, FEM_SGS1, SGS_MHD_wk1,   &
      &    MHD_IO1, fem_sq1, FEM_MHD1%label_sim)
 !
-      call init_visualize_surface                                       &
-     &   (FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field,           &
+      call init_visualize_surface(FEM_MHD1%geofem, FEM_MHD1%field,      &
      &    viz_ctls_F%psf_ctls, viz_ctls_F%iso_ctls, MHD_viz_psfs)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
 !
@@ -97,8 +96,7 @@
         if (visval.eq.0) then
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field,       &
-     &        MHD_viz_psfs)
+     &        FEM_MHD1%geofem, FEM_MHD1%field, MHD_viz_psfs)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
         end if
 !

@@ -42,8 +42,8 @@
 !
       do ip = 1, num_pe
         id_rank = ip - 1
-        call input_mesh                                                 &
-     &     (mesh_file, id_rank, para_mesh(ip), ele_mesh, ierr)
+        call input_mesh(mesh_file, id_rank,                             &
+     &      para_mesh(ip)%mesh, para_mesh(ip)%group, ierr)
         call set_nod_and_ele_infos                                      &
      &     (para_mesh(ip)%mesh%node, para_mesh(ip)%mesh%ele)
 !

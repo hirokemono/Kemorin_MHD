@@ -7,16 +7,14 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine s_each_LIC_rendering                                 &
-!!     &         (istep_pvr, mesh, ele_mesh, jacs, nod_fld,             &
+!!      subroutine s_each_LIC_rendering(istep_pvr, mesh, jacs, nod_fld, &
 !!     &          lic_fld, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine s_each_LIC_rendering_w_rot                           &
-!!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
+!!     &         (istep_pvr, mesh, group, jacs, nod_fld,                &
 !!     &          lic_fld, pvr_param, pvr_proj, pvr_rgb)
 !
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
-!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -64,8 +62,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_each_LIC_rendering                                   &
-     &         (istep_pvr, mesh, ele_mesh, jacs, nod_fld,               &
+      subroutine s_each_LIC_rendering(istep_pvr, mesh, jacs, nod_fld,   &
      &          lic_fld, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -76,7 +73,6 @@
       integer(kind = kint), intent(in) :: istep_pvr
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
       type(LIC_field_params), intent(in) :: lic_fld
@@ -100,30 +96,30 @@
 !
 !   Left eye
           call lic_rendering_with_fixed_view                            &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
+     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf,                &
      &        lic_fld%lic_param, pvr_param, pvr_proj(1), pvr_rgb(1))
           call store_left_eye_image(pvr_rgb(1))
 !
 !   Right eye
           call lic_rendering_with_fixed_view                            &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
+     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf,                &
      &        lic_fld%lic_param, pvr_param, pvr_proj(2), pvr_rgb(1))
           call add_left_eye_image(pvr_rgb(1))
         else
 !
 !   Left eye
           call lic_rendering_with_fixed_view                            &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
+     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf,                &
      &        lic_fld%lic_param, pvr_param, pvr_proj(1), pvr_rgb(1))
 !
 !   Right eye
           call lic_rendering_with_fixed_view                            &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
+     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf,                &
      &        lic_fld%lic_param, pvr_param, pvr_proj(2), pvr_rgb(2))
         end if
       else
         call lic_rendering_with_fixed_view                              &
-     &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,              &
+     &     (istep_pvr, mesh%node, mesh%ele, mesh%surf,                  &
      &      lic_fld%lic_param, pvr_param,  pvr_proj(1), pvr_rgb(1))
       end if
 !
@@ -132,7 +128,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_each_LIC_rendering_w_rot                             &
-     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,        &
+     &         (istep_pvr, mesh, group, jacs, nod_fld,                  &
      &          lic_fld, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -144,7 +140,6 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
-      type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
       type(LIC_field_params), intent(in) :: lic_fld
@@ -166,19 +161,19 @@
       if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
         if(pvr_param%view%iflag_anaglyph .gt. 0) then
           call anaglyph_lic_rendering_w_rot                             &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf, group,         &
      &        lic_fld%lic_param, pvr_param, pvr_proj, pvr_rgb(1))
         else
           call lic_rendering_with_rotation                              &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf, group,         &
      &        lic_fld%lic_param, pvr_param, pvr_proj(1), pvr_rgb(1))
           call lic_rendering_with_rotation                              &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf, group,         &
      &        lic_fld%lic_param, pvr_param, pvr_proj(2), pvr_rgb(2))
         end if
       else
         call lic_rendering_with_rotation                                &
-     &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,       &
+     &     (istep_pvr, mesh%node, mesh%ele, mesh%surf, group,           &
      &      lic_fld%lic_param, pvr_param, pvr_proj(1), pvr_rgb(1))
       end if
 !

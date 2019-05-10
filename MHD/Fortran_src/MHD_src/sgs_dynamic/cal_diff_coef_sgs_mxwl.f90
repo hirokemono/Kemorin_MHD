@@ -5,7 +5,7 @@
 !
 !!      subroutine s_cal_diff_coef_sgs_mxwl(iak_diff_lor,               &
 !!     &          icomp_sgs_lor, icomp_diff_lor, ie_dfbx, dt,           &
-!!     &          FEM_prm, SGS_par, mesh, group, surf, fluid,           &
+!!     &          FEM_prm, SGS_par, mesh, group, fluid,                 &
 !!     &          Vnod_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          fem_int, FEM_filters, sgs_coefs, mk_MHD,              &
 !!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
@@ -13,7 +13,6 @@
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
@@ -63,7 +62,7 @@
 !
       subroutine s_cal_diff_coef_sgs_mxwl(iak_diff_lor,                 &
      &          icomp_sgs_lor, icomp_diff_lor, ie_dfbx, dt,             &
-     &          FEM_prm, SGS_par, mesh, group, surf, fluid,             &
+     &          FEM_prm, SGS_par, mesh, group, fluid,                   &
      &          Vnod_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          fem_int, FEM_filters, sgs_coefs, mk_MHD,                &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
@@ -91,7 +90,6 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
@@ -168,7 +166,7 @@
 !
       call cal_commute_error_4_mf                                       &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
-     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, surf,                   &
+     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, mesh%surf,              &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, Bsf_bcs%sgs, ifilter_4delta,           &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_magne, &
@@ -187,7 +185,7 @@
 !
       call cal_commute_error_4_mf                                       &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
-     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, surf,                   &
+     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, mesh%surf,              &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, Bsf_bcs%sgs, ifilter_2delta,           &
      &    iphys%i_sgs_grad, iphys%i_SGS_maxwell, iphys%i_magne,         &

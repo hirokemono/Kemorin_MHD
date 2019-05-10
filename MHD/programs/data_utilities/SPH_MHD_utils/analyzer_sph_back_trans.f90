@@ -84,11 +84,10 @@
      &   (MHD_files1, SPH_model1, SPH_MHD1, SPH_WK1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field, &
-     &    MHD_ctl1%viz_ctls, vizs1)
+      call init_visualize                                               &
+     &   (FEM_d1%geofem, FEM_d1%field, MHD_ctl1%viz_ctls, vizs1)
       call init_zonal_mean_sections                                     &
-     &   (FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,                 &
-     &    MHD_ctl1%zm_ctls, zmeans1)
+     &   (FEM_d1%geofem, FEM_d1%field, MHD_ctl1%zm_ctls, zmeans1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
@@ -148,15 +147,15 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,             &
-     &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1, vizs1)
+     &        FEM_d1%geofem, FEM_d1%field, next_tbl_VIZ1%neib_ele,      &
+     &        jacobians_VIZ1, vizs1)
 !*
 !*  ----------- Zonal means --------------
 !*
           call SGS_MHD_zmean_sections                                   &
      &       (MHD_step1%viz_step, MHD_step1%time_d, SPH_SGS1%SGS_par,   &
-     &        SPH_MHD1%sph, FEM_d1%geofem, FEM_d1%ele_mesh,             &
-     &        SPH_WK1%trns_WK, FEM_d1%field, zmeans1)
+     &        SPH_MHD1%sph, FEM_d1%geofem, SPH_WK1%trns_WK,             &
+     &        FEM_d1%field, zmeans1)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
 !

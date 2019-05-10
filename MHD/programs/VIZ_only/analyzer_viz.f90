@@ -57,8 +57,7 @@
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize(femmesh_VIZ, elemesh_VIZ, field_VIZ,          &
-     &    viz_ctl_v, vizs_v)
+      call init_visualize(femmesh_VIZ, field_VIZ, viz_ctl_v, vizs_v)
 !
       end subroutine init_analyzer
 !
@@ -81,8 +80,8 @@
 !  Rendering
         if(visval .eq. 0) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
-          call visualize_all(viz_step_V, t_VIZ%time_d,                  &
-     &        femmesh_VIZ, elemesh_VIZ, field_VIZ,                      &
+          call visualize_all                                            &
+     &       (viz_step_V, t_VIZ%time_d, femmesh_VIZ, field_VIZ,         &
      &        ele_4_nod_VIZ, jacobians_VIZ, vizs_v)
         end if
       end do

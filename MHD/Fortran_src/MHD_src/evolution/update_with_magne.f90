@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine update_with_magnetic_field                           &
 !!     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,&
-!!     &          FEM_prm, SGS_par, mesh, group, surf, fluid, conduct,  &
+!!     &          FEM_prm, SGS_par, mesh, group, fluid, conduct,        &
 !!     &          Bsf_bcs, Fsf_bcs, iphys, iphys_ele, fem_int,          &
 !!     &          FEM_filters, FEM_SGS_wk, mhd_fem_wk, rhs_mat,         &
 !!     &          nod_fld, ele_fld, diff_coefs)
@@ -17,7 +17,6 @@
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
@@ -66,7 +65,7 @@
 !
       subroutine update_with_magnetic_field                             &
      &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,  &
-     &          FEM_prm, SGS_par, mesh, group, surf, fluid, conduct,    &
+     &          FEM_prm, SGS_par, mesh, group, fluid, conduct,          &
      &          Bsf_bcs, Fsf_bcs, iphys, iphys_ele, fem_int,            &
      &          FEM_filters, FEM_SGS_wk, mhd_fem_wk, rhs_mat,           &
      &          nod_fld, ele_fld, diff_coefs)
@@ -87,7 +86,6 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
@@ -181,9 +179,9 @@
      &     .and. diff_coefs%iflag_field(iak_diff_b) .eq. 0) then
         if (iflag2.eq.2 .or. iflag2.eq.3) then
           if (iflag_debug.gt.0) write(*,*) 's_cal_diff_coef_magne'
-          call s_cal_diff_coef_magne                                    &
-     &       (iak_diff_b, icomp_diff_b, dt, FEM_prm, SGS_par,           &
-     &        mesh%nod_comm, mesh%node, mesh%ele, surf, group%surf_grp, &
+          call s_cal_diff_coef_magne(iak_diff_b, icomp_diff_b, dt,      &
+     &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node,               &
+     &        mesh%ele, mesh%surf, group%surf_grp,                      &
      &        Bsf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, fluid,       &
      &        FEM_filters%layer_tbl, fem_int%jcs, fem_int%rhs_tbl,      &
      &        FEM_filters%FEM_elens, FEM_filters%filtering,             &

@@ -7,10 +7,9 @@
 !> @brief Mark node and element to extend export table
 !!
 !!@verbatim
-!!      subroutine para_sleeve_extension(mesh, group, ele_mesh)
+!!      subroutine para_sleeve_extension(mesh, group)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) :: group
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !!@endverbatim
 !
       module parallel_sleeve_extension
@@ -32,7 +31,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_sleeve_extension(mesh, group, ele_mesh)
+      subroutine para_sleeve_extension(mesh, group)
 !
       use t_para_double_numbering
       use t_next_node_ele_4_node
@@ -48,7 +47,6 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) :: group
-      type(element_geometry), intent(inout) :: ele_mesh
 !
       type(communication_table), save :: ele_comm
       type(communication_table), save :: new_ele_comm
@@ -59,7 +57,7 @@
 !
 !
       if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, mesh, group, ele_mesh)
+      call const_mesh_infos(my_rank, mesh, group)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbl_only'
       call const_element_comm_tbl_only(mesh, ele_comm)
@@ -101,11 +99,10 @@
       call dealloc_next_nod_ele_table(next_tbl)
       call dealloc_comm_table(ele_comm)
       call dealloc_numele_stack(mesh%ele)
-      call dealloc_mesh_infomations(mesh, group, ele_mesh)
+      call dealloc_mesh_infomations(mesh, group)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type'
-      call set_mesh_data_from_type                                      &
-     &   (newmesh, newgroup, mesh, ele_mesh, group)
+      call set_mesh_data_from_type(newmesh, newgroup, mesh, group)
 !
       call deallocate_sph_node_geometry(newmesh%node)
       call dealloc_comm_table(new_ele_comm)

@@ -103,8 +103,7 @@
      &     psf_ctls_md%fname_psf_ctl, psf_ctls_md%psf_ctl_struct)
 !
       call SECTIONING_initialize                                        &
-     &   (femmesh_FUTIL, elemesh_FUTIL, field_FUTIL,                    &
-     &    psf_ctls_md, psf_md)
+     &   (femmesh_FUTIL, field_FUTIL, psf_ctls_md, psf_md)
 !
       end subroutine analyze_med_grp_patch
 !

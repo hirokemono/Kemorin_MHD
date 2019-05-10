@@ -65,7 +65,7 @@
       use set_field_to_restart
       use input_old_file_sel_4_zlib
 !
-      integer(kind = kint) :: nnod_4_surf, nnod_4_edge, ierr
+      integer(kind = kint) :: ierr
       type(field_IO), save :: fld_IO_m
 !
 !
@@ -94,8 +94,8 @@
 !
 !  set new mesh data
 !
-      call mpi_input_mesh_geometry(asbl_param_f%new_mesh_file,          &
-     &    nprocs, new_mesh, nnod_4_surf, nnod_4_edge)
+      call mpi_input_mesh_geometry                                      &
+     &   (asbl_param_f%new_mesh_file, nprocs, new_mesh)
       call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
       call const_global_numnod_list(new_mesh%node)
       call const_global_numele_list(new_mesh%ele)

@@ -52,7 +52,7 @@
       call FEM_initialize_surface(ucd_file_VIZ)
 !
 !  VIZ Initialization
-      call init_visualize_surface(femmesh_VIZ, elemesh_VIZ, field_VIZ,  &
+      call init_visualize_surface(femmesh_VIZ, field_VIZ,               &
      &    sect_psf_ctls, sect_iso_ctls, viz_psfs_v)
 !
       end subroutine init_analyzer
@@ -74,7 +74,7 @@
 !
 !  Generate field lines
         call visualize_surface(viz_step_V, t_VIZ%time_d,                 &
-     &      femmesh_VIZ, elemesh_VIZ, field_VIZ, viz_psfs_v)
+     &      femmesh_VIZ, field_VIZ, viz_psfs_v)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

@@ -82,7 +82,7 @@
 !
       if (my_rank .lt. gen_itp_p%ndomain_org) then
         call input_mesh(gen_itp_p%itp_org_mesh_file, my_rank,           &
-     &     org_femmesh, org_ele_mesh, ierr)
+     &     org_femmesh%mesh, org_femmesh%group, ierr)
 !
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
@@ -98,7 +98,7 @@
 !
       if (my_rank .lt. gen_itp_p%ndomain_dest) then
         call input_mesh(gen_itp_p%itp_dest_mesh_file, my_rank,          &
-     &      new_femmesh, new_ele_mesh, ierr)
+     &      new_femmesh%mesh, new_femmesh%group, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Target mesh data is wrong!!')
         end if

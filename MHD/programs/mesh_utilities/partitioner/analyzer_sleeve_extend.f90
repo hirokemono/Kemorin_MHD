@@ -98,8 +98,7 @@
       do ilevel = 1, part_p1%n_overlap
         if(my_rank .eq. 0) write(*,*) 'para_sleeve_extension',          &
      &                               iflag_debug
-        call para_sleeve_extension                                      &
-     &     (fem_EXT%mesh, fem_EXT%group, e_mesh_EXT)
+        call para_sleeve_extension(fem_EXT%mesh, fem_EXT%group)
       end do
 !
 !

@@ -64,7 +64,7 @@
 !  read global mesh
 !
       call input_mesh(refine_p1%original_mesh_file, my_rank,            &
-     &    org_fem, org_ele_mesh, ierr)
+     &    org_fem%mesh, org_fem%group, ierr)
       if(ierr .gt. 0) stop 'Original mesh is wrong!!'
 !
       if(refine_p1%iflag_read_old_refine_file .gt. 0) then
@@ -122,8 +122,7 @@
 !
       do
         if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-        call const_mesh_infos                                           &
-     &     (my_rank, org_fem%mesh, org_fem%group, org_ele_mesh)
+        call const_mesh_infos(my_rank, org_fem%mesh, org_fem%group)
 !
         write(*,*) 'allocate_refine_flags'
         call alloc_refine_flags(org_fem%mesh%ele, org_ele_mesh%surf,    &
@@ -237,13 +236,12 @@
         if (refine_tbl%iflag_tmp_tri_refine .eq. 0) exit
 !
         write(*,*) 'dealloc_mesh_infos_w_normal'
-        call dealloc_mesh_infos_w_normal                                &
-     &     (org_fem%mesh, org_fem%group, org_ele_mesh)
+        call dealloc_mesh_infos_w_normal(org_fem%mesh, org_fem%group)
 !
         write(*,*) 'set_mesh_data_from_type'
         call set_mesh_data_from_type                                    &
      &     (refined_fem%mesh, refined_fem%group,                        &
-     &      org_fem%mesh, org_ele_mesh, org_fem%group)
+     &      org_fem%mesh, org_fem%group)
 !
         org_ele_mesh%surf%nnod_4_surf = finer_elemesh%surf%nnod_4_surf
         org_ele_mesh%edge%nnod_4_edge = finer_elemesh%edge%nnod_4_edge

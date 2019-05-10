@@ -84,7 +84,7 @@ private :: collect_single_viewer_mesh
         id_rank = ip - 1
         if (iflag_debug.gt.0) write(*,*) 'input_mesh'
         call input_mesh(mesh_file, id_rank,                             &
-     &     sgl_viewer%fem, sgl_viewer%ele_mesh, ierr)
+     &      sgl_viewer%fem%mesh, sgl_viewer%fem%group, ierr)
         call allocate_quad4_2_linear                                    &
      &     (sgl_viewer%fem%mesh%ele%nnod_4_ele)
 !

@@ -176,10 +176,9 @@
       if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type'
       femmesh_s%mesh%ele%first_ele_type                                 &
      &   = set_cube_eletype_from_num(femmesh_s%mesh%ele%nnod_4_ele)
-      call set_mesh_data_from_type(femmesh_s%mesh, femmesh_s%group,     &
-     &    fem%mesh, ele_mesh, fem%group)
+      call set_mesh_data_from_type                                      &
+     &   (femmesh_s%mesh, femmesh_s%group, fem%mesh, fem%group)
       call calypso_mpi_barrier
-      if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type end'
 !
       end subroutine load_FEM_mesh_4_SPH
 !

@@ -4,8 +4,8 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_sgs_mf                               &
-!!     &         (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx, dt,&
-!!     &          FEM_prm, SGS_par, mesh, group, surf,                  &
+!!     &         (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx,    &
+!!     &          dt, FEM_prm, SGS_par, mesh, group,                    &
 !!     &          Vnod_bcs, Vsf_bcs, iphys, iphys_ele, ele_fld, fluid,  &
 !!     &          fem_int, FEM_filters, sgs_coefs, mk_MHD,              &
 !!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
@@ -13,7 +13,6 @@
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
 !!        type(phys_address), intent(in) :: iphys
@@ -62,8 +61,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_sgs_mf                                 &
-     &         (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx, dt,  &
-     &          FEM_prm, SGS_par, mesh, group, surf,                    &
+     &         (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx,      &
+     &          dt, FEM_prm, SGS_par, mesh, group,                      &
      &          Vnod_bcs, Vsf_bcs, iphys, iphys_ele, ele_fld, fluid,    &
      &          fem_int, FEM_filters, sgs_coefs, mk_MHD,                &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
@@ -91,7 +90,6 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
       type(phys_address), intent(in) :: iphys
@@ -170,7 +168,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_commute_error_4_filter_mf'
       call cal_commute_error_4_mf                                       &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
-     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, surf,                   &
+     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, mesh%surf,              &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, Vsf_bcs%sgs, ifilter_4delta,           &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_velo,  &
@@ -195,7 +193,7 @@
       if (iflag_debug.gt.0)   write(*,*) 'cal_commute_error_4_m_flux'
       call cal_commute_error_4_mf                                       &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
-     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, surf,                   &
+     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, mesh%surf,              &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, Vsf_bcs%sgs, ifilter_2delta,           &
      &    iphys%i_sgs_grad, iphys%i_SGS_m_flux, iphys%i_velo,           &

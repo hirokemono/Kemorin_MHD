@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine update_with_velocity                                 &
-!!     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx, i_step, dt,&
-!!     &          FEM_prm, SGS_par, mesh, group, surf, fluid,           &
+!!     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx,            &
+!!     &          i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,     &
 !!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, fem_int,          &
 !!     &          FEM_filters, mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, &
 !!     &          nod_fld, ele_fld, diff_coefs)
@@ -17,7 +17,6 @@
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(velocity_surf_bc_type), intent(in) :: Vsf_bcs
 !!        type(potential_surf_bc_type), intent(in) :: Psf_bcs
@@ -65,8 +64,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_velocity                                   &
-     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx, i_step, dt,  &
-     &          FEM_prm, SGS_par, mesh, group, surf, fluid,             &
+     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx,              &
+     &          i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,       &
      &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, fem_int,            &
      &          FEM_filters, mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,   &
      &          nod_fld, ele_fld, diff_coefs)
@@ -86,7 +85,6 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid
       type(velocity_surf_bc_type), intent(in) :: Vsf_bcs
       type(potential_surf_bc_type), intent(in) :: Psf_bcs
@@ -184,9 +182,9 @@
      &         .and. diff_coefs%iflag_field(iak_diff_v) .eq. 0) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &                 write(*,*) 's_cal_diff_coef_velo'
-          call s_cal_diff_coef_velo                                     &
-     &       (iak_diff_v, icomp_diff_v, dt, FEM_prm, SGS_par,           &
-     &        mesh%nod_comm, mesh%node, mesh%ele, surf, group%surf_grp, &
+          call s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v,           &
+     &        dt, FEM_prm, SGS_par,  mesh%nod_comm, mesh%node,          &
+     &        mesh%ele, mesh%surf, group%surf_grp,                      &
      &        Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld, fluid,       &
      &        FEM_filters%layer_tbl, fem_int%jcs, fem_int%rhs_tbl,      &
      &        FEM_filters%FEM_elens, FEM_filters%filtering,             &

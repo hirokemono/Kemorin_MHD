@@ -6,7 +6,7 @@
 !
 !!      subroutine s_set_aiccg_matrices                                 &
 !!     &        (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,       &
-!!     &         mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,    &
+!!     &         mesh, group, MHD_mesh, nod_bcs, surf_bcs,              &
 !!     &         fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jacs,      &
 !!     &         FEM_elens, ifld_diff, diff_coefs, rhs_tbl,             &
 !!     &         djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,      &
@@ -19,8 +19,7 @@
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(element_geometry), intent(in) ::      ele_mesh
-!!        type(mesh_data_MHD), intent(in) ::          MHD_mesh
+!!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(nodal_boundarty_conditions), intent(in) ::   nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -60,7 +59,7 @@
 !
       subroutine s_set_aiccg_matrices                                   &
      &        (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,         &
-     &         mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,      &
+     &         mesh, group, MHD_mesh, nod_bcs, surf_bcs,                &
      &         fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jacs,        &
      &         FEM_elens, ifld_diff, diff_coefs, rhs_tbl,               &
      &         djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,        &
@@ -101,7 +100,6 @@
       type(commutation_control_params), intent(in) :: cmt_param
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(element_geometry), intent(in) :: ele_mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -182,7 +180,7 @@
 !     set boundary conditions
 !
       call set_aiccg_bc_phys(FEM_prm%npoint_t_evo_int, dt,              &
-     &    mesh%ele, ele_mesh%surf, group%surf_grp,                      &
+     &    mesh%ele, mesh%surf, group%surf_grp,                          &
      &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
      &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, MG_mat_fl_q, nod_bcs,   &
      &    surf_bcs, djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,   &

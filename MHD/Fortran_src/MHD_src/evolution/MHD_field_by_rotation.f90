@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine cal_field_by_rotation                                &
 !!     &         (dt, FEM_prm, SGS_param, cmt_param,                    &
-!!     &          mesh, group, surf, fluid, conduct, cd_prop,           &
+!!     &          mesh, group, fluid, conduct, cd_prop,                 &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, fem_int,&
 !!     &          FEM_elens, ifld_diff, diff_coefs, mk_MHD, mhd_fem_wk, &
 !!     &          rhs_mat, nod_fld)
@@ -18,7 +18,6 @@
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
@@ -71,7 +70,7 @@
 !
       subroutine cal_field_by_rotation                                  &
      &         (dt, FEM_prm, SGS_param, cmt_param,                      &
-     &          mesh, group, surf, fluid, conduct, cd_prop,             &
+     &          mesh, group, fluid, conduct, cd_prop,                   &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, fem_int,  &
      &          FEM_elens, ifld_diff, diff_coefs, mk_MHD, mhd_fem_wk,   &
      &          rhs_mat, nod_fld)
@@ -85,7 +84,6 @@
       type(commutation_control_params), intent(in) :: cmt_param
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(conductive_property), intent(in) :: cd_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
@@ -111,8 +109,9 @@
           call choose_cal_rotation_sgs(cmt_param%iflag_c_velo,          &
      &       FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,     &
      &       ifld_diff%i_velo, iphys%i_velo, iphys%i_vort,              &
-     &       fluid%istack_ele_fld_smp, mk_MHD%mlump_fl, SGS_param,      &
-     &       mesh%nod_comm, mesh%node, mesh%ele, surf, group%surf_grp,  &
+     &       fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,                 &
+     &       SGS_param,  mesh%nod_comm, mesh%node,                      &
+     &       mesh%ele, mesh%surf, group%surf_grp,                       &
      &       iphys_ele, ele_fld, fem_int%jcs, FEM_elens, diff_coefs,    &
      &       nod_bcs%Vnod_bcs%nod_bc_w, surf_bcs%Vsf_bcs%sgs,           &
      &       fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,          &
@@ -129,7 +128,7 @@
      &           FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,    &
      &           dt, ifld_diff%i_magne, iphys%i_magne, iphys%i_current, &
      &           mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,    &
-     &           mesh%nod_comm, mesh%node, mesh%ele, surf,              &
+     &           mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
      &           group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,       &
      &           FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,      &
      &           surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk, &
@@ -139,14 +138,14 @@
 !     &          FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,    &
 !     &          dt, ifld_diff%i_magne, iphys%i_magne, iphys%i_current, &
 !     &          conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param,&
-!     &          mesh%nod_comm, mesh%node, mesh%ele, surf,              &
+!     &          mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
 !     &          group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,       &
 !     &          FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,      &
-!     &          surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl,                         &
+!     &          surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl,                 &
 !     &          rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
 !             call int_current_diffuse                                  &
 !     &         (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,           &
-!     &          surf, group%surf_grp, surf_bcs%Asf_bcs, iphys,         &
+!     &          mesh%surf, group%surf_grp, surf_bcs%Asf_bcs, iphys,    &
 !     &          fem_int%jcs, fem_int%rhs_tbl, fem_int%m_lump,          &
 !     &          mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,           &
 !     &          rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
@@ -157,8 +156,8 @@
      &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,      &
      &         dt, ifld_diff%i_magne, iphys%i_magne, iphys%i_current,   &
      &         mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,      &
-     &         mesh%nod_comm, mesh%node, mesh%ele,                      &
-     &         surf, group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,   &
+     &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,           &
+     &         group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,         &
      &         FEM_elens, diff_coefs,  nod_bcs%Bnod_bcs%nod_bc_j,       &
      &         surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk,   &
      &         rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
@@ -166,7 +165,7 @@
 !     &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt, &
 !     &         ifld_diff%i_magne, iphys%i_magne, iphys%i_current,      &
 !     &         conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param, &
-!     &         mesh%nod_comm, mesh%node, mesh%ele, surf,               &
+!     &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,          &
 !     &         group%surf_grp,iphys_ele, ele_fld, fem_int%jcs,         &
 !     &         FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,       &
 !     &         surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl,                  &

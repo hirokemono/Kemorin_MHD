@@ -151,7 +151,7 @@
 !  --  Construct FEM mesh
         call load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags,                  &
      &      sph%sph_params, sph%sph_rtp, sph%sph_rj,                    &
-     &      fem, ele_mesh, mesh_file, gen_sph)
+     &      fem, mesh_file, gen_sph)
       end if
 !
       end subroutine load_para_SPH_and_FEM_w_LIC
@@ -160,7 +160,7 @@
 !
       subroutine load_FEM_mesh_4_SPH_w_LIC                              &
      &         (FEM_mesh_flags, sph_params, sph_rtp, sph_rj,            &
-     &          fem, ele_mesh, mesh_file, gen_sph)
+     &          fem, mesh_file, gen_sph)
 !
       use calypso_mpi
       use t_mesh_data
@@ -181,7 +181,6 @@
       type(sph_rj_grid), intent(in) :: sph_rj
 !
       type(mesh_data), intent(inout) ::   fem
-      type(element_geometry), intent(inout) :: ele_mesh
       type(field_IO_params), intent(inout) ::  mesh_file
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
@@ -212,7 +211,7 @@
       femmesh_s%mesh%ele%first_ele_type                                 &
      &   = set_cube_eletype_from_num(femmesh_s%mesh%ele%nnod_4_ele)
       call set_mesh_data_from_type(femmesh_s%mesh, femmesh_s%group,     &
-     &    fem%mesh, ele_mesh, fem%group)
+     &    fem%mesh, fem%group)
       call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type end'
 !
@@ -241,18 +240,17 @@
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
-      type(element_geometry) :: ele_mesh
       type(parallel_make_vierwer_mesh) :: par_view
       integer(kind = kint) :: i_level
 !
 !
       call base_FEM_mesh_sph_mhd(sph_params, sph_rtp, sph_rj,           &
-     &    mesh, group, ele_mesh, gen_sph)
+     &    mesh, group, gen_sph)
 !
 ! Increase sleeve size
       do i_level = 2, gen_sph%num_FEM_sleeve
         if(my_rank .eq. 0) write(*,*) 'extend sleeve:', i_level
-        call para_sleeve_extension(mesh, group, ele_mesh)
+        call para_sleeve_extension(mesh, group)
       end do
 !
 ! Output mesh data

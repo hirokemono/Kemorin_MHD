@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine set_boundary_data                                    &
-!!     &         (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,       &
+!!     &         (time_d, IO_bc, mesh, MHD_mesh, group,                 &
 !!     &          MHD_prop, MHD_BC, iphys, nod_fld, FEM_MHD_BCs)
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(mesh_geometry), intent(in) :: mesh
-!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(phys_address), intent(in) :: iphys
@@ -45,7 +44,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_boundary_data                                      &
-     &         (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,         &
+     &         (time_d, IO_bc, mesh, MHD_mesh, group,                   &
      &          MHD_prop, MHD_BC, iphys, nod_fld, FEM_MHD_BCs)
 !
       use m_machine_parameter
@@ -72,7 +71,6 @@
       type(time_data), intent(in) :: time_d
       type(IO_boundary), intent(in) :: IO_bc
       type(mesh_geometry), intent(in) :: mesh
-      type(element_geometry), intent(in) :: ele_mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(mesh_groups), intent(in) ::   group
       type(phys_address), intent(in) :: iphys
@@ -95,7 +93,7 @@
      &    iphys, nod_fld, FEM_MHD_BCs%nod_bcs)
 !
       call set_bc_surface_data                                          &
-     &   (IO_bc, mesh%node, mesh%ele, ele_mesh%surf,                    &
+     &   (IO_bc, mesh%node, mesh%ele, mesh%surf,                        &
      &    group%surf_grp, group%surf_nod_grp, group%surf_grp_geom,      &
      &    MHD_prop, MHD_BC, FEM_MHD_BCs%surf_bcs)
 !

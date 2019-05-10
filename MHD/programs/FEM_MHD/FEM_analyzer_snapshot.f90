@@ -199,16 +199,15 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d,                           &
-     &    FEM_model%FEM_prm, FEM_SGS%SGS_par,                           &
-     &    femmesh, ele_mesh, FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs, &
-     &    iphys_nod, FEM_SGS%FEM_filters, SGS_MHD_wk,                   &
-     &    nod_fld, FEM_SGS%Csims)
+     &    FEM_model%FEM_prm, FEM_SGS%SGS_par, femmesh,                  &
+     &    FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs, iphys_nod,         &
+     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
 !     ----- Evaluate model coefficients
 !
       call cal_FEM_model_coefficients                                   &
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
-     &    femmesh, ele_mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,    &
+     &    femmesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,              &
      &    FEM_model%FEM_MHD_BCs, iphys_nod, FEM_SGS%FEM_filters,        &
      &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
@@ -216,7 +215,7 @@
 !
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt,             &
      &    MHD_step, FEM_model%FEM_prm, FEM_SGS%SGS_par,                 &
-     &    femmesh, ele_mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,    &
+     &    femmesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,              &
      &    FEM_model%FEM_MHD_BCs, iphys_nod, ak_MHD,                     &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !

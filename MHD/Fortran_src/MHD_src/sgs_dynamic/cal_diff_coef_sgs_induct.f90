@@ -5,7 +5,7 @@
 !
 !!      subroutine s_cal_diff_coef_sgs_induct(iak_diff_uxb,             &
 !!     &         icomp_sgs_uxb, icomp_diff_uxb, ie_dfvx, ie_dfbx, dt,   &
-!!     &         FEM_prm, SGS_par, mesh, group, surf, fluid, conduct,   &
+!!     &         FEM_prm, SGS_par, mesh, group, fluid, conduct,         &
 !!     &         cd_prop, Bsf_bcs, iphys, iphys_ele, ele_fld, fem_int,  &
 !!     &         sgs_coefs, FEM_filters, mk_MHD, FEM_SGS_wk,            &
 !!     &         mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
@@ -13,7 +13,6 @@
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
@@ -61,7 +60,7 @@
 !
       subroutine s_cal_diff_coef_sgs_induct(iak_diff_uxb,               &
      &         icomp_sgs_uxb, icomp_diff_uxb, ie_dfvx, ie_dfbx, dt,     &
-     &         FEM_prm, SGS_par, mesh, group, surf, fluid, conduct,     &
+     &         FEM_prm, SGS_par, mesh, group, fluid, conduct,           &
      &         cd_prop, Bsf_bcs, iphys, iphys_ele, ele_fld, fem_int,    &
      &         sgs_coefs, FEM_filters, mk_MHD, FEM_SGS_wk,              &
      &         mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
@@ -88,7 +87,6 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
@@ -162,9 +160,9 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
-      call cal_commute_error_4_idct                                     &
-     &   (FEM_prm%npoint_t_evo_int, conduct%istack_ele_fld_smp,         &
-     &    mk_MHD%mlump_cd, mesh%node, mesh%ele, surf, group%surf_grp,   &
+      call cal_commute_error_4_idct(FEM_prm%npoint_t_evo_int,           &
+     &    conduct%istack_ele_fld_smp, mk_MHD%mlump_cd,                  &
+     &    mesh%node, mesh%ele, mesh%surf, group%surf_grp,               &
      &    Bsf_bcs, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &    ifilter_4delta, iphys%i_sgs_grad_f, iphys%i_sgs_grad_f,       &
      &    iphys%i_filter_velo, iphys%i_filter_magne, rhs_mat%fem_wk,    &
@@ -178,9 +176,9 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
-      call cal_commute_error_4_idct                                     &
-     &   (FEM_prm%npoint_t_evo_int, conduct%istack_ele_fld_smp,         &
-     &    mk_MHD%mlump_cd, mesh%node, mesh%ele, surf, group%surf_grp,   &
+      call cal_commute_error_4_idct(FEM_prm%npoint_t_evo_int,           &
+     &    conduct%istack_ele_fld_smp, mk_MHD%mlump_cd,                  &
+     &    mesh%node, mesh%ele, mesh%surf, group%surf_grp,               &
      &    Bsf_bcs, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &    ifilter_2delta, iphys%i_sgs_grad, iphys%i_SGS_induct_t,       &
      &    iphys%i_velo, iphys%i_magne, rhs_mat%fem_wk, rhs_mat%surf_wk, &

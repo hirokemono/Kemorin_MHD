@@ -125,17 +125,14 @@
      &            'const_mesh_infos', i_level
           call const_mesh_infos                                         &
      &       (my_rank, MGCG_FEM%MG_mesh(i_level)%mesh,                  &
-     &        MGCG_FEM%MG_mesh(i_level)%group,                          &
-     &        MGCG_FEM%MG_ele_mesh(i_level))
+     &        MGCG_FEM%MG_mesh(i_level)%group)
 !
           call const_global_mesh_infos(MGCG_FEM%MG_mesh(i_level)%mesh)
         else
           call set_empty_layers_type_4_MHD                              &
      &       (MGCG_MHD_FEM%MG_MHD_mesh(i_level) )
-          call empty_mesh_info                                          &
-     &       (MGCG_FEM%MG_mesh(i_level)%mesh,                           &
-     &        MGCG_FEM%MG_mesh(i_level)%group,                          &
-     &        MGCG_FEM%MG_ele_mesh(i_level))
+          call empty_mesh_info(MGCG_FEM%MG_mesh(i_level)%mesh,          &
+     &        MGCG_FEM%MG_mesh(i_level)%group)
         end if
 !
         call dealloc_edge_geometory(MGCG_FEM%MG_ele_mesh(i_level)%edge)
@@ -146,8 +143,7 @@
       do i_level = 1, MGCG_WK%num_MG_level
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_allocate_MHD_AMG_array', i_level
-        call s_allocate_MHD_AMG_array                                   &
-     &     (MGCG_FEM%MG_mesh(i_level), MGCG_FEM%MG_ele_mesh(i_level),   &
+        call s_allocate_MHD_AMG_array(MGCG_FEM%MG_mesh(i_level),        &
      &      MGCG_WK%MG_vector(i_level), MGCG_FEM%MG_FEM_mat(i_level),   &
      &      MGCG_FEM%MG_FEM_int(i_level),                               &
      &      MGCG_MHD_FEM%MG_mk_MHD(i_level) )

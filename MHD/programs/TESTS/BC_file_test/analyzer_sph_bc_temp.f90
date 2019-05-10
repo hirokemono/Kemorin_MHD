@@ -55,8 +55,7 @@
      &   (mesh_file_TEC, nprocs, femmesh, ele_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos                                             &
-     &   (my_rank, femmesh%mesh, femmesh%group, ele_mesh)
+      call const_mesh_infos(my_rank, femmesh%mesh, femmesh%group)
 !
        end subroutine initilize_bc_temp
 !

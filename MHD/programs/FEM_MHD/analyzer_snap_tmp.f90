@@ -60,8 +60,7 @@
      &    FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1, FEM_MHD1%label_sim)
 !
       call init_visualize                                               &
-     &   (FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field,           &
-     &    viz_ctls_F, vizs_F)
+     &   (FEM_MHD1%geofem, FEM_MHD1%field, viz_ctls_F, vizs_F)
 !
       end subroutine init_analyzer
 !
@@ -85,7 +84,7 @@
         if (visval.eq.0) then
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field,       &
+     &        FEM_MHD1%geofem, FEM_MHD1%field,                          &
      &        SGS_MHD_wk1%fem_int%next_tbl%neib_ele,                    &
      &        SGS_MHD_wk1%fem_int%jcs, vizs_F)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)

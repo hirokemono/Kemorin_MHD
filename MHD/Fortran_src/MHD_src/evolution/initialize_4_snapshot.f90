@@ -210,7 +210,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
-      call const_MHD_jacobian_and_volumes(SGS_par%model_p, ele_mesh,    &
+      call const_MHD_jacobian_and_volumes(SGS_par%model_p,              &
      &    group, fem_sq%i_msq, mesh, FEM_filters%layer_tbl,             &
      &    spfs_1, SGS_MHD_wk%fem_int%jcs, MHD_mesh, fem_sq%msq)
 !
@@ -236,7 +236,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
       call set_boundary_data                                            &
-     &   (MHD_step%time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,      &
+     &   (MHD_step%time_d, IO_bc, mesh, MHD_mesh, group,                &
      &    MHD_prop, MHD_BC, iphys, nod_fld, FEM_MHD_BCs)
 !
 !     ---------------------

@@ -78,8 +78,8 @@
 !
 !  -------------------------------
 !
-      call init_visualize(femmesh_STR, elemesh_STR, field_STR,          &
-     &    spt_ctl1%viz_ctls, vizs_TRNS)
+      call init_visualize                                               &
+     &   (femmesh_STR, field_STR, spt_ctl1%viz_ctls, vizs_TRNS)
 !
       end subroutine init_analyzer
 !
@@ -113,7 +113,7 @@
 !
         if(visval .eq. 0) then
           call visualize_all(viz_step_STR, t_STR%time_d,                &
-     &        femmesh_STR, elemesh_STR, field_STR, ele_4_nod_SPH_TRANS, &
+     &        femmesh_STR, field_STR, ele_4_nod_SPH_TRANS,              &
      &        jacobians_STR, vizs_TRNS)
         end if
       end do

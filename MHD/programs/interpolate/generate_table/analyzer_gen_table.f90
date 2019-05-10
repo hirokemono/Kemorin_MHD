@@ -82,7 +82,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos                                             &
-     &   (my_rank, org_femmesh%mesh, org_femmesh%group, org_ele_mesh)
+     &   (my_rank, org_femmesh%mesh, org_femmesh%group)
 !
 !     ----- construct mesh informations for original mesh
 !

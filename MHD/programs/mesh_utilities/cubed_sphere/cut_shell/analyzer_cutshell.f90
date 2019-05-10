@@ -44,7 +44,7 @@
 !  read global mesh
 !
       call input_mesh(original_mesh_file, my_rank,                      &
-     &    original_fem, org_ele_mesh, ierr)
+     &    original_fem%mesh, original_fem%group, ierr)
       if(ierr .ne. 0) stop 'Mesh data is wrong!'
 !
 !

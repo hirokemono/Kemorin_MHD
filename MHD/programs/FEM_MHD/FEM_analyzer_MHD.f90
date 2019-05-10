@@ -4,11 +4,11 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_MHD                                   &
-!!     &        (MHD_files, flex_MHD, MHD_step, femmesh,                &
+!!     &        (MHD_files, flex_MHD, MHD_step, fem,                    &
 !!     &         ele_mesh, iphys_nod, nod_fld, FEM_model, MHD_CG,       &
 !!     &         FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(mesh_data), intent(inout) :: femmesh
+!!        type(mesh_data), intent(inout) :: fem
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_address), intent(inout) :: iphys_nod
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -21,13 +21,13 @@
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!      subroutine FEM_analyze_MHD                                      &
-!!     &         (MHD_files, femmesh, ele_mesh, iphys_nod, FEM_model,   &
+!!     &         (MHD_files, fem, ele_mesh, iphys_nod, FEM_model,       &
 !!     &          flex_MHD, MHD_step, visval, retval, MHD_CG, FEM_SGS,  &
 !!     &          SGS_MHD_wk, nod_fld, MHD_IO, fem_sq)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(flexible_stepping_data), intent(inout) :: flex_data
-!!        type(mesh_data), intent(in) :: femmesh
+!!        type(mesh_data), intent(in) :: fem
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_address), intent(in) :: iphys_nod
 !!        type(FEM_MHD_model_data), intent(in) :: FEM_model
@@ -76,7 +76,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_MHD                                     &
-     &        (MHD_files, flex_MHD, MHD_step, femmesh,                  &
+     &        (MHD_files, flex_MHD, MHD_step, fem,                      &
      &         ele_mesh, iphys_nod, nod_fld, FEM_model, MHD_CG,         &
      &         FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !
@@ -100,7 +100,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
 !
-      type(mesh_data), intent(inout) :: femmesh
+      type(mesh_data), intent(inout) :: fem
       type(element_geometry), intent(inout) :: ele_mesh
       type(phys_address), intent(inout) :: iphys_nod
       type(phys_data), intent(inout) :: nod_fld
@@ -119,13 +119,13 @@
       call init_analyzer_fl                                             &
      &   (MHD_files, FEM_model%bc_FEM_IO, FEM_model%FEM_prm,            &
      &    FEM_SGS%SGS_par, flex_MHD, MHD_step,                          &
-     &    femmesh%mesh, femmesh%group, ele_mesh,                        &
+     &    fem%mesh, fem%group, ele_mesh,                                &
      &    FEM_model%MHD_mesh, FEM_SGS%FEM_filters,                      &
      &    FEM_model%MHD_prop, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,  &
      &    FEM_SGS%Csims, iphys_nod, nod_fld, MHD_CG, SGS_MHD_wk,        &
      &    fem_sq, MHD_IO%rst_IO, label_sim)
 !
-      call nod_fields_send_recv(femmesh%mesh, nod_fld)
+      call nod_fields_send_recv(fem%mesh, nod_fld)
 !
 !   obtain elemental averages
 !
@@ -133,7 +133,7 @@
      &    FEM_SGS%Csims%sgs_coefs, FEM_SGS%Csims%diff_coefs)
       if (iflag_debug.eq.1) write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d,                           &
-     &    FEM_model%FEM_prm, FEM_SGS%SGS_par, femmesh, ele_mesh,        &
+     &    FEM_model%FEM_prm, FEM_SGS%SGS_par, fem,                      &
      &    FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs, iphys_nod,         &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
@@ -145,12 +145,12 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
       call set_data_4_const_matrices                                    &
-     &   (femmesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,              &
+     &   (fem, FEM_model%MHD_mesh, FEM_model%MHD_prop,                  &
      &    SGS_MHD_wk%fem_int, MHD_CG%MGCG_WK, MHD_CG%MHD_mat_tbls,      &
      &    MHD_CG%MHD_mat, MHD_CG%solver_pack)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step%time_d%dt,                       &
-     &    FEM_model%FEM_prm, FEM_SGS%SGS_par, femmesh, ele_mesh,        &
+     &    FEM_model%FEM_prm, FEM_SGS%SGS_par, fem,                      &
      &    FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,                    &
      &    FEM_model%MHD_prop, SGS_MHD_wk%fem_int,                       &
      &    FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%Csims,                 &
@@ -160,13 +160,13 @@
 !  
       call cal_FEM_model_coefficients                                   &
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
-     &    femmesh, ele_mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,    &
+     &    fem, FEM_model%MHD_mesh, FEM_model%MHD_prop,                  &
      &    FEM_model%FEM_MHD_BCs, iphys_nod, FEM_SGS%FEM_filters,        &
      &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt, MHD_step,   &
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par,                           &
-     &    femmesh, ele_mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,    &
+     &    fem, FEM_model%MHD_mesh, FEM_model%MHD_prop,                  &
      &    FEM_model%FEM_MHD_BCs, iphys_nod, MHD_CG%ak_MHD,              &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
@@ -174,7 +174,7 @@
 !
       FEM_SGS%SGS_par%iflag_SGS_initial = 0
 !
-      call s_check_deltat_by_prev_rms(MHD_step, femmesh%mesh,           &
+      call s_check_deltat_by_prev_rms(MHD_step, fem%mesh,               &
      &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
      &    iphys_nod, nod_fld, SGS_MHD_wk%fem_int, SGS_MHD_wk%rhs_mat,   &
      &    flex_MHD)
@@ -183,12 +183,12 @@
 !    Open monitor files
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
 !
-      call output_grd_file_w_org_connect                               &
-     &   (MHD_step%ucd_step, femmesh%mesh, FEM_model%MHD_mesh,         &
+      call output_grd_file_w_org_connect                                &
+     &   (MHD_step%ucd_step, fem%mesh, FEM_model%MHD_mesh,              &
      &    nod_fld, MHD_files%ucd_file_IO, MHD_IO%fem_ucd)
 !
       call alloc_phys_range(nod_fld%ntot_phys_viz, MHD_IO%range)
-!       call s_open_boundary_monitor(my_rank, femmesh%group%sf_grp)
+!       call s_open_boundary_monitor(my_rank, fem%group%sf_grp)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -197,7 +197,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_MHD                                        &
-     &         (MHD_files, femmesh, ele_mesh, iphys_nod, FEM_model,     &
+     &         (MHD_files, fem, ele_mesh, iphys_nod, FEM_model,         &
      &          flex_MHD, MHD_step, visval, retval, MHD_CG, FEM_SGS,    &
      &          SGS_MHD_wk, nod_fld, MHD_IO, fem_sq)
 !
@@ -219,7 +219,7 @@
       use FEM_flexible_time_step
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(mesh_data), intent(in) :: femmesh
+      type(mesh_data), intent(in) :: fem
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_address), intent(in) :: iphys_nod
 !
@@ -249,7 +249,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_fields_evolution'
       call FEM_fields_evolution(MHD_step%time_d, FEM_model%FEM_prm,     &
-     &   FEM_SGS%SGS_par, femmesh, ele_mesh, FEM_model%MHD_mesh,        &
+     &   FEM_SGS%SGS_par, fem, FEM_model%MHD_mesh,                      &
      &   FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs, iphys_nod,          &
      &   MHD_CG%ak_MHD, FEM_SGS%FEM_filters, MHD_CG%solver_pack,        &
      &   MHD_CG%MGCG_WK, SGS_MHD_wk, nod_fld, FEM_SGS%Csims, fem_sq)
@@ -258,14 +258,14 @@
 !
       call cal_FEM_model_coefficients                                   &
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
-     &    femmesh, ele_mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,    &
+     &    fem, FEM_model%MHD_mesh, FEM_model%MHD_prop,                  &
      &    FEM_model%FEM_MHD_BCs, iphys_nod, FEM_SGS%FEM_filters,        &
      &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
 !     ---------------------
 !
       call s_check_flexible_time_step                                   &
-     &   (femmesh%mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,         &
+     &   (fem%mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,             &
      &    iphys_nod, nod_fld, SGS_MHD_wk%fem_int, SGS_MHD_wk%rhs_mat,   &
      &    flex_MHD, MHD_step)
 !
@@ -274,7 +274,7 @@
       if(MHD_step%flex_p%istep_flex_to_max .eq. 0) then
         call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt, MHD_step, &
      &      FEM_model%FEM_prm, FEM_SGS%SGS_par,                         &
-     &      femmesh, ele_mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,  &
+     &      fem, FEM_model%MHD_mesh, FEM_model%MHD_prop,                &
      &      FEM_model%FEM_MHD_BCs, iphys_nod, MHD_CG%ak_MHD,            &
      &      FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,                   &
      &      FEM_SGS%Csims)
@@ -286,15 +286,14 @@
 !
         call output_time_step_control                                   &
      &     (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,            &
-     &      FEM_model%FEM_prm, MHD_step%time_d, femmesh%mesh,           &
+     &      FEM_model%FEM_prm, MHD_step%time_d, fem%mesh,               &
      &      FEM_model%MHD_mesh, FEM_model%MHD_prop,                     &
      &      iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                   &
      &      SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                 &
      &      SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq)
 !
         call output_monitor_control(MHD_step%flex_p%istep_max_dt,       &
-     &      MHD_step%point_step, MHD_step%time_d, femmesh%mesh,         &
-     &      nod_fld)
+     &      MHD_step%point_step, MHD_step%time_d, fem%mesh, nod_fld)
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
         call s_output_sgs_model_coefs(MHD_step%flex_p%istep_max_dt,     &
@@ -332,9 +331,8 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       call output_MHD_restart_file_ctl                                  &
      &   (retval, FEM_SGS%SGS_par, MHD_files, MHD_step%time_d,          &
-     &    MHD_step%flex_p, femmesh%mesh, iphys_nod,                     &
-     &    SGS_MHD_wk%FEM_SGS_wk, MHD_step%rst_step, nod_fld,            &
-     &    MHD_IO%rst_IO)
+     &    MHD_step%flex_p, fem%mesh, iphys_nod, SGS_MHD_wk%FEM_SGS_wk,  &
+     &    MHD_step%rst_step, nod_fld, MHD_IO%rst_IO)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !   Finish by specific step
@@ -362,12 +360,11 @@
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
         call update_matrices(MHD_step%time_d,                           &
-     &      FEM_model%FEM_prm, FEM_SGS%SGS_par,                         &
-     &      femmesh, ele_mesh, FEM_model%MHD_mesh,                      &
-     &      FEM_model%FEM_MHD_BCs, FEM_model%MHD_prop,                  &
-     &      SGS_MHD_wk%fem_int, FEM_SGS%FEM_filters%FEM_elens,          &
-     &      FEM_SGS%Csims, MHD_step%flex_p, SGS_MHD_wk%mk_MHD,          &
-     &      SGS_MHD_wk%rhs_mat, MHD_CG)
+     &     FEM_model%FEM_prm, FEM_SGS%SGS_par, fem, FEM_model%MHD_mesh, &
+     &     FEM_model%FEM_MHD_BCs, FEM_model%MHD_prop,                   &
+     &     SGS_MHD_wk%fem_int, FEM_SGS%FEM_filters%FEM_elens,           &
+     &     FEM_SGS%Csims, MHD_step%flex_p, SGS_MHD_wk%mk_MHD,           &
+     &     SGS_MHD_wk%rhs_mat, MHD_CG)
       end if
 !
       end subroutine FEM_analyze_MHD

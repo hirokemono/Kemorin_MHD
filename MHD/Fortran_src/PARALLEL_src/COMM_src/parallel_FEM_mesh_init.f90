@@ -68,7 +68,7 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos tako'
-      call const_mesh_infos(my_rank, mesh, group, ele_mesh)
+      call const_mesh_infos(my_rank, mesh, group)
 !
       if(iflag_debug.gt.0) write(*,*) 'const_global_mesh_infos'
       call const_global_mesh_infos(mesh)

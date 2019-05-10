@@ -7,14 +7,13 @@
 !!     &         (itype_Csym_flux, iflag_supg, num_int, dt,             &
 !!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
 !!     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,&
-!!     &          SGS_par, mesh, group, surf, Snod_bcs, sf_bcs,         &
+!!     &          SGS_par, mesh, group, Snod_bcs, sf_bcs,               &
 !!     &          iphys, iphys_ele, ele_fld, fluid, fem_int,            &
 !!     &          FEM_filters, sgs_coefs, mk_MHD, FEM_SGS_wk,           &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -64,7 +63,7 @@
      &         (itype_Csym_flux, iflag_supg, num_int, dt,               &
      &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
      &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,  &
-     &          SGS_par, mesh, group, surf, Snod_bcs, sf_bcs,           &
+     &          SGS_par, mesh, group, Snod_bcs, sf_bcs,                 &
      &          iphys, iphys_ele, ele_fld, fluid, fem_int,              &
      &          FEM_filters, sgs_coefs, mk_MHD, FEM_SGS_wk,             &
      &          mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
@@ -96,7 +95,6 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -171,7 +169,7 @@
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
       call cal_commute_error_4_sf(num_int, fluid%istack_ele_fld_smp,    &
-     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, surf,                   &
+     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, mesh%surf,              &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, sf_bcs%sgs, ifilter_4delta,            &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, ivelo_f, ifield_f,    &
@@ -188,7 +186,7 @@
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
       call cal_commute_error_4_sf(num_int, fluid%istack_ele_fld_smp,    &
-     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, surf,                   &
+     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, mesh%surf,              &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, sf_bcs%sgs, ifilter_2delta,            &
      &    iphys%i_sgs_grad, i_sgs, ivelo, ifield,                       &

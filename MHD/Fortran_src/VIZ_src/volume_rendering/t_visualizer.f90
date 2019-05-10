@@ -3,14 +3,12 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      subroutine init_visualize                                       &
-!!     &         (femmesh, ele_mesh, nod_fld, viz_ctls, vizs)
+!!      subroutine init_visualize(fem, nod_fld, viz_ctls, vizs)
 !!      subroutine visualize_all(viz_step, time_d,                     &
-!!     &          femmesh, ele_mesh, nod_fld, ele_4_nod, jacs, vizs)
+!!     &          fem, nod_fld, ele_4_nod, jacs, vizs)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
-!!        type(mesh_data), intent(in) :: femmesh
-!!        type(element_geometry), intent(in) :: ele_mesh
+!!        type(mesh_data), intent(in) :: fem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(jacobians_type), intent(in) :: jacs
@@ -56,11 +54,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize                                         &
-     &         (femmesh, ele_mesh, nod_fld, viz_ctls, vizs)
+      subroutine init_visualize(fem, nod_fld, viz_ctls, vizs)
 !
-      type(mesh_data), intent(in) :: femmesh
-      type(element_geometry), intent(in) :: ele_mesh
+      type(mesh_data), intent(in) :: fem
       type(phys_data), intent(in) :: nod_fld
 !
       type(visualization_controls), intent(inout) :: viz_ctls
@@ -69,28 +65,28 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
       call SECTIONING_initialize                                        &
-     &   (femmesh, ele_mesh, nod_fld, viz_ctls%psf_ctls, vizs%psf)
+     &   (fem, nod_fld, viz_ctls%psf_ctls, vizs%psf)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
       call ISOSURF_initialize                                           &
-     &   (femmesh, ele_mesh, nod_fld, viz_ctls%iso_ctls, vizs%iso)
+     &   (fem, nod_fld, viz_ctls%iso_ctls, vizs%iso)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
       call PVR_initialize                                               &
-     &   (femmesh, ele_mesh, nod_fld, viz_ctls%pvr_ctls, vizs%pvr)
+     &   (fem, nod_fld, viz_ctls%pvr_ctls, vizs%pvr)
       call calypso_MPI_barrier
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
       call FLINE_initialize                                             &
-     &   (femmesh, nod_fld, viz_ctls%fline_ctls, vizs%fline)
+     &   (fem, nod_fld, viz_ctls%fline_ctls, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+4)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
       call LIC_initialize                                               &
-     &   (femmesh, ele_mesh, nod_fld, viz_ctls%lic_ctls, vizs%lic)
+     &   (fem, nod_fld, viz_ctls%lic_ctls, vizs%lic)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
       end subroutine init_visualize
@@ -98,12 +94,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_all(viz_step, time_d,                        &
-     &          femmesh, ele_mesh, nod_fld, ele_4_nod, jacs, vizs)
+     &          fem, nod_fld, ele_4_nod, jacs, vizs)
 !
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
-      type(mesh_data), intent(in) :: femmesh
-      type(element_geometry), intent(in) :: ele_mesh
+      type(mesh_data), intent(in) :: fem
 !
       type(phys_data), intent(in) :: nod_fld
       type(element_around_node), intent(in) :: ele_4_nod
@@ -114,31 +109,31 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
       call SECTIONING_visualize(viz_step%PSF_t%istep_file, time_d,      &
-     &    ele_mesh, nod_fld, vizs%psf)
+     &    fem, nod_fld, vizs%psf)
       call calypso_MPI_barrier
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
       call ISOSURF_visualize(viz_step%ISO_t%istep_file, time_d,         &
-     &    femmesh, ele_mesh, nod_fld, vizs%iso)
+     &    fem, nod_fld, vizs%iso)
       call calypso_MPI_barrier
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
       call PVR_visualize(viz_step%PVR_t%istep_file,                     &
-     &    femmesh, ele_mesh, jacs, nod_fld, vizs%pvr)
+     &    fem, jacs, nod_fld, vizs%pvr)
       call calypso_MPI_barrier
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
       call FLINE_visualize(viz_step%FLINE_t%istep_file,                 &
-     &    femmesh, ele_mesh, ele_4_nod, nod_fld, vizs%fline)
+     &    fem, ele_4_nod, nod_fld, vizs%fline)
       call calypso_MPI_barrier
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
       call LIC_visualize(viz_step%LIC_t%istep_file,                     &
-     &    femmesh, ele_mesh, jacs, nod_fld, vizs%lic)
+     &    fem, jacs, nod_fld, vizs%lic)
       call calypso_MPI_barrier
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !

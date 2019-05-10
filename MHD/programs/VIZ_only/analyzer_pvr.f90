@@ -41,8 +41,8 @@
       call FEM_initialize_pvr
 !
 !  VIZ Initialization
-      call PVR_initialize(femmesh_VIZ, elemesh_VIZ, field_VIZ,          &
-     &    viz_ctl_v%fline_ctls, pvr_v)
+      call PVR_initialize                                               &
+     &   (femmesh_VIZ, field_VIZ, viz_ctl_v%fline_ctls, pvr_v)
       call calypso_MPI_barrier
 !
       end subroutine initialization
@@ -65,7 +65,7 @@
 !
 !  Rendering
         call PVR_visualize(viz_step_V%PVR_t%istep_file,                 &
-     &      femmesh_VIZ, elemesh_VIZ, jacobians_VIZ, field_VIZ, pvr_v)
+     &      femmesh_VIZ, jacobians_VIZ, field_VIZ, pvr_v)
       end do
 !
       end subroutine analyze

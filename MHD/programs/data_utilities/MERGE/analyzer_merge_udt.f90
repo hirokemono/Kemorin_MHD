@@ -60,7 +60,6 @@
       use const_element_comm_tables
       use const_mesh_information
 !
-      integer(kind = kint) :: nnod_4_surf, nnod_4_edge
 !
       write(*,*) 'Simulation start: PE. ', my_rank
       if(my_rank .eq. 0) then
@@ -87,8 +86,8 @@
 !
 !  set mesh data
 !
-      call mpi_input_mesh_geometry(asbl_param_u%org_mesh_file, nprocs,  &
-     &    mesh_m, nnod_4_surf, nnod_4_edge)
+      call mpi_input_mesh_geometry                                      &
+     &   (asbl_param_u%org_mesh_file, nprocs, mesh_m)
       call set_nod_and_ele_infos(mesh_m%node, mesh_m%ele)
       call const_global_numnod_list(mesh_m%node)
       call const_global_numele_list(mesh_m%ele)

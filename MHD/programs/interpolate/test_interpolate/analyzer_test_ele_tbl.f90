@@ -76,7 +76,7 @@
         call count_size_4_smp_mesh_type                                 &
      &     (new_femmesh%mesh%node, new_femmesh%mesh%ele)
         if(i_debug.eq.iflag_full_msg) then
-          call check_smp_size_type(my_rank, new_femmesh%mesh)
+          call check_mesh_smp_size(my_rank, new_femmesh%mesh)
         end if
       end if
 !

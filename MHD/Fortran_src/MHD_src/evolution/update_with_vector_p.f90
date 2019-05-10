@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine update_with_vector_potential                         &
 !!     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,&
-!!     &          FEM_prm, SGS_par, mesh, group, surf, fluid, conduct,  &
+!!     &          FEM_prm, SGS_par, mesh, group, fluid, conduct,        &
 !!     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,         &
 !!     &          fem_int, FEM_filters, FEM_SGS_wk, mhd_fem_wk, rhs_mat,&
 !!     &          nod_fld, ele_fld, diff_coefs)
@@ -17,7 +17,6 @@
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(velocity_surf_bc_type), intent(in) :: Asf_bcs
@@ -69,7 +68,7 @@
 !
       subroutine update_with_vector_potential                           &
      &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,  &
-     &          FEM_prm, SGS_par, mesh, group, surf, fluid, conduct,    &
+     &          FEM_prm, SGS_par, mesh, group, fluid, conduct,          &
      &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,           &
      &          fem_int, FEM_filters, FEM_SGS_wk, mhd_fem_wk, rhs_mat,  &
      &          nod_fld, ele_fld, diff_coefs)
@@ -91,7 +90,6 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
@@ -153,7 +151,7 @@
      &       then
               call s_cal_diff_coef_vector_p                             &
      &           (iak_diff_b, icomp_diff_b, dt, FEM_prm, SGS_par,       &
-     &            mesh%nod_comm, mesh%node, mesh%ele, surf, fluid,      &
+     &            mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, fluid, &
      &            FEM_filters%layer_tbl, group%surf_grp,                &
      &            Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,          &
      &            fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,  &
@@ -176,7 +174,7 @@
      &      FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,     &
      &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
      &      mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_par%model_p,   &
-     &      mesh%nod_comm, mesh%node, mesh%ele, surf,                   &
+     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,            &
      &      FEM_filters%FEM_elens, diff_coefs, Bnod_bcs%nod_bc_b,       &
      &      Asf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk,               &

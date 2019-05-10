@@ -5,18 +5,17 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_temperature_field                                &
-!!     &         (i_field, dt, FEM_prm, SGS_par, femmesh, surf, fluid,  &
-!!     &          property, ref_param, nod_bcs, sf_bcs,                 &
-!!     &          iphys, iphys_ele, ele_fld, fem_int,                   &
+!!      subroutine cal_temperature_field(i_field, dt, FEM_prm, SGS_par, &
+!!     &          mesh, group, fluid,  property, ref_param,             &
+!!     &          nod_bcs, sf_bcs, iphys, iphys_ele, ele_fld, fem_int,  &
 !!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
 !!     &          mk_MHD, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,         &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
-!!        type(mesh_data), intent(in) :: femmesh
-!!        type(surface_data), intent(in) :: surf
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) :: group
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(scalar_property), intent(in) :: property
 !!        type(reference_scalar_param), intent(in) :: ref_param
@@ -86,10 +85,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_temperature_field                                  &
-     &         (i_field, dt, FEM_prm, SGS_par, femmesh, surf, fluid,    &
-     &          property, ref_param, nod_bcs, sf_bcs,                   &
-     &          iphys, iphys_ele, ele_fld, fem_int,                     &
+      subroutine cal_temperature_field(i_field, dt, FEM_prm, SGS_par,   &
+     &          mesh, group, fluid,  property, ref_param,               &
+     &          nod_bcs, sf_bcs, iphys, iphys_ele, ele_fld, fem_int,    &
      &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
      &          mk_MHD, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,           &
@@ -100,8 +98,8 @@
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(mesh_data), intent(in) :: femmesh
-      type(surface_data), intent(in) :: surf
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) :: group
       type(field_geometry_data), intent(in) :: fluid
       type(scalar_property), intent(in) :: property
       type(reference_scalar_param), intent(in) :: ref_param
@@ -130,9 +128,9 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_temperature_pre(i_field, dt, FEM_prm,                    &
-     &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
-     &    femmesh%mesh, femmesh%group, surf, fluid,                     &
+      call cal_temperature_pre                                          &
+     &   (i_field, dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,     &
+     &    SGS_par%filter_p, mesh, group, fluid,                         &
      &    property, ref_param, nod_bcs, sf_bcs, iphys, iphys_ele,       &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_elens,             &
      &    icomp_sgs, ifld_diff, iphys_elediff, sgs_coefs,               &
@@ -147,7 +145,7 @@
 !
       subroutine cal_temperature_pre(i_field, dt, FEM_prm,              &
      &          SGS_param, cmt_param, filter_param, mesh, group,        &
-     &          surf, fluid, property, ref_param, nod_bcs, sf_bcs,      &
+     &          fluid, property, ref_param, nod_bcs, sf_bcs,            &
      &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl,               &
      &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
@@ -176,7 +174,6 @@
       type(SGS_filtering_params), intent(in) :: filter_param
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid
       type(scalar_property), intent(in) :: property
       type(reference_scalar_param), intent(in) :: ref_param
@@ -270,14 +267,13 @@
 !      call check_ff_smp(my_rank, n_scalar, mesh%node%max_nod_smp, f_nl)
 !
       call int_sf_scalar_flux                                           &
-     &   (mesh%node, mesh%ele, surf, group%surf_grp, jacs%g_FEM,        &
+     &   (mesh%node, mesh%ele, mesh%surf, group%surf_grp, jacs%g_FEM,   &
      &    jacs%jac_sf_grp, rhs_tbl, sf_bcs%flux,                        &
      &    FEM_prm%npoint_t_evo_int, ak_diffuse, fem_wk, f_l)
 !
       if(cmt_param%iflag_c_temp .ne. id_SGS_commute_OFF                 &
           .and. SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
-        call int_sf_skv_sgs_div_v_flux                                  &
-     &     (mesh%node, mesh%ele, surf, &
+        call int_sf_skv_sgs_div_v_flux(mesh%node, mesh%ele, mesh%surf,  &
      &      group%surf_grp, nod_fld, jacs%g_FEM, jacs%jac_sf_grp,       &
      &      rhs_tbl, FEM_elens, FEM_prm%npoint_t_evo_int,               &
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &

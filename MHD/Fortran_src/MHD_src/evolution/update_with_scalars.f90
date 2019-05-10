@@ -8,18 +8,17 @@
 !!
 !!@verbatim
 !!      subroutine update_with_temperature(iak_diff_t, icomp_diff_t,    &
-!!     &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid, &
+!!     &        i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,       &
 !!     &        sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_filters,&
 !!     &        mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !!      subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,   &
-!!     &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid, &
+!!     &        i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,       &
 !!     &        sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_filters,&
 !!     &        mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !!        type(phys_address), intent(in) :: iphys
@@ -66,7 +65,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_temperature(iak_diff_t, icomp_diff_t,      &
-     &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid,   &
+     &        i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,         &
      &        sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_filters,  &
      &        mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !
@@ -86,7 +85,6 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(phys_address), intent(in) :: iphys
@@ -181,7 +179,7 @@
      &            (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,   &
      &             dt, iphys%i_sgs_temp, iphys%i_filter_temp,           &
      &             iak_diff_t, icomp_diff_t, SGS_par,                   &
-     &             mesh%nod_comm, mesh%node, mesh%ele, surf,            &
+     &             mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,       &
      &             group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,   &
      &             fluid, FEM_filters%layer_tbl,                        &
      &             fem_int%jcs, fem_int%rhs_tbl,                        &
@@ -201,7 +199,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,     &
-     &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid,   &
+     &        i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,         &
      &        sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_filters,  &
      &        mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !
@@ -221,7 +219,6 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(field_geometry_data), intent(in) :: fluid
       type(phys_address), intent(in) :: iphys
@@ -290,7 +287,7 @@
      &            (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,   &
      &             dt, iphys%i_sgs_composit, iphys%i_filter_comp,       &
      &             iak_diff_c, icomp_diff_c, SGS_par,                   &
-     &             mesh%nod_comm, mesh%node, mesh%ele, surf,            &
+     &             mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,       &
      &             group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,   &
      &             fluid, FEM_filters%layer_tbl,                        &
      &             fem_int%jcs, fem_int%rhs_tbl,                        &

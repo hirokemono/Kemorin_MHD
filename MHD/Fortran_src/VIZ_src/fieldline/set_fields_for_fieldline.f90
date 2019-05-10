@@ -16,9 +16,8 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine s_set_fields_for_fieldline                           &
-!!     &         (mesh, ele_mesh, group, fln_prm, fln_src, fln_tce)
+!!     &         (mesh, group, fln_prm, fln_src, fln_tce)
 !!        type(mesh_geometry), intent(in) :: mesh
-!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -141,7 +140,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_fields_for_fieldline                             &
-     &         (mesh, ele_mesh, group, fln_prm, fln_src, fln_tce)
+     &         (mesh, group, fln_prm, fln_src, fln_tce)
 !
       use t_mesh_data
       use start_surface_by_gl_table
@@ -150,7 +149,6 @@
       use start_surface_4_fline
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(element_geometry), intent(in) :: ele_mesh
       type(mesh_groups), intent(in) :: group
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
@@ -160,8 +158,7 @@
 !
       if(fln_prm%id_fline_seed_type .eq. iflag_surface_group) then
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_flux'
-        call s_start_surface_by_flux                                    &
-     &     (mesh%node, mesh%ele, ele_mesh%surf,                         &
+        call s_start_surface_by_flux(mesh%node, mesh%ele, mesh%surf,    &
      &      fln_prm, fln_src, fln_tce)
       else if(fln_prm%id_fline_seed_type                                &
      &                           .eq. iflag_spray_in_domain) then
@@ -177,7 +174,7 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 's_start_surface_4_fline'
-      call s_start_surface_4_fline(mesh%node, mesh%ele, ele_mesh%surf,  &
+      call s_start_surface_4_fline(mesh%node, mesh%ele, mesh%surf,      &
      &    fln_prm, fln_src, fln_tce)
       if(iflag_debug .gt. 0) write(*,*) 's_start_surface_4_fline end'
 !

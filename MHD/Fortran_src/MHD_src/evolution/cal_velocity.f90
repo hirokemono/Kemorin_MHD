@@ -6,7 +6,7 @@
 !        modified by H.Matsui on July, 2006
 !
 !!      subroutine velocity_evolution(time, dt, FEM_prm, SGS_par,       &
-!!     &          mesh, group, surf, fluid, fl_prop, cd_prop,           &
+!!     &          mesh, group, fluid, fl_prop, cd_prop,                 &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,           &
 !!     &          iphys_ele, ak_MHD, fem_int, FEM_filters,              &
 !!     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,        &
@@ -17,7 +17,6 @@
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
-!!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -92,7 +91,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine velocity_evolution(time, dt, FEM_prm, SGS_par,         &
-     &          mesh, group, surf, fluid, fl_prop, cd_prop,             &
+     &          mesh, group, fluid, fl_prop, cd_prop,                   &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,             &
      &          iphys_ele, ak_MHD, fem_int, FEM_filters,                &
      &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,          &
@@ -113,7 +112,6 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
-      type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -156,7 +154,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
       call s_cal_velocity_pre(time, dt, FEM_prm, SGS_par,               &
-     &    mesh%nod_comm, mesh%node, mesh%ele, surf,                     &
+     &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,                &
      &    fluid, group%surf_grp, group%surf_nod_grp,                    &
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
      &    iphys_ele, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
@@ -179,7 +177,7 @@
       do iloop = 0, FEM_prm%maxiter_stokes
         call cal_mod_potential(ifld_diff%i_velo,                        &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      mesh%node, mesh%ele, surf, fluid,                           &
+     &      mesh%node, mesh%ele, mesh%surf, fluid,                      &
      &      group%surf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs,                 &
      &      iphys, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &      diff_coefs, Pmatrix, MGCG_WK%MG_vector, rhs_mat%fem_wk,     &
@@ -191,8 +189,8 @@
      &      iphys%i_p_phi, iphys%i_press,  nod_fld%d_fld)
 !
         call cal_velocity_co(time, dt, FEM_prm, SGS_par,                &
-     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
-     &      surf, fluid, group%surf_grp, group%surf_nod_grp,            &
+     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
+     &      fluid, group%surf_grp, group%surf_nod_grp,                  &
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele,      &
      &      ele_fld, ak_MHD, fem_int, FEM_filters%FEM_elens, ifld_diff, &
      &      diff_coefs, mk_MHD%mlump_fl, Vmatrix, MGCG_WK%MG_vector,    &
