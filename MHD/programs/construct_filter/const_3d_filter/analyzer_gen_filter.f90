@@ -42,8 +42,6 @@
       type(ctl_param_newdom_filter), save :: newfil_p1
 !
       type(mesh_data), save :: fem_f
-      type(element_geometry), save :: ele_filter
-!
       type(shape_finctions_at_points), save :: spfs_f
 !>      Stracture for FEM assembling
       type(finite_element_integration), save :: fem_int_f
@@ -111,8 +109,7 @@
 !  --  read geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh                                               &
-     &   (mesh_filter_file, nprocs, fem_f, ele_filter)
+      call mpi_input_mesh(mesh_filter_file, nprocs, fem_f)
 !
 !     --------------------- 
 !
@@ -139,7 +136,7 @@
       if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
      &   write(*,*) 'pick_surface_group_geometry'
       call pick_surface_group_geometry                                  &
-     &   (ele_filter%surf, fem_f%group%surf_grp,                        &
+     &   (fem_f%mesh%surf, fem_f%group%surf_grp,                        &
      &    fem_f%group%tbls_surf_grp, fem_f%group%surf_grp_geom)
 !
 !  -------------------------------
@@ -217,7 +214,7 @@
       call init_nod_send_recv(fem_f%mesh)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
-      call s_cal_element_size(fem_f%mesh, ele_filter, fem_f%group,      &
+      call s_cal_element_size(fem_f%mesh, fem_f%group,                  &
      &    fil_elist1, gfil_p1, tbl_crs_f, mat_tbl_f, rhs_mat_f,         &
      &    fem_int_f, FEM_elen_f, ref_m1, filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)

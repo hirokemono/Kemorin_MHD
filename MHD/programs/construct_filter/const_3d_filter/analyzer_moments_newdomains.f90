@@ -21,10 +21,7 @@
       type(ctl_param_newdom_filter), save :: newfil_p1
 !
       type(mesh_geometry), save ::    orgmesh
-      type(element_geometry), save :: org_ele_mesh
-!
       type(mesh_geometry), save ::    newmesh
-      type(element_geometry), save :: new_ele_mesh
 !
 ! ----------------------------------------------------------------------
 !
@@ -79,7 +76,7 @@
       if (newfil_p1%iflag_set_filter_elen .gt. 0                        &
      &  .or. newfil_p1%iflag_set_filter_moms.gt.0) then
         call trans_filter_moms_newmesh_para                             &
-     &     (newfil_p1, orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
+     &     (newfil_p1, orgmesh, newmesh)
       end if
 !
       end subroutine moments_to_newdomain_analyze

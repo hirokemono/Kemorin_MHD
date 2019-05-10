@@ -51,12 +51,6 @@
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
       type(mesh_data), save :: femmesh_VIZ
-!
-!>     Structure for element, surface, and edge mesh
-!!        (position, connectivity, and communication)
-      type(element_geometry), save :: elemesh_VIZ
-!
-!
 !>       Structure for nodal field data
       type(phys_data), save :: field_VIZ
 !
@@ -137,12 +131,11 @@
 !   --------------------------------
 !
 !       load mesh informations
-      call mpi_input_mesh                                               &
-     &   (mesh_file_VIZ, nprocs, femmesh_VIZ, elemesh_VIZ)
+      call mpi_input_mesh(mesh_file_VIZ, nprocs, femmesh_VIZ)
 !
        if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
        call FEM_mesh_initialization                                     &
-     &    (femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ)
+     &    (femmesh_VIZ%mesh, femmesh_VIZ%group)
 !
 !     ---------------------
 !
@@ -175,8 +168,7 @@
       call sel_max_int_point_by_etype                                   &
      &   (femmesh_VIZ%mesh%ele%nnod_4_ele, jacobians_VIZ%g_FEM)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
-     &    femmesh_VIZ%mesh, elemesh_VIZ%surf, femmesh_VIZ%group,        &
-     &    spfs_VIZ, jacobians_VIZ)
+     &    femmesh_VIZ%mesh, femmesh_VIZ%group, spfs_VIZ, jacobians_VIZ)
 !
       end subroutine element_normals_4_VIZ
 !

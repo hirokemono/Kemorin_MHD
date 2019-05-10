@@ -3,12 +3,11 @@
 !
 !      Writen by H. Matsui on Oct., 2007
 !
-!!      subroutine s_const_refined_group(org_mesh, org_e_mesh, org_grp, &
+!!      subroutine s_const_refined_group(org_mesh, org_grp,             &
 !!     &          ref_ids, refine_tbl, newmesh, newgroup)
 !!        type(refined_node_id), intent(in) :: ref_ids
 !!        type(element_refine_table), intent(in) :: refine_tbl
 !!        type(mesh_geometry), intent(in) :: org_mesh
-!!        type(element_geometry), intent(in) :: org_e_mesh
 !!        type(mesh_groups), intent(inout) :: org_grp
 !!        type(mesh_geometry), intent(inout) :: newmesh
 !!        type(mesh_groups), intent(inout) :: newgroup
@@ -36,13 +35,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_refined_group(org_mesh, org_e_mesh, org_grp,   &
+      subroutine s_const_refined_group(org_mesh, org_grp,               &
      &          ref_ids, refine_tbl, newmesh, newgroup)
 !
       type(refined_node_id), intent(in) :: ref_ids
       type(element_refine_table), intent(in) :: refine_tbl
       type(mesh_geometry), intent(in) :: org_mesh
-      type(element_geometry), intent(in) :: org_e_mesh
       type(mesh_groups), intent(inout) :: org_grp
 !
       type(mesh_geometry), intent(inout) :: newmesh
@@ -50,14 +48,14 @@
 !
 !
       call const_refined_node_group                                     &
-     &   (org_mesh%node, org_mesh%ele, org_e_mesh%surf,                 &
-     &    org_e_mesh%edge, org_grp%nod_grp, ref_ids, newgroup%nod_grp)
+     &   (org_mesh%node, org_mesh%ele, org_mesh%surf,                   &
+     &    org_mesh%edge, org_grp%nod_grp, ref_ids, newgroup%nod_grp)
 !
       call const_refined_ele_group                                      &
      &   (org_grp%ele_grp, refine_tbl, newgroup%ele_grp)
 !
       call const_refined_surf_group                                     &
-     &   (org_e_mesh%surf, org_e_mesh%edge, org_grp%surf_grp,           &
+     &   (org_mesh%surf, org_mesh%edge, org_grp%surf_grp,               &
      &    ref_ids, refine_tbl, newmesh%node%numnod, newgroup%surf_grp)
 !
       end subroutine s_const_refined_group

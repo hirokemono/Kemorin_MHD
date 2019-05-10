@@ -61,7 +61,7 @@
 !
       call mesh_setup_4_SPH_TRANS
 !
-      call dealloc_edge_geometory(elemesh_STR%edge)
+      call dealloc_edge_geometory(femmesh_STR%mesh%edge)
 !
 !  -------------------------------
 !

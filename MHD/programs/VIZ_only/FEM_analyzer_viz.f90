@@ -9,7 +9,6 @@
 !!     &         (i_step, ucd_param, time_VIZ, viz_step, visval)
 !!        type(time_step_param), intent(inout) :: time_VIZ
 !!        type(VIZ_step_params), intent(inout) :: viz_step
-!!        type(element_geometry), intent(inout) :: elemesh
 !
       module FEM_analyzer_viz
 !
@@ -55,7 +54,7 @@
 !
 !     --------------------- 
 !
-      call dealloc_edge_geometory(elemesh_VIZ%edge)
+      call dealloc_edge_geometory(femmesh_VIZ%mesh%edge)
 !
 !     ---------------------
 !

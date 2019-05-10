@@ -4,11 +4,10 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_check_MHD_mat(MHD_files, flex_MHD, MHD_step,     &
-!!     &         fem, ele_mesh, iphys_nod, nod_fld, FEM_model,          &
-!!     &         MHD_CG, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
+!!     &          fem, iphys_nod, nod_fld, FEM_model, MHD_CG,           &
+!!     &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(mesh_data), intent(inout) :: fem
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_address), intent(inout) :: iphys_nod
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_model_data), intent(inout) :: FEM_model
@@ -48,8 +47,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_check_MHD_mat(MHD_files, flex_MHD, MHD_step,       &
-     &         fem, ele_mesh, iphys_nod, nod_fld, FEM_model,            &
-     &         MHD_CG, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
+     &          fem, iphys_nod, nod_fld, FEM_model, MHD_CG,             &
+     &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !
       use t_boundary_field_IO
 !
@@ -61,7 +60,6 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
       type(mesh_data), intent(inout) :: fem
-      type(element_geometry), intent(inout) :: ele_mesh
       type(phys_address), intent(inout) :: iphys_nod
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_model_data), intent(inout) :: FEM_model
@@ -81,7 +79,7 @@
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
       call init_analyzer_fl                                             &
      &   (MHD_files, FEM_model%bc_FEM_IO, FEM_model%FEM_prm,            &
-     &    FEM_SGS%SGS_par, flex_MHD, MHD_step, fem%mesh, fem%group, ele_mesh, &
+     &    FEM_SGS%SGS_par, flex_MHD, MHD_step, fem%mesh, fem%group,     &
      &    FEM_model%MHD_mesh, FEM_SGS%FEM_filters,                      &
      &    FEM_model%MHD_prop, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,  &
      &    FEM_SGS%Csims, iphys_nod, nod_fld, MHD_CG, SGS_MHD_wk,        &

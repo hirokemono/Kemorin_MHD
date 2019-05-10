@@ -3,22 +3,19 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_initialize_snap_tmp                              &
-!!     &         (MHD_files, MHD_step, femmesh, ele_mesh,               &
+!!      subroutine FEM_initialize_snap_tmp(MHD_files, MHD_step, femmesh,&
 !!     &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,       &
 !!     &          SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(mesh_data), intent(inout) :: femmesh
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!      subroutine FEM_analyze_snap_tmp(i_step, MHD_files, FEM_model,   &
-!!     &          femmesh, ele_mesh, iphys_nod, ak_MHD,                 &
-!!     &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                &
-!!     &          nod_fld, MHD_IO, fem_sq)
+!!     &          femmesh, iphys_nod, ak_MHD, MHD_step, visval, FEM_SGS,&
+!!     &          SGS_MHD_wk, nod_fld, MHD_IO, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(VIZ_step_params), intent(inout) :: MHD_step
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
@@ -54,14 +51,15 @@
 !
       type(time_data), save, private :: SNAP_time_IO
 !
+       private :: lead_specital_SGS
+!
 ! ----------------------------------------------------------------------
 !
        contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_snap_tmp                                &
-     &         (MHD_files, MHD_step, femmesh, ele_mesh,                 &
+      subroutine FEM_initialize_snap_tmp(MHD_files, MHD_step, femmesh,  &
      &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,         &
      &          SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !
@@ -76,7 +74,6 @@
       type(MHD_file_IO_params), intent(inout) :: MHD_files
 !
       type(mesh_data), intent(inout) :: femmesh
-      type(element_geometry), intent(inout) :: ele_mesh
       type(phys_address), intent(inout) :: iphys_nod
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_model_data), intent(inout) :: FEM_model
@@ -94,7 +91,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap(MHD_files,                                &
      &   FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_model%bc_FEM_IO,       &
-     &   MHD_step, femmesh%mesh, femmesh%group, ele_mesh,               &
+     &   MHD_step, femmesh%mesh, femmesh%group,                         &
      &   FEM_model%MHD_mesh, FEM_SGS%FEM_filters, FEM_model%MHD_prop,   &
      &   ak_MHD, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,               &
      &   FEM_SGS%Csims, iphys_nod, nod_fld, SNAP_time_IO,               &
@@ -112,9 +109,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_snap_tmp(i_step, MHD_files, FEM_model,     &
-     &          femmesh, ele_mesh, iphys_nod, ak_MHD,                   &
-     &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                  &
-     &          nod_fld, MHD_IO, fem_sq)
+     &          femmesh, iphys_nod, ak_MHD, MHD_step, visval, FEM_SGS,  &
+     &          SGS_MHD_wk, nod_fld, MHD_IO, fem_sq)
 !
       use m_fem_mhd_restart
       use t_FEM_MHD_mean_square
@@ -137,7 +133,6 @@
       integer(kind=kint ), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(mesh_data), intent(in) :: femmesh
-      type(element_geometry), intent(in) :: ele_mesh
       type(phys_address), intent(in) :: iphys_nod
       type(FEM_MHD_model_data), intent(in) :: FEM_model
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -213,7 +208,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'lead_specital_SGS'
       call lead_specital_SGS                                            &
      &  (MHD_step, FEM_model%FEM_prm, FEM_SGS%SGS_par,                  &
-     &   femmesh%mesh, ele_mesh, femmesh%group, FEM_model%MHD_mesh,     &
+     &   femmesh%mesh, femmesh%group, FEM_model%MHD_mesh,               &
      &   FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs%surf_bcs,            &
      &   iphys_nod, SGS_MHD_wk%iphys_ele, ak_MHD, SGS_MHD_wk%fem_int,   &
      &   FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%FEM_filters%filtering,  &
@@ -274,7 +269,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine lead_specital_SGS                                      &
-     &       (MHD_step, FEM_prm, SGS_par, mesh, ele_mesh, group,        &
+     &       (MHD_step, FEM_prm, SGS_par, mesh, group,                  &
      &        MHD_mesh, MHD_prop, sf_bcs, iphys, iphys_ele, ak_MHD,     &
      &        fem_int, FEM_elens, filtering, Csims_FEM_MHD, mk_MHD,     &
      &        FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
@@ -295,7 +290,6 @@
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
-      type(element_geometry), intent(in) :: ele_mesh
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(mesh_groups), intent(in) ::   group
       type(mesh_data_MHD), intent(in) :: MHD_mesh
@@ -337,7 +331,7 @@
      &      Csims_FEM_MHD%ifld_diff%i_mom_flux,                         &
      &      Csims_FEM_MHD%ifld_diff%i_lorentz, MHD_step%time_d%dt,      &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
+     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, MHD_mesh%fluid,                             &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      sf_bcs%Vsf_bcs, sf_bcs%Bsf_bcs, iphys, iphys_ele, ak_MHD,   &

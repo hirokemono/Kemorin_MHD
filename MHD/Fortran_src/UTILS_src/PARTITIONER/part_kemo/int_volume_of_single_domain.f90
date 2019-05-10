@@ -12,22 +12,17 @@
 !> @brief Construct jacobians and volume integrations
 !!
 !!@verbatim
-!!      subroutine const_jacobian_volume_normals(my_rank, nprocs,       &
-!!     &          mesh, surf, group, spfs, jacs)
-!!      subroutine const_jacobian_and_volume(my_rank, nprocs,           &
-!!     &          node, sf_grp, infinity_list, ele, spf_3d, jacs)
-!!      subroutine const_jacobian_and_vol_layer                         &
-!!     &         (my_rank, nprocs, node, sf_grp, infinity_list, ele,    &
-!!     &          spfs, jacs, layer_tbl)
+!!      subroutine const_jacobian_and_single_vol                        &
+!!     &         (mesh, group, spfs, jacs)
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) :: group
+!!        type(shape_finctions_at_points), intent(inout) :: spfs
+!!        type(jacobians_type), intent(inout) :: jacs
+!!      subroutine int_single_volume_of_domain(ele, g_FEM, jac_3d)
 !!        type(node_data), intent(in) :: node
-!!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(scalar_surf_BC_list), intent(in) :: infinity_list
 !!        type(element_data), intent(inout) :: ele
-!!        type(shape_finctions_at_points), intent(inout) :: spfs
-!!        type(volume_shape_function), intent(inout) :: spf_3d
-!!        type(jacobians_type), intent(inout) :: jacs
-!!        type(layering_tbl), intent(inout) :: layer_tbl
-!!      subroutine s_int_volume_of_domain(ele, g_FEM, jac_3d)
+!!      subroutine cal_node_volue(ele, g_FEM, jac_3d)
 !!@endverbatim
 !
       module int_volume_of_single_domain
@@ -73,7 +68,8 @@
      &    group%surf_grp, group%infty_grp, spfs%spf_3d, jacs)
 !
       call allocate_volume_4_smp
-      call int_single_volume_of_domain(mesh%ele, jacs%g_FEM, jacs%jac_3d)
+      call int_single_volume_of_domain                                  &
+     &   (mesh%ele, jacs%g_FEM, jacs%jac_3d)
       call deallocate_volume_4_smp
 !
       call dealloc_dxi_dx_element(mesh%ele, jacs)
@@ -115,7 +111,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_node_volue(node , ele, node_volume)
+      subroutine cal_node_volue(node, ele, node_volume)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

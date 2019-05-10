@@ -11,12 +11,12 @@
 !!@verbatim
 !!      subroutine input_control_4_FEM_MHD                              &
 !!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
-!!     &          MHD_BC, femmesh, ele_mesh, nod_fld, ele_fld,          &
-!!     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
+!!     &          MHD_BC, femmesh, nod_fld, ele_fld, IO_bc,             &
+!!     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !!      subroutine input_control_4_FEM_snap                             &
 !!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
-!!     &          MHD_BC, femmesh, ele_mesh, nod_fld, ele_fld,&
-!!     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
+!!     &          MHD_BC, femmesh, nod_fld, ele_fld, IO_bc,             &
+!!     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
@@ -30,7 +30,6 @@
 !!        type(takepiro_model_param), intent(inout) :: takepito_C
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(mesh_data), intent(inout) :: femmesh
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_data), intent(inout) :: nod_fld, ele_fld
 !!        type(IO_boundary), intent(inout) :: IO_bc
 !!        type(filters_on_FEM), intent(inout) :: FEM_filters
@@ -86,8 +85,8 @@
 !
       subroutine input_control_4_FEM_MHD                                &
      &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
-     &          MHD_BC, femmesh, ele_mesh, nod_fld, ele_fld,            &
-     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
+     &          MHD_BC, femmesh, nod_fld, ele_fld, IO_bc,               &
+     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !
       use set_control_FEM_MHD
       use mpi_load_mesh_data
@@ -99,7 +98,6 @@
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(mesh_data), intent(inout) :: femmesh
-      type(element_geometry), intent(inout) :: ele_mesh
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -126,8 +124,7 @@
       call dealloc_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl)
 !
 !  --  load FEM mesh data
-      call mpi_input_mesh                                               &
-     &   (MHD_files%mesh_file_IO, nprocs, femmesh, ele_mesh)
+      call mpi_input_mesh(MHD_files%mesh_file_IO, nprocs, femmesh)
 !
       call input_meshes_4_MHD(SGS_par%model_p, MHD_prop, MHD_BC,        &
      &    femmesh%mesh, femmesh%group, IO_bc, SGS_par%filter_p,         &
@@ -146,8 +143,8 @@
 !
       subroutine input_control_4_FEM_snap                               &
      &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
-     &          MHD_BC, femmesh, ele_mesh, nod_fld, ele_fld,            &
-     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
+     &          MHD_BC, femmesh, nod_fld, ele_fld, IO_bc,               &
+     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !
       use set_control_FEM_MHD
       use mpi_load_mesh_data
@@ -158,7 +155,6 @@
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(mesh_data), intent(inout) :: femmesh
-      type(element_geometry), intent(inout) :: ele_mesh
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -186,7 +182,7 @@
 !
 !  --  load FEM mesh data
       call mpi_input_mesh                                               &
-     &   (MHD_files%mesh_file_IO, nprocs, femmesh, ele_mesh)
+     &   (MHD_files%mesh_file_IO, nprocs, femmesh)
 !
       call input_meshes_4_MHD(SGS_par%model_p, MHD_prop,                &
      &    MHD_BC, femmesh%mesh, femmesh%group, IO_bc, SGS_par%filter_p, &

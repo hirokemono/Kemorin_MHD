@@ -31,8 +31,6 @@
       type(ctl_params_4_gen_table), save :: gen_itp_p1
 !
       type(mesh_data), save :: org_femmesh
-      type(element_geometry), save :: org_ele_mesh
-!
       type(next_nod_ele_table), save :: next_tbl_i
 !
       type(shape_finctions_at_points), save :: spfs_I
@@ -78,7 +76,7 @@
 !     ----- construct mesh informations for target mesh
 !
       call mpi_input_mesh(gen_itp_p1%itp_dest_mesh_file,                &
-     &    nprocs, org_femmesh, org_ele_mesh)
+     &    nprocs, org_femmesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos                                             &

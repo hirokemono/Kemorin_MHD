@@ -43,8 +43,8 @@
 !
 !     ---------------------
 !
-      call deallocate_surface_geom_type(elemesh_VIZ%surf)
-      call dealloc_edge_geometory(elemesh_VIZ%edge)
+      call deallocate_surface_geom_type(femmesh_VIZ%mesh%surf)
+      call dealloc_edge_geometory(femmesh_VIZ%mesh%edge)
 !
       end subroutine FEM_initialize_surface
 !

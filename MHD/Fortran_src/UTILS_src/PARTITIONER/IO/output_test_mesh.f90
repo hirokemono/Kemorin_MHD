@@ -8,7 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine output_test_mesh_informations                        &
-!!     &         (id_rank, mesh, ele_mesh, mesh_IO, ele_mesh_IO)
+!!     &         (id_rank, mesh, mesh_IO, ele_mesh_IO)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_geometry), intent(inout) :: mesh_IO
+!!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !!@endverbatim
 !
       module output_test_mesh
@@ -29,7 +32,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine output_test_mesh_informations                          &
-     &         (id_rank, mesh, ele_mesh, mesh_IO, ele_mesh_IO)
+     &         (id_rank, mesh, mesh_IO, ele_mesh_IO)
 !
       use copy_mesh_structures
       use mesh_file_IO
@@ -41,7 +44,6 @@
 !
       integer, intent(in) :: id_rank
       type(mesh_geometry), intent(in) :: mesh
-      type(element_geometry), intent(in) :: ele_mesh
       type(mesh_geometry), intent(inout) :: mesh_IO
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !
@@ -77,10 +79,10 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
       call empty_comm_table(ele_mesh_IO%comm)
-      call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele,      &
+      call copy_surf_connect_to_IO(mesh%surf, mesh%ele%numele,          &
      &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
       call copy_surf_geometry_to_IO                                     &
-     &   (ele_mesh%surf, ele_mesh_IO%node, ele_mesh_IO%sfed)
+     &   (mesh%surf, ele_mesh_IO%node, ele_mesh_IO%sfed)
       if (iflag_debug.gt.0) write(*,*) 'output_surface_sph_file'
       call output_surface_xyz_file                                      &
      &   (id_rank, def_surf_mesh_head, ele_mesh_IO)
@@ -91,9 +93,9 @@
 !
       call empty_comm_table(ele_mesh_IO%comm)
       call copy_edge_connect_to_IO                                      &
-     &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf,        &
+     &   (mesh%edge, mesh%ele%numele, mesh%surf%numsurf,                &
      &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
-      call copy_edge_geometry_to_IO(ele_mesh%edge,                      &
+      call copy_edge_geometry_to_IO(mesh%edge,                          &
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       if (iflag_debug.gt.0) write(*,*) 'output_edge_sph_file'
       call output_edge_xyz_file                                         &

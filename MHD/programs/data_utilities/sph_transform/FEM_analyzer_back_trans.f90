@@ -84,14 +84,13 @@
         call sel_max_int_point_by_etype                                 &
      &     (femmesh_STR%mesh%ele%nnod_4_ele, jacobians%g_FEM)
         call const_jacobian_volume_normals(my_rank, nprocs,             &
-     &      femmesh_STR%mesh, elemesh_STR%surf, femmesh_STR%group,      &
-     &      spfs_TRNS, jacobians)
+     &      femmesh_STR%mesh, femmesh_STR%group, spfs_TRNS, jacobians)
       end if
 !
 !  -------------------------------
 !  -------------------------------
 !
-      call dealloc_edge_geometory(elemesh_STR%edge)
+      call dealloc_edge_geometory(femmesh_STR%mesh%edge)
 !
 !  connect grid data to volume output
 !

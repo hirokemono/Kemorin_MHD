@@ -11,9 +11,8 @@
 !!      subroutine const_element_comm_tbl_only(mesh, ele_comm)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(communication_table), intent(inout) :: ele_comm
-!!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh, ele_mesh)
+!!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh)
 !!        type(mesh_geometry), intent(inout) ::    mesh
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !!
 !!      subroutine const_ele_comm_tbl                                   &
 !!     &         (node, nod_comm, belongs, ele_comm, ele)
@@ -107,15 +106,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_ele_comm_tbls_gl_nele(mesh, ele_mesh)
+      subroutine dealloc_ele_comm_tbls_gl_nele(mesh)
 !
       type(mesh_geometry), intent(inout) :: mesh
-      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       call dealloc_numnod_stack(mesh%node)
       call dealloc_numele_stack(mesh%ele)
-      call dealloc_numedge_stack(ele_mesh%edge)
+      call dealloc_numedge_stack(mesh%edge)
 !
       end subroutine dealloc_ele_comm_tbls_gl_nele
 !

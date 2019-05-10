@@ -3,14 +3,12 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_initialize_snapshot                              &
-!!     &        (MHD_files, MHD_step, femmesh, ele_mesh,                &
+!!      subroutine FEM_initialize_snapshot(MHD_files, MHD_step, femmesh,&
 !!     &         iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,        &
 !!     &         SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(mesh_data), intent(inout) :: femmesh
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_address), intent(inout) :: iphys_nod
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_model_data), intent(inout) :: FEM_model
@@ -19,13 +17,11 @@
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
-!!      subroutine FEM_analyze_snapshot(i_step, MHD_files,              &
-!!     &          femmesh, ele_mesh, iphys_nod, FEM_model, ak_MHD,      &
-!!     &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                &
-!!     &          nod_fld, MHD_IO, fem_sq)
+!!      subroutine FEM_analyze_snapshot(i_step, MHD_files, femmesh,     &
+!!     &          iphys_nod, FEM_model, ak_MHD, MHD_step, visval,       &
+!!     &          FEM_SGS, SGS_MHD_wk, nod_fld, MHD_IO, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(mesh_data), intent(in) :: femmesh
-!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_address), intent(in) :: iphys_nod
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(FEM_MHD_model_data), intent(in) :: FEM_model
@@ -72,8 +68,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_snapshot                                &
-     &        (MHD_files, MHD_step, femmesh, ele_mesh,                  &
+      subroutine FEM_initialize_snapshot(MHD_files, MHD_step, femmesh,  &
      &         iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,          &
      &         SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !
@@ -85,7 +80,6 @@
       type(MHD_file_IO_params), intent(inout) :: MHD_files
 !
       type(mesh_data), intent(inout) :: femmesh
-      type(element_geometry), intent(inout) :: ele_mesh
       type(phys_address), intent(inout) :: iphys_nod
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_model_data), intent(inout) :: FEM_model
@@ -103,7 +97,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap(MHD_files,                                &
      &   FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_model%bc_FEM_IO,       &
-     &   MHD_step, femmesh%mesh, femmesh%group, ele_mesh,               &
+     &   MHD_step, femmesh%mesh, femmesh%group,                         &
      &   FEM_model%MHD_mesh,  FEM_SGS%FEM_filters, FEM_model%MHD_prop,  &
      &   ak_MHD, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,               &
      &   FEM_SGS%Csims, iphys_nod, nod_fld, SNAP_time_IO,               &
@@ -120,10 +114,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_snapshot(i_step, MHD_files,                &
-     &          femmesh, ele_mesh, iphys_nod, FEM_model, ak_MHD,        &
-     &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                  &
-     &          nod_fld, MHD_IO, fem_sq)
+      subroutine FEM_analyze_snapshot(i_step, MHD_files, femmesh,       &
+     &          iphys_nod, FEM_model, ak_MHD, MHD_step, visval,         &
+     &          FEM_SGS, SGS_MHD_wk, nod_fld, MHD_IO, fem_sq)
 !
       use m_fem_mhd_restart
       use t_FEM_MHD_mean_square
@@ -146,7 +139,6 @@
       integer(kind=kint ), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(mesh_data), intent(in) :: femmesh
-      type(element_geometry), intent(in) :: ele_mesh
       type(phys_address), intent(in) :: iphys_nod
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !

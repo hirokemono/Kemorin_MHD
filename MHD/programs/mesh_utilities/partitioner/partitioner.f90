@@ -62,7 +62,6 @@
       type(control_param_assemble), save :: asbl_param_p
 !
       type(mesh_data), save :: org_fem
-      type(element_geometry), save :: org_ele_mesh
 !
       type(near_mesh), save :: included_ele
 !>     Stracture for Jacobians
@@ -171,26 +170,26 @@
       if(iflag_part_debug .gt. 0) then
         write(*,*) 'mesh data info test'
         write(*,*) 'numnod', org_fem%mesh%node%numnod
-        write(*,*) 'numsurf', org_ele_mesh%surf%numsurf
+        write(*,*) 'numsurf', org_fem%mesh%surf%numsurf
         write(*,*) 'numele', org_fem%mesh%ele%numele
-        write(*,*) 'nnod_4_surf',org_ele_mesh%surf%nnod_4_surf
-        write(*,*) 'isf_4_ele', shape(org_ele_mesh%surf%isf_4_ele)
-        write(*,*) 'iele_4_surf', shape(org_ele_mesh%surf%iele_4_surf)
+        write(*,*) 'nnod_4_surf',org_fem%mesh%surf%nnod_4_surf
+        write(*,*) 'isf_4_ele', shape(org_fem%mesh%surf%isf_4_ele)
+        write(*,*) 'iele_4_surf', shape(org_fem%mesh%surf%iele_4_surf)
         write(*,*) 'interior_surf',                                     &
-     &            shape(org_ele_mesh%surf%interior_surf)
+     &            shape(org_fem%mesh%surf%interior_surf)
       end if
 !
 !  -------------------------------
 !
 !      if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-!      call pick_surface_group_geometry(org_ele_mesh%surf,              &
+!      call pick_surface_group_geometry(org_fem%mesh%surf,              &
 !     &   org_fem%group%surf_grp, org_fem%group%tbls_surf_grp,          &
 !     &   org_fem%group%surf_grp_geom)
 !
 !  -------------------------------
 !  ========= compute element volume ===============
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
+      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
       allocate(jacobians_T%g_FEM)
       call sel_max_int_point_by_etype                                   &
      &   (org_fem%mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
@@ -210,7 +209,7 @@
      &    org_fem%mesh, org_fem%group, domain_grp1)
 !      write(*,*) 'grouping_for_partitioner'
       call grouping_for_partitioner                                     &
-     &   (org_fem%mesh%node, org_fem%mesh%ele, org_ele_mesh%edge,       &
+     &   (org_fem%mesh%node, org_fem%mesh%ele, org_fem%mesh%edge,       &
      &    org_fem%group%nod_grp, org_fem%group%ele_grp,                 &
      &    org_fem%group%tbls_ele_grp, node_volume,                      &
      &    part_p1, domain_grp1)
@@ -241,10 +240,10 @@
 
         call seed_particles(domain_grp1%nod_d_grp,                      &
      &      org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,          &
-     &      org_ele_mesh%surf%numsurf, org_ele_mesh%surf%nnod_4_surf,   &
-     &      org_ele_mesh%surf%isf_4_ele, org_ele_mesh%surf%ie_surf,     &
-     &      org_ele_mesh%surf%iele_4_surf,                              &
-     &      org_ele_mesh%surf%interior_surf, org_fem%mesh%node%xx,      &
+     &      org_fem%mesh%surf%numsurf, org_fem%mesh%surf%nnod_4_surf,   &
+     &      org_fem%mesh%surf%isf_4_ele, org_fem%mesh%surf%ie_surf,     &
+     &      org_fem%mesh%surf%iele_4_surf,                              &
+     &      org_fem%mesh%surf%interior_surf, org_fem%mesh%node%xx,      &
      &      data_field_vec%d_ucd,                                       &
      &      particles, num_particle, part_p1%num_domain, time_cost)
 
@@ -287,7 +286,7 @@
 !      write(*,*) 'PROC_LOCAL_MESH'
       call PROC_LOCAL_MESH                                              &
      &   (part_p1, org_fem%mesh%node, org_fem%mesh%ele,                 &
-     &    org_ele_mesh%edge, org_ele_mesh%surf, data_field_vec,         &
+     &    org_fem%mesh%edge, org_fem%mesh%surf, data_field_vec,         &
      &    org_fem%group, internals_part1, domain_grp1,                  &
      &    comm_part1, included_ele)
       call dealloc_local_ne_id_tbl(domain_grp1)

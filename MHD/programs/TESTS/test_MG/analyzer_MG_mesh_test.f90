@@ -21,7 +21,6 @@
       implicit none
 !
       type(mesh_data), save :: fem_MG
-      type(element_geometry), save :: ele_mesh
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,7 +76,7 @@
 !     --------------------- 
 !
       if (iflag_debug.gt.0) write(*,*) 's_input_control_test_MG'
-      call s_input_control_test_MG(fem_MG, ele_mesh)
+      call s_input_control_test_MG(fem_MG)
 !
 !     --------------------- 
 !
@@ -87,7 +86,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-      call pick_surface_group_geometry(ele_mesh%surf,                   &
+      call pick_surface_group_geometry(fem_MG%mesh%surf,                &
      &    fem_MG%group%surf_grp, fem_MG%group%tbls_surf_grp,            &
      &    fem_MG%group%surf_grp_geom)
 !
@@ -99,31 +98,31 @@
       call sel_max_int_point_by_etype                                   &
      &   (fem_MG%mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
-     &    fem_MG%mesh, ele_mesh%surf, fem_MG%group,                     &
-     &    spfs_T, jacobians_T)
+     &    fem_MG%mesh, fem_MG%group, spfs_T, jacobians_T)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_spherical'
-      call s_cal_normal_vector_spherical(ele_mesh%surf)
+      call s_cal_normal_vector_spherical(fem_MG%mesh%surf)
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_cylindrical'
-      call s_cal_normal_vector_cylindrical(ele_mesh%surf)
+      call s_cal_normal_vector_cylindrical(fem_MG%mesh%surf)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'const_edge_vector'
       call const_edge_vector(my_rank, nprocs,                           &
-     &    fem_MG%mesh%node, ele_mesh%edge, spfs_T%spf_1d, jacobians_T)
+     &    fem_MG%mesh%node, fem_MG%mesh%edge, spfs_T%spf_1d,            &
+     &    jacobians_T)
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_spherical'
-      call s_cal_edge_vector_spherical(ele_mesh%edge)
+      call s_cal_edge_vector_spherical(fem_MG%mesh%edge)
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_cylindrical'
-      call s_cal_edge_vector_cylindrical(ele_mesh%edge)
+      call s_cal_edge_vector_cylindrical(fem_MG%mesh%edge)
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'output_test_mesh_informations'
       call output_test_mesh_informations                                &
-     &   (my_rank, fem_MG%mesh, ele_mesh, mesh_IO, ele_mesh_IO)
+     &   (my_rank, fem_MG%mesh, mesh_IO, ele_mesh_IO)
 !
        end subroutine init_analyzer
 !

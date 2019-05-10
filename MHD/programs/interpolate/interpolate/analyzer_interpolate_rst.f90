@@ -33,10 +33,7 @@
       type(time_step_param), save :: t_ITP
 !
       type(mesh_data), save :: org_femmesh
-      type(element_geometry), save :: org_ele_mesh
-!
       type(mesh_data), save :: new_femmesh
-      type(element_geometry), save :: new_ele_mesh
 !
       type(interpolate_table), save :: itp_rst
 !
@@ -48,7 +45,7 @@
       type(time_data), save :: itp_time_IO
       type(field_IO), save :: itp_fld_IO
 !
-      private :: new_femmesh, new_ele_mesh
+      private :: new_femmesh
       private :: new_phys, itp_fld_IO
 !
 ! ----------------------------------------------------------------------
@@ -77,8 +74,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
       call s_input_control_interpolate(gen_itp_p1, gtbl_ctl1,           &
-     &    org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,         &
-     &    itp_rst, t_ITP, ierr)
+     &    org_femmesh, new_femmesh, itp_rst, t_ITP, ierr)
 !
 !     --------------------- 
 !

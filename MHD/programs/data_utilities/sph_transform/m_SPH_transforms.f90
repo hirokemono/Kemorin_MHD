@@ -42,11 +42,6 @@
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
       type(mesh_data), save :: femmesh_STR
-!
-!>     Structure for element, surface, and edge mesh
-!!        (position, connectivity, and communication)
-      type(element_geometry), save :: elemesh_STR
-!
 !>      Structure to make spherical shell grid
       type(construct_spherical_grid), save :: gen_sph_TRNS
 !
@@ -102,7 +97,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization                                      &
-     &   (femmesh_STR%mesh, femmesh_STR%group, elemesh_STR)
+     &   (femmesh_STR%mesh, femmesh_STR%group)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type                                         &

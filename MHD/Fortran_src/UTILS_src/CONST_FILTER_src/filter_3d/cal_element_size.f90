@@ -4,11 +4,10 @@
 !      Written by H.Matsui on Nov., 2006
 !      Modified by H. Matsui on Mar., 2008
 !
-!!      subroutine s_cal_element_size(mesh, ele_mesh, group, fil_elist, &
+!!      subroutine s_cal_element_size(mesh, group, fil_elist,           &
 !!     &          gfil_p, tbl_crs, mat_tbl, rhs_mat, fem_int, FEM_elen, &
 !!     &          ref_m, filter_dxi, dxidxs)
 !!        type(mesh_geometry), intent(in) :: mesh
-!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_list_4_filter), intent(in) :: fil_elist
 !!        type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
@@ -64,7 +63,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_element_size(mesh, ele_mesh, group, fil_elist,   &
+      subroutine s_cal_element_size(mesh, group, fil_elist,             &
      &          gfil_p, tbl_crs, mat_tbl, rhs_mat, fem_int, FEM_elen,   &
      &          ref_m, filter_dxi, dxidxs)
 !
@@ -88,7 +87,6 @@
       use cal_1st_diff_deltax_4_nod
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(element_geometry), intent(in) :: ele_mesh
       type(mesh_groups), intent(in) ::   group
       type(element_list_4_filter), intent(in) :: fil_elist
 !
@@ -123,7 +121,7 @@
 !
       call alloc_finite_elem_mat(mesh, rhs_mat)
       call alloc_int_surf_data                                          &
-     &   (group%surf_grp%num_item, ele_mesh%surf%nnod_4_surf,           &
+     &   (group%surf_grp%num_item, mesh%surf%nnod_4_surf,               &
      &    rhs_mat%surf_wk)
       call alloc_fem_int_base_type(mesh, fem_int)
       call allocate_scalar_ele_4_int(mesh%ele%numele)

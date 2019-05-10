@@ -37,7 +37,6 @@
       type(partitioner_comm_tables), save, private :: comm_part1
 !
       type(mesh_data), save, private :: fem_EXT
-      type(element_geometry), save, private :: e_mesh_EXT
       type(parallel_make_vierwer_mesh), save, private :: par_viexw_ex
 !
 ! ----------------------------------------------------------------------
@@ -72,8 +71,7 @@
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh                                               &
-     &   (part_p1%global_mesh_file, nprocs, fem_EXT, e_mesh_EXT)
+      call mpi_input_mesh(part_p1%global_mesh_file, nprocs, fem_EXT)
 !
 !  ------  Initialize data communication for FEM data
 !

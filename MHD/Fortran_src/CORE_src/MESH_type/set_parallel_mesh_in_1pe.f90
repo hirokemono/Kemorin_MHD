@@ -37,7 +37,6 @@
 !
       integer :: ip, id_rank
       integer(kind = kint) :: ierr
-      type(element_geometry) :: ele_mesh
 !
 !
       do ip = 1, num_pe

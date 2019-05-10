@@ -75,7 +75,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
       call FEM_initialize_w_viz(MHD_files1, MHD_step1,                  &
-     &    FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%iphys, FEM_d1%field,   &
+     &    FEM_d1%geofem, FEM_d1%iphys, FEM_d1%field,                    &
      &    next_tbl_VIZ1, jacobians_VIZ1, MHD_IO1)
 !
 !        Initialize spherical transform dynamo

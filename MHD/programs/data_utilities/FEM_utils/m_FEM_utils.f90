@@ -38,12 +38,6 @@
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
       type(mesh_data), save :: femmesh_FUTIL
-!
-!>     Structure for element, surface, and edge mesh
-!!        (position, connectivity, and communication)
-      type(element_geometry), save :: elemesh_FUTIL
-!
-!
 !>       Structure for nodal field data
       type(phys_data), save :: field_FUTIL
 !>       address for nodal fields
@@ -79,8 +73,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh                                               &
-     &   (mesh_file, nprocs, femmesh_FUTIL, elemesh_FUTIL)
+      call mpi_input_mesh(mesh_file, nprocs, femmesh_FUTIL)
 !
 !     --------------------- 
 !

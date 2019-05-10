@@ -23,10 +23,7 @@
       implicit none
 !
       type(mesh_geometry), save ::    orgmesh
-      type(element_geometry), save :: org_ele_mesh
-!
       type(mesh_geometry), save ::    newmesh
-      type(element_geometry), save :: new_ele_mesh
 !
       type(ctl_param_newdom_filter), save :: newfil_p1
       type(filtering_data_type), save :: filtering_nd
@@ -102,8 +99,7 @@
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_sgl'
       if (newfil_p1%iflag_set_filter_elen .gt. 0                        &
      &  .or. newfil_p1%iflag_set_filter_moms.gt.0) then
-        call trans_filter_moms_newmesh_sgl                              &
-     &     (newfil_p1, orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
+        call trans_filter_moms_newmesh_sgl(newfil_p1, orgmesh, newmesh)
       end if
 !
       if (newfil_p1%iflag_set_filter_coef .gt. 0) then

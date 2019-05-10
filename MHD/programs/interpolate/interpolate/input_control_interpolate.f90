@@ -4,14 +4,11 @@
 !     Written by H. Matsui on July, 2006
 !
 !!      subroutine s_input_control_interpolate(gen_itp_p, gtbl_ctl,     &
-!!     &          org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh, &
-!!     &          itp_info, t_param, ierr)
+!!     &          org_femmesh, new_femmesh, itp_info, t_param, ierr)
 !!        type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
 !!        type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !!        type(mesh_data), intent(inout) :: org_femmesh
-!!        type(element_geometry), intent(inout) :: org_ele_mesh
 !!        type(mesh_data), intent(inout) :: new_femmesh
-!!        type(element_geometry), intent(inout) :: new_ele_mesh
 !!        type(interpolate_table), intent(inout) :: itp_info
 !!        type(time_step_param), intent(inout) :: t_param
 !      subroutine set_ctl_interpolate_udt(fld_ctl, nod_fld)
@@ -34,8 +31,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_input_control_interpolate(gen_itp_p, gtbl_ctl,       &
-     &          org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,   &
-     &          itp_info, t_param, ierr)
+     &          org_femmesh, new_femmesh, itp_info, t_param, ierr)
 !
       use t_mesh_data
       use t_interpolate_table
@@ -59,10 +55,7 @@
       type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
       type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
       type(mesh_data), intent(inout) :: org_femmesh
-      type(element_geometry), intent(inout) :: org_ele_mesh
-!
       type(mesh_data), intent(inout) :: new_femmesh
-      type(element_geometry), intent(inout) :: new_ele_mesh
       type(interpolate_table), intent(inout) :: itp_info
       type(time_step_param), intent(inout) :: t_param
       integer(kind = kint), intent(inout) :: ierr

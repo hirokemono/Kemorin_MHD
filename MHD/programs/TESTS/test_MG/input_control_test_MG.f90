@@ -2,9 +2,8 @@
 !      module input_control_test_MG
 !     Written by H. Matsui on Apr., 2008
 !
-!!     subroutine s_input_control_test_MG(fem, ele_mesh)
+!!     subroutine s_input_control_test_MG(fem)
 !!        type(mesh_data), intent(inout) :: fem
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !
 !
 !
@@ -27,7 +26,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_test_MG(fem, ele_mesh)
+      subroutine s_input_control_test_MG(fem)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -39,7 +38,6 @@
       use set_MG_mesh_data
 !
       type(mesh_data), intent(inout) :: fem
-      type(element_geometry), intent(inout) :: ele_mesh
 !
       type(field_IO_params), save ::  mesh_file_test
 !
@@ -54,7 +52,7 @@
 !  --  read geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh_file_test, nprocs, fem, ele_mesh)
+      call mpi_input_mesh(mesh_file_test, nprocs, fem)
 !
 !  --  read geometry data for MG
 !

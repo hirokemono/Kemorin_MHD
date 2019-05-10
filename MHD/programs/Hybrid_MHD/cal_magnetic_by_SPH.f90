@@ -26,7 +26,6 @@
       type(phys_data), save :: fem_fld
 !
       type(mesh_data), save :: mesh_sph
-      type(element_geometry), save :: ele_mesh_sph
       type(phys_data), save :: sph_fld
 !
       type(interpolate_table), intent(in) :: itp_FEM_2_SPH
@@ -85,12 +84,11 @@
 !     ---------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh                                               &
-     &   (mesh_file_H, nprocs, mesh_sph, ele_mesh_sph)
+      call mpi_input_mesh(mesh_file_H, nprocs, mesh_sph)
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization                                      &
-     &   (mesh_sph%mesh, mesh_sph%group, ele_mesh_sph)
+     &   (mesh_sph%mesh, mesh_sph%group)
 !
       call alloc_phys_name_type(sph_fld)
       call alloc_phys_data_type(mesh_sph%node%numnod, sph_fld)

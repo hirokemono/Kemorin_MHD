@@ -6,7 +6,6 @@
 !!      subroutine s_allocate_MHD_AMG_array                             &
 !!     &         (fem, MG_vector, rhs_mat, fem_int, mk_MHD)
 !!        type(mesh_data), intent(in) :: fem
-!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(vectors_4_solver), intent(inout) ::          MG_vector
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(finite_element_integration), intent(inout) :: fem_int

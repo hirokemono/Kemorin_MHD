@@ -4,7 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine init_analyzer_snap(MHD_files, FEM_prm, SGS_par,      &
-!!     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,     &
+!!     &          IO_bc, MHD_step, mesh, group, MHD_mesh,               &
 !!     &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,   &
 !!     &          Csims_FEM_MHD, iphys, nod_fld, t_IO, rst_step,        &
 !!     &          SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim)
@@ -15,7 +15,6 @@
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !!        type(filters_on_FEM), intent(inout) :: FEM_filters
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
@@ -72,7 +71,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_analyzer_snap(MHD_files, FEM_prm, SGS_par,        &
-     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,       &
+     &          IO_bc, MHD_step, mesh, group, MHD_mesh,                 &
      &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,     &
      &          Csims_FEM_MHD, iphys, nod_fld, t_IO, rst_step,          &
      &          SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim)
@@ -114,7 +113,6 @@
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
-      type(element_geometry), intent(inout) :: ele_mesh
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(filters_on_FEM), intent(inout) :: FEM_filters
       type(MHD_evolution_param), intent(inout) :: MHD_prop
@@ -155,7 +153,7 @@
 !     ---------------------
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(mesh, group, ele_mesh)
+      call FEM_mesh_initialization(mesh, group)
 !
 !     ---------------------
 !
@@ -190,8 +188,8 @@
      &   (SGS_par, mesh, FEM_filters%layer_tbl,                         &
      &    MHD_prop, Csims_FEM_MHD, SGS_MHD_wk%FEM_SGS_wk)
 !
-      call deallocate_surface_geom_type(ele_mesh%surf)
-      call dealloc_edge_geometory(ele_mesh%edge)
+      call deallocate_surface_geom_type(mesh%surf)
+      call dealloc_edge_geometory(mesh%edge)
 !
 !     --------------------- 
 !
@@ -223,14 +221,13 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector                                          &
-     &   (my_rank, nprocs, mesh%node, ele_mesh%surf,                    &
+      call const_normal_vector(my_rank, nprocs, mesh%node, mesh%surf,   &
      &    spfs_1%spf_2d, SGS_MHD_wk%fem_int%jcs)
       call dealloc_surf_shape_func(spfs_1%spf_2d)
 !
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
       call int_surface_parameters                                       &
-     &   (mesh, ele_mesh%surf, group, SGS_MHD_wk%rhs_mat%surf_wk)
+     &   (mesh, group, SGS_MHD_wk%rhs_mat%surf_wk)
 !
 !     --------------------- 
 !

@@ -16,8 +16,7 @@
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!
-!!      subroutine set_mesh                                             &
-!!     &         (mesh, group, nnod_4_surf, nnod_4_edge)
+!!      subroutine set_mesh(mesh, group)
 !!      subroutine set_mesh_geometry_data(mesh_IO, nod_comm, node, ele)
 !!      subroutine set_node_geometry_data(mesh_IO, node)
 !!      subroutine set_zero_mesh_data                                   &
@@ -145,8 +144,7 @@
 ! -----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_mesh                                               &
-     &         (fem_IO, mesh, group, nnod_4_surf, nnod_4_edge)
+      subroutine set_mesh(fem_IO, mesh, group)
 !
       use set_nnod_4_ele_by_type
 !
@@ -154,7 +152,6 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
-      integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
 !
 !
       call set_mesh_geometry_data(fem_IO%mesh,                          &
@@ -163,8 +160,8 @@
      &    group%nod_grp, group%ele_grp, group%surf_grp)
       call dealloc_groups_data(fem_IO%group)
 !
-      call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (mesh%ele%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+      call set_3D_nnod_4_sfed_by_ele(mesh%ele%nnod_4_ele,               &
+     &    mesh%surf%nnod_4_surf, mesh%edge%nnod_4_edge)
 !
       end subroutine set_mesh
 !
@@ -199,7 +196,7 @@
       use copy_mesh_structures
 !
       type(mesh_geometry), intent(inout) :: mesh_IO
-      type(node_data), intent(inout) ::           node
+      type(node_data), intent(inout) :: node
 !
 !
       call copy_node_geometry_types(mesh_IO%node, node)

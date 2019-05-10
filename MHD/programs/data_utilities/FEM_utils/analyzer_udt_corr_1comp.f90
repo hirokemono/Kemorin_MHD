@@ -27,7 +27,6 @@
       implicit none
 !
       type(mesh_data_p), save :: femmesh_p_FUT
-      type(element_geometry_p), save :: elemesh_FUT
 !
       type(mesh_data_p), save :: femmesh_p_REF
       type(phys_data), save :: phys_ref
@@ -67,14 +66,13 @@
 !     --------------------- 
 !
       call init_mesh_group_type(femmesh_p_FUT%group)
-      call init_element_mesh_type(elemesh_FUT)
+      call init_element_mesh_type(femmesh_p_FUT%mesh)
 !
       call s_input_control_corr_udt                                     &
      &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, time_U)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh_p'
-      call mpi_input_mesh_p(mesh_file_FUTIL, femmesh_p_FUT,             &
-     &    elemesh_FUT%surf%nnod_4_surf,                                 &
-     &    elemesh_FUT%edge%nnod_4_edge)
+      call mpi_input_mesh_p                                             &
+     &   (mesh_file_FUTIL, femmesh_p_FUT%mesh, femmesh_p_FUT%group)
 !
 !     --------------------- 
 !
@@ -89,8 +87,9 @@
      &   (isix, femmesh_p_FUT%mesh%node%numnod)
       call init_send_recv(femmesh_p_FUT%mesh%nod_comm)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos_p'
-      call const_mesh_infos_p(my_rank, femmesh_p_FUT, elemesh_FUT)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos_p                                           &
+     &   (my_rank, femmesh_p_FUT%mesh, femmesh_p_FUT%group)
       call const_global_numnod_list(femmesh_p_FUT%mesh%node)
 !
 !     --------------------- 

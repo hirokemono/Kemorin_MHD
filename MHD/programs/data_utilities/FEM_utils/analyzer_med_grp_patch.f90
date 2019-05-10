@@ -46,14 +46,13 @@
       if (iflag_debug.eq.1) write(*,*) 's_input_control_grp_patch'
       call s_input_control_grp_patch(mesh_file_FUTIL, udt_param_FUTIL)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh                                               &
-     &   (mesh_file_FUTIL, nprocs, femmesh_FUTIL, elemesh_FUTIL)
+      call mpi_input_mesh(mesh_file_FUTIL, nprocs, femmesh_FUTIL)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization                                      &
-     &   (femmesh_FUTIL%mesh, femmesh_FUTIL%group, elemesh_FUTIL)
+     &   (femmesh_FUTIL%mesh, femmesh_FUTIL%group)
 !
       field_FUTIL%num_phys = 1
       call alloc_phys_name_type(field_FUTIL)

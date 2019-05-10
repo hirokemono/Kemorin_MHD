@@ -1,10 +1,9 @@
 !const_refine_interpolate.f90
 !     Written by H. Matsui on Oct., 2007
 !
-!!      subroutine s_const_refine_interpolate_tbl(org_mesh, org_e_mesh, &
-!!     &          newmesh, refine_p, ref_ids, refine_tbl)
+!!      subroutine s_const_refine_interpolate_tbl                       &
+!!     &         (org_mesh, newmesh, refine_p, ref_ids, refine_tbl)
 !!        type(mesh_geometry), intent(in) :: org_mesh
-!!        type(element_geometry), intent(in) :: org_e_mesh
 !!        type(mesh_geometry), intent(in) :: newmesh
 !!        type(ctl_param_4_refiner), intent(in) :: refine_p
 !!        type(refined_node_id), intent(in) :: ref_ids
@@ -44,8 +43,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine s_const_refine_interpolate_tbl(org_mesh, org_e_mesh,   &
-     &          newmesh, refine_p, ref_ids, refine_tbl)
+      subroutine s_const_refine_interpolate_tbl                         &
+     &         (org_mesh, newmesh, refine_p, ref_ids, refine_tbl)
 !
       use t_mesh_data
       use t_geometry_data
@@ -54,7 +53,6 @@
       use merge_refine_itp_table
 !
       type(mesh_geometry), intent(in) :: org_mesh
-      type(element_geometry), intent(in) :: org_e_mesh
       type(mesh_geometry), intent(in) :: newmesh
       type(ctl_param_4_refiner), intent(in) :: refine_p
       type(refined_node_id), intent(in) :: ref_ids
@@ -69,7 +67,7 @@
      &            .and. iflag_merge .eq. 0) then
         write(*,*) 'const_single_refine_itp_tbl'
         call const_single_refine_itp_tbl                                &
-     &     (org_mesh%ele, org_e_mesh%surf, org_e_mesh%edge,             &
+     &     (org_mesh%ele, org_mesh%surf, org_mesh%edge,                 &
      &      newmesh%node, refine_p, ref_ids, refine_tbl, itp_refine)
         call write_refinement_table(ione, refine_p%refine_info_head,    &
      &      org_mesh%ele, refine_tbl)
@@ -89,7 +87,7 @@
       else if(iflag_merge .gt. 0) then
         write(*,*) 'const_second_refine_itp_tbl'
         call const_second_refine_itp_tbl                                &
-     &     (org_mesh%ele, org_e_mesh%surf, org_e_mesh%edge,             &
+     &     (org_mesh%ele, org_mesh%surf, org_mesh%edge,                 &
      &      newmesh%node, ref_ids, itp_refine, ref_itp_wk%c2f_2nd)
         write(*,*) 'const_merged_refine_itp_tbl'
         call const_merged_refine_itp_tbl                                &

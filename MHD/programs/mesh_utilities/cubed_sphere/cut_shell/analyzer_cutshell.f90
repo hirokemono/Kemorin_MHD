@@ -19,7 +19,6 @@
 !
       type(mesh_data), save :: original_fem
       type(mesh_data), save :: cutted_fem
-      type(element_geometry), save :: org_ele_mesh
 !
 !   --------------------------------------------------------------------
 !

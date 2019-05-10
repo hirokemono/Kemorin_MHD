@@ -13,7 +13,7 @@
 !!
 !!@verbatim
 !!      subroutine const_jacobian_volume_normals(id_rank, nprocs,       &
-!!     &          mesh, surf, group, spfs, jacs)
+!!     &          mesh, group, spfs, jacs)
 !!      subroutine const_jacobian_and_volume(id_rank, nprocs,           &
 !!     &          node, sf_grp, infinity_list, ele, spf_3d, jacs)
 !!      subroutine const_jacobian_and_vol_layer                         &
@@ -52,7 +52,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_jacobian_volume_normals(id_rank, nprocs,         &
-     &          mesh, surf, group, spfs, jacs)
+     &          mesh, group, spfs, jacs)
 !
       use set_normal_vectors
       use set_surf_grp_vectors
@@ -62,7 +62,6 @@
 !
       integer, intent(in) :: id_rank, nprocs
       type(mesh_geometry), intent(inout) :: mesh
-      type(surface_data), intent(inout) :: surf
       type(mesh_groups), intent(inout) :: group
       type(shape_finctions_at_points), intent(inout) :: spfs
       type(jacobians_type), intent(inout) :: jacs
@@ -81,11 +80,11 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector(id_rank, nprocs,                         &
-     &    mesh%node, surf, spfs%spf_2d, jacs)
+     &    mesh%node, mesh%surf, spfs%spf_2d, jacs)
       call dealloc_surf_shape_func(spfs%spf_2d)
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-      call pick_normal_of_surf_group(surf, group%surf_grp,              &
+      call pick_normal_of_surf_group(mesh%surf, group%surf_grp,         &
      &    group%tbls_surf_grp, group%surf_grp_geom)
 !
       if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
@@ -93,7 +92,7 @@
      &    group%surf_grp, group%surf_grp_geom)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
-      call cal_surf_normal_at_nod(mesh%node, mesh%ele, surf,            &
+      call cal_surf_normal_at_nod(mesh%node, mesh%ele, mesh%surf,       &
      &    group%surf_grp, group%surf_grp_geom, group%surf_nod_grp)
 !
 !      call check_jacobians_trilinear                                   &

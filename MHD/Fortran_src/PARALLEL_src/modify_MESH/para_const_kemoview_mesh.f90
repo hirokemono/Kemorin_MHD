@@ -35,8 +35,6 @@
 !
       type parallel_make_vierwer_mesh
         type(mesh_data) :: fem
-        type(element_geometry) :: ele_mesh
-!
         type(merged_viewer_mesh) ::  mgd_vmesh
       end type parallel_make_vierwer_mesh
 !
@@ -63,7 +61,7 @@
       if(nprocs .eq. 1) iflag_add_comm_tbl = 0
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh_file, nprocs, par_v%fem, par_v%ele_mesh)
+      call mpi_input_mesh(mesh_file, nprocs, par_v%fem)
       call allocate_quad4_2_linear(par_v%fem%mesh%ele%nnod_4_ele)
 !
       if(iflag_add_comm_tbl .gt. 0) then
@@ -72,19 +70,18 @@
       end if
 !
       if(my_rank .eq. 0) write(*,*) 'Construct kemoviewer data'
-      call const_surf_mesh_4_viewer(par_v%fem%mesh, par_v%fem%group,    &
-     &    par_v%ele_mesh%surf, par_v%ele_mesh%edge,                     &
+      call const_surf_mesh_4_viewer(par_v%fem%group, par_v%fem%mesh,    &
      &    par_v%mgd_vmesh%view_mesh, par_v%mgd_vmesh%domain_grps,       &
      &    par_v%mgd_vmesh%view_nod_grps, par_v%mgd_vmesh%view_ele_grps, &
      &    par_v%mgd_vmesh%view_sf_grps)
 !
-      call deallocate_iso_surface_type(par_v%ele_mesh%surf)
-      call deallocate_ext_surface_type(par_v%ele_mesh%surf)
-      call deallocate_surface_connect_type(par_v%ele_mesh%surf)
-      call deallocate_inod_in_surf_type(par_v%ele_mesh%surf)
+      call deallocate_iso_surface_type(par_v%fem%mesh%surf)
+      call deallocate_ext_surface_type(par_v%fem%mesh%surf)
+      call deallocate_surface_connect_type(par_v%fem%mesh%surf)
+      call deallocate_inod_in_surf_type(par_v%fem%mesh%surf)
 !
       call dealloc_mesh_infos(par_v%fem%mesh, par_v%fem%group)
-      call dealloc_inod_in_edge(par_v%ele_mesh%edge)
+      call dealloc_inod_in_edge(par_v%fem%mesh%edge)
 !
       if(iflag_write_subdomain .gt. 0) then
         if(my_rank .eq. 0) write(*,*) 'sel_output_single_surface_grid'

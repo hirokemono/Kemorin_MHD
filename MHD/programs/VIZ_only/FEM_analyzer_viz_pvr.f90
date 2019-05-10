@@ -45,7 +45,7 @@
 !
 !     ---------------------
 !
-      call dealloc_edge_geometory(elemesh_VIZ%edge)
+      call dealloc_edge_geometory(femmesh_VIZ%mesh%edge)
 !
       end subroutine FEM_initialize_pvr
 !

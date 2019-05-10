@@ -33,7 +33,6 @@
       type(control_param_assemble), save :: asbl_param_m
       integer, save :: ndomain_org
       type(mesh_data), save :: fem_m
-      type(element_geometry), save :: e_mesh_m
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,8 +68,7 @@
 !
 !  set mesh data
 !
-      call mpi_input_mesh                                               &
-     &   (asbl_param_m%org_mesh_file, nprocs, fem_m, e_mesh_m)
+      call mpi_input_mesh(asbl_param_m%org_mesh_file, nprocs, fem_m)
       call set_nod_and_ele_infos(fem_m%mesh%node, fem_m%mesh%ele)
       call const_global_numnod_list(fem_m%mesh%node)
       call const_global_numele_list(fem_m%mesh%ele)

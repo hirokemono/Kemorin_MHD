@@ -46,7 +46,7 @@
       call input_control_4_FEM_snap                                     &
      &   (MHD_files1, FEM_model1%FEM_prm, FEM_SGS1%SGS_par,             &
      &    MHD_step1, FEM_model1%MHD_prop, FEM_model1%MHD_BC,            &
-     &    FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field,           &
+     &    FEM_MHD1%geofem, FEM_MHD1%field,                              &
      &    SGS_MHD_wk1%ele_fld, FEM_model1%bc_FEM_IO,                    &
      &    FEM_SGS1%FEM_filters, SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1,        &
      &    viz_ctls_F)
@@ -54,10 +54,10 @@
 !
 !     --------------------- 
 !
-      call FEM_initialize_snapshot                                      &
-     &   (MHD_files1, MHD_step1, FEM_MHD1%geofem, FEM_MHD1%ele_mesh,    &
-     &    FEM_MHD1%iphys, FEM_MHD1%field, FEM_model1, MHD_CG1%ak_MHD,   &
-     &    FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1, FEM_MHD1%label_sim)
+      call FEM_initialize_snapshot(MHD_files1, MHD_step1,               &
+     &    FEM_MHD1%geofem, FEM_MHD1%iphys, FEM_MHD1%field, FEM_model1,  &
+     &    MHD_CG1%ak_MHD,  FEM_SGS1, SGS_MHD_wk1, MHD_IO1,              &
+     &    fem_sq1, FEM_MHD1%label_sim)
 !
       call init_visualize                                               &
      &   (FEM_MHD1%geofem, FEM_MHD1%field, viz_ctls_F, vizs_F)
@@ -75,10 +75,10 @@
      &           MHD_step1%finish_d%i_end_step
 !
 !  Read and generate fields
-        call FEM_analyze_snapshot(i_step, MHD_files1,                   &
-     &      FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%iphys,         &
-     &      FEM_model1, MHD_CG1%ak_MHD, MHD_step1, visval, FEM_SGS1,    &
-     &      SGS_MHD_wk1, FEM_MHD1%field, MHD_IO1, fem_sq1)
+        call FEM_analyze_snapshot(i_step, MHD_files1, FEM_MHD1%geofem,  &
+     &      FEM_MHD1%iphys, FEM_model1, MHD_CG1%ak_MHD, MHD_step1,      &
+     &      visval, FEM_SGS1, SGS_MHD_wk1, FEM_MHD1%field,              &
+     &      MHD_IO1, fem_sq1)
 !
 !  Visualization
         if (visval.eq.0) then

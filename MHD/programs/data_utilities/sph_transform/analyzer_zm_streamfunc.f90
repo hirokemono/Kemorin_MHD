@@ -55,8 +55,7 @@
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh(files_STR%FEM_mesh_flags,         &
      &    SPH_TRNS%sph, SPH_TRNS%comms, SPH_TRNS%groups,                &
-     &    femmesh_STR, elemesh_STR, files_STR%mesh_file_IO,             &
-     &    gen_sph_TRNS)
+     &    femmesh_STR, files_STR%mesh_file_IO, gen_sph_TRNS)
 !
 !  -------------------------------
 !

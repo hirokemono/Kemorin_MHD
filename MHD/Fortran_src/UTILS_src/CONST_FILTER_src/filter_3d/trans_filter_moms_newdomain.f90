@@ -3,15 +3,13 @@
 !
 !      modified by H. Matsui on Apr., 2008
 !
-!!      subroutine trans_filter_moms_newmesh_para(newfil_p,             &
-!!     &          orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
-!!      subroutine trans_filter_moms_newmesh_sgl(newfil_p,              &
-!!     &          orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
+!!      subroutine trans_filter_moms_newmesh_para                       &
+!!     &         (newfil_p, orgmesh, newmesh)
+!!      subroutine trans_filter_moms_newmesh_sgl                        &
+!!     &         (newfil_p, orgmesh, newmesh)
 !!        type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !!        type(mesh_geometry), intent(inout) :: orgmesh
-!!        type(element_geometry), intent(inout) :: org_ele_mesh
 !!        type(mesh_geometry), intent(inout) :: newmesh
-!!        type(element_geometry), intent(inout) :: new_ele_mesh
 !
       module trans_filter_moms_newdomain
 !
@@ -41,8 +39,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine trans_filter_moms_newmesh_para(newfil_p,               &
-     &          orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
+      subroutine trans_filter_moms_newmesh_para                         &
+     &         (newfil_p, orgmesh, newmesh)
 !
       use calypso_mpi
 !
@@ -51,9 +49,7 @@
       type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !
       type(mesh_geometry), intent(inout) :: orgmesh
-      type(element_geometry), intent(inout) :: org_ele_mesh
       type(mesh_geometry), intent(inout) :: newmesh
-      type(element_geometry), intent(inout) :: new_ele_mesh
 !
       integer(kind = kint) :: ierr
 !
@@ -66,7 +62,7 @@
       call allocate_iele_local_newfilter
 !
       call trans_filter_moms_each_domain(my_rank, newfil_p,             &
-     &    orgmesh, org_ele_mesh, newmesh, new_ele_mesh, ierr)
+     &    orgmesh, newmesh, ierr)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Original mesh is wrong!!')
       end if
@@ -77,8 +73,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine trans_filter_moms_newmesh_sgl(newfil_p,                &
-     &          orgmesh, org_ele_mesh, newmesh, new_ele_mesh)
+      subroutine trans_filter_moms_newmesh_sgl                          &
+     &         (newfil_p, orgmesh, newmesh)
 !
       use calypso_mpi
       use m_2nd_pallalel_vector
@@ -87,9 +83,7 @@
       type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !
       type(mesh_geometry), intent(inout) :: orgmesh
-      type(element_geometry), intent(inout) :: org_ele_mesh
       type(mesh_geometry), intent(inout) :: newmesh
-      type(element_geometry), intent(inout) :: new_ele_mesh
 !
       integer(kind = kint) :: ip2, my_rank_2nd
       integer(kind = kint) :: ierr
@@ -102,7 +96,7 @@
       do ip2 = 1, nprocs_2nd
         my_rank_2nd = ip2 - 1
         call trans_filter_moms_each_domain(my_rank, newfil_p,           &
-     &      orgmesh, org_ele_mesh, newmesh, new_ele_mesh, ierr)
+     &      orgmesh, newmesh, ierr)
         if(ierr .gt. 0) stop  'Original mesh is wrong!!'
       end do
 !
@@ -175,7 +169,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine trans_filter_moms_each_domain(my_rank_2nd, newfil_p,   &
-     &          orgmesh, org_ele_mesh, newmesh, new_ele_mesh, ierr)
+     &          orgmesh, newmesh, ierr)
 !
       use calypso_mpi
       use m_filter_file_names
@@ -192,9 +186,7 @@
       type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !
       type(mesh_geometry), intent(inout) :: orgmesh
-      type(element_geometry), intent(inout) :: org_ele_mesh
       type(mesh_geometry), intent(inout) :: newmesh
-      type(element_geometry), intent(inout) :: new_ele_mesh
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -214,8 +206,8 @@
       newmesh%node%internal_node = mesh_IO_f%node%internal_node
       call copy_ele_connect_from_IO(mesh_IO_f%ele, newmesh%ele)
       call set_3D_nnod_4_sfed_by_ele(newmesh%ele%nnod_4_ele,            &
-     &                               new_ele_mesh%surf%nnod_4_surf,     &
-     &                               new_ele_mesh%edge%nnod_4_edge)
+     &                               newmesh%surf%nnod_4_surf,          &
+     &                               newmesh%edge%nnod_4_edge)
 !
       call dealloc_mesh_geometry_base(mesh_IO_f)
 !
@@ -244,8 +236,8 @@
       if (iflag_debug.eq.1) write(*,*) 'const_filter_moms_newdomain'
       call const_filter_moms_newdomain                                  &
      &   (newfil_p, nprocs, newmesh%node, orgmesh%node, orgmesh%ele,    &
-     &    org_ele_mesh%surf, org_ele_mesh%edge,                         &
-     &    FEM_elen_t, FEM_momenet1, elen2_ele, moment2_ele)
+     &    orgmesh%surf, orgmesh%edge, FEM_elen_t, FEM_momenet1,         &
+     &    elen2_ele, moment2_ele)
 !
 !
 !      write new filter moments file

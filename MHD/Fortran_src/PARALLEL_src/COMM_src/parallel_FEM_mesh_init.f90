@@ -8,11 +8,10 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_mesh_initialization(mesh, group, ele_mesh)
+!!      subroutine FEM_mesh_initialization(mesh, group)
 !!        type(field_io_params), intent(in) :: mesh_file
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !!@endverbatim
 !!
       module parallel_FEM_mesh_init
@@ -36,7 +35,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_mesh_initialization(mesh, group, ele_mesh)
+      subroutine FEM_mesh_initialization(mesh, group)
 !
       use t_file_IO_parameter
       use t_read_mesh_data
@@ -51,7 +50,6 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
-      type(element_geometry), intent(inout) :: ele_mesh
 !
 !  -------------------------------
 !      if (iflag_debug.gt.0) write(*,*) 'set_local_nod_4_monitor'

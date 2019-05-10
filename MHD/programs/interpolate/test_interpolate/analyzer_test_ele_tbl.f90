@@ -28,10 +28,7 @@
       type(ctl_params_4_gen_table), save :: gen_itp_p1
 !
       type(mesh_data), save :: org_femmesh
-      type(element_geometry), save :: org_ele_mesh
-!
       type(mesh_data), save :: new_femmesh
-      type(element_geometry), save :: new_ele_mesh
 !
       type(interpolate_table), save :: itp_ele_t
 !
@@ -63,8 +60,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_itp_mesh'
       call s_input_control_interpolate(gen_itp_p1, gtbl_ctl1,           &
-     &    org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,         &
-     &    itp_ele_t, t_ITP, ierr)
+     &    org_femmesh, new_femmesh, itp_ele_t, t_ITP, ierr)
 !
 !     --------------------- 
 !

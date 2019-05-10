@@ -135,7 +135,8 @@
      &        MGCG_FEM%MG_mesh(i_level)%group)
         end if
 !
-        call dealloc_edge_geometory(MGCG_FEM%MG_ele_mesh(i_level)%edge)
+        call dealloc_edge_geometory                                     &
+     &     (MGCG_FEM%MG_mesh(i_level)%mesh%edge)
       end do
 !
 !     ---------------------
@@ -209,13 +210,13 @@
      &      spfs%spf_3d, MGCG_FEM%MG_FEM_int(i_level)%jcs)
 !
         call alloc_surf_shape_func                                      &
-     &     (MGCG_FEM%MG_ele_mesh(i_level)%surf%nnod_4_surf,             &
+     &     (MGCG_FEM%MG_mesh(i_level)%mesh%surf%nnod_4_surf,            &
      &      MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM, spfs%spf_2d)
         call const_jacobians_surf_group                                 &
      &     (my_rank, MGCG_WK%MG_mpi(i_level)%nprocs,                    &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%node,                        &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%ele,                         &
-     &      MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
+     &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,                        &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
      &      spfs%spf_2d, MGCG_FEM%MG_FEM_int(i_level)%jcs)
         call dealloc_surf_shape_func(spfs%spf_2d)
@@ -243,10 +244,9 @@
      &         'int_normal_4_all_surface', i_level
         call int_normal_4_all_surface                                   &
      &     (MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM,                     &
-     &      MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
+     &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,                        &
      &      MGCG_FEM%MG_FEM_int(i_level)%jcs%jac_2d)
         call int_surface_parameters(MGCG_FEM%MG_mesh(i_level)%mesh,     &
-     &      MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
      &      MGCG_FEM%MG_mesh(i_level)%group,                            &
      &      MGCG_FEM%MG_FEM_mat(i_level)%surf_wk)
 !
@@ -260,7 +260,7 @@
         call set_bc_surface_data(MGCG_MHD_FEM%IO_MG_bc(i_level),        &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%node,                        &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%ele,                         &
-     &      MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
+     &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,                        &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_nod_grp,               &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_geom,              &

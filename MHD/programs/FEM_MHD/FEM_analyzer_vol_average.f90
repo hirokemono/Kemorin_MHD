@@ -3,12 +3,10 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_initialize_vol_average                           &
-!!     &         (MHD_files, MHD_step, femmesh, ele_mesh,               &
-!!     &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,       &
-!!     &          SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
+!!      subroutine FEM_initialize_vol_average(MHD_files, MHD_step,      &
+!!     &          femmesh, iphys_nod, nod_fld, FEM_model, ak_MHD,       &
+!!     &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !!        type(mesh_data), intent(inout) :: femmesh
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_address), intent(inout) :: iphys_nod
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_model_data), intent(inout) :: FEM_model
@@ -56,10 +54,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_vol_average                             &
-     &         (MHD_files, MHD_step, femmesh, ele_mesh,                 &
-     &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,         &
-     &          SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
+      subroutine FEM_initialize_vol_average(MHD_files, MHD_step,        &
+     &          femmesh, iphys_nod, nod_fld, FEM_model, ak_MHD,         &
+     &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !
       use t_boundary_field_IO
 !
@@ -71,7 +68,6 @@
       type(MHD_file_IO_params), intent(inout) :: MHD_files
 !
       type(mesh_data), intent(inout) :: femmesh
-      type(element_geometry), intent(inout) :: ele_mesh
       type(phys_address), intent(inout) :: iphys_nod
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_model_data), intent(inout) :: FEM_model
@@ -88,7 +84,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap(MHD_files, FEM_model%FEM_prm,             &
      &   FEM_SGS%SGS_par, FEM_model%bc_FEM_IO, MHD_step,                &
-     &   femmesh%mesh, femmesh%group, ele_mesh, FEM_model%MHD_mesh,     &
+     &   femmesh%mesh, femmesh%group, FEM_model%MHD_mesh,               &
      &   FEM_SGS%FEM_filters, FEM_model%MHD_prop, ak_MHD,               &
      &   FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,        &
      &   iphys_nod, nod_fld, SNAP_time_IO, MHD_step%rst_step,           &

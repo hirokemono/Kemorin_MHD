@@ -23,7 +23,6 @@
 !
       type(field_IO_params), save ::  mesh_file_TEC
       type(mesh_data), save :: femmesh
-      type(element_geometry), save :: ele_mesh
       type(IO_boundary), save :: IO_bc_t
 !
 ! ----------------------------------------------------------------------
@@ -51,8 +50,7 @@
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh                                               &
-     &   (mesh_file_TEC, nprocs, femmesh, ele_mesh)
+      call mpi_input_mesh(mesh_file_TEC, nprocs, femmesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos(my_rank, femmesh%mesh, femmesh%group)

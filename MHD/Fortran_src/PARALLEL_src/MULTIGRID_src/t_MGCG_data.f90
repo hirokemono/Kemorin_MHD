@@ -55,8 +55,6 @@
       type mesh_4_MGCG
 !>        Mesh structure for Multigrid
         type(mesh_data), allocatable :: MG_mesh(:)
-!>        Element structure for Multigrid
-        type(element_geometry), allocatable ::  MG_ele_mesh(:)
 !
 !>        Element flag for Multigrid
         integer(kind = kint) :: iflag_MG_commute_by_ele = 0
@@ -98,8 +96,6 @@
 !
 !
       allocate(MGCG_FEM%MG_mesh(MGCG_WK%num_MG_level))
-      allocate(MGCG_FEM%MG_ele_mesh(MGCG_WK%num_MG_level))
-!
       allocate(MGCG_FEM%MG_c2f_ele_tbl(MGCG_WK%num_MG_level))
 !
       allocate(MGCG_FEM%MG_FEM_mat(MGCG_WK%num_MG_level))
@@ -128,8 +124,6 @@
 !
 !
       deallocate(MGCG_FEM%MG_mesh)
-      deallocate(MGCG_FEM%MG_ele_mesh)
-!
       deallocate(MGCG_FEM%MG_c2f_ele_tbl)
 !
       deallocate(MGCG_FEM%MG_FEM_int)

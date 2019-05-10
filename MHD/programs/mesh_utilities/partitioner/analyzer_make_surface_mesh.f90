@@ -27,7 +27,6 @@
       implicit none
 !
       type(mesh_data), save :: fem_T
-      type(element_geometry), save :: ele_mesh
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,13 +84,12 @@
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh                                               &
-     &   (T_meshes%mesh_file_IO, nprocs, fem_T, ele_mesh)
+      call mpi_input_mesh(T_meshes%mesh_file_IO, nprocs, fem_T)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(fem_T%mesh, fem_T%group, ele_mesh)
+      call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
       call end_elapsed_time(ied_total_elapsed)
 !
       end subroutine initialize_make_surface_mesh

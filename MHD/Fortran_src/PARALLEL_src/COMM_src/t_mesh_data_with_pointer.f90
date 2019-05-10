@@ -17,16 +17,13 @@
 !!     &         (mesh_org, group_org  mesh_p, group_p)
 !!      subroutine link_pointer_elemesh(ele_mesh_org, ele_mesh_p)
 !!
-!!      subroutine mpi_input_mesh_p                                     &
-!!     &         (mesh_file, femmesh_p, nnod_4_surf, nnod_4_edge)
-!!      subroutine input_mesh_p(id_rank, mesh_file, femmesh_p,          &
-!!     &          nnod_4_surf, nnod_4_edge, ierr)
+!!      subroutine mpi_input_mesh_p(mesh_file, mesh_p, group_p)
+!!      subroutine input_mesh_p                                         &
+!!     &         (id_rank, mesh_file, mesh_p, group_p, ierr)
+!!      subroutine const_mesh_infos_p(id_rank, mesh_p, group_p)
 !!        type(field_IO_params), intent(in) ::  mesh_file
-!!        type(mesh_data_p), intent(inout) :: femmesh_p
-!!
-!!      subroutine const_mesh_infos_p(id_rank, femmesh_p, ele_mesh)
-!!        type(mesh_data_p), intent(inout) :: femmesh_p
-!!        type(element_geometry_p), intent(inout) :: ele_mesh
+!!        type(mesh_geometry_p), intent(inout) :: mesh_p
+!!        type(mesh_groups_p), intent(inout) ::   group_p
 !!@endverbatim
 !
       module t_mesh_data_with_pointer
@@ -46,6 +43,11 @@
         type(node_data), pointer ::           node
 !>     Structure for element position and connectivity
         type(element_data), pointer ::        ele
+!
+!>     Structure for surface position and connectivity
+        type(surface_data), pointer :: surf
+!>     Structure for edge position and connectivity
+        type(edge_data),  pointer :: edge
       end type mesh_geometry_p
 !
 !>     Structure for group data (node, element, surface, and infinity)
@@ -79,16 +81,6 @@
 !>     Structure for group data
         type(mesh_groups_p) ::   group
       end type mesh_data_p
-!
-!>     Structure for element, surface, and edge mesh
-!!        (position and connectivity)
-      type element_geometry_p
-!>     Structure for surface position and connectivity
-        type(surface_data), pointer :: surf
-!
-!>     Structure for edge position and connectivity
-        type(edge_data),  pointer :: edge
-      end type element_geometry_p
 !
 ! -----------------------------------------------------------------------
 !
@@ -146,22 +138,22 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine init_element_mesh_type(ele_mesh_p)
+      subroutine init_element_mesh_type(mesh_p)
 !
-      type(element_geometry_p), intent(inout) :: ele_mesh_p
+      type(mesh_geometry_p), intent(inout) :: mesh_p
 !
-      allocate(ele_mesh_p%surf)
-      allocate(ele_mesh_p%edge)
+      allocate(mesh_p%surf)
+      allocate(mesh_p%edge)
 !
       end subroutine init_element_mesh_type
 !
 !------------------------------------------------------------------
 !
-      subroutine finalize_element_mesh_type(ele_mesh_p)
+      subroutine finalize_element_mesh_type(mesh_p)
 !
-      type(element_geometry_p), intent(inout) :: ele_mesh_p
+      type(mesh_geometry_p), intent(inout) :: mesh_p
 !
-      deallocate(ele_mesh_p%surf, ele_mesh_p%edge)
+      deallocate(mesh_p%surf, mesh_p%edge)
 !
       end subroutine finalize_element_mesh_type
 !
@@ -181,6 +173,8 @@
       mesh_p%nod_comm => mesh_org%nod_comm
       mesh_p%node => mesh_org%node
       mesh_p%ele =>  mesh_org%ele
+      mesh_p%surf => mesh_org%surf
+      mesh_p%edge => mesh_org%edge
 !
       group_p%nod_grp =>  group_org%nod_grp
       group_p%ele_grp =>  group_org%ele_grp
@@ -190,19 +184,6 @@
       group_p%tbls_surf_grp => group_org%tbls_surf_grp
 !
       end subroutine link_pointer_mesh
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine link_pointer_elemesh(ele_mesh_org, ele_mesh_p)
-!
-      type(element_geometry), intent(in), target :: ele_mesh_org
-      type(element_geometry_p), intent(inout) :: ele_mesh_p
-!
-!
-      ele_mesh_p%surf => ele_mesh_org%surf
-      ele_mesh_p%edge => ele_mesh_org%edge
-!
-      end subroutine link_pointer_elemesh
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -216,26 +197,15 @@
       nullify(group_p%tbls_ele_grp, group_p%tbls_surf_grp)
       nullify(group_p%surf_grp, group_p%ele_grp, group_p%nod_grp)
 
+      nullify(mesh_p%surf, mesh_p%edge)
       nullify(mesh_p%ele, mesh_p%node, mesh_p%nod_comm)
 !
       end subroutine unlink_pointer_mesh
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine unlink_pointer_elemesh(ele_mesh_p)
-!
-      type(element_geometry_p), intent(inout) :: ele_mesh_p
-!
-!
-      nullify(ele_mesh_p%surf, ele_mesh_p%edge)
-!
-      end subroutine unlink_pointer_elemesh
-!
-!  ---------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine mpi_input_mesh_p                                       &
-     &         (mesh_file, femmesh_p, nnod_4_surf, nnod_4_edge)
+      subroutine mpi_input_mesh_p(mesh_file, mesh_p, group_p)
 !
       use calypso_mpi
       use t_mesh_data
@@ -251,8 +221,8 @@
       use load_mesh_data
 !
       type(field_IO_params), intent(in) ::  mesh_file
-      type(mesh_data_p), intent(inout) :: femmesh_p
-      integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
+      type(mesh_geometry_p), intent(inout) :: mesh_p
+      type(mesh_groups_p), intent(inout) ::   group_p
 !
       type(mesh_data) :: fem_IO_m
 !
@@ -262,22 +232,20 @@
 !
 !
       call set_mesh_geometry_data(fem_IO_m%mesh,                        &
-     &    femmesh_p%mesh%nod_comm, femmesh_p%mesh%node,                 &
-     &    femmesh_p%mesh%ele)
+     &    mesh_p%nod_comm, mesh_p%node, mesh_p%ele)
       call set_grp_data_from_IO(fem_IO_m%group,                         &
-     &    femmesh_p%group%nod_grp, femmesh_p%group%ele_grp,             &
-     &    femmesh_p%group%surf_grp)
+     &    group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
       call dealloc_groups_data(fem_IO_m%group)
 !
-      call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (femmesh_p%mesh%ele%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+      call set_3D_nnod_4_sfed_by_ele(mesh_p%ele%nnod_4_ele,             &
+     &   mesh_p%surf%nnod_4_surf, mesh_p%edge%nnod_4_edge)
 !
       end subroutine mpi_input_mesh_p
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_mesh_p(id_rank, mesh_file, femmesh_p,            &
-     &          nnod_4_surf, nnod_4_edge, ierr)
+      subroutine input_mesh_p                                           &
+     &         (id_rank, mesh_file, mesh_p, group_p, ierr)
 !
       use t_mesh_data
       use t_comm_table
@@ -294,8 +262,8 @@
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  mesh_file
 !
-      type(mesh_data_p), intent(inout) :: femmesh_p
-      integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
+      type(mesh_geometry_p), intent(inout) :: mesh_p
+      type(mesh_groups_p), intent(inout) ::   group_p
       integer(kind = kint), intent(inout) :: ierr
 !
       type(mesh_data) :: fem_IO_i
@@ -305,21 +273,19 @@
      &   (mesh_file, id_rank, fem_IO_i%mesh, fem_IO_i%group, ierr)
 !
       call set_mesh_geometry_data(fem_IO_i%mesh,                        &
-     &    femmesh_p%mesh%nod_comm, femmesh_p%mesh%node,                 &
-     &    femmesh_p%mesh%ele)
+     &    mesh_p%nod_comm, mesh_p%node, mesh_p%ele)
       call set_grp_data_from_IO(fem_IO_i%group,                         &
-     &    femmesh_p%group%nod_grp, femmesh_p%group%ele_grp,             &
-     &    femmesh_p%group%surf_grp)
+     &    group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
       call dealloc_groups_data(fem_IO_i%group)
 !
-      call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (femmesh_p%mesh%ele%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+      call set_3D_nnod_4_sfed_by_ele(mesh_p%ele%nnod_4_ele,             &
+     &    mesh_p%surf%nnod_4_surf, mesh_p%edge%nnod_4_edge)
 !
       end subroutine input_mesh_p
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_mesh_infos_p(id_rank, femmesh_p, ele_mesh)
+      subroutine const_mesh_infos_p(id_rank, mesh_p, group_p)
 !
       use t_mesh_data
       use t_geometry_data
@@ -337,47 +303,41 @@
 !      use check_surface_groups
 !
       integer, intent(in) :: id_rank
-      type(mesh_data_p), intent(inout) :: femmesh_p
-      type(element_geometry_p), intent(inout) :: ele_mesh
+      type(mesh_geometry_p), intent(inout) :: mesh_p
+      type(mesh_groups_p), intent(inout) ::   group_p
 !
 !
        if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
-      call const_nod_ele_infos(id_rank,                                 &
-     &    femmesh_p%mesh%node, femmesh_p%mesh%ele,                      &
-     &    femmesh_p%group%nod_grp, femmesh_p%group%ele_grp,             &
-     &    femmesh_p%group%surf_grp)
+      call const_nod_ele_infos(id_rank, mesh_p%node, mesh_p%ele,        &
+     &    group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_element_info'
-      call set_local_element_info(ele_mesh%surf, ele_mesh%edge)
+      call set_local_element_info(mesh_p%surf, mesh_p%edge)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_surface_and_edge'
       call set_surface_and_edge                                         &
-     &   (femmesh_p%mesh%node, femmesh_p%mesh%ele,                      &
-     &    ele_mesh%surf, ele_mesh%edge)
+     &   (mesh_p%node, mesh_p%ele, mesh_p%surf, mesh_p%edge)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surface'
-      call const_ele_list_4_surface(femmesh_p%mesh%ele, ele_mesh%surf)
+      call const_ele_list_4_surface(mesh_p%ele, mesh_p%surf)
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_node_4_surf_group'
-      call set_node_4_surf_group                                        &
-     &   (femmesh_p%mesh%node, femmesh_p%mesh%ele, ele_mesh%surf,       &
-     &    femmesh_p%group%surf_grp, femmesh_p%group%surf_nod_grp)
-!      call check_surface_node_id(id_rank, femmesh_p%group%surf_nod_grp)
+      call set_node_4_surf_group(mesh_p%node, mesh_p%ele, mesh_p%surf,  &
+     &    group_p%surf_grp, group_p%surf_nod_grp)
+!      call check_surface_node_id(id_rank, group_p%surf_nod_grp)
 !
 !      if (iflag_debug.gt.0) then
 !        call check_surf_nod_4_sheard_para                              &
-!     &     (id_rank, femmesh_p%group%surf_grp%num_grp,                 &
-!     &      femmesh_p%group%surf_nod_grp)
+!     &     (id_rank, group_p%surf_grp%num_grp, group_p%surf_nod_grp)
 !      end if
 !
 !
        if (iflag_debug.eq.1) write(*,*) 'const_group_connectiviy_1st'
       call const_group_type_info                                        &
-     &   (femmesh_p%mesh%node, femmesh_p%mesh%ele,                      &
-     &    ele_mesh%surf, ele_mesh%edge,                                 &
-     &    femmesh_p%group%ele_grp, femmesh_p%group%surf_grp,            &
-     &    femmesh_p%group%tbls_ele_grp, femmesh_p%group%tbls_surf_grp)
+     &   (mesh_p%node, mesh_p%ele, mesh_p%surf, mesh_p%edge,            &
+     &    group_p%ele_grp, group_p%surf_grp,                            &
+     &    group_p%tbls_ele_grp, group_p%tbls_surf_grp)
 !
       end subroutine const_mesh_infos_p
 !

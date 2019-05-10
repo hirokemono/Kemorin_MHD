@@ -33,7 +33,6 @@
 !
       type single_make_vierwer_mesh
         type(mesh_data) :: fem
-        type(element_geometry) :: ele_mesh
 !
         integer :: nprocs_sf
         type(viewer_mesh_data), allocatable :: view_mesh(:)
@@ -96,20 +95,19 @@ private :: collect_single_viewer_mesh
 !
         write(*,*) 'Construct kemoviewer data for rank ', id_rank
         call const_surf_mesh_4_viewer                                   &
-     &     (sgl_viewer%fem%mesh, sgl_viewer%fem%group,                  &
-     &      sgl_viewer%ele_mesh%surf, sgl_viewer%ele_mesh%edge,         &
+     &     (sgl_viewer%fem%group, sgl_viewer%fem%mesh,                  &
      &      sgl_viewer%view_mesh(ip), sgl_viewer%domain_grps(ip),       &
      &      sgl_viewer%view_nod_grps(ip), sgl_viewer%view_ele_grps(ip), &
      &      sgl_viewer%view_sf_grps(ip))
 !
-        call deallocate_iso_surface_type(sgl_viewer%ele_mesh%surf)
-        call deallocate_ext_surface_type(sgl_viewer%ele_mesh%surf)
-        call deallocate_surface_connect_type(sgl_viewer%ele_mesh%surf)
-        call deallocate_inod_in_surf_type(sgl_viewer%ele_mesh%surf)
+        call deallocate_iso_surface_type(sgl_viewer%fem%mesh%surf)
+        call deallocate_ext_surface_type(sgl_viewer%fem%mesh%surf)
+        call deallocate_surface_connect_type(sgl_viewer%fem%mesh%surf)
+        call deallocate_inod_in_surf_type(sgl_viewer%fem%mesh%surf)
 !
         call dealloc_mesh_infos                                         &
      &     (sgl_viewer%fem%mesh, sgl_viewer%fem%group)
-        call dealloc_inod_in_edge(sgl_viewer%ele_mesh%edge)
+        call dealloc_inod_in_edge(sgl_viewer%fem%mesh%edge)
 !
         if(iflag_write_subdomain .gt. 0) then
           call sel_output_single_surface_grid(id_rank, mesh_file,       &

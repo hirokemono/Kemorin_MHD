@@ -4,12 +4,11 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_analyze_filtered(i_step, MHD_files,              &
-!!     &          fem, ele_mesh, iphys_nod, FEM_model, ak_MHD,          &
+!!     &          fem, iphys_nod, FEM_model, ak_MHD,                    &
 !!     &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                &
 !!     &          nod_fld, fem_ucd, MHD_IO, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(mesh_data), intent(in) :: fem
-!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_address), intent(in) :: iphys_nod
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -52,7 +51,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_filtered(i_step, MHD_files,                &
-     &          fem, ele_mesh, iphys_nod, FEM_model, ak_MHD,            &
+     &          fem, iphys_nod, FEM_model, ak_MHD,                      &
      &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                  &
      &          nod_fld, fem_ucd, MHD_IO, fem_sq)
 !
@@ -78,7 +77,6 @@
       integer(kind=kint ), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(mesh_data), intent(in) :: fem
-      type(element_geometry), intent(in) :: ele_mesh
       type(phys_address), intent(in) :: iphys_nod
       type(FEM_MHD_model_data), intent(in) :: FEM_model
       type(coefs_4_MHD_type), intent(in) :: ak_MHD

@@ -48,6 +48,11 @@
         type(node_data) ::           node
 !>     Structure for element position and connectivity
         type(element_data) ::        ele
+!
+!>     Structure for surface position and connectivity
+        type(surface_data) ::        surf
+!>     Structure for edge position and connectivity
+        type(edge_data) ::           edge
       end type mesh_geometry
 !
 !>     Structure for group data (node, element, surface, and infinity)
@@ -82,16 +87,6 @@
 !>     Structure for group data
         type(mesh_groups) ::   group
       end type mesh_data
-!
-!
-!>     Structure for element, surface, and edge mesh
-!!                                 (position and connectivity)
-      type element_geometry
-!>     Structure for surface position and connectivity
-        type(surface_data) ::        surf
-!>     Structure for edge position and connectivity
-        type(edge_data) ::           edge
-      end type element_geometry
 !
 !------------------------------------------------------------------
 !

@@ -8,13 +8,11 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_w_viz                                 &
-!!     &         (MHD_files, MHD_step, geofem, ele_mesh,                &
+!!      subroutine FEM_initialize_w_viz(MHD_files, MHD_step, geofem,    &
 !!     &          iphys, nod_fld, next_tbl, jacobians, MHD_IO)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_data), intent(inout) :: geofem
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(next_nod_ele_table), intent(inout) :: next_tbl
@@ -57,8 +55,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_w_viz                                   &
-     &         (MHD_files, MHD_step, geofem, ele_mesh,                  &
+      subroutine FEM_initialize_w_viz(MHD_files, MHD_step, geofem,      &
      &          iphys, nod_fld, next_tbl, jacobians, MHD_IO)
 !
       use set_table_4_RHS_assemble
@@ -69,7 +66,6 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
       type(mesh_data), intent(inout) :: geofem
-      type(element_geometry), intent(inout) :: ele_mesh
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(next_nod_ele_table), intent(inout) :: next_tbl
@@ -86,7 +82,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files, MHD_step,                  &
-     &    geofem, ele_mesh, iphys, nod_fld, MHD_IO)
+     &    geofem, iphys, nod_fld, MHD_IO)
 !
 !  -------------------------------
 !
@@ -106,7 +102,7 @@
       allocate(jacobians%g_FEM)
       call set_max_integration_points(ione, jacobians%g_FEM)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
-     &    geofem%mesh, ele_mesh%surf, geofem%group, spfs_M, jacobians)
+     &    geofem%mesh, geofem%group, spfs_M, jacobians)
 !
       end subroutine FEM_initialize_w_viz
 !
