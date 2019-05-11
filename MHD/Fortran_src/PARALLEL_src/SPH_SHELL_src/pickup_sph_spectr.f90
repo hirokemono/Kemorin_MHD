@@ -42,12 +42,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_picked_sph_address                               &
-     &         (l_truncation, sph_rj, pick_list, picked)
+     &         (iflag_center, l_truncation, sph_rj, pick_list, picked)
 !
       use t_spheric_rj_data
       use t_pickup_sph_spectr_data
 !
-      integer(kind = kint), intent(in) ::l_truncation
+      integer(kind = kint), intent(in) :: iflag_center
+      integer(kind = kint), intent(in) :: l_truncation
       type(sph_rj_grid), intent(in) :: sph_rj
 !
       type(pickup_mode_list), intent(inout) :: pick_list
@@ -68,7 +69,7 @@
       call alloc_pickup_sph_spec_local(nprocs, picked)
       call alloc_pick_sph_monitor(picked)
 !
-      call set_picked_sph_address(l_truncation, sph_rj,                 &
+      call set_picked_sph_address(iflag_center, l_truncation, sph_rj,   &
      &    pick_list%num_modes, pick_list%num_degree,                    &
      &    pick_list%num_order, pick_list%idx_pick_mode,                 &
      &    pick_list%idx_pick_l, pick_list%idx_pick_m,                   &
@@ -205,7 +206,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_picked_sph_address(l_truncation, sph_rj,           &
+      subroutine set_picked_sph_address                                 &
+     &         (iflag_center, l_truncation, sph_rj,                     &
      &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,           &
      &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,           &
      &          num_pickup, idx_pick_gl, idx_pick_lc,                   &
@@ -214,7 +216,7 @@
       use spherical_harmonics
       use quicksort
 !
-      integer(kind = kint), intent(in) :: l_truncation
+      integer(kind = kint), intent(in) :: iflag_center, l_truncation
       type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint), intent(in) :: num_pick_sph
@@ -322,6 +324,7 @@
      &      idx_pickup(jcou,1), idx_pickup(jcou,2))
       end do
 !
+      if(iflag_center .le. 0) return
       if(idx_pickup(1,3) .eq. 0) then
         idx_pickup(0,1:3) = 0
         idx_pickup(0,4) = sph_rj%inod_rj_center

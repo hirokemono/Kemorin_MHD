@@ -79,6 +79,8 @@
 !>        Stack of modes for monitoring spectrum
 !!          (global, l, global m, Global lm, local lm)
         integer(kind = kint), allocatable :: idx_out(:,:)
+!>        Name of Gauss coefficients  (g_{l}^{m} or h_{l}^{m})
+        character(len=kchara), allocatable :: gauss_mode_name_lc(:)
 !
 !>        Number of fields for monitoring output
 !!         @f$ f(r,\theta,\phi) @f$
@@ -239,6 +241,28 @@
       if(picked%num_sph_mode .gt. 0) picked%scale_for_zelo   = 1.0d0
 !
       end subroutine alloc_scale_4_l0
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_gauss_coef_monitor_lc(gauss)
+!
+      type(picked_spectrum_data), intent(inout) :: gauss
+!
+!
+      allocate( gauss%gauss_mode_name_lc(gauss%num_sph_mode_lc) )
+!
+      end subroutine alloc_gauss_coef_monitor_lc
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_gauss_coef_monitor_lc(gauss)
+!
+      type(picked_spectrum_data), intent(inout) :: gauss
+!
+!
+      deallocate( gauss%gauss_mode_name_lc )
+!
+      end subroutine dealloc_gauss_coef_monitor_lc
 !
 ! -----------------------------------------------------------------------
 !

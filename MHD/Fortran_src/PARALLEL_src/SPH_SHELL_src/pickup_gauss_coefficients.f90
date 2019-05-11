@@ -13,9 +13,6 @@
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_address), intent(in) :: ipol
-!!      subroutine cal_gauss_coefficients                               &
-!!     &         (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r, ipol,&
-!!     &          nnod_rj, ntot_phys_rj, d_rj, gauss_coef)
 !!
 !!      subroutine cal_no_heat_source_Nu(kr_in, kr_out, r_in, r_out,    &
 !!     &          idx_rj_degree_zero, nidx_rj,                          &
@@ -71,8 +68,10 @@
           end do
         end if
 !
+      write(*,*) 'const_picked_sph_address for gauss coefficients'
+      write(50+my_rank,*) 'const_picked_sph_address for gauss coefficients'
         call const_picked_sph_address                                   &
-     &    (sph_params%l_truncation, sph_rj, gauss_list, gauss_coef)
+     &     (izero, sph_params%l_truncation, sph_rj, gauss_list, gauss_coef)
 !
       else
         gauss_coef%num_sph_mode = 0
@@ -84,81 +83,10 @@
       gauss_coef%istack_comp_rj(1) = 1
       gauss_coef%ifield_monitor_rj(1) = 1
       call alloc_gauss_coef_monitor(gauss_coef)
+      call alloc_gauss_coef_monitor_lc(gauss_coef)
       call set_gauss_coefs_labels(gauss_coef)
 !
       end subroutine init_gauss_coefs_4_monitor
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_gauss_coefficients                                 &
-     &         (nlayer_ICB, nlayer_CMB, nidx_rj, radius_1d_rj_r, ipol,  &
-     &          nnod_rj, ntot_phys_rj, d_rj, gauss_coef)
-!
-      use calypso_mpi
-      use t_pickup_sph_spectr_data
-!
-      type(phys_address), intent(in) :: ipol
-      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-      integer(kind = kint), intent(in) :: nidx_rj(2)
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
-!
-      type(picked_spectrum_data), intent(inout) :: gauss_coef
-!
-      integer(kind = kint_gl) :: num64
-      integer(kind = kint) :: inum, j, l, inod
-      real(kind = kreal) :: rcmb_to_Re, ricb_to_Rref
-      real(kind = kreal) :: r_4_gauss_coefs, a2r_4_gauss
-!
-!
-      if(gauss_coef%num_sph_mode .eq. 0) return
-!
-!$omp parallel do
-      do inum = 1, gauss_coef%num_sph_mode
-        gauss_coef%d_rj_lc(1,inum) = 0.0d0
-      end do
-!$omp end parallel do
-!
-      r_4_gauss_coefs = gauss_coef%radius_gl(1)
-      if(r_4_gauss_coefs .ge. radius_1d_rj_r(nlayer_CMB)) then
-        a2r_4_gauss = one / (r_4_gauss_coefs**2)
-        rcmb_to_Re = radius_1d_rj_r(nlayer_CMB) / r_4_gauss_coefs
-!$omp parallel do private(j,l,inod)
-        do inum = 1, gauss_coef%num_sph_mode
-          j = gauss_coef%idx_lc(inum)
-          l = gauss_coef%idx_gl(inum,2)
-          if(j .gt. izero) then
-            inod =  j +    (nlayer_CMB-1) * nidx_rj(2)
-            gauss_coef%d_rj_lc(1,inum)                                  &
-     &                       = d_rj(inod,ipol%i_magne) * dble(l)        &
-     &                        * rcmb_to_Re**l *a2r_4_gauss
-          end if
-        end do
-!$omp end parallel do
-!
-      else if(r_4_gauss_coefs .le. radius_1d_rj_r(nlayer_ICB)) then
-        a2r_4_gauss = one / (radius_1d_rj_r(nlayer_ICB)**2)
-        ricb_to_Rref = r_4_gauss_coefs / radius_1d_rj_r(nlayer_ICB)
-!$omp parallel do private(j,l,inod)
-        do inum = 1, gauss_coef%num_sph_mode
-          j = gauss_coef%idx_lc(inum)
-          l = gauss_coef%idx_gl(inum,2)
-          if(j .gt. izero) then
-            inod =  j +    (nlayer_ICB-1) * nidx_rj(2)
-            gauss_coef%d_rj_lc(1,inum)                                  &
-     &                      = - d_rj(inod,ipol%i_magne)  * dble(l+1)    &
-     &                         * ricb_to_Rref**(l-1) * a2r_4_gauss
-          end if
-        end do
-!$omp end parallel do
-      end if
-!
-      num64 = int(gauss_coef%num_sph_mode,KIND(num64))
-      call calypso_mpi_allreduce_real                                   &
-     &   (gauss_coef%d_rj_lc, gauss_coef%d_rj_gl, num64, MPI_SUM)
-!
-      end subroutine cal_gauss_coefficients
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -170,12 +98,11 @@
 !
       type(picked_spectrum_data), intent(inout) :: gauss
 !
-      integer(kind = kint) :: j, l, m, mm, inum
+      integer(kind = kint) :: l, m, mm, inum
       character(len=kchara) :: gauss_head
 !
 !
       do inum = 1, gauss%num_sph_mode
-        j = gauss%idx_gl(inum,1)
         l = gauss%idx_gl(inum,2)
         m = gauss%idx_gl(inum,3)
         mm = abs(m)
@@ -192,6 +119,25 @@
      &     trim(gauss%gauss_mode_name(inum)), '_'
         call add_index_after_name                                       &
      &     (mm, gauss_head, gauss%gauss_mode_name(inum))
+      end do
+!
+      do inum = 1, gauss%num_sph_mode_lc
+        l = gauss%idx_out(inum,1)
+        m = gauss%idx_out(inum,2)
+        mm = abs(m)
+!
+        if(m .lt. izero) then
+          write(gauss_head,'(a1)') 'h'
+        else
+          write(gauss_head,'(a1)') 'g'
+        end if
+!
+        call add_index_after_name                                       &
+     &     (l, gauss_head, gauss%gauss_mode_name_lc(inum))
+        write(gauss_head,'(a,a1)')                                      &
+     &     trim(gauss%gauss_mode_name_lc(inum)), '_'
+        call add_index_after_name                                       &
+     &     (mm, gauss_head, gauss%gauss_mode_name_lc(inum))
       end do
 !
       end subroutine set_gauss_coefs_labels

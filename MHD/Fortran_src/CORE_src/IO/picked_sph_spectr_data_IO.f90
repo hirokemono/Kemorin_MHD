@@ -102,13 +102,13 @@
       do inum = 1, picked%num_sph_mode
         do knum = 1, picked%num_layer
           ipick = knum + (inum-1) * picked%num_layer
-          write(id_pick_mode,'(i16,1pe23.14e3)', advance='NO')          &
+          write(id_pick_mode,'(i16,1pe25.14e3)', advance='NO')          &
      &               i_step, time
-          write(id_pick_mode,'(i16,1pe23.14e3,2i16)', advance='NO')     &
+          write(id_pick_mode,'(i16,1pe25.14e3,2i16)', advance='NO')     &
      &               picked%id_radius(knum), picked%radius_gl(knum),    &
      &               picked%idx_gl(inum,2:3)
           do i_fld = 1, picked%ntot_comp_rj
-            write(id_pick_mode,'(1pe23.14e3)', advance='NO')            &
+            write(id_pick_mode,'(1pe25.14e3)', advance='NO')            &
      &              picked%d_rj_gl(i_fld,ipick)
           end do
           write(id_pick_mode,'(a)') ''

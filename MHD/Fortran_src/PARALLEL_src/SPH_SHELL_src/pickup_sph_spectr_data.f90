@@ -53,13 +53,14 @@
       type(picked_spectrum_data), intent(inout) :: picked
 !
       integer(kind = kint) :: l, num
+      integer(kind = kint) :: iflag_center = 0
 !
 !
       num = pick_list%num_modes                                         &
      &     + pick_list%num_degree + pick_list%num_order
       if(num .eq. 0) return
 !
-      call init_sph_radial_monitor_list(sph_rj, picked)
+      call init_sph_radial_monitor_list(sph_rj, picked, iflag_center)
 !
       call count_sph_labels_4_monitor(rj_fld%num_phys,                  &
      &    rj_fld%num_component, rj_fld%iflag_monitor, picked)
@@ -72,8 +73,9 @@
         end do
       end if
 !
-      call const_picked_sph_address                                     &
-     &   (sph_params%l_truncation, sph_rj, pick_list, picked)
+      write(*,*) 'const_picked_sph_address for picked_spectr'
+      call const_picked_sph_address(iflag_center,                       &
+     &    sph_params%l_truncation, sph_rj, pick_list, picked)
 !
       call set_sph_fld_id_4_monitor(rj_fld%num_phys,                    &
      &    rj_fld%num_component, rj_fld%iflag_monitor, picked)

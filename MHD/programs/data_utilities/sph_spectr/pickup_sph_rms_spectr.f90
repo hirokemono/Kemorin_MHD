@@ -89,11 +89,13 @@
       type(pickup_mode_list), intent(inout) :: pick_list
       type(picked_spectrum_data), intent(inout) :: pick_rms
 !
+      integer(kind = kint) :: iflag_center = 0
 !
-      call init_sph_radial_monitor_list(sph_rj, pick_rms)
 !
-      call const_picked_sph_address                                    &
-     &   (sph_params%l_truncation, sph_rj, pick_list, pick_rms)
+      call init_sph_radial_monitor_list(sph_rj, pick_rms, iflag_center)
+!
+      call const_picked_sph_address(iflag_center,                       &
+     &    sph_params%l_truncation, sph_rj, pick_list, pick_rms)
 !
       call set_sph_rms_labels_4_monitor(pwr, pick_rms)
 !

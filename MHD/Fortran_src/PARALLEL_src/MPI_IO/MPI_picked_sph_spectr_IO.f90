@@ -18,16 +18,15 @@
       use calypso_mpi
       use m_calypso_mpi_IO
 !
+      use t_calypso_mpi_IO_param
       use t_spheric_parameter
-      use t_pickup_sph_spectr_data
       use t_pickup_sph_spectr_data
       use t_phys_data
       use t_time_data
 !
       implicit  none
 !
-      integer, parameter, private :: len_fixed = 4*16 + 2*23 + 1
-      integer, parameter, private :: len_real = 23
+      integer, parameter, private :: len_fixed = 4*16 + 2*25 + 1
 !
 ! -----------------------------------------------------------------------
 !
@@ -46,8 +45,7 @@
       type(phys_data), intent(in) :: rj_fld
       type(picked_spectrum_data), intent(in) :: picked
 !
-      integer(kind = kint) :: id_picked
-      integer(kind = kint_gl) :: ioff_gl
+      type(calypso_MPI_IO_params) :: IO_param
       character(len = kchara) :: file_name
 !
 !
@@ -59,29 +57,24 @@
 !
       call calypso_mpi_barrier
       call calypso_mpi_append_file_open                                 &
-     &   (file_name, nprocs, id_picked, ioff_gl)
+     &   (file_name, nprocs, IO_param%id_rank, IO_param%ioff_gl)
       call calypso_mpi_barrier
 !
-      call write_ucd_data_mpi                                           &
-     &   (id_picked, ioff_gl, time_d%i_time_step, time_d%time,          &
-     &    sph_rj, rj_fld, picked, picked%ntot_comp_rj)
+      call write_picked_specr_mpi(IO_param, time_d, sph_rj, rj_fld,     &
+     &    picked, picked%ntot_comp_rj)
 !
-      call calypso_close_mpi_file(id_picked)
+      call calypso_close_mpi_file(IO_param%id_rank)
 !
       end subroutine append_picked_spectrum_file
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine write_ucd_data_mpi(id_picked, ioff_gl, i_step, time,   &
+      subroutine write_picked_specr_mpi(IO_param, time_d,               &
      &          sph_rj, rj_fld, picked, ntot_comp_rj)
 !
-      integer, intent(in) ::  id_picked
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-!
-      integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: time
-!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(time_data), intent(in) :: time_d
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
       type(picked_spectrum_data), intent(in) :: picked
@@ -94,16 +87,16 @@
       integer :: ilen_n
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
-      character(len = len_fixed+ntot_comp_rj*23),                       &
+      character(len = len_fixed+ntot_comp_rj*25),                       &
      &                                 allocatable :: pickedbuf(:)
       real(kind=kreal), allocatable :: d_rj_out(:)
 !
 !
-      ilen_n = len_fixed + ntot_comp_rj*23
+      ilen_n = len_fixed + ntot_comp_rj*25
       num = picked%istack_picked_spec_lc(my_rank+1)                     &
      &     - picked%istack_picked_spec_lc(my_rank)
       if(num .gt. 0) then
-        ioffset = ioff_gl                                               &
+        ioffset = IO_param%ioff_gl                                      &
      &         + ilen_n * picked%istack_picked_spec_lc(my_rank)
 !
         allocate(d_rj_out(ntot_comp_rj))
@@ -113,9 +106,10 @@
           ist = 1
           call pick_degre0_sped_4_monitor                               &
      &       (rj_fld, picked, ntot_comp_rj, d_rj_out)
-          pickedbuf(1) = pickes_each_mode(i_step, time,                 &
-     &                     zero, izero, izero, izero,                   &
-     &                     ntot_comp_rj, d_rj_out)
+          pickedbuf(1)                                                  &
+     &           = picked_each_mode(time_d%i_time_step, time_d%time,    &
+     &                              zero, izero, izero, izero,          &
+     &                              ntot_comp_rj, d_rj_out)
         end if
 !
         do inum = 1, picked%num_sph_mode_lc
@@ -125,27 +119,27 @@
      &           sph_rj, rj_fld, picked, ntot_comp_rj, d_rj_out)
 !
              pickedbuf(ipick+ist)                                       &
-     &           = pickes_each_mode(i_step, time,                       &
+     &           = picked_each_mode(time_d%i_time_step, time_d%time,    &
      &            picked%radius_gl(knum), picked%id_radius(knum),       &
      &            picked%idx_out(inum,1), picked%idx_out(inum,2),       &
      &            ntot_comp_rj, d_rj_out)
           end do
         end do
 
-        call calypso_mpi_seek_wrt_mul_chara                            &
-     &     (id_picked, ioffset, ilen_n, num, pickedbuf)
+        call calypso_mpi_seek_wrt_mul_chara                             &
+     &     (IO_param%id_rank, ioffset, ilen_n, num, pickedbuf)
         deallocate(d_rj_out, pickedbuf)
       end if
 !
-      ioff_gl = ioff_gl                                                &
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
      &       + ilen_n * picked%istack_picked_spec_lc(nprocs)
 !
-      end subroutine write_ucd_data_mpi
+      end subroutine write_picked_specr_mpi
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      function pickes_each_mode                                         &
+      function picked_each_mode                                         &
      &       (i_step, time, radius, kr, l, m, ntot_comp_rj, d_rj_out)
 !
       integer(kind = kint), intent(in) :: i_step
@@ -154,18 +148,18 @@
       integer(kind = kint), intent(in) :: ntot_comp_rj
       real(kind = kreal), intent(in) :: d_rj_out(ntot_comp_rj)
 !
-      character(len = len_fixed+ntot_comp_rj*23) :: pickes_each_mode
+      character(len = len_fixed+ntot_comp_rj*25) :: picked_each_mode
 !
       character(len=kchara) :: fmt_txt
 !
 !
       write(fmt_txt,'(a37,i4,a17)')                                     &
-     &         '(i16,1pe23.14e3, i16,1pe23.14e3,2i16,',                 &
-     &           ntot_comp_rj, '(1pE23.14e3), a1)'
-      write(pickes_each_mode,fmt_txt) i_step, time,                     &
+     &         '(i16,1pe25.14e3, i16,1pe25.14e3,2i16,',                 &
+     &           ntot_comp_rj, '(1pE25.14e3), a1)'
+      write(picked_each_mode,fmt_txt) i_step, time,                     &
      &          kr, radius, l, m, d_rj_out(1:ntot_comp_rj), char(10)
 !
-      end function  pickes_each_mode
+      end function  picked_each_mode
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

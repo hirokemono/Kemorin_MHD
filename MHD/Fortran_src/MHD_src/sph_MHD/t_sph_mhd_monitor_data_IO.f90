@@ -146,11 +146,10 @@
       call cal_sph_monitor_data                                         &
      &   (SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                   &
      &    sph_MHD_bc%sph_bc_U, leg, SPH_MHD%ipol, SPH_MHD%fld,          &
-     &    monitor%pwr, monitor%WK_pwr, monitor%gauss_coef,              &
-     &    monitor%Nusselt)
+     &    monitor%pwr, monitor%WK_pwr, monitor%Nusselt)
 !
       call output_sph_monitor_data(time_d, SPH_MHD%sph%sph_params,      &
-     &    SPH_MHD%sph%sph_rj, SPH_MHD%fld,                              &
+     &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld,                &
      &    monitor%pwr, monitor%pick_coef, monitor%gauss_coef,           &
      &    monitor%Nusselt)
 !
