@@ -15,14 +15,6 @@
 !!
 !!      subroutine allocate_iflag_pick_sph(l_truncation)
 !!      subroutine deallocate_iflag_pick_sph
-!!      subroutine count_picked_sph_adrress(l_truncation,               &
-!!     &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,         &
-!!     &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,         &
-!!     &          num_pickup)
-!!      subroutine set_picked_sph_address(l_truncation, sph_rj,         &
-!!     &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,         &
-!!     &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,         &
-!!     &          num_pickup, idx_pick_gl, idx_pick_lc)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!      subroutine set_scale_4_vect_l0(num_pickup,                      &
 !!     &          idx_pick_gl, scale_for_zelo)
@@ -33,10 +25,15 @@
       use m_precision
       use m_constants
 !
+      use calypso_mpi
+      use t_spheric_rj_data
+!
       implicit  none
 !
       integer(kind = kint), allocatable :: iflag_picked_sph(:)
       private :: iflag_picked_sph
+!
+      private :: count_picked_sph_adrress, set_picked_sph_address
 !
 ! -----------------------------------------------------------------------
 !
@@ -56,25 +53,54 @@
       type(pickup_mode_list), intent(inout) :: pick_list
       type(picked_spectrum_data), intent(inout) :: picked
 !
+      integer :: i
+      integer(kind = kint) :: ntot
+!
 !
       call allocate_iflag_pick_sph(l_truncation)
 !
-      call count_picked_sph_adrress(l_truncation,                       &
+      call count_picked_sph_adrress(l_truncation, sph_rj,               &
      &    pick_list%num_modes, pick_list%num_degree,                    &
      &    pick_list%num_order, pick_list%idx_pick_mode,                 &
      &    pick_list%idx_pick_l, pick_list%idx_pick_m,                   &
-     &    picked%num_sph_mode)
+     &    picked%num_sph_mode, picked%num_sph_mode_lc)
 !
+      call alloc_pickup_sph_spec_local(nprocs, picked)
       call alloc_pick_sph_monitor(picked)
 !
       call set_picked_sph_address(l_truncation, sph_rj,                 &
      &    pick_list%num_modes, pick_list%num_degree,                    &
      &    pick_list%num_order, pick_list%idx_pick_mode,                 &
      &    pick_list%idx_pick_l, pick_list%idx_pick_m,                   &
-     &    picked%num_sph_mode, picked%idx_gl, picked%idx_lc)
+     &    picked%num_sph_mode, picked%idx_gl, picked%idx_lc,            &
+     &    picked%num_sph_mode_lc, picked%idx_out)
+!
+      ntot = picked%ntot_pick_spectr_lc
+      if(picked%idx_out(0,4) .gt. 0) ntot = ntot + 1
+      call MPI_Allgather(ntot, 1, CALYPSO_INTEGER,                      &
+     &    picked%istack_picked_spec_lc(1), 1, CALYPSO_INTEGER,          &
+     &    CALYPSO_COMM, ierr_MPI)
+!
+      picked%istack_picked_spec_lc(0) = 0
+      do i = 1, nprocs
+        picked%istack_picked_spec_lc(i)                                 &
+     &       =  picked%istack_picked_spec_lc(i-1)                       &
+     &        + picked%istack_picked_spec_lc(i)
+      end do
+!
 !
       call deallocate_iflag_pick_sph
       call dealloc_pick_sph_mode(pick_list)
+!
+      write(50+my_rank,*) 'idx_out', picked%num_sph_mode_lc
+      do i = 0,  picked%num_sph_mode_lc
+        write(50+my_rank,*) i, picked%idx_out(i,1:4)
+      end do
+      write(50+my_rank,*) 'idx_lc, idx_lc', picked%num_sph_mode
+      do i = 1,  picked%num_sph_mode
+        write(50+my_rank,*) i, picked%idx_gl(i,2:3),                    &
+     &                      picked%idx_gl(i,1), picked%idx_lc(i)
+      end do
 !
       end subroutine const_picked_sph_address
 !
@@ -104,14 +130,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_picked_sph_adrress(l_truncation,                 &
+      subroutine count_picked_sph_adrress(l_truncation, sph_rj,         &
      &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,           &
      &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,           &
-     &          num_pickup)
+     &          num_pickup, num_pickup_lc)
 !
       use spherical_harmonics
 !
       integer(kind = kint), intent(in) :: l_truncation
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
       integer(kind = kint), intent(in) :: num_pick_sph
       integer(kind = kint), intent(in) :: num_pick_sph_l
@@ -123,19 +150,23 @@
      &                     :: idx_pick_sph_m(num_pick_sph_m)
 !
       integer(kind = kint), intent(inout) :: num_pickup
+      integer(kind = kint), intent(inout) :: num_pickup_lc
 !
-      integer(kind = kint) :: l, m, mm, j, inum
+      integer(kind = kint) :: l, m, mm, j_gl, j_lc, inum
 !
 !
       iflag_picked_sph = -1
       num_pickup = 0
+      num_pickup_lc = 0
       do inum = 1, num_pick_sph
         l = idx_pick_sph(inum,1)
         m = idx_pick_sph(inum,2)
         if(l .le. l_truncation) then
-          j = get_idx_by_full_degree_order(l,m)
+          j_gl = get_idx_by_full_degree_order(l,m)
+          j_lc = find_local_sph_address(sph_rj, int(l), int(m))
           num_pickup = num_pickup + 1
-          iflag_picked_sph(j)  = num_pickup
+          iflag_picked_sph(j_gl)  = num_pickup
+          if(j_lc .gt. 0) num_pickup_lc = num_pickup_lc + 1
         end if
       end do
 !
@@ -143,10 +174,12 @@
         l = idx_pick_sph_l(inum)
         if(l .le. l_truncation) then
           do m = -l, l
-            j = get_idx_by_full_degree_order(l,m)
-            if(iflag_picked_sph(j) .lt. izero) then
+            j_gl = get_idx_by_full_degree_order(l,m)
+            j_lc = find_local_sph_address(sph_rj, int(l), int(m))
+            if(iflag_picked_sph(j_gl) .lt. izero) then
               num_pickup = num_pickup + 1
-              iflag_picked_sph(j)  = num_pickup
+              iflag_picked_sph(j_gl)  = num_pickup
+              if(j_lc .gt. 0) num_pickup_lc = num_pickup_lc + 1
             end if
           end do
         end if
@@ -157,10 +190,12 @@
         mm = abs(m)
         if(mm .le. l_truncation) then
           do l = mm, l_truncation
-            j = get_idx_by_full_degree_order(l,m)
-            if(iflag_picked_sph(j) .lt. izero) then
+            j_gl = get_idx_by_full_degree_order(l,m)
+            j_lc = find_local_sph_address(sph_rj, int(l), int(m))
+            if(iflag_picked_sph(j_gl) .lt. izero) then
               num_pickup = num_pickup + 1
-              iflag_picked_sph(j)  = num_pickup
+              iflag_picked_sph(j_gl)  = num_pickup
+              if(j_lc .gt. 0) num_pickup_lc = num_pickup_lc + 1
             end if
           end do
         end if
@@ -173,9 +208,9 @@
       subroutine set_picked_sph_address(l_truncation, sph_rj,           &
      &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,           &
      &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,           &
-     &          num_pickup, idx_pick_gl, idx_pick_lc)
+     &          num_pickup, idx_pick_gl, idx_pick_lc,                   &
+     &          num_pickup_lc, idx_pickup)
 !
-      use t_spheric_rj_data
       use spherical_harmonics
       use quicksort
 !
@@ -192,27 +227,35 @@
      &                     :: idx_pick_sph_m(num_pick_sph_m)
 !
       integer(kind = kint), intent(in) :: num_pickup
+      integer(kind = kint), intent(in) :: num_pickup_lc
 !
       integer(kind = kint), intent(inout) :: idx_pick_gl(num_pickup,3)
       integer(kind = kint), intent(inout) :: idx_pick_lc(num_pickup)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: idx_pickup(0:num_pickup_lc,4)
 !
-      integer(kind = kint) :: l, m, mm, j, icou, inum
-      integer(kind = 4) :: l4, m4
+      integer(kind = kint) :: l, m, mm, j_lc, j_gl, icou, inum, jcou
 !
 !
       iflag_picked_sph = -1
       icou = 0
+      jcou = 0
       do inum = 1, num_pick_sph
         l = idx_pick_sph(inum,1)
         m = idx_pick_sph(inum,2)
-        l4 = int(l)
-        m4 = int(m)
-        j = get_idx_by_full_degree_order(l,m)
+        j_gl = get_idx_by_full_degree_order(l,m)
+        j_lc = find_local_sph_address(sph_rj, int(l), int(m))
         if(l .le. l_truncation) then
           icou = icou + 1
-          idx_pick_gl(icou,1) = j
-          idx_pick_lc(icou) = find_local_sph_address(sph_rj, l4, m4)
-          iflag_picked_sph(j)  = icou
+          idx_pick_gl(icou,1) = j_gl
+          idx_pick_lc(icou) = j_lc
+          iflag_picked_sph(j_gl)  = icou
+!
+          if(j_lc .gt. 0) then
+            jcou = jcou + 1
+            idx_pickup(jcou,3) = j_gl
+            idx_pickup(jcou,4) = j_lc
+          end if
         end if
       end do
 !
@@ -220,15 +263,19 @@
         l = idx_pick_sph_l(inum)
         if(l .le. l_truncation) then
           do m = -l, l
-           l4 = int(l)
-           m4 = int(m)
-           j = get_idx_by_full_degree_order(l,m)
-            if(iflag_picked_sph(j) .lt. izero) then
+            j_gl = get_idx_by_full_degree_order(l,m)
+            j_lc = find_local_sph_address(sph_rj, int(l), int(m))
+            if(iflag_picked_sph(j_gl) .lt. izero) then
               icou = icou + 1
-              idx_pick_gl(icou,1) = j
-              idx_pick_lc(icou)                                         &
-     &           = find_local_sph_address(sph_rj, l4, m4)
-              iflag_picked_sph(j)  = icou
+              idx_pick_gl(icou,1) = j_gl
+              idx_pick_lc(icou) = j_lc
+              iflag_picked_sph(j_gl)  = icou
+!
+              if(j_lc .gt. 0) then
+                jcou = jcou + 1
+                idx_pickup(jcou,3) = j_gl
+                idx_pickup(jcou,4) = j_lc
+              end if
             end if
           end do
         end if
@@ -239,15 +286,19 @@
         mm = abs(m)
         if(mm .le. l_truncation) then
           do l = mm, l_truncation
-            l4 = int(l)
-            m4 = int(m)
-            j = get_idx_by_full_degree_order(l,m)
-            if(iflag_picked_sph(j) .lt. izero) then
+            j_gl = get_idx_by_full_degree_order(l,m)
+            j_lc = find_local_sph_address(sph_rj, int(l), int(m))
+            if(iflag_picked_sph(j_gl) .lt. izero) then
               icou = icou + 1
-              idx_pick_gl(icou,1) = j
-              idx_pick_lc(icou)                                         &
-     &              = find_local_sph_address(sph_rj, l4, m4)
-              iflag_picked_sph(j)  = icou
+              idx_pick_gl(icou,1) = j_gl
+              idx_pick_lc(icou) = j_lc
+              iflag_picked_sph(j_gl)  = icou
+!
+              if(j_lc .gt. 0) then
+                jcou = jcou + 1
+                idx_pickup(jcou,3) = j_gl
+                idx_pickup(jcou,4) = j_lc
+              end if
             end if
           end do
         end if
@@ -260,6 +311,21 @@
         call get_degree_order_by_full_j(idx_pick_gl(icou,1),            &
      &      idx_pick_gl(icou,2), idx_pick_gl(icou,3))
       end do
+!
+      if(num_pickup_lc .le. 0) return
+!
+      call quicksort_w_index(num_pickup_lc, idx_pickup(1,3),            &
+     &    ione, num_pickup_lc, idx_pickup(1,4))
+!
+      do jcou = 1, num_pickup_lc
+        call get_degree_order_by_full_j(idx_pickup(jcou,3),             &
+     &      idx_pickup(jcou,1), idx_pickup(jcou,2))
+      end do
+!
+      if(idx_pickup(1,3) .eq. 0) then
+        idx_pickup(0,1:3) = 0
+        idx_pickup(0,4) = sph_rj%inod_rj_center
+      end if
 !
       end subroutine set_picked_sph_address
 !

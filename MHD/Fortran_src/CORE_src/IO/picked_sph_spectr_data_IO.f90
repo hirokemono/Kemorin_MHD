@@ -31,7 +31,7 @@
 !>      File ID for spectrum monitor file
       integer(kind = kint), parameter :: id_pick_mode = 22
 !
-      private :: open_sph_spec_4_monitor
+!      private :: open_sph_spec_4_monitor
 !
 ! -----------------------------------------------------------------------
 !
@@ -39,41 +39,40 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine open_sph_spec_4_monitor(picked)
+      subroutine open_sph_spec_4_monitor(id_file, file_name, picked)
 !
-      use set_parallel_file_name
       use write_field_labels
 !
       type(picked_spectrum_data), intent(in) :: picked
 !
-      character(len = kchara) :: file_name
+      character(len = kchara), intent(in) :: file_name
+      integer(kind = kint), intent(in) :: id_file
 !
 !
-      file_name = add_dat_extension(picked%file_prefix)
-      open(id_pick_mode, file = file_name, form='formatted',            &
+      open(id_file, file = file_name, form='formatted',                 &
      &    status='old', position='append', err = 99)
       return
 !
    99 continue
-      close(id_pick_mode)
-      open(id_pick_mode, file = file_name, form='formatted',            &
+      close(id_file)
+      open(id_file, file = file_name, form='formatted',                 &
      &    status='replace')
 !
-      write(id_pick_mode,'(a)')    '#'
-      write(id_pick_mode,'(a)')    '# num_layers, num_spectr'
-      write(id_pick_mode,'(2i16)')                                      &
+      write(id_file,'(a)')    '#'
+      write(id_file,'(a)')    '# num_layers, num_spectr'
+      write(id_file,'(2i16)')                                           &
      &                           picked%num_layer, picked%num_sph_mode
-      write(id_pick_mode,'(a)')    '# number of component'
-      write(id_pick_mode,'(i16)') picked%ntot_comp_rj
+      write(id_file,'(a)')    '# number of component'
+      write(id_file,'(i16)') picked%ntot_comp_rj
 !
-      write(id_pick_mode,'(a)',advance='NO')  't_step    time    '
-      write(id_pick_mode,'(a)',advance='NO')  'radius_ID    radius    '
-      write(id_pick_mode,'(a)',advance='NO')  'degree    order    '
+      write(id_file,'(a)',advance='NO')  't_step    time    '
+      write(id_file,'(a)',advance='NO')  'radius_ID    radius    '
+      write(id_file,'(a)',advance='NO')  'degree    order    '
 !
-      call write_multi_labels(id_pick_mode, picked%ntot_comp_rj,        &
+      call write_multi_labels(id_file, picked%ntot_comp_rj,             &
      &    picked%spectr_name)
 
-      write(id_pick_mode,'(a)') ''
+      write(id_file,'(a)') ''
 !
       end subroutine open_sph_spec_4_monitor
 !
@@ -82,6 +81,8 @@
 !
       subroutine write_sph_spec_monitor(id_rank, i_step, time, picked)
 !
+      use set_parallel_file_name
+!
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
@@ -89,12 +90,14 @@
       type(picked_spectrum_data), intent(in) :: picked
 !
       integer(kind = kint) :: inum, knum, ipick, i_fld
+      character(len = kchara)  :: file_name
 !
 !
       if(picked%num_sph_mode .eq. izero) return
       if(id_rank .gt. izero) return
 !
-      call open_sph_spec_4_monitor(picked)
+      file_name = add_dat_extension(picked%file_prefix)
+      call open_sph_spec_4_monitor(id_pick_mode, file_name, picked)
 !
       do inum = 1, picked%num_sph_mode
         do knum = 1, picked%num_layer

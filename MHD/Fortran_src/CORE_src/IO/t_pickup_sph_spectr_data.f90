@@ -70,15 +70,25 @@
 !>        Local spherical harmonics ID to evaluate  monitoring spectrum
         integer(kind = kint), allocatable :: idx_lc(:)
 !
+!>        Number of modes of monitoring spectrum in each process
+        integer(kind = kint) :: ntot_pick_spectr_lc = 0
+!>        Number of modes of monitoring spectrum in each process
+        integer(kind = kint) :: num_sph_mode_lc =  0
+!>        Stack of modes for monitoring spectrum
+        integer(kind = kint), allocatable :: istack_picked_spec_lc(:)
+!>        Stack of modes for monitoring spectrum
+!!          (global, l, global m, Global lm, local lm)
+        integer(kind = kint), allocatable :: idx_out(:,:)
+!
 !>        Number of fields for monitoring output
 !!         @f$ f(r,\theta,\phi) @f$
-        integer (kind=kint) ::  num_field_rj =  0
+        integer(kind = kint) ::  num_field_rj =  0
 !>        Total number of component for monitoring spectrum
         integer(kind = kint) :: ntot_comp_rj =  0
 !>        Number of component for monitoring spectrum
-        integer (kind=kint), allocatable :: istack_comp_rj(:)
+        integer(kind = kint), allocatable :: istack_comp_rj(:)
 !>        Field  address for monitoring of @f$ f(r,j) @f$
-        integer (kind=kint), allocatable :: ifield_monitor_rj(:)
+        integer(kind = kint), allocatable :: ifield_monitor_rj(:)
 !>        monitoring spectrum
         real(kind = kreal), allocatable :: d_rj_gl(:,:)
 !>        Localy evaluated  monitoring spectrum
@@ -152,6 +162,43 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine alloc_pickup_sph_spec_local(nprocs, picked)
+!
+      integer, intent(in) :: nprocs
+      type(picked_spectrum_data), intent(inout) :: picked
+!
+      integer(kind = kint) :: num
+!
+!
+      picked%ntot_pick_spectr_lc                                        &
+     &      = picked%num_sph_mode_lc * picked%num_layer
+      num = picked%ntot_pick_spectr_lc
+!
+      allocate( picked%istack_picked_spec_lc(0:nprocs) )
+!
+      allocate( picked%idx_out(0:picked%num_sph_mode_lc,4) )
+!
+      picked%istack_picked_spec_lc = 0
+!$omp parallel workshare
+      picked%idx_out =  -1
+!$omp end parallel workshare
+!
+      end subroutine alloc_pickup_sph_spec_local
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_pickup_sph_spec_local(picked)
+!
+      type(picked_spectrum_data), intent(inout) :: picked
+!
+!
+      deallocate( picked%istack_picked_spec_lc)
+      deallocate( picked%idx_out)
+!
+      end subroutine dealloc_pickup_sph_spec_local
+!
+! -----------------------------------------------------------------------
+!
       subroutine alloc_pick_sph_monitor(picked)
 !
       type(picked_spectrum_data), intent(inout) :: picked
@@ -159,7 +206,7 @@
       integer(kind = kint) :: num
 !
 !
-      num = picked%num_sph_mode*picked%num_layer
+      num = picked%num_sph_mode * picked%num_layer
 !
       allocate( picked%idx_gl(picked%num_sph_mode,3) )
       allocate( picked%idx_lc(picked%num_sph_mode) )

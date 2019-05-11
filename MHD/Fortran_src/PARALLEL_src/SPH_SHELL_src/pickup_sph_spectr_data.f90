@@ -9,9 +9,6 @@
 !!@verbatim
 !!      subroutine init_sph_spec_4_monitor(sph_params, sph_rj, rj_fld,  &
 !!     &          pick_list, picked)
-!!      subroutine pickup_sph_spec_4_monitor(sph_rj, n_point,           &
-!!     &          num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj, &
-!!     &          picked)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(pickup_mode_list), intent(inout) :: pick_list
@@ -91,105 +88,6 @@
      &    rj_fld%phys_name, picked)
 !
       end subroutine init_sph_spec_4_monitor
-!
-! -----------------------------------------------------------------------
-!
-      subroutine pickup_sph_spec_4_monitor(sph_rj, n_point,             &
-     &          num_phys_rj, ntot_phys_rj, istack_phys_comp_rj, d_rj,   &
-     &          picked)
-!
-      use calypso_mpi
-      use pickup_sph_coefs
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: n_point
-      integer(kind = kint), intent(in) :: num_phys_rj, ntot_phys_rj
-      integer(kind = kint), intent(in)                                  &
-     &                  :: istack_phys_comp_rj(0:num_phys_rj)
-      real(kind=kreal), intent(in) :: d_rj(n_point,ntot_phys_rj)
-!
-      type(picked_spectrum_data), intent(inout) :: picked
-!
-      integer(kind = kint) :: inum, knum, j, k, nd, i_fld, j_fld
-      integer(kind = kint) :: inod, ipick, icou, jcou, kst, ncomp
-      integer(kind = kint_gl) :: num64
-!
-!
-      if(picked%num_sph_mode * picked%num_layer .eq. 0) return
-!
-!$omp parallel do
-      do inum = 1, picked%num_sph_mode*picked%num_layer
-        picked%d_rj_lc(1:picked%ntot_comp_rj,inum) = zero
-      end do
-!$omp end parallel do
-!
-!   Set field at center
-      kst = 1
-      if(picked%idx_gl(1,1).eq.0 .and. sph_rj%iflag_rj_center.gt.0) then
-        kst = kst + 1
-        inod = sph_rj%inod_rj_center
-!
-        do j_fld = 1, picked%num_field_rj
-          i_fld = picked%ifield_monitor_rj(j_fld)
-          ncomp = istack_phys_comp_rj(i_fld)                            &
-     &           - istack_phys_comp_rj(i_fld-1)
-          icou = istack_phys_comp_rj(i_fld-1)
-          jcou = picked%istack_comp_rj(j_fld-1)
-          if(ncomp .eq. 3) then
-             picked%d_rj_lc(jcou+1,1) = 0.0d0
-             picked%d_rj_lc(jcou+2,1) = 0.0d0
-             picked%d_rj_lc(jcou+3,1) = 0.0d0
-           else
-             do nd = 1, ncomp
-               picked%d_rj_lc(jcou+nd,1)= d_rj(inod,icou+nd)
-             end do
-           end if
-         end do
-!
-      end if
-!
-!!$omp parallel private(j)
-      do inum = 1, picked%num_sph_mode
-        j = picked%idx_lc(inum)
-        if(j .gt. izero) then
-!!$omp do private(knum,k,inod,ipick,j_fld,i_fld,icou,jcou,nd)
-          do knum = kst, picked%num_layer
-            k = picked%id_radius(knum)
-            inod =  j +    (k-1) * sph_rj%nidx_rj(2)
-            ipick = knum + (inum-1) * picked%num_layer
-!
-            do j_fld = 1, picked%num_field_rj
-              i_fld = picked%ifield_monitor_rj(j_fld)
-              ncomp = istack_phys_comp_rj(i_fld)                        &
-     &               - istack_phys_comp_rj(i_fld-1)
-              icou = istack_phys_comp_rj(i_fld-1)
-              jcou = picked%istack_comp_rj(j_fld-1)
-              if(ncomp .eq. 3) then
-                  picked%d_rj_lc(jcou+1,ipick)                          &
-     &                = picked%scale_for_zelo(inum) * d_rj(inod,icou+1)
-                  picked%d_rj_lc(jcou+2,ipick)                          &
-     &                = picked%scale_for_zelo(inum) * d_rj(inod,icou+3)
-                  picked%d_rj_lc(jcou+3,ipick)                          &
-     &                = picked%scale_for_zelo(inum) * d_rj(inod,icou+2)
-              else
-                do nd = 1, ncomp
-                  picked%d_rj_lc(jcou+nd,ipick)= d_rj(inod,icou+nd)
-                end do
-              end if
-            end do
-!
-          end do
-!!$omp end do nowait
-        end if
-      end do
-!!$omp end parallel
-!
-      num64 = picked%ntot_comp_rj * picked%num_layer                    &
-     &       * picked%num_sph_mode
-      call calypso_mpi_allreduce_real                                   &
-     &   (picked%d_rj_lc, picked%d_rj_gl, num64, MPI_SUM)
-!
-      end subroutine pickup_sph_spec_4_monitor
 !
 ! -----------------------------------------------------------------------
 !
