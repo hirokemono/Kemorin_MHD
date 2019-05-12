@@ -88,6 +88,7 @@
       use m_ctl_params_sph_utils
       use copy_rj_phys_data_4_IO
       use picked_sph_spectr_data_IO
+      use MPI_picked_sph_mean_sq_IO
 !
 !
       integer(kind = kint) :: i_step
@@ -112,13 +113,12 @@
 !
 !  evaluate energies
 !
-        if (iflag_debug.gt.0) write(*,*) 'pickup_sph_rms_4_monitor'
-        call pickup_sph_rms_4_monitor(SPH_dat_ss%sph%sph_rj, leg_s,     &
-     &      SPH_dat_ss%ipol, SPH_dat_ss%fld, pwr_spec, pick_rms1)
-!
-        if (iflag_debug.gt.0) write(*,*) 'write_sph_spec_monitor'
-        call write_sph_spec_monitor                                     &
-     &     (my_rank, i_step, t_SHR%time_d%time, pick_rms1)
+        if(iflag_debug .gt. 0)                                          &
+     &        write(*,*) 'append_picked_sph_mean_sq_file'
+        t_SHR%time_d%i_time_step = i_step
+        call append_picked_sph_mean_sq_file                             &
+     &     (t_SHR%time_d, SPH_dat_ss%sph%sph_rj, leg_s,                 &
+     &      SPH_dat_ss%ipol, SPH_dat_ss%fld, pick_rms1)
       end do
 !
       end subroutine analyze_pick_rms_sph
