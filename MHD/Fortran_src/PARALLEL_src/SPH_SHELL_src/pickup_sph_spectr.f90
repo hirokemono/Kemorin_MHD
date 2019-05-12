@@ -17,7 +17,7 @@
 !!      subroutine deallocate_iflag_pick_sph
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!      subroutine set_scale_4_vect_l0(num_pickup,                      &
-!!     &          idx_pick_gl, scale_for_zelo)
+!!     &          idx_pick_gl, scale_for_zero)
 !!@endverbatim
 !
       module pickup_sph_spectr
@@ -73,7 +73,7 @@
      &    pick_list%num_modes, pick_list%num_degree,                    &
      &    pick_list%num_order, pick_list%idx_pick_mode,                 &
      &    pick_list%idx_pick_l, pick_list%idx_pick_m,                   &
-     &    picked%num_sph_mode, picked%idx_gl, picked%idx_lc,            &
+     &    picked%num_sph_mode, picked%idx_gl,                           &
      &    picked%num_sph_mode_lc, picked%idx_out)
 !
       ntot = picked%ntot_pick_spectr_lc
@@ -92,16 +92,6 @@
 !
       call deallocate_iflag_pick_sph
       call dealloc_pick_sph_mode(pick_list)
-!
-      write(50+my_rank,*) 'idx_out', picked%num_sph_mode_lc
-      do i = 0,  picked%num_sph_mode_lc
-        write(50+my_rank,*) i, picked%idx_out(i,1:4)
-      end do
-      write(50+my_rank,*) 'idx_lc, idx_lc', picked%num_sph_mode
-      do i = 1,  picked%num_sph_mode
-        write(50+my_rank,*) i, picked%idx_gl(i,2:3),                    &
-     &                      picked%idx_gl(i,1), picked%idx_lc(i)
-      end do
 !
       end subroutine const_picked_sph_address
 !
@@ -210,8 +200,7 @@
      &         (iflag_center, l_truncation, sph_rj,                     &
      &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,           &
      &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,           &
-     &          num_pickup, idx_pick_gl, idx_pick_lc,                   &
-     &          num_pickup_lc, idx_pickup)
+     &          num_pickup, idx_pick_gl, num_pickup_lc, idx_pickup)
 !
       use spherical_harmonics
       use quicksort
@@ -232,7 +221,6 @@
       integer(kind = kint), intent(in) :: num_pickup_lc
 !
       integer(kind = kint), intent(inout) :: idx_pick_gl(num_pickup,3)
-      integer(kind = kint), intent(inout) :: idx_pick_lc(num_pickup)
       integer(kind = kint), intent(inout)                               &
      &                     :: idx_pickup(0:num_pickup_lc,4)
 !
@@ -250,7 +238,6 @@
         if(l .le. l_truncation) then
           icou = icou + 1
           idx_pick_gl(icou,1) = j_gl
-          idx_pick_lc(icou) = j_lc
           iflag_picked_sph(j_gl)  = icou
 !
           if(j_lc .gt. 0) then
@@ -270,7 +257,6 @@
             if(iflag_picked_sph(j_gl) .lt. izero) then
               icou = icou + 1
               idx_pick_gl(icou,1) = j_gl
-              idx_pick_lc(icou) = j_lc
               iflag_picked_sph(j_gl)  = icou
 !
               if(j_lc .gt. 0) then
@@ -293,7 +279,6 @@
             if(iflag_picked_sph(j_gl) .lt. izero) then
               icou = icou + 1
               idx_pick_gl(icou,1) = j_gl
-              idx_pick_lc(icou) = j_lc
               iflag_picked_sph(j_gl)  = icou
 !
               if(j_lc .gt. 0) then
@@ -306,8 +291,8 @@
         end if
       end do
 !
-      call quicksort_w_index(num_pickup, idx_pick_gl(1,1),              &
-     &    ione, num_pickup, idx_pick_lc(1))
+      call quicksort_int(num_pickup, idx_pick_gl(1,1),                  &
+     &    ione, num_pickup)
 !
       do icou = 1, num_pickup
         call get_degree_order_by_full_j(idx_pick_gl(icou,1),            &
@@ -335,20 +320,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_scale_4_vect_l0(num_pickup,                        &
-     &          idx_pick_gl, scale_for_zelo)
+     &          idx_pick_gl, scale_for_zero)
 !
       integer(kind = kint), intent(in) :: num_pickup
       integer(kind = kint), intent(in) :: idx_pick_gl(num_pickup,3)
-      real(kind = kreal), intent(inout) :: scale_for_zelo(num_pickup)
+      real(kind = kreal), intent(inout) :: scale_for_zero(num_pickup)
 !
       integer(kind = kint) :: inum
 !
 !
       do inum = 1, num_pickup
         if(idx_pick_gl(inum,1) .eq. 0) then
-          scale_for_zelo(inum) = half
+          scale_for_zero(inum) = half
         else
-          scale_for_zelo(inum) = one
+          scale_for_zero(inum) = one
         end if
       end do
 !

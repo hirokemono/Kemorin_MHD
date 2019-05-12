@@ -80,10 +80,6 @@
       call set_sph_fld_id_4_monitor(rj_fld%num_phys,                    &
      &    rj_fld%num_component, rj_fld%iflag_monitor, picked)
 !
-      call alloc_scale_4_l0(picked)
-      call set_scale_4_vect_l0                                          &
-     &   (picked%num_sph_mode, picked%idx_gl, picked%scale_for_zelo)
-!
       if(my_rank .ne. 0) return
       call set_sph_labels_4_monitor                                     &
      &   (rj_fld%num_phys, rj_fld%num_component,                        &

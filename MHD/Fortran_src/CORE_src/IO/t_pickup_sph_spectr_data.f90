@@ -12,13 +12,11 @@
 !!      subroutine alloc_pick_sph_m(list_pick)
 !!      subroutine alloc_num_pick_layer(picked)
 !!      subroutine alloc_pick_sph_monitor(picked)
-!!      subroutine alloc_scale_4_l0(picked)
 !!      subroutine alloc_gauss_coef_monitor(gauss)
 !!
 !!      subroutine dealloc_pick_sph_mode(list_pick)
 !!      subroutine dealloc_num_pick_layer(picked)
 !!      subroutine dealloc_pick_sph_monitor(picked)
-!!      subroutine deallocate_scale_4_l0(picked)
 !!      subroutine dealloc_gauss_coef_monitor(gauss)
 !!@endverbatim
 !!
@@ -67,8 +65,6 @@
         integer(kind = kint) :: num_sph_mode =  0
 !>        Global spherical harmonics ID to evaluate  monitoring spectrum
         integer(kind = kint), allocatable :: idx_gl(:,:)
-!>        Local spherical harmonics ID to evaluate  monitoring spectrum
-        integer(kind = kint), allocatable :: idx_lc(:)
 !
 !>        Number of modes of monitoring spectrum in each process
         integer(kind = kint) :: ntot_pick_spectr_lc = 0
@@ -93,13 +89,8 @@
         integer(kind = kint), allocatable :: ifield_monitor_rj(:)
 !>        monitoring spectrum
         real(kind = kreal), allocatable :: d_rj_gl(:,:)
-!>        Localy evaluated  monitoring spectrum
-        real(kind = kreal), allocatable :: d_rj_lc(:,:)
 !>        Name of  monitoring spectrum
         character(len=kchara), allocatable :: spectr_name(:)
-!
-!>      Scale factor for vector at l=m=0
-        real(kind = kreal), allocatable :: scale_for_zelo(:)
 !
 !>      Number of modes of Gauss coefficients to be evaluated
 !>      Name of Gauss coefficients  (g_{l}^{m} or h_{l}^{m})
@@ -211,8 +202,6 @@
       num = picked%num_sph_mode * picked%num_layer
 !
       allocate( picked%idx_gl(picked%num_sph_mode,3) )
-      allocate( picked%idx_lc(picked%num_sph_mode) )
-      allocate( picked%d_rj_lc(picked%ntot_comp_rj,num) )
       allocate( picked%d_rj_gl(picked%ntot_comp_rj,num) )
       allocate( picked%spectr_name(picked%ntot_comp_rj) )
       allocate( picked%istack_comp_rj(0:picked%num_field_rj) )
@@ -224,23 +213,10 @@
       end if
       if(num .gt. 0) then
         picked%idx_gl = -1
-        picked%idx_lc =  0
-        picked%d_rj_lc = 0.0d0
         picked%d_rj_gl = 0.0d0
       end if
 !
       end subroutine alloc_pick_sph_monitor
-!
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_scale_4_l0(picked)
-!
-      type(picked_spectrum_data), intent(inout) :: picked
-!
-      allocate(picked%scale_for_zelo(picked%num_sph_mode) )
-      if(picked%num_sph_mode .gt. 0) picked%scale_for_zelo   = 1.0d0
-!
-      end subroutine alloc_scale_4_l0
 !
 ! -----------------------------------------------------------------------
 !
@@ -307,21 +283,10 @@
 !
 !
       deallocate(picked%idx_gl, picked%d_rj_gl)
-      deallocate(picked%idx_lc, picked%d_rj_lc)
       deallocate(picked%spectr_name)
       deallocate(picked%istack_comp_rj, picked%ifield_monitor_rj)
 !
       end subroutine dealloc_pick_sph_monitor
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_scale_4_l0(picked)
-!
-      type(picked_spectrum_data), intent(inout) :: picked
-!
-      deallocate(picked%scale_for_zelo)
-!
-      end subroutine deallocate_scale_4_l0
 !
 ! -----------------------------------------------------------------------
 !
