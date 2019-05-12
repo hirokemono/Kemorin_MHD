@@ -56,7 +56,9 @@
           call set_radial_grad_scalars(i_step, time,                    &
      &        SPH_dat_ss%sph%sph_rj%nidx_rj(1),                         &
      &        SPH_dat_ss%sph%sph_rj%radius_1d_rj_r,                     &
-     &        r_2nd_newtral%fdm(1)%dmat, buoyancy_ratio, pick)
+     &        r_2nd_newtral%fdm(1)%dmat, buoyancy_ratio,                &
+     &        pick%num_layer, pick%ntot_pick_spectr,                    &
+     &        pick%ntot_comp_rj, pick%d_rj_gl)
           icou = icou + 1
           write(*,*) 'step ', i_step,                                   &
      &        ' is added for time average: count is  ', icou

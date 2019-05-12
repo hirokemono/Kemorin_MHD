@@ -27,6 +27,8 @@
 !
       implicit  none
 !
+      integer(kind = kint), parameter, private :: id_gauss_coef = 23
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -274,6 +276,75 @@
       end if
 !
       end subroutine gauss_coefficients_4_write
+!
+! -----------------------------------------------------------------------
+!
+      integer(kind = kint)                                              &
+     &      function check_gauss_coefs_4_monitor(gauss)
+!
+      use m_phys_labels
+      use skip_comment_f
+!
+      type(picked_spectrum_data), intent(in) :: gauss
+!
+      integer(kind = kint) :: nmode_read
+      real(kind = kreal) :: radius_read
+!
+      character(len=255) :: tmpchara
+!
+!
+      call skip_comment(tmpchara,id_gauss_coef)
+      read(id_gauss_coef,*) nmode_read, radius_read
+!      write(*,*) 'num_mode', gauss%num_sph_mode, nmode_read
+!      write(*,*) 'radius_gauss', gauss%radius_gl(1), radius_read
+      if(gauss%num_sph_mode .ne. nmode_read) then
+        write(*,*) 'Number of Gauss coefficients does not match ',      &
+     &             'with the data in the file'
+        check_gauss_coefs_4_monitor = 1
+        return
+      end if
+      if(abs(gauss%radius_gl(1) - radius_read) .gt. 1.0E-8) then
+        write(*,*) 'Radius of Gauss coefficients does not match ',      &
+     &             'with the data in the file',                         &
+     &              gauss%radius_gl(1), radius_read
+        check_gauss_coefs_4_monitor = 1
+        return
+      end if
+!
+      check_gauss_coefs_4_monitor = 0
+      return
+!
+      end function check_gauss_coefs_4_monitor
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+     integer(kind = kint) function check_gauss_coefs_num(gauss)
+!
+      use set_parallel_file_name
+!
+      type(picked_spectrum_data), intent(in) :: gauss
+!!
+      character(len = kchara) :: file_name
+!
+!
+      check_gauss_coefs_num = 0
+      if(gauss%num_sph_mode .eq. izero) return
+      if(my_rank .gt. izero) return
+!
+      file_name = add_dat_extension(gauss%file_prefix)
+      open(id_gauss_coef, file = file_name,                             &
+     &    form='formatted', status='old', err = 99)
+!
+      check_gauss_coefs_num = check_gauss_coefs_4_monitor(gauss)
+      close(id_gauss_coef)
+      return
+!
+  99  continue
+      write(*,*) 'No Gauss coefficient file'
+      return
+!
+      end function check_gauss_coefs_num
 !
 ! -----------------------------------------------------------------------
 !

@@ -154,7 +154,7 @@
 !
       subroutine set_radial_grad_scalars(istep, time,                   &
      &          nri, radius_1d_rj_r, d1nod_mat_fdm_2, buo_ratio,        &
-     &          picked)
+     &          num_layer, ntot_pick_spectr, ntot_comp_rj, picked_rj)
 !
       integer(kind = kint), intent(in) :: istep
       real(kind = kreal), intent(in) :: time, buo_ratio
@@ -162,19 +162,24 @@
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
       real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
-      type(picked_spectrum_data), intent(in) :: picked
+!
+      integer(kind = kint), intent(in) :: num_layer
+      integer(kind = kint), intent(in) :: ntot_comp_rj
+      integer(kind = kint), intent(in) :: ntot_pick_spectr
+      real(kind = kreal), intent(in) :: picked_rj                       &
+     &                             (ntot_comp_rj,ntot_pick_spectr)
 !
       integer(kind = kint) :: k, ipick
 !
       real(kind = kreal) :: r_neut
 !
-      do k = 1, picked%num_layer
-        ipick = k + (ipick_l0m0-1) * picked%num_layer
-        temp00(k) = picked%d_rj_gl(icomp_temp, ipick)
-        comp00(k) = picked%d_rj_gl(icomp_light,ipick)
+      do k = 1, num_layer
+        ipick = k + (ipick_l0m0-1) * num_layer
+        temp00(k) = picked_rj(icomp_temp, ipick)
+        comp00(k) = picked_rj(icomp_light,ipick)
       end do
 !
-      do k = 2, picked%num_layer - 1
+      do k = 2, num_layer - 1
         grad_temp00(k) =  d1nod_mat_fdm_2(k,-1) * temp00(k-1)           &
      &                  + d1nod_mat_fdm_2(k, 0) * temp00(k  )           &
      &                  + d1nod_mat_fdm_2(k, 1) * temp00(k+1)
@@ -187,7 +192,7 @@
         freq2(k) = freq2(k) * radius_1d_rj_r(k  )**2
       end do
 !
-      do k = picked%num_layer - 2, 2, - 1
+      do k = num_layer - 2, 2, - 1
         if( freq2(k).lt.0.0d0 .and. freq2(k+1).ge.0.0d0) then
           r_neut = (radius_1d_rj_r(k  )*abs(freq2(k+1))                 &
      &            + radius_1d_rj_r(k+1)*abs(freq2(k)  ) )               &
@@ -196,7 +201,7 @@
         end if
       end do
 !
-      do k = 1, picked%num_layer
+      do k = 1, num_layer
             write(id_ave_den,'(i15,1pE25.15e3,i15,1p7E25.15e3)')        &
      &           istep, time, k, radius_1d_rj_r(k),                     &
      &           temp00(k), comp00(k), grad_temp00(k), grad_comp00(k),  &

@@ -94,7 +94,6 @@
 !
       use output_sph_m_square_file
       use picked_sph_spectr_data_IO
-      use gauss_coefs_monitor_IO
       use MPI_picked_sph_spectr_IO
       use MPI_sph_gauss_coefs_IO
 !

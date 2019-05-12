@@ -12,12 +12,10 @@
 !!      subroutine alloc_pick_sph_m(list_pick)
 !!      subroutine alloc_num_pick_layer(picked)
 !!      subroutine alloc_pick_sph_monitor(picked)
-!!      subroutine alloc_gauss_coef_monitor(gauss)
 !!
 !!      subroutine dealloc_pick_sph_mode(list_pick)
 !!      subroutine dealloc_num_pick_layer(picked)
 !!      subroutine dealloc_pick_sph_monitor(picked)
-!!      subroutine dealloc_gauss_coef_monitor(gauss)
 !!@endverbatim
 !!
 !!@n @param  i_step    time step
@@ -87,14 +85,12 @@
         integer(kind = kint), allocatable :: istack_comp_rj(:)
 !>        Field  address for monitoring of @f$ f(r,j) @f$
         integer(kind = kint), allocatable :: ifield_monitor_rj(:)
+!>        Number of modes of monitoring spectrum in each process
+        integer(kind = kint) :: ntot_pick_spectr = 0
 !>        monitoring spectrum
         real(kind = kreal), allocatable :: d_rj_gl(:,:)
 !>        Name of  monitoring spectrum
         character(len=kchara), allocatable :: spectr_name(:)
-!
-!>      Number of modes of Gauss coefficients to be evaluated
-!>      Name of Gauss coefficients  (g_{l}^{m} or h_{l}^{m})
-        character(len=kchara), allocatable :: gauss_mode_name(:)
       end type picked_spectrum_data
 !
 ! -----------------------------------------------------------------------
@@ -199,7 +195,8 @@
       integer(kind = kint) :: num
 !
 !
-      num = picked%num_sph_mode * picked%num_layer
+      picked%ntot_pick_spectr = picked%num_sph_mode * picked%num_layer
+      num = picked%ntot_pick_spectr
 !
       allocate( picked%idx_gl(picked%num_sph_mode,3) )
       allocate( picked%d_rj_gl(picked%ntot_comp_rj,num) )
@@ -241,17 +238,6 @@
       end subroutine dealloc_gauss_coef_monitor_lc
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine alloc_gauss_coef_monitor(gauss)
-!
-      type(picked_spectrum_data), intent(inout) :: gauss
-!
-!
-      allocate( gauss%gauss_mode_name(gauss%num_sph_mode) )
-!
-      end subroutine alloc_gauss_coef_monitor
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_pick_sph_mode(list_pick)
@@ -287,17 +273,6 @@
       deallocate(picked%istack_comp_rj, picked%ifield_monitor_rj)
 !
       end subroutine dealloc_pick_sph_monitor
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_gauss_coef_monitor(gauss)
-!
-      type(picked_spectrum_data), intent(inout) :: gauss
-!
-!
-      deallocate(gauss%gauss_mode_name)
-!
-      end subroutine dealloc_gauss_coef_monitor
 !
 ! -----------------------------------------------------------------------
 !

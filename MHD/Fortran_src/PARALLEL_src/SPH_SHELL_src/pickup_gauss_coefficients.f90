@@ -82,7 +82,6 @@
       gauss_coef%spectr_name(1) = fhd_magne
       gauss_coef%istack_comp_rj(1) = 1
       gauss_coef%ifield_monitor_rj(1) = 1
-      call alloc_gauss_coef_monitor(gauss_coef)
       call alloc_gauss_coef_monitor_lc(gauss_coef)
       call set_gauss_coefs_labels(gauss_coef)
 !
@@ -101,25 +100,6 @@
       integer(kind = kint) :: l, m, mm, inum
       character(len=kchara) :: gauss_head
 !
-!
-      do inum = 1, gauss%num_sph_mode
-        l = gauss%idx_gl(inum,2)
-        m = gauss%idx_gl(inum,3)
-        mm = abs(m)
-!
-        if(m .lt. izero) then
-          write(gauss_head,'(a1)') 'h'
-        else
-          write(gauss_head,'(a1)') 'g'
-        end if
-!
-        call add_index_after_name                                       &
-     &     (l, gauss_head, gauss%gauss_mode_name(inum))
-        write(gauss_head,'(a,a1)')                                      &
-     &     trim(gauss%gauss_mode_name(inum)), '_'
-        call add_index_after_name                                       &
-     &     (mm, gauss_head, gauss%gauss_mode_name(inum))
-      end do
 !
       do inum = 1, gauss%num_sph_mode_lc
         l = gauss%idx_out(inum,1)

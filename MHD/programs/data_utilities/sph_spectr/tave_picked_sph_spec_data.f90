@@ -55,12 +55,6 @@
         if(ierr .gt. 0) exit
 !
         if(time .ge. start_time) then
-          do ipick = 1, pick%num_sph_mode*pick%num_layer
-            do nd = 1, pick%ntot_comp_rj
-              prev_spec(nd,ipick) = pick%d_rj_gl(nd,ipick)
-            end do
-          end do
-!
           if(icou .eq. 0) then
             true_start = time
           else
@@ -72,6 +66,12 @@
               end do
             end do
           end if
+!
+          do ipick = 1, pick%num_sph_mode*pick%num_layer
+            do nd = 1, pick%ntot_comp_rj
+              prev_spec(nd,ipick) = pick%d_rj_gl(nd,ipick)
+            end do
+          end do
 !
           icou = icou + 1
           write(*,*) 'step ', i_step,                                   &
@@ -104,16 +104,8 @@
         if(ierr .gt. 0) exit
 !
         if(time .ge. start_time) then
-          do ipick = 1, pick%num_sph_mode*pick%num_layer
-            do nd = 1, pick%ntot_comp_rj
-              prev_spec(nd,ipick)                                       &
-     &          = (pick%d_rj_gl(nd,ipick) - ave_spec(nd,ipick))**2
-            end do
-          end do
-!
           if(icou .eq. 0) then
             true_start = time
-!
           else
             do ipick = 1, pick%num_sph_mode*pick%num_layer
               do nd = 1, pick%ntot_comp_rj
@@ -123,6 +115,13 @@
               end do
             end do
           end if
+!
+          do ipick = 1, pick%num_sph_mode*pick%num_layer
+            do nd = 1, pick%ntot_comp_rj
+              prev_spec(nd,ipick)                                       &
+     &          = (pick%d_rj_gl(nd,ipick) - ave_spec(nd,ipick))**2
+            end do
+          end do
 !
           icou = icou + 1
           write(*,*) 'step ', i_step,                                   &

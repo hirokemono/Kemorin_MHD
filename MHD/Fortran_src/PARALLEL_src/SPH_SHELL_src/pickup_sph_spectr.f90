@@ -55,7 +55,6 @@
       type(picked_spectrum_data), intent(inout) :: picked
 !
       integer :: i
-      integer(kind = kint) :: ntot
 !
 !
       call allocate_iflag_pick_sph(l_truncation)
@@ -76,9 +75,11 @@
      &    picked%num_sph_mode, picked%idx_gl,                           &
      &    picked%num_sph_mode_lc, picked%idx_out)
 !
-      ntot = picked%ntot_pick_spectr_lc
-      if(picked%idx_out(0,4) .gt. 0) ntot = ntot + 1
-      call MPI_Allgather(ntot, 1, CALYPSO_INTEGER,                      &
+      if(picked%idx_out(0,4) .gt. 0) then 
+        picked%ntot_pick_spectr_lc = picked%ntot_pick_spectr_lc + 1
+      end if
+      call MPI_Allgather                                                &
+     &   (picked%ntot_pick_spectr_lc, 1, CALYPSO_INTEGER,               &
      &    picked%istack_picked_spec_lc(1), 1, CALYPSO_INTEGER,          &
      &    CALYPSO_COMM, ierr_MPI)
 !

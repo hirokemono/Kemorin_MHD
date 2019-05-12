@@ -175,6 +175,7 @@ simple_sph_spectr_data_IO.o \
 part_sum_sph_ene_spec.o
 
 MOD_T_AVE_GAUSS_COEFS = \
+t_gauss_coefs_monitor_IO.o \
 tave_picked_gauss_coefs.o
 
 MOD_T_AVE_PICK_SPH = \

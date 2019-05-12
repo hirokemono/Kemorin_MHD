@@ -37,7 +37,6 @@
       use t_sum_sph_rms_data
 !
       use pickup_sph_spectr_data
-      use pickup_gauss_coefficients
       use output_sph_m_square_file
 !
       implicit none
@@ -75,9 +74,10 @@
       subroutine open_sph_vol_rms_file_mhd(sph, ipol, rj_fld, monitor)
 !
       use m_error_IDs
+      use pickup_gauss_coefficients
       use cal_rms_fields_by_sph
       use output_sph_m_square_file
-      use gauss_coefs_monitor_IO
+      use MPI_sph_gauss_coefs_IO
 !
       type(sph_grids), intent(in) :: sph
       type(phys_address), intent(in) :: ipol
@@ -112,8 +112,8 @@
       call init_gauss_coefs_4_monitor(sph%sph_params, sph%sph_rj,       &
      &    ipol, monitor%gauss_list, monitor%gauss_coef)
 !
-      if ( iflag_debug.gt.0 ) write(*,*) 'check_gauss_coefs_file'
-      iflag = check_gauss_coefs_file(my_rank, monitor%gauss_coef)
+      if ( iflag_debug.gt.0 ) write(*,*) 'check_gauss_coefs_num'
+      iflag = check_gauss_coefs_num(monitor%gauss_coef)
       call MPI_Bcast(iflag, 1, CALYPSO_INTEGER, 0,                      &
      &               CALYPSO_COMM, ierr_MPI)
       if(iflag .gt. 0) then
