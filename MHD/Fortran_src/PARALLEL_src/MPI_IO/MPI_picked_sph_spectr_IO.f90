@@ -48,20 +48,18 @@
       type(calypso_MPI_IO_params) :: IO_param
       character(len = kchara) :: file_name
 !
-!
       file_name = add_dat_extension(picked%file_prefix)
-      if(my_rank .eq. 0) then
-        call open_sph_spec_4_monitor(id_pick_mode, file_name, picked)
-        close(id_pick_mode)
-      end if
 !
-      call calypso_mpi_barrier
       call calypso_mpi_append_file_open                                 &
      &   (file_name, nprocs, IO_param%id_rank, IO_param%ioff_gl)
       call calypso_mpi_barrier
 !
-      call write_picked_specr_mpi(IO_param, time_d, sph_rj, rj_fld,     &
-     &    picked, picked%ntot_comp_rj)
+      if(IO_param%ioff_gl .eq. 0) then
+        call write_picked_specr_head_mpi(IO_param, picked)
+      end if
+!
+      call write_picked_specr_data_mpi(IO_param, time_d, sph_rj,        &
+     &    rj_fld, picked, picked%ntot_comp_rj)
 !
       call calypso_close_mpi_file(IO_param%id_rank)
 !
@@ -70,7 +68,45 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine write_picked_specr_mpi(IO_param, time_d,               &
+      subroutine write_picked_specr_head_mpi(IO_param, picked)
+!
+      use MPI_ascii_data_IO
+      use write_field_labels
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      integer :: len_head, len_fld
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+!
+      character(len = 1), parameter :: timebuf = char(10)
+!
+!
+      len_head = len(pick_sph_header_no_field(picked))
+      len_fld =  int(count_label_list_length(picked%ntot_comp_rj,       &
+     &                                   picked%spectr_name))
+      if(my_rank .eq. 0) then
+        ioffset = IO_param%ioff_gl
+        call calypso_mpi_seek_write_chara(IO_param%id_rank, ioffset,    &
+     &      len_head, pick_sph_header_no_field(picked))
+!
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_rank, ioffset, len_fld,                         &
+     &      make_field_list(len_fld,picked%ntot_comp_rj,                &
+     &                      picked%spectr_name))
+!
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_rank, ioffset, 1, timebuf)
+      end if
+      IO_param%ioff_gl = IO_param%ioff_gl + len_head + len_fld + ione
+!
+      end subroutine write_picked_specr_head_mpi
+!
+! -----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine write_picked_specr_data_mpi(IO_param, time_d,          &
      &          sph_rj, rj_fld, picked, ntot_comp_rj)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -134,7 +170,7 @@
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &       + ilen_n * picked%istack_picked_spec_lc(nprocs)
 !
-      end subroutine write_picked_specr_mpi
+      end subroutine write_picked_specr_data_mpi
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

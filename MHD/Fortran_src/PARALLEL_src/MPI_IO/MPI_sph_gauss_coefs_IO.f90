@@ -24,6 +24,7 @@
       use t_phys_address
       use t_phys_data
       use t_time_data
+      use m_monitor_file_labels
 !
       implicit  none
 !
@@ -84,22 +85,23 @@
       integer(kind = kint_gl) :: inum
       integer(kind = kint_gl) :: num
       integer, parameter :: ilen_n = 14
-      integer, parameter :: ilen_h = 28+1+16+25+1+19
+      integer, parameter :: ilen_h                                      &
+     &        = ilen_pk_gauss_head + 16+25+1 + ilen_time_label
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
-      character(len = 28+1+16+25+1+19) :: timebuf(1)
+      character(len = ilen_h) :: timebuf
       character(len = ilen_n), allocatable :: pickedbuf(:)
 !
 !
       if(my_rank .eq. 0) then
-        write(timebuf(1),'(a28,a1, i16,1pe25.15e3,a1, a19)')            &
-     &        'num_spectr, reference_radius', char(10),                 &
+        ioffset = IO_param%ioff_gl
+        write(timebuf,'(a31, i16,1pe25.15e3,a1, a18)')                  &
+     &        hd_pick_gauss_head(),                                     &
      &        picked%num_sph_mode, picked%radius_gl(1), char(10),       &
-     &        't_step    time    '
+     &        hd_time_label()
 !
-        num = 1
-        call calypso_mpi_seek_wrt_mul_chara                             &
-     &     (IO_param%id_rank, IO_param%ioff_gl, ilen_h, num, timebuf)
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_rank, ioffset, ilen_h, timebuf)
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ilen_h
 !
@@ -125,10 +127,10 @@
      &                + ilen_n * picked%istack_picked_spec_lc(nprocs)
 !
       if(my_rank .eq. 0) then
-        write(timebuf(1),'(a1)') char(10)
-        num = 1
-        call calypso_mpi_seek_wrt_mul_chara                             &
-     &     (IO_param%id_rank, IO_param%ioff_gl, ione, num, timebuf)
+        ioffset = IO_param%ioff_gl
+        write(timebuf,'(a1)') char(10)
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_rank, ioffset, ilen_h, timebuf)
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ione
 !
@@ -160,7 +162,7 @@
       integer, parameter :: ilen_n = 25
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
-      character(len = 16+25) :: timebuf(1)
+      character(len = 16+25) :: timebuf
       character(len = 25), allocatable :: pickedbuf(:)
       real(kind=kreal), allocatable :: d_rj_out(:)
 !
@@ -168,10 +170,11 @@
 !
       ilength = len(picked_gauss_head(time_d%i_time_step, time_d%time))
       if(my_rank .eq. 0) then
-        timebuf(1) = picked_gauss_head(time_d%i_time_step, time_d%time)
-        num = 1
-        call calypso_mpi_seek_wrt_mul_chara                             &
-     &     (IO_param%id_rank, IO_param%ioff_gl, ilength, num, timebuf)
+        ioffset = IO_param%ioff_gl
+        timebuf = picked_gauss_head(time_d%i_time_step, time_d%time)
+!
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_rank, ioffset, ilength, timebuf)
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ilength
 !
@@ -199,10 +202,11 @@
      &                + ilen_n * picked%istack_picked_spec_lc(nprocs)
 !
       if(my_rank .eq. 0) then
-        write(timebuf(1),'(a1)') char(10)
-        num = 1
-        call calypso_mpi_seek_wrt_mul_chara                             &
-     &     (IO_param%id_rank, IO_param%ioff_gl, ione, num, timebuf)
+        ioffset = IO_param%ioff_gl
+        write(timebuf,'(a1)') char(10)
+!
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_rank, ioffset, 1, timebuf)
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ione
 !

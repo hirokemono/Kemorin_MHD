@@ -31,6 +31,8 @@
 !>      File ID for spectrum monitor file
       integer(kind = kint), parameter :: id_pick_mode = 22
 !
+!
+!
 !      private :: open_sph_spec_4_monitor
 !
 ! -----------------------------------------------------------------------
@@ -40,8 +42,6 @@
 ! -----------------------------------------------------------------------
 !
       subroutine open_sph_spec_4_monitor(id_file, file_name, picked)
-!
-      use write_field_labels
 !
       type(picked_spectrum_data), intent(in) :: picked
 !
@@ -58,21 +58,7 @@
       open(id_file, file = file_name, form='formatted',                 &
      &    status='replace')
 !
-      write(id_file,'(a)')    '#'
-      write(id_file,'(a)')    '# num_layers, num_spectr'
-      write(id_file,'(2i16)')                                           &
-     &                           picked%num_layer, picked%num_sph_mode
-      write(id_file,'(a)')    '# number of component'
-      write(id_file,'(i16)') picked%ntot_comp_rj
-!
-      write(id_file,'(a)',advance='NO')  't_step    time    '
-      write(id_file,'(a)',advance='NO')  'radius_ID    radius    '
-      write(id_file,'(a)',advance='NO')  'degree    order    '
-!
-      call write_multi_labels(id_file, picked%ntot_comp_rj,             &
-     &    picked%spectr_name)
-
-      write(id_file,'(a)') ''
+      call write_pick_sph_file_header(id_file, picked)
 !
       end subroutine open_sph_spec_4_monitor
 !

@@ -72,6 +72,7 @@
 !
       subroutine open_gauss_coefs_4_monitor(gauss_IO)
 !
+      use m_monitor_file_labels
       use set_parallel_file_name
       use write_field_labels
 !
@@ -89,11 +90,11 @@
      &    form='formatted', status='replace')
 !
 !
-      write(id_gauss_coef,'(a)')    'num_spectr, reference_radius'
+      write(id_gauss_coef,'(a)')   hd_pick_gauss_head()
       write(id_gauss_coef,'(i16,1pe25.15e3)')                           &
      &     gauss_IO%num_mode, gauss_IO%radius_gauss
 !
-      write(id_gauss_coef,'(a)',advance='NO')    't_step    time    '
+      write(id_gauss_coef,'(a)',advance='NO')  hd_time_label()
 !
       call write_multi_labels(id_gauss_coef, gauss_IO%num_mode,         &
      &    gauss_IO%gauss_coef_name)
@@ -199,9 +200,9 @@
       allocate(gauss_IO%gauss_coef_name(gauss_IO%num_mode) )
       allocate(gauss_IO%gauss_coef(gauss_IO%num_mode) )
 !
-      if(gauss_IO%num_mode .le 0) return
+      if(gauss_IO%num_mode .le. 0) return
 !$omp parallel workshare
-      gauss_IO%gauss_coef(1:gauss_IO%num_mode)
+      gauss_IO%gauss_coef(1:gauss_IO%num_mode) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_gauss_coef_monitor

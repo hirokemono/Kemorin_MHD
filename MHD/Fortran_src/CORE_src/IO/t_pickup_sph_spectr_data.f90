@@ -275,5 +275,56 @@
       end subroutine dealloc_pick_sph_monitor
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine write_pick_sph_file_header(id_file, picked)
+!
+      use m_monitor_file_labels
+      use write_field_labels
+!
+      integer(kind = kint), intent(in) :: id_file
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      integer(kind = kint) :: l_fd
+!
+!
+      write(id_file,'(a)',advance='NO')                                 &
+     &                          pick_sph_header_no_field(picked)
+!
+      l_fd = count_label_list_length                                    &
+     &                         (picked%ntot_comp_rj,picked%spectr_name)
+      write(id_file,'(a)',advance='NO')                                 &
+     &    make_field_list(l_fd, picked%ntot_comp_rj,picked%spectr_name)
+      write(id_file,'(a)') ''
+!
+      end subroutine write_pick_sph_file_header
+!
+! -----------------------------------------------------------------------
+!
+      function pick_sph_header_no_field(picked)
+!
+      use m_monitor_file_labels
+!
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      integer(kind = kint), parameter                                   &
+     &         :: ilen_h1 = ilen_pick_sph_head + 2*16 + 1
+      integer(kind = kint), parameter                                   &
+     &         :: ilen_h2 = ilen_pick_sph_num + 16 + 1
+      integer(kind = kint), parameter                                   &
+     &        :: len_head = ilen_h1 + ilen_h2 + ilen_time_sph_label
+!
+      character(len = len_head) :: pick_sph_header_no_field
+!
+!
+      write(pick_sph_header_no_field,'(a,2i16,a1,a,i16,a1,a)')          &
+     &        hd_pick_sph_head(),                                       &
+     &        picked%num_layer, picked%num_sph_mode, char(10),          &
+     &        hd_pick_sph_num(), picked%ntot_comp_rj, char(10),         &
+     &        hd_time_sph_label()
+!
+      end function pick_sph_header_no_field
+!
+! -----------------------------------------------------------------------
 !
       end module t_pickup_sph_spectr_data
