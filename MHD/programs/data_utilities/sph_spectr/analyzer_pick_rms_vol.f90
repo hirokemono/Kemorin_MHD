@@ -89,7 +89,7 @@
 !
       use m_ctl_params_sph_utils
       use copy_rj_phys_data_4_IO
-      use picked_sph_spectr_data_IO
+      use MPI_picked_sph_mean_sq_IO
 !
 !
       integer(kind = kint) :: i_step
@@ -114,21 +114,18 @@
 !
 !  evaluate energies
 !
-        if (iflag_debug.gt.0) write(*,*) 'pickup_sph_rms_vol_monitor'
-        call pickup_sph_rms_vol_monitor                                 &
-     &     (ione, SPH_dat_ss%sph%sph_rj%nidx_rj(1),                     &
-     &      SPH_dat_ss%sph%sph_rj, leg_s,                               &
-     &      SPH_dat_ss%ipol, SPH_dat_ss%fld, pwr_spec, pick_rms1)
-!
         pick_sph_u%num_layer = 1
         pick_rms1%file_prefix = pick_sph_u%file_prefix
         pick_rms1%num_layer = pick_sph_u%num_layer
         pick_rms1%id_radius = pick_sph_u%id_radius
         pick_rms1%radius_gl = pick_sph_u%radius_gl
 !
-        if (iflag_debug.gt.0) write(*,*) 'write_sph_spec_monitor'
-        call write_sph_spec_monitor                                     &
-     &     (my_rank, i_step, t_SHR%time_d%time, pick_rms1)
+        if (iflag_debug.gt.0) write(*,*)                                &
+     &       'append_picked_sph_vol_msq_file'
+        t_SHR%time_d%i_time_step =i_step
+        call append_picked_sph_vol_msq_file(t_SHR%time_d,               &
+     &     SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj, leg_s,     &
+     &     SPH_dat_ss%ipol, SPH_dat_ss%fld, pick_rms1)
       end do
 !
       end subroutine analyze_pick_rms_vol

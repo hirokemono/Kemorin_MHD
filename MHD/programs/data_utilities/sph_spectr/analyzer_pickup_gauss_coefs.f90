@@ -85,6 +85,7 @@
       use copy_rj_phys_data_4_IO
       use cal_write_sph_monitor_data
       use pickup_gauss_coefficients
+      use MPI_sph_gauss_coefs_IO
 !
       integer(kind = kint) :: i_step
 !
@@ -104,9 +105,9 @@
         call copy_time_step_data(spec_time_IO, t_SHR%time_d)
 !
         t_SHR%time_d%i_time_step = i_step
-        call cal_write_gauss_coefs(t_SHR%time_d,                        &
-     &     SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,            &
-     &     SPH_dat_ss%ipol, SPH_dat_ss%fld, gauss_u)
+        call append_sph_gauss_coefs_file(t_SHR%time_d,                  &
+     &      SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,           &
+     &      SPH_dat_ss%ipol, SPH_dat_ss%fld, gauss_u)
       end do
 !
       end subroutine analyze_pick_gauss_coef

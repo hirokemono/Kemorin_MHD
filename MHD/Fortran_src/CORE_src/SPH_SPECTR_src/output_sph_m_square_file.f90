@@ -350,7 +350,7 @@
       if(pwr%iflag_layer_rms_spec .eq. izero)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
-      if(pwr%iflag_spectr_l .gt. izero) then
+      if(id_rank .eq. pwr%irank_l) then
         write(fname_rms, '(a,a6)') trim(pwr%fhead_rms_layer), '_l.dat'
         write(mode_label,'(a)') 'radial_id  radius  degree'
         call write_sph_layer_spec_file(fname_rms, mode_label,           &
@@ -360,7 +360,7 @@
      &      pwr%pwr_name, pwr%kr_4_rms, pwr%r_4_rms, pwr%shl_l)
       end if
 !
-      if(pwr%iflag_spectr_m .gt. izero) then
+      if(id_rank .eq. pwr%irank_m) then
         write(fname_rms, '(a,a6)') trim(pwr%fhead_rms_layer), '_m.dat'
         write(mode_label,'(a)') 'radial_id  radius  order'
         call write_sph_layer_spec_file(fname_rms, mode_label,           &
@@ -370,7 +370,7 @@
      &     pwr%pwr_name, pwr%kr_4_rms, pwr%r_4_rms, pwr%shl_m)
       end if
 !
-      if(pwr%iflag_spectr_lm .gt. izero) then
+      if(id_rank .eq. pwr%irank_lm) then
         write(fname_rms,'(a,a7)') trim(pwr%fhead_rms_layer), '_lm.dat'
         write(mode_label,'(a)') 'radial_id  radius  diff_deg_order'
         call write_sph_layer_spec_file(fname_rms, mode_label,           &
@@ -380,7 +380,7 @@
      &     pwr%pwr_name, pwr%kr_4_rms, pwr%r_4_rms, pwr%shl_lm)
       end if
 !
-      if(pwr%iflag_spectr_m0 .gt. izero) then
+      if(id_rank .eq. pwr%irank_m0) then
         write(fname_rms,'(a,a7)') trim(pwr%fhead_rms_layer), '_m0.dat'
         write(mode_label,'(a)') 'radial_id  radius'
         call write_sph_layer_pwr_file(fname_rms, mode_label,            &

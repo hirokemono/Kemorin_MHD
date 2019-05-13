@@ -43,6 +43,17 @@
 !>        File prefix for volume average file
         character(len = kchara) :: fhead_ave = 'sph_ave_volume'
 !
+!>        MPI rank for l-spectr data output
+        integer :: irank_l =   0
+!>        MPI rank for l-spectr data output
+        integer :: irank_m =   0
+!>        MPI rank for l-spectr data output
+        integer :: irank_lm =  0
+!>        MPI rank for axisymmetric component output
+        integer :: irank_m0 =  0
+!>        MPI rank for l-spectr data output
+        integer :: irank_ave = 0
+!
 !>        Output flag for volume mean square data
         integer(kind = kint) :: iflag_volume_rms_spec = 0
 !>        Output flag for volume average data
@@ -115,6 +126,17 @@
 !
 !>        Output flag for spectrum for axis-symmetric component
         integer(kind = kint) :: iflag_spectr_m0 = 1
+!
+!>        MPI rank for l-spectr data output
+        integer :: irank_l =   0
+!>        MPI rank for l-spectr data output
+        integer :: irank_m =   0
+!>        MPI rank for l-spectr data output
+        integer :: irank_lm =  0
+!>        MPI rank for axisymmetric component output
+        integer :: irank_m0 =  0
+!>        MPI rank for l-spectr data output
+        integer :: irank_ave = 0
 !
 !>        Number of radial points for mean square
         integer(kind=kint) :: nri_rms = 0
@@ -233,23 +255,32 @@
      &     (id_rank, ltr, pwr%ntot_comp_sq, pwr%v_spectr(i))
       end do
 !
-      if(id_rank .gt. 0) return
+      if(id_rank .eq. pwr%irank_l) then
+        allocate(pwr%shl_l(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
+        if(pwr%nri_rms .gt. 0) pwr%shl_l =  0.0d0
+      end if
 !
-      allocate(pwr%shl_l(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
-      allocate(pwr%shl_m(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
-      allocate(pwr%shl_lm(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
+      if(id_rank .eq. pwr%irank_m) then
+        allocate(pwr%shl_m(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
+        if(pwr%nri_rms .gt. 0) pwr%shl_m =  0.0d0
+      end if
 !
-      allocate( pwr%shl_sq(pwr%nri_rms,pwr%ntot_comp_sq) )
-      allocate( pwr%shl_m0(pwr%nri_rms,pwr%ntot_comp_sq) )
-      allocate( pwr%ratio_shl_m0(pwr%nri_rms,pwr%ntot_comp_sq) )
-      if(pwr%nri_rms .gt. 0) then
-        pwr%shl_sq =       0.0d0
-        pwr%shl_m0 =       0.0d0
-        pwr%ratio_shl_m0 = 0.0d0
+      if(id_rank .eq. pwr%irank_lm) then
+        allocate(pwr%shl_lm(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
+        if(pwr%nri_rms .gt. 0) pwr%shl_lm = 0.0d0
+      end if
 !
-        pwr%shl_l =  0.0d0
-        pwr%shl_m =  0.0d0
-        pwr%shl_lm = 0.0d0
+      if(id_rank .eq. pwr%irank_ave) then
+        allocate( pwr%shl_sq(pwr%nri_rms,pwr%ntot_comp_sq) )
+        if(pwr%nri_rms .gt. 0) pwr%shl_sq =       0.0d0
+      end if
+!
+      if(id_rank .eq. pwr%irank_m0) then
+        allocate( pwr%shl_m0(pwr%nri_rms,pwr%ntot_comp_sq) )
+        if(pwr%nri_rms .gt. 0) pwr%shl_m0 =       0.0d0
+!
+        allocate( pwr%ratio_shl_m0(pwr%nri_rms,pwr%ntot_comp_sq) )
+        if(pwr%nri_rms .gt. 0) pwr%ratio_shl_m0 = 0.0d0
       end if
 !
       end subroutine alloc_rms_4_sph_spectr
@@ -292,9 +323,13 @@
 !
       deallocate(pwr%r_4_rms, pwr%kr_4_rms)
 !
-      if(id_rank .gt. 0) return
-      deallocate(pwr%shl_l, pwr%shl_m, pwr%shl_lm)
-      deallocate(pwr%shl_sq, pwr%shl_m0, pwr%ratio_shl_m0)
+!
+      if(id_rank .eq. pwr%irank_l) deallocate(pwr%shl_l)
+      if(id_rank .eq. pwr%irank_m) deallocate(pwr%shl_m)
+      if(id_rank .eq. pwr%irank_lm) deallocate(pwr%shl_lm)
+      if(id_rank .eq. pwr%irank_ave) deallocate(pwr%shl_sq)
+      if(id_rank .eq. pwr%irank_m0) deallocate(pwr%shl_m0)
+      if(id_rank .eq. pwr%irank_m0) deallocate(pwr%ratio_shl_m0)
 !
       deallocate(pwr%num_comp_sq, pwr%istack_comp_sq)
       deallocate(pwr%pwr_name, pwr%id_field)
@@ -334,21 +369,34 @@
       v_pwr%ntot_comp_sq = ntot_comp_sq
       if(id_rank .gt. 0) return
 !
-      allocate( v_pwr%v_l(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
-      allocate( v_pwr%v_m(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
-      allocate( v_pwr%v_lm(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
+      if(v_pwr%irank_l .eq. 0) then
+        allocate( v_pwr%v_l(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
+        v_pwr%v_l = 0.0d0
+      end if
 !
-      allocate( v_pwr%v_sq(v_pwr%ntot_comp_sq) )
-      allocate( v_pwr%v_m0(v_pwr%ntot_comp_sq) )
-      allocate( v_pwr%v_ratio_m0(v_pwr%ntot_comp_sq) )
+      if(v_pwr%irank_m .eq. 0) then
+        allocate( v_pwr%v_m(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
+        v_pwr%v_m =  0.0d0
+      end if
 !
-      v_pwr%v_l = 0.0d0
-      v_pwr%v_m =  0.0d0
-      v_pwr%v_lm = 0.0d0
+      if(v_pwr%irank_lm .eq. 0) then
+        allocate( v_pwr%v_lm(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
+        v_pwr%v_lm = 0.0d0
+      end if
 !
-      v_pwr%v_sq =       0.0d0
-      v_pwr%v_m0 =       0.0d0
-      v_pwr%v_ratio_m0 = 0.0d0
+      if(v_pwr%irank_ave .eq. 0) then
+        allocate( v_pwr%v_sq(v_pwr%ntot_comp_sq) )
+        v_pwr%v_sq =       0.0d0
+      end if
+!
+      if(v_pwr%irank_m0 .eq. 0) then
+        allocate( v_pwr%v_m0(v_pwr%ntot_comp_sq) )
+        v_pwr%v_m0 =       0.0d0
+!
+        allocate( v_pwr%v_ratio_m0(v_pwr%ntot_comp_sq) )
+        v_pwr%v_ratio_m0 = 0.0d0
+      end if
+!
 !
       end subroutine alloc_sph_vol_mean_square
 !
@@ -379,8 +427,12 @@
 !
       if(id_rank .gt. 0) return
 !
-      deallocate(v_pwr%v_l, v_pwr%v_m, v_pwr%v_lm)
-      deallocate(v_pwr%v_sq, v_pwr%v_m0, v_pwr%v_ratio_m0)
+      if(v_pwr%irank_l .eq. 0) deallocate(v_pwr%v_l)
+      if(v_pwr%irank_m .eq. 0) deallocate(v_pwr%v_m)
+      if(v_pwr%irank_lm .eq. 0) deallocate(v_pwr%v_lm)
+      if(v_pwr%irank_ave .eq. 0) deallocate(v_pwr%v_sq)
+      if(v_pwr%irank_m0 .eq. 0) deallocate(v_pwr%v_m0)
+      if(v_pwr%irank_m0 .eq. 0) deallocate(v_pwr%v_ratio_m0)
 !
       end subroutine dealloc_sph_vol_mean_square
 !
