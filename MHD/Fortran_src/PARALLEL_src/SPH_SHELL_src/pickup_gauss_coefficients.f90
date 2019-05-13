@@ -10,9 +10,12 @@
 !!@verbatim
 !!      subroutine init_gauss_coefs_4_monitor                           &
 !!     &          (sph_params, sph_rj, ipol, gauss_list, gauss_coef)
+!!      subroutine gauss_coefficients_4_write                           &
+!!     &        (sph_params, sph_rj, ipol, rj_fld, gauss_coef, d_rj_out)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_address), intent(in) :: ipol
+!!        type(picked_spectrum_data), intent(inout) :: gauss_coef
 !!
 !!      subroutine cal_no_heat_source_Nu(kr_in, kr_out, r_in, r_out,    &
 !!     &          idx_rj_degree_zero, nidx_rj,                          &
@@ -26,7 +29,10 @@
       use m_precision
       use m_constants
 !
+      use t_spheric_parameter
       use t_phys_address
+      use t_phys_data
+      use t_pickup_sph_spectr_data
       use pickup_sph_spectr
 !
       implicit  none
@@ -68,8 +74,8 @@
           end do
         end if
 !
-        call const_picked_sph_address                                   &
-     &     (izero, sph_params%l_truncation, sph_rj, gauss_list, gauss_coef)
+        call const_picked_sph_address(izero, sph_params%l_truncation,   &
+     &      sph_rj, gauss_list, gauss_coef)
 !
       else
         gauss_coef%num_sph_mode = 0
@@ -84,6 +90,60 @@
       call set_gauss_coefs_labels(gauss_coef)
 !
       end subroutine init_gauss_coefs_4_monitor
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gauss_coefficients_4_write                             &
+     &        (sph_params, sph_rj, ipol, rj_fld, gauss_coef, d_rj_out)
+!
+      use calypso_mpi
+      use t_pickup_sph_spectr_data
+!
+      type(phys_address), intent(in) :: ipol
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_data), intent(in) :: rj_fld
+!
+      type(picked_spectrum_data), intent(in) :: gauss_coef
+      real(kind=kreal), intent(inout)                                   &
+     &                 :: d_rj_out(gauss_coef%num_sph_mode_lc)
+!
+      integer(kind = kint) :: inum, l, i
+      real(kind = kreal) :: r_ICB, r_CMB, rcmb_to_Re, ricb_to_Rref
+      real(kind = kreal) :: r_4_gauss_coefs, a2r_4_gauss
+!
+!
+      r_4_gauss_coefs = gauss_coef%radius_gl(1)
+      r_ICB = sph_rj%radius_1d_rj_r(sph_params%nlayer_ICB)
+      r_CMB = sph_rj%radius_1d_rj_r(sph_params%nlayer_CMB)
+      if(r_4_gauss_coefs .ge. r_CMB) then
+        a2r_4_gauss = one / (r_4_gauss_coefs**2)
+        rcmb_to_Re = r_CMB / r_4_gauss_coefs
+!$omp parallel do private(l,i)
+        do inum = 1, gauss_coef%num_sph_mode_lc
+          l = gauss_coef%idx_out(inum,1)
+          i = gauss_coef%idx_out(inum,4)                                &
+     &          + (sph_params%nlayer_CMB-1) * sph_rj%nidx_rj(2)
+          d_rj_out(inum) = rj_fld%d_fld(i,ipol%i_magne)                 &
+     &                    * dble(l) * rcmb_to_Re**l *a2r_4_gauss
+        end do
+!$omp end parallel do
+!
+      else if(r_4_gauss_coefs .le. r_ICB) then
+        a2r_4_gauss = one / (r_ICB**2)
+        ricb_to_Rref = r_4_gauss_coefs / r_ICB
+!$omp parallel do private(l,i)
+        do inum = 1, gauss_coef%num_sph_mode_lc
+          l = gauss_coef%idx_out(inum,1)
+          i = gauss_coef%idx_out(inum,4)                                &
+     &          + (sph_params%nlayer_ICB-1) * sph_rj%nidx_rj(2)
+          d_rj_out(inum) = - rj_fld%d_fld(i,ipol%i_magne)               &
+     &                  * dble(l+1) * a2r_4_gauss * ricb_to_Rref**(l-1)
+        end do
+!$omp end parallel do
+      end if
+!
+      end subroutine gauss_coefficients_4_write
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -7,8 +7,15 @@
 !>@brief  Data arrays to monitoring spectrum data
 !!
 !!@verbatim
-!!      subroutine append_picked_spectrum_file(file_name, picked)
-!!        type(picked_spectrum_data), intent(in) :: picked
+!!      subroutine append_sph_gauss_coefs_file                          &
+!!     &         (time_d, sph_params, sph_rj, ipol, rj_fld, gauss)
+!!        type(time_data), intent(in) :: time_d
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(phys_address), intent(in) :: ipol
+!!        type(phys_data), intent(in) :: rj_fld
+!!        type(picked_spectrum_data), intent(in) :: gauss
+!!        type(calypso_MPI_IO_params) :: IO_param
 !!@endverbatim
 !!
       module MPI_sph_gauss_coefs_IO
@@ -29,6 +36,9 @@
       implicit  none
 !
       integer(kind = kint), parameter, private :: id_gauss_coef = 23
+!
+      private :: write_sph_gauss_coefes_mpi
+      private :: picked_gauss_head
 !
 ! -----------------------------------------------------------------------
 !
@@ -137,6 +147,7 @@
      &          sph_params, sph_rj, ipol, rj_fld,  picked)
 !
       use MPI_ascii_data_IO
+      use pickup_gauss_coefficients
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
@@ -220,59 +231,34 @@
       end function  picked_gauss_head
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
-      subroutine gauss_coefficients_4_write                             &
-     &         (sph_params, sph_rj, ipol, rj_fld, picked, d_rj_out)
+     integer(kind = kint) function check_gauss_coefs_num(gauss)
 !
-      use calypso_mpi
-      use t_pickup_sph_spectr_data
+      use set_parallel_file_name
 !
-      type(phys_address), intent(in) :: ipol
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_data), intent(in) :: rj_fld
-!
-      type(picked_spectrum_data), intent(in) :: picked
-      real(kind=kreal), intent(inout)                                   &
-     &                 :: d_rj_out(picked%num_sph_mode_lc)
-!
-      integer(kind = kint) :: inum, l, i
-      real(kind = kreal) :: r_ICB, r_CMB, rcmb_to_Re, ricb_to_Rref
-      real(kind = kreal) :: r_4_gauss_coefs, a2r_4_gauss
+      type(picked_spectrum_data), intent(in) :: gauss
+!!
+      character(len = kchara) :: file_name
 !
 !
-      r_4_gauss_coefs = picked%radius_gl(1)
-      r_ICB = sph_rj%radius_1d_rj_r(sph_params%nlayer_ICB)
-      r_CMB = sph_rj%radius_1d_rj_r(sph_params%nlayer_CMB)
-      if(r_4_gauss_coefs .ge. r_CMB) then
-        a2r_4_gauss = one / (r_4_gauss_coefs**2)
-        rcmb_to_Re = r_CMB / r_4_gauss_coefs
-!$omp parallel do private(l,i)
-        do inum = 1, picked%num_sph_mode_lc
-          l = picked%idx_out(inum,1)
-          i = picked%idx_out(inum,4)                                    &
-     &          + (sph_params%nlayer_CMB-1) * sph_rj%nidx_rj(2)
-          d_rj_out(inum) = rj_fld%d_fld(i,ipol%i_magne)                 &
-     &                    * dble(l) * rcmb_to_Re**l *a2r_4_gauss
-        end do
-!$omp end parallel do
+      check_gauss_coefs_num = 0
+      if(gauss%num_sph_mode .eq. izero) return
+      if(my_rank .gt. izero) return
 !
-      else if(r_4_gauss_coefs .le. r_ICB) then
-        a2r_4_gauss = one / (r_ICB**2)
-        ricb_to_Rref = r_4_gauss_coefs / r_ICB
-!$omp parallel do private(l,i)
-        do inum = 1, picked%num_sph_mode_lc
-          l = picked%idx_out(inum,1)
-          i = picked%idx_out(inum,4)                                    &
-     &          + (sph_params%nlayer_ICB-1) * sph_rj%nidx_rj(2)
-          d_rj_out(inum) = - rj_fld%d_fld(i,ipol%i_magne)               &
-     &                  * dble(l+1) * a2r_4_gauss * ricb_to_Rref**(l-1)
-        end do
-!$omp end parallel do
-      end if
+      file_name = add_dat_extension(gauss%file_prefix)
+      open(id_gauss_coef, file = file_name,                             &
+     &    form='formatted', status='old', err = 99)
 !
-      end subroutine gauss_coefficients_4_write
+      check_gauss_coefs_num = check_gauss_coefs_4_monitor(gauss)
+      close(id_gauss_coef)
+      return
+!
+  99  continue
+      write(*,*) 'No Gauss coefficient file'
+      return
+!
+      end function check_gauss_coefs_num
 !
 ! -----------------------------------------------------------------------
 !
@@ -312,36 +298,6 @@
       return
 !
       end function check_gauss_coefs_4_monitor
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-     integer(kind = kint) function check_gauss_coefs_num(gauss)
-!
-      use set_parallel_file_name
-!
-      type(picked_spectrum_data), intent(in) :: gauss
-!!
-      character(len = kchara) :: file_name
-!
-!
-      check_gauss_coefs_num = 0
-      if(gauss%num_sph_mode .eq. izero) return
-      if(my_rank .gt. izero) return
-!
-      file_name = add_dat_extension(gauss%file_prefix)
-      open(id_gauss_coef, file = file_name,                             &
-     &    form='formatted', status='old', err = 99)
-!
-      check_gauss_coefs_num = check_gauss_coefs_4_monitor(gauss)
-      close(id_gauss_coef)
-      return
-!
-  99  continue
-      write(*,*) 'No Gauss coefficient file'
-      return
-!
-      end function check_gauss_coefs_num
 !
 ! -----------------------------------------------------------------------
 !
