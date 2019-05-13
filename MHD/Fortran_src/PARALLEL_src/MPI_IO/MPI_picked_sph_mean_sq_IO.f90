@@ -40,7 +40,8 @@
      &         (time_d, sph_rj, leg, ipol, rj_fld, picked)
 !
       use set_parallel_file_name
-      use picked_sph_spectr_data_IO
+      use MPI_ascii_data_IO
+      use MPI_picked_sph_spectr_IO
 !
       type(time_data), intent(in) :: time_d
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -54,21 +55,18 @@
 !
 !
       file_name = add_dat_extension(picked%file_prefix)
-      if(my_rank .eq. 0) then
-        call open_sph_spec_4_monitor(id_pick_mode, file_name, picked)
-        close(id_pick_mode)
-      end if
+      call open_append_mpi_file(file_name, nprocs, my_rank, IO_param)
+      call calypso_mpi_barrier
 !
-      call calypso_mpi_barrier
-      call calypso_mpi_append_file_open                                 &
-     &   (file_name, nprocs, IO_param%id_rank, IO_param%ioff_gl)
-      call calypso_mpi_barrier
+      if(IO_param%ioff_gl .eq. 0) then
+        call write_picked_specr_head_mpi(IO_param, picked)
+      end if
 !
       call write_picked_sph_mean_sq_mpi                                 &
      &   (IO_param, time_d, sph_rj, leg, ipol, rj_fld,                  &
      &    picked, picked%ntot_comp_rj)
 !
-      call calypso_close_mpi_file(IO_param%id_rank)
+      call close_mpi_file(IO_param)
 !
       end subroutine append_picked_sph_mean_sq_file
 !
@@ -78,7 +76,8 @@
      &         (time_d, sph_params, sph_rj, leg, ipol, rj_fld, picked)
 !
       use set_parallel_file_name
-      use picked_sph_spectr_data_IO
+      use MPI_ascii_data_IO
+      use MPI_picked_sph_spectr_IO
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -93,21 +92,18 @@
 !
 !
       file_name = add_dat_extension(picked%file_prefix)
-      if(my_rank .eq. 0) then
-        call open_sph_spec_4_monitor(id_pick_mode, file_name, picked)
-        close(id_pick_mode)
-      end if
+      call open_append_mpi_file(file_name, nprocs, my_rank, IO_param)
+      call calypso_mpi_barrier
 !
-      call calypso_mpi_barrier
-      call calypso_mpi_append_file_open                                 &
-     &   (file_name, nprocs, IO_param%id_rank, IO_param%ioff_gl)
-      call calypso_mpi_barrier
+      if(IO_param%ioff_gl .eq. 0) then
+        call write_picked_specr_head_mpi(IO_param, picked)
+      end if
 !
       call wrt_picked_sph_mean_vol_sq_mpi                               &
      &   (IO_param, time_d, sph_params, sph_rj, leg, ipol, rj_fld,      &
      &    picked, picked%ntot_comp_rj)
 !
-      call calypso_close_mpi_file(IO_param%id_rank)
+      call close_mpi_file(IO_param)
 !
       end subroutine append_picked_sph_vol_msq_file
 !
@@ -200,7 +196,7 @@
         end do
 !
         call calypso_mpi_seek_wrt_mul_chara                             &
-     &     (IO_param%id_rank, ioffset, ilen_n, num, pickedbuf)
+     &     (IO_param%id_file, ioffset, ilen_n, num, pickedbuf)
         deallocate(d_rj_out, pickedbuf)
       end if
 !
@@ -313,7 +309,7 @@
         end do
 !
         call calypso_mpi_seek_wrt_mul_chara                             &
-     &     (IO_param%id_rank, ioffset, ilen_n, num, pickedbuf)
+     &     (IO_param%id_file, ioffset, ilen_n, num, pickedbuf)
         deallocate(d_rj_out, pickedbuf)
       end if
 !

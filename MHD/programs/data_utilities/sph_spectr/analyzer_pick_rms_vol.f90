@@ -89,7 +89,6 @@
 !
       use m_ctl_params_sph_utils
       use copy_rj_phys_data_4_IO
-      use picked_sph_spectr_data_IO
       use MPI_picked_sph_mean_sq_IO
 !
 !
@@ -121,7 +120,8 @@
         pick_rms1%id_radius = pick_sph_u%id_radius
         pick_rms1%radius_gl = pick_sph_u%radius_gl
 !
-        if (iflag_debug.gt.0) write(*,*) 'write_sph_spec_monitor'
+        if (iflag_debug.gt.0) write(*,*)                                &
+     &       'append_picked_sph_vol_msq_file'
         t_SHR%time_d%i_time_step =i_step
         call append_picked_sph_vol_msq_file(t_SHR%time_d,               &
      &     SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj, leg_s,     &

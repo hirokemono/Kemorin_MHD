@@ -27,7 +27,7 @@
 !>      length of hd_fem_para
       integer(kind = kint), parameter :: ilen_pick_sph_num = 21+1
 !>      length of hd_fem_para
-      integer(kind = kint), parameter :: ilen_pk_gauss_head = 30+1
+      integer(kind = kint), parameter :: ilen_pk_gauss_head = 28+1
 !
 !
 !------------------------------------------------------------------
@@ -74,7 +74,7 @@
       character(len=ilen_pk_gauss_head) function hd_pick_gauss_head()
 !
 !
-      hd_pick_gauss_head = '# num_spectr, reference_radius' // char(10)
+      hd_pick_gauss_head = 'num_spectr, reference_radius' // char(10)
 !
       end function hd_pick_gauss_head
 !

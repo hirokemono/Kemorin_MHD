@@ -39,8 +39,8 @@
       subroutine append_sph_gauss_coefs_file                            &
      &         (time_d, sph_params, sph_rj, ipol, rj_fld, gauss)
 !
+      use MPI_ascii_data_IO
       use set_parallel_file_name
-      use picked_sph_spectr_data_IO
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -56,8 +56,7 @@
       file_name = add_dat_extension(gauss%file_prefix)
 !
       call calypso_mpi_barrier
-      call calypso_mpi_append_file_open                                 &
-     &   (file_name, nprocs, IO_param%id_rank, IO_param%ioff_gl)
+      call open_append_mpi_file(file_name, nprocs, my_rank, IO_param)
       call calypso_mpi_barrier
 !
       if(IO_param%ioff_gl .eq. 0) then
@@ -67,7 +66,7 @@
       call write_sph_gauss_coefes_mpi                                   &
      &   (IO_param, time_d, sph_params, sph_rj, ipol, rj_fld, gauss)
 !
-      call calypso_close_mpi_file(IO_param%id_rank)
+      call close_mpi_file(IO_param)
 !
       end subroutine append_sph_gauss_coefs_file
 !
@@ -77,60 +76,54 @@
       subroutine write_sph_gauss_header_mpi(IO_param, picked)
 !
       use MPI_ascii_data_IO
+      use write_field_labels
+      use transfer_to_long_integers
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
       type(picked_spectrum_data), intent(in) :: picked
 !
-      integer(kind = kint_gl) :: inum
-      integer(kind = kint_gl) :: num
+      integer(kind = kint) :: len_fld
       integer, parameter :: ilen_n = 14
       integer, parameter :: ilen_h                                      &
      &        = ilen_pk_gauss_head + 16+25+1 + ilen_time_label
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
       character(len = ilen_h) :: timebuf
-      character(len = ilen_n), allocatable :: pickedbuf(:)
 !
 !
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        write(timebuf,'(a31, i16,1pe25.15e3,a1, a18)')                  &
+        write(timebuf,'(a, i16,1pe25.15e3,a1, a)')                      &
      &        hd_pick_gauss_head(),                                     &
      &        picked%num_sph_mode, picked%radius_gl(1), char(10),       &
      &        hd_time_label()
 !
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_rank, ioffset, ilen_h, timebuf)
+     &     (IO_param%id_file, ioffset, ilen_h, timebuf)
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ilen_h
 !
 !
-      num = picked%istack_picked_spec_lc(my_rank+1)                     &
-     &     - picked%istack_picked_spec_lc(my_rank)
-      if(num .gt. 0) then
-        ioffset = IO_param%ioff_gl                                      &
-     &         + ilen_n * picked%istack_picked_spec_lc(my_rank)
+      len_fld = count_label_list_length(picked%num_sph_mode_lc,         &
+     &                                  picked%gauss_mode_name_lc)
+      call istack64_4_parallel_data(cast_long(len_fld), IO_param)
 !
-        allocate(pickedbuf(picked%num_sph_mode_lc))
-        do inum = 1, num
-          write(pickedbuf(inum),'(a14)')   '              '
-          write(pickedbuf(inum),'(a)')                                  &
-     &                trim(picked%gauss_mode_name_lc(inum))
-        end do
-!
-        call calypso_mpi_seek_wrt_mul_chara(IO_param%id_rank, ioffset,  &
-     &      ilen_n, num, pickedbuf)
-        deallocate(pickedbuf)
+      ioffset = IO_param%ioff_gl                                        &
+     &         + IO_param%istack_merged(my_rank)
+      if(len_fld .gt. 0) then
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_file, ioffset, len_fld,                         &
+     &      make_field_list(len_fld, picked%num_sph_mode_lc,            &
+     &                      picked%gauss_mode_name_lc))
       end if
       IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &                + ilen_n * picked%istack_picked_spec_lc(nprocs)
+     &         + IO_param%istack_merged(nprocs)
 !
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        write(timebuf,'(a1)') char(10)
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_rank, ioffset, ilen_h, timebuf)
+     &     (IO_param%id_file, ioffset, 1, char(10))
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ione
 !
@@ -174,7 +167,7 @@
         timebuf = picked_gauss_head(time_d%i_time_step, time_d%time)
 !
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_rank, ioffset, ilength, timebuf)
+     &     (IO_param%id_file, ioffset, ilength, timebuf)
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ilength
 !
@@ -195,7 +188,7 @@
         end do
 !
         call calypso_mpi_seek_wrt_mul_chara                             &
-     &     (IO_param%id_rank, ioffset, ilen_n, num, pickedbuf)
+     &     (IO_param%id_file, ioffset, ilen_n, num, pickedbuf)
         deallocate(d_rj_out, pickedbuf)
       end if
       IO_param%ioff_gl = IO_param%ioff_gl                               &
@@ -206,7 +199,7 @@
         write(timebuf,'(a1)') char(10)
 !
         call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_rank, ioffset, 1, timebuf)
+     &     (IO_param%id_file, ioffset, 1, timebuf)
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ione
 !

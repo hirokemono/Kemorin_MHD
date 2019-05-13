@@ -73,7 +73,6 @@
         end do
       end if
 !
-      write(*,*) 'const_picked_sph_address for picked_spectr'
       call const_picked_sph_address(iflag_center,                       &
      &    sph_params%l_truncation, sph_rj, pick_list, picked)
 !

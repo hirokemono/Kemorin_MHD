@@ -53,8 +53,9 @@
 !
       integer(kind = kint) :: i
 !
-      count_label_list_length = len_trim(field_list(1))
-      do i = 2, num
+!
+      count_label_list_length = 0
+      do i = 1, num
         count_label_list_length                                         &
      &        = count_label_list_length + len_trim(field_list(i)) + 4
       end do
@@ -75,10 +76,10 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      if(num .eq. 1) then
-        write(make_field_list,'(a)') trim(field_list(1))
+      if(num .le. 0) then
+        make_field_list = ''
       else
-        write(fmt_txt,'(a1,i4,a13)')    '(', num-1, '(a,4X), a,a1)'
+        write(fmt_txt,'(a1,i4,a10)')    '(', num, '(a,4X),a1)'
         write(make_field_list,fmt_txt) (trim(field_list(i)),i=1,num)
       end if
 !

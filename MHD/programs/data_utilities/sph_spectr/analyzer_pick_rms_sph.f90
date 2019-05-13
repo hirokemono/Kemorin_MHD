@@ -87,7 +87,6 @@
 !
       use m_ctl_params_sph_utils
       use copy_rj_phys_data_4_IO
-      use picked_sph_spectr_data_IO
       use MPI_picked_sph_mean_sq_IO
 !
 !

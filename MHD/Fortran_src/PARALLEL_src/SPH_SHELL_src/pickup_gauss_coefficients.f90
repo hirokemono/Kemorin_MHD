@@ -68,8 +68,6 @@
           end do
         end if
 !
-      write(*,*) 'const_picked_sph_address for gauss coefficients'
-      write(50+my_rank,*) 'const_picked_sph_address for gauss coefficients'
         call const_picked_sph_address                                   &
      &     (izero, sph_params%l_truncation, sph_rj, gauss_list, gauss_coef)
 !

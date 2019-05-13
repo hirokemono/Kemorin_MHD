@@ -61,8 +61,6 @@
 !
 !>        Number of modes of  monitoring spectrum to be evaluated
         integer(kind = kint) :: num_sph_mode =  0
-!>        Global spherical harmonics ID to evaluate  monitoring spectrum
-        integer(kind = kint), allocatable :: idx_gl(:,:)
 !
 !>        Number of modes of monitoring spectrum in each process
         integer(kind = kint) :: ntot_pick_spectr_lc = 0
@@ -87,8 +85,7 @@
         integer(kind = kint), allocatable :: ifield_monitor_rj(:)
 !>        Number of modes of monitoring spectrum in each process
         integer(kind = kint) :: ntot_pick_spectr = 0
-!>        monitoring spectrum
-        real(kind = kreal), allocatable :: d_rj_gl(:,:)
+
 !>        Name of  monitoring spectrum
         character(len=kchara), allocatable :: spectr_name(:)
       end type picked_spectrum_data
@@ -156,12 +153,9 @@
       integer, intent(in) :: nprocs
       type(picked_spectrum_data), intent(inout) :: picked
 !
-      integer(kind = kint) :: num
-!
 !
       picked%ntot_pick_spectr_lc                                        &
      &      = picked%num_sph_mode_lc * picked%num_layer
-      num = picked%ntot_pick_spectr_lc
 !
       allocate( picked%istack_picked_spec_lc(0:nprocs) )
 !
@@ -192,14 +186,7 @@
 !
       type(picked_spectrum_data), intent(inout) :: picked
 !
-      integer(kind = kint) :: num
 !
-!
-      picked%ntot_pick_spectr = picked%num_sph_mode * picked%num_layer
-      num = picked%ntot_pick_spectr
-!
-      allocate( picked%idx_gl(picked%num_sph_mode,3) )
-      allocate( picked%d_rj_gl(picked%ntot_comp_rj,num) )
       allocate( picked%spectr_name(picked%ntot_comp_rj) )
       allocate( picked%istack_comp_rj(0:picked%num_field_rj) )
       allocate( picked%ifield_monitor_rj(picked%num_field_rj) )
@@ -207,10 +194,6 @@
       if(picked%num_field_rj .gt. 0) then
         picked%ifield_monitor_rj = 0
         picked%istack_comp_rj =    0
-      end if
-      if(num .gt. 0) then
-        picked%idx_gl = -1
-        picked%d_rj_gl = 0.0d0
       end if
 !
       end subroutine alloc_pick_sph_monitor
@@ -268,7 +251,6 @@
       type(picked_spectrum_data), intent(inout) :: picked
 !
 !
-      deallocate(picked%idx_gl, picked%d_rj_gl)
       deallocate(picked%spectr_name)
       deallocate(picked%istack_comp_rj, picked%ifield_monitor_rj)
 !
@@ -308,7 +290,7 @@
       type(picked_spectrum_data), intent(in) :: picked
 !
       integer(kind = kint), parameter                                   &
-     &         :: ilen_h1 = ilen_pick_sph_head + 2*16 + 1
+     &         :: ilen_h1 = ilen_pick_sph_head + 3*16 + 1
       integer(kind = kint), parameter                                   &
      &         :: ilen_h2 = ilen_pick_sph_num + 16 + 1
       integer(kind = kint), parameter                                   &
@@ -317,9 +299,9 @@
       character(len = len_head) :: pick_sph_header_no_field
 !
 !
-      write(pick_sph_header_no_field,'(a,2i16,a1,a,i16,a1,a)')          &
-     &        hd_pick_sph_head(),                                       &
-     &        picked%num_layer, picked%num_sph_mode, char(10),          &
+      write(pick_sph_header_no_field,'(a,3i16,a1,a,i16,a1,a)')          &
+     &        hd_pick_sph_head(), picked%num_layer,                     &
+     &        picked%num_sph_mode, picked%ntot_pick_spectr, char(10),   &
      &        hd_pick_sph_num(), picked%ntot_comp_rj, char(10),         &
      &        hd_time_sph_label()
 !

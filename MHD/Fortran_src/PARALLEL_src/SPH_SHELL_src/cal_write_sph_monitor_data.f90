@@ -93,7 +93,6 @@
      &          ipol, rj_fld, pwr, pick_coef, gauss_coef, Nusselt)
 !
       use output_sph_m_square_file
-      use picked_sph_spectr_data_IO
       use MPI_picked_sph_spectr_IO
       use MPI_sph_gauss_coefs_IO
 !

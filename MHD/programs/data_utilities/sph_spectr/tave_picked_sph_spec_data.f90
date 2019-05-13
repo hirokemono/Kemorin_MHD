@@ -7,12 +7,11 @@
 !
       use m_precision
       use m_constants
-      use t_pickup_sph_spectr_data
-      use picked_sph_spectr_data_IO
+      use t_picked_sph_spectr_data_IO
 !
       implicit  none
 !
-      type(picked_spectrum_data), save :: pick
+      type(picked_spectrum_data_IO), save :: pick_IO
 !
       real(kind = kreal), allocatable :: prev_spec(:,:)
       real(kind = kreal), allocatable :: ave_spec(:,:)
@@ -25,7 +24,7 @@
       character(len=kchara) :: sdev_header
       integer(kind = kint), parameter :: id_pick = 15
 !
-      integer(kind = kint) :: i_step, ierr, num, icou, ipick, nd
+      integer(kind = kint) :: i_step, ierr, icou, i, nd
       real(kind = kreal) :: acou, time, prev_time
       real(kind = kreal) :: start_time, end_time, true_start
 !
@@ -40,14 +39,12 @@
       write(*,*) 'Input start and end time'
       read(5,*) start_time, end_time
 !
-      pick%file_prefix = evo_header
-      call open_sph_spec_read(id_pick, pick)
+      call open_sph_spec_read(id_pick, evo_header, pick_IO)
 !
-      num = pick%num_sph_mode * pick%num_layer
-      allocate( prev_spec(pick%ntot_comp_rj,num) )
-      allocate( ave_spec(pick%ntot_comp_rj,num) )
-      allocate( rms_spec(pick%ntot_comp_rj,num) )
-      allocate( sdev_spec(pick%ntot_comp_rj,num) )
+      allocate(prev_spec(pick_IO%ntot_comp,pick_IO%ntot_pick_spectr))
+      allocate(ave_spec(pick_IO%ntot_comp,pick_IO%ntot_pick_spectr))
+      allocate(rms_spec(pick_IO%ntot_comp,pick_IO%ntot_pick_spectr))
+      allocate(sdev_spec(pick_IO%ntot_comp,pick_IO%ntot_pick_spectr))
 !
 !$omp parallel workshare
       prev_spec =  0.0d0
@@ -59,23 +56,27 @@
 !       Evaluate time average
 !
       icou = 0
+      true_start = start_time
+      prev_time = true_start
       do
-        call read_sph_spec_monitor(id_pick, i_step, time, pick, ierr)
+        call read_sph_spec_monitor                                      &
+     &     (id_pick, i_step, time, pick_IO, ierr)
         if(ierr .gt. 0) exit
 !
         if(time .ge. start_time) then
           if(icou .eq. 0) then
             true_start = time
           else
+!
 !$omp parallel
-            do ipick = 1, pick%num_sph_mode*pick%num_layer
+            do i = 1, pick_IO%ntot_pick_spectr
 !$omp do
-              do nd = 1, pick%ntot_comp_rj
-                ave_spec(nd,ipick) = ave_spec(nd,ipick) + half          &
-     &           * (pick%d_rj_gl(nd,ipick) + prev_spec(nd,ipick))       &
+              do nd = 1, pick_IO%ntot_comp
+                ave_spec(nd,i) = ave_spec(nd,i) + half                  &
+     &           * (pick_IO%d_pk(nd,i) + prev_spec(nd,i))               &
      &           * (time - prev_time)
-                rms_spec(nd,ipick) = rms_spec(nd,ipick) + half          &
-     &           * (pick%d_rj_gl(nd,ipick)**2 + prev_spec(nd,ipick)**2) &
+                rms_spec(nd,i) = rms_spec(nd,i) + half                  &
+     &           * (pick_IO%d_pk(nd,i)**2 + prev_spec(nd,i)**2)         &
      &           * (time - prev_time)
               end do
 !$omp end do nowait
@@ -84,10 +85,10 @@
           end if
 !
 !$omp parallel
-          do ipick = 1, pick%num_sph_mode*pick%num_layer
+          do i = 1, pick_IO%ntot_pick_spectr
 !$omp do
-            do nd = 1, pick%ntot_comp_rj
-              prev_spec(nd,ipick) = pick%d_rj_gl(nd,ipick)
+            do nd = 1, pick_IO%ntot_comp
+              prev_spec(nd,i) = pick_IO%d_pk(nd,i)
             end do
 !$omp end do nowait
           end do
@@ -105,15 +106,14 @@
 !
       acou = one / (time - true_start)
 !$omp parallel
-      do ipick = 1, pick%num_sph_mode*pick%num_layer
+      do i = 1, pick_IO%ntot_pick_spectr
 !$omp do
-        do nd = 1, pick%ntot_comp_rj
-          sdev_spec(nd,ipick)                                           &
-     &        = rms_spec(nd,ipick) - ave_spec(nd,ipick)**2
+        do nd = 1, pick_IO%ntot_comp
+          sdev_spec(nd,i) = rms_spec(nd,i) - ave_spec(nd,i)**2
 !
-          ave_spec(nd,ipick) =   ave_spec(nd,ipick) * acou
-          rms_spec(nd,ipick) =   sqrt(rms_spec(nd,ipick) * acou)
-          sdev_spec(nd,ipick) =  sqrt(sdev_spec(nd,ipick) * acou)
+          ave_spec(nd,i) =   ave_spec(nd,i) * acou
+          rms_spec(nd,i) =   sqrt(rms_spec(nd,i) * acou)
+          sdev_spec(nd,i) =  sqrt(sdev_spec(nd,i) * acou)
         end do
 !$omp end do nowait
       end do
@@ -121,39 +121,38 @@
 !
 !    output time average
 !
-      do ipick = 1, pick%num_sph_mode*pick%num_layer
-        do nd = 1, pick%ntot_comp_rj
-          pick%d_rj_gl(nd,ipick) = ave_spec(nd,ipick)
+      do i = 1, pick_IO%ntot_pick_spectr
+        do nd = 1, pick_IO%ntot_comp
+          pick_IO%d_pk(nd,i) = ave_spec(nd,i)
         end do
       end do
 !
-      pick%file_prefix = tave_header
-      call write_sph_spec_monitor(0, i_step, time, pick)
+      call write_tave_sph_spec_monitor                                  &
+     &   (tave_header, i_step, time, true_start, pick_IO)
 !
 !    output RMS deviation
 !
-      do ipick = 1, pick%num_sph_mode*pick%num_layer
-        do nd = 1, pick%ntot_comp_rj
-          pick%d_rj_gl(nd,ipick) = rms_spec(nd,ipick)
+      do i = 1, pick_IO%ntot_pick_spectr
+        do nd = 1, pick_IO%ntot_comp
+          pick_IO%d_pk(nd,i) = rms_spec(nd,i)
         end do
       end do
 !
-      pick%file_prefix = trms_header
-      call write_sph_spec_monitor(0, i_step, time, pick)
+      call write_tave_sph_spec_monitor                                  &
+     &   (trms_header, i_step, time, true_start, pick_IO)
 !
 !    output standard deviation
 !
-      do ipick = 1, pick%num_sph_mode*pick%num_layer
-        do nd = 1, pick%ntot_comp_rj
-          pick%d_rj_gl(nd,ipick) = sdev_spec(nd,ipick)
+      do i = 1, pick_IO%ntot_pick_spectr
+        do nd = 1, pick_IO%ntot_comp
+          pick_IO%d_pk(nd,i) = sdev_spec(nd,i)
         end do
       end do
 !
-      pick%file_prefix = sdev_header
-      call write_sph_spec_monitor(0, i_step, time, pick)
+      call write_tave_sph_spec_monitor                                  &
+     &   (sdev_header, i_step, time, true_start, pick_IO)
 !
-      call dealloc_pick_sph_monitor(pick)
-      call dealloc_num_pick_layer(pick)
+      call dealloc_pick_sph_monitor_IO(pick_IO)
       deallocate(prev_spec, ave_spec, sdev_spec)
 !
       write(*,*) '***** program finished *****'

@@ -72,7 +72,6 @@
      &    pick_list%num_modes, pick_list%num_degree,                    &
      &    pick_list%num_order, pick_list%idx_pick_mode,                 &
      &    pick_list%idx_pick_l, pick_list%idx_pick_m,                   &
-     &    picked%num_sph_mode, picked%idx_gl,                           &
      &    picked%num_sph_mode_lc, picked%idx_out)
 !
       if(picked%idx_out(0,4) .gt. 0) then 
@@ -89,6 +88,7 @@
      &       =  picked%istack_picked_spec_lc(i-1)                       &
      &        + picked%istack_picked_spec_lc(i)
       end do
+      picked%ntot_pick_spectr = picked%istack_picked_spec_lc(nprocs) 
 !
 !
       call deallocate_iflag_pick_sph
@@ -201,7 +201,7 @@
      &         (iflag_center, l_truncation, sph_rj,                     &
      &          num_pick_sph, num_pick_sph_l, num_pick_sph_m,           &
      &          idx_pick_sph, idx_pick_sph_l, idx_pick_sph_m,           &
-     &          num_pickup, idx_pick_gl, num_pickup_lc, idx_pickup)
+     &          num_pickup_lc, idx_pickup)
 !
       use spherical_harmonics
       use quicksort
@@ -218,10 +218,8 @@
       integer(kind = kint), intent(in)                                  &
      &                     :: idx_pick_sph_m(num_pick_sph_m)
 !
-      integer(kind = kint), intent(in) :: num_pickup
       integer(kind = kint), intent(in) :: num_pickup_lc
 !
-      integer(kind = kint), intent(inout) :: idx_pick_gl(num_pickup,3)
       integer(kind = kint), intent(inout)                               &
      &                     :: idx_pickup(0:num_pickup_lc,4)
 !
@@ -238,7 +236,6 @@
         j_lc = find_local_sph_address(sph_rj, int(l), int(m))
         if(l .le. l_truncation) then
           icou = icou + 1
-          idx_pick_gl(icou,1) = j_gl
           iflag_picked_sph(j_gl)  = icou
 !
           if(j_lc .gt. 0) then
@@ -257,7 +254,6 @@
             j_lc = find_local_sph_address(sph_rj, int(l), int(m))
             if(iflag_picked_sph(j_gl) .lt. izero) then
               icou = icou + 1
-              idx_pick_gl(icou,1) = j_gl
               iflag_picked_sph(j_gl)  = icou
 !
               if(j_lc .gt. 0) then
@@ -279,7 +275,6 @@
             j_lc = find_local_sph_address(sph_rj, int(l), int(m))
             if(iflag_picked_sph(j_gl) .lt. izero) then
               icou = icou + 1
-              idx_pick_gl(icou,1) = j_gl
               iflag_picked_sph(j_gl)  = icou
 !
               if(j_lc .gt. 0) then
@@ -290,14 +285,6 @@
             end if
           end do
         end if
-      end do
-!
-      call quicksort_int(num_pickup, idx_pick_gl(1,1),                  &
-     &    ione, num_pickup)
-!
-      do icou = 1, num_pickup
-        call get_degree_order_by_full_j(idx_pick_gl(icou,1),            &
-     &      idx_pick_gl(icou,2), idx_pick_gl(icou,3))
       end do
 !
       if(num_pickup_lc .le. 0) return
