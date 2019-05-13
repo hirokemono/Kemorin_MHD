@@ -382,8 +382,7 @@
       end if
       call calypso_mpi_barrier
 !
-!      if(id_rank .eq. pwr%irank_l) then
-      if(id_rank .eq. 0) then
+      if(id_rank .eq. pwr%irank_l) then
         write(*,*) 'write_sph_layer_spec_file l', id_rank
         write(fname_rms, '(a,a6)') trim(pwr%fhead_rms_layer), '_l.dat'
         write(mode_label,'(a)') 'radial_id  radius  degree'
@@ -395,8 +394,7 @@
       end if
       call calypso_mpi_barrier
 !
-!      if(id_rank .eq. pwr%irank_lm) then
-      if(id_rank .eq. 0) then
+      if(id_rank .eq. pwr%irank_lm) then
         write(*,*) 'write_sph_layer_spec_file lm', id_rank
         write(fname_rms,'(a,a7)') trim(pwr%fhead_rms_layer), '_lm.dat'
         write(mode_label,'(a)') 'radial_id  radius  diff_deg_order'

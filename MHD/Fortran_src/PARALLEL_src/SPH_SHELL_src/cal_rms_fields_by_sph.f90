@@ -273,14 +273,12 @@
       if(pwr%nri_rms .le. 0) return
       num64 = pwr%ntot_comp_sq * pwr%nri_rms * (l_truncation + 1)
       call calypso_mpi_reduce_real(WK_pwr%shl_l_local, pwr%shl_l,       &
-!     &    num64, MPI_SUM, pwr%irank_l)
-     &    num64, MPI_SUM, 0)
+     &    num64, MPI_SUM, pwr%irank_l)
       call calypso_mpi_reduce_real(WK_pwr%shl_m_local, pwr%shl_m,       &
 !     &    num64, MPI_SUM, pwr%irank_m)
      &    num64, MPI_SUM, 0)
       call calypso_mpi_reduce_real(WK_pwr%shl_lm_local, pwr%shl_lm,     &
-!     &    num64, MPI_SUM, pwr%irank_lm)
-     &    num64, MPI_SUM, 0)
+     &    num64, MPI_SUM, pwr%irank_lm)
 !
       end subroutine global_sum_sph_layerd_square
 !
@@ -353,6 +351,17 @@
         call surf_ave_4_sph_rms                                         &
      &       (sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
      &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_m0)
+      end if
+!
+      if(my_rank .eq. pwr%irank_l) then
+        call surf_ave_4_sph_rms_int(sph_params%l_truncation,          &
+     &      sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &      pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_l)
+      end if
+      if(my_rank .eq. pwr%irank_lm) then
+        call surf_ave_4_sph_rms_int(sph_params%l_truncation,          &
+     &      sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &      pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_lm)
       end if
 !
       end subroutine sum_mean_square_on_sphere
