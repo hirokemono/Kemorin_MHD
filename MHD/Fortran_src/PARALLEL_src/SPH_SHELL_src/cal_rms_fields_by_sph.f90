@@ -182,7 +182,6 @@
 !
       if(pwr%ntot_comp_sq .eq. 0) return
 !
-      call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
       call sum_sph_layerd_rms                                           &
      &   (sph_params%l_truncation, sph_rj, ipol, g_sph_rj, rj_fld,      &
@@ -230,7 +229,6 @@
 !
       if(cor%ntot_comp_sq .eq. 0) return
 !
-      call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_correlate'
       call sum_sph_layerd_correlate                                     &
      &   (sph_params%l_truncation, sph_rj, g_sph_rj, rj_fld1, rj_fld2,  &
@@ -308,8 +306,7 @@
         call calypso_mpi_reduce_real(WK_pwr%vol_l_local(0,1,i),         &
      &      v_pwr(i)%v_l, num64, MPI_SUM, v_pwr(i)%irank_l)
         call calypso_mpi_reduce_real(WK_pwr%vol_m_local(0,1,i),         &
-!     &      v_pwr(i)%v_m, num64, MPI_SUM, v_pwr(i)%irank_m)
-     &      v_pwr(i)%v_m, num64, MPI_SUM, 0)
+     &      v_pwr(i)%v_m, num64, MPI_SUM, v_pwr(i)%irank_m)
         call calypso_mpi_reduce_real(WK_pwr%vol_lm_local(0,1,i),        &
      &      v_pwr(i)%v_lm, num64, MPI_SUM, v_pwr(i)%irank_lm)
       end do
@@ -396,8 +393,7 @@
 !
       do i = 1, num_vol_spectr
 !
-!        if(my_rank .eq. v_pwr(i)%irank_m) then
-        if(my_rank .eq. 0) then
+        if(my_rank .eq. v_pwr(i)%irank_m) then
           call sum_sph_vol_rms_all_modes(sph_params%l_truncation,       &
      &        ntot_rms_rj, v_pwr(i)%v_m, v_pwr(i)%v_sq)
           call pick_axis_sph_vol_pwr(sph_params%l_truncation,           &
@@ -423,8 +419,7 @@
         end if
 !
 !
-!        if(my_rank .eq. v_pwr(i)%irank_m) then
-        if(my_rank .eq. 0) then
+        if(my_rank .eq. v_pwr(i)%irank_m) then
           call vol_ave_4_rms_sph_int(sph_params%l_truncation,           &
      &        ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_m)
         end if

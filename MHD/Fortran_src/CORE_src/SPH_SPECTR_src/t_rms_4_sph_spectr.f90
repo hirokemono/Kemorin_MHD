@@ -296,6 +296,7 @@
      &   .or. id_rank.eq.pwr%irank_lm) then
         allocate( pwr%shl_sq(pwr%nri_rms,pwr%ntot_comp_sq) )
         if(pwr%nri_rms .gt. 0) pwr%shl_sq =       0.0d0
+
       end if
 !
       end subroutine alloc_rms_4_sph_spectr
@@ -402,7 +403,7 @@
         v_pwr%v_lm = 0.0d0
       end if
 !
-!      if(id_rank .eq. v_pwr%irank_m) then
+      if(id_rank .eq. v_pwr%irank_m) then
         allocate( v_pwr%v_m(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
         v_pwr%v_m =  0.0d0
 !
@@ -411,13 +412,13 @@
 !
         allocate( v_pwr%v_ratio_m0(v_pwr%ntot_comp_sq) )
         v_pwr%v_ratio_m0 = 0.0d0
-!      end if
+      end if
 !
-!      if(     id_rank.eq.v_pwr%irank_l .or. id_rank.eq.v_pwr%irank_m   &
-!     &   .or. id_rank.eq.v_pwr%irank_lm) then
+      if(     id_rank.eq.v_pwr%irank_l .or. id_rank.eq.v_pwr%irank_m   &
+     &   .or. id_rank.eq.v_pwr%irank_lm) then
         allocate( v_pwr%v_sq(v_pwr%ntot_comp_sq) )
         v_pwr%v_sq =       0.0d0
-!      end if
+      end if
 !
       end subroutine alloc_sph_vol_mean_square
 !
