@@ -199,16 +199,48 @@
       call calypso_mpi_barrier
       if(my_rank .eq. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'
-        call surf_ave_4_sph_rms_int(sph_params%l_truncation,            &
-     &      sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                      &
-     &      pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms,                &
-     &      pwr%shl_l, pwr%shl_m, pwr%shl_lm, pwr%shl_sq, pwr%shl_m0)
+          call surf_ave_4_sph_rms_int(sph_params%l_truncation,          &
+     &        sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms,              &
+     &        pwr%shl_l)
+!
+          call surf_ave_4_sph_rms_int(sph_params%l_truncation,          &
+     &        sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms,              &
+     &        pwr%shl_m)
+!
+          call surf_ave_4_sph_rms_int(sph_params%l_truncation,          &
+     &        sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms,              &
+     &        pwr%shl_lm)
+!
+          call surf_ave_4_sph_rms                                       &
+     &       (sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_sq)
+!
+          call surf_ave_4_sph_rms                                       &
+     &       (sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_m0)
         do i = 1, pwr%num_vol_spectr
-          call vol_ave_4_rms_sph                                        &
-     &       (sph_params%l_truncation, pwr%ntot_comp_sq,                &
-     &        pwr%v_spectr(i)%avol, pwr%v_spectr(i)%v_l,                &
-     &        pwr%v_spectr(i)%v_m, pwr%v_spectr(i)%v_lm,                &
-     &        pwr%v_spectr(i)%v_sq, pwr%v_spectr(i)%v_m0)
+            call vol_ave_4_rms_sph_int                                  &
+     &         (sph_params%l_truncation, pwr%ntot_comp_sq,              &
+     &          pwr%v_spectr(i)%avol, pwr%v_spectr(i)%v_l)
+!
+            call vol_ave_4_rms_sph_int                                  &
+     &         (sph_params%l_truncation, pwr%ntot_comp_sq,              &
+     &          pwr%v_spectr(i)%avol, pwr%v_spectr(i)%v_m)
+!
+            call vol_ave_4_rms_sph_int                                  &
+     &         (sph_params%l_truncation, pwr%ntot_comp_sq,              &
+     &          pwr%v_spectr(i)%avol, pwr%v_spectr(i)%v_lm)
+!
+            call vol_ave_4_rms_sph                                      &
+     &         (pwr%ntot_comp_sq, pwr%v_spectr(i)%avol,                 &
+     &          pwr%v_spectr(i)%v_sq)
+!
+            call vol_ave_4_rms_sph                                      &
+     &         (pwr%ntot_comp_sq, pwr%v_spectr(i)%avol,                 &
+     &          pwr%v_spectr(i)%v_m0)
         end do
       end if
 !
@@ -260,16 +292,49 @@
       call calypso_mpi_barrier
       if(my_rank .eq. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'surf_ave_4_sph_rms_int'
-        call surf_ave_4_sph_rms_int(sph_params%l_truncation,            &
-     &      sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                      &
-     &      cor%nri_rms, cor%ntot_comp_sq, cor%kr_4_rms,                &
-     &      cor%shl_l, cor%shl_m, cor%shl_lm, cor%shl_sq, cor%shl_m0)
+          call surf_ave_4_sph_rms_int(sph_params%l_truncation,          &
+     &        sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &        cor%nri_rms, cor%ntot_comp_sq, cor%kr_4_rms,              &
+     &        cor%shl_l)
+!
+          call surf_ave_4_sph_rms_int(sph_params%l_truncation,          &
+     &        sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &        cor%nri_rms, cor%ntot_comp_sq, cor%kr_4_rms,              &
+     &        cor%shl_m)
+!
+          call surf_ave_4_sph_rms_int(sph_params%l_truncation,          &
+     &        sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &        cor%nri_rms, cor%ntot_comp_sq, cor%kr_4_rms,              &
+     &        cor%shl_lm)
+!
+          call surf_ave_4_sph_rms                                       &
+     &       (sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &        cor%nri_rms, cor%ntot_comp_sq, cor%kr_4_rms, cor%shl_sq)
+!
+          call surf_ave_4_sph_rms                                       &
+     &       (sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &        cor%nri_rms, cor%ntot_comp_sq, cor%kr_4_rms, cor%shl_m0)
+!
         do i = 1, cor%num_vol_spectr
-          call vol_ave_4_rms_sph                                        &
-     &       (sph_params%l_truncation, cor%ntot_comp_sq,                &
-     &        cor%v_spectr(i)%avol, cor%v_spectr(i)%v_l,                &
-     &        cor%v_spectr(i)%v_m, cor%v_spectr(i)%v_lm,                &
-     &        cor%v_spectr(i)%v_sq, cor%v_spectr(i)%v_m0)
+            call vol_ave_4_rms_sph_int                                  &
+     &         (sph_params%l_truncation, cor%ntot_comp_sq,              &
+     &          cor%v_spectr(i)%avol, cor%v_spectr(i)%v_l)
+!
+            call vol_ave_4_rms_sph_int                                  &
+     &         (sph_params%l_truncation, cor%ntot_comp_sq,              &
+     &          cor%v_spectr(i)%avol, cor%v_spectr(i)%v_m)
+!
+            call vol_ave_4_rms_sph_int                                  &
+     &         (sph_params%l_truncation, cor%ntot_comp_sq,              &
+     &          cor%v_spectr(i)%avol, cor%v_spectr(i)%v_lm)
+!
+            call vol_ave_4_rms_sph                                      &
+     &         (cor%ntot_comp_sq, cor%v_spectr(i)%avol,                 &
+     &          cor%v_spectr(i)%v_sq)
+!
+            call vol_ave_4_rms_sph                                      &
+     &         (cor%ntot_comp_sq, cor%v_spectr(i)%avol,                 &
+     &          cor%v_spectr(i)%v_m0)
         end do
       end if
 !
@@ -326,7 +391,7 @@
 !
         if(my_rank .eq. 0) then
           call sum_sph_vol_rms_all_modes(l_truncation, ntot_rms_rj,     &
-     &      v_pwr(i)%v_l, v_pwr(i)%v_sq)
+     &      v_pwr(i)%v_m, v_pwr(i)%v_sq)
           call pick_axis_sph_vol_pwr                                    &
      &     (l_truncation, ntot_rms_rj, v_pwr(i)%v_m, v_pwr(i)%v_sq,     &
      &      v_pwr(i)%v_m0, v_pwr(i)%v_ratio_m0)
@@ -344,7 +409,7 @@
 !
       if(my_rank .gt. 0) return
       call sum_sph_rms_all_modes(l_truncation, nri_rms, ntot_rms_rj,    &
-     &    rms_sph_l, rms_sph)
+     &    rms_sph_m, rms_sph)
       call pick_axis_sph_power(l_truncation, nri_rms, ntot_rms_rj,      &
      &    rms_sph_m, rms_sph, rms_sph_m0, ratio_sph_m0)
 !

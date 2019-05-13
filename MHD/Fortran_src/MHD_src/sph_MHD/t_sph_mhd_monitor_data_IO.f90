@@ -168,7 +168,7 @@
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
 !
-      if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
+      if(iflag_debug .gt. 0) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr                                        &
      &   (sph%sph_params, sph%sph_rj, rj_fld,                           &
      &    monitor%pwr, monitor%WK_pwr)
