@@ -281,7 +281,7 @@
         if(pwr%nri_rms .gt. 0) pwr%shl_lm = 0.0d0
       end if
 !
-!      if(id_rank .eq. pwr%irank_m) then
+      if(id_rank .eq. pwr%irank_m) then
         allocate(pwr%shl_m(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
         if(pwr%nri_rms .gt. 0) pwr%shl_m =        0.0d0
 !
@@ -290,13 +290,13 @@
 !
         allocate( pwr%ratio_shl_m0(pwr%nri_rms,pwr%ntot_comp_sq) )
         if(pwr%nri_rms .gt. 0) pwr%ratio_shl_m0 = 0.0d0
-!      end if
+      end if
 !
-!      if(     id_rank.eq.pwr%irank_l .or. id_rank.eq.pwr%irank_m        &
-!     &   .or. id_rank.eq.pwr%irank_lm) then
+      if(     id_rank.eq.pwr%irank_l .or. id_rank.eq.pwr%irank_m        &
+     &   .or. id_rank.eq.pwr%irank_lm) then
         allocate( pwr%shl_sq(pwr%nri_rms,pwr%ntot_comp_sq) )
         if(pwr%nri_rms .gt. 0) pwr%shl_sq =       0.0d0
-!      end if
+      end if
 !
       end subroutine alloc_rms_4_sph_spectr
 !
@@ -346,14 +346,14 @@
         deallocate(pwr%shl_lm)
       end if
 !
-!      if(id_rank .eq. pwr%irank_m) then
+      if(id_rank .eq. pwr%irank_m) then
         deallocate(pwr%shl_m, pwr%shl_m0, pwr%ratio_shl_m0)
-!      end if
+      end if
 !
-!      if(     id_rank.eq.pwr%irank_l .or. id_rank.eq.pwr%irank_m        &
-!     &   .or. id_rank.eq.pwr%irank_lm) then
+      if(     id_rank.eq.pwr%irank_l .or. id_rank.eq.pwr%irank_m        &
+     &   .or. id_rank.eq.pwr%irank_lm) then
         deallocate(pwr%shl_sq)
-!      end if
+      end if
 !
       deallocate(pwr%num_comp_sq, pwr%istack_comp_sq)
       deallocate(pwr%pwr_name, pwr%id_field)

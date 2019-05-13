@@ -275,8 +275,7 @@
       call calypso_mpi_reduce_real(WK_pwr%shl_l_local, pwr%shl_l,       &
      &    num64, MPI_SUM, pwr%irank_l)
       call calypso_mpi_reduce_real(WK_pwr%shl_m_local, pwr%shl_m,       &
-!     &    num64, MPI_SUM, pwr%irank_m)
-     &    num64, MPI_SUM, 0)
+     &    num64, MPI_SUM, pwr%irank_m)
       call calypso_mpi_reduce_real(WK_pwr%shl_lm_local, pwr%shl_lm,     &
      &    num64, MPI_SUM, pwr%irank_lm)
 !
@@ -330,8 +329,7 @@
       type(sph_mean_squares), intent(inout) :: pwr
 !
 !
-!      if(my_rank .eq. pwr%irank_m) then
-      if(my_rank .eq. 0) then
+      if(my_rank .eq. pwr%irank_m) then
         call sum_sph_rms_all_modes                                      &
      &     (sph_params%l_truncation, pwr%nri_rms, pwr%ntot_comp_sq,     &
      &      pwr%shl_m, pwr%shl_sq)
@@ -359,20 +357,19 @@
      &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_sq)
       end if
 !
-!      if(my_rank .eq. pwr%irank_m) then
-      if(my_rank .eq. 0) then
+      if(my_rank .eq. pwr%irank_m) then
         call surf_ave_4_sph_rms_int(sph_params%l_truncation,            &
      &        sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
      &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_m)
       end if
       if(my_rank .eq. pwr%irank_l) then
-        call surf_ave_4_sph_rms_int(sph_params%l_truncation,          &
-     &      sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+        call surf_ave_4_sph_rms_int(sph_params%l_truncation,            &
+     &      sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                      &
      &      pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_l)
       end if
       if(my_rank .eq. pwr%irank_lm) then
-        call surf_ave_4_sph_rms_int(sph_params%l_truncation,          &
-     &      sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+        call surf_ave_4_sph_rms_int(sph_params%l_truncation,            &
+     &      sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                      &
      &      pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_lm)
       end if
 !

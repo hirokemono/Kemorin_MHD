@@ -325,9 +325,8 @@
       if(pwr%iflag_layer_rms_spec .eq. izero)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
+      if(id_rank .ne. pwr%irank_m) return
 !
-!      if(id_rank .ne. pwr%irank_m) return
-      if(id_rank .ne. 0) return
         write(*,*) 'write_sph_layer_ms_file m', id_rank
       write(fname_rms,   '(a,a6)') trim(pwr%fhead_rms_layer), '_s.dat'
       write(mode_label,'(a)') 'radial_id  radius'
@@ -361,8 +360,7 @@
       if(pwr%iflag_layer_rms_spec .eq. izero)  return
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
-!      if(id_rank .eq. pwr%irank_m) then
-      if(id_rank .eq. 0) then
+      if(id_rank .eq. pwr%irank_m) then
         write(*,*) 'write_sph_layer_spec_file m', id_rank
         write(fname_rms, '(a,a6)') trim(pwr%fhead_rms_layer), '_m.dat'
         write(mode_label,'(a)') 'radial_id  radius  order'
