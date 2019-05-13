@@ -17,7 +17,7 @@
 !!     &          leg, ipol, rj_fld, pwr, WK_pwr)
 !!      subroutine cal_write_layerd_sph_rms(time_d, sph_params, sph_rj, &
 !!     &          leg, ipol, rj_fld, pwr, WK_pwr)
-!!      subroutine cal_rms_data_4_sph_mhd(time_d, sph_rj,               &
+!!      subroutine cal_write_no_heat_sourse_Nu(time_d, sph_rj,           &
 !!     &          sph_bc_U, ipol, rj_fld, Nusselt)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -191,7 +191,7 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine cal_rms_data_4_sph_mhd(time_d, sph_rj,                 &
+      subroutine cal_write_no_heat_sourse_Nu(time_d, sph_rj,            &
      &          sph_bc_U, ipol, rj_fld, Nusselt)
 !
       use pickup_gauss_coefficients
@@ -213,7 +213,7 @@
       call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,           &
      &    time_d%i_time_step, time_d%time, Nusselt)
 !
-      end subroutine cal_rms_data_4_sph_mhd
+      end subroutine cal_write_no_heat_sourse_Nu
 !
 !  --------------------------------------------------------------------
 !

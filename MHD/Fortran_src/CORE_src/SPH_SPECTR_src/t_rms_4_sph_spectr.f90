@@ -39,25 +39,21 @@
 !>      Structure of mean square data over volume
       type sph_vol_mean_squares
 !>        File prefix for volume mean square file
-        character(len = kchara) :: fhead_rms_v = 'sph_pwr_volume'
+        character(len = kchara) :: fhead_rms_v
 !>        File prefix for volume average file
-        character(len = kchara) :: fhead_ave = 'sph_ave_volume'
+        character(len = kchara) :: fhead_ave
 !
 !>        MPI rank for l-spectr data output
-        integer :: irank_l =   0
-!>        MPI rank for l-spectr data output
-        integer :: irank_m =   0
-!>        MPI rank for l-spectr data output
-        integer :: irank_lm =  0
-!>        MPI rank for axisymmetric component output
-        integer :: irank_m0 =  0
-!>        MPI rank for l-spectr data output
-        integer :: irank_ave = 0
+        integer :: irank_l
+!>        MPI rank for m-spectr data output
+        integer :: irank_m
+!>        MPI rank for l-m -spectr data output
+        integer :: irank_lm
 !
 !>        Output flag for volume mean square data
-        integer(kind = kint) :: iflag_volume_rms_spec = 0
+        integer(kind = kint) :: iflag_volume_rms_spec
 !>        Output flag for volume average data
-        integer(kind = kint) :: iflag_volume_ave_sph =  0
+        integer(kind = kint) :: iflag_volume_ave_sph
 !
 !>        Number of radial points for mean square
         integer(kind=kint) :: ltr
@@ -128,18 +124,14 @@
         integer(kind = kint) :: iflag_spectr_m0 = 1
 !
 !>        MPI rank for l-spectr data output
-        integer :: irank_l =   0
-!>        MPI rank for l-spectr data output
-        integer :: irank_m =   0
-!>        MPI rank for l-spectr data output
-        integer :: irank_lm =  0
-!>        MPI rank for axisymmetric component output
-        integer :: irank_m0 =  0
-!>        MPI rank for l-spectr data output
-        integer :: irank_ave = 0
+        integer :: irank_l
+!>        MPI rank for m-spectr data output
+        integer :: irank_m
+!>        MPI rank for l-m -spectr data output
+        integer :: irank_lm
 !
 !>        Number of radial points for mean square
-        integer(kind=kint) :: nri_rms = 0
+        integer(kind=kint) :: nri_rms
 !
 !>        Radial ID from layered mean square
         integer(kind=kint), allocatable :: kr_4_rms(:)
@@ -183,8 +175,31 @@
       integer(kind = kint), intent(in) ::n_vpower
       type(sph_mean_squares), intent(inout) :: pwr
 !
+      integer(kind = kint) :: i
+!
+!
       pwr%num_vol_spectr = n_vpower
       allocate(pwr%v_spectr(n_vpower))
+!
+      do i = 1, pwr%num_vol_spectr
+        write(pwr%v_spectr(i)%fhead_rms_v,'(a)') 'sph_pwr_volume'
+        write(pwr%v_spectr(i)%fhead_rms_v,'(a)') 'sph_ave_volume'
+!
+        pwr%v_spectr(i)%irank_l =  -1
+        pwr%v_spectr(i)%irank_m =  -1
+        pwr%v_spectr(i)%irank_lm = -1
+!
+        pwr%v_spectr(i)%iflag_volume_rms_spec = 0
+        pwr%v_spectr(i)%iflag_volume_ave_sph = 0
+!
+        pwr%v_spectr(i)%ltr = 0
+        pwr%v_spectr(i)%ntot_comp_sq = 0
+!
+        pwr%v_spectr(i)%r_inside =  0
+        pwr%v_spectr(i)%r_outside = 0
+        pwr%v_spectr(i)%kr_inside =  0.0d0
+        pwr%v_spectr(i)%kr_outside = 0.0d0
+      end do
 !
       end subroutine alloc_volume_spectr_data
 !
@@ -250,38 +265,38 @@
       integer(kind = kint) :: i
 !
       pwr%ntot_comp_sq = pwr%istack_comp_sq(pwr%num_fld_sq)
+!
       do i = 1, pwr%num_vol_spectr
         call alloc_sph_vol_mean_square                                  &
      &     (id_rank, ltr, pwr%ntot_comp_sq, pwr%v_spectr(i))
       end do
 !
-      if(id_rank .eq. pwr%irank_l) then
+!      if(id_rank .eq. pwr%irank_l) then
+!      if(id_rank .eq. 0) then
         allocate(pwr%shl_l(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
         if(pwr%nri_rms .gt. 0) pwr%shl_l =  0.0d0
-      end if
+!      end if
 !
-      if(id_rank .eq. pwr%irank_m) then
-        allocate(pwr%shl_m(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
-        if(pwr%nri_rms .gt. 0) pwr%shl_m =  0.0d0
-      end if
-!
-      if(id_rank .eq. pwr%irank_lm) then
+!      if(id_rank .eq. pwr%irank_lm) then
+!      if(id_rank .eq. 0) then
         allocate(pwr%shl_lm(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
         if(pwr%nri_rms .gt. 0) pwr%shl_lm = 0.0d0
-      end if
+!      end if
 !
-      if(id_rank .eq. pwr%irank_ave) then
+!      if(id_rank .eq. pwr%irank_m) then
+!      if(id_rank .eq. 0) then
+        allocate(pwr%shl_m(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
+        if(pwr%nri_rms .gt. 0) pwr%shl_m =        0.0d0
+!
         allocate( pwr%shl_sq(pwr%nri_rms,pwr%ntot_comp_sq) )
         if(pwr%nri_rms .gt. 0) pwr%shl_sq =       0.0d0
-      end if
 !
-      if(id_rank .eq. pwr%irank_m0) then
         allocate( pwr%shl_m0(pwr%nri_rms,pwr%ntot_comp_sq) )
         if(pwr%nri_rms .gt. 0) pwr%shl_m0 =       0.0d0
 !
         allocate( pwr%ratio_shl_m0(pwr%nri_rms,pwr%ntot_comp_sq) )
         if(pwr%nri_rms .gt. 0) pwr%ratio_shl_m0 = 0.0d0
-      end if
+!      end if
 !
       end subroutine alloc_rms_4_sph_spectr
 !
@@ -324,12 +339,17 @@
       deallocate(pwr%r_4_rms, pwr%kr_4_rms)
 !
 !
-      if(id_rank .eq. pwr%irank_l) deallocate(pwr%shl_l)
-      if(id_rank .eq. pwr%irank_m) deallocate(pwr%shl_m)
-      if(id_rank .eq. pwr%irank_lm) deallocate(pwr%shl_lm)
-      if(id_rank .eq. pwr%irank_ave) deallocate(pwr%shl_sq)
-      if(id_rank .eq. pwr%irank_m0) deallocate(pwr%shl_m0)
-      if(id_rank .eq. pwr%irank_m0) deallocate(pwr%ratio_shl_m0)
+!      if(id_rank .eq. pwr%irank_l) then
+        deallocate(pwr%shl_l)
+!      end if
+!      if(id_rank .eq. pwr%irank_lm) then
+        deallocate(pwr%shl_lm)
+!      end if
+!
+!      if(id_rank .eq. pwr%irank_m) then
+        deallocate(pwr%shl_m, pwr%shl_sq)
+        deallocate(pwr%shl_m0, pwr%ratio_shl_m0)
+!      end if
 !
       deallocate(pwr%num_comp_sq, pwr%istack_comp_sq)
       deallocate(pwr%pwr_name, pwr%id_field)
@@ -367,36 +387,33 @@
 !
       v_pwr%ltr = ltr
       v_pwr%ntot_comp_sq = ntot_comp_sq
-      if(id_rank .gt. 0) return
 !
-      if(v_pwr%irank_l .eq. 0) then
+      if(id_rank .eq. v_pwr%irank_l) then
         allocate( v_pwr%v_l(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
         v_pwr%v_l = 0.0d0
       end if
 !
-      if(v_pwr%irank_m .eq. 0) then
-        allocate( v_pwr%v_m(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
-        v_pwr%v_m =  0.0d0
-      end if
-!
-      if(v_pwr%irank_lm .eq. 0) then
+      if(id_rank .eq. v_pwr%irank_lm) then
         allocate( v_pwr%v_lm(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
         v_pwr%v_lm = 0.0d0
       end if
 !
-      if(v_pwr%irank_ave .eq. 0) then
-        allocate( v_pwr%v_sq(v_pwr%ntot_comp_sq) )
-        v_pwr%v_sq =       0.0d0
-      end if
+!      if(id_rank .eq. v_pwr%irank_m) then
+        allocate( v_pwr%v_m(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
+        v_pwr%v_m =  0.0d0
 !
-      if(v_pwr%irank_m0 .eq. 0) then
         allocate( v_pwr%v_m0(v_pwr%ntot_comp_sq) )
-        v_pwr%v_m0 =       0.0d0
+        v_pwr%v_m0 = 0.0d0
 !
         allocate( v_pwr%v_ratio_m0(v_pwr%ntot_comp_sq) )
         v_pwr%v_ratio_m0 = 0.0d0
-      end if
+!      end if
 !
+!      if(     id_rank.eq.v_pwr%irank_l .or. id_rank.eq.v_pwr%irank_m   &
+!     &   .or. id_rank.eq.v_pwr%irank_lm) then
+        allocate( v_pwr%v_sq(v_pwr%ntot_comp_sq) )
+        v_pwr%v_sq =       0.0d0
+!      end if
 !
       end subroutine alloc_sph_vol_mean_square
 !
@@ -425,14 +442,21 @@
       type(sph_vol_mean_squares), intent(inout) :: v_pwr
 !
 !
-      if(id_rank .gt. 0) return
+      if(id_rank .eq. v_pwr%irank_l) then
+        deallocate(v_pwr%v_l)
+      end if
+      if(id_rank .eq. v_pwr%irank_lm) then
+        deallocate(v_pwr%v_lm)
+      end if
 !
-      if(v_pwr%irank_l .eq. 0) deallocate(v_pwr%v_l)
-      if(v_pwr%irank_m .eq. 0) deallocate(v_pwr%v_m)
-      if(v_pwr%irank_lm .eq. 0) deallocate(v_pwr%v_lm)
-      if(v_pwr%irank_ave .eq. 0) deallocate(v_pwr%v_sq)
-      if(v_pwr%irank_m0 .eq. 0) deallocate(v_pwr%v_m0)
-      if(v_pwr%irank_m0 .eq. 0) deallocate(v_pwr%v_ratio_m0)
+!      if(id_rank .eq. v_pwr%irank_m) then
+        deallocate(v_pwr%v_m, v_pwr%v_m0, v_pwr%v_ratio_m0)
+!      end if
+!
+!      if(     id_rank.eq.v_pwr%irank_l .or. id_rank.eq.v_pwr%irank_m    &
+!     &   .or. id_rank.eq.v_pwr%irank_lm) then
+        deallocate(v_pwr%v_sq)
+!      end if
 !
       end subroutine dealloc_sph_vol_mean_square
 !
@@ -449,6 +473,5 @@
       end subroutine dealloc_sph_vol_ave
 !
 ! -----------------------------------------------------------------------
-!
 !
       end module t_rms_4_sph_spectr
