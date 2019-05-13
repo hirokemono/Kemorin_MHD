@@ -454,14 +454,14 @@
         deallocate(v_pwr%v_lm)
       end if
 !
-!      if(id_rank .eq. v_pwr%irank_m) then
+      if(id_rank .eq. v_pwr%irank_m) then
         deallocate(v_pwr%v_m, v_pwr%v_m0, v_pwr%v_ratio_m0)
-!      end if
+      end if
 !
-!      if(     id_rank.eq.v_pwr%irank_l .or. id_rank.eq.v_pwr%irank_m    &
-!     &   .or. id_rank.eq.v_pwr%irank_lm) then
+      if(     id_rank.eq.v_pwr%irank_l .or. id_rank.eq.v_pwr%irank_m    &
+     &   .or. id_rank.eq.v_pwr%irank_lm) then
         deallocate(v_pwr%v_sq)
-!      end if
+      end if
 !
       end subroutine dealloc_sph_vol_mean_square
 !
