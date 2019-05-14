@@ -49,6 +49,8 @@
       character(len = kchara) :: file_name
 !
 !
+      if(picked%num_sph_mode .le. 0) return
+!
       file_name = add_dat_extension(picked%file_prefix)
       if(my_rank .eq. 0) then
         call open_sph_spec_4_monitor(id_pick_mode, file_name, picked)

@@ -50,6 +50,8 @@
       character(len = kchara) :: file_name
 !
 !
+      if(gauss%num_sph_mode .le. 0) return
+!
       file_name = add_dat_extension(gauss%file_prefix)
 !
       call calypso_mpi_barrier
