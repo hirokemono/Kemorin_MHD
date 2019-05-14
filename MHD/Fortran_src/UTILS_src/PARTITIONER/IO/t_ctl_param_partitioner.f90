@@ -67,6 +67,7 @@
 !
         integer(kind = kint) :: NPOWER_rcb
         integer(kind = kint), allocatable :: idir_rcb(:)
+        integer(kind = kint), allocatable :: ndiv_rcb(:)
 !
         integer(kind = kint) :: num_egrp_layer
         character(len=kchara), allocatable :: grp_layer_name(:)
@@ -95,7 +96,11 @@
 !
 !
       allocate(part_p%idir_rcb(part_p%NPOWER_rcb))
-      if(part_p%NPOWER_rcb .gt. 0) part_p%idir_rcb = 300
+      allocate(part_p%ndiv_rcb(part_p%NPOWER_rcb))
+      if(part_p%NPOWER_rcb .gt. 0) then
+        part_p%idir_rcb = 300
+        part_p%ndiv_rcb = 2
+      end if
 !
       end subroutine alloc_rcb_directions
 !
@@ -128,7 +133,7 @@
 !
       type(ctl_param_partitioner), intent(inout) :: part_p
 !
-      deallocate(part_p%idir_rcb)
+      deallocate(part_p%idir_rcb, part_p%ndiv_rcb)
 !
       end subroutine dealloc_rcb_directions
 !

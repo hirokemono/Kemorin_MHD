@@ -42,10 +42,10 @@ begin partitioner_control
     partitioning_method_ctl    RCB_xyz
 !
     array RCB_dir_ctl   4
-      RCB_dir_ctl  radius   end
-      RCB_dir_ctl  theta    end
-      RCB_dir_ctl  phi      end
-      RCB_dir_ctl  phi      end
+      RCB_dir_ctl  radius     3
+      RCB_dir_ctl  theta      2
+      RCB_dir_ctl  phi        2
+      RCB_dir_ctl  phi        2
     end array RCB_dir_ctl
 !
     array dir_domain_ctl   3

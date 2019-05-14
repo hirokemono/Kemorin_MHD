@@ -51,7 +51,8 @@
 !
 !>        Structure for list of bisection
 !!@n        ele_grp_ordering_ctl%c_tbl: Direction of bisectioning
-        type(ctl_array_chara) :: RCB_dir_ctl
+!!@n        ele_grp_ordering_ctl%ivec: Number of decomposition
+        type(ctl_array_ci) :: RCB_dir_ctl
 !
 !>        Structure for number of subdomains
 !!@n        ndomain_section_ctl%c_tbl:  Direction of sectioning
@@ -206,7 +207,7 @@
 !
       type(control_data_4_partitioner), intent(inout) :: part_ctl
 !
-      call dealloc_control_array_chara(part_ctl%RCB_dir_ctl)
+      call dealloc_control_array_c_i(part_ctl%RCB_dir_ctl)
       call dealloc_control_array_c_i(part_ctl%ndomain_section_ctl)
       call dealloc_control_array_chara(part_ctl%ele_grp_ordering_ctl)
       call dealloc_control_array_chara(part_ctl%ele_grp_layering_ctl)
@@ -291,7 +292,7 @@
         if(i_decomp_ctl .gt. 0) exit
 !
 !
-        call read_control_array_c1                                      &
+        call read_control_array_c_i                                     &
      &     (hd_num_rcb, part_ctl%RCB_dir_ctl)
         call read_control_array_c_i                                     &
      &     (hd_num_es, part_ctl%ndomain_section_ctl)

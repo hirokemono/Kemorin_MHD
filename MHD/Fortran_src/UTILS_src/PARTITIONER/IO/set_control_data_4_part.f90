@@ -383,15 +383,15 @@
       use t_read_control_arrays
       use skip_comment_f
 !
-      type(ctl_array_chara), intent(in) :: RCB_dir_ctl
+      type(ctl_array_ci), intent(in) :: RCB_dir_ctl
       type(ctl_param_partitioner), intent(inout) :: part_p
 !
       integer(kind = kint) :: i, icou
 !
 !
         part_p%NPOWER_rcb = RCB_dir_ctl%num
-        part_p%num_domain = 2**part_p%NPOWER_rcb
         call alloc_rcb_directions(part_p)
+        part_p%ndiv_rcb(1:RCB_dir_ctl) = 2
 !
         icou = 0
         do i = 1, RCB_dir_ctl%num
@@ -405,11 +405,22 @@
             icou = icou + 1
             part_p%idir_rcb(icou) = 3
           end if
+!
+          if(RCB_dir_ctl%ivec(i) .le. 0) then
+            part_p%ndiv_rcb(icou) = 2
+          else
+            part_p%ndiv_rcb(icou) = RCB_dir_ctl%ivec(i)
+          end if
         end do
         if (icou .lt. part_p%NPOWER_rcb) then
           write(*,*) 'Set correct direction'
           stop
         end if
+!
+      part_p%num_domain = 1
+      do i = 1, part_p%NPOWER_rcb
+        part_p%num_domain = part_p%num_domain * part_p%ndiv_rcb(i)
+      end do
 !
       end subroutine set_control_XYZ_RCB
 !
@@ -427,8 +438,8 @@
 !
 !
         part_p%NPOWER_rcb = RCB_dir_ctl%num
-        part_p%num_domain = 2**part_p%NPOWER_rcb
         call alloc_rcb_directions(part_p)
+        part_p%ndiv_rcb(icou) = 2
 !
         icou = 0
         do i = 1, RCB_dir_ctl%num
@@ -450,16 +461,30 @@
             icou = icou + 1
             part_p%idir_rcb(icou) = 3
           end if
+!
+          if(RCB_dir_ctl%ivec(i) .le. 0) then
+            part_p%ndiv_rcb(icou) = 2
+          else
+            part_p%ndiv_rcb(icou) = RCB_dir_ctl%ivec(i)
+          end if
+!
         end do
         if (icou .lt. part_p%NPOWER_rcb) then
           write(*,*) 'Set correct direction'
           stop
         end if
 !
+      part_p%num_domain = 1
+      do i = 1, part_p%NPOWER_rcb
+        part_p%num_domain = part_p%num_domain * part_p%ndiv_rcb(i)
+      end do
+!
         write(*,'(/,"### Spherical RECURSIVE COORDINATE BiSECTION")')
         write (*,*)  "number of level: ", part_p%NPOWER_rcb
         write (*,'(" Direction Code r:1, theta:2, phi:3")')
-        write  (*,*) part_p%idir_rcb(1:part_p%NPOWER_rcb)
+        write (*,*) part_p%idir_rcb(1:part_p%NPOWER_rcb)
+        write (*,*) 'Number of decompositions'
+        write (*,*) part_p%ndiv_rcb(1:part_p%NPOWER_rcb)
 !
       end subroutine set_control_SPH_RCB
 !

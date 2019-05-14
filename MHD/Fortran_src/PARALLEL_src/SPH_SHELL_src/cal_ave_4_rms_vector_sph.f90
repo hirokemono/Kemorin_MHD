@@ -17,16 +17,16 @@
 !!     &          nri_rms, ntot_rms_rj, kr_for_rms, rms_sph)
 !!
 !!      subroutine vol_ave_4_rms_sph_int(l_truncation, ntot_rms_rj,     &
-!!     &          avol, rms_sph_vol_l)
+!!     &          avol, sq_sph_vol_l)
 !!      subroutine vol_ave_4_rms_sph(ntot_rms_rj, avol, rms_sph_vol)
 !!
 !!      subroutine sum_sph_vol_rms_all_modes(ltr, ntot_rms,             &
-!!     &          rms_sph_vl, rms_v_sph)
+!!     &          sq_sph_vl, sq_v_sph)
 !!      subroutine sum_sph_rms_all_modes(ltr, nri_rms, ntot_rms,        &
 !!     &          rms_sph_l, rms_sph)
 !!
 !!      subroutine pick_axis_sph_vol_pwr(ltr, ntot_rms,                 &
-!!     &          rms_sph_vm, rms_v_sph, rms_v_sph_m0, ratio_v_sph_m0)
+!!     &          rms_sph_vm, sq_v_sph, rms_v_sph_m0, ratio_v_sph_m0)
 !!      subroutine pick_axis_sph_power(ltr, nri_rms, ntot_rms,          &
 !!     &          rms_sph_m, rms_sph, rms_sph_m0, ratio_sph_m0)
 !!@endverbatim
@@ -234,11 +234,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine pick_axis_sph_vol_pwr(ltr, ntot_rms,                   &
-     &          rms_sph_vm, rms_v_sph, rms_v_sph_m0, ratio_v_sph_m0)
+     &          rms_sph_vm, sq_v_sph, rms_v_sph_m0, ratio_v_sph_m0)
 !
       integer(kind = kint), intent(in) :: ltr, ntot_rms
       real(kind = kreal), intent(in) :: rms_sph_vm(0:ltr,ntot_rms)
-      real(kind = kreal), intent(in) :: rms_v_sph(ntot_rms)
+      real(kind = kreal), intent(in) :: sq_v_sph(ntot_rms)
 !
       real(kind = kreal), intent(inout) :: rms_v_sph_m0(ntot_rms)
       real(kind = kreal), intent(inout) :: ratio_v_sph_m0(ntot_rms)
@@ -249,10 +249,10 @@
 !$omp parallel do private(nd)
       do nd = 1, ntot_rms
         rms_v_sph_m0(nd) = rms_sph_vm(0,nd)
-        if(rms_v_sph(nd) .eq. zero) then
+        if(sq_v_sph(nd) .eq. zero) then
           ratio_v_sph_m0(nd) = zero
         else
-          ratio_v_sph_m0(nd) = sqrt(rms_v_sph_m0(nd) / rms_v_sph(nd))
+          ratio_v_sph_m0(nd) = sqrt(rms_v_sph_m0(nd) / sq_v_sph(nd))
         end if
       end do
 !$omp end parallel do

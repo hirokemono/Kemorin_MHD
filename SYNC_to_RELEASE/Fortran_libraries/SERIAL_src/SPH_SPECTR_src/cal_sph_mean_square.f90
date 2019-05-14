@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/CORE_src/SPH_SPECTR_src/cal_sph_mean_square.f90
