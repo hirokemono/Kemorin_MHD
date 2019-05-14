@@ -256,7 +256,7 @@
         end if
 !
         if(id_rank .eq. pwr%v_spectr(i)%irank_lm) then
-          write(*,*) 'write_sph_vol_ms_spectr_file lm', id_rank, i
+!          write(*,*) 'write_sph_vol_ms_spectr_file lm', id_rank, i
           write(fname_rms, '(a,a7)')                                    &
      &       trim(pwr%v_spectr(i)%fhead_rms_v), '_lm.dat'
           write(mode_label,'(a)') 'diff_deg_order'
