@@ -339,20 +339,32 @@
      &     (sph_params%l_truncation, pwr%nri_rms, pwr%ntot_comp_sq,     &
      &      pwr%shl_m, pwr%shl_sq, pwr%shl_m0, pwr%ratio_shl_m0)
 !
-        call surf_ave_4_sph_rms_int(sph_params%l_truncation,            &
-     &        sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
-     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms,              &
-     &        pwr%shl_m)
+        call surf_ave_4_sph_rms(sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,  &
+     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_sq)
+        call surf_ave_4_sph_rms(sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,  &
+     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_m0)
 !
-        call surf_ave_4_sph_rms                                         &
-     &       (sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+      else if(my_rank .eq. pwr%irank_l) then
+        call sum_sph_rms_all_modes                                      &
+     &     (sph_params%l_truncation, pwr%nri_rms, pwr%ntot_comp_sq,     &
+     &      pwr%shl_l, pwr%shl_sq)
+        call surf_ave_4_sph_rms(sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,  &
      &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_sq)
 !
-        call surf_ave_4_sph_rms                                         &
-     &       (sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
-     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_m0)
+      else if(my_rank .eq. pwr%irank_lm) then
+        call sum_sph_rms_all_modes                                      &
+     &     (sph_params%l_truncation, pwr%nri_rms, pwr%ntot_comp_sq,     &
+     &      pwr%shl_lm, pwr%shl_sq)
+        call surf_ave_4_sph_rms(sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,  &
+     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_sq)
       end if
 !
+!      if(my_rank .eq. pwr%irank_m) then
+      if(my_rank .eq. 0) then
+        call surf_ave_4_sph_rms_int(sph_params%l_truncation,            &
+     &        sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
+     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_m)
+      end if
       if(my_rank .eq. pwr%irank_l) then
         call surf_ave_4_sph_rms_int(sph_params%l_truncation,          &
      &      sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
@@ -395,22 +407,34 @@
      &        ntot_rms_rj, v_pwr(i)%v_m, v_pwr(i)%v_sq,                 &
      &        v_pwr(i)%v_m0, v_pwr(i)%v_ratio_m0)
 !
-          call vol_ave_4_rms_sph_int(sph_params%l_truncation,           &
-     &        ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_m)
+          call vol_ave_4_rms_sph                                        &
+     &         (ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_sq)
+          call vol_ave_4_rms_sph                                        &
+     &         (ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_m0)
 !
-          call vol_ave_4_rms_sph                                      &
+        else if(my_rank .eq. v_pwr(i)%irank_l) then
+          call sum_sph_vol_rms_all_modes(sph_params%l_truncation,       &
+     &        ntot_rms_rj, v_pwr(i)%v_l, v_pwr(i)%v_sq)
+          call vol_ave_4_rms_sph                                        &
      &         (ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_sq)
 !
-          call vol_ave_4_rms_sph                                      &
-     &         (ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_m0)
+        else if(my_rank .eq. v_pwr(i)%irank_lm) then
+          call sum_sph_vol_rms_all_modes(sph_params%l_truncation,       &
+     &        ntot_rms_rj, v_pwr(i)%v_lm, v_pwr(i)%v_sq)
+          call vol_ave_4_rms_sph                                        &
+     &         (ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_sq)
         end if
 !
 !
+!        if(my_rank .eq. v_pwr(i)%irank_m) then
+        if(my_rank .eq. 0) then
+          call vol_ave_4_rms_sph_int(sph_params%l_truncation,           &
+     &        ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_m)
+        end if
         if(my_rank .eq. v_pwr(i)%irank_l) then
           call vol_ave_4_rms_sph_int(sph_params%l_truncation,           &
      &        ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_l)
         end if
-!
         if(my_rank .eq. v_pwr(i)%irank_lm) then
           call vol_ave_4_rms_sph_int(sph_params%l_truncation,           &
      &        ntot_rms_rj, v_pwr(i)%avol, v_pwr(i)%v_lm)
