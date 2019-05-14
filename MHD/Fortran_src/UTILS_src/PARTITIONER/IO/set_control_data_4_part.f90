@@ -391,7 +391,7 @@
 !
         part_p%NPOWER_rcb = RCB_dir_ctl%num
         call alloc_rcb_directions(part_p)
-        part_p%ndiv_rcb(1:RCB_dir_ctl) = 2
+        part_p%ndiv_rcb(1:part_p%NPOWER_rcb) = 2
 !
         icou = 0
         do i = 1, RCB_dir_ctl%num
@@ -431,7 +431,7 @@
       use t_read_control_arrays
       use skip_comment_f
 !
-      type(ctl_array_chara), intent(in) :: RCB_dir_ctl
+      type(ctl_array_ci), intent(in) :: RCB_dir_ctl
       type(ctl_param_partitioner), intent(inout) :: part_p
 !
       integer(kind = kint) :: i, icou
@@ -439,7 +439,7 @@
 !
         part_p%NPOWER_rcb = RCB_dir_ctl%num
         call alloc_rcb_directions(part_p)
-        part_p%ndiv_rcb(icou) = 2
+        part_p%ndiv_rcb(1:part_p%NPOWER_rcb) = 2
 !
         icou = 0
         do i = 1, RCB_dir_ctl%num
