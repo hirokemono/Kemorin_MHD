@@ -161,7 +161,7 @@
         icou = 0
         if(picked%idx_out(0,4) .gt. 0) then
           icou = icou + 1
-          call rms_rj_center_monitor(sph_rj, rj_fld, picked,            &
+          call cal_rj_mean_sq_center_monitor(sph_rj, rj_fld, picked,    &
      &        ntot_comp_rj, d_rj_out)
           call convert_to_energy_sph__monitor                           &
      &       (ipol, picked, ntot_comp_rj, d_rj_out)
@@ -176,8 +176,8 @@
         ist = 1
         if(picked%idx_out(1,1) .eq. 0) then
           do knum = 1, picked%num_layer
-            call rms_rj_degree0_monitor(knum, sph_rj, rj_fld, picked,   &
-     &          ntot_comp_rj, d_rj_out)
+            call cal_rj_mean_sq_degree0_monitor                         &
+     &         (knum, sph_rj, rj_fld, picked, ntot_comp_rj, d_rj_out)
             call convert_to_energy_sph__monitor                         &
      &         (ipol, picked, ntot_comp_rj, d_rj_out)
 !
@@ -195,8 +195,8 @@
         do inum = ist, picked%num_sph_mode_lc
           do knum = 1, picked%num_layer
             icou = icou + 1
-            call rms_rj_spectrum_4_monitor                              &
-     &         (inum, knum, sph_rj, rj_fld, leg, picked,                &
+            call cal_rj_mean_sq_spectr_monitor                          &
+     &         (inum, knum, sph_rj, leg, rj_fld, picked,                &
      &          ntot_comp_rj, d_rj_out)
             call convert_to_energy_sph__monitor                         &
      &         (ipol, picked, ntot_comp_rj, d_rj_out)
@@ -274,8 +274,8 @@
         ist = 1
         if(picked%idx_out(1,1) .eq. 0) then
           do knum = sph_params%nlayer_ICB, sph_params%nlayer_CMB
-            call rms_rj_degree0_monitor(knum, sph_rj, rj_fld, picked,   &
-     &          ntot_comp_rj, d_rj_out)
+            call cal_rj_mean_sq_degree0_monitor                         &
+     &         (knum, sph_rj, rj_fld, picked, ntot_comp_rj, d_rj_out)
             d_layer(knum,1:ntot_comp_rj) = d_rj_out
           end do
 !
@@ -297,8 +297,8 @@
 !
         do inum = ist, picked%num_sph_mode_lc
           do knum = kst, ked
-            call rms_rj_spectrum_4_monitor                              &
-     &         (inum, knum, sph_rj, rj_fld, leg, picked,                &
+            call cal_rj_mean_sq_spectr_monitor                          &
+     &         (inum, knum, sph_rj, leg, rj_fld, picked,                &
      &          ntot_comp_rj, d_rj_out)
             d_layer(knum,1:ntot_comp_rj) = d_rj_out
           end do
