@@ -66,7 +66,7 @@
       integer(kind = kint) :: i, icomp
 !
 !
-      if(pwr%v_spectr(1)%irank_m .gt. 0) return
+      if(my_rank .ne. pwr%v_spectr(1)%irank_m) return
       write(*,'(a10,i16,a10,1pe15.8)',advance='no')                     &
      &     'time step=', time_d%i_time_step, 'time=', time_d%time
 !
@@ -210,6 +210,7 @@
      &        sph_rj%nidx_rj(1), pwr%num_fld_sq, pwr%ntot_comp_sq,      &
      &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_sq)
         end if
+        call calypso_mpi_barrier
       end do
 !
       end subroutine write_sph_vol_ms_file
@@ -254,6 +255,7 @@
      &        sph_rj%nidx_rj(1), pwr%num_fld_sq, pwr%ntot_comp_sq,      &
      &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_l)
         end if
+        call calypso_mpi_barrier
 !
         if(id_rank .eq. pwr%v_spectr(i)%irank_lm) then
 !          write(*,*) 'write_sph_vol_ms_spectr_file lm', id_rank, i
@@ -268,6 +270,7 @@
      &        sph_rj%nidx_rj(1), pwr%num_fld_sq, pwr%ntot_comp_sq,      &
      &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_lm)
         end if
+        call calypso_mpi_barrier
 !
         if(id_rank .eq. pwr%v_spectr(i)%irank_m) then
 !          write(*,*) 'write_sph_vol_ms_spectr_file m', id_rank, i
@@ -293,6 +296,7 @@
      &        sph_rj%nidx_rj(1), pwr%num_fld_sq, pwr%ntot_comp_sq,      &
      &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_m0)
         end if
+        call calypso_mpi_barrier
       end do
 !
       end subroutine write_sph_vol_ms_spectr_file
@@ -373,6 +377,7 @@
      &     pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,           &
      &     pwr%pwr_name, pwr%kr_4_rms, pwr%r_4_rms, pwr%shl_m0)
       end if
+      call calypso_mpi_barrier
 !
       if(id_rank .eq. pwr%irank_l) then
 !        write(*,*) 'write_sph_layer_spec_file l', id_rank
@@ -384,6 +389,7 @@
      &      pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,          &
      &      pwr%pwr_name, pwr%kr_4_rms, pwr%r_4_rms, pwr%shl_l)
       end if
+        call calypso_mpi_barrier
 !
       if(id_rank .eq. pwr%irank_lm) then
 !        write(*,*) 'write_sph_layer_spec_file lm', id_rank
@@ -395,6 +401,7 @@
      &     pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,           &
      &     pwr%pwr_name, pwr%kr_4_rms, pwr%r_4_rms, pwr%shl_lm)
       end if
+        call calypso_mpi_barrier
 !
       end subroutine write_sph_layer_spectr_file
 !
