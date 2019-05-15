@@ -55,7 +55,7 @@
       integer (kind = kint) :: k1, ii, ix
       integer (kind = kint) :: ist, ied
 !
-! --------- lead average velocity in a element
+! --------- lead divergence in a element
 !
 !$omp parallel do private(k1,ii,ix,iele,ist,ied)
       do iproc = 1, np_smp
@@ -137,7 +137,7 @@
       integer (kind = kint) :: k1, ii, ix
       integer (kind = kint) :: ist, ied
 !
-! --------- lead average velocity in a element
+! --------- lead divergence in a element
 !
 !$omp parallel do private(k1,ii,ix,inum,iele,ist,ied)
       do iproc = 1, np_smp

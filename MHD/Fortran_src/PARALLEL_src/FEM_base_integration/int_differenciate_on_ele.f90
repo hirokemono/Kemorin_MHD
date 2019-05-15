@@ -132,7 +132,7 @@
 !$omp end parallel do
       end do
 !
-! --------- lead average gradient of magntic field in a element
+! --------- lead gradient of field in a element
 !
 !$omp parallel do private(k1,ii,ix,iele,istart,iend) 
       do iproc = 1, np_smp
@@ -205,7 +205,7 @@
 !$omp end parallel do
       end do
 !
-! --------- lead average gradient of magntic field in a element
+! --------- lead gradient of field in a element
 !
 !$omp parallel do private(k1,ii,ix,iele,istart,iend) 
       do iproc = 1, np_smp
