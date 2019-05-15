@@ -58,7 +58,7 @@
      &        r_2nd_newtral%fdm(1)%dmat, buoyancy_ratio, pick_IO, ntl1)
           icou = icou + 1
           write(*,*) 'step ', i_step,                                   &
-     &        ' is added for time average: count is  ', icou
+     &        ' is written for neutral points: count is  ', icou
         end if
 !
         if(i_step .ge. istep_end) exit

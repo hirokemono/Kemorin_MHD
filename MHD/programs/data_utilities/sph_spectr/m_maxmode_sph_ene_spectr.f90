@@ -5,7 +5,7 @@
 !! @date   Programmed in  Nov., 2007
 !!
 !
-!> @brief Time average spherical harmonics spectrum data
+!> @brief Find max and minimum amplitude
 !!
 !!@verbatim
 !!      subroutine sph_maximum_pwr_spectr                               &

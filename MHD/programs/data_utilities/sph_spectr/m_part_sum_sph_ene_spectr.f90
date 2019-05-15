@@ -5,7 +5,7 @@
 !! @date   Programmed in  Nov., 2007
 !!
 !
-!> @brief Time average spherical harmonics spectrum data
+!> @brief TAke sum of a part of spectrum data
 !!
 !!@verbatim
 !!      subroutine sph_part_pwr_spectr_sum                              &

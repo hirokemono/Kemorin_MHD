@@ -5,7 +5,7 @@
 !! @date   Programmed in  Nov., 2007
 !!
 !
-!> @brief Evaluate time average and standard deviation 
+!> @brief Evaluate sum of mean square
 !!        from spherical harmonics spectrum data
 !
       program part_sum_sph_ene_spec

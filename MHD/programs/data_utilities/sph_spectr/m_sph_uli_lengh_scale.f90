@@ -5,7 +5,7 @@
 !! @date   Programmed in  Nov., 2007
 !!
 !
-!> @brief Time average spherical harmonics spectrum data
+!> @brief Obtain lengh scale from spherical harmonics spectrum data
 !!
 !!@verbatim
 !!      subroutine sph_uli_lengh_scale_by_spectr                        &
