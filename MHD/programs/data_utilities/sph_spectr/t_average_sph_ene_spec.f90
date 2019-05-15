@@ -54,15 +54,11 @@
       if(iflag_data_mode .eq. 1) then
         call sph_spectr_average                                         &
      &     (fname_org_rms, start_time, end_time, sph_IN_t)
-        call sph_spectr_std_deviation                                   &
-     &     (fname_org_rms, start_time, end_time, sph_IN_t)
       end if
 !
       sph_IN_t%iflag_spectr = 1
       if(iflag_data_mode .eq. 0 .or. iflag_data_mode .eq. 2) then
         call sph_spectr_average                                         &
-     &     (fname_org_rms_l, start_time, end_time, sph_IN_t)
-        call sph_spectr_std_deviation                                   &
      &     (fname_org_rms_l, start_time, end_time, sph_IN_t)
       end if
 !
@@ -71,14 +67,10 @@
      &                        trim(input_header), '_m.dat'
         call sph_spectr_average                                         &
      &     (fname_org_rms, start_time, end_time, sph_IN_t)
-        call sph_spectr_std_deviation                                   &
-     &     (fname_org_rms, start_time, end_time, sph_IN_t)
 !
         write(fname_org_rms,'(a,a7)')                                   &
      &                        trim(input_header), '_lm.dat'
         call sph_spectr_average                                         &
-     &     (fname_org_rms, start_time, end_time, sph_IN_t)
-        call sph_spectr_std_deviation                                   &
      &     (fname_org_rms, start_time, end_time, sph_IN_t)
       end if
 !
