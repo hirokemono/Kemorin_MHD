@@ -27,7 +27,7 @@
       write(*,*) 'Input start and end time'
       read(*,*) start_time, end_time
 !
-!    Evaluate time average
+!    Evaluate length scale
 !
       call sph_uli_lengh_scale_by_spectr                                &
      &   (input_header, start_time, end_time, sph_IN_u)
