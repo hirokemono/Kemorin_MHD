@@ -77,6 +77,8 @@
           do nd = 1, num_comp
             ave_coef(1:num_layer,nd) = ave_coef(1:num_layer,nd)         &
      &                               + coef(1:num_layer,nd)
+            rms_coef(1:num_layer,nd) = rms_coef(1:num_layer,nd)         &
+     &                               + coef(1:num_layer,nd)**2
           end do
           icou = icou + 1
         end if
@@ -89,45 +91,18 @@
       write(*,*)
 !
       do nd = 1, num_comp
-        ave_coef(1:num_layer,nd) = ave_coef(1:num_layer,nd)/dble(icou)
+        sigma_coef(1:num_layer,nd) = rms_coef(1:num_layer,nd)           &
+     &                              - ave_coef(1:num_layer,nd)**2
+!
+        ave_coef(1:num_layer,nd)                                        &
+     &           = ave_coef(1:num_layer,nd) / dble(icou)
+        rms_coef(1:num_layer,nd)                                        &
+     &           = sqrt(rms_coef(1:num_layer,nd) / dble(icou))
+        sigma_coef(1:num_layer,nd)                                      &
+     &           = sqrt(sigma_coef(1:num_layer,nd) / dble(icou))
       end do
 !
 !   Evaluate standard deviation
-!
-      call read_field_name_evo_file(id_org_file, group_data_file_name,  &
-     &    ithree, num_comp, comp_name)
-!
-      write(*,'(a,39X)', advance='NO') 'read data for deviation:'
-      icou = 0
-      do
-        call read_evolution_data(id_org_file, num_comp, num_layer,      &
-    &       istep_read, time, coef, ierr)
-        if(ierr .gt. 0) exit
-!
-        if(mod((istep_read-istep_start),istep_inc) .eq. izero           &
-     &     .and. istep_read.ge.istep_start) then
-          do nd = 1, num_comp
-            sigma_coef(1:num_layer,nd) = sigma_coef(1:num_layer,nd)     &
-     &         + (coef(1:num_layer,nd) - ave_coef(1:num_layer,nd) )**2
-          end do
-          icou = icou + 1
-        end if
-        write(*,'(38a1,i15,a8,i15)', advance='NO')                      &
-     &           (char(8),i=1,38), istep_read, ' count: ', icou
-!
-        if(istep_read .ge. istep_end) exit
-      end do
-      close(id_org_file)
-      write(*,*)
-!
-      do nd = 1, num_comp
-        sigma_coef(1:num_layer,nd) = sigma_coef(1:num_layer,nd)         &
-     &                             / dble(icou)
-      end do
-!
-      call sqrt_of_rms_coefs(num_layer, num_comp, ave_coef)
-      call sqrt_of_rms_coefs(num_layer, num_comp, sigma_coef)
-!
       call write_t_ave_m_coef_file(istep_read, time)
       call write_sigma_m_coef_file(istep_read, time)
 !

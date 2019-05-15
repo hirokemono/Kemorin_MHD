@@ -14,6 +14,7 @@
 !
       real(kind = kreal), allocatable :: coef(:,:)
       real(kind = kreal), allocatable :: ave_coef(:,:)
+      real(kind = kreal), allocatable :: rms_coef(:,:)
       real(kind = kreal), allocatable :: sigma_coef(:,:)
       character(len=kchara), allocatable :: comp_name(:)
 !
@@ -48,9 +49,11 @@
 !
       allocate(coef(num_layer,num_comp))
       allocate(ave_coef(num_layer,num_comp))
+      allocate(rms_coef(num_layer,num_comp))
       allocate(sigma_coef(num_layer,num_comp))
       coef = 0.0d0
       ave_coef  = 0.0d0
+      rms_coef  = 0.0d0
       sigma_coef  = 0.0d0
 !
       end subroutine allocate_model_coef_array
@@ -60,7 +63,7 @@
       subroutine deallocate_model_coef_array
 !
 !
-      deallocate(sigma_coef, ave_coef, coef, comp_name)
+      deallocate(sigma_coef, ave_coef, rms_coef, coef, comp_name)
 !
       end subroutine deallocate_model_coef_array
 !
