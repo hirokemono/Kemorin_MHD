@@ -9,7 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine dealloc_mul_node_clusterings(clusters)
-!!      subroutine const_multi_node_clusters(node, neib_nod, clusters)
+!!      subroutine const_multi_node_clusters                            &
+!!     &         (ilevel_end, node, neib_nod, clusters)
 !!        type(node_data), intent(in) :: node
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
 !!        type(mul_node_clusterings), intent(in) :: clusters
@@ -19,7 +20,7 @@
 !
       use m_precision
       use m_constants
-      use t_geometry_data
+      use t_mesh_data
       use t_next_node_ele_4_node
       use t_node_clustering_list
 !
@@ -53,45 +54,68 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_multi_node_clusters(node, neib_nod, clusters)
+      subroutine const_multi_node_clusters                              &
+     &         (ilevel_end, mesh, neib_nod, clusters)
 !
-      type(node_data), intent(in) :: node
+      use int_volume_of_single_domain
+      use copy_mesh_structures
+!
+      integer(kind = kint), intent(in) :: ilevel_end
+      type(mesh_geometry), intent(in) :: mesh
       type(next_nod_id_4_nod), intent(in) :: neib_nod
 !
       type(mul_node_clusterings), intent(inout) :: clusters
 !
       type(node_clustering_list) :: first_ctr
+      real(kind = kreal), allocatable :: volume_nod(:)
+      integer(kind = kint) :: i
 !
+!
+      write(*,*) 'estimate node volume'
+      allocate(volume_nod(mesh%node%numnod))
+      call cal_node_volue                                               &
+     &   (mesh%node, mesh%ele, volume_nod)
+!
+      call copy_node_geometry_types(mesh%node, first_ctr%cluster_nod)
 !
       clusters%num_cluster = 1
       call alloc_mul_node_clusterings(clusters)
 !
-      first_ctr%num_gruped_nod = node%internal_node
-      call alloc_node_clustering_list(node%internal_node, first_ctr)
+      first_ctr%num_gruped_nod = mesh%node%internal_node
+      call alloc_node_clustering_list                                   &
+     &   (mesh%node%internal_node, first_ctr)
       call alloc_istack_grouped(first_ctr)
 !
+      write(*,*) 'init_grouping_list'
       call init_grouping_list                                           &
      &   (first_ctr%num_gruped_nod, first_ctr%istack_grouped,           &
-     &    first_ctr%inod_list, first_ctr%igrp_by_nod)
+     &    first_ctr%inod_list, &
+     &    first_ctr%igrp_by_nod)
 !
-      call expand_node_clustering                                       &
-     &   (node, neib_nod, first_ctr, clusters%cluster(1))
+      write(*,*) 'expand_node_clustering'
+      call expand_node_clustering(mesh%node, volume_nod, neib_nod,      &
+     &    first_ctr, clusters%cluster(1))
       call dealloc_node_clustering_list(first_ctr)
 !
-      do
+      do i = 2, ilevel_end
         if(clusters%cluster(clusters%num_cluster)%num_gruped_nod        &
      &       .le. max_grp) exit
-        call append_extended_cluster(node, neib_nod, clusters)
+        write(*,*) 'append_extended_cluster', i
+        call append_extended_cluster                                    &
+     &     (mesh%node, volume_nod, neib_nod, clusters)
       end do
+      deallocate(volume_nod)
 !
       end subroutine const_multi_node_clusters
 !
 !-----------------------------------------------------------------------
 !
-      subroutine append_extended_cluster(node, neib_nod, clusters)
+      subroutine append_extended_cluster                                &
+     &         (node, volume_nod, neib_nod, clusters)
 !
       type(node_data), intent(in) :: node
       type(next_nod_id_4_nod), intent(in) :: neib_nod
+      real(kind = kreal), intent(in) :: volume_nod(node%numnod)
 !
       type(mul_node_clusterings), intent(inout) :: clusters
 !
@@ -120,7 +144,7 @@
       end do
       call dealloc_mul_node_clusterings(tmp_clusters)
 !
-      call expand_node_clustering(node, neib_nod,                       &
+      call expand_node_clustering(node, volume_nod, neib_nod,           &
      &    clusters%cluster(clusters%num_cluster-1),                     &
      &    clusters%cluster(clusters%num_cluster))
 !
@@ -148,12 +172,12 @@
       integer(kind = kint), intent(inout)                               &
      &              :: istack_grouped(0:num_gruped_nod)
       integer(kind = kint), intent(inout) :: inod_list(num_gruped_nod)
-      integer(kind = kint), intent(inout) :: igrp_by_nod(num_gruped_nod)
+      integer(kind = kint), intent(inout)                               &
+     &              :: igrp_by_nod(num_gruped_nod)
 !
       integer(kind = kint) :: inod
 !
 !
-      istack_grouped(0) = 0
 !$omp parallel do private(inod)
       do inod = 1, num_gruped_nod
         inod_list(inod) =      inod

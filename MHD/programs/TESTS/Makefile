@@ -6,6 +6,7 @@ TESTS_DIR = $$(PROG_DIR)/TESTS
 SUBDIRS =      \
 mesh_test      \
 comm_test      \
+node_clustering_test \
 test_gaussian  \
 test_solver    \
 \
@@ -48,7 +49,7 @@ target_list:
 
 target_task:
 	@echo tests_with_f: fem_mesh_test comm_tests gauss_tests solver_tests \
-	f_graphic_tests fft_test lag_tests getarg_tests \
+	f_graphic_tests fft_test lag_tests getarg_tests node_clustring_test \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo tests_with_c: zlib_tests c_graphic_tests \

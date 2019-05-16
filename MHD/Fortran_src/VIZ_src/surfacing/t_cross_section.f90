@@ -114,13 +114,11 @@
       if (iflag_debug.eq.1) write(*,*) 'alloc_psf_field_type'
       call alloc_psf_field_type(psf)
 !
-      call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_psf_control'
       call set_psf_control(psf%num_psf, fem%group, nod_fld,             &
      &    psf_ctls, psf%psf_param, psf%psf_def,                         &
      &    psf%psf_mesh, psf%psf_file_IO)
 !
-      call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
       call set_search_mesh_list_4_psf(psf%num_psf, fem%mesh, fem%group, &
      &    psf%psf_param, psf%psf_search)
@@ -176,7 +174,7 @@
      &    psf%psf_def, psf%psf_param, psf%psf_list, psf%psf_grp_list,   &
      &    psf%psf_mesh)
 !
-      if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
+      if (iflag_debug.eq.1) write(*,*) 'output_section_data'
       call output_section_data                                          &
      &   (psf%num_psf, psf%psf_file_IO, istep_psf, time_d,              &
      &    psf%psf_time_IO, psf%psf_out, psf%psf_out_m)
