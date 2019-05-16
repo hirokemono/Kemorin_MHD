@@ -141,7 +141,6 @@
 !
 !
       call init_mpi_IO_status
-      call calypso_mpi_barrier
       call MPI_FILE_OPEN                                                &
      &   (CALYPSO_COMM, file_name, MPI_MODE_RDONLY,                     &
      &    MPI_INFO_NULL, id_mpi_file, ierr_MPI)
@@ -157,7 +156,6 @@
 !
 !
       call MPI_FILE_CLOSE(id_mpi_file, ierr_MPI)
-      call calypso_mpi_barrier
       call deallocate_mpi_IO_status
 !
       end subroutine calypso_close_mpi_file
