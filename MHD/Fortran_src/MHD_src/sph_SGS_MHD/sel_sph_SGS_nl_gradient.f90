@@ -80,8 +80,6 @@
      &           :: frc_sgs_rtp(sph_rtp%nnod_rtp,ncomp_sgs_rtp_2_rj)
 !
 !
-      call calypso_mpi_barrier
-!
       if(iflag_FFT .eq. iflag_FFTW) then
         call sph_SGS_induct_nl_gradient_pin                             &
      &    (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,               &

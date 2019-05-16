@@ -146,8 +146,6 @@
       depth_part(1:ntot_overlap,1:npixel_img_local) = -1000.0d0
 !$omp end workshare
 !
-      call calypso_mpi_barrier
-!
       nneib_send = 0
       do i_rank = 0, nprocs-1
           nneib_send = nneib_send + 1
@@ -224,8 +222,6 @@
 !$omp workshare
       rgba_part(1:4,1:ntot_overlap,1:npixel_img_local) = zero
 !$omp end workshare
-!
-      call calypso_mpi_barrier
 !
       nneib_send = 0
       do i_rank = 0, nprocs-1

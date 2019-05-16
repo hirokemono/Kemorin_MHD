@@ -71,8 +71,6 @@
       integer(kind = kint) :: iflag_lc
 !
 !
-      call calypso_mpi_barrier
-!
       if(my_rank .eq. izero) then
         iflag_lc = 0
         if     (check_exsist_rtp_file(my_rank) .ne. 0                   &
@@ -93,7 +91,6 @@
         call para_gen_sph_grids(sph_maker%sph_tmp, sph_maker%gen_sph)
         call dealloc_gen_mesh_params(sph_maker%gen_sph)
       end if
-      call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &

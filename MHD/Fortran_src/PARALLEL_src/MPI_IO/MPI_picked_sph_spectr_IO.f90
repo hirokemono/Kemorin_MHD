@@ -68,7 +68,6 @@
       file_name = add_dat_extension(picked%file_prefix)
 !
       call open_append_mpi_file(file_name, nprocs, my_rank, IO_param1)
-      call calypso_mpi_barrier
 !
       if(IO_param1%ioff_gl .eq. 0) then
         call write_picked_specr_head_mpi(IO_param1, picked)

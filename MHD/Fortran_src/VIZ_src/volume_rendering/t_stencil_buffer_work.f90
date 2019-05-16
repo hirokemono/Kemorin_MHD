@@ -91,7 +91,6 @@
      &   (irank_image_file, npe_img_composit,                           &
      &    num_pixel_xy, num_pvr_ray_gl, num_ray_start_gl, stencil_wk)
 !
-      call calypso_mpi_barrier
       if(my_rank .eq. irank_image_file) then
         write(*,*) 'Stencil buffer size, num. of segmented image: ',    &
      &            stencil_wk%ntot_recv_image, max_ray_start_gl

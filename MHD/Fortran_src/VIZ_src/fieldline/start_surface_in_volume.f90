@@ -57,7 +57,6 @@
       integer(kind = kint), allocatable :: iflag_ele(:)
 !
 !
-      call calypso_mpi_barrier
       allocate(iflag_ele(ele%numele))
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_for_fline_area'

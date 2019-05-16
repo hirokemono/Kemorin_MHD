@@ -170,7 +170,6 @@
           call check_sph_2nd_moments                                    &
      &       (id_file, sph%sph_rtp, leg, sph_filters(i))
         end if
-        call calypso_mpi_barrier
       end do
 !
       end subroutine init_filter_4_SPH_MHD

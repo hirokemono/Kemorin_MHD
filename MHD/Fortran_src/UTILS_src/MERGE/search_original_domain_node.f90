@@ -242,7 +242,6 @@
         end do
         istack_recv(ip) = icou
       end do
-      call calypso_mpi_barrier
 !
       icou = 0
       do ip = 1, nprocs_org

@@ -76,7 +76,6 @@
      &      fln_src%nele_start_grp, fln_src%iele_start_item,            &
      &      fln_src%vector_nod_fline, fln_src%flux_start)
       end if
-      call calypso_mpi_barrier
 !
       abs_flux_start_l = 0.0d0
       tot_flux_start_l = 0.0d0
@@ -127,7 +126,6 @@
       end if
       write(my_rank+50,*)  'adjusted flux_4_each_line',                 &
      &                     flux_4_each_line
-      call calypso_mpi_barrier
 !
       if(fln_prm%num_each_field_line .gt. 0) then
         if(fln_prm%id_seed_distribution  .eq. iflag_no_random) then
@@ -142,8 +140,6 @@
         end if
       end if
 !
-      write(*,*) 'calypso_mpi_barrier'
-      call calypso_mpi_barrier
 !
       end subroutine s_start_surface_by_flux
 !
@@ -307,7 +303,6 @@
       end if
 !
       deallocate(rnd_flux, r_rnd, seed)
-      call calypso_mpi_barrier
 !
       end subroutine start_surface_by_random
 !

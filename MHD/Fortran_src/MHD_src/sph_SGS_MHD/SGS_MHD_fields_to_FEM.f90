@@ -53,19 +53,15 @@
       type(phys_data), intent(inout) :: nod_fld
 !*
 !
-      call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'copy_field_from_transform SGS'
       call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK%trns_SGS%backward, mesh, nod_fld)
-      call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'copy_field_from_transform DYCS'
       call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK%trns_DYNS%backward, mesh, nod_fld)
-      call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'copy_force_from_transform SGS'
       call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK%trns_SGS%forward, mesh, nod_fld)
-      call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'copy_force_from_transform DYCS'
       call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK%trns_DYNS%forward, mesh, nod_fld)

@@ -164,7 +164,6 @@
       call const_FEM_mesh_4_sph_mhd                                     &
      &   (FEM_mesh_flags, sph_params, sph_rtp, sph_rj,                  &
      &    femmesh_s%mesh, femmesh_s%group, mesh_file, gen_sph)
-      call calypso_mpi_barrier
 !      call compare_mesh_type                                           &
 !     &   (my_rank, fem%mesh%nod_comm, mesh%node, mesh%ele,             &
 !     &    femmesh_s%mesh)
@@ -175,7 +174,6 @@
      &   = set_cube_eletype_from_num(femmesh_s%mesh%ele%nnod_4_ele)
       call set_mesh_data_from_type                                      &
      &   (femmesh_s%mesh, femmesh_s%group, fem%mesh, fem%group)
-      call calypso_mpi_barrier
 !
       end subroutine load_FEM_mesh_4_SPH
 !

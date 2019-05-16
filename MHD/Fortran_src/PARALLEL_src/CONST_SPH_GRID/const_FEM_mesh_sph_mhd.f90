@@ -100,7 +100,6 @@
 !          call pickup_surface_mesh_para(mesh_file, par_view)
 !        end if
       end if
-      call calypso_mpi_barrier
 !
       end subroutine const_FEM_mesh_4_sph_mhd
 !

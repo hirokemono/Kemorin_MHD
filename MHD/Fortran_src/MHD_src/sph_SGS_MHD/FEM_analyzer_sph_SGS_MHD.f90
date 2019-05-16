@@ -63,7 +63,6 @@
 !*
 !*  -----------  data transfer to FEM array --------------
 !*
-      call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'copy_force_from_transform MHD'
       call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK%trns_MHD%forward, geofem%mesh, nod_fld)
@@ -73,11 +72,9 @@
       end if
 !
 !
-      call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'copy_field_from_transform SNAP'
       call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK%trns_snap%backward, geofem%mesh, nod_fld)
-      call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'copy_force_from_transform SNAP'
       call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK%trns_snap%forward, geofem%mesh, nod_fld)

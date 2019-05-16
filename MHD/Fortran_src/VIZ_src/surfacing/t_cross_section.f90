@@ -146,8 +146,6 @@
       call output_section_mesh(psf%num_psf, psf%psf_file_IO,            &
      &    psf%psf_mesh, psf%psf_out, psf%psf_out_m)
 !
-!      call calypso_mpi_barrier
-!
       end subroutine SECTIONING_initialize
 !
 !  ---------------------------------------------------------------------

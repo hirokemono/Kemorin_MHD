@@ -60,8 +60,6 @@
       field_FUTIL%istack_component(1) = 1
       field_FUTIL%phys_name(1) = 'temperature'
 !
-      call calypso_mpi_barrier
-!
       end subroutine initialize_med_grp_patch
 !
 ! ----------------------------------------------------------------------

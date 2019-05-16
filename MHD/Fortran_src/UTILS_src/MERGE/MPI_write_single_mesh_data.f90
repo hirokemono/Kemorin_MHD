@@ -82,7 +82,6 @@
      &        int8_and_vector_textline(id_global(i), numdir, xx_tmp))
         end do
       end if
-      call calypso_mpi_barrier
 !
       end subroutine mpi_write_merged_node_position
 !

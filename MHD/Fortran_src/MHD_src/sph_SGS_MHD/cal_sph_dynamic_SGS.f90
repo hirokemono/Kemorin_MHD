@@ -314,7 +314,6 @@
      &    trns_SIMI%f_trns, trns_Csim%b_trns, trns_DYNG%b_trns,         &
      &    trns_SIMI%forward, trns_Csim%backward, trns_DYNG%backward,    &
      &    dynamic_SPH)
-      call calypso_mpi_barrier
 !
       end subroutine sph_dynamic_nl_gradient
 !

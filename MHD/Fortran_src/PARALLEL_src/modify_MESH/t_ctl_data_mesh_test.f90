@@ -84,7 +84,6 @@
 !
       close(ctl_file_code)
 !
-      call calypso_mpi_barrier
       call bcast_ctl_data_4_platform(mesh_tctl%plt)
       call bcast_FEM_mesh_control(mesh_tctl%Fmesh_ctl)
 !

@@ -79,7 +79,6 @@
       call alloc_double_numbering(ele%numele, dbl_ele)
       call set_para_ele_double_numbering                                &
      &   (new_node%internal_node, ele_comm, ele, dbl_ele)
-      call calypso_mpi_barrier
 !
       allocate(iflag_node(org_node%numnod))
       allocate(iflag_ele(ele%numele))
@@ -204,8 +203,6 @@
 !      do i = 1, new_ele%numele
 !         write(50+my_rank,*) new_ele%iele_global(i), new_ele%ie(i,1:8)
 !      end do
-!
-      call calypso_mpi_barrier
 !
       end subroutine extend_ele_connectivity
 !

@@ -90,7 +90,7 @@
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
         call sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
-        call calypso_mpi_barrier
+
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       end do
@@ -143,7 +143,7 @@
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
         call sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
-        call calypso_mpi_barrier
+
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       end do

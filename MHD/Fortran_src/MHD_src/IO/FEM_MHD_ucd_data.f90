@@ -76,7 +76,6 @@
 !
       call sel_write_parallel_ucd_mesh                                  &
      &   (ucd_param, fem_ucd%ucd, fem_ucd%m_ucd)
-      call calypso_mpi_barrier
 !
       if(   mod(ucd_param%iflag_format,icent)/iten .eq. iflag_udt/iten  &
      & .or. mod(ucd_param%iflag_format,icent)/iten .eq. iflag_vtd/iten) &

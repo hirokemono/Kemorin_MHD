@@ -121,7 +121,6 @@
 !
       call MPI_BCAST(pvr_ctls%num_pvr_ctl,  1,                          &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call calypso_mpi_barrier
       if(pvr_ctls%num_pvr_ctl .le. 0) return
 !
       if(my_rank .gt. 0)  call alloc_pvr_ctl_struct(pvr_ctls)

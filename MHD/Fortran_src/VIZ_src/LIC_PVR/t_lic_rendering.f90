@@ -102,7 +102,6 @@
       end if
       call mpi_Bcast(check_LIC_update, 1, CALYPSO_INTEGER, 0,           &
      &    CALYPSO_COMM, ierr_MPI)
-      call calypso_mpi_barrier
 !
       end function check_LIC_update
 !

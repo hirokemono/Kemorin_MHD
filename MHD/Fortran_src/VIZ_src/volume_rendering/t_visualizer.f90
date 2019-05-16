@@ -76,7 +76,6 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
       call PVR_initialize                                               &
      &   (fem, nod_fld, viz_ctls%pvr_ctls, vizs%pvr)
-      call calypso_MPI_barrier
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
@@ -110,31 +109,26 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
       call SECTIONING_visualize(viz_step%PSF_t%istep_file, time_d,      &
      &    fem, nod_fld, vizs%psf)
-      call calypso_MPI_barrier
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
       call ISOSURF_visualize(viz_step%ISO_t%istep_file, time_d,         &
      &    fem, nod_fld, vizs%iso)
-      call calypso_MPI_barrier
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
       call PVR_visualize(viz_step%PVR_t%istep_file,                     &
      &    fem, jacs, nod_fld, vizs%pvr)
-      call calypso_MPI_barrier
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
       call FLINE_visualize(viz_step%FLINE_t%istep_file,                 &
      &    fem, ele_4_nod, nod_fld, vizs%fline)
-      call calypso_MPI_barrier
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
       call LIC_visualize(viz_step%LIC_t%istep_file,                     &
      &    fem, jacs, nod_fld, vizs%lic)
-      call calypso_MPI_barrier
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       end subroutine visualize_all

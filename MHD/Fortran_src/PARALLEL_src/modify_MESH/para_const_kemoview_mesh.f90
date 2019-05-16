@@ -95,7 +95,6 @@
       call collect_surf_mesh_4_viewer(mesh_file,  par_v%mgd_vmesh)
 !
       call deallocate_quad4_2_linear
-      call calypso_mpi_barrier
 !
       end subroutine pickup_surface_mesh_para
 !

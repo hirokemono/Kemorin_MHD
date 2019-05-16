@@ -122,7 +122,6 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call calypso_mpi_barrier
       if(my_rank .eq. 0) then
         write(*,*) 'UCD data by MPI-IO: ', trim(file_name)
       end if
@@ -159,7 +158,6 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call calypso_mpi_barrier
      if(my_rank .eq. 0) then
         write(*,*) 'UCD field by MPI-IO: ', trim(file_name)
       end if
@@ -190,7 +188,6 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call calypso_mpi_barrier
       if(my_rank .eq. 0) then
         write(*,*) 'UCD grid by MPI-IO: ', trim(file_name)
       end if
@@ -224,7 +221,6 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call calypso_mpi_barrier
      if(my_rank .eq. 0) then
         write(*,*) 'VTK by MPI-IO: ', trim(file_name)
       end if
@@ -259,7 +255,6 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call calypso_mpi_barrier
      if(my_rank .eq. 0) then
         write(*,*) 'VTK field by MPI-IO: ', trim(file_name)
       end if
@@ -290,7 +285,6 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call calypso_mpi_barrier
      if(my_rank .eq. 0) then
         write(*,*) 'VTK grid by MPI-IO: ', trim(file_name)
       end if

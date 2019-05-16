@@ -67,9 +67,7 @@
 !
       file_name = add_dat_extension(gauss%file_prefix)
 !
-      call calypso_mpi_barrier
       call open_append_mpi_file(file_name, nprocs, my_rank, IO_param)
-      call calypso_mpi_barrier
 !
       if(IO_param%ioff_gl .eq. 0) then
         call write_sph_gauss_header_mpi(IO_param, gauss)

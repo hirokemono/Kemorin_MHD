@@ -70,7 +70,6 @@
       integer(kind = kint) :: iflag_lc
 !
 !
-      call calypso_mpi_barrier
 !
       if(my_rank .eq. izero) then
         iflag_lc = 0
@@ -92,7 +91,6 @@
         call para_gen_sph_grids(sph_maker%sph_tmp, sph_maker%gen_sph)
         call dealloc_gen_mesh_params(sph_maker%gen_sph)
       end if
-      call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_w_LIC'
       call load_para_SPH_and_FEM_w_LIC(MHD_files%FEM_mesh_flags,        &
@@ -195,7 +193,6 @@
       call const_FEM_mesh_4_sph_MHD_w_LIC                               &
      &   (FEM_mesh_flags, sph_params, sph_rtp, sph_rj,                  &
      &    femmesh_s%mesh, femmesh_s%group, mesh_file, gen_sph)
-      call calypso_mpi_barrier
 !      call compare_mesh_type                                           &
 !     &   (my_rank, fem%mesh%nod_comm, mesh%node, mesh%ele,             &
 !     &    femmesh_s%mesh)
@@ -206,7 +203,6 @@
      &   = set_cube_eletype_from_num(femmesh_s%mesh%ele%nnod_4_ele)
       call set_mesh_data_from_type(femmesh_s%mesh, femmesh_s%group,     &
      &    fem%mesh, fem%group)
-      call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type end'
 !
       end subroutine load_FEM_mesh_4_SPH_w_LIC
@@ -258,7 +254,6 @@
           call pickup_surface_mesh_para(mesh_file, par_view)
         end if
       end if
-      call calypso_mpi_barrier
 !
       end subroutine const_FEM_mesh_4_sph_MHD_w_LIC
 !

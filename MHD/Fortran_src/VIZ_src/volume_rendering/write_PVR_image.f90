@@ -114,7 +114,6 @@
      &      pvr_screen, pvr_rgb%rgba_real_gl)
         if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+3)
       end if
-      call calypso_mpi_barrier
 !
       end subroutine rendering_image
 !
