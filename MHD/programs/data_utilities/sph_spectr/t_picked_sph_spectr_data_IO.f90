@@ -108,12 +108,19 @@
       write(*,'(a)')  '#   Start and end time'
       write(*,'(1p2e25.12)')  true_Start, time
 !
-      l_fd = count_label_list_length                                    &
-     &              (picked_IO%ntot_comp,picked_IO%spectr_name)
-      write(*,'(2a)') hd_time_sph_label(),                              &
-     &    make_field_list(l_fd, picked_IO%ntot_comp,                    &
-     &                    picked_IO%spectr_name)
+      write(id_pick_mode,'(a)')    '#'
+      write(id_pick_mode,'(a)')    '# num_layers, num_spectr'
+      write(id_pick_mode,'(3i16)') picked_IO%num_layer,                 &
+     &           picked_IO%num_mode, picked_IO%ntot_pick_spectr
+      write(id_pick_mode,'(a)')    '# number of component'
+      write(id_pick_mode,'(i16)') picked_IO%ntot_comp
 !
+      write(id_pick_mode,'(a)',advance='NO')  't_step    time    '
+      write(id_pick_mode,'(a)',advance='NO')  'radius_ID    radius    '
+      write(id_pick_mode,'(a)',advance='NO')  'degree    order    '
+!
+      call write_multi_labels(id_pick_mode, picked_IO%ntot_comp,        &
+     &    picked_IO%spectr_name)
 !
       do ipick = 1, picked_IO%ntot_pick_spectr
           write(id_pick_mode,'(i16,1pe25.14e3)', advance='NO')          &

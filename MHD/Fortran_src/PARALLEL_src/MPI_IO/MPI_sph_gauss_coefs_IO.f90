@@ -66,8 +66,8 @@
       if(gauss%num_sph_mode .le. 0) return
 !
       file_name = add_dat_extension(gauss%file_prefix)
-!
       call open_append_mpi_file(file_name, nprocs, my_rank, IO_param)
+      call calypso_mpi_barrier
 !
       if(IO_param%ioff_gl .eq. 0) then
         call write_sph_gauss_header_mpi(IO_param, gauss)
@@ -93,13 +93,15 @@
 !
       type(picked_spectrum_data), intent(in) :: picked
 !
-      integer(kind = kint) :: len_fld
+      integer(kind = kint) :: len_fld, i
+      integer :: len_each
       integer, parameter :: ilen_n = 14
       integer, parameter :: ilen_h                                      &
      &        = ilen_pk_gauss_head + 16+25+1 + ilen_time_label
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
       character(len = ilen_h) :: timebuf
+      character(len = kchara) :: textbuf
 !
 !
       if(my_rank .eq. 0) then
@@ -122,10 +124,13 @@
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(my_rank)
       if(len_fld .gt. 0) then
-        call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, len_fld,                         &
-     &      make_field_list(len_fld, picked%num_sph_mode_lc,            &
-     &                      picked%gauss_mode_name_lc))
+        do i = 1, picked%num_sph_mode_lc
+          len_each = len_trim(picked%gauss_mode_name_lc(i)) + 4
+          write(textbuf,'(a,a4)') trim(picked%gauss_mode_name_lc(i)),   &
+     &                           '    '
+          call calypso_mpi_seek_write_chara                             &
+     &       (IO_param%id_file, ioffset, len_each, textbuf)
+        end do
       end if
       IO_param%ioff_gl = IO_param%ioff_gl                               &
      &         + IO_param%istack_merged(nprocs)

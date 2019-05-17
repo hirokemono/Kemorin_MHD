@@ -67,7 +67,13 @@
 !
       file_name = add_dat_extension(picked%file_prefix)
 !
+!      if(my_rank .eq. 0) then
+!        call write_picked_spectr_header_only(file_name, picked)
+!      end if
+!      call calypso_mpi_barrier
+!
       call open_append_mpi_file(file_name, nprocs, my_rank, IO_param1)
+      call calypso_mpi_barrier
 !
       if(IO_param1%ioff_gl .eq. 0) then
         call write_picked_specr_head_mpi(IO_param1, picked)
@@ -92,24 +98,28 @@
 !
       type(picked_spectrum_data), intent(in) :: picked
 !
-      integer :: len_head, len_fld
+      integer(kind = kint) :: i
+      integer :: len_head, len_fld, len_each
       integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
       character(len = 1), parameter :: timebuf = char(10)
+      character(len = kchara) :: textbuf
 !
 !
       len_head = len(pick_sph_header_no_field(picked))
       if(my_rank .eq. 0) then
-        len_fld =  int(count_label_list_length(picked%ntot_comp_rj,     &
-     &                                   picked%spectr_name))
         ioffset = IO_param%ioff_gl
         call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
      &      len_head, pick_sph_header_no_field(picked))
 !
-        call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, len_fld,                         &
-     &      make_field_list(len_fld,picked%ntot_comp_rj,                &
-     &                      picked%spectr_name))
+        len_fld = 0
+        do i = 1, picked%ntot_comp_rj
+          len_each = len_trim(picked%spectr_name(i)) + 4
+          len_fld = len_fld + len_each
+          write(textbuf,'(a,a4)') trim(picked%spectr_name(i)), '    '
+          call calypso_mpi_seek_write_chara                             &
+     &       (IO_param%id_file, ioffset, len_each, textbuf)
+        end do
 !
         call calypso_mpi_seek_write_chara                               &
      &     (IO_param%id_file, ioffset, 1, timebuf)
@@ -218,6 +228,35 @@
      &          kr, radius, l, m, d_rj_out(1:ntot_comp_rj), char(10)
 !
       end function  picked_each_mode_to_text
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine write_picked_spectr_header_only(file_name, picked)
+!
+      use write_field_labels
+!
+      character(len=kchara), intent(in) :: file_name
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      integer(kind = kint) :: i
+      integer(kind = kint), parameter :: id_pick_mode = 23
+!
+!
+      open(id_pick_mode, file = file_name, form='formatted',            &
+     &    status='old', position='append', err = 99)
+      close(id_pick_mode)
+      return
+!
+   99 continue
+      close(id_pick_mode)
+!
+      open(id_pick_mode, file = file_name, form='formatted',            &
+     &    status='replace')
+      call write_pick_sph_file_header(id_pick_mode, picked)
+      close(id_pick_mode)
+!
+      end subroutine write_picked_spectr_header_only
 !
 ! ----------------------------------------------------------------------
 !

@@ -267,17 +267,20 @@
       integer(kind = kint), intent(in) :: id_file
       type(picked_spectrum_data), intent(in) :: picked
 !
-      integer(kind = kint) :: l_fd
 !
+      write(id_file,'(a)')    '#'
+      write(id_file,'(a)')    '# num_layers, num_spectr'
+      write(id_file,'(3i16)') picked%num_layer, picked%num_sph_mode,    &
+     &                        picked%ntot_pick_spectr
+      write(id_file,'(a)')    '# number of component'
+      write(id_file,'(i16)') picked%ntot_comp_rj
 !
-      write(id_file,'(a)',advance='NO')                                 &
-     &                          pick_sph_header_no_field(picked)
+      write(id_file,'(a)',advance='NO')  't_step    time    '
+      write(id_file,'(a)',advance='NO')  'radius_ID    radius    '
+      write(id_file,'(a)',advance='NO')  'degree    order    '
 !
-      l_fd = count_label_list_length                                    &
-     &                         (picked%ntot_comp_rj,picked%spectr_name)
-      write(id_file,'(a)',advance='NO')                                 &
-     &    make_field_list(l_fd, picked%ntot_comp_rj,picked%spectr_name)
-      write(id_file,'(a)') ''
+      call write_multi_labels(id_file, picked%ntot_comp_rj,             &
+     &    picked%spectr_name)
 !
       end subroutine write_pick_sph_file_header
 !
