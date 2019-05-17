@@ -293,7 +293,7 @@
 !      end if
 !
 !      if(     id_rank.eq.pwr%irank_l .or. id_rank.eq.pwr%irank_m        &
-     &   .or. id_rank.eq.pwr%irank_lm) then
+!     &   .or. id_rank.eq.pwr%irank_lm) then
         allocate( pwr%shl_sq(pwr%nri_rms,pwr%ntot_comp_sq) )
         if(pwr%nri_rms .gt. 0) pwr%shl_sq =       0.0d0
 !      end if
