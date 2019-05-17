@@ -397,10 +397,10 @@
         v_pwr%v_l = 0.0d0
 !      end if
 !
-!      if(id_rank .eq. v_pwr%irank_lm) then
+      if(id_rank .eq. v_pwr%irank_lm) then
         allocate( v_pwr%v_lm(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
         v_pwr%v_lm = 0.0d0
-!      end if
+      end if
 !
 !      if(id_rank .eq. v_pwr%irank_m) then
         allocate( v_pwr%v_m(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
@@ -449,9 +449,9 @@
 !      if(id_rank .eq. v_pwr%irank_l) then
         deallocate(v_pwr%v_l)
 !      end if
-!      if(id_rank .eq. v_pwr%irank_lm) then
+      if(id_rank .eq. v_pwr%irank_lm) then
         deallocate(v_pwr%v_lm)
-!      end if
+      end if
 !
 !      if(id_rank .eq. v_pwr%irank_m) then
         deallocate(v_pwr%v_m, v_pwr%v_m0, v_pwr%v_ratio_m0)

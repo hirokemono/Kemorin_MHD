@@ -303,10 +303,24 @@
 !
       num64 = ntot_rms_rj * (l_truncation + 1)
       do i = 1, num_vol_spectr
+        write(*,*) my_rank, 'calypso_mpi_reduce_real l', &
+     &           allocated(v_pwr(i)%v_l), v_pwr(i)%irank_l
+        if(allocated(v_pwr(i)%v_l)) write(*,*)   &
+     &     'size', size(v_pwr(i)%v_l), num64
         call calypso_mpi_reduce_real(WK_pwr%vol_l_local(0,1,i),         &
      &      v_pwr(i)%v_l, num64, MPI_SUM, v_pwr(i)%irank_l)
+!
+        write(*,*) my_rank, 'calypso_mpi_reduce_real m', &
+     &           allocated(v_pwr(i)%v_m), v_pwr(i)%irank_m
+        if(allocated(v_pwr(i)%v_m)) write(*,*)   &
+     &     'size', size(v_pwr(i)%v_m), num64
         call calypso_mpi_reduce_real(WK_pwr%vol_m_local(0,1,i),         &
      &      v_pwr(i)%v_m, num64, MPI_SUM, v_pwr(i)%irank_m)
+!
+        write(*,*) my_rank, 'calypso_mpi_reduce_real lm', &
+     &           allocated(v_pwr(i)%v_lm), v_pwr(i)%irank_lm
+        if(allocated(v_pwr(i)%v_lm)) write(*,*)   &
+     &     'size', size(v_pwr(i)%v_lm), num64
         call calypso_mpi_reduce_real(WK_pwr%vol_lm_local(0,1,i),        &
      &      v_pwr(i)%v_lm, num64, MPI_SUM, v_pwr(i)%irank_lm)
       end do
@@ -521,9 +535,12 @@
         icou = icou + 3
       end if
       do i = 1, pwr%num_vol_spectr
-        pwr%v_spectr(i)%irank_m =  mod(int((icou+1)*rinc)+ip_ave, nprocs)
-        pwr%v_spectr(i)%irank_l =  mod(int((icou+2)*rinc)+ip_ave, nprocs)
-        pwr%v_spectr(i)%irank_lm = mod(int((icou+3)*rinc)+ip_ave, nprocs)
+        pwr%v_spectr(i)%irank_m                                         &
+     &        =  mod(int((icou+1)*rinc)+ip_ave, nprocs)
+        pwr%v_spectr(i)%irank_l                                         &
+     &        =  mod(int((icou+2)*rinc)+ip_ave, nprocs)
+        pwr%v_spectr(i)%irank_lm                                        &
+     &        = mod(int((icou+3)*rinc)+ip_ave, nprocs)
         icou = icou + 3
       end do
 !
