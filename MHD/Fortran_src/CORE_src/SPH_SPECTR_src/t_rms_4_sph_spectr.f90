@@ -271,17 +271,21 @@
      &     (id_rank, ltr, pwr%ntot_comp_sq, pwr%v_spectr(i))
       end do
 !
-!      if(id_rank .eq. pwr%irank_l) then
+      if(id_rank .eq. pwr%irank_l) then
         allocate(pwr%shl_l(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
         if(pwr%nri_rms .gt. 0) pwr%shl_l =  0.0d0
-!      end if
+      else
+        allocate(pwr%shl_l(1,0,1))
+      end if
 !
-!      if(id_rank .eq. pwr%irank_lm) then
+      if(id_rank .eq. pwr%irank_lm) then
         allocate(pwr%shl_lm(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
         if(pwr%nri_rms .gt. 0) pwr%shl_lm = 0.0d0
-!      end if
+      else
+        allocate(pwr%shl_lm(1,0,1))
+      end if
 !
-!      if(id_rank .eq. pwr%irank_m) then
+      if(id_rank .eq. pwr%irank_m) then
         allocate(pwr%shl_m(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
         if(pwr%nri_rms .gt. 0) pwr%shl_m =        0.0d0
 !
@@ -290,13 +294,19 @@
 !
         allocate( pwr%ratio_shl_m0(pwr%nri_rms,pwr%ntot_comp_sq) )
         if(pwr%nri_rms .gt. 0) pwr%ratio_shl_m0 = 0.0d0
-!      end if
+      else
+        allocate(pwr%shl_m(1,0,1))
+        allocate(pwr%shl_m0(1,1))
+        allocate(pwr%ratio_shl_m0(0,0))
+      end if
 !
-!      if(     id_rank.eq.pwr%irank_l .or. id_rank.eq.pwr%irank_m        &
-!     &   .or. id_rank.eq.pwr%irank_lm) then
+      if(     id_rank.eq.pwr%irank_l .or. id_rank.eq.pwr%irank_m        &
+     &   .or. id_rank.eq.pwr%irank_lm) then
         allocate( pwr%shl_sq(pwr%nri_rms,pwr%ntot_comp_sq) )
         if(pwr%nri_rms .gt. 0) pwr%shl_sq =       0.0d0
-!      end if
+      else
+        allocate(pwr%shl_sq(0,0))
+      end if
 !
       end subroutine alloc_rms_4_sph_spectr
 !
@@ -339,21 +349,10 @@
       deallocate(pwr%r_4_rms, pwr%kr_4_rms)
 !
 !
-!      if(id_rank .eq. pwr%irank_l) then
         deallocate(pwr%shl_l)
-!      end if
-!      if(id_rank .eq. pwr%irank_lm) then
         deallocate(pwr%shl_lm)
-!      end if
-!
-!      if(id_rank .eq. pwr%irank_m) then
         deallocate(pwr%shl_m, pwr%shl_m0, pwr%ratio_shl_m0)
-!      end if
-!
-!      if(     id_rank.eq.pwr%irank_l .or. id_rank.eq.pwr%irank_m        &
-!     &   .or. id_rank.eq.pwr%irank_lm) then
         deallocate(pwr%shl_sq)
-!      end if
 !
       deallocate(pwr%num_comp_sq, pwr%istack_comp_sq)
       deallocate(pwr%pwr_name, pwr%id_field)
@@ -392,10 +391,12 @@
       v_pwr%ltr = ltr
       v_pwr%ntot_comp_sq = ntot_comp_sq
 !
-!      if(id_rank .eq. v_pwr%irank_l) then
+      if(id_rank .eq. v_pwr%irank_l) then
         allocate( v_pwr%v_l(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
         v_pwr%v_l = 0.0d0
-!      end if
+      else
+        allocate( v_pwr%v_l(0,0) )
+      end if
 !
       if(id_rank .eq. v_pwr%irank_lm) then
         allocate( v_pwr%v_lm(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
@@ -404,7 +405,7 @@
         allocate( v_pwr%v_lm(0,0) )
       end if
 !
-!      if(id_rank .eq. v_pwr%irank_m) then
+      if(id_rank .eq. v_pwr%irank_m) then
         allocate( v_pwr%v_m(0:v_pwr%ltr,v_pwr%ntot_comp_sq) )
         v_pwr%v_m =  0.0d0
 !
@@ -413,13 +414,19 @@
 !
         allocate( v_pwr%v_ratio_m0(v_pwr%ntot_comp_sq) )
         v_pwr%v_ratio_m0 = 0.0d0
-!      end if
+      else
+        allocate( v_pwr%v_m(0,0) )
+        allocate( v_pwr%v_m0(0) )
+        allocate( v_pwr%v_ratio_m0(0) )
+      end if
 !
-!      if(     id_rank.eq.v_pwr%irank_l .or. id_rank.eq.v_pwr%irank_m   &
-!     &   .or. id_rank.eq.v_pwr%irank_lm) then
+      if(     id_rank.eq.v_pwr%irank_l .or. id_rank.eq.v_pwr%irank_m    &
+     &   .or. id_rank.eq.v_pwr%irank_lm) then
         allocate( v_pwr%v_sq(v_pwr%ntot_comp_sq) )
         v_pwr%v_sq =       0.0d0
-!      end if
+      else
+        allocate( v_pwr%v_sq(0) )
+      end if
 !
       end subroutine alloc_sph_vol_mean_square
 !
@@ -448,21 +455,10 @@
       type(sph_vol_mean_squares), intent(inout) :: v_pwr
 !
 !
-!      if(id_rank .eq. v_pwr%irank_l) then
         deallocate(v_pwr%v_l)
-!      end if
-!      if(id_rank .eq. v_pwr%irank_lm) then
         deallocate(v_pwr%v_lm)
-!      end if
-!
-!      if(id_rank .eq. v_pwr%irank_m) then
         deallocate(v_pwr%v_m, v_pwr%v_m0, v_pwr%v_ratio_m0)
-!      end if
-!
-!      if(     id_rank.eq.v_pwr%irank_l .or. id_rank.eq.v_pwr%irank_m    &
-!     &   .or. id_rank.eq.v_pwr%irank_lm) then
         deallocate(v_pwr%v_sq)
-!      end if
 !
       end subroutine dealloc_sph_vol_mean_square
 !
