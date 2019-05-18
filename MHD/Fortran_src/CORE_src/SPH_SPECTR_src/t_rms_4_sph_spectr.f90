@@ -275,14 +275,14 @@
         allocate(pwr%shl_l(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
         if(pwr%nri_rms .gt. 0) pwr%shl_l =  0.0d0
       else
-        allocate(pwr%shl_l(1,0,1))
+        allocate(pwr%shl_l(0,0,0))
       end if
 !
       if(id_rank .eq. pwr%irank_lm) then
         allocate(pwr%shl_lm(pwr%nri_rms,0:ltr,pwr%ntot_comp_sq))
         if(pwr%nri_rms .gt. 0) pwr%shl_lm = 0.0d0
       else
-        allocate(pwr%shl_lm(1,0,1))
+        allocate(pwr%shl_lm(0,0,0))
       end if
 !
       if(id_rank .eq. pwr%irank_m) then
@@ -295,8 +295,8 @@
         allocate( pwr%ratio_shl_m0(pwr%nri_rms,pwr%ntot_comp_sq) )
         if(pwr%nri_rms .gt. 0) pwr%ratio_shl_m0 = 0.0d0
       else
-        allocate(pwr%shl_m(1,0,1))
-        allocate(pwr%shl_m0(1,1))
+        allocate(pwr%shl_m(0,0,0))
+        allocate(pwr%shl_m0(0,0))
         allocate(pwr%ratio_shl_m0(0,0))
       end if
 !
