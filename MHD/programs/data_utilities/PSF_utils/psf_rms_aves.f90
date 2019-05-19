@@ -152,10 +152,43 @@
       do nd = 1, psf_u%psf_phys%ntot_phys
 !$omp do
         do inod = 1, psf_u%psf_nod%numnod
-          tsdev_psf(inod,nd) = trms_psf(inod,nd) - tave_psf(inod,nd)**2
-!
           tave_psf(inod,nd) = tave_psf(inod,nd) * acou
           trms_psf(inod,nd) = sqrt(trms_psf(inod,nd) * acou)
+        end do
+!$omp end do
+      end do
+!$omp end parallel
+!
+!
+      icou = 0
+      write(*,'(a,i15)', advance='NO')                                  &
+     &          'read for RMS. Step:  ', istep
+      do istep = istep_start, istep_end, istep_int
+        icou = icou + 1
+        write(*,'(15a1)', advance='NO') (char(8),i=1,15)
+        write(*,'(i15)', advance='NO') istep
+!
+        call sel_read_udt_file                                          &
+     &     (-1, istep, psf_file_param, psf_time, psf_ucd)
+!
+!$omp parallel
+        do nd = 1, psf_u%psf_phys%ntot_phys
+!$omp do
+          do inod = 1, psf_u%psf_nod%numnod
+          tsdev_psf(inod,nd) = tsdev_psf(inod,nd)                       &
+     &                        + (psf_u%psf_phys%d_fld(inod,nd)          &
+     &                         - tave_psf(inod,nd))**2
+          end do
+!$omp end do
+        end do
+!$omp end parallel
+      end do
+      write(*,*)
+!
+!$omp parallel
+      do nd = 1, psf_u%psf_phys%ntot_phys
+!$omp do
+        do inod = 1, psf_u%psf_nod%numnod
           tsdev_psf(inod,nd) = sqrt(tsdev_psf(inod,nd) * acou)
         end do
 !$omp end do
