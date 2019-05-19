@@ -60,6 +60,34 @@
      &   (icou, cdat_a%circle, cdat_a%d_circle)
 !
 !
+!  Evaluate standard deviation
+!
+      call open_read_field_data_on_circle(sph_c%sph_rtp, sph_c%sph_rj,  &
+     &    cdat_a%circle, cdat_a%d_circle)
+!
+      icou = 0
+      do
+        call read_field_data_on_circle                                  &
+     &     (istep, time, ierr, cdat_a%circle, cdat_a%d_circle)
+        write(*,*) 'read_field_data_on_circle end', istep, time, icou
+        if(ierr.gt.0) go to 98
+!
+        if (istep .ge. ist) then
+          icou = icou + 1
+          call sum_deviation_circle_field                               &
+     &       (cdat_a%circle, cdat_a%d_circle)
+        end if
+!
+        if (istep .ge. ied) exit
+!
+        write(*,*) 'step', istep, 'deviation finished. Count: ', icou
+      end do
+   98 continue
+!
+      call close_field_data_on_circle
+      call divide_deviation_circle_field                                &
+     &   (icou, cdat_a%circle, cdat_a%d_circle)
+!
       call copy_average_circle_field(cdat_a%circle, cdat_a%d_circle)
       call write_field_data_on_circle                                   &
      &   (istep, time, cdat_a%circle, cdat_a%d_circle)
