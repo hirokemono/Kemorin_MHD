@@ -106,8 +106,6 @@ set_model_coef_to_med_patch.o \
 read_layer_evo_file_header.o
 
 MOD_T_AVE_M_COEF =    \
-t_average_m_coefs.o \
-\
 m_ctl_data_ele_grp_udt.o \
 m_ctl_params_ele_grp_udt.o \
 m_merdional_grouping_patch.o \

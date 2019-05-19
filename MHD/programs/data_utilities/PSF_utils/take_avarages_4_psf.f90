@@ -80,17 +80,33 @@
           d_ele = (psf_phys%d_fld(i1,icomp) + psf_phys%d_fld(i2,icomp)  &
      &           + psf_phys%d_fld(i3,icomp) ) / 3.0d0
 !
+          psf_aves%rms(icomp) = psf_aves%rms(icomp)                     &
+     &                         + d_ele * d_ele * coef
           psf_aves%ave(icomp) = psf_aves%ave(icomp) + d_ele * coef
-          psf_aves%rms(icomp) = psf_aves%rms(icomp) + d_ele**2 * coef
         end do
-        psf_aves%sdev(icomp)                                            &
-     &             = psf_aves%rms(icomp) - psf_aves%ave(icomp)**2
-!
-        psf_aves%sdev(icomp)                                            &
-     &        =  sqrt( psf_aves%sdev(icomp) / psf_norm%area )
         psf_aves%rms(icomp)                                             &
      &        =  sqrt( psf_aves%rms(icomp) / psf_norm%area )
         psf_aves%ave(icomp) = psf_aves%ave(icomp) / psf_norm%area
+      end do
+!
+!   Evaluate standard deviation
+      do icomp = 1, psf_phys%ntot_phys
+        do iele = 1, psf_ele%numele
+          coef = psf_norm%area_ele(iele) * psf_norm%rflag_ave(iele)
+!
+          i1 = psf_ele%ie(iele,1)
+          i2 = psf_ele%ie(iele,2)
+          i3 = psf_ele%ie(iele,3)
+!
+          d_ele = (psf_phys%d_fld(i1,icomp) + psf_phys%d_fld(i2,icomp)  &
+     &           + psf_phys%d_fld(i3,icomp) ) / 3.0d0                   &
+     &           - psf_aves%ave(icomp)
+!
+          psf_aves%sdev(icomp) = psf_aves%sdev(icomp)                   &
+     &                          + d_ele * d_ele * coef
+        end do
+        psf_aves%sdev(icomp)                                            &
+     &           = sqrt( psf_aves%sdev(icomp) / psf_norm%area)
       end do
 !
       end subroutine cal_rms_ave_4_psf
@@ -179,12 +195,38 @@
       end do
 !
       do icomp = 1, psf_phys%ntot_phys
-        psf_aves%sdev(icomp)                                            &
-     &         = psf_aves%rms(icomp) - psf_aves%ave(icomp)**2
+        psf_aves%rms(icomp) = sqrt( psf_aves%rms(icomp)/area )
+        psf_aves%ave(icomp) = psf_aves%ave(icomp)/area
+      end do
 !
-        psf_aves%sdev(icomp) = sqrt(psf_aves%sdev(icomp) / area)
-        psf_aves%rms(icomp) =  sqrt(psf_aves%rms(icomp) / area)
-        psf_aves%ave(icomp) =  psf_aves%ave(icomp) / area
+!   Evaluate standard deviation
+      do iele = 1, psf_ele%numele
+        if(psf_norm%rflag_ave(iele).eq.0.0d0) cycle
+!
+        i1 = psf_ele%ie(iele,1)
+        i2 = psf_ele%ie(iele,2)
+        i3 = psf_ele%ie(iele,3)
+!
+        ref_ele =  (psf_phys%d_fld(i1,icomp_ref)                        &
+     &            + psf_phys%d_fld(i2,icomp_ref)                        &
+     &            + psf_phys%d_fld(i3,icomp_ref) ) / 3.0d0
+!
+        if(iflag_ref.eq.1 .and. ref_ele.lt.ref_value) cycle
+        if(iflag_ref.eq.2 .and. ref_ele.gt.ref_value) cycle
+!
+        area = area + psf_norm%area_ele(iele)
+        do icomp = 1, psf_phys%ntot_phys
+          d_ele = (psf_phys%d_fld(i1,icomp) + psf_phys%d_fld(i2,icomp)  &
+     &           + psf_phys%d_fld(i3,icomp) ) / 3.0d0                   &
+     &           - psf_aves%ave(icomp)
+!
+          psf_aves%sdev(icomp) = psf_aves%sdev(icomp)                   &
+     &                     + d_ele**2 * psf_norm%area_ele(iele)
+        end do
+      end do
+!
+      do icomp = 1, psf_phys%ntot_phys
+        psf_aves%sdev(icomp) = sqrt( psf_aves%sdev(icomp)/area )
       end do
 !
       end subroutine cal_range_rms_ave_4_psf
