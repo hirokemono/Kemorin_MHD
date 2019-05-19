@@ -392,7 +392,7 @@
         cluster_nod2%xx(icou,3) = cluster_nod2%xx(icou,3) / dble(num)
       end do
 !
-      end subroutine set_clusterd_postiion!
+      end subroutine set_clusterd_postiion
 !
 !-----------------------------------------------------------------------
 !
