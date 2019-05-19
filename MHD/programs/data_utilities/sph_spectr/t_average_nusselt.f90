@@ -120,7 +120,7 @@
       close(id_pick)
 !
       acou = one / (time - true_start)
-      sdev_Nu(1:2) = sqrt(sdev_Nu(1:2)) * acou
+      sdev_Nu(1:2) = sqrt(sdev_Nu(1:2) * acou)
 !
 !    output Results
 !
