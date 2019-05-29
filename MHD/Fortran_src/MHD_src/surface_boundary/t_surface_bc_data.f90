@@ -62,10 +62,10 @@
 !
 !
       type velocity_surf_bc_type
-        type(scaler_surf_bc_data_type) :: sgs(3)
+        type(scaler_surf_bc_data_type), allocatable :: sgs(:)
         type(scaler_surf_flux_bc_type) :: normal
-        type(scaler_surf_flux_bc_type) :: grad(3)
-        type(scaler_surf_bc_data_type) :: torque_lead(3)
+        type(scaler_surf_flux_bc_type), allocatable :: grad(:)
+        type(scaler_surf_bc_data_type), allocatable :: torque_lead(:)
         type(scaler_surf_bc_data_type) :: free_sph_in
         type(scaler_surf_bc_data_type) :: free_sph_out
       end type velocity_surf_bc_type
@@ -80,10 +80,10 @@
       end type potential_surf_bc_type
 !
       type vector_surf_bc_type
-        type(scaler_surf_bc_data_type) :: sgs(3)
+        type(scaler_surf_bc_data_type), allocatable :: sgs(:)
         type(scaler_surf_flux_bc_type) :: normal
-        type(scaler_surf_flux_bc_type) :: grad(3)
-        type(scaler_surf_bc_data_type) :: torque_lead(3)
+        type(scaler_surf_flux_bc_type), allocatable :: grad(:)
+        type(scaler_surf_bc_data_type), allocatable :: torque_lead(:)
       end type vector_surf_bc_type
 !
       type scaler_surf_bc_type
@@ -102,6 +102,10 @@
 !
       type(velocity_surf_bc_type),  intent(inout) :: Vsf_bcs
 !
+!
+      allocate(Vsf_bcs%sgs(3))
+      allocate(Vsf_bcs%grad(3))
+      allocate(Vsf_bcs%torque_lead(3))
 !
       call alloc_surf_vector_num(Vsf_bcs%grad)
       call alloc_surf_scaler_num(Vsf_bcs%normal)
@@ -129,6 +133,8 @@
       call dealloc_surf_scaler_dat_type(Vsf_bcs%free_sph_in)
       call dealloc_surf_scaler_dat_type(Vsf_bcs%free_sph_out)
 !
+      deallocate(Vsf_bcs%sgs, Vsf_bcs%grad, Vsf_bcs%torque_lead)
+!
       end subroutine dealloc_surf_data_velo
 !
 !  ---------------------------------------------------------------------
@@ -137,6 +143,10 @@
 !
       type(vector_surf_bc_type),  intent(inout) :: Bsf_bcs
 !
+!
+      allocate(Bsf_bcs%sgs(3))
+      allocate(Bsf_bcs%grad(3))
+      allocate(Bsf_bcs%torque_lead(3))
 !
       call alloc_surf_vector_num(Bsf_bcs%grad)
       call alloc_surf_vector_dat_type(Bsf_bcs%sgs)
@@ -159,6 +169,8 @@
       call dealloc_surf_vector_dat_type(Bsf_bcs%sgs)
       call dealloc_surf_scaler_type(Bsf_bcs%normal)
       call dealloc_surf_vector_dat_type(Bsf_bcs%torque_lead)
+!
+      deallocate(Bsf_bcs%sgs, Bsf_bcs%grad, Bsf_bcs%torque_lead)
 !
       end subroutine dealloc_surf_vector
 !
