@@ -83,7 +83,7 @@
      &         (field_ctl, ref_phys, cor_phys, pcor)
 !
       use t_correlate_4_plane
-      use t_read_control_arrays
+      use t_control_array_character3
       use t_phys_data
       use skip_comment_f
 !
@@ -114,7 +114,7 @@
       subroutine count_list_4_correlate                                 &
      &         (field_ctl, ref_phys, cor_phys, num_crt)
 !
-      use t_read_control_arrays
+      use t_control_array_character3
       use t_phys_data
       use skip_comment_f
 !
@@ -151,7 +151,7 @@
      &          num_crt, crt_name, crt_comp, ifield_crt,                &
      &          ifield_crt2, icomp_crt)
 !
-      use t_read_control_arrays
+      use t_control_array_character3
       use t_phys_data
       use skip_comment_f
 !

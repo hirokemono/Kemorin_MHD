@@ -7,6 +7,24 @@
 !>@brief  Subroutines to read control arrays
 !!
 !!@verbatim
+!!      subroutine alloc_control_array_c3(array_c3)
+!!      subroutine dealloc_control_array_c3(array_c3)
+!!      subroutine read_control_array_c3                                &
+!!     &         (id_control, label, array_c3, c_buf)
+!!        type(ctl_array_c3), intent(inout) :: array_c3
+!!      subroutine write_control_array_c3                               &
+!!     &         (id_control, level, label, array_c3)
+!!        type(ctl_array_c3), intent(in) :: array_c3
+!!
+!!      subroutine append_control_array_c3(read_c3, array_c3)
+!!        type(read_chara3_item), intent(inout) ::    read_c3
+!!        type(ctl_array_c3), intent(inout) :: array_c3
+!!      subroutine copy_control_array_c3(num_copy, org_c3, tgt_c3)
+!!        type(ctl_array_c3), intent(in) ::    org_c3
+!!        type(ctl_array_c3), intent(inout) :: tgt_c3
+!!      subroutine append_control_item_c3(read_c3, array_c3)
+!!        type(read_chara3_item), intent(in) ::    read_c3
+!!        type(ctl_array_c3), intent(inout) :: array_c3
 !!@endverbatim
 !!
 !!
@@ -14,14 +32,54 @@
 !
       use m_precision
       use t_control_elements
-      use t_read_control_arrays
 !
       implicit none
+!
+!>  Structure for three charactors control array 
+      type ctl_array_c3
+!>     number of array items
+        integer(kind=kint) :: num = 0
+!>     array counter
+        integer(kind=kint) :: icou = 0
+!>     array for 1st character
+        character(len=kchara), allocatable :: c1_tbl(:)
+!>     array for 2nd character
+        character(len=kchara), allocatable :: c2_tbl(:)
+!>     array for 3rd character
+        character(len=kchara), allocatable :: c3_tbl(:)
+      end type ctl_array_c3
 !
 !   --------------------------------------------------------------------
 !
       contains
 !
+!   --------------------------------------------------------------------
+!
+      subroutine alloc_control_array_c3(array_c3)
+!
+      type(ctl_array_c3), intent(inout) :: array_c3
+!
+!
+      allocate( array_c3%c1_tbl(array_c3%num) )
+      allocate( array_c3%c2_tbl(array_c3%num) )
+      allocate( array_c3%c3_tbl(array_c3%num) )
+!
+      end subroutine alloc_control_array_c3
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_control_array_c3(array_c3)
+!
+      type(ctl_array_c3), intent(inout) :: array_c3
+!
+!
+      if(allocated(array_c3%c1_tbl) .eqv. .FALSE.) return
+      deallocate(array_c3%c1_tbl, array_c3%c2_tbl, array_c3%c3_tbl)
+      array_c3%num = 0
+!
+      end subroutine dealloc_control_array_c3
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_c3                                  &

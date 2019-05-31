@@ -50,7 +50,7 @@
       use m_machine_parameter
 !
       use t_control_parameter
-      use t_read_control_arrays
+      use t_control_array_character3
       use t_phys_data
 !
       use add_nodal_fields_4_MHD
@@ -167,7 +167,7 @@
      &         (field_ctl, meq_ctl, circle, d_circle)
 !
       use t_ctl_data_sph_vol_spectr
-      use t_read_control_arrays
+      use t_control_array_character3
       use t_circle_transform
       use t_phys_data
       use ordering_field_by_viz

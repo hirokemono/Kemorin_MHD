@@ -28,9 +28,6 @@
 !!      subroutine write_control_array_c2                               &
 !!     &         (id_file, level, label, array_c2)
 !!        type(ctl_array_c2), intent(in) :: array_c2
-!!      subroutine write_control_array_c3                               &
-!!     &         (id_file, level, label, array_c3)
-!!        type(ctl_array_c3), intent(in) :: array_c3
 !!      subroutine write_control_array_c_r                              &
 !!     &         (id_file, level, label, array_cr)
 !!        type(ctl_array_cr), intent(in) :: array_cr

@@ -99,7 +99,7 @@
       subroutine const_fields_4_FFT(field_ctl, plane_fft_wk)
 !
       use t_spectr_4_ispack
-      use t_read_control_arrays
+      use t_control_array_character3
       use skip_comment_f
 !
       type(ctl_array_c3), intent(in) :: field_ctl
@@ -129,7 +129,7 @@
 !
       subroutine count_fields_4_FFT(field_ctl, num_fft)
 !
-      use t_read_control_arrays
+      use t_control_array_character3
       use skip_comment_f
 !
       type(ctl_array_c3), intent(in) :: field_ctl
@@ -162,7 +162,7 @@
       subroutine set_fields_4_FFT(field_ctl, num_fft,                   &
      &          fft_name, fft_comp, ifield_fft, icomp_fft)
 !
-      use t_read_control_arrays
+      use t_control_array_character3
       use skip_comment_f
 !
       type(ctl_array_c3), intent(in) :: field_ctl

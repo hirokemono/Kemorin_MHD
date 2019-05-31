@@ -16,7 +16,7 @@
       use m_phys_labels
       use t_SGS_control_parameter
       use t_physical_property
-      use t_read_control_arrays
+      use t_control_array_character3
 !
       use add_nodal_fields_ctl
 !

@@ -376,6 +376,7 @@
 !
       subroutine bcast_ctl_array_c3(array_c3)
 !
+      use t_control_array_character3
       use transfer_to_long_integers
 !
       type(ctl_array_c3), intent(inout) :: array_c3

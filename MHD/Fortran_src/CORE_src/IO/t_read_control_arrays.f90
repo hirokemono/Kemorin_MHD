@@ -7,8 +7,6 @@
 !>@brief  Subroutines to read control arrays
 !!
 !!@verbatim
-!!      subroutine alloc_control_array_c3(array_c3)
-!!
 !!      subroutine dealloc_control_array_real(array_real)
 !!      subroutine dealloc_control_array_r2(array_r2)
 !!      subroutine dealloc_control_array_r3(array_r3)
@@ -16,7 +14,6 @@
 !!      subroutine dealloc_control_array_i2(array_i2)
 !!      subroutine dealloc_control_array_chara(array_chara)
 !!      subroutine dealloc_control_array_c2(array_c2)
-!!      subroutine dealloc_control_array_c3(array_c3)
 !!      subroutine dealloc_control_array_c_r(array_cr)
 !!      subroutine dealloc_control_array_c_i(array_ci)
 !!      subroutine dealloc_control_array_c_r2(array_cr2)
@@ -146,20 +143,6 @@
 !>     array for 2nd character
         character(len=kchara), allocatable :: c2_tbl(:)
       end type ctl_array_c2
-!
-!>  Structure for three charactors control array 
-      type ctl_array_c3
-!>     number of array items
-        integer(kind=kint) :: num = 0
-!>     array counter
-        integer(kind=kint) :: icou = 0
-!>     array for 1st character
-        character(len=kchara), allocatable :: c1_tbl(:)
-!>     array for 2nd character
-        character(len=kchara), allocatable :: c2_tbl(:)
-!>     array for 3rd character
-        character(len=kchara), allocatable :: c3_tbl(:)
-      end type ctl_array_c3
 !
 !>  Structure for charactor and two reals control array 
       type ctl_array_cr2
@@ -373,19 +356,6 @@
       allocate( array_c2%c2_tbl(array_c2%num) )
 !
       end subroutine alloc_control_array_c2
-!
-!   --------------------------------------------------------------------
-!
-      subroutine alloc_control_array_c3(array_c3)
-!
-      type(ctl_array_c3), intent(inout) :: array_c3
-!
-!
-      allocate( array_c3%c1_tbl(array_c3%num) )
-      allocate( array_c3%c2_tbl(array_c3%num) )
-      allocate( array_c3%c3_tbl(array_c3%num) )
-!
-      end subroutine alloc_control_array_c3
 !
 !   --------------------------------------------------------------------
 !
@@ -612,19 +582,6 @@
       array_c2%num = 0
 !
       end subroutine dealloc_control_array_c2
-!
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_control_array_c3(array_c3)
-!
-      type(ctl_array_c3), intent(inout) :: array_c3
-!
-!
-      if(allocated(array_c3%c1_tbl) .eqv. .FALSE.) return
-      deallocate(array_c3%c1_tbl, array_c3%c2_tbl, array_c3%c3_tbl)
-      array_c3%num = 0
-!
-      end subroutine dealloc_control_array_c3
 !
 !   --------------------------------------------------------------------
 !
