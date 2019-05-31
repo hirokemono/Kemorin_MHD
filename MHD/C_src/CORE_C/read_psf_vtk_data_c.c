@@ -262,7 +262,6 @@ int read_kemoview_vtk(const char *file_name, struct psf_data *viz_s){
 	iflag_datatype = read_psf_vtk_connect_data(viz_s);
 	
 	read_psf_vtk_field_data(viz_s);
-    printf("TAkoTAko");
 	fclose(fp);
 	return iflag_datatype;
 }

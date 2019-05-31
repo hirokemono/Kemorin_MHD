@@ -28,9 +28,6 @@
 !!      subroutine copy_control_array_c2(num_copy, org_c2, tgt_c2)
 !!        type(ctl_array_c2), intent(in) ::    org_c2
 !!        type(ctl_array_c2), intent(inout) :: tgt_c2
-!!      subroutine copy_control_array_c3(num_copy, org_c3, tgt_c3)
-!!        type(ctl_array_c3), intent(in) ::    org_c3
-!!        type(ctl_array_c3), intent(inout) :: tgt_c3
 !!      subroutine copy_control_array_c_r(num_copy, org_cr, tgt_cr)
 !!        type(ctl_array_cr), intent(in) ::    org_cr
 !!        type(ctl_array_cr), intent(inout) :: tgt_cr
@@ -179,23 +176,6 @@
       tgt_c2%c2_tbl(1:num_copy) = org_c2%c2_tbl(1:num_copy)
 !
       end subroutine copy_control_array_c2
-!
-! -----------------------------------------------------------------------
-!
-      subroutine copy_control_array_c3(num_copy, org_c3, tgt_c3)
-!
-      integer(kind = kint), intent(in) ::  num_copy
-      type(ctl_array_c3), intent(in) ::    org_c3
-      type(ctl_array_c3), intent(inout) :: tgt_c3
-!
-!
-      if(num_copy .le. 0) return
-      tgt_c3%icou = org_c3%icou
-      tgt_c3%c1_tbl(1:num_copy) = org_c3%c1_tbl(1:num_copy)
-      tgt_c3%c2_tbl(1:num_copy) = org_c3%c2_tbl(1:num_copy)
-      tgt_c3%c3_tbl(1:num_copy) = org_c3%c3_tbl(1:num_copy)
-!
-      end subroutine copy_control_array_c3
 !
 ! -----------------------------------------------------------------------
 !
