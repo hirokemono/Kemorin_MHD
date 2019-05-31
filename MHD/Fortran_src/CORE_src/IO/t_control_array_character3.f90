@@ -65,6 +65,40 @@
       end subroutine read_control_array_c3
 !
 !   --------------------------------------------------------------------
+!
+      subroutine write_control_array_c3                                 &
+     &         (id_control, level, label, array_c3)
+!
+      use skip_comment_f
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control, level
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_c3), intent(in) :: array_c3
+!
+      integer(kind = kint) :: maxlen(0:2)
+      integer(kind = kint) :: i
+!
+!
+      if(array_c3%num .le. 0) return
+      write(id_control,'(a1)') '!'
+!
+      maxlen(0) = len_trim(label)
+      maxlen(1) = max_len_of_charaarray(array_c3%num, array_c3%c1_tbl)
+      maxlen(2) = max_len_of_charaarray(array_c3%num, array_c3%c2_tbl)
+!
+      call write_array_flag_for_ctl                                     &
+     &   (id_control, level, label, array_c3%num)
+      do i = 1, array_c3%num
+        call write_character3_ctl_item                                  &
+     &     (id_control, (level+1), label, maxlen,                       &
+     &      array_c3%c1_tbl(i), array_c3%c2_tbl(i), array_c3%c3_tbl(i))
+      end do
+      call write_end_array_flag_for_ctl(id_control, level, label)
+!
+      end subroutine write_control_array_c3
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine append_control_array_c3(read_c3, array_c3)

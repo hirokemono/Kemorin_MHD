@@ -73,8 +73,6 @@
 !!     &         (id_file, level, label, num, c_tbl)
 !!      subroutine write_control_array_chara2_list                      &
 !!     &         (id_file, level, label, num, c1_tbl, c2_tbl)
-!!      subroutine write_control_array_chara3_list                      &
-!!     &         (id_file, level, label, num, c1_tbl, c2_tbl, c3_tbl)
 !!      subroutine write_control_array_c_r2_list                        &
 !!     &         (id_file, level, label, num, c_tbl,  vec1, vec2)
 !!      subroutine write_control_array_c2_r_list                        &
@@ -762,34 +760,6 @@
       call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_chara2_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_array_chara3_list                        &
-     &         (id_file, level, label, num, c1_tbl, c2_tbl, c3_tbl)
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      character(len=kchara), intent(in) :: c1_tbl(num), c2_tbl(num)
-      character(len=kchara), intent(in) :: c3_tbl(num)
-!
-      integer(kind = kint) :: maxlen(0:2)
-      integer(kind = kint) :: i
-!
-      maxlen(0) = len_trim(label)
-      maxlen(1) = max_len_of_charaarray(num, c1_tbl)
-      maxlen(2) = max_len_of_charaarray(num, c2_tbl)
-!
-!
-      call write_array_flag_for_ctl(id_file, level, label, num)
-      do i = 1, num
-        call write_character3_ctl_item(id_file, (level+1),              &
-     &      label, maxlen, c1_tbl(i), c2_tbl(i), c3_tbl(i))
-      end do
-      call write_end_array_flag_for_ctl(id_file, level, label)
-!
-      end subroutine write_control_array_chara3_list
 !
 !   --------------------------------------------------------------------
 !

@@ -28,9 +28,6 @@
 !!      subroutine append_control_array_c2(read_c2, array_c2)
 !!        type(read_chara2_item), intent(inout) ::    read_c2
 !!        type(ctl_array_c2), intent(inout) :: array_c2
-!!      subroutine append_control_array_c3(read_c3, array_c3)
-!!        type(read_chara3_item), intent(inout) ::    read_c3
-!!        type(ctl_array_c3), intent(inout) :: array_c3
 !!      subroutine append_control_array_c_r(read_cr, array_cr)
 !!        type(read_chara_real_item), intent(inout) ::    read_cr
 !!        type(ctl_array_cr), intent(inout) :: array_cr
