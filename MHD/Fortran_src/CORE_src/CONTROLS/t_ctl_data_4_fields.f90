@@ -51,6 +51,7 @@
 !
       use m_precision
       use t_read_control_arrays
+      use t_control_array_character3
 !
       implicit  none
 !
@@ -121,7 +122,8 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
-        call read_control_array_c3(hd_field_list, fld_ctl%field_ctl)
+        call read_control_array_c3(ctl_file_code,                       &
+     &      hd_field_list, fld_ctl%field_ctl, c_buf1)
         call read_control_array_c1(hd_quad_field, fld_ctl%quad_phys)
       end do
 !

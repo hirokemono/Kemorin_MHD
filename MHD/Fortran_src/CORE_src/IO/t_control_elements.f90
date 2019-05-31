@@ -78,14 +78,6 @@
         integer(kind = kint) ::  intvalue
       end type read_integer_item
 !
-!>        structure of control character item
-      type read_character_item
-!>        read flag (If item is read iflag = 1)
-        integer(kind = kint) ::  iflag = 0
-!>        array for read character item
-        character(len=kchara) :: charavalue
-      end type read_character_item
-!
 !>        structure of control item with two reals
       type read_real2_item
 !>        read flag (If item is read iflag = 1)
@@ -103,6 +95,14 @@
         real(kind = kreal) ::    realvalue(3)
       end type read_real3_item
 !
+!>        structure of control integer item
+      type read_int2_item
+!>        read flag (If item is read iflag = 1)
+        integer(kind = kint) ::  iflag = 0
+!>        array for read integer item
+        integer(kind = kint) ::  intvalue(2)
+      end type read_int2_item
+!
 !>        structure of control item with three integers
       type read_int3_item
 !>        read flag (If item is read iflag = 1)
@@ -111,6 +111,22 @@
         integer(kind = kint) ::  intvalue(3)
       end type read_int3_item
 !
+!>        structure of control character item
+      type read_character_item
+!>        read flag (If item is read iflag = 1)
+        integer(kind = kint) ::  iflag = 0
+!>        array for read character item
+        character(len=kchara) :: charavalue
+      end type read_character_item
+!
+!>        structure of control item with three characters
+      type read_chara2_item
+!>        read flag (If item is read iflag = 1)
+        integer(kind = kint) ::  iflag = 0
+!>        array for read character items
+        character(len=kchara) ::  charavalue(2)
+      end type read_chara2_item
+!
 !>        structure of control item with three characters
       type read_chara3_item
 !>        read flag (If item is read iflag = 1)
@@ -118,6 +134,88 @@
 !>        array for read character items
         character(len=kchara) ::  charavalue(3)
       end type read_chara3_item
+!
+!>        structure of control item with three characters
+      type read_chara_real_item
+!>        read flag (If item is read iflag = 1)
+        integer(kind = kint) ::  iflag = 0
+!>        array for read character items
+        character(len=kchara) ::  charavalue
+!>        array for read real item
+        real(kind = kreal) ::    realvalue
+      end type read_chara_real_item
+!
+!>        structure of control item with three characters
+      type read_chara_real2_item
+!>        read flag (If item is read iflag = 1)
+        integer(kind = kint) ::  iflag = 0
+!>        array for read character items
+        character(len=kchara) ::  charavalue
+!>        array for read real item
+        real(kind = kreal) ::    realvalue(2)
+      end type read_chara_real2_item
+!
+!>        structure of control item with three characters
+      type read_chara2_real_item
+!>        read flag (If item is read iflag = 1)
+        integer(kind = kint) ::  iflag = 0
+!>        array for read character items
+        character(len=kchara) ::  charavalue(2)
+!>        array for read real item
+        real(kind = kreal) ::    realvalue
+      end type read_chara2_real_item
+!
+!>        structure of control item with three characters
+      type read_chara_int_item
+!>        read flag (If item is read iflag = 1)
+        integer(kind = kint) ::  iflag = 0
+!>        array for read character items
+        character(len=kchara) ::  charavalue
+!>        array for read integer items
+        integer(kind = kint) ::  intvalue
+      end type read_chara_int_item
+!
+!>        structure of control item with three characters
+      type read_int_chara_real_item
+!>        read flag (If item is read iflag = 1)
+        integer(kind = kint) ::  iflag = 0
+!>        array for read integer items
+        integer(kind = kint) ::  intvalue
+!>        array for read character items
+        character(len=kchara) ::  charavalue
+!>        array for read real item
+        real(kind = kreal) ::    realvalue
+      end type read_int_chara_real_item
+!
+!>        structure of control item with three characters
+      type read_int_real_item
+!>        read flag (If item is read iflag = 1)
+        integer(kind = kint) ::  iflag = 0
+!>        array for read integer items
+        integer(kind = kint) ::  intvalue
+!>        array for read real item
+        real(kind = kreal) ::    realvalue
+      end type read_int_real_item
+!
+!>        structure of control item with three characters
+      type read_int2_real_item
+!>        read flag (If item is read iflag = 1)
+        integer(kind = kint) ::  iflag = 0
+!>        array for read integer items
+        integer(kind = kint) ::  intvalue(2)
+!>        array for read real item
+        real(kind = kreal) ::    realvalue
+      end type read_int2_real_item
+!
+!>        structure of control item with three characters
+      type read_int2_real2_item
+!>        read flag (If item is read iflag = 1)
+        integer(kind = kint) ::  iflag = 0
+!>        array for read integer items
+        integer(kind = kint) ::  intvalue(2)
+!>        array for read real item
+        real(kind = kreal) ::    realvalue(2)
+      end type read_int2_real2_item
 !
 !
 !

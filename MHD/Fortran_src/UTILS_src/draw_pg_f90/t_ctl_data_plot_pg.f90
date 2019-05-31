@@ -24,6 +24,7 @@
       use t_ctl_data_4_time_steps
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_character3
 !
       implicit none
 !
@@ -347,8 +348,8 @@
         if(i_sf_plotting .gt. 0) exit
 !
 !
-        call read_control_array_c3                                      &
-     &     (hd_field_2_plot, pg_fld_ctl%plot_field_ctl)
+        call read_control_array_c3(ctl_file_code,                       &
+     &      hd_field_2_plot, pg_fld_ctl%plot_field_ctl, c_buf1)
 !
         call read_control_array_i2_r2                                   &
      &     (hd_ctr_range_ctl, pg_fld_ctl%contour_range_ctl)

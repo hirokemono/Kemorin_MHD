@@ -33,7 +33,6 @@
 !!      subroutine read_control_array_i2(label, array_i2)
 !!      subroutine read_control_array_c1(label, array_chara)
 !!      subroutine read_control_array_c2(label, array_c2)
-!!      subroutine read_control_array_c3(label, array_c3)
 !!      subroutine read_control_array_c_r(label, array_cr)
 !!      subroutine read_control_array_c_i(label, array_ci)
 !!      subroutine read_control_array_c_r2(label, array_cr2)
@@ -621,7 +620,7 @@
       type(ctl_array_c3), intent(inout) :: array_c3
 !
 !
-      if(array_c3%num .le. 0) return
+      if(allocated(array_c3%c1_tbl) .eqv. .FALSE.) return
       deallocate(array_c3%c1_tbl, array_c3%c2_tbl, array_c3%c3_tbl)
       array_c3%num = 0
 !
@@ -865,26 +864,6 @@
       end if
 !
       end subroutine read_control_array_c2
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_c3(label, array_c3)
-!
-      use m_read_control_elements
-!
-      character(len=kchara), intent(in) :: label
-      type(ctl_array_c3), intent(inout) :: array_c3
-!
-!
-      call find_control_array_flag(label, array_c3%num)
-      if(array_c3%num.gt.0 .and. array_c3%icou.eq.0) then
-        call alloc_control_array_c3(array_c3)
-        call read_control_array_chara3_list(label, array_c3%num,       &
-     &      array_c3%icou, array_c3%c1_tbl, array_c3%c2_tbl,           &
-     &      array_c3%c3_tbl)
-      end if
-!
-      end subroutine read_control_array_c3
 !
 !   --------------------------------------------------------------------
 !

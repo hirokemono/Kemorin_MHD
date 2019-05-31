@@ -11,12 +11,12 @@
 !!      subroutine check_read_control_header
 !!      subroutine check_read_control_buffer
 !!
-!!      integer(kind = kint) function right_begin_flag(ctl_name)
-!!      integer(kind = kint) function right_file_flag(ctl_name)
+!!      integer(kind = kint) function right_begin_flag(label)
+!!      integer(kind = kint) function right_file_flag(label)
 !!
-!!      integer(kind = kint) function find_control_end_flag(ctl_name)
-!!      subroutine find_control_array_flag(ctl_name, num_array)
-!!      subroutine find_control_end_array_flag(ctl_name, num, iflag_end)
+!!      integer(kind = kint) function find_control_end_flag(label)
+!!      subroutine find_control_array_flag(label, num_array)
+!!      subroutine find_control_end_array_flag(label, num, iflag_end)
 !!
 !!      subroutine read_real_ctl_item(label, iflag_dat, real_data)
 !!      subroutine read_integer_ctl_item(label, iflag_dat, int_data)
@@ -46,8 +46,6 @@
 !!      subroutine read_control_array_chara_list(label, num, icou, c_tbl)
 !!      subroutine read_control_array_chara2_list(label, num, icou,     &
 !!     &          c1_tbl, c2_tbl)
-!!      subroutine read_control_array_chara3_list(label, num, icou,     &
-!!     &          c1_tbl, c2_tbl, c3_tbl)
 !!      subroutine read_control_array_vect_list(label, num, icou,       &
 !!     &          c_tbl, vect)
 !!      subroutine read_control_array_int_v_list(label, num, icou,      &
@@ -66,7 +64,6 @@
 !!     &          int2, vec1, vec2)
 !!@endverbatim
 !!
-!!@n @param  ctl_name   label for control block
 !!@n @param  label      label for control items
 !!@n @param  iflag_end  integer flag for reading block
 !!@n @param  iflag_dat  integer flag for reading block
@@ -94,26 +91,14 @@
 !
       use m_precision
       use m_machine_parameter
+      use t_read_control_elements
 !
       implicit none
 !
 !>   control file id
       integer (kind=kint) :: ctl_file_code = 11
 !
-!>   Label to start a control block
-       character(len=kchara), parameter  :: hd_begin = 'Begin'
-!>   Label to end a control block
-       character(len=kchara), parameter  :: hd_end = 'End'
-!>   Label for an array control block
-       character(len=kchara), parameter  :: hd_array = 'Array'
-!>   Label for an array control block
-       character(len=kchara), parameter  :: hd_file = 'File'
-!
-!>   character for read label
-       character(len=kchara), private  :: header_chara
-!
-!>   temporal character for reading line
-       character(len=255), private :: character_4_read
+      type(buffer_for_control), save  :: c_buf1
 !
 !   --------------------------------------------------------------------
 !
@@ -123,11 +108,8 @@
 !
       subroutine load_ctl_label_and_line
 !
-      use skip_comment_f
 !
-!
-      call skip_comment(character_4_read, ctl_file_code)
-      read(character_4_read,*) header_chara
+      call load_one_line_from_control(ctl_file_code, c_buf1)
 !
       end subroutine load_ctl_label_and_line
 !
@@ -135,7 +117,7 @@
 !
       subroutine check_read_control_header
 !
-      write(*,*) 'read header: ', trim(header_chara)
+      call monitor_read_control_label(c_buf1)
 !
       end subroutine check_read_control_header
 !
@@ -143,117 +125,83 @@
 !
       subroutine check_read_control_buffer
 !
-      write(*,*) 'Buffer: ', trim(character_4_read)
+      call monitor_read_control_buffer(c_buf1)
 !
       end subroutine check_read_control_buffer
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      integer(kind = kint) function right_begin_flag(ctl_name)
+      integer(kind = kint) function right_begin_flag(label)
 !
-      use skip_comment_f
-!
-      character(len=kchara), intent(in) :: ctl_name
-      character(len=kchara)  :: tmpchara, item_name
+      character(len=kchara), intent(in) :: label
 !
 !
       right_begin_flag = 0
-      if (cmp_no_case(header_chara, hd_begin)) then
-        read(character_4_read,*) tmpchara, item_name
-        if(item_name .eq. ctl_name) right_begin_flag = 1
-      end if
-!
-!      write(*,*) 'header_chara: ', trim(header_chara)
-!      write(*,*) right_begin_flag, trim(ctl_name)
+      if(check_begin_flag(c_buf1, label)) right_begin_flag = 1
 !
       end function right_begin_flag
 !
 !   --------------------------------------------------------------------
 !
-      integer(kind = kint) function right_file_flag(ctl_name)
+      integer(kind = kint) function right_file_flag(label)
 !
-      use skip_comment_f
-!
-      character(len=kchara), intent(in) :: ctl_name
-      character(len=kchara)  :: tmpchara, item_name
+      character(len=kchara), intent(in) :: label
 !
 !
       right_file_flag = 0
-      if (cmp_no_case(header_chara, hd_file)) then
-        read(character_4_read,*) tmpchara, item_name
-        if(item_name .eq. ctl_name) right_file_flag = 1
-      end if
+      if(check_file_flag(c_buf1, label)) right_file_flag = 1
 !
       end function right_file_flag
 !
 !   --------------------------------------------------------------------
 !
-      integer(kind = kint) function find_control_end_flag(ctl_name)
+      integer(kind = kint) function find_control_end_flag(label)
 !
-      use skip_comment_f
-!
-      character(len=kchara), intent(in) :: ctl_name
-!
-      character(len=kchara)  :: tmpchara, item_name
+      character(len=kchara), intent(in) :: label
 !
 !
       find_control_end_flag = 0
-      if (cmp_no_case(header_chara, hd_end)) then
-        read(character_4_read,*) tmpchara, item_name
-        if(item_name .eq. ctl_name) find_control_end_flag = 1
-      end if 
+      if(check_end_flag(c_buf1, label)) find_control_end_flag = 1
 !
       end function find_control_end_flag
 !
 !   --------------------------------------------------------------------
 !
-      subroutine find_control_array_flag(ctl_name, num_array)
+      subroutine find_control_array_flag(label, num_array)
 !
       use skip_comment_f
 !
-      character(len=kchara), intent(in) :: ctl_name
+      character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(inout) :: num_array
 !
       character(len=kchara)  :: tmpchara, item_name
 !
 !
-!      write(*,*) 'header_chara: ', num_array, trim(header_chara)
+!      write(*,*) 'c_buf1%header_chara: ', num_array, trim(c_buf1%header_chara)
       if(num_array .gt. 0) return
 !
-      if (cmp_no_case(header_chara, hd_array)) then
-        read(character_4_read,*) tmpchara, item_name
-!        write(*,*) trim(item_name),': ', trim(ctl_name)
-        if(item_name .ne. ctl_name) return
-!
-        read(character_4_read,*) tmpchara, item_name, num_array
-!        write(*,*) 'num_array: ', num_array
-     end if
+      if(check_array_flag(c_buf1, label)) then
+        read(c_buf1%ctl_buffer,*) tmpchara, item_name, num_array
+      end if
 !
       end subroutine find_control_array_flag
 !
 !   --------------------------------------------------------------------
 !
-      subroutine find_control_end_array_flag(ctl_name, num, iflag_end)
+      subroutine find_control_end_array_flag(label, num, iflag_end)
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: num
-      character(len=kchara), intent(in) :: ctl_name
+      character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(inout) :: iflag_end
 !
-      character(len=kchara)  :: tmpchara, array_name, item_name
       integer(kind = kint) :: iflag
 !
 !
       iflag = 0
-      if (cmp_no_case(header_chara, hd_end)) then
-        read(character_4_read,*) tmpchara, array_name
-        if (cmp_no_case(array_name, hd_array)) then
-          read(character_4_read,*) tmpchara, array_name, item_name
-          if(item_name .eq. ctl_name) iflag = 1
-        end if
-      end if
+      if (check_end_array_flag(c_buf1, label)) iflag = 1
 !
       if(iflag .gt. 0) then
         if(iflag_end .lt. num) then
@@ -279,10 +227,10 @@
       real(kind = kreal), intent(inout) :: real_data
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
+      if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
-      read(character_4_read,*) header_chara, real_data
-      if (iflag_debug .gt. 0)  write(*,*) trim(header_chara), real_data
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara, real_data
+      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf1%header_chara), real_data
       iflag_dat = 1
 !
       end subroutine read_real_ctl_item
@@ -296,10 +244,10 @@
        integer (kind=kint), intent(inout) :: int_data
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
+      if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
-      read(character_4_read,*) header_chara, int_data
-      if (iflag_debug .gt. 0)  write(*,*) trim(header_chara), int_data
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara, int_data
+      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf1%header_chara), int_data
       iflag_dat = 1
 !
        end subroutine read_integer_ctl_item
@@ -314,10 +262,10 @@
       character(len=kchara), intent(inout) :: chara_data
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
+      if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
-      read(character_4_read,*) header_chara, chara_data
-      if (iflag_debug .gt. 0)  write(*,*) trim(header_chara), ': ',     &
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara, chara_data
+      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf1%header_chara), ': ',     &
      &                                    trim(chara_data)
       iflag_dat = 1
 !
@@ -333,11 +281,11 @@
       real(kind = kreal), intent(inout) :: real1, real2
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
+      if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
-      read(character_4_read,*) header_chara, real1, real2
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara, real1, real2
       if (iflag_debug .gt. 0)  write(*,'(a,a2,1p3e16.7)')               &
-     &            trim(header_chara), ': ', real1, real2
+     &            trim(c_buf1%header_chara), ': ', real1, real2
       iflag_dat = 1
 !
        end subroutine read_real2_ctl_item
@@ -352,11 +300,11 @@
       real(kind = kreal), intent(inout) :: real1, real2, real3
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
+      if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
-      read(character_4_read,*) header_chara, real1, real2, real3
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara, real1, real2, real3
       if (iflag_debug .gt. 0)  write(*,'(a,a2,1p3e16.7)')               &
-     &            trim(header_chara), ': ', real1, real2, real3
+     &            trim(c_buf1%header_chara), ': ', real1, real2, real3
       iflag_dat = 1
 !
       end subroutine read_real3_ctl_item
@@ -371,11 +319,11 @@
       integer (kind=kint), intent(inout) :: int1, int2, int3
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
+      if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
-      read(character_4_read,*) header_chara, int1, int2, int3
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara, int1, int2, int3
       if (iflag_debug .gt. 0)  write(*,'(a,a2,3i6)')                    &
-     &            trim(header_chara), ': ', int1, int2, int3
+     &            trim(c_buf1%header_chara), ': ', int1, int2, int3
       iflag_dat = 1
 !
       end subroutine read_integer3_ctl_item
@@ -390,15 +338,16 @@
       character(len=kchara), intent(inout) :: chara1, chara2, chara3
 !
 !
-      if(iflag_dat.gt.0 .or. header_chara.ne.label) return
+      if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
-      read(character_4_read,*) header_chara, chara1, chara2, chara3
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                    &
+     &                         chara1, chara2, chara3
       if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
-     &            trim(header_chara), ' 1: ', chara1
+     &            trim(c_buf1%header_chara), ' 1: ', chara1
       if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
-     &            trim(header_chara), ' 2: ', chara2
+     &            trim(c_buf1%header_chara), ' 2: ', chara2
       if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
-     &            trim(header_chara), ' 3: ', chara3
+     &            trim(c_buf1%header_chara), ' 3: ', chara3
       iflag_dat = 1
 !
        end subroutine read_character3_ctl_item
@@ -416,7 +365,7 @@
 !
        if(icou .ge. 1) return
        icou = icou + 1
-       read(character_4_read,*) header_chara, tmpchara, fname
+       read(c_buf1%ctl_buffer,*) c_buf1%header_chara, tmpchara, fname
 !
        end subroutine read_file_name_from_ctl_line
 !
@@ -433,7 +382,7 @@
 !
        if(icou .ge. num) return
        icou = icou + 1
-       read(character_4_read,*) header_chara, tmpchara, fname(icou)
+       read(c_buf1%ctl_buffer,*) c_buf1%header_chara, tmpchara, fname(icou)
 !
        end subroutine read_file_names_from_ctl_line
 !
@@ -453,9 +402,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .ge. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara, ivect(icou)
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, ivect(icou)
        end if
       end do
 !
@@ -478,9 +427,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .ge. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara,                        &
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                        &
      &                            ivect(icou), vect(icou)
         end if
       end do
@@ -504,9 +453,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .ge. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara,                        &
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                        &
      &           c_tbl(icou), vect(icou)
         end if
       end do
@@ -530,9 +479,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .ge. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara,                        &
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                        &
      &                            c_tbl(icou), ivect(icou)
         end if
       end do
@@ -555,9 +504,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .ge. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara, vec1(icou)
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, vec1(icou)
         end if
       end do
 !
@@ -579,9 +528,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .ge. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara, vec1(icou), vec2(icou)
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, vec1(icou), vec2(icou)
         end if
       end do
 !
@@ -604,9 +553,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .ge. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara,                        &
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                &
      &                          vec1(icou), vec2(icou), vec3(icou)
         end if
       end do
@@ -628,9 +577,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .eq. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara, c_tbl(icou)
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, c_tbl(icou)
         end if
       end do
 !
@@ -652,9 +601,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .ge. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara,                        &
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                        &
      &                           c1_tbl(icou), c2_tbl(icou)
         end if
       end do
@@ -662,31 +611,6 @@
       end subroutine read_control_array_chara2_list
 !
 !   --------------------------------------------------------------------
-!
-      subroutine read_control_array_chara3_list(label, num, icou,       &
-     &          c1_tbl, c2_tbl, c3_tbl)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c1_tbl(num), c2_tbl(num)
-      character(len=kchara), intent(inout) :: c3_tbl(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .ge. num) exit
-!
-        if(header_chara.eq.label) then
-          icou = icou + 1
-          read(character_4_read,*) header_chara, c1_tbl(icou),          &
-     &                           c2_tbl(icou), c3_tbl(icou)
-        end if
-      end do
-!
-      end subroutine read_control_array_chara3_list
-!
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_c_r2_list(label, num, icou, c_tbl,  &
@@ -704,9 +628,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .ge. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara, c_tbl(icou),           &
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, c_tbl(icou),           &
      &                           vec1(icou), vec2(icou)
         end if
       end do
@@ -730,9 +654,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .eq. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara,                        &
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                        &
      &                         c1_tbl(icou), c2_tbl(icou), vect(icou)
         end if
       end do
@@ -757,9 +681,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .ge. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara,                        &
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                        &
      &                         ivect(icou), c_tbl(icou), vect(icou)
         end if
       end do
@@ -782,9 +706,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .eq. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara, int1(icou), int2(icou)
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, int1(icou), int2(icou)
         end if
       end do
 !
@@ -807,9 +731,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .eq. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara, int1(icou),            &
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, int1(icou),            &
      &                            int2(icou), vect(icou)
         end if
       end do
@@ -833,9 +757,9 @@
         call find_control_end_array_flag(label, num, icou)
         if(icou .eq. num) exit
 !
-        if(header_chara.eq.label) then
+        if(c_buf1%header_chara.eq.label) then
           icou = icou + 1
-          read(character_4_read,*) header_chara, int1(icou),            &
+          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, int1(icou),            &
      &                          int2(icou), vec1(icou), vec2(icou)
         end if
       end do

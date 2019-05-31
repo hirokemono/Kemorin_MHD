@@ -1,0 +1,127 @@
+!>@file   t_control_array_character3.f90
+!!@brief  module t_control_array_character3
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2014
+!
+!>@brief  Subroutines to read control arrays
+!!
+!!@verbatim
+!!@endverbatim
+!!
+!!
+      module t_control_array_character3
+!
+      use m_precision
+      use t_control_elements
+      use t_read_control_arrays
+!
+      implicit none
+!
+!   --------------------------------------------------------------------
+!
+      contains
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_control_array_c3                                  &
+     &         (id_control, label, array_c3, c_buf)
+!
+      use m_read_control_elements
+      use append_control_items
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_c3), intent(inout) :: array_c3
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+      type(read_chara3_item) :: read_c3
+!
+      character(len=kchara)  :: tmpchara
+      integer(kind = kint) :: ntmp = -1
+!
+!
+      if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
+      read(c_buf%ctl_buffer,*,err=99,end=99) tmpchara, tmpchara, ntmp
+      if(ntmp .eq. 0) return
+!
+  99  continue
+      if(array_c3%icou .gt. 0) return
+!
+      read_c3%iflag = 0
+      array_c3%num =  0
+      call alloc_control_array_c3(array_c3)
+!
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_array_flag(c_buf, label)) exit
+!
+        if(c_buf%header_chara.eq.label) then
+          call read_character3_ctl_type(label, read_c3)
+          call append_control_array_c3(read_c3, array_c3)
+        end if
+      end do
+!
+      end subroutine read_control_array_c3
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine append_control_array_c3(read_c3, array_c3)
+!
+      type(read_chara3_item), intent(inout) ::    read_c3
+      type(ctl_array_c3), intent(inout) :: array_c3
+!
+      type(ctl_array_c3) :: tmp_c3
+!
+!
+      tmp_c3%num = array_c3%num
+      call alloc_control_array_c3(tmp_c3)
+      call copy_control_array_c3(tmp_c3%num, array_c3, tmp_c3)
+      call dealloc_control_array_c3(array_c3)
+!
+      array_c3%num = tmp_c3%num + 1
+      call alloc_control_array_c3(array_c3)
+      call copy_control_array_c3(tmp_c3%num, tmp_c3, array_c3)
+      call append_control_item_c3(read_c3, array_c3)
+      read_c3%iflag = 0
+!
+      call dealloc_control_array_c3(tmp_c3)
+!
+      end subroutine append_control_array_c3
+!
+! -----------------------------------------------------------------------
+!
+      subroutine copy_control_array_c3(num_copy, org_c3, tgt_c3)
+!
+      integer(kind = kint), intent(in) ::  num_copy
+      type(ctl_array_c3), intent(in) ::    org_c3
+      type(ctl_array_c3), intent(inout) :: tgt_c3
+!
+!
+      if(num_copy .le. 0) return
+      tgt_c3%icou = org_c3%icou
+      tgt_c3%c1_tbl(1:num_copy) = org_c3%c1_tbl(1:num_copy)
+      tgt_c3%c2_tbl(1:num_copy) = org_c3%c2_tbl(1:num_copy)
+      tgt_c3%c3_tbl(1:num_copy) = org_c3%c3_tbl(1:num_copy)
+!
+      end subroutine copy_control_array_c3
+!
+! -----------------------------------------------------------------------
+!
+      subroutine append_control_item_c3(read_c3, array_c3)
+!
+      type(read_chara3_item), intent(in) ::    read_c3
+      type(ctl_array_c3), intent(inout) :: array_c3
+!
+!
+      array_c3%icou = array_c3%icou + read_c3%iflag
+      array_c3%c1_tbl(array_c3%num) = read_c3%charavalue(1)
+      array_c3%c2_tbl(array_c3%num) = read_c3%charavalue(2)
+      array_c3%c3_tbl(array_c3%num) = read_c3%charavalue(3)
+!
+      end subroutine append_control_item_c3
+!
+! -----------------------------------------------------------------------
+!
+      end module t_control_array_character3
