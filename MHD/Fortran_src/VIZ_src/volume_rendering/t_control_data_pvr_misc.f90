@@ -71,6 +71,8 @@
       use t_control_data_4_psf
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_chara2real
+      use t_control_array_chara2real
       use skip_comment_f
 !
       implicit  none
@@ -259,8 +261,8 @@
         if(i_plot_area .gt. 0) exit
 !
         call read_control_array_c1(hd_plot_grp, pvr_area_ctl)
-        call read_control_array_c2_r                                    &
-     &     (hd_sf_enhanse, surf_enhanse_ctl)
+        call read_control_array_c2_r(ctl_file_code,                     &
+     &      hd_sf_enhanse, surf_enhanse_ctl, c_buf1)
       end do
 !
       end subroutine read_plot_area_ctl

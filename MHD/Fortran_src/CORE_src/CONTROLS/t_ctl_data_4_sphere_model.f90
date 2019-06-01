@@ -84,6 +84,7 @@
       use m_precision
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_intreal
 !
       implicit  none
 !
@@ -228,8 +229,8 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_control_array_i_r                                     &
-     &     (hd_numlayer_shell, spctl%radius_ctl)
+        call read_control_array_i_r(ctl_file_code,                      &
+     &      hd_numlayer_shell, spctl%radius_ctl, c_buf1)
 !
         call read_control_array_c_i(hd_bc_sph, spctl%radial_grp_ctl)
 !

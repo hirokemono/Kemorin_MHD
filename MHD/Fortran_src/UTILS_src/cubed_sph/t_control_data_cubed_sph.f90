@@ -14,6 +14,7 @@
       use skip_comment_f
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_intreal
 !
       implicit none
 !
@@ -280,10 +281,10 @@
         i_cubed_sph_def = find_control_end_flag(hd_cubed_sph_def)
         if(i_cubed_sph_def .gt. 0) exit
 !
-        call read_control_array_i_r                                     &
-       &   (hd_cubed_sph_radius, cubed_sph_c%radial_pnt_ctl)
-        call read_control_array_i_r                                     &
-       &   (hd_edge_latitude, cubed_sph_c%edge_latitude_ctl)
+        call read_control_array_i_r(ctl_file_code,                      &
+       &    hd_cubed_sph_radius, cubed_sph_c%radial_pnt_ctl, c_buf1)
+        call read_control_array_i_r(ctl_file_code,                      &
+       &    hd_edge_latitude, cubed_sph_c%edge_latitude_ctl, c_buf1)
 !
 !
         call read_chara_ctl_type                                        &

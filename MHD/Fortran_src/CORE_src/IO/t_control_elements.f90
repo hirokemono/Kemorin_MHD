@@ -31,6 +31,21 @@
 !!      subroutine read_character3_ctl_type(label, chara3_item)
 !!        character(len=kchara), intent(in) :: label
 !!        type(read_chara3_item), intent(inout) :: chara3_item
+!!      subroutine read_char2real_ctl_type(label, c2r_item)
+!!        character(len=kchara), intent(in) :: label
+!!        type(read_chara2_real_item), intent(inout) :: c2r_item
+!!      subroutine read_intchrreal_ctl_type(label, icr_item)
+!!        character(len=kchara), intent(in) :: label
+!!        type(read_int_chara_real_item), intent(inout) :: icr_item
+!!      subroutine read_intreal_ctl_type(label, ir_item)
+!!        character(len=kchara), intent(in) :: label
+!!        type(read_int_real_item), intent(inout) :: ir_item
+!!      subroutine read_int2real_ctl_type(label, i2r_item)
+!!        character(len=kchara), intent(in) :: label
+!!        type(read_int2_real_item), intent(inout) :: i2r_item
+!!      subroutine read_int2real2_ctl_type(label, i2r2_item)
+!!        character(len=kchara), intent(in) :: label
+!!        type(read_int2_real2_item), intent(inout) :: i2r2_item
 !!
 !!      subroutine write_real_ctl_type                                  &
 !!     &         (id_file, level, maxlen, label, real_item)
@@ -332,6 +347,74 @@
      &    chara3_item%charavalue(3))
 !
        end subroutine read_character3_ctl_type
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_char2real_ctl_type(label, c2r_item)
+!
+      character(len=kchara), intent(in) :: label
+      type(read_chara2_real_item), intent(inout) :: c2r_item
+!
+!
+      call read_char2real_ctl_item(label, c2r_item%iflag,               &
+     &    c2r_item%charavalue(1), c2r_item%charavalue(2),               &
+     &    c2r_item%realvalue)
+!
+       end subroutine read_char2real_ctl_type
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_intchrreal_ctl_type(label, icr_item)
+!
+      character(len=kchara), intent(in) :: label
+      type(read_int_chara_real_item), intent(inout) :: icr_item
+!
+!
+      call read_intchrreal_ctl_item(label, icr_item%iflag,              &
+     &    icr_item%intvalue, icr_item%charavalue, icr_item%realvalue)
+!
+       end subroutine read_intchrreal_ctl_type
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_intreal_ctl_type(label, ir_item)
+!
+      character(len=kchara), intent(in) :: label
+      type(read_int_real_item), intent(inout) :: ir_item
+!
+!
+      call read_intreal_ctl_item(label, ir_item%iflag,                  &
+     &    ir_item%intvalue, ir_item%realvalue)
+!
+       end subroutine read_intreal_ctl_type
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_int2real_ctl_type(label, i2r_item)
+!
+      character(len=kchara), intent(in) :: label
+      type(read_int2_real_item), intent(inout) :: i2r_item
+!
+!
+      call read_int2real_ctl_item(label, i2r_item%iflag,               &
+     &    i2r_item%intvalue(1), i2r_item%intvalue(2),                  &
+     &    i2r_item%realvalue)
+!
+       end subroutine read_int2real_ctl_type
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_int2real2_ctl_type(label, i2r2_item)
+!
+      character(len=kchara), intent(in) :: label
+      type(read_int2_real2_item), intent(inout) :: i2r2_item
+!
+!
+      call read_int2real2_ctl_item(label, i2r2_item%iflag,              &
+     &    i2r2_item%intvalue(1), i2r2_item%intvalue(2),                 &
+     &    i2r2_item%realvalue(1), i2r2_item%realvalue(2))
+!
+       end subroutine read_int2real2_ctl_type
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

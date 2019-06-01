@@ -91,7 +91,7 @@
      &         (edge_latitude_ctl, rprm_csph)
 !
       use t_numref_cubed_sph
-      use t_read_control_arrays
+      use t_control_array_intreal
       use skip_comment_f
 !
       type(ctl_array_ir), intent(in) :: edge_latitude_ctl

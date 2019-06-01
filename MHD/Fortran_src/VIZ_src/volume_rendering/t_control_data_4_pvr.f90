@@ -85,6 +85,7 @@
       use t_ctl_data_4_view_transfer
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_chara2real
       use t_ctl_data_pvr_colormap
       use t_control_data_pvr_misc
       use skip_comment_f

@@ -99,6 +99,7 @@
 !
       use m_machine_parameter
       use t_read_control_arrays
+      use t_control_array_chara2real
 !
       implicit  none
 !
@@ -216,24 +217,24 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_control_array_c2_r                                    &
-     &     (hd_n_bc_hf, sbc_ctl%surf_bc_HF_ctl)
-        call read_control_array_c2_r                                    &
-     &     (hd_n_bc_mf, sbc_ctl%surf_bc_ST_ctl)
-        call read_control_array_c2_r                                    &
-     &     (hd_n_bc_gradp, sbc_ctl%surf_bc_PN_ctl)
-        call read_control_array_c2_r                                    &
-     &     (hd_n_bc_gradb, sbc_ctl%surf_bc_BN_ctl)
-        call read_control_array_c2_r                                    &
-     &     (hd_n_bc_gradj, sbc_ctl%surf_bc_JN_ctl)
-        call read_control_array_c2_r                                    &
-     &     (hd_n_bc_grada, sbc_ctl%surf_bc_AN_ctl)
-        call read_control_array_c2_r                                    &
-     &     (hd_n_bc_gradmp, sbc_ctl%surf_bc_MPN_ctl)
-        call read_control_array_c2_r                                    &
-     &     (hd_n_bc_gradc, sbc_ctl%surf_bc_CF_ctl)
-        call read_control_array_c2_r                                    &
-     &     (hd_n_bc_infty, sbc_ctl%surf_bc_INF_ctl)
+        call read_control_array_c2_r(ctl_file_code,                     &
+     &      hd_n_bc_hf, sbc_ctl%surf_bc_HF_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+     &      hd_n_bc_mf, sbc_ctl%surf_bc_ST_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+     &      hd_n_bc_gradp, sbc_ctl%surf_bc_PN_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+     &      hd_n_bc_gradb, sbc_ctl%surf_bc_BN_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+     &      hd_n_bc_gradj, sbc_ctl%surf_bc_JN_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+     &      hd_n_bc_grada, sbc_ctl%surf_bc_AN_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+     &      hd_n_bc_gradmp, sbc_ctl%surf_bc_MPN_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+     &      hd_n_bc_gradc, sbc_ctl%surf_bc_CF_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+     &      hd_n_bc_infty, sbc_ctl%surf_bc_INF_ctl, c_buf1)
       end do
 !
       end subroutine read_bc_4_surf_ctl

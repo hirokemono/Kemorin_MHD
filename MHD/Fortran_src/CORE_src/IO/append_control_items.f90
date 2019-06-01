@@ -34,21 +34,6 @@
 !!      subroutine append_control_item_c_r2(read_cr2, array_cr2)
 !!        type(read_chara_real2_item), intent(in) ::    read_cr2
 !!        type(ctl_array_cr2), intent(inout) :: array_cr2
-!!      subroutine append_control_item_c2_r(read_c2r, array_c2r)
-!!        type(read_chara2_real_item), intent(in) ::    read_c2r
-!!        type(ctl_array_c2r), intent(inout) :: array_c2r
-!!      subroutine append_control_item_i_c_r(read_icr, array_icr)
-!!        type(read_int_chara_real_item), intent(in) ::    read_icr
-!!        type(ctl_array_icr), intent(inout) :: array_icr
-!!      subroutine append_control_item_i_r(read_ir, array_ir)
-!!        type(read_int_real_item), intent(in) ::    read_ir
-!!        type(ctl_array_ir), intent(inout) :: array_ir
-!!      subroutine append_control_item_i2_r(read_i2r, array_i2r)
-!!        type(read_int2_real_item), intent(in) ::    read_i2r
-!!        type(ctl_array_i2r), intent(inout) :: array_i2r
-!!      subroutine append_control_item_i2_r2(read_i2r2, array_i2r2)
-!!        type(read_int2_real2_item), intent(in) ::    read_i2r2
-!!        type(ctl_array_i2r2), intent(inout) :: array_i2r2
 !!@endverbatim
 !!
       module append_control_items
@@ -189,81 +174,6 @@
       array_cr2%vec2(array_cr2%num) =  read_cr2%realvalue(2)
 !
       end subroutine append_control_item_c_r2
-!
-! -----------------------------------------------------------------------
-!
-      subroutine append_control_item_c2_r(read_c2r, array_c2r)
-!
-      type(read_chara2_real_item), intent(in) ::    read_c2r
-      type(ctl_array_c2r), intent(inout) :: array_c2r
-!
-!
-      array_c2r%icou = array_c2r%icou + read_c2r%iflag
-      array_c2r%c1_tbl(array_c2r%num) = read_c2r%charavalue(1)
-      array_c2r%c2_tbl(array_c2r%num) = read_c2r%charavalue(2)
-      array_c2r%vect(array_c2r%num) =   read_c2r%realvalue
-!
-      end subroutine append_control_item_c2_r
-!
-! -----------------------------------------------------------------------
-!
-      subroutine append_control_item_i_c_r(read_icr, array_icr)
-!
-      type(read_int_chara_real_item), intent(in) ::    read_icr
-      type(ctl_array_icr), intent(inout) :: array_icr
-!
-!
-      array_icr%icou = array_icr%icou + read_icr%iflag
-      array_icr%ivec(array_icr%num) =  read_icr%intvalue
-      array_icr%c_tbl(array_icr%num) = read_icr%charavalue
-      array_icr%vect(array_icr%num) =  read_icr%realvalue
-!
-      end subroutine append_control_item_i_c_r
-!
-! -----------------------------------------------------------------------
-!
-      subroutine append_control_item_i_r(read_ir, array_ir)
-!
-      type(read_int_real_item), intent(in) ::    read_ir
-      type(ctl_array_ir), intent(inout) :: array_ir
-!
-!
-      array_ir%icou = array_ir%icou + read_ir%iflag
-      array_ir%ivec(array_ir%num) = read_ir%intvalue
-      array_ir%vect(array_ir%num) = read_ir%realvalue
-!
-      end subroutine append_control_item_i_r
-!
-! -----------------------------------------------------------------------
-!
-      subroutine append_control_item_i2_r(read_i2r, array_i2r)
-!
-      type(read_int2_real_item), intent(in) ::    read_i2r
-      type(ctl_array_i2r), intent(inout) :: array_i2r
-!
-!
-      array_i2r%icou = array_i2r%icou + read_i2r%iflag
-      array_i2r%int1(array_i2r%num) = read_i2r%intvalue(1)
-      array_i2r%int2(array_i2r%num) = read_i2r%intvalue(2)
-      array_i2r%vect(array_i2r%num) = read_i2r%realvalue
-!
-      end subroutine append_control_item_i2_r
-!
-! -----------------------------------------------------------------------
-!
-      subroutine append_control_item_i2_r2(read_i2r2, array_i2r2)
-!
-      type(read_int2_real2_item), intent(in) ::    read_i2r2
-      type(ctl_array_i2r2), intent(inout) :: array_i2r2
-!
-!
-      array_i2r2%icou = array_i2r2%icou + read_i2r2%iflag
-      array_i2r2%int1(array_i2r2%num) = read_i2r2%intvalue(1)
-      array_i2r2%int2(array_i2r2%num) = read_i2r2%intvalue(2)
-      array_i2r2%vec1(array_i2r2%num) = read_i2r2%realvalue(1)
-      array_i2r2%vec2(array_i2r2%num) = read_i2r2%realvalue(2)
-!
-      end subroutine append_control_item_i2_r2
 !
 ! -----------------------------------------------------------------------
 !

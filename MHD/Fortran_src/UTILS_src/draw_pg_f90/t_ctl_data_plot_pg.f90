@@ -25,6 +25,8 @@
       use t_control_elements
       use t_read_control_arrays
       use t_control_array_character3
+      use t_control_array_int2real
+      use t_control_array_int2real2
 !
       implicit none
 !
@@ -351,11 +353,11 @@
         call read_control_array_c3(ctl_file_code,                       &
      &      hd_field_2_plot, pg_fld_ctl%plot_field_ctl, c_buf1)
 !
-        call read_control_array_i2_r2                                   &
-     &     (hd_ctr_range_ctl, pg_fld_ctl%contour_range_ctl)
+        call read_control_array_i2_r2(ctl_file_code,                    &
+     &      hd_ctr_range_ctl, pg_fld_ctl%contour_range_ctl, c_buf1)
 !
-        call read_control_array_i2_r                                    &
-     &     (hd_vec_scale_ctl, pg_fld_ctl%vector_scale_ctl)
+        call read_control_array_i2_r(ctl_file_code,                     &
+     &      hd_vec_scale_ctl, pg_fld_ctl%vector_scale_ctl, c_buf1)
 !
         call read_chara_ctl_type                                        &
      &     (hd_psf_data_fmt_ctl, pg_fld_ctl%psf_data_fmt_ctl)

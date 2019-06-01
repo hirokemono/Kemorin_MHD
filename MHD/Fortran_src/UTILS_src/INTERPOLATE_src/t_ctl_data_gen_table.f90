@@ -28,6 +28,7 @@
       use t_ctl_data_4_time_steps
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_intreal
       use skip_comment_f
 !
       implicit  none
@@ -408,8 +409,8 @@
         i_iteration_ctl = find_control_end_flag(hd_iteration_ctl)
         if(i_iteration_ctl .gt. 0) exit
 !
-        call read_control_array_i_r                                     &
-     &     (hd_eps_4_itp, gtbl_ctl%eps_4_itp_ctl)
+        call read_control_array_i_r(ctl_file_code,                      &
+     &      hd_eps_4_itp, gtbl_ctl%eps_4_itp_ctl, c_buf1)
 !
         call read_integer_ctl_type(hd_itr, gtbl_ctl%itr_refine_ctl)
 !

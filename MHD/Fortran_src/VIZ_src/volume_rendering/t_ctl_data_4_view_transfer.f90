@@ -110,6 +110,7 @@
       use m_read_control_elements
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_chara2real
       use skip_comment_f
       use bcast_control_arrays
 !
@@ -284,8 +285,8 @@
         call read_control_array_c_r                                     &
      &     (hd_viewpt_in_view, mat%viewpt_in_viewer_ctl)
 !
-        call read_control_array_c2_r                                    &
-     &     (hd_model_mat, mat%modelview_mat_ctl)
+        call read_control_array_c2_r(ctl_file_code,                     &
+     &      hd_model_mat, mat%modelview_mat_ctl, c_buf1)
 !
         call read_real_ctl_type(hd_view_rot_deg,                        &
      &        mat%view_rotation_deg_ctl)

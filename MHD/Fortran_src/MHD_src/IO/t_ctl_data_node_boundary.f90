@@ -105,6 +105,7 @@
 !
       use m_precision
       use t_read_control_arrays
+      use t_control_array_chara2real
 !
       implicit  none
 !
@@ -210,22 +211,22 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_control_array_c2_r                                    &
-       &   (hd_n_bc_temp, nbc_ctl%node_bc_T_ctl)
-        call read_control_array_c2_r                                    &
-       &   (hd_n_bc_velo, nbc_ctl%node_bc_U_ctl)
-        call read_control_array_c2_r                                    &
-       &   (hd_n_bc_press, nbc_ctl%node_bc_P_ctl)
-        call read_control_array_c2_r                                    &
-       &   (hd_n_bc_composit, nbc_ctl%node_bc_C_ctl)
-        call read_control_array_c2_r                                    &
-       &   (hd_n_bc_magne, nbc_ctl%node_bc_B_ctl)
-        call read_control_array_c2_r                                    &
-       &   (hd_n_bc_mag_p, nbc_ctl%node_bc_MP_ctl)
-        call read_control_array_c2_r                                    &
-       &   (hd_n_bc_vect_p, nbc_ctl%node_bc_A_ctl)
-        call read_control_array_c2_r                                    &
-       &   (hd_n_bc_currect, nbc_ctl%node_bc_J_ctl)
+        call read_control_array_c2_r(ctl_file_code,                     &
+       &    hd_n_bc_temp, nbc_ctl%node_bc_T_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+       &    hd_n_bc_velo, nbc_ctl%node_bc_U_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+       &    hd_n_bc_press, nbc_ctl%node_bc_P_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+       &    hd_n_bc_composit, nbc_ctl%node_bc_C_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+       &    hd_n_bc_magne, nbc_ctl%node_bc_B_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+       &    hd_n_bc_mag_p, nbc_ctl%node_bc_MP_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+       &    hd_n_bc_vect_p, nbc_ctl%node_bc_A_ctl, c_buf1)
+        call read_control_array_c2_r(ctl_file_code,                     &
+       &    hd_n_bc_currect, nbc_ctl%node_bc_J_ctl, c_buf1)
       end do
 !
       end subroutine read_bc_4_node_ctl
