@@ -28,6 +28,8 @@
 !!     &         (label, iflag_dat, real1, real2, real3)
 !!      subroutine read_integer3_ctl_item                               &
 !!     &         (label, iflag_dat, int1, int2, int3)
+!!      subroutine read_character2_ctl_item(label, iflag_dat,           &
+!!     &          chara1, chara2)
 !!      subroutine read_character3_ctl_item(label, iflag_dat,           &
 !!     &          chara1, chara2, chara3)
 !!
@@ -327,6 +329,27 @@
       iflag_dat = 1
 !
       end subroutine read_integer3_ctl_item
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_character2_ctl_item(label, iflag_dat,             &
+     &          chara1, chara2)
+!
+      character(len=kchara), intent(in) :: label
+      integer (kind=kint), intent(inout) :: iflag_dat
+      character(len=kchara), intent(inout) :: chara1, chara2
+!
+!
+      if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
+!
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara, chara1, chara2
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+     &            trim(c_buf1%header_chara), ' 1: ', chara1
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+     &            trim(c_buf1%header_chara), ' 2: ', chara2
+      iflag_dat = 1
+!
+       end subroutine read_character2_ctl_item
 !
 !   --------------------------------------------------------------------
 !

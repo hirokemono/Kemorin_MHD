@@ -114,6 +114,7 @@
       use set_parallel_file_name
       use t_control_data_4_psf
       use t_read_control_arrays
+      use t_control_array_character2
       use set_coefs_of_sections
 !
       integer(kind = kint), intent(inout) :: num_psf_ctl

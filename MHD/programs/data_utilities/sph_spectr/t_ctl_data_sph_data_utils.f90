@@ -48,6 +48,7 @@
       use t_ctl_data_4_time_steps
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_character2
 !
       type diff_spectrum_ctl
         type(read_character_item) :: org_field_head_ctl
@@ -210,8 +211,8 @@
         if(i_hard .gt. 0) exit
 !
 !
-        call read_control_array_c2                                      &
-     &     (hd_field_to_rename, field_list%field_to_rename_ctl)
+        call read_control_array_c2(ctl_file_code,                       &
+     &      hd_field_to_rename, field_list%field_to_rename_ctl, c_buf1)
       end do
 !
       end subroutine read_rename_spectr_control

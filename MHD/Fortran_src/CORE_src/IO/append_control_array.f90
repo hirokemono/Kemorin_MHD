@@ -25,9 +25,6 @@
 !!      subroutine append_control_array_c1(read_c1, array_c1)
 !!        type(read_character_item), intent(inout) ::    read_c1
 !!        type(ctl_array_chara), intent(inout) :: array_c1
-!!      subroutine append_control_array_c2(read_c2, array_c2)
-!!        type(read_chara2_item), intent(inout) ::    read_c2
-!!        type(ctl_array_c2), intent(inout) :: array_c2
 !!      subroutine append_control_array_c_r(read_cr, array_cr)
 !!        type(read_chara_real_item), intent(inout) ::    read_cr
 !!        type(ctl_array_cr), intent(inout) :: array_cr
@@ -219,31 +216,6 @@
       call dealloc_control_array_chara(org_c1)
 !
       end subroutine append_control_array_c1
-!
-! -----------------------------------------------------------------------
-!
-      subroutine append_control_array_c2(read_c2, array_c2)
-!
-      type(read_chara2_item), intent(inout) ::    read_c2
-      type(ctl_array_c2), intent(inout) :: array_c2
-!
-      type(ctl_array_c2) ::    org_c2
-!
-!
-      org_c2%num = array_c2%num
-      call alloc_control_array_c2(org_c2)
-      call copy_control_array_c2(org_c2%num, array_c2, org_c2)
-      call dealloc_control_array_c2(array_c2)
-!
-      array_c2%num = org_c2%num + 1
-      call alloc_control_array_c2(array_c2)
-      call copy_control_array_c2(org_c2%num, org_c2, array_c2)
-      call append_control_item_c2(read_c2, array_c2)
-      read_c2%iflag = 0
-!
-      call dealloc_control_array_c2(org_c2)
-!
-      end subroutine append_control_array_c2
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

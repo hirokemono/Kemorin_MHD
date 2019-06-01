@@ -46,7 +46,7 @@
 !!       subroutine write_i_c_r_ctl_item(id_file, level, label,         &
 !!     &           int_data, chara_data, real_data)
 !!      subroutine write_character2_ctl_item                            &
-!!     &         (id_file, level, label, chara1, chara2)
+!!     &         (id_file, level, label, maxlen, chara1, chara2)
 !!      subroutine write_character3_ctl_item                            &
 !!     &         (id_file, level, label, maxlen, chara1, chara2, chara3)
 !!
@@ -71,8 +71,6 @@
 !!     &         (id_file, level, label, num, vec1, vec2, vec3)
 !!      subroutine write_control_array_chara_list                       &
 !!     &         (id_file, level, label, num, c_tbl)
-!!      subroutine write_control_array_chara2_list                      &
-!!     &         (id_file, level, label, num, c1_tbl, c2_tbl)
 !!      subroutine write_control_array_c_r2_list                        &
 !!     &         (id_file, level, label, num, c_tbl,  vec1, vec2)
 !!      subroutine write_control_array_c2_r_list                        &
@@ -476,16 +474,23 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_character2_ctl_item                              &
-     &         (id_file, level, label, chara1, chara2)
+     &         (id_file, level, label, maxlen, chara1, chara2)
 !
       integer(kind = kint), intent(in) :: id_file, level
+      integer(kind = kint), intent(in) :: maxlen(0:1)
       character(len=kchara), intent(in) :: label
       character(len=kchara), intent(in) :: chara1, chara2
 !
+      integer(kind = kint) :: nspace0, nspace1
+!
+      nspace0 = maxlen(0) - len_trim(label)
+      nspace1 = maxlen(1) - len_trim(chara1) - 2 * iflag_divide(chara1)
 !
       call write_space_4_parse(id_file, level)
       call write_ctl_chara_cont(id_file, label)
+      call write_spaces(id_file, nspace0)
       call write_ctl_chara_cont(id_file, chara1)
+      call write_spaces(id_file, nspace1)
       call write_ctl_chara_lf(id_file, chara2)
 !
       end subroutine write_character2_ctl_item
@@ -738,28 +743,6 @@
       call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_chara_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_array_chara2_list                        &
-     &         (id_file, level, label, num, c1_tbl, c2_tbl)
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      character(len=kchara), intent(in) :: c1_tbl(num), c2_tbl(num)
-!
-      integer(kind = kint) :: i
-!
-!
-      call write_array_flag_for_ctl(id_file, level, label, num)
-      do i = 1, num
-        call write_character2_ctl_item                                  &
-     &     (id_file, (level+1), label, c1_tbl(i), c2_tbl(i))
-      end do
-      call write_end_array_flag_for_ctl(id_file, level, label)
-!
-      end subroutine write_control_array_chara2_list
 !
 !   --------------------------------------------------------------------
 !

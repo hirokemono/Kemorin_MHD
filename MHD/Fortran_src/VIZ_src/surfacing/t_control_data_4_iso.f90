@@ -71,9 +71,9 @@
       use skip_comment_f
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_character2
 !
       implicit  none
-!
 !
       type iso_ctl
 !>        Structure for file prefix
@@ -265,8 +265,8 @@
         iso_c%i_iso_result = find_control_end_flag(hd_iso_result)
         if(iso_c%i_iso_result .gt. 0) exit
 !
-        call read_control_array_c2                                      &
-     &     (hd_iso_result_field, iso_c%iso_out_field_ctl)
+        call read_control_array_c2(ctl_file_code,                       &
+     &      hd_iso_result_field, iso_c%iso_out_field_ctl, c_buf1)
 !
         call read_chara_ctl_type(hd_result_type,                        &
      &      iso_c%iso_result_type_ctl)

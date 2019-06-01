@@ -13,7 +13,6 @@
 !!      subroutine dealloc_control_array_int(array_int)
 !!      subroutine dealloc_control_array_i2(array_i2)
 !!      subroutine dealloc_control_array_chara(array_chara)
-!!      subroutine dealloc_control_array_c2(array_c2)
 !!      subroutine dealloc_control_array_c_r(array_cr)
 !!      subroutine dealloc_control_array_c_i(array_ci)
 !!      subroutine dealloc_control_array_c_r2(array_cr2)
@@ -29,7 +28,6 @@
 !!      subroutine read_control_array_i1(label, array_int)
 !!      subroutine read_control_array_i2(label, array_i2)
 !!      subroutine read_control_array_c1(label, array_chara)
-!!      subroutine read_control_array_c2(label, array_c2)
 !!      subroutine read_control_array_c_r(label, array_cr)
 !!      subroutine read_control_array_c_i(label, array_ci)
 !!      subroutine read_control_array_c_r2(label, array_cr2)
@@ -131,18 +129,6 @@
 !>     array for 1st character
         character(len=kchara), allocatable :: c_tbl(:)
       end type ctl_array_chara
-!
-!>  Structure for two charactors control array 
-      type ctl_array_c2
-!>     number of array items
-        integer(kind=kint) :: num = 0
-!>     array counter
-        integer(kind=kint) :: icou = 0
-!>     array for 1st character
-        character(len=kchara), allocatable :: c1_tbl(:)
-!>     array for 2nd character
-        character(len=kchara), allocatable :: c2_tbl(:)
-      end type ctl_array_c2
 !
 !>  Structure for charactor and two reals control array 
       type ctl_array_cr2
@@ -344,18 +330,6 @@
       allocate( array_chara%c_tbl(array_chara%num) )
 !
       end subroutine alloc_control_array_chara
-!
-!   --------------------------------------------------------------------
-!
-      subroutine alloc_control_array_c2(array_c2)
-!
-      type(ctl_array_c2), intent(inout) :: array_c2
-!
-!
-      allocate( array_c2%c1_tbl(array_c2%num) )
-      allocate( array_c2%c2_tbl(array_c2%num) )
-!
-      end subroutine alloc_control_array_c2
 !
 !   --------------------------------------------------------------------
 !
@@ -569,19 +543,6 @@
       array_chara%num = 0
 !
       end subroutine dealloc_control_array_chara
-!
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_control_array_c2(array_c2)
-!
-      type(ctl_array_c2), intent(inout) :: array_c2
-!
-!
-      if(array_c2%num .le. 0) return
-      deallocate(array_c2%c1_tbl, array_c2%c2_tbl)
-      array_c2%num = 0
-!
-      end subroutine dealloc_control_array_c2
 !
 !   --------------------------------------------------------------------
 !
@@ -802,25 +763,6 @@
       end if
 !
       end subroutine read_control_array_c1
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_c2(label, array_c2)
-!
-      use m_read_control_elements
-!
-      character(len=kchara), intent(in) :: label
-      type(ctl_array_c2), intent(inout) :: array_c2
-!
-!
-      call find_control_array_flag(label, array_c2%num)
-      if(array_c2%num.gt.0 .and. array_c2%icou.eq.0) then
-        call alloc_control_array_c2(array_c2)
-        call read_control_array_chara2_list(label, array_c2%num,        &
-     &      array_c2%icou, array_c2%c1_tbl, array_c2%c2_tbl)
-      end if
-!
-      end subroutine read_control_array_c2
 !
 !   --------------------------------------------------------------------
 !

@@ -351,6 +351,7 @@
 !
       subroutine bcast_ctl_array_c2(array_c2)
 !
+      use t_control_array_character2
       use transfer_to_long_integers
 !
       type(ctl_array_c2), intent(inout) :: array_c2

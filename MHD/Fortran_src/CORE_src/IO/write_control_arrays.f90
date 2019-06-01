@@ -25,9 +25,6 @@
 !!      subroutine write_control_array_c1                               &
 !!     &          (id_file, level, label, array_chara)
 !!        type(ctl_array_chara), intent(in) :: array_chara
-!!      subroutine write_control_array_c2                               &
-!!     &         (id_file, level, label, array_c2)
-!!        type(ctl_array_c2), intent(in) :: array_c2
 !!      subroutine write_control_array_c_r                              &
 !!     &         (id_file, level, label, array_cr)
 !!        type(ctl_array_cr), intent(in) :: array_cr
@@ -203,26 +200,6 @@
       end if
 !
       end subroutine write_control_array_c1
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_array_c2                                 &
-     &         (id_file, level, label, array_c2)
-!
-      use write_control_elements
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      type(ctl_array_c2), intent(in) :: array_c2
-!
-!
-      if(array_c2%num .gt. 0) then
-        write(id_file,'(a1)') '!'
-        call write_control_array_chara2_list(id_file, level, label,     &
-     &      array_c2%num, array_c2%c1_tbl, array_c2%c2_tbl)
-      end if
-!
-      end subroutine write_control_array_c2
 !
 !   --------------------------------------------------------------------
 !

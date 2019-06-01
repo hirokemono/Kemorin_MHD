@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in June, 2014
 !
-!>@brief  Subroutines to read control arrays
+!>@brief  Structure of control array input with 3 words
 !!
 !!@verbatim
 !!      subroutine alloc_control_array_c3(array_c3)
@@ -86,7 +86,6 @@
      &         (id_control, label, array_c3, c_buf)
 !
       use m_read_control_elements
-      use append_control_items
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: label

@@ -122,6 +122,7 @@
       use skip_comment_f
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_character2
 !
       implicit  none
 !
@@ -373,8 +374,8 @@
         psf_c%i_output_field = find_control_end_flag(hd_output_field)
         if(psf_c%i_output_field .gt. 0) exit
 !
-        call read_control_array_c2                                      &
-     &     (hd_psf_result_field, psf_c%psf_out_field_ctl)
+        call read_control_array_c2(ctl_file_code,                       &
+     &      hd_psf_result_field, psf_c%psf_out_field_ctl, c_buf1)
       end do
 !
       end subroutine read_psf_output_ctl

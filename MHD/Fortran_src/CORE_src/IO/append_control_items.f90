@@ -25,9 +25,6 @@
 !!      subroutine append_control_item_c1(read_c1, array_c1)
 !!        type(read_character_item), intent(in) ::    read_c1
 !!        type(ctl_array_chara), intent(inout) :: array_c1
-!!      subroutine append_control_item_c2(read_c2, array_c2)
-!!        type(read_chara2_item), intent(in) ::    read_c2
-!!        type(ctl_array_c2), intent(inout) :: array_c2
 !!      subroutine append_control_item_c_r(read_cr, array_cr)
 !!        type(read_chara_real_item), intent(in) ::    read_cr
 !!        type(ctl_array_cr), intent(inout) :: array_cr
@@ -148,20 +145,6 @@
       array_c1%c_tbl(array_c1%num) = read_c1%charavalue
 !
       end subroutine append_control_item_c1
-!
-! -----------------------------------------------------------------------
-!
-      subroutine append_control_item_c2(read_c2, array_c2)
-!
-      type(read_chara2_item), intent(in) ::    read_c2
-      type(ctl_array_c2), intent(inout) :: array_c2
-!
-!
-      array_c2%icou = array_c2%icou + read_c2%iflag
-      array_c2%c1_tbl(array_c2%num) = read_c2%charavalue(1)
-      array_c2%c2_tbl(array_c2%num) = read_c2%charavalue(2)
-!
-      end subroutine append_control_item_c2
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
