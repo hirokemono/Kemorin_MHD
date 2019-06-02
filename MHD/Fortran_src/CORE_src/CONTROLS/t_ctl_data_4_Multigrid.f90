@@ -95,7 +95,8 @@
 !
       use m_precision
       use t_control_elements
-      use t_read_control_arrays
+      use t_control_array_character
+      use t_control_array_integer
 !
       implicit  none
 !
@@ -224,7 +225,6 @@
 !
       use m_machine_parameter
       use m_read_control_elements
-      use write_control_arrays
 !
       character(len=kchara), intent(in) :: hd_block
 !
@@ -255,23 +255,25 @@
      &     (hd_num_MG_level, MG_ctl%num_multigrid_level_ctl)
 !
 !
-        call read_control_array_i1                                      &
-     &     (hd_num_MG_subdomain, MG_ctl%num_MG_subdomain_ctl)
+        call read_control_array_i1(ctl_file_code,                       &
+     &      hd_num_MG_subdomain, MG_ctl%num_MG_subdomain_ctl, c_buf1)
 !
-        call read_control_array_c1                                      &
-     &     (hd_MG_mesh_header, MG_ctl%MG_mesh_prefix_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_MG_mesh_header, MG_ctl%MG_mesh_prefix_ctl, c_buf1)
 !
-        call read_control_array_c1                                      &
-     &     (hd_MG_fine_2_coarse_tbl, MG_ctl%MG_fine_2_coarse_tbl)
-        call read_control_array_c1                                      &
-     &     (hd_MG_coarse_2_fine_tbl, MG_ctl%MG_coarse_2_fine_tbl)
-        call read_control_array_c1                                      &
-     &     (hd_MG_f2c_ele_tbl, MG_ctl%MG_f2c_ele_tbl_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_MG_fine_2_coarse_tbl, MG_ctl%MG_fine_2_coarse_tbl,       &
+     &      c_buf1)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_MG_coarse_2_fine_tbl, MG_ctl%MG_coarse_2_fine_tbl,       &
+     &      c_buf1)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_MG_f2c_ele_tbl, MG_ctl%MG_f2c_ele_tbl_ctl, c_buf1)
 !
-        call read_control_array_c1                                      &
-     &     (hd_MG_mesh_file_fmt, MG_ctl%MG_mesh_fmt_ctl)
-        call read_control_array_c1                                      &
-     &     (hd_MG_tbl_file_fmt, MG_ctl%MG_table_fmt_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_MG_mesh_file_fmt, MG_ctl%MG_mesh_fmt_ctl, c_buf1)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_MG_tbl_file_fmt, MG_ctl%MG_table_fmt_ctl, c_buf1)
       end do
 !
       end subroutine read_control_Multigrid
@@ -284,7 +286,6 @@
       use m_machine_parameter
       use m_read_control_elements
       use write_control_elements
-      use write_control_arrays
 !
       integer(kind = kint), intent(in) :: id_file
       character(len=kchara), intent(in) :: hd_block

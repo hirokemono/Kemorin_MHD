@@ -73,7 +73,6 @@
      &          SGS_par, MHD_prop, sph, rj_fld, nod_fld, monitor)
 !
       use t_SGS_control_parameter
-      use t_read_control_arrays
       use t_phys_data
       use t_sph_mhd_monitor_data_IO
 !

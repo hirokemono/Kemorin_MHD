@@ -78,7 +78,6 @@
       use m_machine_parameter
       use m_read_control_elements
       use t_control_elements
-      use t_read_control_arrays
       use t_control_data_LIC_masking
       use skip_comment_f
 !

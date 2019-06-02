@@ -50,7 +50,7 @@
       module t_ctl_data_4_fields
 !
       use m_precision
-      use t_read_control_arrays
+      use t_control_array_character
       use t_control_array_character3
 !
       implicit  none
@@ -124,7 +124,8 @@
 !
         call read_control_array_c3(ctl_file_code,                       &
      &      hd_field_list, fld_ctl%field_ctl, c_buf1)
-        call read_control_array_c1(hd_quad_field, fld_ctl%quad_phys)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_quad_field, fld_ctl%quad_phys, c_buf1)
       end do
 !
       end subroutine read_phys_data_control
@@ -137,7 +138,6 @@
       use m_machine_parameter
       use m_read_control_elements
       use write_control_elements
-      use write_control_arrays
 !
       integer(kind = kint), intent(in) :: id_file
       character(len=kchara), intent(in) :: hd_block

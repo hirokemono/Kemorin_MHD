@@ -50,7 +50,6 @@
       use m_precision
 !
       use t_control_elements
-      use t_read_control_arrays
       use t_ctl_data_sph_vol_spectr
       use t_ctl_data_pick_sph_spectr
       use skip_comment_f

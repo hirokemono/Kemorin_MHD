@@ -59,7 +59,8 @@
 !
       use m_precision
       use t_control_elements
-      use t_read_control_arrays
+      use t_control_array_character
+      use t_control_array_integer
 !
       implicit  none
 !
@@ -144,12 +145,13 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_ntotal_layer_grp_ctl, elayer_ctl%layer_grp_name_ctl,     &
+     &      c_buf1)
 !
-        call read_control_array_c1                                      &
-     &     (hd_ntotal_layer_grp_ctl, elayer_ctl%layer_grp_name_ctl)
-!
-        call read_control_array_i1                                      &
-     &     (hd_num_layer_grp_ctl, elayer_ctl%igrp_stack_layer_ctl)
+        call read_control_array_i1(ctl_file_code,                       &
+     &      hd_num_layer_grp_ctl, elayer_ctl%igrp_stack_layer_ctl,      &
+     &      c_buf1)
 !
 !
         call read_integer_ctl_type(hd_num_SGS_ele_grp,                  &

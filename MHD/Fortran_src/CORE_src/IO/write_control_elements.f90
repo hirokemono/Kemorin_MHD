@@ -54,17 +54,6 @@
 !!     &         (id_file, level, label, fname)
 !!      subroutine write_file_names_from_ctl_line                       &
 !!     &         (id_file, level, label, num, fname)
-!!
-!!      subroutine write_control_array_int_list                         &
-!!     &         (id_file, level, label, num, ivect)
-!!      subroutine write_control_array_real_list                        &
-!!     &         (id_file, level, label, num, vec1)
-!!      subroutine write_control_array_real2_list                       &
-!!     &         (id_file, level, label, num, vec1, vec2)
-!!      subroutine write_control_array_real3_list                       &
-!!     &         (id_file, level, label, num, vec1, vec2, vec3)
-!!      subroutine write_control_array_chara_list                       &
-!!     &         (id_file, level, label, num, c_tbl)
 !!@endverbatim
 !!
 !!@n @param  ctl_name   label for control block
@@ -541,98 +530,6 @@
       call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_file_names_from_ctl_line
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_array_int_list                           &
-     &         (id_file, level, label, num, ivect)
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer (kind=kint), intent(in) :: ivect(num)
-!
-      integer(kind = kint) :: i, length
-!
-!
-      call write_array_flag_for_ctl(id_file, level, label, num)
-      do i = 1, num
-        length = len_trim(label)
-        call write_integer_ctl_item                                     &
-     &     (id_file, (level+1), length, label, ivect(i))
-      end do
-      call write_end_array_flag_for_ctl(id_file, level, label)
-!
-      end subroutine write_control_array_int_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_array_real_list                          &
-     &         (id_file, level, label, num, vec1)
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      real (kind=kreal), intent(in) :: vec1(num)
-!
-      integer(kind = kint) :: i, length
-!
-!
-      call write_array_flag_for_ctl(id_file, level, label, num)
-      do i = 1, num
-        length = len_trim(label)
-        call write_real_ctl_item                                        &
-     &     (id_file, (level+1), length, label, vec1(i))
-      end do
-      call write_end_array_flag_for_ctl(id_file, level, label)
-!
-      end subroutine write_control_array_real_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_array_real2_list                         &
-     &         (id_file, level, label, num, vec1, vec2)
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      real (kind=kreal), intent(in) :: vec1(num), vec2(num)
-!
-      integer(kind = kint) :: i
-!
-!
-      call write_array_flag_for_ctl(id_file, level, label, num)
-      do i = 1, num
-        call write_real2_ctl_item                                       &
-     &     (id_file, (level+1), label, vec1(i), vec2(i))
-      end do
-      call write_end_array_flag_for_ctl(id_file, level, label)
-!
-      end subroutine write_control_array_real2_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_array_chara_list                         &
-     &         (id_file, level, label, num, c_tbl)
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      character(len=kchara), intent(in) :: c_tbl(num)
-!
-      integer(kind = kint) :: i, length
-!
-!
-      call write_array_flag_for_ctl(id_file, level, label, num)
-      do i = 1, num
-        length = len_trim(label)
-        call write_character_ctl_item                                   &
-     &     (id_file, (level+1), length, label, c_tbl(i))
-      end do
-      call write_end_array_flag_for_ctl(id_file, level, label)
-!
-      end subroutine write_control_array_chara_list
 !
 !   --------------------------------------------------------------------
 !

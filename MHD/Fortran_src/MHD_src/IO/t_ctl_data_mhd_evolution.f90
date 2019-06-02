@@ -55,7 +55,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
-      use t_read_control_arrays
+      use t_control_array_character
       use skip_comment_f
 !
       implicit  none
@@ -141,8 +141,8 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
-        call read_control_array_c1                                      &
-     &     (hd_t_evo_field, evo_ctl%t_evo_field_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_t_evo_field, evo_ctl%t_evo_field_ctl, c_buf1)
       end do
 !
       end subroutine read_mhd_time_evo_ctl
@@ -165,10 +165,10 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
-        call read_control_array_c1                                      &
-     &      (hd_fluid_grp, earea_ctl%evo_fluid_group_ctl)
-        call read_control_array_c1                                      &
-     &      (hd_conduct_grp, earea_ctl%evo_conduct_group_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_fluid_grp, earea_ctl%evo_fluid_group_ctl, c_buf1)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_conduct_grp, earea_ctl%evo_conduct_group_ctl, c_buf1)
       end do
 !
       end subroutine read_mhd_layer_ctl

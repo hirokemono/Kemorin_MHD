@@ -103,7 +103,6 @@
       use m_legendre_transform_list
 !
       use t_ctl_data_4_platforms
-      use t_read_control_arrays
       use t_ctl_data_mhd_evo_scheme
       use t_phys_data
       use t_field_data_IO

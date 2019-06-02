@@ -75,7 +75,7 @@
       use m_read_control_elements
       use skip_comment_f
       use t_control_elements
-      use t_read_control_arrays
+      use t_control_array_character
 !
       implicit  none
 !
@@ -177,10 +177,10 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_control_array_c1                                      &
-     &     (hd_whole_filter_grp, s3df_ctl%whole_filter_grp_ctl)
-        call read_control_array_c1                                      &
-     &     (hd_fluid_filter_grp, s3df_ctl%fluid_filter_grp_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_whole_filter_grp, s3df_ctl%whole_filter_grp_ctl, c_buf1)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_fluid_filter_grp, s3df_ctl%fluid_filter_grp_ctl, c_buf1)
 !
         call read_chara_ctl_type(hd_momentum_filter_ctl,                &
      &      s3df_ctl%momentum_filter_ctl)

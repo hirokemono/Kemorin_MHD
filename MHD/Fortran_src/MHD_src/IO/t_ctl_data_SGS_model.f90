@@ -178,7 +178,7 @@
       use m_read_control_elements
       use skip_comment_f
       use t_control_elements
-      use t_read_control_arrays
+      use t_control_array_character
       use t_ctl_data_SGS_filter
       use t_ctl_data_filter_files
       use t_ctl_data_ele_layering
@@ -397,9 +397,10 @@
      &       (hd_sph_filter, i_sph_filter_ctl, sgs_ctl)
         end if
 !
-        call read_control_array_c1(hd_SGS_terms, sgs_ctl%SGS_terms_ctl)
-        call read_control_array_c1                                      &
-     &     (hd_commutation_fld, sgs_ctl%commutate_fld_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_SGS_terms, sgs_ctl%SGS_terms_ctl, c_buf1)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_commutation_fld, sgs_ctl%commutate_fld_ctl, c_buf1)
 !
         call read_chara_ctl_type(hd_SGS_model,                          &
      &      sgs_ctl%SGS_model_name_ctl)

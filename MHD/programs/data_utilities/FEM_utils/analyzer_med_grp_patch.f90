@@ -69,7 +69,6 @@
       use m_ctl_params_4_diff_udt
       use set_parallel_file_name
       use t_control_data_sections
-      use t_read_control_arrays
       use t_cross_section
       use set_coefs_of_sections
 !
@@ -113,7 +112,6 @@
       use m_ctl_params_4_diff_udt
       use set_parallel_file_name
       use t_control_data_4_psf
-      use t_read_control_arrays
       use t_control_array_character2
       use set_coefs_of_sections
 !

@@ -19,8 +19,8 @@
       use skip_comment_f
       use t_ctl_data_4_platforms
       use t_ctl_data_4_FEM_mesh
-      use t_read_control_arrays
       use t_control_elements
+      use t_control_array_character
       use t_control_array_charaint
 !
       implicit    none
@@ -297,8 +297,8 @@
      &      hd_num_rcb, part_ctl%RCB_dir_ctl, c_buf1)
         call read_control_array_c_i(ctl_file_code,                      &
      &      hd_num_es, part_ctl%ndomain_section_ctl, c_buf1)
-        call read_control_array_c1                                      &
-     &     (hd_num_r_layerd, part_ctl%ele_grp_layering_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_num_r_layerd, part_ctl%ele_grp_layering_ctl, c_buf1)
 !
 !
         call read_integer_ctl_type                                      &
@@ -367,8 +367,8 @@
         i_ele_ordering_ctl = find_control_end_flag(hd_ele_ordering_ctl)
         if(i_ele_ordering_ctl .gt. 0) exit
 !
-        call read_control_array_c1                                      &
-     &     (hd_nele_grp_ordering, part_ctl%ele_grp_ordering_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &     hd_nele_grp_ordering, part_ctl%ele_grp_ordering_ctl, c_buf1)
       end do
 !
       end subroutine read_ctl_data_4_ele_ordeirng

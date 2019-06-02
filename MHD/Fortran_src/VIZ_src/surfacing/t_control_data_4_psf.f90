@@ -121,7 +121,7 @@
       use m_read_control_elements
       use skip_comment_f
       use t_control_elements
-      use t_read_control_arrays
+      use t_control_array_character
       use t_control_array_charareal
       use t_control_array_character2
 !
@@ -347,7 +347,8 @@
         call read_control_array_c_r(ctl_file_code,                      &
      &      hd_axis_ctl, psf_c%psf_axis_ctl, c_buf1)
 !
-        call read_control_array_c1(hd_psf_area, psf_c%psf_area_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_psf_area, psf_c%psf_area_ctl, c_buf1)
 !
         call read_psf_plot_area_ctl(psf_c)
 !
@@ -398,7 +399,8 @@
         psf_c%i_plot_area = find_control_end_flag(hd_plot_area)
         if(psf_c%i_plot_area .gt. 0) exit
 !
-        call read_control_array_c1(hd_plot_grp, psf_c%psf_area_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_plot_grp, psf_c%psf_area_ctl, c_buf1)
       end do
 !
       end subroutine read_psf_plot_area_ctl

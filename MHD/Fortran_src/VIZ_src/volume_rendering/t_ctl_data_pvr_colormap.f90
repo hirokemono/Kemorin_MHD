@@ -102,7 +102,7 @@
       use m_read_control_elements
       use t_ctl_data_4_view_transfer
       use t_control_elements
-      use t_read_control_arrays
+      use t_control_array_real2
       use t_control_array_real3
       use skip_comment_f
       use bcast_control_arrays
@@ -378,9 +378,10 @@
         if(color%i_pvr_colordef .gt. 0) exit
 !
 !
-        call read_control_array_r2(hd_colortable, color%colortbl_ctl)
-        call read_control_array_r2                                      &
-     &     (hd_linear_opacity, color%linear_opacity_ctl)
+        call read_control_array_r2(ctl_file_code,                       &
+     &      hd_colortable, color%colortbl_ctl, c_buf1)
+        call read_control_array_r2(ctl_file_code,                       &
+     &      hd_linear_opacity, color%linear_opacity_ctl, c_buf1)
 !
         call read_control_array_r3(ctl_file_code,                       &
      &      hd_opacity_def, color%step_opacity_ctl, c_buf1)

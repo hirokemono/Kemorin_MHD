@@ -83,7 +83,6 @@
 !
       use m_precision
       use t_control_elements
-      use t_read_control_arrays
       use t_control_array_charaint
       use t_control_array_integer2
       use t_control_array_intreal

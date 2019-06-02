@@ -13,7 +13,7 @@
       use m_read_control_elements
       use skip_comment_f
       use t_control_elements
-      use t_read_control_arrays
+      use t_control_array_integer
       use t_control_array_charaint
       use t_control_array_integer2
       use t_control_array_intreal
@@ -353,8 +353,8 @@
 !
         call read_control_array_c_i(ctl_file_code,                      &
      &      hd_num_nod_grp, cubed_sph_c%node_grp_name_ctl, c_buf1)
-        call read_control_array_i1                                      &
-     &     (hd_num_nod_layer, cubed_sph_c%node_grp_layer_ctl)
+        call read_control_array_i1(ctl_file_code,                       &
+     &      hd_num_nod_layer, cubed_sph_c%node_grp_layer_ctl, c_buf1)
       end do
 !
       end subroutine read_ctl_nod_bc_4_shell
@@ -376,8 +376,8 @@
 !
         call read_control_array_c_i(ctl_file_code,                      &
      &      hd_num_ele_grp, cubed_sph_c%elem_grp_name_ctl, c_buf1)
-        call read_control_array_i1                                      &
-     &     (hd_num_ele_layer, cubed_sph_c%elem_grp_layer_ctl)
+        call read_control_array_i1(ctl_file_code,                       &
+     &      hd_num_ele_layer, cubed_sph_c%elem_grp_layer_ctl, c_buf1)
       end do
 !
       end subroutine read_ctl_ele_bc_4_shell

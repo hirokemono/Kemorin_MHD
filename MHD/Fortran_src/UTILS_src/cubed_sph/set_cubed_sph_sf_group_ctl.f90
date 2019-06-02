@@ -18,7 +18,6 @@
       module set_cubed_sph_sf_group_ctl
 !
       use m_precision
-      use t_read_control_arrays
       use t_group_data
 !
       implicit  none

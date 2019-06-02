@@ -80,7 +80,6 @@
       use m_constants
       use calypso_mpi
       use t_control_elements
-      use t_read_control_arrays
 !
       implicit none
 !
@@ -205,6 +204,7 @@
 !
       subroutine bcast_ctl_array_r1(array_real)
 !
+      use t_control_array_real
       use transfer_to_long_integers
 !
       type(ctl_array_real), intent(inout) :: array_real
@@ -228,6 +228,7 @@
 !
       subroutine bcast_ctl_array_r2(array_r2)
 !
+      use t_control_array_real2
       use transfer_to_long_integers
 !
       type(ctl_array_r2), intent(inout) :: array_r2
@@ -281,6 +282,7 @@
 !
       subroutine bcast_ctl_array_i1(array_int)
 !
+      use t_control_array_integer
       use transfer_to_long_integers
 !
       type(ctl_array_int), intent(inout) :: array_int
@@ -330,6 +332,7 @@
 !
       subroutine bcast_ctl_array_c1(array_chara)
 !
+      use t_control_array_character
       use transfer_to_long_integers
 !
       type(ctl_array_chara), intent(inout) :: array_chara

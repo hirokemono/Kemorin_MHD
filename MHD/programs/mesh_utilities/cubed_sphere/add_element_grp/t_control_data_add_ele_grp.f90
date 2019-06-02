@@ -12,7 +12,6 @@
 !
       use m_read_control_elements
       use t_ctl_data_4_platforms
-      use t_read_control_arrays
       use t_control_elements
       use t_control_array_charareal2
       use skip_comment_f

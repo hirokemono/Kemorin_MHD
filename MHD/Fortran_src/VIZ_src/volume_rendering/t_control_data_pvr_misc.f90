@@ -70,8 +70,7 @@
       use m_read_control_elements
       use t_control_data_4_psf
       use t_control_elements
-      use t_read_control_arrays
-      use t_control_array_chara2real
+      use t_control_array_character
       use t_control_array_chara2real
       use skip_comment_f
 !
@@ -260,7 +259,8 @@
         i_plot_area = find_control_end_flag(hd_plot_area)
         if(i_plot_area .gt. 0) exit
 !
-        call read_control_array_c1(hd_plot_grp, pvr_area_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_plot_grp, pvr_area_ctl, c_buf1)
         call read_control_array_c2_r(ctl_file_code,                     &
      &      hd_sf_enhanse, surf_enhanse_ctl, c_buf1)
       end do

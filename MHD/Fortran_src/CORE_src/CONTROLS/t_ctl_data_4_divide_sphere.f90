@@ -44,7 +44,6 @@
 !
       use m_precision
       use t_control_elements
-      use t_read_control_arrays
       use t_control_array_charaint
 !
       implicit  none
@@ -160,10 +159,8 @@
       subroutine write_control_shell_domain                             &
      &         (id_file, hd_block, sdctl, level)
 !
-      use t_control_array_charaint
       use m_read_control_elements
       use write_control_elements
-      use write_control_arrays
 !
       integer(kind = kint), intent(in) :: id_file
       character(len=kchara), intent(in) :: hd_block

@@ -70,7 +70,7 @@
       use m_read_control_elements
       use skip_comment_f
       use t_control_elements
-      use t_read_control_arrays
+      use t_control_array_character
       use t_control_array_character2
 !
       implicit  none
@@ -242,7 +242,8 @@
 !
         call read_real_ctl_type(hd_iso_value, iso_c%isosurf_value_ctl)
 !
-        call read_control_array_c1(hd_iso_area, iso_c%iso_area_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_iso_area, iso_c%iso_area_ctl, c_buf1)
       end do
 !
       end subroutine read_iso_define_data
@@ -292,8 +293,10 @@
         iso_c%i_iso_plot_area = find_control_end_flag(hd_iso_plot_area)
         if(iso_c%i_iso_plot_area .gt. 0) exit
 !
-        call read_control_array_c1(hd_iso_area, iso_c%iso_area_ctl)
-        call read_control_array_c1(hd_iso_plot_grp, iso_c%iso_area_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_iso_area, iso_c%iso_area_ctl, c_buf1)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_iso_plot_grp, iso_c%iso_area_ctl, c_buf1)
       end do
 !
       end subroutine read_iso_plot_area_ctl

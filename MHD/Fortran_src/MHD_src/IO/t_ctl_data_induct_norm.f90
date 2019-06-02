@@ -29,7 +29,6 @@
       module t_ctl_data_induct_norm
 !
       use m_precision
-      use t_read_control_arrays
       use t_control_array_charareal
 !
       implicit  none

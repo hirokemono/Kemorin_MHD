@@ -117,6 +117,7 @@
      &         (node_grp_name_ctl, node_grp_layer_ctl,                  &
      &          nlayer_ICB, nlayer_CMB, nlayer_EXT, csp_nod_grp)
 !
+      use t_control_array_integer
       use t_control_array_charaint
       use set_cubed_sph_nod_group_ctl
 !
@@ -164,6 +165,7 @@
      &         (elem_grp_name_ctl, elem_grp_layer_ctl,                  &
      &          nlayer_ICB, nlayer_CMB, nlayer_EXT, csp_ele_grp)
 !
+      use t_control_array_integer
       use t_control_array_charaint
       use set_cubed_sph_ele_group_ctl
 !

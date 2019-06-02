@@ -58,7 +58,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
-      use t_read_control_arrays
+      use t_control_array_character
       use t_control_array_integer2
       use t_control_array_real3
       use t_control_elements
@@ -174,8 +174,8 @@
         if(fln%i_vr_fline_ctl .gt. 0) exit
 !
 !
-        call read_control_array_c1(hd_fline_grp,                        &
-     &      fln%fline_area_grp_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_fline_grp, fln%fline_area_grp_ctl, c_buf1)
 !
         call read_control_array_r3(ctl_file_code,                       &
      &      hd_xx_start_point, fln%seed_point_ctl, c_buf1)

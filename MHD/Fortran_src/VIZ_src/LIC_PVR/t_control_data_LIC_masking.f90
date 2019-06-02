@@ -35,7 +35,7 @@
       use m_machine_parameter
       use m_read_control_elements
       use t_control_elements
-      use t_read_control_arrays
+      use t_control_array_real2
       use skip_comment_f
 !
       implicit  none
@@ -87,8 +87,8 @@
      &     (hd_masking_field, mask_ctl%field_name_ctl)
         call read_chara_ctl_type                                        &
      &     (hd_masking_comp, mask_ctl%component_ctl)
-        call read_control_array_r2                                      &
-     &     (hd_masking_range, mask_ctl%mask_range_ctl)
+        call read_control_array_r2(ctl_file_code,                       &
+     &      hd_masking_range, mask_ctl%mask_range_ctl, c_buf1)
       end do
 !
       end subroutine read_lic_masking_ctl_data

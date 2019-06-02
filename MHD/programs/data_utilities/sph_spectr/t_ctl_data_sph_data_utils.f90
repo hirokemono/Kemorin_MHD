@@ -47,7 +47,6 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
       use t_control_elements
-      use t_read_control_arrays
       use t_control_array_character2
 !
       type diff_spectrum_ctl

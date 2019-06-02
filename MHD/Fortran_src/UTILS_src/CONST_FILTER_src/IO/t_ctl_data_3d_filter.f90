@@ -28,7 +28,7 @@
       use m_machine_parameter
       use t_ctl_data_gen_filter
       use t_ctl_data_4_platforms
-      use t_read_control_arrays
+      use t_control_array_character
       use t_ctl_data_filter_files
       use t_control_elements
       use skip_comment_f
@@ -150,8 +150,8 @@
         i_filter_area_ctl = find_control_end_flag(hd_filter_area_ctl)
         if(i_filter_area_ctl .gt. 0) exit
 !
-        call read_control_array_c1                                      &
-     &     (hd_filter_area, fil3_ctl%filter_area_ctl)
+        call read_control_array_c1(ctl_file_code,                       &
+     &      hd_filter_area, fil3_ctl%filter_area_ctl, c_buf1)
       end do
 !
       end subroutine read_filter_area_ctl

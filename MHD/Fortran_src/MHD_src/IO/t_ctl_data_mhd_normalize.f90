@@ -91,7 +91,6 @@
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f
-      use t_read_control_arrays
       use t_control_array_charareal
       use t_ctl_data_momentum_norm
       use t_ctl_data_induct_norm

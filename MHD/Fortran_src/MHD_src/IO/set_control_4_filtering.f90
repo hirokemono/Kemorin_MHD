@@ -49,7 +49,6 @@
       use t_SGS_control_parameter
       use t_ctl_data_SGS_filter
       use t_ctl_data_filter_files
-      use t_read_control_arrays
       use SPH_SGS_ini_model_coefs_IO
       use set_control_ele_layering
       use skip_comment_f
@@ -190,7 +189,7 @@
       subroutine set_control_filter_area(filter_grp_ctl, f_area)
 !
       use t_SGS_control_parameter
-      use t_read_control_arrays
+      use t_control_array_character
 !
       type(ctl_array_chara), intent(in)  :: filter_grp_ctl
       type(SGS_filter_area_params), intent(inout) :: f_area

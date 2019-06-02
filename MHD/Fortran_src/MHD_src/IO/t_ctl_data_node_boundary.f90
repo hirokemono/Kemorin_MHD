@@ -104,7 +104,6 @@
       module t_ctl_data_node_boundary
 !
       use m_precision
-      use t_read_control_arrays
       use t_control_array_chara2real
 !
       implicit  none

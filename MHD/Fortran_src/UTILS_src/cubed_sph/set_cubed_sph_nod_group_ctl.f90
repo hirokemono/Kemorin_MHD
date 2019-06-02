@@ -20,7 +20,6 @@
       module set_cubed_sph_nod_group_ctl
 !
       use m_precision
-      use t_read_control_arrays
       use t_group_data
 !
       implicit  none
@@ -36,6 +35,7 @@
      &          nlayer_ICB, nlayer_CMB, nlayer_EXT,                     &
      &          if_CMB, if_ICB, if_EXT, csp_nod_grp)
 !
+      use t_control_array_integer
       use t_control_array_charaint
       use skip_comment_f
 !
@@ -143,6 +143,7 @@
      &          nlayer_ICB, nlayer_CMB, nlayer_EXT,                     &
      &          if_CMB, if_ICB, if_EXT, csp_nod_grp)
 !
+      use t_control_array_integer
       use t_control_array_charaint
 !
       type(ctl_array_ci), intent(in) :: node_grp_name_ctl

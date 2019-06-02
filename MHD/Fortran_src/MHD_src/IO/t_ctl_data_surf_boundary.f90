@@ -98,7 +98,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use t_read_control_arrays
       use t_control_array_chara2real
 !
       implicit  none

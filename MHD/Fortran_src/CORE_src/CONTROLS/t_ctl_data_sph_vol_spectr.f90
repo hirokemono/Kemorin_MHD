@@ -70,7 +70,7 @@
       use m_precision
 !
       use t_control_elements
-      use t_read_control_arrays
+      use t_control_array_integer
       use skip_comment_f
 !
       implicit  none
@@ -216,8 +216,8 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_control_array_i1                                      &
-     &     (hd_spctr_layer, lp_ctl%idx_spec_layer_ctl)
+        call read_control_array_i1(ctl_file_code,                       &
+     &      hd_spctr_layer, lp_ctl%idx_spec_layer_ctl, c_buf1)
 !
         call read_chara_ctl_type(hd_layer_rms_head,                     &
      &      lp_ctl%layered_pwr_spectr_prefix)

@@ -50,27 +50,6 @@
 !!
 !!      subroutine read_file_name_from_ctl_line(icou, fname)
 !!      subroutine read_file_names_from_ctl_line(num, icou, fname)
-!!
-!!      subroutine read_control_array_real_list(label, num, icou,       &
-!!     &          vec1)
-!!      subroutine read_control_array_real2_list(label, num, icou,      &
-!!     &          vec1, vec2)
-!!      subroutine read_control_array_real3_list(label, num, icou,      &
-!!     &          vec1, vec2, vec3)
-!!      subroutine read_control_array_int_list(label, num, icou, ivect)
-!!      subroutine read_control_array_int2_list(label, num, icou, int1, &
-!!     &          int2)
-!!      subroutine read_control_array_chara_list(label, num, icou, c_tbl)
-!!      subroutine read_control_array_chara2_list(label, num, icou,     &
-!!     &          c1_tbl, c2_tbl)
-!!      subroutine read_control_array_vect_list(label, num, icou,       &
-!!     &          c_tbl, vect)
-!!      subroutine read_control_array_int_v_list(label, num, icou,      &
-!!     &          c_tbl, ivect)
-!!      subroutine read_control_array_c_r2_list(label, num, icou, c_tbl,&
-!!     &          vec1, vec2)
-!!      subroutine read_control_array_c2_r_list(label, num, icou,       &
-!!     &          c1_tbl, c2_tbl, vect)
 !!@endverbatim
 !!
 !!@n @param  label      label for control items
@@ -239,7 +218,8 @@
       if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
       read(c_buf1%ctl_buffer,*) c_buf1%header_chara, real_data
-      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf1%header_chara), real_data
+      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf1%header_chara),    &
+     &                       real_data
       iflag_dat = 1
 !
       end subroutine read_real_ctl_item
@@ -256,7 +236,8 @@
       if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
       read(c_buf1%ctl_buffer,*) c_buf1%header_chara, int_data
-      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf1%header_chara), int_data
+      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf1%header_chara),    &
+     &                        int_data
       iflag_dat = 1
 !
        end subroutine read_integer_ctl_item
@@ -274,8 +255,8 @@
       if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
       read(c_buf1%ctl_buffer,*) c_buf1%header_chara, chara_data
-      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf1%header_chara), ': ',     &
-     &                                    trim(chara_data)
+      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf1%header_chara),    &
+     &                       ': ', trim(chara_data)
       iflag_dat = 1
 !
       end subroutine read_character_ctl_item
@@ -611,284 +592,10 @@
 !
        if(icou .ge. num) return
        icou = icou + 1
-       read(c_buf1%ctl_buffer,*) c_buf1%header_chara, tmpchara, fname(icou)
+       read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                   &
+     &                          tmpchara, fname(icou)
 !
        end subroutine read_file_names_from_ctl_line
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_int_list(label, num, icou, ivect)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      integer (kind=kint), intent(inout) :: ivect(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .ge. num) exit
-!
-        if(c_buf1%header_chara.eq.label) then
-          icou = icou + 1
-          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, ivect(icou)
-       end if
-      end do
-!
-      end subroutine read_control_array_int_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_vect_list(label, num, icou,         &
-     &          c_tbl, vect)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c_tbl(num)
-      real (kind=kreal), intent(inout) :: vect(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .ge. num) exit
-!
-        if(c_buf1%header_chara.eq.label) then
-          icou = icou + 1
-          read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                        &
-     &           c_tbl(icou), vect(icou)
-        end if
-      end do
-!
-      end subroutine read_control_array_vect_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_int_v_list(label, num, icou,        &
-     &          c_tbl, ivect)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c_tbl(num)
-      integer (kind=kint), intent(inout) :: ivect(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .ge. num) exit
-!
-        if(c_buf1%header_chara.eq.label) then
-          icou = icou + 1
-          read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                        &
-     &                            c_tbl(icou), ivect(icou)
-        end if
-      end do
-!
-      end subroutine read_control_array_int_v_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_real_list(label, num, icou,        &
-     &          vec1)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      real (kind=kreal), intent(inout) :: vec1(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .ge. num) exit
-!
-        if(c_buf1%header_chara.eq.label) then
-          icou = icou + 1
-          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, vec1(icou)
-        end if
-      end do
-!
-      end subroutine read_control_array_real_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_real2_list(label, num, icou,        &
-     &          vec1, vec2)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      real (kind=kreal), intent(inout) :: vec1(num), vec2(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .ge. num) exit
-!
-        if(c_buf1%header_chara.eq.label) then
-          icou = icou + 1
-          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, vec1(icou), vec2(icou)
-        end if
-      end do
-!
-      end subroutine read_control_array_real2_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_real3_list(label, num, icou,        &
-     &          vec1, vec2, vec3)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      real (kind=kreal), intent(inout) :: vec1(num), vec2(num)
-      real (kind=kreal), intent(inout) :: vec3(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .ge. num) exit
-!
-        if(c_buf1%header_chara.eq.label) then
-          icou = icou + 1
-          read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                &
-     &                          vec1(icou), vec2(icou), vec3(icou)
-        end if
-      end do
-!
-      end subroutine read_control_array_real3_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_chara_list(label, num, icou, c_tbl)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c_tbl(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
-!
-        if(c_buf1%header_chara.eq.label) then
-          icou = icou + 1
-          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, c_tbl(icou)
-        end if
-      end do
-!
-      end subroutine read_control_array_chara_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_chara2_list(label, num, icou,       &
-     &          c1_tbl, c2_tbl)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c1_tbl(num), c2_tbl(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .ge. num) exit
-!
-        if(c_buf1%header_chara.eq.label) then
-          icou = icou + 1
-          read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                        &
-     &                           c1_tbl(icou), c2_tbl(icou)
-        end if
-      end do
-!
-      end subroutine read_control_array_chara2_list
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_c_r2_list(label, num, icou, c_tbl,  &
-     &          vec1, vec2)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c_tbl(num)
-      real (kind=kreal), intent(inout) :: vec1(num), vec2(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .ge. num) exit
-!
-        if(c_buf1%header_chara.eq.label) then
-          icou = icou + 1
-          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, c_tbl(icou),           &
-     &                           vec1(icou), vec2(icou)
-        end if
-      end do
-!
-      end subroutine read_control_array_c_r2_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_c2_r_list(label, num, icou,         &
-     &          c1_tbl, c2_tbl, vect)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: c1_tbl(num), c2_tbl(num)
-      real (kind=kreal), intent(inout) :: vect(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
-!
-        if(c_buf1%header_chara.eq.label) then
-          icou = icou + 1
-          read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                        &
-     &                         c1_tbl(icou), c2_tbl(icou), vect(icou)
-        end if
-      end do
-!
-      end subroutine read_control_array_c2_r_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_array_int2_list(label, num, icou, int1,   &
-     &          int2)
-!
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(inout) :: icou
-      integer(kind = kint), intent(inout) :: int1(num), int2(num)
-!
-      if (icou .gt. 0) return
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(label, num, icou)
-        if(icou .eq. num) exit
-!
-        if(c_buf1%header_chara.eq.label) then
-          icou = icou + 1
-          read(c_buf1%ctl_buffer,*) c_buf1%header_chara, int1(icou), int2(icou)
-        end if
-      end do
-!
-      end subroutine read_control_array_int2_list
 !
 !   --------------------------------------------------------------------
 !
