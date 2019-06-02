@@ -110,6 +110,7 @@
       use m_read_control_elements
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_charareal
       use t_control_array_chara2real
       use skip_comment_f
       use bcast_control_arrays
@@ -274,16 +275,19 @@
         call read_stereo_view_ctl(mat)
 !
 !
-        call read_control_array_c_r(hd_look_point, mat%lookpoint_ctl)
-        call read_control_array_c_r(hd_view_point, mat%viewpoint_ctl)
-        call read_control_array_c_r(hd_up_dir, mat%up_dir_ctl)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_look_point, mat%lookpoint_ctl, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_view_point, mat%viewpoint_ctl, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_up_dir, mat%up_dir_ctl, c_buf1)
 !
-        call read_control_array_c_r                                     &
-     &     (hd_view_rot_dir, mat%view_rot_vec_ctl)
-        call read_control_array_c_r                                     &
-     &     (hd_scale_fac_dir, mat%scale_vector_ctl)
-        call read_control_array_c_r                                     &
-     &     (hd_viewpt_in_view, mat%viewpt_in_viewer_ctl)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_view_rot_dir, mat%view_rot_vec_ctl, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_scale_fac_dir, mat%scale_vector_ctl, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_viewpt_in_view, mat%viewpt_in_viewer_ctl, c_buf1)
 !
         call read_control_array_c2_r(ctl_file_code,                     &
      &      hd_model_mat, mat%modelview_mat_ctl, c_buf1)

@@ -47,6 +47,7 @@
 !
       use m_precision
       use t_read_control_arrays
+      use t_control_array_charareal
 !
       implicit  none
 !
@@ -128,17 +129,21 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_control_array_c_r(hd_n_mom, mom_ctl%coef_4_intertia)
-        call read_control_array_c_r(hd_n_press, mom_ctl%coef_4_grad_p)
-        call read_control_array_c_r                                     &
-       &   (hd_n_v_diff, mom_ctl%coef_4_viscous)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_mom, mom_ctl%coef_4_intertia, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_press, mom_ctl%coef_4_grad_p, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_v_diff, mom_ctl%coef_4_viscous, c_buf1)
 !
-        call read_control_array_c_r                                     &
-       &   (hd_n_buo, mom_ctl%coef_4_termal_buo)
-        call read_control_array_c_r                                     &
-       &   (hd_n_c_buo, mom_ctl%coef_4_comp_buo)
-        call read_control_array_c_r(hd_n_cor, mom_ctl%coef_4_Coriolis)
-        call read_control_array_c_r(hd_n_lor, mom_ctl%coef_4_Lorentz)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_buo, mom_ctl%coef_4_termal_buo, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_c_buo, mom_ctl%coef_4_comp_buo, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_cor, mom_ctl%coef_4_Coriolis, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_lor, mom_ctl%coef_4_Lorentz, c_buf1)
       end do
 !
       end subroutine read_momentum_ctl

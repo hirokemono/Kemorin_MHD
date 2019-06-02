@@ -32,6 +32,8 @@
 !
       use m_precision
       use t_read_control_arrays
+      use t_control_array_integer2
+      use t_control_array_real3
 !
       implicit  none
 !
@@ -88,10 +90,10 @@
 !
         call read_control_array_c1                                      &
      &     (hd_monitor_grp, nmtr_ctl%group_4_monitor_ctl)
-        call read_control_array_r3                                      &
-     &     (hd_monitor_position, nmtr_ctl%xx_4_monitor_ctl)
-        call read_control_array_i2                                      &
-     &     (hd_monitor_node, nmtr_ctl%node_4_monitor_ctl)
+        call read_control_array_r3(ctl_file_code,                       &
+     &      hd_monitor_position, nmtr_ctl%xx_4_monitor_ctl, c_buf1)
+        call read_control_array_i2(ctl_file_code,                       &
+     &      hd_monitor_node, nmtr_ctl%node_4_monitor_ctl, c_buf1)
       end do
 !
       end subroutine read_monitor_data_ctl

@@ -14,6 +14,8 @@
       use skip_comment_f
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_charaint
+      use t_control_array_integer2
       use t_control_array_intreal
 !
       implicit none
@@ -349,8 +351,8 @@
         i_node_grp_def = find_control_end_flag(hd_node_grp_def)
         if(i_node_grp_def .gt. 0) exit
 !
-        call read_control_array_c_i                                     &
-     &     (hd_num_nod_grp, cubed_sph_c%node_grp_name_ctl)
+        call read_control_array_c_i(ctl_file_code,                      &
+     &      hd_num_nod_grp, cubed_sph_c%node_grp_name_ctl, c_buf1)
         call read_control_array_i1                                      &
      &     (hd_num_nod_layer, cubed_sph_c%node_grp_layer_ctl)
       end do
@@ -372,8 +374,8 @@
         i_ele_grp_def = find_control_end_flag(hd_ele_grp_def)
         if(i_ele_grp_def .gt. 0) exit
 !
-        call read_control_array_c_i                                     &
-     &     (hd_num_ele_grp, cubed_sph_c%elem_grp_name_ctl)
+        call read_control_array_c_i(ctl_file_code,                      &
+     &      hd_num_ele_grp, cubed_sph_c%elem_grp_name_ctl, c_buf1)
         call read_control_array_i1                                      &
      &     (hd_num_ele_layer, cubed_sph_c%elem_grp_layer_ctl)
       end do
@@ -395,10 +397,10 @@
         i_surf_grp_def = find_control_end_flag(hd_surf_grp_def)
         if(i_surf_grp_def .gt. 0) exit
 !
-        call read_control_array_c_i                                     &
-     &     (hd_num_sf_grp, cubed_sph_c%surf_grp_name_ctl)
-        call read_control_array_c_i                                     &
-     &     (hd_num_sf_layer, cubed_sph_c%surf_grp_layer_ctl)
+        call read_control_array_c_i(ctl_file_code,                      &
+     &      hd_num_sf_grp, cubed_sph_c%surf_grp_name_ctl, c_buf1)
+        call read_control_array_c_i(ctl_file_code,                      &
+     &      hd_num_sf_layer, cubed_sph_c%surf_grp_layer_ctl, c_buf1)
       end do
 !
       end subroutine read_ctl_surf_bc_4_shell
@@ -418,8 +420,8 @@
         i_coarse_shell = find_control_end_flag(hd_coarse_shell)
         if(i_coarse_shell .gt. 0) exit
 !
-        call read_control_array_i2                                      &
-     &     (hd_num_level_coarse, cubed_sph_c%sph_coarsing_ctl)
+        call read_control_array_i2(ctl_file_code,                       &
+     &      hd_num_level_coarse, cubed_sph_c%sph_coarsing_ctl, c_buf1)
       end do
 !
       end subroutine read_ctl_4_coarse_shell

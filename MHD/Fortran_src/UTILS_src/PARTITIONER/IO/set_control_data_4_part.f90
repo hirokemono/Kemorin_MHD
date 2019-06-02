@@ -381,6 +381,7 @@
       subroutine set_control_XYZ_RCB(RCB_dir_ctl, part_p)
 !
       use t_read_control_arrays
+      use t_control_array_charaint
       use skip_comment_f
 !
       type(ctl_array_ci), intent(in) :: RCB_dir_ctl
@@ -429,6 +430,7 @@
       subroutine set_control_SPH_RCB(RCB_dir_ctl, part_p)
 !
       use t_read_control_arrays
+      use t_control_array_charaint
       use skip_comment_f
 !
       type(ctl_array_ci), intent(in) :: RCB_dir_ctl
@@ -493,6 +495,7 @@
       subroutine set_control_EQ_XYZ(ndomain_section_ctl, part_p)
 !
       use t_read_control_arrays
+      use t_control_array_charaint
       use skip_comment_f
 !
       type(ctl_array_ci), intent(in) :: ndomain_section_ctl
@@ -524,6 +527,7 @@
      &          ele_grp_layering_ctl, sphere_file_name_ctl, part_p)
 !
       use t_read_control_arrays
+      use t_control_array_charaint
       use t_control_elements
       use skip_comment_f
 !

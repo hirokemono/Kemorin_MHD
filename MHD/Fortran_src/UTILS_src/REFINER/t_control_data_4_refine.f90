@@ -14,6 +14,7 @@
       use t_ctl_data_4_platforms
       use t_read_control_arrays
       use m_read_control_elements
+      use t_control_array_charaint
       use t_control_array_character2
       use skip_comment_f
 !
@@ -211,8 +212,8 @@
         call read_control_array_c2(ctl_file_code,                       &
      &      hd_num_ref_type, refine_ctl%refined_ele_grp_ctl, c_buf1)
 !
-        call read_control_array_c_i                                     &
-     &     (hd_num_ref_code, refine_ctl%refine_i_ele_grp_ctl)
+        call read_control_array_c_i(ctl_file_code,                      &
+     &      hd_num_ref_code, refine_ctl%refine_i_ele_grp_ctl, c_buf1)
 !
         call read_chara_ctl_type                                        &
      &     (hd_itp_type, refine_ctl%interpolate_type_ctl)

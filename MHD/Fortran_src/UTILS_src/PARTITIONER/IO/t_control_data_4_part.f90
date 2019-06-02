@@ -21,6 +21,7 @@
       use t_ctl_data_4_FEM_mesh
       use t_read_control_arrays
       use t_control_elements
+      use t_control_array_charaint
 !
       implicit    none
 !
@@ -292,10 +293,10 @@
         if(i_decomp_ctl .gt. 0) exit
 !
 !
-        call read_control_array_c_i                                     &
-     &     (hd_num_rcb, part_ctl%RCB_dir_ctl)
-        call read_control_array_c_i                                     &
-     &     (hd_num_es, part_ctl%ndomain_section_ctl)
+        call read_control_array_c_i(ctl_file_code,                      &
+     &      hd_num_rcb, part_ctl%RCB_dir_ctl, c_buf1)
+        call read_control_array_c_i(ctl_file_code,                      &
+     &      hd_num_es, part_ctl%ndomain_section_ctl, c_buf1)
         call read_control_array_c1                                      &
      &     (hd_num_r_layerd, part_ctl%ele_grp_layering_ctl)
 !

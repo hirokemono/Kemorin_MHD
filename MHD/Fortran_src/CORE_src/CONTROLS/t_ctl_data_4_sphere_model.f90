@@ -84,6 +84,8 @@
       use m_precision
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_charaint
+      use t_control_array_integer2
       use t_control_array_intreal
 !
       implicit  none
@@ -232,7 +234,8 @@
         call read_control_array_i_r(ctl_file_code,                      &
      &      hd_numlayer_shell, spctl%radius_ctl, c_buf1)
 !
-        call read_control_array_c_i(hd_bc_sph, spctl%radial_grp_ctl)
+        call read_control_array_c_i(ctl_file_code,                      &
+     &      hd_bc_sph, spctl%radial_grp_ctl, c_buf1)
 !
 !
         call read_chara_ctl_type                                        &
@@ -269,10 +272,10 @@
         call read_integer_ctl_type                                      &
      &     (hd_num_med_grp, spctl%num_med_layer_ctl)
 !
-        call read_control_array_i2                                      &
-     &     (hd_list_radial_grp, spctl%radial_layer_list_ctl)
-        call read_control_array_i2                                      &
-     &     (hd_list_med_grp, spctl%med_layer_list_ctl)
+        call read_control_array_i2(ctl_file_code,                       &
+     &      hd_list_radial_grp, spctl%radial_layer_list_ctl, c_buf1)
+        call read_control_array_i2(ctl_file_code,                       &
+     &      hd_list_med_grp, spctl%med_layer_list_ctl, c_buf1)
       end do
 !
       end subroutine read_control_shell_define

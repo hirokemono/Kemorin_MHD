@@ -92,6 +92,7 @@
       use m_read_control_elements
       use skip_comment_f
       use t_read_control_arrays
+      use t_control_array_charareal
       use t_ctl_data_momentum_norm
       use t_ctl_data_induct_norm
       use t_ctl_data_termal_norm
@@ -166,7 +167,8 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
-        call read_control_array_c_r(hd_dimless, dless_ctl%dimless)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_dimless, dless_ctl%dimless, c_buf1)
       end do
 !
       end subroutine read_dimless_ctl

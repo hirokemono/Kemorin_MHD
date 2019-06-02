@@ -13,7 +13,7 @@
 !!     &         (id_control, label, array_i2r, c_buf)
 !!        type(ctl_array_i2r), intent(inout) :: array_i2r
 !!      subroutine write_control_array_i2_r                             &
-!!     &         (id_file, level, label, array_i2r)
+!!     &         (id_control, level, label, array_i2r)
 !!        type(ctl_array_i2r), intent(in) :: array_i2r
 !!
 !!      subroutine append_control_array_i2_r(read_i2r, array_i2r)

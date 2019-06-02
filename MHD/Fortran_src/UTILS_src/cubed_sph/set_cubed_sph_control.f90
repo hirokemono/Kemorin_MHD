@@ -153,7 +153,7 @@
      &         (sph_coarsing_ctl, course_p)
 !
       use t_numref_cubed_sph
-      use t_read_control_arrays
+      use t_control_array_integer2
       use skip_comment_f
 !
       type(ctl_array_i2), intent(in) :: sph_coarsing_ctl

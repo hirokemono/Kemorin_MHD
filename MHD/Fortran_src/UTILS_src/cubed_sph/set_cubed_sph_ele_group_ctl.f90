@@ -33,6 +33,7 @@
       subroutine set_cubed_sph_element_grp_num(elem_grp_name_ctl,       &
      &          if_CMB, if_ICB, if_EXT, csp_ele_grp)
 !
+      use t_control_array_charaint
       use skip_comment_f
 !
       type(ctl_array_ci), intent(in) :: elem_grp_name_ctl
@@ -71,6 +72,7 @@
      &          nlayer_ICB, nlayer_CMB, nlayer_EXT,                     &
      &          if_CMB, if_ICB, if_EXT, csp_ele_grp)
 !
+      use t_control_array_charaint
       use skip_comment_f
 !
       type(ctl_array_ci), intent(in) :: elem_grp_name_ctl
@@ -128,6 +130,7 @@
      &          nlayer_ICB, nlayer_CMB, nlayer_EXT,                     &
      &          if_CMB, if_ICB, if_EXT, csp_ele_grp)
 !
+      use t_control_array_charaint
       use skip_comment_f
 !
       type(ctl_array_ci), intent(in) :: elem_grp_name_ctl

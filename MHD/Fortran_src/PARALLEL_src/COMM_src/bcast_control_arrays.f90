@@ -253,6 +253,7 @@
 !
       subroutine bcast_ctl_array_r3(array_r3)
 !
+      use t_control_array_real3
       use transfer_to_long_integers
 !
       type(ctl_array_r3), intent(inout) :: array_r3
@@ -303,6 +304,7 @@
 !
       subroutine bcast_ctl_array_i2(array_i2)
 !
+      use t_control_array_integer2
       use transfer_to_long_integers
 !
       type(ctl_array_i2), intent(inout) :: array_i2
@@ -405,6 +407,7 @@
 !
       subroutine bcast_ctl_array_cr(array_cr)
 !
+      use t_control_array_charareal
       use transfer_to_long_integers
 !
       type(ctl_array_cr), intent(inout) :: array_cr
@@ -430,6 +433,7 @@
 !
       subroutine bcast_ctl_array_ci(array_ci)
 !
+      use t_control_array_charaint
       use transfer_to_long_integers
 !
       type(ctl_array_ci), intent(inout) :: array_ci
@@ -455,6 +459,7 @@
 !
       subroutine bcast_ctl_array_cr2(array_cr2)
 !
+      use t_control_array_charareal2
       use transfer_to_long_integers
 !
       type(ctl_array_cr2), intent(inout) :: array_cr2

@@ -58,6 +58,7 @@
 !
       use m_precision
       use t_read_control_arrays
+      use t_control_array_charareal
 !
       implicit  none
 !
@@ -125,12 +126,12 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_control_array_c_r                                     &
-     &     (hd_n_thermal, heat_ctl%coef_4_adv_flux)
-        call read_control_array_c_r                                     &
-     &     (hd_n_t_diff, heat_ctl%coef_4_diffuse)
-        call read_control_array_c_r                                     &
-     &     (hd_n_h_src, heat_ctl%coef_4_source)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_thermal, heat_ctl%coef_4_adv_flux, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_t_diff, heat_ctl%coef_4_diffuse, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_h_src, heat_ctl%coef_4_source, c_buf1)
       end do
 !
       end subroutine read_thermal_ctl
@@ -158,12 +159,12 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_control_array_c_r                                     &
-     &     (hd_n_dscalar, comp_ctl%coef_4_adv_flux)
-        call read_control_array_c_r                                     &
-     &     (hd_n_dsc_diff, comp_ctl%coef_4_diffuse)
-        call read_control_array_c_r                                     &
-     &     (hd_n_dsc_src, comp_ctl%coef_4_source)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_dscalar, comp_ctl%coef_4_adv_flux, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_dsc_diff, comp_ctl%coef_4_diffuse, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_dsc_src, comp_ctl%coef_4_source, c_buf1)
       end do
 !
       end subroutine read_composition_eq_ctl

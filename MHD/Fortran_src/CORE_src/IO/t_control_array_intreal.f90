@@ -13,7 +13,7 @@
 !!     &         (id_control, label, array_ir, c_buf)
 !!        type(ctl_array_ir), intent(inout) :: array_ir
 !!      subroutine write_control_array_i_r                              &
-!!     &         (id_file, level, label, array_ir)
+!!     &         (id_control, level, label, array_ir)
 !!        type(ctl_array_ir), intent(in) :: array_ir
 !!
 !!      subroutine append_control_array_i_r(read_ir, array_ir)

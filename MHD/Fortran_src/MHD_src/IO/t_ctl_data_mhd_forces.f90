@@ -89,6 +89,7 @@
       use m_read_control_elements
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_charareal
       use calypso_mpi
       use skip_comment_f
       use bcast_control_arrays
@@ -206,8 +207,8 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
-        call read_control_array_c_r                                     &
-     &     (hd_gravity_vect, g_ctl%gravity_vector)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_gravity_vect, g_ctl%gravity_vector, c_buf1)
 !
         call read_chara_ctl_type(hd_gravity_type, g_ctl%gravity)
       end do
@@ -233,8 +234,8 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_control_array_c_r                                     &
-     &     (hd_rotation_vec, cor_ctl%system_rotation)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_rotation_vec, cor_ctl%system_rotation, c_buf1)
       end do
 !
       end subroutine read_coriolis_ctl
@@ -257,7 +258,8 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
-        call read_control_array_c_r(hd_magne_vect, mcv_ctl%ext_magne)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_magne_vect, mcv_ctl%ext_magne, c_buf1)
 !
         call read_chara_ctl_type(hd_magneto_cv, mcv_ctl%magneto_cv)
       end do

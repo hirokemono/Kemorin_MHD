@@ -30,6 +30,7 @@
 !
       use m_precision
       use t_read_control_arrays
+      use t_control_array_charareal
 !
       implicit  none
 !
@@ -97,14 +98,14 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_control_array_c_r                                     &
-     &     (hd_n_magne, induct_ctl%coef_4_magne_evo)
-        call read_control_array_c_r                                     &
-     &     (hd_n_mag_p, induct_ctl%coef_4_mag_potential)
-        call read_control_array_c_r                                     &
-     &     (hd_n_m_diff, induct_ctl%coef_4_mag_diffuse)
-        call read_control_array_c_r                                     &
-     &     (hd_n_induct, induct_ctl%coef_4_induction)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_magne, induct_ctl%coef_4_magne_evo, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_mag_p, induct_ctl%coef_4_mag_potential, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_m_diff, induct_ctl%coef_4_mag_diffuse, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_n_induct, induct_ctl%coef_4_induction, c_buf1)
       end do
 !
       end subroutine read_induction_ctl

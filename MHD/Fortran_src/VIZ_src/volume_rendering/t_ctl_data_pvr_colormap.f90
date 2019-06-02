@@ -103,6 +103,7 @@
       use t_ctl_data_4_view_transfer
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_real3
       use skip_comment_f
       use bcast_control_arrays
 !
@@ -315,8 +316,8 @@
         light%i_pvr_lighting = find_control_end_flag(hd_block)
         if(light%i_pvr_lighting .gt. 0) exit
 !
-        call read_control_array_r3                                      &
-     &     (hd_light_param, light%light_position_ctl)
+        call read_control_array_r3(ctl_file_code,                       &
+     &      hd_light_param, light%light_position_ctl, c_buf1)
 !
         call read_real_ctl_type(hd_ambient, light%ambient_coef_ctl )
         call read_real_ctl_type(hd_diffuse, light%diffuse_coef_ctl )
@@ -381,8 +382,8 @@
         call read_control_array_r2                                      &
      &     (hd_linear_opacity, color%linear_opacity_ctl)
 !
-        call read_control_array_r3                                      &
-     &     (hd_opacity_def, color%step_opacity_ctl)
+        call read_control_array_r3(ctl_file_code,                       &
+     &      hd_opacity_def, color%step_opacity_ctl, c_buf1)
 !
         call read_chara_ctl_type                                        &
      &     (hd_lic_color_fld, color%lic_color_fld_ctl)

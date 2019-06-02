@@ -26,14 +26,20 @@
 !!      subroutine read_real2_ctl_item(label, iflag_dat, real1, real2)
 !!      subroutine read_real3_ctl_item                                  &
 !!     &         (label, iflag_dat, real1, real2, real3)
+!!      subroutine read_integer2_ctl_item(label, iflag_dat, int1, int2)
 !!      subroutine read_integer3_ctl_item                               &
 !!     &         (label, iflag_dat, int1, int2, int3)
 !!      subroutine read_character2_ctl_item(label, iflag_dat,           &
 !!     &          chara1, chara2)
 !!      subroutine read_character3_ctl_item(label, iflag_dat,           &
 !!     &          chara1, chara2, chara3)
+!!      subroutine read_charreal2_ctl_item                              &
+!!     &         (label, iflag_dat, chara, vec1, vec2)
 !!      subroutine read_char2real_ctl_item                              &
 !!     &         (label, iflag_dat, chara1, chara2, vect)
+!!      subroutine read_charareal_ctl_item                              &
+!!     &         (label, iflag_dat, chara, vect)
+!!      subroutine read_charaint_ctl_item(label, iflag_dat, chara, ivec)
 !!      subroutine read_intchrreal_ctl_item                             &
 !!     &         (label, iflag_dat, ivec, chara, vect)
 !!      subroutine read_intreal_ctl_item(label, iflag_dat, ivec, vect)
@@ -314,6 +320,24 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine read_integer2_ctl_item(label, iflag_dat, int1, int2)
+!
+      character(len=kchara), intent(in) :: label
+      integer (kind=kint), intent(inout) :: iflag_dat
+      integer (kind=kint), intent(inout) :: int1, int2
+!
+!
+      if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
+!
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara, int1, int2
+      if (iflag_debug .gt. 0)  write(*,'(a,a2,2i6)')                    &
+     &            trim(c_buf1%header_chara), ': ', int1, int2
+      iflag_dat = 1
+!
+      end subroutine read_integer2_ctl_item
+!
+!   --------------------------------------------------------------------
+!
       subroutine read_integer3_ctl_item                                 &
      &         (label, iflag_dat, int1, int2, int3)
 !
@@ -378,6 +402,28 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine read_charreal2_ctl_item                                &
+     &         (label, iflag_dat, chara, vec1, vec2)
+!
+      character(len=kchara), intent(in) :: label
+      integer(kind = kint), intent(inout) :: iflag_dat
+      character(len=kchara), intent(inout) :: chara
+      real(kind = kreal), intent(inout) :: vec1, vec2
+!
+!
+      if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
+!
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara, chara, vec1, vec2
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+     &            trim(c_buf1%header_chara), ' chara: ', chara
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1p2e23.15)')              &
+     &            trim(c_buf1%header_chara), ' real: ', vec1, vec2
+      iflag_dat = 1
+!
+       end subroutine read_charreal2_ctl_item
+!
+!   --------------------------------------------------------------------
+!
       subroutine read_char2real_ctl_item                                &
      &         (label, iflag_dat, chara1, chara2, vect)
 !
@@ -389,16 +435,60 @@
 !
       if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
-      read(c_buf1%ctl_buffer,*) c_buf1%header_chara, chara1, chara2, vect
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                    &
+     &                         chara1, chara2, vect
       if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
      &            trim(c_buf1%header_chara), ' 1: ', chara1
       if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
      &            trim(c_buf1%header_chara), ' 2: ', chara2
-      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1pe23.15)')               &
      &            trim(c_buf1%header_chara), ' real: ', vect
       iflag_dat = 1
 !
        end subroutine read_char2real_ctl_item
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_charareal_ctl_item                                &
+     &         (label, iflag_dat, chara, vect)
+!
+      character(len=kchara), intent(in) :: label
+      integer(kind = kint), intent(inout) :: iflag_dat
+      character(len=kchara), intent(inout) :: chara
+      real(kind = kreal), intent(inout) :: vect
+!
+!
+      if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
+!
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara, chara, vect
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,a)')                      &
+     &            trim(c_buf1%header_chara), ' char: ', chara
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,1pe23.15)')               &
+     &            trim(c_buf1%header_chara), ' vect: ', vect
+      iflag_dat = 1
+!
+       end subroutine read_charareal_ctl_item
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_charaint_ctl_item(label, iflag_dat, chara, ivec)
+!
+      character(len=kchara), intent(in) :: label
+      integer(kind = kint), intent(inout) :: iflag_dat
+      character(len=kchara), intent(inout) :: chara
+      integer(kind = kint), intent(inout) :: ivec
+!
+!
+      if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
+!
+      read(c_buf1%ctl_buffer,*) c_buf1%header_chara, chara, ivec
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,a)')                      &
+     &            trim(c_buf1%header_chara), ' char: ', chara
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,i16)')                    &
+     &            trim(c_buf1%header_chara), ' int:  ', ivec
+      iflag_dat = 1
+!
+       end subroutine read_charaint_ctl_item
 !
 !   --------------------------------------------------------------------
 !
@@ -415,11 +505,11 @@
       if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
       read(c_buf1%ctl_buffer,*) c_buf1%header_chara, ivec, chara, vect
-      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,i16)')                    &
      &            trim(c_buf1%header_chara), ' int:  ', ivec
-      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,a)')                      &
      &            trim(c_buf1%header_chara), ' char: ', chara
-      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1pe23.15)')               &
      &            trim(c_buf1%header_chara), ' real: ', vect
       iflag_dat = 1
 !
@@ -438,9 +528,9 @@
       if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
       read(c_buf1%ctl_buffer,*) c_buf1%header_chara, ivec, vect
-      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,i16)')                    &
      &            trim(c_buf1%header_chara), ' int:  ', ivec
-      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1pe23.15)')               &
      &            trim(c_buf1%header_chara), ' real: ', vect
       iflag_dat = 1
 !
@@ -460,9 +550,9 @@
       if(iflag_dat.gt.0 .or. c_buf1%header_chara.ne.label) return
 !
       read(c_buf1%ctl_buffer,*) c_buf1%header_chara, int1, int2, vect
-      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,2i16)')                   &
      &            trim(c_buf1%header_chara), ' int:  ', int1, int2
-      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1pe23.15)')               &
      &            trim(c_buf1%header_chara), ' real: ', vect
       iflag_dat = 1
 !
@@ -483,9 +573,9 @@
 !
       read(c_buf1%ctl_buffer,*) c_buf1%header_chara,                    &
      &                         int1, int2, vec1, vec2
-      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,2i16)')                   &
      &            trim(c_buf1%header_chara), ' int:  ', int1, int2
-      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1p2e23.15)')              &
      &            trim(c_buf1%header_chara), ' real: ', vec1, vec2
       iflag_dat = 1
 !

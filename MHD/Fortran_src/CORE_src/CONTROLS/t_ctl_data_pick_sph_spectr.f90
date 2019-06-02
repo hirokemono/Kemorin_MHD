@@ -76,6 +76,7 @@
 !
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_integer2
       use skip_comment_f
 !
       implicit  none
@@ -224,8 +225,8 @@
         call read_control_array_i1                                      &
      &     (hd_pick_layer, pspec_ctl%idx_pick_layer_ctl)
 !
-        call read_control_array_i2                                      &
-     &     (hd_pick_sph_lm, pspec_ctl%idx_pick_sph_ctl)
+        call read_control_array_i2(ctl_file_code,                       &
+     &      hd_pick_sph_lm, pspec_ctl%idx_pick_sph_ctl, c_buf1)
         call read_control_array_i1                                      &
      &     (hd_pick_sph_l, pspec_ctl%idx_pick_sph_l_ctl)
         call read_control_array_i1                                      &
@@ -256,8 +257,8 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_control_array_i2                                      &
-     &     (hd_pick_gauss_lm, g_pwr%idx_gauss_ctl)
+       call read_control_array_i2(ctl_file_code,                       &
+     &      hd_pick_gauss_lm, g_pwr%idx_gauss_ctl, c_buf1)
         call read_control_array_i1                                      &
      &     (hd_pick_gauss_l, g_pwr%idx_gauss_l_ctl)
         call read_control_array_i1                                      &

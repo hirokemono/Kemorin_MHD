@@ -57,10 +57,6 @@
 !!
 !!      subroutine write_control_array_int_list                         &
 !!     &         (id_file, level, label, num, ivect)
-!!      subroutine write_control_array_vect_list                        &
-!!     &         (id_file, level, label, num, c_tbl, vect)
-!!      subroutine write_control_array_int_v_list                       &
-!!     &         (id_file, level, label, num, c_tbl, ivect)
 !!      subroutine write_control_array_real_list                        &
 !!     &         (id_file, level, label, num, vec1)
 !!      subroutine write_control_array_real2_list                       &
@@ -69,10 +65,6 @@
 !!     &         (id_file, level, label, num, vec1, vec2, vec3)
 !!      subroutine write_control_array_chara_list                       &
 !!     &         (id_file, level, label, num, c_tbl)
-!!      subroutine write_control_array_c_r2_list                        &
-!!     &         (id_file, level, label, num, c_tbl,  vec1, vec2)
-!!      subroutine write_control_array_int2_list                        &
-!!     &         (id_file, level, label, num, int1, int2)
 !!@endverbatim
 !!
 !!@n @param  ctl_name   label for control block
@@ -576,52 +568,6 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_vect_list                          &
-     &         (id_file, level, label, num, c_tbl, vect)
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      character(len=kchara), intent(in) :: c_tbl(num)
-      real (kind=kreal), intent(in) :: vect(num)
-!
-      integer(kind = kint) :: i
-!
-!
-      call write_array_flag_for_ctl(id_file, level, label, num)
-      do i = 1, num
-        call write_chara_real_ctl_item                                  &
-     &     (id_file, (level+1), label, c_tbl(i), vect(i))
-      end do
-      call write_end_array_flag_for_ctl(id_file, level, label)
-!
-      end subroutine write_control_array_vect_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_array_int_v_list                         &
-     &         (id_file, level, label, num, c_tbl, ivect)
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      character(len=kchara), intent(in) :: c_tbl(num)
-      integer (kind=kint), intent(in) :: ivect(num)
-!
-      integer(kind = kint) :: i
-!
-!
-      call write_array_flag_for_ctl(id_file, level, label, num)
-      do i = 1, num
-        call write_chara_int_ctl_item                                   &
-     &     (id_file, (level+1), label, c_tbl(i), ivect(i))
-      end do
-      call write_end_array_flag_for_ctl(id_file, level, label)
-!
-      end subroutine write_control_array_int_v_list
-!
-!   --------------------------------------------------------------------
-!
       subroutine write_control_array_real_list                          &
      &         (id_file, level, label, num, vec1)
 !
@@ -667,29 +613,6 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_real3_list                         &
-     &         (id_file, level, label, num, vec1, vec2, vec3)
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      real (kind=kreal), intent(in) :: vec1(num), vec2(num)
-      real (kind=kreal), intent(in) :: vec3(num)
-!
-      integer(kind = kint) :: i
-!
-!
-      call write_array_flag_for_ctl(id_file, level, label, num)
-      do i = 1, num
-        call write_real3_ctl_item                                       &
-     &     (id_file, (level+1), label, vec1(i), vec2(i), vec3(i))
-      end do
-      call write_end_array_flag_for_ctl(id_file, level, label)
-!
-      end subroutine write_control_array_real3_list
-!
-!   --------------------------------------------------------------------
-!
       subroutine write_control_array_chara_list                         &
      &         (id_file, level, label, num, c_tbl)
 !
@@ -710,51 +633,6 @@
       call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_chara_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_array_c_r2_list                          &
-     &         (id_file, level, label, num, c_tbl,  vec1, vec2)
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      character(len=kchara), intent(in) :: c_tbl(num)
-      real (kind=kreal), intent(in) :: vec1(num), vec2(num)
-!
-      integer(kind = kint) :: i
-!
-!
-      call write_array_flag_for_ctl(id_file, level, label, num)
-      do i = 1, num
-        call write_chara_real2_ctl_item(id_file, (level+1),             &
-     &      label, c_tbl(i), vec1(i), vec2(i))
-      end do
-      call write_end_array_flag_for_ctl(id_file, level, label)
-!
-      end subroutine write_control_array_c_r2_list
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_array_int2_list                          &
-     &         (id_file, level, label, num, int1, int2)
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: int1(num), int2(num)
-!
-      integer(kind = kint) :: i
-!
-!
-      call write_array_flag_for_ctl(id_file, level, label, num)
-      do i = 1, num
-        call write_integer2_ctl_item                                    &
-     &     (id_file, (level+1), label, int1(i), int2(i))
-      end do
-      call write_end_array_flag_for_ctl(id_file, level, label)
-!
-      end subroutine write_control_array_int2_list
 !
 !   --------------------------------------------------------------------
 !

@@ -14,6 +14,7 @@
       use t_ctl_data_4_platforms
       use t_read_control_arrays
       use t_control_elements
+      use t_control_array_charareal2
       use skip_comment_f
 !
       implicit    none
@@ -175,14 +176,14 @@
         i_add_ele_grp_para = find_control_end_flag(hd_add_ele_grp_para)
         if(i_add_ele_grp_para .gt. 0) exit
 !
-        call read_control_array_c_r2                                    &
-     &      (hd_num_r_ele_grping, addgrp_c%r_ele_grouping_ctl)
-        call read_control_array_c_r2                                    &
-     &      (hd_num_t_ele_grping, addgrp_c%t_ele_grouping_ctl)
-        call read_control_array_c_r2                                    &
-     &      (hd_num_s_ele_grping, addgrp_c%s_ele_grouping_ctl)
-        call read_control_array_c_r2                                    &
-     &      (hd_num_z_ele_grping, addgrp_c%z_ele_grouping_ctl)
+        call read_control_array_c_r2(ctl_file_code,                     &
+     &      hd_num_r_ele_grping, addgrp_c%r_ele_grouping_ctl, c_buf1)
+        call read_control_array_c_r2(ctl_file_code,                     &
+     &      hd_num_t_ele_grping, addgrp_c%t_ele_grouping_ctl, c_buf1)
+        call read_control_array_c_r2(ctl_file_code,                     &
+     &      hd_num_s_ele_grping, addgrp_c%s_ele_grouping_ctl, c_buf1)
+        call read_control_array_c_r2(ctl_file_code,                     &
+     &      hd_num_z_ele_grping, addgrp_c%z_ele_grouping_ctl, c_buf1)
 !
 !
         call read_chara_ctl_type(hd_2nd_grp_direction,                  &

@@ -117,6 +117,7 @@
      &         (node_grp_name_ctl, node_grp_layer_ctl,                  &
      &          nlayer_ICB, nlayer_CMB, nlayer_EXT, csp_nod_grp)
 !
+      use t_control_array_charaint
       use set_cubed_sph_nod_group_ctl
 !
       type(ctl_array_ci), intent(in) :: node_grp_name_ctl
@@ -163,6 +164,7 @@
      &         (elem_grp_name_ctl, elem_grp_layer_ctl,                  &
      &          nlayer_ICB, nlayer_CMB, nlayer_EXT, csp_ele_grp)
 !
+      use t_control_array_charaint
       use set_cubed_sph_ele_group_ctl
 !
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
@@ -208,6 +210,7 @@
      &         (surf_grp_name_ctl, surf_grp_layer_ctl,                  &
      &          nlayer_ICB, nlayer_CMB, nlayer_EXT, csp_surf_grp)
 !
+      use t_control_array_charaint
       use set_cubed_sph_sf_group_ctl
 !
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB

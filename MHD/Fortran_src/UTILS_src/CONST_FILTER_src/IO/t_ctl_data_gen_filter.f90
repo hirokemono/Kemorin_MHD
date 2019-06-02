@@ -16,6 +16,7 @@
       use m_read_control_elements
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_charareal
       use t_control_array_intchrreal
       use t_ctl_data_4_solvers
 !
@@ -166,10 +167,10 @@
         call read_control_array_i_c_r(ctl_file_code,                    &
      &      hd_order_moments, gen_f_ctl%ref_filter_mom_ctl, c_buf1)
 !
-        call read_control_array_c_r                                     &
-     &     (hd_ref_filter, gen_f_ctl%reference_filter_ctl)
-        call read_control_array_c_r                                     &
-     &     (hd_horiz_filter, gen_f_ctl%horizontal_filter_ctl)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_ref_filter, gen_f_ctl%reference_filter_ctl, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_horiz_filter, gen_f_ctl%horizontal_filter_ctl, c_buf1)
 !
 !
         call read_chara_ctl_type                                        &

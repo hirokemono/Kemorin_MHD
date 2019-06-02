@@ -45,6 +45,7 @@
       use m_precision
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_charaint
 !
       implicit  none
 !
@@ -144,12 +145,12 @@
         call read_integer_ctl_type                                      &
      &     (hd_num_horiz_domain, sdctl%num_horiz_domain_ctl)
 !
-        call read_control_array_c_i                                     &
-     &     (hd_ndomain_rtp, sdctl%ndomain_sph_grid_ctl)
-        call read_control_array_c_i                                     &
-     &     (hd_ndomain_rtm, sdctl%ndomain_legendre_ctl)
-        call read_control_array_c_i                                     &
-     &     (hd_ndomain_rj, sdctl%ndomain_spectr_ctl)
+        call read_control_array_c_i(ctl_file_code,                      &
+     &      hd_ndomain_rtp, sdctl%ndomain_sph_grid_ctl, c_buf1)
+        call read_control_array_c_i(ctl_file_code,                      &
+     &      hd_ndomain_rtm, sdctl%ndomain_legendre_ctl, c_buf1)
+        call read_control_array_c_i(ctl_file_code,                      &
+     &      hd_ndomain_rj, sdctl%ndomain_spectr_ctl, c_buf1)
       end do
 !
       end subroutine read_control_shell_domain
@@ -159,6 +160,7 @@
       subroutine write_control_shell_domain                             &
      &         (id_file, hd_block, sdctl, level)
 !
+      use t_control_array_charaint
       use m_read_control_elements
       use write_control_elements
       use write_control_arrays

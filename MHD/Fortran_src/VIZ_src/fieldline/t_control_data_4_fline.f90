@@ -59,6 +59,8 @@
       use m_machine_parameter
       use m_read_control_elements
       use t_read_control_arrays
+      use t_control_array_integer2
+      use t_control_array_real3
       use t_control_elements
       use skip_comment_f
       use calypso_mpi
@@ -175,10 +177,10 @@
         call read_control_array_c1(hd_fline_grp,                        &
      &      fln%fline_area_grp_ctl)
 !
-        call read_control_array_r3                                      &
-     &     (hd_xx_start_point, fln%seed_point_ctl)
-        call read_control_array_i2                                      &
-     &     (hd_start_global_surf, fln%seed_surface_ctl)
+        call read_control_array_r3(ctl_file_code,                       &
+     &      hd_xx_start_point, fln%seed_point_ctl, c_buf1)
+        call read_control_array_i2(ctl_file_code,                       &
+     &      hd_start_global_surf, fln%seed_surface_ctl, c_buf1)
 !
 !
         call read_chara_ctl_type(hd_fline_file_head,                    &

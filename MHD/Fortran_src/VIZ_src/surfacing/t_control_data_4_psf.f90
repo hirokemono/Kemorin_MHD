@@ -122,6 +122,7 @@
       use skip_comment_f
       use t_control_elements
       use t_read_control_arrays
+      use t_control_array_charareal
       use t_control_array_character2
 !
       implicit  none
@@ -337,12 +338,14 @@
         if(psf_c%i_surface_define .gt. 0) exit
 !
 !
-        call read_control_array_c_r(hd_coefs_ctl, psf_c%psf_coefs_ctl)
-        call read_control_array_c_r                                     &
-     &     (hd_center_ctl, psf_c%psf_center_ctl)
-        call read_control_array_c_r                                     &
-     &     (hd_normal_ctl, psf_c%psf_normal_ctl)
-        call read_control_array_c_r(hd_axis_ctl, psf_c%psf_axis_ctl)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_coefs_ctl, psf_c%psf_coefs_ctl, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_center_ctl, psf_c%psf_center_ctl, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_normal_ctl, psf_c%psf_normal_ctl, c_buf1)
+        call read_control_array_c_r(ctl_file_code,                      &
+     &      hd_axis_ctl, psf_c%psf_axis_ctl, c_buf1)
 !
         call read_control_array_c1(hd_psf_area, psf_c%psf_area_ctl)
 !
