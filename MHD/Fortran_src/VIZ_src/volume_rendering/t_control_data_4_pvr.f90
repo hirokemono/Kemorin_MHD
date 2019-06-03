@@ -315,22 +315,26 @@
         call read_pvr_rotation_ctl(hd_pvr_rotation, pvr_ctl%movie)
 !
 !
-        call read_chara_ctl_type(hd_pvr_updated, pvr_ctl%updated_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_pvr_file_head, pvr_ctl%file_head_ctl)
-        call read_chara_ctl_type(hd_pvr_out_type, pvr_ctl%file_fmt_ctl)
+     &     (c_buf1, hd_pvr_updated, pvr_ctl%updated_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_pvr_monitor, pvr_ctl%monitoring_ctl)
+     &     (c_buf1, hd_pvr_file_head, pvr_ctl%file_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_pvr_rgba_type, pvr_ctl%transparent_ctl)
+     &     (c_buf1, hd_pvr_out_type, pvr_ctl%file_fmt_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_pvr_monitor, pvr_ctl%monitoring_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_pvr_rgba_type, pvr_ctl%transparent_ctl)
 !
-        call read_chara_ctl_type(hd_pvr_streo, pvr_ctl%streo_ctl)
-        call read_chara_ctl_type(hd_pvr_anaglyph, pvr_ctl%anaglyph_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_pvr_streo, pvr_ctl%streo_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_pvr_anaglyph, pvr_ctl%anaglyph_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_output_field_def, pvr_ctl%pvr_field_ctl)
+     &     (c_buf1, hd_output_field_def, pvr_ctl%pvr_field_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_output_comp_def, pvr_ctl%pvr_comp_ctl)
+     &     (c_buf1, hd_output_comp_def, pvr_ctl%pvr_comp_ctl)
       end do
 !
       end subroutine read_pvr_ctl
@@ -352,7 +356,8 @@
         pvr_ctl%i_pvr_ctl = find_control_end_flag(hd_block)
         if(pvr_ctl%i_pvr_ctl .gt. 0) exit
 !
-        call read_chara_ctl_type(hd_pvr_updated, pvr_ctl%updated_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_pvr_updated, pvr_ctl%updated_ctl)
       end do
 !
       end subroutine read_pvr_update_flag

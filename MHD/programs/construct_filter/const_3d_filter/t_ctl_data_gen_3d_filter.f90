@@ -141,7 +141,8 @@
 !
         call read_filter_param_ctl(gen_f_ctl)
         call read_filter_fnames_control                                 &
-     &     (hd_filter_fnames, i_filter_fnames, fil3_ctl%ffile_3d_ctl)
+     &     (ctl_file_code, hd_filter_fnames, i_filter_fnames,           &
+     &      fil3_ctl%ffile_3d_ctl, c_buf1)
         call read_org_filter_fnames_ctl(org_fil_files_ctl)
 !
         call read_filter_area_ctl(fil3_ctl)

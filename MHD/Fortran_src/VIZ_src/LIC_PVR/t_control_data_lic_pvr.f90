@@ -183,14 +183,21 @@
 !
         call read_lic_control_data(hd_lic_ctl, lic_ctl)
 !
-        call read_chara_ctl_type(hd_pvr_updated, pvr%updated_ctl)
-        call read_chara_ctl_type(hd_lic_file_head, pvr%file_head_ctl)
-        call read_chara_ctl_type(hd_lic_out_type, pvr%file_fmt_ctl )
-        call read_chara_ctl_type(hd_pvr_monitor, pvr%monitoring_ctl)
-        call read_chara_ctl_type(hd_pvr_rgba_type, pvr%transparent_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_pvr_updated, pvr%updated_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_lic_file_head, pvr%file_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_lic_out_type, pvr%file_fmt_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_pvr_monitor, pvr%monitoring_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_pvr_rgba_type, pvr%transparent_ctl)
 !
-        call read_chara_ctl_type(hd_pvr_streo, pvr%streo_ctl)
-        call read_chara_ctl_type(hd_pvr_anaglyph, pvr%anaglyph_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_pvr_streo, pvr%streo_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_pvr_anaglyph, pvr%anaglyph_ctl)
       end do
 !
       end subroutine read_lic_pvr_ctl

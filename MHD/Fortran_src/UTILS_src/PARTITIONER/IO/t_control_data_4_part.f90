@@ -302,28 +302,28 @@
 !
 !
         call read_integer_ctl_type                                      &
-     &     (hd_sleeve_level, part_ctl%sleeve_level_old)
+     &     (c_buf1, hd_sleeve_level, part_ctl%sleeve_level_old)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_part_method, part_ctl%part_method_ctl)
+     &     (c_buf1, hd_part_method, part_ctl%part_method_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_ele_overlap, part_ctl%element_overlap_ctl)
+     &     (c_buf1, hd_ele_overlap, part_ctl%element_overlap_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_sph_sf_file, part_ctl%sphere_file_name_ctl)
+     &     (c_buf1, hd_sph_sf_file, part_ctl%sphere_file_name_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_metis_in_file, part_ctl%metis_input_file_ctl)
+     &     (c_buf1, hd_metis_in_file, part_ctl%metis_input_file_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_metis_dom_file, part_ctl%metis_domain_file_ctl)
+     &     (c_buf1, hd_metis_dom_file, part_ctl%metis_domain_file_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_fine_mesh_file, part_ctl%finer_mesh_head_ctl)
+     &     (c_buf1, hd_fine_mesh_file, part_ctl%finer_mesh_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_fine_fmt_file, part_ctl%finer_mesh_fmt_ctl)
+     &     (c_buf1, hd_fine_fmt_file, part_ctl%finer_mesh_fmt_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_fine_itp_file, part_ctl%itp_tbl_head_ctl)
+     &     (c_buf1, hd_fine_itp_file, part_ctl%itp_tbl_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_domain_tbl_file, part_ctl%domain_group_file_ctl)
+     &     (c_buf1, hd_domain_tbl_file, part_ctl%domain_group_file_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_fmt_itp_tbl, part_ctl%itp_tbl_format_ctl)
+     &     (c_buf1, hd_fmt_itp_tbl, part_ctl%itp_tbl_format_ctl)
       end do
 !
       end subroutine read_ctl_data_4_decomp
@@ -345,9 +345,9 @@
         if(i_part_ghost_ctl .gt. 0) exit
 !
         call read_chara_ctl_type                                        &
-        &     (hd_new_partition, part_ctl%new_part_method_ctl)
+     &     (c_buf1, hd_new_partition, part_ctl%new_part_method_ctl)
         call read_chara_ctl_type                                        &
-        &     (hd_selective_ghost, part_ctl%selective_ghost_ctl)
+     &     (c_buf1, hd_selective_ghost, part_ctl%selective_ghost_ctl)
       end do
 !
       end subroutine read_ctl_data_4_part_ghost

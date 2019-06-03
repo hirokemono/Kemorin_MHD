@@ -125,11 +125,13 @@
         if(i_files_ctl .gt. 0) exit
 !
 !
-        call read_chara_ctl_type(hd_org_f_ctl, orginal_mesh_head_ctl)
-        call read_chara_ctl_type(hd_org_fmt_ctl, orginal_mesh_fmt_ctl)
-        call read_chara_ctl_type(hd_cutshell_f_ctl,                     &
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_org_f_ctl, orginal_mesh_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_org_fmt_ctl, orginal_mesh_fmt_ctl)
+        call read_chara_ctl_type(c_buf1, hd_cutshell_f_ctl,             &
      &      cutshell_mesh_head_ctl)
-        call read_chara_ctl_type(hd_cutshell_fmt_ctl,                   &
+        call read_chara_ctl_type(c_buf1, hd_cutshell_fmt_ctl,           &
      &      cutshell_mesh_fmt_ctl)
         end do
 !
@@ -147,7 +149,8 @@
         i_cutshell_param = find_control_end_flag(hd_cutshell_param)
         if(i_cutshell_param .gt. 0) exit
 !
-        call read_chara_ctl_type(hd_cutshell_type, cutshell_type_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_cutshell_type, cutshell_type_ctl)
       end do
 !
       end subroutine read_ctl_data_4_cutshell_type

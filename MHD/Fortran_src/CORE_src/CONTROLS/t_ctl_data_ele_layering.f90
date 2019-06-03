@@ -7,7 +7,8 @@
 !>@brief  Structure for reading parameters for radial grouping
 !!
 !!@verbatim
-!!      subroutine read_ele_layers_control(hd_block, iflag, elayer_ctl)
+!!      subroutine read_ele_layers_control                              &
+!!     &         (id_control, hd_block, iflag, elayer_ctl, c_buf)
 !!      subroutine dealloc_ctl_data_ele_layering(elayer_ctl)
 !!        type(layering_control), intent(inout) :: elayer_ctl
 !!
@@ -27,14 +28,14 @@
 !!
 !!      begin dynamic_model_layer_ctl
 !!        layering_data_ctl     explicit
-!!        array grp_stack_each_layer_ctl    4
+!!        array grp_stack_each_layer_ctl
 !!          grp_stack_each_layer_ctl  2
 !!          grp_stack_each_layer_ctl  4
 !!          grp_stack_each_layer_ctl  6
 !!          grp_stack_each_layer_ctl  8
 !!        end array grp_stack_each_layer_ctl
 !!
-!!        array layer_grp_name_ctl    8
+!!        array layer_grp_name_ctl
 !!          layer_grp_name_ctl    fluid_layer_1   end
 !!          layer_grp_name_ctl    fluid_layer_2   end
 !!          layer_grp_name_ctl    fluid_layer_3   end
@@ -58,6 +59,7 @@
       module t_ctl_data_ele_layering
 !
       use m_precision
+      use t_read_control_elements
       use t_control_elements
       use t_control_array_character
       use t_control_array_integer
@@ -126,50 +128,51 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_ele_layers_control(hd_block, iflag, elayer_ctl)
+      subroutine read_ele_layers_control                                &
+     &         (id_control, hd_block, iflag, elayer_ctl, c_buf)
 !
       use m_machine_parameter
       use skip_comment_f
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
       integer(kind = kint), intent(inout) :: iflag
       type(layering_control), intent(inout) :: elayer_ctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
-      if (iflag .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(iflag .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
 !
-        iflag = find_control_end_flag(hd_block)
-        if(iflag .gt. 0) exit
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        call read_control_array_c1(ctl_file_code,                       &
-     &      hd_ntotal_layer_grp_ctl, elayer_ctl%layer_grp_name_ctl,     &
-     &      c_buf1)
+        call read_control_array_c1(id_control, hd_ntotal_layer_grp_ctl, &
+     &      elayer_ctl%layer_grp_name_ctl, c_buf)
 !
-        call read_control_array_i1(ctl_file_code,                       &
-     &      hd_num_layer_grp_ctl, elayer_ctl%igrp_stack_layer_ctl,      &
-     &      c_buf1)
+        call read_control_array_i1(id_control, hd_num_layer_grp_ctl,    &
+     &      elayer_ctl%igrp_stack_layer_ctl, c_buf)
 !
 !
-        call read_integer_ctl_type(hd_num_SGS_ele_grp,                  &
+        call read_integer_ctl_type(c_buf, hd_num_SGS_ele_grp,           &
      &      elayer_ctl%num_layering_grp_ctl)
-        call read_integer_ctl_type(hd_num_SGS_fluid_grp,                &
+        call read_integer_ctl_type(c_buf, hd_num_SGS_fluid_grp,         &
      &      elayer_ctl%num_fl_layer_grp_ctl)
 !
-        call read_integer_ctl_type(hd_ngrp_SGS_on_sphere,               &
+        call read_integer_ctl_type(c_buf, hd_ngrp_SGS_on_sphere,        &
      &      elayer_ctl%ngrp_SGS_on_sphere_ctl)
 !
 !
-        call read_chara_ctl_type                                        &
-     &     (hd_layering_data_ctl, elayer_ctl%layering_grp_type_ctl)
-        call read_chara_ctl_type(hd_start_SGS_ele_grp_name,             &
+        call read_chara_ctl_type(c_buf, hd_layering_data_ctl,           &
+     &      elayer_ctl%layering_grp_type_ctl)
+        call read_chara_ctl_type(c_buf, hd_start_SGS_ele_grp_name,      &
      &      elayer_ctl%start_layering_grp_name_ctl)
-        call read_chara_ctl_type(hd_start_SGS_fluid_grp_name,           &
+        call read_chara_ctl_type(c_buf, hd_start_SGS_fluid_grp_name,    &
      &      elayer_ctl%start_fl_layer_grp_name_ctl)
       end do
+      iflag = 1
 !
       end subroutine read_ele_layers_control
 !

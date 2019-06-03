@@ -179,14 +179,14 @@
         if(i_single_refine_files .gt. 0) exit
 !
 !
-        call read_chara_ctl_type(hd_course_to_fine_ctl,                 &
+        call read_chara_ctl_type(c_buf1, hd_course_to_fine_ctl,         &
      &      refine_ctl%coarse_2_fine_head_ctl)
-        call read_chara_ctl_type(hd_fine_to_course_ctl,                 &
+        call read_chara_ctl_type(c_buf1, hd_fine_to_course_ctl,         &
      &      refine_ctl%fine_2_course_head_ctl)
 !
-        call read_chara_ctl_type(hd_refine_info_ctl,                    &
+        call read_chara_ctl_type(c_buf1, hd_refine_info_ctl,            &
      &      refine_ctl%refine_info_head_ctl)
-        call read_chara_ctl_type(hd_old_refine_info_ctl,                &
+        call read_chara_ctl_type(c_buf1, hd_old_refine_info_ctl,        &
      &      refine_ctl%old_refine_info_head_ctl)
       end do
 !
@@ -215,7 +215,7 @@
      &      hd_num_ref_code, refine_ctl%refine_i_ele_grp_ctl, c_buf1)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_itp_type, refine_ctl%interpolate_type_ctl)
+     &     (c_buf1, hd_itp_type, refine_ctl%interpolate_type_ctl)
       end do
 !
       end subroutine read_ctl_data_4_refine_type

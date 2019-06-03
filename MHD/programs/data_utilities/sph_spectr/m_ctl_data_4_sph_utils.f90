@@ -176,8 +176,10 @@
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, t_su_ctl)
 !
-        call read_real_ctl_type(hd_buo_ratio, buoyancy_ratio_ctl)
-        call read_real_ctl_type(hd_thermal_buo, thermal_buoyancy_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_buo_ratio, buoyancy_ratio_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_thermal_buo, thermal_buoyancy_ctl)
       end do
 !
       end subroutine read_sph_trans_model_ctl
@@ -196,13 +198,13 @@
         if(i_sph_trans_params .gt. 0) exit
 !
 !
-        call read_chara_ctl_type(hd_ene_spec_head,                      &
+        call read_chara_ctl_type(c_buf1, hd_ene_spec_head,              &
      &      ene_spec_head_ctl)
-        call read_chara_ctl_type(hd_vol_ene_spec_head,                  &
+        call read_chara_ctl_type(c_buf1, hd_vol_ene_spec_head,          &
      &      vol_ene_spec_head_ctl)
-        call read_chara_ctl_type(hd_zm_sph_spec_file,                   &
+        call read_chara_ctl_type(c_buf1, hd_zm_sph_spec_file,           &
      &      zm_spec_file_head_ctl)
-        call read_chara_ctl_type(hd_tsph_esp_file,                      &
+        call read_chara_ctl_type(c_buf1, hd_tsph_esp_file,              &
      &      tave_ene_spec_head_ctl)
       end do
 !

@@ -183,29 +183,29 @@
      &      hd_start_global_surf, fln%seed_surface_ctl, c_buf1)
 !
 !
-        call read_chara_ctl_type(hd_fline_file_head,                    &
+        call read_chara_ctl_type(c_buf1, hd_fline_file_head,            &
      &      fln%fline_file_head_ctl)
-        call read_chara_ctl_type(hd_fline_output_type,                  &
+        call read_chara_ctl_type(c_buf1, hd_fline_output_type,          &
      &      fln%fline_output_type_ctl)
 !
-        call read_chara_ctl_type(hd_field_line_field,                   &
+        call read_chara_ctl_type(c_buf1, hd_field_line_field,           &
      &      fln%fline_field_ctl )
-        call read_chara_ctl_type(hd_coloring_field,                     &
+        call read_chara_ctl_type(c_buf1, hd_coloring_field,             &
      &      fln%fline_color_field_ctl )
-        call read_chara_ctl_type(hd_coloring_comp,                      &
+        call read_chara_ctl_type(c_buf1, hd_coloring_comp,              &
      &      fln%fline_color_comp_ctl )
-        call read_chara_ctl_type(hd_starting_type,                      &
+        call read_chara_ctl_type(c_buf1, hd_starting_type,              &
      &      fln%starting_type_ctl )
-        call read_chara_ctl_type(hd_start_surf_grp,                     &
+        call read_chara_ctl_type(c_buf1, hd_start_surf_grp,             &
      &      fln%start_surf_grp_ctl )
-        call read_chara_ctl_type(hd_selection_type,                     &
+        call read_chara_ctl_type(c_buf1, hd_selection_type,             &
      &      fln%selection_type_ctl )
-        call read_chara_ctl_type(hd_line_direction,                     &
+        call read_chara_ctl_type(c_buf1, hd_line_direction,             &
      &      fln%line_direction_ctl )
 !
-        call read_integer_ctl_type(hd_num_fieldline,                    &
+        call read_integer_ctl_type(c_buf1, hd_num_fieldline,            &
      &      fln%num_fieldline_ctl )
-        call read_integer_ctl_type(hd_max_line_stepping,                &
+        call read_integer_ctl_type(c_buf1, hd_max_line_stepping,        &
      &      fln%max_line_stepping_ctl)
       end do
 !

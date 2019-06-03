@@ -49,6 +49,8 @@
 !
       use m_precision
 !
+      use m_read_control_elements
+      use t_read_control_elements
       use t_control_elements
       use t_ctl_data_sph_vol_spectr
       use t_ctl_data_pick_sph_spectr
@@ -143,15 +145,17 @@
         if(iflag .gt. 0) exit
 !
         call read_gauss_spectr_ctl                                      &
-     &     (hd_gauss_spec_block, i_gauss_pwr_ctl, smonitor_ctl%g_pwr)
+     &     (ctl_file_code, hd_gauss_spec_block, i_gauss_pwr_ctl,        &
+     &      smonitor_ctl%g_pwr, c_buf1)
         call read_pickup_spectr_ctl                                     &
-     &     (hd_pick_sph_ctl, i_pick_sph_ctl, smonitor_ctl%pspec_ctl)
+     &     (ctl_file_code, hd_pick_sph_ctl, i_pick_sph_ctl,             &
+     &      smonitor_ctl%pspec_ctl, c_buf1)
         call read_layerd_spectr_ctl                                     &
-     &     (hd_layer_spec_block, i_layer_spectr_ctl,                    &
-     &      smonitor_ctl%lp_ctl)
+     &     (ctl_file_code, hd_layer_spec_block, i_layer_spectr_ctl,     &
+     &      smonitor_ctl%lp_ctl, c_buf1)
         call read_mid_eq_monitor_ctl                                    &
-     &     (hd_mid_eq_monitor_ctl, i_mid_eq_monitor_ctl,                &
-     &      smonitor_ctl%meq_ctl)
+     &     (ctl_file_code, hd_mid_eq_monitor_ctl, i_mid_eq_monitor_ctl, &
+     &      smonitor_ctl%meq_ctl, c_buf1)
 !
         call find_control_array_flag                                    &
      &     (hd_vol_spec_block, smonitor_ctl%num_vspec_ctl)
@@ -159,11 +163,11 @@
           call read_volume_spectr_ctl(smonitor_ctl)
         end if
 !
-        call read_chara_ctl_type(hd_Nusselt_file_head,                  &
+        call read_chara_ctl_type(c_buf1, hd_Nusselt_file_head,          &
      &      smonitor_ctl%Nusselt_file_prefix)
-        call read_chara_ctl_type(hd_voume_ave_head,                     &
+        call read_chara_ctl_type(c_buf1, hd_voume_ave_head,             &
      &      smonitor_ctl%volume_average_prefix)
-        call read_chara_ctl_type(hd_voume_rms_head,                     &
+        call read_chara_ctl_type(c_buf1, hd_voume_rms_head,             &
      &      smonitor_ctl%volume_pwr_spectr_prefix)
       end do
 !
@@ -190,8 +194,9 @@
         if(right_begin_flag(hd_vol_spec_block) .gt. 0) then
           i_vol_spectr_ctl = i_vol_spectr_ctl + 1
           iflag = 0
-          call read_each_vol_spectr_ctl(hd_vol_spec_block, iflag,       &
-     &        smonitor_ctl%v_pwr(i_vol_spectr_ctl))
+          call read_each_vol_spectr_ctl                                 &
+     &       (ctl_file_code, hd_vol_spec_block, iflag,                  &
+     &        smonitor_ctl%v_pwr(i_vol_spectr_ctl), c_buf1)
         end if
       end do
 !

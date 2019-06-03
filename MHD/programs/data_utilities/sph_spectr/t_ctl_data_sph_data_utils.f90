@@ -44,6 +44,7 @@
       use m_precision
       use calypso_mpi
 !
+      use m_read_control_elements
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
       use t_control_elements
@@ -158,18 +159,18 @@
         i_hard = find_control_end_flag(hd_file_def)
         if(i_hard .gt. 0) exit
 !
-        call read_chara_ctl_type                                        &
-     &     (hd_org_field_prefix, file_list%org_field_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_sub_field_prefix, file_list%sub_field_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_out_field_prefix, file_list%out_field_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_org_field_format, file_list%org_spec_file_fmt_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_sub_field_format, file_list%sub_spec_file_fmt_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_out_field_format, file_list%out_spec_file_fmt_ctl)
+        call read_chara_ctl_type(c_buf1, hd_org_field_prefix,           &
+     &      file_list%org_field_head_ctl)
+        call read_chara_ctl_type(c_buf1, hd_sub_field_prefix,           &
+     &      file_list%sub_field_head_ctl)
+        call read_chara_ctl_type(c_buf1, hd_out_field_prefix,           &
+     &      file_list%out_field_head_ctl)
+        call read_chara_ctl_type(c_buf1, hd_org_field_format,           &
+     &      file_list%org_spec_file_fmt_ctl)
+        call read_chara_ctl_type(c_buf1, hd_sub_field_format,           &
+     &      file_list%sub_spec_file_fmt_ctl)
+        call read_chara_ctl_type(c_buf1, hd_out_field_format,           &
+     &      file_list%out_spec_file_fmt_ctl)
       end do
 !
       end subroutine read_diff_spectr_file_control

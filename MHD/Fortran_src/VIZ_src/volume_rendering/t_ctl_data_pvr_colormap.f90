@@ -319,9 +319,12 @@
         call read_control_array_r3(ctl_file_code,                       &
      &      hd_light_param, light%light_position_ctl, c_buf1)
 !
-        call read_real_ctl_type(hd_ambient, light%ambient_coef_ctl )
-        call read_real_ctl_type(hd_diffuse, light%diffuse_coef_ctl )
-        call read_real_ctl_type(hd_specular, light%specular_coef_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_ambient, light%ambient_coef_ctl )
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_diffuse, light%diffuse_coef_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_specular, light%specular_coef_ctl)
       end do
 !
       end subroutine read_lighting_ctl
@@ -387,24 +390,26 @@
      &      hd_opacity_def, color%step_opacity_ctl, c_buf1)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_lic_color_fld, color%lic_color_fld_ctl)
+     &     (c_buf1, hd_lic_color_fld, color%lic_color_fld_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_lic_color_comp, color%lic_color_comp_ctl)
+     &     (c_buf1, hd_lic_color_comp, color%lic_color_comp_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_lic_opacity_fld, color%lic_opacity_fld_ctl)
+     &     (c_buf1, hd_lic_opacity_fld, color%lic_opacity_fld_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_lic_opacity_comp, color%lic_opacity_comp_ctl)
+     &     (c_buf1, hd_lic_opacity_comp, color%lic_opacity_comp_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_colormap_mode, color%colormap_mode_ctl)
+     &     (c_buf1, hd_colormap_mode, color%colormap_mode_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_data_mapping, color%data_mapping_ctl)
-        call read_chara_ctl_type(hd_opacity_style,                      &
+     &     (c_buf1, hd_data_mapping, color%data_mapping_ctl)
+        call read_chara_ctl_type(c_buf1, hd_opacity_style,              &
      &      color%opacity_style_ctl)
 !
-        call read_real_ctl_type(hd_pvr_range_min, color%range_min_ctl)
-        call read_real_ctl_type(hd_pvr_range_max, color%range_max_ctl)
-        call read_real_ctl_type(hd_constant_opacity,                    &
+        call read_real_ctl_type(c_buf1, hd_pvr_range_min,               &
+     &      color%range_min_ctl)
+        call read_real_ctl_type(c_buf1, hd_pvr_range_max,               &
+     &      color%range_max_ctl)
+        call read_real_ctl_type(c_buf1, hd_constant_opacity,            &
      &      color%fix_opacity_ctl)
       end do
 !
@@ -453,23 +458,23 @@
 !
 !
         call read_integer_ctl_type                                      &
-     &     (hd_pvr_font_size, cbar_ctl%font_size_ctl)
-        call read_integer_ctl_type(hd_pvr_numgrid_cbar,                 &
+     &     (c_buf1, hd_pvr_font_size, cbar_ctl%font_size_ctl)
+        call read_integer_ctl_type(c_buf1, hd_pvr_numgrid_cbar,         &
      &      cbar_ctl%ngrid_cbar_ctl)
 !
 !
-        call read_chara_ctl_type(hd_colorbar_switch,                    &
+        call read_chara_ctl_type(c_buf1, hd_colorbar_switch,            &
      &      cbar_ctl%colorbar_switch_ctl)
-        call read_chara_ctl_type(hd_colorbar_scale,                     &
+        call read_chara_ctl_type(c_buf1, hd_colorbar_scale,             &
      &      cbar_ctl%colorbar_scale_ctl)
-        call read_chara_ctl_type(hd_zeromarker_flag,                    &
+        call read_chara_ctl_type(c_buf1, hd_zeromarker_flag,            &
      &      cbar_ctl%zeromarker_flag_ctl)
 !
-        call read_chara_ctl_type(hd_axis_switch,                        &
+        call read_chara_ctl_type(c_buf1, hd_axis_switch,                &
      &      cbar_ctl%axis_switch_ctl)
 !!
-        call read_real2_ctl_type                                        &
-     &     (hd_cbar_range, cbar_ctl%cbar_range_ctl)
+        call read_real2_ctl_type(c_buf1,                                &
+     &      hd_cbar_range, cbar_ctl%cbar_range_ctl)
       end do
 !
       end subroutine read_pvr_colorbar_ctl

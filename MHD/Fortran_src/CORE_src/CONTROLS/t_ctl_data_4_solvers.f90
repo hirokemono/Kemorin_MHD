@@ -207,14 +207,16 @@
      &     (hd_Multigrid_params, i_Multigrid_params, CG_ctl%MG_ctl)
 !
 !
-        call read_real_ctl_type(hd_eps, CG_ctl%eps_ctl)
-        call read_real_ctl_type(hd_sigma, CG_ctl%sigma_ctl)
-        call read_real_ctl_type(hd_sigma_diag, CG_ctl%sigma_diag_ctl)
+        call read_real_ctl_type(c_buf1, hd_eps, CG_ctl%eps_ctl)
+        call read_real_ctl_type(c_buf1, hd_sigma, CG_ctl%sigma_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_sigma_diag, CG_ctl%sigma_diag_ctl)
 !
-        call read_integer_ctl_type(hd_itr, CG_ctl%itr_ctl)
+        call read_integer_ctl_type(c_buf1, hd_itr, CG_ctl%itr_ctl)
 !
-        call read_chara_ctl_type(hd_method, CG_ctl%method_ctl)
-        call read_chara_ctl_type(hd_precond, CG_ctl%precond_ctl)
+        call read_chara_ctl_type(c_buf1, hd_method, CG_ctl%method_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_precond, CG_ctl%precond_ctl)
       end do
 !
       end subroutine read_CG_solver_param_ctl
@@ -243,11 +245,12 @@
 !
 !
         call read_integer_ctl_type                                      &
-     &     (hd_min_color, DJDS_ctl%min_color_ctl)
-        call read_integer_ctl_type(hd_mc_color, DJDS_ctl%mc_color_ctl)
+     &     (c_buf1, hd_min_color, DJDS_ctl%min_color_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf1, hd_mc_color, DJDS_ctl%mc_color_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_order_method, DJDS_ctl%order_method_ctl)
+     &     (c_buf1, hd_order_method, DJDS_ctl%order_method_ctl)
       end do
 !
       end subroutine read_control_DJDS_solver

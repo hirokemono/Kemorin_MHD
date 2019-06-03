@@ -311,11 +311,11 @@
         end if
 !
 !
-        call read_chara_ctl_type(hd_psf_file_prefix,                    &
+        call read_chara_ctl_type(c_buf1, hd_psf_file_prefix,            &
      &      psf_c%psf_file_head_ctl)
-        call read_chara_ctl_type(hd_psf_file_head,                      &
+        call read_chara_ctl_type(c_buf1, hd_psf_file_head,              &
      &      psf_c%psf_file_head_ctl)
-        call read_chara_ctl_type(hd_psf_out_type,                       &
+        call read_chara_ctl_type(c_buf1, hd_psf_out_type,               &
      &      psf_c%psf_output_type_ctl)
       end do
 !
@@ -353,12 +353,13 @@
         call read_psf_plot_area_ctl(psf_c)
 !
 !
-        call read_real_ctl_type(hd_radius, psf_c%radius_psf_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_radius, psf_c%radius_psf_ctl)
 !
-        call read_chara_ctl_type(hd_section_method,                     &
+        call read_chara_ctl_type(c_buf1, hd_section_method,             &
      &      psf_c%section_method_ctl)
         call read_chara_ctl_type                                        &
-     &      (hd_group_name, psf_c%psf_group_name_ctl)
+     &     (c_buf1, hd_group_name, psf_c%psf_group_name_ctl)
       end do
 !
       end subroutine read_section_def_control

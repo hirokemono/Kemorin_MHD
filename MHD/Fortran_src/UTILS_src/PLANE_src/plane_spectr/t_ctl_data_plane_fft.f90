@@ -221,13 +221,13 @@
         pfft_c%i_spec_file = find_control_end_flag(hd_spec_file)
         if(pfft_c%i_spec_file .gt. 0) exit
 !
-        call read_chara_ctl_type(hd_plane_spec_mode_head,               &
+        call read_chara_ctl_type(c_buf1, hd_plane_spec_mode_head,       &
      &      pfft_c%plane_spectr_mode_head_ctl)
-        call read_chara_ctl_type(hd_plane_spec_data_head,               &
+        call read_chara_ctl_type(c_buf1, hd_plane_spec_data_head,       &
      &      pfft_c%plane_spectr_data_head_ctl)
-        call read_chara_ctl_type(hd_plane_spec_ene_head,                &
+        call read_chara_ctl_type(c_buf1, hd_plane_spec_ene_head,        &
      &      pfft_c%plane_spectr_ene_head_ctl)
-        call read_chara_ctl_type(hd_plane_sp_h_ene_head,                &
+        call read_chara_ctl_type(c_buf1, hd_plane_sp_h_ene_head,        &
      &      pfft_c%plane_spectr_h_ene_head_ctl)
       end do
 !

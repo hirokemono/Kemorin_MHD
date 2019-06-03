@@ -95,20 +95,20 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_chara_ctl_type(hd_mem_conserve,                       &
+        call read_chara_ctl_type(c_buf1, hd_mem_conserve,               &
      &      Fmesh_ctl%memory_conservation_ctl)
-        call read_chara_ctl_type(hd_FEM_mesh_output,                    &
+        call read_chara_ctl_type(c_buf1, hd_FEM_mesh_output,            &
      &      Fmesh_ctl%FEM_mesh_output_switch)
-        call read_chara_ctl_type(hd_FEM_surf_output,                    &
+        call read_chara_ctl_type(c_buf1, hd_FEM_surf_output,            &
      &      Fmesh_ctl%FEM_surface_output_switch)
-        call read_chara_ctl_type(hd_FEM_viewer_output,                  &
+        call read_chara_ctl_type(c_buf1, hd_FEM_viewer_output,          &
      &      Fmesh_ctl%FEM_viewer_output_switch)
 !
         call read_integer_ctl_type                                      &
-     &     (hd_sleeve_level, Fmesh_ctl%FEM_sleeve_level_ctl)
+     &     (c_buf1, hd_sleeve_level, Fmesh_ctl%FEM_sleeve_level_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_ele_overlap, Fmesh_ctl%FEM_element_overlap_ctl)
+     &     (c_buf1, hd_ele_overlap, Fmesh_ctl%FEM_element_overlap_ctl)
        end do
 !
       end subroutine read_FEM_mesh_control

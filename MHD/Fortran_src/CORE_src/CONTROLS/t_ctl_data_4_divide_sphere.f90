@@ -137,12 +137,12 @@
         if(iflag .gt. 0) exit
 !
         call read_chara_ctl_type                                        &
-     &     (hd_inner_decomp, sdctl%inner_decomp_ctl)
+     &     (c_buf1, hd_inner_decomp, sdctl%inner_decomp_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (hd_num_radial_domain, sdctl%num_radial_domain_ctl)
+     &     (c_buf1, hd_num_radial_domain, sdctl%num_radial_domain_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_num_horiz_domain, sdctl%num_horiz_domain_ctl)
+     &     (c_buf1, hd_num_horiz_domain, sdctl%num_horiz_domain_ctl)
 !
         call read_control_array_c_i(ctl_file_code,                      &
      &      hd_ndomain_rtp, sdctl%ndomain_sph_grid_ctl, c_buf1)

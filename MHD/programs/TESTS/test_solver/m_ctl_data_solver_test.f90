@@ -108,12 +108,15 @@
         call read_CG_solver_param_ctl                                   &
      &   (hd_solver_ctl, i_solver_ctl, CG_test_ctl)
 !
-        call read_chara_ctl_type(hd_matrix_head_ctl, matrix_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_solution_head_ctl,solution_head_ctl)
-        call read_chara_ctl_type(hd_solver_type, solver_type_ctl)
+     &     (c_buf1, hd_matrix_head_ctl, matrix_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_solution_head_ctl,solution_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_solver_type, solver_type_ctl)
 !
-        call read_integer_ctl_type(hd_ip_smp_p_ctl, ip_smp_p_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf1, hd_ip_smp_p_ctl, ip_smp_p_ctl)
       end do
 !
       end subroutine read_ctl_data_test

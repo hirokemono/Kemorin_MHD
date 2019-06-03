@@ -161,9 +161,9 @@
         if(i_prod_files .gt. 0) exit
 !
 !
-        call read_chara_ctl_type(hd_product_udt_1,                      &
+        call read_chara_ctl_type(c_buf1, hd_product_udt_1,              &
      &      product_udt_1_head_ctl)
-        call read_chara_ctl_type(hd_product_udt_2,                      &
+        call read_chara_ctl_type(c_buf1, hd_product_udt_2,              &
      &      product_udt_2_head_ctl)
       end do
 !
@@ -186,12 +186,14 @@
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, t_pu_ctl)
 !
-        call read_chara_ctl_type(hd_result_field, result_field_ctl)
-        call read_chara_ctl_type(hd_product_field_1,                    &
+        call read_chara_ctl_type(c_buf1, hd_result_field,               &
+     &      result_field_ctl)
+        call read_chara_ctl_type(c_buf1, hd_product_field_1,            &
      &      product_field_1_ctl)
-        call read_chara_ctl_type(hd_product_field_2,                    &
+        call read_chara_ctl_type(c_buf1, hd_product_field_2,            &
      &      product_field_2_ctl)
-        call read_chara_ctl_type(hd_product_type, product_type_ctl)
+        call read_chara_ctl_type(c_buf1, hd_product_type,               &
+     &      product_type_ctl)
       end do
 !
       end subroutine read_product_model_ctl

@@ -173,47 +173,47 @@
 !
 !
         call read_chara_ctl_type                                        &
-     &     (hd_solver_type, gen_f_ctl%f_solver_type_ctl)
+     &     (c_buf1, hd_solver_type, gen_f_ctl%f_solver_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_ordering_list, gen_f_ctl%ordering_list_ctl)
-        call read_chara_ctl_type(hd_tgt_filter_type,                    &
+     &     (c_buf1, hd_ordering_list, gen_f_ctl%ordering_list_ctl)
+        call read_chara_ctl_type(c_buf1, hd_tgt_filter_type,            &
      &      gen_f_ctl%tgt_filter_type_ctl)
-        call read_chara_ctl_type(hd_momentum_type,                      &
+        call read_chara_ctl_type(c_buf1, hd_momentum_type,              &
      &      gen_f_ctl%momentum_type_ctl)
-        call read_chara_ctl_type(hd_filter_corection,                   &
+        call read_chara_ctl_type(c_buf1, hd_filter_corection,           &
      &      gen_f_ctl%filter_correction_ctl)
-        call read_chara_ctl_type(hd_filter_fixed_point,                 &
+        call read_chara_ctl_type(c_buf1, hd_filter_fixed_point,         &
      &      gen_f_ctl%filter_fixed_point_ctl)
-        call read_chara_ctl_type(hd_filter_negative_center,             &
+        call read_chara_ctl_type(c_buf1, hd_filter_negative_center,     &
      &      gen_f_ctl%negative_center_ctl)
 !
 !
         call read_real_ctl_type                                         &
-     &     (hd_omitted_ratio, gen_f_ctl%omitted_ratio_ctl)
+     &     (c_buf1, hd_omitted_ratio, gen_f_ctl%omitted_ratio_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_minimum_det, gen_f_ctl%minimum_det_ctl)
+     &     (c_buf1, hd_minimum_det, gen_f_ctl%minimum_det_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_maximum_rms, gen_f_ctl%maximum_rms_ctl)
+     &     (c_buf1, hd_maximum_rms, gen_f_ctl%maximum_rms_ctl)
 !
 !
-        call read_integer_ctl_type(hd_num_int_points,                   &
+        call read_integer_ctl_type(c_buf1, hd_num_int_points,           &
      &      gen_f_ctl%num_int_points_ctl)
-        call read_integer_ctl_type(hd_minimum_comp,                     &
+        call read_integer_ctl_type(c_buf1, hd_minimum_comp,             &
      &      gen_f_ctl%minimum_comp_ctl)
-        call read_integer_ctl_type(hd_nele_filtering,                   &
+        call read_integer_ctl_type(c_buf1, hd_nele_filtering,           &
      &      gen_f_ctl%num_ele_4_filter_ctl)
-        call read_integer_ctl_type(hd_maximum_neighbour,                &
+        call read_integer_ctl_type(c_buf1, hd_maximum_neighbour,        &
      &      gen_f_ctl%maximum_neighbour_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (hd_start_node_ctl, gen_f_ctl%start_node_ctl)
+     &     (c_buf1, hd_start_node_ctl, gen_f_ctl%start_node_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_end_node_ctl, gen_f_ctl%end_node_ctl)
-        call read_integer_ctl_type(hd_start_nfree_mat,                  &
+     &     (c_buf1, hd_end_node_ctl, gen_f_ctl%end_node_ctl)
+        call read_integer_ctl_type(c_buf1, hd_start_nfree_mat,          &
      &      gen_f_ctl%ist_num_free_ctl)
-        call read_integer_ctl_type(hd_end_nfree_mat,                    &
+        call read_integer_ctl_type(c_buf1, hd_end_nfree_mat,            &
      &      gen_f_ctl%ied_num_free_ctl)
-        call read_integer_ctl_type(hd_err_level_commute,                &
+        call read_integer_ctl_type(c_buf1, hd_err_level_commute,        &
      &      gen_f_ctl%ilevel_filter_error_info)
       end do
 !

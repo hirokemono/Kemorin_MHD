@@ -114,7 +114,7 @@
         if(check_end_array_flag(c_buf, label)) exit
 !
         if(c_buf%header_chara.eq.label) then
-          call read_character3_ctl_type(label, read_c3)
+          call read_character3_ctl_type(c_buf, label, read_c3)
           call append_control_array_c3(read_c3, array_c3)
         end if
       end do

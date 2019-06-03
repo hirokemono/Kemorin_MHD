@@ -119,7 +119,7 @@
         if(check_end_array_flag(c_buf, label)) exit
 !
         if(c_buf%header_chara.eq.label) then
-          call read_int2real_ctl_type(label, read_i2r)
+          call read_int2real_ctl_type(c_buf, label, read_i2r)
           call append_control_array_i2_r(read_i2r, array_i2r)
         end if
       end do

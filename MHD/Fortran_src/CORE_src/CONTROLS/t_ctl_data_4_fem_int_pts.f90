@@ -83,12 +83,12 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
-        call read_integer_ctl_type                                      &
-     &     (hd_intgration_points, fint_ctl%integration_points_ctl)
-        call read_integer_ctl_type                                      &
-     &     (hd_intg_point_poisson, fint_ctl%intg_point_poisson_ctl)
-        call read_integer_ctl_type                                      &
-     &     (hd_intg_point_t_evo, fint_ctl%intg_point_t_evo_ctl)
+        call read_integer_ctl_type(c_buf1, hd_intgration_points,        &
+     &      fint_ctl%integration_points_ctl)
+        call read_integer_ctl_type(c_buf1, hd_intg_point_poisson,       &
+     &      fint_ctl%intg_point_poisson_ctl)
+        call read_integer_ctl_type(c_buf1, hd_intg_point_t_evo,         &
+     &      fint_ctl%intg_point_t_evo_ctl)
       end do
 !
       end subroutine read_control_fem_int_points

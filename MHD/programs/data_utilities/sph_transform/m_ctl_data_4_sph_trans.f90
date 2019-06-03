@@ -196,21 +196,25 @@
         if(i_sph_trans_params .gt. 0) exit
 !
 !
-        call read_integer_ctl_type(hd_legendre_vect_len,                &
+        call read_integer_ctl_type(c_buf1, hd_legendre_vect_len,        &
      &      legendre_vector_len_ctl)
 !
-        call read_chara_ctl_type(hd_zm_sph_spec_file,                   &
+        call read_chara_ctl_type(c_buf1, hd_zm_sph_spec_file,           &
      &      zm_spec_file_head_ctl)
-        call read_chara_ctl_type(hd_zm_field_file, zonal_udt_head_ctl)
-        call read_chara_ctl_type(hd_cmb_grp, cmb_radial_grp_ctl)
-        call read_chara_ctl_type(hd_icb_grp, icb_radial_grp_ctl)
+        call read_chara_ctl_type(c_buf1, hd_zm_field_file,              &
+     &      zonal_udt_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_cmb_grp, cmb_radial_grp_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_icb_grp, icb_radial_grp_ctl)
 !
-        call read_chara_ctl_type(hd_sph_transform_mode,                 &
+        call read_chara_ctl_type(c_buf1, hd_sph_transform_mode,         &
      &      Legendre_trans_loop_ctl)
-        call read_chara_ctl_type(hd_FFT_package, FFT_lib_ctl)
-        call read_chara_ctl_type(hd_import_mode, import_mode_ctl)
+        call read_chara_ctl_type(c_buf1, hd_FFT_package, FFT_lib_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_import_mode, import_mode_ctl)
 !
-        call read_chara_ctl_type(hd_gauss_file_name,                    &
+        call read_chara_ctl_type(c_buf1, hd_gauss_file_name,            &
      &      gauss_sph_fhead_ctl)
       end do
 !

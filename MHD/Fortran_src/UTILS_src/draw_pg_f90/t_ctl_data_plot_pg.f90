@@ -323,12 +323,12 @@
 !
 !
         call read_chara_ctl_type                                        &
-     &     (hd_contour_type_ctl, pg_panel_ctl%contour_type_ctl)
+     &     (c_buf1, hd_contour_type_ctl, pg_panel_ctl%contour_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_color_mode_ctl, pg_panel_ctl%color_mode_ctl)
+     &     (c_buf1, hd_color_mode_ctl, pg_panel_ctl%color_mode_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (hd_num_panels_ctl, pg_panel_ctl%num_panels_ctl)
+     &     (c_buf1, hd_num_panels_ctl, pg_panel_ctl%num_panels_ctl)
       end do
 !
       end subroutine read_ctl_data_4_pgplot_param
@@ -359,11 +359,11 @@
      &      hd_vec_scale_ctl, pg_fld_ctl%vector_scale_ctl, c_buf1)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_psf_data_fmt_ctl, pg_fld_ctl%psf_data_fmt_ctl)
+     &     (c_buf1, hd_psf_data_fmt_ctl, pg_fld_ctl%psf_data_fmt_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_psf_data_ctl, pg_fld_ctl%psf_file_head_ctl)
+     &     (c_buf1, hd_psf_data_ctl, pg_fld_ctl%psf_file_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_map_grid_file, pg_fld_ctl%map_grid_file_ctl)
+     &     (c_buf1, hd_map_grid_file, pg_fld_ctl%map_grid_file_ctl)
       end do
 !
       end subroutine read_ctl_data_4_surf_plot
@@ -384,13 +384,13 @@
         if(i_z_plane_ctl .gt. 0) exit
 !
 !
-        call read_real_ctl_type                                         &
-     &     (hd_outer_radius_ctl, pg_section_ctl%outer_radius_ctl)
-        call read_real_ctl_type                                         &
-     &     (hd_ro_ri_ratio_ctl, pg_section_ctl%ro_ri_ratio_ctl)
+        call read_real_ctl_type(c_buf1, hd_outer_radius_ctl,            &
+     &      pg_section_ctl%outer_radius_ctl)
+        call read_real_ctl_type(c_buf1, hd_ro_ri_ratio_ctl,             &
+     &      pg_section_ctl%ro_ri_ratio_ctl)
 !
-        call read_real2_ctl_type                                        &
-     &     (hd_plane_size_ctl, pg_section_ctl%pg_plane_size_ctl)
+        call read_real2_ctl_type(c_buf1,                                &
+     &      hd_plane_size_ctl, pg_section_ctl%pg_plane_size_ctl)
       end do
 !
       end subroutine read_ctl_data_4_zplane_plot
@@ -411,9 +411,9 @@
         if(i_sphere_map_ctl .gt. 0) exit
 !
         call read_chara_ctl_type                                        &
-     &     (hd_sph_grid_type, pg_map_ctl%pg_grid_type_ctl)
+     &     (c_buf1, hd_sph_grid_type, pg_map_ctl%pg_grid_type_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_radial_ID_ctl, pg_map_ctl%radial_ID_ctl)
+     &     (c_buf1, hd_radial_ID_ctl, pg_map_ctl%radial_ID_ctl)
       end do
 !
       end subroutine read_ctl_data_4_sph_map

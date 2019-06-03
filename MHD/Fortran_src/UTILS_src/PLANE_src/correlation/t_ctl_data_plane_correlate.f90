@@ -172,18 +172,18 @@
         if(pcor_c%i_hard .gt. 0) exit
 !
         call read_chara_ctl_type                                        &
-     &     (hd_mesh_head_ctl, pcor_c%cor_mesh_head_ctl)
+     &     (c_buf1, hd_mesh_head_ctl, pcor_c%cor_mesh_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_mesh_fmt_ctl, pcor_c%cor_mesh_fmt_ctl)
+     &     (c_buf1, hd_mesh_fmt_ctl, pcor_c%cor_mesh_fmt_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_ref_mesh_head_ctl, pcor_c%ref_mesh_head_ctl)
+     &     (c_buf1, hd_ref_mesh_head_ctl, pcor_c%ref_mesh_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_ref_mesh_fmt_ctl, pcor_c%ref_mesh_fmt_ctl)
+     &     (c_buf1, hd_ref_mesh_fmt_ctl, pcor_c%ref_mesh_fmt_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_udt_head_ctl, pcor_c%cor_udt_head_ctl)
+     &     (c_buf1, hd_udt_head_ctl, pcor_c%cor_udt_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_ref_udt_head_ctl, pcor_c%ref_udt_head_ctl)
+     &     (c_buf1, hd_ref_udt_head_ctl, pcor_c%ref_udt_head_ctl)
       end do
 !
       end subroutine read_correlate_file_heads

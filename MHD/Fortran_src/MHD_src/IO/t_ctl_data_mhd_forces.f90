@@ -211,7 +211,8 @@
         call read_control_array_c_r(ctl_file_code,                      &
      &      hd_gravity_vect, g_ctl%gravity_vector, c_buf1)
 !
-        call read_chara_ctl_type(hd_gravity_type, g_ctl%gravity)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_gravity_type, g_ctl%gravity)
       end do
 !
       end subroutine read_gravity_ctl
@@ -262,7 +263,8 @@
         call read_control_array_c_r(ctl_file_code,                      &
      &      hd_magne_vect, mcv_ctl%ext_magne, c_buf1)
 !
-        call read_chara_ctl_type(hd_magneto_cv, mcv_ctl%magneto_cv)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_magneto_cv, mcv_ctl%magneto_cv)
       end do
 !
       end subroutine read_magneto_ctl

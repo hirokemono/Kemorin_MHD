@@ -231,7 +231,8 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
-        call read_chara_ctl_type(hd_rst_flag, mr_ctl%restart_flag_ctl)
+        call read_chara_ctl_type(c_buf1, hd_rst_flag,                   &
+     &      mr_ctl%restart_flag_ctl)
       end do
 !
       end subroutine read_restart_ctl
@@ -258,52 +259,56 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
-        call read_chara_ctl_type(hd_scheme, mevo_ctl%scheme_ctl)
-        call read_chara_ctl_type(hd_diff_correct,                       &
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_scheme, mevo_ctl%scheme_ctl)
+        call read_chara_ctl_type(c_buf1, hd_diff_correct,               &
      &      mevo_ctl%diffuse_correct)
-        call read_chara_ctl_type(hd_method_4_velo,                      &
+        call read_chara_ctl_type(c_buf1, hd_method_4_velo,              &
      &      mevo_ctl%method_4_CN)
-        call read_chara_ctl_type(hd_precond_4_crank,                    &
+        call read_chara_ctl_type(c_buf1, hd_precond_4_crank,            &
      &      mevo_ctl%precond_4_CN)
-        call read_chara_ctl_type(hd_sph_transform_mode,                 &
+        call read_chara_ctl_type(c_buf1, hd_sph_transform_mode,         &
      &      mevo_ctl%Legendre_trans_type)
-        call read_chara_ctl_type(hd_FFT_package, mevo_ctl%FFT_library)
-        call read_chara_ctl_type(hd_import_mode, mevo_ctl%import_mode)
-        call read_chara_ctl_type(hd_SR_routine,                         &
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_FFT_package, mevo_ctl%FFT_library)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_import_mode, mevo_ctl%import_mode)
+        call read_chara_ctl_type(c_buf1, hd_SR_routine,                 &
      &      mevo_ctl%SR_routine)
 !
         call read_real_ctl_type                                         &
-     &     (hd_eps_4_velo,  mevo_ctl%eps_4_velo_ctl)
+     &     (c_buf1, hd_eps_4_velo,  mevo_ctl%eps_4_velo_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_eps_4_magne, mevo_ctl%eps_4_magne_ctl)
+     &     (c_buf1, hd_eps_4_magne, mevo_ctl%eps_4_magne_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_coef_imp_v,  mevo_ctl%coef_imp_v_ctl)
+     &     (c_buf1, hd_coef_imp_v,  mevo_ctl%coef_imp_v_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_coef_imp_t,  mevo_ctl%coef_imp_t_ctl)
+     &     (c_buf1, hd_coef_imp_t,  mevo_ctl%coef_imp_t_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_coef_imp_b,  mevo_ctl%coef_imp_b_ctl)
+     &     (c_buf1, hd_coef_imp_b,  mevo_ctl%coef_imp_b_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_coef_imp_c,  mevo_ctl%coef_imp_c_ctl)
+     &     (c_buf1, hd_coef_imp_c,  mevo_ctl%coef_imp_c_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_eps_crank,   mevo_ctl%eps_crank_ctl)
+     &     (c_buf1, hd_eps_crank,   mevo_ctl%eps_crank_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_eps_B_crank, mevo_ctl%eps_B_crank_ctl)
+     &     (c_buf1, hd_eps_B_crank, mevo_ctl%eps_B_crank_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_iflag_supg,   mevo_ctl%iflag_supg_ctl)
+     &     (c_buf1, hd_iflag_supg,   mevo_ctl%iflag_supg_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_iflag_v_supg, mevo_ctl%iflag_supg_v_ctl)
+     &     (c_buf1, hd_iflag_v_supg, mevo_ctl%iflag_supg_v_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_iflag_t_supg, mevo_ctl%iflag_supg_t_ctl)
+     &     (c_buf1, hd_iflag_t_supg, mevo_ctl%iflag_supg_t_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_iflag_b_supg, mevo_ctl%iflag_supg_b_ctl)
+     &     (c_buf1, hd_iflag_b_supg, mevo_ctl%iflag_supg_b_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_iflag_c_supg, mevo_ctl%iflag_supg_c_ctl)
+     &     (c_buf1, hd_iflag_c_supg, mevo_ctl%iflag_supg_c_ctl)
 !
-        call read_integer_ctl_type(hd_num_multi_pass,                   &
+        call read_integer_ctl_type(c_buf1, hd_num_multi_pass,           &
      &      mevo_ctl%num_multi_pass_ctl)
-        call read_integer_ctl_type(hd_maxiter, mevo_ctl%maxiter_ctl)
-        call read_integer_ctl_type(hd_legendre_vect_len,                &
+        call read_integer_ctl_type(c_buf1, hd_maxiter,                  &
+     &      mevo_ctl%maxiter_ctl)
+        call read_integer_ctl_type(c_buf1, hd_legendre_vect_len,        &
      &      mevo_ctl%leg_vector_len)
       end do
 !

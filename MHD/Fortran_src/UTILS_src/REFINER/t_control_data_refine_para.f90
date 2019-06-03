@@ -143,17 +143,17 @@
         if(i_course_mesh_para_ctl .gt. 0) exit
 !
 !
-        call read_integer_ctl_type(hd_num_course_subdomain,             &
+        call read_integer_ctl_type(c_buf1, hd_num_course_subdomain,     &
      &      p_refine_ctl%nprocs_course_ctl)
 !
-        call read_chara_ctl_type(hd_course_mesh_file_head,              &
+        call read_chara_ctl_type(c_buf1, hd_course_mesh_file_head,      &
      &      p_refine_ctl%course_mesh_file_head_ctl)
-        call read_chara_ctl_type(hd_course_to_fine_p_head,              &
+        call read_chara_ctl_type(c_buf1, hd_course_to_fine_p_head,      &
      &      p_refine_ctl%c2f_para_head_ctl)
-        call read_chara_ctl_type(hd_fine_to_course_p_head,              &
+        call read_chara_ctl_type(c_buf1, hd_fine_to_course_p_head,      &
      &      p_refine_ctl%f2c_para_head_ctl)
 !
-        call read_chara_ctl_type(hd_fine_to_course_ele_head,            &
+        call read_chara_ctl_type(c_buf1, hd_fine_to_course_ele_head,    &
      &      p_refine_ctl%refine_info_para_head_ctl)
       end do
 !

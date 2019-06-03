@@ -264,8 +264,10 @@
         if(i_diff_files .gt. 0) exit
 !
 !
-        call read_chara_ctl_type(hd_ref_udt_head_ctl, ref_udt_head_ctl)
-        call read_chara_ctl_type(hd_tgt_udt_head_ctl, tgt_udt_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_ref_udt_head_ctl, ref_udt_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_tgt_udt_head_ctl, tgt_udt_head_ctl)
       end do
 !
       end subroutine read_diff_files_ctl
@@ -288,22 +290,22 @@
      &     (hd_phys_values, i_phys_values, fld_d_ctl)
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, t_d_ctl)
-        call read_ele_layers_control                                    &
-     &     (hd_dynamic_layers, i_dynamic_layers, elayer_d_ctl)
+        call read_ele_layers_control(ctl_file_code, hd_dynamic_layers,  &
+     &      i_dynamic_layers, elayer_d_ctl, c_buf1)
         call read_control_fem_int_points                                &
      &     (hd_int_points, i_int_points, fint_d_ctl)
 !
 !
 !
-        call read_chara_ctl_type(hd_prod_name,                          &
+        call read_chara_ctl_type(c_buf1, hd_prod_name,                  &
      &      product_field_ctl)
-        call read_chara_ctl_type(hd_corr_fld_name,                      &
+        call read_chara_ctl_type(c_buf1, hd_corr_fld_name,              &
      &      correlate_fld_ctl)
-        call read_chara_ctl_type(hd_corr_cmp_name,                      &
+        call read_chara_ctl_type(c_buf1, hd_corr_cmp_name,              &
      &      correlate_cmp_ctl)
-        call read_chara_ctl_type(hd_correlate_coord,                    &
+        call read_chara_ctl_type(c_buf1, hd_correlate_coord,            &
      &      correlate_coord_ctl)
-        call read_chara_ctl_type(hd_group_mesh_head,                    &
+        call read_chara_ctl_type(c_buf1, hd_group_mesh_head,            &
      &      group_mesh_head_ctl)
       end do
 !

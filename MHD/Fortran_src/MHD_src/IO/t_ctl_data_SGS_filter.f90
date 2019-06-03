@@ -182,13 +182,13 @@
         call read_control_array_c1(ctl_file_code,                       &
      &      hd_fluid_filter_grp, s3df_ctl%fluid_filter_grp_ctl, c_buf1)
 !
-        call read_chara_ctl_type(hd_momentum_filter_ctl,                &
+        call read_chara_ctl_type(c_buf1, hd_momentum_filter_ctl,        &
      &      s3df_ctl%momentum_filter_ctl)
-        call read_chara_ctl_type(hd_heat_filter_ctl,                    &
+        call read_chara_ctl_type(c_buf1, hd_heat_filter_ctl,            &
      &      s3df_ctl%heat_filter_ctl)
-        call read_chara_ctl_type(hd_induction_filter_ctl,               &
+        call read_chara_ctl_type(c_buf1, hd_induction_filter_ctl,       &
      &      s3df_ctl%induction_filter_ctl)
-        call read_chara_ctl_type(hd_comp_filter_ctl,                    &
+        call read_chara_ctl_type(c_buf1, hd_comp_filter_ctl,            &
      &      s3df_ctl%compostion_filter_ctl)
       end do
 !
@@ -212,21 +212,21 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
-        call read_chara_ctl_type(hd_sph_filter_type,                    &
+        call read_chara_ctl_type(c_buf1, hd_sph_filter_type,            &
      &      sphf_ctl%sph_filter_type_ctl)
-        call read_chara_ctl_type(hd_radial_filter_type,                 &
+        call read_chara_ctl_type(c_buf1, hd_radial_filter_type,         &
      &      sphf_ctl%radial_filter_type_ctl)
 !
-        call read_integer_ctl_type(hd_max_mom,                          &
+        call read_integer_ctl_type(c_buf1, hd_max_mom,                  &
      &      sphf_ctl%maximum_moments_ctl)
-        call read_integer_ctl_type(hd_1st_reference,                    &
+        call read_integer_ctl_type(c_buf1, hd_1st_reference,            &
      &      sphf_ctl%first_reference_ctl)
-        call read_integer_ctl_type(hd_2nd_reference,                    &
+        call read_integer_ctl_type(c_buf1, hd_2nd_reference,            &
      &      sphf_ctl%second_reference_ctl)
 !
-        call read_real_ctl_type(hd_radial_filter_w,                     &
+        call read_real_ctl_type(c_buf1, hd_radial_filter_w,             &
      &      sphf_ctl%radial_filter_width_ctl)
-        call read_real_ctl_type(hd_sphere_filter_w,                     &
+        call read_real_ctl_type(c_buf1, hd_sphere_filter_w,             &
      &      sphf_ctl%sphere_filter_width_ctl)
       end do
 !

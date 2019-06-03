@@ -102,7 +102,8 @@
         call read_control_platforms                                     &
      &     (hd_platform, i_platform, f_comm_plt)
         call read_filter_fnames_control                                 &
-     &     (hd_filter_fnames, i_filter_fnames, ffile_ctest_ctl)
+     &     (ctl_file_code, hd_filter_fnames, i_filter_fnames,           &
+     &      ffile_ctest_ctl, c_buf1)
       end do
 !
       end subroutine read_filter_comm_test_data

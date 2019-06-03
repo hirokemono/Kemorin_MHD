@@ -385,9 +385,10 @@
         call read_3d_filtering_ctl                                      &
      &     (hd_3d_filtering, i_3d_filtering, sgs_ctl%s3df_ctl)
         call read_filter_fnames_control                                 &
-     &     (hd_filter_fnames, i_filter_fnames, sgs_ctl%ffile_ctl)
-        call read_ele_layers_control                                    &
-     &     (hd_dynamic_layers, i_dynamic_layers, sgs_ctl%elayer_ctl)
+     &     (ctl_file_code, hd_filter_fnames, i_filter_fnames,           &
+     &      sgs_ctl%ffile_ctl, c_buf1)
+        call read_ele_layers_control(ctl_file_code, hd_dynamic_layers,  &
+     &      i_dynamic_layers, sgs_ctl%elayer_ctl, c_buf1)
 !
 !
         call find_control_array_flag                                    &
@@ -402,69 +403,69 @@
         call read_control_array_c1(ctl_file_code,                       &
      &      hd_commutation_fld, sgs_ctl%commutate_fld_ctl, c_buf1)
 !
-        call read_chara_ctl_type(hd_SGS_model,                          &
+        call read_chara_ctl_type(c_buf1, hd_SGS_model,                  &
      &      sgs_ctl%SGS_model_name_ctl)
-        call read_chara_ctl_type(hd_SGS_filter,                         &
+        call read_chara_ctl_type(c_buf1, hd_SGS_filter,                 &
      &      sgs_ctl%SGS_filter_name_ctl)
-        call read_chara_ctl_type(hd_DIFF_coefs,                         &
+        call read_chara_ctl_type(c_buf1, hd_DIFF_coefs,                 &
      &      sgs_ctl%DIFF_model_coef_ctl)
 !
-        call read_chara_ctl_type(hd_SGS_clips,                          &
+        call read_chara_ctl_type(c_buf1, hd_SGS_clips,                  &
      &      sgs_ctl%SGS_negative_clip_ctl)
-        call read_chara_ctl_type(hd_SGS_marging,                        &
+        call read_chara_ctl_type(c_buf1, hd_SGS_marging,                &
      &      sgs_ctl%SGS_marging_ctl)
-        call read_chara_ctl_type(hd_SGS_perturbation_ctl,               &
+        call read_chara_ctl_type(c_buf1, hd_SGS_perturbation_ctl,       &
      &      sgs_ctl%SGS_perturbation_ctl)
-        call read_chara_ctl_type(hd_model_coef_type_ctl,                &
+        call read_chara_ctl_type(c_buf1, hd_model_coef_type_ctl,        &
      &      sgs_ctl%SGS_model_coef_type_ctl)
 !
-        call read_chara_ctl_type(hd_hf_csim_type_ctl,                   &
+        call read_chara_ctl_type(c_buf1, hd_hf_csim_type_ctl,           &
      &      sgs_ctl%heat_flux_csim_type_ctl)
-        call read_chara_ctl_type(hd_cf_csim_type_ctl,                   &
+        call read_chara_ctl_type(c_buf1, hd_cf_csim_type_ctl,           &
      &      sgs_ctl%comp_flux_csim_type_ctl)
-        call read_chara_ctl_type(hd_mf_csim_type_ctl,                   &
+        call read_chara_ctl_type(c_buf1, hd_mf_csim_type_ctl,           &
      &      sgs_ctl%mom_flux_csim_type_ctl)
-        call read_chara_ctl_type(hd_mxwl_csim_type_ctl,                 &
+        call read_chara_ctl_type(c_buf1, hd_mxwl_csim_type_ctl,         &
      &      sgs_ctl%maxwell_csim_type_ctl)
-        call read_chara_ctl_type(hd_uxb_csim_type_ctl,                  &
+        call read_chara_ctl_type(c_buf1, hd_uxb_csim_type_ctl,          &
      &      sgs_ctl%uxb_csim_type_ctl)
-        call read_chara_ctl_type(hd_model_coef_coord_ctl,               &
+        call read_chara_ctl_type(c_buf1, hd_model_coef_coord_ctl,       &
      &      sgs_ctl%SGS_model_coef_coord_ctl)
-        call read_chara_ctl_type(hd_SGS_buo_Csim_usage,                 &
+        call read_chara_ctl_type(c_buf1, hd_SGS_buo_Csim_usage,         &
      &      sgs_ctl%SGS_buo_Csim_usage_ctl)
 !
 !
-        call read_real_ctl_type(hd_delta_shrink_dynamic,                &
+        call read_real_ctl_type(c_buf1, hd_delta_shrink_dynamic,        &
      &      sgs_ctl%delta_to_shrink_dynamic_ctl)
-        call read_real_ctl_type(hd_SGS_clip_limit,                      &
+        call read_real_ctl_type(c_buf1, hd_SGS_clip_limit,              &
      &      sgs_ctl%clipping_limit_ctl)
 !
-        call read_real_ctl_type(hd_SGS_hf_factor,                       &
+        call read_real_ctl_type(c_buf1, hd_SGS_hf_factor,               &
      &      sgs_ctl%SGS_hf_factor_ctl)
-        call read_real_ctl_type(hd_SGS_cf_factor,                       &
+        call read_real_ctl_type(c_buf1, hd_SGS_cf_factor,               &
      &      sgs_ctl%SGS_cf_factor_ctl)
-        call read_real_ctl_type(hd_SGS_mf_factor,                       &
+        call read_real_ctl_type(c_buf1, hd_SGS_mf_factor,               &
      &      sgs_ctl%SGS_mf_factor_ctl)
-        call read_real_ctl_type(hd_SGS_mxwl_factor,                     &
+        call read_real_ctl_type(c_buf1, hd_SGS_mxwl_factor,             &
      &      sgs_ctl%SGS_mxwl_factor_ctl)
-        call read_real_ctl_type(hd_SGS_uxb_factor,                      &
+        call read_real_ctl_type(c_buf1, hd_SGS_uxb_factor,              &
      &      sgs_ctl%SGS_uxb_factor_ctl)
 !
-        call read_real_ctl_type(hd_delta_extend_dynamic,                &
+        call read_real_ctl_type(c_buf1, hd_delta_extend_dynamic,        &
      &      sgs_ctl%delta_to_extend_dynamic_ctl)
-        call read_real_ctl_type(hd_stabilize_weight,                    &
+        call read_real_ctl_type(c_buf1, hd_stabilize_weight,            &
      &      sgs_ctl%stabilize_weight_ctl)
 !
-        call read_integer_ctl_type(hd_istep_dynamic,                    &
+        call read_integer_ctl_type(c_buf1, hd_istep_dynamic,            &
      &      sgs_ctl%istep_dynamic_ctl)
-        call read_integer_ctl_type(hd_min_step_dynamic,                 &
+        call read_integer_ctl_type(c_buf1, hd_min_step_dynamic,         &
      &      sgs_ctl%min_step_dynamic_ctl)
-        call read_integer_ctl_type(hd_max_step_dynamic,                 &
+        call read_integer_ctl_type(c_buf1, hd_max_step_dynamic,         &
      &      sgs_ctl%max_step_dynamic_ctl)
 !
-        call read_integer_ctl_type(hd_r_ave_area_ctl,                   &
+        call read_integer_ctl_type(c_buf1, hd_r_ave_area_ctl,           &
      &      sgs_ctl%ngrp_radial_ave_ctl)
-        call read_integer_ctl_type(hd_med_ave_area_ctl,                 &
+        call read_integer_ctl_type(c_buf1, hd_med_ave_area_ctl,         &
      &      sgs_ctl%ngrp_med_ave_ctl)
       end do
 !

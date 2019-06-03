@@ -146,17 +146,19 @@
         if(i_grouping_plot .gt. 0) exit
 !
 !
-        call read_chara_ctl_type(hd_group_mesh_head,                    &
+        call read_chara_ctl_type(c_buf1, hd_group_mesh_head,            &
      &      group_mesh_head_ctl)
-        call read_chara_ctl_type(hd_group_data_name, grp_evo_data_ctl)
-        call read_chara_ctl_type(hd_group_udt_head,                     &
+        call read_chara_ctl_type(c_buf1, hd_group_data_name,            &
+     &      grp_evo_data_ctl)
+        call read_chara_ctl_type(c_buf1, hd_group_udt_head,             &
      &      grp_ucd_data_head_ctl)
-        call read_chara_ctl_type(hd_start_ele_grp_name,                 &
+        call read_chara_ctl_type(c_buf1, hd_start_ele_grp_name,         &
      &      start_ele_grp_name_ctl)
-        call read_chara_ctl_type(hd_time_average_data,                  &
+        call read_chara_ctl_type(c_buf1, hd_time_average_data,          &
      &      time_average_data_ctl)
 !
-        call read_integer_ctl_type(hd_ngrp_ele_grp, ngrp_ele_grp_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf1, hd_ngrp_ele_grp, ngrp_ele_grp_ctl)
       end do
 !
       end subroutine read_ctl_data_4_drmd_grp

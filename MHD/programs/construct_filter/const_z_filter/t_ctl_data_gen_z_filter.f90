@@ -108,10 +108,10 @@
 !
 !
         call read_chara_ctl_type                                        &
-     &     (hd_filter_head_ctl, z_filter_ctl%z_filter_head_ctl)
+     &     (c_buf1, hd_filter_head_ctl, z_filter_ctl%z_filter_head_ctl)
 !
         call read_integer_ctl_type                                      &
-     &      (hd_ip_smp_z_ctl, z_filter_ctl%ip_smp_z_ctl)
+     &     (c_buf1, hd_ip_smp_z_ctl, z_filter_ctl%ip_smp_z_ctl)
       end do
 !
       end subroutine read_ctl_z_filter_ctl_data

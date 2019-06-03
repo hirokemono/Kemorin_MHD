@@ -183,7 +183,7 @@
         end if
 !
         call read_real_ctl_type                                         &
-     &     (hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)
+     &     (c_buf1, hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)
       end do
 !
       end subroutine read_pvr_section_ctl
@@ -205,12 +205,12 @@
         i_flag = find_control_end_flag(hd_pvr_isosurf)
         if(i_flag .gt. 0) exit
 !
-        call read_chara_ctl_type(hd_iso_direction,                      &
+        call read_chara_ctl_type(c_buf1, hd_iso_direction,              &
      &      pvr_iso_ctl%isosurf_type_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_isosurf_value, pvr_iso_ctl%isosurf_value_ctl )
+     &     (c_buf1, hd_isosurf_value, pvr_iso_ctl%isosurf_value_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_pvr_opacity, pvr_iso_ctl%opacity_ctl)
+     &     (c_buf1, hd_pvr_opacity, pvr_iso_ctl%opacity_ctl)
       end do
 !
       end subroutine read_pvr_isosurface_ctl
@@ -231,9 +231,9 @@
         movie%i_pvr_rotation = find_control_end_flag(hd_pvr_rotation)
         if(movie%i_pvr_rotation .gt. 0) exit
 !
-        call read_integer_ctl_type(hd_movie_rot_frame,                  &
+        call read_integer_ctl_type(c_buf1, hd_movie_rot_frame,          &
      &      movie%num_frames_ctl)
-        call read_chara_ctl_type(hd_movie_rot_axis,                     &
+        call read_chara_ctl_type(c_buf1, hd_movie_rot_axis,             &
      &      movie%rotation_axis_ctl)
       end do
 !

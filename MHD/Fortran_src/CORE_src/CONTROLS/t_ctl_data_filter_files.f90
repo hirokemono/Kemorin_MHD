@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine read_filter_fnames_control                           &
-!!     &         (hd_block, iflag, ffile_ctl)
+!!     &         (id_control, hd_block, iflag, ffile_ctl, c_buf)
 !!
 !!  ---------------------------------------------------------------------
 !!
@@ -36,6 +36,7 @@
 !
       use m_precision
       use t_control_elements
+      use t_read_control_elements
 !
       implicit  none
 !
@@ -114,52 +115,53 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_filter_fnames_control                             &
-     &         (hd_block, iflag, ffile_ctl)
+     &         (id_control, hd_block, iflag, ffile_ctl, c_buf)
 !
       use m_machine_parameter
       use skip_comment_f
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
       integer(kind = kint), intent(inout) :: iflag
       type(filter_file_control), intent(inout) :: ffile_ctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
-      if (iflag .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(iflag .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        iflag = find_control_end_flag(hd_block)
-        if(iflag .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
 !
         call read_chara_ctl_type                                        &
-     &     (hd_filter_head_ctl, ffile_ctl%filter_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_filter_coef_head_ctl, ffile_ctl%filter_coef_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_filter_elen_head_ctl, ffile_ctl%filter_elen_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_filter_moms_head_ctl, ffile_ctl%filter_moms_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_filter_wide_head, ffile_ctl%filter_wide_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_model_coef_ini_head, ffile_ctl%model_coef_ini_head_ctl)
-        call read_chara_ctl_type(hd_commute_coef_ini_head,              &
+     &     (c_buf, hd_filter_head_ctl, ffile_ctl%filter_head_ctl)
+        call read_chara_ctl_type(c_buf, hd_filter_coef_head_ctl,        &
+     &      ffile_ctl%filter_coef_head_ctl)
+        call read_chara_ctl_type(c_buf, hd_filter_elen_head_ctl,        &
+     &      ffile_ctl%filter_elen_head_ctl)
+        call read_chara_ctl_type(c_buf, hd_filter_moms_head_ctl,        &
+     &      ffile_ctl%filter_moms_head_ctl)
+        call read_chara_ctl_type(c_buf, hd_filter_wide_head,            &
+     &      ffile_ctl%filter_wide_head_ctl)
+        call read_chara_ctl_type(c_buf, hd_model_coef_ini_head,         &
+     &      ffile_ctl%model_coef_ini_head_ctl)
+        call read_chara_ctl_type(c_buf, hd_commute_coef_ini_head,       &
      &      ffile_ctl%commute_coef_ini_head_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_filter_elen_fmt, ffile_ctl%filter_elen_format)
+     &     (c_buf, hd_filter_elen_fmt, ffile_ctl%filter_elen_format)
         call read_chara_ctl_type                                        &
-     &     (hd_filter_3d_fmt, ffile_ctl%filter_3d_format)
+     &     (c_buf, hd_filter_3d_fmt, ffile_ctl%filter_3d_format)
         call read_chara_ctl_type                                        &
-     &     (hd_filter_wide_fmt, ffile_ctl%filter_wide_format)
-        call read_chara_ctl_type                                        &
-     &     (hd_model_coef_rst_format, ffile_ctl%model_coef_rst_format)
-        call read_chara_ctl_type(hd_commute_c_rst_format,               &
+     &     (c_buf, hd_filter_wide_fmt, ffile_ctl%filter_wide_format)
+        call read_chara_ctl_type(c_buf, hd_model_coef_rst_format,       &
+     &      ffile_ctl%model_coef_rst_format)
+        call read_chara_ctl_type(c_buf, hd_commute_c_rst_format,        &
      &      ffile_ctl%commute_coef_rst_format)
       end do
+      iflag = 1
 !
       end subroutine read_filter_fnames_control
 !

@@ -238,38 +238,43 @@
 !
 !
         call read_chara_ctl_type                                        &
-     &     (hd_sph_c_type, spctl%sph_coef_type_ctl)
+     &     (c_buf1, hd_sph_c_type, spctl%sph_coef_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_sph_g_type, spctl%sph_grid_type_ctl)
+     &     (c_buf1, hd_sph_g_type, spctl%sph_grid_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_r_grid_type, spctl%radial_grid_type_ctl)
+     &     (c_buf1, hd_r_grid_type, spctl%radial_grid_type_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (hd_phi_symmetry, spctl%phi_symmetry_ctl)
-        call read_integer_ctl_type(hd_sph_truncate, spctl%ltr_ctl)
+     &     (c_buf1, hd_phi_symmetry, spctl%phi_symmetry_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_ntheta_shell, spctl%ngrid_elevation_ctl)
+     &     (c_buf1, hd_sph_truncate, spctl%ltr_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_nphi_shell, spctl%ngrid_azimuth_ctl)
+     &     (c_buf1, hd_ntheta_shell, spctl%ngrid_elevation_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf1, hd_nphi_shell, spctl%ngrid_azimuth_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (hd_n_fluid_grid, spctl%num_fluid_grid_ctl)
+     &     (c_buf1, hd_n_fluid_grid, spctl%num_fluid_grid_ctl)
 !
-!
-        call read_real_ctl_type(hd_Min_radius, spctl%Min_radius_ctl)
-        call read_real_ctl_type(hd_ICB_radius, spctl%ICB_radius_ctl)
-        call read_real_ctl_type(hd_CMB_radius, spctl%CMB_radius_ctl)
-        call read_real_ctl_type(hd_Max_radius, spctl%Max_radius_ctl)
 !
         call read_real_ctl_type                                         &
-     &     (hd_shell_size, spctl%fluid_core_size_ctl)
+     &     (c_buf1, hd_Min_radius, spctl%Min_radius_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_shell_ratio, spctl%ICB_to_CMB_ratio_ctl)
+     &     (c_buf1, hd_ICB_radius, spctl%ICB_radius_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_CMB_radius, spctl%CMB_radius_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_Max_radius, spctl%Max_radius_ctl)
+!
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_shell_size, spctl%fluid_core_size_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_shell_ratio, spctl%ICB_to_CMB_ratio_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (hd_num_radial_grp, spctl%num_radial_layer_ctl)
+     &     (c_buf1, hd_num_radial_grp, spctl%num_radial_layer_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_num_med_grp, spctl%num_med_layer_ctl)
+     &     (c_buf1, hd_num_med_grp, spctl%num_med_layer_ctl)
 !
         call read_control_array_i2(ctl_file_code,                       &
      &      hd_list_radial_grp, spctl%radial_layer_list_ctl, c_buf1)

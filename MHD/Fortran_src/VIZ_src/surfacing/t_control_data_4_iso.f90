@@ -209,11 +209,11 @@
         call read_iso_define_data(iso_c)
 !
 !
-        call read_chara_ctl_type(hd_isosurf_prefix,                     &
+        call read_chara_ctl_type(c_buf1, hd_isosurf_prefix,             &
      &      iso_c%iso_file_head_ctl)
-        call read_chara_ctl_type(hd_iso_file_head,                      &
+        call read_chara_ctl_type(c_buf1, hd_iso_file_head,              &
      &      iso_c%iso_file_head_ctl)
-        call read_chara_ctl_type(hd_iso_out_type,                       &
+        call read_chara_ctl_type(c_buf1, hd_iso_out_type,               &
      &      iso_c%iso_output_type_ctl)
       end do
 !
@@ -237,10 +237,13 @@
         call  read_iso_plot_area_ctl(iso_c)
 !
 !
-        call read_chara_ctl_type(hd_iso_field, iso_c%isosurf_data_ctl)
-        call read_chara_ctl_type(hd_iso_comp, iso_c%isosurf_comp_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_iso_field, iso_c%isosurf_data_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_iso_comp, iso_c%isosurf_comp_ctl)
 !
-        call read_real_ctl_type(hd_iso_value, iso_c%isosurf_value_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_iso_value, iso_c%isosurf_value_ctl)
 !
         call read_control_array_c1(ctl_file_code,                       &
      &      hd_iso_area, iso_c%iso_area_ctl, c_buf1)
@@ -269,10 +272,10 @@
         call read_control_array_c2(ctl_file_code,                       &
      &      hd_iso_result_field, iso_c%iso_out_field_ctl, c_buf1)
 !
-        call read_chara_ctl_type(hd_result_type,                        &
+        call read_chara_ctl_type(c_buf1, hd_result_type,                &
      &      iso_c%iso_result_type_ctl)
 !
-        call read_real_ctl_type(hd_result_value,                        &
+        call read_real_ctl_type(c_buf1, hd_result_value,                &
      &      iso_c%result_value_iso_ctl)
       end do
 !

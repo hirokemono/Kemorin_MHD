@@ -185,8 +185,10 @@
      &     (hd_takepiro_ctl, i_takepiro_t_ctl, reft_ctl%takepiro_ctl)
 !
 !
-        call read_chara_ctl_type(hd_ref_temp,  reft_ctl%reference_ctl)
-        call read_chara_ctl_type(hd_strat_ctl, reft_ctl%stratified_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_ref_temp,  reft_ctl%reference_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_strat_ctl, reft_ctl%stratified_ctl)
       end do
 !
       end subroutine read_reftemp_ctl
@@ -219,8 +221,10 @@
      &     (hd_takepiro_ctl, i_takepiro_c_ctl, refc_ctl%takepiro_ctl)
 !
 !
-        call read_chara_ctl_type(hd_ref_comp,  refc_ctl%reference_ctl)
-        call read_chara_ctl_type(hd_strat_ctl, refc_ctl%stratified_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_ref_comp, refc_ctl%reference_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_strat_ctl, refc_ctl%stratified_ctl)
       end do
 !
       end subroutine read_refcomp_ctl
@@ -261,8 +265,8 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
-        call read_real_ctl_type(hd_position, ref_ctl%depth)
-        call read_real_ctl_type(hd_temp_value, ref_ctl%value)
+        call read_real_ctl_type(c_buf1, hd_position, ref_ctl%depth)
+        call read_real_ctl_type(c_buf1, hd_temp_value, ref_ctl%value)
       end do
 !
       end subroutine read_ref_temp_ctl
@@ -285,8 +289,8 @@
         iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
-        call read_real_ctl_type(hd_position, ref_ctl%depth)
-        call read_real_ctl_type(hd_comp_value, ref_ctl%value)
+        call read_real_ctl_type(c_buf1, hd_position, ref_ctl%depth)
+        call read_real_ctl_type(c_buf1, hd_comp_value, ref_ctl%value)
       end do
 !
       end subroutine read_ref_comp_ctl
@@ -311,11 +315,11 @@
 !
 !
         call read_real_ctl_type                                         &
-     &     (hd_strat_sigma, takepiro_ctl%stratified_sigma_ctl)
+     &     (c_buf1, hd_strat_sigma, takepiro_ctl%stratified_sigma_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_strat_width, takepiro_ctl%stratified_width_ctl)
-        call read_real_ctl_type                                         &
-     &     (hd_strat_outer, takepiro_ctl%stratified_outer_r_ctl)
+     &     (c_buf1, hd_strat_width, takepiro_ctl%stratified_width_ctl)
+        call read_real_ctl_type(c_buf1, hd_strat_outer,                 &
+     &      takepiro_ctl%stratified_outer_r_ctl)
       end do
 !
       end subroutine read_takepiro_ctl

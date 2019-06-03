@@ -236,7 +236,7 @@
         i_newrst_magne = find_control_end_flag(hd_newrst_magne)
         if(i_newrst_magne .gt. 0) exit
 !
-        call read_real_ctl_type(hd_magnetic_field_ratio,                &
+        call read_real_ctl_type(c_buf1, hd_magnetic_field_ratio,        &
      &      mgd_ctl%magnetic_ratio_ctl)
       end do
 !

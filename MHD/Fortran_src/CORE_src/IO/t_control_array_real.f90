@@ -111,7 +111,7 @@
         if(check_end_array_flag(c_buf, label)) exit
 !
         if(c_buf%header_chara.eq.label) then
-          call read_real_ctl_type(label, read_r1)
+          call read_real_ctl_type(c_buf, label, read_r1)
           call append_control_array_real(read_r1, array_real)
         end if
       end do

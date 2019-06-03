@@ -241,18 +241,21 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_chara_ctl_type(hd_MG_METHOD, MG_ctl%MG_METHOD_ctl)
-        call read_chara_ctl_type(hd_MG_PRECOND, MG_ctl%MG_PRECOND_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_MG_METHOD, MG_ctl%MG_METHOD_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_MG_PRECOND, MG_ctl%MG_PRECOND_ctl)
 !
-        call read_real_ctl_type(hd_MG_residual, MG_ctl%MG_residual_ctl)
-!
-        call read_integer_ctl_type                                      &
-     &     (hd_maxiter_mid, MG_ctl%maxiter_mid_ctl)
-        call read_integer_ctl_type                                      &
-     &     (hd_maxiter_coarsest, MG_ctl%maxiter_coarsest_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_MG_residual, MG_ctl%MG_residual_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (hd_num_MG_level, MG_ctl%num_multigrid_level_ctl)
+     &     (c_buf1, hd_maxiter_mid, MG_ctl%maxiter_mid_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf1, hd_maxiter_coarsest, MG_ctl%maxiter_coarsest_ctl)
+!
+        call read_integer_ctl_type                                      &
+     &     (c_buf1, hd_num_MG_level, MG_ctl%num_multigrid_level_ctl)
 !
 !
         call read_control_array_i1(ctl_file_code,                       &

@@ -200,49 +200,54 @@
         if(iflag .gt. 0) exit
 !
 !
-        call read_integer_ctl_type(hd_num_subdomain, plt%ndomain_ctl)
-        call read_integer_ctl_type(hd_num_smp, plt%num_smp_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf1, hd_num_subdomain, plt%ndomain_ctl)
+        call read_integer_ctl_type(c_buf1, hd_num_smp, plt%num_smp_ctl)
 !
 !
-        call read_chara_ctl_type(hd_mesh_header, plt%mesh_file_prefix)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_mesh_header, plt%mesh_file_prefix)
 !
-        call read_chara_ctl_type(hd_udt_header, plt%field_file_prefix)
-        call read_chara_ctl_type(hd_rst_header,                         &
+        call read_chara_ctl_type(c_buf1, hd_udt_header,                 &
+     &      plt%field_file_prefix)
+        call read_chara_ctl_type(c_buf1, hd_rst_header,                 &
      &      plt%restart_file_prefix)
-        call read_chara_ctl_type(hd_spectr_header,                      &
+        call read_chara_ctl_type(c_buf1, hd_spectr_header,              &
      &      plt%spectr_field_file_prefix)
 !
-        call read_chara_ctl_type(hd_sph_files_header,                   &
+        call read_chara_ctl_type(c_buf1, hd_sph_files_header,           &
      &       plt%sph_file_prefix)
 !
-        call read_chara_ctl_type(hd_coriolis_tri_int_name,              &
+        call read_chara_ctl_type(c_buf1, hd_coriolis_tri_int_name,      &
      &      plt%coriolis_int_file_name)
-        call read_chara_ctl_type(hd_bc_data_file_name,                  &
+        call read_chara_ctl_type(c_buf1, hd_bc_data_file_name,          &
      &      plt%bc_data_file_name_ctl)
 !
-        call read_chara_ctl_type(hd_itp_sph_to_fem,                     &
+        call read_chara_ctl_type(c_buf1, hd_itp_sph_to_fem,             &
      &      plt%interpolate_sph_to_fem_ctl)
-        call read_chara_ctl_type(hd_itp_fem_to_sph,                     &
+        call read_chara_ctl_type(c_buf1, hd_itp_fem_to_sph,             &
      &      plt%interpolate_fem_to_sph_ctl)
 !
-        call read_chara_ctl_type(hd_mesh_file_fmt,                      &
+        call read_chara_ctl_type(c_buf1, hd_mesh_file_fmt,              &
      &      plt%mesh_file_fmt_ctl)
-        call read_chara_ctl_type(hd_rst_files_fmt,                      &
+        call read_chara_ctl_type(c_buf1, hd_rst_files_fmt,              &
      &      plt%restart_file_fmt_ctl)
-        call read_chara_ctl_type(hd_udt_files_fmt,                      &
+        call read_chara_ctl_type(c_buf1, hd_udt_files_fmt,              &
      &      plt%field_file_fmt_ctl)
-        call read_chara_ctl_type(hd_sph_files_fmt,                      &
+        call read_chara_ctl_type(c_buf1, hd_sph_files_fmt,              &
      &      plt%sph_file_fmt_ctl)
-        call read_chara_ctl_type(hd_itp_files_fmt,                      &
+        call read_chara_ctl_type(c_buf1, hd_itp_files_fmt,              &
      &      plt%itp_file_fmt_ctl)
-        call read_chara_ctl_type(hd_spect_field_fmt,                    &
+        call read_chara_ctl_type(c_buf1, hd_spect_field_fmt,            &
      &      plt%spectr_field_fmt_ctl)
-        call read_chara_ctl_type(hd_coriolis_file_fmt,                  &
+        call read_chara_ctl_type(c_buf1, hd_coriolis_file_fmt,          &
      &      plt%coriolis_file_fmt_ctl)
 !
-        call read_chara_ctl_type(hd_debug_flag_ctl, plt%debug_flag_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_debug_flag_ctl, plt%debug_flag_ctl)
 !
-        call read_chara_ctl_type(hd_del_org_data, plt%del_org_data_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_del_org_data, plt%del_org_data_ctl)
        end do
 !
       end subroutine read_control_platforms

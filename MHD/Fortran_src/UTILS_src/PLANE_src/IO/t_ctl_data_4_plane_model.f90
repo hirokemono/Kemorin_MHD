@@ -84,22 +84,22 @@
         if(cube_c%i_plane_def .gt. 0) exit
 !
 !
-        call read_integer_ctl_type(hd_num_of_sleeve_ctl,                &
+        call read_integer_ctl_type(c_buf1, hd_num_of_sleeve_ctl,        &
      &      cube_c%num_of_sleeve_ctl)
 !
-        call read_chara_ctl_type(hd_horizontal_grid_ctl,                &
+        call read_chara_ctl_type(c_buf1, hd_horizontal_grid_ctl,        &
      &      cube_c%horizontal_grid_ctl)
 !
-        call read_real3_ctl_type(hd_plane_size_ctl,                     &
+        call read_real3_ctl_type(c_buf1, hd_plane_size_ctl,             &
      &     cube_c%plane_size_ctl)
 !
-        call read_integer3_ctl_type(hd_nnod_plane_ctl,                  &
+        call read_integer3_ctl_type(c_buf1, hd_nnod_plane_ctl,          &
      &      cube_c%nnod_plane_ctl)
 !
-        call read_integer3_ctl_type(hd_ndomain_plane_ctl,               &
+        call read_integer3_ctl_type(c_buf1, hd_ndomain_plane_ctl,       &
      &      cube_c%ndomain_plane_ctl)
 !
-        call read_character3_ctl_type(hd_unit_len_plane_ctl,            &
+        call read_character3_ctl_type(c_buf1, hd_unit_len_plane_ctl,    &
      &      cube_c%unit_len_plane_ctl)
       end do
 !

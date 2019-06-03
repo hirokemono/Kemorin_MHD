@@ -8,14 +8,17 @@
 !> @brief control date for volume averaged spectr data
 !!
 !!@verbatim
-!!      subroutine read_each_vol_spectr_ctl(hd_block, iflag, v_pwr)
+!!      subroutine read_each_vol_spectr_ctl                             &
+!!     &         (id_control, hd_block, iflag, v_pwr, c_buf)
 !!        type(volume_spectr_control), intent(inout) :: v_pwr
-!!      subroutine read_layerd_spectr_ctl(hd_block, iflag, lp_ctl)
+!!      subroutine read_layerd_spectr_ctl                               &
+!!     &         (id_control, hd_block, iflag, lp_ctl, c_buf)
 !!      subroutine dealloc_num_spec_layer_ctl(lp_ctl)
 !!        type(layerd_spectr_control), intent(inout) :: lp_ctl
 !!      subroutine reset_mid_equator_control(meq_ctl)
 !!        type(mid_equator_control), intent(inout) :: meq_ctl
-!!      subroutine read_mid_eq_monitor_ctl(hd_block, iflag, meq_ctl)
+!!      subroutine read_mid_eq_monitor_ctl                              &
+!!     &         (id_control, hd_block, iflag, meq_ctl, c_buf)
 !!        type(mid_equator_control), intent(inout) :: meq_ctl
 !!
 !! -----------------------------------------------------------------
@@ -69,6 +72,7 @@
 !
       use m_precision
 !
+      use t_read_control_elements
       use t_control_elements
       use t_control_array_integer
       use skip_comment_f
@@ -173,64 +177,71 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_each_vol_spectr_ctl(hd_block, iflag, v_pwr)
+      subroutine read_each_vol_spectr_ctl                               &
+     &         (id_control, hd_block, iflag, v_pwr, c_buf)
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
       integer(kind = kint), intent(inout) :: iflag
       type(volume_spectr_control), intent(inout) :: v_pwr
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(iflag .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        iflag = find_control_end_flag(hd_block)
-        if(iflag .gt. 0) exit
-!
-        call read_chara_ctl_type(hd_vol_pwr, v_pwr%volume_spec_file_ctl)
-        call read_chara_ctl_type(hd_vol_ave, v_pwr%volume_ave_file_ctl)
-        call read_real_ctl_type(hd_inner_r,  v_pwr%inner_radius_ctl)
-        call read_real_ctl_type(hd_outer_r,  v_pwr%outer_radius_ctl)
+        call read_chara_ctl_type(c_buf, hd_vol_pwr,                     &
+     &      v_pwr%volume_spec_file_ctl)
+        call read_chara_ctl_type(c_buf, hd_vol_ave,                     &
+     &      v_pwr%volume_ave_file_ctl)
+        call read_real_ctl_type(c_buf, hd_inner_r,                      &
+     &      v_pwr%inner_radius_ctl)
+        call read_real_ctl_type(c_buf, hd_outer_r,                      &
+     &      v_pwr%outer_radius_ctl)
       end do
+      iflag = 1
 !
       end subroutine read_each_vol_spectr_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_layerd_spectr_ctl(hd_block, iflag, lp_ctl)
+      subroutine read_layerd_spectr_ctl                                 &
+     &         (id_control, hd_block, iflag, lp_ctl, c_buf)
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
       integer(kind = kint), intent(inout) :: iflag
       type(layerd_spectr_control), intent(inout) :: lp_ctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if (iflag .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        iflag = find_control_end_flag(hd_block)
-        if(iflag .gt. 0) exit
+        call read_control_array_i1(id_control,                          &
+     &      hd_spctr_layer, lp_ctl%idx_spec_layer_ctl, c_buf)
 !
-!
-        call read_control_array_i1(ctl_file_code,                       &
-     &      hd_spctr_layer, lp_ctl%idx_spec_layer_ctl, c_buf1)
-!
-        call read_chara_ctl_type(hd_layer_rms_head,                     &
+        call read_chara_ctl_type(c_buf, hd_layer_rms_head,              &
      &      lp_ctl%layered_pwr_spectr_prefix)
 !
-        call read_chara_ctl_type(hd_degree_spectr_switch,               &
+        call read_chara_ctl_type(c_buf, hd_degree_spectr_switch,        &
      &      lp_ctl%degree_spectr_switch)
-        call read_chara_ctl_type(hd_order_spectr_switch,                &
+        call read_chara_ctl_type(c_buf, hd_order_spectr_switch,         &
      &      lp_ctl%order_spectr_switch)
-        call read_chara_ctl_type(hd_diff_lm_spectr_switch,              &
+        call read_chara_ctl_type(c_buf, hd_diff_lm_spectr_switch,       &
      &      lp_ctl%diff_lm_spectr_switch)
-        call read_chara_ctl_type(hd_axis_spectr_switch,                 &
+        call read_chara_ctl_type(c_buf, hd_axis_spectr_switch,          &
      &      lp_ctl%axis_spectr_switch)
       end do
+      iflag = 1
 !
       end subroutine read_layerd_spectr_ctl
 !
@@ -267,32 +278,36 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_mid_eq_monitor_ctl(hd_block, iflag, meq_ctl)
+      subroutine read_mid_eq_monitor_ctl                                &
+     &         (id_control, hd_block, iflag, meq_ctl, c_buf)
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
       integer(kind = kint), intent(inout) :: iflag
       type(mid_equator_control), intent(inout) :: meq_ctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if (iflag .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        iflag = find_control_end_flag(hd_block)
-        if(iflag .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
 !
-        call read_real_ctl_type(hd_pick_s_ctl, meq_ctl%pick_s_ctl)
-        call read_real_ctl_type(hd_pick_z_ctl, meq_ctl%pick_z_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf, hd_pick_s_ctl, meq_ctl%pick_s_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf, hd_pick_z_ctl, meq_ctl%pick_z_ctl)
 !
-        call read_integer_ctl_type(hd_nphi_mid_eq,                      &
+        call read_integer_ctl_type(c_buf, hd_nphi_mid_eq,               &
      &      meq_ctl%nphi_mid_eq_ctl)
 !
-        call read_chara_ctl_type(hd_circle_coord,                       &
+        call read_chara_ctl_type(c_buf, hd_circle_coord,                &
      &      meq_ctl%pick_circle_coord_ctl)
       end do
+      iflag = 1
 !
       end subroutine read_mid_eq_monitor_ctl
 !

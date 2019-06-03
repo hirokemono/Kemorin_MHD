@@ -173,7 +173,7 @@
 !
         call read_dx_solver_param_ctl(fil3_ctl)
 !
-        call read_chara_ctl_type(hd_mass_matrix_type,                   &
+        call read_chara_ctl_type(c_buf1, hd_mass_matrix_type,           &
      &      fil3_ctl%mass_matrix_type_ctl)
       end do
 !
@@ -196,19 +196,19 @@
 !
 !
         call read_chara_ctl_type                                        &
-     &     (hd_method_esize, fil3_ctl%method_esize_ctl)
+     &     (c_buf1, hd_method_esize, fil3_ctl%method_esize_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_precond_esize, fil3_ctl%precond_esize_ctl)
+     &     (c_buf1, hd_precond_esize, fil3_ctl%precond_esize_ctl)
 !
         call read_real_ctl_type                                         &
-     &     (hd_eps_esize, fil3_ctl%eps_esize_ctl)
+     &     (c_buf1, hd_eps_esize, fil3_ctl%eps_esize_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_sigma_esize, fil3_ctl%sigma_esize_ctl)
-        call read_real_ctl_type(hd_sigma_diag_esize,                    &
+     &     (c_buf1, hd_sigma_esize, fil3_ctl%sigma_esize_ctl)
+        call read_real_ctl_type(c_buf1, hd_sigma_diag_esize,            &
      &      fil3_ctl%sigma_diag_esize_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (hd_itr_esize, fil3_ctl%itr_esize_ctl)
+     &     (c_buf1, hd_itr_esize, fil3_ctl%itr_esize_ctl)
       end do
 !
       end subroutine read_dx_solver_param_ctl
@@ -251,13 +251,13 @@
         if(i_org_filter_fnames .gt. 0) exit
 !
 !
-        call read_chara_ctl_type(hd_org_filter_head,                    &
+        call read_chara_ctl_type(c_buf1, hd_org_filter_head,            &
      &      org_fil_files_ctl%org_filter_head_ctl)
-        call read_chara_ctl_type(hd_org_filter_coef_head,               &
+        call read_chara_ctl_type(c_buf1, hd_org_filter_coef_head,       &
      &      org_fil_files_ctl%org_filter_coef_head_ctl)
-        call read_chara_ctl_type(hd_org_filter_elen_head,               &
+        call read_chara_ctl_type(c_buf1, hd_org_filter_elen_head,       &
      &      org_fil_files_ctl%org_filter_elen_head_ctl)
-        call read_chara_ctl_type(hd_org_filter_moms_head,               &
+        call read_chara_ctl_type(c_buf1, hd_org_filter_moms_head,       &
      &      org_fil_files_ctl%org_filter_moms_head_ctl)
       end do
 !

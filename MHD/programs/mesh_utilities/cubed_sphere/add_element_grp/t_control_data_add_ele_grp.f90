@@ -185,7 +185,7 @@
      &      hd_num_z_ele_grping, addgrp_c%z_ele_grouping_ctl, c_buf1)
 !
 !
-        call read_chara_ctl_type(hd_2nd_grp_direction,                  &
+        call read_chara_ctl_type(c_buf1, hd_2nd_grp_direction,          &
      &      addgrp_c%sph_grp_direction_ctl)
       end do
 !

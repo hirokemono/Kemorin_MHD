@@ -197,50 +197,50 @@
 !
 !
         call read_chara_ctl_type                                        &
-     &     (hd_LIC_field, lic_ctl%LIC_field_ctl)
+     &     (c_buf1, hd_LIC_field, lic_ctl%LIC_field_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_color_field, lic_ctl%color_field_ctl)
+     &     (c_buf1, hd_color_field, lic_ctl%color_field_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_color_component, lic_ctl%color_component_ctl)
+     &     (c_buf1, hd_color_component, lic_ctl%color_component_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_opacity_field, lic_ctl%opacity_field_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_opacity_component, lic_ctl%opacity_component_ctl)
+     &     (c_buf1, hd_opacity_field, lic_ctl%opacity_field_ctl)
+        call read_chara_ctl_type(c_buf1, hd_opacity_component,          &
+     &      lic_ctl%opacity_component_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_noise_type, lic_ctl%noise_type_ctl)
+     &     (c_buf1, hd_noise_type, lic_ctl%noise_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_noise_file_head, lic_ctl%noise_file_prefix_ctl)
+     &     (c_buf1, hd_noise_file_head, lic_ctl%noise_file_prefix_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_noise_grid_size, lic_ctl%noise_resolution_ctl)
+     &     (c_buf1, hd_noise_grid_size, lic_ctl%noise_resolution_ctl)
+!
+        call read_chara_ctl_type(c_buf1, hd_kernel_function_type,       &
+     &      lic_ctl%kernel_function_type_ctl)
+        call read_chara_ctl_type(c_buf1, hd_kernal_file_name,           &
+     &      lic_ctl%kernal_file_prefix_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_kernel_function_type, lic_ctl%kernel_function_type_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_kernal_file_name, lic_ctl%kernal_file_prefix_ctl)
-!
-        call read_chara_ctl_type                                        &
-     &     (hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
+     &     (c_buf1, hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_step_size, lic_ctl%step_size_ctl)
+     &     (c_buf1, hd_step_size, lic_ctl%step_size_ctl)
 !
-        call read_chara_ctl_type                                        &
-     &     (hd_LIC_trace_type, lic_ctl%LIC_trace_length_def_ctl)
+        call read_chara_ctl_type(c_buf1, hd_LIC_trace_type,             &
+     &      lic_ctl%LIC_trace_length_def_ctl)
         call read_real_ctl_type                                         &
-     &     (hd_LIC_trace_length, lic_ctl%LIC_trace_length_ctl)
+     &     (c_buf1, hd_LIC_trace_length, lic_ctl%LIC_trace_length_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_LIC_trace_count, lic_ctl%LIC_trace_count_ctl)
+     &     (c_buf1, hd_LIC_trace_count, lic_ctl%LIC_trace_count_ctl)
 !
-        call read_chara_ctl_type                                        &
-     &     (hd_normalization_type, lic_ctl%normalization_type_ctl)
-        call read_real_ctl_type                                         &
-     &     (hd_normalization_value, lic_ctl%normalization_value_ctl)
+        call read_chara_ctl_type(c_buf1, hd_normalization_type,         &
+     &      lic_ctl%normalization_type_ctl)
+        call read_real_ctl_type(c_buf1, hd_normalization_value,         &
+     &      lic_ctl%normalization_value_ctl)
 !
-        call read_chara_ctl_type                                        &
-     &     (hd_reflection_ref_type, lic_ctl%reflection_ref_type_ctl)
-        call read_real_ctl_type                                         &
-     &     (hd_referection_parameter, lic_ctl%reflection_parameter_ctl)
+        call read_chara_ctl_type(c_buf1, hd_reflection_ref_type,        &
+     &      lic_ctl%reflection_ref_type_ctl)
+        call read_real_ctl_type(c_buf1, hd_referection_parameter,       &
+     &      lic_ctl%reflection_parameter_ctl)
 !
         call find_control_array_flag                                    &
      &     (hd_masking_ctl, lic_ctl%num_masking_ctl)

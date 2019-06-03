@@ -114,8 +114,8 @@
         call read_control_platforms                                     &
      &     (hd_new_data, i_new_data, newd_fil_ctl%new_filter_plt)
         call read_filter_fnames_control                                 &
-     &     (hd_filter_fnames, i_filter_fnames,                          &
-     &      newd_fil_ctl%ffile_ndom_ctl)
+     &     (ctl_file_code, hd_filter_fnames, i_filter_fnames,           &
+     &      newd_fil_ctl%ffile_ndom_ctl, c_buf1)
         call read_org_filter_fnames_ctl                                 &
      &     (newd_fil_ctl%org_filter_file_ctls)
       end do

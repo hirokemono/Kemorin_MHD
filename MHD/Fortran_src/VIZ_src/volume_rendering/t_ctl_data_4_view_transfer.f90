@@ -291,9 +291,9 @@
         call read_control_array_c2_r(ctl_file_code,                     &
      &      hd_model_mat, mat%modelview_mat_ctl, c_buf1)
 !
-        call read_real_ctl_type(hd_view_rot_deg,                        &
+        call read_real_ctl_type(c_buf1, hd_view_rot_deg,                &
      &        mat%view_rotation_deg_ctl)
-        call read_real_ctl_type(hd_scale_factor,                        &
+        call read_real_ctl_type(c_buf1, hd_scale_factor,                &
      &        mat%scale_factor_ctl)
       end do
 !
@@ -315,13 +315,13 @@
         mat%i_project_mat = find_control_end_flag(hd_project_mat)
         if(mat%i_project_mat .gt. 0) exit
 !
-        call read_real_ctl_type(hd_perspect_angle,                      &
+        call read_real_ctl_type(c_buf1, hd_perspect_angle,              &
      &          mat%perspective_angle_ctl)
-        call read_real_ctl_type(hd_perspect_xy,                         &
+        call read_real_ctl_type(c_buf1, hd_perspect_xy,                 &
      &          mat%perspective_xy_ratio_ctl)
-        call read_real_ctl_type(hd_perspect_near,                       &
+        call read_real_ctl_type(c_buf1, hd_perspect_near,               &
      &          mat%perspective_near_ctl)
-        call read_real_ctl_type(hd_perspect_far,                        &
+        call read_real_ctl_type(c_buf1, hd_perspect_far,                &
      &          mat%perspective_far_ctl)
       end do
 !
@@ -342,8 +342,10 @@
         mat%i_image_size = find_control_end_flag(hd_image_size)
         if(mat%i_image_size .gt. 0) exit
 !
-        call read_integer_ctl_type(hd_x_pixel, mat%num_xpixel_ctl)
-        call read_integer_ctl_type(hd_y_pixel, mat%num_ypixel_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf1, hd_x_pixel, mat%num_xpixel_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf1, hd_y_pixel, mat%num_ypixel_ctl)
       end do
 !
       end subroutine read_image_size_ctl
@@ -363,9 +365,10 @@
         mat%i_stereo_view = find_control_end_flag(hd_stereo_view)
         if(mat%i_stereo_view .gt. 0) exit
 !
-        call read_real_ctl_type(hd_focalpoint, mat%focalpoint_ctl)
-        call read_real_ctl_type(hd_eye_separation,                      &
-     &        mat%eye_separation_ctl)
+        call read_real_ctl_type(c_buf1, hd_focalpoint,                  &
+     &      mat%focalpoint_ctl)
+        call read_real_ctl_type(c_buf1, hd_eye_separation,              &
+     &      mat%eye_separation_ctl)
       end do
 !
       end subroutine read_stereo_view_ctl

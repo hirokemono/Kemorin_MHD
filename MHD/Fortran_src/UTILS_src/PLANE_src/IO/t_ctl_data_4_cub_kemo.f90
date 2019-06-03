@@ -162,7 +162,8 @@
         call read_control_platforms                                     &
      &     (hd_platform, cubmesh_c%i_platform, cubmesh_c%cubmesh_plt)
         call read_filter_fnames_control                                 &
-     &     (hd_filter_fnames, i_filter_fnames, cubmesh_c%ffile_cub_ctl)
+     &     (ctl_file_code, hd_filter_fnames, i_filter_fnames,           &
+     &      cubmesh_c%ffile_cub_ctl, c_buf1)
 !
         call read_plane_model_param_ctl(hd_plane_def, cubmesh_c%cube_c)
         call read_z_filter_mesh_ctl(cubmesh_c)
@@ -189,16 +190,16 @@
      &         = find_control_end_flag(hd_l_filter_ctl)
         if(cubmesh_c%i_l_filter_ctl .gt. 0) exit
 !
-        call read_chara_ctl_type(hd_z_filter_header,                    &
+        call read_chara_ctl_type(c_buf1, hd_z_filter_header,            &
      &      cubmesh_c%z_filter_head_ctl)
-        call read_chara_ctl_type(hd_vert_filter_type,                   &
+        call read_chara_ctl_type(c_buf1, hd_vert_filter_type,           &
      &      cubmesh_c%vert_filter_type_ctl)
 !
         call read_real_ctl_type                                         &
-     &     (hd_omitting_value, cubmesh_c%omitting_value_ctl)
+     &     (c_buf1, hd_omitting_value, cubmesh_c%omitting_value_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (hd_num_z_filter, cubmesh_c%num_z_filter_ctl)
+     &     (c_buf1, hd_num_z_filter, cubmesh_c%num_z_filter_ctl)
       end do
 !
       end subroutine read_z_filter_mesh_ctl

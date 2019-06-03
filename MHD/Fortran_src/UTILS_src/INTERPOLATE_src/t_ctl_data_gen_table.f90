@@ -356,16 +356,16 @@
 !
 !
         call read_chara_ctl_type                                        &
-     &     (hd_table_head_ctl, gtbl_ctl%table_head_ctl)
+     &     (c_buf1, hd_table_head_ctl, gtbl_ctl%table_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_itp_node_head_ctl, gtbl_ctl%itp_node_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_single_itp_tbl, gtbl_ctl%single_itp_tbl_head_ctl)
-        call read_chara_ctl_type                                        &
-     &      (hd_reverse_ele_tbl, gtbl_ctl%reverse_element_table_ctl)
+     &     (c_buf1, hd_itp_node_head_ctl, gtbl_ctl%itp_node_head_ctl)
+        call read_chara_ctl_type(c_buf1, hd_single_itp_tbl,             &
+     &      gtbl_ctl%single_itp_tbl_head_ctl)
+        call read_chara_ctl_type(c_buf1, hd_reverse_ele_tbl,            &
+     &      gtbl_ctl%reverse_element_table_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_fmt_itp_tbl, gtbl_ctl%fmt_itp_table_file_ctl)
+     &     (c_buf1, hd_fmt_itp_tbl, gtbl_ctl%fmt_itp_table_file_ctl)
       end do
 !
       end subroutine read_itp_files_ctl
@@ -411,9 +411,11 @@
         call read_control_array_i_r(ctl_file_code,                      &
      &      hd_eps_4_itp, gtbl_ctl%eps_4_itp_ctl, c_buf1)
 !
-        call read_integer_ctl_type(hd_itr, gtbl_ctl%itr_refine_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf1, hd_itr, gtbl_ctl%itr_refine_ctl)
 !
-        call read_real_ctl_type(hd_eps, gtbl_ctl%eps_refine_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf1, hd_eps, gtbl_ctl%eps_refine_ctl)
       end do
 !
       end subroutine read_itaration_param_ctl
@@ -435,21 +437,21 @@
 !
 !
         call read_chara_ctl_type                                        &
-     &     (hd_hash_type, gtbl_ctl%ele_hash_type_ctl)
+     &     (c_buf1, hd_hash_type, gtbl_ctl%ele_hash_type_ctl)
 ! 
-        call read_integer_ctl_type(hd_search_radius,                    &
+        call read_integer_ctl_type(c_buf1, hd_search_radius,            &
      &      gtbl_ctl%num_radial_divide_ctl)
-        call read_integer_ctl_type(hd_num_hash_elev,                    &
+        call read_integer_ctl_type(c_buf1, hd_num_hash_elev,            &
      &      gtbl_ctl%num_theta_divide_ctl)
-        call read_integer_ctl_type(hd_num_hash_azim,                    &
+        call read_integer_ctl_type(c_buf1, hd_num_hash_azim,            &
      &      gtbl_ctl%num_phi_divide_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (hd_num_hash_x, gtbl_ctl%num_x_divide_ctl)
+     &     (c_buf1, hd_num_hash_x, gtbl_ctl%num_x_divide_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_num_hash_y, gtbl_ctl%num_y_divide_ctl)
+     &     (c_buf1, hd_num_hash_y, gtbl_ctl%num_y_divide_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_num_hash_z, gtbl_ctl%num_z_divide_ctl)
+     &     (c_buf1, hd_num_hash_z, gtbl_ctl%num_z_divide_ctl)
       end do
 !
       end subroutine read_element_hash_ctl

@@ -82,11 +82,11 @@
 !
 !
         call read_chara_ctl_type                                        &
-     &     (hd_masking_type, mask_ctl%mask_type_ctl)
+     &     (c_buf1, hd_masking_type, mask_ctl%mask_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_masking_field, mask_ctl%field_name_ctl)
+     &     (c_buf1, hd_masking_field, mask_ctl%field_name_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_masking_comp, mask_ctl%component_ctl)
+     &     (c_buf1, hd_masking_comp, mask_ctl%component_ctl)
         call read_control_array_r2(ctl_file_code,                       &
      &      hd_masking_range, mask_ctl%mask_range_ctl, c_buf1)
       end do

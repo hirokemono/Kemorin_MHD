@@ -7,56 +7,56 @@
 !>@brief  Structure for reading control items
 !!
 !!@verbatim
-!!      subroutine read_real_ctl_type(label, real_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_real_ctl_type(c_buf, label, real_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_real_item), intent(inout) :: real_item
-!!      subroutine read_integer_ctl_type(label, int_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_integer_ctl_type(c_buf, label, int_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_integer_item), intent(inout) :: int_item
-!!      subroutine read_chara_ctl_type(label, chara_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_chara_ctl_type(c_buf, label, chara_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_character_item), intent(inout) :: chara_item
-!!      subroutine read_real2_ctl_type(label, real2_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_real2_ctl_type(c_buf, label, real2_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_real2_item), intent(inout) :: real2_item
-!!      subroutine read_real3_ctl_type(label, real3_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_real3_ctl_type(c_buf, label, real3_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_real3_item), intent(inout) :: real3_item
-!!      subroutine read_integer2_ctl_type(label, int2_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_integer2_ctl_type(c_buf, label, int2_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_int2_item), intent(inout) :: int2_item
-!!      subroutine read_integer3_ctl_type(label, int3_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_integer3_ctl_type(c_buf, label, int3_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_int3_item), intent(inout) :: int3_item
-!!      subroutine read_character2_ctl_type(label, chara2_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_character2_ctl_type(c_buf, label, chara2_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara2_item), intent(inout) :: chara2_item
-!!      subroutine read_character3_ctl_type(label, chara3_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_character3_ctl_type(c_buf, label, chara3_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara3_item), intent(inout) :: chara3_item
-!!      subroutine read_charreal2_ctl_type(label, cr2_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_charreal2_ctl_type(c_buf, label, cr2_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara_real2_item), intent(inout) :: cr2_item
-!!      subroutine read_char2real_ctl_type(label, c2r_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_char2real_ctl_type(c_buf, label, c2r_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara2_real_item), intent(inout) :: c2r_item
-!!      subroutine read_charareal_ctl_type(label, cr_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_charareal_ctl_type(c_buf, label, cr_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara_real_item), intent(inout) :: cr_item
-!!      subroutine read_charaint_ctl_type(label, ci_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_charaint_ctl_type(c_buf, label, ci_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara_int_item), intent(inout) :: ci_item
-!!      subroutine read_intchrreal_ctl_type(label, icr_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_intchrreal_ctl_type(c_buf, label, icr_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_int_chara_real_item), intent(inout) :: icr_item
-!!      subroutine read_intreal_ctl_type(label, ir_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_intreal_ctl_type(c_buf, label, ir_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_int_real_item), intent(inout) :: ir_item
-!!      subroutine read_int2real_ctl_type(label, i2r_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_int2real_ctl_type(c_buf, label, i2r_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_int2_real_item), intent(inout) :: i2r_item
-!!      subroutine read_int2real2_ctl_type(label, i2r2_item)
-!!        character(len=kchara), intent(in) :: label
+!!      subroutine read_int2real2_ctl_type(c_buf, label, i2r2_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_int2_real2_item), intent(inout) :: i2r2_item
 !!
 !!      subroutine write_real_ctl_type                                  &
@@ -87,7 +87,8 @@
       module t_control_elements
 !
       use m_precision
-      use m_read_control_elements
+      use m_machine_parameter
+      use t_read_control_elements
 !
       implicit none
 !
@@ -255,39 +256,48 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_real_ctl_type(label, real_item)
+      subroutine read_real_ctl_type(c_buf, label, real_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_real_item), intent(inout) :: real_item
 !
 !
-      call read_real_ctl_item(label, real_item%iflag,                   &
+      call read_real_ctl_item(c_buf, label, real_item%iflag,            &
      &    real_item%realvalue)
 !
       end subroutine read_real_ctl_type
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_integer_ctl_type(label, int_item)
+      subroutine read_integer_ctl_type(c_buf, label, int_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_integer_item), intent(inout) :: int_item
 !
 !
-      call read_integer_ctl_item(label, int_item%iflag,                 &
+      call read_integer_ctl_item(c_buf, label, int_item%iflag,          &
      &    int_item%intvalue)
 !
        end subroutine read_integer_ctl_type
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_chara_ctl_type(label, chara_item)
+      subroutine read_chara_ctl_type(c_buf, label, chara_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_character_item), intent(inout) :: chara_item
 !
 !
-      call read_character_ctl_item(label, chara_item%iflag,             &
+      call read_character_ctl_item(c_buf, label, chara_item%iflag,      &
      &    chara_item%charavalue)
 !
        end subroutine read_chara_ctl_type
@@ -295,26 +305,32 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_real2_ctl_type(label, real2_item)
+      subroutine read_real2_ctl_type(c_buf, label, real2_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_real2_item), intent(inout) :: real2_item
 !
 !
-      call read_real2_ctl_item(label, real2_item%iflag,                 &
+      call read_real2_ctl_item(c_buf, label, real2_item%iflag,          &
      &    real2_item%realvalue(1), real2_item%realvalue(2))
 !
        end subroutine read_real2_ctl_type
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_real3_ctl_type(label, real3_item)
+      subroutine read_real3_ctl_type(c_buf, label, real3_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_real3_item), intent(inout) :: real3_item
 !
 !
-      call read_real3_ctl_item(label, real3_item%iflag,                 &
+      call read_real3_ctl_item(c_buf, label, real3_item%iflag,          &
      &    real3_item%realvalue(1), real3_item%realvalue(2),             &
      &    real3_item%realvalue(3))
 !
@@ -322,24 +338,30 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_integer2_ctl_type(label, int2_item)
+      subroutine read_integer2_ctl_type(c_buf, label, int2_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_int2_item), intent(inout) :: int2_item
 !
-      call read_integer2_ctl_item(label, int2_item%iflag,               &
+      call read_integer2_ctl_item(c_buf, label, int2_item%iflag,        &
      &    int2_item%intvalue(1), int2_item%intvalue(2))
 !
       end subroutine read_integer2_ctl_type
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_integer3_ctl_type(label, int3_item)
+      subroutine read_integer3_ctl_type(c_buf, label, int3_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_int3_item), intent(inout) :: int3_item
 !
-      call read_integer3_ctl_item(label, int3_item%iflag,               &
+      call read_integer3_ctl_item(c_buf, label, int3_item%iflag,        &
      &    int3_item%intvalue(1), int3_item%intvalue(2),                 &
      &    int3_item%intvalue(3))
 !
@@ -347,26 +369,32 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_character2_ctl_type(label, chara2_item)
+      subroutine read_character2_ctl_type(c_buf, label, chara2_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara2_item), intent(inout) :: chara2_item
 !
 !
-      call read_character2_ctl_item(label, chara2_item%iflag,           &
+      call read_character2_ctl_item(c_buf, label, chara2_item%iflag,    &
      &    chara2_item%charavalue(1), chara2_item%charavalue(2))
 !
        end subroutine read_character2_ctl_type
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_character3_ctl_type(label, chara3_item)
+      subroutine read_character3_ctl_type(c_buf, label, chara3_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara3_item), intent(inout) :: chara3_item
 !
 !
-      call read_character3_ctl_item(label, chara3_item%iflag,           &
+      call read_character3_ctl_item(c_buf, label, chara3_item%iflag,    &
      &    chara3_item%charavalue(1), chara3_item%charavalue(2),         &
      &    chara3_item%charavalue(3))
 !
@@ -374,27 +402,33 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_charreal2_ctl_type(label, cr2_item)
+      subroutine read_charreal2_ctl_type(c_buf, label, cr2_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara_real2_item), intent(inout) :: cr2_item
 !
 !
       call read_charreal2_ctl_item                                      &
-     &   (label, cr2_item%iflag, cr2_item%charavalue,                   &
+     &   (c_buf, label, cr2_item%iflag, cr2_item%charavalue,            &
      &    cr2_item%realvalue(1), cr2_item%realvalue(2))
 !
        end subroutine read_charreal2_ctl_type
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_char2real_ctl_type(label, c2r_item)
+      subroutine read_char2real_ctl_type(c_buf, label, c2r_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara2_real_item), intent(inout) :: c2r_item
 !
 !
-      call read_char2real_ctl_item(label, c2r_item%iflag,               &
+      call read_char2real_ctl_item(c_buf, label, c2r_item%iflag,        &
      &    c2r_item%charavalue(1), c2r_item%charavalue(2),               &
      &    c2r_item%realvalue)
 !
@@ -402,79 +436,97 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_charareal_ctl_type(label, cr_item)
+      subroutine read_charareal_ctl_type(c_buf, label, cr_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara_real_item), intent(inout) :: cr_item
 !
 !
-      call read_charareal_ctl_item(label, cr_item%iflag,                &
+      call read_charareal_ctl_item(c_buf, label, cr_item%iflag,         &
      &    cr_item%charavalue, cr_item%realvalue)
 !
        end subroutine read_charareal_ctl_type
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_charaint_ctl_type(label, ci_item)
+      subroutine read_charaint_ctl_type(c_buf, label, ci_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara_int_item), intent(inout) :: ci_item
 !
 !
-      call read_charaint_ctl_item(label, ci_item%iflag,                 &
+      call read_charaint_ctl_item(c_buf, label, ci_item%iflag,          &
      &    ci_item%charavalue, ci_item%intvalue)
 !
        end subroutine read_charaint_ctl_type
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_intchrreal_ctl_type(label, icr_item)
+      subroutine read_intchrreal_ctl_type(c_buf, label, icr_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_int_chara_real_item), intent(inout) :: icr_item
 !
 !
-      call read_intchrreal_ctl_item(label, icr_item%iflag,              &
+      call read_intchrreal_ctl_item(c_buf, label, icr_item%iflag,       &
      &    icr_item%intvalue, icr_item%charavalue, icr_item%realvalue)
 !
        end subroutine read_intchrreal_ctl_type
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_intreal_ctl_type(label, ir_item)
+      subroutine read_intreal_ctl_type(c_buf, label, ir_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_int_real_item), intent(inout) :: ir_item
 !
 !
-      call read_intreal_ctl_item(label, ir_item%iflag,                  &
+      call read_intreal_ctl_item(c_buf, label, ir_item%iflag,           &
      &    ir_item%intvalue, ir_item%realvalue)
 !
        end subroutine read_intreal_ctl_type
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_int2real_ctl_type(label, i2r_item)
+      subroutine read_int2real_ctl_type(c_buf, label, i2r_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_int2_real_item), intent(inout) :: i2r_item
 !
 !
-      call read_int2real_ctl_item(label, i2r_item%iflag,               &
-     &    i2r_item%intvalue(1), i2r_item%intvalue(2),                  &
+      call read_int2real_ctl_item(c_buf, label, i2r_item%iflag,         &
+     &    i2r_item%intvalue(1), i2r_item%intvalue(2),                   &
      &    i2r_item%realvalue)
 !
        end subroutine read_int2real_ctl_type
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_int2real2_ctl_type(label, i2r2_item)
+      subroutine read_int2real2_ctl_type(c_buf, label, i2r2_item)
 !
+      use read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_int2_real2_item), intent(inout) :: i2r2_item
 !
 !
-      call read_int2real2_ctl_item(label, i2r2_item%iflag,              &
+      call read_int2real2_ctl_item(c_buf, label, i2r2_item%iflag,       &
      &    i2r2_item%intvalue(1), i2r2_item%intvalue(2),                 &
      &    i2r2_item%realvalue(1), i2r2_item%realvalue(2))
 !

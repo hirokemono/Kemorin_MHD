@@ -290,20 +290,20 @@
 !
 !
         call read_chara_ctl_type                                        &
-     &     (hd_domain_shape, cubed_sph_c%domain_shape_ctl)
+     &     (c_buf1, hd_domain_shape, cubed_sph_c%domain_shape_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_divide_def, cubed_sph_c%divide_type_ctl)
+     &     (c_buf1, hd_divide_def, cubed_sph_c%divide_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_high_ele_type, cubed_sph_c%high_ele_type_ctl)
+     &     (c_buf1, hd_high_ele_type, cubed_sph_c%high_ele_type_ctl)
 !
+        call read_integer_ctl_type(c_buf1, hd_numele_4_90deg,           &
+     &      cubed_sph_c%numele_4_90deg)
+        call read_integer_ctl_type(c_buf1, hd_numele_4_vert,            &
+     &      cubed_sph_c%numele_4_vertical_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_numele_4_90deg, cubed_sph_c%numele_4_90deg)
+     &     (c_buf1, hd_nend_adjust, cubed_sph_c%nend_adjust_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_numele_4_vert, cubed_sph_c%numele_4_vertical_ctl)
-        call read_integer_ctl_type                                      &
-     &     (hd_nend_adjust, cubed_sph_c%nend_adjust_ctl)
-        call read_integer_ctl_type                                      &
-     &     (hd_nstart_cube, cubed_sph_c%nstart_cube_ctl)
+     &     (c_buf1, hd_nstart_cube, cubed_sph_c%nstart_cube_ctl)
       end do
 !
       end subroutine read_ctl_4_shell_def
@@ -329,9 +329,9 @@
 !
 !
         call read_integer_ctl_type                                      &
-     &     (hd_nlayer_ICB, cubed_sph_c%nlayer_ICB_ctl)
+     &     (c_buf1, hd_nlayer_ICB, cubed_sph_c%nlayer_ICB_ctl)
         call read_integer_ctl_type                                      &
-     &     (hd_nlayer_CMB, cubed_sph_c%nlayer_CMB_ctl)
+     &     (c_buf1, hd_nlayer_CMB, cubed_sph_c%nlayer_CMB_ctl)
       end do
 !
       end subroutine read_ctl_shell_boundary

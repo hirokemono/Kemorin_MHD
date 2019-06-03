@@ -149,10 +149,13 @@
         if(i_bc_def .gt. 0) exit
 !
 !
-        call read_chara_ctl_type(hd_nod_grp_t, temp_nod_grp_name)
+        call read_chara_ctl_type                                        &
+     &     (c_buf1, hd_nod_grp_t, temp_nod_grp_name)
 !
-        call read_integer_ctl_type(hd_sph_degree, hermonic_degree_ctl)
-        call read_integer_ctl_type(hd_sph_order, hermonic_order_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf1, hd_sph_degree, hermonic_degree_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf1, hd_sph_order, hermonic_order_ctl)
       end do
 !
       end subroutine read_ctl_data_4_temp_nod_bc

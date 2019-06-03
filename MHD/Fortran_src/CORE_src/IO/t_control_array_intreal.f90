@@ -115,7 +115,7 @@
         if(check_end_array_flag(c_buf, label)) exit
 !
         if(c_buf%header_chara.eq.label) then
-          call read_intreal_ctl_type(label, read_ir)
+          call read_intreal_ctl_type(c_buf, label, read_ir)
           call append_control_array_i_r(read_ir, array_ir)
         end if
       end do
