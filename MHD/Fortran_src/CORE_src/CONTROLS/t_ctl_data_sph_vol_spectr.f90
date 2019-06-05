@@ -8,11 +8,19 @@
 !> @brief control date for volume averaged spectr data
 !!
 !!@verbatim
+!!      subroutine copy_volume_spectr_control(org_vpwr, new_vpwr)
+!!      subroutine copy_volume_spectr_control(org_vpwr, new_vpwr)
+!!        type(volume_spectr_control), intent(in) :: org_vpwr
+!!        type(volume_spectr_control), intent(inout) :: new_vpwr
+!!
 !!      subroutine read_each_vol_spectr_ctl                             &
 !!     &         (id_control, hd_block, iflag, v_pwr, c_buf)
 !!        type(volume_spectr_control), intent(inout) :: v_pwr
 !!      subroutine read_layerd_spectr_ctl                               &
 !!     &         (id_control, hd_block, iflag, lp_ctl, c_buf)
+!!
+!!      subroutine reset_volume_spectr_control(v_pwr)
+!!        type(volume_spectr_control), intent(inout) :: v_pwr
 !!      subroutine dealloc_num_spec_layer_ctl(lp_ctl)
 !!        type(layerd_spectr_control), intent(inout) :: lp_ctl
 !!      subroutine reset_mid_equator_control(meq_ctl)
@@ -177,6 +185,27 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine copy_volume_spectr_control(org_vpwr, new_vpwr)
+!
+      use copy_control_elements
+!
+      type(volume_spectr_control), intent(in) :: org_vpwr
+      type(volume_spectr_control), intent(inout) :: new_vpwr
+!
+!
+      call copy_chara_ctl(org_vpwr%volume_spec_file_ctl,                &
+     &    new_vpwr%volume_spec_file_ctl)
+      call copy_chara_ctl(org_vpwr%volume_ave_file_ctl,                 &
+     &    new_vpwr%volume_ave_file_ctl)
+      call copy_real_ctl(org_vpwr%inner_radius_ctl,                     &
+     &    new_vpwr%inner_radius_ctl)
+      call copy_real_ctl(org_vpwr%outer_radius_ctl,                     &
+     &    new_vpwr%outer_radius_ctl)
+!
+      end subroutine copy_volume_spectr_control
+!
+! -----------------------------------------------------------------------
+!
       subroutine read_each_vol_spectr_ctl                               &
      &         (id_control, hd_block, iflag, v_pwr, c_buf)
 !
@@ -244,6 +273,20 @@
       iflag = 1
 !
       end subroutine read_layerd_spectr_ctl
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine reset_volume_spectr_control(v_pwr)
+!
+      type(volume_spectr_control), intent(inout) :: v_pwr
+!
+      v_pwr%volume_spec_file_ctl%iflag = 0
+      v_pwr%volume_ave_file_ctl%iflag =  0
+      v_pwr%inner_radius_ctl%iflag =     0
+      v_pwr%outer_radius_ctl%iflag =     0
+!
+      end subroutine reset_volume_spectr_control
 !
 ! -----------------------------------------------------------------------
 !

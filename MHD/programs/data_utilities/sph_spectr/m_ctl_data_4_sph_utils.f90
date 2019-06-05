@@ -152,8 +152,8 @@
         call read_sph_trans_model_ctl
         call read_sph_trans_params_ctl
 !
-        call read_sph_monitoring_ctl                                    &
-     &     (hd_pick_sph, i_pick_sph, smonitor_u_ctl)
+        call read_sph_monitoring_ctl(ctl_file_code, hd_pick_sph,        &
+     &      i_pick_sph, smonitor_u_ctl, c_buf1)
       end do
 !
       end subroutine read_sph_utils_control_data

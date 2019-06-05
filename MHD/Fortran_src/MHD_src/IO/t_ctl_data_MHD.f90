@@ -141,8 +141,8 @@
 !
         call read_monitor_data_ctl                                      &
      &     (hd_monitor_data, i_monitor_data, MHD_ctl%nmtr_ctl)
-        call read_sph_monitoring_ctl                                    &
-     &     (hd_pick_sph, i_pick_sph, MHD_ctl%smonitor_ctl)
+        call read_sph_monitoring_ctl(ctl_file_code, hd_pick_sph,        &
+     &      i_pick_sph, MHD_ctl%smonitor_ctl, c_buf1)
 !
         call read_sections_control_data                                 &
      &     (MHD_ctl%psf_ctls, MHD_ctl%iso_ctls)
@@ -183,8 +183,8 @@
 !
         call read_monitor_data_ctl                                      &
      &     (hd_monitor_data, i_monitor_data, MHD_ctl%nmtr_ctl)
-        call read_sph_monitoring_ctl                                    &
-     &     (hd_pick_sph, i_pick_sph, MHD_ctl%smonitor_ctl)
+        call read_sph_monitoring_ctl(ctl_file_code, hd_pick_sph,        &
+     &      i_pick_sph, MHD_ctl%smonitor_ctl, c_buf1)
       end do
 !
       end subroutine read_sph_mhd_ctl_noviz

@@ -8,7 +8,8 @@
 !> @brief Monitoring section IO for Control data
 !!
 !!@verbatim
-!!      subroutine read_sph_monitoring_ctl(hd_block, iflag, smonitor_ctl)
+!!      subroutine read_sph_monitoring_ctl                              &
+!!     &         (id_control, hd_block, iflag, smonitor_ctl, c_buf)
 !!      subroutine dealloc_sph_monitoring_ctl(smonitor_ctl)
 !!
 !! -----------------------------------------------------------------
@@ -49,7 +50,6 @@
 !
       use m_precision
 !
-      use m_read_control_elements
       use t_read_control_elements
       use t_control_elements
       use t_ctl_data_sph_vol_spectr
@@ -96,7 +96,6 @@
      &            :: hd_pick_sph_ctl =     'pickup_spectr_ctl'
       character(len=kchara), parameter                                  &
      &            :: hd_mid_eq_monitor_ctl = 'mid_equator_monitor_ctl'
-      integer(kind = kint) :: i_vol_spectr_ctl =   0
       integer(kind = kint) :: i_layer_spectr_ctl = 0
       integer(kind = kint) :: i_gauss_pwr_ctl = 0
       integer(kind = kint) :: i_pick_sph_ctl =  0
@@ -112,7 +111,7 @@
      &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
 !
 !
-      private :: hd_vol_spec_block, i_vol_spectr_ctl
+      private :: hd_vol_spec_block
       private :: hd_layer_spec_block, i_layer_spectr_ctl
       private :: hd_gauss_spec_block, i_gauss_pwr_ctl
       private :: hd_pick_sph_ctl, i_pick_sph_ctl
@@ -128,75 +127,85 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_sph_monitoring_ctl(hd_block, iflag, smonitor_ctl)
+      subroutine read_sph_monitoring_ctl                                &
+     &         (id_control, hd_block, iflag, smonitor_ctl, c_buf)
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
       integer(kind = kint), intent(inout) :: iflag
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
-      if (iflag .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(iflag .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        iflag = find_control_end_flag(hd_block)
-        if(iflag .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_gauss_spectr_ctl                                      &
-     &     (ctl_file_code, hd_gauss_spec_block, i_gauss_pwr_ctl,        &
-     &      smonitor_ctl%g_pwr, c_buf1)
+     &     (id_control, hd_gauss_spec_block, i_gauss_pwr_ctl,           &
+     &      smonitor_ctl%g_pwr, c_buf)
         call read_pickup_spectr_ctl                                     &
-     &     (ctl_file_code, hd_pick_sph_ctl, i_pick_sph_ctl,             &
-     &      smonitor_ctl%pspec_ctl, c_buf1)
+     &     (id_control, hd_pick_sph_ctl, i_pick_sph_ctl,                &
+     &      smonitor_ctl%pspec_ctl, c_buf)
         call read_layerd_spectr_ctl                                     &
-     &     (ctl_file_code, hd_layer_spec_block, i_layer_spectr_ctl,     &
-     &      smonitor_ctl%lp_ctl, c_buf1)
+     &     (id_control, hd_layer_spec_block, i_layer_spectr_ctl,        &
+     &      smonitor_ctl%lp_ctl, c_buf)
         call read_mid_eq_monitor_ctl                                    &
-     &     (ctl_file_code, hd_mid_eq_monitor_ctl, i_mid_eq_monitor_ctl, &
-     &      smonitor_ctl%meq_ctl, c_buf1)
+     &     (id_control, hd_mid_eq_monitor_ctl, i_mid_eq_monitor_ctl,    &
+     &      smonitor_ctl%meq_ctl, c_buf)
 !
-        call find_control_array_flag                                    &
-     &     (hd_vol_spec_block, smonitor_ctl%num_vspec_ctl)
-        if(smonitor_ctl%num_vspec_ctl .gt. 0) then
-          call read_volume_spectr_ctl(smonitor_ctl)
+        if(check_array_flag(c_buf, hd_vol_spec_block)) then
+          call read_volume_spectr_ctl(id_control, smonitor_ctl, c_buf)
         end if
 !
-        call read_chara_ctl_type(c_buf1, hd_Nusselt_file_head,          &
+        call read_chara_ctl_type(c_buf, hd_Nusselt_file_head,           &
      &      smonitor_ctl%Nusselt_file_prefix)
-        call read_chara_ctl_type(c_buf1, hd_voume_ave_head,             &
+        call read_chara_ctl_type(c_buf, hd_voume_ave_head,              &
      &      smonitor_ctl%volume_average_prefix)
-        call read_chara_ctl_type(c_buf1, hd_voume_rms_head,             &
+        call read_chara_ctl_type(c_buf, hd_voume_rms_head,              &
      &      smonitor_ctl%volume_pwr_spectr_prefix)
       end do
+      iflag = 1
 !
       end subroutine read_sph_monitoring_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_volume_spectr_ctl(smonitor_ctl)
+      subroutine read_volume_spectr_ctl                                 &
+     &         (id_control, smonitor_ctl, c_buf)
 !
+      integer(kind = kint), intent(in) :: id_control
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
-      integer(kind = kint) :: iflag
+      integer(kind = kint) :: iflag = 0
+      type(volume_spectr_control) :: read_vpwr
+      integer(kind = kint) :: ntmp = -1
+      character(len = kchara) :: tmpchara
 !
 !
-      if (i_vol_spectr_ctl .gt. 0) return
+      read(c_buf%ctl_buffer,*,err=99,end=99) tmpchara, tmpchara, ntmp
+      if(ntmp .eq. 0) return
+!
+  99  continue
+      if(smonitor_ctl%num_vspec_ctl .gt. 0) return
+      smonitor_ctl%num_vspec_ctl = 0
+      iflag = 0
       allocate(smonitor_ctl%v_pwr(smonitor_ctl%num_vspec_ctl))
 !
       do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(hd_vol_spec_block,             &
-     &      smonitor_ctl%num_vspec_ctl, i_vol_spectr_ctl)
-        if(i_vol_spectr_ctl .ge. smonitor_ctl%num_vspec_ctl) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_array_flag(c_buf, hd_vol_spec_block)) exit
 !
-        if(right_begin_flag(hd_vol_spec_block) .gt. 0) then
-          i_vol_spectr_ctl = i_vol_spectr_ctl + 1
+        call read_each_vol_spectr_ctl(id_control,                       &
+     &      hd_vol_spec_block, iflag, read_vpwr, c_buf)
+        if(iflag .gt. 0) then
+          call append_volume_spectr_ctls(read_vpwr, smonitor_ctl)
+          call reset_volume_spectr_control(read_vpwr)
           iflag = 0
-          call read_each_vol_spectr_ctl                                 &
-     &       (ctl_file_code, hd_vol_spec_block, iflag,                  &
-     &        smonitor_ctl%v_pwr(i_vol_spectr_ctl), c_buf1)
         end if
       end do
 !
@@ -225,5 +234,53 @@
       end subroutine dealloc_sph_monitoring_ctl
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine append_volume_spectr_ctls(add_vpwr, smonitor_ctl)
+!
+      type(volume_spectr_control), intent(in) :: add_vpwr
+      type(sph_monitor_control), intent(inout) :: smonitor_ctl
+!
+      integer(kind = kint) :: num_tmp = 0
+      type(volume_spectr_control), allocatable :: tmp_vpwr(:)
+!
+!
+      num_tmp = smonitor_ctl%num_vspec_ctl
+      allocate(tmp_vpwr(num_tmp))
+      call copy_volume_spectr_ctls                                      &
+     &   (num_tmp, smonitor_ctl%v_pwr, tmp_vpwr)
+!
+      deallocate(smonitor_ctl%v_pwr)
+      smonitor_ctl%num_vspec_ctl = smonitor_ctl%num_vspec_ctl + 1
+      allocate(smonitor_ctl%v_pwr(smonitor_ctl%num_vspec_ctl))
+!
+      call copy_volume_spectr_ctls                                      &
+     &   (num_tmp, tmp_vpwr, smonitor_ctl%v_pwr(1))
+      deallocate(tmp_vpwr)
+!
+      call copy_volume_spectr_control                                   &
+     &   (add_vpwr, smonitor_ctl%v_pwr(smonitor_ctl%num_vspec_ctl))
+      write(*,*) 'add_vpwr: ',          &
+     &     trim(add_vpwr%volume_spec_file_ctl%charavalue)
+!
+      end subroutine append_volume_spectr_ctls
+!
+! -----------------------------------------------------------------------
+!
+      subroutine copy_volume_spectr_ctls(num_ctl, org_vpwr, new_vpwr)
+!
+      integer(kind = kint), intent(in) :: num_ctl
+      type(volume_spectr_control), intent(in) :: org_vpwr(num_ctl)
+      type(volume_spectr_control), intent(inout) :: new_vpwr(num_ctl)
+!
+      integer(kind = kint) :: i
+!
+      do i = 1, num_ctl
+        call copy_volume_spectr_control(org_vpwr(i), new_vpwr(i))
+      end do
+!
+      end subroutine copy_volume_spectr_ctls
+!
+! -----------------------------------------------------------------------
 !
       end module t_ctl_data_4_sph_monitor
