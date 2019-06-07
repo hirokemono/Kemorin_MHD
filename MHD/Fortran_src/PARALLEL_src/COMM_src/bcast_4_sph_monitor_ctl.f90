@@ -145,6 +145,8 @@
 !
       subroutine bcast_mid_eq_monitor_ctl(meq_ctl)
 !
+      use t_mid_equator_control
+!
       type(mid_equator_control), intent(inout) :: meq_ctl
 !
 !

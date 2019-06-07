@@ -8,7 +8,9 @@
 !> @brief control date for volume averaged spectr data
 !!
 !!@verbatim
-!!      subroutine copy_volume_spectr_control(org_vpwr, new_vpwr)
+!!      subroutine copy_volume_spectr_ctls(num_ctl, org_vpwr, new_vpwr)
+!!        type(volume_spectr_control), intent(in) :: org_vpwr(num_ctl)
+!!        type(volume_spectr_control), intent(inout) :: new_vpwr(num_ctl)
 !!      subroutine copy_volume_spectr_control(org_vpwr, new_vpwr)
 !!        type(volume_spectr_control), intent(in) :: org_vpwr
 !!        type(volume_spectr_control), intent(inout) :: new_vpwr
@@ -23,11 +25,6 @@
 !!        type(volume_spectr_control), intent(inout) :: v_pwr
 !!      subroutine dealloc_num_spec_layer_ctl(lp_ctl)
 !!        type(layerd_spectr_control), intent(inout) :: lp_ctl
-!!      subroutine reset_mid_equator_control(meq_ctl)
-!!        type(mid_equator_control), intent(inout) :: meq_ctl
-!!      subroutine read_mid_eq_monitor_ctl                              &
-!!     &         (id_control, hd_block, iflag, meq_ctl, c_buf)
-!!        type(mid_equator_control), intent(inout) :: meq_ctl
 !!
 !! -----------------------------------------------------------------
 !!
@@ -121,21 +118,6 @@
       end type layerd_spectr_control
 !
 !
-      type mid_equator_control
-!>        Structure for coordiniate system for circled data
-        type(read_character_item) :: pick_circle_coord_ctl
-!
-!>        Structure for Number of zonal points for benchamek check
-        type(read_integer_item) :: nphi_mid_eq_ctl
-!
-!>        Structure for position for s
-        type(read_real_item) :: pick_s_ctl
-!
-!>        Structure for position for z
-        type(read_real_item) :: pick_z_ctl
-      end type mid_equator_control
-!
-!
 !   labels for item
 !
       character(len=kchara), parameter                                  &
@@ -164,24 +146,29 @@
       character(len=kchara), parameter                                  &
      &           :: hd_axis_spectr_switch = 'diff_lm_spectr_switch'
 !
-      character(len=kchara), parameter                                  &
-     &            :: hd_nphi_mid_eq = 'nphi_mid_eq_ctl'
-      character(len=kchara), parameter                                  &
-     &            :: hd_pick_s_ctl = 'pick_cylindrical_radius_ctl'
-      character(len=kchara), parameter                                  &
-     &            :: hd_pick_z_ctl =  'pick_vertical_position_ctl'
-      character(len=kchara), parameter                                  &
-     &            :: hd_circle_coord = 'pick_circle_coord_ctl'
-!
       private :: hd_vol_pwr, hd_vol_ave, hd_inner_r, hd_outer_r
       private :: hd_axis_spectr_switch, hd_diff_lm_spectr_switch
       private :: hd_degree_spectr_switch, hd_order_spectr_switch
-      private :: hd_nphi_mid_eq, hd_pick_s_ctl, hd_pick_z_ctl
-      private :: hd_circle_coord
 !
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine copy_volume_spectr_ctls(num_ctl, org_vpwr, new_vpwr)
+!
+      integer(kind = kint), intent(in) :: num_ctl
+      type(volume_spectr_control), intent(in) :: org_vpwr(num_ctl)
+      type(volume_spectr_control), intent(inout) :: new_vpwr(num_ctl)
+!
+      integer(kind = kint) :: i
+!
+      do i = 1, num_ctl
+        call copy_volume_spectr_control(org_vpwr(i), new_vpwr(i))
+      end do
+!
+      end subroutine copy_volume_spectr_ctls
 !
 ! -----------------------------------------------------------------------
 !
@@ -304,55 +291,6 @@
       lp_ctl%axis_spectr_switch%iflag =    0
 !
       end subroutine dealloc_num_spec_layer_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine reset_mid_equator_control(meq_ctl)
-!
-      type(mid_equator_control), intent(inout) :: meq_ctl
-!
-      meq_ctl%pick_circle_coord_ctl%iflag = 0
-      meq_ctl%nphi_mid_eq_ctl%iflag = 0
-      meq_ctl%pick_s_ctl%iflag =    0
-      meq_ctl%pick_z_ctl%iflag =    0
-!
-      end subroutine reset_mid_equator_control
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine read_mid_eq_monitor_ctl                                &
-     &         (id_control, hd_block, iflag, meq_ctl, c_buf)
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      integer(kind = kint), intent(inout) :: iflag
-      type(mid_equator_control), intent(inout) :: meq_ctl
-      type(buffer_for_control), intent(inout) :: c_buf
-!
-!
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if (iflag .gt. 0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-!
-        call read_real_ctl_type                                         &
-     &     (c_buf, hd_pick_s_ctl, meq_ctl%pick_s_ctl)
-        call read_real_ctl_type                                         &
-     &     (c_buf, hd_pick_z_ctl, meq_ctl%pick_z_ctl)
-!
-        call read_integer_ctl_type(c_buf, hd_nphi_mid_eq,               &
-     &      meq_ctl%nphi_mid_eq_ctl)
-!
-        call read_chara_ctl_type(c_buf, hd_circle_coord,                &
-     &      meq_ctl%pick_circle_coord_ctl)
-      end do
-      iflag = 1
-!
-      end subroutine read_mid_eq_monitor_ctl
 !
 ! -----------------------------------------------------------------------
 !

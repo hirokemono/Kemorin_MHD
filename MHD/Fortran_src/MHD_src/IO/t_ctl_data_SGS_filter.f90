@@ -1,14 +1,25 @@
-!t_ctl_data_SGS_filter.f90
-!      module t_ctl_data_SGS_filter
+!>@file   t_ctl_data_SGS_filter.f90
+!!@brief  module t_ctl_data_SGS_filter
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr., 2012
 !
-!        programmed by H.Matsui on March. 2006
-!
-!!      subroutine read_3d_filtering_ctl(hd_block, iflag, s3df_ctl)
-!!      subroutine bcast_3d_filtering_ctl(s3df_ctl)
+!>@brief  Structure for filtering controls
+!!
+!!@verbatim
+!!      subroutine copy_control_4_SGS_filter(org_sphf_c, new_sphf_c)
+!!        type(sph_filter_ctl_type), intent(in) :: org_sphf_c
+!!        type(sph_filter_ctl_type), intent(inout) :: new_sphf_c
+!!      subroutine read_3d_filtering_ctl                                &
+!!     &         (id_control, hd_block, iflag, s3df_ctl, c_buf)
+!!        type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine read_control_4_SGS_filter                            &
+!!     &         (id_control, hd_block, iflag, sphf_ctl, c_buf)
+!!        type(sph_filter_ctl_type), intent(inout) :: sphf_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine dealloc_3d_filtering_ctl(s3df_ctl)
 !!        type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
-!!      subroutine read_control_4_SGS_filter(hd_block, sphf_ctl)
-!!      subroutine bcast_control_4_SGS_filter(sphf_ctl)
 !!      subroutine reset_control_4_SGS_filter(sphf_ctl)
 !!        type(sph_filter_ctl_type), intent(inout) :: sphf_ctl
 !!
@@ -65,6 +76,7 @@
 !!      end 3d_filtering_ctl
 !! 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!@endverbatim
 !!
 !
       module t_ctl_data_SGS_filter
@@ -72,8 +84,8 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_read_control_elements
       use skip_comment_f
+      use t_read_control_elements
       use t_control_elements
       use t_control_array_character
 !
@@ -160,114 +172,106 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_3d_filtering_ctl(hd_block, iflag, s3df_ctl)
+      subroutine copy_control_4_SGS_filter(org_sphf_c, new_sphf_c)
 !
+      use copy_control_elements
+!
+      type(sph_filter_ctl_type), intent(in) :: org_sphf_c
+      type(sph_filter_ctl_type), intent(inout) :: new_sphf_c
+!
+!
+      call copy_chara_ctl(org_sphf_c%sph_filter_type_ctl,               &
+     &                    new_sphf_c%sph_filter_type_ctl)
+      call copy_chara_ctl(org_sphf_c%radial_filter_type_ctl,            &
+     &                     new_sphf_c%radial_filter_type_ctl)
+!
+      call copy_integer_ctl(org_sphf_c%maximum_moments_ctl,             &
+     &                     new_sphf_c%maximum_moments_ctl)
+!
+      call copy_real_ctl(org_sphf_c%sphere_filter_width_ctl,            &
+     &                     new_sphf_c%sphere_filter_width_ctl)
+      call copy_real_ctl(org_sphf_c%radial_filter_width_ctl,            &
+     &                     new_sphf_c%radial_filter_width_ctl)
+!
+      end subroutine copy_control_4_SGS_filter
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine read_3d_filtering_ctl                                  &
+     &         (id_control, hd_block, iflag, s3df_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
+!
       integer(kind = kint), intent(inout) :: iflag
-!
       type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
-      if (iflag .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(iflag .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        iflag = find_control_end_flag(hd_block)
-        if(iflag .gt. 0) exit
+        call read_control_array_c1(id_control,                          &
+     &      hd_whole_filter_grp, s3df_ctl%whole_filter_grp_ctl, c_buf)
+        call read_control_array_c1(id_control,                          &
+     &      hd_fluid_filter_grp, s3df_ctl%fluid_filter_grp_ctl, c_buf)
 !
-!
-        call read_control_array_c1(ctl_file_code,                       &
-     &      hd_whole_filter_grp, s3df_ctl%whole_filter_grp_ctl, c_buf1)
-        call read_control_array_c1(ctl_file_code,                       &
-     &      hd_fluid_filter_grp, s3df_ctl%fluid_filter_grp_ctl, c_buf1)
-!
-        call read_chara_ctl_type(c_buf1, hd_momentum_filter_ctl,        &
+        call read_chara_ctl_type(c_buf, hd_momentum_filter_ctl,         &
      &      s3df_ctl%momentum_filter_ctl)
-        call read_chara_ctl_type(c_buf1, hd_heat_filter_ctl,            &
+        call read_chara_ctl_type(c_buf, hd_heat_filter_ctl,             &
      &      s3df_ctl%heat_filter_ctl)
-        call read_chara_ctl_type(c_buf1, hd_induction_filter_ctl,       &
+        call read_chara_ctl_type(c_buf, hd_induction_filter_ctl,        &
      &      s3df_ctl%induction_filter_ctl)
-        call read_chara_ctl_type(c_buf1, hd_comp_filter_ctl,            &
+        call read_chara_ctl_type(c_buf, hd_comp_filter_ctl,             &
      &      s3df_ctl%compostion_filter_ctl)
       end do
+      iflag = 1
 !
       end subroutine read_3d_filtering_ctl
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_4_SGS_filter(hd_block, sphf_ctl)
+      subroutine read_control_4_SGS_filter                              &
+     &         (id_control, hd_block, iflag, sphf_ctl, c_buf)
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
+      integer(kind = kint), intent(inout) :: iflag
       type(sph_filter_ctl_type), intent(inout) :: sphf_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
-      integer(kind = kint) :: iflag
 !
-!
-      iflag = 0
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(iflag .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        iflag = find_control_end_flag(hd_block)
-        if(iflag .gt. 0) exit
-!
-        call read_chara_ctl_type(c_buf1, hd_sph_filter_type,            &
+        call read_chara_ctl_type(c_buf, hd_sph_filter_type,             &
      &      sphf_ctl%sph_filter_type_ctl)
-        call read_chara_ctl_type(c_buf1, hd_radial_filter_type,         &
+        call read_chara_ctl_type(c_buf, hd_radial_filter_type,          &
      &      sphf_ctl%radial_filter_type_ctl)
 !
-        call read_integer_ctl_type(c_buf1, hd_max_mom,                  &
+        call read_integer_ctl_type(c_buf, hd_max_mom,                   &
      &      sphf_ctl%maximum_moments_ctl)
-        call read_integer_ctl_type(c_buf1, hd_1st_reference,            &
+        call read_integer_ctl_type(c_buf, hd_1st_reference,             &
      &      sphf_ctl%first_reference_ctl)
-        call read_integer_ctl_type(c_buf1, hd_2nd_reference,            &
+        call read_integer_ctl_type(c_buf, hd_2nd_reference,             &
      &      sphf_ctl%second_reference_ctl)
 !
-        call read_real_ctl_type(c_buf1, hd_radial_filter_w,             &
+        call read_real_ctl_type(c_buf, hd_radial_filter_w,              &
      &      sphf_ctl%radial_filter_width_ctl)
-        call read_real_ctl_type(c_buf1, hd_sphere_filter_w,             &
+        call read_real_ctl_type(c_buf, hd_sphere_filter_w,              &
      &      sphf_ctl%sphere_filter_width_ctl)
       end do
+      iflag = 1
 !
       end subroutine read_control_4_SGS_filter
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_3d_filtering_ctl(s3df_ctl)
-!
-      use bcast_control_arrays
-!
-      type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
-!
-!
-      call bcast_ctl_array_c1(s3df_ctl%whole_filter_grp_ctl)
-      call bcast_ctl_array_c1(s3df_ctl%fluid_filter_grp_ctl)
-!
-      call bcast_ctl_type_c1(s3df_ctl%momentum_filter_ctl)
-      call bcast_ctl_type_c1(s3df_ctl%heat_filter_ctl)
-      call bcast_ctl_type_c1(s3df_ctl%induction_filter_ctl)
-      call bcast_ctl_type_c1(s3df_ctl%compostion_filter_ctl)
-!
-      end subroutine bcast_3d_filtering_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_control_4_SGS_filter(sphf_ctl)
-!
-      use bcast_control_arrays
-!
-      type(sph_filter_ctl_type), intent(inout) :: sphf_ctl
-!
-!
-      call bcast_ctl_type_c1(sphf_ctl%sph_filter_type_ctl)
-      call bcast_ctl_type_i1(sphf_ctl%maximum_moments_ctl)
-!
-      call bcast_ctl_type_r1(sphf_ctl%radial_filter_width_ctl)
-      call bcast_ctl_type_r1(sphf_ctl%sphere_filter_width_ctl)
-!
-      end subroutine bcast_control_4_SGS_filter
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

@@ -54,6 +54,7 @@
       use t_control_elements
       use t_ctl_data_sph_vol_spectr
       use t_ctl_data_pick_sph_spectr
+      use t_mid_equator_control
       use skip_comment_f
 !
       implicit  none
@@ -120,6 +121,7 @@
       private :: hd_voume_ave_head, hd_voume_rms_head
 !
       private :: read_volume_spectr_ctl
+      private :: append_volume_spectr_ctls
 !
 ! -----------------------------------------------------------------------
 !
@@ -158,7 +160,8 @@
      &      smonitor_ctl%meq_ctl, c_buf)
 !
         if(check_array_flag(c_buf, hd_vol_spec_block)) then
-          call read_volume_spectr_ctl(id_control, smonitor_ctl, c_buf)
+          call read_volume_spectr_ctl                                   &
+     &       (id_control, hd_vol_spec_block, smonitor_ctl, c_buf)
         end if
 !
         call read_chara_ctl_type(c_buf, hd_Nusselt_file_head,           &
@@ -175,9 +178,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_volume_spectr_ctl                                 &
-     &         (id_control, smonitor_ctl, c_buf)
+     &         (id_control, hd_block, smonitor_ctl, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
@@ -198,13 +202,12 @@
 !
       do
         call load_one_line_from_control(id_control, c_buf)
-        if(check_end_array_flag(c_buf, hd_vol_spec_block)) exit
+        if(check_end_array_flag(c_buf, hd_block)) exit
 !
         call read_each_vol_spectr_ctl(id_control,                       &
-     &      hd_vol_spec_block, iflag, read_vpwr, c_buf)
+     &      hd_block, iflag, read_vpwr, c_buf)
         if(iflag .gt. 0) then
           call append_volume_spectr_ctls(read_vpwr, smonitor_ctl)
-          call reset_volume_spectr_control(read_vpwr)
           iflag = 0
         end if
       end do
@@ -217,6 +220,8 @@
 !
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !
+      integer(kind = kint) :: i
+!
 !
       call dealloc_num_spec_layer_ctl(smonitor_ctl%lp_ctl)
       call dealloc_pick_spectr_control(smonitor_ctl%pspec_ctl)
@@ -228,6 +233,10 @@
       smonitor_ctl%Nusselt_file_prefix%iflag = 0
 !
       if(smonitor_ctl%num_vspec_ctl .le. 0) return
+!
+      do i = 1, smonitor_ctl%num_vspec_ctl
+       call reset_volume_spectr_control(smonitor_ctl%v_pwr(i))
+      end do
       deallocate(smonitor_ctl%v_pwr)
       smonitor_ctl%num_vspec_ctl = 0
 !
@@ -238,7 +247,7 @@
 !
       subroutine append_volume_spectr_ctls(add_vpwr, smonitor_ctl)
 !
-      type(volume_spectr_control), intent(in) :: add_vpwr
+      type(volume_spectr_control), intent(inout) :: add_vpwr
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !
       integer(kind = kint) :: num_tmp = 0
@@ -260,26 +269,9 @@
 !
       call copy_volume_spectr_control                                   &
      &   (add_vpwr, smonitor_ctl%v_pwr(smonitor_ctl%num_vspec_ctl))
-      write(*,*) 'add_vpwr: ',          &
-     &     trim(add_vpwr%volume_spec_file_ctl%charavalue)
+      call reset_volume_spectr_control(add_vpwr)
 !
       end subroutine append_volume_spectr_ctls
-!
-! -----------------------------------------------------------------------
-!
-      subroutine copy_volume_spectr_ctls(num_ctl, org_vpwr, new_vpwr)
-!
-      integer(kind = kint), intent(in) :: num_ctl
-      type(volume_spectr_control), intent(in) :: org_vpwr(num_ctl)
-      type(volume_spectr_control), intent(inout) :: new_vpwr(num_ctl)
-!
-      integer(kind = kint) :: i
-!
-      do i = 1, num_ctl
-        call copy_volume_spectr_control(org_vpwr(i), new_vpwr(i))
-      end do
-!
-      end subroutine copy_volume_spectr_ctls
 !
 ! -----------------------------------------------------------------------
 !
