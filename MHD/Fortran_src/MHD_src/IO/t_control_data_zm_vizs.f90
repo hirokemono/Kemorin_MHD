@@ -121,15 +121,15 @@
       if(right_file_flag(hd_section) .gt. 0) then
         psf_ctls%num_psf_ctl = 1
         call alloc_psf_ctl_stract(psf_ctls)
-        call read_file_names_from_ctl_line                            &
+        call read_file_names_from_ctl_line                              &
      &     (psf_ctls%num_psf_ctl, i_psf_ctl, psf_ctls%fname_psf_ctl)
       else if(right_begin_flag(hd_section) .gt. 0) then
         i_psf_ctl = i_psf_ctl + 1
         psf_ctls%num_psf_ctl = 1
         call alloc_psf_ctl_stract(psf_ctls)
         psf_ctls%fname_psf_ctl(i_psf_ctl) = 'NO_FILE'
-        call read_psf_control_data                                    &
-     &     (hd_section, psf_ctls%psf_ctl_struct(i_psf_ctl))
+        call read_psf_control_data(ctl_file_code, hd_section,           &
+     &      psf_ctls%psf_ctl_struct(i_psf_ctl), c_buf1)
       end if
 !
       end subroutine read_single_section_ctl

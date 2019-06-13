@@ -19,6 +19,7 @@
 !!      subroutine append_control_array_c2(read_c2, array_c2)
 !!        type(read_chara2_item), intent(inout) ::    read_c2
 !!        type(ctl_array_c2), intent(inout) :: array_c2
+!!      subroutine dup_control_array_c2(org_c2, tgt_c2)
 !!      subroutine copy_control_array_c2(num_copy, org_c2, tgt_c2)
 !!        type(ctl_array_c2), intent(in) ::    org_c2
 !!        type(ctl_array_c2), intent(inout) :: tgt_c2
@@ -175,6 +176,20 @@
       call dealloc_control_array_c2(org_c2)
 !
       end subroutine append_control_array_c2
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dup_control_array_c2(org_c2, tgt_c2)
+!
+      type(ctl_array_c2), intent(in) ::    org_c2
+      type(ctl_array_c2), intent(inout) :: tgt_c2
+!
+!
+      tgt_c2%num = org_c2%num
+      call alloc_control_array_c2(tgt_c2)
+      call copy_control_array_c2(org_c2%num, org_c2, tgt_c2)
+!
+      end subroutine dup_control_array_c2
 !
 ! -----------------------------------------------------------------------
 !

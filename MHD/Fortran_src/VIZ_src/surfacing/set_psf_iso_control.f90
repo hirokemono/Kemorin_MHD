@@ -221,15 +221,15 @@
       if(fname_psf_ctl .eq. 'NO_FILE') return
 !
       if(my_rank .eq. 0) then
-        ctl_file_code = psf_ctl_file_code
-        open(ctl_file_code, file=fname_psf_ctl, status='old')
+        open(psf_ctl_file_code, file=fname_psf_ctl, status='old')
 !
         call load_ctl_label_and_line
-        call read_psf_control_data                                      &
-     &     (hd_section_ctl, psf_ctl_struct)
-        call read_psf_control_data(hd_psf_ctl, psf_ctl_struct)
+        call read_psf_control_data(psf_ctl_file_code, hd_section_ctl,   &
+     &      psf_ctl_struct, c_buf1)
+        call read_psf_control_data(psf_ctl_file_code, hd_psf_ctl,       &
+     &      psf_ctl_struct, c_buf1)
 !
-        close(ctl_file_code)
+        close(psf_ctl_file_code)
       end if
 !
       call bcast_psf_control_data(psf_ctl_struct)

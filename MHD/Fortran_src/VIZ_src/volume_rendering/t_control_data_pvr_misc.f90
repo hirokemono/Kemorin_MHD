@@ -145,7 +145,8 @@
       do
         call load_ctl_label_and_line
         if(right_begin_flag(hd_surface_define) .gt. 0) then
-          call read_section_def_control(pvr_sect_ctl%psf_c)
+          call read_section_def_control                                 &
+     &       (ctl_file_code, pvr_sect_ctl%psf_c, c_buf1)
           exit
         end if
       end do
@@ -179,7 +180,8 @@
         else if(right_begin_flag(hd_surface_define) .gt. 0) then
           i_psf_ctl1 = i_psf_ctl1 + 1
           pvr_sect_ctl%fname_sect_ctl = 'NO_FILE'
-          call read_section_def_control(pvr_sect_ctl%psf_c)
+          call read_section_def_control                                 &
+     &       (ctl_file_code, pvr_sect_ctl%psf_c, c_buf1)
         end if
 !
         call read_real_ctl_type                                         &

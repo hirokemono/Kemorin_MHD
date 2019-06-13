@@ -106,16 +106,14 @@
         i_viz_control = find_control_end_flag(hd_viz_control)
         if(i_viz_control .eq. 1) exit
 !
-        call find_control_array_flag                                    &
-     &    (hd_psf_ctl, viz_ctls%psf_ctls%num_psf_ctl)
-        if(viz_ctls%psf_ctls%num_psf_ctl .gt. 0) then
-          call read_files_4_psf_ctl(viz_ctls%psf_ctls)
+        if(check_array_flag(c_buf1, hd_psf_ctl)) then
+          call read_files_4_psf_ctl(ctl_file_code, hd_psf_ctl,          &
+     &        viz_ctls%psf_ctls, c_buf1)
         end if
 !
-        call find_control_array_flag                                    &
-     &     (hd_section_ctl, viz_ctls%psf_ctls%num_psf_ctl)
-        if(viz_ctls%psf_ctls%num_psf_ctl .gt. 0) then
-          call read_files_4_psf_ctl(viz_ctls%psf_ctls)
+        if(check_array_flag(c_buf1, hd_section_ctl)) then
+          call read_files_4_psf_ctl(ctl_file_code, hd_section_ctl,      &
+     &        viz_ctls%psf_ctls, c_buf1)
         end if
 !
         call find_control_array_flag                                    &

@@ -159,7 +159,6 @@
       integer(kind = kint), intent(inout) :: iflag
       type(mhd_model_control), intent(inout) :: model_ctl
 !
-      integer i
 !
       if(right_begin_flag(hd_block) .eq. 0) return
       if (iflag .gt. 0) return
@@ -204,20 +203,6 @@
 !
         call read_sgs_ctl(ctl_file_code, hd_sgs_ctl, i_sgs_ctl,         &
      &      model_ctl%sgs_ctl, c_buf1)
-      end do
-!
-      write(*,*) 'num_sph_filter_ctl', model_ctl%sgs_ctl%num_sph_filter_ctl
-      do i = 1,  model_ctl%sgs_ctl%num_sph_filter_ctl
-        write(*,*) 'sph_filter_type_ctl', i,   &
-     &       model_ctl%sgs_ctl%sph_filter_ctl(i)%sph_filter_type_ctl%charavalue
-        write(*,*) 'maximum_moments_ctl', i,   & 
-     &       model_ctl%sgs_ctl%sph_filter_ctl(i)%maximum_moments_ctl%intvalue
-        write(*,*) 'sphere_filter_width_ctl', i,   & 
-     &       model_ctl%sgs_ctl%sph_filter_ctl(i)%sphere_filter_width_ctl%realvalue
-        write(*,*) 'radial_filter_width_ctl', i,   & 
-     &       model_ctl%sgs_ctl%sph_filter_ctl(i)%radial_filter_width_ctl%realvalue
-        write(*,*) 'second_reference_ctl', i,   & 
-     &       model_ctl%sgs_ctl%sph_filter_ctl(i)%second_reference_ctl%intvalue
       end do
 !
       end subroutine read_sph_sgs_mhd_model
