@@ -168,7 +168,6 @@
       integer(kind = kint) :: i
 !
 !
-      ctl_file_code = iso_ctl_file_code
       do i = 1, num_iso
         call read_control_4_iso                                         &
      &     (iso_ctls%fname_iso_ctl(i), iso_ctls%iso_ctl_struct(i))
@@ -252,14 +251,14 @@
       if(fname_iso_ctl .eq. 'NO_FILE') return
 !
       if(my_rank .eq. 0) then
-        ctl_file_code = iso_ctl_file_code
-        open(ctl_file_code, file=fname_iso_ctl, status='old')
+        open(iso_ctl_file_code, file=fname_iso_ctl, status='old')
 !
         call load_ctl_label_and_line
         call read_iso_control_data                                      &
-     &     (hd_isosurf_ctl, iso_ctl_struct)
-        call read_iso_control_data(hd_iso_ctl, iso_ctl_struct)
-        close(ctl_file_code)
+     &     (iso_ctl_file_code, hd_isosurf_ctl, iso_ctl_struct, c_buf1)
+        call read_iso_control_data                                      &
+     &     (iso_ctl_file_code, hd_iso_ctl, iso_ctl_struct, c_buf1)
+        close(iso_ctl_file_code)
       end if
 !
       call bcast_iso_control_data(iso_ctl_struct)

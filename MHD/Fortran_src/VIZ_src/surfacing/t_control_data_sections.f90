@@ -8,14 +8,17 @@
 !      subroutine dealloc_psf_ctl_stract(psf_ctls)
 !      subroutine dealloc_iso_ctl_stract(iso_ctls)
 !
-!      subroutine read_sections_control_data(psf_ctls, iso_ctls)
-!
-!      subroutine read_files_4_psf_ctl(psf_ctls)
-!      subroutine read_files_4_iso_ctl(iso_ctls)
-!
-!      subroutine bcast_files_4_psf_ctl(psf_ctls)
-!      subroutine bcast_files_4_iso_ctl(iso_ctls)
-!
+!!      subroutine read_sections_control_data                           &
+!!     &         (id_control, psf_ctls, iso_ctls, c_buf)
+!!
+!!      subroutine read_files_4_psf_ctl                                 &
+!!     &         (id_control, hd_block, psf_ctls, c_buf)
+!!      subroutine read_files_4_iso_ctl                                 &
+!!     &         (id_control, hd_block, iso_ctls, c_buf)
+!!
+!!      subroutine bcast_files_4_psf_ctl(psf_ctls)
+!!      subroutine bcast_files_4_iso_ctl(iso_ctls)
+!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array cross_section_ctl  1
 !!      file   cross_section_ctl   'ctl_psf_eq'
@@ -131,38 +134,44 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_sections_control_data(psf_ctls, iso_ctls)
+      subroutine read_sections_control_data                             &
+     &         (id_control, psf_ctls, iso_ctls, c_buf)
 !
-      use m_read_control_elements
+      use t_read_control_elements
       use skip_comment_f
 !
+      integer(kind = kint), intent(in) :: id_control
       type(section_controls), intent(inout) :: psf_ctls
       type(isosurf_controls), intent(inout) :: iso_ctls
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_viz_ctl) .eq. 0) return
-      if (i_viz_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_viz_ctl) .eqv. .FALSE.) return
+!
+      if(i_viz_ctl .gt. 0) return
       do
-        call load_one_line_from_control(ctl_file_code, c_buf1)
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_viz_ctl)) exit
 !
-        i_viz_ctl = find_control_end_flag(hd_viz_ctl)
-        if(i_viz_ctl .eq. 1) exit
-!
-        if(check_array_flag(c_buf1, hd_psf_ctl)) then
+        if(check_array_flag(c_buf, hd_psf_ctl)) then
           call read_files_4_psf_ctl                                     &
-     &       (ctl_file_code, hd_psf_ctl, psf_ctls, c_buf1)
+     &       (id_control, hd_psf_ctl, psf_ctls, c_buf)
         end if
-        if(check_array_flag(c_buf1, hd_section_ctl)) then
+        if(check_array_flag(c_buf, hd_section_ctl)) then
           call read_files_4_psf_ctl                                     &
-     &     (ctl_file_code, hd_section_ctl, psf_ctls, c_buf1)
+     &     (id_control, hd_section_ctl, psf_ctls, c_buf)
         end if
 !
-        call find_control_array_flag(hd_iso_ctl, iso_ctls%num_iso_ctl)
-        call read_files_4_iso_ctl(iso_ctls)
-        call find_control_array_flag                                    &
-     &     (hd_isosurf_ctl, iso_ctls%num_iso_ctl)
-        call read_files_4_iso_ctl(iso_ctls)
+        if(check_array_flag(c_buf, hd_iso_ctl)) then
+          call read_files_4_iso_ctl                                     &
+     &       (id_control, hd_iso_ctl, iso_ctls, c_buf)
+        end if
+        if(check_array_flag(c_buf, hd_isosurf_ctl)) then
+          call read_files_4_iso_ctl                                     &
+     &       (id_control, hd_isosurf_ctl, iso_ctls, c_buf)
+        end if
       end do
+      i_viz_ctl = 1
 !
       end subroutine read_sections_control_data
 !
@@ -172,7 +181,7 @@
       subroutine read_files_4_psf_ctl                                   &
      &         (id_control, hd_block, psf_ctls, c_buf)
 !
-      use m_read_control_elements
+      use t_read_control_elements
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -195,7 +204,7 @@
           call append_new_section_control(psf_ctls)
           psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl)                  &
      &        = third_word(c_buf)
-        else if(right_begin_flag(hd_block) .gt. 0) then
+        else if(check_begin_flag(c_buf, hd_block)) then
           call append_new_section_control(psf_ctls)
           psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl) = 'NO_FILE'
           call read_psf_control_data(id_control, hd_block,              &
@@ -212,51 +221,43 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_files_4_iso_ctl(iso_ctls)
+      subroutine read_files_4_iso_ctl                                   &
+     &         (id_control, hd_block, iso_ctls, c_buf)
 !
-      use m_read_control_elements
+      use t_read_control_elements
       use skip_comment_f
 !
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
       type(isosurf_controls), intent(inout) :: iso_ctls
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
-      integer (kind=kint) :: i_iso_ctl1 = 0, i_iso_ctl2 = 0
+      integer(kind = kint) :: i
 !
 !
-      if(iso_ctls%num_iso_ctl .le. 0) return
-      if ((i_iso_ctl1+i_iso_ctl2) .gt. 0) return
-!
+      if(allocated(iso_ctls%fname_iso_ctl)) return
+      iso_ctls%num_iso_ctl = 0
       call alloc_iso_ctl_stract(iso_ctls)
+!
       do
-        call load_one_line_from_control(ctl_file_code, c_buf1)
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_array_flag(c_buf, hd_block)) exit
 !
-        call find_control_end_array_flag(hd_isosurf_ctl,                &
-     &      iso_ctls%num_iso_ctl, i_iso_ctl1)
-        if(i_iso_ctl1 .ge. iso_ctls%num_iso_ctl) exit
-        call find_control_end_array_flag(hd_iso_ctl,                    &
-     &      iso_ctls%num_iso_ctl, i_iso_ctl2)
-        if(i_iso_ctl2 .ge. iso_ctls%num_iso_ctl) exit
-!
-        if(right_file_flag(hd_isosurf_ctl) .gt. 0) then
-          call read_file_names_from_ctl_line                            &
-     &       (iso_ctls%num_iso_ctl, i_iso_ctl1, iso_ctls%fname_iso_ctl)
-        else if(right_begin_flag(hd_isosurf_ctl) .gt. 0) then
-          i_iso_ctl1 = i_iso_ctl1 + 1
-          iso_ctls%fname_iso_ctl(i_iso_ctl1) = 'NO_FILE'
-          call read_iso_control_data                                    &
-     &       (hd_isosurf_ctl, iso_ctls%iso_ctl_struct(i_iso_ctl1))
-!
-        else if(right_file_flag(hd_isosurf_ctl) .gt. 0                  &
-     &     .or. right_file_flag(hd_iso_ctl) .gt. 0) then
-          call read_file_names_from_ctl_line                            &
-     &       (iso_ctls%num_iso_ctl, i_iso_ctl2, iso_ctls%fname_iso_ctl)
-        else if(right_begin_flag(hd_isosurf_ctl) .gt. 0                 &
-     &     .or. right_begin_flag(hd_iso_ctl) .gt. 0) then
-          i_iso_ctl2 = i_iso_ctl2 + 1
-          iso_ctls%fname_iso_ctl(i_iso_ctl2) = 'NO_FILE'
-          call read_iso_control_data                                    &
-     &        (hd_iso_ctl, iso_ctls%iso_ctl_struct(i_iso_ctl2))
+        if(check_file_flag(c_buf, hd_block)) then
+          call append_new_isosurface_control(iso_ctls)
+          iso_ctls%fname_iso_ctl(iso_ctls%num_iso_ctl)                  &
+     &        = third_word(c_buf)
+        else if(check_begin_flag(c_buf, hd_block)) then
+          call append_new_isosurface_control(iso_ctls)
+          iso_ctls%fname_iso_ctl(iso_ctls%num_iso_ctl) = 'NO_FILE'
+          call read_iso_control_data(id_control, hd_block,              &
+     &        iso_ctls%iso_ctl_struct(iso_ctls%num_iso_ctl), c_buf)
         end if
+      end do
 !
+      write(*,*) 'iso_ctls%num_iso_ctl', iso_ctls%num_iso_ctl
+      do i= 1, iso_ctls%num_iso_ctl
+        write(*,*) i, iso_ctls%fname_iso_ctl(i)
       end do
 !
       end subroutine read_files_4_iso_ctl
@@ -329,7 +330,7 @@
 !
       tmp_psf_c%num_psf_ctl = psf_ctls%num_psf_ctl
       call alloc_psf_ctl_stract(tmp_psf_c)
-      call dup_conttol_4_psfs                                           &
+      call dup_control_4_psfs                                           &
      &    (tmp_psf_c%num_psf_ctl, psf_ctls, tmp_psf_c)
 !
       call dealloc_cont_dat_4_psfs                                      &
@@ -339,7 +340,7 @@
       psf_ctls%num_psf_ctl = tmp_psf_c%num_psf_ctl + 1
       call alloc_psf_ctl_stract(psf_ctls)
 !
-      call dup_conttol_4_psfs                                           &
+      call dup_control_4_psfs                                           &
      &   (tmp_psf_c%num_psf_ctl, tmp_psf_c, psf_ctls)
 !
       call dealloc_cont_dat_4_psfs                                      &
@@ -350,7 +351,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dup_conttol_4_psfs                                     &
+      subroutine dup_control_4_psfs                                     &
      &         (num_psf, org_psf_ctls, new_psf_ctls)
 !
       integer(kind = kint), intent(in) :: num_psf
@@ -367,7 +368,88 @@
         new_psf_ctls%fname_psf_ctl(i) = org_psf_ctls%fname_psf_ctl(i)
       end do
 !
-      end subroutine dup_conttol_4_psfs
+      end subroutine dup_control_4_psfs
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_cont_dat_4_psfs(num_psf, psf_c)
+!
+      integer(kind = kint), intent(in) :: num_psf
+      type(psf_ctl), intent(inout) :: psf_c(num_psf)
+!
+      integer(kind = kint) :: i
+!
+      do i = 1, num_psf
+        call deallocate_cont_dat_4_psf(psf_c(i))
+      end do
+!
+      end subroutine dealloc_cont_dat_4_psfs
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine append_new_isosurface_control(iso_ctls)
+!
+      type(isosurf_controls), intent(inout) :: iso_ctls
+!
+      type(isosurf_controls) :: tmp_iso_c
+!
+!
+      tmp_iso_c%num_iso_ctl = iso_ctls%num_iso_ctl
+      call alloc_iso_ctl_stract(tmp_iso_c)
+      call dup_control_4_isos                                           &
+     &    (tmp_iso_c%num_iso_ctl, iso_ctls, tmp_iso_c)
+!
+      call dealloc_cont_dat_4_isos                                      &
+     &   (iso_ctls%num_iso_ctl, iso_ctls%iso_ctl_struct)
+      call dealloc_iso_ctl_stract(iso_ctls)
+!
+      iso_ctls%num_iso_ctl = tmp_iso_c%num_iso_ctl + 1
+      call alloc_iso_ctl_stract(iso_ctls)
+!
+      call dup_control_4_isos                                           &
+     &   (tmp_iso_c%num_iso_ctl, tmp_iso_c, iso_ctls)
+!
+      call dealloc_cont_dat_4_isos                                      &
+     &   (tmp_iso_c%num_iso_ctl, tmp_iso_c%iso_ctl_struct)
+      call dealloc_iso_ctl_stract(tmp_iso_c)
+!
+      end subroutine append_new_isosurface_control
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dup_control_4_isos                                     &
+     &         (num_iso, org_iso_ctls, new_iso_ctls)
+!
+      integer(kind = kint), intent(in) :: num_iso
+      type(isosurf_controls), intent(in) :: org_iso_ctls
+      type(isosurf_controls), intent(inout) :: new_iso_ctls
+!
+      integer(kind = kint) :: i
+!
+      do i = 1, num_iso
+        if(org_iso_ctls%fname_iso_ctl(i) .eq. 'NO_FILE') then
+          call dup_control_4_iso(org_iso_ctls%iso_ctl_struct(i),        &
+              new_iso_ctls%iso_ctl_struct(i))
+        end if
+        new_iso_ctls%fname_iso_ctl(i) = org_iso_ctls%fname_iso_ctl(i)
+      end do
+!
+      end subroutine dup_control_4_isos
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_cont_dat_4_isos(num_iso, iso_c)
+!
+      integer(kind = kint), intent(in) :: num_iso
+      type(iso_ctl), intent(inout) :: iso_c(num_iso)
+!
+      integer(kind = kint) :: i
+!
+      do i = 1, num_iso
+        call deallocate_cont_dat_4_iso(iso_c(i))
+      end do
+!
+      end subroutine dealloc_cont_dat_4_isos
 !
 !  ---------------------------------------------------------------------
 !

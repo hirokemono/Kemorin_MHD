@@ -123,7 +123,8 @@
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, t_sect_ctl)
 !
-        call read_sections_control_data(sect_psf_ctls, sect_iso_ctls)
+        call read_sections_control_data                                 &
+     &     (ctl_file_code, sect_psf_ctls, sect_iso_ctls, c_buf1)
       end do
 !
       end subroutine read_section_control_data

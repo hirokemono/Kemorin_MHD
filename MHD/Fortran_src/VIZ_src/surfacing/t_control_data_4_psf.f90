@@ -303,21 +303,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_cont_dat_4_psfs(num_psf, psf_c)
-!
-      integer(kind = kint), intent(in) :: num_psf
-      type(psf_ctl), intent(inout) :: psf_c(num_psf)
-!
-      integer(kind = kint) :: i
-!
-      do i = 1, num_psf
-        call deallocate_cont_dat_4_psf(psf_c(i))
-      end do
-!
-      end subroutine dealloc_cont_dat_4_psfs
-!
-!  ---------------------------------------------------------------------
-!
       subroutine dup_control_4_psf(org_psf_c, new_psf_c)
 !
       use copy_control_elements

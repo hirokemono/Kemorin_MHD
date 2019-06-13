@@ -116,16 +116,14 @@
      &        viz_ctls%psf_ctls, c_buf1)
         end if
 !
-        call find_control_array_flag                                    &
-     &     (hd_iso_ctl, viz_ctls%iso_ctls%num_iso_ctl)
-        if(viz_ctls%iso_ctls%num_iso_ctl .gt. 0) then
-          call read_files_4_iso_ctl(viz_ctls%iso_ctls)
+        if(check_array_flag(c_buf1, hd_iso_ctl)) then
+          call read_files_4_iso_ctl(ctl_file_code, hd_iso_ctl,          &
+     &        viz_ctls%iso_ctls, c_buf1)
         end if
 !
-        call find_control_array_flag                                    &
-     &     (hd_isosurf_ctl, viz_ctls%iso_ctls%num_iso_ctl)
-        if(viz_ctls%iso_ctls%num_iso_ctl .gt. 0) then
-          call read_files_4_iso_ctl(viz_ctls%iso_ctls)
+        if(check_array_flag(c_buf1, hd_isosurf_ctl)) then
+          call read_files_4_iso_ctl(ctl_file_code, hd_isosurf_ctl,      &
+     &        viz_ctls%iso_ctls, c_buf1)
         end if
 !
         call find_control_array_flag                                    &

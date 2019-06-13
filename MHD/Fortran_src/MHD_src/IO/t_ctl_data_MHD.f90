@@ -145,7 +145,7 @@
      &      i_pick_sph, MHD_ctl%smonitor_ctl, c_buf1)
 !
         call read_sections_control_data                                 &
-     &     (MHD_ctl%psf_ctls, MHD_ctl%iso_ctls)
+     &     (ctl_file_code, MHD_ctl%psf_ctls, MHD_ctl%iso_ctls, c_buf1)
 !
         call read_zonal_mean_control(MHD_ctl%zm_ctls)
       end do
