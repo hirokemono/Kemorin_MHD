@@ -39,6 +39,7 @@
       use m_machine_parameter
       use calypso_mpi
       use t_control_data_sections
+      use t_control_data_isosurfaces
       use t_control_data_pvrs
       use t_control_data_flines
       use t_control_data_LIC_pvrs
@@ -132,10 +133,9 @@
           call read_files_4_pvr_ctl(viz_ctls%pvr_ctls)
         end if
 !
-        call find_control_array_flag                                    &
-     &     (hd_fline_ctl, viz_ctls%fline_ctls%num_fline_ctl)
-        if(viz_ctls%fline_ctls%num_fline_ctl .gt. 0) then
-          call read_files_4_fline_ctl(viz_ctls%fline_ctls)
+        if(check_array_flag(c_buf1, hd_fline_ctl)) then
+          call read_files_4_fline_ctl(ctl_file_code, hd_fline_ctl,      &
+     &        viz_ctls%fline_ctls, c_buf1)
         end if
 !
         call find_control_array_flag                                    &

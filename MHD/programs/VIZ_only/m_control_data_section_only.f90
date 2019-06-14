@@ -32,6 +32,7 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
       use t_control_data_sections
+      use t_control_data_isosurfaces
 !
       implicit  none
 !
@@ -107,8 +108,8 @@
       subroutine read_section_control_data
 !
       use m_read_control_elements
-!
       use skip_comment_f
+      use read_sections_control_data
 !
 !
       if(right_begin_flag(hd_viz_only_file) .eq. 0) return
@@ -123,7 +124,7 @@
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, t_sect_ctl)
 !
-        call read_sections_control_data                                 &
+        call s_read_sections_control_data                               &
      &     (ctl_file_code, sect_psf_ctls, sect_iso_ctls, c_buf1)
       end do
 !

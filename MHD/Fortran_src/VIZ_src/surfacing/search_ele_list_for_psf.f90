@@ -1,14 +1,18 @@
-!search_ele_list_for_psf.f90
-!      module search_ele_list_for_psf
+!>@file   search_ele_list_for_psf.f90
+!!@brief  module search_ele_list_for_psf
+!!
+!!@date  Programmed by H.Matsui in June, 2006
 !
-!      Written by H. Matsui on June, 2006
-!
+!>@brief set elememnt list for sections
+!!
+!!@verbatim
 !!      subroutine set_search_mesh_list_4_psf                           &
 !!     &         (num_psf, mesh, group, psf_param, psf_search)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(psf_parameters), intent(in) :: psf_param(num_psf)
 !!        type(psf_search_lists), intent(inout) :: psf_search(num_psf)
+!!@endverbatim
 !
       module search_ele_list_for_psf
 !

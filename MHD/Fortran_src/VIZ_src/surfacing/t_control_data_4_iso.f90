@@ -1,8 +1,11 @@
+!>@file   t_control_data_4_iso.f90
+!!@brief  module t_control_data_4_iso
+!!
+!!@date  Programmed by H.Matsui in May, 2006
 !
-!      module t_control_data_4_iso
-!
-!        programmed by H.Matsui on May. 2006
-!
+!>@brief control data for each isosurface
+!!
+!!@verbatim
 !!      subroutine init_iso_ctl_stract(iso_c)
 !!      subroutine deallocate_cont_dat_4_iso(iso_c)
 !!        type(iso_ctl), intent(inout) :: iso_c
@@ -65,7 +68,8 @@
 !!    isosurf_comp: component for isosurface
 !!           x, y, z, radial, elevation, azimuth, cylinder_r, norm
 !!    isosurf_value:  value for isosurface
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@endverbatim
+!
       module t_control_data_4_iso
 !
       use m_precision

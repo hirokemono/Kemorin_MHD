@@ -1,43 +1,51 @@
-!t_control_data_4_fline.f90
-!      module t_control_data_4_fline
+!>@file   t_control_data_4_fline.f90
+!!@brief  module t_control_data_4_fline
+!!
+!!@date  Programmed by H.Matsui in May, 2006
 !
-!        programmed by H.Matsui on May. 2006
-!
+!>@brief control data for each field line
+!!
+!!@verbatim
 !!      subroutine deallocate_cont_dat_fline(fln)
-!
+!!
 !!      subroutine read_field_line_ctl(hd_block, fln)
 !!      subroutine bcast_field_line_ctl(fln)
 !!      subroutine reset_fline_control_flags(fln)
-!
-!  ---------------------------------------------------------------------
-!     example of control for Kemo's field line
+!!        type(fline_ctl), intent(inout) :: fln
 !!
-!  begin fieldline
-!    fline_file_head    'psf'
-!    fline_output_type   ucd
+!!      subroutine dup_control_4_fline(org_fln, new_fln)
+!!        type(fline_ctl), intent(in) :: org_fln
+!!        type(fline_ctl), intent(inout) :: new_fln
 !!
-!    array chosen_ele_grp_ctl 1
-!      chosen_ele_grp_ctl   outer_core   end
-!    end array chosen_ele_grp_ctl
+!!  ---------------------------------------------------------------------
+!!     example of control for Kemo's field line
+!!
+!!  begin fieldline
+!!    fline_file_head    'psf'
+!!    fline_output_type   ucd
+!!
+!!    array chosen_ele_grp_ctl 1
+!!      chosen_ele_grp_ctl   outer_core   end
+!!    end array chosen_ele_grp_ctl
 !!
 !!  starting_type:    position_list, surface_list,  or surface_group
-!    line_direction_ctl        forward
-!    max_line_stepping_ctl     1000
-!    starting_type_ctl     position_list
+!!    line_direction_ctl        forward
+!!    max_line_stepping_ctl     1000
+!!    starting_type_ctl     position_list
 !!
-!    start_surf_grp_ctl      icb_surf
-!    num_fieldline_ctl       10
+!!    start_surf_grp_ctl      icb_surf
+!!    num_fieldline_ctl       10
 !!
 !!    selection_type_ctl:    amplitude, area_size
-!    selection_type_ctl     amplitude
+!!    selection_type_ctl     amplitude
 !!
-!    array starting_point_ctl  10
-!      starting_point_ctl  0.0  0.0  0.0
-!    end array starting_point_ctl
+!!    array starting_point_ctl  10
+!!      starting_point_ctl  0.0  0.0  0.0
+!!    end array starting_point_ctl
 !!
-!    array starting_gl_surface_id  10
-!      starting_gl_surface_id  12  3
-!    end array
+!!    array starting_gl_surface_id  10
+!!      starting_gl_surface_id  12  3
+!!    end array
 !!
 !!     field type:
 !!     scalar, vector, sym_tensor, asym_tensor
@@ -45,19 +53,20 @@
 !!       cylindrical_vector, cylindrical_sym_tensor
 !!       norm, 
 !!
-!    field_line_field_ctl      magnetic_field   end
-!    coloring_field_ctl        magnetic_field   end
-!    coloring_comp_ctl        radial   end
+!!    field_line_field_ctl      magnetic_field   end
+!!    coloring_field_ctl        magnetic_field   end
+!!    coloring_comp_ctl        radial   end
 !!
-!  end fieldline
-!  ---------------------------------------------------------------------
+!!  end fieldline
+!!  ---------------------------------------------------------------------
+!!@endverbatim
 !
       module t_control_data_4_fline
 !
       use m_precision
 !
       use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
       use t_control_array_character
       use t_control_array_integer2
       use t_control_array_real3
@@ -67,8 +76,6 @@
 !
       implicit  none
 !
-!
-      integer(kind = kint), parameter :: fline_ctl_file_code = 11
 !
       type fline_ctl
         type(read_character_item) :: fline_file_head_ctl
@@ -149,65 +156,70 @@
 !
       type(fline_ctl), intent(inout) :: fln
 !
+!
       call dealloc_control_array_i2(fln%seed_surface_ctl)
       call dealloc_control_array_r3(fln%seed_point_ctl)
       call dealloc_control_array_chara(fln%fline_area_grp_ctl)
+!
+      call reset_fline_control_flags(fln)
 !
       end subroutine deallocate_cont_dat_fline
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_field_line_ctl(hd_block, fln)
+      subroutine read_field_line_ctl(id_control, hd_block, fln, c_buf)
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
       type(fline_ctl), intent(inout) :: fln
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+!
       if (fln%i_vr_fline_ctl.gt.0) return
       do
-        call load_ctl_label_and_line
-!
-        fln%i_vr_fline_ctl = find_control_end_flag(hd_block)
-        if(fln%i_vr_fline_ctl .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
 !
-        call read_control_array_c1(ctl_file_code,                       &
-     &      hd_fline_grp, fln%fline_area_grp_ctl, c_buf1)
+        call read_control_array_c1(id_control,                          &
+     &      hd_fline_grp, fln%fline_area_grp_ctl, c_buf)
 !
-        call read_control_array_r3(ctl_file_code,                       &
-     &      hd_xx_start_point, fln%seed_point_ctl, c_buf1)
-        call read_control_array_i2(ctl_file_code,                       &
-     &      hd_start_global_surf, fln%seed_surface_ctl, c_buf1)
+        call read_control_array_r3(id_control,                          &
+     &      hd_xx_start_point, fln%seed_point_ctl, c_buf)
+        call read_control_array_i2(id_control,                          &
+     &      hd_start_global_surf, fln%seed_surface_ctl, c_buf)
 !
 !
-        call read_chara_ctl_type(c_buf1, hd_fline_file_head,            &
+        call read_chara_ctl_type(c_buf, hd_fline_file_head,             &
      &      fln%fline_file_head_ctl)
-        call read_chara_ctl_type(c_buf1, hd_fline_output_type,          &
+        call read_chara_ctl_type(c_buf, hd_fline_output_type,           &
      &      fln%fline_output_type_ctl)
 !
-        call read_chara_ctl_type(c_buf1, hd_field_line_field,           &
+        call read_chara_ctl_type(c_buf, hd_field_line_field,            &
      &      fln%fline_field_ctl )
-        call read_chara_ctl_type(c_buf1, hd_coloring_field,             &
+        call read_chara_ctl_type(c_buf, hd_coloring_field,              &
      &      fln%fline_color_field_ctl )
-        call read_chara_ctl_type(c_buf1, hd_coloring_comp,              &
+        call read_chara_ctl_type(c_buf, hd_coloring_comp,               &
      &      fln%fline_color_comp_ctl )
-        call read_chara_ctl_type(c_buf1, hd_starting_type,              &
+        call read_chara_ctl_type(c_buf, hd_starting_type,               &
      &      fln%starting_type_ctl )
-        call read_chara_ctl_type(c_buf1, hd_start_surf_grp,             &
+        call read_chara_ctl_type(c_buf, hd_start_surf_grp,              &
      &      fln%start_surf_grp_ctl )
-        call read_chara_ctl_type(c_buf1, hd_selection_type,             &
+        call read_chara_ctl_type(c_buf, hd_selection_type,              &
      &      fln%selection_type_ctl )
-        call read_chara_ctl_type(c_buf1, hd_line_direction,             &
+        call read_chara_ctl_type(c_buf, hd_line_direction,              &
      &      fln%line_direction_ctl )
 !
-        call read_integer_ctl_type(c_buf1, hd_num_fieldline,            &
+        call read_integer_ctl_type(c_buf, hd_num_fieldline,             &
      &      fln%num_fieldline_ctl )
-        call read_integer_ctl_type(c_buf1, hd_max_line_stepping,        &
+        call read_integer_ctl_type(c_buf, hd_max_line_stepping,         &
      &      fln%max_line_stepping_ctl)
       end do
+      fln%i_vr_fline_ctl = 1 
 !
       end subroutine read_field_line_ctl
 !
@@ -279,6 +291,54 @@
       fln%line_direction_ctl%iflag = 0
 !
       end subroutine reset_fline_control_flags
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dup_control_4_fline(org_fln, new_fln)
+!
+      use copy_control_elements
+!
+      type(fline_ctl), intent(in) :: org_fln
+      type(fline_ctl), intent(inout) :: new_fln
+!
+!
+      call copy_chara_ctl(org_fln%fline_file_head_ctl,                  &
+     &                    new_fln%fline_file_head_ctl)
+      call copy_chara_ctl(org_fln%fline_output_type_ctl,                &
+     &                    new_fln%fline_output_type_ctl)
+!
+      call copy_chara_ctl(org_fln%fline_field_ctl,                      &
+     &                    new_fln%fline_field_ctl)
+      call copy_chara_ctl(org_fln%fline_color_field_ctl,                &
+     &                    new_fln%fline_color_field_ctl)
+      call copy_chara_ctl(org_fln%fline_color_comp_ctl,                 &
+     &                    new_fln%fline_color_comp_ctl)
+!
+      call copy_chara_ctl(org_fln%starting_type_ctl,                    &
+     &                    new_fln%starting_type_ctl)
+      call copy_chara_ctl(org_fln%selection_type_ctl,                   &
+     &                    new_fln%selection_type_ctl)
+      call copy_chara_ctl(org_fln%line_direction_ctl,                   &
+     &                    new_fln%line_direction_ctl)
+!
+      call copy_chara_ctl(org_fln%start_surf_grp_ctl,                   &
+     &                    new_fln%start_surf_grp_ctl)
+!
+      call copy_integer_ctl(org_fln%num_fieldline_ctl,                  &
+     &                      new_fln%num_fieldline_ctl)
+      call copy_integer_ctl(org_fln%max_line_stepping_ctl,              &
+     &                      new_fln%max_line_stepping_ctl)
+!
+      call dup_control_array_c1(org_fln%fline_area_grp_ctl,             &
+     &                          new_fln%fline_area_grp_ctl)
+      call dup_control_array_r3(org_fln%seed_point_ctl,                 &
+     &                          new_fln%seed_point_ctl)
+      call dup_control_array_i2(org_fln%seed_surface_ctl,               &
+     &                          new_fln%seed_surface_ctl)
+!
+      new_fln%i_vr_fline_ctl = org_fln%i_vr_fline_ctl
+!
+      end subroutine dup_control_4_fline
 !
 !  ---------------------------------------------------------------------
 !

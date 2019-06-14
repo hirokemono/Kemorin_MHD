@@ -49,6 +49,7 @@
       subroutine init_visualize_surface                                 &
      &         (fem, nod_fld, psf_ctls, iso_ctls, viz_psfs)
 !
+      use t_control_data_isosurfaces
       use t_control_data_sections
 !
       type(mesh_data), intent(in) :: fem

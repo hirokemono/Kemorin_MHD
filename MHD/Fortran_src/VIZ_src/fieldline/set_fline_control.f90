@@ -27,8 +27,6 @@
 !
       implicit none
 !
-      private :: read_control_4_fline
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -46,11 +44,8 @@
       integer(kind = kint) :: i
 !
 !
-      ctl_file_code = fline_ctl_file_code
-!
       do i = 1, num_fline
-        call read_control_4_fline                                       &
-     &     (hd_fline_ctl, fline_ctls%fname_fline_ctl(i),                &
+        call read_fline_control_file(fline_ctls%fname_fline_ctl(i),     &
      &      fline_ctls%fline_ctl_struct(i))
       end do
 !
@@ -99,34 +94,5 @@
       end subroutine s_set_fline_control
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_4_fline                                   &
-     &         (hd_fline_ctl, fname_fline_ctl, fline_ctl_struct)
-!
-      use calypso_mpi
-      use t_control_data_4_fline
-!
-      character(len = kchara), intent(in) :: hd_fline_ctl
-      character(len = kchara), intent(in) :: fname_fline_ctl
-      type(fline_ctl), intent(inout)  :: fline_ctl_struct
-!
-      if(fname_fline_ctl .eq. 'NO_FILE') return
-      call reset_fline_control_flags(fline_ctl_struct)
-!
-      if(my_rank .eq. 0) then
-        open(fline_ctl_file_code, file=fname_fline_ctl,                 &
-     &         status='old')
-        call load_ctl_label_and_line
-        call read_field_line_ctl                                        &
-     &     (hd_fline_ctl, fline_ctl_struct)
-        close(fline_ctl_file_code)
-      end if
-!
-      call bcast_field_line_ctl(fline_ctl_struct)
-!
-      end subroutine read_control_4_fline
-!
-!  ---------------------------------------------------------------------
 !
       end module set_fline_control

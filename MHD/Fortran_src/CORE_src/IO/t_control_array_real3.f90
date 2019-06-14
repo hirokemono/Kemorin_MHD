@@ -19,6 +19,9 @@
 !!      subroutine append_control_array_r3(read_r3, array_r3)
 !!        type(read_real3_item), intent(inout) ::    read_r3
 !!        type(ctl_array_r3), intent(inout) :: array_r3
+!!      subroutine dup_control_array_r3(org_r3, tgt_r3)
+!!        type(ctl_array_r3), intent(in) ::    org_r3
+!!        type(ctl_array_r3), intent(inout) :: tgt_r3
 !!      subroutine copy_control_array_r3(num_copy, org_r3, tgt_r3)
 !!        type(ctl_array_r3), intent(in) ::    org_r3
 !!        type(ctl_array_r3), intent(inout) :: tgt_r3
@@ -179,6 +182,20 @@
       call dealloc_control_array_r3(org_r3)
 !
       end subroutine append_control_array_r3
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dup_control_array_r3(org_r3, tgt_r3)
+!
+      type(ctl_array_r3), intent(in) ::    org_r3
+      type(ctl_array_r3), intent(inout) :: tgt_r3
+!
+!
+      tgt_r3%num = org_r3%num
+      call alloc_control_array_r3(tgt_r3)
+      call copy_control_array_r3(org_r3%num, org_r3, tgt_r3)
+!
+      end subroutine dup_control_array_r3
 !
 ! -----------------------------------------------------------------------
 !

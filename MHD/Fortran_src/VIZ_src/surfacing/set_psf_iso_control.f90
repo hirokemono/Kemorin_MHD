@@ -144,6 +144,7 @@
 !
       use calypso_mpi
       use m_read_control_elements
+      use t_control_data_isosurfaces
       use t_control_data_sections
       use t_control_params_4_iso
       use t_mesh_data

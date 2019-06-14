@@ -32,6 +32,7 @@
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
       use t_control_data_sections
+      use t_control_data_isosurfaces
       use t_control_data_zm_vizs
 !
       implicit none
@@ -114,6 +115,8 @@
 !
       subroutine read_sph_mhd_ctl_w_psf(MHD_ctl)
 !
+      use read_sections_control_data
+!
       type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
@@ -144,7 +147,7 @@
         call read_sph_monitoring_ctl(ctl_file_code, hd_pick_sph,        &
      &      i_pick_sph, MHD_ctl%smonitor_ctl, c_buf1)
 !
-        call read_sections_control_data                                 &
+        call s_read_sections_control_data                               &
      &     (ctl_file_code, MHD_ctl%psf_ctls, MHD_ctl%iso_ctls, c_buf1)
 !
         call read_zonal_mean_control(MHD_ctl%zm_ctls)
