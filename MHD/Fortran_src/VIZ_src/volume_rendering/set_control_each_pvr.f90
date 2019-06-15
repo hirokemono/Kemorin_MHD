@@ -44,7 +44,7 @@
 !
       implicit  none
 !
-      private :: set_control_pvr_isosurf
+      private :: set_control_pvr_render_area, set_control_pvr_isosurf
 !
 !  ---------------------------------------------------------------------
 !
@@ -117,10 +117,8 @@
       use t_group_data
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
-      use set_area_4_viz
       use set_color_4_pvr
       use set_rgba_4_each_pixel
-      use pvr_surface_enhancement
       use set_coefs_of_sections
       use set_control_pvr_color
       use skip_comment_f
@@ -137,33 +135,8 @@
       integer(kind = kint) :: id_section_method, ierr, i
 !
 !
-      call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
-     &    pvr_ctl%pvr_area_ctl%num, pvr_ctl%pvr_area_ctl%c_tbl,         &
-     &    pvr_area%nele_grp_area_pvr)
-!
-      if (pvr_area%nele_grp_area_pvr .le. 0) then
-        call calypso_MPI_abort(ierr_PVR, 'set correct element group')
-      else
-        call alloc_pvr_element_group(pvr_area)
-      end if
-!
-!
-      call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
-     &    pvr_ctl%pvr_area_ctl%num, pvr_ctl%pvr_area_ctl%c_tbl,         &
-     &    pvr_area%nele_grp_area_pvr, pvr_area%id_ele_grp_area_pvr)
-!
-!
-      if (pvr_ctl%surf_enhanse_ctl%num .gt. 0) then
-        call set_pvr_bc_enhanse_flag(surf_grp,                          &
-     &      pvr_ctl%surf_enhanse_ctl%num,                               &
-     &      pvr_ctl%surf_enhanse_ctl%c1_tbl,                            &
-     &      pvr_ctl%surf_enhanse_ctl%c2_tbl,                            &
-     &      pvr_ctl%surf_enhanse_ctl%vect,                              &
-     &      field_pvr%iflag_enhanse, field_pvr%enhansed_opacity)
-      else
-         field_pvr%iflag_enhanse = IFLAG_NONE
-      end if
-!
+      call set_control_pvr_render_area(pvr_ctl%render_area_c,           &
+     &    ele_grp, surf_grp, pvr_area, field_pvr)
 !
       field_pvr%num_sections = pvr_ctl%num_pvr_sect_ctl
       if(field_pvr%num_sections .gt. 0) then
@@ -194,6 +167,58 @@
      &   (pvr_ctl%cmap_cbar_c%cbar_ctl, cbar_param)
 !
       end subroutine set_control_pvr
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_control_pvr_render_area                            &
+     &         (render_area_c, ele_grp, surf_grp, pvr_area, field_pvr)
+!
+      use t_group_data
+      use t_control_data_pvr_area
+      use t_control_params_4_pvr
+      use t_geometries_in_pvr_screen
+      use skip_comment_f
+      use pvr_surface_enhancement
+      use set_area_4_viz
+!
+      type(group_data), intent(in) :: ele_grp
+      type(surface_group_data), intent(in) :: surf_grp
+      type(pvr_render_area_ctl), intent(in) :: render_area_c
+!
+      type(pvr_projected_field), intent(inout) :: field_pvr
+      type(viz_area_parameter), intent(inout) :: pvr_area
+!
+!
+      call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
+     &    render_area_c%pvr_area_ctl%num,                               &
+     &    render_area_c%pvr_area_ctl%c_tbl,                             &
+     &    pvr_area%nele_grp_area_pvr)
+!
+      if (pvr_area%nele_grp_area_pvr .le. 0) then
+        call calypso_MPI_abort(ierr_PVR, 'set correct element group')
+      else
+        call alloc_pvr_element_group(pvr_area)
+      end if
+!
+!
+      call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
+     &    render_area_c%pvr_area_ctl%num,                               &
+     &    render_area_c%pvr_area_ctl%c_tbl,                             &
+     &    pvr_area%nele_grp_area_pvr, pvr_area%id_ele_grp_area_pvr)
+!
+!
+      if (render_area_c%surf_enhanse_ctl%num .gt. 0) then
+        call set_pvr_bc_enhanse_flag(surf_grp,                          &
+     &      render_area_c%surf_enhanse_ctl%num,                         &
+     &      render_area_c%surf_enhanse_ctl%c1_tbl,                      &
+     &      render_area_c%surf_enhanse_ctl%c2_tbl,                      &
+     &      render_area_c%surf_enhanse_ctl%vect,                        &
+     &      field_pvr%iflag_enhanse, field_pvr%enhansed_opacity)
+      else
+         field_pvr%iflag_enhanse = IFLAG_NONE
+      end if
+!
+      end subroutine set_control_pvr_render_area
 !
 !  ---------------------------------------------------------------------
 !

@@ -114,7 +114,7 @@
 !
       do iele = fluid%iele_start_fld, fluid%iele_end_fld
 !
-        cfl_tmp = ele%volume_ele(iele)**(1/3)*2.0d0                     &
+        cfl_tmp = ele%volume_ele(iele)**(1.0d0/3.0d0)*2.0d0             &
      &            / (sqrt(d_ele(iele,ivelo_ele  )**2                    &
      &                  + d_ele(iele,ivelo_ele+1)**2                    &
      &                  + d_ele(iele,ivelo_ele+2)**2) + 1.0d-10)

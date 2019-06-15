@@ -129,6 +129,7 @@
 !
       use t_control_data_pvr_isosurfs
       use t_control_data_pvr_movie
+      use t_control_data_pvr_area
 !
       character(len=kchara), intent(in) :: hd_block
       character(len = kchara), intent(in) :: hd_lic_colordef
@@ -180,8 +181,8 @@
      &        pvr%pvr_isos_c, c_buf1)
         end if
 !
-        call read_plot_area_ctl(hd_plot_area, pvr%i_plot_area,          &
-     &      pvr%pvr_area_ctl, pvr%surf_enhanse_ctl)
+        call read_pvr_render_area_ctl(ctl_file_code, hd_plot_area,      &
+     &      pvr%render_area_c, c_buf1)
         call read_lighting_ctl(hd_pvr_lighting, pvr%light)
         call read_pvr_rotation_ctl(ctl_file_code, hd_pvr_rotation,      &
      &      pvr%movie, c_buf1)

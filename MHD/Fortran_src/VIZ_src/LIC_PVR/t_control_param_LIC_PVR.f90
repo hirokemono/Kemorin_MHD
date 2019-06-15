@@ -116,7 +116,7 @@
       use t_group_data
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
-      use t_control_data_pvr_misc
+      use t_control_data_pvr_sections
       use t_LIC_kernel_image
       use set_control_each_pvr
       use set_field_comp_for_viz

@@ -109,7 +109,7 @@
 !
       subroutine LIC_initialize(fem, nod_fld, lic_ctls, lic)
 !
-      use t_control_data_pvr_misc
+      use t_control_data_pvr_sections
       use set_pvr_control
       use each_LIC_rendering
       use rendering_and_image_nums

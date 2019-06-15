@@ -121,7 +121,7 @@
 !
       subroutine PVR_initialize(fem, nod_fld, pvr_ctls, pvr)
 !
-      use t_control_data_pvr_misc
+      use t_control_data_pvr_sections
       use set_pvr_control
       use rendering_and_image_nums
 !

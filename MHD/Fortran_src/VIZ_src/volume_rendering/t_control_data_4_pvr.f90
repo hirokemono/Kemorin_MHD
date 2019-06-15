@@ -87,9 +87,10 @@
       use t_control_array_character
       use t_control_array_chara2real
       use t_ctl_data_pvr_colormap
-      use t_control_data_pvr_misc
+      use t_control_data_pvr_sections
       use t_control_data_pvr_movie
       use t_control_data_pvr_isosurfs
+      use t_control_data_pvr_area
       use skip_comment_f
 !
       implicit  none
@@ -125,9 +126,7 @@
 !
 !>      Structure for element group list for PVR
 !!@n      group_4_monitor_ctl%c_tbl: Name of element group for PVR
-        type(ctl_array_chara) :: pvr_area_ctl
-!
-        type(ctl_array_c2r) :: surf_enhanse_ctl
+        type(pvr_render_area_ctl) :: render_area_c
 !
         type(read_character_item) :: pvr_field_ctl
         type(read_character_item) :: pvr_comp_ctl
@@ -146,8 +145,7 @@
         integer (kind=kint) :: i_color_file = 0
 !
 !     2nd level for volume rendering
-        integer (kind=kint) :: i_plot_area =           0
-        integer (kind=kint) :: i_pvr_sect =            0
+        integer (kind=kint) :: i_pvr_sect = 0
       end type pvr_parameter_ctl
 !
 !
@@ -207,14 +205,8 @@
       call dealloc_pvr_light_crl(pvr_ctl%light)
       call deallocate_pvr_cmap_cbar(pvr_ctl%cmap_cbar_c)
 !
-      call dealloc_control_array_chara(pvr_ctl%pvr_area_ctl)
-      call dealloc_control_array_c2_r(pvr_ctl%surf_enhanse_ctl)
+      call dealloc_pvr_render_area_ctl(pvr_ctl%render_area_c)
       call dealloc_pvr_isosurfs_ctl(pvr_ctl%pvr_isos_c)
-!
-      pvr_ctl%pvr_area_ctl%num =  0
-      pvr_ctl%pvr_area_ctl%icou = 0
-      pvr_ctl%surf_enhanse_ctl%num =  0
-      pvr_ctl%surf_enhanse_ctl%icou = 0
 !
       if(pvr_ctl%num_pvr_sect_ctl .gt. 0) then
         do i = 1, pvr_ctl%num_pvr_sect_ctl
@@ -233,7 +225,6 @@
       pvr_ctl%pvr_comp_ctl%iflag =    0
 !
       pvr_ctl%i_pvr_ctl = 0
-      pvr_ctl%i_plot_area =   0
 !
       end subroutine deallocate_cont_dat_pvr
 !
@@ -304,8 +295,8 @@
      &        pvr_ctl%pvr_isos_c, c_buf1)
         end if
 !
-        call read_plot_area_ctl(hd_plot_area, pvr_ctl%i_plot_area,      &
-     &      pvr_ctl%pvr_area_ctl, pvr_ctl%surf_enhanse_ctl)
+        call read_pvr_render_area_ctl(ctl_file_code, hd_plot_area,      &
+     &      pvr_ctl%render_area_c, c_buf1)
         call read_lighting_ctl(hd_pvr_lighting, pvr_ctl%light)
         call read_pvr_rotation_ctl(ctl_file_code, hd_pvr_rotation,      &
      &      pvr_ctl%movie, c_buf1)

@@ -15,9 +15,10 @@
 !
       use t_control_data_4_pvr
       use t_ctl_data_pvr_colormap
-      use t_control_data_pvr_misc
+      use t_control_data_pvr_sections
       use t_control_data_pvr_isosurfs
       use t_control_data_pvr_movie
+      use t_control_data_pvr_area
       use t_ctl_data_4_view_transfer
 !
       use bcast_control_arrays
@@ -58,10 +59,7 @@
       call bcast_pvr_colordef_ctl(pvr%cmap_cbar_c%color)
 !
       call bcast_pvr_rotation_ctl(pvr%movie)
-!
-      call bcast_ctl_array_c1(pvr%pvr_area_ctl)
-      call bcast_ctl_array_c2r(pvr%surf_enhanse_ctl)
-!
+      call bcast_pvr_render_area_ctl(pvr%render_area_c)
 !
       call bcast_ctl_type_c1(pvr%updated_ctl)
       call bcast_ctl_type_c1(pvr%file_head_ctl)

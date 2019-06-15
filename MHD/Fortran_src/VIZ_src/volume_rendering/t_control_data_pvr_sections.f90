@@ -1,5 +1,5 @@
-!>@file   t_control_data_pvr_misc.f90
-!!@brief  module t_control_data_pvr_misc
+!>@file   t_control_data_pvr_sections.f90
+!!@brief  module t_control_data_pvr_sections
 !!
 !!@author H. Matsui
 !!@date Programmed in 2006
@@ -55,7 +55,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module t_control_data_pvr_misc
+      module t_control_data_pvr_sections
 !
       use m_precision
       use calypso_mpi
@@ -216,4 +216,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module t_control_data_pvr_misc
+      end module t_control_data_pvr_sections

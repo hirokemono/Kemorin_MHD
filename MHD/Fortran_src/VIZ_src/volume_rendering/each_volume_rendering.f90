@@ -62,7 +62,7 @@
       subroutine each_PVR_initialize(i_pvr, mesh, group,                &
      &          area_def, pvr_param, pvr_proj, pvr_rgb)
 !
-      use t_control_data_pvr_misc
+      use t_control_data_pvr_sections
       use set_pvr_control
       use cal_pvr_modelview_mat
       use cal_pvr_projection_mat

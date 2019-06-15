@@ -100,7 +100,7 @@
       use t_phys_data
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
-      use t_control_data_pvr_misc
+      use t_control_data_pvr_sections
       use set_control_each_pvr
       use set_field_comp_for_viz
       use set_pvr_modelview_matrix
