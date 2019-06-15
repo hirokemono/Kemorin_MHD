@@ -16,14 +16,15 @@
       use t_control_data_4_pvr
       use t_ctl_data_pvr_colormap
       use t_control_data_pvr_misc
+      use t_control_data_pvr_isosurfs
+      use t_control_data_pvr_movie
       use t_ctl_data_4_view_transfer
 !
       use bcast_control_arrays
 !
       implicit  none
 !
-      private :: bcast_pvr_sections_ctl, bcast_pvr_isosurfs_ctl
-      private :: bcast_pvr_colorbar_ctl, bcast_pvr_rotation_ctl
+      private :: bcast_pvr_sections_ctl, bcast_pvr_colorbar_ctl
       private :: bcast_lighting_ctl, bcast_projection_mat_ctl
       private :: bcast_image_size_ctl, bcast_stereo_view_ctl
 !
@@ -49,14 +50,14 @@
       call MPI_BCAST(pvr%color_file_ctl, kchara,                        &
      &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
 !
-      call bcast_pvr_isosurfs_ctl(pvr)
+      call bcast_pvr_isosurfs_ctl(pvr%pvr_isos_c)
       call bcast_pvr_sections_ctl(pvr)
 !
       call bcast_lighting_ctl(pvr%light)
       call bcast_pvr_colorbar_ctl(pvr%cmap_cbar_c%cbar_ctl)
       call bcast_pvr_colordef_ctl(pvr%cmap_cbar_c%color)
 !
-       call bcast_pvr_rotation_ctl(pvr%movie)
+      call bcast_pvr_rotation_ctl(pvr%movie)
 !
       call bcast_ctl_array_c1(pvr%pvr_area_ctl)
       call bcast_ctl_array_c2r(pvr%surf_enhanse_ctl)
@@ -120,31 +121,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine bcast_pvr_isosurfs_ctl(pvr)
-!
-      type(pvr_parameter_ctl), intent(inout) :: pvr
-!
-      integer(kind = kint) :: i
-!
-!
-      call MPI_BCAST(pvr%i_pvr_iso,  1,                                 &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(pvr%num_pvr_iso_ctl,  1,                           &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      if(pvr%num_pvr_iso_ctl .gt. 0 .and. my_rank .gt. 0) then
-        allocate(pvr%pvr_iso_ctl(pvr%num_pvr_iso_ctl))
-      end if
-!
-      do i = 1, pvr%num_pvr_iso_ctl
-        call bcast_ctl_type_c1(pvr%pvr_iso_ctl(i)%isosurf_type_ctl)
-        call bcast_ctl_type_r1(pvr%pvr_iso_ctl(i)%isosurf_value_ctl)
-        call bcast_ctl_type_r1(pvr%pvr_iso_ctl(i)%opacity_ctl)
-      end do
-!
-      end subroutine bcast_pvr_isosurfs_ctl
-!
-!  ---------------------------------------------------------------------
-!
       subroutine bcast_pvr_colorbar_ctl(cbar_ctl)
 !
       use bcast_control_arrays
@@ -167,23 +143,6 @@
       call bcast_ctl_type_r2(cbar_ctl%cbar_range_ctl)
 !
       end subroutine bcast_pvr_colorbar_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_pvr_rotation_ctl(movie)
-!
-      use bcast_control_arrays
-!
-      type(pvr_movie_ctl), intent(inout) :: movie
-!
-!
-      call MPI_BCAST(movie%i_pvr_rotation,  1,                          &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_ctl_type_i1(movie%num_frames_ctl)
-      call bcast_ctl_type_c1(movie%rotation_axis_ctl)
-!
-      end subroutine bcast_pvr_rotation_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

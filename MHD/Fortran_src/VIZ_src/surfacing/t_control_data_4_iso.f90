@@ -7,7 +7,7 @@
 !!
 !!@verbatim
 !!      subroutine init_iso_ctl_stract(iso_c)
-!!      subroutine deallocate_cont_dat_4_iso(iso_c)
+!!      subroutine dealloc_cont_dat_4_iso(iso_c)
 !!        type(iso_ctl), intent(inout) :: iso_c
 !!      subroutine dup_control_4_iso(org_iso_c, new_iso_c)
 !!        type(iso_ctl), intent(in) :: org_iso_c
@@ -195,7 +195,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_cont_dat_4_iso(iso_c)
+      subroutine dealloc_cont_dat_4_iso(iso_c)
 !
       type(iso_ctl), intent(inout) :: iso_c
 !
@@ -221,7 +221,7 @@
       iso_c%iso_area_ctl%num =  0
       iso_c%iso_area_ctl%icou = 0
 !
-      end subroutine deallocate_cont_dat_4_iso
+      end subroutine dealloc_cont_dat_4_iso
 !
 !  ---------------------------------------------------------------------
 !

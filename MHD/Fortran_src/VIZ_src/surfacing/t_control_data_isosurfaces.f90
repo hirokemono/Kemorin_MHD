@@ -203,7 +203,7 @@
       integer(kind = kint) :: i
 !
       do i = 1, num_iso
-        call deallocate_cont_dat_4_iso(iso_c(i))
+        call dealloc_cont_dat_4_iso(iso_c(i))
       end do
 !
       end subroutine dealloc_cont_dat_4_isos

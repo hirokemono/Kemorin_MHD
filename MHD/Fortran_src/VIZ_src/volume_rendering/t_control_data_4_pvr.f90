@@ -88,6 +88,8 @@
       use t_control_array_chara2real
       use t_ctl_data_pvr_colormap
       use t_control_data_pvr_misc
+      use t_control_data_pvr_movie
+      use t_control_data_pvr_isosurfs
       use skip_comment_f
 !
       implicit  none
@@ -131,10 +133,10 @@
         type(read_character_item) :: pvr_comp_ctl
 !
         integer(kind = kint) :: num_pvr_sect_ctl = 0
-        type(pvr_sections_ctl), pointer :: pvr_sect_ctl(:)
+        type(pvr_sections_ctl), allocatable :: pvr_sect_ctl(:)
 !
-        integer(kind = kint) :: num_pvr_iso_ctl = 0
-        type(pvr_isosurf_ctl), pointer :: pvr_iso_ctl(:)
+!>       constrol structure for isosurfaces in PVR
+        type(pvr_isosurfs_ctl) :: pvr_isos_c
 !
 !     Top level
 !
@@ -146,7 +148,6 @@
 !     2nd level for volume rendering
         integer (kind=kint) :: i_plot_area =           0
         integer (kind=kint) :: i_pvr_sect =            0
-        integer (kind=kint) :: i_pvr_iso =             0
       end type pvr_parameter_ctl
 !
 !
@@ -208,6 +209,7 @@
 !
       call dealloc_control_array_chara(pvr_ctl%pvr_area_ctl)
       call dealloc_control_array_c2_r(pvr_ctl%surf_enhanse_ctl)
+      call dealloc_pvr_isosurfs_ctl(pvr_ctl%pvr_isos_c)
 !
       pvr_ctl%pvr_area_ctl%num =  0
       pvr_ctl%pvr_area_ctl%icou = 0
@@ -216,18 +218,12 @@
 !
       if(pvr_ctl%num_pvr_sect_ctl .gt. 0) then
         do i = 1, pvr_ctl%num_pvr_sect_ctl
-          call deallocate_cont_dat_4_psf(pvr_ctl%pvr_sect_ctl(i)%psf_c)
+          call dealloc_cont_dat_4_psf(pvr_ctl%pvr_sect_ctl(i)%psf_c)
         end do
         deallocate(pvr_ctl%pvr_sect_ctl)
       end if
       pvr_ctl%num_pvr_sect_ctl = 0
       pvr_ctl%i_pvr_sect = 0
-!
-      if(pvr_ctl%num_pvr_iso_ctl .gt. 0) then
-        deallocate(pvr_ctl%pvr_iso_ctl)
-      end if
-      pvr_ctl%num_pvr_iso_ctl = 0
-      pvr_ctl%i_pvr_iso = 0
 !
       pvr_ctl%updated_ctl%iflag =     0
       pvr_ctl%file_head_ctl%iflag =   0
@@ -303,16 +299,16 @@
           call read_pvr_sections_ctl(pvr_ctl)
         end if
 !
-        call find_control_array_flag                                    &
-     &     (hd_pvr_isosurf, pvr_ctl%num_pvr_iso_ctl)
-        if(pvr_ctl%num_pvr_iso_ctl .gt. 0) then
-          call read_pvr_isosurfs_ctl(pvr_ctl)
+        if(check_array_flag(c_buf1, hd_pvr_isosurf)) then
+          call read_pvr_isosurfs_ctl(ctl_file_code, hd_pvr_isosurf,     &
+     &        pvr_ctl%pvr_isos_c, c_buf1)
         end if
 !
         call read_plot_area_ctl(hd_plot_area, pvr_ctl%i_plot_area,      &
      &      pvr_ctl%pvr_area_ctl, pvr_ctl%surf_enhanse_ctl)
         call read_lighting_ctl(hd_pvr_lighting, pvr_ctl%light)
-        call read_pvr_rotation_ctl(hd_pvr_rotation, pvr_ctl%movie)
+        call read_pvr_rotation_ctl(ctl_file_code, hd_pvr_rotation,      &
+     &      pvr_ctl%movie, c_buf1)
 !
 !
         call read_chara_ctl_type                                        &
@@ -387,31 +383,6 @@
       end do
 !
       end subroutine read_pvr_sections_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_pvr_isosurfs_ctl(pvr_ctl)
-!
-      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl
-!
-!
-      if (pvr_ctl%i_pvr_iso .gt. 0) return
-      allocate(pvr_ctl%pvr_iso_ctl(pvr_ctl%num_pvr_iso_ctl))
-!
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag                                &
-     &     (hd_pvr_isosurf, pvr_ctl%num_pvr_iso_ctl, pvr_ctl%i_pvr_iso)
-        if(pvr_ctl%i_pvr_iso .ge. pvr_ctl%num_pvr_iso_ctl) exit
-!
-        if(right_begin_flag(hd_pvr_isosurf) .gt. 0) then
-          pvr_ctl%i_pvr_iso = pvr_ctl%i_pvr_iso + 1
-          call read_pvr_isosurface_ctl                                  &
-     &       (hd_pvr_isosurf, pvr_ctl%pvr_iso_ctl(pvr_ctl%i_pvr_iso))
-        end if
-      end do
-!
-      end subroutine read_pvr_isosurfs_ctl
 !
 !  ---------------------------------------------------------------------
 !

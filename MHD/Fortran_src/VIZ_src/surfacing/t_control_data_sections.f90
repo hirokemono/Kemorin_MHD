@@ -208,7 +208,7 @@
       integer(kind = kint) :: i
 !
       do i = 1, num_psf
-        call deallocate_cont_dat_4_psf(psf_c(i))
+        call dealloc_cont_dat_4_psf(psf_c(i))
       end do
 !
       end subroutine dealloc_cont_dat_4_psfs

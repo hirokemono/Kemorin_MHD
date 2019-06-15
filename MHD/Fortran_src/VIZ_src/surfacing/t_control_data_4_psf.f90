@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine init_psf_ctl_stract(psf_c)
-!!      subroutine deallocate_cont_dat_4_psf(psf_c)
+!!      subroutine dealloc_cont_dat_4_psf(psf_c)
 !!        type(psf_ctl), intent(inout) :: psf_c
 !!      subroutine dup_control_4_psf(org_psf_c, new_psf_c)
 !!        type(psf_ctl), intent(in) :: org_psf_c
@@ -258,7 +258,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_cont_dat_4_psf(psf_c)
+      subroutine dealloc_cont_dat_4_psf(psf_c)
 !
       type(psf_ctl), intent(inout) :: psf_c
 !
@@ -299,7 +299,7 @@
       psf_c%psf_axis_ctl%num =  0
       psf_c%psf_axis_ctl%icou = 0
 !
-      end subroutine deallocate_cont_dat_4_psf
+      end subroutine dealloc_cont_dat_4_psf
 !
 !  ---------------------------------------------------------------------
 !

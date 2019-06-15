@@ -44,6 +44,8 @@
 !
       implicit  none
 !
+      private :: set_control_pvr_isosurf
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -133,7 +135,6 @@
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param
 !
       integer(kind = kint) :: id_section_method, ierr, i
-      character(len = kchara) :: tmpchara
 !
 !
       call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
@@ -183,33 +184,7 @@
       end if
 !
 !
-      field_pvr%num_isosurf = pvr_ctl%num_pvr_iso_ctl
-      if(field_pvr%num_isosurf .gt. 0) then
-        call alloc_pvr_isosurfaces(field_pvr)
-!
-        do i = 1, field_pvr%num_isosurf
-          if(pvr_ctl%pvr_iso_ctl(i)%isosurf_value_ctl%iflag .gt. 0)     &
-     &     then
-            field_pvr%iso_value(i)                                      &
-     &        = pvr_ctl%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue
-          end if
-          if(pvr_ctl%pvr_iso_ctl(i)%opacity_ctl%iflag .gt. 0) then
-            field_pvr%iso_opacity(i)                                    &
-     &        = pvr_ctl%pvr_iso_ctl(i)%opacity_ctl%realvalue
-          end if
-          if(pvr_ctl%pvr_iso_ctl(i)%isosurf_type_ctl%iflag .gt. 0) then
-            tmpchara                                                    &
-     &          = pvr_ctl%pvr_iso_ctl(i)%isosurf_type_ctl%charavalue
-            if(cmp_no_case(tmpchara, LABEL_DECREASE)) then
-              field_pvr%itype_isosurf(i) = IFLAG_SHOW_REVERSE
-            else if(cmp_no_case(tmpchara, LABEL_DECREASE)) then
-              field_pvr%itype_isosurf(i) = IFLAG_SHOW_FORWARD
-            else
-              field_pvr%itype_isosurf(i) = IFLAG_SHOW_FORWARD
-            end if
-          end if
-        end do
-      end if
+      call set_control_pvr_isosurf(pvr_ctl%pvr_isos_c, field_pvr)
 !
 !    set colormap setting
       call set_control_pvr_lighting(pvr_ctl%light, color_param)
@@ -222,9 +197,61 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine set_control_pvr_isosurf(pvr_isos_c, field_pvr)
+!
+      use t_control_data_pvr_isosurfs
+      use t_geometries_in_pvr_screen
+      use pvr_surface_enhancement
+!
+      type(pvr_isosurfs_ctl), intent(in) :: pvr_isos_c
+!
+      type(pvr_projected_field), intent(inout) :: field_pvr
+!
+      integer(kind = kint) ::  i
+      character(len = kchara) :: tmpchara
+!
+      integer(kind = kint) :: iflag
+!
+!
+      field_pvr%num_isosurf = pvr_isos_c%num_pvr_iso_ctl
+      if(field_pvr%num_isosurf .le. 0) return
+!
+      call alloc_pvr_isosurfaces(field_pvr)
+!
+      do i = 1, field_pvr%num_isosurf
+        iflag = pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%iflag
+        if(iflag .gt. 0) then
+          field_pvr%iso_value(i)                                        &
+     &        = pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue
+        end if
+!
+        iflag = pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%iflag
+        if(iflag .gt. 0) then
+          field_pvr%iso_opacity(i)                                      &
+     &        = pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%realvalue
+        end if
+!
+        iflag = pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl%iflag
+        if(iflag .gt. 0) then
+          tmpchara                                                      &
+     &      = pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl%charavalue
+          if(cmp_no_case(tmpchara, LABEL_DECREASE)) then
+            field_pvr%itype_isosurf(i) = IFLAG_SHOW_REVERSE
+          else if(cmp_no_case(tmpchara, LABEL_DECREASE)) then
+            field_pvr%itype_isosurf(i) = IFLAG_SHOW_FORWARD
+          else
+            field_pvr%itype_isosurf(i) = IFLAG_SHOW_FORWARD
+          end if
+        end if
+      end do
+!
+      end subroutine set_control_pvr_isosurf
+!
+!  ---------------------------------------------------------------------
+!
       subroutine set_control_pvr_movie(movie, view_param)
 !
-      use t_control_data_pvr_misc
+      use t_control_data_pvr_movie
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
       use skip_comment_f

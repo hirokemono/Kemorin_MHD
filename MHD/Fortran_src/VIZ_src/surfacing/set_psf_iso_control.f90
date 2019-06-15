@@ -128,7 +128,7 @@
      &      psf_mesh(i)%field,  psf_param(i), psf_def(i), ierr)
         if(ierr.gt.0) call calypso_MPI_abort(ierr, e_message)
 !
-        call deallocate_cont_dat_4_psf(psf_ctls%psf_ctl_struct(i))
+        call dealloc_cont_dat_4_psf(psf_ctls%psf_ctl_struct(i))
 !
         call count_total_comps_4_viz(psf_mesh(i)%field)
       end do
@@ -186,7 +186,7 @@
         call set_control_4_iso(iso_ctls%iso_ctl_struct(i),              &
      &      group%ele_grp, nod_fld%num_phys, nod_fld%phys_name,         &
      &      iso_mesh(i)%field, iso_param(i), iso_def(i))
-        call deallocate_cont_dat_4_iso(iso_ctls%iso_ctl_struct(i))
+        call dealloc_cont_dat_4_iso(iso_ctls%iso_ctl_struct(i))
 !
         call count_total_comps_4_viz(iso_mesh(i)%field)
       end do
