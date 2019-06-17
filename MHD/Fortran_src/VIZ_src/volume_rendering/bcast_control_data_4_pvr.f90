@@ -25,7 +25,7 @@
 !
       implicit  none
 !
-      private :: bcast_pvr_sections_ctl, bcast_pvr_colorbar_ctl
+      private :: bcast_pvr_colorbar_ctl
       private :: bcast_lighting_ctl, bcast_projection_mat_ctl
       private :: bcast_image_size_ctl, bcast_stereo_view_ctl
 !
@@ -52,7 +52,7 @@
      &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_pvr_isosurfs_ctl(pvr%pvr_isos_c)
-      call bcast_pvr_sections_ctl(pvr)
+      call bcast_pvr_sections_ctl(pvr%pvr_scts_c)
 !
       call bcast_lighting_ctl(pvr%light)
       call bcast_pvr_colorbar_ctl(pvr%cmap_cbar_c%cbar_ctl)
@@ -87,36 +87,6 @@
       end subroutine bcast_pvr_update_flag
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_pvr_sections_ctl(pvr)
-!
-      type(pvr_parameter_ctl), intent(inout) :: pvr
-!
-      integer(kind = kint) :: i
-!
-!
-      call MPI_BCAST(pvr%num_pvr_sect_ctl,  1,                          &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      if(pvr%num_pvr_sect_ctl .gt. 0 .and. my_rank .gt. 0) then
-        allocate(pvr%pvr_sect_ctl(pvr%num_pvr_sect_ctl))
-      end if
-!
-      call MPI_BCAST(pvr%i_pvr_sect,  1,                                &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-!
-      do i = 1, pvr%num_pvr_sect_ctl
-        call MPI_BCAST(pvr%pvr_sect_ctl(i)%fname_sect_ctl, kchara,      &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-        call MPI_BCAST(pvr%pvr_sect_ctl(i)%psf_c%i_psf_ctl,     1,      &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-!
-        call bcast_section_def_control(pvr%pvr_sect_ctl(i)%psf_c)
-        call bcast_ctl_type_r1(pvr%pvr_sect_ctl(i)%opacity_ctl)
-      end do
-!
-      end subroutine bcast_pvr_sections_ctl
-!
 !  ---------------------------------------------------------------------
 !
       subroutine bcast_pvr_colorbar_ctl(cbar_ctl)

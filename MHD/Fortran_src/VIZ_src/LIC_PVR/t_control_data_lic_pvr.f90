@@ -172,9 +172,10 @@
      &       (hd_pvr_colorbar, pvr%cmap_cbar_c%cbar_ctl)
         end if
 !
-        call find_control_array_flag                                    &
-     &     (hd_pvr_sections, pvr%num_pvr_sect_ctl)
-        if(pvr%num_pvr_sect_ctl .gt. 0) call read_pvr_sections_ctl(pvr)
+        if(check_array_flag(c_buf1, hd_pvr_sections)) then
+          call read_pvr_sections_ctl(ctl_file_code, hd_pvr_sections,    &
+     &        pvr%pvr_scts_c, c_buf1)
+        end if
 !
         if(check_array_flag(c_buf1, hd_pvr_isosurf)) then
           call read_pvr_isosurfs_ctl(ctl_file_code, hd_pvr_isosurf,     &

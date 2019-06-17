@@ -81,9 +81,9 @@
         call read_control_colormap                                      &
      &     (hd_pvr_colordef, i_pvr, pvr_ctl(i_pvr))
 !
-        do i_psf = 1, pvr_ctl(i_pvr)%num_pvr_sect_ctl
+        do i_psf = 1, pvr_ctl(i_pvr)%pvr_scts_c%num_pvr_sect_ctl
           call read_control_pvr_section_def                             &
-     &     (pvr_ctl(i_pvr)%pvr_sect_ctl(i_psf))
+     &       (pvr_ctl(i_pvr)%pvr_scts_c%pvr_sect_ctl(i_psf))
         end do
 !
         call bcast_vr_psf_ctl(pvr_ctl(i_pvr))

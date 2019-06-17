@@ -7,50 +7,35 @@
 !> @brief control data for parallel volume rendering
 !!
 !!@verbatim
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      subroutine read_control_pvr_section_def(pvr_sect_ctl)
-!!      subroutine read_pvr_section_ctl(hd_pvr_sections, pvr_sect_ctl)
-!!        type(pvr_sections_ctl), intent(inout) :: pvr_sect_ctl
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine read_pvr_sections_ctl                                &
+!!     &         (id_control, hd_block, pvr_scts_c, c_buf)
+!!        type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
+!!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
-!!      subroutine read_plot_area_ctl(hd_plot_area, i_plot_area,        &
-!!     &           pvr_area_ctl, surf_enhanse_ctl)
-!!        type(ctl_array_chara), intent(inout) :: pvr_area_ctl
-!!        type(ctl_array_c2r), intent(inout) :: surf_enhanse_ctl
+!!      subroutine read_control_pvr_section_def(pvr_sect_ctl)
+!!      subroutine read_pvr_section_ctl                                 &
+!!     &         (id_control, hd_block, pvr_sect_ctl, c_buf)
+!!        type(pvr_section_ctl), intent(inout) :: pvr_sect_ctl
+!!
+!!      subroutine bcast_pvr_sections_ctl(pvr_scts_c)
 !!
 !!      subroutine dup_pvr_section_ctl(org_pvr_sect_c, new_pvr_sect_c)
-!!        type(pvr_sections_ctl), intent(in) :: org_pvr_sect_c
-!!        type(pvr_sections_ctl), intent(inout) :: new_pvr_sect_c
+!!        type(pvr_section_ctl), intent(in) :: org_pvr_sect_c
+!!        type(pvr_section_ctl), intent(inout) :: new_pvr_sect_c
 !!
 !!      subroutine dealloc_pvr_section_ctl(pvr_sect_ctl)
-!!        type(pvr_sections_ctl), intent(inout) :: pvr_sect_ctl
+!!        type(pvr_section_ctl), intent(inout) :: pvr_sect_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!  begin plot_area_ctl
-!!    array chosen_ele_grp_ctl  1
-!!      chosen_ele_grp_ctl   outer_core
-!!    end array chosen_ele_grp_ctl
-!!
-!!    array surface_enhanse_ctl  2
-!!      surface_enhanse_ctl   ICB   reverse_surface   0.7
-!!      surface_enhanse_ctl   CMB   forward_surface   0.4
-!!    end array surface_enhanse_ctl
-!!  end  plot_area_ctl
-!!!
-!!  array section_ctl  2
+!!  array section_ctl
 !!    file section_ctl     ctl_psf_eq
 !!    begin section_ctl
 !!      ...
 !!    end section_ctl
+!!
+!!    opacity_ctl       0.9
 !!  end array section_ctl
 !!!
-!!  array isosurface_ctl  2
-!!    begin isosurface_ctl
-!!      isosurf_value       0.3
-!!      opacity_ctl         0.9
-!!      surface_direction   normal
-!!    end isosurface_ctl
-!!     ...
-!!  end array isosurface_ctl
-!!!
-!!end volume_rendering
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -71,31 +56,91 @@
       implicit  none
 !
 !
-      type pvr_sections_ctl
+      type pvr_section_ctl
         character(len = kchara) :: fname_sect_ctl
         type(psf_ctl) :: psf_c
         type(read_real_item) :: opacity_ctl
+      end type pvr_section_ctl
+!
+!
+      type pvr_sections_ctl
+        integer(kind = kint) :: num_pvr_sect_ctl = 0
+        type(pvr_section_ctl), allocatable :: pvr_sect_ctl(:)
       end type pvr_sections_ctl
 !
 !     4th level for area group
 !
-      character(len=kchara) :: hd_plot_grp = 'chosen_ele_grp_ctl'
-      character(len=kchara) :: hd_sf_enhanse = 'surface_enhanse_ctl'
       character(len=kchara) :: hd_pvr_opacity =   'opacity_ctl'
-!
-      private :: hd_plot_grp, hd_sf_enhanse, hd_pvr_opacity
+      private :: hd_pvr_opacity
 !
 !  ---------------------------------------------------------------------
 !
       contains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_pvr_sections_ctl(pvr_scts_c)
+!
+      type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
+!
+!
+      call dealloc_pvr_sects_ctl                                        &
+     &   (pvr_scts_c%num_pvr_sect_ctl, pvr_scts_c%pvr_sect_ctl)
+      deallocate(pvr_scts_c%pvr_sect_ctl)
+!
+      pvr_scts_c%num_pvr_sect_ctl = 0
+!
+      end subroutine dealloc_pvr_sections_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_pvr_sections_ctl(pvr_scts_c)
+!
+      type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
+!
+!
+      allocate(pvr_scts_c%pvr_sect_ctl(pvr_scts_c%num_pvr_sect_ctl))
+!
+      end subroutine alloc_pvr_sections_ctl
+!
+! -----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine read_pvr_sections_ctl                                  &
+     &         (id_control, hd_block, pvr_scts_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(allocated(pvr_scts_c%pvr_sect_ctl)) return
+      pvr_scts_c%num_pvr_sect_ctl = 0
+      call alloc_pvr_sections_ctl(pvr_scts_c)
+!
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_array_flag(c_buf, hd_block)) exit
+!
+        if(check_begin_flag(c_buf, hd_block)) then
+          call append_new_pvr_section_ctl(pvr_scts_c)
+          call read_pvr_section_ctl(id_control, hd_block,               &
+     &        pvr_scts_c%pvr_sect_ctl(pvr_scts_c%num_pvr_sect_ctl),     &
+     &        c_buf)
+        end if
+      end do
+!
+      end subroutine read_pvr_sections_ctl
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine read_control_pvr_section_def(pvr_sect_ctl)
 !
       use m_read_control_elements
 !
-      type(pvr_sections_ctl), intent(inout) :: pvr_sect_ctl
+      type(pvr_section_ctl), intent(inout) :: pvr_sect_ctl
       integer(kind = kint), parameter :: psf_ctl_file_code = 11
 !
 !
@@ -123,29 +168,32 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_section_ctl(hd_pvr_sections, pvr_sect_ctl)
+      subroutine read_pvr_section_ctl                                   &
+     &         (id_control, hd_block, pvr_sect_ctl, c_buf)
 !
-      character(len=kchara), intent(in) :: hd_pvr_sections
-      type(pvr_sections_ctl), intent(inout) :: pvr_sect_ctl
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_section_ctl), intent(inout) :: pvr_sect_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
       pvr_sect_ctl%psf_c%i_surface_define = 0
       do
-        call load_one_line_from_control(ctl_file_code, c_buf1)
-        if(check_end_flag(c_buf1, hd_pvr_sections)) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
 !
-        if(check_file_flag(c_buf1, hd_surface_define)) then
-          pvr_sect_ctl%fname_sect_ctl = third_word(c_buf1)
+        if(check_file_flag(c_buf, hd_surface_define)) then
+          pvr_sect_ctl%fname_sect_ctl = third_word(c_buf)
         end if
-        if(check_begin_flag(c_buf1, hd_surface_define)) then
+        if(check_begin_flag(c_buf, hd_surface_define)) then
           pvr_sect_ctl%fname_sect_ctl = 'NO_FILE'
           call read_section_def_control                                 &
-     &       (ctl_file_code, pvr_sect_ctl%psf_c, c_buf1)
+     &       (id_control, pvr_sect_ctl%psf_c, c_buf)
         end if
 !
         call read_real_ctl_type                                         &
-     &     (c_buf1, hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)
+     &     (c_buf, hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)
       end do
       pvr_sect_ctl%psf_c%i_surface_define = 1
 !
@@ -154,30 +202,95 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_plot_area_ctl(hd_plot_area, i_plot_area,          &
-     &           pvr_area_ctl, surf_enhanse_ctl)
+      subroutine bcast_pvr_sections_ctl(pvr_scts_c)
 !
-      character(len=kchara), intent(in) :: hd_plot_area
-      integer(kind=kint), intent(inout) :: i_plot_area
-      type(ctl_array_chara), intent(inout) :: pvr_area_ctl
-      type(ctl_array_c2r), intent(inout) :: surf_enhanse_ctl
+      use bcast_control_arrays
 !
+      type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
 !
-      if(check_begin_flag(c_buf1, hd_plot_area) .eqv. .FALSE.) return
-      if (i_plot_area.gt.0) return
-      do
-        call load_one_line_from_control(ctl_file_code, c_buf1)
-        if(check_end_flag(c_buf1, hd_plot_area)) exit
+      integer(kind = kint) :: i
 !
 !
-        call read_control_array_c1(ctl_file_code,                       &
-     &      hd_plot_grp, pvr_area_ctl, c_buf1)
-        call read_control_array_c2_r(ctl_file_code,                     &
-     &      hd_sf_enhanse, surf_enhanse_ctl, c_buf1)
+      call MPI_BCAST(pvr_scts_c%num_pvr_sect_ctl,  1,                   &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      if(pvr_scts_c%num_pvr_sect_ctl .gt. 0 .and. my_rank .gt. 0) then
+        allocate(pvr_scts_c%pvr_sect_ctl(pvr_scts_c%num_pvr_sect_ctl))
+      end if
+!
+      do i = 1, pvr_scts_c%num_pvr_sect_ctl
+        call MPI_BCAST(pvr_scts_c%pvr_sect_ctl(i)%fname_sect_ctl,       &
+     &      kchara, CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+        call MPI_BCAST(pvr_scts_c%pvr_sect_ctl(i)%psf_c%i_psf_ctl,      &
+     &      1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
+        call bcast_section_def_control                                  &
+     &     (pvr_scts_c%pvr_sect_ctl(i)%psf_c)
+        call bcast_ctl_type_r1(pvr_scts_c%pvr_sect_ctl(i)%opacity_ctl)
       end do
-      i_plot_area = 1
 !
-      end subroutine read_plot_area_ctl
+      end subroutine bcast_pvr_sections_ctl
+!
+!  ---------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine append_new_pvr_section_ctl(pvr_scts_c)
+!
+      type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
+!
+      type(pvr_sections_ctl) :: tmp_pvr_scts
+!
+!
+      tmp_pvr_scts%num_pvr_sect_ctl = pvr_scts_c%num_pvr_sect_ctl
+      call alloc_pvr_sections_ctl(tmp_pvr_scts)
+      call dup_pvr_sections_ctl(tmp_pvr_scts%num_pvr_sect_ctl,          &
+     &    pvr_scts_c%pvr_sect_ctl, tmp_pvr_scts%pvr_sect_ctl)
+!
+      call dealloc_pvr_sections_ctl(pvr_scts_c)
+!
+      pvr_scts_c%num_pvr_sect_ctl = tmp_pvr_scts%num_pvr_sect_ctl + 1
+      call alloc_pvr_sections_ctl(pvr_scts_c)
+!
+      call dup_pvr_sections_ctl(tmp_pvr_scts%num_pvr_sect_ctl,          &
+     &    tmp_pvr_scts%pvr_sect_ctl, pvr_scts_c%pvr_sect_ctl(1))
+!
+      call dealloc_pvr_sections_ctl(tmp_pvr_scts)
+!
+      end subroutine append_new_pvr_section_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dup_pvr_sections_ctl                                   &
+     &         (num_pvr_sect, org_pvr_sect_c, new_pvr_sect_c)
+!
+      integer(kind = kint), intent(in) :: num_pvr_sect
+      type(pvr_section_ctl), intent(in) :: org_pvr_sect_c(num_pvr_sect)
+      type(pvr_section_ctl), intent(inout)                              &
+     &                       :: new_pvr_sect_c(num_pvr_sect)
+!
+      integer(kind = kint) :: i
+!
+      do i = 1, num_pvr_sect
+        call dup_pvr_section_ctl(org_pvr_sect_c(i), new_pvr_sect_c(i))
+      end do
+!
+      end subroutine dup_pvr_sections_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_pvr_sects_ctl(num_pvr_sect, pvr_sect_ctl)
+!
+      integer(kind = kint), intent(in) :: num_pvr_sect
+      type(pvr_section_ctl), intent(inout)                              &
+     &                       :: pvr_sect_ctl(num_pvr_sect)
+!
+      integer(kind = kint) :: i
+!
+!
+      do i = 1, num_pvr_sect
+        call dealloc_pvr_section_ctl(pvr_sect_ctl(i))
+      end do
+!
+      end subroutine dealloc_pvr_sects_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -186,8 +299,8 @@
 !
       use copy_control_elements
 !
-      type(pvr_sections_ctl), intent(in) :: org_pvr_sect_c
-      type(pvr_sections_ctl), intent(inout) :: new_pvr_sect_c
+      type(pvr_section_ctl), intent(in) :: org_pvr_sect_c
+      type(pvr_section_ctl), intent(inout) :: new_pvr_sect_c
 !
 !
       if(org_pvr_sect_c%fname_sect_ctl .eq. 'NO_FILE') then
@@ -202,11 +315,10 @@
       end subroutine dup_pvr_section_ctl
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
       subroutine dealloc_pvr_section_ctl(pvr_sect_ctl)
 !
-      type(pvr_sections_ctl), intent(inout) :: pvr_sect_ctl
+      type(pvr_section_ctl), intent(inout) :: pvr_sect_ctl
 !
 !
       call dealloc_cont_dat_4_psf(pvr_sect_ctl%psf_c)

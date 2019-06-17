@@ -131,8 +131,7 @@
         type(read_character_item) :: pvr_field_ctl
         type(read_character_item) :: pvr_comp_ctl
 !
-        integer(kind = kint) :: num_pvr_sect_ctl = 0
-        type(pvr_sections_ctl), allocatable :: pvr_sect_ctl(:)
+        type(pvr_sections_ctl) :: pvr_scts_c
 !
 !>       constrol structure for isosurfaces in PVR
         type(pvr_isosurfs_ctl) :: pvr_isos_c
@@ -143,9 +142,6 @@
 !
         integer (kind=kint) :: i_view_file =  0
         integer (kind=kint) :: i_color_file = 0
-!
-!     2nd level for volume rendering
-        integer (kind=kint) :: i_pvr_sect = 0
       end type pvr_parameter_ctl
 !
 !
@@ -195,7 +191,6 @@
       subroutine deallocate_cont_dat_pvr(pvr_ctl)
 !
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl
-      integer(kind = kint) :: i
 !
 !
       call reset_pvr_light_flags(pvr_ctl%light)
@@ -207,15 +202,7 @@
 !
       call dealloc_pvr_render_area_ctl(pvr_ctl%render_area_c)
       call dealloc_pvr_isosurfs_ctl(pvr_ctl%pvr_isos_c)
-!
-      if(pvr_ctl%num_pvr_sect_ctl .gt. 0) then
-        do i = 1, pvr_ctl%num_pvr_sect_ctl
-          call dealloc_cont_dat_4_psf(pvr_ctl%pvr_sect_ctl(i)%psf_c)
-        end do
-        deallocate(pvr_ctl%pvr_sect_ctl)
-      end if
-      pvr_ctl%num_pvr_sect_ctl = 0
-      pvr_ctl%i_pvr_sect = 0
+      call dealloc_pvr_sections_ctl(pvr_ctl%pvr_scts_c)
 !
       pvr_ctl%updated_ctl%iflag =     0
       pvr_ctl%file_head_ctl%iflag =   0
@@ -284,10 +271,9 @@
      &       (hd_pvr_colorbar, pvr_ctl%cmap_cbar_c%cbar_ctl)
         end if
 !
-        call find_control_array_flag                                    &
-     &     (hd_pvr_sections, pvr_ctl%num_pvr_sect_ctl)
-        if(pvr_ctl%num_pvr_sect_ctl .gt. 0) then
-          call read_pvr_sections_ctl(pvr_ctl)
+        if(check_array_flag(c_buf1, hd_pvr_sections)) then
+          call read_pvr_sections_ctl(ctl_file_code, hd_pvr_sections,    &
+     &        pvr_ctl%pvr_scts_c, c_buf1)
         end if
 !
         if(check_array_flag(c_buf1, hd_pvr_isosurf)) then
@@ -348,32 +334,6 @@
       end do
 !
       end subroutine read_pvr_update_flag
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine read_pvr_sections_ctl(pvr_ctl)
-!
-      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl
-!
-!
-      if (pvr_ctl%i_pvr_sect .gt. 0) return
-      allocate(pvr_ctl%pvr_sect_ctl(pvr_ctl%num_pvr_sect_ctl))
-!
-      do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(hd_pvr_sections,               &
-     &      pvr_ctl%num_pvr_sect_ctl, pvr_ctl%i_pvr_sect)
-        if(pvr_ctl%i_pvr_sect .ge. pvr_ctl%num_pvr_sect_ctl) exit
-!
-        if(right_begin_flag(hd_pvr_sections) .gt. 0) then
-          pvr_ctl%i_pvr_sect = pvr_ctl%i_pvr_sect + 1
-          call read_pvr_section_ctl                                     &
-     &      (hd_pvr_sections, pvr_ctl%pvr_sect_ctl(pvr_ctl%i_pvr_sect))
-        end if
-      end do
-!
-      end subroutine read_pvr_sections_ctl
 !
 !  ---------------------------------------------------------------------
 !

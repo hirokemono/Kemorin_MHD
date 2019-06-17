@@ -138,24 +138,7 @@
       call set_control_pvr_render_area(pvr_ctl%render_area_c,           &
      &    ele_grp, surf_grp, pvr_area, field_pvr)
 !
-      field_pvr%num_sections = pvr_ctl%num_pvr_sect_ctl
-      if(field_pvr%num_sections .gt. 0) then
-        call alloc_pvr_sections(field_pvr)
-!
-        do i = 1, field_pvr%num_sections
-          call s_set_coefs_of_sections                                  &
-     &       (pvr_ctl%pvr_sect_ctl(i)%psf_c, id_section_method,         &
-     &        field_pvr%coefs(1:10,i), ierr)
-          if(ierr .gt. 0) call calypso_mpi_abort                        &
-     &         (ierr, 'Set section parameters for pvr_ctl')
-!
-          if(pvr_ctl%pvr_sect_ctl(i)%opacity_ctl%iflag .gt. 0) then
-            field_pvr%sect_opacity(i)                                   &
-     &        = pvr_ctl%pvr_sect_ctl(i)%opacity_ctl%realvalue
-          end if
-        end do
-      end if
-!
+      call set_control_pvr_sections(pvr_ctl%pvr_scts_c, field_pvr)
 !
       call set_control_pvr_isosurf(pvr_ctl%pvr_isos_c, field_pvr)
 !
@@ -219,6 +202,43 @@
       end if
 !
       end subroutine set_control_pvr_render_area
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_control_pvr_sections(pvr_scts_c, field_pvr)
+!
+      use t_control_data_pvr_sections
+      use t_geometries_in_pvr_screen
+      use set_coefs_of_sections
+      use set_control_pvr_color
+      use skip_comment_f
+!
+      type(pvr_sections_ctl), intent(in) :: pvr_scts_c
+!
+      type(pvr_projected_field), intent(inout) :: field_pvr
+!
+      integer(kind = kint) :: id_section_method, ierr, i
+!
+!
+      field_pvr%num_sections = pvr_scts_c%num_pvr_sect_ctl
+      if(field_pvr%num_sections .gt. 0) then
+        call alloc_pvr_sections(field_pvr)
+!
+        do i = 1, field_pvr%num_sections
+          call s_set_coefs_of_sections                                  &
+     &       (pvr_scts_c%pvr_sect_ctl(i)%psf_c, id_section_method,      &
+     &        field_pvr%coefs(1:10,i), ierr)
+          if(ierr .gt. 0) call calypso_mpi_abort                        &
+     &         (ierr, 'Set section parameters for pvr')
+!
+          if(pvr_scts_c%pvr_sect_ctl(i)%opacity_ctl%iflag .gt. 0) then
+            field_pvr%sect_opacity(i)                                   &
+     &        = pvr_scts_c%pvr_sect_ctl(i)%opacity_ctl%realvalue
+          end if
+        end do
+      end if
+!
+      end subroutine set_control_pvr_sections
 !
 !  ---------------------------------------------------------------------
 !
