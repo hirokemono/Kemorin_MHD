@@ -7,10 +7,14 @@
 !> @brief control data for parallel volume rendering
 !!
 !!@verbatim
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!      subroutine dealloc_lic_count_data(pvr, lic_ctl)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine read_control_lic_pvr_file(id_control, fname_lic_ctl, &
+!!     &          hd_lic_ctl, hd_lic_colordef,                          &
+!!     &          pvr_ctl_type, lic_ctl_type)
 !!      subroutine read_lic_pvr_ctl                                     &
-!!     &         (hd_block, hd_lic_colordef, pvr, lic_ctl)
+!!     &         (id_control, hd_block, hd_lic_colordef,                &
+!!     &          pvr, lic_ctl, c_buf)
+!!      subroutine dealloc_lic_count_data(pvr, lic_ctl)
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -65,7 +69,7 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
       use t_control_data_4_pvr
       use t_control_data_LIC
       use skip_comment_f
@@ -110,6 +114,127 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine read_control_lic_pvr_file(id_control, fname_lic_ctl,   &
+     &          hd_lic_ctl, hd_lic_colordef,                            &
+     &          pvr_ctl_type, lic_ctl_type)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: hd_lic_ctl
+      character(len = kchara), intent(in) :: hd_lic_colordef
+      character(len = kchara), intent(in) :: fname_lic_ctl
+      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
+      type(lic_parameter_ctl), intent(inout) :: lic_ctl_type
+!
+      type(buffer_for_control) :: c_buf1
+!
+!
+      if(fname_lic_ctl .eq. 'NO_FILE') return
+!
+      write(*,*) 'LIC control file: ', trim(fname_lic_ctl)
+!
+      open(id_control, file=fname_lic_ctl, status='old')
+      call load_ctl_label_and_line
+      call read_lic_pvr_ctl                                             &
+     &     (id_control, hd_lic_ctl, hd_lic_colordef,                    &
+     &      pvr_ctl_type, lic_ctl_type, c_buf1)
+      close(id_control)
+!
+      end subroutine read_control_lic_pvr_file
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_lic_pvr_ctl                                       &
+     &         (id_control, hd_block, hd_lic_colordef,                  &
+     &          pvr, lic_ctl, c_buf)
+!
+      use t_control_data_pvr_isosurfs
+      use t_control_data_pvr_movie
+      use t_control_data_pvr_area
+      use read_control_pvr_modelview
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      character(len = kchara), intent(in) :: hd_lic_colordef
+!
+      type(pvr_parameter_ctl), intent(inout) :: pvr
+      type(lic_parameter_ctl), intent(inout) :: lic_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(pvr%i_pvr_ctl .gt. 0) return
+!
+      pvr%view_file_ctl = 'NO_FILE'
+      pvr%color_file_ctl = 'NO_FILE'
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
+!
+!
+        if(check_file_flag(c_buf, hd_view_transform)) then
+           pvr%view_file_ctl = third_word(c_buf)
+        else if(check_begin_flag(c_buf, hd_view_transform)) then
+          call read_view_transfer_ctl(id_control, hd_view_transform,    &
+     &        pvr%mat, c_buf)
+        end if
+!
+        if(check_file_flag(c_buf, hd_lic_colordef)) then
+          pvr%color_file_ctl = third_word(c_buf)
+        end if
+!
+        if(pvr%color_file_ctl .eq. 'NO_FILE') then
+          call read_pvr_colordef_ctl(id_control, hd_colormap,           &
+     &        pvr%cmap_cbar_c%color, c_buf)
+          call read_pvr_colordef_ctl(id_control, hd_lic_colordef,       &
+     &        pvr%cmap_cbar_c%color, c_buf)
+!
+          call read_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,       &
+     &        pvr%cmap_cbar_c%cbar_ctl, c_buf)
+        end if
+!
+        if(check_array_flag(c_buf, hd_pvr_sections)) then
+          call read_pvr_sections_ctl(id_control, hd_pvr_sections,       &
+     &        pvr%pvr_scts_c, c_buf)
+        end if
+!
+        if(check_array_flag(c_buf, hd_pvr_isosurf)) then
+          call read_pvr_isosurfs_ctl(id_control, hd_pvr_isosurf,        &
+     &        pvr%pvr_isos_c, c_buf)
+        end if
+!
+        call read_pvr_render_area_ctl(id_control, hd_plot_area,         &
+     &      pvr%render_area_c, c_buf)
+        call read_lighting_ctl(id_control, hd_pvr_lighting,             &
+     &      pvr%light, c_buf)
+        call read_pvr_rotation_ctl(id_control, hd_pvr_rotation,         &
+     &      pvr%movie, c_buf)
+!
+        call read_lic_control_data                                      &
+     &     (id_control, hd_lic_ctl, lic_ctl, c_buf)
+!
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_pvr_updated, pvr%updated_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_lic_file_head, pvr%file_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_lic_out_type, pvr%file_fmt_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_pvr_monitor, pvr%monitoring_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_pvr_rgba_type, pvr%transparent_ctl)
+!
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_pvr_streo, pvr%streo_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_pvr_anaglyph, pvr%anaglyph_ctl)
+      end do
+      pvr%i_pvr_ctl = 1
+!
+      end subroutine read_lic_pvr_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       subroutine dealloc_lic_count_data(pvr, lic_ctl)
 !
       type(pvr_parameter_ctl), intent(inout) :: pvr
@@ -120,94 +245,6 @@
       call deallocate_cont_dat_pvr(pvr)
 !
       end subroutine dealloc_lic_count_data
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine read_lic_pvr_ctl                                       &
-     &         (hd_block, hd_lic_colordef, pvr, lic_ctl)
-!
-      use t_control_data_pvr_isosurfs
-      use t_control_data_pvr_movie
-      use t_control_data_pvr_area
-!
-      character(len=kchara), intent(in) :: hd_block
-      character(len = kchara), intent(in) :: hd_lic_colordef
-!
-      type(pvr_parameter_ctl), intent(inout) :: pvr
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl
-!
-!
-      if(right_begin_flag(hd_block) .eq. 0) return
-      if (pvr%i_pvr_ctl.gt.0) return
-!
-      pvr%view_file_ctl = 'NO_FILE'
-      pvr%color_file_ctl = 'NO_FILE'
-      do
-        call load_ctl_label_and_line
-!
-        pvr%i_pvr_ctl = find_control_end_flag(hd_block)
-        if(pvr%i_pvr_ctl .gt. 0) exit
-!
-!
-        if(right_file_flag(hd_view_transform) .gt. 0) then
-          call read_file_name_from_ctl_line(pvr%i_view_file,            &
-     &        pvr%view_file_ctl)
-        else if(right_begin_flag(hd_view_transform) .gt. 0) then
-          call read_view_transfer_ctl(hd_view_transform, pvr%mat)
-        end if
-!
-        if(right_file_flag(hd_lic_colordef) .gt. 0) then
-          call read_file_name_from_ctl_line(pvr%i_color_file,           &
-     &        pvr%color_file_ctl)
-        end if
-!
-        if(pvr%color_file_ctl .eq. 'NO_FILE') then
-          call read_pvr_colordef_ctl                                    &
-     &       (hd_colormap, pvr%cmap_cbar_c%color)
-          call read_pvr_colordef_ctl                                    &
-     &       (hd_lic_colordef, pvr%cmap_cbar_c%color)
-!
-          call read_pvr_colorbar_ctl                                    &
-     &       (hd_pvr_colorbar, pvr%cmap_cbar_c%cbar_ctl)
-        end if
-!
-        if(check_array_flag(c_buf1, hd_pvr_sections)) then
-          call read_pvr_sections_ctl(ctl_file_code, hd_pvr_sections,    &
-     &        pvr%pvr_scts_c, c_buf1)
-        end if
-!
-        if(check_array_flag(c_buf1, hd_pvr_isosurf)) then
-          call read_pvr_isosurfs_ctl(ctl_file_code, hd_pvr_isosurf,     &
-     &        pvr%pvr_isos_c, c_buf1)
-        end if
-!
-        call read_pvr_render_area_ctl(ctl_file_code, hd_plot_area,      &
-     &      pvr%render_area_c, c_buf1)
-        call read_lighting_ctl(hd_pvr_lighting, pvr%light)
-        call read_pvr_rotation_ctl(ctl_file_code, hd_pvr_rotation,      &
-     &      pvr%movie, c_buf1)
-!
-        call read_lic_control_data(hd_lic_ctl, lic_ctl)
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_updated, pvr%updated_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_lic_file_head, pvr%file_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_lic_out_type, pvr%file_fmt_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_monitor, pvr%monitoring_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_rgba_type, pvr%transparent_ctl)
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_streo, pvr%streo_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_anaglyph, pvr%anaglyph_ctl)
-      end do
-!
-      end subroutine read_lic_pvr_ctl
 !
 !  ---------------------------------------------------------------------
 !

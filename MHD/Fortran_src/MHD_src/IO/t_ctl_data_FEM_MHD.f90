@@ -151,7 +151,8 @@
 !
         call read_monitor_data_ctl                                      &
      &     (hd_monitor_data, i_monitor_data, FEM_MHD_ctl%nmtr_ctl)
-        call read_viz_controls(viz_ctls)
+        call read_viz_controls                                          &
+     &     (ctl_file_code, viz_ctls, c_buf1)
       end do
 !
       end subroutine read_fem_mhd_control_data

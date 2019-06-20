@@ -64,6 +64,10 @@
         type(volume_rendering_module) :: pvr
       end type lic_volume_rendering_module
 !
+      character(len=kchara), parameter                                  &
+     &             :: hd_lic_ctl = 'LIC_rendering'
+      private :: hd_lic_ctl
+!
       private :: alloc_LIC_data
 !
 !  ---------------------------------------------------------------------

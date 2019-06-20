@@ -1,11 +1,19 @@
-!bcast_control_data_4_pvr.f90
-!      module bcast_control_data_4_pvr
+!>@file   bcast_control_data_4_pvr.f90
+!!@brief  module bcast_control_data_4_pvr
+!!
+!!@author H. Matsui
+!!@date Programmed in 2006
 !
-!        programmed by H.Matsui on May. 2006
-!
+!> @brief control data for parallel volume rendering
+!!
+!!@verbatim
 !!      subroutine bcast_vr_psf_ctl(pvr)
-!!      subroutine bcast_pvr_colordef_ctl(color)
-!!      subroutine bcast_view_transfer_ctl(mat)
+!!        type(pvr_parameter_ctl), intent(inout) :: pvr
+!!      subroutine dup_pvr_ctl(org_pvr, new_pvr)
+!!      subroutine copy_pvr_update_flag(org_pvr, new_pvr)
+!!        type(pvr_parameter_ctl), intent(in) :: org_pvr
+!!        type(pvr_parameter_ctl), intent(inout) :: new_pvr
+!!@end verbatim
 !
 !
       module bcast_control_data_4_pvr
@@ -14,20 +22,16 @@
       use calypso_mpi
 !
       use t_control_data_4_pvr
-      use t_ctl_data_pvr_colormap
+      use t_ctl_data_pvr_colormap_bar
+      use t_ctl_data_pvr_light
+      use t_ctl_data_pvr_colorbar
       use t_control_data_pvr_sections
       use t_control_data_pvr_isosurfs
       use t_control_data_pvr_movie
       use t_control_data_pvr_area
       use t_ctl_data_4_view_transfer
 !
-      use bcast_control_arrays
-!
       implicit  none
-!
-      private :: bcast_pvr_colorbar_ctl
-      private :: bcast_lighting_ctl, bcast_projection_mat_ctl
-      private :: bcast_image_size_ctl, bcast_stereo_view_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -36,6 +40,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine bcast_vr_psf_ctl(pvr)
+!
+      use bcast_control_arrays
+      use bcast_dup_view_transfer_ctl
 !
       type(pvr_parameter_ctl), intent(inout) :: pvr
 !
@@ -79,6 +86,8 @@
 !
       subroutine bcast_pvr_update_flag(pvr)
 !
+      use bcast_control_arrays
+!
       type(pvr_parameter_ctl), intent(inout) :: pvr
 !
 !
@@ -89,155 +98,61 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine bcast_pvr_colorbar_ctl(cbar_ctl)
+      subroutine dup_pvr_ctl(org_pvr, new_pvr)
 !
-      use bcast_control_arrays
+      use copy_control_elements
+      use bcast_dup_view_transfer_ctl
 !
-      type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
-!
-!
-      call MPI_BCAST(cbar_ctl%i_pvr_colorbar,  1,                       &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_ctl_type_i1(cbar_ctl%font_size_ctl)
-      call bcast_ctl_type_i1(cbar_ctl%ngrid_cbar_ctl)
-!
-      call bcast_ctl_type_c1(cbar_ctl%colorbar_switch_ctl)
-      call bcast_ctl_type_c1(cbar_ctl%colorbar_scale_ctl)
-      call bcast_ctl_type_c1(cbar_ctl%zeromarker_flag_ctl)
-!
-      call bcast_ctl_type_c1(cbar_ctl%axis_switch_ctl)
-!!
-      call bcast_ctl_type_r2(cbar_ctl%cbar_range_ctl)
-!
-      end subroutine bcast_pvr_colorbar_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_lighting_ctl(light)
-!
-      type(pvr_light_ctl), intent(inout) :: light
+      type(pvr_parameter_ctl), intent(in) :: org_pvr
+      type(pvr_parameter_ctl), intent(inout) :: new_pvr
 !
 !
-      call MPI_BCAST(light%i_pvr_lighting,  1,                          &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      new_pvr%i_pvr_ctl = org_pvr%i_pvr_ctl
 !
-      call bcast_ctl_array_r3(light%light_position_ctl)
+      new_pvr%view_file_ctl = org_pvr%view_file_ctl
+      call dup_view_transfer_ctl(org_pvr%mat, new_pvr%mat)
 !
-      call bcast_ctl_type_r1(light%ambient_coef_ctl )
-      call bcast_ctl_type_r1(light%diffuse_coef_ctl )
-      call bcast_ctl_type_r1(light%specular_coef_ctl)
+      new_pvr%color_file_ctl = org_pvr%color_file_ctl
 !
-      end subroutine bcast_lighting_ctl
+      call dup_pvr_isosurfs_ctl(org_pvr%pvr_isos_c, new_pvr%pvr_isos_c)
+      call dup_pvr_sections_ctl(org_pvr%pvr_scts_c, new_pvr%pvr_scts_c)
 !
-!  ---------------------------------------------------------------------
+      call dup_lighting_ctl(org_pvr%light, new_pvr%light)
+      call dup_pvr_cmap_cbar(org_pvr%cmap_cbar_c, new_pvr%cmap_cbar_c)
 !
-      subroutine bcast_pvr_colordef_ctl(color)
+      call dup_pvr_movie_control_flags(org_pvr%movie, new_pvr%movie)
+      call dup_pvr_render_area_ctl(org_pvr%render_area_c,               &
+     &                             new_pvr%render_area_c)
 !
-      type(pvr_colormap_ctl), intent(inout) :: color
+      call copy_chara_ctl(org_pvr%updated_ctl, new_pvr%updated_ctl)
+      call copy_chara_ctl(org_pvr%file_head_ctl, new_pvr%file_head_ctl)
+      call copy_chara_ctl(org_pvr%file_fmt_ctl, new_pvr%file_fmt_ctl)
+      call copy_chara_ctl(org_pvr%monitoring_ctl,                       &
+     &                    new_pvr%monitoring_ctl)
+      call copy_chara_ctl(org_pvr%transparent_ctl,                      &
+     &                    new_pvr%transparent_ctl)
 !
+      call copy_chara_ctl(org_pvr%streo_ctl, new_pvr%streo_ctl)
+      call copy_chara_ctl(org_pvr%anaglyph_ctl, new_pvr%anaglyph_ctl)
 !
-      call MPI_BCAST(color%i_pvr_colordef,  1,                          &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call copy_chara_ctl(org_pvr%pvr_field_ctl, new_pvr%pvr_field_ctl)
+      call copy_chara_ctl(org_pvr%pvr_comp_ctl, new_pvr%pvr_comp_ctl)
 !
-      call bcast_ctl_array_r2(color%colortbl_ctl)
-      call bcast_ctl_array_r2(color%linear_opacity_ctl)
-!
-      call bcast_ctl_array_r3(color%step_opacity_ctl)
-!
-      call bcast_ctl_type_c1(color%lic_color_fld_ctl)
-      call bcast_ctl_type_c1(color%lic_color_comp_ctl)
-      call bcast_ctl_type_c1(color%lic_opacity_fld_ctl)
-      call bcast_ctl_type_c1(color%lic_opacity_comp_ctl)
-!
-      call bcast_ctl_type_c1(color%colormap_mode_ctl)
-      call bcast_ctl_type_c1(color%data_mapping_ctl)
-      call bcast_ctl_type_c1(color%opacity_style_ctl)
-!
-      call bcast_ctl_type_r1(color%range_min_ctl)
-      call bcast_ctl_type_r1(color%range_max_ctl)
-      call bcast_ctl_type_r1(color%fix_opacity_ctl)
-!
-      end subroutine bcast_pvr_colordef_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_view_transfer_ctl(mat)
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      call MPI_BCAST(mat%i_view_transform,  1,                          &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_projection_mat_ctl(mat)
-      call bcast_image_size_ctl(mat)
-      call bcast_stereo_view_ctl(mat)
-!
-!
-      call bcast_ctl_array_cr(mat%lookpoint_ctl)
-      call bcast_ctl_array_cr(mat%viewpoint_ctl)
-      call bcast_ctl_array_cr(mat%up_dir_ctl)
-!
-      call bcast_ctl_array_cr(mat%view_rot_vec_ctl)
-      call bcast_ctl_array_cr(mat%scale_vector_ctl)
-      call bcast_ctl_array_cr(mat%viewpt_in_viewer_ctl)
-!
-      call bcast_ctl_array_c2r(mat%modelview_mat_ctl)
-!
-      call bcast_ctl_type_r1(mat%view_rotation_deg_ctl)
-      call bcast_ctl_type_r1(mat%scale_factor_ctl)
-!
-      end subroutine bcast_view_transfer_ctl
+      end subroutine dup_pvr_ctl
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine bcast_projection_mat_ctl(mat)
+      subroutine copy_pvr_update_flag(org_pvr, new_pvr)
 !
-      type(modeview_ctl), intent(inout) :: mat
+      use copy_control_elements
 !
-!
-      call MPI_BCAST(mat%i_project_mat,  1,                             &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_ctl_type_r1(mat%perspective_angle_ctl)
-      call bcast_ctl_type_r1(mat%perspective_xy_ratio_ctl)
-      call bcast_ctl_type_r1(mat%perspective_near_ctl)
-      call bcast_ctl_type_r1(mat%perspective_far_ctl)
-!
-      end subroutine bcast_projection_mat_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_image_size_ctl(mat)
-!
-      type(modeview_ctl), intent(inout) :: mat
+      type(pvr_parameter_ctl), intent(in) :: org_pvr
+      type(pvr_parameter_ctl), intent(inout) :: new_pvr
 !
 !
-      call MPI_BCAST(mat%i_image_size,  1,                              &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call copy_chara_ctl(org_pvr%updated_ctl, new_pvr%updated_ctl)
 !
-      call bcast_ctl_type_i1(mat%num_xpixel_ctl)
-      call bcast_ctl_type_i1(mat%num_ypixel_ctl)
-!
-      end subroutine bcast_image_size_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_stereo_view_ctl(mat)
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      call MPI_BCAST(mat%i_stereo_view,  1,                             &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_ctl_type_r1(mat%focalpoint_ctl)
-      call bcast_ctl_type_r1(mat%eye_separation_ctl)
-!
-      end subroutine bcast_stereo_view_ctl
+      end subroutine copy_pvr_update_flag
 !
 !  ---------------------------------------------------------------------
 !

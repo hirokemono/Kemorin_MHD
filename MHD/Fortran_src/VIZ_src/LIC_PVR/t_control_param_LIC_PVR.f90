@@ -51,8 +51,6 @@
         type(lic_parameters) :: lic_param
       end type LIC_field_params
 !
-      private :: read_control_lic_pvr
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -64,6 +62,7 @@
      &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type,              &
      &          cflag_update)
 !
+      use read_control_pvr_modelview
       use bcast_control_data_4_pvr
       use set_pvr_control
 !
@@ -88,12 +87,18 @@
 !
       ctl_file_code = lic_ctl_file_code
       do i_lic = 1, num_lic_ctl
-        call read_control_lic_pvr                                       &
-     &     (i_lic, hd_pvr_ctl, hd_pvr_colordef, fname_lic_ctl(i_lic),   &
-     &       pvr_ctl_type(i_lic), lic_ctl_type(i_lic))
-        call read_control_modelview(i_lic, pvr_ctl_type(i_lic))
-        call read_control_colormap                                      &
-     &     (hd_pvr_colordef, i_lic, pvr_ctl_type(i_lic))
+        if(my_rank .eq. 0) then
+          call read_control_lic_pvr_file(ctl_file_code,                 &
+     &        fname_lic_ctl(i_lic), hd_pvr_ctl, hd_pvr_colordef,        &
+     &        pvr_ctl_type(i_lic), lic_ctl_type(i_lic))
+
+          call read_control_modelview_file                              &
+     &       (ctl_file_code, pvr_ctl_type(i_lic)%view_file_ctl,         &
+     &        pvr_ctl_type(i_lic)%mat)
+          call read_control_lic_colormap_file                           &
+     &       (ctl_file_code, pvr_ctl_type(i_lic)%color_file_ctl,        &
+     &        pvr_ctl_type(i_lic)%cmap_cbar_c)
+        end if
 !
         do i_psf = 1, pvr_ctl_type(i_lic)%pvr_scts_c%num_pvr_sect_ctl
           call read_control_pvr_section_def                             &
@@ -194,36 +199,6 @@
       end subroutine flush_each_lic_control
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine read_control_lic_pvr                                   &
-     &         (i_pvr, hd_lic_ctl, hd_lic_colordef, fname_pvr_ctl,      &
-     &          pvr_ctl_type, lic_ctl_type)
-!
-      use calypso_mpi
-      use bcast_control_data_4_pvr
-!
-      integer(kind = kint), intent(in) :: i_pvr
-      character(len = kchara), intent(in) :: hd_lic_ctl
-      character(len = kchara), intent(in) :: hd_lic_colordef
-      character(len = kchara), intent(in) :: fname_pvr_ctl
-      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl_type
-!
-      if(fname_pvr_ctl .eq. 'NO_FILE') return
-!
-      if(my_rank .eq. 0) then
-         write(*,*) 'LIC control:', i_pvr,':  ', trim(fname_pvr_ctl)
-!
-        open(ctl_file_code, file=fname_pvr_ctl, status='old')
-        call load_ctl_label_and_line
-        call read_lic_pvr_ctl(hd_lic_ctl, hd_lic_colordef,              &
-     &      pvr_ctl_type, lic_ctl_type)
-        close(ctl_file_code)
-      end if
-!
-      end subroutine read_control_lic_pvr
-!
 !  ---------------------------------------------------------------------
 !
       end module t_control_param_LIC_PVR

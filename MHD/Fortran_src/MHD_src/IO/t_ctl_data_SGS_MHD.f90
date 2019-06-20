@@ -186,7 +186,8 @@
         call read_sph_monitoring_ctl(ctl_file_code, hd_pick_sph,        &
      &      i_pick_sph, MHD_ctl%smonitor_ctl, c_buf1)
 !
-        call read_viz_controls(MHD_ctl%viz_ctls)
+        call read_viz_controls                                          &
+     &     (ctl_file_code, MHD_ctl%viz_ctls, c_buf1)
 !
         call read_zonal_mean_control(MHD_ctl%zm_ctls)
       end do

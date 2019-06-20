@@ -144,9 +144,9 @@
 !
       if((psph_ctl%iflag_sph_shell + psph_ctl%ifile_sph_shell) .gt. 0)  &
      &      return
-      if(right_file_flag(hd_block) .gt. 0) then
-        call read_file_name_from_ctl_line                               &
-     &     (psph_ctl%ifile_sph_shell, psph_ctl%control_sph_file)
+      if(check_file_flag(c_buf1, hd_block)) then
+        psph_ctl%control_sph_file = third_word(c_buf1)
+        psph_ctl%ifile_sph_shell = 1
         return
       end if
 !

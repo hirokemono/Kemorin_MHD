@@ -111,25 +111,22 @@
       character(len = kchara), intent(in) :: hd_section
       type(section_controls), intent(inout) :: psf_ctls
 !
-      integer(kind=kint) :: i_psf_ctl = 0
-!
 !
       if(psf_ctls%num_psf_ctl .gt. 0) return
 !      call check_read_control_header
 !      call check_read_control_buffer
 !
-      if(right_file_flag(hd_section) .gt. 0) then
+      if(check_file_flag(c_buf1, hd_section)) then
         psf_ctls%num_psf_ctl = 1
         call alloc_psf_ctl_stract(psf_ctls)
-        call read_file_names_from_ctl_line                              &
-     &     (psf_ctls%num_psf_ctl, i_psf_ctl, psf_ctls%fname_psf_ctl)
+        psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl)                    &
+     &                                  = third_word(c_buf1)
       else if(right_begin_flag(hd_section) .gt. 0) then
-        i_psf_ctl = i_psf_ctl + 1
         psf_ctls%num_psf_ctl = 1
         call alloc_psf_ctl_stract(psf_ctls)
-        psf_ctls%fname_psf_ctl(i_psf_ctl) = 'NO_FILE'
+        psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl) = 'NO_FILE'
         call read_psf_control_data(ctl_file_code, hd_section,           &
-     &      psf_ctls%psf_ctl_struct(i_psf_ctl), c_buf1)
+     &      psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl), c_buf1)
       end if
 !
       end subroutine read_single_section_ctl

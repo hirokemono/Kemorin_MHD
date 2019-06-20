@@ -7,7 +7,8 @@
 !>@brief structure of control data for multiple PVRs
 !!
 !!@verbatim
-!!      subroutine read_files_4_pvr_ctl(pvr_ctls)
+!!      subroutine read_files_4_pvr_ctl                                 &
+!!     &         (id_control, hd_pvr_ctl, pvr_ctls, c_buf)
 !!      subroutine bcast_files_4_pvr_ctl(pvr_ctls)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -28,8 +29,6 @@
       implicit  none
 !
       character(len=kchara), parameter                                  &
-     &                    :: hd_pvr_ctl = 'volume_rendering'
-      character(len=kchara), parameter                                  &
      &                    :: hd_pvr_colordef =  'pvr_color_ctl'
 !
       type volume_rendering_controls
@@ -38,11 +37,6 @@
         type(pvr_parameter_ctl), allocatable :: pvr_ctl_type(:)
       end type volume_rendering_controls
 !
-!     lavel for volume rendering
-!
-      integer (kind=kint) :: i_pvr_ctl =   0
-!
-      private :: i_pvr_ctl
       private :: alloc_pvr_ctl_struct
 !
 !   --------------------------------------------------------------------
@@ -63,47 +57,57 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_pvr_file_header_ctl(pvr_ctls)
+      subroutine dealloc_pvr_ctl_struct(pvr_ctls)
 !
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
 !
+      integer(kind = kint) :: i
+!
+!
+      do i = 1, pvr_ctls%num_pvr_ctl
+        call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i))
+      end do
 !
       deallocate(pvr_ctls%pvr_ctl_type)
       deallocate(pvr_ctls%fname_pvr_ctl)
 !
-      end subroutine dealloc_pvr_file_header_ctl
+      end subroutine dealloc_pvr_ctl_struct
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_files_4_pvr_ctl(pvr_ctls)
+      subroutine read_files_4_pvr_ctl                                   &
+     &         (id_control, hd_pvr_ctl, pvr_ctls, c_buf)
 !
-      use m_read_control_elements
+      use t_read_control_elements
       use skip_comment_f
 !
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: hd_pvr_ctl
+!
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if (i_pvr_ctl .gt. 0) return
-!
+      if(allocated(pvr_ctls%fname_pvr_ctl)) return
+      pvr_ctls%num_pvr_ctl = 0
       call alloc_pvr_ctl_struct(pvr_ctls)
+!
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_array_flag(c_buf, hd_pvr_ctl)) exit
 !
-        call find_control_end_array_flag(hd_pvr_ctl,                    &
-     &      pvr_ctls%num_pvr_ctl, i_pvr_ctl)
-        if(i_pvr_ctl .ge. pvr_ctls%num_pvr_ctl) exit
-!
-        if(right_file_flag(hd_pvr_ctl) .gt. 0) then
-          call read_file_names_from_ctl_line(pvr_ctls%num_pvr_ctl,      &
-     &        i_pvr_ctl, pvr_ctls%fname_pvr_ctl)
+        if(check_file_flag(c_buf, hd_pvr_ctl)) then
+          call append_new_pvr_ctl_struct(pvr_ctls)
+          pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl)                  &
+     &        = third_word(c_buf)
         end if
 !
         if(right_begin_flag(hd_pvr_ctl) .gt. 0) then
-          i_pvr_ctl = i_pvr_ctl + 1
-          pvr_ctls%fname_pvr_ctl(i_pvr_ctl) = 'NO_FILE'
-          call read_pvr_ctl(hd_pvr_ctl, hd_pvr_colordef,                &
-     &        pvr_ctls%pvr_ctl_type(i_pvr_ctl))
+          call append_new_pvr_ctl_struct(pvr_ctls)
+          pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl) = 'NO_FILE'
+          call read_pvr_ctl(id_control, hd_pvr_ctl, hd_pvr_colordef,    &
+     &        pvr_ctls%pvr_ctl_type(pvr_ctls%num_pvr_ctl), c_buf)
         end if
       end do
 !
@@ -132,5 +136,50 @@
       end subroutine bcast_files_4_pvr_ctl
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine append_new_pvr_ctl_struct(pvr_ctls)
+!
+      type(volume_rendering_controls), intent(inout) :: pvr_ctls
+!
+      type(volume_rendering_controls) :: tmp_pvrs_c
+!
+!
+      tmp_pvrs_c%num_pvr_ctl = pvr_ctls%num_pvr_ctl
+      call alloc_pvr_ctl_struct(tmp_pvrs_c)
+      call dup_pvr_ctl_struct                                           &
+     &   (pvr_ctls%num_pvr_ctl, pvr_ctls, tmp_pvrs_c)
+      call dealloc_pvr_ctl_struct(pvr_ctls)
+!
+      pvr_ctls%num_pvr_ctl = tmp_pvrs_c%num_pvr_ctl + 1
+      call alloc_pvr_ctl_struct(pvr_ctls)
+      call dup_pvr_ctl_struct                                           &
+     &   (tmp_pvrs_c%num_pvr_ctl, tmp_pvrs_c, pvr_ctls)
+      call dealloc_pvr_ctl_struct(tmp_pvrs_c)
+!
+      end subroutine append_new_pvr_ctl_struct
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dup_pvr_ctl_struct(num_pvr, org_pvrs_c, new_pvrs_c)
+!
+      use bcast_control_data_4_pvr
+!
+      integer(kind = kint), intent(in) :: num_pvr
+      type(volume_rendering_controls), intent(in) :: org_pvrs_c
+      type(volume_rendering_controls), intent(inout) :: new_pvrs_c
+!
+      integer(kind = kint) :: i
+!
+!
+      do i = 1, num_pvr
+        new_pvrs_c%fname_pvr_ctl(i) = org_pvrs_c%fname_pvr_ctl(i)
+        call dup_pvr_ctl(org_pvrs_c%pvr_ctl_type(i),                    &
+     &                   new_pvrs_c%pvr_ctl_type(i))
+      end do
+!
+      end subroutine dup_pvr_ctl_struct
+!
+!  ---------------------------------------------------------------------
 !
       end module t_control_data_pvrs

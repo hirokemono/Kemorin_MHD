@@ -22,11 +22,6 @@
 !!     &         (hd_pvr_ctl, fname_pvr_ctl, pvr_ctl_type)
 !!      subroutine flush_each_pvr_control(pvr_param)
 !!        type(PVR_control_params), intent(inout) :: pvr_param
-!!      subroutine read_control_modelview(i_pvr, pvr_ctl_type)
-!!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
-!!      subroutine read_control_colormap                                &
-!!     &         (hd_pvr_colordef, i_pvr, pvr_ctl_type)
-!!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
 !!@endverbatim
 !
       module set_pvr_control
@@ -40,10 +35,6 @@
 !
       integer(kind = kint), parameter :: pvr_ctl_file_code = 11
 !
-      character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
-!
-      private :: hd_view_transform
-!
       private :: read_control_pvr
 !
 !  ---------------------------------------------------------------------
@@ -55,6 +46,7 @@
       subroutine read_pvr_controls(hd_pvr_ctl, hd_pvr_colordef,         &
      &          num_pvr_ctl, fname_pvr_ctl, pvr_ctl, cflag_update)
 !
+      use read_control_pvr_modelview
       use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: num_pvr_ctl
@@ -77,9 +69,14 @@
       do i_pvr = 1, num_pvr_ctl
         call read_control_pvr(i_pvr, hd_pvr_ctl, hd_pvr_colordef,       &
      &    fname_pvr_ctl(i_pvr), pvr_ctl(i_pvr))
-        call read_control_modelview(i_pvr, pvr_ctl(i_pvr))
-        call read_control_colormap                                      &
-     &     (hd_pvr_colordef, i_pvr, pvr_ctl(i_pvr))
+        if(my_rank .eq. 0) then
+          call read_control_modelview_file                              &
+     &       (ctl_file_code, pvr_ctl(i_pvr)%view_file_ctl,              &
+     &        pvr_ctl(i_pvr)%mat)
+          call read_control_pvr_colormap_file                           &
+     &       (ctl_file_code, pvr_ctl(i_pvr)%color_file_ctl,             &
+     &        pvr_ctl(i_pvr)%cmap_cbar_c)
+        end if
 !
         do i_psf = 1, pvr_ctl(i_pvr)%pvr_scts_c%num_pvr_sect_ctl
           call read_control_pvr_section_def                             &
@@ -194,7 +191,8 @@
 !
         open(ctl_file_code, file=fname_pvr_ctl, status='old')
         call load_ctl_label_and_line
-        call read_pvr_ctl(hd_pvr_ctl, hd_pvr_colordef, pvr_ctl_type)
+        call read_pvr_ctl(ctl_file_code, hd_pvr_ctl, hd_pvr_colordef,   &
+     &      pvr_ctl_type, c_buf1)
         close(ctl_file_code)
       end if
 !
@@ -218,90 +216,14 @@
         open(ctl_file_code, file=fname_pvr_ctl, status='old')
 !
         call load_ctl_label_and_line
-        call read_pvr_update_flag(hd_pvr_ctl, pvr_ctl_type)
+        call read_pvr_update_flag                                       &
+     &     (ctl_file_code, hd_pvr_ctl, pvr_ctl_type, c_buf1)
         close(ctl_file_code)
       end if
 !
       call bcast_pvr_update_flag(pvr_ctl_type)
 !
       end subroutine read_control_pvr_update
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_control_modelview(i_pvr, pvr_ctl_type)
-!
-      use calypso_mpi
-      use m_error_IDs
-      use t_ctl_data_4_view_transfer
-!
-      integer(kind = kint), intent(in) :: i_pvr
-      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
-!
-!
-      if(my_rank .gt. 0) return
-!
-      if(pvr_ctl_type%view_file_ctl .eq. 'NO_FILE') then
-        write(*,*)  'Modelview control:', i_pvr, ' is included'
-        return
-      end if
-!
-      write(*,*) 'Modelview control:', i_pvr,':  ',                     &
-     &               trim(pvr_ctl_type%view_file_ctl)
-!
-      open(ctl_file_code,                                               &
-     &        file=pvr_ctl_type%view_file_ctl, status='old')
-!
-      call load_ctl_label_and_line
-!
-      if(right_begin_flag(hd_view_transform) .gt. 0) then
-        call read_view_transfer_ctl                                     &
-     &        (hd_view_transform, pvr_ctl_type%mat)
-      else
-        call calypso_mpi_abort(ierr_PVR, 'Set view matrix file')
-      end if
-!
-      close(ctl_file_code)
-!
-      end subroutine read_control_modelview
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_control_colormap                                  &
-     &         (hd_pvr_colordef, i_pvr, pvr_ctl_type)
-!
-      use calypso_mpi
-      use m_error_IDs
-      use t_ctl_data_pvr_colormap
-!
-      character(len = kchara), intent(in) :: hd_pvr_colordef
-      integer(kind = kint), intent(in) :: i_pvr
-      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
-!
-!
-      if(my_rank .gt. 0) return
-!
-      if(pvr_ctl_type%color_file_ctl .eq. 'NO_FILE') then
-        write(*,*)  'Colormap control:', i_pvr, ' is included'
-        return
-      end if
-!
-      write(*,*) 'Colormap control:', i_pvr,':  ',                      &
-     &                 trim(pvr_ctl_type%color_file_ctl)
-!
-      open(ctl_file_code, file=pvr_ctl_type%color_file_ctl,             &
-     &     status='old')
-!
-      do
-        call load_ctl_label_and_line
-        if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
-          call read_pvr_cmap_cbar                                       &
-     &       (hd_pvr_colordef, pvr_ctl_type%cmap_cbar_c)
-          exit
-        end if
-      end do
-      close(ctl_file_code)
-!
-      end subroutine read_control_colormap
 !
 !  ---------------------------------------------------------------------
 !

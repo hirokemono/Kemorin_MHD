@@ -116,7 +116,7 @@
 !
       subroutine copy_real2_ctl(org_r2, new_r2)
 !
-      type(read_real2_item), intent(inout) :: org_r2
+      type(read_real2_item), intent(in) :: org_r2
       type(read_real2_item), intent(inout) :: new_r2
 !
 !

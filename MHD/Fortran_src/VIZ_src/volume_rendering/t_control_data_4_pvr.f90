@@ -11,8 +11,12 @@
 !!      subroutine deallocate_cont_dat_pvr(pvr_ctl)
 !!
 !!      subroutine reset_pvr_update_flags(pvr_ctl)
-!!      subroutine read_pvr_ctl(hd_block, hd_pvr_colordef, pvr_ctl)
-!!      subroutine read_pvr_update_flag(hd_block, pvr_ctl)
+!!      subroutine read_pvr_ctl                                         &
+!!     &         (id_control, hd_block, hd_pvr_colordef, pvr_ctl, c_buf)
+!!      subroutine read_pvr_update_flag                                 &
+!!     &         (id_control, hd_block, pvr_ctl, c_buf)
+!!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of control for Kemo's volume rendering
@@ -81,12 +85,13 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
       use t_ctl_data_4_view_transfer
       use t_control_elements
       use t_control_array_character
       use t_control_array_chara2real
-      use t_ctl_data_pvr_colormap
+      use t_ctl_data_pvr_colormap_bar
+      use t_ctl_data_pvr_light
       use t_control_data_pvr_sections
       use t_control_data_pvr_movie
       use t_control_data_pvr_isosurfs
@@ -136,12 +141,8 @@
 !>       constrol structure for isosurfaces in PVR
         type(pvr_isosurfs_ctl) :: pvr_isos_c
 !
-!     Top level
-!
-        integer (kind=kint) :: i_pvr_ctl = 0
-!
-        integer (kind=kint) :: i_view_file =  0
-        integer (kind=kint) :: i_color_file = 0
+!     Top level flag
+        integer(kind = kint) :: i_pvr_ctl = 0
       end type pvr_parameter_ctl
 !
 !
@@ -229,109 +230,115 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_ctl(hd_block, hd_pvr_colordef, pvr_ctl)
+      subroutine read_pvr_ctl                                           &
+     &         (id_control, hd_block, hd_pvr_colordef, pvr_ctl, c_buf)
 !
+      use read_control_pvr_modelview
+!
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       character(len = kchara), intent(in) :: hd_pvr_colordef
 !
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
-      if (pvr_ctl%i_pvr_ctl.gt.0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(pvr_ctl%i_pvr_ctl .gt. 0) return
 !
       pvr_ctl%view_file_ctl = 'NO_FILE'
       pvr_ctl%color_file_ctl = 'NO_FILE'
       do
-        call load_ctl_label_and_line
-!
-        pvr_ctl%i_pvr_ctl = find_control_end_flag(hd_block)
-        if(pvr_ctl%i_pvr_ctl .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
 !
-        if(right_file_flag(hd_view_transform) .gt. 0) then
-          call read_file_name_from_ctl_line(pvr_ctl%i_view_file,        &
-     &        pvr_ctl%view_file_ctl)
-        else if(right_begin_flag(hd_view_transform) .gt. 0) then
-          call read_view_transfer_ctl(hd_view_transform, pvr_ctl%mat)
+        if(check_file_flag(c_buf, hd_view_transform)) then
+          pvr_ctl%view_file_ctl = third_word(c_buf)
+        else if(check_begin_flag(c_buf, hd_view_transform)) then
+          call read_view_transfer_ctl(id_control, hd_view_transform,    &
+      &       pvr_ctl%mat, c_buf)
         end if
 !
-        if(right_file_flag(hd_pvr_colordef) .gt. 0) then
-          call read_file_name_from_ctl_line(pvr_ctl%i_color_file,       &
-     &        pvr_ctl%color_file_ctl)
+        if(check_file_flag(c_buf, hd_pvr_colordef)) then
+          pvr_ctl%color_file_ctl = third_word(c_buf)
         end if
 !
         if(pvr_ctl%color_file_ctl .eq. 'NO_FILE') then
-          call read_pvr_colordef_ctl                                    &
-     &       (hd_pvr_colordef, pvr_ctl%cmap_cbar_c%color)
-          call read_pvr_colordef_ctl                                    &
-     &       (hd_colormap, pvr_ctl%cmap_cbar_c%color)
+          call read_pvr_colordef_ctl(id_control, hd_pvr_colordef,       &
+     &        pvr_ctl%cmap_cbar_c%color, c_buf)
+          call read_pvr_colordef_ctl(id_control, hd_colormap,           &
+     &        pvr_ctl%cmap_cbar_c%color, c_buf)
 !
-          call read_pvr_colorbar_ctl                                    &
-     &       (hd_pvr_colorbar, pvr_ctl%cmap_cbar_c%cbar_ctl)
+          call read_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,       &
+     &        pvr_ctl%cmap_cbar_c%cbar_ctl, c_buf)
         end if
 !
-        if(check_array_flag(c_buf1, hd_pvr_sections)) then
-          call read_pvr_sections_ctl(ctl_file_code, hd_pvr_sections,    &
-     &        pvr_ctl%pvr_scts_c, c_buf1)
+        if(check_array_flag(c_buf, hd_pvr_sections)) then
+          call read_pvr_sections_ctl(id_control, hd_pvr_sections,       &
+     &        pvr_ctl%pvr_scts_c, c_buf)
         end if
 !
-        if(check_array_flag(c_buf1, hd_pvr_isosurf)) then
-          call read_pvr_isosurfs_ctl(ctl_file_code, hd_pvr_isosurf,     &
-     &        pvr_ctl%pvr_isos_c, c_buf1)
+        if(check_array_flag(c_buf, hd_pvr_isosurf)) then
+          call read_pvr_isosurfs_ctl(id_control, hd_pvr_isosurf,        &
+     &        pvr_ctl%pvr_isos_c, c_buf)
         end if
 !
-        call read_pvr_render_area_ctl(ctl_file_code, hd_plot_area,      &
-     &      pvr_ctl%render_area_c, c_buf1)
-        call read_lighting_ctl(hd_pvr_lighting, pvr_ctl%light)
-        call read_pvr_rotation_ctl(ctl_file_code, hd_pvr_rotation,      &
-     &      pvr_ctl%movie, c_buf1)
+        call read_pvr_render_area_ctl(id_control, hd_plot_area,         &
+     &      pvr_ctl%render_area_c, c_buf)
+        call read_lighting_ctl(id_control, hd_pvr_lighting,             &
+     &      pvr_ctl%light, c_buf)
+        call read_pvr_rotation_ctl(id_control, hd_pvr_rotation,         &
+     &      pvr_ctl%movie, c_buf)
 !
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_updated, pvr_ctl%updated_ctl)
+     &     (c_buf, hd_pvr_updated, pvr_ctl%updated_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_file_head, pvr_ctl%file_head_ctl)
+     &     (c_buf, hd_pvr_file_head, pvr_ctl%file_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_out_type, pvr_ctl%file_fmt_ctl)
+     &     (c_buf, hd_pvr_out_type, pvr_ctl%file_fmt_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_monitor, pvr_ctl%monitoring_ctl)
+     &     (c_buf, hd_pvr_monitor, pvr_ctl%monitoring_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_rgba_type, pvr_ctl%transparent_ctl)
+     &     (c_buf, hd_pvr_rgba_type, pvr_ctl%transparent_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_streo, pvr_ctl%streo_ctl)
+     &     (c_buf, hd_pvr_streo, pvr_ctl%streo_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_anaglyph, pvr_ctl%anaglyph_ctl)
+     &     (c_buf, hd_pvr_anaglyph, pvr_ctl%anaglyph_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_output_field_def, pvr_ctl%pvr_field_ctl)
+     &     (c_buf, hd_output_field_def, pvr_ctl%pvr_field_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_output_comp_def, pvr_ctl%pvr_comp_ctl)
+     &     (c_buf, hd_output_comp_def, pvr_ctl%pvr_comp_ctl)
       end do
+      pvr_ctl%i_pvr_ctl = 1
 !
       end subroutine read_pvr_ctl
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_update_flag(hd_block, pvr_ctl)
+      subroutine read_pvr_update_flag                                   &
+     &         (id_control, hd_block, pvr_ctl, c_buf)
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if (pvr_ctl%i_pvr_ctl.gt.0) return
       do
-        call load_ctl_label_and_line
-!
-        pvr_ctl%i_pvr_ctl = find_control_end_flag(hd_block)
-        if(pvr_ctl%i_pvr_ctl .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_pvr_updated, pvr_ctl%updated_ctl)
+     &     (c_buf, hd_pvr_updated, pvr_ctl%updated_ctl)
       end do
+      pvr_ctl%i_pvr_ctl = 1
 !
       end subroutine read_pvr_update_flag
 !

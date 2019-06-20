@@ -11,11 +11,15 @@
 !!      subroutine read_pvr_isosurfs_ctl                                &
 !!     &         (id_control, hd_block, pvr_isos_c, c_buf)
 !!      subroutine bcast_pvr_isosurfs_ctl(pvr_isos_c)
+!!
 !!      subroutine alloc_pvr_isosurfs_ctl(pvr_isos_c)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(pvr_isosurfs_ctl), intent(inout) :: pvr_isos_c
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine dup_pvr_isosurfs_ctl(org_pvr_iso_c, new_pvr_isos_c)
+!!        type(pvr_isosurfs_ctl), intent(in) :: org_pvr_iso_c
+!!        type(pvr_isosurfs_ctl), intent(inout) :: new_pvr_isos_c
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  array isosurface_ctl  2
@@ -65,7 +69,7 @@
 !
       private :: alloc_pvr_isosurfs_ctl, read_pvr_isosurface_ctl
       private :: bcast_pvr_isosurface_ctl, append_new_pvr_isosurf_ctl
-      private :: dup_pvr_isosurfs_ctl, reset_pvr_isosurfs_ctl
+      private :: copy_pvr_isosurfs_ctl, reset_pvr_isosurfs_ctl
       private :: dup_pvr_isosurface_ctl, reset_pvr_isosurface_ctl
 !
 !  ---------------------------------------------------------------------
@@ -207,7 +211,7 @@
 !
       tmp_pvr_isos%num_pvr_iso_ctl = pvr_isos_c%num_pvr_iso_ctl
       call alloc_pvr_isosurfs_ctl(tmp_pvr_isos)
-      call dup_pvr_isosurfs_ctl(tmp_pvr_isos%num_pvr_iso_ctl,           &
+      call copy_pvr_isosurfs_ctl(tmp_pvr_isos%num_pvr_iso_ctl,          &
      &    pvr_isos_c%pvr_iso_ctl, tmp_pvr_isos%pvr_iso_ctl)
 !
       call dealloc_pvr_isosurfs_ctl(pvr_isos_c)
@@ -215,7 +219,7 @@
       pvr_isos_c%num_pvr_iso_ctl = tmp_pvr_isos%num_pvr_iso_ctl + 1
       call alloc_pvr_isosurfs_ctl(pvr_isos_c)
 !
-      call dup_pvr_isosurfs_ctl(tmp_pvr_isos%num_pvr_iso_ctl,           &
+      call copy_pvr_isosurfs_ctl(tmp_pvr_isos%num_pvr_iso_ctl,          &
      &    tmp_pvr_isos%pvr_iso_ctl, pvr_isos_c%pvr_iso_ctl(1))
 !
       call dealloc_pvr_isosurfs_ctl(tmp_pvr_isos)
@@ -224,7 +228,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dup_pvr_isosurfs_ctl                                   &
+      subroutine dup_pvr_isosurfs_ctl(org_pvr_iso_c, new_pvr_isos_c)
+!
+      type(pvr_isosurfs_ctl), intent(in) :: org_pvr_iso_c
+      type(pvr_isosurfs_ctl), intent(inout) :: new_pvr_isos_c
+!
+!
+      new_pvr_isos_c%num_pvr_iso_ctl = org_pvr_iso_c%num_pvr_iso_ctl
+      call alloc_pvr_isosurfs_ctl(new_pvr_isos_c)
+      call copy_pvr_isosurfs_ctl(org_pvr_iso_c%num_pvr_iso_ctl,         &
+     &    org_pvr_iso_c%pvr_iso_ctl, new_pvr_isos_c%pvr_iso_ctl)
+!
+      end subroutine dup_pvr_isosurfs_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_pvr_isosurfs_ctl                                  &
      &         (num_pvr_iso, org_pvr_iso_c, new_pvr_iso_c)
 !
       integer(kind = kint), intent(in) :: num_pvr_iso
@@ -237,7 +256,7 @@
         call dup_pvr_isosurface_ctl(org_pvr_iso_c(i), new_pvr_iso_c(i))
       end do
 !
-      end subroutine dup_pvr_isosurfs_ctl
+      end subroutine copy_pvr_isosurfs_ctl
 !
 !  ---------------------------------------------------------------------
 !

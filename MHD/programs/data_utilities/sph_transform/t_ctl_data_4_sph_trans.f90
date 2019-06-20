@@ -161,7 +161,8 @@
         call read_sph_trans_model_ctl(spt_ctl)
         call read_sph_trans_params_ctl(spt_ctl)
 !
-        call read_viz_controls(spt_ctl%viz_ctls)
+        call read_viz_controls                                          &
+     &     (ctl_file_code, spt_ctl%viz_ctls, c_buf1)
       end do
 !
       end subroutine read_sph_trans_control_data

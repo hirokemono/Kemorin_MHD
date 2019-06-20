@@ -58,6 +58,9 @@
         type(fieldline_controls) :: fline_ctls
 !>        Structures of LIC rendering controls
         type(lic_rendering_controls) :: lic_ctls
+!
+!
+        integer (kind=kint) :: i_viz_control = 0
       end type visualization_controls
 !
 !
@@ -65,7 +68,6 @@
 !
       character(len=kchara), parameter                                  &
      &                    :: hd_viz_control = 'visual_control'
-      integer (kind=kint) :: i_viz_control = 0
 !
 !     lavel for volume rendering
 !
@@ -74,16 +76,20 @@
      &             :: hd_section_ctl = 'cross_section_ctl'
       character(len=kchara), parameter                                  &
      &             :: hd_isosurf_ctl = 'isosurface_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_ctl = 'volume_rendering'
+      character(len=kchara), parameter                                  &
+     &             :: hd_lic_ctl = 'LIC_rendering'
 !
 !      Deprecated labels
       character(len=kchara), parameter                                  &
      &             :: hd_psf_ctl = 'surface_rendering'
       character(len=kchara), parameter                                  &
      &             :: hd_iso_ctl = 'isosurf_rendering'
-      private :: hd_section_ctl, hd_psf_ctl
-      private :: hd_isosurf_ctl, hd_iso_ctl
 !
-      private :: hd_viz_control, i_viz_control
+      private :: hd_section_ctl, hd_psf_ctl, hd_lic_ctl
+      private :: hd_isosurf_ctl, hd_iso_ctl
+      private :: hd_viz_control
 !
 !   --------------------------------------------------------------------
 !
@@ -91,59 +97,60 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_viz_controls(viz_ctls)
+      subroutine read_viz_controls(id_control, viz_ctls, c_buf)
 !
-      use m_read_control_elements
+      use t_read_control_elements
       use skip_comment_f
 !
+      integer(kind = kint), intent(in) :: id_control
+!
       type(visualization_controls), intent(inout) :: viz_ctls
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_viz_control) .eq. 0) return
-      if (i_viz_control .gt. 0) return
+      if(check_begin_flag(c_buf, hd_viz_control) .eqv. .FALSE.) return
+      if(viz_ctls%i_viz_control .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_viz_control)) exit
 !
-        i_viz_control = find_control_end_flag(hd_viz_control)
-        if(i_viz_control .eq. 1) exit
 !
-        if(check_array_flag(c_buf1, hd_psf_ctl)) then
-          call read_files_4_psf_ctl(ctl_file_code, hd_psf_ctl,          &
-     &        viz_ctls%psf_ctls, c_buf1)
+        if(check_array_flag(c_buf, hd_psf_ctl)) then
+          call read_files_4_psf_ctl(id_control, hd_psf_ctl,             &
+     &        viz_ctls%psf_ctls, c_buf)
         end if
 !
-        if(check_array_flag(c_buf1, hd_section_ctl)) then
-          call read_files_4_psf_ctl(ctl_file_code, hd_section_ctl,      &
-     &        viz_ctls%psf_ctls, c_buf1)
+        if(check_array_flag(c_buf, hd_section_ctl)) then
+          call read_files_4_psf_ctl(id_control, hd_section_ctl,         &
+     &        viz_ctls%psf_ctls, c_buf)
         end if
 !
-        if(check_array_flag(c_buf1, hd_iso_ctl)) then
-          call read_files_4_iso_ctl(ctl_file_code, hd_iso_ctl,          &
-     &        viz_ctls%iso_ctls, c_buf1)
+        if(check_array_flag(c_buf, hd_iso_ctl)) then
+          call read_files_4_iso_ctl(id_control, hd_iso_ctl,             &
+     &        viz_ctls%iso_ctls, c_buf)
         end if
 !
-        if(check_array_flag(c_buf1, hd_isosurf_ctl)) then
-          call read_files_4_iso_ctl(ctl_file_code, hd_isosurf_ctl,      &
-     &        viz_ctls%iso_ctls, c_buf1)
+        if(check_array_flag(c_buf, hd_isosurf_ctl)) then
+          call read_files_4_iso_ctl(id_control, hd_isosurf_ctl,         &
+     &        viz_ctls%iso_ctls, c_buf)
         end if
 !
-        call find_control_array_flag                                    &
-     &     (hd_pvr_ctl, viz_ctls%pvr_ctls%num_pvr_ctl)
-        if(viz_ctls%pvr_ctls%num_pvr_ctl .gt. 0) then
-          call read_files_4_pvr_ctl(viz_ctls%pvr_ctls)
+        if(check_array_flag(c_buf, hd_pvr_ctl)) then
+          call read_files_4_pvr_ctl(id_control, hd_pvr_ctl,             &
+     &        viz_ctls%pvr_ctls, c_buf)
         end if
 !
-        if(check_array_flag(c_buf1, hd_fline_ctl)) then
-          call read_files_4_fline_ctl(ctl_file_code, hd_fline_ctl,      &
-     &        viz_ctls%fline_ctls, c_buf1)
+        if(check_array_flag(c_buf, hd_fline_ctl)) then
+          call read_files_4_fline_ctl(id_control, hd_fline_ctl,         &
+     &        viz_ctls%fline_ctls, c_buf)
         end if
 !
-        call find_control_array_flag                                    &
-     &     (hd_lic_ctl, viz_ctls%lic_ctls%num_lic_ctl)
-        if(viz_ctls%lic_ctls%num_lic_ctl .gt. 0) then
-          call read_files_4_lic_ctl(viz_ctls%lic_ctls)
+        if(check_array_flag(c_buf, hd_lic_ctl)) then
+          call read_files_4_lic_ctl(id_control, hd_lic_ctl,             &
+     &        viz_ctls%lic_ctls, c_buf)
         end if
       end do
+      viz_ctls%i_viz_control = 1
 !
       end subroutine read_viz_controls
 !

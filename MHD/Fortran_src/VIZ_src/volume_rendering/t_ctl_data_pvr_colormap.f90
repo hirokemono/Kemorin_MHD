@@ -1,42 +1,23 @@
-!t_ctl_data_pvr_colormap.f90
-!      module t_ctl_data_pvr_colormap
+!>@file   t_ctl_data_pvr_colormap.f90
+!!@brief  module t_ctl_data_pvr_colormap
+!!
+!!@author H. Matsui
+!!@date Programmed in 2006
 !
-!        programmed by H.Matsui on May. 2006
+!> @brief colormap control data for parallel volume rendering
 !!
-!!      subroutine deallocate_pvr_cmap_cbar(cmap_cbar_c)
-!!      subroutine read_pvr_cmap_cbar(hd_block, cmap_cbar_c)
-!!        type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
-!!
-!!      subroutine dealloc_pvr_light_crl(light)
-!!      subroutine read_lighting_ctl(hd_block, light)
-!!      subroutine reset_pvr_light_flags(light)
-!!        type(pvr_light_ctl), intent(inout) :: light
-!!
-!!      subroutine dealloc_pvr_color_crl(color)
-!!      subroutine read_pvr_colordef_ctl(hd_block, color)
+!!@verbatim
+!!      subroutine read_pvr_colordef_ctl                                &
+!!     &         (id_control, hd_block, color, c_buf)
 !!      subroutine reset_pvr_colormap_flags(color)
+!!      subroutine dealloc_pvr_color_crl(color)
 !!        type(pvr_colormap_ctl), intent(inout) :: color
-!!
-!!      subroutine read_pvr_colorbar_ctl(hd_block, cbar_ctl)
-!!      subroutine reset_pvr_colorbar_ctl_flags(cbar_ctl)
-!!        type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
+!!      subroutine dup_pvr_colordef_ctl(org_color, new_color)
+!!        type(pvr_colormap_ctl), intent(in) :: org_color
+!!        type(pvr_colormap_ctl), intent(inout) :: new_color
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of color control for Kemo's volume rendering
-!!
-!!begin volume_rendering   (BMP or PNG)
-!!  begin lighting_ctl
-!!    array position_of_lights    4
-!!      position_of_lights    0.0   0.0    0.0   end
-!!      position_of_lights  -10.0   0.0  -10.0   end
-!!      position_of_lights  -10.0   0.0    0.0   end
-!!      position_of_lights    0.0  10.0    0.0   end
-!!    end array position_of_lights
-!!!
-!!    ambient_coef_ctl              0.5
-!!    diffuse_coef_ctl              5.6
-!!    specular_coef_ctl             0.8
-!!  end lighting_ctl
 !!
 !!  begin colormap_ctl
 !!    colormap_mode_ctl       rainbow
@@ -78,20 +59,10 @@
 !!!
 !!    range_min_ctl   0.0
 !!    range_max_ctl   1.0
-!!  end   colormap_ctl
-!!
-!!  begin colorbar_ctl
-!!    colorbar_switch_ctl    ON
-!!    colorbar_scale_ctl     ON
-!!    iflag_zeromarker       ON
-!!    colorbar_range     0.0   1.0
-!!    font_size_ctl         3
-!!    num_grid_ctl     4
-!!!
-!!    axis_label_switch      ON
-!!  end colorbar_ctl
+!!  end colormap_ctl
 !!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!@endverbatim
 !
       module t_ctl_data_pvr_colormap
 !
@@ -99,30 +70,14 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
       use t_ctl_data_4_view_transfer
       use t_control_elements
       use t_control_array_real2
       use t_control_array_real3
       use skip_comment_f
-      use bcast_control_arrays
 !
       implicit  none
-!
-!
-      type pvr_light_ctl
-        type(read_real_item) :: ambient_coef_ctl
-        type(read_real_item) :: diffuse_coef_ctl
-        type(read_real_item) :: specular_coef_ctl
-!
-!>      Structure for light positions
-!!@n      light_position_ctl%vec1:  X-component of light position
-!!@n      light_position_ctl%vec2:  Y-component of light position
-!!@n      light_position_ctl%vec3:  Z-component of light position
-        type(ctl_array_r3) :: light_position_ctl
-!
-        integer (kind=kint) :: i_pvr_lighting = 0
-      end type pvr_light_ctl
 !
 !
       type pvr_colormap_ctl
@@ -154,50 +109,10 @@
 !!@n        step_opacity_ctl%vec3:  Opacity for each level
         type(ctl_array_r3) :: step_opacity_ctl
 !
-!
 !     Top level
 !     2nd level for color definition
         integer (kind=kint) :: i_pvr_colordef =        0
       end type pvr_colormap_ctl
-!
-!
-      type pvr_colorbar_ctl
-        type(read_character_item) :: colorbar_switch_ctl
-        type(read_character_item) :: colorbar_scale_ctl
-        type(read_character_item) :: zeromarker_flag_ctl
-        type(read_integer_item) ::   font_size_ctl
-        type(read_integer_item) ::   ngrid_cbar_ctl
-        type(read_real2_item) ::     cbar_range_ctl
-!
-        type(read_character_item) :: axis_switch_ctl
-!
-!     2nd level for volume rendering
-        integer (kind=kint) :: i_pvr_colorbar = 0
-      end type pvr_colorbar_ctl
-!
-!
-!>  Structure of control data for PVR colormap and colorbar
-      type pvr_colormap_bar_ctl
-!>    Structure for colormap
-        type(pvr_colormap_ctl) :: color
-!>    Structure for colorbar
-        type(pvr_colorbar_ctl) :: cbar_ctl
-!
-        integer (kind=kint) :: i_cmap_cbar = 0
-      end type pvr_colormap_bar_ctl
-!
-!
-!     2nd level for colormap and colorbar
-!
-      character(len=kchara) :: hd_pvr_colorbar =  'colorbar_ctl'
-      character(len=kchara) :: hd_colormap =      'colormap_ctl'
-!
-!     3rd level for lighting
-!
-      character(len=kchara) :: hd_ambient =  'ambient_coef_ctl'
-      character(len=kchara) :: hd_diffuse =  'diffuse_coef_ctl'
-      character(len=kchara) :: hd_specular = 'specular_coef_ctl'
-      character(len=kchara) :: hd_light_param =  'position_of_lights'
 !
 !     3rd level for colormap
 !
@@ -222,29 +137,12 @@
       character(len=kchara) :: hd_linear_opacity = 'linear_opacity_ctl'
       character(len=kchara) :: hd_opacity_def =    'step_opacity_ctl'
 !
-!     3rd level for colorbar
-!
-      character(len=kchara)                                             &
-     &                    :: hd_colorbar_switch = 'colorbar_switch_ctl'
-      character(len=kchara) :: hd_colorbar_scale = 'colorbar_scale_ctl'
-      character(len=kchara) :: hd_pvr_font_size = 'font_size_ctl'
-      character(len=kchara) :: hd_pvr_numgrid_cbar = 'num_grid_ctl'
-      character(len=kchara) :: hd_zeromarker_flag = 'iflag_zeromarker'
-      character(len=kchara) :: hd_cbar_range = 'colorbar_range'
-!
-      character(len=kchara) :: hd_axis_switch = 'axis_label_switch'
-!
-      private :: hd_ambient, hd_diffuse, hd_specular
-      private :: hd_light_param, hd_colormap_mode, hd_data_mapping
+      private :: hd_colormap_mode, hd_data_mapping
       private :: hd_pvr_range_min, hd_pvr_range_max
       private :: hd_colortable, hd_opacity_style
       private :: hd_constant_opacity, hd_opacity_def, hd_linear_opacity
-!
-      private :: hd_colorbar_switch, hd_colorbar_scale
-      private :: hd_pvr_font_size, hd_cbar_range
-      private :: hd_pvr_numgrid_cbar, hd_zeromarker_flag
-      private :: hd_axis_switch
-      private :: hd_colormap, hd_pvr_colorbar
+      private :: hd_lic_color_comp
+      private :: hd_lic_opacity_fld, hd_lic_opacity_comp
 !
 !  ---------------------------------------------------------------------
 !
@@ -252,169 +150,91 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_pvr_cmap_cbar(cmap_cbar_c)
+      subroutine read_pvr_colordef_ctl                                  &
+     &         (id_control, hd_block, color, c_buf)
 !
-      type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
-!
-      call reset_pvr_colormap_flags(cmap_cbar_c%color)
-      call reset_pvr_colorbar_ctl_flags(cmap_cbar_c%cbar_ctl)
-      call dealloc_pvr_color_crl(cmap_cbar_c%color)
-!
-      cmap_cbar_c%i_cmap_cbar = 0
-!
-      end subroutine deallocate_pvr_cmap_cbar
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_pvr_cmap_cbar(hd_block, cmap_cbar_c)
-!
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-!
-      type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
-!
-!
-      if (cmap_cbar_c%i_cmap_cbar.gt.0) return
-      do
-        call load_ctl_label_and_line
-!
-        cmap_cbar_c%i_cmap_cbar = find_control_end_flag(hd_block)
-        if(cmap_cbar_c%i_cmap_cbar .gt. 0) exit
-!
-        call read_pvr_colordef_ctl(hd_colormap, cmap_cbar_c%color)
-        call read_pvr_colorbar_ctl                                      &
-     &     (hd_pvr_colorbar, cmap_cbar_c%cbar_ctl)
-      end do
-!
-      end subroutine read_pvr_cmap_cbar
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_pvr_light_crl(light)
-!
-      type(pvr_light_ctl), intent(inout) :: light
-!
-      call dealloc_control_array_r3(light%light_position_ctl)
-      light%light_position_ctl%num = 0
-      light%light_position_ctl%icou = 0
-!
-      end subroutine dealloc_pvr_light_crl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_lighting_ctl(hd_block, light)
-!
-      character(len=kchara), intent(in) :: hd_block
-      type(pvr_light_ctl), intent(inout) :: light
-!
-!
-      if(right_begin_flag(hd_block) .eq. 0) return
-      if (light%i_pvr_lighting.gt.0) return
-      do
-        call load_ctl_label_and_line
-!
-        light%i_pvr_lighting = find_control_end_flag(hd_block)
-        if(light%i_pvr_lighting .gt. 0) exit
-!
-        call read_control_array_r3(ctl_file_code,                       &
-     &      hd_light_param, light%light_position_ctl, c_buf1)
-!
-        call read_real_ctl_type                                         &
-     &     (c_buf1, hd_ambient, light%ambient_coef_ctl )
-        call read_real_ctl_type                                         &
-     &     (c_buf1, hd_diffuse, light%diffuse_coef_ctl)
-        call read_real_ctl_type                                         &
-     &     (c_buf1, hd_specular, light%specular_coef_ctl)
-      end do
-!
-      end subroutine read_lighting_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine reset_pvr_light_flags(light)
-!
-      type(pvr_light_ctl), intent(inout) :: light
-!
-!
-      light%ambient_coef_ctl%iflag =  0
-      light%diffuse_coef_ctl%iflag =  0
-      light%specular_coef_ctl%iflag = 0
-      light%i_pvr_lighting = 0
-!
-      end subroutine reset_pvr_light_flags
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_pvr_color_crl(color)
 !
       type(pvr_colormap_ctl), intent(inout) :: color
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      call dealloc_control_array_r3(color%step_opacity_ctl)
-      call dealloc_control_array_r2(color%linear_opacity_ctl)
-      call dealloc_control_array_r2(color%colortbl_ctl)
-!
-      color%colortbl_ctl%num =       0
-      color%colortbl_ctl%icou = 0
-      color%step_opacity_ctl%num =   0
-      color%step_opacity_ctl%icou =    0
-      color%linear_opacity_ctl%num = 0
-      color%linear_opacity_ctl%icou =  0
-!
-      end subroutine dealloc_pvr_color_crl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_pvr_colordef_ctl(hd_block, color)
-!
-      character(len=kchara), intent(in) :: hd_block
-      type(pvr_colormap_ctl), intent(inout) :: color
-!
-!
-      if(right_begin_flag(hd_block) .eq. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(color%i_pvr_colordef.gt.0) return
       do
-        call load_ctl_label_and_line
-!
-        color%i_pvr_colordef = find_control_end_flag(hd_block)
-        if(color%i_pvr_colordef .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
 !
-        call read_control_array_r2(ctl_file_code,                       &
-     &      hd_colortable, color%colortbl_ctl, c_buf1)
-        call read_control_array_r2(ctl_file_code,                       &
-     &      hd_linear_opacity, color%linear_opacity_ctl, c_buf1)
+        call read_control_array_r2(id_control, hd_colortable,           &
+     &      color%colortbl_ctl, c_buf)
+        call read_control_array_r2(id_control, hd_linear_opacity,       &
+     &      color%linear_opacity_ctl, c_buf)
 !
-        call read_control_array_r3(ctl_file_code,                       &
-     &      hd_opacity_def, color%step_opacity_ctl, c_buf1)
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_lic_color_fld, color%lic_color_fld_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_lic_color_comp, color%lic_color_comp_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_lic_opacity_fld, color%lic_opacity_fld_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_lic_opacity_comp, color%lic_opacity_comp_ctl)
+        call read_control_array_r3(id_control, hd_opacity_def,          &
+     &      color%step_opacity_ctl, c_buf)
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_colormap_mode, color%colormap_mode_ctl)
+     &     (c_buf, hd_lic_color_fld, color%lic_color_fld_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_data_mapping, color%data_mapping_ctl)
-        call read_chara_ctl_type(c_buf1, hd_opacity_style,              &
+     &     (c_buf, hd_lic_color_comp, color%lic_color_comp_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_lic_opacity_fld, color%lic_opacity_fld_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_lic_opacity_comp, color%lic_opacity_comp_ctl)
+!
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_colormap_mode, color%colormap_mode_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_data_mapping, color%data_mapping_ctl)
+        call read_chara_ctl_type(c_buf, hd_opacity_style,               &
      &      color%opacity_style_ctl)
 !
-        call read_real_ctl_type(c_buf1, hd_pvr_range_min,               &
+        call read_real_ctl_type(c_buf, hd_pvr_range_min,                &
      &      color%range_min_ctl)
-        call read_real_ctl_type(c_buf1, hd_pvr_range_max,               &
+        call read_real_ctl_type(c_buf, hd_pvr_range_max,                &
      &      color%range_max_ctl)
-        call read_real_ctl_type(c_buf1, hd_constant_opacity,            &
+        call read_real_ctl_type(c_buf, hd_constant_opacity,             &
      &      color%fix_opacity_ctl)
       end do
+      color%i_pvr_colordef = 1
 !
       end subroutine read_pvr_colordef_ctl
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine bcast_pvr_colordef_ctl(color)
+!
+      use bcast_control_arrays
+!
+      type(pvr_colormap_ctl), intent(inout) :: color
+!
+!
+      call MPI_BCAST(color%i_pvr_colordef,  1,                          &
+     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
+      call bcast_ctl_array_r2(color%colortbl_ctl)
+      call bcast_ctl_array_r2(color%linear_opacity_ctl)
+!
+      call bcast_ctl_array_r3(color%step_opacity_ctl)
+!
+      call bcast_ctl_type_c1(color%lic_color_fld_ctl)
+      call bcast_ctl_type_c1(color%lic_color_comp_ctl)
+      call bcast_ctl_type_c1(color%lic_opacity_fld_ctl)
+      call bcast_ctl_type_c1(color%lic_opacity_comp_ctl)
+!
+      call bcast_ctl_type_c1(color%colormap_mode_ctl)
+      call bcast_ctl_type_c1(color%data_mapping_ctl)
+      call bcast_ctl_type_c1(color%opacity_style_ctl)
+!
+      call bcast_ctl_type_r1(color%range_min_ctl)
+      call bcast_ctl_type_r1(color%range_max_ctl)
+      call bcast_ctl_type_r1(color%fix_opacity_ctl)
+!
+      end subroutine bcast_pvr_colordef_ctl
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine reset_pvr_colormap_flags(color)
@@ -439,63 +259,71 @@
       end subroutine reset_pvr_colormap_flags
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_colorbar_ctl(hd_block, cbar_ctl)
+      subroutine dealloc_pvr_color_crl(color)
 !
-      character(len=kchara), intent(in) :: hd_block
-      type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
+      type(pvr_colormap_ctl), intent(inout) :: color
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
-      if (cbar_ctl%i_pvr_colorbar.gt.0) return
-      do
-        call load_ctl_label_and_line
+      call reset_pvr_colormap_flags(color)
+      call dealloc_control_array_r3(color%step_opacity_ctl)
+      call dealloc_control_array_r2(color%linear_opacity_ctl)
+      call dealloc_control_array_r2(color%colortbl_ctl)
 !
-        cbar_ctl%i_pvr_colorbar                                         &
-     &      = find_control_end_flag(hd_block)
-        if(cbar_ctl%i_pvr_colorbar .gt. 0) exit
+      color%colortbl_ctl%num =       0
+      color%colortbl_ctl%icou = 0
+      color%step_opacity_ctl%num =   0
+      color%step_opacity_ctl%icou =    0
+      color%linear_opacity_ctl%num = 0
+      color%linear_opacity_ctl%icou =  0
 !
-!
-        call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_pvr_font_size, cbar_ctl%font_size_ctl)
-        call read_integer_ctl_type(c_buf1, hd_pvr_numgrid_cbar,         &
-     &      cbar_ctl%ngrid_cbar_ctl)
-!
-!
-        call read_chara_ctl_type(c_buf1, hd_colorbar_switch,            &
-     &      cbar_ctl%colorbar_switch_ctl)
-        call read_chara_ctl_type(c_buf1, hd_colorbar_scale,             &
-     &      cbar_ctl%colorbar_scale_ctl)
-        call read_chara_ctl_type(c_buf1, hd_zeromarker_flag,            &
-     &      cbar_ctl%zeromarker_flag_ctl)
-!
-        call read_chara_ctl_type(c_buf1, hd_axis_switch,                &
-     &      cbar_ctl%axis_switch_ctl)
-!!
-        call read_real2_ctl_type(c_buf1,                                &
-     &      hd_cbar_range, cbar_ctl%cbar_range_ctl)
-      end do
-!
-      end subroutine read_pvr_colorbar_ctl
+      end subroutine dealloc_pvr_color_crl
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      subroutine reset_pvr_colorbar_ctl_flags(cbar_ctl)
+      subroutine dup_pvr_colordef_ctl(org_color, new_color)
 !
-      type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
+      use copy_control_elements
+!
+      type(pvr_colormap_ctl), intent(in) :: org_color
+      type(pvr_colormap_ctl), intent(inout) :: new_color
 !
 !
-      cbar_ctl%colorbar_switch_ctl%iflag = 0
-      cbar_ctl%colorbar_scale_ctl%iflag =  0
-      cbar_ctl%font_size_ctl%iflag =       0
-      cbar_ctl%ngrid_cbar_ctl%iflag =      0
-      cbar_ctl%zeromarker_flag_ctl%iflag = 0
-      cbar_ctl%cbar_range_ctl%iflag =      0
+      new_color%i_pvr_colordef = org_color%i_pvr_colordef
 !
-      cbar_ctl%i_pvr_colorbar = 0
+      call dup_control_array_r2(org_color%colortbl_ctl,                 &
+     &                          new_color%colortbl_ctl)
+      call dup_control_array_r2(org_color%linear_opacity_ctl,           &
+     &                          new_color%linear_opacity_ctl)
 !
-      end subroutine reset_pvr_colorbar_ctl_flags
+      call dup_control_array_r3(org_color%step_opacity_ctl,             &
+     &                          new_color%step_opacity_ctl)
+!
+      call copy_chara_ctl(org_color%lic_color_fld_ctl,                  &
+     &                    new_color%lic_color_fld_ctl)
+      call copy_chara_ctl(org_color%lic_color_comp_ctl,                 &
+     &                    new_color%lic_color_comp_ctl)
+      call copy_chara_ctl(org_color%lic_opacity_fld_ctl,                &
+     &                    new_color%lic_opacity_fld_ctl)
+      call copy_chara_ctl(org_color%lic_opacity_comp_ctl,               &
+     &                    new_color%lic_opacity_comp_ctl)
+!
+      call copy_chara_ctl(org_color%colormap_mode_ctl,                  &
+     &                    new_color%colormap_mode_ctl)
+      call copy_chara_ctl(org_color%data_mapping_ctl,                   &
+     &                    new_color%data_mapping_ctl)
+      call copy_chara_ctl(org_color%opacity_style_ctl,                  &
+     &                    new_color%opacity_style_ctl)
+!
+      call copy_real_ctl(org_color%range_min_ctl,                       &
+     &                   new_color%range_min_ctl)
+      call copy_real_ctl(org_color%range_max_ctl,                       &
+     &                   new_color%range_max_ctl)
+      call copy_real_ctl(org_color%fix_opacity_ctl,                     &
+     &                   new_color%fix_opacity_ctl)
+!
+      end subroutine dup_pvr_colordef_ctl
 !
 !  ---------------------------------------------------------------------
 !

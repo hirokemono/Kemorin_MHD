@@ -11,7 +11,7 @@
 !!     &         (id_control, hd_block, movie, c_buf)
 !!        type(pvr_movie_ctl), intent(inout) :: movie
 !!
-!!      subroutine dup_pvr_movie_control_flags(movie)
+!!      subroutine dup_pvr_movie_control_flags(org_movie, new_movie)
 !!        type(pvr_movie_ctl), intent(in) :: org_movie
 !!        type(pvr_movie_ctl), intent(inout) :: new_movie
 !!      subroutine reset_pvr_movie_control_flags(movie)

@@ -77,6 +77,10 @@
         type(pvr_image_type), allocatable :: pvr_rgb(:)
       end type volume_rendering_module
 !
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_ctl = 'volume_rendering'
+      private :: hd_pvr_ctl
+!
 !  ---------------------------------------------------------------------
 !
       contains

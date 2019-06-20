@@ -119,7 +119,8 @@
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, t_viz_ctl)
 !
-        call read_viz_controls(viz_ctl_v)
+        call read_viz_controls                                          &
+     &     (ctl_file_code, viz_ctl_v, c_buf1)
       end do
 !
       end subroutine read_vizs_control_data

@@ -25,7 +25,6 @@
       use calypso_mpi
 !
       use t_control_params_4_pvr
-      use t_ctl_data_pvr_colormap
       use skip_comment_f
 !
       implicit  none
@@ -38,6 +37,7 @@
 !
       subroutine set_control_pvr_lighting(light, color_param)
 !
+      use t_ctl_data_pvr_light
       use set_color_4_pvr
       use set_rgba_4_each_pixel
 !
@@ -101,6 +101,7 @@
 !
       subroutine set_control_pvr_colormap(color, color_param)
 !
+      use t_ctl_data_pvr_colormap
       use set_color_4_pvr
       use set_rgba_4_each_pixel
 !
@@ -251,6 +252,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_pvr_colorbar(cbar_ctl, cbar_param)
+!
+      use t_ctl_data_pvr_colorbar
 !
       type(pvr_colorbar_ctl), intent(in) :: cbar_ctl
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param

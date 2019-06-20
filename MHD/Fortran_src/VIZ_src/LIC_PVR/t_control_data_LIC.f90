@@ -8,8 +8,14 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!      subroutine read_lic_control_data(hd_lic_ctl, lic_ctl)
+!!      subroutine read_lic_control_data                                &
+!!     &         (id_control, hd_lic_ctl, lic_ctl, c_buf)
+!!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine dealloc_lic_control_flags(lic_ctl)
+!!      subroutine dup_lic_control_data(org_lic_c, new_lic_c)
+!!        type(lic_parameter_ctl), intent(in) :: org_lic_c
+!!        type(lic_parameter_ctl), intent(inout) :: new_lic_c
 !!      subroutine bcast_lic_control_data(lic_ctl)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!
@@ -76,7 +82,7 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
       use t_control_elements
       use t_control_data_LIC_masking
       use skip_comment_f
@@ -93,7 +99,6 @@
         type(read_character_item) :: opacity_component_ctl
 !
         integer(kind = kint) :: num_masking_ctl = 0
-        integer(kind=kint) :: i_masking_ctl = 0
         type(lic_masking_ctl), allocatable :: mask_ctl(:)
 !
         type(read_character_item) :: noise_type_ctl
@@ -181,97 +186,102 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_lic_control_data(hd_lic_ctl, lic_ctl)
+      subroutine read_lic_control_data                                  &
+     &         (id_control, hd_lic_ctl, lic_ctl, c_buf)
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: hd_lic_ctl
+!
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_lic_ctl) .eq. 0) return
-      if (lic_ctl%i_lic_control.gt.0) return
+      if(check_begin_flag(c_buf, hd_lic_ctl) .eqv. .FALSE.) return
+      if(lic_ctl%i_lic_control .gt. 0) return
+!
       do
-        call load_ctl_label_and_line
-!
-        lic_ctl%i_lic_control = find_control_end_flag(hd_lic_ctl)
-        if(lic_ctl%i_lic_control .gt. 0) exit
-!
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_lic_ctl)) exit
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_LIC_field, lic_ctl%LIC_field_ctl)
+     &     (c_buf, hd_LIC_field, lic_ctl%LIC_field_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_color_field, lic_ctl%color_field_ctl)
+     &     (c_buf, hd_color_field, lic_ctl%color_field_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_color_component, lic_ctl%color_component_ctl)
+     &     (c_buf, hd_color_component, lic_ctl%color_component_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_opacity_field, lic_ctl%opacity_field_ctl)
-        call read_chara_ctl_type(c_buf1, hd_opacity_component,          &
+     &     (c_buf, hd_opacity_field, lic_ctl%opacity_field_ctl)
+        call read_chara_ctl_type(c_buf, hd_opacity_component,           &
      &      lic_ctl%opacity_component_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_noise_type, lic_ctl%noise_type_ctl)
+     &     (c_buf, hd_noise_type, lic_ctl%noise_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_noise_file_head, lic_ctl%noise_file_prefix_ctl)
+     &     (c_buf, hd_noise_file_head, lic_ctl%noise_file_prefix_ctl)
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_noise_grid_size, lic_ctl%noise_resolution_ctl)
+     &     (c_buf, hd_noise_grid_size, lic_ctl%noise_resolution_ctl)
 !
-        call read_chara_ctl_type(c_buf1, hd_kernel_function_type,       &
+        call read_chara_ctl_type(c_buf, hd_kernel_function_type,        &
      &      lic_ctl%kernel_function_type_ctl)
-        call read_chara_ctl_type(c_buf1, hd_kernal_file_name,           &
+        call read_chara_ctl_type(c_buf, hd_kernal_file_name,            &
      &      lic_ctl%kernal_file_prefix_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
+     &     (c_buf, hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
         call read_real_ctl_type                                         &
-     &     (c_buf1, hd_step_size, lic_ctl%step_size_ctl)
+     &     (c_buf, hd_step_size, lic_ctl%step_size_ctl)
 !
-        call read_chara_ctl_type(c_buf1, hd_LIC_trace_type,             &
+        call read_chara_ctl_type(c_buf, hd_LIC_trace_type,              &
      &      lic_ctl%LIC_trace_length_def_ctl)
         call read_real_ctl_type                                         &
-     &     (c_buf1, hd_LIC_trace_length, lic_ctl%LIC_trace_length_ctl)
+     &     (c_buf, hd_LIC_trace_length, lic_ctl%LIC_trace_length_ctl)
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_LIC_trace_count, lic_ctl%LIC_trace_count_ctl)
+     &     (c_buf, hd_LIC_trace_count, lic_ctl%LIC_trace_count_ctl)
 !
-        call read_chara_ctl_type(c_buf1, hd_normalization_type,         &
+        call read_chara_ctl_type(c_buf, hd_normalization_type,          &
      &      lic_ctl%normalization_type_ctl)
-        call read_real_ctl_type(c_buf1, hd_normalization_value,         &
+        call read_real_ctl_type(c_buf, hd_normalization_value,          &
      &      lic_ctl%normalization_value_ctl)
 !
-        call read_chara_ctl_type(c_buf1, hd_reflection_ref_type,        &
+        call read_chara_ctl_type(c_buf, hd_reflection_ref_type,         &
      &      lic_ctl%reflection_ref_type_ctl)
-        call read_real_ctl_type(c_buf1, hd_referection_parameter,       &
+        call read_real_ctl_type(c_buf, hd_referection_parameter,        &
      &      lic_ctl%reflection_parameter_ctl)
 !
-        call find_control_array_flag                                    &
-     &     (hd_masking_ctl, lic_ctl%num_masking_ctl)
-        if(lic_ctl%num_masking_ctl .gt. 0                               &
-     &      .and. lic_ctl%i_masking_ctl .eq. 0) then
-          call read_lic_masking_ctl_array(lic_ctl)
+        if(check_array_flag(c_buf, hd_masking_ctl)) then
+          call read_lic_masking_ctl_array                               &
+     &       (id_control, hd_masking_ctl, lic_ctl, c_buf)
         end if
       end do
+      lic_ctl%i_lic_control = 1
 !
       end subroutine read_lic_control_data
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_lic_masking_ctl_array(lic_ctl)
+      subroutine read_lic_masking_ctl_array                             &
+     &         (id_control, hd_block, lic_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: hd_block
 !
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if (lic_ctl%i_masking_ctl .gt. 0) return
+      if(allocated(lic_ctl%mask_ctl)) return
+      lic_ctl%num_masking_ctl = 0
       allocate(lic_ctl%mask_ctl(lic_ctl%num_masking_ctl))
 !
       do
-        call load_ctl_label_and_line
-        call find_control_end_array_flag(hd_masking_ctl,                &
-     &      lic_ctl%num_masking_ctl, lic_ctl%i_masking_ctl)
-        if(lic_ctl%i_masking_ctl .ge. lic_ctl%num_masking_ctl) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if (check_end_array_flag(c_buf, hd_block)) exit
 !
-        if(right_begin_flag(hd_masking_ctl) .gt. 0) then
-          lic_ctl%i_masking_ctl = lic_ctl%i_masking_ctl + 1
-          call read_lic_masking_ctl_data                                &
-     &      (hd_masking_ctl, lic_ctl%mask_ctl(lic_ctl%i_masking_ctl))
+        if(check_begin_flag(c_buf, hd_block)) then
+          call append_new_lic_masking_ctl(lic_ctl)
+          call read_lic_masking_ctl_data(id_control, hd_block,          &
+     &        lic_ctl%mask_ctl(lic_ctl%num_masking_ctl), c_buf)
         end if
       end do
 !
@@ -283,8 +293,6 @@
       subroutine dealloc_lic_control_flags(lic_ctl)
 !
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
-!
-      integer(kind = kint) :: i
 !
 !
       lic_ctl%LIC_field_ctl%iflag = 0
@@ -316,13 +324,11 @@
 !
 !
       if(lic_ctl%num_masking_ctl .gt. 0) then
-        do i = 1, lic_ctl%num_masking_ctl
-          call dealloc_lic_masking_ctl_flags(lic_ctl%mask_ctl(i))
-        end do
+        call dealloc_lic_masking_ctls                                   &
+     &     (lic_ctl%num_masking_ctl, lic_ctl%mask_ctl)
         deallocate(lic_ctl%mask_ctl)
       end if
       lic_ctl%num_masking_ctl =  0
-      lic_ctl%i_masking_ctl =    0
 !
       lic_ctl%i_lic_control = 0
 !
@@ -379,6 +385,102 @@
       end do
 !
       end subroutine bcast_lic_control_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dup_lic_control_data(org_lic_c, new_lic_c)
+!
+      use copy_control_elements
+!
+      type(lic_parameter_ctl), intent(in) :: org_lic_c
+      type(lic_parameter_ctl), intent(inout) :: new_lic_c
+!
+!
+      new_lic_c%i_lic_control = org_lic_c%i_lic_control
+!
+      call copy_chara_ctl(org_lic_c%LIC_field_ctl,                      &
+     &                    new_lic_c%LIC_field_ctl)
+      call copy_chara_ctl(org_lic_c%color_field_ctl,                    &
+     &                    new_lic_c%color_field_ctl)
+      call copy_chara_ctl(org_lic_c%color_component_ctl,                &
+     &                    new_lic_c%color_component_ctl)
+      call copy_chara_ctl(org_lic_c%opacity_field_ctl,                  &
+     &                    new_lic_c%opacity_field_ctl)
+      call copy_chara_ctl(org_lic_c%opacity_component_ctl,              &
+     &                    new_lic_c%opacity_component_ctl)
+!
+      call copy_chara_ctl(org_lic_c%noise_type_ctl,                     &
+     &                    new_lic_c%noise_type_ctl)
+      call copy_chara_ctl(org_lic_c%noise_file_prefix_ctl,              &
+     &                    new_lic_c%noise_file_prefix_ctl)
+      call copy_integer_ctl(org_lic_c%noise_resolution_ctl,             &
+     &                      new_lic_c%noise_resolution_ctl)
+!
+      call copy_chara_ctl(org_lic_c%kernel_function_type_ctl,           &
+     &                    new_lic_c%kernel_function_type_ctl)
+      call copy_chara_ctl(org_lic_c%kernal_file_prefix_ctl,             &
+     &                    new_lic_c%kernal_file_prefix_ctl)
+!
+      call copy_chara_ctl(org_lic_c%vr_sample_mode_ctl,                 &
+     &                    new_lic_c%vr_sample_mode_ctl)
+      call copy_real_ctl(org_lic_c%step_size_ctl,                       &
+     &                   new_lic_c%step_size_ctl)
+!
+      call copy_chara_ctl(org_lic_c%LIC_trace_length_def_ctl,           &
+     &                    new_lic_c%LIC_trace_length_def_ctl)
+      call copy_real_ctl(org_lic_c%LIC_trace_length_ctl,                &
+     &                   new_lic_c%LIC_trace_length_ctl)
+      call copy_integer_ctl(org_lic_c%LIC_trace_count_ctl,              &
+     &                      new_lic_c%LIC_trace_count_ctl)
+!
+      call copy_chara_ctl(org_lic_c%normalization_type_ctl,             &
+     &                    new_lic_c%normalization_type_ctl)
+      call copy_real_ctl(org_lic_c%normalization_value_ctl,             &
+     &                    new_lic_c%normalization_value_ctl)
+!
+      call copy_chara_ctl(org_lic_c%reflection_ref_type_ctl,            &
+     &                    new_lic_c%reflection_ref_type_ctl)
+      call copy_real_ctl(org_lic_c%reflection_parameter_ctl,            &
+     &                    new_lic_c%reflection_parameter_ctl)
+!
+      new_lic_c%num_masking_ctl = org_lic_c%num_masking_ctl
+      if(new_lic_c%num_masking_ctl .gt. 0) then
+        allocate(new_lic_c%mask_ctl(new_lic_c%num_masking_ctl))
+        call dup_lic_masking_ctls(org_lic_c%num_masking_ctl,            &
+     &      org_lic_c%mask_ctl, new_lic_c%mask_ctl)
+      end if
+!
+      end subroutine dup_lic_control_data
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine append_new_lic_masking_ctl(lic_ctl)
+!
+      type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!
+      integer(kind=kint) :: ntmp_masking
+      type(lic_masking_ctl), allocatable :: tmp_mask_c(:)
+!
+!
+      ntmp_masking = lic_ctl%num_masking_ctl
+      allocate(tmp_mask_c(ntmp_masking))
+      call dup_lic_masking_ctls                                         &
+     &   (ntmp_masking, lic_ctl%mask_ctl, tmp_mask_c)
+!
+      call dealloc_lic_masking_ctls                                     &
+     &   (lic_ctl%num_masking_ctl, lic_ctl%mask_ctl)
+      deallocate(lic_ctl%mask_ctl)
+!
+      lic_ctl%num_masking_ctl = ntmp_masking + 1
+      allocate(lic_ctl%mask_ctl(lic_ctl%num_masking_ctl))
+      call dup_lic_masking_ctls                                         &
+     &   (ntmp_masking, tmp_mask_c, lic_ctl%mask_ctl(1))
+!
+      call dealloc_lic_masking_ctls(ntmp_masking, tmp_mask_c)
+      deallocate(tmp_mask_c)
+!
+      end subroutine append_new_lic_masking_ctl
 !
 !  ---------------------------------------------------------------------
 !

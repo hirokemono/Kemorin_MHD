@@ -7,8 +7,8 @@
 !>@brief Control inputs for PVR view parameter
 !!
 !!@verbatim
-!!      subroutine read_view_transfer_ctl(hd_block, mat)
 !!      subroutine dealloc_view_transfer_ctl(mat)
+!!        type(modeview_ctl), intent(inout) :: mat
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  Input example
 !
@@ -103,16 +103,14 @@
       module t_ctl_data_4_view_transfer
 !
       use m_precision
-      use calypso_mpi
 !
       use m_constants
       use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
       use t_control_elements
       use t_control_array_charareal
       use t_control_array_chara2real
       use skip_comment_f
-      use bcast_control_arrays
 !
       implicit  none
 !
@@ -192,188 +190,10 @@
         integer (kind=kint) :: i_stereo_view = 0
       end type modeview_ctl
 !
-!
-!     3rd level for view_transform_define
-      character(len=kchara) :: hd_image_size =    'image_size_ctl'
-      character(len=kchara) :: hd_model_mat =   'modelview_matrix_ctl'
-      character(len=kchara) :: hd_project_mat = 'projection_matrix_ctl'
-!
-      character(len=kchara) :: hd_look_point =  'look_at_point_ctl'
-      character(len=kchara) :: hd_view_point =  'viewpoint_ctl'
-      character(len=kchara) :: hd_up_dir =      'up_direction_ctl'
-!
-!
-      character(len=kchara) :: hd_view_rot_deg                          &
-     &                        = 'view_rotation_deg_ctl'
-      character(len=kchara) :: hd_view_rot_dir                          &
-     &                        = 'view_rotation_vec_ctl'
-!
-      character(len=kchara) :: hd_scale_factor                          &
-     &                             = 'scale_factor_ctl'
-      character(len=kchara) :: hd_scale_fac_dir                         &
-     &                        = 'scale_factor_vec_ctl'
-      character(len=kchara) :: hd_viewpt_in_view                        &
-     &                        = 'viewpoint_in_viewer_ctl'
-!
-      character(len=kchara) :: hd_stereo_view                           &
-     &                        = 'streo_view_parameter_ctl'
-!
-!     4th level for projection_matrix
-      character(len=kchara) :: hd_perspect_angle                        &
-     &                        = 'perspective_angle_ctl'
-      character(len=kchara) :: hd_perspect_xy =                         &
-     &                        'perspective_xy_ratio_ctl'
-      character(len=kchara) :: hd_perspect_near =                       &
-     &                        'perspective_near_ctl'
-      character(len=kchara) :: hd_perspect_far =                        &
-     &                        'perspective_far_ctl'
-!
-!     4th level for image size
-      character(len=kchara) :: hd_x_pixel = 'x_pixel_ctl'
-      character(len=kchara) :: hd_y_pixel = 'y_pixel_ctl'
-!
-!     4th level for stereo view
-      character(len=kchara) :: hd_focalpoint =     'focal_point_ctl'
-      character(len=kchara) :: hd_eye_separation = 'eye_separation_ctl'
-!
-!
-      private :: hd_x_pixel, hd_y_pixel
-      private :: hd_project_mat, hd_view_point, hd_up_dir, hd_image_size
-      private :: hd_model_mat
-      private :: hd_perspect_angle, hd_perspect_xy
-      private :: hd_perspect_near, hd_perspect_far
-      private :: hd_viewpt_in_view, hd_stereo_view
-      private :: hd_focalpoint,  hd_eye_separation
-      private :: hd_view_rot_deg, hd_view_rot_dir, hd_scale_fac_dir
-!
-      private :: read_projection_mat_ctl
-      private :: read_stereo_view_ctl
-      private :: read_image_size_ctl
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine read_view_transfer_ctl(hd_block, mat)
-!
-      character(len=kchara), intent(in) :: hd_block
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      if (mat%i_view_transform .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        mat%i_view_transform = find_control_end_flag(hd_block)
-        if(mat%i_view_transform .gt. 0) exit
-!
-        call read_projection_mat_ctl(mat)
-        call read_image_size_ctl(mat)
-        call read_stereo_view_ctl(mat)
-!
-!
-        call read_control_array_c_r(ctl_file_code,                      &
-     &      hd_look_point, mat%lookpoint_ctl, c_buf1)
-        call read_control_array_c_r(ctl_file_code,                      &
-     &      hd_view_point, mat%viewpoint_ctl, c_buf1)
-        call read_control_array_c_r(ctl_file_code,                      &
-     &      hd_up_dir, mat%up_dir_ctl, c_buf1)
-!
-        call read_control_array_c_r(ctl_file_code,                      &
-     &      hd_view_rot_dir, mat%view_rot_vec_ctl, c_buf1)
-        call read_control_array_c_r(ctl_file_code,                      &
-     &      hd_scale_fac_dir, mat%scale_vector_ctl, c_buf1)
-        call read_control_array_c_r(ctl_file_code,                      &
-     &      hd_viewpt_in_view, mat%viewpt_in_viewer_ctl, c_buf1)
-!
-        call read_control_array_c2_r(ctl_file_code,                     &
-     &      hd_model_mat, mat%modelview_mat_ctl, c_buf1)
-!
-        call read_real_ctl_type(c_buf1, hd_view_rot_deg,                &
-     &        mat%view_rotation_deg_ctl)
-        call read_real_ctl_type(c_buf1, hd_scale_factor,                &
-     &        mat%scale_factor_ctl)
-      end do
-!
-      end subroutine read_view_transfer_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine read_projection_mat_ctl(mat)
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      if(right_begin_flag(hd_project_mat) .eq. 0) return
-      if (mat%i_project_mat.gt.0) return
-      do
-        call load_ctl_label_and_line
-!
-        mat%i_project_mat = find_control_end_flag(hd_project_mat)
-        if(mat%i_project_mat .gt. 0) exit
-!
-        call read_real_ctl_type(c_buf1, hd_perspect_angle,              &
-     &          mat%perspective_angle_ctl)
-        call read_real_ctl_type(c_buf1, hd_perspect_xy,                 &
-     &          mat%perspective_xy_ratio_ctl)
-        call read_real_ctl_type(c_buf1, hd_perspect_near,               &
-     &          mat%perspective_near_ctl)
-        call read_real_ctl_type(c_buf1, hd_perspect_far,                &
-     &          mat%perspective_far_ctl)
-      end do
-!
-      end subroutine read_projection_mat_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_image_size_ctl(mat)
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      if(right_begin_flag(hd_image_size) .eq. 0) return
-      if (mat%i_image_size.gt.0) return
-      do
-        call load_ctl_label_and_line
-!
-        mat%i_image_size = find_control_end_flag(hd_image_size)
-        if(mat%i_image_size .gt. 0) exit
-!
-        call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_x_pixel, mat%num_xpixel_ctl)
-        call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_y_pixel, mat%num_ypixel_ctl)
-      end do
-!
-      end subroutine read_image_size_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_stereo_view_ctl(mat)
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      if(right_begin_flag(hd_stereo_view) .eq. 0) return
-      if (mat%i_stereo_view.gt.0) return
-      do
-        call load_ctl_label_and_line
-!
-        mat%i_stereo_view = find_control_end_flag(hd_stereo_view)
-        if(mat%i_stereo_view .gt. 0) exit
-!
-        call read_real_ctl_type(c_buf1, hd_focalpoint,                  &
-     &      mat%focalpoint_ctl)
-        call read_real_ctl_type(c_buf1, hd_eye_separation,              &
-     &      mat%eye_separation_ctl)
-      end do
-!
-      end subroutine read_stereo_view_ctl
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_view_transfer_ctl(mat)

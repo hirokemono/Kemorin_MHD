@@ -20,6 +20,15 @@
 !!
 !!      subroutine bcast_pvr_sections_ctl(pvr_scts_c)
 !!
+!!      subroutine append_new_pvr_section_ctl(pvr_scts_c)
+!!        type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
+!!      subroutine dup_pvr_sections_ctl(org_pvr_scts_c, new_pvr_scts_c)
+!!      subroutine copy_pvr_sections_ctl                                &
+!!     &         (num_pvr_sect, org_pvr_sect_c, new_pvr_sect_c)
+!!        type(pvr_section_ctl), intent(in)                             &
+!!     &                       :: org_pvr_sect_c(num_pvr_sect)
+!!        type(pvr_section_ctl), intent(inout)                          &
+!!     &                       :: new_pvr_sect_c(num_pvr_sect)
 !!      subroutine dup_pvr_section_ctl(org_pvr_sect_c, new_pvr_sect_c)
 !!        type(pvr_section_ctl), intent(in) :: org_pvr_sect_c
 !!        type(pvr_section_ctl), intent(inout) :: new_pvr_sect_c
@@ -242,7 +251,7 @@
 !
       tmp_pvr_scts%num_pvr_sect_ctl = pvr_scts_c%num_pvr_sect_ctl
       call alloc_pvr_sections_ctl(tmp_pvr_scts)
-      call dup_pvr_sections_ctl(tmp_pvr_scts%num_pvr_sect_ctl,          &
+      call copy_pvr_sections_ctl(tmp_pvr_scts%num_pvr_sect_ctl,         &
      &    pvr_scts_c%pvr_sect_ctl, tmp_pvr_scts%pvr_sect_ctl)
 !
       call dealloc_pvr_sections_ctl(pvr_scts_c)
@@ -250,7 +259,7 @@
       pvr_scts_c%num_pvr_sect_ctl = tmp_pvr_scts%num_pvr_sect_ctl + 1
       call alloc_pvr_sections_ctl(pvr_scts_c)
 !
-      call dup_pvr_sections_ctl(tmp_pvr_scts%num_pvr_sect_ctl,          &
+      call copy_pvr_sections_ctl(tmp_pvr_scts%num_pvr_sect_ctl,         &
      &    tmp_pvr_scts%pvr_sect_ctl, pvr_scts_c%pvr_sect_ctl(1))
 !
       call dealloc_pvr_sections_ctl(tmp_pvr_scts)
@@ -259,7 +268,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dup_pvr_sections_ctl                                   &
+      subroutine dup_pvr_sections_ctl(org_pvr_scts_c, new_pvr_scts_c)
+!
+      type(pvr_sections_ctl), intent(in) :: org_pvr_scts_c
+      type(pvr_sections_ctl), intent(inout) :: new_pvr_scts_c
+!
+!
+      new_pvr_scts_c%num_pvr_sect_ctl = org_pvr_scts_c%num_pvr_sect_ctl
+      call alloc_pvr_sections_ctl(new_pvr_scts_c)
+      call copy_pvr_sections_ctl(org_pvr_scts_c%num_pvr_sect_ctl,       &
+     &    org_pvr_scts_c%pvr_sect_ctl, new_pvr_scts_c%pvr_sect_ctl)
+!
+      end subroutine dup_pvr_sections_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_pvr_sections_ctl                                  &
      &         (num_pvr_sect, org_pvr_sect_c, new_pvr_sect_c)
 !
       integer(kind = kint), intent(in) :: num_pvr_sect
@@ -273,7 +297,7 @@
         call dup_pvr_section_ctl(org_pvr_sect_c(i), new_pvr_sect_c(i))
       end do
 !
-      end subroutine dup_pvr_sections_ctl
+      end subroutine copy_pvr_sections_ctl
 !
 !  ---------------------------------------------------------------------
 !
