@@ -81,7 +81,7 @@
       call bcast_sph_shell_define_ctl(gen_SPH_ctl)
 !
       if(gen_SPH_ctl%psph_ctl%ifile_sph_shell .gt. 0) then
-        call read_ctl_file_gen_shell_grids(gen_SPH_ctl%psph_ctl)
+        call bcast_parallel_shell_ctl(gen_SPH_ctl%psph_ctl)
       end if
 !
       end subroutine read_control_4_const_shell
@@ -105,7 +105,7 @@
         call read_control_platforms                                     &
      &     (hd_platform, i_platform, gen_SPH_ctl%plt)
         call read_parallel_shell_in_MHD_ctl                             &
-     &     (hd_sph_shell, gen_SPH_ctl%psph_ctl)
+     &     (ctl_file_code, hd_sph_shell, gen_SPH_ctl%psph_ctl, c_buf1)
       end do
 !
       end subroutine read_sph_shell_define_ctl

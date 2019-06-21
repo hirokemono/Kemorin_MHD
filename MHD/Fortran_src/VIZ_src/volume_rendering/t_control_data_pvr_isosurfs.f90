@@ -136,9 +136,11 @@
       type(pvr_isosurfs_ctl), intent(inout) :: pvr_isos_c
 !
 !
-      call reset_pvr_isosurfs_ctl                                       &
+      if(allocated(pvr_isos_c%pvr_iso_ctl)) then
+        call reset_pvr_isosurfs_ctl                                     &
      &    (pvr_isos_c%num_pvr_iso_ctl, pvr_isos_c%pvr_iso_ctl)
-      deallocate(pvr_isos_c%pvr_iso_ctl)
+        deallocate(pvr_isos_c%pvr_iso_ctl)
+      end if
 !
       pvr_isos_c%num_pvr_iso_ctl = 0
 !
@@ -214,6 +216,7 @@
       call copy_pvr_isosurfs_ctl(tmp_pvr_isos%num_pvr_iso_ctl,          &
      &    pvr_isos_c%pvr_iso_ctl, tmp_pvr_isos%pvr_iso_ctl)
 !
+      write(*,*) 'Aho a'
       call dealloc_pvr_isosurfs_ctl(pvr_isos_c)
 !
       pvr_isos_c%num_pvr_iso_ctl = tmp_pvr_isos%num_pvr_iso_ctl + 1
@@ -222,6 +225,7 @@
       call copy_pvr_isosurfs_ctl(tmp_pvr_isos%num_pvr_iso_ctl,          &
      &    tmp_pvr_isos%pvr_iso_ctl, pvr_isos_c%pvr_iso_ctl(1))
 !
+      write(*,*) 'Aho b'
       call dealloc_pvr_isosurfs_ctl(tmp_pvr_isos)
 !
       end subroutine append_new_pvr_isosurf_ctl

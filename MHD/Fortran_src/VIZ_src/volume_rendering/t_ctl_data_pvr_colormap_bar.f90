@@ -8,9 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine read_control_pvr_colormap_file                       &
-!!     &         (id_control, color_file_name, cmap_cbar_c)
-!!      subroutine read_control_lic_colormap_file                       &
-!!     &         (id_control, color_file_name, cmap_cbar_c)
+!!     &         (id_control, color_file_name, hd_block, cmap_cbar_c)
 !!        type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
 !!
 !!      subroutine read_pvr_cmap_cbar                                   &
@@ -108,20 +106,11 @@
         integer (kind=kint) :: i_cmap_cbar = 0
       end type pvr_colormap_bar_ctl
 !
-!
-!     Top level of colormap and colorbar
-!
-      character(len=kchara), parameter                                  &
-     &                    :: hd_pvr_colordef =  'pvr_color_ctl'
-      character(len=kchara), parameter                                  &
-     &                    :: hd_lic_colordef =  'LIC_color_ctl'
-!
 !     2nd level for colormap and colorbar
 !
       character(len=kchara) :: hd_pvr_colorbar =  'colorbar_ctl'
       character(len=kchara) :: hd_colormap =      'colormap_ctl'
 !
-      private :: hd_pvr_colordef, hd_lic_colordef
       private :: hd_colormap, hd_pvr_colorbar
 !
 !  ---------------------------------------------------------------------
@@ -131,10 +120,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_control_pvr_colormap_file                         &
-     &         (id_control, color_file_name, cmap_cbar_c)
+     &         (id_control, color_file_name, hd_block, cmap_cbar_c)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: color_file_name
+      character(len=kchara), intent(in) :: hd_block
       type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
 !
       type(buffer_for_control) :: c_buf1
@@ -150,37 +140,13 @@
 !
       do
         call load_one_line_from_control(id_control, c_buf1)
-        call read_pvr_cmap_cbar(id_control, hd_pvr_colordef,            &
+        call read_pvr_cmap_cbar(id_control, hd_block,                   &
      &      cmap_cbar_c, c_buf1)
         if(cmap_cbar_c%i_cmap_cbar .gt. 0) exit
       end do
       close(id_control)
 !
       end subroutine read_control_pvr_colormap_file
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_control_lic_colormap_file                         &
-     &         (id_control, color_file_name, cmap_cbar_c)
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: color_file_name
-      type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
-!
-      type(buffer_for_control) :: c_buf1
-!
-!
-      open(id_control, file = color_file_name, status='old')
-!
-      do
-        call load_one_line_from_control(id_control, c_buf1)
-        call read_pvr_cmap_cbar(id_control, hd_lic_colordef,            &
-     &      cmap_cbar_c, c_buf1)
-        if(cmap_cbar_c%i_cmap_cbar .gt. 0) exit
-      end do
-      close(id_control)
-!
-      end subroutine read_control_lic_colormap_file
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

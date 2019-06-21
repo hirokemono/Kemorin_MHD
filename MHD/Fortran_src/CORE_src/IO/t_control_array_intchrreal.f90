@@ -98,15 +98,8 @@
 !
       type(read_int_chara_real_item) :: read_icr
 !
-      character(len=kchara)  :: tmpchara
-      integer(kind = kint) :: ntmp = -1
-!
 !
       if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
-      read(c_buf%ctl_buffer,*,err=99,end=99) tmpchara, tmpchara, ntmp
-      if(ntmp .eq. 0) return
-!
-  99  continue
       if(array_icr%icou .gt. 0) return
 !
       read_icr%iflag = 0

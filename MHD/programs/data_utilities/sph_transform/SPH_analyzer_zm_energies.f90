@@ -217,6 +217,8 @@
       real(kind = kreal) :: ave_ratio
 !
 !
+      i_velo = 0
+      i_press = 0
       do i = 1, rj_fld%num_phys
         if     (rj_fld%phys_name(i) .eq. fhd_velo) then
           i_velo =  istack_comp(i- 1) + 1

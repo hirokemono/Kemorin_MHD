@@ -53,7 +53,6 @@
       integer(kind=kint) :: istep, icou, i_layer
       integer(kind=kint) :: ist_true, ied_true
       integer(kind=kint) :: nx_2, ny_2
-      integer :: num_pe
       real   (kind=kreal) :: rtmp
 !
       integer(kind=kint) :: nd, nxy, i1, ix, iy, iz, iii, itmp, j

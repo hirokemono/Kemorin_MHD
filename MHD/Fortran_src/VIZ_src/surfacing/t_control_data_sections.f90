@@ -68,8 +68,11 @@
 !
       type(section_controls), intent(inout) :: psf_ctls
 !
-      deallocate(psf_ctls%psf_ctl_struct)
-      deallocate(psf_ctls%fname_psf_ctl)
+      if(allocated(psf_ctls%fname_psf_ctl)) then
+        deallocate(psf_ctls%psf_ctl_struct)
+        deallocate(psf_ctls%fname_psf_ctl)
+      end if
+      psf_ctls%num_psf_ctl = 0
 !
       end subroutine dealloc_psf_ctl_stract
 !
@@ -80,6 +83,7 @@
      &         (id_control, hd_block, psf_ctls, c_buf)
 !
       use t_read_control_elements
+      use set_psf_iso_control
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -102,17 +106,15 @@
           call append_new_section_control(psf_ctls)
           psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl)                  &
      &        = third_word(c_buf)
+          call read_control_4_psf_file(id_control+2,                    &
+     &        psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl),             &
+     &        psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl))
         else if(check_begin_flag(c_buf, hd_block)) then
           call append_new_section_control(psf_ctls)
           psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl) = 'NO_FILE'
           call read_psf_control_data(id_control, hd_block,              &
      &        psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl), c_buf)
         end if
-      end do
-!
-      write(*,*) 'psf_ctls%num_psf_ctl', psf_ctls%num_psf_ctl
-      do i= 1, psf_ctls%num_psf_ctl
-        write(*,*) i, psf_ctls%fname_psf_ctl(i)
       end do
 !
       end subroutine read_files_4_psf_ctl
@@ -139,9 +141,7 @@
      &   (psf_ctls%fname_psf_ctl, int(kchara*psf_ctls%num_psf_ctl),     &
      &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
       do i_psf = 1, psf_ctls%num_psf_ctl
-        if(psf_ctls%fname_psf_ctl(i_psf) .eq. 'NO_FILE') then
-          call bcast_psf_control_data(psf_ctls%psf_ctl_struct(i_psf))
-        end if
+        call bcast_psf_control_data(psf_ctls%psf_ctl_struct(i_psf))
       end do
 !
       end subroutine bcast_files_4_psf_ctl
@@ -189,10 +189,8 @@
       integer(kind = kint) :: i
 !
       do i = 1, num_psf
-        if(org_psf_ctls%fname_psf_ctl(i) .eq. 'NO_FILE') then
-          call dup_control_4_psf(org_psf_ctls%psf_ctl_struct(i),        &
-              new_psf_ctls%psf_ctl_struct(i))
-        end if
+        call dup_control_4_psf(org_psf_ctls%psf_ctl_struct(i),          &
+            new_psf_ctls%psf_ctl_struct(i))
         new_psf_ctls%fname_psf_ctl(i) = org_psf_ctls%fname_psf_ctl(i)
       end do
 !

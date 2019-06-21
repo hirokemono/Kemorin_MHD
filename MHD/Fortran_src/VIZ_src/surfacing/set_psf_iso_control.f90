@@ -27,6 +27,11 @@
 !!        type(isosurface_define), intent(inout) :: iso_def(num_iso)
 !!        type(psf_local_data), intent(inout) :: iso_mesh(num_iso)
 !!        type(field_IO_params), intent(inout) :: iso_file_IO(num_iso)
+!!
+!!      subroutine read_control_4_psf_file                              &
+!!     &         (id_control, fname_psf_ctl, psf_ctl_struct)
+!!      subroutine read_control_4_iso_file                              &
+!!     &         (id_control, fname_iso_ctl, iso_ctl_struct)
 !!@endverbatim
 !
       module set_psf_iso_control
@@ -35,9 +40,6 @@
       use m_machine_parameter
 !
       implicit none
-!
-      integer(kind = kint), parameter :: psf_ctl_file_code = 11
-      integer(kind = kint), parameter :: iso_ctl_file_code = 11
 !
 !     Top level
       character(len=kchara), parameter                                  &
@@ -52,9 +54,6 @@
      &             :: hd_iso_ctl = 'isosurf_rendering'
       private :: hd_section_ctl, hd_psf_ctl
       private :: hd_isosurf_ctl, hd_iso_ctl
-!
-      private :: psf_ctl_file_code, iso_ctl_file_code
-      private :: read_control_4_psf, read_control_4_iso
 !
 !  ---------------------------------------------------------------------
 !
@@ -108,11 +107,8 @@
 !
 !
       do i = 1, num_psf
-        if (iflag_debug.eq.1) write(*,*) 'read_control_4_psf', i
-        call read_control_4_psf                                         &
-     &     (psf_ctls%fname_psf_ctl(i), psf_ctls%psf_ctl_struct(i))
+        call bcast_psf_control_data(psf_ctls%psf_ctl_struct(i))
       end do
-!
       do i = 1, num_psf
         call count_control_4_psf(psf_ctls%psf_ctl_struct(i),            &
      &      group%ele_grp, nod_fld%num_phys, nod_fld%phys_name,         &
@@ -170,10 +166,8 @@
 !
 !
       do i = 1, num_iso
-        call read_control_4_iso                                         &
-     &     (iso_ctls%fname_iso_ctl(i), iso_ctls%iso_ctl_struct(i))
+        call bcast_iso_control_data(iso_ctls%iso_ctl_struct(i))
       end do
-!
       do i = 1, num_iso
         call count_control_4_iso(iso_ctls%iso_ctl_struct(i),            &
      &      group%ele_grp, nod_fld%num_phys, nod_fld%phys_name,         &
@@ -206,65 +200,64 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_4_psf(fname_psf_ctl, psf_ctl_struct)
+      subroutine read_control_4_psf_file                                &
+     &         (id_control, fname_psf_ctl, psf_ctl_struct)
 !
-      use calypso_mpi
-      use m_read_control_elements
-!
+      use t_read_control_elements
       use t_control_data_4_psf
 !
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: fname_psf_ctl
       type(psf_ctl), intent(inout) :: psf_ctl_struct
 !
+      type(buffer_for_control) :: c_buf1
 !
-      if(fname_psf_ctl .eq. 'NO_FILE') return
 !
-      if(my_rank .eq. 0) then
-        open(psf_ctl_file_code, file=fname_psf_ctl, status='old')
+      write(*,*) 'read section control file: ', trim(fname_psf_ctl)
+      open(id_control, file=fname_psf_ctl, status='old')
 !
-        call load_ctl_label_and_line
-        call read_psf_control_data(psf_ctl_file_code, hd_section_ctl,   &
+      do
+        call load_one_line_from_control(id_control, c_buf1)
+        call read_psf_control_data(id_control, hd_section_ctl,          &
      &      psf_ctl_struct, c_buf1)
-        call read_psf_control_data(psf_ctl_file_code, hd_psf_ctl,       &
+        call read_psf_control_data(id_control, hd_psf_ctl,              &
      &      psf_ctl_struct, c_buf1)
+        if(psf_ctl_struct%i_psf_ctl .gt. 0) exit
+      end do
+      close(id_control)
 !
-        close(psf_ctl_file_code)
-      end if
-!
-      call bcast_psf_control_data(psf_ctl_struct)
-!
-      end subroutine read_control_4_psf
+      end subroutine read_control_4_psf_file
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_4_iso(fname_iso_ctl, iso_ctl_struct)
+      subroutine read_control_4_iso_file                                &
+     &         (id_control, fname_iso_ctl, iso_ctl_struct)
 !
-      use calypso_mpi
-      use m_read_control_elements
-!
+      use t_read_control_elements
       use t_control_data_4_iso
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: fname_iso_ctl
       type(iso_ctl), intent(inout) :: iso_ctl_struct
 !
+      type(buffer_for_control) :: c_buf1
 !
-      if(fname_iso_ctl .eq. 'NO_FILE') return
 !
-      if(my_rank .eq. 0) then
-        open(iso_ctl_file_code, file=fname_iso_ctl, status='old')
+      write(*,*) 'read isosurface control file: ', trim(fname_iso_ctl)
+      open(id_control, file=fname_iso_ctl, status='old')
 !
-        call load_ctl_label_and_line
+      do
+        call load_one_line_from_control(id_control, c_buf1)
         call read_iso_control_data                                      &
-     &     (iso_ctl_file_code, hd_isosurf_ctl, iso_ctl_struct, c_buf1)
+     &     (id_control, hd_isosurf_ctl, iso_ctl_struct, c_buf1)
         call read_iso_control_data                                      &
-     &     (iso_ctl_file_code, hd_iso_ctl, iso_ctl_struct, c_buf1)
-        close(iso_ctl_file_code)
-      end if
+     &     (id_control, hd_iso_ctl, iso_ctl_struct, c_buf1)
+        if(iso_ctl_struct%i_iso_ctl .gt. 0) exit
+      end do
+      close(id_control)
 !
-      call bcast_iso_control_data(iso_ctl_struct)
-!
-      end subroutine read_control_4_iso
+      end subroutine read_control_4_iso_file
 !
 !  ---------------------------------------------------------------------
 !

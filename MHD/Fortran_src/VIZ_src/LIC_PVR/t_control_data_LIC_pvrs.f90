@@ -68,14 +68,16 @@
       integer(kind = kint) :: i
 !
 !
-      do i = 1, lic_ctls%num_lic_ctl
-        call dealloc_lic_control_flags(lic_ctls%lic_ctl_type(i))
-        call deallocate_cont_dat_pvr(lic_ctls%pvr_ctl_type(i))
-      end do
+      if(allocated(lic_ctls%fname_lic_ctl)) then
+        do i = 1, lic_ctls%num_lic_ctl
+          call dealloc_lic_control_flags(lic_ctls%lic_ctl_type(i))
+          call deallocate_cont_dat_pvr(lic_ctls%pvr_ctl_type(i))
+        end do
 !
-      deallocate(lic_ctls%lic_ctl_type)
-      deallocate(lic_ctls%pvr_ctl_type)
-      deallocate(lic_ctls%fname_lic_ctl)
+        deallocate(lic_ctls%lic_ctl_type)
+        deallocate(lic_ctls%pvr_ctl_type)
+        deallocate(lic_ctls%fname_lic_ctl)
+      end if
       lic_ctls%num_lic_ctl = 0
 !
       end subroutine dealloc_lic_ctl_struct
@@ -108,9 +110,14 @@
           call append_new_lic_ctl_struct(lic_ctls)
           lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl)                  &
      &        = third_word(c_buf)
+          call read_control_lic_pvr_file(id_control+2,                  &
+     &        lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl),             &
+     &        hd_lic_ctl, hd_lic_colordef,                              &
+     &        lic_ctls%pvr_ctl_type(lic_ctls%num_lic_ctl),              &
+     &        lic_ctls%lic_ctl_type(lic_ctls%num_lic_ctl))
         end if
 !
-        if(right_begin_flag(hd_lic_ctl) .gt. 0) then
+        if(check_begin_flag(c_buf, hd_lic_ctl)) then
           call append_new_lic_ctl_struct(lic_ctls)
           lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl) = 'NO_FILE'
           call read_lic_pvr_ctl                                         &

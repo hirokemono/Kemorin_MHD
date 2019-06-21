@@ -197,24 +197,22 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(viewctl_file_name .eq. 'NO_FILE') then
-        write(*,*)  'Modelview control is included'
-        return
-      end if
-!
       write(*,*) 'Modelview control:', trim(viewctl_file_name)
-!
       open(id_control, file = viewctl_file_name, status='old')
 !
-      call load_one_line_from_control(id_control, c_buf1)
-      if(check_begin_flag(c_buf1, hd_view_transform)) then
-        call read_view_transfer_ctl(id_control, hd_view_transform,      &
-     &      mat, c_buf1)
-      else
+      do 
+        call load_one_line_from_control(id_control, c_buf1)
+        if(check_begin_flag(c_buf1, hd_view_transform)) then
+          call read_view_transfer_ctl(id_control, hd_view_transform,    &
+     &        mat, c_buf1)
+        end if
+        if(mat%i_view_transform .gt. 0) exit
+      end do
+      close(id_control)
+
+      if(mat%i_view_transform .eq. 0) then
         call calypso_mpi_abort(ierr_PVR, 'Set view matrix file')
       end if
-!
-      close(id_control)
 !
       end subroutine read_control_modelview_file
 !

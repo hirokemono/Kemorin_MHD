@@ -45,8 +45,7 @@
 !
 !
       do i = 1, num_fline
-        call read_fline_control_file(fline_ctls%fname_fline_ctl(i),     &
-     &      fline_ctls%fline_ctl_struct(i))
+        call bcast_field_line_ctl(fline_ctls%fline_ctl_struct(i))
       end do
 !
       end subroutine read_controls_4_fline

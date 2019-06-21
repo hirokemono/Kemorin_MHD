@@ -74,7 +74,6 @@
       character(len=kchara) :: tmpchara
 !
       integer(kind=kint) :: ix, iy, iz, j, istep
-      integer :: num_pe
 !
 !     set parameters
 !

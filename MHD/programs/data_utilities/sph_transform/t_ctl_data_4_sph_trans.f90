@@ -80,7 +80,6 @@
 !
       integer(kind=kint), private :: i_platform =         0
       integer(kind=kint), private :: i_org_data =         0
-      integer(kind=kint), private :: i_FEM_mesh =    0
       integer(kind=kint), private :: i_sph_trans_model =  0
       integer(kind=kint), private :: i_sph_trans_params = 0
       integer(kind=kint), private :: i_phys_values =      0
@@ -156,7 +155,7 @@
         call read_control_platforms                                     &
      &     (hd_org_data, i_org_data, spt_ctl%org_plt)
         call read_FEM_mesh_control                                      &
-     &     (hd_FEM_mesh, i_FEM_mesh, spt_ctl%Fmesh_ctl)
+     &     (ctl_file_code, hd_FEM_mesh, spt_ctl%Fmesh_ctl, c_buf1)
 !
         call read_sph_trans_model_ctl(spt_ctl)
         call read_sph_trans_params_ctl(spt_ctl)

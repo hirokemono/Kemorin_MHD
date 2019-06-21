@@ -202,6 +202,7 @@
       call deallocate_pvr_cmap_cbar(pvr_ctl%cmap_cbar_c)
 !
       call dealloc_pvr_render_area_ctl(pvr_ctl%render_area_c)
+      write(*,*) 'pvr_ctl%pvr_isos_c%pvr_iso_ctl', allocated(pvr_ctl%pvr_isos_c%pvr_iso_ctl)
       call dealloc_pvr_isosurfs_ctl(pvr_ctl%pvr_isos_c)
       call dealloc_pvr_sections_ctl(pvr_ctl%pvr_scts_c)
 !
@@ -255,16 +256,22 @@
 !
         if(check_file_flag(c_buf, hd_view_transform)) then
           pvr_ctl%view_file_ctl = third_word(c_buf)
+          call read_control_modelview_file                              &
+      &      (id_control+2, pvr_ctl%view_file_ctl, pvr_ctl%mat)
         else if(check_begin_flag(c_buf, hd_view_transform)) then
+          write(*,*)  'Modelview control is included'
           call read_view_transfer_ctl(id_control, hd_view_transform,    &
       &       pvr_ctl%mat, c_buf)
         end if
 !
         if(check_file_flag(c_buf, hd_pvr_colordef)) then
           pvr_ctl%color_file_ctl = third_word(c_buf)
+          call read_control_pvr_colormap_file                           &
+     &       (id_control+2, pvr_ctl%color_file_ctl, hd_pvr_colordef,    &
+     &        pvr_ctl%cmap_cbar_c)
         end if
 !
-        if(pvr_ctl%color_file_ctl .eq. 'NO_FILE') then
+        if(pvr_ctl%cmap_cbar_c%i_cmap_cbar .eq. 0) then
           call read_pvr_colordef_ctl(id_control, hd_pvr_colordef,       &
      &        pvr_ctl%cmap_cbar_c%color, c_buf)
           call read_pvr_colordef_ctl(id_control, hd_colormap,           &
@@ -330,7 +337,7 @@
 !
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if (pvr_ctl%i_pvr_ctl.gt.0) return
+      if(pvr_ctl%i_pvr_ctl .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit

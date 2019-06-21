@@ -7,10 +7,8 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine read_lic_controls                                    &
-!!     &         (hd_pvr_ctl, hd_pvr_colordef, num_lic_ctl,             &
-!!     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type,            &
-!!     &          cflag_update)
+!!      subroutine bcast_lic_controls                                   &
+!!     &         (num_lic_ctl, pvr_ctl_type, lic_ctl_type, cflag_update)
 !!        integer(kind = kint), intent(in) :: num_lic_ctl
 !!        type(pvr_parameter_ctl), intent(inout)                        &
 !!     &                        :: pvr_ctl_type(num_lic_ctl)
@@ -43,8 +41,6 @@
 !
       implicit  none
 !
-      integer(kind = kint), parameter :: lic_ctl_file_code = 11
-!
 !>      Structure of PVR field parameters
       type LIC_field_params
 !>        Structure for field parameter for PVR
@@ -57,20 +53,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_lic_controls                                      &
-     &         (hd_pvr_ctl, hd_pvr_colordef, num_lic_ctl,               &
-     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type,              &
-     &          cflag_update)
+      subroutine bcast_lic_controls                                     &
+     &         (num_lic_ctl, pvr_ctl_type, lic_ctl_type, cflag_update)
 !
-      use read_control_pvr_modelview
       use bcast_control_data_4_pvr
       use set_pvr_control
 !
       integer(kind = kint), intent(in) :: num_lic_ctl
-      character(len = kchara), intent(in)  :: hd_pvr_ctl
-      character(len = kchara), intent(in) :: hd_pvr_colordef
-      character(len = kchara), intent(in)                               &
-     &                         :: fname_lic_ctl(num_lic_ctl)
 !
       type(pvr_parameter_ctl), intent(inout)                            &
      &                        :: pvr_ctl_type(num_lic_ctl)
@@ -78,38 +67,19 @@
      &                        :: lic_ctl_type(num_lic_ctl)
       character(len=kchara), intent(inout) :: cflag_update
 !
-      integer(kind = kint) :: i_lic, i_psf
+      integer(kind = kint) :: i_lic
 !
 !
       if(pvr_ctl_type(1)%updated_ctl%iflag .gt. 0) then
         cflag_update = pvr_ctl_type(1)%updated_ctl%charavalue
       end if
 !
-      ctl_file_code = lic_ctl_file_code
       do i_lic = 1, num_lic_ctl
-        if(my_rank .eq. 0) then
-          call read_control_lic_pvr_file(ctl_file_code,                 &
-     &        fname_lic_ctl(i_lic), hd_pvr_ctl, hd_pvr_colordef,        &
-     &        pvr_ctl_type(i_lic), lic_ctl_type(i_lic))
-
-          call read_control_modelview_file                              &
-     &       (ctl_file_code, pvr_ctl_type(i_lic)%view_file_ctl,         &
-     &        pvr_ctl_type(i_lic)%mat)
-          call read_control_lic_colormap_file                           &
-     &       (ctl_file_code, pvr_ctl_type(i_lic)%color_file_ctl,        &
-     &        pvr_ctl_type(i_lic)%cmap_cbar_c)
-        end if
-!
-        do i_psf = 1, pvr_ctl_type(i_lic)%pvr_scts_c%num_pvr_sect_ctl
-          call read_control_pvr_section_def                             &
-     &       (pvr_ctl_type(i_lic)%pvr_scts_c%pvr_sect_ctl(i_psf))
-        end do
-!
         call bcast_vr_psf_ctl(pvr_ctl_type(i_lic))
         call bcast_lic_control_data(lic_ctl_type(i_lic))
       end do
 !
-      end subroutine read_lic_controls
+      end subroutine bcast_lic_controls
 !
 !  ---------------------------------------------------------------------
 !

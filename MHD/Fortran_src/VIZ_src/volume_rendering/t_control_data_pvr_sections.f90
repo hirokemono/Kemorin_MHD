@@ -13,7 +13,6 @@
 !!        type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
-!!      subroutine read_control_pvr_section_def(pvr_sect_ctl)
 !!      subroutine read_pvr_section_ctl                                 &
 !!     &         (id_control, hd_block, pvr_sect_ctl, c_buf)
 !!        type(pvr_section_ctl), intent(inout) :: pvr_sect_ctl
@@ -55,7 +54,7 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
       use t_control_data_4_psf
       use t_control_elements
       use t_control_array_character
@@ -82,6 +81,8 @@
       character(len=kchara) :: hd_pvr_opacity =   'opacity_ctl'
       private :: hd_pvr_opacity
 !
+      private :: read_control_pvr_section_def
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -93,9 +94,11 @@
       type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
 !
 !
-      call dealloc_pvr_sects_ctl                                        &
-     &   (pvr_scts_c%num_pvr_sect_ctl, pvr_scts_c%pvr_sect_ctl)
-      deallocate(pvr_scts_c%pvr_sect_ctl)
+     if(allocated(pvr_scts_c%pvr_sect_ctl)) then
+        call dealloc_pvr_sects_ctl                                      &
+     &     (pvr_scts_c%num_pvr_sect_ctl, pvr_scts_c%pvr_sect_ctl)
+        deallocate(pvr_scts_c%pvr_sect_ctl)
+      end if
 !
       pvr_scts_c%num_pvr_sect_ctl = 0
 !
@@ -145,33 +148,29 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_pvr_section_def(pvr_sect_ctl)
+      subroutine read_control_pvr_section_def                           &
+     &         (id_control, fname_sect_ctl, psf_c)
 !
-      use m_read_control_elements
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: fname_sect_ctl
+      type(psf_ctl), intent(inout) :: psf_c
 !
-      type(pvr_section_ctl), intent(inout) :: pvr_sect_ctl
-      integer(kind = kint), parameter :: psf_ctl_file_code = 11
+      type(buffer_for_control) :: c_buf1
 !
 !
-      if(my_rank .gt. 0) return
-      if(pvr_sect_ctl%fname_sect_ctl .eq. 'NO_FILE') return
-!
-      ctl_file_code = psf_ctl_file_code
-      write(*,*) 'Read ',  trim(pvr_sect_ctl%fname_sect_ctl),           &
-     &             'for surface definition'
-      open(ctl_file_code, file=pvr_sect_ctl%fname_sect_ctl,             &
-     &       status='old')
+      write(*,*) 'Read ', trim(fname_sect_ctl),                         &
+     &        ' for surface definition'
+      open(id_control, file = fname_sect_ctl, status='old')
 !
       do
-        call load_one_line_from_control(ctl_file_code, c_buf1)
-        if(right_begin_flag(hd_surface_define) .gt. 0) then
-          call read_section_def_control                                 &
-     &       (ctl_file_code, pvr_sect_ctl%psf_c, c_buf1)
+        call load_one_line_from_control(id_control, c_buf1)
+        if(check_begin_flag(c_buf1, hd_surface_define)) then
+          call read_section_def_control(id_control, psf_c, c_buf1)
           exit
         end if
       end do
 !
-      close(ctl_file_code)
+      close(id_control)
 !
       end subroutine read_control_pvr_section_def
 !
@@ -194,6 +193,8 @@
 !
         if(check_file_flag(c_buf, hd_surface_define)) then
           pvr_sect_ctl%fname_sect_ctl = third_word(c_buf)
+          call read_control_pvr_section_def(id_control+2,               &
+     &        pvr_sect_ctl%fname_sect_ctl, pvr_sect_ctl%psf_c)
         end if
         if(check_begin_flag(c_buf, hd_surface_define)) then
           pvr_sect_ctl%fname_sect_ctl = 'NO_FILE'
@@ -327,10 +328,8 @@
       type(pvr_section_ctl), intent(inout) :: new_pvr_sect_c
 !
 !
-      if(org_pvr_sect_c%fname_sect_ctl .eq. 'NO_FILE') then
-        call dup_control_4_psf                                          &
-     &     (org_pvr_sect_c%psf_c, new_pvr_sect_c%psf_c)
-      end if
+      call dup_control_4_psf                                            &
+     &   (org_pvr_sect_c%psf_c, new_pvr_sect_c%psf_c)
       new_pvr_sect_c%fname_sect_ctl = org_pvr_sect_c%fname_sect_ctl
 !
       call copy_real_ctl(org_pvr_sect_c%opacity_ctl,                    &

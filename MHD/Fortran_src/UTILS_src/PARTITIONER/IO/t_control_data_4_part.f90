@@ -115,7 +115,6 @@
 !
       integer(kind=kint) :: i_platform =   0
       integer(kind=kint) :: i_org_data =   0
-      integer(kind=kint) :: i_FEM_mesh =   0
 !
       integer (kind=kint) :: i_org_f_ctl =        0
       integer (kind=kint) :: i_ele_ordering_ctl = 0
@@ -185,7 +184,7 @@
       private :: hd_org_f_ctl
       private :: hd_platform, i_platform
       private :: hd_org_data, i_org_data
-      private :: hd_FEM_mesh, i_FEM_mesh
+      private :: hd_FEM_mesh
       private :: hd_ele_ordering_ctl, hd_decomp_ctl
       private :: i_ele_ordering_ctl, i_decomp_ctl
       private :: hd_nele_grp_ordering
@@ -268,7 +267,7 @@
      &     (hd_org_data, i_org_data, part_ctl%single_plt)
 !
         call read_FEM_mesh_control                                      &
-     &     (hd_FEM_mesh, i_FEM_mesh, part_ctl%part_Fmesh)
+     &     (ctl_file_code, hd_FEM_mesh, part_ctl%part_Fmesh, c_buf1)
 !
         call read_ctl_data_4_decomp(part_ctl)
         call read_ctl_data_4_ele_ordeirng(part_ctl)

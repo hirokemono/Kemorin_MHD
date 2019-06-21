@@ -87,7 +87,7 @@
       character(len=kchara) :: hd_pvr_streo =    'streo_imaging'
       character(len=kchara) :: hd_pvr_anaglyph = 'anaglyph_image'
 !
-      character(len=kchara) :: hd_lic_ctl = 'LIC_ctl'
+      character(len=kchara) :: hd_lic_control = 'LIC_ctl'
 !
 !     3rd level for surface_define
 !
@@ -105,7 +105,7 @@
 !
       private :: hd_lic_file_head, hd_lic_out_type, hd_pvr_rgba_type
       private :: hd_pvr_streo, hd_pvr_anaglyph, hd_pvr_updated
-      private :: hd_lic_ctl, hd_pvr_monitor
+      private :: hd_lic_control, hd_pvr_monitor
       private :: hd_plot_area
 !
 !  ---------------------------------------------------------------------
@@ -133,10 +133,13 @@
       write(*,*) 'LIC control file: ', trim(fname_lic_ctl)
 !
       open(id_control, file=fname_lic_ctl, status='old')
-      call load_ctl_label_and_line
-      call read_lic_pvr_ctl                                             &
+      do
+        call load_one_line_from_control(id_control, c_buf1)
+        call read_lic_pvr_ctl                                           &
      &     (id_control, hd_lic_ctl, hd_lic_colordef,                    &
      &      pvr_ctl_type, lic_ctl_type, c_buf1)
+        if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
+      end do
       close(id_control)
 !
       end subroutine read_control_lic_pvr_file
@@ -172,17 +175,22 @@
 !
 !
         if(check_file_flag(c_buf, hd_view_transform)) then
-           pvr%view_file_ctl = third_word(c_buf)
+          pvr%view_file_ctl = third_word(c_buf)
+          call read_control_modelview_file                              &
+     &       (id_control+2, pvr%view_file_ctl, pvr%mat)
         else if(check_begin_flag(c_buf, hd_view_transform)) then
+          write(*,*) 'Modelview control is included'
           call read_view_transfer_ctl(id_control, hd_view_transform,    &
      &        pvr%mat, c_buf)
         end if
 !
         if(check_file_flag(c_buf, hd_lic_colordef)) then
           pvr%color_file_ctl = third_word(c_buf)
+          call read_control_pvr_colormap_file(id_control+2,             &
+     &        pvr%color_file_ctl, hd_lic_colordef, pvr%cmap_cbar_c)
         end if
 !
-        if(pvr%color_file_ctl .eq. 'NO_FILE') then
+        if(pvr%cmap_cbar_c%i_cmap_cbar .eq. 0) then
           call read_pvr_colordef_ctl(id_control, hd_colormap,           &
      &        pvr%cmap_cbar_c%color, c_buf)
           call read_pvr_colordef_ctl(id_control, hd_lic_colordef,       &
@@ -210,7 +218,7 @@
      &      pvr%movie, c_buf)
 !
         call read_lic_control_data                                      &
-     &     (id_control, hd_lic_ctl, lic_ctl, c_buf)
+     &     (id_control, hd_lic_control, lic_ctl, c_buf)
 !
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_pvr_updated, pvr%updated_ctl)

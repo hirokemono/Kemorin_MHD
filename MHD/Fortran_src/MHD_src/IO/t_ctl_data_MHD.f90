@@ -135,7 +135,7 @@
      &     (hd_org_data, i_org_data, MHD_ctl%org_plt)
 !
         call read_parallel_shell_in_MHD_ctl                             &
-     &     (hd_sph_shell, MHD_ctl%psph_ctl)
+     &     (ctl_file_code, hd_sph_shell, MHD_ctl%psph_ctl, c_buf1)
 !
         call read_sph_mhd_model                                         &
      &     (hd_model, i_model, MHD_ctl%model_ctl)
@@ -150,7 +150,8 @@
         call s_read_sections_control_data                               &
      &     (ctl_file_code, MHD_ctl%psf_ctls, MHD_ctl%iso_ctls, c_buf1)
 !
-        call read_zonal_mean_control(MHD_ctl%zm_ctls)
+        call read_zonal_mean_control                                    &
+     &     (ctl_file_code, MHD_ctl%zm_ctls, c_buf1)
       end do
 !
       end subroutine read_sph_mhd_ctl_w_psf
@@ -177,7 +178,7 @@
      &     (hd_org_data, i_org_data, MHD_ctl%org_plt)
 !
         call read_parallel_shell_in_MHD_ctl                             &
-     &     (hd_sph_shell, MHD_ctl%psph_ctl)
+     &     (ctl_file_code, hd_sph_shell, MHD_ctl%psph_ctl, c_buf1)
 !
         call read_sph_mhd_model                                         &
      &     (hd_model, i_model, MHD_ctl%model_ctl)

@@ -363,17 +363,11 @@
 !
       integer(kind = kint) :: iflag = 0
       type(sph_filter_ctl_type) :: read_sfil_c
-      integer(kind = kint) :: ntmp = -1
-      character(len = kchara) :: tmpchara
 !
 !
-      read(c_buf%ctl_buffer,*,err=99,end=99) tmpchara, tmpchara, ntmp
-      if(ntmp .eq. 0) return
-!
-  99  continue
       if(sgs_ctl%num_sph_filter_ctl .gt. 0) return
-      sgs_ctl%num_sph_filter_ctl = 0
       iflag = 0
+      sgs_ctl%num_sph_filter_ctl = 0
       call alloc_sph_filter_ctl(sgs_ctl)
 !
       do

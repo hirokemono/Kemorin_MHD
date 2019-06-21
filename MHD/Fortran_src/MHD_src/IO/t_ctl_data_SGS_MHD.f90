@@ -122,7 +122,7 @@
       call bcast_sph_mhd_control_data(MHD_ctl)
 !
       if(MHD_ctl%psph_ctl%ifile_sph_shell .gt. 0) then
-       call read_ctl_file_gen_shell_grids(MHD_ctl%psph_ctl)
+        call bcast_parallel_shell_ctl(MHD_ctl%psph_ctl)
       end if
 !
       end subroutine read_control_4_sph_SGS_MHD
@@ -174,7 +174,7 @@
      &     (hd_new_data, i_new_data, MHD_ctl%new_plt)
 !
         call read_parallel_shell_in_MHD_ctl                             &
-     &     (hd_sph_shell, MHD_ctl%psph_ctl)
+     &     (ctl_file_code, hd_sph_shell, MHD_ctl%psph_ctl, c_buf1)
 !
         call read_sph_sgs_mhd_model                                     &
      &     (hd_model, i_model, MHD_ctl%model_ctl)
@@ -189,7 +189,8 @@
         call read_viz_controls                                          &
      &     (ctl_file_code, MHD_ctl%viz_ctls, c_buf1)
 !
-        call read_zonal_mean_control(MHD_ctl%zm_ctls)
+        call read_zonal_mean_control                                    &
+     &     (ctl_file_code, MHD_ctl%zm_ctls, c_buf1)
       end do
 !
       end subroutine read_sph_mhd_control_data

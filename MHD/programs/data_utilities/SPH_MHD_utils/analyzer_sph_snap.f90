@@ -258,8 +258,8 @@
 !*  ----------- Visualization --------------
 !*
       do
-        visval = check_PVR_update                                       &
-     &         (MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr)
+        call check_PVR_update(ctl_file_code,                            &
+     &      MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr, visval)
         call calypso_mpi_barrier
 !
         if(visval .eq. IFLAG_TERMINATE) then
@@ -273,6 +273,8 @@
           end if
 !
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+          call read_ctl_pvr_files_4_update                              &
+     &       (ctl_file_code, MHD_ctl1%viz_ctls%pvr_ctls)
           call PVR_initialize(FEM_d1%geofem, FEM_d1%field,              &
      &        MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr)
           call calypso_MPI_barrier

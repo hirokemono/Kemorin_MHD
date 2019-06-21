@@ -6,8 +6,6 @@
 !>@brief control data for cross sections
 !!
 !!@verbatim
-!!      subroutine read_fline_control_file                              &
-!!     &         (hd_fline_ctl, fname_fline_ctl, fline_ctl_struct)
 !!      subroutine read_files_4_fline_ctl                               &
 !!     &         (id_control, hd_block, fline_ctls, c_buf)
 !!      subroutine bcast_files_4_fline_ctl(fline_ctls)
@@ -30,8 +28,6 @@
 !
       implicit  none
 !
-      integer(kind = kint), parameter :: fline_ctl_file_code = 11
-!
       type fieldline_controls
         integer(kind = kint) :: num_fline_ctl = 0
         character(len = kchara), allocatable :: fname_fline_ctl(:)
@@ -40,10 +36,7 @@
 !
 !      fieldline flag
 !
-      character(len=kchara), parameter :: hd_fline_ctl =  'fieldline'
-!
-      private :: fline_ctl_file_code
-      private :: alloc_fline_ctl_struct
+      private :: read_fline_control_file, alloc_fline_ctl_struct
       private :: append_new_fline_control
       private :: dup_control_4_flines, dealloc_cont_dat_4_flines
 !
@@ -53,31 +46,30 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_fline_control_file                                &
-     &         (fname_fline_ctl, fline_ctl_struct)
+      subroutine read_fline_control_file(id_control, fname_fline_ctl,   &
+     &          hd_block, fline_ctl_struct)
 !
       use t_control_data_4_fline
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: fname_fline_ctl
+      character(len=kchara), intent(in) :: hd_block
       type(fline_ctl), intent(inout)  :: fline_ctl_struct
 !
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(fname_fline_ctl .eq. 'NO_FILE') return
+      write(*,*) 'read fieldline control file: ', trim(fname_fline_ctl)
       call reset_fline_control_flags(fline_ctl_struct)
+      open(id_control, file=fname_fline_ctl, status='old')
 !
-      if(my_rank .eq. 0) then
-        open(fline_ctl_file_code, file=fname_fline_ctl,                 &
-     &         status='old')
-        call load_one_line_from_control(fline_ctl_file_code, c_buf1)
-!
-        call read_field_line_ctl(fline_ctl_file_code, hd_fline_ctl,     &
+      do
+        call load_one_line_from_control(id_control, c_buf1)
+        call read_field_line_ctl(id_control, hd_block,                  &
      &      fline_ctl_struct, c_buf1)
-        close(fline_ctl_file_code)
-      end if
-!
-      call bcast_field_line_ctl(fline_ctl_struct)
+        if(fline_ctl_struct%i_vr_fline_ctl .gt. 0) exit
+      end do
+      close(id_control)
 !
       end subroutine read_fline_control_file
 !
@@ -109,6 +101,10 @@
           call append_new_fline_control(fline_ctls)
           fline_ctls%fname_fline_ctl(fline_ctls%num_fline_ctl)          &
      &        = third_word(c_buf)
+          call read_fline_control_file(id_control+2,                    &
+     &        fline_ctls%fname_fline_ctl(fline_ctls%num_fline_ctl),     &
+     &        hd_block,                                                 &
+     &        fline_ctls%fline_ctl_struct(fline_ctls%num_fline_ctl))
         end if
 !
         if(check_begin_flag(c_buf, hd_block)) then
@@ -157,8 +153,11 @@
 !
       type(fieldline_controls), intent(inout) :: fline_ctls
 !
-      deallocate(fline_ctls%fname_fline_ctl)
-      deallocate(fline_ctls%fline_ctl_struct)
+      if(allocated(fline_ctls%fline_ctl_struct)) then
+        deallocate(fline_ctls%fname_fline_ctl)
+        deallocate(fline_ctls%fline_ctl_struct)
+      end if
+      fline_ctls%num_fline_ctl = 0
 !
       end subroutine dealloc_fline_fhead_ctl
 !
@@ -216,10 +215,8 @@
       integer(kind = kint) :: i
 !
       do i = 1, num_fline
-        if(org_fline_ctls%fname_fline_ctl(i) .eq. 'NO_FILE') then
-          call dup_control_4_fline(org_fline_ctls%fline_ctl_struct(i),  &
+        call dup_control_4_fline(org_fline_ctls%fline_ctl_struct(i),    &
               new_fline_ctls%fline_ctl_struct(i))
-        end if
         new_fline_ctls%fname_fline_ctl(i)                               &
      &           = org_fline_ctls%fname_fline_ctl(i)
       end do

@@ -80,6 +80,7 @@
      &             :: hd_pvr_ctl = 'volume_rendering'
       character(len=kchara), parameter                                  &
      &             :: hd_lic_ctl = 'LIC_rendering'
+      character(len=kchara), parameter :: hd_fline_ctl =  'fieldline'
 !
 !      Deprecated labels
       character(len=kchara), parameter                                  &

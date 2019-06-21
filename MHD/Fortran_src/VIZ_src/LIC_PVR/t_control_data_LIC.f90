@@ -179,6 +179,7 @@
       private :: hd_reflection_ref_type, hd_referection_parameter
 !
       private :: read_lic_masking_ctl_array
+      private :: alloc_lic_masking_ctl, dealloc_lic_masking_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -272,7 +273,7 @@
 !
       if(allocated(lic_ctl%mask_ctl)) return
       lic_ctl%num_masking_ctl = 0
-      allocate(lic_ctl%mask_ctl(lic_ctl%num_masking_ctl))
+      call alloc_lic_masking_ctl(lic_ctl)
 !
       do
         call load_one_line_from_control(id_control, c_buf)
@@ -326,9 +327,8 @@
       if(lic_ctl%num_masking_ctl .gt. 0) then
         call dealloc_lic_masking_ctls                                   &
      &     (lic_ctl%num_masking_ctl, lic_ctl%mask_ctl)
-        deallocate(lic_ctl%mask_ctl)
       end if
-      lic_ctl%num_masking_ctl =  0
+      call dealloc_lic_masking_ctl(lic_ctl)
 !
       lic_ctl%i_lic_control = 0
 !
@@ -377,9 +377,8 @@
 !
       call MPI_BCAST(lic_ctl%num_masking_ctl,  1,                       &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      if(my_rank .ne. 0) then
-        allocate(lic_ctl%mask_ctl(lic_ctl%num_masking_ctl))
-      end if
+!
+      if(my_rank .ne. 0) call alloc_lic_masking_ctl(lic_ctl)
       do i = 1, lic_ctl%num_masking_ctl
         call bcast_lic_masking_ctl_data(lic_ctl%mask_ctl(i))
       end do
@@ -470,10 +469,10 @@
 !
       call dealloc_lic_masking_ctls                                     &
      &   (lic_ctl%num_masking_ctl, lic_ctl%mask_ctl)
-      deallocate(lic_ctl%mask_ctl)
+      call dealloc_lic_masking_ctl(lic_ctl)
 !
       lic_ctl%num_masking_ctl = ntmp_masking + 1
-      allocate(lic_ctl%mask_ctl(lic_ctl%num_masking_ctl))
+      call alloc_lic_masking_ctl(lic_ctl)
       call dup_lic_masking_ctls                                         &
      &   (ntmp_masking, tmp_mask_c, lic_ctl%mask_ctl(1))
 !
@@ -481,6 +480,32 @@
       deallocate(tmp_mask_c)
 !
       end subroutine append_new_lic_masking_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_lic_masking_ctl(lic_ctl)
+!
+      type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!
+!
+      allocate(lic_ctl%mask_ctl(lic_ctl%num_masking_ctl))
+!
+      end subroutine alloc_lic_masking_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_lic_masking_ctl(lic_ctl)
+!
+      type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!
+!
+      if(allocated(lic_ctl%mask_ctl)) then
+        deallocate(lic_ctl%mask_ctl)
+      end if
+      lic_ctl%num_masking_ctl = 0
+!
+      end subroutine dealloc_lic_masking_ctl
 !
 !  ---------------------------------------------------------------------
 !

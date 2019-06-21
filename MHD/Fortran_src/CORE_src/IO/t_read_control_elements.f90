@@ -178,11 +178,18 @@
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
 !
+      character(len=kchara)  :: tmpchara
+      integer(kind = kint) :: ntmp = -1
+!
 !
       check_array_flag = .FALSE.
-      if(cmp_no_case(first_word(c_buf), hd_array)) then
-        check_array_flag = cmp_no_case(second_word(c_buf), label)
-      end if
+      if(cmp_no_case(first_word(c_buf), hd_array) .eqv. .FALSE.) return
+      if(cmp_no_case(second_word(c_buf), label) .eqv. .FALSE.) return
+      read(c_buf%ctl_buffer,*,err=99,end=99) tmpchara, tmpchara, ntmp
+      if(ntmp .eq. 0) return
+!
+  99  continue
+      check_array_flag = cmp_no_case(second_word(c_buf), label)
 !
       end function check_array_flag
 !

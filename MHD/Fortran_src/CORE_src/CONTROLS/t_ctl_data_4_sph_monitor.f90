@@ -122,6 +122,8 @@
 !
       private :: read_volume_spectr_ctl
       private :: append_volume_spectr_ctls
+      private :: alloc_volume_spectr_control
+      private :: dealloc_volume_spectr_control
 !
 ! -----------------------------------------------------------------------
 !
@@ -187,18 +189,12 @@
 !
       integer(kind = kint) :: iflag = 0
       type(volume_spectr_control) :: read_vpwr
-      integer(kind = kint) :: ntmp = -1
-      character(len = kchara) :: tmpchara
 !
 !
-      read(c_buf%ctl_buffer,*,err=99,end=99) tmpchara, tmpchara, ntmp
-      if(ntmp .eq. 0) return
-!
-  99  continue
       if(smonitor_ctl%num_vspec_ctl .gt. 0) return
-      smonitor_ctl%num_vspec_ctl = 0
       iflag = 0
-      allocate(smonitor_ctl%v_pwr(smonitor_ctl%num_vspec_ctl))
+      smonitor_ctl%num_vspec_ctl = 0
+      call alloc_volume_spectr_control(smonitor_ctl)
 !
       do
         call load_one_line_from_control(id_control, c_buf)
@@ -237,8 +233,7 @@
       do i = 1, smonitor_ctl%num_vspec_ctl
        call reset_volume_spectr_control(smonitor_ctl%v_pwr(i))
       end do
-      deallocate(smonitor_ctl%v_pwr)
-      smonitor_ctl%num_vspec_ctl = 0
+      call dealloc_volume_spectr_control(smonitor_ctl)
 !
       end subroutine dealloc_sph_monitoring_ctl
 !
@@ -259,9 +254,9 @@
       call copy_volume_spectr_ctls                                      &
      &   (num_tmp, smonitor_ctl%v_pwr, tmp_vpwr)
 !
-      deallocate(smonitor_ctl%v_pwr)
-      smonitor_ctl%num_vspec_ctl = smonitor_ctl%num_vspec_ctl + 1
-      allocate(smonitor_ctl%v_pwr(smonitor_ctl%num_vspec_ctl))
+      call dealloc_volume_spectr_control(smonitor_ctl)
+      smonitor_ctl%num_vspec_ctl = num_tmp + 1
+      call alloc_volume_spectr_control(smonitor_ctl)
 !
       call copy_volume_spectr_ctls                                      &
      &   (num_tmp, tmp_vpwr, smonitor_ctl%v_pwr(1))
@@ -272,6 +267,28 @@
       call reset_volume_spectr_control(add_vpwr)
 !
       end subroutine append_volume_spectr_ctls
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_volume_spectr_control(smonitor_ctl)
+!
+      type(sph_monitor_control), intent(inout) :: smonitor_ctl
+!
+      allocate(smonitor_ctl%v_pwr(smonitor_ctl%num_vspec_ctl))
+!
+      end subroutine alloc_volume_spectr_control
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_volume_spectr_control(smonitor_ctl)
+!
+      type(sph_monitor_control), intent(inout) :: smonitor_ctl
+!
+      if(allocated(smonitor_ctl%v_pwr)) deallocate(smonitor_ctl%v_pwr)
+      smonitor_ctl%num_vspec_ctl = 0
+!
+      end subroutine dealloc_volume_spectr_control
 !
 ! -----------------------------------------------------------------------
 !

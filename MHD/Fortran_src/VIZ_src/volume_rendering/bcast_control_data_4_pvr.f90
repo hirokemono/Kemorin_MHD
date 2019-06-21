@@ -115,6 +115,7 @@
       new_pvr%color_file_ctl = org_pvr%color_file_ctl
 !
       call dup_pvr_isosurfs_ctl(org_pvr%pvr_isos_c, new_pvr%pvr_isos_c)
+      write(*,*) 'duplicate', allocated(org_pvr%pvr_isos_c%pvr_iso_ctl)
       call dup_pvr_sections_ctl(org_pvr%pvr_scts_c, new_pvr%pvr_scts_c)
 !
       call dup_lighting_ctl(org_pvr%light, new_pvr%light)

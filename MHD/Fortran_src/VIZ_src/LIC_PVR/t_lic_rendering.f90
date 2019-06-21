@@ -7,7 +7,9 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
-!!      integer(kind = kint), function check_LIC_update(lic_ctls, lic)
+!!      subroutine check_LIC_update                                     &
+!!     &         (id_control, lic_ctls, lic, iflag_update)
+!!      subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
 !!      subroutine LIC_initialize(fem, nod_fld, lic_ctls, lic)
 !!      subroutine LIC_visualize(istep_pvr, fem, jacs, nod_fld, lic)
 !!      subroutine dealloc_LIC_data(lic)
@@ -76,40 +78,68 @@
 !
 !  ---------------------------------------------------------------------
 !
-      integer(kind = kint) function check_LIC_update(lic_ctls, lic)
+      subroutine check_LIC_update                                       &
+     &         (id_control, lic_ctls, lic, iflag_update)
 !
       use set_pvr_control
       use skip_comment_f
 !
+      integer(kind = kint), intent(in) :: id_control
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(lic_volume_rendering_module), intent(inout) :: lic
+      integer(kind = kint), intent(inout) :: iflag_update
 !
       character(len = kchara) :: tmpchara
 !
 !
       call calypso_mpi_barrier
-      call read_control_pvr_update(hd_lic_ctl,                          &
-     &    lic_ctls%fname_lic_ctl(1), lic_ctls%pvr_ctl_type(1))
-!
       if(my_rank .eq. izero) then
-        check_LIC_update = IFLAG_THROUGH
+        call read_control_pvr_update                                    &
+     &     (id_control, lic_ctls%fname_lic_ctl(1),                      &
+     &      hd_lic_ctl, lic_ctls%pvr_ctl_type(1))
+!
+        iflag_update = IFLAG_THROUGH
         if(lic_ctls%pvr_ctl_type(1)%updated_ctl%iflag .gt. 0) then
           tmpchara = lic_ctls%pvr_ctl_type(1)%updated_ctl%charavalue
           if(cmp_no_case(tmpchara, 'end')) then
-            check_LIC_update = IFLAG_TERMINATE
+            iflag_update = IFLAG_TERMINATE
           else if(lic%pvr%cflag_update .ne. tmpchara) then
-            check_LIC_update = IFLAG_UPDATE
+            iflag_update = IFLAG_UPDATE
             lic%pvr%cflag_update = tmpchara
           end if
         end if
         call reset_pvr_update_flags(lic_ctls%pvr_ctl_type(1))
       end if
-      call mpi_Bcast(check_LIC_update, 1, CALYPSO_INTEGER, 0,           &
+      call mpi_Bcast(iflag_update, 1, CALYPSO_INTEGER, 0,               &
      &    CALYPSO_COMM, ierr_MPI)
 !
-      end function check_LIC_update
+      end subroutine check_LIC_update
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
+!
+      use t_read_control_elements
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: id_control
+      type(lic_rendering_controls), intent(inout) :: lic_ctls
+!
+      integer(kind = kint) :: i_lic
+!
+!
+      do i_lic = 1, lic_ctls%num_lic_ctl
+        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE') then
+          call read_control_lic_pvr_file                                &
+     &     (id_control, lic_ctls%fname_lic_ctl(i_lic),                  &
+     &      hd_lic_ctl, hd_lic_colordef,                                &
+     &      lic_ctls%pvr_ctl_type(i_lic), lic_ctls%lic_ctl_type(i_lic))
+        end if
+      end do
+!
+      end subroutine read_ctl_lic_pvr_files_4_update
+!
+!   --------------------------------------------------------------------
 !
       subroutine LIC_initialize(fem, nod_fld, lic_ctls, lic)
 !
@@ -131,8 +161,7 @@
         return
       end if
 !
-      call read_lic_controls(hd_lic_ctl, hd_pvr_colordef,               &
-     &    lic_ctls%num_lic_ctl, lic_ctls%fname_lic_ctl,                 &
+      call bcast_lic_controls(lic_ctls%num_lic_ctl,                     &
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
      &    lic%pvr%cflag_update)
 !
@@ -158,8 +187,11 @@
      &    lic%lic_fld, lic%pvr%pvr_param)
 !
       do i_lic = 1, lic_ctls%num_lic_ctl
-        call dealloc_lic_count_data                                     &
-     &     (lic_ctls%pvr_ctl_type(i_lic), lic_ctls%lic_ctl_type(i_lic))
+        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
+     &      .or. my_rank .ne. 0) then
+          call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
+     &        lic_ctls%lic_ctl_type(i_lic))
+        end if
       end do
 !
       do i_lic = 1, lic%pvr%num_pvr

@@ -10,7 +10,7 @@
 !!      subroutine read_files_4_pvr_ctl                                 &
 !!     &         (id_control, hd_pvr_ctl, pvr_ctls, c_buf)
 !!      subroutine bcast_files_4_pvr_ctl(pvr_ctls)
-!
+!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array  volume_rendering  1
 !!      file  volume_rendering  'ctl_pvr_temp'
@@ -64,12 +64,15 @@
       integer(kind = kint) :: i
 !
 !
-      do i = 1, pvr_ctls%num_pvr_ctl
-        call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i))
-      end do
+      if(allocated(pvr_ctls%fname_pvr_ctl)) then
+        do i = 1, pvr_ctls%num_pvr_ctl
+          call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i))
+        end do
 !
-      deallocate(pvr_ctls%pvr_ctl_type)
-      deallocate(pvr_ctls%fname_pvr_ctl)
+        deallocate(pvr_ctls%pvr_ctl_type)
+        deallocate(pvr_ctls%fname_pvr_ctl)
+      end if
+      pvr_ctls%num_pvr_ctl = 0
 !
       end subroutine dealloc_pvr_ctl_struct
 !
@@ -81,6 +84,7 @@
 !
       use t_read_control_elements
       use skip_comment_f
+      use set_pvr_control
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: hd_pvr_ctl
@@ -101,9 +105,13 @@
           call append_new_pvr_ctl_struct(pvr_ctls)
           pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl)                  &
      &        = third_word(c_buf)
+          call read_control_pvr_file(id_control+2,                      &
+     &        pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl),             &
+     &        hd_pvr_ctl, hd_pvr_colordef,                              &
+     &        pvr_ctls%pvr_ctl_type(pvr_ctls%num_pvr_ctl))
         end if
 !
-        if(right_begin_flag(hd_pvr_ctl) .gt. 0) then
+        if(check_begin_flag(c_buf, hd_pvr_ctl)) then
           call append_new_pvr_ctl_struct(pvr_ctls)
           pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl) = 'NO_FILE'
           call read_pvr_ctl(id_control, hd_pvr_ctl, hd_pvr_colordef,    &
@@ -149,12 +157,14 @@
       call alloc_pvr_ctl_struct(tmp_pvrs_c)
       call dup_pvr_ctl_struct                                           &
      &   (pvr_ctls%num_pvr_ctl, pvr_ctls, tmp_pvrs_c)
+      write(*,*) 'Tako'
       call dealloc_pvr_ctl_struct(pvr_ctls)
 !
       pvr_ctls%num_pvr_ctl = tmp_pvrs_c%num_pvr_ctl + 1
       call alloc_pvr_ctl_struct(pvr_ctls)
       call dup_pvr_ctl_struct                                           &
      &   (tmp_pvrs_c%num_pvr_ctl, tmp_pvrs_c, pvr_ctls)
+      write(*,*) 'TakoTako'
       call dealloc_pvr_ctl_struct(tmp_pvrs_c)
 !
       end subroutine append_new_pvr_ctl_struct

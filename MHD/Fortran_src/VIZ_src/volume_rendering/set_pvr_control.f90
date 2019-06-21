@@ -6,8 +6,10 @@
 !>@brief Set PVR parameters from control files
 !!
 !!@verbatim
-!!      subroutine read_pvr_controls(hd_pvr_ctl, hd_pvr_colordef,       &
-!!     &          num_pvr_ctl, fname_pvr_ctl, pvr_ctl, cflag_update)
+!!      subroutine read_control_pvr_file(id_control, fname_pvr_ctl,     &
+!!     &          hd_pvr_ctl, hd_pvr_colordef, pvr_ctl_type)
+!!      subroutine bcast_pvr_controls                                   &
+!!     &         (num_pvr_ctl, pvr_ctl, cflag_update)
 !!        integer(kind = kint), intent(in) :: num_pvr_ctl
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl(num_pvr_ctl)
 !!      subroutine s_set_pvr_controls(group, nod_fld,                   &
@@ -19,7 +21,7 @@
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
 !!
 !!      subroutine read_control_pvr_update                              &
-!!     &         (hd_pvr_ctl, fname_pvr_ctl, pvr_ctl_type)
+!!     &         (id_control, fname_pvr_ctl, hd_pvr_ctl, pvr_ctl_type)
 !!      subroutine flush_each_pvr_control(pvr_param)
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!@endverbatim
@@ -35,58 +37,35 @@
 !
       integer(kind = kint), parameter :: pvr_ctl_file_code = 11
 !
-      private :: read_control_pvr
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_controls(hd_pvr_ctl, hd_pvr_colordef,         &
-     &          num_pvr_ctl, fname_pvr_ctl, pvr_ctl, cflag_update)
+      subroutine bcast_pvr_controls                                     &
+     &         (num_pvr_ctl, pvr_ctl, cflag_update)
 !
       use read_control_pvr_modelview
       use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: num_pvr_ctl
-      character(len = kchara), intent(in)  :: hd_pvr_ctl
-      character(len = kchara), intent(in) :: hd_pvr_colordef
-      character(len = kchara), intent(in)                               &
-     &                        :: fname_pvr_ctl(num_pvr_ctl)
 !
       character(len=kchara), intent(inout) :: cflag_update
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl(num_pvr_ctl)
 !
-      integer(kind = kint) :: i_pvr, i_psf
+      integer(kind = kint) :: i_pvr
 !
 !
       if(pvr_ctl(1)%updated_ctl%iflag .gt. 0) then
         cflag_update = pvr_ctl(1)%updated_ctl%charavalue
       end if
 !
-      ctl_file_code = pvr_ctl_file_code
       do i_pvr = 1, num_pvr_ctl
-        call read_control_pvr(i_pvr, hd_pvr_ctl, hd_pvr_colordef,       &
-     &    fname_pvr_ctl(i_pvr), pvr_ctl(i_pvr))
-        if(my_rank .eq. 0) then
-          call read_control_modelview_file                              &
-     &       (ctl_file_code, pvr_ctl(i_pvr)%view_file_ctl,              &
-     &        pvr_ctl(i_pvr)%mat)
-          call read_control_pvr_colormap_file                           &
-     &       (ctl_file_code, pvr_ctl(i_pvr)%color_file_ctl,             &
-     &        pvr_ctl(i_pvr)%cmap_cbar_c)
-        end if
-!
-        do i_psf = 1, pvr_ctl(i_pvr)%pvr_scts_c%num_pvr_sect_ctl
-          call read_control_pvr_section_def                             &
-     &       (pvr_ctl(i_pvr)%pvr_scts_c%pvr_sect_ctl(i_psf))
-        end do
-!
         call bcast_vr_psf_ctl(pvr_ctl(i_pvr))
       end do
 !
-      end subroutine read_pvr_controls
+      end subroutine bcast_pvr_controls
 !
 !  ---------------------------------------------------------------------
 !
@@ -171,55 +150,56 @@
 !  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_pvr                                       &
-     &         (i_pvr, hd_pvr_ctl, hd_pvr_colordef, fname_pvr_ctl,      &
-     &          pvr_ctl_type)
+      subroutine read_control_pvr_file(id_control, fname_pvr_ctl,       &
+     &          hd_pvr_ctl, hd_pvr_colordef, pvr_ctl_type)
 !
-      use calypso_mpi
-      use bcast_control_data_4_pvr
-!
-      integer(kind = kint), intent(in) :: i_pvr
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: fname_pvr_ctl
       character(len = kchara), intent(in) :: hd_pvr_ctl
       character(len = kchara), intent(in) :: hd_pvr_colordef
-      character(len = kchara), intent(in) :: fname_pvr_ctl
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
 !
-      if(fname_pvr_ctl .eq. 'NO_FILE') return
+      type(buffer_for_control) :: c_buf1
 !
-      if(my_rank .eq. 0) then
-         write(*,*) 'PVR control:', i_pvr,':  ', trim(fname_pvr_ctl)
 !
-        open(ctl_file_code, file=fname_pvr_ctl, status='old')
-        call load_ctl_label_and_line
-        call read_pvr_ctl(ctl_file_code, hd_pvr_ctl, hd_pvr_colordef,   &
+      write(*,*) 'PVR control:  ', trim(fname_pvr_ctl)
+!
+      open(id_control, file=fname_pvr_ctl, status='old')
+      do
+        call load_one_line_from_control(id_control, c_buf1)
+        call read_pvr_ctl(id_control, hd_pvr_ctl, hd_pvr_colordef,      &
      &      pvr_ctl_type, c_buf1)
-        close(ctl_file_code)
-      end if
+        if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
+      end do
+      close(id_control)
 !
-      end subroutine read_control_pvr
+      end subroutine read_control_pvr_file
 !
 !  ---------------------------------------------------------------------
 !
       subroutine read_control_pvr_update                                &
-     &         (hd_pvr_ctl, fname_pvr_ctl, pvr_ctl_type)
+     &         (id_control, fname_pvr_ctl, hd_pvr_ctl, pvr_ctl_type)
 !
-      use calypso_mpi
       use bcast_control_data_4_pvr
 !
-      character(len = kchara), intent(in)  :: hd_pvr_ctl
+      integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in)  :: fname_pvr_ctl
+      character(len = kchara), intent(in)  :: hd_pvr_ctl
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
 !
+      type(buffer_for_control) :: c_buf1
 !
       if(fname_pvr_ctl .eq. 'NO_FILE') return
-      if(my_rank .eq. 0) then
-        open(ctl_file_code, file=fname_pvr_ctl, status='old')
+      open(id_control, file=fname_pvr_ctl, status='old')
+      pvr_ctl_type%i_pvr_ctl = 0
 !
-        call load_ctl_label_and_line
+      do
+        call load_one_line_from_control(id_control, c_buf1)
         call read_pvr_update_flag                                       &
-     &     (ctl_file_code, hd_pvr_ctl, pvr_ctl_type, c_buf1)
-        close(ctl_file_code)
-      end if
+     &     (id_control, hd_pvr_ctl, pvr_ctl_type, c_buf1)
+        if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
+      end do
+      close(id_control)
 !
       call bcast_pvr_update_flag(pvr_ctl_type)
 !

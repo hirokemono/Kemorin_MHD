@@ -102,15 +102,8 @@
 !
       type(read_real3_item) :: read_r3
 !
-      character(len=kchara)  :: tmpchara
-      integer(kind = kint) :: ntmp = -1
-!
 !
       if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
-      read(c_buf%ctl_buffer,*,err=99,end=99) tmpchara, tmpchara, ntmp
-      if(ntmp .eq. 0) return
-!
-  99  continue
       if(array_r3%icou .gt. 0) return
 !
       read_r3%iflag = 0

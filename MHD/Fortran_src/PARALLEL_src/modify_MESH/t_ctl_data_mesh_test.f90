@@ -54,7 +54,6 @@
 !
       character(len=kchara), parameter, private                         &
      &                    :: hd_FEM_mesh = 'FEM_mesh_ctl'
-      integer(kind=kint), private :: i_FEM_mesh =   0
 !
       private :: read_test_mesh_ctl_data
 !
@@ -111,7 +110,7 @@
         call read_control_platforms                                     &
      &     (hd_platform, i_platform, mesh_tctl%plt)
         call read_FEM_mesh_control                                      &
-     &     (hd_FEM_mesh, i_FEM_mesh, mesh_tctl%Fmesh_ctl)
+     &     (ctl_file_code, hd_FEM_mesh, mesh_tctl%Fmesh_ctl, c_buf1)
       end do
 !
       end subroutine read_test_mesh_ctl_data

@@ -55,13 +55,12 @@
 !
       use t_read_control_elements
       use skip_comment_f
+      use set_psf_iso_control
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(isosurf_controls), intent(inout) :: iso_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
-!
-      integer(kind = kint) :: i
 !
 !
       if(allocated(iso_ctls%fname_iso_ctl)) return
@@ -76,17 +75,15 @@
           call append_new_isosurface_control(iso_ctls)
           iso_ctls%fname_iso_ctl(iso_ctls%num_iso_ctl)                  &
      &        = third_word(c_buf)
+          call read_control_4_iso_file(id_control+2,                    &
+&             iso_ctls%fname_iso_ctl(iso_ctls%num_iso_ctl),             &
+&             iso_ctls%iso_ctl_struct(iso_ctls%num_iso_ctl))
         else if(check_begin_flag(c_buf, hd_block)) then
           call append_new_isosurface_control(iso_ctls)
           iso_ctls%fname_iso_ctl(iso_ctls%num_iso_ctl) = 'NO_FILE'
           call read_iso_control_data(id_control, hd_block,              &
      &        iso_ctls%iso_ctl_struct(iso_ctls%num_iso_ctl), c_buf)
         end if
-      end do
-!
-      write(*,*) 'iso_ctls%num_iso_ctl', iso_ctls%num_iso_ctl
-      do i= 1, iso_ctls%num_iso_ctl
-        write(*,*) i, iso_ctls%fname_iso_ctl(i)
       end do
 !
       end subroutine read_files_4_iso_ctl
@@ -125,8 +122,11 @@
 !
       type(isosurf_controls), intent(inout) :: iso_ctls
 !
-      deallocate(iso_ctls%iso_ctl_struct)
-      deallocate(iso_ctls%fname_iso_ctl)
+      if(allocated(iso_ctls%fname_iso_ctl)) then
+        deallocate(iso_ctls%iso_ctl_struct)
+        deallocate(iso_ctls%fname_iso_ctl)
+      end if
+      iso_ctls%num_iso_ctl = 0
 !
       end subroutine dealloc_iso_ctl_stract
 !

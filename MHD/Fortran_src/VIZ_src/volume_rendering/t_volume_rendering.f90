@@ -6,7 +6,9 @@
 !>@brief Main routines for volume renderings
 !!
 !!@verbatim
-!!      integer(kind = kint), function check_PVR_update(pvr_ctls, pvr)
+!!      subroutine check_PVR_update                                     &
+!!     &         (id_control, pvr_ctls, pvr, iflag_update)
+!!      subroutine read_ctl_pvr_files_4_update(id_control, pvr_ctls)
 !!      subroutine PVR_initialize(fem, nod_fld, pvr)
 !!      subroutine PVR_visualize(istep_pvr, fem, jacs, nod_fld, pvr)
 !!      subroutine alloc_pvr_data(pvr)
@@ -87,39 +89,69 @@
 !
 !  ---------------------------------------------------------------------
 !
-      integer(kind = kint) function check_PVR_update(pvr_ctls, pvr)
+      subroutine check_PVR_update                                       &
+     &         (id_control, pvr_ctls, pvr, iflag_update)
 !
       use set_pvr_control
       use skip_comment_f
 !
+      integer(kind = kint), intent(in) :: id_control
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(volume_rendering_module), intent(inout) :: pvr
+      integer(kind = kint), intent(inout) :: iflag_update
 !
       character(len = kchara) :: tmpchara
 !
 !
       call calypso_mpi_barrier
-      call read_control_pvr_update(hd_pvr_ctl,                          &
-     &    pvr_ctls%fname_pvr_ctl(1), pvr_ctls%pvr_ctl_type(1))
-!
       if(my_rank .eq. izero) then
-        check_PVR_update = IFLAG_THROUGH
+        call read_control_pvr_update                                    &
+     &     (id_control, pvr_ctls%fname_pvr_ctl(1),                      &
+     &      hd_pvr_ctl, pvr_ctls%pvr_ctl_type(1))
+!
+        iflag_update = IFLAG_THROUGH
         if(pvr_ctls%pvr_ctl_type(1)%updated_ctl%iflag .gt. 0) then
           tmpchara = pvr_ctls%pvr_ctl_type(1)%updated_ctl%charavalue
           if(cmp_no_case(tmpchara, 'end')) then
-            check_PVR_update = IFLAG_TERMINATE
+            iflag_update = IFLAG_TERMINATE
           else if(pvr%cflag_update .ne. tmpchara) then
-            check_PVR_update = IFLAG_UPDATE
+            iflag_update = IFLAG_UPDATE
             pvr%cflag_update = tmpchara
           end if
         end if
         call reset_pvr_update_flags(pvr_ctls%pvr_ctl_type(1))
       end if
-      call mpi_Bcast(check_PVR_update, 1, CALYPSO_INTEGER, 0,           &
+!
+      call mpi_Bcast(iflag_update, 1, CALYPSO_INTEGER, 0,               &
      &    CALYPSO_COMM, ierr_MPI)
       call calypso_mpi_barrier
 !
-      end function check_PVR_update
+      end subroutine check_PVR_update
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_ctl_pvr_files_4_update(id_control, pvr_ctls)
+!
+      use t_read_control_elements
+      use skip_comment_f
+      use set_pvr_control
+!
+      integer(kind = kint), intent(in) :: id_control
+      type(volume_rendering_controls), intent(inout) :: pvr_ctls
+!
+      integer(kind = kint) :: i_pvr
+!
+!
+      if(my_rank .ne. 0) return
+      do i_pvr = 1, pvr_ctls%num_pvr_ctl
+        if(pvr_ctls%fname_pvr_ctl(i_pvr) .ne. 'NO_FILE') then
+          call read_control_pvr_file                                    &
+     &     (id_control, pvr_ctls%fname_pvr_ctl(i_pvr),                  &
+     &      hd_pvr_ctl, hd_pvr_colordef, pvr_ctls%pvr_ctl_type(i_pvr))
+        end if
+      end do
+!
+      end subroutine read_ctl_pvr_files_4_update
 !
 !  ---------------------------------------------------------------------
 !
@@ -142,10 +174,8 @@
         return
       end if
 !
-      call read_pvr_controls                                            &
-     &   (hd_pvr_ctl, hd_pvr_colordef, pvr_ctls%num_pvr_ctl,            &
-     &    pvr_ctls%fname_pvr_ctl, pvr_ctls%pvr_ctl_type,                &
-     &    pvr%cflag_update)
+      call bcast_pvr_controls(pvr_ctls%num_pvr_ctl,                     &
+     &    pvr_ctls%pvr_ctl_type, pvr%cflag_update)
 !
       call count_num_rendering_and_images                               &
      &   (pvr_ctls%num_pvr_ctl, pvr_ctls%pvr_ctl_type, pvr%num_pvr,     &
@@ -169,16 +199,19 @@
       call s_set_pvr_controls(fem%group, nod_fld, pvr%num_pvr,          &
      &    pvr_ctls%pvr_ctl_type, pvr%pvr_param)
 !
-      do i_pvr = 1, pvr_ctls%num_pvr_ctl
-        call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i_pvr))
-      end do
-!
       do i_pvr = 1, pvr%num_pvr
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
         call each_PVR_initialize(i_pvr, fem%mesh, fem%group,            &
      &      pvr%pvr_param(i_pvr)%area_def,  pvr%pvr_param(i_pvr),       &
      &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
+      end do
+!
+      do i_pvr = 1, pvr_ctls%num_pvr_ctl
+        if(pvr_ctls%fname_pvr_ctl(i_pvr) .ne. 'NO_FILE'                 &
+     &      .or. my_rank .ne. 0) then
+          call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i_pvr))
+        end if
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
