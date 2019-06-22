@@ -11,7 +11,8 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_fem_mhd_control(hd_block, iflag, fmctl_ctl)
+!!      subroutine read_fem_mhd_control                                 &
+!!     &         (id_control, hd_block, fmctl_ctl, c_buf)
 !!      subroutine bcast_fem_mhd_control(fmctl_ctl)
 !!        type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
 !!@endverbatim
@@ -20,8 +21,9 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
       use t_ctl_data_4_time_steps
       use t_ctl_data_mhd_evo_scheme
       use t_ctl_data_4_solvers
@@ -42,10 +44,11 @@
         type(solver_control) :: CG_ctl
 !>        integeration points
         type(fem_intergration_control)  :: fint_ctl
+!
+        integer (kind=kint) :: i_control = 0
       end type fem_mhd_control_control
 !
 !    label for entry of group
-!
 !
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
@@ -58,18 +61,8 @@
       character(len=kchara), parameter                                  &
      &      :: hd_time_loop =      'time_loop_ctl'
 !
-      integer (kind=kint) :: i_tstep =      0
-      integer (kind=kint) :: i_restart_file =   0
-      integer (kind=kint) :: i_solver_ctl =     0
-      integer (kind=kint) :: i_int_points = 0
-      integer (kind=kint) :: i_time_loop =      0
-!
-!
-      private :: hd_time_step, i_tstep
-      private :: hd_restart_file, i_restart_file
-      private :: hd_time_loop, i_time_loop
-      private :: hd_solver_ctl, i_solver_ctl
-      private :: hd_int_points, i_int_points
+      private :: hd_time_step, hd_restart_file, hd_time_loop
+      private :: hd_solver_ctl, hd_int_points
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,35 +70,36 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_fem_mhd_control(hd_block, iflag, fmctl_ctl)
+      subroutine read_fem_mhd_control                                   &
+     &         (id_control, hd_block, fmctl_ctl, c_buf)
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
-      integer(kind = kint), intent(inout) :: iflag
       type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
-      if (iflag .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(fmctl_ctl%i_control .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        iflag = find_control_end_flag(hd_block)
-        if(iflag .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
 !
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, fmctl_ctl%tctl)
+     &     (id_control, hd_time_step, fmctl_ctl%tctl, c_buf)
         call read_restart_ctl                                           &
-     &     (hd_restart_file, i_restart_file, fmctl_ctl%mrst_ctl)
+     &     (id_control, hd_restart_file, fmctl_ctl%mrst_ctl, c_buf)
         call read_control_fem_int_points                                &
-     &     (hd_int_points, i_int_points, fmctl_ctl%fint_ctl)
+     &     (id_control, hd_int_points, fmctl_ctl%fint_ctl, c_buf)
 !
         call read_CG_solver_param_ctl                                   &
-     &     (hd_solver_ctl, i_solver_ctl, fmctl_ctl%CG_ctl)
+     &     (id_control, hd_solver_ctl, fmctl_ctl%CG_ctl, c_buf)
         call read_time_loop_ctl                                         &
-     &     (hd_time_loop, i_time_loop, fmctl_ctl%mevo_ctl)
+     &     (id_control, hd_time_loop, fmctl_ctl%mevo_ctl, c_buf)
       end do
+      fmctl_ctl%i_control = 0
 !
       end subroutine read_fem_mhd_control
 !
@@ -127,6 +121,9 @@
 !
       call bcast_CG_solver_param_ctl(fmctl_ctl%CG_ctl)
       call bcast_control_fem_int_points(fmctl_ctl%fint_ctl)
+!
+      call MPI_BCAST(fmctl_ctl%i_control, 1,                            &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_fem_mhd_control
 !

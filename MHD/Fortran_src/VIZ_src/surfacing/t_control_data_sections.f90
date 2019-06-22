@@ -14,6 +14,9 @@
 !!      subroutine bcast_files_4_psf_ctl(psf_ctls)
 !!        type(section_controls), intent(inout) :: psf_ctls
 !!
+!!      subroutine read_control_4_psf_file                              &
+!!     &         (id_control, fname_psf_ctl, psf_ctl_struct)
+!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array cross_section_ctl  1
 !!      file   cross_section_ctl   'ctl_psf_eq'
@@ -39,6 +42,13 @@
 !
       private :: append_new_section_control
       private :: dup_control_4_psfs, dealloc_cont_dat_4_psfs
+!
+      character(len=kchara), parameter                                  &
+     &             :: hd_section_ctl = 'cross_section_ctl'
+!      Deprecated labels
+      character(len=kchara), parameter                                  &
+     &             :: hd_psf_ctl = 'surface_rendering'
+      private :: hd_section_ctl, hd_psf_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -83,15 +93,12 @@
      &         (id_control, hd_block, psf_ctls, c_buf)
 !
       use t_read_control_elements
-      use set_psf_iso_control
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(section_controls), intent(inout) :: psf_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
-!
-      integer(kind = kint) :: i
 !
 !
       if(allocated(psf_ctls%fname_psf_ctl)) return
@@ -210,6 +217,37 @@
       end do
 !
       end subroutine dealloc_cont_dat_4_psfs
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_control_4_psf_file                                &
+     &         (id_control, fname_psf_ctl, psf_ctl_struct)
+!
+      use t_read_control_elements
+      use t_control_data_4_psf
+!
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: fname_psf_ctl
+      type(psf_ctl), intent(inout) :: psf_ctl_struct
+!
+      type(buffer_for_control) :: c_buf1
+!
+!
+      write(*,*) 'read section control file: ', trim(fname_psf_ctl)
+      open(id_control, file=fname_psf_ctl, status='old')
+!
+      do
+        call load_one_line_from_control(id_control, c_buf1)
+        call read_psf_control_data(id_control, hd_section_ctl,          &
+     &      psf_ctl_struct, c_buf1)
+        call read_psf_control_data(id_control, hd_psf_ctl,              &
+     &      psf_ctl_struct, c_buf1)
+        if(psf_ctl_struct%i_psf_ctl .gt. 0) exit
+      end do
+      close(id_control)
+!
+      end subroutine read_control_4_psf_file
 !
 !  ---------------------------------------------------------------------
 !

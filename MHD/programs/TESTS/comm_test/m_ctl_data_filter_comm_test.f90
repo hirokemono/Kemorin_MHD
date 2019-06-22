@@ -53,15 +53,13 @@
      &                    :: hd_platform = 'data_files_def'
       character(len=kchara), parameter :: hd_filter_fnames              &
      &                        = 'filter_files_def'
-      integer (kind=kint) :: i_platform =   0
       integer (kind=kint) :: i_filter_fnames = 0
 !
       private :: test_mest_ctl_file_code, fname_test_mesh_ctl
       private :: hd_filter_test_ctl, i_filter_test_ctl
       private :: read_filter_comm_test_data
 !
-      private :: hd_platform, i_platform
-      private :: hd_filter_fnames, i_filter_fnames
+      private :: hd_platform, hd_filter_fnames, i_filter_fnames
 !
 !   --------------------------------------------------------------------
 !
@@ -100,7 +98,7 @@
         if(i_filter_test_ctl .gt. 0) exit
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, f_comm_plt)
+     &     (ctl_file_code, hd_platform, f_comm_plt, c_buf1)
         call read_filter_fnames_control                                 &
      &     (ctl_file_code, hd_filter_fnames, i_filter_fnames,           &
      &      ffile_ctest_ctl, c_buf1)

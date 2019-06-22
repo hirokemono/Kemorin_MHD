@@ -68,8 +68,6 @@
       character(len=kchara), parameter                                  &
      &                    :: hd_newrst_magne = 'newrst_magne_ctl'
 !
-      integer (kind=kint) :: i_platform =      0
-      integer (kind=kint) :: i_new_data =      0
       integer (kind=kint) :: i_model =         0
       integer (kind=kint) :: i_control =       0
       integer (kind=kint) :: i_newrst_magne =  0
@@ -77,16 +75,10 @@
 !>      label for block
       character(len=kchara), parameter                                  &
      &      :: hd_phys_values =  'phys_values_ctl'
-!>      Number of field
-      integer (kind=kint) :: i_phys_values =   0
-!
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
-      integer (kind=kint) :: i_tstep =      0
-!
       character(len=kchara), parameter                                  &
      &      :: hd_new_time_step = 'new_time_step_ctl'
-      integer (kind=kint) :: i_nstep =      0
 !
 !   newrst_magne_ratio data
 !
@@ -96,11 +88,9 @@
       private :: control_file_code
       private :: ctl_assemble_sph_name, control_file_name
       private :: hd_assemble, i_assemble
-      private :: hd_platform, i_platform
-      private :: hd_new_data, i_new_data, i_newrst_magne
+      private :: hd_platform, hd_new_data, i_newrst_magne
       private :: hd_model, hd_control, i_model, i_control
-      private :: hd_phys_values, i_phys_values
-      private :: hd_time_step, i_tstep, hd_new_time_step, i_nstep
+      private :: hd_phys_values, hd_time_step, hd_new_time_step
       private :: hd_newrst_magne, hd_magnetic_field_ratio
 !
       private :: read_merge_control_data
@@ -163,9 +153,9 @@
 !
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, mgd_ctl%source_plt)
+     &     (ctl_file_code, hd_platform, mgd_ctl%source_plt, c_buf1)
         call read_control_platforms                                     &
-     &     (hd_new_data, i_new_data, mgd_ctl%assemble_plt)
+     &     (ctl_file_code, hd_new_data, mgd_ctl%assemble_plt, c_buf1)
 !
         call read_merge_field_data(mgd_ctl)
         call read_merge_step_data(mgd_ctl)
@@ -191,7 +181,7 @@
         if(i_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
-     &     (hd_phys_values, i_phys_values, mgd_ctl%fld_mge_ctl)
+     &     (ctl_file_code, hd_phys_values, mgd_ctl%fld_mge_ctl, c_buf1)
       end do
 !
       end subroutine read_merge_field_data
@@ -212,9 +202,9 @@
         if(i_control .gt. 0) exit
 !
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, mgd_ctl%t_mge_ctl)
+     &     (ctl_file_code, hd_time_step, mgd_ctl%t_mge_ctl, c_buf1)
         call read_control_time_step_data                                &
-     &     (hd_new_time_step, i_nstep, mgd_ctl%t2_mge_ctl)
+     &     (ctl_file_code, hd_new_time_step, mgd_ctl%t2_mge_ctl, c_buf1)
       end do
 !
       end subroutine read_merge_step_data

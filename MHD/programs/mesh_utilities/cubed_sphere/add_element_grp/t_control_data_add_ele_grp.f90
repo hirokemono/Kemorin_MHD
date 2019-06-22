@@ -70,8 +70,6 @@
      &                    :: hd_new_data = 'new_data_files_def'
       integer (kind=kint) :: i_files_ctl =        0
       integer (kind=kint) :: i_add_ele_grp_para = 0
-      integer (kind=kint) :: i_platform =   0
-      integer (kind=kint) :: i_new_data =      0
 !
 !   3rd level for element_group_ctl
 !
@@ -90,8 +88,7 @@
       private :: hd_files_ctl, i_files_ctl
       private :: hd_add_ele_grp_para, i_add_ele_grp_para
       private :: hd_2nd_grp_direction
-      private :: hd_platform, i_platform
-      private :: hd_new_data, i_new_data
+      private :: hd_platform, hd_new_data
       private :: hd_num_r_ele_grping, hd_num_t_ele_grping
       private :: hd_num_s_ele_grping, hd_num_z_ele_grping
 !
@@ -150,9 +147,9 @@
         if(i_add_ele_grp_ctl .gt. 0) exit
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, addgrp_c%source_plt)
+     &     (ctl_file_code, hd_platform, addgrp_c%source_plt, c_buf1)
         call read_control_platforms                                     &
-     &     (hd_new_data, i_new_data, addgrp_c%added_plt)
+     &     (ctl_file_code, hd_new_data, addgrp_c%added_plt, c_buf1)
 !
         call read_ctl_data_4_add_2d_egrp(addgrp_c)
       end do

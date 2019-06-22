@@ -33,6 +33,7 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter, private :: ctl_file_code = 11
       character(len=kchara), parameter, private                         &
      &                      :: snap_ctl_name = 'control_snapshot'
 !

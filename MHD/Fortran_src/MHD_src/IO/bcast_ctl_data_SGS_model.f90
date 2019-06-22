@@ -98,6 +98,9 @@
       call bcast_ctl_type_i1(sgs_ctl%ngrp_radial_ave_ctl)
       call bcast_ctl_type_i1(sgs_ctl%ngrp_med_ave_ctl)
 !
+      call MPI_BCAST(sgs_ctl%i_sgs_ctl, 1,                              &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
       end subroutine bcast_sgs_ctl
 !
 ! -----------------------------------------------------------------------

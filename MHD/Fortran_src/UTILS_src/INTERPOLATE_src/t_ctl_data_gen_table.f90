@@ -119,11 +119,6 @@
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
 !
-      integer (kind=kint) :: i_platform =   0
-      integer (kind=kint) :: i_new_data =      0
-      integer (kind=kint) :: i_phys_values =   0
-      integer (kind=kint) :: i_tstep =      0
-!
 !     2nd level for const_filter
 !
       character(len=kchara), parameter                                  &
@@ -191,10 +186,8 @@
       private :: hd_reverse_ele_tbl, hd_single_itp_tbl
       private :: hd_eps_4_itp, hd_itr, hd_eps
       private :: hd_num_hash_x, hd_num_hash_y, hd_num_hash_z
-      private :: hd_phys_values, i_phys_values
-      private :: hd_time_step, i_tstep
-      private :: hd_platform, i_platform
-      private :: hd_new_data, i_new_data
+      private :: hd_phys_values, hd_time_step
+      private :: hd_platform, hd_new_data
 !
       private :: read_const_itp_tbl_ctl_data
       private :: read_control_dist_itp_data
@@ -301,9 +294,9 @@
         if(i_table_control .gt. 0) exit
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, gtbl_ctl%src_plt)
+     &     (ctl_file_code, hd_platform, gtbl_ctl%src_plt, c_buf1)
         call read_control_platforms                                     &
-     &     (hd_new_data, i_new_data, gtbl_ctl%dst_plt)
+     &     (ctl_file_code, hd_new_data, gtbl_ctl%dst_plt, c_buf1)
 !
         call read_itp_files_ctl(gtbl_ctl)
         call read_element_hash_ctl(gtbl_ctl)
@@ -329,9 +322,9 @@
         if(i_distribute_itp .gt. 0) exit
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, gtbl_ctl%src_plt)
+     &     (ctl_file_code, hd_platform, gtbl_ctl%src_plt, c_buf1)
         call read_control_platforms                                     &
-     &     (hd_new_data, i_new_data, gtbl_ctl%dst_plt)
+     &     (ctl_file_code, hd_new_data, gtbl_ctl%dst_plt, c_buf1)
 !
         call read_itp_files_ctl(gtbl_ctl)
       end do
@@ -386,9 +379,9 @@
         if(i_itp_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
-     &     (hd_phys_values, i_phys_values, gtbl_ctl%fld_gt_ctl)
+     &     (ctl_file_code, hd_phys_values, gtbl_ctl%fld_gt_ctl, c_buf1)
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, gtbl_ctl%t_gt_ctl)
+     &     (ctl_file_code, hd_time_step, gtbl_ctl%t_gt_ctl, c_buf1)
       end do
 !
       end subroutine read_itaration_model_ctl

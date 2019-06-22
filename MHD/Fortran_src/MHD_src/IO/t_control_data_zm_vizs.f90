@@ -109,7 +109,7 @@
      &          (id_control, hd_section, psf_ctls, c_buf)
 !
       use t_read_control_elements
-      use set_psf_iso_control
+      use t_control_data_sections
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control

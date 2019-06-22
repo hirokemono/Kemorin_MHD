@@ -43,10 +43,6 @@
 
         integer (kind=kint) :: i_fft_plane_ctl = 0
         integer (kind=kint) :: i_control = 0
-        integer (kind=kint) :: i_platform =   0
-        integer (kind=kint) :: i_new_data =      0
-        integer (kind=kint) :: i_phys_values =   0
-        integer (kind=kint) :: i_tstep =      0
         integer (kind=kint) :: i_spec_file = 0
       end type ctl_data_plane_fft
 !
@@ -148,7 +144,7 @@
 !
 !
         call read_control_platforms                                     &
-     &     (hd_new_data, pfft_c%i_new_data, pfft_c%new_p_plt)
+     &     (ctl_file_code, hd_new_data, pfft_c%new_p_plt, c_buf1)
 !
         call read_ctl_data_plane_spec_file(pfft_c)
         call read_merge_field_data(pfft_c)
@@ -179,7 +175,7 @@
         if(i_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
-     &     (hd_phys_values, pfft_c%i_phys_values, pfft_c%fld_zfft_ctl)
+     &     (ctl_file_code, hd_phys_values, pfft_c%fld_zfft_ctl, c_buf1)
       end do
 !
       end subroutine read_merge_field_data
@@ -200,7 +196,7 @@
         if(pfft_c%i_control .gt. 0) exit
 !
         call read_control_time_step_data                                &
-     &     (hd_time_step, pfft_c%i_tstep, pfft_c%t_zfft_ctl)
+     &     (ctl_file_code, hd_time_step, pfft_c%t_zfft_ctl, c_buf1)
       end do
 !
       end subroutine read_merge_step_data

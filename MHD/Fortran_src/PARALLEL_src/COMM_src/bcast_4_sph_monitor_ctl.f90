@@ -39,6 +39,9 @@
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !
 !
+      call MPI_BCAST(smonitor_ctl%i_pick_sph, 1,                        &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
       call bcast_ctl_type_c1(smonitor_ctl%volume_average_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%volume_pwr_spectr_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%Nusselt_file_prefix)

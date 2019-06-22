@@ -84,12 +84,8 @@
 !>      label for block
       character(len=kchara), parameter                                  &
      &      :: hd_phys_values =  'phys_values_ctl'
-!>      Number of field
-      integer (kind=kint) :: i_phys_values =   0
-!
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
-      integer (kind=kint) :: i_tstep =      0
 !
       private :: hd_cor_plane_ctl
       private :: hd_hard, hd_ref_plane_mesh_ctl
@@ -97,8 +93,7 @@
       private :: hd_mesh_head_ctl, hd_mesh_fmt_ctl
       private :: hd_udt_head_ctl,  hd_ref_udt_head_ctl
       private :: hd_model, hd_control
-      private :: hd_phys_values, i_phys_values
-      private :: hd_time_step, i_tstep, hd_plane_def
+      private :: hd_phys_values, hd_time_step, hd_plane_def
 !
       private :: read_cor_plane_control_data
       private :: read_correlate_file_heads
@@ -204,7 +199,7 @@
         if(pcor_c%i_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
-     &     (hd_phys_values, i_phys_values, pcor_c%fld_pc_ctl)
+     &     (ctl_file_code, hd_phys_values, pcor_c%fld_pc_ctl, c_buf1)
       end do
 !
       end subroutine read_merge_field_data
@@ -224,7 +219,7 @@
         if(pcor_c%i_control .gt. 0) exit
 !
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, pcor_c%t_pc_ctl)
+     &     (ctl_file_code, hd_time_step, pcor_c%t_pc_ctl, c_buf1)
       end do
 !
       end subroutine read_merge_step_data

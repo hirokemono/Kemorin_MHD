@@ -66,6 +66,9 @@
       call bcast_ctl_array_c3(fld_ctl%field_ctl)
       call bcast_ctl_array_c1(fld_ctl%quad_phys)
 !
+      call MPI_BCAST(fld_ctl%i_phys_values, 1,                          &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
       end subroutine bcast_phys_data_ctl
 !
 !   --------------------------------------------------------------------

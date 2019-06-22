@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine read_sgs_ctl                                         &
-!!     &         (id_control, hd_block, iflag, sgs_ctl, c_buf)
+!!     &         (id_control, hd_block, sgs_ctl, c_buf)
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
@@ -246,18 +246,17 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_sgs_ctl                                           &
-     &         (id_control, hd_block, iflag, sgs_ctl, c_buf)
+     &         (id_control, hd_block, sgs_ctl, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
-      integer(kind = kint), intent(inout) :: iflag
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(iflag .gt. 0) return
+      if(sgs_ctl%i_sgs_ctl .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
@@ -346,7 +345,7 @@
         call read_integer_ctl_type(c_buf, hd_med_ave_area_ctl,          &
      &      sgs_ctl%ngrp_med_ave_ctl)
       end do
-      iflag = 1
+      sgs_ctl%i_sgs_ctl = 1
 !
       end subroutine read_sgs_ctl
 !

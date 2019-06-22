@@ -119,13 +119,11 @@
      &         :: hd_horiz_filter =  'num_horiz_filter'
       character(len=kchara), parameter                                  &
      &         :: hd_solver_type =       'solver_type'
-!
       character(len=kchara), parameter                                  &
      &       :: hd_solver_ctl =     'solver_ctl'
-      integer (kind=kint) :: i_solver_ctl =     0
 !
       private :: hd_filter_param_ctl, i_filter_param_ctl
-      private :: hd_solver_ctl, i_solver_ctl
+      private :: hd_solver_ctl
 !
       private :: hd_num_int_points, hd_minimum_comp, hd_omitted_ratio
       private :: hd_ordering_list, hd_start_node_ctl, hd_end_node_ctl
@@ -160,8 +158,8 @@
         if(i_filter_param_ctl .gt. 0) exit
 !
 !
-        call read_CG_solver_param_ctl                                   &
-     &     (hd_solver_ctl, i_solver_ctl, gen_f_ctl%CG_filter_ctl)
+        call read_CG_solver_param_ctl(ctl_file_code, hd_solver_ctl,     &
+     &      gen_f_ctl%CG_filter_ctl, c_buf1)
 !
         call read_control_array_i_c_r(ctl_file_code,                    &
      &      hd_order_moments, gen_f_ctl%ref_filter_mom_ctl, c_buf1)

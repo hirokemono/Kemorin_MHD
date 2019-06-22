@@ -86,9 +86,6 @@
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
 !
-      integer (kind=kint) :: i_platform =   0
-      integer (kind=kint) :: i_tstep =      0
-!
       character(len=kchara), parameter                                  &
      &      :: hd_org_field_prefix =     'org_sprctr_prefix'
       character(len=kchara), parameter                                  &
@@ -110,8 +107,7 @@
       private :: hd_sub_field_prefix, hd_sub_field_format
       private :: hd_out_field_prefix, hd_out_field_format
       private :: hd_rename_def, hd_field_to_rename
-      private :: hd_time_step, i_tstep
-      private :: hd_platform, i_platform
+      private :: hd_time_step, hd_platform
 !
 ! -------------------------------------------------------------------
 !
@@ -134,9 +130,10 @@
         i_hard = find_control_end_flag(hd_control_d_sph)
         if(i_hard .gt. 0) exit
 !
-        call read_control_platforms(hd_platform, i_platform, ctl%plt)
+        call read_control_platforms                                     &
+     &     (ctl_file_code, hd_platform, ctl%plt, c_buf1)
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, ctl%tctl)
+     &     (ctl_file_code, hd_time_step, ctl%tctl, c_buf1)
         call read_diff_spectr_file_control(ctl%file_list)
         call read_rename_spectr_control(ctl%field_list)
       end do

@@ -55,12 +55,10 @@
      &         :: hd_solver_type =      'solver_type'
       character(len=kchara), parameter                                  &
      &         :: hd_solver_ctl =     'solver_ctl'
-      integer (kind=kint) :: i_solver_ctl =     0
 !
       private :: hd_solver_test_ctl, i_solver_test_ctl
       private :: hd_matrix_head_ctl, hd_solution_head_ctl
-      private :: hd_ip_smp_p_ctl,    hd_solver_type
-      private :: hd_solver_ctl, i_solver_ctl
+      private :: hd_ip_smp_p_ctl, hd_solver_type, hd_solver_ctl
 !
       private :: read_ctl_data_test
 !
@@ -102,11 +100,11 @@
       do
         call load_ctl_label_and_line
 !
-        i_solver_test_ctl = find_control_end_flag(hd_solver_test_ctl)
+        i_solver_test_ctl = find_control_end_flag(hd_solver_test_ctl, c_buf1)
         if (i_solver_test_ctl .gt. 0) exit
 !
         call read_CG_solver_param_ctl                                   &
-     &   (hd_solver_ctl, i_solver_ctl, CG_test_ctl)
+     &     (ctl_file_code, hd_solver_ctl, CG_test_ctl)
 !
         call read_chara_ctl_type                                        &
      &     (c_buf1, hd_matrix_head_ctl, matrix_head_ctl)

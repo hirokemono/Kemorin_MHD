@@ -43,8 +43,6 @@
 !
       call MPI_BCAST(cubmesh_c%i_plane_mesh, 1,                         &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(cubmesh_c%i_platform, 1,                           &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call MPI_BCAST(cubmesh_c%i_l_filter_ctl, 1,                       &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)

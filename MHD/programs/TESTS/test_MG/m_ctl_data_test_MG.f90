@@ -49,13 +49,11 @@
      &                    :: hd_platform = 'data_files_def'
       character(len=kchara), parameter                                  &
      &         :: hd_MG_params =    'MG_grids_ctl'
-      integer (kind=kint) :: i_platform =   0
       integer (kind=kint) :: i_MG_params =  0
 !
       private :: id_ctl_4_MG_test, fname_MG_test_ctl
       private :: hd_MG_test_ctl, i_MG_test_ctl
-      private :: hd_platform, i_platform
-      private :: hd_mesh_head_ctl
+      private :: hd_platform, hd_mesh_head_ctl
 !
       private :: read_MG_test_data_ctl
 !
@@ -101,7 +99,7 @@
 !
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, MGtest_plt)
+     &     (ctl_file_code, hd_platform, MGtest_plt, c_buf1)
         call read_MG_param_ctl
       end do
 !

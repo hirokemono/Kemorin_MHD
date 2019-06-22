@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine read_sph_monitoring_ctl                              &
-!!     &         (id_control, hd_block, iflag, smonitor_ctl, c_buf)
+!!     &         (id_control, hd_block, smonitor_ctl, c_buf)
 !!      subroutine dealloc_sph_monitoring_ctl(smonitor_ctl)
 !!
 !! -----------------------------------------------------------------
@@ -82,6 +82,8 @@
 !
 !>        Structure for picked spectrum file prefix
         type(read_character_item) :: Nusselt_file_prefix
+!
+        integer (kind = kint) :: i_pick_sph = 0
       end type sph_monitor_control
 !
 !
@@ -132,18 +134,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_sph_monitoring_ctl                                &
-     &         (id_control, hd_block, iflag, smonitor_ctl, c_buf)
+     &         (id_control, hd_block, smonitor_ctl, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
-      integer(kind = kint), intent(inout) :: iflag
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(iflag .gt. 0) return
+      if(smonitor_ctl%i_pick_sph  .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
@@ -173,7 +174,7 @@
         call read_chara_ctl_type(c_buf, hd_voume_rms_head,              &
      &      smonitor_ctl%volume_pwr_spectr_prefix)
       end do
-      iflag = 1
+      smonitor_ctl%i_pick_sph = 1
 !
       end subroutine read_sph_monitoring_ctl
 !
@@ -218,6 +219,8 @@
 !
       integer(kind = kint) :: i
 !
+!
+      smonitor_ctl%i_pick_sph = 0
 !
       call dealloc_num_spec_layer_ctl(smonitor_ctl%lp_ctl)
       call dealloc_pick_spectr_control(smonitor_ctl%pspec_ctl)

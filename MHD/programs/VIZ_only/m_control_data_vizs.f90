@@ -56,13 +56,9 @@
      &                    :: hd_platform = 'data_files_def'
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
-      integer (kind=kint) :: i_platform =   0
-      integer (kind=kint) :: i_tstep =      0
 !
       private :: hd_viz_only_file, i_viz_only_file
-!
-      private :: hd_platform, i_platform
-      private :: hd_time_step, i_tstep
+      private :: hd_platform, hd_time_step
 !
       private :: viz_ctl_file_code, fname_viz_ctl
 !
@@ -115,9 +111,10 @@
         i_viz_only_file = find_control_end_flag(hd_viz_only_file)
         if(i_viz_only_file .eq. 1) exit
 !
-        call read_control_platforms(hd_platform, i_platform, viz_plt)
+        call read_control_platforms                                     &
+     &     (ctl_file_code, hd_platform, viz_plt, c_buf1)
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, t_viz_ctl)
+     &     (ctl_file_code, hd_time_step, t_viz_ctl, c_buf1)
 !
         call read_viz_controls                                          &
      &     (ctl_file_code, viz_ctl_v, c_buf1)

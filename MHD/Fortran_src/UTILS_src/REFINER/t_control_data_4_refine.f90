@@ -58,8 +58,6 @@
      &                    :: hd_new_data = 'new_data_files_def'
       integer (kind=kint) :: i_single_refine_files =  0
       integer (kind=kint) :: i_refine_param = 0
-      integer (kind=kint) :: i_platform =   0
-      integer (kind=kint) :: i_new_data =      0
 !
 !   3rd level for partitioner_control
 !
@@ -85,9 +83,8 @@
       private :: control_file_name
       private :: hd_refine_ctl, i_refine_ctl
       private :: hd_single_refine_files, i_single_refine_files
-      private :: hd_refine_param, hd_new_data, i_new_data
+      private :: hd_refine_param, hd_platform, hd_new_data
       private :: i_refine_param
-      private :: hd_platform, i_platform
       private :: hd_course_to_fine_ctl, hd_fine_to_course_ctl
       private :: hd_refine_info_ctl, hd_old_refine_info_ctl
 !
@@ -152,9 +149,9 @@
         if(i_refine_ctl .gt. 0) exit
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, refine_ctl%source_plt)
+     &     (ctl_file_code, hd_platform, refine_ctl%source_plt, c_buf1)
         call read_control_platforms                                     &
-     &     (hd_new_data, i_new_data, refine_ctl%refined_plt)
+     &     (ctl_file_code, hd_new_data, refine_ctl%refined_plt, c_buf1)
         call read_ctl_data_4_refine_mesh(refine_ctl)
         call read_ctl_data_4_refine_type(refine_ctl)
       end do

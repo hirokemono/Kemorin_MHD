@@ -131,7 +131,6 @@
       integer(kind= kint) :: i_sf_plotting =     0
       integer(kind= kint) :: i_z_plane_ctl =     0
       integer(kind= kint) :: i_sphere_map_ctl =  0
-      integer (kind=kint) :: i_tstep =      0
 !
 !     flags for pgplot paramter
 !
@@ -189,8 +188,7 @@
       private :: hd_sf_plotting,    i_sf_plotting
       private :: hd_z_plane_ctl,    i_z_plane_ctl
       private :: hd_sphere_map_ctl, i_sphere_map_ctl
-      private :: hd_grouping_plot
-      private :: hd_time_step, i_tstep
+      private :: hd_grouping_plot, hd_time_step
       private :: hd_contour_type_ctl, hd_color_mode_ctl
       private :: hd_num_panels_ctl
       private :: hd_psf_data_fmt_ctl, hd_map_grid_file
@@ -274,7 +272,7 @@
 !
 !
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, pg_ctl%t_pg_ctl)
+     &     (ctl_file_code, hd_time_step, pg_ctl%t_pg_ctl, c_buf1)
 !
         call read_ctl_data_4_pgplot_param(pg_ctl%pg_panel_ctl)
         call read_ctl_data_4_surf_plot(pg_ctl%pg_fld_ctl)

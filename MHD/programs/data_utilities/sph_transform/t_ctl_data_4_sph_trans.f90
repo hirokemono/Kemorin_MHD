@@ -78,12 +78,8 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_time_step = 'time_step_ctl'
 !
-      integer(kind=kint), private :: i_platform =         0
-      integer(kind=kint), private :: i_org_data =         0
       integer(kind=kint), private :: i_sph_trans_model =  0
       integer(kind=kint), private :: i_sph_trans_params = 0
-      integer(kind=kint), private :: i_phys_values =      0
-      integer(kind=kint), private :: i_tstep =            0
 !
 !   2nd level
 !
@@ -151,9 +147,9 @@
         if(i_sph_trans_ctl .gt. 0) exit
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, spt_ctl%plt)
+     &     (ctl_file_code, hd_platform, spt_ctl%plt, c_buf1)
         call read_control_platforms                                     &
-     &     (hd_org_data, i_org_data, spt_ctl%org_plt)
+     &     (ctl_file_code, hd_org_data, spt_ctl%org_plt, c_buf1)
         call read_FEM_mesh_control                                      &
      &     (ctl_file_code, hd_FEM_mesh, spt_ctl%Fmesh_ctl, c_buf1)
 !
@@ -182,9 +178,9 @@
         if(i_sph_trans_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
-     &     (hd_phys_values, i_phys_values, spt_ctl%fld_ctl)
+     &     (ctl_file_code, hd_phys_values, spt_ctl%fld_ctl, c_buf1)
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, spt_ctl%t_ctl)
+     &     (ctl_file_code, hd_time_step, spt_ctl%t_ctl, c_buf1)
       end do
 !
       end subroutine read_sph_trans_model_ctl

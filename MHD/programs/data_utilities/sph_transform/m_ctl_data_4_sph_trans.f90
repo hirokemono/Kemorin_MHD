@@ -66,12 +66,8 @@
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
 !
-      integer (kind=kint) :: i_platform =   0
-      integer (kind=kint) :: i_org_data =      0
       integer (kind=kint) :: i_sph_trans_model =  0
       integer (kind=kint) :: i_sph_trans_params = 0
-      integer (kind=kint) :: i_phys_values =   0
-      integer (kind=kint) :: i_tstep =      0
 !
 !   2nd level
 !
@@ -99,11 +95,8 @@
       private :: control_file_code, control_file_name
       private :: hd_sph_trans_ctl, i_sph_trans_ctl
       private :: hd_sph_trans_model, i_sph_trans_model
-      private :: hd_phys_values, i_phys_values
-      private :: hd_platform, i_platform
-      private :: hd_org_data, i_org_data
-      private :: hd_time_step, i_tstep
-      private :: hd_FFT_package, hd_import_mode
+      private :: hd_phys_values, hd_platform, hd_org_data
+      private :: hd_time_step, hd_FFT_package, hd_import_mode
       private :: hd_sph_trans_params, i_sph_trans_params
       private :: hd_zm_sph_spec_file, hd_zm_field_file
       private :: hd_sph_transform_mode, hd_legendre_vect_len
@@ -149,9 +142,10 @@
         i_sph_trans_ctl = find_control_end_flag(hd_sph_trans_ctl)
         if(i_sph_trans_ctl .gt. 0) exit
 !
-        call read_control_platforms(hd_platform, i_platform, st_plt)
         call read_control_platforms                                     &
-     &     (hd_org_data, i_org_data, org_st_plt)
+     &     (ctl_file_code, hd_platform, st_plt, c_buf1)
+        call read_control_platforms                                     &
+     &     (ctl_file_code, hd_org_data, org_st_plt, c_buf1)
 !
         call read_sph_trans_model_ctl
         call read_sph_trans_params_ctl
@@ -176,9 +170,9 @@
         if(i_sph_trans_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
-     &     (hd_phys_values, i_phys_values, fld_st_ctl)
+     &     (ctl_file_code, hd_phys_values, fld_st_ctl, c_buf1)
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, t_st_ctl)
+     &     (ctl_file_code, hd_time_step, t_st_ctl, c_buf1)
       end do
 !
       end subroutine read_sph_trans_model_ctl

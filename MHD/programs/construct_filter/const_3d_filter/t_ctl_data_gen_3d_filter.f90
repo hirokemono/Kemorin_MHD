@@ -48,15 +48,11 @@
 !
       character(len=kchara), parameter                                  &
      &                    :: hd_platform = 'data_files_def'
-      integer (kind=kint) :: i_platform =   0
-!
-      private :: hd_filter_control, i_filter_control
-      private :: hd_platform, i_platform
-!
-      character(len=kchara), parameter :: hd_filter_fnames              &
-     &                        = 'filter_files_def'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_filter_fnames = 'filter_files_def'
       integer (kind=kint) :: i_filter_fnames = 0
 !
+      private :: hd_filter_control, i_filter_control, hd_platform
       private :: hd_filter_fnames, i_filter_fnames
       private :: read_const_filter_ctl_data
 !
@@ -137,7 +133,7 @@
 !
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, fil3_ctl%gen_filter_plt)
+     &    (ctl_file_code, hd_platform, fil3_ctl%gen_filter_plt, c_buf1)
 !
         call read_filter_param_ctl(gen_f_ctl)
         call read_filter_fnames_control                                 &

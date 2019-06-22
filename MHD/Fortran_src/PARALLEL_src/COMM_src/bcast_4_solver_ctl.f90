@@ -47,6 +47,9 @@
       call bcast_ctl_type_c1(CG_ctl%method_ctl)
       call bcast_ctl_type_c1(CG_ctl%precond_ctl)
 !
+      call MPI_BCAST(CG_ctl%i_solver_ctl, 1,                            &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
       end subroutine bcast_CG_solver_param_ctl
 !
 ! -----------------------------------------------------------------------
@@ -63,6 +66,9 @@
       call bcast_ctl_type_i1(DJDS_ctl%mc_color_ctl)
 !
       call bcast_ctl_type_c1(DJDS_ctl%order_method_ctl)
+!
+      call MPI_BCAST(DJDS_ctl%i_DJDS_params, 1,                         &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_control_DJDS_solver
 !
@@ -96,6 +102,9 @@
 !
       call bcast_ctl_array_c1(MG_ctl%MG_mesh_fmt_ctl)
       call bcast_ctl_array_c1(MG_ctl%MG_table_fmt_ctl)
+!
+      call MPI_BCAST(MG_ctl%i_Multigrid_params, 1,                      &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_control_Multigrid
 !

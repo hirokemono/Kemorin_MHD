@@ -72,7 +72,6 @@
 !
         integer (kind=kint) :: i_plane_mesh = 0
 !
-        integer (kind=kint) :: i_platform =   0
         integer (kind=kint) :: i_l_filter_ctl =  0
       end type ctl_data_4_cub_kemo
 !
@@ -160,7 +159,7 @@
 !
 !
         call read_control_platforms                                     &
-     &     (hd_platform, cubmesh_c%i_platform, cubmesh_c%cubmesh_plt)
+     &     (ctl_file_code, hd_platform, cubmesh_c%cubmesh_plt, c_buf1)
         call read_filter_fnames_control                                 &
      &     (ctl_file_code, hd_filter_fnames, i_filter_fnames,           &
      &      cubmesh_c%ffile_cub_ctl, c_buf1)

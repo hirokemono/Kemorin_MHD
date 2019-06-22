@@ -113,9 +113,6 @@
       character(len=kchara), parameter :: hd_part_ghost_ctl             &
      &                      = 'part_ghost_ctl'
 !
-      integer(kind=kint) :: i_platform =   0
-      integer(kind=kint) :: i_org_data =   0
-!
       integer (kind=kint) :: i_org_f_ctl =        0
       integer (kind=kint) :: i_ele_ordering_ctl = 0
       integer (kind=kint) :: i_decomp_ctl =       0
@@ -182,9 +179,7 @@
       private :: control_file_name
       private :: hd_part_ctl, i_part_ctl
       private :: hd_org_f_ctl
-      private :: hd_platform, i_platform
-      private :: hd_org_data, i_org_data
-      private :: hd_FEM_mesh
+      private :: hd_platform, hd_org_data, hd_FEM_mesh
       private :: hd_ele_ordering_ctl, hd_decomp_ctl
       private :: i_ele_ordering_ctl, i_decomp_ctl
       private :: hd_nele_grp_ordering
@@ -262,9 +257,9 @@
 !
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, part_ctl%part_plt)
+     &     (ctl_file_code, hd_platform, part_ctl%part_plt, c_buf1)
         call read_control_platforms                                     &
-     &     (hd_org_data, i_org_data, part_ctl%single_plt)
+     &     (ctl_file_code, hd_org_data, part_ctl%single_plt, c_buf1)
 !
         call read_FEM_mesh_control                                      &
      &     (ctl_file_code, hd_FEM_mesh, part_ctl%part_Fmesh, c_buf1)

@@ -51,7 +51,6 @@
      &                    :: hd_platform = 'data_files_def'
       character(len=kchara), parameter :: hd_course_mesh_para_ctl       &
      &                      = 'parallel_course_mesh_ctl'
-      integer (kind=kint) :: i_platform =   0
       integer (kind=kint) :: i_course_mesh_para_ctl = 0
 !
 !   3rd level for parallel_course_mesh_ctl
@@ -72,8 +71,7 @@
       private :: hd_course_mesh_para_ctl, i_course_mesh_para_ctl
       private :: hd_num_course_subdomain, hd_course_mesh_file_head
       private :: hd_fine_to_course_p_head,  hd_course_to_fine_p_head
-      private :: hd_fine_to_course_ele_head
-      private :: hd_platform, i_platform
+      private :: hd_fine_to_course_ele_head, hd_platform
       private :: read_ref_para_itp_ctl_data
       private :: read_ctl_data_4_course_mesh
 !
@@ -117,8 +115,8 @@
      &     = find_control_end_flag(hd_para_refine_tbl_ctl)
 !
 !
-        call read_control_platforms                                     &
-     &     (hd_platform, i_platform, p_refine_ctl%para_refine_plt)
+        call read_control_platforms(ctl_file_code, hd_platform,         &
+     &      p_refine_ctl%para_refine_plt, c_buf1)
 !
         call read_ctl_data_4_course_mesh(p_refine_ctl)
         call read_ctl_data_4_refine_mesh(refine_ctl)

@@ -48,7 +48,6 @@
 !
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
-      integer (kind=kint) :: i_tstep =      0
 !
 !
 !     flags for grouping plot
@@ -73,8 +72,7 @@
       private :: hd_grouping_plot,  i_grouping_plot
       private :: hd_group_mesh_head, hd_group_data_name
       private :: hd_group_udt_head, hd_start_ele_grp_name
-      private :: hd_ngrp_ele_grp
-      private :: hd_time_step, i_tstep
+      private :: hd_ngrp_ele_grp, hd_time_step
 !
       private :: read_ctl_data_ele_grp_udt
       private :: read_ctl_data_4_drmd_grp
@@ -121,7 +119,7 @@
         if(i_ele_grp_udt .gt. 0) exit
 !
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, t_egu_ctl)
+     &     (ctl_file_code, hd_time_step, t_egu_ctl, c_buf1)
         call read_ctl_data_4_drmd_grp
       end do
 !

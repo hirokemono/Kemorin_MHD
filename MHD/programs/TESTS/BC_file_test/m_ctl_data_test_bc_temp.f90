@@ -60,7 +60,6 @@
      &                    :: hd_platform = 'data_files_def'
       character(len=kchara), parameter :: hd_bc_def =   'boundary_ctl'
 !
-      integer (kind=kint) :: i_platform =   0
       integer (kind=kint) :: i_bc_def =    0
 !
 !     2nd level for boundary defeine
@@ -74,8 +73,7 @@
 !
       private :: test_mest_ctl_file_code, fname_test_mesh_ctl
 !
-      private :: hd_platform, i_platform
-      private :: hd_bc_def, i_bc_def
+      private :: hd_platform, hd_bc_def, i_bc_def
       private :: read_test_mesh_ctl_data
       private :: hd_nod_grp_t, hd_sph_degree, hd_sph_order
 !
@@ -125,7 +123,7 @@
 !
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, bc_test_plt)
+     &     (ctl_file_code, hd_platform, bc_test_plt, c_buf1)
         call read_ctl_data_4_temp_nod_bc
       end do
 !

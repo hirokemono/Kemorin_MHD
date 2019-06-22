@@ -21,7 +21,9 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_machine_parameter
+      use t_read_control_elements
       use t_ctl_data_4_platforms
       use t_ctl_data_SGS_MHD_model
       use t_ctl_data_FEM_MHD_control
@@ -33,7 +35,7 @@
       implicit none
 !
 !
-      integer(kind=kint), parameter :: control_file_code = 11
+      integer(kind=kint), parameter :: ctl_file_code = 11
 !
       type fem_mhd_control
 !>        Structure for file settings
@@ -55,12 +57,13 @@
         type(sph_monitor_control) :: smonitor_ctl
 !>        Structure for monitoring plave list
         type(node_monitor_control) :: nmtr_ctl
+!
+        integer(kind = kint) :: i_mhd_ctl = 0
       end type fem_mhd_control
 !
 !   Top level of label
 !
       character(len=kchara) :: hd_mhd_ctl = 'MHD_control'
-      integer (kind=kint) :: i_mhd_ctl = 0
 !
 !   2nd level for MHD
 !
@@ -79,15 +82,7 @@
       character(len=kchara), parameter                                  &
      &      :: hd_monitor_data = 'monitor_data_ctl'
 !
-      integer (kind=kint) :: i_platform =     0
-      integer (kind=kint) :: i_org_data =     0
-      integer (kind=kint) :: i_new_data =     0
-      integer (kind=kint) :: i_model =        0
-      integer (kind=kint) :: i_control =      0
-      integer (kind=kint) :: i_pick_sph =     0
-      integer (kind=kint) :: i_monitor_data = 0
-!
-      private :: hd_mhd_ctl, i_mhd_ctl
+      private :: hd_mhd_ctl
       private :: read_fem_mhd_control_data, bcast_fem_mhd_ctl_data
 !
 ! ----------------------------------------------------------------------
@@ -103,14 +98,18 @@
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
 !
+      type(buffer_for_control) :: c_buf1
+!
 !
       if(my_rank .eq. 0) then
-        ctl_file_code = control_file_code
-        open (ctl_file_code, file = file_name, status='old' )
+        open(ctl_file_code, file = file_name, status='old' )
 !
-        call load_ctl_label_and_line
-        call read_fem_mhd_control_data(FEM_MHD_ctl, viz_ctls)
-!
+        do
+          call load_one_line_from_control(ctl_file_code, c_buf1)
+          call read_fem_mhd_control_data(ctl_file_code, hd_mhd_ctl,     &
+     &        FEM_MHD_ctl, viz_ctls, c_buf1)
+          if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) exit
+        end do
         close(ctl_file_code)
       end if
 !
@@ -121,39 +120,43 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine read_fem_mhd_control_data(FEM_MHD_ctl, viz_ctls)
+      subroutine read_fem_mhd_control_data                              &
+     &         (id_control, hd_block, FEM_MHD_ctl, viz_ctls, c_buf)
 !
       use calypso_mpi
       use t_ctl_data_FEM_MHD_control
 !
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_mhd_ctl) .eq. 0) return
-      if (i_mhd_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        i_mhd_ctl = find_control_end_flag(hd_mhd_ctl)
-        if(i_mhd_ctl .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, FEM_MHD_ctl%plt)
+     &     (id_control, hd_platform, FEM_MHD_ctl%plt, c_buf)
         call read_control_platforms                                     &
-     &     (hd_org_data, i_org_data, FEM_MHD_ctl%org_plt)
+     &     (id_control, hd_org_data, FEM_MHD_ctl%org_plt, c_buf)
 !
         call read_sph_sgs_mhd_model                                     &
-     &     (hd_model, i_model, FEM_MHD_ctl%model_ctl)
+     &     (id_control, hd_model, FEM_MHD_ctl%model_ctl, c_buf)
         call read_fem_mhd_control                                       &
-     &     (hd_control, i_control, FEM_MHD_ctl%fmctl_ctl)
+     &     (id_control, hd_control, FEM_MHD_ctl%fmctl_ctl, c_buf)
 !
-        call read_monitor_data_ctl                                      &
-     &     (hd_monitor_data, i_monitor_data, FEM_MHD_ctl%nmtr_ctl)
+        call read_monitor_data_ctl(id_control, hd_monitor_data,         &
+     &      FEM_MHD_ctl%nmtr_ctl, c_buf)
         call read_viz_controls                                          &
-     &     (ctl_file_code, viz_ctls, c_buf1)
+     &     (id_control, viz_ctls, c_buf)
       end do
+      FEM_MHD_ctl%i_mhd_ctl = 1
 !
       end subroutine read_fem_mhd_control_data
 !
@@ -181,6 +184,9 @@
       call bcast_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
 !
       call bcast_viz_controls(viz_ctls)
+!
+      call MPI_BCAST(FEM_MHD_ctl%i_mhd_ctl, 1,                          &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_fem_mhd_ctl_data
 !

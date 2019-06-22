@@ -27,11 +27,6 @@
 !!        type(isosurface_define), intent(inout) :: iso_def(num_iso)
 !!        type(psf_local_data), intent(inout) :: iso_mesh(num_iso)
 !!        type(field_IO_params), intent(inout) :: iso_file_IO(num_iso)
-!!
-!!      subroutine read_control_4_psf_file                              &
-!!     &         (id_control, fname_psf_ctl, psf_ctl_struct)
-!!      subroutine read_control_4_iso_file                              &
-!!     &         (id_control, fname_iso_ctl, iso_ctl_struct)
 !!@endverbatim
 !
       module set_psf_iso_control
@@ -40,20 +35,6 @@
       use m_machine_parameter
 !
       implicit none
-!
-!     Top level
-      character(len=kchara), parameter                                  &
-     &             :: hd_section_ctl = 'cross_section_ctl'
-      character(len=kchara), parameter                                  &
-     &             :: hd_isosurf_ctl = 'isosurface_ctl'
-!
-!      Deprecated labels
-      character(len=kchara), parameter                                  &
-     &             :: hd_psf_ctl = 'surface_rendering'
-      character(len=kchara), parameter                                  &
-     &             :: hd_iso_ctl = 'isosurf_rendering'
-      private :: hd_section_ctl, hd_psf_ctl
-      private :: hd_isosurf_ctl, hd_iso_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -199,66 +180,5 @@
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
-!
-      subroutine read_control_4_psf_file                                &
-     &         (id_control, fname_psf_ctl, psf_ctl_struct)
-!
-      use t_read_control_elements
-      use t_control_data_4_psf
-!
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: fname_psf_ctl
-      type(psf_ctl), intent(inout) :: psf_ctl_struct
-!
-      type(buffer_for_control) :: c_buf1
-!
-!
-      write(*,*) 'read section control file: ', trim(fname_psf_ctl)
-      open(id_control, file=fname_psf_ctl, status='old')
-!
-      do
-        call load_one_line_from_control(id_control, c_buf1)
-        call read_psf_control_data(id_control, hd_section_ctl,          &
-     &      psf_ctl_struct, c_buf1)
-        call read_psf_control_data(id_control, hd_psf_ctl,              &
-     &      psf_ctl_struct, c_buf1)
-        if(psf_ctl_struct%i_psf_ctl .gt. 0) exit
-      end do
-      close(id_control)
-!
-      end subroutine read_control_4_psf_file
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_control_4_iso_file                                &
-     &         (id_control, fname_iso_ctl, iso_ctl_struct)
-!
-      use t_read_control_elements
-      use t_control_data_4_iso
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: fname_iso_ctl
-      type(iso_ctl), intent(inout) :: iso_ctl_struct
-!
-      type(buffer_for_control) :: c_buf1
-!
-!
-      write(*,*) 'read isosurface control file: ', trim(fname_iso_ctl)
-      open(id_control, file=fname_iso_ctl, status='old')
-!
-      do
-        call load_one_line_from_control(id_control, c_buf1)
-        call read_iso_control_data                                      &
-     &     (id_control, hd_isosurf_ctl, iso_ctl_struct, c_buf1)
-        call read_iso_control_data                                      &
-     &     (id_control, hd_iso_ctl, iso_ctl_struct, c_buf1)
-        if(iso_ctl_struct%i_iso_ctl .gt. 0) exit
-      end do
-      close(id_control)
-!
-      end subroutine read_control_4_iso_file
-!
-!  ---------------------------------------------------------------------
 !
       end module set_psf_iso_control

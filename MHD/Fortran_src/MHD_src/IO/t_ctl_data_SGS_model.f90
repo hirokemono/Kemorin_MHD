@@ -139,6 +139,8 @@
 !
         integer(kind = kint) :: num_sph_filter_ctl
         type(sph_filter_ctl_type), allocatable :: sph_filter_ctl(:)
+!
+        integer (kind=kint) :: i_sgs_ctl =       0
       end type SGS_model_control
 !
       private :: copy_SGS_filter_ctls
@@ -222,6 +224,8 @@
 !
       sgs_ctl%ngrp_radial_ave_ctl%iflag =  0
       sgs_ctl%ngrp_med_ave_ctl%iflag =     0
+!
+      sgs_ctl%i_sgs_ctl = 0
 !
       end subroutine dealloc_sgs_ctl
 !

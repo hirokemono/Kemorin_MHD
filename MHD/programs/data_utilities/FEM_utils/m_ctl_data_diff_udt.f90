@@ -146,18 +146,11 @@
       character(len=kchara), parameter                                  &
      &      :: hd_int_points = 'intg_point_num_ctl'
 !
-      integer(kind=kint) :: i_platform =   0
-      integer(kind=kint) :: i_org_data =      0
-      integer (kind=kint) :: i_phys_values =   0
-      integer (kind=kint) :: i_tstep =      0
       integer (kind=kint) :: i_dynamic_layers = 0
-      integer (kind=kint) :: i_int_points = 0
 !
-      private :: hd_platform, i_platform
-      private :: hd_org_data, i_org_data
-      private :: hd_phys_values, i_phys_values
+      private :: hd_platform, hd_org_data, hd_phys_values
       private :: hd_dynamic_layers, i_dynamic_layers
-      private :: hd_int_points, i_int_points
+      private :: hd_int_points
 !
 !   --------------------------------------------------------------------
 !
@@ -239,9 +232,10 @@
         i_diff_control = find_control_end_flag(hd_entry)
         if(i_diff_control .gt. 0) exit
 !
-        call read_control_platforms(hd_platform, i_platform, d_plt)
         call read_control_platforms                                     &
-     &     (hd_org_data, i_org_data, org_d_plt)
+     &     (ctl_file_code, hd_platform, d_plt, c_buf1)
+        call read_control_platforms                                     &
+     &     (ctl_file_code, hd_org_data, org_d_plt, c_buf1)
 !
         call read_diff_files_ctl
         call read_diff_model_ctl
@@ -287,13 +281,13 @@
 !
 !
         call read_phys_data_control                                     &
-     &     (hd_phys_values, i_phys_values, fld_d_ctl)
+     &     (ctl_file_code, hd_phys_values, fld_d_ctl, c_buf1)
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, t_d_ctl)
+     &     (ctl_file_code, hd_time_step, t_d_ctl, c_buf1)
         call read_ele_layers_control(ctl_file_code, hd_dynamic_layers,  &
      &      i_dynamic_layers, elayer_d_ctl, c_buf1)
         call read_control_fem_int_points                                &
-     &     (hd_int_points, i_int_points, fint_d_ctl)
+     &     (ctl_file_code, hd_int_points, fint_d_ctl, c_buf1)
 !
 !
 !

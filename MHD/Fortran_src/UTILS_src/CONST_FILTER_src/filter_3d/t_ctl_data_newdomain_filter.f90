@@ -48,12 +48,9 @@
      &                    :: hd_new_data = 'new_data_files_def'
       character(len=kchara), parameter :: hd_filter_fnames              &
      &                        = 'filter_files_def'
-      integer (kind=kint) :: i_platform =   0
-      integer (kind=kint) :: i_new_data =      0
       integer (kind=kint) :: i_filter_fnames = 0
 !
-      private :: hd_platform, i_platform
-      private :: hd_new_data, i_new_data
+      private :: hd_platform, hd_new_data
       private :: hd_filter_fnames, i_filter_fnames
 !
       private :: id_filter_ctl_file, fname_trans_flt_ctl
@@ -109,10 +106,10 @@
         if(i_filter_newdomain_ctl .gt. 0) exit
 !
 !
-        call read_control_platforms                                     &
-     &     (hd_platform, i_platform, newd_fil_ctl%org_filter_plt)
-        call read_control_platforms                                     &
-     &     (hd_new_data, i_new_data, newd_fil_ctl%new_filter_plt)
+        call read_control_platforms(ctl_file_code, hd_platform,         &
+     &      newd_fil_ctl%org_filter_plt, c_buf1)
+        call read_control_platforms(ctl_file_code, hd_new_data,         &
+     &      newd_fil_ctl%new_filter_plt, c_buf1)
         call read_filter_fnames_control                                 &
      &     (ctl_file_code, hd_filter_fnames, i_filter_fnames,           &
      &      newd_fil_ctl%ffile_ndom_ctl, c_buf1)

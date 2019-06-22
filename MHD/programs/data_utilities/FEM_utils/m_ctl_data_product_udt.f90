@@ -73,9 +73,6 @@
      &                    :: hd_org_data = 'org_data_files_def'
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
-      integer(kind=kint) :: i_platform =   0
-      integer(kind=kint) :: i_org_data =      0
-      integer(kind=kint) :: i_tstep =      0
 !
       character(len=kchara), parameter                                  &
      &      :: hd_product_field_1 = 'product_field_1_ctl'
@@ -90,9 +87,7 @@
       private :: fname_prod_ctl
 !
       private :: hd_prod_control, i_prod_control
-      private :: hd_platform, i_platform
-      private :: hd_org_data, i_org_data
-      private :: hd_time_step, i_tstep
+      private :: hd_platform, hd_org_data, hd_time_step
       private :: hd_prod_files, hd_prod_model
       private :: hd_product_udt_1, hd_product_udt_2
       private :: hd_product_type
@@ -136,9 +131,10 @@
         i_prod_control = find_control_end_flag(hd_prod_control)
         if(i_prod_control .gt. 0) exit
 !
-        call read_control_platforms(hd_platform, i_platform, pu_plt)
         call read_control_platforms                                     &
-     &     (hd_org_data, i_org_data, org_pu_plt)
+     &     (ctl_file_code, hd_platform, pu_plt, c_buf1)
+        call read_control_platforms                                     &
+     &     (ctl_file_code, hd_org_data, org_pu_plt, c_buf1)
 !
         call read_prod_files_ctl
         call read_product_model_ctl
@@ -184,7 +180,7 @@
 !
 !
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, t_pu_ctl)
+     &     (ctl_file_code, hd_time_step, t_pu_ctl, c_buf1)
 !
         call read_chara_ctl_type(c_buf1, hd_result_field,               &
      &      result_field_ctl)

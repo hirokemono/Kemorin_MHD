@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine dealloc_control_Multigrid(MG_ctl)
-!!      subroutine read_control_Multigrid(hd_block, iflag, MG_ctl)
+!!      subroutine read_control_Multigrid                               &
+!!     &         (id_control, hd_block, MG_ctl, c_buf)
 !!        type(MGCG_control), intent(inout) :: MG_ctl
 !!      subroutine write_control_Multigrid                              &
-!!     &         (id_file, hd_block, MG_ctl, level)
+!!     &         (id_control, hd_block, MG_ctl, level)
 !!        type(MGCG_control), intent(inout) :: MG_ctl
 !!!!!!!!  setting for MGCG solver !!!!!!!!!!!!!!!!!!!!!
 !!
@@ -94,6 +95,7 @@
       module t_ctl_data_4_Multigrid
 !
       use m_precision
+      use m_machine_parameter
       use t_control_elements
       use t_control_array_character
       use t_control_array_integer
@@ -147,6 +149,8 @@
 !
 !>        Structure for error torrance for each step
         type(read_real_item) :: MG_residual_ctl
+!
+        integer (kind=kint) :: i_Multigrid_params = 0
       end type MGCG_control
 !
 !   file and domain controls
@@ -217,80 +221,81 @@
       MG_ctl%maxiter_coarsest_ctl%iflag =    0
       MG_ctl%MG_residual_ctl%iflag =         0
 !
+      MG_ctl%i_Multigrid_params = 0
+!
       end subroutine dealloc_control_Multigrid
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_Multigrid(hd_block, iflag, MG_ctl)
+      subroutine read_control_Multigrid                                 &
+     &         (id_control, hd_block, MG_ctl, c_buf)
 !
-      use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
-      integer(kind = kint), intent(inout) :: iflag
       type(MGCG_control), intent(inout) :: MG_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_block) .eq. 0) return
-      if (iflag .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(MG_ctl%i_Multigrid_params .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        iflag = find_control_end_flag(hd_block)
-        if(iflag .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_MG_METHOD, MG_ctl%MG_METHOD_ctl)
+     &     (c_buf, hd_MG_METHOD, MG_ctl%MG_METHOD_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_MG_PRECOND, MG_ctl%MG_PRECOND_ctl)
+     &     (c_buf, hd_MG_PRECOND, MG_ctl%MG_PRECOND_ctl)
 !
         call read_real_ctl_type                                         &
-     &     (c_buf1, hd_MG_residual, MG_ctl%MG_residual_ctl)
+     &     (c_buf, hd_MG_residual, MG_ctl%MG_residual_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_maxiter_mid, MG_ctl%maxiter_mid_ctl)
+     &     (c_buf, hd_maxiter_mid, MG_ctl%maxiter_mid_ctl)
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_maxiter_coarsest, MG_ctl%maxiter_coarsest_ctl)
+     &     (c_buf, hd_maxiter_coarsest, MG_ctl%maxiter_coarsest_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_num_MG_level, MG_ctl%num_multigrid_level_ctl)
+     &     (c_buf, hd_num_MG_level, MG_ctl%num_multigrid_level_ctl)
 !
 !
-        call read_control_array_i1(ctl_file_code,                       &
-     &      hd_num_MG_subdomain, MG_ctl%num_MG_subdomain_ctl, c_buf1)
+        call read_control_array_i1(id_control,                          &
+     &      hd_num_MG_subdomain, MG_ctl%num_MG_subdomain_ctl, c_buf)
 !
-        call read_control_array_c1(ctl_file_code,                       &
-     &      hd_MG_mesh_header, MG_ctl%MG_mesh_prefix_ctl, c_buf1)
+        call read_control_array_c1(id_control,                          &
+     &      hd_MG_mesh_header, MG_ctl%MG_mesh_prefix_ctl, c_buf)
 !
-        call read_control_array_c1(ctl_file_code,                       &
+        call read_control_array_c1(id_control,                          &
      &      hd_MG_fine_2_coarse_tbl, MG_ctl%MG_fine_2_coarse_tbl,       &
-     &      c_buf1)
-        call read_control_array_c1(ctl_file_code,                       &
+     &      c_buf)
+        call read_control_array_c1(id_control,                          &
      &      hd_MG_coarse_2_fine_tbl, MG_ctl%MG_coarse_2_fine_tbl,       &
-     &      c_buf1)
-        call read_control_array_c1(ctl_file_code,                       &
-     &      hd_MG_f2c_ele_tbl, MG_ctl%MG_f2c_ele_tbl_ctl, c_buf1)
+     &      c_buf)
+        call read_control_array_c1(id_control,                          &
+     &      hd_MG_f2c_ele_tbl, MG_ctl%MG_f2c_ele_tbl_ctl, c_buf)
 !
-        call read_control_array_c1(ctl_file_code,                       &
-     &      hd_MG_mesh_file_fmt, MG_ctl%MG_mesh_fmt_ctl, c_buf1)
-        call read_control_array_c1(ctl_file_code,                       &
-     &      hd_MG_tbl_file_fmt, MG_ctl%MG_table_fmt_ctl, c_buf1)
+        call read_control_array_c1(id_control,                          &
+     &      hd_MG_mesh_file_fmt, MG_ctl%MG_mesh_fmt_ctl, c_buf)
+        call read_control_array_c1(id_control,                          &
+     &      hd_MG_tbl_file_fmt, MG_ctl%MG_table_fmt_ctl, c_buf)
       end do
+      MG_ctl%i_Multigrid_params = 1
 !
       end subroutine read_control_Multigrid
 !
 !  ---------------------------------------------------------------------
 !
       subroutine write_control_Multigrid                                &
-     &         (id_file, hd_block, MG_ctl, level)
+     &         (id_control, hd_block, MG_ctl, level)
 !
-      use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
       use write_control_elements
 !
-      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(MGCG_control), intent(in) :: MG_ctl
 !
@@ -314,45 +319,45 @@
       maxlen = max(maxlen, len_trim(hd_MG_mesh_file_fmt))
       maxlen = max(maxlen, len_trim(hd_MG_tbl_file_fmt))
 !
-      write(id_file,'(a1)') '!'
-      level = write_begin_flag_for_ctl(id_file, level, hd_block)
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
-        call write_chara_ctl_type(id_file, level, maxlen,               &
+        call write_chara_ctl_type(id_control, level, maxlen,            &
      &      hd_MG_METHOD, MG_ctl%MG_METHOD_ctl)
-        call write_chara_ctl_type(id_file, level, maxlen,               &
+        call write_chara_ctl_type(id_control, level, maxlen,            &
      &      hd_MG_PRECOND, MG_ctl%MG_PRECOND_ctl)
 !
-        call write_real_ctl_type(id_file, level, maxlen,                &
+        call write_real_ctl_type(id_control, level, maxlen,             &
      &      hd_MG_residual, MG_ctl%MG_residual_ctl)
 !
-        call write_integer_ctl_type(id_file, level, maxlen,             &
+        call write_integer_ctl_type(id_control, level, maxlen,          &
      &      hd_maxiter_mid, MG_ctl%maxiter_mid_ctl)
-        call write_integer_ctl_type(id_file, level, maxlen,             &
+        call write_integer_ctl_type(id_control, level, maxlen,          &
      &      hd_maxiter_coarsest, MG_ctl%maxiter_coarsest_ctl)
 !
-        call write_integer_ctl_type(id_file, level, maxlen,             &
+        call write_integer_ctl_type(id_control, level, maxlen,          &
      &      hd_num_MG_level, MG_ctl%num_multigrid_level_ctl)
 !
 !
-        call write_control_array_i1(id_file, level,                     &
+        call write_control_array_i1(id_control, level,                  &
      &      hd_num_MG_subdomain, MG_ctl%num_MG_subdomain_ctl)
 !
-        call write_control_array_c1(id_file, level,                     &
+        call write_control_array_c1(id_control, level,                  &
      &      hd_MG_mesh_header, MG_ctl%MG_mesh_prefix_ctl)
 !
-        call write_control_array_c1(id_file, level,                     &
+        call write_control_array_c1(id_control, level,                  &
      &      hd_MG_fine_2_coarse_tbl, MG_ctl%MG_fine_2_coarse_tbl)
-        call write_control_array_c1(id_file, level,                     &
+        call write_control_array_c1(id_control, level,                  &
      &      hd_MG_coarse_2_fine_tbl, MG_ctl%MG_coarse_2_fine_tbl)
-        call write_control_array_c1(id_file, level,                     &
+        call write_control_array_c1(id_control, level,                  &
      &      hd_MG_f2c_ele_tbl, MG_ctl%MG_f2c_ele_tbl_ctl)
 !
-        call write_control_array_c1(id_file, level,                     &
+        call write_control_array_c1(id_control, level,                  &
      &      hd_MG_mesh_file_fmt, MG_ctl%MG_mesh_fmt_ctl)
-        call write_control_array_c1(id_file, level,                     &
+        call write_control_array_c1(id_control, level,                  &
      &      hd_MG_tbl_file_fmt, MG_ctl%MG_table_fmt_ctl)
 !
-      level =  write_end_flag_for_ctl(id_file, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_control_Multigrid
 !
