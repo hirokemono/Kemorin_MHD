@@ -87,7 +87,7 @@
       subroutine read_control_array_r2                                  &
      &         (id_control, label, array_r2, c_buf)
 !
-      use m_read_control_elements
+      use t_read_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: label

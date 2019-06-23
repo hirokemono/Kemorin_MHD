@@ -202,7 +202,6 @@
       call deallocate_pvr_cmap_cbar(pvr_ctl%cmap_cbar_c)
 !
       call dealloc_pvr_render_area_ctl(pvr_ctl%render_area_c)
-      write(*,*) 'pvr_ctl%pvr_isos_c%pvr_iso_ctl', allocated(pvr_ctl%pvr_isos_c%pvr_iso_ctl)
       call dealloc_pvr_isosurfs_ctl(pvr_ctl%pvr_isos_c)
       call dealloc_pvr_sections_ctl(pvr_ctl%pvr_scts_c)
 !

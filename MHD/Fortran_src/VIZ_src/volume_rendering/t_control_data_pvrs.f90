@@ -157,14 +157,12 @@
       call alloc_pvr_ctl_struct(tmp_pvrs_c)
       call dup_pvr_ctl_struct                                           &
      &   (pvr_ctls%num_pvr_ctl, pvr_ctls, tmp_pvrs_c)
-      write(*,*) 'Tako'
       call dealloc_pvr_ctl_struct(pvr_ctls)
 !
       pvr_ctls%num_pvr_ctl = tmp_pvrs_c%num_pvr_ctl + 1
       call alloc_pvr_ctl_struct(pvr_ctls)
       call dup_pvr_ctl_struct                                           &
      &   (tmp_pvrs_c%num_pvr_ctl, tmp_pvrs_c, pvr_ctls)
-      write(*,*) 'TakoTako'
       call dealloc_pvr_ctl_struct(tmp_pvrs_c)
 !
       end subroutine append_new_pvr_ctl_struct

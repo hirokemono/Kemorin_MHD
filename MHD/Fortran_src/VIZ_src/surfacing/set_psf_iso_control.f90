@@ -88,9 +88,6 @@
 !
 !
       do i = 1, num_psf
-        call bcast_psf_control_data(psf_ctls%psf_ctl_struct(i))
-      end do
-      do i = 1, num_psf
         call count_control_4_psf(psf_ctls%psf_ctl_struct(i),            &
      &      group%ele_grp, nod_fld%num_phys, nod_fld%phys_name,         &
      &      psf_mesh(i)%field, psf_param(i), psf_file_IO(i), ierr)
@@ -146,9 +143,6 @@
       integer(kind = kint) :: i
 !
 !
-      do i = 1, num_iso
-        call bcast_iso_control_data(iso_ctls%iso_ctl_struct(i))
-      end do
       do i = 1, num_iso
         call count_control_4_iso(iso_ctls%iso_ctl_struct(i),            &
      &      group%ele_grp, nod_fld%num_phys, nod_fld%phys_name,         &

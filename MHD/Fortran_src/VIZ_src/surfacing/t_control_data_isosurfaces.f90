@@ -116,9 +116,7 @@
      &   (iso_ctls%fname_iso_ctl, int(kchara*iso_ctls%num_iso_ctl),     &
      &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
       do i_iso = 1, iso_ctls%num_iso_ctl
-        if(iso_ctls%fname_iso_ctl(i_iso) .eq. 'NO_FILE') then
-          call bcast_iso_control_data(iso_ctls%iso_ctl_struct(i_iso))
-        end if
+        call bcast_iso_control_data(iso_ctls%iso_ctl_struct(i_iso))
       end do
 !
       end subroutine bcast_files_4_iso_ctl

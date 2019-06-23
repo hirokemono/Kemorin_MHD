@@ -164,7 +164,7 @@
       subroutine write_control_shell_domain                             &
      &         (id_file, hd_block, sdctl, level)
 !
-      use m_read_control_elements
+      use t_read_control_elements
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_file
