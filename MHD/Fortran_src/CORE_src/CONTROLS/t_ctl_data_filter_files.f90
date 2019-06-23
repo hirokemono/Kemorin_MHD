@@ -8,7 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine read_filter_fnames_control                           &
-!!     &         (id_control, hd_block, iflag, ffile_ctl, c_buf)
+!!     &         (id_control, hd_block, ffile_ctl, c_buf)
+!!      subroutine reset_filter_fnames_control(ffile_ctl)
+!!        type(filter_file_control), intent(inout) :: ffile_ctl
+!!        type(buffer_for_control), intent(inout) :: c_buf
 !!
 !!  ---------------------------------------------------------------------
 !!
@@ -71,6 +74,8 @@
         type(read_character_item) :: model_coef_rst_format
 !>        Structure for file format of commutation coefficient
         type(read_character_item) :: commute_coef_rst_format
+!
+        integer (kind=kint) :: i_filter_fnames = 0
       end type filter_file_control
 !
 !     flags for filter file headers
@@ -115,7 +120,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_filter_fnames_control                             &
-     &         (id_control, hd_block, iflag, ffile_ctl, c_buf)
+     &         (id_control, hd_block, ffile_ctl, c_buf)
 !
       use m_machine_parameter
       use skip_comment_f
@@ -123,13 +128,12 @@
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
-      integer(kind = kint), intent(inout) :: iflag
       type(filter_file_control), intent(inout) :: ffile_ctl
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(iflag .gt. 0) return
+      if(ffile_ctl%i_filter_fnames .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
@@ -161,9 +165,34 @@
         call read_chara_ctl_type(c_buf, hd_commute_c_rst_format,        &
      &      ffile_ctl%commute_coef_rst_format)
       end do
-      iflag = 1
+      ffile_ctl%i_filter_fnames = 1
 !
       end subroutine read_filter_fnames_control
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine reset_filter_fnames_control(ffile_ctl)
+!
+      type(filter_file_control), intent(inout) :: ffile_ctl
+!
+!
+      ffile_ctl%filter_head_ctl%iflag =           0
+      ffile_ctl%filter_coef_head_ctl%iflag =      0
+      ffile_ctl%filter_elen_head_ctl%iflag =      0
+      ffile_ctl%filter_moms_head_ctl%iflag =      0
+      ffile_ctl%filter_wide_head_ctl%iflag =      0
+      ffile_ctl%model_coef_ini_head_ctl%iflag =   0
+      ffile_ctl%commute_coef_ini_head_ctl%iflag = 0
+!
+      ffile_ctl%filter_elen_format%iflag =      0
+      ffile_ctl%filter_3d_format%iflag =        0
+      ffile_ctl%filter_wide_format%iflag =      0
+      ffile_ctl%model_coef_rst_format%iflag =   0
+      ffile_ctl%commute_coef_rst_format%iflag = 0
+!
+      ffile_ctl%i_filter_fnames = 0
+!
+      end subroutine reset_filter_fnames_control
 !
 !  ---------------------------------------------------------------------
 !

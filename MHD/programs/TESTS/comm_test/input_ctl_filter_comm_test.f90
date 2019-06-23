@@ -24,8 +24,8 @@
       use calypso_mpi
       use t_filter_file_data
       use t_filtering_data
+      use t_ctl_data_filter_comm_test
       use m_machine_parameter
-      use m_ctl_data_filter_comm_test
       use m_nod_filter_comm_table
       use m_filter_file_names
 !
@@ -35,16 +35,17 @@
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_work_type), intent(inout) :: wk_filter
 !
+      type(ctl_data_filter_comm_test) :: fc_test_ctl
       type(filter_file_data) :: filter_IO_t
       character(len=kchara) :: file_name
       integer(kind = kint) :: ierr
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_filter_comm_test'
-      call read_control_filter_comm_test
+      call read_control_filter_comm_test(fc_test_ctl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_comm_test'
-      call set_ctl_param_filter_comm_test(ffile_ctest_ctl)
+      call set_ctl_param_filter_comm_test(fc_test_ctl%ffile_ctest_ctl)
 !
 !  --  read filter geometry
 !

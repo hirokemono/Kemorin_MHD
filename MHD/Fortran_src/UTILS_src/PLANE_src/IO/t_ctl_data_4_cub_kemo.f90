@@ -4,6 +4,7 @@
 !!        programmed by H.Matsui on Aug., 2007
 !!
 !!      subroutine read_control_data_plane_mesh
+!!      subroutine reset_plane_mesh_ctl_data(cubmesh_c)
 !!
 !!   --------------------------------------------------------------------
 !!    Example of control block
@@ -43,6 +44,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use t_read_control_elements
       use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
       use t_ctl_data_4_plane_model
@@ -102,17 +104,15 @@
 !
       character(len=kchara), parameter :: hd_filter_fnames              &
      &                        = 'filter_files_def'
-      integer (kind=kint) :: i_filter_fnames = 0
 !
       private :: control_file_name, control_file_code
 !
       private :: hd_plane_mesh, hd_l_filter_ctl, hd_platform
       private :: hd_num_z_filter,     hd_z_filter_header
       private :: hd_vert_filter_type, hd_omitting_value
+      private :: hd_filter_fnames, hd_plane_def
 !
       private :: read_plane_mesh_ctl_data, read_z_filter_mesh_ctl
-!
-      private :: hd_filter_fnames, i_filter_fnames, hd_plane_def
 !
 !  ---------------------------------------------------------------------
 !
@@ -122,86 +122,124 @@
 !
        subroutine read_control_data_plane_mesh(cubmesh_c)
 !
-      use m_read_control_elements
       use skip_comment_f
 !
       type(ctl_data_4_cub_kemo), intent(inout) :: cubmesh_c
 !
+      type(buffer_for_control) :: c_buf1
 !
-      ctl_file_code = control_file_code
-      open (ctl_file_code, file = control_file_name)
 !
-      call load_ctl_label_and_line
-      call read_plane_mesh_ctl_data(cubmesh_c)
+      open (control_file_code, file = control_file_name)
 !
-      close(ctl_file_code)
+      do
+        call load_one_line_from_control(control_file_code, c_buf1)
+        call read_plane_mesh_ctl_data                                   &
+     &     (control_file_code, hd_plane_mesh, cubmesh_c, c_buf1)
+        if(cubmesh_c%i_plane_mesh .gt. 0) exit
+      end do
+      close(control_file_code)
 !
       end subroutine read_control_data_plane_mesh
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_plane_mesh_ctl_data(cubmesh_c)
+      subroutine read_plane_mesh_ctl_data                               &
+     &         (id_control, hd_block, cubmesh_c, c_buf)
 !
-      use m_read_control_elements
       use skip_comment_f
 !
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
       type(ctl_data_4_cub_kemo), intent(inout) :: cubmesh_c
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-!   1 begin phys_values_ctl
 !
-      if(right_begin_flag(hd_plane_mesh) .eq. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cubmesh_c%i_plane_mesh .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        cubmesh_c%i_plane_mesh = find_control_end_flag(hd_plane_mesh)
-        if(cubmesh_c%i_plane_mesh .gt. 0) exit
-!
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
-     &     (ctl_file_code, hd_platform, cubmesh_c%cubmesh_plt, c_buf1)
-        call read_filter_fnames_control                                 &
-     &     (ctl_file_code, hd_filter_fnames, i_filter_fnames,           &
-     &      cubmesh_c%ffile_cub_ctl, c_buf1)
+     &     (id_control, hd_platform, cubmesh_c%cubmesh_plt, c_buf)
+        call read_filter_fnames_control(id_control, hd_filter_fnames,   &
+     &      cubmesh_c%ffile_cub_ctl, c_buf)
 !
-        call read_plane_model_param_ctl(hd_plane_def, cubmesh_c%cube_c)
-        call read_z_filter_mesh_ctl(cubmesh_c)
+        call read_plane_model_param_ctl(id_control, hd_plane_def,       &
+     &      cubmesh_c%cube_c, c_buf)
+        call read_z_filter_mesh_ctl(id_control, hd_l_filter_ctl,        &
+     &      cubmesh_c, c_buf)
       end do
+      cubmesh_c%i_plane_mesh = 1
 !
       end subroutine read_plane_mesh_ctl_data
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_z_filter_mesh_ctl(cubmesh_c)
-!
-      use m_read_control_elements
-      use skip_comment_f
+      subroutine reset_plane_mesh_ctl_data(cubmesh_c)
 !
       type(ctl_data_4_cub_kemo), intent(inout) :: cubmesh_c
 !
 !
-      if(right_begin_flag(hd_l_filter_ctl) .eq. 0) return
-      if (cubmesh_c%i_l_filter_ctl .gt. 0) return
+      call reset_filter_fnames_control(cubmesh_c%ffile_cub_ctl)
+      call reset_z_filter_mesh_ctl(cubmesh_c)
+!
+      cubmesh_c%i_plane_mesh = 0
+!
+      end subroutine reset_plane_mesh_ctl_data
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine read_z_filter_mesh_ctl                                 &
+     &         (id_control, hd_block, cubmesh_c, c_buf)
+!
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(ctl_data_4_cub_kemo), intent(inout) :: cubmesh_c
+      type(buffer_for_control), intent(inout) :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(cubmesh_c%i_l_filter_ctl .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        cubmesh_c%i_l_filter_ctl                                        &
-     &         = find_control_end_flag(hd_l_filter_ctl)
-        if(cubmesh_c%i_l_filter_ctl .gt. 0) exit
-!
-        call read_chara_ctl_type(c_buf1, hd_z_filter_header,            &
+        call read_chara_ctl_type(c_buf, hd_z_filter_header,             &
      &      cubmesh_c%z_filter_head_ctl)
-        call read_chara_ctl_type(c_buf1, hd_vert_filter_type,           &
+        call read_chara_ctl_type(c_buf, hd_vert_filter_type,            &
      &      cubmesh_c%vert_filter_type_ctl)
 !
         call read_real_ctl_type                                         &
-     &     (c_buf1, hd_omitting_value, cubmesh_c%omitting_value_ctl)
+     &     (c_buf, hd_omitting_value, cubmesh_c%omitting_value_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_num_z_filter, cubmesh_c%num_z_filter_ctl)
+     &     (c_buf, hd_num_z_filter, cubmesh_c%num_z_filter_ctl)
       end do
+      cubmesh_c%i_l_filter_ctl = 1
 !
       end subroutine read_z_filter_mesh_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine reset_z_filter_mesh_ctl(cubmesh_c)
+!
+      type(ctl_data_4_cub_kemo), intent(inout) :: cubmesh_c
+!
+!
+      cubmesh_c%z_filter_head_ctl%iflag =    0
+      cubmesh_c%vert_filter_type_ctl%iflag = 0
+      cubmesh_c%omitting_value_ctl%iflag =   0
+      cubmesh_c%num_z_filter_ctl%iflag =     0
+!
+      cubmesh_c%i_l_filter_ctl = 0
+!
+      end subroutine reset_z_filter_mesh_ctl
 !
 ! -----------------------------------------------------------------------
 !

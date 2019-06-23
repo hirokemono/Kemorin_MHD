@@ -143,9 +143,10 @@
         call read_merge_step_data(pcor_c)
 !
         call read_plane_model_param_ctl                                 &
-     &     (hd_plane_def, pcor_c%cube_c_corr)
+     &     (ctl_file_code, hd_plane_def, pcor_c%cube_c_corr, c_buf1)
         call read_plane_model_param_ctl                                 &
-     &     (hd_ref_plane_mesh_ctl, pcor_c%cube2nd_c)
+     &     (ctl_file_code, hd_ref_plane_mesh_ctl,                       &
+     &      pcor_c%cube2nd_c, c_buf1)
       end do
 !
       end subroutine read_cor_plane_control_data

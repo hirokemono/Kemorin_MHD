@@ -146,10 +146,8 @@
       character(len=kchara), parameter                                  &
      &      :: hd_int_points = 'intg_point_num_ctl'
 !
-      integer (kind=kint) :: i_dynamic_layers = 0
-!
       private :: hd_platform, hd_org_data, hd_phys_values
-      private :: hd_dynamic_layers, i_dynamic_layers
+      private :: hd_dynamic_layers
       private :: hd_int_points
 !
 !   --------------------------------------------------------------------
@@ -285,7 +283,7 @@
         call read_control_time_step_data                                &
      &     (ctl_file_code, hd_time_step, t_d_ctl, c_buf1)
         call read_ele_layers_control(ctl_file_code, hd_dynamic_layers,  &
-     &      i_dynamic_layers, elayer_d_ctl, c_buf1)
+     &      elayer_d_ctl, c_buf1)
         call read_control_fem_int_points                                &
      &     (ctl_file_code, hd_int_points, fint_d_ctl, c_buf1)
 !

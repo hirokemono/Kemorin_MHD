@@ -57,6 +57,7 @@
       use set_2nd_geometry_4_table
       use const_jacobians_3d
       use mpi_load_mesh_data
+      use read_ctl_data_gen_table
 !
       if (my_rank.eq.0) then
         write(*,*) 'Construct commutation filter'
@@ -70,7 +71,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_gen_table'
       call set_ctl_params_4_gen_table(gtbl_ctl1, gen_itp_p1, itp_blks1)
       
-call dealloc_ctl_data_gen_table(gtbl_ctl1)
+      call dealloc_ctl_data_gen_table(gtbl_ctl1)
 !
 !  --  read geometry
 !

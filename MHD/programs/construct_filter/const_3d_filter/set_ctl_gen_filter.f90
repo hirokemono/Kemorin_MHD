@@ -58,13 +58,13 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_gen_filter'
       call set_control_mesh_def                                         &
-     &   (filter3d_ctl%fil3_ctl%gen_filter_plt, mesh_file)
+     &   (filter3d_ctl%gen_filter_plt, mesh_file)
       call set_file_heads_3d_comm_filter                                &
      &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl%ffile_3d_ctl,   &
      &    gfil_p)
       call set_ctl_params_gen_filter                                    &
-     &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl,                &
-     &    filter3d_ctl%org_fil_files_ctl,                               &
+     &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%gen_filter_plt,          &
+     &    filter3d_ctl%fil3_ctl, filter3d_ctl%org_fil_files_ctl,        &
      &    newfil_p%org_filter_coef_head,                                &
      &    gfil_p, FEM_elens, f_matrices%fil_mat_crs, ref_m)
 !
@@ -85,21 +85,21 @@
 !
 !
       call set_control_mesh_def                                         &
-     &   (filter3d_ctl%fil3_ctl%gen_filter_plt, mesh_file)
+     &   (filter3d_ctl%gen_filter_plt, mesh_file)
       call set_file_heads_3d_comm_filter                                &
      &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl%ffile_3d_ctl,   &
      &    gfil_p)
       call set_numdomain_3d_comm_filter                                 &
-     &   (filter3d_ctl%fil3_ctl, num_pe)
+     &   (filter3d_ctl%gen_filter_plt, num_pe)
 !
       end subroutine set_controls_sort_3dfilter
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_gen_filter(gen_f_ctl, fil3_ctl,         &
-     &          org_fil_files_ctl, org_filter_coef_head, gfil_p,        &
-     &          FEM_elens, fil_mat_crs, ref_m)
+      subroutine set_ctl_params_gen_filter(gen_f_ctl, gen_filter_plt,   &
+     &          fil3_ctl, org_fil_files_ctl, org_filter_coef_head,      &
+     &          gfil_p, FEM_elens, fil_mat_crs, ref_m)
 !
       use calypso_mpi
       use m_error_IDs
@@ -111,6 +111,7 @@
 !
       use skip_comment_f
 !
+      type(platform_data_control), intent(in) :: gen_filter_plt
       type(ctl_data_gen_filter), intent(in) :: gen_f_ctl
       type(ctl_data_3d_filter), intent(in) :: fil3_ctl
       type(org_filter_prefix_ctls), intent(in) :: org_fil_files_ctl
@@ -126,8 +127,8 @@
 !
 !
       np_smp = 1
-      if(fil3_ctl%gen_filter_plt%num_smp_ctl%iflag .gt. 0) then
-         np_smp = fil3_ctl%gen_filter_plt%num_smp_ctl%intvalue
+      if(gen_filter_plt%num_smp_ctl%iflag .gt. 0) then
+         np_smp = gen_filter_plt%num_smp_ctl%intvalue
       end if
 !
       gfil_p%num_int_points = 4
@@ -509,14 +510,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_numdomain_3d_comm_filter(fil3_ctl, num_pe)
+      subroutine set_numdomain_3d_comm_filter(gen_filter_plt, num_pe)
 !
-      type(ctl_data_3d_filter), intent(in) :: fil3_ctl
+      type(platform_data_control), intent(in) :: gen_filter_plt
       integer, intent(inout) :: num_pe
 !
 !
-      if(fil3_ctl%gen_filter_plt%ndomain_ctl%iflag .ne. 0) then
-        num_pe = int(fil3_ctl%gen_filter_plt%ndomain_ctl%intvalue)
+      if(gen_filter_plt%ndomain_ctl%iflag .ne. 0) then
+        num_pe = int(gen_filter_plt%ndomain_ctl%intvalue)
       else
         write(*,*) 'set number of domains'
         stop

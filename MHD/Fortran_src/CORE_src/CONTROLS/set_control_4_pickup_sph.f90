@@ -51,7 +51,6 @@
       use t_rms_4_sph_spectr
       use output_sph_m_square_file
       use skip_comment_f
-      use calypso_mpi
 !
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(sph_mean_squares), intent(inout) :: pwr

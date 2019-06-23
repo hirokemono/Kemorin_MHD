@@ -7,7 +7,7 @@
 !>@brief  Structure for reading parameters for filtering files
 !!
 !!@verbatim
-!!      subroutine bcast_ctl_data_4_filter_files(ffile_ctl)
+!!      subroutine bcast_filter_fnames_control(ffile_ctl)
 !!        type(filter_file_control), intent(inout) :: ffile_ctl
 !!      subroutine bcast_ele_layers_control(elayer_ctl)
 !!        type(layering_control), intent(inout) :: elayer_ctl
@@ -28,7 +28,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine bcast_ctl_data_4_filter_files(ffile_ctl)
+      subroutine bcast_filter_fnames_control(ffile_ctl)
 !
       use bcast_control_arrays
 !
@@ -49,7 +49,10 @@
       call bcast_ctl_type_c1(ffile_ctl%model_coef_rst_format)
       call bcast_ctl_type_c1(ffile_ctl%commute_coef_rst_format)
 !
-      end subroutine bcast_ctl_data_4_filter_files
+      call MPI_BCAST(ffile_ctl%i_filter_fnames, 1,                      &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
+      end subroutine bcast_filter_fnames_control
 !
 !  ---------------------------------------------------------------------
 !
@@ -73,6 +76,9 @@
       call bcast_ctl_type_c1(elayer_ctl%layering_grp_type_ctl)
       call bcast_ctl_type_c1(elayer_ctl%start_layering_grp_name_ctl)
       call bcast_ctl_type_c1(elayer_ctl%start_fl_layer_grp_name_ctl)
+!
+      call MPI_BCAST(elayer_ctl%i_dynamic_layers, 1,                    &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ele_layers_control
 !

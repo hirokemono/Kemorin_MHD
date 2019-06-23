@@ -31,7 +31,7 @@
 !
 !
       call bcast_ctl_data_4_platform(cubmesh_c%cubmesh_plt)
-      call bcast_ctl_data_4_filter_files(cubmesh_c%ffile_cub_ctl)
+      call bcast_filter_fnames_control(cubmesh_c%ffile_cub_ctl)
 !
       call bcast_plane_model_param_ctl(cubmesh_c%cube_c)
 !

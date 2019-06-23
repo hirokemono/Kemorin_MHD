@@ -9,6 +9,8 @@
 !!@verbatim
 !!      subroutine read_sgs_ctl                                         &
 !!     &         (id_control, hd_block, sgs_ctl, c_buf)
+!!      subroutine bcast_sgs_ctl(sgs_ctl)
+!!      subroutine reset_sgs_ctl(sgs_ctl)
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
@@ -213,11 +215,9 @@
 !
       character(len=kchara), parameter :: hd_dynamic_layers             &
      &                        = 'dynamic_model_layer_ctl'
-      integer (kind=kint) :: i_dynamic_layers = 0
 !
       character(len=kchara), parameter :: hd_filter_fnames              &
      &                        = 'filter_files_def'
-      integer (kind=kint) :: i_filter_fnames = 0
 !
       private :: hd_SGS_filter, hd_SGS_model
       private :: hd_SGS_clips, hd_SGS_clip_limit
@@ -235,9 +235,9 @@
       private :: hd_mxwl_csim_type_ctl, hd_uxb_csim_type_ctl
 !
       private :: read_control_4_SGS_filters
-      private :: hd_dynamic_layers, i_dynamic_layers
+      private :: hd_dynamic_layers
 !
-      private :: hd_filter_fnames, i_filter_fnames
+      private :: hd_filter_fnames
 !
 !   --------------------------------------------------------------------
 !
@@ -264,10 +264,9 @@
         call read_3d_filtering_ctl(id_control, hd_3d_filtering,         &
      &      i_3d_filtering, sgs_ctl%s3df_ctl, c_buf)
         call read_filter_fnames_control                                 &
-     &     (id_control, hd_filter_fnames, i_filter_fnames,              &
-     &      sgs_ctl%ffile_ctl, c_buf)
+     &     (id_control, hd_filter_fnames, sgs_ctl%ffile_ctl, c_buf)
         call read_ele_layers_control(id_control, hd_dynamic_layers,     &
-     &      i_dynamic_layers, sgs_ctl%elayer_ctl, c_buf)
+     &      sgs_ctl%elayer_ctl, c_buf)
 !
 !
         if(check_array_flag(c_buf, hd_sph_filter)) then
@@ -348,6 +347,30 @@
       sgs_ctl%i_sgs_ctl = 1
 !
       end subroutine read_sgs_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_sgs_ctl(sgs_ctl)
+!
+      use bcast_4_filter_files_ctl
+!
+      type(SGS_model_control), intent(inout) :: sgs_ctl
+!
+!
+      call bcast_filter_fnames_control(sgs_ctl%ffile_ctl)
+!
+      end subroutine bcast_sgs_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine reset_sgs_ctl(sgs_ctl)
+!
+      type(SGS_model_control), intent(inout) :: sgs_ctl
+!
+!
+      call reset_filter_fnames_control(sgs_ctl%ffile_ctl)
+!
+      end subroutine reset_sgs_ctl
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

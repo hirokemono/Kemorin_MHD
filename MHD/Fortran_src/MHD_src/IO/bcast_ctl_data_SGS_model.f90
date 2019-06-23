@@ -45,7 +45,7 @@
 !
 !
       call bcast_3d_filtering_ctl(sgs_ctl%s3df_ctl)
-      call bcast_ctl_data_4_filter_files(sgs_ctl%ffile_ctl)
+      call bcast_filter_fnames_control(sgs_ctl%ffile_ctl)
       call bcast_ele_layers_control(sgs_ctl%elayer_ctl)
 !
 !

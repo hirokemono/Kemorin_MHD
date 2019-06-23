@@ -16,9 +16,11 @@
       use t_comm_table
       use t_crs_matrix
       use t_iccg_parameter
+      use t_ctl_data_solver_test
 !
       implicit none
 !
+      type(ctl_data_solver_test), save :: solvertest_c1
       type(communication_table), save :: nod_comm
       type(node_data), save :: node
       type(CRS_matrix_connect), save :: tbl_crs
@@ -39,7 +41,6 @@
       subroutine init_analyzer
 !
       use calypso_mpi
-      use m_ctl_data_solver_test
       use set_control_solver_test
 !
       use crs_matrix_io
@@ -47,9 +48,9 @@
 !
 !C-- CNTL DATA
 
-      call read_control_4_solver_test
+      call read_control_4_solver_test(solvertest_c1)
       call set_ctl_params_4_solver_test                                 &
-     &   (mat_crs, CG_param_t, DJDS_param_t)
+     &   (solvertest_c1, mat_crs, CG_param_t, DJDS_param_t)
 !
 !C 
 !C +-------------+

@@ -92,6 +92,8 @@
 !
 !>        Structure for number of groups on sphere
         type(read_integer_item) :: ngrp_SGS_on_sphere_ctl
+!
+        integer (kind=kint) :: i_dynamic_layers = 0
       end type layering_control
 !
 !    labels for layering parameteres
@@ -129,7 +131,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_ele_layers_control                                &
-     &         (id_control, hd_block, iflag, elayer_ctl, c_buf)
+     &         (id_control, hd_block, elayer_ctl, c_buf)
 !
       use m_machine_parameter
       use skip_comment_f
@@ -137,16 +139,14 @@
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
-      integer(kind = kint), intent(inout) :: iflag
       type(layering_control), intent(inout) :: elayer_ctl
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(iflag .gt. 0) return
+      if(elayer_ctl%i_dynamic_layers .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
-!
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c1(id_control, hd_ntotal_layer_grp_ctl, &
@@ -172,7 +172,7 @@
         call read_chara_ctl_type(c_buf, hd_start_SGS_fluid_grp_name,    &
      &      elayer_ctl%start_fl_layer_grp_name_ctl)
       end do
-      iflag = 1
+      elayer_ctl%i_dynamic_layers = 1
 !
       end subroutine read_ele_layers_control
 !
@@ -185,6 +185,8 @@
 !
       call dealloc_control_array_int(elayer_ctl%igrp_stack_layer_ctl)
       call dealloc_control_array_chara(elayer_ctl%layer_grp_name_ctl)
+!
+      elayer_ctl%i_dynamic_layers = 0
 !
       end subroutine dealloc_ctl_data_ele_layering
 !

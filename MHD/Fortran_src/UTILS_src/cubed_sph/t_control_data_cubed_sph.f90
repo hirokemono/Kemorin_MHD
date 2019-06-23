@@ -10,8 +10,8 @@
       module t_control_data_cubed_sph
 !
       use m_precision
-      use m_read_control_elements
       use skip_comment_f
+      use t_read_control_elements
       use t_control_elements
       use t_control_array_integer
       use t_control_array_charaint
@@ -20,7 +20,9 @@
 !
       implicit none
 !
-      character(len = kchara) :: name_ctl_shell = 'ctl_shell'
+      integer(kind = kint), parameter, private :: ctl_file_code = 11
+      character(len=kchara), parameter, private                         &
+     &                                 :: name_ctl_shell = 'ctl_shell'
 !
       type control_data_cubed_sph
         type(read_character_item) :: domain_shape_ctl
@@ -83,12 +85,21 @@
 !!@n      sph_coarsing_ctl%int1: Coarsing level for radial direction
 !!@n      sph_coarsing_ctl%int2: Coarsing level on sphere
         type(ctl_array_i2) :: sph_coarsing_ctl
+!
+        integer (kind=kint) :: i_shell_ctl = 0
+!
+        integer (kind=kint) :: i_cubed_sph_def = 0
+        integer (kind=kint) :: i_boundaries =   0
+        integer (kind=kint) :: i_coarse_shell = 0
+!
+        integer (kind=kint) :: i_node_grp_def = 0
+        integer (kind=kint) :: i_ele_grp_def =  0
+        integer (kind=kint) :: i_surf_grp_def = 0
       end type control_data_cubed_sph
 !
 !   Top level
 !
       character(len=kchara) :: hd_shell_ctl = 'make_shell'
-      integer (kind=kint) :: i_shell_ctl = 0
 !
 !   3rd level for shell define
 !
@@ -131,9 +142,6 @@
      &             :: hd_boundaries =   'boundaries_ctl'
       character(len=kchara), parameter                                  &
      &             :: hd_coarse_shell = 'coarse_shell_ctl'
-      integer (kind=kint) :: i_cubed_sph_def = 0
-      integer (kind=kint) :: i_boundaries =   0
-      integer (kind=kint) :: i_coarse_shell = 0
 !
 !   3rd level for boundary define
 !
@@ -143,9 +151,6 @@
      &             :: hd_ele_grp_def =  'element_group_ctl'
       character(len=kchara), parameter                                  &
      &             :: hd_surf_grp_def = 'surface_group_ctl'
-      integer (kind=kint) :: i_node_grp_def = 0
-      integer (kind=kint) :: i_ele_grp_def =  0
-      integer (kind=kint) :: i_surf_grp_def = 0
 !
 !   4th level for node group def
 !
@@ -175,13 +180,10 @@
       private :: hd_nlayer_ICB, hd_nlayer_CMB
       private :: hd_num_level_coarse
 !
-      private :: hd_cubed_sph_def, i_cubed_sph_def
-      private :: hd_boundaries,    i_boundaries
-      private :: hd_coarse_shell,  i_coarse_shell
+      private :: hd_cubed_sph_def
+      private :: hd_boundaries, hd_coarse_shell
 !
-      private :: hd_node_grp_def, i_node_grp_def
-      private :: hd_ele_grp_def,  i_ele_grp_def
-      private :: hd_surf_grp_def, i_surf_grp_def
+      private :: hd_node_grp_def, hd_ele_grp_def, hd_surf_grp_def
 !
       private :: hd_num_nod_grp, hd_num_ele_grp, hd_num_sf_grp
       private :: hd_num_nod_layer, hd_num_ele_layer, hd_num_sf_layer
@@ -202,10 +204,17 @@
 !
       type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
 !
+      type(buffer_for_control) :: c_buf1
 !
-      open (ctl_file_code, file=name_ctl_shell)
 !
-      call read_control_data_4_shell(cubed_sph_c)
+      open(ctl_file_code, file=name_ctl_shell)
+!
+      do
+        call load_one_line_from_control(ctl_file_code, c_buf1)
+        call read_control_data_4_shell                                  &
+     &     (ctl_file_code, hd_shell_ctl, cubed_sph_c, c_buf1)
+        if(cubed_sph_c%i_shell_ctl .gt. 0) exit
+      end do
 !
       close(ctl_file_code)
 !
@@ -249,180 +258,216 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_data_4_shell(cubed_sph_c)
+      subroutine read_control_data_4_shell                              &
+     &         (id_control, hd_block, cubed_sph_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(cubed_sph_c%i_shell_ctl .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_shell_ctl = find_control_end_flag(hd_shell_ctl)
-        if(i_shell_ctl .gt. 0) exit
-!
-        call read_ctl_4_shell_def(cubed_sph_c)
-        call read_ctl_shell_boundary(cubed_sph_c)
-        call read_ctl_4_coarse_shell(cubed_sph_c)
+        call read_ctl_4_shell_def                                       &
+     &     (id_control, hd_cubed_sph_def, cubed_sph_c, c_buf)
+        call read_ctl_shell_boundary                                    &
+     &     (id_control, hd_boundaries, cubed_sph_c, c_buf)
+        call read_ctl_4_coarse_shell                                    &
+     &     (id_control, hd_coarse_shell, cubed_sph_c, c_buf)
       end do
+      cubed_sph_c%i_shell_ctl = 1
 !
       end subroutine read_control_data_4_shell
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_4_shell_def(cubed_sph_c)
+      subroutine read_ctl_4_shell_def                                   &
+     &         (id_control, hd_block, cubed_sph_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_cubed_sph_def) .eq. 0) return
-      if (i_cubed_sph_def .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(cubed_sph_c%i_cubed_sph_def .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_cubed_sph_def = find_control_end_flag(hd_cubed_sph_def)
-        if(i_cubed_sph_def .gt. 0) exit
-!
-        call read_control_array_i_r(ctl_file_code,                      &
-       &    hd_cubed_sph_radius, cubed_sph_c%radial_pnt_ctl, c_buf1)
-        call read_control_array_i_r(ctl_file_code,                      &
-       &    hd_edge_latitude, cubed_sph_c%edge_latitude_ctl, c_buf1)
+        call read_control_array_i_r(id_control,                         &
+       &    hd_cubed_sph_radius, cubed_sph_c%radial_pnt_ctl, c_buf)
+        call read_control_array_i_r(id_control,                         &
+       &    hd_edge_latitude, cubed_sph_c%edge_latitude_ctl, c_buf)
 !
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_domain_shape, cubed_sph_c%domain_shape_ctl)
+     &     (c_buf, hd_domain_shape, cubed_sph_c%domain_shape_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_divide_def, cubed_sph_c%divide_type_ctl)
+     &     (c_buf, hd_divide_def, cubed_sph_c%divide_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_high_ele_type, cubed_sph_c%high_ele_type_ctl)
+     &     (c_buf, hd_high_ele_type, cubed_sph_c%high_ele_type_ctl)
 !
-        call read_integer_ctl_type(c_buf1, hd_numele_4_90deg,           &
+        call read_integer_ctl_type(c_buf, hd_numele_4_90deg,            &
      &      cubed_sph_c%numele_4_90deg)
-        call read_integer_ctl_type(c_buf1, hd_numele_4_vert,            &
+        call read_integer_ctl_type(c_buf, hd_numele_4_vert,             &
      &      cubed_sph_c%numele_4_vertical_ctl)
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_nend_adjust, cubed_sph_c%nend_adjust_ctl)
+     &     (c_buf, hd_nend_adjust, cubed_sph_c%nend_adjust_ctl)
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_nstart_cube, cubed_sph_c%nstart_cube_ctl)
+     &     (c_buf, hd_nstart_cube, cubed_sph_c%nstart_cube_ctl)
       end do
+      cubed_sph_c%i_cubed_sph_def = 1
 !
       end subroutine read_ctl_4_shell_def
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_shell_boundary(cubed_sph_c)
+      subroutine read_ctl_shell_boundary                                &
+     &         (id_control, hd_block, cubed_sph_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_boundaries) .eq. 0) return
-      if (i_boundaries .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(cubed_sph_c%i_boundaries .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_boundaries = find_control_end_flag(hd_boundaries)
-        if(i_boundaries .gt. 0) exit
-!
-        call read_ctl_nod_bc_4_shell(cubed_sph_c)
-        call read_ctl_ele_bc_4_shell(cubed_sph_c)
-        call read_ctl_surf_bc_4_shell(cubed_sph_c)
+        call read_ctl_nod_bc_4_shell                                    &
+     &     (id_control, hd_node_grp_def, cubed_sph_c, c_buf)
+        call read_ctl_ele_bc_4_shell                                    &
+     &     (id_control, hd_ele_grp_def, cubed_sph_c, c_buf)
+        call read_ctl_surf_bc_4_shell                                   &
+     &     (id_control, hd_surf_grp_def, cubed_sph_c, c_buf)
 !
 !
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_nlayer_ICB, cubed_sph_c%nlayer_ICB_ctl)
+     &     (c_buf, hd_nlayer_ICB, cubed_sph_c%nlayer_ICB_ctl)
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_nlayer_CMB, cubed_sph_c%nlayer_CMB_ctl)
+     &     (c_buf, hd_nlayer_CMB, cubed_sph_c%nlayer_CMB_ctl)
       end do
+      cubed_sph_c%i_boundaries = 1
 !
       end subroutine read_ctl_shell_boundary
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_nod_bc_4_shell(cubed_sph_c)
+      subroutine read_ctl_nod_bc_4_shell                                &
+     &         (id_control, hd_block, cubed_sph_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_node_grp_def) .eq. 0) return
-      if (i_node_grp_def .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(cubed_sph_c%i_node_grp_def .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_node_grp_def = find_control_end_flag(hd_node_grp_def)
-        if(i_node_grp_def .gt. 0) exit
-!
-        call read_control_array_c_i(ctl_file_code,                      &
-     &      hd_num_nod_grp, cubed_sph_c%node_grp_name_ctl, c_buf1)
-        call read_control_array_i1(ctl_file_code,                       &
-     &      hd_num_nod_layer, cubed_sph_c%node_grp_layer_ctl, c_buf1)
+        call read_control_array_c_i(id_control,                         &
+     &      hd_num_nod_grp, cubed_sph_c%node_grp_name_ctl, c_buf)
+        call read_control_array_i1(id_control,                          &
+     &      hd_num_nod_layer, cubed_sph_c%node_grp_layer_ctl, c_buf)
       end do
+      cubed_sph_c%i_node_grp_def = 1
 !
       end subroutine read_ctl_nod_bc_4_shell
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_ele_bc_4_shell(cubed_sph_c)
+      subroutine read_ctl_ele_bc_4_shell                                &
+     &         (id_control, hd_block, cubed_sph_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_ele_grp_def) .eq. 0) return
-      if (i_ele_grp_def .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(cubed_sph_c%i_ele_grp_def .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_ele_grp_def = find_control_end_flag(hd_ele_grp_def)
-        if(i_ele_grp_def .gt. 0) exit
-!
-        call read_control_array_c_i(ctl_file_code,                      &
-     &      hd_num_ele_grp, cubed_sph_c%elem_grp_name_ctl, c_buf1)
-        call read_control_array_i1(ctl_file_code,                       &
-     &      hd_num_ele_layer, cubed_sph_c%elem_grp_layer_ctl, c_buf1)
+        call read_control_array_c_i(id_control,                         &
+     &      hd_num_ele_grp, cubed_sph_c%elem_grp_name_ctl, c_buf)
+        call read_control_array_i1(id_control,                          &
+     &      hd_num_ele_layer, cubed_sph_c%elem_grp_layer_ctl, c_buf)
       end do
+      cubed_sph_c%i_ele_grp_def = 1
 !
       end subroutine read_ctl_ele_bc_4_shell
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_surf_bc_4_shell(cubed_sph_c)
+      subroutine read_ctl_surf_bc_4_shell                               &
+     &         (id_control, hd_block, cubed_sph_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_surf_grp_def) .eq. 0) return
-      if (i_surf_grp_def .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(cubed_sph_c%i_surf_grp_def .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_surf_grp_def = find_control_end_flag(hd_surf_grp_def)
-        if(i_surf_grp_def .gt. 0) exit
-!
-        call read_control_array_c_i(ctl_file_code,                      &
-     &      hd_num_sf_grp, cubed_sph_c%surf_grp_name_ctl, c_buf1)
-        call read_control_array_c_i(ctl_file_code,                      &
-     &      hd_num_sf_layer, cubed_sph_c%surf_grp_layer_ctl, c_buf1)
+        call read_control_array_c_i(id_control,                         &
+     &      hd_num_sf_grp, cubed_sph_c%surf_grp_name_ctl, c_buf)
+        call read_control_array_c_i(id_control,                         &
+     &      hd_num_sf_layer, cubed_sph_c%surf_grp_layer_ctl, c_buf)
       end do
+      cubed_sph_c%i_surf_grp_def = 1
 !
       end subroutine read_ctl_surf_bc_4_shell
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_4_coarse_shell(cubed_sph_c)
+      subroutine read_ctl_4_coarse_shell                                &
+     &         (id_control, hd_block, cubed_sph_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_coarse_shell) .eq. 0) return
-      if (i_coarse_shell .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(cubed_sph_c%i_coarse_shell .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_coarse_shell = find_control_end_flag(hd_coarse_shell)
-        if(i_coarse_shell .gt. 0) exit
-!
-        call read_control_array_i2(ctl_file_code,                       &
-     &      hd_num_level_coarse, cubed_sph_c%sph_coarsing_ctl, c_buf1)
+        call read_control_array_i2(id_control, hd_num_level_coarse,     &
+     &      cubed_sph_c%sph_coarsing_ctl, c_buf)
       end do
+      cubed_sph_c%i_coarse_shell = 1
 !
       end subroutine read_ctl_4_coarse_shell
 !

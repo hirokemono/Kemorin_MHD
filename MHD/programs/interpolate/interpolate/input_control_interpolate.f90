@@ -51,6 +51,7 @@
       use itp_table_IO_select_4_zlib
       use copy_interpolate_types
       use interpolate_nod_field_2_type
+      use read_ctl_data_gen_table
 !
       type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
       type(ctl_data_gen_table), intent(inout) :: gtbl_ctl

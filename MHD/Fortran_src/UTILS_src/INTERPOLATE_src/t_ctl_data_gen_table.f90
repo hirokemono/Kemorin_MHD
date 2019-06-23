@@ -7,22 +7,21 @@
 !>@brief Structure for reading parameters to generate interpolate table
 !!
 !!@verbatim
-!!      subroutine read_control_4_gen_itp_table(gtbl_ctl)
-!!      subroutine read_control_4_interpolate(gtbl_ctl)
 !!      subroutine read_control_4_distribute_itp(gtbl_ctl)
 !!
 !!      subroutine dealloc_ctl_data_gen_table(gtbl_ctl)
 !!        type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+!!
+!!      subroutine read_const_itp_tbl_ctl_data                          &
+!!     &         (id_control, hd_block, gtbl_ctl, c_buf)
 !!@endverbatim
-!
-!     required module for 3rd level
 !
       module t_ctl_data_gen_table
 !
       use m_precision
 !
       use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
       use t_ctl_data_4_platforms
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
@@ -96,19 +95,22 @@
 !
 !>        Structure for error torrance
         type(read_real_item) :: eps_refine_ctl
+!
+        integer (kind=kint) :: i_itp_files = 0
+        integer (kind=kint) :: i_itp_model = 0
+        integer (kind=kint) :: i_iteration_ctl = 0
+        integer(kind = kint) :: i_element_hash = 0
+!
+        integer (kind=kint) :: i_table_control = 0
+        integer (kind=kint) :: i_distribute_itp = 0
       end type ctl_data_gen_table
 !
 !
 !
 !     Top level
 !
-      character(len=kchara), parameter :: hd_table_control              &
-     &                   = 'construct_table'
-      integer (kind=kint) :: i_table_control = 0
-!
       character(len=kchara), parameter :: hd_distribute_itp             &
      &                   = 'parallel_table'
-      integer (kind=kint) :: i_distribute_itp = 0
 !
       character(len=kchara), parameter                                  &
      &                    :: hd_platform = 'data_files_def'
@@ -131,12 +133,6 @@
      &         :: hd_element_hash  =  'element_hash'
       character(len=kchara), parameter                                  &
      &         :: hd_iteration_ctl = 'iteration_ctl'
-!
-      integer (kind=kint) :: i_itp_files = 0
-      integer (kind=kint) :: i_itp_model = 0
-!
-      integer (kind=kint) :: i_element_hash = 0
-      integer (kind=kint) :: i_iteration_ctl =    0
 !
 !     3rd level for file header
 !
@@ -178,10 +174,9 @@
      &         ::  hd_eps =        'eps_4_refine'
 !
       private :: table_ctl_file_code, fname_table_ctl, fname_itp_ctl
-      private :: hd_table_control, i_table_control
-      private :: hd_itp_files, hd_itp_model, i_itp_files, i_itp_model
-      private :: hd_iteration_ctl, i_iteration_ctl, hd_search_radius
-      private :: hd_element_hash, i_element_hash, hd_fmt_itp_tbl
+      private :: hd_itp_files, hd_itp_model
+      private :: hd_iteration_ctl, hd_search_radius
+      private :: hd_element_hash, hd_fmt_itp_tbl
       private :: hd_table_head_ctl, hd_itp_node_head_ctl
       private :: hd_reverse_ele_tbl, hd_single_itp_tbl
       private :: hd_eps_4_itp, hd_itr, hd_eps
@@ -189,7 +184,6 @@
       private :: hd_phys_values, hd_time_step
       private :: hd_platform, hd_new_data
 !
-      private :: read_const_itp_tbl_ctl_data
       private :: read_control_dist_itp_data
       private :: read_itp_files_ctl, read_element_hash_ctl
       private :: read_itaration_param_ctl, read_itaration_model_ctl
@@ -200,70 +194,309 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_4_gen_itp_table(gtbl_ctl)
-!
-      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
-!
-!
-      ctl_file_code = table_ctl_file_code
-      open(ctl_file_code, file=fname_table_ctl, status='old')
-!
-      call load_ctl_label_and_line
-      call read_const_itp_tbl_ctl_data(gtbl_ctl)
-!
-      close(ctl_file_code)
-!
-      end subroutine read_control_4_gen_itp_table
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_control_4_interpolate(gtbl_ctl)
-!
-      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
-!
-!
-      ctl_file_code = table_ctl_file_code
-      open(ctl_file_code, file=fname_itp_ctl, status='old')
-!
-      call load_ctl_label_and_line
-      call read_const_itp_tbl_ctl_data(gtbl_ctl)
-!
-      close(ctl_file_code)
-!
-      end subroutine read_control_4_interpolate
-!
-!  ---------------------------------------------------------------------
-!
       subroutine read_control_4_distribute_itp(gtbl_ctl)
 !
       type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !
+      type(buffer_for_control) :: c_buf1
 !
-      ctl_file_code = table_ctl_file_code
-      open(ctl_file_code, file=fname_dist_itp_ctl, status='old')
 !
-      call load_ctl_label_and_line
-      call read_control_dist_itp_data(gtbl_ctl)
-!
-      close(ctl_file_code)
+        open(table_ctl_file_code, file=fname_dist_itp_ctl,status='old')
+        do
+          call load_one_line_from_control(table_ctl_file_code, c_buf1)
+          call read_control_dist_itp_data                               &
+     &       (table_ctl_file_code, hd_distribute_itp, gtbl_ctl, c_buf1)
+          if(gtbl_ctl%i_distribute_itp .gt. 0) exit
+        end do
+        close(table_ctl_file_code)
 !
       end subroutine read_control_4_distribute_itp
 !
-!  ---------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine read_const_itp_tbl_ctl_data                            &
+     &         (id_control, hd_block, gtbl_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(gtbl_ctl%i_distribute_itp .gt. 0) return
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
+!
+        call read_control_platforms                                     &
+     &     (id_control, hd_platform, gtbl_ctl%src_plt, c_buf)
+        call read_control_platforms                                     &
+     &     (id_control, hd_new_data, gtbl_ctl%dst_plt, c_buf)
+!
+        call read_itp_files_ctl                                         &
+     &     (id_control, hd_itp_files, gtbl_ctl, c_buf)
+        call read_element_hash_ctl                                      &
+     &     (id_control, hd_element_hash, gtbl_ctl, c_buf)
+        call read_itaration_param_ctl                                   &
+     &     (id_control, hd_iteration_ctl, gtbl_ctl, c_buf)
+        call read_itaration_model_ctl                                   &
+     &     (id_control, hd_itp_model, gtbl_ctl, c_buf)
+      end do
+      gtbl_ctl%i_table_control = 1
+!
+      end subroutine read_const_itp_tbl_ctl_data
+!
+!   --------------------------------------------------------------------
 !
       subroutine dealloc_ctl_data_gen_table(gtbl_ctl)
 !
       type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !
 !
-      call dealloc_control_array_i_r(gtbl_ctl%eps_4_itp_ctl)
+      call reset_itp_files_ctl(gtbl_ctl)
+      call dealloc_itaration_model_ctl(gtbl_ctl)
+      call dealloc_itaration_param_ctl(gtbl_ctl)
+      call reset_element_hash_ctl(gtbl_ctl)
+      gtbl_ctl%i_table_control = 0
+!
+      end subroutine dealloc_ctl_data_gen_table
+!
+!  ---------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine read_control_dist_itp_data                             &
+     &         (id_control, hd_block, gtbl_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(gtbl_ctl%i_distribute_itp .gt. 0) return
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
+!
+        call read_control_platforms                                     &
+     &     (id_control, hd_platform, gtbl_ctl%src_plt, c_buf)
+        call read_control_platforms                                     &
+     &     (id_control, hd_new_data, gtbl_ctl%dst_plt, c_buf)
+!
+        call read_itp_files_ctl                                         &
+     &     (id_control, hd_itp_files, gtbl_ctl, c_buf)
+      end do
+      gtbl_ctl%i_distribute_itp = 1
+!
+      end subroutine read_control_dist_itp_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine reset_control_dist_itp_data(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+!
+!
+      call reset_itp_files_ctl(gtbl_ctl)
+      gtbl_ctl%i_distribute_itp = 0
+!
+      end subroutine reset_control_dist_itp_data
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine read_itp_files_ctl                                     &
+     &         (id_control, hd_block, gtbl_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(gtbl_ctl%i_itp_files .gt. 0) return
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
+!
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_table_head_ctl, gtbl_ctl%table_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_itp_node_head_ctl, gtbl_ctl%itp_node_head_ctl)
+        call read_chara_ctl_type(c_buf, hd_single_itp_tbl,              &
+     &      gtbl_ctl%single_itp_tbl_head_ctl)
+        call read_chara_ctl_type(c_buf, hd_reverse_ele_tbl,             &
+     &      gtbl_ctl%reverse_element_table_ctl)
+!
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_fmt_itp_tbl, gtbl_ctl%fmt_itp_table_file_ctl)
+      end do
+      gtbl_ctl%i_itp_files = 1
+!
+      end subroutine read_itp_files_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine reset_itp_files_ctl(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+!
 !
       gtbl_ctl%table_head_ctl%iflag = 0
       gtbl_ctl%fmt_itp_table_file_ctl%iflag = 0
       gtbl_ctl%itp_node_head_ctl%iflag = 0
       gtbl_ctl%reverse_element_table_ctl%iflag = 0
       gtbl_ctl%single_itp_tbl_head_ctl%iflag = 0
+!
+      gtbl_ctl%i_itp_files = 0
+!
+      end subroutine reset_itp_files_ctl
+!
+!  ---------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine read_itaration_model_ctl                               &
+     &         (id_control, hd_block, gtbl_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(gtbl_ctl%i_itp_model .gt. 0) return
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
+!
+        call read_phys_data_control                                     &
+     &     (id_control, hd_phys_values, gtbl_ctl%fld_gt_ctl, c_buf)
+        call read_control_time_step_data                                &
+     &     (id_control, hd_time_step, gtbl_ctl%t_gt_ctl, c_buf)
+      end do
+      gtbl_ctl%i_itp_model = 1
+!
+      end subroutine read_itaration_model_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_itaration_model_ctl(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+!
+!
+      call dealloc_phys_control(gtbl_ctl%fld_gt_ctl)
+      gtbl_ctl%i_itp_model = 0
+!
+      end subroutine dealloc_itaration_model_ctl
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine read_itaration_param_ctl                               &
+     &         (id_control, hd_block, gtbl_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(gtbl_ctl%i_iteration_ctl.gt.0) return
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
+!
+        call read_control_array_i_r(id_control,                         &
+     &      hd_eps_4_itp, gtbl_ctl%eps_4_itp_ctl, c_buf)
+!
+        call read_integer_ctl_type                                      &
+     &     (c_buf, hd_itr, gtbl_ctl%itr_refine_ctl)
+!
+        call read_real_ctl_type                                         &
+     &     (c_buf, hd_eps, gtbl_ctl%eps_refine_ctl)
+      end do
+      gtbl_ctl%i_iteration_ctl = 1
+!
+      end subroutine read_itaration_param_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_itaration_param_ctl(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+!
+!
+      call dealloc_control_array_i_r(gtbl_ctl%eps_4_itp_ctl)
+!
+      gtbl_ctl%itr_refine_ctl%iflag = 0
+      gtbl_ctl%eps_refine_ctl%iflag = 0
+!
+      gtbl_ctl%i_iteration_ctl = 0
+!
+      end subroutine dealloc_itaration_param_ctl
+!
+!  ---------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine read_element_hash_ctl                                  &
+     &         (id_control, hd_block, gtbl_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(gtbl_ctl%i_element_hash .gt. 0) return
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
+!
+!
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_hash_type, gtbl_ctl%ele_hash_type_ctl)
+! 
+        call read_integer_ctl_type(c_buf, hd_search_radius,             &
+     &      gtbl_ctl%num_radial_divide_ctl)
+        call read_integer_ctl_type(c_buf, hd_num_hash_elev,             &
+     &      gtbl_ctl%num_theta_divide_ctl)
+        call read_integer_ctl_type(c_buf, hd_num_hash_azim,             &
+     &      gtbl_ctl%num_phi_divide_ctl)
+!
+        call read_integer_ctl_type                                      &
+     &     (c_buf, hd_num_hash_x, gtbl_ctl%num_x_divide_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf, hd_num_hash_y, gtbl_ctl%num_y_divide_ctl)
+        call read_integer_ctl_type                                      &
+     &     (c_buf, hd_num_hash_z, gtbl_ctl%num_z_divide_ctl)
+      end do
+      gtbl_ctl%i_element_hash = 1
+!
+      end subroutine read_element_hash_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine reset_element_hash_ctl(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+!
+!
       gtbl_ctl%ele_hash_type_ctl%iflag = 0
+!
       gtbl_ctl%num_radial_divide_ctl%iflag = 0
       gtbl_ctl%num_theta_divide_ctl%iflag = 0
       gtbl_ctl%num_phi_divide_ctl%iflag = 0
@@ -272,183 +505,10 @@
       gtbl_ctl%num_y_divide_ctl%iflag = 0
       gtbl_ctl%num_z_divide_ctl%iflag = 0
 !
-      gtbl_ctl%itr_refine_ctl%iflag = 0
-      gtbl_ctl%eps_refine_ctl%iflag = 0
+      gtbl_ctl%i_element_hash = 0
 !
-      end subroutine dealloc_ctl_data_gen_table
+      end subroutine reset_element_hash_ctl
 !
 !  ---------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine read_const_itp_tbl_ctl_data(gtbl_ctl)
-!
-      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
-!
-!
-      if(right_begin_flag(hd_table_control) .eq. 0) return
-      if (i_table_control.gt.0) return
-      do
-        call load_ctl_label_and_line
-!
-        i_table_control = find_control_end_flag(hd_table_control)
-        if(i_table_control .gt. 0) exit
-!
-        call read_control_platforms                                     &
-     &     (ctl_file_code, hd_platform, gtbl_ctl%src_plt, c_buf1)
-        call read_control_platforms                                     &
-     &     (ctl_file_code, hd_new_data, gtbl_ctl%dst_plt, c_buf1)
-!
-        call read_itp_files_ctl(gtbl_ctl)
-        call read_element_hash_ctl(gtbl_ctl)
-        call read_itaration_param_ctl(gtbl_ctl)
-        call read_itaration_model_ctl(gtbl_ctl)
-      end do
-!
-      end subroutine read_const_itp_tbl_ctl_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_control_dist_itp_data(gtbl_ctl)
-!
-      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
-!
-!
-      if(right_begin_flag(hd_distribute_itp) .eq. 0) return
-      if (i_distribute_itp.gt.0) return
-      do
-        call load_ctl_label_and_line
-!
-        i_distribute_itp = find_control_end_flag(hd_distribute_itp)
-        if(i_distribute_itp .gt. 0) exit
-!
-        call read_control_platforms                                     &
-     &     (ctl_file_code, hd_platform, gtbl_ctl%src_plt, c_buf1)
-        call read_control_platforms                                     &
-     &     (ctl_file_code, hd_new_data, gtbl_ctl%dst_plt, c_buf1)
-!
-        call read_itp_files_ctl(gtbl_ctl)
-      end do
-!
-      end subroutine read_control_dist_itp_data
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine read_itp_files_ctl(gtbl_ctl)
-!
-      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
-!
-!
-      if(right_begin_flag(hd_itp_files) .eq. 0) return
-      if (i_itp_files.gt.0) return
-      do
-        call load_ctl_label_and_line
-!
-        i_itp_files = find_control_end_flag(hd_itp_files)
-        if(i_itp_files .gt. 0) exit
-!
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_table_head_ctl, gtbl_ctl%table_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_itp_node_head_ctl, gtbl_ctl%itp_node_head_ctl)
-        call read_chara_ctl_type(c_buf1, hd_single_itp_tbl,             &
-     &      gtbl_ctl%single_itp_tbl_head_ctl)
-        call read_chara_ctl_type(c_buf1, hd_reverse_ele_tbl,            &
-     &      gtbl_ctl%reverse_element_table_ctl)
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_fmt_itp_tbl, gtbl_ctl%fmt_itp_table_file_ctl)
-      end do
-!
-      end subroutine read_itp_files_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_itaration_model_ctl(gtbl_ctl)
-!
-      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
-!
-!
-      if(right_begin_flag(hd_itp_model) .eq. 0) return
-      if (i_itp_model.gt.0) return
-      do
-        call load_ctl_label_and_line
-!
-        i_itp_model = find_control_end_flag(hd_itp_model)
-        if(i_itp_model .gt. 0) exit
-!
-        call read_phys_data_control                                     &
-     &     (ctl_file_code, hd_phys_values, gtbl_ctl%fld_gt_ctl, c_buf1)
-        call read_control_time_step_data                                &
-     &     (ctl_file_code, hd_time_step, gtbl_ctl%t_gt_ctl, c_buf1)
-      end do
-!
-      end subroutine read_itaration_model_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_itaration_param_ctl(gtbl_ctl)
-!
-      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
-!
-!
-      if(right_begin_flag(hd_iteration_ctl) .eq. 0) return
-      if (i_iteration_ctl.gt.0) return
-      do
-        call load_ctl_label_and_line
-!
-        i_iteration_ctl = find_control_end_flag(hd_iteration_ctl)
-        if(i_iteration_ctl .gt. 0) exit
-!
-        call read_control_array_i_r(ctl_file_code,                      &
-     &      hd_eps_4_itp, gtbl_ctl%eps_4_itp_ctl, c_buf1)
-!
-        call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_itr, gtbl_ctl%itr_refine_ctl)
-!
-        call read_real_ctl_type                                         &
-     &     (c_buf1, hd_eps, gtbl_ctl%eps_refine_ctl)
-      end do
-!
-      end subroutine read_itaration_param_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_element_hash_ctl(gtbl_ctl)
-!
-      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
-!
-!
-      if(right_begin_flag(hd_element_hash) .eq. 0) return
-      if (i_element_hash .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        i_element_hash = find_control_end_flag(hd_element_hash)
-        if(i_element_hash .gt. 0) exit
-!
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_hash_type, gtbl_ctl%ele_hash_type_ctl)
-! 
-        call read_integer_ctl_type(c_buf1, hd_search_radius,            &
-     &      gtbl_ctl%num_radial_divide_ctl)
-        call read_integer_ctl_type(c_buf1, hd_num_hash_elev,            &
-     &      gtbl_ctl%num_theta_divide_ctl)
-        call read_integer_ctl_type(c_buf1, hd_num_hash_azim,            &
-     &      gtbl_ctl%num_phi_divide_ctl)
-!
-        call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_num_hash_x, gtbl_ctl%num_x_divide_ctl)
-        call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_num_hash_y, gtbl_ctl%num_y_divide_ctl)
-        call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_num_hash_z, gtbl_ctl%num_z_divide_ctl)
-      end do
-!
-      end subroutine read_element_hash_ctl
-!
-!   --------------------------------------------------------------------
 !
       end module t_ctl_data_gen_table

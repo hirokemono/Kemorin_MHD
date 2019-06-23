@@ -30,7 +30,7 @@ SOURCES = $(shell ls *.f90)
 
 
 MOD_SOLVERTEST_CORE = \
-m_ctl_data_solver_test.o \
+t_ctl_data_solver_test.o \
 crs_matrix_io.o \
 set_control_solver_test.o \
 

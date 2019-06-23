@@ -36,7 +36,6 @@
       use m_precision
       use m_constants
       use t_time_data
-      use calypso_mpi
 !
       implicit none
 !
@@ -66,7 +65,7 @@
       integer(kind = kint) :: i, icomp
 !
 !
-      if(my_rank .ne. pwr%v_spectr(1)%irank_m) return
+      if(id_rank .ne. pwr%v_spectr(1)%irank_m) return
       write(*,'(a10,i16,a10,1pe15.8)',advance='no')                     &
      &     'time step=', time_d%i_time_step, 'time=', time_d%time
 !

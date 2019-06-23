@@ -151,9 +151,9 @@
         call read_merge_step_data(pfft_c)
 !
         call read_plane_model_param_ctl                                 &
-     &     (hd_plane_def, pfft_c%cube_c_fft)
+     &     (ctl_file_code, hd_plane_def, pfft_c%cube_c_fft, c_buf1)
         call read_plane_model_param_ctl                                 &
-     &     (hd_2nd_plane_def, pfft_c%cube2nd_cf)
+     &     (ctl_file_code, hd_2nd_plane_def, pfft_c%cube2nd_cf, c_buf1)
       end do
 !
       end subroutine read_fft_plane_control_data

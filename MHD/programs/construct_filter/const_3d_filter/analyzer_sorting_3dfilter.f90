@@ -52,7 +52,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_controls_sort_3dfilter'
       call set_controls_sort_3dfilter                                   &
      &   (filter3d_ctl1, mesh_filter_file, gfil_p1, nprocs)
-      call dealloc_ctl_data_gen_3d_filter(filter3d_ctl1)
+      call dealloc_const_filter_ctl_data(filter3d_ctl1)
 !
       end subroutine sort_3dfilter_init
 !

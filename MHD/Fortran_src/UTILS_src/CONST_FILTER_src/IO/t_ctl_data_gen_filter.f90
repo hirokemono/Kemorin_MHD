@@ -3,7 +3,9 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      subroutine read_filter_param_ctl(gen_f_ctl)
+!!      subroutine read_filter_param_ctl                                &
+!!     &         (id_control, hd_block, gen_f_ctl, c_buf)
+!!      subroutine bcast_filter_param_ctl(gen_f_ctl)
 !!      subroutine dealloc_filter_param_ctl(gen_f_ctl)
 !!        type(ctl_data_gen_filter), intent(inout) :: gen_f_ctl
 !
@@ -13,7 +15,7 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
       use t_control_elements
       use t_control_array_charareal
       use t_control_array_intchrreal
@@ -64,14 +66,10 @@
         type(solver_control) :: CG_filter_ctl
 !
         type(read_character_item) :: f_solver_type_ctl
+!
+        integer (kind=kint) :: i_filter_param_ctl =   0
       end type ctl_data_gen_filter
 !
-!
-!     label for entry
-!
-      character(len=kchara), parameter                                  &
-     &         :: hd_filter_param_ctl = 'filter_control'
-      integer (kind=kint) :: i_filter_param_ctl =   0
 !
 !     3rd level for filter_control
 !
@@ -122,9 +120,7 @@
       character(len=kchara), parameter                                  &
      &       :: hd_solver_ctl =     'solver_ctl'
 !
-      private :: hd_filter_param_ctl, i_filter_param_ctl
       private :: hd_solver_ctl
-!
       private :: hd_num_int_points, hd_minimum_comp, hd_omitted_ratio
       private :: hd_ordering_list, hd_start_node_ctl, hd_end_node_ctl
       private :: hd_start_nfree_mat, hd_end_nfree_mat, hd_minimum_det
@@ -141,81 +137,126 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_param_ctl(gen_f_ctl)
+      subroutine read_filter_param_ctl                                  &
+     &         (id_control, hd_block, gen_f_ctl, c_buf)
 !
-      use m_read_control_elements
       use skip_comment_f
 !
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
       type(ctl_data_gen_filter), intent(inout) :: gen_f_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_filter_param_ctl) .eq. 0) return
-      if (i_filter_param_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(gen_f_ctl%i_filter_param_ctl .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        i_filter_param_ctl = find_control_end_flag(hd_filter_param_ctl)
-        if(i_filter_param_ctl .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
 !
-        call read_CG_solver_param_ctl(ctl_file_code, hd_solver_ctl,     &
-     &      gen_f_ctl%CG_filter_ctl, c_buf1)
+        call read_CG_solver_param_ctl(id_control, hd_solver_ctl,        &
+     &      gen_f_ctl%CG_filter_ctl, c_buf)
 !
-        call read_control_array_i_c_r(ctl_file_code,                    &
-     &      hd_order_moments, gen_f_ctl%ref_filter_mom_ctl, c_buf1)
+        call read_control_array_i_c_r(id_control,                       &
+     &      hd_order_moments, gen_f_ctl%ref_filter_mom_ctl, c_buf)
 !
-        call read_control_array_c_r(ctl_file_code,                      &
-     &      hd_ref_filter, gen_f_ctl%reference_filter_ctl, c_buf1)
-        call read_control_array_c_r(ctl_file_code,                      &
-     &      hd_horiz_filter, gen_f_ctl%horizontal_filter_ctl, c_buf1)
+        call read_control_array_c_r(id_control,                         &
+     &      hd_ref_filter, gen_f_ctl%reference_filter_ctl, c_buf)
+        call read_control_array_c_r(id_control,                         &
+     &      hd_horiz_filter, gen_f_ctl%horizontal_filter_ctl, c_buf)
 !
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_solver_type, gen_f_ctl%f_solver_type_ctl)
+     &     (c_buf, hd_solver_type, gen_f_ctl%f_solver_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_ordering_list, gen_f_ctl%ordering_list_ctl)
-        call read_chara_ctl_type(c_buf1, hd_tgt_filter_type,            &
+     &     (c_buf, hd_ordering_list, gen_f_ctl%ordering_list_ctl)
+        call read_chara_ctl_type(c_buf, hd_tgt_filter_type,             &
      &      gen_f_ctl%tgt_filter_type_ctl)
-        call read_chara_ctl_type(c_buf1, hd_momentum_type,              &
+        call read_chara_ctl_type(c_buf, hd_momentum_type,               &
      &      gen_f_ctl%momentum_type_ctl)
-        call read_chara_ctl_type(c_buf1, hd_filter_corection,           &
+        call read_chara_ctl_type(c_buf, hd_filter_corection,            &
      &      gen_f_ctl%filter_correction_ctl)
-        call read_chara_ctl_type(c_buf1, hd_filter_fixed_point,         &
+        call read_chara_ctl_type(c_buf, hd_filter_fixed_point,          &
      &      gen_f_ctl%filter_fixed_point_ctl)
-        call read_chara_ctl_type(c_buf1, hd_filter_negative_center,     &
+        call read_chara_ctl_type(c_buf, hd_filter_negative_center,      &
      &      gen_f_ctl%negative_center_ctl)
 !
 !
         call read_real_ctl_type                                         &
-     &     (c_buf1, hd_omitted_ratio, gen_f_ctl%omitted_ratio_ctl)
+     &     (c_buf, hd_omitted_ratio, gen_f_ctl%omitted_ratio_ctl)
         call read_real_ctl_type                                         &
-     &     (c_buf1, hd_minimum_det, gen_f_ctl%minimum_det_ctl)
+     &     (c_buf, hd_minimum_det, gen_f_ctl%minimum_det_ctl)
         call read_real_ctl_type                                         &
-     &     (c_buf1, hd_maximum_rms, gen_f_ctl%maximum_rms_ctl)
+     &     (c_buf, hd_maximum_rms, gen_f_ctl%maximum_rms_ctl)
 !
 !
-        call read_integer_ctl_type(c_buf1, hd_num_int_points,           &
+        call read_integer_ctl_type(c_buf, hd_num_int_points,            &
      &      gen_f_ctl%num_int_points_ctl)
-        call read_integer_ctl_type(c_buf1, hd_minimum_comp,             &
+        call read_integer_ctl_type(c_buf, hd_minimum_comp,              &
      &      gen_f_ctl%minimum_comp_ctl)
-        call read_integer_ctl_type(c_buf1, hd_nele_filtering,           &
+        call read_integer_ctl_type(c_buf, hd_nele_filtering,            &
      &      gen_f_ctl%num_ele_4_filter_ctl)
-        call read_integer_ctl_type(c_buf1, hd_maximum_neighbour,        &
+        call read_integer_ctl_type(c_buf, hd_maximum_neighbour,         &
      &      gen_f_ctl%maximum_neighbour_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_start_node_ctl, gen_f_ctl%start_node_ctl)
+     &     (c_buf, hd_start_node_ctl, gen_f_ctl%start_node_ctl)
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_end_node_ctl, gen_f_ctl%end_node_ctl)
-        call read_integer_ctl_type(c_buf1, hd_start_nfree_mat,          &
+     &     (c_buf, hd_end_node_ctl, gen_f_ctl%end_node_ctl)
+        call read_integer_ctl_type(c_buf, hd_start_nfree_mat,           &
      &      gen_f_ctl%ist_num_free_ctl)
-        call read_integer_ctl_type(c_buf1, hd_end_nfree_mat,            &
+        call read_integer_ctl_type(c_buf, hd_end_nfree_mat,             &
      &      gen_f_ctl%ied_num_free_ctl)
-        call read_integer_ctl_type(c_buf1, hd_err_level_commute,        &
+        call read_integer_ctl_type(c_buf, hd_err_level_commute,         &
      &      gen_f_ctl%ilevel_filter_error_info)
       end do
+      gen_f_ctl%i_filter_param_ctl = 1
 !
       end subroutine read_filter_param_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_filter_param_ctl(gen_f_ctl)
+!
+      use bcast_control_arrays
+!
+      type(ctl_data_gen_filter), intent(inout) :: gen_f_ctl
+!
+!
+      call bcast_ctl_array_cr(gen_f_ctl%reference_filter_ctl)
+      call bcast_ctl_array_cr(gen_f_ctl%horizontal_filter_ctl)
+!
+      call bcast_ctl_array_icr(gen_f_ctl%ref_filter_mom_ctl)
+!
+      call bcast_ctl_type_i1(gen_f_ctl%num_int_points_ctl)
+      call bcast_ctl_type_i1(gen_f_ctl%minimum_comp_ctl)
+      call bcast_ctl_type_i1(gen_f_ctl%num_ele_4_filter_ctl)
+      call bcast_ctl_type_r1(gen_f_ctl%omitted_ratio_ctl)
+      call bcast_ctl_type_r1(gen_f_ctl%minimum_det_ctl)
+      call bcast_ctl_type_r1(gen_f_ctl%maximum_rms_ctl)
+      call bcast_ctl_type_c1(gen_f_ctl%ordering_list_ctl)
+      call bcast_ctl_type_c1(gen_f_ctl%tgt_filter_type_ctl)
+      call bcast_ctl_type_c1(gen_f_ctl%momentum_type_ctl)
+      call bcast_ctl_type_c1(gen_f_ctl%filter_correction_ctl)
+      call bcast_ctl_type_c1(gen_f_ctl%filter_fixed_point_ctl)
+      call bcast_ctl_type_c1(gen_f_ctl%negative_center_ctl)
+!
+      call bcast_ctl_type_i1(gen_f_ctl%maximum_neighbour_ctl)
+      call bcast_ctl_type_i1(gen_f_ctl%ilevel_filter_error_info)
+!
+      call bcast_ctl_type_i1(gen_f_ctl%start_node_ctl)
+      call bcast_ctl_type_i1(gen_f_ctl%end_node_ctl)
+      call bcast_ctl_type_i1(gen_f_ctl%ist_num_free_ctl)
+      call bcast_ctl_type_i1(gen_f_ctl%ied_num_free_ctl)
+!
+      call bcast_ctl_type_c1(gen_f_ctl%f_solver_type_ctl)
+!
+      call MPI_BCAST(gen_f_ctl%i_filter_param_ctl, 1,                   &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
+      end subroutine bcast_filter_param_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -251,6 +292,8 @@
       gen_f_ctl%ied_num_free_ctl%iflag = 0
 !
       gen_f_ctl%f_solver_type_ctl%iflag = 0
+!
+      gen_f_ctl%i_filter_param_ctl = 0
 !
       end subroutine dealloc_filter_param_ctl
 !

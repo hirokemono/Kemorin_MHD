@@ -9,11 +9,12 @@
 !!@verbatim
 !!      subroutine read_control_platforms                               &
 !!     &         (id_control, hd_block, plt, c_buf)
-!!      subroutine read_control_platforms(hd_block, iflag, plt)
 !!        type(platform_data_control), intent(inout) :: plt
 !!      subroutine write_control_platforms                              &
 !!     &         (id_file, hd_block, plt, level)
 !!        type(platform_data_control), intent(in) :: plt
+!!      subroutine reset_control_platforms(plt)
+!!        type(platform_data_control), intent(inout) :: plt
 !!
 !! ------------------------------------------------------------------
 !!      Example of control parameters
@@ -350,6 +351,41 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_control_platforms
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine reset_control_platforms(plt)
+!
+      type(platform_data_control), intent(inout) :: plt
+!
+!
+      plt%ndomain_ctl%iflag = 0
+      plt%num_smp_ctl%iflag = 0
+!
+      plt%mesh_file_prefix%iflag =         0
+      plt%field_file_prefix%iflag =        0
+      plt%restart_file_prefix%iflag =      0
+      plt%spectr_field_file_prefix%iflag = 0
+!
+      plt%sph_file_prefix%iflag =            0
+      plt%coriolis_int_file_name%iflag =     0
+      plt%bc_data_file_name_ctl%iflag =      0
+      plt%interpolate_sph_to_fem_ctl%iflag = 0
+      plt%interpolate_fem_to_sph_ctl%iflag = 0
+!
+      plt%mesh_file_fmt_ctl%iflag =     0
+      plt%sph_file_fmt_ctl%iflag =      0
+      plt%restart_file_fmt_ctl%iflag =  0
+      plt%field_file_fmt_ctl%iflag =    0
+      plt%itp_file_fmt_ctl%iflag =      0
+      plt%spectr_field_fmt_ctl%iflag =  0
+      plt%coriolis_file_fmt_ctl%iflag = 0
+!
+      plt%del_org_data_ctl%iflag = 0
+!
+      plt%i_platform = 0
+!
+      end subroutine reset_control_platforms
 !
 !  ---------------------------------------------------------------------
 !
