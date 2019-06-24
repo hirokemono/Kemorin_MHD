@@ -12,11 +12,13 @@
 !
       use t_mesh_data
       use t_phys_data
+      use t_control_data_4_cutshell
 !
       implicit none
 !
       integer, parameter, private :: my_rank = izero
 !
+      type(ctl_data_cutshell), save :: cutshell_ctl1
       type(mesh_data), save :: original_fem
       type(mesh_data), save :: cutted_fem
 !
@@ -28,7 +30,6 @@
 
       subroutine  initialize_cutshell
 !
-      use m_control_data_4_cutshell
       use load_mesh_data
       use set_control_cut_shell
       use cal_mesh_position
@@ -37,8 +38,8 @@
       integer(kind = kint) :: ierr
 !
 !
-      call read_control_data_4_cutshell
-      call s_set_control_4_cutshell
+      call read_control_data_4_cutshell(cutshell_ctl1)
+      call s_set_control_4_cutshell(cutshell_ctl1)
 !
 !  read global mesh
 !

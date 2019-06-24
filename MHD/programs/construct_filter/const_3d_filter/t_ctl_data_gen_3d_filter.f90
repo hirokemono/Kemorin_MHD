@@ -14,7 +14,7 @@
 !
       use m_precision
       use calypso_mpi
-      use m_read_control_elements
+      use t_read_control_elements
       use t_ctl_data_3d_filter
       use t_ctl_data_gen_filter
       use t_ctl_data_4_platforms

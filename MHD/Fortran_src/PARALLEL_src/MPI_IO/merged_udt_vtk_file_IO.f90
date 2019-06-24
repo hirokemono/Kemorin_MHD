@@ -105,7 +105,6 @@
 !
       subroutine finalize_merged_ucd(iflag_format, m_ucd)
 !
-      use m_merged_ucd_data
       use hdf5_file_IO
 !
       integer(kind = kint), intent(in) :: iflag_format

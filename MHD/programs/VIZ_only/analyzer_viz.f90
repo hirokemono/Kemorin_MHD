@@ -15,10 +15,12 @@
       use m_visualization
 !
       use FEM_analyzer_viz
+      use t_control_data_all_vizs
       use t_visualizer
 !
       implicit none
 !
+      type(control_data_vizs), save :: vizs_ctl1
       type(visualize_modules), save :: vizs_v
 !
 !  ---------------------------------------------------------------------
@@ -30,7 +32,6 @@
       subroutine init_analyzer
 !
       use calypso_mpi
-      use m_control_data_vizs
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
 !
@@ -45,8 +46,9 @@
 !     read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
-      call read_control_file_vizs
-      call set_control_params_4_viz(t_viz_ctl, viz_plt,                 &
+      call read_control_file_vizs(vizs_ctl1)
+      call set_control_params_4_viz                                     &
+     &   (vizs_ctl1%t_viz_ctl, vizs_ctl1%viz_plt,                       &
      &    mesh_file_VIZ, ucd_file_VIZ, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
@@ -57,7 +59,8 @@
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize(femmesh_VIZ, field_VIZ, viz_ctl_v, vizs_v)
+      call init_visualize                                               &
+     &   (femmesh_VIZ, field_VIZ, vizs_ctl1%viz_ctl_v, vizs_v)
 !
       end subroutine init_analyzer
 !

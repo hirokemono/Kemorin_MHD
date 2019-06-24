@@ -6,11 +6,11 @@
 !
       use m_constants
       use m_merdional_grouping_patch
-      use m_ctl_data_ele_grp_udt
       use m_ctl_params_ele_grp_udt
       use m_tave_SGS_model_coefs
       use m_field_file_format
 !
+      use t_ctl_data_ele_grp_udt
       use t_group_data
       use t_time_data
       use t_ucd_data
@@ -25,6 +25,7 @@
       implicit none
 !
 !
+      type(ctl_ele_grp_udt), save :: egrp_udt_ctl1
       type(group_data), save :: e_grp
       type(time_data), save :: psf_time_IO
       type(ucd_data), save :: psf_ucd
@@ -34,8 +35,8 @@
       real(kind = kreal)  :: time
 !
 !
-      call read_control_ele_grp_udt
-      call set_control_ele_grp_udt
+      call read_control_ele_grp_udt(egrp_udt_ctl1)
+      call set_control_ele_grp_udt(egrp_udt_ctl1)
 !
       call read_med_grouping_patch(layerd_mesh_head, e_grp,             &
      &    start_ele_grp_name, istart_grp)

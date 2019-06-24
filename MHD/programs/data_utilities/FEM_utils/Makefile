@@ -41,7 +41,7 @@ SOURCES = $(shell ls *.f90)
 
 MOD_UDT_UTILS = \
 m_FEM_utils.o \
-m_ctl_data_diff_udt.o \
+t_ctl_data_diff_udt.o \
 m_ctl_params_4_diff_udt.o \
 \
 set_ctl_diff_udt.o \
@@ -59,7 +59,7 @@ analyzer_ave_udt.o
 
 MOD_PROD_FIELDS = \
 m_FEM_utils.o \
-m_ctl_data_product_udt.o \
+t_ctl_data_product_udt.o \
 m_ctl_params_4_prod_udt.o \
 product_udt_fields.o \
 analyzer_udt_product.o \
@@ -67,7 +67,7 @@ main_prod_udt.o
 
 MOD_RATIO_FIELDS = \
 m_FEM_utils.o \
-m_ctl_data_product_udt.o \
+t_ctl_data_product_udt.o \
 m_ctl_params_4_prod_udt.o \
 product_udt_fields.o \
 analyzer_udt_ratio.o \
@@ -98,7 +98,7 @@ analyzer_med_grp_patch.o
 MOD_MED_GRP_UDT = \
 element_grouping_udt.o \
 \
-m_ctl_data_ele_grp_udt.o \
+t_ctl_data_ele_grp_udt.o \
 m_ctl_params_ele_grp_udt.o \
 m_merdional_grouping_patch.o \
 m_tave_SGS_model_coefs.o \
@@ -106,7 +106,7 @@ set_model_coef_to_med_patch.o \
 read_layer_evo_file_header.o
 
 MOD_T_AVE_M_COEF =    \
-m_ctl_data_ele_grp_udt.o \
+t_ctl_data_ele_grp_udt.o \
 m_ctl_params_ele_grp_udt.o \
 m_merdional_grouping_patch.o \
 m_tave_SGS_model_coefs.o \
@@ -117,7 +117,7 @@ MOD_PICK_NODE_MONITOR = \
 pick_point_node_monitor.o
 
 MOD_MHD_LENGH_SCALE = \
-m_ctl_data_product_udt.o \
+t_ctl_data_product_udt.o \
 m_ctl_params_4_prod_udt.o \
 FEM_MHD_length_scale.o \
 \

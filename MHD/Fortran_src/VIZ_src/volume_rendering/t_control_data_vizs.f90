@@ -7,8 +7,11 @@
 !> @brief Control data structure for visualization controls
 !!
 !!@verbatim
-!!      subroutine read_viz_controls(viz_ctls)
+!!      subroutine read_viz_controls(id_control, viz_ctls, c_buf)
 !!      subroutine bcast_viz_controls(viz_ctls)
+!!      subroutine dealloc_viz_controls(viz_ctls)
+!!       type(visualization_controls), intent(inout) :: viz_ctls
+!!       type(buffer_for_control), intent(inout)  :: c_buf
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin visual_control
@@ -169,6 +172,21 @@
       call bcast_files_4_lic_ctl(viz_ctls%lic_ctls)
 !
       end subroutine bcast_viz_controls
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_viz_controls(viz_ctls)
+!
+      type(visualization_controls), intent(inout) :: viz_ctls
+!
+!
+      call dealloc_psf_ctl_stract(viz_ctls%psf_ctls)
+      call dealloc_iso_ctl_stract(viz_ctls%iso_ctls)
+      call dealloc_pvr_ctl_struct(viz_ctls%pvr_ctls)
+      call dealloc_fline_fhead_ctl(viz_ctls%fline_ctls)
+      call dealloc_lic_ctl_struct(viz_ctls%lic_ctls)
+!
+      end subroutine dealloc_viz_controls
 !
 !   --------------------------------------------------------------------
 !

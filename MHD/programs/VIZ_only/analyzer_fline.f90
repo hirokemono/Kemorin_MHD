@@ -11,9 +11,11 @@
 !
       use FEM_analyzer_viz_fline
       use t_fieldline
+      use t_control_data_all_vizs
 !
       implicit none
 !
+      type(control_data_vizs), save :: vizs_ctl1
       type(fieldline_module), save :: fline_v
 !
 !  ---------------------------------------------------------------------
@@ -25,7 +27,6 @@
       subroutine initialize_fline
 !
       use calypso_mpi
-      use m_control_data_vizs
       use t_control_data_vizs
 !
       integer(kind = kint) :: ierr
@@ -34,9 +35,10 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
-      call read_control_file_vizs
-      call set_control_params_4_viz(t_viz_ctl, viz_plt,                 &
-     &   mesh_file_VIZ, ucd_file_VIZ, ierr)
+      call read_control_file_vizs(vizs_ctl1)
+      call set_control_params_4_viz                                     &
+     &   (vizs_ctl1%t_viz_ctl, vizs_ctl1%viz_plt,                       &
+     &    mesh_file_VIZ, ucd_file_VIZ, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
@@ -44,8 +46,8 @@
       call FEM_initialize_fline(ucd_file_VIZ)
 !
 !  VIZ Initialization
-      call FLINE_initialize                                             &
-     &   (femmesh_VIZ, field_VIZ, viz_ctl_v%fline_ctls, fline_v)
+      call FLINE_initialize(femmesh_VIZ, field_VIZ,                     &
+     &    vizs_ctl1%viz_ctl_v%fline_ctls, fline_v)
 !
       end subroutine initialize_fline
 !

@@ -10,10 +10,12 @@
       use m_visualization
 !
       use FEM_analyzer_viz_pvr
+      use t_control_data_all_vizs
       use t_volume_rendering
 !
       implicit none
 !
+      type(control_data_vizs), save :: vizs_ctl1
       type(volume_rendering_module), save :: pvr_v
 !
 !  ---------------------------------------------------------------------
@@ -25,24 +27,24 @@
       subroutine initialization
 !
       use calypso_mpi
-      use m_control_data_vizs
 !
       integer(kind = kint) :: ierr
 !
 !     read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
-      call read_control_file_vizs
-      call set_control_params_4_viz(t_viz_ctl, viz_plt,                 &
-     &   mesh_file_VIZ, ucd_file_VIZ, ierr)
+      call read_control_file_vizs(vizs_ctl1)
+      call set_control_params_4_viz                                     &
+     &   (vizs_ctl1%t_viz_ctl, vizs_ctl1%viz_plt,                       &
+     &    mesh_file_VIZ, ucd_file_VIZ, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
       call FEM_initialize_pvr
 !
 !  VIZ Initialization
-      call PVR_initialize                                               &
-     &   (femmesh_VIZ, field_VIZ, viz_ctl_v%fline_ctls, pvr_v)
+      call PVR_initialize(femmesh_VIZ, field_VIZ,                       &
+     &    vizs_ctl1%viz_ctl_v%fline_ctls, pvr_v)
       call calypso_MPI_barrier
 !
       end subroutine initialization

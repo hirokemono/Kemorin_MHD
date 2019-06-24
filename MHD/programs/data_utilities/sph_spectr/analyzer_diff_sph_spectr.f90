@@ -63,7 +63,7 @@
       integer(kind = kint) :: istep_fld, istart, iend, increment
 !
 !
-      call read_control_data_diff_spectr(ctl1)
+      call read_control_file_sph_util(control_file_name, ctl1)
 !
       call set_control_diff_sph_field(ctl1%plt, ctl1%tctl,              &
      &    ctl1%file_list, files1, istart, iend, increment)
@@ -121,24 +121,5 @@
       end subroutine difference_of_two_spectr
 !
 ! -------------------------------------------------------------------
-! -------------------------------------------------------------------
-!
-       subroutine read_control_data_diff_spectr(ctl)
-!
-      type(spectr_data_util_ctl), intent(inout) :: ctl
-      integer(kind = kint), parameter :: control_file_code = 11
-!
-!
-      ctl_file_code = control_file_code
-      open (ctl_file_code, file = control_file_name)
-!
-      call load_ctl_label_and_line
-      call read_spectr_util_control(ctl)
-!
-      close(ctl_file_code)
-!
-      end subroutine read_control_data_diff_spectr
-!
-! -----------------------------------------------------------------------
 !
       end module  analyzer_diff_sph_spectr

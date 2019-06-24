@@ -70,12 +70,13 @@
       integer(kind = kint) :: istep_fld, istart, iend, increment
 !
 !
-      call read_control_data_diff_spectr(ctl1)
+      call read_control_file_sph_util(control_file_name, ctl1)
 !
       call set_control_diff_sph_field(ctl1%plt, ctl1%tctl,              &
      &     ctl1%file_list, files1, istart, iend, increment)
       call set_control_rename_sph_fld(ctl1%field_list, rename1)
-      call dealloc_rename_spectr_control(ctl1%field_list)
+!
+      call dealloc_spectr_util_control(ctl1)
 !
       do istep_fld = istart, iend, increment
         call difference_of_two_spectr(istep_fld, files1, rename1)
@@ -107,18 +108,14 @@
      &    files%org_file_param, fst_t_IO, sph_fst_IO)
 !
 !
-      call calypso_mpi_barrier
       call overwrt_new_field_name(sph_fst_IO, fld_list)
-      call calypso_mpi_barrier
 !
       call alloc_merged_field_stack(nprocs, sph_fst_IO)
       call count_number_of_node_stack                                   &
      &   (sph_fst_IO%nnod_IO, sph_fst_IO%istack_numnod_IO)
 !
-      call calypso_mpi_barrier
       call sel_write_step_SPH_field_file(nprocs, my_rank, istep_fld,    &
      &    files%out_file_param, fst_t_IO, sph_fst_IO)
-      call calypso_mpi_barrier
 !
       call dealloc_merged_field_stack(sph_fst_IO)
       call dealloc_phys_data_IO(sph_fst_IO)
@@ -127,24 +124,5 @@
       end subroutine difference_of_two_spectr
 !
 ! -------------------------------------------------------------------
-! -------------------------------------------------------------------
-!
-       subroutine read_control_data_diff_spectr(ctl)
-!
-      type(spectr_data_util_ctl), intent(inout) :: ctl
-      integer(kind = kint), parameter :: control_file_code = 11
-!
-!
-      ctl_file_code = control_file_code
-      open (ctl_file_code, file = control_file_name)
-!
-      call load_ctl_label_and_line
-      call read_spectr_util_control(ctl)
-!
-      close(ctl_file_code)
-!
-      end subroutine read_control_data_diff_spectr
-!
-! -----------------------------------------------------------------------
 !
       end module  analyzer_rename_sph_field

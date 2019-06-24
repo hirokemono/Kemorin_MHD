@@ -7,7 +7,7 @@
 !>@brief  Control brog for field definition
 !!
 !!@verbatim
-!!      subroutine bcast_phys_data_ctl(hd_block, iflag, fld_ctl)
+!!      subroutine bcast_phys_data_ctl(fld_ctl)
 !!
 !! ---------------------------------------------------------------------
 !!

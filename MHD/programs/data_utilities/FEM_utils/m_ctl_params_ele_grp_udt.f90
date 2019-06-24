@@ -3,8 +3,9 @@
 !
 !      Written by H. Matsui on March, 2012
 !
-!      subroutine set_control_ele_grp_udt
-!      subroutine find_start_element_group(num_mat, mat_name)
+!!      subroutine set_control_ele_grp_udt
+!!        type(ctl_ele_grp_udt), intent(in) :: egrp_udt_ctl
+!!      subroutine find_start_element_group(num_mat, mat_name)
 !
       module m_ctl_params_ele_grp_udt
 !
@@ -51,82 +52,84 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_control_ele_grp_udt
+      subroutine set_control_ele_grp_udt(egrp_udt_ctl)
 !
-      use m_ctl_data_ele_grp_udt
+      use t_ctl_data_ele_grp_udt
       use set_parallel_file_name
       use skip_comment_f
 !
+      type(ctl_ele_grp_udt), intent(in) :: egrp_udt_ctl
       character(len = kchara) :: fhead_tmp
 !
 !
       layerd_mesh_head =  "grouping_mesh"
-      if(group_mesh_head_ctl%iflag .gt. 0) then
-        layerd_mesh_head = group_mesh_head_ctl%charavalue
+      if(egrp_udt_ctl%group_mesh_head_ctl%iflag .gt. 0) then
+        layerd_mesh_head = egrp_udt_ctl%group_mesh_head_ctl%charavalue
       end if
 !
-      if(grp_evo_data_ctl%iflag .gt. 0) then
-        group_data_file_name = grp_evo_data_ctl%charavalue
+      if(egrp_udt_ctl%grp_evo_data_ctl%iflag .gt. 0) then
+        group_data_file_name = egrp_udt_ctl%grp_evo_data_ctl%charavalue
       else
         write(*,*) 'set grouping data file name'
         stop
       end if
 !
-      if(grp_ucd_data_head_ctl%iflag .gt. 0) then
-        grp_ucd_param%file_prefix = grp_ucd_data_head_ctl%charavalue
+      if(egrp_udt_ctl%grp_ucd_data_head_ctl%iflag .gt. 0) then
+        grp_ucd_param%file_prefix                                       &
+     &        = egrp_udt_ctl%grp_ucd_data_head_ctl%charavalue
       else
         grp_ucd_param%file_prefix = group_data_file_name
       end if
 !
-      if(ngrp_ele_grp_ctl%iflag .gt. 0) then
-        num_ele_grp_drmd = ngrp_ele_grp_ctl%intvalue
+      if(egrp_udt_ctl%ngrp_ele_grp_ctl%iflag .gt. 0) then
+        num_ele_grp_drmd = egrp_udt_ctl%ngrp_ele_grp_ctl%intvalue
       else
         num_ele_grp_drmd = -2
       end if
 !
       iflag_time_averaged = 0
-      if(time_average_data_ctl%iflag .gt. 0) then
-        if(yes_flag(time_average_data_ctl%charavalue )) then
-          iflag_time_averaged = 1
-        end if
+      if(egrp_udt_ctl%time_average_data_ctl%iflag .gt. 0) then
+        if(yes_flag(egrp_udt_ctl%time_average_data_ctl%charavalue))     &
+     &                                        iflag_time_averaged = 1
       end if
 !
       call set_grp_data_mode_by_data_name
 !
-      if(start_ele_grp_name_ctl%iflag .gt. 0) then
-        start_ele_grp_name = start_ele_grp_name_ctl%charavalue
+      if(egrp_udt_ctl%start_ele_grp_name_ctl%iflag .gt. 0) then
+        start_ele_grp_name                                              &
+     &        = egrp_udt_ctl%start_ele_grp_name_ctl%charavalue
       else
         write(start_ele_grp_name,'(a)') 'all'
       end if
-      if(ngrp_ele_grp_ctl%iflag .gt. 0) then
-        num_ele_grp_drmd = ngrp_ele_grp_ctl%intvalue
+      if(egrp_udt_ctl%ngrp_ele_grp_ctl%iflag .gt. 0) then
+        num_ele_grp_drmd = egrp_udt_ctl%ngrp_ele_grp_ctl%intvalue
       end if
 !
 !
 !
       start_time = 0.0d0
-      if(t_egu_ctl%time_init_ctl%iflag .gt. 0) then
-        start_time = t_egu_ctl%time_init_ctl%realvalue
+      if(egrp_udt_ctl%t_egu_ctl%time_init_ctl%iflag .gt. 0) then
+        start_time = egrp_udt_ctl%t_egu_ctl%time_init_ctl%realvalue
       end if
 !
       delta_t = 0.0d0
-      if(t_egu_ctl%dt_ctl%iflag .gt. 0) then
-        delta_t = t_egu_ctl%dt_ctl%realvalue
+      if(egrp_udt_ctl%t_egu_ctl%dt_ctl%iflag .gt. 0) then
+        delta_t = egrp_udt_ctl%t_egu_ctl%dt_ctl%realvalue
       end if
 !
       istep_start = 1
-      if(t_egu_ctl%i_step_init_ctl%iflag .gt. 0) then
-        istep_start = t_egu_ctl%i_step_init_ctl%intvalue
+      if(egrp_udt_ctl%t_egu_ctl%i_step_init_ctl%iflag .gt. 0) then
+        istep_start = egrp_udt_ctl%t_egu_ctl%i_step_init_ctl%intvalue
       end if
 !
       istep_end = 1
-      if(t_egu_ctl%i_step_number_ctl%iflag .gt. 0) then
-        istep_end = t_egu_ctl%i_step_number_ctl%intvalue
+      if(egrp_udt_ctl%t_egu_ctl%i_step_number_ctl%iflag .gt. 0) then
+        istep_end = egrp_udt_ctl%t_egu_ctl%i_step_number_ctl%intvalue
       end if
 !
       istep_inc = 1
-      if(t_egu_ctl%i_step_psf_ctl%iflag .gt. 0) then
-        istep_inc = t_egu_ctl%i_step_psf_ctl%intvalue
+      if(egrp_udt_ctl%t_egu_ctl%i_step_psf_ctl%iflag .gt. 0) then
+        istep_inc = egrp_udt_ctl%t_egu_ctl%i_step_psf_ctl%intvalue
       end if
 !
       fhead_tmp = add_int_suffix                                        &

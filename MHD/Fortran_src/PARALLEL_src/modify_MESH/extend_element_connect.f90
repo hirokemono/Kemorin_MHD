@@ -37,7 +37,6 @@
      &          new_comm, new_node, new_ele)
 !
       use t_next_node_ele_4_node
-      use m_merged_ucd_data
       use solver_SR_type
       use extend_comm_table_SR
       use mark_export_nod_ele_extend

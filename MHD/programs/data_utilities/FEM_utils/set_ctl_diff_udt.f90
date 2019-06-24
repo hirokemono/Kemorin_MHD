@@ -5,14 +5,22 @@
 !     Modified by H. Matsui on JUne, 2007
 !
 !!      subroutine set_ctl_params_correlate_udt                         &
-!!     &         (mesh_file, udt_org_param, nod_fld, time_U)
+!!     &         (d_plt, org_d_plt, diff_ctl,                           &
+!!     &          mesh_file, udt_org_param, nod_fld, time_U)
+!!        type(platform_data_control), intent(in) :: d_plt
+!!        type(platform_data_control), intent(in) :: org_d_plt
+!!        type(diff_model_ctl), intent(in) :: diff_ctl
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(field_IO_params), intent(inout) :: udt_org_param
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(ucd_data), intent(inout) :: ucd
 !!        type(time_step_param), intent(inout) :: time_U
 !!      subroutine set_ctl_params_diff_udt                              &
-!!     &         (mesh_file, udt_org_param, ucd)
+!!     &         (d_plt, org_d_plt, diff_ctl, mesh_file, udt_org_param)
+!!        type(platform_data_control), intent(in) :: d_plt
+!!        type(platform_data_control), intent(in) :: org_d_plt
+!!        type(diff_model_ctl), intent(in) :: diff_ctl
+!!        type(field_IO_params), intent(inout) ::  mesh_file
+!!        type(field_IO_params), intent(inout) :: udt_org_param
 !!      subroutine s_set_ctl_4_diff_udt_steps(tctl, time_U)
 !!        type(time_data_control), intent(in) :: tctl
 !!        type(time_step_param), intent(inout) :: time_U
@@ -38,11 +46,16 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_ctl_params_correlate_udt                           &
-     &         (mesh_file, udt_org_param, nod_fld, time_U)
+     &         (d_plt, org_d_plt, diff_ctl,                             &
+     &          mesh_file, udt_org_param, nod_fld, time_U)
 !
-      use m_ctl_data_diff_udt
+      use t_ctl_data_diff_udt
       use set_control_nodal_data
       use set_control_ele_layering
+!
+      type(platform_data_control), intent(in) :: d_plt
+      type(platform_data_control), intent(in) :: org_d_plt
+      type(diff_model_ctl), intent(in) :: diff_ctl
 !
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: udt_org_param
@@ -52,28 +65,29 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
-      call set_ctl_params_diff_udt(mesh_file, udt_org_param)
+      call set_ctl_params_diff_udt(d_plt, org_d_plt, diff_ctl,          &
+     &    mesh_file, udt_org_param)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_ele_layering'
-      call s_set_control_ele_layering(elayer_d_ctl)
-      call dealloc_ctl_data_ele_layering(elayer_d_ctl)
+      call s_set_control_ele_layering(diff_ctl%elayer_d_ctl)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
-      call s_set_control_nodal_data(fld_d_ctl%field_ctl, nod_fld, ierr)
+      call s_set_control_nodal_data                                     &
+     &   (diff_ctl%fld_d_ctl%field_ctl, nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
-      call s_set_ctl_4_diff_udt_steps(t_d_ctl, time_U)
-      call dealloc_phys_control(fld_d_ctl)
+      call s_set_ctl_4_diff_udt_steps(diff_ctl%t_d_ctl, time_U)
 !
       end subroutine set_ctl_params_correlate_udt
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_diff_udt(mesh_file, udt_org_param)
+      subroutine set_ctl_params_diff_udt                                &
+     &         (d_plt, org_d_plt, diff_ctl, mesh_file, udt_org_param)
 !
       use t_field_data_IO
-      use m_ctl_data_diff_udt
+      use t_ctl_data_diff_udt
       use m_geometry_constants
       use m_file_format_switch
       use m_default_file_prefix
@@ -81,6 +95,10 @@
       use set_control_platform_data
       use ucd_IO_select
       use skip_comment_f
+!
+      type(platform_data_control), intent(in) :: d_plt
+      type(platform_data_control), intent(in) :: org_d_plt
+      type(diff_model_ctl), intent(in) :: diff_ctl
 !
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: udt_org_param
@@ -97,23 +115,25 @@
 !
 !   set field data name
 !
-      if (ref_udt_head_ctl%iflag .ne. 0) then
-        first_ucd_param%file_prefix = ref_udt_head_ctl%charavalue
+      if(diff_ctl%ref_udt_head_ctl%iflag .ne. 0) then
+        first_ucd_param%file_prefix                                     &
+     &       = diff_ctl%ref_udt_head_ctl%charavalue
       else
         first_ucd_param%file_prefix = ref_udt_file_head
       end if
       first_ucd_param%iflag_format = udt_org_param%iflag_format
 !
-      if (tgt_udt_head_ctl%iflag .ne. 0) then
-        second_ucd_param%file_prefix = tgt_udt_head_ctl%charavalue
+      if(diff_ctl%tgt_udt_head_ctl%iflag .ne. 0) then
+        second_ucd_param%file_prefix                                    &
+     &        = diff_ctl%tgt_udt_head_ctl%charavalue
       else
         second_ucd_param%file_prefix = tgt_udt_file_head
       end if
       second_ucd_param%iflag_format = udt_org_param%iflag_format
 !
       grouping_mesh_head =  "grouping_mesh"
-      if (group_mesh_head_ctl%iflag .ne. 0) then
-        grouping_mesh_head = group_mesh_head_ctl%charavalue
+      if(diff_ctl%group_mesh_head_ctl%iflag .ne. 0) then
+        grouping_mesh_head = diff_ctl%group_mesh_head_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &   write(*,*) 'grouping_mesh_head: ', trim(grouping_mesh_head)
       end if
@@ -131,29 +151,29 @@
       ave_ucd_param%iflag_format =  udt_org_param%iflag_format
 !
       product_field_name = "velocity"
-      if (product_field_ctl%iflag .ne. 0) then
-        product_field_name = product_field_ctl%charavalue
+      if(diff_ctl%product_field_ctl%iflag .ne. 0) then
+        product_field_name = diff_ctl%product_field_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &   write(*,*) 'product_field_name ', trim(product_field_name)
       end if
 !
       correlate_field_name =  "velocity"
-      if (correlate_fld_ctl%iflag .ne. 0) then
-        correlate_field_name = correlate_fld_ctl%charavalue
+      if(diff_ctl%correlate_fld_ctl%iflag .ne. 0) then
+        correlate_field_name = diff_ctl%correlate_fld_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &   write(*,*) 'correlate_field_name ', trim(correlate_field_name)
       end if
 !
       correlate_comp_name =  "norm"
-      if (correlate_cmp_ctl%iflag .ne. 0) then
-        correlate_comp_name = correlate_cmp_ctl%charavalue
+      if(diff_ctl%correlate_cmp_ctl%iflag .ne. 0) then
+        correlate_comp_name = diff_ctl%correlate_cmp_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &   write(*,*) 'correlate_comp_name ', trim(correlate_comp_name)
       end if
 !
       tmpchara = "Cartesian"
-      if (correlate_coord_ctl%iflag .ne. 0) then
-        tmpchara = correlate_coord_ctl%charavalue
+      if(diff_ctl%correlate_coord_ctl%iflag .ne. 0) then
+        tmpchara = diff_ctl%correlate_coord_ctl%charavalue
       end if
 !
       if     (cmp_no_case(tmpchara, 'cartesian')                        &

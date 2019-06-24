@@ -41,7 +41,7 @@ MOD_GAUSS_B_TRANS = \
 analyzer_gauss_back_trans.o \
 FEM_analyzer_back_trans.o \
 SPH_analyzer_gauss_b_trans.o \
-m_control_data_vizs.o  \
+t_control_data_all_vizs.o  \
 main_gauss_back_trans.o
 
 MOD_ZM_F_TRANS = \
@@ -70,7 +70,7 @@ SPH_analyzer_sph_trans.o \
 SPH_analyzer_back_trans_old.o \
 \
 analyzer_zm_sph_field.o \
-m_control_data_vizs.o  \
+t_control_data_all_vizs.o  \
 main_zm_sph_field.o
 
 
@@ -82,7 +82,7 @@ FEM_analyzer_back_trans.o \
 SPH_analyzer_sph_trans.o \
 SPH_analyzer_back_trans_old.o \
 \
-m_control_data_vizs.o  \
+t_control_data_all_vizs.o  \
 analyzer_zonal_rms_sph.o \
 main_zonal_rms_sph.o
 

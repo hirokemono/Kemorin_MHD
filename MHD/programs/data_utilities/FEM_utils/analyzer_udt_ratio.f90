@@ -32,10 +32,11 @@
 !
       use m_ctl_params_4_prod_udt
       use m_array_for_send_recv
-      use m_ctl_data_product_udt
+      use t_ctl_data_product_udt
       use nod_phys_send_recv
       use product_udt_fields
 !
+      type(product_udt_ctl) :: prod_udt_c1
       integer(kind = kint) :: ierr
 !
 !
@@ -47,13 +48,14 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_prod_udt'
-      call read_control_4_prod_udt
+      call read_control_4_prod_udt(prod_udt_c1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
-      call set_ctl_params_prod_udt                                      &
-     &   (mesh_file_FUTIL, udt_param_FUTIL)
+      call set_ctl_params_prod_udt(prod_udt_c1%pu_plt,                  &
+     &   prod_udt_c1%org_pu_plt, prod_udt_c1%prod_ctl,                  &
+     &   mesh_file_FUTIL, udt_param_FUTIL)
       call set_fixed_time_step_params                                   &
-     &   (t_pu_ctl, time_U, ierr, e_message)
+     &   (prod_udt_c1%prod_ctl%t_pu_ctl, time_U, ierr, e_message)
 !
 !     --------------------- 
 !

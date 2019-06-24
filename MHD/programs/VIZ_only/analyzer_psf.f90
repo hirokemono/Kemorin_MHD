@@ -15,9 +15,11 @@
 !
       use FEM_analyzer_viz_surf
       use t_viz_sections
+      use t_control_data_section_only
 !
       implicit none
 !
+      type(control_data_section_only), save :: sec_viz_ctl1
       type(surfacing_modules), save :: viz_psfs_v
 !
 !  ---------------------------------------------------------------------
@@ -29,7 +31,6 @@
       subroutine init_analyzer
 !
       use calypso_mpi
-      use m_control_data_section_only
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
 !
@@ -43,8 +44,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
-      call read_control_data_section_only
-      call set_control_params_4_viz(t_sect_ctl, sect_plt,               &
+      call read_control_data_section_only(sec_viz_ctl1)
+      call set_control_params_4_viz                                     &
+     &   (sec_viz_ctl1%t_sect_ctl, sec_viz_ctl1%sect_plt,               &
      &    mesh_file_VIZ, ucd_file_VIZ, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
@@ -53,7 +55,8 @@
 !
 !  VIZ Initialization
       call init_visualize_surface(femmesh_VIZ, field_VIZ,               &
-     &    sect_psf_ctls, sect_iso_ctls, viz_psfs_v)
+     &    sec_viz_ctl1%sect_psf_ctls, sec_viz_ctl1%sect_iso_ctls,       &
+     &    viz_psfs_v)
 !
       end subroutine init_analyzer
 !

@@ -18,9 +18,11 @@
       use t_mesh_data
       use t_boundary_field_IO
       use t_file_IO_parameter
+      use t_ctl_data_test_bc_temp
 !
       implicit none
 !
+      type(ctl_data_bc_temp_test), save :: bc_temp_test_ctl1
       type(field_IO_params), save ::  mesh_file_TEC
       type(mesh_data), save :: femmesh
       type(IO_boundary), save :: IO_bc_t
@@ -33,7 +35,6 @@
 !
       subroutine initilize_bc_temp
 !
-      use m_ctl_data_test_bc_temp
       use m_ctl_params_test_bc_temp
       use mpi_load_mesh_data
       use const_mesh_information
@@ -42,10 +43,10 @@
 !     ----- read control data
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_4_bc_temp'
-      call read_control_4_bc_temp
+      call read_control_4_bc_temp(bc_temp_test_ctl1)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_params_sph_bc_temp'
-      call set_ctl_params_sph_bc_temp(mesh_file_TEC)
+      call set_ctl_params_sph_bc_temp(bc_temp_test_ctl1, mesh_file_TEC)
 !
 !  --  read geometry
 !

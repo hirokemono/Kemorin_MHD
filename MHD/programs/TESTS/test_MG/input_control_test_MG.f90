@@ -31,23 +31,24 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use m_ctl_data_test_MG
       use m_geometry_param_MG
+      use t_ctl_data_test_MG
       use set_control_test_MG
       use mpi_load_mesh_data
       use set_MG_mesh_data
 !
       type(mesh_data), intent(inout) :: fem
 !
+      type(ctl_data_test_MG), save :: test_MG_ctl1
       type(field_IO_params), save ::  mesh_file_test
 !
 !  --  read control data
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_mesh_test'
-      call read_control_4_MG_test
+      call read_control_4_MG_test(test_MG_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_test_MG'
-      call set_ctl_test_MG(MGtest_plt, mesh_file_test)
+      call set_ctl_test_MG(test_MG_ctl1%MGtest_plt, mesh_file_test)
 !
 !  --  read geometry
 !
