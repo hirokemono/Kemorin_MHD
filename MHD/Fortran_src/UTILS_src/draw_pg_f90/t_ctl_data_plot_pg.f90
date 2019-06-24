@@ -18,14 +18,14 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_read_control_elements
-      use skip_comment_f
 !
+      use t_read_control_elements
       use t_ctl_data_4_time_steps
       use t_control_elements
       use t_control_array_character3
       use t_control_array_int2real
       use t_control_array_int2real2
+      use skip_comment_f
 !
       implicit none
 !
@@ -43,6 +43,8 @@
         type(read_character_item)  :: color_mode_ctl
 !
         type(read_integer_item) :: num_panels_ctl
+!
+        integer(kind= kint) :: i_pgplot_param =    0
       end type pgplot_panel_ctl
 !
 !>      Structure of field to view
@@ -69,6 +71,8 @@
 !!@n      vector_scale_ctl%int2: Incrememnt for vedctor data to draw
 !!@n      vector_scale_ctl%vect: Scale factor for vectror
         type(ctl_array_i2r) :: vector_scale_ctl
+!
+        integer(kind= kint) :: i_sf_plotting =     0
       end type pgplot_field_ctl
 !
 !>      Structure of section plot
@@ -76,12 +80,16 @@
         type(read_real_item) :: outer_radius_ctl
         type(read_real_item) :: ro_ri_ratio_ctl
         type(read_real2_item) :: pg_plane_size_ctl
+!
+        integer(kind= kint) :: i_z_plane_ctl =     0
       end type pgpolot_section_ctl
 !
 !>      Structure of map plot
       type pgpolot_map_ctl
         type(read_integer_item) :: radial_ID_ctl
         type(read_character_item) :: pg_grid_type_ctl
+!
+        integer(kind= kint) :: i_sphere_map_ctl =  0
       end type pgpolot_map_ctl
 !
 !
@@ -98,19 +106,20 @@
         type(pgpolot_section_ctl) :: pg_section_ctl
 !>        Structure of map plot
         type(pgpolot_map_ctl) :: pg_map_ctl
+!
+        integer(kind= kint) :: i_draw_pgplot =  0
+        integer(kind= kint) :: i_drmed_grp =    0
       end type controls_with_pgplot
 !
 !     top level
 !
       character(len=kchara), parameter                                  &
      &                    :: hd_draw_pgplot = 'drawing_pgplot_ctl'
-      integer(kind= kint) :: i_draw_pgplot =    0
 !
 !     top level for drmed_grp
 !
       character(len=kchara), parameter                                  &
      &                    :: hd_drmed_grp =   'draw_grouping_pg_ctl'
-      integer(kind= kint) :: i_drmed_grp =    0
 !
 !     flags for 2nd level
 !
@@ -126,11 +135,6 @@
      &                    :: hd_grouping_plot = 'grouping_plot_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
-!
-      integer(kind= kint) :: i_pgplot_param =    0
-      integer(kind= kint) :: i_sf_plotting =     0
-      integer(kind= kint) :: i_z_plane_ctl =     0
-      integer(kind= kint) :: i_sphere_map_ctl =  0
 !
 !     flags for pgplot paramter
 !
@@ -182,23 +186,19 @@
 !
       private :: fname_pgplot_ctl, fname_drmed_grp_ctl
 !
-      private :: hd_draw_pgplot, i_draw_pgplot
-      private :: hd_drmed_grp,     i_drmed_grp
-      private :: hd_pgplot_param,   i_pgplot_param
-      private :: hd_sf_plotting,    i_sf_plotting
-      private :: hd_z_plane_ctl,    i_z_plane_ctl
-      private :: hd_sphere_map_ctl, i_sphere_map_ctl
-      private :: hd_grouping_plot, hd_time_step
+      private :: hd_draw_pgplot, hd_drmed_grp
+      private :: hd_pgplot_param, hd_sf_plotting, hd_z_plane_ctl
+      private :: hd_sphere_map_ctl, hd_grouping_plot, hd_time_step
       private :: hd_contour_type_ctl, hd_color_mode_ctl
-      private :: hd_num_panels_ctl
-      private :: hd_psf_data_fmt_ctl, hd_map_grid_file
-      private :: hd_psf_data_ctl, hd_vec_scale_ctl
+      private :: hd_num_panels_ctl, hd_psf_data_fmt_ctl
+      private :: hd_map_grid_file, hd_psf_data_ctl, hd_vec_scale_ctl
       private :: hd_ctr_range_ctl,   hd_field_2_plot
       private :: hd_outer_radius_ctl, hd_ro_ri_ratio_ctl
       private :: hd_plane_size_ctl
       private :: hd_radial_ID_ctl, hd_sph_grid_type
 !
       private :: read_ctl_data_draw_pgplot
+      private :: read_ctl_data_draw_grped_pg
       private :: read_ctl_data_4_pgplot_param
       private :: read_ctl_data_4_surf_plot
       private :: read_ctl_data_4_zplane_plot, read_ctl_data_4_sph_map
@@ -214,14 +214,18 @@
 !
       type(controls_with_pgplot), intent(inout) :: pg_ctl
 !
+      type(buffer_for_control) :: c_buf1
 !
-      ctl_file_code = pg_ctl_file_code
-      open ( ctl_file_code, file=fname_pgplot_ctl )
 !
-      call load_ctl_label_and_line
-      call read_ctl_data_draw_pgplot(pg_ctl)
+      open(pg_ctl_file_code, file=fname_pgplot_ctl)
 !
-      close(ctl_file_code)
+      do
+        call load_one_line_from_control(pg_ctl_file_code, c_buf1)
+        call read_ctl_data_draw_pgplot                                  &
+     &     (pg_ctl_file_code, hd_draw_pgplot, pg_ctl, c_buf1)
+        if(pg_ctl%i_draw_pgplot .gt. 0) exit
+      end do
+      close(pg_ctl_file_code)
 !
       end subroutine read_control_draw_pg
 !
@@ -231,14 +235,18 @@
 !
       type(controls_with_pgplot), intent(inout) :: pg_ctl
 !
+      type(buffer_for_control) :: c_buf1
 !
-      ctl_file_code = pg_ctl_file_code
-      open ( ctl_file_code, file=fname_drmed_grp_ctl)
 !
-      call load_ctl_label_and_line
-      call read_ctl_data_draw_grped_pg(pg_ctl)
+      open(pg_ctl_file_code, file=fname_drmed_grp_ctl)
 !
-      close(ctl_file_code)
+      do
+        call load_one_line_from_control(pg_ctl_file_code, c_buf1)
+        call read_ctl_data_draw_grped_pg                                &
+     &     (pg_ctl_file_code, hd_drmed_grp, pg_ctl, c_buf1)
+        if(pg_ctl%i_drmed_grp .gt. 0) exit
+      end do
+      close(pg_ctl_file_code)
 !
       end subroutine read_control_drmed_grp_pg
 !
@@ -257,162 +265,189 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_data_draw_pgplot(pg_ctl)
+      subroutine read_ctl_data_draw_pgplot                              &
+     &         (id_control, hd_block, pg_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(controls_with_pgplot), intent(inout) :: pg_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_draw_pgplot) .eq. 0) return
-      if (i_draw_pgplot .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(pg_ctl%i_draw_pgplot .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        i_draw_pgplot = find_control_end_flag(hd_draw_pgplot)
-        if(i_draw_pgplot .gt. 0) exit
-!
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_time_step_data                                &
-     &     (ctl_file_code, hd_time_step, pg_ctl%t_pg_ctl, c_buf1)
+     &     (id_control, hd_time_step, pg_ctl%t_pg_ctl, c_buf)
 !
-        call read_ctl_data_4_pgplot_param(pg_ctl%pg_panel_ctl)
-        call read_ctl_data_4_surf_plot(pg_ctl%pg_fld_ctl)
-        call read_ctl_data_4_zplane_plot(pg_ctl%pg_section_ctl)
-        call read_ctl_data_4_sph_map(pg_ctl%pg_map_ctl)
+        call read_ctl_data_4_pgplot_param                               &
+     &     (id_control, hd_pgplot_param, pg_ctl%pg_panel_ctl, c_buf)
+        call read_ctl_data_4_surf_plot(id_control, hd_sf_plotting,      &
+     &      pg_ctl%pg_fld_ctl, c_buf)
+        call read_ctl_data_4_zplane_plot(id_control, hd_z_plane_ctl,    &
+     &      pg_ctl%pg_section_ctl, c_buf)
+        call read_ctl_data_4_sph_map(id_control, hd_sphere_map_ctl,     &
+     &      pg_ctl%pg_map_ctl, c_buf)
       end do
+      pg_ctl%i_draw_pgplot = 1
 !
       end subroutine read_ctl_data_draw_pgplot
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_ctl_data_draw_grped_pg(pg_ctl)
+      subroutine read_ctl_data_draw_grped_pg                            &
+     &         (id_control, hd_block, pg_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(controls_with_pgplot), intent(inout) :: pg_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_drmed_grp) .eq. 0) return
-      if (i_drmed_grp .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(pg_ctl%i_drmed_grp .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_drmed_grp = find_control_end_flag(hd_drmed_grp)
-        if(i_drmed_grp .gt. 0) exit
-!
-        call read_ctl_data_4_pgplot_param(pg_ctl%pg_panel_ctl)
-        call read_ctl_data_4_surf_plot(pg_ctl%pg_fld_ctl)
+        call read_ctl_data_4_pgplot_param                               &
+     &     (id_control, hd_pgplot_param, pg_ctl%pg_panel_ctl, c_buf)
+        call read_ctl_data_4_surf_plot(id_control, hd_sf_plotting,      &
+     &     pg_ctl%pg_fld_ctl, c_buf)
       end do
+      pg_ctl%i_drmed_grp = 1
 !
       end subroutine read_ctl_data_draw_grped_pg
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_ctl_data_4_pgplot_param(pg_panel_ctl)
+      subroutine read_ctl_data_4_pgplot_param                           &
+     &         (id_control, hd_block, pg_panel_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(pgplot_panel_ctl), intent(inout) :: pg_panel_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_pgplot_param) .eq. 0) return
-      if (i_pgplot_param .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(pg_panel_ctl%i_pgplot_param .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        i_pgplot_param = find_control_end_flag(hd_pgplot_param)
-        if(i_pgplot_param .gt. 0) exit
-!
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_contour_type_ctl, pg_panel_ctl%contour_type_ctl)
+     &     (c_buf, hd_contour_type_ctl, pg_panel_ctl%contour_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_color_mode_ctl, pg_panel_ctl%color_mode_ctl)
+     &     (c_buf, hd_color_mode_ctl, pg_panel_ctl%color_mode_ctl)
 !
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_num_panels_ctl, pg_panel_ctl%num_panels_ctl)
+     &     (c_buf, hd_num_panels_ctl, pg_panel_ctl%num_panels_ctl)
       end do
+      pg_panel_ctl%i_pgplot_param = 1
 !
       end subroutine read_ctl_data_4_pgplot_param
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_ctl_data_4_surf_plot(pg_fld_ctl)
+      subroutine read_ctl_data_4_surf_plot                              &
+     &         (id_control, hd_block, pg_fld_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(pgplot_field_ctl), intent(inout) :: pg_fld_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_sf_plotting) .eq. 0) return
-      if (i_sf_plotting .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(pg_fld_ctl%i_sf_plotting .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_sf_plotting = find_control_end_flag(hd_sf_plotting)
-        if(i_sf_plotting .gt. 0) exit
+        call read_control_array_c3(id_control,                          &
+     &      hd_field_2_plot, pg_fld_ctl%plot_field_ctl, c_buf)
 !
+        call read_control_array_i2_r2(id_control,                       &
+     &      hd_ctr_range_ctl, pg_fld_ctl%contour_range_ctl, c_buf)
 !
-        call read_control_array_c3(ctl_file_code,                       &
-     &      hd_field_2_plot, pg_fld_ctl%plot_field_ctl, c_buf1)
-!
-        call read_control_array_i2_r2(ctl_file_code,                    &
-     &      hd_ctr_range_ctl, pg_fld_ctl%contour_range_ctl, c_buf1)
-!
-        call read_control_array_i2_r(ctl_file_code,                     &
-     &      hd_vec_scale_ctl, pg_fld_ctl%vector_scale_ctl, c_buf1)
+        call read_control_array_i2_r(id_control,                        &
+     &      hd_vec_scale_ctl, pg_fld_ctl%vector_scale_ctl, c_buf)
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_psf_data_fmt_ctl, pg_fld_ctl%psf_data_fmt_ctl)
+     &     (c_buf, hd_psf_data_fmt_ctl, pg_fld_ctl%psf_data_fmt_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_psf_data_ctl, pg_fld_ctl%psf_file_head_ctl)
+     &     (c_buf, hd_psf_data_ctl, pg_fld_ctl%psf_file_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_map_grid_file, pg_fld_ctl%map_grid_file_ctl)
+     &     (c_buf, hd_map_grid_file, pg_fld_ctl%map_grid_file_ctl)
       end do
+      pg_fld_ctl%i_sf_plotting = 1
 !
       end subroutine read_ctl_data_4_surf_plot
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_ctl_data_4_zplane_plot(pg_section_ctl)
+      subroutine read_ctl_data_4_zplane_plot                            &
+     &         (id_control, hd_block, pg_section_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(pgpolot_section_ctl), intent(inout) :: pg_section_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_z_plane_ctl) .eq. 0) return
-      if (i_z_plane_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(pg_section_ctl%i_z_plane_ctl .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        i_z_plane_ctl = find_control_end_flag(hd_z_plane_ctl)
-        if(i_z_plane_ctl .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
 !
-        call read_real_ctl_type(c_buf1, hd_outer_radius_ctl,            &
+        call read_real_ctl_type(c_buf, hd_outer_radius_ctl,             &
      &      pg_section_ctl%outer_radius_ctl)
-        call read_real_ctl_type(c_buf1, hd_ro_ri_ratio_ctl,             &
+        call read_real_ctl_type(c_buf, hd_ro_ri_ratio_ctl,              &
      &      pg_section_ctl%ro_ri_ratio_ctl)
 !
-        call read_real2_ctl_type(c_buf1,                                &
+        call read_real2_ctl_type(c_buf,                                 &
      &      hd_plane_size_ctl, pg_section_ctl%pg_plane_size_ctl)
       end do
+      pg_section_ctl%i_z_plane_ctl = 1
 !
       end subroutine read_ctl_data_4_zplane_plot
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_ctl_data_4_sph_map(pg_map_ctl)
+      subroutine read_ctl_data_4_sph_map                                &
+     &         (id_control, hd_block, pg_map_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(pgpolot_map_ctl), intent(inout) :: pg_map_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_sphere_map_ctl) .eq. 0) return
-      if(i_sphere_map_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(pg_map_ctl%i_sphere_map_ctl .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        i_sphere_map_ctl = find_control_end_flag(hd_sphere_map_ctl)
-        if(i_sphere_map_ctl .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_sph_grid_type, pg_map_ctl%pg_grid_type_ctl)
+     &     (c_buf, hd_sph_grid_type, pg_map_ctl%pg_grid_type_ctl)
         call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_radial_ID_ctl, pg_map_ctl%radial_ID_ctl)
+     &     (c_buf, hd_radial_ID_ctl, pg_map_ctl%radial_ID_ctl)
       end do
+      pg_map_ctl%i_sphere_map_ctl = 1
 !
       end subroutine read_ctl_data_4_sph_map
 !

@@ -56,6 +56,7 @@
 !
       use parallel_FEM_mesh_init
       use set_control_data_4_part
+      use bcast_control_data_4_part
 !
       use t_file_IO_parameter
       use t_mesh_data
@@ -63,7 +64,9 @@
 !
 !     ----- read control data
 !
-      call read_control_data_4_part(part_ctl1)
+      if(my_rank .eq. 0) call read_control_data_4_part(part_ctl1)
+      call bcast_part_control_data(part_ctl1)
+!
       call set_control_4_extend_sleeve                                  &
      &   (my_rank, part_ctl1, comm_part1, part_p1)
       call dealloc_ctl_data_4_part(part_ctl1)

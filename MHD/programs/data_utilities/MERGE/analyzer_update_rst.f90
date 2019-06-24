@@ -64,6 +64,7 @@
       use load_mesh_data_4_merge
       use set_field_to_restart
       use input_old_file_sel_4_zlib
+      use bcast_4_assemble_sph_ctl
 !
       integer(kind = kint) :: ierr
       type(field_IO), save :: fld_IO_m
@@ -81,7 +82,8 @@
 !
 !   read control data
 !
-      call read_control_4_merge(mgd_ctl_f)
+      if(my_rank .eq. 0) call read_control_4_merge(mgd_ctl_f)
+      call bcast_merge_control_data(mgd_ctl_f)
 !
       call set_control_4_merge(mgd_ctl_f, asbl_param_f, ndomain_org)
       call set_control_4_newrst                                         &

@@ -125,6 +125,7 @@
 !  ========= Read global field data for load balance partition =======
       write(*,*) 'read control_merge'
       call read_control_4_merge(mgd_ctl_p)
+!
       call set_control_4_merge(mgd_ctl_p, asbl_param_p, num_pe)
       call set_assemble_step_4_ucd(mgd_ctl_p%t_mge_ctl, asbl_param_p)
 !      call set_control_4_newudt                                        &

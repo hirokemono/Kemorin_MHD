@@ -63,7 +63,7 @@
      &          psf_ctls, psf_param, psf_def, psf_mesh, psf_file_IO)
 !
       use calypso_mpi
-      use m_read_control_elements
+      use t_read_control_elements
       use t_control_data_sections
       use t_mesh_data
       use t_phys_data
@@ -117,7 +117,7 @@
      &          iso_ctls, iso_param, iso_def, iso_mesh, iso_file_IO)
 !
       use calypso_mpi
-      use m_read_control_elements
+      use t_read_control_elements
       use t_control_data_isosurfaces
       use t_control_data_sections
       use t_control_params_4_iso

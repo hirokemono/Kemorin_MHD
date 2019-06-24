@@ -13,7 +13,7 @@
       use t_control_elements
       use t_ctl_data_4_platforms
       use t_control_data_4_refine
-      use m_read_control_elements
+      use t_read_control_elements
       use skip_comment_f
 !
       implicit    none
@@ -31,11 +31,15 @@
         type(read_character_item) :: c2f_para_head_ctl
         type(read_character_item) :: f2c_para_head_ctl
         type(read_character_item) :: refine_info_para_head_ctl
+!
+        integer (kind=kint) :: i_course_mesh_para_ctl = 0
       end type file_ctls_refine_para
 !
       type control_data_refine_para
         type(control_data_4_refine) :: refine_ctl
         type(file_ctls_refine_para) :: p_refine_ctl
+!
+        integer (kind=kint) :: i_para_refine_tbl_ctl = 0
       end type control_data_refine_para
 !
 !
@@ -43,7 +47,6 @@
 !
       character(len=kchara), parameter :: hd_para_refine_tbl_ctl        &
      &                      = 'para_refine_tbl_control'
-      integer (kind=kint) :: i_para_refine_tbl_ctl = 0
 !
 !   2nd level for para_refine_tbl_control
 !
@@ -51,7 +54,8 @@
      &                    :: hd_platform = 'data_files_def'
       character(len=kchara), parameter :: hd_course_mesh_para_ctl       &
      &                      = 'parallel_course_mesh_ctl'
-      integer (kind=kint) :: i_course_mesh_para_ctl = 0
+      character(len=kchara), parameter :: hd_single_refine_files        &
+     &                      = 'single_refined_table_ctl'
 !
 !   3rd level for parallel_course_mesh_ctl
 !
@@ -67,8 +71,8 @@
      &                      = 'fine_to_course_ele_head_ctl'
 !
 !
-      private :: hd_para_refine_tbl_ctl,  i_para_refine_tbl_ctl
-      private :: hd_course_mesh_para_ctl, i_course_mesh_para_ctl
+      private :: hd_para_refine_tbl_ctl
+      private :: hd_course_mesh_para_ctl, hd_single_refine_files
       private :: hd_num_course_subdomain, hd_course_mesh_file_head
       private :: hd_fine_to_course_p_head,  hd_course_to_fine_p_head
       private :: hd_fine_to_course_ele_head, hd_platform
@@ -85,75 +89,87 @@
 !
       type(control_data_refine_para), intent(inout) :: para__refine_c
 !
+      type(buffer_for_control) :: c_buf1
 !
-      ctl_file_code = ctl_refine_code
-      open (ctl_file_code, file = ctl_refine_file_name)
 !
-      call load_ctl_label_and_line
-      call read_ref_para_itp_ctl_data                                   &
-     &   (para__refine_c%refine_ctl, para__refine_c%p_refine_ctl)
+      open (ctl_refine_code, file = ctl_refine_file_name)
 !
-      close(ctl_file_code)
+      do
+        call load_one_line_from_control(ctl_refine_code, c_buf1)
+        call read_ref_para_itp_ctl_data                                 &
+     &     (ctl_refine_code, hd_para_refine_tbl_ctl,                    &
+     &      para__refine_c, c_buf1)
+        if(para__refine_c%i_para_refine_tbl_ctl .gt. 0) exit
+      end do
+      close(ctl_refine_code)
 !
       end subroutine read_control_data_ref_para_itp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_ref_para_itp_ctl_data(refine_ctl, p_refine_ctl)
+      subroutine read_ref_para_itp_ctl_data                             &
+     &         (id_control, hd_block, para__refine_c, c_buf)
 !
-      type(control_data_4_refine), intent(inout) :: refine_ctl
-      type(file_ctls_refine_para), intent(inout) :: p_refine_ctl
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(control_data_refine_para), intent(inout) :: para__refine_c
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_para_refine_tbl_ctl) .eq. 0) return
-      if (i_para_refine_tbl_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(para__refine_c%i_para_refine_tbl_ctl .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_para_refine_tbl_ctl                                           &
-     &     = find_control_end_flag(hd_para_refine_tbl_ctl)
+        call read_control_platforms(id_control, hd_platform,            &
+     &      para__refine_c%p_refine_ctl%para_refine_plt, c_buf)
 !
-!
-        call read_control_platforms(ctl_file_code, hd_platform,         &
-     &      p_refine_ctl%para_refine_plt, c_buf1)
-!
-        call read_ctl_data_4_course_mesh(p_refine_ctl)
-        call read_ctl_data_4_refine_mesh(refine_ctl)
+        call read_ctl_data_4_course_mesh                                &
+     &     (id_control, hd_course_mesh_para_ctl,                        &
+     &      para__refine_c%p_refine_ctl, c_buf)
+        call read_ctl_data_4_refine_mesh                                &
+     &     (id_control, hd_single_refine_files,                         &
+     &      para__refine_c%refine_ctl, c_buf)
       end do
+      para__refine_c%i_para_refine_tbl_ctl = 1
 !
       end subroutine read_ref_para_itp_ctl_data
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine read_ctl_data_4_course_mesh(p_refine_ctl)
+       subroutine read_ctl_data_4_course_mesh                           &
+      &         (id_control, hd_block, p_refine_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(file_ctls_refine_para), intent(inout) :: p_refine_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_course_mesh_para_ctl) .eq. 0) return
-      if (i_course_mesh_para_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(p_refine_ctl%i_course_mesh_para_ctl .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_course_mesh_para_ctl                                          &
-     &     = find_control_end_flag(hd_course_mesh_para_ctl)
-        if(i_course_mesh_para_ctl .gt. 0) exit
-!
-!
-        call read_integer_ctl_type(c_buf1, hd_num_course_subdomain,     &
+        call read_integer_ctl_type(c_buf, hd_num_course_subdomain,      &
      &      p_refine_ctl%nprocs_course_ctl)
 !
-        call read_chara_ctl_type(c_buf1, hd_course_mesh_file_head,      &
+        call read_chara_ctl_type(c_buf, hd_course_mesh_file_head,       &
      &      p_refine_ctl%course_mesh_file_head_ctl)
-        call read_chara_ctl_type(c_buf1, hd_course_to_fine_p_head,      &
+        call read_chara_ctl_type(c_buf, hd_course_to_fine_p_head,       &
      &      p_refine_ctl%c2f_para_head_ctl)
-        call read_chara_ctl_type(c_buf1, hd_fine_to_course_p_head,      &
+        call read_chara_ctl_type(c_buf, hd_fine_to_course_p_head,       &
      &      p_refine_ctl%f2c_para_head_ctl)
 !
-        call read_chara_ctl_type(c_buf1, hd_fine_to_course_ele_head,    &
+        call read_chara_ctl_type(c_buf, hd_fine_to_course_ele_head,     &
      &      p_refine_ctl%refine_info_para_head_ctl)
       end do
+      p_refine_ctl%i_course_mesh_para_ctl = 1
 !
       end subroutine read_ctl_data_4_course_mesh
 !

@@ -15,13 +15,13 @@
 !
       use m_precision
 !
-      use m_read_control_elements
-      use skip_comment_f
+      use t_read_control_elements
       use t_ctl_data_4_platforms
       use t_ctl_data_4_FEM_mesh
       use t_control_elements
       use t_control_array_character
       use t_control_array_charaint
+      use skip_comment_f
 !
       implicit    none
 !
@@ -51,8 +51,8 @@
         type(read_character_item) :: selective_ghost_ctl
 !
 !>        Structure for list of bisection
-!!@n        ele_grp_ordering_ctl%c_tbl: Direction of bisectioning
-!!@n        ele_grp_ordering_ctl%ivec: Number of decomposition
+!!@n        RCB_dir_ctl%c_tbl: Direction of bisectioning
+!!@n        RCB_dir_ctl%ivec: Number of decomposition
         type(ctl_array_ci) :: RCB_dir_ctl
 !
 !>        Structure for number of subdomains
@@ -61,7 +61,7 @@
         type(ctl_array_ci) :: ndomain_section_ctl
 !
 !>        Structure for element group list for layering
-!!@n        ele_grp_ordering_ctl%c_tbl:  list of element group
+!!@n        ele_grp_layering_ctl%c_tbl:  list of element group
         type(ctl_array_chara) :: ele_grp_layering_ctl
 !
 !>        File name for sphere file data
@@ -87,13 +87,19 @@
 !>        Structure for element group list for ordering
 !!@n        ele_grp_ordering_ctl%c_tbl:  list of element group
         type(ctl_array_chara) :: ele_grp_ordering_ctl
+!
+!
+        integer (kind=kint) :: i_part_ctl = 0
+!
+        integer (kind=kint) :: i_decomp_ctl =       0
+        integer (kind=kint) :: i_part_ghost_ctl =   0
+        integer (kind=kint) :: i_ele_ordering_ctl = 0
       end type control_data_4_partitioner
 !
 !   Top level
 !
       character(len=kchara), parameter :: hd_part_ctl                   &
      &                      = 'partitioner_control'
-      integer (kind=kint) :: i_part_ctl = 0
 !
 !   2nd level for partitioner_control
 !
@@ -112,11 +118,6 @@
      &                      = 'decompose_ctl'
       character(len=kchara), parameter :: hd_part_ghost_ctl             &
      &                      = 'part_ghost_ctl'
-!
-      integer (kind=kint) :: i_org_f_ctl =        0
-      integer (kind=kint) :: i_ele_ordering_ctl = 0
-      integer (kind=kint) :: i_decomp_ctl =       0
-      integer (kind=kint) :: i_part_ghost_ctl =   0
 !
 !   3rd level for new partition and ghost cells
 !
@@ -171,17 +172,13 @@
       character(len=kchara), parameter :: hd_fine_itp_file              &
      &                      = 'interpolate_tbl_head'
       character(len=kchara), parameter                                  &
-     &         :: hd_fmt_itp_tbl =    'interpolate_table_format_ctl'
-
-      integer (kind=kint) :: i_fmt_itp_tbl =      0
+     &         :: hd_fmt_itp_tbl = 'interpolate_table_format_ctl'
 !
 !
       private :: control_file_name
-      private :: hd_part_ctl, i_part_ctl
-      private :: hd_org_f_ctl
-      private :: hd_platform, hd_org_data, hd_FEM_mesh
+      private :: hd_part_ctl
+      private :: hd_org_f_ctl, hd_platform, hd_org_data, hd_FEM_mesh
       private :: hd_ele_ordering_ctl, hd_decomp_ctl
-      private :: i_ele_ordering_ctl, i_decomp_ctl
       private :: hd_nele_grp_ordering
       private :: hd_part_method, hd_sleeve_level, hd_ele_overlap
       private :: hd_num_rcb, hd_num_es, hd_num_r_layerd, hd_sph_sf_file
@@ -189,8 +186,11 @@
       private :: hd_domain_tbl_file, hd_fine_mesh_file
       private :: hd_fine_itp_file, hd_fmt_itp_tbl, hd_fine_fmt_file
 !
-      private :: read_part_control_data
+      private :: read_part_control_data, read_ctl_data_4_part_ghost
       private :: read_ctl_data_4_decomp, read_ctl_data_4_ele_ordeirng
+!
+      private :: dealloc_ctl_data_4_decomp, reset_ctl_data_4_part_ghost
+      private :: dealloc_ctl_data_4_ele_ordeirng
 !
 ! -----------------------------------------------------------------------
 !
@@ -202,10 +202,141 @@
 !
       type(control_data_4_partitioner), intent(inout) :: part_ctl
 !
+      call dealloc_ctl_data_4_decomp(part_ctl)
+      call reset_ctl_data_4_part_ghost(part_ctl)
+      call dealloc_ctl_data_4_ele_ordeirng(part_ctl)
+!
+      end subroutine dealloc_ctl_data_4_part
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine read_control_data_4_part(part_ctl)
+!
+      type(control_data_4_partitioner), intent(inout) :: part_ctl
+!
+      type(buffer_for_control)  :: c_buf1
+!
+!
+      open(control_file_code, file = control_file_name)
+!
+      do
+        call load_one_line_from_control(control_file_code, c_buf1)
+        call read_part_control_data(control_file_code, hd_part_ctl,  &
+     &      part_ctl, c_buf1)
+        if(part_ctl%i_part_ctl .gt. 0) exit
+      end do
+!
+      close(control_file_code)
+!
+      end subroutine read_control_data_4_part
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+       subroutine read_part_control_data                                &
+     &         (id_control, hd_block, part_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(control_data_4_partitioner), intent(inout) :: part_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(part_ctl%i_part_ctl .gt. 0) return
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
+!
+        call read_control_platforms                                     &
+     &     (id_control, hd_platform, part_ctl%part_plt, c_buf)
+        call read_control_platforms                                     &
+     &     (id_control, hd_org_data, part_ctl%single_plt, c_buf)
+!
+        call read_FEM_mesh_control                                      &
+     &     (id_control, hd_FEM_mesh, part_ctl%part_Fmesh, c_buf)
+!
+        call read_ctl_data_4_decomp                                     &
+     &     (id_control, hd_decomp_ctl, part_ctl, c_buf)
+        call read_ctl_data_4_ele_ordeirng                               &
+     &     (id_control, hd_ele_ordering_ctl, part_ctl, c_buf)
+        call read_ctl_data_4_part_ghost                                 &
+     &     (id_control, hd_part_ghost_ctl, part_ctl, c_buf)
+      end do
+      part_ctl%i_part_ctl = 1
+!
+      end subroutine read_part_control_data
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------!
+      subroutine read_ctl_data_4_decomp                                 &
+     &         (id_control, hd_block, part_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(control_data_4_partitioner), intent(inout) :: part_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(part_ctl%i_decomp_ctl .gt. 0) return
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
+!
+        call read_control_array_c_i(id_control,                         &
+     &      hd_num_rcb, part_ctl%RCB_dir_ctl, c_buf)
+        call read_control_array_c_i(id_control,                         &
+     &      hd_num_es, part_ctl%ndomain_section_ctl, c_buf)
+        call read_control_array_c1(id_control,                          &
+     &      hd_num_r_layerd, part_ctl%ele_grp_layering_ctl, c_buf)
+!
+!
+        call read_integer_ctl_type                                      &
+     &     (c_buf, hd_sleeve_level, part_ctl%sleeve_level_old)
+!
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_part_method, part_ctl%part_method_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_ele_overlap, part_ctl%element_overlap_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_sph_sf_file, part_ctl%sphere_file_name_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_metis_in_file, part_ctl%metis_input_file_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_metis_dom_file, part_ctl%metis_domain_file_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_fine_mesh_file, part_ctl%finer_mesh_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_fine_fmt_file, part_ctl%finer_mesh_fmt_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_fine_itp_file, part_ctl%itp_tbl_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_domain_tbl_file, part_ctl%domain_group_file_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_fmt_itp_tbl, part_ctl%itp_tbl_format_ctl)
+      end do
+      part_ctl%i_decomp_ctl = 1
+!
+      end subroutine read_ctl_data_4_decomp
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_ctl_data_4_decomp(part_ctl)
+!
+      type(control_data_4_partitioner), intent(inout) :: part_ctl
+!
+!
       call dealloc_control_array_c_i(part_ctl%RCB_dir_ctl)
       call dealloc_control_array_c_i(part_ctl%ndomain_section_ctl)
-      call dealloc_control_array_chara(part_ctl%ele_grp_ordering_ctl)
       call dealloc_control_array_chara(part_ctl%ele_grp_layering_ctl)
+!
+      part_ctl%part_method_ctl%iflag = 0
+      part_ctl%element_overlap_ctl%iflag = 0
+      part_ctl%sleeve_level_old%iflag = 0
 !
       part_ctl%sphere_file_name_ctl%iflag = 0
       part_ctl%metis_input_file_ctl%iflag = 0
@@ -219,154 +350,91 @@
       part_ctl%itp_tbl_head_ctl%iflag = 0
       part_ctl%itp_tbl_format_ctl%iflag = 0
 !
-      end subroutine dealloc_ctl_data_4_part
+      part_ctl%i_decomp_ctl = 0
+!
+      end subroutine dealloc_ctl_data_4_decomp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_data_4_part(part_ctl)
+      subroutine read_ctl_data_4_part_ghost                             &
+     &         (id_control, hd_block, part_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(control_data_4_partitioner), intent(inout) :: part_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      ctl_file_code = control_file_code
-      open (ctl_file_code, file = control_file_name)
-!
-      call load_ctl_label_and_line
-      call read_part_control_data(part_ctl)
-!
-      close(ctl_file_code)
-!
-      end subroutine read_control_data_4_part
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-       subroutine read_part_control_data(part_ctl)
-!
-      type(control_data_4_partitioner), intent(inout) :: part_ctl
-!
-!
-      if(right_begin_flag(hd_part_ctl) .eq. 0) return
-      if (i_part_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(part_ctl%i_part_ghost_ctl .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_part_ctl = find_control_end_flag(hd_part_ctl)
-        if(i_part_ctl .gt. 0) exit
-!
-!
-        call read_control_platforms                                     &
-     &     (ctl_file_code, hd_platform, part_ctl%part_plt, c_buf1)
-        call read_control_platforms                                     &
-     &     (ctl_file_code, hd_org_data, part_ctl%single_plt, c_buf1)
-!
-        call read_FEM_mesh_control                                      &
-     &     (ctl_file_code, hd_FEM_mesh, part_ctl%part_Fmesh, c_buf1)
-!
-        call read_ctl_data_4_decomp(part_ctl)
-        call read_ctl_data_4_ele_ordeirng(part_ctl)
-        call read_ctl_data_4_part_ghost(part_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_new_partition, part_ctl%new_part_method_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_selective_ghost, part_ctl%selective_ghost_ctl)
       end do
-!
-      end subroutine read_part_control_data
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------!
-      subroutine read_ctl_data_4_decomp(part_ctl)
-!
-      type(control_data_4_partitioner), intent(inout) :: part_ctl
-!
-!
-      if(right_begin_flag(hd_decomp_ctl) .eq. 0) return
-      if (i_decomp_ctl .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        i_decomp_ctl = find_control_end_flag(hd_decomp_ctl)
-        if(i_decomp_ctl .gt. 0) exit
-!
-!
-        call read_control_array_c_i(ctl_file_code,                      &
-     &      hd_num_rcb, part_ctl%RCB_dir_ctl, c_buf1)
-        call read_control_array_c_i(ctl_file_code,                      &
-     &      hd_num_es, part_ctl%ndomain_section_ctl, c_buf1)
-        call read_control_array_c1(ctl_file_code,                       &
-     &      hd_num_r_layerd, part_ctl%ele_grp_layering_ctl, c_buf1)
-!
-!
-        call read_integer_ctl_type                                      &
-     &     (c_buf1, hd_sleeve_level, part_ctl%sleeve_level_old)
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_part_method, part_ctl%part_method_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_ele_overlap, part_ctl%element_overlap_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_sph_sf_file, part_ctl%sphere_file_name_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_metis_in_file, part_ctl%metis_input_file_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_metis_dom_file, part_ctl%metis_domain_file_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_fine_mesh_file, part_ctl%finer_mesh_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_fine_fmt_file, part_ctl%finer_mesh_fmt_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_fine_itp_file, part_ctl%itp_tbl_head_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_domain_tbl_file, part_ctl%domain_group_file_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_fmt_itp_tbl, part_ctl%itp_tbl_format_ctl)
-      end do
-!
-      end subroutine read_ctl_data_4_decomp
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_ctl_data_4_part_ghost(part_ctl)
-!
-      type(control_data_4_partitioner), intent(inout) :: part_ctl
-!
-!
-      if(right_begin_flag(hd_part_ghost_ctl) .eq. 0) return
-      if (i_part_ghost_ctl .gt. 0) return
-      do
-!
-        call load_ctl_label_and_line
-!
-        i_part_ghost_ctl = find_control_end_flag(hd_part_ghost_ctl)
-        if(i_part_ghost_ctl .gt. 0) exit
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_new_partition, part_ctl%new_part_method_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf1, hd_selective_ghost, part_ctl%selective_ghost_ctl)
-      end do
+      part_ctl%i_part_ghost_ctl = 1
 !
       end subroutine read_ctl_data_4_part_ghost
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_ctl_data_4_ele_ordeirng(part_ctl)
+      subroutine reset_ctl_data_4_part_ghost(part_ctl)
 !
       type(control_data_4_partitioner), intent(inout) :: part_ctl
 !
 !
-      if(right_begin_flag(hd_ele_ordering_ctl) .eq. 0) return
-      if (i_ele_ordering_ctl .gt. 0) return
+      part_ctl%new_part_method_ctl%iflag = 0
+      part_ctl%selective_ghost_ctl%iflag = 0
+!
+      part_ctl%i_part_ghost_ctl = 0
+!
+      end subroutine reset_ctl_data_4_part_ghost
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine read_ctl_data_4_ele_ordeirng                           &
+     &         (id_control, hd_block, part_ctl, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(control_data_4_partitioner), intent(inout) :: part_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(part_ctl%i_ele_ordering_ctl .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        i_ele_ordering_ctl = find_control_end_flag(hd_ele_ordering_ctl)
-        if(i_ele_ordering_ctl .gt. 0) exit
-!
-        call read_control_array_c1(ctl_file_code,                       &
-     &     hd_nele_grp_ordering, part_ctl%ele_grp_ordering_ctl, c_buf1)
+        call read_control_array_c1(id_control, hd_nele_grp_ordering,    &
+     &      part_ctl%ele_grp_ordering_ctl, c_buf)
       end do
+      part_ctl%i_ele_ordering_ctl = 1
 !
       end subroutine read_ctl_data_4_ele_ordeirng
 !
 ! -----------------------------------------------------------------------!
+      subroutine dealloc_ctl_data_4_ele_ordeirng(part_ctl)
+!
+      type(control_data_4_partitioner), intent(inout) :: part_ctl
+!
+!
+      call dealloc_control_array_chara(part_ctl%ele_grp_ordering_ctl)
+!
+      part_ctl%i_ele_ordering_ctl = 0
+!
+      end subroutine dealloc_ctl_data_4_ele_ordeirng
+!
+! -----------------------------------------------------------------------
+!
       end module t_control_data_4_part
 

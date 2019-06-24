@@ -10,7 +10,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_read_control_elements
+      use t_read_control_elements
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
       use t_ctl_data_4_fields
@@ -41,6 +41,7 @@
         type(read_character_item) :: plane_spectr_h_ene_head_ctl
 
 
+        integer (kind=kint) :: i_model = 0
         integer (kind=kint) :: i_fft_plane_ctl = 0
         integer (kind=kint) :: i_control = 0
         integer (kind=kint) :: i_spec_file = 0
@@ -52,7 +53,6 @@
 !
 !  label for entry for model section
       character(len=kchara), parameter :: hd_model =   'model'
-      integer (kind=kint) :: i_model = 0
 !
 !  label for entry for control section
 !
@@ -95,10 +95,8 @@
       private :: hd_plane_spec_ene_head, hd_plane_sp_h_ene_head
 !
       private :: hd_fft_plane_ctl
-      private :: hd_model, hd_control, i_model
-      private :: hd_new_data
-      private :: hd_phys_values
-      private :: hd_time_step, hd_plane_def
+      private :: hd_model, hd_control, hd_new_data
+      private :: hd_phys_values, hd_time_step, hd_plane_def
 !
       private :: read_fft_plane_control_data
       private :: read_merge_field_data, read_merge_step_data
@@ -114,118 +112,137 @@
 !
       type(ctl_data_plane_fft), intent(inout) :: pfft_c
 !
+      type(buffer_for_control) :: c_buf1
 !
-      ctl_file_code = control_file_code
 !
-      open (ctl_file_code, file = control_file_name)
-!
-      call load_ctl_label_and_line
-      call read_fft_plane_control_data(pfft_c)
-!
-      close(ctl_file_code)
+      open (control_file_code, file = control_file_name)
+      do
+        call load_one_line_from_control(control_file_code, c_buf1)
+        call read_fft_plane_control_data                                &
+     &     (control_file_code, hd_fft_plane_ctl, pfft_c, c_buf1)
+        if (pfft_c%i_fft_plane_ctl .gt. 0) exit
+      end do
+      close(control_file_code)
 !
       end subroutine read_control_data_fft_plane
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_fft_plane_control_data(pfft_c)
+      subroutine read_fft_plane_control_data                            &
+     &         (id_control, hd_block, pfft_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(ctl_data_plane_fft), intent(inout) :: pfft_c
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_fft_plane_ctl) .eq. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if (pfft_c%i_fft_plane_ctl .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        pfft_c%i_fft_plane_ctl                                          &
-     &        = find_control_end_flag(hd_fft_plane_ctl)
-        if(pfft_c%i_fft_plane_ctl .gt. 0) exit
-!
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
-     &     (ctl_file_code, hd_new_data, pfft_c%new_p_plt, c_buf1)
+     &     (id_control, hd_new_data, pfft_c%new_p_plt, c_buf)
 !
-        call read_ctl_data_plane_spec_file(pfft_c)
-        call read_merge_field_data(pfft_c)
-        call read_merge_step_data(pfft_c)
+        call read_ctl_data_plane_spec_file                              &
+     &     (id_control, hd_spec_file, pfft_c, c_buf)
+        call read_merge_field_data                                      &
+     &     (id_control, hd_model, pfft_c, c_buf)
+        call read_merge_step_data                                       &
+     &     (id_control, hd_control, pfft_c, c_buf)
 !
         call read_plane_model_param_ctl                                 &
-     &     (ctl_file_code, hd_plane_def, pfft_c%cube_c_fft, c_buf1)
+     &     (id_control, hd_plane_def, pfft_c%cube_c_fft, c_buf)
         call read_plane_model_param_ctl                                 &
-     &     (ctl_file_code, hd_2nd_plane_def, pfft_c%cube2nd_cf, c_buf1)
+     &     (id_control, hd_2nd_plane_def, pfft_c%cube2nd_cf, c_buf)
       end do
+      pfft_c%i_fft_plane_ctl = 1
 !
       end subroutine read_fft_plane_control_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-       subroutine read_merge_field_data(pfft_c)
+       subroutine read_merge_field_data                                 &
+     &         (id_control, hd_block, pfft_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(ctl_data_plane_fft), intent(inout) :: pfft_c
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_model) .eq. 0) return
-      if (i_model .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(pfft_c%i_model .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        i_model = find_control_end_flag(hd_model)
-        if(i_model .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_phys_data_control                                     &
-     &     (ctl_file_code, hd_phys_values, pfft_c%fld_zfft_ctl, c_buf1)
+     &     (id_control, hd_phys_values, pfft_c%fld_zfft_ctl, c_buf)
       end do
+      pfft_c%i_model = 1
 !
       end subroutine read_merge_field_data
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine read_merge_step_data(pfft_c)
+       subroutine read_merge_step_data                                  &
+     &         (id_control, hd_block, pfft_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(ctl_data_plane_fft), intent(inout) :: pfft_c
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_control) .eq. 0) return
-      if (pfft_c%i_control .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(pfft_c%i_control .gt. 0) return
       do
-        call load_ctl_label_and_line
-!
-        pfft_c%i_control = find_control_end_flag(hd_control)
-        if(pfft_c%i_control .gt. 0) exit
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_time_step_data                                &
-     &     (ctl_file_code, hd_time_step, pfft_c%t_zfft_ctl, c_buf1)
+     &     (id_control, hd_time_step, pfft_c%t_zfft_ctl, c_buf)
       end do
+      pfft_c%i_control = 1
 !
       end subroutine read_merge_step_data
 !
 ! -----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_ctl_data_plane_spec_file(pfft_c)
+      subroutine read_ctl_data_plane_spec_file                          &
+     &         (id_control, hd_block, pfft_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
       type(ctl_data_plane_fft), intent(inout) :: pfft_c
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(right_begin_flag(hd_spec_file) .eq. 0) return
-      if (pfft_c%i_spec_file .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(pfft_c%i_spec_file .gt. 0) return
       do
-        call load_ctl_label_and_line
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
 !
-        pfft_c%i_spec_file = find_control_end_flag(hd_spec_file)
-        if(pfft_c%i_spec_file .gt. 0) exit
-!
-        call read_chara_ctl_type(c_buf1, hd_plane_spec_mode_head,       &
+        call read_chara_ctl_type(c_buf, hd_plane_spec_mode_head,        &
      &      pfft_c%plane_spectr_mode_head_ctl)
-        call read_chara_ctl_type(c_buf1, hd_plane_spec_data_head,       &
+        call read_chara_ctl_type(c_buf, hd_plane_spec_data_head,        &
      &      pfft_c%plane_spectr_data_head_ctl)
-        call read_chara_ctl_type(c_buf1, hd_plane_spec_ene_head,        &
+        call read_chara_ctl_type(c_buf, hd_plane_spec_ene_head,         &
      &      pfft_c%plane_spectr_ene_head_ctl)
-        call read_chara_ctl_type(c_buf1, hd_plane_sp_h_ene_head,        &
+        call read_chara_ctl_type(c_buf, hd_plane_sp_h_ene_head,         &
      &      pfft_c%plane_spectr_h_ene_head_ctl)
       end do
+      pfft_c%i_spec_file = 1
 !
       end subroutine read_ctl_data_plane_spec_file
 !

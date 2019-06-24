@@ -40,9 +40,9 @@
      &               :: fname_test_mesh_ctl = "ctl_filter_comm_test"
 !
       type ctl_data_filter_comm_test
-        type(platform_data_control), save :: f_comm_plt
+        type(platform_data_control) :: f_comm_plt
 !>        Structure for filtering files
-        type(filter_file_control), save :: ffile_ctest_ctl
+        type(filter_file_control) :: ffile_ctest_ctl
 !
         integer (kind=kint) :: i_filter_test_ctl = 0
       end type ctl_data_filter_comm_test
@@ -81,15 +81,16 @@
      &      status='old')
 !
        do
-          call load_ctl_label_and_line
+          call load_one_line_from_control                               &
+     &       (test_mest_ctl_file_code, c_buf1)
           call read_filter_comm_test_data(test_mest_ctl_file_code,      &
      &        hd_filter_test_ctl, fc_test_ctl, c_buf1)
-          if(i_filter_test_ctl.gt.0) exit
+          if(fc_test_ctl%i_filter_test_ctl.gt.0) exit
         end do
         close(test_mest_ctl_file_code)
       end if
 !
-      call bcast_plane_mesh_ctl_data
+      call bcast_filter_comm_test_data(fc_test_ctl)
 !
       end subroutine read_control_filter_comm_test
 !
@@ -123,11 +124,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_plane_mesh_ctl_data(fc_test_ctl)
-!
-      type(ctl_data_filter_comm_test), intent(inout) :: fc_test_ctl
+      subroutine bcast_filter_comm_test_data(fc_test_ctl)
 !
       use bcast_4_platform_ctl
+      use bcast_4_filter_files_ctl
+!
+      type(ctl_data_filter_comm_test), intent(inout) :: fc_test_ctl
 !
 !
       call bcast_ctl_data_4_platform(fc_test_ctl%f_comm_plt)
@@ -136,11 +138,11 @@
       call MPI_BCAST(fc_test_ctl%i_filter_test_ctl, 1,                  &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
-      end subroutine bcast_plane_mesh_ctl_data
+      end subroutine bcast_filter_comm_test_data
 !
 !   --------------------------------------------------------------------
 !
-      subroutine reset_plane_mesh_ctl_data(fc_test_ctl)
+      subroutine reset_filter_comm_test_data(fc_test_ctl)
 !
       type(ctl_data_filter_comm_test), intent(inout) :: fc_test_ctl
 !
@@ -148,7 +150,9 @@
       call reset_control_platforms(fc_test_ctl%f_comm_plt)
       call reset_filter_fnames_control(fc_test_ctl%ffile_ctest_ctl)
 !
-      end subroutine reset_plane_mesh_ctl_data
+      fc_test_ctl%i_filter_test_ctl = 0
+!
+      end subroutine reset_filter_comm_test_data
 !
 !   --------------------------------------------------------------------
 !

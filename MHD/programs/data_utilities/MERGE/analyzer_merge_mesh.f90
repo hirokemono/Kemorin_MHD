@@ -51,6 +51,7 @@
       use const_element_comm_tables
       use const_mesh_information
       use set_control_platform_data
+      use bcast_4_assemble_sph_ctl
 !
       write(*,*) 'Simulation start: PE. ', my_rank
       if(my_rank .eq. 0) then
@@ -61,7 +62,9 @@
 !
 !   read control data
 !
-      call read_control_4_merge(mgd_ctl_m)
+      if(my_rank .eq. 0) call read_control_4_merge(mgd_ctl_m)
+      call bcast_merge_control_data(mgd_ctl_m)
+!
       call set_control_4_merge(mgd_ctl_m, asbl_param_m, ndomain_org)
       call set_control_mesh_file_def(def_new_mesh_head,                 &
      &    mgd_ctl_m%assemble_plt, asbl_param_m%new_mesh_file)

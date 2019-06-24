@@ -59,6 +59,7 @@
       use nod_phys_send_recv
       use const_element_comm_tables
       use const_mesh_information
+      use bcast_4_assemble_sph_ctl
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -71,7 +72,9 @@
 !
 !   read control data
 !
-      call read_control_4_merge(mgd_ctl_u)
+      if(my_rank .eq. 0) call read_control_4_merge(mgd_ctl_u)
+      call bcast_merge_control_data(mgd_ctl_u)
+!
       call set_control_4_merge(mgd_ctl_u, asbl_param_u, ndomain_org)
       call set_assemble_ucd_file_param                                  &
      &   (mgd_ctl_u%source_plt, mgd_ctl_u%assemble_plt, asbl_param_u)
