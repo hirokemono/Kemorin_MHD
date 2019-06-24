@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/CORE_src/IO/write_control_arrays.f90
