@@ -121,10 +121,6 @@
 !
       call bcast_sph_mhd_control_data(MHD_ctl)
 !
-      if(MHD_ctl%psph_ctl%ifile_sph_shell .gt. 0) then
-        call bcast_parallel_shell_ctl(MHD_ctl%psph_ctl)
-      end if
-!
       end subroutine read_control_4_sph_SGS_MHD
 !
 ! ----------------------------------------------------------------------

@@ -114,6 +114,8 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      write(*,*) 'Spherical shell resolution file: ',                   &
+     &          trim(psph_ctl%control_sph_file)
       open(id_control, file = psph_ctl%control_sph_file)
 !
       do
@@ -126,6 +128,7 @@
       end do
 !
       close(id_control)
+      write(*,*) 'Spherical shell resolution file end'
 !
       end subroutine read_ctl_file_gen_shell_grids
 !
@@ -152,6 +155,7 @@
       end if
 !
       if(check_begin_flag(c_buf, hd_block)) then
+        write(*,*) 'resolution data is included'
         call read_parallel_shell_ctl                                    &
      &     (id_control, hd_block, psph_ctl, c_buf)
       end if

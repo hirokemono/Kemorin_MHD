@@ -85,10 +85,6 @@
 !
       call bcast_sph_shell_define_ctl(gen_SPH_ctl)
 !
-      if(gen_SPH_ctl%psph_ctl%ifile_sph_shell .gt. 0) then
-        call bcast_parallel_shell_ctl(gen_SPH_ctl%psph_ctl)
-      end if
-!
       end subroutine read_control_4_const_shell
 !
 ! ----------------------------------------------------------------------
