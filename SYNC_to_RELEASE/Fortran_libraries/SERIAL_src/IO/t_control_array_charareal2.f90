@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/CORE_src/CONTROLS/t_control_array_charareal2.f90

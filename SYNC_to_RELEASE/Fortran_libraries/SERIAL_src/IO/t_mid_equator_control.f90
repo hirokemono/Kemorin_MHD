@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/CORE_src/CONTROLS/t_mid_equator_control.f90
