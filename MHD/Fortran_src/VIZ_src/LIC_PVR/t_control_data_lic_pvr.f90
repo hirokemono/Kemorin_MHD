@@ -195,7 +195,6 @@
         end if
 !
         if(pvr%cmap_cbar_c%i_cmap_cbar .eq. 0) then
-          write(*,*) 'Colormap control is included'
           call read_pvr_colordef_ctl(id_control, hd_colormap,           &
      &        pvr%cmap_cbar_c%color, c_buf)
           call read_pvr_colordef_ctl(id_control, hd_lic_colordef,       &
