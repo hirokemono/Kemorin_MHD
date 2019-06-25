@@ -125,6 +125,9 @@
         call alloc_psf_ctl_stract(psf_ctls)
         psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl)                    &
      &                                  = third_word(c_buf)
+!
+        write(*,'(3a)', ADVANCE='NO') 'Read file for',                  &
+     &                               trim(hd_section), '... '
         call read_control_4_psf_file(id_control+2,                      &
      &      psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl),               &
      &      psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl))
@@ -132,6 +135,8 @@
         psf_ctls%num_psf_ctl = 1
         call alloc_psf_ctl_stract(psf_ctls)
         psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl) = 'NO_FILE'
+!
+        write(*,*) 'Control for', trim(hd_section), ' is included'
         call read_psf_control_data(id_control, hd_section,              &
      &      psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl), c_buf)
       end if

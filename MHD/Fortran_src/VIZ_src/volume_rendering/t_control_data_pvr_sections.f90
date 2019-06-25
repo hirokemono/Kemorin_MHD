@@ -82,6 +82,7 @@
       private :: hd_pvr_opacity
 !
       private :: read_control_pvr_section_def
+      private :: read_pvr_section_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -137,6 +138,9 @@
 !
         if(check_begin_flag(c_buf, hd_block)) then
           call append_new_pvr_section_ctl(pvr_scts_c)
+!
+          write(*,'(2a,i4)', ADVANCE='NO') trim(hd_block),              &
+     &                           ' No. ', pvr_scts_c%num_pvr_sect_ctl
           call read_pvr_section_ctl(id_control, hd_block,               &
      &        pvr_scts_c%pvr_sect_ctl(pvr_scts_c%num_pvr_sect_ctl),     &
      &        c_buf)
@@ -158,8 +162,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      write(*,*) 'Read ', trim(fname_sect_ctl),                         &
-     &        ' for surface definition'
+      write(*,*) trim(fname_sect_ctl), ' for surface definition'
       open(id_control, file = fname_sect_ctl, status='old')
 !
       do
@@ -192,11 +195,13 @@
 !
 !
         if(check_file_flag(c_buf, hd_surface_define)) then
+          write(*,'(a)', ADVANCE='NO') ' is read from file... '
           pvr_sect_ctl%fname_sect_ctl = third_word(c_buf)
           call read_control_pvr_section_def(id_control+2,               &
      &        pvr_sect_ctl%fname_sect_ctl, pvr_sect_ctl%psf_c)
         end if
         if(check_begin_flag(c_buf, hd_surface_define)) then
+          write(*,*) ' is included'
           pvr_sect_ctl%fname_sect_ctl = 'NO_FILE'
           call read_section_def_control                                 &
      &       (id_control, pvr_sect_ctl%psf_c, c_buf)

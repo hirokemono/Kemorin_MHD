@@ -101,6 +101,9 @@
           call append_new_fline_control(fline_ctls)
           fline_ctls%fname_fline_ctl(fline_ctls%num_fline_ctl)          &
      &        = third_word(c_buf)
+!
+          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for',           &
+     &        trim(hd_block), ' No. ', fline_ctls%num_fline_ctl, '... '
           call read_fline_control_file(id_control+2,                    &
      &        fline_ctls%fname_fline_ctl(fline_ctls%num_fline_ctl),     &
      &        hd_block,                                                 &
@@ -111,6 +114,9 @@
           call append_new_fline_control(fline_ctls)
           fline_ctls%fname_fline_ctl(fline_ctls%num_fline_ctl)          &
      &                                                = 'NO_FILE'
+!
+          write(*,*) 'Control for', trim(hd_block), ' No. ',            &
+     &              fline_ctls%num_fline_ctl, ' is included'
           call read_field_line_ctl(id_control, hd_block,                &
      &        fline_ctls%fline_ctl_struct(fline_ctls%num_fline_ctl),    &
      &        c_buf)

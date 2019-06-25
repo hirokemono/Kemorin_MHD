@@ -110,6 +110,9 @@
           call append_new_lic_ctl_struct(lic_ctls)
           lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl)                  &
      &        = third_word(c_buf)
+!
+          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for',           &
+     &        trim(hd_lic_ctl),  ' No. ', lic_ctls%num_lic_ctl, '... '
           call read_control_lic_pvr_file(id_control+2,                  &
      &        lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl),             &
      &        hd_lic_ctl, hd_lic_colordef,                              &
@@ -120,6 +123,9 @@
         if(check_begin_flag(c_buf, hd_lic_ctl)) then
           call append_new_lic_ctl_struct(lic_ctls)
           lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl) = 'NO_FILE'
+!
+          write(*,*) 'Control for', trim(hd_lic_ctl), ' No. ',          &
+     &              lic_ctls%num_lic_ctl, ' is included'
           call read_lic_pvr_ctl                                         &
      &       (id_control, hd_lic_ctl, hd_lic_colordef,                  &
      &        lic_ctls%pvr_ctl_type(lic_ctls%num_lic_ctl),              &

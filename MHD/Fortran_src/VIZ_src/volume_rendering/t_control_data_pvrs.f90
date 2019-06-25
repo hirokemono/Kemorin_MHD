@@ -105,6 +105,9 @@
           call append_new_pvr_ctl_struct(pvr_ctls)
           pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl)                  &
      &        = third_word(c_buf)
+!
+          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for',           &
+     &        trim(hd_pvr_ctl), ' No. ', pvr_ctls%num_pvr_ctl, '... '
           call read_control_pvr_file(id_control+2,                      &
      &        pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl),             &
      &        hd_pvr_ctl, hd_pvr_colordef,                              &
@@ -114,6 +117,9 @@
         if(check_begin_flag(c_buf, hd_pvr_ctl)) then
           call append_new_pvr_ctl_struct(pvr_ctls)
           pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl) = 'NO_FILE'
+!
+          write(*,*) 'Control for', trim(hd_pvr_ctl), ' No. ',          &
+     &              pvr_ctls%num_pvr_ctl, ' is included'
           call read_pvr_ctl(id_control, hd_pvr_ctl, hd_pvr_colordef,    &
      &        pvr_ctls%pvr_ctl_type(pvr_ctls%num_pvr_ctl), c_buf)
         end if

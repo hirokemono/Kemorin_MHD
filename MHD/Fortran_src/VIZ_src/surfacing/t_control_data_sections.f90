@@ -113,12 +113,18 @@
           call append_new_section_control(psf_ctls)
           psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl)                  &
      &        = third_word(c_buf)
+!
+          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for',           &
+     &        trim(hd_block), ' No. ', psf_ctls%num_psf_ctl, '... '
           call read_control_4_psf_file(id_control+2,                    &
      &        psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl),             &
      &        psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl))
         else if(check_begin_flag(c_buf, hd_block)) then
           call append_new_section_control(psf_ctls)
           psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl) = 'NO_FILE'
+!
+          write(*,*) 'Control for', trim(hd_block), ' No. ',            &
+     &              psf_ctls%num_psf_ctl, ' is included'
           call read_psf_control_data(id_control, hd_block,              &
      &        psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl), c_buf)
         end if
@@ -234,7 +240,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      write(*,*) 'read section control file: ', trim(fname_psf_ctl)
+      write(*,*) 'Section control file: ', trim(fname_psf_ctl)
       open(id_control, file=fname_psf_ctl, status='old')
 !
       do

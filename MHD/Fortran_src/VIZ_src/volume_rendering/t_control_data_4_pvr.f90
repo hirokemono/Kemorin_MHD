@@ -254,16 +254,20 @@
 !
 !
         if(check_file_flag(c_buf, hd_view_transform)) then
+          write(*,'(3a)', ADVANCE='NO')                                 &
+     &                 'Read file for', trim(hd_view_transform), '... '
           pvr_ctl%view_file_ctl = third_word(c_buf)
           call read_control_modelview_file                              &
-      &      (id_control+2, pvr_ctl%view_file_ctl, pvr_ctl%mat)
+     &       (id_control+2, pvr_ctl%view_file_ctl, pvr_ctl%mat)
         else if(check_begin_flag(c_buf, hd_view_transform)) then
           write(*,*)  'Modelview control is included'
           call read_view_transfer_ctl(id_control, hd_view_transform,    &
-      &       pvr_ctl%mat, c_buf)
+     &        pvr_ctl%mat, c_buf)
         end if
 !
         if(check_file_flag(c_buf, hd_pvr_colordef)) then
+          write(*,'(3a)', ADVANCE='NO')                                 &
+     &                 'Read file for', trim(hd_pvr_colordef), '... '
           pvr_ctl%color_file_ctl = third_word(c_buf)
           call read_control_pvr_colormap_file                           &
      &       (id_control+2, pvr_ctl%color_file_ctl, hd_pvr_colordef,    &
@@ -271,6 +275,7 @@
         end if
 !
         if(pvr_ctl%cmap_cbar_c%i_cmap_cbar .eq. 0) then
+          write(*,*)  'Colormap control is included'
           call read_pvr_colordef_ctl(id_control, hd_pvr_colordef,       &
      &        pvr_ctl%cmap_cbar_c%color, c_buf)
           call read_pvr_colordef_ctl(id_control, hd_colormap,           &
