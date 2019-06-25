@@ -102,7 +102,7 @@
           fline_ctls%fname_fline_ctl(fline_ctls%num_fline_ctl)          &
      &        = third_word(c_buf)
 !
-          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for',           &
+          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for ',          &
      &        trim(hd_block), ' No. ', fline_ctls%num_fline_ctl, '... '
           call read_fline_control_file(id_control+2,                    &
      &        fline_ctls%fname_fline_ctl(fline_ctls%num_fline_ctl),     &

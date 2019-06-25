@@ -255,7 +255,7 @@
 !
         if(check_file_flag(c_buf, hd_view_transform)) then
           write(*,'(3a)', ADVANCE='NO')                                 &
-     &                 'Read file for', trim(hd_view_transform), '... '
+     &            'Read file for ', trim(hd_view_transform), '... '
           pvr_ctl%view_file_ctl = third_word(c_buf)
           call read_control_modelview_file                              &
      &       (id_control+2, pvr_ctl%view_file_ctl, pvr_ctl%mat)
@@ -267,7 +267,7 @@
 !
         if(check_file_flag(c_buf, hd_pvr_colordef)) then
           write(*,'(3a)', ADVANCE='NO')                                 &
-     &                 'Read file for', trim(hd_pvr_colordef), '... '
+     &              'Read file for ', trim(hd_pvr_colordef), '... '
           pvr_ctl%color_file_ctl = third_word(c_buf)
           call read_control_pvr_colormap_file                           &
      &       (id_control+2, pvr_ctl%color_file_ctl, hd_pvr_colordef,    &

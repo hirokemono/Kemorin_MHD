@@ -111,7 +111,7 @@
           lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl)                  &
      &        = third_word(c_buf)
 !
-          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for',           &
+          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for ',          &
      &        trim(hd_lic_ctl),  ' No. ', lic_ctls%num_lic_ctl, '... '
           call read_control_lic_pvr_file(id_control+2,                  &
      &        lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl),             &

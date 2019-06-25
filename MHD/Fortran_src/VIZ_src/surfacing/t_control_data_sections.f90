@@ -114,7 +114,7 @@
           psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl)                  &
      &        = third_word(c_buf)
 !
-          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for',           &
+          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for ',          &
      &        trim(hd_block), ' No. ', psf_ctls%num_psf_ctl, '... '
           call read_control_4_psf_file(id_control+2,                    &
      &        psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl),             &

@@ -106,7 +106,7 @@
           pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl)                  &
      &        = third_word(c_buf)
 !
-          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for',           &
+          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for ',          &
      &        trim(hd_pvr_ctl), ' No. ', pvr_ctls%num_pvr_ctl, '... '
           call read_control_pvr_file(id_control+2,                      &
      &        pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl),             &

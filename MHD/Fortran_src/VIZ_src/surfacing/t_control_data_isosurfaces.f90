@@ -82,7 +82,7 @@
           call append_new_isosurface_control(iso_ctls)
           iso_ctls%fname_iso_ctl(iso_ctls%num_iso_ctl)                  &
      &        = third_word(c_buf)
-          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for',           &
+          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for ',          &
      &        trim(hd_block), ' No. ', iso_ctls%num_iso_ctl, '... '
           call read_control_4_iso_file(id_control+2,                    &
 &             iso_ctls%fname_iso_ctl(iso_ctls%num_iso_ctl),             &
