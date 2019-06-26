@@ -77,11 +77,11 @@
 
 !
       if (iflag_debug.gt.0) write(*,*) 'init_filter_4_SPH_MHD'
-      call calypso_mpi_barrier
-      call calypso_mpi_abort(10, 'aho')
 
       call init_filter_4_SPH_MHD(sph, sph_grps, trans_p%leg,            &
      &    dynamic_SPH%num_sph_filteres, dynamic_SPH%sph_filters)
+      call calypso_mpi_barrier
+      call calypso_mpi_abort(11, 'Tako')
 !
       if (iflag_debug.gt.0) write(*,*) 'init_work_4_SGS_sph_mhd'
       call init_work_4_SGS_sph_mhd(SGS_par, dynamic_SPH%sph_d_grp,      &
