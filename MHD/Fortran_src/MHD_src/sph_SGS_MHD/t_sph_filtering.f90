@@ -128,7 +128,8 @@
       character(len=kchara) :: fname_tmp, file_name
 !
 !
-      do i = 1, num_sph_filteres
+      do i = 1, 0
+!      do i = 1, num_sph_filteres
         i1 = sph_filters(i)%id_1st_ref_filter
         i2 = sph_filters(i)%id_2nd_ref_filter
         if(sph_filters(i)%itype_radial_filter                           &
@@ -156,7 +157,6 @@
      &      sph_filters(i1)%sph_filter, sph_filters(i2)%sph_filter,    &
      &      sph_filters(i)%sph_moments, sph_filters(i)%sph_filter)
 !
-        cycle
         if(iflag_debug.gt.0) write(*,*)'init_sph_2nd_order_moments_rtp'
         call init_sph_2nd_order_moments_rtp                             &
      &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
