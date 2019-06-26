@@ -95,7 +95,7 @@
         write(*,*) my_rank, 'radial_filter_type_ctl', i,   &
      &     sgs_ctl%sph_filter_ctl(i)%radial_filter_type_ctl%charavalue
         write(*,*) my_rank, 'maximum_moments_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%maximum_moments_ctl%realvalue
+     &     sgs_ctl%sph_filter_ctl(i)%maximum_moments_ctl%intvalue
         write(*,*) my_rank, 'sphere_filter_width_ctl', i,   &
      &     sgs_ctl%sph_filter_ctl(i)%sphere_filter_width_ctl%realvalue
         write(*,*) my_rank, 'radial_filter_width_ctl', i,   &
