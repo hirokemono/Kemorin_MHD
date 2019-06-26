@@ -143,8 +143,8 @@
         end if
       end do
 !
-     call calypso_mpi_barrier
-     call calypso_mpi_abort(101, 'TakoTako')
+!     call calypso_mpi_barrier
+!     call calypso_mpi_abort(101, 'TakoTako')
 !
       do i = 1, num_sph_filteres
         if(iflag_debug.gt.0) write(*,*)' const_filter_on_sphere'
@@ -157,7 +157,12 @@
         if(iflag_debug.gt.0) write(*,*)' const_filter_on_sphere'
         call init_sph_2nd_order_moments_rtp                             &
      &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
+      end do
 !
+      call calypso_mpi_barrier
+      call calypso_mpi_abort(199, 'AhoAho')
+!
+      do i = 1, num_sph_filteres
         if(iflag_debug .gt. 0) then
           fname_tmp = add_int_suffix(i, filter_head)
           file_name = add_dat_extension(fname_tmp)
