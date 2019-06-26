@@ -147,7 +147,8 @@
       end do
 !
       call calypso_mpi_barrier
-      call calypso_mpi_abort(101, 'TakoTako')
+!      call calypso_mpi_abort(101, 'TakoTako')
+      go to 10
 !
       do i = 1, num_sph_filteres
         i1 = sph_filters(i)%id_1st_ref_filter
@@ -164,28 +165,32 @@
      &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
       end do
 !
-      call calypso_mpi_barrier
-      call calypso_mpi_abort(199, 'AhoAho')
+  10  continue
+!      call calypso_mpi_barrier
+!      call calypso_mpi_abort(199, 'AhoAho')
 !
       do i = 1, num_sph_filteres
-        if(iflag_debug .gt. 0) then
+!        if(iflag_debug .gt. 0) then
           fname_tmp = add_int_suffix(i, filter_head)
           file_name = add_dat_extension(fname_tmp)
           call check_radial_filter                                      &
      &       (file_name, sph%sph_rj, sph_filters(i)%r_filter)
 !
-          id_file = 50+my_rank
-          write(id_file,*) 'check_horiz_filter_weight for no. ', i
-          call check_horiz_filter_weight                                &
-     &       (id_file, sph_filters(i)%sph_filter)
-        end if
-        if(i_debug .gt. 0) then
-          write(id_file,*) 'check_sph_2nd_moments for no. ',            &
-     &         i, my_rank
-          call check_sph_2nd_moments                                    &
-     &       (id_file, sph%sph_rtp, leg, sph_filters(i))
-        end if
+!          id_file = 50+my_rank
+!          write(id_file,*) 'check_horiz_filter_weight for no. ', i
+!          call check_horiz_filter_weight                                &
+!     &       (id_file, sph_filters(i)%sph_filter)
+!        end if
+!        if(i_debug .gt. 0) then
+!          write(id_file,*) 'check_sph_2nd_moments for no. ',            &
+!     &         i, my_rank
+!          call check_sph_2nd_moments                                    &
+!     &       (id_file, sph%sph_rtp, leg, sph_filters(i))
+!        end if
       end do
+!
+      call calypso_mpi_barrier
+      call calypso_mpi_abort(199, 'AhoAho')
 !
       end subroutine init_filter_4_SPH_MHD
 !
