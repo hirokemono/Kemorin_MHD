@@ -147,16 +147,19 @@
 !     call calypso_mpi_abort(101, 'TakoTako')
 !
       do i = 1, num_sph_filteres
+        i1 = sph_filters(i)%id_1st_ref_filter
+        i2 = sph_filters(i)%id_2nd_ref_filter
         if(iflag_debug.gt.0) write(*,*)' const_filter_on_sphere'
-        call const_filter_on_sphere(sph_filters(i)%itype_sph_filter,    &
-     &      sph%sph_params%l_truncation,                                &
-     &      sph_filters(i1)%sph_moments, sph_filters(i2)%sph_moments,   &
-     &      sph_filters(i1)%sph_filter, sph_filters(i2)%sph_filter,     &
+        call const_filter_on_sphere(sph_filters(i)%itype_sph_filter,   &
+     &      sph%sph_params%l_truncation,                               &
+     &      sph_filters(i1)%sph_moments, sph_filters(i2)%sph_moments,  &
+     &      sph_filters(i1)%sph_filter, sph_filters(i2)%sph_filter,    &
      &      sph_filters(i)%sph_moments, sph_filters(i)%sph_filter)
 !
-        if(iflag_debug.gt.0) write(*,*)' const_filter_on_sphere'
-!        call init_sph_2nd_order_moments_rtp                             &
-!     &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
+        cycle
+        if(iflag_debug.gt.0) write(*,*)'init_sph_2nd_order_moments_rtp'
+        call init_sph_2nd_order_moments_rtp                             &
+     &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
       end do
 !
       call calypso_mpi_barrier
