@@ -233,6 +233,7 @@
 !
 !
       call alloc_sph_filter_moms(sph_filters%r_moments)
+      return
       call cal_r_gaussian_moments(sph_filters%width,                    &
      &    sph_filters%r_moments)
 !
