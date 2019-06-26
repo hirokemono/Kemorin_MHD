@@ -125,10 +125,9 @@
 !
       integer(kind = kint)  :: i, i1, i2
       integer(kind = kint)  :: id_file
-      character(len=kchara) :: fname_tmp, fname_tmp2, file_name
+      character(len=kchara) :: fname_tmp, file_name
 !
 !
-      call calypso_mpi_barrier
       do i = 1, num_sph_filteres
         i1 = sph_filters(i)%id_1st_ref_filter
         i2 = sph_filters(i)%id_2nd_ref_filter
@@ -138,60 +137,40 @@
      &       (sph%sph_rj, sph_filters(i1)%r_filter,                     &
      &        sph_filters(i2)%r_filter, sph_filters(i)%r_filter)
         else
-          call calypso_mpi_barrier
-           write(*,*)' const_sph_radial_filter', i, i1, i2
-!          if(iflag_debug.gt.0) write(*,*)' const_sph_radial_filter'
+          if(iflag_debug.gt.0) write(*,*)' const_sph_radial_filter'
           call const_sph_radial_filter                                  &
      &       (sph%sph_rj, sph_grps, sph_filters(i))
         end if
-      end do
 !
-      call calypso_mpi_barrier
-!      call calypso_mpi_abort(101, 'TakoTako')
-      go to 10
-!
-      do i = 1, num_sph_filteres
-        i1 = sph_filters(i)%id_1st_ref_filter
-        i2 = sph_filters(i)%id_2nd_ref_filter
         if(iflag_debug.gt.0) write(*,*)' const_filter_on_sphere'
-        call const_filter_on_sphere(sph_filters(i)%itype_sph_filter,   &
-     &      sph%sph_params%l_truncation,                               &
-     &      sph_filters(i1)%sph_moments, sph_filters(i2)%sph_moments,  &
-     &      sph_filters(i1)%sph_filter, sph_filters(i2)%sph_filter,    &
+        call const_filter_on_sphere(sph_filters(i)%itype_sph_filter,    &
+     &      sph%sph_params%l_truncation,                                &
+     &      sph_filters(i1)%sph_moments, sph_filters(i2)%sph_moments,   &
+     &      sph_filters(i1)%sph_filter, sph_filters(i2)%sph_filter,     &
      &      sph_filters(i)%sph_moments, sph_filters(i)%sph_filter)
 !
-        if(iflag_debug.gt.0) write(*,*)'init_sph_2nd_order_moments_rtp'
+        if(iflag_debug.gt.0) write(*,*)' const_filter_on_sphere'
         call init_sph_2nd_order_moments_rtp                             &
      &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
-      end do
 !
-  10  continue
-!      call calypso_mpi_barrier
-!      call calypso_mpi_abort(199, 'AhoAho')
-!
-      do i = 1, num_sph_filteres
-!        if(iflag_debug .gt. 0) then
+        if(iflag_debug .gt. 0) then
           fname_tmp = add_int_suffix(i, filter_head)
-          fname_tmp2 = add_int_suffix(my_rank, fname_tmp)
-          file_name = add_dat_extension(fname_tmp2)
+          file_name = add_dat_extension(fname_tmp)
           call check_radial_filter                                      &
      &       (file_name, sph%sph_rj, sph_filters(i)%r_filter)
 !
-!          id_file = 50+my_rank
-!          write(id_file,*) 'check_horiz_filter_weight for no. ', i
-!          call check_horiz_filter_weight                                &
-!     &       (id_file, sph_filters(i)%sph_filter)
-!        end if
-!        if(i_debug .gt. 0) then
-!          write(id_file,*) 'check_sph_2nd_moments for no. ',            &
-!     &         i, my_rank
-!          call check_sph_2nd_moments                                    &
-!     &       (id_file, sph%sph_rtp, leg, sph_filters(i))
-!        end if
+          id_file = 50+my_rank
+          write(id_file,*) 'check_horiz_filter_weight for no. ', i
+          call check_horiz_filter_weight                                &
+     &       (id_file, sph_filters(i)%sph_filter)
+        end if
+        if(i_debug .gt. 0) then
+          write(id_file,*) 'check_sph_2nd_moments for no. ',            &
+     &         i, my_rank
+          call check_sph_2nd_moments                                    &
+     &       (id_file, sph%sph_rtp, leg, sph_filters(i))
+        end if
       end do
-!
-      call calypso_mpi_barrier
-      call calypso_mpi_abort(199, 'AhoAho')
 !
       end subroutine init_filter_4_SPH_MHD
 !

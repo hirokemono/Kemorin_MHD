@@ -75,24 +75,6 @@
      &     (sgs_ctl%sph_filter_ctl(i)%second_reference_ctl)
       end do
 !
-      write(*,*) my_rank, 'num_sph_filter_ctl', sgs_ctl%num_sph_filter_ctl
-      do i = 1, sgs_ctl%num_sph_filter_ctl
-        write(*,*) my_rank, 'sph_filter_type_ctl',  i, &
-     &     sgs_ctl%sph_filter_ctl(i)%sph_filter_type_ctl%charavalue
-        write(*,*) my_rank, 'radial_filter_type_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%radial_filter_type_ctl%charavalue
-        write(*,*) my_rank, 'maximum_moments_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%maximum_moments_ctl%intvalue
-        write(*,*) my_rank, 'sphere_filter_width_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%sphere_filter_width_ctl%realvalue
-        write(*,*) my_rank, 'radial_filter_width_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%radial_filter_width_ctl%realvalue
-        write(*,*) my_rank, 'first_reference_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%first_reference_ctl%intvalue
-        write(*,*) my_rank, 'second_reference_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%second_reference_ctl%intvalue
-      end do
-
       call bcast_ctl_array_c1(sgs_ctl%SGS_terms_ctl)
       call bcast_ctl_array_c1(sgs_ctl%commutate_fld_ctl)
 !
@@ -135,6 +117,25 @@
 !
       call MPI_BCAST(sgs_ctl%i_sgs_ctl, 1,                              &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
+!      write(*,*) my_rank, 'num_sph_filter_ctl',                        &
+!     &     sgs_ctl%num_sph_filter_ctl
+!      do i = 1, sgs_ctl%num_sph_filter_ctl
+!        write(*,*) my_rank, 'sph_filter_type_ctl',  i,                 &
+!     &     sgs_ctl%sph_filter_ctl(i)%sph_filter_type_ctl%charavalue
+!        write(*,*) my_rank, 'radial_filter_type_ctl', i,               &
+!     &     sgs_ctl%sph_filter_ctl(i)%radial_filter_type_ctl%charavalue
+!        write(*,*) my_rank, 'maximum_moments_ctl', i,                  &
+!     &     sgs_ctl%sph_filter_ctl(i)%maximum_moments_ctl%intvalue
+!        write(*,*) my_rank, 'sphere_filter_width_ctl', i,              &
+!     &     sgs_ctl%sph_filter_ctl(i)%sphere_filter_width_ctl%realvalue
+!        write(*,*) my_rank, 'radial_filter_width_ctl', i,              &
+!     &     sgs_ctl%sph_filter_ctl(i)%radial_filter_width_ctl%realvalue
+!        write(*,*) my_rank, 'first_reference_ctl', i,                  &
+!     &     sgs_ctl%sph_filter_ctl(i)%first_reference_ctl%intvalue
+!        write(*,*) my_rank, 'second_reference_ctl', i,                 &
+!     &     sgs_ctl%sph_filter_ctl(i)%second_reference_ctl%intvalue
+!      end do
 !
       end subroutine bcast_sgs_ctl
 !

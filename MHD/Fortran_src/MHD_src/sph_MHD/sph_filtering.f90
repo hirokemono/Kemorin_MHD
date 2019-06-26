@@ -77,7 +77,6 @@
 
 !
       if (iflag_debug.gt.0) write(*,*) 'init_filter_4_SPH_MHD'
-
       call init_filter_4_SPH_MHD(sph, sph_grps, trans_p%leg,            &
      &    dynamic_SPH%num_sph_filteres, dynamic_SPH%sph_filters)
 !
