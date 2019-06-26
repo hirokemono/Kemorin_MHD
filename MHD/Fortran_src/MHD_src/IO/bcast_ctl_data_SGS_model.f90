@@ -54,6 +54,8 @@
       if(my_rank .gt. 0 .and. sgs_ctl%num_sph_filter_ctl .gt. 0) then
         call alloc_sph_filter_ctl(sgs_ctl)
       end if
+      call calypso_mpi_barrier
+!
       do i = 1, sgs_ctl%num_sph_filter_ctl
         write(*,*) my_rank, 'bcast_control_4_SGS_filter', i
         call bcast_control_4_SGS_filter(sgs_ctl%sph_filter_ctl(i))
