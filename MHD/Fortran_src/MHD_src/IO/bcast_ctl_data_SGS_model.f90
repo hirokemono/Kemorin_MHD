@@ -51,10 +51,11 @@
 !
       call MPI_BCAST(sgs_ctl%num_sph_filter_ctl, 1,                     &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      if(my_rank .gt. 0 .and. sgs_ctl%num_sph_filter_ctl.gt. 0) then
+      if(my_rank .gt. 0 .and. sgs_ctl%num_sph_filter_ctl .gt. 0) then
         call alloc_sph_filter_ctl(sgs_ctl)
       end if
       do i = 1, sgs_ctl%num_sph_filter_ctl
+        write(*,*) my_rank, 'bcast_control_4_SGS_filter', i
         call bcast_control_4_SGS_filter(sgs_ctl%sph_filter_ctl(i))
       end do
 !
@@ -133,10 +134,14 @@
 !
 !
       call bcast_ctl_type_c1(sphf_ctl%sph_filter_type_ctl)
+      call bcast_ctl_type_c1(sphf_ctl%radial_filter_type_ctl)
       call bcast_ctl_type_i1(sphf_ctl%maximum_moments_ctl)
 !
       call bcast_ctl_type_r1(sphf_ctl%radial_filter_width_ctl)
       call bcast_ctl_type_r1(sphf_ctl%sphere_filter_width_ctl)
+!
+      call bcast_ctl_type_i1(sphf_ctl%first_reference_ctl)
+      call bcast_ctl_type_i1(sphf_ctl%second_reference_ctl)
 !
       end subroutine bcast_control_4_SGS_filter
 !
