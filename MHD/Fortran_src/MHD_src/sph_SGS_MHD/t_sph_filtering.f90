@@ -155,8 +155,8 @@
      &      sph_filters(i)%sph_moments, sph_filters(i)%sph_filter)
 !
         if(iflag_debug.gt.0) write(*,*)' const_filter_on_sphere'
-        call init_sph_2nd_order_moments_rtp                             &
-     &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
+!        call init_sph_2nd_order_moments_rtp                             &
+!     &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
       end do
 !
       call calypso_mpi_barrier
@@ -233,7 +233,6 @@
 !
 !
       call alloc_sph_filter_moms(sph_filters%r_moments)
-      return
       call cal_r_gaussian_moments(sph_filters%width,                    &
      &    sph_filters%r_moments)
 !
