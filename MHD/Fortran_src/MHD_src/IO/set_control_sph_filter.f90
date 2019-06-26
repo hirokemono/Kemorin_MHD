@@ -88,25 +88,6 @@
      &   (ierr_SGS, 'Do not set recursive filter for the first filter')
       end if
 !
-      write(*,*) my_rank, 'num_sph_filter_ctl', sgs_ctl%num_sph_filter_ctl
-      do i = 1, sgs_ctl%num_sph_filter_ctl
-        write(*,*) my_rank, 'sph_filter_type_ctl',  i, &
-     &     sgs_ctl%sph_filter_ctl(i)%sph_filter_type_ctl%charavalue
-        write(*,*) my_rank, 'radial_filter_type_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%radial_filter_type_ctl%charavalue
-        write(*,*) my_rank, 'maximum_moments_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%maximum_moments_ctl%intvalue
-        write(*,*) my_rank, 'sphere_filter_width_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%sphere_filter_width_ctl%realvalue
-        write(*,*) my_rank, 'radial_filter_width_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%radial_filter_width_ctl%realvalue
-        write(*,*) my_rank, 'first_reference_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%first_reference_ctl%intvalue
-        write(*,*) my_rank, 'second_reference_ctl', i,   &
-     &     sgs_ctl%sph_filter_ctl(i)%second_reference_ctl%intvalue
-      end do
-
-!
       end subroutine set_control_SPH_SGS_filters
 !
 ! -----------------------------------------------------------------------
