@@ -128,8 +128,8 @@
       character(len=kchara) :: fname_tmp, file_name
 !
 !
-      do i = 1, 0
-!      do i = 1, num_sph_filteres
+      call calypso_mpi_barrier
+      do i = 1, num_sph_filteres
         i1 = sph_filters(i)%id_1st_ref_filter
         i2 = sph_filters(i)%id_2nd_ref_filter
         if(sph_filters(i)%itype_radial_filter                           &
@@ -138,14 +138,16 @@
      &       (sph%sph_rj, sph_filters(i1)%r_filter,                     &
      &        sph_filters(i2)%r_filter, sph_filters(i)%r_filter)
         else
-          if(iflag_debug.gt.0) write(*,*)' const_sph_radial_filter'
+          call calypso_mpi_barrier
+           write(*,*)' const_sph_radial_filter', i, i1, i2
+!          if(iflag_debug.gt.0) write(*,*)' const_sph_radial_filter'
           call const_sph_radial_filter                                  &
      &       (sph%sph_rj, sph_grps, sph_filters(i))
         end if
       end do
 !
-!     call calypso_mpi_barrier
-!     call calypso_mpi_abort(101, 'TakoTako')
+      call calypso_mpi_barrier
+      call calypso_mpi_abort(101, 'TakoTako')
 !
       do i = 1, num_sph_filteres
         i1 = sph_filters(i)%id_1st_ref_filter
