@@ -205,7 +205,7 @@
       integer(kind = kint) :: i, ist, ied
 !
 !
-      if(my_rank .ne. 0) return
+!      if(my_rank .ne. 0) return
 !
         open(ifile_r_filter, file = file_name)
         write(ifile_r_filter,*)  'r_filter%inod_filter(i)',             &

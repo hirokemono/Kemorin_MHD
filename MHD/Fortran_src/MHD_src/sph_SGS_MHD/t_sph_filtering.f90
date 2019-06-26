@@ -125,7 +125,7 @@
 !
       integer(kind = kint)  :: i, i1, i2
       integer(kind = kint)  :: id_file
-      character(len=kchara) :: fname_tmp, file_name
+      character(len=kchara) :: fname_tmp, fname_tmp2, file_name
 !
 !
       call calypso_mpi_barrier
@@ -172,7 +172,8 @@
       do i = 1, num_sph_filteres
 !        if(iflag_debug .gt. 0) then
           fname_tmp = add_int_suffix(i, filter_head)
-          file_name = add_dat_extension(fname_tmp)
+          fname_tmp2 = add_int_suffix(my_rank, fname_tmp)
+          file_name = add_dat_extension(fname_tmp2)
           call check_radial_filter                                      &
      &       (file_name, sph%sph_rj, sph_filters(i)%r_filter)
 !
