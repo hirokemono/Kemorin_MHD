@@ -57,8 +57,22 @@
       call calypso_mpi_barrier
 !
       do i = 1, sgs_ctl%num_sph_filter_ctl
-        write(*,*) my_rank, 'bcast_control_4_SGS_filter', i
-        call bcast_control_4_SGS_filter(sgs_ctl%sph_filter_ctl(i))
+        call bcast_ctl_type_c1                                          &
+     &     (sgs_ctl%sph_filter_ctl(i)%sph_filter_type_ctl)
+        call bcast_ctl_type_c1                                          &
+     &     (sgs_ctl%sph_filter_ctl(i)%radial_filter_type_ctl)
+        call bcast_ctl_type_i1                                          &
+     &     (sgs_ctl%sph_filter_ctl(i)%maximum_moments_ctl)
+!
+        call bcast_ctl_type_r1                                          &
+     &     (sgs_ctl%sph_filter_ctl(i)%radial_filter_width_ctl)
+        call bcast_ctl_type_r1                                          &
+     &     (sgs_ctl%sph_filter_ctl(i)%sphere_filter_width_ctl)
+!
+        call bcast_ctl_type_i1                                          &
+     &     (sgs_ctl%sph_filter_ctl(i)%first_reference_ctl)
+        call bcast_ctl_type_i1                                          &
+     &     (sgs_ctl%sph_filter_ctl(i)%second_reference_ctl)
       end do
 !
       write(*,*) my_rank, 'num_sph_filter_ctl', sgs_ctl%num_sph_filter_ctl
