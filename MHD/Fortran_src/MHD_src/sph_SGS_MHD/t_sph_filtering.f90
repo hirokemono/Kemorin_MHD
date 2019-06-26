@@ -141,7 +141,12 @@
           call const_sph_radial_filter                                  &
      &       (sph%sph_rj, sph_grps, sph_filters(i))
         end if
+      end do
 !
+     call calypso_mpi_barrier
+     call calypso_mpi_abort(101, 'TakoTako')
+!
+      do i = 1, num_sph_filteres
         if(iflag_debug.gt.0) write(*,*)' const_filter_on_sphere'
         call const_filter_on_sphere(sph_filters(i)%itype_sph_filter,    &
      &      sph%sph_params%l_truncation,                                &
