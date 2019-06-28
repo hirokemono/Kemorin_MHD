@@ -191,21 +191,16 @@ static int read_chara_int_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *la
                       struct chara_int_ctl_list *head){
     int iflag = 0;
     int icou = 0;
-    int num_array = 0;
     
-    iflag = find_control_array_flag_c(buf, label, &num_array);
-    if(iflag*num_array == 0) return iflag;
+    if(find_control_array_flag_c(buf, label) == 0) return 0;
+    if(head->ci_item != NULL) return 0;
     
     skip_comment_read_line(fp, buf);
-    while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
+    while(find_control_end_array_flag_c(buf, label) == 0){
         head = add_chara_int_ctl_list_after(head);
         iflag = read_chara_int_ctl_item_c(buf, label, head->ci_item);
         icou = icou + iflag;
         skip_comment_read_line(fp, buf);
-    };
-    
-    if(num_array /= icou+1){
-        printf("Number of %s does not match.: %d %d\n", label, num_array, icou);
     };
     return icou;
 };
@@ -213,12 +208,11 @@ static int read_chara_int_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *la
 static int write_chara_int_ctl_list(FILE *fp, int level, const char *label, 
                        struct chara_int_ctl_list *head){
     int mlen2[2];
-    int num = count_maxlen_chara_int_ctl_list(label, head, mlen2);
     
-    if(num == 0) return level;
+    if(count_maxlen_chara_int_ctl_list(label, head, mlen2) == 0) return level;
     
     fprintf(fp, "!\n");
-    level = write_array_flag_for_ctl_c(fp, level, label, num);
+    level = write_array_flag_for_ctl_c(fp, level, label);
     head = head->_next;
     
     while (head != NULL) {    /* Go through null pointer*/

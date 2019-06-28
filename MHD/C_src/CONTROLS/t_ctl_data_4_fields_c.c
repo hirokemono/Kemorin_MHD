@@ -96,23 +96,18 @@ static int read_field_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
                       struct chara3_ctl_item *tmp_fld_item, struct chara_int2_ctl_list *head){
     int iflag = 0;
     int icou = 0;
-    int num_array = 0;
     
-    iflag = find_control_array_flag_c(buf, label, &num_array);
-    if(iflag*num_array == 0) return iflag;
+    if(find_control_array_flag_c(buf, label) == 0) return 0;
+    if(head->ci2_item != NULL) return 0;
     
     skip_comment_read_line(fp, buf);
-    while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
+    while(find_control_end_array_flag_c(buf, label) == 0){
         head = add_chara_int2_ctl_list_after(head);
         iflag = read_chara3_ctl_item_c(buf, label, tmp_fld_item);
 		set_viz_flags_from_text(tmp_fld_item, head->ci2_item);
 		tmp_fld_item->iflag = 0;
         icou = icou + iflag;
         skip_comment_read_line(fp, buf);
-    };
-    
-    if(num_array /= icou+1){
-        printf("Number of %s does not match.: %d %d\n", label, num_array, icou);
     };
     return icou;
 };
@@ -122,15 +117,14 @@ static int write_field_ctl_list(FILE *fp, int level, const char *label,
 	int mlen2[2];
 	int maxlen[3];
 	
-    int num = count_maxlen_chara_int2_ctl_list(label, head, mlen2);
+    if(count_maxlen_chara_int2_ctl_list(label, head, mlen2) == 0) return level;
 	maxlen[0] = mlen2[0];
 	maxlen[1] = mlen2[1];
 	maxlen[2] = (int) strlen("Viz_Off");
     
-    if(num == 0) return level;
 	
     fprintf(fp, "!\n");
-    level = write_array_flag_for_ctl_c(fp, level, label, num);
+    level = write_array_flag_for_ctl_c(fp, level, label);
     head = head->_next;
     
 	while (head != NULL) {    /* Go through null pointer*/

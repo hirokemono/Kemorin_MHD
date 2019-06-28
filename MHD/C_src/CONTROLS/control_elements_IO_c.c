@@ -67,9 +67,9 @@ int write_end_flag_for_ctl_c(FILE *fp, int level, const char *label){
 	return (level - 1);
 }
 
-int write_array_flag_for_ctl_c(FILE *fp, int level, const char *label, int num){
+int write_array_flag_for_ctl_c(FILE *fp, int level, const char *label){
 	write_space_4_parse_c(fp, level);
-	fprintf(fp, "array  %s    %d\n", label, num);
+	fprintf(fp, "array  %s\n", label);
 	return (level + 1);
 }
 
@@ -131,46 +131,34 @@ int find_control_end_flag_c(const char buf[LENGTHBUF], const char *label){
 	return iflag;
 }
 
-int find_control_array_flag_c(const char buf[LENGTHBUF], const char *label, int *num){
-	int iflag = 0;
+int find_control_array_flag_c(const char buf[LENGTHBUF], const char *label){
+    int nword = 0;
+    int num = -1;
 	char header_chara[KCHARA_C], item_name[KCHARA_C];
 	
-	if(*num > 0) return iflag;
-	sscanf(buf, "%s", header_chara);
-	if(cmp_no_case_c(header_chara, label_array) > 0){
-		sscanf(buf, "%s %s", header_chara, item_name);
-		if(cmp_no_case_c(label, item_name) == 0){return 0;};
-		sscanf(buf, "%s %s %d", header_chara, item_name, num);
-		iflag = 1;
-	};
-	return iflag;
+	nword = sscanf(buf, "%s", header_chara);
+    if(cmp_no_case_c(header_chara, label_array) == 0){return 0;};
+    
+    nword = sscanf(buf, "%s %s", header_chara, item_name);
+    if(cmp_no_case_c(label, item_name) == 0){return 0;};
+    
+    nword = sscanf(buf, "%s %s %d", header_chara, item_name, &num);
+    if(nword == 3 && num == 0){return 0;};
+
+	return 1;
 }
 
-int find_control_end_array_flag_c(const char buf[LENGTHBUF], const char *label, int num, int icou){
-	int iflag = 0;
+int find_control_end_array_flag_c(const char buf[LENGTHBUF], const char *label){
 	char header_chara[KCHARA_C], item_name[KCHARA_C], array_head[KCHARA_C];
 	
 	sscanf(buf, "%s", header_chara);
-	if(cmp_no_case_c(header_chara, label_end) > 0){
-		sscanf(buf, "%s %s", header_chara, array_head);
-		if(cmp_no_case_c(array_head, label_array) > 0){
-			sscanf(buf, "%s %s %s", header_chara, array_head, item_name);
-			iflag = cmp_no_case_c(label, item_name);
-		};
-	};
-	if(iflag !=0){
-		if(icou < num){
-			printf("number of array is not enough!\n");
-			return -1;
-		};
-	} else {
-		if(icou > num){
-			printf("array should be finished!\n");
-			return -1;
-		};
-	};
-	
-	return iflag;
+    if(cmp_no_case_c(header_chara, label_end) == 0) {return 0;};
+
+    sscanf(buf, "%s %s", header_chara, array_head);
+    if(cmp_no_case_c(array_head, label_array) == 0) {return 0;};
+
+    sscanf(buf, "%s %s %s", header_chara, array_head, item_name);
+	return cmp_no_case_c(label, item_name);
 };
 
 int count_max_length_of_label(int num, const char *label[KCHARA_C]){

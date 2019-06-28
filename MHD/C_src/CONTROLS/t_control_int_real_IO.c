@@ -167,34 +167,26 @@ static int read_int_real_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *lab
                       struct int_real_ctl_list *head){
     int iflag = 0;
     int icou = 0;
-    int num_array = 0;
     
-    iflag = find_control_array_flag_c(buf, label, &num_array);
-    if(iflag*num_array == 0) return iflag;
+    if(find_control_array_flag_c(buf, label) == 0) return 0;
+    if(head->ir_item != NULL) return 0;
     
     skip_comment_read_line(fp, buf);
-    while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
+    while(find_control_end_array_flag_c(buf, label) == 0){
         head = add_int_real_ctl_list_after(head);
         iflag = read_int_real_ctl_item_c(buf, label, head->ir_item);
         icou = icou + iflag;
         skip_comment_read_line(fp, buf);
-    };
-    
-    if(num_array /= icou+1){
-        printf("Number of %s does not match.: %d %d\n", label, num_array, icou);
     };
     return icou;
 };
 
 static int write_int_real_ctl_list(FILE *fp, int level, const char *label, 
                        struct int_real_ctl_list *head){
-    
-    int num = count_int_real_ctl_list(head);
-    
-    if(num == 0) return level;
+    if(count_int_real_ctl_list(head) == 0) return level;
     
     fprintf(fp, "!\n");
-    level = write_array_flag_for_ctl_c(fp, level, label, num);
+    level = write_array_flag_for_ctl_c(fp, level, label);
     head = head->_next;
     
     while (head != NULL) {    /* Go through null pointer*/

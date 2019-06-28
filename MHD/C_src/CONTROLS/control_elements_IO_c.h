@@ -30,7 +30,7 @@ void write_file_flag_for_ctl_c(FILE *fp, int level, const char *label, const cha
 int write_begin_flag_for_ctl_c(FILE *FP, int level, const char *label);
 int write_end_flag_for_ctl_c(FILE *FP, int level, const char *label);
 
-int write_array_flag_for_ctl_c(FILE *fp, int level, const char *label, int num);
+int write_array_flag_for_ctl_c(FILE *fp, int level, const char *label);
 int write_end_array_flag_for_ctl_c(FILE *fp, int level, const char *label);
 
 void skip_comment_read_line(FILE *fp, char buf[LENGTHBUF]);
@@ -40,8 +40,8 @@ int read_file_flag_c(const char buf[LENGTHBUF], char *file_name);
 
 int right_begin_flag_c(const char buf[LENGTHBUF], const char *label);
 int find_control_end_flag_c(const char buf[LENGTHBUF], const char *label);
-int find_control_array_flag_c(const char buf[LENGTHBUF], const char *label, int *num);
-int find_control_end_array_flag_c(const char buf[LENGTHBUF], const char *label, int num, int icou);
+int find_control_array_flag_c(const char buf[LENGTHBUF], const char *label);
+int find_control_end_array_flag_c(const char buf[LENGTHBUF], const char *label);
 
 int count_max_length_of_label(int num, const char *label[KCHARA_C]);
 
