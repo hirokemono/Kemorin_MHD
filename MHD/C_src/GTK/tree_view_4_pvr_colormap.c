@@ -397,6 +397,8 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	GtkWidget *combobox_cmap;
 	
 	GtkWidget *label_tree;
+    GtkTreeModel *model;
+    GtkTreeModel *child_model;
     int index = 0;
 
     init_real2_tree_view(color_vws->cmap_vws);
@@ -404,8 +406,8 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
     
 	label_tree = gtk_tree_view_new();
 	create_fixed_label_w_index_tree(label_tree);
-    GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
-    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    model = gtk_tree_view_get_model (label_tree);  
+    child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     index = append_ci_item_to_tree(index, &color_labels[RAINBOW_MODE][0], RAINBOW_MODE, child_model);
 	index = append_ci_item_to_tree(index, &color_labels[GRAYSCALE_MODE][0], GRAYSCALE_MODE, child_model);
 	index = append_ci_item_to_tree(index, &color_labels[RED_BLUE_MODE][0], RED_BLUE_MODE, child_model);

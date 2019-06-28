@@ -16,6 +16,8 @@
 #include "t_control_int_IO.h"
 #include "t_control_chara_IO.h"
 
+#define NLBL_PLATFORM_CTL 20
+
 struct platform_data_control_c{
     int maxlen;
     
@@ -24,19 +26,19 @@ struct platform_data_control_c{
 
     struct chara_ctl_item *debug_flag_c;
 
+    struct chara_ctl_item *sph_file_prefix_c;
     struct chara_ctl_item *mesh_file_prefix_c;
     struct chara_ctl_item *field_file_prefix_c;
     struct chara_ctl_item *restart_file_prefix_c;
     struct chara_ctl_item *spectr_field_file_prefix_c;
-    struct chara_ctl_item *sph_file_prefix_c;
 
     struct chara_ctl_item *coriolis_int_file_name_c;
     struct chara_ctl_item *bc_data_file_name_c;
     struct chara_ctl_item *interpolate_sph_to_fem_c;
     struct chara_ctl_item *interpolate_fem_to_sph_c;
     
-    struct chara_ctl_item *mesh_file_fmt_c;
     struct chara_ctl_item *sph_file_fmt_c;
+    struct chara_ctl_item *mesh_file_fmt_c;
     struct chara_ctl_item *restart_file_fmt_c;
     struct chara_ctl_item *field_file_fmt_c;
     struct chara_ctl_item *itp_file_fmt_c;

@@ -64,9 +64,8 @@ static void cb_Open(GtkButton *button, gpointer data)
 		read_SGS_MHD_control_file_c(read_file_name, buf, mhd_ctl);
 		
 		g_free(read_file_name);
-	
+        
 		set_control_box(vbox_0);
-		gtk_container_add(GTK_CONTAINER(window), vbox_0);
 		gtk_widget_show_all(window);
 	}else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
@@ -220,7 +219,6 @@ void set_control_box(GtkWidget *vbox0){
 		gtk_container_add(GTK_CONTAINER(expander_MHD_ctl[i]), hbox_2[i]);
 	};
 	gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
-	
 	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
@@ -247,8 +245,9 @@ int main(int argc, char** argv)
 	scroll_window = gtk_scrolled_window_new(NULL, NULL);
 	gtk_box_pack_start(GTK_BOX(vbox_0), scroll_window, TRUE, TRUE, 0);
 	*/
-	
+	/*
 	gtk_box_pack_start(GTK_BOX(vbox_0), gtk_label_new(" BoxBoxBox "), TRUE, TRUE, 0);
+     */
 	set_file_box(vbox_0);
 	gtk_container_add(GTK_CONTAINER(window), vbox_0);
 	
