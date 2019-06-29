@@ -32,7 +32,7 @@
 		187D27E7212B44C100007329 /* tree_view_4_field_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27E5212B44C100007329 /* tree_view_4_field_GTK.c */; };
 		187D27EE212C9A7200007329 /* tree_view_chara_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27EC212C9A7200007329 /* tree_view_chara_GTK.c */; };
 		187D27F4212CDFFC00007329 /* tree_view_chara_int_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27F2212CDFFC00007329 /* tree_view_chara_int_GTK.c */; };
-		187F12FF22C6A68E00B0F844 /* file_dialog_5.c in Sources */ = {isa = PBXBuildFile; fileRef = 187F12FE22C6A68E00B0F844 /* file_dialog_5.c */; };
+		187F130322C79F5200B0F844 /* file_dialog_5.c in Sources */ = {isa = PBXBuildFile; fileRef = 187F130222C79F5200B0F844 /* file_dialog_5.c */; };
 		18812B88211EC37400BF714B /* libgtk-3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B87211EC37400BF714B /* libgtk-3.a */; };
 		18812B8A211EC39400BF714B /* libglib-2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B89211EC39400BF714B /* libglib-2.0.a */; };
 		18812B8C211EC6CC00BF714B /* libgdk-3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B8B211EC6CC00BF714B /* libgdk-3.a */; };
@@ -175,7 +175,7 @@
 		187D27ED212C9A7200007329 /* tree_view_chara_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_chara_GTK.h; path = ../../C_src/GTK/tree_view_chara_GTK.h; sourceTree = "<group>"; };
 		187D27F2212CDFFC00007329 /* tree_view_chara_int_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_chara_int_GTK.c; path = ../../C_src/GTK/tree_view_chara_int_GTK.c; sourceTree = "<group>"; };
 		187D27F3212CDFFC00007329 /* tree_view_chara_int_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_chara_int_GTK.h; path = ../../C_src/GTK/tree_view_chara_int_GTK.h; sourceTree = "<group>"; };
-		187F12FE22C6A68E00B0F844 /* file_dialog_5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_dialog_5.c; path = ../../../programs/TESTS/GTK3_test/file_dialog_5.c; sourceTree = "<group>"; };
+		187F130222C79F5200B0F844 /* file_dialog_5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_dialog_5.c; path = ../../../programs/TESTS/GTK3_test/file_dialog_5.c; sourceTree = "<group>"; };
 		18812AE8211EB5B000BF714B /* GTK_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GTK_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		18812B87211EC37400BF714B /* libgtk-3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libgtk-3.a"; path = "../../../../../../../opt/local/lib/libgtk-3.a"; sourceTree = "<group>"; };
 		18812B89211EC39400BF714B /* libglib-2.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libglib-2.0.a"; path = "../../../../../../../opt/local/lib/libglib-2.0.a"; sourceTree = "<group>"; };
@@ -351,7 +351,7 @@
 		18812AEA211EB5B000BF714B /* GTK_test */ = {
 			isa = PBXGroup;
 			children = (
-				187F12FE22C6A68E00B0F844 /* file_dialog_5.c */,
+				187F130222C79F5200B0F844 /* file_dialog_5.c */,
 			);
 			path = GTK_test;
 			sourceTree = "<group>";
@@ -608,8 +608,8 @@
 				18812BFC211F762200BF714B /* t_ctl_data_mhd_evolution_c.c in Sources */,
 				18812C02211F762200BF714B /* t_ctl_data_temp_model_c.c in Sources */,
 				18F5F386212625E1004320C7 /* tree_view_chara2_real_GTK.c in Sources */,
-				187F12FF22C6A68E00B0F844 /* file_dialog_5.c in Sources */,
 				189DF36A213462580055AD0F /* tree_view_real3_GTK.c in Sources */,
+				187F130322C79F5200B0F844 /* file_dialog_5.c in Sources */,
 				18812C12211F762300BF714B /* t_control_data_4_iso_c.c in Sources */,
 				18812C1E211F762300BF714B /* t_control_data_ISO_ctl_list.c in Sources */,
 				18812BFA211F762200BF714B /* t_ctl_data_sph_filter_list.c in Sources */,

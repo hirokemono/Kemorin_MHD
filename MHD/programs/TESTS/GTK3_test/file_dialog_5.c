@@ -267,8 +267,10 @@ static void set_file_fmt_cb(GtkComboBox *combobox_cmap, gpointer data)
 }
 
 void set_control_box(GtkWidget *vbox0){
+    GtkWidget *scrolled_window;
 	GtkWidget *hbox_1, *vbox_1, *Frame_1;
 	GtkWidget *hbox_2[NLBL_SGS_MHD_CTL], *vbox_2[NLBL_SGS_MHD_CTL], *Frame_2[NLBL_SGS_MHD_CTL];
+	GtkWidget *vbox_platform;
     GtkWidget *switch_0, *spinner_1, *spinner_2, *switch_19;
     GtkAdjustment *adjust_1, *adjust_2;
     GtkWidget *tbox_3, *tbox_4, *tbox_5, *tbox_6, *tbox_7;
@@ -305,6 +307,7 @@ void set_control_box(GtkWidget *vbox0){
 		vbox_2[i] = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 		
 		if(i == 0){
+			vbox_platform = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 			for(ii=0;ii<7;ii++){
 				index = 0;
 				label_tree[ii] = gtk_tree_view_new();
@@ -491,8 +494,18 @@ void set_control_box(GtkWidget *vbox0){
                 gtk_box_pack_start(GTK_BOX(hbox_3[19]), switch_19, FALSE, FALSE, 0);
 			};
             for(ii=0;ii<NLBL_PLATFORM_CTL;ii++){
-                gtk_box_pack_start(GTK_BOX(vbox_2[0]), hbox_3[ii], FALSE, FALSE, 0);
-            }
+                gtk_box_pack_start(GTK_BOX(vbox_platform), hbox_3[ii], FALSE, FALSE, 0);
+			}
+			scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+			gtk_widget_set_size_request(scrolled_window, 300, 400);
+			gtk_scrolled_window_set_max_content_height(scrolled_window, 400);
+			gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+			gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+			
+			gtk_scrolled_window_add_with_viewport (
+						GTK_SCROLLED_WINDOW(scrolled_window), vbox_platform);
+			gtk_box_pack_start(GTK_BOX(vbox_2[0]), scrolled_window, FALSE, FALSE, 0);
 		};
 		
 		Frame_2[i] = gtk_frame_new("");
@@ -509,6 +522,7 @@ void set_control_box(GtkWidget *vbox0){
 	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
 	gtk_container_add(GTK_CONTAINER(expander_Top), hbox_1);
+    
 	gtk_box_pack_start(GTK_BOX(vbox0), expander_Top, TRUE, TRUE, 0);
 };
 
