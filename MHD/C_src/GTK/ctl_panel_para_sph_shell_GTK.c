@@ -1,11 +1,11 @@
 /*
-//  control_panel_4_para_sph_shell_GTK.c
+//  ctl_panel_para_sph_shell_GTK.c
 //  Kemorin_MHD_Cocoa
 //
 //  Created by Hiroaki Matsui on 2019/06/30.
 */
 
-#include "control_panel_4_para_sph_shell_GTK.h"
+#include "ctl_panel_para_sph_shell_GTK.h"
 
 void expander_switch_cb(GObject *switch_3, GParamSpec *pspec, gpointer data){
     int *iflag = (int *) data;

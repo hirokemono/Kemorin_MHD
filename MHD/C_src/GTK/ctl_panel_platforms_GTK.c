@@ -1,11 +1,11 @@
 /*
-//  control_panel_4_platforms_GTK.c
+//  ctl_panel_platforms_GTK.c
 //  
 //
 //  Created by Hiroaki Matsui on 2018/05/18.
 */
 
-#include "control_panel_4_platforms_GTK.h"
+#include "ctl_panel_platforms_GTK.h"
 
 #define ASCII_MODE           0
 #define BINARY_MODE          1

@@ -1,12 +1,12 @@
 /*
-//  control_panel_4_para_sph_shell_GTK.h
+//  ctl_panel_para_sph_shell_GTK.h
 //  Kemorin_MHD_Cocoa
 //
 //  Created by Hiroaki Matsui on 2019/06/30.
 */
 
-#ifndef control_panel_4_para_sph_shell_GTK__
-#define control_panel_4_para_sph_shell_GTK__
+#ifndef ctl_panel_para_sph_shell_GTK__
+#define ctl_panel_para_sph_shell_GTK__
 
 #include <gtk/gtk.h>
 #include "t_control_data_sph_grid_c.h"
@@ -21,4 +21,4 @@ void add_control_block_box(char *c_label, int *iflag_box,
 
 void add_parallel_shell_box(struct parallel_sph_shell_control_c *shell_ctl, GtkWidget *vbox);
 
-#endif /* control_panel_4_para_sph_shell_GTK__ */
+#endif /* ctl_panel_para_sph_shell_GTK__ */

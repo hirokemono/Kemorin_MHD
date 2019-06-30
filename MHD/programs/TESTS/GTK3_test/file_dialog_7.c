@@ -1,8 +1,8 @@
 
 #include <gtk/gtk.h>
 #include "t_SGS_MHD_control_c.h"
-#include "control_panel_4_platforms_GTK.h"
-#include "control_panel_4_para_sph_shell_GTK.h"
+#include "ctl_panel_platforms_GTK.h"
+#include "ctl_panel_para_sph_shell_GTK.h"
 
 #define NONE_MODE   0
 #define FILE_MODE  -1
