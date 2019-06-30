@@ -107,7 +107,7 @@ static void set_file_fmt_cb(GtkComboBox *combobox_cmap, gpointer data)
 }
 
 void add_platoform_box(struct platform_data_control_c *files_c, GtkWidget *vbox){
-	int ii;
+	int i;
 	char *c_label;
     GtkWidget *label_tree[7];
     GtkTreeModel *model[7];
@@ -121,26 +121,26 @@ void add_platoform_box(struct platform_data_control_c *files_c, GtkWidget *vbox)
     GtkWidget *combobox_12, *combobox_13, *combobox_14, *combobox_15;
 	GtkWidget *combobox_16, *combobox_17, *combobox_18;
 	
-	GtkWidget *hbox_3[NLBL_PLATFORM_CTL];
+	GtkWidget *hbox_1[NLBL_PLATFORM_CTL];
 	GtkWidget *vbox_platform;
 	GtkWidget *scrolled_window;
 	
     int index = 0;
     
-	for(ii=0;ii<7;ii++){
+	for(i=0;i<7;i++){
 		index = 0;
-		label_tree[ii] = gtk_tree_view_new();
-		create_fixed_label_w_index_tree(label_tree[ii]);
-		model[ii] = gtk_tree_view_get_model (label_tree[ii]);  
-		child_model[ii] = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model[ii]));
-		index = append_ci_item_to_tree(index, &file_fmt_labels[ASCII_MODE][0], ASCII_MODE, child_model[ii]);
-		index = append_ci_item_to_tree(index, &file_fmt_labels[BINARY_MODE][0], BINARY_MODE, child_model[ii]);
-		index = append_ci_item_to_tree(index, &file_fmt_labels[GZIP_MODE][0], GZIP_MODE, child_model[ii]);
-		index = append_ci_item_to_tree(index, &file_fmt_labels[BIN_GZ_MODE][0], BIN_GZ_MODE, child_model[ii]);
-		index = append_ci_item_to_tree(index, &file_fmt_labels[MERGED_MODE][0], MERGED_MODE, child_model[ii]);
-		index = append_ci_item_to_tree(index, &file_fmt_labels[MERGED_BIN_MODE][0], MERGED_BIN_MODE, child_model[ii]);
-		index = append_ci_item_to_tree(index, &file_fmt_labels[MERGED_GZ_MODE][0], MERGED_GZ_MODE, child_model[ii]);
-		index = append_ci_item_to_tree(index, &file_fmt_labels[MERGED_BIN_GZ_MODE][0], MERGED_BIN_GZ_MODE, child_model[ii]);
+		label_tree[i] = gtk_tree_view_new();
+		create_fixed_label_w_index_tree(label_tree[i]);
+		model[i] = gtk_tree_view_get_model (label_tree[i]);  
+		child_model[i] = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model[i]));
+		index = append_ci_item_to_tree(index, &file_fmt_labels[ASCII_MODE][0], ASCII_MODE, child_model[i]);
+		index = append_ci_item_to_tree(index, &file_fmt_labels[BINARY_MODE][0], BINARY_MODE, child_model[i]);
+		index = append_ci_item_to_tree(index, &file_fmt_labels[GZIP_MODE][0], GZIP_MODE, child_model[i]);
+		index = append_ci_item_to_tree(index, &file_fmt_labels[BIN_GZ_MODE][0], BIN_GZ_MODE, child_model[i]);
+		index = append_ci_item_to_tree(index, &file_fmt_labels[MERGED_MODE][0], MERGED_MODE, child_model[i]);
+		index = append_ci_item_to_tree(index, &file_fmt_labels[MERGED_BIN_MODE][0], MERGED_BIN_MODE, child_model[i]);
+		index = append_ci_item_to_tree(index, &file_fmt_labels[MERGED_GZ_MODE][0], MERGED_GZ_MODE, child_model[i]);
+		index = append_ci_item_to_tree(index, &file_fmt_labels[MERGED_BIN_GZ_MODE][0], MERGED_BIN_GZ_MODE, child_model[i]);
 	};
 	
 	adjust_1 = gtk_adjustment_new(files_c->ndomain_c->i_data, 1, 2147483648, 1,
@@ -285,34 +285,34 @@ void add_platoform_box(struct platform_data_control_c *files_c, GtkWidget *vbox)
 	
 	
 	c_label = (char *)calloc(KCHARA_C, sizeof(char));
-	for(ii=0;ii<NLBL_PLATFORM_CTL;ii++){
-		hbox_3[ii] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-		gtk_box_set_homogeneous(hbox_3[ii], FALSE);
-		get_label_platform_ctl(ii, c_label);
-		gtk_box_pack_start(GTK_BOX(hbox_3[ii]), gtk_label_new(c_label), FALSE, FALSE, 0);
+	for(i=0;i<NLBL_PLATFORM_CTL;i++){
+		hbox_1[i] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+		gtk_box_set_homogeneous(hbox_1[i], FALSE);
+		get_label_platform_ctl(i, c_label);
+		gtk_box_pack_start(GTK_BOX(hbox_1[i]), gtk_label_new(c_label), FALSE, FALSE, 0);
 	};
 	free(c_label);
 	
-	gtk_box_pack_start(GTK_BOX(hbox_3[0]), switch_0, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[1]), spinner_1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[2]), spinner_2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[3]), tbox_3, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[4]), tbox_4, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[5]), tbox_5, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[6]), tbox_6, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[7]), tbox_7, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[8]), tbox_8, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[9]), tbox_9, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[10]), tbox_10, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[11]), tbox_11, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[12]), combobox_12, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[13]), combobox_13, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[14]), combobox_14, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[15]), combobox_15, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[16]), combobox_16, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[17]), combobox_17, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[18]), combobox_18, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3[19]), switch_19, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[0]), switch_0, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[1]), spinner_1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[2]), spinner_2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[3]), tbox_3, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[4]), tbox_4, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[5]), tbox_5, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[6]), tbox_6, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[7]), tbox_7, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[8]), tbox_8, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[9]), tbox_9, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[10]), tbox_10, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[11]), tbox_11, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[12]), combobox_12, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[13]), combobox_13, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[14]), combobox_14, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[15]), combobox_15, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[16]), combobox_16, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[17]), combobox_17, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[18]), combobox_18, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1[19]), switch_19, FALSE, FALSE, 0);
 	
 	vbox_platform = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
@@ -323,8 +323,8 @@ void add_platoform_box(struct platform_data_control_c *files_c, GtkWidget *vbox)
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 	
 	
-	for(ii=0;ii<NLBL_PLATFORM_CTL;ii++){
-		gtk_box_pack_start(GTK_BOX(vbox_platform), hbox_3[ii], FALSE, FALSE, 0);
+	for(i=0;i<NLBL_PLATFORM_CTL;i++){
+		gtk_box_pack_start(GTK_BOX(vbox_platform), hbox_1[i], FALSE, FALSE, 0);
 	};
 	gtk_scrolled_window_add_with_viewport (
 		GTK_SCROLLED_WINDOW(scrolled_window), vbox_platform);

@@ -2,6 +2,7 @@
 #include <gtk/gtk.h>
 #include "t_SGS_MHD_control_c.h"
 #include "control_panel_4_platforms_GTK.h"
+#include "control_panel_4_para_sph_shell_GTK.h"
 
 #define NONE_MODE   0
 #define FILE_MODE  -1
@@ -223,30 +224,6 @@ void set_file_box(GtkWidget *vbox0){
 	gtk_box_pack_start(GTK_BOX(vbox0), hbox, FALSE, FALSE, 0);
 };
 
-static void expander_switch_cb(GObject    *switch_3,
-                        GParamSpec *pspec,
-                        gpointer    data){
-    int *iflag = (int *) data;
-	
-	if(gtk_switch_get_state(switch_3) == TRUE){
-		gtk_switch_set_state(switch_3, TRUE);
-        *iflag = 1;
-	} else {
-		gtk_switch_set_state(switch_3, FALSE);
-        *iflag = 0;
-	};
-};
-
-static void expander_action_cb(GObject    *switch_3,
-                        gpointer    data){
-    struct GtkWidget *expender = (GtkWidget *) switch_3;
-    int *iflag = (int *) data;
-	
-	if(*iflag == 0){
-		gtk_expander_set_expanded(GTK_EXPANDER(expender), TRUE);
-    };
-};
-
 static void set_block_mode_cb(GtkComboBox *combobox_cmap, gpointer data)
 {
     int *iflag_block = (int *) data;
@@ -273,24 +250,16 @@ static void file_name_cb(GtkEntry *entry, gpointer data)
     char *file_name = (char *) data;
 	file_name = gtk_entry_get_text(entry);
     return;
-}
+};
 
-
-void set_control_box(GtkWidget *vbox0){
-	GtkWidget *hbox_1, *vbox_1, *Frame_1;
-	GtkWidget *hbox_2[NLBL_SGS_MHD_CTL], *vbox_2[NLBL_SGS_MHD_CTL], *Frame_2[NLBL_SGS_MHD_CTL];
-	GtkWidget *hbox_3, *switch_3[NLBL_SGS_MHD_CTL];
-	GtkWidget *expander_MHD_ctl[NLBL_SGS_MHD_CTL];
-	GtkWidget *entry_3;
-	GtkWidget *button_S;
-	
-	int i, ii;
-	char *c_label;
-	c_label = (char *)calloc(KCHARA_C, sizeof(char));
-	
+void add_control_file_block_box(char *c_label, int *iflag_box, 
+			GtkWidget *hbox, GtkWidget *expander_b){
+	GtkWidget *combo_b;
     GtkWidget *label_tree;
     GtkTreeModel *model;
 	GtkTreeModel *child_model;
+	GtkWidget *entry_3;
+	GtkWidget *button_S;
     int index = 0;
 	
 	index = 0;
@@ -302,6 +271,46 @@ void set_control_box(GtkWidget *vbox0){
 	index = append_ci_item_to_tree(index, &input_mode_labels[1][0], FILE_MODE, child_model);
 	index = append_ci_item_to_tree(index, &input_mode_labels[2][0], TYPE_MODE, child_model);
 	
+	
+	combo_b = gtk_combo_box_new_with_model(child_model);
+	child_model = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo_b), child_model, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combo_b), child_model,
+				"text", COLUMN_FIELD_NAME, NULL);
+	gtk_combo_box_set_active(combo_b, mhd_ctl->iflag_spherical_shell_ctl);
+	g_signal_connect(G_OBJECT(combo_b), "changed", G_CALLBACK(set_block_mode_cb),
+				(gpointer) iflag_box);
+	g_signal_connect(G_OBJECT(expander_b), "activate", G_CALLBACK(expander_action_cb), 
+					(gpointer) iflag_box);
+	
+	
+	entry_3 = gtk_entry_new();
+	gtk_entry_set_text(entry_3, mhd_ctl->shell_ctl_file_name);
+	g_signal_connect(G_OBJECT(entry_3), "activate", G_CALLBACK(file_name_cb), 
+				(gpointer) mhd_ctl->shell_ctl_file_name);
+	
+	button_S = gtk_button_new_with_label("Save");
+	g_signal_connect(G_OBJECT(button_S), "clicked", G_CALLBACK(cb_Save_sph), 
+				(gpointer) entry_3);
+	
+	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(c_label), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), combo_b, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("File:"), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry_3, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), button_S, FALSE, FALSE, 0);
+	return;
+};
+
+void set_control_box(GtkWidget *vbox0){
+	GtkWidget *hbox_1, *vbox_1, *Frame_1;
+	GtkWidget *hbox_2[NLBL_SGS_MHD_CTL], *vbox_2[NLBL_SGS_MHD_CTL], *Frame_2[NLBL_SGS_MHD_CTL];
+	GtkWidget *hbox_3[NLBL_SGS_MHD_CTL];
+	GtkWidget *expander_MHD_ctl[NLBL_SGS_MHD_CTL];
+	
+	int i, ii;
+	char *c_label;
+	c_label = (char *)calloc(KCHARA_C, sizeof(char));
+	
 	/* Generate expander */
 	get_label_MHD_control_head(c_label);
     expander_Top = gtk_expander_new_with_mnemonic(c_label);
@@ -310,178 +319,72 @@ void set_control_box(GtkWidget *vbox0){
 	Frame_1 = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
 	
-	switch_3[0] = gtk_switch_new();
-	expander_MHD_ctl[0] = gtk_expander_new("");
-	gtk_switch_set_active(GTK_SWITCH(switch_3[0]), TRUE);
-	if(mhd_ctl->iflag_data_files_def > 0){
-		gtk_switch_set_state(GTK_SWITCH(switch_3[0]), TRUE);
-	} else {
-		gtk_switch_set_state(GTK_SWITCH(switch_3[0]), FALSE);
+	for (i=0;i<NLBL_SGS_MHD_CTL;i++){
+		Frame_2[i] = gtk_frame_new("");
+		hbox_2[i] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+		vbox_2[i] = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+		hbox_3[i] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+		expander_MHD_ctl[i] = gtk_expander_new("");
 	};
-	g_signal_connect (G_OBJECT(switch_3[0]), "notify::active", G_CALLBACK(expander_switch_cb), 
-				(gpointer) &mhd_ctl->iflag_data_files_def);
-	g_signal_connect(G_OBJECT(expander_MHD_ctl[0]), "activate", G_CALLBACK(expander_action_cb), 
-				(gpointer) &mhd_ctl->iflag_data_files_def);
 	
-	switch_3[1] = gtk_switch_new();
-	expander_MHD_ctl[1] = gtk_expander_new("");
-	gtk_switch_set_active(GTK_SWITCH(switch_3[1]), TRUE);
-	if(mhd_ctl->iflag_org_files_def > 0){
-		gtk_switch_set_state(GTK_SWITCH(switch_3[1]), TRUE);
-	} else {
-		gtk_switch_set_state(GTK_SWITCH(switch_3[1]), FALSE);
-	};
-	g_signal_connect (G_OBJECT(switch_3[1]), "notify::active", G_CALLBACK(expander_switch_cb), 
-				(gpointer) &mhd_ctl->iflag_org_files_def);
-	g_signal_connect(G_OBJECT(expander_MHD_ctl[1]), "activate", G_CALLBACK(expander_action_cb), 
-				(gpointer) &mhd_ctl->iflag_org_files_def);
+	get_label_SGS_MHD_ctl(0, c_label);
+	add_control_block_box(c_label, &mhd_ctl->iflag_data_files_def,
+				hbox_3[0], expander_MHD_ctl[0]);
 	
-	switch_3[2] = gtk_switch_new();
-	expander_MHD_ctl[2] = gtk_expander_new("");
-	gtk_switch_set_active(GTK_SWITCH(switch_3[2]), TRUE);
-	if(mhd_ctl->iflag_new_files_def > 0){
-		gtk_switch_set_state(GTK_SWITCH(switch_3[2]), TRUE);
-	} else {
-		gtk_switch_set_state(GTK_SWITCH(switch_3[2]), FALSE);
-	};
-	g_signal_connect (G_OBJECT(switch_3[2]), "notify::active", G_CALLBACK(expander_switch_cb), 
-				(gpointer) &mhd_ctl->iflag_new_files_def);
-	g_signal_connect(G_OBJECT(expander_MHD_ctl[2]), "activate", G_CALLBACK(expander_action_cb), 
-				(gpointer) &mhd_ctl->iflag_new_files_def);
+	get_label_SGS_MHD_ctl(1, c_label);
+	add_control_block_box(c_label, &mhd_ctl->iflag_org_files_def,
+				hbox_3[1], expander_MHD_ctl[1]);
 	
-    expander_MHD_ctl[3] = gtk_expander_new("");
-	switch_3[3] = gtk_combo_box_new_with_model(child_model);
-	child_model = gtk_cell_renderer_text_new();
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(switch_3[3]), child_model, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(switch_3[3]), child_model,
-				"text", COLUMN_FIELD_NAME, NULL);
-	gtk_combo_box_set_active(switch_3[3], mhd_ctl->iflag_spherical_shell_ctl);
-	g_signal_connect(G_OBJECT(switch_3[3]), "changed", G_CALLBACK(set_block_mode_cb),
-				(gpointer) &mhd_ctl->iflag_spherical_shell_ctl);
-	g_signal_connect(G_OBJECT(expander_MHD_ctl[3]), "activate", G_CALLBACK(expander_action_cb), 
-				(gpointer) &mhd_ctl->iflag_spherical_shell_ctl);
+	get_label_SGS_MHD_ctl(2, c_label);
+	add_control_block_box(c_label, &mhd_ctl->iflag_new_files_def,
+				hbox_3[2], expander_MHD_ctl[2]);
 	
-	switch_3[4] = gtk_switch_new();
-	expander_MHD_ctl[4] = gtk_expander_new("");
-	gtk_switch_set_active(GTK_SWITCH(switch_3[4]), TRUE);
-	if(mhd_ctl->iflag_model > 0){
-		gtk_switch_set_state(GTK_SWITCH(switch_3[4]), TRUE);
-	} else {
-		gtk_switch_set_state(GTK_SWITCH(switch_3[4]), FALSE);
-	};
-	g_signal_connect (G_OBJECT(switch_3[4]), "notify::active", G_CALLBACK(expander_switch_cb), 
-				(gpointer) &mhd_ctl->iflag_model);
-	g_signal_connect(G_OBJECT(expander_MHD_ctl[4]), "activate", G_CALLBACK(expander_action_cb), 
-				(gpointer) &mhd_ctl->iflag_model);
+	get_label_SGS_MHD_ctl(3, c_label);
+	add_control_file_block_box(c_label, &mhd_ctl->iflag_spherical_shell_ctl,
+				hbox_3[3], expander_MHD_ctl[3]);
 	
-	switch_3[5] = gtk_switch_new();
-	expander_MHD_ctl[5] = gtk_expander_new("");
-	gtk_switch_set_active(GTK_SWITCH(switch_3[5]), TRUE);
-	if(mhd_ctl->iflag_control > 0){
-		gtk_switch_set_state(GTK_SWITCH(switch_3[5]), TRUE);
-	} else {
-		gtk_switch_set_state(GTK_SWITCH(switch_3[5]), FALSE);
-	};
-	g_signal_connect (G_OBJECT(switch_3[5]), "notify::active", G_CALLBACK(expander_switch_cb), 
-				(gpointer) &mhd_ctl->iflag_control);
-	g_signal_connect(G_OBJECT(expander_MHD_ctl[5]), "activate", G_CALLBACK(expander_action_cb), 
-				(gpointer) &mhd_ctl->iflag_control);
+	get_label_SGS_MHD_ctl(4, c_label);
+	add_control_block_box(c_label, &mhd_ctl->iflag_model,
+				hbox_3[4], expander_MHD_ctl[4]);
 	
-	switch_3[6] = gtk_switch_new();
-	expander_MHD_ctl[6] = gtk_expander_new("");
-	gtk_switch_set_active(GTK_SWITCH(switch_3[6]), TRUE);
-	if(mhd_ctl->iflag_sph_monitor_ctl > 0){
-		gtk_switch_set_state(GTK_SWITCH(switch_3[6]), TRUE);
-	} else {
-		gtk_switch_set_state(GTK_SWITCH(switch_3[6]), FALSE);
-	};
-	g_signal_connect (G_OBJECT(switch_3[6]), "notify::active", G_CALLBACK(expander_switch_cb), 
-				(gpointer) &mhd_ctl->iflag_sph_monitor_ctl);
-	g_signal_connect(G_OBJECT(expander_MHD_ctl[6]), "activate", G_CALLBACK(expander_action_cb), 
-				(gpointer) &mhd_ctl->iflag_sph_monitor_ctl);
+	get_label_SGS_MHD_ctl(5, c_label);
+	add_control_block_box(c_label, &mhd_ctl->iflag_control,
+				hbox_3[5], expander_MHD_ctl[5]);
 	
-	switch_3[7] = gtk_switch_new();
-	expander_MHD_ctl[7] = gtk_expander_new("");
-	gtk_switch_set_active(GTK_SWITCH(switch_3[7]), TRUE);
-	if(mhd_ctl->iflag_node_monitor_ctl > 0){
-		gtk_switch_set_state(GTK_SWITCH(switch_3[7]), TRUE);
-	} else {
-		gtk_switch_set_state(GTK_SWITCH(switch_3[7]), FALSE);
-	};
-	g_signal_connect (G_OBJECT(switch_3[7]), "notify::active", G_CALLBACK(expander_switch_cb), 
-				(gpointer) &mhd_ctl->iflag_node_monitor_ctl);
-	g_signal_connect(G_OBJECT(expander_MHD_ctl[7]), "activate", G_CALLBACK(expander_action_cb), 
-				(gpointer) &mhd_ctl->iflag_node_monitor_ctl);
+	get_label_SGS_MHD_ctl(6, c_label);
+	add_control_block_box(c_label, &mhd_ctl->iflag_sph_monitor_ctl,
+				hbox_3[6], expander_MHD_ctl[6]);
 	
-	switch_3[8] = gtk_switch_new();
-	expander_MHD_ctl[8] = gtk_expander_new("");
-	gtk_switch_set_active(GTK_SWITCH(switch_3[8]), TRUE);
-	if(mhd_ctl->iflag_visual_control > 0){
-		gtk_switch_set_state(GTK_SWITCH(switch_3[8]), TRUE);
-	} else {
-		gtk_switch_set_state(GTK_SWITCH(switch_3[8]), FALSE);
-	};
-	g_signal_connect (G_OBJECT(switch_3[8]), "notify::active", G_CALLBACK(expander_switch_cb), 
-				(gpointer) &mhd_ctl->iflag_visual_control);
-	g_signal_connect(G_OBJECT(expander_MHD_ctl[8]), "activate", G_CALLBACK(expander_action_cb), 
-				(gpointer) &mhd_ctl->iflag_visual_control);
+	get_label_SGS_MHD_ctl(7, c_label);
+	add_control_block_box(c_label, &mhd_ctl->iflag_node_monitor_ctl,
+				hbox_3[7], expander_MHD_ctl[7]);
 	
-	switch_3[9] = gtk_switch_new();
-	expander_MHD_ctl[9] = gtk_expander_new("");
-	gtk_switch_set_active(GTK_SWITCH(switch_3[9]), TRUE);
-	if(mhd_ctl->iflag_zonal_mean_control > 0){
-		gtk_switch_set_state(GTK_SWITCH(switch_3[9]), TRUE);
-	} else {
-		gtk_switch_set_state(GTK_SWITCH(switch_3[9]), FALSE);
-	};
-	g_signal_connect (G_OBJECT(switch_3[9]), "notify::active", G_CALLBACK(expander_switch_cb), 
-				(gpointer) &mhd_ctl->iflag_zonal_mean_control);
-	g_signal_connect(G_OBJECT(expander_MHD_ctl[9]), "activate", G_CALLBACK(expander_action_cb), 
-				(gpointer) &mhd_ctl->iflag_zonal_mean_control);
+	get_label_SGS_MHD_ctl(8, c_label);
+	add_control_block_box(c_label, &mhd_ctl->iflag_visual_control,
+				hbox_3[8], expander_MHD_ctl[8]);
+	
+	get_label_SGS_MHD_ctl(9, c_label);
+	add_control_block_box(c_label, &mhd_ctl->iflag_zonal_mean_control,
+				hbox_3[9], expander_MHD_ctl[9]);
+	
 	
 	for (i=0;i<NLBL_SGS_MHD_CTL;i++){
-		vbox_2[i] = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-		
-		hbox_3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-		
-		get_label_SGS_MHD_ctl(i, c_label);
-		
-		gtk_box_pack_start(GTK_BOX(hbox_3), gtk_label_new(c_label), FALSE, FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(hbox_3), switch_3[i], FALSE, FALSE, 0);
-		
-		if(i==3){
-			entry_3 = gtk_entry_new();
-			gtk_entry_set_text(entry_3, mhd_ctl->shell_ctl_file_name);
-			g_signal_connect(G_OBJECT(entry_3), "activate", G_CALLBACK(file_name_cb), 
-				(gpointer) mhd_ctl->shell_ctl_file_name);
-			
-			button_S = gtk_button_new_with_label("Save");
-			g_signal_connect(G_OBJECT(button_S), "clicked", G_CALLBACK(cb_Save_sph), 
-						(gpointer) entry_3);
-			
-			gtk_box_pack_start(GTK_BOX(hbox_3), gtk_label_new("File:"), FALSE, FALSE, 0);
-			gtk_box_pack_start(GTK_BOX(hbox_3), entry_3, TRUE, TRUE, 0);
-			gtk_box_pack_start(GTK_BOX(hbox_3), button_S, FALSE, FALSE, 0);
-		};
-		
-		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3, TRUE, TRUE, 0);
-		gtk_box_pack_start(GTK_BOX(vbox_1), expander_MHD_ctl[i], TRUE, TRUE, 0);
-		
-		
         if(iflag_read_mhd > 0){
             if(i == 0){add_platoform_box(mhd_ctl->files, vbox_2[i]);};
             if(i == 1){add_platoform_box(mhd_ctl->org_files, vbox_2[i]);};
-            if(i == 2){add_platoform_box(mhd_ctl->new_files, vbox_2[i]);};
+			if(i == 2){add_platoform_box(mhd_ctl->new_files, vbox_2[i]);};
+			if(i == 3){add_parallel_shell_box(mhd_ctl->shell_ctl, vbox_2[i]);};
 		};
 		
-		Frame_2[i] = gtk_frame_new("");
 		gtk_frame_set_shadow_type(GTK_FRAME(Frame_2[i]), GTK_SHADOW_IN);
 		gtk_container_add(GTK_CONTAINER(Frame_2[i]), vbox_2[i]);
 		
-		hbox_2[i] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 		gtk_box_pack_start(GTK_BOX(hbox_2[i]), gtk_label_new("  "), FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(hbox_2[i]), Frame_2[i], TRUE, TRUE, 0);
+		
+		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], TRUE, TRUE, 0);
 		gtk_container_add(GTK_CONTAINER(expander_MHD_ctl[i]), hbox_2[i]);
+		gtk_box_pack_start(GTK_BOX(vbox_1), expander_MHD_ctl[i], TRUE, TRUE, 0);
 	};
 	gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
 	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
@@ -520,6 +423,6 @@ int main(int argc, char** argv)
 	
 	gtk_widget_show_all(window);
 	gtk_main();
-
+	
 	return 0;
 }

@@ -16,6 +16,8 @@
 #include "t_ctl_data_4_FEM_mesh_c.h"
 #include "t_ctl_data_4_sphere_model_c.h"
 
+#define NLBL_SPH_SHELL_CTL      3
+
 struct parallel_sph_shell_control_c{
 	int maxlen;
 	

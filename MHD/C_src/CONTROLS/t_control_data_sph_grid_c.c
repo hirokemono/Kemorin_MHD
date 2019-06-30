@@ -7,7 +7,6 @@
 
 #include "t_control_data_sph_grid_c.h"
 
-#define NLBL_SPH_SHELL_CTL      3
 
 FILE *FP_Shell;
 
