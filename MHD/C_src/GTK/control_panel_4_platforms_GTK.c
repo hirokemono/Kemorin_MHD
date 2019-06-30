@@ -73,7 +73,7 @@ static void file_prefix_cb(GtkEntry *entry, gpointer data)
     return;
 }
 
-int find_file_fmt_index(struct chara_ctl_item *file_fmt_c){
+static int find_file_fmt_index(struct chara_ctl_item *file_fmt_c){
 	int i;
 	
 	for(i=0;i<8;i++){

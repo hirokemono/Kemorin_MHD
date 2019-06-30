@@ -181,7 +181,7 @@ void set_control_box(GtkWidget *vbox0){
 	
 	/* Generate expander */
 	get_label_MHD_control_head(c_label);
-	expander_Top = gtk_expander_new_with_mnemonic(c_label);
+    expander_Top = gtk_expander_new_with_mnemonic(c_label);        
 	
 	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	Frame_1 = gtk_frame_new("");
@@ -189,16 +189,20 @@ void set_control_box(GtkWidget *vbox0){
 	
 	for (i=0;i<NLBL_SGS_MHD_CTL;i++){
 		get_label_SGS_MHD_ctl(i, c_label);
-		expander_MHD_ctl[i] =  gtk_expander_new(c_label);
+        if(i == 3){
+            gtk_box_pack_start(GTK_BOX(vbox_1), gtk_label_new(c_label), FALSE, FALSE, 0);
+            expander_MHD_ctl[i] = gtk_expander_new("");
+        } else {
+            expander_MHD_ctl[i] =  gtk_expander_new(c_label);
+        }
 		gtk_box_pack_start(GTK_BOX(vbox_1), expander_MHD_ctl[i], TRUE, TRUE, 0);
 		
 		vbox_2[i] = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 		
-		if(i == 0){
-			
-			if(iflag_read_mhd > 0){
-				add_platoform_box(mhd_ctl->files, vbox_2[0]);
-			};
+        if(iflag_read_mhd > 0){
+            if(i == 0){add_platoform_box(mhd_ctl->files, vbox_2[i]);};
+            if(i == 1){add_platoform_box(mhd_ctl->org_files, vbox_2[i]);};
+            if(i == 2){add_platoform_box(mhd_ctl->new_files, vbox_2[i]);};
 		};
 		
 		Frame_2[i] = gtk_frame_new("");
