@@ -63,6 +63,7 @@ void get_label_mhd_evo_scheme_control(int index, char *label){
 void alloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl){
     int i;
     
+    mrst_ctl->iflag_use = 0;
     mrst_ctl->maxlen = 0;
     for (i=0;i<NLBL_MHD_REATART_CTL;i++){
         if(strlen(label_mhd_restart_control[i]) > mrst_ctl->maxlen){
@@ -79,20 +80,26 @@ void dealloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl){
 	
     dealloc_chara_ctl_item_c(mrst_ctl->restart_flag_c);
 	free(mrst_ctl->restart_flag_c);
+    mrst_ctl->iflag_use = 0;
 	
 	return;
 }
-int read_mhd_restart_control_c(FILE *fp, char buf[LENGTHBUF], 
+void read_mhd_restart_control_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct mhd_restart_control_c *mrst_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
 		read_chara_ctl_item_c(buf, label_mhd_restart_control[0], mrst_ctl->restart_flag_c);
 	};
-	return 1;
+    mrst_ctl->iflag_use = 1;
+    return;
 }
+
 int write_mhd_restart_control_c(FILE *fp, int level, const char *label, 
                                 struct mhd_restart_control_c *mrst_ctl){
+    if(mrst_ctl->iflag_use == 0) return level;
+    
+    fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	write_chara_ctl_item_c(fp, level, mrst_ctl->maxlen, 
 				label_mhd_restart_control[0], mrst_ctl->restart_flag_c);
@@ -103,6 +110,7 @@ int write_mhd_restart_control_c(FILE *fp, int level, const char *label,
 void alloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl){
     int i;
     
+    mevo_ctl->iflag_use = 0;
     mevo_ctl->maxlen = 0;
     for (i=0;i<NLBL_MHD_EVO_SCHEME_CTL;i++){
         if(strlen(label_mhd_evo_scheme_control[i]) > mevo_ctl->maxlen){
@@ -219,9 +227,11 @@ void dealloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl)
 	free(mevo_ctl->SR_routine_c);
 	
 	free(mevo_ctl->leg_vector_len_c);
-	return;
+
+    mevo_ctl->iflag_use = 0;
+    return;
 }
-int read_mhd_evo_scheme_control_c(FILE *fp, char buf[LENGTHBUF], 
+void read_mhd_evo_scheme_control_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct mhd_evo_scheme_control_c *mevo_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
@@ -260,10 +270,14 @@ int read_mhd_evo_scheme_control_c(FILE *fp, char buf[LENGTHBUF],
 		
 		read_integer_ctl_item_c(buf, label_mhd_evo_scheme_control[23], mevo_ctl->leg_vector_len_c);
 	};
-	return 1;
+    mevo_ctl->iflag_use = 1;
+	return;
 }
 int write_mhd_evo_scheme_control_c(FILE *fp, int level, const char *label, 
                                    struct mhd_evo_scheme_control_c *mevo_ctl){
+    if(mevo_ctl->iflag_use == 0) return level;
+    
+    fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	write_chara_ctl_item_c(fp, level, mevo_ctl->maxlen, 
 				label_mhd_evo_scheme_control[15], mevo_ctl->scheme_c);

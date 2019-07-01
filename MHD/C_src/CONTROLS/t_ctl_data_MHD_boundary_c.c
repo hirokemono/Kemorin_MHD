@@ -70,6 +70,7 @@ static void alloc_MHD_bc_ctl_c(struct MHD_boundary_ctl_c *nod_bc_ctl){
 void alloc_MHD_node_bc_ctl_c(struct MHD_boundary_ctl_c *nod_bc_ctl){
 	int i;
 	
+    nod_bc_ctl->iflag_use = 0;
 	nod_bc_ctl->maxlen = 0;
 	for (i=0;i<NLBL_NODE_BC_CTL;i++){
 		if(strlen(label_MHD_node_bc_ctl[i]) > nod_bc_ctl->maxlen){
@@ -83,6 +84,7 @@ void alloc_MHD_node_bc_ctl_c(struct MHD_boundary_ctl_c *nod_bc_ctl){
 void alloc_MHD_surf_bc_ctl_c(struct MHD_boundary_ctl_c *surf_bc_ctl){
 	int i;
 	
+    surf_bc_ctl->iflag_use = 0;
 	surf_bc_ctl->maxlen = 0;
 	for (i=0;i<NLBL_SURF_BC_CTL;i++){
 		if(strlen(label_MHD_surf_bc_ctl[i]) > surf_bc_ctl->maxlen){
@@ -113,11 +115,12 @@ void dealloc_MHD_boundary_ctl_c(struct MHD_boundary_ctl_c *bc_ctl){
     free(bc_ctl->bc_A_ctl);
     free(bc_ctl->bc_J_ctl);
     free(bc_ctl->bc_infty_ctl);
-	
+
+    bc_ctl->iflag_use = 0;
 	return;
 };
 
-int read_MHD_node_bc_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_MHD_node_bc_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct MHD_boundary_ctl_c *nod_bc_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
@@ -131,10 +134,11 @@ int read_MHD_node_bc_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara2_real_clist(fp, buf, label_MHD_node_bc_ctl[ 6], nod_bc_ctl->bc_A_ctl);
 		read_chara2_real_clist(fp, buf, label_MHD_node_bc_ctl[ 7], nod_bc_ctl->bc_J_ctl);
 	};
-	return 1;
+    nod_bc_ctl->iflag_use = 1;
+	return;
 };
 
-int read_MHD_surf_bc_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_MHD_surf_bc_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct MHD_boundary_ctl_c *surf_bc_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
@@ -149,12 +153,15 @@ int read_MHD_surf_bc_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara2_real_clist(fp, buf, label_MHD_surf_bc_ctl[ 7], surf_bc_ctl->bc_J_ctl);
 		read_chara2_real_clist(fp, buf, label_MHD_surf_bc_ctl[ 8], surf_bc_ctl->bc_infty_ctl);
 	};
-	return 1;
+    surf_bc_ctl->iflag_use = 1;
+	return;
 };
 
 int write_MHD_node_bc_ctl_c(FILE *fp, int level, const char *label,
                             struct MHD_boundary_ctl_c *nod_bc_ctl){
+    if(nod_bc_ctl->iflag_use == 0) return level;
 	
+    fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_chara2_real_clist(fp, level, label_MHD_node_bc_ctl[0], nod_bc_ctl->bc_T_ctl);
@@ -172,7 +179,9 @@ int write_MHD_node_bc_ctl_c(FILE *fp, int level, const char *label,
 
 int write_MHD_surf_bc_ctl_c(FILE *fp, int level, const char *label,
                             struct MHD_boundary_ctl_c *surf_bc_ctl){
+    if(surf_bc_ctl->iflag_use == 0) return level;
 	
+    fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_chara2_real_clist(fp, level, label_MHD_surf_bc_ctl[0], surf_bc_ctl->bc_T_ctl);

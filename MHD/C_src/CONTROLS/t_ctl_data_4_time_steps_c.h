@@ -18,6 +18,7 @@
 #include "t_control_chara_IO.h"
 
 struct time_data_control_c{
+    int iflag_use;
     int maxlen;
     
     struct int_ctl_item *i_step_init_c;
@@ -69,7 +70,7 @@ void get_label_time_data_ctl(int index, char *label);
 void alloc_time_data_control_c(struct time_data_control_c *tctl);
 void dealloc_time_data_control_c(struct time_data_control_c *tctl);
 
-int read_time_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_time_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct time_data_control_c *tctl);
 int write_time_data_control_c(FILE *fp, int level, const char *label, 
 			struct time_data_control_c *tctl);

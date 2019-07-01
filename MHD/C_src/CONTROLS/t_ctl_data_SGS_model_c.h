@@ -19,6 +19,7 @@
 #include "t_ctl_data_sph_filter_list.h"
 
 struct filter_file_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_ctl_item *filter_head_c;
@@ -39,6 +40,7 @@ struct filter_file_ctl_c{
 };
 
 struct layering_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_ctl_item *layering_grp_type_c;
@@ -54,6 +56,7 @@ struct layering_ctl_c{
 };
 
 struct SGS_3d_filter_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_clist *whole_filter_grp_list;
@@ -66,6 +69,7 @@ struct SGS_3d_filter_ctl_c{
 };
 
 struct SGS_model_control_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_ctl_item *SGS_model_name_c;
@@ -107,13 +111,8 @@ struct SGS_model_control_c{
 	struct chara_clist *SGS_terms_list;
 	struct chara_clist *commutate_fld_list;
 	
-	int iflag_file_ctl;
 	struct filter_file_ctl_c *ffile_c;
-	
-	int iflag_layer_ctl;
 	struct layering_ctl_c *elayer_c;
-	
-	int iflag_3dfilter_ctl;
 	struct SGS_3d_filter_ctl_c *s3df_c;
 	
 	struct sph_filter_ctl_list sph_filter_list;
@@ -128,28 +127,28 @@ void get_label_SGS_model_ctl(int index, char *label);
 
 void alloc_filter_file_ctl_c(struct filter_file_ctl_c *ffile_c);
 void dealloc_filter_file_ctl_c(struct filter_file_ctl_c *ffile_c);
-int read_filter_file_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_filter_file_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct filter_file_ctl_c *ffile_c);
 int write_filter_file_ctl_c(FILE *fp, int level, const char *label, 
                             struct filter_file_ctl_c *ffile_c);
 
 void alloc_layering_ctl_c(struct layering_ctl_c *elayer_c);
 void dealloc_layering_ctl_c(struct layering_ctl_c *elayer_c);
-int read_layering_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_layering_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct layering_ctl_c *elayer_c);
 int write_layering_ctl_c(FILE *fp, int level, const char *label, 
                          struct layering_ctl_c *elayer_c);
 
 void alloc_SGS_3d_filter_ctl_c(struct SGS_3d_filter_ctl_c *s3df_c);
 void dealloc_SGS_3d_filter_ctl_c(struct SGS_3d_filter_ctl_c *s3df_c);
-int read_SGS_3d_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_SGS_3d_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct SGS_3d_filter_ctl_c *s3df_c);
 int write_SGS_3d_filter_ctl_c(FILE *fp, int level, const char *label, 
                               struct SGS_3d_filter_ctl_c *s3df_c);
 
 void alloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c);
 void dealloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c);
-int read_SGS_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_SGS_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct SGS_model_control_c *SGS_ctl_c);
 int write_SGS_model_ctl_c(FILE *fp, int level, const char *label,
                           struct SGS_model_control_c *SGS_ctl_c);

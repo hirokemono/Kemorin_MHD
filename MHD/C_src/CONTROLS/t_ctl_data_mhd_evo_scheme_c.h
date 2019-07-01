@@ -18,12 +18,14 @@
 #include "t_control_chara_IO.h"
 
 struct mhd_restart_control_c{
+    int iflag_use;
     int maxlen;
     
     struct chara_ctl_item *restart_flag_c;
 };
 
 struct mhd_evo_scheme_control_c{
+    int iflag_use;
     int maxlen;
     
     struct chara_ctl_item *coef_imp_v_c;
@@ -66,14 +68,14 @@ void get_label_mhd_evo_scheme_control(int index, char *label);
 
 void alloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl);
 void dealloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl);
-int read_mhd_restart_control_c(FILE *fp, char buf[LENGTHBUF], 
+void read_mhd_restart_control_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct mhd_restart_control_c *mrst_ctl);
 int write_mhd_restart_control_c(FILE *fp, int level, const char *label, 
                                 struct mhd_restart_control_c *mrst_ctl);
 
 void alloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl);
 void dealloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl);
-int read_mhd_evo_scheme_control_c(FILE *fp, char buf[LENGTHBUF], 
+void read_mhd_evo_scheme_control_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct mhd_evo_scheme_control_c *mevo_ctl);
 int write_mhd_evo_scheme_control_c(FILE *fp, int level, const char *label, 
                                    struct mhd_evo_scheme_control_c *mevo_ctl);

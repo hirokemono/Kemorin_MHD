@@ -23,6 +23,7 @@ void get_label_field_ctl(int index, char *label){
 void alloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	int i;
 	
+    fld_ctl->iflag_use = 0;
 	fld_ctl->maxlen = 0;
 	for (i=0;i<NLBL_FIELD_CTL;i++){
 		if(strlen(label_field_ctl[i]) > fld_ctl->maxlen){
@@ -50,6 +51,7 @@ void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	clear_chara_int2_ctl_list(&fld_ctl->field_list);
 	clear_chara_ctl_list(&fld_ctl->quad_phys_list);
 	
+    fld_ctl->iflag_use = 0;
 	return;
 };
 
@@ -137,7 +139,7 @@ static int write_field_ctl_list(FILE *fp, int level, const char *label,
     return level;
 };
 
-int read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct field_ctl_c *fld_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
@@ -147,10 +149,13 @@ int read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		read_chara_ctl_list(fp, buf, label_field_ctl[ 1], &fld_ctl->quad_phys_list);
 	};
-	return 1;
+    fld_ctl->iflag_use = 1;
+	return;
 };
 
 int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c *fld_ctl){
+    if(fld_ctl->iflag_use == 0) return level;
+    
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_field_ctl_list(fp, level, label_field_ctl[0], 

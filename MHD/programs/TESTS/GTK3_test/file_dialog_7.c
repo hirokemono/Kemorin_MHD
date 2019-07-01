@@ -4,12 +4,13 @@
 #include "control_elements_IO_GTK.h"
 #include "ctl_panel_platforms_GTK.h"
 #include "ctl_panel_para_sph_shell_GTK.h"
+#include "ctl_panel_SPH_MHD_model_GTK.h"
 
 
 int iflag_read_mhd = 0;
 struct SGS_MHD_control_c *mhd_ctl;
 
-void set_control_box(GtkWidget *vbox0);
+GtkWidget *make_control_hbox();
 
 GtkWidget *window;
 GtkWidget *expander_Top;
@@ -24,9 +25,10 @@ static void cb_New(GtkButton *button, gpointer data)
 
 static void cb_Open(GtkButton *button, gpointer data)
 {
-  GtkWidget *dialog;
-  GtkWidget *parent;
-  GtkEntry *entry;
+	GtkWidget *hbox_0;
+	GtkWidget *dialog;
+	GtkWidget *parent;
+	GtkEntry *entry;
 	
   /* Four selections for GtkFileChooserAction */
 	GtkFileChooserAction action[] = {GTK_FILE_CHOOSER_ACTION_OPEN, GTK_FILE_CHOOSER_ACTION_SAVE,
@@ -68,7 +70,8 @@ static void cb_Open(GtkButton *button, gpointer data)
 		
 		g_free(read_file_name);
         
-		set_control_box(vbox_0);
+		hbox_0 = make_control_hbox(vbox_0);
+		gtk_box_pack_start(GTK_BOX(vbox_0), hbox_0, TRUE, TRUE, 0);
 		gtk_widget_show_all(window);
 	}else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
@@ -202,8 +205,9 @@ void set_file_box(GtkWidget *vbox0){
 	gtk_box_pack_start(GTK_BOX(vbox0), hbox, FALSE, FALSE, 0);
 };
 
-void set_control_box(GtkWidget *vbox0){
-	GtkWidget *hbox_1, *vbox_1, *Frame_1;
+GtkWidget *make_control_hbox(){
+	GtkWidget *hbox;
+	GtkWidget *vbox_1;
 	GtkWidget *hbox_3[NLBL_SGS_MHD_CTL];
     GtkWidget *sph_save_bottun = gtk_button_new_with_label("Save");
 	
@@ -216,8 +220,6 @@ void set_control_box(GtkWidget *vbox0){
     expander_Top = gtk_expander_new_with_mnemonic(c_label);
 	
 	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	Frame_1 = gtk_frame_new("");
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
 	
 	get_label_SGS_MHD_ctl(0, c_label);
 	hbox_3[0] = make_platoform_hbox(c_label, mhd_ctl->files);
@@ -235,10 +237,10 @@ void set_control_box(GtkWidget *vbox0){
 				mhd_ctl->shell_ctl, sph_save_bottun);
 	
 	get_label_SGS_MHD_ctl(4, c_label);
-	hbox_3[4] = make_empty_ctl_hbox(c_label, &mhd_ctl->iflag_model);
+	hbox_3[4] = make_mhd_model_ctl_hbox(c_label, mhd_ctl->model_ctl);
 	
 	get_label_SGS_MHD_ctl(5, c_label);
-    hbox_3[5] = make_empty_ctl_hbox(c_label, &mhd_ctl->iflag_control);
+    hbox_3[5] = make_mhd_control_ctl_hbox(c_label, mhd_ctl->control_ctl);
 	
 	get_label_SGS_MHD_ctl(6, c_label);
     hbox_3[6] = make_empty_ctl_hbox(c_label, &mhd_ctl->iflag_sph_monitor_ctl);
@@ -255,13 +257,10 @@ void set_control_box(GtkWidget *vbox0){
 	for (i=0;i<NLBL_SGS_MHD_CTL;i++){
 		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], TRUE, TRUE, 0);
 	};
-	gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
-	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
-	gtk_container_add(GTK_CONTAINER(expander_Top), hbox_1);
-    
-	gtk_box_pack_start(GTK_BOX(vbox0), expander_Top, TRUE, TRUE, 0);
+	
+	get_label_MHD_control_head(c_label);
+    hbox = make_expand_ctl_hbox(c_label, &iflag_read_mhd, 700, vbox_1);
+    return hbox;
 };
 
 int main(int argc, char** argv)
@@ -279,13 +278,7 @@ int main(int argc, char** argv)
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
 	vbox_0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	/*
-	scroll_window = gtk_scrolled_window_new(NULL, NULL);
-	gtk_box_pack_start(GTK_BOX(vbox_0), scroll_window, TRUE, TRUE, 0);
-	*/
-	/*
-	gtk_box_pack_start(GTK_BOX(vbox_0), gtk_label_new(" BoxBoxBox "), TRUE, TRUE, 0);
-     */
+	
 	set_file_box(vbox_0);
 	gtk_container_add(GTK_CONTAINER(window), vbox_0);
 	

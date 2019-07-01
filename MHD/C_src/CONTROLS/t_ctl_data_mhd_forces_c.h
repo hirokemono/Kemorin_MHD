@@ -23,12 +23,14 @@
 
 
 struct forces_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_clist *force_names_list;
 };
 
 struct gravity_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_ctl_item *gravity_c;
@@ -36,12 +38,14 @@ struct gravity_ctl_c{
 };
 
 struct coriolis_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_real_clist *system_rotation_list;
 };
 
 struct magneto_cv_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_ctl_item *magneto_cv_c;
@@ -57,28 +61,28 @@ void get_label_magneto_cv_ctl(int index, char *label);
 
 void alloc_forces_ctl_c(struct forces_ctl_c *frc_ctl);
 void dealloc_forces_ctl_c(struct forces_ctl_c *frc_ctl);
-int read_forces_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_forces_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct forces_ctl_c *frc_ctl);
 int write_forces_ctl_c(FILE *fp, int level,	const char *label,
                        struct forces_ctl_c *frc_ctl);
 
 void alloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl);
 void dealloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl);
-int read_gravity_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_gravity_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct gravity_ctl_c *g_ctl);
 int write_gravity_ctl_c(FILE *fp, int level, const char *label, 
                         struct gravity_ctl_c *g_ctl);
 
 void alloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl);
 void dealloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl);
-int read_coriolis_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_coriolis_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct coriolis_ctl_c *cor_ctl);
 int write_coriolis_ctl_c(FILE *fp, int level, const char *label,
                          struct coriolis_ctl_c *cor_ctl);
 
 void alloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl);
 void dealloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl);
-int read_magneto_cv_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_magneto_cv_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct magneto_cv_ctl_c *mcv_ctl);
 int write_magneto_cv_ctl_c(FILE *fp, int level, const char *label,
                            struct magneto_cv_ctl_c *mcv_ctl);

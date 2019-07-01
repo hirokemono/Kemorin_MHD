@@ -23,6 +23,7 @@
 
 
 struct field_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara3_ctl_item *tmp_fld_item;
@@ -47,7 +48,7 @@ void get_label_field_ctl(int index, char *label);
 
 void alloc_field_ctl_c(struct field_ctl_c *fld_ctl);
 void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl);
-int read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct field_ctl_c *fld_ctl);
 int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c *fld_ctl);
 

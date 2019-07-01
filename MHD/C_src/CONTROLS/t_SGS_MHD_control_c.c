@@ -46,8 +46,6 @@ void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 		};
 	};
 	
-	mhd_ctl->iflag_model =               0;
-	mhd_ctl->iflag_control =             0;
     mhd_ctl->iflag_sph_monitor_ctl =     0;
 	mhd_ctl->iflag_node_monitor_ctl =    0;
 	mhd_ctl->iflag_visual_control =      0;
@@ -88,8 +86,6 @@ void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
     mhd_ctl->iflag_visual_control =      0;
     mhd_ctl->iflag_node_monitor_ctl =    0;
     mhd_ctl->iflag_sph_monitor_ctl =     0;
-    mhd_ctl->iflag_control =             0;
-    mhd_ctl->iflag_model =               0;
 	
 	dealloc_sph_zonal_means_controls_c(mhd_ctl->zm_ctls);
 	free(mhd_ctl->zm_ctls);
@@ -138,10 +134,10 @@ int read_SGS_MHD_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		};
 		
 		if(right_begin_flag_c(buf, label_SGS_MHD_ctl[4]) > 0){
-			mhd_ctl->iflag_model = read_mhd_model_ctl_c(fp, buf, label_SGS_MHD_ctl[4], mhd_ctl->model_ctl);
+			read_mhd_model_ctl_c(fp, buf, label_SGS_MHD_ctl[4], mhd_ctl->model_ctl);
 		};
 		if(right_begin_flag_c(buf, label_SGS_MHD_ctl[5]) > 0){
-			mhd_ctl->iflag_control = read_mhd_control_ctl_c(fp, buf, label_SGS_MHD_ctl[5], mhd_ctl->control_ctl);
+			read_mhd_control_ctl_c(fp, buf, label_SGS_MHD_ctl[5], mhd_ctl->control_ctl);
 		};
 		if(right_begin_flag_c(buf, label_SGS_MHD_ctl[6]) > 0){
 			mhd_ctl->iflag_sph_monitor_ctl = read_sph_monitor_ctl_c(fp, buf, label_SGS_MHD_ctl[6], mhd_ctl->smtr_ctl);
@@ -173,14 +169,8 @@ int write_SGS_MHD_control_c(FILE *fp, int level, const char *label,
 		level = write_spherical_shell_ctl_c(fp, level, label_SGS_MHD_ctl[3], mhd_ctl->shell_ctl);
 	};
 	
-	if(mhd_ctl->iflag_model > 0){
-		fprintf(fp, "!\n");
-		level = write_mhd_model_ctl_c(fp, level, label_SGS_MHD_ctl[4], mhd_ctl->model_ctl);
-	};
-	if(mhd_ctl->iflag_control > 0){
-		fprintf(fp, "!\n");
-		level = write_mhd_control_ctl_c(fp, level, label_SGS_MHD_ctl[5], mhd_ctl->control_ctl);
-	};
+    level = write_mhd_model_ctl_c(fp, level, label_SGS_MHD_ctl[4], mhd_ctl->model_ctl);
+    level = write_mhd_control_ctl_c(fp, level, label_SGS_MHD_ctl[5], mhd_ctl->control_ctl);
 	if(mhd_ctl->iflag_sph_monitor_ctl > 0){
 		fprintf(fp, "!\n");
 		level = write_sph_monitor_ctl_c(fp, level, label_SGS_MHD_ctl[6], mhd_ctl->smtr_ctl);

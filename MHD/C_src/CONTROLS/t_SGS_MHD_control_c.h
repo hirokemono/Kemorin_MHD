@@ -36,9 +36,7 @@ struct SGS_MHD_control_c{
 	char *shell_ctl_file_name;
 	struct parallel_sph_shell_control_c *shell_ctl;
 	
-	int iflag_model;
 	struct mhd_model_control_c *model_ctl;
-	int iflag_control;
 	struct sph_mhd_control_control_c *control_ctl;
 	
 	int iflag_sph_monitor_ctl;

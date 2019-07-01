@@ -17,6 +17,7 @@
 #include "t_control_chara_IO.h"
 
 struct reference_point_ctl_c{
+    int iflag_use;
     int maxlen;
 	
 	struct real_ctl_item *value_c;
@@ -24,6 +25,7 @@ struct reference_point_ctl_c{
 };
 
 struct takepiro_model_ctl_c{
+    int iflag_use;
     int maxlen;
 	
 	struct real_ctl_item *stratified_sigma_c;
@@ -32,16 +34,14 @@ struct takepiro_model_ctl_c{
 };
 
 struct reference_temperature_c{
+    int iflag_use;
     int maxlen;
 	
     struct chara_ctl_item *reference_c;
 	struct chara_ctl_item *stratified_c;
 	
-	int iflag_low_temp_ctl;
 	struct reference_point_ctl_c *low_c;
-	int iflag_high_temp_ctl;
 	struct reference_point_ctl_c *high_c;
-	int iflag_takepiro_c;
 	struct takepiro_model_ctl_c *takepiro_c;
 };
 
@@ -52,9 +52,9 @@ void get_label_ref_temperature_ctl(int index, char *label);
 
 void alloc_reference_point_ctl_c(struct reference_point_ctl_c *ref_c);
 void dealloc_reference_point_ctl_c(struct reference_point_ctl_c *ref_c);
-int read_reftemp_point_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_reftemp_point_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct reference_point_ctl_c *ref_c);
-int read_refcomp_point_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_refcomp_point_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct reference_point_ctl_c *ref_c);
 int write_reftemp_point_ctl_c(FILE *fp, int level, const char *label, 
                               struct reference_point_ctl_c *ref_c);
@@ -63,16 +63,16 @@ int write_refcomp_point_ctl_c(FILE *fp, int level, const char *label,
 
 void alloc_takepiro_model_ctl_c(struct takepiro_model_ctl_c *takepiro_c);
 void dealloc_takepiro_model_ctl_c(struct takepiro_model_ctl_c *takepiro_c);
-int read_rtakepiro_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_rtakepiro_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct takepiro_model_ctl_c *takepiro_c);
 int write_takepiro_model_ctl_c(FILE *fp, int level, const char *label, 
                                struct takepiro_model_ctl_c *takepiro_c);
 
 void alloc_ref_temperature_ctl_c(struct reference_temperature_c *reft_ctl);
 void dealloc_ref_temperature_ctl_c(struct reference_temperature_c *reft_ctl);
-int read_ref_temperature_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_ref_temperature_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct reference_temperature_c *reft_ctl);
-int read_ref_composition_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_ref_composition_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct reference_temperature_c *refc_ctl);
 int write_ref_temperature_ctl_c(FILE *fp, int level, const char *label, 
                                 struct reference_temperature_c *reft_ctl);

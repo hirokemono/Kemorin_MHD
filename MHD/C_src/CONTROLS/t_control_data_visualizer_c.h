@@ -21,7 +21,6 @@ struct viz_only_ctl_c{
     int maxlen;
 	
     struct platform_data_control_c *files;
-	int iflag_time_data_control;
     struct time_data_control_c *tctl;
 	int iflag_visualizers_ctl;
     struct visualizers_ctl_c *viz_c;

@@ -7,52 +7,91 @@
 
 #include "ctl_panel_SPH_MHD_model_GTK.h"
 
-GtkWidget * make_parallel_shell_hbox(struct parallel_sph_shell_control_c *shell_ctl){
+GtkWidget *make_mhd_model_ctl_hbox(const char *label_hd, 
+			struct mhd_model_control_c *model_ctl){
 	int i;
 	char *c_label;
 	
-	GtkWidget *hbox_2[NLBL_SPH_SHELL_CTL], *hbox_3[NLBL_SPH_SHELL_CTL];
-	GtkWidget *expander_SPH_ctl[NLBL_SPH_SHELL_CTL];
+	GtkWidget *hbox_3[NLBL_MHD_MODEL_CTL];
 	
-	GtkWidget *vbox_sph_shell = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);;
-	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *Frame = gtk_frame_new("");
-	
-	for (i=0;i<NLBL_SPH_SHELL_CTL;i++){
-		hbox_3[i] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-		expander_SPH_ctl[i] = gtk_expander_new("");
-	};
+	GtkWidget *hbox;
+	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);;
 	
 	c_label = (char *)calloc(KCHARA_C, sizeof(char));
-	get_label_sph_shell_ctl(0, c_label);
-	add_control_block_box(c_label, &shell_ctl->iflag_FEM_mesh_ctl,
-				hbox_3[0], expander_SPH_ctl[0]);
-	hbox_2[0] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+	get_label_mhd_model_ctl(0, c_label);
+	hbox_3[0] = make_empty_ctl_hbox(c_label, &model_ctl->fld_ctl->iflag_use);
 	
-	free(c_label);
+	get_label_mhd_model_ctl(1, c_label);
+	hbox_3[1] = make_empty_ctl_hbox(c_label, &model_ctl->evo_ctl->iflag_use);
 	
-	gtk_widget_set_size_request(scrolled_window, 300, 400);
-	gtk_scrolled_window_set_max_content_height(scrolled_window, 400);
-	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
-				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+	get_label_mhd_model_ctl(2, c_label);
+	hbox_3[2] = make_empty_ctl_hbox(c_label, &model_ctl->earea_ctl->iflag_use);
 	
+	get_label_mhd_model_ctl(3, c_label);
+	hbox_3[3] = make_empty_ctl_hbox(c_label, &model_ctl->nbc_ctl->iflag_use);
 	
-	for(i=0;i<NLBL_SPH_SHELL_CTL;i++){
-		gtk_box_pack_start(GTK_BOX(vbox_sph_shell), hbox_3[i], FALSE, FALSE, 0);
-		gtk_container_add(GTK_CONTAINER(expander_SPH_ctl[i]), hbox_2[i]);
-		gtk_box_pack_start(GTK_BOX(vbox_sph_shell), expander_SPH_ctl[i], TRUE, TRUE, 0);
+	get_label_mhd_model_ctl(4, c_label);
+	hbox_3[4] = make_empty_ctl_hbox(c_label, &model_ctl->sbc_ctl->iflag_use);
+	
+	get_label_mhd_model_ctl(5, c_label);
+	hbox_3[5] = make_empty_ctl_hbox(c_label, &model_ctl->frc_ctl->iflag_use);
+	
+	get_label_mhd_model_ctl(6, c_label);
+	hbox_3[6] = make_empty_ctl_hbox(c_label, &model_ctl->dless_ctl->iflag_use);
+	
+	get_label_mhd_model_ctl(7, c_label);
+	hbox_3[7] = make_empty_ctl_hbox(c_label, &model_ctl->eqs_ctl->iflag_use);
+	
+	get_label_mhd_model_ctl(8, c_label);
+	hbox_3[8] = make_empty_ctl_hbox(c_label, &model_ctl->g_ctl->iflag_use);
+	
+	get_label_mhd_model_ctl(9, c_label);
+	hbox_3[9] = make_empty_ctl_hbox(c_label, &model_ctl->cor_ctl->iflag_use);
+	
+	get_label_mhd_model_ctl(10, c_label);
+	hbox_3[10] = make_empty_ctl_hbox(c_label, &model_ctl->mcv_ctl->iflag_use);
+	
+	get_label_mhd_model_ctl(11, c_label);
+	hbox_3[11] = make_empty_ctl_hbox(c_label, &model_ctl->reft_ctl->iflag_use);
+	
+	get_label_mhd_model_ctl(12, c_label);
+	hbox_3[12] = make_empty_ctl_hbox(c_label, &model_ctl->refc_ctl->iflag_use);
+	
+	get_label_mhd_model_ctl(13, c_label);
+	hbox_3[13] = make_empty_ctl_hbox(c_label, &model_ctl->sgs_ctl->iflag_use);
+
+    for(i=0;i<NLBL_MHD_MODEL_CTL;i++){
+		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], TRUE, TRUE, 0);
 	};
-	gtk_scrolled_window_add_with_viewport (
-		GTK_SCROLLED_WINDOW(scrolled_window), vbox_sph_shell);
-	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, FALSE, FALSE, 0);
 	
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame), GTK_SHADOW_IN);
-	gtk_container_add(GTK_CONTAINER(Frame), vbox);
+	hbox = make_expand_ctl_hbox(label_hd, &model_ctl->iflag_use, 400, vbox_1);
+	return hbox;
+}
+
+GtkWidget *make_mhd_control_ctl_hbox(const char *label_hd, 
+			struct sph_mhd_control_control_c *control_ctl){
+	int i;
+	char *c_label;
 	
-	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), Frame, TRUE, TRUE, 0);
+	GtkWidget *hbox_3[NLBL_MHD_CONTROL_CTL];
+	
+	GtkWidget *hbox;
+	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);;
+	
+	c_label = (char *)calloc(KCHARA_C, sizeof(char));
+	get_label_mhd_control_ctl(0, c_label);
+	hbox_3[0] = make_empty_ctl_hbox(c_label, &control_ctl->tctl->iflag_use);
+	
+	get_label_mhd_control_ctl(1, c_label);
+	hbox_3[1] = make_empty_ctl_hbox(c_label, &control_ctl->mrst_ctl->iflag_use);
+	
+	get_label_mhd_control_ctl(2, c_label);
+	hbox_3[2] = make_empty_ctl_hbox(c_label, &control_ctl->mevo_ctl->iflag_use);
+
+    for(i=0;i<NLBL_MHD_CONTROL_CTL;i++){
+		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], TRUE, TRUE, 0);
+	};
+	
+	hbox = make_expand_ctl_hbox(label_hd, &control_ctl->iflag_use, 400, vbox_1);
 	return hbox;
 }

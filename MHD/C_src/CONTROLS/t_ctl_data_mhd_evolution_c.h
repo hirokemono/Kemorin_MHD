@@ -17,12 +17,14 @@
 
 
 struct mhd_evolution_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_clist *t_evo_field_list;
 };
 
 struct mhd_evo_area_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_clist *evo_fluid_group_list;
@@ -36,14 +38,14 @@ void get_label_mhd_evo_area_ctl(int index, char *label);
 
 void alloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl);
 void dealloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl);
-int read_mhd_evolution_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_mhd_evolution_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct mhd_evolution_ctl_c *evo_ctl);
 int write_mhd_evolution_ctl_c(FILE *fp, int level,
 			const char *label, struct mhd_evolution_ctl_c *evo_ctl);
 
 void alloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl);
 void dealloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl);
-int read_mhd_evo_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_mhd_evo_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct mhd_evo_area_ctl_c *earea_ctl);
 int write_mhd_evo_area_ctl_c(FILE *fp, int level, const char *label, 
                              struct mhd_evo_area_ctl_c *earea_ctl);
