@@ -14,13 +14,16 @@
 #include "t_control_int_IO.h"
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
+#include "tree_views_4_fixed_lists_GTK.h"
 
 void cb_expander_action(GObject *switch_3, gpointer data);
 
 GtkWidget *make_expand_ctl_hbox(const char *label_hd, int *iflag_use, int vsize_scroll,
 			GtkWidget *vbox_1);
 GtkWidget *make_empty_ctl_hbox(const char *label_hd, int *iflag_use);
-
+GtkWidget *make_expand_ctl_file_hbox(const char *label_hd, int *iflag_use, char *filke_name, 
+                                     int vsize_scroll, GtkWidget *vbox_1, GtkWidget *save_bottun);
+    
 GtkWidget *make_chara_ctl_switch_hbox(const char *label, struct chara_ctl_item *ctl_item);
 GtkWidget *make_toggle_hbox (const char *label, struct chara_ctl_item *ctl_item,
 			gboolean is_on, gboolean is_sensitive);

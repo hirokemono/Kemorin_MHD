@@ -7,7 +7,6 @@
 
 #include "ctl_panel_para_sph_shell_GTK.h"
 
-
 GtkWidget * make_FEM_mesh_ctl_hbox(const char *label_hd, struct FEM_mesh_control_c *Fmesh){
 	int i;
 	char *c_label;
@@ -165,7 +164,8 @@ GtkWidget * make_sph_shell_ctl_hbox(const char *label_hd, struct sphere_data_ctl
 	return hbox;
 }
 
-GtkWidget * make_parallel_shell_hbox(const char *label_hd, struct parallel_sph_shell_control_c *shell_ctl){
+GtkWidget *make_parallel_shell_hbox(const char *label_hd, char *shell_ctl_file_name, 
+			struct parallel_sph_shell_control_c *shell_ctl, GtkWidget *save_bottun){
 	int i;
 	char *c_label;
 	
@@ -189,6 +189,7 @@ GtkWidget * make_parallel_shell_hbox(const char *label_hd, struct parallel_sph_s
 		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], TRUE, TRUE, 0);
 	};
 	
-	hbox = make_expand_ctl_hbox(label_hd, &shell_ctl->iflag_use_file, 400, vbox_1);
+    hbox = make_expand_ctl_file_hbox(label_hd, &shell_ctl->iflag_use_file, 
+                                     shell_ctl_file_name, 400, vbox_1, save_bottun);
 	return hbox;
 }

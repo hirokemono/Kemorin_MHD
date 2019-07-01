@@ -5,19 +5,6 @@
 #include "ctl_panel_platforms_GTK.h"
 #include "ctl_panel_para_sph_shell_GTK.h"
 
-#define NONE_MODE   0
-#define FILE_MODE  -1
-#define TYPE_MODE   1
-
-const char *label_none =    "None";
-/*const char *label_begin = "Begin"; */
-/* const char *label_file =    "File"; */
-
-const char input_mode_labels[3][KCHARA_C] = {
-    "None",
-    "File", 
-    "Begin",
-};
 
 int iflag_read_mhd = 0;
 struct SGS_MHD_control_c *mhd_ctl;
@@ -94,9 +81,8 @@ static void cb_Open(GtkButton *button, gpointer data)
 
 static void cb_Save(GtkButton *button, gpointer data)
 {
-  GtkWidget *dialog;
-  GtkWidget *parent;
-  GtkEntry *entry;
+	GtkWidget *dialog;
+	GtkWidget *parent = GTK_WIDGET(data);
 	
   /* Four selections for GtkFileChooserAction */
 	GtkFileChooserAction action[] = {GTK_FILE_CHOOSER_ACTION_OPEN, GTK_FILE_CHOOSER_ACTION_SAVE,
@@ -104,8 +90,6 @@ static void cb_Save(GtkButton *button, gpointer data)
   gint response;
   gchar *write_file_name;
 
-  parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
-  entry = GTK_ENTRY(data);
 
 	/* generate file selection widget*/
 	dialog = gtk_file_chooser_dialog_new("File Chooser Dialog", GTK_WINDOW(parent), action[1],
@@ -119,8 +103,6 @@ static void cb_Save(GtkButton *button, gpointer data)
 		/* Get file name */
 		write_file_name = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		g_print( "Write file name: %s\n", write_file_name);
-		
-		gtk_entry_set_text(entry, write_file_name);
 		
 		write_SGS_MHD_control_file_c(write_file_name, mhd_ctl);
 		dealloc_SGS_MHD_control_c(mhd_ctl);
@@ -137,45 +119,40 @@ static void cb_Save(GtkButton *button, gpointer data)
 
 static void cb_Save_sph(GtkButton *button, gpointer data)
 {
-  GtkWidget *dialog;
-  GtkWidget *parent;
-  GtkEntry *entry;
-	
-  /* Four selections for GtkFileChooserAction */
-	GtkFileChooserAction action[] = {GTK_FILE_CHOOSER_ACTION_OPEN, GTK_FILE_CHOOSER_ACTION_SAVE,
-			GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER};
-  gint response;
-  gchar *write_file_name;
-
-  parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
-  entry = GTK_ENTRY(data);
-
-	/* generate file selection widget*/
-	dialog = gtk_file_chooser_dialog_new("File Chooser Dialog", GTK_WINDOW(parent), action[1],
-				"_Cancel", GTK_RESPONSE_CANCEL, "_Save", GTK_RESPONSE_ACCEPT, NULL);
-	
-	gtk_widget_show_all(dialog);
-	
-	response = gtk_dialog_run(GTK_DIALOG(dialog));
-	if( response == GTK_RESPONSE_ACCEPT ){
-		g_print( "File is selecting \n");
-		/* Get file name */
-		write_file_name = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		g_print( "Write file name: %s\n", write_file_name);
-		
-		gtk_entry_set_text(entry, write_file_name);
-		
-		write_spherical_shell_file_c(write_file_name, mhd_ctl->shell_ctl);
-		g_free(write_file_name);
-		iflag_read_mhd = 0;
-		
-	} else if( response == GTK_RESPONSE_CANCEL ){
-		g_print( "Cancel button was pressed.\n" );
-	} else{
-		g_print( "Another response was received.\n" );
-	};
-	gtk_widget_destroy(dialog);
+    GtkWidget *dialog;
+	GtkWidget *parent = GTK_WIDGET(data);
+    
+    /* Four selections for GtkFileChooserAction */
+    GtkFileChooserAction action[] = {GTK_FILE_CHOOSER_ACTION_OPEN, GTK_FILE_CHOOSER_ACTION_SAVE,
+        GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER};
+    gint response;
+    gchar *write_file_name;
+    
+    /* generate file selection widget*/
+    dialog = gtk_file_chooser_dialog_new("File Chooser Dialog", GTK_WINDOW(parent), action[1],
+                                         "_Cancel", GTK_RESPONSE_CANCEL, "_Save", GTK_RESPONSE_ACCEPT, NULL);
+    
+    gtk_widget_show_all(dialog);
+    
+    response = gtk_dialog_run(GTK_DIALOG(dialog));
+    if( response == GTK_RESPONSE_ACCEPT ){
+        g_print( "File is selecting \n");
+        /* Get file name */
+        write_file_name = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+        g_print( "Write file name: %s\n", write_file_name);
+        
+        write_spherical_shell_file_c(write_file_name, write_file_name);
+        g_free(write_file_name);
+        iflag_read_mhd = 0;
+        
+    } else if( response == GTK_RESPONSE_CANCEL ){
+        g_print( "Cancel button was pressed.\n" );
+    } else{
+        g_print( "Another response was received.\n" );
+    };
+    gtk_widget_destroy(dialog);
 }
+
 
 void expander_MHD_ctl_callback(GObject *object, GParamSpec *param_spec, gpointer user_data){
 	GtkExpander *expander;
@@ -212,9 +189,9 @@ void set_file_box(GtkWidget *vbox0){
 	button_S = gtk_button_new_with_label("Save");
 	button_Q = gtk_button_new_with_label("Quit");
 	
-	g_signal_connect(G_OBJECT(button_N), "clicked", G_CALLBACK(cb_New), (gpointer)entry);
-	g_signal_connect(G_OBJECT(button_O), "clicked", G_CALLBACK(cb_Open), (gpointer)entry);
-	g_signal_connect(G_OBJECT(button_S), "clicked", G_CALLBACK(cb_Save), (gpointer)entry);
+	g_signal_connect(G_OBJECT(button_N), "clicked", G_CALLBACK(cb_New), (gpointer) entry);
+	g_signal_connect(G_OBJECT(button_O), "clicked", G_CALLBACK(cb_Open), (gpointer) entry);
+	g_signal_connect(G_OBJECT(button_S), "clicked", G_CALLBACK(cb_Save), (gpointer) window);
 	g_signal_connect(G_OBJECT(button_Q), "clicked", G_CALLBACK(gtk_main_quit), NULL);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), button_N, FALSE, FALSE, 0);
@@ -225,87 +202,10 @@ void set_file_box(GtkWidget *vbox0){
 	gtk_box_pack_start(GTK_BOX(vbox0), hbox, FALSE, FALSE, 0);
 };
 
-static void set_block_mode_cb(GtkComboBox *combobox_cmap, gpointer data)
-{
-    int *iflag_block = (int *) data;
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
-    GtkTreeIter iter;
-    
-    gchar *row_string;
-    int index_mode;
-    
-    gint idx = gtk_combo_box_get_active(combobox_cmap);
-    if(idx < 0) return;
-    
-    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-    
-    gtk_tree_model_get_iter(model_cmap, &iter, path);  
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_mode, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, iflag_block, -1);
-    return;
-}
-
-static void file_name_cb(GtkEntry *entry, gpointer data)
-{
-    char *file_name = (char *) data;
-	file_name = gtk_entry_get_text(entry);
-    return;
-};
-
-GtkWidget *make_control_file_block_hbox(char *c_label, int *iflag_box, GtkWidget *expander_b){
-	GtkWidget *combo_b;
-    GtkWidget *label_tree;
-    GtkTreeModel *model;
-	GtkTreeModel *child_model;
-	GtkWidget *entry_3;
-	GtkWidget *button_S;
-    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-
-    int index = 0;
-	
-	index = 0;
-	label_tree = gtk_tree_view_new();
-	create_fixed_label_w_index_tree(label_tree);
-	model = gtk_tree_view_get_model (label_tree);  
-	child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
-	index = append_ci_item_to_tree(index, &input_mode_labels[0][0], NONE_MODE, child_model);
-	index = append_ci_item_to_tree(index, &input_mode_labels[1][0], FILE_MODE, child_model);
-	index = append_ci_item_to_tree(index, &input_mode_labels[2][0], TYPE_MODE, child_model);
-	
-	
-	combo_b = gtk_combo_box_new_with_model(child_model);
-	child_model = gtk_cell_renderer_text_new();
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo_b), child_model, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combo_b), child_model,
-				"text", COLUMN_FIELD_NAME, NULL);
-	gtk_combo_box_set_active(combo_b, mhd_ctl->shell_ctl->iflag_use_file);
-	g_signal_connect(G_OBJECT(combo_b), "changed", G_CALLBACK(set_block_mode_cb),
-				(gpointer) iflag_box);
-	g_signal_connect(G_OBJECT(expander_b), "activate", G_CALLBACK(cb_expander_action), 
-					(gpointer) iflag_box);
-	
-	
-	entry_3 = gtk_entry_new();
-	gtk_entry_set_text(entry_3, mhd_ctl->shell_ctl_file_name);
-	g_signal_connect(G_OBJECT(entry_3), "activate", G_CALLBACK(file_name_cb), 
-				(gpointer) mhd_ctl->shell_ctl_file_name);
-	
-	button_S = gtk_button_new_with_label("Save");
-	g_signal_connect(G_OBJECT(button_S), "clicked", G_CALLBACK(cb_Save_sph), 
-				(gpointer) entry_3);
-	
-	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(c_label), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), combo_b, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("File:"), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), entry_3, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), button_S, FALSE, FALSE, 0);
-	return hbox;
-};
-
 void set_control_box(GtkWidget *vbox0){
 	GtkWidget *hbox_1, *vbox_1, *Frame_1;
 	GtkWidget *hbox_3[NLBL_SGS_MHD_CTL];
+    GtkWidget *sph_save_bottun = gtk_button_new_with_label("Save");
 	
 	int i, ii;
 	char *c_label;
@@ -328,8 +228,11 @@ void set_control_box(GtkWidget *vbox0){
 	get_label_SGS_MHD_ctl(2, c_label);
 	hbox_3[2] = make_platoform_hbox(c_label, mhd_ctl->new_files);
 	
+    g_signal_connect(G_OBJECT(sph_save_bottun), "clicked", G_CALLBACK(cb_Save_sph), 
+                     (gpointer) window);
 	get_label_SGS_MHD_ctl(3, c_label);
-	hbox_3[3] = make_parallel_shell_hbox(c_label, mhd_ctl->shell_ctl);
+	hbox_3[3] = make_parallel_shell_hbox(c_label, mhd_ctl->shell_ctl_file_name,
+				mhd_ctl->shell_ctl, sph_save_bottun);
 	
 	get_label_SGS_MHD_ctl(4, c_label);
 	hbox_3[4] = make_empty_ctl_hbox(c_label, &mhd_ctl->iflag_model);

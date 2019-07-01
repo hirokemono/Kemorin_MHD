@@ -7,6 +7,49 @@
 
 #include "control_elements_IO_GTK.h"
 
+#define NONE_MODE   0
+#define FILE_MODE  -1
+#define TYPE_MODE   1
+
+const char *label_none =    "None";
+/*const char *label_begin = "Begin"; */
+/* const char *label_file =    "File"; */
+
+const char input_mode_labels[3][KCHARA_C] = {
+    "None",
+    "File", 
+    "Begin",
+};
+
+
+static void cb_file_block_select(GtkComboBox *combobox_cmap, gpointer data)
+{
+    int *iflag_block = (int *) data;
+    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
+    GtkTreeIter iter;
+    
+    gchar *row_string;
+    int index_mode;
+    
+    gint idx = gtk_combo_box_get_active(combobox_cmap);
+    if(idx < 0) return;
+    
+    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
+    
+    gtk_tree_model_get_iter(model_cmap, &iter, path);  
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_mode, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, iflag_block, -1);
+    return;
+}
+
+static void cb_file_name_input(GtkEntry *entry, gpointer data)
+{
+    char *file_name = (char *) data;
+    file_name = gtk_entry_get_text(entry);
+    return;
+};
+
 static void cb_expander_switch(GObject *switch_3, GParamSpec *pspec, gpointer data){
     int *iflag = (int *) data;
     
@@ -28,12 +71,7 @@ void cb_expander_action(GObject *switch_3, gpointer data){
     };
 };
 
-GtkWidget *make_expand_ctl_hbox(const char *label_hd, int *iflag_use, int vsize_scroll,
-			GtkWidget *vbox_1){
-	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
-	GtkWidget *expander = gtk_expander_new("");
-	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+static GtkWidget *make_block_switch_hbox(const char *label_hd, int *iflag_use){
     GtkWidget *hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	GtkWidget *switch_b = gtk_switch_new();
 	
@@ -45,6 +83,62 @@ GtkWidget *make_expand_ctl_hbox(const char *label_hd, int *iflag_use, int vsize_
 	};
 	g_signal_connect(G_OBJECT(switch_b), "notify::active", G_CALLBACK(cb_expander_switch), 
 				(gpointer) iflag_use);
+	
+	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new(label_hd), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1), switch_b, FALSE, FALSE, 0);
+	
+	return hbox_1;
+};
+
+static GtkWidget *make_control_file_block_hbox(const char *label_hd, int *iflag_use_file, 
+			char *file_name, GtkWidget *save_bottun){
+	GtkWidget *combo_b;
+    GtkWidget *label_tree;
+    GtkTreeModel *model;
+	GtkTreeModel *child_model;
+	GtkWidget *entry_3 = gtk_entry_new();
+    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+
+    int index = 0;
+	
+	index = 0;
+	label_tree = gtk_tree_view_new();
+	create_fixed_label_w_index_tree(label_tree);
+	model = gtk_tree_view_get_model (label_tree);  
+	child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+	index = append_ci_item_to_tree(index, &input_mode_labels[0][0], NONE_MODE, child_model);
+	index = append_ci_item_to_tree(index, &input_mode_labels[1][0], FILE_MODE, child_model);
+	index = append_ci_item_to_tree(index, &input_mode_labels[2][0], TYPE_MODE, child_model);
+	
+	
+	combo_b = gtk_combo_box_new_with_model(child_model);
+	child_model = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo_b), child_model, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combo_b), child_model,
+				"text", COLUMN_FIELD_NAME, NULL);
+	gtk_combo_box_set_active(combo_b, iflag_use_file);
+	g_signal_connect(G_OBJECT(combo_b), "changed", G_CALLBACK(cb_file_block_select),
+				(gpointer) iflag_use_file);
+	
+	gtk_entry_set_text(entry_3, file_name);
+	g_signal_connect(G_OBJECT(entry_3), "activate", G_CALLBACK(cb_file_name_input), (gpointer) file_name);
+	
+	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(label_hd), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), combo_b, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("File:"), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry_3, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), save_bottun, FALSE, FALSE, 0);
+	return hbox;
+};
+
+GtkWidget *make_expand_ctl_hbox(const char *label_hd, int *iflag_use, int vsize_scroll,
+			GtkWidget *vbox_1){
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
+	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
+	GtkWidget *expander = gtk_expander_new("");
+	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    GtkWidget *hbox_1 = make_block_switch_hbox(label_hd, iflag_use);
+	
 	g_signal_connect(G_OBJECT(expander), "activate", G_CALLBACK(cb_expander_action), 
 					(gpointer) iflag_use);
 	
@@ -62,8 +156,39 @@ GtkWidget *make_expand_ctl_hbox(const char *label_hd, int *iflag_use, int vsize_
 	
 	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
 	
-	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new(label_hd), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_1), switch_b, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
+	
+	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+	return hbox;
+};
+
+GtkWidget *make_expand_ctl_file_hbox(const char *label_hd, int *iflag_use_file, char *file_name, 
+                                     int vsize_scroll, GtkWidget *vbox_1, GtkWidget *save_bottun){
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
+	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
+	GtkWidget *expander = gtk_expander_new("");
+	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+	
+	GtkWidget *hbox_1 = make_control_file_block_hbox(label_hd, iflag_use_file, 
+				file_name, save_bottun);
+	
+	g_signal_connect(G_OBJECT(expander), "activate", G_CALLBACK(cb_expander_action), 
+					(gpointer) iflag_use_file);
+	
+    gtk_container_set_border_width(GTK_CONTAINER(vbox_1), 5);
+	
+	gtk_widget_set_size_request(scrolled_window, 300, vsize_scroll);
+    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_window), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_max_content_height(scrolled_window, vsize_scroll);
+	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 5);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+    
+	gtk_scrolled_window_add_with_viewport(
+		GTK_SCROLLED_WINDOW(scrolled_window), vbox_1);
+	
+	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
 	
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_1, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);

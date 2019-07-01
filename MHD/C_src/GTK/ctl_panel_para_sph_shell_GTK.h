@@ -15,6 +15,7 @@
 
 /* prototypes */
 
-GtkWidget * make_parallel_shell_hbox(const char *label_hd, struct parallel_sph_shell_control_c *shell_ctl);
+GtkWidget *make_parallel_shell_hbox(const char *label_hd, char *shell_ctl_file_name, 
+			struct parallel_sph_shell_control_c *shell_ctl, GtkWidget *save_bottun);
 
 #endif /* ctl_panel_para_sph_shell_GTK__ */
