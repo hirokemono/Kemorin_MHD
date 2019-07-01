@@ -14,12 +14,8 @@ GtkWidget * make_FEM_mesh_ctl_hbox(const char *label_hd, struct FEM_mesh_control
 	
 	GtkWidget *hbox_3[NLBL_FEM_MESH_CTL];
 	
-	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
-	GtkWidget *hbox_2;
+	GtkWidget *hbox;
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);;
-	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	GtkWidget *expander = gtk_expander_new("");
 	
 	c_label = (char *)calloc(KCHARA_C, sizeof(char));
 	
@@ -46,27 +42,7 @@ GtkWidget * make_FEM_mesh_ctl_hbox(const char *label_hd, struct FEM_mesh_control
 	for(i=0;i<NLBL_FEM_MESH_CTL;i++){
 		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], FALSE, FALSE, 0);
 	};
-	
-	hbox_2 = make_control_block_hbox(label_hd, &Fmesh->iflag_use, expander);
-	
-    gtk_container_set_border_width(GTK_CONTAINER(vbox_1), 5);
-	
-	gtk_widget_set_size_request(scrolled_window, 300, 400);
-    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_window), GTK_SHADOW_IN);
-	gtk_scrolled_window_set_max_content_height(scrolled_window, 400);
-	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 5);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
-				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-    
-	gtk_scrolled_window_add_with_viewport(
-		GTK_SCROLLED_WINDOW(scrolled_window), vbox_1);
-	
-	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
-	
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+	hbox = make_expand_ctl_hbox(label_hd, &Fmesh->iflag_use, 400, vbox_1);
 	return hbox;
 }
 
@@ -76,12 +52,8 @@ GtkWidget * make_sph_domains_ctl_hbox(const char *label_hd, struct sphere_domain
 	
 	GtkWidget *hbox_3[NLBL_SPHERE_DOMAIN_CTL];
 	
-	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
-	GtkWidget *hbox_2;
+	GtkWidget *hbox;
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);;
-	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	GtkWidget *expander = gtk_expander_new("");
 	
 	c_label = (char *)calloc(KCHARA_C, sizeof(char));
 	
@@ -108,27 +80,8 @@ GtkWidget * make_sph_domains_ctl_hbox(const char *label_hd, struct sphere_domain
 	for(i=0;i<NLBL_SPHERE_DOMAIN_CTL;i++){
 		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], FALSE, FALSE, 0);
 	};
-	
-	hbox_2 = make_control_block_hbox(label_hd, &sdctl_c->iflag_use, expander);
-	
-    gtk_container_set_border_width(GTK_CONTAINER(vbox_1), 5);
-	
-	gtk_widget_set_size_request(scrolled_window, 300, 400);
-    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_window), GTK_SHADOW_IN);
-	gtk_scrolled_window_set_max_content_height(scrolled_window, 400);
-	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 5);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
-				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-    
-	gtk_scrolled_window_add_with_viewport(
-		GTK_SCROLLED_WINDOW(scrolled_window), vbox_1);
-	
-	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
-	
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+		
+	hbox = make_expand_ctl_hbox(label_hd, &sdctl_c->iflag_use, 400, vbox_1);
 	return hbox;
 }
 
@@ -138,12 +91,8 @@ GtkWidget * make_sph_shell_ctl_hbox(const char *label_hd, struct sphere_data_ctl
 	
 	GtkWidget *hbox_3[NLBL_SPHERE_DATA_CTL];
 	
-	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
-	GtkWidget *hbox_2;
+	GtkWidget *hbox;
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);;
-	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	GtkWidget *expander = gtk_expander_new("");
 	
 	c_label = (char *)calloc(KCHARA_C, sizeof(char));
 	
@@ -212,27 +161,7 @@ GtkWidget * make_sph_shell_ctl_hbox(const char *label_hd, struct sphere_data_ctl
 	for(i=0;i<NLBL_SPHERE_DATA_CTL;i++){
 		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], FALSE, FALSE, 0);
 	};
-	
-	hbox_2 = make_control_block_hbox(label_hd, &spctl_c->iflag_use, expander);
-	
-    gtk_container_set_border_width(GTK_CONTAINER(vbox_1), 5);
-	
-	gtk_widget_set_size_request(scrolled_window, 300, 400);
-    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_window), GTK_SHADOW_IN);
-	gtk_scrolled_window_set_max_content_height(scrolled_window, 400);
-	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 5);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
-				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-    
-	gtk_scrolled_window_add_with_viewport(
-		GTK_SCROLLED_WINDOW(scrolled_window), vbox_1);
-	
-	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
-	
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+	hbox = make_expand_ctl_hbox(label_hd, &spctl_c->iflag_use, 400, vbox_1);
 	return hbox;
 }
 
@@ -242,12 +171,8 @@ GtkWidget * make_parallel_shell_hbox(const char *label_hd, struct parallel_sph_s
 	
 	GtkWidget *hbox_3[NLBL_SPH_SHELL_CTL];
 	
-	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
-	GtkWidget *hbox_2;
+	GtkWidget *hbox;
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);;
-	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	GtkWidget *expander = gtk_expander_new("");
 	
 	c_label = (char *)calloc(KCHARA_C, sizeof(char));
 	get_label_sph_shell_ctl(0, c_label);
@@ -260,36 +185,10 @@ GtkWidget * make_parallel_shell_hbox(const char *label_hd, struct parallel_sph_s
 	hbox_3[2] = make_sph_shell_ctl_hbox(c_label, shell_ctl->spctl_c);
 	free(c_label);
 	
-	gtk_widget_set_size_request(scrolled_window, 300, 400);
-	gtk_scrolled_window_set_max_content_height(scrolled_window, 400);
-	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
-				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-	
-	
 	for(i=0;i<NLBL_SPH_SHELL_CTL;i++){
 		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], TRUE, TRUE, 0);
 	};
 	
-	hbox_2 = make_control_block_hbox(label_hd, &shell_ctl->iflag_use_file, expander);
-	
-    gtk_container_set_border_width(GTK_CONTAINER(vbox_1), 5);
-	
-	gtk_widget_set_size_request(scrolled_window, 300, 400);
-    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_window), GTK_SHADOW_IN);
-	gtk_scrolled_window_set_max_content_height(scrolled_window, 400);
-	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 5);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
-				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-    
-	gtk_scrolled_window_add_with_viewport(
-		GTK_SCROLLED_WINDOW(scrolled_window), vbox_1);
-	
-	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
-	
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+	hbox = make_expand_ctl_hbox(label_hd, &shell_ctl->iflag_use_file, 400, vbox_1);
 	return hbox;
 }

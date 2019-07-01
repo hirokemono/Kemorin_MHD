@@ -7,7 +7,7 @@
 
 #include "control_elements_IO_GTK.h"
 
-void cb_expander_switch(GObject *switch_3, GParamSpec *pspec, gpointer data){
+static void cb_expander_switch(GObject *switch_3, GParamSpec *pspec, gpointer data){
     int *iflag = (int *) data;
     
     if(gtk_switch_get_state(switch_3) == TRUE){
@@ -28,40 +28,31 @@ void cb_expander_action(GObject *switch_3, gpointer data){
     };
 };
 
-GtkWidget *make_control_block_hbox(char *c_label, int *iflag_box, GtkWidget *expander_b){
-    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+GtkWidget *make_expand_ctl_hbox(const char *label_hd, int *iflag_use, int vsize_scroll,
+			GtkWidget *vbox_1){
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
+	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
+	GtkWidget *expander = gtk_expander_new("");
+	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    GtkWidget *hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	GtkWidget *switch_b = gtk_switch_new();
+	
 	gtk_switch_set_active(GTK_SWITCH(switch_b), TRUE);
-	if(*iflag_box > 0){
+	if(*iflag_use > 0){
 		gtk_switch_set_state(GTK_SWITCH(switch_b), TRUE);
 	} else {
 		gtk_switch_set_state(GTK_SWITCH(switch_b), FALSE);
 	};
 	g_signal_connect(G_OBJECT(switch_b), "notify::active", G_CALLBACK(cb_expander_switch), 
-				(gpointer) iflag_box);
-	g_signal_connect(G_OBJECT(expander_b), "activate", G_CALLBACK(cb_expander_action), 
-					(gpointer) iflag_box);
-	
-	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(c_label), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), switch_b, FALSE, FALSE, 0);
-	return hbox;
-};
-
-GtkWidget * make_empty_ctl_hbox(const char *label_hd, int *iflag_use){
-	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
-	GtkWidget *hbox_2;
-	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);;
-	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	GtkWidget *expander = gtk_expander_new("");
-	
-	hbox_2 = make_control_block_hbox(label_hd, iflag_use, expander);
+				(gpointer) iflag_use);
+	g_signal_connect(G_OBJECT(expander), "activate", G_CALLBACK(cb_expander_action), 
+					(gpointer) iflag_use);
 	
     gtk_container_set_border_width(GTK_CONTAINER(vbox_1), 5);
 	
-	gtk_widget_set_size_request(scrolled_window, 300, 20);
+	gtk_widget_set_size_request(scrolled_window, 300, vsize_scroll);
     gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_window), GTK_SHADOW_IN);
-	gtk_scrolled_window_set_max_content_height(scrolled_window, 20);
+	gtk_scrolled_window_set_max_content_height(scrolled_window, vsize_scroll);
 	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 5);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
@@ -71,10 +62,19 @@ GtkWidget * make_empty_ctl_hbox(const char *label_hd, int *iflag_use){
 	
 	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
 	
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new(label_hd), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1), switch_b, FALSE, FALSE, 0);
+	
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_1, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+	return hbox;
+};
+
+GtkWidget *make_empty_ctl_hbox(const char *label_hd, int *iflag_use){
+	GtkWidget *hbox = make_expand_ctl_hbox(label_hd, iflag_use, 20, 
+				gtk_box_new(GTK_ORIENTATION_VERTICAL, 10));
 	return hbox;
 }
 
