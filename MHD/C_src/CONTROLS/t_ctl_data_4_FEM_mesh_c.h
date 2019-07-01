@@ -16,6 +16,8 @@
 #include "t_control_int_IO.h"
 #include "t_control_chara_IO.h"
 
+#define NLBL_FEM_MESH_CTL  6
+
 struct FEM_mesh_control_c{
     int maxlen;
 

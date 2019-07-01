@@ -7,6 +7,32 @@
 
 #include "control_elements_IO_GTK.h"
 
+static void cb_switch_chara(GObject    *switch_3,
+                        GParamSpec *pspec,
+                        gpointer    data){
+    struct chara_ctl_item *ctl_item = (struct chara_ctl_item *) data;
+
+    if(gtk_switch_get_state(switch_3) == TRUE){
+        gtk_switch_set_state(switch_3, TRUE);
+		
+		if(cmp_no_case_c(ctl_item->c_tbl, "YES") > 0
+					|| cmp_no_case_c(ctl_item->c_tbl, "NO")){
+			sprintf(ctl_item->c_tbl, "YES");
+		} else {
+			sprintf(ctl_item->c_tbl, "ON");
+		};
+    } else {
+        gtk_switch_set_state(switch_3, FALSE);
+		
+		if(cmp_no_case_c(ctl_item->c_tbl, "YES") > 0
+					|| cmp_no_case_c(ctl_item->c_tbl, "NO")){
+			sprintf(ctl_item->c_tbl, "NO");
+		} else {
+			sprintf(ctl_item->c_tbl, "OFF");
+		};
+    };
+};
+
 static void cb_toggle_ctl_item(GtkToggleButton *toggle, gpointer data)
 {
 	struct chara_ctl_item *ctl_item = (struct chara_ctl_item *) data;
@@ -20,6 +46,27 @@ static void cb_toggle_ctl_item(GtkToggleButton *toggle, gpointer data)
     };
     return;
 }
+
+GtkWidget *make_chara_ctl_switch_hbox(const char *label, struct chara_ctl_item *ctl_item){
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	GtkWidget*switch_0 = gtk_switch_new();
+	
+	gtk_box_set_homogeneous(hbox, FALSE);
+	gtk_switch_set_active(GTK_SWITCH(switch_0), TRUE);
+	if(cmp_no_case_c(ctl_item->c_tbl, "YES") > 0){
+		gtk_switch_set_state(GTK_SWITCH(switch_0), TRUE);
+	} else if(cmp_no_case_c(ctl_item->c_tbl, "ON") > 0){
+		gtk_switch_set_state(GTK_SWITCH(switch_0), TRUE);
+	} else {
+		gtk_switch_set_state(GTK_SWITCH(switch_0), FALSE);
+	}
+	g_signal_connect(G_OBJECT (switch_0), "notify::active", G_CALLBACK(cb_switch_chara), 
+				(gpointer) ctl_item);
+	
+	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(label), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), switch_0, FALSE, FALSE, 0);
+	return hbox;
+};
 
 GtkWidget *make_toggle_hbox (const char *label, struct chara_ctl_item *ctl_item,
 			gboolean is_on, gboolean is_sensitive){
@@ -55,8 +102,7 @@ static void cb_chara_ctl_item(GtkEntry *entry, gpointer data)
 	return;
 }
 
-GtkWidget *
-make_text_hbox (const char *label, struct chara_ctl_item *ctl_item){
+GtkWidget *make_text_hbox(const char *label, struct chara_ctl_item *ctl_item){
 	GtkWidget *hbox;
 	GtkWidget *tbox, *current;
 
@@ -86,7 +132,7 @@ static void cb_int_ctl_item(GtkEntry *spinner, gpointer data)
 	return;
 }
 
-GtkWidget *make_integer_hbox (const char *label, struct int_ctl_item *ctl_item){
+GtkWidget *make_integer_hbox(const char *label, struct int_ctl_item *ctl_item){
 	GtkWidget *hbox;
 	GtkWidget *spinner, *current;
 	GtkAdjustment *adjust;

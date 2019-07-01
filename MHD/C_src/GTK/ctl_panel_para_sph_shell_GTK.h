@@ -11,6 +11,7 @@
 #include <gtk/gtk.h>
 #include "t_control_data_sph_grid_c.h"
 #include "tree_views_4_fixed_lists_GTK.h"
+#include "control_elements_IO_GTK.h"
 
 /* prototypes */
 
@@ -19,6 +20,6 @@ void expander_action_cb(GObject *switch_3, gpointer data);
 void add_control_block_box(char *c_label, int *iflag_box, 
 			GtkWidget *hbox, GtkWidget *expander_b);
 
-void add_parallel_shell_box(struct parallel_sph_shell_control_c *shell_ctl, GtkWidget *vbox);
+GtkWidget * make_parallel_shell_hbox(struct parallel_sph_shell_control_c *shell_ctl);
 
 #endif /* ctl_panel_para_sph_shell_GTK__ */

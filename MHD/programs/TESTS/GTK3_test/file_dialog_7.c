@@ -320,9 +320,6 @@ void set_control_box(GtkWidget *vbox0){
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
 	
 	for (i=0;i<NLBL_SGS_MHD_CTL;i++){
-		Frame_2[i] = gtk_frame_new("");
-		hbox_2[i] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-		vbox_2[i] = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 		hbox_3[i] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 		expander_MHD_ctl[i] = gtk_expander_new("");
 	};
@@ -330,18 +327,22 @@ void set_control_box(GtkWidget *vbox0){
 	get_label_SGS_MHD_ctl(0, c_label);
 	add_control_block_box(c_label, &mhd_ctl->iflag_data_files_def,
 				hbox_3[0], expander_MHD_ctl[0]);
+	hbox_2[0] = make_platoform_hbox(mhd_ctl->files);
 	
 	get_label_SGS_MHD_ctl(1, c_label);
 	add_control_block_box(c_label, &mhd_ctl->iflag_org_files_def,
 				hbox_3[1], expander_MHD_ctl[1]);
+	hbox_2[1] = make_platoform_hbox(mhd_ctl->org_files);
 	
 	get_label_SGS_MHD_ctl(2, c_label);
 	add_control_block_box(c_label, &mhd_ctl->iflag_new_files_def,
 				hbox_3[2], expander_MHD_ctl[2]);
+	hbox_2[2] = make_platoform_hbox(mhd_ctl->new_files);
 	
 	get_label_SGS_MHD_ctl(3, c_label);
 	add_control_file_block_box(c_label, &mhd_ctl->iflag_spherical_shell_ctl,
 				hbox_3[3], expander_MHD_ctl[3]);
+	hbox_2[3] = make_parallel_shell_hbox(mhd_ctl->shell_ctl);
 	
 	get_label_SGS_MHD_ctl(4, c_label);
 	add_control_block_box(c_label, &mhd_ctl->iflag_model,
@@ -367,21 +368,19 @@ void set_control_box(GtkWidget *vbox0){
 	add_control_block_box(c_label, &mhd_ctl->iflag_zonal_mean_control,
 				hbox_3[9], expander_MHD_ctl[9]);
 	
-	
-	for (i=0;i<NLBL_SGS_MHD_CTL;i++){
-        if(iflag_read_mhd > 0){
-            if(i == 0){add_platoform_box(mhd_ctl->files, vbox_2[i]);};
-            if(i == 1){add_platoform_box(mhd_ctl->org_files, vbox_2[i]);};
-			if(i == 2){add_platoform_box(mhd_ctl->new_files, vbox_2[i]);};
-			if(i == 3){add_parallel_shell_box(mhd_ctl->shell_ctl, vbox_2[i]);};
-		};
+	for (i=4;i<NLBL_SGS_MHD_CTL;i++){
+		Frame_2[i] = gtk_frame_new("");
+		hbox_2[i] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+		vbox_2[i] = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 		
 		gtk_frame_set_shadow_type(GTK_FRAME(Frame_2[i]), GTK_SHADOW_IN);
 		gtk_container_add(GTK_CONTAINER(Frame_2[i]), vbox_2[i]);
 		
 		gtk_box_pack_start(GTK_BOX(hbox_2[i]), gtk_label_new("  "), FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(hbox_2[i]), Frame_2[i], TRUE, TRUE, 0);
-		
+	};
+	
+	for (i=0;i<NLBL_SGS_MHD_CTL;i++){
 		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], TRUE, TRUE, 0);
 		gtk_container_add(GTK_CONTAINER(expander_MHD_ctl[i]), hbox_2[i]);
 		gtk_box_pack_start(GTK_BOX(vbox_1), expander_MHD_ctl[i], TRUE, TRUE, 0);

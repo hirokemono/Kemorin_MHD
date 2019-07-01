@@ -7,16 +7,14 @@
 
 #include "t_ctl_data_4_FEM_mesh_c.h"
 
-#define NLBL_FEM_MESH_CTL  6
-
 const char label_FEM_mesh_ctl[NLBL_FEM_MESH_CTL][KCHARA_C] = {
     /*[0]*/    {"memory_conservation_ctl"},
     /*[1]*/    {"FEM_mesh_output_switch"},
     /*[2]*/    {"FEM_surface_output_switch"},
     /*[3]*/    {"FEM_viewer_mesh_output_switch"},
     
-    /*[4]*/    {"delete_original_data_flag"},
-    /*[5]*/    {"excluding_FEM_mesh_ctl"},
+    /*[4]*/    {"sleeve_level_ctl"},
+    /*[5]*/    {"element_overlap_ctl"}
 };
 
 void get_label_FEM_mesh_ctl(int index, char *label){

@@ -15,6 +15,7 @@
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
 
+GtkWidget *make_chara_ctl_switch_hbox(const char *label, struct chara_ctl_item *ctl_item);
 GtkWidget *make_toggle_hbox (const char *label, struct chara_ctl_item *ctl_item,
 			gboolean is_on, gboolean is_sensitive);
 GtkWidget *make_text_hbox (const char *label, struct chara_ctl_item *ctl_item);

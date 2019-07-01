@@ -20,6 +20,9 @@
 #include "t_control_int_real_IO.h"
 #include "t_control_chara_int_IO.h"
 
+#define NLBL_SPHERE_DOMAIN_CTL  6
+#define NLBL_SPHERE_DATA_CTL   20
+
 struct sphere_domain_ctl_c{
 	int maxlen;
 	

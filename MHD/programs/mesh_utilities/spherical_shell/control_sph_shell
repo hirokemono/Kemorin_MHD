@@ -9,7 +9,6 @@ begin MHD_control
 !
   begin spherical_shell_ctl
     begin FEM_mesh_ctl
-      memory_conservation_ctl        'YES'
       FEM_mesh_output_switch         'NO'
       FEM_surface_output_switch      'NO'
       FEM_viewer_mesh_output_switch  'NO'
