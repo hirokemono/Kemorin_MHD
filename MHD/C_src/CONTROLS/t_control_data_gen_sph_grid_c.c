@@ -32,10 +32,7 @@ void alloc_gen_sph_shell_ctl_c(struct gen_sph_grid_ctl_c *gen_sph_c){
 			gen_sph_c->maxlen = (int) strlen(label_gen_sph_grid_ctl[i]);
 		};
 	};
-	
-	gen_sph_c->iflag_platform_data_ctl = 0;
-	gen_sph_c->iflag_shell_ctl = 0;
-	
+
 	gen_sph_c->files = (struct platform_data_control_c *) malloc(sizeof(struct platform_data_control_c));
 	alloc_platform_data_control_c(gen_sph_c->files);
 	gen_sph_c->shell_ctl = (struct parallel_sph_shell_control_c *) malloc(sizeof(struct parallel_sph_shell_control_c));
@@ -48,10 +45,7 @@ void dealloc_gen_sph_shell_ctl_c(struct gen_sph_grid_ctl_c *gen_sph_c){
 	dealloc_parallel_sph_shell_control_c(gen_sph_c->shell_ctl);
 	free(gen_sph_c->files);
 	free(gen_sph_c->shell_ctl);
-	
-	gen_sph_c->iflag_platform_data_ctl = 0;
-	gen_sph_c->iflag_shell_ctl = 0;
-	return;
+    return;
 };
 
 int read_gen_sph_shell_ctl_c(FILE *fp, char buf[LENGTHBUF], 
@@ -61,14 +55,12 @@ int read_gen_sph_shell_ctl_c(FILE *fp, char buf[LENGTHBUF],
 		skip_comment_read_line(fp, buf);
 		
 		if(right_begin_flag_c(buf, label_gen_sph_grid_ctl[ 0]) > 0){
-			gen_sph_c->iflag_platform_data_ctl = read_platform_data_control_c(fp, buf,
-						label_gen_sph_grid_ctl[ 0], gen_sph_c->files);
+			read_platform_data_control_c(fp, buf, label_gen_sph_grid_ctl[ 0], gen_sph_c->files);
 		};
 		if(right_begin_flag_c(buf, label_gen_sph_grid_ctl[ 1]) > 0){
-			gen_sph_c->iflag_shell_ctl = read_spherical_shell_ctl_c(fp, buf,
-						label_gen_sph_grid_ctl[ 1], gen_sph_c->shell_ctl);
+			read_spherical_shell_ctl_c(fp, buf, label_gen_sph_grid_ctl[ 1], gen_sph_c->shell_ctl);
 		} else if(right_file_flag_c(buf, label_gen_sph_grid_ctl[ 1])){
-			gen_sph_c->iflag_shell_ctl = read_file_flag_c(buf, gen_sph_c->fname_shell_ctl);
+			gen_sph_c->shell_ctl->iflag_use_file = read_file_flag_c(buf, gen_sph_c->fname_shell_ctl);
 		};
 	};
 	return 1;
@@ -77,19 +69,15 @@ int read_gen_sph_shell_ctl_c(FILE *fp, char buf[LENGTHBUF],
 int write_gen_sph_shell_ctl_c(FILE *fp, int level, const char *label, 
                             struct gen_sph_grid_ctl_c *gen_sph_c){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
-	
-	if(gen_sph_c->iflag_platform_data_ctl > 0){
-		level = write_platform_data_control_c(fp, level, 
+    level = write_platform_data_control_c(fp, level, 
 					label_gen_sph_grid_ctl[ 0], gen_sph_c->files);
-	};
-	if(gen_sph_c->iflag_shell_ctl == 1){
-		fprintf(fp, "!\n");
+	if(gen_sph_c->shell_ctl->iflag_use_file == -1){
+        fprintf(fp, "!\n");
+        write_file_flag_for_ctl_c(fp, level, 
+                                  label_gen_sph_grid_ctl[ 1], gen_sph_c->fname_shell_ctl);
+    } else {
 		level = write_spherical_shell_ctl_c(fp, level, 
 					label_gen_sph_grid_ctl[ 1], gen_sph_c->shell_ctl);
-	} else if(gen_sph_c->iflag_shell_ctl == -1){
-		fprintf(fp, "!\n");
-		write_file_flag_for_ctl_c(fp, level, 
-					label_gen_sph_grid_ctl[ 1], gen_sph_c->fname_shell_ctl);
 	};
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -97,7 +85,7 @@ int write_gen_sph_shell_ctl_c(FILE *fp, int level, const char *label,
 };
 
 void rename_gen_sph_subfiles_c(struct gen_sph_grid_ctl_c *gen_sph_c){
-    if(gen_sph_c->iflag_shell_ctl ==-1){
+    if(gen_sph_c->shell_ctl->iflag_use_file ==-1){
         strcat(gen_sph_c->fname_shell_ctl, "_2");
     }
     return;
@@ -119,9 +107,7 @@ int read_gen_sph_shell_file_c(const char *file_name, char buf[LENGTHBUF],
     };
     fclose(FP_GRID);
 	
-    if(gen_sph_c->iflag_shell_ctl ==-1){
-		read_spherical_shell_file_c(gen_sph_c->fname_shell_ctl, buf, gen_sph_c->shell_ctl);
-	};
+    read_spherical_shell_file_c(gen_sph_c->fname_shell_ctl, buf, gen_sph_c->shell_ctl);
 	
     return iflag;
 };
@@ -129,9 +115,7 @@ int read_gen_sph_shell_file_c(const char *file_name, char buf[LENGTHBUF],
 int write_gen_sph_shell_file_c(const char *file_name, struct gen_sph_grid_ctl_c *gen_sph_c){
     int level = 0;
     
-    if(gen_sph_c->iflag_shell_ctl ==-1){
-		write_spherical_shell_file_c(gen_sph_c->fname_shell_ctl, gen_sph_c->shell_ctl);
-	};
+    write_spherical_shell_file_c(gen_sph_c->fname_shell_ctl, gen_sph_c->shell_ctl);
     
     printf("Write spherical shell generation control: %s\n", file_name);
     if ((FP_GRID = fopen(file_name, "w")) == NULL) {

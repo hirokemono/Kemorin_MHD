@@ -46,10 +46,6 @@ void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 		};
 	};
 	
-	mhd_ctl->iflag_data_files_def =      0;
-	mhd_ctl->iflag_org_files_def =       0;
-	mhd_ctl->iflag_new_files_def =       0;
-	mhd_ctl->iflag_spherical_shell_ctl = 0;
 	mhd_ctl->iflag_model =               0;
 	mhd_ctl->iflag_control =             0;
     mhd_ctl->iflag_sph_monitor_ctl =     0;
@@ -94,10 +90,6 @@ void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
     mhd_ctl->iflag_sph_monitor_ctl =     0;
     mhd_ctl->iflag_control =             0;
     mhd_ctl->iflag_model =               0;
-    mhd_ctl->iflag_spherical_shell_ctl = 0;
-    mhd_ctl->iflag_new_files_def =       0;
-    mhd_ctl->iflag_org_files_def =       0;
-    mhd_ctl->iflag_data_files_def =      0;
 	
 	dealloc_sph_zonal_means_controls_c(mhd_ctl->zm_ctls);
 	free(mhd_ctl->zm_ctls);
@@ -114,11 +106,11 @@ void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 	dealloc_parallel_sph_shell_control_c(mhd_ctl->shell_ctl);
 	free(mhd_ctl->shell_ctl);
 	free(mhd_ctl->shell_ctl_file_name);
-	alloc_platform_data_control_c(mhd_ctl->new_files);
+	dealloc_platform_data_control_c(mhd_ctl->new_files);
 	free(mhd_ctl->new_files);
-	alloc_platform_data_control_c(mhd_ctl->org_files);
+	dealloc_platform_data_control_c(mhd_ctl->org_files);
 	free(mhd_ctl->org_files);
-	alloc_platform_data_control_c(mhd_ctl->files);
+	dealloc_platform_data_control_c(mhd_ctl->files);
 	free(mhd_ctl->files);
 	return;
 }
@@ -130,19 +122,19 @@ int read_SGS_MHD_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		skip_comment_read_line(fp, buf);
 		
 		if(right_begin_flag_c(buf, label_SGS_MHD_ctl[0]) > 0){
-			mhd_ctl->iflag_data_files_def = read_platform_data_control_c(fp, buf,label_SGS_MHD_ctl[0], mhd_ctl->files);
+			read_platform_data_control_c(fp, buf,label_SGS_MHD_ctl[0], mhd_ctl->files);
 		};
 		if(right_begin_flag_c(buf, label_SGS_MHD_ctl[1]) > 0){ 
-			mhd_ctl->iflag_org_files_def = read_platform_data_control_c(fp, buf, label_SGS_MHD_ctl[1], mhd_ctl->org_files);
+			read_platform_data_control_c(fp, buf, label_SGS_MHD_ctl[1], mhd_ctl->org_files);
 		};
 		if(right_begin_flag_c(buf, label_SGS_MHD_ctl[2]) > 0){
-			mhd_ctl->iflag_new_files_def = read_platform_data_control_c(fp, buf, label_SGS_MHD_ctl[2], mhd_ctl->new_files);
+			read_platform_data_control_c(fp, buf, label_SGS_MHD_ctl[2], mhd_ctl->new_files);
 		};
 		
 		if(right_begin_flag_c(buf, label_SGS_MHD_ctl[3]) > 0){
-			mhd_ctl->iflag_spherical_shell_ctl = read_spherical_shell_ctl_c(fp, buf, label_SGS_MHD_ctl[3], mhd_ctl->shell_ctl);
+			read_spherical_shell_ctl_c(fp, buf, label_SGS_MHD_ctl[3], mhd_ctl->shell_ctl);
 		} else if(right_file_flag_c(buf, label_SGS_MHD_ctl[3]) > 0){
-			mhd_ctl->iflag_spherical_shell_ctl = read_file_flag_c(buf, mhd_ctl->shell_ctl_file_name);
+			mhd_ctl->shell_ctl->iflag_use_file = read_file_flag_c(buf, mhd_ctl->shell_ctl_file_name);
 		};
 		
 		if(right_begin_flag_c(buf, label_SGS_MHD_ctl[4]) > 0){
@@ -170,25 +162,15 @@ int read_SGS_MHD_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_SGS_MHD_control_c(FILE *fp, int level, const char *label, 
 			struct SGS_MHD_control_c *mhd_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
+    level = write_platform_data_control_c(fp, level, label_SGS_MHD_ctl[0], mhd_ctl->files);
+    level = write_platform_data_control_c(fp, level, label_SGS_MHD_ctl[1], mhd_ctl->org_files);
+    level = write_platform_data_control_c(fp, level, label_SGS_MHD_ctl[2], mhd_ctl->new_files);
 	
-    if(mhd_ctl->iflag_data_files_def > 0){
-        level = write_platform_data_control_c(fp, level, label_SGS_MHD_ctl[0], mhd_ctl->files);
-    };
-    if(mhd_ctl->iflag_org_files_def > 0){
+	if(mhd_ctl->shell_ctl->iflag_use_file == -1){
         fprintf(fp, "!\n");
-        level = write_platform_data_control_c(fp, level, label_SGS_MHD_ctl[1], mhd_ctl->org_files);
-    };
-    if(mhd_ctl->iflag_new_files_def > 0){
-        fprintf(fp, "!\n");
-        level = write_platform_data_control_c(fp, level, label_SGS_MHD_ctl[2], mhd_ctl->new_files);
-	};
-	
-	if(mhd_ctl->iflag_spherical_shell_ctl == 1){
-		fprintf(fp, "!\n");
+        write_file_flag_for_ctl_c(fp, level, label_SGS_MHD_ctl[3], mhd_ctl->shell_ctl_file_name);
+    } else {
 		level = write_spherical_shell_ctl_c(fp, level, label_SGS_MHD_ctl[3], mhd_ctl->shell_ctl);
-	}else if(mhd_ctl->iflag_spherical_shell_ctl == -1){
-		fprintf(fp, "!\n");
-		write_file_flag_for_ctl_c(fp, level, label_SGS_MHD_ctl[3], mhd_ctl->shell_ctl_file_name);
 	};
 	
 	if(mhd_ctl->iflag_model > 0){
@@ -222,7 +204,7 @@ int write_SGS_MHD_control_c(FILE *fp, int level, const char *label,
 
 void rename_SGS_MHD_ctl_subfile_c(struct SGS_MHD_control_c *mhd_ctl){
 	
-    if(mhd_ctl->iflag_spherical_shell_ctl ==-1){
+    if(mhd_ctl->shell_ctl->iflag_use_file ==-1){
         strcat(mhd_ctl->shell_ctl_file_name, "_2");
     }
 	
@@ -244,10 +226,7 @@ void rename_SGS_MHD_ctl_subfile_c(struct SGS_MHD_control_c *mhd_ctl){
 
 void read_SGS_MHD_ctl_subfile_c(char buf[LENGTHBUF], struct SGS_MHD_control_c *mhd_ctl){
 	
-	if(mhd_ctl->iflag_spherical_shell_ctl ==-1){
-		read_spherical_shell_file_c(mhd_ctl->shell_ctl_file_name, buf, mhd_ctl->shell_ctl);
-	};
-	
+    read_spherical_shell_file_c(mhd_ctl->shell_ctl_file_name, buf, mhd_ctl->shell_ctl);
 	read_vizs_ctl_files_c(buf, mhd_ctl->viz_c);
 	
 	if(mhd_ctl->iflag_zonal_mean_control > 0){
@@ -258,10 +237,7 @@ void read_SGS_MHD_ctl_subfile_c(char buf[LENGTHBUF], struct SGS_MHD_control_c *m
 
 void write_SGS_MHD_ctl_subfile_c(struct SGS_MHD_control_c *mhd_ctl){
 	
-	if(mhd_ctl->iflag_spherical_shell_ctl ==-1){
-		write_spherical_shell_file_c(mhd_ctl->shell_ctl_file_name, mhd_ctl->shell_ctl);
-	};
-	
+    write_spherical_shell_file_c(mhd_ctl->shell_ctl_file_name, mhd_ctl->shell_ctl);
 	write_vizs_ctl_files_c(mhd_ctl->viz_c);
 	
 	if(mhd_ctl->iflag_zonal_mean_control > 0){

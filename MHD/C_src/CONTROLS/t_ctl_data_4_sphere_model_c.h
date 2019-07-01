@@ -24,6 +24,7 @@
 #define NLBL_SPHERE_DATA_CTL   20
 
 struct sphere_domain_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_ctl_item *inner_decomp_c;
@@ -36,6 +37,7 @@ struct sphere_domain_ctl_c{
 };
 
 struct sphere_data_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct int_ctl_item *ltr_c;
@@ -74,14 +76,14 @@ void get_label_sphere_data_ctl(int index, char *label);
 
 void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c);
 void dealloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c);
-int read_sphere_domain_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_sphere_domain_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct sphere_domain_ctl_c *sdctl_c);
 int write_sphere_domain_ctl_c(FILE *fp, int level,
 			const char *label, struct sphere_domain_ctl_c *sdctl_c);
 
 void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c);
 void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c);
-int read_sphere_data_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_sphere_data_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct sphere_data_ctl_c *spctl_c);
 int write_sphere_data_ctl_c(FILE *fp, int level,
 			const char *label, struct sphere_data_ctl_c *spctl_c);

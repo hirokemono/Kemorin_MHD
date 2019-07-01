@@ -26,7 +26,6 @@ void get_label_viz_only_ctl(int index, char *label){
 };
 
 void alloc_visualizers_ctl_c(struct viz_only_ctl_c *viz_only){
-	viz_only->iflag_platform_data_control = 0;
 	viz_only->iflag_time_data_control = 0;
 	viz_only->iflag_visualizers_ctl = 0;
 	
@@ -47,7 +46,6 @@ void dealloc_visualizers_ctl_c(struct viz_only_ctl_c *viz_only){
 	free(viz_only->tctl);
 	free(viz_only->viz_c);
 	
-	viz_only->iflag_platform_data_control = 0;
 	viz_only->iflag_time_data_control = 0;
 	viz_only->iflag_visualizers_ctl = 0;
 	return;
@@ -60,8 +58,7 @@ int read_visualizers_ctl_c(FILE *fp, char buf[LENGTHBUF],
 		skip_comment_read_line(fp, buf);
 		
 		if(right_begin_flag_c(buf, label_viz_only_ctl[ 0]) > 0){
-			viz_only->iflag_platform_data_control = read_platform_data_control_c(fp, buf,
-						label_viz_only_ctl[ 0], viz_only->files);
+			read_platform_data_control_c(fp, buf, label_viz_only_ctl[ 0], viz_only->files);
             };
 		if(right_begin_flag_c(buf, label_viz_only_ctl[ 1]) > 0){
 			viz_only->iflag_time_data_control = read_time_data_control_c(fp, buf,
@@ -78,11 +75,8 @@ int read_visualizers_ctl_c(FILE *fp, char buf[LENGTHBUF],
 int write_visualizers_ctl_c(FILE *fp, int level, const char *label, 
                             struct viz_only_ctl_c *viz_only){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
-	
-	if(viz_only->iflag_platform_data_control > 0){
-		level = write_platform_data_control_c(fp, level, 
+    level = write_platform_data_control_c(fp, level, 
 					label_viz_only_ctl[ 0], viz_only->files);
-	};
 	if(viz_only->iflag_time_data_control > 0){
 		fprintf(fp, "!\n");
 		level = write_time_data_control_c(fp, level, 

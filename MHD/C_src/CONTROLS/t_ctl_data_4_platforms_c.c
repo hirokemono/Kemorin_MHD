@@ -43,7 +43,7 @@ void get_label_platform_ctl(int index, char *label){
 
 void alloc_platform_data_control_c(struct platform_data_control_c *files){
     int i;
-    
+    files->iflag_use = 0;
     files->maxlen = 0;
     for (i=0;i<NLBL_PLATFORM_CTL;i++){
         if(strlen(label_platform_ctl[i]) > files->maxlen){
@@ -126,13 +126,14 @@ void dealloc_platform_data_control_c(struct platform_data_control_c *files){
     dealloc_chara_ctl_item_c(files->coriolis_file_fmt_c);
 
     dealloc_chara_ctl_item_c(files->del_org_data_ctl_c);
+    
+    files->iflag_use = 0;
     return;
 };
 
-int read_platform_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
+void read_platform_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
 			struct platform_data_control_c *files){
 	while(find_control_end_flag_c(buf, label) == 0){
-		
         skip_comment_read_line(fp, buf);
 
         read_chara_ctl_item_c(buf, label_platform_ctl[0], files->debug_flag_c);
@@ -161,11 +162,15 @@ int read_platform_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *labe
 		
         read_chara_ctl_item_c(buf, label_platform_ctl[19], files->del_org_data_ctl_c);
 	};
-    return 1;
+    files->iflag_use = 1;
+    return;
 }
 
 int write_platform_data_control_c(FILE *fp, int level, const char *label, 
                                   struct platform_data_control_c *files){
+    if(files->iflag_use == 0) return level;
+    
+    fprintf(fp, "!\n");
     level = write_begin_flag_for_ctl_c(fp, level, label);
     
     write_chara_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[0], files->debug_flag_c);

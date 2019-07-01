@@ -19,6 +19,7 @@
 #define NLBL_FEM_MESH_CTL  6
 
 struct FEM_mesh_control_c{
+    int iflag_use;
     int maxlen;
 
     struct chara_ctl_item *memory_conservation_c;
@@ -37,7 +38,7 @@ void get_label_FEM_mesh_ctl(int index, char *label);
 void alloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh);
 void dealloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh);
 
-int read_FEM_mesh_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
+void read_FEM_mesh_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
                                  struct FEM_mesh_control_c *Fmesh);
 int write_FEM_mesh_control_c(FILE *fp, int level, const char *label, struct FEM_mesh_control_c *Fmesh);
 

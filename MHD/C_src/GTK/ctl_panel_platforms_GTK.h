@@ -14,6 +14,6 @@
 
 /* prototypes */
 
-GtkWidget * make_platoform_hbox(struct platform_data_control_c *files_c);
+GtkWidget * make_platoform_hbox(const char *label_hd, struct platform_data_control_c *files_c);
 
 #endif /* ctl_panel_platforms_GTK__ */

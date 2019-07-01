@@ -59,7 +59,7 @@ void get_label_sphere_data_ctl(int index, char *label){
 
 void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	int i;
-	
+    sdctl_c->iflag_use = 0;
 	sdctl_c->maxlen = 0;
 	for (i=0;i<NLBL_SPHERE_DOMAIN_CTL;i++){
 		if(strlen(label_sphere_domain_ctl[i]) > sdctl_c->maxlen){
@@ -105,11 +105,11 @@ void dealloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
     free(sdctl_c->ndomain_sph_grid_list);
     free(sdctl_c->ndomain_legendre_list);
     free(sdctl_c->ndomain_spectr_list);
-	
+    sdctl_c->iflag_use = 0;
 	return;
 };
 
-int read_sphere_domain_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_sphere_domain_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct sphere_domain_ctl_c *sdctl_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		
@@ -124,11 +124,15 @@ int read_sphere_domain_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara_int_clist(fp, buf, label_sphere_domain_ctl[ 4], sdctl_c->ndomain_legendre_list);
 		read_chara_int_clist(fp, buf, label_sphere_domain_ctl[ 5], sdctl_c->ndomain_spectr_list);
 	};
-	return 1;
+    sdctl_c->iflag_use = 1;
+	return;
 };
 
 int write_sphere_domain_ctl_c(FILE *fp, int level,
 			const char *label, struct sphere_domain_ctl_c *sdctl_c){
+    if(sdctl_c->iflag_use == 0) return level;
+    
+    fprintf(fp, "!\n");
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_chara_ctl_item_c(fp, level, sdctl_c->maxlen, label_sphere_domain_ctl[ 0], sdctl_c->inner_decomp_c);
@@ -148,6 +152,7 @@ int write_sphere_domain_ctl_c(FILE *fp, int level,
 void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	int i;
 	
+    spctl_c->iflag_use = 0;
 	spctl_c->maxlen = 0;
 	for (i=0;i<NLBL_SPHERE_DATA_CTL;i++){
 		if(strlen(label_sphere_data_ctl[i]) > spctl_c->maxlen){
@@ -251,11 +256,12 @@ void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	clear_int2_clist(spctl_c->med_layer_list);
     free(spctl_c->radial_layer_list);
     free(spctl_c->med_layer_list);
+    spctl_c->iflag_use = 0;
 	
 	return;
 };
 
-int read_sphere_data_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_sphere_data_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct sphere_data_ctl_c *spctl_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		
@@ -290,11 +296,15 @@ int read_sphere_data_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_int2_clist(fp, buf, label_sphere_data_ctl[18], spctl_c->radial_layer_list);
 		read_int2_clist(fp, buf, label_sphere_data_ctl[19], spctl_c->med_layer_list);
 	};
-	return 1;
+    spctl_c->iflag_use = 1;
+	return;
 };
 
 int write_sphere_data_ctl_c(FILE *fp, int level,
 			const char *label, struct sphere_data_ctl_c *spctl_c){
+    if(spctl_c->iflag_use == 0) return level;
+
+    fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
     write_chara_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 0], spctl_c->sph_coef_type_c);

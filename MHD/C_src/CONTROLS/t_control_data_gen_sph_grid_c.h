@@ -19,10 +19,9 @@
 struct gen_sph_grid_ctl_c{
     int maxlen;
 	
-	int iflag_platform_data_ctl;
     struct platform_data_control_c *files;
-	int iflag_shell_ctl;
-	char *fname_shell_ctl;
+
+    char *fname_shell_ctl;
     struct parallel_sph_shell_control_c *shell_ctl;
 };
 

@@ -19,13 +19,11 @@
 #define NLBL_SPH_SHELL_CTL      3
 
 struct parallel_sph_shell_control_c{
+    int iflag_use_file;
 	int maxlen;
 	
-	int iflag_FEM_mesh_ctl;
 	struct FEM_mesh_control_c *Fmesh_ctl;
-	int iflag_sph_domain;
 	struct sphere_domain_ctl_c *sdctl_c;
-	int iflag_sph_shell;
 	struct sphere_data_ctl_c *spctl_c;
 };
 
@@ -34,12 +32,12 @@ void get_label_sph_shell_ctl(int index, char *label);
 
 void alloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl);
 void dealloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl);
-int read_spherical_shell_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_spherical_shell_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct parallel_sph_shell_control_c *shell_ctl);
 int write_spherical_shell_ctl_c(FILE *fp, int level, const char *label, 
                                 struct parallel_sph_shell_control_c *shell_ctl);
 
-int read_spherical_shell_file_c(const char *file_name, char buf[LENGTHBUF],
+void read_spherical_shell_file_c(const char *file_name, char buf[LENGTHBUF],
 			struct parallel_sph_shell_control_c *shell_ctl);
 int write_spherical_shell_file_c(const char *file_name,
 			struct parallel_sph_shell_control_c *shell_ctl);

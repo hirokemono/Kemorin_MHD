@@ -29,14 +29,10 @@
 struct SGS_MHD_control_c{
 	int maxlen;
 	
-	int iflag_data_files_def;
 	struct platform_data_control_c *files;
-	int iflag_org_files_def;
 	struct platform_data_control_c *org_files;
-	int iflag_new_files_def;
 	struct platform_data_control_c *new_files;
 	
-	int iflag_spherical_shell_ctl;
 	char *shell_ctl_file_name;
 	struct parallel_sph_shell_control_c *shell_ctl;
 	

@@ -15,11 +15,6 @@
 
 /* prototypes */
 
-void expander_switch_cb(GObject *switch_3, GParamSpec *pspec, gpointer data);
-void expander_action_cb(GObject *switch_3, gpointer data);
-void add_control_block_box(char *c_label, int *iflag_box, 
-			GtkWidget *hbox, GtkWidget *expander_b);
-
-GtkWidget * make_parallel_shell_hbox(struct parallel_sph_shell_control_c *shell_ctl);
+GtkWidget * make_parallel_shell_hbox(const char *label_hd, struct parallel_sph_shell_control_c *shell_ctl);
 
 #endif /* ctl_panel_para_sph_shell_GTK__ */

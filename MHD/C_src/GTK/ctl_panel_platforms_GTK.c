@@ -69,7 +69,7 @@ static void set_file_fmt_cb(GtkComboBox *combobox_cmap, gpointer data)
     return;
 }
 
-GtkWidget * make_platoform_box(const char *label, struct chara_ctl_item *ctl_item){
+GtkWidget * make_file_format_hbox(const char *label, struct chara_ctl_item *ctl_item){
     GtkTreeModel *model;
 	GtkTreeModel *child_model;
 	
@@ -108,99 +108,106 @@ GtkWidget * make_platoform_box(const char *label, struct chara_ctl_item *ctl_ite
 	return hbox;
 };
 
-GtkWidget * make_platoform_hbox(struct platform_data_control_c *files_c){
+GtkWidget * make_platoform_hbox(const char *label_hd, struct platform_data_control_c *files_c){
 	int i;
 	char *c_label;
 	
-	GtkWidget *hbox_1[NLBL_PLATFORM_CTL];
+	GtkWidget *hbox_3[NLBL_PLATFORM_CTL];
 	
-	GtkWidget *vbox_platform = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);;
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
+	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
+	GtkWidget *hbox_2;
+	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);;
 	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *Frame = gtk_frame_new("");
+	GtkWidget *expander = gtk_expander_new("");
 	
 	c_label = (char *)calloc(KCHARA_C, sizeof(char));
 	
 	get_label_platform_ctl(0, c_label);
-	hbox_1[0] = make_chara_ctl_switch_hbox(c_label, files_c->debug_flag_c);
+	hbox_3[0] = make_chara_ctl_switch_hbox(c_label, files_c->debug_flag_c);
 	
 	get_label_platform_ctl(1, c_label);
-	hbox_1[1] = make_integer_hbox(c_label, files_c->ndomain_c);
+	hbox_3[1] = make_integer_hbox(c_label, files_c->ndomain_c);
 	
 	get_label_platform_ctl(2, c_label);
-	hbox_1[2] = make_integer_hbox(c_label, files_c->num_smp_c);
+	hbox_3[2] = make_integer_hbox(c_label, files_c->num_smp_c);
 	
 	get_label_platform_ctl(3, c_label);
-	hbox_1[3] = make_text_hbox(c_label, files_c->sph_file_prefix_c);
+	hbox_3[3] = make_text_hbox(c_label, files_c->sph_file_prefix_c);
 	
 	get_label_platform_ctl(4, c_label);
-	hbox_1[4] = make_text_hbox(c_label, files_c->mesh_file_prefix_c);
+	hbox_3[4] = make_text_hbox(c_label, files_c->mesh_file_prefix_c);
 	
 	get_label_platform_ctl(5, c_label);
-	hbox_1[5] = make_text_hbox(c_label, files_c->field_file_prefix_c);
+	hbox_3[5] = make_text_hbox(c_label, files_c->field_file_prefix_c);
 	
 	get_label_platform_ctl(6, c_label);
-	hbox_1[6] = make_text_hbox(c_label, files_c->restart_file_prefix_c);
+	hbox_3[6] = make_text_hbox(c_label, files_c->restart_file_prefix_c);
 	
 	get_label_platform_ctl(7, c_label);
-	hbox_1[7] = make_text_hbox(c_label, files_c->spectr_field_file_prefix_c);
+	hbox_3[7] = make_text_hbox(c_label, files_c->spectr_field_file_prefix_c);
 	
 	get_label_platform_ctl(8, c_label);
-	hbox_1[8] = make_text_hbox(c_label, files_c->coriolis_int_file_name_c);
+	hbox_3[8] = make_text_hbox(c_label, files_c->coriolis_int_file_name_c);
 	
 	get_label_platform_ctl(9, c_label);
-	hbox_1[9] = make_text_hbox(c_label, files_c->bc_data_file_name_c);
+	hbox_3[9] = make_text_hbox(c_label, files_c->bc_data_file_name_c);
 	
 	get_label_platform_ctl(10, c_label);
-	hbox_1[10] = make_text_hbox(c_label, files_c->interpolate_sph_to_fem_c);
+	hbox_3[10] = make_text_hbox(c_label, files_c->interpolate_sph_to_fem_c);
 	
 	get_label_platform_ctl(11, c_label);
-	hbox_1[11] = make_text_hbox(c_label, files_c->interpolate_fem_to_sph_c);
+	hbox_3[11] = make_text_hbox(c_label, files_c->interpolate_fem_to_sph_c);
 	
 	get_label_platform_ctl(12, c_label);
-	hbox_1[12] = make_platoform_box(c_label, files_c->sph_file_fmt_c);
+	hbox_3[12] = make_file_format_hbox(c_label, files_c->sph_file_fmt_c);
 	
 	get_label_platform_ctl(13, c_label);
-	hbox_1[13] = make_platoform_box(c_label, files_c->mesh_file_fmt_c);
+	hbox_3[13] = make_file_format_hbox(c_label, files_c->mesh_file_fmt_c);
 	
 	get_label_platform_ctl(14, c_label);
-	hbox_1[14] = make_platoform_box(c_label, files_c->restart_file_fmt_c);
+	hbox_3[14] = make_file_format_hbox(c_label, files_c->restart_file_fmt_c);
 	
 	get_label_platform_ctl(15, c_label);
-	hbox_1[15] = make_platoform_box(c_label, files_c->field_file_fmt_c);
+	hbox_3[15] = make_file_format_hbox(c_label, files_c->field_file_fmt_c);
 	
 	get_label_platform_ctl(16, c_label);
-	hbox_1[16] = make_platoform_box(c_label, files_c->itp_file_fmt_c);
+	hbox_3[16] = make_file_format_hbox(c_label, files_c->itp_file_fmt_c);
 	
 	get_label_platform_ctl(17, c_label);
-	hbox_1[17] = make_platoform_box(c_label, files_c->spectr_field_fmt_c);
+	hbox_3[17] = make_file_format_hbox(c_label, files_c->spectr_field_fmt_c);
 	
 	get_label_platform_ctl(18, c_label);
-	hbox_1[18] = make_platoform_box(c_label, files_c->coriolis_file_fmt_c);
+	hbox_3[18] = make_file_format_hbox(c_label, files_c->coriolis_file_fmt_c);
 	
 	get_label_platform_ctl(19, c_label);
-	hbox_1[19] = make_chara_ctl_switch_hbox(c_label, files_c->del_org_data_ctl_c);
+	hbox_3[19] = make_chara_ctl_switch_hbox(c_label, files_c->del_org_data_ctl_c);
 	
 	free(c_label);
 	
 	for(i=0;i<NLBL_PLATFORM_CTL;i++){
-		gtk_box_pack_start(GTK_BOX(vbox_platform), hbox_1[i], FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], FALSE, FALSE, 0);
 	};
 	
+	hbox_2 = make_control_block_hbox(label_hd, &files_c->iflag_use, expander);
+	
+    gtk_container_set_border_width(GTK_CONTAINER(vbox_1), 5);
+	
 	gtk_widget_set_size_request(scrolled_window, 300, 400);
+    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_window), GTK_SHADOW_IN);
 	gtk_scrolled_window_set_max_content_height(scrolled_window, 400);
-	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 10);
+	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 5);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-	gtk_scrolled_window_add_with_viewport (
-		GTK_SCROLLED_WINDOW(scrolled_window), vbox_platform);
-	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, FALSE, FALSE, 0);
+    
+	gtk_scrolled_window_add_with_viewport(
+		GTK_SCROLLED_WINDOW(scrolled_window), vbox_1);
 	
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame), GTK_SHADOW_IN);
-	gtk_container_add(GTK_CONTAINER(Frame), vbox);
+	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
 	
-	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), Frame, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
+	
+	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 	return hbox;
 }

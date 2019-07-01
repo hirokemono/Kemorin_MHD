@@ -21,6 +21,8 @@
 struct platform_data_control_c{
     int maxlen;
     
+    int iflag_use;
+    
     struct int_ctl_item *ndomain_c;
     struct int_ctl_item *num_smp_c;
 
@@ -55,7 +57,7 @@ void get_label_platform_ctl(int index, char *label);
 void alloc_platform_data_control_c(struct platform_data_control_c *files);
 void dealloc_platform_data_control_c(struct platform_data_control_c *files);
 
-int read_platform_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
+void read_platform_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
 			struct platform_data_control_c *files);
 int write_platform_data_control_c(FILE *fp, int level, const char *label, 
                                   struct platform_data_control_c *files);

@@ -170,28 +170,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../C_src/CONTROLS/t_control_chara_real_IO.c"
-            timestampString = "583677557.135179"
+            timestampString = "583695143.285688"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "101"
             endingLineNumber = "101"
             landmarkName = "add_chara_real_ctl_list_before"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../C_src/GTK/ctl_panel_para_sph_shell_GTK.c"
-            timestampString = "583677557.13527"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "136"
-            endingLineNumber = "136"
-            landmarkName = "make_sph_domains_ctl_hbox"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
