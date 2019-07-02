@@ -18,6 +18,7 @@
 #include "t_control_real3_IO.h"
 
 struct node_monitor_ctl_c{
+    int iflag_use;
     int maxlen;
     
     struct chara_clist *group_4_monitor_list;
@@ -30,7 +31,7 @@ void get_label_node_monitor_ctl(int index, char *label);
 
 void alloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl);
 void dealloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl);
-int read_node_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF],
+void read_node_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct node_monitor_ctl_c *nmtr_ctl);
 int write_node_monitor_ctl_c(FILE *fp, int level, const char *label, 
 			struct node_monitor_ctl_c *nmtr_ctl);

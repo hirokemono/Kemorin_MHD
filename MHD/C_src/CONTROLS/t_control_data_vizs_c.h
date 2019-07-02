@@ -21,6 +21,7 @@
 
 
 struct visualizers_ctl_c{
+    int iflag_use;
     int maxlen;
     
     struct PSF_ctl_list psf_ctl_list;
@@ -35,7 +36,7 @@ void get_label_viz_ctl(int index, char *label);
 
 void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c);
 void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c);
-int read_vizs_ctl_c(FILE *fp, char buf[LENGTHBUF], 
+void read_vizs_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct visualizers_ctl_c *viz_c);
 int write_vizs_ctl_c(FILE *fp, int level, const char *label, 
 			struct visualizers_ctl_c *viz_c);

@@ -183,6 +183,7 @@ void set_file_box(GtkWidget *vbox0){
 
 	/* Generate file entry */
 	entry = gtk_entry_new();
+	gtk_editable_set_editable (GTK_EDITABLE(entry), FALSE);
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)window);
 	
@@ -243,16 +244,16 @@ GtkWidget *make_control_hbox(){
     hbox_3[5] = make_mhd_control_ctl_hbox(c_label, mhd_ctl->control_ctl);
 	
 	get_label_SGS_MHD_ctl(6, c_label);
-    hbox_3[6] = make_empty_ctl_hbox(c_label, &mhd_ctl->iflag_sph_monitor_ctl);
+    hbox_3[6] = make_empty_ctl_hbox(c_label, &mhd_ctl->smtr_ctl->iflag_use);
 	
 	get_label_SGS_MHD_ctl(7, c_label);
-	hbox_3[7] = make_empty_ctl_hbox(c_label, &mhd_ctl->iflag_node_monitor_ctl);
+	hbox_3[7] = make_empty_ctl_hbox(c_label, &mhd_ctl->nmtr_ctl->iflag_use);
 	
 	get_label_SGS_MHD_ctl(8, c_label);
-	hbox_3[8] = make_empty_ctl_hbox(c_label, &mhd_ctl->iflag_visual_control);
+	hbox_3[8] = make_empty_ctl_hbox(c_label, &mhd_ctl->viz_c->iflag_use);
 	
 	get_label_SGS_MHD_ctl(9, c_label);
-	hbox_3[9] = make_empty_ctl_hbox(c_label, &mhd_ctl->iflag_zonal_mean_control);
+	hbox_3[9] = make_empty_ctl_hbox(c_label, &mhd_ctl->zm_ctls->iflag_use);
 	
 	for (i=0;i<NLBL_SGS_MHD_CTL;i++){
 		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], TRUE, TRUE, 0);

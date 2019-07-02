@@ -17,7 +17,11 @@ GtkWidget *make_mhd_model_ctl_hbox(const char *label_hd,
 	GtkWidget *hbox;
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);;
 	
+	struct field_views *fields_vws;
+	
 	c_label = (char *)calloc(KCHARA_C, sizeof(char));
+	
+//	init_field_views_GTK(fld_ctl, struct field_views *fields_vws);
 	get_label_mhd_model_ctl(0, c_label);
 	hbox_3[0] = make_empty_ctl_hbox(c_label, &model_ctl->fld_ctl->iflag_use);
 	
@@ -79,6 +83,7 @@ GtkWidget *make_mhd_control_ctl_hbox(const char *label_hd,
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);;
 	
 	c_label = (char *)calloc(KCHARA_C, sizeof(char));
+	
 	get_label_mhd_control_ctl(0, c_label);
 	hbox_3[0] = make_empty_ctl_hbox(c_label, &control_ctl->tctl->iflag_use);
 	

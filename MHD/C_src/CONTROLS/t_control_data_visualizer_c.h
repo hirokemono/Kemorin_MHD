@@ -22,7 +22,6 @@ struct viz_only_ctl_c{
 	
     struct platform_data_control_c *files;
     struct time_data_control_c *tctl;
-	int iflag_visualizers_ctl;
     struct visualizers_ctl_c *viz_c;
 };
 

@@ -39,14 +39,10 @@ struct SGS_MHD_control_c{
 	struct mhd_model_control_c *model_ctl;
 	struct sph_mhd_control_control_c *control_ctl;
 	
-	int iflag_sph_monitor_ctl;
 	struct sph_monitor_control_c *smtr_ctl;
-	int iflag_node_monitor_ctl;
 	struct node_monitor_ctl_c *nmtr_ctl;
 	
-	int iflag_visual_control;
 	struct visualizers_ctl_c *viz_c;
-	int iflag_zonal_mean_control;
 	struct sph_zonal_means_ctl_c *zm_ctls;
 };
 

@@ -26,8 +26,6 @@ void get_label_viz_only_ctl(int index, char *label){
 };
 
 void alloc_visualizers_ctl_c(struct viz_only_ctl_c *viz_only){
-	viz_only->iflag_visualizers_ctl = 0;
-	
 	viz_only->files = (struct platform_data_control_c *) malloc(sizeof(struct platform_data_control_c));
 	alloc_platform_data_control_c(viz_only->files);
 	viz_only->tctl = (struct time_data_control_c *) malloc(sizeof(struct time_data_control_c));
@@ -44,9 +42,8 @@ void dealloc_visualizers_ctl_c(struct viz_only_ctl_c *viz_only){
 	free(viz_only->files);
 	free(viz_only->tctl);
 	free(viz_only->viz_c);
-	
-	viz_only->iflag_visualizers_ctl = 0;
-	return;
+
+    return;
 };
 
 int read_visualizers_ctl_c(FILE *fp, char buf[LENGTHBUF], 
@@ -62,8 +59,7 @@ int read_visualizers_ctl_c(FILE *fp, char buf[LENGTHBUF],
 			read_time_data_control_c(fp, buf, label_viz_only_ctl[ 1], viz_only->tctl);
             };
 		if(right_begin_flag_c(buf, label_viz_only_ctl[ 2]) > 0){
-			viz_only->iflag_visualizers_ctl = read_vizs_ctl_c(fp, buf,
-						label_viz_only_ctl[ 2], viz_only->viz_c);
+			read_vizs_ctl_c(fp, buf, label_viz_only_ctl[ 2], viz_only->viz_c);
             };
 	};
 	return 1;
@@ -76,11 +72,8 @@ int write_visualizers_ctl_c(FILE *fp, int level, const char *label,
 					label_viz_only_ctl[ 0], viz_only->files);
     level = write_time_data_control_c(fp, level, 
 					label_viz_only_ctl[ 1], viz_only->tctl);
-	if(viz_only->iflag_visualizers_ctl > 0){
-		fprintf(fp, "!\n");
-		level = write_vizs_ctl_c(fp, level, 
+    level = write_vizs_ctl_c(fp, level, 
 					label_viz_only_ctl[ 2], viz_only->viz_c);
-	};
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

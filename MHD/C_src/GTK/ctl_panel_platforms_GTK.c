@@ -120,40 +120,40 @@ GtkWidget * make_platoform_hbox(const char *label_hd, struct platform_data_contr
 	c_label = (char *)calloc(KCHARA_C, sizeof(char));
 	
 	get_label_platform_ctl(0, c_label);
-	hbox_3[0] = make_chara_ctl_switch_hbox(c_label, files_c->debug_flag_c);
+	hbox_3[0] = make_chara_ctl_switch_hbox(0, c_label, files_c->debug_flag_c);
 	
 	get_label_platform_ctl(1, c_label);
-	hbox_3[1] = make_integer_hbox(c_label, files_c->ndomain_c);
+	hbox_3[1] = make_integer_hbox(1, c_label, files_c->ndomain_c);
 	
 	get_label_platform_ctl(2, c_label);
-	hbox_3[2] = make_integer_hbox(c_label, files_c->num_smp_c);
+	hbox_3[2] = make_integer_hbox(1, c_label, files_c->num_smp_c);
 	
 	get_label_platform_ctl(3, c_label);
-	hbox_3[3] = make_text_hbox(c_label, files_c->sph_file_prefix_c);
+	hbox_3[3] = make_text_hbox(1, c_label, files_c->sph_file_prefix_c);
 	
 	get_label_platform_ctl(4, c_label);
-	hbox_3[4] = make_text_hbox(c_label, files_c->mesh_file_prefix_c);
+	hbox_3[4] = make_text_hbox(0, c_label, files_c->mesh_file_prefix_c);
 	
 	get_label_platform_ctl(5, c_label);
-	hbox_3[5] = make_text_hbox(c_label, files_c->field_file_prefix_c);
+	hbox_3[5] = make_text_hbox(0, c_label, files_c->field_file_prefix_c);
 	
 	get_label_platform_ctl(6, c_label);
-	hbox_3[6] = make_text_hbox(c_label, files_c->restart_file_prefix_c);
+	hbox_3[6] = make_text_hbox(1, c_label, files_c->restart_file_prefix_c);
 	
 	get_label_platform_ctl(7, c_label);
-	hbox_3[7] = make_text_hbox(c_label, files_c->spectr_field_file_prefix_c);
+	hbox_3[7] = make_text_hbox(0, c_label, files_c->spectr_field_file_prefix_c);
 	
 	get_label_platform_ctl(8, c_label);
-	hbox_3[8] = make_text_hbox(c_label, files_c->coriolis_int_file_name_c);
+	hbox_3[8] = make_text_hbox(0, c_label, files_c->coriolis_int_file_name_c);
 	
 	get_label_platform_ctl(9, c_label);
-	hbox_3[9] = make_text_hbox(c_label, files_c->bc_data_file_name_c);
+	hbox_3[9] = make_text_hbox(0, c_label, files_c->bc_data_file_name_c);
 	
 	get_label_platform_ctl(10, c_label);
-	hbox_3[10] = make_text_hbox(c_label, files_c->interpolate_sph_to_fem_c);
+	hbox_3[10] = make_text_hbox(0, c_label, files_c->interpolate_sph_to_fem_c);
 	
 	get_label_platform_ctl(11, c_label);
-	hbox_3[11] = make_text_hbox(c_label, files_c->interpolate_fem_to_sph_c);
+	hbox_3[11] = make_text_hbox(0, c_label, files_c->interpolate_fem_to_sph_c);
 	
 	get_label_platform_ctl(12, c_label);
 	hbox_3[12] = make_file_format_hbox(c_label, files_c->sph_file_fmt_c);
@@ -177,7 +177,7 @@ GtkWidget * make_platoform_hbox(const char *label_hd, struct platform_data_contr
 	hbox_3[18] = make_file_format_hbox(c_label, files_c->coriolis_file_fmt_c);
 	
 	get_label_platform_ctl(19, c_label);
-	hbox_3[19] = make_chara_ctl_switch_hbox(c_label, files_c->del_org_data_ctl_c);
+	hbox_3[19] = make_chara_ctl_switch_hbox(0, c_label, files_c->del_org_data_ctl_c);
 	
 	free(c_label);
 	

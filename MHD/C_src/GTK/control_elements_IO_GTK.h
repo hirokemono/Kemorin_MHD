@@ -24,13 +24,13 @@ GtkWidget *make_empty_ctl_hbox(const char *label_hd, int *iflag_use);
 GtkWidget *make_expand_ctl_file_hbox(const char *label_hd, int *iflag_use, char *filke_name, 
                                      int vsize_scroll, GtkWidget *vbox_1, GtkWidget *save_bottun);
     
-GtkWidget *make_chara_ctl_switch_hbox(const char *label, struct chara_ctl_item *ctl_item);
-GtkWidget *make_toggle_hbox (const char *label, struct chara_ctl_item *ctl_item,
+GtkWidget *make_chara_ctl_switch_hbox(int iflag_fix_on, const char *label, struct chara_ctl_item *ctl_item);
+GtkWidget *make_toggle_hbox(const char *label, struct chara_ctl_item *ctl_item,
 			gboolean is_on, gboolean is_sensitive);
-GtkWidget *make_text_hbox (const char *label, struct chara_ctl_item *ctl_item);
-GtkWidget *make_integer_hbox (const char *label, struct int_ctl_item *ctl_item);
-GtkWidget *make_real_hbox (const char *label, struct real_ctl_item *ctl_item);
-GtkWidget *make_filename_hbox (const char *label, struct chara_ctl_item *ctl_item);
+GtkWidget *make_text_hbox(int iflag_fix_on, const char *label, struct chara_ctl_item *ctl_item);
+GtkWidget *make_integer_hbox(int iflag_fix_on, const char *label, struct int_ctl_item *ctl_item);
+GtkWidget *make_real_hbox(int iflag_fix_on, const char *label, struct real_ctl_item *ctl_item);
+GtkWidget *make_filename_hbox(const char *label, struct chara_ctl_item *ctl_item);
 
 
 #endif /* control_elements_IO_GTK_k_ */

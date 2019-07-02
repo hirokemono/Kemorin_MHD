@@ -46,11 +46,6 @@ void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 		};
 	};
 	
-    mhd_ctl->iflag_sph_monitor_ctl =     0;
-	mhd_ctl->iflag_node_monitor_ctl =    0;
-	mhd_ctl->iflag_visual_control =      0;
-	mhd_ctl->iflag_zonal_mean_control =  0;
-	
 	mhd_ctl->files = (struct platform_data_control_c *) malloc(sizeof(struct platform_data_control_c));
 	alloc_platform_data_control_c(mhd_ctl->files);
 	
@@ -82,11 +77,6 @@ void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 }
 
 void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
-    mhd_ctl->iflag_zonal_mean_control =  0;
-    mhd_ctl->iflag_visual_control =      0;
-    mhd_ctl->iflag_node_monitor_ctl =    0;
-    mhd_ctl->iflag_sph_monitor_ctl =     0;
-	
 	dealloc_sph_zonal_means_controls_c(mhd_ctl->zm_ctls);
 	free(mhd_ctl->zm_ctls);
 	dealloc_vizs_ctl_c(mhd_ctl->viz_c);
@@ -140,16 +130,16 @@ int read_SGS_MHD_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			read_mhd_control_ctl_c(fp, buf, label_SGS_MHD_ctl[5], mhd_ctl->control_ctl);
 		};
 		if(right_begin_flag_c(buf, label_SGS_MHD_ctl[6]) > 0){
-			mhd_ctl->iflag_sph_monitor_ctl = read_sph_monitor_ctl_c(fp, buf, label_SGS_MHD_ctl[6], mhd_ctl->smtr_ctl);
+			read_sph_monitor_ctl_c(fp, buf, label_SGS_MHD_ctl[6], mhd_ctl->smtr_ctl);
 		};
 		if(right_begin_flag_c(buf, label_SGS_MHD_ctl[7]) > 0){
-			mhd_ctl->iflag_zonal_mean_control = read_zonal_mean_control_c(fp, buf, label_SGS_MHD_ctl[7], mhd_ctl->zm_ctls);
+			read_zonal_mean_control_c(fp, buf, label_SGS_MHD_ctl[7], mhd_ctl->zm_ctls);
 		};
 		if(right_begin_flag_c(buf, label_SGS_MHD_ctl[8]) > 0){
-			mhd_ctl->iflag_visual_control = read_vizs_ctl_c(fp, buf, label_SGS_MHD_ctl[8], mhd_ctl->viz_c);
+			read_vizs_ctl_c(fp, buf, label_SGS_MHD_ctl[8], mhd_ctl->viz_c);
 		};
 		if(right_begin_flag_c(buf, label_SGS_MHD_ctl[9]) > 0){
-			mhd_ctl->iflag_node_monitor_ctl = read_node_monitor_ctl_c(fp, buf, label_SGS_MHD_ctl[9], mhd_ctl->nmtr_ctl);
+			read_node_monitor_ctl_c(fp, buf, label_SGS_MHD_ctl[9], mhd_ctl->nmtr_ctl);
 		};
 	};
 	return 1;
@@ -171,22 +161,10 @@ int write_SGS_MHD_control_c(FILE *fp, int level, const char *label,
 	
     level = write_mhd_model_ctl_c(fp, level, label_SGS_MHD_ctl[4], mhd_ctl->model_ctl);
     level = write_mhd_control_ctl_c(fp, level, label_SGS_MHD_ctl[5], mhd_ctl->control_ctl);
-	if(mhd_ctl->iflag_sph_monitor_ctl > 0){
-		fprintf(fp, "!\n");
-		level = write_sph_monitor_ctl_c(fp, level, label_SGS_MHD_ctl[6], mhd_ctl->smtr_ctl);
-	};
-	if(mhd_ctl->iflag_zonal_mean_control > 0){
-		fprintf(fp, "!\n");
-		level = write_zonal_mean_control_c(fp, level, label_SGS_MHD_ctl[7], mhd_ctl->zm_ctls);
-	};
-	if(mhd_ctl->iflag_visual_control > 0){
-		fprintf(fp, "!\n");
-		level = write_vizs_ctl_c(fp, level, label_SGS_MHD_ctl[8], mhd_ctl->viz_c);
-	};
-	if(mhd_ctl->iflag_node_monitor_ctl > 0){
-		fprintf(fp, "!\n");
-		level = write_node_monitor_ctl_c(fp, level, label_SGS_MHD_ctl[9], mhd_ctl->nmtr_ctl);
-	};
+    level = write_sph_monitor_ctl_c(fp, level, label_SGS_MHD_ctl[6], mhd_ctl->smtr_ctl);
+    level = write_zonal_mean_control_c(fp, level, label_SGS_MHD_ctl[7], mhd_ctl->zm_ctls);
+    level = write_vizs_ctl_c(fp, level, label_SGS_MHD_ctl[8], mhd_ctl->viz_c);
+    level = write_node_monitor_ctl_c(fp, level, label_SGS_MHD_ctl[9], mhd_ctl->nmtr_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -218,10 +196,7 @@ void read_SGS_MHD_ctl_subfile_c(char buf[LENGTHBUF], struct SGS_MHD_control_c *m
 	
     read_spherical_shell_file_c(mhd_ctl->shell_ctl_file_name, buf, mhd_ctl->shell_ctl);
 	read_vizs_ctl_files_c(buf, mhd_ctl->viz_c);
-	
-	if(mhd_ctl->iflag_zonal_mean_control > 0){
-		read_zonal_mean_psf_ctl_file_c(buf, mhd_ctl->zm_ctls);
-	};
+    read_zonal_mean_psf_ctl_file_c(buf, mhd_ctl->zm_ctls);
  	return;
 };
 
@@ -229,10 +204,7 @@ void write_SGS_MHD_ctl_subfile_c(struct SGS_MHD_control_c *mhd_ctl){
 	
     write_spherical_shell_file_c(mhd_ctl->shell_ctl_file_name, mhd_ctl->shell_ctl);
 	write_vizs_ctl_files_c(mhd_ctl->viz_c);
-	
-	if(mhd_ctl->iflag_zonal_mean_control > 0){
-		write_zonal_mean_psf_ctl_file_c(mhd_ctl->zm_ctls);
-	};
+    write_zonal_mean_psf_ctl_file_c(mhd_ctl->zm_ctls);
  	return;
 };
 

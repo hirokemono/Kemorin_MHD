@@ -23,6 +23,7 @@ void get_label_sph_zonal_means_ctl(int index, char *label){
 void alloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls){
 	int i;
 	
+    zm_ctls->iflag_use = 0;
 	zm_ctls->maxlen = 0;
 	for (i=0;i<NLBL_SPH_ZONAL_MEAN_CTL;i++){
 		if(strlen(label_sph_zonal_means_ctl[i]) > zm_ctls->maxlen){
@@ -55,10 +56,12 @@ void dealloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls){
 	free(zm_ctls->zmean_psf_c);
 	free(zm_ctls->zrms_psf_file_name);
 	free(zm_ctls->zrms_psf_c);
+    
+    zm_ctls->iflag_use = 0;
 	return;
 }
 
-int read_zonal_mean_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
+void read_zonal_mean_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
 			struct sph_zonal_means_ctl_c *zm_ctls){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
@@ -76,11 +79,15 @@ int read_zonal_mean_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			zm_ctls->iflag_zrms_section_controls = read_file_flag_c(buf, zm_ctls->zrms_psf_file_name);
 		};
 	};
-	return 1;
+	zm_ctls->iflag_use = 1;
+    return;
 }
 
 int write_zonal_mean_control_c(FILE *fp, int level, const char *label, 
 			struct sph_zonal_means_ctl_c *zm_ctls){
+    if(zm_ctls->iflag_use == 0) return level;
+
+    fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	if(zm_ctls->iflag_zmean_section_controls == 1){
@@ -100,6 +107,8 @@ int write_zonal_mean_control_c(FILE *fp, int level, const char *label,
 }
 
 void read_zonal_mean_psf_ctl_file_c(char buf[LENGTHBUF], struct sph_zonal_means_ctl_c *zm_ctls){
+    if(zm_ctls->iflag_use == 0) return;
+        
 	if(zm_ctls->iflag_zmean_section_controls == -1){
 		read_psf_ctl_file_c(zm_ctls->zmean_psf_file_name, buf, zm_ctls->zmean_psf_c);
 	};
@@ -110,6 +119,8 @@ void read_zonal_mean_psf_ctl_file_c(char buf[LENGTHBUF], struct sph_zonal_means_
 };
 
 void write_zonal_mean_psf_ctl_file_c(struct sph_zonal_means_ctl_c *zm_ctls){
+    if(zm_ctls->iflag_use == 0) return;
+    
 	if(zm_ctls->iflag_zmean_section_controls == -1){
 		write_psf_ctl_file_c(zm_ctls->zmean_psf_file_name, zm_ctls->zmean_psf_c);
 	};

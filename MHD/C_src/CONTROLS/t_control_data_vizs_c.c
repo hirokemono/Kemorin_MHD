@@ -29,6 +29,7 @@ void get_label_viz_ctl(int index, char *label){
 void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	int i;
 	
+    viz_c->iflag_use = 0;
 	viz_c->maxlen = 0;
 	for (i=0;i<NLBL_VIZ_CTL;i++){
 		if(strlen(label_viz_ctl[i]) > viz_c->maxlen){
@@ -53,10 +54,11 @@ void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	clear_LIC_PVR_ctl_list(&viz_c->lic_ctl_list);
 	clear_FLINE_ctl_list(&viz_c->fline_ctl_list);
 	
+    viz_c->iflag_use = 0;
 	return;
 };
 
-int read_vizs_ctl_c(FILE *fp, char buf[LENGTHBUF], 
+void read_vizs_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct visualizers_ctl_c *viz_c){
 	int iflag;
 	
@@ -72,11 +74,15 @@ int read_vizs_ctl_c(FILE *fp, char buf[LENGTHBUF],
 		iflag = read_PSF_ctl_list(fp, buf, label_viz_ctl[ 5], &viz_c->psf_ctl_list);
 		iflag = read_ISO_ctl_list(fp, buf, label_viz_ctl[ 6], &viz_c->iso_ctl_list);
 	};
-	return 1;
+	viz_c->iflag_use = 1;
+    return;
 };
 
 int write_vizs_ctl_c(FILE *fp, int level, const char *label, 
 			struct visualizers_ctl_c *viz_c){
+    if(viz_c->iflag_use == 0) return level;
+    
+    fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	level = write_PSF_ctl_list(fp, level, label_viz_ctl[ 0], &viz_c->psf_ctl_list);

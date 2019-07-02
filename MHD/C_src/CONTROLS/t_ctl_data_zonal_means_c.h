@@ -16,6 +16,7 @@
 #include "t_control_data_4_psf_c.h"
 
 struct sph_zonal_means_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	int iflag_zmean_section_controls;
@@ -31,7 +32,7 @@ void get_label_sph_zonal_means_ctl(int index, char *label);
 
 void alloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls);
 void dealloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls);
-int read_zonal_mean_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
+void read_zonal_mean_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
 			struct sph_zonal_means_ctl_c *zm_ctls);
 int write_zonal_mean_control_c(FILE *fp, int level, const char *label, 
 			struct sph_zonal_means_ctl_c *zm_ctls);

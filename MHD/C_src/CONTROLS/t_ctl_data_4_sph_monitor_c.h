@@ -20,6 +20,7 @@
 #include "t_ctl_data_4_volume_spectr_list.h"
 
 struct pick_spectr_control_c{
+    int iflag_use;
     int maxlen;
     
     struct chara_ctl_item *picked_mode_head_c;
@@ -31,6 +32,7 @@ struct pick_spectr_control_c{
 };
 
 struct layerd_spectr_control_c{
+    int iflag_use;
     int maxlen;
     
 	struct chara_ctl_item *layered_pwr_spectr_prefix_c;
@@ -44,6 +46,7 @@ struct layerd_spectr_control_c{
 };
 
 struct gauss_spectr_control_c{
+    int iflag_use;
     int maxlen;
     
 	struct chara_ctl_item *gauss_coefs_prefix_c;
@@ -55,6 +58,7 @@ struct gauss_spectr_control_c{
 };
 
 struct mid_equator_control_c{
+    int iflag_use;
     int maxlen;
     
     struct chara_ctl_item *pick_circle_coord_c;
@@ -65,6 +69,7 @@ struct mid_equator_control_c{
 };
 
 struct sph_monitor_control_c{
+    int iflag_use;
     int maxlen;
 	
 	
@@ -72,14 +77,10 @@ struct sph_monitor_control_c{
     struct chara_ctl_item *volume_pwr_spectr_prefix_c;
     struct chara_ctl_item *Nusselt_file_prefix_c;
 	
-	int iflag_pspec_ctl;
 	struct pick_spectr_control_c *pspec_ctl_c;
 	
-	int iflag_g_pwr;
 	struct gauss_spectr_control_c *g_pwr;
-	int iflag_lp_ctl;
 	struct layerd_spectr_control_c *lp_ctl;
-	int iflag_meq_ctl;
 	struct mid_equator_control_c *meq_ctl;
 	
 	struct volume_spectr_ctl_list v_pwr_list;
@@ -94,28 +95,28 @@ void get_label_mid_equator_ctl(int index, char *label);
 
 void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c);
 void dealloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c);
-int read_pick_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
+void read_pick_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct pick_spectr_control_c *pspec_ctl_c);
 int write_pick_spectr_control_c(FILE *fp, int level, const char *label, 
                                 struct pick_spectr_control_c *pspec_ctl_c);
 
 void alloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr);
 void dealloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr);
-int read_gauss_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
+void read_gauss_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct gauss_spectr_control_c *g_pwr);
 int write_gauss_spectr_control_c(FILE *fp, int level,
 			const char *label, struct gauss_spectr_control_c *g_pwr);
 
 void alloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl);
 void dealloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl);
-int read_layerd_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
+void read_layerd_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct layerd_spectr_control_c *lp_ctl);
 int write_layerd_spectr_control_c(FILE *fp, int level,
 			const char *label, struct layerd_spectr_control_c *lp_ctl);
 
 void alloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl);
 void dealloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl);
-int read_mid_equator_control_c(FILE *fp, char buf[LENGTHBUF], 
+void read_mid_equator_control_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct mid_equator_control_c *meq_ctl);
 int write_mid_equator_control_c(FILE *fp, int level,
 			const char *label, struct mid_equator_control_c *meq_ctl);
@@ -123,7 +124,7 @@ int write_mid_equator_control_c(FILE *fp, int level,
 
 void alloc_sph_monitor_ctl_c(struct sph_monitor_control_c *monitor_ctl);
 void dealloc_sph_monitor_ctl_c(struct sph_monitor_control_c *monitor_ctl);
-int read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
+void read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
 			struct sph_monitor_control_c *monitor_ctl);
 int write_sph_monitor_ctl_c(FILE *fp, int level, const char *label,
 			struct sph_monitor_control_c *monitor_ctl);
