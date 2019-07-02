@@ -52,12 +52,13 @@ static void set_file_fmt_cb(GtkComboBox *combobox_cmap, gpointer data)
     GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
     GtkTreeIter iter;
     
+    gint idx;
     gchar *row_string;
-    int index_field;
-    int index_mode;
-    
-    gint idx = gtk_combo_box_get_active(combobox_cmap);
-    if(idx < 0) return;
+    int index_field, index_mode;
+	
+	if(file_fmt->iflag == 0) gtk_combo_box_set_active(combobox_cmap, -1);
+	idx = gtk_combo_box_get_active(combobox_cmap);
+	if(idx < 0) return;
     
     GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
     
@@ -69,14 +70,13 @@ static void set_file_fmt_cb(GtkComboBox *combobox_cmap, gpointer data)
     return;
 }
 
-GtkWidget * make_file_format_hbox(const char *label, struct chara_ctl_item *ctl_item){
+GtkWidget * make_file_format_hbox(int iflag_fix_on, const char *label, struct chara_ctl_item *ctl_item){
     GtkTreeModel *model;
 	GtkTreeModel *child_model;
+	GtkWidget *hbox;
 	
-    GtkWidget *combobox;
-	
-	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	GtkWidget *label_tree = gtk_tree_view_new();
+	struct entry_and_flag *tbox_flag = (struct entry_and_flag *) malloc(sizeof(struct entry_and_flag));
 	int index = 0;
 	
 	create_fixed_label_w_index_tree(label_tree);
@@ -91,20 +91,16 @@ GtkWidget * make_file_format_hbox(const char *label, struct chara_ctl_item *ctl_
 	index = append_ci_item_to_tree(index, &file_fmt_labels[MERGED_GZ_MODE][0], MERGED_GZ_MODE, child_model);
 	index = append_ci_item_to_tree(index, &file_fmt_labels[MERGED_BIN_GZ_MODE][0], MERGED_BIN_GZ_MODE, child_model);
 	
-	gtk_box_set_homogeneous(hbox, FALSE);
-	
-	get_label_platform_ctl(12, label);
-	combobox = gtk_combo_box_new_with_model(child_model);
+	tbox_flag->entry = gtk_combo_box_new_with_model(child_model);
 	child_model = gtk_cell_renderer_text_new();
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), child_model, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox), child_model,
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(tbox_flag->entry), child_model, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(tbox_flag->entry), child_model,
 				"text", COLUMN_FIELD_NAME, NULL);
-	gtk_combo_box_set_active(combobox, find_file_fmt_index(ctl_item));
-	g_signal_connect(G_OBJECT(combobox), "changed", G_CALLBACK(set_file_fmt_cb),
+	gtk_combo_box_set_active(tbox_flag->entry, find_file_fmt_index(ctl_item));
+	g_signal_connect(G_OBJECT(tbox_flag->entry), "changed", G_CALLBACK(set_file_fmt_cb),
 				(gpointer) ctl_item);
-	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(label), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), combobox, FALSE, FALSE, 0);
 	
+	hbox = make_entry_with_switch_hbox(iflag_fix_on, label, &ctl_item->iflag, tbox_flag);
 	return hbox;
 };
 
@@ -156,25 +152,25 @@ GtkWidget * make_platoform_hbox(const char *label_hd, struct platform_data_contr
 	hbox_3[11] = make_text_hbox(0, c_label, files_c->interpolate_fem_to_sph_c);
 	
 	get_label_platform_ctl(12, c_label);
-	hbox_3[12] = make_file_format_hbox(c_label, files_c->sph_file_fmt_c);
+	hbox_3[12] = make_file_format_hbox(1, c_label, files_c->sph_file_fmt_c);
 	
 	get_label_platform_ctl(13, c_label);
-	hbox_3[13] = make_file_format_hbox(c_label, files_c->mesh_file_fmt_c);
+	hbox_3[13] = make_file_format_hbox(0, c_label, files_c->mesh_file_fmt_c);
 	
 	get_label_platform_ctl(14, c_label);
-	hbox_3[14] = make_file_format_hbox(c_label, files_c->restart_file_fmt_c);
+	hbox_3[14] = make_file_format_hbox(1, c_label, files_c->restart_file_fmt_c);
 	
 	get_label_platform_ctl(15, c_label);
-	hbox_3[15] = make_file_format_hbox(c_label, files_c->field_file_fmt_c);
+	hbox_3[15] = make_file_format_hbox(0, c_label, files_c->field_file_fmt_c);
 	
 	get_label_platform_ctl(16, c_label);
-	hbox_3[16] = make_file_format_hbox(c_label, files_c->itp_file_fmt_c);
+	hbox_3[16] = make_file_format_hbox(0, c_label, files_c->itp_file_fmt_c);
 	
 	get_label_platform_ctl(17, c_label);
-	hbox_3[17] = make_file_format_hbox(c_label, files_c->spectr_field_fmt_c);
+	hbox_3[17] = make_file_format_hbox(0, c_label, files_c->spectr_field_fmt_c);
 	
 	get_label_platform_ctl(18, c_label);
-	hbox_3[18] = make_file_format_hbox(c_label, files_c->coriolis_file_fmt_c);
+	hbox_3[18] = make_file_format_hbox(0, c_label, files_c->coriolis_file_fmt_c);
 	
 	get_label_platform_ctl(19, c_label);
 	hbox_3[19] = make_chara_ctl_switch_hbox(0, c_label, files_c->del_org_data_ctl_c);
