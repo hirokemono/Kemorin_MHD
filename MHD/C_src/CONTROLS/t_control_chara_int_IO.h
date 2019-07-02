@@ -33,6 +33,7 @@ struct chara_int_ctl_list{
 struct chara_int_clist{
 	struct chara_int_ctl_list ci_item_head;
 
+    int iflag_use;
     char *clist_name;
     char *c1_name;
     char *i1_name;
@@ -56,7 +57,7 @@ void set_from_chara_int_ctl_item_c( struct chara_int_ctl_item *ci_item,
 void init_chara_int_clist(struct chara_int_clist *ci_clst);
 void clear_chara_int_clist(struct chara_int_clist *ci_clst);
 int count_chara_int_clist(struct chara_int_clist *ci_clst);
-int read_chara_int_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
+void read_chara_int_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct chara_int_clist *ci_clst);
 int write_chara_int_clist(FILE *fp, int level, const char *label, 
                        struct chara_int_clist *ci_clst);
@@ -68,6 +69,7 @@ void update_chara_int_clist_by_index(int index, char *c_in, int i1_in,
 			struct chara_int_clist *ci_clst);
 void set_from_chara_int_clist_at_index(int index, struct chara_int_clist *ci_clst,
 			char *c_out, int *i1_out);
+struct chara_int_ctl_item *chara_int_clist_at_index(int index, struct chara_int_clist *ci_clst);
 
 void add_chara_int_clist_before_c_tbl(char *ref, char *c_in, int i1_in,
 			struct chara_int_clist *ci_clst);

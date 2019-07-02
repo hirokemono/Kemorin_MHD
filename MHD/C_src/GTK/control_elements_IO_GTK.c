@@ -321,7 +321,6 @@ GtkWidget *make_chara_ctl_switch_hbox(int iflag_fix_on, const char *label, struc
 	
 	tbox_flag->entry = gtk_switch_new();
 	
-	gtk_box_set_homogeneous(hbox, FALSE);
 	gtk_switch_set_active(GTK_SWITCH(tbox_flag->entry), TRUE);
 	if(cmp_no_case_c(ctl_item->c_tbl, "YES") > 0){
 		gtk_switch_set_active(GTK_SWITCH(tbox_flag->entry), TRUE);

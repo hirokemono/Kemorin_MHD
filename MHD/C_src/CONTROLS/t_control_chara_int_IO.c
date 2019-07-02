@@ -253,6 +253,10 @@ static void set_from_chara_int_ctl_list_at_index(int index, struct chara_int_ctl
 	return;
 };
 
+static struct chara_int_ctl_item *chara_int_ctl_list_at_index(int index, struct chara_int_ctl_list *head){
+    struct chara_int_ctl_list *tmp_list = find_ci_ctl_list_item_by_index(index, head);
+    return tmp_list->ci_item;
+}
 
 static void add_chara_int_ctl_list_before_c_tbl(char *ref, char *c_in, int i1_in,
 			struct chara_int_ctl_list *head){
@@ -293,31 +297,41 @@ static void set_from_chara_int_ctl_list_at_c_tbl(char *ref, struct chara_int_ctl
 
 void init_chara_int_clist(struct chara_int_clist *ci_clst){
     init_chara_int_ctl_list(&ci_clst->ci_item_head);
-    
+	
+	ci_clst->iflag_use = 0;
     ci_clst->clist_name = (char *)calloc(32,sizeof(char));
     ci_clst->c1_name = (char *)calloc(32,sizeof(char));
     ci_clst->i1_name = (char *)calloc(32,sizeof(char));
     return;
 };
+
 void clear_chara_int_clist(struct chara_int_clist *ci_clst){
     clear_chara_int_ctl_list(&ci_clst->ci_item_head);
 	
 	free(ci_clst->clist_name);
     free(ci_clst->c1_name);
     free(ci_clst->i1_name);
+	ci_clst->iflag_use = 0;
     return;
 };
+
 int count_chara_int_clist(struct chara_int_clist *ci_clst){
     return count_chara_int_ctl_list(&ci_clst->ci_item_head);
 };
 
-int read_chara_int_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
+void read_chara_int_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct chara_int_clist *ci_clst){
-    sprintf(ci_clst->clist_name,"%s", label);
-    return read_chara_int_ctl_list(fp, buf, label, &ci_clst->ci_item_head);
+    if(ci_clst->iflag_use > 0) return;
+    
+	sprintf(ci_clst->clist_name,"%s", label);
+	ci_clst->iflag_use = read_chara_int_ctl_list(fp, buf, label, &ci_clst->ci_item_head);
+    return;
 };
+
 int write_chara_int_clist(FILE *fp, int level, const char *label, 
                        struct chara_int_clist *ci_clst){
+    if(ci_clst->iflag_use == 0) return level;
+    
     return write_chara_int_ctl_list(fp, level, label, &ci_clst->ci_item_head);
 };
 
@@ -342,6 +356,9 @@ void set_from_chara_int_clist_at_index(int index, struct chara_int_clist *ci_cls
             c_out, i1_out);
     return;
 };
+struct chara_int_ctl_item *chara_int_clist_at_index(int index, struct chara_int_clist *ci_clst){
+    return chara_int_ctl_list_at_index(index, &ci_clst->ci_item_head);
+}
 
 void add_chara_int_clist_before_c_tbl(char *ref, char *c_in, int i1_in,
             struct chara_int_clist *ci_clst){

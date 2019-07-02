@@ -159,7 +159,7 @@ int write_pick_spectr_control_c(FILE *fp, int level, const char *label,
     fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara_ctl_item_c(fp, level, pspec_ctl_c->maxlen, 
+	level = write_chara_ctl_item_c(fp, level, pspec_ctl_c->maxlen, 
 				label_pick_spectr_ctl[0], pspec_ctl_c->picked_mode_head_c);
 	
 	write_int_clist(fp, level, label_pick_spectr_ctl[1], pspec_ctl_c->idx_pick_layer_list);
@@ -242,9 +242,9 @@ int write_gauss_spectr_control_c(FILE *fp, int level, const char *label,
     fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara_ctl_item_c(fp, level, g_pwr->maxlen, 
+	level = write_chara_ctl_item_c(fp, level, g_pwr->maxlen, 
 				label_gauss_spectr_ctl[0], g_pwr->gauss_coefs_prefix_c);
-	write_real_ctl_item_c(fp, level, g_pwr->maxlen, 
+	level = write_real_ctl_item_c(fp, level, g_pwr->maxlen, 
 				label_gauss_spectr_ctl[1], g_pwr->gauss_coefs_radius_c);
 	
 	write_int2_clist(fp, level, label_gauss_spectr_ctl[2], g_pwr->idx_gauss_list);
@@ -330,18 +330,18 @@ int write_layerd_spectr_control_c(FILE *fp, int level, const char *label,
     fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
+	level = write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
 				label_layerd_spectr_ctl[0], lp_ctl->layered_pwr_spectr_prefix_c);
 	
 	write_int_clist(fp, level, label_layerd_spectr_ctl[1], lp_ctl->idx_spec_layer_list);
 	
-	write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
+	level = write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
 				label_layerd_spectr_ctl[2], lp_ctl->degree_spectr_switch_c);
-	write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
+	level = write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
 				label_layerd_spectr_ctl[3], lp_ctl->order_spectr_switch_c);
-	write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
+	level = write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
 				label_layerd_spectr_ctl[4], lp_ctl->diff_lm_spectr_switch_c);
-	write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
+	level = write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
 				label_layerd_spectr_ctl[5], lp_ctl->axis_spectr_switch_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -404,14 +404,14 @@ int write_mid_equator_control_c(FILE *fp, int level, const char *label,
     fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara_ctl_item_c(fp, level, meq_ctl->maxlen, 
+	level = write_chara_ctl_item_c(fp, level, meq_ctl->maxlen, 
 				label_mid_equator_ctl[0], meq_ctl->pick_circle_coord_c);
 	
-	write_integer_ctl_item_c(fp, level, meq_ctl->maxlen, 
+	level = write_integer_ctl_item_c(fp, level, meq_ctl->maxlen, 
 				label_mid_equator_ctl[1], meq_ctl->nphi_mid_eq_c);
-	write_real_ctl_item_c(fp, level, meq_ctl->maxlen, 
+	level = write_real_ctl_item_c(fp, level, meq_ctl->maxlen, 
 				label_mid_equator_ctl[2], meq_ctl->pick_s_c);
-	write_real_ctl_item_c(fp, level, meq_ctl->maxlen, 
+	level = write_real_ctl_item_c(fp, level, meq_ctl->maxlen, 
 				label_mid_equator_ctl[3], meq_ctl->pick_z_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -504,9 +504,12 @@ int write_sph_monitor_ctl_c(FILE *fp, int level, const char *label,
     fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-    write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[5], monitor_ctl->volume_average_prefix_c);
-    write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[6], monitor_ctl->volume_pwr_spectr_prefix_c);
-	write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[7], monitor_ctl->Nusselt_file_prefix_c);
+    level = write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[5],
+                                   monitor_ctl->volume_average_prefix_c);
+    level = write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[6],
+                                   monitor_ctl->volume_pwr_spectr_prefix_c);
+	level = write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[7],
+                                   monitor_ctl->Nusselt_file_prefix_c);
 	
     level = write_pick_spectr_control_c(fp, level, label_sph_monitor_ctl[3], monitor_ctl->pspec_ctl_c);
     level = write_gauss_spectr_control_c(fp, level, label_sph_monitor_ctl[2], monitor_ctl->g_pwr);

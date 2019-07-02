@@ -7,6 +7,81 @@
 
 #include "ctl_panel_para_sph_shell_GTK.h"
 
+#define RADIAL_MODE      0
+#define HORIZONTAL_MODE  1
+
+const char *label_radial =     "radial";
+const char *label_horizontal = "horizontal";
+const char *label_meridional = "meridional";
+const char *label_zonal =      "zonal";
+const char *label_modes =      "modes";
+
+const char inner_docomp_labels[2][KCHARA_C] = {
+    "radial", 
+    "horizontal"
+};
+
+static int find_inner_decomp_index(struct chara_ctl_item *inner_decomp_c){
+	int i;
+	
+	for(i=0;i<2;i++){
+		if(cmp_no_case_c(inner_decomp_c->c_tbl, &inner_docomp_labels[i][0]) > 0) return i;
+	}
+	return -1;
+};
+
+static void set_inner_decomp_cb(GtkComboBox *combobox_cmap, gpointer data)
+{
+    struct chara_ctl_item *inner_decomp_c = (struct colormap_view *) data;
+    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
+    GtkTreeIter iter;
+    
+    gint idx;
+    gchar *row_string;
+    int index_field, index_mode;
+	
+	if(inner_decomp_c->iflag == 0) gtk_combo_box_set_active(combobox_cmap, -1);
+	idx = gtk_combo_box_get_active(combobox_cmap);
+	if(idx < 0) return;
+    
+    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
+    
+    gtk_tree_model_get_iter(model_cmap, &iter, path);  
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+    
+    sprintf(inner_decomp_c->c_tbl, "%s", row_string);
+    return;
+}
+
+GtkWidget * make_inner_decomp_hbox(int iflag_fix_on, const char *label, struct chara_ctl_item *ctl_item){
+    GtkTreeModel *model;
+	GtkTreeModel *child_model;
+	GtkWidget *hbox;
+	
+	GtkWidget *label_tree = gtk_tree_view_new();
+	struct entry_and_flag *tbox_flag = (struct entry_and_flag *) malloc(sizeof(struct entry_and_flag));
+	int index = 0;
+	
+	create_fixed_label_w_index_tree(label_tree);
+	model = gtk_tree_view_get_model(label_tree);  
+	child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+	index = append_ci_item_to_tree(index, &inner_docomp_labels[RADIAL_MODE][0], RADIAL_MODE, child_model);
+	index = append_ci_item_to_tree(index, &inner_docomp_labels[HORIZONTAL_MODE][0], HORIZONTAL_MODE, child_model);
+	
+	tbox_flag->entry = gtk_combo_box_new_with_model(child_model);
+	child_model = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(tbox_flag->entry), child_model, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(tbox_flag->entry), child_model,
+				"text", COLUMN_FIELD_NAME, NULL);
+	gtk_combo_box_set_active(tbox_flag->entry, find_inner_decomp_index(ctl_item));
+	g_signal_connect(G_OBJECT(tbox_flag->entry), "changed", G_CALLBACK(set_inner_decomp_cb),
+				(gpointer) ctl_item);
+	
+	hbox = make_entry_with_switch_hbox(iflag_fix_on, label, &ctl_item->iflag, tbox_flag);
+	return hbox;
+};
+
 GtkWidget * make_FEM_mesh_ctl_hbox(const char *label_hd, struct FEM_mesh_control_c *Fmesh){
 	int i;
 	char *c_label;
@@ -45,6 +120,51 @@ GtkWidget * make_FEM_mesh_ctl_hbox(const char *label_hd, struct FEM_mesh_control
 	return hbox;
 }
 
+GtkWidget *make_ndomain_hbox(int iflag_decomp, const char *label_hd, 
+			struct chara_int_clist *ndomain_list){
+	int i, num;
+	struct chara_int_ctl_item *tmp_list;
+	GtkAdjustment *adjust[2];
+	GtkWidget *spin[2];
+	GtkWidget *hbox_3[2];
+	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	
+	if(iflag_decomp == 5){
+		num = 1;
+	} else { 
+		num = 2;
+	};
+	
+	if(count_chara_int_clist(ndomain_list) != num){
+		dealloc_ndomain_list_c(ndomain_list);
+        ndomain_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist));
+        alloc_ndomain_list_c(ndomain_list);
+		if(iflag_decomp == 3){
+			append_chara_int_clist(label_radial, 0, ndomain_list);
+			append_chara_int_clist(label_meridional, 0, ndomain_list);
+		} else if(iflag_decomp == 4){
+			append_chara_int_clist(label_radial, 0, ndomain_list);
+			append_chara_int_clist(label_zonal, 0, ndomain_list);
+		} else {
+			append_chara_int_clist(label_modes, 0, ndomain_list);
+		};
+	};
+	
+	for(i=0;i<num;i++){
+		tmp_list = chara_int_clist_at_index(i, ndomain_list);
+		hbox_3[i] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+		adjust[i] = gtk_adjustment_new(tmp_list->i_data, 0, 2147483648, 1, 100, 21474836);
+		spin[i] = gtk_spin_button_new(adjust[i], 1, 0);
+		gtk_box_pack_start(GTK_BOX(hbox_3[i]), gtk_label_new(tmp_list->c_tbl), FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(hbox_3[i]), spin[i], TRUE, TRUE, 0);
+		
+		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], FALSE, FALSE, 0);
+	};
+	GtkWidget *hbox = make_expand_ctl_hbox(label_hd, &ndomain_list->iflag_use, 100, vbox_1);
+	
+	return hbox;
+}
+
 GtkWidget * make_sph_domains_ctl_hbox(const char *label_hd, struct sphere_domain_ctl_c *sdctl_c){
 	int i;
 	char *c_label;
@@ -52,12 +172,12 @@ GtkWidget * make_sph_domains_ctl_hbox(const char *label_hd, struct sphere_domain
 	GtkWidget *hbox_3[NLBL_SPHERE_DOMAIN_CTL];
 	
 	GtkWidget *hbox;
-	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);;
+	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	
 	c_label = (char *)calloc(KCHARA_C, sizeof(char));
 	
 	get_label_sphere_domain_ctl(0, c_label);
-	hbox_3[0] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+	hbox_3[0] = make_inner_decomp_hbox(0, c_label, sdctl_c->inner_decomp_c);
 	
 	get_label_sphere_domain_ctl(1, c_label);
 	hbox_3[1] = make_integer_hbox(1, c_label, sdctl_c->num_radial_domain_c);
@@ -66,13 +186,13 @@ GtkWidget * make_sph_domains_ctl_hbox(const char *label_hd, struct sphere_domain
 	hbox_3[2] = make_integer_hbox(1, c_label, sdctl_c->num_horiz_domain_c);
 	
 	get_label_sphere_domain_ctl(3, c_label);
-	hbox_3[3] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+	hbox_3[3] = make_ndomain_hbox(3, c_label, sdctl_c->ndomain_sph_grid_list);
 	
 	get_label_sphere_domain_ctl(4, c_label);
-	hbox_3[4] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+	hbox_3[4] = make_ndomain_hbox(4, c_label, sdctl_c->ndomain_legendre_list);
 	
 	get_label_sphere_domain_ctl(5, c_label);
-	hbox_3[5] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+	hbox_3[5] = make_ndomain_hbox(5, c_label, sdctl_c->ndomain_spectr_list);
 	
 	free(c_label);
 	

@@ -183,7 +183,6 @@ void set_file_box(GtkWidget *vbox0){
 
 	/* Generate file entry */
 	entry = gtk_entry_new();
-	gtk_editable_set_editable (GTK_EDITABLE(entry), FALSE);
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)window);
 	

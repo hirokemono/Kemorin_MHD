@@ -56,6 +56,20 @@ void get_label_sphere_data_ctl(int index, char *label){
     return;
 };
 
+void alloc_ndomain_list_c(struct chara_int_clist *ndomain_list){
+	init_chara_int_clist(ndomain_list);
+    sprintf(ndomain_list->c1_name, "Direction");
+    sprintf(ndomain_list->i1_name, "Value");
+	
+	return;
+};
+
+void dealloc_ndomain_list_c(struct chara_int_clist *ndomain_list){
+	clear_chara_int_clist(ndomain_list);
+    free(ndomain_list);
+	
+	return;
+};
 
 void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	int i;
@@ -76,17 +90,11 @@ void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	init_int_ctl_item_c(sdctl_c->num_horiz_domain_c);
 	
     sdctl_c->ndomain_sph_grid_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist));
+    alloc_ndomain_list_c(sdctl_c->ndomain_sph_grid_list);
     sdctl_c->ndomain_legendre_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist));
+    alloc_ndomain_list_c(sdctl_c->ndomain_legendre_list);
     sdctl_c->ndomain_spectr_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist));
-	init_chara_int_clist(sdctl_c->ndomain_sph_grid_list);
-	init_chara_int_clist(sdctl_c->ndomain_legendre_list);
-	init_chara_int_clist(sdctl_c->ndomain_spectr_list);
-    sprintf(sdctl_c->ndomain_sph_grid_list->c1_name, "Direction");
-    sprintf(sdctl_c->ndomain_legendre_list->c1_name, "Direction");
-    sprintf(sdctl_c->ndomain_spectr_list->c1_name, "Direction");
-    sprintf(sdctl_c->ndomain_sph_grid_list->i1_name, "Value");
-    sprintf(sdctl_c->ndomain_legendre_list->i1_name, "Value");
-    sprintf(sdctl_c->ndomain_spectr_list->i1_name, "Value");
+    alloc_ndomain_list_c(sdctl_c->ndomain_spectr_list);
 	
 	return;
 };
@@ -99,12 +107,10 @@ void dealloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	free(sdctl_c->num_radial_domain_c);
 	free(sdctl_c->num_horiz_domain_c);
 	
-	clear_chara_int_clist(sdctl_c->ndomain_sph_grid_list);
-	clear_chara_int_clist(sdctl_c->ndomain_legendre_list);
-	clear_chara_int_clist(sdctl_c->ndomain_spectr_list);
-    free(sdctl_c->ndomain_sph_grid_list);
-    free(sdctl_c->ndomain_legendre_list);
-    free(sdctl_c->ndomain_spectr_list);
+	dealloc_ndomain_list_c(sdctl_c->ndomain_sph_grid_list);
+	dealloc_ndomain_list_c(sdctl_c->ndomain_legendre_list);
+	dealloc_ndomain_list_c(sdctl_c->ndomain_spectr_list);
+	
     sdctl_c->iflag_use = 0;
 	return;
 };
@@ -140,9 +146,9 @@ int write_sphere_domain_ctl_c(FILE *fp, int level,
 	write_integer_ctl_item_c(fp, level, sdctl_c->maxlen, label_sphere_domain_ctl[ 1], sdctl_c->num_radial_domain_c);
 	write_integer_ctl_item_c(fp, level, sdctl_c->maxlen, label_sphere_domain_ctl[ 2], sdctl_c->num_horiz_domain_c);
 	
-	write_chara_int_clist(fp, level, label_sphere_domain_ctl[ 3], sdctl_c->ndomain_sph_grid_list);
-	write_chara_int_clist(fp, level, label_sphere_domain_ctl[ 4], sdctl_c->ndomain_legendre_list);
-	write_chara_int_clist(fp, level, label_sphere_domain_ctl[ 5], sdctl_c->ndomain_spectr_list);
+	level = write_chara_int_clist(fp, level, label_sphere_domain_ctl[ 3], sdctl_c->ndomain_sph_grid_list);
+	level = write_chara_int_clist(fp, level, label_sphere_domain_ctl[ 4], sdctl_c->ndomain_legendre_list);
+	level = write_chara_int_clist(fp, level, label_sphere_domain_ctl[ 5], sdctl_c->ndomain_spectr_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -327,7 +333,7 @@ int write_sphere_data_ctl_c(FILE *fp, int level,
 	write_real_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[13], spctl_c->CMB_radius_c);
 	write_real_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[14], spctl_c->Max_radius_c);
 	
-	write_chara_int_clist(fp, level, label_sphere_data_ctl[15], spctl_c->radial_grp_list);
+	level = write_chara_int_clist(fp, level, label_sphere_data_ctl[15], spctl_c->radial_grp_list);
 	
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[16], spctl_c->num_radial_layer_c);
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[17], spctl_c->num_med_layer_c);
