@@ -21,6 +21,7 @@
 		1813DAE821210809003AB1B9 /* t_control_int2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DAE221210809003AB1B9 /* t_control_int2_IO.c */; };
 		1813DAFD212203AE003AB1B9 /* t_control_chara_int2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DAFC212203AE003AB1B9 /* t_control_chara_int2_IO.c */; };
 		1832D27822CAA961005673BB /* ctl_panel_SPH_MHD_model_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 1832D27722CAA961005673BB /* ctl_panel_SPH_MHD_model_GTK.c */; };
+		1832D27A22CC0759005673BB /* file_dialog_8.c in Sources */ = {isa = PBXBuildFile; fileRef = 1832D27922CC0759005673BB /* file_dialog_8.c */; };
 		183A3F202129C55F00ACF6BD /* tree_view_real2_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 183A3F1F2129C55F00ACF6BD /* tree_view_real2_GTK.c */; };
 		183B85ED2129EBDE00148B24 /* tree_view_4_pvr_colormap.c in Sources */ = {isa = PBXBuildFile; fileRef = 183B85EC2129EBDE00148B24 /* tree_view_4_pvr_colormap.c */; };
 		1843AA632123A8F20073BCB1 /* m_direction_labels_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1843AA612123A8F10073BCB1 /* m_direction_labels_c.c */; };
@@ -34,7 +35,6 @@
 		187D27EE212C9A7200007329 /* tree_view_chara_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27EC212C9A7200007329 /* tree_view_chara_GTK.c */; };
 		187D27F4212CDFFC00007329 /* tree_view_chara_int_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27F2212CDFFC00007329 /* tree_view_chara_int_GTK.c */; };
 		187F130B22C7FD7700B0F844 /* ctl_panel_platforms_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187F130922C7FD7700B0F844 /* ctl_panel_platforms_GTK.c */; };
-		187F130F22C8D97B00B0F844 /* file_dialog_7.c in Sources */ = {isa = PBXBuildFile; fileRef = 187F130E22C8D97B00B0F844 /* file_dialog_7.c */; };
 		187F131422C94ED100B0F844 /* ctl_panel_para_sph_shell_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187F131222C94ED000B0F844 /* ctl_panel_para_sph_shell_GTK.c */; };
 		18812B88211EC37400BF714B /* libgtk-3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B87211EC37400BF714B /* libgtk-3.a */; };
 		18812B8A211EC39400BF714B /* libglib-2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B89211EC39400BF714B /* libglib-2.0.a */; };
@@ -156,6 +156,7 @@
 		1813DAFC212203AE003AB1B9 /* t_control_chara_int2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_int2_IO.c; path = ../../C_src/CONTROLS/t_control_chara_int2_IO.c; sourceTree = "<group>"; };
 		1832D27622CAA961005673BB /* ctl_panel_SPH_MHD_model_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ctl_panel_SPH_MHD_model_GTK.h; path = ../../C_src/GTK/ctl_panel_SPH_MHD_model_GTK.h; sourceTree = "<group>"; };
 		1832D27722CAA961005673BB /* ctl_panel_SPH_MHD_model_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ctl_panel_SPH_MHD_model_GTK.c; path = ../../C_src/GTK/ctl_panel_SPH_MHD_model_GTK.c; sourceTree = "<group>"; };
+		1832D27922CC0759005673BB /* file_dialog_8.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_dialog_8.c; path = ../../../programs/TESTS/GTK3_test/file_dialog_8.c; sourceTree = "<group>"; };
 		183A3F1F2129C55F00ACF6BD /* tree_view_real2_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_real2_GTK.c; path = ../../C_src/GTK/tree_view_real2_GTK.c; sourceTree = "<group>"; };
 		183A3F212129C56C00ACF6BD /* tree_view_real2_GTK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = tree_view_real2_GTK.h; path = ../../C_src/GTK/tree_view_real2_GTK.h; sourceTree = "<group>"; };
 		183B85EC2129EBDE00148B24 /* tree_view_4_pvr_colormap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_pvr_colormap.c; path = ../../C_src/GTK/tree_view_4_pvr_colormap.c; sourceTree = "<group>"; };
@@ -182,7 +183,6 @@
 		187D27F3212CDFFC00007329 /* tree_view_chara_int_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_chara_int_GTK.h; path = ../../C_src/GTK/tree_view_chara_int_GTK.h; sourceTree = "<group>"; };
 		187F130922C7FD7700B0F844 /* ctl_panel_platforms_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ctl_panel_platforms_GTK.c; path = ../../C_src/GTK/ctl_panel_platforms_GTK.c; sourceTree = "<group>"; };
 		187F130A22C7FD7700B0F844 /* ctl_panel_platforms_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ctl_panel_platforms_GTK.h; path = ../../C_src/GTK/ctl_panel_platforms_GTK.h; sourceTree = "<group>"; };
-		187F130E22C8D97B00B0F844 /* file_dialog_7.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_dialog_7.c; path = ../../../programs/TESTS/GTK3_test/file_dialog_7.c; sourceTree = "<group>"; };
 		187F131222C94ED000B0F844 /* ctl_panel_para_sph_shell_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ctl_panel_para_sph_shell_GTK.c; path = ../../C_src/GTK/ctl_panel_para_sph_shell_GTK.c; sourceTree = "<group>"; };
 		187F131322C94ED000B0F844 /* ctl_panel_para_sph_shell_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ctl_panel_para_sph_shell_GTK.h; path = ../../C_src/GTK/ctl_panel_para_sph_shell_GTK.h; sourceTree = "<group>"; };
 		18812AE8211EB5B000BF714B /* GTK_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GTK_test; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -360,7 +360,7 @@
 		18812AEA211EB5B000BF714B /* GTK_test */ = {
 			isa = PBXGroup;
 			children = (
-				187F130E22C8D97B00B0F844 /* file_dialog_7.c */,
+				1832D27922CC0759005673BB /* file_dialog_8.c */,
 			);
 			path = GTK_test;
 			sourceTree = "<group>";
@@ -628,7 +628,6 @@
 				18812C12211F762300BF714B /* t_control_data_4_iso_c.c in Sources */,
 				18812C1E211F762300BF714B /* t_control_data_ISO_ctl_list.c in Sources */,
 				18812BFA211F762200BF714B /* t_ctl_data_sph_filter_list.c in Sources */,
-				187F130F22C8D97B00B0F844 /* file_dialog_7.c in Sources */,
 				1813DAD6212107EB003AB1B9 /* t_control_chara_IO.c in Sources */,
 				183B85ED2129EBDE00148B24 /* tree_view_4_pvr_colormap.c in Sources */,
 				1843AA6C2124B4810073BCB1 /* tree_view_4_force_GTK.c in Sources */,
@@ -666,6 +665,7 @@
 				1813DAD2212107EB003AB1B9 /* t_control_chara_int_IO.c in Sources */,
 				18812BFE211F762200BF714B /* t_control_data_gen_sph_grid_c.c in Sources */,
 				1843AA762124BFBE0073BCB1 /* tree_views_4_fixed_lists_GTK.c in Sources */,
+				1832D27A22CC0759005673BB /* file_dialog_8.c in Sources */,
 				18812C00211F762200BF714B /* t_ctl_data_node_monitor_c.c in Sources */,
 				1813DAE821210809003AB1B9 /* t_control_int2_IO.c in Sources */,
 				18812C04211F762200BF714B /* t_control_data_LIC_c.c in Sources */,

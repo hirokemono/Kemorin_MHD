@@ -45,8 +45,6 @@ void append_model_data(int index_field, struct all_field_ctl_c *all_fld_tbl, Gtk
 
 void create_field_tree_view(struct field_views *fields_vws);
 void create_unused_field_tree_view(struct field_views *fields_vws);
-void create_direction_label_tree(GtkWidget *label_tree);
-
 void create_direction_tree_views(struct field_views *fields_vws);
 
 #endif /* tree_view_4_field_GTK_h_ */

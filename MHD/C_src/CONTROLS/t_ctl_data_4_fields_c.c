@@ -141,10 +141,12 @@ static int write_field_ctl_list(FILE *fp, int level, const char *label,
 
 void read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct field_ctl_c *fld_ctl){
+    if(fld_ctl->iflag_use > 0) return;
+    
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_field_ctl_list(fp, buf, label_field_ctl[ 0],
+        read_field_ctl_list(fp, buf, label_field_ctl[ 0],
 					fld_ctl->tmp_fld_item, &fld_ctl->field_list);
 		
 		read_chara_ctl_list(fp, buf, label_field_ctl[ 1], &fld_ctl->quad_phys_list);
