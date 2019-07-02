@@ -59,14 +59,22 @@ static void cb_file_name_input(GtkEntry *entry, gpointer data)
 };
 
 static void cb_expander_switch(GObject *switch_3, GParamSpec *pspec, gpointer data){
-    int *iflag = (int *) data;
+    int *iflag_use = (int *) data;
     
-    if(gtk_switch_get_state(switch_3) == TRUE){
-        gtk_switch_set_state(switch_3, TRUE);
-        *iflag = 1;
+    if(gtk_switch_get_active(switch_3) == TRUE){
+        *iflag_use = 1;
     } else {
-        gtk_switch_set_state(switch_3, FALSE);
-        *iflag = 0;
+        *iflag_use = 0;
+    };
+};
+
+static void cb_expander_toggle(GObject *check, gpointer data){
+    int *iflag_use = (int *) data;
+    
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(check)) == TRUE) {
+        *iflag_use = 1;
+    } else {
+        *iflag_use = 0;
     };
 };
 
@@ -81,19 +89,17 @@ void cb_expander_action(GObject *switch_3, gpointer data){
 
 static GtkWidget *make_block_switch_hbox(const char *label_hd, int *iflag_use){
     GtkWidget *hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-	GtkWidget *switch_b = gtk_switch_new();
+	GtkWidget *check = gtk_check_button_new_with_label(label_hd);
 	
-	gtk_switch_set_active(GTK_SWITCH(switch_b), TRUE);
-	if(*iflag_use > 0){
-		gtk_switch_set_state(GTK_SWITCH(switch_b), TRUE);
+	if(*iflag_use == 0){
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), FALSE);
 	} else {
-		gtk_switch_set_state(GTK_SWITCH(switch_b), FALSE);
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check), TRUE);
 	};
-	g_signal_connect(G_OBJECT(switch_b), "notify::active", G_CALLBACK(cb_expander_switch), 
+	g_signal_connect(G_OBJECT(check), "toggled", G_CALLBACK(cb_expander_toggle), 
 				(gpointer) iflag_use);
 	
-	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new(label_hd), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_1), switch_b, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1), check, FALSE, FALSE, 0);
 	
 	return hbox_1;
 };
