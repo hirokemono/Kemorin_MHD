@@ -219,7 +219,9 @@
 !
 !
       istack(0) = 0
-      call gz_mpi_read_int_vector(IO_param, num, istack(1))
+      if(num .gt. 0) then
+        call gz_mpi_read_int_vector(IO_param, num, istack(1))
+      end if
       ntot = istack(num)
 !
       end subroutine gz_mpi_read_int_stack

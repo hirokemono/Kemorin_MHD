@@ -62,6 +62,7 @@
       integer(kind = kint), intent(in) :: istack(0:num)
 !
 !
+      if(num .le. 0) return
       call gz_mpi_write_int_vector_b(IO_param, num, istack(1))
 !
       end subroutine gz_mpi_write_integer_stack_b
@@ -175,7 +176,9 @@
 !
 !
       istack(0) = 0
-      call gz_mpi_read_int_vector_b(IO_param, num, istack(1))
+      if(num .gt. 0) then 
+        call gz_mpi_read_int_vector_b(IO_param, num, istack(1))
+      end if
       ntot = istack(num)
 !
       end subroutine gz_mpi_read_integer_stack_b
