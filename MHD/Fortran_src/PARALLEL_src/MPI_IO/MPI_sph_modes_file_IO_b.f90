@@ -64,12 +64,8 @@
      &      'Read merged binary grid file: ', trim(file_name)
       call open_read_mpi_file_b                                         &
      &   (file_name, num_pe, id_rank, IO_param)
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-      &      'open_read_mpi_file_b end'
       call mpi_read_geom_rtp_data_b(IO_param, sph_file%comm_IO,         &
      &    sph_file%sph_IO, sph_file%sph_grp_IO)
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-      &      'mpi_read_geom_rtp_data_b end'
       call close_mpi_file(IO_param)
 !
       end subroutine mpi_read_geom_rtp_file_b

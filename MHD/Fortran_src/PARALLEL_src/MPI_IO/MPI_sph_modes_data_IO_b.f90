@@ -70,27 +70,17 @@
 !
       sph_IO%numdir_sph =  3
 !
-      write(*,*) my_rank, 'mpi_read_domain_info_b'
       call mpi_read_domain_info_b(IO_param, comm_IO)
-      write(*,*) my_rank, 'mpi_read_gl_reso_sph_b'
       call mpi_read_gl_reso_sph_b(IO_param, sph_IO)
-      write(*,*) my_rank, 'pi_read_rank_4_sph_b'
       call mpi_read_rank_4_sph_b(IO_param, sph_IO)
-      write(*,*) my_rank, 'mpi_read_rtp_gl_1d_table_b'
       call mpi_read_rtp_gl_1d_table_b(IO_param, sph_IO)
-      write(*,*) my_rank, 'mpi_read_gl_nodes_sph_b'
       call mpi_read_gl_nodes_sph_b(IO_param, sph_IO)
 !
-      write(*,*) my_rank, 'mpi_read_import_data_b'
       call mpi_read_import_data_b(IO_param, comm_IO)
 !
-      write(*,*) my_rank, 'mpi_read_group_data_b bc_rtp_grp'
       call mpi_read_group_data_b(IO_param, sph_grps_IO%bc_rtp_grp)
-      write(*,*) my_rank, 'mpi_read_group_data_b radial_rtp_grp'
       call mpi_read_group_data_b(IO_param, sph_grps_IO%radial_rtp_grp)
-      write(*,*) my_rank, 'mpi_read_group_data_b theta_rtp_grp'
       call mpi_read_group_data_b(IO_param, sph_grps_IO%theta_rtp_grp)
-      write(*,*) my_rank, 'mpi_read_group_data_b zonal_rtp_grp'
       call mpi_read_group_data_b(IO_param, sph_grps_IO%zonal_rtp_grp)
 !
       end subroutine mpi_read_geom_rtp_data_b
