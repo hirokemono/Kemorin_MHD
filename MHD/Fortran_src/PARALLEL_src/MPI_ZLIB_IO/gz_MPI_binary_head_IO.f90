@@ -96,7 +96,6 @@
       integer(kind = kint_gl) :: num64
 !
 !
-      if(num .le. 0) return
       num64 = int(IO_param%nprocs_in,KIND(num64))
       call gz_mpi_write_mul_int8head_b(IO_param, num64, i8stack(1))
 !
@@ -259,7 +258,6 @@
 !
       num64 = int(num_pe,KIND(num64))
       i8stack(0) = 0
-      if(num .le. 0) return
       call gz_mpi_read_mul_int8head_b(IO_param, num64, i8stack(1))
 !
       end subroutine gz_mpi_read_merged_stack_b
