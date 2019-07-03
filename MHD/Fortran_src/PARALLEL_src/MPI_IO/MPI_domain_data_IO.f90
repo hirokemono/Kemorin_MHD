@@ -238,7 +238,7 @@
 !
 !
       istack(0) = 0
-      if(num .gt. 0) call mpi_read_int_vector(IO_param, num, istack(1))
+      call mpi_read_int_vector(IO_param, num, istack(1))
       ntot = istack(num)
 !
       end subroutine mpi_read_int_stack

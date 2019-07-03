@@ -80,9 +80,10 @@
 !
       integer(kind = kint), intent(in) :: istack(0:num)
 !
+      integer(kind = kint_gl) :: ist
 !
-      if(num .le. 0) return
-      call mpi_write_int_vector_b(IO_param, num, istack(1))
+      ist = min(1,num)
+      call mpi_write_int_vector_b(IO_param, num, istack(ist))
 !
       end subroutine mpi_write_integer_stack_b
 !
@@ -99,7 +100,6 @@
       type(tmp_i8_array)  :: tmp64
 !
 !
-      if(num .le. 0) return
       if(IO_param%id_rank .ge. IO_param%nprocs_in) return
       call dup_from_short_array(num, int_dat, tmp64)
       call mpi_write_int8_vector_b(IO_param, tmp64%n1, tmp64%id_a)
@@ -215,11 +215,11 @@
       integer(kind = kint), intent(inout) :: ntot
       integer(kind = kint), intent(inout) :: istack(0:num)
 !
+      integer(kind = kint_gl) :: ist
 !
       istack(0) = 0
-      if(num .gt. 0) then
-        call mpi_read_int_vector_b(IO_param, num, istack(1))
-      end if
+      ist = min(1, num)
+      call mpi_read_int_vector_b(IO_param, num, istack(ist))
       ntot = istack(num)
 !
       end subroutine mpi_read_integer_stack_b
@@ -238,7 +238,6 @@
       type(tmp_i8_array)  :: tmp64
 !
 !
-      if(num .le. 0) return
       call alloc_1d_i8array(num, tmp64)
       call mpi_read_int8_vector_b(IO_param, tmp64%n1, tmp64%id_a)
       call dup_to_short_array(tmp64, int_dat)
