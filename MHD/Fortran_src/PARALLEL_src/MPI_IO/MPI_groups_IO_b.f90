@@ -45,8 +45,10 @@
 !
       integer(kind = kint_gl) :: num64
 !
+      integer i
 !
       call mpi_read_one_inthead_b(IO_param, group_IO%num_grp)
+      write(*,*) my_rank, 'group_IO%num_grp', group_IO%num_grp
       call alloc_group_num(group_IO)
 !
       call mpi_read_mul_charahead_b                                     &
@@ -55,6 +57,11 @@
       num64 = group_IO%num_grp
       call mpi_read_integer_stack_b(IO_param, num64,                    &
      &    group_IO%istack_grp, group_IO%num_item)
+!
+      do i = 1, group_IO%num_grp
+        write(*,*) i, 'group_IO%istack_grp', group_IO%istack_grp(i), &
+     &      group_IO%num_item(i), trim(group_IO%grp_name)
+      end do
 !
       call alloc_group_item(group_IO)
 !
