@@ -256,7 +256,7 @@ static void set_from_chara_int_ctl_list_at_index(int index, struct chara_int_ctl
 static struct chara_int_ctl_item *chara_int_ctl_list_at_index(int index, struct chara_int_ctl_list *head){
     struct chara_int_ctl_list *tmp_list = find_ci_ctl_list_item_by_index(index, head);
     return tmp_list->ci_item;
-}
+};
 
 static void add_chara_int_ctl_list_before_c_tbl(char *ref, char *c_in, int i1_in,
 			struct chara_int_ctl_list *head){
@@ -358,7 +358,7 @@ void set_from_chara_int_clist_at_index(int index, struct chara_int_clist *ci_cls
 };
 struct chara_int_ctl_item *chara_int_clist_at_index(int index, struct chara_int_clist *ci_clst){
     return chara_int_ctl_list_at_index(index, &ci_clst->ci_item_head);
-}
+};
 
 void add_chara_int_clist_before_c_tbl(char *ref, char *c_in, int i1_in,
             struct chara_int_clist *ci_clst){

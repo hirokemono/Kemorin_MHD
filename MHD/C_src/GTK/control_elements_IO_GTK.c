@@ -96,8 +96,8 @@ void cb_toggle_entry(GtkCheckButton *check, gpointer data)
 	return;
 }
 
-static GtkWidget *make_block_switch_hbox(const char *label_hd, int *iflag_use){
-    GtkWidget *hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+static GtkWidget *make_block_switch_vbox(const char *label_hd, int *iflag_use){
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	GtkWidget *check = gtk_check_button_new_with_label(label_hd);
 	
 	if(*iflag_use == 0){
@@ -108,19 +108,22 @@ static GtkWidget *make_block_switch_hbox(const char *label_hd, int *iflag_use){
 	g_signal_connect(G_OBJECT(check), "toggled", G_CALLBACK(cb_expander_toggle), 
 				(gpointer) iflag_use);
 	
-	gtk_box_pack_start(GTK_BOX(hbox_1), check, FALSE, FALSE, 0);
+    gtk_box_set_baseline_position(vbox, GTK_BASELINE_POSITION_TOP);
+	gtk_box_pack_start(GTK_BOX(vbox), check, FALSE, FALSE, 0);
 	
-	return hbox_1;
+	return vbox;
 };
 
-static GtkWidget *make_control_file_block_hbox(const char *label_hd, int *iflag_use_file, 
+static GtkWidget *make_control_file_block_vbox(const char *label_hd, int *iflag_use_file, 
 			char *file_name, GtkWidget *save_bottun){
 	GtkWidget *combo_b;
     GtkWidget *label_tree;
     GtkTreeModel *model;
 	GtkTreeModel *child_model;
 	GtkWidget *entry_3 = gtk_entry_new();
-    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    GtkWidget *hbox_y = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    GtkWidget *hbox_z = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 
     int index = 0;
 	
@@ -143,30 +146,35 @@ static GtkWidget *make_control_file_block_hbox(const char *label_hd, int *iflag_
 				(gpointer) iflag_use_file);
 	
 	gtk_entry_set_text(entry_3, file_name);
+    gtk_entry_set_width_chars(entry_3, 20);
 	g_signal_connect(G_OBJECT(entry_3), "activate", G_CALLBACK(cb_file_name_input), (gpointer) file_name);
 	
-	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(label_hd), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), combo_b, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("File:"), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), entry_3, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), save_bottun, FALSE, FALSE, 0);
-	return hbox;
+    gtk_box_pack_start(GTK_BOX(hbox_y), combo_b, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_y), gtk_label_new(label_hd), FALSE, FALSE, 0);
+    
+	gtk_box_pack_start(GTK_BOX(hbox_z), gtk_label_new("File:"), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_z), entry_3, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_z), save_bottun, FALSE, FALSE, 0);
+    
+    gtk_box_pack_start(GTK_BOX(vbox), hbox_y, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox_z, FALSE, FALSE, 0);   
+	return vbox;
 };
 
 GtkWidget *make_expand_ctl_hbox(const char *label_hd, int *iflag_use, int vsize_scroll,
 			GtkWidget *vbox_1){
 	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
 	GtkWidget *expander = gtk_expander_new("");
 	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-    GtkWidget *hbox_1 = make_block_switch_hbox(label_hd, iflag_use);
+    GtkWidget *vbox_2 = make_block_switch_vbox(label_hd, iflag_use);
 	
 	g_signal_connect(G_OBJECT(expander), "activate", G_CALLBACK(cb_expander_action), 
 					(gpointer) iflag_use);
+    gtk_expander_set_resize_toplevel(GTK_EXPANDER(expander), TRUE);
 	
-    gtk_container_set_border_width(GTK_CONTAINER(vbox_1), 5);
+    gtk_container_set_border_width(GTK_CONTAINER(vbox_1), 10);
 	
-	gtk_widget_set_size_request(scrolled_window, 300, vsize_scroll);
+	gtk_widget_set_size_request(scrolled_window, 450, vsize_scroll);
     gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_window), GTK_SHADOW_IN);
 	gtk_scrolled_window_set_max_content_height(scrolled_window, vsize_scroll);
 	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 5);
@@ -178,21 +186,18 @@ GtkWidget *make_expand_ctl_hbox(const char *label_hd, int *iflag_use, int vsize_
 	
 	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
 	
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox_2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), expander, TRUE, TRUE, 0);
 	return hbox;
 };
 
 GtkWidget *make_expand_ctl_file_hbox(const char *label_hd, int *iflag_use_file, char *file_name, 
                                      int vsize_scroll, GtkWidget *vbox_1, GtkWidget *save_bottun){
 	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
 	GtkWidget *expander = gtk_expander_new("");
 	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
 	
-	GtkWidget *hbox_1 = make_control_file_block_hbox(label_hd, iflag_use_file, 
+	GtkWidget *vbox_2 = make_control_file_block_vbox(label_hd, iflag_use_file, 
 				file_name, save_bottun);
 	
 	g_signal_connect(G_OBJECT(expander), "activate", G_CALLBACK(cb_expander_action), 
@@ -212,10 +217,8 @@ GtkWidget *make_expand_ctl_file_hbox(const char *label_hd, int *iflag_use_file, 
 	
 	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
 	
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox_2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), expander, TRUE, TRUE, 0);
 	return hbox;
 };
 

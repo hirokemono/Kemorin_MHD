@@ -131,6 +131,7 @@ static void cb_set_field_name(GtkComboBox *combobox_field, gpointer user_data)
     gchar *row_string;
 	int index_field;
 	int num_comp;
+    int iflag_quad;
 	
 	GtkWidget *combobox_comp;
 	GtkCellRenderer *column_comp;
@@ -145,8 +146,9 @@ static void cb_set_field_name(GtkComboBox *combobox_field, gpointer user_data)
     gtk_tree_model_get(model_field, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
     gtk_tree_model_get(model_field, &iter, COLUMN_FIELD_NAME, &row_string, -1);
     gtk_tree_model_get(model_field, &iter, COLUMN_NUM_COMP, &num_comp, -1);
-    
-    printf("Selected field %d %d, %s\n", index_field, num_comp, row_string);
+    gtk_tree_model_get(model_field, &iter, COLUMN_QUADRATURE, &iflag_quad, -1);
+   
+    printf("Selected field %d %d %d %s\n", index_field, num_comp, iflag_quad, row_string);
 	
 	if(num_comp == 6){
 		model_comp =  gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->sym_tensor_label_view));
@@ -199,7 +201,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	char *c_label = (char *)calloc(KCHARA_C, sizeof(char));
 	
 	
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	/* Delete data bottun */
@@ -216,7 +218,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
 	
 	/* Set signals for sorting */
-	add_sorting_shgnal_w_label(fields_vws->used_tree_view, hbox);
+	add_sorting_signal_w_label(fields_vws->used_tree_view, hbox);
 	
 	get_label_MHD_control_head(c_label);
 	
@@ -251,7 +253,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
 	
 	/* Set signals for sorting */
-	add_sorting_shgnal_w_label(fields_vws->unused_field_tree_view, hbox);
+	add_sorting_signal_w_label(fields_vws->unused_field_tree_view, hbox);
 	
 };
 

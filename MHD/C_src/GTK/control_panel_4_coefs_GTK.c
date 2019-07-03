@@ -193,6 +193,6 @@ void add_coefs_selection_box(struct coefs_view *coefs_vw, GtkWidget *vbox)
     gtk_container_add(GTK_CONTAINER(scrolled_window), coefs_vw->coefs_tree_view);
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
 	
-	add_sorting_shgnal_w_label(coefs_vw->coefs_tree_view, hbox)
+	add_sorting_signal_w_label(coefs_vw->coefs_tree_view, hbox)
 };
 

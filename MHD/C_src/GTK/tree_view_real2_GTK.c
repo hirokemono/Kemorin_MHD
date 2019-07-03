@@ -261,7 +261,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     child_model = gtk_list_store_new(2, G_TYPE_DOUBLE, G_TYPE_DOUBLE);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
-    /* ソート用のモデルを作成してツリービューにセットする */
+    /* Construct model for sorting and set to tree view */
     model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(r2_tree_view), model);
     

@@ -298,7 +298,7 @@ void create_text_tree_view(GtkTreeView *c_tree_view,
     child_model = gtk_list_store_new(1, G_TYPE_STRING);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
-    /* ソート用のモデルを作成してツリービューにセットする */
+    /* Construct model for sorting and set to tree view */
     model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(c_tree_view), model);
     
@@ -340,7 +340,7 @@ void add_chara_list_box_w_addbottun(GtkTreeView *c_tree_view,
     
     c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
-    hbox = gtk_hbox_new(FALSE, 0);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
     
     /* Pack bottuns */
@@ -356,7 +356,7 @@ void add_chara_list_box_w_addbottun(GtkTreeView *c_tree_view,
     gtk_container_add(GTK_CONTAINER(scrolled_window), c_tree_view);
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
-	add_sorting_shgnal_w_label(c_tree_view, hbox);
+	add_sorting_signal_w_label(c_tree_view, hbox);
 };
 
 void add_chara_list_box_w_combobox(GtkTreeView *c_tree_view, 
@@ -372,7 +372,7 @@ void add_chara_list_box_w_combobox(GtkTreeView *c_tree_view,
     
     c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
-    hbox = gtk_hbox_new(FALSE, 0);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
     
     /* Pack bottuns */
@@ -395,6 +395,6 @@ void add_chara_list_box_w_combobox(GtkTreeView *c_tree_view,
     gtk_container_add(GTK_CONTAINER(scrolled_window), c_tree_view);
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
-	add_sorting_shgnal_w_label(c_tree_view, hbox);
+	add_sorting_signal_w_label(c_tree_view, hbox);
 };
 

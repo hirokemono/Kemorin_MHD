@@ -316,7 +316,7 @@ void create_text2_real_tree_view(GtkListStore *cbox_child_model, GtkTreeView *c2
                                      G_TYPE_DOUBLE);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
-    /* ソート用のモデルを作成してツリービューにセットする */
+    /* Construct model for sorting and set to tree view */
     model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(c2r_tree_view, model);
     
@@ -424,7 +424,7 @@ void create_cbox_text_real_tree_view(GtkListStore *cbox_child_model, GtkTreeView
                                      G_TYPE_DOUBLE);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
-    /* ソート用のモデルを作成してツリービューにセットする */
+    /* Construct model for sorting and set to tree view */
     model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(c2r_tree_view, model);
     
@@ -523,7 +523,7 @@ void add_chara2_real_list_box_w_addbottun(GtkTreeView *c2r_tree_view,
     
     c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
-    hbox = gtk_hbox_new(FALSE, 0);
+    hbox = gtk_hbox_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
     
     /* Pack bottuns */
@@ -540,7 +540,7 @@ void add_chara2_real_list_box_w_addbottun(GtkTreeView *c2r_tree_view,
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
 	
-    add_sorting_shgnal_w_label(c2r_tree_view, hbox);
+    add_sorting_signal_w_label(c2r_tree_view, hbox);
     
 };
 
@@ -558,7 +558,7 @@ void add_chara2_real_list_box_w_combobox(GtkTreeView *c2r_tree_view,
     
     c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
-    hbox = gtk_hbox_new(FALSE, 0);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
     
     /* Pack bottuns */
@@ -580,7 +580,7 @@ void add_chara2_real_list_box_w_combobox(GtkTreeView *c2r_tree_view,
     gtk_container_add(GTK_CONTAINER(scrolled_window), c2r_tree_view);
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
-    add_sorting_shgnal_w_label(c2r_tree_view, hbox);
+    add_sorting_signal_w_label(c2r_tree_view, hbox);
     
 };
 

@@ -21,7 +21,7 @@ void set_last_field_to_label(GtkTreeSelection *selection, gpointer user_data);
 void block_changed_signal(GObject *instance);
 void unblock_changed_signal(GObject *instance);
 
-void add_sorting_shgnal_w_label(GtkTreeView *tree_view, GtkWidget *hbox);
+void add_sorting_signal_w_label(GtkTreeView *tree_view, GtkWidget *hbox);
 
 
 

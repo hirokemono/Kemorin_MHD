@@ -71,7 +71,7 @@ void unblock_changed_signal(GObject *instance)
 }
 
 
-void add_sorting_shgnal_w_label(GtkTreeView *tree_view, GtkWidget *hbox){
+void add_sorting_signal_w_label(GtkTreeView *tree_view, GtkWidget *hbox){
     GtkTreeSelection *selection;
 	GtkTreeModel *model;
     GtkTreeModel *child_model;
@@ -107,7 +107,7 @@ void add_sorting_shgnal_w_label(GtkTreeView *tree_view, GtkWidget *hbox){
 GtkWidget * create_fixed_label_w_math_tree(void){
     /* Construct empty list storage */
     GtkListStore *child_model = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING);;
-    /* ソート用のモデルを作成してツリービューにセットする */
+    /* Construct model for sorting and set to tree view */
     GtkTreeModel *model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     GtkWidget *label_tree = gtk_tree_view_new();
     
@@ -119,7 +119,7 @@ GtkWidget * create_fixed_label_w_math_tree(void){
 GtkWidget * create_fixed_label_w_index_tree(void){
     /* Construct empty list storage */
     GtkListStore *child_model = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_INT);    
-    /* ソート用のモデルを作成してツリービューにセットする */
+    /* Construct model for sorting and set to tree view */
     GtkTreeModel *model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     GtkWidget *label_tree = gtk_tree_view_new();
 
@@ -144,7 +144,7 @@ void create_fixed_constant_tree(GtkWidget *label_tree)
                                      G_TYPE_DOUBLE);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
-    /* ソート用のモデルを作成してツリービューにセットする */
+    /* Construct model for sorting and set to tree view */
     model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(label_tree), model);
     
