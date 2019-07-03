@@ -86,7 +86,7 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
 !
-      call open_read_mpi_file                                          &
+      call open_read_mpi_file                                           &
      &   (file_name, num_pe, id_rank, IO_param)
       call calypso_mpi_seek_read_endian                                 &
      &   (IO_param%id_file, IO_param%iflag_bin_swap, IO_param%ioff_gl)
