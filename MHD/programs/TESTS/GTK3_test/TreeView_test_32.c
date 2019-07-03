@@ -59,8 +59,7 @@ int main(int argc, char **argv)
     
     srand((unsigned)time(NULL));
     
-    mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
-    alloc_SGS_MHD_control_c(mhd_ctl);
+    mhd_ctl = alloc_SGS_MHD_control_c();
     read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
     
     bc_vws = (struct boundary_condition_view *) malloc(sizeof(struct boundary_condition_view));

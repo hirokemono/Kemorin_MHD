@@ -36,8 +36,9 @@ void get_label_MHD_control_head(char *label){
     return;
 };
 
-void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
+struct SGS_MHD_control_c *alloc_SGS_MHD_control_c(void){
 	int i;
+    struct SGS_MHD_control_c *mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
 	
 	mhd_ctl->maxlen = 0;
 	for (i=0;i<NLBL_SGS_MHD_CTL;i++){
@@ -73,7 +74,7 @@ void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 	alloc_vizs_ctl_c(mhd_ctl->viz_c);
 	mhd_ctl->zm_ctls = (struct sph_zonal_means_ctl_c *) malloc(sizeof(struct sph_zonal_means_ctl_c));
 	alloc_sph_zonal_means_controls_c(mhd_ctl->zm_ctls);
-	return;
+	return mhd_ctl;
 }
 
 void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){

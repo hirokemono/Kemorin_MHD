@@ -50,7 +50,7 @@ struct SGS_MHD_control_c{
 void get_label_MHD_control_head(char *label);
 void get_label_SGS_MHD_ctl(int index, char *label);
 
-void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl);
+struct SGS_MHD_control_c *alloc_SGS_MHD_control_c(void);
 void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl);
 
 int read_SGS_MHD_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 

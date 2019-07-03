@@ -245,8 +245,7 @@ int main(int argc, char** argv)
 {
 	GtkWidget *scroll_window;
 	
-	mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
-	alloc_SGS_MHD_control_c(mhd_ctl);
+	mhd_ctl = alloc_SGS_MHD_control_c();
 	
 	gtk_init(&argc, &argv);
 

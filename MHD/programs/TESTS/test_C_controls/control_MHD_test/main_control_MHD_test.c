@@ -43,8 +43,7 @@ int main(int argc,char *argv[])
 	printf("Copied file name: %s\n", file_name_2);
 	
 	
-	mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
-	alloc_SGS_MHD_control_c(mhd_ctl);
+	mhd_ctl = alloc_SGS_MHD_control_c();
 	
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
 

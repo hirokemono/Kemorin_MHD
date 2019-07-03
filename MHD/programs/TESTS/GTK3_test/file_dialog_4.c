@@ -57,8 +57,6 @@ static void cb_Open(GtkButton *button, gpointer data)
     /* Show file name in entry */
 		gtk_entry_set_text(entry, read_file_name);
 		
-		mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
-		alloc_SGS_MHD_control_c(mhd_ctl);
 		iflag_read_mhd = 1;
 		
 		read_SGS_MHD_control_file_c(read_file_name, buf, mhd_ctl);
@@ -230,8 +228,7 @@ int main(int argc, char** argv)
 {
 	GtkWidget *scroll_window;
 	
-	mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
-	alloc_SGS_MHD_control_c(mhd_ctl);
+    mhd_ctl = alloc_SGS_MHD_control_c();
 	
 	gtk_init(&argc, &argv);
 

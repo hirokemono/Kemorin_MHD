@@ -431,8 +431,7 @@ int main(int argc, char **argv)
     all_fld_list = (struct all_field_ctl_c **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_c *));
     alloc_all_field_ctl_c(all_fld_list);
 	
-	mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
-	alloc_SGS_MHD_control_c(mhd_ctl);
+    mhd_ctl = alloc_SGS_MHD_control_c();
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
     load_field_from_ctl(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
 	

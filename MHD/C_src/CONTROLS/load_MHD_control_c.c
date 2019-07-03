@@ -13,8 +13,7 @@ char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_MHD";
 void load_MHD_control_c(){
     char buf[LENGTHBUF];      /* character buffer for reading line */
     
-    mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
-    alloc_SGS_MHD_control_c(mhd_ctl);
+    mhd_ctl = alloc_SGS_MHD_control_c();
     read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
 
     return;
