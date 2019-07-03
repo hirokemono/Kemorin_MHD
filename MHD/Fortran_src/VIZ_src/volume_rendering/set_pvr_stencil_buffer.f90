@@ -121,7 +121,7 @@
      &    img_stack%depth_pixel_composit, img_stack%istack_composition, &
      &    img_composit_tbl)
 !
-      write(*,*) 's_set_pvr_stencil_buffer' end
+      write(*,*) 's_set_pvr_stencil_buffer end'
 !
       if(i_debug .gt. 0) then
         fname_tmp = add_int_suffix(my_rank, check_fhead)
