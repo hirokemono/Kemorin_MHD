@@ -47,11 +47,11 @@
 !
       integer i
 !
-      write(my_rank+50,*) 'read num_grp', IO_param%ioff_gl
+      write(*,*) 'read num_grp', IO_param%ioff_gl
       call mpi_read_one_inthead_b(IO_param, group_IO%num_grp)
       call alloc_group_num(group_IO)
 !
-      write(my_rank+50,*) 'read grp_name', IO_param%ioff_gl
+      write(*,*) 'read grp_name', IO_param%ioff_gl
       call mpi_read_mul_charahead_b                                     &
      &     (IO_param, group_IO%num_grp, group_IO%grp_name)
 !
@@ -59,7 +59,7 @@
       call mpi_read_integer_stack_b(IO_param, num64,                    &
      &    group_IO%istack_grp, group_IO%num_item)
 !
-      write(my_rank+50,*) 'read istack_grp', IO_param%ioff_gl
+      write(*,*) 'read istack_grp', IO_param%ioff_gl
       do i = 1, group_IO%num_grp
         write(*,*) i, 'group_IO%istack_grp', group_IO%istack_grp(i), &
      &       trim(group_IO%grp_name(i))
@@ -67,7 +67,7 @@
 !
       call alloc_group_item(group_IO)
 !
-      write(my_rank+50,*) 'read item_grp', IO_param%ioff_gl
+      write(*,*) 'read item_grp', IO_param%ioff_gl
       num64 = group_IO%num_item
       call mpi_read_int_vector_b(IO_param, num64, group_IO%item_grp)
 !
@@ -112,20 +112,20 @@
       integer(kind = kint_gl) :: num64
 !
 !
-      write(my_rank+50,*) 'write num_grp', IO_param%ioff_gl
+      write(*,*) 'write num_grp', IO_param%ioff_gl
       call mpi_write_one_inthead_b(IO_param, group_IO%num_grp)
 !
-      write(my_rank+50,*) 'write grp_name', IO_param%ioff_gl
+      write(*,*) 'write grp_name', IO_param%ioff_gl
       call mpi_write_mul_charahead_b                                    &
      &     (IO_param, group_IO%num_grp, group_IO%grp_name)
 !
-      write(my_rank+50,*) 'write istack_grp', IO_param%ioff_gl
+      write(*,*) 'write istack_grp', IO_param%ioff_gl
       num64 = group_IO%num_grp
       call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_integer_stack_b                                    &
      &   (IO_param, num64, group_IO%istack_grp)
 !
-      write(my_rank+50,*) 'write item_grp', IO_param%ioff_gl
+      write(*,*) 'write item_grp', IO_param%ioff_gl
       num64 = group_IO%num_item
       call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_int_vector_b(IO_param, num64, group_IO%item_grp)
