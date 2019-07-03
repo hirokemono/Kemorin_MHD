@@ -306,7 +306,7 @@
         call MPI_FILE_SEEK                                              &
      &     (id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
         call MPI_FILE_WRITE(id_mpi_file, i_UNIX, 1,                     &
-     &     CALYPSO_INTEGER, sta1_IO, ierr_MPI)
+     &      CALYPSO_FOUR_INT, sta1_IO, ierr_MPI)
       end if
       ioff_gl = ioff_gl + ifour
 !
@@ -340,7 +340,7 @@
       end if
       ioff_gl = ioff_gl + ifour
 !
-      call MPI_BCAST(iflag_bin_swap, 1, CALYPSO_INTEGER, 0,             &
+      call MPI_BCAST(iflag_bin_swap, 1, CALYPSO_FOUR_INT, 0,            &
      &    CALYPSO_COMM, ierr_MPI)
 
       end subroutine calypso_mpi_seek_read_endian
