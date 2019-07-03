@@ -7,12 +7,13 @@
 
 #include "tree_view_4_field_GTK.h"
 
-void init_field_views_GTK(struct field_ctl_c *fld_ctl_ref, struct field_views *fields_vws){
+struct field_views * init_field_views_GTK(struct field_ctl_c *fld_ctl_ref){
+    struct field_views *fields_vws = (struct field_views *) malloc(sizeof(struct field_views));
     fields_vws->fld_ctl_gtk = fld_ctl_ref;
     fields_vws->all_fld_tbl = (struct all_field_ctl_c **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_c *));
     alloc_all_field_ctl_c(fields_vws->all_fld_tbl);
     load_field_w_qflag_from_ctl(fields_vws->fld_ctl_gtk, fields_vws->all_fld_tbl);
-    return;
+    return fields_vws;
 }
 
 void dealloc_field_views_GTK(struct field_views *fields_vws){
@@ -156,6 +157,7 @@ void create_field_tree_view(struct field_views *fields_vws)
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* ソート用のモデルを作成してツリービューにセットする */
+    fields_vws->used_tree_view = gtk_tree_view_new();
     model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(fields_vws->used_tree_view), model);
     
@@ -262,6 +264,7 @@ void create_unused_field_tree_view(struct field_views *fields_vws)
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* ソート用のモデルを作成してツリービューにセットする */
+    fields_vws->unused_field_tree_view = gtk_tree_view_new();
     model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(fields_vws->unused_field_tree_view), model);
     
@@ -312,19 +315,19 @@ void create_unused_field_tree_view(struct field_views *fields_vws)
 
 void create_direction_tree_views(struct field_views *fields_vws)
 {
-	create_fixed_label_w_math_tree(fields_vws->scalar_label_view);
+    fields_vws->scalar_label_view = create_fixed_label_w_math_tree();
     append_scalar_componnet_label(fields_vws->scalar_label_view);
 	
-	create_fixed_label_w_math_tree(fields_vws->vector_label_view);
+	fields_vws->vector_label_view = create_fixed_label_w_math_tree();
 	append_vector_componnet_label(fields_vws->vector_label_view);
 	
-	create_fixed_label_w_math_tree(fields_vws->sym_tensor_label_view);
+	fields_vws->sym_tensor_label_view = create_fixed_label_w_math_tree();
 	append_vector_componnet_label(fields_vws->sym_tensor_label_view);
 	
-	create_fixed_label_w_math_tree(fields_vws->xyz_dir_label_view);
+	fields_vws->xyz_dir_label_view = create_fixed_label_w_math_tree();
 	append_vector_componnet_label(fields_vws->xyz_dir_label_view);
 	
-	create_fixed_label_w_math_tree(fields_vws->surface_eq_view);
+	fields_vws->surface_eq_view = create_fixed_label_w_math_tree();
 	append_vector_componnet_label(fields_vws->surface_eq_view);
 	
 }

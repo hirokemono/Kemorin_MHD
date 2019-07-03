@@ -10,20 +10,26 @@
 GtkWidget *make_mhd_model_ctl_hbox(const char *label_hd, 
 			struct mhd_model_control_c *model_ctl){
 	int i;
-	char *c_label;
 	
 	GtkWidget *hbox_3[NLBL_MHD_MODEL_CTL];
 	
+    GtkWidget *vbox_3;
 	GtkWidget *hbox;
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);;
 	
-	struct field_views *fields_vws;
-	
-	c_label = (char *)calloc(KCHARA_C, sizeof(char));
-	
-//	init_field_views_GTK(fld_ctl, struct field_views *fields_vws);
+    char *c_label = (char *)calloc(KCHARA_C, sizeof(char));
+	struct field_views *fields_vws = init_field_views_GTK(model_ctl->fld_ctl);
+    
+    create_field_tree_view(fields_vws);
+    create_unused_field_tree_view(fields_vws);
+    create_direction_tree_views(fields_vws);
+    
+    vbox_3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    add_field_selection_box(fields_vws, vbox_3);
+    
 	get_label_mhd_model_ctl(0, c_label);
-	hbox_3[0] = make_empty_ctl_hbox(c_label, &model_ctl->fld_ctl->iflag_use);
+	hbox_3[0] = make_expand_ctl_hbox(c_label, &model_ctl->fld_ctl->iflag_use,
+                                     700, vbox_3);
 	
 	get_label_mhd_model_ctl(1, c_label);
 	hbox_3[1] = make_empty_ctl_hbox(c_label, &model_ctl->evo_ctl->iflag_use);
@@ -68,7 +74,7 @@ GtkWidget *make_mhd_model_ctl_hbox(const char *label_hd,
 		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], TRUE, TRUE, 0);
 	};
 	
-	hbox = make_expand_ctl_hbox(label_hd, &model_ctl->iflag_use, 400, vbox_1);
+	hbox = make_expand_ctl_hbox(label_hd, &model_ctl->iflag_use, 600, vbox_1);
 	return hbox;
 }
 

@@ -508,6 +508,7 @@ static void create_field_tree_view(struct all_field_ctl_c **all_fld_ctl, struct 
 	g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
 
 	/* ソート用のモデルを作成してツリービューにセットする */
+    fields_vws->used_tree_view = gtk_tree_view_new();
 	model = gtk_tree_model_sort_new_with_model(child_model);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(fields_vws->used_tree_view), model);
 
@@ -615,6 +616,7 @@ static void create_unused_field_tree_view(struct all_field_ctl_c **all_fld_ctl, 
 	g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
 
 	/* ソート用のモデルを作成してツリービューにセットする */
+    fields_vws->unused_field_tree_view = gtk_tree_view_new();
 	model = gtk_tree_model_sort_new_with_model(child_model);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(fields_vws->unused_field_tree_view), model);
 
@@ -676,13 +678,8 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	
     fields_vws = (struct field_views *) malloc(sizeof(struct field_views));
 	
-	fields_vws->used_tree_view = gtk_tree_view_new();
 	create_field_tree_view(all_fld_list, fields_vws);
-	/* ウィンドウ作成 */
-	
-	fields_vws->unused_field_tree_view = gtk_tree_view_new();
-	
-	create_unused_field_tree_view(all_fld_list, fields_vws);
+    create_unused_field_tree_view(all_fld_list, fields_vws);
 	
 	
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);

@@ -25,16 +25,8 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	gchar *title;
 	
 	
-	fields_vws->used_tree_view = gtk_tree_view_new();
 	create_field_tree_view(fields_vws);
-	fields_vws->unused_field_tree_view = gtk_tree_view_new();
 	create_unused_field_tree_view(fields_vws);
-	
-    fields_vws->scalar_label_view = gtk_tree_view_new();
-    fields_vws->vector_label_view = gtk_tree_view_new();
-    fields_vws->sym_tensor_label_view = gtk_tree_view_new();
-    fields_vws->xyz_dir_label_view = gtk_tree_view_new();
-    fields_vws->surface_eq_view = gtk_tree_view_new();
     create_direction_tree_views(fields_vws);
 	
 	
@@ -73,8 +65,7 @@ int main(int argc, char **argv)
     mhd_ctl = alloc_SGS_MHD_control_c();
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
 	
-	fields_vws = (struct field_views *) malloc(sizeof(struct field_views));
-	init_field_views_GTK(mhd_ctl->model_ctl->fld_ctl, fields_vws);
+	fields_vws = init_field_views_GTK(mhd_ctl->model_ctl->fld_ctl);
 	
 	gtk_init(&argc, &argv);
 

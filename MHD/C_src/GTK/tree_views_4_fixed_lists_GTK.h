@@ -25,8 +25,8 @@ void add_sorting_shgnal_w_label(GtkTreeView *tree_view, GtkWidget *hbox);
 
 
 
-void create_fixed_label_w_math_tree(GtkWidget *label_tree);
-void create_fixed_label_w_index_tree(GtkWidget *label_tree);
+GtkWidget * create_fixed_label_w_math_tree(void);
+GtkWidget * create_fixed_label_w_index_tree(void);
 void create_fixed_constant_tree(GtkWidget *label_tree);
 
 void append_scalar_componnet_label(GtkWidget *label_tree);

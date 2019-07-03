@@ -38,7 +38,7 @@ struct field_views{
 
 /* prototypes */
 
-void init_field_views_GTK(struct field_ctl_c *fld_ctl_ref, struct field_views *fields_vws);
+struct field_views *  init_field_views_GTK(struct field_ctl_c *fld_ctl_ref);
 void dealloc_field_views_GTK(struct field_views *fields_vws);
 
 void append_model_data(int index_field, struct all_field_ctl_c *all_fld_tbl, GtkTreeModel *child_model);

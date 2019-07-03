@@ -104,35 +104,27 @@ void add_sorting_shgnal_w_label(GtkTreeView *tree_view, GtkWidget *hbox){
 
 
 
-void create_fixed_label_w_math_tree(GtkWidget *label_tree){
-    GtkTreeModel *model;
-    GtkCellRenderer *renderer;
-    GtkTreeViewColumn *column;
-    
-    GtkListStore *child_model;
-    
+GtkWidget * create_fixed_label_w_math_tree(void){
     /* Construct empty list storage */
-    child_model = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING);
-    
+    GtkListStore *child_model = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING);;
     /* ソート用のモデルを作成してツリービューにセットする */
-    model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
+    GtkTreeModel *model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
+    GtkWidget *label_tree = gtk_tree_view_new();
+    
     gtk_tree_view_set_model(GTK_TREE_VIEW(label_tree), model);
+    return label_tree;
 }
 
 
-void create_fixed_label_w_index_tree(GtkWidget *label_tree){
-    GtkTreeModel *model;
-    GtkCellRenderer *renderer;
-    GtkTreeViewColumn *column;
-    
-    GtkListStore *child_model;
-    
+GtkWidget * create_fixed_label_w_index_tree(void){
     /* Construct empty list storage */
-    child_model = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_INT);
-    
+    GtkListStore *child_model = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_INT);    
     /* ソート用のモデルを作成してツリービューにセットする */
-    model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
+    GtkTreeModel *model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
+    GtkWidget *label_tree = gtk_tree_view_new();
+
     gtk_tree_view_set_model(GTK_TREE_VIEW(label_tree), model);
+    return label_tree;
 }
 
 void create_fixed_constant_tree(GtkWidget *label_tree)

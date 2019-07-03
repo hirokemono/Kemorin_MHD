@@ -10,8 +10,10 @@
 
 #include <gtk/gtk.h>
 #include "t_ctl_data_SGS_MHD_model_c.h"
+#include "t_ctl_data_4_fields_c.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "control_elements_IO_GTK.h"
+#include "tree_view_4_field_GTK.h"
 
 /* prototypes */
 

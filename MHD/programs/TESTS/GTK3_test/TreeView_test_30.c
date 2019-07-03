@@ -27,9 +27,6 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
     
     dless_vws->dimless_tree_view = gtk_tree_view_new();
     init_dimless_tree_view(dless_vws);
-    /* ウィンドウ作成 */
-    
-    dless_vws->default_dless_view = gtk_tree_view_new();
     create_used_dimless_tree_views(dless_vws);
     
     

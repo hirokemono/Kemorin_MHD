@@ -5,7 +5,6 @@
 #include "ctl_panel_platforms_GTK.h"
 #include "ctl_panel_para_sph_shell_GTK.h"
 #include "ctl_panel_SPH_MHD_model_GTK.h"
-#include "tree_view_4_field_GTK.h"
 
 
 int iflag_read_mhd = 0;
@@ -214,17 +213,49 @@ GtkWidget *make_control_hbox(){
 	char *c_label;
 	c_label = (char *)calloc(KCHARA_C, sizeof(char));
 	
+	/* Generate expander */
 	get_label_MHD_control_head(c_label);
     expander_Top = gtk_expander_new_with_mnemonic(c_label);
 	
-    struct field_views *fields_vws = init_field_views_GTK(mhd_ctl->model_ctl->fld_ctl);
-    create_field_tree_view(fields_vws);
-    create_unused_field_tree_view(fields_vws);
-    create_direction_tree_views(fields_vws);
-    
 	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	add_field_selection_box(fields_vws, vbox_1);
-    
+	
+	get_label_SGS_MHD_ctl(0, c_label);
+	hbox_3[0] = make_platoform_hbox(c_label, mhd_ctl->files);
+	
+	get_label_SGS_MHD_ctl(1, c_label);
+	hbox_3[1] = make_platoform_hbox(c_label, mhd_ctl->org_files);
+	
+	get_label_SGS_MHD_ctl(2, c_label);
+	hbox_3[2] = make_platoform_hbox(c_label, mhd_ctl->new_files);
+	
+    g_signal_connect(G_OBJECT(sph_save_bottun), "clicked", G_CALLBACK(cb_Save_sph), 
+                     (gpointer) window);
+	get_label_SGS_MHD_ctl(3, c_label);
+	hbox_3[3] = make_parallel_shell_hbox(c_label, mhd_ctl->shell_ctl_file_name,
+				mhd_ctl->shell_ctl, sph_save_bottun);
+	
+	get_label_SGS_MHD_ctl(4, c_label);
+	hbox_3[4] = make_mhd_model_ctl_hbox(c_label, mhd_ctl->model_ctl);
+	
+	get_label_SGS_MHD_ctl(5, c_label);
+    hbox_3[5] = make_mhd_control_ctl_hbox(c_label, mhd_ctl->control_ctl);
+	
+	get_label_SGS_MHD_ctl(6, c_label);
+    hbox_3[6] = make_empty_ctl_hbox(c_label, &mhd_ctl->smtr_ctl->iflag_use);
+	
+	get_label_SGS_MHD_ctl(7, c_label);
+	hbox_3[7] = make_empty_ctl_hbox(c_label, &mhd_ctl->nmtr_ctl->iflag_use);
+	
+	get_label_SGS_MHD_ctl(8, c_label);
+	hbox_3[8] = make_empty_ctl_hbox(c_label, &mhd_ctl->viz_c->iflag_use);
+	
+	get_label_SGS_MHD_ctl(9, c_label);
+	hbox_3[9] = make_empty_ctl_hbox(c_label, &mhd_ctl->zm_ctls->iflag_use);
+	
+	for (i=0;i<NLBL_SGS_MHD_CTL;i++){
+		gtk_box_pack_start(GTK_BOX(vbox_1), hbox_3[i], TRUE, TRUE, 0);
+	};
+	
 	get_label_MHD_control_head(c_label);
     hbox = make_expand_ctl_hbox(c_label, &iflag_read_mhd, 700, vbox_1);
     return hbox;
@@ -234,7 +265,7 @@ int main(int argc, char** argv)
 {
 	GtkWidget *scroll_window;
 	
-	mhd_ctl = alloc_SGS_MHD_control_c();
+    mhd_ctl = alloc_SGS_MHD_control_c();
 	
 	gtk_init(&argc, &argv);
 

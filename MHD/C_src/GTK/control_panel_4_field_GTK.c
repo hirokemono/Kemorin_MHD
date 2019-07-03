@@ -196,9 +196,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	GtkWidget *button_1;
 	GtkWidget *scrolled_window_1;
 	
-	char *c_label;
-	
-	c_label = (char *)calloc(KCHARA_C, sizeof(char));
+	char *c_label = (char *)calloc(KCHARA_C, sizeof(char));
 	
 	
 	hbox = gtk_hbox_new(FALSE, 0);

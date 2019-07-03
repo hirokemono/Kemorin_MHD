@@ -76,6 +76,7 @@ void init_dimless_tree_view(struct dimless_views *dless_vws){
 
 void create_used_dimless_tree_views(struct dimless_views *dless_vws)
 {
+    dless_vws->default_dless_view = gtk_tree_view_new();
     create_fixed_constant_tree(dless_vws->default_dless_view);
     append_default_coefs_label(dless_vws->default_dless_view);
 }

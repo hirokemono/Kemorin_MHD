@@ -55,17 +55,15 @@ static void set_inner_decomp_cb(GtkComboBox *combobox_cmap, gpointer data)
 }
 
 GtkWidget * make_inner_decomp_hbox(int iflag_fix_on, const char *label, struct chara_ctl_item *ctl_item){
-    GtkTreeModel *model;
-	GtkTreeModel *child_model;
 	GtkWidget *hbox;
 	
-	GtkWidget *label_tree = gtk_tree_view_new();
 	struct entry_and_flag *tbox_flag = (struct entry_and_flag *) malloc(sizeof(struct entry_and_flag));
 	int index = 0;
 	
-	create_fixed_label_w_index_tree(label_tree);
-	model = gtk_tree_view_get_model(label_tree);  
-	child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    GtkWidget *label_tree = create_fixed_label_w_index_tree();
+    GtkTreeModel *model = gtk_tree_view_get_model(label_tree);
+    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    
 	index = append_ci_item_to_tree(index, &inner_docomp_labels[RADIAL_MODE][0], RADIAL_MODE, child_model);
 	index = append_ci_item_to_tree(index, &inner_docomp_labels[HORIZONTAL_MODE][0], HORIZONTAL_MODE, child_model);
 	
