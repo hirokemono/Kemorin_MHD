@@ -60,7 +60,7 @@
 !
       do i = 1, group_IO%num_grp
         write(*,*) i, 'group_IO%istack_grp', group_IO%istack_grp(i), &
-     &      group_IO%num_item(i), trim(group_IO%grp_name)
+     &       trim(group_IO%grp_name(i))
       end do
 !
       call alloc_group_item(group_IO)
