@@ -107,10 +107,12 @@
 !
 !      if(iflag_debug .eq. 0) return
       if(my_rank .gt. 0) return
-      write(*,*) 'istack_pvr_render', istack_pvr_render
-      write(*,*) 'istack_pvr_images', istack_pvr_images
+!      write(*,*) 'istack_pvr_render', istack_pvr_render
+!      write(*,*) 'istack_pvr_images', istack_pvr_images
+      write(*,*) 'ID, File, ouput_PE, end_composition_PE, Num_PE'
       do i_pvr = 1, num_pvr_images
-        write(*,*) 'irank_image_file', pvr_rgb(i_pvr)%irank_image_file, &
+        write(*,*) i_pvr, trim(pvr_rgb(i_pvr)%pvr_prefix), '  ',        &
+     &             pvr_rgb(i_pvr)%irank_image_file, &
      &                               pvr_rgb(i_pvr)%irank_end_composit, &
      &                                 pvr_rgb(i_pvr)%npe_img_composit, &
      &                                 trim(pvr_rgb(i_pvr)%pvr_prefix)

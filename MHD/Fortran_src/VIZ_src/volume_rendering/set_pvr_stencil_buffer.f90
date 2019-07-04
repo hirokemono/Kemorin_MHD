@@ -103,29 +103,20 @@
      &      = - pvr_start%xx_pvr_ray_start(3,1:pvr_start%num_pvr_ray)
 !$omp end parallel workshare
 !
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'calypso_SR_type_int'
       call calypso_SR_type_int(0, img_composit_tbl,                     &
      &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
      &    pvr_start%id_pixel_start, img_stack%ipix_4_composit)
 !
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'calypso_SR_type_'
       call calypso_SR_type_1(0, img_composit_tbl,                       &
      &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
      &    img_stack%depth_pvr_ray_start, img_stack%depth_pixel_composit)
 !
-      call calypso_mpi_barrier
       call alloc_pvr_image_stack_table(img_stack)
-      write(*,*) 'set_image_stacking_and_recv'
       call set_image_stacking_and_recv                                  &
      &   (num_pixel_xy, img_stack%item_4_composit,                      &
      &    img_stack%npixel_4_composit, img_stack%ipix_4_composit,       &
      &    img_stack%depth_pixel_composit, img_stack%istack_composition, &
      &    img_composit_tbl)
-!
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 's_set_pvr_stencil_buffer end'
 !
       if(i_debug .gt. 0) then
         fname_tmp = add_int_suffix(my_rank, check_fhead)
