@@ -7,11 +7,10 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine rendering_image(node, ele, surf, color_param,        &
-!!     &          field_pvr, view_param, pvr_screen, pvr_start)
-!!      subroutine composite_image                                      &
-!!     &         (istep_pvr, color_param, cbar_param, pvr_screen,       &
-!!     &          pvr_start, pvr_stencil, pvr_rgb)
+!!      subroutine rendering_image                                      &
+!!     &         (istep_pvr, node, ele, surf, color_param,              &
+!!     &          cbar_param, field_pvr, view_param, pvr_screen,        &
+!!     &          pvr_start, rgba_real_gl, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -47,8 +46,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_image(node, ele, surf, color_param,          &
-     &          field_pvr, view_param, pvr_screen, pvr_start)
+      subroutine rendering_image                                        &
+     &         (istep_pvr, node, ele, surf, color_param,                &
+     &          cbar_param, field_pvr, view_param, pvr_screen,          &
+     &          pvr_start, pvr_stencil, pvr_rgb)
 !
       use m_geometry_constants
       use m_elapsed_labels_4_VIZ
@@ -56,20 +57,29 @@
       use t_surface_data
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
+      use t_pvr_image_array
       use t_pvr_ray_startpoints
-!
+      use t_pvr_stencil_buffer
       use ray_trace_4_each_image
+      use draw_pvr_colorbar
+      use pvr_axis_label
+!      use composit_by_segmentad_image
 !
+      integer(kind = kint), intent(in) :: istep_pvr
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(pvr_projected_field), intent(in) :: field_pvr
       type(pvr_colormap_parameter), intent(in) :: color_param
+      type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_projected_position), intent(in) :: pvr_screen
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
+      type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
+!      type(pvr_segmented_img), intent(inout) :: pvr_img
+      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+3)
@@ -82,38 +92,6 @@
      &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
      &    pvr_start%xx_pvr_ray_start, pvr_start%rgba_ray)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+3)
-!
-      end subroutine rendering_image
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine composite_image                                        &
-     &         (istep_pvr, color_param, cbar_param, pvr_screen,         &
-     &          pvr_start, pvr_stencil, pvr_rgb)
-!
-      use m_geometry_constants
-      use m_elapsed_labels_4_VIZ
-      use t_control_params_4_pvr
-      use t_geometries_in_pvr_screen
-      use t_pvr_image_array
-      use t_pvr_ray_startpoints
-      use t_pvr_stencil_buffer
-!
-      use draw_pvr_colorbar
-      use pvr_axis_label
-!      use composit_by_segmentad_image
-!
-      integer(kind = kint), intent(in) :: istep_pvr
-!
-      type(pvr_colormap_parameter), intent(in) :: color_param
-      type(pvr_colorbar_parameter), intent(in) :: cbar_param
-      type(pvr_projected_position), intent(in) :: pvr_screen
-      type(pvr_ray_start_type), intent(in) :: pvr_start
-!
-      type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
-!      type(pvr_segmented_img), intent(inout) :: pvr_img
-      type(pvr_image_type), intent(inout) :: pvr_rgb
-!
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+4)
       if(iflag_debug .gt. 0) write(*,*) 'collect_rendering_image'
@@ -135,7 +113,7 @@
         if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+3)
       end if
 !
-      end subroutine composite_image
+      end subroutine rendering_image
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

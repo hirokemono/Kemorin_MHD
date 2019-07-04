@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine set_fixed_view_and_image(node, ele, surf, group,     &
 !!     &          pvr_param, pvr_rgb, pvr_proj)
-!!      subroutine rendering_with_fixed_view                            &
-!!     &         (node, ele, surf, pvr_param, pvr_proj)
+!!      subroutine rendering_with_fixed_view(istep_pvr, node, ele, surf,&
+!!     &          pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine flush_rendering_4_fixed_view(pvr_proj)
 !!
 !!      subroutine rendering_at_once(istep_pvr, node, ele, surf, group, &
@@ -125,26 +125,30 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_fixed_view                              &
-     &         (node, ele, surf, pvr_param, pvr_proj)
+      subroutine rendering_with_fixed_view(istep_pvr, node, ele, surf,  &
+     &          pvr_param, pvr_proj, pvr_rgb)
 !
       use write_PVR_image
 !
+      integer(kind = kint), intent(in) :: istep_pvr
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(PVR_control_params), intent(in) :: pvr_param
 !
       type(PVR_projection_data), intent(inout) :: pvr_proj
+      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
       call copy_item_pvr_ray_start                                      &
      &   (pvr_proj%start_save, pvr_proj%start_pt)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(node, ele, surf,                             &
-     &    pvr_param%color, pvr_param%field, pvr_param%view,             &
-     &    pvr_proj%screen, pvr_proj%start_pt)
+      call rendering_image                                              &
+     &   (istep_pvr, node, ele, surf, pvr_param%color,                  &
+     &    pvr_param%colorbar, pvr_param%field, pvr_param%view,          &
+     &    pvr_proj%screen, pvr_proj%start_pt, pvr_proj%stencil,         &
+     &    pvr_rgb)
 !
       end subroutine rendering_with_fixed_view
 !
@@ -196,12 +200,9 @@
      &   (pvr_rgb, pvr_proj%start_pt, pvr_proj%stencil)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(node, ele, surf,                             &
-     &    pvr_param%color, pvr_param%field, pvr_param%view,             &
-     &    pvr_proj%screen, pvr_proj%start_pt)
-      if(iflag_debug .gt. 0) write(*,*) 'composite_image'
-      call composite_image                                              &
-     &   (istep_pvr, pvr_param%color, pvr_param%colorbar,               &
+      call rendering_image                                              &
+     &   (istep_pvr, node, ele, surf, pvr_param%color,                  &
+     &    pvr_param%colorbar, pvr_param%field, pvr_param%view,          &
      &    pvr_proj%screen, pvr_proj%start_pt, pvr_proj%stencil,         &
      &    pvr_rgb)
 !
