@@ -9,7 +9,6 @@
 
 
 void alloc_volume_rendering_ctl_c(struct volume_rendering_ctl_c *v_render_c){
-	v_render_c->iflag_pvr_ctl = 0;
 	v_render_c->fname_pvr_ctl = (char *)calloc(KCHARA_C, sizeof(char));
 	v_render_c->pvr_c = (struct pvr_ctl_c *) malloc(sizeof(struct pvr_ctl_c));
 	alloc_pvr_ctl_c(v_render_c->pvr_c);
@@ -21,7 +20,6 @@ void dealloc_volume_rendering_ctl_c(struct volume_rendering_ctl_c *v_render_c){
 	dealloc_pvr_ctl_c(v_render_c->pvr_c);
 	free(v_render_c->pvr_c);
 	free(v_render_c->fname_pvr_ctl);
-	v_render_c->iflag_pvr_ctl = 0;
 	return;
 };
 
@@ -29,7 +27,7 @@ int read_volume_rendering_ctl_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct volume_rendering_ctl_c *v_render_c){
 	
 	if(right_begin_flag_c(buf, label) > 0){
-		v_render_c->iflag_pvr_ctl = read_pvr_ctl_c(fp, buf, label, v_render_c->pvr_c);
+		read_pvr_ctl_c(fp, buf, label, v_render_c->pvr_c);
 	} else if(right_file_flag_c(buf, label)){
 		v_render_c->iflag_pvr_ctl = read_file_flag_c(buf, v_render_c->fname_pvr_ctl);
 	} else {

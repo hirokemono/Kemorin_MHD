@@ -73,6 +73,7 @@ void get_label_colorbar_ctl(int index, char *label){
 void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	int i;
 	
+    cmap_c->iflag_use = 0;
 	cmap_c->maxlen = 0;
 	for (i=0;i<NLBL_COLORMAP_CTL;i++){
 		if((int) strlen(label_colormap_ctl[i]) > cmap_c->maxlen){
@@ -157,12 +158,14 @@ void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	free(cmap_c->range_min_ctl);
 	free(cmap_c->range_max_ctl);
 	
+    cmap_c->iflag_use = 0;
 	return;
 };
 
-int read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct colormap_ctl_c *cmap_c){
-	if(right_begin_flag_c(buf, label) == 0) return 0;
+    if(cmap_c->iflag_use > 0) return;
+	if(right_begin_flag_c(buf, label) == 0) return;
 	
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
@@ -187,11 +190,15 @@ int read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_real_ctl_item_c(buf, label_colormap_ctl[11], cmap_c->range_min_ctl);
 		read_real_ctl_item_c(buf, label_colormap_ctl[12], cmap_c->range_max_ctl);
 	};
-	return 1;
+	cmap_c->iflag_use = 1;
+    return;
 };
 
 int write_colormap_ctl_c(FILE *fp, int level, const char *label, 
 			struct colormap_ctl_c *cmap_c){
+    if(cmap_c->iflag_use == 0) return level;
+    
+    fprintf(fp, "!\n");
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_chara_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 0], cmap_c->colormap_mode_ctl);
@@ -223,6 +230,7 @@ int write_colormap_ctl_c(FILE *fp, int level, const char *label,
 void alloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
 	int i;
 	
+    light_c->iflag_use = 0;
 	light_c->maxlen = 0;
 	for (i=0;i<NLBL_LIGHTING_CTL;i++){
 		if((int) strlen(label_lighting_ctl[i]) > light_c->maxlen){
@@ -254,10 +262,12 @@ void dealloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
 	
 	clear_real3_clist(light_c->light_position_list);	
     free(light_c->light_position_list);    
-	return;
+
+    light_c->iflag_use = 0;
+    return;
 };
 
-int read_lighting_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_lighting_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct lighting_ctl_c *light_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
@@ -268,11 +278,15 @@ int read_lighting_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_real_ctl_item_c(buf, label_lighting_ctl[ 2], light_c->diffuse_coef_ctl);
 		read_real_ctl_item_c(buf, label_lighting_ctl[ 3], light_c->specular_coef_ctl);
 	};
-	return 1;
+	light_c->iflag_use = 1;
+    return;
 };
 
 int write_lighting_ctl_c(FILE *fp, int level, const char *label, 
 			struct lighting_ctl_c *light_c){
+    if(light_c->iflag_use == 0) return level;
+    
+    fprintf(fp, "!\n");
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_real3_clist(fp, level, label_lighting_ctl[ 0], light_c->light_position_list);
@@ -289,6 +303,7 @@ int write_lighting_ctl_c(FILE *fp, int level, const char *label,
 void alloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
 	int i;
 	
+    cbar_c->iflag_use = 0;
 	cbar_c->maxlen = 0;
 	for (i=0;i<NLBL_PVR_COLORBAR_CTL;i++){
 		if(strlen(label_colorbar_ctl[i]) > cbar_c->maxlen){
@@ -334,12 +349,13 @@ void dealloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
 	dealloc_chara_ctl_item_c(cbar_c->axis_switch_ctl);
 	free(cbar_c->axis_switch_ctl);
 	
+    cbar_c->iflag_use = 0;
 	return;
 };
 
-int read_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_colorbar_ctl_c *cbar_c){
-	if(right_begin_flag_c(buf, label) == 0) return 0;
+	if(right_begin_flag_c(buf, label) == 0) return;
 	
 	while(find_control_end_flag_c(buf, label) == 0){
 		
@@ -356,11 +372,15 @@ int read_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 6], cbar_c->axis_switch_ctl);
 	};
-	return 1;
+    cbar_c->iflag_use = 1;
+	return;
 };
 
 int write_colorbar_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_colorbar_ctl_c *cbar_c){
+    if(cbar_c->iflag_use == 0) return level;
+    
+    fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 0], cbar_c->colorbar_switch_ctl);
@@ -382,16 +402,14 @@ int write_colorbar_ctl_c(FILE *fp, int level, const char *label,
 void alloc_colormap_colorbar_ctl_c(struct pvr_colormap_bar_ctl_c *cmap_cbar_c){
 	int i;
 	
+    cmap_cbar_c->iflag_use = 0;
 	cmap_cbar_c->maxlen = 0;
 	for (i=0;i<NLBL_CMAP_CBAR_CTL;i++){
 		if(strlen(label_cmap_cbar_ctl[i]) > cmap_cbar_c->maxlen){
 			cmap_cbar_c->maxlen = (int) strlen(label_cmap_cbar_ctl[i]);
 		};
 	};
-	
-	cmap_cbar_c->iflag_colormap_ctl =     0;
-	cmap_cbar_c->iflag_colorbar_ctl =     0;
-	
+		
 	cmap_cbar_c->cmap_c = (struct colormap_ctl_c *) malloc(sizeof(struct colormap_ctl_c));
 	alloc_colormap_ctl_c(cmap_cbar_c->cmap_c);
 	
@@ -407,23 +425,21 @@ void dealloc_colormap_colorbar_ctl_c(struct pvr_colormap_bar_ctl_c *cmap_cbar_c)
 	dealloc_colorbar_ctl_c(cmap_cbar_c->cbar_c);
 	free(cmap_cbar_c->cbar_c);
 	
-	cmap_cbar_c->iflag_colormap_ctl =     0;
-	cmap_cbar_c->iflag_colorbar_ctl =     0;
+    cmap_cbar_c->iflag_use = 0;
 	return;
 };
 
-int read_colormap_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF],
+void read_colormap_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct pvr_colormap_bar_ctl_c *cmap_cbar_c){
 	
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		cmap_cbar_c->iflag_colormap_ctl = read_colormap_ctl_c(fp, buf, 
-					label_cmap_cbar_ctl[0], cmap_cbar_c->cmap_c);
-		cmap_cbar_c->iflag_colorbar_ctl = read_colorbar_ctl_c(fp, buf, 
-					label_cmap_cbar_ctl[1], cmap_cbar_c->cbar_c);
+		read_colormap_ctl_c(fp, buf, label_cmap_cbar_ctl[0], cmap_cbar_c->cmap_c);
+		read_colorbar_ctl_c(fp, buf, label_cmap_cbar_ctl[1], cmap_cbar_c->cbar_c);
 	};
-	return 1;
+    cmap_cbar_c->iflag_use = 1;
+    return;
 };
 
 
@@ -431,23 +447,17 @@ int write_colormap_colorbar_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_colormap_bar_ctl_c *cmap_cbar_c){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	if(cmap_cbar_c->iflag_colormap_ctl == 1){
-		level = write_colormap_ctl_c(fp, level, label_cmap_cbar_ctl[0], cmap_cbar_c->cmap_c);
-	};
+    level = write_colormap_ctl_c(fp, level, label_cmap_cbar_ctl[0], cmap_cbar_c->cmap_c);
+    level = write_colorbar_ctl_c(fp, level, label_cmap_cbar_ctl[1], cmap_cbar_c->cbar_c);
 	
-	if(cmap_cbar_c->iflag_colorbar_ctl > 0){
-		fprintf(fp, "!\n");
-		level = write_colorbar_ctl_c(fp, level, label_cmap_cbar_ctl[1], cmap_cbar_c->cbar_c);
-	};
-	level = write_end_flag_for_ctl_c(fp, level, label);
+    level = write_end_flag_for_ctl_c(fp, level, label);
     return level;
 };
 
 
 
-int read_colormap_file_c(const char *file_name, char buf[LENGTHBUF],
+void read_colormap_file_c(const char *file_name, char buf[LENGTHBUF],
 			struct pvr_colormap_bar_ctl_c *cmap_cbar_c){
-	int iflag = 0;
 	
     printf("Read PVR colormap file name: %s\n", file_name);
 	if ((FP_Colormap = fopen(file_name, "r")) == NULL) {
@@ -457,17 +467,17 @@ int read_colormap_file_c(const char *file_name, char buf[LENGTHBUF],
 	
     skip_comment_read_line(FP_Colormap, buf);
 	if(right_begin_flag_c(buf, label_colormap_head) > 0){
-		iflag = read_colormap_colorbar_ctl_c(FP_Colormap, buf,
-					label_colormap_head, cmap_cbar_c);
+		read_colormap_colorbar_ctl_c(FP_Colormap, buf, label_colormap_head, cmap_cbar_c);
 	};
 	fclose(FP_Colormap);
 	
-	return -1;
+    cmap_cbar_c->iflag_use = -1;
+	return;
 };
 
-int write_colormap_file_c(const char *file_name, 
+void write_colormap_file_c(const char *file_name, 
 			struct pvr_colormap_bar_ctl_c *cmap_cbar_c){
-	int level;
+	int level = 0;
 	
     printf("Write PVR colormap file name: %s\n", file_name);
 	if ((FP_Colormap = fopen(file_name, "w")) == NULL) {
@@ -479,5 +489,5 @@ int write_colormap_file_c(const char *file_name,
 				label_colormap_head, cmap_cbar_c);
 	fclose(FP_Colormap);
 	
-	return -1;
+	return;
 };

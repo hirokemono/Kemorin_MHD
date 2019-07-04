@@ -19,6 +19,7 @@
 #include "t_control_chara2_real_IO.h"
 
 struct image_size_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct int_ctl_item *num_xpixel_ctl;
@@ -26,6 +27,7 @@ struct image_size_ctl_c{
 };
 
 struct streo_view_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
     struct real_ctl_item *focalpoint_ctl;
@@ -33,6 +35,7 @@ struct streo_view_ctl_c{
 };
 
 struct projection_mat_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
     struct real_ctl_item *perspective_angle_ctl;
@@ -42,6 +45,7 @@ struct projection_mat_ctl_c{
 };
 
 struct modeview_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara2_real_clist *modelview_mat_ctl;
@@ -57,11 +61,8 @@ struct modeview_ctl_c{
 	struct chara_real_clist *scale_vector_list;
 	struct chara_real_clist *viewpt_in_viewer_list;
 	
-	int iflag_image_size_ctl;
 	struct image_size_ctl_c *img_size_c;
-	int iflag_streo_view_ctl;
 	struct streo_view_ctl_c *streo_view_c;
-	int iflag_projection_mat_ctl;
 	struct projection_mat_ctl_c *projection_c;
 };
 
@@ -73,34 +74,34 @@ void get_label_modeview_ctl(int index, char *label);
 
 void alloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c);
 void dealloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c);
-int read_image_size_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_image_size_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct image_size_ctl_c *img_size_c);
 int write_image_size_ctl_c(FILE *fp, int level, const char *label, 
 			struct image_size_ctl_c *img_size_c);
 
 void alloc_streo_view_ctl_c(struct streo_view_ctl_c *streo_view_c);
 void dealloc_streo_view_ctl_c(struct streo_view_ctl_c *streo_view_c);
-int read_streo_view_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_streo_view_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct streo_view_ctl_c *streo_view_c);
 int write_streo_view_ctl_c(FILE *fp, int level, const char *label, 
 			struct streo_view_ctl_c *streo_view_c);
 
 void alloc_projection_mat_ctl_c(struct projection_mat_ctl_c *projection_c);
 void dealloc_projection_mat_ctl_c(struct projection_mat_ctl_c *projection_c);
-int read_projection_mat_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_projection_mat_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct projection_mat_ctl_c *projection_c);
 int write_projection_mat_ctl_c(FILE *fp, int level, const char *label, 
 			struct projection_mat_ctl_c *projection_c);
 
 void alloc_modeview_ctl_c(struct modeview_ctl_c *mat_c);
 void dealloc_modeview_ctl_c(struct modeview_ctl_c *mat_c);
-int read_modeview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_modeview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct modeview_ctl_c *mat_c);
 int write_modeview_ctl_c(FILE *fp, int level, const char *label, 
 			struct modeview_ctl_c *mat_c);
 
-int read_modeview_file_c(const char *file_name, char buf[LENGTHBUF],
+void read_modeview_file_c(const char *file_name, char buf[LENGTHBUF],
 			struct modeview_ctl_c *mat_c);
-int write_modeview_file_c(const char *file_name, struct modeview_ctl_c *mat_c);
+void write_modeview_file_c(const char *file_name, struct modeview_ctl_c *mat_c);
 
 #endif /* t_ctl_data_4_view_transfer_c_h_ */

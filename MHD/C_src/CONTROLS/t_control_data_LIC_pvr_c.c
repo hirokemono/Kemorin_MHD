@@ -95,7 +95,6 @@ int write_LIC_pvr_ctl_c(FILE *fp, int level, const char *label,
         write_lic_ctl_c(fp, level, label_LIC_pvr_ctl[ 0], lic_pvr_c->lic_c);
     };
     
-    fprintf(fp, "!\n");
 	write_pvr_ctl_items(fp, level, lic_pvr_c->pvr_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);

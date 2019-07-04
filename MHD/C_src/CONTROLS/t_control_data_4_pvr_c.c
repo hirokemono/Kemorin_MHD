@@ -43,7 +43,9 @@ const char label_pvr_ctl[NLBL_PVR_CTL][KCHARA_C] = {
 	/*[15]*/	{"section_ctl"},
 	/*[16]*/	{"isosurface_ctl"},
 	
-	/*[17]*/	{"colormap_ctl"}
+	/*[17]*/	{"colormap_ctl"},
+	
+	/*[18]*/	{"max_pe_4_composit"}
 };
 
 const char label_pvr_head[KCHARA_C] = "volume_rendering";
@@ -66,6 +68,7 @@ void get_label_pvr_ctl(int index, char *label){
 void alloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
 	int i;
 	
+    area_c->iflag_use = 0;
 	area_c->maxlen = 0;
 	for (i=0;i<NLBL_PVR_PLOT_AREA_CTL;i++){
 		if(strlen(label_pvr_plot_area_ctl[i]) > area_c->maxlen){
@@ -91,10 +94,11 @@ void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
 	clear_chara2_real_clist(area_c->surf_enhanse_ctl);
     free(area_c->surf_enhanse_ctl);
 	
+    area_c->iflag_use = 0;
 	return;
 };
 
-int read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_plot_area_ctl_c *area_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		
@@ -103,11 +107,15 @@ int read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara_clist(fp, buf, label_pvr_plot_area_ctl[0], area_c->pvr_area_list);
 		read_chara2_real_clist(fp, buf, label_pvr_plot_area_ctl[1], area_c->surf_enhanse_ctl);
 	};
-	return 1;
+	area_c->iflag_use = 1;
+    return;
 };
 
 int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_plot_area_ctl_c *area_c){
+    if(area_c->iflag_use == 0) return level;
+    
+    fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	level = write_chara_clist(fp, level, label_pvr_plot_area_ctl[ 0], area_c->pvr_area_list);
@@ -121,6 +129,7 @@ int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
 void alloc_pvr_movie_ctl_c(struct pvr_movie_ctl_c *movie_c){
 	int i;
 	
+    movie_c->iflag_use = 0;
 	movie_c->maxlen = 0;
 	for (i=0;i<NLBL_PVR_MOVIE_CTL;i++){
 		if(strlen(label_pvr_movie_ctl[i]) > movie_c->maxlen){
@@ -142,10 +151,11 @@ void dealloc_pvr_movie_ctl_c(struct pvr_movie_ctl_c *movie_c){
 	free(movie_c->rotation_axis_ctl);
 	free(movie_c->num_frames_ctl);
 	
+    movie_c->iflag_use = 0;
 	return;
 };
 
-int read_pvr_movie_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_pvr_movie_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_movie_ctl_c *movie_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		
@@ -154,11 +164,15 @@ int read_pvr_movie_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara_ctl_item_c(buf, label_pvr_movie_ctl[ 0], movie_c->rotation_axis_ctl);
 		read_integer_ctl_item_c(buf, label_pvr_movie_ctl[ 1], movie_c->num_frames_ctl);
 	};
-	return 1;
+	movie_c->iflag_use = 1;
+    return;
 };
 
 int write_pvr_movie_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_movie_ctl_c *movie_c){
+    if(movie_c->iflag_use == 0) return level;
+    
+    fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_chara_ctl_item_c(fp, level, movie_c->maxlen, label_pvr_movie_ctl[ 0], movie_c->rotation_axis_ctl);
@@ -172,6 +186,7 @@ int write_pvr_movie_ctl_c(FILE *fp, int level, const char *label,
 void alloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	int i;
 	
+    pvr_c->iflag_use = 0;
 	pvr_c->maxlen = 0;
 	for (i=0;i<NLBL_PVR_CTL;i++){
 		if(strlen(label_pvr_ctl[i]) > pvr_c->maxlen){
@@ -201,12 +216,9 @@ void alloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	alloc_chara_ctl_item_c(pvr_c->pvr_field_ctl);
 	alloc_chara_ctl_item_c(pvr_c->pvr_comp_ctl);
 	
-	pvr_c->iflag_plot_area_ctl =    0;
-	pvr_c->iflag_modeview_ctl =     0;
-	pvr_c->iflag_lighting_ctl =     0;
-	pvr_c->iflag_cmap_cbar_ctl =    0;
-	pvr_c->iflag_pvr_movie_ctl =    0;
-	
+    pvr_c->maxpe_composit_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+    init_int_ctl_item_c(pvr_c->maxpe_composit_ctl);
+
 	pvr_c->area_c = (struct pvr_plot_area_ctl_c *) malloc(sizeof(struct pvr_plot_area_ctl_c));
 	alloc_pvr_plot_area_ctl_c(pvr_c->area_c);
 	
@@ -252,7 +264,9 @@ void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	dealloc_chara_ctl_item_c(pvr_c->pvr_comp_ctl);
 	free(pvr_c->pvr_field_ctl);
 	free(pvr_c->pvr_comp_ctl);
+    free(pvr_c->maxpe_composit_ctl);
 	
+    
 	dealloc_pvr_plot_area_ctl_c(pvr_c->area_c);
 	free(pvr_c->area_c);
 	
@@ -272,13 +286,8 @@ void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	
 	clear_pvr_section_ctl_list(&pvr_c->pvr_sect_c_list);
 	clear_pvr_iso_ctl_list(&pvr_c->pvr_iso_c_list);
-	
-	pvr_c->iflag_plot_area_ctl =    0;
-	pvr_c->iflag_modeview_ctl =     0;
-	pvr_c->iflag_lighting_ctl =     0;
-	pvr_c->iflag_cmap_cbar_ctl =    0;
-	pvr_c->iflag_pvr_movie_ctl =    0;
-	
+		
+    pvr_c->iflag_use = 0;
 	return;
 };
 
@@ -293,49 +302,48 @@ void read_pvr_ctl_items(FILE *fp, char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 	read_chara_ctl_item_c(buf, label_pvr_ctl[ 5], pvr_c->streo_ctl);
 	read_chara_ctl_item_c(buf, label_pvr_ctl[ 6], pvr_c->anaglyph_ctl);
 	
+	read_integer_ctl_item_c(buf, label_pvr_ctl[18], pvr_c->maxpe_composit_ctl);
+	
 	read_chara_ctl_item_c(buf, label_pvr_ctl[ 7], pvr_c->pvr_field_ctl);
 	read_chara_ctl_item_c(buf, label_pvr_ctl[ 8], pvr_c->pvr_comp_ctl);
 	if(right_begin_flag_c(buf, label_pvr_ctl[ 9]) > 0){
-		pvr_c->iflag_plot_area_ctl = read_pvr_plot_area_ctl_c(fp, buf, 
-					label_pvr_ctl[ 9], pvr_c->area_c);
+		read_pvr_plot_area_ctl_c(fp, buf, label_pvr_ctl[ 9], pvr_c->area_c);
 	};
 	if(right_begin_flag_c(buf, label_pvr_ctl[10]) > 0){
-		pvr_c->iflag_modeview_ctl = read_modeview_ctl_c(fp, buf, 
-					label_pvr_ctl[10], pvr_c->mat_c);
+		read_modeview_ctl_c(fp, buf, label_pvr_ctl[10], pvr_c->mat_c);
 	} else if(right_file_flag_c(buf, label_pvr_ctl[10])){
-		pvr_c->iflag_modeview_ctl = read_file_flag_c(buf, pvr_c->pvr_modelview_file_name);
+		pvr_c->mat_c->iflag_use = read_file_flag_c(buf, pvr_c->pvr_modelview_file_name);
 	};
 	
 	if(right_begin_flag_c(buf, label_pvr_ctl[12]) > 0){
-		pvr_c->iflag_lighting_ctl = read_lighting_ctl_c(fp, buf, 
-					label_pvr_ctl[12], pvr_c->light_c);
+		read_lighting_ctl_c(fp, buf, label_pvr_ctl[12], pvr_c->light_c);
 	};
 	
 	if(right_file_flag_c(buf, label_pvr_ctl[11])){
 		pvr_c->iflag_cmap_cbar_ctl = read_file_flag_c(buf, pvr_c->pvr_colormap_file_name);
 	}else{
-		pvr_c->cmap_cbar_c->iflag_colormap_ctl = read_colormap_ctl_c(fp, buf, 
-			label_pvr_ctl[11], pvr_c->cmap_cbar_c->cmap_c);
-		pvr_c->cmap_cbar_c->iflag_colormap_ctl = read_colormap_ctl_c(fp, buf, 
-			label_pvr_ctl[17], pvr_c->cmap_cbar_c->cmap_c);
+		read_colormap_ctl_c(fp, buf, label_pvr_ctl[11], pvr_c->cmap_cbar_c->cmap_c);
+		read_colormap_ctl_c(fp, buf, label_pvr_ctl[17], pvr_c->cmap_cbar_c->cmap_c);
 		
-		pvr_c->cmap_cbar_c->iflag_colorbar_ctl = read_colorbar_ctl_c(fp, buf, 
-			label_pvr_ctl[13], pvr_c->cmap_cbar_c->cbar_c);
+		read_colorbar_ctl_c(fp, buf, label_pvr_ctl[13], pvr_c->cmap_cbar_c->cbar_c);
 	};
 	
 	
 	if(right_begin_flag_c(buf, label_pvr_ctl[14]) > 0){
-		pvr_c->iflag_pvr_movie_ctl = read_pvr_movie_ctl_c(fp, buf, 
-					label_pvr_ctl[14], pvr_c->movie_c);
+		read_pvr_movie_ctl_c(fp, buf, label_pvr_ctl[14], pvr_c->movie_c);
 	};
 	
 	iflag = read_pvr_section_ctl_list(fp, buf, label_pvr_ctl[15], &pvr_c->pvr_sect_c_list);
 	iflag = read_pvr_iso_ctl_list(fp, buf, label_pvr_ctl[16], &pvr_c->pvr_iso_c_list);
 	
+    pvr_c->iflag_use = 1;
 	return;
 };
 
 int write_pvr_ctl_items(FILE *fp, int level, struct pvr_ctl_c *pvr_c){
+    if(pvr_c->iflag_use == 0) return level;
+    
+    fprintf(fp, "!\n");
 	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 0], pvr_c->updated_ctl);
 	
 	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 3], pvr_c->monitoring_ctl);
@@ -343,53 +351,37 @@ int write_pvr_ctl_items(FILE *fp, int level, struct pvr_ctl_c *pvr_c){
 	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 5], pvr_c->streo_ctl);
 	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 6], pvr_c->anaglyph_ctl);
 	
+	level = write_integer_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 6], pvr_c->maxpe_composit_ctl);
+	
 	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 7], pvr_c->pvr_field_ctl);
 	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 8], pvr_c->pvr_comp_ctl);
     
-	if(pvr_c->iflag_plot_area_ctl > 0){
-		fprintf(fp, "!\n");
-		level = write_pvr_plot_area_ctl_c(fp, level, label_pvr_ctl[ 9], pvr_c->area_c);
-	};
+    level = write_pvr_plot_area_ctl_c(fp, level, label_pvr_ctl[ 9], pvr_c->area_c);
 	
-	if(pvr_c->iflag_modeview_ctl > 0){
-		fprintf(fp, "!\n");
+	if(pvr_c->mat_c->iflag_use > 0){
 		level = write_modeview_ctl_c(fp, level, label_pvr_ctl[10], pvr_c->mat_c);
-	} else if(pvr_c->iflag_modeview_ctl == -1){
-		fprintf(fp, "!\n");
+	} else if(pvr_c->mat_c->iflag_use == -1){
 		write_file_flag_for_ctl_c(fp, level, label_pvr_ctl[10], pvr_c->pvr_modelview_file_name);
 	};
 	
-	if(pvr_c->iflag_lighting_ctl > 0){
-		fprintf(fp, "!\n");
-		level = write_lighting_ctl_c(fp, level, label_pvr_ctl[12], pvr_c->light_c);
-	};
+    level = write_lighting_ctl_c(fp, level, label_pvr_ctl[12], pvr_c->light_c);
 	
 	if(pvr_c->iflag_cmap_cbar_ctl == -1){
 		fprintf(fp, "!\n");
 		write_file_flag_for_ctl_c(fp, level, label_pvr_ctl[11], pvr_c->pvr_colormap_file_name);
 	}else{
-		if(pvr_c->cmap_cbar_c->iflag_colormap_ctl == 1){
-			fprintf(fp, "!\n");
-			level = write_colormap_ctl_c(fp, level, label_pvr_ctl[17], pvr_c->cmap_cbar_c->cmap_c);
-		};
-		if(pvr_c->cmap_cbar_c->iflag_colorbar_ctl == 1){
-			fprintf(fp, "!\n");
-			level = write_colorbar_ctl_c(fp, level, label_pvr_ctl[13], pvr_c->cmap_cbar_c->cbar_c);
-		};
+        level = write_colormap_ctl_c(fp, level, label_pvr_ctl[17], pvr_c->cmap_cbar_c->cmap_c);
+        level = write_colorbar_ctl_c(fp, level, label_pvr_ctl[13], pvr_c->cmap_cbar_c->cbar_c);
 	};
 	
-	if(pvr_c->iflag_pvr_movie_ctl > 0){
-		fprintf(fp, "!\n");
-		level = write_pvr_movie_ctl_c(fp, level, label_pvr_ctl[14], pvr_c->movie_c);
-	};
-	
+    level = write_pvr_movie_ctl_c(fp, level, label_pvr_ctl[14], pvr_c->movie_c);	
 	level = write_pvr_section_ctl_list(fp, level, label_pvr_ctl[15], &pvr_c->pvr_sect_c_list);
 	level = write_pvr_iso_ctl_list(fp, level, label_pvr_ctl[16], &pvr_c->pvr_iso_c_list);
 	
 	return level;
 };
 
-int read_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_ctl_c *pvr_c){
 	
 	while(find_control_end_flag_c(buf, label) == 0){
@@ -400,7 +392,7 @@ int read_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
         
 		read_pvr_ctl_items(fp, buf, pvr_c);
 	};
-	return 1;
+	return;
 };
 
 int write_pvr_ctl_c(FILE *fp, int level, const char *label,
@@ -417,7 +409,7 @@ int write_pvr_ctl_c(FILE *fp, int level, const char *label,
 
 
 void rename_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
-    if(pvr_c->iflag_modeview_ctl ==-1){
+    if(pvr_c->mat_c->iflag_use  ==-1){
         strcat(pvr_c->pvr_modelview_file_name, "_2");
     }
     if(pvr_c->iflag_cmap_cbar_ctl ==-1){
@@ -428,38 +420,33 @@ void rename_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
     return;
 }
 
-int read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
+void read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
     int iflag;
-	if(pvr_c->iflag_modeview_ctl ==-1){
-		iflag = read_modeview_file_c(pvr_c->pvr_modelview_file_name, buf,
-							 pvr_c->mat_c);
+	if(pvr_c->mat_c->iflag_use ==-1){
+		read_modeview_file_c(pvr_c->pvr_modelview_file_name, buf, pvr_c->mat_c);
 	};
-	if(pvr_c->iflag_cmap_cbar_ctl ==-1){
-		iflag = read_colormap_file_c(pvr_c->pvr_colormap_file_name, buf,
-							   pvr_c->cmap_cbar_c);
+	if(pvr_c->cmap_cbar_c->iflag_use ==-1){
+		read_colormap_file_c(pvr_c->pvr_colormap_file_name, buf, pvr_c->cmap_cbar_c);
 	};
 	
 	read_pvr_section_subfile_list(buf, &pvr_c->pvr_sect_c_list);
-	
-	return 0;
+	return;
 };
 
 void write_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
-    int iflag;
-	if(pvr_c->iflag_modeview_ctl ==-1){
-		iflag = write_modeview_file_c(pvr_c->pvr_modelview_file_name, pvr_c->mat_c);
+	if(pvr_c->mat_c->iflag_use ==-1){
+		write_modeview_file_c(pvr_c->pvr_modelview_file_name, pvr_c->mat_c);
 	};
 	if(pvr_c->iflag_cmap_cbar_ctl ==-1){
-		iflag = write_colormap_file_c(pvr_c->pvr_colormap_file_name, pvr_c->cmap_cbar_c);
+		write_colormap_file_c(pvr_c->pvr_colormap_file_name, pvr_c->cmap_cbar_c);
 	};
 	
 	write_pvr_section_subfile_list(&pvr_c->pvr_sect_c_list);
 	return;
 };
 
-int read_pvr_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
+void read_pvr_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
 						struct pvr_ctl_c *pvr_c){
-	int iflag = 0;
 	
 	if ((FP_PVR = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!: %s\n", file_name);
@@ -468,13 +455,12 @@ int read_pvr_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
 	
 	skip_comment_read_line(FP_PVR, buf);
 	if(right_begin_flag_c(buf, label_pvr_head) > 0){
-		iflag = read_pvr_ctl_c(FP_PVR, buf, label_pvr_head, pvr_c);
+		read_pvr_ctl_c(FP_PVR, buf, label_pvr_head, pvr_c);
 	};
 	fclose(FP_PVR);
 	
 	read_pvr_ctl_subfiles(buf, pvr_c);
-	
-	return iflag;
+	return;
 };
 
 int write_pvr_ctl_file_c(const char *file_name, struct pvr_ctl_c *pvr_c){

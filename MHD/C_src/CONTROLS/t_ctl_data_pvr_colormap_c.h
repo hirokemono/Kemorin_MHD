@@ -25,6 +25,7 @@
 #define NLBL_CMAP_CBAR_CTL     2
 
 struct colormap_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_ctl_item *colormap_mode_ctl;
@@ -47,6 +48,7 @@ struct colormap_ctl_c{
 };
 
 struct lighting_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct real_ctl_item *ambient_coef_ctl;
@@ -57,6 +59,7 @@ struct lighting_ctl_c{
 };
 
 struct pvr_colorbar_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
 	struct chara_ctl_item *colorbar_switch_ctl;
@@ -72,11 +75,10 @@ struct pvr_colorbar_ctl_c{
 };
 
 struct pvr_colormap_bar_ctl_c{
+    int iflag_use;
 	int maxlen;
 	
-	int iflag_colormap_ctl;
 	struct colormap_ctl_c *cmap_c;
-	int iflag_colorbar_ctl;
 	struct pvr_colorbar_ctl_c *cbar_c;
 };
 
@@ -87,21 +89,21 @@ void get_label_colorbar_ctl(int index, char *label);
 
 void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c);
 void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c);
-int read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct colormap_ctl_c *cmap_c);
 int write_colormap_ctl_c(FILE *fp, int level, const char *label, 
 			struct colormap_ctl_c *cmap_c);
 
 void alloc_lighting_ctl_c(struct lighting_ctl_c *light_c);
 void dealloc_lighting_ctl_c(struct lighting_ctl_c *light_c);
-int read_lighting_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_lighting_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct lighting_ctl_c *light_c);
 int write_lighting_ctl_c(FILE *fp, int level, const char *label, 
 			struct lighting_ctl_c *light_c);
 
 void alloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c);
 void dealloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c);
-int read_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_colorbar_ctl_c *cbar_c);
 int write_colorbar_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_colorbar_ctl_c *cbar_c);
@@ -109,14 +111,14 @@ int write_colorbar_ctl_c(FILE *fp, int level, const char *label,
 
 void alloc_colormap_colorbar_ctl_c(struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
 void dealloc_colormap_colorbar_ctl_c(struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
-int read_colormap_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF],
+void read_colormap_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
 int write_colormap_colorbar_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
 
-int read_colormap_file_c(const char *file_name, char buf[LENGTHBUF],
+void read_colormap_file_c(const char *file_name, char buf[LENGTHBUF],
 			struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
-int write_colormap_file_c(const char *file_name, 
+void write_colormap_file_c(const char *file_name, 
 			struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
 
 #endif /* t_ctl_data_pvr_colormap_c_h_ */

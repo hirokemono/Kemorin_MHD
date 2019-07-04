@@ -82,7 +82,7 @@ void copy_GL_modelview_params_to_ctl(struct view_element *view, struct modeview_
     for (i = 0; i < 3; i++) drotation[i] = view->rotation[i+1];
 	lookat_in_view[2] = view->x_lookat[2];
 	
-	mat_c->iflag_image_size_ctl = 1;
+	mat_c->img_size_c->iflag_use = 1;
 	update_int_ctl_item_c(view->nx_window, mat_c->img_size_c->num_xpixel_ctl);
 	update_int_ctl_item_c(view->ny_window, mat_c->img_size_c->num_ypixel_ctl);
 	
@@ -95,7 +95,7 @@ void copy_GL_modelview_params_to_ctl(struct view_element *view, struct modeview_
 	copy_vector_to_ctl(drotation, mat_c->view_rot_vec_list);
 	update_real_ctl_item_c(view->rotation[0], mat_c->view_rotation_deg_ctl);
 	
-    mat_c->iflag_projection_mat_ctl = 1;
+    mat_c->projection_c->iflag_use = 1;
 	update_real_ctl_item_c(view->aperture, mat_c->projection_c->perspective_angle_ctl);
 	update_real_ctl_item_c(view->aspect, mat_c->projection_c->perspective_xy_ratio_ctl);
 	update_real_ctl_item_c(view->near, mat_c->projection_c->perspective_near_ctl);
@@ -117,7 +117,7 @@ void copy_GL_modelview_params_from_ctl(struct modeview_ctl_c *mat_c, struct view
 	double lookat_in_view[3];
     double drotation[3];
 	
-	if(mat_c->iflag_image_size_ctl > 0){
+	if(mat_c->img_size_c->iflag_use > 0){
 		view->nx_window = set_from_int_ctl_item_c(mat_c->img_size_c->num_xpixel_ctl);
 		view->ny_window = set_from_int_ctl_item_c(mat_c->img_size_c->num_ypixel_ctl);
 	};
@@ -131,7 +131,7 @@ void copy_GL_modelview_params_from_ctl(struct modeview_ctl_c *mat_c, struct view
 	copy_vector_from_ctl(&mat_c->view_rot_vec_list->cr_item_head, drotation);
     set_from_real_ctl_item_c(mat_c->view_rotation_deg_ctl, &view->rotation[0]);
 	
-    if(mat_c->iflag_projection_mat_ctl > 0){
+    if(mat_c->projection_c->iflag_use > 0){
         set_from_real_ctl_item_c(mat_c->projection_c->perspective_angle_ctl, &view->aperture);
         set_from_real_ctl_item_c(mat_c->projection_c->perspective_xy_ratio_ctl, &view->aspect);
         set_from_real_ctl_item_c(mat_c->projection_c->perspective_near_ctl, &view->near);
@@ -152,7 +152,7 @@ void write_GL_modelview_file(struct kv_string *filename, int iflag_view, struct 
 	
 	copy_GL_modelview_params_to_ctl(view, mat_c0);
 	if(iflag_view == VIEW_STEREO){
-		mat_c0->iflag_streo_view_ctl = 1;
+		mat_c0->streo_view_c->iflag_use = 1;
 		copy_GL_stereo_params_to_ctl(view, mat_c0->streo_view_c);
 	};
     /*
@@ -176,14 +176,14 @@ void read_GL_modelview_file(struct kv_string *filename, int iflag_view, struct v
 	read_modeview_file_c(filename->string, buf, mat_c0);
     
 	copy_GL_modelview_params_from_ctl(mat_c0, view);
-	if(mat_c0->iflag_streo_view_ctl > 0){
+	if(mat_c0->streo_view_c->iflag_use > 0){
 		copy_GL_stereo_params_from_ctl(mat_c0->streo_view_c, view);
 		iflag_view = VIEW_STEREO;
 	};
 	
 	/*
 	copy_mat44_from_ctl(view->mat_object_2_eye, &mat_c0->modelview_mat_ctl);
-	if(mat_c0->iflag_projection_mat_ctl > 0){
+	if(mat_c0->projection_c->iflag_use > 0){
 		copy_mat44_from_ctl(view->mat_eye_2_clip, &mat_c0->projection_mat_ctl);
 	}
 	*/

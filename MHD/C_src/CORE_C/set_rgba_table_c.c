@@ -161,6 +161,8 @@ void copy_colormap_to_ctl(struct colormap_params *cmap_s,
 	copy_to_chara_ctl_item("point_linear", cmap_c->opacity_style_ctl);
     dup_real2_clist(cmap_s->opacitymap_clist, cmap_c->colortbl_list);
 	update_real_ctl_item_c(cmap_s->min_opacity, cmap_c->fix_opacity_ctl);
+    
+    cmap_c->iflag_use = 1;
 	return;
 	}
 
@@ -177,6 +179,7 @@ void make_colorbar_for_ctl(struct colormap_params *cmap_s,
 	update_int_ctl_item_c(1, cbar_c->font_size_ctl);
 	update_int_ctl_item_c(3, cbar_c->ngrid_cbar_ctl);
 
+    cbar_c->iflag_use = 1;
 	return;
 }
 
@@ -212,9 +215,7 @@ void check_colormap_control_file_s(struct colormap_params *cmap_s){
 	cmap_cbar_c0 = (struct pvr_colormap_bar_ctl_c *) malloc(sizeof(struct pvr_colormap_bar_ctl_c));
 	alloc_colormap_colorbar_ctl_c(cmap_cbar_c0);
 	
-	cmap_cbar_c0->iflag_colormap_ctl = 1;
 	copy_colormap_to_ctl(cmap_s, cmap_cbar_c0->cmap_c);
-	cmap_cbar_c0->iflag_colorbar_ctl = 1;
 	make_colorbar_for_ctl(cmap_s, cmap_cbar_c0->cbar_c);
 	
 	write_colormap_colorbar_ctl_c(stdout, 0, 
@@ -229,9 +230,7 @@ void write_colormap_control_file_s(const char *file_name, struct colormap_params
 	cmap_cbar_c0 = (struct pvr_colormap_bar_ctl_c *) malloc(sizeof(struct pvr_colormap_bar_ctl_c));
 	alloc_colormap_colorbar_ctl_c(cmap_cbar_c0);
 	
-	cmap_cbar_c0->iflag_colormap_ctl = 1;
 	copy_colormap_to_ctl(cmap_s, cmap_cbar_c0->cmap_c);
-	cmap_cbar_c0->iflag_colorbar_ctl = 1;
 	make_colorbar_for_ctl(cmap_s, cmap_cbar_c0->cbar_c);
 	
 	write_colormap_file_c(file_name, cmap_cbar_c0);
@@ -243,7 +242,6 @@ void write_colormap_control_file_s(const char *file_name, struct colormap_params
 
 void read_colormap_control_file_s(const char *file_name, struct colormap_params *cmap_s){
 	char buf[LENGTHBUF];      /* character buffer for reading line */
-	
 	
 	cmap_cbar_c0 = (struct pvr_colormap_bar_ctl_c *) malloc(sizeof(struct pvr_colormap_bar_ctl_c));
 	alloc_colormap_colorbar_ctl_c(cmap_cbar_c0);
