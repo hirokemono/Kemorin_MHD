@@ -9,8 +9,8 @@
 !!      subroutine count_num_rendering_and_images(num_pvr_ctl, pvr_ctls,&
 !!     &          num_pvr, num_pvr_rendering, num_pvr_images)
 !!      subroutine s_num_rendering_and_images(num_pe, num_pvr, pvr_ctl, &
-!!     &          istack_pvr_render, istack_pvr_images, num_pvr_images, &
-!!     &          pvr_rgb)
+!!     &          num_pvr_rendering, num_pvr_images,                    &
+!!     &          istack_pvr_render, istack_pvr_images, pvr_rgb)
 !!
 !!      subroutine set_num_rendering_and_images(num_pvr_ctl, pvr_ctls,  &
 !!     &          istack_pvr_render, istack_pvr_images)
@@ -29,7 +29,7 @@
 !
       implicit none
 !
-      private :: set_rank_to_write_images, set_pvr_file_parameters
+      private :: set_pvr_file_parameters
       private :: set_pvr_file_prefix, set_pvr_file_control
 !
 !  ---------------------------------------------------------------------
@@ -77,12 +77,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_num_rendering_and_images(num_pe, num_pvr, pvr_ctl,   &
-     &          istack_pvr_render, istack_pvr_images, num_pvr_images,   &
-     &          pvr_rgb)
+     &          num_pvr_rendering, num_pvr_images,                      &
+     &          istack_pvr_render, istack_pvr_images, pvr_rgb)
+!
+      use set_composition_pe_range
 !
       integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: num_pvr
+      integer(kind = kint), intent(in) :: num_pvr_rendering
       integer(kind = kint), intent(in) :: num_pvr_images
+!
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
 !
       integer(kind = kint), intent(inout)                               &
@@ -94,18 +98,20 @@
       integer(kind = kint) :: i_pvr
 !
 !
-      call set_num_rendering_and_images(num_pvr, pvr_ctl,               &
-     &    istack_pvr_render, istack_pvr_images)
+      call s_set_composition_pe_range(num_pe, num_pvr, pvr_ctl,         &
+     &    num_pvr_rendering, num_pvr_images,                            &
+     &    istack_pvr_render, istack_pvr_images, pvr_rgb)
 !
-      call set_rank_to_write_images(num_pe, num_pvr_images, pvr_rgb)
       call set_pvr_file_parameters(num_pvr, pvr_ctl,                    &
      &    istack_pvr_images, num_pvr_images, pvr_rgb)
 !
-      if(iflag_debug .eq. 0) return
+!      if(iflag_debug .eq. 0) return
+      if(my_rank .gt. 0) return
       write(*,*) 'istack_pvr_render', istack_pvr_render
       write(*,*) 'istack_pvr_images', istack_pvr_images
       do i_pvr = 1, num_pvr_images
         write(*,*) 'irank_image_file', pvr_rgb(i_pvr)%irank_image_file, &
+     &                               pvr_rgb(i_pvr)%irank_end_composit, &
      &                                 pvr_rgb(i_pvr)%npe_img_composit, &
      &                                 trim(pvr_rgb(i_pvr)%pvr_prefix)
       end do
@@ -113,64 +119,6 @@
       end subroutine s_num_rendering_and_images
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine set_num_rendering_and_images(num_pvr_ctl, pvr_ctls,    &
-     &          istack_pvr_render, istack_pvr_images)
-!
-      use skip_comment_f
-!
-      integer(kind = kint), intent(in) :: num_pvr_ctl
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctls(num_pvr_ctl)
-      integer(kind = kint), intent(inout)                               &
-     &              :: istack_pvr_render(0:num_pvr_ctl)
-      integer(kind = kint), intent(inout)                               &
-     &              :: istack_pvr_images(0:num_pvr_ctl)
-!
-      integer(kind = kint) :: i_pvr
-!
-!
-      istack_pvr_render(0) = 0
-      istack_pvr_images(0) = 0
-      do i_pvr = 1, num_pvr_ctl
-        if(yes_flag(pvr_ctls(i_pvr)%streo_ctl%charavalue)) then
-          istack_pvr_render(i_pvr) = istack_pvr_render(i_pvr-1) + 2
-          if(yes_flag(pvr_ctls(i_pvr)%anaglyph_ctl%charavalue)) then
-            istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 1
-          else
-            istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 2
-          end if
-        else
-          istack_pvr_render(i_pvr) = istack_pvr_render(i_pvr-1) + 1
-          istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 1
-        end if
-      end do
-!
-      end subroutine set_num_rendering_and_images
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_rank_to_write_images                               &
-     &         (num_pe, num_pvr_images, pvr_rgb)
-!
-      use cal_minmax_and_stacks
-!
-      integer, intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: num_pvr_images
-      type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
-!
-      integer(kind = kint) :: i_pvr
-      real(kind = kreal) :: address
-!
-!
-      do i_pvr = num_pvr_images, 1, -1
-        address = dble((i_pvr-1) * num_pe) / dble(num_pvr_images)
-        pvr_rgb(i_pvr)%irank_image_file = aint(address)
-        pvr_rgb(i_pvr)%npe_img_composit = num_pe
-      end do
-!
-      end subroutine set_rank_to_write_images
-!
 !  ---------------------------------------------------------------------
 !
       subroutine set_pvr_file_parameters(num_pvr_ctl, pvr_ctls,         &

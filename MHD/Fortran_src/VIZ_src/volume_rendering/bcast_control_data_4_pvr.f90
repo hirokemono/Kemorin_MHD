@@ -80,6 +80,8 @@
       call bcast_ctl_type_c1(pvr%pvr_field_ctl)
       call bcast_ctl_type_c1(pvr%pvr_comp_ctl)
 !
+      call bcast_ctl_type_i1(pvr%maxpe_composit_ctl)
+!
       end subroutine bcast_vr_psf_ctl
 !
 !  ---------------------------------------------------------------------
@@ -137,6 +139,9 @@
 !
       call copy_chara_ctl(org_pvr%pvr_field_ctl, new_pvr%pvr_field_ctl)
       call copy_chara_ctl(org_pvr%pvr_comp_ctl, new_pvr%pvr_comp_ctl)
+!
+      call copy_integer_ctl(org_pvr%maxpe_composit_ctl,                 &
+     &    new_pvr%maxpe_composit_ctl)
 !
       end subroutine dup_pvr_ctl
 !

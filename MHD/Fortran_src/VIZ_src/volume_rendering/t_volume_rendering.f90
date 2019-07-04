@@ -185,8 +185,8 @@
 !
       call s_num_rendering_and_images                                   &
      &   (nprocs, pvr%num_pvr, pvr_ctls%pvr_ctl_type,                   &
-     &    pvr%istack_pvr_render,  pvr%istack_pvr_images,                &
-     &    pvr%num_pvr_images, pvr%pvr_rgb)
+     &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
+     &    pvr%istack_pvr_render,  pvr%istack_pvr_images, pvr%pvr_rgb)
 !
 !
       do i_pvr = 1, pvr%num_pvr

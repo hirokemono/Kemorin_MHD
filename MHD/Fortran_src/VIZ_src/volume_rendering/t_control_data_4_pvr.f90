@@ -31,6 +31,8 @@
 !!  streo_imaging        YES
 !!  anaglyph_image       YES
 !!!
+!!  max_pe_4_composit     32
+!!
 !!  output_field    temperature
 !!  output_component     scalar
 !!!
@@ -136,6 +138,8 @@
         type(read_character_item) :: pvr_field_ctl
         type(read_character_item) :: pvr_comp_ctl
 !
+        type(read_integer_item) :: maxpe_composit_ctl
+!
         type(pvr_sections_ctl) :: pvr_scts_c
 !
 !>       constrol structure for isosurfaces in PVR
@@ -148,27 +152,44 @@
 !
 !     2nd level for volume_rendering
 !
-      character(len=kchara) :: hd_pvr_updated =     'updated_sign'
-      character(len=kchara) :: hd_pvr_file_head =   'pvr_file_head'
-      character(len=kchara) :: hd_pvr_out_type =    'pvr_output_type'
-      character(len=kchara) :: hd_pvr_monitor =   'monitoring_mode'
-      character(len=kchara) :: hd_pvr_rgba_type = 'image_tranceparency'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_updated =     'updated_sign'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_file_head =   'pvr_file_head'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_out_type =    'pvr_output_type'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_monitor =   'monitoring_mode'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_rgba_type = 'image_tranceparency'
 !
-      character(len=kchara) :: hd_pvr_streo =    'streo_imaging'
-      character(len=kchara) :: hd_pvr_anaglyph = 'anaglyph_image'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_maxpe_composit = 'max_pe_4_composit'
 !
-      character(len=kchara) :: hd_output_field_def = 'output_field'
-      character(len=kchara) :: hd_output_comp_def =  'output_component'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_streo =    'streo_imaging'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_anaglyph = 'anaglyph_image'
 !
-      character(len=kchara) :: hd_pvr_sections = 'section_ctl'
-      character(len=kchara) :: hd_pvr_isosurf =  'isosurface_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_output_field_def = 'output_field'
+      character(len=kchara), parameter                                  &
+     &             :: hd_output_comp_def =  'output_component'
 !
-      character(len=kchara) :: hd_pvr_colorbar =  'colorbar_ctl'
-      character(len=kchara) :: hd_pvr_rotation =  'image_rotation_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_sections = 'section_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_isosurf =  'isosurface_ctl'
+!
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_colorbar =  'colorbar_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_rotation =  'image_rotation_ctl'
 !
 !     3rd level for surface_define
 !
-      character(len=kchara) :: hd_plot_area =   'plot_area_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_plot_area =   'plot_area_ctl'
 !
 !     3rd level for rotation
 !
@@ -211,6 +232,7 @@
       pvr_ctl%transparent_ctl%iflag = 0
       pvr_ctl%pvr_field_ctl%iflag =   0
       pvr_ctl%pvr_comp_ctl%iflag =    0
+      pvr_ctl%maxpe_composit_ctl%iflag = 0
 !
       pvr_ctl%i_pvr_ctl = 0
 !
@@ -322,6 +344,9 @@
      &     (c_buf, hd_output_field_def, pvr_ctl%pvr_field_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_output_comp_def, pvr_ctl%pvr_comp_ctl)
+!
+        call read_integer_ctl_type                                      &
+     &     (c_buf, hd_pvr_maxpe_composit, pvr_ctl%maxpe_composit_ctl)
       end do
       pvr_ctl%i_pvr_ctl = 1
 !

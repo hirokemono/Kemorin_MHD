@@ -172,8 +172,9 @@
 !
       call s_num_rendering_and_images                                   &
      &   (nprocs, lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,               &
+     &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images,            &
      &    lic%pvr%istack_pvr_render, lic%pvr%istack_pvr_images,         &
-     &    lic%pvr%num_pvr_images, lic%pvr%pvr_rgb)
+     &    lic%pvr%pvr_rgb)
 !
       do i_lic = 1, lic%pvr%num_pvr
         call allocate_nod_data_4_pvr                                    &
