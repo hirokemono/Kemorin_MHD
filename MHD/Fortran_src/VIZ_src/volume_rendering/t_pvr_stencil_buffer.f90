@@ -67,7 +67,7 @@
 !
       call const_stencil_buffer_work                                    &
      &   (pvr_rgb%irank_image_file, pvr_rgb%npe_img_composit,           &
-     &    pvr_rgb%num_pixel_xy, pvr_start,  stencil_wk)
+     &    pvr_rgb%num_pixel_xy, pvr_start, stencil_wk)
 !
       call s_set_pvr_stencil_buffer(pvr_rgb%irank_image_file,           &
      &    pvr_rgb%num_pixel_xy, pvr_start, stencil_wk,                  &
