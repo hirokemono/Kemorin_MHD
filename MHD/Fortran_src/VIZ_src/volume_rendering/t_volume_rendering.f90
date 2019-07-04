@@ -243,9 +243,15 @@
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       do i_pvr = 1, pvr%num_pvr
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
+        call each_PVR_rendering(fem%mesh, jacs, nod_fld,                &
+     &      pvr%pvr_param(i_pvr), pvr%pvr_proj(ist_rdr))
+      end do
+!
+      do i_pvr = 1, pvr%num_pvr
+        ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
-        call each_PVR_rendering(istep_pvr, fem%mesh, jacs, nod_fld,     &
-     &      pvr%pvr_param(i_pvr), pvr%pvr_proj(ist_rdr),                &
+        call each_PVR_composition                                       &
+     &     (istep_pvr, pvr%pvr_param(i_pvr), pvr%pvr_proj(ist_rdr),     &
      &      pvr%pvr_rgb(ist_img))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
@@ -254,8 +260,7 @@
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
       do i_pvr = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
-        if(pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0)                &
-     &   then
+        if(pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
           call sel_write_pvr_image_file                                 &
      &       (iminus, iminus,  pvr%pvr_rgb(ist_img))
         end if

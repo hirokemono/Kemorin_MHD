@@ -5,8 +5,11 @@
 !
 !!      subroutine each_PVR_initialize(i_pvr, mesh, group,              &
 !!     &          area_def, pvr_param, pvr_proj, pvr_rgb)
-!!      subroutine each_PVR_rendering(istep_pvr, mesh, jacs, nod_fld,   &
-!!     &          pvr_param, pvr_proj, pvr_rgb)
+!!      subroutine each_PVR_rendering                                   &
+!!     &         (mesh, jacs, nod_fld, pvr_param, pvr_proj)
+!!      subroutine each_PVR_composition                                 &
+!!     &         (istep_pvr, pvr_param, pvr_proj, pvr_rgb)
+!!
 !!      subroutine each_PVR_rendering_w_rot(istep_pvr, mesh, group,     &
 !!     &          jacs, nod_fld, pvr_param, pvr_proj, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -144,12 +147,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_rendering(istep_pvr, mesh, jacs, nod_fld,     &
-     &          pvr_param, pvr_proj, pvr_rgb)
+      subroutine each_PVR_rendering                                     &
+     &         (mesh, jacs, nod_fld, pvr_param, pvr_proj)
 !
       use cal_pvr_modelview_mat
-!
-      integer(kind = kint), intent(in) :: istep_pvr
 !
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: nod_fld
@@ -157,7 +158,6 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
@@ -169,39 +169,63 @@
       call set_default_pvr_data_params                                  &
      &   (pvr_param%outline, pvr_param%color)
 !
+!   Left or single eye
+      call rendering_with_fixed_view                                    &
+     &   (mesh%node, mesh%ele, mesh%surf, pvr_param, pvr_proj(1))
+!
+!   right eye
       if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        if(pvr_param%view%iflag_anaglyph .gt. 0) then
-!
-!   Left eye
-          call rendering_with_fixed_view                                &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf,                &
-     &        pvr_param, pvr_proj(1), pvr_rgb(1))
-          call store_left_eye_image(pvr_rgb(1))
-!
-!   right eye
-          call rendering_with_fixed_view                                &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf,                &
-     &        pvr_param, pvr_proj(2), pvr_rgb(1))
-          call add_left_eye_image(pvr_rgb(1))
-        else
-!
-!   Left eye
-          call rendering_with_fixed_view                                &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf,                &
-     &        pvr_param, pvr_proj(1), pvr_rgb(1))
-!
-!   right eye
-          call rendering_with_fixed_view                                &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf,                &
-     &        pvr_param, pvr_proj(2), pvr_rgb(2))
-        end if
-      else
         call rendering_with_fixed_view                                  &
-     &     (istep_pvr, mesh%node, mesh%ele, mesh%surf,                  &
-     &      pvr_param, pvr_proj(1), pvr_rgb(1))
+     &     (mesh%node, mesh%ele, mesh%surf, pvr_param, pvr_proj(2))
       end if
 !
       end subroutine each_PVR_rendering
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine each_PVR_composition                                   &
+     &         (istep_pvr, pvr_param, pvr_proj, pvr_rgb)
+!
+      use write_PVR_image
+!
+      integer(kind = kint), intent(in) :: istep_pvr
+!
+      type(PVR_control_params), intent(inout) :: pvr_param
+      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+!
+!
+!   Left or single eye
+      if(iflag_debug .gt. 0) write(*,*) 'composite_image 1'
+      call composite_image                                              &
+     &   (istep_pvr, pvr_param%color, pvr_param%colorbar,               &
+     &    pvr_proj(1)%screen, pvr_proj(1)%start_pt,                     &
+     &    pvr_proj(1)%stencil, pvr_rgb(1))
+!
+      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
+        if(pvr_param%view%iflag_anaglyph .gt. 0) then
+!   Left eye
+          call store_left_eye_image(pvr_rgb(1))
+!
+!   right eye
+          if(iflag_debug .gt. 0) write(*,*) 'composite_image 2'
+          call composite_image                                          &
+     &       (istep_pvr, pvr_param%color, pvr_param%colorbar,           &
+     &        pvr_proj(2)%screen, pvr_proj(2)%start_pt,                 &
+     &        pvr_proj(2)%stencil, pvr_rgb(1))
+          call add_left_eye_image(pvr_rgb(1))
+        else
+!
+!   right eye
+          if(iflag_debug .gt. 0) write(*,*) 'composite_image'
+          call composite_image                                          &
+     &       (istep_pvr, pvr_param%color, pvr_param%colorbar,           &
+     &        pvr_proj(2)%screen, pvr_proj(2)%start_pt,                 &
+     &        pvr_proj(2)%stencil, pvr_rgb(2))
+        end if
+      end if
+!
+      end subroutine each_PVR_composition
 !
 !  ---------------------------------------------------------------------
 !
