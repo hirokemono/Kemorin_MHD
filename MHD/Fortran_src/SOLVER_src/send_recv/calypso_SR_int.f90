@@ -49,7 +49,6 @@
       module calypso_SR_int
 !
       use m_precision
-      use m_elapsed_labels_SEND_RECV
 !
       implicit none
 !
@@ -71,6 +70,7 @@
       use calypso_SR_core
       use set_to_send_buffer
       use select_copy_from_recv
+      use m_elapsed_labels_SEND_RECV
 !
       integer(kind = kint), intent(in) :: iflag_SR
       integer(kind = kint), intent(in) :: nnod_org
@@ -94,36 +94,28 @@
       integer (kind=kint), intent(inout):: iX_new(nnod_new)
 !
 !
-      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+4)
       call resize_iwork_4_SR(npe_send, npe_recv,                        &
      &    istack_send(npe_send), istack_recv(npe_recv))
-      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+4)
 !
 !C-- SEND
 !
-      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+5)
       call set_to_send_buf_int(nnod_org,                                &
      &    istack_send(npe_send), inod_export, iX_org, iWS)
-      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+5)
 !C
 !C-- COMM
-      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+6)
+      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+4)
       call calypso_send_recv_intcore                                    &
      &             (npe_send, isend_self, id_pe_send, istack_send,      &
      &              npe_recv, irecv_self, id_pe_recv, istack_recv)
-      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+6)
+      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+4)
 !
 !C-- RECV
-      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+7)
       call sel_cppy_from_recv_buf_int(iflag_SR, nnod_new,               &
      &    istack_recv(npe_recv), inod_import, irev_import,              &
      &    iWR(1), iX_new)
-      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+7)
 !
 !C-- WAIT
-      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+8)
       call calypso_send_recv_fin(npe_send, isend_self)
-      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+8)
 !
       end subroutine calypso_send_recv_int
 !

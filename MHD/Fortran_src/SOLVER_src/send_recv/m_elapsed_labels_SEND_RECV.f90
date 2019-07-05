@@ -53,7 +53,7 @@
 !
       subroutine elpsed_label_calypso_send_recv
 !
-      integer(kind = kint), parameter :: num_append = 8
+      integer(kind = kint), parameter :: num_append = 7
 !
 !
       call append_elapsed_times                                         &
@@ -63,11 +63,10 @@
       elps1%labels(ist_elapsed_CSR+2) = 'calypso_send_recv_core    '
       elps1%labels(ist_elapsed_CSR+3) = 'set_from_recv_buf_rev_N    '
 !
-      elps1%labels(ist_elapsed_CSR+4) = 'resize_iwork_4_SR    '
-      elps1%labels(ist_elapsed_CSR+5) = 'set_to_send_buf_int    '
-      elps1%labels(ist_elapsed_CSR+6) = 'calypso_send_recv_intcore '
-      elps1%labels(ist_elapsed_CSR+7) = 'sel_cppy_from_recv_buf_int'
-      elps1%labels(ist_elapsed_CSR+8) = 'calypso_send_recv_fin    '
+      elps1%labels(ist_elapsed_CSR+4) = 'calypso_send_recv_intcore '
+      elps1%labels(ist_elapsed_CSR+5) = 'MPI_ISEND    '
+      elps1%labels(ist_elapsed_CSR+6) = 'MPI_IRECV '
+      elps1%labels(ist_elapsed_CSR+7) = 'start_elapsed_time'
 !
       iflag_CSR_time = .TRUE.
 !
