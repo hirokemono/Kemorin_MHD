@@ -216,6 +216,13 @@
 !
         write(*,*) 'range_pe', minval(stencil_wk%irank_4_composit), &
      &                        maxval(stencil_wk%irank_4_composit)
+        do i_rank = 0, nprocs-1
+          icou = 0
+          do ipix = 1, num_pixel_xy
+            if(stencil_wk%irank_4_composit(ipix) .eq. i_rank) icou = icou + 1
+          end do
+          if(icou .gt. 0) write(*,*) 'icou', i_rank, icou
+        end do
 !        write(50+my_rank,*) 'ipix, stencil_wk%irank_4_composit'
 !        do ipix = 1, num_pixel_xy
 !          write(50+my_rank,*) ipix, stencil_wk%irank_4_composit(ipix)
