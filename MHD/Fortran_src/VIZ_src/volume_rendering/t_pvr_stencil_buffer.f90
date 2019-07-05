@@ -66,11 +66,11 @@
 !
 !
       call const_stencil_buffer_work                                    &
-     &   (pvr_rgb%irank_image_file, pvr_rgb%npe_img_composit,           &
+     &   (pvr_rgb%irank_start_composit, pvr_rgb%irank_image_file,       &
      &    pvr_rgb%num_pixel_xy, pvr_start, stencil_wk)
 !
       call s_set_pvr_stencil_buffer                                     &
-     &   (pvr_rgb%irank_image_file, pvr_rgb%irank_end_composit,         &
+     &   (pvr_rgb%irank_start_composit, pvr_rgb%irank_image_file,       &
      &    pvr_rgb%num_pixel_xy, pvr_start, stencil_wk,                  &
      &    pvr_stencil%num_pixel_recv, pvr_stencil%img_output_tbl,       &
      &    pvr_stencil%img_composit_tbl, pvr_stencil%img_stack)

@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine s_set_pvr_stencil_buffer                             &
-!!     &         (irank_image_file, irank_end_composit, num_pixel_xy,   &
+!!     &         (irank_start_composit, irank_image_file, num_pixel_xy, &
 !!     &          pvr_start, stencil_wk,  num_pixel_recv,               &
 !!     &          img_output_tbl, img_composit_tbl, img_stack)
 !!        type(pvr_ray_start_type), intent(in) :: pvr_start
@@ -49,7 +49,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_pvr_stencil_buffer                               &
-     &         (irank_image_file, irank_end_composit, num_pixel_xy,     &
+     &         (irank_start_composit, irank_image_file, num_pixel_xy,   &
      &          pvr_start, stencil_wk,  num_pixel_recv,                 &
      &          img_output_tbl, img_composit_tbl, img_stack)
 !
@@ -58,8 +58,8 @@
       use const_comm_tbl_img_composit
       use set_parallel_file_name
 !
+      integer(kind = kint), intent(in) :: irank_start_composit
       integer(kind = kint), intent(in) :: irank_image_file
-      integer(kind = kint), intent(in) :: irank_end_composit
       integer(kind = kint), intent(in) :: num_pixel_xy
       type(pvr_ray_start_type), intent(in) :: pvr_start
       type(stencil_buffer_work), intent(in)  :: stencil_wk
@@ -96,7 +96,7 @@
 !      write(*,*) 's_const_comm_tbl_img_composit'
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+9)
       call s_const_comm_tbl_img_composit                                &
-     &   (irank_image_file, irank_end_composit,                         &
+     &   (irank_start_composit, irank_image_file,                       &
      &    num_pixel_xy, stencil_wk%irank_4_composit,                    &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
      &    img_composit_tbl)

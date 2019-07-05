@@ -11,8 +11,8 @@
 !!     &         (stencil_wk, irank_image_file, num_pixel_xy,           &
 !!     &          npixel_4_composit, num_pixel_recv, img_output_tbl)
 !!      subroutine s_const_comm_tbl_img_composit                        &
-!!     &         (irank_image_file, irank_end_composit, num_pixel_xy,   &
-!!    &          irank_4_composit, num_pvr_ray, id_pixel_start,        &
+!!     &         (irank_start_composit, irank_image_file, num_pixel_xy, &
+!!    &          irank_4_composit, num_pvr_ray, id_pixel_start,         &
 !!     &          img_composit_tbl)
 !!      subroutine set_image_stacking_and_recv(num_pixel_xy,            &
 !!     &          item_4_composit, npixel_4_composit, ipix_4_composit,  &
@@ -94,7 +94,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_const_comm_tbl_img_composit                          &
-     &         (irank_image_file, irank_end_composit, num_pixel_xy,     &
+     &         (irank_start_composit, irank_image_file, num_pixel_xy,   &
      &          irank_4_composit, num_pvr_ray, id_pixel_start,          &
      &          img_composit_tbl)
 !
@@ -102,7 +102,7 @@
 !
       integer(kind = kint), intent(in) :: num_pixel_xy
       integer(kind = kint), intent(in) :: irank_image_file
-      integer(kind = kint), intent(in) :: irank_end_composit
+      integer(kind = kint), intent(in) :: irank_start_composit
       integer(kind = kint), intent(in)                                  &
      &                     :: irank_4_composit(num_pixel_xy)
 !
@@ -142,7 +142,7 @@
      &                  num_recv_pixel_tmp, 1, CALYPSO_INTEGER,         &
      &                  CALYPSO_COMM, ierr_MPI)
 !
-      do i_rank = int(irank_image_file), int(irank_end_composit)
+      do i_rank = int(irank_start_composit), int(irank_image_file)
         call MPI_Gather                                                 &
      &     (num_send_pixel_tmp(i_rank+1), 1, CALYPSO_INTEGER,           &
      &      num_recv_pixel_tmp2, 1, CALYPSO_INTEGER,                    &
