@@ -115,13 +115,6 @@
 !$omp end parallel workshare
 !
       call calypso_mpi_barrier
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+10)
-      call calypso_SR_type_int(0, img_composit_tbl,                     &
-     &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
-     &    pvr_start%id_pixel_start, img_stack%ipix_4_composit)
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+10)
-!
-      call calypso_mpi_barrier
       allocate(i8_send(pvr_start%num_pvr_ray))
       allocate(i8_recv(img_composit_tbl%ntot_import))
       if(pvr_start%num_pvr_ray .gt. 0) i8_send = pvr_start%id_pixel_start
@@ -131,6 +124,13 @@
      &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
      &    i8_send, i8_recv)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+9)
+!
+      call calypso_mpi_barrier
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+10)
+      call calypso_SR_type_int(0, img_composit_tbl,                     &
+     &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
+     &    pvr_start%id_pixel_start, img_stack%ipix_4_composit)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+10)
 !
       deallocate(i8_send, i8_recv)
 !
