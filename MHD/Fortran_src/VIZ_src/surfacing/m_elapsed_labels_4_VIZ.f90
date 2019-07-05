@@ -122,7 +122,7 @@
       elps1%labels(ist_elapsed_PVR+8)                                  &
      &                    = 's_const_comm_tbl_img_composit  '
       elps1%labels(ist_elapsed_PVR+9)                                  &
-     &                    = '+ calypso_SR_type_int8 test  '
+     &                    = '- pvr_start%xx_pvr_ray_start  '
       elps1%labels(ist_elapsed_PVR+10)                                  &
      &                    = 'calypso_SR_type_int pvr_init  '
       elps1%labels(ist_elapsed_PVR+11)                                  &

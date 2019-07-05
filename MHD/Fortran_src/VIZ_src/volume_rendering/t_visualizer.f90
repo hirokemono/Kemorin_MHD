@@ -67,26 +67,31 @@
       call SECTIONING_initialize                                        &
      &   (fem, nod_fld, viz_ctls%psf_ctls, vizs%psf)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
+      call calypso_mpi_barrier
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
       call ISOSURF_initialize                                           &
      &   (fem, nod_fld, viz_ctls%iso_ctls, vizs%iso)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
+      call calypso_mpi_barrier
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
       call PVR_initialize                                               &
      &   (fem, nod_fld, viz_ctls%pvr_ctls, vizs%pvr)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
+      call calypso_mpi_barrier
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
       call FLINE_initialize                                             &
      &   (fem, nod_fld, viz_ctls%fline_ctls, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+4)
+      call calypso_mpi_barrier
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
       call LIC_initialize                                               &
      &   (fem, nod_fld, viz_ctls%lic_ctls, vizs%lic)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
+      call calypso_mpi_barrier
 !
       end subroutine init_visualize
 !

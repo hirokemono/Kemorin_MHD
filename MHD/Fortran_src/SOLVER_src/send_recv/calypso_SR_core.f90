@@ -126,7 +126,6 @@
 !
       use calypso_mpi
       use m_solver_SR
-      use m_elapsed_labels_SEND_RECV
 !
       integer(kind = kint), intent(in) :: npe_send, isend_self
       integer(kind = kint), intent(in) :: id_pe_send(npe_send)
@@ -145,7 +144,6 @@
       ncomm_send = int(npe_send - isend_self)
       ncomm_recv = int(npe_recv - irecv_self)
 !
-      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+5)
       do neib = 1, ncomm_send
         ist= istack_send(neib-1) + 1
         num  = int(istack_send(neib  ) - istack_send(neib-1))
@@ -153,10 +151,8 @@
      &     (iWS(ist), num, CALYPSO_INTEGER, int(id_pe_send(neib)),      &
      &      0, CALYPSO_COMM, req1(neib), ierr_MPI)
       end do
-      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+5)
 !C
 !C-- RECEIVE
-      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+6)
       if(ncomm_recv .gt. 0) then
         do neib = ncomm_recv, 1, -1
           ist= istack_recv(neib-1) + 1
@@ -170,11 +166,9 @@
       if(ncomm_recv .gt. 0) then
         call MPI_WAITALL(ncomm_recv, req2, sta2, ierr_MPI)
       end if
-      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+6)
 !
       if (isend_self .eq. 0) return
 !
-      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+7)
       ist_send= istack_send(npe_send-1)
       ist_recv= istack_recv(npe_recv-1)
       num  =   int(istack_send(npe_send  ) - istack_send(npe_send-1))
@@ -183,7 +177,6 @@
         iWR(ist_recv+i) = iWS(ist_send+i)
       end do
 !$omp end parallel do
-      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+7)
 !
       end subroutine calypso_send_recv_intcore
 !

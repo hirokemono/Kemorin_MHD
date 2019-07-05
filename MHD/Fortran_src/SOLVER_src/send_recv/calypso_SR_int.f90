@@ -70,7 +70,6 @@
       use calypso_SR_core
       use set_to_send_buffer
       use select_copy_from_recv
-      use m_elapsed_labels_SEND_RECV
 !
       integer(kind = kint), intent(in) :: iflag_SR
       integer(kind = kint), intent(in) :: nnod_org
@@ -103,11 +102,9 @@
      &    istack_send(npe_send), inod_export, iX_org, iWS)
 !C
 !C-- COMM
-      if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+4)
       call calypso_send_recv_intcore                                    &
      &             (npe_send, isend_self, id_pe_send, istack_send,      &
      &              npe_recv, irecv_self, id_pe_recv, istack_recv)
-      if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+4)
 !
 !C-- RECV
       call sel_cppy_from_recv_buf_int(iflag_SR, nnod_new,               &
