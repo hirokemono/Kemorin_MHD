@@ -98,20 +98,37 @@
 !
       subroutine elpsed_label_4_PVR
 !
-      integer(kind = kint), parameter :: num_append = 4
+      integer(kind = kint), parameter :: num_append = 12
 !
 !
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_PVR, ied_elapsed_PVR)
 !
-      elps1%labels(ist_elapsed_PVR+1)                                  &
+      elps1%labels(ist_elapsed_PVR+1)                                   &
      &                    = 'Volume rendering w/o file output   '
-      elps1%labels(ist_elapsed_PVR+2)                                  &
+      elps1%labels(ist_elapsed_PVR+2)                                   &
      &                    = 'Volume rendering file output   '
-      elps1%labels(ist_elapsed_PVR+3)                                  &
+      elps1%labels(ist_elapsed_PVR+3)                                   &
      &                    = 'V. Rendering ray trace   '
-      elps1%labels(ist_elapsed_PVR+4)                                  &
+      elps1%labels(ist_elapsed_PVR+4)                                   &
      &                    = 'V. Rendering subimage composit   '
+!
+      elps1%labels(ist_elapsed_PVR+5)                                  &
+     &                    = 'count_parallel_stencil_buffer  '
+      elps1%labels(ist_elapsed_PVR+6)                                  &
+     &                    = 's_const_comm_tbl_img_output  '
+      elps1%labels(ist_elapsed_PVR+7)                                  &
+     &                    = 'set_global_pixel_4_composit  '
+      elps1%labels(ist_elapsed_PVR+8)                                  &
+     &                    = 's_const_comm_tbl_img_composit  '
+      elps1%labels(ist_elapsed_PVR+9)                                  &
+     &                    = '- pvr_start%xx_pvr_ray_start  '
+      elps1%labels(ist_elapsed_PVR+10)                                  &
+     &                    = 'calypso_SR_type_int pvr_init  '
+      elps1%labels(ist_elapsed_PVR+11)                                  &
+     &                    = 'calypso_SR_type_1 pvr_init '
+      elps1%labels(ist_elapsed_PVR+12)                                  &
+     &                    = 'set_image_stacking_and_recv  '
 !
       iflag_PVR_time = .TRUE.
 !
