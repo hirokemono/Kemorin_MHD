@@ -82,9 +82,9 @@
       if(iflag_CSR_time) then
         call reset_elapsed_times(ist_elapsed_FSR+1, ied_elapsed_FSR)
       end if
-      if(iflag_CSR_time) then
-        call reset_elapsed_times(ist_elapsed_CSR+1, ied_elapsed_CSR)
-      end if
+!      if(iflag_CSR_time) then
+!        call reset_elapsed_times(ist_elapsed_CSR+1, ied_elapsed_CSR)
+!      end if
 !
       end subroutine reset_elapse_after_init_SR
 !
