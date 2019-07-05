@@ -200,8 +200,7 @@
             icou = icou + 1
             ip = int((istack_ray_start_gl(ipix) - 1)                    &
      &              * npe_img_composit / num_pvr_ray_gl + 1)
-            i_rank = int(mod(irank_image_file-npe_img_composit+ip,      &
-     &                       nprocs))
+            i_rank = int(mod(irank_image_file+ip,nprocs))
             stencil_wk%irank_4_composit(ipix) = i_rank
             stencil_wk%istack_recv_image(ip) = icou
             stencil_wk%irev_recv_image(ipix) = icou

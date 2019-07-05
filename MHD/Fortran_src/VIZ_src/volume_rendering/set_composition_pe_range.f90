@@ -49,14 +49,14 @@
      &              :: istack_pvr_images(0:num_pvr)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
-      integer(kind = kint), allocatable:: irank_start_tmp(:)
       integer(kind = kint), allocatable:: irank_image_tmp(:)
+      integer(kind = kint), allocatable:: irank_end_tmp(:)
       integer(kind = kint), allocatable:: maxpe_composit_tmp(:)
 !
 !
       allocate(maxpe_composit_tmp(num_pvr_rendering))
-      allocate(irank_start_tmp(num_pvr_rendering))
       allocate(irank_image_tmp(num_pvr_rendering))
+      allocate(irank_end_tmp(num_pvr_rendering))
 !
       call set_num_rendering_and_images(num_pvr, pvr_ctl,               &
      &    istack_pvr_render, istack_pvr_images)
@@ -66,13 +66,13 @@
      &    num_pvr_rendering, maxpe_composit_tmp)
 !
       call set_rank_to_write_tmp(num_pe, num_pvr_rendering,             &
-     &    maxpe_composit_tmp, irank_start_tmp, irank_image_tmp)
+     &    maxpe_composit_tmp, irank_image_tmp, irank_end_tmp)
       call set_rank_to_write_images                                     &
      &   (num_pvr, istack_pvr_render, istack_pvr_images,                &
-     &    num_pvr_rendering, irank_start_tmp, irank_image_tmp,          &
+     &    num_pvr_rendering, irank_image_tmp, irank_end_tmp,            &
      &    num_pvr_images, pvr_rgb)
 !
-      deallocate(irank_start_tmp, irank_image_tmp, maxpe_composit_tmp)
+      deallocate(irank_image_tmp, irank_end_tmp, maxpe_composit_tmp)
 !
       end subroutine s_set_composition_pe_range
 !
@@ -115,7 +115,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_rank_to_write_tmp(num_pe, num_pvr_rendering,       &
-     &          maxpe_composit_tmp, irank_start_tmp, irank_image_tmp)
+     &          maxpe_composit_tmp, irank_image_tmp, irank_end_tmp)
 !
       integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: num_pvr_rendering
@@ -123,9 +123,9 @@
      &              :: maxpe_composit_tmp(num_pvr_rendering)
 !
       integer(kind = kint), intent(inout)                               &
-     &              :: irank_start_tmp(num_pvr_rendering)
-      integer(kind = kint), intent(inout)                               &
      &              :: irank_image_tmp(num_pvr_rendering)
+      integer(kind = kint), intent(inout)                               &
+     &              :: irank_end_tmp(num_pvr_rendering)
 !
       integer(kind = kint) :: i_pvr, num
       real(kind = kreal) :: address
@@ -133,28 +133,28 @@
 !
       do i_pvr = 1, num_pvr_rendering
         address = dble((i_pvr-1) * num_pe) / dble(num_pvr_rendering)
-        irank_start_tmp(i_pvr) = aint(address)
+        irank_image_tmp(i_pvr) = aint(address)
       end do
 
       do i_pvr = 1, num_pvr_rendering - 1 
-        num = irank_start_tmp(i_pvr+1) - irank_start_tmp(i_pvr)
+        num = irank_image_tmp(i_pvr+1) - irank_image_tmp(i_pvr)
         if(num .le. 0) then
-           irank_image_tmp(i_pvr) = irank_start_tmp(i_pvr)
+           irank_end_tmp(i_pvr) = irank_image_tmp(i_pvr)
         else if(num .gt. maxpe_composit_tmp(i_pvr)) then
-           irank_image_tmp(i_pvr)                                       &
-     &       = irank_start_tmp(i_pvr) + maxpe_composit_tmp(i_pvr) - 1
+           irank_end_tmp(i_pvr)                                         &
+     &       = irank_image_tmp(i_pvr) + maxpe_composit_tmp(i_pvr) - 1
         else
-          irank_image_tmp(i_pvr) = irank_start_tmp(i_pvr+1) - 1
+          irank_end_tmp(i_pvr) = irank_image_tmp(i_pvr+1) - 1
         end if
       end do
 !
-      num = num_pe - irank_start_tmp(num_pvr_rendering)
+      num = num_pe - irank_image_tmp(num_pvr_rendering)
       if(num .gt. maxpe_composit_tmp(num_pvr_rendering)) then
-         irank_image_tmp(num_pvr_rendering)                             &
-     &     = irank_start_tmp(num_pvr_rendering)                         &
+         irank_end_tmp(num_pvr_rendering)                               &
+     &     = irank_image_tmp(num_pvr_rendering)                         &
      &      + maxpe_composit_tmp(num_pvr_rendering) - 1
       else
-        irank_image_tmp(num_pvr_rendering) = num_pe - 1
+        irank_end_tmp(num_pvr_rendering) = num_pe - 1
       end if
 !
 !
@@ -164,7 +164,7 @@
 !
       subroutine set_rank_to_write_images                               &
      &         (num_pvr_ctl, istack_pvr_render, istack_pvr_images,      &
-     &          num_pvr_rendering, irank_start_tmp, irank_image_tmp,    &
+     &          num_pvr_rendering, irank_image_tmp, irank_end_tmp,      &
      &          num_pvr_images, pvr_rgb)
 !
       integer(kind = kint), intent(in) :: num_pvr_ctl
@@ -175,9 +175,9 @@
 !
       integer(kind = kint), intent(in) :: num_pvr_rendering
       integer(kind = kint), intent(in)                                  &
-     &              :: irank_start_tmp(num_pvr_rendering)
-      integer(kind = kint), intent(in)                                  &
      &              :: irank_image_tmp(num_pvr_rendering)
+      integer(kind = kint), intent(in)                                  &
+     &              :: irank_end_tmp(num_pvr_rendering)
       integer(kind = kint), intent(in) :: num_pvr_images
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
@@ -193,32 +193,32 @@
         num_rdr = istack_pvr_images(i_pvr) - ist_rdr
         if(num_rdr .eq. 2) then
           if(num_img .eq. 1) then
-            pvr_rgb(ist_img+1)%irank_start_composit                     &
-     &         = irank_start_tmp(ist_rdr+1)
             pvr_rgb(ist_img+1)%irank_image_file                         &
-     &         = irank_image_tmp(ist_rdr+2)
+     &         = irank_image_tmp(ist_rdr+1)
+            pvr_rgb(ist_img+1)%irank_end_composit                       &
+     &         = irank_end_tmp(ist_rdr+2)
           else
-            pvr_rgb(ist_img+1)%irank_start_composit                     &
-     &          = irank_start_tmp(ist_rdr+1)
-            pvr_rgb(ist_img+2)%irank_start_composit                     &
-     &          = irank_start_tmp(ist_rdr+1)
             pvr_rgb(ist_img+1)%irank_image_file                         &
-     &          = irank_image_tmp(ist_rdr+2)
+     &          = irank_image_tmp(ist_rdr+1)
             pvr_rgb(ist_img+2)%irank_image_file                         &
-     &          = irank_image_tmp(ist_rdr+2)
+     &          = irank_image_tmp(ist_rdr+1)
+            pvr_rgb(ist_img+1)%irank_end_composit                       &
+     &          = irank_end_tmp(ist_rdr+2)
+            pvr_rgb(ist_img+2)%irank_end_composit                       &
+     &          = irank_end_tmp(ist_rdr+2)
           end if
         else
-          pvr_rgb(ist_img+1)%irank_start_composit                       &
-     &        = irank_start_tmp(ist_rdr+1)
           pvr_rgb(ist_img+1)%irank_image_file                           &
      &        = irank_image_tmp(ist_rdr+1)
+          pvr_rgb(ist_img+1)%irank_end_composit                         &
+     &        = irank_end_tmp(ist_rdr+1)
         end if
       end do
 !
       do i_pvr = 1, num_pvr_images
         pvr_rgb(i_pvr)%npe_img_composit                                 &
-     &      = pvr_rgb(i_pvr)%irank_image_file                           &
-     &       - pvr_rgb(i_pvr)%irank_start_composit + 1
+     &      = pvr_rgb(i_pvr)%irank_end_composit                         &
+     &       - pvr_rgb(i_pvr)%irank_image_file + 1
       end do
 !
       end subroutine set_rank_to_write_images
