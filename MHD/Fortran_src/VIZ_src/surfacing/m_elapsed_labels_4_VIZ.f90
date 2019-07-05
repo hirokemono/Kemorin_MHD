@@ -57,7 +57,7 @@
 !
 !
       call reset_elapse_after_init_VIZ_top
-      call reset_elapse_after_init_PVR
+!      call reset_elapse_after_init_PVR
       call reset_elapse_after_init_LIC
 !
       end subroutine reset_elapse_after_init_VIZ
