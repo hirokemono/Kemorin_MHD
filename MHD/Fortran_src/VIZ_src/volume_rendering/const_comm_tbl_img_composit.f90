@@ -114,8 +114,9 @@
       integer(kind = kint), allocatable :: index_pvr_start(:)
       integer(kind = kint), allocatable :: num_send_pixel_tmp(:)
       integer(kind = kint), allocatable :: num_recv_pixel_tmp(:)
+       integer(kind = kint), allocatable :: num_recv_pixel_tmp2(:)
 !
-      integer(kind = kint) :: i_rank
+      integer :: i_rank
 !
 !
       allocate(index_pvr_start(num_pvr_ray))
@@ -124,22 +125,35 @@
 !
       allocate(num_send_pixel_tmp(nprocs))
       allocate(num_recv_pixel_tmp(nprocs))
+      allocate(num_recv_pixel_tmp2(nprocs))
 !$omp parallel workshare
       num_send_pixel_tmp(1:nprocs) = 0
       num_recv_pixel_tmp(1:nprocs) = 0
+      num_recv_pixel_tmp2(1:nprocs) = 0
 !$omp end parallel workshare
 !
       call count_num_send_pixel_tmp                                     &
      &   (num_pixel_xy, irank_4_composit, num_pvr_ray,                  &
      &    id_pixel_start, index_pvr_start, num_send_pixel_tmp)
 !
-      do i_rank = irank_image_file, irank_end_composit
+      call MPI_Alltoall(num_send_pixel_tmp, 1, CALYPSO_INTEGER,         &
+     &                  num_recv_pixel_tmp, 1, CALYPSO_INTEGER,         &
+     &                  CALYPSO_COMM, ierr_MPI)
+!
+      do i_rank = int(irank_image_file), int(irank_end_composit)
         call MPI_Gather                                                 &
      &     (num_send_pixel_tmp(i_rank+1), 1, CALYPSO_INTEGER,           &
-     &      num_recv_pixel_tmp, 1, CALYPSO_INTEGER,                     &
+     &      num_recv_pixel_tmp2, 1, CALYPSO_INTEGER,                    &
      &      i_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
+      do i_rank = 1, nprocs
+        if(num_recv_pixel_tmp(i_rank) .ne. num_recv_pixel_tmp2(i_rank)) &
+     &     then
+           write(*,*) 'aho!!', my_rank, i_rank, &
+     &       num_recv_pixel_tmp(i_rank), num_recv_pixel_tmp2(i_rank)
+         end if
+      end do
 !
       call count_comm_pe_pvr_composition                                &
      &   (nprocs, num_send_pixel_tmp, num_recv_pixel_tmp,               &
