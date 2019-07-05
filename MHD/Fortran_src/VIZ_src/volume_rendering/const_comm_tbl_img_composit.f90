@@ -136,6 +136,8 @@
      &   (num_pixel_xy, irank_4_composit, num_pvr_ray,                  &
      &    id_pixel_start, index_pvr_start, num_send_pixel_tmp)
 !
+      if(my_rank .eq. 30) write(*,*) 'num_send_pixel_tmp', num_send_pixel_tmp
+!
       call MPI_Alltoall(num_send_pixel_tmp, 1, CALYPSO_INTEGER,         &
      &                  num_recv_pixel_tmp, 1, CALYPSO_INTEGER,         &
      &                  CALYPSO_COMM, ierr_MPI)
