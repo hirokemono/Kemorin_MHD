@@ -116,18 +116,18 @@
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+9)
 !
       call calypso_mpi_barrier
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+10)
-      call calypso_SR_type_int(0, img_composit_tbl,                     &
-     &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
-     &    pvr_start%id_pixel_start, img_stack%ipix_4_composit)
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+10)
-!
-      call calypso_mpi_barrier
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+11)
       call calypso_SR_type_1(0, img_composit_tbl,                       &
      &   pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,           &
      &   img_stack%depth_pvr_ray_start, img_stack%depth_pixel_composit)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+11)
+!
+      call calypso_mpi_barrier
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+10)
+      call calypso_SR_type_int(0, img_composit_tbl,                     &
+     &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
+     &    pvr_start%id_pixel_start, img_stack%ipix_4_composit)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+10)
 !
       call calypso_mpi_barrier
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+12)
