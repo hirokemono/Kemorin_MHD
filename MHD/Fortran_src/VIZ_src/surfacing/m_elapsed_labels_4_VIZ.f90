@@ -114,15 +114,15 @@
      &                    = 'V. Rendering subimage composit   '
 !
       elps1%labels(ist_elapsed_PVR+5)                                  &
-     &                    = 'count_parallel_stencil_buffer  '
+     &                    = 'bcast_pvr_controls  '
       elps1%labels(ist_elapsed_PVR+6)                                  &
-     &                    = 's_const_comm_tbl_img_output  '
+     &                    = 'set_pvr_controls  '
       elps1%labels(ist_elapsed_PVR+7)                                  &
-     &                    = 'set_global_pixel_4_composit  '
+     &                    = 'each_PVR_initialize  '
       elps1%labels(ist_elapsed_PVR+8)                                  &
-     &                    = 's_const_comm_tbl_img_composit  '
+     &                    = 's_const_comm_tbl_img_output  '
       elps1%labels(ist_elapsed_PVR+9)                                  &
-     &                    = '- pvr_start%xx_pvr_ray_start  '
+     &                    = 's_const_comm_tbl_img_composit  '
       elps1%labels(ist_elapsed_PVR+10)                                  &
      &                    = 'calypso_SR_type_int pvr_init  '
       elps1%labels(ist_elapsed_PVR+11)                                  &

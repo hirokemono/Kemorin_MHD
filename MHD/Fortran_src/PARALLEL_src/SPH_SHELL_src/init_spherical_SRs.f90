@@ -66,12 +66,10 @@
       X_rj = 0.0d0
       X_rtp = 0.0d0
 !
-      call calypso_mpi_barrier
       call check_spherical_SRs_N                                        &
      &   (NB, comms_sph%comm_rtp, comms_sph%comm_rtm,                   &
      &        comms_sph%comm_rlm, comms_sph%comm_rj)
 !
-      call calypso_mpi_barrier
       call check_calypso_sph_buffer_N(NB, comms_sph)
       call sel_sph_import_table(NB, comms_sph,                          &
      &    sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,                   &
@@ -118,14 +116,18 @@
       real(kind = kreal) :: etime_item_import(0:1) = 0.0d0
 !
 !
-      call calypso_mpi_barrier
       call check_spherical_SRs_N                                        &
      &   (NB, comms_sph%comm_rtp, comms_sph%comm_rtm,                   &
      &        comms_sph%comm_rlm, comms_sph%comm_rj)
 !
       if(iflag_sph_SRN .ne. iflag_import_UNDEFINED) return
 !
-      call calypso_mpi_barrier
+      iflag_sph_SRN = iflag_import_rev
+      starttime = MPI_WTIME()
+      call all_sph_send_recv_N(NB, comms_sph,                           &
+     &    nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,                        &
+     &    X_rtp, X_rtm, X_rlm, X_rj)
+!
       if(my_rank .eq. 0) write(*,*) 'test  send_recv with reg. import'
       iflag_sph_SRN = iflag_import_item
       starttime = MPI_WTIME()
@@ -134,7 +136,6 @@
      &    X_rtp, X_rtm, X_rlm, X_rj)
       endtime(0) = MPI_WTIME() - starttime
 !
-      call calypso_mpi_barrier
       if(my_rank .eq. 0) write(*,*) 'test  send_recv with rev. import'
       iflag_sph_SRN = iflag_import_rev
       starttime = MPI_WTIME()

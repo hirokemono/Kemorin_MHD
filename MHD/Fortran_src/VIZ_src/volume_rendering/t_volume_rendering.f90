@@ -32,6 +32,7 @@
       use m_machine_parameter
       use m_geometry_constants
       use m_work_time
+      use m_elapsed_labels_4_VIZ
 !
       use t_mesh_data
       use t_phys_data
@@ -103,7 +104,6 @@
       character(len = kchara) :: tmpchara
 !
 !
-      call calypso_mpi_barrier
       if(my_rank .eq. izero) then
         call read_control_pvr_update                                    &
      &     (id_control, pvr_ctls%fname_pvr_ctl(1),                      &
@@ -174,14 +174,15 @@
         return
       end if
 !
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+5)
       call bcast_pvr_controls(pvr_ctls%num_pvr_ctl,                     &
      &    pvr_ctls%pvr_ctl_type, pvr%cflag_update)
-      call calypso_mpi_barrier
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+5)
 !
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
       call count_num_rendering_and_images                               &
      &   (pvr_ctls%num_pvr_ctl, pvr_ctls%pvr_ctl_type, pvr%num_pvr,     &
      &    pvr%num_pvr_rendering, pvr%num_pvr_images)
-      call calypso_mpi_barrier
 !
       call alloc_pvr_data(pvr)
 !
@@ -189,7 +190,6 @@
      &   (nprocs, pvr%num_pvr, pvr_ctls%pvr_ctl_type,                   &
      &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
      &    pvr%istack_pvr_render,  pvr%istack_pvr_images, pvr%pvr_rgb)
-      call calypso_mpi_barrier
 !
 !
       do i_pvr = 1, pvr%num_pvr
@@ -197,20 +197,19 @@
      &     (fem%mesh%node%numnod, fem%mesh%ele%numele,                  &
      &      fem%group%surf_grp%num_grp, pvr%pvr_param(i_pvr)%field)
         call reset_pvr_view_parameteres(pvr%pvr_param(i_pvr)%view)
-        call calypso_mpi_barrier
       end do
 !
       call s_set_pvr_controls(fem%group, nod_fld, pvr%num_pvr,          &
      &    pvr_ctls%pvr_ctl_type, pvr%pvr_param)
-      call calypso_mpi_barrier
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+6)
 !
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
       do i_pvr = 1, pvr%num_pvr
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
         call each_PVR_initialize(i_pvr, fem%mesh, fem%group,            &
      &      pvr%pvr_param(i_pvr)%area_def,  pvr%pvr_param(i_pvr),       &
      &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
-         call calypso_mpi_barrier
       end do
 !
       do i_pvr = 1, pvr_ctls%num_pvr_ctl
@@ -219,6 +218,7 @@
           call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i_pvr))
         end if
       end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+7)
 !
 !      call check_surf_rng_pvr_domain(my_rank)
 !      call check_surf_norm_pvr_domain(my_rank)
@@ -229,7 +229,6 @@
 !
       subroutine PVR_visualize(istep_pvr, fem, jacs, nod_fld, pvr)
 !
-      use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use write_PVR_image
 !

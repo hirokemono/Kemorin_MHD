@@ -11,8 +11,9 @@
 !!     &         (stencil_wk, irank_image_file, num_pixel_xy,           &
 !!     &          npixel_4_composit, num_pixel_recv, img_output_tbl)
 !!      subroutine s_const_comm_tbl_img_composit                        &
-!!     &         (num_pixel_xy, irank_4_composit, num_pvr_ray,          &
-!!     &          id_pixel_start, img_composit_tbl)
+!!     &         (irank_image_file, irank_end_composit, num_pixel_xy,   &
+!!    &          irank_4_composit, num_pvr_ray, id_pixel_start,        &
+!!     &          img_composit_tbl)
 !!      subroutine set_image_stacking_and_recv(num_pixel_xy,            &
 !!     &          item_4_composit, npixel_4_composit, ipix_4_composit,  &
 !!     &          depth_pixel_composit, istack_composition,             &
@@ -93,12 +94,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_const_comm_tbl_img_composit                          &
-     &         (num_pixel_xy, irank_4_composit, num_pvr_ray,            &
-     &          id_pixel_start, img_composit_tbl)
+     &         (irank_image_file, irank_end_composit, num_pixel_xy,     &
+     &          irank_4_composit, num_pvr_ray, id_pixel_start,          &
+     &          img_composit_tbl)
 !
       use comm_tbl_4_img_composit
 !
       integer(kind = kint), intent(in) :: num_pixel_xy
+      integer(kind = kint), intent(in) :: irank_image_file
+      integer(kind = kint), intent(in) :: irank_end_composit
       integer(kind = kint), intent(in)                                  &
      &                     :: irank_4_composit(num_pixel_xy)
 !
@@ -111,6 +115,8 @@
       integer(kind = kint), allocatable :: num_send_pixel_tmp(:)
       integer(kind = kint), allocatable :: num_recv_pixel_tmp(:)
 !
+      integer(kind = kint) :: i_rank
+!
 !
       allocate(index_pvr_start(num_pvr_ray))
       call sort_index_pvr_start                                         &
@@ -118,14 +124,21 @@
 !
       allocate(num_send_pixel_tmp(nprocs))
       allocate(num_recv_pixel_tmp(nprocs))
+!$omp parallel workshare
+      num_send_pixel_tmp(1:nprocs) = 0
+      num_recv_pixel_tmp(1:nprocs) = 0
+!$omp end parallel workshare
 !
       call count_num_send_pixel_tmp                                     &
      &   (num_pixel_xy, irank_4_composit, num_pvr_ray,                  &
      &    id_pixel_start, index_pvr_start, num_send_pixel_tmp)
 !
-      call MPI_Alltoall(num_send_pixel_tmp, 1, CALYPSO_INTEGER,         &
-     &                  num_recv_pixel_tmp, 1, CALYPSO_INTEGER,         &
-     &                  CALYPSO_COMM, ierr_MPI)
+      do i_rank = irank_image_file, irank_end_composit
+        call MPI_Gather                                                 &
+     &     (num_send_pixel_tmp(i_rank+1), 1, CALYPSO_INTEGER,           &
+     &      num_recv_pixel_tmp, 1, CALYPSO_INTEGER,                     &
+     &      i_rank, CALYPSO_COMM, ierr_MPI)
+      end do
 !
 !
       call count_comm_pe_pvr_composition                                &
