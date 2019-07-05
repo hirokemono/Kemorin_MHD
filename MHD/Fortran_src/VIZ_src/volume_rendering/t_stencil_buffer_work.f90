@@ -73,6 +73,8 @@
       num64 = pvr_start%num_pvr_ray
       call MPI_REDUCE(num64, num_pvr_ray_gl, 1, CALYPSO_GLOBAL_INT,     &
      &    MPI_SUM, int(irank_image_file), CALYPSO_COMM, ierr_MPI)
+      if(pvr_start%num_pvr_ray .le. 0) write(*,*)                       &
+     &     'num_pvr_ray is 0 at', my_rank
 !
       call count_local_ray_4_each_pixel(num_pixel_xy,                   &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
@@ -85,6 +87,10 @@
       call MPI_REDUCE(max_ray_start_lc, max_ray_start_gl, 1,            &
      &    CALYPSO_GLOBAL_INT, MPI_SUM, int(irank_image_file),           &
      &    CALYPSO_COMM, ierr_MPI)
+      if(pvr_start%num_ray_start_lc .le. 0) write(*,*)                  &
+     &     'num_ray_start_lc is 0 at', my_rank
+      if(pvr_start%max_ray_start_lc .le. 0) write(*,*)                  &
+     &     'max_ray_start_lc is 0 at', my_rank
 !
       call alloc_stencil_buffer_work(num_pixel_xy, stencil_wk)
       call set_global_stencil_buffer                                    &
