@@ -214,6 +214,8 @@
         stencil_wk%ntot_recv_image                                      &
      &         = stencil_wk%istack_recv_image(nprocs)
 !
+        write(*,*) 'range_pe' minval(stencil_wk%irank_4_composit), &
+     &                        maxval(stencil_wk%irank_4_composit)
 !        write(50+my_rank,*) 'ipix, stencil_wk%irank_4_composit'
 !        do ipix = 1, num_pixel_xy
 !          write(50+my_rank,*) ipix, stencil_wk%irank_4_composit(ipix)
