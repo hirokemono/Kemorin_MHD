@@ -176,10 +176,12 @@
 !
       call bcast_pvr_controls(pvr_ctls%num_pvr_ctl,                     &
      &    pvr_ctls%pvr_ctl_type, pvr%cflag_update)
+      call calypso_mpi_barrier
 !
       call count_num_rendering_and_images                               &
      &   (pvr_ctls%num_pvr_ctl, pvr_ctls%pvr_ctl_type, pvr%num_pvr,     &
      &    pvr%num_pvr_rendering, pvr%num_pvr_images)
+      call calypso_mpi_barrier
 !
       call alloc_pvr_data(pvr)
 !
@@ -187,6 +189,7 @@
      &   (nprocs, pvr%num_pvr, pvr_ctls%pvr_ctl_type,                   &
      &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
      &    pvr%istack_pvr_render,  pvr%istack_pvr_images, pvr%pvr_rgb)
+      call calypso_mpi_barrier
 !
 !
       do i_pvr = 1, pvr%num_pvr
@@ -194,10 +197,12 @@
      &     (fem%mesh%node%numnod, fem%mesh%ele%numele,                  &
      &      fem%group%surf_grp%num_grp, pvr%pvr_param(i_pvr)%field)
         call reset_pvr_view_parameteres(pvr%pvr_param(i_pvr)%view)
+        call calypso_mpi_barrier
       end do
 !
       call s_set_pvr_controls(fem%group, nod_fld, pvr%num_pvr,          &
      &    pvr_ctls%pvr_ctl_type, pvr%pvr_param)
+      call calypso_mpi_barrier
 !
       do i_pvr = 1, pvr%num_pvr
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
@@ -205,6 +210,7 @@
         call each_PVR_initialize(i_pvr, fem%mesh, fem%group,            &
      &      pvr%pvr_param(i_pvr)%area_def,  pvr%pvr_param(i_pvr),       &
      &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
+         call calypso_mpi_barrier
       end do
 !
       do i_pvr = 1, pvr_ctls%num_pvr_ctl
