@@ -23,6 +23,7 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_elapsed_labels_4_VIZ
       use calypso_mpi
 !
       use t_calypso_comm_table
@@ -71,30 +72,40 @@
 !
 !
 !      write(*,*) 'count_parallel_stencil_buffer'
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+5)
       call count_parallel_stencil_buffer                                &
      &   (stencil_wk, img_stack%npixel_4_composit)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+5)
 !
 !
 !      write(*,*) 's_const_comm_tbl_img_output'
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
       call s_const_comm_tbl_img_output                                  &
      &   (stencil_wk, irank_image_file, num_pixel_xy,                   &
      &    img_stack%npixel_4_composit, num_pixel_recv, img_output_tbl)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+6)
 !
 !
 !      write(*,*) 'set_global_pixel_4_composit'
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
       call alloc_pvr_ipixel_4_composit(num_pixel_xy, img_stack)
       call set_global_pixel_4_composit                                  &
      &   (stencil_wk, img_stack%npixel_4_composit, num_pixel_xy,        &
      &    img_stack%ipixel_4_composit, img_stack%item_4_composit)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+7)
 !
 !
 !
 !      write(*,*) 's_const_comm_tbl_img_composit'
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+8)
       call s_const_comm_tbl_img_composit                                &
      &   (num_pixel_xy, stencil_wk%irank_4_composit,                    &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
      &    img_composit_tbl)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+8)
 !
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+9)
       call alloc_depth_pixel_composit(pvr_start%num_pvr_ray,            &
      &    img_composit_tbl%ntot_import, img_stack)
 !
@@ -102,21 +113,28 @@
       img_stack%depth_pvr_ray_start(1:pvr_start%num_pvr_ray)            &
      &      = - pvr_start%xx_pvr_ray_start(3,1:pvr_start%num_pvr_ray)
 !$omp end parallel workshare
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+9)
 !
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+10)
       call calypso_SR_type_int(0, img_composit_tbl,                     &
      &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
      &    pvr_start%id_pixel_start, img_stack%ipix_4_composit)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+10)
 !
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+11)
       call calypso_SR_type_1(0, img_composit_tbl,                       &
      &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
      &    img_stack%depth_pvr_ray_start, img_stack%depth_pixel_composit)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+11)
 !
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+12)
       call alloc_pvr_image_stack_table(img_stack)
       call set_image_stacking_and_recv                                  &
      &   (num_pixel_xy, img_stack%item_4_composit,                      &
      &    img_stack%npixel_4_composit, img_stack%ipix_4_composit,       &
      &    img_stack%depth_pixel_composit, img_stack%istack_composition, &
      &    img_composit_tbl)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+12)
 !
       if(i_debug .gt. 0) then
         fname_tmp = add_int_suffix(my_rank, check_fhead)

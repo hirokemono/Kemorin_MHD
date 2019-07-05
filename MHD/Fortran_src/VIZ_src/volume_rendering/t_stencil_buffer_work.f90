@@ -73,8 +73,6 @@
       num64 = pvr_start%num_pvr_ray
       call MPI_REDUCE(num64, num_pvr_ray_gl, 1, CALYPSO_GLOBAL_INT,     &
      &    MPI_SUM, int(irank_image_file), CALYPSO_COMM, ierr_MPI)
-      if(pvr_start%num_pvr_ray .le. 0) write(*,*)                       &
-     &     'num_pvr_ray is 0 at', my_rank
 !
       call count_local_ray_4_each_pixel(num_pixel_xy,                   &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
