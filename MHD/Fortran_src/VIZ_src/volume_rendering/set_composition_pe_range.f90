@@ -142,12 +142,21 @@
            irank_end_tmp(i_pvr) = irank_image_tmp(i_pvr)
         else if(num .gt. maxpe_composit_tmp(i_pvr)) then
            irank_end_tmp(i_pvr)                                         &
-     &       = irank_image_tmp(i_pvr) + maxpe_composit_tmp(i_pvr)
+     &       = irank_image_tmp(i_pvr) + maxpe_composit_tmp(i_pvr) - 1
         else
           irank_end_tmp(i_pvr) = irank_image_tmp(i_pvr+1) - 1
         end if
       end do
-      irank_end_tmp(num_pvr_rendering) = num_pe - 1
+!
+      num = num_pe - irank_image_tmp(num_pvr_rendering)
+      if(num .gt. maxpe_composit_tmp(num_pvr_rendering)) then
+         irank_end_tmp(num_pvr_rendering)                               &
+     &     = irank_image_tmp(num_pvr_rendering)                         &
+     &      + maxpe_composit_tmp(num_pvr_rendering) - 1
+      else
+        irank_end_tmp(num_pvr_rendering) = num_pe - 1
+      end if
+!
 !
       end subroutine set_rank_to_write_tmp
 !
