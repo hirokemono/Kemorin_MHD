@@ -250,20 +250,20 @@
 !
       WK_l_tst%n_pol_e = 3*WK_l_tst%nvec_jk + WK_l_tst%nscl_jk
       WK_l_tst%n_tor_e = 2*WK_l_tst%nvec_jk
-      allocate(WK_l_tst%pol_e(WK_l_tst%n_pol_e,1))
-      allocate(WK_l_tst%tor_e(WK_l_tst%n_tor_e,1))
-      allocate(WK_l_tst%pol_o(WK_l_tst%n_pol_e,1))
-      allocate(WK_l_tst%tor_o(WK_l_tst%n_tor_e,1))
+      allocate(WK_l_tst%pol_e(WK_l_tst%n_pol_e,np_smp))
+      allocate(WK_l_tst%tor_e(WK_l_tst%n_tor_e,np_smp))
+      allocate(WK_l_tst%pol_o(WK_l_tst%n_pol_e,np_smp))
+      allocate(WK_l_tst%tor_o(WK_l_tst%n_tor_e,np_smp))
 !
       WK_l_tst%nvec_lk = ((nth_rtm+1)/2) * maxidx_rtm_r_smp * nvector
       WK_l_tst%nscl_lk = ((nth_rtm+1)/2) * maxidx_rtm_r_smp * nscalar
 !
       WK_l_tst%n_sym_r = 3*WK_l_tst%nvec_lk + WK_l_tst%nscl_lk
       WK_l_tst%n_sym_p = 2*WK_l_tst%nvec_lk
-      allocate(WK_l_tst%symp_r(WK_l_tst%n_sym_r,1))
-      allocate(WK_l_tst%symp_p(WK_l_tst%n_sym_p,1))
-      allocate(WK_l_tst%asmp_r(WK_l_tst%n_sym_r,1))
-      allocate(WK_l_tst%asmp_p(WK_l_tst%n_sym_p,1))
+      allocate(WK_l_tst%symp_r(WK_l_tst%n_sym_r,np_smp))
+      allocate(WK_l_tst%symp_p(WK_l_tst%n_sym_p,np_smp))
+      allocate(WK_l_tst%asmp_r(WK_l_tst%n_sym_r,np_smp))
+      allocate(WK_l_tst%asmp_p(WK_l_tst%n_sym_p,np_smp))
 !
       end subroutine alloc_leg_sym_matmul_test
 !
