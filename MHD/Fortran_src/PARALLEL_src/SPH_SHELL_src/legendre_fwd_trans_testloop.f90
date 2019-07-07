@@ -92,9 +92,9 @@
 !
       nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
       nlo_rtm = sph_rtm%nidx_rtm(2) / 2
-!$omp parallel do schedule(static)                                      &
-!$omp             private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
-!$omp& reduction(+:elaps)
+!!$omp parallel do schedule(static)                                     &
+!!$omp             private(ip,mp_rlm,mn_rlm,st_elapsed)                 &
+!!$omp& reduction(+:elaps)
       do ip = 1, np_smp
         kst(ip) = sph_rlm%istack_rlm_kr_smp(ip-1)
         nkr(ip) = sph_rlm%istack_rlm_kr_smp(ip)                         &
@@ -163,7 +163,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!!$omp end parallel do
 !
 !      elapsed(46:49)                                                   &
 !     &     = elaps(1:4) / dble(omp_get_max_threads()) + elapsed(46:49)
