@@ -55,20 +55,13 @@
 !>      Work structure for Legendre trasform by large matmul
       type leg_trns_testloop_work
 !>         Number of meridional grid points in northern hemisphere
-        integer(kind = kint) :: nl_e_rtm
-!>         Number of meridional grid points in northern hemisphere
-        integer(kind = kint) :: nl_o_rtm
-!>         Number of meridional grid points in northern hemisphere
-        integer(kind = kint) :: narray_nl
-!>         Number of meridional grid points in northern hemisphere
-        integer(kind = kint), allocatable :: istack_nlo_rtm(:)
-!
+        integer(kind = kint) :: nth_sym
 !>          @$f P_{l}{m} @$f
 !!          at gouss points in northen hemisphere
-        real(kind = kreal), allocatable :: Ps_tj(:,:,:)
+        real(kind = kreal), allocatable :: Ps_tj(:,:)
 !>          @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
 !!          at gouss points in northen hemisphere
-        real(kind = kreal), allocatable :: dPsdt_tj(:,:,:)
+        real(kind = kreal), allocatable :: dPsdt_tj(:,:)
 !
 !
 !>        Maximum matrix size for spectr data
@@ -93,8 +86,7 @@
 !!@n       dtordp_e = Pol_e(  nvec_jk+1:2*nvec_jk,ip)
 !!@n       dpoldp_e = Pol_e(2*nvec_jk+1:3*nvec_jk,ip)
 !!@n       scl_e =    Pol_e(3*nvec_jk+1:3*nvec_jk+nscl_jk,ip)
-        real(kind = kreal), allocatable :: pol_e(:)
-        real(kind = kreal), allocatable :: pol_e_smp(:,:)
+        real(kind = kreal), allocatable :: pol_e(:,:)
 !
 !>      Theta derivative of poloidal component with evem (l-m)
 !!@n        real(kind = kreal), allocatable :: dtordt_e(:,:)
@@ -102,8 +94,7 @@
 !!@n        real(kind = kreal), allocatable :: dpoldt_e(:,:)
 !!@n       dtordt_e = tor_e(          1:  nvec_jk,ip)
 !!@n       dpoldt_e = tor_e(  nvec_jk+1:2*nvec_jk,ip)
-        real(kind = kreal), allocatable :: tor_e(:)
-        real(kind = kreal), allocatable :: tor_e_smp(:,:)
+        real(kind = kreal), allocatable :: tor_e(:,:)
 !
 !>       Poloidal component with odd (l-m)
 !!@n         real(kind = kreal), allocatable :: pol_o(:,:)
@@ -117,8 +108,7 @@
 !!@n       dtordp_o = pol_o(  nvec_jk+1:2*nvec_jk,ip)
 !!@n       dpoldp_o = pol_o(2*nvec_jk+1:3*nvec_jk,ip)
 !!@n       scl_o =    pol_o(3*nvec_jk+1:3*nvec_jk+nscl_jk,ip)
-        real(kind = kreal), allocatable :: pol_o(:)
-        real(kind = kreal), allocatable :: pol_o_smp(:,:)
+        real(kind = kreal), allocatable :: pol_o(:,:)
 !
 !>       Theta derivative of Toroidal component with odd (l-m)
 !!@n        real(kind = kreal), allocatable :: dtordt_o(:,:)
@@ -126,8 +116,7 @@
 !!@n        real(kind = kreal), allocatable :: dpoldt_o(:,:)
 !!@n       dtordt_o = tor_o(          1:  nvec_jk,ip)
 !!@n       dpoldt_o = tor_o(  nvec_jk+1:2*nvec_jk,ip)
-        real(kind = kreal), allocatable :: tor_o(:)
-        real(kind = kreal), allocatable :: tor_o_smp(:,:)
+        real(kind = kreal), allocatable :: tor_o(:,:)
 !
 !
 !>       Maximum matrix size for field data
@@ -185,8 +174,8 @@
         real(kind = kreal), allocatable :: symp_p(:,:)
       end type leg_trns_testloop_work
 !
-      private :: const_sym_legendre_lsmp_j
-      private :: alloc_leg_sym_inner_omp
+      private :: const_symmetric_leg_lj_test
+      private :: alloc_leg_sym_matmul_test
 !
 ! -----------------------------------------------------------------------
 !
@@ -206,21 +195,22 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
 !
-      call const_sym_legendre_lsmp_j(sph_rlm%nidx_rlm(2),               &
+      call const_symmetric_leg_lj_test(sph_rlm%nidx_rlm(2),             &
      &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3),                     &
      &    leg, idx_trns, WK_l_tst)
-      call alloc_leg_sym_inner_omp                                      &
-     &   (sph_rtm%nidx_rtm(1), nvector, nscalar, idx_trns, WK_l_tst)
+      call alloc_leg_sym_matmul_test                                    &
+     &   (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),               &
+     &    nvector, nscalar, idx_trns, WK_l_tst)
 !
       end subroutine init_legendre_testloop
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_sym_legendre_lsmp_j                              &
+      subroutine const_symmetric_leg_lj_test                            &
      &         (jmax_rlm, nth_rtm, mphi_rtm, leg, idx_trns, WK_l_tst)
 !
-      use cal_minmax_and_stacks
+      use set_legendre_matrices
 !
       integer(kind = kint), intent(in) :: nth_rtm, mphi_rtm, jmax_rlm
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -229,31 +219,24 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
 !
-      WK_l_tst%nl_e_rtm = (nth_rtm + 1) / 2
-      WK_l_tst%nl_o_rtm = nth_rtm / 2
-      allocate(WK_l_tst%istack_nlo_rtm(0:np_smp))
+      WK_l_tst%nth_sym = (nth_rtm+1) / 2
+      allocate( WK_l_tst%Ps_tj(WK_l_tst%nth_sym,jmax_rlm) )
+      allocate( WK_l_tst%dPsdt_tj(WK_l_tst%nth_sym,jmax_rlm) )
 !
-      call count_number_4_smp(np_smp, ione, WK_l_tst%nl_o_rtm,         &
-     &    WK_l_tst%istack_nlo_rtm, WK_l_tst%narray_nl)
-      WK_l_tst%narray_nl = WK_l_tst%narray_nl + 1
-!
-      allocate(WK_l_tst%Ps_tj(WK_l_tst%narray_nl,jmax_rlm,np_smp))
-      allocate(WK_l_tst%dPsdt_tj(WK_l_tst%narray_nl,jmax_rlm,np_smp))
-!
-      call set_symmetric_legendre_lsmp_j(nth_rtm, mphi_rtm, jmax_rlm,   &
-     &    np_smp, WK_l_tst%istack_nlo_rtm,                              &
-     &    WK_l_tst%narray_nl, WK_l_tst%nl_e_rtm,                        &
+      call set_symmetric_legendre_lj                                    &
+     &   (nth_rtm, mphi_rtm, jmax_rlm, WK_l_tst%nth_sym,                &
      &    idx_trns%lstack_rlm, idx_trns%lstack_even_rlm,                &
      &    leg%P_rtm, leg%dPdt_rtm, WK_l_tst%Ps_tj, WK_l_tst%dPsdt_tj)
 !
-      end subroutine const_sym_legendre_lsmp_j
+      end subroutine const_symmetric_leg_lj_test
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_sym_inner_omp                                &
-     &         (nri_rtm, nvector, nscalar, idx_trns, WK_l_tst)
+      subroutine alloc_leg_sym_matmul_test(nth_rtm, maxidx_rtm_r_smp,   &
+     &          nvector, nscalar, idx_trns, WK_l_tst)
 !
-      integer(kind = kint), intent(in) :: nri_rtm
+      integer(kind = kint), intent(in) :: nth_rtm
+      integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
       integer(kind = kint), intent(in) :: nvector, nscalar
       type(index_4_sph_trans), intent(in) :: idx_trns
 !
@@ -261,24 +244,19 @@
 !
 !
       WK_l_tst%nvec_jk = ((idx_trns%maxdegree_rlm+1)/2)                 &
-     &                  * nri_rtm * nvector
+     &         * maxidx_rtm_r_smp * nvector
       WK_l_tst%nscl_jk = ((idx_trns%maxdegree_rlm+1)/2)                 &
-     &                  * nri_rtm * nscalar
+     &         * maxidx_rtm_r_smp * nscalar
 !
       WK_l_tst%n_pol_e = 3*WK_l_tst%nvec_jk + WK_l_tst%nscl_jk
       WK_l_tst%n_tor_e = 2*WK_l_tst%nvec_jk
-      allocate(WK_l_tst%pol_e(WK_l_tst%n_pol_e))
-      allocate(WK_l_tst%tor_e(WK_l_tst%n_tor_e))
-      allocate(WK_l_tst%pol_o(WK_l_tst%n_pol_e))
-      allocate(WK_l_tst%tor_o(WK_l_tst%n_tor_e))
+      allocate(WK_l_tst%pol_e(WK_l_tst%n_pol_e,np_smp))
+      allocate(WK_l_tst%tor_e(WK_l_tst%n_tor_e,np_smp))
+      allocate(WK_l_tst%pol_o(WK_l_tst%n_pol_e,np_smp))
+      allocate(WK_l_tst%tor_o(WK_l_tst%n_tor_e,np_smp))
 !
-      allocate(WK_l_tst%pol_e_smp(WK_l_tst%n_pol_e,np_smp))
-      allocate(WK_l_tst%tor_e_smp(WK_l_tst%n_tor_e,np_smp))
-      allocate(WK_l_tst%pol_o_smp(WK_l_tst%n_pol_e,np_smp))
-      allocate(WK_l_tst%tor_o_smp(WK_l_tst%n_tor_e,np_smp))
-!
-      WK_l_tst%nvec_lk = WK_l_tst%narray_nl * nri_rtm * nvector
-      WK_l_tst%nscl_lk = WK_l_tst%narray_nl * nri_rtm * nscalar
+      WK_l_tst%nvec_lk = ((nth_rtm+1)/2) * maxidx_rtm_r_smp * nvector
+      WK_l_tst%nscl_lk = ((nth_rtm+1)/2) * maxidx_rtm_r_smp * nscalar
 !
       WK_l_tst%n_sym_r = 3*WK_l_tst%nvec_lk + WK_l_tst%nscl_lk
       WK_l_tst%n_sym_p = 2*WK_l_tst%nvec_lk
@@ -287,7 +265,7 @@
       allocate(WK_l_tst%asmp_r(WK_l_tst%n_sym_r,np_smp))
       allocate(WK_l_tst%asmp_p(WK_l_tst%n_sym_p,np_smp))
 !
-      end subroutine alloc_leg_sym_inner_omp
+      end subroutine alloc_leg_sym_matmul_test
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -297,15 +275,12 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
 !
-      deallocate(WK_l_tst%pol_e_smp, WK_l_tst%tor_e_smp)
-      deallocate(WK_l_tst%pol_o_smp, WK_l_tst%tor_o_smp)
       deallocate(WK_l_tst%pol_e, WK_l_tst%tor_e)
       deallocate(WK_l_tst%pol_o, WK_l_tst%tor_o)
       deallocate(WK_l_tst%symp_r, WK_l_tst%symp_p)
       deallocate(WK_l_tst%asmp_r, WK_l_tst%asmp_p)
 !
       deallocate(WK_l_tst%Ps_tj, WK_l_tst%dPsdt_tj)
-!
       end subroutine dealloc_leg_vec_test
 !
 ! -----------------------------------------------------------------------
