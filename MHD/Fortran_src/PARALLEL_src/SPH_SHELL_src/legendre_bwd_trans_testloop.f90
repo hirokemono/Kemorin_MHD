@@ -432,7 +432,7 @@
 !
 !
       nkrv = nidx_rlm(1) * nvector
-      do kk = 1, sph_rlm%nidx_rlm(1) * nscalar
+      do kk = 1, nidx_rlm(1) * nscalar
         k_rlm = 1 + mod((kk-1),nidx_rlm(1))
         nd = 1 + (kk - k_rlm) / nidx_rlm(1)
         do lp_rtm = 1, nidx_rtm(2)/2
