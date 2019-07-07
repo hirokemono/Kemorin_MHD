@@ -197,6 +197,10 @@
 !
 !
       nkrv = nidx_rlm(1) * nvector
+!$omp parallel do private(lp_rtm,ln_rtm,kk,k_rlm,nd,                    &
+!$omp&                    ip_rtpm,ip_rtnm,in_rtpm,in_rtnm,              &
+!$omp&                    ipp_recv,ipn_recv,inp_recv,inn_recv,          &
+!$omp&                    asin_rtm,wp_rtm)
       do lp_rtm = 1, nlo_rtm
         ln_rtm = nidx_rtm(2) - lp_rtm + 1
         wp_rtm =   weight_rtm(lp_rtm)
@@ -245,6 +249,8 @@
      &                             * wp_rtm * asin_rtm
         end do
       end do
+!$omp end parallel do
+!
 !   Equator (if necessary)
       do lp_rtm = nlo_rtm+1, nle_rtm
         wp_rtm = weight_rtm(lp_rtm)
@@ -314,6 +320,8 @@
 !
 !
       nkrv = nidx_rlm(1) * nvector
+!$omp parallel do private(lp_rtm,ln_rtm,kk,k_rlm,nd,                    &
+!$omp&                    ip_rtpm,ip_rtnm,ipp_recv,ipn_recv,wp_rtm)
       do lp_rtm = 1, nlo_rtm
         ln_rtm = nidx_rtm(2) - lp_rtm + 1
         wp_rtm = weight_rtm(lp_rtm)
@@ -337,6 +345,8 @@
      &                            * wp_rtm
         end do
       end do
+!$omp end parallel do
+!
 !   Equator (if necessary)
       do lp_rtm = nlo_rtm+1, nle_rtm
         wp_rtm = weight_rtm(lp_rtm)
@@ -395,6 +405,7 @@
 !
 !
       nkrv = nidx_rlm(1) * nvector
+!$omp parallel do private(jj,kk,k_rlm,g7,gm,r1,r2)
       do jj = 1, n_jk_e
         g7 = g_sph_rlm(2*jj+jst-1,7)
         gm = dble(idx_gl_1d_rlm_j(2*jj+jst-1,3))
@@ -410,6 +421,9 @@
           pol_e(kk+nkrv,jj) =   pol_e(kk+nkrv,jj) *   r1 * g7 * gm
         end do
       end do
+!$omp end parallel do
+!
+!$omp parallel do private(jj,kk,k_rlm,g7,gm,r1,r2)
       do jj = 1, n_jk_o
         g7 = g_sph_rlm(2*jj+jst,7)
         gm = dble(idx_gl_1d_rlm_j(2*jj+jst,3))
@@ -425,6 +439,8 @@
           pol_o(kk+nkrv,jj) =   pol_o(kk+nkrv,jj) *   r1 * g7 * gm
         end do
       end do
+!$omp end parallel do
+!
 !
       do jj = 1, n_jk_o
         do kk = 1, nkrv
@@ -502,18 +518,23 @@
 !
 !
       nkrv = nidx_rlm(1) * nvector
+!$omp parallel do private(jj,kk,g6)
       do jj = 1, n_jk_e
         g6 = g_sph_rlm(2*jj+jst-1,6)
         do kk = 1, nidx_rlm(1)*nscalar
           scl_e(kk+3*nkrv,jj) = scl_e(kk+3*nkrv,jj) * g6
         end do
       end do
+!$omp end parallel do
+!
+!$omp parallel do private(jj,kk,g6)
       do jj = 1, n_jk_o
         g6 = g_sph_rlm(2*jj+jst,6)
         do kk = 1, nidx_rlm(1)*nscalar
           scl_o(kk+3*nkrv,jj) = scl_o(kk+3*nkrv,jj) * g6
         end do
       end do
+!$omp end parallel do
 !
       do kk = 1, nidx_rlm(1)*nscalar
         k_rlm = 1 + mod((kk-1),nidx_rlm(1))
