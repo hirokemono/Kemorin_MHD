@@ -170,7 +170,7 @@
 !
       subroutine set_sp_rlm_vec_testloop(nnod_rlm, nidx_rlm,      &
      &          istep_rlm, idx_gl_1d_rlm_j, a_r_1d_rlm_r, g_sph_rlm,    &
-     &           nkr, jst, n_jk_e, n_jk_o, ncomp, nvector,          &
+     &          nkr, jst, n_jk_e, n_jk_o, ncomp, nvector,          &
      &          irev_sr_rlm, n_WR, WR,  pol_e, tor_e, pol_o, tor_o)
 !
       integer(kind = kint), intent(in) :: nnod_rlm
@@ -200,8 +200,8 @@
 !
       nkrv = nkr * nvector
       do kk = 1, nkrv
-        k_rlm = 1 + mod((-1),nidx_rlm(1))
-        nd = 1 + (-k_rlm) / nidx_rlm(1)
+        k_rlm = 1 + mod((kk-1),nidx_rlm(1))
+        nd = 1 + (kk - k_rlm) / nidx_rlm(1)
         a1r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)
         a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
 !   even l-m
@@ -265,8 +265,8 @@
 !
       nkrv = nkr * nvector
       do kk = 1, nkr*nscalar
-        k_rlm = 1 + mod((-1),nidx_rlm(1))
-        nd = 1 + (-k_rlm) / nidx_rlm(1)
+        k_rlm = 1 + mod((kk-1),nidx_rlm(1))
+        nd = 1 + (kk - k_rlm) / nidx_rlm(1)
 !   even l-m
         do jj = 1, n_jk_e
           i_rlm = 1 + (2*jj + jst - 2) * istep_rlm(2)                   &
@@ -290,7 +290,7 @@
 !
       subroutine cal_vr_rtm_vec_testloop(nnod_rtm, nidx_rtm,      &
      &          istep_rtm, nidx_rlm, asin_theta_1d_rtm,                 &
-     &           nkr, mp_rlm, mn_rlm, nl_rtm, symp_r, asmp_p,       &
+     &          nkr, mp_rlm, mn_rlm, nl_rtm, symp_r, asmp_p,       &
      &          asmp_r, symp_p, ncomp, nvector, irev_sr_rtm, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rtm
@@ -334,8 +334,8 @@
       end do
 !
       do kk = 1, nkrv
-        k_rlm = 1 + mod((-1),nidx_rlm(1))
-        nd = 1 + (- k_rlm) / nidx_rlm(1)
+        k_rlm = 1 + mod((kk-1),nidx_rlm(1))
+        nd = 1 + (kk - k_rlm) / nidx_rlm(1)
         do lp_rtm = 1, nidx_rtm(2)/2
           ln_rtm =  nidx_rtm(2) - lp_rtm + 1
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
@@ -435,8 +435,8 @@
 !
       nkrv = nkr * nvector
       do kk = 1, nkr*nscalar
-        k_rlm = 1 + mod(-1,nidx_rlm(1))
-        nd = 1 + (-k_rlm) / nidx_rlm(1)
+        k_rlm = 1 + mod((kk-1),nidx_rlm(1))
+        nd = 1 + (kk - k_rlm) / nidx_rlm(1)
         do lp_rtm = 1, nidx_rtm(2)/2
           ln_rtm =  nidx_rtm(2) - lp_rtm + 1
 !
