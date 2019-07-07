@@ -44,11 +44,10 @@
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
       use t_work_4_sph_trans
+      use m_elapsed_labels_SPH_TRNS
 !
       implicit none
 !
-      real(kind = kreal), private :: st_elapsed
-      real(kind = kreal), private :: elaps(4)
       integer, external :: omp_get_max_threads
 !
 ! -----------------------------------------------------------------------
@@ -84,7 +83,6 @@
       integer(kind = kint) :: n_jk_e, n_jk_o
 !
 !
-      elaps(1:4) = 0
 !$omp parallel workshare
       WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
@@ -103,7 +101,7 @@
           n_jk_o = idx_trns%lstack_rlm(mp_rlm)                      &
      &                - idx_trns%lstack_even_rlm(mp_rlm)
 !
-!          st_elapsed = MPI_WTIME()
+      if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+15)
           call set_vr_rtm_vec_testloop                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, weight_rtm,          &
@@ -117,10 +115,10 @@
      &        mp_rlm, nle_rtm, nlo_rtm,                                 &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,      &
      &        WK_l_tst%symp_r(1,1), WK_l_tst%asmp_r(1,1))
-!          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
+      if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+15)
 !
-!          st_elapsed = MPI_WTIME()
 !  even l-m
+      if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
           call matmul_fwd_leg_trans(nkrs, n_jk_e,               &
      &        WK_l_tst%nth_sym, WK_l_tst%symp_r(1,1),                  &
      &        WK_l_tst%Ps_tj(1,jst+1), WK_l_tst%pol_e(1,1))
@@ -135,9 +133,9 @@
           call matmul_fwd_leg_trans(nkrt, n_jk_o,               &
      &        WK_l_tst%nth_sym, WK_l_tst%symp_p(1,1),                  &
      &        WK_l_tst%dPsdt_tj(1,jst_h), WK_l_tst%tor_o(1,1))
-  !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
+      if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
-!          st_elapsed = MPI_WTIME()
+      if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
           call cal_sp_rlm_vec_testloop                            &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                       &
      &        sph_rlm%istep_rlm, sph_rlm%idx_gl_1d_rlm_j,               &
@@ -151,12 +149,9 @@
      &        jst, n_jk_o, n_jk_e,        &
      &        WK_l_tst%pol_e(1,1), WK_l_tst%pol_o(1,1),               &
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WS, WS)
-!          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
+      if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+17)
 !
         end do
-!
-!      elapsed(46:49)                                                   &
-!     &     = elaps(1:4) / dble(omp_get_max_threads()) + elapsed(46:49)
 !
       end subroutine legendre_f_trans_vector_test
 !
