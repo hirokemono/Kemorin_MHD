@@ -442,6 +442,7 @@
 !$omp end parallel do
 !
 !
+!$omp parallel do private(kk,k_rlm,nd,jj,ie_rlm,io_rlm,ie_send,io_send)
       do jj = 1, n_jk_o
         do kk = 1, nkrv
           k_rlm = 1 + mod((kk-1),nidx_rlm(1))
@@ -468,8 +469,10 @@
      &                   - pol_o(kk+nkrv,jj) -   tor_o(kk,jj)
         end do
       end do
+!$omp end parallel do
 !
       do jj = n_jk_o+1, n_jk_e
+!$omp parallel do private(kk,k_rlm,nd,ie_rlm,ie_send)
         do kk = 1, nkrv
           k_rlm = 1 + mod((kk-1),nidx_rlm(1))
           nd = 1 + (kk - k_rlm) / nidx_rlm(1)
@@ -483,6 +486,7 @@
           WS(ie_send  ) = WS(ie_send  )                                 &
      &                   - pol_e(kk+nkrv,jj) -   tor_e(kk,jj)
         end do
+!$omp end parallel do
       end do
 !
       end subroutine cal_sp_rlm_vec_testloop
@@ -536,6 +540,7 @@
       end do
 !$omp end parallel do
 !
+!$omp parallel do private(kk,k_rlm,nd,jj,ie_rlm,io_rlm,ie_send,io_send)
       do kk = 1, nidx_rlm(1)*nscalar
         k_rlm = 1 + mod((kk-1),nidx_rlm(1))
         nd = 1 + (kk - k_rlm) / nidx_rlm(1)
@@ -558,6 +563,7 @@
           WS(ie_send) = WS(ie_send) + scl_e(kk+3*nkrv,jj)
         end do
       end do
+!$omp end parallel do
 !
       end subroutine cal_sp_rlm_scl_testloop
 !
