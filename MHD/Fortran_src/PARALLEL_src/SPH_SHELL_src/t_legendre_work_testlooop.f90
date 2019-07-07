@@ -199,7 +199,7 @@
      &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3),                     &
      &    leg, idx_trns, WK_l_tst)
       call alloc_leg_sym_matmul_test                                    &
-     &   (sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(1),                     &
+     &   (sph_rtm%nidx_rtm(2), sph_rtm%maxidx_rtm_smp(1),               &
      &    nvector, nscalar, idx_trns, WK_l_tst)
 !
       end subroutine init_legendre_testloop

@@ -78,6 +78,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
+      integer(kind = kint) :: ip
       integer(kind = kint) :: nl_rtm, mp_rlm, mn_rlm
       integer(kind = kint) :: kst(np_smp),  nkr(np_smp)
       integer(kind = kint) :: nkrs(np_smp),  nkrt(np_smp)
@@ -91,69 +92,75 @@
 !
       elaps(1:4) = 0
       nl_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
-        kst(1) = sph_rlm%istack_rlm_kr_smp(0)
-        nkr(1) = sph_rlm%istack_rlm_kr_smp(np_smp)                         &
-     &           - sph_rlm%istack_rlm_kr_smp(0)
-        nkrs(1) = ncomp*nkr(np_smp)
-        nkrt(1) = 2*nvector*nkr(np_smp)
+!$omp parallel do schedule(static)                                      &
+!$omp&            private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
+!$omp& reduction(+:elaps)
+      do ip = 1, np_smp
+        kst(ip) = sph_rlm%istack_rlm_kr_smp(ip-1)
+        nkr(ip) = sph_rlm%istack_rlm_kr_smp(ip)                         &
+     &           - sph_rlm%istack_rlm_kr_smp(ip-1)
+        nkrs(ip) = ncomp*nkr(ip)
+        nkrt(ip) = 2*nvector*nkr(ip)
 !
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst(1) = idx_trns%lstack_rlm(mp_rlm-1)
-          jst_h(1) = idx_trns%lstack_even_rlm(mp_rlm) + 1
-          n_jk_e(1) = idx_trns%lstack_even_rlm(mp_rlm)                 &
+          jst(ip) = idx_trns%lstack_rlm(mp_rlm-1)
+          jst_h(ip) = idx_trns%lstack_even_rlm(mp_rlm) + 1
+          n_jk_e(ip) = idx_trns%lstack_even_rlm(mp_rlm)                 &
      &                - idx_trns%lstack_rlm(mp_rlm-1)
-          n_jk_o(1) = idx_trns%lstack_rlm(mp_rlm)                      &
+          n_jk_o(ip) = idx_trns%lstack_rlm(mp_rlm)                      &
      &                - idx_trns%lstack_even_rlm(mp_rlm)
 !
 !          st_elapsed = MPI_WTIME()
           call set_sp_rlm_vec_testloop                            &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,    &
      &        sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r, g_sph_rlm, &
-     &        kst(1), nkr(1), jst(1), n_jk_e(1), n_jk_o(1),        &
+     &        kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
      &        ncomp, nvector, comm_rlm%irev_sr, n_WR, WR,               &
-     &        WK_l_tst%pol_e(1,1), WK_l_tst%tor_e(1,1),               &
-     &        WK_l_tst%pol_o(1,1), WK_l_tst%tor_o(1,1) )
+     &        WK_l_tst%pol_e(1,ip), WK_l_tst%tor_e(1,ip),               &
+     &        WK_l_tst%pol_o(1,ip), WK_l_tst%tor_o(1,ip) )
           call set_sp_rlm_scl_testloop                            &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,    &
-     &        kst(1), nkr(1), jst(1), n_jk_e(1), n_jk_o(1),        &
+     &        kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WR, WR,      &
-     &        WK_l_tst%pol_e(1,1), WK_l_tst%pol_o(1,1) )
+     &        WK_l_tst%pol_e(1,ip), WK_l_tst%pol_o(1,ip) )
 !          elaps(2) = MPI_WTIME() - st_elapsed + elaps(2)
 !
 !   even l-m
 !          st_elapsed = MPI_WTIME()
-          call matmul_bwd_leg_trans(nl_rtm, nkrs(1), n_jk_e(1),       &
-     &        WK_l_tst%Ps_tj(1,jst(1)+1), WK_l_tst%pol_e(1,1),        &
-     &        WK_l_tst%symp_r(1,1))
-          call matmul_bwd_leg_trans(nl_rtm, nkrt(1), n_jk_e(1),       &
-     &        WK_l_tst%dPsdt_tj(1,jst(1)+1), WK_l_tst%tor_e(1,1),     &
-     &        WK_l_tst%asmp_p(1,1))
+          call matmul_bwd_leg_trans(nl_rtm, nkrs(ip), n_jk_e(ip),       &
+     &        WK_l_tst%Ps_tj(1,jst(ip)+1), WK_l_tst%pol_e(1,ip),        &
+     &        WK_l_tst%symp_r(1,ip))
+          call matmul_bwd_leg_trans(nl_rtm, nkrt(ip), n_jk_e(ip),       &
+     &        WK_l_tst%dPsdt_tj(1,jst(ip)+1), WK_l_tst%tor_e(1,ip),     &
+     &        WK_l_tst%asmp_p(1,ip))
 !   odd l-m
-          call matmul_bwd_leg_trans(nl_rtm, nkrs(1), n_jk_o(1),       &
-     &        WK_l_tst%Ps_tj(1,jst_h(1)), WK_l_tst%pol_o(1,1),        &
-     &        WK_l_tst%asmp_r(1,1))
-          call matmul_bwd_leg_trans(nl_rtm, nkrt(1), n_jk_o(1),       &
-     &        WK_l_tst%dPsdt_tj(1,jst_h(1)), WK_l_tst%tor_o(1,1),     &
-     &        WK_l_tst%symp_p(1,1))
+          call matmul_bwd_leg_trans(nl_rtm, nkrs(ip), n_jk_o(ip),       &
+     &        WK_l_tst%Ps_tj(1,jst_h(ip)), WK_l_tst%pol_o(1,ip),        &
+     &        WK_l_tst%asmp_r(1,ip))
+          call matmul_bwd_leg_trans(nl_rtm, nkrt(ip), n_jk_o(ip),       &
+     &        WK_l_tst%dPsdt_tj(1,jst_h(ip)), WK_l_tst%tor_o(1,ip),     &
+     &        WK_l_tst%symp_p(1,ip))
 !          elaps(3) = MPI_WTIME() - st_elapsed + elaps(3)
 !
 !          st_elapsed = MPI_WTIME()
           call cal_vr_rtm_vec_testloop                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, asin_theta_1d_rtm,                      &
-     &        kst(1), nkr(1), mp_rlm, mn_rlm, nl_rtm,                 &
-     &        WK_l_tst%symp_r(1,1), WK_l_tst%asmp_p(1,1),             &
-     &        WK_l_tst%asmp_r(1,1), WK_l_tst%symp_p(1,1),             &
+     &        kst(ip), nkr(ip), mp_rlm, mn_rlm, nl_rtm,                 &
+     &        WK_l_tst%symp_r(1,ip), WK_l_tst%asmp_p(1,ip),             &
+     &        WK_l_tst%asmp_r(1,ip), WK_l_tst%symp_p(1,ip),             &
      &        ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
           call cal_vr_rtm_scl_testloop                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, kst(1), nkr(1), mp_rlm, nl_rtm,       &
-     &        WK_l_tst%symp_r(1,1), WK_l_tst%asmp_r(1,1),             &
+     &        sph_rlm%nidx_rlm, kst(ip), nkr(ip), mp_rlm, nl_rtm,       &
+     &        WK_l_tst%symp_r(1,ip), WK_l_tst%asmp_r(1,ip),             &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
 !          elaps(4) = MPI_WTIME() - st_elapsed + elaps(4)
 !
         end do
+      end do
+!$omp end parallel do
 !
 !      elapsed(41:44)                                                   &
 !     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
