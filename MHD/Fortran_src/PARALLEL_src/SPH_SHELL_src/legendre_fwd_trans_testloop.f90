@@ -95,10 +95,10 @@
 !!$omp parallel do schedule(static)                                     &
 !!$omp             private(ip,mp_rlm,mn_rlm,st_elapsed)                 &
 !!$omp& reduction(+:elaps)
-      do ip = 1, np_smp
-        kst(ip) = sph_rlm%istack_rlm_kr_smp(ip-1)
-        nkr(ip) = sph_rlm%istack_rlm_kr_smp(ip)                         &
-     &           - sph_rlm%istack_rlm_kr_smp(ip-1)
+      do ip = 1, 1
+        kst(ip) = sph_rlm%istack_rlm_kr_smp(0)
+        nkr(ip) = sph_rlm%istack_rlm_kr_smp(np_smp)                     &
+     &           - sph_rlm%istack_rlm_kr_smp(0)
         nkrs(ip) = ncomp*nkr(ip)
         nkrt(ip) = 2*nvector*nkr(ip)
 !

@@ -92,13 +92,13 @@
 !
       elaps(1:4) = 0
       nl_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
-!$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,mp_rlm,mn_rlm,st_elapsed)                  &
-!$omp& reduction(+:elaps)
-      do ip = 1, np_smp
-        kst(ip) = sph_rlm%istack_rlm_kr_smp(ip-1)
-        nkr(ip) = sph_rlm%istack_rlm_kr_smp(ip)                         &
-     &           - sph_rlm%istack_rlm_kr_smp(ip-1)
+!!$omp parallel do schedule(static)                                     &
+!!$omp&            private(ip,mp_rlm,mn_rlm,st_elapsed)                 &
+!!$omp& reduction(+:elaps)
+      do ip = 1, 1
+        kst(ip) = sph_rlm%istack_rlm_kr_smp(0)
+        nkr(ip) = sph_rlm%istack_rlm_kr_smp(np_smp)                     &
+     &           - sph_rlm%istack_rlm_kr_smp(0)
         nkrs(ip) = ncomp*nkr(ip)
         nkrt(ip) = 2*nvector*nkr(ip)
 !
@@ -160,7 +160,7 @@
 !
         end do
       end do
-!$omp end parallel do
+!!$omp end parallel do
 !
 !      elapsed(41:44)                                                   &
 !     &     = elaps(1:4)/ dble(omp_get_max_threads()) + elapsed(41:44)
