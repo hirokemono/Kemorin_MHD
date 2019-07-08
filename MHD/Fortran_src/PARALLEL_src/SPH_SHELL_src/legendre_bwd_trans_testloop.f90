@@ -173,26 +173,24 @@
       real (kind=kreal), intent(in):: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &           :: pol_e(n_jk_e,ncomp*nidx_rlm(1))
+     &           :: pol_e(n_jk_e,nidx_rlm(1),3*nvector)
       real(kind = kreal), intent(inout)                                 &
-     &           :: tor_e(n_jk_e,2*nvector*nidx_rlm(1))
+     &           :: tor_e(n_jk_e,nidx_rlm(1),2*nvector)
       real(kind = kreal), intent(inout)                                 &
-     &           :: pol_o(n_jk_o,ncomp*nidx_rlm(1))
+     &           :: pol_o(n_jk_o,nidx_rlm(1),3*nvector)
       real(kind = kreal), intent(inout)                                 &
-     &           :: tor_o(n_jk_o,2*nvector*nidx_rlm(1))
+     &           :: tor_o(n_jk_o,nidx_rlm(1),2*nvector)
 !
-      integer(kind = kint) :: jj, kk, k_rlm, nd
-      integer(kind = kint) :: j_rlm, i_rlm, i_recv, nkrv
+      integer(kind = kint) :: jj, k_rlm, nd
+      integer(kind = kint) :: j_rlm, i_rlm, i_recv
       real(kind = kreal) :: a1r_1d_rlm_r, a2r_1d_rlm_r
       real(kind = kreal) :: g3, gm
 !
 !
-      nkrv = nidx_rlm(1) * nvector
-!$omp parallel do private(kk,k_rlm,nd,a1r_1d_rlm_r,a2r_1d_rlm_r,        &
+!$omp parallel do private(k_rlm,nd,a1r_1d_rlm_r,a2r_1d_rlm_r,        &
 !$omp&                    jj,j_rlm,i_rlm,i_recv,g3,gm)
-      do kk = 1, nkrv
-        k_rlm = 1 + mod((kk-1),nidx_rlm(1))
-        nd = 1 + (kk - k_rlm) / nidx_rlm(1)
+      do nd = 1, nvector
+      do k_rlm = 1, nidx_rlm(1)
         a1r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)
         a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
         do jj = 1, n_jk_e
@@ -203,11 +201,11 @@
      &              + (k_rlm-1) * istep_rlm(1)
           i_recv = 3*nd + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
-          pol_e(jj,kk) =        WR(i_recv-2) * a2r_1d_rlm_r * g3
-          tor_e(jj,kk+nkrv) =   WR(i_recv-1) * a1r_1d_rlm_r
-          pol_e(jj,kk+2*nkrv) = WR(i_recv-1) * a1r_1d_rlm_r * gm
-          tor_e(jj,kk) =        WR(i_recv  ) * a1r_1d_rlm_r
-          pol_e(jj,kk+nkrv) =   WR(i_recv  ) * a1r_1d_rlm_r * gm
+          pol_e(jj,k_rlm,3*nd-2) = WR(i_recv-2) * a2r_1d_rlm_r * g3
+          tor_e(jj,k_rlm,2*nd-1) = WR(i_recv-1) * a1r_1d_rlm_r
+          pol_e(jj,k_rlm,3*nd  ) = WR(i_recv-1) * a1r_1d_rlm_r * gm
+          tor_e(jj,k_rlm,2*nd  ) = WR(i_recv  ) * a1r_1d_rlm_r
+          pol_e(jj,k_rlm,3*nd-1) = WR(i_recv  ) * a1r_1d_rlm_r * gm
         end do
 !
 !   odd l-m
@@ -219,12 +217,13 @@
      &              + (k_rlm-1) * istep_rlm(1)
           i_recv = 3*nd + (irev_sr_rlm(i_rlm) - 1) * ncomp
 !
-          pol_o(jj,kk) =        WR(i_recv-2) * a2r_1d_rlm_r * g3
-          tor_o(jj,kk+nkrv) =   WR(i_recv-1) * a1r_1d_rlm_r
-          pol_o(jj,kk+2*nkrv) = WR(i_recv-1) * a1r_1d_rlm_r * gm
-          tor_o(jj,kk) =        WR(i_recv  ) * a1r_1d_rlm_r
-          pol_o(jj,kk+nkrv) =   WR(i_recv  ) * a1r_1d_rlm_r * gm
+          pol_o(jj,k_rlm,3*nd-2) = WR(i_recv-2) * a2r_1d_rlm_r * g3
+          tor_o(jj,k_rlm,2*nd  ) = WR(i_recv-1) * a1r_1d_rlm_r
+          pol_o(jj,k_rlm,3*nd  ) = WR(i_recv-1) * a1r_1d_rlm_r * gm
+          tor_o(jj,k_rlm,2*nd-1) = WR(i_recv  ) * a1r_1d_rlm_r
+          pol_o(jj,k_rlm,3*nd-1) = WR(i_recv  ) * a1r_1d_rlm_r * gm
         end do
+      end do
       end do
 !$omp end parallel do
 !
@@ -248,25 +247,23 @@
       real(kind = kreal), intent(in) :: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &           :: scl_e(n_jk_e,ncomp*nidx_rlm(1))
+     &           :: scl_e(n_jk_e,nidx_rlm(1),ncomp)
       real(kind = kreal), intent(inout)                                 &
-     &           :: scl_o(n_jk_o,ncomp*nidx_rlm(1))
+     &           :: scl_o(n_jk_o,nidx_rlm(1),ncomp)
 !
-      integer(kind = kint) :: jj, kk, k_rlm, nd
-      integer(kind = kint) :: i_rlm, i_recv, nkrv
+      integer(kind = kint) :: jj, k_rlm, nd
+      integer(kind = kint) :: i_rlm, i_recv
 !
 !
-      nkrv = nidx_rlm(1) * nvector
-!$omp parallel do private(kk,k_rlm,nd,jj,i_rlm,i_recv)
-      do kk = 1, nidx_rlm(1)*nscalar
-        k_rlm = 1 + mod((kk-1),nidx_rlm(1))
-        nd = 1 + (kk - k_rlm) / nidx_rlm(1)
+!$omp parallel do private(k_rlm,nd,jj,i_rlm,i_recv)
+      do nd = 1, nscalar
+      do k_rlm = 1, nidx_rlm(1)
 !   even l-m
         do jj = 1, n_jk_e
           i_rlm = 1 + (2*jj + jst - 2) * istep_rlm(2)                   &
      &              + (k_rlm-1) *        istep_rlm(1)
           i_recv = nd + 3*nvector + (irev_sr_rlm(i_rlm) - 1) * ncomp
-          scl_e(jj,kk+3*nkrv) = WR(i_recv)
+          scl_e(jj,k_rlm,nd+3*nvector) = WR(i_recv)
         end do
 !
 !   odd l-m
@@ -274,8 +271,9 @@
           i_rlm = 1 + (2*jj + jst - 1) * istep_rlm(2)                   &
      &              + (k_rlm-1) *        istep_rlm(1)
           i_recv = nd + 3*nvector + (irev_sr_rlm(i_rlm) - 1) * ncomp
-          scl_o(jj,kk+3*nkrv) = WR(i_recv)
+          scl_o(jj,k_rlm,nd+3*nvector) = WR(i_recv)
         end do
+      end do
       end do
 !$omp end parallel do
 !
@@ -301,46 +299,46 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
       real(kind = kreal), intent(inout)                             &
-     &           :: symp_r(nl_rtm,ncomp*nidx_rlm(1))
+     &           :: symp_r(nl_rtm,nidx_rlm(1),3*nvector)
       real(kind = kreal), intent(in)                                &
-     &           :: asmp_p(nl_rtm,2*nvector*nidx_rlm(1))
+     &           :: asmp_p(nl_rtm,nidx_rlm(1),2*nvector)
       real(kind = kreal), intent(inout)                             &
-     &           :: asmp_r(nl_rtm,ncomp*nidx_rlm(1))
+     &           :: asmp_r(nl_rtm,nidx_rlm(1),3*nvector)
       real(kind = kreal), intent(in)                                &
-     &            :: symp_p(nl_rtm,2*nvector*nidx_rlm(1))
+     &           :: symp_p(nl_rtm,nidx_rlm(1),2*nvector)
 !
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: kk, k_rlm, nd
-      integer(kind = kint) :: lp_rtm, ln_rtm, nkrv
+      integer(kind = kint) :: k_rlm, nd
+      integer(kind = kint) :: lp_rtm, ln_rtm
       integer(kind = kint) :: ip_rtpm, in_rtpm, ip_rtnm, in_rtnm
       integer(kind = kint) :: ipp_send, inp_send, ipn_send, inn_send
 !
 !
-      nkrv = nidx_rlm(1) * nvector
-!$omp parallel do private(kk,lp_rtm)
-      do kk = 1, nkrv
+!$omp parallel do private(nd,k_rlm,lp_rtm)
+      do nd = 1, nvector
+      do k_rlm = 1, nidx_rlm(1)
         do lp_rtm = 1, nl_rtm
-          symp_r(lp_rtm,kk+nkrv)                                        &
-     &         = - symp_r(lp_rtm,kk+nkrv) *   asin_theta_1d_rtm(lp_rtm)
-          symp_r(lp_rtm,kk+2*nkrv)                                      &
-     &         = - symp_r(lp_rtm,kk+2*nkrv) * asin_theta_1d_rtm(lp_rtm)
-          asmp_r(lp_rtm,kk+nkrv)                                        &
-     &         = - asmp_r(lp_rtm,kk+nkrv) *   asin_theta_1d_rtm(lp_rtm)
-          asmp_r(lp_rtm,kk+2*nkrv)                                      &
-     &         = - asmp_r(lp_rtm,kk+2*nkrv) * asin_theta_1d_rtm(lp_rtm)
+          symp_r(lp_rtm,k_rlm,3*nd-1)                                   &
+     &      = - symp_r(lp_rtm,k_rlm,3*nd-1) * asin_theta_1d_rtm(lp_rtm)
+          symp_r(lp_rtm,k_rlm,3*nd  )                                   &
+     &      = - symp_r(lp_rtm,k_rlm,3*nd  ) * asin_theta_1d_rtm(lp_rtm)
+          asmp_r(lp_rtm,k_rlm,3*nd-1)                                   &
+     &      = - asmp_r(lp_rtm,k_rlm,3*nd-1) * asin_theta_1d_rtm(lp_rtm)
+          asmp_r(lp_rtm,k_rlm,3*nd  )                                   &
+     &      = - asmp_r(lp_rtm,k_rlm,3*nd  ) * asin_theta_1d_rtm(lp_rtm)
         end do
+      end do
       end do
 !$omp end parallel do
 !
-!$omp parallel do private(kk,k_rlm,nd,lp_rtm,ln_rtm,                    &
+!$omp parallel do private(k_rlm,nd,lp_rtm,ln_rtm,                    &
 !$omp&                    ip_rtpm,in_rtpm,ip_rtnm,in_rtnm,              &
 !$omp&                    ipp_send,inp_send,ipn_send,inn_send)
-      do kk = 1, nkrv
-        k_rlm = 1 + mod((kk-1),nidx_rlm(1))
-        nd = 1 + (kk - k_rlm) / nidx_rlm(1)
+      do nd = 1, nvector
+      do k_rlm = 1, nidx_rlm(1)
         do lp_rtm = 1, nidx_rtm(2)/2
           ln_rtm =  nidx_rtm(2) - lp_rtm + 1
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
@@ -362,38 +360,38 @@
           inn_send = 3*nd + (irev_sr_rtm(in_rtnm) - 1) * ncomp
 !
           WS(ipp_send-2) = WS(ipp_send-2)                               &
-     &            + symp_r(lp_rtm,kk) +     asmp_r(lp_rtm,kk)
+     &      + symp_r(lp_rtm,k_rlm,3*nd-2) + asmp_r(lp_rtm,k_rlm,3*nd-2)
           WS(ipp_send-1) = WS(ipp_send-1)                               &
-     &            + asmp_p(lp_rtm,kk+nkrv) + symp_p(lp_rtm,kk+nkrv)
+     &      + asmp_p(lp_rtm,k_rlm,2*nd  ) + symp_p(lp_rtm,k_rlm,2*nd  )
           WS(ipp_send  ) = WS(ipp_send  )                               &
-     &            - asmp_p(lp_rtm,kk) -     symp_p(lp_rtm,kk)
+     &      - asmp_p(lp_rtm,k_rlm,2*nd-1) - symp_p(lp_rtm,k_rlm,2*nd-1)
 !
           WS(inp_send-1) = WS(inp_send-1)                               &
-     &            + symp_r(lp_rtm,kk+nkrv) +   asmp_r(lp_rtm,kk+nkrv)
+     &      + symp_r(lp_rtm,k_rlm,3*nd-1) + asmp_r(lp_rtm,k_rlm,3*nd-1)
           WS(inp_send  ) = WS(inp_send  )                               &
-     &            + symp_r(lp_rtm,kk+2*nkrv) + asmp_r(lp_rtm,kk+2*nkrv)
+     &      + symp_r(lp_rtm,k_rlm,3*nd  ) + asmp_r(lp_rtm,k_rlm,3*nd  )
 !
 !
           WS(ipn_send-2) = WS(ipn_send-2)                               &
-     &            + symp_r(lp_rtm,kk) -     asmp_r(lp_rtm,kk)
+     &      + symp_r(lp_rtm,k_rlm,3*nd-2) - asmp_r(lp_rtm,k_rlm,3*nd-2)
           WS(ipn_send-1) = WS(ipn_send-1)                               &
-     &            - asmp_p(lp_rtm,kk+nkrv) + symp_p(lp_rtm,kk+nkrv)
+     &      - asmp_p(lp_rtm,k_rlm,2*nd  ) + symp_p(lp_rtm,k_rlm,2*nd  )
           WS(ipn_send  ) = WS(ipn_send  )                               &
-     &            + asmp_p(lp_rtm,kk) -     symp_p(lp_rtm,kk)
+     &      + asmp_p(lp_rtm,k_rlm,2*nd-1) - symp_p(lp_rtm,k_rlm,2*nd-1)
 !
           WS(inn_send-1) = WS(inn_send-1)                               &
-     &            + symp_r(lp_rtm,kk+nkrv) -   asmp_r(lp_rtm,kk+nkrv)
+     &      + symp_r(lp_rtm,k_rlm,3*nd-1) - asmp_r(lp_rtm,k_rlm,3*nd-1)
           WS(inn_send  ) = WS(inn_send  )                               &
-     &            + symp_r(lp_rtm,kk+2*nkrv) - asmp_r(lp_rtm,kk+2*nkrv)
+     &      + symp_r(lp_rtm,k_rlm,3*nd  ) - asmp_r(lp_rtm,k_rlm,3*nd  )
         end do
+      end do
       end do
 !$omp end parallel do
 !
-!$omp parallel do private(kk,k_rlm,nd,lp_rtm,ln_rtm,ip_rtpm,in_rtpm,    &
+!$omp parallel do private(k_rlm,nd,lp_rtm,ln_rtm,ip_rtpm,in_rtpm,    &
 !$omp&                    ipp_send,inp_send)
-      do kk = 1, nkrv
-        k_rlm = 1 + mod((kk-1),nidx_rlm(1))
-        nd = 1 + (kk - k_rlm) / nidx_rlm(1)
+      do nd = 1, nvector
+      do k_rlm = 1, nidx_rlm(1)
         do lp_rtm = nidx_rtm(2)/2+1, nl_rtm
           ln_rtm =  nidx_rtm(2) - nidx_rtm(2)/2-1 + 1
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
@@ -406,13 +404,14 @@
           ipp_send = 3*nd + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
           inp_send = 3*nd + (irev_sr_rtm(in_rtpm) - 1) * ncomp
 !
-          WS(ipp_send-2) = WS(ipp_send-2) + symp_r(lp_rtm,kk)
-          WS(ipp_send-1) = WS(ipp_send-1) + symp_p(lp_rtm,kk+nkrv)
-          WS(ipp_send  ) = WS(ipp_send  ) - symp_p(lp_rtm,kk)
+          WS(ipp_send-2) = WS(ipp_send-2) + symp_r(lp_rtm,k_rlm,3*nd-1)
+          WS(ipp_send-1) = WS(ipp_send-1) + symp_p(lp_rtm,k_rlm,2*nd  )
+          WS(ipp_send  ) = WS(ipp_send  ) - symp_p(lp_rtm,k_rlm,2*nd-1)
 !
-          WS(inp_send-1) = WS(inp_send-1) + symp_r(lp_rtm,kk+nkrv)
-          WS(inp_send  ) = WS(inp_send  ) + symp_r(lp_rtm,kk+2*nkrv)
+          WS(inp_send-1) = WS(inp_send-1) + symp_r(lp_rtm,k_rlm,3*nd-1)
+          WS(inp_send  ) = WS(inp_send  ) + symp_r(lp_rtm,k_rlm,3*nd  )
         end do
+      end do
       end do
 !$omp end parallel do
 !
@@ -433,24 +432,22 @@
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: mp_rlm
       integer(kind = kint), intent(in) :: nl_rtm
-      real(kind = kreal), intent(in) :: symp(nl_rtm,ncomp*nidx_rlm(1))
-      real(kind = kreal), intent(in) :: asmp(nl_rtm,ncomp*nidx_rlm(1))
+      real(kind = kreal), intent(in) :: symp(nl_rtm,nidx_rlm(1),ncomp)
+      real(kind = kreal), intent(in) :: asmp(nl_rtm,nidx_rlm(1),ncomp)
 !
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: kk, k_rlm, nd
-      integer(kind = kint) :: lp_rtm, ln_rtm, nkrv
+      integer(kind = kint) :: k_rlm, nd
+      integer(kind = kint) :: lp_rtm, ln_rtm
       integer(kind = kint) :: ip_rtpm, ip_rtnm, ipp_send, ipn_send
 !
 !
-      nkrv = nidx_rlm(1) * nvector
-!$omp parallel do private(kk,k_rlm,nd,lp_rtm,ln_rtm,                    &
+!$omp parallel do private(k_rlm,nd,lp_rtm,ln_rtm,                    &
 !$omp&                 ip_rtpm,ip_rtnm,ipp_send,ipn_send)
-      do kk = 1, nidx_rlm(1) * nscalar
-        k_rlm = 1 + mod((kk-1),nidx_rlm(1))
-        nd = 1 + (kk - k_rlm) / nidx_rlm(1)
+      do nd = 1, nscalar
+      do k_rlm = 1, nidx_rlm(1)
         do lp_rtm = 1, nidx_rtm(2)/2
           ln_rtm =  nidx_rtm(2) - lp_rtm + 1
 !
@@ -467,17 +464,19 @@
      &                  + (irev_sr_rtm(ip_rtnm) - 1) * ncomp
 !
           WS(ipp_send) = WS(ipp_send)                                   &
-     &                + symp(lp_rtm,kk+3*nkrv) + asmp(lp_rtm,kk+3*nkrv)
+     &                + symp(lp_rtm,k_rlm,nd+3*nvector)                 &
+     &                + asmp(lp_rtm,k_rlm,nd+3*nvector)
           WS(ipn_send) = WS(ipn_send)                                   &
-     &                + symp(lp_rtm,kk+3*nkrv) - asmp(lp_rtm,kk+3*nkrv)
+     &                + symp(lp_rtm,k_rlm,nd+3*nvector)                 &
+     &                - asmp(lp_rtm,k_rlm,nd+3*nvector)
         end do
+      end do
       end do
 !$omp end parallel do
 !
-!$omp parallel do private(kk,k_rlm,nd,lp_rtm,ip_rtpm,ipp_send)
-      do kk = 1, nidx_rlm(1) * nscalar
-        k_rlm = 1 + mod((kk-1),nidx_rlm(1))
-        nd = 1 + (kk - k_rlm) / nidx_rlm(1)
+!$omp parallel do private(k_rlm,nd,lp_rtm,ip_rtpm,ipp_send)
+      do nd = 1, nscalar
+      do k_rlm = 1, nidx_rlm(1)
         do lp_rtm = nidx_rtm(2)/2+1, nl_rtm
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
      &                + (k_rlm-1) *  istep_rtm(1)                       &
@@ -485,8 +484,9 @@
           ipp_send = nd + 3*nvector                                     &
      &                  + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
 !
-          WS(ipp_send) = WS(ipp_send) + symp(lp_rtm,kk+3*nkrv)
+          WS(ipp_send) = WS(ipp_send) + symp(lp_rtm,k_rlm,nd+3*nvector)
         end do
+      end do
       end do
 !$omp end parallel do
 !
