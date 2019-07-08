@@ -173,13 +173,13 @@
       real (kind=kreal), intent(in):: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &           :: pol_e(n_jk_e,ncomp*nidx_rlm(1))
+     &           :: pol_e(n_jk_e,nidx_rlm(1),ncomp)
       real(kind = kreal), intent(inout)                                 &
-     &           :: tor_e(n_jk_e,2*nvector*nidx_rlm(1))
+     &           :: tor_e(n_jk_e,nidx_rlm(1),2*nvector)
       real(kind = kreal), intent(inout)                                 &
-     &           :: pol_o(n_jk_o,ncomp*nidx_rlm(1))
+     &           :: pol_o(n_jk_o,nidx_rlm(1),ncomp)
       real(kind = kreal), intent(inout)                                 &
-     &           :: tor_o(n_jk_o,2*nvector*nidx_rlm(1))
+     &           :: tor_o(n_jk_o,nidx_rlm(1),2*nvector)
 !
       integer(kind = kint) :: jj, k_rlm, nd
       integer(kind = kint) :: j_rlm, i_rlm, i_recv, nkrv
@@ -248,9 +248,9 @@
       real(kind = kreal), intent(in) :: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &           :: scl_e(n_jk_e,ncomp*nidx_rlm(1))
+     &           :: scl_e(n_jk_e,nidx_rlm(1),ncomp)
       real(kind = kreal), intent(inout)                                 &
-     &           :: scl_o(n_jk_o,ncomp*nidx_rlm(1))
+     &           :: scl_o(n_jk_o,nidx_rlm(1),ncomp)
 !
       integer(kind = kint) :: jj, k_rlm, nd
       integer(kind = kint) :: i_rlm, i_recv, nkrv
@@ -301,13 +301,13 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
       real(kind = kreal), intent(inout)                             &
-     &           :: symp_r(nl_rtm,ncomp*nidx_rlm(1))
+     &           :: symp_r(nl_rtm,nidx_rlm(1),ncomp)
       real(kind = kreal), intent(in)                                &
-     &           :: asmp_p(nl_rtm,2*nvector*nidx_rlm(1))
+     &           :: asmp_p(nl_rtm,nidx_rlm(1),2*nvector)
       real(kind = kreal), intent(inout)                             &
-     &           :: asmp_r(nl_rtm,ncomp*nidx_rlm(1))
+     &           :: asmp_r(nl_rtm,nidx_rlm(1),ncomp)
       real(kind = kreal), intent(in)                                &
-     &           :: symp_p(nl_rtm,2*nvector*nidx_rlm(1))
+     &           :: symp_p(nl_rtm,nidx_rlm(1),2*nvector)
 !
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       integer(kind = kint), intent(in) :: n_WS
@@ -435,8 +435,8 @@
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: mp_rlm
       integer(kind = kint), intent(in) :: nl_rtm
-      real(kind = kreal), intent(in) :: symp(nl_rtm,ncomp*nidx_rlm(1))
-      real(kind = kreal), intent(in) :: asmp(nl_rtm,ncomp*nidx_rlm(1))
+      real(kind = kreal), intent(in) :: symp(nl_rtm,nidx_rlm(1),ncomp)
+      real(kind = kreal), intent(in) :: asmp(nl_rtm,nidx_rlm(1),ncomp)
 !
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       integer(kind = kint), intent(in) :: n_WS
