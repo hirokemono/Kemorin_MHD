@@ -236,7 +236,7 @@
      &                             * wp_rtm
           asmp_p(2*nd-1,k_rlm,lp_rtm) = (WR(ipp_recv  ) - WR(ipn_recv  ))*wp_rtm
 !
-          symp_r(3*nd-1,k_rlm,lp_rtm) =   (WR(inp_recv-1) + WR(inn_recv-1))  &
+          symp_r(3*nd-1,k_rlm,lp_rtm) = (WR(inp_recv-1) + WR(inn_recv-1))  &
      &                             * wp_rtm * asin_rtm
           symp_r(3*nd,  k_rlm,lp_rtm) = (WR(inp_recv  ) + WR(inn_recv  ))  &
      &                             * wp_rtm * asin_rtm
