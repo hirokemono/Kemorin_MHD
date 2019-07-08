@@ -322,9 +322,10 @@
 !
 !
       nkrv = nidx_rlm(1) * nvector
-!$omp parallel do private(kk,lp_rtm)
+!$omp parallel do private(nd,k_rlm,kk,lp_rtm)
       do nd = 1, nvector
         do k_rlm = 1, nidx_rlm(1)
+        kk = k_rlm + (nd-1) * nidx_rlm(1)
         do lp_rtm = 1, nl_rtm
           symp_r(lp_rtm,kk+nkrv)                                        &
      &         = - symp_r(lp_rtm,kk+nkrv) *   asin_theta_1d_rtm(lp_rtm)
