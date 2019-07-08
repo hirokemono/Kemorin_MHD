@@ -204,7 +204,6 @@
         ln_rtm = nidx_rtm(2) - lp_rtm + 1
         wp_rtm =   weight_rtm(lp_rtm)
         asin_rtm = asin_theta_1d_rtm(lp_rtm)
-        do nd = 1, nvector
         do k_rlm = 1, nidx_rlm(1)
 !
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
@@ -219,33 +218,37 @@
           in_rtnm = 1 + (ln_rtm-1) * istep_rtm(2)                       &
      &                + (k_rlm-1) *  istep_rtm(1)                       &
      &                + (mn_rlm-1) * istep_rtm(3)
-          ipp_recv = 3*nd + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
-          ipn_recv = 3*nd + (irev_sr_rtm(ip_rtnm) - 1) * ncomp
-          inp_recv = 3*nd + (irev_sr_rtm(in_rtpm) - 1) * ncomp
-          inn_recv = 3*nd + (irev_sr_rtm(in_rtnm) - 1) * ncomp
 !
-          symp_r(3*nd-2,k_rlm,lp_rtm) = (WR(ipp_recv-2) + WR(ipn_recv-2))    &
-     &                             * wp_rtm
-          symp_p(2*nd,  k_rlm,lp_rtm) = (WR(ipp_recv-1) + WR(ipn_recv-1))    &
-     &                             * wp_rtm
-          symp_p(2*nd-1,k_rlm,lp_rtm) =      (WR(ipp_recv  ) + WR(ipn_recv  ))    &
-     &                             * wp_rtm
+          do nd = 1, nvector
+            ipp_recv = 3*nd + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
+            ipn_recv = 3*nd + (irev_sr_rtm(ip_rtnm) - 1) * ncomp
+            inp_recv = 3*nd + (irev_sr_rtm(in_rtpm) - 1) * ncomp
+            inn_recv = 3*nd + (irev_sr_rtm(in_rtnm) - 1) * ncomp
 !
-          asmp_r(3*nd-2,k_rlm,lp_rtm) = (WR(ipp_recv-2) - WR(ipn_recv-2))*wp_rtm
-          asmp_p(2*nd,  k_rlm,lp_rtm) = (WR(ipp_recv-1) - WR(ipn_recv-1))    &
-     &                             * wp_rtm
-          asmp_p(2*nd-1,k_rlm,lp_rtm) = (WR(ipp_recv  ) - WR(ipn_recv  ))*wp_rtm
+            symp_r(3*nd-2,k_rlm,lp_rtm)                                 &
+     &          = (WR(ipp_recv-2) + WR(ipn_recv-2)) * wp_rtm
+            symp_p(2*nd,  k_rlm,lp_rtm)                                 &
+     &          = (WR(ipp_recv-1) + WR(ipn_recv-1)) * wp_rtm
+            symp_p(2*nd-1,k_rlm,lp_rtm)                                 &
+     &          = (WR(ipp_recv  ) + WR(ipn_recv  )) * wp_rtm
 !
-          symp_r(3*nd-1,k_rlm,lp_rtm) = (WR(inp_recv-1) + WR(inn_recv-1))  &
-     &                             * wp_rtm * asin_rtm
-          symp_r(3*nd,  k_rlm,lp_rtm) = (WR(inp_recv  ) + WR(inn_recv  ))  &
-     &                             * wp_rtm * asin_rtm
+            asmp_r(3*nd-2,k_rlm,lp_rtm)                                 &
+     &          = (WR(ipp_recv-2) - WR(ipn_recv-2)) * wp_rtm
+            asmp_p(2*nd,  k_rlm,lp_rtm)                                 &
+     &          = (WR(ipp_recv-1) - WR(ipn_recv-1)) * wp_rtm
+            asmp_p(2*nd-1,k_rlm,lp_rtm)                                 &
+     &          = (WR(ipp_recv  ) - WR(ipn_recv  )) * wp_rtm
 !
-          asmp_r(3*nd-1,k_rlm,lp_rtm) =   (WR(inp_recv-1) - WR(inn_recv-1))  &
-     &                             * wp_rtm * asin_rtm
-          asmp_r(3*nd,  k_rlm,lp_rtm) = (WR(inp_recv  ) - WR(inn_recv  ))  &
-     &                             * wp_rtm * asin_rtm
-        end do
+            symp_r(3*nd-1,k_rlm,lp_rtm)                                 &
+     &          = (WR(inp_recv-1) + WR(inn_recv-1)) * wp_rtm * asin_rtm
+            symp_r(3*nd,  k_rlm,lp_rtm)                                 &
+     &          = (WR(inp_recv  ) + WR(inn_recv  )) * wp_rtm * asin_rtm
+!
+            asmp_r(3*nd-1,k_rlm,lp_rtm)                                 &
+     &          = (WR(inp_recv-1) - WR(inn_recv-1)) * wp_rtm * asin_rtm
+            asmp_r(3*nd,  k_rlm,lp_rtm)                                 &
+     &          = (WR(inp_recv  ) - WR(inn_recv  )) * wp_rtm * asin_rtm
+          end do
         end do
       end do
 !$omp end parallel do
@@ -254,7 +257,6 @@
       do lp_rtm = nlo_rtm+1, nle_rtm
         wp_rtm = weight_rtm(lp_rtm)
         asin_rtm = asin_theta_1d_rtm(lp_rtm)
-        do nd = 1, nvector
         do k_rlm = 1, nidx_rlm(1)
 !
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
@@ -263,23 +265,27 @@
           in_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
      &                + (k_rlm-1) *  istep_rtm(1)                       &
      &                + (mn_rlm-1) * istep_rtm(3)
-          ipp_recv = 3*nd + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
-          inp_recv = 3*nd + (irev_sr_rtm(in_rtpm) - 1) * ncomp
 !
-          symp_r(3*nd-2,k_rlm,lp_rtm) =      WR(ipp_recv-2) * wp_rtm
-          symp_p(2*nd,  k_rlm,lp_rtm) = WR(ipp_recv-1) * wp_rtm
-          symp_p(2*nd-1,k_rlm,lp_rtm) =      WR(ipp_recv  ) * wp_rtm
+          do nd = 1, nvector
+            ipp_recv = 3*nd + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
+            inp_recv = 3*nd + (irev_sr_rtm(in_rtpm) - 1) * ncomp
 !
-          asmp_r(3*nd-2,k_rlm,lp_rtm) =      0.0d0
-          asmp_p(2*nd,  k_rlm,lp_rtm) = 0.0d0
-          asmp_p(2*nd-1,k_rlm,lp_rtm) =      0.0d0
+            symp_r(3*nd-2,k_rlm,lp_rtm) = WR(ipp_recv-2) * wp_rtm
+            symp_p(2*nd,  k_rlm,lp_rtm) = WR(ipp_recv-1) * wp_rtm
+            symp_p(2*nd-1,k_rlm,lp_rtm) = WR(ipp_recv  ) * wp_rtm
 !
-          symp_r(3*nd-1,k_rlm,lp_rtm) =   WR(inp_recv-1) * wp_rtm * asin_rtm
-          symp_r(3*nd,  k_rlm,lp_rtm) = WR(inp_recv  ) * wp_rtm * asin_rtm
+            asmp_r(3*nd-2,k_rlm,lp_rtm) = 0.0d0
+            asmp_p(2*nd,  k_rlm,lp_rtm) = 0.0d0
+            asmp_p(2*nd-1,k_rlm,lp_rtm) = 0.0d0
 !
-          asmp_r(3*nd-1,k_rlm,lp_rtm) =   0.0d0
-          asmp_r(3*nd,  k_rlm,lp_rtm) = 0.0d0
-        end do
+            symp_r(3*nd-1,k_rlm,lp_rtm) = WR(inp_recv-1)                &
+     &                                   * wp_rtm * asin_rtm
+            symp_r(3*nd,  k_rlm,lp_rtm) = WR(inp_recv  )                &
+     &                                   * wp_rtm * asin_rtm
+!
+            asmp_r(3*nd-1,k_rlm,lp_rtm) = 0.0d0
+            asmp_r(3*nd,  k_rlm,lp_rtm) = 0.0d0
+          end do
         end do
       end do
 !
@@ -323,7 +329,6 @@
       do lp_rtm = 1, nlo_rtm
         ln_rtm = nidx_rtm(2) - lp_rtm + 1
         wp_rtm = weight_rtm(lp_rtm)
-        do nd = 1, nscalar
         do k_rlm = 1, nidx_rlm(1)
 !
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
@@ -332,16 +337,18 @@
           ip_rtnm = 1 + (ln_rtm-1) * istep_rtm(2)                       &
      &                + (k_rlm-1) *  istep_rtm(1)                       &
      &                + (mp_rlm-1) * istep_rtm(3)
-          ipp_recv = nd + 3*nvector                                     &
+!
+          do nd = 1, nscalar
+            ipp_recv = nd + 3*nvector                                   &
      &                  + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
-          ipn_recv = nd + 3*nvector                                     &
+            ipn_recv = nd + 3*nvector                                   &
      &                  + (irev_sr_rtm(ip_rtnm) - 1) * ncomp
 !
-          symp(nd+3*nvector,k_rlm,lp_rtm) = (WR(ipp_recv) + WR(ipn_recv))        &
-     &                            * wp_rtm
-          asmp(nd+3*nvector,k_rlm,lp_rtm) = (WR(ipp_recv) - WR(ipn_recv))        &
-     &                            * wp_rtm
-        end do
+            symp(nd+3*nvector,k_rlm,lp_rtm)                             &
+     &               = (WR(ipp_recv) + WR(ipn_recv)) * wp_rtm
+            asmp(nd+3*nvector,k_rlm,lp_rtm)                             &
+     &               = (WR(ipp_recv) - WR(ipn_recv)) * wp_rtm
+          end do
         end do
       end do
 !$omp end parallel do
@@ -349,18 +356,18 @@
 !   Equator (if necessary)
       do lp_rtm = nlo_rtm+1, nle_rtm
         wp_rtm = weight_rtm(lp_rtm)
-        do nd = 1, nscalar
         do k_rlm = 1, nidx_rlm(1)
-!
-          ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                   &
-     &                + (k_rlm-1) *  istep_rtm(1)                   &
+          ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
+     &                + (k_rlm-1) *  istep_rtm(1)                       &
      &                + (mp_rlm-1) * istep_rtm(3)
-          ipp_recv = nd + 3*nvector                                 &
-     &                  + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
 !
-          symp(nd+3*nvector,k_rlm,lp_rtm) = WR(ipp_recv) * wp_rtm
-          asmp(nd+3*nvector,k_rlm,lp_rtm) = 0.0d0
-        end do
+          do nd = 1, nscalar
+            ipp_recv = nd + 3*nvector                                   &
+     &                    + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
+!
+            symp(nd+3*nvector,k_rlm,lp_rtm) = WR(ipp_recv) * wp_rtm
+            asmp(nd+3*nvector,k_rlm,lp_rtm) = 0.0d0
+          end do
         end do
       end do
 !
@@ -408,17 +415,17 @@
       do jj = 1, n_jk_e
         g7 = g_sph_rlm(2*jj+jst-1,7)
         gm = dble(idx_gl_1d_rlm_j(2*jj+jst-1,3))
-        do nd = 1, nvector
         do k_rlm = 1, nidx_rlm(1)
           r1 = radius_1d_rlm_r(k_rlm)
           r2 = r1 * r1
 !
-          pol_e(3*nd-2,k_rlm,jj) = pol_e(3*nd-2,k_rlm,jj) * r2 * g7
-          tor_e(2*nd,  k_rlm,jj) = tor_e(2*nd,  k_rlm,jj) * r1 * g7
-          pol_e(3*nd,  k_rlm,jj) = pol_e(3*nd,  k_rlm,jj) * r1 * g7 * gm
-          tor_e(2*nd-1,k_rlm,jj) = tor_e(2*nd-1,k_rlm,jj) * r1 * g7
-          pol_e(3*nd-1,k_rlm,jj) = pol_e(3*nd-1,k_rlm,jj) * r1 * g7 * gm
-        end do
+          do nd = 1, nvector
+            pol_e(3*nd-2,k_rlm,jj) = pol_e(3*nd-2,k_rlm,jj) * r2*g7
+            tor_e(2*nd,  k_rlm,jj) = tor_e(2*nd,  k_rlm,jj) * r1*g7
+            pol_e(3*nd,  k_rlm,jj) = pol_e(3*nd,  k_rlm,jj) * r1*g7*gm
+            tor_e(2*nd-1,k_rlm,jj) = tor_e(2*nd-1,k_rlm,jj) * r1*g7
+            pol_e(3*nd-1,k_rlm,jj) = pol_e(3*nd-1,k_rlm,jj) * r1*g7*gm
+          end do
         end do
       end do
 !$omp end parallel do
@@ -427,17 +434,17 @@
       do jj = 1, n_jk_o
         g7 = g_sph_rlm(2*jj+jst,7)
         gm = dble(idx_gl_1d_rlm_j(2*jj+jst,3))
-        do nd = 1, nvector
         do k_rlm = 1, nidx_rlm(1)
           r1 = radius_1d_rlm_r(k_rlm)
           r2 = r1 * r1
 !
-          pol_o(3*nd-2,k_rlm,jj) = pol_o(3*nd-2,k_rlm,jj) * r2 * g7
-          tor_o(2*nd,  k_rlm,jj) = tor_o(2*nd,  k_rlm,jj) * r1 * g7
-          pol_o(3*nd,  k_rlm,jj) = pol_o(3*nd,  k_rlm,jj) * r1 * g7 * gm
-          tor_o(2*nd-1,k_rlm,jj) = tor_o(2*nd-1,k_rlm,jj) * r1 * g7
-          pol_o(3*nd-1,k_rlm,jj) = pol_o(3*nd-1,k_rlm,jj) * r1 * g7 * gm
-        end do
+          do nd = 1, nvector
+            pol_o(3*nd-2,k_rlm,jj) = pol_o(3*nd-2,k_rlm,jj) * r2*g7
+            tor_o(2*nd,  k_rlm,jj) = tor_o(2*nd,  k_rlm,jj) * r1*g7
+            pol_o(3*nd,  k_rlm,jj) = pol_o(3*nd,  k_rlm,jj) * r1*g7*gm
+            tor_o(2*nd-1,k_rlm,jj) = tor_o(2*nd-1,k_rlm,jj) * r1*g7
+            pol_o(3*nd-1,k_rlm,jj) = pol_o(3*nd-1,k_rlm,jj) * r1*g7*gm
+          end do
         end do
       end do
 !$omp end parallel do
@@ -445,46 +452,48 @@
 !
 !$omp parallel do private(k_rlm,nd,jj,ie_rlm,io_rlm,ie_send,io_send)
       do jj = 1, n_jk_o
-        do nd = 1, nvector
         do k_rlm = 1, nidx_rlm(1)
           ie_rlm = 1 + (2*jj+jst-2) * istep_rlm(2)                      &
      &               + (k_rlm-1) *    istep_rlm(1)
           io_rlm = 1 + (2*jj+jst-1) * istep_rlm(2)                      &
      &               + (k_rlm-1) *    istep_rlm(1)
-          ie_send = 3*nd + (irev_sr_rlm(ie_rlm) - 1) * ncomp
-          io_send = 3*nd + (irev_sr_rlm(io_rlm) - 1) * ncomp
+!
+          do nd = 1, nvector
+            ie_send = 3*nd + (irev_sr_rlm(ie_rlm) - 1) * ncomp
+            io_send = 3*nd + (irev_sr_rlm(io_rlm) - 1) * ncomp
 !
 !  even l-m
-          WS(ie_send-2) = WS(ie_send-2) + pol_e(3*nd-2,k_rlm,jj)
-          WS(ie_send-1) = WS(ie_send-1)                                 &
-     &                   - pol_e(3*nd,  k_rlm,jj) + tor_e(2*nd,  k_rlm,jj)
-          WS(ie_send  ) = WS(ie_send  )                                 &
-     &                   - pol_e(3*nd-1,k_rlm,jj) - tor_e(2*nd-1,k_rlm,jj)
+            WS(ie_send-2) = WS(ie_send-2) + pol_e(3*nd-2,k_rlm,jj)
+            WS(ie_send-1) = WS(ie_send-1) - pol_e(3*nd,  k_rlm,jj)      &
+     &                                    + tor_e(2*nd,  k_rlm,jj)
+            WS(ie_send  ) = WS(ie_send  ) - pol_e(3*nd-1,k_rlm,jj)      &
+     &                                    - tor_e(2*nd-1,k_rlm,jj)
 !  odd l-m
-          WS(io_send-2) = WS(io_send-2) + pol_o(3*nd-2,k_rlm,jj)
-          WS(io_send-1) = WS(io_send-1)                                 &
-     &                   - pol_o(3*nd,  k_rlm,jj) + tor_o(2*nd,  k_rlm,jj)
-          WS(io_send  ) = WS(io_send  )                                 &
-     &                   - pol_o(3*nd-1,k_rlm,jj) - tor_o(2*nd-1,k_rlm,jj)
-        end do
+            WS(io_send-2) = WS(io_send-2) + pol_o(3*nd-2,k_rlm,jj)
+            WS(io_send-1) = WS(io_send-1) - pol_o(3*nd,  k_rlm,jj)      &
+     &                                    + tor_o(2*nd,  k_rlm,jj)
+            WS(io_send  ) = WS(io_send  ) - pol_o(3*nd-1,k_rlm,jj)      &
+     &                                    - tor_o(2*nd-1,k_rlm,jj)
+          end do
         end do
       end do
 !$omp end parallel do
 !
       do jj = n_jk_o+1, n_jk_e
 !$omp parallel do private(k_rlm,nd,ie_rlm,ie_send)
-        do nd = 1, nvector
         do k_rlm = 1, nidx_rlm(1)
           ie_rlm = 1 + (2*jj+jst-2) * istep_rlm(2)                      &
      &               + (k_rlm-1) *    istep_rlm(1)
-          ie_send = 3*nd + (irev_sr_rlm(ie_rlm) - 1) * ncomp
 !
-          WS(ie_send-2) = WS(ie_send-2) + pol_e(3*nd-2,k_rlm,jj)
-          WS(ie_send-1) = WS(ie_send-1)                                 &
-     &                   - pol_e(3*nd,  k_rlm,jj) + tor_e(2*nd,  k_rlm,jj)
-          WS(ie_send  ) = WS(ie_send  )                                 &
-     &                   - pol_e(3*nd-1,k_rlm,jj) - tor_e(2*nd-1,k_rlm,jj)
-        end do
+          do nd = 1, nvector
+            ie_send = 3*nd + (irev_sr_rlm(ie_rlm) - 1) * ncomp
+!
+            WS(ie_send-2) = WS(ie_send-2) + pol_e(3*nd-2,k_rlm,jj)
+            WS(ie_send-1) = WS(ie_send-1) - pol_e(3*nd,  k_rlm,jj)      &
+     &                                    + tor_e(2*nd,  k_rlm,jj)
+            WS(ie_send  ) = WS(ie_send  ) - pol_e(3*nd-1,k_rlm,jj)      &
+     &                                    - tor_e(2*nd-1,k_rlm,jj)
+          end do
         end do
 !$omp end parallel do
       end do
@@ -524,47 +533,52 @@
 !$omp parallel do private(jj,nd,k_rlm,g6)
       do jj = 1, n_jk_e
         g6 = g_sph_rlm(2*jj+jst-1,6)
-        do nd = 1, nscalar
         do k_rlm = 1, nidx_rlm(1)
-          scl_e(nd+3*nvector,k_rlm,jj) = scl_e(nd+3*nvector,k_rlm,jj) * g6
+          do nd = 1, nscalar
+            scl_e(nd+3*nvector,k_rlm,jj)                                &
+     &            = scl_e(nd+3*nvector,k_rlm,jj) * g6
+          end do
         end do
-      end do
       end do
 !$omp end parallel do
 !
 !$omp parallel do private(jj,nd,k_rlm,g6)
       do jj = 1, n_jk_o
         g6 = g_sph_rlm(2*jj+jst,6)
-        do nd = 1, nscalar
         do k_rlm = 1, nidx_rlm(1)
-          scl_o(nd+3*nvector,k_rlm,jj) = scl_o(nd+3*nvector,k_rlm,jj) * g6
+          do nd = 1, nscalar
+            scl_o(nd+3*nvector,k_rlm,jj)                                &
+     &            = scl_o(nd+3*nvector,k_rlm,jj) * g6
+          end do
         end do
-      end do
       end do
 !$omp end parallel do
 !
 !$omp parallel do private(k_rlm,nd,jj,ie_rlm,io_rlm,ie_send,io_send)
-      do nd = 1, nscalar
       do k_rlm = 1, nidx_rlm(1)
         do jj = 1, n_jk_o
           ie_rlm = 1 + (2*jj+jst-2) * istep_rlm(2)                      &
      &               + (k_rlm-1) *    istep_rlm(1)
           io_rlm = 1 + (2*jj+jst-1) * istep_rlm(2)                      &
      &               + (k_rlm-1) *    istep_rlm(1)
-          ie_send = nd + 3*nvector + (irev_sr_rlm(ie_rlm) - 1) * ncomp
-          io_send = nd + 3*nvector + (irev_sr_rlm(io_rlm) - 1) * ncomp
 !
-          WS(ie_send) = WS(ie_send) + scl_e(nd+3*nvector,k_rlm,jj)
-          WS(io_send) = WS(io_send) + scl_o(nd+3*nvector,k_rlm,jj)
+          do nd = 1, nscalar
+            ie_send = nd + 3*nvector + (irev_sr_rlm(ie_rlm) - 1)*ncomp
+            io_send = nd + 3*nvector + (irev_sr_rlm(io_rlm) - 1)*ncomp
+!
+            WS(ie_send) = WS(ie_send) + scl_e(nd+3*nvector,k_rlm,jj)
+            WS(io_send) = WS(io_send) + scl_o(nd+3*nvector,k_rlm,jj)
+          end do
         end do
 !
         do jj = n_jk_o+1, n_jk_e
           ie_rlm = 1 + (2*jj+jst-2) * istep_rlm(2)                      &
      &               + (k_rlm-1) *    istep_rlm(1)
-          ie_send = nd + 3*nvector + (irev_sr_rlm(ie_rlm) - 1) * ncomp
-          WS(ie_send) = WS(ie_send) + scl_e(nd+3*nvector,k_rlm,jj)
+          do nd = 1, nscalar
+            ie_send = nd + 3*nvector + (irev_sr_rlm(ie_rlm) - 1)*ncomp
+            WS(ie_send) = WS(ie_send) + scl_e(nd+3*nvector,k_rlm,jj)
+          end do
         end do
-      end do
       end do
 !$omp end parallel do
 !
