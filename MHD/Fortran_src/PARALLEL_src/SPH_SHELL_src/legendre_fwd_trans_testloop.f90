@@ -77,7 +77,7 @@
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: mp_rlm, mn_rlm, nle_rtm, nlo_rtm
+      integer(kind = kint) :: mp_rlm, nle_rtm, nlo_rtm
       integer(kind = kint) :: nkrs,  nkrt
       integer(kind = kint) :: jst
 !
@@ -88,43 +88,42 @@
 !
       nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
       nlo_rtm = sph_rtm%nidx_rtm(2) / 2
-        nkrs = ncomp * sph_rlm%nidx_rlm(1)
-        nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
+      nkrs = ncomp * sph_rlm%nidx_rlm(1)
+      nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
 !
-        do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-          mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
-          jst = idx_trns%lstack_rlm(mp_rlm-1)
+      do mp_rlm = 1, sph_rtm%nidx_rtm(3)
+        jst = idx_trns%lstack_rlm(mp_rlm-1)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+15)
           call set_vr_rtm_vec_testloop                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, weight_rtm,          &
-     &        mp_rlm, mn_rlm, nle_rtm, nlo_rtm,                    &
+     &        mp_rlm, nle_rtm, nlo_rtm,                    &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,    &
-     &        WK_l_tst%symp_r(1,1), WK_l_tst%asmp_p(1,1),             &
-     &        WK_l_tst%asmp_r(1,1), WK_l_tst%symp_p(1,1) )
+     &        WK_l_tst%symp_r(1), WK_l_tst%asmp_p(1),             &
+     &        WK_l_tst%asmp_r(1), WK_l_tst%symp_p(1) )
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+15)
 !
 !  even l-m
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
           call matmul_fwd_leg_trans_tstlop                              &
      &       (nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_e, &
-     &        WK_l_tst%Pmat(mp_rlm)%nth_sym, WK_l_tst%symp_r(1,1),      &
-     &        WK_l_tst%Pmat(mp_rlm)%Pse_tj, WK_l_tst%pol_e(1,1))
+     &        WK_l_tst%Pmat(mp_rlm)%nth_sym, WK_l_tst%symp_r(1),      &
+     &        WK_l_tst%Pmat(mp_rlm)%Pse_tj, WK_l_tst%pol_e(1))
           call matmul_fwd_leg_trans_tstlop                              &
      &       (nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_e, &
-     &        WK_l_tst%Pmat(mp_rlm)%nth_sym, WK_l_tst%asmp_p(1,1),      &
-     &        WK_l_tst%Pmat(mp_rlm)%dPsedt_tj, WK_l_tst%tor_e(1,1))
+     &        WK_l_tst%Pmat(mp_rlm)%nth_sym, WK_l_tst%asmp_p(1),      &
+     &        WK_l_tst%Pmat(mp_rlm)%dPsedt_tj, WK_l_tst%tor_e(1))
 !
 !  odd l-m
           call matmul_fwd_leg_trans_tstlop                              &
      &       (nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_o, &
-     &        WK_l_tst%Pmat(mp_rlm)%nth_sym, WK_l_tst%asmp_r(1,1),      &
-     &        WK_l_tst%Pmat(mp_rlm)%Pso_tj, WK_l_tst%pol_o(1,1))
+     &        WK_l_tst%Pmat(mp_rlm)%nth_sym, WK_l_tst%asmp_r(1),      &
+     &        WK_l_tst%Pmat(mp_rlm)%Pso_tj, WK_l_tst%pol_o(1))
           call matmul_fwd_leg_trans_tstlop                              &
      &       (nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_o, &
-     &        WK_l_tst%Pmat(mp_rlm)%nth_sym, WK_l_tst%symp_p(1,1),      &
-     &        WK_l_tst%Pmat(mp_rlm)%dPsodt_tj, WK_l_tst%tor_o(1,1))
+     &        WK_l_tst%Pmat(mp_rlm)%nth_sym, WK_l_tst%symp_p(1),      &
+     &        WK_l_tst%Pmat(mp_rlm)%dPsodt_tj, WK_l_tst%tor_o(1))
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
@@ -134,12 +133,12 @@
      &        sph_rlm%radius_1d_rlm_r, g_sph_rlm, jst,                &
      &        WK_l_tst%Pmat(mp_rlm)%n_jk_o,                           &
      &        WK_l_tst%Pmat(mp_rlm)%n_jk_e,                           &
-     &        WK_l_tst%pol_e(1,1), WK_l_tst%pol_o(1,1),               &
-     &        WK_l_tst%tor_e(1,1), WK_l_tst%tor_o(1,1),               &
+     &        WK_l_tst%pol_e(1), WK_l_tst%pol_o(1),               &
+     &        WK_l_tst%tor_e(1), WK_l_tst%tor_o(1),               &
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WS, WS)
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+17)
 !
-        end do
+      end do
 !
       end subroutine legendre_f_trans_vector_test
 !
@@ -148,7 +147,7 @@
 !
       subroutine set_vr_rtm_vec_testloop(nnod_rtm, nidx_rtm,      &
      &         istep_rtm, nidx_rlm, asin_theta_1d_rtm, weight_rtm,      &
-     &         mp_rlm, mn_rlm, nle_rtm, nlo_rtm,              &
+     &         mp_rlm, nle_rtm, nlo_rtm,              &
      &         ncomp, nvector, nscalar, irev_sr_rtm, n_WR, WR,     &
      &         symp_r, asmp_p, asmp_r, symp_p)
 !
@@ -159,7 +158,7 @@
       real(kind = kreal), intent(in) :: weight_rtm(nidx_rtm(2))
       real(kind = kreal), intent(in) :: asin_theta_1d_rtm(nidx_rtm(2))
 !
-      integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
+      integer(kind = kint), intent(in) :: mp_rlm
       integer(kind = kint), intent(in) :: nle_rtm, nlo_rtm
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
@@ -176,13 +175,14 @@
       real(kind=kreal), intent(inout)                                   &
      &         :: symp_p(2*nvector,nidx_rlm(1),nle_rtm)
 !
-!
-      integer(kind = kint) :: k_rlm, nd
+      integer(kind = kint) :: k_rlm, nd, mn_rlm
       integer(kind = kint) :: lp_rtm, ln_rtm
       integer(kind = kint) :: ip_rtpm, in_rtpm, ip_rtnm, in_rtnm
       integer(kind = kint) :: ipp_recv, ipn_recv, inp_recv, inn_recv
       real(kind = kreal) :: wp_rtm, asin_rtm
 !
+!
+      mn_rlm = nidx_rtm(3) - mp_rlm + 1
 !
 !$omp parallel do private(lp_rtm,ln_rtm,k_rlm,nd,                    &
 !$omp&                    ip_rtpm,ip_rtnm,in_rtpm,in_rtnm,              &
