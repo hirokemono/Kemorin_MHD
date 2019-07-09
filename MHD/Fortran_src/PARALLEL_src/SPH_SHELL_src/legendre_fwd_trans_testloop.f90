@@ -79,8 +79,7 @@
 !
       integer(kind = kint) :: mp_rlm, mn_rlm, nle_rtm, nlo_rtm
       integer(kind = kint) :: nkrs,  nkrt
-      integer(kind = kint) :: jst, jst_h
-      integer(kind = kint) :: n_jk_e, n_jk_o
+      integer(kind = kint) :: jst
 !
 !
 !$omp parallel workshare
@@ -95,11 +94,6 @@
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
           jst = idx_trns%lstack_rlm(mp_rlm-1)
-          jst_h = idx_trns%lstack_even_rlm(mp_rlm) + 1
-          n_jk_e = idx_trns%lstack_even_rlm(mp_rlm)                 &
-     &                - idx_trns%lstack_rlm(mp_rlm-1)
-          n_jk_o = idx_trns%lstack_rlm(mp_rlm)                      &
-     &                - idx_trns%lstack_even_rlm(mp_rlm)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+15)
           call set_vr_rtm_vec_testloop                            &
@@ -119,35 +113,35 @@
 !
 !  even l-m
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
-          call matmul_fwd_leg_trans(nkrs, n_jk_e,               &
-     &        WK_l_tst%nth_sym, WK_l_tst%symp_r(1,1),                  &
-     &        WK_l_tst%Ps_tj(1,jst+1), WK_l_tst%pol_e(1,1))
-          call matmul_fwd_leg_trans(nkrt, n_jk_e,               &
-     &        WK_l_tst%nth_sym, WK_l_tst%asmp_p(1,1),                  &
-     &        WK_l_tst%dPsdt_tj(1,jst+1), WK_l_tst%tor_e(1,1))
+          call matmul_fwd_leg_trans_tstlop                              &
+     &       (nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_e, &
+     &        WK_l_tst%Pmat(mp_rlm)%nth_sym, WK_l_tst%symp_r(1,1),      &
+     &        WK_l_tst%Pmat(mp_rlm)%Pse_tj, WK_l_tst%pol_e(1,1))
+          call matmul_fwd_leg_trans_tstlop                              &
+     &       (nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_e, &
+     &        WK_l_tst%Pmat(mp_rlm)%nth_sym, WK_l_tst%asmp_p(1,1),      &
+     &        WK_l_tst%Pmat(mp_rlm)%dPsedt_tj, WK_l_tst%tor_e(1,1))
 !
 !  odd l-m
-          call matmul_fwd_leg_trans(nkrs, n_jk_o,               &
-     &        WK_l_tst%nth_sym, WK_l_tst%asmp_r(1,1),                  &
-     &        WK_l_tst%Ps_tj(1,jst_h), WK_l_tst%pol_o(1,1))
-          call matmul_fwd_leg_trans(nkrt, n_jk_o,               &
-     &        WK_l_tst%nth_sym, WK_l_tst%symp_p(1,1),                  &
-     &        WK_l_tst%dPsdt_tj(1,jst_h), WK_l_tst%tor_o(1,1))
+          call matmul_fwd_leg_trans_tstlop                              &
+     &       (nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_o, &
+     &        WK_l_tst%Pmat(mp_rlm)%nth_sym, WK_l_tst%asmp_r(1,1),      &
+     &        WK_l_tst%Pmat(mp_rlm)%Pso_tj, WK_l_tst%pol_o(1,1))
+          call matmul_fwd_leg_trans_tstlop                              &
+     &       (nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_o, &
+     &        WK_l_tst%Pmat(mp_rlm)%nth_sym, WK_l_tst%symp_p(1,1),      &
+     &        WK_l_tst%Pmat(mp_rlm)%dPsodt_tj, WK_l_tst%tor_o(1,1))
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
           call cal_sp_rlm_vec_testloop                            &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                       &
      &        sph_rlm%istep_rlm, sph_rlm%idx_gl_1d_rlm_j,               &
-     &        sph_rlm%radius_1d_rlm_r, g_sph_rlm,                       &
-     &        jst, n_jk_o, n_jk_e,        &
+     &        sph_rlm%radius_1d_rlm_r, g_sph_rlm, jst,                &
+     &        WK_l_tst%Pmat(mp_rlm)%n_jk_o,                           &
+     &        WK_l_tst%Pmat(mp_rlm)%n_jk_e,                           &
      &        WK_l_tst%pol_e(1,1), WK_l_tst%pol_o(1,1),               &
      &        WK_l_tst%tor_e(1,1), WK_l_tst%tor_o(1,1),               &
-     &        ncomp, nvector, comm_rlm%irev_sr, n_WS, WS)
-          call cal_sp_rlm_scl_testloop(sph_rlm%nnod_rlm,          &
-     &        sph_rlm%nidx_rlm, sph_rlm%istep_rlm, g_sph_rlm,           &
-     &        jst, n_jk_o, n_jk_e,        &
-     &        WK_l_tst%pol_e(1,1), WK_l_tst%pol_o(1,1),               &
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WS, WS)
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+17)
 !
@@ -379,7 +373,8 @@
       subroutine cal_sp_rlm_vec_testloop(nnod_rlm, nidx_rlm,      &
      &         istep_rlm, idx_gl_1d_rlm_j, radius_1d_rlm_r, g_sph_rlm,  &
      &         jst, n_jk_o, n_jk_e, pol_e, pol_o,             &
-     &         tor_e, tor_o, ncomp, nvector, irev_sr_rlm, n_WS, WS)
+     &         tor_e, tor_o, ncomp, nvector, nscalar,                   &
+     &         irev_sr_rlm, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: nidx_rlm(2)
@@ -389,7 +384,7 @@
       real(kind = kreal), intent(in) :: radius_1d_rlm_r(nidx_rlm(1))
       real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
 !
-      integer(kind = kint), intent(in) :: ncomp, nvector
+      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: jst, n_jk_o, n_jk_e
 !
       real(kind = kreal), intent(inout)                                 &
@@ -408,11 +403,12 @@
       integer(kind = kint) :: k_rlm
       integer(kind = kint) :: ie_rlm, io_rlm, ie_send, io_send
       integer(kind = kint) :: nd, jj
-      real(kind = kreal) :: g7, gm, r1, r2
+      real(kind = kreal) :: g6, g7, gm, r1, r2
 !
 !
-!$omp parallel do private(jj,nd,k_rlm,g7,gm,r1,r2)
+!$omp parallel do private(jj,nd,k_rlm,g6,g7,gm,r1,r2)
       do jj = 1, n_jk_e
+        g6 = g_sph_rlm(2*jj+jst-1,6)
         g7 = g_sph_rlm(2*jj+jst-1,7)
         gm = dble(idx_gl_1d_rlm_j(2*jj+jst-1,3))
         do k_rlm = 1, nidx_rlm(1)
@@ -426,12 +422,18 @@
             tor_e(2*nd-1,k_rlm,jj) = tor_e(2*nd-1,k_rlm,jj) * r1*g7
             pol_e(3*nd-1,k_rlm,jj) = pol_e(3*nd-1,k_rlm,jj) * r1*g7*gm
           end do
+!
+          do nd = 1, nscalar
+            pol_e(nd+3*nvector,k_rlm,jj)                                &
+     &            = pol_e(nd+3*nvector,k_rlm,jj) * g6
+          end do
         end do
       end do
 !$omp end parallel do
 !
-!$omp parallel do private(jj,nd,k_rlm,g7,gm,r1,r2)
+!$omp parallel do private(jj,nd,k_rlm,g6,g7,gm,r1,r2)
       do jj = 1, n_jk_o
+        g6 = g_sph_rlm(2*jj+jst,6)
         g7 = g_sph_rlm(2*jj+jst,7)
         gm = dble(idx_gl_1d_rlm_j(2*jj+jst,3))
         do k_rlm = 1, nidx_rlm(1)
@@ -444,6 +446,11 @@
             pol_o(3*nd,  k_rlm,jj) = pol_o(3*nd,  k_rlm,jj) * r1*g7*gm
             tor_o(2*nd-1,k_rlm,jj) = tor_o(2*nd-1,k_rlm,jj) * r1*g7
             pol_o(3*nd-1,k_rlm,jj) = pol_o(3*nd-1,k_rlm,jj) * r1*g7*gm
+          end do
+!
+          do nd = 1, nscalar
+            pol_o(nd+3*nvector,k_rlm,jj)                                &
+     &            = pol_o(nd+3*nvector,k_rlm,jj) * g6
           end do
         end do
       end do
@@ -475,6 +482,14 @@
             WS(io_send  ) = WS(io_send  ) - pol_o(3*nd-1,k_rlm,jj)      &
      &                                    - tor_o(2*nd-1,k_rlm,jj)
           end do
+!
+          do nd = 1, nscalar
+            ie_send = nd + 3*nvector + (irev_sr_rlm(ie_rlm) - 1)*ncomp
+            io_send = nd + 3*nvector + (irev_sr_rlm(io_rlm) - 1)*ncomp
+!
+            WS(ie_send) = WS(ie_send) + pol_e(nd+3*nvector,k_rlm,jj)
+            WS(io_send) = WS(io_send) + pol_o(nd+3*nvector,k_rlm,jj)
+          end do
         end do
       end do
 !$omp end parallel do
@@ -494,6 +509,11 @@
             WS(ie_send  ) = WS(ie_send  ) - pol_e(3*nd-1,k_rlm,jj)      &
      &                                    - tor_e(2*nd-1,k_rlm,jj)
           end do
+!
+          do nd = 1, nscalar
+            ie_send = nd + 3*nvector + (irev_sr_rlm(ie_rlm) - 1)*ncomp
+            WS(ie_send) = WS(ie_send) + pol_e(nd+3*nvector,k_rlm,jj)
+          end do
         end do
 !$omp end parallel do
       end do
@@ -502,88 +522,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sp_rlm_scl_testloop                          &
-     &         (nnod_rlm, nidx_rlm, istep_rlm, g_sph_rlm,               &
-     &          jst, n_jk_o, n_jk_e, scl_e, scl_o,            &
-     &          ncomp, nvector, nscalar, irev_sr_rlm, n_WS, WS)
+      subroutine matmul_fwd_leg_trans_tstlop(nkr, n_jk, nl_rtm,         &
+     &          V_kl, P_lj, S_kj)
 !
-      integer(kind = kint), intent(in) :: nnod_rlm
-      integer(kind = kint), intent(in) :: nidx_rlm(2)
-      integer(kind = kint), intent(in) :: istep_rlm(2)
-      real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
+      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
+      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
 !
-      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      integer(kind = kint), intent(in) :: jst, n_jk_o, n_jk_e
-!
-      real(kind = kreal), intent(inout)                                 &
-     &           :: scl_e(ncomp,nidx_rlm(1),n_jk_e)
-      real(kind = kreal), intent(inout)                                 &
-     &           :: scl_o(ncomp,nidx_rlm(1),n_jk_o)
-!
-      integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
-      integer(kind = kint), intent(in) :: n_WS
-      real (kind=kreal), intent(inout):: WS(n_WS)
-!
-      integer(kind = kint) ::  k_rlm
-      integer(kind = kint) :: ie_rlm, io_rlm, ie_send, io_send
-      integer(kind = kint) :: nd, jj
-      real(kind = kreal) :: g6
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
 !
 !
-!$omp parallel do private(jj,nd,k_rlm,g6)
-      do jj = 1, n_jk_e
-        g6 = g_sph_rlm(2*jj+jst-1,6)
-        do k_rlm = 1, nidx_rlm(1)
-          do nd = 1, nscalar
-            scl_e(nd+3*nvector,k_rlm,jj)                                &
-     &            = scl_e(nd+3*nvector,k_rlm,jj) * g6
-          end do
-        end do
-      end do
-!$omp end parallel do
+      if(nkr .eq. 0) return
+      S_kj = matmul(V_kl,P_lj)
 !
-!$omp parallel do private(jj,nd,k_rlm,g6)
-      do jj = 1, n_jk_o
-        g6 = g_sph_rlm(2*jj+jst,6)
-        do k_rlm = 1, nidx_rlm(1)
-          do nd = 1, nscalar
-            scl_o(nd+3*nvector,k_rlm,jj)                                &
-     &            = scl_o(nd+3*nvector,k_rlm,jj) * g6
-          end do
-        end do
-      end do
-!$omp end parallel do
+      end subroutine matmul_fwd_leg_trans_tstlop
 !
-!$omp parallel do private(k_rlm,nd,jj,ie_rlm,io_rlm,ie_send,io_send)
-      do k_rlm = 1, nidx_rlm(1)
-        do jj = 1, n_jk_o
-          ie_rlm = 1 + (2*jj+jst-2) * istep_rlm(2)                      &
-     &               + (k_rlm-1) *    istep_rlm(1)
-          io_rlm = 1 + (2*jj+jst-1) * istep_rlm(2)                      &
-     &               + (k_rlm-1) *    istep_rlm(1)
-!
-          do nd = 1, nscalar
-            ie_send = nd + 3*nvector + (irev_sr_rlm(ie_rlm) - 1)*ncomp
-            io_send = nd + 3*nvector + (irev_sr_rlm(io_rlm) - 1)*ncomp
-!
-            WS(ie_send) = WS(ie_send) + scl_e(nd+3*nvector,k_rlm,jj)
-            WS(io_send) = WS(io_send) + scl_o(nd+3*nvector,k_rlm,jj)
-          end do
-        end do
-!
-        do jj = n_jk_o+1, n_jk_e
-          ie_rlm = 1 + (2*jj+jst-2) * istep_rlm(2)                      &
-     &               + (k_rlm-1) *    istep_rlm(1)
-          do nd = 1, nscalar
-            ie_send = nd + 3*nvector + (irev_sr_rlm(ie_rlm) - 1)*ncomp
-            WS(ie_send) = WS(ie_send) + scl_e(nd+3*nvector,k_rlm,jj)
-          end do
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine cal_sp_rlm_scl_testloop
-!
-! -----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       end module legendre_fwd_trans_testloop

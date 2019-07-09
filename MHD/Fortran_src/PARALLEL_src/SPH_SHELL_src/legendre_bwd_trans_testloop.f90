@@ -79,8 +79,7 @@
 !
       integer(kind = kint) :: nl_rtm, mp_rlm, mn_rlm
       integer(kind = kint) :: nkrs,  nkrt
-      integer(kind = kint) :: jst, jst_h
-      integer(kind = kint) :: n_jk_e, n_jk_o
+      integer(kind = kint) :: jst
 !
 !
 !$omp parallel workshare
@@ -94,17 +93,13 @@
         do mp_rlm = 1, sph_rtm%nidx_rtm(3)
           mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
           jst = idx_trns%lstack_rlm(mp_rlm-1)
-          jst_h = idx_trns%lstack_even_rlm(mp_rlm) + 1
-          n_jk_e = idx_trns%lstack_even_rlm(mp_rlm)                 &
-     &                - idx_trns%lstack_rlm(mp_rlm-1)
-          n_jk_o = idx_trns%lstack_rlm(mp_rlm)                      &
-     &                - idx_trns%lstack_even_rlm(mp_rlm)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+12)
           call set_sp_rlm_vec_testloop                            &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,    &
      &        sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r, g_sph_rlm, &
-     &        jst, n_jk_e, n_jk_o,        &
+     &        jst, WK_l_tst%Pmat(mp_rlm)%n_jk_e,                        &
+     &        WK_l_tst%Pmat(mp_rlm)%n_jk_o,                          &
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WR, WR,     &
      &        WK_l_tst%pol_e(1,1), WK_l_tst%tor_e(1,1),               &
      &        WK_l_tst%pol_o(1,1), WK_l_tst%tor_o(1,1) )
@@ -112,18 +107,22 @@
 !
 !   even l-m
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+13)
-          call matmul_bwd_leg_trans(nl_rtm, nkrs, n_jk_e,       &
-     &        WK_l_tst%Ps_tj(1,jst+1), WK_l_tst%pol_e(1,1),        &
+          call matmul_bwd_leg_trans_tstlop                              &
+     &       (nl_rtm, nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_e,               &
+     &        WK_l_tst%Pmat(mp_rlm)%Pse_tj, WK_l_tst%pol_e(1,1),        &
      &        WK_l_tst%symp_r(1,1))
-          call matmul_bwd_leg_trans(nl_rtm, nkrt, n_jk_e,       &
-     &        WK_l_tst%dPsdt_tj(1,jst+1), WK_l_tst%tor_e(1,1),     &
+          call matmul_bwd_leg_trans_tstlop                              &
+     &       (nl_rtm, nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_e,              &
+     &        WK_l_tst%Pmat(mp_rlm)%dPsedt_tj, WK_l_tst%tor_e(1,1),     &
      &        WK_l_tst%asmp_p(1,1))
 !   odd l-m
-          call matmul_bwd_leg_trans(nl_rtm, nkrs, n_jk_o,       &
-     &        WK_l_tst%Ps_tj(1,jst_h), WK_l_tst%pol_o(1,1),        &
+          call matmul_bwd_leg_trans_tstlop                              &
+     &       (nl_rtm, nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_o,               &
+     &        WK_l_tst%Pmat(mp_rlm)%Pso_tj, WK_l_tst%pol_o(1,1),        &
      &        WK_l_tst%asmp_r(1,1))
-          call matmul_bwd_leg_trans(nl_rtm, nkrt, n_jk_o,       &
-     &        WK_l_tst%dPsdt_tj(1,jst_h), WK_l_tst%tor_o(1,1),     &
+          call matmul_bwd_leg_trans_tstlop                              &
+     &       (nl_rtm, nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_o,               &
+     &        WK_l_tst%Pmat(mp_rlm)%dPsodt_tj, WK_l_tst%tor_o(1,1),     &
      &        WK_l_tst%symp_p(1,1))
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+13)
 !
@@ -375,11 +374,10 @@
       end do
 !$omp end parallel do
 !
-!$omp parallel do private(k_rlm,nd,lp_rtm,ln_rtm,ip_rtpm,in_rtpm,    &
+!$omp parallel do private(k_rlm,nd,lp_rtm,ip_rtpm,in_rtpm,    &
 !$omp&                    ipp_send,inp_send)
       do k_rlm = 1, nidx_rlm(1)
         do lp_rtm = nidx_rtm(2)/2+1, nl_rtm
-          ln_rtm =  nidx_rtm(2) - nidx_rtm(2)/2-1 + 1
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
      &                + (k_rlm-1) *  istep_rtm(1)                       &
      &                + (mp_rlm-1) * istep_rtm(3)
@@ -413,5 +411,22 @@
       end subroutine cal_vr_rtm_vec_testloop
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine matmul_bwd_leg_trans_tstlop(nl_rtm, nkr, n_jk,         &
+     &          P_lj, S_jk, V_lk)
+!
+      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+      real(kind = kreal), intent(in) :: S_jk(n_jk,nkr)
+!
+      real(kind = kreal), intent(inout) :: V_lk(nl_rtm,nkr)
+!
+!
+      if(nkr .eq. 0) return
+      V_lk = matmul(P_lj,S_jk)
+!
+      end subroutine matmul_bwd_leg_trans_tstlop
+!
+! ----------------------------------------------------------------------
 !
       end module legendre_bwd_trans_testloop
