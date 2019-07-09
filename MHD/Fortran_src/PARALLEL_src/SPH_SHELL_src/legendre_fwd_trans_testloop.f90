@@ -99,16 +99,10 @@
           call set_vr_rtm_vec_testloop                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, weight_rtm,          &
-     &        mp_rlm, mn_rlm, nle_rtm, nlo_rtm,       &
-     &        ncomp, nvector, comm_rtm%irev_sr, n_WR, WR,               &
+     &        mp_rlm, mn_rlm, nle_rtm, nlo_rtm,                    &
+     &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,    &
      &        WK_l_tst%symp_r(1,1), WK_l_tst%asmp_p(1,1),             &
      &        WK_l_tst%asmp_r(1,1), WK_l_tst%symp_p(1,1) )
-          call set_vr_rtm_scl_testloop                            &
-     &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, weight_rtm,           &
-     &        mp_rlm, nle_rtm, nlo_rtm,                                 &
-     &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,      &
-     &        WK_l_tst%symp_r(1,1), WK_l_tst%asmp_r(1,1))
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+15)
 !
 !  even l-m
@@ -155,7 +149,7 @@
       subroutine set_vr_rtm_vec_testloop(nnod_rtm, nidx_rtm,      &
      &         istep_rtm, nidx_rlm, asin_theta_1d_rtm, weight_rtm,      &
      &         mp_rlm, mn_rlm, nle_rtm, nlo_rtm,              &
-     &         ncomp, nvector, irev_sr_rtm, n_WR, WR,                   &
+     &         ncomp, nvector, nscalar, irev_sr_rtm, n_WR, WR,     &
      &         symp_r, asmp_p, asmp_r, symp_p)
 !
       integer(kind = kint), intent(in) :: nnod_rtm
@@ -168,7 +162,7 @@
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
       integer(kind = kint), intent(in) :: nle_rtm, nlo_rtm
 !
-      integer(kind = kint), intent(in) :: ncomp, nvector
+      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       real (kind=kreal), intent(in) :: WR(n_WR)
@@ -283,39 +277,6 @@
         end do
       end do
 !
-      end subroutine set_vr_rtm_vec_testloop
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_vr_rtm_scl_testloop                          &
-     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm, weight_rtm,    &
-     &          mp_rlm,  nle_rtm, nlo_rtm,                    &
-     &          ncomp, nvector, nscalar, irev_sr_rtm,                   &
-     &          n_WR, WR, symp, asmp)
-!
-      integer(kind = kint), intent(in) :: nnod_rtm
-      integer(kind = kint), intent(in) :: nidx_rtm(3)
-      integer(kind = kint), intent(in) :: istep_rtm(3)
-      integer(kind = kint), intent(in) :: nidx_rlm(2)
-      real(kind = kreal), intent(in) :: weight_rtm(nidx_rtm(2))
-!
-      integer(kind = kint), intent(in) :: mp_rlm
-      integer(kind = kint), intent(in) :: nle_rtm, nlo_rtm
-!
-      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
-      integer(kind = kint), intent(in) :: n_WR
-      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
-      real (kind=kreal), intent(in) :: WR(n_WR)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &         :: symp(ncomp,nidx_rlm(1),nle_rtm)
-      real(kind = kreal), intent(inout)                                 &
-     &         :: asmp(ncomp,nidx_rlm(1),nle_rtm)
-!
-      integer(kind = kint) :: k_rlm, nd
-      integer(kind = kint) :: lp_rtm, ln_rtm
-      integer(kind = kint) :: ip_rtpm, ip_rtnm, ipp_recv, ipn_recv
-      real(kind = kreal) :: wp_rtm
 !
 !
 !$omp parallel do private(lp_rtm,ln_rtm,k_rlm,nd,                    &
@@ -338,9 +299,9 @@
             ipn_recv = nd + 3*nvector                                   &
      &                  + (irev_sr_rtm(ip_rtnm) - 1) * ncomp
 !
-            symp(nd+3*nvector,k_rlm,lp_rtm)                             &
+            symp_r(nd+3*nvector,k_rlm,lp_rtm)                           &
      &               = (WR(ipp_recv) + WR(ipn_recv)) * wp_rtm
-            asmp(nd+3*nvector,k_rlm,lp_rtm)                             &
+            asmp_r(nd+3*nvector,k_rlm,lp_rtm)                           &
      &               = (WR(ipp_recv) - WR(ipn_recv)) * wp_rtm
           end do
         end do
@@ -359,13 +320,13 @@
             ipp_recv = nd + 3*nvector                                   &
      &                    + (irev_sr_rtm(ip_rtpm) - 1) * ncomp
 !
-            symp(nd+3*nvector,k_rlm,lp_rtm) = WR(ipp_recv) * wp_rtm
-            asmp(nd+3*nvector,k_rlm,lp_rtm) = 0.0d0
+            symp_r(nd+3*nvector,k_rlm,lp_rtm) = WR(ipp_recv) * wp_rtm
+            asmp_r(nd+3*nvector,k_rlm,lp_rtm) = 0.0d0
           end do
         end do
       end do
 !
-      end subroutine set_vr_rtm_scl_testloop
+      end subroutine set_vr_rtm_vec_testloop
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
