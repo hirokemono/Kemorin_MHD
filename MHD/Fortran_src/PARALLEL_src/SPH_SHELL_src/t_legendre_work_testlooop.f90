@@ -66,6 +66,13 @@
 !!          at gouss points in northen hemisphere
         real(kind = kreal), allocatable :: dPsedt_tj(:,:)
 !
+!>          @$f P_{l}{m} @$f
+!!          at gouss points in northen hemisphere
+        real(kind = kreal), allocatable :: Pse_jt(:,:)
+!>          @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
+!!          at gouss points in northen hemisphere
+        real(kind = kreal), allocatable :: dPsedt_jt(:,:)
+!
 !>         Number of meridional grid points in northern hemisphere
         integer(kind = kint) :: n_jk_o
 !>          @$f P_{l}{m} @$f
@@ -74,6 +81,13 @@
 !>          @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
 !!          at gouss points in northen hemisphere
         real(kind = kreal), allocatable :: dPsodt_tj(:,:)
+!
+!>          @$f P_{l}{m} @$f
+!!          at gouss points in northen hemisphere
+        real(kind = kreal), allocatable :: Pso_jt(:,:)
+!>          @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
+!!          at gouss points in northen hemisphere
+        real(kind = kreal), allocatable :: dPsodt_jt(:,:)
       end type leg_matrix_testloop
 !
 !
@@ -112,7 +126,7 @@
 !!@n       dtordp_e = Pol_e(  nvec_jk+1:2*nvec_jk,ip)
 !!@n       dpoldp_e = Pol_e(2*nvec_jk+1:3*nvec_jk,ip)
 !!@n       scl_e =    Pol_e(3*nvec_jk+1:3*nvec_jk+nscl_jk,ip)
-        real(kind = kreal), allocatable :: pol_e(:,:)
+        real(kind = kreal), allocatable :: pol_e(:)
 !
 !>      Theta derivative of poloidal component with evem (l-m)
 !!@n        real(kind = kreal), allocatable :: dtordt_e(:,:)
@@ -120,7 +134,7 @@
 !!@n        real(kind = kreal), allocatable :: dpoldt_e(:,:)
 !!@n       dtordt_e = tor_e(          1:  nvec_jk,ip)
 !!@n       dpoldt_e = tor_e(  nvec_jk+1:2*nvec_jk,ip)
-        real(kind = kreal), allocatable :: tor_e(:,:)
+        real(kind = kreal), allocatable :: tor_e(:)
 !
 !>       Poloidal component with odd (l-m)
 !!@n         real(kind = kreal), allocatable :: pol_o(:,:)
@@ -134,7 +148,7 @@
 !!@n       dtordp_o = pol_o(  nvec_jk+1:2*nvec_jk,ip)
 !!@n       dpoldp_o = pol_o(2*nvec_jk+1:3*nvec_jk,ip)
 !!@n       scl_o =    pol_o(3*nvec_jk+1:3*nvec_jk+nscl_jk,ip)
-        real(kind = kreal), allocatable :: pol_o(:,:)
+        real(kind = kreal), allocatable :: pol_o(:)
 !
 !>       Theta derivative of Toroidal component with odd (l-m)
 !!@n        real(kind = kreal), allocatable :: dtordt_o(:,:)
@@ -142,7 +156,7 @@
 !!@n        real(kind = kreal), allocatable :: dpoldt_o(:,:)
 !!@n       dtordt_o = tor_o(          1:  nvec_jk,ip)
 !!@n       dpoldt_o = tor_o(  nvec_jk+1:2*nvec_jk,ip)
-        real(kind = kreal), allocatable :: tor_o(:,:)
+        real(kind = kreal), allocatable :: tor_o(:)
 !
 !
 !>       Maximum matrix size for field data
@@ -167,7 +181,7 @@
 !!@n       symn_t = symp_r(  nvec_lk+1:2*nvec_lk,ip)
 !!@n       symn_p = symp_r(2*nvec_lk+1:3*nvec_lk,ip)
 !!@n       symp =   symp_r(3*nvec_lk+1:3*nvec_lk+nscl_lk,ip)
-        real(kind = kreal), allocatable :: symp_r(:,:)
+        real(kind = kreal), allocatable :: symp_r(:)
 !
 !>         Anti-symmetric phi-component
 !!@n        real(kind = kreal), allocatable :: asmp_p(:,:)
@@ -175,7 +189,7 @@
 !!@n        real(kind = kreal), allocatable :: asmp_t(:,:)
 !!@n       asmp_p = asmp_p(          1:  nvec_lk,ip)
 !!@n       asmp_t = asmp_p(  nvec_lk+1:2*nvec_lk,ip)
-        real(kind = kreal), allocatable :: asmp_p(:,:)
+        real(kind = kreal), allocatable :: asmp_p(:)
 !
 !!         Anti-symmetric radial component
 !!@n        real(kind = kreal), allocatable :: asmp_r(:,:)
@@ -189,7 +203,7 @@
 !!@n       asmn_t = asmp_r(  nvec_lk+1:2*nvec_lk,ip)
 !!@n       asmn_p = asmp_r(2*nvec_lk+1:3*nvec_lk,ip)
 !!@n       asmp =   asmp_r(3*nvec_lk+1:3*nvec_lk+nscl_lk,ip)
-        real(kind = kreal), allocatable :: asmp_r(:,:)
+        real(kind = kreal), allocatable :: asmp_r(:)
 !
 !>        Symmetric phi-component
 !!@n        real(kind = kreal), allocatable :: symp_p(:,:)
@@ -197,7 +211,7 @@
 !!@n        real(kind = kreal), allocatable :: symp_t(:,:)
 !!@n       symp_p = symp_p(          1:  nvec_lk,ip)
 !!@n       symp_t = symp_p(  nvec_lk+1:2*nvec_lk,ip)
-        real(kind = kreal), allocatable :: symp_p(:,:)
+        real(kind = kreal), allocatable :: symp_p(:)
       end type leg_trns_testloop_work
 !
       private :: const_symmetric_leg_lj_test
@@ -291,20 +305,20 @@
 !
       WK_l_tst%n_pol_e = 3*WK_l_tst%nvec_jk + WK_l_tst%nscl_jk
       WK_l_tst%n_tor_e = 2*WK_l_tst%nvec_jk
-      allocate(WK_l_tst%pol_e(WK_l_tst%n_pol_e,1))
-      allocate(WK_l_tst%tor_e(WK_l_tst%n_tor_e,1))
-      allocate(WK_l_tst%pol_o(WK_l_tst%n_pol_e,1))
-      allocate(WK_l_tst%tor_o(WK_l_tst%n_tor_e,1))
+      allocate(WK_l_tst%pol_e(WK_l_tst%n_pol_e))
+      allocate(WK_l_tst%tor_e(WK_l_tst%n_tor_e))
+      allocate(WK_l_tst%pol_o(WK_l_tst%n_pol_e))
+      allocate(WK_l_tst%tor_o(WK_l_tst%n_tor_e))
 !
       WK_l_tst%nvec_lk = ((nth_rtm+1)/2) * maxidx_rtm_r_smp * nvector
       WK_l_tst%nscl_lk = ((nth_rtm+1)/2) * maxidx_rtm_r_smp * nscalar
 !
       WK_l_tst%n_sym_r = 3*WK_l_tst%nvec_lk + WK_l_tst%nscl_lk
       WK_l_tst%n_sym_p = 2*WK_l_tst%nvec_lk
-      allocate(WK_l_tst%symp_r(WK_l_tst%n_sym_r,1))
-      allocate(WK_l_tst%symp_p(WK_l_tst%n_sym_p,1))
-      allocate(WK_l_tst%asmp_r(WK_l_tst%n_sym_r,1))
-      allocate(WK_l_tst%asmp_p(WK_l_tst%n_sym_p,1))
+      allocate(WK_l_tst%symp_r(WK_l_tst%n_sym_r))
+      allocate(WK_l_tst%symp_p(WK_l_tst%n_sym_p))
+      allocate(WK_l_tst%asmp_r(WK_l_tst%n_sym_r))
+      allocate(WK_l_tst%asmp_p(WK_l_tst%n_sym_p))
 !
       end subroutine alloc_leg_sym_matmul_test
 !
@@ -374,6 +388,23 @@
       Pmat%dPsodt_tj(1:Pmat%nth_sym,1:Pmat%n_jk_o) = 0.0d0
 !$omp end parallel workshare
 !
+!
+      allocate(Pmat%Pse_jt(Pmat%n_jk_e,Pmat%nth_sym))
+      allocate(Pmat%dPsedt_jt(Pmat%n_jk_e,Pmat%nth_sym))
+!
+!$omp parallel workshare
+      Pmat%Pse_jt(1:Pmat%n_jk_e,1:Pmat%nth_sym) =    0.0d0
+      Pmat%dPsedt_jt(1:Pmat%n_jk_e,1:Pmat%nth_sym) = 0.0d0
+!$omp end parallel workshare
+!
+      allocate(Pmat%Pso_jt(Pmat%n_jk_o,Pmat%nth_sym))
+      allocate(Pmat%dPsodt_jt(Pmat%n_jk_o,Pmat%nth_sym))
+!
+!$omp parallel workshare
+      Pmat%Pso_jt(1:Pmat%n_jk_o,1:Pmat%nth_sym) =    0.0d0
+      Pmat%dPsodt_jt(1:Pmat%n_jk_o,1:Pmat%nth_sym) = 0.0d0
+!$omp end parallel workshare
+!
       end subroutine alloc_each_sym_leg_testloop
 !
 ! -----------------------------------------------------------------------
@@ -385,6 +416,9 @@
 !
       deallocate(Pmat%Pse_tj, Pmat%dPsedt_tj)
       deallocate(Pmat%Pso_tj, Pmat%dPsodt_tj)
+!
+      deallocate(Pmat%Pse_jt, Pmat%dPsedt_jt)
+      deallocate(Pmat%Pso_jt, Pmat%dPsodt_jt)
 !
       end subroutine dealloc_each_sym_leg_testloop
 !
@@ -420,29 +454,27 @@
       integer(kind = kint) :: l_rtm, j_rlm, jj
 !
 !
-!$omp parallel private(jj,j_rlm)
-        do jj = 1, Pmat%n_jk_e
-          j_rlm = 2*jj + jst_rlm - 1
-!$omp do private(l_rtm)
-          do l_rtm = 1, Pmat%nth_sym
+!$omp parallel do private(l_rtm,jj,j_rlm)
+        do l_rtm = 1, Pmat%nth_sym
+          do jj = 1, Pmat%n_jk_e
+            j_rlm = 2*jj + jst_rlm - 1
             Pmat%Pse_tj(l_rtm,jj) =     P_rtm(l_rtm,j_rlm)
             Pmat%dPsedt_tj(l_rtm,jj) =  dPdt_rtm(l_rtm,j_rlm)
-          end do
-!$omp end do nowait
-        end do
-!$omp end parallel
 !
-!$omp parallel private(jj,j_rlm)
-        do jj = 1, Pmat%n_jk_o
-          j_rlm = 2*jj + jst_rlm
-!$omp do private(l_rtm)
-          do l_rtm = 1, Pmat%nth_sym
+            Pmat%Pse_jt(jj,l_rtm) =     P_rtm(l_rtm,j_rlm)
+            Pmat%dPsedt_jt(jj,l_rtm) =  dPdt_rtm(l_rtm,j_rlm)
+          end do
+!
+          do jj = 1, Pmat%n_jk_o
+            j_rlm = 2*jj + jst_rlm
             Pmat%Pso_tj(l_rtm,jj) =     P_rtm(l_rtm,j_rlm)
             Pmat%dPsodt_tj(l_rtm,jj) =  dPdt_rtm(l_rtm,j_rlm)
+!
+            Pmat%Pso_jt(jj,l_rtm) =     P_rtm(l_rtm,j_rlm)
+            Pmat%dPsodt_jt(jj,l_rtm) =  dPdt_rtm(l_rtm,j_rlm)
           end do
-!$omp end do nowait
         end do
-!$omp end parallel
+!$omp end parallel do
 !
       end subroutine set_each_sym_leg_testloop
 !
