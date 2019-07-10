@@ -91,18 +91,72 @@
       end type leg_matrix_testloop
 !
 !
+      type field_matrix_testloop
+        integer(kind = kint) :: lst_rtm
+        integer(kind = kint) :: nle_rtm
+        integer(kind = kint) :: nlo_rtm
+        integer(kind = kint) :: nkrs
+        integer(kind = kint) :: nkrt
+        integer(kind = kint) :: nvec_lk
+        integer(kind = kint) :: nscl_lk
+        integer(kind = kint) :: n_sym_r
+        integer(kind = kint) :: n_sym_p
+!
+!>         Symmetric radial component
+!!@n        real(kind = kreal), allocatable :: symp_r(:,:)
+!!@n       Symmetric theta-component with condugate order
+!!@n        real(kind = kreal), allocatable :: symn_t(:,:)
+!!@n       Symmetric phi-component with condugate order
+!!@n        real(kind = kreal), allocatable :: symn_p(:,:)
+!!@n       Symmetric scalar component
+!!@n        real(kind = kreal), allocatable :: symp(:,:)
+!!@n       symp_r = symp_r(          1:  nvec_lk,ip)
+!!@n       symn_t = symp_r(  nvec_lk+1:2*nvec_lk,ip)
+!!@n       symn_p = symp_r(2*nvec_lk+1:3*nvec_lk,ip)
+!!@n       symp =   symp_r(3*nvec_lk+1:3*nvec_lk+nscl_lk,ip)
+        real(kind = kreal), allocatable :: symp_r(:)
+!
+!>         Anti-symmetric phi-component
+!!@n        real(kind = kreal), allocatable :: asmp_p(:,:)
+!!@n       Anti-symmetric theta-component
+!!@n        real(kind = kreal), allocatable :: asmp_t(:,:)
+!!@n       asmp_p = asmp_p(          1:  nvec_lk,ip)
+!!@n       asmp_t = asmp_p(  nvec_lk+1:2*nvec_lk,ip)
+        real(kind = kreal), allocatable :: asmp_p(:)
+!
+!!         Anti-symmetric radial component
+!!@n        real(kind = kreal), allocatable :: asmp_r(:,:)
+!!@n       Anti-symmetric theta-component with condugate order
+!!@n        real(kind = kreal), allocatable :: asmn_t(:,:)
+!!@n       Anti-symmetric phi-component with condugate order
+!!@n        real(kind = kreal), allocatable :: asmn_p(:,:)
+!!@n       Anti-symmetric scalar component
+!!@n        real(kind = kreal), allocatable :: asmp(:,:)
+!!@n       asmp_r = asmp_r(          1:  nvec_lk,ip)
+!!@n       asmn_t = asmp_r(  nvec_lk+1:2*nvec_lk,ip)
+!!@n       asmn_p = asmp_r(2*nvec_lk+1:3*nvec_lk,ip)
+!!@n       asmp =   asmp_r(3*nvec_lk+1:3*nvec_lk+nscl_lk,ip)
+        real(kind = kreal), allocatable :: asmp_r(:)
+!
+!>        Symmetric phi-component
+!!@n        real(kind = kreal), allocatable :: symp_p(:,:)
+!!@n       Symmetric theta-component
+!!@n        real(kind = kreal), allocatable :: symp_t(:,:)
+!!@n       symp_p = symp_p(          1:  nvec_lk,ip)
+!!@n       symp_t = symp_p(  nvec_lk+1:2*nvec_lk,ip)
+        real(kind = kreal), allocatable :: symp_p(:)
+      end type field_matrix_testloop
+!
 !>      Work structure for Legendre trasform by large matmul
       type leg_trns_testloop_work
 !>         Number of harmonics order
         integer(kind = kint) :: mphi_rtm
         type(leg_matrix_testloop), allocatable :: Pmat(:)
-!>          @$f P_{l}{m} @$f
-!!          at gouss points in northen hemisphere
-        real(kind = kreal), allocatable :: Ps_tj(:,:)
-!>          @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
-!!          at gouss points in northen hemisphere
-        real(kind = kreal), allocatable :: dPsdt_tj(:,:)
 !
+        type(field_matrix_testloop), allocatable :: Fmat(:)
+!
+        integer(kind = kint) :: nkrs
+        integer(kind = kint) :: nkrt
 !
 !>        Maximum matrix size for spectr data
         integer(kind = kint) :: nvec_jk
@@ -238,6 +292,16 @@
       call const_symmetric_leg_lj_test(sph_rlm%nidx_rlm(2),             &
      &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3),                     &
      &    leg, idx_trns, WK_l_tst)
+!
+      WK_l_tst%nkrs = (3*nvector + nscalar) * sph_rtm%nidx_rtm(1)
+      WK_l_tst%nkrt = 2*nvector * sph_rtm%nidx_rtm(1)
+!
+      allocate(WK_l_tst%Fmat(np_smp))
+      call count_size_of_field_mat_tstlop                               &
+     &   (np_smp, sph_rtm%nidx_rtm(1), sph_rtm%istack_rtm_lt_smp,       &
+     &    nvector, nscalar, WK_l_tst%nkrs, WK_l_tst%nkrt, WK_l_tst%Fmat)
+      call alloc_field_mat_tstlop(np_smp, WK_l_tst%Fmat)
+!
       call alloc_leg_sym_matmul_test                                    &
      &   (sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(1),                     &
      &    nvector, nscalar, idx_trns, WK_l_tst)
@@ -436,6 +500,9 @@
 !
       call dealloc_symmetric_leg_lj_test(WK_l_tst)
 !
+      call dealloc_field_mat_tstlop(np_smp, WK_l_tst%Fmat)
+      deallocate(WK_l_tst%Fmat)
+!
       end subroutine dealloc_leg_vec_test
 !
 ! -----------------------------------------------------------------------
@@ -477,6 +544,89 @@
 !$omp end parallel do
 !
       end subroutine set_each_sym_leg_testloop
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine count_size_of_field_mat_tstlop                         &
+     &         (np_smp, nri_rtm, istack_rtm_lt_smp, nvector, nscalar,   &
+     &          nkrs, nkrt, Fmat)
+!
+      integer(kind = kint), intent(in) :: np_smp
+      integer(kind = kint), intent(in) :: nri_rtm
+      integer(kind = kint), intent(in) :: istack_rtm_lt_smp(0:np_smp)
+      integer(kind = kint), intent(in) :: nvector, nscalar, nkrs, nkrt
+!
+      type(field_matrix_testloop), intent(inout) :: Fmat(np_smp)
+!
+      integer(kind = kint) :: ip, led
+!
+!
+      led = 0
+      do ip = 1, np_smp
+        Fmat(ip)%lst_rtm = led
+        led = (istack_rtm_lt_smp(ip) + 1) / 2
+        Fmat(ip)%nle_rtm = led - Fmat(ip)%lst_rtm
+        Fmat(ip)%nlo_rtm = Fmat(ip)%nle_rtm
+      end do
+      Fmat(np_smp)%nlo_rtm = istack_rtm_lt_smp(ip) / 2                  &
+     &                      - Fmat(ip)%lst_rtm
+!
+      do ip = 1, np_smp
+        Fmat(ip)%nvec_lk = Fmat(ip)%nle_rtm * nri_rtm * nvector
+        Fmat(ip)%nscl_lk = Fmat(ip)%nle_rtm * nri_rtm * nscalar
+        Fmat(ip)%n_sym_r = Fmat(ip)%nle_rtm * nkrs
+        Fmat(ip)%n_sym_p = Fmat(ip)%nle_rtm * nkrt
+      end do
+!
+      end subroutine count_size_of_field_mat_tstlop
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_field_mat_tstlop(np_smp, Fmat)
+!
+      integer(kind = kint), intent(in) :: np_smp
+      type(field_matrix_testloop), intent(inout) :: Fmat(np_smp)
+!
+      integer(kind = kint) :: ip
+!
+!
+      do ip = 1, np_smp
+        allocate(Fmat(ip)%symp_r(Fmat(ip)%n_sym_r))
+        allocate(Fmat(ip)%symp_p(Fmat(ip)%n_sym_p))
+        allocate(Fmat(ip)%asmp_r(Fmat(ip)%n_sym_r))
+        allocate(Fmat(ip)%asmp_p(Fmat(ip)%n_sym_p))
+!
+!$omp parallel workshare
+        Fmat(ip)%symp_r(1:Fmat(ip)%n_sym_r) = 0.0d0
+        Fmat(ip)%asmp_r(1:Fmat(ip)%n_sym_r) = 0.0d0
+!$omp end parallel workshare
+!$omp parallel workshare
+        Fmat(ip)%symp_p(1:Fmat(ip)%n_sym_p) = 0.0d0
+        Fmat(ip)%asmp_p(1:Fmat(ip)%n_sym_p) = 0.0d0
+!$omp end parallel workshare
+      end do
+!
+      end subroutine alloc_field_mat_tstlop
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_field_mat_tstlop(np_smp, Fmat)
+!
+      integer(kind = kint), intent(in) :: np_smp
+      type(field_matrix_testloop), intent(inout) :: Fmat(np_smp)
+!
+      integer(kind = kint) :: ip
+!
+!
+      do ip = 1, np_smp
+        deallocate(Fmat(ip)%symp_r)
+        deallocate(Fmat(ip)%symp_p)
+        deallocate(Fmat(ip)%asmp_r)
+        deallocate(Fmat(ip)%asmp_p)
+      end do
+!
+      end subroutine dealloc_field_mat_tstlop
 !
 ! -----------------------------------------------------------------------
 !
