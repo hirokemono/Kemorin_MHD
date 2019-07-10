@@ -78,13 +78,16 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
       integer(kind = kint) :: mp_rlm
+      integer(kind = kint) :: nkrs,  nkrt
       integer(kind = kint) :: jst
-      integer(kind = kint) :: ip, lst_m, lst_r, lst_p
 !
 !
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
+!
+      nkrs = ncomp * sph_rlm%nidx_rlm(1)
+      nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
 !
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
         jst = idx_trns%lstack_rlm(mp_rlm-1)
@@ -101,36 +104,29 @@
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
 !
 !   even l-m
-!$omp parallel do private(ip,lst_m,lst_r,lst_p)
-        do ip = 1, np_smp
-          lst_m = WK_l_tst%Fmat(ip-1)%lst_rtm
-          lst_r = WK_l_tst%nkrs * WK_l_tst%Fmat(ip-1)%lst_rtm
-          lst_p = WK_l_tst%nkrt * WK_l_tst%Fmat(ip-1)%lst_rtm
-!
-          if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+13)
+      if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+13)
           call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tst%Fmat(ip)%nle_rtm, WK_l_tst%nkrs,             &
+     &       (WK_l_tst%Pmat(mp_rlm)%nth_sym, nkrs,                      &
      &        WK_l_tst%Pmat(mp_rlm)%n_jk_e,                             &
-     &        WK_l_tst%Pmat(mp_rlm)%Pse_jt(1,lst_m), WK_l_tst%pol_e(1),        &
-     &        WK_l_tst%symp_r(lst_r+1))
+     &        WK_l_tst%Pmat(mp_rlm)%Pse_jt, WK_l_tst%pol_e(1),        &
+     &        WK_l_tst%symp_r(1))
           call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tst%Fmat(ip)%nle_rtm, WK_l_tst%nkrt,             &
+     &       (WK_l_tst%Pmat(mp_rlm)%nth_sym, nkrt,                      &
      &        WK_l_tst%Pmat(mp_rlm)%n_jk_e,              &
-     &        WK_l_tst%Pmat(mp_rlm)%dPsedt_jt(1,lst_m),     &
-     &        WK_l_tst%tor_e(1), WK_l_tst%asmp_p(lst_p+1))
+     &        WK_l_tst%Pmat(mp_rlm)%dPsedt_jt, WK_l_tst%tor_e(1),     &
+     &        WK_l_tst%asmp_p(1))
 !   odd l-m
           call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tst%Fmat(ip)%nle_rtm, WK_l_tst%nkrs,            &
+     &       (WK_l_tst%Pmat(mp_rlm)%nth_sym, nkrs,                      &
      &        WK_l_tst%Pmat(mp_rlm)%n_jk_o,               &
-     &        WK_l_tst%Pmat(mp_rlm)%Pso_jt(1,lst_m),         &
-     &        WK_l_tst%pol_o(1), WK_l_tst%asmp_r(lst_r+1))
+     &        WK_l_tst%Pmat(mp_rlm)%Pso_jt, WK_l_tst%pol_o(1),        &
+     &        WK_l_tst%asmp_r(1))
           call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tst%Fmat(ip)%nle_rtm, WK_l_tst%nkrt,             &
+     &       (WK_l_tst%Pmat(mp_rlm)%nth_sym, nkrt,                      &
      &        WK_l_tst%Pmat(mp_rlm)%n_jk_o,               &
-     &        WK_l_tst%Pmat(mp_rlm)%dPsodt_jt(1,lst_m),     &
-     &        WK_l_tst%tor_o(1), WK_l_tst%symp_p(lst_p+1))
-          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+13)
-        end do
+     &        WK_l_tst%Pmat(mp_rlm)%dPsodt_jt, WK_l_tst%tor_o(1),     &
+     &        WK_l_tst%symp_p(1))
+      if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+13)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
           call cal_vr_rtm_vec_testloop                            &
@@ -287,6 +283,7 @@
 !
        mn_rlm = nidx_rtm(3) - mp_rlm + 1
 !
+!$omp parallel do private(nd,k_rlm,lp_rtm)
       do nd = 1, nvector
         do k_rlm = 1, nidx_rlm(1)
           do lp_rtm = 1, nl_rtm
@@ -301,7 +298,11 @@
           end do
         end do
       end do
+!$omp end parallel do
 !
+!$omp parallel do private(k_rlm,nd,lp_rtm,ln_rtm,                    &
+!$omp&                    ip_rtpm,in_rtpm,ip_rtnm,in_rtnm,              &
+!$omp&                    ipp_send,inp_send,ipn_send,inn_send)
       do k_rlm = 1, nidx_rlm(1)
         do lp_rtm = 1, nidx_rtm(2)/2
           ln_rtm =  nidx_rtm(2) - lp_rtm + 1
@@ -375,7 +376,10 @@
           end do
         end do
       end do
+!$omp end parallel do
 !
+!$omp parallel do private(k_rlm,nd,lp_rtm,ip_rtpm,in_rtpm,    &
+!$omp&                    ipp_send,inp_send)
       do k_rlm = 1, nidx_rlm(1)
         do lp_rtm = nidx_rtm(2)/2+1, nl_rtm
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
@@ -406,6 +410,7 @@
           end do
         end do
       end do
+!$omp end parallel do
 !
       end subroutine cal_vr_rtm_vec_testloop
 !
