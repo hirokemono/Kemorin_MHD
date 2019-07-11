@@ -88,8 +88,6 @@
 !
       nkrs = (3*nvector + nscalar) * sph_rlm%nidx_rlm(1)
       nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
-      write(*,*) 'bwd nkrs', nkrs, WK_l_tst%nkrs
-      write(*,*) 'bwd nkrt', nkrt, WK_l_tst%nkrt
 !
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
         jst = idx_trns%lstack_rlm(mp_rlm-1)
@@ -105,6 +103,7 @@
      &        WK_l_tst%pol_o(1), WK_l_tst%tor_o(1) )
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
 !
+!$omp parallel do private(ip,lst_rtm)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%Fmat(ip)%lst_rtm
 !   even l-m
@@ -144,6 +143,7 @@
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
           if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
         end do
+!$omp end parallel do
 !
       end do
 !
