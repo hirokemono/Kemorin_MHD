@@ -86,7 +86,7 @@
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
-      nkrs = ncomp * sph_rlm%nidx_rlm(1)
+      nkrs = (3*nvector + nscalar) * sph_rlm%nidx_rlm(1)
       nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
       write(*,*) 'bwd nkrs', nkrs, WK_l_tst%nkrs
       write(*,*) 'bwd nkrt', nkrt, WK_l_tst%nkrt
@@ -172,11 +172,11 @@
 !
       integer(kind = kint), intent(in) :: nvector, nscalar
       real(kind = kreal), intent(inout)                                 &
-     &           :: pol_e(ncomp_recv,nidx_rlm(1),n_jk_e)
+     &           :: pol_e(3*nvector+nscalar,nidx_rlm(1),n_jk_e)
       real(kind = kreal), intent(inout)                                 &
      &           :: tor_e(2*nvector,nidx_rlm(1),n_jk_e)
       real(kind = kreal), intent(inout)                                 &
-     &           :: pol_o(ncomp_recv,nidx_rlm(1),n_jk_o)
+     &           :: pol_o(3*nvector+nscalar,nidx_rlm(1),n_jk_o)
       real(kind = kreal), intent(inout)                                 &
      &           :: tor_o(2*nvector,nidx_rlm(1),n_jk_o)
 !
@@ -274,11 +274,11 @@
 !
       integer(kind = kint), intent(in) :: nvector, nscalar
       real(kind = kreal), intent(inout)                             &
-     &           :: symp_r(ncomp_send,nidx_rlm(1),nle_rtm)
+     &           :: symp_r(3*nvector+nscalar,nidx_rlm(1),nle_rtm)
       real(kind = kreal), intent(in)                                &
      &           :: asmp_p(2*nvector,nidx_rlm(1),nle_rtm)
       real(kind = kreal), intent(inout)                             &
-     &           :: asmp_r(ncomp_send,nidx_rlm(1),nle_rtm)
+     &           :: asmp_r(3*nvector+nscalar,nidx_rlm(1),nle_rtm)
       real(kind = kreal), intent(in)                                &
      &           :: symp_p(2*nvector,nidx_rlm(1),nle_rtm)
 !
