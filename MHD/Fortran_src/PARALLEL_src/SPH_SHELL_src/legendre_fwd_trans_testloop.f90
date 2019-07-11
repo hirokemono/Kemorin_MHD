@@ -104,8 +104,8 @@
      &        WK_l_tst%Fmat(ip)%nle_rtm,  &
      &        WK_l_tst%Fmat(ip)%nlo_rtm,  &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,    &
-     &        WK_l_tst%symp_r(1), WK_l_tst%asmp_p(1),             &
-     &        WK_l_tst%asmp_r(1), WK_l_tst%symp_p(1) )
+     &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1),             &
+     &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1) )
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+15)
 !
 !  even l-m
@@ -114,24 +114,24 @@
      &       (nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_e, &
      &        WK_l_tst%Fmat(ip)%nle_rtm,      &
      &        WK_l_tst%Pmat(mp_rlm)%Pse_jt(1,lst_rtm+1),     &
-     &        WK_l_tst%symp_r(1), WK_l_tst%Smat(1)%pol_e(1))
+     &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Smat(1)%pol_e(1))
           call matmul_fwd_leg_trans_tstlop                              &
      &       (nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_e, &
      &        WK_l_tst%Fmat(ip)%nle_rtm,      &
      &        WK_l_tst%Pmat(mp_rlm)%dPsedt_jt(1,lst_rtm+1),     &
-     &        WK_l_tst%asmp_p(1), WK_l_tst%Smat(1)%tor_e(1))
+     &        WK_l_tst%Fmat(ip)%asmp_p(1), WK_l_tst%Smat(1)%tor_e(1))
 !
 !  odd l-m
           call matmul_fwd_leg_trans_tstlop                              &
      &       (nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_o, &
      &        WK_l_tst%Fmat(ip)%nle_rtm,      &
      &        WK_l_tst%Pmat(mp_rlm)%Pso_jt(1,lst_rtm+1),     &
-     &        WK_l_tst%asmp_r(1), WK_l_tst%Smat(1)%pol_o(1))
+     &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Smat(1)%pol_o(1))
           call matmul_fwd_leg_trans_tstlop                              &
      &       (nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_o, &
      &        WK_l_tst%Fmat(ip)%nle_rtm,      &
      &        WK_l_tst%Pmat(mp_rlm)%dPsodt_jt(1,lst_rtm+1),    &
-     &        WK_l_tst%symp_p(1), WK_l_tst%Smat(1)%tor_o(1))
+     &        WK_l_tst%Fmat(ip)%symp_p(1), WK_l_tst%Smat(1)%tor_o(1))
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
