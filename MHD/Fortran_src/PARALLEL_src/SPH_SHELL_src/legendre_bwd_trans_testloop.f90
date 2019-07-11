@@ -78,8 +78,8 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
       integer(kind = kint) :: mp_rlm
-      integer(kind = kint) :: nkrs, nkrt, nle, nlo
-      integer(kind = kint) :: jst
+      integer(kind = kint) :: nkrs, nkrt, nle
+      integer(kind = kint) :: ip, jst
 !
 !
 !$omp parallel workshare
@@ -129,16 +129,19 @@
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+13)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
+        do ip = 1, np_smp
           nle = WK_l_tst%Fmat(np_smp)%lst_rtm                           &
      &         + WK_l_tst%Fmat(np_smp)%nle_rtm
-          nlo = WK_l_tst%Fmat(np_smp)%lst_rtm                           &
-     &         + WK_l_tst%Fmat(np_smp)%nlo_rtm
           call cal_vr_rtm_vec_testloop                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, mp_rlm, nle, nlo,    &
+     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, mp_rlm, nle,    &
+     &        WK_l_tst%Fmat(ip)%lst_rtm,    &
+     &        WK_l_tst%Fmat(np_smp)%nle_rtm,  &
+     &        WK_l_tst%Fmat(np_smp)%nlo_rtm,  &
      &        WK_l_tst%symp_r(1), WK_l_tst%asmp_p(1),             &
      &        WK_l_tst%asmp_r(1), WK_l_tst%symp_p(1),             &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
+         end do
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
 !
       end do
@@ -250,7 +253,7 @@
 !
       subroutine cal_vr_rtm_vec_testloop(nnod_rtm, nidx_rtm,      &
      &          istep_rtm, nidx_rlm, asin_theta_1d_rtm,                 &
-     &          mp_rlm, nle_rtm, nlo_rtm, symp_r, asmp_p,       &
+     &          mp_rlm, nl_rtm, lst_rtm, nle_rtm, nlo_rtm, symp_r, asmp_p,       &
      &          asmp_r, symp_p, ncomp, nvector, nscalar,      &
      &          irev_sr_rtm, n_WS, WS)
 !
@@ -262,31 +265,33 @@
      &           :: asin_theta_1d_rtm(nidx_rtm(2))
 !
       integer(kind = kint), intent(in) :: mp_rlm
+      integer(kind = kint), intent(in) :: nl_rtm, lst_rtm
       integer(kind = kint), intent(in) :: nle_rtm, nlo_rtm
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       real(kind = kreal), intent(inout)                             &
-     &           :: symp_r(ncomp,nidx_rlm(1),nle_rtm)
+     &           :: symp_r(ncomp,nidx_rlm(1),nl_rtm)
       real(kind = kreal), intent(in)                                &
-     &           :: asmp_p(2*nvector,nidx_rlm(1),nle_rtm)
+     &           :: asmp_p(2*nvector,nidx_rlm(1),nl_rtm)
       real(kind = kreal), intent(inout)                             &
-     &           :: asmp_r(ncomp,nidx_rlm(1),nle_rtm)
+     &           :: asmp_r(ncomp,nidx_rlm(1),nl_rtm)
       real(kind = kreal), intent(in)                                &
-     &           :: symp_p(2*nvector,nidx_rlm(1),nle_rtm)
+     &           :: symp_p(2*nvector,nidx_rlm(1),nl_rtm)
 !
       integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       integer(kind = kint) :: k_rlm, nd, mn_rlm
-      integer(kind = kint) :: lp_rtm, ln_rtm
+      integer(kind = kint) :: lt, lp_rtm, ln_rtm
       integer(kind = kint) :: ip_rtpm, in_rtpm, ip_rtnm, in_rtnm
       integer(kind = kint) :: ipp_send, inp_send, ipn_send, inn_send
 !
 !
       mn_rlm = nidx_rtm(3) - mp_rlm + 1
 !
-      do lp_rtm = 1, nle_rtm
+      do lt = 1, nle_rtm
+        lp_rtm = lst_rtm + lt
         do nd = 1, nvector
           do k_rlm = 1, nidx_rlm(1)
             symp_r(3*nd-1,k_rlm,lp_rtm) = - symp_r(3*nd-1,k_rlm,lp_rtm) &
@@ -301,7 +306,8 @@
         end do
       end do
 !
-      do lp_rtm = 1, nlo_rtm
+      do lt = 1, nlo_rtm
+        lp_rtm = lst_rtm + lt
         do k_rlm = 1, nidx_rlm(1)
           ln_rtm =  nidx_rtm(2) - lp_rtm + 1
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
@@ -375,7 +381,8 @@
         end do
       end do
 !
-      do lp_rtm = nlo_rtm+1, nle_rtm
+      do lt = nlo_rtm+1, nle_rtm
+        lp_rtm = lst_rtm + lt
         do k_rlm = 1, nidx_rlm(1)
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
      &                + (k_rlm-1) *  istep_rtm(1)                       &
