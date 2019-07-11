@@ -281,12 +281,11 @@
       integer(kind = kint) :: ipp_send, inp_send, ipn_send, inn_send
 !
 !
-       mn_rlm = nidx_rtm(3) - mp_rlm + 1
+      mn_rlm = nidx_rtm(3) - mp_rlm + 1
 !
-!$omp parallel do private(nd,k_rlm,lp_rtm)
-      do nd = 1, nvector
-        do k_rlm = 1, nidx_rlm(1)
-          do lp_rtm = 1, nl_rtm
+      do lp_rtm = 1, nl_rtm
+        do nd = 1, nvector
+          do k_rlm = 1, nidx_rlm(1)
             symp_r(3*nd-1,k_rlm,lp_rtm) = - symp_r(3*nd-1,k_rlm,lp_rtm) &
      &                                    * asin_theta_1d_rtm(lp_rtm)
             symp_r(3*nd,  k_rlm,lp_rtm) = - symp_r(3*nd,  k_rlm,lp_rtm) &
@@ -298,13 +297,9 @@
           end do
         end do
       end do
-!$omp end parallel do
 !
-!$omp parallel do private(k_rlm,nd,lp_rtm,ln_rtm,                    &
-!$omp&                    ip_rtpm,in_rtpm,ip_rtnm,in_rtnm,              &
-!$omp&                    ipp_send,inp_send,ipn_send,inn_send)
-      do k_rlm = 1, nidx_rlm(1)
-        do lp_rtm = 1, nidx_rtm(2)/2
+      do lp_rtm = 1, nidx_rtm(2)/2
+        do k_rlm = 1, nidx_rlm(1)
           ln_rtm =  nidx_rtm(2) - lp_rtm + 1
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
      &                + (k_rlm-1) *  istep_rtm(1)                       &
@@ -376,12 +371,9 @@
           end do
         end do
       end do
-!$omp end parallel do
 !
-!$omp parallel do private(k_rlm,nd,lp_rtm,ip_rtpm,in_rtpm,    &
-!$omp&                    ipp_send,inp_send)
-      do k_rlm = 1, nidx_rlm(1)
-        do lp_rtm = nidx_rtm(2)/2+1, nl_rtm
+      do lp_rtm = nidx_rtm(2)/2+1, nl_rtm
+        do k_rlm = 1, nidx_rlm(1)
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
      &                + (k_rlm-1) *  istep_rtm(1)                       &
      &                + (mp_rlm-1) * istep_rtm(3)
@@ -410,7 +402,6 @@
           end do
         end do
       end do
-!$omp end parallel do
 !
       end subroutine cal_vr_rtm_vec_testloop
 !
