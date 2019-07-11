@@ -78,7 +78,6 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       integer(kind = kint) :: mp_rlm, nle_rtm, nlo_rtm
-      integer(kind = kint) :: nkrs,  nkrt
       integer(kind = kint) :: jst
 !
 !
