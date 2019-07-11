@@ -149,16 +149,6 @@
 !
 !
       type spectr_matrix_testloop
-!>        Maximum matrix size for spectr data
-        integer(kind = kint) :: nvec_jk
-!>        Maximum matrix size for spectr data
-        integer(kind = kint) :: nscl_jk
-!
-!>       size for work area of pol_e and pol_o
-        integer(kind = kint) :: n_pol_e
-!>       size for work area of tor_e and tor_o
-        integer(kind = kint) :: n_tor_e
-!
 !>         Poloidal component with evem (l-m)  
 !!@n        real(kind = kreal), allocatable :: pol_e(:,:)
 !!@n       Phi derivative of toroidal component with evem (l-m)
@@ -353,6 +343,9 @@
      &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3),                     &
      &    leg, idx_trns, WK_l_tst)
 !
+      call alloc_leg_sym_matmul_test                                    &
+     &   (sph_rtm%nidx_rtm, nvector, nscalar, idx_trns, WK_l_tst)
+!
       allocate(WK_l_tst%Fmat(np_smp))
       allocate(WK_l_tst%Smat(np_smp))
 !
@@ -360,11 +353,8 @@
      &   (np_smp, sph_rtm%nidx_rtm(1), sph_rtm%istack_rtm_lt_smp,       &
      &    nvector, nscalar, WK_l_tst%Fmat)
       call alloc_field_mat_tstlop(np_smp, WK_l_tst%Fmat)
-      call alloc_spectr_mat_tstlop(np_smp, sph_rtm%nidx_rtm,            &
-     &    nvector, nscalar, idx_trns, WK_l_tst%Smat)
-!
-      call alloc_leg_sym_matmul_test                                    &
-     &   (sph_rtm%nidx_rtm, nvector, nscalar, idx_trns, WK_l_tst)
+      call alloc_spectr_mat_tstlop                                      &
+     &   (WK_l_tst%n_pol_e, WK_l_tst%n_tor_e, np_smp, WK_l_tst%Smat)
 !
       end subroutine init_legendre_testloop
 !
@@ -428,10 +418,6 @@
 !
       WK_l_tst%n_pol_e = 3*WK_l_tst%nvec_jk + WK_l_tst%nscl_jk
       WK_l_tst%n_tor_e = 2*WK_l_tst%nvec_jk
-      allocate(WK_l_tst%pol_e(WK_l_tst%n_pol_e))
-      allocate(WK_l_tst%tor_e(WK_l_tst%n_tor_e))
-      allocate(WK_l_tst%pol_o(WK_l_tst%n_pol_e))
-      allocate(WK_l_tst%tor_o(WK_l_tst%n_tor_e))
 !
       WK_l_tst%nvec_lk = ((nidx_rtm(2)+1)/2) * nidx_rtm(1) * nvector
       WK_l_tst%nscl_lk = ((nidx_rtm(2)+1)/2) * nidx_rtm(1) * nscalar
@@ -552,8 +538,6 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
 !
-      deallocate(WK_l_tst%pol_e, WK_l_tst%tor_e)
-      deallocate(WK_l_tst%pol_o, WK_l_tst%tor_o)
       deallocate(WK_l_tst%symp_r, WK_l_tst%symp_p)
       deallocate(WK_l_tst%asmp_r, WK_l_tst%asmp_p)
 !
@@ -693,13 +677,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_spectr_mat_tstlop(np_smp, nidx_rtm,              &
-     &          nvector, nscalar, idx_trns, Smat)
+      subroutine alloc_spectr_mat_tstlop                                &
+     &          (n_pol_e, n_tor_e, np_smp, Smat)
 !
       integer(kind = kint), intent(in) :: np_smp
-      integer(kind = kint), intent(in) :: nidx_rtm(3)
-      integer(kind = kint), intent(in) :: nvector, nscalar
-      type(index_4_sph_trans), intent(in) :: idx_trns
+      integer(kind = kint), intent(in) :: n_pol_e, n_tor_e
 !
       type(spectr_matrix_testloop), intent(inout) :: Smat(np_smp)
 !
@@ -707,26 +689,18 @@
 !
 !
       do ip = 1, np_smp
-        Smat(ip)%nvec_jk = ((idx_trns%maxdegree_rlm+1)/2)               &
-     &                    * nidx_rtm(1) * nvector
-        Smat(ip)%nscl_jk = ((idx_trns%maxdegree_rlm+1)/2)               &
-     &                    * nidx_rtm(1) * nscalar
-!
-        Smat(ip)%n_pol_e = 3*Smat(ip)%nvec_jk + Smat(ip)%nscl_jk
-        Smat(ip)%n_tor_e = 2*Smat(ip)%nvec_jk
-!
-        allocate(Smat(ip)%pol_e(Smat(ip)%n_pol_e))
-        allocate(Smat(ip)%pol_o(Smat(ip)%n_pol_e))
-        allocate(Smat(ip)%tor_e(Smat(ip)%n_tor_e))
-        allocate(Smat(ip)%tor_o(Smat(ip)%n_tor_e))
+        allocate(Smat(ip)%pol_e(n_pol_e))
+        allocate(Smat(ip)%pol_o(n_pol_e))
+        allocate(Smat(ip)%tor_e(n_tor_e))
+        allocate(Smat(ip)%tor_o(n_tor_e))
 !
 !$omp parallel workshare
-        Smat(ip)%pol_e(1:Smat(ip)%n_pol_e) = 0.0d0
-        Smat(ip)%pol_o(1:Smat(ip)%n_pol_e) = 0.0d0
+        Smat(ip)%pol_e(1:n_pol_e) = 0.0d0
+        Smat(ip)%pol_o(1:n_pol_e) = 0.0d0
 !$omp end parallel workshare
 !$omp parallel workshare
-        Smat(ip)%tor_o(1:Smat(ip)%n_tor_e) = 0.0d0
-        Smat(ip)%tor_e(1:Smat(ip)%n_tor_e) = 0.0d0
+        Smat(ip)%tor_o(1:n_tor_e) = 0.0d0
+        Smat(ip)%tor_e(1:n_tor_e) = 0.0d0
 !$omp end parallel workshare
       end do
 !
