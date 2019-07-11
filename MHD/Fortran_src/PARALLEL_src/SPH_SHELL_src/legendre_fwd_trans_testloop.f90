@@ -141,21 +141,30 @@
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
+!$omp parallel private(ip)
         do ip = 2, np_smp
-
+!$omp workshare
           WK_l_tst%Smat(1)%pol_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_e)     &
      &          = WK_l_tst%Smat(1)%pol_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_e)   &
      &           + WK_l_tst%Smat(ip)%pol_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_e)
+!$omp end workshare nowait
+!$omp workshare
           WK_l_tst%Smat(1)%tor_e(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_e)     &
      &          = WK_l_tst%Smat(1)%tor_e(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_e)   &
      &           + WK_l_tst%Smat(ip)%tor_e(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_e)
+!$omp end workshare nowait
+!$omp workshare
           WK_l_tst%Smat(1)%pol_o(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_o)     &
      &          = WK_l_tst%Smat(1)%pol_o(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_o)   &
      &           + WK_l_tst%Smat(ip)%pol_o(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_o)
+!$omp end workshare nowait
+!$omp workshare
           WK_l_tst%Smat(1)%tor_o(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_o)     &
      &          = WK_l_tst%Smat(1)%tor_o(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_o)   &
      &           + WK_l_tst%Smat(ip)%tor_o(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_o)
+!$omp end workshare nowait
         end do
+!$omp end parallel
 !
           call cal_sp_rlm_vec_testloop                            &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                       &
