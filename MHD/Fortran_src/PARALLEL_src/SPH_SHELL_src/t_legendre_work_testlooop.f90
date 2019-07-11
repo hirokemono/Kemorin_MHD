@@ -218,50 +218,6 @@
 !>       size for work area of tor_e and tor_o
         integer(kind = kint) :: n_tor_e
 !
-!>         Poloidal component with evem (l-m)  
-!!@n        real(kind = kreal), allocatable :: pol_e(:,:)
-!!@n       Phi derivative of toroidal component with evem (l-m)
-!!@n        real(kind = kreal), allocatable :: dtordp_e(:,:)
-!!@n       Phi derivative of poloidal component with evem (l-m)
-!!@n        real(kind = kreal), allocatable :: dpoldp_e(:,:)
-!!@n       Scalar with evem (l-m)
-!!@n        real(kind = kreal), allocatable :: scl_e(:,:)
-!!@n       pol_e =    Pol_e(          1:  nvec_jk,ip)
-!!@n       dtordp_e = Pol_e(  nvec_jk+1:2*nvec_jk,ip)
-!!@n       dpoldp_e = Pol_e(2*nvec_jk+1:3*nvec_jk,ip)
-!!@n       scl_e =    Pol_e(3*nvec_jk+1:3*nvec_jk+nscl_jk,ip)
-        real(kind = kreal), allocatable :: pol_e(:)
-!
-!>      Theta derivative of poloidal component with evem (l-m)
-!!@n        real(kind = kreal), allocatable :: dtordt_e(:,:)
-!!@n    Theta derivative of Toroidal component with evem (l-m)
-!!@n        real(kind = kreal), allocatable :: dpoldt_e(:,:)
-!!@n       dtordt_e = tor_e(          1:  nvec_jk,ip)
-!!@n       dpoldt_e = tor_e(  nvec_jk+1:2*nvec_jk,ip)
-        real(kind = kreal), allocatable :: tor_e(:)
-!
-!>       Poloidal component with odd (l-m)
-!!@n         real(kind = kreal), allocatable :: pol_o(:,:)
-!!@n       Phi derivative of toroidal component with odd (l-m)
-!!@n        real(kind = kreal), allocatable :: dtordp_o(:,:)
-!!@n       Phi derivative of Poloidal component with odd (l-m)
-!!@n        real(kind = kreal), allocatable :: dpoldp_o(:,:)
-!!@n       Scalar with odd (l-m)
-!!@n        real(kind = kreal), allocatable :: scl_o(:,:)
-!!@n       pol_o =    pol_o(          1:  nvec_jk,ip)
-!!@n       dtordp_o = pol_o(  nvec_jk+1:2*nvec_jk,ip)
-!!@n       dpoldp_o = pol_o(2*nvec_jk+1:3*nvec_jk,ip)
-!!@n       scl_o =    pol_o(3*nvec_jk+1:3*nvec_jk+nscl_jk,ip)
-        real(kind = kreal), allocatable :: pol_o(:)
-!
-!>       Theta derivative of Toroidal component with odd (l-m)
-!!@n        real(kind = kreal), allocatable :: dtordt_o(:,:)
-!!@n       Theta derivative of Poloidal component with odd (l-m)
-!!@n        real(kind = kreal), allocatable :: dpoldt_o(:,:)
-!!@n       dtordt_o = tor_o(          1:  nvec_jk,ip)
-!!@n       dpoldt_o = tor_o(  nvec_jk+1:2*nvec_jk,ip)
-        real(kind = kreal), allocatable :: tor_o(:)
-!
 !
 !>       Maximum matrix size for field data
         integer(kind = kint) :: nvec_lk
@@ -272,50 +228,6 @@
         integer(kind = kint) :: n_sym_r
 !>       size for work area of symp_p and asmp_p
         integer(kind = kint) :: n_sym_p
-!
-!>         Symmetric radial component
-!!@n        real(kind = kreal), allocatable :: symp_r(:,:)
-!!@n       Symmetric theta-component with condugate order
-!!@n        real(kind = kreal), allocatable :: symn_t(:,:)
-!!@n       Symmetric phi-component with condugate order
-!!@n        real(kind = kreal), allocatable :: symn_p(:,:)
-!!@n       Symmetric scalar component
-!!@n        real(kind = kreal), allocatable :: symp(:,:)
-!!@n       symp_r = symp_r(          1:  nvec_lk,ip)
-!!@n       symn_t = symp_r(  nvec_lk+1:2*nvec_lk,ip)
-!!@n       symn_p = symp_r(2*nvec_lk+1:3*nvec_lk,ip)
-!!@n       symp =   symp_r(3*nvec_lk+1:3*nvec_lk+nscl_lk,ip)
-        real(kind = kreal), allocatable :: symp_r(:)
-!
-!>         Anti-symmetric phi-component
-!!@n        real(kind = kreal), allocatable :: asmp_p(:,:)
-!!@n       Anti-symmetric theta-component
-!!@n        real(kind = kreal), allocatable :: asmp_t(:,:)
-!!@n       asmp_p = asmp_p(          1:  nvec_lk,ip)
-!!@n       asmp_t = asmp_p(  nvec_lk+1:2*nvec_lk,ip)
-        real(kind = kreal), allocatable :: asmp_p(:)
-!
-!!         Anti-symmetric radial component
-!!@n        real(kind = kreal), allocatable :: asmp_r(:,:)
-!!@n       Anti-symmetric theta-component with condugate order
-!!@n        real(kind = kreal), allocatable :: asmn_t(:,:)
-!!@n       Anti-symmetric phi-component with condugate order
-!!@n        real(kind = kreal), allocatable :: asmn_p(:,:)
-!!@n       Anti-symmetric scalar component
-!!@n        real(kind = kreal), allocatable :: asmp(:,:)
-!!@n       asmp_r = asmp_r(          1:  nvec_lk,ip)
-!!@n       asmn_t = asmp_r(  nvec_lk+1:2*nvec_lk,ip)
-!!@n       asmn_p = asmp_r(2*nvec_lk+1:3*nvec_lk,ip)
-!!@n       asmp =   asmp_r(3*nvec_lk+1:3*nvec_lk+nscl_lk,ip)
-        real(kind = kreal), allocatable :: asmp_r(:)
-!
-!>        Symmetric phi-component
-!!@n        real(kind = kreal), allocatable :: symp_p(:,:)
-!!@n       Symmetric theta-component
-!!@n        real(kind = kreal), allocatable :: symp_t(:,:)
-!!@n       symp_p = symp_p(          1:  nvec_lk,ip)
-!!@n       symp_t = symp_p(  nvec_lk+1:2*nvec_lk,ip)
-        real(kind = kreal), allocatable :: symp_p(:)
       end type leg_trns_testloop_work
 !
       private :: const_symmetric_leg_lj_test
@@ -424,10 +336,6 @@
 !
       WK_l_tst%n_sym_r = 3*WK_l_tst%nvec_lk + WK_l_tst%nscl_lk
       WK_l_tst%n_sym_p = 2*WK_l_tst%nvec_lk
-      allocate(WK_l_tst%symp_r(WK_l_tst%n_sym_r))
-      allocate(WK_l_tst%symp_p(WK_l_tst%n_sym_p))
-      allocate(WK_l_tst%asmp_r(WK_l_tst%n_sym_r))
-      allocate(WK_l_tst%asmp_p(WK_l_tst%n_sym_p))
 !
       end subroutine alloc_leg_sym_matmul_test
 !
@@ -537,9 +445,6 @@
 !
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
-!
-      deallocate(WK_l_tst%symp_r, WK_l_tst%symp_p)
-      deallocate(WK_l_tst%asmp_r, WK_l_tst%asmp_p)
 !
       call dealloc_symmetric_leg_lj_test(WK_l_tst)
 !
