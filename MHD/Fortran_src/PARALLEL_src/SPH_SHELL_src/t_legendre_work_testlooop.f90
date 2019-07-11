@@ -147,6 +147,64 @@
         real(kind = kreal), allocatable :: symp_p(:)
       end type field_matrix_testloop
 !
+!
+      type spectr_matrix_testloop
+!>        Maximum matrix size for spectr data
+        integer(kind = kint) :: nvec_jk
+!>        Maximum matrix size for spectr data
+        integer(kind = kint) :: nscl_jk
+!
+!>       size for work area of pol_e and pol_o
+        integer(kind = kint) :: n_pol_e
+!>       size for work area of tor_e and tor_o
+        integer(kind = kint) :: n_tor_e
+!
+!>         Poloidal component with evem (l-m)  
+!!@n        real(kind = kreal), allocatable :: pol_e(:,:)
+!!@n       Phi derivative of toroidal component with evem (l-m)
+!!@n        real(kind = kreal), allocatable :: dtordp_e(:,:)
+!!@n       Phi derivative of poloidal component with evem (l-m)
+!!@n        real(kind = kreal), allocatable :: dpoldp_e(:,:)
+!!@n       Scalar with evem (l-m)
+!!@n        real(kind = kreal), allocatable :: scl_e(:,:)
+!!@n       pol_e =    Pol_e(          1:  nvec_jk,ip)
+!!@n       dtordp_e = Pol_e(  nvec_jk+1:2*nvec_jk,ip)
+!!@n       dpoldp_e = Pol_e(2*nvec_jk+1:3*nvec_jk,ip)
+!!@n       scl_e =    Pol_e(3*nvec_jk+1:3*nvec_jk+nscl_jk,ip)
+        real(kind = kreal), allocatable :: pol_e(:)
+!
+!>      Theta derivative of poloidal component with evem (l-m)
+!!@n        real(kind = kreal), allocatable :: dtordt_e(:,:)
+!!@n    Theta derivative of Toroidal component with evem (l-m)
+!!@n        real(kind = kreal), allocatable :: dpoldt_e(:,:)
+!!@n       dtordt_e = tor_e(          1:  nvec_jk,ip)
+!!@n       dpoldt_e = tor_e(  nvec_jk+1:2*nvec_jk,ip)
+        real(kind = kreal), allocatable :: tor_e(:)
+!
+!>       Poloidal component with odd (l-m)
+!!@n         real(kind = kreal), allocatable :: pol_o(:,:)
+!!@n       Phi derivative of toroidal component with odd (l-m)
+!!@n        real(kind = kreal), allocatable :: dtordp_o(:,:)
+!!@n       Phi derivative of Poloidal component with odd (l-m)
+!!@n        real(kind = kreal), allocatable :: dpoldp_o(:,:)
+!!@n       Scalar with odd (l-m)
+!!@n        real(kind = kreal), allocatable :: scl_o(:,:)
+!!@n       pol_o =    pol_o(          1:  nvec_jk,ip)
+!!@n       dtordp_o = pol_o(  nvec_jk+1:2*nvec_jk,ip)
+!!@n       dpoldp_o = pol_o(2*nvec_jk+1:3*nvec_jk,ip)
+!!@n       scl_o =    pol_o(3*nvec_jk+1:3*nvec_jk+nscl_jk,ip)
+        real(kind = kreal), allocatable :: pol_o(:)
+!
+!>       Theta derivative of Toroidal component with odd (l-m)
+!!@n        real(kind = kreal), allocatable :: dtordt_o(:,:)
+!!@n       Theta derivative of Poloidal component with odd (l-m)
+!!@n        real(kind = kreal), allocatable :: dpoldt_o(:,:)
+!!@n       dtordt_o = tor_o(          1:  nvec_jk,ip)
+!!@n       dpoldt_o = tor_o(  nvec_jk+1:2*nvec_jk,ip)
+        real(kind = kreal), allocatable :: tor_o(:)
+      end type spectr_matrix_testloop
+!
+!
 !>      Work structure for Legendre trasform by large matmul
       type leg_trns_testloop_work
 !>         Number of harmonics order
@@ -154,6 +212,8 @@
         type(leg_matrix_testloop), allocatable :: Pmat(:)
 !
         type(field_matrix_testloop), allocatable :: Fmat(:)
+!
+        type(spectr_matrix_testloop), allocatable :: Smat(:)
 !
         integer(kind = kint) :: nkrs
         integer(kind = kint) :: nkrt
@@ -293,18 +353,18 @@
      &    sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3),                     &
      &    leg, idx_trns, WK_l_tst)
 !
-      WK_l_tst%nkrs = (3*nvector + nscalar) * sph_rtm%nidx_rtm(1)
-      WK_l_tst%nkrt = 2*nvector * sph_rtm%nidx_rtm(1)
-!
       allocate(WK_l_tst%Fmat(np_smp))
+      allocate(WK_l_tst%Smat(np_smp))
+!
       call count_size_of_field_mat_tstlop                               &
      &   (np_smp, sph_rtm%nidx_rtm(1), sph_rtm%istack_rtm_lt_smp,       &
-     &    nvector, nscalar, WK_l_tst%nkrs, WK_l_tst%nkrt, WK_l_tst%Fmat)
+     &    nvector, nscalar, WK_l_tst%Fmat)
       call alloc_field_mat_tstlop(np_smp, WK_l_tst%Fmat)
+      call alloc_spectr_mat_tstlop(np_smp, sph_rtm%nidx_rtm,            &
+     &    nvector, nscalar, idx_trns, WK_l_tst%Smat)
 !
       call alloc_leg_sym_matmul_test                                    &
-     &   (sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(1),                     &
-     &    nvector, nscalar, idx_trns, WK_l_tst)
+     &   (sph_rtm%nidx_rtm, nvector, nscalar, idx_trns, WK_l_tst)
 !
       end subroutine init_legendre_testloop
 !
@@ -351,11 +411,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_leg_sym_matmul_test(nth_rtm, maxidx_rtm_r_smp,   &
-     &          nvector, nscalar, idx_trns, WK_l_tst)
+      subroutine alloc_leg_sym_matmul_test                              &
+     &         (nidx_rtm, nvector, nscalar, idx_trns, WK_l_tst)
 !
-      integer(kind = kint), intent(in) :: nth_rtm
-      integer(kind = kint), intent(in) :: maxidx_rtm_r_smp
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: nvector, nscalar
       type(index_4_sph_trans), intent(in) :: idx_trns
 !
@@ -363,9 +422,9 @@
 !
 !
       WK_l_tst%nvec_jk = ((idx_trns%maxdegree_rlm+1)/2)                 &
-     &         * maxidx_rtm_r_smp * nvector
+     &                  * nidx_rtm(1) * nvector
       WK_l_tst%nscl_jk = ((idx_trns%maxdegree_rlm+1)/2)                 &
-     &         * maxidx_rtm_r_smp * nscalar
+     &                  * nidx_rtm(1) * nscalar
 !
       WK_l_tst%n_pol_e = 3*WK_l_tst%nvec_jk + WK_l_tst%nscl_jk
       WK_l_tst%n_tor_e = 2*WK_l_tst%nvec_jk
@@ -374,8 +433,8 @@
       allocate(WK_l_tst%pol_o(WK_l_tst%n_pol_e))
       allocate(WK_l_tst%tor_o(WK_l_tst%n_tor_e))
 !
-      WK_l_tst%nvec_lk = ((nth_rtm+1)/2) * maxidx_rtm_r_smp * nvector
-      WK_l_tst%nscl_lk = ((nth_rtm+1)/2) * maxidx_rtm_r_smp * nscalar
+      WK_l_tst%nvec_lk = ((nidx_rtm(2)+1)/2) * nidx_rtm(1) * nvector
+      WK_l_tst%nscl_lk = ((nidx_rtm(2)+1)/2) * nidx_rtm(1) * nscalar
 !
       WK_l_tst%n_sym_r = 3*WK_l_tst%nvec_lk + WK_l_tst%nscl_lk
       WK_l_tst%n_sym_p = 2*WK_l_tst%nvec_lk
@@ -500,7 +559,9 @@
 !
       call dealloc_symmetric_leg_lj_test(WK_l_tst)
 !
+      call dealloc_spectr_mat_tstlop(np_smp, WK_l_tst%Smat)
       call dealloc_field_mat_tstlop(np_smp, WK_l_tst%Fmat)
+      deallocate(WK_l_tst%Smat)
       deallocate(WK_l_tst%Fmat)
 !
       end subroutine dealloc_leg_vec_test
@@ -550,12 +611,12 @@
 !
       subroutine count_size_of_field_mat_tstlop                         &
      &         (np_smp, nri_rtm, istack_rtm_lt_smp, nvector, nscalar,   &
-     &          nkrs, nkrt, Fmat)
+     &          Fmat)
 !
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: nri_rtm
       integer(kind = kint), intent(in) :: istack_rtm_lt_smp(0:np_smp)
-      integer(kind = kint), intent(in) :: nvector, nscalar, nkrs, nkrt
+      integer(kind = kint), intent(in) :: nvector, nscalar
 !
       type(field_matrix_testloop), intent(inout) :: Fmat(np_smp)
 !
@@ -575,8 +636,9 @@
       do ip = 1, np_smp
         Fmat(ip)%nvec_lk = Fmat(ip)%nle_rtm * nri_rtm * nvector
         Fmat(ip)%nscl_lk = Fmat(ip)%nle_rtm * nri_rtm * nscalar
-        Fmat(ip)%n_sym_r = Fmat(ip)%nle_rtm * nkrs
-        Fmat(ip)%n_sym_p = Fmat(ip)%nle_rtm * nkrt
+        Fmat(ip)%n_sym_r = Fmat(ip)%nle_rtm * nri_rtm                   &
+     &                    * (3*nvector + nscalar)
+        Fmat(ip)%n_sym_p = Fmat(ip)%nle_rtm * nri_rtm * 2*nvector
       end do
 !
       end subroutine count_size_of_field_mat_tstlop
@@ -627,6 +689,67 @@
       end do
 !
       end subroutine dealloc_field_mat_tstlop
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_spectr_mat_tstlop(np_smp, nidx_rtm,              &
+     &          nvector, nscalar, idx_trns, Smat)
+!
+      integer(kind = kint), intent(in) :: np_smp
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: nvector, nscalar
+      type(index_4_sph_trans), intent(in) :: idx_trns
+!
+      type(spectr_matrix_testloop), intent(inout) :: Smat(np_smp)
+!
+      integer(kind = kint) :: ip
+!
+!
+      do ip = 1, np_smp
+        Smat(ip)%nvec_jk = ((idx_trns%maxdegree_rlm+1)/2)               &
+     &                    * nidx_rtm(1) * nvector
+        Smat(ip)%nscl_jk = ((idx_trns%maxdegree_rlm+1)/2)               &
+     &                    * nidx_rtm(1) * nscalar
+!
+        Smat(ip)%n_pol_e = 3*Smat(ip)%nvec_jk + Smat(ip)%nscl_jk
+        Smat(ip)%n_tor_e = 2*Smat(ip)%nvec_jk
+!
+        allocate(Smat(ip)%pol_e(Smat(ip)%n_pol_e))
+        allocate(Smat(ip)%pol_o(Smat(ip)%n_pol_e))
+        allocate(Smat(ip)%tor_e(Smat(ip)%n_tor_e))
+        allocate(Smat(ip)%tor_o(Smat(ip)%n_tor_e))
+!
+!$omp parallel workshare
+        Smat(ip)%pol_e(1:Smat(ip)%n_pol_e) = 0.0d0
+        Smat(ip)%pol_o(1:Smat(ip)%n_pol_e) = 0.0d0
+!$omp end parallel workshare
+!$omp parallel workshare
+        Smat(ip)%tor_o(1:Smat(ip)%n_tor_e) = 0.0d0
+        Smat(ip)%tor_e(1:Smat(ip)%n_tor_e) = 0.0d0
+!$omp end parallel workshare
+      end do
+!
+      end subroutine alloc_spectr_mat_tstlop
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_spectr_mat_tstlop(np_smp, Smat)
+!
+      integer(kind = kint), intent(in) :: np_smp
+      type(spectr_matrix_testloop), intent(inout) :: Smat(np_smp)
+!
+      integer(kind = kint) :: ip
+!
+!
+      do ip = 1, np_smp
+        deallocate(Smat(ip)%pol_e)
+        deallocate(Smat(ip)%pol_o)
+        deallocate(Smat(ip)%tor_e)
+        deallocate(Smat(ip)%tor_o)
+      end do
+!
+      end subroutine dealloc_spectr_mat_tstlop
 !
 ! -----------------------------------------------------------------------
 !
