@@ -96,8 +96,7 @@
           call set_sp_rlm_vec_testloop                            &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,    &
      &        sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r, g_sph_rlm, &
-     &        jst, WK_l_tst%Pmat(mp_rlm)%n_jk_e,                        &
-     &        WK_l_tst%Pmat(mp_rlm)%n_jk_o,                          &
+     &        jst, WK_l_tst%n_jk_e(mp_rlm),  WK_l_tst%n_jk_o(mp_rlm),   &
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WR, WR,     &
      &        WK_l_tst%Smat(1)%pol_e(1), WK_l_tst%Smat(1)%tor_e(1),    &
      &        WK_l_tst%Smat(1)%pol_o(1), WK_l_tst%Smat(1)%tor_o(1) )
@@ -110,23 +109,23 @@
 !   even l-m
           call matmul_bwd_leg_trans_tstlop                              &
      &       (WK_l_tst%Fmat(ip)%nle_rtm, nkrs,                      &
-     &        WK_l_tst%Pmat(mp_rlm)%n_jk_e,                             &
+     &        WK_l_tst%n_jk_e(mp_rlm),                             &
      &        WK_l_tst%Pmat(mp_rlm)%Pse_jt(1,lst_rtm+1), WK_l_tst%Smat(1)%pol_e(1), &
      &        WK_l_tst%Fmat(ip)%symp_r(1))
           call matmul_bwd_leg_trans_tstlop                              &
      &       (WK_l_tst%Fmat(ip)%nle_rtm, nkrt,                      &
-     &        WK_l_tst%Pmat(mp_rlm)%n_jk_e,              &
+     &        WK_l_tst%n_jk_e(mp_rlm),              &
      &        WK_l_tst%Pmat(mp_rlm)%dPsedt_jt(1,lst_rtm+1), WK_l_tst%Smat(1)%tor_e(1), &
      &        WK_l_tst%Fmat(ip)%asmp_p(1))
 !   odd l-m
           call matmul_bwd_leg_trans_tstlop                              &
      &       (WK_l_tst%Fmat(ip)%nle_rtm, nkrs,                      &
-     &        WK_l_tst%Pmat(mp_rlm)%n_jk_o,               &
+     &        WK_l_tst%n_jk_o(mp_rlm),               &
      &        WK_l_tst%Pmat(mp_rlm)%Pso_jt(1,lst_rtm+1), WK_l_tst%Smat(1)%pol_o(1), &
      &        WK_l_tst%Fmat(ip)%asmp_r(1))
           call matmul_bwd_leg_trans_tstlop                              &
      &       (WK_l_tst%Fmat(ip)%nle_rtm, nkrt,                      &
-     &        WK_l_tst%Pmat(mp_rlm)%n_jk_o,               &
+     &        WK_l_tst%n_jk_o(mp_rlm),               &
      &        WK_l_tst%Pmat(mp_rlm)%dPsodt_jt(1,lst_rtm+1), WK_l_tst%Smat(1)%tor_o(1),     &
      &        WK_l_tst%Fmat(ip)%symp_p(1))
         end do

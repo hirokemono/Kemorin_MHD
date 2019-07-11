@@ -115,24 +115,24 @@
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%Fmat(ip)%lst_rtm
           call matmul_fwd_leg_trans_tstlop                              &
-     &       (nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_e, &
+     &       (nkrs, WK_l_tst%n_jk_e(mp_rlm), &
      &        WK_l_tst%Fmat(ip)%nle_rtm,      &
      &        WK_l_tst%Pmat(mp_rlm)%Pse_jt(1,lst_rtm+1),     &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Smat(ip)%pol_e(1))
           call matmul_fwd_leg_trans_tstlop                              &
-     &       (nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_e, &
+     &       (nkrt, WK_l_tst%n_jk_e(mp_rlm), &
      &        WK_l_tst%Fmat(ip)%nle_rtm,      &
      &        WK_l_tst%Pmat(mp_rlm)%dPsedt_jt(1,lst_rtm+1),     &
      &        WK_l_tst%Fmat(ip)%asmp_p(1), WK_l_tst%Smat(ip)%tor_e(1))
 !
 !  odd l-m
           call matmul_fwd_leg_trans_tstlop                              &
-     &       (nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_o, &
+     &       (nkrs, WK_l_tst%n_jk_o(mp_rlm), &
      &        WK_l_tst%Fmat(ip)%nle_rtm,      &
      &        WK_l_tst%Pmat(mp_rlm)%Pso_jt(1,lst_rtm+1),     &
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Smat(ip)%pol_o(1))
           call matmul_fwd_leg_trans_tstlop                              &
-     &       (nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_o, &
+     &       (nkrt, WK_l_tst%n_jk_o(mp_rlm), &
      &        WK_l_tst%Fmat(ip)%nle_rtm,      &
      &        WK_l_tst%Pmat(mp_rlm)%dPsodt_jt(1,lst_rtm+1),    &
      &        WK_l_tst%Fmat(ip)%symp_p(1), WK_l_tst%Smat(ip)%tor_o(1))
@@ -144,24 +144,24 @@
 !$omp parallel private(ip)
         do ip = 2, np_smp
 !$omp workshare
-          WK_l_tst%Smat(1)%pol_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_e)     &
-     &          = WK_l_tst%Smat(1)%pol_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_e)   &
-     &           + WK_l_tst%Smat(ip)%pol_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_e)
+          WK_l_tst%Smat(1)%pol_e(1:nkrs*WK_l_tst%n_jk_e(mp_rlm))     &
+     &          = WK_l_tst%Smat(1)%pol_e(1:nkrs*WK_l_tst%n_jk_e(mp_rlm))   &
+     &           + WK_l_tst%Smat(ip)%pol_e(1:nkrs*WK_l_tst%n_jk_e(mp_rlm))
 !$omp end workshare nowait
 !$omp workshare
-          WK_l_tst%Smat(1)%tor_e(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_e)     &
-     &          = WK_l_tst%Smat(1)%tor_e(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_e)   &
-     &           + WK_l_tst%Smat(ip)%tor_e(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_e)
+          WK_l_tst%Smat(1)%tor_e(1:nkrt*WK_l_tst%n_jk_e(mp_rlm))     &
+     &          = WK_l_tst%Smat(1)%tor_e(1:nkrt*WK_l_tst%n_jk_e(mp_rlm))   &
+     &           + WK_l_tst%Smat(ip)%tor_e(1:nkrt*WK_l_tst%n_jk_e(mp_rlm))
 !$omp end workshare nowait
 !$omp workshare
-          WK_l_tst%Smat(1)%pol_o(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_o)     &
-     &          = WK_l_tst%Smat(1)%pol_o(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_o)   &
-     &           + WK_l_tst%Smat(ip)%pol_o(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_o)
+          WK_l_tst%Smat(1)%pol_o(1:nkrs*WK_l_tst%n_jk_o(mp_rlm))     &
+     &          = WK_l_tst%Smat(1)%pol_o(1:nkrs*WK_l_tst%n_jk_o(mp_rlm))   &
+     &           + WK_l_tst%Smat(ip)%pol_o(1:nkrs*WK_l_tst%n_jk_o(mp_rlm))
 !$omp end workshare nowait
 !$omp workshare
-          WK_l_tst%Smat(1)%tor_o(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_o)     &
-     &          = WK_l_tst%Smat(1)%tor_o(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_o)   &
-     &           + WK_l_tst%Smat(ip)%tor_o(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_o)
+          WK_l_tst%Smat(1)%tor_o(1:nkrt*WK_l_tst%n_jk_o(mp_rlm))     &
+     &          = WK_l_tst%Smat(1)%tor_o(1:nkrt*WK_l_tst%n_jk_o(mp_rlm))   &
+     &           + WK_l_tst%Smat(ip)%tor_o(1:nkrt*WK_l_tst%n_jk_o(mp_rlm))
 !$omp end workshare nowait
         end do
 !$omp end parallel
@@ -170,8 +170,8 @@
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                       &
      &        sph_rlm%istep_rlm, sph_rlm%idx_gl_1d_rlm_j,               &
      &        sph_rlm%radius_1d_rlm_r, g_sph_rlm, jst,                &
-     &        WK_l_tst%Pmat(mp_rlm)%n_jk_o,                           &
-     &        WK_l_tst%Pmat(mp_rlm)%n_jk_e,                           &
+     &        WK_l_tst%n_jk_o(mp_rlm),                           &
+     &        WK_l_tst%n_jk_e(mp_rlm),                           &
      &        WK_l_tst%Smat(1)%pol_e(1), WK_l_tst%Smat(1)%pol_o(1),   &
      &        WK_l_tst%Smat(1)%tor_e(1), WK_l_tst%Smat(1)%tor_o(1),   &
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WS, WS)

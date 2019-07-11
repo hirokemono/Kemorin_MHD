@@ -54,11 +54,6 @@
 !
 !
       type leg_matrix_testloop
-!>         Number of meridional grid points in northern hemisphere
-        integer(kind = kint) :: nth_sym
-!
-!>         Number of meridional grid points in northern hemisphere
-        integer(kind = kint) :: n_jk_e
 !>          @$f P_{l}{m} @$f
 !!          at gouss points in northen hemisphere
         real(kind = kreal), allocatable :: Pse_tj(:,:)
@@ -73,8 +68,6 @@
 !!          at gouss points in northen hemisphere
         real(kind = kreal), allocatable :: dPsedt_jt(:,:)
 !
-!>         Number of meridional grid points in northern hemisphere
-        integer(kind = kint) :: n_jk_o
 !>          @$f P_{l}{m} @$f
 !!          at gouss points in northen hemisphere
         real(kind = kreal), allocatable :: Pso_tj(:,:)
@@ -197,8 +190,16 @@
 !
 !>      Work structure for Legendre trasform by large matmul
       type leg_trns_testloop_work
+!>         Number of meridional grid points in northern hemisphere
+        integer(kind = kint) :: nth_sym
+!
 !>         Number of harmonics order
         integer(kind = kint) :: mphi_rtm
+!>         Number of meridional grid points in northern hemisphere
+        integer(kind = kint), allocatable :: n_jk_e(:)
+!>         Number of meridional grid points in northern hemisphere
+        integer(kind = kint), allocatable :: n_jk_o(:)
+!
         type(leg_matrix_testloop), allocatable :: Pmat(:)
 !
         type(field_matrix_testloop), allocatable :: Fmat(:)
@@ -287,6 +288,8 @@
 !
       WK_l_tst%mphi_rtm = mphi_rtm
       allocate(WK_l_tst%Pmat(mphi_rtm))
+      allocate(WK_l_tst%n_jk_e(mphi_rtm))
+      allocate(WK_l_tst%n_jk_o(mphi_rtm))
 !
       call init_symmetric_legs_testloop(nth_rtm, mphi_rtm, jmax_rlm,    &
      &    idx_trns%lstack_rlm, idx_trns%lstack_even_rlm,                &
@@ -307,6 +310,7 @@
         call dealloc_each_sym_leg_testloop(WK_l_tst%Pmat(mp_rlm))
       end do
       deallocate(WK_l_tst%Pmat)
+      deallocate(WK_l_tst%n_jk_e, WK_l_tst%n_jk_o)
 !
       end subroutine dealloc_symmetric_leg_lj_test
 !
@@ -358,15 +362,22 @@
       integer(kind = kint) :: mp_rlm
 !
 !
+      WK_l_tst%nth_sym = (nth_rtm+1) / 2
       do mp_rlm = 1, mphi_rtm
+        WK_l_tst%n_jk_e(mp_rlm) = lstack_even_rlm(mp_rlm)               &
+     &                           - lstack_rlm(mp_rlm-1)
+        WK_l_tst%n_jk_o(mp_rlm) = lstack_rlm(mp_rlm)                    &
+     &                           - lstack_even_rlm(mp_rlm)
+!
         call alloc_each_sym_leg_testloop                                &
-     &    (nth_rtm, lstack_rlm(mp_rlm-1), lstack_even_rlm(mp_rlm),      &
+     &    (WK_l_tst%nth_sym, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),      &
      &     WK_l_tst%Pmat(mp_rlm))
       end do
 !
       do mp_rlm = 1, mphi_rtm
         call set_each_sym_leg_testloop                                  &
      &     (nth_rtm, jmax_rlm, lstack_rlm(mp_rlm-1),  P_rtm, dPdt_rtm,  &
+     &      WK_l_tst%nth_sym, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm), &
      &      WK_l_tst%Pmat(mp_rlm))
       end do
 !
@@ -376,50 +387,46 @@
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_each_sym_leg_testloop                            &
-     &         (nth_rtm, lstack_rlm, lstack_even_rlm, Pmat)
+     &         (nth_sym, n_jk_e, n_jk_o, Pmat)
 !
-      integer(kind = kint), intent(in) :: nth_rtm
-      integer(kind = kint), intent(in) :: lstack_rlm(0:1)
-      integer(kind = kint), intent(in) :: lstack_even_rlm
+      integer(kind = kint), intent(in) :: nth_sym
+      integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
 !
       type(leg_matrix_testloop), intent(inout) :: Pmat
 !
 !
-      Pmat%nth_sym = (nth_rtm+1) / 2
-      Pmat%n_jk_e = lstack_even_rlm - lstack_rlm(0)
-      Pmat%n_jk_o = lstack_rlm(1) - lstack_even_rlm
 !
-      allocate(Pmat%Pse_tj(Pmat%nth_sym,Pmat%n_jk_e))
-      allocate(Pmat%dPsedt_tj(Pmat%nth_sym,Pmat%n_jk_e))
+      allocate(Pmat%Pse_tj(nth_sym,n_jk_e))
+      allocate(Pmat%dPsedt_tj(nth_sym,n_jk_e))
 !
 !$omp parallel workshare
-      Pmat%Pse_tj(1:Pmat%nth_sym,1:Pmat%n_jk_e) =    0.0d0
-      Pmat%dPsedt_tj(1:Pmat%nth_sym,1:Pmat%n_jk_e) = 0.0d0
+      Pmat%Pse_tj(1:nth_sym,1:n_jk_e) =    0.0d0
+      Pmat%dPsedt_tj(1:nth_sym,1:n_jk_e) = 0.0d0
 !$omp end parallel workshare
 !
-      allocate(Pmat%Pso_tj(Pmat%nth_sym,Pmat%n_jk_o))
-      allocate(Pmat%dPsodt_tj(Pmat%nth_sym,Pmat%n_jk_o))
+      allocate(Pmat%Pso_tj(nth_sym,n_jk_o))
+      allocate(Pmat%dPsodt_tj(nth_sym,n_jk_o))
 !
 !$omp parallel workshare
-      Pmat%Pso_tj(1:Pmat%nth_sym,1:Pmat%n_jk_o) =    0.0d0
-      Pmat%dPsodt_tj(1:Pmat%nth_sym,1:Pmat%n_jk_o) = 0.0d0
+      Pmat%Pso_tj(1:nth_sym,1:n_jk_o) =    0.0d0
+      Pmat%dPsodt_tj(1:nth_sym,1:n_jk_o) = 0.0d0
 !$omp end parallel workshare
 !
 !
-      allocate(Pmat%Pse_jt(Pmat%n_jk_e,Pmat%nth_sym))
-      allocate(Pmat%dPsedt_jt(Pmat%n_jk_e,Pmat%nth_sym))
+      allocate(Pmat%Pse_jt(n_jk_e,nth_sym))
+      allocate(Pmat%dPsedt_jt(n_jk_e,nth_sym))
 !
 !$omp parallel workshare
-      Pmat%Pse_jt(1:Pmat%n_jk_e,1:Pmat%nth_sym) =    0.0d0
-      Pmat%dPsedt_jt(1:Pmat%n_jk_e,1:Pmat%nth_sym) = 0.0d0
+      Pmat%Pse_jt(1:n_jk_e,1:nth_sym) =    0.0d0
+      Pmat%dPsedt_jt(1:n_jk_e,1:nth_sym) = 0.0d0
 !$omp end parallel workshare
 !
-      allocate(Pmat%Pso_jt(Pmat%n_jk_o,Pmat%nth_sym))
-      allocate(Pmat%dPsodt_jt(Pmat%n_jk_o,Pmat%nth_sym))
+      allocate(Pmat%Pso_jt(n_jk_o,nth_sym))
+      allocate(Pmat%dPsodt_jt(n_jk_o,nth_sym))
 !
 !$omp parallel workshare
-      Pmat%Pso_jt(1:Pmat%n_jk_o,1:Pmat%nth_sym) =    0.0d0
-      Pmat%dPsodt_jt(1:Pmat%n_jk_o,1:Pmat%nth_sym) = 0.0d0
+      Pmat%Pso_jt(1:n_jk_o,1:nth_sym) =    0.0d0
+      Pmat%dPsodt_jt(1:n_jk_o,1:nth_sym) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_each_sym_leg_testloop
@@ -458,7 +465,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_each_sym_leg_testloop                              &
-     &         (nth_rtm, jmax_rlm, jst_rlm, P_rtm, dPdt_rtm, Pmat)
+     &         (nth_rtm, jmax_rlm, jst_rlm, P_rtm, dPdt_rtm,            &
+     &          nth_sym, n_jk_e, n_jk_o, Pmat)
 !
       integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
       integer(kind = kint), intent(in) :: jst_rlm
@@ -466,14 +474,16 @@
       real(kind= kreal), intent(in) :: P_rtm(nth_rtm,jmax_rlm)
       real(kind= kreal), intent(in) :: dPdt_rtm(nth_rtm,jmax_rlm)
 !
+      integer(kind = kint), intent(in) :: nth_sym
+      integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
       type(leg_matrix_testloop), intent(inout) :: Pmat
 !
       integer(kind = kint) :: l_rtm, j_rlm, jj
 !
 !
 !$omp parallel do private(l_rtm,jj,j_rlm)
-        do l_rtm = 1, Pmat%nth_sym
-          do jj = 1, Pmat%n_jk_e
+        do l_rtm = 1, nth_sym
+          do jj = 1, n_jk_e
             j_rlm = 2*jj + jst_rlm - 1
             Pmat%Pse_tj(l_rtm,jj) =     P_rtm(l_rtm,j_rlm)
             Pmat%dPsedt_tj(l_rtm,jj) =  dPdt_rtm(l_rtm,j_rlm)
@@ -482,7 +492,7 @@
             Pmat%dPsedt_jt(jj,l_rtm) =  dPdt_rtm(l_rtm,j_rlm)
           end do
 !
-          do jj = 1, Pmat%n_jk_o
+          do jj = 1, n_jk_o
             j_rlm = 2*jj + jst_rlm
             Pmat%Pso_tj(l_rtm,jj) =     P_rtm(l_rtm,j_rlm)
             Pmat%dPsodt_tj(l_rtm,jj) =  dPdt_rtm(l_rtm,j_rlm)
