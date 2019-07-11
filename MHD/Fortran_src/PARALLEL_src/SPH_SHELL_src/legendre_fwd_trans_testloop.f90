@@ -77,7 +77,7 @@
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: mp_rlm, nle_rtm, nlo_rtm
+      integer(kind = kint) :: mp_rlm
       integer(kind = kint) :: nkrs, nkrt, lst_rtm
       integer(kind = kint) :: ip, jst
 !
@@ -86,14 +86,13 @@
       WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
-      nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
-      nlo_rtm = sph_rtm%nidx_rtm(2) / 2
       nkrs = (3*nvector+nscalar) * sph_rlm%nidx_rlm(1)
       nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
 !
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
         jst = idx_trns%lstack_rlm(mp_rlm-1)
 !
+!$omp parallel do private(ip,lst_rtm)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%Fmat(ip)%lst_rtm
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+15)
@@ -107,6 +106,7 @@
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1), &
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1) )
         end do
+!$omp end parallel do
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+15)
 !
 !  even l-m
