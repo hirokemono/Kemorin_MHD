@@ -257,7 +257,7 @@
 !
       subroutine cal_vr_rtm_vec_testloop(nnod_rtm, nidx_rtm,      &
      &          istep_rtm, nidx_rlm, asin_theta_1d_rtm,                 &
-     &          mp_rlm, lst_rtm, nle_rtm, nlo_rtm, symp_r, asmp_p,       &
+     &          mp_rlm, lst_rtm, nle_rtm, nlo_rtm, symp_r, asmp_p,      &
      &          asmp_r, symp_p, ncomp_send, nvector, nscalar,      &
      &          irev_sr_rtm, n_WS, WS)
 !
