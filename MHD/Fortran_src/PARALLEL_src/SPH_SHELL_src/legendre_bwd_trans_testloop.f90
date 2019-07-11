@@ -78,7 +78,7 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
       integer(kind = kint) :: mp_rlm
-      integer(kind = kint) :: nkrs,  nkrt
+      integer(kind = kint) :: nkrs,  nkrt, nle, nlo
       integer(kind = kint) :: jst
 !
 !
@@ -129,11 +129,13 @@
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+13)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
+          nle = WK_l_tst%Fmat(np_smp)%lst_rtm                           &
+     &         + WK_l_tst%Fmat(np_smp)%nle_rtm
+          nlo = WK_l_tst%Fmat(np_smp)%lst_rtm                           &
+     &         + WK_l_tst%Fmat(np_smp)%nlo_rtm
           call cal_vr_rtm_vec_testloop                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, mp_rlm,              &
-     &        WK_l_tst%Fmat(np_smp)%nle_rtm,                   &
-     &        WK_l_tst%Fmat(np_smp)%nlo_rtm,                   &
+     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, mp_rlm, nle, nlo,    &
      &        WK_l_tst%symp_r(1), WK_l_tst%asmp_p(1),             &
      &        WK_l_tst%asmp_r(1), WK_l_tst%symp_p(1),             &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
