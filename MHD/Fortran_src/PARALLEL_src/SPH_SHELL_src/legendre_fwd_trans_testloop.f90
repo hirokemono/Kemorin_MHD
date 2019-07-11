@@ -142,12 +142,13 @@
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
         do ip = 2, np_smp
+
           WK_l_tst%Smat(1)%pol_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_e)     &
      &          = WK_l_tst%Smat(1)%pol_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_e)   &
      &           + WK_l_tst%Smat(ip)%pol_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_e)
-          WK_l_tst%Smat(1)%tor_e(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_o)     &
-     &          = WK_l_tst%Smat(1)%tor_e(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_o)   &
-     &           + WK_l_tst%Smat(ip)%tor_e(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_o)
+          WK_l_tst%Smat(1)%tor_e(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_e)     &
+     &          = WK_l_tst%Smat(1)%tor_e(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_e)   &
+     &           + WK_l_tst%Smat(ip)%tor_e(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_e)
           WK_l_tst%Smat(1)%pol_o(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_o)     &
      &          = WK_l_tst%Smat(1)%pol_o(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_o)   &
      &           + WK_l_tst%Smat(ip)%pol_o(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_o)
