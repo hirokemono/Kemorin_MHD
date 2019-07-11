@@ -88,10 +88,6 @@
 !
       nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
       nlo_rtm = sph_rtm%nidx_rtm(2) / 2
-      nkrs = (3*nvector + nscalar) * sph_rlm%nidx_rlm(1)
-      nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
-      write(*,*) 'fwd nkrs', nkrs, WK_l_tst%nkrs
-      write(*,*) 'fwd nkrt', nkrt, WK_l_tst%nkrt
 !
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
         jst = idx_trns%lstack_rlm(mp_rlm-1)
@@ -109,24 +105,24 @@
 !  even l-m
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
           call matmul_fwd_leg_trans_tstlop                              &
-     &       (nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_e, &
+     &       (WK_l_tst%nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_e, &
      &        WK_l_tst%Pmat(mp_rlm)%nth_sym,      &
      &        WK_l_tst%Pmat(mp_rlm)%Pse_jt,     &
      &        WK_l_tst%symp_r(1), WK_l_tst%pol_e(1))
           call matmul_fwd_leg_trans_tstlop                              &
-     &       (nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_e, &
+     &       (WK_l_tst%nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_e, &
      &        WK_l_tst%Pmat(mp_rlm)%nth_sym,      &
      &        WK_l_tst%Pmat(mp_rlm)%dPsedt_jt,     &
      &        WK_l_tst%asmp_p(1), WK_l_tst%tor_e(1))
 !
 !  odd l-m
           call matmul_fwd_leg_trans_tstlop                              &
-     &       (nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_o, &
+     &       (WK_l_tst%nkrs, WK_l_tst%Pmat(mp_rlm)%n_jk_o, &
      &        WK_l_tst%Pmat(mp_rlm)%nth_sym,      &
      &        WK_l_tst%Pmat(mp_rlm)%Pso_jt,     &
      &        WK_l_tst%asmp_r(1), WK_l_tst%pol_o(1))
           call matmul_fwd_leg_trans_tstlop                              &
-     &       (nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_o, &
+     &       (WK_l_tst%nkrt, WK_l_tst%Pmat(mp_rlm)%n_jk_o, &
      &        WK_l_tst%Pmat(mp_rlm)%nth_sym,      &
      &        WK_l_tst%Pmat(mp_rlm)%dPsodt_jt,    &
      &        WK_l_tst%symp_p(1), WK_l_tst%tor_o(1))
