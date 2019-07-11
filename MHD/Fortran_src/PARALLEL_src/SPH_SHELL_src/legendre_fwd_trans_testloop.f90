@@ -141,17 +141,30 @@
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
-        do ip = 1, np_smp
+        do ip = 2, np_smp
+          WK_l_tst%Smat(1)%pol_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_e)     &
+     &          = WK_l_tst%Smat(1)%pol_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_e)   &
+     &           + WK_l_tst%Smat(ip)%pol_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_e)
+          WK_l_tst%Smat(1)%pol_o(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_e)     &
+     &          = WK_l_tst%Smat(1)%pol_o(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_e)   &
+     &           + WK_l_tst%Smat(ip)%pol_o(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_e)
+          WK_l_tst%Smat(1)%tor_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_o)     &
+     &          = WK_l_tst%Smat(1)%tor_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_o)   &
+     &           + WK_l_tst%Smat(ip)%tor_e(1:nkrs*WK_l_tst%Pmat(mp_rlm)%n_jk_o)
+          WK_l_tst%Smat(1)%tor_o(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_o)     &
+     &          = WK_l_tst%Smat(1)%tor_o(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_o)   &
+     &           + WK_l_tst%Smat(ip)%tor_o(1:nkrt*WK_l_tst%Pmat(mp_rlm)%n_jk_o)
+        end do
+!
           call cal_sp_rlm_vec_testloop                            &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                       &
      &        sph_rlm%istep_rlm, sph_rlm%idx_gl_1d_rlm_j,               &
      &        sph_rlm%radius_1d_rlm_r, g_sph_rlm, jst,                &
      &        WK_l_tst%Pmat(mp_rlm)%n_jk_o,                           &
      &        WK_l_tst%Pmat(mp_rlm)%n_jk_e,                           &
-     &        WK_l_tst%Smat(ip)%pol_e(1), WK_l_tst%Smat(ip)%pol_o(1),   &
-     &        WK_l_tst%Smat(ip)%tor_e(1), WK_l_tst%Smat(ip)%tor_o(1),   &
+     &        WK_l_tst%Smat(1)%pol_e(1), WK_l_tst%Smat(1)%pol_o(1),   &
+     &        WK_l_tst%Smat(1)%tor_e(1), WK_l_tst%Smat(1)%tor_o(1),   &
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WS, WS)
-        end do
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+17)
 !
       end do
