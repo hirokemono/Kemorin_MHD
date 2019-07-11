@@ -78,7 +78,7 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
       integer(kind = kint) :: mp_rlm
-      integer(kind = kint) :: nkrs,  nkrt, nle, nlo
+      integer(kind = kint) :: nkrs,　nkrt, nle, nlo
       integer(kind = kint) :: jst
 !
 !
@@ -133,6 +133,10 @@
      &         + WK_l_tst%Fmat(np_smp)%nle_rtm
           nlo = WK_l_tst%Fmat(np_smp)%lst_rtm                           &
      &         + WK_l_tst%Fmat(np_smp)%nlo_rtm
+          write(*,*) 'nle', nle, (sph_rtm%nidx_rtm(2) + 1) / 2
+          write(*,*) 'nlo', nlo, sph_rtm%nidx_rtm(2) / 2
+          nle = (sph_rtm%nidx_rtm(2) + 1) / 2
+          nlo = sph_rtm%nidx_rtm(2) / 2
           call cal_vr_rtm_vec_testloop                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, mp_rlm, nle, nlo,    &
@@ -375,7 +379,7 @@
         end do
       end do
 !
-      do lp_rtm = nlo_rtm, nle_rtm
+      do lp_rtm = nlo_rtm+1, nle_rtm
         do k_rlm = 1, nidx_rlm(1)
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
      &                + (k_rlm-1) *  istep_rtm(1)                       &
