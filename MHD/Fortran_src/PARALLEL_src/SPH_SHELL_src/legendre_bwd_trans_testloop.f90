@@ -135,9 +135,9 @@
           call cal_vr_rtm_vec_testloop                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, mp_rlm, nle,    &
-     &        WK_l_tst%Fmat(ip)%lst_rtm,    &
-     &        WK_l_tst%Fmat(np_smp)%nle_rtm,  &
-     &        WK_l_tst%Fmat(np_smp)%nlo_rtm,  &
+     &        WK_l_tst%Fmat(ip)%lst_rtm,  &
+     &        WK_l_tst%Fmat(ip)%nle_rtm,  &
+     &        WK_l_tst%Fmat(ip)%nlo_rtm,  &
      &        WK_l_tst%symp_r(1), WK_l_tst%asmp_p(1),             &
      &        WK_l_tst%asmp_r(1), WK_l_tst%symp_p(1),             &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
