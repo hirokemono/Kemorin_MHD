@@ -78,7 +78,7 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
       integer(kind = kint) :: mp_rlm
-      integer(kind = kint) :: nkrs, nkrt, nle
+      integer(kind = kint) :: nkrs, nkrt, nle, lst_rtm
       integer(kind = kint) :: ip, jst
 !
 !
@@ -103,33 +103,34 @@
      &        WK_l_tst%pol_o(1), WK_l_tst%tor_o(1) )
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
 !
+        do ip = 1, np_smp
+          lst_rtm = WK_l_tst%Fmat(ip)%lst_rtm
 !   even l-m
-      if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+13)
+          if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+13)
           call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tst%Pmat(mp_rlm)%nth_sym, nkrs,                      &
+     &       (WK_l_tst%Fmat(ip)%nle_rtm, nkrs,                      &
      &        WK_l_tst%Pmat(mp_rlm)%n_jk_e,                             &
-     &        WK_l_tst%Pmat(mp_rlm)%Pse_jt, WK_l_tst%pol_e(1),        &
-     &        WK_l_tst%symp_r(1))
+     &        WK_l_tst%Pmat(mp_rlm)%Pse_jt(1,lst_rtm+1), WK_l_tst%pol_e(1), &
+     &        WK_l_tst%symp_r(lst_rtm*nkrs+1))
           call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tst%Pmat(mp_rlm)%nth_sym, nkrt,                      &
+     &       (WK_l_tst%Fmat(ip)%nle_rtm, nkrt,                      &
      &        WK_l_tst%Pmat(mp_rlm)%n_jk_e,              &
-     &        WK_l_tst%Pmat(mp_rlm)%dPsedt_jt, WK_l_tst%tor_e(1),     &
-     &        WK_l_tst%asmp_p(1))
+     &        WK_l_tst%Pmat(mp_rlm)%dPsedt_jt(1,lst_rtm+1), WK_l_tst%tor_e(1), &
+     &        WK_l_tst%asmp_p(lst_rtm*nkrt+1))
 !   odd l-m
           call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tst%Pmat(mp_rlm)%nth_sym, nkrs,                      &
+     &       (WK_l_tst%Fmat(ip)%nle_rtm, nkrs,                      &
      &        WK_l_tst%Pmat(mp_rlm)%n_jk_o,               &
-     &        WK_l_tst%Pmat(mp_rlm)%Pso_jt, WK_l_tst%pol_o(1),        &
-     &        WK_l_tst%asmp_r(1))
+     &        WK_l_tst%Pmat(mp_rlm)%Pso_jt(1,lst_rtm+1), WK_l_tst%pol_o(1), &
+     &        WK_l_tst%asmp_r(lst_rtm*nkrs+1))
           call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tst%Pmat(mp_rlm)%nth_sym, nkrt,                      &
+     &       (WK_l_tst%Fmat(ip)%nle_rtm, nkrt,                      &
      &        WK_l_tst%Pmat(mp_rlm)%n_jk_o,               &
-     &        WK_l_tst%Pmat(mp_rlm)%dPsodt_jt, WK_l_tst%tor_o(1),     &
-     &        WK_l_tst%symp_p(1))
+     &        WK_l_tst%Pmat(mp_rlm)%dPsodt_jt(1,lst_rtm+1), WK_l_tst%tor_o(1),     &
+     &        WK_l_tst%symp_p(lst_rtm*nkrt+1))
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+13)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
-        do ip = 1, np_smp
           nle = WK_l_tst%Fmat(np_smp)%lst_rtm                           &
      &         + WK_l_tst%Fmat(np_smp)%nle_rtm
           call cal_vr_rtm_vec_testloop                            &
@@ -141,8 +142,8 @@
      &        WK_l_tst%symp_r(1), WK_l_tst%asmp_p(1),             &
      &        WK_l_tst%asmp_r(1), WK_l_tst%symp_p(1),             &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
-         end do
-      if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
+          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
+        end do
 !
       end do
 !
