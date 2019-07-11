@@ -78,7 +78,6 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       integer(kind = kint) :: mp_rlm, nle_rtm, nlo_rtm
-      integer(kind = kint) :: nkrs,  nkrt
       integer(kind = kint) :: jst
 !
 !
@@ -88,9 +87,6 @@
 !
       nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
       nlo_rtm = sph_rtm%nidx_rtm(2) / 2
-      nkrs = ncomp * sph_rlm%nidx_rlm(1)
-      nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
-      write(*,*) 'fwd nkrs', nkrs, WK_l_tst%nkrs
       write(*,*) 'fwd nkrt', nkrt, WK_l_tst%nkrt
 !
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)

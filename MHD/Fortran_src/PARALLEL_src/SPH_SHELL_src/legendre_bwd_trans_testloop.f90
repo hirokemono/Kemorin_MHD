@@ -78,18 +78,13 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
       integer(kind = kint) :: mp_rlm
-      integer(kind = kint) :: nkrs, nkrt, lst_rtm
+      integer(kind = kint) :: lst_rtm
       integer(kind = kint) :: ip, jst
 !
 !
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
-!
-      nkrs = ncomp * sph_rlm%nidx_rlm(1)
-      nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
-      write(*,*) 'bwd nkrs', nkrs, WK_l_tst%nkrs
-      write(*,*) 'bwd nkrt', nkrt, WK_l_tst%nkrt
 !
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
         jst = idx_trns%lstack_rlm(mp_rlm-1)
