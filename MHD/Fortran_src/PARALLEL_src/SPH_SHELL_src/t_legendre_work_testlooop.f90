@@ -569,7 +569,7 @@
         Fmat(ip)%nle_rtm = led - Fmat(ip)%lst_rtm
         Fmat(ip)%nlo_rtm = Fmat(ip)%nle_rtm
       end do
-      Fmat(np_smp)%nlo_rtm = istack_rtm_lt_smp(ip) / 2                  &
+      Fmat(np_smp)%nlo_rtm = istack_rtm_lt_smp(np_smp) / 2              &
      &                      - Fmat(ip)%lst_rtm
 !
       do ip = 1, np_smp
