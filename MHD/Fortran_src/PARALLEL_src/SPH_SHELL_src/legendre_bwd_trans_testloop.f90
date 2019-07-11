@@ -78,7 +78,7 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
       integer(kind = kint) :: mp_rlm
-      integer(kind = kint) :: nkrs,　nkrt, nle, nlo
+      integer(kind = kint) :: nkrs, nkrt, nle, nlo
       integer(kind = kint) :: jst
 !
 !
