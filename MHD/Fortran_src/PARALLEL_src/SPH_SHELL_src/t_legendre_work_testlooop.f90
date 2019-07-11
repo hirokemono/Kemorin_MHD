@@ -570,7 +570,7 @@
         Fmat(ip)%nlo_rtm = Fmat(ip)%nle_rtm
       end do
       Fmat(np_smp)%nlo_rtm = istack_rtm_lt_smp(np_smp) / 2              &
-     &                      - Fmat(ip)%lst_rtm
+     &                      - Fmat(np_smp)%lst_rtm
 !
       do ip = 1, np_smp
         Fmat(ip)%nvec_lk = Fmat(ip)%nle_rtm * nri_rtm * nvector
