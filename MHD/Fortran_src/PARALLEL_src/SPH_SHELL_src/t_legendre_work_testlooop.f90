@@ -196,6 +196,7 @@
 !>         Number of meridional grid points in northern hemisphere
         integer(kind = kint), allocatable :: n_jk_o(:)
 !
+!
         integer(kind = kint), allocatable :: lst_rtm(:)
         integer(kind = kint), allocatable :: nle_rtm(:)
         integer(kind = kint), allocatable :: nlo_rtm(:)
@@ -204,17 +205,13 @@
 !
         type(field_matrix_testloop), allocatable :: Fmat(:)
 !
-        type(spectr_matrix_testloop), allocatable :: Smat(:)
-!
-!>        Maximum matrix size for spectr data
-        integer(kind = kint) :: nvec_jk
-!>        Maximum matrix size for spectr data
-        integer(kind = kint) :: nscl_jk
 !
 !>       size for work area of pol_e and pol_o
         integer(kind = kint) :: n_pol_e
 !>       size for work area of tor_e and tor_o
         integer(kind = kint) :: n_tor_e
+!
+        type(spectr_matrix_testloop), allocatable :: Smat(:)
       end type leg_trns_testloop_work
 !
       private :: count_symmetric_leg_lj_test
@@ -250,28 +247,22 @@
       allocate(WK_l_tst%Fmat(np_smp))
       allocate(WK_l_tst%Smat(np_smp))
 !
-      write(*,*) 'count_size_of_field_mat_tstlop'
       call count_size_of_field_mat_tstlop                               &
      &   (np_smp, sph_rtm%nidx_rtm(1), sph_rtm%istack_rtm_lt_smp,       &
      &    nvector, nscalar, WK_l_tst%lst_rtm, WK_l_tst%nle_rtm,         &
      &    WK_l_tst%nlo_rtm, WK_l_tst%Fmat)
-      write(*,*) 'count_symmetric_leg_lj_test'
       call count_symmetric_leg_lj_test                                  &
      &   (sph_rtm%nidx_rtm(3), idx_trns, WK_l_tst)
 !
 !
-      write(*,*) 'init_symmetric_legs_testloop'
       call init_symmetric_legs_testloop                                 &
      &  (sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), sph_rlm%nidx_rlm(2), &
      &   idx_trns%lstack_rlm, leg%P_rtm, leg%dPdt_rtm, WK_l_tst)
 !
-      write(*,*) 'alloc_leg_sym_matmul_test'
       call alloc_leg_sym_matmul_test                                    &
      &   (sph_rtm%nidx_rtm, nvector, nscalar, idx_trns, WK_l_tst)
 !
-      write(*,*) 'alloc_field_mat_tstlop'
       call alloc_field_mat_tstlop(np_smp, WK_l_tst%Fmat)
-      write(*,*) 'alloc_spectr_mat_tstlop'
       call alloc_spectr_mat_tstlop                                      &
      &   (WK_l_tst%n_pol_e, WK_l_tst%n_tor_e, np_smp, WK_l_tst%Smat)
 !
@@ -334,13 +325,10 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
 !
-      WK_l_tst%nvec_jk = ((idx_trns%maxdegree_rlm+1)/2)                 &
-     &                  * nidx_rtm(1) * nvector
-      WK_l_tst%nscl_jk = ((idx_trns%maxdegree_rlm+1)/2)                 &
-     &                  * nidx_rtm(1) * nscalar
-!
-      WK_l_tst%n_pol_e = 3*WK_l_tst%nvec_jk + WK_l_tst%nscl_jk
-      WK_l_tst%n_tor_e = 2*WK_l_tst%nvec_jk
+      WK_l_tst%n_pol_e = ((idx_trns%maxdegree_rlm+1)/2) *  nidx_rtm(1)  &
+     &                  * (3*nvector + nscalar)
+      WK_l_tst%n_tor_e = ((idx_trns%maxdegree_rlm+1)/2) *  nidx_rtm(1)  &
+     &                  * 2*nvector
 !
       end subroutine alloc_leg_sym_matmul_test
 !
@@ -585,10 +573,8 @@
 !
 !
       do ip = 1, np_smp
-        deallocate(Fmat(ip)%symp_r)
-        deallocate(Fmat(ip)%symp_p)
-        deallocate(Fmat(ip)%asmp_r)
-        deallocate(Fmat(ip)%asmp_p)
+        deallocate(Fmat(ip)%symp_r, Fmat(ip)%symp_p)
+        deallocate(Fmat(ip)%asmp_r, Fmat(ip)%asmp_p)
       end do
 !
       end subroutine dealloc_field_mat_tstlop
@@ -636,10 +622,8 @@
 !
 !
       do ip = 1, np_smp
-        deallocate(Smat(ip)%pol_e)
-        deallocate(Smat(ip)%pol_o)
-        deallocate(Smat(ip)%tor_e)
-        deallocate(Smat(ip)%tor_o)
+        deallocate(Smat(ip)%pol_e, Smat(ip)%pol_o)
+        deallocate(Smat(ip)%tor_e, Smat(ip)%tor_o)
       end do
 !
       end subroutine dealloc_spectr_mat_tstlop
