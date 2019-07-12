@@ -85,9 +85,6 @@
 !
 !
       type field_matrix_testloop
-        integer(kind = kint) :: lst_rtm
-        integer(kind = kint) :: nle_rtm
-        integer(kind = kint) :: nlo_rtm
         integer(kind = kint) :: nkrs
         integer(kind = kint) :: nkrt
         integer(kind = kint) :: nvec_lk
@@ -200,6 +197,10 @@
 !>         Number of meridional grid points in northern hemisphere
         integer(kind = kint), allocatable :: n_jk_o(:)
 !
+        integer(kind = kint), allocatable :: lst_rtm(:)
+        integer(kind = kint), allocatable :: nle_rtm(:)
+        integer(kind = kint), allocatable :: nlo_rtm(:)
+!
         type(leg_matrix_testloop), allocatable :: Pmat(:)
 !
         type(field_matrix_testloop), allocatable :: Fmat(:)
@@ -262,9 +263,14 @@
       allocate(WK_l_tst%Fmat(np_smp))
       allocate(WK_l_tst%Smat(np_smp))
 !
+      allocate(WK_l_tst%lst_rtm(np_smp))
+      allocate(WK_l_tst%nle_rtm(np_smp))
+      allocate(WK_l_tst%nlo_rtm(np_smp))
+!
       call count_size_of_field_mat_tstlop                               &
      &   (np_smp, sph_rtm%nidx_rtm(1), sph_rtm%istack_rtm_lt_smp,       &
-     &    nvector, nscalar, WK_l_tst%Fmat)
+     &    nvector, nscalar, WK_l_tst%lst_rtm, WK_l_tst%nle_rtm,         &
+     &   WK_l_tst%nlo_rtm, WK_l_tst%Fmat)
       call alloc_field_mat_tstlop(np_smp, WK_l_tst%Fmat)
       call alloc_spectr_mat_tstlop                                      &
      &   (WK_l_tst%n_pol_e, WK_l_tst%n_tor_e, np_smp, WK_l_tst%Smat)
@@ -460,6 +466,8 @@
       deallocate(WK_l_tst%Smat)
       deallocate(WK_l_tst%Fmat)
 !
+      deallocate(WK_l_tst%lst_rtm, WK_l_tst%nle_rtm, WK_l_tst%nlo_rtm)
+!
       end subroutine dealloc_leg_vec_test
 !
 ! -----------------------------------------------------------------------
@@ -510,13 +518,16 @@
 !
       subroutine count_size_of_field_mat_tstlop                         &
      &         (np_smp, nri_rtm, istack_rtm_lt_smp, nvector, nscalar,   &
-     &          Fmat)
+     &          lst_rtm, nle_rtm, nlo_rtm, Fmat)
 !
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: nri_rtm
       integer(kind = kint), intent(in) :: istack_rtm_lt_smp(0:np_smp)
       integer(kind = kint), intent(in) :: nvector, nscalar
 !
+      integer(kind = kint), intent(inout) :: lst_rtm(np_smp)
+      integer(kind = kint), intent(inout) :: nle_rtm(np_smp)
+      integer(kind = kint), intent(inout) :: nlo_rtm(np_smp)
       type(field_matrix_testloop), intent(inout) :: Fmat(np_smp)
 !
       integer(kind = kint) :: ip, led
@@ -524,20 +535,19 @@
 !
       led = 0
       do ip = 1, np_smp
-        Fmat(ip)%lst_rtm = led
+        lst_rtm(ip) = led
         led = (istack_rtm_lt_smp(ip) + 1) / 2
-        Fmat(ip)%nle_rtm = led - Fmat(ip)%lst_rtm
-        Fmat(ip)%nlo_rtm = Fmat(ip)%nle_rtm
+        nle_rtm(ip) = led - lst_rtm(ip)
+        nlo_rtm(ip) = nle_rtm(ip)
       end do
-      Fmat(np_smp)%nlo_rtm = istack_rtm_lt_smp(np_smp) / 2              &
-     &                      - Fmat(np_smp)%lst_rtm
+      nlo_rtm(np_smp) = istack_rtm_lt_smp(np_smp) / 2 - lst_rtm(np_smp)
 !
       do ip = 1, np_smp
-        Fmat(ip)%nvec_lk = Fmat(ip)%nle_rtm * nri_rtm * nvector
-        Fmat(ip)%nscl_lk = Fmat(ip)%nle_rtm * nri_rtm * nscalar
-        Fmat(ip)%n_sym_r = Fmat(ip)%nle_rtm * nri_rtm                   &
+        Fmat(ip)%nvec_lk = nle_rtm(ip) * nri_rtm * nvector
+        Fmat(ip)%nscl_lk = nle_rtm(ip) * nri_rtm * nscalar
+        Fmat(ip)%n_sym_r = nle_rtm(ip) * nri_rtm                   &
      &                    * (3*nvector + nscalar)
-        Fmat(ip)%n_sym_p = Fmat(ip)%nle_rtm * nri_rtm * 2*nvector
+        Fmat(ip)%n_sym_p = nle_rtm(ip) * nri_rtm * 2*nvector
       end do
 !
       end subroutine count_size_of_field_mat_tstlop
