@@ -399,23 +399,35 @@
 !
 !
 !$omp parallel do private(jj,nd,k_rlm,g6,g7,gm,r1,r2)
-      do jj = 1, n_jk_e
-        g6 = g_sph_rlm(2*jj+jst-1,6)
-        g7 = g_sph_rlm(2*jj+jst-1,7)
-        gm = dble(idx_gl_1d_rlm_j(2*jj+jst-1,3))
+      do nd = 1, nvector
         do k_rlm = 1, nidx_rlm(1)
           r1 = radius_1d_rlm_r(k_rlm)
           r2 = r1 * r1
+          do jj = 1, n_jk_e
+            g6 = g_sph_rlm(2*jj+jst-1,6)
+            g7 = g_sph_rlm(2*jj+jst-1,7)
+            gm = dble(idx_gl_1d_rlm_j(2*jj+jst-1,3))
 !
-          do nd = 1, nvector
             pol_e(jj,k_rlm,3*nd-2) = pol_e(jj,k_rlm,3*nd-2) * r2*g7
             tor_e(jj,k_rlm,2*nd  ) = tor_e(jj,k_rlm,2*nd  ) * r1*g7
             pol_e(jj,k_rlm,3*nd  ) = pol_e(jj,k_rlm,3*nd  ) * r1*g7*gm
             tor_e(jj,k_rlm,2*nd-1) = tor_e(jj,k_rlm,2*nd-1) * r1*g7
             pol_e(jj,k_rlm,3*nd-1) = pol_e(jj,k_rlm,3*nd-1) * r1*g7*gm
           end do
+        end do
+      end do
+!$omp end parallel do
 !
-          do nd = 1, nscalar
+!$omp parallel do private(jj,nd,k_rlm,g6,g7,gm,r1,r2)
+      do nd = 1, nscalar
+        do k_rlm = 1, nidx_rlm(1)
+          r1 = radius_1d_rlm_r(k_rlm)
+          r2 = r1 * r1
+          do jj = 1, n_jk_e
+            g6 = g_sph_rlm(2*jj+jst-1,6)
+            g7 = g_sph_rlm(2*jj+jst-1,7)
+            gm = dble(idx_gl_1d_rlm_j(2*jj+jst-1,3))
+!
             pol_e(jj,k_rlm,nd+3*nvector)                                &
      &            = pol_e(jj,k_rlm,nd+3*nvector) * g6
           end do
@@ -424,23 +436,35 @@
 !$omp end parallel do
 !
 !$omp parallel do private(jj,nd,k_rlm,g6,g7,gm,r1,r2)
-      do jj = 1, n_jk_o
-        g6 = g_sph_rlm(2*jj+jst,6)
-        g7 = g_sph_rlm(2*jj+jst,7)
-        gm = dble(idx_gl_1d_rlm_j(2*jj+jst,3))
-        do k_rlm = 1, nidx_rlm(1)
+      do nd = 1, nvector
+       do k_rlm = 1, nidx_rlm(1)
           r1 = radius_1d_rlm_r(k_rlm)
           r2 = r1 * r1
+          do jj = 1, n_jk_o
+            g6 = g_sph_rlm(2*jj+jst,6)
+            g7 = g_sph_rlm(2*jj+jst,7)
+            gm = dble(idx_gl_1d_rlm_j(2*jj+jst,3))
 !
-          do nd = 1, nvector
             pol_o(jj,k_rlm,3*nd-2) = pol_o(jj,k_rlm,3*nd-2) * r2*g7
             tor_o(jj,k_rlm,2*nd  ) = tor_o(jj,k_rlm,2*nd  ) * r1*g7
             pol_o(jj,k_rlm,3*nd  ) = pol_o(jj,k_rlm,3*nd  ) * r1*g7*gm
             tor_o(jj,k_rlm,2*nd-1) = tor_o(jj,k_rlm,2*nd-1) * r1*g7
             pol_o(jj,k_rlm,3*nd-1) = pol_o(jj,k_rlm,3*nd-1) * r1*g7*gm
           end do
+        end do
+      end do
+!$omp end parallel do
 !
-          do nd = 1, nscalar
+!$omp parallel do private(jj,nd,k_rlm,g6,g7,gm,r1,r2)
+      do nd = 1, nscalar
+        do k_rlm = 1, nidx_rlm(1)
+          r1 = radius_1d_rlm_r(k_rlm)
+          r2 = r1 * r1
+          do jj = 1, n_jk_o
+            g6 = g_sph_rlm(2*jj+jst,6)
+            g7 = g_sph_rlm(2*jj+jst,7)
+            gm = dble(idx_gl_1d_rlm_j(2*jj+jst,3))
+!
             pol_o(jj,k_rlm,nd+3*nvector)                                &
      &            = pol_o(jj,k_rlm,nd+3*nvector) * g6
           end do
@@ -450,14 +474,14 @@
 !
 !
 !$omp parallel do private(k_rlm,nd,jj,ie_rlm,io_rlm,ie_send,io_send)
-      do jj = 1, n_jk_o
+      do nd = 1, nvector
         do k_rlm = 1, nidx_rlm(1)
-          ie_rlm = 1 + (2*jj+jst-2) * istep_rlm(2)                      &
+          do jj = 1, n_jk_o
+            ie_rlm = 1 + (2*jj+jst-2) * istep_rlm(2)                    &
      &               + (k_rlm-1) *    istep_rlm(1)
-          io_rlm = 1 + (2*jj+jst-1) * istep_rlm(2)                      &
+            io_rlm = 1 + (2*jj+jst-1) * istep_rlm(2)                    &
      &               + (k_rlm-1) *    istep_rlm(1)
 !
-          do nd = 1, nvector
             ie_send = 3*nd + (irev_sr_rlm(ie_rlm) - 1) * ncomp_send
             io_send = 3*nd + (irev_sr_rlm(io_rlm) - 1) * ncomp_send
 !
@@ -474,8 +498,19 @@
             WS(io_send  ) = WS(io_send  ) - pol_o(jj,k_rlm,3*nd-1)      &
      &                                    - tor_o(jj,k_rlm,2*nd-1)
           end do
+        end do
+      end do
+!$omp end parallel do
 !
-          do nd = 1, nscalar
+!$omp parallel do private(k_rlm,nd,jj,ie_rlm,io_rlm,ie_send,io_send)
+      do nd = 1, nscalar
+        do k_rlm = 1, nidx_rlm(1)
+          do jj = 1, n_jk_o
+            ie_rlm = 1 + (2*jj+jst-2) * istep_rlm(2)                    &
+     &               + (k_rlm-1) *    istep_rlm(1)
+            io_rlm = 1 + (2*jj+jst-1) * istep_rlm(2)                    &
+     &               + (k_rlm-1) *    istep_rlm(1)
+!
             ie_send = nd + 3*nvector                                    &
      &               + (irev_sr_rlm(ie_rlm) - 1) * ncomp_send
             io_send = nd + 3*nvector                                    &
@@ -490,11 +525,11 @@
 !
       do jj = n_jk_o+1, n_jk_e
 !$omp parallel do private(k_rlm,nd,ie_rlm,ie_send)
-        do k_rlm = 1, nidx_rlm(1)
-          ie_rlm = 1 + (2*jj+jst-2) * istep_rlm(2)                      &
-     &               + (k_rlm-1) *    istep_rlm(1)
+        do nd = 1, nvector
+          do k_rlm = 1, nidx_rlm(1)
+            ie_rlm = 1 + (2*jj+jst-2) * istep_rlm(2)                    &
+     &                 + (k_rlm-1) *    istep_rlm(1)
 !
-          do nd = 1, nvector
             ie_send = 3*nd + (irev_sr_rlm(ie_rlm) - 1) * ncomp_send
 !
             WS(ie_send-2) = WS(ie_send-2) + pol_e(jj,k_rlm,3*nd-2)
@@ -503,8 +538,14 @@
             WS(ie_send  ) = WS(ie_send  ) - pol_e(jj,k_rlm,3*nd-1)      &
      &                                    - tor_e(jj,k_rlm,2*nd-1)
           end do
+        end do
+!$omp end parallel do
 !
-          do nd = 1, nscalar
+!$omp parallel do private(k_rlm,nd,ie_rlm,ie_send)
+        do nd = 1, nscalar
+          do k_rlm = 1, nidx_rlm(1)
+            ie_rlm = 1 + (2*jj+jst-2) * istep_rlm(2)                    &
+     &               + (k_rlm-1) *    istep_rlm(1)
             ie_send = nd + 3*nvector                                    &
      &               + (irev_sr_rlm(ie_rlm) - 1) * ncomp_send
             WS(ie_send) = WS(ie_send) + pol_e(jj,k_rlm,nd+3*nvector)
