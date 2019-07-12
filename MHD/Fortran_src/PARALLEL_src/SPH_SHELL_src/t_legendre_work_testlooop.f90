@@ -247,6 +247,9 @@
       allocate(WK_l_tst%nle_rtm(np_smp))
       allocate(WK_l_tst%nlo_rtm(np_smp))
 !
+      allocate(WK_l_tst%Fmat(np_smp))
+      allocate(WK_l_tst%Smat(np_smp))
+!
       write(*,*) 'count_size_of_field_mat_tstlop'
       call count_size_of_field_mat_tstlop                               &
      &   (np_smp, sph_rtm%nidx_rtm(1), sph_rtm%istack_rtm_lt_smp,       &
@@ -265,9 +268,6 @@
       write(*,*) 'alloc_leg_sym_matmul_test'
       call alloc_leg_sym_matmul_test                                    &
      &   (sph_rtm%nidx_rtm, nvector, nscalar, idx_trns, WK_l_tst)
-!
-      allocate(WK_l_tst%Fmat(np_smp))
-      allocate(WK_l_tst%Smat(np_smp))
 !
       write(*,*) 'alloc_field_mat_tstlop'
       call alloc_field_mat_tstlop(np_smp, WK_l_tst%Fmat)
