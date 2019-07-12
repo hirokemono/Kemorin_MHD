@@ -85,8 +85,6 @@
 !
 !
       type field_matrix_testloop
-        integer(kind = kint) :: nkrs
-        integer(kind = kint) :: nkrt
         integer(kind = kint) :: nvec_lk
         integer(kind = kint) :: nscl_lk
         integer(kind = kint) :: n_sym_r
@@ -203,9 +201,6 @@
         type(field_matrix_testloop), allocatable :: Fmat(:)
 !
         type(spectr_matrix_testloop), allocatable :: Smat(:)
-!
-        integer(kind = kint) :: nkrs
-        integer(kind = kint) :: nkrt
 !
 !>        Maximum matrix size for spectr data
         integer(kind = kint) :: nvec_jk
@@ -499,20 +494,20 @@
           l_rtm = lst_rtm + lt
           do jj = 1, n_jk_e
             j_rlm = 2*jj + jst_rlm - 1
-            Pmat%Pse_tj(l_rtm,jj) =     P_rtm(l_rtm,j_rlm)
-            Pmat%dPsedt_tj(l_rtm,jj) =  dPdt_rtm(l_rtm,j_rlm)
+            Pmat%Pse_tj(lt,jj) =     P_rtm(l_rtm,j_rlm)
+            Pmat%dPsedt_tj(lt,jj) =  dPdt_rtm(l_rtm,j_rlm)
 !
-            Pmat%Pse_jt(jj,l_rtm) =     P_rtm(l_rtm,j_rlm)
-            Pmat%dPsedt_jt(jj,l_rtm) =  dPdt_rtm(l_rtm,j_rlm)
+            Pmat%Pse_jt(jj,lt) =     P_rtm(l_rtm,j_rlm)
+            Pmat%dPsedt_jt(jj,lt) =  dPdt_rtm(l_rtm,j_rlm)
           end do
 !
           do jj = 1, n_jk_o
             j_rlm = 2*jj + jst_rlm
-            Pmat%Pso_tj(l_rtm,jj) =     P_rtm(l_rtm,j_rlm)
-            Pmat%dPsodt_tj(l_rtm,jj) =  dPdt_rtm(l_rtm,j_rlm)
+            Pmat%Pso_tj(lt,jj) =     P_rtm(l_rtm,j_rlm)
+            Pmat%dPsodt_tj(lt,jj) =  dPdt_rtm(l_rtm,j_rlm)
 !
-            Pmat%Pso_jt(jj,l_rtm) =     P_rtm(l_rtm,j_rlm)
-            Pmat%dPsodt_jt(jj,l_rtm) =  dPdt_rtm(l_rtm,j_rlm)
+            Pmat%Pso_jt(jj,lt) =     P_rtm(l_rtm,j_rlm)
+            Pmat%dPsodt_jt(jj,lt) =  dPdt_rtm(l_rtm,j_rlm)
           end do
         end do
 !$omp end parallel do
