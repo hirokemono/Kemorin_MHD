@@ -187,14 +187,14 @@
 !
 !$omp parallel do private(k_rlm,nd,a1r_1d_rlm_r,a2r_1d_rlm_r,        &
 !$omp&                    jj,j_rlm,i_rlm,i_recv,g3,gm)
-      do nd = 1, nvector
+      do jj = 1, n_jk_e
+        j_rlm = 2*jj + jst - 1
+        g3 = g_sph_rlm(j_rlm,3)
+        gm = dble(idx_gl_1d_rlm_j(j_rlm,3))
         do k_rlm = 1, nidx_rlm(1)
           a1r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)
           a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
-          do jj = 1, n_jk_e
-            j_rlm = 2*jj + jst - 1
-            g3 = g_sph_rlm(j_rlm,3)
-            gm = dble(idx_gl_1d_rlm_j(j_rlm,3))
+          do nd = 1, nvector
             i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                        &
      &                + (k_rlm-1) * istep_rlm(1)
             i_recv = 3*nd + (irev_sr_rlm(i_rlm) - 1) * ncomp_recv
@@ -205,12 +205,21 @@
             tor_e(2*nd-1,k_rlm,jj) = WR(i_recv  ) * a1r_1d_rlm_r
             pol_e(3*nd-1,k_rlm,jj) = WR(i_recv  ) * a1r_1d_rlm_r * gm
           end do
+        end do
+      end do
+!$omp end parallel do
 !
 !   odd l-m
-          do jj = 1, n_jk_o
-            j_rlm = 2*jj + jst
-            g3 = g_sph_rlm(j_rlm,3)
-            gm = dble(idx_gl_1d_rlm_j(j_rlm,3))
+!$omp parallel do private(k_rlm,nd,a1r_1d_rlm_r,a2r_1d_rlm_r,        &
+!$omp&                    jj,j_rlm,i_rlm,i_recv,g3,gm)
+      do jj = 1, n_jk_o
+        j_rlm = 2*jj + jst
+        g3 = g_sph_rlm(j_rlm,3)
+        gm = dble(idx_gl_1d_rlm_j(j_rlm,3))
+        do k_rlm = 1, nidx_rlm(1)
+          a1r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)
+          a2r_1d_rlm_r = a_r_1d_rlm_r(k_rlm)*a_r_1d_rlm_r(k_rlm)
+          do nd = 1, nvector
             i_rlm = 1 + (j_rlm-1) * istep_rlm(2)                        &
      &                + (k_rlm-1) * istep_rlm(1)
             i_recv = 3*nd + (irev_sr_rlm(i_rlm) - 1) * ncomp_recv
@@ -226,19 +235,25 @@
 !$omp end parallel do
 !
 !$omp parallel do private(k_rlm,nd,jj,i_rlm,i_recv)
-      do nd = 1, nscalar
+      do jj = 1, n_jk_e
         do k_rlm = 1, nidx_rlm(1)
+          do nd = 1, nscalar
 !   even l-m
-          do jj = 1, n_jk_e
             i_rlm = 1 + (2*jj + jst - 2) * istep_rlm(2)                 &
      &                + (k_rlm-1) *        istep_rlm(1)
             i_recv = nd + 3*nvector                                     &
      &              + (irev_sr_rlm(i_rlm) - 1) * ncomp_recv
             pol_e(nd+3*nvector,k_rlm,jj) = WR(i_recv)
           end do
+        end do
+      end do
+!$omp end parallel do
 !
+!$omp parallel do private(k_rlm,nd,jj,i_rlm,i_recv)
+      do jj = 1, n_jk_o
+        do k_rlm = 1, nidx_rlm(1)
+          do nd = 1, nscalar
 !   odd l-m
-          do jj = 1, n_jk_o
             i_rlm = 1 + (2*jj + jst - 1) * istep_rlm(2)                 &
      &                + (k_rlm-1) *        istep_rlm(1)
             i_recv = nd + 3*nvector                                     &
