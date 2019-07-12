@@ -85,9 +85,13 @@
 !
 !
       type field_matrix_testloop
+!>        Maximum matrix size for field data
         integer(kind = kint) :: nvec_lk
+!>        Maximum matrix size for field data
         integer(kind = kint) :: nscl_lk
+!>        size for work area of symp_r and asmp_r
         integer(kind = kint) :: n_sym_r
+!>        size for work area of symp_p and asmp_p
         integer(kind = kint) :: n_sym_p
 !
 !>         Symmetric radial component
@@ -211,17 +215,6 @@
         integer(kind = kint) :: n_pol_e
 !>       size for work area of tor_e and tor_o
         integer(kind = kint) :: n_tor_e
-!
-!
-!>       Maximum matrix size for field data
-        integer(kind = kint) :: nvec_lk
-!>       Maximum matrix size for field data
-        integer(kind = kint) :: nscl_lk
-!
-!>       size for work area of symp_r and asmp_r
-        integer(kind = kint) :: n_sym_r
-!>       size for work area of symp_p and asmp_p
-        integer(kind = kint) :: n_sym_p
       end type leg_trns_testloop_work
 !
       private :: count_symmetric_leg_lj_test
@@ -254,25 +247,31 @@
       allocate(WK_l_tst%nle_rtm(np_smp))
       allocate(WK_l_tst%nlo_rtm(np_smp))
 !
+      write(*,*) 'count_size_of_field_mat_tstlop'
       call count_size_of_field_mat_tstlop                               &
      &   (np_smp, sph_rtm%nidx_rtm(1), sph_rtm%istack_rtm_lt_smp,       &
      &    nvector, nscalar, WK_l_tst%lst_rtm, WK_l_tst%nle_rtm,         &
      &    WK_l_tst%nlo_rtm, WK_l_tst%Fmat)
+      write(*,*) 'count_symmetric_leg_lj_test'
       call count_symmetric_leg_lj_test                                  &
      &   (sph_rtm%nidx_rtm(3), idx_trns, WK_l_tst)
 !
 !
+      write(*,*) 'init_symmetric_legs_testloop'
       call init_symmetric_legs_testloop                                 &
      &  (sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), sph_rlm%nidx_rlm(2), &
      &   idx_trns%lstack_rlm, leg%P_rtm, leg%dPdt_rtm, WK_l_tst)
 !
+      write(*,*) 'alloc_leg_sym_matmul_test'
       call alloc_leg_sym_matmul_test                                    &
      &   (sph_rtm%nidx_rtm, nvector, nscalar, idx_trns, WK_l_tst)
 !
       allocate(WK_l_tst%Fmat(np_smp))
       allocate(WK_l_tst%Smat(np_smp))
 !
+      write(*,*) 'alloc_field_mat_tstlop'
       call alloc_field_mat_tstlop(np_smp, WK_l_tst%Fmat)
+      write(*,*) 'alloc_spectr_mat_tstlop'
       call alloc_spectr_mat_tstlop                                      &
      &   (WK_l_tst%n_pol_e, WK_l_tst%n_tor_e, np_smp, WK_l_tst%Smat)
 !
@@ -342,12 +341,6 @@
 !
       WK_l_tst%n_pol_e = 3*WK_l_tst%nvec_jk + WK_l_tst%nscl_jk
       WK_l_tst%n_tor_e = 2*WK_l_tst%nvec_jk
-!
-      WK_l_tst%nvec_lk = ((nidx_rtm(2)+1)/2) * nidx_rtm(1) * nvector
-      WK_l_tst%nscl_lk = ((nidx_rtm(2)+1)/2) * nidx_rtm(1) * nscalar
-!
-      WK_l_tst%n_sym_r = 3*WK_l_tst%nvec_lk + WK_l_tst%nscl_lk
-      WK_l_tst%n_sym_p = 2*WK_l_tst%nvec_lk
 !
       end subroutine alloc_leg_sym_matmul_test
 !
