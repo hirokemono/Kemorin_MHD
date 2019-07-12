@@ -110,23 +110,23 @@
           call matmul_bwd_leg_trans_tstlop                              &
      &       (WK_l_tst%nle_rtm(ip), nkrs,                      &
      &        WK_l_tst%n_jk_e(mp_rlm),                             &
-     &        WK_l_tst%Pmat(mp_rlm)%Pse_jt(1,lst_rtm+1), WK_l_tst%Smat(1)%pol_e(1), &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt, WK_l_tst%Smat(1)%pol_e(1), &
      &        WK_l_tst%Fmat(ip)%symp_r(1))
           call matmul_bwd_leg_trans_tstlop                              &
      &       (WK_l_tst%nle_rtm(ip), nkrt,                      &
      &        WK_l_tst%n_jk_e(mp_rlm),              &
-     &        WK_l_tst%Pmat(mp_rlm)%dPsedt_jt(1,lst_rtm+1), WK_l_tst%Smat(1)%tor_e(1), &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt, WK_l_tst%Smat(1)%tor_e(1), &
      &        WK_l_tst%Fmat(ip)%asmp_p(1))
 !   odd l-m
           call matmul_bwd_leg_trans_tstlop                              &
      &       (WK_l_tst%nle_rtm(ip), nkrs,                      &
      &        WK_l_tst%n_jk_o(mp_rlm),               &
-     &        WK_l_tst%Pmat(mp_rlm)%Pso_jt(1,lst_rtm+1), WK_l_tst%Smat(1)%pol_o(1), &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt, WK_l_tst%Smat(1)%pol_o(1), &
      &        WK_l_tst%Fmat(ip)%asmp_r(1))
           call matmul_bwd_leg_trans_tstlop                              &
      &       (WK_l_tst%nle_rtm(ip), nkrt,                      &
      &        WK_l_tst%n_jk_o(mp_rlm),               &
-     &        WK_l_tst%Pmat(mp_rlm)%dPsodt_jt(1,lst_rtm+1), WK_l_tst%Smat(1)%tor_o(1),     &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt, WK_l_tst%Smat(1)%tor_o(1),     &
      &        WK_l_tst%Fmat(ip)%symp_p(1))
         end do
 !$omp end parallel do
