@@ -71,8 +71,8 @@
      &          asin_theta_1d_rtm, g_sph_rlm,                           &
      &          n_WR, n_WS, WR, WS, WK_l_bsm)
 !
-      use set_sp_rlm_for_leg_matmul
-      use cal_vr_rtm_by_matmul
+      use set_sp_rlm_leg_matmul_big
+      use set_vr_rtm_leg_matmul_big
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
@@ -185,8 +185,8 @@
      &          asin_theta_1d_rtm, g_sph_rlm,                           &
      &          n_WR, n_WS, WR, WS, WK_l_bsm)
 !
-      use set_sp_rlm_for_leg_matmul
-      use cal_vr_rtm_by_matmul
+      use set_sp_rlm_leg_matmul_big
+      use set_vr_rtm_leg_matmul_big
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
@@ -300,8 +300,8 @@
      &          asin_theta_1d_rtm, g_sph_rlm,                           &
      &          n_WR, n_WS, WR, WS, WK_l_bsm)
 !
-      use set_sp_rlm_for_leg_matmul
-      use cal_vr_rtm_by_matmul
+      use set_sp_rlm_leg_matmul_big
+      use set_vr_rtm_leg_matmul_big
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm

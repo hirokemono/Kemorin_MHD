@@ -140,6 +140,9 @@
 !@n     with symmetry and  self matrix product
       integer(kind = kint), parameter :: iflag_leg_sym_matprod_big = 15
 !>      integer flag to perform Legendre transform 
+!@n     with symmetry and  self matrix product
+      integer(kind = kint), parameter :: iflag_leg_sym_mat_jt = 16
+!>      integer flag to perform Legendre transform 
 !@n     with testing loop
       integer(kind = kint), parameter :: iflag_leg_test_loop =   99
 !

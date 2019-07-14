@@ -56,15 +56,17 @@
       use t_legendre_work_matmul
       use t_legendre_work_sym_matmul
       use t_leg_trans_sym_matmul_big
+      use t_legendre_work_sym_mat_jt
       use t_legendre_work_testlooop
 !
       use legendre_transform_org
       use legendre_transform_krin
       use legendre_transform_spin
-      use legendre_transform_testloop
       use legendre_transform_matmul
       use legendre_trans_sym_matmul
       use legendre_trans_matmul_big
+      use legendre_transform_sym_tomp
+      use legendre_transform_testloop
 !
       implicit none
 !
@@ -83,6 +85,9 @@
         type(leg_trns_bsym_mul_work) :: WK_l_bsm
 !>        Structure for Legendre trasdorm for test
         type(leg_trns_testloop_work) :: WK_l_tst
+!
+!>        Structure for Legendre trasdorm for test
+        type(leg_trns_theta_omp_work) :: WK_l_tsp
       end type legendre_trns_works
 !
 !
@@ -136,6 +141,9 @@
      &     (sph_rtm%nidx_rtm(2), idx_trns, WK_leg%WK_l_mtl)
         call alloc_leg_scl_blocked                                      &
      &     (sph_rtm%nidx_rtm(2), idx_trns, WK_leg%WK_l_mtl)
+      else if(WK_leg%id_legendre .eq. iflag_leg_sym_mat_jt) then
+        call init_legendre_sym_mat_jt(sph_rtm, sph_rlm, leg,            &
+     &      idx_trns, nvector, nscalar, WK_leg%WK_l_tsp)
       else if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
         call init_legendre_testloop(sph_rtm, sph_rlm, leg,              &
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_tst)
@@ -170,6 +178,8 @@
       else if(WK_leg%id_legendre .eq. iflag_leg_blocked                 &
      &   .or. WK_leg%id_legendre .eq. iflag_leg_krloop_outer) then
         call dealloc_leg_vec_matmul(WK_leg%WK_l_mtl)
+      else if(WK_leg%id_legendre .eq. iflag_leg_sym_mat_jt) then
+        call dealloc_leg_sym_mat_jt(WK_leg%WK_l_tsp)
       else if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
         call dealloc_leg_vec_test(WK_leg%WK_l_tst)
       else
@@ -260,6 +270,10 @@
         call leg_backward_trans_matprod_big(ncomp, nvector, nscalar,    &
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
      &      n_WR, n_WS, WR, WS, WK_leg%WK_l_bsm)
+      else if(WK_leg%id_legendre .eq. iflag_leg_sym_mat_jt) then
+        call leg_backward_trans_smat_jt(ncomp, nvector, nscalar,        &
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
+     &      n_WR, n_WS, WR, WS, WK_leg%WK_l_tsp)
       else
         call leg_backward_trans_org(ncomp, nvector, nscalar,            &
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
@@ -349,6 +363,10 @@
         call leg_forward_trans_matprod_big(ncomp, nvector, nscalar,     &
      &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,        &
      &      n_WR, n_WS, WR, WS, WK_leg%WK_l_bsm)
+      else if(WK_leg%id_legendre .eq. iflag_leg_sym_mat_jt) then
+        call leg_forward_trans_smat_jt(ncomp, nvector, nscalar,         &
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,        &
+     &      n_WR, n_WS, WR, WS, WK_leg%WK_l_tsp)
       else
         call leg_forwawd_trans_org(ncomp, nvector, nscalar,             &
      &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,        &
