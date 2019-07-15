@@ -278,14 +278,6 @@
 !
       if(my_rank .gt. 0) return
         write(*,'(a)') 'Loop ID: type, maximum time, average time'
-        if(etime_trans(iflag_leg_orginal_loop) .gt. zero)               &
-     &  write(*,'(a,1p2e16.6)') ' 1: elapsed by original loop:      ',  &
-     &            etime_max(iflag_leg_orginal_loop),  &
-     &            etime_trans(iflag_leg_orginal_loop)
-        if(etime_trans(iflag_leg_blocked) .gt. zero)                    &
-     &  write(*,'(a,1p2e16.6)') ' 2: elapsed by blocked loop:      ',   &
-     &            etime_max(iflag_leg_blocked),                         &
-     &            etime_trans(iflag_leg_blocked)
         if(etime_trans(iflag_leg_krloop_inner) .gt. zero)               &
      &  write(*,'(a,1p2e16.6)') ' 3: elapsed by inner radius loop:  ',  &
      &            etime_max(iflag_leg_krloop_inner),                    &

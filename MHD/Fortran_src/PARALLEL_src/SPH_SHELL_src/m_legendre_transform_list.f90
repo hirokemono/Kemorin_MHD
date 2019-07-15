@@ -97,12 +97,6 @@
       integer(kind = kint), parameter :: iflag_leg_undefined = -1
 !>      integer flag to perform Legendre transform 
 !@n     using original array order
-      integer(kind = kint), parameter :: iflag_leg_orginal_loop = 1
-!>      integer flag to perform Legendre transform 
-!@n     using blocked loop
-      integer(kind = kint), parameter :: iflag_leg_blocked =      2
-!>      integer flag to perform Legendre transform 
-!!@n    using longer loop for original array order 
       integer(kind = kint), parameter :: iflag_leg_krloop_inner = 3
 !>      integer flag to perform Legendre transform 
 !@n     with inneromst Legendre polynomial loop
@@ -185,10 +179,6 @@
         set_legendre_trans_mode_ctl = iflag_leg_sym_dgemm
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_matprod)) then
         set_legendre_trans_mode_ctl = iflag_leg_sym_matprod
-      else if(cmp_no_case(tranx_loop_ctl, leg_blocked_loop)) then
-        set_legendre_trans_mode_ctl = iflag_leg_blocked
-      else if(cmp_no_case(tranx_loop_ctl, leg_orginal_loop)) then
-        set_legendre_trans_mode_ctl = iflag_leg_orginal_loop
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_matmul_big)) then
         set_legendre_trans_mode_ctl = iflag_leg_sym_matmul_big
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_dgemm_big)) then
@@ -196,7 +186,7 @@
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_matprod_big)) then
         set_legendre_trans_mode_ctl = iflag_leg_sym_matprod_big
       else
-        set_legendre_trans_mode_ctl = iflag_leg_orginal_loop
+        set_legendre_trans_mode_ctl = iflag_leg_symmetry
       end if
 !
       end function set_legendre_trans_mode_ctl
@@ -212,11 +202,7 @@
       character(len=kchara) :: tmpchara
 !
 !
-      if     (id_legendre .eq. iflag_leg_orginal_loop) then
-        write(tmpchara,'(a)') trim(leg_orginal_loop)
-      else if(id_legendre .eq. iflag_leg_blocked) then
-        write(tmpchara,'(a)') trim(leg_blocked_loop)
-      else if(id_legendre .eq. iflag_leg_krloop_inner) then
+	  if(id_legendre .eq. iflag_leg_krloop_inner) then
         write(tmpchara,'(a)') trim(leg_krloop_inner)
       else if(id_legendre .eq. iflag_leg_krloop_outer) then
         write(tmpchara,'(a)') trim(leg_krloop_outer)
