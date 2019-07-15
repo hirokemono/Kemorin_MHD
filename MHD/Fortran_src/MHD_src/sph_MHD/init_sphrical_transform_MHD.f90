@@ -49,10 +49,9 @@
 !
       implicit  none
 !
-      integer(kind = kint), parameter :: num_test =  6
+      integer(kind = kint), parameter :: num_test =  5
       integer(kind = kint), parameter :: list_test(num_test)            &
-     &        = (/iflag_leg_krloop_inner,                               &
-     &            iflag_leg_sym_spin_loop,                              &
+     &        = (/iflag_leg_sym_spin_loop,                              &
      &            iflag_leg_sym_matmul,                                 &
      &            iflag_leg_sym_dgemm,                                  &
      &            iflag_leg_sym_matmul_big,                             &
@@ -278,10 +277,6 @@
 !
       if(my_rank .gt. 0) return
         write(*,'(a)') 'Loop ID: type, maximum time, average time'
-        if(etime_trans(iflag_leg_krloop_inner) .gt. zero)               &
-     &  write(*,'(a,1p2e16.6)') ' 3: elapsed by inner radius loop:  ',  &
-     &            etime_max(iflag_leg_krloop_inner),                    &
-     &            etime_trans(iflag_leg_krloop_inner)
         if(etime_trans(iflag_leg_krloop_outer) .gt. zero)               &
      &  write(*,'(a,1p2e16.6)') ' 4: elapsed by outer radius loop:  ',  &
      &            etime_max(iflag_leg_krloop_outer),                    &

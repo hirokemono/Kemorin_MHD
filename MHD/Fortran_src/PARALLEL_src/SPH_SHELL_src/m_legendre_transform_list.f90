@@ -96,9 +96,6 @@
 !>      integer flag to run elpse time check for legendre transform
       integer(kind = kint), parameter :: iflag_leg_undefined = -1
 !>      integer flag to perform Legendre transform 
-!@n     using original array order
-      integer(kind = kint), parameter :: iflag_leg_krloop_inner = 3
-!>      integer flag to perform Legendre transform 
 !@n     with inneromst Legendre polynomial loop
       integer(kind = kint), parameter :: iflag_leg_krloop_outer = 4
 !>      integer flag to perform Legendre transform with symmetry
@@ -159,8 +156,6 @@
 !
       if(     cmp_no_case(tranx_loop_ctl, leg_test_loop)) then
         set_legendre_trans_mode_ctl = iflag_leg_test_loop
-      else if(cmp_no_case(tranx_loop_ctl, leg_krloop_inner)) then
-        set_legendre_trans_mode_ctl = iflag_leg_krloop_inner
       else if(cmp_no_case(tranx_loop_ctl, leg_krloop_outer)) then
         set_legendre_trans_mode_ctl = iflag_leg_krloop_outer
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_org_loop)) then
@@ -202,9 +197,7 @@
       character(len=kchara) :: tmpchara
 !
 !
-	  if(id_legendre .eq. iflag_leg_krloop_inner) then
-        write(tmpchara,'(a)') trim(leg_krloop_inner)
-      else if(id_legendre .eq. iflag_leg_krloop_outer) then
+      if(id_legendre .eq. iflag_leg_krloop_outer) then
         write(tmpchara,'(a)') trim(leg_krloop_outer)
       else if(id_legendre .eq. iflag_leg_symmetry) then
         write(tmpchara,'(a)') trim(leg_sym_org_loop)
