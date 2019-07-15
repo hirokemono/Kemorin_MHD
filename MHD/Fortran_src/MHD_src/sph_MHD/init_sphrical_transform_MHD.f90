@@ -277,10 +277,6 @@
 !
       if(my_rank .gt. 0) return
         write(*,'(a)') 'Loop ID: type, maximum time, average time'
-        if(etime_trans(iflag_leg_krloop_outer) .gt. zero)               &
-     &  write(*,'(a,1p2e16.6)') ' 4: elapsed by outer radius loop:  ',  &
-     &            etime_max(iflag_leg_krloop_outer),                    &
-     &            etime_trans(iflag_leg_krloop_outer)
         if(etime_trans(iflag_leg_symmetry) .gt. zero)                   &
      &  write(*,'(a,1p2e16.6)')                                         &
      &          ' 5: elapsed by original loop with symmetric: ',        &
