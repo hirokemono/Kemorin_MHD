@@ -107,17 +107,11 @@
 !@n     with symmetry and dgemm in BLAS
       integer(kind = kint), parameter :: iflag_leg_sym_dgemm =    11
 !>      integer flag to perform Legendre transform 
-!@n     with symmetry and  self matrix product
-      integer(kind = kint), parameter :: iflag_leg_sym_matprod =  12
-!>      integer flag to perform Legendre transform 
 !@n     with symmetry and mutmul function
       integer(kind = kint), parameter :: iflag_leg_sym_matmul_big =  13
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and dgemm in BLAS
       integer(kind = kint), parameter :: iflag_leg_sym_dgemm_big =   14
-!>      integer flag to perform Legendre transform 
-!@n     with symmetry and  self matrix product
-      integer(kind = kint), parameter :: iflag_leg_sym_matprod_big = 15
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and  self matrix product
       integer(kind = kint), parameter :: iflag_leg_sym_mat_jt = 16
@@ -152,14 +146,10 @@
         set_legendre_trans_mode_ctl = iflag_leg_sym_matmul
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_dgemm)) then
         set_legendre_trans_mode_ctl = iflag_leg_sym_dgemm
-      else if(cmp_no_case(tranx_loop_ctl, leg_sym_matprod)) then
-        set_legendre_trans_mode_ctl = iflag_leg_sym_matprod
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_matmul_big)) then
         set_legendre_trans_mode_ctl = iflag_leg_sym_matmul_big
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_dgemm_big)) then
         set_legendre_trans_mode_ctl = iflag_leg_sym_dgemm_big
-      else if(cmp_no_case(tranx_loop_ctl, leg_sym_matprod_big)) then
-        set_legendre_trans_mode_ctl = iflag_leg_sym_matprod_big
       else
         set_legendre_trans_mode_ctl = iflag_leg_symmetry
       end if
@@ -185,14 +175,10 @@
         write(tmpchara,'(a)') trim(leg_sym_matmul)
       else if(id_legendre .eq. iflag_leg_sym_dgemm) then
         write(tmpchara,'(a)') trim(leg_sym_dgemm)
-      else if(id_legendre .eq. iflag_leg_sym_matprod) then
-        write(tmpchara,'(a)') trim(leg_sym_matprod)
       else if(id_legendre .eq. iflag_leg_sym_matmul_big) then
         write(tmpchara,'(a)') trim(leg_sym_matmul_big)
       else if(id_legendre .eq. iflag_leg_sym_dgemm_big) then
         write(tmpchara,'(a)') trim(leg_sym_dgemm_big)
-      else if(id_legendre .eq. iflag_leg_sym_matprod_big) then
-        write(tmpchara,'(a)') trim(leg_sym_matprod_big)
       else if(id_legendre .eq. iflag_leg_test_loop) then
         write(tmpchara,'(a)') trim(leg_test_loop)
       end if

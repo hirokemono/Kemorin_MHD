@@ -295,11 +295,6 @@
      &  write(*,'(a,1p2e16.6)') '11: elapsed by BLAS with symmetric: ', &
      &            etime_max(iflag_leg_sym_dgemm),                       &
      &            etime_trans(iflag_leg_sym_dgemm)
-        if(etime_trans(iflag_leg_sym_matprod) .gt. zero)                &
-     &  write(*,'(a,1p2e16.6)')                                         &
-     &          '12: elapsed by matrix prod. with symm.: ',             &
-     &            etime_max(iflag_leg_sym_matprod),                     &
-     &            etime_trans(iflag_leg_sym_matprod)
         if(etime_trans(iflag_leg_sym_matmul_big) .gt. zero)             &
      &  write(*,'(a,1p2e16.6)')                                         &
      &          '13: elapsed by big matmul with symmetric: ',           &
@@ -310,11 +305,6 @@
      &          '14: elapsed by big BLAS with symmetric: ',             &
      &            etime_max(iflag_leg_sym_dgemm_big),                   &
      &            etime_trans(iflag_leg_sym_dgemm_big)
-        if(etime_trans(iflag_leg_sym_matprod_big) .gt. zero)            &
-     &  write(*,'(a,1p2e16.6)')                                         &
-     &          '15: elapsed by big matrix prod. with symm.: ',         &
-     &            etime_max(iflag_leg_sym_matprod_big),                 &
-     &            etime_trans(iflag_leg_sym_matprod_big)
 !
       end subroutine select_legendre_transform
 !
