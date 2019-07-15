@@ -101,15 +101,6 @@
 !@n     with symmetry and inneromst Legendre polynomial loop
       integer(kind = kint), parameter :: iflag_leg_sym_spin_loop = 6
 !>      integer flag to perform Legendre transform 
-!@n     with mutmul function
-      integer(kind = kint), parameter :: iflag_leg_matmul =        7
-!>      integer flag to perform Legendre transform 
-!@n     with dgemm in BLAS
-      integer(kind = kint), parameter :: iflag_leg_dgemm =         8
-!>      integer flag to perform Legendre transform 
-!@n     with self matrix product
-      integer(kind = kint), parameter :: iflag_leg_matprod =       9
-!>      integer flag to perform Legendre transform 
 !@n     with symmetry and mutmul function
       integer(kind = kint), parameter :: iflag_leg_sym_matmul =   10
 !>      integer flag to perform Legendre transform 
@@ -157,12 +148,6 @@
         set_legendre_trans_mode_ctl = iflag_leg_symmetry
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_spin_loop)) then
         set_legendre_trans_mode_ctl = iflag_leg_sym_spin_loop
-      else if(cmp_no_case(tranx_loop_ctl, leg_matmul)) then
-        set_legendre_trans_mode_ctl = iflag_leg_matmul
-      else if(cmp_no_case(tranx_loop_ctl, leg_dgemm)) then
-        set_legendre_trans_mode_ctl = iflag_leg_dgemm
-      else if(cmp_no_case(tranx_loop_ctl, leg_matprod)) then
-        set_legendre_trans_mode_ctl = iflag_leg_matprod
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_matmul)) then
         set_legendre_trans_mode_ctl = iflag_leg_sym_matmul
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_dgemm)) then
@@ -196,12 +181,6 @@
         write(tmpchara,'(a)') trim(leg_sym_org_loop)
        else if(id_legendre .eq. iflag_leg_sym_spin_loop) then
         write(tmpchara,'(a)') trim(leg_sym_spin_loop)
-      else if(id_legendre .eq. iflag_leg_matmul) then
-        write(tmpchara,'(a)') trim(leg_matmul)
-      else if(id_legendre .eq. iflag_leg_dgemm) then
-        write(tmpchara,'(a)') trim(leg_dgemm)
-      else if(id_legendre .eq. iflag_leg_matprod) then
-        write(tmpchara,'(a)') trim(leg_matprod)
       else if(id_legendre .eq. iflag_leg_sym_matmul) then
         write(tmpchara,'(a)') trim(leg_sym_matmul)
       else if(id_legendre .eq. iflag_leg_sym_dgemm) then

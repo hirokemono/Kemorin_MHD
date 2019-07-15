@@ -286,18 +286,6 @@
      &  write(*,'(a,1p2e16.6)') ' 6: elapsed by sym. outer radius: ',   &
      &            etime_max(iflag_leg_sym_spin_loop),                   &
      &            etime_trans(iflag_leg_sym_spin_loop)
-        if(etime_trans(iflag_leg_matmul) .gt. zero)                     &
-     &  write(*,'(a,1p2e16.6)') ' 7: elapsed by matmul: ',              &
-     &            etime_max(iflag_leg_matmul),                          &
-     &            etime_trans(iflag_leg_matmul)
-        if(etime_trans(iflag_leg_dgemm) .gt. zero)                      &
-     &  write(*,'(a,1p2e16.6)') ' 8: elapsed by BLAS: ',                &
-     &            etime_max(iflag_leg_dgemm),                           &
-     &            etime_trans(iflag_leg_dgemm)
-        if(etime_trans(iflag_leg_matprod) .gt. zero)                    &
-     &  write(*,'(a,1p2e16.6)') ' 9: elapsed by matrix product: ',      &
-     &            etime_max(iflag_leg_matprod),                         &
-     &            etime_trans(iflag_leg_matprod)
         if(etime_trans(iflag_leg_sym_matmul) .gt. zero)                 &
      &  write(*,'(a,1p2e16.6)')                                         &
      &          '10: elapsed by matmul with symmetric: ',               &

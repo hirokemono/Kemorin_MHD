@@ -53,8 +53,6 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_work_4_sph_trans_spin
-      use t_legendre_work_matmul
-      use t_legendre_work_sym_matmul
 !
       implicit none
 !
