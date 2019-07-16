@@ -113,7 +113,6 @@
         n_jk4 =   int(n_jk)
         call DGEMM('N', 'N', nl_rtm4, nkr4, n_jk4, one,                 &
      &      P_lj, nl_rtm4, S_jk, n_jk4, zero, V_lk, nl_rtm4)
-      end if
 #endif
       else
         call matmat_leg_trans(nl_rtm, nkr, n_jk, P_lj, S_jk, V_lk)
