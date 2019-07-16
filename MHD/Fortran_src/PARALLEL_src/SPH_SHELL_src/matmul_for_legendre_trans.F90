@@ -67,7 +67,7 @@
       integer :: n_jk4, nkr4, nl_rtm4
 !
 !
-      if(nkr .eq. 0) return
+      if(n_jk*nkr .eq. 0) return
       if(iflag_matmul .eq. iflag_INTRINSIC) then
         S_kj = matmul(V_kl,P_lj)
 #ifdef BLAS
@@ -135,8 +135,7 @@
 !
       integer :: n_jk4, nkr4, nl_rtm4
 !
-!!!!!!!!!
-      if(nkr .eq. 0) return
+      if(n_jk*nkr .eq. 0) return
       if(iflag_matmul .eq. iflag_INTRINSIC) then
         S_jk = matmul(P_jl,V_lk)
 #ifdef BLAS
@@ -205,9 +204,7 @@
       integer :: n_jk4, nkr4, nl_rtm4
 !
 !
-      if(nkr .eq. 0) return
-!
-      if(nkr .eq. 0) return
+      if(n_jk*nkr .eq. 0) return
       if(iflag_matmul .eq. iflag_INTRINSIC) then
         S_kj(1:nkr,1:n_jk) = coef * S_kj(1:nkr,1:n_jk)                  &
      &         +  matmul(V_kl(1:nkr,1:nl_rtm), P_lj(1:nl_rtm,1:n_jk))
