@@ -292,7 +292,6 @@
 !
         if(etime_trans(iflag_leg_sym_spin_loop) .gt. zero) then
           write(*,'(i3,a)') iflag_leg_sym_spin_loop,                    &
-     &       iflag_leg_sym_spin_loop, ':  ', trim(leg_sym_spin_loop),   &
      &            ': elapsed by sym. outer radius'
           write(*,'(2a,1p2e16.6)') trim(leg_sym_spin_loop),  ':  ',     &
      &            etime_max(iflag_leg_sym_spin_loop),                   &
