@@ -135,11 +135,9 @@
 !
       integer :: n_jk4, nkr4, nl_rtm4
 !
-!
+!!!!!!!!!
       if(nkr .eq. 0) return
-!      if(iflag_matmul .eq. iflag_INTRINSIC) then
-       if(iflag_matmul .eq. iflag_INTRINSIC .or. &
-     &        iflag_matmul .eq. iflag_DGEMM) then
+      if(iflag_matmul .eq. iflag_INTRINSIC) then
         S_jk = matmul(P_jl,V_lk)
 #ifdef BLAS
       else if(iflag_matmul .eq. iflag_DGEMM) then
