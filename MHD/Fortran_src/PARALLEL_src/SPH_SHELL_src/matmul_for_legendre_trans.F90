@@ -129,7 +129,7 @@
       integer(kind = kint), intent(in) :: iflag_matmul
       integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
       real(kind = kreal), intent(in) :: P_jl(n_jk,nl_rtm)
-      real(kind = kreal), intent(in) :: V_lk(nkr,nl_rtm)
+      real(kind = kreal), intent(in) :: V_lk(nl_rtm,nkr)
 !
       real(kind = kreal), intent(inout) :: S_jk(n_jk,nkr)
 !
@@ -161,7 +161,7 @@
       integer(kind = kint), intent(in) :: iflag_matmul
       integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
       real(kind = kreal), intent(in) :: S_kj(nkr,n_jk)
-      real(kind = kreal), intent(in) :: P_jl(nl_rtm,n_jk)
+      real(kind = kreal), intent(in) :: P_jl(n_jk,nl_rtm)
 !
       real(kind = kreal), intent(inout) :: V_kl(nkr,nl_rtm)
 !
