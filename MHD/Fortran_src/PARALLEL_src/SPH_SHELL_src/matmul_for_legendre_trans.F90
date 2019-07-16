@@ -173,8 +173,7 @@
       if(nkr .eq. 0) return
       if(n_jk .eq. 0) then
         V_kl = 0.0d0
-      else if(iflag_matmul .eq. iflag_INTRINSIC .or. &
-     &        iflag_matmul .eq. iflag_DGEMM) then
+      if(iflag_matmul .eq. iflag_INTRINSIC) then
         V_kl = matmul(S_kj,P_jl)
 !
 #ifdef BLAS
