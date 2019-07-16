@@ -283,71 +283,71 @@
       if(my_rank .gt. 0) return
         write(*,'(a)') 'Loop ID: type, maximum time, average time'
         if(etime_trans(iflag_leg_symmetry) .gt. zero)                   &
-     &  write(*,'(i3,a,a,1p2e16.6)')                                    &
-     &           iflag_leg_symmetry, trim(leg_sym_org_loop),            &
+     &  write(*,'(i3,3a,1p2e16.6)')                                     &
+     &       iflag_leg_symmetry, ':  ', trim(leg_sym_org_loop),         &
      &          ': elapsed by original loop with symmetric: ',          &
      &            etime_max(iflag_leg_symmetry),                        &
      &            etime_trans(iflag_leg_symmetry)
 !
         if(etime_trans(iflag_leg_sym_spin_loop) .gt. zero)              &
-     &  write(*,'(i3,a,a,1p2e16.6)')                                    &
-     &           iflag_leg_sym_spin_loop, trim(leg_sym_spin_loop),      &
+     &  write(*,'(i3,3a,1p2e16.6)')                                     &
+     &       iflag_leg_sym_spin_loop, ':  ', trim(leg_sym_spin_loop),   &
      &            ': elapsed by sym. outer radius: ',                   &
      &            etime_max(iflag_leg_sym_spin_loop),                   &
      &            etime_trans(iflag_leg_sym_spin_loop)
 !
         if(etime_trans(iflag_leg_sym_matmul) .gt. zero)                 &
-     &  write(*,'(i3,a,a,1p2e16.6)')                                    &
-     &           iflag_leg_sym_matmul, trim(leg_sym_matmul),            &
+     &  write(*,'(i3,3a,1p2e16.6)')                                     &
+     &           iflag_leg_sym_matmul, ':  ', trim(leg_sym_matmul),     &
      &          '10: elapsed by matmul with symmetric: ',               &
      &            etime_max(iflag_leg_sym_matmul),                      &
      &            etime_trans(iflag_leg_sym_matmul)
 !
         if(etime_trans(iflag_leg_sym_dgemm) .gt. zero)                  &
-     &  write(*,'(i3,a,a,1p2e16.6)')                                    &
-     &           iflag_leg_sym_dgemm, trim(leg_sym_dgemm),              &
+     &  write(*,'(i3,3a,1p2e16.6)')                                     &
+     &           iflag_leg_sym_dgemm, ':  ', trim(leg_sym_dgemm),       &
      &          ': elapsed by BLAS with symmetric: ',                   &
      &            etime_max(iflag_leg_sym_dgemm),                       &
      &            etime_trans(iflag_leg_sym_dgemm)
 !
         if(etime_trans(iflag_leg_sym_matmul_big) .gt. zero)             &
-     &  write(*,'(i3,a,a,1p2e16.6)')                                    &
-     &           iflag_leg_sym_matmul_big, trim(leg_sym_matmul_big),    &
+     &  write(*,'(i3,3a,1p2e16.6)')                                     &
+     &       iflag_leg_sym_matmul_big, ':  ', trim(leg_sym_matmul_big), &
      &          ': elapsed by big matmul with symmetric: ',             &
      &            etime_max(iflag_leg_sym_matmul_big),                  &
      &            etime_trans(iflag_leg_sym_matmul_big)
 !
         if(etime_trans(iflag_leg_sym_dgemm_big) .gt. zero)              &
-     &  write(*,'(i3,a,a,1p2e16.6)')                                    &
-     &           iflag_leg_sym_dgemm_big, trim(leg_sym_dgemm_big),      &
+     &  write(*,'(i3,3a,1p2e16.6)')                                     &
+     &       iflag_leg_sym_dgemm_big, ':  ', trim(leg_sym_dgemm_big),   &
      &          ': elapsed by big BLAS with symmetric: ',               &
      &            etime_max(iflag_leg_sym_dgemm_big),                   &
      &            etime_trans(iflag_leg_sym_dgemm_big)
 !
         if(etime_trans(iflag_leg_sym_mat_jt) .gt. zero)                 &
-     &  write(*,'(i3,a,a,1p2e16.6)')                                    &
-     &           iflag_leg_sym_mat_jt, trim(leg_sym_mat_jt),            &
+     &  write(*,'(i3,3a,1p2e16.6)')                                     &
+     &           iflag_leg_sym_mat_jt, ':  ', trim(leg_sym_mat_jt),     &
      &          ': elapsed by big matmul with symmetric: ',             &
      &            etime_max(iflag_leg_sym_mat_jt),                      &
      &            etime_trans(iflag_leg_sym_mat_jt)
 !
         if(etime_trans(iflag_leg_sym_dgemm_jt) .gt. zero)               &
-     &  write(*,'(i3,a,a,1p2e16.6)')                                    &
-     &           iflag_leg_sym_dgemm_jt, trim(leg_sym_dgemm_jt),        &
+     &  write(*,'(i3,3a,1p2e16.6)')                                     &
+     &           iflag_leg_sym_dgemm_jt, ':  ', trim(leg_sym_dgemm_jt), &
      &          ': elapsed by big matmul with symmetric: ',             &
      &            etime_max(iflag_leg_sym_dgemm_jt),                    &
      &            etime_trans(iflag_leg_sym_dgemm_jt)
 !
         if(etime_trans(iflag_leg_sym_mat_tj) .gt. zero)                 &
-     &  write(*,'(i3,a,a,1p2e16.6)')                                    &
-     &           iflag_leg_sym_mat_tj, trim(leg_sym_mat_tj),            &
+     &  write(*,'(i3,3a,1p2e16.6)')                                     &
+     &           iflag_leg_sym_mat_tj, ':  ', trim(leg_sym_mat_tj),     &
      &          ': elapsed by big matmul with symmetric: ',             &
      &            etime_max(iflag_leg_sym_mat_tj),                      &
      &            etime_trans(iflag_leg_sym_mat_tj)
 !
         if(etime_trans(iflag_leg_sym_dgemm_tj) .gt. zero)               &
-     &  write(*,'(i3,a,a,1p2e16.6)')                                    &
-     &           iflag_leg_sym_dgemm_tj, trim(leg_dgemm_tj),            &
+     &  write(*,'(i3,3a,1p2e16.6)')                                     &
+     &           iflag_leg_sym_dgemm_tj, ':  ', trim(leg_dgemm_tj),     &
      &          ': elapsed by big matmul with symmetric: ',             &
      &            etime_max(iflag_leg_sym_dgemm_tj),                    &
      &            etime_trans(iflag_leg_sym_dgemm_tj)
