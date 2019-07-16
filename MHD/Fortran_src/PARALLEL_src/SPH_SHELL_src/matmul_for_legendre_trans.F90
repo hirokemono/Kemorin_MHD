@@ -103,7 +103,7 @@
       if(nkr .eq. 0) return
       if(n_jk .eq. 0) then
         V_lk = 0.0d0
-      if(iflag_matmul .eq. iflag_INTRINSIC) then
+      else if(iflag_matmul .eq. iflag_INTRINSIC) then
         V_lk = matmul(P_lj,S_jk)
 !
 #ifdef BLAS
