@@ -180,7 +180,7 @@
         nkr4 =    int(nkr)
         n_jk4 =   int(n_jk)
         call DGEMM('N', 'N', nkr4, nl_rtm4, n_jk4, one,                 &
-     &      P_jl, nkr4, S_kj, n_jk4, zero, V_kl, nkr4)
+     &      S_kj, nkr4, P_jl, n_jk4, zero, V_kl, nkr4)
 #endif
       else
         call matmat_leg_trans(nkr, nl_rtm, n_jk, S_kj, P_jl, V_kl)

@@ -160,24 +160,5 @@
       end subroutine legendre_b_trans_sym_mat_jt
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine matmul_bwd_leg_trans_tstlop(iflag_matmul,        &
-     &          nkr, nl_rtm, n_jk, S_kj, P_jl, V_kl)
-!
-      integer(kind = kint), intent(in) :: iflag_matmul
-      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-      real(kind = kreal), intent(in) :: P_jl(n_jk,nl_rtm)
-      real(kind = kreal), intent(in) :: S_kj(nkr,n_jk)
-!
-      real(kind = kreal), intent(inout) :: V_kl(nkr,nl_rtm)
-!
-!
-      if(nkr .eq. 0) return
-      V_kl = matmul(S_kj,P_jl)
-!
-      end subroutine matmul_bwd_leg_trans_tstlop
-!
-! ----------------------------------------------------------------------
 !
       end module leg_bwd_trans_sym_mat_jt
