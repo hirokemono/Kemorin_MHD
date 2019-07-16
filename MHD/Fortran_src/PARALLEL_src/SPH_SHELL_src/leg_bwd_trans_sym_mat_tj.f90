@@ -9,7 +9,8 @@
 !!       (Blocked loop version)
 !!
 !!@verbatim
-!!      subroutine legendre_b_trans_sym_mat_tj(ncomp, nvector, nscalar, &
+!!      subroutine legendre_b_trans_sym_mat_tj                          &
+!!     &         (iflag_matmul, ncomp, nvector, nscalar,                &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
 !!     &          asin_theta_1d_rtm, g_sph_rlm,                         &
 !!     &          n_WR, n_WS, WR, WS, WK_l_tsp)
@@ -57,14 +58,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_b_trans_sym_mat_tj(ncomp, nvector, nscalar,   &
+      subroutine legendre_b_trans_sym_mat_tj                            &
+     &         (iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
      &          asin_theta_1d_rtm, g_sph_rlm,                           &
      &          n_WR, n_WS, WR, WS, WK_l_tsp)
 !
       use set_sp_rlm_sym_mat_tsmp
       use cal_vr_rtm_sym_mat_tsmp
+      use matmul_for_legendre_trans
 !
+      integer(kind = kint), intent(in) :: iflag_matmul
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -110,21 +114,21 @@
         do ip = 1, np_smp
           lst_rtm = WK_l_tsp%lst_rtm(ip)
 !   even l-m
-          call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tsp%nle_rtm(ip), nkrs, WK_l_tsp%n_jk_e(mp_rlm),      &
+          call matmul_bwd_leg_trans(iflag_matmul,                       &
+     &        WK_l_tsp%nle_rtm(ip), nkrs, WK_l_tsp%n_jk_e(mp_rlm),      &
      &        WK_l_tsp%Pmat(mp_rlm,ip)%Pse_tj,                          &
      &        WK_l_tsp%Smat(1)%pol_e(1), WK_l_tsp%Fmat(ip)%symp_r(1))
-          call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tsp%nle_rtm(ip), nkrt, WK_l_tsp%n_jk_e(mp_rlm),      &
+          call matmul_bwd_leg_trans(iflag_matmul,                       &
+     &        WK_l_tsp%nle_rtm(ip), nkrt, WK_l_tsp%n_jk_e(mp_rlm),      &
      &        WK_l_tsp%Pmat(mp_rlm,ip)%dPsedt_tj,                       &
      &        WK_l_tsp%Smat(1)%tor_e(1), WK_l_tsp%Fmat(ip)%asmp_p(1))
 !   odd l-m
-          call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tsp%nle_rtm(ip), nkrs, WK_l_tsp%n_jk_o(mp_rlm),      &
+          call matmul_bwd_leg_trans(iflag_matmul,                       &
+     &        WK_l_tsp%nle_rtm(ip), nkrs, WK_l_tsp%n_jk_o(mp_rlm),      &
      &        WK_l_tsp%Pmat(mp_rlm,ip)%Pso_tj,                          &
      &        WK_l_tsp%Smat(1)%pol_o(1), WK_l_tsp%Fmat(ip)%asmp_r(1))
-          call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tsp%nle_rtm(ip), nkrt, WK_l_tsp%n_jk_o(mp_rlm),      &
+          call matmul_bwd_leg_trans(iflag_matmul,                       &
+     &        WK_l_tsp%nle_rtm(ip), nkrt, WK_l_tsp%n_jk_o(mp_rlm),      &
      &        WK_l_tsp%Pmat(mp_rlm,ip)%dPsodt_tj,                       &
      &        WK_l_tsp%Smat(1)%tor_o(1), WK_l_tsp%Fmat(ip)%symp_p(1))
         end do
@@ -152,23 +156,5 @@
       end subroutine legendre_b_trans_sym_mat_tj
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine matmul_bwd_leg_trans_tstlop(nl_rtm, nkr, n_jk,         &
-     &          P_lj, S_jk, V_lk)
-!
-      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
-      real(kind = kreal), intent(in) :: S_jk(n_jk,nkr)
-!
-      real(kind = kreal), intent(inout) :: V_lk(nl_rtm,nkr)
-!
-!
-      if(nkr .eq. 0) return
-      V_lk = matmul(P_lj,S_jk)
-!
-      end subroutine matmul_bwd_leg_trans_tstlop
-!
-! ----------------------------------------------------------------------
 !
       end module leg_bwd_trans_sym_mat_tj

@@ -9,7 +9,8 @@
 !!       (Blocked loop version)
 !!
 !!@verbatim
-!!      subroutine legendre_f_trans_sym_mat_tj(ncomp, nvector, nscalar, &
+!!      subroutine legendre_f_trans_sym_mat_tj                          &
+!!     &         (iflag_matmul, ncomp, nvector, nscalar,                &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,       &
 !!     &          asin_theta_1d_rtm, g_sph_rlm, weight_rtm,             &
 !!     &          n_WR, n_WS, WR, WS, WK_l_tsp)
@@ -56,14 +57,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_f_trans_sym_mat_tj(ncomp, nvector, nscalar,   &
+      subroutine legendre_f_trans_sym_mat_tj                            &
+     &         (iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,         &
      &          asin_theta_1d_rtm, g_sph_rlm, weight_rtm,               &
      &          n_WR, n_WS, WR, WS, WK_l_tsp)
 !
       use set_vr_rtm_sym_mat_tsmp
       use cal_sp_rlm_sym_mat_tsmp
+      use matmul_for_legendre_trans
 !
+      integer(kind = kint), intent(in) :: iflag_matmul
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
@@ -116,25 +120,25 @@
 !$omp parallel do private(ip,lst_rtm)
         do ip = 1, np_smp
           lst_rtm = WK_l_tsp%lst_rtm(ip)
-          call matmul_fwd_leg_trans_tstlop                              &
-     &       (nkrs, WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%nle_rtm(ip),      &
+          call matmul_fwd_leg_trans(iflag_matmul,                       &
+     &        nkrs, WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%nle_rtm(ip),      &
      &        WK_l_tsp%Fmat(ip)%symp_r(1),                              &
      &        WK_l_tsp%Pmat(mp_rlm,ip)%Pse_tj,                          &
      &        WK_l_tsp%Smat(ip)%pol_e(1))
-          call matmul_fwd_leg_trans_tstlop                              &
-     &       (nkrt, WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%nle_rtm(ip),      &
+          call matmul_fwd_leg_trans(iflag_matmul,                       &
+     &        nkrt, WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%nle_rtm(ip),      &
      &        WK_l_tsp%Fmat(ip)%asmp_p(1),                              &
      &        WK_l_tsp%Pmat(mp_rlm,ip)%dPsedt_tj,                       &
      &        WK_l_tsp%Smat(ip)%tor_e(1))
 !
 !  odd l-m
-          call matmul_fwd_leg_trans_tstlop                              &
-     &       (nkrs, WK_l_tsp%n_jk_o(mp_rlm), WK_l_tsp%nle_rtm(ip),      &
+          call matmul_fwd_leg_trans(iflag_matmul,                       &
+     &        nkrs, WK_l_tsp%n_jk_o(mp_rlm), WK_l_tsp%nle_rtm(ip),      &
      &        WK_l_tsp%Fmat(ip)%asmp_r(1),                              &
      &        WK_l_tsp%Pmat(mp_rlm,ip)%Pso_tj,                          &
      &        WK_l_tsp%Smat(ip)%pol_o(1))
-          call matmul_fwd_leg_trans_tstlop                              &
-     &       (nkrt, WK_l_tsp%n_jk_o(mp_rlm), WK_l_tsp%nle_rtm(ip),      &
+          call matmul_fwd_leg_trans(iflag_matmul,                       &
+     &        nkrt, WK_l_tsp%n_jk_o(mp_rlm), WK_l_tsp%nle_rtm(ip),      &
      &        WK_l_tsp%Fmat(ip)%symp_p(1),                              &
      &        WK_l_tsp%Pmat(mp_rlm,ip)%dPsodt_tj,                       &
      &        WK_l_tsp%Smat(ip)%tor_o(1))
@@ -183,22 +187,5 @@
       end subroutine legendre_f_trans_sym_mat_tj
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine matmul_fwd_leg_trans_tstlop(nkr, n_jk, nl_rtm,         &
-     &          V_kl, P_lj, S_kj)
-!
-      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
-      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
-!
-      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
-!
-!
-      if(nkr .eq. 0) return
-      S_kj = matmul(V_kl,P_lj)
-!
-      end subroutine matmul_fwd_leg_trans_tstlop
-!
-! ----------------------------------------------------------------------
 !
       end module leg_fwd_trans_sym_mat_tj

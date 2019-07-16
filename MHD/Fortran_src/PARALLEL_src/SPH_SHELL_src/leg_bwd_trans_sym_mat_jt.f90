@@ -9,7 +9,8 @@
 !!       (Blocked loop version)
 !!
 !!@verbatim
-!!      subroutine legendre_b_trans_sym_mat_jt(ncomp, nvector, nscalar, &
+!!      subroutine legendre_b_trans_sym_mat_jt                          &
+!!     &         (iflag_matmul, ncomp, nvector, nscalar,                &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
 !!     &          asin_theta_1d_rtm, g_sph_rlm,                         &
 !!     &          n_WR, n_WS, WR, WS, WK_l_tsp)
@@ -57,14 +58,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_b_trans_sym_mat_jt(ncomp, nvector, nscalar,   &
+      subroutine legendre_b_trans_sym_mat_jt                            &
+     &         (iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
      &          asin_theta_1d_rtm, g_sph_rlm,                           &
      &          n_WR, n_WS, WR, WS, WK_l_tsp)
 !
       use set_sp_rlm_sym_mat_tsmp
       use cal_vr_rtm_sym_mat_tsmp
+      use matmul_for_legendre_trans
 !
+      integer(kind = kint), intent(in) :: iflag_matmul
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -110,21 +114,21 @@
         do ip = 1, np_smp
           lst_rtm = WK_l_tsp%lst_rtm(ip)
 !   even l-m
-          call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tsp%nle_rtm(ip), nkrs, WK_l_tsp%n_jk_e(mp_rlm),      &
+          call matmul_bwd_leg_trans_Pjl(iflag_matmul,                   &
+     &        nkrs, WK_l_tsp%nle_rtm(ip), WK_l_tsp%n_jk_e(mp_rlm),      &
      &        WK_l_tsp%Pmat(mp_rlm,ip)%Pse_jt,                          &
      &        WK_l_tsp%Smat(1)%pol_e(1), WK_l_tsp%Fmat(ip)%symp_r(1))
-          call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tsp%nle_rtm(ip), nkrt, WK_l_tsp%n_jk_e(mp_rlm),      &
+          call matmul_bwd_leg_trans_Pjl(iflag_matmul,                   &
+     &        nkrt, WK_l_tsp%nle_rtm(ip), WK_l_tsp%n_jk_e(mp_rlm),      &
      &        WK_l_tsp%Pmat(mp_rlm,ip)%dPsedt_jt,                       &
      &        WK_l_tsp%Smat(1)%tor_e(1), WK_l_tsp%Fmat(ip)%asmp_p(1))
 !   odd l-m
-          call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tsp%nle_rtm(ip), nkrs, WK_l_tsp%n_jk_o(mp_rlm),      &
+          call matmul_bwd_leg_trans_Pjl(iflag_matmul,                   &
+     &        nkrs, WK_l_tsp%nle_rtm(ip), WK_l_tsp%n_jk_o(mp_rlm),      &
      &        WK_l_tsp%Pmat(mp_rlm,ip)%Pso_jt,                          &
      &        WK_l_tsp%Smat(1)%pol_o(1), WK_l_tsp%Fmat(ip)%asmp_r(1))
-          call matmul_bwd_leg_trans_tstlop                              &
-     &       (WK_l_tsp%nle_rtm(ip), nkrt, WK_l_tsp%n_jk_o(mp_rlm),      &
+          call matmul_bwd_leg_trans_Pjl(iflag_matmul,                   &
+     &        nkrt, WK_l_tsp%nle_rtm(ip), WK_l_tsp%n_jk_o(mp_rlm),      &
      &        WK_l_tsp%Pmat(mp_rlm,ip)%dPsodt_jt,                       &
      &        WK_l_tsp%Smat(1)%tor_o(1), WK_l_tsp%Fmat(ip)%symp_p(1))
         end do

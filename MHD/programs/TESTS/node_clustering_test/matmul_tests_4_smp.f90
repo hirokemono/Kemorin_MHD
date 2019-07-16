@@ -18,10 +18,6 @@
 !
       implicit none
 !
-      integer(kind= kint), parameter :: iflag_MATMAT = 0
-      integer(kind= kint), parameter :: iflag_MATMUL = 1
-      integer(kind= kint), parameter :: iflag_BLAS =   2
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -293,12 +289,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_add_matmul_by_smp                                  &
-     &         (iflag_matprod, np_smp, n, m, l, a, b, coef, c)
+     &         (iflag_matmul, np_smp, n, m, l, a, b, coef, c)
 !
       use cal_minmax_and_stacks
       use matmul_for_legendre_trans
 !
-      integer(kind= kint), intent(in) :: iflag_matprod
+      integer(kind= kint), intent(in) :: iflag_matmul
       integer(kind= kint), intent(in) :: np_smp
       integer(kind= kint), intent(in) :: l, m, n
       real(kind = kreal), intent(in) :: a(n,l), b(l,m)
@@ -353,7 +349,7 @@
       end do
 !$omp end parallel do
 !
-      if(iflag_matprod .eq. iflag_MATMUL) then
+      if(iflag_matmul .eq. iflag_INTRINSIC) then
 !$omp parallel do private(kp)
         do kp = 1, np_smp
           c0(1:n,1:m,kp) = matmul(a0(1:n,1:l0,kp), b0(1:l0,1:m,kp))
@@ -361,7 +357,7 @@
 !$omp end parallel do
       end if
 !
-      if(iflag_matprod .eq. iflag_BLAS) then
+      if(iflag_matmul .eq. iflag_DGEMM) then
 !$omp parallel do private(kp)
         do kp = 1, np_smp
           c0(1:n,1:m,kp) = 0.0d0
@@ -372,10 +368,10 @@
 !$omp end parallel do
       end if
 !
-      if(iflag_matprod .eq. iflag_MATMAT) then
+      if(iflag_matmul .eq. iflag_MATPROD) then
 !$omp parallel do private(kp)
         do kp = 1, np_smp
-          call matmat_fwd_leg_trans                                     &
+          call matmat_leg_trans                                         &
      &       (n, m, l0, a0(1,1,kp), b0(1,1,kp), c0(1,1,kp))
         end do
 !$omp end parallel do
@@ -404,12 +400,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_add_matmul_by_smp2                                 &
-     &         (iflag_matprod, np_smp, n, m, l, a, b, coef, c)
+     &         (iflag_matmul, np_smp, n, m, l, a, b, coef, c)
 !
       use cal_minmax_and_stacks
       use matmul_for_legendre_trans
 !
-      integer(kind= kint), intent(in) :: iflag_matprod
+      integer(kind= kint), intent(in) :: iflag_matmul
       integer(kind= kint), intent(in) :: np_smp
       integer(kind= kint), intent(in) :: l, m, n
       real(kind = kreal), intent(in) :: a(n,l), b(l,m)
@@ -434,7 +430,7 @@
       call init_a0_matmul_4_smp(np_smp, lstack_smp, l0, n, l, a, a0)
       call init_b0_matmul_4_smp(np_smp, lstack_smp, l0, m, l, b, b0)
 !
-      call sel_add_matmul_smp(iflag_matprod, np_smp,                    &
+      call sel_add_matmul_smp(iflag_matmul, np_smp,                     &
      &    n, m, l0, a0, b0, coef, c0, c)
 !
       deallocate(a0,b0,c0)
@@ -511,13 +507,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_add_matmul_smp(iflag_matprod, np_smp,              &
+      subroutine sel_add_matmul_smp(iflag_matmul, np_smp,               &
      &          n, m, l0, a0, b0, coef, c0, c)
 !
       use cal_minmax_and_stacks
       use matmul_for_legendre_trans
 !
-      integer(kind= kint), intent(in) :: iflag_matprod
+      integer(kind= kint), intent(in) :: iflag_matmul
       integer(kind= kint), intent(in) :: np_smp
       integer(kind= kint), intent(in) :: m, n, l0
       real(kind = kreal), intent(in) :: a0(n,l0,np_smp)
@@ -530,7 +526,7 @@
       integer(kind= kint) :: kp
 !
 !
-      if(iflag_matprod .eq. iflag_MATMUL) then
+      if(iflag_matmul .eq. iflag_INTRINSIC) then
 !$omp parallel do private(kp)
         do kp = 1, np_smp
           c0(1:n,1:m,kp) = matmul(a0(1:n,1:l0,kp), b0(1:l0,1:m,kp))
@@ -538,7 +534,7 @@
 !$omp end parallel do
       end if
 !
-      if(iflag_matprod .eq. iflag_BLAS) then
+      if(iflag_matmul .eq. iflag_DGEMM) then
 !$omp parallel do private(kp)
         do kp = 1, np_smp
           c0(1:n,1:m,kp) = 0.0d0
@@ -549,10 +545,10 @@
 !$omp end parallel do
       end if
 !
-      if(iflag_matprod .eq. iflag_MATMAT) then
+      if(iflag_matmul .eq. iflag_MATPROD) then
 !$omp parallel do private(kp)
         do kp = 1, np_smp
-          call matmat_fwd_leg_trans                                     &
+          call matmat_leg_trans                                         &
      &       (n, m, l0, a0(1,1,kp), b0(1,1,kp), c0(1,1,kp))
         end do
 !$omp end parallel do
