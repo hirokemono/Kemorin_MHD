@@ -138,7 +138,7 @@
 !
       if(nkr .eq. 0) return
 !      if(iflag_matmul .eq. iflag_INTRINSIC) then
-      else if(iflag_matmul .eq. iflag_INTRINSIC .or. &
+       if(iflag_matmul .eq. iflag_INTRINSIC .or. &
      &        iflag_matmul .eq. iflag_DGEMM) then
         S_jk = matmul(P_jl,V_lk)
 #ifdef BLAS
