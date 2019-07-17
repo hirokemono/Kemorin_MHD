@@ -110,20 +110,20 @@
 !   even l-m
             call matmul_bwd_leg_trans_tstlop                            &
      &       (ll, WK_l_tst%nle_rtm(ip), nkrs, WK_l_tst%n_jk_e(mp_rlm),  &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt,                          &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt(1,ll),                    &
      &        WK_l_tst%Smat(1)%pol_e(1), WK_l_tst%Fmat(ip)%symp_r(1))
             call matmul_bwd_leg_trans_tstlop                            &
      &       (ll, WK_l_tst%nle_rtm(ip), nkrt, WK_l_tst%n_jk_e(mp_rlm),  &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt,                       &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt(1,ll),                 &
      &        WK_l_tst%Smat(1)%tor_e(1), WK_l_tst%Fmat(ip)%asmp_p(1))
 !   odd l-m
             call matmul_bwd_leg_trans_tstlop                            &
      &       (ll, WK_l_tst%nle_rtm(ip), nkrs, WK_l_tst%n_jk_o(mp_rlm),  &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt,                          &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt(1,ll),                    &
      &        WK_l_tst%Smat(1)%pol_o(1), WK_l_tst%Fmat(ip)%asmp_r(1))
             call matmul_bwd_leg_trans_tstlop                            &
      &       (ll, WK_l_tst%nle_rtm(ip), nkrt, WK_l_tst%n_jk_o(mp_rlm),  &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt,                       &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,ll),                 &
      &        WK_l_tst%Smat(1)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
           end do
         end do
@@ -443,7 +443,7 @@
 !
       integer(kind = kint), intent(in) :: ll, n_jk, nkr, nl_rtm
       real(kind = kreal), intent(in) :: S_kj(nkr,n_jk)
-      real(kind = kreal), intent(in) :: P_jl(n_jk,nl_rtm)
+      real(kind = kreal), intent(in) :: P_jl(n_jk)
 !
       real(kind = kreal), intent(inout) :: V_kl(nkr,nl_rtm)
 !
@@ -454,7 +454,7 @@
       V_kl(1:nkr,ll) = 0.0d0
       do kk = 1, nkr
         do jj = 1, n_jk
-          V_kl(kk,ll) = V_kl(kk,ll) + S_kj(kk,jj) * P_jl(jj,ll)
+          V_kl(kk,ll) = V_kl(kk,ll) + S_kj(kk,jj) * P_jl(jj)
         end do
       end do
 !
