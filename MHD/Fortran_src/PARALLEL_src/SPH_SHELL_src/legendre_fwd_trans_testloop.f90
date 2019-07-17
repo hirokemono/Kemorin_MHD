@@ -198,7 +198,7 @@
 !$omp end parallel
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
-      if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
+        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
           call cal_sp_rlm_vec_testloop                                  &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                       &
      &        sph_rlm%istep_rlm, sph_rlm%idx_gl_1d_rlm_j,               &
@@ -207,7 +207,7 @@
      &        WK_l_tst%Smat(1)%pol_e(1), WK_l_tst%Smat(1)%pol_o(1),     &
      &        WK_l_tst%Smat(1)%tor_e(1), WK_l_tst%Smat(1)%tor_o(1),     &
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WS, WS)
-      if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+17)
+        if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+17)
 !
       end do
 !
@@ -430,13 +430,13 @@
       integer(kind = kint), intent(in) :: jst, n_jk_o, n_jk_e
 !
       real(kind = kreal), intent(inout)                                 &
-     &         :: pol_e(n_jk_e,nidx_rlm(1),3*nvector+nscalar)
+     &         :: pol_e(3*nvector+nscalar,nidx_rlm(1),n_jk_e)
       real(kind = kreal), intent(inout)                                 &
-     &         :: pol_o(n_jk_o,nidx_rlm(1),3*nvector+nscalar)
+     &         :: pol_o(3*nvector+nscalar,nidx_rlm(1),n_jk_o)
       real(kind = kreal), intent(inout)                                 &
-     &         :: tor_e(n_jk_e,nidx_rlm(1),2*nvector)
+     &         :: tor_e(2*nvector,nidx_rlm(1),n_jk_e)
       real(kind = kreal), intent(inout)                                 &
-     &         :: tor_o(n_jk_o,nidx_rlm(1),2*nvector)
+     &         :: tor_o(2*nvector,nidx_rlm(1),n_jk_o)
 !
       integer(kind = kint), intent(in) :: ncomp_send
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
@@ -461,11 +461,11 @@
             g7 = g_sph_rlm(2*jj+jst-1,7)
             gm = dble(idx_gl_1d_rlm_j(2*jj+jst-1,3))
 !
-            pol_e(jj,k_rlm,3*nd-2) = pol_e(jj,k_rlm,3*nd-2) * r2*g7
-            tor_e(jj,k_rlm,2*nd  ) = tor_e(jj,k_rlm,2*nd  ) * r1*g7
-            pol_e(jj,k_rlm,3*nd  ) = pol_e(jj,k_rlm,3*nd  ) * r1*g7*gm
-            tor_e(jj,k_rlm,2*nd-1) = tor_e(jj,k_rlm,2*nd-1) * r1*g7
-            pol_e(jj,k_rlm,3*nd-1) = pol_e(jj,k_rlm,3*nd-1) * r1*g7*gm
+            pol_e(3*nd-2,k_rlm,jj) = pol_e(3*nd-2,k_rlm,jj) * r2*g7
+            tor_e(2*nd,  k_rlm,jj) = tor_e(2*nd,  k_rlm,jj) * r1*g7
+            pol_e(3*nd,  k_rlm,jj) = pol_e(3*nd,  k_rlm,jj) * r1*g7*gm
+            tor_e(2*nd-1,k_rlm,jj) = tor_e(2*nd-1,k_rlm,jj) * r1*g7
+            pol_e(3*nd-1,k_rlm,jj) = pol_e(3*nd-1,k_rlm,jj) * r1*g7*gm
           end do
       end do
 !$omp end parallel do
@@ -482,8 +482,8 @@
             g7 = g_sph_rlm(2*jj+jst-1,7)
             gm = dble(idx_gl_1d_rlm_j(2*jj+jst-1,3))
 !
-            pol_e(jj,k_rlm,nd+3*nvector)                                &
-     &            = pol_e(jj,k_rlm,nd+3*nvector) * g6
+            pol_e(nd+3*nvector,k_rlm,jj)                                &
+     &            = pol_e(nd+3*nvector,k_rlm,jj) * g6
           end do
       end do
 !$omp end parallel do
@@ -500,11 +500,11 @@
             g7 = g_sph_rlm(2*jj+jst,7)
             gm = dble(idx_gl_1d_rlm_j(2*jj+jst,3))
 !
-            pol_o(jj,k_rlm,3*nd-2) = pol_o(jj,k_rlm,3*nd-2) * r2*g7
-            tor_o(jj,k_rlm,2*nd  ) = tor_o(jj,k_rlm,2*nd  ) * r1*g7
-            pol_o(jj,k_rlm,3*nd  ) = pol_o(jj,k_rlm,3*nd  ) * r1*g7*gm
-            tor_o(jj,k_rlm,2*nd-1) = tor_o(jj,k_rlm,2*nd-1) * r1*g7
-            pol_o(jj,k_rlm,3*nd-1) = pol_o(jj,k_rlm,3*nd-1) * r1*g7*gm
+            pol_o(3*nd-2,k_rlm,jj) = pol_o(3*nd-2,k_rlm,jj) * r2*g7
+            tor_o(2*nd,  k_rlm,jj) = tor_o(2*nd,  k_rlm,jj) * r1*g7
+            pol_o(3*nd,  k_rlm,jj) = pol_o(3*nd,  k_rlm,jj) * r1*g7*gm
+            tor_o(2*nd-1,k_rlm,jj) = tor_o(2*nd-1,k_rlm,jj) * r1*g7
+            pol_o(3*nd-1,k_rlm,jj) = pol_o(3*nd-1,k_rlm,jj) * r1*g7*gm
           end do
       end do
 !$omp end parallel do
@@ -521,8 +521,8 @@
             g7 = g_sph_rlm(2*jj+jst,7)
             gm = dble(idx_gl_1d_rlm_j(2*jj+jst,3))
 !
-            pol_o(jj,k_rlm,nd+3*nvector)                                &
-     &            = pol_o(jj,k_rlm,nd+3*nvector) * g6
+            pol_o(nd+3*nvector,k_rlm,jj)                                &
+     &            = pol_o(nd+3*nvector,k_rlm,jj) * g6
           end do
       end do
 !$omp end parallel do
@@ -543,17 +543,17 @@
             io_send = 3*nd + (irev_sr_rlm(io_rlm) - 1) * ncomp_send
 !
 !  even l-m
-            WS(ie_send-2) = WS(ie_send-2) + pol_e(jj,k_rlm,3*nd-2)
-            WS(ie_send-1) = WS(ie_send-1) - pol_e(jj,k_rlm,3*nd  )      &
-     &                                    + tor_e(jj,k_rlm,2*nd  )
-            WS(ie_send  ) = WS(ie_send  ) - pol_e(jj,k_rlm,3*nd-1)      &
-     &                                    - tor_e(jj,k_rlm,2*nd-1)
+            WS(ie_send-2) = WS(ie_send-2) + pol_e(3*nd-2,k_rlm,jj)
+            WS(ie_send-1) = WS(ie_send-1) - pol_e(3*nd,  k_rlm,jj)      &
+     &                                    + tor_e(2*nd,  k_rlm,jj)
+            WS(ie_send  ) = WS(ie_send  ) - pol_e(3*nd-1,k_rlm,jj)      &
+     &                                    - tor_e(2*nd-1,k_rlm,jj)
 !  odd l-m
-            WS(io_send-2) = WS(io_send-2) + pol_o(jj,k_rlm,3*nd-2)
-            WS(io_send-1) = WS(io_send-1) - pol_o(jj,k_rlm,3*nd  )      &
-     &                                    + tor_o(jj,k_rlm,2*nd  )
-            WS(io_send  ) = WS(io_send  ) - pol_o(jj,k_rlm,3*nd-1)      &
-     &                                    - tor_o(jj,k_rlm,2*nd-1)
+            WS(io_send-2) = WS(io_send-2) + pol_o(3*nd-2,k_rlm,jj)
+            WS(io_send-1) = WS(io_send-1) - pol_o(3*nd,  k_rlm,jj)      &
+     &                                    + tor_o(2*nd,  k_rlm,jj)
+            WS(io_send  ) = WS(io_send  ) - pol_o(3*nd-1,k_rlm,jj)      &
+     &                                    - tor_o(2*nd-1,k_rlm,jj)
           end do
       end do
 !$omp end parallel do
@@ -574,8 +574,8 @@
             io_send = nd + 3*nvector                                    &
      &               + (irev_sr_rlm(io_rlm) - 1) * ncomp_send
 !
-            WS(ie_send) = WS(ie_send) + pol_e(jj,k_rlm,nd+3*nvector)
-            WS(io_send) = WS(io_send) + pol_o(jj,k_rlm,nd+3*nvector)
+            WS(ie_send) = WS(ie_send) + pol_e(nd+3*nvector,k_rlm,jj)
+            WS(io_send) = WS(io_send) + pol_o(nd+3*nvector,k_rlm,jj)
           end do
       end do
 !$omp end parallel do
@@ -591,11 +591,11 @@
 !
             ie_send = 3*nd + (irev_sr_rlm(ie_rlm) - 1) * ncomp_send
 !
-            WS(ie_send-2) = WS(ie_send-2) + pol_e(jj,k_rlm,3*nd-2)
-            WS(ie_send-1) = WS(ie_send-1) - pol_e(jj,k_rlm,3*nd  )      &
-     &                                    + tor_e(jj,k_rlm,2*nd  )
-            WS(ie_send  ) = WS(ie_send  ) - pol_e(jj,k_rlm,3*nd-1)      &
-     &                                    - tor_e(jj,k_rlm,2*nd-1)
+            WS(ie_send-2) = WS(ie_send-2) + pol_e(3*nd-2,k_rlm,jj)
+            WS(ie_send-1) = WS(ie_send-1) - pol_e(3*nd,  k_rlm,jj)      &
+     &                                    + tor_e(2*nd,  k_rlm,jj)
+            WS(ie_send  ) = WS(ie_send  ) - pol_e(3*nd-1,k_rlm,jj)      &
+     &                                    - tor_e(2*nd-1,k_rlm,jj)
         end do
 !$omp end parallel do
 !
@@ -608,7 +608,7 @@
      &               + (k_rlm-1) *    istep_rlm(1)
             ie_send = nd + 3*nvector                                    &
      &               + (irev_sr_rlm(ie_rlm) - 1) * ncomp_send
-            WS(ie_send) = WS(ie_send) + pol_e(jj,k_rlm,nd+3*nvector)
+            WS(ie_send) = WS(ie_send) + pol_e(nd+3*nvector,k_rlm,jj)
         end do
 !$omp end parallel do
       end do
@@ -618,20 +618,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine matmul_fwd_leg_trans_tstlop(nkr, n_jk,         &
-     &          P_jl, V_lk, S_jk)
+     &          P_jl, V_lk, S_kj)
 !
       integer(kind = kint), intent(in) :: n_jk, nkr
       real(kind = kreal), intent(in) :: P_jl(n_jk)
       real(kind = kreal), intent(in) :: V_lk(nkr)
 !
-      real(kind = kreal), intent(inout) :: S_jk(n_jk,nkr)
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk_o)
 !
       integer(kind = kint) :: jj, kk
 !
 !
-      do kk = 1, nkr
-        do jj = 1, n_jk
-          S_jk(jj,kk) = S_jk(jj,kk) + P_jl(jj) * V_lk(kk)
+      do jj = 1, n_jk
+        do kk = 1, nkr
+          S_kj(kk,jj) = S_kj(kk,jj) + P_jl(jj) * V_lk(kk)
         end do
       end do
 !
