@@ -624,7 +624,7 @@
       real(kind = kreal), intent(in) :: P_jl(n_jk)
       real(kind = kreal), intent(in) :: V_lk(nkr)
 !
-      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk_o)
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
 !
       integer(kind = kint) :: jj, kk
 !
