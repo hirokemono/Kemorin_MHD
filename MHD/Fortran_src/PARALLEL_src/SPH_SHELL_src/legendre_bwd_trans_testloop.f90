@@ -105,7 +105,8 @@
 !$omp parallel do private(ip,lst_rtm,lt)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%lst_rtm(ip)
-          do lt = 1, WK_l_tst%nle_rtm(ip)
+!
+          do lt = 1, WK_l_tst%nlo_rtm(ip)
 !   even l-m
             call matmul_bwd_leg_trans_tstlop                            &
      &       (lt, WK_l_tst%nle_rtm(ip), nkrs, WK_l_tst%n_jk_e(mp_rlm),  &
@@ -125,15 +126,12 @@
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,lt),                 &
      &        WK_l_tst%Smat(1)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
 !
-            call mul_asin_to_vr_rtm(lt,                                 &
-     &        sph_rtm%nidx_rtm, sph_rlm%nidx_rlm,    &
+            call mul_asin_to_vr_rtm(lt, sph_rlm%nidx_rlm,    &
      &        asin_theta_1d_rtm(WK_l_tst%lst_rtm(ip)+lt),    &
-     &        WK_l_tst%lst_rtm(ip), WK_l_tst%nle_rtm(ip),               &
+     &        WK_l_tst%nle_rtm(ip),               &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_r(1), &
      &        nvector, nscalar)
-          end do
 !
-          do lt = 1, WK_l_tst%nlo_rtm(ip)
             call cal_vr_rtm_vec_testloop(lt,                            &
      &        sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, mp_rlm, WK_l_tst%lst_rtm(ip),           &
@@ -144,6 +142,31 @@
           end do
 !
           do lt = WK_l_tst%nlo_rtm(ip)+1, WK_l_tst%nle_rtm(ip)
+!   even l-m
+            call matmul_bwd_leg_trans_tstlop                            &
+     &       (lt, WK_l_tst%nle_rtm(ip), nkrs, WK_l_tst%n_jk_e(mp_rlm),  &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt(1,lt),                    &
+     &        WK_l_tst%Smat(1)%pol_e(1), WK_l_tst%Fmat(ip)%symp_r(1))
+            call matmul_bwd_leg_trans_tstlop                            &
+     &       (lt, WK_l_tst%nle_rtm(ip), nkrt, WK_l_tst%n_jk_e(mp_rlm),  &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt(1,lt),                 &
+     &        WK_l_tst%Smat(1)%tor_e(1), WK_l_tst%Fmat(ip)%asmp_p(1))
+!   odd l-m
+            call matmul_bwd_leg_trans_tstlop                            &
+     &       (lt, WK_l_tst%nle_rtm(ip), nkrs, WK_l_tst%n_jk_o(mp_rlm),  &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt(1,lt),                    &
+     &        WK_l_tst%Smat(1)%pol_o(1), WK_l_tst%Fmat(ip)%asmp_r(1))
+            call matmul_bwd_leg_trans_tstlop                            &
+     &       (lt, WK_l_tst%nle_rtm(ip), nkrt, WK_l_tst%n_jk_o(mp_rlm),  &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,lt),                 &
+     &        WK_l_tst%Smat(1)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
+!
+            call mul_asin_to_vr_rtm(lt, sph_rlm%nidx_rlm,    &
+     &        asin_theta_1d_rtm(WK_l_tst%lst_rtm(ip)+lt),    &
+     &        WK_l_tst%nle_rtm(ip),               &
+     &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_r(1), &
+     &        nvector, nscalar)
+!
             call cal_vr_rtm_vec_equator(lt,                             &
      &        sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, mp_rlm, WK_l_tst%lst_rtm(ip),           &
@@ -280,15 +303,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine mul_asin_to_vr_rtm                                     &
-     &         (lt, nidx_rtm, nidx_rlm, asin_theta_1d_rtm,              &
-     &          lst_rtm, nle_rtm, symp_r, asmp_r, nvector, nscalar)
+     &         (lt, nidx_rlm, asin_theta_1d_rtm,              &
+     &          nle_rtm, symp_r, asmp_r, nvector, nscalar)
 !
       integer(kind = kint), intent(in) :: lt
-      integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: nidx_rlm(2)
       real(kind = kreal), intent(in) :: asin_theta_1d_rtm
 !
-      integer(kind = kint), intent(in) :: lst_rtm
       integer(kind = kint), intent(in) :: nle_rtm
 !
       integer(kind = kint), intent(in) :: nvector, nscalar
