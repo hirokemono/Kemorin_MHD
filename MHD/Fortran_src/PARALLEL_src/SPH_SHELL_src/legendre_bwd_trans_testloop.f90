@@ -92,39 +92,37 @@
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
         jst = idx_trns%lstack_rlm(mp_rlm-1)
 !
-      if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+12)
+!$omp parallel do private(ip,lst_rtm,lt,lp_rtm)
+        do ip = 1, np_smp
+          lst_rtm = WK_l_tst%lst_rtm(ip)
+!
           call set_sp_rlm_vec_testloop                                  &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,    &
      &        sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r, g_sph_rlm, &
      &        jst, WK_l_tst%n_jk_e(mp_rlm),  WK_l_tst%n_jk_o(mp_rlm),   &
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WR, WR,      &
-     &        WK_l_tst%Smat(1)%pol_e(1), WK_l_tst%Smat(1)%tor_e(1),     &
-     &        WK_l_tst%Smat(1)%pol_o(1), WK_l_tst%Smat(1)%tor_o(1) )
-      if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
-!
-!$omp parallel do private(ip,lst_rtm,lt,lp_rtm)
-        do ip = 1, np_smp
-          lst_rtm = WK_l_tst%lst_rtm(ip)
+     &        WK_l_tst%Smat(ip)%pol_e(1), WK_l_tst%Smat(ip)%tor_e(1),   &
+     &        WK_l_tst%Smat(ip)%pol_o(1), WK_l_tst%Smat(ip)%tor_o(1))
 !
           do lt = 1, WK_l_tst%nlo_rtm(ip)
 !   even l-m
             call matmul_bwd_leg_trans_tstlop                            &
      &       (nkrs, WK_l_tst%n_jk_e(mp_rlm),  &
      &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt(1,lt),                    &
-     &        WK_l_tst%Smat(1)%pol_e(1), WK_l_tst%Fmat(ip)%symp_r(1))
+     &        WK_l_tst%Smat(ip)%pol_e(1), WK_l_tst%Fmat(ip)%symp_r(1))
             call matmul_bwd_leg_trans_tstlop                            &
      &       (nkrt, WK_l_tst%n_jk_e(mp_rlm),  &
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt(1,lt),                 &
-     &        WK_l_tst%Smat(1)%tor_e(1), WK_l_tst%Fmat(ip)%asmp_p(1))
+     &        WK_l_tst%Smat(ip)%tor_e(1), WK_l_tst%Fmat(ip)%asmp_p(1))
 !   odd l-m
             call matmul_bwd_leg_trans_tstlop                            &
      &       (nkrs, WK_l_tst%n_jk_o(mp_rlm),  &
      &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt(1,lt),                    &
-     &        WK_l_tst%Smat(1)%pol_o(1), WK_l_tst%Fmat(ip)%asmp_r(1))
+     &        WK_l_tst%Smat(ip)%pol_o(1), WK_l_tst%Fmat(ip)%asmp_r(1))
             call matmul_bwd_leg_trans_tstlop                            &
      &       (nkrt, WK_l_tst%n_jk_o(mp_rlm),  &
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,lt),                 &
-     &        WK_l_tst%Smat(1)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
+     &        WK_l_tst%Smat(ip)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
 !
             call mul_asin_to_vr_rtm(sph_rlm%nidx_rlm,    &
      &        asin_theta_1d_rtm(WK_l_tst%lst_rtm(ip)+lt),    &
@@ -145,20 +143,20 @@
             call matmul_bwd_leg_trans_tstlop                            &
      &       (nkrs, WK_l_tst%n_jk_e(mp_rlm),  &
      &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt(1,lt),                    &
-     &        WK_l_tst%Smat(1)%pol_e(1), WK_l_tst%Fmat(ip)%symp_r(1))
+     &        WK_l_tst%Smat(ip)%pol_e(1), WK_l_tst%Fmat(ip)%symp_r(1))
             call matmul_bwd_leg_trans_tstlop                            &
      &       (nkrt, WK_l_tst%n_jk_e(mp_rlm),  &
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt(1,lt),                 &
-     &        WK_l_tst%Smat(1)%tor_e(1), WK_l_tst%Fmat(ip)%asmp_p(1))
+     &        WK_l_tst%Smat(ip)%tor_e(1), WK_l_tst%Fmat(ip)%asmp_p(1))
 !   odd l-m
             call matmul_bwd_leg_trans_tstlop                            &
      &       (nkrs, WK_l_tst%n_jk_o(mp_rlm),  &
      &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt(1,lt),                    &
-     &        WK_l_tst%Smat(1)%pol_o(1), WK_l_tst%Fmat(ip)%asmp_r(1))
+     &        WK_l_tst%Smat(ip)%pol_o(1), WK_l_tst%Fmat(ip)%asmp_r(1))
             call matmul_bwd_leg_trans_tstlop                            &
      &       (nkrt, WK_l_tst%n_jk_o(mp_rlm),  &
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,lt),                 &
-     &        WK_l_tst%Smat(1)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
+     &        WK_l_tst%Smat(ip)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
 !
             call mul_asin_to_vr_rtm(sph_rlm%nidx_rlm,    &
      &        asin_theta_1d_rtm(WK_l_tst%lst_rtm(ip)+lt),    &
