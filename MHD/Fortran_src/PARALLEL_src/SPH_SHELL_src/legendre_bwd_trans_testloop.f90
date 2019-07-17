@@ -216,8 +216,8 @@
       real(kind = kreal) :: g3, gm
 !
 !
-!$omp parallel do private(k_rlm,nd,a1r_1d_rlm_r,a2r_1d_rlm_r,        &
-!$omp&                    jj,j_rlm,i_rlm,i_recv,g3,gm)
+!!$omp parallel do private(k_rlm,nd,a1r_1d_rlm_r,a2r_1d_rlm_r,        &
+!!$omp&                    jj,j_rlm,i_rlm,i_recv,g3,gm)
       do jj = 1, n_jk_e
         j_rlm = 2*jj + jst - 1
         g3 = g_sph_rlm(j_rlm,3)
@@ -238,11 +238,11 @@
           end do
         end do
       end do
-!$omp end parallel do
+!!$omp end parallel do
 !
 !   odd l-m
-!$omp parallel do private(k_rlm,nd,a1r_1d_rlm_r,a2r_1d_rlm_r,        &
-!$omp&                    jj,j_rlm,i_rlm,i_recv,g3,gm)
+!!$omp parallel do private(k_rlm,nd,a1r_1d_rlm_r,a2r_1d_rlm_r,        &
+!!$omp&                    jj,j_rlm,i_rlm,i_recv,g3,gm)
       do jj = 1, n_jk_o
         j_rlm = 2*jj + jst
         g3 = g_sph_rlm(j_rlm,3)
@@ -263,9 +263,9 @@
           end do
         end do
       end do
-!$omp end parallel do
+!!$omp end parallel do
 !
-!$omp parallel do private(k_rlm,nd,jj,i_rlm,i_recv)
+!!$omp parallel do private(k_rlm,nd,jj,i_rlm,i_recv)
       do jj = 1, n_jk_e
         do k_rlm = 1, nidx_rlm(1)
           do nd = 1, nscalar
@@ -278,9 +278,9 @@
           end do
         end do
       end do
-!$omp end parallel do
+!!$omp end parallel do
 !
-!$omp parallel do private(k_rlm,nd,jj,i_rlm,i_recv)
+!!$omp parallel do private(k_rlm,nd,jj,i_rlm,i_recv)
       do jj = 1, n_jk_o
         do k_rlm = 1, nidx_rlm(1)
           do nd = 1, nscalar
@@ -293,7 +293,7 @@
           end do
         end do
       end do
-!$omp end parallel do
+!!$omp end parallel do
 !
       end subroutine set_sp_rlm_vec_testloop
 !
