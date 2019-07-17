@@ -90,7 +90,7 @@
       nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
 !
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-        mn_rlm = nidx_rtm(3) - mp_rlm + 1
+        mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
         jst = idx_trns%lstack_rlm(mp_rlm-1)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+12)
