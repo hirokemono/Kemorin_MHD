@@ -77,7 +77,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
-      integer(kind = kint) :: mp_rlm
+      integer(kind = kint) :: mp_rlm, mn_rlm
       integer(kind = kint) :: nkrs, nkrt, lst_rtm
       integer(kind = kint) :: ip, jst, lt, lp_rtm
 !
@@ -90,6 +90,7 @@
       nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
 !
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
+        mn_rlm = nidx_rtm(3) - mp_rlm + 1
         jst = idx_trns%lstack_rlm(mp_rlm-1)
 !
       if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+12)
@@ -107,6 +108,7 @@
           lst_rtm = WK_l_tst%lst_rtm(ip)
 !
           do lt = 1, WK_l_tst%nlo_rtm(ip)
+            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
 !   even l-m
             call matmul_bwd_leg_trans_tstlop                            &
      &       (nkrs, WK_l_tst%n_jk_e(mp_rlm),  &
@@ -126,21 +128,21 @@
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,lt),                 &
      &        WK_l_tst%Smat(1)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
 !
-            call mul_asin_to_vr_rtm(sph_rlm%nidx_rlm,    &
-     &        asin_theta_1d_rtm(WK_l_tst%lst_rtm(ip)+lt),    &
+            call mul_asin_to_vr_rtm                                     &
+     &       (sph_rlm%nidx_rlm, asin_theta_1d_rtm(lp_rtm),              &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_r(1), &
      &        nvector, nscalar)
 !
-            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
             call cal_vr_rtm_vec_testloop                                &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, mp_rlm, lp_rtm,           &
+     &        sph_rlm%nidx_rlm, mp_rlm, mn_rlm, lp_rtm,                 &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1), &
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1), &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
           end do
 !
           do lt = WK_l_tst%nlo_rtm(ip)+1, WK_l_tst%nle_rtm(ip)
+            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
 !   even l-m
             call matmul_bwd_leg_trans_tstlop                            &
      &       (nkrs, WK_l_tst%n_jk_e(mp_rlm),  &
@@ -160,15 +162,14 @@
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,lt),                 &
      &        WK_l_tst%Smat(1)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
 !
-            call mul_asin_to_vr_rtm(sph_rlm%nidx_rlm,    &
-     &        asin_theta_1d_rtm(WK_l_tst%lst_rtm(ip)+lt),    &
+            call mul_asin_to_vr_rtm                                     &
+     &       (sph_rlm%nidx_rlm, asin_theta_1d_rtm(lp_rtm),              &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_r(1), &
      &        nvector, nscalar)
 !
-            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
             call cal_vr_rtm_vec_equator                                 &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, mp_rlm, lp_rtm,           &
+     &        sph_rlm%nidx_rlm, mp_rlm, mn_rlm, lp_rtm,                 &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%symp_p(1), &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
           end do
@@ -335,8 +336,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_vr_rtm_vec_testloop                                &
-     &         (nnod_rtm, nidx_rtm,  istep_rtm, nidx_rlm,           &
-     &          mp_rlm, lp_rtm, symp_r, asmp_p,      &
+     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm,           &
+     &          mp_rlm, mn_rlm, lp_rtm, symp_r, asmp_p,      &
      &          asmp_r, symp_p, ncomp_send, nvector, nscalar,      &
      &          irev_sr_rtm, n_WS, WS)
 !
@@ -345,7 +346,7 @@
       integer(kind = kint), intent(in) :: istep_rtm(3)
       integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
-      integer(kind = kint), intent(in) :: mp_rlm
+      integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
       integer(kind = kint), intent(in) :: lp_rtm
 !
       integer(kind = kint), intent(in) :: nvector, nscalar
@@ -363,13 +364,10 @@
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: k_rlm, nd, mn_rlm
-      integer(kind = kint) :: ln_rtm
+      integer(kind = kint) :: k_rlm, nd, ln_rtm
       integer(kind = kint) :: ip_rtpm, in_rtpm, ip_rtnm, in_rtnm
       integer(kind = kint) :: ipp_send, inp_send, ipn_send, inn_send
 !
-!
-      mn_rlm = nidx_rtm(3) - mp_rlm + 1
 !
         do k_rlm = 1, nidx_rlm(1)
           ln_rtm =  nidx_rtm(2) - lp_rtm + 1
@@ -447,10 +445,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_vr_rtm_vec_equator(nnod_rtm, nidx_rtm,      &
-     &          istep_rtm, nidx_rlm,                 &
-     &          mp_rlm, lp_rtm, symp_r,      &
-     &          symp_p, ncomp_send, nvector, nscalar,      &
+      subroutine cal_vr_rtm_vec_equator(nnod_rtm, nidx_rtm,             &
+     &          istep_rtm, nidx_rlm, mp_rlm, mn_rlm, lp_rtm, symp_r,    &
+     &          symp_p, ncomp_send, nvector, nscalar,                   &
      &          irev_sr_rtm, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: lp_rtm
@@ -459,7 +456,7 @@
       integer(kind = kint), intent(in) :: istep_rtm(3)
       integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
-      integer(kind = kint), intent(in) :: mp_rlm
+      integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
 !
       integer(kind = kint), intent(in) :: nvector, nscalar
       real(kind = kreal), intent(inout)                             &
@@ -472,12 +469,10 @@
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: k_rlm, nd, mn_rlm
+      integer(kind = kint) :: k_rlm, nd
       integer(kind = kint) :: ip_rtpm, in_rtpm
       integer(kind = kint) :: ipp_send, inp_send
 !
-!
-        mn_rlm = nidx_rtm(3) - mp_rlm + 1
 !
         do k_rlm = 1, nidx_rlm(1)
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
