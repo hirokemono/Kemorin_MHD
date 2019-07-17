@@ -126,6 +126,12 @@
      &        WK_l_tst%Smat(1)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
           end do
 !
+          call mul_asin_to_vr_rtm                                       &
+     &       (sph_rtm%nidx_rtm, sph_rlm%nidx_rlm, asin_theta_1d_rtm,    &
+     &        WK_l_tst%lst_rtm(ip), WK_l_tst%nle_rtm(ip),               &
+     &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_r(1), &
+     &        nvector, nscalar)
+!
           call cal_vr_rtm_vec_testloop                                  &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, asin_theta_1d_rtm,                      &
@@ -262,6 +268,48 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine mul_asin_to_vr_rtm                                     &
+     &         (nidx_rtm, nidx_rlm, asin_theta_1d_rtm,                  &
+     &          lst_rtm, nle_rtm, symp_r, asmp_r, nvector, nscalar)
+!
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
+      real(kind = kreal), intent(in)                                &
+     &           :: asin_theta_1d_rtm(nidx_rtm(2))
+!
+      integer(kind = kint), intent(in) :: lst_rtm
+      integer(kind = kint), intent(in) :: nle_rtm
+!
+      integer(kind = kint), intent(in) :: nvector, nscalar
+      real(kind = kreal), intent(inout)                             &
+     &           :: symp_r(3*nvector+nscalar,nidx_rlm(1),nle_rtm)
+      real(kind = kreal), intent(inout)                             &
+     &           :: asmp_r(3*nvector+nscalar,nidx_rlm(1),nle_rtm)
+!
+      integer(kind = kint) :: k_rlm, nd
+      integer(kind = kint) :: lt, lp_rtm
+!
+!
+      do lt = 1, nle_rtm
+        lp_rtm = lst_rtm + lt
+        do nd = 1, nvector
+          do k_rlm = 1, nidx_rlm(1)
+            symp_r(3*nd-1,k_rlm,lt) = - symp_r(3*nd-1,k_rlm,lt) &
+     &                                    * asin_theta_1d_rtm(lp_rtm)
+            symp_r(3*nd,  k_rlm,lt) = - symp_r(3*nd,  k_rlm,lt) &
+     &                                    * asin_theta_1d_rtm(lp_rtm)
+            asmp_r(3*nd-1,k_rlm,lt) = - asmp_r(3*nd-1,k_rlm,lt) &
+     &                                    * asin_theta_1d_rtm(lp_rtm)
+            asmp_r(3*nd,  k_rlm,lt) = - asmp_r(3*nd,  k_rlm,lt) &
+     &                                    * asin_theta_1d_rtm(lp_rtm)
+          end do
+        end do
+      end do
+!
+      end subroutine mul_asin_to_vr_rtm
+!
+! -----------------------------------------------------------------------
+!
       subroutine cal_vr_rtm_vec_testloop(nnod_rtm, nidx_rtm,      &
      &          istep_rtm, nidx_rlm, asin_theta_1d_rtm,                 &
      &          mp_rlm, lst_rtm, nle_rtm, nlo_rtm, symp_r, asmp_p,      &
@@ -301,22 +349,6 @@
 !
 !
       mn_rlm = nidx_rtm(3) - mp_rlm + 1
-!
-      do lt = 1, nle_rtm
-        lp_rtm = lst_rtm + lt
-        do nd = 1, nvector
-          do k_rlm = 1, nidx_rlm(1)
-            symp_r(3*nd-1,k_rlm,lt) = - symp_r(3*nd-1,k_rlm,lt) &
-     &                                    * asin_theta_1d_rtm(lp_rtm)
-            symp_r(3*nd,  k_rlm,lt) = - symp_r(3*nd,  k_rlm,lt) &
-     &                                    * asin_theta_1d_rtm(lp_rtm)
-            asmp_r(3*nd-1,k_rlm,lt) = - asmp_r(3*nd-1,k_rlm,lt) &
-     &                                    * asin_theta_1d_rtm(lp_rtm)
-            asmp_r(3*nd,  k_rlm,lt) = - asmp_r(3*nd,  k_rlm,lt) &
-     &                                    * asin_theta_1d_rtm(lp_rtm)
-          end do
-        end do
-      end do
 !
       do lt = 1, nlo_rtm
         lp_rtm = lst_rtm + lt
