@@ -97,6 +97,12 @@
 !$omp parallel do private(ip,lst_rtm,lt)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%lst_rtm(ip)
+!
+           WK_l_tst%Smat(ip)%pol_e(1:WK_l_tst%n_pol_e) = 0.0d0
+           WK_l_tst%Smat(ip)%tor_e(1:WK_l_tst%n_tor_e) = 0.0d0
+           WK_l_tst%Smat(ip)%pol_o(1:WK_l_tst%n_pol_e) = 0.0d0
+           WK_l_tst%Smat(ip)%tor_o(1:WK_l_tst%n_tor_e) = 0.0d0
+!
           do lt = 1, WK_l_tst%nlo_rtm(ip)
             call set_vr_rtm_vec_testloop(lt,                            &
      &        sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
@@ -106,25 +112,7 @@
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,      &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1), &
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1))
-           end do
 !
-          do lt = WK_l_tst%nlo_rtm(ip)+1, WK_l_tst%nle_rtm(ip)
-            call set_vr_rtm_vec_equator(lt,                             &
-     &        sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, weight_rtm,          &
-     &        mp_rlm, mn_rlm, WK_l_tst%lst_rtm(ip),                     &
-     &        WK_l_tst%nle_rtm(ip),            &
-     &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,      &
-     &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1), &
-     &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1))
-           end do
-!
-           WK_l_tst%Smat(ip)%pol_e(1:WK_l_tst%n_pol_e) = 0.0d0
-           WK_l_tst%Smat(ip)%tor_e(1:WK_l_tst%n_tor_e) = 0.0d0
-           WK_l_tst%Smat(ip)%pol_o(1:WK_l_tst%n_pol_e) = 0.0d0
-           WK_l_tst%Smat(ip)%tor_o(1:WK_l_tst%n_tor_e) = 0.0d0
-!
-          do lt = 1, WK_l_tst%nle_rtm(ip)
             call matmul_fwd_leg_trans_tstlop                            &
      &       (lt, nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),  &
      &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt(1,lt),                    &
@@ -144,6 +132,37 @@
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,lt),                 &
      &        WK_l_tst%Fmat(ip)%symp_p(1), WK_l_tst%Smat(ip)%tor_o(1))
           end do
+!
+          do lt = WK_l_tst%nlo_rtm(ip)+1, WK_l_tst%nle_rtm(ip)
+            call set_vr_rtm_vec_equator(lt,                             &
+     &        sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
+     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, weight_rtm,          &
+     &        mp_rlm, mn_rlm, WK_l_tst%lst_rtm(ip),                     &
+     &        WK_l_tst%nle_rtm(ip),            &
+     &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,      &
+     &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1), &
+     &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1))
+!
+            call matmul_fwd_leg_trans_tstlop                            &
+     &       (lt, nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),  &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt(1,lt),                    &
+     &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Smat(ip)%pol_e(1))
+            call matmul_fwd_leg_trans_tstlop                            &
+     &       (lt, nkrt, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),  &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt(1,lt),                 &
+     &        WK_l_tst%Fmat(ip)%asmp_p(1), WK_l_tst%Smat(ip)%tor_e(1))
+!
+!  odd l-m
+            call matmul_fwd_leg_trans_tstlop                            &
+     &       (lt, nkrs, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),  &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt(1,lt),                    &
+     &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Smat(ip)%pol_o(1))
+            call matmul_fwd_leg_trans_tstlop                            &
+     &       (lt, nkrt, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),  &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,lt),                 &
+     &        WK_l_tst%Fmat(ip)%symp_p(1), WK_l_tst%Smat(ip)%tor_o(1))
+          end do
+!
         end do
 !$omp end parallel do
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+15)
