@@ -364,7 +364,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       integer(kind = kint) :: k_rlm, nd, mn_rlm
-      integer(kind = kint) :: lp_rtm, ln_rtm
+      integer(kind = kint) :: ln_rtm
       integer(kind = kint) :: ip_rtpm, in_rtpm, ip_rtnm, in_rtnm
       integer(kind = kint) :: ipp_send, inp_send, ipn_send, inn_send
 !
