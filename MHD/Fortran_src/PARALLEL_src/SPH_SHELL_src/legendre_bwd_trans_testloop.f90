@@ -79,7 +79,7 @@
 !
       integer(kind = kint) :: mp_rlm
       integer(kind = kint) :: nkrs, nkrt, lst_rtm
-      integer(kind = kint) :: ip, jst, ll
+      integer(kind = kint) :: ip, jst, lt
 !
 !
 !$omp parallel workshare
@@ -102,49 +102,56 @@
      &        WK_l_tst%Smat(1)%pol_o(1), WK_l_tst%Smat(1)%tor_o(1) )
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
 !
-!$omp parallel do private(ip,lst_rtm,ll)
+!$omp parallel do private(ip,lst_rtm,lt)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%lst_rtm(ip)
-          do ll = 1, WK_l_tst%nle_rtm(ip)
+          do lt = 1, WK_l_tst%nle_rtm(ip)
 !   even l-m
             call matmul_bwd_leg_trans_tstlop                            &
-     &       (ll, WK_l_tst%nle_rtm(ip), nkrs, WK_l_tst%n_jk_e(mp_rlm),  &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt(1,ll),                    &
+     &       (lt, WK_l_tst%nle_rtm(ip), nkrs, WK_l_tst%n_jk_e(mp_rlm),  &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt(1,lt),                    &
      &        WK_l_tst%Smat(1)%pol_e(1), WK_l_tst%Fmat(ip)%symp_r(1))
             call matmul_bwd_leg_trans_tstlop                            &
-     &       (ll, WK_l_tst%nle_rtm(ip), nkrt, WK_l_tst%n_jk_e(mp_rlm),  &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt(1,ll),                 &
+     &       (lt, WK_l_tst%nle_rtm(ip), nkrt, WK_l_tst%n_jk_e(mp_rlm),  &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt(1,lt),                 &
      &        WK_l_tst%Smat(1)%tor_e(1), WK_l_tst%Fmat(ip)%asmp_p(1))
 !   odd l-m
             call matmul_bwd_leg_trans_tstlop                            &
-     &       (ll, WK_l_tst%nle_rtm(ip), nkrs, WK_l_tst%n_jk_o(mp_rlm),  &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt(1,ll),                    &
+     &       (lt, WK_l_tst%nle_rtm(ip), nkrs, WK_l_tst%n_jk_o(mp_rlm),  &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt(1,lt),                    &
      &        WK_l_tst%Smat(1)%pol_o(1), WK_l_tst%Fmat(ip)%asmp_r(1))
             call matmul_bwd_leg_trans_tstlop                            &
-     &       (ll, WK_l_tst%nle_rtm(ip), nkrt, WK_l_tst%n_jk_o(mp_rlm),  &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,ll),                 &
+     &       (lt, WK_l_tst%nle_rtm(ip), nkrt, WK_l_tst%n_jk_o(mp_rlm),  &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,lt),                 &
      &        WK_l_tst%Smat(1)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
           end do
 !
-          call mul_asin_to_vr_rtm                                       &
-     &       (sph_rtm%nidx_rtm, sph_rlm%nidx_rlm, asin_theta_1d_rtm,    &
+          do lt = 1, WK_l_tst%nle_rtm(ip)
+            call mul_asin_to_vr_rtm(lt,                                 &
+     &        sph_rtm%nidx_rtm, sph_rlm%nidx_rlm, asin_theta_1d_rtm,    &
      &        WK_l_tst%lst_rtm(ip), WK_l_tst%nle_rtm(ip),               &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_r(1), &
      &        nvector, nscalar)
+          end do
 !
-          call cal_vr_rtm_vec_testloop                                  &
-     &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
+          do lt = 1, WK_l_tst%nlo_rtm(ip)
+            call cal_vr_rtm_vec_testloop(lt,                            &
+     &        sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, mp_rlm, WK_l_tst%lst_rtm(ip),           &
-     &        WK_l_tst%nle_rtm(ip), WK_l_tst%nlo_rtm(ip),               &
+     &        WK_l_tst%nle_rtm(ip),             &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1), &
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1), &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
-          call cal_vr_rtm_vec_equator                                   &
-     &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
+          end do
+!
+          do lt = WK_l_tst%nlo_rtm(ip)+1, WK_l_tst%nle_rtm(ip)
+            call cal_vr_rtm_vec_equator(lt,                             &
+     &        sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, mp_rlm, WK_l_tst%lst_rtm(ip),           &
-     &        WK_l_tst%nle_rtm(ip), WK_l_tst%nlo_rtm(ip),               &
+     &        WK_l_tst%nle_rtm(ip),            &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%symp_p(1), &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
+          end do
         end do
 !$omp end parallel do
 !
@@ -274,9 +281,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine mul_asin_to_vr_rtm                                     &
-     &         (nidx_rtm, nidx_rlm, asin_theta_1d_rtm,                  &
+     &         (lt, nidx_rtm, nidx_rlm, asin_theta_1d_rtm,              &
      &          lst_rtm, nle_rtm, symp_r, asmp_r, nvector, nscalar)
 !
+      integer(kind = kint), intent(in) :: lt
       integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: nidx_rlm(2)
       real(kind = kreal), intent(in)                                &
@@ -292,10 +300,9 @@
      &           :: asmp_r(3*nvector+nscalar,nidx_rlm(1),nle_rtm)
 !
       integer(kind = kint) :: k_rlm, nd
-      integer(kind = kint) :: lt, lp_rtm
+      integer(kind = kint) :: lp_rtm
 !
 !
-      do lt = 1, nle_rtm
         lp_rtm = lst_rtm + lt
         do nd = 1, nvector
           do k_rlm = 1, nidx_rlm(1)
@@ -309,18 +316,18 @@
      &                                    * asin_theta_1d_rtm(lp_rtm)
           end do
         end do
-      end do
 !
       end subroutine mul_asin_to_vr_rtm
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_vr_rtm_vec_testloop(nnod_rtm, nidx_rtm,      &
-     &          istep_rtm, nidx_rlm,                 &
-     &          mp_rlm, lst_rtm, nle_rtm, nlo_rtm, symp_r, asmp_p,      &
+      subroutine cal_vr_rtm_vec_testloop                                &
+     &         (lt, nnod_rtm, nidx_rtm,  istep_rtm, nidx_rlm,           &
+     &          mp_rlm, lst_rtm, nle_rtm, symp_r, asmp_p,      &
      &          asmp_r, symp_p, ncomp_send, nvector, nscalar,      &
      &          irev_sr_rtm, n_WS, WS)
 !
+      integer(kind = kint), intent(in) :: lt
       integer(kind = kint), intent(in) :: nnod_rtm
       integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: istep_rtm(3)
@@ -328,7 +335,7 @@
 !
       integer(kind = kint), intent(in) :: mp_rlm
       integer(kind = kint), intent(in) :: lst_rtm
-      integer(kind = kint), intent(in) :: nle_rtm, nlo_rtm
+      integer(kind = kint), intent(in) :: nle_rtm
 !
       integer(kind = kint), intent(in) :: nvector, nscalar
       real(kind = kreal), intent(inout)                             &
@@ -346,14 +353,13 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       integer(kind = kint) :: k_rlm, nd, mn_rlm
-      integer(kind = kint) :: lt, lp_rtm, ln_rtm
+      integer(kind = kint) :: lp_rtm, ln_rtm
       integer(kind = kint) :: ip_rtpm, in_rtpm, ip_rtnm, in_rtnm
       integer(kind = kint) :: ipp_send, inp_send, ipn_send, inn_send
 !
 !
       mn_rlm = nidx_rtm(3) - mp_rlm + 1
 !
-      do lt = 1, nlo_rtm
         lp_rtm = lst_rtm + lt
         do k_rlm = 1, nidx_rlm(1)
           ln_rtm =  nidx_rtm(2) - lp_rtm + 1
@@ -426,18 +432,18 @@
      &                  - asmp_r(nd+3*nvector,k_rlm,lt)
           end do
         end do
-      end do
 !
       end subroutine cal_vr_rtm_vec_testloop
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_vr_rtm_vec_equator(nnod_rtm, nidx_rtm,      &
+      subroutine cal_vr_rtm_vec_equator(lt, nnod_rtm, nidx_rtm,      &
      &          istep_rtm, nidx_rlm,                 &
-     &          mp_rlm, lst_rtm, nle_rtm, nlo_rtm, symp_r,      &
+     &          mp_rlm, lst_rtm, nle_rtm, symp_r,      &
      &          symp_p, ncomp_send, nvector, nscalar,      &
      &          irev_sr_rtm, n_WS, WS)
 !
+      integer(kind = kint), intent(in) :: lt
       integer(kind = kint), intent(in) :: nnod_rtm
       integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: istep_rtm(3)
@@ -445,7 +451,7 @@
 !
       integer(kind = kint), intent(in) :: mp_rlm
       integer(kind = kint), intent(in) :: lst_rtm
-      integer(kind = kint), intent(in) :: nle_rtm, nlo_rtm
+      integer(kind = kint), intent(in) :: nle_rtm
 !
       integer(kind = kint), intent(in) :: nvector, nscalar
       real(kind = kreal), intent(inout)                             &
@@ -459,14 +465,13 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       integer(kind = kint) :: k_rlm, nd, mn_rlm
-      integer(kind = kint) :: lt, lp_rtm
+      integer(kind = kint) :: lp_rtm
       integer(kind = kint) :: ip_rtpm, in_rtpm
       integer(kind = kint) :: ipp_send, inp_send
 !
 !
-      mn_rlm = nidx_rtm(3) - mp_rlm + 1
+        mn_rlm = nidx_rtm(3) - mp_rlm + 1
 !
-      do lt = nlo_rtm+1, nle_rtm
         lp_rtm = lst_rtm + lt
         do k_rlm = 1, nidx_rlm(1)
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
@@ -496,7 +501,6 @@
      &                    + symp_r(nd+3*nvector,k_rlm,lt)
           end do
         end do
-      end do
 !
       end subroutine cal_vr_rtm_vec_equator
 !
