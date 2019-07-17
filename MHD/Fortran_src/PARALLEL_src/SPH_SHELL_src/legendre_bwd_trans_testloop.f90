@@ -102,7 +102,6 @@
      &        WK_l_tst%Smat(1)%pol_o(1), WK_l_tst%Smat(1)%tor_o(1) )
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
 !
-          if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+13)
 !$omp parallel do private(ip,lst_rtm,ll)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%lst_rtm(ip)
@@ -126,14 +125,7 @@
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,ll),                 &
      &        WK_l_tst%Smat(1)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
           end do
-        end do
-!$omp end parallel do
-      if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+13)
 !
-      if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
-!$omp parallel do private(ip,lst_rtm)
-        do ip = 1, np_smp
-          lst_rtm = WK_l_tst%lst_rtm(ip)
           call cal_vr_rtm_vec_testloop                                  &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, asin_theta_1d_rtm,                      &
@@ -144,7 +136,6 @@
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
         end do
 !$omp end parallel do
-          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
 !
       end do
 !
