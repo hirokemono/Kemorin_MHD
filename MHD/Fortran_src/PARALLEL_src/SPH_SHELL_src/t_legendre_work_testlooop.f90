@@ -486,9 +486,8 @@
       do ip = 1, np_smp
         Fmat(ip)%nvec_lk = nle_rtm(ip) * nri_rtm * nvector
         Fmat(ip)%nscl_lk = nle_rtm(ip) * nri_rtm * nscalar
-        Fmat(ip)%n_sym_r = nle_rtm(ip) * nri_rtm                   &
-     &                    * (3*nvector + nscalar)
-        Fmat(ip)%n_sym_p = nle_rtm(ip) * nri_rtm * 2*nvector
+        Fmat(ip)%n_sym_r = nri_rtm * (3*nvector + nscalar)
+        Fmat(ip)%n_sym_p = nri_rtm * 2*nvector
       end do
 !
       end subroutine count_size_of_field_mat_tstlop
