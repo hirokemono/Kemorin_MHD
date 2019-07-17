@@ -168,7 +168,7 @@
      &        nvector, nscalar)
 !
             call cal_vr_rtm_vec_equator                                 &
-     &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
+     &       (sph_rtm%nnod_rtm, sph_rtm%istep_rtm,                      &
      &        sph_rlm%nidx_rlm, mp_rlm, mn_rlm, lp_rtm,                 &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%symp_p(1), &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
@@ -445,14 +445,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_vr_rtm_vec_equator(nnod_rtm, nidx_rtm,             &
+      subroutine cal_vr_rtm_vec_equator(nnod_rtm,                       &
      &          istep_rtm, nidx_rlm, mp_rlm, mn_rlm, lp_rtm, symp_r,    &
      &          symp_p, ncomp_send, nvector, nscalar,                   &
      &          irev_sr_rtm, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: lp_rtm
       integer(kind = kint), intent(in) :: nnod_rtm
-      integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: istep_rtm(3)
       integer(kind = kint), intent(in) :: nidx_rlm(2)
 !
