@@ -124,11 +124,10 @@
      &       (lt, WK_l_tst%nle_rtm(ip), nkrt, WK_l_tst%n_jk_o(mp_rlm),  &
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,lt),                 &
      &        WK_l_tst%Smat(1)%tor_o(1), WK_l_tst%Fmat(ip)%symp_p(1))
-          end do
 !
-          do lt = 1, WK_l_tst%nle_rtm(ip)
             call mul_asin_to_vr_rtm(lt,                                 &
-     &        sph_rtm%nidx_rtm, sph_rlm%nidx_rlm, asin_theta_1d_rtm,    &
+     &        sph_rtm%nidx_rtm, sph_rlm%nidx_rlm,    &
+     &        asin_theta_1d_rtm(WK_l_tst%lst_rtm(ip)+lt),    &
      &        WK_l_tst%lst_rtm(ip), WK_l_tst%nle_rtm(ip),               &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_r(1), &
      &        nvector, nscalar)
@@ -287,8 +286,7 @@
       integer(kind = kint), intent(in) :: lt
       integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: nidx_rlm(2)
-      real(kind = kreal), intent(in)                                &
-     &           :: asin_theta_1d_rtm(nidx_rtm(2))
+      real(kind = kreal), intent(in) :: asin_theta_1d_rtm
 !
       integer(kind = kint), intent(in) :: lst_rtm
       integer(kind = kint), intent(in) :: nle_rtm
@@ -300,20 +298,18 @@
      &           :: asmp_r(3*nvector+nscalar,nidx_rlm(1),nle_rtm)
 !
       integer(kind = kint) :: k_rlm, nd
-      integer(kind = kint) :: lp_rtm
 !
 !
-        lp_rtm = lst_rtm + lt
         do nd = 1, nvector
           do k_rlm = 1, nidx_rlm(1)
             symp_r(3*nd-1,k_rlm,lt) = - symp_r(3*nd-1,k_rlm,lt) &
-     &                                    * asin_theta_1d_rtm(lp_rtm)
+     &                                    * asin_theta_1d_rtm
             symp_r(3*nd,  k_rlm,lt) = - symp_r(3*nd,  k_rlm,lt) &
-     &                                    * asin_theta_1d_rtm(lp_rtm)
+     &                                    * asin_theta_1d_rtm
             asmp_r(3*nd-1,k_rlm,lt) = - asmp_r(3*nd-1,k_rlm,lt) &
-     &                                    * asin_theta_1d_rtm(lp_rtm)
+     &                                    * asin_theta_1d_rtm
             asmp_r(3*nd,  k_rlm,lt) = - asmp_r(3*nd,  k_rlm,lt) &
-     &                                    * asin_theta_1d_rtm(lp_rtm)
+     &                                    * asin_theta_1d_rtm
           end do
         end do
 !
