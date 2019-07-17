@@ -448,9 +448,9 @@
       integer(kind = kint) :: jj, kk, ll
 !
 !
-      V_kl(1:nkr,1:nl_rtm) = 0.0d0
 !
       do ll = 1, nl_rtm
+        V_kl(1:nkr,ll) = 0.0d0
         do kk = 1, nkr
           do jj = 1, n_jk
             V_kl(kk,ll) = V_kl(kk,ll) + S_kj(kk,jj) * P_jl(jj,ll)

@@ -113,6 +113,11 @@
 !$omp parallel do private(ip,lst_rtm)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%lst_rtm(ip)
+           WK_l_tst%Smat(ip)%pol_e(1:WK_l_tst%n_pol_e) = 0.0d0
+           WK_l_tst%Smat(ip)%tor_e(1:WK_l_tst%n_tor_e) = 0.0d0
+           WK_l_tst%Smat(ip)%pol_o(1:WK_l_tst%n_pol_e) = 0.0d0
+           WK_l_tst%Smat(ip)%tor_o(1:WK_l_tst%n_tor_e) = 0.0d0
+!
           call matmul_fwd_leg_trans_tstlop                              &
      &       (nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt,                          &
@@ -577,8 +582,6 @@
 !
       integer(kind = kint) :: jj, kk, ll
 !
-!
-      S_jk(1:n_jk,1:nkr) = 0.0d0
 !
       do ll = 1, nl_rtm
         do kk = 1, nkr
