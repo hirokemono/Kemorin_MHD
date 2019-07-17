@@ -1,18 +1,19 @@
-!>@file   legendre_transform_org.f90
-!!@brief  module legendre_transform_org
+!>@file   legendre_transform_matmul.f90
+!!@brief  module legendre_transform_matmul
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2007
 !!@n    Modified in Apr. 2013
 !
 !>@brief  Legendre transforms
-!!       (Original version)
+!!       (longest loop version)
 !!
 !!
 !!@verbatim
-!!      subroutine leg_backward_trans_sym_org(ncomp, nvector, nscalar,  &
+!!      subroutine leg_backward_trans_matmul                            &
+!!     &         (iflag_matmul, ncomp, nvector, nscalar,                &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,  &
-!!     &          n_WR, n_WS, WR, WS, WK_l_sml)
+!!     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !!        Input:  sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!        Output: vr_rtm   (Order: radius,theta,phi)
 !!
@@ -21,12 +22,12 @@
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(index_4_sph_trans), intent(in) :: idx_trns
-!!        type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
 !!
 !!    Forward transforms
-!!      subroutine leg_forward_trans_sym_org(ncomp, nvector, nscalar,   &
+!!       subroutine leg_forward_trans_matmul                            &
+!!     &         (iflag_matmul, ncomp, nvector, nscalar,                &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,  &
-!!     &          n_WR, n_WS, WR, WS, WK_l_sml)
+!!     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!
@@ -35,7 +36,6 @@
 !!        type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(index_4_sph_trans), intent(in) :: idx_trns
-!!        type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -43,7 +43,7 @@
 !!@param   nscalar  Number of scalar (including tensor components)
 !!                  for spherical transform
 !
-      module legendre_transform_org
+      module legendre_transform_matmul
 !
       use m_precision
 !
@@ -51,8 +51,7 @@
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
       use t_schmidt_poly_on_rtm
-      use t_work_4_sph_trans
-      use t_work_4_sph_trans_spin
+      use t_legendre_work_matmul
 !
       implicit none
 !
@@ -62,15 +61,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_backward_trans_sym_org(ncomp, nvector, nscalar,    &
+      subroutine leg_backward_trans_matmul                              &
+     &         (iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
-     &          n_WR, n_WS, WR, WS, WK_l_sml)
+     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !
-      use legendre_bwd_trans_symmetry
+      use legendre_bwd_trans_matmul
 !
+      integer(kind = kint), intent(in) :: iflag_matmul
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+      type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
       type(legendre_4_sph_trans), intent(in) :: leg
       type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
@@ -78,26 +79,30 @@
 !
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
-      type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
+      type(leg_trns_matmul_work), intent(inout) :: WK_l_mtl
 !
 !
-      call leg_bwd_trans_vector_sym_org(ncomp, nvector,                 &
+      call leg_b_trans_vector_matmul(iflag_matmul, ncomp, nvector,      &
      &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,               &
-     &    leg%asin_t_rtm, leg%g_sph_rlm, n_WR, n_WS, WR, WS, WK_l_sml)
-      call leg_bwd_trans_scalar_sym_org(ncomp, nvector, nscalar,        &
+     &    leg%asin_t_rtm, leg%g_sph_rlm, leg%P_rtm, leg%dPdt_rtm,       &
+     &    n_WR, n_WS, WR, WS, WK_l_mtl)
+      call leg_b_trans_scalar_matmul                                    &
+     &   (iflag_matmul, ncomp, nvector, nscalar,                        &
      &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,               &
-     &    n_WR, n_WS, WR, WS, WK_l_sml)
+     &    leg%P_rtm, n_WR, n_WS, WR, WS, WK_l_mtl)
 !
-      end subroutine leg_backward_trans_sym_org
+      end subroutine leg_backward_trans_matmul
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_forward_trans_sym_org(ncomp, nvector, nscalar,     &
+      subroutine leg_forward_trans_matmul                               &
+     &         (iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,    &
-     &          n_WR, n_WS, WR, WS, WK_l_sml)
+     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !
-      use legendre_fwd_trans_symmetry
+      use legendre_fwd_trans_matmul
 !
+      integer(kind = kint), intent(in) :: iflag_matmul
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -108,19 +113,21 @@
 !
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
-      type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
+      type(leg_trns_matmul_work), intent(inout) :: WK_l_mtl
 !
 !
-      call leg_fwd_trans_vector_sym_org(ncomp, nvector,                 &
+      call leg_f_trans_vector_matmul(iflag_matmul, ncomp, nvector,      &
      &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,               &
      &    leg%asin_t_rtm, leg%g_sph_rlm, leg%weight_rtm,                &
-     &    n_WR, n_WS, WR, WS, WK_l_sml)
-      call leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,        &
+     &    leg%P_rtm, leg%dPdt_rtm, n_WR, n_WS, WR, WS, WK_l_mtl)
+      call leg_f_trans_scalar_matmul                                    &
+     &   (iflag_matmul, ncomp, nvector, nscalar,                        &
      &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,               &
-     &    leg%g_sph_rlm, leg%weight_rtm, n_WR, n_WS, WR, WS, WK_l_sml)
+     &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm,                     &
+     &    n_WR, n_WS, WR, WS, WK_l_mtl)
 !
-      end subroutine leg_forward_trans_sym_org
+      end subroutine leg_forward_trans_matmul
 !
 ! -----------------------------------------------------------------------
 !
-      end module legendre_transform_org
+      end module legendre_transform_matmul
