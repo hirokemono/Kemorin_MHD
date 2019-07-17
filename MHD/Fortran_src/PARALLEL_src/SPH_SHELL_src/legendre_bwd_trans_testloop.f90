@@ -89,12 +89,12 @@
       nkrs = (3*nvector + nscalar) * sph_rlm%nidx_rlm(1)
       nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
 !
-      do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-        jst = idx_trns%lstack_rlm(mp_rlm-1)
+!$omp parallel do private(ip,lst_rtm,lt,lp_rtm,mp_rlm,jst)
+      do ip = 1, np_smp
+        lst_rtm = WK_l_tst%lst_rtm(ip)
 !
-!$omp parallel do private(ip,lst_rtm,lt,lp_rtm)
-        do ip = 1, np_smp
-          lst_rtm = WK_l_tst%lst_rtm(ip)
+        do mp_rlm = 1, sph_rtm%nidx_rtm(3)
+          jst = idx_trns%lstack_rlm(mp_rlm-1)
 !
           call set_sp_rlm_vec_testloop                                  &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,    &
@@ -171,9 +171,8 @@
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
           end do
         end do
-!$omp end parallel do
-!
       end do
+!$omp end parallel do
 !
       end subroutine legendre_b_trans_vector_test
 !
