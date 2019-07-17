@@ -134,11 +134,16 @@
 !
           call cal_vr_rtm_vec_testloop                                  &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm,                      &
-     &        mp_rlm, WK_l_tst%lst_rtm(ip),                             &
+     &        sph_rlm%nidx_rlm, mp_rlm, WK_l_tst%lst_rtm(ip),           &
      &        WK_l_tst%nle_rtm(ip), WK_l_tst%nlo_rtm(ip),               &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1), &
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1), &
+     &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
+          call cal_vr_rtm_vec_equator                                   &
+     &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
+     &        sph_rlm%nidx_rlm, mp_rlm, WK_l_tst%lst_rtm(ip),           &
+     &        WK_l_tst%nle_rtm(ip), WK_l_tst%nlo_rtm(ip),               &
+     &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%symp_p(1), &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
         end do
 !$omp end parallel do
@@ -311,7 +316,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_vr_rtm_vec_testloop(nnod_rtm, nidx_rtm,      &
-     &          istep_rtm, nidx_rlm, asin_theta_1d_rtm,                 &
+     &          istep_rtm, nidx_rlm,                 &
      &          mp_rlm, lst_rtm, nle_rtm, nlo_rtm, symp_r, asmp_p,      &
      &          asmp_r, symp_p, ncomp_send, nvector, nscalar,      &
      &          irev_sr_rtm, n_WS, WS)
@@ -320,8 +325,6 @@
       integer(kind = kint), intent(in) :: nidx_rtm(3)
       integer(kind = kint), intent(in) :: istep_rtm(3)
       integer(kind = kint), intent(in) :: nidx_rlm(2)
-      real(kind = kreal), intent(in)                                &
-     &           :: asin_theta_1d_rtm(nidx_rtm(2))
 !
       integer(kind = kint), intent(in) :: mp_rlm
       integer(kind = kint), intent(in) :: lst_rtm
@@ -425,6 +428,44 @@
         end do
       end do
 !
+      end subroutine cal_vr_rtm_vec_testloop
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_vr_rtm_vec_equator(nnod_rtm, nidx_rtm,      &
+     &          istep_rtm, nidx_rlm,                 &
+     &          mp_rlm, lst_rtm, nle_rtm, nlo_rtm, symp_r,      &
+     &          symp_p, ncomp_send, nvector, nscalar,      &
+     &          irev_sr_rtm, n_WS, WS)
+!
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
+!
+      integer(kind = kint), intent(in) :: mp_rlm
+      integer(kind = kint), intent(in) :: lst_rtm
+      integer(kind = kint), intent(in) :: nle_rtm, nlo_rtm
+!
+      integer(kind = kint), intent(in) :: nvector, nscalar
+      real(kind = kreal), intent(inout)                             &
+     &           :: symp_r(3*nvector+nscalar,nidx_rlm(1),nle_rtm)
+      real(kind = kreal), intent(in)                                &
+     &           :: symp_p(2*nvector,nidx_rlm(1),nle_rtm)
+!
+      integer(kind = kint), intent(in) :: ncomp_send
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
+      integer(kind = kint), intent(in) :: n_WS
+      real (kind=kreal), intent(inout):: WS(n_WS)
+!
+      integer(kind = kint) :: k_rlm, nd, mn_rlm
+      integer(kind = kint) :: lt, lp_rtm
+      integer(kind = kint) :: ip_rtpm, in_rtpm
+      integer(kind = kint) :: ipp_send, inp_send
+!
+!
+      mn_rlm = nidx_rtm(3) - mp_rlm + 1
+!
       do lt = nlo_rtm+1, nle_rtm
         lp_rtm = lst_rtm + lt
         do k_rlm = 1, nidx_rlm(1)
@@ -457,8 +498,9 @@
         end do
       end do
 !
-      end subroutine cal_vr_rtm_vec_testloop
+      end subroutine cal_vr_rtm_vec_equator
 !
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine matmul_bwd_leg_trans_tstlop(ll, nl_rtm, nkr, n_jk,     &
