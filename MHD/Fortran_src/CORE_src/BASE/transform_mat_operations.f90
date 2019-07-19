@@ -166,26 +166,34 @@
       real(kind = kreal), intent(inout) :: rot_mat(4,4)
 !
       real(kind = kreal) :: c_agl, s_agl, angle, pi
+      real(kind = kreal) :: axs1(3), saxis
 !
 !
       pi = four * atan(one)
       angle = angle_deg * pi / 180.0
       c_agl = cos(angle)
       s_agl = sin(angle)
+      saxis = sqrt(axis(1)*axis(1) + axis(2)*axis(2) + axis(3)*axis(3))
+      if(saxis .eq. 0.0d0) then
+        axs1(1:2) = 0.0d0
+        axs1(3) = 1.0d0
+      else
+        axs1(1:3) = axis(1:3) / saxis
+      end if
 !
-      rot_mat(1,1) = axis(1)*axis(1) * (one - c_agl ) +           c_agl
-      rot_mat(1,2) = axis(1)*axis(2) * (one - c_agl ) - axis(3) * s_agl
-      rot_mat(1,3) = axis(1)*axis(3) * (one - c_agl ) + axis(2) * s_agl
+      rot_mat(1,1) = axs1(1)*axs1(1) *  (one - c_agl) +           c_agl
+      rot_mat(1,2) = axs1(1)*axs1(2) * (one - c_agl) - axs1(3) * s_agl
+      rot_mat(1,3) = axs1(1)*axs1(3) * (one - c_agl) + axs1(2) * s_agl
       rot_mat(1,4) = zero
 !
-      rot_mat(2,1) = axis(2)*axis(1) * (one - c_agl ) + axis(3) * s_agl
-      rot_mat(2,2) = axis(2)*axis(2) * (one - c_agl ) +           c_agl
-      rot_mat(2,3) = axis(2)*axis(3) * (one - c_agl ) - axis(1) * s_agl
+      rot_mat(2,1) = axs1(2)*axs1(1) * (one - c_agl) + axs1(3) * s_agl
+      rot_mat(2,2) = axs1(2)*axs1(2) *  (one - c_agl) +           c_agl
+      rot_mat(2,3) = axs1(2)*axs1(3) * (one - c_agl) - axs1(1) * s_agl
       rot_mat(2,4) = zero
 !
-      rot_mat(3,1) = axis(3)*axis(1) * (one - c_agl ) - axis(2) * s_agl
-      rot_mat(3,2) = axis(3)*axis(2) * (one - c_agl ) + axis(1) * s_agl
-      rot_mat(3,3) = axis(3)*axis(3) * (one - c_agl ) +           c_agl
+      rot_mat(3,1) = axs1(3)*axs1(1) * (one - c_agl) - axs1(2) * s_agl
+      rot_mat(3,2) = axs1(3)*axs1(2) * (one - c_agl) + axs1(1) * s_agl
+      rot_mat(3,3) = axs1(3)*axs1(3) * (one - c_agl) +           c_agl
       rot_mat(3,4) = zero
 !
       rot_mat(4,1) = zero
