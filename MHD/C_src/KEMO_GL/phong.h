@@ -10,6 +10,7 @@
 #define phong_h__
 
 #include "glsl.h"
+#include "m_read_text_to_character.h"
 
 /* prototype */
 

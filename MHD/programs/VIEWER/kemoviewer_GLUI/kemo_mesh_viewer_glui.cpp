@@ -1038,6 +1038,7 @@ void draw_mesh_kemo_glui(int iflag_streo_shutter, int iflag_dmesh) {
     struct kv_string *command;
 	int narg_glut = 0;
 	char **arg_glut;
+	int iflag_core_profile = 0;
 	
 	/* Initialize arrays for viewer */
 	kemoview_allocate_single_viwewer_struct(single_kemoview);
@@ -1085,7 +1086,7 @@ void draw_mesh_kemo_glui(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	/* ! set the perspective and lighting */
 	kemoview_init_background_color();
-	kemoview_init_lighting();
+	kemoview_init_lighting(iflag_core_profile);
 	
 	
 	/*! Create menu window*/

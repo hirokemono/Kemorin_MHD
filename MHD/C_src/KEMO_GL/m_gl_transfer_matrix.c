@@ -8,7 +8,225 @@
 static GLdouble object_size = 7.0e0;
 
 
+void identity_glmat_c(GLdouble mat[16]){
+	mat[ 0] = ONE;
+	mat[ 4] = ZERO;
+	mat[ 8] = ZERO;
+	mat[12] = ZERO;
+	
+	mat[ 1] = ZERO;
+	mat[ 5] = ONE;
+	mat[ 9] = ZERO;
+	mat[13] = ZERO;
+	
+	mat[ 2] = ZERO;
+	mat[ 6] = ZERO;
+	mat[10] = ONE;
+	mat[14] = ZERO;
+	
+	mat[ 3] = ZERO;
+	mat[ 7] = ZERO;
+	mat[11] = ZERO;
+	mat[15] = ONE;
+	return;
+};
+
+void translate_glmat_c(GLdouble trans_x, GLdouble trans_y, GLdouble trans_z, 
+			GLdouble mat[16]){
+	mat[ 0] = ONE;
+	mat[ 4] = ZERO;
+	mat[ 8] = ZERO;
+	mat[12] = trans_x;
+	
+	mat[ 1] = ZERO;
+	mat[ 5] = ONE;
+	mat[ 9] = ZERO;
+	mat[13] = trans_y;
+	
+	mat[ 2] = ZERO;
+	mat[ 6] = ZERO;
+	mat[10] = ONE;
+	mat[14] = trans_z;
+	
+	mat[ 3] = ZERO;
+	mat[ 7] = ZERO;
+	mat[11] = ZERO;
+	mat[15] = ONE;
+	return;
+};
+
+void scale_glmat_c(GLdouble scale_x, GLdouble scale_y, GLdouble scale_z,
+			GLdouble mat[16]){
+	mat[ 0] = scale_x;
+	mat[ 4] = ZERO;
+	mat[ 8] = ZERO;
+	mat[12] = ZERO;
+	
+	mat[ 1] = ZERO;
+	mat[ 5] = scale_y;
+	mat[ 9] = ZERO;
+	mat[13] = ZERO;
+	
+	mat[ 2] = ZERO;
+	mat[ 6] = ZERO;
+	mat[10] = scale_z;
+	mat[14] = ZERO;
+	
+	mat[ 3] = ZERO;
+	mat[ 7] = ZERO;
+	mat[11] = ZERO;
+	mat[15] = ONE;
+	return;
+};
+
+void rotate_glmat_c(GLdouble angle_deg, GLdouble axis_x, GLdouble axis_y, GLdouble axis_z, 
+			GLdouble mat[16]){
+	GLdouble pi = FOUR * atan(ONE);
+	GLdouble axs1_x, axs1_y, axs1_z, saxis;
+	GLdouble angle = angle_deg * pi / 180.0;
+	GLdouble c_agl = cos(angle);
+	GLdouble s_agl = sin(angle);
+	
+	saxis = sqrt(axis_x*axis_x + axis_y*axis_y + axis_z*axis_z);
+	if(saxis == 0.0){
+		axs1_x= 0.0;
+		axs1_y= 0.0;
+		axs1_z= 1.0;
+	} else {
+		axs1_x= axis_x / saxis;
+		axs1_y= axis_y / saxis;
+		axs1_z= axis_z / saxis;
+	};
+	
+	mat[ 0] = axs1_x*axs1_x * (ONE - c_agl) +          c_agl;
+	mat[ 4] = axs1_x*axs1_y * (ONE - c_agl) - axs1_z * s_agl;
+	mat[ 8] = axs1_x*axs1_z * (ONE - c_agl) + axs1_y * s_agl;
+	mat[12] = ZERO;
+	
+	mat[ 1] = axs1_y*axs1_x * (ONE - c_agl) + axs1_z * s_agl;
+	mat[ 5] = axs1_y*axs1_y * (ONE - c_agl) +           c_agl;
+	mat[ 9] = axs1_y*axs1_z * (ONE - c_agl) - axs1_x * s_agl;
+	mat[13] = ZERO;
+	
+	mat[ 2] = axs1_z*axs1_x * (ONE - c_agl) - axs1_y * s_agl;
+	mat[ 6] = axs1_z*axs1_y * (ONE - c_agl) + axs1_x * s_agl;
+	mat[10] = axs1_z*axs1_z * (ONE - c_agl) +          c_agl;
+	mat[14] = ZERO;
+	
+	mat[ 3] = ZERO;
+	mat[ 7] = ZERO;
+	mat[11] = ZERO;
+	mat[15] = ONE;
+	return;
+};
+
+void frustsum_glmat_c(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
+			GLdouble near, GLdouble far, GLdouble mat[16]){
+	
+	mat[ 0] = TWO*near / (right-left);
+	mat[ 4] = ZERO;
+	mat[ 8] = (right+left) / (right-left);
+	mat[12] = ZERO;
+	
+	mat[ 1] = ZERO;
+	mat[ 5] = TWO*near / (top-bottom);
+	mat[ 9] = (top+bottom) / (top-bottom);
+	mat[13] = ZERO;
+	
+	mat[ 2] = ZERO;
+	mat[ 6] = ZERO;
+	mat[10] =-(far+near) / (far-near);
+	mat[14] =-TWO*far*near / (far-near);
+	
+	mat[ 3] = ZERO;
+	mat[ 7] = ZERO;
+	mat[11] = -ONE;
+	mat[15] = ZERO;
+	
+	return;
+};
+
+void orthogonal_glmat_c(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
+			GLdouble near, GLdouble far, GLdouble mat[16]){
+	
+	mat[ 0] = TWO / (right-left);
+	mat[ 4] = ZERO;
+	mat[ 8] = ZERO;
+	mat[12] = -(right+left) / (right-left);
+	
+	mat[ 1] = ZERO;
+	mat[ 5] = TWO / (top-bottom);
+	mat[ 9] = ZERO;
+	mat[13] = -(top+bottom) / (top-bottom);
+	
+	mat[ 2] = ZERO;
+	mat[ 6] = ZERO;
+	mat[10] =-TWO/ (far-near);
+	mat[14] =-(far+near) / (far-near);
+	
+	mat[ 3] = ZERO;
+	mat[ 7] = ZERO;
+	mat[11] = ZERO;
+	mat[15] = ONE;
+	
+	return;
+};
+
+void copy_glmat_c(GLdouble a[16], GLdouble b[16]){
+	int i;
+	for(i=0;i<16;i++){b[i] = a[i];};
+	return;
+};
+
+void cal_glmat44_prod_c(GLdouble a[16], GLdouble b[16], GLdouble c[16]){
+	c[ 0] = a[0]*b[0] + a[4]*b[1] + a[ 8]*b[2] + a[12]*b[3];
+	c[ 1] = a[1]*b[0] + a[5]*b[1] + a[ 9]*b[2] + a[13]*b[3];
+	c[ 2] = a[2]*b[0] + a[6]*b[1] + a[10]*b[2] + a[14]*b[3];
+	c[ 3] = a[3]*b[0] + a[7]*b[1] + a[11]*b[2] + a[15]*b[3];
+	
+	c[ 4] = a[0]*b[4] + a[4]*b[5] + a[ 8]*b[6] + a[12]*b[7];
+	c[ 5] = a[1]*b[4] + a[5]*b[5] + a[ 9]*b[6] + a[13]*b[7];
+	c[ 6] = a[2]*b[4] + a[6]*b[5] + a[10]*b[6] + a[14]*b[7];
+	c[ 7] = a[3]*b[4] + a[7]*b[5] + a[11]*b[6] + a[15]*b[7];
+	
+	c[ 8] = a[0]*b[8] + a[4]*b[9] + a[ 8]*b[10] + a[12]*b[11];
+	c[ 9] = a[1]*b[8] + a[5]*b[9] + a[ 9]*b[10] + a[13]*b[11];
+	c[10] = a[2]*b[8] + a[6]*b[9] + a[10]*b[10] + a[14]*b[11];
+	c[11] = a[3]*b[8] + a[7]*b[9] + a[11]*b[10] + a[15]*b[11];
+	
+	c[12] = a[0]*b[12] + a[4]*b[13] + a[ 8]*b[14] + a[12]*b[15];
+	c[13] = a[1]*b[12] + a[5]*b[13] + a[ 9]*b[14] + a[13]*b[15];
+	c[14] = a[2]*b[12] + a[6]*b[13] + a[10]*b[14] + a[14]*b[15];
+	c[15] = a[3]*b[12] + a[7]*b[13] + a[11]*b[14] + a[15]*b[15];
+	return;
+};
+
+void cal_glmat33_prod_c(GLdouble a[16], GLdouble b[16], GLdouble c[16]){
+	c[ 0] = a[0]*b[0] + a[4]*b[1] + a[ 8]*b[2];
+	c[ 1] = a[1]*b[0] + a[5]*b[1] + a[ 9]*b[2];
+	c[ 2] = a[2]*b[0] + a[6]*b[1] + a[10]*b[2];
+	c[ 3] = a[3]*b[0] + a[7]*b[1] + a[11]*b[2];
+	
+	c[ 4] = a[0]*b[4] + a[4]*b[5] + a[ 8]*b[6];
+	c[ 5] = a[1]*b[4] + a[5]*b[5] + a[ 9]*b[6];
+	c[ 6] = a[2]*b[4] + a[6]*b[5] + a[10]*b[6];
+	c[ 7] = a[3]*b[4] + a[7]*b[5] + a[11]*b[6];
+	
+	c[ 8] = a[0]*b[8] + a[4]*b[9] + a[ 8]*b[10];
+	c[ 9] = a[1]*b[8] + a[5]*b[9] + a[ 9]*b[10];
+	c[10] = a[2]*b[8] + a[6]*b[9] + a[10]*b[10];
+	c[11] = a[3]*b[8] + a[7]*b[9] + a[11]*b[10];
+	
+	c[12] = b[12];
+	c[13] = b[13];
+	c[14] = b[14];
+	c[15] = b[15];
+	return;
+};
+
+
 void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar){
+	GLdouble projection[16];
     GLdouble pi = 3.1415926535897932384626433832795;
     GLdouble fW, fH;
     
@@ -16,80 +234,61 @@ void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar
     fH = tan( fovY / 360 * pi ) * zNear;
     fW = fH * aspect;
     
-    glFrustum( -fW, fW, -fH, fH, zNear, zFar );
+	frustsum_glmat_c(-fW, fW, -fH, fH, zNear, zFar, projection);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(projection);
 }
 
-
-static void init_center_model(GLdouble shift[3]){
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-	glPushMatrix();
-	glLoadIdentity();
-    
-	/* Shift object againt to the eye point */
-	/*  gluLookAt(-shift[0], -shift[1], -shift[2], -shift[0], -shift[1], 0, 0., 1., 0.); */
-    
-	glTranslated(shift[0], shift[1], shift[2]);
-    
-	return;
-}
-static void init_left_eye_model(GLdouble shift[3], GLdouble eyeSep){
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-	glPushMatrix();
-	glLoadIdentity();
-    
-	/* Shift object againt to the eye point */
-	/*  gluLookAt(-shift[0]-eyeSep/3.0, -shift[1], -shift[2], 
-     -shift[0]-eyeSep/3.0, -shift[1],         0., 0., 1., 0.); */
+void orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
+			GLdouble near, GLdouble far){
+	GLdouble orthogonal[16];
+	orthogonal_glmat_c(left, right, bottom, top,
+				near, far, orthogonal);
 	
-	glTranslated(shift[0]+eyeSep/3.0, shift[1], shift[2]);
-	return;
-}
-static void init_right_eye_model(GLdouble shift[3], GLdouble eyeSep){
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-	glPushMatrix();
-	glLoadIdentity();
-    
-	/* Shift object againt to the eye point */
-	/*  gluLookAt(-shift[0]+eyeSep/3.0, -shift[1], -shift[2], 
-     -shift[0]+eyeSep/3.0, -shift[1],         0., 0., 1., 0.); */
-	
-	glTranslated(shift[0]-eyeSep/3.0, shift[1], shift[2]);
-	return;
-}
-
-static void modify_view_kemo(GLdouble x_lookat[3], GLdouble shift[3], GLdouble iso_scale,
-							 GLdouble rotation[4]){
-    
-	/* Rotate object around the lookat point*/
-	glRotated(rotation[0], rotation[1], rotation[2], rotation[3]);
-	/* Change size of object */
-	glScaled(iso_scale, iso_scale, iso_scale);
-	/* Move lookat point to the center of coordinate */
-	glTranslated(-x_lookat[0], -x_lookat[1], -x_lookat[2]);
-	
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(orthogonal);
 	return;
 };
 
-static void rotate_view_kemo(GLdouble x_lookat[3], GLdouble shift[3], GLdouble iso_scale,
-							 GLdouble rotation[4], GLdouble rotate_animation[4]){
-	glRotated(rotation[0], rotation[1], rotation[2], rotation[3]);
-	glRotated(rotate_animation[0], rotate_animation[1], rotate_animation[2], rotate_animation[3]);
-	glScaled(iso_scale, iso_scale, iso_scale);
-	glTranslated(-x_lookat[0], -x_lookat[1], -x_lookat[2]);
+static void Kemo_Translate_view_c(GLdouble shift_x, GLdouble shift_y, GLdouble shift_z, 
+			GLdouble model[16]){
+	GLdouble tmpmat[16];
+	GLdouble trans[16];
+	
+	copy_glmat_c(model, tmpmat);
+   	translate_glmat_c(shift_x, shift_y, shift_z, trans);
+	cal_glmat44_prod_c(trans, tmpmat, model);
 	return;
-};
+}
 
+static void Kemo_Scale_view_c(GLdouble scale_x, GLdouble scale_y, GLdouble scale_z, 
+			GLdouble model[16]){
+	GLdouble tmpmat[16];
+	GLdouble trans[16];
+	
+	copy_glmat_c(model, tmpmat);
+   	scale_glmat_c(scale_x, scale_y, scale_z, trans);
+	cal_glmat33_prod_c(trans, tmpmat, model);
+	return;
+}
+
+static void Kemo_Rotate_view_c(GLdouble rotate[4], GLdouble model[16]){
+	GLdouble tmpmat[16];
+	GLdouble trans[16];
+	
+	copy_glmat_c(model, tmpmat);
+   	rotate_glmat_c(rotate[0], rotate[1], rotate[2], rotate[3], trans);
+	cal_glmat33_prod_c(trans, tmpmat, model);
+	return;
+}
 
 static void update_projection(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_window,
 							  GLdouble aperture, GLdouble aspect, GLdouble near, GLdouble far){
 	GLdouble wd2;
 	GLdouble left, right;
+	GLdouble projection[16];
 	/* set projection */
-	glMatrixMode (GL_PROJECTION);
-	glLoadIdentity ();
 	
 	near = x_lookfrom[2] - object_size * HALF;
 	if (near < 1.0e-6) near = 1.0e-6;
@@ -102,15 +301,19 @@ static void update_projection(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_
 	
 	left  = - aspect * wd2;
 	right =   aspect * wd2;
-	glFrustum (left, right, (-wd2), wd2, near, far);
-    
-    /*	gluPerspective(aperture, aspect, near, far);*/
+	
+	frustsum_glmat_c(left, right, (-wd2), wd2, near, far, projection);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(projection);
+	
 	return;
 }
 
 static void update_projection_left(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_window,
 								   GLdouble aperture, GLdouble aspect, GLdouble near, GLdouble far,
 								   GLdouble focalLength, GLdouble eyeSep){
+	GLdouble projection[16];
 	GLdouble wd2, ndfl;
 	GLdouble left, right;
 	/* set projection */
@@ -129,13 +332,20 @@ static void update_projection_left(GLdouble x_lookfrom[2], GLint nx_window, GLin
 	
 	left  = - aspect * wd2 + 0.5 * eyeSep * ndfl;
 	right =   aspect * wd2 + 0.5 * eyeSep * ndfl;
-	glFrustum (left, right, (-wd2), wd2, near, far);
+	
+	identity_glmat_c(projection);
+	frustsum_glmat_c(left, right, (-wd2), wd2, near, far, projection);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(projection);
+	
 	return;
 }
 
 static void update_projection_right(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_window,
 									GLdouble aperture, GLdouble aspect, GLdouble near, GLdouble far,
 									GLdouble focalLength, GLdouble eyeSep){
+	GLdouble projection[16];
 	GLdouble wd2, ndfl;
 	GLdouble left, right;
 	/* set projection */
@@ -154,58 +364,127 @@ static void update_projection_right(GLdouble x_lookfrom[2], GLint nx_window, GLi
 	
 	left  = - aspect * wd2 - 0.5 * eyeSep * ndfl;
 	right =   aspect * wd2 - 0.5 * eyeSep * ndfl;
-	glFrustum (left, right, (-wd2), wd2, near, far);
+	
+	identity_glmat_c(projection);
+	frustsum_glmat_c(left, right, (-wd2), wd2, near, far, projection);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(projection);
+	
 	return;
 }
 
 
+void set_view_by_identity(){
+	GLdouble modelview[16];
+	
+	identity_glmat_c(modelview);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixd(modelview);
+	return;
+};
 
 
 void modify_view_by_struct(struct view_element *view){
-	init_center_model(view->shift);
-	modify_view_kemo(view->x_lookat, view->shift, view->iso_scale,
-                     view->rotation);
-	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
+	identity_glmat_c(view->mat_object_2_eye);
+	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
+				view->mat_object_2_eye);
+	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
+	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
+				view->mat_object_2_eye);
+	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
+				view->mat_object_2_eye);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixd(view->mat_object_2_eye);
 	return;
 };
 void modify_left_view_by_struct(struct view_element *view){
-	init_left_eye_model(view->shift, view->eye_separation);
-	modify_view_kemo(view->x_lookat, view->shift, view->iso_scale,
-					 view->rotation);
-	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
+	identity_glmat_c(view->mat_object_2_eye);
+	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
+				view->mat_object_2_eye);
+	Kemo_Translate_view_c(view->eye_separation/3.0, ZERO, ZERO, view->mat_object_2_eye);
+	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
+	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
+				view->mat_object_2_eye);
+	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
+				view->mat_object_2_eye);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixd(view->mat_object_2_eye);
 	return;
 };
 void modify_right_view_by_struct(struct view_element *view){
-	init_right_eye_model(view->shift, view->eye_separation);
-	modify_view_kemo(view->x_lookat, view->shift, view->iso_scale,
-					 view->rotation);
-	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
+	
+	identity_glmat_c(view->mat_object_2_eye);
+	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
+				view->mat_object_2_eye);
+	Kemo_Translate_view_c(-view->eye_separation/3.0, ZERO, ZERO,
+				view->mat_object_2_eye);
+	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
+	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
+				view->mat_object_2_eye);
+	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
+				view->mat_object_2_eye);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixd(view->mat_object_2_eye);
 	return;
 };
 
 
 void rotate_view_by_struct(struct view_element *view){
-	init_center_model(view->shift);
-	rotate_view_kemo(view->x_lookat, view->shift, view->iso_scale,
-					 view->rotation, view->rotate_animation);
+	identity_glmat_c(view->mat_object_2_eye);
+	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
+				view->mat_object_2_eye);
+	Kemo_Rotate_view_c(view->rotation,
+				view->mat_object_2_eye);
+	Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
+	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
+				view->mat_object_2_eye);
+	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
+				view->mat_object_2_eye);
+	/*
+	printf("          /%f %f %f %f\\ \n", view->mat_object_2_eye[0], view->mat_object_2_eye[4], view->mat_object_2_eye[ 8], view->mat_object_2_eye[12]);
+	printf(" matrix = |%f %f %f %f| \n", view->mat_object_2_eye[1], view->mat_object_2_eye[5], view->mat_object_2_eye[ 9], view->mat_object_2_eye[13]);
+	printf("          |%f %f %f %f| \n", view->mat_object_2_eye[2], view->mat_object_2_eye[6], view->mat_object_2_eye[10], view->mat_object_2_eye[14]);
+	printf("          \\%f %f %f %f/ \n", view->mat_object_2_eye[3], view->mat_object_2_eye[7], view->mat_object_2_eye[11], view->mat_object_2_eye[15]);
+	*/
 	
-	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixd(view->mat_object_2_eye);
 	return;
 };
 void rotate_left_view_by_struct(struct view_element *view){
-	init_left_eye_model(view->shift, view->eye_separation);
-	rotate_view_kemo(view->x_lookat, view->shift, view->iso_scale,
-					 view->rotation, view->rotate_animation);
+	identity_glmat_c(view->mat_object_2_eye);
+	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
+				view->mat_object_2_eye);
+	Kemo_Translate_view_c(view->eye_separation/3.0, ZERO, ZERO, 
+				view->mat_object_2_eye);
+	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
+	Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
+	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale, 
+				view->mat_object_2_eye);
+	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
+				view->mat_object_2_eye);
 	
-	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixd(view->mat_object_2_eye);
 	return;
 };
 void rotate_right_view_by_struct(struct view_element *view){
-	init_right_eye_model(view->shift, view->eye_separation);
-	rotate_view_kemo(view->x_lookat, view->shift, view->iso_scale,
-                     view->rotation, view->rotate_animation);
-    
-	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
+	identity_glmat_c(view->mat_object_2_eye);
+	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
+				view->mat_object_2_eye);
+	Kemo_Translate_view_c(-view->eye_separation/3.0, ZERO, ZERO, 
+				view->mat_object_2_eye);
+	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
+	Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
+	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale, 
+				view->mat_object_2_eye);
+	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
+				view->mat_object_2_eye);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixd(view->mat_object_2_eye);
 	return;
 };
 

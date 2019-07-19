@@ -462,6 +462,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 - (void) awakeFromNib
 {
+	int iflag_core_profile = 0;
     id_window = kemoview_get_current_viewer_id();
     kemoview_set_single_viewer_id(id_window);
 
@@ -484,7 +485,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	[self prepareOpenGL];
 	
 	kemoviewer_reset_to_init_angle();
-	kemoview_init_lighting();
+	kemoview_init_lighting(iflag_core_profile);
 
 	kemoview_draw_objects_c();
 	

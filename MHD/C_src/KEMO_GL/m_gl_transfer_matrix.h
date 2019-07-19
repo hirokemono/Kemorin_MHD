@@ -68,12 +68,23 @@ struct view_element{
     /* Shader object */
     GLuint PhongGl2Program;
     GLuint GouraudGl2Program;
+
+
+	int iflag_core_profile;
+	int iflag_shading_profile;
+	GLuint index_modelViewMatrix;
+	GLuint index_ProjectionMatrix;
 };
 
 /* prototypes */
 
-void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar);
+void identity_glmat_c(GLdouble mat[16]);
 
+void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar);
+void orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
+			GLdouble near, GLdouble far);
+
+void set_view_by_identity();
 void modify_view_by_struct(struct view_element *view);
 void modify_left_view_by_struct(struct view_element *view);
 void modify_right_view_by_struct(struct view_element *view);

@@ -5,15 +5,16 @@
 #define DRAW_MENUBOTTUN_GL_
 
 #include <math.h>
+#include "m_gl_transfer_matrix.h"
 #include "ysglusefontbitmap.h"
 
 #define MENU_HEIGHT 30
 #define MENU_WIDTH  80
 
-GLubyte menubottun_bits[3*MENU_HEIGHT*MENU_WIDTH];
 /* prototypes */
 
 void draw_menubottun_gl();
+void draw_menubottun_gl3();
 
 #endif
 

@@ -13,6 +13,8 @@ void SetPhongShaderSrc(GLuint PhongGl2Program)
 {
 	const GLchar *phong_vsrc =
     "// phong.vert\n"
+	"#version 330\n"
+	"\n"
     "varying vec3 position;\n"
     "varying vec3 normal;\n"
     "void main(void)\n"
@@ -24,6 +26,7 @@ void SetPhongShaderSrc(GLuint PhongGl2Program)
 	
 	const GLchar *phong_fsrc =
     "// phong.frag\n"
+	"#version 330\n"
     "\n"
     "varying vec3 position;\n"
     "varying vec3 normal;\n"
@@ -44,8 +47,18 @@ void SetPhongShaderSrc(GLuint PhongGl2Program)
     "	}\n"
     "}\n";
 	
-	/* Compile and link  shader */
-	LoadShaderFromStrings(&PhongGl2Program, phong_vsrc, phong_fsrc);
+	struct file_text *phong_vertex = init_file_text("/Users/matsui/src_kemo/MHD/C_src/GLSL/phong.vert");
+	struct file_text *phong_fragment = init_file_text("/Users/matsui/src_kemo/MHD/C_src/GLSL/phong.frag");
 	
+	read_text_to_carray(phong_vertex);
+	read_text_to_carray(phong_fragment);
+/*	
+	check_file_contents(phong_vertex);
+	check_file_contents(phong_fragment);
+*/	
+	/* Compile and link  shader */
+	LoadShaderFromStrings(&PhongGl2Program, phong_vertex->text, phong_fragment->text);
+//	LoadShaderFromStrings(&PhongGl2Program, phong_vsrc, phong_fsrc);
+//	LoadShaderFromStrings(&PhongGl2Program, phong_vsrc, phong_fsrc);
 	return;
 }

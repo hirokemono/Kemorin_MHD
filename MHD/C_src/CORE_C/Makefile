@@ -15,6 +15,7 @@ OBJ_KEMO_C = \
  write_image_2_bmp.o \
  read_image_2_bmp.o \
  \
+ m_read_text_to_character.o \
  m_surface_mesh_4_viewer_c.o \
  m_grouping_mesh_4_viewer_c.o \
  m_psf_data_4_viewer_c.o \
@@ -315,6 +316,15 @@ module:
 	'$$(KEMO_C_DIR)'/skip_comment_c.c \
 	skip_comment_c.h \
 	kemosrc_param_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	m_read_text_to_character.o: \
+	'$$(KEMO_C_DIR)'/m_read_text_to_character.c \
+	m_read_text_to_character.h \
+	skip_comment_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

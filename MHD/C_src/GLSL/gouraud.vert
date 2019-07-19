@@ -1,8 +1,13 @@
+#version 330 core
 // gouraud.vert
+
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelViewMatrix;
 
 void main(void)
 {
-	vec3 position = vec3(gl_ModelViewMatrix * gl_Vertex);
+	vec3 position = vec3(modelViewMatrix * gl_Vertex);
 	vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
 	vec3 light = normalize(gl_LightSource[0].position.xyz - position);
 	float diffuse = dot(light, normal);
@@ -16,5 +21,5 @@ void main(void)
 					  + gl_FrontLightProduct[0].specular * specular;
 	}
 	
-	gl_Position =  gl_ProjectionMatrix * vec4(position, 1.0);
+	gl_Position =  projectionMatrix * vec4(position, 1.0);
 }

@@ -24,7 +24,7 @@ static void enter_leave(int state){
 	return;
 }
 
-static void link_glut_menu_address(){
+void link_glut_menu_address(){
 	glut_menu_id = &glut_menu_id_struct;
 	return;
 }
@@ -32,7 +32,7 @@ static void link_glut_menu_address(){
 
 /* draw object using GLUT */
 
-static void draw_mesh_w_menu(){
+void draw_mesh_w_menu(){
 	make_1st_level_menu();
 	draw_mesh_keep_menu();
 	return;
@@ -915,6 +915,7 @@ static void make_1st_level_menu(){
 void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	int narg_glut = 0;
 	char **arg_glut;
+	int iflag_core_profile = 0;
 	
 	/* Initialize arrays for viewer */
 	
@@ -943,8 +944,13 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	glutInitWindowSize(NPIX_X, NPIX_Y);
 	winid = glutCreateWindow("Kemoviewer");
 	set_main_window_id_glut(winid);
-
+	
 	/*glutEntryFunc(enter_leave);*/
+	  fprintf(
+	  stdout,
+	  "INFO: OpenGL Version: %s\n",
+	  glGetString(GL_VERSION)
+	  );
 	
 	/*! Set the display callback  */
 	
@@ -960,7 +966,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	/* ! set the perspective and lighting */
 	kemoview_init_background_color();
-	kemoview_init_lighting();
+	kemoview_init_lighting(iflag_core_profile);
 	
 	
 	/*! Create menu window*/

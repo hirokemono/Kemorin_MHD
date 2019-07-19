@@ -509,6 +509,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/draw_menu_bottun_gl.c \
 	draw_menu_bottun_gl.h \
 	ysglusefontbitmap.o \
+	m_gl_transfer_matrix.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -657,6 +658,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/phong.c \
 	phong.h \
 	glsl.o \
+	m_read_text_to_character.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -666,6 +668,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/gouraud.c \
 	gouraud.h \
 	glsl.o \
+	m_read_text_to_character.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

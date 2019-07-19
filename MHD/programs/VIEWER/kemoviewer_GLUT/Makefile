@@ -2,8 +2,9 @@
 #
 #
 
-TARGET_KEMOVIEW_C =  'kemoviewer_glut'
-TARGET_KEMOVIEW_F =  'kemoviewer_f'
+TARGET_KEMOVIEW_C =   'kemoviewer_glut'
+TARGET_KEMOVIEW3_C =  'kemoviewer_glut3'
+TARGET_KEMOVIEW_F =   'kemoviewer_f'
 
 LIBS_KEMOVIEW = \
 '$$(LIB_UTILS)' \
@@ -34,6 +35,14 @@ kemoview_glut_console_input.o \
 \
 '$$(OBJ_KEMOVIEW_GLUT)'
 
+MOD_KEMOVIEW_GLUT3 = \
+kemoviewer_glut3.o \
+\
+kemo_mesh_viewer_glut.o \
+kemoview_glut_console_input.o \
+\
+'$$(OBJ_KEMOVIEW_GLUT)'
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -43,17 +52,26 @@ dir_list:
 
 target_list:
 	@echo 'TARGET_KEMOVIEW_C =  $$(BUILDDIR)/$(TARGET_KEMOVIEW_C)'  >> $(MAKENAME)
+	@echo 'TARGET_KEMOVIEW3_C = $$(BUILDDIR)/$(TARGET_KEMOVIEW3_C)' >> $(MAKENAME)
 	@echo 'TARGET_KEMOVIEW_F =  $$(BUILDDIR)/$(TARGET_KEMOVIEW_F)'  >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
-	@echo viewer_glut: '$$(TARGET_KEMOVIEW_C)'   >> $(MAKENAME)
+	@echo viewer_glut:  '$$(TARGET_KEMOVIEW_C)'   >> $(MAKENAME)
+	@echo viewer_glut3: '$$(TARGET_KEMOVIEW3_C)'   >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_KEMOVIEW_C)': '$$(MOD_KEMOVIEW_GLUT)' \
 	'$$(LIB_KEMO_C_FILE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' '$$(OPTFLAGS_GL)' -o '$$(TARGET_KEMOVIEW_C)' \
 	'$$(MOD_KEMOVIEW_GLUT) -L. $$(LIB_KEMO_C)' \
+	'$$(OPENGL_LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_KEMOVIEW3_C)': '$$(MOD_KEMOVIEW_GLUT3)' \
+	'$$(LIB_KEMO_C_FILE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' '$$(OPTFLAGS_GL)' -o '$$(TARGET_KEMOVIEW3_C)' \
+	'$$(MOD_KEMOVIEW_GLUT3) -L. $$(LIB_KEMO_C)' \
 	'$$(OPENGL_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_KEMOVIEW_F)': '$$(MOD_KEMOVIEW_MAIN)' \
@@ -75,6 +93,8 @@ lib_name:
 mod_list:
 	@echo  MOD_KEMOVIEW_GLUT =  \\ >> $(MAKENAME)
 	@echo  $(MOD_KEMOVIEW_GLUT) >> $(MAKENAME)
+	@echo  MOD_KEMOVIEW_GLUT3 =  \\ >> $(MAKENAME)
+	@echo  $(MOD_KEMOVIEW_GLUT3) >> $(MAKENAME)
 	@echo  MOD_KEMOVIEW_MAIN =  \\ >> $(MAKENAME)
 	@echo  $(MOD_KEMOVIEW_MAIN) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
@@ -113,6 +133,17 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
+	
+	@echo \
+	kemoviewer_glut3.o:  \
+	'$$(KEMOVIEW_GLUTDIR)'/kemoviewer_glut3.c  \
+	kemo_mesh_viewer_glut.o \
+	kemoviewer.h \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE)' \
+	'$$(KEMOVIEW_GLUTDIR)'/kemoviewer_glut3.c  \
+	>> $(MAKENAME)
+
 
 
 includes:

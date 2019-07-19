@@ -1,7 +1,8 @@
+#version 330 core
 // phong.frag
 
-varying vec3 position;
-varying vec3 normal;
+out vec3 position;
+out vec3 normal;
 
 void main (void)
 {

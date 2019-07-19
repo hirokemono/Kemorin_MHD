@@ -440,9 +440,11 @@ extern "C" {
 
     void kemoview_draw_objects_c();
     void kemoview_draw_viewer_to_ps();
-    void kemoview_init_lighting();
+    void kemoview_init_lighting(int iflag_core_profile);
     
     void kemoview_init_background_color();
+	void kemoview_orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
+							   GLdouble near, GLdouble far);
     void kemoview_set_background_color(GLfloat color[4]);
     void kemoview_get_background_color(GLfloat color[4]);
     
@@ -627,6 +629,7 @@ extern "C" {
     int kemoview_get_anaglyph_flag();
     
     void kemoview_draw_glut_menubottun();
+	void kemoview_draw_glut_menubottun3();
     
     /* subroutines for surafces */
     void kemoview_set_PSF_num_loaded(int num);

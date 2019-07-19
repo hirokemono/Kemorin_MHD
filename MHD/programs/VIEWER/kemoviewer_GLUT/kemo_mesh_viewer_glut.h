@@ -29,6 +29,9 @@
 
 /* prototypes */
 
+void link_glut_menu_address();
+void draw_mesh_w_menu();
+
 void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh);
 
 #endif

@@ -167,6 +167,7 @@
 		18D7E7961562D359009B05FF /* RGBAMapController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7261562D359009B05FF /* RGBAMapController.m */; };
 		18D7E7971562D359009B05FF /* SetCocoaGLMessases.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7281562D359009B05FF /* SetCocoaGLMessases.m */; };
 		18D7E7981562D359009B05FF /* SurfaceGroupTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E72A1562D359009B05FF /* SurfaceGroupTableController.m */; };
+		18EE497722E231B0000B1F03 /* m_read_text_to_character.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EE497522E231B0000B1F03 /* m_read_text_to_character.c */; };
 		18EF6DF215098F38000AD94E /* gl2ps.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EF6DE815098F38000AD94E /* gl2ps.c */; };
 		18F6DAF615D993F7006F4600 /* set_each_psf_parameters.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F6DAF515D993F7006F4600 /* set_each_psf_parameters.c */; };
 		18F9051515DDEA45001368FA /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F9051315DDEA45001368FA /* MainMenu.xib */; };
@@ -509,6 +510,8 @@
 		18D7E7281562D359009B05FF /* SetCocoaGLMessases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetCocoaGLMessases.m; sourceTree = "<group>"; };
 		18D7E7291562D359009B05FF /* SurfaceGroupTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SurfaceGroupTableController.h; sourceTree = "<group>"; };
 		18D7E72A1562D359009B05FF /* SurfaceGroupTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SurfaceGroupTableController.m; sourceTree = "<group>"; };
+		18EE497522E231B0000B1F03 /* m_read_text_to_character.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = m_read_text_to_character.c; sourceTree = "<group>"; };
+		18EE497622E231B0000B1F03 /* m_read_text_to_character.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_read_text_to_character.h; sourceTree = "<group>"; };
 		18EF6DE615098F38000AD94E /* COPYING.GL2PS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING.GL2PS; sourceTree = "<group>"; };
 		18EF6DE715098F38000AD94E /* COPYING.LGPL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING.LGPL; sourceTree = "<group>"; };
 		18EF6DE815098F38000AD94E /* gl2ps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gl2ps.c; sourceTree = "<group>"; };
@@ -799,6 +802,8 @@
 				18D7E6951562D359009B05FF /* transfer_matvec.h */,
 				18D7E69A1562D359009B05FF /* ysglfontdata.c */,
 				18D7E69B1562D359009B05FF /* ysglfontdata.h */,
+				18EE497522E231B0000B1F03 /* m_read_text_to_character.c */,
+				18EE497622E231B0000B1F03 /* m_read_text_to_character.h */,
 			);
 			path = CORE_C;
 			sourceTree = "<group>";
@@ -1203,6 +1208,7 @@
 				18D7E7761562D359009B05FF /* set_texture_4_psf.c in Sources */,
 				18D7E7771562D359009B05FF /* sort_by_patch_distance.c in Sources */,
 				185CB9B5212F593D00BB3C0B /* t_control_data_4_iso_c.c in Sources */,
+				18EE497722E231B0000B1F03 /* m_read_text_to_character.c in Sources */,
 				18D7E7781562D359009B05FF /* trackball.c in Sources */,
 				18D7E77A1562D359009B05FF /* write_modelview_matrix.c in Sources */,
 				185CB9B6212F593D00BB3C0B /* t_control_data_4_psf_c.c in Sources */,

@@ -1,12 +1,17 @@
+#version 330 core
 // phong.vert
 
-varying vec3 position;
-varying vec3 normal;
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelViewMatrix;
+
+out vec3 position;
+out vec3 normal;
 
 void main(void)
 {
-	position = vec3(gl_ModelViewMatrix * gl_Vertex);
+	position = vec3(modelViewMatrix * gl_Vertex);
 	normal = normalize(gl_NormalMatrix * gl_Normal);
 
-	gl_Position =  gl_ProjectionMatrix * vec4(position, 1.0);
+	gl_Position =  projectionMatrix * vec4(position, 1.0);
 }

@@ -400,7 +400,9 @@ void draw_single()
 /* A more complex drawing function, using 2 separate viewports */
 void draw_multi()
 {
-  GLint viewport[4];
+	GLdouble modelview[16];
+	GLdouble projection[16];
+  	GLint viewport[4];
 
   glScissor(0, 0, window_w, window_h);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -416,9 +418,7 @@ void draw_multi()
   gl2psBeginViewport(viewport);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(-1.3,1.3, -1.3,1.3, -1.3,1.3);
+  kemoview_orthogonalGL(-1.3,1.3, -1.3,1.3, -1.3,1.3);
   glMatrixMode(GL_MODELVIEW);
 
   objects();
@@ -439,9 +439,7 @@ void draw_multi()
   gl2psBeginViewport(viewport);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(-1.3,1.3, -1.3,1.3, -1.3,1.3);
+  kemoview_orthogonalGL(-1.3,1.3, -1.3,1.3, -1.3,1.3);
   glMatrixMode(GL_MODELVIEW);
 
   glPushMatrix();
@@ -487,13 +485,13 @@ void display()
 
 void reshape(int w, int h)
 {
-  window_w = w;
-  window_h = h;
+	GLdouble modelview[16];
+	GLdouble projection[16];
+	window_w = w;
+	window_h = h;
 
   glViewport(0, 0, (GLsizei)window_w, (GLsizei)window_h);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(-1.3,1.3, -1.3,1.3, -1.3,1.3);
+  kemoview_orthogonalGL(-1.3,1.3, -1.3,1.3, -1.3,1.3);
   glMatrixMode(GL_MODELVIEW);
 
   glClearColor(0.5, 0.5, 0.5, 0.);

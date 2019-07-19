@@ -168,13 +168,19 @@ void kemoview_draw_viewer_to_ps(){
 	return;
 };
 
-void kemoview_init_lighting(){
+void kemoview_init_lighting(int iflag_core_profile){
+	kemo_sgl->view_s->iflag_core_profile = iflag_core_profile;
 	kemo_sgl->view_s->gl_drawID = glGenLists(IONE);
 	
 	kemo_gl_initial_lighting_c(kemo_sgl->view_s);
 	/* ! set bitmap font list (8x12) */
 	init_colorbar_fonts();
 }
+void kemoview_orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
+						   GLdouble near, GLdouble far){
+	orthogonalGL(left, right, bottom, top, near, far);
+	return;
+};
 
 void kemoview_init_background_color(){init_bg_color_kemoview(kemo_sgl->mesh_m);}
 void kemoview_set_background_color(GLfloat color[4]) {
@@ -687,6 +693,7 @@ int kemoview_get_stereo_shutter(){return kemo_sgl->mesh_m->iflag_streo_stutter;}
 int kemoview_get_anaglyph_flag(){return kemo_sgl->mesh_m->iflag_streo_anaglyph;}
 
 void kemoview_draw_glut_menubottun(){draw_menubottun_gl();}
+void kemoview_draw_glut_menubottun3(){draw_menubottun_gl3();}
 
 /* Subroutines for surface rendering */
 void kemoview_set_PSF_num_loaded(int num){kemo_sgl->psf_a->num_loaded = num;};

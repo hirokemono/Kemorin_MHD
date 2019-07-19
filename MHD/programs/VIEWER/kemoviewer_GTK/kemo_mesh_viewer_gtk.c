@@ -816,6 +816,7 @@ static void make_1st_level_menu(){
 void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	int narg_glut = 0;
 	char **arg_glut;
+	int iflag_core_profile = 0;
     GLboolean bStereo;
 	/* Initialize arrays for viewer */
 	
@@ -865,7 +866,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	/* ! set the perspective and lighting */
 	kemoview_init_background_color();
-	kemoview_init_lighting();
+	kemoview_init_lighting(iflag_core_profile);
 	
 	
 	/*! Create menu window*/
