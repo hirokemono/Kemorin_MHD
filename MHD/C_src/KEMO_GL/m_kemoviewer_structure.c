@@ -956,7 +956,7 @@ void kemoview_set_fline_opacity_data(int i_point, double value, double opacity){
 }
 
 void kemoview_set_fline_color_mode_id(int isel){
-//	set_color_mode_by_id(kemo_sgl->fline_m->cmap_fline, isel);
+	set_color_mode_by_id(kemo_sgl->fline_m->cmap_fline, isel);
 }
 
 double kemoview_get_fline_min_color(){

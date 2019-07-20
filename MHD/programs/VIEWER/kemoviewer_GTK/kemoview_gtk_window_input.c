@@ -138,7 +138,7 @@ static void gtk_colormap_menu(double range_min, double range_max, struct kv_stri
 	gtk_container_add(GTK_CONTAINER(rangew), box);
 	
 	color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
-    init_colormap_views_4_viewer(kemoview_get_psf_colormap_params(), color_vws);
+    init_colormap_views_4_viewer(color_vws);
 	
 	add_colormp_list_box(color_vws, box);
 	GtkButton *button;

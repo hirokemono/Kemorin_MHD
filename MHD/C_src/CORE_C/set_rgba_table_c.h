@@ -29,7 +29,7 @@ void set_each_color_point_s(struct colormap_params *cmap_s,
 void set_each_opacity_point_s(struct colormap_params *cmap_s, 
 			int i_point, double value, double opacity);
 
-void set_color_mode_id_s(struct colormap_params *cmap_s, int isel);
+void set_color_mode_by_id(struct colormap_params *cmap_s, int isel);
 
 
 double send_minimum_opacity_s(struct colormap_params *cmap_s);
@@ -48,7 +48,11 @@ void set_constant_opacitymap(struct colormap_params *cmap_s,
 			double val_min, double val_max, double opaciy);
 void set_full_opacitymap(struct colormap_params *cmap_s, double val_min, double val_max);
 
-void copy_colormap_from_ctl(struct colormap_ctl_c *cmap_c, 
+void copy_colormap_from_ctl(struct chara_ctl_item *colormap_mode_ctl, 
+			struct real2_clist *colortbl_list, struct colormap_params *cmap_s);
+void copy_opacity_from_ctl(struct real2_clist *linear_opacity_list, 
+			struct colormap_params *cmap_s);
+void copy_color_opacity_from_ctl(struct colormap_ctl_c *cmap_c, 
                             struct colormap_params *cmap_s);
 
 void check_colormap_control_file_s(struct colormap_params *cmap_s);

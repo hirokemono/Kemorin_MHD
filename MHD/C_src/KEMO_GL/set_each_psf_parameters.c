@@ -127,7 +127,7 @@ double send_vector_thick(struct psf_menu_val *psf_menu)        {return psf_menu-
 
 
 void set_PSF_color_mode_id(struct psf_menu_val *psf_menu, int isel){
-//	set_color_mode_by_id(psf_menu->cmap_psf, isel);
+	set_color_mode_by_id(psf_menu->cmap_psf, isel);
 	return;
 }
 int send_PSF_color_mode_id(struct psf_menu_val *psf_menu){return send_color_mode_id_s(psf_menu->cmap_psf);};
