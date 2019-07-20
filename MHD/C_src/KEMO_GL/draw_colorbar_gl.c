@@ -1,5 +1,6 @@
-
-/* draw_colorbar_gl.c */
+/*
+/* draw_colorbar_gl.c
+*/
 
 #include "draw_colorbar_gl.h"
 #include "gl2ps.h"
@@ -84,8 +85,8 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	iflag_zero = 0;
 	
-	psf_min = cmap_s->range_min->r_data;
-	psf_max = cmap_s->range_max->r_data;
+	psf_min = cmap_s->color_data[IZERO];
+	psf_max = cmap_s->color_data[cmap_s->n_color_point-1];
 	if( (psf_min*psf_max) < ZERO ) iflag_zero = 1;
 	
 	yline_zero = ybar_min + (ybar_max-ybar_min) * (-psf_min) / (psf_max-psf_min);
@@ -100,7 +101,7 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	glOrtho(0.0, xwin, 0.0, ywin, -1.0, 1.0);
+	gluOrtho2D(0.0, xwin, 0.0, ywin);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();

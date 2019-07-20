@@ -1,5 +1,6 @@
-
-/* draw_colorbar_gl.h */
+/*
+// draw_colorbar_gl.h
+*/
 
 #ifndef DRAW_COLORBAR_GL_
 #define DRAW_COLORBAR_GL_

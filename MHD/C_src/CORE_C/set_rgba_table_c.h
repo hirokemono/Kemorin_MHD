@@ -1,5 +1,6 @@
-
-/* set_rgba_table_c.h */
+/*
+// set_rgba_table_c.h
+*/
 
 #ifndef SET_RGBA_TABLE_C_
 #define SET_RGBA_TABLE_C_
@@ -9,7 +10,6 @@
 #include "m_color_table_c.h"
 #include "skip_comment_c.h"
 #include "t_ctl_data_pvr_colormap_c.h"
-#include "t_control_real2_IO.h"
 
 
 extern const char color_labels[4][KCHARA_C];
@@ -17,17 +17,19 @@ extern const char color_labels[4][KCHARA_C];
 /* prototypes */
 
 
-void set_rgb_from_value_s(const char *color_mode_name, struct real2_clist *colormap_clist,
-                          double value, double *red, double *green, double *blue);
+void set_rgb_from_value_s(struct colormap_params *cmap_s,
+			double value, double *red, double *green, double *blue);
 void set_rgb_from_rgb(struct colormap_params *cmap_s,
                       double red, double green, double blue);
+double set_opacity_from_value_s(struct colormap_params *cmap_s, 
+			double value);
 
 void set_each_color_point_s(struct colormap_params *cmap_s, 
 			int i_point, double value, double color);
 void set_each_opacity_point_s(struct colormap_params *cmap_s, 
 			int i_point, double value, double opacity);
 
-void set_color_mode_by_id(struct colormap_params *cmap_s, int isel);
+void set_color_mode_id_s(struct colormap_params *cmap_s, int isel);
 
 
 double send_minimum_opacity_s(struct colormap_params *cmap_s);
