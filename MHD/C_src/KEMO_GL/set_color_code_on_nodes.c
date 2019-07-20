@@ -20,24 +20,21 @@ static void set_color_code_for_psf(struct psf_data *psf_s, struct psf_menu_val *
 	if (   psf_m->psf_patch_color == WHITE_SURFACE) {
 		for (inod=0; inod< psf_s->nnod_viz; inod++){
 			for(nd=0;nd<3;nd++){psf_s->color_nod[inod][nd] = white[nd];};
-            psf_s->color_nod[inod][3] 
-            = color_normalize_linear_segment_c(psf_m->cmap_psf->opacitymap_clist, d_patch);
+            psf_s->color_nod[inod][3] = set_opacity_from_value_s(psf_m->cmap_psf, d_patch);
 		};
 	}
 
     if (psf_m->psf_patch_color == TEXTURED_SURFACE) {
         for (inod=0; inod< psf_s->nnod_viz; inod++){
             for(nd=0;nd<3;nd++){psf_s->color_nod[inod][nd] = gray[nd];};
-            psf_s->color_nod[inod][3] 
-            = color_normalize_linear_segment_c(psf_m->cmap_psf->opacitymap_clist, d_patch);
+            psf_s->color_nod[inod][3] = set_opacity_from_value_s(psf_m->cmap_psf, d_patch);
         };
     }
 
     if (   psf_m->psf_patch_color == SINGLE_COLOR) {
         for (inod=0; inod< psf_s->nnod_viz; inod++){
             for(nd=0;nd<3;nd++){psf_s->color_nod[inod][nd] = psf_m->cmap_psf->single_color[nd];};
-            psf_s->color_nod[inod][3] 
-            = color_normalize_linear_segment_c(psf_m->cmap_psf->opacitymap_clist, d_patch);
+            psf_s->color_nod[inod][3] = set_opacity_from_value_s(psf_m->cmap_psf, d_patch);
         };
     }
 
@@ -59,16 +56,14 @@ static void set_color_code_for_psf(struct psf_data *psf_s, struct psf_menu_val *
 		for (inod=0; inod< psf_s->nnod_viz; inod++){
 			d_patch =  psf_s->d_nod[inod][psf_m->icomp_draw_fline];
 			set_two_color_scale_c(d_patch, psf_s->color_nod[inod]);
-			psf_s->color_nod[inod][3] 
-            = color_normalize_linear_segment_c(psf_m->cmap_psf->opacitymap_clist, d_patch);
+			psf_s->color_nod[inod][3] = set_opacity_from_value_s(psf_m->cmap_psf, d_patch);
 		};
 	}
 	else if (psf_m->psf_patch_color == TWO_GRAY_LINE) {
 		for (inod=0; inod< psf_s->nnod_viz; inod++){
 			d_patch =  psf_s->d_nod[inod][psf_m->icomp_draw_fline];
 			set_two_color_scale_g(d_patch, psf_s->color_nod[inod]);
-			psf_s->color_nod[inod][3] 
-            = color_normalize_linear_segment_c(psf_m->cmap_psf->opacitymap_clist, d_patch);
+			psf_s->color_nod[inod][3] = set_opacity_from_value_s(psf_m->cmap_psf, d_patch);
 		};
 	};
 */	
@@ -113,16 +108,14 @@ void set_color_code_for_fieldlines(struct psf_data *fline_s,
 		for (inod=0; inod< fline_s->nnod_viz; inod++){
 			d_edge =  fline_s->d_nod[inod][fline_m->icomp_draw_fline];
 			set_two_color_scale_c(d_edge, fline_s->color_nod[inod]);
-			fline_s->color_nod[inod][3] 
-            = color_normalize_linear_segment_c(fline_m->cmap_fline->opacitymap_clist, d_edge);
+			fline_s->color_nod[inod][3] = set_opacity_from_value_s(fline_m->cmap_fline, d_edge);
 		};
 	}
 	else if (fline_m->fieldline_color == TWO_GRAY_LINE) {
 		for (inod=0; inod< fline_s->nnod_viz; inod++){
 			d_edge =  fline_s->d_nod[inod][fline_m->icomp_draw_fline];
 			set_two_color_scale_g(d_edge, fline_s->color_nod[inod]);
-			fline_s->color_nod[inod][3] 
-            = color_normalize_linear_segment_c(fline_m->cmap_fline->opacitymap_clist, d_edge);
+			fline_s->color_nod[inod][3] = set_opacity_from_value_s(fline_m->cmap_fline, d_edge);
 		};
 	};
 
