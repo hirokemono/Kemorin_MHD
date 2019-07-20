@@ -8,6 +8,18 @@
 static GLdouble object_size = 7.0e0;
 
 
+static void  load_projection_mat(GLdouble projection[16]){
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(projection);
+	return;
+};
+
+static void  load_model_mat(GLdouble model[16]){
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixd(model);
+	return;
+};
+
 void identity_glmat_c(GLdouble mat[16]){
 	mat[ 0] = ONE;
 	mat[ 4] = ZERO;
@@ -225,8 +237,8 @@ void cal_glmat33_prod_c(GLdouble a[16], GLdouble b[16], GLdouble c[16]){
 };
 
 
-void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar){
-	GLdouble projection[16];
+static void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar,
+			GLdouble projection[16]){
     GLdouble pi = 3.1415926535897932384626433832795;
     GLdouble fW, fH;
     
@@ -235,9 +247,6 @@ void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar
     fW = fH * aspect;
     
 	frustsum_glmat_c(-fW, fW, -fH, fH, zNear, zFar, projection);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixd(projection);
 }
 
 void orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
@@ -245,9 +254,7 @@ void orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
 	GLdouble orthogonal[16];
 	orthogonal_glmat_c(left, right, bottom, top,
 				near, far, orthogonal);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixd(orthogonal);
+	load_projection_mat(orthogonal);
 	return;
 };
 
@@ -284,11 +291,10 @@ static void Kemo_Rotate_view_c(GLdouble rotate[4], GLdouble model[16]){
 }
 
 static void update_projection(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_window,
-							  GLdouble aperture, GLdouble aspect, GLdouble near, GLdouble far){
+							  GLdouble aperture, GLdouble aspect, GLdouble near, GLdouble far,
+							  GLdouble projection[16]){
 	GLdouble wd2;
 	GLdouble left, right;
-	GLdouble projection[16];
-	/* set projection */
 	
 	near = x_lookfrom[2] - object_size * HALF;
 	if (near < 1.0e-6) near = 1.0e-6;
@@ -303,22 +309,14 @@ static void update_projection(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_
 	right =   aspect * wd2;
 	
 	frustsum_glmat_c(left, right, (-wd2), wd2, near, far, projection);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixd(projection);
-	
 	return;
 }
 
 static void update_projection_left(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_window,
 								   GLdouble aperture, GLdouble aspect, GLdouble near, GLdouble far,
-								   GLdouble focalLength, GLdouble eyeSep){
-	GLdouble projection[16];
+								   GLdouble focalLength, GLdouble eyeSep, GLdouble projection[16]){
 	GLdouble wd2, ndfl;
 	GLdouble left, right;
-	/* set projection */
-	glMatrixMode (GL_PROJECTION);
-	glLoadIdentity ();
 	
 	near = x_lookfrom[2] - object_size * HALF;
 	if (near < 1.0e-6) near = 1.0e-6;
@@ -333,24 +331,15 @@ static void update_projection_left(GLdouble x_lookfrom[2], GLint nx_window, GLin
 	left  = - aspect * wd2 + 0.5 * eyeSep * ndfl;
 	right =   aspect * wd2 + 0.5 * eyeSep * ndfl;
 	
-	identity_glmat_c(projection);
 	frustsum_glmat_c(left, right, (-wd2), wd2, near, far, projection);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixd(projection);
-	
 	return;
 }
 
 static void update_projection_right(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_window,
 									GLdouble aperture, GLdouble aspect, GLdouble near, GLdouble far,
-									GLdouble focalLength, GLdouble eyeSep){
-	GLdouble projection[16];
+									GLdouble focalLength, GLdouble eyeSep, GLdouble projection[16]){
 	GLdouble wd2, ndfl;
 	GLdouble left, right;
-	/* set projection */
-	glMatrixMode (GL_PROJECTION);
-	glLoadIdentity ();
 	
 	near = x_lookfrom[2] - object_size * HALF;
 	if (near < 1.0e-6) near = 1.0e-6;
@@ -367,10 +356,6 @@ static void update_projection_right(GLdouble x_lookfrom[2], GLint nx_window, GLi
 	
 	identity_glmat_c(projection);
 	frustsum_glmat_c(left, right, (-wd2), wd2, near, far, projection);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixd(projection);
-	
 	return;
 }
 
@@ -379,8 +364,7 @@ void set_view_by_identity(){
 	GLdouble modelview[16];
 	
 	identity_glmat_c(modelview);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(modelview);
+	load_model_mat(modelview);
 	return;
 };
 
@@ -395,8 +379,7 @@ void modify_view_by_struct(struct view_element *view){
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
 				view->mat_object_2_eye);
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(view->mat_object_2_eye);
+	load_model_mat(view->mat_object_2_eye);
 	return;
 };
 void modify_left_view_by_struct(struct view_element *view){
@@ -409,8 +392,8 @@ void modify_left_view_by_struct(struct view_element *view){
 				view->mat_object_2_eye);
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
 				view->mat_object_2_eye);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(view->mat_object_2_eye);
+	
+	load_model_mat(view->mat_object_2_eye);
 	return;
 };
 void modify_right_view_by_struct(struct view_element *view){
@@ -425,8 +408,8 @@ void modify_right_view_by_struct(struct view_element *view){
 				view->mat_object_2_eye);
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
 				view->mat_object_2_eye);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(view->mat_object_2_eye);
+	
+	load_model_mat(view->mat_object_2_eye);
 	return;
 };
 
@@ -449,10 +432,10 @@ void rotate_view_by_struct(struct view_element *view){
 	printf("          \\%f %f %f %f/ \n", view->mat_object_2_eye[3], view->mat_object_2_eye[7], view->mat_object_2_eye[11], view->mat_object_2_eye[15]);
 	*/
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(view->mat_object_2_eye);
+	load_model_mat(view->mat_object_2_eye);
 	return;
 };
+
 void rotate_left_view_by_struct(struct view_element *view){
 	identity_glmat_c(view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
@@ -466,10 +449,10 @@ void rotate_left_view_by_struct(struct view_element *view){
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
 				view->mat_object_2_eye);
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(view->mat_object_2_eye);
+	load_model_mat(view->mat_object_2_eye);
 	return;
 };
+
 void rotate_right_view_by_struct(struct view_element *view){
 	identity_glmat_c(view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
@@ -483,29 +466,67 @@ void rotate_right_view_by_struct(struct view_element *view){
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
 				view->mat_object_2_eye);
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(view->mat_object_2_eye);
+	load_model_mat(view->mat_object_2_eye);
+	return;
+};
+
+void set_view_for_message(struct view_element *view){
+	GLdouble modelview[16];
+	GLdouble scale[3];
+	
+	scale[0] =  ((GLdouble) (1+view->iflag_retina)) / ((GLdouble) view->nx_window);
+	scale[1] = - ((GLdouble) (1+view->iflag_retina)) / ((GLdouble) view->ny_window);
+	scale[2] =  1.0;
+	
+	identity_glmat_c(modelview);
+	Kemo_Scale_view_c(scale[0], scale[1], scale[2], modelview);
+	
+	load_model_mat(modelview);
 	return;
 };
 
 
+void set_projection_by_identity(){
+	GLdouble projection[16];
+	
+	identity_glmat_c(projection);
+	load_projection_mat(projection);
+	return;
+};
+void load_projection_matrix(struct view_element *view){
+	load_projection_mat(view->mat_eye_2_clip);
+	return;
+};
+void init_projection_struct(struct view_element *view){
+	perspectiveGL(view->aperture, view->aspect, view->near, view->far,
+				  view->mat_eye_2_clip);
+	load_projection_mat(view->mat_eye_2_clip);
+	return;
+};
+
 void update_projection_struct(struct view_element *view){
 	update_projection(view->x_lookfrom, view->nx_window, view->ny_window,
-                      view->aperture, view->aspect, view->near, view->far);
+                      view->aperture, view->aspect, view->near, view->far, 
+					  view->mat_eye_2_clip);
+	load_projection_mat(view->mat_eye_2_clip);
 	return;
-}
+};
 void update_left_projection_struct(struct view_element *view){
 	update_projection_left(view->x_lookfrom, view->nx_window, view->ny_window,
 						   view->aperture, view->aspect, view->near, view->far,
-						   view->focal_length, view->eye_separation);
+						   view->focal_length, view->eye_separation, 
+						   view->mat_eye_2_clip);
+	load_projection_mat(view->mat_eye_2_clip);
 	return;
-}
+};
 void update_right_projection_struct(struct view_element *view){
 	update_projection_right(view->x_lookfrom, view->nx_window, view->ny_window,
 							view->aperture, view->aspect, view->near, view->far,
-							view->focal_length, view->eye_separation);
+							view->focal_length, view->eye_separation, 
+							view->mat_eye_2_clip);
+	load_projection_mat(view->mat_eye_2_clip);
 	return;
-}
+};
 
 
 
@@ -819,7 +840,7 @@ void gl_zooming_struct(struct view_element *view, GLdouble wheelDelta){
 	if (view->aperture < 0.1)   view->aperture = 0.1;
 	if (view->aperture > 179.9) view->aperture = 179.9;
 	
-	update_projection_struct(view);
+//	update_projection_struct(view);
 }
 
 void reset_to_init_angle(struct view_element *view){

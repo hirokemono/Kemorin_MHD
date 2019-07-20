@@ -168,6 +168,15 @@ void kemoview_draw_viewer_to_ps(){
 	return;
 };
 
+void kemoview_orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
+						   GLdouble near, GLdouble far){
+	orthogonalGL(left, right, bottom, top, near, far);
+	return;
+};
+void kemoview_indentity_projectionmatrix(){set_projection_by_identity();};
+void kemoview_indentity_viewmatrix(){set_view_by_identity();};
+void kemoview_message_viewmatrix(){set_view_for_message(kemo_sgl->view_s);};
+
 void kemoview_init_lighting(int iflag_core_profile){
 	kemo_sgl->view_s->iflag_core_profile = iflag_core_profile;
 	kemo_sgl->view_s->gl_drawID = glGenLists(IONE);
@@ -176,11 +185,6 @@ void kemoview_init_lighting(int iflag_core_profile){
 	/* ! set bitmap font list (8x12) */
 	init_colorbar_fonts();
 }
-void kemoview_orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
-						   GLdouble near, GLdouble far){
-	orthogonalGL(left, right, bottom, top, near, far);
-	return;
-};
 
 void kemoview_init_background_color(){init_bg_color_kemoview(kemo_sgl->mesh_m);}
 void kemoview_set_background_color(GLfloat color[4]) {

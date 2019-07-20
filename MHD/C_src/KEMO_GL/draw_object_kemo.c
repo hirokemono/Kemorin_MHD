@@ -24,14 +24,8 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 		ywin = 1.7;
 	}
 	
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	glOrtho(-xwin, xwin, -ywin, ywin, -1.0, 1.0);
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-	
+	orthogonalGL(-xwin, xwin, -ywin, ywin, -1.0, 1.0);
+	set_view_by_identity();
     draw_patches_4_map(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_patch,
                        psf_s, psf_a, gl_buf);
 
@@ -49,10 +43,8 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	if(mesh_m->iflag_draw_coast != 0)   {draw_map_coast(gl_buf);}
 	if(mesh_m->iflag_draw_sph_grid != 0){draw_flame_4_map(gl_buf, view_s->iflag_write_ps);};
 	
-	glPopMatrix();
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
+	load_projection_matrix(view_s);
+	modify_view_by_struct(view_s);
 	return iflag_map;
 }
 

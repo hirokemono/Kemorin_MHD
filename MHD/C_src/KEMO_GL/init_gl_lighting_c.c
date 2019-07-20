@@ -56,12 +56,7 @@ void kemo_gl_initial_lighting_c(struct view_element *view_s){
      */
     
 	init_kemoview_perspective(view_s);
-	
-	glMatrixMode(GL_PROJECTION);
-	perspectiveGL(view_s->aperture, view_s->aspect, view_s->near, view_s->far);
-	
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
+	init_projection_struct(view_s);
 	
     /*   This glClear send error on Cocoa....  Why?*/
 	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);

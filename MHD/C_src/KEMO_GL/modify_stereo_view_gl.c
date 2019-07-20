@@ -69,6 +69,7 @@ static void rotate_stereo_anaglyph(struct view_element *view_s){
 };
 
 static void modify_mono_kemoview(struct view_element *view_s){
+	update_projection_struct(view_s);
 	modify_view_by_struct(view_s);
 	
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -77,6 +78,7 @@ static void modify_mono_kemoview(struct view_element *view_s){
 };
 
 static void rotate_mono_kemoview(struct view_element *view_s){
+	update_projection_struct(view_s);
 	rotate_view_by_struct(view_s);
 	
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);

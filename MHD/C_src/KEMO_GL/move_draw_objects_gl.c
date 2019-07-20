@@ -131,6 +131,8 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 				draw_colorbar_gl(view_s->iflag_retina,
                                  view_s->nx_window, view_s->ny_window,
                                  mesh_m->text_color, mesh_m->bg_color, psf_m[i]->cmap_psf);
+				load_projection_matrix(view_s);
+				rotate_view_by_struct(view_s);				
 			};
 		};
 	};

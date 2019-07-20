@@ -108,16 +108,14 @@ static void display(void)
   glClearColor(0.3, 0.5, 0.8, 0.);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  /* draw a smooth-shaded torus */
-  glPushMatrix();
-  glRotatef(-60., 2., 0., 1.);
-  glEnable(GL_LIGHTING);
+	  /* draw a smooth-shaded torus */
+ 	 glRotatef(-60., 2., 0., 1.);
+ 	 glEnable(GL_LIGHTING);
 	/*  glutSolidTorus(0.3, 0.6, 30, 30);*/
 	drawCube(0.5);
-  glDisable(GL_LIGHTING);
-  glPopMatrix();
+  	glDisable(GL_LIGHTING);
 
-  glColor3f(1.,1.,1.);
+ 	 glColor3f(1.,1.,1.);
 
   /* draw a stippled line with many small segments (this tests the
      ability of gl2ps to render lines using as few strokes as

@@ -129,15 +129,10 @@ static void menubottun_bitmap(GLubyte *menu_bitmap){
 }
 
 void draw_menubottun_gl(){
-	GLdouble perspective[16];
-	GLdouble modelview[16];
 	GLubyte menubottun_bits[3*MENU_HEIGHT*MENU_WIDTH];
 	
 	menubottun_bitmap(menubottun_bits);
-	
-	identity_glmat_c(perspective);
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixd(perspective);
+	kemoview_indentity_projectionmatrix();
 	
 	glClearColor(0.3, 0.9, 0.9, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);
@@ -149,22 +144,16 @@ void draw_menubottun_gl(){
 }
 
 void draw_menubottun_gl3(){
-	GLdouble modelview[16];
 	GLubyte menubottun_bits[3*MENU_HEIGHT*MENU_WIDTH];
 	
 	menubottun_bitmap(menubottun_bits);
-	
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
+	kemoview_indentity_projectionmatrix();
 	
 	glClearColor(0.5, 0.2, 0.9, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);
 	glRasterPos2i(-1 , -1);
 	glDrawPixels(MENU_WIDTH , MENU_HEIGHT , GL_RGB , GL_UNSIGNED_BYTE , menubottun_bits);
 	
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
 	glFlush();
 	
 	return;

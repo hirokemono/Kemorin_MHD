@@ -456,7 +456,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	BgColor4f[3] = 1.0;
 	kemoview_set_background_color(BgColor4f);
 
-	glPushMatrix();
 }
 // ---------------------------------
 

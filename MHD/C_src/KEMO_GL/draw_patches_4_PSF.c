@@ -242,10 +242,6 @@ void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m, struct
     float radius = (float) psf_m->vector_thick;
 	double ascale = ONE / psf_m->scale_vect;
 	
-	glPushMatrix();
-	glLoadIdentity();
-	glPopMatrix();
-	
 	glShadeModel(GL_SMOOTH);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);

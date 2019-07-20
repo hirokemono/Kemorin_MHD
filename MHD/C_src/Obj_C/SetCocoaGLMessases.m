@@ -116,23 +116,16 @@ GLenum glReportError ()
 
 - (void) drawInfo : (GLfloat) xWinSize : (GLfloat) yWinSize
 {
-	GLint matrixMode;
 	GLboolean depthTest = glIsEnabled (GL_DEPTH_TEST);
 	GLfloat messageTop;
-	GLfloat TextColor4f[4], ErrTextColor4f[4];
+	GLfloat TextColor4f[4], ErrTextColor4f[4];	
     
     if(fDrawHelp == NO && fDrawResolution==NO && fDrawinfo==NO) return;
 	kemoview_get_text_color_code(TextColor4f);
 	
 	// set orthograhic 1:1  pixel transform in local view coords
-	glGetIntegerv (GL_MATRIX_MODE, &matrixMode);
-	glMatrixMode (GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity ();
-	glMatrixMode (GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity ();
-	glScalef (1.0f / xWinSize, -1.0f / yWinSize, 1.0f);
+	kemoview_indentity_projectionmatrix();
+	kemoview_message_viewmatrix();
 	
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, TextColor4f);
     
@@ -170,12 +163,6 @@ GLenum glReportError ()
 		glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE, ErrTextColor4f);
 		[gErrStringTex drawAtPoint:NSMakePoint (-floor(xWinSize) / 1.05, messageTop)];
 	}
-	
-	// reset orginal martices
-	glPopMatrix(); // GL_MODELVIEW
-	glMatrixMode (GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode (matrixMode);
 	
 	glDisable (GL_TEXTURE_RECTANGLE_EXT);
 	glDisable (GL_BLEND);

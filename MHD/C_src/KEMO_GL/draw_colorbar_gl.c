@@ -1,5 +1,5 @@
 /*
-/* draw_colorbar_gl.c
+// draw_colorbar_gl.c
 */
 
 #include "draw_colorbar_gl.h"
@@ -98,13 +98,8 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	sprintf(colorbar_text, "% 3.2E% 3.2E% 3.2E",psf_min, psf_max, ZERO);
 	
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	gluOrtho2D(0.0, xwin, 0.0, ywin);
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
+	orthogonalGL(0.0, xwin, 0.0, ywin,-1.0,1.0);
+	set_view_by_identity();
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -264,12 +259,5 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 	};
 	glColor4fv(black);
     glEnable(GL_LIGHTING);
-
-    
-	glPopMatrix();
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-
 	return;
 }
