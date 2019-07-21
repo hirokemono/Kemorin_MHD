@@ -26,7 +26,15 @@ static GLfloat cube_normals [6][3] = {
 static GLuint cube_faces [6][4] = {
 	{3, 2, 1, 0}, {2, 3, 7, 6}, {0, 1, 5, 4}, {3, 0, 4, 7}, {1, 2, 6, 5}, {4, 5, 6, 7} };
 
+static GLuint cube_tri_faces [12][3] = {
+			{3, 2, 1}, {3, 1, 0}, {2, 3, 7}, {2, 7, 6}, {0, 1, 5}, {0, 5, 4}, 
+			{3, 0, 4}, {3, 4, 7}, {1, 2, 6}, {1, 6, 5}, {4, 5, 6}, {4, 6, 7}};
 
+static GLuint cube_edge [12][2] = {
+			{0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, 
+			{6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7}};
+
+static GLuint cube_nodes[8] = {3, 2, 1, 0, 4, 5, 6, 7};
 
 /* draw simple cube based on current modelview and projection matrices */
 void drawCube(GLfloat fSize)
@@ -164,9 +172,9 @@ void drawCube_Element(GLfloat fSize)
 {
 	long f, i;
 	GLfloat x_draw[24];
-	GLfloat x_norm[24];
+	GLfloat x_norm[36];
 	GLfloat c_code[32];
-	GLuint  ie[24];
+	GLuint  ie[36];
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
@@ -181,19 +189,19 @@ void drawCube_Element(GLfloat fSize)
 		c_code[4*i+1] = cube_vertex_colors[i][1];
 		c_code[4*i+2] = cube_vertex_colors[i][2];
 		c_code[4*i+3] = 1.0;
-		x_draw[3*i  ] = cube_vertices[i][0] * fSize;
-		x_draw[3*i+1] = cube_vertices[i][1] * fSize;
-		x_draw[3*i+2] = cube_vertices[i][2] * fSize;
-	}
-	for (f = 0; f < num_faces; f++){
-		for (i = 0; i < 4; i++) {
-			ie[4*f+i] = cube_faces[f][i];
-		}
 	}
 	for (i = 0; i < 8; i++) {
 		x_draw[3*i  ] = cube_vertices[i][0] * fSize;
 		x_draw[3*i+1] = cube_vertices[i][1] * fSize;
 		x_draw[3*i+2] = cube_vertices[i][2] * fSize;
+	};
+	for (f = 0; f < num_faces; f++){
+		x_norm[6*f  ] = cube_normals[f][0];
+		x_norm[6*f+1] = cube_normals[f][1];
+		x_norm[6*f+2] = cube_normals[f][2];
+		x_norm[6*f+3] = cube_normals[f][0];
+		x_norm[6*f+4] = cube_normals[f][1];
+		x_norm[6*f+5] = cube_normals[f][2];
 	};
 	glVertexPointer(ITHREE, GL_FLOAT, IZERO, x_draw);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, c_code);
@@ -203,14 +211,7 @@ void drawCube_Element(GLfloat fSize)
 	
 	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
-	for (f = 0; f < num_faces; f++){
-		for (i = 0; i < 8; i++) {
-			x_norm[3*i  ] = cube_normals[f][0];
-			x_norm[3*i+1] = cube_normals[f][1];
-			x_norm[3*i+2] = cube_normals[f][2];
-		};
-	};
-	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, ie);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, &cube_tri_faces[0][0]);
 	
 	for (i = 0; i < 8; i++) {
 		c_code[4*i  ] = 0.;
@@ -225,8 +226,16 @@ void drawCube_Element(GLfloat fSize)
 			x_norm[3*i+1] = cube_normals[f][1];
 			x_norm[3*i+2] = cube_normals[f][2];
 		};
-		glDrawElements(GL_LINE_LOOP, 4, GL_UNSIGNED_INT, &cube_faces[f][0]);
 	}
+	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, &cube_edge[0][0]);
+	
+	for (i = 0; i < 8; i++) {
+		c_code[4*i  ] = 1.0;
+		c_code[4*i+1] = 1.0;
+		c_code[4*i+2] = 1.0;
+		c_code[4*i+3] = 1.0;
+	};
+	glDrawElements(GL_POINTS, 8, GL_UNSIGNED_INT, &cube_nodes[0]);
 	
 	glDisable(GL_COLOR_MATERIAL);
 
