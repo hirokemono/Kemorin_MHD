@@ -24,6 +24,13 @@ static void enter_leave(int state){
 	return;
 }
 
+void set_window_id_glut3(int *id3_window, int *id3_menu){
+	id3_window = &winid;
+	id3_menu = &menu_win;
+	set_main_window_id_glut(winid);
+	return;
+}
+
 void link_glut_menu_address(){
 	glut_menu_id = &glut_menu_id_struct;
 	return;

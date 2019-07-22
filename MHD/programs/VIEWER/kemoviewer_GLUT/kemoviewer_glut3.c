@@ -6,7 +6,8 @@
 #define NPIX_X  800
 #define NPIX_Y  640
 
-static int winid, menu_win;
+int id3_window;
+int id3_menu;
 struct kemoviewer_type *single_kemoview;
 
 static void display_menu3(){
@@ -32,6 +33,7 @@ void draw_mesh_kemo3(int iflag_streo_shutter, int iflag_dmesh) {
 		kemoview_set_anaglyph_flag(ANAGLYPH_ON);
 	};
 	
+	set_window_id_glut3(&id3_window, &id3_menu);
 	link_glut_menu_address();
 	
 	/*! Initializations with GLUT*/
@@ -47,8 +49,7 @@ void draw_mesh_kemo3(int iflag_streo_shutter, int iflag_dmesh) {
     kemoview_set_retinamode(IZERO);
 	kemoview_set_windowsize(NPIX_X, NPIX_Y);
 	glutInitWindowSize(NPIX_X, NPIX_Y);
-	winid = glutCreateWindow("Kemoviewer");
-	set_main_window_id_glut(winid);
+	id3_window = glutCreateWindow("Kemoviewer");
 	
 	/*glutEntryFunc(enter_leave);*/
 	  fprintf(
@@ -76,13 +77,13 @@ void draw_mesh_kemo3(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	
 	/*! Create menu window */
-	menu_win = glutCreateSubWindow(winid,IZERO,IZERO,MENU_WIDTH,MENU_HEIGHT);
+	id3_menu = glutCreateSubWindow(id3_window,IZERO,IZERO,MENU_WIDTH,MENU_HEIGHT);
 	/*glutEntryFunc(enter_leave);*/
 	
 	glutDisplayFunc(display_menu3);
-	
+	/*
 	draw_mesh_w_menu();
-	
+	*/
 	/*! set callback for GLUT*/
 	glutMainLoop();
 	return;

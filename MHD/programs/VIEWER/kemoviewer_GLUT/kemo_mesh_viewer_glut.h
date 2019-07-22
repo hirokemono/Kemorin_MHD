@@ -29,6 +29,7 @@
 
 /* prototypes */
 
+void set_window_id_glut3(int *id3_window, int *id3_menu);
 void link_glut_menu_address();
 void draw_mesh_w_menu();
 

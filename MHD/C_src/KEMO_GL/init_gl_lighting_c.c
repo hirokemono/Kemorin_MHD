@@ -47,13 +47,12 @@ void init_bg_color_kemoview(struct mesh_menu_val *mesh_m){
 
 void kemo_gl_initial_lighting_c(struct view_element *view_s){
 	int base;
-    
-    /*
-     if (glslInit()) exit(1);
-     SetGouraudShaderSrc(view_s->GouraudGl2Program);
-     SetPhongShaderSrc(view_s->PhongGl2Program);
-     glUseProgram(view_s->PhongGl2Program);
-     */
+	if(view_s->iflag_shading_profile == 1){
+		if (glslInit()) exit(1);
+		SetGouraudShaderSrc(view_s->GouraudGl2Program);
+  	   	SetPhongShaderSrc(view_s->PhongGl2Program);
+		glUseProgram(view_s->PhongGl2Program);
+	};
     
 	init_kemoview_perspective(view_s);
 	init_projection_struct(view_s);
