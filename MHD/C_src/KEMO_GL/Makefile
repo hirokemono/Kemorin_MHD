@@ -59,6 +59,8 @@ gl_buffer_2_gl2ps.o \
 \
 set_each_psf_parameters.o \
 \
+psf_patch_buffer.o \
+\
 glsl.o \
 phong.o \
 gouraud.o
@@ -641,6 +643,17 @@ module:
 	skip_comment_c.o \
 	set_rgba_table_c.o \
 	set_texture_4_psf.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	psf_patch_buffer.o: \
+	'$$(KEMO_C_GLDIR)'/psf_patch_buffer.c \
+	psf_patch_buffer.h \
+	m_psf_data_4_viewer_c.o \
+	m_kemoviewer_menu.o \
+	coordinate_converter_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
