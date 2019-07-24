@@ -98,6 +98,10 @@
       use parallel_load_data_4_sph
       use parallel_FEM_mesh_init
 !
+      use const_FEM_mesh_sph_mhd
+!
+      type(mesh_data) :: femmesh_s
+!
 !  ========= Generate spherical harmonics table ========================
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_grids'
@@ -107,24 +111,15 @@
       if(sph_files1%FEM_mesh_flags%iflag_access_FEM .eq. 0) goto 99
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+3)
-      if(iflag_debug .gt. 0) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh                                   &
-     &   (sph_files1%FEM_mesh_flags, sph_const, comms_sph, sph_grps,    &
-     &    geofem, sph_files1%mesh_file_IO, gen_sph_G)
+      if(iflag_debug .gt. 0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
+      call const_FEM_mesh_4_sph_mhd                                     &
+     &   (FEM_mesh_flags, sph%sph_params, sph%sph_rtp, sph%sph_rj,      &
+     &    femmesh_s%mesh, femmesh_s%group, sph_files1%mesh_file_IO,     &
+     &    gen_sph_G)
       call calypso_MPI_barrier
 !
       call dealloc_gen_sph_fem_mesh_param(gen_sph_G)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)
-!
-      if(sph_files1%FEM_mesh_flags%iflag_output_SURF .eq. 0) goto 99
-!
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+4)
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
-      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+4)
-      call end_elapsed_time(ied_total_elapsed)
-!
-  99  continue
 !
       call output_elapsed_times
       call calypso_MPI_barrier
