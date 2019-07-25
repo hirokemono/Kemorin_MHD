@@ -76,8 +76,8 @@
      &    test_sph_files%FEM_mesh_flags)
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh                                           &
-     &   (SPH_TEST%sph, SPH_TEST%comms, SPH_TEST%groups)
+      call load_para_sph_mesh(sph_file_param0,                          &
+     &    SPH_TEST%sph, SPH_TEST%comms, SPH_TEST%groups)
 !
        end subroutine init_test_sph
 !

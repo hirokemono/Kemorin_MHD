@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine const_FEM_mesh_4_sph_mhd                             &
-!!     &         (FEM_mesh_flags, sph_params, sph_rtp, sph_rj,          &
-!!     &          mesh, group, mesh_file, gen_sph)
+!!     &        (FEM_mesh_flags, mesh_file, sph_params, sph_rtp, sph_rj,&
+!!     &         mesh, group, mesh_file, gen_sph)
 !!      subroutine base_FEM_mesh_sph_mhd                                &
 !!     &         (FEM_mesh_flags, sph_params, sph_rtp, sph_rj,          &
 !!     &          mesh, group, gen_sph)
@@ -56,8 +56,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_FEM_mesh_4_sph_mhd                               &
-     &         (FEM_mesh_flags, sph_params, sph_rtp, sph_rj,            &
-     &          mesh, group, mesh_file, gen_sph)
+     &        (FEM_mesh_flags, mesh_file, sph_params, sph_rtp, sph_rj,  &
+     &         mesh, group, gen_sph)
 !
       use calypso_mpi
       use mpi_load_mesh_data
@@ -66,13 +66,13 @@
 !      use parallel_sleeve_extension
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
+      type(field_IO_params), intent(in) ::  mesh_file
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) :: sph_rj
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::  group
-      type(field_IO_params), intent(inout) ::  mesh_file
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
@@ -91,7 +91,6 @@
 !
 ! Output mesh data
       if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then
-        mesh_file%file_prefix = sph_file_head
         call mpi_output_mesh(mesh_file, mesh, group)
         write(*,'(a,i6,a)')                                             &
      &          'FEM mesh for domain', my_rank, ' is done.'
