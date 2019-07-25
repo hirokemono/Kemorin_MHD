@@ -13,6 +13,8 @@ mesh_utilities \
 data_utilities \
 VIEWER \
 \
+Rayleigh_link \
+\
 TESTS
 
 
@@ -53,7 +55,8 @@ target_task:
 	'const_filteres itp_tools'     >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo 'utilities: '            \
-	'data_utils mesh_utils'        >> $(MAKENAME)
+	'data_utils mesh_utils'        \
+	'rayleigh_link'                >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo 'FEM_minimum: '          \
 	'fem_mhd cubed_sph_utils '     \
