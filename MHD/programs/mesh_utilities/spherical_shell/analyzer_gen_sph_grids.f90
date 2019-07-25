@@ -101,7 +101,8 @@
 !  ========= Generate spherical harmonics table ========================
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_grids'
-      call para_gen_sph_grids(sph_const, gen_sph_G)
+      call para_gen_sph_grids                                           &
+     &   (sph_files1%sph_file_param, sph_const, gen_sph_G)
       call dealloc_gen_mesh_params(gen_sph_G)
 !
       if(sph_files1%FEM_mesh_flags%iflag_access_FEM .eq. 0) goto 99
@@ -109,7 +110,8 @@
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+3)
       if(iflag_debug .gt. 0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
-     &   (sph_files1%FEM_mesh_flags, sph_const, comms_sph, sph_grps,    &
+     &   (sph_files1%FEM_mesh_flags, sph_files1%sph_file_param,         &
+     &    sph_const, comms_sph, sph_grps,                               &
      &    geofem, sph_files1%mesh_file_IO, gen_sph_G)
       call calypso_MPI_barrier
 !

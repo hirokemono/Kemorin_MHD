@@ -13,7 +13,6 @@
 !!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(field_IO_params), intent(inout) ::  mesh_file
-!!        type(field_IO_params), intent(inout) :: sph_file_param
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!      subroutine set_control_4_shell_grids(nprocs_check,              &
 !!     &          Fmesh_ctl, spctl, sdctl, sph, gen_sph, ierr)
@@ -44,6 +43,8 @@
       type gen_sph_file_IO_params
 !>        FEM mesh IO flags
         type(FEM_file_IO_flags) :: FEM_mesh_flags
+!>        Structure of mesh file IO paramters
+        type(field_IO_params) :: sph_file_param
 !>        Structure of mesh file IO paramters
         type(field_IO_params) :: mesh_file_IO
 !>        Structure of file name and format for spectr data file
@@ -112,8 +113,8 @@
 !
       call turn_off_debug_flag_by_ctl(id_rank, plt)
       call set_control_sph_mesh(plt, Fmesh_ctl,                         &
-     &    sph_files%mesh_file_IO, sph_files%sph_file_IO,                &
-     &    sph_files%FEM_mesh_flags)
+     &    sph_files%sph_file_param, sph_files%mesh_file_IO,             &
+     &    sph_files%sph_file_IO, sph_files%FEM_mesh_flags)
 !
       end subroutine set_control_4_shell_files
 !

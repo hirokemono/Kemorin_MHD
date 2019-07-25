@@ -95,7 +95,8 @@
      &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
      &    monitor)
 !
-      call select_make_SPH_mesh(DMHD_ctl%psph_ctl%iflag_sph_shell,      &
+      call select_make_SPH_mesh                                         &
+     &   (DMHD_ctl%psph_ctl%iflag_sph_shell, MHD_files%sph_file_param,  &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, sph_maker1,       &
      &    FEM_dat%geofem, MHD_files)
 !
@@ -140,8 +141,8 @@
      &    SPH_model%MHD_prop, SPH_MHD%fld, monitor)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh                                           &
-     &   (SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
+      call load_para_sph_mesh(MHD_files%sph_file_param,                 &
+     &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
 !
       call dealloc_sph_mhd_ctl_data(DMHD_ctl)
 !
@@ -186,7 +187,8 @@
      &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
      &    monitor)
 !
-      call select_make_SPH_mesh(DMHD_ctl%psph_ctl%iflag_sph_shell,      &
+      call select_make_SPH_mesh                                         &
+     &   (DMHD_ctl%psph_ctl%iflag_sph_shell, MHD_files%sph_file_param,  &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, sph_maker1,       &
      &    FEM_dat%geofem, MHD_files)
 !

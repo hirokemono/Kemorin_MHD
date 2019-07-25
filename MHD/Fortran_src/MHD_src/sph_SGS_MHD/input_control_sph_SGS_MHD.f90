@@ -99,7 +99,8 @@
      &    SPH_MHD%fld, FEM_dat%field, monitor)
 !
 !
-      call select_make_SPH_mesh_w_LIC(MHD_ctl%psph_ctl%iflag_sph_shell, &
+      call select_make_SPH_mesh_w_LIC                                   &
+     &   (MHD_ctl%psph_ctl%iflag_sph_shell, MHD_files%sph_file_param,   &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, sph_maker2,       &
      &    FEM_dat%geofem, MHD_files)
 !

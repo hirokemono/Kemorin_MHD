@@ -51,8 +51,8 @@
 !       set spectr grids
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh                                           &
-     &   (SPH_dat_ss%sph, SPH_dat_ss%comms, SPH_dat_ss%groups)
+      call load_para_sph_mesh(files_SHR%sph_file_param,                 &
+     &    SPH_dat_ss%sph, SPH_dat_ss%comms, SPH_dat_ss%groups)
 !
 !  ------  initialize spectr data
 !

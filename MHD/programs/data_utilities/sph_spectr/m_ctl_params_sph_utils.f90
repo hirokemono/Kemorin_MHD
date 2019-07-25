@@ -30,6 +30,8 @@
         type(FEM_file_IO_flags) :: FEM_mesh_flags
 !
 !>        Structure of mesh file IO paramters
+        type(field_IO_params) :: sph_file_param
+!>        Structure of mesh file IO paramters
         type(field_IO_params) :: mesh_file_IO
 !>        Structure of file name and format for spectr data file
         type(field_IO_params) :: sph_file_IO
@@ -115,8 +117,8 @@
       call turn_off_debug_flag_by_ctl(my_rank, spu_ctl%plt)
       call set_control_smp_def(my_rank, spu_ctl%plt)
       call set_control_sph_mesh(spu_ctl%plt, spu_ctl%Fmesh_ctl,         &
-     &    files_SHR%mesh_file_IO, files_SHR%sph_file_IO,                &
-     &    files_SHR%FEM_mesh_flags)
+     &    files_SHR%sph_file_param, files_SHR%mesh_file_IO,             &
+     &    files_SHR%sph_file_IO, files_SHR%FEM_mesh_flags)
       call set_control_mesh_file_def(def_org_sph_rj_head,               &
      &    spu_ctl%org_plt, files_SHR%org_rj_file_IO)
       call set_control_mesh_file_def(def_org_rst_header,                &
