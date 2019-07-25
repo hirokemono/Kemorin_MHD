@@ -19,7 +19,7 @@
       call calypso_MPI_init
 !
       call init_gen_FEM_rayleigh
-      call analyze_gen_sph_grids
+      call analyze_FEM_rayleigh
 !
       call  calypso_MPI_finalize
 !

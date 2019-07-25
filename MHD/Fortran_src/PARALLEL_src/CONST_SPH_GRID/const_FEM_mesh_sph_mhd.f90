@@ -124,8 +124,7 @@
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
 !
-      call const_global_sph_FEM                                         &
-     &   (sph_rtp, sph_rj, gen_sph%radial_rtp_grp_lc, gen_sph)
+      call const_global_sph_FEM(sph_rtp, sph_rj, gen_sph)
 !
       call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_SF)
 !
@@ -148,20 +147,18 @@
 !-----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_global_sph_FEM                                   &
-     &         (sph_rtp, sph_rj, radial_rtp_grp, gen_sph)
+      subroutine const_global_sph_FEM(sph_rtp, sph_rj, gen_sph)
 !
       use set_sph_1d_domain_id
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(group_data), intent(in) :: radial_rtp_grp
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtp_mesh'
-      call const_global_rtp_mesh(sph_rtp, radial_rtp_grp,               &
+      call const_global_rtp_mesh(sph_rtp, gen_sph%radial_rtp_grp_lc,    &
      &    gen_sph%s3d_ranks, sph_dbc_SF, gen_sph%sph_lcp,               &
      &    gen_sph%stk_lc1d, gen_sph%sph_gl1d)
 !

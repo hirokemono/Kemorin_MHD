@@ -27,7 +27,9 @@ main_test_sph.o
 
 MOD_FEM_MESH_RAYLEIGH = \
 main_gen_FEM_4_rayleigh.o \
-analyzer_gen_FEM_4_rayleigh.o
+analyzer_gen_FEM_4_rayleigh.o \
+\
+const_fem_nodes_4_rayleigh.o
 
 #
 #  -------------------------------------------------------------------------
