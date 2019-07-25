@@ -89,7 +89,7 @@
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
 !
-      call load_para_sph_mesh(sph, comms_sph, sph_grps)
+      call load_para_sph_mesh(sph_file_param, sph, comms_sph, sph_grps)
 !
       call copy_group_data                                              &
      &   (sph_grps%radial_rtp_grp, gen_sph%radial_rtp_grp_lc)

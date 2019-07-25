@@ -91,7 +91,7 @@
 !
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
       call mpi_gen_sph_rlm_grids(sph_file_param,                        &
-     &   (gen_sph, sph%sph_params, sph%sph_rlm, comm_rlm_mul)
+     &    gen_sph, sph%sph_params, sph%sph_rlm, comm_rlm_mul)
       call bcast_comm_stacks_sph                                        &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)

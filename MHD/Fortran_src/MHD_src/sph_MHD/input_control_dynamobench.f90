@@ -116,7 +116,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh                                           &
-     &   (sph_file_param0, sph, comms_sph, sph_grps)
+     &   (MHD_files%sph_file_param, sph, comms_sph, sph_grps)
 !
       call dealloc_sph_mhd_ctl_data(DMHD_ctl)
 !

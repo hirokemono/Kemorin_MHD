@@ -95,7 +95,7 @@
 !   Load spherical harmonics data
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh(sph_file_param0,                          &
+      call load_para_sph_mesh(MHD_files1%sph_file_param,                &
      &    SPH_MHD1%sph, SPH_MHD1%comms, SPH_MHD1%groups)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)

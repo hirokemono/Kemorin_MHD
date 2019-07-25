@@ -42,6 +42,8 @@
 !>        FEM mesh IO flags
         type(FEM_file_IO_flags) :: FEM_mesh_flags
 !>        Structure of mesh file IO paramters
+        type(field_IO_params) :: sph_file_param
+!>        Structure of mesh file IO paramters
         type(field_IO_params) :: mesh_file_IO
 !>        Structure of file name and format for restart file
         type(field_IO_params) :: fst_file_IO
@@ -110,8 +112,8 @@
       call turn_off_debug_flag_by_ctl(my_rank, spt_ctl%plt)
       call set_control_smp_def(my_rank, spt_ctl%plt)
       call set_control_sph_mesh(spt_ctl%plt, spt_ctl%Fmesh_ctl,         &
-     &    files_param%mesh_file_IO, files_param%sph_file_IO,            &
-     &    files_param%FEM_mesh_flags)
+     &    files_param%sph_file_param, files_param%mesh_file_IO,         &
+     &    files_param%sph_file_IO, files_param%FEM_mesh_flags)
       call set_control_restart_file_def                                 &
      &   (spt_ctl%plt, files_param%fst_file_IO)
       call set_ucd_file_define(spt_ctl%plt, files_param%ucd_file_IO)
@@ -208,8 +210,8 @@
       call turn_off_debug_flag_by_ctl(my_rank, spt_ctl%plt)
       call set_control_smp_def(my_rank, spt_ctl%plt)
       call set_control_sph_mesh(spt_ctl%plt, spt_ctl%Fmesh_ctl,         &
-     &    files_param%mesh_file_IO, files_param%sph_file_IO,            &
-     &    files_param%FEM_mesh_flags)
+     &    files_param%sph_file_param, files_param%mesh_file_IO,         &
+     &    files_param%sph_file_IO, files_param%FEM_mesh_flags)
       call set_control_restart_file_def                                 &
      &   (spt_ctl%plt, files_param%fst_file_IO)
       call set_merged_ucd_file_define                                   &

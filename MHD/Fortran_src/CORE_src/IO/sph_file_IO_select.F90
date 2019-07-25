@@ -63,9 +63,6 @@
 !
       implicit none
 !
-      character(len=kchara) :: sph_file_head =     "in_sph"
-      integer(kind = kint) :: iflag_sph_file_fmt = 0
-!
       integer(kind = kint), parameter, private :: mesh_file_id = 14
 !
       character(len=kchara), private :: sph_file_name

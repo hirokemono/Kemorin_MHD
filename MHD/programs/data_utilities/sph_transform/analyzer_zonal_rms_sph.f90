@@ -58,7 +58,7 @@
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
-     &   (files_STR%FEM_mesh_flags, sph_file_param0,                    &
+     &   (files_STR%FEM_mesh_flags, files_STR%sph_file_param,           &
      &    SPH_TRNS%sph, SPH_TRNS%comms, SPH_TRNS%groups,                &
      &    femmesh_STR, files_STR%mesh_file_IO, gen_sph_TRNS)
 !

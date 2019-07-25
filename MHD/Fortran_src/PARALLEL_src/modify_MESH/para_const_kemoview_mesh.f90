@@ -54,7 +54,7 @@
       use viewer_mesh_IO_select
       use add_comm_table_in_node_grp
 !
-      type(field_IO_params), intent(inout) :: mesh_file
+      type(field_IO_params), intent(in) :: mesh_file
       type(parallel_make_vierwer_mesh), intent(inout) :: par_v
 !
 !
