@@ -13,7 +13,6 @@
 !!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(field_IO_params), intent(inout) ::  mesh_file
-!!        type(field_IO_params), intent(inout) :: sph_file_param
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!      subroutine set_control_4_shell_grids(nprocs_check,              &
 !!     &          Fmesh_ctl, spctl, sdctl, sph, gen_sph, ierr)
