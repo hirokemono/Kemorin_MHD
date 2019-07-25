@@ -5,7 +5,7 @@
 RAYLEIGH_LINK_DIR = $$(PROG_DIR)/Rayleigh_link
 
 TARGET_FEM_MESH_RAYLEIGH =  make_rayleigh_mesh
-TARGET_CVT_RAYLEIGH_SPH = convert_from_rayleigh
+TARGET_CVT_RAYLEIGH_SPH = convert_rayleigh_sph
 TARGET_CVT_RAYLEIGH_FLD = convert_rayleigh_field
 
 LIB_FILES_RAYLEIGH_LINK = \
@@ -34,11 +34,17 @@ MOD_FEM_MESH_RAYLEIGH = \
 main_gen_FEM_4_rayleigh.o \
 analyzer_gen_FEM_4_rayleigh.o \
 \
+t_rayleigh_resolution.o \
 const_fem_nodes_4_rayleigh.o
 
 MOD_CVT_RAYLEIGH_SPH = \
-main_convert_from_rayleigh.o \
-analyzer_rayleigh_convert.o
+main_cvt_from_rayleigh_sph.o \
+analyzer_rayleigh_cvt_sph.o \
+\
+t_convert_from_rayleigh.o \
+t_rayleigh_restart_IO.o \
+rayleigh_restart_IO.o \
+convert_from_rayleigh_rst.o
 
 MOD_CVT_RAYLEIGH_FLD = \
 main_cvt_from_rayleigh_fld.o \

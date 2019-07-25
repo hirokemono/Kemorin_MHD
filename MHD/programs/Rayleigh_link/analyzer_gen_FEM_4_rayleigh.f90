@@ -84,9 +84,11 @@
       if(iflag_debug .gt. 0) write(*,*) 'load_para_SPH_and_FEM_mesh2'
       sph_files1%mesh_file_IO%file_prefix = 'sph_lm63t96r71c_12_2/in'
       sph_files1%mesh_file_IO%iflag_format = id_ascii_file_fmt
-
-      call load_para_SPH_and_FEM_mesh2                                  &
-     &   (sph_const, geofem, sph_files1%mesh_file_IO, gen_sph_G)
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
+      call base_FEM_mesh_sph_mhd                                        &
+     &   (sph_const%sph_params, sph_const%sph_rtp, sph_const%sph_rj,    &
+     &    geofem%mesh, geofem%group, gen_sph_G)
 !
       end subroutine init_gen_FEM_rayleigh
 !
@@ -94,6 +96,14 @@
 !
       subroutine analyze_FEM_rayleigh
 !
+      use mpi_load_mesh_data
+!
+!
+! Output mesh data
+      call mpi_output_mesh                                              &
+     &   (sph_files1%mesh_file_IO, geofem%mesh, geofem%group)
+      write(*,'(a,i6,a)')                                               &
+     &          'FEM mesh for domain', my_rank, ' is done.'
 !
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
@@ -101,170 +111,5 @@
       end subroutine analyze_FEM_rayleigh
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine load_para_SPH_and_FEM_mesh2                            &
-     &         (sph, fem, mesh_file, gen_sph)
-!
-      use calypso_mpi
-      use t_mesh_data
-      use copy_mesh_structures
-      use mesh_file_name_by_param
-      use mpi_load_mesh_data
-      use parallel_load_data_4_sph
-      use const_FEM_mesh_sph_mhd
-      use cal_minmax_and_stacks
-!
-      type(sph_grids), intent(in) :: sph
-!
-      type(mesh_data), intent(inout) :: fem
-      type(field_IO_params), intent(inout) ::  mesh_file
-!
-      type(construct_spherical_grid), intent(inout) :: gen_sph
-!
-!  --  Construct FEM mesh
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
-      call base_FEM_mesh_sph_mhd                                        &
-     &   (sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
-     &    fem%mesh, fem%group, gen_sph)
-!
-! Output mesh data
-      call mpi_output_mesh(mesh_file, fem%mesh, fem%group)
-      write(*,'(a,i6,a)')                                               &
-     &          'FEM mesh for domain', my_rank, ' is done.'
-!
-      end subroutine load_para_SPH_and_FEM_mesh2
-!
-! -----------------------------------------------------------------------
-!
-      subroutine shell_params_from_rayleigh(r_reso, sph, gen_sph)
-!
-      use calypso_mpi
-      use t_mesh_data
-      use cal_minmax_and_stacks
-!
-      type(Rayleigh_grid_param), intent(in) :: r_reso
-!
-      type(sph_grids), intent(inout) :: sph
-      type(construct_spherical_grid), intent(inout) :: gen_sph
-!
-      type(FEM_file_IO_flags) :: FEM_mesh_flags
-      integer(kind = kint) :: i, irev
-!
-!
-      sph%sph_params%iflag_shell_mode = iflag_MESH_same
-!
-      sph%sph_rtp%irank_sph_rtp(1) = r_reso%irank_r
-      sph%sph_rtp%irank_sph_rtp(2) = r_reso%irank_h
-      sph%sph_rtp%irank_sph_rtp(3) = 0
-
-      sph%sph_rj%nidx_global_rj(1) = r_reso%nri
-      sph%sph_rj%nidx_global_rj(2) = (r_reso%ltr + 1)**2
-      sph%sph_rj%nidx_rj(1) = sph%sph_rj%nidx_global_rj(1)
-      sph%sph_rj%nidx_rj(2) = sph%sph_rj%nidx_global_rj(2) / nprocs
-!
-      sph%sph_rtp%nidx_global_rtp(1) = r_reso%nri
-      sph%sph_rtp%nidx_global_rtp(2) = r_reso%nth
-      sph%sph_rtp%nidx_global_rtp(3) = r_reso%nphi
-      sph%sph_rtp%ist_rtp(1) = r_reso%kst
-      sph%sph_rtp%ist_rtp(2) = r_reso%lst
-      sph%sph_rtp%ist_rtp(3) = 1
-      sph%sph_rtp%ied_rtp(1) = r_reso%ked
-      sph%sph_rtp%ied_rtp(2) = r_reso%led
-      sph%sph_rtp%ied_rtp(3) = r_reso%nphi
-      sph%sph_rtp%nidx_rtp(1) = r_reso%ked - r_reso%kst + 1
-      sph%sph_rtp%nidx_rtp(2) = r_reso%led - r_reso%lst + 1
-      sph%sph_rtp%nidx_rtp(3) = r_reso%nphi
-!
-      call alloc_type_sph_1d_index_rj(sph%sph_rj)
-      do i = 1, r_reso%nri
-        irev = r_reso%nri - i + 1
-        sph%sph_rj%radius_1d_rj_r(i) = r_reso%radius(irev)
-      end do
-!
-      call alloc_type_sph_1d_index_rtp(sph%sph_rtp)
-!
-      do i = 1, sph%sph_rtp%nidx_rtp(1)
-        sph%sph_rtp%idx_gl_1d_rtp_r(i) = sph%sph_rtp%ist_rtp(1) + i- 1
-      end do
-!
-      gen_sph%theta_rtp_grp_lc%num_grp = 0
-      call alloc_group_num(gen_sph%theta_rtp_grp_lc)
-      call alloc_group_item(gen_sph%theta_rtp_grp_lc)
-!
-      gen_sph%radial_rtp_grp_lc%num_grp = 5
-      call alloc_group_num(gen_sph%radial_rtp_grp_lc)
-!
-      gen_sph%radial_rj_grp_lc%num_grp =  5
-      call alloc_group_num(gen_sph%radial_rj_grp_lc)
-      gen_sph%radial_rj_grp_lc%grp_name(1) = 'ICB'
-      gen_sph%radial_rj_grp_lc%grp_name(2) = 'CMB'
-      gen_sph%radial_rj_grp_lc%grp_name(3) = 'to_Center'
-      gen_sph%radial_rj_grp_lc%grp_name(4) = 'inner_core'
-      gen_sph%radial_rj_grp_lc%grp_name(5) = 'outer_core'
-!
-      gen_sph%radial_rj_grp_lc%nitem_grp(1) = 1
-      gen_sph%radial_rj_grp_lc%nitem_grp(2) = 1
-      gen_sph%radial_rj_grp_lc%nitem_grp(3) = 1
-      gen_sph%radial_rj_grp_lc%nitem_grp(4) = 0
-      gen_sph%radial_rj_grp_lc%nitem_grp(5) = sph%sph_rj%nidx_rj(1)
-!
-      call s_cal_total_and_stacks(gen_sph%radial_rj_grp_lc%num_grp,     &
-     &    gen_sph%radial_rj_grp_lc%nitem_grp, izero,                    &
-     &    gen_sph%radial_rj_grp_lc%istack_grp,                          &
-     &    gen_sph%radial_rj_grp_lc%num_item)
-      call alloc_group_item(gen_sph%radial_rj_grp_lc)
-!
-      gen_sph%radial_rj_grp_lc%item_grp(1) = 1
-      gen_sph%radial_rj_grp_lc%item_grp(2) = sph%sph_rj%nidx_rj(1)
-      gen_sph%radial_rj_grp_lc%item_grp(3) = 1
-      do i = 1, sph%sph_rj%nidx_rj(1)
-        gen_sph%radial_rj_grp_lc%item_grp(i+3) = i
-      end do
-!
-      gen_sph%radial_rtp_grp_lc%grp_name(1) = 'ICB'
-      gen_sph%radial_rtp_grp_lc%grp_name(2) = 'CMB'
-      gen_sph%radial_rtp_grp_lc%grp_name(3) = 'to_Center'
-      gen_sph%radial_rtp_grp_lc%grp_name(4) = 'inner_core'
-      gen_sph%radial_rtp_grp_lc%grp_name(5) = 'outer_core'
-!
-      gen_sph%radial_rtp_grp_lc%nitem_grp(1:5) = 0
-      if(sph%sph_rtp%ist_rtp(1) .eq. 1) then
-        gen_sph%radial_rtp_grp_lc%nitem_grp(1) = 1
-        gen_sph%radial_rtp_grp_lc%nitem_grp(3) = 1
-      end if
-      if(sph%sph_rtp%ied_rtp(1) .eq. sph%sph_rj%nidx_rj(1)) then
-        gen_sph%radial_rtp_grp_lc%nitem_grp(2) = 1
-      end if
-      gen_sph%radial_rtp_grp_lc%nitem_grp(4) = 0
-      gen_sph%radial_rtp_grp_lc%nitem_grp(5)                            &
-     &          = sph%sph_rtp%ied_rtp(1) - sph%sph_rtp%ist_rtp(1) + 1
-!
-      call s_cal_total_and_stacks(gen_sph%radial_rtp_grp_lc%num_grp,    &
-     &    gen_sph%radial_rtp_grp_lc%nitem_grp, izero,                   &
-     &    gen_sph%radial_rtp_grp_lc%istack_grp,                         &
-     &    gen_sph%radial_rtp_grp_lc%num_item)
-      call alloc_group_item(gen_sph%radial_rtp_grp_lc)
-!
-      if(sph%sph_rtp%ist_rtp(1) .eq. 1) then
-        i = gen_sph%radial_rtp_grp_lc%istack_grp(0) + 1
-        gen_sph%radial_rtp_grp_lc%nitem_grp(i) = 1
-      end if
-      if(sph%sph_rtp%ied_rtp(1) .eq. sph%sph_rj%nidx_rj(1)) then
-        i = gen_sph%radial_rtp_grp_lc%istack_grp(1) + 1
-        gen_sph%radial_rtp_grp_lc%nitem_grp(i) = sph%sph_rtp%ied_rtp(1)
-      end if
-      if(sph%sph_rtp%ist_rtp(1) .eq. 1) then
-        i = gen_sph%radial_rtp_grp_lc%istack_grp(2) + 1
-        gen_sph%radial_rtp_grp_lc%nitem_grp(i) = 1
-      end if
-!
-      do i = 1, sph%sph_rtp%nidx_rtp(1)
-        gen_sph%radial_rj_grp_lc%item_grp(i+3) = i
-      end do
-!
-      end subroutine shell_params_from_rayleigh
-!
-! -----------------------------------------------------------------------
 !
       end module analyzer_gen_FEM_4_rayleigh

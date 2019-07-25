@@ -1,5 +1,5 @@
-!>@file   analyzer_rayleigh_convert.f90
-!!@brief  module analyzer_rayleigh_convert
+!>@file   analyzer_rayleigh_cvt_sph.f90
+!!@brief  module analyzer_rayleigh_cvt_sph
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Apr., 2018
@@ -7,11 +7,11 @@
 !>@brief  Main loop to assemble spectr data
 !!
 !!@verbatim
-!!      subroutine init_cvt_rayleigh
-!!      subroutine analyze_cvt_rayleigh
+!!      subroutine init_cvt_rayleigh_sph
+!!      subroutine analyze_cvt_rayleigh_sph
 !!@endverbatim
 !
-      module analyzer_rayleigh_convert
+      module analyzer_rayleigh_cvt_sph
 !
       use m_precision
       use m_constants
@@ -54,7 +54,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_cvt_rayleigh
+      subroutine init_cvt_rayleigh_sph
 !
       use m_error_IDs
 !
@@ -125,11 +125,11 @@
 !      call check_nodal_field_name_type                                 &
 !     &   (50+my_rank, sph_asbl_s%new_sph_phys(1))
 !
-      end subroutine init_cvt_rayleigh
+      end subroutine init_cvt_rayleigh_sph
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze_cvt_rayleigh
+      subroutine analyze_cvt_rayleigh_sph
 !
       use r_interpolate_marged_sph
       use set_field_file_names
@@ -190,8 +190,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end subroutine analyze_cvt_rayleigh
+      end subroutine analyze_cvt_rayleigh_sph
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_rayleigh_convert
+      end module analyzer_rayleigh_cvt_sph
