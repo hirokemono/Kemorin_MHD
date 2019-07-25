@@ -37,9 +37,6 @@
      &         :: control_file_name = 'control_sph_shell'
 !
 !
-!>      Structure for file settings
-      type(sph_mesh_generation_ctl), save :: SPH_MAKE_ctl
-!
 !>       Structure of grid and spectr data for spherical spectr method
       type(sph_grids), save :: sph_const
 !>      Structure of mesh file name and formats
@@ -54,8 +51,7 @@
 !
       type(Rayleigh_grid_param), save, private :: r_reso0
 !
-      private :: control_file_name
-      private :: sph_const, SPH_MAKE_ctl
+      private :: sph_const
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,41 +63,6 @@
 !
       use m_error_IDs
       use m_file_format_switch
-!
-      integer(kind = kint) :: ierr = 0
-      type(field_IO_params) ::  rayleigh_mesh_file
-!
-! 
-      call init_elapse_time_by_TOTAL
-      call elpsed_label_gen_sph_grid
-!
-!
-!
-      call start_elapsed_time(ied_total_elapsed)
-      call read_control_4_const_shell(control_file_name, SPH_MAKE_ctl)
-      call set_control_4_gen_shell_grids                                &
-     &   (my_rank, SPH_MAKE_ctl%plt, SPH_MAKE_ctl%psph_ctl,             &
-     &    sph_const, sph_files1, gen_sph_G, ierr)
-      if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
-!
-      rayleigh_mesh_file%file_prefix = 'Rayleigh_in'
-      rayleigh_mesh_file%iflag_format = id_ascii_file_fmt
-      call output_fem_nodes_4_rayleigh(rayleigh_mesh_file, r_reso0)
-!
-!      if(gen_sph_G%s3d_ranks%ndomain_sph .ne. nprocs) then
-!        if(my_rank .eq. 0) write(*,*) 'The number of MPI processes ',   &
-!     &      'must be equal to the number of subdomains.', char(10),     &
-!     &      'Current subdomains: ', gen_sph_G%s3d_ranks%ndomain_sph
-!        write(e_message,'(a)') 'Parallellization error'
-!        call calypso_mpi_abort(ierr_P_MPI, e_message)
-!      end if
-!
-      end subroutine init_gen_FEM_rayleigh
-!
-! ----------------------------------------------------------------------
-!
-      subroutine analyze_FEM_rayleigh
-!
       use m_array_for_send_recv
       use parallel_gen_sph_grids
       use mpi_gen_sph_grids_modes
@@ -110,23 +71,27 @@
 !
       use const_FEM_mesh_sph_mhd
 !
-!  ========= Generate spherical harmonics table ========================
 !
-!      if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_grids'
-!      call para_gen_sph_grids(sph_const, gen_sph_G)
-!      call dealloc_gen_mesh_params(gen_sph_G)
+      type(field_IO_params) ::  rayleigh_mesh_file
 !
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+3)
+!
+      rayleigh_mesh_file%file_prefix = 'Rayleigh_in'
+      rayleigh_mesh_file%iflag_format = id_ascii_file_fmt
+      call output_fem_nodes_4_rayleigh(rayleigh_mesh_file, r_reso0)
+!
       if(iflag_debug .gt. 0) write(*,*) 'load_para_SPH_and_FEM_mesh2'
+      sph_file_head = 'sph_lm63t96r71c_12_2/in'
+      sph_files1%mesh_file_IO%iflag_format = id_ascii_file_fmt
       call load_para_SPH_and_FEM_mesh2                                  &
-     &   (sph_files1%FEM_mesh_flags, sph_const,    &
-     &    geofem, sph_files1%mesh_file_IO, gen_sph_G)
-      call calypso_MPI_barrier
+     &   (sph_const, geofem, sph_files1%mesh_file_IO, gen_sph_G)
 !
-      call dealloc_gen_sph_fem_mesh_param(gen_sph_G)
-      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)
+      end subroutine init_gen_FEM_rayleigh
 !
-      call output_elapsed_times
+! ----------------------------------------------------------------------
+!
+      subroutine analyze_FEM_rayleigh
+!
+!
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
@@ -135,8 +100,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine load_para_SPH_and_FEM_mesh2                            &
-     &         (FEM_mesh_flags, sph,               &
-     &          fem, mesh_file, gen_sph)
+     &         (sph, fem, mesh_file, gen_sph)
 !
       use calypso_mpi
       use t_mesh_data
@@ -147,7 +111,6 @@
       use const_FEM_mesh_sph_mhd
       use cal_minmax_and_stacks
 !
-      type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(sph_grids), intent(inout) :: sph
 !
       type(mesh_data), intent(inout) :: fem
@@ -155,6 +118,7 @@
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
+      type(FEM_file_IO_flags) :: FEM_mesh_flags
       integer(kind = kint) :: i, irev
 !
 !
@@ -271,6 +235,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
       sph%sph_params%iflag_shell_mode = iflag_MESH_same
+      FEM_mesh_flags%iflag_access_FEM = 1
       call const_FEM_mesh_4_sph_mhd                                     &
      &   (FEM_mesh_flags, sph%sph_params, sph%sph_rtp, sph%sph_rj,      &
      &    fem%mesh, fem%group, mesh_file, gen_sph)
