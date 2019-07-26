@@ -19,6 +19,7 @@ OBJ_KEMO_CTL_C = \
  t_control_chara2_real_IO.o \
  t_control_chara3_IO.o \
  t_control_chara_int2_IO.o \
+ t_control_chara_int3_IO.o \
  t_control_real3_IO.o \
  \
  all_field_names_c.o \
@@ -242,6 +243,17 @@ module:
 	t_control_chara_int2_IO.o: \
 	'$$(KEMO_CTL_C_DIR)'/t_control_chara_int2_IO.c \
 	t_control_chara_int2_IO.h \
+	kemosrc_param_c.o \
+	skip_comment_c.o \
+	control_elements_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_chara_int3_IO.o: \
+	'$$(KEMO_CTL_C_DIR)'/t_control_chara_int3_IO.c \
+	t_control_chara_int3_IO.h \
 	kemosrc_param_c.o \
 	skip_comment_c.o \
 	control_elements_IO_c.o \

@@ -1,0 +1,55 @@
+begin rayleigh_visualizer
+  begin data_files_def
+    num_subdomain_ctl           2
+    num_smp_ctl                 4
+!
+    rayleigh_field_dir             'Spherical3D/'
+  end data_files_def
+!
+  begin phys_values_ctl
+    array scalar_field_ctl
+      scalar_field_ctl  temperature   501
+      scalar_field_ctl  pressure      601
+    end array scalar_field_ctl
+!
+    array vector_field_ctl
+      vector_field_ctl  velocity            1   2   3
+      vector_field_ctl  vorticity         201 202 203
+      vector_field_ctl  magnetic_field    801 802 803
+    end array vector_field_ctl
+  end phys_values_ctl
+!
+  begin time_step_ctl
+    i_step_init_ctl           1
+    i_step_number_ctl         1
+!
+    i_step_sectioning_ctl     1
+    i_step_isosurface_ctl     0
+    i_step_pvr_ctl            1
+    i_step_fline_ctl          0
+    i_step_LIC_ctl            0
+  end time_step_ctl
+!
+  begin visual_control
+    array cross_section_ctl
+      file   cross_section_ctl   'ctl_psf_z0'
+    end array cross_section_ctl
+!
+!    array isosurface_ctl
+!      file   isosurface_ctl   'ctl_iso_p_n1e4'
+!      file   isosurface_ctl   'ctl_iso_p_p1e4'
+!    end array isosurface_ctl
+!
+    array  volume_rendering
+      file  volume_rendering  'ctl_pvr_temp'
+    end array volume_rendering
+!
+!    array  fieldline
+!      file  fieldline  'ctl_fline_magne'
+!    end array fieldline
+!
+!    array  LIC_rendering
+!      file  LIC_rendering  'ctl_LIC_magne'
+ !   end array LIC_rendering
+  end  visual_control
+end  rayleigh_visualizer
