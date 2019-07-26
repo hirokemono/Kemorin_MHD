@@ -14,7 +14,8 @@ LIB_FILES_RAYLEIGH_LINK = \
 '$$(LIB_UTILS_FILE)' \
 '$$(LIB_PARA_FILE)'     \
 '$$(LIB_SOLVER_FILE)'   \
-'$$(LIB_MESH_FILE)'
+'$$(LIB_MESH_FILE)'     \
+'$$(LIB_FFTPACK_FILE)'
 
 
 LIBS_RAYLEIGH_LINK = \
@@ -22,7 +23,8 @@ LIBS_RAYLEIGH_LINK = \
 '$$(LIB_UTILS)'     \
 '$$(LIB_PARA)'      \
 '$$(LIB_SOLVER)'    \
-'$$(LIB_MESH)'
+'$$(LIB_MESH)'      \
+'$$(LIB_FFTPACK)'
 
 ifdef FORTRAN_C_CONNECT
   LIBS_RAYLEIGH_LINK+=        '$$(LIB_KEMO_C)'
@@ -52,6 +54,7 @@ main_cvt_from_rayleigh_fld.o \
 analyzer_rayleigh_cvt_fld.o \
 \
 t_rayleigh_resolution.o \
+t_rayleigh_field_IO.o \
 const_fem_nodes_4_rayleigh.o
 
 
@@ -59,6 +62,7 @@ MOD_RAYLEIGH_VIZ = \
 m_viz_4_rayleigh.o \
 t_control_data_all_vizs.o \
 t_rayleigh_resolution.o \
+t_rayleigh_field_IO.o \
 const_fem_nodes_4_rayleigh.o \
 \
 main_visualize_rayleigh.o \

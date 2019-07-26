@@ -60,7 +60,7 @@
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz_rayleigh'
-      call FEM_initialize_viz_rayleigh(ucd_file_VIZ, viz_step_V)
+      call FEM_initialize_viz_rayleigh(viz_step_V)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
@@ -84,7 +84,7 @@
         if(iflag_debug .gt. 0)                                          &
      &      write(*,*) 'FEM_analyze_viz_rayleigh', i_step
         call FEM_analyze_viz_rayleigh                                   &
-     &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V, visval)
+     &     (i_step, t_VIZ, viz_step_V, visval)
 !
 !  Rendering
         if(visval .eq. 0) then
