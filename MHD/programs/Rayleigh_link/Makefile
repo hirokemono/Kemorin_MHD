@@ -5,23 +5,24 @@
 RAYLEIGH_LINK_DIR = $$(PROG_DIR)/Rayleigh_link
 
 TARGET_FEM_MESH_RAYLEIGH =  make_rayleigh_mesh
-TARGET_CVT_RAYLEIGH_SPH = convert_rayleigh_sph
-TARGET_CVT_RAYLEIGH_FLD = convert_rayleigh_field
+TARGET_CVT_RAYLEIGH_SPH =   convert_rayleigh_sph
+TARGET_CVT_RAYLEIGH_FLD =   convert_rayleigh_field
+TARGET_RAYLEIGH_VIZ =       viz_rayleigh
 
 LIB_FILES_RAYLEIGH_LINK = \
+'$$(LIB_VIZ_FILE)'    \
 '$$(LIB_UTILS_FILE)' \
 '$$(LIB_PARA_FILE)'     \
 '$$(LIB_SOLVER_FILE)'   \
-'$$(LIB_MESH_FILE)'     \
-'$$(LIB_FFTPACK_FILE)'
+'$$(LIB_MESH_FILE)'
 
 
 LIBS_RAYLEIGH_LINK = \
+'$$(LIB_VIZ)'    \
 '$$(LIB_UTILS)'     \
 '$$(LIB_PARA)'      \
 '$$(LIB_SOLVER)'    \
-'$$(LIB_MESH)'      \
-'$$(LIB_FFTPACK)'
+'$$(LIB_MESH)'
 
 ifdef FORTRAN_C_CONNECT
   LIBS_RAYLEIGH_LINK+=        '$$(LIB_KEMO_C)'
@@ -54,6 +55,17 @@ t_rayleigh_resolution.o \
 const_fem_nodes_4_rayleigh.o
 
 
+MOD_RAYLEIGH_VIZ = \
+m_viz_4_rayleigh.o \
+t_control_data_all_vizs.o \
+t_rayleigh_resolution.o \
+const_fem_nodes_4_rayleigh.o \
+\
+main_visualize_rayleigh.o \
+analyzer_viz_rayleigh.o \
+FEM_analyzer_viz_rayleigh.o
+
+
 
 #
 #  -------------------------------------------------------------------------
@@ -67,12 +79,13 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_CVT_RAYLEIGH_SPH = $$(BUILDDIR)/$(TARGET_CVT_RAYLEIGH_SPH)' >> $(MAKENAME)
 	@echo 'TARGET_CVT_RAYLEIGH_FLD = $$(BUILDDIR)/$(TARGET_CVT_RAYLEIGH_FLD)' >> $(MAKENAME)
+	@echo 'TARGET_RAYLEIGH_VIZ = $$(BUILDDIR)/$(TARGET_RAYLEIGH_VIZ)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo rayleigh_link: \
-	'$$(TARGET_FEM_MESH_RAYLEIGH)  '\
 	'$$(TARGET_CVT_RAYLEIGH_SPH) $$(TARGET_CVT_RAYLEIGH_FLD)' \
+	'$$(TARGET_FEM_MESH_RAYLEIGH)  $$(TARGET_RAYLEIGH_VIZ)' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FEM_MESH_RAYLEIGH)': '$$(MOD_FEM_MESH_RAYLEIGH)' \
@@ -90,11 +103,17 @@ target_task:
 	'-L. $$(LIBS_RAYLEIGH_LINK)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	
 	@echo '$$(TARGET_CVT_RAYLEIGH_FLD)': '$$(MOD_CVT_RAYLEIGH_FLD)' \
 	'$$(LIB_FILES_RAYLEIGH_LINK)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_CVT_RAYLEIGH_FLD)' '$$(MOD_CVT_RAYLEIGH_FLD)' \
+	'-L. $$(LIBS_RAYLEIGH_LINK)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_RAYLEIGH_VIZ)': '$$(MOD_RAYLEIGH_VIZ)' \
+	'$$(LIB_FILES_RAYLEIGH_LINK)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_RAYLEIGH_VIZ)' '$$(MOD_RAYLEIGH_VIZ)' \
 	'-L. $$(LIBS_RAYLEIGH_LINK)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -115,6 +134,8 @@ mod_list:
 	@echo  $(MOD_CVT_RAYLEIGH_SPH)   >> $(MAKENAME)
 	@echo  MOD_CVT_RAYLEIGH_FLD=  \\ >> $(MAKENAME)
 	@echo  $(MOD_CVT_RAYLEIGH_FLD)   >> $(MAKENAME)
+	@echo  MOD_RAYLEIGH_VIZ=  \\ >> $(MAKENAME)
+	@echo  $(MOD_RAYLEIGH_VIZ)   >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 

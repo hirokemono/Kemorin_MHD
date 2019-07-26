@@ -1,20 +1,25 @@
-!analyzer_viz.f90
-!      module analyzer_viz
+!>@file   analyzer_viz_rayleigh.f90
+!!@brief  module analyzer_viz_rayleigh
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in July, 2019
 !
-!     Written by H. Matsui on July, 2006
+!>@brief  Main loop of visualization of Rayleigh data
+!!
+!!@verbatim
+!!      subroutine init_viz_rayleigh
+!!      subroutine analyze_viz_rayleigh
+!!@endverbatim
 !
-!      subroutine init_analyzer
-!      subroutine analyze
-!
-      module analyzer_viz
+      module analyzer_viz_rayleigh
 !
       use m_precision
       use m_machine_parameter
 !
       use m_work_time
-      use m_visualization
+      use m_viz_4_rayleigh
 !
-      use FEM_analyzer_viz
+      use FEM_analyzer_viz_rayleigh
       use t_control_data_all_vizs
       use t_visualizer
 !
@@ -29,7 +34,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine init_viz_rayleigh
 !
       use calypso_mpi
       use m_elapsed_labels_4_VIZ
@@ -54,19 +59,19 @@
 !
 !
 !  FEM Initialization
-      if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_vizs'
-      call FEM_initialize_vizs(ucd_file_VIZ, viz_step_V)
+      if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz_rayleigh'
+      call FEM_initialize_viz_rayleigh(ucd_file_VIZ, viz_step_V)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
       call init_visualize                                               &
      &   (femmesh_VIZ, field_VIZ, vizs_ctl1%viz_ctl_v, vizs_v)
 !
-      end subroutine init_analyzer
+      end subroutine init_viz_rayleigh
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_viz_rayleigh
 !
       integer(kind=kint ) :: i_step, visval
 !
@@ -76,8 +81,9 @@
         call set_IO_step_flag(i_step,t_VIZ%ucd_step)
 !
 !  Load field data
-        if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
-        call FEM_analyze_vizs                                           &
+        if(iflag_debug .gt. 0)                                          &
+     &      write(*,*) 'FEM_analyze_viz_rayleigh', i_step
+        call FEM_analyze_viz_rayleigh                                   &
      &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V, visval)
 !
 !  Rendering
@@ -92,8 +98,8 @@
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call output_elapsed_times
 !
-      end subroutine analyze
+      end subroutine analyze_viz_rayleigh
 !
 !  ---------------------------------------------------------------------
 !
-      end module analyzer_viz
+      end module analyzer_viz_rayleigh

@@ -48,7 +48,6 @@
       type(Rayleigh_grid_param), save, private :: r_reso0
 !
       private :: sph_const
-      private :: shell_params_from_rayleigh
 !
 ! ----------------------------------------------------------------------
 !

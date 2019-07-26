@@ -1,5 +1,5 @@
-!>@file   m_visualization.f90
-!!@brief  module m_visualization
+!>@file   m_viz_4_rayleigh.f90
+!!@brief  module m_viz_4_rayleigh
 !!
 !!@author H. Matsui
 !!@date Programmed in June, 2006
@@ -16,7 +16,7 @@
 !!        type(time_data), intent(inout) :: time_d
 !!@endverbatim
 !
-      module m_visualization
+      module m_viz_4_rayleigh
 !
       use m_precision
       use m_machine_parameter
@@ -216,4 +216,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module m_visualization
+      end module m_viz_4_rayleigh

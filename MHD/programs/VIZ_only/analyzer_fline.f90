@@ -38,7 +38,7 @@
       call read_control_file_vizs(vizs_ctl1)
       call set_control_params_4_viz                                     &
      &   (vizs_ctl1%t_viz_ctl, vizs_ctl1%viz_plt,                       &
-     &    mesh_file_VIZ, ucd_file_VIZ, ierr)
+     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ, viz_step_V, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !

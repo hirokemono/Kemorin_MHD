@@ -43,14 +43,18 @@
 !       setup mesh information
 !   --------------------------------
 !
-      call mesh_setup_4_VIZ(ucd_param)
+      call mesh_setup_4_VIZ(mesh_file_VIZ, ucd_param, t_VIZ,            &
+     &    femmesh_VIZ, VIZ_time_IO, ucd_VIZ, field_VIZ)
 !
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
       iflag = viz_step%FLINE_t%increment + viz_step%PVR_t%increment     &
      &       + viz_step%LIC_t%increment
-      if(iflag .gt. 0) call element_normals_4_VIZ
+      if(iflag .gt. 0) then
+        call element_normals_4_VIZ                                      &
+     &     (femmesh_VIZ, ele_4_nod_VIZ, spfs_VIZ, jacobians_VIZ)
+      end if
 !
 !     --------------------- 
 !
@@ -79,8 +83,8 @@
 !
       visval = iflag_vizs_w_fix_step(i_step, viz_step)
       call istep_viz_w_fix_dt(i_step, viz_step)
-      call set_field_data_4_VIZ                                         &
-     &   (visval, i_step, ucd_param, time_VIZ%time_d)
+      call set_field_data_4_VIZ(visval, i_step, ucd_param,              &
+     &   femmesh_VIZ, VIZ_time_IO, ucd_VIZ, time_VIZ%time_d, field_VIZ)
 !
       end subroutine FEM_analyze_vizs
 !

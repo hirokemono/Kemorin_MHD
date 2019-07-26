@@ -37,11 +37,13 @@
 !       setup mesh information
 !   --------------------------------
 !
-      call mesh_setup_4_VIZ(ucd_param)
+      call mesh_setup_4_VIZ(mesh_file_VIZ, ucd_param, t_VIZ,            &
+     &    femmesh_VIZ, VIZ_time_IO, ucd_VIZ, field_VIZ)
 !
 !     --------------------- init for PVR
 !
-      call element_normals_4_VIZ
+      call element_normals_4_VIZ                                        &
+     &   (femmesh_VIZ, ele_4_nod_VIZ, spfs_VIZ, jacobians_VIZ)
 !
 !     ---------------------
 !
@@ -65,7 +67,8 @@
       visval = output_IO_flag(i_step, pvr_step)
       call istep_file_w_fix_dt(i_step, pvr_step)
       call set_field_data_4_VIZ                                         &
-     &   (pvr_step%istep_file, i_step, ucd_param, t_VIZ%time_d)
+     &  (pvr_step%istep_file, i_step, ucd_param,                        &
+     &   femmesh_VIZ, VIZ_time_IO, ucd_VIZ, time_VIZ%time_d, field_VIZ)
 !
       end subroutine FEM_analyze_pvr
 !

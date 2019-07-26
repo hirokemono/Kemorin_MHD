@@ -104,6 +104,7 @@
       call mpi_output_mesh(rayleigh_mesh_file,                          &
      &    rayleigh_fem%mesh, rayleigh_fem%group)
 !
+      call dealloc_gen_sph_fem_mesh_param(gen_sph_G)
 !
       allocate( org_mesh(nprocs) )
       call copy_node_geometry_types                                     &
