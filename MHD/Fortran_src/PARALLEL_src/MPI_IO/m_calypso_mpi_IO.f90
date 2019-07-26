@@ -42,6 +42,8 @@
 !!     &          iflag_bin_swap, ioffset, num, vector)
 !!      subroutine calypso_mpi_seek_read_int8(id_mpi_file,              &
 !!     &          iflag_bin_swap, ioffset, num, i8_vector)
+!!      subroutine calypso_mpi_seek_read_int4head                       &
+!!     &         (id_mpi_file, int4_dat, ioff_gl)
 !!
 !!      subroutine calypso_mpi_seek_write_gz(id_mpi_file, ioffset, zbuf)
 !!      subroutine calypso_mpi_seek_read_gz(id_mpi_file, ioffset, zbuf)
@@ -480,6 +482,38 @@
       end if
 !
       end subroutine calypso_mpi_seek_read_int8
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_seek_read_int4head                         &
+     &         (id_mpi_file, int4_dat, ioff_gl)
+!
+      use m_error_IDs
+      use binary_IO
+!
+      integer, intent(in) ::  id_mpi_file
+      integer, intent(inout) :: int4_dat
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: int_vector(1)
+!
+!
+      if(my_rank .eq. 0) then
+        ioffset = ioff_gl
+        call MPI_FILE_SEEK                                              &
+     &     (id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
+        call MPI_FILE_READ(id_mpi_file, int_vector, 1,                  &
+     &      CALYPSO_FOUR_INT, sta1_IO, ierr_MPI)
+!
+        int4_dat = int_vector(1)
+      end if
+      ioff_gl = ioff_gl + ifour
+!
+      call MPI_BCAST(int4_dat, 1, CALYPSO_FOUR_INT, 0,                  &
+     &    CALYPSO_COMM, ierr_MPI)
+
+      end subroutine calypso_mpi_seek_read_int4head
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

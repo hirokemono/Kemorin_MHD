@@ -48,7 +48,10 @@ convert_from_rayleigh_rst.o
 
 MOD_CVT_RAYLEIGH_FLD = \
 main_cvt_from_rayleigh_fld.o \
-analyzer_rayleigh_cvt_fld.o
+analyzer_rayleigh_cvt_fld.o \
+\
+t_rayleigh_resolution.o \
+const_fem_nodes_4_rayleigh.o
 
 
 

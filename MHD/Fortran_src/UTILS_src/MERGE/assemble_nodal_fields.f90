@@ -38,7 +38,7 @@
 !
       private :: count_fields_4_assemble_ucd
       private :: set_field_name_4_assemble_ucd
-      private :: copy_field_data_4_assemble
+!      private :: copy_field_data_4_assemble
 !
 ! ----------------------------------------------------------------------
 !

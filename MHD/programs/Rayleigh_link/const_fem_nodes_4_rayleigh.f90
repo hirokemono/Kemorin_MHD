@@ -11,6 +11,7 @@
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!
 !!      subroutine s_const_fem_nodes_4_rayleigh(r_reso, mesh, group)
+!!      subroutine fem_nodes_4_rayleigh_file(r_reso, mesh, group)
 !!        type(Rayleigh_grid_param), intent(in) :: r_reso
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
@@ -34,7 +35,7 @@
 !
       implicit none
 !
-      private :: nodes_4_rayleigh
+      private :: nodes_4_rayleigh, nodes_4_rayleigh_file
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,6 +85,53 @@
 !      write(*,*) 'nodes_4_rayleigh', mesh%node%numnod, r_reso%nphi
       call nodes_4_rayleigh(r_reso, mesh%node)
 !
+      call const_ele_and_grp_4_rayleigh(mesh, group)
+!
+      end subroutine s_const_fem_nodes_4_rayleigh
+!
+! ----------------------------------------------------------------------
+!
+      subroutine fem_nodes_4_rayleigh_file(r_reso, mesh, group)
+!
+      use cal_minmax_and_stacks
+!
+      type(Rayleigh_grid_param), intent(in) :: r_reso
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
+!
+      integer(kind = kint), allocatable :: istack_nnod(:)
+      integer(kind = kint) :: nnod_gl, ndivideed, irest, istart_pe
+!
+!
+      nnod_gl = r_reso%nri * r_reso%nth * r_reso%nphi
+!
+      allocate(istack_nnod(0:nprocs))
+      call cal_divide_and_rest(ndivideed, irest, nnod_gl, nprocs)
+      call set_stack_of_segments                                       &
+     &   (nprocs, ndivideed, irest, ione, istack_nnod)
+!
+      istart_pe = istack_nnod(my_rank)
+      mesh%node%numnod = istack_nnod(my_rank+1) -  istack_nnod(my_rank)
+      mesh%node%internal_node = mesh%node%numnod
+      deallocate(istack_nnod)
+!
+      call alloc_node_geometry_base(mesh%node)
+!
+!      write(*,*) 'nodes_4_rayleigh_file', mesh%node%numnod, r_reso%nphi
+      call nodes_4_rayleigh_file(istart_pe, r_reso, mesh%node)
+!
+      call const_ele_and_grp_4_rayleigh(mesh, group)
+!
+      end subroutine fem_nodes_4_rayleigh_file
+!
+! ----------------------------------------------------------------------
+!
+      subroutine const_ele_and_grp_4_rayleigh(mesh, group)
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
+!
+!
       mesh%ele%numele = 0
       mesh%ele%nnod_4_ele = num_t_linear
       call allocate_ele_connect_type(mesh%ele)
@@ -104,7 +152,7 @@
       call alloc_sf_group_num(group%surf_grp)
       call alloc_sf_group_item(group%surf_grp)
 !
-      end subroutine s_const_fem_nodes_4_rayleigh
+      end subroutine const_ele_and_grp_4_rayleigh
 !
 ! ----------------------------------------------------------------------
 !
@@ -123,7 +171,7 @@
       pi = four * atan(one)
       allocate(r(node%numnod), t(node%numnod), p(node%numnod))
 !
-!!$omp parallel do private(k,l,m,k_to_out,inod)
+!$omp parallel do private(k,l,m,k_to_out,inod)
       do k = r_reso%kst, r_reso%ked
         inod = (k - r_reso%kst) * r_reso%nphi                           &
      &        * (r_reso%led - r_reso%lst + 1)
@@ -139,13 +187,56 @@
           end do
         end do
       end do
-!!$omp end parallel do
+!$omp end parallel do
 !
       call position_2_xyz(node%numnod, r, t, p,                         &
      &    node%xx(1,1), node%xx(1,2), node%xx(1,3))
       deallocate(r, t, p)
 !
       end subroutine nodes_4_rayleigh
+!
+! ----------------------------------------------------------------------
+!
+      subroutine nodes_4_rayleigh_file(ist_pe, r_reso, node)
+!
+      use coordinate_converter
+!
+      integer(kind = kint), intent(in) :: ist_pe
+      type(Rayleigh_grid_param), intent(in) :: r_reso
+      type(node_data), intent(inout) :: node
+!
+      integer(kind = kint) :: k, l, m, k_to_out, inod, l_tmp, i_gl
+      real(kind = kreal) :: pi
+      real(kind = kreal), allocatable :: r(:), t(:), p(:)
+!
+!
+      pi = four * atan(one)
+      allocate(r(node%numnod), t(node%numnod), p(node%numnod))
+!
+!$omp parallel do private(i_gl,k,l,m,l_tmp,k_to_out,inod)
+      do inod = 1, node%numnod
+        i_gl = inod + ist_pe
+        m = mod(i_gl-1,r_reso%nphi)
+        l_tmp = (i_gl-m) / r_reso%nphi
+        l = mod(l_tmp,r_reso%nth)
+        k = (l_tmp-l) / r_reso%nth
+        m = m + 1
+        l = l + 1
+        k = k + 1
+        k_to_out = r_reso%nri - k + 1
+            node%inod_global(inod) = k_to_out + (l-1) * r_reso%nri      &
+     &                              + (m-1) * r_reso%nth * r_reso%nri
+        r(inod) = r_reso%radius(k)
+        t(inod) = r_reso%theta(l)
+        p(inod) = two * pi * dble(m-1) / dble(r_reso%nphi)
+      end do
+!$omp end parallel do
+!
+      call position_2_xyz(node%numnod, r, t, p,                         &
+     &    node%xx(1,1), node%xx(1,2), node%xx(1,3))
+      deallocate(r, t, p)
+!
+      end subroutine nodes_4_rayleigh_file
 !
 ! ----------------------------------------------------------------------
 !

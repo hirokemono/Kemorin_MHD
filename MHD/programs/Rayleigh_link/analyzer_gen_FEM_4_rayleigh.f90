@@ -29,12 +29,10 @@
       use t_ctl_data_const_sph_mesh
       use t_const_spherical_grid
       use t_ctl_params_gen_sph_shell
+      use t_rayleigh_resolution
       use const_fem_nodes_4_rayleigh
 !
       implicit none
-!
-      character (len = kchara)                                          &
-     &         :: control_file_name = 'control_sph_shell'
 !
 !
 !>       Structure of grid and spectr data for spherical spectr method
@@ -45,8 +43,6 @@
 !>      Structure to construct grid
       type(construct_spherical_grid), save :: gen_sph_G
 !
-      type(sph_comm_tables), save, private :: comms_sph
-      type(sph_group_data), save, private ::  sph_grps
       type(mesh_data), save, private :: geofem
 !
       type(Rayleigh_grid_param), save, private :: r_reso0
@@ -82,7 +78,7 @@
       call shell_params_from_rayleigh(r_reso0, sph_const, gen_sph_G)
 !
       if(iflag_debug .gt. 0) write(*,*) 'load_para_SPH_and_FEM_mesh2'
-      sph_files1%mesh_file_IO%file_prefix = 'sph_lm63t96r71c_12_2/in'
+      sph_files1%mesh_file_IO%file_prefix = 'aho/in'
       sph_files1%mesh_file_IO%iflag_format = id_ascii_file_fmt
 !
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
