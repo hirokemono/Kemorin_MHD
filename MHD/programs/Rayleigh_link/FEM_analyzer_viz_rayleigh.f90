@@ -54,6 +54,7 @@
 !
       use const_fem_nodes_4_rayleigh
       use const_FEM_mesh_sph_mhd
+      use parallel_FEM_mesh_init
       use mpi_load_mesh_data
 !
       type(field_IO_params), intent(in) :: ucd_param
@@ -87,19 +88,19 @@
       call base_FEM_mesh_sph_mhd                                        &
      &   (sph_const%sph_params, sph_const%sph_rtp, sph_const%sph_rj,    &
      &    femmesh_VIZ%mesh, femmesh_VIZ%group, gen_sph_R)
-      mesh_file%file_prefix = 'aho_viz/tako'
-      mesh_file%iflag_format = id_ascii_file_fmt
-      call mpi_output_mesh                                              &
-     &   (mesh_file, femmesh_VIZ%mesh, femmesh_VIZ%group)
 !
       call dealloc_gen_sph_fem_mesh_param(gen_sph_R)
+!
+       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+       call FEM_mesh_initialization                                     &
+      &   (femmesh_VIZ%mesh, femmesh_VIZ%group)
 !
 !   --------------------------------
 !       setup mesh information
 !   --------------------------------
 !
-      call mesh_setup_4_VIZ2(mesh_file_VIZ, ucd_param, t_VIZ,           &
-     &    femmesh_VIZ, VIZ_time_IO, ucd_VIZ, field_VIZ)
+      call mesh_setup_4_VIZ2(ucd_param, t_VIZ,           &
+     &    femmesh_VIZ%mesh%node, VIZ_time_IO, ucd_VIZ, field_VIZ)
 !
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
@@ -146,21 +147,18 @@
 !-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine mesh_setup_4_VIZ2(mesh_file, ucd_param, time_v,         &
-     &          fem, t_IO, ucd, field)
+      subroutine mesh_setup_4_VIZ2(ucd_param, time_v,       &
+     &          node, t_IO, ucd, field)
 !
       use m_array_for_send_recv
-      use mpi_load_mesh_data
       use nod_phys_send_recv
-      use parallel_FEM_mesh_init
       use set_parallel_file_name
       use set_ucd_data_to_type
       use ucd_IO_select
 !
-      type(field_IO_params), intent(in) :: mesh_file
       type(field_IO_params), intent(in) :: ucd_param
       type(time_step_param), intent(in) :: time_v
-      type(mesh_data), intent(inout) :: fem
+      type(node_data), intent(in) :: node
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: field
@@ -170,19 +168,10 @@
 !       setup mesh information
 !   --------------------------------
 !
-!       load mesh informations
-!      call mpi_input_mesh(mesh_file, nprocs, fem)
-!
-       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-       call FEM_mesh_initialization(fem%mesh, fem%group)
-!
-!     ---------------------
-!
-      ucd%nnod = fem%mesh%node%numnod
+      ucd%nnod = node%numnod
       call sel_read_udt_param(my_rank, time_v%init_d%i_time_step,       &
      &    ucd_param, t_IO, ucd)
-      call alloc_phys_data_type_by_output                               &
-     &   (ucd, fem%mesh%node, field)
+      call alloc_phys_data_type_by_output(ucd, node, field)
 !
       end subroutine mesh_setup_4_VIZ2
 !
