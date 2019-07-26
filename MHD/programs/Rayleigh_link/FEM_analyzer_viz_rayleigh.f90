@@ -41,9 +41,8 @@
 !
 !>       Structure of grid and spectr data for spherical spectr method
       type(sph_grids), save :: sph_const
-      type(mesh_data), save :: geofem
 !
-      private :: gen_sph_R, r_reso_V, rayleigh_fem, sph_const, geofem
+      private :: gen_sph_R, r_reso_V, rayleigh_fem, sph_const
 !
 !-----------------------------------------------------------------------
 !
@@ -79,8 +78,6 @@
      &   (r_reso_V, rayleigh_fem%mesh, rayleigh_fem%group)
 !
       call shell_params_from_rayleigh(r_reso_V, sph_const, gen_sph_R)
-      call mpi_output_mesh(rayleigh_mesh_file,                          &
-     &    rayleigh_fem%mesh, rayleigh_fem%group)
 !
 !   --------------------------------
 !       setup mesh information
@@ -89,11 +86,11 @@
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
       call base_FEM_mesh_sph_mhd                                        &
      &   (sph_const%sph_params, sph_const%sph_rtp, sph_const%sph_rj,    &
-     &    geofem%mesh, geofem%group, gen_sph_R)
+     &    femmesh_VIZ%mesh, femmesh_VIZ%group, gen_sph_R)
       mesh_file%file_prefix = 'aho_viz/tako'
       mesh_file%iflag_format = id_ascii_file_fmt
       call mpi_output_mesh                                              &
-     &   (mesh_file, geofem%mesh, geofem%group)
+     &   (mesh_file, femmesh_VIZ%mesh, femmesh_VIZ%group)
 !
       call dealloc_gen_sph_fem_mesh_param(gen_sph_R)
 !
@@ -174,7 +171,7 @@
 !   --------------------------------
 !
 !       load mesh informations
-      call mpi_input_mesh(mesh_file, nprocs, fem)
+!      call mpi_input_mesh(mesh_file, nprocs, fem)
 !
        if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
        call FEM_mesh_initialization(fem%mesh, fem%group)
