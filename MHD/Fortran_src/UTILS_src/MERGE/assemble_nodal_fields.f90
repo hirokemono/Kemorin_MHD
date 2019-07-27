@@ -13,10 +13,9 @@
 !!     &         (asbl_tbl, fld_IO, fld)
 !!
 !!      subroutine assemble_field_data                                  &
-!!     &         (nprocs_org, asbl_comm, new_fld, t_IO, org_fIO)
+!!     &         (nprocs_org, asbl_comm, new_fld, org_fIO)
 !!        type(comm_table_4_assemble), intent(in) :: asbl_comm
 !!        type(phys_data), intent(inout) :: new_fld
-!!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: org_fIO(nprocs_org)
 !!@endverbatim
 !!
@@ -111,7 +110,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine assemble_field_data                                    &
-     &         (nprocs_org, asbl_comm, new_fld, t_IO, org_fIO)
+     &         (nprocs_org, asbl_comm, new_fld, org_fIO)
 !
       use t_phys_data
       use t_field_data_IO
@@ -125,13 +124,11 @@
       type(comm_table_4_assemble), intent(in) :: asbl_comm
 !
       type(phys_data), intent(inout) :: new_fld
-      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: org_fIO(nprocs_org)
 !
       integer(kind = kint) :: ist, num, ip
 !
 !
-      call share_time_step_data(t_IO)
       do ip = 1, nprocs_org
         call share_field_IO_names(ip, org_fIO(ip))
         call share_each_field_IO_data(ip, org_fIO(ip))

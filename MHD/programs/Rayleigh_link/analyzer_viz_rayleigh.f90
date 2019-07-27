@@ -20,12 +20,13 @@
       use m_viz_4_rayleigh
 !
       use FEM_analyzer_viz_rayleigh
-      use t_control_data_all_vizs
+      use t_ctl_data_rayleigh_vizs
+      use t_rayleigh_field_address
       use t_visualizer
 !
       implicit none
 !
-      type(control_data_vizs), save :: vizs_ctl1
+      type(control_data_rayleigh_vizs), save :: rayleigh_vizs_ctl1
       type(visualize_modules), save :: vizs_v
 !
 !  ---------------------------------------------------------------------
@@ -50,13 +51,15 @@
 !
 !     read controls
 !
-      if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
-      call read_control_file_vizs(vizs_ctl1)
-      call set_control_params_4_viz                                     &
-     &   (vizs_ctl1%t_viz_ctl, vizs_ctl1%viz_plt,                       &
-     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ, viz_step_V, ierr)
+      if (iflag_debug.gt.0) write(*,*) 'read_ctl_file_reayleigh_viz'
+      call read_ctl_file_reayleigh_viz(rayleigh_vizs_ctl1)
+      call set_ctl_params_rayleigh_viz                                  &
+     &   (rayleigh_vizs_ctl1%t_viz_ctl, rayleigh_vizs_ctl1%viz_plt,     &
+     &    rayleigh_vizs_ctl1%sdctl, rayleigh_vizs_ctl1%field_ctl,       &
+     &    t_VIZ, viz_step_V, rayleigh_ftbl1, rayleigh_fld, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
+!      call check_rayleigh_field_address(rayleigh_ftbl1)
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz_rayleigh'
@@ -65,7 +68,7 @@
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
       call init_visualize                                               &
-     &   (femmesh_VIZ, field_VIZ, vizs_ctl1%viz_ctl_v, vizs_v)
+     &   (femmesh_VIZ, field_VIZ, rayleigh_vizs_ctl1%viz_ctl_v, vizs_v)
 !
       end subroutine init_viz_rayleigh
 !

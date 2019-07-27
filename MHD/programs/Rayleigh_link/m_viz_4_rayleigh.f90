@@ -7,8 +7,9 @@
 !>@brief Arrays for Field data IO for visualizers
 !!
 !!@verbatim
-!!      subroutine set_control_params_4_viz                             &
-!!     &         (tctl, plt, mesh_file, ucd_param, ierr)
+!!      subroutine set_ctl_params_rayleigh_viz                          &
+!!     &         (tctl, plt, sdctl, field_ctl,                          &
+!!     &          mesh_file, ucd_param, time_v, viz_step, ierr)
 !!      subroutine mesh_setup_4_VIZ(ucd_param)
 !!      subroutine element_normals_4_VIZ
 !!      subroutine set_field_data_4_VIZ(iflag, istep_ucd, time_d)
@@ -56,7 +57,6 @@
 !
 !
 !>        Instance for FEM field data IO
-      type(time_data), save :: VIZ_time_IO
       type(ucd_data), save :: ucd_VIZ
 !>        Instance for numbers of FEM mesh for merged IO
 !      type(merged_ucd_data), save :: m_ucd_SPH_TRNS
@@ -74,86 +74,54 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_params_4_viz(tctl, plt,                    &
-     &          mesh_file, ucd_param, time_v, viz_step, ierr)
+      subroutine set_ctl_params_rayleigh_viz                            &
+     &         (tctl, plt, sdctl, field_ctl,                            &
+     &          time_v, viz_step, rayleigh_ftbl, ra_fld, ierr)
 !
-      use t_ucd_data
+      use m_error_IDs
       use t_file_IO_parameter
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
+      use t_ctl_data_4_fields
+      use t_ctl_data_4_divide_sphere
       use t_VIZ_step_parameter
+      use t_rayleigh_field_address
+      use t_rayleigh_field_IO
 !
       use m_file_format_switch
-      use m_default_file_prefix
       use set_control_platform_data
-      use ucd_IO_select
 !
       type(time_data_control), intent(in) :: tctl
+      type(platform_data_control), intent(in) :: plt
+      type(sphere_domain_control), intent(in) :: sdctl
+      type(field_control), intent(in) :: field_ctl
 !
       integer(kind = kint), intent(inout) :: ierr
-      type(platform_data_control), intent(inout) :: plt
-      type(field_IO_params), intent(inout) :: mesh_file
-      type(field_IO_params), intent(inout) :: ucd_param
       type(time_step_param), intent(inout) :: time_v
       type(VIZ_step_params), intent(inout) :: viz_step
+!
+      type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
+      type(rayleigh_field), intent(inout) :: ra_fld
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call set_control_smp_def(my_rank, plt)
-      call set_control_mesh_def(plt, mesh_file)
-      call set_ucd_file_define(plt, ucd_param)
 !
-      call set_fixed_time_step_params(tctl, time_v, ierr, e_message)
+      call set_fixed_time_step_params                                   &
+     &   (tctl, time_v, ierr, e_message)
+      if(ierr .gt. 0) return
+!
       call viz_fixed_time_step_params                                   &
      &   (time_v%init_d%dt, tctl, viz_step)
       call copy_delta_t(time_v%init_d, time_v%time_d)
 !
-      if(ierr .gt. 0) return
+      call set_ctl_rayleigh_field_address                               &
+     &   (plt, field_ctl, rayleigh_ftbl, e_message, ierr)
 !
-      end subroutine set_control_params_4_viz
+      call set_ctl_params_rayleigh_domains                              &
+     &   (sdctl, ra_fld, e_message, ierr)
 !
-! ----------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine mesh_setup_4_VIZ(mesh_file, ucd_param, time_v,         &
-     &          fem, t_IO, ucd, field)
-!
-      use m_array_for_send_recv
-      use mpi_load_mesh_data
-      use nod_phys_send_recv
-      use parallel_FEM_mesh_init
-      use set_parallel_file_name
-      use set_ucd_data_to_type
-      use ucd_IO_select
-!
-      type(field_IO_params), intent(in) :: mesh_file
-      type(field_IO_params), intent(in) :: ucd_param
-      type(time_step_param), intent(in) :: time_v
-      type(mesh_data), intent(inout) :: fem
-      type(time_data), intent(inout) :: t_IO
-      type(ucd_data), intent(inout) :: ucd
-      type(phys_data), intent(inout) :: field
-!
-!
-!   --------------------------------
-!       setup mesh information
-!   --------------------------------
-!
-!       load mesh informations
-      call mpi_input_mesh(mesh_file, nprocs, fem)
-!
-       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-       call FEM_mesh_initialization(fem%mesh, fem%group)
-!
-!     ---------------------
-!
-      ucd%nnod = fem%mesh%node%numnod
-      call sel_read_udt_param(my_rank, time_v%init_d%i_time_step,       &
-     &    ucd_param, t_IO, ucd)
-      call alloc_phys_data_type_by_output                               &
-     &   (ucd, fem%mesh%node, field)
-!
-      end subroutine mesh_setup_4_VIZ
+      end subroutine set_ctl_params_rayleigh_viz
 !
 ! ----------------------------------------------------------------------
 !
@@ -184,35 +152,6 @@
      &    fem%mesh, fem%group, spfs, jacobians)
 !
       end subroutine element_normals_4_VIZ
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_field_data_4_VIZ(iflag, istep_ucd, ucd_param,      &
-     &         fem, t_IO, ucd, time_d, field)
-!
-      use set_ucd_data_to_type
-      use nod_phys_send_recv
-!
-      integer(kind = kint), intent(in) :: iflag, istep_ucd
-      type(field_IO_params), intent(in) :: ucd_param
-      type(mesh_data), intent(in) :: fem
-!
-      type(time_data), intent(inout) :: t_IO
-      type(ucd_data), intent(inout) :: ucd
-      type(time_data), intent(inout) :: time_d
-      type(phys_data), intent(inout) :: field
-!
-!
-      if(iflag .ne. 0) return
-      call set_data_by_read_ucd(my_rank, istep_ucd,                     &
-     &    ucd_param, t_IO, ucd, field)
-      call copy_time_step_size_data(t_IO, time_d)
-!
-      if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(fem%mesh, field)
-!
-      end subroutine set_field_data_4_VIZ
 !
 ! ----------------------------------------------------------------------
 !

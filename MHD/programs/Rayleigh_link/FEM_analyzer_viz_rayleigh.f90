@@ -31,6 +31,7 @@
       use t_const_spherical_grid
       use t_rayleigh_resolution
       use t_rayleigh_field_IO
+      use t_rayleigh_field_address
       use t_comm_table_4_assemble
       use m_viz_4_rayleigh
 !
@@ -42,6 +43,7 @@
       type(mesh_data), save :: rayleigh_fem
 !
       type(rayleigh_field), save :: rayleigh_fld
+      type(rayleigh_field_address), save :: rayleigh_ftbl1
 !
 !>       Structure of grid and spectr data for spherical spectr method
       type(sph_grids), save :: sph_const
@@ -79,9 +81,10 @@
 !   --------------------------------
 !
       call load_resolution_4_rayleigh(r_reso_V)
-!
 !      call s_const_fem_nodes_4_rayleigh                                &
 !     &   (r_reso_V, rayleigh_fem%mesh, rayleigh_fem%group)
+!
+      call mesh_setup_4_VIZ2
       call fem_nodes_4_rayleigh_file                                    &
      &   (r_reso_V, rayleigh_fem%mesh, rayleigh_fem%group)
 !
@@ -123,7 +126,8 @@
 !       setup field information
 !   --------------------------------
 !
-      call mesh_setup_4_VIZ2(femmesh_VIZ%mesh, field_VIZ)
+      call init_fields_by_rayleigh                                      &
+     &   (rayleigh_ftbl1, femmesh_VIZ%mesh, field_VIZ)
 !
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
@@ -159,25 +163,18 @@
       visval = iflag_vizs_w_fix_step(i_step, viz_step)
       call istep_viz_w_fix_dt(i_step, viz_step)
 !
+      time_VIZ%time_d%i_time_step = i_step
+      time_VIZ%time_d%time = 0.0d0
+      time_VIZ%time_d%dt = 0.0d0
       call set_field_data_4_VIZ2                                        &
-     &   (visval, femmesh_VIZ, VIZ_time_IO, time_VIZ%time_d, field_VIZ)
+     &   (visval, i_step, femmesh_VIZ, field_VIZ)
 !
       end subroutine FEM_analyze_viz_rayleigh
 !
 !-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine mesh_setup_4_VIZ2(mesh, field)
-!
-      use m_array_for_send_recv
-      use nod_phys_send_recv
-      use set_parallel_file_name
-      use set_ucd_data_to_type
-      use ucd_IO_select
-      use share_field_data
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(phys_data), intent(inout) :: field
+      subroutine mesh_setup_4_VIZ2
 !
       character(len=kchara) :: file_name
 !
@@ -185,93 +182,59 @@
       file_name = 'Spherical_3D/00007000_grid'
       call read_rayleigh_field_param(file_name, rayleigh_fld)
 !
-      if(my_rank .eq. 0) then
-        field%num_phys = 1
-        call alloc_phys_name_type(field)
-        field%phys_name(1) = 'temperature'
-        field%num_component(1) = 1
-        field%istack_component(1) = 1
-        field%ntot_phys = 1
-      end if
-!
-      call share_phys_field_names(field)
-      field%num_phys_viz =  field%num_phys
-      field%ntot_phys_viz = field%ntot_phys
-!
-      call alloc_phys_data_type(mesh%node%numnod, field)
-!
       end subroutine mesh_setup_4_VIZ2
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_field_data_4_VIZ2                                  &
-     &         (iflag, fem, t_IO, time_d, field)
+      subroutine set_field_data_4_VIZ2(iflag, i_step, fem, field)
 !
       use assemble_nodal_fields
       use nod_phys_send_recv
 !
-      use set_ucd_data_to_type
-      use merged_udt_vtk_file_IO
-      use parallel_ucd_IO_select
+      use coordinate_convert_4_sph
+      use share_field_data
 !
       integer(kind = kint), intent(in) :: iflag
+      integer(kind = kint), intent(in) :: i_step
       type(mesh_data), intent(in) :: fem
 !
-      type(time_data), intent(inout) :: t_IO
-      type(time_data), intent(inout) :: time_d
       type(phys_data), intent(inout) :: field
 !
       character(len=kchara) :: file_name
       integer(kind = kint_gl) :: nnod_r, istart_pe
 !
-      type(field_IO_params) :: new_fld_file
-      integer(kind = kint) :: istep = 1
-      type(ucd_data), save :: ucd_m
-      type(merged_ucd_data), save :: mucd_m
+      integer(kind = kint) :: nd
 !
 !
       if(iflag .ne. 0) return
-        nnod_r = rayleigh_pmesh(my_rank+1)%node%numnod
-        istart_pe                                                       &
-     &         = rayleigh_pmesh(my_rank+1)%node%istack_numnod(my_rank)
-        file_name = 'Spherical_3D/00007000_0501'
-        call alloc_rayleigh_component(nnod_r, istart_pe, rayleigh_fld)
+      nnod_r = rayleigh_pmesh(my_rank+1)%node%numnod
+      istart_pe                                                         &
+     &       = rayleigh_pmesh(my_rank+1)%node%istack_numnod(my_rank)
 !
+      call init_fields_IO_by_rayleigh(rayleigh_ftbl1,                   &
+     &    rayleigh_pmesh(my_rank+1), rayleigh_fIO(my_rank+1))
+!
+      call alloc_rayleigh_component(nnod_r, istart_pe, rayleigh_fld)
+      do nd = 1, rayleigh_ftbl1%ntot_comp
+        write(file_name,'(a,a1,i8.8,a1,i4.4)')                          &
+     &                     trim(rayleigh_ftbl1%field_dir), '/',         &
+     &                     i_step, '_', rayleigh_ftbl1%id_rayleigh(nd)
         call read_each_rayleigh_component(file_name, rayleigh_fld)
-        call load_local_field_from_rayleigh                             &
-     &     (rayleigh_fld, t_IO, rayleigh_fIO(my_rank+1))
-        call dealloc_rayleigh_component(rayleigh_fld)
 !
-        call copy_time_step_size_data(t_IO, time_d)
-        call assemble_field_data                                        &
-     &     (nprocs, asbl_comm_R, field, t_IO, rayleigh_fIO)
+!$omp parallel workshare
+        rayleigh_fIO(my_rank+1)%d_IO(1:nnod_r,nd)                       &
+     &         = rayleigh_fld%rayleigh_in(1:nnod_r)
+!$omp end parallel workshare
+      end do
+      call dealloc_rayleigh_component(rayleigh_fld)
 !
+      call assemble_field_data                                          &
+     &   (nprocs, asbl_comm_R, field, rayleigh_fIO)
 !
-        if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-        call nod_fields_send_recv(fem%mesh, field)
-        call calypso_mpi_barrier
+      call overwrite_nodal_sph_2_xyz(fem%mesh%node, field)
 !
-     return
-!
-      new_fld_file%iflag_format = iflag_fld
-      new_fld_file%file_prefix =  'aho_viz/tako'
-!
-      call link_num_field_2_ucd(field, ucd_m)
-      call link_local_mesh_2_ucd                                        &
-     &   (fem%mesh%node, fem%mesh%ele, ucd_m)
-      call link_field_data_to_ucd(field, ucd_m)
-!
-      if(new_fld_file%iflag_format/icent .eq. iflag_single/icent) then
-!        write(*,*) 'init_merged_ucd'
-        call init_merged_ucd(new_fld_file%iflag_format,                 &
-     &      fem%mesh%node, fem%mesh%ele, fem%mesh%nod_comm,             &
-     &      ucd_m, mucd_m)
-      end if
-!
-      call sel_write_parallel_ucd_mesh(new_fld_file, ucd_m, mucd_m)
-!        write(*,*) 'sel_write_parallel_ucd_file'
-        call sel_write_parallel_ucd_file                                &
-     &     (istep, new_fld_file, t_IO, ucd_m, mucd_m)
+      if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
+      call nod_fields_send_recv(fem%mesh, field)
 !
       end subroutine set_field_data_4_VIZ2
 !

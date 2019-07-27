@@ -96,7 +96,6 @@
       character(len=kchara), parameter, private                         &
      &            ::   hd_thermal_buo =  'thermal_buoyancy_ctl'
 !
-!
       private :: control_file_code, control_file_name
       private :: read_sph_utils_control_data, read_sph_trans_params_ctl
       private :: bcast_control_data_sph_utils

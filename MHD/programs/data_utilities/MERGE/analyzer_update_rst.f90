@@ -151,6 +151,7 @@
       use load_mesh_data_4_merge
       use set_field_file_names
       use set_merged_restart_data
+      use share_field_data
 !
       integer(kind = kint) :: istep, icou
 !
@@ -164,8 +165,9 @@
         call load_old_FEM_restart_4_merge(istep,                        &
      &      asbl_param_f%org_fld_file, ndomain_org, t_IO_m, org_fIO)
 !
+        call share_time_step_data(t_IO_m)
         call assemble_field_data                                        &
-     &     (ndomain_org, asbl_comm_f, new_fld, t_IO_m, org_fIO)
+     &     (ndomain_org, asbl_comm_f, new_fld, org_fIO)
 !
 !   re-scaling for magnetic field
         call rescale_4_magne(asbl_param_f%b_ratio, new_fld)

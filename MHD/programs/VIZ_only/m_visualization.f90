@@ -9,6 +9,12 @@
 !!@verbatim
 !!      subroutine set_control_params_4_viz                             &
 !!     &         (tctl, plt, mesh_file, ucd_param, ierr)
+!!        type(time_data_control), intent(in) :: tctl
+!!        type(platform_data_control), intent(in) :: plt
+!!        type(field_IO_params), intent(inout) :: mesh_file
+!!        type(field_IO_params), intent(inout) :: ucd_param
+!!        type(time_step_param), intent(inout) :: time_v
+!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!      subroutine mesh_setup_4_VIZ(ucd_param)
 !!      subroutine element_normals_4_VIZ
 !!      subroutine set_field_data_4_VIZ(iflag, istep_ucd, time_d)
@@ -89,9 +95,9 @@
       use ucd_IO_select
 !
       type(time_data_control), intent(in) :: tctl
+      type(platform_data_control), intent(in) :: plt
 !
       integer(kind = kint), intent(inout) :: ierr
-      type(platform_data_control), intent(inout) :: plt
       type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: ucd_param
       type(time_step_param), intent(inout) :: time_v

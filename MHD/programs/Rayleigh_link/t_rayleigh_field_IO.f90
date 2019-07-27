@@ -20,10 +20,10 @@
 !!      subroutine read_each_rayleigh_component(file_name, ra_fld)
 !!        type(rayleigh_field), intent(inout) :: ra_fld
 !!
-!!      subroutine load_local_field_from_rayleigh(ra_fld, t_IO, fld_IO)
-!!        type(rayleigh_field), intent(in) :: ra_fld
-!!        type(time_data), intent(inout) :: t_IO
-!!        type(field_IO), intent(inout) :: fld_IO
+!!      subroutine set_ctl_params_rayleigh_domains                      &
+!!     &         (sdctl, ra_fld, e_msg, ierr)
+!!        type(sphere_domain_control), intent(in) :: sdctl
+!!        type(rayleigh_field), intent(inout) :: ra_fld
 !!@endverbatim
 !
       module t_rayleigh_field_IO
@@ -33,15 +33,16 @@
       use m_constants
       use calypso_mpi
       use t_field_data_IO
-      use set_parallel_file_name
 !
       implicit  none
 !
-!>      Structure for Rayleigh restart data
+!>      Structure for Rayleigh field data
       type rayleigh_field
 !>        Endian swap flag
         integer :: iflag_swap = 0
 !
+!>        Number of subdomains for grid data
+        integer(kind = kint) :: ndomain_rtp(3)
 !>        global radial resolution
         integer :: nri_gl
 !>        global meridional resolution
@@ -182,8 +183,6 @@
         call check_rayleigh_1d_grids(ra_fld)
       end if
 !
-      call dealloc_rayleigh_1d_grids(ra_fld)
-!
       end subroutine read_rayleigh_field_param
 !
 ! ----------------------------------------------------------------------
@@ -217,36 +216,39 @@
       end subroutine read_each_rayleigh_component
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
-      subroutine load_local_field_from_rayleigh(ra_fld, t_IO, fld_IO)
+      subroutine set_ctl_params_rayleigh_domains                        &
+     &         (sdctl, ra_fld, e_msg, ierr)
 !
-      use t_time_data
+      use m_error_IDs
+      use t_ctl_data_4_divide_sphere
 !
-      type(rayleigh_field), intent(in) :: ra_fld
+      type(sphere_domain_control), intent(in) :: sdctl
+      type(rayleigh_field), intent(inout) :: ra_fld
 !
-      type(time_data), intent(inout) :: t_IO
-      type(field_IO), intent(inout) :: fld_IO
+      character(len = kchara), intent(inout) :: e_msg
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      t_IO%i_time_step = 7000
-      t_IO%time = 0.7
-      t_IO%dt = 0.0d0
+      ierr = 0
+      if(      sdctl%num_radial_domain_ctl%iflag .le. 0                 &
+     &   .and. sdctl%num_radial_domain_ctl%iflag .le. 0) then
+        e_msg = 'Set Parallelization information'
+        ierr = ierr_file
+        return
+      end if
 !
-      fld_IO%nnod_IO = int(ra_fld%nnod_rayleigh_in)
-      fld_IO%num_field_IO = 1
-      call alloc_phys_name_IO(fld_IO)
+      ra_fld%ndomain_rtp(1) = sdctl%num_radial_domain_ctl%intvalue
+      ra_fld%ndomain_rtp(2) = sdctl%num_horiz_domain_ctl%intvalue
+      ra_fld%ndomain_rtp(3) = 1
 !
-      fld_IO%fld_name = 'temperature'
-      fld_IO%num_comp_IO(1) = 1
-      call cal_istack_phys_comp_IO(fld_IO)
+      if(ra_fld%ndomain_rtp(1)*ra_fld%ndomain_rtp(2) .ne. nprocs) then
+        e_msg = 'Set correct horizontal and vertical pallelization'
+        ierr = ierr_file
+      end if
 !
-      call alloc_phys_data_IO(fld_IO)
-      fld_IO%d_IO(1:fld_IO%nnod_IO,1)                                   &
-     &             = ra_fld%rayleigh_in(1:fld_IO%nnod_IO)
+      end subroutine set_ctl_params_rayleigh_domains
 !
-      end subroutine load_local_field_from_rayleigh
-!
-! -----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
       end module t_rayleigh_field_IO

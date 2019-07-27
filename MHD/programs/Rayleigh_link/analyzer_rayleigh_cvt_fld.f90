@@ -180,6 +180,7 @@
       use load_mesh_data_4_merge
       use set_field_file_names
       use const_element_comm_tables
+      use share_field_data
 !
       integer(kind = kint) :: istep, icou
 !
@@ -228,9 +229,9 @@
      &     (ra_fld_A, t_IO_m, org_fIO(my_rank+1))
         call dealloc_rayleigh_component(ra_fld_A)
 !
-!        write(*,*) 'assemble_field_data'
+        call share_time_step_data(t_IO_m)
         call assemble_field_data                                        &
-     &     (nprocs, asbl_comm_u, new_fld, t_IO_m, org_fIO)
+     &     (nprocs, asbl_comm_u, new_fld, org_fIO)
 !
 !        write(*,*) 'nod_fields_send_recv'
         call nod_fields_send_recv(geofem%mesh, new_fld)
@@ -249,5 +250,36 @@
       end subroutine analyze_rayleigh_cvt_fld
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine load_local_field_from_rayleigh(ra_fld, t_IO, fld_IO)
+!
+      use t_time_data
+!
+      type(rayleigh_field), intent(in) :: ra_fld
+!
+      type(time_data), intent(inout) :: t_IO
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      t_IO%i_time_step = 7000
+      t_IO%time = 0.7
+      t_IO%dt = 0.0d0
+!
+      fld_IO%nnod_IO = int(ra_fld%nnod_rayleigh_in)
+      fld_IO%num_field_IO = 1
+      call alloc_phys_name_IO(fld_IO)
+!
+      fld_IO%fld_name = 'temperature'
+      fld_IO%num_comp_IO(1) = 1
+      call cal_istack_phys_comp_IO(fld_IO)
+!
+      call alloc_phys_data_IO(fld_IO)
+      fld_IO%d_IO(1:fld_IO%nnod_IO,1)                                   &
+     &             = ra_fld%rayleigh_in(1:fld_IO%nnod_IO)
+!
+      end subroutine load_local_field_from_rayleigh
+!
+! -----------------------------------------------------------------------
 !
       end module analyzer_rayleigh_cvt_fld

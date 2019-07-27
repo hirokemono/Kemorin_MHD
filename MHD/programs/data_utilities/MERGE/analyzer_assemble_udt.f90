@@ -153,6 +153,7 @@
       use nod_phys_send_recv
       use load_mesh_data_4_merge
       use set_field_file_names
+      use share_field_data
 !
       integer(kind = kint) :: istep, icou
 !
@@ -184,8 +185,9 @@
         call load_local_FEM_field_4_merge(istep,                        &
      &      asbl_param_u%org_fld_file,  ndomain_org, t_IO_m, org_fIO)
 !
+		call share_time_step_data(t_IO_m)
         call assemble_field_data                                        &
-     &     (ndomain_org, asbl_comm_u, new_fld, t_IO_m, org_fIO)
+     &     (ndomain_org, asbl_comm_u, new_fld, org_fIO)
 !
         call nod_fields_send_recv(new_mesh, new_fld)
 !
