@@ -45,7 +45,9 @@
         integer(kind = kint) :: lst
         integer(kind = kint) :: led
 !
+!>        radial grid
         real(kind = kreal), allocatable :: radius_gl(:)
+!>        meridional grid
         real(kind = kreal), allocatable :: theta_gl(:)
         real(kind = kreal), allocatable :: cos_theta(:)
       end type Rayleigh_grid_param

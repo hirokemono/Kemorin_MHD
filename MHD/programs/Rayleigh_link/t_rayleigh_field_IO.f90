@@ -8,10 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine alloc_rayleigh_component(nnod_r, istart_pe, ra_fld)
-!!      subroutine alloc_rayleigh_1d_grids(ra_fld)
 !!        type(rayleigh_field), intent(inout) :: ra_fld
 !!      subroutine dealloc_rayleigh_component(ra_fld)
-!!      subroutine dealloc_rayleigh_1d_grids(ra_fld)
 !!        type(rayleigh_field), intent(inout) :: ra_fld
 !!
 !!      subroutine read_rayleigh_field_param(file_name, ra_fld)
@@ -58,7 +56,7 @@
 !>        global horizontal resolution
         integer :: nphi_gl
 !>        radial grid
-        real(kind = kreal), allocatable :: radius_gl(:)
+!        real(kind = kreal), allocatable :: radius_gl(:)
 !>        meridional grid
 !        real(kind = kreal), allocatable :: theta_gl(:)
 !        real(kind = kreal), allocatable :: cos_theta(:)
@@ -93,22 +91,6 @@
       end subroutine alloc_rayleigh_component
 !
 !-----------------------------------------------------------------------
-!
-      subroutine alloc_rayleigh_1d_grids(ra_fld)
-!
-      type(rayleigh_field), intent(inout) :: ra_fld
-!
-      allocate(ra_fld%radius_gl(ra_fld%nri_gl))
-!      allocate(ra_fld%theta_gl(ra_fld%nth_gl))
-!      allocate(ra_fld%cos_theta(ra_fld%nth_gl))
-!
-      ra_fld%radius_gl(1:ra_fld%nri_gl) = 0.0d0
-!      ra_fld%theta_gl(1:ra_fld%nth_gl) = 0.0d0
-!      ra_fld%cos_theta(1:ra_fld%nth_gl) = 0.0d0
-!
-      end subroutine alloc_rayleigh_1d_grids
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine dealloc_rayleigh_component(ra_fld)
@@ -119,16 +101,6 @@
       deallocate(ra_fld%rayleigh_in)
 !
       end subroutine dealloc_rayleigh_component
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_rayleigh_1d_grids(ra_fld)
-!
-      type(rayleigh_field), intent(inout) :: ra_fld
-!
-      deallocate(ra_fld%radius_gl)!, ra_fld%theta_gl, ra_fld%cos_theta)
-!
-      end subroutine dealloc_rayleigh_1d_grids
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -162,10 +134,12 @@
       call mpi_read_int4head_b(IO_param, ra_fld%nth_gl)
       call mpi_read_int4head_b(IO_param, ra_fld%nphi_gl)
 !
-      call alloc_rayleigh_1d_grids(ra_fld)
+!      allocate(r_reso%radius_gl(r_reso%nri_gl))
+!      allocate(r_reso%theta_gl(r_reso%nth_gl))
+!      allocate(r_reso%cos_theta(r_reso%nth_gl))
 !
       num64 = ra_fld%nri_gl
-      call mpi_read_mul_realhead_b(IO_param, num64, ra_fld%radius_gl)
+      call mpi_read_mul_realhead_b(IO_param, num64, r_reso%radius_gl)
       num64 = ra_fld%nth_gl
       call mpi_read_mul_realhead_b(IO_param, num64, r_reso%theta_gl)
 !

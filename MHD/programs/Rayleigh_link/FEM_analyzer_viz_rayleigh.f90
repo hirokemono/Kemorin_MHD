@@ -78,7 +78,7 @@
       type(VIZ_step_params), intent(inout) :: viz_step
 !
       character(len=kchara) :: file_name
-      integer(kind = kint) :: iflag, i
+      integer(kind = kint) :: iflag
 !
       integer(kind = kint) :: ndivideed, irest
       integer(kind = kint), allocatable :: istack_r(:), istack_h(:)
@@ -126,12 +126,6 @@
       write(*,*)  my_rank, 'led', r_reso_V%led, rayleigh_fld%led
 !      write(*,*)  my_rank, 'irank_r', r_reso_V%irank_r, rayleigh_fld%irank_r
 !      write(*,*)  my_rank, 'irank_h', r_reso_V%irank_h, rayleigh_fld%irank_h
-!      do i = 1, r_reso_V%nri_gl
-!        write(*,*) i, 'radius', r_reso_V%radius_gl(i)-rayleigh_fld%radius_gl(i)
-!      end do
-!      do i = 1, r_reso_V%nth_gl
-!        write(*,*) i, 'theta', r_reso_V%theta_gl(i)-rayleigh_fld%theta_gl(i)
-!      end do
 !
 !      call s_const_fem_nodes_4_rayleigh                                &
 !     &   (r_reso_V, rayleigh_fem%mesh, rayleigh_fem%group)
