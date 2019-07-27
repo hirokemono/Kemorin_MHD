@@ -44,10 +44,10 @@
         integer(kind = kint) :: irank_r
         integer(kind = kint) :: irank_h
 !
-        integer(kind = kint) :: kst
-        integer(kind = kint) :: ked
-        integer(kind = kint) :: lst
-        integer(kind = kint) :: led
+!        integer(kind = kint) :: kst
+!        integer(kind = kint) :: ked
+!        integer(kind = kint) :: lst
+!        integer(kind = kint) :: led
 !
 !>        global radial resolution
 !        integer :: nri_gl
@@ -105,13 +105,13 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_rayleigh_field_param(file_name, r_reso, ra_fld)
+      subroutine read_rayleigh_field_param(file_name, r_reso, iflag_swap)
 !
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
 !
       character(len = kchara), intent(in) :: file_name
-      type(rayleigh_field), intent(inout) :: ra_fld
+      integer, intent(inout) :: iflag_swap
       type(Rayleigh_grid_param), intent(inout) :: r_reso
 !
       integer :: b_flag
@@ -126,9 +126,9 @@
       call open_read_mpi_file                                           &
      &   (file_name, nprocs, my_rank, IO_param)
 !
-      ra_fld%iflag_swap  = iendian_KEEP
+      iflag_swap  = iendian_KEEP
       call mpi_read_int4head_b(IO_param, b_flag)
-      if(b_flag .ne. 314) ra_fld%iflag_swap = iendian_FLIP
+      if(b_flag .ne. 314) iflag_swap = iendian_FLIP
 !
       call mpi_read_int4head_b(IO_param, r_reso%nri_gl)
       call mpi_read_int4head_b(IO_param, r_reso%nth_gl)

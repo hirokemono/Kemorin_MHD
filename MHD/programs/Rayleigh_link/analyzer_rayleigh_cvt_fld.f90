@@ -99,7 +99,8 @@
       rayleigh_mesh_file%iflag_format = id_ascii_file_fmt
       call load_resolution_4_rayleigh(r_reso0)
       file_name = 'Spherical_3D/00007000_grid'
-      call read_rayleigh_field_param(file_name, r_reso0, ra_fld_A)
+      call read_rayleigh_field_param                                    &
+     &   (file_name, r_reso0, ra_fld_A%iflag_swap)
 !
 !
 !      call s_const_fem_nodes_4_rayleigh                                &

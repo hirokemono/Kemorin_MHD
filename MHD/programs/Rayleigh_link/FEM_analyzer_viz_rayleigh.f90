@@ -93,7 +93,8 @@
       write(file_name,'(a,a1,i8.8,a5)')                                 &
      &                     trim(rayleigh_ftbl1%field_dir), '/',         &
      &                     i_step, '_grid'
-      call read_rayleigh_field_param(file_name, r_reso_V, rayleigh_fld)
+      call read_rayleigh_field_param                                    &
+     &   (file_name, r_reso_V, rayleigh_fld%iflag_swap)
 !
       rayleigh_fld%irank_h = mod(my_rank,rayleigh_fld%ndomain_rtp(2))
       rayleigh_fld%irank_r = (my_rank - rayleigh_fld%irank_h)           &
@@ -106,24 +107,24 @@
      &    rayleigh_fld%ndomain_rtp(1))
       call set_stack_of_segments(rayleigh_fld%ndomain_rtp(1),          &
      &    ndivideed, irest, ione, istack_r)
-      rayleigh_fld%kst = istack_r(r_reso_V%irank_r  ) + 1
-      rayleigh_fld%ked = istack_r(r_reso_V%irank_r+1)
+      r_reso_V%kst = istack_r(r_reso_V%irank_r  ) + 1
+      r_reso_V%ked = istack_r(r_reso_V%irank_r+1)
 !
       call cal_divide_and_rest(ndivideed, irest, r_reso_V%nth_gl,      &
      &    rayleigh_fld%ndomain_rtp(2))
       call set_stack_of_segments(rayleigh_fld%ndomain_rtp(2),          &
      &    ndivideed, irest, ione, istack_h)
-      rayleigh_fld%lst = istack_h(r_reso_V%irank_h  ) + 1
-      rayleigh_fld%led = istack_h(r_reso_V%irank_h+1)
+      r_reso_V%lst = istack_h(r_reso_V%irank_h  ) + 1
+      r_reso_V%led = istack_h(r_reso_V%irank_h+1)
       deallocate(istack_r, istack_h)
 !
 !      write(*,*) 'nri_gl', r_reso_V%nri_gl, rayleigh_fld%nri_gl
 !      write(*,*) 'nth_gl', r_reso_V%nth_gl, rayleigh_fld%nth_gl
 !      write(*,*) 'nphi_gl', r_reso_V%nphi_gl, rayleigh_fld%nphi_gl
-      write(*,*)  my_rank, 'kst', r_reso_V%kst, rayleigh_fld%kst
-      write(*,*)  my_rank, 'ked', r_reso_V%ked, rayleigh_fld%ked
-      write(*,*)  my_rank, 'lst', r_reso_V%lst, rayleigh_fld%lst
-      write(*,*)  my_rank, 'led', r_reso_V%led, rayleigh_fld%led
+!      write(*,*)  my_rank, 'kst', r_reso_V%kst, rayleigh_fld%kst
+!      write(*,*)  my_rank, 'ked', r_reso_V%ked, rayleigh_fld%ked
+!      write(*,*)  my_rank, 'lst', r_reso_V%lst, rayleigh_fld%lst
+!      write(*,*)  my_rank, 'led', r_reso_V%led, rayleigh_fld%led
 !      write(*,*)  my_rank, 'irank_r', r_reso_V%irank_r, rayleigh_fld%irank_r
 !      write(*,*)  my_rank, 'irank_h', r_reso_V%irank_h, rayleigh_fld%irank_h
 !
