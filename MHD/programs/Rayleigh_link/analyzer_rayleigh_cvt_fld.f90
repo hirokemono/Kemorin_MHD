@@ -60,7 +60,6 @@
       use t_ctl_data_const_sph_mesh
       use t_const_spherical_grid
       use t_ctl_params_gen_sph_shell
-      use t_rayleigh_resolution
 !
       use mpi_load_mesh_data
       use nod_phys_send_recv

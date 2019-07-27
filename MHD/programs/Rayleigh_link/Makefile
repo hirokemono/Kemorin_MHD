@@ -37,7 +37,7 @@ MOD_FEM_MESH_RAYLEIGH = \
 main_gen_FEM_4_rayleigh.o \
 analyzer_gen_FEM_4_rayleigh.o \
 \
-t_rayleigh_resolution.o \
+t_rayleigh_field_IO.o \
 const_fem_nodes_4_rayleigh.o
 
 MOD_CVT_RAYLEIGH_SPH = \
@@ -53,7 +53,6 @@ MOD_CVT_RAYLEIGH_FLD = \
 main_cvt_from_rayleigh_fld.o \
 analyzer_rayleigh_cvt_fld.o \
 \
-t_rayleigh_resolution.o \
 t_rayleigh_field_IO.o \
 const_fem_nodes_4_rayleigh.o
 
@@ -61,7 +60,6 @@ const_fem_nodes_4_rayleigh.o
 MOD_RAYLEIGH_VIZ = \
 m_viz_4_rayleigh.o \
 t_ctl_data_rayleigh_vizs.o \
-t_rayleigh_resolution.o \
 t_rayleigh_field_IO.o \
 t_rayleigh_field_address.o \
 const_fem_nodes_4_rayleigh.o \

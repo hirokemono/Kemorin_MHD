@@ -31,7 +31,7 @@
 !
       use calypso_mpi
 !
-      use t_rayleigh_resolution
+      use t_rayleigh_field_IO
       use t_mesh_data
       use t_group_data
 !

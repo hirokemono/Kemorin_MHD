@@ -29,7 +29,6 @@
 !
       use t_spheric_parameter
       use t_const_spherical_grid
-      use t_rayleigh_resolution
       use t_rayleigh_field_IO
       use t_rayleigh_field_address
       use t_comm_table_4_assemble

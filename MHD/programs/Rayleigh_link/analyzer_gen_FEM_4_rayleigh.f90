@@ -29,7 +29,7 @@
       use t_ctl_data_const_sph_mesh
       use t_const_spherical_grid
       use t_ctl_params_gen_sph_shell
-      use t_rayleigh_resolution
+      use t_rayleigh_field_IO
       use const_fem_nodes_4_rayleigh
 !
       implicit none
