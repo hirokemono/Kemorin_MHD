@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine set_ctl_params_rayleigh_viz                          &
 !!     &         (tctl, plt, sdctl, field_ctl,                          &
-!!     &          time_v, viz_step, rayleigh_ftbl, r_reso, ierr)
+!!     &          time_v, viz_step, rayleigh_ftbl, rayleigh_rtp, ierr)
 !!        type(time_data_control), intent(in) :: tctl
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(sphere_domain_control), intent(in) :: sdctl
@@ -17,7 +17,7 @@
 !!        type(time_step_param), intent(inout) :: time_v
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
-!!        type(Rayleigh_grid_param), intent(inout) :: r_reso
+!!        type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !!      subroutine element_normals_4_VIZ
 !!@endverbatim
 !
@@ -80,7 +80,7 @@
 !
       subroutine set_ctl_params_rayleigh_viz                            &
      &         (tctl, plt, sdctl, field_ctl,                            &
-     &          time_v, viz_step, rayleigh_ftbl, r_reso, ierr)
+     &          time_v, viz_step, rayleigh_ftbl, rayleigh_rtp, ierr)
 !
       use m_error_IDs
       use t_file_IO_parameter
@@ -105,7 +105,7 @@
       type(VIZ_step_params), intent(inout) :: viz_step
 !
       type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
-      type(Rayleigh_grid_param), intent(inout) :: r_reso
+      type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt)
@@ -123,7 +123,7 @@
      &   (plt, field_ctl, rayleigh_ftbl, e_message, ierr)
 !
       call set_ctl_params_rayleigh_domains                              &
-     &   (sdctl, r_reso, e_message, ierr)
+     &   (sdctl, rayleigh_rtp, e_message, ierr)
 !
       end subroutine set_ctl_params_rayleigh_viz
 !

@@ -39,7 +39,7 @@
 !
 !>      Structure to construct grid
       type(construct_spherical_grid), save :: gen_sph_R
-      type(Rayleigh_grid_param), save :: r_reso_V
+      type(rayleigh_field), save :: rayleigh_rtp_V
       type(mesh_data), save :: rayleigh_fem
 !
       type(rayleigh_field_address), save :: rayleigh_ftbl1
@@ -85,13 +85,14 @@
       write(file_name,'(a,a1,i8.8,a5)')                                 &
      &                     trim(rayleigh_ftbl1%field_dir), '/',         &
      &                     i_step, '_grid'
-      call read_rayleigh_field_param(file_name, r_reso_V)
-      call set_rayleigh_parallel_param(r_reso_V)
+      call read_rayleigh_field_param(file_name, rayleigh_rtp_V)
+      call set_rayleigh_parallel_param(rayleigh_rtp_V)
 !
       call fem_nodes_4_rayleigh_file                                    &
-     &   (r_reso_V, rayleigh_fem%mesh, rayleigh_fem%group)
+     &   (rayleigh_rtp_V, rayleigh_fem%mesh, rayleigh_fem%group)
 !
-      call shell_params_from_rayleigh(r_reso_V, sph_const, gen_sph_R)
+      call shell_params_from_rayleigh                                   &
+     &   (rayleigh_rtp_V, sph_const, gen_sph_R)
 !
 !   --------------------------------
 !       setup mesh information
@@ -205,19 +206,19 @@
       call init_fields_IO_by_rayleigh(rayleigh_ftbl1,                   &
      &    rayleigh_pmesh(my_rank+1), rayleigh_fIO(my_rank+1))
 !
-      call alloc_rayleigh_component(nnod_r, istart_pe, r_reso_V)
+      call alloc_rayleigh_component(nnod_r, istart_pe, rayleigh_rtp_V)
       do nd = 1, rayleigh_ftbl1%ntot_comp
         write(file_name,'(a,a1,i8.8,a1,i4.4)')                          &
      &                     trim(rayleigh_ftbl1%field_dir), '/',         &
      &                     i_step, '_', rayleigh_ftbl1%id_rayleigh(nd)
-        call read_each_rayleigh_component(file_name, r_reso_V)
+        call read_each_rayleigh_component(file_name, rayleigh_rtp_V)
 !
 !$omp parallel workshare
         rayleigh_fIO(my_rank+1)%d_IO(1:nnod_r,nd)                       &
-     &         = r_reso_V%field_rtp(1:nnod_r)
+     &         = rayleigh_rtp_V%field_rtp(1:nnod_r)
 !$omp end parallel workshare
       end do
-      call dealloc_rayleigh_component(r_reso_V)
+      call dealloc_rayleigh_component(rayleigh_rtp_V)
 !
       call assemble_field_data                                          &
      &   (nprocs, asbl_comm_R, field, rayleigh_fIO)

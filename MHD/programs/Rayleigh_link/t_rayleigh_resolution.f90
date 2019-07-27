@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine copy_resolution_4_rayleigh(nri, nth, ltr,            &
-!!     &           kst, ked, lst, led, radius, cos_theta, r_reso)
-!!      subroutine dealloc_resolution_4_rayleigh(r_reso)
-!!      subroutine load_resolution_4_rayleigh(r_reso)
-!!        type(Rayleigh_grid_param), intent(inout) :: r_reso
-!!      subroutine write_resolution_4_rayleigh(file_name, r_reso)
-!!        type(Rayleigh_grid_param), intent(in) :: r_reso
+!!     &           kst, ked, lst, led, radius, cos_theta, rayleigh_rtp)
+!!      subroutine dealloc_resolution_4_rayleigh(rayleigh_rtp)
+!!      subroutine load_resolution_4_rayleigh(rayleigh_rtp)
+!!        type(rayleigh_field), intent(inout) :: rayleigh_rtp
+!!      subroutine write_resolution_4_rayleigh(file_name, rayleigh_rtp)
+!!        type(rayleigh_field), intent(in) :: rayleigh_rtp
 !!@endverbatim
 !
       module t_rayleigh_resolution
@@ -30,7 +30,7 @@
       character(len=kchara), parameter :: rayleigh_resolution_file      &
      &                                = 'Rayleigh_grid_kemo.dat'
 !
-      type Rayleigh_grid_param
+      type rayleigh_field
 !>        Endian swap flag
         integer :: iflag_swap = 0
 !
@@ -73,7 +73,7 @@
         integer(kind = kint_gl) :: istart_rayleigh_in
 !>        Single component from Rayleigh data
         real(kind = kreal), allocatable :: field_rtp(:)
-      end type Rayleigh_grid_param
+      end type rayleigh_field
 !
 ! ----------------------------------------------------------------------
 !
@@ -82,7 +82,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_resolution_4_rayleigh(nri, nth, ltr,              &
-     &           kst, ked, lst, led, radius, cos_theta, r_reso)
+     &           kst, ked, lst, led, radius, cos_theta, rayleigh_rtp)
 !
       integer(kind = kint), intent(in) :: nri
       integer(kind = kint), intent(in) :: nth
@@ -94,45 +94,48 @@
       real(kind = kreal), intent(in) :: radius(nri)
       real(kind = kreal), intent(in) :: cos_theta(nth)
 !
-      type(Rayleigh_grid_param), intent(inout) :: r_reso
+      type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !
 !
-      r_reso%ltr = ltr
-      r_reso%nri_gl = nri
-      r_reso%nth_gl = nth
-      r_reso%nphi_gl = 2 * r_reso%nth_gl
-      r_reso%kst = kst
-      r_reso%ked = ked
-      r_reso%lst = lst
-      r_reso%led = led
+      rayleigh_rtp%ltr = ltr
+      rayleigh_rtp%nri_gl = nri
+      rayleigh_rtp%nth_gl = nth
+      rayleigh_rtp%nphi_gl = 2 * rayleigh_rtp%nth_gl
+      rayleigh_rtp%kst = kst
+      rayleigh_rtp%ked = ked
+      rayleigh_rtp%lst = lst
+      rayleigh_rtp%led = led
 !
-      allocate(r_reso%radius_gl(r_reso%nri_gl))
-      allocate(r_reso%theta_gl(r_reso%nth_gl))
-      allocate(r_reso%cos_theta(r_reso%nth_gl))
+      allocate(rayleigh_rtp%radius_gl(rayleigh_rtp%nri_gl))
+      allocate(rayleigh_rtp%theta_gl(rayleigh_rtp%nth_gl))
+      allocate(rayleigh_rtp%cos_theta(rayleigh_rtp%nth_gl))
 !
-      r_reso%radius_gl(1:r_reso%nri_gl) = radius(1:r_reso%nri_gl)
-      r_reso%cos_theta(1:r_reso%nth_gl) = cos_theta(1:r_reso%nth_gl)
-      r_reso%theta_gl(1:r_reso%nth_gl)                                  &
-     &      = acos(cos_theta(1:r_reso%nth_gl))
+      rayleigh_rtp%radius_gl(1:rayleigh_rtp%nri_gl)                     &
+     &      = radius(1:rayleigh_rtp%nri_gl)
+      rayleigh_rtp%cos_theta(1:rayleigh_rtp%nth_gl)                     &
+     &      = cos_theta(1:rayleigh_rtp%nth_gl)
+      rayleigh_rtp%theta_gl(1:rayleigh_rtp%nth_gl)                      &
+     &      = acos(cos_theta(1:rayleigh_rtp%nth_gl))
 !
       end subroutine copy_resolution_4_rayleigh
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_resolution_4_rayleigh(r_reso)
+      subroutine dealloc_resolution_4_rayleigh(rayleigh_rtp)
 !
-      type(Rayleigh_grid_param), intent(inout) :: r_reso
+      type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !
 !
-      deallocate(r_reso%radius_gl, r_reso%cos_theta, r_reso%theta_gl)
+      deallocate(rayleigh_rtp%radius_gl)
+      deallocate(rayleigh_rtp%cos_theta, rayleigh_rtp%theta_gl)
 !
       end subroutine dealloc_resolution_4_rayleigh
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine load_resolution_4_rayleigh(r_reso)
+      subroutine load_resolution_4_rayleigh(rayleigh_rtp)
 !
-      type(Rayleigh_grid_param), intent(inout) :: r_reso
+      type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !
       integer, allocatable :: r_rank(:), h_rank(:)
       integer(kind = kint), allocatable :: kst_read(:)
@@ -161,74 +164,75 @@
      &          kst_read(ip), ked_read(ip), lst_read(ip), led_read(ip)
         end do
 !
-        read(13,*) r_reso%nri_gl
-        allocate(r_reso%radius_gl(r_reso%nri_gl))
+        read(13,*) rayleigh_rtp%nri_gl
+        allocate(rayleigh_rtp%radius_gl(rayleigh_rtp%nri_gl))
 !
-        do kr = 1, r_reso%nri_gl
-          read(13,*) itmp, r_reso%radius_gl(kr)
+        do kr = 1, rayleigh_rtp%nri_gl
+          read(13,*) itmp, rayleigh_rtp%radius_gl(kr)
         end do
 !
-        read(13,*) r_reso%ltr, r_reso%nth_gl
-        allocate(r_reso%theta_gl(r_reso%nth_gl))
-        allocate(r_reso%cos_theta(r_reso%nth_gl))
+        read(13,*) rayleigh_rtp%ltr, rayleigh_rtp%nth_gl
+        allocate(rayleigh_rtp%theta_gl(rayleigh_rtp%nth_gl))
+        allocate(rayleigh_rtp%cos_theta(rayleigh_rtp%nth_gl))
 !
-        do lt = 1, r_reso%nth_gl
-          read(13,*) itmp, r_reso%cos_theta(lt), r_reso%theta_gl(lt)
+        do lt = 1, rayleigh_rtp%nth_gl
+          read(13,*) itmp, rayleigh_rtp%cos_theta(lt),                  &
+     &                     rayleigh_rtp%theta_gl(lt)
         end do
         close(13)
       end if
 !
       call MPI_Scatter(r_rank, 1, CALYPSO_INTEGER,                      &
-     &                 r_reso%irank_r, 1, CALYPSO_INTEGER,              &
+     &                 rayleigh_rtp%irank_r, 1, CALYPSO_INTEGER,        &
      &                 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Scatter(h_rank, 1, CALYPSO_INTEGER,                      &
-     &                 r_reso%irank_h, 1, CALYPSO_INTEGER,              &
+     &                 rayleigh_rtp%irank_h, 1, CALYPSO_INTEGER,        &
      &                 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Scatter(kst_read, 1, CALYPSO_INTEGER,                    &
-     &                 r_reso%kst, 1, CALYPSO_INTEGER,                  &
+     &                 rayleigh_rtp%kst, 1, CALYPSO_INTEGER,            &
      &                 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Scatter(ked_read, 1, CALYPSO_INTEGER,                    &
-     &                 r_reso%ked, 1, CALYPSO_INTEGER,                  &
+     &                 rayleigh_rtp%ked, 1, CALYPSO_INTEGER,            &
      &                 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Scatter(lst_read, 1, CALYPSO_INTEGER,                    &
-     &                 r_reso%lst, 1, CALYPSO_INTEGER,                  &
+     &                 rayleigh_rtp%lst, 1, CALYPSO_INTEGER,            &
      &                 0, CALYPSO_COMM, ierr_MPI)
       call MPI_Scatter(led_read, 1, CALYPSO_INTEGER,                    &
-     &                 r_reso%led, 1, CALYPSO_INTEGER,                  &
+     &                 rayleigh_rtp%led, 1, CALYPSO_INTEGER,            &
      &                 0, CALYPSO_COMM, ierr_MPI)
       if(my_rank .eq. 0) then
         deallocate(r_rank, h_rank)
         deallocate(kst_read, ked_read, lst_read, led_read)
       end if
 !
-      call MPI_BCAST                                                    &
-     &   (r_reso%ltr, 1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST                                                    &
-     &   (r_reso%nri_gl, 1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST                                                    &
-     &   (r_reso%nth_gl, 1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      r_reso%nphi_gl = 2 * r_reso%nth_gl
+      call MPI_BCAST(rayleigh_rtp%ltr, 1, CALYPSO_INTEGER, 0,           &
+     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(rayleigh_rtp%nri_gl, 1, CALYPSO_INTEGER, 0,        &
+     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(rayleigh_rtp%nth_gl, 1, CALYPSO_INTEGER, 0,        &
+     &    CALYPSO_COMM, ierr_MPI)
+      rayleigh_rtp%nphi_gl = 2 * rayleigh_rtp%nth_gl
 !
       if(my_rank .ne. 0) then
-        allocate(r_reso%radius_gl(r_reso%nri_gl))
-        allocate(r_reso%cos_theta(r_reso%nth_gl))
-        allocate(r_reso%theta_gl(r_reso%nth_gl))
+        allocate(rayleigh_rtp%radius_gl(rayleigh_rtp%nri_gl))
+        allocate(rayleigh_rtp%cos_theta(rayleigh_rtp%nth_gl))
+        allocate(rayleigh_rtp%theta_gl(rayleigh_rtp%nth_gl))
       end if
-      call MPI_BCAST(r_reso%radius_gl, r_reso%nri_gl, CALYPSO_REAL, 0,  &
-     &               CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(r_reso%cos_theta, r_reso%nth_gl, CALYPSO_REAL, 0,  &
-     &               CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(r_reso%theta_gl, r_reso%nth_gl, CALYPSO_REAL, 0,   &
-     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(rayleigh_rtp%radius_gl, rayleigh_rtp%nri_gl,       &
+     &               CALYPSO_REAL, 0,  CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(rayleigh_rtp%cos_theta, rayleigh_rtp%nth_gl,       &
+     &               CALYPSO_REAL, 0,CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(rayleigh_rtp%theta_gl, rayleigh_rtp%nth_gl,        &
+     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine load_resolution_4_rayleigh
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_resolution_4_rayleigh(file_name, r_reso)
+      subroutine write_resolution_4_rayleigh(file_name, rayleigh_rtp)
 !
       character(len=kchara) :: file_name
-      type(Rayleigh_grid_param), intent(in) :: r_reso
+      type(rayleigh_field), intent(in) :: rayleigh_rtp
 !
       integer :: ip, kr, lt
       integer, allocatable :: r_rank(:), h_rank(:)
@@ -245,22 +249,22 @@
         allocate(lt_max(nprocs))
       end if
 !
-      call MPI_Gather(r_reso%irank_r, 1, MPI_INTEGER,                   &
+      call MPI_Gather(rayleigh_rtp%irank_r, 1, MPI_INTEGER,             &
      &                r_rank, 1, MPI_INTEGER,                           &
      &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(r_reso%irank_h, 1, MPI_INTEGER,                   &
+      call MPI_Gather(rayleigh_rtp%irank_h, 1, MPI_INTEGER,             &
      &                h_rank, 1, MPI_INTEGER,                           &
      &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(r_reso%kst, 1, MPI_INTEGER,                       &
+      call MPI_Gather(rayleigh_rtp%kst, 1, MPI_INTEGER,                 &
      &                kr_min, 1, MPI_INTEGER,                           &
      &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(r_reso%ked, 1, MPI_INTEGER,                       &
+      call MPI_Gather(rayleigh_rtp%ked, 1, MPI_INTEGER,                 &
      &                kr_max, 1, MPI_INTEGER,                           &
      &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(r_reso%lst, 1, MPI_INTEGER,                       &
+      call MPI_Gather(rayleigh_rtp%lst, 1, MPI_INTEGER,                 &
      &                lt_min, 1, MPI_INTEGER,                           &
      &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(r_reso%led, 1, MPI_INTEGER,                       &
+      call MPI_Gather(rayleigh_rtp%led, 1, MPI_INTEGER,                 &
      &                lt_max, 1, MPI_INTEGER,                           &
      &                0, CALYPSO_COMM, ierr_MPI)
 !
@@ -273,15 +277,15 @@
      &                kr_min(ip), kr_max(ip), lt_min(ip), lt_max(ip)
         end do
 !
-        write(12,'(i16,a)')  r_reso%nri_gl, 'kr, r'
-        do kr = 1, r_reso%nri_gl
-          write(12,'(i16,1pe25.15)') kr, r_reso%radius_gl(kr)
+        write(12,'(i16,a)')  rayleigh_rtp%nri_gl, '  kr, r'
+        do kr = 1, rayleigh_rtp%nri_gl
+          write(12,'(i16,1pe25.15)') kr, rayleigh_rtp%radius_gl(kr)
         end do
-        write(12,'(2i16,a)')  r_reso%ltr, r_reso%nth_gl,                &
+        write(12,'(2i16,a)')  rayleigh_rtp%ltr, rayleigh_rtp%nth_gl,    &
      &                      'lt, cos_theta, theta'
-        do lt = 1, r_reso%nth_gl
+        do lt = 1, rayleigh_rtp%nth_gl
           write(12,'(i16,1p2e25.15)')                                   &
-     &             lt, r_reso%cos_theta(lt), r_reso%theta_gl
+     &       lt, rayleigh_rtp%cos_theta(lt), rayleigh_rtp%theta_gl(lt)
         end do
         close(12)
         deallocate(r_rank, h_rank)

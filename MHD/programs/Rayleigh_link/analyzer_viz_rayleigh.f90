@@ -56,7 +56,7 @@
       call set_ctl_params_rayleigh_viz                                  &
      &   (rayleigh_vizs_ctl1%t_viz_ctl, rayleigh_vizs_ctl1%viz_plt,     &
      &    rayleigh_vizs_ctl1%sdctl, rayleigh_vizs_ctl1%field_ctl,       &
-     &    t_VIZ, viz_step_V, rayleigh_ftbl1, r_reso_V, ierr)
+     &    t_VIZ, viz_step_V, rayleigh_ftbl1, rayleigh_rtp_V, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !      call check_rayleigh_field_address(rayleigh_ftbl1)

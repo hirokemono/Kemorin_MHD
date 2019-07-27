@@ -42,7 +42,7 @@
       type(control_data_4_merge), save :: mgd_ctl_u
       type(comm_table_4_assemble), save :: asbl_comm_u
 !
-      type(Rayleigh_grid_param), save :: r_reso_A
+      type(rayleigh_field), save :: rayleigh_rtp_A
 !
       type(time_data), save :: t_IO_m
 !
@@ -96,15 +96,16 @@
       rayleigh_mesh_file%file_prefix = 'Rayleigh_in'
       rayleigh_mesh_file%iflag_format = id_ascii_file_fmt
       file_name = 'Spherical_3D/00007000_grid'
-      call read_rayleigh_field_param(file_name, r_reso_A)
-      call set_rayleigh_parallel_param(r_reso_A)
+      call read_rayleigh_field_param(file_name, rayleigh_rtp_A)
+      call set_rayleigh_parallel_param(rayleigh_rtp_A)
 !
 !
 !      call s_const_fem_nodes_4_rayleigh                                &
-!     &   (r_reso_A, rayleigh_fem%mesh, rayleigh_fem%group)
+!     &   (rayleigh_rtp_A, rayleigh_fem%mesh, rayleigh_fem%group)
       call fem_nodes_4_rayleigh_file                                    &
-     &   (r_reso_A, rayleigh_fem%mesh, rayleigh_fem%group)
-      call shell_params_from_rayleigh(r_reso_A, sph_const, gen_sph_G)
+     &   (rayleigh_rtp_A, rayleigh_fem%mesh, rayleigh_fem%group)
+      call shell_params_from_rayleigh                                   &
+     &   (rayleigh_rtp_A, sph_const, gen_sph_G)
       call mpi_output_mesh(rayleigh_mesh_file,                          &
      &    rayleigh_fem%mesh, rayleigh_fem%group)
 !
@@ -220,13 +221,14 @@
         nnod_r = org_mesh(my_rank+1)%node%numnod
         istart_pe = org_mesh(my_rank+1)%node%istack_numnod(my_rank)
         file_name = 'Spherical_3D/00007000_0501'
-        call alloc_rayleigh_component(nnod_r, istart_pe, r_reso_A)
+        call alloc_rayleigh_component                                   &
+     &     (nnod_r, istart_pe, rayleigh_rtp_A)
 !
-        call read_each_rayleigh_component(file_name, r_reso_A)
+        call read_each_rayleigh_component(file_name, rayleigh_rtp_A)
 !        write(*,*) 'load_local_field_from_rayleigh'
         call load_local_field_from_rayleigh                             &
-     &     (r_reso_A, t_IO_m, org_fIO(my_rank+1))
-        call dealloc_rayleigh_component(r_reso_A)
+     &     (rayleigh_rtp_A, t_IO_m, org_fIO(my_rank+1))
+        call dealloc_rayleigh_component(rayleigh_rtp_A)
 !
         call share_time_step_data(t_IO_m)
         call assemble_field_data                                        &
@@ -251,11 +253,12 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine load_local_field_from_rayleigh(r_reso, t_IO, fld_IO)
+      subroutine load_local_field_from_rayleigh                         &
+     &         (rayleigh_rtp, t_IO, fld_IO)
 !
       use t_time_data
 !
-      type(Rayleigh_grid_param), intent(in) :: r_reso
+      type(rayleigh_field), intent(in) :: rayleigh_rtp
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
@@ -265,7 +268,7 @@
       t_IO%time = 0.7
       t_IO%dt = 0.0d0
 !
-      fld_IO%nnod_IO = int(r_reso%nnod_rayleigh_in)
+      fld_IO%nnod_IO = int(rayleigh_rtp%nnod_rayleigh_in)
       fld_IO%num_field_IO = 1
       call alloc_phys_name_IO(fld_IO)
 !
@@ -275,7 +278,7 @@
 !
       call alloc_phys_data_IO(fld_IO)
       fld_IO%d_IO(1:fld_IO%nnod_IO,1)                                   &
-     &             = r_reso%field_rtp(1:fld_IO%nnod_IO)
+     &             = rayleigh_rtp%field_rtp(1:fld_IO%nnod_IO)
 !
       end subroutine load_local_field_from_rayleigh
 !

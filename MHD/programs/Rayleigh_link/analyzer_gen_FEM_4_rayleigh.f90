@@ -45,7 +45,7 @@
 !
       type(mesh_data), save, private :: geofem
 !
-      type(Rayleigh_grid_param), save, private :: r_reso0
+      type(rayleigh_field), save, private :: rayleigh_rtp_V
 !
       private :: sph_const
 !
@@ -73,8 +73,10 @@
 !
       rayleigh_mesh_file%file_prefix = 'Rayleigh_in'
       rayleigh_mesh_file%iflag_format = id_ascii_file_fmt
-      call output_fem_nodes_4_rayleigh(rayleigh_mesh_file, r_reso0)
-      call shell_params_from_rayleigh(r_reso0, sph_const, gen_sph_G)
+      call output_fem_nodes_4_rayleigh                                  &
+     &   (rayleigh_mesh_file, rayleigh_rtp_V)
+      call shell_params_from_rayleigh                                   &
+     &   (rayleigh_rtp_V, sph_const, gen_sph_G)
 !
       if(iflag_debug .gt. 0) write(*,*) 'load_para_SPH_and_FEM_mesh2'
       sph_files1%mesh_file_IO%file_prefix = 'aho/in'
