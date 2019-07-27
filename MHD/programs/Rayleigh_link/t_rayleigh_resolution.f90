@@ -31,18 +31,34 @@
      &                                = 'Rayleigh_grid_kemo.dat'
 !
       type Rayleigh_grid_param
+!>        Endian swap flag
+        integer :: iflag_swap = 0
+!
+!>        Trancation
         integer(kind = kint) :: ltr
 !
+!>        Global radial resolution
         integer(kind = kint) :: nri_gl
+!>        Global meridional resolution
         integer(kind = kint) :: nth_gl
+!>        Global zonal resolution
         integer(kind = kint) :: nphi_gl
 !
+!>        Number of subdomains for grid data
+        integer(kind = kint) :: ndomain_rtp(3)
+!
+!>        MPI rank for radial decomposition
         integer(kind = kint) :: irank_r
+!>        MPI rank for horizontal decomposition
         integer(kind = kint) :: irank_h
 !
+!>        Start address in radial direction
         integer(kind = kint) :: kst
+!>        End address in radial direction
         integer(kind = kint) :: ked
+!>        Start address in meridional direction
         integer(kind = kint) :: lst
+!>        End address in meridional direction
         integer(kind = kint) :: led
 !
 !>        radial grid
@@ -50,6 +66,13 @@
 !>        meridional grid
         real(kind = kreal), allocatable :: theta_gl(:)
         real(kind = kreal), allocatable :: cos_theta(:)
+!
+!>        number of data points of rayleigh field data
+        integer(kind = kint_gl) :: nnod_rayleigh_in
+!>        Start address of rayleigh field data for each process
+        integer(kind = kint_gl) :: istart_rayleigh_in
+!>        Single component from Rayleigh data
+        real(kind = kreal), allocatable :: field_rtp(:)
       end type Rayleigh_grid_param
 !
 ! ----------------------------------------------------------------------

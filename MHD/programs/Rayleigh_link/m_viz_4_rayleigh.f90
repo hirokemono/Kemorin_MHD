@@ -9,12 +9,16 @@
 !!@verbatim
 !!      subroutine set_ctl_params_rayleigh_viz                          &
 !!     &         (tctl, plt, sdctl, field_ctl,                          &
-!!     &          mesh_file, ucd_param, time_v, viz_step, ierr)
-!!      subroutine mesh_setup_4_VIZ(ucd_param)
+!!     &          time_v, viz_step, rayleigh_ftbl, r_reso, ierr)
+!!        type(time_data_control), intent(in) :: tctl
+!!        type(platform_data_control), intent(in) :: plt
+!!        type(sphere_domain_control), intent(in) :: sdctl
+!!        type(field_control), intent(in) :: field_ctl
+!!        type(time_step_param), intent(inout) :: time_v
+!!        type(VIZ_step_params), intent(inout) :: viz_step
+!!        type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
+!!        type(Rayleigh_grid_param), intent(inout) :: r_reso
 !!      subroutine element_normals_4_VIZ
-!!      subroutine set_field_data_4_VIZ(iflag, istep_ucd, time_d)
-!!        type(field_IO_params), intent(in) :: ucd_param
-!!        type(time_data), intent(inout) :: time_d
 !!@endverbatim
 !
       module m_viz_4_rayleigh
@@ -76,7 +80,7 @@
 !
       subroutine set_ctl_params_rayleigh_viz                            &
      &         (tctl, plt, sdctl, field_ctl,                            &
-     &          time_v, viz_step, rayleigh_ftbl, ra_fld, ierr)
+     &          time_v, viz_step, rayleigh_ftbl, r_reso, ierr)
 !
       use m_error_IDs
       use t_file_IO_parameter
@@ -101,7 +105,7 @@
       type(VIZ_step_params), intent(inout) :: viz_step
 !
       type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
-      type(rayleigh_field), intent(inout) :: ra_fld
+      type(Rayleigh_grid_param), intent(inout) :: r_reso
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt)
@@ -119,7 +123,7 @@
      &   (plt, field_ctl, rayleigh_ftbl, e_message, ierr)
 !
       call set_ctl_params_rayleigh_domains                              &
-     &   (sdctl, ra_fld, e_message, ierr)
+     &   (sdctl, r_reso, e_message, ierr)
 !
       end subroutine set_ctl_params_rayleigh_viz
 !

@@ -42,7 +42,6 @@
       type(Rayleigh_grid_param), save :: r_reso_V
       type(mesh_data), save :: rayleigh_fem
 !
-      type(rayleigh_field), save :: rayleigh_fld
       type(rayleigh_field_address), save :: rayleigh_ftbl1
 !
 !>       Structure of grid and spectr data for spherical spectr method
@@ -55,7 +54,7 @@
 !>       Structure of data asssemble table
       type(comm_table_4_assemble), save :: asbl_comm_R
 !
-      private :: gen_sph_R, r_reso_V, rayleigh_fem, sph_const
+      private :: gen_sph_R, rayleigh_fem, sph_const
 !
 !-----------------------------------------------------------------------
 !
@@ -72,64 +71,23 @@
       use copy_mesh_structures
       use mpi_load_mesh_data
 !
-      use cal_minmax_and_stacks
-!
       integer (kind =kint), intent(in) :: i_step
       type(VIZ_step_params), intent(inout) :: viz_step
 !
       character(len=kchara) :: file_name
       integer(kind = kint) :: iflag
 !
-      integer(kind = kint) :: ndivideed, irest
-      integer(kind = kint), allocatable :: istack_r(:), istack_h(:)
-!
 !   --------------------------------
 !       setup Rayleigh information
 !   --------------------------------
-!
-      call load_resolution_4_rayleigh(r_reso_V)
 !
       file_name = 'Spherical_3D/00007000_grid'
       write(file_name,'(a,a1,i8.8,a5)')                                 &
      &                     trim(rayleigh_ftbl1%field_dir), '/',         &
      &                     i_step, '_grid'
-      call read_rayleigh_field_param                                    &
-     &   (file_name, r_reso_V, rayleigh_fld%iflag_swap)
+      call read_rayleigh_field_param(file_name, r_reso_V)
+      call set_rayleigh_parallel_param(r_reso_V)
 !
-      rayleigh_fld%irank_h = mod(my_rank,rayleigh_fld%ndomain_rtp(2))
-      rayleigh_fld%irank_r = (my_rank - rayleigh_fld%irank_h)           &
-     &                      / rayleigh_fld%ndomain_rtp(2)
-!
-      allocate(istack_r(0:rayleigh_fld%ndomain_rtp(1)))
-      allocate(istack_h(0:rayleigh_fld%ndomain_rtp(2)))
-!
-      call cal_divide_and_rest(ndivideed, irest, r_reso_V%nri_gl,      &
-     &    rayleigh_fld%ndomain_rtp(1))
-      call set_stack_of_segments(rayleigh_fld%ndomain_rtp(1),          &
-     &    ndivideed, irest, ione, istack_r)
-      r_reso_V%kst = istack_r(r_reso_V%irank_r  ) + 1
-      r_reso_V%ked = istack_r(r_reso_V%irank_r+1)
-!
-      call cal_divide_and_rest(ndivideed, irest, r_reso_V%nth_gl,      &
-     &    rayleigh_fld%ndomain_rtp(2))
-      call set_stack_of_segments(rayleigh_fld%ndomain_rtp(2),          &
-     &    ndivideed, irest, ione, istack_h)
-      r_reso_V%lst = istack_h(r_reso_V%irank_h  ) + 1
-      r_reso_V%led = istack_h(r_reso_V%irank_h+1)
-      deallocate(istack_r, istack_h)
-!
-!      write(*,*) 'nri_gl', r_reso_V%nri_gl, rayleigh_fld%nri_gl
-!      write(*,*) 'nth_gl', r_reso_V%nth_gl, rayleigh_fld%nth_gl
-!      write(*,*) 'nphi_gl', r_reso_V%nphi_gl, rayleigh_fld%nphi_gl
-!      write(*,*)  my_rank, 'kst', r_reso_V%kst, rayleigh_fld%kst
-!      write(*,*)  my_rank, 'ked', r_reso_V%ked, rayleigh_fld%ked
-!      write(*,*)  my_rank, 'lst', r_reso_V%lst, rayleigh_fld%lst
-!      write(*,*)  my_rank, 'led', r_reso_V%led, rayleigh_fld%led
-!      write(*,*)  my_rank, 'irank_r', r_reso_V%irank_r, rayleigh_fld%irank_r
-!      write(*,*)  my_rank, 'irank_h', r_reso_V%irank_h, rayleigh_fld%irank_h
-!
-!      call s_const_fem_nodes_4_rayleigh                                &
-!     &   (r_reso_V, rayleigh_fem%mesh, rayleigh_fem%group)
       call fem_nodes_4_rayleigh_file                                    &
      &   (r_reso_V, rayleigh_fem%mesh, rayleigh_fem%group)
 !
@@ -247,19 +205,19 @@
       call init_fields_IO_by_rayleigh(rayleigh_ftbl1,                   &
      &    rayleigh_pmesh(my_rank+1), rayleigh_fIO(my_rank+1))
 !
-      call alloc_rayleigh_component(nnod_r, istart_pe, rayleigh_fld)
+      call alloc_rayleigh_component(nnod_r, istart_pe, r_reso_V)
       do nd = 1, rayleigh_ftbl1%ntot_comp
         write(file_name,'(a,a1,i8.8,a1,i4.4)')                          &
      &                     trim(rayleigh_ftbl1%field_dir), '/',         &
      &                     i_step, '_', rayleigh_ftbl1%id_rayleigh(nd)
-        call read_each_rayleigh_component(file_name, rayleigh_fld)
+        call read_each_rayleigh_component(file_name, r_reso_V)
 !
 !$omp parallel workshare
         rayleigh_fIO(my_rank+1)%d_IO(1:nnod_r,nd)                       &
-     &         = rayleigh_fld%rayleigh_in(1:nnod_r)
+     &         = r_reso_V%field_rtp(1:nnod_r)
 !$omp end parallel workshare
       end do
-      call dealloc_rayleigh_component(rayleigh_fld)
+      call dealloc_rayleigh_component(r_reso_V)
 !
       call assemble_field_data                                          &
      &   (nprocs, asbl_comm_R, field, rayleigh_fIO)
