@@ -50,11 +50,11 @@
         integer(kind = kint) :: led
 !
 !>        global radial resolution
-        integer :: nri_gl
+!        integer :: nri_gl
 !>        global meridional resolution
-        integer :: nth_gl
+!        integer :: nth_gl
 !>        global horizontal resolution
-        integer :: nphi_gl
+!        integer :: nphi_gl
 !>        radial grid
 !        real(kind = kreal), allocatable :: radius_gl(:)
 !>        meridional grid
@@ -130,23 +130,23 @@
       call mpi_read_int4head_b(IO_param, b_flag)
       if(b_flag .ne. 314) ra_fld%iflag_swap = iendian_FLIP
 !
-      call mpi_read_int4head_b(IO_param, ra_fld%nri_gl)
-      call mpi_read_int4head_b(IO_param, ra_fld%nth_gl)
-      call mpi_read_int4head_b(IO_param, ra_fld%nphi_gl)
+      call mpi_read_int4head_b(IO_param, r_reso%nri_gl)
+      call mpi_read_int4head_b(IO_param, r_reso%nth_gl)
+      call mpi_read_int4head_b(IO_param, r_reso%nphi_gl)
 !
 !      allocate(r_reso%radius_gl(r_reso%nri_gl))
 !      allocate(r_reso%theta_gl(r_reso%nth_gl))
 !      allocate(r_reso%cos_theta(r_reso%nth_gl))
 !
-      num64 = ra_fld%nri_gl
+      num64 = r_reso%nri_gl
       call mpi_read_mul_realhead_b(IO_param, num64, r_reso%radius_gl)
-      num64 = ra_fld%nth_gl
+      num64 = r_reso%nth_gl
       call mpi_read_mul_realhead_b(IO_param, num64, r_reso%theta_gl)
 !
       call close_mpi_file(IO_param)
 !
 !$omp parallel do private(i)
-      do i = 1, ra_fld%nth_gl
+      do i = 1, r_reso%nth_gl
         r_reso%cos_theta(i) = cos(r_reso%theta_gl(i))
       end do
 !$omp end parallel do
