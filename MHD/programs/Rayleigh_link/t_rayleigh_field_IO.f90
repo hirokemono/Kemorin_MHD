@@ -60,8 +60,8 @@
 !>        radial grid
         real(kind = kreal), allocatable :: radius_gl(:)
 !>        meridional grid
-        real(kind = kreal), allocatable :: theta_gl(:)
-        real(kind = kreal), allocatable :: cos_theta(:)
+!        real(kind = kreal), allocatable :: theta_gl(:)
+!        real(kind = kreal), allocatable :: cos_theta(:)
 !
         integer(kind = kint_gl) :: nnod_rayleigh_in
 !
@@ -99,11 +99,11 @@
       type(rayleigh_field), intent(inout) :: ra_fld
 !
       allocate(ra_fld%radius_gl(ra_fld%nri_gl))
-      allocate(ra_fld%theta_gl(ra_fld%nth_gl))
+!      allocate(ra_fld%theta_gl(ra_fld%nth_gl))
 !      allocate(ra_fld%cos_theta(ra_fld%nth_gl))
 !
       ra_fld%radius_gl(1:ra_fld%nri_gl) = 0.0d0
-      ra_fld%theta_gl(1:ra_fld%nth_gl) = 0.0d0
+!      ra_fld%theta_gl(1:ra_fld%nth_gl) = 0.0d0
 !      ra_fld%cos_theta(1:ra_fld%nth_gl) = 0.0d0
 !
       end subroutine alloc_rayleigh_1d_grids
@@ -126,7 +126,7 @@
 !
       type(rayleigh_field), intent(inout) :: ra_fld
 !
-      deallocate(ra_fld%radius_gl, ra_fld%theta_gl) !, ra_fld%cos_theta)
+      deallocate(ra_fld%radius_gl)!, ra_fld%theta_gl, ra_fld%cos_theta)
 !
       end subroutine dealloc_rayleigh_1d_grids
 !
@@ -167,13 +167,13 @@
       num64 = ra_fld%nri_gl
       call mpi_read_mul_realhead_b(IO_param, num64, ra_fld%radius_gl)
       num64 = ra_fld%nth_gl
-      call mpi_read_mul_realhead_b(IO_param, num64, ra_fld%theta_gl)
+      call mpi_read_mul_realhead_b(IO_param, num64, r_reso%theta_gl)
 !
       call close_mpi_file(IO_param)
 !
 !$omp parallel do private(i)
       do i = 1, ra_fld%nth_gl
-        r_reso%cos_theta(i) = cos(ra_fld%theta_gl(i))
+        r_reso%cos_theta(i) = cos(r_reso%theta_gl(i))
       end do
 !$omp end parallel do
 !
