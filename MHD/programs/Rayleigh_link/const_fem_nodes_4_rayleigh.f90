@@ -78,11 +78,11 @@
 !
 !
       mesh%node%numnod = (r_reso%ked - r_reso%kst + 1)                  &
-     &                  * (r_reso%led - r_reso%lst + 1) * r_reso%nphi
+     &                * (r_reso%led - r_reso%lst + 1) * r_reso%nphi_gl
       mesh%node%internal_node = mesh%node%numnod
       call alloc_node_geometry_base(mesh%node)
 !
-!      write(*,*) 'nodes_4_rayleigh', mesh%node%numnod, r_reso%nphi
+!      write(*,*) 'nodes_4_rayleigh', mesh%node%numnod, r_reso%nphi_gl
       call nodes_4_rayleigh(r_reso, mesh%node)
 !
       call const_ele_and_grp_4_rayleigh(mesh, group)
@@ -103,7 +103,7 @@
       integer(kind = kint) :: nnod_gl, ndivideed, irest, istart_pe
 !
 !
-      nnod_gl = r_reso%nri * r_reso%nth * r_reso%nphi
+      nnod_gl = r_reso%nri_gl * r_reso%nth_gl * r_reso%nphi_gl
 !
       allocate(istack_nnod(0:nprocs))
       call cal_divide_and_rest(ndivideed, irest, nnod_gl, nprocs)
@@ -117,7 +117,7 @@
 !
       call alloc_node_geometry_base(mesh%node)
 !
-!      write(*,*) 'nodes_4_rayleigh_file', mesh%node%numnod, r_reso%nphi
+!      write(*,*) 'nodes_4_rayleigh_file'
       call nodes_4_rayleigh_file(istart_pe, r_reso, mesh%node)
 !
       call const_ele_and_grp_4_rayleigh(mesh, group)
@@ -173,17 +173,17 @@
 !
 !$omp parallel do private(k,l,m,k_to_out,inod)
       do k = r_reso%kst, r_reso%ked
-        inod = (k - r_reso%kst) * r_reso%nphi                           &
+        inod = (k - r_reso%kst) * r_reso%nphi_gl                        &
      &        * (r_reso%led - r_reso%lst + 1)
         do l = r_reso%lst, r_reso%led
-          do m = 1, r_reso%nphi
-            k_to_out = r_reso%nri - k + 1
+          do m = 1, r_reso%nphi_gl
+            k_to_out = r_reso%nri_gl - k + 1
             inod = inod + 1
-            node%inod_global(inod) = k_to_out + (l-1) * r_reso%nri      &
-     &                              + (m-1) * r_reso%nth * r_reso%nri
-            r(inod) = r_reso%radius(k)
-            t(inod) = r_reso%theta(l)
-            p(inod) = two * pi * dble(m-1) / dble(r_reso%nphi)
+            node%inod_global(inod) = k_to_out + (l-1) * r_reso%nri_gl   &
+     &                        + (m-1) * r_reso%nth_gl * r_reso%nri_gl
+            r(inod) = r_reso%radius_gl(k)
+            t(inod) = r_reso%theta_gl(l)
+            p(inod) = two * pi * dble(m-1) / dble(r_reso%nphi_gl)
           end do
         end do
       end do
@@ -216,19 +216,19 @@
 !$omp parallel do private(i_gl,k,l,m,l_tmp,k_to_out,inod)
       do inod = 1, node%numnod
         i_gl = inod + ist_pe
-        m = mod(i_gl-1,r_reso%nphi)
-        l_tmp = (i_gl-m) / r_reso%nphi
-        l = mod(l_tmp,r_reso%nth)
-        k = (l_tmp-l) / r_reso%nth
+        m = mod(i_gl-1,r_reso%nphi_gl)
+        l_tmp = (i_gl-m) / r_reso%nphi_gl
+        l = mod(l_tmp,r_reso%nth_gl)
+        k = (l_tmp-l) / r_reso%nth_gl
         m = m + 1
         l = l + 1
         k = k + 1
-        k_to_out = r_reso%nri - k + 1
-            node%inod_global(inod) = k_to_out + (l-1) * r_reso%nri      &
-     &                              + (m-1) * r_reso%nth * r_reso%nri
-        r(inod) = r_reso%radius(k)
-        t(inod) = r_reso%theta(l)
-        p(inod) = two * pi * dble(m-1) / dble(r_reso%nphi)
+        k_to_out = r_reso%nri_gl - k + 1
+            node%inod_global(inod) = k_to_out + (l-1) * r_reso%nri_gl   &
+     &                        + (m-1) * r_reso%nth_gl * r_reso%nri_gl
+        r(inod) = r_reso%radius_gl(k)
+        t(inod) = r_reso%theta_gl(l)
+        p(inod) = two * pi * dble(m-1) / dble(r_reso%nphi_gl)
       end do
 !$omp end parallel do
 !
@@ -261,28 +261,28 @@
       sph%sph_rtp%irank_sph_rtp(2) = r_reso%irank_h
       sph%sph_rtp%irank_sph_rtp(3) = 0
 
-      sph%sph_rj%nidx_global_rj(1) = r_reso%nri
+      sph%sph_rj%nidx_global_rj(1) = r_reso%nri_gl
       sph%sph_rj%nidx_global_rj(2) = (r_reso%ltr + 1)**2
       sph%sph_rj%nidx_rj(1) = sph%sph_rj%nidx_global_rj(1)
       sph%sph_rj%nidx_rj(2) = sph%sph_rj%nidx_global_rj(2) / nprocs
 !
-      sph%sph_rtp%nidx_global_rtp(1) = r_reso%nri
-      sph%sph_rtp%nidx_global_rtp(2) = r_reso%nth
-      sph%sph_rtp%nidx_global_rtp(3) = r_reso%nphi
+      sph%sph_rtp%nidx_global_rtp(1) = r_reso%nri_gl
+      sph%sph_rtp%nidx_global_rtp(2) = r_reso%nth_gl
+      sph%sph_rtp%nidx_global_rtp(3) = r_reso%nphi_gl
       sph%sph_rtp%ist_rtp(1) = r_reso%kst
       sph%sph_rtp%ist_rtp(2) = r_reso%lst
       sph%sph_rtp%ist_rtp(3) = 1
       sph%sph_rtp%ied_rtp(1) = r_reso%ked
       sph%sph_rtp%ied_rtp(2) = r_reso%led
-      sph%sph_rtp%ied_rtp(3) = r_reso%nphi
+      sph%sph_rtp%ied_rtp(3) = r_reso%nphi_gl
       sph%sph_rtp%nidx_rtp(1) = r_reso%ked - r_reso%kst + 1
       sph%sph_rtp%nidx_rtp(2) = r_reso%led - r_reso%lst + 1
-      sph%sph_rtp%nidx_rtp(3) = r_reso%nphi
+      sph%sph_rtp%nidx_rtp(3) = r_reso%nphi_gl
 !
       call alloc_type_sph_1d_index_rj(sph%sph_rj)
-      do i = 1, r_reso%nri
-        irev = r_reso%nri - i + 1
-        sph%sph_rj%radius_1d_rj_r(i) = r_reso%radius(irev)
+      do i = 1, r_reso%nri_gl
+        irev = r_reso%nri_gl - i + 1
+        sph%sph_rj%radius_1d_rj_r(i) = r_reso%radius_gl(irev)
       end do
 !
       call alloc_type_sph_1d_index_rtp(sph%sph_rtp)

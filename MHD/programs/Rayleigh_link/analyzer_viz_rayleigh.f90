@@ -63,7 +63,8 @@
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz_rayleigh'
-      call FEM_initialize_viz_rayleigh(viz_step_V)
+      call FEM_initialize_viz_rayleigh                                  &
+     &   (t_VIZ%init_d%i_time_step, viz_step_V)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'

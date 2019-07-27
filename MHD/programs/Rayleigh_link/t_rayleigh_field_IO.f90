@@ -13,8 +13,6 @@
 !!      subroutine dealloc_rayleigh_component(ra_fld)
 !!      subroutine dealloc_rayleigh_1d_grids(ra_fld)
 !!        type(rayleigh_field), intent(inout) :: ra_fld
-!!      subroutine check_rayleigh_1d_grids(ra_fld)
-!!        type(rayleigh_field), intent(in) :: ra_fld
 !!
 !!      subroutine read_rayleigh_field_param(file_name, ra_fld)
 !!      subroutine read_each_rayleigh_component(file_name, ra_fld)
@@ -33,6 +31,7 @@
       use m_constants
       use calypso_mpi
       use t_field_data_IO
+      use t_rayleigh_resolution
 !
       implicit  none
 !
@@ -43,6 +42,15 @@
 !
 !>        Number of subdomains for grid data
         integer(kind = kint) :: ndomain_rtp(3)
+!
+        integer(kind = kint) :: irank_r
+        integer(kind = kint) :: irank_h
+!
+        integer(kind = kint) :: kst
+        integer(kind = kint) :: ked
+        integer(kind = kint) :: lst
+        integer(kind = kint) :: led
+!
 !>        global radial resolution
         integer :: nri_gl
 !>        global meridional resolution
@@ -53,6 +61,7 @@
         real(kind = kreal), allocatable :: radius_gl(:)
 !>        meridional grid
         real(kind = kreal), allocatable :: theta_gl(:)
+        real(kind = kreal), allocatable :: cos_theta(:)
 !
         integer(kind = kint_gl) :: nnod_rayleigh_in
 !
@@ -91,9 +100,11 @@
 !
       allocate(ra_fld%radius_gl(ra_fld%nri_gl))
       allocate(ra_fld%theta_gl(ra_fld%nth_gl))
+!      allocate(ra_fld%cos_theta(ra_fld%nth_gl))
 !
       ra_fld%radius_gl(1:ra_fld%nri_gl) = 0.0d0
       ra_fld%theta_gl(1:ra_fld%nth_gl) = 0.0d0
+!      ra_fld%cos_theta(1:ra_fld%nth_gl) = 0.0d0
 !
       end subroutine alloc_rayleigh_1d_grids
 !
@@ -115,47 +126,28 @@
 !
       type(rayleigh_field), intent(inout) :: ra_fld
 !
-      deallocate(ra_fld%radius_gl, ra_fld%theta_gl)
+      deallocate(ra_fld%radius_gl, ra_fld%theta_gl) !, ra_fld%cos_theta)
 !
       end subroutine dealloc_rayleigh_1d_grids
 !
 !-----------------------------------------------------------------------
-!
-      subroutine check_rayleigh_1d_grids(ra_fld)
-!
-      type(rayleigh_field), intent(in) :: ra_fld
-!
-      integer(kind = kint) :: i
-!
-!
-      write(50+my_rank,*) 'iflag_swap: ', ra_fld%iflag_swap
-      write(50+my_rank,*) 'global_grid',                                &
-     &                   ra_fld%nri_gl, ra_fld%nth_gl, ra_fld%nphi_gl
-      do i = 1, ra_fld%nri_gl
-        write(50+my_rank,*) i, ra_fld%radius_gl(i)
-      end do
-      do i = 1, ra_fld%nth_gl
-        write(50+my_rank,*) i, ra_fld%theta_gl(i)
-      end do
-!
-      end subroutine check_rayleigh_1d_grids
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_rayleigh_field_param(file_name, ra_fld)
+      subroutine read_rayleigh_field_param(file_name, r_reso, ra_fld)
 !
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
 !
       character(len = kchara), intent(in) :: file_name
       type(rayleigh_field), intent(inout) :: ra_fld
+      type(Rayleigh_grid_param), intent(inout) :: r_reso
 !
       integer :: b_flag
 !
       type(calypso_MPI_IO_params), save :: IO_param
 !
       integer(kind = kint_gl) :: num64
+      integer(kind = kint) :: i
 !
 !
       write(*,*) 'Read parameter file: ', trim(file_name)
@@ -179,9 +171,11 @@
 !
       call close_mpi_file(IO_param)
 !
-      if(i_debug .gt. 0) then
-        call check_rayleigh_1d_grids(ra_fld)
-      end if
+!$omp parallel do private(i)
+      do i = 1, ra_fld%nth_gl
+        r_reso%cos_theta(i) = cos(ra_fld%theta_gl(i))
+      end do
+!$omp end parallel do
 !
       end subroutine read_rayleigh_field_param
 !

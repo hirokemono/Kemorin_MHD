@@ -63,7 +63,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_viz_rayleigh(viz_step)
+      subroutine FEM_initialize_viz_rayleigh(i_step, viz_step)
 !
       use const_fem_nodes_4_rayleigh
       use const_FEM_mesh_sph_mhd
@@ -72,19 +72,69 @@
       use copy_mesh_structures
       use mpi_load_mesh_data
 !
+      use cal_minmax_and_stacks
+!
+      integer (kind =kint), intent(in) :: i_step
       type(VIZ_step_params), intent(inout) :: viz_step
 !
-      integer(kind = kint) :: iflag
+      character(len=kchara) :: file_name
+      integer(kind = kint) :: iflag, i
+!
+      integer(kind = kint) :: ndivideed, irest
+      integer(kind = kint), allocatable :: istack_r(:), istack_h(:)
 !
 !   --------------------------------
 !       setup Rayleigh information
 !   --------------------------------
 !
       call load_resolution_4_rayleigh(r_reso_V)
+!
+      file_name = 'Spherical_3D/00007000_grid'
+      write(file_name,'(a,a1,i8.8,a5)')                                 &
+     &                     trim(rayleigh_ftbl1%field_dir), '/',         &
+     &                     i_step, '_grid'
+      call read_rayleigh_field_param(file_name, r_reso_V, rayleigh_fld)
+!
+      rayleigh_fld%irank_h = mod(my_rank,rayleigh_fld%ndomain_rtp(2))
+      rayleigh_fld%irank_r = (my_rank - rayleigh_fld%irank_h)           &
+     &                      / rayleigh_fld%ndomain_rtp(2)
+!
+      allocate(istack_r(0:rayleigh_fld%ndomain_rtp(1)))
+      allocate(istack_h(0:rayleigh_fld%ndomain_rtp(2)))
+!
+      call cal_divide_and_rest(ndivideed, irest, r_reso_V%nri_gl,      &
+     &    rayleigh_fld%ndomain_rtp(1))
+      call set_stack_of_segments(rayleigh_fld%ndomain_rtp(1),          &
+     &    ndivideed, irest, ione, istack_r)
+      rayleigh_fld%kst = istack_r(r_reso_V%irank_r  ) + 1
+      rayleigh_fld%ked = istack_r(r_reso_V%irank_r+1)
+!
+      call cal_divide_and_rest(ndivideed, irest, r_reso_V%nth_gl,      &
+     &    rayleigh_fld%ndomain_rtp(2))
+      call set_stack_of_segments(rayleigh_fld%ndomain_rtp(2),          &
+     &    ndivideed, irest, ione, istack_h)
+      rayleigh_fld%lst = istack_h(r_reso_V%irank_h  ) + 1
+      rayleigh_fld%led = istack_h(r_reso_V%irank_h+1)
+      deallocate(istack_r, istack_h)
+!
+!      write(*,*) 'nri_gl', r_reso_V%nri_gl, rayleigh_fld%nri_gl
+!      write(*,*) 'nth_gl', r_reso_V%nth_gl, rayleigh_fld%nth_gl
+!      write(*,*) 'nphi_gl', r_reso_V%nphi_gl, rayleigh_fld%nphi_gl
+      write(*,*)  my_rank, 'kst', r_reso_V%kst, rayleigh_fld%kst
+      write(*,*)  my_rank, 'ked', r_reso_V%ked, rayleigh_fld%ked
+      write(*,*)  my_rank, 'lst', r_reso_V%lst, rayleigh_fld%lst
+      write(*,*)  my_rank, 'led', r_reso_V%led, rayleigh_fld%led
+!      write(*,*)  my_rank, 'irank_r', r_reso_V%irank_r, rayleigh_fld%irank_r
+!      write(*,*)  my_rank, 'irank_h', r_reso_V%irank_h, rayleigh_fld%irank_h
+!      do i = 1, r_reso_V%nri_gl
+!        write(*,*) i, 'radius', r_reso_V%radius_gl(i)-rayleigh_fld%radius_gl(i)
+!      end do
+!      do i = 1, r_reso_V%nth_gl
+!        write(*,*) i, 'theta', r_reso_V%theta_gl(i)-rayleigh_fld%theta_gl(i)
+!      end do
+!
 !      call s_const_fem_nodes_4_rayleigh                                &
 !     &   (r_reso_V, rayleigh_fem%mesh, rayleigh_fem%group)
-!
-      call mesh_setup_4_VIZ2
       call fem_nodes_4_rayleigh_file                                    &
      &   (r_reso_V, rayleigh_fem%mesh, rayleigh_fem%group)
 !
@@ -172,18 +222,6 @@
       end subroutine FEM_analyze_viz_rayleigh
 !
 !-----------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine mesh_setup_4_VIZ2
-!
-      character(len=kchara) :: file_name
-!
-!
-      file_name = 'Spherical_3D/00007000_grid'
-      call read_rayleigh_field_param(file_name, rayleigh_fld)
-!
-      end subroutine mesh_setup_4_VIZ2
-!
 ! ----------------------------------------------------------------------
 !
       subroutine set_field_data_4_VIZ2(iflag, i_step, fem, field)

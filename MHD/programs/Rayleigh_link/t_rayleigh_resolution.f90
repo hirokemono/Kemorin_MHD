@@ -33,9 +33,9 @@
       type Rayleigh_grid_param
         integer(kind = kint) :: ltr
 !
-        integer(kind = kint) :: nri
-        integer(kind = kint) :: nth
-        integer(kind = kint) :: nphi
+        integer(kind = kint) :: nri_gl
+        integer(kind = kint) :: nth_gl
+        integer(kind = kint) :: nphi_gl
 !
         integer(kind = kint) :: irank_r
         integer(kind = kint) :: irank_h
@@ -45,8 +45,8 @@
         integer(kind = kint) :: lst
         integer(kind = kint) :: led
 !
-        real(kind = kreal), allocatable :: radius(:)
-        real(kind = kreal), allocatable :: theta(:)
+        real(kind = kreal), allocatable :: radius_gl(:)
+        real(kind = kreal), allocatable :: theta_gl(:)
         real(kind = kreal), allocatable :: cos_theta(:)
       end type Rayleigh_grid_param
 !
@@ -73,21 +73,22 @@
 !
 !
       r_reso%ltr = ltr
-      r_reso%nri = nri
-      r_reso%nth = nth
-      r_reso%nphi = 2 * r_reso%nth
+      r_reso%nri_gl = nri
+      r_reso%nth_gl = nth
+      r_reso%nphi_gl = 2 * r_reso%nth_gl
       r_reso%kst = kst
       r_reso%ked = ked
       r_reso%lst = lst
       r_reso%led = led
 !
-      allocate(r_reso%radius(r_reso%nri))
-      allocate(r_reso%cos_theta(r_reso%nth))
-      allocate(r_reso%theta(r_reso%nth))
+      allocate(r_reso%radius_gl(r_reso%nri_gl))
+      allocate(r_reso%theta_gl(r_reso%nth_gl))
+      allocate(r_reso%cos_theta(r_reso%nth_gl))
 !
-      r_reso%radius(1:r_reso%nri) = radius(1:r_reso%nri)
-      r_reso%cos_theta(1:r_reso%nth) = cos_theta(1:r_reso%nth)
-      r_reso%theta(1:r_reso%nth) = acos(cos_theta(1:r_reso%nth))
+      r_reso%radius_gl(1:r_reso%nri_gl) = radius(1:r_reso%nri_gl)
+      r_reso%cos_theta(1:r_reso%nth_gl) = cos_theta(1:r_reso%nth_gl)
+      r_reso%theta_gl(1:r_reso%nth_gl)                                  &
+     &      = acos(cos_theta(1:r_reso%nth_gl))
 !
       end subroutine copy_resolution_4_rayleigh
 !
@@ -98,7 +99,7 @@
       type(Rayleigh_grid_param), intent(inout) :: r_reso
 !
 !
-      deallocate(r_reso%radius, r_reso%cos_theta, r_reso%theta)
+      deallocate(r_reso%radius_gl, r_reso%cos_theta, r_reso%theta_gl)
 !
       end subroutine dealloc_resolution_4_rayleigh
 !
@@ -135,19 +136,19 @@
      &          kst_read(ip), ked_read(ip), lst_read(ip), led_read(ip)
         end do
 !
-        read(13,*) r_reso%nri
-        allocate(r_reso%radius(r_reso%nri))
+        read(13,*) r_reso%nri_gl
+        allocate(r_reso%radius_gl(r_reso%nri_gl))
 !
-        do kr = 1, r_reso%nri
-          read(13,*) itmp, r_reso%radius(kr)
+        do kr = 1, r_reso%nri_gl
+          read(13,*) itmp, r_reso%radius_gl(kr)
         end do
 !
-        read(13,*) r_reso%ltr, r_reso%nth
-        allocate(r_reso%cos_theta(r_reso%nth))
-        allocate(r_reso%theta(r_reso%nth))
+        read(13,*) r_reso%ltr, r_reso%nth_gl
+        allocate(r_reso%theta_gl(r_reso%nth_gl))
+        allocate(r_reso%cos_theta(r_reso%nth_gl))
 !
-        do lt = 1, r_reso%nth
-          read(13,*) itmp, r_reso%cos_theta(lt), r_reso%theta(lt)
+        do lt = 1, r_reso%nth_gl
+          read(13,*) itmp, r_reso%cos_theta(lt), r_reso%theta_gl(lt)
         end do
         close(13)
       end if
@@ -178,21 +179,21 @@
       call MPI_BCAST                                                    &
      &   (r_reso%ltr, 1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST                                                    &
-     &   (r_reso%nri, 1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+     &   (r_reso%nri_gl, 1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST                                                    &
-     &   (r_reso%nth, 1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      r_reso%nphi = 2 * r_reso%nth
+     &   (r_reso%nth_gl, 1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      r_reso%nphi_gl = 2 * r_reso%nth_gl
 !
       if(my_rank .ne. 0) then
-        allocate(r_reso%radius(r_reso%nri))
-        allocate(r_reso%cos_theta(r_reso%nth))
-        allocate(r_reso%theta(r_reso%nth))
+        allocate(r_reso%radius_gl(r_reso%nri_gl))
+        allocate(r_reso%cos_theta(r_reso%nth_gl))
+        allocate(r_reso%theta_gl(r_reso%nth_gl))
       end if
-      call MPI_BCAST(r_reso%radius, r_reso%nri, CALYPSO_REAL, 0,        &
+      call MPI_BCAST(r_reso%radius_gl, r_reso%nri_gl, CALYPSO_REAL, 0,  &
      &               CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(r_reso%cos_theta, r_reso%nth, CALYPSO_REAL, 0,     &
+      call MPI_BCAST(r_reso%cos_theta, r_reso%nth_gl, CALYPSO_REAL, 0,  &
      &               CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(r_reso%theta, r_reso%nth, CALYPSO_REAL, 0,         &
+      call MPI_BCAST(r_reso%theta_gl, r_reso%nth_gl, CALYPSO_REAL, 0,   &
      &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine load_resolution_4_rayleigh
@@ -247,15 +248,15 @@
      &                kr_min(ip), kr_max(ip), lt_min(ip), lt_max(ip)
         end do
 !
-        write(12,'(i16,a)')  r_reso%nri, 'kr, r'
-        do kr = 1, r_reso%nri
-          write(12,'(i16,1pe25.15)') kr, r_reso%radius(kr)
+        write(12,'(i16,a)')  r_reso%nri_gl, 'kr, r'
+        do kr = 1, r_reso%nri_gl
+          write(12,'(i16,1pe25.15)') kr, r_reso%radius_gl(kr)
         end do
-        write(12,'(2i16,a)')  r_reso%ltr, r_reso%nth,                   &
+        write(12,'(2i16,a)')  r_reso%ltr, r_reso%nth_gl,                &
      &                      'lt, cos_theta, theta'
-        do lt = 1, r_reso%nth
+        do lt = 1, r_reso%nth_gl
           write(12,'(i16,1p2e25.15)')                                   &
-     &             lt, r_reso%cos_theta(lt), r_reso%theta
+     &             lt, r_reso%cos_theta(lt), r_reso%theta_gl
         end do
         close(12)
         deallocate(r_rank, h_rank)

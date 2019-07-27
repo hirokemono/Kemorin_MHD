@@ -98,6 +98,10 @@
       rayleigh_mesh_file%file_prefix = 'Rayleigh_in'
       rayleigh_mesh_file%iflag_format = id_ascii_file_fmt
       call load_resolution_4_rayleigh(r_reso0)
+      file_name = 'Spherical_3D/00007000_grid'
+      call read_rayleigh_field_param(file_name, r_reso0, ra_fld_A)
+!
+!
 !      call s_const_fem_nodes_4_rayleigh                                &
 !     &   (r_reso0, rayleigh_fem%mesh, rayleigh_fem%group)
       call fem_nodes_4_rayleigh_file                                    &
@@ -143,9 +147,6 @@
      &    geofem%mesh%node, asbl_comm_u)
 !
 !
-!
-      file_name = 'Spherical_3D/00007000_grid'
-      call read_rayleigh_field_param(file_name, ra_fld_A)
 !
       if(my_rank .eq. 0) then
         new_fld%num_phys = 1
