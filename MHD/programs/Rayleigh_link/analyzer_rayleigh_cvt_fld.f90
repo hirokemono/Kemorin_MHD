@@ -195,8 +195,6 @@
 !
       character(len=kchara) :: file_name
 !
-      integer(kind = kint_gl) :: nnod_r, istart_pe
-!
       new_fld_file%iflag_format = iflag_fld
       new_fld_file%file_prefix =  'field_12/tako'
 !
@@ -217,16 +215,17 @@
       allocate(org_fIO(nprocs))
 !
       do istep = istep_start, istep_end, istep_increment
-        nnod_r = org_mesh(my_rank+1)%node%numnod
-        istart_pe = org_mesh(my_rank+1)%node%istack_numnod(my_rank)
         file_name = 'Spherical_3D/00007000_0501'
         call alloc_rayleigh_component                                   &
-     &     (nnod_r, istart_pe, rayleigh_rtp_A)
-!
-        call read_each_rayleigh_component(file_name, rayleigh_rtp_A)
-!        write(*,*) 'load_local_field_from_rayleigh'
+     &     (org_mesh(my_rank+1)%node%numnod,                            &
+     &      org_mesh(my_rank+1)%node%istack_numnod(my_rank),            &
+     &      rayleigh_rtp_A)
         call load_local_field_from_rayleigh                             &
      &     (rayleigh_rtp_A, t_IO_m, org_fIO(my_rank+1))
+!
+        call read_each_rayleigh_component(file_name,                    &
+     &      org_fIO(my_rank+1)%nnod_IO, org_fIO(my_rank+1)%d_IO(1,1),   &
+     &      rayleigh_rtp_A)
         call dealloc_rayleigh_component(rayleigh_rtp_A)
 !
         call share_time_step_data(t_IO_m)
@@ -276,8 +275,6 @@
       call cal_istack_phys_comp_IO(fld_IO)
 !
       call alloc_phys_data_IO(fld_IO)
-      fld_IO%d_IO(1:fld_IO%nnod_IO,1)                                   &
-     &             = rayleigh_rtp%field_rtp(1:fld_IO%nnod_IO)
 !
       end subroutine load_local_field_from_rayleigh
 !

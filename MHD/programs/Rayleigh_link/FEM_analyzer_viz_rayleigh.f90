@@ -192,30 +192,25 @@
       type(phys_data), intent(inout) :: field
 !
       character(len=kchara) :: file_name
-      integer(kind = kint_gl) :: nnod_r, istart_pe
 !
       integer(kind = kint) :: nd
 !
 !
       if(iflag .ne. 0) return
-      nnod_r = rayleigh_pmesh(my_rank+1)%node%numnod
-      istart_pe                                                         &
-     &       = rayleigh_pmesh(my_rank+1)%node%istack_numnod(my_rank)
-!
       call init_fields_IO_by_rayleigh(rayleigh_ftbl1,                   &
      &    rayleigh_pmesh(my_rank+1), rayleigh_fIO(my_rank+1))
 !
-      call alloc_rayleigh_component(nnod_r, istart_pe, rayleigh_rtp_V)
+      call alloc_rayleigh_component                                     &
+     &   (rayleigh_pmesh(my_rank+1)%node%numnod,                        &
+     &    rayleigh_pmesh(my_rank+1)%node%istack_numnod(my_rank),        &
+     &    rayleigh_rtp_V)
       do nd = 1, rayleigh_ftbl1%ntot_comp
         write(file_name,'(a,a1,i8.8,a1,i4.4)')                          &
      &                     trim(rayleigh_ftbl1%field_dir), '/',         &
      &                     i_step, '_', rayleigh_ftbl1%id_rayleigh(nd)
-        call read_each_rayleigh_component(file_name, rayleigh_rtp_V)
-!
-!$omp parallel workshare
-        rayleigh_fIO(my_rank+1)%d_IO(1:nnod_r,nd)                       &
-     &         = rayleigh_rtp_V%field_rtp(1:nnod_r)
-!$omp end parallel workshare
+        call read_each_rayleigh_component                               &
+     &     (file_name, rayleigh_pmesh(my_rank+1)%node%numnod,           &
+     &      rayleigh_fIO(my_rank+1)%d_IO(1,nd), rayleigh_rtp_V)
       end do
       call dealloc_rayleigh_component(rayleigh_rtp_V)
 !

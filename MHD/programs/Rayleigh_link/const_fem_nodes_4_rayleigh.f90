@@ -37,6 +37,9 @@
 !
       implicit none
 !
+      character(len=kchara), parameter, private                         &
+     &       ::  rayleigh_resolution_file = 'Rayleigh_grid_kemo.dat'
+!
       private :: nodes_4_rayleigh, nodes_4_rayleigh_file
       private :: const_ele_and_grp_4_rayleigh
 !
@@ -50,6 +53,7 @@
 !
       use t_file_IO_parameter
       use mpi_load_mesh_data
+      use palallel_conf_4_rayleigh
 !
       type(field_IO_params), intent(inout) :: mesh_file
 !
@@ -59,9 +63,9 @@
       type(mesh_groups) ::   group0
 !
 !
-      call load_resolution_4_rayleigh(rayleigh_rtp)
+      call load_resolution_4_rayleigh                                   &
+     &   (rayleigh_resolution_file, rayleigh_rtp)
       call s_const_fem_nodes_4_rayleigh(rayleigh_rtp, mesh0, group0)
-!      call dealloc_resolution_4_rayleigh(rayleigh_rtp)
 !
       call mpi_output_mesh(mesh_file, mesh0, group0)
 !
