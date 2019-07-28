@@ -10,7 +10,7 @@
 !!      subroutine copy_resolution_4_rayleigh(nri, nth, ltr,            &
 !!     &           kst, ked, lst, led, radius, cos_theta, rayleigh_rtp)
 !!
-!!      subroutine load_resolution_4_rayleigh(rayleigh_rtp)
+!!      subroutine load_resolution_4_rayleigh(file_name, rayleigh_rtp)
 !!        type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !!      subroutine write_resolution_4_rayleigh(file_name, rayleigh_rtp)
 !!        type(rayleigh_field), intent(in) :: rayleigh_rtp
@@ -69,8 +69,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine load_resolution_4_rayleigh(rayleigh_rtp)
+      subroutine load_resolution_4_rayleigh(file_name, rayleigh_rtp)
 !
+      character(len=kchara) :: file_name
       type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !
       integer, allocatable :: r_rank(:), h_rank(:)
@@ -91,9 +92,8 @@
         allocate(lst_read(nprocs))
         allocate(led_read(nprocs))
 !
-        write(*,*) 'Read Rayleigh grid parameter: ',                    &
-     &            trim(rayleigh_resolution_file)
-        open(13, file = rayleigh_resolution_file)
+        write(*,*) 'Read Rayleigh grid parameter: ', trim(file_name)
+        open(13, file = file_name)
         read(13,*) tmpchara
         do ip = 1, nprocs
           read(13,*) itmp, r_rank(ip), h_rank(ip),                      &
