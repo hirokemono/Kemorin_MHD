@@ -11,7 +11,7 @@
 !!      subroutine bcast_dynamo_viz_control(viz_ctls)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!  begin zonal_mean_control
+!!  begin dynamo_vizs_control
 !!    file  zonal_mean_section_ctl
 !!    begin  zonal_RMS_section_ctl
 !!      ....
@@ -20,7 +20,7 @@
 !!    begin crustal_filtering_ctl
 !!      truncation_degree_ctl        13
 !!    end crustal_filtering_ctl
-!!  end zonal_mean_control
+!!  end hd_dynamo_viz_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -47,7 +47,7 @@
       end type clust_filtering_ctl
 !
 !>      Structures of zonal mean controls
-      type sph_zonal_means_controls
+      type sph_dynamo_viz_controls
 !>        Structure of zonal mean sectioning controls
         type(section_controls) :: zm_psf_ctls
 !>        Structure of zonal RMS sectioning controls
@@ -56,11 +56,15 @@
         type(clust_filtering_ctl) :: crust_filter_ctl
 !
         integer (kind=kint) :: i_viz_ctl = 0
-      end type sph_zonal_means_controls
+      end type sph_dynamo_viz_controls
 !
 !
 !     label for entry
 !
+      character(len=kchara), parameter                                  &
+     &                    :: hd_dynamo_viz_ctl = 'dynamo_vizs_control'
+!
+!>      Here is the old label
       character(len=kchara), parameter                                  &
      &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
 !
@@ -77,7 +81,7 @@
       character(len=kchara), parameter                                  &
      &             :: hd_crustal_truncation = 'truncation_degree_ctl'
 !
-      private :: hd_zm_section, hd_zRMS_section
+      private :: hd_zm_section, hd_zRMS_section, hd_dynamo_viz_ctl
       private :: hd_zm_viz_ctl, hd_crustal_filtering
       private :: read_single_section_ctl
       private :: read_crustal_filtering_ctl
@@ -95,14 +99,17 @@
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
-      type(sph_zonal_means_controls), intent(inout) :: zm_ctls
+      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_zm_viz_ctl) .eqv. .FALSE.) return
+      if(check_begin_flag(c_buf, hd_dynamo_viz_ctl) .eqv. .FALSE.       &
+     &   .and. check_begin_flag(c_buf, hd_zm_viz_ctl) .eqv. .FALSE.)    &
+     &  return
       if(zm_ctls%i_viz_ctl .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_dynamo_viz_ctl)) exit
         if(check_end_flag(c_buf, hd_zm_viz_ctl)) exit
 !
         call read_single_section_ctl(id_control, hd_zm_section,         &
@@ -121,7 +128,7 @@
 !
       subroutine bcast_dynamo_viz_control(zm_ctls)
 !
-      type(sph_zonal_means_controls), intent(inout) :: zm_ctls
+      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !
 !
       call bcast_files_4_psf_ctl(zm_ctls%zm_psf_ctls)
