@@ -90,9 +90,9 @@
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, WK%WK_sph,              &
      &    sph_maker1%gen_sph)
 !
-      call set_control_SPH_MHD_w_viz                                    &
-     &   (DMHD_ctl%model_ctl, DMHD_ctl%psph_ctl, DMHD_ctl%smonitor_ctl, &
-     &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
+      call set_control_SPH_MHD_w_viz(DMHD_ctl%model_ctl,                &
+     &    DMHD_ctl%psph_ctl, DMHD_ctl%smonitor_ctl, DMHD_ctl%zm_ctls,   &
+     &     SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field, &
      &    monitor)
 !
       call select_make_SPH_mesh                                         &
@@ -182,8 +182,8 @@
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, WK%WK_sph,              &
      &    sph_maker1%gen_sph)
 !
-      call set_control_SPH_MHD_w_viz                                    &
-     &   (DMHD_ctl%model_ctl, DMHD_ctl%psph_ctl, DMHD_ctl%smonitor_ctl, &
+      call set_control_SPH_MHD_w_viz(DMHD_ctl%model_ctl,                &
+     &    DMHD_ctl%psph_ctl, DMHD_ctl%smonitor_ctl, DMHD_ctl%zm_ctls,   &
      &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
      &    monitor)
 !

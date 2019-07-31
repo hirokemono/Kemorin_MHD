@@ -198,7 +198,8 @@
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%fld)
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
-      call lead_special_fields_4_sph_mhd(i_step, SPH_model%omega_sph,   &
+      call lead_special_fields_4_sph_mhd                                &
+     &   (i_step, SPH_model%omega_sph, SPH_WK%monitor,                  &
      &    SPH_WK%r_2nd, SPH_model%MHD_prop, SPH_model%sph_MHD_bc,       &
      &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_SGS%dynamic,              &
      &    SPH_WK%MHD_mats, MHD_step, SPH_MHD)
@@ -250,8 +251,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_special_fields_4_sph_mhd                          &
-     &         (i_step, omega_sph, r_2nd, MHD_prop, sph_MHD_bc,         &
+      subroutine lead_special_fields_4_sph_mhd(i_step, omega_sph,       &
+     &          monitor, r_2nd, MHD_prop, sph_MHD_bc,                   &
      &          trans_p, trns_WK, dynamic_SPH, sph_MHD_mat,             &
      &          MHD_step, SPH_MHD)
 !
@@ -274,6 +275,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(sph_rotation), intent(in) :: omega_sph
+      type(sph_mhd_monitor_data), intent(in) :: monitor
       type(fdm_matrices), intent(in) :: r_2nd
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -288,7 +290,7 @@
 !
 !
       if(lead_field_data_flag(i_step, MHD_step) .eq. 0) then
-        call lead_fields_4_SPH_SGS_MHD(SPH_SGS1%SGS_par,                &
+        call lead_fields_4_SPH_SGS_MHD(SPH_SGS1%SGS_par, monitor,       &
      &      r_2nd, MHD_prop, sph_MHD_bc, trans_p, sph_MHD_mat,          &
      &      trns_WK, dynamic_SPH, SPH_MHD)
       end if

@@ -30,7 +30,7 @@
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
       use t_control_data_vizs
-      use t_control_data_zm_vizs
+      use t_control_data_dynamo_vizs
 !
       implicit none
 !
@@ -61,7 +61,7 @@
 !>        Structures of visualization controls
         type(visualization_controls) :: viz_ctls
 !>        Structures of zonal mean controls
-        type(sph_zonal_means_controls) :: zm_ctls
+        type(sph_dynamo_viz_controls) :: zm_ctls
 !
         integer (kind=kint) :: i_mhd_ctl = 0
       end type sph_sgs_mhd_control
@@ -190,7 +190,7 @@
         call read_viz_controls                                          &
      &     (id_control, MHD_ctl%viz_ctls, c_buf)
 !
-        call read_zonal_mean_control                                    &
+        call read_dynamo_viz_control                                    &
      &     (id_control, MHD_ctl%zm_ctls, c_buf)
       end do
       MHD_ctl%i_mhd_ctl = 1
@@ -211,7 +211,7 @@
       call bcast_ctl_data_4_platform(MHD_ctl%new_plt)
 !
       call bcast_viz_controls(MHD_ctl%viz_ctls)
-      call bcast_zonal_mean_control(MHD_ctl%zm_ctls)
+      call bcast_dynamo_viz_control(MHD_ctl%zm_ctls)
 !
       end subroutine bcast_sph_mhd_control_data
 !

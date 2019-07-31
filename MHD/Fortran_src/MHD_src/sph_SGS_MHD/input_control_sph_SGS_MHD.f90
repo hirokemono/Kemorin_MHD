@@ -93,8 +93,8 @@
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, trns_WK%WK_sph,         &
      &    sph_maker2%gen_sph)
 !
-      call set_control_SGS_SPH_MHD_field                                &
-     &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
+      call set_control_SGS_SPH_MHD_field(MHD_ctl%model_ctl,             &
+     &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, MHD_ctl%zm_ctls,      &
      &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_MHD%sph,             &
      &    SPH_MHD%fld, FEM_dat%field, monitor)
 !

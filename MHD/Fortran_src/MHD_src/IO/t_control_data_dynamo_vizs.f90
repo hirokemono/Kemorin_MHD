@@ -1,5 +1,5 @@
-!>@file   t_control_data_zm_vizs.f90
-!!@brief  module t_control_data_zm_vizs
+!>@file   t_control_data_dynamo_vizs.f90
+!!@brief  module t_control_data_dynamo_vizs
 !!
 !!@author H. Matsui
 !!@date Programmed in Nov., 2017
@@ -7,8 +7,8 @@
 !> @brief Control data structure for zonal mean visualization controls
 !!
 !!@verbatim
-!!      subroutine read_zonal_mean_control(id_control, zm_ctls, c_buf)
-!!      subroutine bcast_zonal_mean_control(viz_ctls)
+!!      subroutine read_dynamo_viz_control(id_control, zm_ctls, c_buf)
+!!      subroutine bcast_dynamo_viz_control(viz_ctls)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin zonal_mean_control
@@ -16,27 +16,44 @@
 !!    begin  zonal_RMS_section_ctl
 !!      ....
 !!    end zonal_RMS_section_ctl
+!!
+!!    begin crustal_filtering_ctl
+!!      truncation_degree_ctl        13
+!!    end crustal_filtering_ctl
 !!  end zonal_mean_control
+!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
 !
-      module t_control_data_zm_vizs
+      module t_control_data_dynamo_vizs
 !
       use m_precision
 !
       use m_machine_parameter
       use calypso_mpi
+      use t_control_elements
       use t_control_data_sections
 !
       implicit  none
 !
+!
+!>      Structure of crustal filtering of mangeitc field
+      type clust_filtering_ctl
+!>        Truncation dgree by crustal field
+        type(read_integer_item) :: crust_truncation_ctl
+!
+        integer (kind=kint) :: i_crustal_filtering = 0
+      end type clust_filtering_ctl
+!
 !>      Structures of zonal mean controls
       type sph_zonal_means_controls
-!>        Structures of zonal mean sectioning controls
+!>        Structure of zonal mean sectioning controls
         type(section_controls) :: zm_psf_ctls
-!>        Structures of zonal RMS sectioning controls
+!>        Structure of zonal RMS sectioning controls
         type(section_controls) :: zRMS_psf_ctls
+!>        Structure of crustal filtering of mangeitc field
+        type(clust_filtering_ctl) :: crust_filter_ctl
 !
         integer (kind=kint) :: i_viz_ctl = 0
       end type sph_zonal_means_controls
@@ -54,10 +71,17 @@
      &             :: hd_zm_section = 'zonal_mean_section_ctl'
       character(len=kchara), parameter                                  &
      &             :: hd_zRMS_section = 'zonal_RMS_section_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_crustal_filtering = 'crustal_filtering_ctl'
+!
+      character(len=kchara), parameter                                  &
+     &             :: hd_crustal_truncation = 'truncation_degree_ctl'
 !
       private :: hd_zm_section, hd_zRMS_section
-      private :: hd_zm_viz_ctl
+      private :: hd_zm_viz_ctl, hd_crustal_filtering
       private :: read_single_section_ctl
+      private :: read_crustal_filtering_ctl
+      private :: bcast_crustal_filtering_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -65,7 +89,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_zonal_mean_control(id_control, zm_ctls, c_buf)
+      subroutine read_dynamo_viz_control(id_control, zm_ctls, c_buf)
 !
       use t_read_control_elements
       use skip_comment_f
@@ -85,22 +109,26 @@
      &      zm_ctls%zm_psf_ctls, c_buf)
         call read_single_section_ctl(id_control, hd_zRMS_section,       &
      &      zm_ctls%zRMS_psf_ctls, c_buf)
+        call read_crustal_filtering_ctl                                 &
+     &     (id_control, hd_crustal_filtering,                           &
+     &      zm_ctls%crust_filter_ctl, c_buf)
       end do
       zm_ctls%i_viz_ctl = 1
 !
-      end subroutine read_zonal_mean_control
+      end subroutine read_dynamo_viz_control
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_zonal_mean_control(zm_ctls)
+      subroutine bcast_dynamo_viz_control(zm_ctls)
 !
       type(sph_zonal_means_controls), intent(inout) :: zm_ctls
 !
 !
       call bcast_files_4_psf_ctl(zm_ctls%zm_psf_ctls)
       call bcast_files_4_psf_ctl(zm_ctls%zRMS_psf_ctls)
+      call bcast_crustal_filtering_ctl(zm_ctls%crust_filter_ctl)
 !
-      end subroutine bcast_zonal_mean_control
+      end subroutine bcast_dynamo_viz_control
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
@@ -145,4 +173,61 @@
 !
 !   --------------------------------------------------------------------
 !
-      end module t_control_data_zm_vizs
+      subroutine read_crustal_filtering_ctl                         &
+     &         (id_control, hd_block, crust_filter_c, c_buf)
+!
+      use t_read_control_elements
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(clust_filtering_ctl), intent(inout) :: crust_filter_c
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(crust_filter_c%i_crustal_filtering .gt. 0) return
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
+!
+        call read_integer_ctl_type(c_buf, hd_crustal_truncation,        &
+     &      crust_filter_c%crust_truncation_ctl)
+       end do
+       crust_filter_c%i_crustal_filtering = 1
+!
+      end subroutine read_crustal_filtering_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine bcast_crustal_filtering_ctl(crust_filter_c)
+!
+      use bcast_control_arrays
+!
+      type(clust_filtering_ctl), intent(inout) :: crust_filter_c
+!
+!
+      call bcast_ctl_type_i1(crust_filter_c%crust_truncation_ctl)
+      call MPI_BCAST(crust_filter_c%i_crustal_filtering, 1,             &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
+      end subroutine bcast_crustal_filtering_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine reset_crustal_filtering_ctl(crust_filter_c)
+!
+      use bcast_control_arrays
+!
+      type(clust_filtering_ctl), intent(inout) :: crust_filter_c
+!
+!
+      crust_filter_c%crust_truncation_ctl%iflag = 0
+      crust_filter_c%i_crustal_filtering = 0
+!
+      end subroutine reset_crustal_filtering_ctl
+!
+!   --------------------------------------------------------------------
+!
+      end module t_control_data_dynamo_vizs

@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine lead_fields_4_SPH_SGS_MHD                            &
-!!     &         (SGS_par, r_2nd, MHD_prop, sph_MHD_bc, trans_p,        &
-!!     &          sph_MHD_mat, WK, dynamic_SPH, SPH_MHD)
+!!     &         (SGS_par, monitor, r_2nd, MHD_prop, sph_MHD_bc,        &
+!!     &          trans_p, sph_MHD_mat, WK, dynamic_SPH, SPH_MHD)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -52,9 +52,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lead_fields_4_SPH_SGS_MHD                              &
-     &         (SGS_par, r_2nd, MHD_prop, sph_MHD_bc, trans_p,          &
-     &          sph_MHD_mat, WK, dynamic_SPH, SPH_MHD)
+     &         (SGS_par, monitor, r_2nd, MHD_prop, sph_MHD_bc,          &
+     &          trans_p, sph_MHD_mat, WK, dynamic_SPH, SPH_MHD)
 !
+      use t_sph_mhd_monitor_data_IO
       use sph_transforms_4_MHD
       use cal_buoyancies_sph_MHD
       use cal_energy_flux_rtp
@@ -62,6 +63,7 @@
       use lead_fields_4_sph_mhd
 !
       type(SGS_paremeters), intent(in) :: SGS_par
+      type(sph_mhd_monitor_data), intent(in) :: monitor
       type(fdm_matrices), intent(in) :: r_2nd
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -97,8 +99,8 @@
      &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, sph_MHD_bc, trans_p,       &
      &    SPH_MHD%ipol, WK%trns_MHD, WK%trns_tmp, WK%WK_sph,            &
      &    SPH_MHD%fld)
-      call enegy_fluxes_SPH_SGS_MHD                                     &
-     &   (SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,                  &
+      call enegy_fluxes_SPH_SGS_MHD(monitor%ltr_crust,                  &
+     &    SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,                  &
      &    r_2nd, MHD_prop, sph_MHD_bc, trans_p, SPH_MHD%ipol,           &
      &    WK%trns_MHD, WK%trns_SGS, WK%trns_snap, WK%WK_sph,            &
      &    SPH_MHD%fld)
@@ -171,8 +173,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine enegy_fluxes_SPH_SGS_MHD                               &
-     &         (SGS_param, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, &
+      subroutine enegy_fluxes_SPH_SGS_MHD(ltr_crust, SGS_param,         &
+     &          sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,            &
      &          trans_p, ipol, trns_MHD, trns_SGS, trns_snap,           &
      &          WK_sph, rj_fld)
 !
@@ -181,6 +183,7 @@
       use cal_SGS_terms_sph_MHD
       use cal_SGS_buo_flux_sph_MHD
 !
+      integer(kind = kint), intent(in) :: ltr_crust
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -198,8 +201,8 @@
 !
 !
       call cal_sph_enegy_fluxes                                         &
-     &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,         &
-     &    ipol, trns_MHD, trns_snap,  WK_sph, rj_fld)
+     &   (ltr_crust, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,       &
+     &    trans_p, ipol, trns_MHD, trns_snap,  WK_sph, rj_fld)
 !
 !      Work of SGS terms
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then

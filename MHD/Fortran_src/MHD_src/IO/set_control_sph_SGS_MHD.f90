@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine set_control_SGS_SPH_MHD_field                        &
-!!     &         (model_ctl, psph_ctl, smonitor_ctl,                    &
+!!     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls,           &
 !!     &          SGS_par, MHD_prop, sph, rj_fld, nod_fld, monitor)
 !!      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt, model_ctl,   &
 !!     &          smctl_ctl, nmtr_ctl, psph_ctl, sph_gen, MHD_files,    &
@@ -53,6 +53,7 @@
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
+      use t_control_data_dynamo_vizs
       use t_sph_transforms
       use t_bc_data_list
       use t_flex_delta_t_data
@@ -69,7 +70,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SGS_SPH_MHD_field                          &
-     &         (model_ctl,  psph_ctl, smonitor_ctl,                     &
+     &         (model_ctl,  psph_ctl, smonitor_ctl, zm_ctls,            &
      &          SGS_par, MHD_prop, sph, rj_fld, nod_fld, monitor)
 !
       use t_SGS_control_parameter
@@ -87,6 +88,7 @@
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(mhd_model_control), intent(inout) :: model_ctl
       type(sph_monitor_control), intent(in) :: smonitor_ctl
+      type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
       type(parallel_sph_shell_control), intent(in) :: psph_ctl
       type(sph_grids), intent(inout) :: sph
       type(phys_data), intent(inout) :: rj_fld
@@ -107,6 +109,9 @@
 !
 !   set_pickup modes
       call set_control_SPH_MHD_monitors(smonitor_ctl, rj_fld, monitor)
+!
+      call set_crustal_filtering_control                                &
+     &   (zm_ctls%crust_filter_ctl, monitor)
 !
 !
       call set_FEM_mesh_mode_4_SPH(psph_ctl%spctl, sph%sph_params)

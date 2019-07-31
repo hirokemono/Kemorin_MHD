@@ -236,8 +236,8 @@
 !*
       if(lead_field_data_flag(i_step, MHD_step) .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
-        call lead_fields_4_SPH_SGS_MHD                                  &
-     &     (SPH_SGS%SGS_par, SPH_WK%r_2nd, SPH_model%MHD_prop,          &
+        call lead_fields_4_SPH_SGS_MHD(SPH_SGS%SGS_par,                 &
+     &      SPH_WK%monitor, SPH_WK%r_2nd, SPH_model%MHD_prop,           &
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p, SPH_WK%MHD_mats,      &
      &      SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       end if
