@@ -217,7 +217,9 @@ const struct field_def field_props[NUM_FIELD] = {
 			
 			{3, "filtered_buoyancy", "$$    $$"},
 			{1, "filtered_buoyancy_flux", "$$    $$"},
-			
+
+			{3, "truncated_magnetic_field", "$$    $$"},
+	
 			{3, "SGS_heat_flux", "$$    $$"},
 			{3, "SGS_composit_flux", "$$    $$"},
 			{6, "SGS_momentum_flux", "$$    $$"},

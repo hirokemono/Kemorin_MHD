@@ -11,7 +11,8 @@
 
 const char label_sph_zonal_means_ctl[NLBL_SPH_ZONAL_MEAN_CTL][KCHARA_C] = {
     /*[ 0]*/    {"zonal_mean_section_ctl"},
-    /*[ 1]*/    {"zonal_RMS_section_ctl"}
+    /*[ 1]*/    {"zonal_RMS_section_ctl"},
+	/*[ 2]*/    {"crustal_filtering_ctl"}
 };
 
 void get_label_sph_zonal_means_ctl(int index, char *label){
@@ -42,6 +43,7 @@ void alloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls){
 	
 	alloc_psf_ctl_c(zm_ctls->zmean_psf_c);
 	alloc_psf_ctl_c(zm_ctls->zrms_psf_c);
+	alloc_crustal_filter_ctl_c(zm_ctls->crust_filter_c);
 	return;
 }
 
@@ -51,6 +53,7 @@ void dealloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls){
 	
 	dealloc_psf_ctl_c(zm_ctls->zmean_psf_c);
 	dealloc_psf_ctl_c(zm_ctls->zrms_psf_c);
+	dealloc_crustal_filter_ctl_c(zm_ctls->crust_filter_c);
 	
 	free(zm_ctls->zmean_psf_file_name);
 	free(zm_ctls->zmean_psf_c);
@@ -78,6 +81,10 @@ void read_zonal_mean_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		}else if(right_file_flag_c(buf, label_sph_zonal_means_ctl[1]) > 0){
 			zm_ctls->iflag_zrms_section_controls = read_file_flag_c(buf, zm_ctls->zrms_psf_file_name);
 		};
+		
+		if(right_begin_flag_c(buf, label_sph_zonal_means_ctl[1]) > 0){
+			read_crustal_filter_ctl_c(fp, buf, label_sph_zonal_means_ctl[2], zm_ctls->crust_filter_c);
+		};
 	};
 	zm_ctls->iflag_use = 1;
     return;
@@ -100,6 +107,9 @@ int write_zonal_mean_control_c(FILE *fp, int level, const char *label,
 		level = write_psf_ctl_c(fp, level, label_sph_zonal_means_ctl[1], zm_ctls->zrms_psf_c);
 	}else if(zm_ctls->iflag_zrms_section_controls == -1){
 		write_file_flag_for_ctl_c(fp, level, label_sph_zonal_means_ctl[1], zm_ctls->zrms_psf_file_name);
+	};
+	if(zm_ctls->crust_filter_c->iflag_use == 1){
+		write_crustal_filter_ctl_c(fp, level, label_sph_zonal_means_ctl[2], zm_ctls->crust_filter_c);
 	};
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);

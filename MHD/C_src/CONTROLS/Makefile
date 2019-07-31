@@ -44,6 +44,7 @@ OBJ_KEMO_CTL_C = \
  t_ctl_data_4_sphere_model_c.o \
  t_control_data_sph_grid_c.o \
  \
+ t_ctl_data_crust_filter_c.o \
  t_control_data_4_psf_c.o \
  t_control_data_4_iso_c.o \
  t_control_data_4_fline_c.o \
@@ -406,6 +407,7 @@ module:
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
 	t_control_data_4_psf_c.o \
+	t_ctl_data_crust_filter_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -532,6 +534,17 @@ module:
 	control_elements_IO_c.o \
 	t_ctl_data_4_FEM_mesh_c.o \
 	t_ctl_data_4_sphere_model_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_ctl_data_crust_filter_c.o: \
+	'$$(KEMO_CTL_C_DIR)'/t_ctl_data_crust_filter_c.c \
+	t_ctl_data_crust_filter_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	t_control_int_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

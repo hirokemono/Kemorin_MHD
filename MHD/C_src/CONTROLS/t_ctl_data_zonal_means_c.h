@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "t_control_data_4_psf_c.h"
+#include "t_ctl_data_crust_filter_c.h"
 
 struct sph_zonal_means_ctl_c{
     int iflag_use;
@@ -25,6 +26,8 @@ struct sph_zonal_means_ctl_c{
 	int iflag_zrms_section_controls;
 	char *zrms_psf_file_name;
 	struct psf_ctl_c *zrms_psf_c;
+	
+	struct crustal_filter_ctl_c *crust_filter_c;
 };
 
 /* Prototypes */
