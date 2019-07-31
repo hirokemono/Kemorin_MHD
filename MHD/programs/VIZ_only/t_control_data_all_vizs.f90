@@ -63,7 +63,11 @@
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
 !
+      character(len=kchara), parameter                                  &
+     &                    :: hd_viz_control = 'visual_control'
+!
       private :: hd_viz_only_file, hd_platform, hd_time_step
+      private :: hd_viz_control
 !
       private :: viz_ctl_file_code, fname_viz_ctl
 !
@@ -125,7 +129,7 @@
      &     (id_control, hd_time_step, vizs_ctl%t_viz_ctl, c_buf)
 !
         call read_viz_controls                                          &
-     &     (id_control, vizs_ctl%viz_ctl_v, c_buf)
+     &     (id_control, hd_viz_control, vizs_ctl%viz_ctl_v, c_buf)
       end do
       vizs_ctl%i_viz_only_file = 1
 !

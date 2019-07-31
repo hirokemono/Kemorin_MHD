@@ -66,14 +66,6 @@
         integer (kind=kint) :: i_viz_control = 0
       end type visualization_controls
 !
-!
-!     label for entry
-!
-      character(len=kchara), parameter                                  &
-     &                    :: hd_viz_control = 'visual_control'
-!
-!     lavel for volume rendering
-!
 !     Top level
       character(len=kchara), parameter                                  &
      &             :: hd_section_ctl = 'cross_section_ctl'
@@ -93,7 +85,6 @@
 !
       private :: hd_section_ctl, hd_psf_ctl, hd_lic_ctl
       private :: hd_isosurf_ctl, hd_iso_ctl
-      private :: hd_viz_control
 !
 !   --------------------------------------------------------------------
 !
@@ -101,22 +92,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_viz_controls(id_control, viz_ctls, c_buf)
+      subroutine read_viz_controls                                      &
+     &         (id_control, hd_block, viz_ctls, c_buf)
 !
       use t_read_control_elements
       use skip_comment_f
 !
-      integer(kind = kint), intent(in) :: id_control
+      integer(kind = kint), intent(in) :: id_control 
+      character(len=kchara), intent(in) :: hd_block
 !
       type(visualization_controls), intent(inout) :: viz_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_viz_control) .eqv. .FALSE.) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(viz_ctls%i_viz_control .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_viz_control)) exit
+        if(check_end_flag(c_buf, hd_block)) exit
 !
 !
         if(check_array_flag(c_buf, hd_psf_ctl)) then

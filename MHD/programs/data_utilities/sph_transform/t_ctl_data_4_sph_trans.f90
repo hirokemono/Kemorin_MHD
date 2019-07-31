@@ -106,7 +106,11 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_gauss_file_name = 'sph_gauss_coefs_head_ctl'
 !
+      character(len=kchara), parameter                                  &
+     &                    :: hd_viz_control = 'visual_control'
+!
       private :: control_file_code, control_file_name
+      private :: hd_viz_control
 !
       private :: read_sph_trans_control_data
       private :: bcast_sph_trans_control_data
@@ -174,7 +178,7 @@
      &     (id_control, hd_sph_trans_params, spt_ctl, c_buf)
 !
         call read_viz_controls                                          &
-     &     (id_control, spt_ctl%viz_ctls, c_buf)
+     &     (id_control, hd_viz_control, spt_ctl%viz_ctls, c_buf)
       end do
       spt_ctl%i_sph_trans_ctl = 1
 !

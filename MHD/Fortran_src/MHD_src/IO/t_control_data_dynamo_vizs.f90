@@ -7,7 +7,8 @@
 !> @brief Control data structure for zonal mean visualization controls
 !!
 !!@verbatim
-!!      subroutine read_dynamo_viz_control(id_control, zm_ctls, c_buf)
+!!      subroutine read_dynamo_viz_control                              &
+!!     &         (id_control, hd_block, zm_ctls, c_buf)
 !!      subroutine bcast_dynamo_viz_control(viz_ctls)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -20,7 +21,7 @@
 !!    begin crustal_filtering_ctl
 !!      truncation_degree_ctl        13
 !!    end crustal_filtering_ctl
-!!  end hd_dynamo_viz_ctl
+!!  end dynamo_vizs_control
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -50,16 +51,6 @@
         integer (kind=kint) :: i_viz_ctl = 0
       end type sph_dynamo_viz_controls
 !
-!
-!     label for entry
-!
-      character(len=kchara), parameter                                  &
-     &                    :: hd_dynamo_viz_ctl = 'dynamo_vizs_control'
-!
-!>      Here is the old label
-      character(len=kchara), parameter                                  &
-     &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
-!
 !     lavel for volume rendering
 !
 !     Top level
@@ -70,8 +61,8 @@
       character(len=kchara), parameter                                  &
      &             :: hd_crustal_filtering = 'crustal_filtering_ctl'
 !
-      private :: hd_zm_section, hd_zRMS_section, hd_dynamo_viz_ctl
-      private :: hd_zm_viz_ctl, hd_crustal_filtering
+      private :: hd_zm_section, hd_zRMS_section
+      private :: hd_crustal_filtering
 !
 !   --------------------------------------------------------------------
 !
@@ -79,24 +70,23 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_dynamo_viz_control(id_control, zm_ctls, c_buf)
+      subroutine read_dynamo_viz_control                                &
+     &         (id_control, hd_block, zm_ctls, c_buf)
 !
       use t_read_control_elements
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_dynamo_viz_ctl) .eqv. .FALSE.       &
-     &   .and. check_begin_flag(c_buf, hd_zm_viz_ctl) .eqv. .FALSE.)    &
-     &  return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(zm_ctls%i_viz_ctl .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_dynamo_viz_ctl)) exit
-        if(check_end_flag(c_buf, hd_zm_viz_ctl)) exit
+        if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_single_section_ctl(id_control, hd_zm_section,         &
      &      zm_ctls%zm_psf_ctls, c_buf)

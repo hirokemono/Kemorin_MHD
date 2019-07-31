@@ -81,8 +81,11 @@
      &                     :: hd_pick_sph = 'sph_monitor_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_monitor_data = 'monitor_data_ctl'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_viz_control = 'visual_control'
 !
       private :: hd_mhd_ctl
+      private :: hd_viz_control
       private :: read_fem_mhd_control_data, bcast_fem_mhd_ctl_data
 !
 ! ----------------------------------------------------------------------
@@ -154,7 +157,7 @@
         call read_monitor_data_ctl(id_control, hd_monitor_data,         &
      &      FEM_MHD_ctl%nmtr_ctl, c_buf)
         call read_viz_controls                                          &
-     &     (id_control, viz_ctls, c_buf)
+     &     (id_control, hd_viz_control, viz_ctls, c_buf)
       end do
       FEM_MHD_ctl%i_mhd_ctl = 1
 !

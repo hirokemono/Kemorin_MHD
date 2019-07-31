@@ -89,6 +89,11 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_domains_sph = 'num_domain_ctl'
 !
+      character(len=kchara), parameter                                  &
+     &                    :: hd_viz_control = 'visual_control'
+!
+      private :: hd_viz_control
+!
       private :: viz_ctl_file_code, fname_viz_ctl
 !
       private :: read_rayleigh_vizs_ctl_data
@@ -158,8 +163,8 @@
         call read_control_shell_domain                                  &
      &     (id_control, hd_domains_sph, rayleigh_vizs_ctl%sdctl, c_buf)
 !
-        call read_viz_controls                                          &
-     &     (id_control, rayleigh_vizs_ctl%viz_ctl_v, c_buf)
+        call read_viz_controls(id_control, hd_viz_control,              &
+     &      rayleigh_vizs_ctl%viz_ctl_v, c_buf)
       end do
       rayleigh_vizs_ctl%i_viz_only_file = 1
 !

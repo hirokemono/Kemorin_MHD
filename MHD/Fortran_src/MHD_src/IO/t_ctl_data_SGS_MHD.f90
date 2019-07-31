@@ -87,7 +87,17 @@
       character(len=kchara), parameter                                  &
      &      :: hd_monitor_data = 'monitor_data_ctl'
 !
+      character(len=kchara), parameter                                  &
+     &                    :: hd_viz_control = 'visual_control'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_dynamo_viz_ctl = 'dynamo_vizs_control'
+!
+!>      Here is the old label
+      character(len=kchara), parameter                                  &
+     &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
+!
       private :: ctl_file_code, hd_mhd_ctl
+      private :: hd_viz_control, hd_dynamo_viz_ctl, hd_zm_viz_ctl
 !
       private :: read_sph_mhd_control_data
       private :: bcast_sph_mhd_control_data
@@ -188,10 +198,12 @@
      &     (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, c_buf)
 !
         call read_viz_controls                                          &
-     &     (id_control, MHD_ctl%viz_ctls, c_buf)
+     &     (id_control, hd_viz_control, MHD_ctl%viz_ctls, c_buf)
 !
         call read_dynamo_viz_control                                    &
-     &     (id_control, MHD_ctl%zm_ctls, c_buf)
+     &     (id_control, hd_dynamo_viz_ctl, MHD_ctl%zm_ctls, c_buf)
+        call read_dynamo_viz_control                                    &
+     &     (id_control, hd_zm_viz_ctl, MHD_ctl%zm_ctls, c_buf)
       end do
       MHD_ctl%i_mhd_ctl = 1
 !
