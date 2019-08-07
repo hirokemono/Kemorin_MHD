@@ -44,10 +44,6 @@ void draw_mesh_grid(int line_color, int color_mode, int color_loop, GLfloat sing
 	glVertexPointer(ITHREE, GL_FLOAT, IZERO, gl_buf->xyz);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
 	
-	glDisable(GL_CULL_FACE);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
-
 	inum_buf = 0;
 	for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
 		if(iflag_domain[ip] != 0){
@@ -63,8 +59,6 @@ void draw_mesh_grid(int line_color, int color_mode, int color_loop, GLfloat sing
 		};
 	};
 	if(inum_buf > 0) {glDrawArrays(GL_LINES, IZERO, (ITWO*inum_buf));};
-
-	glEnable(GL_CULL_FACE);
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);

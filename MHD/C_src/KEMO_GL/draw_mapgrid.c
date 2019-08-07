@@ -143,6 +143,6 @@ void draw_sph_flame(double radius, struct buffer_for_gl *gl_buf,
 	
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);	
+	glDisableClientState(GL_COLOR_ARRAY);
 	return;
 }

@@ -108,7 +108,10 @@ void draw_grids_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 	int i, ip_st;
 	
 	for(i=0; i < mesh_s->num_pe_sf;i++){mesh_s->ip_domain_far[i] = i+1;};
-
+	
+	glDisable(GL_CULL_FACE);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	
 	if(mesh_m->draw_surface_grid != 0){
 		draw_mesh_grid(mesh_m->domain_grid_color, mesh_m->mesh_color_mode,
 					   mesh_m->num_of_color_loop, mesh_m->domain_grid_color_code,
@@ -144,6 +147,7 @@ void draw_grids_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 						   mesh_s, gl_buf);
 		};
 	};
+	glEnable(GL_CULL_FACE);
 	
 	return;
 }
