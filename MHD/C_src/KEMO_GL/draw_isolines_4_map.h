@@ -24,6 +24,6 @@
 
 void draw_map_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 						  struct buffer_for_gl *gl_buf, int iflag_retina,
-                          int draw_map_PSF_isoline);
+                          int iflag_write_ps);
 
 #endif

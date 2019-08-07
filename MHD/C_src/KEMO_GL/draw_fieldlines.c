@@ -26,12 +26,6 @@ void draw_fieldtubes_c(struct psf_data *fline_s, struct fline_menu_val *fline_m,
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
 	glNormalPointer(GL_FLOAT, IZERO, gl_buf->norm);
 	
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDisable(GL_CULL_FACE);
-	glShadeModel(GL_SMOOTH);
-	
 	inum_buf = 0;
 	for (iele = 0; iele < fline_s->nele_viz; iele++) {
 		for (k = 0; k < 2; k++) {
@@ -60,8 +54,6 @@ void draw_fieldtubes_c(struct psf_data *fline_s, struct fline_menu_val *fline_m,
  
 	};
 	if(inum_buf > 0){glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*inum_buf));};
-
-	glEnable(GL_CULL_FACE);
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
@@ -80,10 +72,6 @@ void draw_fieldlines_c(struct psf_data *fline_s, struct fline_menu_val *fline_m,
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(ITHREE, GL_FLOAT, IZERO, gl_buf->xyz);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
-	
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	
 	icou = 0;
 	while(icou<fline_s->nele_viz){
