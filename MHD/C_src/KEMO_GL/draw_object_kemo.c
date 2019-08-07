@@ -26,18 +26,25 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	
 	orthogonalGL(-xwin, xwin, -ywin, ywin, -1.0, 1.0);
 	set_view_by_identity();
-    draw_patches_4_map(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_patch,
-                       psf_s, psf_a, gl_buf);
-
-    for(i=0; i<psf_a->nmax_loaded; i++){
-        iflag_map = iflag_map + psf_a->iflag_loaded[i];
-        if(psf_a->iflag_loaded[i] != 0){
-            if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
-                draw_map_PSF_isoline(psf_s[i], psf_m[i], gl_buf, view_s->iflag_retina,
-                                     view_s->iflag_write_ps);
-            };
-        };
-    };
+	
+	/* set shading mode */
+	glShadeModel(GL_SMOOTH);
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	
+	draw_patches_4_map(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_patch,
+				psf_s, psf_a, gl_buf);
+	
+	for(i=0; i<psf_a->nmax_loaded; i++){
+		iflag_map = iflag_map + psf_a->iflag_loaded[i];
+		if(psf_a->iflag_loaded[i] != 0){
+			if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
+				draw_map_PSF_isoline(psf_s[i], psf_m[i], gl_buf, view_s->iflag_retina,
+							view_s->iflag_write_ps);
+			};
+		};
+	};
 	
 
 	if(mesh_m->iflag_draw_coast != 0)   {draw_map_coast(gl_buf);}

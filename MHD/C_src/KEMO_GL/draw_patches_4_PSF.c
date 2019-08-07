@@ -153,21 +153,15 @@ void draw_patch_4_PSF(int shading_mode, int ist_psf, int ied_psf,
                       struct psf_data **psf_s, struct psf_menu_val **psf_m,
 					  struct kemo_array_control *psf_a, struct buffer_for_gl *gl_buf){
 	int icou, num;
-
-    if(ied_psf-ist_psf <= 0) return;
-
+	
+	if(ied_psf-ist_psf <= 0) return;
+	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glVertexPointer(ITHREE, GL_FLOAT, IZERO, gl_buf->xyz);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
 	glNormalPointer(GL_FLOAT, IZERO, gl_buf->norm);
-	
-	/* set shading mode */
-	glShadeModel(GL_SMOOTH);
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	
 	icou = ist_psf;
 	while(icou < ied_psf){
@@ -182,8 +176,6 @@ void draw_patch_4_PSF(int shading_mode, int ist_psf, int ied_psf,
 		glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num));
 		icou = icou + NSIZE_GL_BUFFER;
 	};
-
-	glEnable(GL_CULL_FACE);
 	
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
@@ -201,12 +193,6 @@ void draw_patches_4_map(int shading_mode, int ist_psf, int ied_psf,
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(ITWO, GL_FLOAT, IZERO, gl_buf->xy);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
-	
-	/* set shading mode */
-	glShadeModel(GL_SMOOTH);
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	
 	icou = ist_psf;
 	while(icou < ied_psf){
@@ -242,10 +228,6 @@ void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m, struct
     float radius = (float) psf_m->vector_thick;
 	double ascale = ONE / psf_m->scale_vect;
 	
-	glShadeModel(GL_SMOOTH);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	
 	if(psf_m->vector_patch_color != RAINBOW_SURFACE){
 		glColor4fv(arrow_c);
 	};
@@ -257,13 +239,7 @@ void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m, struct
     glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
     glNormalPointer(GL_FLOAT, IZERO, gl_buf->norm);
     
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glShadeModel(GL_SMOOTH);
-    glDisable(GL_CULL_FACE);
-
-    
-    inum_buf = 0;
+	inum_buf = 0;
 	for (inod = 0; inod < psf_s->nnod_viz; inod++) {
 		if (inod % psf_m->increment_vect == 0) {
             if(psf_s->norm_nod[inod][0] != 0.0
@@ -327,8 +303,6 @@ void draw_arrow_4_PSF(struct psf_data *psf_s, struct psf_menu_val *psf_m, struct
 		};
 	};
     if(inum_buf > 0){glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*inum_buf));};
-
-    glEnable(GL_CULL_FACE);
     
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
@@ -360,9 +334,9 @@ void draw_texure_4_PSF(int shading_mode, int ist_psf, int ied_psf,
 	int i, icou, num;
     
     if(ied_psf-ist_psf <= 0) return;
-    
-    i = psf_a->ipsf_viz_far[ist_psf]-1;
-    set_texture(psf_m[i]);
+	
+	i = psf_a->ipsf_viz_far[ist_psf]-1;
+	set_texture(psf_m[i]);
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
@@ -372,13 +346,6 @@ void draw_texure_4_PSF(int shading_mode, int ist_psf, int ied_psf,
     glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
 	glTexCoordPointer(ITWO, GL_FLOAT, IZERO, gl_buf->xy);
 	glNormalPointer(GL_FLOAT, IZERO, gl_buf->norm);
-	
-	/* set shading mode */
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	
 	icou = ist_psf;
 	while(icou < ied_psf){
@@ -394,13 +361,9 @@ void draw_texure_4_PSF(int shading_mode, int ist_psf, int ied_psf,
 		glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num));
 		icou = icou + NSIZE_GL_BUFFER;
 	};
-	glDisable(GL_TEXTURE_2D);
-	glEnable(GL_CULL_FACE);
-
 	glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
-
 	return;	
 }
