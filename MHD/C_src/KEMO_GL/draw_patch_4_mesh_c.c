@@ -49,13 +49,6 @@ void draw_mesh_patch(int shading_mode, int polygon_mode, int surface_color,
 	int i, ip, icou, inum, ist, ied, j, jnum;
 	int inum_buf = 0;
 	double f_color[4];
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glVertexPointer(ITHREE, GL_FLOAT, IZERO, gl_buf->xyz);
-	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
-	glNormalPointer(GL_FLOAT, IZERO, gl_buf->norm);
 
 	
 	glEnable( GL_CULL_FACE );
@@ -75,6 +68,13 @@ void draw_mesh_patch(int shading_mode, int polygon_mode, int surface_color,
 		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	}
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glVertexPointer(ITHREE, GL_FLOAT, IZERO, gl_buf->xyz);
+	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
+	glNormalPointer(GL_FLOAT, IZERO, gl_buf->norm);
 	
 	for(i = 0; i < mesh_s->num_pe_sf; i++){
 		ip = ip_domain_far[i] - 1;
@@ -98,15 +98,15 @@ void draw_mesh_patch(int shading_mode, int polygon_mode, int surface_color,
 	};
 	
 	if(inum_buf > 0) {glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*inum_buf));};
+	
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 
 	
 	if(opacity < 1.0){
 		glDisable(GL_MULTISAMPLE);
 		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	}
-	
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
 	return;
 }
