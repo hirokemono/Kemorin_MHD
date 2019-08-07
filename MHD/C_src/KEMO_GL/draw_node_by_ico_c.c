@@ -12,19 +12,13 @@ void draw_node_by_ico(int num_grp, int igrp, int *istack_grp, int *item_grp,
 	double xyz_patch[180], norm_patch[180];
 	int inum_buf, num_ico;
 	int i, nd, ip, inod, inum, ist, ied;
-
+	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glVertexPointer(ITHREE, GL_FLOAT, IZERO, gl_buf->xyz);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
 	glNormalPointer(GL_FLOAT, IZERO, gl_buf->norm);
-	
-	glShadeModel(GL_SMOOTH);
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glCullFace(GL_BACK);
 	
 	set_node_color_mode_c(node_color, color_mode, color_loop, igrp, num_grp, single_color);
 
@@ -58,9 +52,7 @@ void draw_node_by_ico(int num_grp, int igrp, int *istack_grp, int *item_grp,
 	if(inum_buf > 0){
             glDrawArrays(GL_TRIANGLES, IZERO, inum_buf);
      };
-
-	glEnable(GL_CULL_FACE);
-
+	
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);

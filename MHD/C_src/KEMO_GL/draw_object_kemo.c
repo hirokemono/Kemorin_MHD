@@ -52,6 +52,11 @@ void draw_nodes_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 						 struct buffer_for_gl *gl_buf){
 	int i, ip_st;
 	
+	glShadeModel(GL_SMOOTH);
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glDisable(GL_CULL_FACE);
+	
 	draw_node_by_ico(mesh_s->num_pe_sf, IZERO, mesh_s->nod_stack_domain_sf,
 			mesh_s->nod_item_domain_sf, mesh_s,
 			mesh_m->node_diam, mesh_m->domain_node_color,
@@ -64,11 +69,13 @@ void draw_nodes_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 		ip_st = i * mesh_s->num_pe_sf;
 		
 		if( mesh_m->draw_nodgrp_nod[i] ){
+	
 			draw_node_by_ico(mesh_s->ngrp_nod_sf, i, &mesh_s->nod_stack_sf[ip_st],
 					mesh_s->nod_item_sf, mesh_s,
 					mesh_m->node_diam, mesh_m->node_node_color,
 					mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
 					mesh_m->node_node_color_code, mesh_m->always_draw_domains, gl_buf);
+	
 		};
 	};
 	
@@ -83,6 +90,7 @@ void draw_nodes_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 					mesh_m->node_diam, mesh_m->ele_node_color,
 					mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
 					mesh_m->ele_node_color_code, mesh_m->always_draw_domains, gl_buf);
+	
 		};
 	};
 	
@@ -97,8 +105,10 @@ void draw_nodes_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 					mesh_m->node_diam, mesh_m->surf_node_color,
 					mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
 					mesh_m->surf_node_color_code, mesh_m->always_draw_domains, gl_buf);
+	
 		};
 	};
+	glEnable(GL_CULL_FACE);
 	return;
 }
 
