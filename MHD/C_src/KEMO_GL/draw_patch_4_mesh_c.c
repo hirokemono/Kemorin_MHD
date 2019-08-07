@@ -51,19 +51,6 @@ void draw_mesh_patch(int shading_mode, int polygon_mode, int surface_color,
 	double f_color[4];
 
 	
-	glEnable( GL_CULL_FACE );
-	glShadeModel(GL_SMOOTH);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	
-	if (polygon_mode == NORMAL_POLYGON) { 
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glCullFace(GL_BACK);
-		}
-	else if(polygon_mode == REVERSE_POLYGON) { 
-		glPolygonMode(GL_BACK, GL_FILL);
-		glCullFace(GL_FRONT);
-	};
-	
 	if(opacity < 1.0){
 		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
@@ -103,10 +90,5 @@ void draw_mesh_patch(int shading_mode, int polygon_mode, int surface_color,
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 
-	
-	if(opacity < 1.0){
-		glDisable(GL_MULTISAMPLE);
-		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	}
 	return;
 }
