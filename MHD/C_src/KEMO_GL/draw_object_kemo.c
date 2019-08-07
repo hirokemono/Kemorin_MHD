@@ -156,11 +156,10 @@ void draw_patches_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mes
 	
 	copy_patch_distance_mesh(mesh_s);
 	
-	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity >= 1.0){
-	glEnable( GL_CULL_FACE );
 	glShadeModel(GL_SMOOTH);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	
+	glEnable( GL_CULL_FACE );
 	if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glCullFace(GL_BACK);
@@ -170,6 +169,7 @@ void draw_patches_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mes
 		glCullFace(GL_FRONT);
 	};
 	
+	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity >= 1.0){
 		draw_mesh_patch(mesh_m->shading_mode, mesh_m->polygon_mode, 
 				mesh_m->domain_surface_color, mesh_m->mesh_color_mode,
 				mesh_m->num_of_color_loop, mesh_m->domain_opacity,
@@ -186,19 +186,6 @@ void draw_patches_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mes
 		ip_st = i * mesh_s->num_pe_sf;
 		
 		if( mesh_m->draw_elegrp_solid[i] != 0 && mesh_m->ele_grp_opacity >= 1.0){
-	glEnable( GL_CULL_FACE );
-	glShadeModel(GL_SMOOTH);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	
-	if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glCullFace(GL_BACK);
-		}
-	else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
-		glPolygonMode(GL_BACK, GL_FILL);
-		glCullFace(GL_FRONT);
-	};
-	
 			draw_mesh_patch(mesh_m->shading_mode, mesh_m->polygon_mode, 
 					mesh_m->ele_surface_color, mesh_m->mesh_color_mode,
 					mesh_m->num_of_color_loop, mesh_m->ele_grp_opacity,
@@ -216,19 +203,6 @@ void draw_patches_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mes
 		ip_st = i * mesh_s->num_pe_sf;
 		
 		if( mesh_m->draw_surfgrp_solid[i] != 0 && mesh_m->surf_grp_opacity >= 1.0){
-	glEnable( GL_CULL_FACE );
-	glShadeModel(GL_SMOOTH);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	
-	if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glCullFace(GL_BACK);
-		}
-	else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
-		glPolygonMode(GL_BACK, GL_FILL);
-		glCullFace(GL_FRONT);
-	};
-	
 			draw_mesh_patch(mesh_m->shading_mode, mesh_m->polygon_mode, 
 					mesh_m->surf_surface_color, mesh_m->mesh_color_mode,
 					mesh_m->num_of_color_loop, mesh_m->surf_grp_opacity,
@@ -256,18 +230,10 @@ void draw_transparent_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val 
 		copy_patch_distance_mesh(mesh_s);
 	}
 	
-	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity < 1.0){
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDepthMask(GL_FALSE);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		/*glBlendFunc(GL_SRC_ALPHA, GL_ONE);*/
-		
-	glEnable( GL_CULL_FACE );
 	glShadeModel(GL_SMOOTH);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	
+	glEnable( GL_CULL_FACE );
 	if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glCullFace(GL_BACK);
@@ -276,9 +242,16 @@ void draw_transparent_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val 
 		glPolygonMode(GL_BACK, GL_FILL);
 		glCullFace(GL_FRONT);
 	};
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	
+	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	/*glBlendFunc(GL_SRC_ALPHA, GL_ONE);*/
+	
+	
+	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity < 1.0){
 		draw_mesh_patch(mesh_m->shading_mode, mesh_m->polygon_mode, 
 				mesh_m->domain_surface_color, mesh_m->mesh_color_mode,
 				mesh_m->num_of_color_loop, mesh_m->domain_opacity,
@@ -287,45 +260,15 @@ void draw_transparent_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val 
 				mesh_s->isurf_domain_sf, mesh_s->normal_domain, mesh_s->norm_nod_domain,
 				mesh_s->iele_domain_far, mesh_s->ip_domain_far, 
 				IZERO, mesh_s, mesh_m->draw_domains_solid, gl_buf);
-		glDisable(GL_MULTISAMPLE);
-		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		
-		glDisable(GL_BLEND);
-		glDepthMask(GL_TRUE);
-		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDisable(GL_MULTISAMPLE);
 	};
 	
 	/* ! draw element group */
 	
 	if(mesh_m->ele_grp_opacity < 1.0){
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDepthMask(GL_FALSE);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		/*glBlendFunc(GL_SRC_ALPHA, GL_ONE);*/
-		
 		for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
 			ip_st = i * mesh_s->num_pe_sf;
 			
 			if( mesh_m->draw_elegrp_solid[i] != 0){
-	glEnable( GL_CULL_FACE );
-	glShadeModel(GL_SMOOTH);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	
-	if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glCullFace(GL_BACK);
-		}
-	else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
-		glPolygonMode(GL_BACK, GL_FILL);
-		glCullFace(GL_FRONT);
-	};
-	
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-				
 				draw_mesh_patch(mesh_m->shading_mode, mesh_m->polygon_mode, 
 						mesh_m->ele_surface_color, mesh_m->mesh_color_mode,
 						mesh_m->num_of_color_loop, mesh_m->ele_grp_opacity,
@@ -334,46 +277,17 @@ void draw_transparent_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val 
 						mesh_s->ele_item_sf, mesh_s->normal_ele_grp, mesh_s->norm_nod_ele_grp,
 						mesh_s->iele_grp_far, mesh_s->ip_domain_far,
 						i, mesh_s, mesh_m->always_draw_domains, gl_buf);
-				glDisable(GL_MULTISAMPLE);
-				glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 			};
 		};
-		
-		glDisable(GL_BLEND);
-		glDepthMask(GL_TRUE);
-		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDisable(GL_MULTISAMPLE);
 	}
 	
 	/* ! draw surface group */
-	
 	if(mesh_m->surf_grp_opacity < 1.0){
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDepthMask(GL_FALSE);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		/*glBlendFunc(GL_SRC_ALPHA, GL_ONE);*/
 		
 		for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
 			ip_st = i * mesh_s->num_pe_sf;
 		
 			if( mesh_m->draw_surfgrp_solid[i] != 0){
-	glEnable( GL_CULL_FACE );
-	glShadeModel(GL_SMOOTH);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	
-	if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glCullFace(GL_BACK);
-		}
-	else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
-		glPolygonMode(GL_BACK, GL_FILL);
-		glCullFace(GL_FRONT);
-	};
-	
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 				draw_mesh_patch(mesh_m->shading_mode, mesh_m->polygon_mode, 
 					mesh_m->surf_surface_color, mesh_m->mesh_color_mode,
 					mesh_m->num_of_color_loop, mesh_m->surf_grp_opacity,
@@ -382,17 +296,13 @@ void draw_transparent_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val 
 					mesh_s->surf_item_sf, mesh_s->normal_surf_grp, mesh_s->norm_nod_surf_grp, 
 					mesh_s->isurf_grp_far, mesh_s->ip_domain_far,
 					i, mesh_s, mesh_m->always_draw_domains, gl_buf);
-				glDisable(GL_MULTISAMPLE);
-				glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 			};
 		};
-	
-		
-		glDisable(GL_BLEND);
-		glDepthMask(GL_TRUE);
-		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDisable(GL_MULTISAMPLE);
 	};
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
+	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+	glDisable(GL_MULTISAMPLE);
 	
 	return;
 }

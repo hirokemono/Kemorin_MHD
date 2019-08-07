@@ -49,12 +49,6 @@ void draw_mesh_patch(int shading_mode, int polygon_mode, int surface_color,
 	int i, ip, icou, inum, ist, ied, j, jnum;
 	int inum_buf = 0;
 	double f_color[4];
-
-	
-	if(opacity < 1.0){
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	}
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
