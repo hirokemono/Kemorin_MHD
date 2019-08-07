@@ -73,6 +73,7 @@
 		185CB9DE212F593D00BB3C0B /* t_ctl_data_temp_model_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB9A3212F593D00BB3C0B /* t_ctl_data_temp_model_c.c */; };
 		185CB9DF212F593D00BB3C0B /* t_ctl_data_zonal_means_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB9A5212F593D00BB3C0B /* t_ctl_data_zonal_means_c.c */; };
 		185CB9E0212F593D00BB3C0B /* t_SGS_MHD_control_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB9A7212F593D00BB3C0B /* t_SGS_MHD_control_c.c */; };
+		18753CD222FB63A500FEA6D9 /* t_ctl_data_crust_filter_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18753CD122FB63A400FEA6D9 /* t_ctl_data_crust_filter_c.c */; };
 		1888414A22E64C090039BA2B /* psf_patch_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 1888414822E64C090039BA2B /* psf_patch_buffer.c */; };
 		18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5A2711F832A8A005AF658 /* libz.tbd */; };
 		18D7E72B1562D359009B05FF /* cal_surface_center_normal_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E64F1562D359009B05FF /* cal_surface_center_normal_c.c */; };
@@ -313,6 +314,8 @@
 		18601A6115D9B0D20015F6B0 /* kemoviewer_GLUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GLUI; path = ../../programs/VIEWER/kemoviewer_GLUI; sourceTree = "<group>"; };
 		18601A6215D9B0D20015F6B0 /* kemoviewer_GLUT */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GLUT; path = ../../programs/VIEWER/kemoviewer_GLUT; sourceTree = "<group>"; };
 		18601A6315D9B0D20015F6B0 /* kemoviewer_GTK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GTK; path = ../../programs/VIEWER/kemoviewer_GTK; sourceTree = "<group>"; };
+		18753CD122FB63A400FEA6D9 /* t_ctl_data_crust_filter_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_crust_filter_c.c; sourceTree = "<group>"; };
+		18753CD322FB63AB00FEA6D9 /* t_ctl_data_crust_filter_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_crust_filter_c.h; sourceTree = "<group>"; };
 		1888414822E64C090039BA2B /* psf_patch_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = psf_patch_buffer.c; sourceTree = "<group>"; };
 		1888414922E64C090039BA2B /* psf_patch_buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = psf_patch_buffer.h; sourceTree = "<group>"; };
 		18B5A2711F832A8A005AF658 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -707,6 +710,8 @@
 				185CB9A4212F593D00BB3C0B /* t_ctl_data_temp_model_c.h */,
 				185CB9A5212F593D00BB3C0B /* t_ctl_data_zonal_means_c.c */,
 				185CB9A6212F593D00BB3C0B /* t_ctl_data_zonal_means_c.h */,
+				18753CD122FB63A400FEA6D9 /* t_ctl_data_crust_filter_c.c */,
+				18753CD322FB63AB00FEA6D9 /* t_ctl_data_crust_filter_c.h */,
 				185CB9A7212F593D00BB3C0B /* t_SGS_MHD_control_c.c */,
 				185CB9A8212F593D00BB3C0B /* t_SGS_MHD_control_c.h */,
 			);
@@ -1196,6 +1201,7 @@
 				18D7E7691562D359009B05FF /* m_kemoviewer_menu.c in Sources */,
 				18D7E76A1562D359009B05FF /* m_kemoviewer_structure.c in Sources */,
 				18D7E76C1562D359009B05FF /* modify_object_4_viewer_c.c in Sources */,
+				18753CD222FB63A500FEA6D9 /* t_ctl_data_crust_filter_c.c in Sources */,
 				185CB9DD212F593D00BB3C0B /* t_ctl_data_sph_filter_list.c in Sources */,
 				18D7E76D1562D359009B05FF /* modify_stereo_view_gl.c in Sources */,
 				18D7E76E1562D359009B05FF /* move_draw_objects_gl.c in Sources */,
