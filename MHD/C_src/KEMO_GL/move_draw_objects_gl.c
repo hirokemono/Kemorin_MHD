@@ -9,26 +9,28 @@ static int draw_solid_objects_4_psf(struct psf_data **psf_s, struct psf_menu_val
     int i;
     int iflag_psf = 0;
     
+	glShadeModel(GL_SMOOTH);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glDisable(GL_CULL_FACE);
     for(i=0; i<psf_a->nmax_loaded; i++){
         iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
         if(psf_a->iflag_loaded[i] != 0){
-			glShadeModel(GL_SMOOTH);
-			glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+			
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glDisable(GL_CULL_FACE);
 			if(psf_m[i]->draw_psf_vect  != 0){
 				draw_arrow_4_PSF(psf_s[i], psf_m[i], gl_buf);
 			};
-			glEnable(GL_CULL_FACE);
 			
-            if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
-                draw_PSF_isoline(psf_s[i], psf_m[i], gl_buf,
-                                 view_s->iflag_retina, view_s->iflag_write_ps);
-            };
-        };
-    };
-    
-    return iflag_psf;
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
+				draw_PSF_isoline(psf_s[i], psf_m[i], gl_buf,
+							view_s->iflag_retina, view_s->iflag_write_ps);
+			};
+		};
+	};
+	glEnable(GL_CULL_FACE);
+	
+	return iflag_psf;
 }
 
 static void draw_solid_patch_4_psf(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,

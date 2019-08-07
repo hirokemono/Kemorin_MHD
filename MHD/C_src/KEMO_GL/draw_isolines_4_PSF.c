@@ -133,28 +133,24 @@ void draw_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 	glVertexPointer(ITHREE, GL_FLOAT, IZERO, gl_buf->xyz);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
 	
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
 	glLineWidth(HALF * ((float) iflag_retina+IONE));
     if (iflag_write_ps == ON) {
         ierr = gl2psLineWidth(ONE);
     };
 	
 	if(psf_m->draw_psf_grid  != 0){
-        find_start_positive_lines(psf_m);
-        if(psf_m->ist_positive_line > 1){
-            glEnable(GL_LINE_STIPPLE);
-            glLineStipple(1,0x3333);
-            if (iflag_write_ps == ON) {ierr = gl2psEnable(GL2PS_LINE_STIPPLE);};
-
-            draw_isolines_4_psf(IONE, psf_m->ist_positive_line,
-                                psf_s, psf_m, gl_buf);
-            
-            if (iflag_write_ps == ON) {ierr = gl2psDisable(GL2PS_LINE_STIPPLE);};
-            glDisable(GL_LINE_STIPPLE);
-        };
+		find_start_positive_lines(psf_m);
+		if(psf_m->ist_positive_line > 1){
+			glEnable(GL_LINE_STIPPLE);
+			glLineStipple(1,0x3333);
+			if (iflag_write_ps == ON) {ierr = gl2psEnable(GL2PS_LINE_STIPPLE);};
+			
+			draw_isolines_4_psf(IONE, psf_m->ist_positive_line,
+						psf_s, psf_m, gl_buf);
+			
+			if (iflag_write_ps == ON) {ierr = gl2psDisable(GL2PS_LINE_STIPPLE);};
+			glDisable(GL_LINE_STIPPLE);
+		};
         if(psf_m->ist_positive_line < psf_m->n_isoline){
             draw_isolines_4_psf(psf_m->ist_positive_line,
                                 psf_m->n_isoline, psf_s, psf_m, gl_buf);
@@ -169,8 +165,6 @@ void draw_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
         glLineWidth(HALF * ((float) iflag_retina+IONE));
         if (iflag_write_ps == ON) {ierr = gl2psLineWidth(ONE);};
     };
-	
-	glEnable(GL_CULL_FACE);
 	
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
