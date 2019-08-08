@@ -7,6 +7,27 @@
 #include <stdio.h>
 #include "kemosrc_param_c.h"
 
+struct vect_m{
+	double xyz[3];
+};
+
+struct norm_nod_q{
+	struct vect_m normal[4];
+	double dist_nod[4];
+};
+
+struct norm_nod_t{
+	struct vect_m normal[3];
+	double dist_nod[3];
+};
+
+struct norm_vector{
+	int num_patch;
+	
+	struct vect_m *norm_ele_v;
+	struct norm_nod_t *norm_nod_v;
+};
+
 struct viewer_mesh {
 	int num_pe_sf;
 	
@@ -117,6 +138,8 @@ struct viewer_mesh {
 
 /* prototypes */
 
+struct norm_vector * init_quad_norm_vector(int num_patch);
+void delloc_quad_norm_vector(struct norm_vector *norms);
 
 void alloc_nummesh_viewer_s(struct viewer_mesh *mesh_s);
 void alloc_domain_stack_viewer_s(struct viewer_mesh *mesh_s);

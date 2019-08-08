@@ -4,7 +4,7 @@
 #include "draw_patch_4_mesh_c.h"
 
 static void set_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int polygon_mode, 
-								   double normal_ele[3], double normal_nod[12], struct viewer_mesh *mesh_s,
+								   double normal_ele[3], double normal_nod[9], struct viewer_mesh *mesh_s,
 								   double f_color[4], int *inum_buf, struct buffer_for_gl *gl_buf){
 	int inod, k, kr, k1, nd;
 	

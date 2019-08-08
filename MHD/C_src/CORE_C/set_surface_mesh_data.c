@@ -81,11 +81,6 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
                            *(mesh_s->xx_view[inod][1] - x_center[1])
                            +(mesh_s->xx_view[inod][2] - x_center[2])
                            *(mesh_s->xx_view[inod][2] - x_center[2]) );
-                    
-					for (nd=0; nd<3; nd++){
-						mesh_s->norm_nod_domain[jnum][nd+3*k1]
-                        = ((double) idir) * mesh_s->surf_norm_view[inum][nd];
-					};
 				};
 			}
 		}
@@ -114,11 +109,6 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
 						   *(mesh_s->xx_view[inod][1] - x_center[1])
 						   +(mesh_s->xx_view[inod][2] - x_center[2])
 						   *(mesh_s->xx_view[inod][2] - x_center[2]) );
-                    
-					for (nd=0; nd<3; nd++){
-						mesh_s->norm_nod_ele_grp[jnum][nd+3*k1]
-						= ((double) idir) * mesh_s->surf_norm_view[inum][nd];
-					};
 				};
 			}
 		}
@@ -147,11 +137,6 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
 						   *(mesh_s->xx_view[inod][1] - x_center[1])
 						   +(mesh_s->xx_view[inod][2] - x_center[2])
 						   *(mesh_s->xx_view[inod][2] - x_center[2]) );
-                    
-					for (nd=0; nd<3; nd++){
-						mesh_s->norm_nod_surf_grp[jnum][nd+3*k1]
-						= ((double) idir) * mesh_s->surf_norm_view[inum][nd];
-					};
 				};
 			}
 		}
