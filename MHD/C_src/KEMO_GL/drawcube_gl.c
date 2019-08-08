@@ -252,60 +252,53 @@ void drawCube_array(GLfloat fSize)
 }
 
 
-void drawCube_Element2(GLfloat fSize)
-{
+void drawCube_Element2(GLfloat fSize, 
+			struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO){
 	int i;
 	int n_vertex = 8;
-	int ncomp_buf = 20;
+	strided_buf->ncomp_buf = 20;
 	
-	int ist_xyz =  0;
-	int ist_norm = 3;
-	int ist_tex =  6;
-	int ist_csurf = 8;
+	strided_buf->ist_xyz =  0;
+	strided_buf->ist_norm = 3;
+	strided_buf->ist_tex =  6;
+	strided_buf->ist_csurf = 8;
 	int ist_cedge = 12;
 	int ist_cnode = 16;
 	
-    GLuint idx_vertexBuf;
-    GLuint idx_indexBuf;
-	GLfloat gl_vertex[ncomp_buf*n_vertex];
-	
-	GLfloat *x_draw;
-	GLfloat *x_norm;
-	GLfloat *c_surf;
 	GLfloat *c_edge;
 	GLfloat *c_dots;
-	GLfloat *xy_tex;
+	
 	GLfloat radius;
 	
 	/* Set Stride for each vertex buffer */
-	GLsizei stride = sizeof(GLfloat) * ncomp_buf;
+	GLsizei stride = sizeof(GLfloat) * strided_buf->ncomp_buf;
 
 	for(i=0;i<n_vertex;i++){
-		x_draw = &gl_vertex[ist_xyz +   ncomp_buf*i];
-		x_norm = &gl_vertex[ist_norm +  ncomp_buf*i];
-		xy_tex = &gl_vertex[ist_tex +   ncomp_buf*i];
-		c_surf = &gl_vertex[ist_csurf + ncomp_buf*i];
-		c_edge = &gl_vertex[ist_cedge + ncomp_buf*i];
-		c_dots = &gl_vertex[ist_cnode + ncomp_buf*i];
+		strided_buf->x_draw = &strided_buf->v_buf[strided_buf->ist_xyz +   strided_buf->ncomp_buf*i];
+		strided_buf->n_draw = &strided_buf->v_buf[strided_buf->ist_norm +  strided_buf->ncomp_buf*i];
+		strided_buf->x_txur = &strided_buf->v_buf[strided_buf->ist_tex +   strided_buf->ncomp_buf*i];
+		strided_buf->c_draw = &strided_buf->v_buf[strided_buf->ist_csurf + strided_buf->ncomp_buf*i];
+		c_edge = &strided_buf->v_buf[ist_cedge + strided_buf->ncomp_buf*i];
+		c_dots = &strided_buf->v_buf[ist_cnode + strided_buf->ncomp_buf*i];
 		
 		radius = sqrt(cube_vertices[i][0]*cube_vertices[i][0]
 					+ cube_vertices[i][1]*cube_vertices[i][1]
 					+ cube_vertices[i][2]*cube_vertices[i][2]);
-		x_draw[0] = cube_vertices[i][0] * fSize;
-		x_draw[1] = cube_vertices[i][1] * fSize;
-		x_draw[2] = cube_vertices[i][2] * fSize;
+		strided_buf->x_draw[0] = cube_vertices[i][0] * fSize;
+		strided_buf->x_draw[1] = cube_vertices[i][1] * fSize;
+		strided_buf->x_draw[2] = cube_vertices[i][2] * fSize;
 		
-		x_norm[0] = cube_vertices[i][0] / radius;
-		x_norm[1] = cube_vertices[i][1] / radius;
-		x_norm[2] = cube_vertices[i][2] / radius;
+		strided_buf->n_draw[0] = cube_vertices[i][0] / radius;
+		strided_buf->n_draw[1] = cube_vertices[i][1] / radius;
+		strided_buf->n_draw[2] = cube_vertices[i][2] / radius;
 		
-		xy_tex[0] = x_draw[0];
-		xy_tex[1] = x_draw[1];
+		strided_buf->x_txur[0] = strided_buf->x_draw[0];
+		strided_buf->x_txur[1] = strided_buf->x_draw[1];
 		
-		c_surf[0] = cube_vertex_colors[i][0];
-		c_surf[1] = cube_vertex_colors[i][1];
-		c_surf[2] = cube_vertex_colors[i][2];
-		c_surf[3] = 1.0;
+		strided_buf->c_draw[0] = cube_vertex_colors[i][0];
+		strided_buf->c_draw[1] = cube_vertex_colors[i][1];
+		strided_buf->c_draw[2] = cube_vertex_colors[i][2];
+		strided_buf->c_draw[3] = 1.0;
 		
 		c_edge[0] = 0.0;
 		c_edge[1] = 0.0;
@@ -319,10 +312,10 @@ void drawCube_Element2(GLfloat fSize)
 	};
 		
 	/* Create vertex buffer on GPU and cpoy data from CPU*/
-	glGenBuffers(1, &idx_vertexBuf);
-	glBindBuffer(GL_ARRAY_BUFFER, idx_vertexBuf);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * n_vertex*ncomp_buf,
-				gl_vertex, GL_STATIC_DRAW);
+	glGenBuffers(1, &cube_VAO->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, cube_VAO->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * n_vertex*strided_buf->ncomp_buf,
+				strided_buf->v_buf, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	/* Set Vertex buffer */
@@ -335,58 +328,58 @@ void drawCube_Element2(GLfloat fSize)
 	*/
 	
 	/* Stride is size of buffer for each point */
-	glBindBuffer(GL_ARRAY_BUFFER, idx_vertexBuf);
-	glVertexPointer(3,   GL_FLOAT, stride, (sizeof(GLfloat)*ist_xyz));
-	glNormalPointer(     GL_FLOAT, stride, (sizeof(GLfloat)*ist_norm));
-	glTexCoordPointer(2, GL_FLOAT, stride, (sizeof(GLfloat)*ist_tex));
-	glColorPointer(4,    GL_FLOAT, stride, (sizeof(GLfloat)*ist_csurf));
+	glBindBuffer(GL_ARRAY_BUFFER, cube_VAO->id_vertex);
+	glVertexPointer(3,   GL_FLOAT, stride, (sizeof(GLfloat)*strided_buf->ist_xyz));
+	glNormalPointer(     GL_FLOAT, stride, (sizeof(GLfloat)*strided_buf->ist_norm));
+	glTexCoordPointer(2, GL_FLOAT, stride, (sizeof(GLfloat)*strided_buf->ist_tex));
+	glColorPointer(4,    GL_FLOAT, stride, (sizeof(GLfloat)*strided_buf->ist_csurf));
 	
 	/* Create index buffer on GPU, and then copy from CPU */
-	glGenBuffers(1, &idx_indexBuf);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idx_indexBuf);
+	glGenBuffers(1, &cube_VAO->id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*36, cube_tri_faces, GL_STATIC_DRAW);
 	
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &idx_indexBuf);
+	glDeleteBuffers(1, &cube_VAO->id_index);
 	
 
 	
-	glBindBuffer(GL_ARRAY_BUFFER, idx_vertexBuf);
-	glVertexPointer(3,   GL_FLOAT, stride, (sizeof(GLfloat)*ist_xyz));
-	glNormalPointer(     GL_FLOAT, stride, (sizeof(GLfloat)*ist_norm));
-	glTexCoordPointer(2, GL_FLOAT, stride, (sizeof(GLfloat)*ist_tex));
+	glBindBuffer(GL_ARRAY_BUFFER, cube_VAO->id_vertex);
+	glVertexPointer(3,   GL_FLOAT, stride, (sizeof(GLfloat)*strided_buf->ist_xyz));
+	glNormalPointer(     GL_FLOAT, stride, (sizeof(GLfloat)*strided_buf->ist_norm));
+	glTexCoordPointer(2, GL_FLOAT, stride, (sizeof(GLfloat)*strided_buf->ist_tex));
 	glColorPointer(4,    GL_FLOAT, stride, (sizeof(GLfloat)*ist_cedge));
 	
 	/* Create index buffer on GPU, and then copy from CPU */
-	glGenBuffers(1, &idx_indexBuf);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idx_indexBuf);
+	glGenBuffers(1, &cube_VAO->id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*24, cube_edge, GL_STATIC_DRAW);
 	
 	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &idx_indexBuf);
+	glDeleteBuffers(1, &cube_VAO->id_index);
 
-	glBindBuffer(GL_ARRAY_BUFFER, idx_vertexBuf);
-	glVertexPointer(3,   GL_FLOAT, stride, (sizeof(GLfloat)*ist_xyz));
-	glNormalPointer(     GL_FLOAT, stride, (sizeof(GLfloat)*ist_norm));
-	glTexCoordPointer(2, GL_FLOAT, stride, (sizeof(GLfloat)*ist_tex));
+	glBindBuffer(GL_ARRAY_BUFFER, cube_VAO->id_vertex);
+	glVertexPointer(3,   GL_FLOAT, stride, (sizeof(GLfloat)*strided_buf->ist_xyz));
+	glNormalPointer(     GL_FLOAT, stride, (sizeof(GLfloat)*strided_buf->ist_norm));
+	glTexCoordPointer(2, GL_FLOAT, stride, (sizeof(GLfloat)*strided_buf->ist_tex));
 	glColorPointer(4,    GL_FLOAT, stride, (sizeof(GLfloat)*ist_cnode));
 	
 	/* Create index buffer on GPU, and then copy from CPU */
-	glGenBuffers(1, &idx_indexBuf);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idx_indexBuf);
+	glGenBuffers(1, &cube_VAO->id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*8, cube_nodes, GL_STATIC_DRAW);
 	
 	glDrawElements(GL_POINTS, 8, GL_UNSIGNED_INT, 0);
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &idx_indexBuf);
+	glDeleteBuffers(1, &cube_VAO->id_index);
 
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

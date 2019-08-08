@@ -36,13 +36,37 @@ void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf){
 	return;
 };
 
-struct gl_strided_buffer * init_buffer_for_gl(){
-	struct gl_strided_buffer *strided_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+static void alloc_strided_buffer(int num_points, int num_comp, 
+			struct gl_strided_buffer *strided_buf){
+	strided_buf->nsize_buf = num_comp * num_points;
+	if((strided_buf->v_buf = (GLfloat *) malloc(strided_buf->nsize_buf*sizeof(GLfloat))) == NULL){
+        printf("malloc error for strided_buf->v_buf\n");
+        exit(0);
+	};
+};
+
+struct gl_strided_buffer * init_strided_buffer(){
+	struct gl_strided_buffer *strided_buf;
+	if((strided_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer))) == NULL){
+        printf("malloc error for gl_strided_buffer\n");
+        exit(0);
+	};
+	
+	alloc_strided_buffer((4*NPATCH_GL_BUFFER), 16, strided_buf);
 	set_buffer_address_4_patch(strided_buf);
 	return strided_buf;
 };
 
-void dealloc_buffer_for_gl(struct gl_strided_buffer *strided_buf){
+void resize_strided_buffer(int num_points, int num_comp, 
+			struct gl_strided_buffer *strided_buf){
+	if(num_points*num_comp <= strided_buf->nsize_buf) return;
+	
+	free(strided_buf->v_buf);
+	alloc_strided_buffer(num_points, num_comp, strided_buf);
+	return;
+};
+
+void dealloc_strided_buffer(struct gl_strided_buffer *strided_buf){
 	free(strided_buf->v_buf);
 	free(strided_buf);
 	return;

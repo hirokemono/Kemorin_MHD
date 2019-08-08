@@ -228,15 +228,18 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	/* draw example cube for empty data */
 	if( (mesh_m->iflag_draw_mesh+iflag_psf+fline_m->iflag_draw_fline) == 0){
 		glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glEnable(GL_CULL_FACE);
-		glEnable(GL_COLOR_MATERIAL);
-		glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
-				
-//		drawCube_Element2(0.5f);
-		drawCube_flat(0.5f, strided_buf, cube_VAO);
-
-		glDisable(GL_COLOR_MATERIAL);
+		
+		if(view_s->iflag_shading_profile == 1){
+		} else {
+			glEnable(GL_CULL_FACE);
+			glEnable(GL_COLOR_MATERIAL);
+			glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
+			
+//			drawCube_Element2(0.5f, strided_buf, cube_VAO);
+			drawCube_flat(0.5f, strided_buf, cube_VAO);
+			
+			glDisable(GL_COLOR_MATERIAL);
+		};
 	}
 	
 	glEndList();

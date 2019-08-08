@@ -41,7 +41,7 @@ void kemoview_allocate_pointers(){
 	
 	kemo_sgl->view_s = (struct view_element *)      malloc(sizeof(struct view_element));
 	kemo_sgl->gl_buf = (struct buffer_for_gl *)     malloc(sizeof(struct buffer_for_gl));
-	kemo_sgl->strided_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	kemo_sgl->strided_buf = init_strided_buffer();
 	kemo_sgl->cube_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
 	kemo_sgl->mesh_d =  (struct viewer_mesh *)       malloc(sizeof(struct viewer_mesh));
