@@ -11,11 +11,6 @@ struct vect_m{
 	double xyz[3];
 };
 
-struct norm_nod_q{
-	struct vect_m normal[4];
-	double dist_nod[4];
-};
-
 struct norm_nod_t{
 	struct vect_m normal[3];
 	double dist_nod[3];

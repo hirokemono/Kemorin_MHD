@@ -15,7 +15,7 @@ struct norm_vector * init_quad_norm_vector(int num_patch){
 	norms->num_patch = num_patch;
 	
 	norms->norm_ele_v = (struct vect_m *) malloc(norms->num_patch * sizeof(struct vect_m));
-	norms->norm_nod_v = (struct norm_nod_q *) malloc(norms->num_patch * sizeof(struct norm_nod_q));
+	norms->norm_nod_v = (struct norm_nod_t *) malloc(norms->num_patch * sizeof(struct norm_nod_t));
 	
 	return norms;
 };
