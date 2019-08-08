@@ -1,5 +1,5 @@
 /*
- *  drawcube_gl.h
+ *  drawcube_gl_old.h
  *  Kemoview_Cocoa
  *
  *  Created by Hiroaki Matsui on 12/02/24.
@@ -17,8 +17,6 @@
 
 void drawCube (GLfloat fSize);
 void drawCube_array (GLfloat fSize);
-
-void drawCube_Element2(GLfloat fSize);
-void drawCube_flat(GLfloat fSize);
+void drawCube_Element(GLfloat fSize);
 
 #endif

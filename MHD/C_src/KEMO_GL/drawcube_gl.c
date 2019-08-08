@@ -44,9 +44,6 @@ void drawCube(GLfloat fSize)
 	GLfloat x_draw[4][3];
 	GLfloat x_norm[4][3];
 
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_COLOR_MATERIAL);
-	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
 	glBegin (GL_QUADS);
 	
 	for (f = 0; f < num_faces; f++){
@@ -89,7 +86,6 @@ void drawCube(GLfloat fSize)
 			glVertex3f(x_draw[i][0], x_draw[i][1], x_draw[i][2]);
 		glEnd ();
 	}
-	glDisable(GL_COLOR_MATERIAL);
 
 	return;
 }
@@ -108,11 +104,6 @@ void drawCube_array(GLfloat fSize)
 	glEnableClientState(GL_INDEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	 */
-
-	glEnable(GL_CULL_FACE);
-	
-	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_COLOR_MATERIAL);
 
 	glVertexPointer(ITHREE, GL_FLOAT, IZERO, x_draw);
 	glNormalPointer(GL_FLOAT, IZERO, x_norm);
@@ -154,8 +145,6 @@ void drawCube_array(GLfloat fSize)
 		glColorPointer(IFOUR, GL_FLOAT, IZERO, c_code);
 		glDrawArrays(GL_LINE_LOOP, IZERO, IFOUR);
 	}
-	
-	glDisable(GL_COLOR_MATERIAL);
 
 	/*
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -168,86 +157,6 @@ void drawCube_array(GLfloat fSize)
 	return;
 }
 
-void drawCube_Element(GLfloat fSize)
-{
-	long f, i;
-	GLfloat x_draw[24];
-	GLfloat x_norm[36];
-	GLfloat c_code[32];
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	/*
-	glEnableClientState(GL_INDEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	*/
-	
-	for (i = 0; i < 8; i++) {
-		c_code[4*i  ] = cube_vertex_colors[i][0];
-		c_code[4*i+1] = cube_vertex_colors[i][1];
-		c_code[4*i+2] = cube_vertex_colors[i][2];
-		c_code[4*i+3] = 1.0;
-	}
-	for (i = 0; i < 8; i++) {
-		x_draw[3*i  ] = cube_vertices[i][0] * fSize;
-		x_draw[3*i+1] = cube_vertices[i][1] * fSize;
-		x_draw[3*i+2] = cube_vertices[i][2] * fSize;
-	};
-	for (f = 0; f < num_faces; f++){
-		x_norm[6*f  ] = cube_normals[f][0];
-		x_norm[6*f+1] = cube_normals[f][1];
-		x_norm[6*f+2] = cube_normals[f][2];
-		x_norm[6*f+3] = cube_normals[f][0];
-		x_norm[6*f+4] = cube_normals[f][1];
-		x_norm[6*f+5] = cube_normals[f][2];
-	};
-	glVertexPointer(ITHREE, GL_FLOAT, IZERO, x_draw);
-	glColorPointer(IFOUR, GL_FLOAT, IZERO, c_code);
-	glNormalPointer(GL_FLOAT, IZERO, x_norm);
-	
-	glEnable(GL_CULL_FACE);
-	
-	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_COLOR_MATERIAL);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, &cube_tri_faces[0][0]);
-	
-	for (i = 0; i < 8; i++) {
-		c_code[4*i  ] = 0.;
-		c_code[4*i+1] = 0.;
-		c_code[4*i+2] = 0.;
-		c_code[4*i+3] = 1.0;
-	};
-	
-	for (f = 0; f < num_faces; f++) {
-		for (i = 0; i < 8; i++) {
-			x_norm[3*i  ] = cube_normals[f][0];
-			x_norm[3*i+1] = cube_normals[f][1];
-			x_norm[3*i+2] = cube_normals[f][2];
-		};
-	}
-	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, &cube_edge[0][0]);
-	
-	for (i = 0; i < 8; i++) {
-		c_code[4*i  ] = 1.0;
-		c_code[4*i+1] = 1.0;
-		c_code[4*i+2] = 1.0;
-		c_code[4*i+3] = 1.0;
-	};
-	glDrawElements(GL_POINTS, 8, GL_UNSIGNED_INT, &cube_nodes[0]);
-	
-	glDisable(GL_COLOR_MATERIAL);
-
-	/*
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_INDEX_ARRAY);
-	*/
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	
-	return;
-}
 
 void drawCube_Element2(GLfloat fSize)
 {
@@ -338,11 +247,6 @@ void drawCube_Element2(GLfloat fSize)
 	glTexCoordPointer(2, GL_FLOAT, stride, (sizeof(GLfloat)*ist_tex));
 	glColorPointer(4,    GL_FLOAT, stride, (sizeof(GLfloat)*ist_csurf));
 	
-	
-	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_COLOR_MATERIAL);
-	
 	/* Create index buffer on GPU, and then copy from CPU */
 	glGenBuffers(1, &idx_indexBuf);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idx_indexBuf);
@@ -390,8 +294,6 @@ void drawCube_Element2(GLfloat fSize)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glDeleteBuffers(1, &idx_indexBuf);
 
-	
-	glDisable(GL_COLOR_MATERIAL);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
@@ -527,18 +429,12 @@ void drawCube_flat(GLfloat fSize)
 	glColorPointer(4,    GL_FLOAT, stride, (sizeof(GLfloat)*ist_csurf));
 	
 	
-	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_COLOR_MATERIAL);
-	
 	glDrawArrays(GL_TRIANGLES, 0,  36);
 	glDrawArrays(GL_LINES,     36, 24);
 	glDrawArrays(GL_POINTS,    60,  8);
 	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
-	glDisable(GL_COLOR_MATERIAL);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
