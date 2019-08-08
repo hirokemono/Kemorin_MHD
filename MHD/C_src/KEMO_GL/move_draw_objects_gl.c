@@ -9,9 +9,6 @@ static int draw_solid_objects_4_psf(struct psf_data **psf_s, struct psf_menu_val
     int i;
     int iflag_psf = 0;
     
-	glShadeModel(GL_SMOOTH);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glDisable(GL_CULL_FACE);
     for(i=0; i<psf_a->nmax_loaded; i++){
         iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
         if(psf_a->iflag_loaded[i] != 0){
@@ -28,7 +25,6 @@ static int draw_solid_objects_4_psf(struct psf_data **psf_s, struct psf_menu_val
 			};
 		};
 	};
-	glEnable(GL_CULL_FACE);
 	
 	return iflag_psf;
 }
@@ -36,27 +32,14 @@ static int draw_solid_objects_4_psf(struct psf_data **psf_s, struct psf_menu_val
 static void draw_solid_patch_4_psf(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
                            struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
                            struct buffer_for_gl *gl_buf){
-	/* set shading mode */
-	glShadeModel(GL_SMOOTH);
 	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	draw_texure_4_PSF(mesh_m->shading_mode, 
 				IZERO, psf_a->istack_solid_psf_txtur, 
 				psf_s, psf_m, psf_a, gl_buf);
-	glEnable(GL_CULL_FACE);
 	glDisable(GL_TEXTURE_2D);
-	
-	/* set shading mode */
-	glShadeModel(GL_SMOOTH);
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	
 	draw_patch_4_PSF(mesh_m->shading_mode, psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 
 				psf_s, psf_m, psf_a, gl_buf);
-	glEnable(GL_CULL_FACE);
     return;
 }
 
@@ -72,22 +55,15 @@ static void draw_transparent_patch_4_psf(struct psf_data **psf_s,
     
 	/* set shading mode */
 	glShadeModel(GL_SMOOTH);
-	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	
+	glEnable(GL_TEXTURE_2D);
     draw_texure_4_PSF(mesh_m->shading_mode, 
 				psf_a->istack_solid_psf_patch, psf_a->istack_trans_psf_txtur, 
 				psf_s, psf_m, psf_a, gl_buf);
-	glEnable(GL_CULL_FACE);
 	glDisable(GL_TEXTURE_2D);
-	
-	
-	/* set shading mode */
-	glShadeModel(GL_SMOOTH);
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	
 	draw_patch_4_PSF(mesh_m->shading_mode,
 				psf_a->istack_trans_psf_txtur, psf_a->ntot_psf_patch,
@@ -126,8 +102,8 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	}
 	
 	if(fline_m->iflag_draw_fline != 0){
+		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 		if(fline_m->fieldline_type == IFLAG_PIPE){
-			glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glDisable(GL_CULL_FACE);
 			glShadeModel(GL_SMOOTH);
@@ -135,7 +111,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			draw_fieldtubes_c(fline_s, fline_m, gl_buf);
 			glEnable(GL_CULL_FACE);
 		} else {
-			glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			
 			draw_fieldlines_c(fline_s, fline_m, gl_buf);
@@ -146,18 +121,44 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
         set_color_code_for_psfs(psf_s, psf_m, psf_a);
         iflag_psf = draw_objects_4_map(psf_s, mesh_m, psf_m, psf_a, view_s, gl_buf);
     } else {
-        iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
-        set_color_code_for_psfs(psf_s, psf_m, psf_a);
-               
-        draw_solid_patch_4_psf(psf_s, mesh_m, psf_m, psf_a, gl_buf);
-        iflag = draw_solid_objects_4_psf(psf_s, psf_m, psf_a, view_s, gl_buf);
-        iflag_psf = iflag_psf + iflag;
+		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
+		set_color_code_for_psfs(psf_s, psf_m, psf_a);
+		
+	/* set shading mode */
+		glShadeModel(GL_SMOOTH);
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+		draw_solid_patch_4_psf(psf_s, mesh_m, psf_m, psf_a, gl_buf);
+		iflag = draw_solid_objects_4_psf(psf_s, psf_m, psf_a, view_s, gl_buf);
+		glEnable(GL_CULL_FACE);
+		
+		iflag_psf = iflag_psf + iflag;
 	};
     
 	
 	if(mesh_m->iflag_draw_mesh != 0){
+		glDisable(GL_CULL_FACE);
+		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+		
 		draw_grids_4_domain(mesh_s, mesh_m, gl_buf);
+		
+		
+		glShadeModel(GL_SMOOTH);
+		glEnable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT, GL_FILL);
+		
 		draw_nodes_4_domain(mesh_s, mesh_m, gl_buf);
+		
+		if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
+			glPolygonMode(GL_FRONT, GL_FILL);
+			glCullFace(GL_BACK);
+		}
+		else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
+			glPolygonMode(GL_BACK, GL_FILL);
+			glCullFace(GL_FRONT);
+		};
+	
 		draw_patches_4_domain(mesh_s, mesh_m, gl_buf);
 	};
     
@@ -173,7 +174,35 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
         draw_transparent_patch_4_psf(psf_s, mesh_m, psf_m, psf_a, view_s, gl_buf);
     };
 	
-	if(mesh_m->iflag_draw_mesh != 0) draw_transparent_4_domain(mesh_s, mesh_m, view_s, gl_buf);
+	if(mesh_m->iflag_draw_mesh != 0){
+		glShadeModel(GL_SMOOTH);
+		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+		
+		glEnable( GL_CULL_FACE );
+		if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
+			glPolygonMode(GL_FRONT, GL_FILL);
+			glCullFace(GL_BACK);
+		}
+		else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
+			glPolygonMode(GL_BACK, GL_FILL);
+			glCullFace(GL_FRONT);
+		};
+		
+		glEnable(GL_MULTISAMPLE);
+		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		glDepthMask(GL_FALSE);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		/*glBlendFunc(GL_SRC_ALPHA, GL_ONE);*/
+	
+		draw_transparent_4_domain(mesh_s, mesh_m, view_s, gl_buf);
+		
+		glDisable(GL_BLEND);
+		glDepthMask(GL_TRUE);
+		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		glDisable(GL_MULTISAMPLE);
+	};
+	
 	
     /* Draw Color bar */
 	for(i=0; i<psf_a->nmax_loaded; i++){

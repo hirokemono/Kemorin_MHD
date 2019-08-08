@@ -132,9 +132,6 @@ void draw_grids_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 	
 	for(i=0; i < mesh_s->num_pe_sf;i++){mesh_s->ip_domain_far[i] = i+1;};
 	
-	glDisable(GL_CULL_FACE);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	
 	if(mesh_m->draw_surface_grid != 0){
 		draw_mesh_grid(mesh_m->domain_grid_color, mesh_m->mesh_color_mode,
 					   mesh_m->num_of_color_loop, mesh_m->domain_grid_color_code,
@@ -182,19 +179,6 @@ void draw_patches_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mes
 	int i, ip_st;
 	
 	copy_patch_distance_mesh(mesh_s);
-	
-	glShadeModel(GL_SMOOTH);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	
-	glEnable( GL_CULL_FACE );
-	if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glCullFace(GL_BACK);
-		}
-	else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
-		glPolygonMode(GL_BACK, GL_FILL);
-		glCullFace(GL_FRONT);
-	};
 	
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity >= 1.0){
 		draw_mesh_patch(mesh_m->shading_mode, mesh_m->polygon_mode, 
@@ -257,26 +241,6 @@ void draw_transparent_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val 
 		copy_patch_distance_mesh(mesh_s);
 	}
 	
-	glShadeModel(GL_SMOOTH);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	
-	glEnable( GL_CULL_FACE );
-	if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glCullFace(GL_BACK);
-		}
-	else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
-		glPolygonMode(GL_BACK, GL_FILL);
-		glCullFace(GL_FRONT);
-	};
-	
-	glEnable(GL_MULTISAMPLE);
-	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glDepthMask(GL_FALSE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	/*glBlendFunc(GL_SRC_ALPHA, GL_ONE);*/
-	
 	
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity < 1.0){
 		draw_mesh_patch(mesh_m->shading_mode, mesh_m->polygon_mode, 
@@ -326,10 +290,6 @@ void draw_transparent_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val 
 			};
 		};
 	};
-	glDisable(GL_BLEND);
-	glDepthMask(GL_TRUE);
-	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glDisable(GL_MULTISAMPLE);
 	
 	return;
 }
