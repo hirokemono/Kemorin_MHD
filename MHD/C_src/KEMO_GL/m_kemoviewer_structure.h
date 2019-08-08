@@ -8,6 +8,7 @@
 #include "m_psf_data_4_viewer_c.h"
 #include "m_kemoviewer_menu.h"
 #include "m_gl_transfer_matrix.h"
+#include "vartex_array_object_gl.h"
 #include "read_data_4_kemoviewer.h"
 #include "set_rgba_table_c.h"
 #include "rainbow_color_code_c.h"

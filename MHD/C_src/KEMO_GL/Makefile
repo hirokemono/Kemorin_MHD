@@ -10,6 +10,7 @@ m_kemoviewer_menu.o \
 m_kemoviewer_structure.o \
 \
 write_modelview_matrix.o \
+vartex_array_object_gl.o \
 \
 drawcube_gl.o \
 ysglusefontbitmap.o \
@@ -270,6 +271,7 @@ module:
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
 	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
 	set_rgba_table_c.o \
 	skip_comment_c.o \
 	read_data_4_kemoviewer.o \
@@ -309,7 +311,7 @@ module:
 	rainbow_color_code_c.o \
 	icosahedron_c.o \
 	m_surface_mesh_4_viewer_c.o \
-	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -319,7 +321,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/draw_grids_4_mesh.c \
 	draw_grids_4_mesh.h \
 	m_surface_mesh_4_viewer_c.o \
-	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
 	rainbow_color_code_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
@@ -331,7 +333,7 @@ module:
 	kemoviewer_param_c.h \
 	m_surface_mesh_4_viewer_c.o \
 	m_kemoviewer_menu.o \
-	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
 	rainbow_color_code_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
@@ -344,7 +346,7 @@ module:
 	gl2ps.o \
 	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
-	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
 	set_new_patch_4_map_c.o \
 	rainbow_color_code_c.o \
 	find_isoline_on_patch_c.o \
@@ -359,7 +361,7 @@ module:
 	gl2ps.o \
 	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
-	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
 	set_new_patch_4_map_c.o \
 	rainbow_color_code_c.o \
 	find_isoline_on_patch_c.o \
@@ -376,7 +378,7 @@ module:
 	rainbow_color_code_c.o \
 	set_color_code_on_nodes.o \
 	icosahedron_c.o \
-	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -388,6 +390,7 @@ module:
 	m_kemoviewer_menu.o \
 	icosahedron_c.o \
 	m_psf_data_4_viewer_c.o \
+	vartex_array_object_gl.o \
 	set_new_patch_4_map_c.o \
 	coordinate_converter_c.o \
 	set_color_code_on_nodes.o \
@@ -413,6 +416,7 @@ module:
 	m_surface_mesh_4_viewer_c.o \
 	m_psf_data_4_viewer_c.o \
 	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -425,6 +429,7 @@ module:
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
 	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
 	draw_colorbar_gl.o \
 	draw_fieldlines.o \
 	draw_mapgrid.o \
@@ -502,6 +507,15 @@ module:
 	m_gl_transfer_matrix.o \
 	rainbow_color_code_c.o \
 	ysglusefontbitmap.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	vartex_array_object_gl.o: \
+	'$$(KEMO_C_GLDIR)'/vartex_array_object_gl.c \
+	vartex_array_object_gl.h \
+	kemoviewer.h \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -595,7 +609,7 @@ module:
 	draw_mapgrid.h \
 	gl2ps.o \
 	kemoviewer_param_c.o \
-	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
 	coordinate_converter_c.o \
 	rainbow_color_code_c.o \
 	>> $(MAKENAME)
@@ -607,7 +621,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/draw_coastline.c \
 	draw_coastline.h \
 	kemoviewer_param_c.o \
-	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
 	coastline_c.o \
 	coordinate_converter_c.o \
 	rainbow_color_code_c.o \

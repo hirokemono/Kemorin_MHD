@@ -6,7 +6,7 @@
 
 #include "kemoviewer_param_c.h"
 #include "m_kemoviewer_menu.h"
-#include "m_gl_transfer_matrix.h"
+#include "vartex_array_object_gl.h"
 #include "m_kemoviewer_menu.h"
 #include "init_gl_lighting_c.h"
 #include "set_new_patch_4_map_c.h"

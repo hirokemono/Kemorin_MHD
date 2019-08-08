@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "kemoviewer_param_c.h"
 #include "m_surface_mesh_4_viewer_c.h"
-#include "m_gl_transfer_matrix.h"
+#include "vartex_array_object_gl.h"
 #include "rainbow_color_code_c.h"
 
 /* prototypes */

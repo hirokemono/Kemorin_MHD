@@ -20,14 +20,17 @@ CORE_C    \
 CONTROLS  \
 KEMO_GL   \
 KEMO_GLUT \
+GLSL      \
 GTK
 
 ifdef OPENGL_LIBS
   OBJS_C+= \
     $$(OBJ_KEMO_GL_C) \
+    $$(OBJ_SHADERS)   \
     $$(OBJ_GL2PS_C)
   LIBDIRS+=   \
     KEMO_GL   \
+    GLSL      \
     KEMO_GLUT
 endif
 

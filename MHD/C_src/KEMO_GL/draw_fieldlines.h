@@ -5,7 +5,7 @@
 #define DRAW_FIELDLINES_
 
 #include "m_kemoviewer_menu.h"
-#include "m_gl_transfer_matrix.h"
+#include "vartex_array_object_gl.h"
 #include "rainbow_color_code_c.h"
 #include "set_color_code_on_nodes.h"
 #include "icosahedron_c.h"

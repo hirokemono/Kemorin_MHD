@@ -48,7 +48,8 @@
       integer,parameter :: max_line_len = 4095
       character(len = max_line_len) linebuf
 !
-      character(len=256) :: shader_name
+      character(len=512) :: shader_name
+      character(len=512) :: func_name
       integer :: i, n
 !
 !
@@ -62,8 +63,17 @@
           shader_name(i:i) = shader_file(i:i)
         end if
       end do
-      do i = n+1, 256
+      do i = n+1, 512
         shader_name(i:i) = ' '
+      end do
+!
+      n = len_trim(shader_name)
+      write(func_name,'(a5)') 'load_'
+      do i = 1, n
+        func_name(i+5:i+5) = shader_name(i:i)
+      end do
+      do i = n+6, 512
+        func_name(i:i) = ' '
       end do
 !
       full_path = trim(dirname) // '/' // trim(c_prefix) // '.h'
@@ -73,18 +83,28 @@
       full_path = trim(dirname) // '/' // trim(shader_file)
       open(12, file = full_path, recl=max_line_len)
 !
-      write(13,'(a14,a,a3)') 'const GLchar  ', trim(shader_name), '[];'
-      write(15,'(a14,a,a2)') 'const GLchar  ', trim(shader_name), '[]'
-      write(15,'(a4)') ' = {'
+      write(13,'(3a)') 'char * ', trim(func_name), '();'
+      write(15,'(3a)') 'char * ', trim(func_name), '(){'
+      close(13)
+
+      write(15,'(3a)') '    const char  ', trim(shader_name), '[]'
+      write(15,'(a)')  '    = {'
       do
         read (12,'(a)',end=10) linebuf
-        write(15,'(a5,a,a4)') '    "', trim(linebuf), '\n"\'
+        write(15,'(3a)') '        "', trim(linebuf), '\n"\'
       end do
   10  continue
-      write(15,'(a8)') '    "\n"'
-      write(15,'(a4,a1)') '  };', char(10)
       close(12)
-      close(13)
+!
+      write(15,'(a)')  '        "\n"'
+      write(15,'(a)')  '    };'
+      write(15,'(a)')  '    '
+      write(15,'(3a)') '    long n = strlen(', trim(shader_name), ');'
+      write(15,'(a)')  '    char * src = alloc_string((int) n+1);'
+      write(15,'(a)')  '    '
+      write(15,'(3a)') '    strcpy(src, ', trim(shader_name), ');'
+      write(15,'(a)')  '    return src;'
+      write(15,'(a2,a1)')  '};', char(10)
       close(15)
 !
       end subroutine append_each_shader
@@ -138,6 +158,12 @@
        write(13,'(a)') '#ifndef shaders__'
        write(13,'(a)') '#define shaders__'
        write(13,'(a)') ''
+       write(13,'(a)') '#include <string.h>'
+       write(13,'(a)') '#include "kemoviewer.h"'
+       write(13,'(a)') '#include "skip_comment_c.h"'
+       write(13,'(a)') ''
+       write(13,'(a)') '/* prototypes */'
+       write(13,'(a)') ''
        close(13)
 !
       full_path = trim(dirname) // '/' // trim(c_file_prefix) // '.c'
@@ -146,6 +172,8 @@
        write(15,'(a)') '//  Source of shader texts'
        write(15,'(a)') '//  Generated from shader files'
        write(15,'(a)') '*/'
+       write(15,'(a)') ''
+       write(15,'(a)') '#include "shaders.h"'
        write(15,'(a)') ''
        close(15)
 !

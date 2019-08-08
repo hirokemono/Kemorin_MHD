@@ -6,6 +6,7 @@
 
 #include "m_kemoviewer_menu.h"
 #include "m_gl_transfer_matrix.h"
+#include "vartex_array_object_gl.h"
 #include "draw_patches_4_PSF.h"
 #include "draw_isolines_4_PSF.h"
 #include "draw_isolines_4_map.h"
