@@ -64,8 +64,6 @@ void draw_map_coast(struct buffer_for_gl *gl_buf){
 	glVertexPointer(ITWO, GL_FLOAT, IZERO, gl_buf->xy);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
 	
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
 	set_black_color_c(f_color);
 	
 	rtp_flame[0] = ONE;
@@ -97,7 +95,7 @@ void draw_map_coast(struct buffer_for_gl *gl_buf){
 	if(inum>0){glDrawArrays(GL_LINES, IZERO, (ITWO*inum));};
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);	
+	glDisableClientState(GL_COLOR_ARRAY);
 	return;
 }
 

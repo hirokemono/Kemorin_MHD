@@ -13,8 +13,8 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	    
 	/* set shading mode */
 	glShadeModel(GL_SMOOTH);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
 	if(view_s->ny_window > view_s->nx_window) {
 		xwin = 2.05;
@@ -28,17 +28,11 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	set_view_by_identity();
 	
 	/* set shading mode */
-	glShadeModel(GL_SMOOTH);
-	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	
 	draw_patches_4_map(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_patch,
 				psf_s, psf_a, gl_buf);
 	
-	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag_map = iflag_map + psf_a->iflag_loaded[i];
 		if(psf_a->iflag_loaded[i] != 0){
@@ -52,9 +46,13 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	};
 	glEnable(GL_CULL_FACE);
 	
-
-	if(mesh_m->iflag_draw_coast != 0)   {draw_map_coast(gl_buf);}
-	if(mesh_m->iflag_draw_sph_grid != 0){draw_flame_4_map(gl_buf, view_s->iflag_write_ps);};
+	
+	if(mesh_m->iflag_draw_coast != 0){
+		draw_map_coast(gl_buf);
+	};
+	if(mesh_m->iflag_draw_sph_grid != 0){
+		draw_flame_4_map(gl_buf, view_s->iflag_write_ps);
+	};
 	
 	load_projection_matrix(view_s);
 	modify_view_by_struct(view_s);
@@ -64,11 +62,6 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 void draw_nodes_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 						 struct buffer_for_gl *gl_buf){
 	int i, ip_st;
-	
-	glShadeModel(GL_SMOOTH);
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glDisable(GL_CULL_FACE);
 	
 	draw_node_by_ico(mesh_s->num_pe_sf, IZERO, mesh_s->nod_stack_domain_sf,
 			mesh_s->nod_item_domain_sf, mesh_s,
@@ -121,7 +114,6 @@ void draw_nodes_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 	
 		};
 	};
-	glEnable(GL_CULL_FACE);
 	return;
 }
 

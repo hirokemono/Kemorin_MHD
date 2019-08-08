@@ -129,7 +129,9 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		glDisable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+		
 		draw_solid_patch_4_psf(psf_s, mesh_m, psf_m, psf_a, gl_buf);
+		
 		iflag = draw_solid_objects_4_psf(psf_s, psf_m, psf_a, view_s, gl_buf);
 		glEnable(GL_CULL_FACE);
 		
@@ -213,7 +215,7 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
                                  view_s->nx_window, view_s->ny_window,
                                  mesh_m->text_color, mesh_m->bg_color, psf_m[i]->cmap_psf);
 				load_projection_matrix(view_s);
-				rotate_view_by_struct(view_s);				
+				rotate_view_by_struct(view_s);
 			};
 		};
 	};

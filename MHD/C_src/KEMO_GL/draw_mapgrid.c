@@ -37,7 +37,6 @@ void draw_flame_4_map(struct buffer_for_gl *gl_buf, int iflag_write_ps){
 	glVertexPointer(ITWO, GL_FLOAT, IZERO, gl_buf->xy);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
 	
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_LINE_STIPPLE);
 	glLineStipple(1,0x3333);
     if (iflag_write_ps == ON) {ierr = gl2psEnable(GL2PS_LINE_STIPPLE);};
@@ -88,7 +87,7 @@ void draw_flame_4_map(struct buffer_for_gl *gl_buf, int iflag_write_ps){
 	
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);	
+	glDisableClientState(GL_COLOR_ARRAY);
 	return;
 }
 
