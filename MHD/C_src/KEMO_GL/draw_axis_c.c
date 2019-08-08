@@ -234,13 +234,13 @@ static void draw_axis_gl(GLfloat x_arrowx[6], GLfloat x_arrowy[6], GLfloat x_arr
 	/*draw 'Y" */
 	for (k=0; k<6; k++) {
 		for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_charay[3*k+nd];
-		for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = blue[nd];
+		for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = green[nd];
         icou = icou + 1;
 	}
 	/*draw 'Z' */
 	for (k=0; k<6; k++) {
 		for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_charaz[3*k+nd];
-		for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = green[nd];
+		for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = blue[nd];
         icou = icou + 1;
 	}
 	glDrawArrays(GL_LINES, IZERO, (ITWO*11));
