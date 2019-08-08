@@ -567,7 +567,9 @@ module:
 	drawcube_gl.o: \
 	'$$(KEMO_C_GLDIR)'/drawcube_gl.c \
 	drawcube_gl.h \
+	kemoviewer.h \
 	kemoviewer_param_c.o \
+	vartex_array_object_gl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

@@ -36,6 +36,100 @@ static GLuint cube_edge [12][2] = {
 
 static GLuint cube_nodes[8] = {3, 2, 1, 0, 4, 5, 6, 7};
 
+/* cube informaiton into VBO */
+
+int flatSurfCube_VBO(int icou, GLfloat fSize, struct gl_strided_buffer *strided_buf){
+	int i, j, k;
+	
+	for(j=0;j<12;j++){
+		for(k=0;k<3;k++){
+			set_node_stride_VBO(icou, strided_buf);
+			icou = icou + 1;
+			
+			i = cube_tri_faces[j][k];
+			strided_buf->x_draw[0] = cube_vertices[i][0] * fSize;
+			strided_buf->x_draw[1] = cube_vertices[i][1] * fSize;
+			strided_buf->x_draw[2] = cube_vertices[i][2] * fSize;
+			
+			strided_buf->n_draw[0] = cube_normals[j/2][0];
+			strided_buf->n_draw[1] = cube_normals[j/2][1];
+			strided_buf->n_draw[2] = cube_normals[j/2][2];
+		
+			strided_buf->x_txur[0] = strided_buf->x_draw[0];
+			strided_buf->x_txur[1] = strided_buf->x_draw[1];
+		
+			strided_buf->c_draw[0] = cube_vertex_colors[i][0];
+			strided_buf->c_draw[1] = cube_vertex_colors[i][1];
+			strided_buf->c_draw[2] = cube_vertex_colors[i][2];
+			strided_buf->c_draw[3] = 1.0;
+		};
+	};
+	
+	return icou;
+};
+
+int flatEdgeCube_VBO(int icou, GLfloat fSize, struct gl_strided_buffer *strided_buf){
+	int i, j, k;
+	
+	for(j=0;j<12;j++){
+		for(k=0;k<2;k++){
+			set_node_stride_VBO(icou, strided_buf);
+			icou = icou + 1;
+			
+			i = cube_edge[j][k];
+			strided_buf->x_draw[0] = cube_vertices[i][0] * fSize;
+			strided_buf->x_draw[1] = cube_vertices[i][1] * fSize;
+			strided_buf->x_draw[2] = cube_vertices[i][2] * fSize;
+			
+			strided_buf->n_draw[0] = cube_normals[j/2][0];
+			strided_buf->n_draw[1] = cube_normals[j/2][1];
+			strided_buf->n_draw[2] = cube_normals[j/2][2];
+		
+			strided_buf->x_txur[0] = strided_buf->x_draw[0];
+			strided_buf->x_txur[1] = strided_buf->x_draw[1];
+		
+			strided_buf->c_draw[0] = 0.0;
+			strided_buf->c_draw[1] = 0.0;
+			strided_buf->c_draw[2] = 0.0;
+			strided_buf->c_draw[3] = 1.0;
+		};
+	};
+	
+	return icou;
+};
+
+int flatNodeCube_VBO(int icou, GLfloat fSize, struct gl_strided_buffer *strided_buf){
+	int i, j, k;
+	GLfloat radius;
+	
+	for(j=0;j<8;j++){
+		set_node_stride_VBO(icou, strided_buf);
+		icou = icou + 1;
+		
+		i = j;
+		radius = sqrt(cube_vertices[i][0]*cube_vertices[i][0]
+					+ cube_vertices[i][1]*cube_vertices[i][1]
+					+ cube_vertices[i][2]*cube_vertices[i][2]);
+		strided_buf->x_draw[0] = cube_vertices[i][0] * fSize;
+		strided_buf->x_draw[1] = cube_vertices[i][1] * fSize;
+		strided_buf->x_draw[2] = cube_vertices[i][2] * fSize;
+		
+		strided_buf->n_draw[0] = cube_normals[j/2][0];
+		strided_buf->n_draw[1] = cube_normals[j/2][1];
+		strided_buf->n_draw[2] = cube_normals[j/2][2];
+		
+		strided_buf->x_txur[0] = strided_buf->x_draw[0];
+		strided_buf->x_txur[1] = strided_buf->x_draw[1];
+		
+		strided_buf->c_draw[0] = 0.0;
+		strided_buf->c_draw[1] = 0.0;
+		strided_buf->c_draw[2] = 0.0;
+		strided_buf->c_draw[3] = 1.0;
+	};
+	
+	return icou;
+};
+
 /* draw simple cube based on current modelview and projection matrices */
 void drawCube(GLfloat fSize)
 {
@@ -301,117 +395,26 @@ void drawCube_Element2(GLfloat fSize)
 	return;
 }
 
-void drawCube_flat(GLfloat fSize)
-{
+
+void drawCube_flat(GLfloat fSize, 
+			struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO){
 	int i, j, k, icou;
-	int n_vertex = 8;
-	int ncomp_buf = 12;
-	
-	int ist_xyz =  0;
-	int ist_norm = 3;
-	int ist_tex =  6;
-	int ist_csurf = 8;
-	
-    GLuint idx_vertexBuf;
-	GLfloat gl_vertex[ncomp_buf*(8+24+36)];
-	
-	GLfloat *x_draw;
-	GLfloat *x_norm;
-	GLfloat *c_surf;
-	GLfloat *xy_tex;
 	GLfloat radius;
 	
 	/* Set Stride for each vertex buffer */
-	GLsizei stride = sizeof(GLfloat) * ncomp_buf;
+	set_buffer_address_4_patch(strided_buf);
+	strided_buf->istride = strided_buf->ncomp_buf;
 	
 	icou = 0;
-	for(j=0;j<12;j++){
-		for(k=0;k<3;k++){
-			x_draw = &gl_vertex[ist_xyz +   ncomp_buf*icou];
-			x_norm = &gl_vertex[ist_norm +  ncomp_buf*icou];
-			xy_tex = &gl_vertex[ist_tex +   ncomp_buf*icou];
-			c_surf = &gl_vertex[ist_csurf + ncomp_buf*icou];
-			icou = icou + 1;
-			
-			i = cube_tri_faces[j][k];
-			x_draw[0] = cube_vertices[i][0] * fSize;
-			x_draw[1] = cube_vertices[i][1] * fSize;
-			x_draw[2] = cube_vertices[i][2] * fSize;
-			
-			x_norm[0] = cube_normals[j/2][0];
-			x_norm[1] = cube_normals[j/2][1];
-			x_norm[2] = cube_normals[j/2][2];
-		
-			xy_tex[0] = x_draw[0];
-			xy_tex[1] = x_draw[1];
-		
-			c_surf[0] = cube_vertex_colors[i][0];
-			c_surf[1] = cube_vertex_colors[i][1];
-			c_surf[2] = cube_vertex_colors[i][2];
-			c_surf[3] = 1.0;
-		};
-	};
-		
-	for(j=0;j<12;j++){
-		for(k=0;k<2;k++){
-			x_draw = &gl_vertex[ist_xyz +   ncomp_buf*icou];
-			x_norm = &gl_vertex[ist_norm +  ncomp_buf*icou];
-			xy_tex = &gl_vertex[ist_tex +   ncomp_buf*icou];
-			c_surf = &gl_vertex[ist_csurf + ncomp_buf*icou];
-			icou = icou + 1;
-			
-			i = cube_edge[j][k];
-			x_draw[0] = cube_vertices[i][0] * fSize;
-			x_draw[1] = cube_vertices[i][1] * fSize;
-			x_draw[2] = cube_vertices[i][2] * fSize;
-			
-			x_norm[0] = cube_normals[j/2][0];
-			x_norm[1] = cube_normals[j/2][1];
-			x_norm[2] = cube_normals[j/2][2];
-		
-			xy_tex[0] = x_draw[0];
-			xy_tex[1] = x_draw[1];
-		
-			c_surf[0] = 0.0;
-			c_surf[1] = 0.0;
-			c_surf[2] = 0.0;
-			c_surf[3] = 1.0;
-		};
-	};
-		
-	for(j=0;j<8;j++){
-		x_draw = &gl_vertex[ist_xyz +   ncomp_buf*icou];
-		x_norm = &gl_vertex[ist_norm +  ncomp_buf*icou];
-		xy_tex = &gl_vertex[ist_tex +   ncomp_buf*icou];
-		c_surf = &gl_vertex[ist_csurf + ncomp_buf*icou];
-		icou = icou + 1;
-		
-		i = j;
-		radius = sqrt(cube_vertices[i][0]*cube_vertices[i][0]
-					+ cube_vertices[i][1]*cube_vertices[i][1]
-					+ cube_vertices[i][2]*cube_vertices[i][2]);
-		x_draw[0] = cube_vertices[i][0] * fSize;
-		x_draw[1] = cube_vertices[i][1] * fSize;
-		x_draw[2] = cube_vertices[i][2] * fSize;
-		
-		x_norm[0] = cube_normals[j/2][0];
-		x_norm[1] = cube_normals[j/2][1];
-		x_norm[2] = cube_normals[j/2][2];
-		
-		xy_tex[0] = x_draw[0];
-		xy_tex[1] = x_draw[1];
-		
-		c_surf[0] = 0.0;
-		c_surf[1] = 0.0;
-		c_surf[2] = 0.0;
-		c_surf[3] = 1.0;
-	};
-
+	icou = flatSurfCube_VBO(icou, fSize, strided_buf);
+	icou = flatEdgeCube_VBO(icou, fSize, strided_buf);
+	icou = flatNodeCube_VBO(icou, fSize, strided_buf);
+	
 	/* Create vertex buffer on GPU and cpoy data from CPU*/
-	glGenBuffers(1, &idx_vertexBuf);
-	glBindBuffer(GL_ARRAY_BUFFER, idx_vertexBuf);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * (8+24+36)*ncomp_buf,
-				gl_vertex, GL_STATIC_DRAW);
+	glGenBuffers(1, &cube_VAO->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, cube_VAO->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * (8+24+36)*strided_buf->ncomp_buf,
+				strided_buf->v_buf, GL_STATIC_DRAW);
 	
 	/* Set Vertex buffer */
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -423,10 +426,14 @@ void drawCube_flat(GLfloat fSize)
 	*/
 	
 	/* Stride is size of buffer for each point */
-	glVertexPointer(3,   GL_FLOAT, stride, (sizeof(GLfloat)*ist_xyz));
-	glNormalPointer(     GL_FLOAT, stride, (sizeof(GLfloat)*ist_norm));
-	glTexCoordPointer(2, GL_FLOAT, stride, (sizeof(GLfloat)*ist_tex));
-	glColorPointer(4,    GL_FLOAT, stride, (sizeof(GLfloat)*ist_csurf));
+	glVertexPointer(3,   GL_FLOAT, (sizeof(GLfloat)*strided_buf->istride),
+				(sizeof(GLfloat)*strided_buf->ist_xyz));
+	glNormalPointer(     GL_FLOAT, (sizeof(GLfloat)*strided_buf->istride),
+				(sizeof(GLfloat)*strided_buf->ist_norm));
+	glTexCoordPointer(2, GL_FLOAT, (sizeof(GLfloat)*strided_buf->istride),
+				(sizeof(GLfloat)*strided_buf->ist_tex));
+	glColorPointer(4,    GL_FLOAT, (sizeof(GLfloat)*strided_buf->istride),
+				(sizeof(GLfloat)*strided_buf->ist_csurf));
 	
 	
 	glDrawArrays(GL_TRIANGLES, 0,  36);

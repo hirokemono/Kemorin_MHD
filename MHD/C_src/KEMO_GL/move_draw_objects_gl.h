@@ -23,5 +23,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 				  struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
 				  struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 				  struct fline_menu_val *fline_m, struct view_element *view_s,
-				  struct buffer_for_gl *gl_buf);
+				  struct buffer_for_gl *gl_buf, struct gl_strided_buffer *strided_buf,
+				  struct VAO_ids *cube_VAO);
 #endif

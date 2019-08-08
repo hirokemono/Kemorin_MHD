@@ -12,6 +12,7 @@
 
 #include <math.h>
 #include "kemoviewer_param_c.h"
+#include "vartex_array_object_gl.h"
 
 /* prototypes */
 
@@ -19,6 +20,7 @@ void drawCube (GLfloat fSize);
 void drawCube_array (GLfloat fSize);
 
 void drawCube_Element2(GLfloat fSize);
-void drawCube_flat(GLfloat fSize);
+void drawCube_flat(GLfloat fSize, 
+				   struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO);
 
 #endif

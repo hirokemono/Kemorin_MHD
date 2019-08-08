@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include "kemoviewer.h"
 
-#define NPATCH_GL_BUFFER  1024
+#define NPATCH_GL_BUFFER  4096
 #define NSIZE_GL_BUFFER  32768
 
 struct buffer_for_gl{
@@ -55,15 +55,15 @@ struct VAO_ids{
 
 /* Prototypes */
 
+void set_buffer_address_4_patch(struct gl_strided_buffer *strided_buf);
+void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf);
+
 struct gl_strided_buffer * init_buffer_for_gl();
-void dealloc_buffer_for_gl(struct gl_strided_buffer *gl_buf);
+void dealloc_buffer_for_gl(struct gl_strided_buffer *strided_buf);
 
-void set_buffer_address_4_patch(struct gl_strided_buffer *gl_buf);
-void set_buffer_address_4_map(struct gl_strided_buffer *gl_buf);
-
-void set_zero_stride_VBO(int inum, struct gl_strided_buffer *gl_buf);
-void set_node_stride_VBO(int inum, struct gl_strided_buffer *gl_buf);
-void select_stride_VBO(int inum, struct gl_strided_buffer *gl_buf);
+void set_zero_stride_VBO(int inum, struct gl_strided_buffer *strided_buf);
+void set_node_stride_VBO(int inum, struct gl_strided_buffer *strided_buf);
+void select_stride_VBO(int inum, struct gl_strided_buffer *strided_buf);
 
 
 void DestroyVBO(struct VAO_ids *VAO);
