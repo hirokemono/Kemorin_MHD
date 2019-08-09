@@ -470,3 +470,86 @@ void drawCube_flat(GLfloat fSize,
 	return;
 }
 
+void set_quadVBO(struct VAO_ids *VAO_quad)
+{
+	struct gl_strided_buffer *gl_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	GLuint idx_indexBuf;
+	
+	gl_buf->num_nod_buf = 4;
+	gl_buf->ncomp_buf = 12;
+	
+	gl_buf->ist_xyz =  0;
+	gl_buf->ist_norm = 3;
+	gl_buf->ist_tex =  6;
+	gl_buf->ist_csurf = 8;
+	gl_buf->v_buf = (GLfloat *) malloc(gl_buf->num_nod_buf*gl_buf->ncomp_buf*sizeof(GLfloat));
+	
+	GLsizei stride = sizeof(GLfloat) * gl_buf->ncomp_buf;
+	
+	GLfloat Vertices[] = {
+		-0.8f,  0.8f, 0.0f, 
+		0.8f,  0.8f, 0.0f, 
+		-0.8f, -0.8f, 0.0f, 
+		0.8f, -0.8f, 0.0f
+	};
+	
+	GLfloat Colors[] = {
+		1.0f, 0.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 1.0f
+	};
+	
+	GLuint quad_tri_faces [2][3] = {0, 2, 1,  2, 3, 1};
+	
+	int i,nd,k;
+	
+	for(i=0;i<gl_buf->num_nod_buf;i++){
+		for(nd=0;nd<3;nd++){
+			gl_buf->v_buf[nd + gl_buf->ist_xyz + i*gl_buf->ncomp_buf] = Vertices[nd+3*i];
+		};
+		for(nd=0;nd<4;nd++){
+			gl_buf->v_buf[nd + gl_buf->ist_csurf + i*gl_buf->ncomp_buf] = Colors[nd+4*i];
+		};
+	};
+	
+	GLenum ErrorCheckValue = glGetError();
+	
+	glGenVertexArrays(1, &VAO_quad->id_VAO);
+	glBindVertexArray(VAO_quad->id_VAO);
+	
+	glGenBuffers(1, &VAO_quad->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, VAO_quad->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
+				 gl_buf->v_buf, GL_STATIC_DRAW);
+	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride,
+						  (GLvoid*) (gl_buf->ist_xyz * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride, 
+						  (GLvoid*) (gl_buf->ist_csurf * sizeof(GL_FLOAT)));
+	
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	
+	/* Create index buffer on GPU, and then copy from CPU */
+	glGenBuffers(1, &VAO_quad->id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO_quad->id_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*6, quad_tri_faces, GL_STATIC_DRAW);
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	ErrorCheckValue = glGetError();
+	if (ErrorCheckValue != GL_NO_ERROR)
+	{
+		fprintf(
+				stderr,
+				"ERROR: Could not create a VBO: %s \n",
+				gluErrorString(ErrorCheckValue)
+				);
+		
+		exit(-1);
+	}
+	
+	glBindVertexArray(0);
+}

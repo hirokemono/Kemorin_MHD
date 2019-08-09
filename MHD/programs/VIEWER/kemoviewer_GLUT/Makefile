@@ -37,8 +37,6 @@ kemoview_glut_console_input.o \
 
 MOD_KEMOVIEW_GLUT3 = \
 kemoviewer_glut3.o \
-\
-kemo_mesh_viewer_glut.o \
 kemoview_glut_console_input.o \
 \
 '$$(OBJ_KEMOVIEW_GLUT)'

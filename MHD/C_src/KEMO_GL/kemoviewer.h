@@ -790,7 +790,14 @@ extern "C" {
 /** Write Kemoviwer window image to file without step number */
     void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix);
 /** Write Kemoviwer window image to file with step number */
-    void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix);
+	void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix);
+	
+	void kemoview_draw_quad_setup();
+	void kemoview_draw_menu_setup();
+	void kemoview_draw_quad_gl3();
+	void kemoview_draw_menu_gl3();
+	void kemo_Cleanup();
+	
 #ifdef __cplusplus
 }
 #endif

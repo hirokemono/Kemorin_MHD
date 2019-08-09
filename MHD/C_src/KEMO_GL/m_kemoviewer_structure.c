@@ -21,6 +21,7 @@ struct kemoviewer_type{
 	struct gl_strided_buffer  *strided_buf;
 	struct kemoview_shaders   *kemo_shaders;
 	struct VAO_ids *cube_VAO;
+	struct VAO_ids *menu_VAO;
 	
 	struct psf_menu_val       *psf_current_menu;
 	struct psf_data           *psf_current_data;
@@ -47,6 +48,7 @@ void kemoview_allocate_pointers(){
 	kemo_sgl->kemo_shaders = init_kemoview_shaders();
 	kemo_sgl->strided_buf = init_strided_buffer();
 	kemo_sgl->cube_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	kemo_sgl->menu_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
 	kemo_sgl->mesh_d =  (struct viewer_mesh *)       malloc(sizeof(struct viewer_mesh));
 	kemo_sgl->fline_d = (struct psf_data *)          malloc(sizeof(struct psf_data));
@@ -163,7 +165,8 @@ void kemoview_draw_objects_c(){
     /*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
 	draw_objects(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
                  kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
-				 kemo_sgl->gl_buf, kemo_sgl->strided_buf, kemo_sgl->cube_VAO);
+				 kemo_sgl->gl_buf, kemo_sgl->strided_buf, kemo_sgl->cube_VAO, 
+				 kemo_sgl->kemo_shaders);
 	return;
 };
 
@@ -172,7 +175,8 @@ void kemoview_draw_viewer_to_ps(){
     kemo_sgl->view_s->iflag_write_ps = ON;
 	draw_objects(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m,
                  kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s,
-				 kemo_sgl->gl_buf, kemo_sgl->strided_buf, kemo_sgl->cube_VAO);
+				 kemo_sgl->gl_buf, kemo_sgl->strided_buf, kemo_sgl->cube_VAO,
+				 kemo_sgl->kemo_shaders);
     kemo_sgl->view_s->iflag_write_ps = OFF;
 	return;
 };
@@ -188,7 +192,7 @@ void kemoview_message_viewmatrix(){set_view_for_message(kemo_sgl->view_s);};
 
 void kemoview_init_lighting(int iflag_core_profile){
 	kemo_sgl->view_s->iflag_core_profile = iflag_core_profile;
-	kemo_sgl->view_s->gl_drawID = glGenLists(IONE);
+	kemo_sgl->view_s->iflag_shading_profile = iflag_core_profile;
 	
 	kemo_gl_initial_lighting_c(kemo_sgl->view_s, kemo_sgl->kemo_shaders);
 	/* ! set bitmap font list (8x12) */
@@ -999,6 +1003,45 @@ void kemoview_write_fline_colormap_file(struct kv_string *filename){
 void kemoview_read_fline_colormap_file(struct kv_string *filename){
 	read_colormap_control_file_s(filename->string, kemo_sgl->fline_m->cmap_fline);
 }
+
+/*  Trmporal routines */
+
+struct shader_ids sampleShader;
+
+void kemoview_draw_quad_setup(){
+	LoadShaderFromStrings(kemo_sgl->kemo_shaders->test, load_test_vert(), load_test_frag());
+}
+void kemoview_draw_menu_setup(){
+	LoadShaderFromStrings(kemo_sgl->kemo_shaders->menu, load_menu_vert(), load_menu_frag());
+}
+
+void kemoview_draw_quad_gl3(){
+	glUseProgram(kemo_sgl->kemo_shaders->test->programId);
+	
+	identity_matrix_to_shader(kemo_sgl->kemo_shaders->test);
+//	transfer_matrix_to_shader(kemo_sgl->kemo_shaders->test, kemo_sgl->view_s);
+	
+	set_quadVBO(kemo_sgl->cube_VAO);
+	
+	glBindVertexArray(kemo_sgl->cube_VAO->id_VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, kemo_sgl->cube_VAO->id_index);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	DestroyVBO(kemo_sgl->cube_VAO);
+}
+void kemoview_draw_menu_gl3(){
+	glUseProgram(kemo_sgl->kemo_shaders->menu->programId);
+	
+	VBO_for_Menu(kemo_sgl->menu_VAO);
+	glBindVertexArray(kemo_sgl->menu_VAO->id_VAO);
+	glDrawArrays(GL_POINTS, 0, MENU_HEIGHT*MENU_WIDTH);
+	DestroyVBO(kemo_sgl->menu_VAO);
+}
+void kemo_Cleanup()
+{
+  destory_shaders(kemo_sgl->kemo_shaders->test);
+  destory_shaders(kemo_sgl->kemo_shaders->test);
+}
+
 
 /*  Routines using libpng */
 #ifdef PNG_OUTPUT

@@ -1,6 +1,7 @@
 
 /* move_draw_objects_gl.c */
 
+#include <OpenGL/gl3.h>
 #include "move_draw_objects_gl.h"
 
 static int draw_solid_objects_4_psf(struct psf_data **psf_s, struct psf_menu_val **psf_m,
@@ -84,7 +85,7 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 				  struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 				  struct fline_menu_val *fline_m, struct view_element *view_s,
 				  struct buffer_for_gl *gl_buf, struct gl_strided_buffer *strided_buf,
-				  struct VAO_ids *cube_VAO){
+				  struct VAO_ids *cube_VAO, struct kemoview_shaders *kemo_shaders){
 	int i, iflag;
 	int iflag_psf = 0;
 	
@@ -226,6 +227,14 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		if(view_s->iflag_shading_profile == 1){
+			glUseProgram(kemo_shaders->test->programId);
+//			transfer_matrix_to_shader(kemo_shaders->test, view_s);
+			identity_matrix_to_shader(kemo_shaders->test);
+			
+			set_quadVBO(cube_VAO);
+			glBindVertexArray(cube_VAO->id_VAO);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		} else {
 			glEnable(GL_CULL_FACE);
 			glEnable(GL_COLOR_MATERIAL);

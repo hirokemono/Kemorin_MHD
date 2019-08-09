@@ -952,20 +952,16 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	winid = glutCreateWindow("Kemoviewer");
 	set_main_window_id_glut(winid);
 	
+	/*! Set the display callback  */
+	glutDisplayFunc(display);
+	glutReshapeFunc(modifywindow);
+	
 	/*glutEntryFunc(enter_leave);*/
 	  fprintf(
 	  stdout,
 	  "INFO: OpenGL Version: %s\n",
 	  glGetString(GL_VERSION)
 	  );
-	
-	/*! Set the display callback  */
-	
-	glutDisplayFunc(display);
-	glutReshapeFunc(modifywindow);
-	
-	if (!glutExtensionSupported("GL_ARB_texture_non_power_of_two")) 
-		{printf("GL_ARB_texture_non_power_of_two is not Supported\n");};
 	
 	/*  initialize view_modifier, receiving the id for it's submenu  */
 	kemoviewer_reset_to_init_angle();

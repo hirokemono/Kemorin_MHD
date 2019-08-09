@@ -1,6 +1,6 @@
 
 /* draw_menu_bottun_gl.c */
-
+#include <OpenGL/gl3.h>
 #include "draw_menu_bottun_gl.h"
 
 static void dtob(int BitSize, int x, int *c) {
@@ -192,6 +192,8 @@ void VBO_for_Menu(struct VAO_ids *VAO_menu){
 		
 		exit(-1);
 	}
+	
+	glBindVertexArray(0);
 	return;
 }
 

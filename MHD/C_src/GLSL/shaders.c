@@ -190,10 +190,12 @@ char * load_test_frag(){
     const char  test_frag_src[]
     = {
         "#version 400\n"\
-        "out vec3 color;\n"\
+        "\n"\
+        "in vec4 ex_Color;\n"\
+        "out vec4 out_Color;\n"\
         "\n"\
         "void main(){\n"\
-        "    color = vec3(1,0,0);\n"\
+        "    out_Color = ex_Color;\n"\
         "}\n"\
         "\n"
     };
