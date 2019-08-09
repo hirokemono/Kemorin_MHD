@@ -685,26 +685,6 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
-	
-	@echo \
-	phong.o: \
-	'$$(KEMO_C_GLDIR)'/phong.c \
-	phong.h \
-	glsl.o \
-	m_read_text_to_character.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	gouraud.o: \
-	'$$(KEMO_C_GLDIR)'/gouraud.c \
-	gouraud.h \
-	glsl.o \
-	m_read_text_to_character.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
 
 includes:
 	@for sources in `ls *.h`; do \
