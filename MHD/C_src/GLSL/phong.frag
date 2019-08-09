@@ -1,4 +1,4 @@
-#version 330 core
+#version 400
 // phong.frag
 
 out vec3 position;

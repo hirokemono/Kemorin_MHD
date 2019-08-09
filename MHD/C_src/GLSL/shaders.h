@@ -9,7 +9,9 @@
 #include "kemoviewer.h"
 #include "skip_comment_c.h"
 
+
 /* prototypes */
+
 
 char * load_gouraud_frag();
 char * load_gouraud_vert();
