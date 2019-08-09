@@ -172,6 +172,14 @@ void draw_patches_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mes
 	
 	copy_patch_distance_mesh(mesh_s);
 	
+	
+/*
+	for(i=0;i<mesh_s->nsurf_domain_sf * mesh_s->nsurf_each_tri;i++){
+		printf("%d, %f %f %f \n", i, mesh_s->normal_domain[i][0],
+		mesh_s->normal_domain[i][1], mesh_s->normal_domain[i][2]);
+	}
+*/
+	
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity >= 1.0){
 		draw_mesh_patch(mesh_m->shading_mode, mesh_m->polygon_mode, 
 				mesh_m->domain_surface_color, mesh_m->mesh_color_mode,

@@ -16,7 +16,6 @@ static void set_viewer_mesh(struct viewer_mesh *mesh_s){
 	take_normal_surf_mesh_c(mesh_s);
 	set_surface_normal_4_each_node(mesh_s);
 	set_normal_on_node_4_mesh(mesh_s);
-	
 	return;
 }
 
