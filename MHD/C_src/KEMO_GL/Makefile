@@ -285,6 +285,7 @@ module:
 	rainbow_color_code_c.o \
 	gl_buffer_2_gl2ps.o \
     set_psf_texture_by_png.o \
+	glsl.h \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -678,6 +679,9 @@ module:
 	glsl.o: \
 	'$$(KEMO_C_GLDIR)'/glsl.c \
 	glsl.h \
+	kemoviewer.h \
+	m_gl_transfer_matrix.o \
+	shaders.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

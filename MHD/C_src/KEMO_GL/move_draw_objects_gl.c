@@ -88,10 +88,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	int i, iflag;
 	int iflag_psf = 0;
 	
-    /*
-     glUseProgram(view_s->PhongGl2Program);
-     */
-    
 	glDeleteLists(view_s->gl_drawID, 1);
 	glNewList(view_s->gl_drawID, GL_COMPILE_AND_EXECUTE);
 	

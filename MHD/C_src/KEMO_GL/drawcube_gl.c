@@ -7,6 +7,7 @@
  *
  */
 
+#include <OpenGL/gl3.h>
 #include "drawcube_gl.h"
 
 static GLint num_faces = 6;
@@ -311,6 +312,10 @@ void drawCube_Element2(GLfloat fSize,
 		c_dots[3] = 1.0;
 	};
 		
+	/* Create VAO */
+	glGenVertexArrays(1, &cube_VAO->id_VAO);
+	glBindVertexArray(cube_VAO->id_VAO);
+	
 	/* Create vertex buffer on GPU and cpoy data from CPU*/
 	glGenBuffers(1, &cube_VAO->id_vertex);
 	glBindBuffer(GL_ARRAY_BUFFER, cube_VAO->id_vertex);
@@ -391,8 +396,7 @@ void drawCube_Element2(GLfloat fSize,
 
 void drawCube_flat(GLfloat fSize, 
 			struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO){
-	int i, j, k, icou;
-	GLfloat radius;
+	int icou;
 	
 	/* Set Stride for each vertex buffer */
 	set_buffer_address_4_patch(strided_buf);
@@ -402,6 +406,10 @@ void drawCube_flat(GLfloat fSize,
 	icou = flatSurfCube_VBO(icou, fSize, strided_buf);
 	icou = flatEdgeCube_VBO(icou, fSize, strided_buf);
 	icou = flatNodeCube_VBO(icou, fSize, strided_buf);
+	
+	/* Create VAO */
+	glGenVertexArrays(1, &cube_VAO->id_VAO);
+	glBindVertexArray(cube_VAO->id_VAO);
 	
 	/* Create vertex buffer on GPU and cpoy data from CPU*/
 	glGenBuffers(1, &cube_VAO->id_vertex);
@@ -428,11 +436,31 @@ void drawCube_flat(GLfloat fSize,
 	glColorPointer(4,    GL_FLOAT, (sizeof(GLfloat)*strided_buf->istride),
 				(sizeof(GLfloat)*strided_buf->ist_csurf));
 	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (sizeof(GLfloat)*strided_buf->istride),
+						  (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (sizeof(GLfloat)*strided_buf->istride), 
+						  (GLvoid*) (strided_buf->ist_norm * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (sizeof(GLfloat)*strided_buf->istride), 
+						  (GLvoid*) (strided_buf->ist_tex * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (sizeof(GLfloat)*strided_buf->istride), 
+						  (GLvoid*) (strided_buf->ist_csurf * sizeof(GL_FLOAT)));
+	
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	
 	
 	glDrawArrays(GL_TRIANGLES, 0,  36);
 	glDrawArrays(GL_LINES,     36, 24);
 	glDrawArrays(GL_POINTS,    60,  8);
 	
+
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	glDisableClientState(GL_COLOR_ARRAY);

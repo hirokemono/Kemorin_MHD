@@ -192,7 +192,7 @@ int read_PSF_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
 
 int write_PSF_ctl_list(FILE *fp, int level, const char *label, 
 			struct PSF_ctl_list *head){
-	if(count_PVR_ctl_list(head) == 0) return level;
+	if(count_PSF_ctl_list(head) == 0) return level;
 	fprintf(fp, "!\n");
 	level = write_array_flag_for_ctl_c(fp, level, label);
     head = head->_next;

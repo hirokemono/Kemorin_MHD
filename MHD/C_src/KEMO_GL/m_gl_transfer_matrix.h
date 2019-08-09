@@ -56,11 +56,6 @@ struct view_element{
 	GLdouble rVel_animate[3];
 	GLdouble rAccel_animate[3];
     
-    /* Shader object */
-    GLuint PhongGl2Program;
-    GLuint GouraudGl2Program;
-
-
 	int iflag_core_profile;
 	int iflag_shading_profile;
 	GLuint index_modelViewMatrix;

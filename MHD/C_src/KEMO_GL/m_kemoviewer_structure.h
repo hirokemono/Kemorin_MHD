@@ -25,6 +25,8 @@
 #include "gl_buffer_2_gl2ps.h"
 #include "set_psf_texture_by_png.h"
 
+#include "glsl.h"
+
 
 #include "kemoviewer.h"
 

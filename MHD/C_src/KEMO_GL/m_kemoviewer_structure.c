@@ -19,6 +19,7 @@ struct kemoviewer_type{
     struct view_element       *view_s;
 	struct buffer_for_gl      *gl_buf;
 	struct gl_strided_buffer  *strided_buf;
+	struct kemoview_shaders   *kemo_shaders;
 	struct VAO_ids *cube_VAO;
 	
 	struct psf_menu_val       *psf_current_menu;
@@ -41,6 +42,9 @@ void kemoview_allocate_pointers(){
 	
 	kemo_sgl->view_s = (struct view_element *)      malloc(sizeof(struct view_element));
 	kemo_sgl->gl_buf = (struct buffer_for_gl *)     malloc(sizeof(struct buffer_for_gl));
+	
+	kemo_sgl->view_s->iflag_shading_profile = 0;
+	kemo_sgl->kemo_shaders = init_kemoview_shaders();
 	kemo_sgl->strided_buf = init_strided_buffer();
 	kemo_sgl->cube_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
@@ -186,7 +190,7 @@ void kemoview_init_lighting(int iflag_core_profile){
 	kemo_sgl->view_s->iflag_core_profile = iflag_core_profile;
 	kemo_sgl->view_s->gl_drawID = glGenLists(IONE);
 	
-	kemo_gl_initial_lighting_c(kemo_sgl->view_s);
+	kemo_gl_initial_lighting_c(kemo_sgl->view_s, kemo_sgl->kemo_shaders);
 	/* ! set bitmap font list (8x12) */
 	init_colorbar_fonts();
 }
