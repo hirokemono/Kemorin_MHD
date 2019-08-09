@@ -4,16 +4,17 @@
 #include "draw_patch_4_mesh_c.h"
 
 static void set_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int polygon_mode, 
-								   double normal_ele[3], double normal_nod[9], struct viewer_mesh *mesh_s,
-								   double f_color[4], int inum_buf, struct buffer_for_gl *gl_buf){
+			double **xx_draw, int **ie_sf_viewer, int *node_quad_2_linear_tri, 
+			double normal_ele[3], double normal_nod[9], 
+			double f_color[4], int inum_buf, struct buffer_for_gl *gl_buf){
 	int inod, k, kr, k1, nd;
 	
 	for (k=0; k<ITHREE; k++) {
 		if (iele < 0) {kr = ITHREE - k - 1;}
 		else {kr = k;};
-		k1 = mesh_s->node_quad_2_linear_tri[3*ie_local+kr] - 1;
-		inod = mesh_s->ie_sf_viewer[abs(iele)-1][k1]-1;
-		for(nd=0;nd<3;nd++) {gl_buf->xyz[ITHREE*inum_buf+k][nd] =  mesh_s->xx_draw[inod][nd];};
+		k1 = node_quad_2_linear_tri[3*ie_local+kr] - 1;
+		inod = ie_sf_viewer[abs(iele)-1][k1]-1;
+		for(nd=0;nd<3;nd++) {gl_buf->xyz[ITHREE*inum_buf+k][nd] = xx_draw[inod][nd];};
 		for(nd=0;nd<4;nd++) {gl_buf->rgba[ITHREE*inum_buf+k][nd] = f_color[nd];};
 
 		if (shading_mode == SMOOTH_SHADE) {
@@ -65,7 +66,8 @@ void draw_mesh_patch(int shading_mode, int polygon_mode, int surface_color,
 				for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
 					jnum = j + inum * mesh_s->nsurf_each_tri;
 					set_each_mesh_tri_patch(j, item_grp[inum], shading_mode, polygon_mode,
-								normal_ele[jnum], normal_nod[jnum], mesh_s, 
+								mesh_s->xx_draw, mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri, 
+								normal_ele[jnum], normal_nod[jnum], 
 								f_color, inum_buf, gl_buf);
 					
 					inum_buf = inum_buf + 1;
