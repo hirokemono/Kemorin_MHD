@@ -62,9 +62,7 @@ set_each_psf_parameters.o \
 \
 psf_patch_buffer.o \
 \
-glsl.o \
-phong.o \
-gouraud.o
+glsl.o
 
 
 #
@@ -195,8 +193,6 @@ module:
 	kemoviewer_param_c.h \
 	m_gl_transfer_matrix.o \
 	m_kemoviewer_menu.o \
-	gouraud.o \
-	phong.o \
 	glsl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
@@ -526,7 +522,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/draw_menu_bottun_gl.c \
 	draw_menu_bottun_gl.h \
 	ysglusefontbitmap.o \
-	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
