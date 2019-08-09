@@ -112,13 +112,13 @@ static void menubottun_bitmap(GLubyte *menu_bitmap){
 		*/
 		for(j=0;j<32;j++){
 			if(bitmap32[j]!=0){
-				index = 3*(2*j+8 + (2*i+2)*MENU_WIDTH);
+				index = 3*((int) (1.5*(float) j+ 9) + (int) (1.5*(float) i+ 6)*MENU_WIDTH);
 				for(k=0;k<3;k++) menu_bitmap[index+k] = 0;
-				index = 3*(2*j+9 + (2*i+2)*MENU_WIDTH);
+				index = 3*((int) (1.5*(float) j+ 10) + (int) (1.5*(float) i+ 6)*MENU_WIDTH);
 				for(k=0;k<3;k++) menu_bitmap[index+k] = 0;
-				index = 3*(2*j+8 + (2*i+3)*MENU_WIDTH);
+				index = 3*((int) (1.5*(float) j+ 9) + (int) (1.5*(float) i+ 7)*MENU_WIDTH);
 				for(k=0;k<3;k++) menu_bitmap[index+k] = 0;
-				index = 3*(2*j+9 + (2*i+3)*MENU_WIDTH);
+				index = 3*((int) (1.5*(float) j+ 10) + (int) (1.5*(float) i+ 7)*MENU_WIDTH);
 				for(k=0;k<3;k++) menu_bitmap[index+k] = 0;
 			}
 		}
@@ -128,7 +128,7 @@ static void menubottun_bitmap(GLubyte *menu_bitmap){
 	return;
 }
 
-void draw_menubottun_gl(){
+void draw_menubottun_gl(struct VAO_ids *VAO_menu){
 	GLubyte menubottun_bits[3*MENU_HEIGHT*MENU_WIDTH];
 	
 	menubottun_bitmap(menubottun_bits);
@@ -143,19 +143,55 @@ void draw_menubottun_gl(){
 	return;
 }
 
-void draw_menubottun_gl3(){
+void VBO_for_Menu(struct VAO_ids *VAO_menu){
 	GLubyte menubottun_bits[3*MENU_HEIGHT*MENU_WIDTH];
+	GLfloat Vertices[4*MENU_WIDTH*MENU_HEIGHT];
+	GLfloat Colors[4*MENU_WIDTH*MENU_HEIGHT];
+	int i, j, idx;
 	
 	menubottun_bitmap(menubottun_bits);
-	kemoview_indentity_projectionmatrix();
+	for(j=0;j<MENU_HEIGHT;j++){
+		for(i=0;i<MENU_WIDTH;i++){
+			idx = i + j * MENU_WIDTH;
+			Vertices[4*idx  ] =  2.0*((float) i / (float) MENU_WIDTH) - 1.0;
+			Vertices[4*idx+1] =  2.0*((float) j / (float) MENU_HEIGHT)- 1.0;
+			Vertices[4*idx+2] = 0.0;
+			Vertices[4*idx+3] = 1.0;
+			
+			Colors[4*idx  ] =  (float) ((int) menubottun_bits[3*idx  ]) / 256.0;
+			Colors[4*idx+1] =  (float) ((int) menubottun_bits[3*idx+1]) / 256.0;
+			Colors[4*idx+2] =  (float) ((int) menubottun_bits[3*idx+2]) / 256.0;
+			Colors[4*idx+3] = 1.0;
+		}
+	}
+	GLenum ErrorCheckValue = glGetError();
 	
-	glClearColor(0.5, 0.2, 0.9, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);
-	glRasterPos2i(-1 , -1);
-	glDrawPixels(MENU_WIDTH , MENU_HEIGHT , GL_RGB , GL_UNSIGNED_BYTE , menubottun_bits);
+	glGenVertexArrays(1, &VAO_menu->id_VAO);
+	glBindVertexArray(VAO_menu->id_VAO);
 	
-	glFlush();
+	glGenBuffers(1, &VAO_menu->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, VAO_menu->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(0);
 	
+	glGenBuffers(1, &VAO_menu->id_color);
+	glBindBuffer(GL_ARRAY_BUFFER, VAO_menu->id_color);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Colors), Colors, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(1);
+	
+	ErrorCheckValue = glGetError();
+	if (ErrorCheckValue != GL_NO_ERROR)
+	{
+		fprintf(
+				stderr,
+				"ERROR: Could not create a VBO: %s \n",
+				gluErrorString(ErrorCheckValue)
+				);
+		
+		exit(-1);
+	}
 	return;
 }
 

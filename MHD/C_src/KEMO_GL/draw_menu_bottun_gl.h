@@ -5,16 +5,16 @@
 #define DRAW_MENUBOTTUN_GL_
 
 #include <math.h>
-#include "m_gl_transfer_matrix.h"
 #include "ysglusefontbitmap.h"
+#include "vartex_array_object_gl.h"
 
-#define MENU_HEIGHT 30
-#define MENU_WIDTH  80
+#define MENU_HEIGHT 32
+#define MENU_WIDTH  64
 
 /* prototypes */
 
 void draw_menubottun_gl();
-void draw_menubottun_gl3();
+void VBO_for_Menu(struct VAO_ids *VAO_menu);
 
 #endif
 

@@ -706,7 +706,7 @@ int kemoview_get_stereo_shutter(){return kemo_sgl->mesh_m->iflag_streo_stutter;}
 int kemoview_get_anaglyph_flag(){return kemo_sgl->mesh_m->iflag_streo_anaglyph;}
 
 void kemoview_draw_glut_menubottun(){draw_menubottun_gl();}
-void kemoview_draw_glut_menubottun3(){draw_menubottun_gl3();}
+//void kemoview_draw_glut_menubottun3(){draw_menubottun_gl3();}
 
 /* Subroutines for surface rendering */
 void kemoview_set_PSF_num_loaded(int num){kemo_sgl->psf_a->num_loaded = num;};

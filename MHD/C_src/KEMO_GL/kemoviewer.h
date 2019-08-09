@@ -372,8 +372,8 @@
 #define RAINBOW_COLOR   1
 #define SET_NUM_COLORS  2
 
-#define MENU_HEIGHT 30
-#define MENU_WIDTH  80
+#define MENU_HEIGHT 32
+#define MENU_WIDTH  64
 
 #define NMAX_PSF     10
 
