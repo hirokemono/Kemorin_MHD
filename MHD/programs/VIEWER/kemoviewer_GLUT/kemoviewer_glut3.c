@@ -2,12 +2,6 @@
 /* kemoviewer_glut.c */
 
 #include "kemoviewer.h"
-#include "m_kemoviewer_structure.h"
-#include "glsl.h"
-#include "skip_comment_c.h"
-#include "vartex_array_object_gl.h"
-#include "shaders.h"
-#include "drawcube_gl.h"
 
 #include "view_modifier_glut.h"
 #include "const_viewer_menu_glut.h"
@@ -22,18 +16,19 @@
 static int winid, menu_win;
 struct kemoviewer_type *single_kemoview;
 
+struct glut_menu_address  glut_menu_id_struct;
+struct glut_menu_address *glut_menu_id;
+
 unsigned FrameCount = 0;
 
 int CurrentWidth = NPIX_X;
 int CurrentHeight = NPIX_Y;
 int WindowHandle = 0;
 
-struct VAO_ids VAO_q;
-
-struct shader_ids menuShader;
-
-GLuint idx_indexBuf;
-
+void link_glut_menu_address(){
+	glut_menu_id = &glut_menu_id_struct;
+	return;
+}
 
 
 void display_menu3(){
@@ -87,6 +82,10 @@ void TimerFunction(int Value)
 }
 
 void init_kemoview_GLUT3(int iflag_streo_shutter) {
+	
+}
+
+void draw_mesh_kemo3(int iflag_streo_shutter, int iflag_dmesh) {
 	int narg_glut = 0;
 	char **arg_glut;
 	
@@ -100,6 +99,8 @@ void init_kemoview_GLUT3(int iflag_streo_shutter) {
 	} else {
 		kemoview_set_anaglyph_flag(ANAGLYPH_ON);
 	};
+	
+	link_glut_menu_address();
 	
 	/*! Initializations with GLUT*/
 	glutInit(&narg_glut, arg_glut);
@@ -131,16 +132,21 @@ void init_kemoview_GLUT3(int iflag_streo_shutter) {
 	  glGetString(GL_VERSION)
 	  );
 	
+	/*  initialize view_modifier, receiving the id for it's submenu  */
+	kemoviewer_reset_to_init_angle();
+	view_modifier_init();
+	
+	/* ! set the perspective and lighting */
+	kemoview_init_background_color();
+	kemoview_init_lighting(1);
+	
 	/*! Create menu window*/
 	menu_win = glutCreateSubWindow(winid,IZERO,IZERO,MENU_WIDTH,MENU_HEIGHT);
 	glutDisplayFunc(display_menu3);
 	glutSetWindow(winid);
 	
-}
-
-void draw_mesh_kemo3(int iflag_streo_shutter, int iflag_dmesh) {
-	init_kemoview_GLUT3(iflag_streo_shutter);
-	/*! set callback for GLUT*/
+	
+	
 	
 	glutSetWindow(winid);
 	kemoview_draw_quad_setup();

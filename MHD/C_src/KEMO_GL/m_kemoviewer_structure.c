@@ -1019,9 +1019,10 @@ void kemoview_draw_quad_gl3(){
 	glUseProgram(kemo_sgl->kemo_shaders->test->programId);
 	
 	identity_matrix_to_shader(kemo_sgl->kemo_shaders->test);
-//	transfer_matrix_to_shader(kemo_sgl->kemo_shaders->test, kemo_sgl->view_s);
-	
 	set_quadVBO(kemo_sgl->cube_VAO);
+	
+//	transfer_matrix_to_shader(kemo_sgl->kemo_shaders->test, kemo_sgl->view_s);
+//	drawCube_flat(0.5f, kemo_sgl->strided_buf, kemo_sgl->cube_VAO);
 	
 	glBindVertexArray(kemo_sgl->cube_VAO->id_VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, kemo_sgl->cube_VAO->id_index);
