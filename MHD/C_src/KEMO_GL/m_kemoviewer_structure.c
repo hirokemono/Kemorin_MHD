@@ -599,7 +599,9 @@ void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char
     set_texture_psf_from_bgra(kemo_sgl->psf_current_menu, width, height, bgra_in);
 };
 
-void kemoview_modify_view(){modify_stereo_kemoview(kemo_sgl->mesh_m, kemo_sgl->view_s);};
+void kemoview_modify_view(){
+	modify_stereo_kemoview(kemo_sgl->mesh_m, kemo_sgl->view_s);
+};
 void kemoview_rotate(){rotate_stereo_kemoview(kemo_sgl->mesh_m, kemo_sgl->view_s);};
 
 void kemoviewer_reset_to_init_angle(){
@@ -1016,12 +1018,19 @@ void kemoview_draw_menu_setup(){
 }
 
 void kemoview_draw_quad_gl3(){
+	int i;
+	
+	update_projection_struct(kemo_sgl->view_s);
+	modify_view_by_struct(kemo_sgl->view_s);
+	
 	glUseProgram(kemo_sgl->kemo_shaders->test->programId);
 	
-	identity_matrix_to_shader(kemo_sgl->kemo_shaders->test);
-	set_quadVBO(kemo_sgl->cube_VAO);
+	printf("TAkotakotako\n");
+	for(i=0;i<16;i++) {printf("%d %f\n", i, (float) kemo_sgl->view_s->mat_object_2_eye[i]);};
+//	identity_matrix_to_shader(kemo_sgl->kemo_shaders->test);
+	transfer_matrix_to_shader(kemo_sgl->kemo_shaders->test, kemo_sgl->view_s);
 	
-//	transfer_matrix_to_shader(kemo_sgl->kemo_shaders->test, kemo_sgl->view_s);
+	set_quadVBO(kemo_sgl->cube_VAO);
 //	drawCube_flat(0.5f, kemo_sgl->strided_buf, kemo_sgl->cube_VAO);
 	
 	glBindVertexArray(kemo_sgl->cube_VAO->id_VAO);
