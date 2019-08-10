@@ -1018,15 +1018,11 @@ void kemoview_draw_menu_setup(){
 }
 
 void kemoview_draw_quad_gl3(){
-	int i;
-	
 	update_projection_struct(kemo_sgl->view_s);
 	modify_view_by_struct(kemo_sgl->view_s);
 	
 	glUseProgram(kemo_sgl->kemo_shaders->test->programId);
 	
-	printf("TAkotakotako\n");
-	for(i=0;i<16;i++) {printf("%d %f\n", i, (float) kemo_sgl->view_s->mat_object_2_eye[i]);};
 //	identity_matrix_to_shader(kemo_sgl->kemo_shaders->test);
 	transfer_matrix_to_shader(kemo_sgl->kemo_shaders->test, kemo_sgl->view_s);
 	
