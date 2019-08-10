@@ -39,6 +39,40 @@ static GLuint cube_nodes[8] = {3, 2, 1, 0, 4, 5, 6, 7};
 
 /* cube informaiton into VBO */
 
+void CubeNode_to_buf(GLfloat fSize, struct gl_strided_buffer *strided_buf){
+	int i;
+	int n_vertex = 8;
+	GLfloat radius;
+	
+	for(i=0;i<n_vertex;i++){
+		strided_buf->x_draw = &strided_buf->v_buf[strided_buf->ist_xyz +   strided_buf->ncomp_buf*i];
+		strided_buf->n_draw = &strided_buf->v_buf[strided_buf->ist_norm +  strided_buf->ncomp_buf*i];
+		strided_buf->x_txur = &strided_buf->v_buf[strided_buf->ist_tex +   strided_buf->ncomp_buf*i];
+		strided_buf->c_draw = &strided_buf->v_buf[strided_buf->ist_csurf + strided_buf->ncomp_buf*i];
+		
+		radius = sqrt(cube_vertices[i][0]*cube_vertices[i][0]
+					+ cube_vertices[i][1]*cube_vertices[i][1]
+					+ cube_vertices[i][2]*cube_vertices[i][2]);
+		strided_buf->x_draw[0] = cube_vertices[i][0] * fSize;
+		strided_buf->x_draw[1] = cube_vertices[i][1] * fSize;
+		strided_buf->x_draw[2] = cube_vertices[i][2] * fSize;
+		
+		strided_buf->n_draw[0] = cube_vertices[i][0] / radius;
+		strided_buf->n_draw[1] = cube_vertices[i][1] / radius;
+		strided_buf->n_draw[2] = cube_vertices[i][2] / radius;
+		
+		strided_buf->x_txur[0] = strided_buf->x_draw[0];
+		strided_buf->x_txur[1] = strided_buf->x_draw[1];
+		
+		strided_buf->c_draw[0] = cube_vertex_colors[i][0];
+		strided_buf->c_draw[1] = cube_vertex_colors[i][1];
+		strided_buf->c_draw[2] = cube_vertex_colors[i][2];
+		strided_buf->c_draw[3] = 1.0;
+	};
+	
+	return;
+}
+
 int flatSurfCube_VBO(int icou, GLfloat fSize, struct gl_strided_buffer *strided_buf){
 	int i, j, k;
 	
@@ -273,33 +307,12 @@ void drawCube_Element2(GLfloat fSize,
 	
 	/* Set Stride for each vertex buffer */
 	GLsizei stride = sizeof(GLfloat) * strided_buf->ncomp_buf;
-
+	
+	CubeNode_to_buf(fSize, strided_buf);
+	
 	for(i=0;i<n_vertex;i++){
-		strided_buf->x_draw = &strided_buf->v_buf[strided_buf->ist_xyz +   strided_buf->ncomp_buf*i];
-		strided_buf->n_draw = &strided_buf->v_buf[strided_buf->ist_norm +  strided_buf->ncomp_buf*i];
-		strided_buf->x_txur = &strided_buf->v_buf[strided_buf->ist_tex +   strided_buf->ncomp_buf*i];
-		strided_buf->c_draw = &strided_buf->v_buf[strided_buf->ist_csurf + strided_buf->ncomp_buf*i];
 		c_edge = &strided_buf->v_buf[ist_cedge + strided_buf->ncomp_buf*i];
 		c_dots = &strided_buf->v_buf[ist_cnode + strided_buf->ncomp_buf*i];
-		
-		radius = sqrt(cube_vertices[i][0]*cube_vertices[i][0]
-					+ cube_vertices[i][1]*cube_vertices[i][1]
-					+ cube_vertices[i][2]*cube_vertices[i][2]);
-		strided_buf->x_draw[0] = cube_vertices[i][0] * fSize;
-		strided_buf->x_draw[1] = cube_vertices[i][1] * fSize;
-		strided_buf->x_draw[2] = cube_vertices[i][2] * fSize;
-		
-		strided_buf->n_draw[0] = cube_vertices[i][0] / radius;
-		strided_buf->n_draw[1] = cube_vertices[i][1] / radius;
-		strided_buf->n_draw[2] = cube_vertices[i][2] / radius;
-		
-		strided_buf->x_txur[0] = strided_buf->x_draw[0];
-		strided_buf->x_txur[1] = strided_buf->x_draw[1];
-		
-		strided_buf->c_draw[0] = cube_vertex_colors[i][0];
-		strided_buf->c_draw[1] = cube_vertex_colors[i][1];
-		strided_buf->c_draw[2] = cube_vertex_colors[i][2];
-		strided_buf->c_draw[3] = 1.0;
 		
 		c_edge[0] = 0.0;
 		c_edge[1] = 0.0;
@@ -311,7 +324,8 @@ void drawCube_Element2(GLfloat fSize,
 		c_dots[2] = 1.0;
 		c_dots[3] = 1.0;
 	};
-		
+	
+	
 	/* Create VAO */
 	glGenVertexArrays(1, &cube_VAO->id_VAO);
 	glBindVertexArray(cube_VAO->id_VAO);
@@ -535,6 +549,65 @@ void set_quadVBO(struct VAO_ids *VAO_quad)
 	glGenBuffers(1, &VAO_quad->id_index);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO_quad->id_index);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint)*6, quad_tri_faces, GL_STATIC_DRAW);
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	ErrorCheckValue = glGetError();
+	if (ErrorCheckValue != GL_NO_ERROR)
+	{
+		fprintf(
+				stderr,
+				"ERROR: Could not create a VBO: %s \n",
+				gluErrorString(ErrorCheckValue)
+				);
+		
+		exit(-1);
+	}
+	
+	glBindVertexArray(0);
+}
+
+void set_cubeVBO(GLfloat fSize, struct VAO_ids *VAO_quad)
+{
+	struct gl_strided_buffer *gl_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	GLuint idx_indexBuf;
+	
+	gl_buf->num_nod_buf = 8;
+	gl_buf->ncomp_buf = 12;
+	
+	gl_buf->ist_xyz =  0;
+	gl_buf->ist_norm = 3;
+	gl_buf->ist_tex =  6;
+	gl_buf->ist_csurf = 8;
+	gl_buf->v_buf = (GLfloat *) malloc(gl_buf->num_nod_buf*gl_buf->ncomp_buf*sizeof(GLfloat));
+	
+	GLsizei stride = sizeof(GLfloat) * gl_buf->ncomp_buf;
+	
+	CubeNode_to_buf(fSize, gl_buf);
+	
+	GLenum ErrorCheckValue = glGetError();
+	
+	glGenVertexArrays(1, &VAO_quad->id_VAO);
+	glBindVertexArray(VAO_quad->id_VAO);
+	
+	glGenBuffers(1, &VAO_quad->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, VAO_quad->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
+				 gl_buf->v_buf, GL_STATIC_DRAW);
+	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride,
+						  (GLvoid*) (gl_buf->ist_xyz * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride, 
+						  (GLvoid*) (gl_buf->ist_csurf * sizeof(GL_FLOAT)));
+	
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	
+	/* Create index buffer on GPU, and then copy from CPU */
+	glGenBuffers(1, &VAO_quad->id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO_quad->id_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*36, cube_tri_faces, GL_STATIC_DRAW);
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

@@ -794,7 +794,7 @@ extern "C" {
 	
 	void kemoview_draw_quad_setup();
 	void kemoview_draw_menu_setup();
-	void kemoview_draw_quad_gl3();
+	void kemoview_draw_cube_gl3();
 	void kemoview_draw_menu_gl3();
 	void kemo_Cleanup();
 	

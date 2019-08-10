@@ -25,5 +25,6 @@ void drawCube_flat(GLfloat fSize,
 				   struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO);
 
 void set_quadVBO(struct VAO_ids *VAO_quad);
+void set_cubeVBO(GLfloat fSize, struct VAO_ids *VAO_quad);
 
 #endif
