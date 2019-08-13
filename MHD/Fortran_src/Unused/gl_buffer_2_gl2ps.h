@@ -4,7 +4,6 @@
 #ifndef GL_BUFFER_2_GL2PS_
 #define GL_BUFFER_2_GL2PS_
 
-#include "gl2ps.h"
 #include "kemoviewer.h"
 
 /* Prototype */

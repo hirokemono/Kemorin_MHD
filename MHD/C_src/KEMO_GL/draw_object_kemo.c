@@ -37,8 +37,7 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 		if(psf_a->iflag_loaded[i] != 0){
 			if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
 				
-				draw_map_PSF_isoline(psf_s[i], psf_m[i], gl_buf, view_s->iflag_retina,
-							view_s->iflag_write_ps);
+				draw_map_PSF_isoline(psf_s[i], psf_m[i], gl_buf, view_s->iflag_retina);
 				
 			};
 		};
@@ -50,7 +49,7 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 		draw_map_coast(gl_buf);
 	};
 	if(mesh_m->iflag_draw_sph_grid != 0){
-		draw_flame_4_map(gl_buf, view_s->iflag_write_ps);
+		draw_flame_4_map(gl_buf);
 	};
 	
 	load_projection_matrix(view_s);

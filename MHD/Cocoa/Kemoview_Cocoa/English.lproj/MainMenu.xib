@@ -568,7 +568,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Wsi-nh-URc">
                             <rect key="frame" x="1" y="1" width="194" height="565"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <view id="3787">
                                     <rect key="frame" x="0.0" y="0.0" width="196" height="565"/>
@@ -2213,7 +2213,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="VFN-e1-GpJ">
                             <rect key="frame" x="0.0" y="0.0" width="232" height="688"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <view autoresizesSubviews="NO" id="3783">
                                     <rect key="frame" x="0.0" y="0.0" width="230" height="686"/>
@@ -3351,7 +3351,6 @@
                                             <items>
                                                 <menuItem title="PNG" state="on" tag="1" id="1537"/>
                                                 <menuItem title="BMP" tag="2" id="1536"/>
-                                                <menuItem title="EPS" tag="10" id="1535"/>
                                                 <menuItem title="PDF" tag="20" id="3525"/>
                                             </items>
                                         </menu>
@@ -3374,7 +3373,6 @@
                                                 <menuItem title="Movie file" state="on" tag="999" id="2464"/>
                                                 <menuItem title="PNG files" tag="1" id="2468"/>
                                                 <menuItem title="BMP file" tag="2" id="2465"/>
-                                                <menuItem title="EPS file" tag="10" id="2466"/>
                                                 <menuItem title="PDF file" tag="20" id="3524"/>
                                             </items>
                                         </menu>

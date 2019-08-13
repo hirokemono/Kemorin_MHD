@@ -21,14 +21,6 @@ int set_image_format_id_by_ext(char *image_fmt){
 			||(image_fmt[0]=='B' && image_fmt[1]=='M' && image_fmt[2]=='P')
 			||(image_fmt[0]=='b' && image_fmt[1]=='m' && image_fmt[2]=='p')){
 		id_img = SAVE_BMP;
-	} else if(  (image_fmt[0]=='1' && image_fmt[1]=='0' && image_fmt[2]=='\0')
-			||(image_fmt[0]=='E' && image_fmt[1]=='P' && image_fmt[2]=='S')
-			||(image_fmt[0]=='s' && image_fmt[1]=='p' && image_fmt[2]=='s')){
-		id_img = SAVE_EPS;
-	} else if(  (image_fmt[0]=='1' && image_fmt[1]=='1' && image_fmt[2]=='\0')
-			||(image_fmt[0]=='P' && image_fmt[1]=='S' && image_fmt[2]=='\0')
-			||(image_fmt[0]=='p' && image_fmt[1]=='s' && image_fmt[2]=='\0')){
-		id_img = SAVE_PS;
 	} else if(  (image_fmt[0]=='2' && image_fmt[1]=='0' && image_fmt[2]=='\0')
 			||(image_fmt[0]=='P' && image_fmt[1]=='D' && image_fmt[2]=='F')
 			||(image_fmt[0]=='p' && image_fmt[1]=='d' && image_fmt[2]=='f')){
@@ -47,9 +39,6 @@ void write_gl_window_to_file(int iflag_img, const char *fhead, GLint nwin_x, GLi
     if (iflag_img == SAVE_BMP)  { gl_buffer_to_bmp(fhead, nwin_x, nwin_y); }
 	else if(iflag_img == SAVE_PPM_B) { gl_buffer_to_ppm_p6(fhead, nwin_x, nwin_y); }
 	else if(iflag_img == SAVE_PPM_A) { gl_buffer_to_ppm_p3(fhead, nwin_x, nwin_y); }
-	else if (iflag_img == SAVE_EPS) { gl_buffer_2_eps_gl2ps(I_BUFFERSIZE, IONE, fhead); }
-	else if (iflag_img == SAVE_PDF) { gl_buffer_2_pdf_gl2ps(I_BUFFERSIZE, IONE, fhead); }
-	else if (iflag_img == SAVE_PS) { gl_buffer_2_ps_gl2ps(I_BUFFERSIZE, IONE, fhead); };
 	
 	return;
 }

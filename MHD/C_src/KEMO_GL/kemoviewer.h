@@ -439,7 +439,6 @@ extern "C" {
     int kemoview_get_current_viewer_id();
 
     void kemoview_draw_objects_c();
-    void kemoview_draw_viewer_to_ps();
     void kemoview_init_lighting(int iflag_core_profile);
     
 	void kemoview_orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
@@ -582,7 +581,6 @@ extern "C" {
     
     void kemoview_get_fliped_img(int npixel_x, int npixel_y,
                                  unsigned char *glimage, unsigned char *fliped_img);
-	void kemoview_write_window_to_vector_file(int iflag_img, struct kv_string *file_prefix);
 
     void kemoview_modify_view();
     void kemoview_rotate();

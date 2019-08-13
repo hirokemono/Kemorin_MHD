@@ -60,6 +60,7 @@
 -(void) InitEvolutionStepByFline;
 -(void) SaveKemoviewPNGFile:(NSString*)ImageFilehead;
 -(void) SaveKemoviewBMPFile:(NSString*)ImageFilehead;
+-(void) SaveKemoviewPDFFile:(NSString*)ImageFilehead;
 
 - (IBAction)SendToClipAsPDF:(id)sender;
 

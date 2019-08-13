@@ -261,6 +261,30 @@ NSData *SnapshotData;
     [SnapshotBitmapRep release];
 }
 
+-(void) SaveKemoviewPDFFile:(NSString*)ImageFilehead
+{
+	NSImageView *myView;
+	NSRect vFrame;
+	NSData *pdfData;
+	
+	[self SetGLBitmapToImageRep];
+	
+	SnapshotImage = [[NSImage alloc] init];
+	[SnapshotImage addRepresentation:SnapshotBitmapRep];
+	
+	vFrame = NSZeroRect;
+	vFrame.size = [SnapshotImage size];
+	myView = [[NSImageView alloc] initWithFrame:vFrame];
+	[myView setImage:SnapshotImage];
+	pdfData = [myView dataWithPDFInsideRect:vFrame];
+	[pdfData retain];
+
+	NSString *filename =  [ImageFilehead stringByAppendingString:@".pdf"];
+	[pdfData writeToFile:filename atomically:YES];
+	[pdfData release];            
+	[SnapshotBitmapRep release];
+}
+
 
 // ---------------------------------
 
@@ -292,11 +316,9 @@ NSData *SnapshotData;
             if (CurrentMovieFormat == SAVE_PNG) {
                 [self SaveKemoviewPNGFile:ImageFilehead];
             } else if (CurrentMovieFormat == SAVE_BMP) {
-                [self SaveKemoviewBMPFile:ImageFilehead];
-            } else {
-                struct kv_string *file_prefix = kemoview_init_kvstring_by_string([ImageFilehead UTF8String]);
-                kemoview_write_window_to_vector_file((int) CurrentMovieFormat, file_prefix);
-                kemoview_free_kvstring(file_prefix);
+				[self SaveKemoviewBMPFile:ImageFilehead];
+			} else {
+                [self SaveKemoviewPDFFile:ImageFilehead];
             }
 		}
         
@@ -343,11 +365,9 @@ NSData *SnapshotData;
                 if (CurrentMovieFormat == SAVE_PNG) {
                     [self SaveKemoviewPNGFile:ImageFilehead];
                 } else if (CurrentMovieFormat == SAVE_BMP) {
-                    [self SaveKemoviewBMPFile:ImageFilehead];
-                } else {
-                    struct kv_string *file_prefix = kemoview_init_kvstring_by_string([ImageFilehead UTF8String]);
-                    kemoview_write_window_to_vector_file((int) CurrentMovieFormat, file_prefix);
-                    kemoview_free_kvstring(file_prefix);
+					[self SaveKemoviewBMPFile:ImageFilehead];
+				} else {
+                    [self SaveKemoviewPDFFile:ImageFilehead];
                 }
 			}
 
@@ -411,15 +431,9 @@ NSData *SnapshotData;
     } else if ([FileExtension isEqualToString:@"bmp"] 
                || [FileExtension isEqualToString:@"BMP"]) {
         id_format = SAVE_BMP;
-    } else if ([FileExtension isEqualToString:@"eps"] 
-               || [FileExtension isEqualToString:@"EPS"]) {
-        id_format = SAVE_EPS;
     } else if ([FileExtension isEqualToString:@"pdf"] 
                || [FileExtension isEqualToString:@"PDF"]) {
         id_format = SAVE_PDF;
-    } else if ([FileExtension isEqualToString:@"ps"] 
-               || [FileExtension isEqualToString:@"PS"]) {
-        id_format = SAVE_PS;
     } else {
         id_format = SAVE_UNDEFINED;
     }

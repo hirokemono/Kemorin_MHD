@@ -3,7 +3,6 @@
 */
 
 #include "draw_colorbar_gl.h"
-#include "gl2ps.h"
 
 static int ibase_8x12;
 static int ibase_12x16;
@@ -32,7 +31,6 @@ static void ysGlPlotBitmap2d_retina(int iflag_retina,
         ysGlPlotBitmap2d(ibase_8x12, (x_plot    ), (y_plot    ), (GLubyte *)label);
     }
     
-    gl2psText(label, "Times",12);
     return;
 }
 

@@ -13,7 +13,6 @@
 #include "rendereps_c.h"
 #include "gl_buffer_2_png.h"
 #include "gl_buffer_2_bmp.h"
-#include "gl_buffer_2_gl2ps.h"
 
 
 /* prototypes */

@@ -553,13 +553,6 @@ void glut_save_image_menu_item(char *file_head){
 	
 	sprintf(tmp_menu, "%s.bmp",file_head); 
 	glutAddMenuEntry(tmp_menu,SAVE_BMP);
-		
-	sprintf(tmp_menu, "%s.eps",file_head); 
-	glutAddMenuEntry(tmp_menu,SAVE_EPS);
-	sprintf(tmp_menu, "%s.pdf",file_head); 
-	glutAddMenuEntry(tmp_menu,SAVE_PDF);
-	sprintf(tmp_menu, "%s.ps",file_head); 
-	glutAddMenuEntry(tmp_menu,SAVE_PS);
 	
 	return;
 }

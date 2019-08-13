@@ -5,7 +5,6 @@ SUBDIRS =  \
 FFTPACK5.1D \
 DCL_custum  \
 \
-gl2ps-1.3.6 \
 glui-2.36_custom
 
 #

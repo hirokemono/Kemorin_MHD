@@ -113,7 +113,6 @@
 !    int kemoview_get_current_viewer_id(mul_kemoviewer_type *kemoview_array);
 !    
 !    void kemoview_draw_objects_c();
-!    void kemoview_draw_viewer_to_ps();
 !    void kemoview_init_lighting();
 !    
 !    void kemoview_init_background_color();

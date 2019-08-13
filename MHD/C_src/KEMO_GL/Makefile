@@ -56,7 +56,6 @@ draw_coastline.o \
 coastline_c.o \
 set_texture_4_psf.o \
 set_psf_texture_by_png.o \
-gl_buffer_2_gl2ps.o \
 \
 set_each_psf_parameters.o \
 \
@@ -214,7 +213,6 @@ module:
 	m_kemoviewer_menu.o \
 	gl_buffer_2_png.o \
 	gl_buffer_2_bmp.o \
-	gl_buffer_2_gl2ps.o \
 	rendereps_c.o \
 	m_color_table_c.o \
 	kemosrc_param_c.o \
@@ -280,7 +278,6 @@ module:
 	rotate_animation.o \
 	set_each_psf_parameters.o \
 	rainbow_color_code_c.o \
-	gl_buffer_2_gl2ps.o \
     set_psf_texture_by_png.o \
 	glsl.h \
 	>> $(MAKENAME)
@@ -341,7 +338,6 @@ module:
 	draw_isolines_4_PSF.o: \
 	'$$(KEMO_C_GLDIR)'/draw_isolines_4_PSF.c \
 	draw_isolines_4_PSF.h \
-	gl2ps.o \
 	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
 	vartex_array_object_gl.o \
@@ -356,7 +352,6 @@ module:
 	draw_isolines_4_map.o: \
 	'$$(KEMO_C_GLDIR)'/draw_isolines_4_map.c \
 	draw_isolines_4_map.h \
-	gl2ps.o \
 	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
 	vartex_array_object_gl.o \
@@ -498,7 +493,6 @@ module:
 	@echo \
 	draw_colorbar_gl.o: \
 	'$$(KEMO_C_GLDIR)'/draw_colorbar_gl.c \
-	gl2ps.o \
 	draw_colorbar_gl.h \
 	m_color_table_c.o \
 	coordinate_converter_c.o \
@@ -573,16 +567,6 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
-	gl_buffer_2_gl2ps.o: \
-	'$$(KEMO_C_GLDIR)'/gl_buffer_2_gl2ps.c \
-	gl_buffer_2_gl2ps.h \
-	kemoviewer.h \
-	gl2ps.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
 	set_texture_4_psf.o: \
 	'$$(KEMO_C_GLDIR)'/set_texture_4_psf.c \
 	set_texture_4_psf.h \
@@ -607,7 +591,6 @@ module:
 	draw_mapgrid.o: \
 	'$$(KEMO_C_GLDIR)'/draw_mapgrid.c \
 	draw_mapgrid.h \
-	gl2ps.o \
 	kemoviewer_param_c.o \
 	vartex_array_object_gl.o \
 	coordinate_converter_c.o \

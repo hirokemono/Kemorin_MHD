@@ -126,10 +126,8 @@
         [_movieMakerController SaveKemoviewPNGFile:ImageFilehead];
     } else if(id_format == SAVE_BMP){
         [_movieMakerController SaveKemoviewBMPFile:ImageFilehead];
-    } else {
-        struct kv_string *file_prefix = kemoview_init_kvstring_by_string([ImageFilehead UTF8String]);
-        kemoview_write_window_to_vector_file(id_format, file_prefix);
-        kemoview_free_kvstring(file_prefix);
+	} else {
+		[_movieMakerController SaveKemoviewPDFFile:ImageFilehead];
     }
     
     [_kemoviewer UpdateImage];

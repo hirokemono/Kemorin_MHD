@@ -125,7 +125,7 @@ static void draw_isolines_4_psf(int ist, int ied, struct psf_data *psf_s,
 }
 
 void draw_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
-					  struct buffer_for_gl *gl_buf, int iflag_retina, int iflag_write_ps){
+					  struct buffer_for_gl *gl_buf, int iflag_retina){
     int ierr;
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -134,17 +134,12 @@ void draw_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
 	
 	glLineWidth(HALF * ((float) iflag_retina+IONE));
-    if (iflag_write_ps == ON) {
-        ierr = gl2psLineWidth(ONE);
-    };
 	
 	if(psf_m->draw_psf_grid  != 0){
 		find_start_positive_lines(psf_m);
 		if(psf_m->ist_positive_line > 1){
-			if (iflag_write_ps == ON) {ierr = gl2psEnable(GL2PS_LINE_STIPPLE);};
 			draw_isolines_4_psf(IONE, psf_m->ist_positive_line,
 						psf_s, psf_m, gl_buf);
-			if (iflag_write_ps == ON) {ierr = gl2psDisable(GL2PS_LINE_STIPPLE);};
 		};
         if(psf_m->ist_positive_line < psf_m->n_isoline){
             draw_isolines_4_psf(psf_m->ist_positive_line,
@@ -152,9 +147,7 @@ void draw_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
         };
     };
 	if(psf_m->draw_psf_zero  != 0){
-        if(iflag_write_ps == ON) {ierr = gl2psLineWidth(TWO);};
         draw_zeroline_4_psf(psf_s, psf_m, gl_buf);
-        if(iflag_write_ps == ON) {ierr = gl2psLineWidth(ONE);};
     };
 	
 	glDisableClientState(GL_COLOR_ARRAY);

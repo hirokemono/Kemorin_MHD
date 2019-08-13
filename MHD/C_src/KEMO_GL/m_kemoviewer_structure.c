@@ -170,17 +170,6 @@ void kemoview_draw_objects_c(){
 	return;
 };
 
-void kemoview_draw_viewer_to_ps(){
-    /*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
-    kemo_sgl->view_s->iflag_write_ps = ON;
-	draw_objects(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m,
-                 kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s,
-				 kemo_sgl->gl_buf, kemo_sgl->strided_buf, kemo_sgl->cube_VAO,
-				 kemo_sgl->kemo_shaders);
-    kemo_sgl->view_s->iflag_write_ps = OFF;
-	return;
-};
-
 void kemoview_orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
 						   GLdouble near, GLdouble far){
 	orthogonalGL(left, right, bottom, top, near, far);
@@ -589,10 +578,6 @@ void kemoview_get_fliped_img(int npixel_x, int npixel_y,
     get_gl_buffer_to_bmp(npixel_x, npixel_y, glimage);
     flip_gl_bitmap(npixel_x, npixel_y, glimage, fliped_img);
     return;
-}
-
-void kemoview_write_window_to_vector_file(int iflag_img, struct kv_string *file_prefix){
-	sel_gl_buffer_2_vector_img(iflag_img, file_prefix->string);
 }
 
 void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char *bgra_in){

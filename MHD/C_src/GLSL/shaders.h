@@ -13,6 +13,8 @@
 /* prototypes */
 
 
+char * load_dash_lines_3D_frag();
+char * load_dash_lines_3D_vert();
 char * load_gouraud_frag();
 char * load_gouraud_vert();
 char * load_menu_frag();

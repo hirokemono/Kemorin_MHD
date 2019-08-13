@@ -22,7 +22,6 @@
 #include "set_each_psf_parameters.h"
 #include "set_texture_4_psf.h"
 #include "numbers_to_bin_c.h"
-#include "gl_buffer_2_gl2ps.h"
 #include "set_psf_texture_by_png.h"
 
 #include "glsl.h"

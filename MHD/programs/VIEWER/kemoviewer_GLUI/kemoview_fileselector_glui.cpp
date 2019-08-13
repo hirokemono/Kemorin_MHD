@@ -214,9 +214,6 @@ static void set_imageformat_listbox_glui(){
 	imgfmt_list->add_item(NO_SAVE_FILE, "No File" );
 	imgfmt_list->add_item(SAVE_PNG, "PNG" );
 	imgfmt_list->add_item(SAVE_BMP, "BMP" );
-	imgfmt_list->add_item(SAVE_EPS, "EPS" );
-	imgfmt_list->add_item(SAVE_PDF, "PDF" );
-	imgfmt_list->add_item(SAVE_PS, "PS" );
 }
 
 static void set_rot_dir_listbox_glui(){

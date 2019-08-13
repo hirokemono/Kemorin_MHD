@@ -45,7 +45,6 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
                      struct mesh_menu_val *mesh_m, struct view_element *view){
 	
     view->iflag_retina = IONE;
-    view->iflag_write_ps = OFF;
     
     mesh_m->mesh_file_name = init_kvstring_by_string("in_surface.ksm");
     mesh_m->pick_surface_command = init_kvstring_by_string("pick_surface");
