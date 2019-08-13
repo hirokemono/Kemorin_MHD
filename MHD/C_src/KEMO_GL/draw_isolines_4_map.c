@@ -13,16 +13,16 @@ static double black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 static double white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 
 
-static int draw_isoline_map_triangle(int ist, double v_line, int icomp,
+static int draw_isoline_map_triangle(int ist, double width, double v_line, int icomp,
 									 double *f_color, struct psf_data *psf_s,
 									 struct buffer_for_gl *gl_buf){
 	int inum;
 	double d_tri[3], xx_tri[9];
-	double d_line[6];
+	double x_ribbon[18];
 	double xyz_map[9];
 	
 	int idraw;
-	int inod, iele, k, nd;
+	int inod, iele, k, nd, k1;
 	
 	inum = ist;
 	for (iele = 0; iele < psf_s->nele_viz; iele++) {
@@ -36,18 +36,18 @@ static int draw_isoline_map_triangle(int ist, double v_line, int icomp,
 		};
 		
 		projection_patch_4_map(xx_tri, xyz_map);
-		idraw = find_isoline_on_patch_c(d_line, xyz_map, d_tri, v_line);
+		idraw = find_isoribbon_on_patch_c(x_ribbon, width, xyz_map, d_tri, v_line);
 		/*  draw isoline */
 		if ( idraw == 1 ){
-			for(nd=0;nd<2;nd++) gl_buf->xy[ITWO*inum  ][nd] =  d_line[  nd];
-			for(nd=0;nd<2;nd++) gl_buf->xy[ITWO*inum+1][nd] =  d_line[3+nd];
-			for(nd=0;nd<4;nd++) gl_buf->rgba[ITWO*inum  ][nd] = f_color[nd];
-			for(nd=0;nd<4;nd++) gl_buf->rgba[ITWO*inum+1][nd] = f_color[nd];
+			for(k1=0;k1<6;k1++){
+				for(nd=0;nd<2;nd++) gl_buf->xy[6*inum+k1][nd] =  x_ribbon[3*k1+nd];
+				for(nd=0;nd<4;nd++) gl_buf->rgba[6*inum+k1][nd] = f_color[nd];
+			};
 			inum = inum + 1;
 		};
 		
-		if(inum>=NSIZE_GL_BUFFER){
-			glDrawArrays(GL_LINES, IZERO, (ITWO*inum));
+		if(2*inum>=NSIZE_GL_BUFFER){
+			glDrawArrays(GL_TRIANGLES, IZERO, (6*inum));
 			inum = 0;
 		}
 	};
@@ -59,9 +59,9 @@ static void draw_zeroline_4_map(struct psf_data *psf_s, struct psf_menu_val *psf
 								struct buffer_for_gl *gl_buf){
 	int inum = 0;
 
-	inum = draw_isoline_map_triangle(inum, ZERO, psf_m->icomp_draw_psf, black,
+	inum = draw_isoline_map_triangle(inum, 0.005, ZERO, psf_m->icomp_draw_psf, black,
 							  psf_s, gl_buf);
-	if(inum > 0) glDrawArrays(GL_LINES, IZERO, (ITWO*inum));
+	if(inum > 0) glDrawArrays(GL_TRIANGLES, IZERO, (6*inum));
 	
 	return;
 }
@@ -86,10 +86,10 @@ static void draw_isolines_4_map(int ist, int ied, struct psf_data *psf_s,
 		if (psf_m->isoline_color == RAINBOW_LINE){	
 			set_rainbow_color_code(psf_m->cmap_psf, v_line, f_color);
 		};
-		inum = draw_isoline_map_triangle(inum, v_line, psf_m->icomp_draw_psf, f_color, 
+		inum = draw_isoline_map_triangle(inum, 0.002, v_line, psf_m->icomp_draw_psf, f_color, 
 								  psf_s, gl_buf);
 	};
-	if(inum > 0) glDrawArrays(GL_LINES, IZERO, (ITWO*inum));
+	if(inum > 0) glDrawArrays(GL_TRIANGLES, IZERO, (6*inum));
 
 	return;
 }
@@ -105,20 +105,14 @@ void draw_map_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 	glVertexPointer(ITWO, GL_FLOAT, IZERO, gl_buf->xy);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
 	
-	glLineWidth(HALF * ((float) iflag_retina+IONE));
 	if(iflag_write_ps == ON) {ierr = gl2psLineWidth(ONE);};
 	if(psf_m->draw_psf_grid  != 0){
         find_start_positive_lines(psf_m);
         if(psf_m->ist_positive_line > 1){
-            glEnable(GL_LINE_STIPPLE);
-            glLineStipple(1,0x3333);
             if (iflag_write_ps == ON) {ierr = gl2psEnable(GL2PS_LINE_STIPPLE);};
-
             draw_isolines_4_map(IONE, psf_m->ist_positive_line,
                                 psf_s, psf_m, gl_buf);
-
             if (iflag_write_ps == ON) {ierr = gl2psDisable(GL2PS_LINE_STIPPLE);};
-            glDisable(GL_LINE_STIPPLE);
         };
         if(psf_m->ist_positive_line < psf_m->n_isoline){
             draw_isolines_4_map(psf_m->ist_positive_line,
@@ -126,12 +120,8 @@ void draw_map_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
         };
     };
 	if(psf_m->draw_psf_zero  != 0){
-        glLineWidth( (float) iflag_retina + ONE );
         if (iflag_write_ps == ON) {ierr = gl2psLineWidth(TWO);};
-
         draw_zeroline_4_map(psf_s, psf_m, gl_buf);
-
-        glLineWidth(HALF * ((float) iflag_retina+IONE));
         if (iflag_write_ps == ON) {ierr = gl2psLineWidth(ONE);};
     };
 	

@@ -32,7 +32,6 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	draw_patches_4_map(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_patch,
 				psf_s, psf_a, gl_buf);
 	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag_map = iflag_map + psf_a->iflag_loaded[i];
 		if(psf_a->iflag_loaded[i] != 0){
