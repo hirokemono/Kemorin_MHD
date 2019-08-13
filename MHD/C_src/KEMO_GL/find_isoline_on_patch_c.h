@@ -4,6 +4,7 @@
 #ifndef FIND_ISOLINE_ON_PATCH_
 #define FIND_ISOLINE_ON_PATCH_
 
+#include <math.h>
 #include "kemoviewer_param_c.h"
 #include "cal_surface_center_normal_c.h"
 

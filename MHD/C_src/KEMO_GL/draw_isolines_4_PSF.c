@@ -44,7 +44,7 @@ void find_start_positive_lines(struct psf_menu_val *psf_m){
     return;
 }
 
-static int draw_isoline_on_triangle(int ist, double v_line, int icomp, double *f_color,
+static int draw_isoline_on_triangle(int ist, double width, double v_line, int icomp, double *f_color,
 									 struct psf_data *psf_s, struct buffer_for_gl *gl_buf){
 	
 	double d_tri[3], xx_tri[9];
@@ -66,7 +66,7 @@ static int draw_isoline_on_triangle(int ist, double v_line, int icomp, double *f
 		};
 		
 		/*  find isoline */
-		idraw = find_isoribbon_on_patch_c(x_ribbon, 0.002, xx_tri, d_tri, v_line);
+		idraw = find_isoribbon_on_patch_c(x_ribbon, width, xx_tri, d_tri, v_line);
 		/*  draw isoline */
 		if(idraw == 1){
 			for(k1=0;k1<6;k1++){
@@ -89,7 +89,7 @@ static void draw_zeroline_4_psf(struct psf_data *psf_s, struct psf_menu_val *psf
 								struct buffer_for_gl *gl_buf){
 	int inum = 0;
 	
-	inum = draw_isoline_on_triangle(inum, ZERO, psf_m->icomp_draw_psf, black,
+	inum = draw_isoline_on_triangle(inum, 0.005, ZERO, psf_m->icomp_draw_psf, black,
 							 psf_s, gl_buf);
 	if(inum > 0) glDrawArrays(GL_TRIANGLES, IZERO, (6*inum));
 	return;
@@ -116,7 +116,7 @@ static void draw_isolines_4_psf(int ist, int ied, struct psf_data *psf_s,
 			set_rainbow_color_code(psf_m->cmap_psf, v_line, f_color);
 		};
 		
-		inum = draw_isoline_on_triangle(inum, v_line, psf_m->icomp_draw_psf, f_color,
+		inum = draw_isoline_on_triangle(inum, 0.002, v_line, psf_m->icomp_draw_psf, f_color,
 								 psf_s, gl_buf);
 	};
 	if(inum > 0) glDrawArrays(GL_TRIANGLES, IZERO, (6*inum));
@@ -141,15 +141,10 @@ void draw_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 	if(psf_m->draw_psf_grid  != 0){
 		find_start_positive_lines(psf_m);
 		if(psf_m->ist_positive_line > 1){
-			glEnable(GL_LINE_STIPPLE);
-			glLineStipple(1,0x3333);
 			if (iflag_write_ps == ON) {ierr = gl2psEnable(GL2PS_LINE_STIPPLE);};
-			
 			draw_isolines_4_psf(IONE, psf_m->ist_positive_line,
 						psf_s, psf_m, gl_buf);
-			
 			if (iflag_write_ps == ON) {ierr = gl2psDisable(GL2PS_LINE_STIPPLE);};
-			glDisable(GL_LINE_STIPPLE);
 		};
         if(psf_m->ist_positive_line < psf_m->n_isoline){
             draw_isolines_4_psf(psf_m->ist_positive_line,
@@ -157,13 +152,9 @@ void draw_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
         };
     };
 	if(psf_m->draw_psf_zero  != 0){
-        glLineWidth( ((float) iflag_retina+IONE) );
-        if (iflag_write_ps == ON) {ierr = gl2psLineWidth(TWO);};
-        
+        if(iflag_write_ps == ON) {ierr = gl2psLineWidth(TWO);};
         draw_zeroline_4_psf(psf_s, psf_m, gl_buf);
-        
-        glLineWidth(HALF * ((float) iflag_retina+IONE));
-        if (iflag_write_ps == ON) {ierr = gl2psLineWidth(ONE);};
+        if(iflag_write_ps == ON) {ierr = gl2psLineWidth(ONE);};
     };
 	
 	glDisableClientState(GL_COLOR_ARRAY);
