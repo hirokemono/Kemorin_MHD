@@ -48,11 +48,11 @@ static int draw_isoline_on_triangle(int ist, double v_line, int icomp, double *f
 									 struct psf_data *psf_s, struct buffer_for_gl *gl_buf){
 	
 	double d_tri[3], xx_tri[9];
-	double d_line[6];
+	double x_ribbon[18];
 	
 	int inum;
 	int idraw;
-	int inod, iele, k, nd;
+	int inod, iele, k, nd, k1;
 	
 	inum = ist;
 	for (iele = 0; iele < psf_s->nele_viz; iele++) {
@@ -66,18 +66,18 @@ static int draw_isoline_on_triangle(int ist, double v_line, int icomp, double *f
 		};
 		
 		/*  find isoline */
-		idraw = find_isoline_on_patch_c(d_line, xx_tri, d_tri, v_line);
+		idraw = find_isoribbon_on_patch_c(x_ribbon, 0.002, xx_tri, d_tri, v_line);
 		/*  draw isoline */
-		if ( idraw == 1 ){
-			for(nd=0;nd<3;nd++) gl_buf->xyz[ITWO*inum  ][nd] =  d_line[  nd];
-			for(nd=0;nd<3;nd++) gl_buf->xyz[ITWO*inum+1][nd] =  d_line[3+nd];
-			for(nd=0;nd<4;nd++) gl_buf->rgba[ITWO*inum  ][nd] = f_color[nd];
-			for(nd=0;nd<4;nd++) gl_buf->rgba[ITWO*inum+1][nd] = f_color[nd];
+		if(idraw == 1){
+			for(k1=0;k1<6;k1++){
+				for(nd=0;nd<3;nd++) gl_buf->xyz[6*inum+k1][nd] =  x_ribbon[3*k1+nd];
+				for(nd=0;nd<4;nd++) gl_buf->rgba[6*inum+k1][nd] = f_color[nd];
+			};
 			inum = inum + 1;
 		};
 		
-		if(inum>=NSIZE_GL_BUFFER){
-			glDrawArrays(GL_LINES, IZERO, (ITWO*inum));
+		if(2*inum>=NSIZE_GL_BUFFER){
+			glDrawArrays(GL_TRIANGLES, IZERO, (6*inum));
 			inum = 0;
 		}
 	};
@@ -91,7 +91,7 @@ static void draw_zeroline_4_psf(struct psf_data *psf_s, struct psf_menu_val *psf
 	
 	inum = draw_isoline_on_triangle(inum, ZERO, psf_m->icomp_draw_psf, black,
 							 psf_s, gl_buf);
-	if(inum > 0) glDrawArrays(GL_LINES, IZERO, (ITWO*inum));
+	if(inum > 0) glDrawArrays(GL_TRIANGLES, IZERO, (6*inum));
 	return;
 }
 
@@ -119,7 +119,7 @@ static void draw_isolines_4_psf(int ist, int ied, struct psf_data *psf_s,
 		inum = draw_isoline_on_triangle(inum, v_line, psf_m->icomp_draw_psf, f_color,
 								 psf_s, gl_buf);
 	};
-	if(inum > 0) glDrawArrays(GL_LINES, IZERO, (ITWO*inum));
+	if(inum > 0) glDrawArrays(GL_TRIANGLES, IZERO, (6*inum));
 	
 	return;
 }

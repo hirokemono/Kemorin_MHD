@@ -11,14 +11,15 @@ layout (location = 4) in vec2  txur;
 uniform mat4 projectionMat;
 uniform mat4 viewMatrix;
 uniform mat4 modelViewMat;
+uniform mat3 modelNormalMat;
 
-out vec3 position;
+out vec4 position;
 out vec3 normal;
 
 void main(void)
 {
-	position = vec3(modelViewMat * gl_Vertex);
-	normal = normalize(gl_NormalMatrix * gl_Normal);
+	position = vec4(modelViewMat * vec4(xyz, 1.0));
+	normal = normalize(modelNormalMat * norm);
 
-	gl_Position =  projectionMat * vec4(position, 1.0);
+	gl_Position =  projectionMat * position;
 }

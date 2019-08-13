@@ -1,7 +1,7 @@
 #version 400
 // phong.frag
 
-out vec3 position;
+out vec4 position;
 out vec3 normal;
 
 void main (void)

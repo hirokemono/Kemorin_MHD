@@ -15,14 +15,14 @@
 
 /* prototypes */
 
-void cal_center_4_quad_c(double x1[3], double x2[3], double x3[3], double x4[3], 
+void cal_center_4_quad_c(const double x1[3], const double x2[3], const double x3[3], const double x4[3], 
 						 double center[3]);
-void cal_center_4_triangle_c(double x1[3], double x2[3], double x3[3], 
+void cal_center_4_triangle_c(const double x1[3], const double x2[3], const double x3[3], 
 							 double center[3]);
 
-double cal_normal_4_quad_c(double x1[3], double x2[3], double x3[3], double x4[3], 
+double cal_normal_4_quad_c(const double x1[3], const double x2[3], const double x3[3], const double x4[3], 
 						   double normal[3]);
-double cal_normal_4_triangle_c(double x1[3], double x2[3], double x3[3], 
+double cal_normal_4_triangle_c(const double x1[3], const double x2[3], const double x3[3], 
 							   double normal[3]);
 
 #endif

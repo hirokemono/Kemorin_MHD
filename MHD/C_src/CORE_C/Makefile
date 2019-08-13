@@ -47,6 +47,7 @@ OBJ_KEMO_C = \
  m_color_table_c.o \
  set_rgb_colors_c.o \
  set_rgba_table_c.o \
+ invert_small_matrix_c.o \
  transfer_matvec.o \
  quicksort_c.o
 
@@ -502,6 +503,14 @@ module:
 	kemosrc_param_c.o \
 	m_surface_mesh_4_viewer_c.o \
 	cal_surface_center_normal_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	invert_small_matrix_c.o: \
+	'$$(KEMO_C_DIR)'/invert_small_matrix_c.c \
+	invert_small_matrix_c.h \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

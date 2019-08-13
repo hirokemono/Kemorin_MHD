@@ -237,6 +237,7 @@ module:
 	find_isoline_on_patch_c.o: \
 	'$$(KEMO_C_GLDIR)'/find_isoline_on_patch_c.c \
 	kemoviewer_param_c.h \
+	cal_surface_center_normal_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

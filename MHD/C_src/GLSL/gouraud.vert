@@ -13,8 +13,8 @@ uniform mat4 modelViewMat;
 
 void main(void)
 {
-	vec3 position = vec3(modelViewMat * gl_Vertex);
-	vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
+	vec3 position = vec3(modelViewMat * vec4(xyz, 1.0));
+	vec3 normal = normalize(gl_NormalMatrix * norm);
 	vec3 light = normalize(gl_LightSource[0].position.xyz - position);
 	float diffuse = dot(light, normal);
 	
