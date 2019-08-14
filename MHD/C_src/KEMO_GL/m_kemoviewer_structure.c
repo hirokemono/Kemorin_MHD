@@ -1011,18 +1011,7 @@ void kemoview_draw_menu_setup(){
 }
 
 void kemoview_draw_quad_gl3(){
-	update_projection_struct(kemo_sgl->view_s);
-	modify_view_by_struct(kemo_sgl->view_s);
-	
-	glUseProgram(kemo_sgl->kemo_shaders->test->programId);
-	
-	identity_matrix_to_shader(kemo_sgl->kemo_shaders->test);
-	set_quadVBO(kemo_sgl->cube_VAO);
-	
-	glBindVertexArray(kemo_sgl->cube_VAO->id_VAO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, kemo_sgl->cube_VAO->id_index);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	DestroyVBO(kemo_sgl->cube_VAO);
+	draw_quad_gl3(kemo_sgl->view_s, kemo_sgl->cube_VAO, kemo_sgl->kemo_shaders);
 }
 
 void kemoview_draw_menu_gl3(){

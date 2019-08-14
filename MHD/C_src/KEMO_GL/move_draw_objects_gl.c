@@ -398,26 +398,60 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		
 		transfer_matrix_to_shader(kemo_shaders->test, view_s);
 		
-		struct gl_strided_buffer *gl_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-		gl_buf->num_nod_buf = 8;
-		gl_buf->ncomp_buf = 12;
+		struct gl_strided_buffer *cube_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+		cube_buf->num_nod_buf = 8;
+		cube_buf->ncomp_buf = 12;
 		
-		gl_buf->ist_xyz =  0;
-		gl_buf->ist_norm = 3;
-		gl_buf->ist_tex =  6;
-		gl_buf->ist_csurf = 8;
-		gl_buf->v_buf = (GLfloat *) malloc(gl_buf->num_nod_buf*gl_buf->ncomp_buf*sizeof(GLfloat));
+		cube_buf->ist_xyz =  0;
+		cube_buf->ist_norm = 3;
+		cube_buf->ist_tex =  6;
+		cube_buf->ist_csurf = 8;
+		cube_buf->v_buf = (GLfloat *) malloc(cube_buf->num_nod_buf*cube_buf->ncomp_buf*sizeof(GLfloat));
 		
-		set_cubeVBO(0.5f, cube_VAO, gl_buf);
+		set_cubeVBO(0.5f, cube_VAO, cube_buf);
 		
 		glBindVertexArray(cube_VAO->id_VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		
-		free(gl_buf->v_buf);
-		free(gl_buf);
+		free(cube_buf->v_buf);
+		free(cube_buf);
 //		DestroyVBO(cube_VAO);
 	}
 	
 	return;
 }
+
+
+void draw_quad_gl3(struct view_element *view_s,
+			struct VAO_ids *quad_VAO, struct kemoview_shaders *kemo_shaders){
+	struct gl_strided_buffer *quad_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	
+	update_projection_struct(view_s);
+	modify_view_by_struct(view_s);
+	
+	glUseProgram(kemo_shaders->test->programId);
+	
+	identity_matrix_to_shader(kemo_shaders->test);
+	
+	
+	quad_buf->num_nod_buf = 4;
+	quad_buf->ncomp_buf = 12;
+	
+	quad_buf->ist_xyz =  0;
+	quad_buf->ist_norm = 3;
+	quad_buf->ist_tex =  6;
+	quad_buf->ist_csurf = 8;
+	quad_buf->v_buf = (GLfloat *) malloc(quad_buf->num_nod_buf*quad_buf->ncomp_buf*sizeof(GLfloat));
+	
+	set_quadVBO(quad_VAO, quad_buf);
+	
+	glBindVertexArray(quad_VAO->id_VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quad_VAO->id_index);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	DestroyVBO(quad_VAO);
+	
+	free(quad_buf->v_buf);
+	free(quad_buf);
+}
+

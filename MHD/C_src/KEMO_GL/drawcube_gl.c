@@ -484,19 +484,8 @@ void drawCube_flat(GLfloat fSize,
 	return;
 }
 
-void set_quadVBO(struct VAO_ids *VAO_quad)
+void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 {
-	struct gl_strided_buffer *gl_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	
-	gl_buf->num_nod_buf = 4;
-	gl_buf->ncomp_buf = 12;
-	
-	gl_buf->ist_xyz =  0;
-	gl_buf->ist_norm = 3;
-	gl_buf->ist_tex =  6;
-	gl_buf->ist_csurf = 8;
-	gl_buf->v_buf = (GLfloat *) malloc(gl_buf->num_nod_buf*gl_buf->ncomp_buf*sizeof(GLfloat));
-	
 	GLsizei stride = sizeof(GLfloat) * gl_buf->ncomp_buf;
 	
 	GLfloat Vertices[] = {
