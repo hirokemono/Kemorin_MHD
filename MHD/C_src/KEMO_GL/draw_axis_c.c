@@ -302,7 +302,6 @@ static void draw_axis_gl(GLfloat x_arrowx[6], GLfloat x_arrowy[6], GLfloat x_arr
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
-	glEnable(GL_CULL_FACE);
     
 	return;
 }
