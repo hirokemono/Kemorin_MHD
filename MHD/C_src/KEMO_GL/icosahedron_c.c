@@ -137,14 +137,20 @@ int set_tube_vertex(int ncorner, float radius, float x_line[6], float dir_line[6
 	float norm_line[6];
 	float xx_w1[3*ncorner], norm_w1[3*ncorner];
 	float xx_w2[3*ncorner], norm_w2[3*ncorner];
-	int num = 0;
+	int npatch_wall = 0;
 	int k, nd;
 	
 	for(k=0;k<2;k++){
-		norm_line[3*k ] =  -dir_line[3*k+2];
-		norm_line[3*k+1] =  dir_line[3*k+2];
-		norm_line[3*k+2] =  dir_line[3*k  ]*dir_line[3*k+2]
-						  - dir_line[3*k+1]*dir_line[3*k+2];
+		if(fabs(dir_line[3*k+2]) < 1.0e-40){
+			norm_line[3*k  ] =  0.0;
+			norm_line[3*k+1] =  0.0;
+			norm_line[3*k+2] =  1.0;
+		} else {
+			norm_line[3*k  ] =  -dir_line[3*k+2];
+			norm_line[3*k+1] =  dir_line[3*k+2];
+			norm_line[3*k+2] =  dir_line[3*k  ]*dir_line[3*k+2]
+					- dir_line[3*k+1]*dir_line[3*k+2];
+		};
 	};
 	
 	set_circle_of_tube(ncorner, radius, &x_line[0], &norm_line[0], &dir_line[0],
@@ -152,53 +158,52 @@ int set_tube_vertex(int ncorner, float radius, float x_line[6], float dir_line[6
 	set_circle_of_tube(ncorner, radius, &x_line[3], &norm_line[3], &dir_line[3],
 					   xx_w2, norm_w2);
 	
-
 	for(k=0;k<ncorner-1;k++){
 		for (nd=0; nd<3; nd++) {
-			xyz[18*k+  nd] = xx_w1[3*k+  nd];
-			xyz[18*k+3+nd] = xx_w1[3*k+3+nd];
-			xyz[18*k+6+nd] = xx_w2[3*k+3+nd];
-			nor[18*k+  nd] = norm_w1[3*k+  nd];
-			nor[18*k+3+nd] = norm_w1[3*k+3+nd];
-			nor[18*k+6+nd] = norm_w2[3*k+3+nd];
+			xyz[3*(6*k)+  nd] = xx_w1[3*k+  nd];
+			xyz[3*(6*k+1)+nd] = xx_w1[3*k+3+nd];
+			xyz[3*(6*k+2)+nd] = xx_w2[3*k+3+nd];
+			nor[3*(6*k)+  nd] = norm_w1[3*k+  nd];
+			nor[3*(6*k+1)+nd] = norm_w1[3*k+3+nd];
+			nor[3*(6*k+2)+nd] = norm_w2[3*k+3+nd];
 			
-			xyz[18*k+ 9+nd] = xx_w2[3*k+3+nd];
-			xyz[18*k+12+nd] = xx_w2[3*k+nd];
-			xyz[18*k+15+nd] = xx_w1[3*k+nd];
-			nor[18*k+ 9+nd] = norm_w2[3*k+3+nd];
-			nor[18*k+12+nd] = norm_w2[3*k+nd];
-			nor[18*k+15+nd] = norm_w1[3*k+nd];
+			xyz[3*(6*k+3)+nd] = xx_w2[3*k+3+nd];
+			xyz[3*(6*k+4)+nd] = xx_w2[3*k+nd];
+			xyz[3*(6*k+5)+nd] = xx_w1[3*k+nd];
+			nor[3*(6*k+3)+nd] = norm_w2[3*k+3+nd];
+			nor[3*(6*k+4)+nd] = norm_w2[3*k+nd];
+			nor[3*(6*k+5)+nd] = norm_w1[3*k+nd];
 		};
 	};
 	
 	for (nd=0; nd<3; nd++) {
-		xyz[18*(ncorner-1)+  nd] = xx_w1[3*(ncorner-1)+nd];
-		xyz[18*(ncorner-1)+3+nd] = xx_w1[nd];
-		xyz[18*(ncorner-1)+6+nd] = xx_w2[nd];
-		nor[18*(ncorner-1)+  nd] = norm_w1[3*(ncorner-1)+nd];
-		nor[18*(ncorner-1)+3+nd] = norm_w1[nd];
-		nor[18*(ncorner-1)+6+nd] = norm_w2[nd];
+		xyz[3*(6*(ncorner-1))+  nd] = xx_w1[3*(ncorner-1)+nd];
+		xyz[3*(6*(ncorner-1)+1)+nd] = xx_w1[nd];
+		xyz[3*(6*(ncorner-1)+2)+nd] = xx_w2[nd];
+		nor[3*(6*(ncorner-1))+  nd] = norm_w1[3*(ncorner-1)+nd];
+		nor[3*(6*(ncorner-1)+1)+nd] = norm_w1[nd];
+		nor[3*(6*(ncorner-1)+2)+nd] = norm_w2[nd];
 		
-		xyz[18*(ncorner-1)+ 9+nd] = xx_w2[nd];
-		xyz[18*(ncorner-1)+12+nd] = xx_w2[3*(ncorner-1)+nd];
-		xyz[18*(ncorner-1)+15+nd] = xx_w1[3*(ncorner-1)+nd];
-		nor[18*(ncorner-1)+ 9+nd] = norm_w2[nd];
-		nor[18*(ncorner-1)+12+nd] = norm_w2[3*(ncorner-1)+nd];
-		nor[18*(ncorner-1)+15+nd] = norm_w1[3*(ncorner-1)+nd];
+		xyz[3*(6*(ncorner-1)+3)+nd] = xx_w2[nd];
+		xyz[3*(6*(ncorner-1)+4)+nd] = xx_w2[3*(ncorner-1)+nd];
+		xyz[3*(6*(ncorner-1)+5)+nd] = xx_w1[3*(ncorner-1)+nd];
+		nor[3*(6*(ncorner-1)+3)+nd] = norm_w2[nd];
+		nor[3*(6*(ncorner-1)+4)+nd] = norm_w2[3*(ncorner-1)+nd];
+		nor[3*(6*(ncorner-1)+5)+nd] = norm_w1[3*(ncorner-1)+nd];
 	};
 	for(k=0;k<ncorner;k++){
 		for (nd=0; nd<3; nd++) {
-			col[24*k+   nd] = color_line[  nd];
-			col[24*k+ 4+nd] = color_line[  nd];
-			col[24*k+ 8+nd] = color_line[4+nd];
-			col[24*k+12+nd] = color_line[4+nd];
-			col[24*k+16+nd] = color_line[4+nd];
-			col[24*k+20+nd] = color_line[  nd];
+			col[4*(6*k)+   nd] = color_line[  nd];
+			col[4*(6*k+1)+nd] = color_line[  nd];
+			col[4*(6*k+2)+nd] = color_line[4+nd];
+			col[4*(6*k+3)+nd] = color_line[4+nd];
+			col[4*(6*k+4)+nd] = color_line[4+nd];
+			col[4*(6*k+5)+nd] = color_line[  nd];
 		};
 	};
 	
-	num = 2*ncorner;
-	return num;
+	npatch_wall = 2*ncorner;
+	return npatch_wall;
 }
 
 int set_cone_vertex(int ncorner, float radius, float x_line[6], float dir_line[6],
@@ -220,28 +225,28 @@ int set_cone_vertex(int ncorner, float radius, float x_line[6], float dir_line[6
     
     for(k=0;k<ncorner-1;k++){
         for (nd=0; nd<3; nd++) {
-            xyz[9*k+  nd] = xx_w1[3*k+  nd];
-            xyz[9*k+3+nd] = xx_w1[3*k+3+nd];
-            xyz[9*k+6+nd] = x_line[nd+3];
-            nor[9*k+  nd] = norm_w1[3*k+  nd];
-            nor[9*k+3+nd] = norm_w1[3*k+3+nd];
-            nor[9*k+6+nd] = 0.5 * (norm_w1[3*k+  nd] + norm_w1[3*k+3+nd]);
+            xyz[3*(3*k)+  nd] = xx_w1[3*k+  nd];
+            xyz[3*(3*k+1)+nd] = xx_w1[3*k+3+nd];
+            xyz[3*(3*k+2)+nd] = x_line[nd+3];
+            nor[3*(3*k)+  nd] = norm_w1[3*k+  nd];
+            nor[3*(3*k+1)+nd] = norm_w1[3*k+3+nd];
+            nor[3*(3*k+2)+nd] = 0.5 * (norm_w1[3*k+  nd] + norm_w1[3*k+3+nd]);
         };
     };
     
     for (nd=0; nd<3; nd++) {
-        xyz[9*(ncorner-1)+  nd] = xx_w1[3*(ncorner-1)+nd];
-        xyz[9*(ncorner-1)+3+nd] = xx_w1[nd];
-        xyz[9*(ncorner-1)+6+nd] = x_line[nd+3];
-        nor[9*(ncorner-1)+  nd] = norm_w1[3*(ncorner-1)+nd];
-        nor[9*(ncorner-1)+3+nd] = norm_w1[nd];
-        nor[9*(ncorner-1)+6+nd] = 0.5 * (norm_w1[3*(ncorner-1)+nd] + norm_w1[nd]);
+        xyz[3*(3*(ncorner-1))+  nd] = xx_w1[3*(ncorner-1)+nd];
+        xyz[3*(3*(ncorner-1)+1)+nd] = xx_w1[nd];
+        xyz[3*(3*(ncorner-1)+2)+nd] = x_line[nd+3];
+        nor[3*(3*(ncorner-1))+  nd] = norm_w1[3*(ncorner-1)+nd];
+        nor[3*(3*(ncorner-1)+1)+nd] = norm_w1[nd];
+        nor[3*(3*(ncorner-1)+2)+nd] = 0.5 * (norm_w1[3*(ncorner-1)+nd] + norm_w1[nd]);
     };
     for(k=0;k<ncorner;k++){
         for (nd=0; nd<3; nd++) {
-            col[12*k+   nd] = color_line[  nd];
-            col[12*k+ 4+nd] = color_line[  nd];
-            col[12*k+ 8+nd] = color_line[4+nd];
+            col[4*(3*k)+   nd] = color_line[  nd];
+            col[4*(3*k+1)+nd] = color_line[  nd];
+            col[4*(3*k+2)+nd] = color_line[4+nd];
         };
     };
     

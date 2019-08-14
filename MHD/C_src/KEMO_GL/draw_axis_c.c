@@ -188,66 +188,126 @@ static void set_vertexs_for_axis(struct view_element *view_s, GLfloat dist,
 
 static void draw_axis_gl(GLfloat x_arrowx[6], GLfloat x_arrowy[6], GLfloat x_arrowz[6], GLfloat w_ratio[3],
                          GLfloat x_charax[12], GLfloat x_charay[18], GLfloat x_charaz[18]){
-    float xyz_buf[22][3];
-	float rgba_buf[22][4];
-    int icou, k, nd;
-    
+	int ncorner = ISIX;
+	float radius = 0.005;
+	
+    float xyz_buf[22*3*6*ncorner];
+    float norm_buf[22*3*6*ncorner];
+	float rgba_buf[22*4*6*ncorner];
+    int icou, k, nd, npatch_wall;
+	
+	GLfloat dir_line[6];
+	GLfloat color_2p[8];
+	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
 	glVertexPointer(ITHREE, GL_FLOAT, IZERO, xyz_buf);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, rgba_buf);
+	glNormalPointer(GL_FLOAT, IZERO, norm_buf);
     
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glLineWidth(4.0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
     glShadeModel(GL_SMOOTH);
     
     icou = 0;
     /*draw x axis */
-    for (k=0; k<2; k++) {
-        for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_arrowx[3*k+nd];
-        for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = red[nd];
-        icou = icou + 1;
+	for (k=0; k<2; k++) {
+		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_arrowx[3+nd] - x_arrowx[nd];};
+		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  red[nd];};
     }
+	npatch_wall = set_tube_vertex(ncorner, radius, x_arrowx, dir_line, color_2p,
+					&xyz_buf[3*icou], &norm_buf[3*icou], &rgba_buf[4*icou]);
+	icou = icou + 3 * npatch_wall;
+	
     /*draw y axis */
-    for (k=0; k<2; k++) {
-        for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_arrowy[3*k+nd];
-        for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = green[nd];
-        icou = icou + 1;
+	for (k=0; k<2; k++) {
+		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_arrowy[3+nd] - x_arrowy[nd];};
+		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
+	npatch_wall = set_tube_vertex(ncorner, radius, x_arrowy, dir_line, color_2p,
+				&xyz_buf[3*icou], &norm_buf[3*icou], &rgba_buf[4*icou]);
+	icou = icou + 3 * npatch_wall;
+	
     /*draw z axis */
-    for (k=0; k<2; k++) {
-        for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_arrowz[3*k+nd];
-        for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = blue[nd];
-        icou = icou + 1;
+	for (k=0; k<2; k++) {
+		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_arrowz[3+nd] - x_arrowz[nd];};
+		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
-    
-    
-	/*draw 'X" */
-	for (k=0; k<4; k++) {
-		for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_charax[3*k+nd];
-		for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = red[nd];
-        icou = icou + 1;
-	}
-	/*draw 'Y" */
-	for (k=0; k<6; k++) {
-		for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_charay[3*k+nd];
-		for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = green[nd];
-        icou = icou + 1;
-	}
+	npatch_wall = set_tube_vertex(ncorner, radius, x_arrowz, dir_line, color_2p,
+					&xyz_buf[3*icou], &norm_buf[3*icou], &rgba_buf[4*icou]);
+	icou = icou + 3 * npatch_wall;
+	
+	
+	/*draw 'X' */
+	for (k=0; k<2; k++) {
+		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charax[3+nd] - x_charax[nd];};
+		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  red[nd];};
+    }
+	npatch_wall = set_tube_vertex(ncorner, radius, &x_charax[0], dir_line, color_2p,
+					&xyz_buf[3*icou], &norm_buf[3*icou], &rgba_buf[4*icou]);
+	icou = icou + 3 * npatch_wall;
+	for (k=0; k<2; k++) {
+		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charax[9+nd] - x_charax[6+nd];};
+		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  red[nd];};
+    }
+	npatch_wall = set_tube_vertex(ncorner, radius, &x_charax[6], dir_line, color_2p,
+					&xyz_buf[3*icou], &norm_buf[3*icou], &rgba_buf[4*icou]);
+	icou = icou + 3 * npatch_wall;
+	
+	/*draw 'Y' */
+	for (k=0; k<2; k++) {
+		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charay[3+nd] - x_charay[nd];};
+		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
+    }
+	npatch_wall = set_tube_vertex(ncorner, radius, &x_charay[0], dir_line, color_2p,
+					&xyz_buf[3*icou], &norm_buf[3*icou], &rgba_buf[4*icou]);
+	icou = icou + 3 * npatch_wall;
+	for (k=0; k<2; k++) {
+		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charay[9+nd] - x_charay[6+nd];};
+		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
+    }
+	npatch_wall = set_tube_vertex(ncorner, radius, &x_charay[6], dir_line, color_2p,
+					&xyz_buf[3*icou], &norm_buf[3*icou], &rgba_buf[4*icou]);
+	icou = icou + 3 * npatch_wall;
+	for (k=0; k<2; k++) {
+		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charay[15+nd] - x_charay[12+nd];};
+		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
+    }
+	npatch_wall = set_tube_vertex(ncorner, radius, &x_charay[12], dir_line, color_2p,
+					&xyz_buf[3*icou], &norm_buf[3*icou], &rgba_buf[4*icou]);
+	icou = icou + 3 * npatch_wall;
+	
 	/*draw 'Z' */
-	for (k=0; k<6; k++) {
-		for(nd=0;nd<3;nd++) xyz_buf[icou][nd] =  x_charaz[3*k+nd];
-		for(nd=0;nd<4;nd++) rgba_buf[icou][nd] = blue[nd];
-        icou = icou + 1;
-	}
-	glDrawArrays(GL_LINES, IZERO, (ITWO*11));
+	for (k=0; k<2; k++) {
+		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charaz[3+nd] - x_charaz[nd];};
+		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
+    }
+	npatch_wall = set_tube_vertex(ncorner, radius, &x_charaz[0], dir_line, color_2p,
+					&xyz_buf[3*icou], &norm_buf[3*icou], &rgba_buf[4*icou]);
+	icou = icou + 3 * npatch_wall;
+	for (k=0; k<2; k++) {
+		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charaz[9+nd] - x_charaz[6+nd];};
+		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
+    }
+	npatch_wall = set_tube_vertex(ncorner, radius, &x_charaz[6], dir_line, color_2p,
+					&xyz_buf[3*icou], &norm_buf[3*icou], &rgba_buf[4*icou]);
+	icou = icou + 3 * npatch_wall;
+	for (k=0; k<2; k++) {
+		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charaz[15+nd] - x_charaz[12+nd];};
+		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
+    }
+	npatch_wall = set_tube_vertex(ncorner, radius, &x_charaz[12], dir_line, color_2p,
+					&xyz_buf[3*icou], &norm_buf[3*icou], &rgba_buf[4*icou]);
+	icou = icou + 3 * npatch_wall;
+	
+	glDrawArrays(GL_TRIANGLES, IZERO, icou);
     
+	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
-    glLineWidth(1.0);
+	glEnable(GL_CULL_FACE);
     
 	return;
 }
