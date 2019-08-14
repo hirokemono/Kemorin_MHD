@@ -26,8 +26,7 @@ GTK
 ifdef OPENGL_LIBS
   OBJS_C+= \
     $$(OBJ_KEMO_GL_C) \
-    $$(OBJ_SHADERS)   \
-    $$(OBJ_GL2PS_C)
+    $$(OBJ_SHADERS)
   LIBDIRS+=   \
     KEMO_GL   \
     GLSL      \

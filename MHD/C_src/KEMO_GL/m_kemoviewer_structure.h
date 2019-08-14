@@ -25,6 +25,7 @@
 #include "set_psf_texture_by_png.h"
 
 #include "glsl.h"
+#include "shaders.h"
 
 
 #include "kemoviewer.h"

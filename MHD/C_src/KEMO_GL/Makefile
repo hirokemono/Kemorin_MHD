@@ -75,7 +75,6 @@ lib_name:
 
 lib_archve:
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(OBJ_KEMO_GL_C)' >> $(MAKENAME)
-	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(OBJ_GL2PS_C)'   >> $(MAKENAME)
 
 
 mod_list:
@@ -278,8 +277,9 @@ module:
 	rotate_animation.o \
 	set_each_psf_parameters.o \
 	rainbow_color_code_c.o \
-    set_psf_texture_by_png.o \
-	glsl.h \
+	set_psf_texture_by_png.o \
+	glsl.o \
+	shaders.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
