@@ -51,7 +51,9 @@ void kemo_gl_initial_lighting_c(struct view_element *view_s,
 	
 	if(view_s->iflag_shading_profile == 1){
 		if (glslInit()) exit(1);
-		 LoadShaderFromStrings(kemo_shaders->test, load_test_vert(), load_test_frag());
+		LoadShaderFromStrings(kemo_shaders->test, load_test_vert(), load_test_frag());
+		LoadShaderFromStrings(kemo_shaders->phong, load_phong_vert(), load_phong_frag());
+//		LoadShaderFromStrings(kemo_shaders->phong_1color, load_phong_vert(), load_phong_frag());
 	} else {
 		view_s->gl_drawID = glGenLists(IONE);
 	};

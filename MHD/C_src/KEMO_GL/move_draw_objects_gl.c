@@ -303,8 +303,9 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		iflag_psf = iflag_psf + iflag;
 	};
     
-	
+	*/
 	if(mesh_m->iflag_draw_mesh != 0){
+		/*
 		glDisable(GL_CULL_FACE);
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 		
@@ -325,10 +326,10 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			glPolygonMode(GL_BACK, GL_FILL);
 			glCullFace(GL_FRONT);
 		};
-	
+		*/
 		draw_patches_4_domain(mesh_s, mesh_m, gl_buf);
 	};
-    
+    /*
 	if(mesh_m->iflag_view_type != VIEW_MAP) {
 		if(mesh_m->iflag_draw_coast != 0)   {draw_coastline(mesh_m->radius_coast, gl_buf);};
 		if(mesh_m->iflag_draw_sph_grid != 0){draw_sph_flame(mesh_m->radius_coast, gl_buf);};
@@ -394,9 +395,26 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		update_projection_struct(view_s);
 		modify_view_by_struct(view_s);
 		
-		glUseProgram(kemo_shaders->test->programId);
+		glUseProgram(kemo_shaders->phong->programId);
 		
-		transfer_matrix_to_shader(kemo_shaders->test, view_s);
+		transfer_matrix_to_shader(kemo_shaders->phong, view_s);
+		
+		int id_lightPosition = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource.position");
+		
+		int id_MaterialAmbient = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.ambient");
+		int id_MaterialDiffuse = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.diffuse");
+		int id_MaterialSpecular = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.specular");
+		int id_MaterialShiness = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.shininess");
+		
+		GLfloat  lightposition[4] = {1.5,0.5,2.0,0.0};
+		GLfloat white[4] = {0.8, 0.8, 0.8, 1.0};
+		GLfloat shine = 0.6;
+		glUniform4fv(id_lightPosition, 1, lightposition);
+		
+		glUniform4fv(id_MaterialAmbient, 1, white);
+		glUniform4fv(id_MaterialDiffuse, 1, white);
+		glUniform4fv(id_MaterialSpecular, 1, white);
+		glUniform1f(id_MaterialShiness, shine);
 		
 		struct gl_strided_buffer *cube_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 		cube_buf->num_nod_buf = 8;
@@ -408,7 +426,7 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		cube_buf->ist_csurf = 8;
 		cube_buf->v_buf = (GLfloat *) malloc(cube_buf->num_nod_buf*cube_buf->ncomp_buf*sizeof(GLfloat));
 		
-		set_cubeVBO(0.5f, cube_VAO, cube_buf);
+		cube_surf_VBO(0.5f, cube_VAO, cube_buf);
 		
 		glBindVertexArray(cube_VAO->id_VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);
@@ -422,6 +440,35 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	return;
 }
 
+void draw_cube_edge_gl3(struct view_element *view_s, 
+						struct VAO_ids *cube_VAO, struct kemoview_shaders *kemo_shaders){
+	struct gl_strided_buffer *gl_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	update_projection_struct(view_s);
+	modify_view_by_struct(view_s);
+	
+	glUseProgram(kemo_shaders->test->programId);
+	
+	transfer_matrix_to_shader(kemo_shaders->test, view_s);
+	
+	GLuint idx_indexBuf;
+	
+	gl_buf->num_nod_buf = 8;
+	gl_buf->ncomp_buf = 12;
+	
+	gl_buf->ist_xyz =  0;
+	gl_buf->ist_norm = 3;
+	gl_buf->ist_tex =  6;
+	gl_buf->ist_csurf = 8;
+	gl_buf->v_buf = (GLfloat *) malloc(gl_buf->num_nod_buf*gl_buf->ncomp_buf*sizeof(GLfloat));
+	
+	cube_edge_VBO(0.5f, cube_VAO, gl_buf);
+	
+	glBindVertexArray(cube_VAO->id_VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);
+	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
+	
+	DestroyVBO(cube_VAO);
+}
 
 void draw_quad_gl3(struct view_element *view_s,
 			struct VAO_ids *quad_VAO, struct kemoview_shaders *kemo_shaders){
@@ -450,8 +497,9 @@ void draw_quad_gl3(struct view_element *view_s,
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quad_VAO->id_index);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	DestroyVBO(quad_VAO);
-	
+
 	free(quad_buf->v_buf);
 	free(quad_buf);
-}
-
+	
+	return;
+};

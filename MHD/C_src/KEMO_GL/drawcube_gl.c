@@ -484,6 +484,111 @@ void drawCube_flat(GLfloat fSize,
 	return;
 }
 
+
+void cube_surf_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
+{
+	GLsizei stride = sizeof(GLfloat) * gl_buf->ncomp_buf;
+	
+	CubeNode_to_buf(fSize, gl_buf);
+	
+	GLenum ErrorCheckValue = glGetError();
+	
+	glGenVertexArrays(1, &VAO_quad->id_VAO);
+	glBindVertexArray(VAO_quad->id_VAO);
+	
+	glGenBuffers(1, &VAO_quad->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, VAO_quad->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
+				 gl_buf->v_buf, GL_STATIC_DRAW);
+	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride,
+						  (GLvoid*) (gl_buf->ist_xyz * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, stride, 
+						  (GLvoid*) (gl_buf->ist_csurf * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, 
+						  (GLvoid*) (gl_buf->ist_norm * sizeof(GL_FLOAT)));
+	
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	
+	/* Create index buffer on GPU, and then copy from CPU */
+	glGenBuffers(1, &VAO_quad->id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO_quad->id_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*36, cube_tri_faces, GL_STATIC_DRAW);
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	/*
+	ErrorCheckValue = glGetError();
+	if (ErrorCheckValue != GL_NO_ERROR)
+	{
+		fprintf(
+				stderr,
+				"ERROR: Could not create a VBO: %s \n",
+				gluErrorString(ErrorCheckValue)
+				);
+		
+		exit(-1);
+	}
+	*/
+	glBindVertexArray(0);
+}
+
+
+void cube_edge_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
+{
+	
+	GLsizei stride = sizeof(GLfloat) * gl_buf->ncomp_buf;
+	
+	CubeNode_to_buf(fSize, gl_buf);
+	
+	GLenum ErrorCheckValue = glGetError();
+	
+	glGenVertexArrays(1, &VAO_quad->id_VAO);
+	glBindVertexArray(VAO_quad->id_VAO);
+	
+	glGenBuffers(1, &VAO_quad->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, VAO_quad->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
+				 gl_buf->v_buf, GL_STATIC_DRAW);
+	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride,
+						  (GLvoid*) (gl_buf->ist_xyz * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, stride, 
+						  (GLvoid*) (gl_buf->ist_csurf * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, 
+						  (GLvoid*) (gl_buf->ist_norm * sizeof(GL_FLOAT)));
+	
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	
+	/* Create index buffer on GPU, and then copy from CPU */
+	glGenBuffers(1, &VAO_quad->id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO_quad->id_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*24, cube_edge, GL_STATIC_DRAW);
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	/*
+	ErrorCheckValue = glGetError();
+	if (ErrorCheckValue != GL_NO_ERROR)
+	{
+		fprintf(
+				stderr,
+				"ERROR: Could not create a VBO: %s \n",
+				gluErrorString(ErrorCheckValue)
+				);
+		
+		exit(-1);
+	}
+	*/
+	glBindVertexArray(0);
+}
+
+
 void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 {
 	GLsizei stride = sizeof(GLfloat) * gl_buf->ncomp_buf;
@@ -553,51 +658,5 @@ void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 		exit(-1);
 	}
 	
-	glBindVertexArray(0);
-}
-
-void set_cubeVBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
-{
-	GLsizei stride = sizeof(GLfloat) * gl_buf->ncomp_buf;
-	
-	CubeNode_to_buf(fSize, gl_buf);
-	
-	GLenum ErrorCheckValue = glGetError();
-	
-	glGenVertexArrays(1, &VAO_quad->id_VAO);
-	glBindVertexArray(VAO_quad->id_VAO);
-	
-	glGenBuffers(1, &VAO_quad->id_vertex);
-	glBindBuffer(GL_ARRAY_BUFFER, VAO_quad->id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
-				 gl_buf->v_buf, GL_STATIC_DRAW);
-	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride,
-						  (GLvoid*) (gl_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride, 
-						  (GLvoid*) (gl_buf->ist_csurf * sizeof(GL_FLOAT)));
-	
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	/* Create index buffer on GPU, and then copy from CPU */
-	glGenBuffers(1, &VAO_quad->id_index);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO_quad->id_index);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*36, cube_tri_faces, GL_STATIC_DRAW);
-	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	/*
-	ErrorCheckValue = glGetError();
-	if (ErrorCheckValue != GL_NO_ERROR)
-	{
-		fprintf(
-				stderr,
-				"ERROR: Could not create a VBO: %s \n",
-				gluErrorString(ErrorCheckValue)
-				);
-		
-		exit(-1);
-	}
-	*/
 	glBindVertexArray(0);
 }

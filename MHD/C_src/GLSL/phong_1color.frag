@@ -2,9 +2,10 @@
 // phong.frag
 
 in vec4 position;
-in vec4 ex_Color;
 in vec3 normal;
 out vec4 out_Color;
+
+uniform vec4 one_Color;
 
 #define MAX_LIGHTS 3
 struct LightSourceParameters{   
@@ -44,15 +45,13 @@ void main (void)
 	vec3 light = normalize(LightSource.position.xyz - position.xyz);
 	float diffuse = dot(light, fnormal);
 	
-	out_Color = ex_Color * frontMaterial.ambient;
+	out_Color = one_Color * frontMaterial.ambient;
 	if (diffuse > 0.0) {
 		vec3 view = normalize(position.xyz);
 		vec3 halfway = normalize(light - view);
 		float product = max(dot(fnormal, halfway), 0.0);
 		float specular = pow(product, frontMaterial.shininess);
-		out_Color += ex_Color * frontMaterial.diffuse * diffuse
-		+ frontMaterial.specular * specular;
+		out_Color += one_Color * frontMaterial.diffuse * diffuse
+		              + frontMaterial.specular * specular;
 	}
-	out_Color = ex_Color;
 }
-
