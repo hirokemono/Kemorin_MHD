@@ -439,6 +439,8 @@ extern "C" {
     int kemoview_get_current_viewer_id();
 
     void kemoview_draw_objects_c();
+	void kemoview_draw_objects_gl3();
+	
     void kemoview_init_lighting(int iflag_core_profile);
     
 	void kemoview_orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
@@ -792,7 +794,6 @@ extern "C" {
 	
 	void kemoview_draw_quad_setup();
 	void kemoview_draw_menu_setup();
-	void kemoview_draw_cube_gl3();
 	void kemoview_draw_menu_gl3();
 	void kemo_Cleanup();
 	

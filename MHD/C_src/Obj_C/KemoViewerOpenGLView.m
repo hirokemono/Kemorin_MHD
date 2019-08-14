@@ -75,7 +75,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 // update the projection matrix based on camera and view info
 - (void) updateProjection
 {
-    [[self openGLContext] makeCurrentContext];
+    [_context makeCurrentContext];
 	// set projection
 	kemoview_update_distance();
 }
@@ -85,7 +85,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 // updates the contexts model view matrix for object and camera moves
 - (void) updateModelView
 {
-    [[self openGLContext] makeCurrentContext];
+    [_context makeCurrentContext];
 	
 	// move view
 	[self modify_view_Cocoa];
@@ -103,7 +103,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 		
 		kemoview_update_projection_by_viewer_size(XpixelGLWindow, YpixelGLWindow);
         
-        [[self openGLContext] makeCurrentContext];
+        [_context makeCurrentContext];
 		[_cocoaGLMessages updateInfoString];
 		[_cocoaGLMessages updateRsolutionString:XpixelGLWindow:YpixelGLWindow];
 	}
@@ -119,7 +119,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 
 - (void) swapbuffer_cocoa{
-	[[self openGLContext] flushBuffer];
+	[_context makeCurrentContext];
+	[_context flushBuffer];
 	[self setNeedsDisplay:YES];
 }
 
@@ -146,7 +147,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	kemoview_set_animation_rot_axis((int) rotationaxis);
 	kemoview_set_animation_rot_angle((int) int_degree);
     kemoview_set_single_viewer_id(id_window);
-	kemoview_draw_objects_c();
+	kemoview_draw_objects_gl3();
 	kemoview_rotate();
 	
 	[self swapbuffer_cocoa];
@@ -157,7 +158,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 {	
     kemoview_set_single_viewer_id(id_window);
 	kemoview_viewer_evolution((int) timeStep);
-	kemoview_draw_objects_c();
+	kemoview_draw_objects_gl3();
 	kemoview_modify_view();
 	
 	[self swapbuffer_cocoa];
@@ -167,7 +168,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 -(void) UpdateImage
 {
     kemoview_set_single_viewer_id(id_window);
-	kemoview_draw_objects_c();
+	kemoview_draw_objects_gl3();
 	[self swapbuffer_cocoa];
 	return;
 }
@@ -178,6 +179,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	[self resizeGL]; // forces projection matrix update (does test for size changes)
 	[self updateModelView];  // update model view matrix for object
 	[_cocoaGLMessages  drawInfo:XpixelRectView:YpixelRectView];
+	kemoview_draw_objects_gl3();
 	[self swapbuffer_cocoa];
 }
 
@@ -242,6 +244,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 - (void) Resetview
 {
 	kemoviewer_reset_to_init_angle();
+	kemoview_draw_objects_gl3();
 
 	[self updateProjection];
 	[self swapbuffer_cocoa];
@@ -340,7 +343,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 /*		kemoview_drugging_addToRotationTrackball();*/
 		[_resetview UpdateParameters];
 	} 
-	kemoview_draw_objects_c();
+	kemoview_draw_objects_gl3();
 	gTrackingViewInfo = NULL;
 	[self setNeedsDisplay: YES];
 }
@@ -427,19 +430,42 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 // set initial OpenGL state (current context is set)
 // called after context is created
-- (void) prepareOpenGL
+- (void) prepareOpenGL:(int) iflag_core_profile
 {
 	GLfloat BgColor4f[4];
 
-    int swapInt = 1;
-	
-    [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; // set to vbl sync
+	if(iflag_core_profile > 0){
+		static const NSOpenGLPixelFormatAttribute attr[]= {
+			NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
+			NSOpenGLPFANoRecovery,
+			NSOpenGLPFADoubleBuffer,
+			//NSOpenGLPFAWindow,
+			NSOpenGLPFAAccelerated,
+			NSOpenGLPFAColorSize,    24,
+			NSOpenGLPFAAlphaSize,     8,
+			NSOpenGLPFADepthSize,    24,
+			NSOpenGLPFAStencilSize,   8,
+			NSOpenGLPFAMultisample,
+			0
+		};
+		NSOpenGLPixelFormat *pixelFormat = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attr] autorelease];
+		_context = [ self openGLContext ];
+		[_context initWithFormat: pixelFormat shareContext: nil];
+		[_context makeCurrentContext];
+	} else {
+	    int swapInt = 1;
+  	  [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; // set to vbl sync
+	};
+	fprintf(
+			stdout,
+			"INFO: OpenGL Version: %s\n",
+			glGetString(GL_VERSION)
+			);
 	
 	// init GL stuff here
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	
-	glShadeModel(GL_SMOOTH);    
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	glPolygonOffset (1.0f, 1.0f);
@@ -461,7 +487,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 - (void) awakeFromNib
 {
-	int iflag_core_profile = 0;
+	int iflag_core_profile = 1;
     id_window = kemoview_get_current_viewer_id();
     kemoview_set_single_viewer_id(id_window);
 
@@ -481,12 +507,12 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	kemoview_set_stereo_shutter(SHUTTER_OFF);
 	kemoview_set_anaglyph_flag(anaglyphFlag);
 	
-	[self prepareOpenGL];
+	[self prepareOpenGL:iflag_core_profile];
 	
 	kemoviewer_reset_to_init_angle();
 	kemoview_init_lighting(iflag_core_profile);
 
-	kemoview_draw_objects_c();
+	kemoview_draw_objects_gl3();
 	
 	// set start values...
 	fAnimate =  0;

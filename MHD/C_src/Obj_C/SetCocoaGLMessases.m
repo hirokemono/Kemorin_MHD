@@ -1,10 +1,10 @@
-//
+/*
 //  SetCocoaGLMessases.m
 //  Kemoview_Cocoa
 //
 //  Created by Hiroaki Matsui on 12/02/28.
 //  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
-//
+*/
 
 #import "SetCocoaGLMessases.h"
 
@@ -62,9 +62,17 @@ static void reportError (char * strError)
 // if error dump gl errors to debugger string, return error
 GLenum glReportError ()
 {
+	char *error;
 	GLenum err = glGetError();
 	if (GL_NO_ERROR != err)
-		reportError ((char *) gluErrorString (err));
+		switch(err) {
+			case GL_INVALID_OPERATION:      error="INVALID_OPERATION";      break;
+			case GL_INVALID_ENUM:           error="INVALID_ENUM";           break;
+			case GL_INVALID_VALUE:          error="INVALID_VALUE";          break;
+			case GL_OUT_OF_MEMORY:          error="OUT_OF_MEMORY";          break;
+			case GL_INVALID_FRAMEBUFFER_OPERATION:  error="INVALID_FRAMEBUFFER_OPERATION";  break;
+		};
+		reportError ((char *) error);
 	return err;
 }
 

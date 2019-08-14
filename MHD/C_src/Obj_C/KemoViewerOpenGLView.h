@@ -36,6 +36,8 @@ typedef struct {
 	IBOutlet ResetViewControll*  _resetview;
 	IBOutlet SetCocoaGLMessases* _cocoaGLMessages;
 	
+	NSOpenGLContext * _context;
+	
 	// image buffer
 	NSBitmapImageRep *bmpRep;
 	// string textures
@@ -99,7 +101,7 @@ typedef struct {
 - (BOOL) becomeFirstResponder;
 - (BOOL) resignFirstResponder;
 
-- (void) prepareOpenGL;
+- (void) prepareOpenGL:(int) iflag_core_profile;
 - (void) awakeFromNib;
 
 @end

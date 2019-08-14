@@ -487,7 +487,6 @@ void drawCube_flat(GLfloat fSize,
 void set_quadVBO(struct VAO_ids *VAO_quad)
 {
 	struct gl_strided_buffer *gl_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	GLuint idx_indexBuf;
 	
 	gl_buf->num_nod_buf = 4;
 	gl_buf->ncomp_buf = 12;
@@ -568,20 +567,8 @@ void set_quadVBO(struct VAO_ids *VAO_quad)
 	glBindVertexArray(0);
 }
 
-void set_cubeVBO(GLfloat fSize, struct VAO_ids *VAO_quad)
+void set_cubeVBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 {
-	struct gl_strided_buffer *gl_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	GLuint idx_indexBuf;
-	
-	gl_buf->num_nod_buf = 8;
-	gl_buf->ncomp_buf = 12;
-	
-	gl_buf->ist_xyz =  0;
-	gl_buf->ist_norm = 3;
-	gl_buf->ist_tex =  6;
-	gl_buf->ist_csurf = 8;
-	gl_buf->v_buf = (GLfloat *) malloc(gl_buf->num_nod_buf*gl_buf->ncomp_buf*sizeof(GLfloat));
-	
 	GLsizei stride = sizeof(GLfloat) * gl_buf->ncomp_buf;
 	
 	CubeNode_to_buf(fSize, gl_buf);
@@ -603,7 +590,6 @@ void set_cubeVBO(GLfloat fSize, struct VAO_ids *VAO_quad)
 	
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	
 	/* Create index buffer on GPU, and then copy from CPU */
 	glGenBuffers(1, &VAO_quad->id_index);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO_quad->id_index);
@@ -611,7 +597,7 @@ void set_cubeVBO(GLfloat fSize, struct VAO_ids *VAO_quad)
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
+	/*
 	ErrorCheckValue = glGetError();
 	if (ErrorCheckValue != GL_NO_ERROR)
 	{
@@ -623,6 +609,6 @@ void set_cubeVBO(GLfloat fSize, struct VAO_ids *VAO_quad)
 		
 		exit(-1);
 	}
-	
+	*/
 	glBindVertexArray(0);
 }

@@ -169,6 +169,14 @@ void kemoview_draw_objects_c(){
 				 kemo_sgl->kemo_shaders);
 	return;
 };
+void kemoview_draw_objects_gl3(){
+	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
+	draw_objects_gl3(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
+				 kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
+				 kemo_sgl->gl_buf, kemo_sgl->strided_buf, kemo_sgl->cube_VAO, 
+				 kemo_sgl->kemo_shaders);
+	return;
+};
 
 void kemoview_orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
 						   GLdouble near, GLdouble far){
@@ -1017,20 +1025,6 @@ void kemoview_draw_quad_gl3(){
 	DestroyVBO(kemo_sgl->cube_VAO);
 }
 
-void kemoview_draw_cube_gl3(){
-	update_projection_struct(kemo_sgl->view_s);
-	modify_view_by_struct(kemo_sgl->view_s);
-	
-	glUseProgram(kemo_sgl->kemo_shaders->test->programId);
-	
-	transfer_matrix_to_shader(kemo_sgl->kemo_shaders->test, kemo_sgl->view_s);
-	set_cubeVBO(0.5f, kemo_sgl->cube_VAO);
-	
-	glBindVertexArray(kemo_sgl->cube_VAO->id_VAO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, kemo_sgl->cube_VAO->id_index);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	DestroyVBO(kemo_sgl->cube_VAO);
-}
 void kemoview_draw_menu_gl3(){
 	glUseProgram(kemo_sgl->kemo_shaders->menu->programId);
 	
