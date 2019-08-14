@@ -37,9 +37,6 @@ void draw_flame_4_map(struct buffer_for_gl *gl_buf){
 	glVertexPointer(ITWO, GL_FLOAT, IZERO, gl_buf->xy);
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
 	
-	glEnable(GL_LINE_STIPPLE);
-	glLineStipple(1,0x3333);
-	
 	set_black_color_c(f_color);
 	
 	inum = 0;
@@ -55,8 +52,9 @@ void draw_flame_4_map(struct buffer_for_gl *gl_buf){
 			aitoff_c(ITWO, rtp_flame, d_map_flame);
 			gl_buf->xy[ITWO*inum  ][0] = d_map_flame[0];
 			gl_buf->xy[ITWO*inum  ][1] = d_map_flame[1];
-			gl_buf->xy[ITWO*inum+1][0] = d_map_flame[2];
-			gl_buf->xy[ITWO*inum+1][1] = d_map_flame[3];
+			
+			gl_buf->xy[ITWO*inum+1][0] = 0.5 * (d_map_flame[0] + d_map_flame[2]);
+			gl_buf->xy[ITWO*inum+1][1] = 0.5 * (d_map_flame[1] + d_map_flame[3]);
 			inum = inum + 1;
 		}
 	}
@@ -71,8 +69,9 @@ void draw_flame_4_map(struct buffer_for_gl *gl_buf){
 			aitoff_c(ITWO, rtp_flame, d_map_flame);
 			gl_buf->xy[ITWO*inum  ][0] = d_map_flame[0];
 			gl_buf->xy[ITWO*inum  ][1] = d_map_flame[1];
-			gl_buf->xy[ITWO*inum+1][0] = d_map_flame[2];
-			gl_buf->xy[ITWO*inum+1][1] = d_map_flame[3];
+			
+			gl_buf->xy[ITWO*inum+1][0] = 0.5 * (d_map_flame[0] + d_map_flame[2]);
+			gl_buf->xy[ITWO*inum+1][1] = 0.5 * (d_map_flame[1] + d_map_flame[3]);
 			inum = inum + 1;
 		}
 	}
@@ -80,9 +79,6 @@ void draw_flame_4_map(struct buffer_for_gl *gl_buf){
 		for(nd=0;nd<4;nd++){gl_buf->rgba[j][nd] = f_color[nd];}
 	}
 	if(inum>0){glDrawArrays(GL_LINES, IZERO, (ITWO*inum));};
-    
-	glDisable(GL_LINE_STIPPLE);
-	
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
@@ -92,6 +88,7 @@ void draw_flame_4_map(struct buffer_for_gl *gl_buf){
 void draw_sph_flame(double radius, struct buffer_for_gl *gl_buf){
 	int i, j, k, nd, inum, ierr;
 	double f_color[4];
+	double t_mid, p_mid;
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -99,30 +96,34 @@ void draw_sph_flame(double radius, struct buffer_for_gl *gl_buf){
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
 	
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_LINE_STIPPLE);
-	glLineStipple(1,0x3333);
 	
 	set_black_color_c(f_color);
 	
 	inum = 0;
 	for(j=0; j<NUM_P+1; j++){
 		for(i=0; i<N_CURVE; i++){
-			for (k=0; k<2; k++){
-				gl_buf->xyz[ITWO*inum+k][0] = (GLfloat) (radius * sin(theta_p_grid[k+i]) * cos(phi_p_grid[j]));
-				gl_buf->xyz[ITWO*inum+k][1] = (GLfloat) (radius * sin(theta_p_grid[k+i]) * sin(phi_p_grid[j]));
-				gl_buf->xyz[ITWO*inum+k][2] = (GLfloat) (radius * cos(theta_p_grid[k+i]));
-			};
+			t_mid = 0.5 * (theta_p_grid[i] + theta_p_grid[i+1]);
+			gl_buf->xyz[ITWO*inum][0] = (GLfloat) (radius * sin(theta_p_grid[i]) * cos(phi_p_grid[j]));
+			gl_buf->xyz[ITWO*inum][1] = (GLfloat) (radius * sin(theta_p_grid[i]) * sin(phi_p_grid[j]));
+			gl_buf->xyz[ITWO*inum][2] = (GLfloat) (radius * cos(theta_p_grid[i]));
+			
+			gl_buf->xyz[ITWO*inum+1][0] = (GLfloat) (radius * sin(t_mid) * cos(phi_p_grid[j]));
+			gl_buf->xyz[ITWO*inum+1][1] = (GLfloat) (radius * sin(t_mid) * sin(phi_p_grid[j]));
+			gl_buf->xyz[ITWO*inum+1][2] = (GLfloat) (radius * cos(t_mid));
 			inum = inum + 1;
 		}
 	}
 	
 	for(j=0; j<NUM_T-1; j++){
 		for(i=0; i<N_CURVE; i++){
-			for (k=0; k<2; k++){
-				gl_buf->xyz[ITWO*inum+k][0] = (GLfloat) (radius * sin(theta_t_grid[j]) * cos(phi_t_grid[i+k]));
-				gl_buf->xyz[ITWO*inum+k][1] = (GLfloat) (radius * sin(theta_t_grid[j]) * sin(phi_t_grid[i+k]));
-				gl_buf->xyz[ITWO*inum+k][2] = (GLfloat) (radius * cos(theta_t_grid[j]));
-			};
+			p_mid = 0.5 * (phi_t_grid[i] + phi_t_grid[i+1]);
+			gl_buf->xyz[ITWO*inum][0] = (GLfloat) (radius * sin(theta_t_grid[j]) * cos(phi_t_grid[i]));
+			gl_buf->xyz[ITWO*inum][1] = (GLfloat) (radius * sin(theta_t_grid[j]) * sin(phi_t_grid[i]));
+			gl_buf->xyz[ITWO*inum][2] = (GLfloat) (radius * cos(theta_t_grid[j]));
+			
+			gl_buf->xyz[ITWO*inum+1][0] = (GLfloat) (radius * sin(theta_t_grid[j]) * cos(p_mid));
+			gl_buf->xyz[ITWO*inum+1][1] = (GLfloat) (radius * sin(theta_t_grid[j]) * sin(p_mid));
+			gl_buf->xyz[ITWO*inum+1][2] = (GLfloat) (radius * cos(theta_t_grid[j]));
 			inum = inum + 1;
 		}
 	}
@@ -132,9 +133,6 @@ void draw_sph_flame(double radius, struct buffer_for_gl *gl_buf){
 	}
 	
 	if(inum>0){glDrawArrays(GL_LINES, IZERO, (ITWO*inum));};
-    
-	glDisable(GL_LINE_STIPPLE);
-	
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);

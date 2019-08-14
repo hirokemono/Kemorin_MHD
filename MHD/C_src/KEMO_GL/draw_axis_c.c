@@ -206,11 +206,6 @@ static void draw_axis_gl(GLfloat x_arrowx[6], GLfloat x_arrowy[6], GLfloat x_arr
 	glColorPointer(IFOUR, GL_FLOAT, IZERO, rgba_buf);
 	glNormalPointer(GL_FLOAT, IZERO, norm_buf);
     
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glDisable(GL_CULL_FACE);
-    glShadeModel(GL_SMOOTH);
-    
     icou = 0;
     /*draw x axis */
 	for (k=0; k<2; k++) {
