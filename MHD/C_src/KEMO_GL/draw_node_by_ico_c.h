@@ -14,11 +14,6 @@
 
 /* prototypes */
 
-void draw_node_by_ico(int num_grp, int igrp, int *istack_grp, int *item_grp,
-					  struct viewer_mesh *mesh_s, double node_diam,
-					  int node_color, int color_mode, int color_loop, GLfloat single_color[4],
-					  int *iflag_domain, struct buffer_for_gl *gl_buf);
-
 void node_ico_VBO(struct view_element *view_s, 
 			int num_grp, int igrp, int *istack_grp, int *item_grp,
 			struct viewer_mesh *mesh_s, double node_diam,

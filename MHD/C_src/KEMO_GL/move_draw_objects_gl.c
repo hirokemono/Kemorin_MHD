@@ -147,13 +147,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		
 		draw_grids_4_domain(mesh_s, mesh_m, gl_buf);
 		
-		
-		glShadeModel(GL_SMOOTH);
-		glEnable(GL_CULL_FACE);
-		glPolygonMode(GL_FRONT, GL_FILL);
-		
-		draw_nodes_4_domain(mesh_s, mesh_m, gl_buf);
-		
 		if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
 			glPolygonMode(GL_FRONT, GL_FILL);
 			glCullFace(GL_BACK);

@@ -58,64 +58,6 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	return iflag_map;
 }
 
-void draw_nodes_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-						 struct buffer_for_gl *gl_buf){
-	int i, ip_st;
-	
-	draw_node_by_ico(mesh_s->num_pe_sf, IZERO, mesh_s->nod_stack_domain_sf,
-			mesh_s->nod_item_domain_sf, mesh_s,
-			mesh_m->node_diam, mesh_m->domain_node_color,
-			mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
-			mesh_m->domain_node_color_code, mesh_m->draw_domains_nod, gl_buf);
-	
-	/* ! draw node group */
-	
-	for (i = 0; i < mesh_s->ngrp_nod_sf; i++){
-		ip_st = i * mesh_s->num_pe_sf;
-		
-		if( mesh_m->draw_nodgrp_nod[i] ){
-	
-			draw_node_by_ico(mesh_s->ngrp_nod_sf, i, &mesh_s->nod_stack_sf[ip_st],
-					mesh_s->nod_item_sf, mesh_s,
-					mesh_m->node_diam, mesh_m->node_node_color,
-					mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
-					mesh_m->node_node_color_code, mesh_m->always_draw_domains, gl_buf);
-	
-		};
-	};
-	
-	/* ! draw element group */
-	
-	for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
-		ip_st = i * mesh_s->num_pe_sf;
-		
-		if( mesh_m->draw_elegrp_nod[i] ){
-			draw_node_by_ico(mesh_s->ngrp_ele_sf, i, &mesh_s->ele_nod_stack_sf[ip_st],
-					mesh_s->ele_nod_item_sf, mesh_s,
-					mesh_m->node_diam, mesh_m->ele_node_color,
-					mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
-					mesh_m->ele_node_color_code, mesh_m->always_draw_domains, gl_buf);
-	
-		};
-	};
-	
-	/* ! draw surface group */
-	
-	for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
-		ip_st = i * mesh_s->num_pe_sf;
-		
-		if( mesh_m->draw_surfgrp_nod[i] ){
-			draw_node_by_ico(mesh_s->ngrp_surf_sf, i, &mesh_s->surf_nod_stack_sf[ip_st],
-					mesh_s->surf_nod_item_sf, mesh_s,
-					mesh_m->node_diam, mesh_m->surf_node_color,
-					mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
-					mesh_m->surf_node_color_code, mesh_m->always_draw_domains, gl_buf);
-	
-		};
-	};
-	return;
-}
-
 
 void draw_grids_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 						 struct buffer_for_gl *gl_buf){
