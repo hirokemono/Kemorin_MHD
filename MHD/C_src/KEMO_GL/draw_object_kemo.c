@@ -59,53 +59,6 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 }
 
 
-void draw_grids_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-						 struct buffer_for_gl *gl_buf){
-	int i, ip_st;
-	
-	for(i=0; i < mesh_s->num_pe_sf;i++){mesh_s->ip_domain_far[i] = i+1;};
-	
-	if(mesh_m->draw_surface_grid != 0){
-		draw_mesh_grid(mesh_m->domain_grid_color, mesh_m->mesh_color_mode,
-					   mesh_m->num_of_color_loop, mesh_m->domain_grid_color_code,
-					   mesh_s->num_pe_sf, mesh_s->edge_stack_domain_sf, 
-					   mesh_s->edge_item_domain_sf, IZERO, mesh_m->draw_domains_grid,
-					   mesh_s, gl_buf);
-	};
-	
-	/* ! draw element group */
-	
-	for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
-		ip_st = i * mesh_s->num_pe_sf;
-		
-		if( mesh_m->draw_elegrp_grid[i] ){
-			draw_mesh_grid(mesh_m->ele_grid_color, mesh_m->mesh_color_mode, 
-						   mesh_m->num_of_color_loop, mesh_m->ele_grid_color_code,
-						   mesh_s->ngrp_ele_sf, &mesh_s->ele_edge_stack_sf[ip_st],
-						   mesh_s->ele_edge_item_sf, i, mesh_m->always_draw_domains,
-						   mesh_s, gl_buf);
-		};
-	};
-	
-	/* ! draw surface group */
-	
-	for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
-		ip_st = i * mesh_s->num_pe_sf;
-		
-		if( mesh_m->draw_surfgrp_grid[i] ){
-			draw_mesh_grid(mesh_m->surf_grid_color, mesh_m->mesh_color_mode,
-						   mesh_m->num_of_color_loop, mesh_m->surf_grid_color_code,
-						   mesh_s->ngrp_surf_sf, &mesh_s->surf_edge_stack_sf[ip_st], 
-						   mesh_s->surf_edge_item_sf, i, mesh_m->always_draw_domains, 
-						   mesh_s, gl_buf);
-		};
-	};
-	glEnable(GL_CULL_FACE);
-	
-	return;
-}
-
-
 void draw_nodes_ico_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 			struct view_element *view_s, struct VAO_ids *mesh_VAO, 
 			struct kemoview_shaders *kemo_shaders, struct gl_strided_buffer *mesh_buf){

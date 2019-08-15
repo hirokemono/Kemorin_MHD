@@ -70,18 +70,22 @@ void mesh_patch_VBO(struct view_element *view_s, int shading_mode, int polygon_m
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
 	
-	int id_lightPosition = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource.position");
+	int id_numLight = glGetUniformLocation(kemo_shaders->phong->programId, "num_lights");
+	int id_lightPosition = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource[0].position");
 	
 	int id_MaterialAmbient = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.ambient");
 	int id_MaterialDiffuse = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.diffuse");
 	int id_MaterialSpecular = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.specular");
 	int id_MaterialShiness = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.shininess");
 	
+	int num_light = 1;
 	GLfloat  lightposition[4] = {5.0, 5.0, -5.0,1.0};
 	GLfloat white1[4] = {0.3, 0.3, 0.3, 1.0};
 	GLfloat white2[4] = {0.8, 0.8, 0.8, 1.0};
 	GLfloat white3[4] = {1.0, 1.0, 1.0, 1.0};
 	GLfloat shine = 20.0;
+	
+	glUniform1i(id_numLight, num_light);
 	glUniform4fv(id_lightPosition, 1, lightposition);
 	
 	glUniform4fv(id_MaterialAmbient, 1, white2);

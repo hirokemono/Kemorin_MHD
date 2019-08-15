@@ -140,23 +140,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		iflag_psf = iflag_psf + iflag;
 	};
     
-	
-	if(mesh_m->iflag_draw_mesh != 0){
-		glDisable(GL_CULL_FACE);
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-		
-		draw_grids_4_domain(mesh_s, mesh_m, gl_buf);
-		
-		if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
-			glPolygonMode(GL_FRONT, GL_FILL);
-			glCullFace(GL_BACK);
-		}
-		else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
-			glPolygonMode(GL_BACK, GL_FILL);
-			glCullFace(GL_FRONT);
-		};
-	};
-    
 	if(mesh_m->iflag_view_type != VIEW_MAP) {
 		if(mesh_m->iflag_draw_coast != 0)   {draw_coastline(mesh_m->radius_coast, gl_buf);};
 		if(mesh_m->iflag_draw_sph_grid != 0){draw_sph_flame(mesh_m->radius_coast, gl_buf);};
@@ -372,17 +355,24 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		
 		transfer_matrix_to_shader(kemo_shaders->phong, view_s);
 		
-		int id_lightPosition = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource.position");
+		int id_numLight = glGetUniformLocation(kemo_shaders->phong->programId, "num_lights");
+		int id_light1Position = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource[0].position");
+		int id_light2Position = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource[1].position");
 		
 		int id_MaterialAmbient = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.ambient");
 		int id_MaterialDiffuse = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.diffuse");
 		int id_MaterialSpecular = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.specular");
 		int id_MaterialShiness = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.shininess");
 		
-		GLfloat  lightposition[4] = {1.5,1.5,-10.0,0.0};
+		int num_light = 2;
+		GLfloat  lightposition[4] =  { 1.5, 1.5,-10.0,0.0};
+		GLfloat  light2position[4] = {-1.5,-1.5,-10.0,0.0};
 		GLfloat white[4] = {0.6, 0.6, 0.6, 1.0};
 		GLfloat shine = 20.0;
-		glUniform4fv(id_lightPosition, 1, lightposition);
+		
+		glUniform1i(id_numLight, num_light);
+		glUniform4fv(id_light1Position, 1, lightposition);
+		glUniform4fv(id_light2Position, 1, light2position);
 		
 		glUniform4fv(id_MaterialAmbient, 1, white);
 		glUniform4fv(id_MaterialDiffuse, 1, white);

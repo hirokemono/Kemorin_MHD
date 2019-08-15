@@ -471,7 +471,7 @@ char * load_phong_frag(){
         "in vec3 normal;\n"\
         "out vec4 out_Color;\n"\
         "\n"\
-        "#define MAX_LIGHTS 3\n"\
+        "#define MAX_LIGHTS 10\n"\
         "struct LightSourceParameters{\n"\
         "	vec4 ambient;              // Aclarri\n"\
         "	vec4 diffuse;              // Dcli\n"\
@@ -484,11 +484,12 @@ char * load_phong_frag(){
         "	// (range: [0.0,90.0], 180.0)\n"\
         "	float spotCosCutoff;       // Derived: cos(Crli)\n"\
         "	// (range: [1.0,0.0],-1.0)\n"\
-        "	float constantAttenuation; // K0\n"\
-        "	float linearAttenuation;   // K1\n"\
-        "	float quadraticAttenuation;// K2\n"\
+        "	float constantAttenuation;   // K0\n"\
+        "	float linearAttenuation;     // K1\n"\
+        "	float quadraticAttenuation;  // K2\n"\
         "};\n"\
-        "uniform LightSourceParameters LightSource;\n"\
+        "uniform int num_lights;\n"\
+        "uniform LightSourceParameters LightSource[MAX_LIGHTS];\n"\
         "\n"\
         "struct ColorMaterial {\n"\
         "	vec4 emission;    // Ecm\n"\
@@ -500,23 +501,26 @@ char * load_phong_frag(){
         "uniform ColorMaterial frontMaterial;\n"\
         "uniform ColorMaterial backMaterial;\n"\
         "\n"\
-        "\n"\
-        "uniform int num_lights;\n"\
-        "\n"\
         "void main (void)\n"\
         "{\n"\
         "	vec3 fnormal = normalize(normal);\n"\
-        "	vec3 light = normalize(LightSource.position.xyz - position.xyz);\n"\
-        "	float diffuse = dot(light, fnormal);\n"\
-        "	\n"\
-        "	out_Color = ex_Color * frontMaterial.ambient;\n"\
-        "	if (diffuse > 0.0) {\n"\
-        "		vec3 view = normalize(position.xyz);\n"\
-        "		vec3 halfway = normalize(light - view);\n"\
-        "		float product = max(dot(fnormal, halfway), 0.0);\n"\
-        "		float specular = pow(product, frontMaterial.shininess);\n"\
-        "		out_Color += ex_Color * frontMaterial.diffuse * diffuse\n"\
-        "		+ vec4(frontMaterial.specular.xyz, ex_Color.w) * specular;\n"\
+        "	vec3 light;\n"\
+        "	float diffuse;\n"\
+        "\n"\
+        "	out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
+        "	for (int i = 0; i < num_lights; ++i){\n"\
+        "		light = normalize(LightSource[i].position.xyz - position.xyz);\n"\
+        "		diffuse = dot(light, fnormal);\n"\
+        "\n"\
+        "		out_Color += ex_Color * frontMaterial.ambient;\n"\
+        "		if (diffuse > 0.0) {\n"\
+        "			vec3 view = normalize(position.xyz);\n"\
+        "			vec3 halfway = normalize(light - view);\n"\
+        "			float product = max(dot(fnormal, halfway), 0.0);\n"\
+        "			float specular = pow(product, frontMaterial.shininess);\n"\
+        "			out_Color += ex_Color * frontMaterial.diffuse * diffuse\n"\
+        "			+ vec4(frontMaterial.specular.xyz, ex_Color.w) * specular;\n"\
+        "		}\n"\
         "	}\n"\
         "}\n"\
         "\n"\

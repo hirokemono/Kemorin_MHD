@@ -14,10 +14,6 @@
 
 /* prototypes */
 
-void draw_mesh_grid(int line_color, int color_mode, int color_loop, GLfloat single_color[4],
-					int num_grp, int *istack_grp, int *item_grp, int igrp, int *iflag_domain, 
-					struct viewer_mesh *mesh_s, struct buffer_for_gl *gl_buf);
-
 void mesh_edge_VBO(struct view_element *view_s, int line_color, int color_mode, int color_loop, GLfloat single_color[4],
 			int num_grp, int *istack_grp, int *item_grp, int igrp, int *iflag_domain, 
 			struct viewer_mesh *mesh_s, 
