@@ -12,7 +12,6 @@
 #include "glsl.h"
 #include "init_gl_lighting_c.h"
 #include "rainbow_color_code_c.h"
-#include "drawcube_gl.h"
 
 /* prototypes */
 void mesh_patch_VBO(struct view_element *view_s, int shading_mode, int polygon_mode, int surface_color,

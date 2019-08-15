@@ -4,7 +4,7 @@
 #include "draw_patch_4_mesh_c.h"
 #include <OpenGL/gl3.h>
 
-static void set_each_mesh_tri_patch_w_stride(int ie_local, int iele, int shading_mode, int polygon_mode, 
+static void set_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int polygon_mode, 
 			double **xx_draw, int **ie_sf_viewer, int *node_quad_2_linear_tri, 
 			double normal_ele[3], double normal_nod[9], 
 			double f_color[4], int inum_buf, struct gl_strided_buffer *strided_buf){
@@ -66,7 +66,7 @@ void mesh_patch_VBO(struct view_element *view_s, int shading_mode, int polygon_m
 	
 	
 	int num_patch = count_patch_VBO(istack_grp, ip_domain_far, mesh_s, iflag_domain);
-		
+	
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
 	
@@ -92,8 +92,6 @@ void mesh_patch_VBO(struct view_element *view_s, int shading_mode, int polygon_m
 	set_buffer_address_4_patch(3*num_patch, mesh_buf);
 	resize_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
 	
-//		cube_flat_VBO(0.2f, mesh_VAO, mesh_buf);
-	
 	
 	for(i = 0; i < mesh_s->num_pe_sf; i++){
 		ip = ip_domain_far[i] - 1;
@@ -112,7 +110,7 @@ void mesh_patch_VBO(struct view_element *view_s, int shading_mode, int polygon_m
 					printf("%d, %f %f %f \n", jnum, normal_ele[jnum][0],
 								normal_ele[jnum][1], normal_ele[jnum][2]);
 					 */
-					set_each_mesh_tri_patch_w_stride(j, item_grp[inum], shading_mode, polygon_mode,
+					set_each_mesh_tri_patch(j, item_grp[inum], shading_mode, polygon_mode,
 								mesh_s->xx_draw, mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri, 
 								normal_ele[jnum], normal_nod[jnum], 
 								f_color, inum_buf, mesh_buf);

@@ -302,9 +302,12 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		glShadeModel(GL_SMOOTH);
 		glEnable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT, GL_FILL);
-		
-		draw_nodes_4_domain(mesh_s, mesh_m, gl_buf);
 		 */
+		
+		struct gl_strided_buffer *mesh_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+		
+		glDisable(GL_CULL_FACE);
+		draw_nodes_ico_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
 		
 		glEnable(GL_CULL_FACE);
 		if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
@@ -315,7 +318,6 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			glPolygonMode(GL_BACK, GL_FILL);
 			glCullFace(GL_FRONT);
 		};
-		struct gl_strided_buffer *mesh_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 		draw_mesh_patches_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
 		free(mesh_buf);
 		DestroyVBO(cube_VAO);
