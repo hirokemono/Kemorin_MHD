@@ -40,7 +40,7 @@ void display3(){
 //	kemoview_modify_view();
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	kemoview_draw_objects_gl3();
+	kemoview_draw_objects_c();
 	
 	glutSwapBuffers();
 	

@@ -147,7 +147,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	kemoview_set_animation_rot_axis((int) rotationaxis);
 	kemoview_set_animation_rot_angle((int) int_degree);
     kemoview_set_single_viewer_id(id_window);
-	kemoview_draw_objects_gl3();
+	kemoview_draw_objects_c();
 	kemoview_rotate();
 	
 	[self swapbuffer_cocoa];
@@ -158,7 +158,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 {	
     kemoview_set_single_viewer_id(id_window);
 	kemoview_viewer_evolution((int) timeStep);
-	kemoview_draw_objects_gl3();
+	kemoview_draw_objects_c();
 	kemoview_modify_view();
 	
 	[self swapbuffer_cocoa];
@@ -168,7 +168,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 -(void) UpdateImage
 {
     kemoview_set_single_viewer_id(id_window);
-	kemoview_draw_objects_gl3();
+	kemoview_draw_objects_c();
 	[self swapbuffer_cocoa];
 	return;
 }
@@ -179,7 +179,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	[self resizeGL]; // forces projection matrix update (does test for size changes)
 	[self updateModelView];  // update model view matrix for object
 	[_cocoaGLMessages  drawInfo:XpixelRectView:YpixelRectView];
-	kemoview_draw_objects_gl3();
+	kemoview_draw_objects_c();
 	[self swapbuffer_cocoa];
 }
 
@@ -244,7 +244,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 - (void) Resetview
 {
 	kemoviewer_reset_to_init_angle();
-	kemoview_draw_objects_gl3();
+	kemoview_draw_objects_c();
 
 	[self updateProjection];
 	[self swapbuffer_cocoa];
@@ -343,7 +343,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 /*		kemoview_drugging_addToRotationTrackball();*/
 		[_resetview UpdateParameters];
 	} 
-	kemoview_draw_objects_gl3();
+	kemoview_draw_objects_c();
 	gTrackingViewInfo = NULL;
 	[self setNeedsDisplay: YES];
 }
@@ -512,7 +512,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	kemoviewer_reset_to_init_angle();
 	kemoview_init_lighting(iflag_core_profile);
 
-	kemoview_draw_objects_gl3();
+	kemoview_draw_objects_c();
 	
 	// set start values...
 	fAnimate =  0;
