@@ -15,13 +15,6 @@
 #include "drawcube_gl.h"
 
 /* prototypes */
-void draw_mesh_patch(int shading_mode, int polygon_mode, int surface_color,
-					 int color_mode, int color_loop, double opacity, GLfloat single_color[4], 
-					 int num_grp, int *istack_grp, int *item_grp, 
-					 double **normal_ele, double **normal_nod, int *isort_grp, 
-					 int *ip_domain_far, int igrp, struct viewer_mesh *mesh_s, 
-					 int *iflag_domain, struct buffer_for_gl *gl_buf);
-
 void mesh_patch_VBO(struct view_element *view_s, int shading_mode, int polygon_mode, int surface_color,
 			int color_mode, int color_loop, double opacity, GLfloat single_color[4], 
 			int num_grp, int *istack_grp, int *item_grp, 
