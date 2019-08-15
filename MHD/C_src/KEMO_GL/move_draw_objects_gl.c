@@ -285,21 +285,14 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	modify_view_by_struct(view_s);
 		
 	if(mesh_m->iflag_draw_mesh != 0){
-		/*
-		glDisable(GL_CULL_FACE);
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-		
-		draw_grids_4_domain(mesh_s, mesh_m, gl_buf);
-		
-		
-		glShadeModel(GL_SMOOTH);
-		glEnable(GL_CULL_FACE);
-		glPolygonMode(GL_FRONT, GL_FILL);
-		 */
 		
 		struct gl_strided_buffer *mesh_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 		
 		glDisable(GL_CULL_FACE);
+		draw_mesh_edges_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
+		
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT, GL_FILL);
 		draw_nodes_ico_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
 		
 		glEnable(GL_CULL_FACE);
@@ -329,7 +322,6 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	*/
 	
 	if(mesh_m->iflag_draw_mesh != 0){
-		
 		if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
 			glPolygonMode(GL_FRONT, GL_FILL);
 			glCullFace(GL_BACK);

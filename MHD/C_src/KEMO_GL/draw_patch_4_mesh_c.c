@@ -89,7 +89,7 @@ void mesh_patch_VBO(struct view_element *view_s, int shading_mode, int polygon_m
 	glUniform4fv(id_MaterialSpecular, 1, white3);
 	glUniform1f(id_MaterialShiness, shine);
 	
-	set_buffer_address_4_patch(3*num_patch, mesh_buf);
+	set_buffer_address_4_patch(ITHREE*num_patch, mesh_buf);
 	resize_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
 	
 	

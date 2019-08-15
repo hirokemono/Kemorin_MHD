@@ -318,7 +318,9 @@ module:
 	'$$(KEMO_C_GLDIR)'/draw_grids_4_mesh.c \
 	draw_grids_4_mesh.h \
 	m_surface_mesh_4_viewer_c.o \
+	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
+	glsl.o \
 	rainbow_color_code_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
