@@ -356,9 +356,14 @@ char * load_gouraud_frag(){
         "#version 400\n"\
         "// gouraud.frag\n"\
         "\n"\
+        "in vec4 ex_Position;\n"\
+        "in vec4 ex_Color;\n"\
+        "\n"\
+        "out vec4 out_Color;\n"\
+        "\n"\
         "void main (void)\n"\
         "{\n"\
-        "	gl_FragColor = gl_Color;\n"\
+        "	out_Color = ex_Color;\n"\
         "}\n"\
         "\n"
     };
@@ -382,27 +387,68 @@ char * load_gouraud_vert(){
         "layout (location = 3) in vec3  norm;\n"\
         "layout (location = 4) in vec2  txur;\n"\
         "\n"\
+        "out vec4 ex_Position;\n"\
+        "out vec4 ex_Color;\n"\
+        "\n"\
         "uniform mat4 projectionMat;\n"\
         "uniform mat4 viewMatrix;\n"\
         "uniform mat4 modelViewMat;\n"\
+        "uniform mat3 modelNormalMat;\n"\
+        "\n"\
+        "#define MAX_LIGHTS 10\n"\
+        "struct LightSourceParameters{\n"\
+        "	vec4 ambient;              // Aclarri\n"\
+        "	vec4 diffuse;              // Dcli\n"\
+        "	vec4 specular;             // Scli\n"\
+        "	vec4 position;             // Ppli\n"\
+        "	vec4 halfVector;           // Derived: Hi\n"\
+        "	vec3 spotDirection;        // Sdli\n"\
+        "	float spotExponent;        // Srli\n"\
+        "	float spotCutoff;          // Crli\n"\
+        "	// (range: [0.0,90.0], 180.0)\n"\
+        "	float spotCosCutoff;       // Derived: cos(Crli)\n"\
+        "	// (range: [1.0,0.0],-1.0)\n"\
+        "	float constantAttenuation;   // K0\n"\
+        "	float linearAttenuation;     // K1\n"\
+        "	float quadraticAttenuation;  // K2\n"\
+        "};\n"\
+        "uniform int num_lights;\n"\
+        "uniform LightSourceParameters LightSource[MAX_LIGHTS];\n"\
+        "\n"\
+        "struct ColorMaterial {\n"\
+        "	vec4 emission;    // Ecm\n"\
+        "	vec4 ambient;     // Acm\n"\
+        "	vec4 diffuse;     // Dcm\n"\
+        "	vec4 specular;    // Scm\n"\
+        "	float shininess;  // Srm\n"\
+        "};\n"\
+        "uniform ColorMaterial frontMaterial;\n"\
+        "uniform ColorMaterial backMaterial;\n"\
+        "\n"\
         "\n"\
         "void main(void)\n"\
         "{\n"\
         "	vec3 position = vec3(modelViewMat * vec4(xyz, 1.0));\n"\
-        "	vec3 normal = normalize(gl_NormalMatrix * norm);\n"\
-        "	vec3 light = normalize(gl_LightSource[0].position.xyz - position);\n"\
-        "	float diffuse = dot(light, normal);\n"\
+        "	vec3 normal = normalize(modelNormalMat * norm);\n"\
+        "	vec3 light;\n"\
+        "	float diffuse;\n"\
         "	\n"\
-        "	gl_FrontColor = gl_FrontLightProduct[0].ambient;\n"\
-        "	if (diffuse > 0.0) {\n"\
-        "		vec3 view = normalize(position);\n"\
-        "		vec3 halfway = normalize(light - view);\n"\
-        "		float specular = pow(max(dot(normal, halfway), 0.0), gl_FrontMaterial.shininess);\n"\
-        "		gl_FrontColor += gl_FrontLightProduct[0].diffuse * diffuse\n"\
-        "					  + gl_FrontLightProduct[0].specular * specular;\n"\
+        "	ex_Color = vec4(0.0,0.0,0.0,0.0);\n"\
+        "	for (int i = 0; i < num_lights; ++i){\n"\
+        "		light = normalize(LightSource[0].position.xyz - position);\n"\
+        "		diffuse = dot(light, normal);\n"\
+        "		\n"\
+        "		ex_Color += frontMaterial.ambient;\n"\
+        "		if (diffuse > 0.0) {\n"\
+        "			vec3 view = normalize(position);\n"\
+        "			vec3 halfway = normalize(light - view);\n"\
+        "			float specular = pow(max(dot(normal, halfway), 0.0), frontMaterial.shininess);\n"\
+        "			ex_Color += frontMaterial.diffuse * diffuse\n"\
+        "						  + frontMaterial.specular * specular;\n"\
+        "		}\n"\
         "	}\n"\
         "	\n"\
-        "	gl_Position =  projectionMat * vec4(position, 1.0);\n"\
+        "	ex_Position =  projectionMat * vec4(position, 1.0);\n"\
         "}\n"\
         "\n"
     };
