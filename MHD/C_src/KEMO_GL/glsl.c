@@ -231,17 +231,27 @@ void destory_shaders(struct shader_ids *shader)
 
 
 void transfer_matrix_to_shader(struct shader_ids *Shader, struct view_element *view_s){
-	GLfloat model[16], proj[16];
+	double a_inv[16];
+	GLfloat model[16], proj[16], nrmat[9];
 	int i;
+	
 	
 	int modelMatLocation =   glGetUniformLocation(Shader->programId, "modelViewMat");
 	int projectMatLocation = glGetUniformLocation(Shader->programId, "projectionMat");
+	int normalMatLocation = glGetUniformLocation(Shader->programId, "modelNormalMat");
 	
+	cal_inverse_44_matrix_c(view_s->mat_object_2_eye, a_inv);
 	for(i=0;i<16;i++) {model[i] = (GLfloat) view_s->mat_object_2_eye[i];};
 	for(i=0;i<16;i++) {proj[i] = (GLfloat) view_s->mat_eye_2_clip[i];};
+	for(i=0;i<3;i++) {
+		nrmat[3*i  ] = (GLfloat) a_inv[  i];
+		nrmat[3*i+1] = (GLfloat) a_inv[4+i];
+		nrmat[3*i+2] = (GLfloat) a_inv[8+i];
+	};
 	
 	glUniformMatrix4fv(modelMatLocation, 1,   NULL, model);
 	glUniformMatrix4fv(projectMatLocation, 1, NULL, proj);
+	glUniformMatrix3fv(normalMatLocation, 1, NULL, nrmat);
 };
 
 void identity_matrix_to_shader(struct shader_ids *Shader){

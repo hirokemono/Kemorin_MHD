@@ -53,6 +53,5 @@ void main (void)
 		out_Color += ex_Color * frontMaterial.diffuse * diffuse
 		+ frontMaterial.specular * specular;
 	}
-	out_Color = ex_Color;
 }
 

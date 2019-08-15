@@ -410,6 +410,7 @@ module:
 	m_psf_data_4_viewer_c.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
+	glsl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -422,13 +423,14 @@ module:
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
 	m_gl_transfer_matrix.o \
-	vartex_array_object_gl.o \
 	draw_colorbar_gl.o \
 	draw_fieldlines.o \
 	draw_mapgrid.o \
 	draw_coastline.o \
 	drawcube_gl.o \
 	draw_patches_4_PSF.o \
+	vartex_array_object_gl.o \
+	glsl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -662,6 +664,7 @@ module:
 	kemoviewer.h \
 	m_gl_transfer_matrix.o \
 	shaders.o \
+	invert_small_matrix_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

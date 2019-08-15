@@ -302,8 +302,11 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		
 		iflag_psf = iflag_psf + iflag;
 	};
-    
+	
 	*/
+	update_projection_struct(view_s);
+	modify_view_by_struct(view_s);
+		
 	if(mesh_m->iflag_draw_mesh != 0){
 		/*
 		glDisable(GL_CULL_FACE);
@@ -317,7 +320,9 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		glPolygonMode(GL_FRONT, GL_FILL);
 		
 		draw_nodes_4_domain(mesh_s, mesh_m, gl_buf);
+		 */
 		
+		glEnable(GL_CULL_FACE);
 		if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
 			glPolygonMode(GL_FRONT, GL_FILL);
 			glCullFace(GL_BACK);
@@ -326,8 +331,8 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			glPolygonMode(GL_BACK, GL_FILL);
 			glCullFace(GL_FRONT);
 		};
-		*/
-		draw_patches_4_domain(mesh_s, mesh_m, gl_buf);
+		struct gl_strided_buffer *mesh_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+		draw_mesh_patches_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
 	};
     /*
 	if(mesh_m->iflag_view_type != VIEW_MAP) {
@@ -390,11 +395,6 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	
 	/* draw example cube for empty data */
 	if( (mesh_m->iflag_draw_mesh+iflag_psf+fline_m->iflag_draw_fline) == 0){
-		glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		update_projection_struct(view_s);
-		modify_view_by_struct(view_s);
-		
 		glUseProgram(kemo_shaders->phong->programId);
 		
 		transfer_matrix_to_shader(kemo_shaders->phong, view_s);
@@ -406,9 +406,9 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		int id_MaterialSpecular = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.specular");
 		int id_MaterialShiness = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.shininess");
 		
-		GLfloat  lightposition[4] = {1.5,0.5,2.0,0.0};
-		GLfloat white[4] = {0.8, 0.8, 0.8, 1.0};
-		GLfloat shine = 0.6;
+		GLfloat  lightposition[4] = {1.5,1.5,-10.0,0.0};
+		GLfloat white[4] = {0.6, 0.6, 0.6, 1.0};
+		GLfloat shine = 20.0;
 		glUniform4fv(id_lightPosition, 1, lightposition);
 		
 		glUniform4fv(id_MaterialAmbient, 1, white);
@@ -417,14 +417,8 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		glUniform1f(id_MaterialShiness, shine);
 		
 		struct gl_strided_buffer *cube_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-		cube_buf->num_nod_buf = 8;
-		cube_buf->ncomp_buf = 12;
-		
-		cube_buf->ist_xyz =  0;
-		cube_buf->ist_norm = 3;
-		cube_buf->ist_tex =  6;
-		cube_buf->ist_csurf = 8;
-		cube_buf->v_buf = (GLfloat *) malloc(cube_buf->num_nod_buf*cube_buf->ncomp_buf*sizeof(GLfloat));
+		set_buffer_address_4_patch(8, cube_buf);
+		alloc_strided_buffer(cube_buf->num_nod_buf, cube_buf->ncomp_buf, cube_buf);
 		
 		cube_surf_VBO(0.5f, cube_VAO, cube_buf);
 		
@@ -434,7 +428,7 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		
 		free(cube_buf->v_buf);
 		free(cube_buf);
-//		DestroyVBO(cube_VAO);
+		DestroyVBO(cube_VAO);
 	}
 	
 	return;
@@ -452,14 +446,8 @@ void draw_cube_edge_gl3(struct view_element *view_s,
 	
 	GLuint idx_indexBuf;
 	
-	gl_buf->num_nod_buf = 8;
-	gl_buf->ncomp_buf = 12;
-	
-	gl_buf->ist_xyz =  0;
-	gl_buf->ist_norm = 3;
-	gl_buf->ist_tex =  6;
-	gl_buf->ist_csurf = 8;
-	gl_buf->v_buf = (GLfloat *) malloc(gl_buf->num_nod_buf*gl_buf->ncomp_buf*sizeof(GLfloat));
+	set_buffer_address_4_patch(8, gl_buf);
+	alloc_strided_buffer(gl_buf->num_nod_buf, gl_buf->ncomp_buf, gl_buf);
 	
 	cube_edge_VBO(0.5f, cube_VAO, gl_buf);
 	
@@ -481,15 +469,8 @@ void draw_quad_gl3(struct view_element *view_s,
 	
 	identity_matrix_to_shader(kemo_shaders->test);
 	
-	
-	quad_buf->num_nod_buf = 4;
-	quad_buf->ncomp_buf = 12;
-	
-	quad_buf->ist_xyz =  0;
-	quad_buf->ist_norm = 3;
-	quad_buf->ist_tex =  6;
-	quad_buf->ist_csurf = 8;
-	quad_buf->v_buf = (GLfloat *) malloc(quad_buf->num_nod_buf*quad_buf->ncomp_buf*sizeof(GLfloat));
+	set_buffer_address_4_patch(4, quad_buf);
+	alloc_strided_buffer(quad_buf->num_nod_buf, quad_buf->ncomp_buf, quad_buf);
 	
 	set_quadVBO(quad_VAO, quad_buf);
 	

@@ -1,6 +1,7 @@
 
 /* draw_object_kemo.c */
 
+#include <OpenGL/gl3.h>
 #include "draw_object_kemo.h"
 
 
@@ -289,6 +290,73 @@ void draw_transparent_4_domain(struct viewer_mesh *mesh_s, struct mesh_menu_val 
 		};
 	};
 	
+	return;
+}
+
+
+void draw_mesh_patches_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+			struct view_element *view_s, struct VAO_ids *mesh_VAO, 
+			struct kemoview_shaders *kemo_shaders, struct gl_strided_buffer *mesh_buf){
+	int i, ip_st;
+	
+	copy_patch_distance_mesh(mesh_s);
+	
+/*
+	for(i=0;i<mesh_s->nsurf_domain_sf * mesh_s->nsurf_each_tri;i++){
+		printf("%d, %f %f %f \n", i, mesh_s->normal_domain[i][0],
+		mesh_s->normal_domain[i][1], mesh_s->normal_domain[i][2]);
+	}
+*/
+	
+	set_buffer_address_4_patch(3*128, mesh_buf);
+	alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
+	
+	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity >= 1.0){
+		mesh_patch_VBO(view_s, mesh_m->shading_mode, mesh_m->polygon_mode, 
+				mesh_m->domain_surface_color, mesh_m->mesh_color_mode,
+				mesh_m->num_of_color_loop, mesh_m->domain_opacity,
+				mesh_m->domain_surface_color_code, 
+				mesh_s->num_pe_sf, mesh_s->isurf_stack_domain_sf, 
+				mesh_s->isurf_domain_sf, mesh_s->normal_domain, mesh_s->norm_nod_domain,
+				mesh_s->iele_domain_far, mesh_s->ip_domain_far,
+				IZERO, mesh_s, mesh_m->draw_domains_solid, mesh_VAO, kemo_shaders, mesh_buf);
+	};
+	
+	/* ! draw element group */
+	
+	for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
+		ip_st = i * mesh_s->num_pe_sf;
+		
+		if( mesh_m->draw_elegrp_solid[i] != 0 && mesh_m->ele_grp_opacity >= 1.0){
+			mesh_patch_VBO(view_s, mesh_m->shading_mode, mesh_m->polygon_mode, 
+					mesh_m->ele_surface_color, mesh_m->mesh_color_mode,
+					mesh_m->num_of_color_loop, mesh_m->ele_grp_opacity,
+					mesh_m->ele_surface_color_code, 
+					mesh_s->ngrp_ele_sf, &mesh_s->ele_stack_sf[ip_st],
+					mesh_s->ele_item_sf, mesh_s->normal_ele_grp, mesh_s->norm_nod_ele_grp,
+					mesh_s->iele_grp_far, mesh_s->ip_domain_far,
+					i, mesh_s, mesh_m->always_draw_domains, mesh_VAO, kemo_shaders, mesh_buf);
+		};
+	};
+	
+	/* ! draw surface group */
+	
+	for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
+		ip_st = i * mesh_s->num_pe_sf;
+		
+		if( mesh_m->draw_surfgrp_solid[i] != 0 && mesh_m->surf_grp_opacity >= 1.0){
+			mesh_patch_VBO(view_s, mesh_m->shading_mode, mesh_m->polygon_mode, 
+					mesh_m->surf_surface_color, mesh_m->mesh_color_mode,
+					mesh_m->num_of_color_loop, mesh_m->surf_grp_opacity,
+					mesh_m->surf_surface_color_code,
+					mesh_s->ngrp_surf_sf, &mesh_s->surf_stack_sf[ip_st],
+					mesh_s->surf_item_sf, mesh_s->normal_surf_grp, mesh_s->norm_nod_surf_grp, 
+					mesh_s->isurf_grp_far, mesh_s->ip_domain_far,
+					i, mesh_s, mesh_m->always_draw_domains, mesh_VAO, kemo_shaders, mesh_buf);
+		};
+	};
+	
+	free(mesh_buf->v_buf);
 	return;
 }
 

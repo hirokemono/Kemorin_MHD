@@ -78,7 +78,11 @@ int flatSurfCube_VBO(int icou, GLfloat fSize, struct gl_strided_buffer *strided_
 	
 	for(j=0;j<12;j++){
 		for(k=0;k<3;k++){
-			set_node_stride_VBO(icou, strided_buf);
+			strided_buf->x_draw = &strided_buf->v_buf[strided_buf->ist_xyz +   strided_buf->ncomp_buf*icou];
+			strided_buf->n_draw = &strided_buf->v_buf[strided_buf->ist_norm +  strided_buf->ncomp_buf*icou];
+			strided_buf->x_txur = &strided_buf->v_buf[strided_buf->ist_tex +   strided_buf->ncomp_buf*icou];
+			strided_buf->c_draw = &strided_buf->v_buf[strided_buf->ist_csurf + strided_buf->ncomp_buf*icou];
+		
 			icou = icou + 1;
 			
 			i = cube_tri_faces[j][k];
@@ -413,8 +417,8 @@ void drawCube_flat(GLfloat fSize,
 	int icou;
 	
 	/* Set Stride for each vertex buffer */
-	set_buffer_address_4_patch(strided_buf);
-	strided_buf->istride = strided_buf->ncomp_buf;
+	set_buffer_address_4_patch(8, strided_buf);
+	strided_buf->istride = sizeof(GLfloat)*strided_buf->ncomp_buf;
 	
 	icou = 0;
 	icou = flatSurfCube_VBO(icou, fSize, strided_buf);
@@ -441,22 +445,22 @@ void drawCube_flat(GLfloat fSize,
 	*/
 	
 	/* Stride is size of buffer for each point */
-	glVertexPointer(3,   GL_FLOAT, (sizeof(GLfloat)*strided_buf->istride),
+	glVertexPointer(3,   GL_FLOAT, strided_buf->istride,
 				(sizeof(GLfloat)*strided_buf->ist_xyz));
-	glNormalPointer(     GL_FLOAT, (sizeof(GLfloat)*strided_buf->istride),
+	glNormalPointer(     GL_FLOAT, strided_buf->istride,
 				(sizeof(GLfloat)*strided_buf->ist_norm));
-	glTexCoordPointer(2, GL_FLOAT, (sizeof(GLfloat)*strided_buf->istride),
+	glTexCoordPointer(2, GL_FLOAT, strided_buf->istride,
 				(sizeof(GLfloat)*strided_buf->ist_tex));
-	glColorPointer(4,    GL_FLOAT, (sizeof(GLfloat)*strided_buf->istride),
+	glColorPointer(4,    GL_FLOAT, strided_buf->istride,
 				(sizeof(GLfloat)*strided_buf->ist_csurf));
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (sizeof(GLfloat)*strided_buf->istride),
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, strided_buf->istride,
 						  (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (sizeof(GLfloat)*strided_buf->istride), 
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, strided_buf->istride, 
 						  (GLvoid*) (strided_buf->ist_norm * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (sizeof(GLfloat)*strided_buf->istride), 
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, strided_buf->istride, 
 						  (GLvoid*) (strided_buf->ist_tex * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (sizeof(GLfloat)*strided_buf->istride), 
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, strided_buf->istride, 
 						  (GLvoid*) (strided_buf->ist_csurf * sizeof(GL_FLOAT)));
 	
 	glEnableVertexAttribArray(0);
@@ -487,8 +491,6 @@ void drawCube_flat(GLfloat fSize,
 
 void cube_surf_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 {
-	GLsizei stride = sizeof(GLfloat) * gl_buf->ncomp_buf;
-	
 	CubeNode_to_buf(fSize, gl_buf);
 	
 	GLenum ErrorCheckValue = glGetError();
@@ -501,11 +503,11 @@ void cube_surf_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_bu
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
 				 gl_buf->v_buf, GL_STATIC_DRAW);
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride,
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, gl_buf->istride,
 						  (GLvoid*) (gl_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, stride, 
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, gl_buf->istride, 
 						  (GLvoid*) (gl_buf->ist_csurf * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, 
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, gl_buf->istride, 
 						  (GLvoid*) (gl_buf->ist_norm * sizeof(GL_FLOAT)));
 	
 	glEnableVertexAttribArray(0);
@@ -538,9 +540,6 @@ void cube_surf_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_bu
 
 void cube_edge_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 {
-	
-	GLsizei stride = sizeof(GLfloat) * gl_buf->ncomp_buf;
-	
 	CubeNode_to_buf(fSize, gl_buf);
 	
 	GLenum ErrorCheckValue = glGetError();
@@ -553,11 +552,11 @@ void cube_edge_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_bu
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
 				 gl_buf->v_buf, GL_STATIC_DRAW);
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride,
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, gl_buf->istride,
 						  (GLvoid*) (gl_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, stride, 
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, gl_buf->istride, 
 						  (GLvoid*) (gl_buf->ist_csurf * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, 
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, gl_buf->istride, 
 						  (GLvoid*) (gl_buf->ist_norm * sizeof(GL_FLOAT)));
 	
 	glEnableVertexAttribArray(0);
@@ -588,11 +587,52 @@ void cube_edge_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_bu
 	glBindVertexArray(0);
 }
 
+void cube_flat_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
+{
+	int icou = 0;
+	icou = flatSurfCube_VBO(icou, fSize, gl_buf);
+	
+	GLenum ErrorCheckValue = glGetError();
+	
+	glGenVertexArrays(1, &VAO_quad->id_VAO);
+	glBindVertexArray(VAO_quad->id_VAO);
+	
+	glGenBuffers(1, &VAO_quad->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, VAO_quad->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
+				 gl_buf->v_buf, GL_STATIC_DRAW);
+	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, gl_buf->istride,
+						  (GLvoid*) (gl_buf->ist_xyz * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, gl_buf->istride, 
+						  (GLvoid*) (gl_buf->ist_csurf * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, gl_buf->istride, 
+						  (GLvoid*) (gl_buf->ist_norm * sizeof(GL_FLOAT)));
+	
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	/*
+	ErrorCheckValue = glGetError();
+	if (ErrorCheckValue != GL_NO_ERROR)
+	{
+		fprintf(
+				stderr,
+				"ERROR: Could not create a VBO: %s \n",
+				gluErrorString(ErrorCheckValue)
+				);
+		
+		exit(-1);
+	}
+	*/
+	glBindVertexArray(0);
+}
+
 
 void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 {
-	GLsizei stride = sizeof(GLfloat) * gl_buf->ncomp_buf;
-	
 	GLfloat Vertices[] = {
 		-0.8f,  0.8f, 0.0f, 
 		0.8f,  0.8f, 0.0f, 
@@ -630,9 +670,9 @@ void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
 				 gl_buf->v_buf, GL_STATIC_DRAW);
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride,
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, gl_buf->istride,
 						  (GLvoid*) (gl_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride, 
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, gl_buf->istride, 
 						  (GLvoid*) (gl_buf->ist_csurf * sizeof(GL_FLOAT)));
 	
 	glEnableVertexAttribArray(0);

@@ -518,7 +518,6 @@ char * load_phong_frag(){
         "		out_Color += ex_Color * frontMaterial.diffuse * diffuse\n"\
         "		+ frontMaterial.specular * specular;\n"\
         "	}\n"\
-        "	out_Color = ex_Color;\n"\
         "}\n"\
         "\n"\
         "\n"

@@ -46,7 +46,7 @@ void kemoview_allocate_pointers(){
 	
 	kemo_sgl->view_s->iflag_shading_profile = 0;
 	kemo_sgl->kemo_shaders = init_kemoview_shaders();
-	kemo_sgl->strided_buf = init_strided_buffer();
+	kemo_sgl->strided_buf = init_strided_buffer(4*NPATCH_GL_BUFFER);
 	kemo_sgl->cube_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	kemo_sgl->menu_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	

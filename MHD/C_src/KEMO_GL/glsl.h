@@ -8,6 +8,7 @@
 #include "kemoviewer.h"
 #include "m_gl_transfer_matrix.h"
 #include "shaders.h"
+#include "invert_small_matrix_c.h"
 
 struct shader_ids{
 	GLuint programId;
