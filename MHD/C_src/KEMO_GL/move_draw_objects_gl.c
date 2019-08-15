@@ -333,6 +333,8 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		};
 		struct gl_strided_buffer *mesh_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 		draw_mesh_patches_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
+		free(mesh_buf);
+		DestroyVBO(cube_VAO);
 	};
     /*
 	if(mesh_m->iflag_view_type != VIEW_MAP) {
@@ -345,10 +347,9 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
     if(mesh_m->iflag_view_type != VIEW_MAP) {
         draw_transparent_patch_4_psf(psf_s, mesh_m, psf_m, psf_a, view_s, gl_buf);
     };
+	*/
 	
 	if(mesh_m->iflag_draw_mesh != 0){
-		glShadeModel(GL_SMOOTH);
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 		
 		glEnable( GL_CULL_FACE );
 		if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
@@ -359,14 +360,16 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			glPolygonMode(GL_BACK, GL_FILL);
 			glCullFace(GL_FRONT);
 		};
-		
 		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 		glDepthMask(GL_FALSE);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-		draw_transparent_4_domain(mesh_s, mesh_m, view_s, gl_buf);
+		
+		struct gl_strided_buffer *mesh_buf2 = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+		draw_transparent_mesh_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf2);
+		free(mesh_buf2);
+		DestroyVBO(cube_VAO);
 		
 		glDisable(GL_BLEND);
 		glDepthMask(GL_TRUE);

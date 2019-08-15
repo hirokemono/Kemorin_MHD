@@ -51,7 +51,7 @@ void main (void)
 		float product = max(dot(fnormal, halfway), 0.0);
 		float specular = pow(product, frontMaterial.shininess);
 		out_Color += ex_Color * frontMaterial.diffuse * diffuse
-		+ frontMaterial.specular * specular;
+		+ vec4(frontMaterial.specular.xyz, ex_Color.w) * specular;
 	}
 }
 
