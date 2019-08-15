@@ -2,9 +2,8 @@
 // phong_1color.vert
 
 layout (location = 0) in vec3  xyz;
-layout (location = 1) in float data;
-layout (location = 2) in vec3  norm;
-layout (location = 3) in vec2  txur;
+layout (location = 3) in vec3  norm;
+layout (location = 4) in vec2  txur;
 
 
 uniform mat4 projectionMat;
@@ -22,3 +21,4 @@ void main(void)
 	
 	gl_Position =  projectionMat * position;
 }
+
