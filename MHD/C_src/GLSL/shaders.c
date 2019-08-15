@@ -575,13 +575,11 @@ char * load_phong_1color_frag(){
     const char  phong_1color_frag_src[]
     = {
         "#version 400\n"\
-        "// phong.frag\n"\
+        "// phong_1color.frag\n"\
         "\n"\
         "in vec4 position;\n"\
         "in vec3 normal;\n"\
         "out vec4 out_Color;\n"\
-        "\n"\
-        "uniform vec4 one_Color;\n"\
         "\n"\
         "#define MAX_LIGHTS 3\n"\
         "struct LightSourceParameters{\n"\
@@ -621,13 +619,13 @@ char * load_phong_1color_frag(){
         "	vec3 light = normalize(LightSource.position.xyz - position.xyz);\n"\
         "	float diffuse = dot(light, fnormal);\n"\
         "	\n"\
-        "	out_Color = one_Color * frontMaterial.ambient;\n"\
+        "	out_Color = frontMaterial.ambient;\n"\
         "	if (diffuse > 0.0) {\n"\
         "		vec3 view = normalize(position.xyz);\n"\
         "		vec3 halfway = normalize(light - view);\n"\
         "		float product = max(dot(fnormal, halfway), 0.0);\n"\
         "		float specular = pow(product, frontMaterial.shininess);\n"\
-        "		out_Color += one_Color * frontMaterial.diffuse * diffuse\n"\
+        "		out_Color +=  frontMaterial.diffuse * diffuse\n"\
         "		              + frontMaterial.specular * specular;\n"\
         "	}\n"\
         "}\n"\
@@ -648,9 +646,8 @@ char * load_phong_1color_vert(){
         "// phong_1color.vert\n"\
         "\n"\
         "layout (location = 0) in vec3  xyz;\n"\
-        "layout (location = 1) in float data;\n"\
-        "layout (location = 2) in vec3  norm;\n"\
-        "layout (location = 3) in vec2  txur;\n"\
+        "layout (location = 3) in vec3  norm;\n"\
+        "layout (location = 4) in vec2  txur;\n"\
         "\n"\
         "\n"\
         "uniform mat4 projectionMat;\n"\
@@ -668,6 +665,7 @@ char * load_phong_1color_vert(){
         "	\n"\
         "	gl_Position =  projectionMat * position;\n"\
         "}\n"\
+        "\n"\
         "\n"
     };
     
