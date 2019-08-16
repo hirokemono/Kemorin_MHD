@@ -2,6 +2,7 @@
 // draw_colorbar_gl.c
 */
 
+#include <OpenGL/gl3.h>
 #include "draw_colorbar_gl.h"
 
 static int ibase_8x12;
@@ -203,9 +204,9 @@ void fade_colorbar_box_to_buf(int ist, struct colormap_params *cmap_s, GLfloat *
 	return;
 };
 
-int colorbar_frame_to_buf(GLfloat *text_color, struct cbar_work *cbar_wk, 
+void colorbar_frame_to_buf(GLfloat *text_color, struct cbar_work *cbar_wk, 
 			struct gl_strided_buffer *strided_buf){
-	int nd, inum;
+	int nd;
 	
 	set_node_stride_VBO(0, strided_buf);
 	strided_buf->x_draw[0] = cbar_wk->xbar_min;
@@ -270,9 +271,7 @@ int colorbar_frame_to_buf(GLfloat *text_color, struct cbar_work *cbar_wk,
 		strided_buf->x_draw[2] = 0.001;
 		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = text_color[nd];}
 	};
-	
-	inum = cbar_wk->iflag_zero + IFOUR;
-	return inum;
+	return;
 };
 
 void set_colorbar_position(int iflag_retina, GLint nx_win, GLint ny_win,
@@ -312,7 +311,7 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 			struct VAO_ids *cbar_VAO, struct kemoview_shaders *kemo_shaders,
 			struct gl_strided_buffer *cbar_buf){
 	int inum, nd;
-	int num_patch;
+	int num_patch, num_edge;
 	
 	GLdouble orthogonal[16];
 	GLfloat xy_buf[384][2];
@@ -370,6 +369,13 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	glBindVertexArray(0);
 	
+	if(cmap_s->min_opacity < 1.0) {
+		glEnable(GL_BLEND);
+		glEnable(GL_TRUE);
+		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		glEnable(GL_MULTISAMPLE);
+	}
+	
 	glBindVertexArray(cbar_VAO->id_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, cbar_VAO->id_vertex);
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
@@ -382,12 +388,40 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 		glDisable(GL_MULTISAMPLE);
 	}
+	
+	
+	num_edge = cbar_wk->iflag_zero + IFOUR;
+	set_buffer_address_4_patch(ITWO*num_edge, cbar_buf);
+	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
+	
+	colorbar_frame_to_buf(text_color, cbar_wk, cbar_buf);
+	
+	glGenVertexArrays(1, &cbar_VAO->id_VAO);
+	glBindVertexArray(cbar_VAO->id_VAO);
+	
+	glGenBuffers(1, &cbar_VAO->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, cbar_VAO->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * cbar_buf->num_nod_buf*cbar_buf->ncomp_buf,
+				 cbar_buf->v_buf, GL_STATIC_DRAW);
+	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, cbar_buf->istride,
+						  (GLvoid*) (cbar_buf->ist_xyz * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, cbar_buf->istride, 
+						  (GLvoid*) (cbar_buf->ist_csurf * sizeof(GL_FLOAT)));
+	
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	
+	glBindVertexArray(0);
+	
+	glBindVertexArray(cbar_VAO->id_VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, cbar_VAO->id_vertex);
+	glDrawArrays(GL_LINES, IZERO, (ITHREE*num_patch));
+	
+	DestroyVBO(cbar_VAO);
+	
 	return;
 	
-	
-	
-	inum = colorbar_frame_to_buf(text_color, cbar_wk, cbar_buf);
-	glDrawArrays(GL_LINES, IZERO, (ITWO*inum));
 	
 	
 	
