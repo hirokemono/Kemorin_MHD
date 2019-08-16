@@ -19,9 +19,6 @@
 double cal_isoline_value(int j, struct psf_menu_val *psf_m);
 void find_start_positive_lines(struct psf_menu_val *psf_m);
 
-void draw_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
-					  struct buffer_for_gl *gl_buf, int iflag_retina);
-
 void draw_PSF_isoline_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			struct view_element *view_s, 
 			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
