@@ -364,6 +364,7 @@ module:
 	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
 	vartex_array_object_gl.o \
+	glsl.o \
 	set_new_patch_4_map_c.o \
 	rainbow_color_code_c.o \
 	find_isoline_on_patch_c.o \
@@ -432,6 +433,7 @@ module:
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
+	draw_isolines_4_map.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

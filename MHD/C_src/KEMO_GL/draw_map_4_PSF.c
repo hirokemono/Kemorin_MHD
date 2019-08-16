@@ -5,7 +5,7 @@
 #include "draw_map_4_PSF.h"
 
 
-static void set_psf_map_to_straided_buf(int ist_psf, int num_buf, struct psf_data **psf_s, 
+static void set_psf_map_to_buf(int ist_psf, int num_buf, struct psf_data **psf_s, 
 			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
 	int inum, iele, inod, ipsf, nd, k;
 	double xx_tri[9], xyz_map[9];
@@ -49,7 +49,7 @@ void draw_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
-	set_psf_map_to_straided_buf(ist_psf, num_patch, psf_s, psf_a, psf_buf);
+	set_psf_map_to_buf(ist_psf, num_patch, psf_s, psf_a, psf_buf);
 	
 	glGenVertexArrays(1, &psf_VAO->id_VAO);
 	glBindVertexArray(psf_VAO->id_VAO);
@@ -110,15 +110,14 @@ int draw_map_objects_VAO(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag_map = iflag_map + psf_a->iflag_loaded[i];
-		/*
+		
 		if(psf_a->iflag_loaded[i] != 0){
 			if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
-				
-				draw_map_PSF_isoline(psf_s[i], psf_m[i], gl_buf, view_s->iflag_retina);
+				draw_map_PSF_isolines_VAO(psf_s[i], psf_m[i], view_s->iflag_retina,
+							orthogonal, psf_VAO, kemo_shaders, psf_buf);
 				
 			};
 		};
-	*/
 	};
 	/*
 	if(mesh_m->iflag_draw_coast != 0){

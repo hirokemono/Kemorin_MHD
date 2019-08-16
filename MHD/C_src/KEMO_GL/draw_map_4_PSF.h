@@ -14,6 +14,7 @@
 #include "icosahedron_c.h"
 #include "coordinate_converter_c.h"
 #include "set_color_code_on_nodes.h"
+#include "draw_isolines_4_map.h"
 
 
 /* prptotypes */
