@@ -44,7 +44,7 @@ static float set_ratio_4_axislabel(struct view_element *view_s,
 
 static void set_vertexs_for_axis(struct view_element *view_s, GLfloat dist,
 								 GLfloat x_arrowx[6], GLfloat x_arrowy[6], GLfloat x_arrowz[6], GLfloat w_ratio[3],
-								 GLfloat x_charax[12], GLfloat x_charay[18], GLfloat x_charaz[18]){
+								 GLfloat x_charax[12], GLfloat x_charay[18], GLfloat x_charaz[18], float *radius){
 	GLfloat l_axis[3], axis_org[3];
 	GLfloat label_ratio[3], min_l_ratio;
 	
@@ -97,6 +97,8 @@ static void set_vertexs_for_axis(struct view_element *view_s, GLfloat dist,
 	if(label_ratio[1] <= min_l_ratio) min_l_ratio = label_ratio[1];
 	if(label_ratio[2] <= min_l_ratio) min_l_ratio = label_ratio[2];
 	
+	*radius = *radius * min_l_ratio / (float) view_s->ny_window;
+
 	/*
 	 printf("x_label %e, %e \n",x_label[0],x_label[1]);
 	 printf("y_label %e, %e \n",y_label[0],y_label[1]);
@@ -217,10 +219,12 @@ static void set_axis_VBO(int ncorner, float radius,
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_arrowx[3+nd] - x_arrowx[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  red[nd];};
-    }
+	}
+	/*
 	printf("x_arrowx1 %f %f %f \n", x_arrowx[0], x_arrowx[1], x_arrowx[2]);
 	printf("x_arrowx2 %f %f %f \n", x_arrowx[3], x_arrowx[4], x_arrowx[5]);
 	printf("dir_line1 %f %f %f \n", dir_line[0], dir_line[1], dir_line[2]);
+	*/
 	npatch_wall = set_tube_strided_buffer(ncorner, radius, x_arrowx, 
 				dir_line, color_2p, icou, strided_buf);
 	icou = icou + 3 * npatch_wall;
@@ -313,7 +317,7 @@ void draw_axis_VAO(struct view_element *view_s, GLfloat dist,
 			struct VAO_ids *mesh_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *strided_buf){	
 	int ncorner = ISIX;
-	float radius = 0.005;
+	float radius = 3.0;
 	
 	GLfloat x_arrowx[6], x_arrowy[6], x_arrowz[6];
 	GLfloat w_ratio[3];
@@ -351,7 +355,7 @@ void draw_axis_VAO(struct view_element *view_s, GLfloat dist,
 	alloc_strided_buffer(strided_buf->num_nod_buf, strided_buf->ncomp_buf, strided_buf);
 	
 	set_vertexs_for_axis(view_s, dist, x_arrowx, x_arrowy, x_arrowz, 
-						 w_ratio, x_charax, x_charay, x_charaz);
+						 w_ratio, x_charax, x_charay, x_charaz, &radius);
 	set_axis_VBO(ncorner, radius, 
 				x_arrowx, x_arrowy, x_arrowz, x_charax, x_charay, x_charaz,
 				strided_buf);
