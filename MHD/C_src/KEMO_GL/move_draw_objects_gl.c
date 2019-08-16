@@ -94,15 +94,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
     /* Draw Solid Objects */
 	
 	glEnable(GL_COLOR_MATERIAL);
-	if(mesh_m->iflag_draw_axis != 0){
-		glShadeModel(GL_SMOOTH);
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glDisable(GL_CULL_FACE);
-		draw_axis(view_s, (GLfloat) mesh_m->dist_domains);
-		glEnable(GL_CULL_FACE);
-	}
-	
 	if(fline_m->iflag_draw_fline != 0){
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 		if(fline_m->fieldline_type == IFLAG_PIPE){

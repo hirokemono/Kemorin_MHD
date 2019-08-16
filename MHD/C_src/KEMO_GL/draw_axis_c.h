@@ -18,8 +18,6 @@
 
 
 /* prototypes */
-void draw_axis(struct view_element *view_s, GLfloat dist);
-
 void draw_axis_VAO(struct view_element *view_s, GLfloat dist, 
 			struct VAO_ids *mesh_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *strided_buf);
