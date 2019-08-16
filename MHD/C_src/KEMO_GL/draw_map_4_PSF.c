@@ -90,7 +90,6 @@ int draw_map_objects_VAO(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	GLdouble orthogonal[16];
 	    
 	/* set shading mode */
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glDisable(GL_CULL_FACE);
 	
 	if(view_s->ny_window > view_s->nx_window) {
@@ -119,16 +118,25 @@ int draw_map_objects_VAO(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 			};
 		};
 	};
-	/*
+	
+	
+	struct gl_strided_buffer *line_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	set_buffer_address_4_patch(3*128, line_buf);
+	alloc_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
+	
 	if(mesh_m->iflag_draw_coast != 0){
-		draw_map_coast(gl_buf);
+		draw_map_coastline_VBO(orthogonal, psf_VAO, kemo_shaders, line_buf);
 	};
+	/*
 	if(mesh_m->iflag_draw_sph_grid != 0){
 		draw_flame_4_map(gl_buf);
 	};
 	load_projection_matrix(view_s);
 	modify_view_by_struct(view_s);
 	*/
+	free(line_buf->v_buf);
+	free(line_buf);
+	
 	return iflag_map;
 }
 

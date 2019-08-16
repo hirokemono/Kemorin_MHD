@@ -657,10 +657,12 @@ module:
 	'$$(KEMO_C_GLDIR)'/draw_coastline.c \
 	draw_coastline.h \
 	kemoviewer_param_c.o \
-	vartex_array_object_gl.o \
 	coastline_c.o \
 	coordinate_converter_c.o \
 	rainbow_color_code_c.o \
+	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
+	glsl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

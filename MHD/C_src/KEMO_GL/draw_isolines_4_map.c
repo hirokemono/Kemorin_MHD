@@ -91,29 +91,6 @@ static void draw_map_zeroline_VAO(struct psf_data *psf_s, struct psf_menu_val *p
 	glUseProgram(kemo_shaders->test->programId);
 	map_matrix_to_shader(kemo_shaders->test, orthogonal);
 	
-	int id_numLight = glGetUniformLocation(kemo_shaders->test->programId, "num_lights");
-	int id_lightPosition = glGetUniformLocation(kemo_shaders->test->programId, "LightSource[0].position");
-	
-	int id_MaterialAmbient = glGetUniformLocation(kemo_shaders->test->programId, "frontMaterial.ambient");
-	int id_MaterialDiffuse = glGetUniformLocation(kemo_shaders->test->programId, "frontMaterial.diffuse");
-	int id_MaterialSpecular = glGetUniformLocation(kemo_shaders->test->programId, "frontMaterial.specular");
-	int id_MaterialShiness = glGetUniformLocation(kemo_shaders->test->programId, "frontMaterial.shininess");
-	
-	int num_light = 1;
-	GLfloat  lightposition[4] = {5.0, 5.0, -5.0,1.0};
-	GLfloat white1[4] = {0.3, 0.3, 0.3, 1.0};
-	GLfloat white2[4] = {0.8, 0.8, 0.8, 1.0};
-	GLfloat white3[4] = {1.0, 1.0, 1.0, 1.0};
-	GLfloat shine = 20.0;
-	
-	glUniform1i(id_numLight, num_light);
-	glUniform4fv(id_lightPosition, 1, lightposition);
-	
-	glUniform4fv(id_MaterialAmbient, 1, white2);
-	glUniform4fv(id_MaterialDiffuse, 1, white1);
-	glUniform4fv(id_MaterialSpecular, 1, white3);
-	glUniform1f(id_MaterialShiness, shine);
-	
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
@@ -175,29 +152,6 @@ static void draw_map_isolines_VAO(int ist, int ied, struct psf_data *psf_s,
 	
 	glUseProgram(kemo_shaders->test->programId);
 	map_matrix_to_shader(kemo_shaders->test, orthogonal);
-	
-	int id_numLight = glGetUniformLocation(kemo_shaders->test->programId, "num_lights");
-	int id_lightPosition = glGetUniformLocation(kemo_shaders->test->programId, "LightSource[0].position");
-	
-	int id_MaterialAmbient = glGetUniformLocation(kemo_shaders->test->programId, "frontMaterial.ambient");
-	int id_MaterialDiffuse = glGetUniformLocation(kemo_shaders->test->programId, "frontMaterial.diffuse");
-	int id_MaterialSpecular = glGetUniformLocation(kemo_shaders->test->programId, "frontMaterial.specular");
-	int id_MaterialShiness = glGetUniformLocation(kemo_shaders->test->programId, "frontMaterial.shininess");
-	
-	int num_light = 1;
-	GLfloat  lightposition[4] = {5.0, 5.0, -5.0,1.0};
-	GLfloat white1[4] = {0.3, 0.3, 0.3, 1.0};
-	GLfloat white2[4] = {0.8, 0.8, 0.8, 1.0};
-	GLfloat white3[4] = {1.0, 1.0, 1.0, 1.0};
-	GLfloat shine = 20.0;
-	
-	glUniform1i(id_numLight, num_light);
-	glUniform4fv(id_lightPosition, 1, lightposition);
-	
-	glUniform4fv(id_MaterialAmbient, 1, white2);
-	glUniform4fv(id_MaterialDiffuse, 1, white1);
-	glUniform4fv(id_MaterialSpecular, 1, white3);
-	glUniform1f(id_MaterialShiness, shine);
 	
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
