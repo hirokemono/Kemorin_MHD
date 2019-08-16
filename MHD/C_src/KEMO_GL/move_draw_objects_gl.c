@@ -184,18 +184,17 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		};
 	};
     */
+	struct gl_strided_buffer *psf_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	set_buffer_address_4_patch(3*128, psf_buf);
+	alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+	
 	if(mesh_m->iflag_view_type == VIEW_MAP) {
-		/*
-        set_color_code_for_psfs(psf_s, psf_m, psf_a);
-		iflag_psf = draw_objects_4_map(psf_s, mesh_m, psf_m, psf_a, view_s, gl_buf);
-		*/
+		set_color_code_for_psfs(psf_s, psf_m, psf_a);
+		iflag_psf = draw_map_objects_VAO(psf_s, mesh_m, psf_m, psf_a, view_s, 
+					cube_VAO, kemo_shaders, psf_buf, gl_buf);
 	} else {
 		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
 		set_color_code_for_psfs(psf_s, psf_m, psf_a);
-		
-		struct gl_strided_buffer *psf_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-		set_buffer_address_4_patch(3*128, psf_buf);
-		alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 		
 		glDisable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -208,11 +207,11 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		iflag = draw_PSF_solid_objects_VAO(psf_s, psf_m, psf_a, view_s,
 					cube_VAO, kemo_shaders, psf_buf);
-		free(psf_buf->v_buf);
-		free(psf_buf);
-		
 		iflag_psf = iflag_psf + iflag;
 	};
+	free(psf_buf->v_buf);
+	free(psf_buf);
+	
 	
 	if(mesh_m->iflag_draw_mesh != 0){
 		

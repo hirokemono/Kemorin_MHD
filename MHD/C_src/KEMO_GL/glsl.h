@@ -36,6 +36,7 @@ void LoadShaderFromStrings(struct shader_ids *shader,
 void destory_shaders(struct shader_ids *shader);
 
 void transfer_matrix_to_shader(struct shader_ids *Shader, struct view_element *view_s);
+void map_matrix_to_shader(struct shader_ids *Shader, const GLdouble *orthogonal);
 void identity_matrix_to_shader(struct shader_ids *Shader);
 
 struct kemoview_shaders * init_kemoview_shaders();

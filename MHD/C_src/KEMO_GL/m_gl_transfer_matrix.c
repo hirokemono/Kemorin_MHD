@@ -252,8 +252,7 @@ static void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdoub
 void orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
 			GLdouble near, GLdouble far){
 	GLdouble orthogonal[16];
-	orthogonal_glmat_c(left, right, bottom, top,
-				near, far, orthogonal);
+	orthogonal_glmat_c(left, right, bottom, top, near, far, orthogonal);
 	load_projection_mat(orthogonal);
 	return;
 };

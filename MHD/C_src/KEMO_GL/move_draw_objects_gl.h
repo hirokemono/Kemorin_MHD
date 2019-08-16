@@ -17,6 +17,7 @@
 #include "drawcube_gl.h"
 #include "draw_patches_4_PSF.h"
 #include "draw_arrows_4_PSF.h"
+#include "draw_map_4_PSF.h"
 
 
 /* prototypes */ 
