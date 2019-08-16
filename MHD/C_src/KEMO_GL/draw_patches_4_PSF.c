@@ -7,102 +7,6 @@
 
 static GLfloat white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 
-static void set_psf_nodes_to_buf(int ist_psf, int num_buf, struct psf_data **psf_s, 
-								 struct kemo_array_control *psf_a, struct buffer_for_gl *gl_buf){
-	int inum, iele, inod, k, ipsf;
-	
-	for(inum=0; inum<num_buf; inum++){
-        ipsf = psf_a->ipsf_viz_far[inum+ist_psf]-1;
-		iele = psf_a->iele_viz_far[inum+ist_psf]-1;
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			gl_buf->xyz[ITHREE*inum+k][0] = psf_s[ipsf]->xx_viz[inod][0];
-			gl_buf->xyz[ITHREE*inum+k][1] = psf_s[ipsf]->xx_viz[inod][1];
-			gl_buf->xyz[ITHREE*inum+k][2] = psf_s[ipsf]->xx_viz[inod][2];
-		};
-	};
-	return;
-}
-
-static void set_psf_colors_to_buf(int ist_psf, int num_buf, struct psf_data **psf_s, 
-								  struct kemo_array_control *psf_a, struct buffer_for_gl *gl_buf){
-	int inum, iele, inod, k, ipsf;
-	
-	for(inum=0; inum<num_buf; inum++){
-        ipsf = psf_a->ipsf_viz_far[inum+ist_psf]-1;
-		iele = psf_a->iele_viz_far[inum+ist_psf]-1;
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			gl_buf->rgba[ITHREE*inum+k][0] = psf_s[ipsf]->color_nod[inod][0];
-			gl_buf->rgba[ITHREE*inum+k][1] = psf_s[ipsf]->color_nod[inod][1];
-			gl_buf->rgba[ITHREE*inum+k][2] = psf_s[ipsf]->color_nod[inod][2];
-			gl_buf->rgba[ITHREE*inum+k][3] = psf_s[ipsf]->color_nod[inod][3];
-		};
-	};
-	return;
-}
-
-static void set_psf_normals_to_buf(int ist_psf, int num_buf, int shading_mode, 
-                                   struct psf_data **psf_s, struct psf_menu_val **psf_m, 
-                                   struct kemo_array_control *psf_a, struct buffer_for_gl *gl_buf){
-    int inum, iele, inod, k, ipsf;
-    
-    for(inum=0; inum<num_buf; inum++){
-        ipsf = psf_a->ipsf_viz_far[inum+ist_psf]-1;
-        iele = psf_a->iele_viz_far[inum+ist_psf]-1;
-        
-        if (shading_mode == SMOOTH_SHADE){
-            for (k = 0; k < ITHREE; k++) {
-                inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-                gl_buf->norm[ITHREE*inum+k][0] = psf_s[ipsf]->norm_nod[inod][0];
-                gl_buf->norm[ITHREE*inum+k][1] = psf_s[ipsf]->norm_nod[inod][1];
-                gl_buf->norm[ITHREE*inum+k][2] = psf_s[ipsf]->norm_nod[inod][2];
-            };
-        } else {
-            for (k = 0; k < ITHREE; k++) {
-                gl_buf->norm[ITHREE*inum+k][0] = psf_s[ipsf]->norm_ele[iele][0];
-                gl_buf->norm[ITHREE*inum+k][1] = psf_s[ipsf]->norm_ele[iele][1];
-                gl_buf->norm[ITHREE*inum+k][2] = psf_s[ipsf]->norm_ele[iele][2];
-            };
-        };
-        
-        if(psf_m[ipsf]->polygon_mode_psf == REVERSE_POLYGON){
-            for (k = 0; k < ITHREE; k++) {
-                gl_buf->norm[ITHREE*inum+k][0] = -gl_buf->norm[ITHREE*inum+k][0];
-                gl_buf->norm[ITHREE*inum+k][1] = -gl_buf->norm[ITHREE*inum+k][1];
-                gl_buf->norm[ITHREE*inum+k][2] = -gl_buf->norm[ITHREE*inum+k][2];
-            };
-        };
-    };
-    return;
-}
-
-
-static void set_psf_textures_to_buf(int ist_psf, int num_buf, struct psf_data **psf_s,
-									struct kemo_array_control *psf_a, struct buffer_for_gl *gl_buf){
-	int inum, iele, inod, k, ipsf;
-	int iflag;
-	double xx_tri[9], rtp_patch[9];
-	
-	for(inum=0; inum<num_buf; inum++){
-        ipsf = psf_a->ipsf_viz_far[inum+ist_psf]-1;
-        iele = psf_a->iele_viz_far[inum+ist_psf]-1;
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			xx_tri[3*k  ] = psf_s[ipsf]->xx_viz[inod][0];
-			xx_tri[3*k+1] = psf_s[ipsf]->xx_viz[inod][1];
-			xx_tri[3*k+2] = psf_s[ipsf]->xx_viz[inod][2];
-		};
-		iflag = latitude_longitude_on_map(xx_tri, rtp_patch);
-		
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			gl_buf->xy[ITHREE*inum+k][0] =  rtp_patch[ITHREE*k+2] * ARCPI * HALF;
-			gl_buf->xy[ITHREE*inum+k][1] =  -rtp_patch[ITHREE*k+1] * ARCPI;
-		};
-	};
-	return;
-}
 
 static void set_psf_nodes_to_map(int ist_psf, int num_buf, struct psf_data **psf_s, 
                                  struct kemo_array_control *psf_a, struct buffer_for_gl *gl_buf){
@@ -148,41 +52,6 @@ static void set_psf_colors_to_map(int ist_psf, int num_buf, struct psf_data **ps
 }
 
 
-
-void draw_patch_4_PSF(int shading_mode, int ist_psf, int ied_psf, 
-                      struct psf_data **psf_s, struct psf_menu_val **psf_m,
-					  struct kemo_array_control *psf_a, struct buffer_for_gl *gl_buf){
-	int icou, num;
-	
-	if(ied_psf-ist_psf <= 0) return;
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glVertexPointer(ITHREE, GL_FLOAT, IZERO, gl_buf->xyz);
-	glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
-	glNormalPointer(GL_FLOAT, IZERO, gl_buf->norm);
-	
-	icou = ist_psf;
-	while(icou < ied_psf){
-		if( (icou+NSIZE_GL_BUFFER) <= ied_psf) {num = NSIZE_GL_BUFFER;}
-		else                                   {num = ied_psf-icou;};
-
-		set_psf_nodes_to_buf(icou, num, psf_s, psf_a, gl_buf);
-		set_psf_normals_to_buf(icou, num, shading_mode, 
-							   psf_s, psf_m, psf_a, gl_buf);
-		set_psf_colors_to_buf(icou, num, psf_s, psf_a, gl_buf);
-
-		glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num));
-		icou = icou + NSIZE_GL_BUFFER;
-	};
-	
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	
-	return;	
-}
 
 void draw_patches_4_map(int shading_mode, int ist_psf, int ied_psf,
                         struct psf_data **psf_s, struct kemo_array_control *psf_a,
@@ -327,46 +196,6 @@ static void set_texture(struct psf_menu_val *psf_m){
 	
 	return;
 };
-
-void draw_texure_4_PSF(int shading_mode, int ist_psf, int ied_psf, 
-                       struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                       struct kemo_array_control *psf_a, struct buffer_for_gl *gl_buf){
-	int i, icou, num;
-    
-    if(ied_psf-ist_psf <= 0) return;
-	
-	i = psf_a->ipsf_viz_far[ist_psf]-1;
-	set_texture(psf_m[i]);
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glVertexPointer(ITHREE, GL_FLOAT, IZERO, gl_buf->xyz);
-    glColorPointer(IFOUR, GL_FLOAT, IZERO, gl_buf->rgba);
-	glTexCoordPointer(ITWO, GL_FLOAT, IZERO, gl_buf->xy);
-	glNormalPointer(GL_FLOAT, IZERO, gl_buf->norm);
-	
-	icou = ist_psf;
-	while(icou < ied_psf){
-		if( (icou+NSIZE_GL_BUFFER) <= ied_psf) {num = NSIZE_GL_BUFFER;}
-		else								   {num = ied_psf-icou;};
-		
-		set_psf_nodes_to_buf(icou, num, psf_s, psf_a, gl_buf);
-		set_psf_normals_to_buf(icou, num, shading_mode, 
-							   psf_s, psf_m, psf_a, gl_buf);
-        set_psf_colors_to_buf(icou, num, psf_s, psf_a, gl_buf);
-		set_psf_textures_to_buf(icou, num, psf_s, psf_a, gl_buf);
-		
-		glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num));
-		icou = icou + NSIZE_GL_BUFFER;
-	};
-	glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-	return;	
-}
 
 
 static void set_psf_nodes_to_strided_buf(int ist_psf, int num_buf, int shading_mode, 
