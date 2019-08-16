@@ -16,21 +16,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	glDeleteLists(view_s->gl_drawID, 1);
 	glNewList(view_s->gl_drawID, GL_COMPILE_AND_EXECUTE);
 	
-    /* Draw Solid Objects */
-	
-	glEnable(GL_COLOR_MATERIAL);
-	if(fline_m->iflag_draw_fline != 0){
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-		if(fline_m->fieldline_type == IFLAG_PIPE){
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glDisable(GL_CULL_FACE);
-			glShadeModel(GL_SMOOTH);
-			
-			draw_fieldtubes_c(fline_s, fline_m, gl_buf);
-			glEnable(GL_CULL_FACE);
-		};
-	};
-    
     /* Draw Color bar */
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag_psf = iflag_psf + psf_a->iflag_loaded[i];

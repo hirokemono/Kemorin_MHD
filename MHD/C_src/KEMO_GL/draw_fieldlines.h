@@ -13,11 +13,6 @@
 #include "icosahedron_c.h"
 
 /* prototypes */
-void draw_fieldlines_c(struct psf_data *fline_s, struct fline_menu_val *fline_m,
-					   struct buffer_for_gl *gl_buf);
-void draw_fieldtubes_c(struct psf_data *fline_s, struct fline_menu_val *fline_m,
-					   struct buffer_for_gl *gl_buf);
-
 void draw_fieldtubes_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m,
 			struct view_element *view_s, 
 			struct VAO_ids *fline_VAO, struct kemoview_shaders *kemo_shaders, 
