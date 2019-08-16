@@ -198,7 +198,7 @@ static void set_texture(struct psf_menu_val *psf_m){
 };
 
 
-static void set_psf_nodes_to_strided_buf(int ist_psf, int num_buf, int shading_mode, 
+static void set_psf_nodes_to_buf(int ist_psf, int num_buf, int shading_mode, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m, 
 			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
 	int inum, iele, inod, k, nd, ipsf;
@@ -225,7 +225,7 @@ static void set_psf_nodes_to_strided_buf(int ist_psf, int num_buf, int shading_m
     return;
 }
 
-static void set_psf_textures_to_strided_buf(int ist_psf, int num_buf, struct psf_data **psf_s,
+static void set_psf_textures_to_buf(int ist_psf, int num_buf, struct psf_data **psf_s,
 			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
 	int inum, iele, inod, k, ipsf;
 	int iflag;
@@ -324,7 +324,7 @@ void draw_PSF_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
 	
-	set_psf_nodes_to_strided_buf(ist_psf, num_patch, shading_mode, 
+	set_psf_nodes_to_buf(ist_psf, num_patch, shading_mode, 
 								   psf_s, psf_m, psf_a, psf_buf);
 	
 	glGenVertexArrays(1, &psf_VAO->id_VAO);
@@ -399,9 +399,9 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
 	
-	set_psf_nodes_to_strided_buf(ist_psf, num_patch, shading_mode, 
+	set_psf_nodes_to_buf(ist_psf, num_patch, shading_mode, 
 				psf_s, psf_m, psf_a, psf_buf);
-	set_psf_textures_to_strided_buf(ist_psf, num_patch, 
+	set_psf_textures_to_buf(ist_psf, num_patch, 
 				psf_s, psf_a, psf_buf);
 	
 	glGenVertexArrays(1, &psf_VAO->id_VAO);

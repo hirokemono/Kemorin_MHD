@@ -30,7 +30,6 @@ static int draw_solid_objects_4_psf(struct psf_data **psf_s, struct psf_menu_val
 }
 
 
-
 void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s, 
 				  struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
 				  struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
@@ -124,6 +123,33 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 }
 
 
+static int draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
+			struct kemo_array_control *psf_a, struct view_element *view_s, 
+			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
+			struct gl_strided_buffer *psf_buf){
+    int i;
+    int iflag_psf = 0;
+    
+    for(i=0; i<psf_a->nmax_loaded; i++){
+        iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
+        if(psf_a->iflag_loaded[i] != 0){
+			
+			if(psf_m[i]->draw_psf_vect  != 0){
+				draw_PSF_arrow_VAO(psf_s[i], psf_m[i], view_s, 
+							psf_VAO, kemo_shaders, psf_buf);
+			};
+			/*
+			if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
+				draw_PSF_isoline(psf_s[i], psf_m[i], gl_buf,
+							view_s->iflag_retina);
+			};
+			*/
+		};
+	};
+	
+	return iflag_psf;
+}
+
 void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s, 
 				  struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
 				  struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
@@ -182,16 +208,13 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 					psf_s, psf_m, psf_a, view_s, cube_VAO, kemo_shaders->phong_texure, psf_buf);
 		draw_PSF_patch_VAO(mesh_m->shading_mode, psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 
 					psf_s, psf_m, psf_a, view_s, cube_VAO, kemo_shaders, psf_buf);
+		
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		iflag = draw_PSF_solid_objects_VAO(psf_s, psf_m, psf_a, view_s,
+					cube_VAO, kemo_shaders, psf_buf);
 		free(psf_buf->v_buf);
 		free(psf_buf);
-		int iflag = 0;
-		for(i=0; i<psf_a->nmax_loaded; i++){
-			iflag = iflag + psf_a->iflag_loaded[i];
-		};
-		/*
-		iflag = draw_solid_objects_4_psf(psf_s, psf_m, psf_a, view_s, gl_buf);
-		glEnable(GL_CULL_FACE);
-		*/
 		
 		iflag_psf = iflag_psf + iflag;
 	};

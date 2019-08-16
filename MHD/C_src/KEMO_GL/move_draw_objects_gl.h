@@ -16,6 +16,7 @@
 #include "draw_coastline.h"
 #include "drawcube_gl.h"
 #include "draw_patches_4_PSF.h"
+#include "draw_arrows_4_PSF.h"
 
 
 /* prototypes */ 
