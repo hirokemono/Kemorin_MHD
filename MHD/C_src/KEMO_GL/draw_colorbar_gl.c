@@ -52,84 +52,23 @@ void init_colorbar_fonts(){
 	return;
 }
 
-void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
-			GLfloat text_color[4], GLfloat bg_color[4], struct colormap_params *cmap_s){
-	int i, inum, nd;
-    
-	GLfloat xwin, ywin;
-	GLfloat xbar_min, xbar_max, xbar_mid;
-	GLfloat ybar_min, ybar_max, ydelta, y1, yline_zero;
-	GLfloat xy_buf[384][2];
-	GLfloat rgba_buf[384][4];
 
-	int iflag_zero;
-	double psf_min, psf_max;
-	double psf_value, f_color[4], l_color[4];
-	char minlabel[20], maxlabel[20], zerolabel[20];
-	
-    xwin = (GLfloat)nx_win;
-	ywin = (GLfloat)ny_win;
-    
-    if( xwin >= 640*(iflag_retina+1) ){
-        xbar_max = xwin * 0.875;
-    } else {
-        xbar_max = xwin - (iflag_retina+1) * 80;
-    }
-	xbar_min = xbar_max - 0.025 * xwin;
-	xbar_mid = (xbar_min + xbar_max) * 0.5;
-	ybar_min = 0.05 * ywin;
-	ybar_max = 0.25 * ywin;
-	ydelta =  (ybar_max - ybar_min) / ((GLfloat)64);
-	
-	iflag_zero = 0;
-	
-	psf_min = cmap_s->color_data[IZERO];
-	psf_max = cmap_s->color_data[cmap_s->n_color_point-1];
-	if( (psf_min*psf_max) < ZERO ) iflag_zero = 1;
-	
-	yline_zero = ybar_min + (ybar_max-ybar_min) * (-psf_min) / (psf_max-psf_min);
-	
-	
-	sprintf(minlabel, "% 3.2E",psf_min);
-	sprintf(maxlabel, "% 3.2E",psf_max);
-	sprintf(zerolabel,"% 3.2E",ZERO);
-	
-	sprintf(colorbar_text, "% 3.2E% 3.2E% 3.2E",psf_min, psf_max, ZERO);
-	
-	orthogonalGL(0.0, xwin, 0.0, ywin,-1.0,1.0);
-	set_view_by_identity();
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(ITWO, GL_FLOAT, IZERO, xy_buf);
-	glColorPointer(IFOUR, GL_FLOAT, IZERO, rgba_buf);
 
-	if(cmap_s->min_opacity < 1.0) {
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDepthMask(GL_FALSE);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
+void solid_colorbar_box_to_buf(struct colormap_params *cmap_s, 
+			GLfloat xbar_min, GLfloat xbar_mid, GLfloat ybar_min, GLfloat ydelta, double psf_min, double psf_max, 
+			GLfloat **xy_buf, GLfloat **rgba_buf){
+	GLfloat y1;
+	double psf_value;
+	double f_color[4], l_color[4];
+	int i, nd;
 	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
-	glColor4fv(black);
-	glColorMaterial(GL_FRONT_AND_BACK,GL_EMISSION);
-
-	set_rainbow_color_code(cmap_s, psf_min, l_color);
-    for (nd=0; nd<3; nd++) {
-        l_color[nd] = l_color[nd] * l_color[3]
-        + bg_color[nd] * (ONE - l_color[3]);
-    };
-    l_color[3] = ONE;
-
-	for(i=0;i<64;i++){
-		y1 = ybar_min + ydelta * (GLfloat)i;
-		psf_value = psf_min + (psf_max-psf_min) * (double)(i+1) / (double)64;
+	int num_quad = 64;
+	for(i=0;i<num_quad;i++){
+		y1 = ybar_min + ydelta * (GLfloat) i;
+		psf_value = psf_min + (psf_max-psf_min) * (double)(i+1) / (double)num_quad;
 		set_rainbow_color_code(cmap_s, psf_value, f_color);
 	
-        f_color[3] = ONE;
+		f_color[3] = ONE;
 		
 		xy_buf[6*i  ][0] = xbar_min;
 		xy_buf[6*i+1][0] = xbar_mid;
@@ -154,18 +93,28 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 		}
 		for (nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	};
-	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*128));
+	return;
+};
 
-	for(i=0;i<64;i++){
+void fade_colorbar_box_to_buf(struct colormap_params *cmap_s, GLfloat *bg_color, 
+			GLfloat xbar_mid, GLfloat xbar_max, GLfloat ybar_min, GLfloat ydelta, double psf_min, double psf_max, 
+			GLfloat **xy_buf, GLfloat **rgba_buf){
+	GLfloat y1;
+	double psf_value;
+	double f_color[4], l_color[4];
+	int i, nd;
+	
+	int num_quad = 64;
+	for(i=0;i<num_quad;i++){
 		y1 = ybar_min + ydelta * (GLfloat)i;
-		psf_value = psf_min + (psf_max-psf_min) * (double)(i+1) / (double)64;
+		psf_value = psf_min + (psf_max-psf_min) * (double)(i+1) / (double)num_quad;
 		set_rainbow_color_code(cmap_s, psf_value, f_color);
 	
 		for (nd=0; nd<3; nd++) {
 			f_color[nd] = f_color[nd] * f_color[3]
 					+ bg_color[nd] * (ONE - f_color[3]);
         };
-        f_color[3] = ONE;        
+        f_color[3] = ONE;
 		
 		xy_buf[6*i  ][0] = xbar_mid;
 		xy_buf[6*i+1][0] = xbar_max;
@@ -190,22 +139,15 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 		}
 		for (nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	};
-	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*128));
+	return;
+};
 
-	
-	glColorMaterial(GL_FRONT_AND_BACK,GL_EMISSION);
-	glColor4fv(black);
-	
-	if(cmap_s->min_opacity < 1.0) {
-		glDisable(GL_BLEND);
-		glDepthMask(GL_TRUE);
-		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDisable(GL_MULTISAMPLE);
-	}
-	
-	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
-	glColor4fv(text_color);
 
+int colorbar_frame_to_buf(int iflag_zero, GLfloat *text_color, 
+			GLfloat xbar_min, GLfloat xbar_max, GLfloat ybar_min, GLfloat ybar_max,
+			GLfloat yline_zero,  GLfloat **xy_buf, GLfloat **rgba_buf){
+	int i, nd, inum;
+	
 	xy_buf[0][0] = xbar_min;
 	xy_buf[1][0] = xbar_min;
 	xy_buf[0][1] = ybar_min;
@@ -232,11 +174,132 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 		xy_buf[6][1] = yline_zero;
 		xy_buf[7][1] = yline_zero;
 	};
-
+	
 	inum = iflag_zero + IFOUR;
 	for (i=0;i<ITWO*inum; i++) {
 		for (nd=0; nd<4; nd++) {rgba_buf[i][nd] = text_color[nd];}
 	}
+	
+	return inum;
+};
+
+struct cbar_work{
+	int iflag_zero;
+	
+	GLfloat xwin;
+	GLfloat ywin;
+	
+	GLfloat xbar_min;
+	GLfloat xbar_max;
+	GLfloat xbar_mid;
+	
+	GLfloat ybar_min;
+	GLfloat ybar_max;
+	GLfloat ydelta;
+	GLfloat yline_zero;
+	
+	double psf_min;
+	double psf_max;
+};
+
+void set_colorbar_position(int iflag_retina, GLint nx_win, GLint ny_win,
+			struct colormap_params *cmap_s, struct cbar_work *cbar_wk){
+    cbar_wk->xwin = (GLfloat)nx_win;
+	cbar_wk->ywin = (GLfloat)ny_win;
+    
+    if( cbar_wk->xwin >= 640*(iflag_retina+1) ){
+        cbar_wk->xbar_max = cbar_wk->xwin * 0.875;
+    } else {
+        cbar_wk->xbar_max = cbar_wk->xwin - (iflag_retina+1) * 80;
+    }
+	cbar_wk->xbar_min = cbar_wk->xbar_max - 0.025 * cbar_wk->xwin;
+	cbar_wk->xbar_mid = (cbar_wk->xbar_min + cbar_wk->xbar_max) * 0.5;
+	cbar_wk->ybar_min = 0.05 * cbar_wk->ywin;
+	cbar_wk->ybar_max = 0.25 * cbar_wk->ywin;
+	cbar_wk->ydelta =  (cbar_wk->ybar_max - cbar_wk->ybar_min)
+			/ ((GLfloat)64);
+	
+	cbar_wk->iflag_zero = 0;
+	
+	cbar_wk->psf_min = cmap_s->color_data[IZERO];
+	cbar_wk->psf_max = cmap_s->color_data[cmap_s->n_color_point-1];
+	if( (cbar_wk->psf_min*cbar_wk->psf_max) < ZERO ) cbar_wk->iflag_zero = 1;
+	
+	cbar_wk->yline_zero = cbar_wk->ybar_min 
+		+ (cbar_wk->ybar_max - cbar_wk->ybar_min) * (-cbar_wk->psf_min) 
+		/ (cbar_wk->psf_max - cbar_wk->psf_min);
+	
+	return;
+}
+
+void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
+			GLfloat text_color[4], GLfloat bg_color[4], struct colormap_params *cmap_s){
+	int inum, nd;
+    
+	GLfloat xy_buf[384][2];
+	GLfloat rgba_buf[384][4];
+	char minlabel[20], maxlabel[20], zerolabel[20];
+	
+	struct cbar_work *cbar_wk = (struct cbar_work *) malloc(sizeof(struct cbar_work));
+	set_colorbar_position(iflag_retina, nx_win, ny_win, cmap_s, cbar_wk);
+	
+	sprintf(minlabel, "% 3.2E",cbar_wk->psf_min);
+	sprintf(maxlabel, "% 3.2E",cbar_wk->psf_max);
+	sprintf(zerolabel,"% 3.2E",ZERO);
+	
+	sprintf(colorbar_text, "% 3.2E% 3.2E% 3.2E", cbar_wk->psf_min, cbar_wk->psf_max, ZERO);
+	
+	orthogonalGL(0.0, cbar_wk->xwin, 0.0, cbar_wk->ywin,-1.0,1.0);
+	set_view_by_identity();
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glVertexPointer(ITWO, GL_FLOAT, IZERO, xy_buf);
+	glColorPointer(IFOUR, GL_FLOAT, IZERO, rgba_buf);
+
+	if(cmap_s->min_opacity < 1.0) {
+		glEnable(GL_MULTISAMPLE);
+		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		glDepthMask(GL_FALSE);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+	glColor4fv(black);
+	glColorMaterial(GL_FRONT_AND_BACK,GL_EMISSION);
+
+	solid_colorbar_box_to_buf(cmap_s, 
+				cbar_wk->xbar_min, cbar_wk->xbar_mid, cbar_wk->ybar_min, 
+				cbar_wk->ydelta, cbar_wk->psf_min, cbar_wk->psf_max, 
+				xy_buf, rgba_buf);
+	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*128));
+
+	fade_colorbar_box_to_buf(cmap_s, bg_color, 
+				cbar_wk->xbar_mid, cbar_wk->xbar_max, cbar_wk->ybar_min, cbar_wk->ydelta,
+				cbar_wk->psf_min, cbar_wk->psf_max, 
+				xy_buf, rgba_buf);
+	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*128));
+
+	
+	glColorMaterial(GL_FRONT_AND_BACK,GL_EMISSION);
+	glColor4fv(black);
+	
+	if(cmap_s->min_opacity < 1.0) {
+		glDisable(GL_BLEND);
+		glDepthMask(GL_TRUE);
+		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		glDisable(GL_MULTISAMPLE);
+	}
+	
+	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+	glColor4fv(text_color);
+
+	inum = colorbar_frame_to_buf(cbar_wk->iflag_zero, text_color,
+				cbar_wk->xbar_min, cbar_wk->xbar_max, 
+				cbar_wk->ybar_min, cbar_wk->ybar_max, cbar_wk->yline_zero,
+				xy_buf, rgba_buf);
 	glDrawArrays(GL_LINES, IZERO, (ITWO*inum));
 	
 	
@@ -246,16 +309,19 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
     glDisable(GL_LIGHTING);
 	glColor4fv(text_color);
 	ysGlPlotBitmap2d_retina(iflag_retina,
-                            (xbar_max+3.0), (ybar_min-6.0), minlabel);
+                            (cbar_wk->xbar_max+3.0), (cbar_wk->ybar_min-6.0), minlabel);
 	ysGlPlotBitmap2d_retina(iflag_retina,
-                            (xbar_max+3.0), (ybar_max-6.0), maxlabel);
+                            (cbar_wk->xbar_max+3.0), (cbar_wk->ybar_max-6.0), maxlabel);
 	
 	
-	if(iflag_zero == 1){
-		ysGlPlotBitmap2d_retina(iflag_retina, (xbar_max+3.0),
-                                (yline_zero-6.0), zerolabel);
+	if(cbar_wk->iflag_zero == 1){
+		ysGlPlotBitmap2d_retina(iflag_retina, (cbar_wk->xbar_max+3.0),
+                                (cbar_wk->yline_zero-6.0), zerolabel);
 	};
+	
+	free(cbar_wk);
 	glColor4fv(black);
     glEnable(GL_LIGHTING);
 	return;
 }
+
