@@ -18,11 +18,6 @@
 
 /* prptotypes */
 
-void draw_patches_4_map(int shading_mode, int ist_psf, int ied_psf,
-                        struct psf_data **psf_s, struct kemo_array_control *psf_a,
-                        struct buffer_for_gl *gl_buf);
-
-
 void draw_PSF_patch_VAO(int shading_mode, int ist_psf, int ied_psf, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct view_element *view_s, 

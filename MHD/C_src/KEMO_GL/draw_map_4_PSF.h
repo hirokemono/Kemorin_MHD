@@ -18,10 +18,10 @@
 
 /* prptotypes */
 
-void draw_patches_4_map(int shading_mode, int ist_psf, int ied_psf,
-			struct psf_data **psf_s, struct kemo_array_control *psf_a,
-			struct buffer_for_gl *gl_buf);
-
+void draw_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf, 
+			struct psf_data **psf_s, struct kemo_array_control *psf_a, const GLdouble *orthogonal, 
+			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
+			struct gl_strided_buffer *psf_buf);
 
 int draw_map_objects_VAO(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
