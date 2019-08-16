@@ -28,9 +28,6 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	orthogonalGL(-xwin, xwin, -ywin, ywin, -1.0, 1.0);
 	set_view_by_identity();
 	
-	if(mesh_m->iflag_draw_coast != 0){
-		draw_map_coast(gl_buf);
-	};
 	if(mesh_m->iflag_draw_sph_grid != 0){
 		draw_flame_4_map(gl_buf);
 	};
