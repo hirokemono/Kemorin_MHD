@@ -41,10 +41,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
     } else {
 		iflag_psf = iflag_psf + iflag;
 	};
-    
-	if(mesh_m->iflag_view_type != VIEW_MAP) {
-		if(mesh_m->iflag_draw_sph_grid != 0){draw_sph_flame(mesh_m->radius_coast, gl_buf);};
-	};
 	
     /* Draw Color bar */
 	for(i=0; i<psf_a->nmax_loaded; i++){
@@ -193,7 +189,9 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		if(mesh_m->iflag_draw_coast != 0){
 			draw_coastline_VBO(mesh_m->radius_coast, view_s, cube_VAO, kemo_shaders, line_buf);
 		};
-/*		if(mesh_m->iflag_draw_sph_grid != 0){draw_sph_flame(mesh_m->radius_coast, gl_buf);};*/
+		if(mesh_m->iflag_draw_sph_grid != 0){
+			draw_sph_flame_VBO(mesh_m->radius_coast, view_s, cube_VAO, kemo_shaders, line_buf);
+		};
 		free(line_buf->v_buf);
 		free(line_buf);
 	};

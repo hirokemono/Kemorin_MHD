@@ -127,13 +127,9 @@ int draw_map_objects_VAO(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	if(mesh_m->iflag_draw_coast != 0){
 		draw_map_coastline_VBO(orthogonal, psf_VAO, kemo_shaders, line_buf);
 	};
-	/*
 	if(mesh_m->iflag_draw_sph_grid != 0){
-		draw_flame_4_map(gl_buf);
+		draw_map_flame_VBO(orthogonal, psf_VAO, kemo_shaders, line_buf);
 	};
-	load_projection_matrix(view_s);
-	modify_view_by_struct(view_s);
-	*/
 	free(line_buf->v_buf);
 	free(line_buf);
 	
