@@ -5,35 +5,6 @@
 #include "draw_object_kemo.h"
 
 
-int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
-                       struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                       struct view_element *view_s, struct buffer_for_gl *gl_buf){
-    int i;
-    int iflag_map = 0;
-	GLdouble xwin, ywin;
-	    
-	/* set shading mode */
-	glShadeModel(GL_SMOOTH);
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glDisable(GL_CULL_FACE);
-	
-	if(view_s->ny_window > view_s->nx_window) {
-		xwin = 2.05;
-		ywin = 2.05 * (GLdouble)view_s->ny_window / (GLdouble)view_s->nx_window;
-	} else{
-		xwin = 1.7 * (GLdouble)view_s->nx_window / (GLdouble)view_s->ny_window;
-		ywin = 1.7;
-	}
-	
-	orthogonalGL(-xwin, xwin, -ywin, ywin, -1.0, 1.0);
-	set_view_by_identity();
-	
-	load_projection_matrix(view_s);
-	modify_view_by_struct(view_s);
-	return iflag_map;
-}
-
-
 void draw_nodes_ico_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 			struct view_element *view_s, struct VAO_ids *mesh_VAO, 
 			struct kemoview_shaders *kemo_shaders, struct gl_strided_buffer *mesh_buf){

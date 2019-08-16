@@ -35,13 +35,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		};
 	};
     
-    if(mesh_m->iflag_view_type == VIEW_MAP) {
-        set_color_code_for_psfs(psf_s, psf_m, psf_a);
-        iflag_psf = draw_objects_4_map(psf_s, mesh_m, psf_m, psf_a, view_s, gl_buf);
-    } else {
-		iflag_psf = iflag_psf + iflag;
-	};
-	
     /* Draw Color bar */
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
