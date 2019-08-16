@@ -20,6 +20,7 @@ struct shader_ids{
 struct kemoview_shaders{
 	struct shader_ids *gouraud;
 	struct shader_ids *phong;
+	struct shader_ids *phong_texure;
 	struct shader_ids *phong_1color;
 	struct shader_ids *menu;
 	struct shader_ids *test;

@@ -725,6 +725,128 @@ char * load_phong_1color_vert(){
     return src;
 };
 
+char * load_phong_texture_frag(){
+    const char  phong_texture_frag_src[]
+    = {
+        "#version 400\n"\
+        "// phong_texture.frag\n"\
+        "\n"\
+        "in vec4 position;\n"\
+        "in vec4 ex_Color;\n"\
+        "in vec3 normal;\n"\
+        "in vec2 tex_position;\n"\
+        "out vec4 out_Color;\n"\
+        "\n"\
+        "#define MAX_LIGHTS 10\n"\
+        "struct LightSourceParameters{\n"\
+        "	vec4 ambient;              // Aclarri\n"\
+        "	vec4 diffuse;              // Dcli\n"\
+        "	vec4 specular;             // Scli\n"\
+        "	vec4 position;             // Ppli\n"\
+        "	vec4 halfVector;           // Derived: Hi\n"\
+        "	vec3 spotDirection;        // Sdli\n"\
+        "	float spotExponent;        // Srli\n"\
+        "	float spotCutoff;          // Crli\n"\
+        "	// (range: [0.0,90.0], 180.0)\n"\
+        "	float spotCosCutoff;       // Derived: cos(Crli)\n"\
+        "	// (range: [1.0,0.0],-1.0)\n"\
+        "	float constantAttenuation;   // K0\n"\
+        "	float linearAttenuation;     // K1\n"\
+        "	float quadraticAttenuation;  // K2\n"\
+        "};\n"\
+        "uniform int num_lights;\n"\
+        "uniform LightSourceParameters LightSource[MAX_LIGHTS];\n"\
+        "\n"\
+        "struct ColorMaterial {\n"\
+        "	vec4 emission;    // Ecm\n"\
+        "	vec4 ambient;     // Acm\n"\
+        "	vec4 diffuse;     // Dcm\n"\
+        "	vec4 specular;    // Scm\n"\
+        "	float shininess;  // Srm\n"\
+        "};\n"\
+        "uniform ColorMaterial frontMaterial;\n"\
+        "uniform ColorMaterial backMaterial;\n"\
+        "\n"\
+        "uniform sampler2D image;\n"\
+        "\n"\
+        "void main (void)\n"\
+        "{\n"\
+        "	vec3 fnormal = normalize(normal);\n"\
+        "	vec3 light;\n"\
+        "	float diffuse;\n"\
+        "\n"\
+        "//	vec4 txColor = texture2D(image, tex_position);\n"\
+        "//	vec4 txColor = ex_Color;\n"\
+        "	out_Color = ex_Color;\n"\
+        "//	out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
+        "//	for (int i = 0; i < num_lights; ++i){\n"\
+        "//		light = normalize(LightSource[i].position.xyz - position.xyz);\n"\
+        "//		diffuse = dot(light, fnormal);\n"\
+        "//\n"\
+        "//		out_Color += ex_Color * frontMaterial.ambient;\n"\
+        "//		if (diffuse > 0.0) {\n"\
+        "//			vec3 view = normalize(position.xyz);\n"\
+        "//			vec3 halfway = normalize(light - view);\n"\
+        "//			float product = max(dot(fnormal, halfway), 0.0);\n"\
+        "//			float specular = pow(product, frontMaterial.shininess);\n"\
+        "//			out_Color += txColor * frontMaterial.diffuse * diffuse\n"\
+        "//			+ vec4(frontMaterial.specular.xyz, txColor.w) * specular;\n"\
+        "//		}\n"\
+        "//	}\n"\
+        "}\n"\
+        "\n"\
+        "\n"
+    };
+    
+    long n = strlen(phong_texture_frag_src);
+    char * src = alloc_string((int) n+1);
+    
+    strcpy(src, phong_texture_frag_src);
+    return src;
+};
+
+char * load_phong_texture_vert(){
+    const char  phong_texture_vert_src[]
+    = {
+        "#version 400\n"\
+        "// phong_texture.vert\n"\
+        "\n"\
+        "layout (location = 0) in vec3  xyz;\n"\
+        "layout (location = 1) in float data;\n"\
+        "layout (location = 2) in vec4  color;\n"\
+        "layout (location = 3) in vec3  norm;\n"\
+        "layout (location = 4) in vec2  txur;\n"\
+        "\n"\
+        "\n"\
+        "uniform mat4 projectionMat;\n"\
+        "uniform mat4 viewMatrix;\n"\
+        "uniform mat4 modelViewMat;\n"\
+        "uniform mat3 modelNormalMat;\n"\
+        "\n"\
+        "out vec4 position;\n"\
+        "out vec4 ex_Color;\n"\
+        "out vec3 normal;\n"\
+        "out vec2 tex_position;\n"\
+        "\n"\
+        "void main(void)\n"\
+        "{\n"\
+        "	position = vec4(modelViewMat * vec4(xyz, 1.0));\n"\
+        "	normal = normalize(modelNormalMat * norm);\n"\
+        "	ex_Color = color;\n"\
+        "	tex_position = txur;\n"\
+        "\n"\
+        "	gl_Position =  projectionMat * position;\n"\
+        "}\n"\
+        "\n"
+    };
+    
+    long n = strlen(phong_texture_vert_src);
+    char * src = alloc_string((int) n+1);
+    
+    strcpy(src, phong_texture_vert_src);
+    return src;
+};
+
 char * load_test_frag(){
     const char  test_frag_src[]
     = {

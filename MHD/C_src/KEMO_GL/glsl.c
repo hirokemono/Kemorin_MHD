@@ -295,6 +295,8 @@ struct kemoview_shaders * init_kemoview_shaders(){
 	sds->gouraud = init_shader_ids();
 	sds->menu = init_shader_ids();
 	sds->phong = init_shader_ids();
+	sds->phong_texure = init_shader_ids();
+	sds->phong_1color = init_shader_ids();
 	sds->test = init_shader_ids();
 	/*
 	LoadShaderFromStrings(sds->gouraud, load_gouraud_vert(), load_gouraud_frag());

@@ -244,18 +244,14 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
 		set_color_code_for_psfs(psf_s, psf_m, psf_a);
 		
-		glDisable(GL_CULL_FACE);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		/*
-		glEnable(GL_TEXTURE_2D);
-		draw_texure_4_PSF(mesh_m->shading_mode, 
-				IZERO, psf_a->istack_solid_psf_txtur, 
-				psf_s, psf_m, psf_a, gl_buf);
-		glDisable(GL_TEXTURE_2D);
-		*/
 		struct gl_strided_buffer *psf_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 		set_buffer_address_4_patch(3*128, psf_buf);
 		alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+		
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		draw_PSF_texture_VAO(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_txtur, 
+					psf_s, psf_m, psf_a, view_s, cube_VAO, kemo_shaders->phong, psf_buf);
 		draw_PSF_patch_VAO(mesh_m->shading_mode, psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 
 					psf_s, psf_m, psf_a, view_s, cube_VAO, kemo_shaders, psf_buf);
 		free(psf_buf->v_buf);
