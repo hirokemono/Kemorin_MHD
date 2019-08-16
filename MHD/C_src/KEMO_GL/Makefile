@@ -144,6 +144,8 @@ module:
 	draw_axis_c.h \
 	kemoviewer_param_c.o \
 	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
+	glsl.o \
 	modify_object_4_viewer_c.o \
 	icosahedron_c.o \
 	m_surface_mesh_4_viewer_c.o \
@@ -181,6 +183,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/icosahedron_c.c \
 	icosahedron_c.h \
 	kemoviewer_param_c.o \
+	vartex_array_object_gl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

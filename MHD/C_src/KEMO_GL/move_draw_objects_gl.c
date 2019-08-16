@@ -214,18 +214,20 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	int i, iflag;
 	int iflag_psf = 0;
 	
-    /* Draw Solid Objects
+    /* Draw Solid Objects */
 	
-	glEnable(GL_COLOR_MATERIAL);
+	update_projection_struct(view_s);
+	modify_view_by_struct(view_s);
+		
 	if(mesh_m->iflag_draw_axis != 0){
-		glShadeModel(GL_SMOOTH);
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_CULL_FACE);
-		draw_axis(view_s, (GLfloat) mesh_m->dist_domains);
-		glEnable(GL_CULL_FACE);
+		struct gl_strided_buffer *axis_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+		draw_axis_VAO(view_s, (GLfloat) mesh_m->dist_domains, cube_VAO, kemo_shaders, axis_buf);
 	}
 	
+	
+	/*
 	if(fline_m->iflag_draw_fline != 0){
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 		if(fline_m->fieldline_type == IFLAG_PIPE){
@@ -264,9 +266,6 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	};
 	
 	*/
-	update_projection_struct(view_s);
-	modify_view_by_struct(view_s);
-		
 	if(mesh_m->iflag_draw_mesh != 0){
 		
 		struct gl_strided_buffer *mesh_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
