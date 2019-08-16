@@ -21,9 +21,6 @@
 
 /* prototypes */
 
-void draw_map_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m,
-						  struct buffer_for_gl *gl_buf, int iflag_retina);
-
 void draw_map_PSF_isolines_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			int iflag_retina, const GLdouble *orthogonal, 
 			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 

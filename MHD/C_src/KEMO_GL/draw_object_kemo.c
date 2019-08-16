@@ -28,21 +28,6 @@ int draw_objects_4_map(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	orthogonalGL(-xwin, xwin, -ywin, ywin, -1.0, 1.0);
 	set_view_by_identity();
 	
-	/* set shading mode */
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	for(i=0; i<psf_a->nmax_loaded; i++){
-		iflag_map = iflag_map + psf_a->iflag_loaded[i];
-		if(psf_a->iflag_loaded[i] != 0){
-			if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
-				
-				draw_map_PSF_isoline(psf_s[i], psf_m[i], gl_buf, view_s->iflag_retina);
-				
-			};
-		};
-	};
-	glEnable(GL_CULL_FACE);
-	
-	
 	if(mesh_m->iflag_draw_coast != 0){
 		draw_map_coast(gl_buf);
 	};
