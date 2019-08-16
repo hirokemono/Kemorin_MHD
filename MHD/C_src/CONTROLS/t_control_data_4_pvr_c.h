@@ -23,7 +23,7 @@
 
 #define NLBL_PVR_PLOT_AREA_CTL  2
 #define NLBL_PVR_MOVIE_CTL      2
-#define NLBL_PVR_CTL            18
+#define NLBL_PVR_CTL            19
 
 struct pvr_plot_area_ctl_c{
     int iflag_use;
