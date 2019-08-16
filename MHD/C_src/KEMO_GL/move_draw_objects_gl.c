@@ -28,10 +28,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			
 			draw_fieldtubes_c(fline_s, fline_m, gl_buf);
 			glEnable(GL_CULL_FACE);
-		} else {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			
-			draw_fieldlines_c(fline_s, fline_m, gl_buf);
 		};
 	};
     
@@ -114,23 +110,22 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			draw_axis_VAO(view_s, (GLfloat) mesh_m->dist_domains, cube_VAO, kemo_shaders, axis_buf);
 		}
 	
-	/*
 	if(fline_m->iflag_draw_fline != 0){
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+		struct gl_strided_buffer *fline_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+		set_buffer_address_4_patch(3*128, fline_buf);
+		alloc_strided_buffer(fline_buf->num_nod_buf, fline_buf->ncomp_buf, fline_buf);
 		if(fline_m->fieldline_type == IFLAG_PIPE){
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glDisable(GL_CULL_FACE);
-			glShadeModel(GL_SMOOTH);
 			
-			draw_fieldtubes_c(fline_s, fline_m, gl_buf);
-			glEnable(GL_CULL_FACE);
+			draw_fieldtubes_VAO(fline_s, fline_m, view_s, cube_VAO, kemo_shaders, fline_buf);
 		} else {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			
-			draw_fieldlines_c(fline_s, fline_m, gl_buf);
+			draw_fieldlines_VAO(fline_s, fline_m, view_s, cube_VAO, kemo_shaders, fline_buf);
 		};
+		free(fline_buf->v_buf);
+		free(fline_buf);
 	};
-    */
 		struct gl_strided_buffer *psf_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 		set_buffer_address_4_patch(3*128, psf_buf);
 		alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);

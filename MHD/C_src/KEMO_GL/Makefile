@@ -383,7 +383,9 @@ module:
 	rainbow_color_code_c.o \
 	set_color_code_on_nodes.o \
 	icosahedron_c.o \
+	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
+	glsl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
