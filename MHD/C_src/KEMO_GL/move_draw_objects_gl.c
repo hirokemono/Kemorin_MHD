@@ -94,13 +94,25 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	update_projection_struct(view_s);
 	modify_view_by_struct(view_s);
 		
-	if(mesh_m->iflag_draw_axis != 0){
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glDisable(GL_CULL_FACE);
-		struct gl_strided_buffer *axis_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-		draw_axis_VAO(view_s, (GLfloat) mesh_m->dist_domains, cube_VAO, kemo_shaders, axis_buf);
-	}
 	
+	if(mesh_m->iflag_view_type == VIEW_MAP) {
+		struct gl_strided_buffer *map_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+		set_buffer_address_4_patch(3*128, map_buf);
+		alloc_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
+	
+		set_color_code_for_psfs(psf_s, psf_m, psf_a);
+		iflag_psf = draw_map_objects_VAO(psf_s, mesh_m, psf_m, psf_a, view_s, 
+					cube_VAO, kemo_shaders, map_buf, gl_buf);
+		
+		free(map_buf->v_buf);
+		free(map_buf);
+	} else {
+		if(mesh_m->iflag_draw_axis != 0){
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glDisable(GL_CULL_FACE);
+			struct gl_strided_buffer *axis_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+			draw_axis_VAO(view_s, (GLfloat) mesh_m->dist_domains, cube_VAO, kemo_shaders, axis_buf);
+		}
 	
 	/*
 	if(fline_m->iflag_draw_fline != 0){
@@ -119,15 +131,10 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		};
 	};
     */
-	struct gl_strided_buffer *psf_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	set_buffer_address_4_patch(3*128, psf_buf);
-	alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
-	
-	if(mesh_m->iflag_view_type == VIEW_MAP) {
-		set_color_code_for_psfs(psf_s, psf_m, psf_a);
-		iflag_psf = draw_map_objects_VAO(psf_s, mesh_m, psf_m, psf_a, view_s, 
-					cube_VAO, kemo_shaders, psf_buf, gl_buf);
-	} else {
+		struct gl_strided_buffer *psf_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+		set_buffer_address_4_patch(3*128, psf_buf);
+		alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+		
 		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
 		set_color_code_for_psfs(psf_s, psf_m, psf_a);
 		
@@ -143,38 +150,33 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		iflag = draw_PSF_solid_objects_VAO(psf_s, psf_m, psf_a, view_s,
 					cube_VAO, kemo_shaders, psf_buf);
 		iflag_psf = iflag_psf + iflag;
-	};
-	free(psf_buf->v_buf);
-	free(psf_buf);
+		
+		free(psf_buf->v_buf);
+		free(psf_buf);
 	
-	
-	if(mesh_m->iflag_draw_mesh != 0){
-		
-		struct gl_strided_buffer *mesh_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-		
-		glDisable(GL_CULL_FACE);
-		draw_mesh_edges_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
-		
-		glDisable(GL_CULL_FACE);
-		glPolygonMode(GL_FRONT, GL_FILL);
-		draw_nodes_ico_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
-		
-		glEnable(GL_CULL_FACE);
-		if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
+		if(mesh_m->iflag_draw_mesh != 0){
+			struct gl_strided_buffer *mesh_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+			
+			glDisable(GL_CULL_FACE);
+			draw_mesh_edges_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
+			
+			glDisable(GL_CULL_FACE);
 			glPolygonMode(GL_FRONT, GL_FILL);
-			glCullFace(GL_BACK);
-		}
-		else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
-			glPolygonMode(GL_BACK, GL_FILL);
-			glCullFace(GL_FRONT);
+			draw_nodes_ico_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
+			
+			glEnable(GL_CULL_FACE);
+			if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
+				glPolygonMode(GL_FRONT, GL_FILL);
+				glCullFace(GL_BACK);
+			} else if(mesh_m->polygon_mode == REVERSE_POLYGON) {
+				glPolygonMode(GL_BACK, GL_FILL);
+				glCullFace(GL_FRONT);
+			};
+			draw_mesh_patches_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
+			free(mesh_buf);
+			DestroyVBO(cube_VAO);
 		};
-		draw_mesh_patches_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
-		free(mesh_buf);
-		DestroyVBO(cube_VAO);
-	};
-	
-	
-	if(mesh_m->iflag_view_type != VIEW_MAP) {
+		
 		struct gl_strided_buffer *line_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 		set_buffer_address_4_patch(3*128, line_buf);
 		alloc_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
@@ -187,16 +189,14 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		};
 		free(line_buf->v_buf);
 		free(line_buf);
-	};
+		
+		/* Draw Transparent Objects */
 	
-    /* Draw Transparent Objects */
-	
-	glEnable(GL_MULTISAMPLE);
-	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glDepthMask(GL_FALSE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	if(mesh_m->iflag_view_type != VIEW_MAP) {
+		glEnable(GL_MULTISAMPLE);
+		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		glDepthMask(GL_FALSE);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		/* set shading mode */
 		struct gl_strided_buffer *psf_buf2 = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
@@ -213,27 +213,27 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 					psf_s, psf_m, psf_a, view_s, cube_VAO, kemo_shaders, psf_buf2);
 		free(psf_buf2->v_buf);
 		free(psf_buf2);
-	};
-	
-	if(mesh_m->iflag_draw_mesh != 0){
-		if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
-			glPolygonMode(GL_FRONT, GL_FILL);
-			glCullFace(GL_BACK);
-		}
-		else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
-			glPolygonMode(GL_BACK, GL_FILL);
-			glCullFace(GL_FRONT);
-		};
 		
-		struct gl_strided_buffer *mesh_buf2 = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-		draw_transparent_mesh_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf2);
-		free(mesh_buf2);
-		DestroyVBO(cube_VAO);
+		if(mesh_m->iflag_draw_mesh != 0){
+			if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
+				glPolygonMode(GL_FRONT, GL_FILL);
+				glCullFace(GL_BACK);
+			}
+			else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
+				glPolygonMode(GL_BACK, GL_FILL);
+				glCullFace(GL_FRONT);
+			};
+			
+			struct gl_strided_buffer *mesh_buf2 = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+			draw_transparent_mesh_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf2);
+			free(mesh_buf2);
+			DestroyVBO(cube_VAO);
+		};
+		glDisable(GL_BLEND);
+		glDepthMask(GL_TRUE);
+		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		glDisable(GL_MULTISAMPLE);
 	};
-	glDisable(GL_BLEND);
-	glDepthMask(GL_TRUE);
-	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glDisable(GL_MULTISAMPLE);
 	
 	
     /* Draw Color bar
