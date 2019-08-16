@@ -133,12 +133,10 @@ static int draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_v
 				draw_PSF_arrow_VAO(psf_s[i], psf_m[i], view_s, 
 							psf_VAO, kemo_shaders, psf_buf);
 			};
-			/*
 			if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
-				draw_PSF_isoline(psf_s[i], psf_m[i], gl_buf,
-							view_s->iflag_retina);
+				draw_PSF_isoline_VAO(psf_s[i], psf_m[i], view_s, 
+							psf_VAO, kemo_shaders, psf_buf);
 			};
-			*/
 		};
 	};
 	

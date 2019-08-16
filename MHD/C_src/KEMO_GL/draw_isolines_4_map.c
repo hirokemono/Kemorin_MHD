@@ -166,7 +166,7 @@ static void draw_map_isolines_VAO(int ist, int ied, struct psf_data *psf_s,
 		for(nd=0;nd<4;nd++) {f_color[nd] = white[nd];}
 	};
 	
-	for (j = (ist-1); j < ied; j++){
+	for (j = ist; j < ied; j++){
 		v_line = cal_isoline_value(j, psf_m);
 		num_patch = num_patch 
 				+ 2 * count_map_isoline_to_buf(0.002, v_line, psf_m->icomp_draw_psf, psf_s);
@@ -203,7 +203,7 @@ static void draw_map_isolines_VAO(int ist, int ied, struct psf_data *psf_s,
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
 	
-	for (j = (ist-1); j < ied; j++){
+	for (j = ist; j < ied; j++){
 		v_line = cal_isoline_value(j, psf_m);
 		
 		if (psf_m->isoline_color == RAINBOW_LINE){	
@@ -223,14 +223,11 @@ static void draw_map_isolines_VAO(int ist, int ied, struct psf_data *psf_s,
 	
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, psf_buf->istride,
 						  (GLvoid*) (psf_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, psf_buf->istride, 
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, psf_buf->istride, 
 						  (GLvoid*) (psf_buf->ist_csurf * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, psf_buf->istride, 
-						  (GLvoid*) (psf_buf->ist_norm * sizeof(GL_FLOAT)));
 	
 	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(1);
 	
 	glBindVertexArray(0);
 	
