@@ -234,29 +234,44 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			draw_fieldlines_c(fline_s, fline_m, gl_buf);
 		};
 	};
-    
-    if(mesh_m->iflag_view_type == VIEW_MAP) {
+    */
+	if(mesh_m->iflag_view_type == VIEW_MAP) {
+		/*
         set_color_code_for_psfs(psf_s, psf_m, psf_a);
-        iflag_psf = draw_objects_4_map(psf_s, mesh_m, psf_m, psf_a, view_s, gl_buf);
-    } else {
+		iflag_psf = draw_objects_4_map(psf_s, mesh_m, psf_m, psf_a, view_s, gl_buf);
+		*/
+	} else {
 		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
 		set_color_code_for_psfs(psf_s, psf_m, psf_a);
 		
-	/* set shading mode
-		glShadeModel(GL_SMOOTH);
 		glDisable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-		
-		draw_solid_patch_4_psf(psf_s, mesh_m, psf_m, psf_a, gl_buf);
-		
+		/*
+		glEnable(GL_TEXTURE_2D);
+		draw_texure_4_PSF(mesh_m->shading_mode, 
+				IZERO, psf_a->istack_solid_psf_txtur, 
+				psf_s, psf_m, psf_a, gl_buf);
+		glDisable(GL_TEXTURE_2D);
+		*/
+		struct gl_strided_buffer *psf_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+		set_buffer_address_4_patch(3*128, psf_buf);
+		alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+		draw_PSF_patch_VAO(mesh_m->shading_mode, psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 
+					psf_s, psf_m, psf_a, view_s, cube_VAO, kemo_shaders, psf_buf);
+		free(psf_buf->v_buf);
+		free(psf_buf);
+		int iflag = 0;
+		for(i=0; i<psf_a->nmax_loaded; i++){
+			iflag = iflag + psf_a->iflag_loaded[i];
+		};
+		/*
 		iflag = draw_solid_objects_4_psf(psf_s, psf_m, psf_a, view_s, gl_buf);
 		glEnable(GL_CULL_FACE);
+		*/
 		
 		iflag_psf = iflag_psf + iflag;
 	};
 	
-	*/
 	if(mesh_m->iflag_draw_mesh != 0){
 		
 		struct gl_strided_buffer *mesh_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));

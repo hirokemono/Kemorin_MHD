@@ -390,10 +390,12 @@ module:
 	m_kemoviewer_menu.o \
 	icosahedron_c.o \
 	m_psf_data_4_viewer_c.o \
-	vartex_array_object_gl.o \
 	set_new_patch_4_map_c.o \
 	coordinate_converter_c.o \
 	set_color_code_on_nodes.o \
+	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
+	glsl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

@@ -7,7 +7,8 @@
 #include "kemoviewer_param_c.h"
 #include "m_kemoviewer_menu.h"
 #include "vartex_array_object_gl.h"
-#include "m_kemoviewer_menu.h"
+#include "glsl.h"
+#include "m_surface_mesh_4_viewer_c.h"
 #include "init_gl_lighting_c.h"
 #include "set_new_patch_4_map_c.h"
 #include "icosahedron_c.h"
@@ -30,4 +31,11 @@ void draw_texure_4_PSF(int shading_mode, int ist_psf, int ied_psf,
                         struct psf_data **psf_s, struct psf_menu_val **psf_m,
                         struct kemo_array_control *psf_a, struct buffer_for_gl *gl_buf);
 
+
+
+void draw_PSF_patch_VAO(int shading_mode, int ist_psf, int ied_psf, 
+			struct psf_data **psf_s, struct psf_menu_val **psf_m,
+			struct kemo_array_control *psf_a, struct view_element *view_s, 
+			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
+			struct gl_strided_buffer *psf_buf);
 #endif
