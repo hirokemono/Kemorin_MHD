@@ -16,20 +16,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	glDeleteLists(view_s->gl_drawID, 1);
 	glNewList(view_s->gl_drawID, GL_COMPILE_AND_EXECUTE);
 	
-    /* Draw Color bar */
-	for(i=0; i<psf_a->nmax_loaded; i++){
-		iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
-		if(psf_a->iflag_loaded[i] != 0){
-			if(psf_m[i]->draw_psf_cbar > 0) {
-				draw_colorbar_gl(view_s->iflag_retina,
-                                 view_s->nx_window, view_s->ny_window,
-                                 mesh_m->text_color, mesh_m->bg_color, psf_m[i]->cmap_psf);
-				load_projection_matrix(view_s);
-				rotate_view_by_struct(view_s);
-			};
-		};
-	};
-	
 	glEndList();
 	
 	return;
@@ -216,23 +202,24 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	};
 	
 	
-    /* Draw Color bar
+    /* Draw Color bar */
+	struct gl_strided_buffer *cbar_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	set_buffer_address_4_patch(3*128, cbar_buf);
+	alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
+		
 		if(psf_a->iflag_loaded[i] != 0){
 			if(psf_m[i]->draw_psf_cbar > 0) {
-				draw_colorbar_gl(view_s->iflag_retina,
-                                 view_s->nx_window, view_s->ny_window,
-                                 mesh_m->text_color, mesh_m->bg_color, psf_m[i]->cmap_psf);
-				load_projection_matrix(view_s);
-				rotate_view_by_struct(view_s);
+				draw_colorbar_VAO(view_s->iflag_retina,
+							view_s->nx_window, view_s->ny_window,
+							mesh_m->text_color, mesh_m->bg_color, psf_m[i]->cmap_psf,
+							cube_VAO, kemo_shaders, cbar_buf);
 			};
 		};
 	};
-	
-	glEnable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDisable(GL_COLOR_MATERIAL);
+	free(cbar_buf->v_buf);
+	free(cbar_buf);
 	
 	/* draw example cube for empty data */
 	if( (mesh_m->iflag_draw_mesh+iflag_psf+fline_m->iflag_draw_fline) == 0){

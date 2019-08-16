@@ -552,6 +552,8 @@ module:
 	m_color_table_c.o \
 	coordinate_converter_c.o \
 	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
+	glsl.o \
 	rainbow_color_code_c.o \
 	ysglusefontbitmap.o \
 	>> $(MAKENAME)
