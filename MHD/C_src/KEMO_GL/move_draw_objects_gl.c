@@ -29,20 +29,6 @@ static int draw_solid_objects_4_psf(struct psf_data **psf_s, struct psf_menu_val
 	return iflag_psf;
 }
 
-static void draw_solid_patch_4_psf(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
-                           struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
-                           struct buffer_for_gl *gl_buf){
-	glEnable(GL_TEXTURE_2D);
-	draw_texure_4_PSF(mesh_m->shading_mode, 
-				IZERO, psf_a->istack_solid_psf_txtur, 
-				psf_s, psf_m, psf_a, gl_buf);
-	glDisable(GL_TEXTURE_2D);
-	
-	draw_patch_4_PSF(mesh_m->shading_mode, psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 
-				psf_s, psf_m, psf_a, gl_buf);
-    return;
-}
-
 static void draw_transparent_patch_4_psf(struct psf_data **psf_s, 
                                     struct mesh_menu_val *mesh_m, struct psf_menu_val **psf_m, 
                                     struct kemo_array_control *psf_a, struct view_element *view_s, struct buffer_for_gl *gl_buf){
@@ -122,8 +108,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		glDisable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-		
-		draw_solid_patch_4_psf(psf_s, mesh_m, psf_m, psf_a, gl_buf);
 		
 		iflag = draw_solid_objects_4_psf(psf_s, psf_m, psf_a, view_s, gl_buf);
 		glEnable(GL_CULL_FACE);
@@ -298,12 +282,31 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		if(mesh_m->iflag_draw_sph_grid != 0){draw_sph_flame(mesh_m->radius_coast, gl_buf);};
 	};
 	
-    /* Draw Transparent Objects
+    /* Draw Transparent Objects */
 	
-    if(mesh_m->iflag_view_type != VIEW_MAP) {
-        draw_transparent_patch_4_psf(psf_s, mesh_m, psf_m, psf_a, view_s, gl_buf);
-    };
-	*/
+	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if(mesh_m->iflag_view_type != VIEW_MAP) {
+		
+		/* set shading mode */
+		struct gl_strided_buffer *psf_buf2 = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+		set_buffer_address_4_patch(3*128, psf_buf2);
+		alloc_strided_buffer(psf_buf2->num_nod_buf, psf_buf2->ncomp_buf, psf_buf2);
+		
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		draw_PSF_texture_VAO(mesh_m->shading_mode, 
+					psf_a->istack_solid_psf_patch, psf_a->istack_trans_psf_txtur, 
+					psf_s, psf_m, psf_a, view_s, cube_VAO, kemo_shaders->phong_texure, psf_buf2);
+		draw_PSF_patch_VAO(mesh_m->shading_mode, 
+					psf_a->istack_trans_psf_txtur, psf_a->ntot_psf_patch,
+					psf_s, psf_m, psf_a, view_s, cube_VAO, kemo_shaders, psf_buf2);
+		free(psf_buf2->v_buf);
+		free(psf_buf2);
+	};
 	
 	if(mesh_m->iflag_draw_mesh != 0){
 		if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
@@ -314,22 +317,16 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			glPolygonMode(GL_BACK, GL_FILL);
 			glCullFace(GL_FRONT);
 		};
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDepthMask(GL_FALSE);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		struct gl_strided_buffer *mesh_buf2 = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 		draw_transparent_mesh_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf2);
 		free(mesh_buf2);
 		DestroyVBO(cube_VAO);
-		
-		glDisable(GL_BLEND);
-		glDepthMask(GL_TRUE);
-		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDisable(GL_MULTISAMPLE);
 	};
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
+	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+	glDisable(GL_MULTISAMPLE);
 	
 	
     /* Draw Color bar
