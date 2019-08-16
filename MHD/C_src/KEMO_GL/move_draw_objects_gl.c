@@ -251,7 +251,7 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		glDisable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		draw_PSF_texture_VAO(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_txtur, 
-					psf_s, psf_m, psf_a, view_s, cube_VAO, kemo_shaders->phong, psf_buf);
+					psf_s, psf_m, psf_a, view_s, cube_VAO, kemo_shaders->phong_texure, psf_buf);
 		draw_PSF_patch_VAO(mesh_m->shading_mode, psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 
 					psf_s, psf_m, psf_a, view_s, cube_VAO, kemo_shaders, psf_buf);
 		free(psf_buf->v_buf);

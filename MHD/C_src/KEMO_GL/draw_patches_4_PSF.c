@@ -98,7 +98,7 @@ static void set_psf_textures_to_buf(int ist_psf, int num_buf, struct psf_data **
 		for (k = 0; k < ITHREE; k++) {
 			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
 			gl_buf->xy[ITHREE*inum+k][0] =  rtp_patch[ITHREE*k+2] * ARCPI * HALF;
-			gl_buf->xy[ITHREE*inum+k][1] = -rtp_patch[ITHREE*k+1] * ARCPI;
+			gl_buf->xy[ITHREE*inum+k][1] =  -rtp_patch[ITHREE*k+1] * ARCPI;
 		};
 	};
 	return;
@@ -553,9 +553,9 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 	
 	int num_light = 1;
 	GLfloat  lightposition[4] = {5.0, 5.0, -5.0,1.0};
-	GLfloat white1[4] = {0.3, 0.3, 0.3, 1.0};
-	GLfloat white2[4] = {0.8, 0.8, 0.8, 1.0};
-	GLfloat white3[4] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat white1[4] = {0.9, 0.9, 0.9, 1.0};
+	GLfloat white2[4] = {0.7, 0.7, 0.7, 1.0};
+	GLfloat white3[4] = {0.4, 0.4, 0.4, 1.0};
 	GLfloat shine = 20.0;
 	
 	glUniform1i(id_numLight, num_light);
@@ -572,8 +572,8 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 	
 	set_psf_nodes_to_strided_buf(ist_psf, num_patch, shading_mode, 
 				psf_s, psf_m, psf_a, psf_buf);
-//	set_psf_textures_to_strided_buf(ist_psf, num_patch, 
-//				psf_s, psf_a, psf_buf);
+	set_psf_textures_to_strided_buf(ist_psf, num_patch, 
+				psf_s, psf_a, psf_buf);
 	
 	glGenVertexArrays(1, &psf_VAO->id_VAO);
 	glBindVertexArray(psf_VAO->id_VAO);
@@ -589,23 +589,23 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 						  (GLvoid*) (psf_buf->ist_csurf * sizeof(GL_FLOAT)));
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, psf_buf->istride, 
 						  (GLvoid*) (psf_buf->ist_norm * sizeof(GL_FLOAT)));
-//	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, psf_buf->istride, 
-//						  (GLvoid*) (psf_buf->ist_tex * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, psf_buf->istride, 
+						  (GLvoid*) (psf_buf->ist_tex * sizeof(GL_FLOAT)));
 	
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
-//	glEnableVertexAttribArray(4);
+	glEnableVertexAttribArray(4);
+	
+	glActiveTexture(GL_TEXTURE_2D); 
+	i = psf_a->ipsf_viz_far[ist_psf]-1;
+	set_texture(psf_m[i]);
+	glUniform1i(id_textureImage, 0);
 	
 	glBindVertexArray(0);
 	
 	glBindVertexArray(psf_VAO->id_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, psf_VAO->id_vertex);
-	
-//	glActiveTexture(GL_TEXTURE_2D); 
-//	i = psf_a->ipsf_viz_far[ist_psf]-1;
-//	set_texture(psf_m[i]);
-//	glUniform1i(id_textureImage, 0);
 	
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
 	

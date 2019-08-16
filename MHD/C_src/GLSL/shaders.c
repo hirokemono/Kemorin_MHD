@@ -775,24 +775,23 @@ char * load_phong_texture_frag(){
         "	vec3 light;\n"\
         "	float diffuse;\n"\
         "\n"\
-        "//	vec4 txColor = texture2D(image, tex_position);\n"\
-        "//	vec4 txColor = ex_Color;\n"\
-        "	out_Color = ex_Color;\n"\
-        "//	out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
-        "//	for (int i = 0; i < num_lights; ++i){\n"\
-        "//		light = normalize(LightSource[i].position.xyz - position.xyz);\n"\
-        "//		diffuse = dot(light, fnormal);\n"\
-        "//\n"\
-        "//		out_Color += ex_Color * frontMaterial.ambient;\n"\
-        "//		if (diffuse > 0.0) {\n"\
-        "//			vec3 view = normalize(position.xyz);\n"\
-        "//			vec3 halfway = normalize(light - view);\n"\
-        "//			float product = max(dot(fnormal, halfway), 0.0);\n"\
-        "//			float specular = pow(product, frontMaterial.shininess);\n"\
-        "//			out_Color += txColor * frontMaterial.diffuse * diffuse\n"\
-        "//			+ vec4(frontMaterial.specular.xyz, txColor.w) * specular;\n"\
-        "//		}\n"\
-        "//	}\n"\
+        "	vec4 txColor = texture(image, tex_position);\n"\
+        "\n"\
+        "	out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
+        "	for (int i = 0; i < num_lights; ++i){\n"\
+        "		light = normalize(LightSource[i].position.xyz - position.xyz);\n"\
+        "		diffuse = dot(light, fnormal);\n"\
+        "\n"\
+        "		out_Color += txColor * frontMaterial.ambient;\n"\
+        "		if (diffuse > 0.0) {\n"\
+        "			vec3 view = normalize(position.xyz);\n"\
+        "			vec3 halfway = normalize(light - view);\n"\
+        "			float product = max(dot(fnormal, halfway), 0.0);\n"\
+        "			float specular = pow(product, frontMaterial.shininess);\n"\
+        "			out_Color += ex_Color * frontMaterial.diffuse * diffuse\n"\
+        "			+ vec4(frontMaterial.specular.xyz, ex_Color.w) * specular;\n"\
+        "		}\n"\
+        "	}\n"\
         "}\n"\
         "\n"\
         "\n"
