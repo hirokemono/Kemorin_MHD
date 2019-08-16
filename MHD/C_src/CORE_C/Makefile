@@ -11,6 +11,7 @@ OBJ_KEMO_C = \
  numbers_to_bin_c.o \
  jacobian_trilinear_c.o \
  ysglfontdata.o \
+ ysglmaketextbitmap.o \
  get_ysglbitmap.o \
  write_image_2_bmp.o \
  read_image_2_bmp.o \
@@ -137,6 +138,15 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
 	'$$(KEMO_C_DIR)'/ysglfontdata.c \
+	>> $(MAKENAME)
+	
+	@echo \
+	ysglmaketextbitmap.o: \
+	'$$(KEMO_C_DIR)'/ysglmaketextbitmap.c \
+	ysglfontdata.h \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
+	'$$(KEMO_C_DIR)'/ysglmaketextbitmap.c \
 	>> $(MAKENAME)
 	
 	@echo \

@@ -31,7 +31,8 @@ static void ysGlPlotBitmap2d_retina(int iflag_retina,
     } else {
         ysGlPlotBitmap2d(ibase_8x12, (x_plot    ), (y_plot    ), (GLubyte *)label);
     }
-    
+	
+	
     return;
 }
 
@@ -74,10 +75,43 @@ struct cbar_work{
 	double psf_max;
 };
 
+void set_one_quad_to_buf(int i_quad, 
+			GLfloat x1[3], GLfloat x2[3], GLfloat x3[3], GLfloat x4[3], 
+			GLfloat c1[4], GLfloat c2[4], GLfloat c3[4], GLfloat c4[4], 
+			struct gl_strided_buffer *strided_buf){
+	int nd;
+	
+	set_node_stride_VBO(6*i_quad, strided_buf);
+	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x1[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c1[nd];};
+	
+	set_node_stride_VBO(6*i_quad+1, strided_buf);
+	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x2[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c2[nd];};
+		
+	set_node_stride_VBO(6*i_quad+2, strided_buf);
+	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x3[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c3[nd];};
+		
+	set_node_stride_VBO(6*i_quad+3, strided_buf);
+	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x3[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c3[nd];};
+		
+	set_node_stride_VBO(6*i_quad+4, strided_buf);
+	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x4[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c4[nd];};
+	
+	set_node_stride_VBO(6*i_quad+5, strided_buf);
+	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x1[nd];};
+	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c1[nd];};
+	return;
+};
 
 void solid_colorbar_box_to_buf(struct colormap_params *cmap_s, 
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
 	GLfloat y1;
+	GLfloat x1[3], x2[3], x3[3], x4[3];
+	GLfloat c1[4], c2[4], c3[4], c4[4];
 	double psf_value;
 	double f_color[4], l_color[4];
 	int i, nd;
@@ -93,41 +127,27 @@ void solid_colorbar_box_to_buf(struct colormap_params *cmap_s,
 		set_rainbow_color_code(cmap_s, psf_value, f_color);
 		f_color[3] = ONE;
 		
-		set_node_stride_VBO(6*i, strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_min;
-		strided_buf->x_draw[1] = y1;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = l_color[nd];};
+		x1[0] = cbar_wk->xbar_min;
+		x1[1] = y1;
+		x1[2] = 0.001;
+		for(nd=0;nd<4;nd++) {c1[nd] = l_color[nd];};
 		
-		set_node_stride_VBO(6*i+1, strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_mid;
-		strided_buf->x_draw[1] = y1;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = l_color[nd];};
+		x2[0] = cbar_wk->xbar_mid;
+		x2[1] = y1;
+		x2[2] = 0.001;
+		for(nd=0;nd<4;nd++) {c2[nd] = l_color[nd];};
 		
-		set_node_stride_VBO(6*i+2, strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_mid;
-		strided_buf->x_draw[1] = y1 + cbar_wk->ydelta;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = f_color[nd];};
-
-		set_node_stride_VBO(6*i+3, strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_mid;
-		strided_buf->x_draw[1] = y1 + cbar_wk->ydelta;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = f_color[nd];};
+		x3[0] = cbar_wk->xbar_mid;
+		x3[1] = y1 + cbar_wk->ydelta;
+		x3[2] = 0.001;
+		for(nd=0;nd<4;nd++) {c3[nd] = f_color[nd];};
 		
-		set_node_stride_VBO(6*i+4, strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_min;
-		strided_buf->x_draw[1] = y1 + cbar_wk->ydelta;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = f_color[nd];};
+		x4[0] = cbar_wk->xbar_min;
+		x4[1] = y1 + cbar_wk->ydelta;
+		x4[2] = 0.001;
+		for(nd=0;nd<4;nd++) {c4[nd] = f_color[nd];};
 		
-		set_node_stride_VBO(6*i+5, strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_min;
-		strided_buf->x_draw[1] = y1;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = l_color[nd];};
+		set_one_quad_to_buf(i, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 		
 		for(nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	};
@@ -137,6 +157,9 @@ void solid_colorbar_box_to_buf(struct colormap_params *cmap_s,
 void fade_colorbar_box_to_buf(int ist, struct colormap_params *cmap_s, GLfloat *bg_color, 
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
 	GLfloat y1;
+	GLfloat x1[3], x2[3], x3[3], x4[3];
+	GLfloat c1[4], c2[4], c3[4], c4[4];
+	
 	double psf_value;
 	double f_color[4], l_color[4];
 	int i, nd;
@@ -160,116 +183,150 @@ void fade_colorbar_box_to_buf(int ist, struct colormap_params *cmap_s, GLfloat *
 		for (nd=0; nd<3; nd++) {
 			f_color[nd] = f_color[nd] * f_color[3]
 					+ bg_color[nd] * (ONE - f_color[3]);
-        };
-        f_color[3] = ONE;
+		};
+		f_color[3] = ONE;
 		
-		set_node_stride_VBO(6*(i+ist), strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_mid;
-		strided_buf->x_draw[1] = y1;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = l_color[nd];};
+		x1[0] = cbar_wk->xbar_mid;
+		x1[1] = y1;
+		x1[2] = 0.001;
+		for(nd=0;nd<4;nd++) {c1[nd] = l_color[nd];};
 		
-		set_node_stride_VBO(6*(i+ist)+1, strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_max;
-		strided_buf->x_draw[1] = y1;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = l_color[nd];};
+		x2[0] = cbar_wk->xbar_max;
+		x2[1] = y1;
+		x2[2] = 0.001;
+		for(nd=0;nd<4;nd++) {c2[nd] = l_color[nd];};
 		
-		set_node_stride_VBO(6*(i+ist)+2, strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_max;
-		strided_buf->x_draw[1] = y1 + cbar_wk->ydelta;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = f_color[nd];};
+		x3[0] = cbar_wk->xbar_max;
+		x3[1] = y1 + cbar_wk->ydelta;
+		x3[2] = 0.001;
+		for(nd=0;nd<4;nd++) {c3[nd] = f_color[nd];};
 		
-		set_node_stride_VBO(6*(i+ist)+3, strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_max;
-		strided_buf->x_draw[1] = y1 + cbar_wk->ydelta;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = f_color[nd];};
+		x4[0] = cbar_wk->xbar_mid;
+		x4[1] = y1 + cbar_wk->ydelta;
+		x4[2] = 0.001;
+		for(nd=0;nd<4;nd++) {c4[nd] = f_color[nd];};
 		
-		set_node_stride_VBO(6*(i+ist)+4, strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_mid;
-		strided_buf->x_draw[1] = y1 + cbar_wk->ydelta;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = f_color[nd];};
-		
-		set_node_stride_VBO(6*(i+ist)+5, strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_mid;
-		strided_buf->x_draw[1] = y1;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = l_color[nd];};
+		set_one_quad_to_buf(ist+i, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 		
 		for (nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	};
 	return;
 };
 
-void colorbar_frame_to_buf(GLfloat *text_color, struct cbar_work *cbar_wk, 
-			struct gl_strided_buffer *strided_buf){
+void colorbar_frame_to_buf(int iflag_retina, GLfloat *text_color,
+			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
+	GLfloat x1[3], x2[3], x3[3], x4[3];
+	GLfloat c1[4], c2[4], c3[4], c4[4];
 	int nd;
 	
-	set_node_stride_VBO(0, strided_buf);
-	strided_buf->x_draw[0] = cbar_wk->xbar_min;
-	strided_buf->x_draw[1] = cbar_wk->ybar_min;
-	strided_buf->x_draw[2] = 0.001;
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = text_color[nd];}
+	x1[0] = cbar_wk->xbar_min - iflag_retina - 1;
+	x1[1] = cbar_wk->ybar_min - iflag_retina - 1;
+	x1[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c1[nd] = text_color[nd];};
 	
-	set_node_stride_VBO(1, strided_buf);
-	strided_buf->x_draw[0] = cbar_wk->xbar_min;
-	strided_buf->x_draw[1] = cbar_wk->ybar_max;
-	strided_buf->x_draw[2] = 0.001;
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = text_color[nd];}
+	x2[0] = cbar_wk->xbar_min;
+	x2[1] = cbar_wk->ybar_min - iflag_retina - 1;
+	x2[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c2[nd] = text_color[nd];};
 	
+	x3[0] = cbar_wk->xbar_min;
+	x3[1] = cbar_wk->ybar_max + iflag_retina + 1;
+	x3[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c3[nd] = text_color[nd];};
 	
-	set_node_stride_VBO(2, strided_buf);
-	strided_buf->x_draw[0] = cbar_wk->xbar_max;
-	strided_buf->x_draw[1] = cbar_wk->ybar_min;
-	strided_buf->x_draw[2] = 0.001;
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = text_color[nd];}
-	
-	set_node_stride_VBO(3, strided_buf);
-	strided_buf->x_draw[0] = cbar_wk->xbar_max;
-	strided_buf->x_draw[1] = cbar_wk->ybar_max;
-	strided_buf->x_draw[2] = 0.001;
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = text_color[nd];}
+	x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
+	x4[1] = cbar_wk->ybar_max + iflag_retina + 1;
+	x4[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c4[nd] = text_color[nd];};
+	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 	
 	
-	set_node_stride_VBO(4, strided_buf);
-	strided_buf->x_draw[0] = cbar_wk->xbar_min;
-	strided_buf->x_draw[1] = cbar_wk->ybar_min;
-	strided_buf->x_draw[2] = 0.001;
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = text_color[nd];}
+	x1[0] = cbar_wk->xbar_max;
+	x1[1] = cbar_wk->ybar_min - iflag_retina - 1;
+	x1[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c1[nd] = text_color[nd];};
 	
-	set_node_stride_VBO(5, strided_buf);
-	strided_buf->x_draw[0] = (cbar_wk->xbar_max + 3.0);
-	strided_buf->x_draw[1] = cbar_wk->ybar_min;
-	strided_buf->x_draw[2] = 0.001;
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = text_color[nd];}
-
-	set_node_stride_VBO(6, strided_buf);
-	strided_buf->x_draw[0] = cbar_wk->xbar_min;
-	strided_buf->x_draw[1] = cbar_wk->ybar_max;
-	strided_buf->x_draw[2] = 0.001;
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = text_color[nd];}
+	x2[0] = cbar_wk->xbar_max + iflag_retina + 1;
+	x2[1] = cbar_wk->ybar_min - iflag_retina - 1;
+	x2[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c2[nd] = text_color[nd];};
 	
-	set_node_stride_VBO(7, strided_buf);
-	strided_buf->x_draw[0] = (cbar_wk->xbar_max + 3.0);
-	strided_buf->x_draw[1] = cbar_wk->ybar_max;
-	strided_buf->x_draw[2] = 0.001;
-	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = text_color[nd];}
+	x3[0] = cbar_wk->xbar_max + iflag_retina + 1;
+	x3[1] = cbar_wk->ybar_max + iflag_retina + 1;
+	x3[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c3[nd] = text_color[nd];};
+	
+	x4[0] = cbar_wk->xbar_max;
+	x4[1] = cbar_wk->ybar_max + iflag_retina + 1;
+	x4[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c4[nd] = text_color[nd];};
+	set_one_quad_to_buf(1, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+	
+	
+	x1[0] = cbar_wk->xbar_min - iflag_retina - 1;
+	x1[1] = cbar_wk->ybar_min - iflag_retina - 1;
+	x1[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c1[nd] = text_color[nd];};
+	
+	x2[0] = cbar_wk->xbar_max + 3.0*(iflag_retina + 1);
+	x2[1] = cbar_wk->ybar_min - iflag_retina - 1;
+	x2[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c2[nd] = text_color[nd];};
+	
+	x3[0] = cbar_wk->xbar_max + 3.0*(iflag_retina + 1);
+	x3[1] = cbar_wk->ybar_min;
+	x3[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c3[nd] = text_color[nd];};
+	
+	x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
+	x4[1] = cbar_wk->ybar_min;
+	x4[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c4[nd] = text_color[nd];};
+	set_one_quad_to_buf(2, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+	
+	
+	x1[0] = cbar_wk->xbar_min - iflag_retina - 1;
+	x1[1] = cbar_wk->ybar_max;
+	x1[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c1[nd] = text_color[nd];};
+	
+	x2[0] = cbar_wk->xbar_max + 3.0*(iflag_retina + 1);
+	x2[1] = cbar_wk->ybar_max;
+	x2[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c2[nd] = text_color[nd];};
+	
+	x3[0] = cbar_wk->xbar_max + 3.0*(iflag_retina + 1);
+	x3[1] = cbar_wk->ybar_max + iflag_retina + 1;
+	x3[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c3[nd] = text_color[nd];};
+	
+	x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
+	x4[1] = cbar_wk->ybar_max + iflag_retina + 1;
+	x4[2] = 0.001;
+	for(nd=0;nd<4;nd++) {c4[nd] = text_color[nd];};
+	set_one_quad_to_buf(3, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 	
 	if(cbar_wk->iflag_zero == 1){
-		set_node_stride_VBO(8, strided_buf);
-		strided_buf->x_draw[0] = cbar_wk->xbar_min;
-		strided_buf->x_draw[1] = cbar_wk->yline_zero;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = text_color[nd];}
+		x1[0] = cbar_wk->xbar_min - iflag_retina - 1;
+		x1[1] = cbar_wk->yline_zero - iflag_retina - 1;
+		x1[2] = 0.001;
+		for(nd=0;nd<4;nd++) {c1[nd] = text_color[nd];};
 		
-		set_node_stride_VBO(9, strided_buf);
-		strided_buf->x_draw[0] = (cbar_wk->xbar_max + 6.0);
-		strided_buf->x_draw[1] = cbar_wk->yline_zero;
-		strided_buf->x_draw[2] = 0.001;
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = text_color[nd];}
+		x2[0] = cbar_wk->xbar_max + 6.0*(iflag_retina + 1);
+		x2[1] = cbar_wk->yline_zero - iflag_retina - 1;
+		x2[2] = 0.001;
+		for(nd=0;nd<4;nd++) {c2[nd] = text_color[nd];};
+		
+		x3[0] = cbar_wk->xbar_max + 6.0*(iflag_retina + 1);
+		x3[1] = cbar_wk->yline_zero;
+		x3[2] = 0.001;
+		for(nd=0;nd<4;nd++) {c3[nd] = text_color[nd];};
+		
+		x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
+		x4[1] = cbar_wk->yline_zero;
+		x4[2] = 0.001;
+		for(nd=0;nd<4;nd++) {c4[nd] = text_color[nd];};
+		set_one_quad_to_buf(4, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 	};
 	return;
 };
@@ -382,19 +439,11 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	DestroyVBO(cbar_VAO);
 	
-	if(cmap_s->min_opacity < 1.0) {
-		glDisable(GL_BLEND);
-		glDepthMask(GL_TRUE);
-		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		glDisable(GL_MULTISAMPLE);
-	}
-	
-	
-	num_edge = cbar_wk->iflag_zero + IFOUR;
-	set_buffer_address_4_patch(ITWO*num_edge, cbar_buf);
+	num_patch = 2*(cbar_wk->iflag_zero + IFOUR);
+	set_buffer_address_4_patch(ITHREE*num_patch, cbar_buf);
 	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 	
-	colorbar_frame_to_buf(text_color, cbar_wk, cbar_buf);
+	colorbar_frame_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
 	
 	glGenVertexArrays(1, &cbar_VAO->id_VAO);
 	glBindVertexArray(cbar_VAO->id_VAO);
@@ -416,10 +465,28 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	glBindVertexArray(cbar_VAO->id_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, cbar_VAO->id_vertex);
-	glDrawArrays(GL_LINES, IZERO, (ITHREE*num_patch));
+	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
 	
 	DestroyVBO(cbar_VAO);
 	
+	if(cmap_s->min_opacity < 1.0) {
+		glDisable(GL_BLEND);
+		glDepthMask(GL_TRUE);
+		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		glDisable(GL_MULTISAMPLE);
+	}
+	
+	unsigned char minBmp[8*8*12];
+	unsigned char maxBmp[8*8*12];
+	unsigned char zeroBmp[8*8*12];
+	YsGlWriteStringToSingleBitBitmap(minlabel, minBmp, 8*8, 12, 0, 0, 
+				YsFont12x16, 8, 12);
+	YsGlWriteStringToSingleBitBitmap(maxlabel, maxBmp, 8*8, 12, 0, 0, 
+				YsFont12x16, 8, 12);
+	if(cbar_wk->iflag_zero == 1){
+	YsGlWriteStringToSingleBitBitmap(zerolabel, zeroBmp, 8*8, 12, 0, 0, 
+				YsFont12x16, 8, 12);
+	};
 	return;
 	
 	
@@ -428,9 +495,9 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	glColor4fv(text_color);
 	ysGlPlotBitmap2d_retina(iflag_retina,
-                            (cbar_wk->xbar_max+3.0), (cbar_wk->ybar_min-6.0), minlabel);
+		(cbar_wk->xbar_max+3.0), (cbar_wk->ybar_min-6.0), minlabel);
 	ysGlPlotBitmap2d_retina(iflag_retina,
-                            (cbar_wk->xbar_max+3.0), (cbar_wk->ybar_max-6.0), maxlabel);
+				(cbar_wk->xbar_max+3.0), (cbar_wk->ybar_max-6.0), maxlabel);
 	
 	
 	if(cbar_wk->iflag_zero == 1){
