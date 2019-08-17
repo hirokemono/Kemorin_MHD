@@ -64,6 +64,14 @@ void node_ico_VBO(struct view_element *view_s,
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
 	
+	set_buffer_address_4_patch(3*num_patch, mesh_buf);
+	resize_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
+	
+	
+	set_node_color_mode_c(node_color, color_mode, color_loop, igrp, num_grp, single_color);
+	set_node_ico_VBO(num_grp, igrp, istack_grp, item_grp, mesh_s, node_diam,
+			node_color, color_mode, color_loop, single_color, iflag_domain, mesh_buf);
+	
 	int id_numLight = glGetUniformLocation(kemo_shaders->phong->programId, "num_lights");
 	int id_lightPosition = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource[0].position");
 	
@@ -86,14 +94,6 @@ void node_ico_VBO(struct view_element *view_s,
 	glUniform4fv(id_MaterialDiffuse, 1, white1);
 	glUniform4fv(id_MaterialSpecular, 1, white3);
 	glUniform1f(id_MaterialShiness, shine);
-	
-	set_buffer_address_4_patch(3*num_patch, mesh_buf);
-	resize_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
-	
-	
-	set_node_color_mode_c(node_color, color_mode, color_loop, igrp, num_grp, single_color);
-	set_node_ico_VBO(num_grp, igrp, istack_grp, item_grp, mesh_s, node_diam,
-			node_color, color_mode, color_loop, single_color, iflag_domain, mesh_buf);
 	
 	glGenVertexArrays(1, &mesh_VAO->id_VAO);
 	glBindVertexArray(mesh_VAO->id_VAO);
