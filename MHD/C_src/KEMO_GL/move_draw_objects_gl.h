@@ -19,6 +19,8 @@
 #include "draw_arrows_4_PSF.h"
 #include "draw_map_4_PSF.h"
 #include "draw_patch_4_mesh_c.h"
+#include "draw_node_by_ico_c.h"
+#include "draw_grids_4_mesh.h"
 
 
 /* prototypes */ 

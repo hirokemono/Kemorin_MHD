@@ -10,9 +10,6 @@ void draw_mesh_edges_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 			struct kemoview_shaders *kemo_shaders, struct gl_strided_buffer *mesh_buf){
 	int i, ip_st;
 	
-	set_buffer_address_4_patch(3*128, mesh_buf);
-	alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
-	
 	for(i=0; i < mesh_s->num_pe_sf;i++){mesh_s->ip_domain_far[i] = i+1;};
 	
 	if(mesh_m->draw_surface_grid != 0){
@@ -50,8 +47,6 @@ void draw_mesh_edges_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 						   mesh_s, mesh_VAO, kemo_shaders, mesh_buf);
 		};
 	};
-	
-	free(mesh_buf->v_buf);
 	return;
 }
 
