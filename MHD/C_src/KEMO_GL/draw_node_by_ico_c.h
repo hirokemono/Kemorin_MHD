@@ -16,13 +16,6 @@
 
 /* prototypes */
 
-void node_ico_VBO(struct view_element *view_s, 
-			int num_grp, int igrp, int *istack_grp, int *item_grp,
-			struct viewer_mesh *mesh_s, double node_diam,
-			int node_color, int color_mode, int color_loop, GLfloat single_color[4], int *iflag_domain, 
-			struct VAO_ids *mesh_VAO, struct kemoview_shaders *kemo_shaders, 
-			struct gl_strided_buffer *mesh_buf);
-
 void draw_mesh_nodes_ico_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 			struct view_element *view_s, struct VAO_ids *mesh_VAO, 
 			struct kemoview_shaders *kemo_shaders, struct gl_strided_buffer *mesh_buf);

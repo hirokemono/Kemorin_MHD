@@ -3,7 +3,7 @@
 
 #include "set_mesh_node_2_gl_buf.h"
 
-int count_mesh_node_ico_to_buf(int *istack_grp, struct viewer_mesh *mesh_s, int *iflag_domain){
+const int count_mesh_node_ico_to_buf(int *istack_grp, struct viewer_mesh *mesh_s, int *iflag_domain){
 	int ip;
 	int num_patch = 0;
 	for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
@@ -15,7 +15,7 @@ int count_mesh_node_ico_to_buf(int *istack_grp, struct viewer_mesh *mesh_s, int 
 	return num_patch;
 }
 
-int set_mesh_node_ico_to_buf(int ist_tri, int num_grp, int igrp, int *istack_grp, int *item_grp,
+const int set_mesh_node_ico_to_buf(int ist_tri, int num_grp, int igrp, int *istack_grp, int *item_grp,
 			struct viewer_mesh *mesh_s, double node_diam,
 			int node_color, int color_mode, int color_loop, GLfloat single_color[4], 
 			int *iflag_domain, struct gl_strided_buffer *mesh_buf){
@@ -142,7 +142,7 @@ int set_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 	for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
 		ip_st = i * mesh_s->num_pe_sf;
 		if( mesh_m->draw_surfgrp_nod[i] ){
-			ist_tri = node_ico_VBO(ist_tri, mesh_s->ngrp_surf_sf, i, &mesh_s->surf_nod_stack_sf[ip_st],
+			ist_tri = set_mesh_node_ico_to_buf(ist_tri, mesh_s->ngrp_surf_sf, i, &mesh_s->surf_nod_stack_sf[ip_st],
 						mesh_s->surf_nod_item_sf, mesh_s,
 						mesh_m->node_diam, mesh_m->surf_node_color,
 						mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
