@@ -44,7 +44,7 @@ void set_colorbar_position(int iflag_retina, GLint nx_win, GLint ny_win,
 
 
 void set_colorbar_text_image(const char minlabel[], const char maxlabel[], 
-			const char zerolabel[], struct cbar_work *cbar_wk){
+			const char zerolabel[], float text_color3[3], struct cbar_work *cbar_wk){
 	int i;
 	for(i=0;i<12*IWIDTH_TXT*IHIGHT_TXT;i++){
 		cbar_wk->numBMP[i] =  0;
@@ -92,10 +92,9 @@ void set_colorbar_text_image(const char minlabel[], const char maxlabel[],
 //	pixout_BMP_c("/Users/matsui/Desktop/aho", IWIDTH_TXT, 3*IHIGHT_TXT, testBMP);
 	
 	for(i=0;i<3*IWIDTH_TXT*IHIGHT_TXT;i++){
-		cbar_wk->numBMP[4*i  ] = (unsigned char) (0.8 * (float) ((int) cbar_wk->numBMP[4*i  ]));
-		cbar_wk->numBMP[4*i+1] = (unsigned char) (0.2 * (float) ((int) cbar_wk->numBMP[4*i+1]));
-		cbar_wk->numBMP[4*i+2] = (unsigned char) (0.4 * (float) ((int) cbar_wk->numBMP[4*i+2]));
-		cbar_wk->numBMP[4*i+3] = (unsigned char) (0.8 * (float) ((int) cbar_wk->numBMP[4*i+3]));
+		cbar_wk->numBMP[4*i  ] = (unsigned char) (text_color3[0] * (float) ((int) cbar_wk->numBMP[4*i  ]));
+		cbar_wk->numBMP[4*i+1] = (unsigned char) (text_color3[1] * (float) ((int) cbar_wk->numBMP[4*i+1]));
+		cbar_wk->numBMP[4*i+2] = (unsigned char) (text_color3[2] * (float) ((int) cbar_wk->numBMP[4*i+2]));
 	};
 	return;
 };

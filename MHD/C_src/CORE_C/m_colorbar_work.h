@@ -42,7 +42,7 @@ struct cbar_work * alloc_colorbar_position();
 void set_colorbar_position(int iflag_retina, GLint nx_win, GLint ny_win,
 			struct colormap_params *cmap_s, struct cbar_work *cbar_wk);
 void set_colorbar_text_image(const char minlabel[], const char maxlabel[], 
-			const char zerolabel[], struct cbar_work *cbar_wk);
+			const char zerolabel[], float text_color3[3], struct cbar_work *cbar_wk);
 
 #endif
 

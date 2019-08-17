@@ -266,8 +266,8 @@ void colorbar_mbox_to_buf(int iflag_retina, GLfloat *text_color,
 	int nd;
 	
 	x1[0] = cbar_wk->xbar_max + 8.0*(iflag_retina + 1);
-	x2[0] = cbar_wk->xbar_max + 88.0*(iflag_retina + 1);
-	x3[0] = cbar_wk->xbar_max + 88.0*(iflag_retina + 1);
+	x2[0] = cbar_wk->xbar_max + 104.0*(iflag_retina + 1);
+	x3[0] = cbar_wk->xbar_max + 104.0*(iflag_retina + 1);
 	x4[0] = cbar_wk->xbar_max + 8.0*(iflag_retina + 1);
 	x1[2] = 0.001;
 	x2[2] = 0.001;
@@ -285,8 +285,8 @@ void colorbar_mbox_to_buf(int iflag_retina, GLfloat *text_color,
 	
 	x1[1] = cbar_wk->ybar_min - iflag_retina - 1;
 	x2[1] = cbar_wk->ybar_min - iflag_retina - 1;
-	x3[1] = cbar_wk->ybar_min + 12.0 * (iflag_retina + 1);
-	x4[1] = cbar_wk->ybar_min + 12.0 * (iflag_retina + 1);
+	x3[1] = cbar_wk->ybar_min + 16.0 * (iflag_retina + 1);
+	x4[1] = cbar_wk->ybar_min + 16.0 * (iflag_retina + 1);
 	t1[1] = 0.0;
 	t2[1] = 0.0;
 	t3[1] = 1.0 / 3.0;
@@ -297,8 +297,8 @@ void colorbar_mbox_to_buf(int iflag_retina, GLfloat *text_color,
 	
 	x1[1] = cbar_wk->ybar_max - iflag_retina - 1;
 	x2[1] = cbar_wk->ybar_max - iflag_retina - 1;
-	x3[1] = cbar_wk->ybar_max + 12.0 * (iflag_retina + 1);
-	x4[1] = cbar_wk->ybar_max + 12.0 * (iflag_retina + 1);
+	x3[1] = cbar_wk->ybar_max + 16.0 * (iflag_retina + 1);
+	x4[1] = cbar_wk->ybar_max + 16.0 * (iflag_retina + 1);
 	t1[1] = 1.0 / 3.0;
 	t2[1] = 1.0 / 3.0;
 	t3[1] = 2.0 / 3.0;
@@ -309,8 +309,8 @@ void colorbar_mbox_to_buf(int iflag_retina, GLfloat *text_color,
 	if(cbar_wk->iflag_zero == 1){
 		x1[1] = cbar_wk->yline_zero - iflag_retina - 1;
 		x2[1] = cbar_wk->yline_zero - iflag_retina - 1;
-		x3[1] = cbar_wk->yline_zero + 12.0 * (iflag_retina + 1);
-		x4[1] = cbar_wk->yline_zero + 12.0 * (iflag_retina + 1);
+		x3[1] = cbar_wk->yline_zero + 16.0 * (iflag_retina + 1);
+		x4[1] = cbar_wk->yline_zero + 16.0 * (iflag_retina + 1);
 		t1[1] = 2.0 / 3.0;
 		t2[1] = 2.0 / 3.0;
 		t3[1] = 1.0;

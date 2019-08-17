@@ -108,7 +108,7 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	DestroyVBO(cbar_VAO);
 	
-	set_colorbar_text_image(minlabel, maxlabel, zerolabel, cbar_wk);
+	set_colorbar_text_image(minlabel, maxlabel, zerolabel, text_color, cbar_wk);
 	
 	glUseProgram(kemo_shaders->simple_texure->programId);
 	map_matrix_to_shader(kemo_shaders->simple_texure, orthogonal);
