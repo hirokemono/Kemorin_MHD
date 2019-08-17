@@ -18,5 +18,9 @@
 void drawCube (GLfloat fSize);
 void drawCube_array (GLfloat fSize);
 void drawCube_Element(GLfloat fSize);
+void drawCube_flat(GLfloat fSize, 
+				   struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO);
+void drawCube_Element2(GLfloat fSize, 
+					   struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO);
 
 #endif
