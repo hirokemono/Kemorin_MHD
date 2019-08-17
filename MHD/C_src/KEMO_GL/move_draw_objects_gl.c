@@ -213,7 +213,8 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			if(psf_m[i]->draw_psf_cbar > 0) {
 				draw_colorbar_VAO(view_s->iflag_retina,
 							view_s->nx_window, view_s->ny_window,
-							mesh_m->text_color, mesh_m->bg_color, psf_m[i]->cmap_psf,
+							mesh_m->text_color, mesh_m->bg_color, 
+							psf_m[i]->cmap_psf, psf_m[i]->cbar_wk,
 							cube_VAO, kemo_shaders, cbar_buf);
 			};
 		};

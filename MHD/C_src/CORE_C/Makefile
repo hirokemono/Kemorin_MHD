@@ -21,6 +21,7 @@ OBJ_KEMO_C = \
  m_grouping_mesh_4_viewer_c.o \
  m_psf_data_4_viewer_c.o \
  m_map_data_4_viewer_c.o \
+ m_colorbar_work.o \
  check_viewer_mesh_c.o \
  check_psf_data_viewer_c.o \
  skip_comment_c.o \
@@ -119,6 +120,17 @@ module:
 	m_map_data_4_viewer_c.o: \
 	'$$(KEMO_C_DIR)'/m_map_data_4_viewer_c.c \
 	m_map_data_4_viewer_c.h \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	m_colorbar_work.o: \
+	'$$(KEMO_C_DIR)'/m_colorbar_work.c \
+	m_colorbar_work.h \
+	m_color_table_c.o \
+	ysglusefontbitmap.o \
+	ysglmaketextbitmap.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

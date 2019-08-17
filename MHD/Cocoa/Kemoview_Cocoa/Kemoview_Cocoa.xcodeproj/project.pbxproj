@@ -96,6 +96,8 @@
 		188BA76023077F7700348842 /* simple_texture.vert in Resources */ = {isa = PBXBuildFile; fileRef = 188BA75E23077F7600348842 /* simple_texture.vert */; };
 		188BA76123077F7700348842 /* simple_texture.frag in Resources */ = {isa = PBXBuildFile; fileRef = 188BA75F23077F7700348842 /* simple_texture.frag */; };
 		188BA76323078C3400348842 /* write_image_2_bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 188BA76223078C3400348842 /* write_image_2_bmp.c */; };
+		188BA7672307C56300348842 /* set_colorbar_to_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 188BA7662307C56200348842 /* set_colorbar_to_buffer.c */; };
+		188BA76A2307D30700348842 /* m_colorbar_work.c in Sources */ = {isa = PBXBuildFile; fileRef = 188BA7682307D30700348842 /* m_colorbar_work.c */; };
 		18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5A2711F832A8A005AF658 /* libz.tbd */; };
 		18CFFEB722FBFDAD005D7739 /* vartex_array_object_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFEB522FBFDAD005D7739 /* vartex_array_object_gl.c */; };
 		18D7E72B1562D359009B05FF /* cal_surface_center_normal_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E64F1562D359009B05FF /* cal_surface_center_normal_c.c */; };
@@ -362,6 +364,10 @@
 		188BA75F23077F7700348842 /* simple_texture.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = simple_texture.frag; path = ../GLSL/simple_texture.frag; sourceTree = "<group>"; };
 		188BA76223078C3400348842 /* write_image_2_bmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = write_image_2_bmp.c; path = CORE_C/write_image_2_bmp.c; sourceTree = "<group>"; };
 		188BA76423078C4200348842 /* write_image_2_bmp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = write_image_2_bmp.h; path = CORE_C/write_image_2_bmp.h; sourceTree = "<group>"; };
+		188BA7652307C56200348842 /* set_colorbar_to_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_colorbar_to_buffer.h; sourceTree = "<group>"; };
+		188BA7662307C56200348842 /* set_colorbar_to_buffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_colorbar_to_buffer.c; sourceTree = "<group>"; };
+		188BA7682307D30700348842 /* m_colorbar_work.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_colorbar_work.c; sourceTree = "<group>"; };
+		188BA7692307D30700348842 /* m_colorbar_work.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_colorbar_work.h; sourceTree = "<group>"; };
 		18B5A2711F832A8A005AF658 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		18CFFEB522FBFDAD005D7739 /* vartex_array_object_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vartex_array_object_gl.c; sourceTree = "<group>"; };
 		18CFFEB622FBFDAD005D7739 /* vartex_array_object_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vartex_array_object_gl.h; sourceTree = "<group>"; };
@@ -820,6 +826,8 @@
 				18D7E65E1562D359009B05FF /* kemosrc_param_c.h */,
 				18D7E65F1562D359009B05FF /* m_color_table_c.c */,
 				18D7E6601562D359009B05FF /* m_color_table_c.h */,
+				188BA7682307D30700348842 /* m_colorbar_work.c */,
+				188BA7692307D30700348842 /* m_colorbar_work.h */,
 				18D7E6631562D359009B05FF /* m_grouping_mesh_4_viewer_c.c */,
 				18D7E6641562D359009B05FF /* m_grouping_mesh_4_viewer_c.h */,
 				18D7E6651562D359009B05FF /* m_map_data_4_viewer_c.c */,
@@ -957,6 +965,8 @@
 				18D7E6DE1562D359009B05FF /* rendereps_c.h */,
 				18D7E6DF1562D359009B05FF /* rotate_animation.c */,
 				18D7E6E01562D359009B05FF /* rotate_animation.h */,
+				188BA7662307C56200348842 /* set_colorbar_to_buffer.c */,
+				188BA7652307C56200348842 /* set_colorbar_to_buffer.h */,
 				18D7E6E11562D359009B05FF /* set_color_code_on_nodes.c */,
 				18D7E6E21562D359009B05FF /* set_color_code_on_nodes.h */,
 				18D7E6E31562D359009B05FF /* set_kemoviewer_ucd_data.c */,
@@ -1185,6 +1195,7 @@
 				185CB9D2212F593D00BB3C0B /* t_ctl_data_4_view_transfer_c.c in Sources */,
 				18D7E72F1562D359009B05FF /* get_ysglbitmap.c in Sources */,
 				18D7E7301562D359009B05FF /* jacobian_trilinear_c.c in Sources */,
+				188BA7672307C56300348842 /* set_colorbar_to_buffer.c in Sources */,
 				18D7E7311562D359009B05FF /* kemo_zlib_io_c.c in Sources */,
 				18D7E7321562D359009B05FF /* kemosrc_param_c.c in Sources */,
 				18D7E7331562D359009B05FF /* m_color_table_c.c in Sources */,
@@ -1297,6 +1308,7 @@
 				18D7E7841562D359009B05FF /* DomainTableController.m in Sources */,
 				18D7E7851562D359009B05FF /* ElementGroupTableController.m in Sources */,
 				18D7E7861562D359009B05FF /* fillRectView.m in Sources */,
+				188BA76A2307D30700348842 /* m_colorbar_work.c in Sources */,
 				185CB9D5212F593D00BB3C0B /* t_ctl_data_mhd_evo_scheme_c.c in Sources */,
 				18D7E7871562D359009B05FF /* FlineController.m in Sources */,
 				185CB9D6212F593D00BB3C0B /* t_ctl_data_mhd_evolution_c.c in Sources */,

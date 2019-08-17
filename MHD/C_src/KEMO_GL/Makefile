@@ -30,6 +30,8 @@ draw_axis_c.o \
 rainbow_color_code_c.o \
 set_color_code_on_nodes.o \
 \
+set_colorbar_to_buffer.o \
+\
 draw_node_by_ico_c.o \
 draw_grids_4_mesh.o \
 draw_patch_4_mesh_c.o \
@@ -299,7 +301,20 @@ module:
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
 	m_color_table_c.o \
+	m_colorbar_work.o \
     set_rgba_table_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	set_colorbar_to_buffer.o: \
+	'$$(KEMO_C_GLDIR)'/set_colorbar_to_buffer.c \
+	set_colorbar_to_buffer.h \
+	m_colorbar_work.o \
+	m_color_table_c.o \
+	vartex_array_object_gl.o \
+	ysglusefontbitmap.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -550,12 +565,14 @@ module:
 	'$$(KEMO_C_GLDIR)'/draw_colorbar_gl.c \
 	draw_colorbar_gl.h \
 	m_color_table_c.o \
+	m_colorbar_work.o \
 	coordinate_converter_c.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
 	rainbow_color_code_c.o \
 	ysglusefontbitmap.o \
+	set_colorbar_to_buffer.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

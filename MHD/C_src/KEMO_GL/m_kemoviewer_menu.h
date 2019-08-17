@@ -13,6 +13,7 @@
 #include "m_psf_data_4_viewer_c.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_color_table_c.h"
+#include "m_colorbar_work.h"
 #include "skip_comment_c.h"
 #include "set_rgba_table_c.h"
 
@@ -203,6 +204,7 @@ struct psf_menu_val{
 	struct colormap_params *cmap_psf;
 	struct colormap_params **cmap_psf_comp;
 	struct colormap_params **cmap_psf_fld;
+	struct cbar_work *cbar_wk;
 	
 	int draw_psf_vect;
 	int draw_psf_refv;

@@ -179,6 +179,12 @@ void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 		set_color_mode_by_id(psf_m->cmap_psf_fld[i], RAINBOW_MODE);
 	}
 	
+	psf_m->cbar_wk = (struct cbar_work *) malloc(sizeof(struct cbar_work));
+	if( psf_m->cmap_psf_fld == NULL ) {
+		printf( "cbar_work cannot alloc!\n" );
+		exit( 1 );
+	}
+	
 	psf_m->cmap_psf = psf_m->cmap_psf_comp[0];
 	return;
 }
@@ -255,6 +261,8 @@ void dealloc_draw_mesh_flags(struct mesh_menu_val *mesh_m){
 
 void dealloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	int i;
+	
+	free(psf_m->cbar_wk);
 	
 	for (i=0;i<psf_s->nfield;i++){
 		dealloc_opacity_index_list_s(psf_m->cmap_psf_fld[i]);
