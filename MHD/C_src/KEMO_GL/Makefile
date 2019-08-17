@@ -30,6 +30,7 @@ rainbow_color_code_c.o \
 set_color_code_on_nodes.o \
 \
 set_colorbar_to_buffer.o \
+set_mesh_patch_2_gl_buf.o \
 \
 draw_node_by_ico_c.o \
 draw_grids_4_mesh.o \
@@ -309,6 +310,19 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	set_mesh_patch_2_gl_buf.o: \
+	'$$(KEMO_C_GLDIR)'/set_mesh_patch_2_gl_buf.c \
+	set_mesh_patch_2_gl_buf.h \
+	kemoviewer_param_c.o \
+	m_kemoviewer_menu.o \
+	m_surface_mesh_4_viewer_c.o \
+	vartex_array_object_gl.o \
+	rainbow_color_code_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	draw_node_by_ico_c.o: \
 	'$$(KEMO_C_GLDIR)'/draw_node_by_ico_c.c \
 	kemoviewer_param_c.h \
@@ -339,10 +353,13 @@ module:
 	draw_patch_4_mesh_c.o: \
 	'$$(KEMO_C_GLDIR)'/draw_patch_4_mesh_c.c \
 	kemoviewer_param_c.h \
-	m_surface_mesh_4_viewer_c.o \
 	m_kemoviewer_menu.o \
+	m_surface_mesh_4_viewer_c.o \
+	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	rainbow_color_code_c.o \
+	set_mesh_patch_2_gl_buf.o \
+	sort_by_patch_distance.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -479,6 +496,8 @@ module:
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
 	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
+	glsl.o \
 	draw_colorbar_gl.o \
 	draw_fieldlines.o \
 	draw_mapgrid.o \
@@ -486,8 +505,7 @@ module:
 	drawcube_gl.o \
 	draw_patches_4_PSF.o \
 	draw_arrows_4_PSF.o \
-	vartex_array_object_gl.o \
-	glsl.o \
+	draw_patch_4_mesh_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

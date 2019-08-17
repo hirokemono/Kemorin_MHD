@@ -10,9 +10,6 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 				  struct fline_menu_val *fline_m, struct view_element *view_s,
 				  struct buffer_for_gl *gl_buf, struct gl_strided_buffer *strided_buf,
 				  struct VAO_ids *cube_VAO, struct kemoview_shaders *kemo_shaders){
-	int i, iflag;
-	int iflag_psf = 0;
-	
 	glDeleteLists(view_s->gl_drawID, 1);
 	glNewList(view_s->gl_drawID, GL_COMPILE_AND_EXECUTE);
 	
@@ -130,15 +127,11 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			glPolygonMode(GL_FRONT, GL_FILL);
 			draw_nodes_ico_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
 			
-			glEnable(GL_CULL_FACE);
-			if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
-				glPolygonMode(GL_FRONT, GL_FILL);
-				glCullFace(GL_BACK);
-			} else if(mesh_m->polygon_mode == REVERSE_POLYGON) {
-				glPolygonMode(GL_BACK, GL_FILL);
-				glCullFace(GL_FRONT);
-			};
-			draw_mesh_patches_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
+			set_buffer_address_4_patch(3*128, mesh_buf);
+			alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
+
+			draw_solid_mesh_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
+			free(mesh_buf->v_buf);
 			free(mesh_buf);
 			DestroyVBO(cube_VAO);
 		};
@@ -181,17 +174,12 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		free(psf_buf2);
 		
 		if(mesh_m->iflag_draw_mesh != 0){
-			if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
-				glPolygonMode(GL_FRONT, GL_FILL);
-				glCullFace(GL_BACK);
-			}
-			else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
-				glPolygonMode(GL_BACK, GL_FILL);
-				glCullFace(GL_FRONT);
-			};
-			
 			struct gl_strided_buffer *mesh_buf2 = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-			draw_transparent_mesh_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf2);
+			set_buffer_address_4_patch(3*128, mesh_buf2);
+			alloc_strided_buffer(mesh_buf2->num_nod_buf, mesh_buf2->ncomp_buf, mesh_buf2);
+			
+			draw_trans_mesh_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf2);
+			free(mesh_buf2->v_buf);
 			free(mesh_buf2);
 			DestroyVBO(cube_VAO);
 		};
@@ -279,9 +267,7 @@ void draw_cube_edge_gl3(struct view_element *view_s,
 	glUseProgram(kemo_shaders->test->programId);
 	
 	transfer_matrix_to_shader(kemo_shaders->test, view_s);
-	
-	GLuint idx_indexBuf;
-	
+
 	set_buffer_address_4_patch(8, gl_buf);
 	alloc_strided_buffer(gl_buf->num_nod_buf, gl_buf->ncomp_buf, gl_buf);
 	

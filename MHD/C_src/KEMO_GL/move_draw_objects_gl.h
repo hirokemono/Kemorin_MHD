@@ -18,6 +18,7 @@
 #include "draw_patches_4_PSF.h"
 #include "draw_arrows_4_PSF.h"
 #include "draw_map_4_PSF.h"
+#include "draw_patch_4_mesh_c.h"
 
 
 /* prototypes */ 
