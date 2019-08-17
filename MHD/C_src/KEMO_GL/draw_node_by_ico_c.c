@@ -5,23 +5,61 @@
 #include <OpenGL/gl3.h>
 
 
-void node_ico_VBO(struct view_element *view_s, 
-			int num_grp, int igrp, int *istack_grp, int *item_grp,
-			struct viewer_mesh *mesh_s, double node_diam,
-			int node_color, int color_mode, int color_loop, GLfloat single_color[4], int *iflag_domain, 
-			struct VAO_ids *mesh_VAO, struct kemoview_shaders *kemo_shaders, 
-			struct gl_strided_buffer *mesh_buf){
-	double f_color[4];
-	double xyz_patch[180], norm_patch[180];
-	int inum_buf, num_ico;
-	int i, nd, ip, inod, inum, ist, ied;
-	
+static int count_node_ico_VBO(int *istack_grp, struct viewer_mesh *mesh_s, int *iflag_domain){
+	int ip;
 	int num_patch = 0;
 	for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
 		if(iflag_domain[ip] != 0){
 			num_patch = num_patch + 20 * (istack_grp[ip+1] - istack_grp[ip]);
 		}
 	};
+	
+	return num_patch;
+}
+
+static void set_node_ico_VBO(int num_grp, int igrp, int *istack_grp, int *item_grp,
+			struct viewer_mesh *mesh_s, double node_diam,
+			int node_color, int color_mode, int color_loop, GLfloat single_color[4], 
+			int *iflag_domain, struct gl_strided_buffer *mesh_buf){
+	double f_color[4];
+	double xyz_patch[180], norm_patch[180];
+	int inum_buf, num_ico;
+	int i, nd, ip, inod, inum, ist, ied;
+	
+	inum_buf = 0;
+	for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
+		if(iflag_domain[ip] != 0){
+			ist = istack_grp[ip];
+			ied = istack_grp[ip+1];
+			set_patch_color_mode_c(node_color, color_mode, color_loop, (ip+1),
+				mesh_s->num_pe_sf, igrp, num_grp, ONE, single_color, f_color);
+			
+			for(inum = ist; inum < ied; inum++){
+				inod = item_grp[inum]-1;
+				num_ico = set_icosahedron_patch(node_diam, &mesh_s->xx_draw[inod][0],
+												 xyz_patch, norm_patch);
+				for (i=0; i<num_ico; i++) {
+					set_node_stride_VBO((inum_buf+i), mesh_buf);
+					for(nd=0;nd<3;nd++){mesh_buf->x_draw[nd] =  xyz_patch[3*i+nd];};
+					for(nd=0;nd<3;nd++){mesh_buf->n_draw[nd] = norm_patch[3*i+nd];};
+					for(nd=0;nd<4;nd++){mesh_buf->c_draw[nd] = f_color[nd];};
+				};
+				
+				inum_buf = inum_buf + num_ico;
+			};
+		}
+	};
+	
+	return;
+}
+
+void node_ico_VBO(struct view_element *view_s, 
+			int num_grp, int igrp, int *istack_grp, int *item_grp,
+			struct viewer_mesh *mesh_s, double node_diam,
+			int node_color, int color_mode, int color_loop, GLfloat single_color[4], int *iflag_domain, 
+			struct VAO_ids *mesh_VAO, struct kemoview_shaders *kemo_shaders, 
+			struct gl_strided_buffer *mesh_buf){
+	int num_patch = count_node_ico_VBO(istack_grp, mesh_s, iflag_domain);
 	
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
@@ -54,30 +92,8 @@ void node_ico_VBO(struct view_element *view_s,
 	
 	
 	set_node_color_mode_c(node_color, color_mode, color_loop, igrp, num_grp, single_color);
-
-	inum_buf = 0;
-	for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
-		if(iflag_domain[ip] != 0){
-			ist = istack_grp[ip];
-			ied = istack_grp[ip+1];
-			set_patch_color_mode_c(node_color, color_mode, color_loop, (ip+1),
-				mesh_s->num_pe_sf, igrp, num_grp, ONE, single_color, f_color);
-			
-			for(inum = ist; inum < ied; inum++){
-				inod = item_grp[inum]-1;
-				num_ico = set_icosahedron_patch(node_diam, &mesh_s->xx_draw[inod][0],
-												 xyz_patch, norm_patch);
-				for (i=0; i<num_ico; i++) {
-					set_node_stride_VBO((inum_buf+i), mesh_buf);
-					for(nd=0;nd<3;nd++){mesh_buf->x_draw[nd] =  xyz_patch[3*i+nd];};
-					for(nd=0;nd<3;nd++){mesh_buf->n_draw[nd] = norm_patch[3*i+nd];};
-					for(nd=0;nd<4;nd++){mesh_buf->c_draw[nd] = f_color[nd];};
-				};
-				
-				inum_buf = inum_buf + num_ico;
-			};
-		}
-	};
+	set_node_ico_VBO(num_grp, igrp, istack_grp, item_grp, mesh_s, node_diam,
+			node_color, color_mode, color_loop, single_color, iflag_domain, mesh_buf);
 	
 	glGenVertexArrays(1, &mesh_VAO->id_VAO);
 	glBindVertexArray(mesh_VAO->id_VAO);
