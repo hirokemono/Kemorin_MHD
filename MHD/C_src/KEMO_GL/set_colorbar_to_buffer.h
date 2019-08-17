@@ -9,7 +9,6 @@
 #include "m_color_table_c.h"
 #include "m_colorbar_work.h"
 #include "vartex_array_object_gl.h"
-#include "ysglusefontbitmap.h"
 
 /* prototypes */
 

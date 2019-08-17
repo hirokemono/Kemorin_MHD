@@ -13,7 +13,6 @@
 #include "glsl.h"
 #include "coordinate_converter_c.h"
 #include "rainbow_color_code_c.h"
-#include "ysglusefontbitmap.h"
 #include "set_colorbar_to_buffer.h"
 
 #include "write_image_2_bmp.h"

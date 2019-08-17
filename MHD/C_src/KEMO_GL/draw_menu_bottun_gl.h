@@ -5,7 +5,7 @@
 #define DRAW_MENUBOTTUN_GL_
 
 #include <math.h>
-#include "ysglusefontbitmap.h"
+#include "ysglfontdata.h"
 #include "vartex_array_object_gl.h"
 
 #define MENU_HEIGHT 32

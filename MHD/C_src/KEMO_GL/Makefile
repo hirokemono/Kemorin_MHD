@@ -13,7 +13,6 @@ write_modelview_matrix.o \
 vartex_array_object_gl.o \
 \
 drawcube_gl.o \
-ysglusefontbitmap.o \
 \
 psf_data_array_manager.o \
 read_data_4_kemoviewer.o \
@@ -45,7 +44,6 @@ draw_object_kemo.o \
 move_draw_objects_gl.o \
 modify_stereo_view_gl.o \
 \
-rendereps_c.o \
 gl_buffer_2_png.o \
 gl_buffer_2_bmp.o \
 write_gl_window_to_file.o \
@@ -204,14 +202,6 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
-	rendereps_c.o: \
-	'$$(KEMO_C_GLDIR)'/rendereps_c.c \
-	kemoviewer_param_c.h \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
 	write_gl_window_to_file.o: \
 	'$$(KEMO_C_GLDIR)'/write_gl_window_to_file.c \
 	write_gl_window_to_file.h \
@@ -314,7 +304,6 @@ module:
 	m_colorbar_work.o \
 	m_color_table_c.o \
 	vartex_array_object_gl.o \
-	ysglusefontbitmap.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -571,7 +560,6 @@ module:
 	vartex_array_object_gl.o \
 	glsl.o \
 	rainbow_color_code_c.o \
-	ysglusefontbitmap.o \
 	set_colorbar_to_buffer.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
@@ -590,18 +578,8 @@ module:
 	draw_menu_bottun_gl.o: \
 	'$$(KEMO_C_GLDIR)'/draw_menu_bottun_gl.c \
 	draw_menu_bottun_gl.h \
-	ysglusefontbitmap.o \
-	vartex_array_object_gl.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	ysglusefontbitmap.o: \
-	'$$(KEMO_C_GLDIR)'/ysglusefontbitmap.c \
-	ysglusefontbitmap.h \
-	kemoviewer_param_c.o \
 	ysglfontdata.o \
+	vartex_array_object_gl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
