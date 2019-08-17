@@ -15,16 +15,8 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	int num_patch;
 	
 	GLdouble orthogonal[16];
-	GLfloat xy_buf[384][2];
-	GLfloat rgba_buf[384][4];
-	char minlabel[20], maxlabel[20], zerolabel[20];
 	
-	set_colorbar_position(iflag_retina, nx_win, ny_win, cmap_s, cbar_wk);
-	
-	sprintf(minlabel, "% 3.2E",cbar_wk->psf_min);
-	sprintf(maxlabel, "% 3.2E",cbar_wk->psf_max);
-	sprintf(zerolabel,"% 3.2E",ZERO);
-	
+	set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win, cmap_s, cbar_wk);
 	orthogonal_glmat_c(0.0, cbar_wk->xwin, 0.0, cbar_wk->ywin, -1.0, 1.0, orthogonal);
 	
 	if(cmap_s->min_opacity < 1.0) {
@@ -108,7 +100,7 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	DestroyVBO(cbar_VAO);
 	
-	set_colorbar_text_image(minlabel, maxlabel, zerolabel, text_color, cbar_wk);
+	set_colorbar_text_image(text_color, cbar_wk);
 	
 	glUseProgram(kemo_shaders->simple_texure->programId);
 	map_matrix_to_shader(kemo_shaders->simple_texure, orthogonal);

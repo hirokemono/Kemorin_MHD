@@ -129,7 +129,7 @@ module:
 	'$$(KEMO_C_DIR)'/m_colorbar_work.c \
 	m_colorbar_work.h \
 	m_color_table_c.o \
-	ysglusefontbitmap.o \
+	ysglfontdata.o \
 	ysglmaketextbitmap.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \

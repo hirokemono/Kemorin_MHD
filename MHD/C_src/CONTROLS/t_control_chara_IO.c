@@ -254,7 +254,7 @@ static void set_from_chara_ctl_list_at_index(int index, struct chara_ctl_list *h
 	if(head != NULL) set_from_chara_ctl_item_c(head->c_item, c_out);
 	return;
 };
-static struct chara_int_ctl_item *chara_ctl_list_at_index(int index, struct chara_ctl_list *head){
+static struct chara_ctl_item *chara_ctl_list_at_index(int index, struct chara_ctl_list *head){
     struct chara_ctl_list *tmp_list = find_c_ctl_list_item_by_index(index, head);
     return tmp_list->c_item;
 };
