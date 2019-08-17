@@ -1,9 +1,8 @@
 #version 400
 // phong_1color.vert
 
-layout (location = 0) in vec3  xyz;
-layout (location = 3) in vec3  norm;
-layout (location = 4) in vec2  txur;
+layout(location = 0) in vec3  xyz;
+layout(location = 1) in vec3  norm;
 
 
 uniform mat4 projectionMat;

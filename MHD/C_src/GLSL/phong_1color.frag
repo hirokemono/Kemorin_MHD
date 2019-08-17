@@ -5,7 +5,7 @@ in vec4 position;
 in vec3 normal;
 out vec4 out_Color;
 
-#define MAX_LIGHTS 3
+#define MAX_LIGHTS 10
 struct LightSourceParameters{   
 	vec4 ambient;              // Aclarri   
 	vec4 diffuse;              // Dcli   
@@ -18,11 +18,12 @@ struct LightSourceParameters{
 	// (range: [0.0,90.0], 180.0)   
 	float spotCosCutoff;       // Derived: cos(Crli)                 
 	// (range: [1.0,0.0],-1.0)   
-	float constantAttenuation; // K0   
-	float linearAttenuation;   // K1   
-	float quadraticAttenuation;// K2  
+	float constantAttenuation;   // K0   
+	float linearAttenuation;     // K1   
+	float quadraticAttenuation;  // K2  
 };    
-uniform LightSourceParameters LightSource;
+uniform int num_lights;
+uniform LightSourceParameters LightSource[MAX_LIGHTS];
 
 struct ColorMaterial {
 	vec4 emission;    // Ecm   
@@ -34,22 +35,28 @@ struct ColorMaterial {
 uniform ColorMaterial frontMaterial;
 uniform ColorMaterial backMaterial;
 
-
-uniform int num_lights;
+uniform vec4 SingleColor;
 
 void main (void)
 {
 	vec3 fnormal = normalize(normal);
-	vec3 light = normalize(LightSource.position.xyz - position.xyz);
-	float diffuse = dot(light, fnormal);
+	vec3 light;
+	float diffuse;
 	
-	out_Color = frontMaterial.ambient;
-	if (diffuse > 0.0) {
-		vec3 view = normalize(position.xyz);
-		vec3 halfway = normalize(light - view);
-		float product = max(dot(fnormal, halfway), 0.0);
-		float specular = pow(product, frontMaterial.shininess);
-		out_Color +=  frontMaterial.diffuse * diffuse
-		              + frontMaterial.specular * specular;
+	out_Color = vec4(0.0,0.0,0.0,0.0);
+	for (int i = 0; i < num_lights; ++i){
+		light = normalize(LightSource[i].position.xyz - position.xyz);
+		diffuse = dot(light, fnormal);
+		
+		out_Color += SingleColor * frontMaterial.ambient;
+		if (diffuse > 0.0) {
+			vec3 view = normalize(position.xyz);
+			vec3 halfway = normalize(light - view);
+			float product = max(dot(fnormal, halfway), 0.0);
+			float specular = pow(product, frontMaterial.shininess);
+			out_Color += SingleColor * frontMaterial.diffuse * diffuse
+			+ vec4(frontMaterial.specular.xyz, SingleColor.w) * specular;
+		}
 	}
 }
+

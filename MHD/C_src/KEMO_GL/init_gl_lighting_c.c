@@ -72,17 +72,10 @@ void kemo_gl_initial_lighting_c(struct view_element *view_s,
 	glLightfv(GL_LIGHT0, GL_POSITION, lightposition);
 	glLightfv(GL_LIGHT1, GL_DIFFUSE,  white );
 	glLightfv(GL_LIGHT1, GL_POSITION, light1_pos );
-	glLightfv(GL_LIGHT2, GL_DIFFUSE,  light2_color );
-	glLightfv(GL_LIGHT2, GL_POSITION, light2_pos );
 	
-    glLightfv(GL_LIGHT3, GL_DIFFUSE, white);
-    glLightfv(GL_LIGHT3, GL_POSITION, maplightposition);
-    
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHT1);
-	glDisable(GL_LIGHT2);
-    glDisable(GL_LIGHT3);
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
 	glEnable(GL_NORMALIZE);
@@ -99,8 +92,6 @@ void set_gl_3D_lighting_c(){
     
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
-    glDisable(GL_LIGHT2);
-    glDisable(GL_LIGHT3);
     
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
     
@@ -111,8 +102,6 @@ void set_gl_map_lighting_c(){
 
     glDisable(GL_LIGHT0);
     glDisable(GL_LIGHT1);
-    glDisable(GL_LIGHT2);
-    glEnable(GL_LIGHT3);
     
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
     

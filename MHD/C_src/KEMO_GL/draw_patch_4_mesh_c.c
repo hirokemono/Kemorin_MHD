@@ -35,7 +35,7 @@ static void set_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, in
 };
 
 
-int count_patch_VBO(int *istack_grp, int *ip_domain_far, struct viewer_mesh *mesh_s, int *iflag_domain){
+int count_mesh_patch_VBO(int *istack_grp, int *ip_domain_far, struct viewer_mesh *mesh_s, int *iflag_domain){
 	int i, ip, icou, ist, ied;
 	
 	int num_patch = 0;
@@ -53,6 +53,47 @@ int count_patch_VBO(int *istack_grp, int *ip_domain_far, struct viewer_mesh *mes
 	return num_patch;
 }
 
+static void set_mesh_patch_VBO(int shading_mode, int polygon_mode, int surface_color,
+			int color_mode, int color_loop, double opacity, GLfloat single_color[4], 
+			int num_grp, int *istack_grp, int *item_grp, 
+			double **normal_ele, double **normal_nod, int *isort_grp, 
+			int *ip_domain_far, int igrp, struct viewer_mesh *mesh_s, int *iflag_domain, 
+			struct gl_strided_buffer *mesh_buf){
+	int i, ip, icou, inum, ist, ied, j, jnum;
+	int inum_buf = 0;
+	double f_color[4];
+	
+	for(i = 0; i < mesh_s->num_pe_sf; i++){
+		ip = ip_domain_far[i] - 1;
+		if(iflag_domain[ip] != 0){
+			set_patch_color_mode_c(surface_color, color_mode, color_loop, ip, mesh_s->num_pe_sf, 
+						igrp, num_grp, opacity, single_color, f_color);
+			
+			ist = istack_grp[ip];
+			ied = istack_grp[ip+1];
+			for(icou = ist; icou < ied; icou++){
+				inum = isort_grp[icou];
+				
+				for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
+					jnum = j + inum * mesh_s->nsurf_each_tri;
+					/*
+					printf("%d, %f %f %f \n", jnum, normal_ele[jnum][0],
+								normal_ele[jnum][1], normal_ele[jnum][2]);
+					 */
+					set_each_mesh_tri_patch(j, item_grp[inum], shading_mode, polygon_mode,
+								mesh_s->xx_draw, mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri, 
+								normal_ele[jnum], normal_nod[jnum], 
+								f_color, inum_buf, mesh_buf);
+					
+					inum_buf = inum_buf + 1;
+				};
+			};
+		};
+	};
+	
+	return;
+}
+
 void mesh_patch_VBO(struct view_element *view_s, int shading_mode, int polygon_mode, int surface_color,
 			int color_mode, int color_loop, double opacity, GLfloat single_color[4], 
 			int num_grp, int *istack_grp, int *item_grp, 
@@ -60,12 +101,7 @@ void mesh_patch_VBO(struct view_element *view_s, int shading_mode, int polygon_m
 			int *ip_domain_far, int igrp, struct viewer_mesh *mesh_s, int *iflag_domain, 
 			struct VAO_ids *mesh_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *mesh_buf){
-	int i, ip, icou, inum, ist, ied, j, jnum;
-	int inum_buf = 0;
-	double f_color[4];
-	
-	
-	int num_patch = count_patch_VBO(istack_grp, ip_domain_far, mesh_s, iflag_domain);
+	int num_patch = count_mesh_patch_VBO(istack_grp, ip_domain_far, mesh_s, iflag_domain);
 	
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
@@ -96,34 +132,10 @@ void mesh_patch_VBO(struct view_element *view_s, int shading_mode, int polygon_m
 	set_buffer_address_4_patch(ITHREE*num_patch, mesh_buf);
 	resize_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
 	
-	
-	for(i = 0; i < mesh_s->num_pe_sf; i++){
-		ip = ip_domain_far[i] - 1;
-		if(iflag_domain[ip] != 0){
-			set_patch_color_mode_c(surface_color, color_mode, color_loop, ip, mesh_s->num_pe_sf, 
-						igrp, num_grp, opacity, single_color, f_color);
-			
-			ist = istack_grp[ip];
-			ied = istack_grp[ip+1];
-			for(icou = ist; icou < ied; icou++){
-				inum = isort_grp[icou];
-				
-				for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
-					jnum = j + inum * mesh_s->nsurf_each_tri;
-					/*
-					printf("%d, %f %f %f \n", jnum, normal_ele[jnum][0],
-								normal_ele[jnum][1], normal_ele[jnum][2]);
-					 */
-					set_each_mesh_tri_patch(j, item_grp[inum], shading_mode, polygon_mode,
-								mesh_s->xx_draw, mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri, 
-								normal_ele[jnum], normal_nod[jnum], 
-								f_color, inum_buf, mesh_buf);
-					
-					inum_buf = inum_buf + 1;
-				};
-			};
-		};
-	};
+	set_mesh_patch_VBO(shading_mode, polygon_mode, surface_color,
+			color_mode, color_loop, opacity, single_color, 
+			num_grp, istack_grp, item_grp, normal_ele, normal_nod, isort_grp, 
+			ip_domain_far, igrp, mesh_s, iflag_domain, mesh_buf);
 	
 	glGenVertexArrays(1, &mesh_VAO->id_VAO);
 	glBindVertexArray(mesh_VAO->id_VAO);
@@ -148,7 +160,7 @@ void mesh_patch_VBO(struct view_element *view_s, int shading_mode, int polygon_m
 	
 	glBindVertexArray(mesh_VAO->id_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh_VAO->id_vertex);
-	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*inum_buf));
+	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
 	
 	DestroyVBO(mesh_VAO);
 	
