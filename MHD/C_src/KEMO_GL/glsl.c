@@ -321,6 +321,7 @@ struct kemoview_shaders * init_kemoview_shaders(){
 	sds->phong = init_shader_ids();
 	sds->phong_texure = init_shader_ids();
 	sds->phong_1color = init_shader_ids();
+	sds->simple_texure = init_shader_ids();
 	sds->test = init_shader_ids();
 	/*
 	LoadShaderFromStrings(sds->gouraud, load_gouraud_vert(), load_gouraud_frag());
@@ -332,6 +333,9 @@ struct kemoview_shaders * init_kemoview_shaders(){
 };
 
 void dealloc_kemoview_shaders(struct kemoview_shaders *sds){
+	destory_shaders(sds->simple_texure);
+	destory_shaders(sds->phong_1color);
+	destory_shaders(sds->phong_texure);
 	destory_shaders(sds->gouraud);
 	destory_shaders(sds->phong);
 	destory_shaders(sds->menu);

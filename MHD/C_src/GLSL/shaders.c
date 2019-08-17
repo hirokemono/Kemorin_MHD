@@ -846,6 +846,66 @@ char * load_phong_texture_vert(){
     return src;
 };
 
+char * load_simple_texture_frag(){
+    const char  simple_texture_frag_src[]
+    = {
+        "#version 400\n"\
+        "// simple_texture.frag\n"\
+        "\n"\
+        "in vec4 position;\n"\
+        "in vec2 tex_position;\n"\
+        "out vec4 out_Color;\n"\
+        "\n"\
+        "uniform sampler2D image;\n"\
+        "\n"\
+        "void main (void)\n"\
+        "{\n"\
+        "	out_Color = texture(image, tex_position);\n"\
+        "}\n"\
+        "\n"\
+        "\n"
+    };
+    
+    long n = strlen(simple_texture_frag_src);
+    char * src = alloc_string((int) n+1);
+    
+    strcpy(src, simple_texture_frag_src);
+    return src;
+};
+
+char * load_simple_texture_vert(){
+    const char  simple_texture_vert_src[]
+    = {
+        "#version 400\n"\
+        "// simple_texture.vert\n"\
+        "\n"\
+        "layout (location = 0) in vec3  xyz;\n"\
+        "layout (location = 1) in vec2  txur;\n"\
+        "\n"\
+        "\n"\
+        "uniform mat4 projectionMat;\n"\
+        "uniform mat4 modelViewMat;\n"\
+        "\n"\
+        "out vec4 position;\n"\
+        "out vec2 tex_position;\n"\
+        "\n"\
+        "void main(void)\n"\
+        "{\n"\
+        "	position = vec4(modelViewMat * vec4(xyz, 1.0));\n"\
+        "	tex_position = txur;\n"\
+        "\n"\
+        "	gl_Position =  projectionMat * position;\n"\
+        "}\n"\
+        "\n"
+    };
+    
+    long n = strlen(simple_texture_vert_src);
+    char * src = alloc_string((int) n+1);
+    
+    strcpy(src, simple_texture_vert_src);
+    return src;
+};
+
 char * load_test_frag(){
     const char  test_frag_src[]
     = {

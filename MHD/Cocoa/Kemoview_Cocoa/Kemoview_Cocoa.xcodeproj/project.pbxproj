@@ -93,6 +93,9 @@
 		188BA7582306A32100348842 /* draw_arrows_4_PSF.c in Sources */ = {isa = PBXBuildFile; fileRef = 188BA7562306A32000348842 /* draw_arrows_4_PSF.c */; };
 		188BA75B2306BB0500348842 /* draw_map_4_PSF.c in Sources */ = {isa = PBXBuildFile; fileRef = 188BA7592306BB0400348842 /* draw_map_4_PSF.c */; };
 		188BA75D23075E5200348842 /* ysglmaketextbitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 188BA75C23075E5100348842 /* ysglmaketextbitmap.c */; };
+		188BA76023077F7700348842 /* simple_texture.vert in Resources */ = {isa = PBXBuildFile; fileRef = 188BA75E23077F7600348842 /* simple_texture.vert */; };
+		188BA76123077F7700348842 /* simple_texture.frag in Resources */ = {isa = PBXBuildFile; fileRef = 188BA75F23077F7700348842 /* simple_texture.frag */; };
+		188BA76323078C3400348842 /* write_image_2_bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 188BA76223078C3400348842 /* write_image_2_bmp.c */; };
 		18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5A2711F832A8A005AF658 /* libz.tbd */; };
 		18CFFEB722FBFDAD005D7739 /* vartex_array_object_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFEB522FBFDAD005D7739 /* vartex_array_object_gl.c */; };
 		18D7E72B1562D359009B05FF /* cal_surface_center_normal_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E64F1562D359009B05FF /* cal_surface_center_normal_c.c */; };
@@ -355,6 +358,10 @@
 		188BA7592306BB0400348842 /* draw_map_4_PSF.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_map_4_PSF.c; sourceTree = "<group>"; };
 		188BA75A2306BB0500348842 /* draw_map_4_PSF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_map_4_PSF.h; sourceTree = "<group>"; };
 		188BA75C23075E5100348842 /* ysglmaketextbitmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ysglmaketextbitmap.c; sourceTree = "<group>"; };
+		188BA75E23077F7600348842 /* simple_texture.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = simple_texture.vert; path = ../GLSL/simple_texture.vert; sourceTree = "<group>"; };
+		188BA75F23077F7700348842 /* simple_texture.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = simple_texture.frag; path = ../GLSL/simple_texture.frag; sourceTree = "<group>"; };
+		188BA76223078C3400348842 /* write_image_2_bmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = write_image_2_bmp.c; path = CORE_C/write_image_2_bmp.c; sourceTree = "<group>"; };
+		188BA76423078C4200348842 /* write_image_2_bmp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = write_image_2_bmp.h; path = CORE_C/write_image_2_bmp.h; sourceTree = "<group>"; };
 		18B5A2711F832A8A005AF658 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		18CFFEB522FBFDAD005D7739 /* vartex_array_object_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vartex_array_object_gl.c; sourceTree = "<group>"; };
 		18CFFEB622FBFDAD005D7739 /* vartex_array_object_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vartex_array_object_gl.h; sourceTree = "<group>"; };
@@ -640,6 +647,8 @@
 				188BA7532306501100348842 /* phong_texture.vert */,
 				181198F9230496CA00C8556A /* phong.frag */,
 				18119904230496CA00C8556A /* phong.vert */,
+				188BA75F23077F7700348842 /* simple_texture.frag */,
+				188BA75E23077F7600348842 /* simple_texture.vert */,
 				181198FE230496CA00C8556A /* shaders.c */,
 				181198FD230496CA00C8556A /* shaders.h */,
 				18119906230496CB00C8556A /* test.frag */,
@@ -775,6 +784,8 @@
 				181198F7230496B100C8556A /* GLSL */,
 				185CB939212F593C00BB3C0B /* CONTROLS */,
 				18D7E64E1562D359009B05FF /* CORE_C */,
+				188BA76223078C3400348842 /* write_image_2_bmp.c */,
+				188BA76423078C4200348842 /* write_image_2_bmp.h */,
 				18D7E69C1562D359009B05FF /* KEMO_GL */,
 				18D7E6F11562D359009B05FF /* KEMO_GLUT */,
 				18D7E6FD1562D359009B05FF /* Makefile */,
@@ -1140,6 +1151,7 @@
 				1811990F230496CB00C8556A /* phong_1color.vert in Resources */,
 				18119907230496CB00C8556A /* menu.frag in Resources */,
 				18119911230496CB00C8556A /* gouraud.frag in Resources */,
+				188BA76023077F7700348842 /* simple_texture.vert in Resources */,
 				18119909230496CB00C8556A /* test.vert in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				18119913230496CB00C8556A /* dash_lines_3D.frag in Resources */,
@@ -1150,6 +1162,7 @@
 				1804E5C3125F025100EC8EAA /* Kemoviewer.icns in Resources */,
 				18F9051515DDEA45001368FA /* MainMenu.xib in Resources */,
 				188BA7552306501100348842 /* phong_texture.vert in Resources */,
+				188BA76123077F7700348842 /* simple_texture.frag in Resources */,
 				18119914230496CB00C8556A /* test.frag in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1225,6 +1238,7 @@
 				18D7E7541562D359009B05FF /* draw_coastline.c in Sources */,
 				185CB9D7212F593D00BB3C0B /* t_ctl_data_mhd_forces_c.c in Sources */,
 				185CB9C2212F593D00BB3C0B /* t_control_data_pvr_section_list.c in Sources */,
+				188BA76323078C3400348842 /* write_image_2_bmp.c in Sources */,
 				18D7E7551562D359009B05FF /* draw_colorbar_gl.c in Sources */,
 				185CB9D0212F593D00BB3C0B /* t_ctl_data_4_sphere_model_c.c in Sources */,
 				18D7E7561562D359009B05FF /* draw_fieldlines.c in Sources */,

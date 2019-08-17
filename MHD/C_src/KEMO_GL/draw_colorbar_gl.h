@@ -14,6 +14,9 @@
 #include "rainbow_color_code_c.h"
 #include "ysglusefontbitmap.h"
 
+#include "write_image_2_bmp.h"
+
+
 char colorbar_text[60];
 /* prototypes */
 

@@ -192,8 +192,6 @@ void kemoview_init_lighting(int iflag_core_profile){
 	kemo_sgl->view_s->iflag_shading_profile = iflag_core_profile;
 	
 	kemo_gl_initial_lighting_c(kemo_sgl->view_s, kemo_sgl->kemo_shaders);
-	/* ! set bitmap font list (8x12) */
-	init_colorbar_fonts();
 }
 
 void kemoview_init_background_color(){init_bg_color_kemoview(kemo_sgl->mesh_m);}

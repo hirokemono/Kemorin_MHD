@@ -65,6 +65,8 @@ struct view_element{
 
 void identity_glmat_c(GLdouble mat[16]);
 
+void orthogonal_glmat_c(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
+						GLdouble near, GLdouble far, GLdouble mat[16]);
 void orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
 			GLdouble near, GLdouble far);
 
