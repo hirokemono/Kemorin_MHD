@@ -123,13 +123,14 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			glDisable(GL_CULL_FACE);
 			draw_mesh_edges_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
 			
-			glDisable(GL_CULL_FACE);
-			glPolygonMode(GL_FRONT, GL_FILL);
-			draw_nodes_ico_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
+			set_buffer_address_4_patch(3*128, mesh_buf);
+			alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
+			draw_mesh_nodes_ico_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
+			free(mesh_buf->v_buf);
 			
 			set_buffer_address_4_patch(3*128, mesh_buf);
 			alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
-
+			
 			draw_solid_mesh_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
 			free(mesh_buf->v_buf);
 			free(mesh_buf);

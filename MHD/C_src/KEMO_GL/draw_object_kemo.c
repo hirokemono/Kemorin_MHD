@@ -10,9 +10,6 @@ void draw_nodes_ico_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 			struct kemoview_shaders *kemo_shaders, struct gl_strided_buffer *mesh_buf){
 	int i, ip_st;
 	
-	set_buffer_address_4_patch(3*128, mesh_buf);
-	alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
-	
 	node_ico_VBO(view_s, mesh_s->num_pe_sf, IZERO, mesh_s->nod_stack_domain_sf,
 				mesh_s->nod_item_domain_sf, mesh_s,
 				mesh_m->node_diam, mesh_m->domain_node_color,
@@ -68,8 +65,6 @@ void draw_nodes_ico_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 	
 		};
 	};
-	
-	free(mesh_buf->v_buf);
 	return;
 }
 
