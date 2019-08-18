@@ -9,12 +9,13 @@
 #include "m_gl_transfer_matrix.h"
 #include "vartex_array_object_gl.h"
 #include "glsl.h"
-#include "m_surface_mesh_4_viewer_c.h"
+#include "m_psf_data_4_viewer_c.h"
 #include "init_gl_lighting_c.h"
 #include "set_new_patch_4_map_c.h"
 #include "icosahedron_c.h"
 #include "coordinate_converter_c.h"
 #include "set_color_code_on_nodes.h"
+#include "set_PSF_patches_to_buf.h"
 
 
 /* prptotypes */

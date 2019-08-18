@@ -33,6 +33,8 @@ set_colorbar_to_buffer.o \
 set_mesh_patch_2_gl_buf.o \
 set_mesh_node_2_gl_buf.o \
 set_mesh_grid_2_gl_buf.o \
+set_PSF_patches_to_buf.o \
+set_PSF_isolines_to_buf.o \
 \
 draw_node_by_ico_c.o \
 draw_grids_4_mesh.o \
@@ -43,7 +45,6 @@ draw_fieldlines.o \
 draw_patches_4_PSF.o \
 draw_arrows_4_PSF.o \
 draw_map_4_PSF.o \
-draw_object_kemo.o \
 move_draw_objects_gl.o \
 modify_stereo_view_gl.o \
 \
@@ -351,6 +352,36 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	set_PSF_patches_to_buf.o: \
+	'$$(KEMO_C_GLDIR)'/set_PSF_patches_to_buf.c \
+	set_PSF_patches_to_buf.h \
+	kemoviewer_param_c.o \
+	m_kemoviewer_menu.o \
+	m_psf_data_4_viewer_c.o \
+	vartex_array_object_gl.o \
+	set_new_patch_4_map_c.o \
+	coordinate_converter_c.o \
+	set_color_code_on_nodes.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	set_PSF_isolines_to_buf.o: \
+	'$$(KEMO_C_GLDIR)'/set_PSF_isolines_to_buf.c \
+	set_PSF_isolines_to_buf.h \
+	kemoviewer_param_c.o \
+	m_kemoviewer_menu.o \
+	m_psf_data_4_viewer_c.o \
+	vartex_array_object_gl.o \
+	set_new_patch_4_map_c.o \
+	set_color_code_on_nodes.o \
+	rainbow_color_code_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	draw_node_by_ico_c.o: \
 	'$$(KEMO_C_GLDIR)'/draw_node_by_ico_c.c \
 	kemoviewer_param_c.h \
@@ -408,6 +439,7 @@ module:
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
+	set_PSF_isolines_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -453,6 +485,7 @@ module:
 	set_new_patch_4_map_c.o \
 	coordinate_converter_c.o \
 	set_color_code_on_nodes.o \
+	set_PSF_patches_to_buf.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
@@ -490,32 +523,9 @@ module:
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
+	set_PSF_patches_to_buf.o \
 	draw_isolines_4_map.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	draw_object_kemo.o: \
-	'$$(KEMO_C_GLDIR)'/draw_object_kemo.c \
-	draw_object_kemo.h \
-	draw_map_4_PSF.o \
-	draw_patches_4_PSF.o \
-	draw_isolines_4_PSF.o \
-	draw_isolines_4_map.o \
-	draw_node_by_ico_c.o \
-	draw_grids_4_mesh.o \
-	draw_patch_4_mesh_c.o \
-	draw_colorbar_gl.o \
-	draw_mapgrid.o \
-	draw_coastline.o \
-	sort_by_patch_distance.o \
-	init_gl_lighting_c.o \
-	m_surface_mesh_4_viewer_c.o \
-	m_psf_data_4_viewer_c.o \
-	m_gl_transfer_matrix.o \
-	vartex_array_object_gl.o \
-	glsl.o \
+	icosahedron_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -537,7 +547,10 @@ module:
 	drawcube_gl.o \
 	draw_patches_4_PSF.o \
 	draw_arrows_4_PSF.o \
+	draw_map_4_PSF.o \
 	draw_patch_4_mesh_c.o \
+	draw_node_by_ico_c.o \
+	draw_grids_4_mesh.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

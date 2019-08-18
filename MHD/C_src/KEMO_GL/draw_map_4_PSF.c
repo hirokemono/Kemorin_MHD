@@ -4,43 +4,11 @@
 #include <OpenGL/gl3.h>
 #include "draw_map_4_PSF.h"
 
-
-static void set_psf_map_to_buf(int ist_psf, int num_buf, struct psf_data **psf_s, 
-			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
-	int inum, iele, inod, ipsf, nd, k;
-	double xx_tri[9], xyz_map[9];
-	
-	for(inum=0; inum<num_buf; inum++){
-		ipsf = psf_a->ipsf_viz_far[inum+ist_psf]-1;
-		iele = psf_a->iele_viz_far[inum+ist_psf]-1;
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			xx_tri[3*k  ] = psf_s[ipsf]->xx_viz[inod][0];
-			xx_tri[3*k+1] = psf_s[ipsf]->xx_viz[inod][1];
-			xx_tri[3*k+2] = psf_s[ipsf]->xx_viz[inod][2];
-		};
-		projection_patch_4_map(xx_tri, xyz_map);
-		
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			set_node_stride_VBO((ITHREE*inum+k), strided_buf);
-			strided_buf->x_draw[0] = xyz_map[ITHREE*k  ];
-			strided_buf->x_draw[1] = xyz_map[ITHREE*k+1];
-			strided_buf->x_draw[2] = 0.0;
-			
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[inod][nd];};
-        };
-    };
-    return;
-}
-
-
 void draw_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf, 
 			struct psf_data **psf_s, struct kemo_array_control *psf_a, const GLdouble *orthogonal, 
 			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *psf_buf){
-	int num_patch = ied_psf - ist_psf;
-	
+	int num_patch = count_psf_nodes_to_buf(ist_psf, ied_psf);
 	if(num_patch <= 0) return;
 	
 	glUseProgram(kemo_shaders->test->programId);
@@ -49,7 +17,7 @@ void draw_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
-	set_psf_map_to_buf(ist_psf, num_patch, psf_s, psf_a, psf_buf);
+	set_psf_map_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
 	
 	glGenVertexArrays(1, &psf_VAO->id_VAO);
 	glBindVertexArray(psf_VAO->id_VAO);

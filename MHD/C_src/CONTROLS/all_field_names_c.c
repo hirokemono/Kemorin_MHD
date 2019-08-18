@@ -41,7 +41,7 @@ const struct field_def field_props[NUM_FIELD] = {
 			
 			/* Square of fields */
 			{1, "square_velocity", "$$  u^{2}  $$"},
-			{1, "square_vorticity", "$$  \omega^{2}  $$"},
+			{1, "square_vorticity", "$$  \\omega^{2}  $$"},
 			{1, "square_magne", "$$  B^{2}  $$"},
 			{1, "square_vector_p", "$$  A^{2}  $$"},
 			{1, "square_current", "$$  J^{2}  $$"},

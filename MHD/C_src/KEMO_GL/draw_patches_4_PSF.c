@@ -16,108 +16,26 @@ static void set_texture(struct psf_menu_val *psf_m){
 	glTexImage2D(
 		GL_TEXTURE_2D , 0 , GL_RGBA , psf_m->texture_width , psf_m->texture_height ,
 		0 , GL_RGBA , GL_UNSIGNED_BYTE , psf_m->texture_rgba);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);	
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
 	glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, blend);
 	
 	return;
 };
-
-
-static void set_psf_nodes_to_buf(int ist_psf, int num_buf, int shading_mode, 
-			struct psf_data **psf_s, struct psf_menu_val **psf_m, 
-			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
-	int inum, iele, inod, k, nd, ipsf;
-	
-	for(inum=0; inum<num_buf; inum++){
-		ipsf = psf_a->ipsf_viz_far[inum+ist_psf]-1;
-		iele = psf_a->iele_viz_far[inum+ist_psf]-1;
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			
-			set_node_stride_VBO((ITHREE*inum+k), strided_buf);
-			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = psf_s[ipsf]->xx_viz[inod][nd];};
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[inod][nd];};
-			if (shading_mode == SMOOTH_SHADE){
-                for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_nod[inod][nd];};
-			} else {
-				for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_ele[iele][nd];};
-			};
-			if(psf_m[ipsf]->polygon_mode_psf == REVERSE_POLYGON){
-				for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = -strided_buf->n_draw[nd];};
-			};
-		};
-    };
-    return;
-}
-
-static void set_psf_textures_to_buf(int ist_psf, int num_buf, struct psf_data **psf_s,
-			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
-	int inum, iele, inod, k, ipsf;
-	int iflag;
-	double xx_tri[9], rtp_patch[9];
-	
-	for(inum=0; inum<num_buf; inum++){
-        ipsf = psf_a->ipsf_viz_far[inum+ist_psf]-1;
-        iele = psf_a->iele_viz_far[inum+ist_psf]-1;
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			xx_tri[3*k  ] = psf_s[ipsf]->xx_viz[inod][0];
-			xx_tri[3*k+1] = psf_s[ipsf]->xx_viz[inod][1];
-			xx_tri[3*k+2] = psf_s[ipsf]->xx_viz[inod][2];
-		};
-		iflag = latitude_longitude_on_map(xx_tri, rtp_patch);
-		
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			set_node_stride_VBO((ITHREE*inum+k), strided_buf);
-			strided_buf->x_txur[0] =  rtp_patch[ITHREE*k+2] * ARCPI * HALF;
-			strided_buf->x_txur[1] = -rtp_patch[ITHREE*k+1] * ARCPI;
-		};
-	};
-	return;
-}
-
-static void set_psf_map_to_straided_buf(int ist_psf, int num_buf, struct psf_data **psf_s, 
-			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
-	int inum, iele, inod, ipsf, nd, k;
-	double xx_tri[9], xyz_map[9];
-	
-	for(inum=0; inum<num_buf; inum++){
-		ipsf = psf_a->ipsf_viz_far[inum+ist_psf]-1;
-		iele = psf_a->iele_viz_far[inum+ist_psf]-1;
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			xx_tri[3*k  ] = psf_s[ipsf]->xx_viz[inod][0];
-			xx_tri[3*k+1] = psf_s[ipsf]->xx_viz[inod][1];
-			xx_tri[3*k+2] = psf_s[ipsf]->xx_viz[inod][2];
-		};
-		projection_patch_4_map(xx_tri, xyz_map);
-		
-		for (k = 0; k < ITHREE; k++) {
-			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			set_node_stride_VBO((ITHREE*inum+k), strided_buf);
-			strided_buf->x_draw[0] = xyz_map[ITHREE*k  ];
-			strided_buf->x_draw[1] = xyz_map[ITHREE*k+1];
-			strided_buf->x_draw[2] = 0.0;
-			
-			strided_buf->n_draw[0] = 0.0;
-			strided_buf->n_draw[1] = 0.0;
-			strided_buf->n_draw[2] = 1.0;
-			
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[inod][nd];};
-        };
-    };
-    return;
-}
 
 void draw_PSF_patch_VAO(int shading_mode, int ist_psf, int ied_psf, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct view_element *view_s, 
 			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *psf_buf){
-	int num_patch = ied_psf - ist_psf;
-	
+	int num_patch = count_psf_nodes_to_buf(ist_psf, ied_psf);
 	if(num_patch <= 0) return;
+	
+	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
+	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+	
+	set_psf_nodes_to_buf(ist_psf, ied_psf, shading_mode, 
+								   psf_s, psf_m, psf_a, psf_buf);
+	
 	
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
@@ -144,13 +62,6 @@ void draw_PSF_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	glUniform4fv(id_MaterialDiffuse, 1, white1);
 	glUniform4fv(id_MaterialSpecular, 1, white3);
 	glUniform1f(id_MaterialShiness, shine);
-	
-	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
-	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
-	
-	
-	set_psf_nodes_to_buf(ist_psf, num_patch, shading_mode, 
-								   psf_s, psf_m, psf_a, psf_buf);
 	
 	glGenVertexArrays(1, &psf_VAO->id_VAO);
 	glBindVertexArray(psf_VAO->id_VAO);
@@ -188,9 +99,14 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 			struct VAO_ids *psf_VAO, struct shader_ids *phong_texure, 
 			struct gl_strided_buffer *psf_buf){
 	int i;
-	int num_patch = ied_psf - ist_psf;
-	
+	int num_patch = count_psf_nodes_to_buf(ist_psf, ied_psf);
 	if(num_patch <= 0) return;
+	
+	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
+	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+	
+	set_psf_nodes_to_buf(ist_psf, ied_psf, shading_mode, psf_s, psf_m, psf_a, psf_buf);
+	set_psf_textures_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
 	
 	glUseProgram(phong_texure->programId);
 	transfer_matrix_to_shader(phong_texure, view_s);
@@ -219,15 +135,6 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 	glUniform4fv(id_MaterialDiffuse, 1, white1);
 	glUniform4fv(id_MaterialSpecular, 1, white3);
 	glUniform1f(id_MaterialShiness, shine);
-	
-	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
-	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
-	
-	
-	set_psf_nodes_to_buf(ist_psf, num_patch, shading_mode, 
-				psf_s, psf_m, psf_a, psf_buf);
-	set_psf_textures_to_buf(ist_psf, num_patch, 
-				psf_s, psf_a, psf_buf);
 	
 	glGenVertexArrays(1, &psf_VAO->id_VAO);
 	glBindVertexArray(psf_VAO->id_VAO);

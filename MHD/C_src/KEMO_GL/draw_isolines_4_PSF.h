@@ -13,11 +13,9 @@
 #include "rainbow_color_code_c.h"
 #include "find_isoline_on_patch_c.h"
 #include "set_new_patch_4_map_c.h"
+#include "set_PSF_isolines_to_buf.h"
 
 /* prototypes */
-
-double cal_isoline_value(int j, struct psf_menu_val *psf_m);
-void find_start_positive_lines(struct psf_menu_val *psf_m);
 
 void draw_PSF_isoline_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			struct view_element *view_s, 
