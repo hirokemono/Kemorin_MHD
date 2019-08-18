@@ -11,13 +11,13 @@ void draw_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	int num_patch = count_psf_nodes_to_buf(ist_psf, ied_psf);
 	if(num_patch <= 0) return;
 	
-	glUseProgram(kemo_shaders->test->programId);
-	map_matrix_to_shader(kemo_shaders->test, orthogonal);
-	
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
 	set_psf_map_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
+	
+	glUseProgram(kemo_shaders->test->programId);
+	map_matrix_to_shader(kemo_shaders->test, orthogonal);
 	
 	glGenVertexArrays(1, &psf_VAO->id_VAO);
 	glBindVertexArray(psf_VAO->id_VAO);

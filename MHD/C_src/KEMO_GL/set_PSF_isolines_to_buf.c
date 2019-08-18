@@ -24,17 +24,17 @@ void find_start_positive_lines(struct psf_menu_val *psf_m){
     range_min = psf_m->cmap_psf->color_data[0];
     range_max = psf_m->cmap_psf->color_data[psf_m->cmap_psf->n_color_point-1];
     
-    if(range_min >= ZERO) psf_m->ist_positive_line = 1;
+    if(range_min >= ZERO) psf_m->ist_positive_line = 0;
     else if(range_max <= ZERO){
-        psf_m->ist_positive_line = psf_m->n_isoline + 1;
+        psf_m->ist_positive_line = psf_m->n_isoline;
     } else {
-        psf_m->ist_positive_line = 1;
+        psf_m->ist_positive_line = 0;
         current_value = range_min;
         for (j = 1; j < psf_m->n_isoline; j++){
             pre_value = current_value;
             current_value = cal_isoline_value(j, psf_m);
             if( (current_value*pre_value) <= ZERO){
-                psf_m->ist_positive_line = j + 1;
+                psf_m->ist_positive_line = j;
                 return;
             };
         };
@@ -169,7 +169,6 @@ static int set_PSF_isolines_to_buf(int ist_edge, int ist, int ied,
 
 int count_PSF_all_isolines_to_buf(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	int ierr;
-	int num_patch = 0;
 	int num_edge = 0;
 	if(psf_m->draw_psf_grid  != 0){
 		find_start_positive_lines(psf_m);
@@ -185,8 +184,7 @@ int count_PSF_all_isolines_to_buf(struct psf_data *psf_s, struct psf_menu_val *p
 	if(psf_m->draw_psf_zero != 0){
         num_edge = num_edge + count_PSF_zeroline(psf_s, psf_m);
     };
-	num_patch = 2*num_edge;
-	return num_patch;
+	return num_edge;
 }
 
 int set_PSF_all_isolines_to_buf(struct psf_data *psf_s, struct psf_menu_val *psf_m,

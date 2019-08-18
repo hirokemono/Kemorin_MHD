@@ -15,9 +15,7 @@
 #include "vartex_array_object_gl.h"
 #include "glsl.h"
 #include "rainbow_color_code_c.h"
-#include "find_isoline_on_patch_c.h"
-#include "set_new_patch_4_map_c.h"
-#include "draw_isolines_4_PSF.h"
+#include "set_map_isolines_to_buf.h"
 
 /* prototypes */
 

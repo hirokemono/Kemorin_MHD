@@ -296,10 +296,6 @@ void identity_matrix_to_shader(struct shader_ids *Shader){
 	glUniformMatrix3fv(normalMatLocation, 1, NULL, nrmat);
 };
 
-void const_kemoview_shaders(struct shaders *k_sds){
-	return;
-};
-
 static struct shader_ids * init_shader_ids(){
     struct shader_ids *s_id;
     if((s_id = (struct shader_ids *) malloc(sizeof(struct shader_ids))) == NULL){

@@ -60,6 +60,7 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		
 	
 	if(mesh_m->iflag_view_type == VIEW_MAP) {
+		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
 		struct gl_strided_buffer *map_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 		set_buffer_address_4_patch(3*128, map_buf);
 		alloc_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);

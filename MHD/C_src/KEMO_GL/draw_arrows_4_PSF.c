@@ -1,9 +1,9 @@
 
 /* draw_arrows_4_PSF.c */
 
+#include <OpenGL/gl3.h>
 #include "draw_arrows_4_PSF.h"
 
-static GLfloat white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 static GLfloat arrow_c[4] = {0.8, 0.7, 0.6, 1.0};
 
 static int count_psf_arrows_to_buf(int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m){

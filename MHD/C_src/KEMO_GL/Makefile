@@ -35,6 +35,7 @@ set_mesh_node_2_gl_buf.o \
 set_mesh_grid_2_gl_buf.o \
 set_PSF_patches_to_buf.o \
 set_PSF_isolines_to_buf.o \
+set_map_isolines_to_buf.o \
 \
 draw_node_by_ico_c.o \
 draw_grids_4_mesh.o \
@@ -308,6 +309,7 @@ module:
 	m_colorbar_work.o \
 	m_color_table_c.o \
 	vartex_array_object_gl.o \
+	rainbow_color_code_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -375,8 +377,27 @@ module:
 	m_psf_data_4_viewer_c.o \
 	vartex_array_object_gl.o \
 	set_new_patch_4_map_c.o \
+	find_isoline_on_patch_c.o \
 	set_color_code_on_nodes.o \
 	rainbow_color_code_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	set_map_isolines_to_buf.o: \
+	'$$(KEMO_C_GLDIR)'/set_map_isolines_to_buf.c \
+	set_map_isolines_to_buf.h \
+	kemoviewer_param_c.o \
+	m_kemoviewer_menu.o \
+	m_psf_data_4_viewer_c.o \
+	vartex_array_object_gl.o \
+	set_new_patch_4_map_c.o \
+	find_isoline_on_patch_c.o \
+	set_color_code_on_nodes.o \
+	rainbow_color_code_c.o \
+	coordinate_converter_c.o \
+	set_PSF_isolines_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -452,10 +473,8 @@ module:
 	m_psf_data_4_viewer_c.o \
 	vartex_array_object_gl.o \
 	glsl.o \
-	set_new_patch_4_map_c.o \
 	rainbow_color_code_c.o \
-	find_isoline_on_patch_c.o \
-	draw_isolines_4_PSF.o \
+	set_map_isolines_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -525,6 +544,8 @@ module:
 	glsl.o \
 	set_PSF_patches_to_buf.o \
 	draw_isolines_4_map.o \
+	draw_coastline.o \
+	draw_mapgrid.o \
 	icosahedron_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \

@@ -15,7 +15,7 @@ void draw_PSF_isoline_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 	double v_line;
 	double f_color[4];
 	
-	num_patch = count_PSF_all_isolines_to_buf(psf_s, psf_m);
+	num_patch = 2*count_PSF_all_isolines_to_buf(psf_s, psf_m);
 	if(num_patch <= 0) return;
 	
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
