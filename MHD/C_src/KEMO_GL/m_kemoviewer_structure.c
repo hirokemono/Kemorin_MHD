@@ -1013,12 +1013,7 @@ void kemoview_draw_quad_gl3(){
 }
 
 void kemoview_draw_menu_gl3(){
-	glUseProgram(kemo_sgl->kemo_shaders->menu->programId);
-	
-	VBO_for_Menu(kemo_sgl->menu_VAO);
-	glBindVertexArray(kemo_sgl->menu_VAO->id_VAO);
-	glDrawArrays(GL_POINTS, 0, MENU_HEIGHT*MENU_WIDTH);
-	DestroyVBO(kemo_sgl->menu_VAO);
+	VBO_for_Menu(kemo_sgl->menu_VAO, kemo_sgl->kemo_shaders);
 }
 void kemo_Cleanup()
 {

@@ -16,7 +16,6 @@
 #include "set_color_code_on_nodes.h"
 #include "draw_isolines_4_map.h"
 #include "draw_coastline.h"
-#include "draw_mapgrid.h"
 #include "set_PSF_patches_to_buf.h"
 
 

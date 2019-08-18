@@ -319,6 +319,13 @@ struct kemoview_shaders * init_kemoview_shaders(){
 	sds->phong_1color = init_shader_ids();
 	sds->simple_texure = init_shader_ids();
 	sds->test = init_shader_ids();
+	
+	if((sds->lights = (struct phong_lights *) malloc(sizeof(struct phong_lights))) == NULL){
+		printf("malloc error in phong_lights \n");
+		exit(0);
+	};
+	
+	
 	/*
 	LoadShaderFromStrings(sds->gouraud, load_gouraud_vert(), load_gouraud_frag());
 	LoadShaderFromStrings(sds->phong, load_phong_vert(), load_phong_frag());
@@ -344,5 +351,43 @@ void dealloc_kemoview_shaders(struct kemoview_shaders *sds){
 	
 	free(sds);
 	return;
+};
+
+
+void set_phong_light_list(struct shader_ids *phong, struct phong_lights *lights){
+	int i;
+	int id_numLight;
+	int id_lightPosition[10];
+	
+	int id_MaterialAmbient, id_MaterialDiffuse;
+	int id_MaterialSpecular, id_MaterialShiness;
+	
+	id_numLight = glGetUniformLocation(phong->programId, "num_lights");
+	id_lightPosition[0] = glGetUniformLocation(phong->programId, "LightSource[0].position");
+	id_lightPosition[1] = glGetUniformLocation(phong->programId, "LightSource[1].position");
+	id_lightPosition[2] = glGetUniformLocation(phong->programId, "LightSource[2].position");
+	id_lightPosition[3] = glGetUniformLocation(phong->programId, "LightSource[3].position");
+	id_lightPosition[4] = glGetUniformLocation(phong->programId, "LightSource[4].position");
+	id_lightPosition[5] = glGetUniformLocation(phong->programId, "LightSource[5].position");
+	id_lightPosition[6] = glGetUniformLocation(phong->programId, "LightSource[6].position");
+	id_lightPosition[7] = glGetUniformLocation(phong->programId, "LightSource[7].position");
+	id_lightPosition[8] = glGetUniformLocation(phong->programId, "LightSource[8].position");
+	id_lightPosition[9] = glGetUniformLocation(phong->programId, "LightSource[9].position");
+	
+	id_MaterialAmbient = glGetUniformLocation(phong->programId, "frontMaterial.ambient");
+	id_MaterialDiffuse = glGetUniformLocation(phong->programId, "frontMaterial.diffuse");
+	id_MaterialSpecular = glGetUniformLocation(phong->programId, "frontMaterial.specular");
+	id_MaterialShiness = glGetUniformLocation(phong->programId, "frontMaterial.shininess");
+	
+	
+	glUniform1i(id_numLight, lights->n_light_point);
+	for(i=0;i<lights->n_light_point;i++){
+		glUniform4fv(id_lightPosition[i], 1, &lights->light_xyz[3*i]);
+	};
+	
+	glUniform4f(id_MaterialAmbient, lights->ambient, lights->ambient, lights->ambient, 1.0);
+	glUniform4f(id_MaterialDiffuse, lights->diffuse, lights->diffuse, lights->diffuse, 1.0);
+	glUniform4f(id_MaterialSpecular, lights->specular, lights->specular, lights->specular, 1.0);
+	glUniform1f(id_MaterialShiness, lights->shiness);
 };
 

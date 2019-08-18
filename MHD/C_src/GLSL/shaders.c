@@ -487,13 +487,13 @@ char * load_menu_vert(){
     = {
         "#version 400\n"\
         "\n"\
-        "layout(location=0) in vec4 in_Position;\n"\
+        "layout(location=0) in vec3 in_Position;\n"\
         "layout(location=1) in vec4 in_Color;\n"\
         "out vec4 ex_Color;\n"\
         "\n"\
         "void main(void)\n"\
         "{\n"\
-        "    gl_Position = in_Position;\n"\
+        "    gl_Position = vec4(in_Position, 1.0);\n"\
         "    ex_Color = in_Color;\n"\
         "}\n"\
         "\n"

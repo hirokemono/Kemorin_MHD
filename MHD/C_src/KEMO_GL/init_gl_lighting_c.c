@@ -58,6 +58,8 @@ void kemo_gl_initial_lighting_c(struct view_element *view_s,
 		LoadShaderFromStrings(kemo_shaders->phong_1color, load_phong_vert(), load_phong_frag());
 		LoadShaderFromStrings(kemo_shaders->simple_texure,
 							  load_simple_texture_vert(), load_simple_texture_frag());
+		
+		init_phong_light_list(kemo_shaders->lights);
 	} else {
 		view_s->gl_drawID = glGenLists(IONE);
 	};
@@ -135,3 +137,4 @@ void reset_light_by_size_of_domain(GLdouble r_max){
      glEnable(GL_DEPTH_TEST);
 	return;
 }
+

@@ -4,7 +4,7 @@
 
 OBJ_KEMO_GL_C = \
 kemoviewer_param_c.o \
-m_psf_data_4_viewer_c.o \
+m_phong_light_table_c.o \
 m_gl_transfer_matrix.o \
 m_kemoviewer_menu.o \
 m_kemoviewer_structure.o \
@@ -39,6 +39,7 @@ set_map_isolines_to_buf.o \
 set_fieldline_to_buf.o \
 set_axis_to_buf.o \
 set_coastline_to_buf.o \
+set_menu_bottun_to_buf.o \
 \
 draw_node_by_ico_c.o \
 draw_grids_4_mesh.o \
@@ -48,6 +49,10 @@ draw_isolines_4_map.o \
 draw_fieldlines.o \
 draw_patches_4_PSF.o \
 draw_map_4_PSF.o \
+draw_coastline.o \
+draw_colorbar_gl.o \
+draw_menu_bottun_gl.o \
+\
 move_draw_objects_gl.o \
 modify_stereo_view_gl.o \
 \
@@ -55,13 +60,8 @@ gl_buffer_2_png.o \
 gl_buffer_2_bmp.o \
 write_gl_window_to_file.o \
 \
-draw_colorbar_gl.o \
-draw_menu_bottun_gl.o \
-\
 sort_by_patch_distance.o \
 \
-draw_mapgrid.o \
-draw_coastline.o \
 coastline_c.o \
 set_texture_4_psf.o \
 set_psf_texture_by_png.o \
@@ -99,6 +99,14 @@ module:
 	kemoviewer_param_c.h \
 	kemoviewer.h \
 	kemosrc_param_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	m_phong_light_table_c.o: \
+	'$$(KEMO_C_GLDIR)'/m_phong_light_table_c.c \
+	m_phong_light_table_c.h \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -214,7 +222,6 @@ module:
 	m_kemoviewer_menu.o \
 	gl_buffer_2_png.o \
 	gl_buffer_2_bmp.o \
-	rendereps_c.o \
 	m_color_table_c.o \
 	kemosrc_param_c.o \
 	>> $(MAKENAME)
@@ -447,6 +454,16 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	set_menu_bottun_to_buf.o: \
+	'$$(KEMO_C_GLDIR)'/set_menu_bottun_to_buf.c \
+	set_menu_bottun_to_buf.h \
+	ysglfontdata.o \
+	vartex_array_object_gl.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	draw_node_by_ico_c.o: \
 	'$$(KEMO_C_GLDIR)'/draw_node_by_ico_c.c \
 	kemoviewer_param_c.h \
@@ -572,7 +589,6 @@ module:
 	set_PSF_patches_to_buf.o \
 	draw_isolines_4_map.o \
 	draw_coastline.o \
-	draw_mapgrid.o \
 	icosahedron_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
@@ -590,7 +606,6 @@ module:
 	glsl.o \
 	draw_colorbar_gl.o \
 	draw_fieldlines.o \
-	draw_mapgrid.o \
 	draw_coastline.o \
 	drawcube_gl.o \
 	draw_patches_4_PSF.o \
@@ -690,6 +705,8 @@ module:
 	draw_menu_bottun_gl.h \
 	ysglfontdata.o \
 	vartex_array_object_gl.o \
+	glsl.o \
+	set_menu_bottun_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -750,24 +767,11 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
-	draw_mapgrid.o: \
-	'$$(KEMO_C_GLDIR)'/draw_mapgrid.c \
-	draw_mapgrid.h \
-	kemoviewer_param_c.o \
-	m_kemoviewer_menu.o \
-	m_gl_transfer_matrix.o \
-	vartex_array_object_gl.o \
-	glsl.o \
-	set_coastline_to_buf.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
 	draw_coastline.o: \
 	'$$(KEMO_C_GLDIR)'/draw_coastline.c \
 	draw_coastline.h \
 	kemoviewer_param_c.o \
+	m_kemoviewer_menu.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
@@ -825,6 +829,7 @@ module:
 	glsl.h \
 	kemoviewer.h \
 	m_gl_transfer_matrix.o \
+	m_phong_light_table_c.o \
 	shaders.o \
 	invert_small_matrix_c.o \
 	>> $(MAKENAME)

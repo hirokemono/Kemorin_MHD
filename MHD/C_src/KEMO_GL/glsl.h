@@ -7,8 +7,8 @@
 
 #include "kemoviewer.h"
 #include "m_gl_transfer_matrix.h"
+#include "m_phong_light_table_c.h"
 #include "shaders.h"
-#include "invert_small_matrix_c.h"
 
 struct shader_ids{
 	GLuint programId;
@@ -25,6 +25,8 @@ struct kemoview_shaders{
 	struct shader_ids *menu;
 	struct shader_ids *simple_texure;
 	struct shader_ids *test;
+	
+	struct phong_lights *lights; 
 };
 
 /* prptotypes */
@@ -42,5 +44,7 @@ void identity_matrix_to_shader(struct shader_ids *Shader);
 
 struct kemoview_shaders * init_kemoview_shaders();
 void dealloc_kemoview_shaders(struct kemoview_shaders *sds);
+
+void set_phong_light_list(struct shader_ids *phong, struct phong_lights *lights);
 
 #endif

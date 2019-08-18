@@ -11,7 +11,6 @@
 #include "draw_axis_c.h"
 #include "draw_colorbar_gl.h"
 #include "draw_fieldlines.h"
-#include "draw_mapgrid.h"
 #include "draw_coastline.h"
 #include "drawcube_gl.h"
 #include "draw_patches_4_PSF.h"
