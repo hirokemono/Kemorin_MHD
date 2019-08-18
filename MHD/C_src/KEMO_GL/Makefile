@@ -36,6 +36,7 @@ set_mesh_grid_2_gl_buf.o \
 set_PSF_patches_to_buf.o \
 set_PSF_isolines_to_buf.o \
 set_map_isolines_to_buf.o \
+set_axis_to_buf.o \
 \
 draw_node_by_ico_c.o \
 draw_grids_4_mesh.o \
@@ -153,9 +154,7 @@ module:
 	vartex_array_object_gl.o \
 	glsl.o \
 	modify_object_4_viewer_c.o \
-	icosahedron_c.o \
-	m_surface_mesh_4_viewer_c.o \
-	m_psf_data_4_viewer_c.o \
+	set_axis_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -398,6 +397,19 @@ module:
 	rainbow_color_code_c.o \
 	coordinate_converter_c.o \
 	set_PSF_isolines_to_buf.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	set_axis_to_buf.o: \
+	'$$(KEMO_C_GLDIR)'/set_axis_to_buf.c \
+	set_axis_to_buf.h \
+	kemoviewer_param_c.o \
+	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
+	modify_object_4_viewer_c.o \
+	icosahedron_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

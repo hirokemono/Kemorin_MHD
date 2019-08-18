@@ -1,8 +1,8 @@
 
-/* draw_axis_c.h*/
+/* set_axis_to_buf.h*/
 
-#ifndef DRAW_AXIS_C_
-#define DRAW_AXIS_C_
+#ifndef SET_AXIS_TO_BUF_
+#define SET_AXIS_TO_BUF_
 
 #include <math.h>
 #include <stdio.h>
@@ -11,14 +11,13 @@
 #include "kemoviewer_param_c.h"
 #include "m_gl_transfer_matrix.h"
 #include "vartex_array_object_gl.h"
-#include "glsl.h"
 #include "modify_object_4_viewer_c.h"
-#include "set_axis_to_buf.h"
+#include "icosahedron_c.h"
 
 
 /* prototypes */
-void draw_axis_VAO(struct view_element *view_s, GLfloat dist, 
-			struct VAO_ids *mesh_VAO, struct kemoview_shaders *kemo_shaders, 
+int count_axis_to_buf(int ncorner);
+int set_axis_to_buf(struct view_element *view_s, GLfloat dist, int ncorner, float radius, 
 			struct gl_strided_buffer *strided_buf);
 	
 #endif
