@@ -16,12 +16,6 @@
 
 /* prototypes */
 
-void mesh_edge_VBO(struct view_element *view_s, int line_color, int color_mode, int color_loop, GLfloat single_color[4],
-			int num_grp, int *istack_grp, int *item_grp, int igrp, int *iflag_domain, 
-			struct viewer_mesh *mesh_s, 
-			struct VAO_ids *mesh_VAO, struct kemoview_shaders *kemo_shaders, 
-			struct gl_strided_buffer *mesh_buf);
-
 void draw_mesh_grids_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 			struct view_element *view_s, struct VAO_ids *mesh_VAO, 
 			struct kemoview_shaders *kemo_shaders, struct gl_strided_buffer *mesh_buf);

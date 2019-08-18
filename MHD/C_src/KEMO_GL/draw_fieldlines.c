@@ -4,78 +4,12 @@
 #include <OpenGL/gl3.h>
 #include "draw_fieldlines.h"
 
-/*
-static const GLfloat black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
-*/
-
-static int count_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s){
-	int num_patch = 2 * fline_s->nele_viz * ncorner; 
-	return num_patch;
-};
-static int count_fieldlines_to_buf(struct psf_data *fline_s){
-	int num_edge = fline_s->nele_viz;
-	return num_edge;
-}
-
-void set_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s, struct fline_menu_val *fline_m,
-			struct gl_strided_buffer *strided_buf) {
-	int num_wall, inum_patch;
-	int inod, iele, k, nd;
-	float xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
-	float x_line[6], dir_line[6], color_line[8];
-	
-	set_color_code_for_fieldlines(fline_s, fline_m);
-	
-	inum_patch = 0;
-	for (iele = 0; iele < fline_s->nele_viz; iele++) {
-		for (k = 0; k < 2; k++) {
-			inod = fline_s->ie_viz[iele][k] - 1;
-			for (nd=0; nd<3; nd++) {
-				x_line[3*k+nd] = (float) fline_s->xx_viz[inod][nd];
-				dir_line[3*k+nd] = (float) fline_s->dir_nod[inod][nd];
-			};
-			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_s->color_nod[inod][nd];};
-		};
-		
-		num_wall = set_tube_vertex(ncorner, fline_m->fieldline_thick, x_line, dir_line, color_line,
-								   xyz, nor, col);
-		
-		for (k=0; k<3*num_wall; k++) {
-			set_node_stride_VBO((ITHREE*inum_patch+k), strided_buf);
-			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*k+nd];};
-			for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*k+nd];};
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = col[4*k+nd];};
-		};
-		inum_patch = inum_patch + num_wall; 
-	};
-	return;
-};
-
-
-static void set_fieldlines_to_buf(struct psf_data *fline_s, struct fline_menu_val *fline_m,
-			struct gl_strided_buffer *strided_buf) {
-	int inod, iele, k, nd;
-	
-	set_color_code_for_fieldlines(fline_s, fline_m);
-	
-	for(iele=0; iele<fline_s->nele_viz; iele++){
-		for(k=0;k<ITWO;k++){
-			inod =fline_s->ie_viz[iele][k] - 1;
-			set_node_stride_VBO((ITWO*iele+k), strided_buf);
-			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = fline_s->xx_viz[inod][nd];};
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = fline_s->color_nod[inod][nd];};
-		};
-	};
-	
-	return;
-}
-
-
 void draw_fieldtubes_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m,
 			struct view_element *view_s, 
 			struct VAO_ids *fline_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *fline_buf){
 	int ncorner = ISIX;
+	int icou;
 	
 	int num_patch = count_fieldtubes_to_buf(ncorner, fline_s);
 	if(num_patch <= 0) return;
@@ -112,7 +46,7 @@ void draw_fieldtubes_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_
 	set_buffer_address_4_patch(ITHREE*num_patch, fline_buf);
 	resize_strided_buffer(fline_buf->num_nod_buf, fline_buf->ncomp_buf, fline_buf);
 	
-	set_fieldtubes_to_buf(ncorner, fline_s, fline_m, fline_buf);
+	icou = set_fieldtubes_to_buf(ncorner, fline_s, fline_m, fline_buf);
 	
 	glGenVertexArrays(1, &fline_VAO->id_VAO);
 	glBindVertexArray(fline_VAO->id_VAO);
@@ -162,7 +96,7 @@ void draw_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_
 	set_buffer_address_4_patch(ITWO*num_edge, fline_buf);
 	resize_strided_buffer(fline_buf->num_nod_buf, fline_buf->ncomp_buf, fline_buf);
 	
-	set_fieldlines_to_buf(fline_s, fline_m, fline_buf);
+	icou = set_fieldlines_to_buf(fline_s, fline_m, fline_buf);
 	
 	
 	glGenVertexArrays(1, &fline_VAO->id_VAO);

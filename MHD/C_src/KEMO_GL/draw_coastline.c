@@ -5,72 +5,19 @@
 #include <OpenGL/gl3.h>
 #include  "draw_coastline.h"
 
-void set_coastline_buf(double radius, struct gl_strided_buffer *strided_buf){
-	int iedge, k, nd;
-	int nedge_coast;
-	double tp_coast[4], lake[2], f_color[4];
-	
-	set_black_color_c(f_color);
-	
-	nedge_coast = get_nedge_coastline();
-	for (iedge=0; iedge<nedge_coast;iedge++) {
-		get_coastline(iedge, tp_coast, lake);
-		
-		for (k = 0; k < 2; k++) {
-			set_node_stride_VBO((ITWO*iedge+k), strided_buf);
-			strided_buf->x_draw[0] = (GLfloat) (radius * cos(tp_coast[2*k]) * cos(tp_coast[2*k+1]));
-			strided_buf->x_draw[1] = (GLfloat) (radius * cos(tp_coast[2*k]) * sin(tp_coast[2*k+1]));
-			strided_buf->x_draw[2] = (GLfloat) (radius * sin(tp_coast[2*k]));
-			strided_buf->n_draw[0] = (GLfloat) (1.0 *    cos(tp_coast[2*k]) * cos(tp_coast[2*k+1]));
-			strided_buf->n_draw[1] = (GLfloat) (1.0 *    cos(tp_coast[2*k]) * sin(tp_coast[2*k+1]));
-			strided_buf->n_draw[2] = (GLfloat) (1.0 *    sin(tp_coast[2*k]));
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];};
-		};
-	};
-	return;
-}
-
-void set_map_coastline_buf(struct gl_strided_buffer *strided_buf){
-	int iedge, j, k, nd;
-	int nedge_coast;
-	double tp_coast[4], lake[2], f_color[4];
-	double rtp_flame[6], xy_coast[4];
-	double pi;
-	
-	pi = TWO * acos(ZERO);
-	
-	set_black_color_c(f_color);
-	
-	rtp_flame[0] = ONE;
-	rtp_flame[3] = ONE;
-	nedge_coast = get_nedge_coastline();
-	for (iedge = 0; iedge < nedge_coast; iedge++) {
-		get_coastline(iedge, tp_coast, lake);
-		for (k = 0; k < 2; k++) {
-			rtp_flame[3*k+1] = -tp_coast[2*k  ]+HALF*pi;
-			rtp_flame[3*k+2] =  tp_coast[2*k+1]+pi;
-		};
-		aitoff_c(ITWO, rtp_flame, xy_coast);
-		
-		for (k = 0; k < 2; k++) {
-			set_node_stride_VBO((ITWO*iedge+k), strided_buf);
-			strided_buf->x_draw[0] = xy_coast[2*k  ];
-			strided_buf->x_draw[1] = xy_coast[2*k+1];
-			strided_buf->x_draw[2] = 0.002;
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];};
-		};
-	};
-	return;
-}
-
 
 void draw_coastline_VBO(double radius, struct view_element *view_s, 
 			struct VAO_ids *line_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *line_buf){
-	int nedge_coast = get_nedge_coastline();
+	int icou;
+	int nedge_coast = count_coastline_buf();
 	
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
+	
+	set_buffer_address_4_patch(ITWO*nedge_coast, line_buf);
+	resize_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
+	icou = set_coastline_buf(radius, line_buf);
 	
 	int id_numLight = glGetUniformLocation(kemo_shaders->phong->programId, "num_lights");
 	int id_lightPosition = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource[0].position");
@@ -94,10 +41,6 @@ void draw_coastline_VBO(double radius, struct view_element *view_s,
 	glUniform4fv(id_MaterialDiffuse, 1, white1);
 	glUniform4fv(id_MaterialSpecular, 1, white3);
 	glUniform1f(id_MaterialShiness, shine);
-	
-	set_buffer_address_4_patch(ITWO*nedge_coast, line_buf);
-	resize_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
-	set_coastline_buf(radius, line_buf);
 	
 	glGenVertexArrays(1, &line_VAO->id_VAO);
 	glBindVertexArray(line_VAO->id_VAO);
@@ -132,14 +75,15 @@ void draw_coastline_VBO(double radius, struct view_element *view_s,
 void draw_map_coastline_VBO(const GLdouble *orthogonal, 
 			struct VAO_ids *line_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *line_buf){
-	int nedge_coast = get_nedge_coastline();
+	int icou;
+	int nedge_coast = count_coastline_buf();
 	
 	glUseProgram(kemo_shaders->test->programId);
 	map_matrix_to_shader(kemo_shaders->test, orthogonal);
 	
 	set_buffer_address_4_patch(ITWO*nedge_coast, line_buf);
 	resize_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
-	set_map_coastline_buf(line_buf);
+	icou = set_map_coastline_buf(line_buf);
 	
 	glGenVertexArrays(1, &line_VAO->id_VAO);
 	glBindVertexArray(line_VAO->id_VAO);

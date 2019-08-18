@@ -1,6 +1,9 @@
 
 /* draw_mapgrid.h */
 
+#ifndef DRAW_MAPGRID_
+#define DRAW_MAPGRID_
+
 #include <math.h>
 
 #include "kemoviewer_param_c.h"
@@ -8,11 +11,7 @@
 #include "m_gl_transfer_matrix.h"
 #include "vartex_array_object_gl.h"
 #include "glsl.h"
-#include "coordinate_converter_c.h"
-#include "rainbow_color_code_c.h"
-
-#ifndef DRAW_MAPGRID_
-#define DRAW_MAPGRID_
+#include "set_coastline_to_buf.h"
 
 /* prototypes */
 

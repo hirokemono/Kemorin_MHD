@@ -36,7 +36,9 @@ set_mesh_grid_2_gl_buf.o \
 set_PSF_patches_to_buf.o \
 set_PSF_isolines_to_buf.o \
 set_map_isolines_to_buf.o \
+set_fieldline_to_buf.o \
 set_axis_to_buf.o \
+set_coastline_to_buf.o \
 \
 draw_node_by_ico_c.o \
 draw_grids_4_mesh.o \
@@ -402,6 +404,22 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	set_fieldline_to_buf.o: \
+	'$$(KEMO_C_GLDIR)'/set_fieldline_to_buf.c \
+	set_fieldline_to_buf.h \
+	kemoviewer_param_c.o \
+	m_kemoviewer_menu.o \
+	m_psf_data_4_viewer_c.o \
+	vartex_array_object_gl.o \
+	rainbow_color_code_c.o \
+	set_color_code_on_nodes.o \
+	rainbow_color_code_c.o \
+	icosahedron_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	set_axis_to_buf.o: \
 	'$$(KEMO_C_GLDIR)'/set_axis_to_buf.c \
 	set_axis_to_buf.h \
@@ -410,6 +428,20 @@ module:
 	vartex_array_object_gl.o \
 	modify_object_4_viewer_c.o \
 	icosahedron_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	set_coastline_to_buf.o: \
+	'$$(KEMO_C_GLDIR)'/set_coastline_to_buf.c \
+	set_coastline_to_buf.h \
+	kemoviewer_param_c.o \
+	m_kemoviewer_menu.o \
+	vartex_array_object_gl.o \
+	coordinate_converter_c.o \
+	rainbow_color_code_c.o \
+	coastline_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -498,7 +530,7 @@ module:
 	m_kemoviewer_menu.o \
 	rainbow_color_code_c.o \
 	set_color_code_on_nodes.o \
-	icosahedron_c.o \
+	set_fieldline_to_buf.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
@@ -588,7 +620,7 @@ module:
 	icosahedron_c.o \
 	init_gl_lighting_c.o \
 	modify_object_4_viewer_c.o \
-	draw_mapgrid.o \
+	set_coastline_to_buf.o \
 	set_psf_viewer.o \
 	set_rgba_table_c.o \
 	set_surface_mesh_data.o \
@@ -722,11 +754,11 @@ module:
 	'$$(KEMO_C_GLDIR)'/draw_mapgrid.c \
 	draw_mapgrid.h \
 	kemoviewer_param_c.o \
-	coordinate_converter_c.o \
-	rainbow_color_code_c.o \
+	m_kemoviewer_menu.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
+	set_coastline_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -736,12 +768,10 @@ module:
 	'$$(KEMO_C_GLDIR)'/draw_coastline.c \
 	draw_coastline.h \
 	kemoviewer_param_c.o \
-	coastline_c.o \
-	coordinate_converter_c.o \
-	rainbow_color_code_c.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
+	set_coastline_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
