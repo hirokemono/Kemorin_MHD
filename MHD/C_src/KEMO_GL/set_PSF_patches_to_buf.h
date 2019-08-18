@@ -11,6 +11,7 @@
 #include "set_new_patch_4_map_c.h"
 #include "coordinate_converter_c.h"
 #include "set_color_code_on_nodes.h"
+#include "icosahedron_c.h"
 
 /* prptotypes */
 
@@ -25,5 +26,8 @@ void set_psf_textures_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s,
 void set_psf_map_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s, 
 			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf);
 
+int count_psf_arrows_to_buf(int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m);
+int set_psf_arrows_to_buf(int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m, 
+			struct gl_strided_buffer *strided_buf);
 
 #endif

@@ -44,7 +44,6 @@ draw_isolines_4_PSF.o \
 draw_isolines_4_map.o \
 draw_fieldlines.o \
 draw_patches_4_PSF.o \
-draw_arrows_4_PSF.o \
 draw_map_4_PSF.o \
 move_draw_objects_gl.o \
 modify_stereo_view_gl.o \
@@ -364,6 +363,7 @@ module:
 	set_new_patch_4_map_c.o \
 	coordinate_converter_c.o \
 	set_color_code_on_nodes.o \
+	icosahedron_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -513,23 +513,6 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
-	draw_arrows_4_PSF.o: \
-	'$$(KEMO_C_GLDIR)'/draw_arrows_4_PSF.c \
-	draw_arrows_4_PSF.h \
-	m_kemoviewer_menu.o \
-	icosahedron_c.o \
-	m_psf_data_4_viewer_c.o \
-	set_new_patch_4_map_c.o \
-	coordinate_converter_c.o \
-	set_color_code_on_nodes.o \
-	m_gl_transfer_matrix.o \
-	vartex_array_object_gl.o \
-	glsl.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
 	draw_map_4_PSF.o: \
 	'$$(KEMO_C_GLDIR)'/draw_map_4_PSF.c \
 	draw_map_4_PSF.h \
@@ -567,7 +550,6 @@ module:
 	draw_coastline.o \
 	drawcube_gl.o \
 	draw_patches_4_PSF.o \
-	draw_arrows_4_PSF.o \
 	draw_map_4_PSF.o \
 	draw_patch_4_mesh_c.o \
 	draw_node_by_ico_c.o \

@@ -42,7 +42,7 @@ void set_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s, struct fline_m
 		
 		for (k=0; k<3*num_wall; k++) {
 			set_node_stride_VBO((ITHREE*inum_patch+k), strided_buf);
-			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] =  xyz[3*k+nd];};
+			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*k+nd];};
 			for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*k+nd];};
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = col[4*k+nd];};
 		};
