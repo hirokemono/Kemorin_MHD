@@ -438,7 +438,8 @@ extern "C" {
     void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *kemoview_array);
     int kemoview_get_current_viewer_id();
 
-    void kemoview_draw_objects_c();
+	void kemoview_draw_objects_c();
+	void kemoview_draw_fast_gl3();
 	void kemoview_draw_objects_gl3();
 	
     void kemoview_init_lighting(int iflag_core_profile);

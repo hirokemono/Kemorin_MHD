@@ -45,6 +45,8 @@ struct VAO_ids{
 	GLuint id_color;
 	
 	GLuint id_index;
+	
+	GLuint npoint_draw;
 };
 
 /* Prototypes */
