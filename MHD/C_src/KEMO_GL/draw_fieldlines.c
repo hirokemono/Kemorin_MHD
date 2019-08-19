@@ -25,6 +25,7 @@ void draw_fieldtubes_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
 	Const_VAO_4_Phong(fline_VAO, fline_buf);
+	glBindVertexArray(0);
 	
 	glBindVertexArray(fline_VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
@@ -54,6 +55,7 @@ void draw_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_
 	icou = set_fieldlines_to_buf(fline_s, fline_m, fline_buf);
 	
 	Const_VAO_4_Simple(fline_VAO, fline_buf);
+	glBindVertexArray(0);
 	
 	glBindVertexArray(fline_VAO->id_VAO);
 	glDrawArrays(GL_LINES, IZERO, (ITWO*num_edge));

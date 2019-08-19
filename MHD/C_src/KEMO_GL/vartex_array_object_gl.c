@@ -130,8 +130,6 @@ void Const_VAO_4_Simple(struct VAO_ids *VAO, struct gl_strided_buffer *strided_b
 	
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	
-	glBindVertexArray(0);
 };
 
 void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
@@ -154,38 +152,16 @@ void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_bu
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
-	
-	glBindVertexArray(0);
+	return;
 };
 
-void Const_VAO_4_Phong_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf, 
-			const int iwidth, const int iheight, const unsigned char *rgba, 
-			GLuint *textures){
-	if(glIsVertexArray(VAO->id_VAO)) glDeleteVertexArrays(1, &VAO->id_VAO);
-	glGenVertexArrays(1, &VAO->id_VAO);
-	glBindVertexArray(VAO->id_VAO);
+void Const_VAO_4_Phong_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+	Const_VAO_4_Phong(VAO, strided_buf);
 	
-	glGenBuffers(1, &VAO->id_vertex);
-	glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * strided_buf->num_nod_buf*strided_buf->ncomp_buf,
-				 strided_buf->v_buf, GL_STATIC_DRAW);
-	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, strided_buf->istride,
-						  (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, strided_buf->istride, 
-						  (GLvoid*) (strided_buf->ist_csurf * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, strided_buf->istride, 
-						  (GLvoid*) (strided_buf->ist_norm * sizeof(GL_FLOAT)));
 	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, strided_buf->istride, 
 						  (GLvoid*) (strided_buf->ist_tex * sizeof(GL_FLOAT)));
-	
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
 	glEnableVertexAttribArray(4);
-	
-	set_texture_to_buffer(iwidth, iheight, rgba, textures);
-	glBindVertexArray(0);
+	return;
 };
 
 
@@ -321,16 +297,17 @@ void Destroy_Phong_Texture_VAO(struct VAO_ids *VAO, GLuint *textures)
 	*/
 }
 
-void set_texture_to_buffer(const int iwidth, const int iheight, 
-			const unsigned char *rgba, GLuint *textures){
+GLuint set_texture_to_buffer(const int iwidth, const int iheight, 
+			const unsigned char *rgba){
 	/* Preference for resiging texture */
-	glGenTextures(1, &textures[0]);
-	glBindTexture(GL_TEXTURE_2D , textures[0]);
+    GLuint textureName;
+	glGenTextures(1, &textureName);
+	glBindTexture(GL_TEXTURE_2D , textureName);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 	glTexImage2D(GL_TEXTURE_2D , 0 , GL_RGBA , iwidth, iheight,
 				 0 , GL_RGBA , GL_UNSIGNED_BYTE , rgba);
-	return;
+	return textureName;
 };

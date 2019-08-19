@@ -19,6 +19,7 @@ void draw_sph_flame_VBO(double radius, struct view_element *view_s,
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
 	Const_VAO_4_Phong(line_VAO, line_buf);
+	glBindVertexArray(0);
 	
 	glBindVertexArray(line_VAO->id_VAO);
 	glDrawArrays(GL_LINES, IZERO, (ITWO*nedge_flame));
@@ -40,6 +41,7 @@ void draw_map_flame_VBO(const GLdouble *orthogonal,
 	set_map_flame_to_buf(line_buf);
 	
 	Const_VAO_4_Simple(line_VAO, line_buf);
+	glBindVertexArray(0);
 	
 	glBindVertexArray(line_VAO->id_VAO);
 	glDrawArrays(GL_LINES, IZERO, (ITWO*nedge_flame));
@@ -65,6 +67,7 @@ void draw_coastline_VBO(double radius, struct view_element *view_s,
 	icou = set_coastline_buf(radius, line_buf);
 	
 	Const_VAO_4_Phong(line_VAO, line_buf);
+	glBindVertexArray(0);
 	
 	glBindVertexArray(line_VAO->id_VAO);
 	glDrawArrays(GL_LINES, IZERO, (ITWO*nedge_coast));
@@ -87,6 +90,7 @@ void draw_map_coastline_VBO(const GLdouble *orthogonal,
 	icou = set_map_coastline_buf(line_buf);
 	
 	Const_VAO_4_Simple(line_VAO, line_buf);
+	glBindVertexArray(0);
 	
 	glBindVertexArray(line_VAO->id_VAO);
 	glDrawArrays(GL_LINES, IZERO, (ITWO*nedge_coast));
@@ -116,6 +120,7 @@ void draw_axis_VAO(struct view_element *view_s, GLfloat dist,
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
 	Const_VAO_4_Phong(mesh_VAO, strided_buf);
+	glBindVertexArray(0);
 	
 	glBindVertexArray(mesh_VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));

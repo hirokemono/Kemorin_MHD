@@ -38,6 +38,7 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	fade_colorbar_box_to_buf(cbar_wk->num_quad, cmap_s, bg_color, cbar_wk, cbar_buf);
 	
 	Const_VAO_4_Simple(cbar_VAO, cbar_buf);
+	glBindVertexArray(0);
 	
 	glEnable(GL_BLEND);
 	glEnable(GL_TRUE);
@@ -55,6 +56,7 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	colorbar_frame_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
 	
 	Const_VAO_4_Simple(cbar_VAO, cbar_buf);
+	glBindVertexArray(0);
 	
 	glBindVertexArray(cbar_VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
@@ -68,8 +70,8 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	int id_textureImage = glGetUniformLocation(kemo_shaders->simple_texure->programId, "image");
 	
-	GLuint id_texture[1];
-	set_texture_to_buffer(IWIDTH_TXT, 3*IHIGHT_TXT, cbar_wk->numBMP, id_texture);
+	GLuint id_texture;
+	id_texture = set_texture_to_buffer(IWIDTH_TXT, 3*IHIGHT_TXT, cbar_wk->numBMP);
 	
 	
 	
@@ -100,6 +102,7 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	glBindVertexArray(cbar_VAO->id_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, cbar_VAO->id_vertex);
 	
+	glBindTexture(GL_TEXTURE_2D, id_texture);
 	glUniform1i(id_textureImage, 0);
 	glDrawArrays(GL_TRIANGLES, 0, 12);
 	

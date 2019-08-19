@@ -27,6 +27,7 @@ void draw_PSF_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 								   psf_s, psf_m, psf_a, psf_buf);
 	
 	Const_VAO_4_Phong(psf_VAO, psf_buf);
+	glBindVertexArray(0);
 	
 	if(psf_VAO->npoint_draw <= 0) return;
 	glUseProgram(kemo_shaders->phong->programId);
@@ -56,10 +57,12 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 	set_psf_nodes_to_buf(ist_psf, ied_psf, shading_mode, psf_s, psf_m, psf_a, psf_buf);
 	set_psf_textures_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
 	
+	Const_VAO_4_Phong_Texture(psf_VAO, psf_buf);
+	
 	i = psf_a->ipsf_viz_far[ist_psf]-1;
-	Const_VAO_4_Phong_Texture(psf_VAO, psf_buf, 
-				psf_m[i]->texture_width, psf_m[i]->texture_height,
-				psf_m[i]->texture_rgba, psf_m[i]->texture_name);
+	psf_m[i]->texture_name[0] = set_texture_to_buffer(psf_m[i]->texture_width, psf_m[i]->texture_height,
+				psf_m[i]->texture_rgba);
+	glBindVertexArray(0);
 	
 	if(psf_VAO->npoint_draw <= 0) return;
 	glBindVertexArray(psf_VAO->id_VAO);
@@ -68,8 +71,9 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 	transfer_matrix_to_shader(kemo_shaders->phong_texure, view_s);
 	set_phong_light_list(kemo_shaders->phong_texure, kemo_shaders->lights);
 	
+	glBindTexture(GL_TEXTURE_2D, psf_m[i]->texture_name);
 	int id_textureImage = glGetUniformLocation(kemo_shaders->phong_texure->programId, "image");
-	glUniform1i(id_textureImage,0);
+	glUniform1i(id_textureImage, 0);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, psf_VAO->id_vertex);
 	glDrawArrays(GL_TRIANGLES, IZERO, psf_VAO->npoint_draw);
@@ -111,6 +115,7 @@ void draw_PSF_arrow_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
 	Const_VAO_4_Phong(psf_VAO, psf_buf);
+	glBindVertexArray(0);
 	
 	if(psf_VAO->npoint_draw <= 0) return;
 	glBindVertexArray(psf_VAO->id_VAO);
@@ -155,6 +160,7 @@ void draw_PSF_isoline_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
 	Const_VAO_4_Phong(psf_VAO, psf_buf);
+	glBindVertexArray(0);
 	
 	if(psf_VAO->npoint_draw <= 0) return;
 	glBindVertexArray(psf_VAO->id_VAO);

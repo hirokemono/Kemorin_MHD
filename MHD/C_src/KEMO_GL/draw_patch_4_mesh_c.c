@@ -46,6 +46,8 @@ void set_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 	icou = set_transparent_mesh_patches_to_buf(mesh_s, mesh_m, mesh_buf);
 	
 	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
+	glBindVertexArray(0);
+	
 	free(mesh_buf->v_buf);
 	free(mesh_buf);
 	return;
@@ -98,13 +100,22 @@ void set_solid_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 	alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
 	
 	nedge_mesh = set_mesh_grids_VAO(mesh_s, mesh_m, mesh_grid_VAO, mesh_buf);
-	Const_VAO_4_Phong(mesh_grid_VAO, mesh_buf);
+	if(mesh_grid_VAO->npoint_draw){
+		Const_VAO_4_Phong(mesh_grid_VAO, mesh_buf);
+		glBindVertexArray(0);
+	};
 	
 	npatch_nodes = set_mesh_nodes_ico_VAO(mesh_s, mesh_m, mesh_node_VAO, mesh_buf);
-	Const_VAO_4_Phong(mesh_node_VAO, mesh_buf);
+	if(mesh_node_VAO->npoint_draw){
+		Const_VAO_4_Phong(mesh_node_VAO, mesh_buf);
+		glBindVertexArray(0);
+	};
 	
 	npatch_mesh = set_solid_mesh_patch_VAO(mesh_s, mesh_m, mesh_solid_VAO, mesh_buf);
-	Const_VAO_4_Phong(mesh_solid_VAO, mesh_buf);
+	if(mesh_solid_VAO->npoint_draw){
+		Const_VAO_4_Phong(mesh_solid_VAO, mesh_buf);
+		glBindVertexArray(0);
+	};
 	
 	free(mesh_buf->v_buf);
 	free(mesh_buf);
