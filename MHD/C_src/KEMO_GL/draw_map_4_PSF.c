@@ -38,7 +38,6 @@ void draw_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	glBindVertexArray(0);
 	
 	glBindVertexArray(psf_VAO->id_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, psf_VAO->id_vertex);
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
 	
 	DestroyVBO(psf_VAO);

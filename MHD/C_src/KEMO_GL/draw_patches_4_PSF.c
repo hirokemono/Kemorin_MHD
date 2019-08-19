@@ -64,7 +64,6 @@ void draw_PSF_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
 	glBindVertexArray(psf_VAO->id_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, psf_VAO->id_vertex);
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
 	
 	DestroyVBO(psf_VAO);
@@ -173,7 +172,6 @@ void draw_PSF_arrow_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 	glBindVertexArray(0);
 	
 	glBindVertexArray(psf_VAO->id_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, psf_VAO->id_vertex);
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
 	
 	DestroyVBO(psf_VAO);

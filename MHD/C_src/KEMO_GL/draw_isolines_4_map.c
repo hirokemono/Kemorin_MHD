@@ -44,7 +44,6 @@ void draw_map_PSF_isolines_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_
 	glBindVertexArray(0);
 	
 	glBindVertexArray(psf_VAO->id_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, psf_VAO->id_vertex);
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
 	
 	DestroyVBO(psf_VAO);
