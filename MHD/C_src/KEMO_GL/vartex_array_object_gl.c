@@ -158,6 +158,36 @@ void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_bu
 	glBindVertexArray(0);
 };
 
+void Const_VAO_4_Phong_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf, 
+			const int iwidth, const int iheight, const unsigned char *rgba, 
+			GLuint *textures){
+	if(glIsVertexArray(VAO->id_VAO)) glDeleteVertexArrays(1, &VAO->id_VAO);
+	glGenVertexArrays(1, &VAO->id_VAO);
+	glBindVertexArray(VAO->id_VAO);
+	
+	glGenBuffers(1, &VAO->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * strided_buf->num_nod_buf*strided_buf->ncomp_buf,
+				 strided_buf->v_buf, GL_STATIC_DRAW);
+	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, strided_buf->istride,
+						  (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, strided_buf->istride, 
+						  (GLvoid*) (strided_buf->ist_csurf * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, strided_buf->istride, 
+						  (GLvoid*) (strided_buf->ist_norm * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, strided_buf->istride, 
+						  (GLvoid*) (strided_buf->ist_tex * sizeof(GL_FLOAT)));
+	
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
+	
+	set_texture_to_buffer(iwidth, iheight, rgba, textures);
+	glBindVertexArray(0);
+};
+
 
 void DestroyVBO(struct VAO_ids *VAO)
 {
@@ -235,6 +265,41 @@ void Destroy_Phong_VAO(struct VAO_ids *VAO)
 	glDisableVertexAttribArray(0);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	glDeleteBuffers(1, &VAO->id_color);
+	glDeleteBuffers(1, &VAO->id_vertex);
+	glBindVertexArray(0);
+	glDeleteVertexArrays(1, &VAO->id_VAO);
+	
+	/*
+	ErrorCheckValue = glGetError();
+	if (ErrorCheckValue != GL_NO_ERROR)
+	{
+		fprintf(
+				stderr,
+				"ERROR: Could not destroy the VBO: %s \n",
+				gluErrorString(ErrorCheckValue)
+				);
+		
+		exit(-1);
+	}
+	*/
+}
+
+void Destroy_Phong_Texture_VAO(struct VAO_ids *VAO, GLuint *textures)
+{
+	GLenum ErrorCheckValue = glGetError();
+	
+	glBindVertexArray(VAO->id_VAO);
+	
+	glDisableVertexAttribArray(4);
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(0);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	glDeleteTextures(1, textures);
 	
 	glDeleteBuffers(1, &VAO->id_color);
 	glDeleteBuffers(1, &VAO->id_vertex);

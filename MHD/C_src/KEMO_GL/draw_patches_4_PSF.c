@@ -28,7 +28,7 @@ void draw_PSF_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	
 	Const_VAO_4_Phong(psf_VAO, psf_buf);
 	
-	if(num_patch <= 0) return;
+	if(psf_VAO->npoint_draw <= 0) return;
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
@@ -56,35 +56,12 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 	set_psf_nodes_to_buf(ist_psf, ied_psf, shading_mode, psf_s, psf_m, psf_a, psf_buf);
 	set_psf_textures_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
 	
-	glGenVertexArrays(1, &psf_VAO->id_VAO);
-	glBindVertexArray(psf_VAO->id_VAO);
-	
-	glGenBuffers(1, &psf_VAO->id_vertex);
-	glBindBuffer(GL_ARRAY_BUFFER, psf_VAO->id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * psf_buf->num_nod_buf*psf_buf->ncomp_buf,
-				 psf_buf->v_buf, GL_STATIC_DRAW);
-	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, psf_buf->istride,
-						  (GLvoid*) (psf_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, psf_buf->istride, 
-						  (GLvoid*) (psf_buf->ist_csurf * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, psf_buf->istride, 
-						  (GLvoid*) (psf_buf->ist_norm * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, psf_buf->istride, 
-						  (GLvoid*) (psf_buf->ist_tex * sizeof(GL_FLOAT)));
-	
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	glEnableVertexAttribArray(4);
-	
 	i = psf_a->ipsf_viz_far[ist_psf]-1;
-	set_texture_to_buffer(psf_m[i]->texture_width, psf_m[i]->texture_height,
-						  psf_m[i]->texture_rgba, psf_m[i]->texture_name);
+	Const_VAO_4_Phong_Texture(psf_VAO, psf_buf, 
+				psf_m[i]->texture_width, psf_m[i]->texture_height,
+				psf_m[i]->texture_rgba, psf_m[i]->texture_name);
 	
-	glBindVertexArray(0);
-	
-	if(num_patch <= 0) return;
+	if(psf_VAO->npoint_draw <= 0) return;
 	glBindVertexArray(psf_VAO->id_VAO);
 	
 	glUseProgram(kemo_shaders->phong_texure->programId);
@@ -97,7 +74,7 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 	glBindBuffer(GL_ARRAY_BUFFER, psf_VAO->id_vertex);
 	glDrawArrays(GL_TRIANGLES, IZERO, psf_VAO->npoint_draw);
 	
-	DestroyVBO(psf_VAO);
+//	Destroy_Phong_Texture_VAO(psf_VAO, psf_m[i]->texture_name);
 	
 	return;	
 }
@@ -124,7 +101,7 @@ void draw_PSF_arrow_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 	
 	Const_VAO_4_Phong(psf_VAO, psf_buf);
 	
-	if(num_patch <= 0) return;
+	if(psf_VAO->npoint_draw <= 0) return;
 	glBindVertexArray(psf_VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, psf_VAO->npoint_draw);
 	Destroy_Phong_VAO(psf_VAO);
@@ -158,10 +135,41 @@ void draw_PSF_isoline_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 	
 	Const_VAO_4_Phong(psf_VAO, psf_buf);
 	
-	if(num_patch <= 0) return;
+	if(psf_VAO->npoint_draw <= 0) return;
 	glBindVertexArray(psf_VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, psf_VAO->npoint_draw);
 	Destroy_Phong_VAO(psf_VAO);
+	
+	return;
+}
+
+int check_draw_psf(struct kemo_array_control *psf_a){
+	int i;
+    int iflag_psf = 0;
+    for(i=0; i<psf_a->nmax_loaded; i++){
+		iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
+	};
+	return iflag_psf;
+};
+
+void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
+			struct kemo_array_control *psf_a, struct view_element *view_s, 
+			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
+			struct gl_strided_buffer *psf_buf){
+    int i;
+    
+    for(i=0; i<psf_a->nmax_loaded; i++){
+        if(psf_a->iflag_loaded[i] != 0){
+			if(psf_m[i]->draw_psf_vect  != 0){
+				draw_PSF_arrow_VAO(psf_s[i], psf_m[i], view_s, 
+							psf_VAO, kemo_shaders, psf_buf);
+			};
+			if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
+				draw_PSF_isoline_VAO(psf_s[i], psf_m[i], view_s, 
+							psf_VAO, kemo_shaders, psf_buf);
+			};
+		};
+	};
 	
 	return;
 }
