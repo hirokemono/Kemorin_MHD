@@ -22,6 +22,10 @@ struct kemoviewer_type{
 	struct VAO_ids *cube_VAO;
 	struct VAO_ids *menu_VAO;
 	
+	struct VAO_ids *mesh_solid_VAO;
+	struct VAO_ids *mesh_grid_VAO;
+	struct VAO_ids *mesh_node_VAO;
+	
 	struct psf_menu_val       *psf_current_menu;
 	struct psf_data           *psf_current_data;
 	struct psf_data           *psf_ucd_tmp;
@@ -47,6 +51,10 @@ void kemoview_allocate_pointers(){
 	kemo_sgl->strided_buf = init_strided_buffer(4*NPATCH_GL_BUFFER);
 	kemo_sgl->cube_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	kemo_sgl->menu_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	
+	kemo_sgl->mesh_solid_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	kemo_sgl->mesh_grid_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	kemo_sgl->mesh_node_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
 	kemo_sgl->mesh_d =  (struct viewer_mesh *)       malloc(sizeof(struct viewer_mesh));
 	kemo_sgl->fline_d = (struct psf_data *)          malloc(sizeof(struct psf_data));
@@ -161,15 +169,19 @@ int kemoview_get_current_viewer_id(){return kemo_sgl->window_ID;};
 void kemoview_draw_objects_c(){
     /*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
 	draw_objects(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
-                 kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
-				 kemo_sgl->strided_buf, kemo_sgl->cube_VAO, kemo_sgl->kemo_shaders);
+				kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
+				kemo_sgl->strided_buf, kemo_sgl->cube_VAO, 
+				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_grid_VAO, kemo_sgl->mesh_node_VAO, 
+				kemo_sgl->kemo_shaders);
 	return;
 };
 void kemoview_draw_objects_gl3(){
 	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
 	draw_objects_gl3(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
-				 kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
-				 kemo_sgl->strided_buf, kemo_sgl->cube_VAO, kemo_sgl->kemo_shaders);
+				kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
+				kemo_sgl->strided_buf, kemo_sgl->cube_VAO, 
+				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_grid_VAO, kemo_sgl->mesh_node_VAO, 
+				kemo_sgl->kemo_shaders);
 	return;
 };
 

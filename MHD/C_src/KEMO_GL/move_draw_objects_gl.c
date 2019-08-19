@@ -5,11 +5,12 @@
 #include "move_draw_objects_gl.h"
 
 void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s, 
-				  struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
-				  struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
-				  struct fline_menu_val *fline_m, struct view_element *view_s,
-				  struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO, 
-				  struct kemoview_shaders *kemo_shaders){
+			struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
+			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
+			struct fline_menu_val *fline_m, struct view_element *view_s,
+			struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO, 
+			struct VAO_ids *mesh_solid_VAO, struct VAO_ids *mesh_grid_VAO, 
+			struct VAO_ids *mesh_node_VAO, struct kemoview_shaders *kemo_shaders){
 	glDeleteLists(view_s->gl_drawID, 1);
 	glNewList(view_s->gl_drawID, GL_COMPILE_AND_EXECUTE);
 	
@@ -45,11 +46,12 @@ static int draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_v
 }
 
 void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s, 
-				  struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
-				  struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
-				  struct fline_menu_val *fline_m, struct view_element *view_s,
-				  struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO, 
-				  struct kemoview_shaders *kemo_shaders){
+			struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
+			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
+			struct fline_menu_val *fline_m, struct view_element *view_s,
+			struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO, 
+			struct VAO_ids *mesh_solid_VAO, struct VAO_ids *mesh_grid_VAO, 
+			struct VAO_ids *mesh_node_VAO, struct kemoview_shaders *kemo_shaders){
 	int i, iflag;
 	int iflag_psf = 0;
 	
@@ -119,16 +121,8 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		free(psf_buf);
 	
 		if(mesh_m->iflag_draw_mesh != 0){
-			struct gl_strided_buffer *mesh_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-			set_buffer_address_4_patch(3*128, mesh_buf);
-			alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
-			
-			draw_mesh_grids_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
-			draw_mesh_nodes_ico_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
-			draw_solid_mesh_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf);
-			
-			free(mesh_buf->v_buf);
-			free(mesh_buf);
+			draw_solid_mesh_VAO(mesh_s, mesh_m, view_s, mesh_solid_VAO, 
+						mesh_grid_VAO, mesh_node_VAO, kemo_shaders);
 		};
 		
 		struct gl_strided_buffer *line_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));

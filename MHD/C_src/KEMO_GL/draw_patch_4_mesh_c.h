@@ -18,19 +18,26 @@
 #include "set_mesh_node_2_gl_buf.h"
 
 /* prototypes */
-void draw_solid_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+int draw_solid_mesh_patch_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 			struct view_element *view_s, struct VAO_ids *mesh_VAO, 
 			struct kemoview_shaders *kemo_shaders, struct gl_strided_buffer *mesh_buf);
 void draw_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 			struct view_element *view_s, struct VAO_ids *mesh_VAO, 
 			struct kemoview_shaders *kemo_shaders, struct gl_strided_buffer *mesh_buf);
 
-void draw_mesh_grids_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+int draw_mesh_grids_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 			struct view_element *view_s, struct VAO_ids *mesh_VAO, 
 			struct kemoview_shaders *kemo_shaders, struct gl_strided_buffer *mesh_buf);
 
-void draw_mesh_nodes_ico_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+int draw_mesh_nodes_ico_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 			struct view_element *view_s, struct VAO_ids *mesh_VAO, 
 			struct kemoview_shaders *kemo_shaders, struct gl_strided_buffer *mesh_buf);
+
+
+
+void draw_solid_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+			struct view_element *view_s, struct VAO_ids *mesh_solid_VAO, 
+			struct VAO_ids *mesh_grid_VAO, struct VAO_ids *mesh_node_VAO, 
+			struct kemoview_shaders *kemo_shaders);
 
 #endif
