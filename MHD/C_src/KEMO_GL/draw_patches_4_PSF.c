@@ -173,14 +173,30 @@ int check_draw_psf(struct kemo_array_control *psf_a){
 	return iflag_psf;
 };
 
-void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
+void draw_PSF_solid_objects_VAO(int shading_mode, 
+			struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct view_element *view_s, 
-			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
-			struct gl_strided_buffer *psf_buf){
+			struct VAO_ids *psf_solid_VAO, struct VAO_ids *psf_texture_VAO, 
+			struct VAO_ids *psf_isoline_VAO, struct VAO_ids *psf_griph_VAO,
+			struct kemoview_shaders *kemo_shaders){
+	struct gl_strided_buffer *psf_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	set_buffer_address_4_patch(3*128, psf_buf);
+	alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+		
+	set_color_code_for_psfs(psf_s, psf_m, psf_a);
 	
+	draw_PSF_texture_VAO(shading_mode, IZERO, psf_a->istack_solid_psf_txtur, 
+				psf_s, psf_m, psf_a, view_s, psf_texture_VAO, kemo_shaders, psf_buf);
+	draw_PSF_patch_VAO(shading_mode, psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 
+				psf_s, psf_m, psf_a, view_s, psf_solid_VAO, kemo_shaders, psf_buf);
+	
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	draw_PSF_arrow_VAO(psf_s, psf_m, psf_a, view_s, 
-						psf_VAO, kemo_shaders, psf_buf);
-	draw_PSF_isoline_VAO(psf_s, psf_m, psf_a, view_s, psf_VAO, kemo_shaders, psf_buf);
+						psf_griph_VAO, kemo_shaders, psf_buf);
+	draw_PSF_isoline_VAO(psf_s, psf_m, psf_a, view_s, psf_isoline_VAO, kemo_shaders, psf_buf);
 	
+	free(psf_buf->v_buf);
+	free(psf_buf);
 	return;
 }

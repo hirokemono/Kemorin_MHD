@@ -29,6 +29,7 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			struct VAO_ids *mesh_node_VAO, struct VAO_ids *mesh_trans_VAO, 
 			struct VAO_ids *psf_solid_VAO, struct VAO_ids *psf_trans_VAO, 
 			struct VAO_ids *psf_texture_VAO, struct VAO_ids *psf_trans_tex_VAO, 
+			struct VAO_ids *psf_isoline_VAO, struct VAO_ids *psf_griph_VAO, 
 			struct kemoview_shaders *kemo_shaders);
 
 void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s, 
@@ -40,6 +41,7 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			struct VAO_ids *mesh_node_VAO, struct VAO_ids *mesh_trans_VAO, 
 			struct VAO_ids *psf_solid_VAO, struct VAO_ids *psf_trans_VAO, 
 			struct VAO_ids *psf_texture_VAO, struct VAO_ids *psf_trans_tex_VAO, 
+			struct VAO_ids *psf_isoline_VAO, struct VAO_ids *psf_griph_VAO, 
 			struct kemoview_shaders *kemo_shaders);
 void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s, 
 			struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
@@ -50,6 +52,7 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 			struct VAO_ids *mesh_node_VAO, struct VAO_ids *mesh_trans_VAO, 
 			struct VAO_ids *psf_solid_VAO, struct VAO_ids *psf_trans_VAO, 
 			struct VAO_ids *psf_texture_VAO, struct VAO_ids *psf_trans_tex_VAO, 
+			struct VAO_ids *psf_isoline_VAO, struct VAO_ids *psf_griph_VAO, 
 			struct kemoview_shaders *kemo_shaders);
 
 void draw_quad_gl3(struct view_element *view_s,

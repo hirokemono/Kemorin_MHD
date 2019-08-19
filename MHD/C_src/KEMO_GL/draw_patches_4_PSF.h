@@ -46,8 +46,10 @@ void draw_PSF_isoline_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
 
 
 int check_draw_psf(struct kemo_array_control *psf_a);
-void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
+void draw_PSF_solid_objects_VAO(int shading_mode,
+			struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct view_element *view_s, 
-			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
-			struct gl_strided_buffer *psf_buf);
+			struct VAO_ids *psf_solid_VAO, struct VAO_ids *psf_texture_VAO, 
+			struct VAO_ids *psf_isoline_VAO, struct VAO_ids *psf_griph_VAO,
+			struct kemoview_shaders *kemo_shaders);
 #endif

@@ -20,6 +20,7 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			struct VAO_ids *mesh_node_VAO, struct VAO_ids *mesh_trans_VAO, 
 			struct VAO_ids *psf_solid_VAO, struct VAO_ids *psf_trans_VAO, 
 			struct VAO_ids *psf_texture_VAO, struct VAO_ids *psf_trans_tex_VAO, 
+			struct VAO_ids *psf_isoline_VAO, struct VAO_ids *psf_griph_VAO, 
 			struct kemoview_shaders *kemo_shaders){
 	glDeleteLists(view_s->gl_drawID, 1);
 	glNewList(view_s->gl_drawID, GL_COMPILE_AND_EXECUTE);
@@ -39,6 +40,7 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			struct VAO_ids *mesh_node_VAO, struct VAO_ids *mesh_trans_VAO, 
 			struct VAO_ids *psf_solid_VAO, struct VAO_ids *psf_trans_VAO, 
 			struct VAO_ids *psf_texture_VAO, struct VAO_ids *psf_trans_tex_VAO, 
+			struct VAO_ids *psf_isoline_VAO, struct VAO_ids *psf_griph_VAO, 
 			struct kemoview_shaders *kemo_shaders){
 	int i, iflag;
 	int iflag_psf = 0;
@@ -107,8 +109,9 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		glDisable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		iflag_psf = iflag_psf + check_draw_psf(psf_a);
-		draw_PSF_solid_objects_VAO(psf_s, psf_m, psf_a, view_s,
-					cube_VAO, kemo_shaders, psf_buf);
+		draw_PSF_solid_objects_VAO(mesh_m->shading_mode, psf_s, psf_m, psf_a, view_s,
+					psf_solid_VAO, psf_texture_VAO, psf_isoline_VAO, psf_griph_VAO, 
+	 				kemo_shaders);
 		
 		free(psf_buf->v_buf);
 		free(psf_buf);
@@ -244,6 +247,7 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 			struct VAO_ids *mesh_node_VAO, struct VAO_ids *mesh_trans_VAO, 
 			struct VAO_ids *psf_solid_VAO, struct VAO_ids *psf_trans_VAO, 
 			struct VAO_ids *psf_texture_VAO, struct VAO_ids *psf_trans_tex_VAO, 
+			struct VAO_ids *psf_isoline_VAO, struct VAO_ids *psf_griph_VAO, 
 			struct kemoview_shaders *kemo_shaders){
 	int i;
 	int iflag_psf = 0;
@@ -292,28 +296,12 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 			free(fline_buf);
 		};
 		
-		struct gl_strided_buffer *psf_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-		set_buffer_address_4_patch(3*128, psf_buf);
-		alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
-		
 		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
-		set_color_code_for_psfs(psf_s, psf_m, psf_a);
-		
-		glDisable(GL_CULL_FACE);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		draw_PSF_texture_VAO(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_txtur, 
-					psf_s, psf_m, psf_a, view_s, psf_texture_VAO, kemo_shaders, psf_buf);
-		draw_PSF_patch_VAO(mesh_m->shading_mode, psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 
-					psf_s, psf_m, psf_a, view_s, psf_solid_VAO, kemo_shaders, psf_buf);
-		
-		glDisable(GL_CULL_FACE);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		iflag_psf = iflag_psf + check_draw_psf(psf_a);
-		draw_PSF_solid_objects_VAO(psf_s, psf_m, psf_a, view_s,
-					cube_VAO, kemo_shaders, psf_buf);
+		draw_PSF_solid_objects_VAO(mesh_m->shading_mode, psf_s, psf_m, psf_a, view_s,
+					psf_solid_VAO, psf_texture_VAO, psf_isoline_VAO, psf_griph_VAO, 
+					kemo_shaders);
 		
-		free(psf_buf->v_buf);
-		free(psf_buf);
 	
 		if(mesh_m->iflag_draw_mesh != 0){
 			set_solid_mesh_VAO(mesh_s, mesh_m, mesh_solid_VAO, 
