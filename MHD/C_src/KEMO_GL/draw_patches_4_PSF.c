@@ -75,7 +75,7 @@ void draw_PSF_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct view_element *view_s, 
-			struct VAO_ids *psf_VAO, struct shader_ids *phong_texure, 
+			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *psf_buf){
 	int i;
 	int num_patch = count_psf_nodes_to_buf(ist_psf, ied_psf);
@@ -87,33 +87,11 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 	set_psf_nodes_to_buf(ist_psf, ied_psf, shading_mode, psf_s, psf_m, psf_a, psf_buf);
 	set_psf_textures_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
 	
-	glUseProgram(phong_texure->programId);
-	transfer_matrix_to_shader(phong_texure, view_s);
+	glUseProgram(kemo_shaders->phong_texure->programId);
+	int id_textureImage = glGetUniformLocation(kemo_shaders->phong_texure->programId, "image");
 	
-	int id_numLight = glGetUniformLocation(phong_texure->programId, "num_lights");
-	int id_lightPosition = glGetUniformLocation(phong_texure->programId, "LightSource[0].position");
-	
-	int id_MaterialAmbient = glGetUniformLocation(phong_texure->programId, "frontMaterial.ambient");
-	int id_MaterialDiffuse = glGetUniformLocation(phong_texure->programId, "frontMaterial.diffuse");
-	int id_MaterialSpecular = glGetUniformLocation(phong_texure->programId, "frontMaterial.specular");
-	int id_MaterialShiness = glGetUniformLocation(phong_texure->programId, "frontMaterial.shininess");
-	
-	int id_textureImage = glGetUniformLocation(phong_texure->programId, "image");
-	
-	int num_light = 1;
-	GLfloat  lightposition[4] = {5.0, 5.0, -5.0,1.0};
-	GLfloat white1[4] = {0.9, 0.9, 0.9, 1.0};
-	GLfloat white2[4] = {0.7, 0.7, 0.7, 1.0};
-	GLfloat white3[4] = {0.4, 0.4, 0.4, 1.0};
-	GLfloat shine = 20.0;
-	
-	glUniform1i(id_numLight, num_light);
-	glUniform4fv(id_lightPosition, 1, lightposition);
-	
-	glUniform4fv(id_MaterialAmbient, 1, white2);
-	glUniform4fv(id_MaterialDiffuse, 1, white1);
-	glUniform4fv(id_MaterialSpecular, 1, white3);
-	glUniform1f(id_MaterialShiness, shine);
+	transfer_matrix_to_shader(kemo_shaders->phong_texure, view_s);
+	set_phong_light_list(kemo_shaders->phong_texure, kemo_shaders->lights);
 	
 	glGenVertexArrays(1, &psf_VAO->id_VAO);
 	glBindVertexArray(psf_VAO->id_VAO);
@@ -171,30 +149,7 @@ void draw_PSF_arrow_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 	
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
-	
-	int id_numLight = glGetUniformLocation(kemo_shaders->phong->programId, "num_lights");
-	int id_lightPosition = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource[0].position");
-	
-	int id_MaterialAmbient = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.ambient");
-	int id_MaterialDiffuse = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.diffuse");
-	int id_MaterialSpecular = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.specular");
-	int id_MaterialShiness = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.shininess");
-	
-	int num_light = 1;
-	GLfloat  lightposition[4] = {5.0, 5.0, -5.0,1.0};
-	GLfloat white1[4] = {0.3, 0.3, 0.3, 1.0};
-	GLfloat white2[4] = {0.8, 0.8, 0.8, 1.0};
-	GLfloat white3[4] = {1.0, 1.0, 1.0, 1.0};
-	GLfloat shine = 20.0;
-	
-	glUniform1i(id_numLight, num_light);
-	glUniform4fv(id_lightPosition, 1, lightposition);
-	
-	glUniform4fv(id_MaterialAmbient, 1, white2);
-	glUniform4fv(id_MaterialDiffuse, 1, white1);
-	glUniform4fv(id_MaterialSpecular, 1, white3);
-	glUniform1f(id_MaterialShiness, shine);
-	
+	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
 	glGenVertexArrays(1, &psf_VAO->id_VAO);
 	glBindVertexArray(psf_VAO->id_VAO);

@@ -28,7 +28,7 @@ void draw_PSF_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct view_element *view_s, 
-			struct VAO_ids *psf_VAO, struct shader_ids *phong_texure, 
+			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *psf_buf);
 
 void draw_PSF_arrow_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m, 

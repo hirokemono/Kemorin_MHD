@@ -15,38 +15,14 @@ void draw_fieldtubes_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_
 	if(num_patch <= 0) return;
 	
 	set_color_code_for_fieldlines(fline_s, fline_m);
-	
-	
-	glUseProgram(kemo_shaders->phong->programId);
-	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
-	
-	int id_numLight = glGetUniformLocation(kemo_shaders->phong->programId, "num_lights");
-	int id_lightPosition = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource[0].position");
-	
-	int id_MaterialAmbient = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.ambient");
-	int id_MaterialDiffuse = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.diffuse");
-	int id_MaterialSpecular = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.specular");
-	int id_MaterialShiness = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.shininess");
-	
-	int num_light = 1;
-	GLfloat  lightposition[4] = {5.0, 5.0, -5.0,1.0};
-	GLfloat white1[4] = {0.3, 0.3, 0.3, 1.0};
-	GLfloat white2[4] = {0.8, 0.8, 0.8, 1.0};
-	GLfloat white3[4] = {1.0, 1.0, 1.0, 1.0};
-	GLfloat shine = 20.0;
-	
-	glUniform1i(id_numLight, num_light);
-	glUniform4fv(id_lightPosition, 1, lightposition);
-	
-	glUniform4fv(id_MaterialAmbient, 1, white2);
-	glUniform4fv(id_MaterialDiffuse, 1, white1);
-	glUniform4fv(id_MaterialSpecular, 1, white3);
-	glUniform1f(id_MaterialShiness, shine);
-	
 	set_buffer_address_4_patch(ITHREE*num_patch, fline_buf);
 	resize_strided_buffer(fline_buf->num_nod_buf, fline_buf->ncomp_buf, fline_buf);
 	
 	icou = set_fieldtubes_to_buf(ncorner, fline_s, fline_m, fline_buf);
+	
+	glUseProgram(kemo_shaders->phong->programId);
+	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
+	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
 	glGenVertexArrays(1, &fline_VAO->id_VAO);
 	glBindVertexArray(fline_VAO->id_VAO);
