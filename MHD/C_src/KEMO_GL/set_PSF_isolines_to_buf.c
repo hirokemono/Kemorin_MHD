@@ -168,7 +168,6 @@ static int set_PSF_isolines_to_buf(int ist_edge, int ist, int ied,
 
 
 int count_PSF_all_isolines_to_buf(struct psf_data *psf_s, struct psf_menu_val *psf_m){
-	int ierr;
 	int num_edge = 0;
 	if(psf_m->draw_psf_grid  != 0){
 		find_start_positive_lines(psf_m);
@@ -187,11 +186,9 @@ int count_PSF_all_isolines_to_buf(struct psf_data *psf_s, struct psf_menu_val *p
 	return num_edge;
 }
 
-int set_PSF_all_isolines_to_buf(struct psf_data *psf_s, struct psf_menu_val *psf_m,
+int set_PSF_all_isolines_to_buf(int ist_edge, struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			struct gl_strided_buffer *psf_buf){
-    int ierr;
-	
-	int iedge_buf = 0;
+	int iedge_buf = ist_edge;
 	if(psf_m->draw_psf_grid  != 0){
 		find_start_positive_lines(psf_m);
 		if(psf_m->ist_positive_line > 1){

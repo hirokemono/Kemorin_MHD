@@ -79,21 +79,32 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 	return;	
 }
 
-void draw_PSF_arrow_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m, 
-			struct view_element *view_s, 
+void draw_PSF_arrow_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m, 
+			struct kemo_array_control *psf_a, struct view_element *view_s, 
 			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *psf_buf){
 	int ncorner = 20;
+	int i;
 	int inum_buf;
 	
-	int num_patch = count_psf_arrows_to_buf(ncorner, psf_s, psf_m);
+	int num_patch = 0;
+	for(i=0; i<psf_a->nmax_loaded; i++){
+		if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
+			num_patch = num_patch + count_psf_arrows_to_buf(ncorner, psf_s[i], psf_m[i]);
+		};
+	};
 	psf_VAO->npoint_draw = ITHREE * num_patch;
 	if(num_patch <= 0) return;
 	
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
-	inum_buf = set_psf_arrows_to_buf(ncorner, psf_s, psf_m, psf_buf);
+	inum_buf = 0;
+	for(i=0; i<psf_a->nmax_loaded; i++){
+		if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
+			inum_buf = set_psf_arrows_to_buf(inum_buf, ncorner, psf_s[i], psf_m[i], psf_buf);
+		};
+	};
 	
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
@@ -110,24 +121,34 @@ void draw_PSF_arrow_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 }
 
 
-void draw_PSF_isoline_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
-			struct view_element *view_s, 
+void draw_PSF_isoline_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
+			struct kemo_array_control *psf_a, struct view_element *view_s, 
 			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *psf_buf){
-	int num_patch = 0;
-	int inum = 0;
-	int j, nd;
-	double v_line;
-	double f_color[4];
+	int i, iflag;
+	int inum_edge;
 	
-	num_patch = 2*count_PSF_all_isolines_to_buf(psf_s, psf_m);
+	int num_patch = 0;
+    for(i=0; i<psf_a->nmax_loaded; i++){
+		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero);
+        if(iflag != 0){
+			num_patch = num_patch + count_PSF_all_isolines_to_buf(psf_s[i], psf_m[i]);
+		};
+	};
+	num_patch = 2 * num_patch;
 	psf_VAO->npoint_draw = ITHREE * num_patch;
 	if(num_patch <= 0) return;
 	
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
-	inum - set_PSF_all_isolines_to_buf(psf_s, psf_m, psf_buf);
+	inum_edge = 0;
+    for(i=0; i<psf_a->nmax_loaded; i++){
+		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero);
+        if(iflag != 0){
+			inum_edge = set_PSF_all_isolines_to_buf(inum_edge, psf_s[i], psf_m[i], psf_buf);
+		};
+	};
 	
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
@@ -156,20 +177,10 @@ void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **p
 			struct kemo_array_control *psf_a, struct view_element *view_s, 
 			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *psf_buf){
-    int i;
-    
-    for(i=0; i<psf_a->nmax_loaded; i++){
-        if(psf_a->iflag_loaded[i] != 0){
-			if(psf_m[i]->draw_psf_vect  != 0){
-				draw_PSF_arrow_VAO(psf_s[i], psf_m[i], view_s, 
-							psf_VAO, kemo_shaders, psf_buf);
-			};
-			if( (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero) != 0){
-				draw_PSF_isoline_VAO(psf_s[i], psf_m[i], view_s, 
-							psf_VAO, kemo_shaders, psf_buf);
-			};
-		};
-	};
+	
+	draw_PSF_arrow_VAO(psf_s, psf_m, psf_a, view_s, 
+						psf_VAO, kemo_shaders, psf_buf);
+	draw_PSF_isoline_VAO(psf_s, psf_m, psf_a, view_s, psf_VAO, kemo_shaders, psf_buf);
 	
 	return;
 }

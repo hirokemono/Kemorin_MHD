@@ -113,7 +113,7 @@ int count_psf_arrows_to_buf(int ncorner, struct psf_data *psf_s, struct psf_menu
 	return inum_buf;
 }
 
-int set_psf_arrows_to_buf(int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m, 
+int set_psf_arrows_to_buf(int ist_patch, int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m, 
 			struct gl_strided_buffer *strided_buf) {
 	float x_line[6], dir_line[6], color_line[8];
 	float xyz[18*ncorner], nor[18*ncorner], col[24*ncorner];
@@ -128,7 +128,7 @@ int set_psf_arrows_to_buf(int ncorner, struct psf_data *psf_s, struct psf_menu_v
 	float radius = (float) psf_m->vector_thick;
 	double ascale = ONE / psf_m->scale_vect;
 	
-	inum_buf = 0;
+	inum_buf = ist_patch;
 	for (inod = 0; inod < psf_s->nnod_viz; inod++) {
 		if (inod % psf_m->increment_vect == 0) {
             if(psf_s->norm_nod[inod][0] != 0.0

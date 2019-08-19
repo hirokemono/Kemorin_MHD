@@ -16,6 +16,7 @@
 #include "coordinate_converter_c.h"
 #include "set_color_code_on_nodes.h"
 #include "set_PSF_patches_to_buf.h"
+#include "set_PSF_isolines_to_buf.h"
 
 
 /* prptotypes */
@@ -33,16 +34,20 @@ void draw_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *psf_buf);
 
-void draw_PSF_arrow_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m, 
-			struct view_element *view_s, 
+void draw_PSF_arrow_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m, 
+			struct kemo_array_control *psf_a, struct view_element *view_s, 
 			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *psf_buf);
 
-void draw_PSF_isoline_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
-			struct view_element *view_s, 
+void draw_PSF_isoline_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
+			struct kemo_array_control *psf_a, struct view_element *view_s, 
 			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *psf_buf);
 
 
 int check_draw_psf(struct kemo_array_control *psf_a);
+void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
+			struct kemo_array_control *psf_a, struct view_element *view_s, 
+			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
+			struct gl_strided_buffer *psf_buf);
 #endif
