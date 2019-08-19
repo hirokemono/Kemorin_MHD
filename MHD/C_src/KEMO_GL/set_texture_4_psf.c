@@ -63,13 +63,6 @@ void set_texture_4_psf(int width, int height, const unsigned char *bgra_in,
 	return;
 }
 
-void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
-    glReadBuffer(GL_FRONT);
-    glPixelStorei(GL_PACK_ALIGNMENT, IONE);
-    glReadPixels(IZERO, IZERO, (GLsizei) num_x, (GLsizei) num_y,
-                 GL_RGB, GL_UNSIGNED_BYTE,(GLubyte *) glimage);
-}
-
 void release_texture_4_psf(struct psf_menu_val *psf_m) {
 	dealloc_draw_psf_texture(psf_m);
 	return;

@@ -18,6 +18,8 @@
 
 
 /* prototypes */ 
+void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage);
+
 void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s, 
 			struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
 			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
