@@ -129,7 +129,6 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			
 			free(mesh_buf->v_buf);
 			free(mesh_buf);
-			DestroyVBO(cube_VAO);
 		};
 		
 		struct gl_strided_buffer *line_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
@@ -177,7 +176,6 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			draw_trans_mesh_VAO(mesh_s, mesh_m, view_s, cube_VAO, kemo_shaders, mesh_buf2);
 			free(mesh_buf2->v_buf);
 			free(mesh_buf2);
-			DestroyVBO(cube_VAO);
 		};
 		glDisable(GL_BLEND);
 		glDepthMask(GL_TRUE);
@@ -270,10 +268,8 @@ void draw_cube_edge_gl3(struct view_element *view_s,
 	cube_edge_VBO(0.5f, cube_VAO, gl_buf);
 	
 	glBindVertexArray(cube_VAO->id_VAO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);
 	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
-	
-	DestroyVBO(cube_VAO);
+	Destroy_Simple_VAO(cube_VAO);
 }
 
 void draw_quad_gl3(struct view_element *view_s,
@@ -295,7 +291,7 @@ void draw_quad_gl3(struct view_element *view_s,
 	glBindVertexArray(quad_VAO->id_VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quad_VAO->id_index);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	DestroyVBO(quad_VAO);
+	Destroy_Simple_VAO(quad_VAO);
 
 	free(quad_buf->v_buf);
 	free(quad_buf);

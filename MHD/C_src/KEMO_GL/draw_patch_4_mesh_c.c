@@ -43,32 +43,12 @@ void draw_solid_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
-	glGenVertexArrays(1, &mesh_VAO->id_VAO);
-	glBindVertexArray(mesh_VAO->id_VAO);
-	
-	glGenBuffers(1, &mesh_VAO->id_vertex);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh_VAO->id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mesh_buf->num_nod_buf*mesh_buf->ncomp_buf,
-				 mesh_buf->v_buf, GL_STATIC_DRAW);
-	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, mesh_buf->istride,
-						  (GLvoid*) (mesh_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, mesh_buf->istride, 
-						  (GLvoid*) (mesh_buf->ist_csurf * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, mesh_buf->istride, 
-						  (GLvoid*) (mesh_buf->ist_norm * sizeof(GL_FLOAT)));
-	
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	
-	glBindVertexArray(0);
+	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
 	
 	glBindVertexArray(mesh_VAO->id_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh_VAO->id_vertex);
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
+	Destroy_Phong_VAO(mesh_VAO);
 	
-	DestroyVBO(mesh_VAO);
 	return;
 }
 
@@ -96,7 +76,6 @@ void draw_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 	icou = set_transparent_mesh_patches_to_buf(mesh_s, mesh_m, mesh_buf);
 	
 	
-	
 	if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
 		glPolygonMode(GL_FRONT, GL_FILL);
 		glCullFace(GL_BACK);
@@ -109,32 +88,12 @@ void draw_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
-	glGenVertexArrays(1, &mesh_VAO->id_VAO);
-	glBindVertexArray(mesh_VAO->id_VAO);
-	
-	glGenBuffers(1, &mesh_VAO->id_vertex);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh_VAO->id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * mesh_buf->num_nod_buf*mesh_buf->ncomp_buf,
-				 mesh_buf->v_buf, GL_STATIC_DRAW);
-	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, mesh_buf->istride,
-						  (GLvoid*) (mesh_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, mesh_buf->istride, 
-						  (GLvoid*) (mesh_buf->ist_csurf * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, mesh_buf->istride, 
-						  (GLvoid*) (mesh_buf->ist_norm * sizeof(GL_FLOAT)));
-	
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	
-	glBindVertexArray(0);
+	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
 	
 	glBindVertexArray(mesh_VAO->id_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh_VAO->id_vertex);
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
+	Destroy_Phong_VAO(mesh_VAO);
 	
-	DestroyVBO(mesh_VAO);
 	return;
 }
 

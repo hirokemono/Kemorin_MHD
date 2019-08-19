@@ -24,32 +24,11 @@ void draw_fieldtubes_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
-	glGenVertexArrays(1, &fline_VAO->id_VAO);
-	glBindVertexArray(fline_VAO->id_VAO);
-	
-	glGenBuffers(1, &fline_VAO->id_vertex);
-	glBindBuffer(GL_ARRAY_BUFFER, fline_VAO->id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * fline_buf->num_nod_buf*fline_buf->ncomp_buf,
-				 fline_buf->v_buf, GL_STATIC_DRAW);
-	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, fline_buf->istride,
-						  (GLvoid*) (fline_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, fline_buf->istride, 
-						  (GLvoid*) (fline_buf->ist_csurf * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, fline_buf->istride, 
-						  (GLvoid*) (fline_buf->ist_norm * sizeof(GL_FLOAT)));
-	
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	
-	glBindVertexArray(0);
+	Const_VAO_4_Phong(fline_VAO, fline_buf);
 	
 	glBindVertexArray(fline_VAO->id_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, fline_VAO->id_vertex);
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
-	
-	DestroyVBO(fline_VAO);
+	Destroy_Phong_VAO(fline_VAO);
 	
 	return;
 }
@@ -74,30 +53,11 @@ void draw_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_
 	
 	icou = set_fieldlines_to_buf(fline_s, fline_m, fline_buf);
 	
-	
-	glGenVertexArrays(1, &fline_VAO->id_VAO);
-	glBindVertexArray(fline_VAO->id_VAO);
-	
-	glGenBuffers(1, &fline_VAO->id_vertex);
-	glBindBuffer(GL_ARRAY_BUFFER, fline_VAO->id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * fline_buf->num_nod_buf*fline_buf->ncomp_buf,
-				 fline_buf->v_buf, GL_STATIC_DRAW);
-	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, fline_buf->istride,
-						  (GLvoid*) (fline_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, fline_buf->istride, 
-						  (GLvoid*) (fline_buf->ist_csurf * sizeof(GL_FLOAT)));
-	
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	
-	glBindVertexArray(0);
+	Const_VAO_4_Simple(fline_VAO, fline_buf);
 	
 	glBindVertexArray(fline_VAO->id_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, fline_VAO->id_vertex);
 	glDrawArrays(GL_LINES, IZERO, (ITWO*num_edge));
-	
-	DestroyVBO(fline_VAO);
+	Destroy_Simple_VAO(fline_VAO);
 	
 	return;
 }
