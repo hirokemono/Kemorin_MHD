@@ -25,7 +25,6 @@ modify_object_4_viewer_c.o \
 find_isoline_on_patch_c.o \
 trackball.o \
 rotate_animation.o \
-draw_axis_c.o \
 rainbow_color_code_c.o \
 set_color_code_on_nodes.o \
 \
@@ -41,11 +40,7 @@ set_axis_to_buf.o \
 set_coastline_to_buf.o \
 set_menu_bottun_to_buf.o \
 \
-draw_node_by_ico_c.o \
-draw_grids_4_mesh.o \
 draw_patch_4_mesh_c.o \
-draw_isolines_4_PSF.o \
-draw_isolines_4_map.o \
 draw_fieldlines.o \
 draw_patches_4_PSF.o \
 draw_map_4_PSF.o \
@@ -151,20 +146,6 @@ module:
 	kemoviewer_param_c.o \
 	write_image_2_bmp.o \
     set_texture_4_psf.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	draw_axis_c.o: \
-	'$$(KEMO_C_GLDIR)'/draw_axis_c.c \
-	draw_axis_c.h \
-	kemoviewer_param_c.o \
-	m_gl_transfer_matrix.o \
-	vartex_array_object_gl.o \
-	glsl.o \
-	modify_object_4_viewer_c.o \
-	set_axis_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -464,78 +445,19 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
-	draw_node_by_ico_c.o: \
-	'$$(KEMO_C_GLDIR)'/draw_node_by_ico_c.c \
-	kemoviewer_param_c.h \
-	m_kemoviewer_menu.o \
-	m_surface_mesh_4_viewer_c.o \
-	m_gl_transfer_matrix.o \
-	vartex_array_object_gl.o \
-	glsl.o \
-	set_mesh_node_2_gl_buf.o \
-	rainbow_color_code_c.o \
-	icosahedron_c.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	draw_grids_4_mesh.o: \
-	'$$(KEMO_C_GLDIR)'/draw_grids_4_mesh.c \
-	draw_grids_4_mesh.h \
-	m_kemoviewer_menu.o \
-	m_surface_mesh_4_viewer_c.o \
-	m_gl_transfer_matrix.o \
-	vartex_array_object_gl.o \
-	glsl.o \
-	rainbow_color_code_c.o \
-	set_mesh_grid_2_gl_buf.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
 	draw_patch_4_mesh_c.o: \
 	'$$(KEMO_C_GLDIR)'/draw_patch_4_mesh_c.c \
 	kemoviewer_param_c.h \
-	m_kemoviewer_menu.o \
 	m_surface_mesh_4_viewer_c.o \
+	m_kemoviewer_menu.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
+	glsl.o \
+	sort_by_patch_distance.o \
 	rainbow_color_code_c.o \
 	set_mesh_patch_2_gl_buf.o \
-	sort_by_patch_distance.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	draw_isolines_4_PSF.o: \
-	'$$(KEMO_C_GLDIR)'/draw_isolines_4_PSF.c \
-	draw_isolines_4_PSF.h \
-	m_kemoviewer_menu.o \
-	m_psf_data_4_viewer_c.o \
-	set_new_patch_4_map_c.o \
-	rainbow_color_code_c.o \
-	find_isoline_on_patch_c.o \
-	m_gl_transfer_matrix.o \
-	vartex_array_object_gl.o \
-	glsl.o \
-	set_PSF_isolines_to_buf.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	draw_isolines_4_map.o: \
-	'$$(KEMO_C_GLDIR)'/draw_isolines_4_map.c \
-	draw_isolines_4_map.h \
-	m_kemoviewer_menu.o \
-	m_psf_data_4_viewer_c.o \
-	vartex_array_object_gl.o \
-	glsl.o \
-	rainbow_color_code_c.o \
-	set_map_isolines_to_buf.o \
+	set_mesh_grid_2_gl_buf.o \
+	set_mesh_node_2_gl_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -560,15 +482,18 @@ module:
 	'$$(KEMO_C_GLDIR)'/draw_patches_4_PSF.c \
 	draw_patches_4_PSF.h \
 	m_kemoviewer_menu.o \
-	icosahedron_c.o \
 	m_psf_data_4_viewer_c.o \
-	set_new_patch_4_map_c.o \
-	coordinate_converter_c.o \
-	set_color_code_on_nodes.o \
-	set_PSF_patches_to_buf.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
+	set_new_patch_4_map_c.o \
+	coordinate_converter_c.o \
+	set_color_code_on_nodes.o \
+	find_isoline_on_patch_c.o \
+	rainbow_color_code_c.o \
+	icosahedron_c.o \
+	set_PSF_patches_to_buf.o \
+	set_PSF_isolines_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -586,10 +511,10 @@ module:
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
-	set_PSF_patches_to_buf.o \
-	draw_isolines_4_map.o \
 	draw_coastline.o \
-	icosahedron_c.o \
+	rainbow_color_code_c.o \
+	set_PSF_patches_to_buf.o \
+	set_map_isolines_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -611,8 +536,6 @@ module:
 	draw_patches_4_PSF.o \
 	draw_map_4_PSF.o \
 	draw_patch_4_mesh_c.o \
-	draw_node_by_ico_c.o \
-	draw_grids_4_mesh.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -775,7 +698,9 @@ module:
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
+	modify_object_4_viewer_c.o \
 	set_coastline_to_buf.o \
+	set_axis_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

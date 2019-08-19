@@ -114,6 +114,7 @@ void select_stride_VBO(int inum, struct gl_strided_buffer *strided_buf){
 }
 
 void Const_VAO_4_Simple(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+	if(glIsVertexArray(VAO->id_VAO)) glDeleteVertexArrays(1, &VAO->id_VAO);
 	glGenVertexArrays(1, &VAO->id_VAO);
 	glBindVertexArray(VAO->id_VAO);
 	
@@ -134,6 +135,7 @@ void Const_VAO_4_Simple(struct VAO_ids *VAO, struct gl_strided_buffer *strided_b
 };
 
 void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+	if(glIsVertexArray(VAO->id_VAO)) glDeleteVertexArrays(1, &VAO->id_VAO);
 	glGenVertexArrays(1, &VAO->id_VAO);
 	glBindVertexArray(VAO->id_VAO);
 	

@@ -144,15 +144,10 @@
 		18D7E74E1562D359009B05FF /* transfer_matvec.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6941562D359009B05FF /* transfer_matvec.c */; };
 		18D7E7511562D359009B05FF /* ysglfontdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E69A1562D359009B05FF /* ysglfontdata.c */; };
 		18D7E7521562D359009B05FF /* coastline_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E69D1562D359009B05FF /* coastline_c.c */; };
-		18D7E7531562D359009B05FF /* draw_axis_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E69F1562D359009B05FF /* draw_axis_c.c */; };
 		18D7E7541562D359009B05FF /* draw_coastline.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A11562D359009B05FF /* draw_coastline.c */; };
 		18D7E7551562D359009B05FF /* draw_colorbar_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A31562D359009B05FF /* draw_colorbar_gl.c */; };
 		18D7E7561562D359009B05FF /* draw_fieldlines.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A51562D359009B05FF /* draw_fieldlines.c */; };
-		18D7E7571562D359009B05FF /* draw_grids_4_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A71562D359009B05FF /* draw_grids_4_mesh.c */; };
-		18D7E7581562D359009B05FF /* draw_isolines_4_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6A91562D359009B05FF /* draw_isolines_4_map.c */; };
-		18D7E7591562D359009B05FF /* draw_isolines_4_PSF.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6AB1562D359009B05FF /* draw_isolines_4_PSF.c */; };
 		18D7E75B1562D359009B05FF /* draw_menu_bottun_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6AF1562D359009B05FF /* draw_menu_bottun_gl.c */; };
-		18D7E75C1562D359009B05FF /* draw_node_by_ico_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B11562D359009B05FF /* draw_node_by_ico_c.c */; };
 		18D7E75E1562D359009B05FF /* draw_patch_4_mesh_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B51562D359009B05FF /* draw_patch_4_mesh_c.c */; };
 		18D7E75F1562D359009B05FF /* draw_patches_4_PSF.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B71562D359009B05FF /* draw_patches_4_PSF.c */; };
 		18D7E7601562D359009B05FF /* drawcube_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B91562D359009B05FF /* drawcube_gl.c */; };
@@ -466,24 +461,14 @@
 		18D7E69B1562D359009B05FF /* ysglfontdata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ysglfontdata.h; sourceTree = "<group>"; };
 		18D7E69D1562D359009B05FF /* coastline_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = coastline_c.c; sourceTree = "<group>"; };
 		18D7E69E1562D359009B05FF /* coastline_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coastline_c.h; sourceTree = "<group>"; };
-		18D7E69F1562D359009B05FF /* draw_axis_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_axis_c.c; sourceTree = "<group>"; };
-		18D7E6A01562D359009B05FF /* draw_axis_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_axis_c.h; sourceTree = "<group>"; };
 		18D7E6A11562D359009B05FF /* draw_coastline.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_coastline.c; sourceTree = "<group>"; };
 		18D7E6A21562D359009B05FF /* draw_coastline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_coastline.h; sourceTree = "<group>"; };
 		18D7E6A31562D359009B05FF /* draw_colorbar_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_colorbar_gl.c; sourceTree = "<group>"; };
 		18D7E6A41562D359009B05FF /* draw_colorbar_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_colorbar_gl.h; sourceTree = "<group>"; };
 		18D7E6A51562D359009B05FF /* draw_fieldlines.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_fieldlines.c; sourceTree = "<group>"; };
 		18D7E6A61562D359009B05FF /* draw_fieldlines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_fieldlines.h; sourceTree = "<group>"; };
-		18D7E6A71562D359009B05FF /* draw_grids_4_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_grids_4_mesh.c; sourceTree = "<group>"; };
-		18D7E6A81562D359009B05FF /* draw_grids_4_mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_grids_4_mesh.h; sourceTree = "<group>"; };
-		18D7E6A91562D359009B05FF /* draw_isolines_4_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_isolines_4_map.c; sourceTree = "<group>"; };
-		18D7E6AA1562D359009B05FF /* draw_isolines_4_map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_isolines_4_map.h; sourceTree = "<group>"; };
-		18D7E6AB1562D359009B05FF /* draw_isolines_4_PSF.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_isolines_4_PSF.c; sourceTree = "<group>"; };
-		18D7E6AC1562D359009B05FF /* draw_isolines_4_PSF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_isolines_4_PSF.h; sourceTree = "<group>"; };
 		18D7E6AF1562D359009B05FF /* draw_menu_bottun_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_menu_bottun_gl.c; sourceTree = "<group>"; };
 		18D7E6B01562D359009B05FF /* draw_menu_bottun_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_menu_bottun_gl.h; sourceTree = "<group>"; };
-		18D7E6B11562D359009B05FF /* draw_node_by_ico_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_node_by_ico_c.c; sourceTree = "<group>"; };
-		18D7E6B21562D359009B05FF /* draw_node_by_ico_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_node_by_ico_c.h; sourceTree = "<group>"; };
 		18D7E6B51562D359009B05FF /* draw_patch_4_mesh_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_patch_4_mesh_c.c; sourceTree = "<group>"; };
 		18D7E6B61562D359009B05FF /* draw_patch_4_mesh_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_patch_4_mesh_c.h; sourceTree = "<group>"; };
 		18D7E6B71562D359009B05FF /* draw_patches_4_PSF.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_patches_4_PSF.c; sourceTree = "<group>"; };
@@ -916,26 +901,16 @@
 				182D092016C040ED0073D215 /* glsl.h */,
 				18D7E69D1562D359009B05FF /* coastline_c.c */,
 				18D7E69E1562D359009B05FF /* coastline_c.h */,
-				18D7E69F1562D359009B05FF /* draw_axis_c.c */,
-				18D7E6A01562D359009B05FF /* draw_axis_c.h */,
 				18D7E6A11562D359009B05FF /* draw_coastline.c */,
 				18D7E6A21562D359009B05FF /* draw_coastline.h */,
 				18D7E6A31562D359009B05FF /* draw_colorbar_gl.c */,
 				18D7E6A41562D359009B05FF /* draw_colorbar_gl.h */,
 				18D7E6A51562D359009B05FF /* draw_fieldlines.c */,
 				18D7E6A61562D359009B05FF /* draw_fieldlines.h */,
-				18D7E6A71562D359009B05FF /* draw_grids_4_mesh.c */,
-				18D7E6A81562D359009B05FF /* draw_grids_4_mesh.h */,
-				18D7E6A91562D359009B05FF /* draw_isolines_4_map.c */,
-				18D7E6AA1562D359009B05FF /* draw_isolines_4_map.h */,
-				18D7E6AB1562D359009B05FF /* draw_isolines_4_PSF.c */,
-				18D7E6AC1562D359009B05FF /* draw_isolines_4_PSF.h */,
 				188BA7592306BB0400348842 /* draw_map_4_PSF.c */,
 				188BA75A2306BB0500348842 /* draw_map_4_PSF.h */,
 				18D7E6AF1562D359009B05FF /* draw_menu_bottun_gl.c */,
 				18D7E6B01562D359009B05FF /* draw_menu_bottun_gl.h */,
-				18D7E6B11562D359009B05FF /* draw_node_by_ico_c.c */,
-				18D7E6B21562D359009B05FF /* draw_node_by_ico_c.h */,
 				18D7E6B51562D359009B05FF /* draw_patch_4_mesh_c.c */,
 				18D7E6B61562D359009B05FF /* draw_patch_4_mesh_c.h */,
 				18D7E6B71562D359009B05FF /* draw_patches_4_PSF.c */,
@@ -1280,7 +1255,6 @@
 				185CB9CB212F593D00BB3C0B /* t_control_real_IO.c in Sources */,
 				18D7E7511562D359009B05FF /* ysglfontdata.c in Sources */,
 				18D7E7521562D359009B05FF /* coastline_c.c in Sources */,
-				18D7E7531562D359009B05FF /* draw_axis_c.c in Sources */,
 				18D7E7541562D359009B05FF /* draw_coastline.c in Sources */,
 				185CB9D7212F593D00BB3C0B /* t_ctl_data_mhd_forces_c.c in Sources */,
 				188FFD9923092C8C00F5A0DE /* set_map_isolines_to_buf.c in Sources */,
@@ -1290,13 +1264,9 @@
 				18D7E7551562D359009B05FF /* draw_colorbar_gl.c in Sources */,
 				185CB9D0212F593D00BB3C0B /* t_ctl_data_4_sphere_model_c.c in Sources */,
 				18D7E7561562D359009B05FF /* draw_fieldlines.c in Sources */,
-				18D7E7571562D359009B05FF /* draw_grids_4_mesh.c in Sources */,
 				185CB9B0212F593D00BB3C0B /* t_control_chara_int2_IO.c in Sources */,
-				18D7E7581562D359009B05FF /* draw_isolines_4_map.c in Sources */,
-				18D7E7591562D359009B05FF /* draw_isolines_4_PSF.c in Sources */,
 				185CB9D4212F593D00BB3C0B /* t_ctl_data_MHD_boundary_c.c in Sources */,
 				18D7E75B1562D359009B05FF /* draw_menu_bottun_gl.c in Sources */,
-				18D7E75C1562D359009B05FF /* draw_node_by_ico_c.c in Sources */,
 				18D7E75E1562D359009B05FF /* draw_patch_4_mesh_c.c in Sources */,
 				185CB9BF212F593D00BB3C0B /* t_control_data_PSF_ctl_list.c in Sources */,
 				18D7E75F1562D359009B05FF /* draw_patches_4_PSF.c in Sources */,

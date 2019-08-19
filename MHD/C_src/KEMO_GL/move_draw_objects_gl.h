@@ -8,7 +8,6 @@
 #include "m_kemoviewer_menu.h"
 #include "m_gl_transfer_matrix.h"
 #include "vartex_array_object_gl.h"
-#include "draw_axis_c.h"
 #include "draw_colorbar_gl.h"
 #include "draw_fieldlines.h"
 #include "draw_coastline.h"
@@ -16,8 +15,6 @@
 #include "draw_patches_4_PSF.h"
 #include "draw_map_4_PSF.h"
 #include "draw_patch_4_mesh_c.h"
-#include "draw_node_by_ico_c.h"
-#include "draw_grids_4_mesh.h"
 
 
 /* prototypes */ 

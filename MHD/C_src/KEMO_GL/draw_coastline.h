@@ -30,4 +30,8 @@ void draw_map_coastline_VBO(const GLdouble *orthogonal,
 			struct VAO_ids *line_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *line_buf);
 
+void draw_axis_VAO(struct view_element *view_s, GLfloat dist, 
+			struct VAO_ids *mesh_VAO, struct kemoview_shaders *kemo_shaders, 
+			struct gl_strided_buffer *strided_buf);
+	
 #endif

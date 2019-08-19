@@ -35,4 +35,9 @@ void draw_PSF_arrow_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			struct view_element *view_s, 
 			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *psf_buf);
+
+void draw_PSF_isoline_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_m,
+			struct view_element *view_s, 
+			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
+			struct gl_strided_buffer *psf_buf);
 #endif
