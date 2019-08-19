@@ -16,6 +16,7 @@
 #include "skip_comment_c.h"
 #include "set_rgba_table_c.h"
 #include "set_texture_4_psf.h"
+#include "draw_patches_4_PSF.h"
 
 /* prototypes */
 

@@ -733,6 +733,7 @@ module:
 	skip_comment_c.o \
 	set_rgba_table_c.o \
 	set_texture_4_psf.o \
+	draw_patches_4_PSF.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

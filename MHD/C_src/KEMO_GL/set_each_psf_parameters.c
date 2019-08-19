@@ -101,6 +101,7 @@ int toggle_draw_psf_refv(struct psf_menu_val *psf_menu){
 
 void set_psf_patch_color_mode(struct psf_menu_val *psf_menu, int iflag){
 	if(psf_menu->psf_patch_color == TEXTURED_SURFACE){
+		release_PSF_texture_from_gl(psf_menu);
 		release_texture_4_psf(psf_menu);
 	};
 	

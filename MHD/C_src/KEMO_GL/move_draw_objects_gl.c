@@ -174,14 +174,8 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		glDisable(GL_MULTISAMPLE);
 		*/
 		if(mesh_m->iflag_draw_mesh != 0){
-			struct gl_strided_buffer *mesh_buf2 = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-			set_buffer_address_4_patch(3*128, mesh_buf2);
-			alloc_strided_buffer(mesh_buf2->num_nod_buf, mesh_buf2->ncomp_buf, mesh_buf2);
-			
-			set_trans_mesh_VAO(mesh_s, mesh_m, view_s, mesh_trans_VAO, mesh_buf2);
-			draw_trans_mesh_VAO(mesh_m, view_s, mesh_trans_VAO, kemo_shaders, mesh_buf2);
-			free(mesh_buf2->v_buf);
-			free(mesh_buf2);
+			set_trans_mesh_VAO(mesh_s, mesh_m, view_s, mesh_trans_VAO);
+			draw_trans_mesh_VAO(mesh_m, view_s, mesh_trans_VAO, kemo_shaders);
 		};
 	};
 	
@@ -381,14 +375,8 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 		glDisable(GL_MULTISAMPLE);
 		if(mesh_m->iflag_draw_mesh != 0){
-			struct gl_strided_buffer *mesh_buf2 = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-			set_buffer_address_4_patch(3*128, mesh_buf2);
-			alloc_strided_buffer(mesh_buf2->num_nod_buf, mesh_buf2->ncomp_buf, mesh_buf2);
-			
-			set_trans_mesh_VAO(mesh_s, mesh_m, view_s, mesh_trans_VAO, mesh_buf2);
-			draw_trans_mesh_VAO(mesh_m, view_s, mesh_trans_VAO, kemo_shaders, mesh_buf2);
-			free(mesh_buf2->v_buf);
-			free(mesh_buf2);
+			set_trans_mesh_VAO(mesh_s, mesh_m, view_s, mesh_trans_VAO);
+			draw_trans_mesh_VAO(mesh_m, view_s, mesh_trans_VAO, kemo_shaders);
 		};
 	};
 	

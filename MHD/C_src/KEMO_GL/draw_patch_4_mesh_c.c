@@ -18,15 +18,13 @@ static int set_solid_mesh_patch_VAO(struct viewer_mesh *mesh_s, struct mesh_menu
 	resize_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
 	
 	icou = set_solid_mesh_patches_to_buf(mesh_s, mesh_m, mesh_buf);
-	
-	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
 	return num_patch;
 }
 
 
 void set_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-			struct view_element *view_s, struct VAO_ids *mesh_VAO, 
-			struct gl_strided_buffer *mesh_buf){
+			struct view_element *view_s, struct VAO_ids *mesh_VAO){
+	struct gl_strided_buffer *mesh_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	int num_patch, icou;
 	
 	if(mesh_m->domain_opacity < 1.0
@@ -42,10 +40,14 @@ void set_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 	if(num_patch <= 0) return;
 	
 	set_buffer_address_4_patch(ITHREE*num_patch, mesh_buf);
-	resize_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
+	alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
 	
 	icou = 0;
 	icou = set_transparent_mesh_patches_to_buf(mesh_s, mesh_m, mesh_buf);
+	
+	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
+	free(mesh_buf->v_buf);
+	free(mesh_buf);
 	return;
 };
 
@@ -66,7 +68,6 @@ static int set_mesh_grids_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *
 	
 	icou = 0;
 	icou = set_mesh_grid_to_buf(mesh_s, mesh_m, mesh_buf);
-	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
 	return num_edge;
 }
 
@@ -83,8 +84,6 @@ static int set_mesh_nodes_ico_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_v
 	
 	icou = 0;
 	icou = set_mesh_node_to_buf(mesh_s, mesh_m, mesh_buf);
-	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
-	
 	return num_patch;
 }
 
@@ -99,8 +98,13 @@ void set_solid_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 	alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
 	
 	nedge_mesh = set_mesh_grids_VAO(mesh_s, mesh_m, mesh_grid_VAO, mesh_buf);
+	Const_VAO_4_Phong(mesh_grid_VAO, mesh_buf);
+	
 	npatch_nodes = set_mesh_nodes_ico_VAO(mesh_s, mesh_m, mesh_node_VAO, mesh_buf);
+	Const_VAO_4_Phong(mesh_node_VAO, mesh_buf);
+	
 	npatch_mesh = set_solid_mesh_patch_VAO(mesh_s, mesh_m, mesh_solid_VAO, mesh_buf);
+	Const_VAO_4_Phong(mesh_solid_VAO, mesh_buf);
 	
 	free(mesh_buf->v_buf);
 	free(mesh_buf);
@@ -159,28 +163,21 @@ void draw_solid_mesh_VAO(struct mesh_menu_val *mesh_m, struct view_element *view
 };
 
 void draw_trans_mesh_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s, 
-			struct VAO_ids *mesh_VAO, struct kemoview_shaders *kemo_shaders, 
-			struct gl_strided_buffer *mesh_buf){
+			struct VAO_ids *mesh_VAO, struct kemoview_shaders *kemo_shaders){
 	if(mesh_VAO->npoint_draw <= 0) return;
 	
+	glDisable(GL_CULL_FACE);
+	glDepthMask(GL_FALSE);
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
-	if (mesh_m->polygon_mode == NORMAL_POLYGON) { 
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glCullFace(GL_BACK);
-	} else if(mesh_m->polygon_mode == REVERSE_POLYGON) { 
-		glPolygonMode(GL_BACK, GL_FILL);
-		glCullFace(GL_FRONT);
-	};
+	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
-	
-	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
 	
 	glBindVertexArray(mesh_VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, (mesh_VAO->npoint_draw));

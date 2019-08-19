@@ -3,8 +3,6 @@
 
 #include "set_texture_4_psf.h"
 
-
-
 void flip_gl_bitmap(int num_x, int num_y,
                     unsigned char *glimage, unsigned char *fliped_img){
     int i, j, k, l;
@@ -62,8 +60,6 @@ void set_texture_4_psf(int width, int height, const unsigned char *bgra_in,
 	alloc_draw_psf_texture(psf_m);
 	vart_flip_rgba_c(psf_m->texture_width, psf_m->texture_height, bgra_in, 
 			psf_m->texture_rgba);
-	glGenTextures(1 , &psf_m->texture_name[0]);
-	
 	return;
 }
 
@@ -75,7 +71,6 @@ void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
 }
 
 void release_texture_4_psf(struct psf_menu_val *psf_m) {
-	glDeleteTextures(1, &psf_m->texture_name[0]);
 	dealloc_draw_psf_texture(psf_m);
 	return;
 }

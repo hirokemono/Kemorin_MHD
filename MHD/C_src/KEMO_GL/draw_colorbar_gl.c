@@ -69,18 +69,8 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	int id_textureImage = glGetUniformLocation(kemo_shaders->simple_texure->programId, "image");
 	
 	GLuint id_texture[1];
-	static const GLfloat blend[] = {1.0,1.0,1.0,1.0};
-	/* Preference for resiging texture */
-	glBindTexture(GL_TEXTURE_2D , id_texture[0]);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	set_texture_to_buffer(IWIDTH_TXT, 3*IHIGHT_TXT, cbar_wk->numBMP, id_texture);
 	
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-	glTexImage2D(GL_TEXTURE_2D , 0 , GL_RGBA , IWIDTH_TXT, 3*IHIGHT_TXT,
-				 0 , GL_RGBA , GL_UNSIGNED_BYTE , cbar_wk->numBMP);
-	//	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-	//	glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, blend);
-
 	
 	
 	num_patch = 2*(cbar_wk->iflag_zero + ITWO);
@@ -110,7 +100,7 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	glBindVertexArray(cbar_VAO->id_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, cbar_VAO->id_vertex);
 	
-	glUniform1i(id_textureImage, id_texture[0]);
+	glUniform1i(id_textureImage, 0);
 	glDrawArrays(GL_TRIANGLES, 0, 12);
 	
 	if(cbar_wk->iflag_zero == 1){

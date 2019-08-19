@@ -20,10 +20,6 @@ void draw_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	glUseProgram(kemo_shaders->test->programId);
 	map_matrix_to_shader(kemo_shaders->test, orthogonal);
 	
-	glGenVertexArrays(1, &psf_VAO->id_VAO);
-	glBindVertexArray(psf_VAO->id_VAO);
-	
-	
 	glBindVertexArray(psf_VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*num_patch));
 	Destroy_Simple_VAO(psf_VAO);

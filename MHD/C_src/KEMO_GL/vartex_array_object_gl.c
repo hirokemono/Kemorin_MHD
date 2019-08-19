@@ -255,3 +255,17 @@ void Destroy_Phong_VAO(struct VAO_ids *VAO)
 	}
 	*/
 }
+
+void set_texture_to_buffer(const int iwidth, const int iheight, 
+			const unsigned char *rgba, GLuint *textures){
+	/* Preference for resiging texture */
+	glGenTextures(1, &textures[0]);
+	glBindTexture(GL_TEXTURE_2D , textures[0]);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	glTexImage2D(GL_TEXTURE_2D , 0 , GL_RGBA , iwidth, iheight,
+				 0 , GL_RGBA , GL_UNSIGNED_BYTE , rgba);
+	return;
+};
