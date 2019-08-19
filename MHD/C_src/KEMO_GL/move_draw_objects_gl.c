@@ -8,8 +8,8 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 				  struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
 				  struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 				  struct fline_menu_val *fline_m, struct view_element *view_s,
-				  struct buffer_for_gl *gl_buf, struct gl_strided_buffer *strided_buf,
-				  struct VAO_ids *cube_VAO, struct kemoview_shaders *kemo_shaders){
+				  struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO, 
+				  struct kemoview_shaders *kemo_shaders){
 	glDeleteLists(view_s->gl_drawID, 1);
 	glNewList(view_s->gl_drawID, GL_COMPILE_AND_EXECUTE);
 	
@@ -48,8 +48,8 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 				  struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
 				  struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 				  struct fline_menu_val *fline_m, struct view_element *view_s,
-				  struct buffer_for_gl *gl_buf, struct gl_strided_buffer *strided_buf,
-				  struct VAO_ids *cube_VAO, struct kemoview_shaders *kemo_shaders){
+				  struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO, 
+				  struct kemoview_shaders *kemo_shaders){
 	int i, iflag;
 	int iflag_psf = 0;
 	
@@ -67,7 +67,7 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	
 		set_color_code_for_psfs(psf_s, psf_m, psf_a);
 		iflag_psf = draw_map_objects_VAO(psf_s, mesh_m, psf_m, psf_a, view_s, 
-					cube_VAO, kemo_shaders, map_buf, gl_buf);
+					cube_VAO, kemo_shaders, map_buf);
 		
 		free(map_buf->v_buf);
 		free(map_buf);

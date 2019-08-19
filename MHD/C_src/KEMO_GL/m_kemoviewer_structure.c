@@ -17,7 +17,6 @@ struct kemoviewer_type{
     struct fline_menu_val     *fline_m;
     
     struct view_element       *view_s;
-	struct buffer_for_gl      *gl_buf;
 	struct gl_strided_buffer  *strided_buf;
 	struct kemoview_shaders   *kemo_shaders;
 	struct VAO_ids *cube_VAO;
@@ -42,7 +41,6 @@ void kemoview_allocate_pointers(){
 	int i;
 	
 	kemo_sgl->view_s = (struct view_element *)      malloc(sizeof(struct view_element));
-	kemo_sgl->gl_buf = (struct buffer_for_gl *)     malloc(sizeof(struct buffer_for_gl));
 	
 	kemo_sgl->view_s->iflag_shading_profile = 0;
 	kemo_sgl->kemo_shaders = init_kemoview_shaders();
@@ -116,7 +114,6 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	free(kemoviewer_data->psf_d);
 	free(kemoviewer_data->psf_m);
     
-	free(kemoviewer_data->gl_buf);
 	free(kemoviewer_data->view_s);
 	
 	free(kemoviewer_data->psf_ucd_tmp);
@@ -165,16 +162,14 @@ void kemoview_draw_objects_c(){
     /*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
 	draw_objects(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
                  kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
-				 kemo_sgl->gl_buf, kemo_sgl->strided_buf, kemo_sgl->cube_VAO, 
-				 kemo_sgl->kemo_shaders);
+				 kemo_sgl->strided_buf, kemo_sgl->cube_VAO, kemo_sgl->kemo_shaders);
 	return;
 };
 void kemoview_draw_objects_gl3(){
 	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
 	draw_objects_gl3(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
 				 kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
-				 kemo_sgl->gl_buf, kemo_sgl->strided_buf, kemo_sgl->cube_VAO, 
-				 kemo_sgl->kemo_shaders);
+				 kemo_sgl->strided_buf, kemo_sgl->cube_VAO, kemo_sgl->kemo_shaders);
 	return;
 };
 
