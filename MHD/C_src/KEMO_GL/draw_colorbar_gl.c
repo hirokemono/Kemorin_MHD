@@ -10,8 +10,7 @@ static const GLfloat black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 			GLfloat text_color[4], GLfloat bg_color[4], 
 			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
-			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders,
-			struct gl_strided_buffer *cbar_buf){
+			struct VAO_ids **cbar_VAO, struct gl_strided_buffer *cbar_buf){
 	int num_patch;
 	int inum_quad;
 	
@@ -68,11 +67,8 @@ void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	return;
 };
 
-void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
-			GLfloat text_color[4], GLfloat bg_color[4], 
-			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
-			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders,
-			struct gl_strided_buffer *cbar_buf){
+void draw_colorbar_VAO(struct cbar_work *cbar_wk,
+			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders){
 	GLdouble orthogonal[16];
 	orthogonal_glmat_c(0.0, cbar_wk->xwin, 0.0, cbar_wk->ywin, -1.0, 1.0, orthogonal);
 	
