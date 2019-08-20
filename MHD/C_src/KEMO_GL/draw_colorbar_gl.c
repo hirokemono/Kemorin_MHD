@@ -7,21 +7,25 @@
 
 static const GLfloat black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 
-void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
-			GLfloat text_color[4], GLfloat bg_color[4], 
-			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
-			struct VAO_ids **cbar_VAO, struct gl_strided_buffer *cbar_buf){
+void count_colorbar_box_VAO(struct cbar_work *cbar_wk, struct VAO_ids *cbar_VAO){
 	int num_patch;
-	int inum_quad;
-	
-	
-	set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win, cmap_s, cbar_wk);
 	
 	num_patch = 4 * cbar_wk->num_quad;
 	num_patch = num_patch + 2*(cbar_wk->iflag_zero + IFOUR);
-	cbar_VAO[0]->npoint_draw = ITHREE * num_patch;
-	
-	set_buffer_address_4_patch(cbar_VAO[0]->npoint_draw, cbar_buf);
+	cbar_VAO->npoint_draw = ITHREE * num_patch;
+	return;
+};
+
+void count_colorbar_text_VAO(struct cbar_work *cbar_wk,struct VAO_ids *text_VAO){
+	text_VAO->npoint_draw = ITHREE*2*(cbar_wk->iflag_zero + ITWO);
+	return;
+};
+
+void set_colorbar_box_VAO(int iflag_retina, GLfloat text_color[4], GLfloat bg_color[4], 
+			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
+			struct VAO_ids *cbar_VAO, struct gl_strided_buffer *cbar_buf){
+	int inum_quad;
+	set_buffer_address_4_patch(cbar_VAO->npoint_draw, cbar_buf);
 	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 	
 	inum_quad = 0;
@@ -29,27 +33,25 @@ void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	inum_quad = solid_colorbar_box_to_buf(inum_quad, cmap_s, cbar_wk, cbar_buf);
 	inum_quad = fade_colorbar_box_to_buf(inum_quad, cmap_s, bg_color, cbar_wk, cbar_buf);
 	
-	glGenVertexArrays(1, &cbar_VAO[0]->id_VAO);
-	glGenVertexArrays(1, &cbar_VAO[1]->id_VAO);
-	
-	
-	
-	glBindVertexArray(cbar_VAO[0]->id_VAO);
-	Const_VAO_4_Simple(cbar_VAO[0], cbar_buf);
+	glBindVertexArray(cbar_VAO->id_VAO);
+	Const_VAO_4_Simple(cbar_VAO, cbar_buf);
 	glBindVertexArray(0);
 	
-	set_colorbar_text_image(text_color, cbar_wk);
 	
-	cbar_VAO[1]->npoint_draw = ITHREE*2*(cbar_wk->iflag_zero + ITWO);
-	set_buffer_address_4_patch(cbar_VAO[1]->npoint_draw, cbar_buf);
+	return;
+};
+
+void set_colorbar_text_VAO(int iflag_retina, GLfloat text_color[4], GLfloat bg_color[4], 
+			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
+			struct VAO_ids *text_VAO, struct gl_strided_buffer *cbar_buf){
+	set_buffer_address_4_patch(text_VAO->npoint_draw, cbar_buf);
 	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 	
 	colorbar_mbox_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
 	
-	glBindVertexArray(cbar_VAO[1]->id_VAO);
-	
-	glGenBuffers(1, &cbar_VAO[1]->id_vertex);
-	glBindBuffer(GL_ARRAY_BUFFER, cbar_VAO[1]->id_vertex);
+	glBindVertexArray(text_VAO->id_VAO);
+	glGenBuffers(1, &text_VAO->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, text_VAO->id_vertex);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * cbar_buf->num_nod_buf*cbar_buf->ncomp_buf,
 				 cbar_buf->v_buf, GL_STATIC_DRAW);
 	
@@ -63,6 +65,29 @@ void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	cbar_wk->id_texture = set_texture_to_buffer(IWIDTH_TXT, 3*IHIGHT_TXT, cbar_wk->numBMP);
 	glBindVertexArray(0);
+	
+	return;
+};
+
+void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
+			GLfloat text_color[4], GLfloat bg_color[4], 
+			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
+			struct VAO_ids **cbar_VAO, struct gl_strided_buffer *cbar_buf){
+	int num_patch;
+	int inum_quad;
+	
+	
+	set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win, cmap_s, cbar_wk);
+	set_colorbar_text_image(text_color, cbar_wk);
+	
+	glGenVertexArrays(1, &cbar_VAO[0]->id_VAO);
+	glGenVertexArrays(1, &cbar_VAO[1]->id_VAO);
+	count_colorbar_box_VAO(cbar_wk, cbar_VAO[0]);
+	count_colorbar_text_VAO(cbar_wk, cbar_VAO[1]);
+	set_colorbar_box_VAO(iflag_retina, text_color, bg_color, 
+				cmap_s, cbar_wk, cbar_VAO[0], cbar_buf);
+	set_colorbar_text_VAO(iflag_retina, text_color, bg_color, 
+				cmap_s, cbar_wk, cbar_VAO[1], cbar_buf);
 	
 	return;
 };
