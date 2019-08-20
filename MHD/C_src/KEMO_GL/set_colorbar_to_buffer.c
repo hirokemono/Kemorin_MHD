@@ -62,8 +62,9 @@ static void set_one_texture_to_buf(int i_quad,
 	return;
 };
 
-void solid_colorbar_box_to_buf(struct colormap_params *cmap_s, 
+int solid_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, 
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
+	int inum_quad = ist_quad;
 	GLfloat y1;
 	GLfloat x1[3], x2[3], x3[3], x4[3];
 	GLfloat c1[4], c2[4], c3[4], c4[4];
@@ -107,11 +108,13 @@ void solid_colorbar_box_to_buf(struct colormap_params *cmap_s,
 		
 		for(nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	};
-	return;
+	inum_quad = ist_quad + cbar_wk->num_quad;
+	return inum_quad;
 };
 
-void fade_colorbar_box_to_buf(int ist, struct colormap_params *cmap_s, GLfloat *bg_color, 
+int fade_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, GLfloat *bg_color, 
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
+	int inum_quad = ist_quad;
 	GLfloat y1;
 	GLfloat x1[3], x2[3], x3[3], x4[3];
 	GLfloat c1[4], c2[4], c3[4], c4[4];
@@ -163,14 +166,15 @@ void fade_colorbar_box_to_buf(int ist, struct colormap_params *cmap_s, GLfloat *
 		x4[1] = y1 + cbar_wk->ydelta;
 		for(nd=0;nd<4;nd++) {c4[nd] = f_color[nd];};
 		
-		set_one_quad_to_buf(ist+i, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+		set_one_quad_to_buf(ist_quad+i, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 		
 		for (nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	};
-	return;
+	inum_quad = ist_quad + cbar_wk->num_quad;
+	return inum_quad;
 };
 
-void colorbar_frame_to_buf(int iflag_retina, GLfloat *text_color,
+int colorbar_frame_to_buf(int ist_quad, int iflag_retina, GLfloat *text_color,
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
 	GLfloat x1[3], x2[3], x3[3], x4[3];
 	GLfloat c1[4], c2[4], c3[4], c4[4];
@@ -197,7 +201,7 @@ void colorbar_frame_to_buf(int iflag_retina, GLfloat *text_color,
 	
 	x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
 	x4[1] = cbar_wk->ybar_max + iflag_retina + 1;
-	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+	set_one_quad_to_buf(ist_quad+1, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 	
 	
 	x1[0] = cbar_wk->xbar_max;
@@ -211,7 +215,7 @@ void colorbar_frame_to_buf(int iflag_retina, GLfloat *text_color,
 	
 	x4[0] = cbar_wk->xbar_max;
 	x4[1] = cbar_wk->ybar_max + iflag_retina + 1;
-	set_one_quad_to_buf(1, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+	set_one_quad_to_buf(ist_quad+1, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 	
 	
 	x1[0] = cbar_wk->xbar_min - iflag_retina - 1;
@@ -225,7 +229,7 @@ void colorbar_frame_to_buf(int iflag_retina, GLfloat *text_color,
 	
 	x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
 	x4[1] = cbar_wk->ybar_min;
-	set_one_quad_to_buf(2, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+	set_one_quad_to_buf(ist_quad+2, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 	
 	
 	x1[0] = cbar_wk->xbar_min - iflag_retina - 1;
@@ -239,7 +243,7 @@ void colorbar_frame_to_buf(int iflag_retina, GLfloat *text_color,
 	
 	x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
 	x4[1] = cbar_wk->ybar_max + iflag_retina + 1;
-	set_one_quad_to_buf(3, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+	set_one_quad_to_buf(ist_quad+3, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 	
 	if(cbar_wk->iflag_zero == 1){
 		x1[0] = cbar_wk->xbar_min - iflag_retina - 1;
@@ -253,9 +257,9 @@ void colorbar_frame_to_buf(int iflag_retina, GLfloat *text_color,
 		
 		x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
 		x4[1] = cbar_wk->yline_zero;
-		set_one_quad_to_buf(4, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+		set_one_quad_to_buf(ist_quad+4, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 	};
-	return;
+	return (ist_quad+4);
 };
 
 void colorbar_mbox_to_buf(int iflag_retina, GLfloat *text_color,

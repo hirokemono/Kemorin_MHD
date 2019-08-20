@@ -145,8 +145,6 @@ void set_PSF_solid_objects_VAO(int shading_mode,
 	glBindVertexArray(psf_solid_VAO[1]->id_VAO);
 	set_PSF_texture_VAO(shading_mode, IZERO, psf_a->istack_solid_psf_txtur, 
 				psf_s, psf_m, psf_a, psf_solid_VAO[1], psf_buf);
-	if(psf_solid_VAO[1]->npoint_draw >0){
-	};
 	
 	glGenVertexArrays(1, &psf_solid_VAO[0]->id_VAO);
 	set_PSF_patch_VAO(shading_mode, psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 

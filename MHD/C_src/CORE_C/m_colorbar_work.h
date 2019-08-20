@@ -37,6 +37,7 @@ struct cbar_work{
 	char maxlabel[20];
 	char zerolabel[20];
 	
+	int id_texture;
 	unsigned char numBMP[12*IHIGHT_TXT*IWIDTH_TXT];
 	unsigned char testBMP[9*IHIGHT_TXT*IWIDTH_TXT];
 };

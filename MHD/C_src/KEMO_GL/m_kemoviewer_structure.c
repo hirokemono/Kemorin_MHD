@@ -72,8 +72,8 @@ void kemoview_allocate_pointers(){
 		kemo_sgl->psf_trans_VAO[i] =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 
-	kemo_sgl->grid_VAO =     (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids));
-	for(i=0;i<3;i++){
+	kemo_sgl->grid_VAO =     (struct VAO_ids **) malloc(5*sizeof(struct VAO_ids));
+	for(i=0;i<5;i++){
 		kemo_sgl->grid_VAO[i] =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 

@@ -52,8 +52,8 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		iflag_psf = check_draw_map(psf_a);
 	 	draw_map_objects_VAO(mesh_m, view_s, psf_solid_VAO, grid_VAO, kemo_shaders);
 	} else {
-		draw_axis_VAO(view_s, grid_VAO[2], kemo_shaders);
-		draw_fieldlines_VAO(fline_m, view_s, grid_VAO[2], kemo_shaders);
+		draw_axis_VAO(view_s, &grid_VAO[2], kemo_shaders);
+		draw_fieldlines_VAO(fline_m, view_s, &grid_VAO[2], kemo_shaders);
 		
 		 iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
 		 iflag_psf = iflag_psf + check_draw_psf(psf_a);
@@ -219,7 +219,7 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 							view_s->nx_window, view_s->ny_window,
 							mesh_m->text_color, mesh_m->bg_color, 
 							psf_m[i]->cmap_psf, psf_m[i]->cbar_wk,
-							cube_VAO, kemo_shaders, cbar_buf);
+							&grid_VAO[3], kemo_shaders, cbar_buf);
 			};
 		};
 	};
