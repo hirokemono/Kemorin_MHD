@@ -256,8 +256,11 @@ void alloc_kemoview_array(struct kemo_array_control *psf_a){
 	
 	return;
 };
-void init_kemoview_array(int ntot_psf_data, struct kemo_array_control *psf_a){
+void set_max_psf_loading(int ntot_psf_data, struct kemo_array_control *psf_a){
 	psf_a->nlimit_loaded = ntot_psf_data;
+	return;
+};
+void init_kemoview_array(struct kemo_array_control *psf_a){
 	psf_a->num_loaded =  0;
 	psf_a->nmax_loaded = 0;
 	psf_a->id_current =  0;
@@ -367,4 +370,38 @@ void set_fline_color_component(int selected, struct psf_data *fline_s,
 			fline_s->data_name[fline_m->if_draw_fline], fline_m->icomp_draw_fline);
 	return;
 }
+
+
+int get_PSF_maximum_load(struct kemo_array_control *psf_a){
+	return psf_a->nlimit_loaded;
+};
+
+void psf_viewer_evolution(int istep, struct kemo_array_control *psf_a){
+    psf_a->istep_sync = istep;
+};
+
+void set_PSF_num_loaded(int num, struct kemo_array_control *psf_a){
+	psf_a->num_loaded = num;
+};
+void set_PSF_max_loaded(int num, struct kemo_array_control *psf_a){
+	psf_a->nmax_loaded = num;
+};
+void set_loaded_PSF_flag(int id_psf, int iflag, struct kemo_array_control *psf_a){
+	psf_a->iflag_loaded[id_psf] = iflag;
+};
+void set_current_PSF_to_menu(int id_psf, struct kemo_array_control *psf_a){
+	psf_a->id_current = id_psf;
+};
+
+int get_PSF_num_loaded(struct kemo_array_control *psf_a){return psf_a->num_loaded;};
+int get_PSF_max_loaded(struct kemo_array_control *psf_a){return psf_a->nmax_loaded;};
+int get_PSF_loaded_flag(int id_psf, struct kemo_array_control *psf_a){
+	return psf_a->iflag_loaded[id_psf];
+};
+int get_curent_PSF_ID(struct kemo_array_control *psf_a){return psf_a->id_current;};
+int get_curent_PSF_filename(struct kemo_array_control *psf_a){return psf_a->id_current;};
+
+int get_PSF_draw_switch(struct kemo_array_control *psf_a){
+	return psf_a->iflag_loaded[psf_a->id_current];
+};
 

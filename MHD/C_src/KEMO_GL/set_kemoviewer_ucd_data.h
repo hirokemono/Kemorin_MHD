@@ -10,6 +10,7 @@
 #ifndef  SET_KEMOVIEWER_UCD_DATA_
 #define  SET_KEMOVIEWER_UCD_DATA_
 
+#include "m_kemoview_psf.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "m_kemoview_mesh_menu.h"
 #include "m_kemoviewer_menu.h"
@@ -22,7 +23,6 @@
 
 int set_data_format_flag(const char *file_name, char *file_head, char *file_ext);
 int kemoviewer_open_data(struct kv_string *filename, struct viewer_mesh *mesh_d, struct mesh_menu_val *mesh_m, 
-					  struct kemo_array_control *psf_a, struct psf_data **psf_d, struct psf_menu_val **psf_m, 
-					  struct psf_data *fline_d, struct fline_menu_val *fline_m, 
-					  struct psf_data *ucd_tmp, struct view_element *view);
+			struct kemoview_psf *kemo_psf, struct psf_data *fline_d, struct fline_menu_val *fline_m, 
+			struct psf_data *ucd_tmp, struct view_element *view);
 #endif

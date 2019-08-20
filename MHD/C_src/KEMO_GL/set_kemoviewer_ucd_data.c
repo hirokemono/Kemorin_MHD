@@ -162,9 +162,8 @@ static void init_draw_fline(struct mesh_menu_val *mesh_m,
 };
 
 int kemoviewer_open_data(struct kv_string *filename, struct viewer_mesh *mesh_d, struct mesh_menu_val *mesh_m, 
-                       struct kemo_array_control *psf_a, struct psf_data **psf_d, struct psf_menu_val **psf_m,
-                       struct psf_data *fline_d, struct fline_menu_val *fline_m, 
-                       struct psf_data *ucd_tmp, struct view_element *view){
+			struct kemoview_psf *kemo_psf, struct psf_data *fline_d, struct fline_menu_val *fline_m, 
+			struct psf_data *ucd_tmp, struct view_element *view){
 	int iflag_datatype;
 	int iflag_fileformat;
 	int istep;
@@ -202,7 +201,7 @@ int kemoviewer_open_data(struct kv_string *filename, struct viewer_mesh *mesh_d,
 		iflag_datatype = check_gzip_psf_grd_first(iflag_fileformat, ucd_header->string, ucd_tmp);
 		if(iflag_datatype != 0){
 			check_gzip_psf_udt_first(iflag_fileformat, istep, ucd_header->string, ucd_tmp);
-			init_draw_psf(mesh_m, psf_a, psf_d, psf_m, ucd_tmp, 
+			init_draw_psf(mesh_m, kemo_psf->psf_a, kemo_psf->psf_d, kemo_psf->psf_m, ucd_tmp, 
 						iflag_fileformat, istep, ucd_header->string);
 		} else{
 			dealloc_psf_mesh_c(ucd_tmp);
@@ -215,7 +214,7 @@ int kemoviewer_open_data(struct kv_string *filename, struct viewer_mesh *mesh_d,
 		iflag_datatype = check_gzip_kemoview_ucd_first(iflag_fileformat, istep, ucd_header->string, ucd_tmp);
 
         if(iflag_datatype == IFLAG_SURFACES){
-			init_draw_psf(mesh_m, psf_a, psf_d, psf_m, ucd_tmp, 
+			init_draw_psf(mesh_m, kemo_psf->psf_a, kemo_psf->psf_d, kemo_psf->psf_m, ucd_tmp, 
 						iflag_fileformat, istep, ucd_header->string);
 		} else if(iflag_datatype == IFLAG_LINES){
 			init_draw_fline(mesh_m, fline_d, fline_m, ucd_tmp, 
@@ -229,12 +228,13 @@ int kemoviewer_open_data(struct kv_string *filename, struct viewer_mesh *mesh_d,
 	};
     
     if ( mesh_m->iflag_draw_mesh == IZERO ) {
-        cal_psf_viewer_range(psf_d, psf_a, fline_d, fline_m, view);
+        cal_psf_viewer_range(kemo_psf->psf_d, kemo_psf->psf_a, fline_d, fline_m, view);
         reset_light_by_size_of_domain(view->r_max);
         reset_to_init_angle(view);
     };
 	
 	dealloc_kvstring(ucd_header);
 	dealloc_kvstring(file_head_w_step);
+	
 	return iflag_datatype;
 }

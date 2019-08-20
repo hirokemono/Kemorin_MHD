@@ -85,9 +85,8 @@ void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
                  GL_RGB, GL_UNSIGNED_BYTE,(GLubyte *) glimage);
 }
 
-void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s, 
+void draw_objects(struct viewer_mesh *mesh_s, struct kemoview_psf *kemo_psf, 
 			struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
-			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 			struct fline_menu_val *fline_m, struct view_element *view_s,
 			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
 	glDeleteLists(view_s->gl_drawID, 1);
@@ -99,9 +98,8 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 }
 
 
-void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s, 
+void draw_objects_gl3(struct viewer_mesh *mesh_s, struct kemoview_psf *kemo_psf, 
 			struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
-			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 			struct fline_menu_val *fline_m, struct view_element *view_s,
 			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
 	int i;
@@ -114,18 +112,19 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 //	modify_view_by_struct(view_s);
 	
 	if(mesh_m->iflag_view_type == VIEW_MAP) {
-		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
-		iflag_psf = check_draw_map(psf_a);
+		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, view_s);
+		iflag_psf = check_draw_map(kemo_psf->psf_a);
 		draw_map_objects_VAO(mesh_m, view_s, 
 					kemo_VAOs->psf_solid_VAO, kemo_VAOs->grid_VAO, kemo_shaders);
 	} else {
 		draw_axis_VAO(view_s, kemo_VAOs->grid_VAO[2], kemo_shaders);
 		draw_fieldlines_VAO(fline_m, view_s, kemo_VAOs->fline_VAO, kemo_shaders);
 		
-		 iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
-		 iflag_psf = iflag_psf + check_draw_psf(psf_a);
-		 draw_PSF_solid_objects_VAO(mesh_m->shading_mode, psf_s, psf_m, psf_a, view_s, 
-									kemo_VAOs->psf_solid_VAO, kemo_shaders);
+		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
+					kemo_psf->psf_a, view_s);
+		iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
+		draw_PSF_solid_objects_VAO(mesh_m->shading_mode, kemo_psf->psf_d, kemo_psf->psf_m,
+					kemo_psf->psf_a, view_s, kemo_VAOs->psf_solid_VAO, kemo_shaders);
 		
 		if(mesh_m->iflag_draw_mesh != 0){
 			draw_solid_mesh_VAO(mesh_m, view_s, 
@@ -134,8 +133,8 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		
 		draw_coastline_grid_VBO(view_s, kemo_VAOs->grid_VAO, kemo_shaders);
 		
-		draw_PSF_trans_objects_VAO(mesh_m->shading_mode, psf_s, psf_m, psf_a, 
-								   view_s, kemo_VAOs->psf_trans_VAO, kemo_shaders);
+		draw_PSF_trans_objects_VAO(mesh_m->shading_mode, kemo_psf->psf_d, kemo_psf->psf_m,
+					kemo_psf->psf_a, view_s, kemo_VAOs->psf_trans_VAO, kemo_shaders);
 		if(mesh_m->iflag_draw_mesh != 0){
 			set_trans_mesh_VAO(mesh_s, mesh_m, view_s, kemo_VAOs->mesh_trans_VAO);
 			draw_trans_mesh_VAO(mesh_m, view_s, 
@@ -144,10 +143,10 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	};
 	
     /* Draw Color bar */
-	for(i=0; i<psf_a->nmax_loaded; i++){
-		iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
+	for(i=0; i<kemo_psf->psf_a->nmax_loaded; i++){
+		iflag_psf = iflag_psf + kemo_psf->psf_a->iflag_loaded[i];
 	};
-	draw_colorbar_VAO(psf_a->cbar_wk, kemo_VAOs->cbar_VAO, kemo_shaders);
+	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO, kemo_shaders);
 	
 	/* draw example cube for empty data */
 	if( (mesh_m->iflag_draw_mesh+iflag_psf+fline_m->iflag_draw_fline) == 0){
@@ -156,9 +155,8 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	return;
 }
 
-void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s, 
+void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct kemoview_psf *kemo_psf, 
 			struct psf_data *fline_s, struct mesh_menu_val *mesh_m,
-			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 			struct fline_menu_val *fline_m, struct view_element *view_s,
 			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
 	int i;
@@ -171,10 +169,12 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 		
 	
 	if(mesh_m->iflag_view_type == VIEW_MAP) {
-		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
-		iflag_psf = check_draw_map(psf_a);
-		set_map_objects_VAO(view_s->iflag_retina, psf_s, mesh_m, psf_m, psf_a, 
-							 kemo_VAOs->psf_solid_VAO, kemo_VAOs->grid_VAO);
+		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
+					kemo_psf->psf_a, view_s);
+		iflag_psf = check_draw_map(kemo_psf->psf_a);
+		set_map_objects_VAO(view_s->iflag_retina, kemo_psf->psf_d, 
+					mesh_m, kemo_psf->psf_m, kemo_psf->psf_a, 
+					kemo_VAOs->psf_solid_VAO, kemo_VAOs->grid_VAO);
 		draw_map_objects_VAO(mesh_m, view_s,
 					kemo_VAOs->psf_solid_VAO, kemo_VAOs->grid_VAO, kemo_shaders);
 	} else {
@@ -185,12 +185,13 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 		sel_fieldlines_VAO(fline_s, fline_m, kemo_VAOs->fline_VAO);
 		draw_fieldlines_VAO(fline_m, view_s, kemo_VAOs->fline_VAO, kemo_shaders);
 		
-		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
-		iflag_psf = iflag_psf + check_draw_psf(psf_a);
-		set_PSF_solid_objects_VAO(mesh_m->shading_mode, psf_s, psf_m, psf_a,
-								  kemo_VAOs->psf_solid_VAO);
-		draw_PSF_solid_objects_VAO(mesh_m->shading_mode, psf_s, psf_m, psf_a, view_s,
-								  kemo_VAOs->psf_solid_VAO, kemo_shaders);
+		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
+					kemo_psf->psf_a, view_s);
+		iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
+		set_PSF_solid_objects_VAO(mesh_m->shading_mode, kemo_psf->psf_d, kemo_psf->psf_m,
+					kemo_psf->psf_a, kemo_VAOs->psf_solid_VAO);
+		draw_PSF_solid_objects_VAO(mesh_m->shading_mode, kemo_psf->psf_d, kemo_psf->psf_m,
+					kemo_psf->psf_a, view_s, kemo_VAOs->psf_solid_VAO, kemo_shaders);
 		
 	
 		if(mesh_m->iflag_draw_mesh != 0){
@@ -204,7 +205,8 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 		
 		/* Draw Transparent Objects */
 		draw_PSF_trans_objects_VAO(mesh_m->shading_mode, 
-					psf_s, psf_m, psf_a, view_s, kemo_VAOs->psf_trans_VAO, kemo_shaders);
+					kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, 
+					view_s, kemo_VAOs->psf_trans_VAO, kemo_shaders);
 		
 		if(mesh_m->iflag_draw_mesh != 0){
 			set_trans_mesh_VAO(mesh_s, mesh_m, view_s, kemo_VAOs->mesh_trans_VAO);
@@ -215,13 +217,14 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 	
 	
     /* Draw Color bar */
-	for(i=0; i<psf_a->nmax_loaded; i++){
-		iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
+	for(i=0;i<kemo_psf->psf_a->nmax_loaded; i++){
+		iflag_psf = iflag_psf + kemo_psf->psf_a->iflag_loaded[i];
 	};
 	
 	set_colorbar_VAO(view_s->iflag_retina, view_s->nx_window, view_s->ny_window,
-				mesh_m->text_color, mesh_m->bg_color, psf_m, psf_a, kemo_VAOs->cbar_VAO);
-	draw_colorbar_VAO(psf_a->cbar_wk, kemo_VAOs->cbar_VAO, kemo_shaders);
+				mesh_m->text_color, mesh_m->bg_color, kemo_psf->psf_m, kemo_psf->psf_a,
+				kemo_VAOs->cbar_VAO);
+	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO, kemo_shaders);
 	
 	/* draw example cube for empty data */
 	if( (mesh_m->iflag_draw_mesh+iflag_psf+fline_m->iflag_draw_fline) == 0){

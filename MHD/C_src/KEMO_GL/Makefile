@@ -8,6 +8,7 @@ m_phong_light_table_c.o \
 m_gl_transfer_matrix.o \
 m_kemoview_mesh_menu.o \
 m_kemoviewer_menu.o \
+m_kemoview_psf.o \
 m_kemoviewer_structure.o \
 \
 write_modelview_matrix.o \
@@ -254,6 +255,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/m_kemoviewer_structure.c \
 	m_kemoviewer_structure.h \
 	kemoviewer.h \
+	m_kemoview_psf.o \
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
 	m_gl_transfer_matrix.o \
@@ -304,6 +306,19 @@ module:
 	m_color_table_c.o \
 	m_colorbar_work.o \
     set_rgba_table_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	m_kemoview_psf.o: \
+	'$$(KEMO_C_GLDIR)'/m_kemoview_psf.c \
+	kemoviewer.h \
+	m_kemoview_psf.h \
+	m_kemoviewer_menu.o \
+	m_psf_data_4_viewer_c.o \
+	read_data_4_kemoviewer.o \
+	psf_data_array_manager.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -552,6 +567,8 @@ module:
 	move_draw_objects_gl.o: \
 	'$$(KEMO_C_GLDIR)'/move_draw_objects_gl.c \
 	move_draw_objects_gl.h \
+	kemoviewer.h \
+	m_kemoview_psf.o \
 	m_kemoview_mesh_menu.o \
 	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
@@ -604,13 +621,14 @@ module:
 	set_kemoviewer_ucd_data.o: \
 	'$$(KEMO_C_GLDIR)'/set_kemoviewer_ucd_data.c \
 	set_kemoviewer_ucd_data.h \
+	m_kemoview_psf.o \
 	m_psf_data_4_viewer_c.o \
-	skip_comment_c.o \
 	m_kemoview_mesh_menu.o \
 	m_kemoviewer_menu.o \
 	m_gl_transfer_matrix.o \
 	read_data_4_kemoviewer.o \
 	psf_data_array_manager.o \
+	skip_comment_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

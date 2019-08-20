@@ -9,17 +9,15 @@ struct kemoviewer_type{
     struct viewer_mesh        *mesh_d;
     struct mesh_menu_val      *mesh_m;
     
-    struct kemo_array_control   *psf_a;
-    struct psf_data            **psf_d;
-    struct psf_menu_val        **psf_m;
-    
+	struct kemoview_psf       *kemo_psf;
+	
     struct psf_data           *fline_d;
     struct fline_menu_val     *fline_m;
     
     struct view_element       *view_s;
 	struct kemoview_shaders   *kemo_shaders;
 	struct kemoview_VAOs      *kemo_VAOs;
-	struct VAO_ids *menu_VAO;
+	struct VAO_ids            *menu_VAO;
 	
 	struct psf_menu_val       *psf_current_menu;
 	struct psf_data           *psf_current_data;
@@ -51,16 +49,7 @@ void kemoview_allocate_pointers(){
 	kemo_sgl->mesh_m =  (struct mesh_menu_val *)     malloc(sizeof(struct mesh_menu_val));
 	kemo_sgl->fline_m = (struct fline_menu_val *)    malloc(sizeof(struct fline_menu_val));
 	
-	kemo_sgl->psf_a =  (struct kemo_array_control *) malloc(sizeof(struct kemo_array_control));
-	kemo_sgl->psf_a->nlimit_loaded = NMAX_PSF;
-	
-	kemo_sgl->psf_d =  (struct psf_data **)     malloc(NMAX_PSF*sizeof(struct psf_data *));
-	kemo_sgl->psf_m =  (struct psf_menu_val **) malloc(NMAX_PSF*sizeof(struct psf_menu_val *));
-	for(i=0;i<kemo_sgl->psf_a->nlimit_loaded;i++){
-		kemo_sgl->psf_d[i] =   (struct psf_data *) malloc(sizeof(struct psf_data));
-		kemo_sgl->psf_m[i] =   (struct psf_menu_val *) malloc(sizeof(struct psf_menu_val));
-		init_psf_parameters(kemo_sgl->psf_m[i]);
-	}
+	kemo_sgl->kemo_psf = init_kemoview_psf();
 	
 	kemo_sgl->psf_ucd_tmp =    (struct psf_data *)          malloc(sizeof(struct psf_data));
 	return;
@@ -73,7 +62,7 @@ void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, i
     kemo_sgl = kemoviewer_data;
 	kemoview_allocate_pointers();
     
-	init_kemoview_array(kemo_sgl->psf_a->nlimit_loaded, kemo_sgl->psf_a);
+	init_kemoview_array(kemo_sgl->kemo_psf->psf_a);
     
 	init_kemoviewer(iflag_dmesh, kemo_sgl->mesh_d, kemo_sgl->mesh_m, kemo_sgl->view_s);
 	init_fline_parameters(kemo_sgl->fline_m);
@@ -89,7 +78,7 @@ void kemoview_allocate_single_viwewer_struct(struct kemoviewer_type *kemoviewer_
     kemo_sgl = kemoviewer_data;
 	kemoview_allocate_pointers();
     
-	init_kemoview_array(kemo_sgl->psf_a->nlimit_loaded, kemo_sgl->psf_a);
+	init_kemoview_array(kemo_sgl->kemo_psf->psf_a);
     
 	init_kemoviewer(IZERO, kemo_sgl->mesh_d, kemo_sgl->mesh_m, kemo_sgl->view_s);
 	init_fline_parameters(kemo_sgl->fline_m);
@@ -99,27 +88,24 @@ void kemoview_allocate_single_viwewer_struct(struct kemoviewer_type *kemoviewer_
 
 void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	int i;
-	for(i=0;i<kemoviewer_data->psf_a->nlimit_loaded;i++){
-		free(kemoviewer_data->psf_d[i]);
-		free(kemoviewer_data->psf_m[i]);
-	}
 	
 	free(kemoviewer_data->mesh_d);
-	free(kemoviewer_data->psf_a);
 	free(kemoviewer_data->fline_d);
 	free(kemoviewer_data->mesh_m);
 	free(kemoviewer_data->fline_m);
-	free(kemoviewer_data->psf_d);
-	free(kemoviewer_data->psf_m);
     
 	free(kemoviewer_data->view_s);
 	
 	free(kemoviewer_data->psf_ucd_tmp);
 	
+	dealloc_kemoview_psf(kemoviewer_data->kemo_psf);
+	dealloc_kemoview_VAOs(kemoviewer_data->kemo_VAOs);
 	return;
 }
 
-int kemoview_get_PSF_maximum_load(){return kemo_sgl->psf_a->nlimit_loaded;};
+int kemoview_get_PSF_maximum_load(){
+	return get_PSF_maximum_load(kemo_sgl->kemo_psf->psf_a);
+};
 
 void kemoview_alloc_kvstringitem(int length, struct kv_string *kvstring){
 	alloc_kvstringitem(length, kvstring);
@@ -158,8 +144,8 @@ int kemoview_get_current_viewer_id(){return kemo_sgl->window_ID;};
 
 void kemoview_draw_objects_c(){
     /*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
-	draw_objects(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
-				kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
+	draw_objects(kemo_sgl->mesh_d, kemo_sgl->kemo_psf, kemo_sgl->fline_d, 
+				kemo_sgl->mesh_m, kemo_sgl->fline_m, kemo_sgl->view_s, 
 				kemo_sgl->kemo_VAOs, kemo_sgl->kemo_shaders);
 	return;
 };
@@ -169,16 +155,16 @@ void kemoview_draw_fast_gl3(){
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glDrawBuffer(GL_BACK);
 	
-	draw_objects_gl3(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
-				kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
+	draw_objects_gl3(kemo_sgl->mesh_d, kemo_sgl->kemo_psf, kemo_sgl->fline_d, 
+				kemo_sgl->mesh_m, kemo_sgl->fline_m, kemo_sgl->view_s, 
 				kemo_sgl->kemo_VAOs, kemo_sgl->kemo_shaders);
 	
 	return;
 };
 void kemoview_draw_objects_gl3(){
 	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
-	update_draw_objects_gl3(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
-				kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
+	update_draw_objects_gl3(kemo_sgl->mesh_d, kemo_sgl->kemo_psf, kemo_sgl->fline_d,
+				kemo_sgl->mesh_m, kemo_sgl->fline_m, kemo_sgl->view_s, 
 				kemo_sgl->kemo_VAOs, kemo_sgl->kemo_shaders);
 	return;
 };
@@ -218,13 +204,12 @@ int kemoview_set_data_format_flag(struct kv_string *filename,
 int kemoview_open_data(struct kv_string *filename){
 	int iflag_datatype;
 	iflag_datatype = kemoviewer_open_data(filename, kemo_sgl->mesh_d, kemo_sgl->mesh_m,
-				kemo_sgl->psf_a, kemo_sgl->psf_d, kemo_sgl->psf_m,
-				kemo_sgl->fline_d, kemo_sgl->fline_m,
+				kemo_sgl->kemo_psf, kemo_sgl->fline_d, kemo_sgl->fline_m,
 				kemo_sgl->psf_ucd_tmp,kemo_sgl->view_s);
     
-	if (kemo_sgl->psf_a->id_current >= IZERO) {
-		kemo_sgl->psf_current_data = kemo_sgl->psf_d[kemo_sgl->psf_a->id_current];
-		kemo_sgl->psf_current_menu = kemo_sgl->psf_m[kemo_sgl->psf_a->id_current];
+	if (kemo_sgl->kemo_psf->psf_a->id_current >= IZERO) {
+		kemo_sgl->psf_current_data = kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current];
+		kemo_sgl->psf_current_menu = kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current];
 	};
     
 	return iflag_datatype;
@@ -238,15 +223,7 @@ void kemoview_close_mesh_view(){
 }
 
 int kemoview_close_PSF_view(){
-	dealloc_draw_psf_flags(kemo_sgl->psf_d[kemo_sgl->psf_a->id_current],
-                           kemo_sgl->psf_m[kemo_sgl->psf_a->id_current]);
-	deallc_all_psf_data(kemo_sgl->psf_d[kemo_sgl->psf_a->id_current]);
-	
-	set_close_current_kemoview_array(kemo_sgl->psf_a);
-    
-	kemo_sgl->psf_current_data = kemo_sgl->psf_d[kemo_sgl->psf_a->id_current];
-	kemo_sgl->psf_current_menu = kemo_sgl->psf_m[kemo_sgl->psf_a->id_current];
-    
+	close_PSF_view(kemo_sgl->kemo_psf, kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu);
 	return kemoview_get_PSF_num_loaded();
 }
 
@@ -275,34 +252,19 @@ void kemoview_load_modelview_file(struct kv_string *filename){
 
 
 
-static void evolution_psf_viewer(){
-	int id_load;
-	printf("Loading PSF %d \n",kemo_sgl->psf_a->nmax_loaded);
-	for(id_load=0; id_load<kemo_sgl->psf_a->nmax_loaded; id_load++){
-		if(kemo_sgl->psf_a->iflag_loaded[id_load] > 0){
-			printf("Loaded PSF file %d %d %s\n",id_load, kemo_sgl->psf_m[id_load]->iflag_psf_file,
-                   kemo_sgl->psf_m[id_load]->psf_header->string);
-			kemo_sgl->psf_m[id_load]->psf_step = kemo_sgl->psf_a->istep_sync;
-			evolution_PSF_data(kemo_sgl->psf_d[id_load], kemo_sgl->psf_ucd_tmp, kemo_sgl->psf_m[id_load]);
-		};
-	}
-	
-	return;
-}
-
 int evolution_fline_viewer(){
 	int ierr;
 	if (kemo_sgl->fline_m->iflag_draw_fline > 0) {
-		kemo_sgl->fline_m->fline_step = kemo_sgl->psf_a->istep_sync;
+		kemo_sgl->fline_m->fline_step = kemo_sgl->kemo_psf->psf_a->istep_sync;
 		ierr = refresh_FLINE_data(kemo_sgl->fline_d, kemo_sgl->psf_ucd_tmp, kemo_sgl->fline_m);
 	}
 	return ierr;
 }
 
 void kemoview_viewer_evolution(int istep){
-    kemo_sgl->psf_a->istep_sync = istep;
+	psf_viewer_evolution(istep, kemo_sgl->kemo_psf->psf_a);
     evolution_fline_viewer();
-    evolution_psf_viewer();
+    evolution_psf_viewer(kemo_sgl->psf_ucd_tmp, kemo_sgl->kemo_psf);
 	return;
 }
 
@@ -713,20 +675,30 @@ void kemoview_draw_glut_menubottun(){
 //void kemoview_draw_glut_menubottun3(){draw_menubottun_gl3();}
 
 /* Subroutines for surface rendering */
-void kemoview_set_PSF_num_loaded(int num){kemo_sgl->psf_a->num_loaded = num;};
-void kemoview_set_PSF_max_loaded(int num){kemo_sgl->psf_a->nmax_loaded = num;};
-void kemoview_set_loaded_PSF_flag(int id_psf, int iflag){kemo_sgl->psf_a->iflag_loaded[id_psf] = iflag;};
+void kemoview_set_PSF_num_loaded(int num){
+	set_PSF_num_loaded(num, kemo_sgl->kemo_psf->psf_a);
+};
+void kemoview_set_PSF_max_loaded(int num){
+	set_PSF_max_loaded(num, kemo_sgl->kemo_psf->psf_a);
+};
+void kemoview_set_loaded_PSF_flag(int id_psf, int iflag){
+	set_loaded_PSF_flag(id_psf, iflag, kemo_sgl->kemo_psf->psf_a);
+};
 void kemoview_set_current_PSF(int id_psf){
-    kemo_sgl->psf_a->id_current = id_psf;
-    kemo_sgl->psf_current_data = kemo_sgl->psf_d[kemo_sgl->psf_a->id_current];
-    kemo_sgl->psf_current_menu = kemo_sgl->psf_m[kemo_sgl->psf_a->id_current];
+	set_current_PSF_to_menu(id_psf, kemo_sgl->kemo_psf->psf_a);
+    kemo_sgl->psf_current_data = kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current];
+    kemo_sgl->psf_current_menu = kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current];
 }
 
-int kemoview_get_PSF_num_loaded(){return kemo_sgl->psf_a->num_loaded;};
-int kemoview_get_PSF_max_loaded(){return kemo_sgl->psf_a->nmax_loaded;};
-int kemoview_get_PSF_loaded_flag(int id_psf){return kemo_sgl->psf_a->iflag_loaded[id_psf];};
-int kemoview_get_curent_PSF_ID(){return kemo_sgl->psf_a->id_current;};
-int kemoview_get_curent_PSF_filename(){return kemo_sgl->psf_a->id_current;};
+int kemoview_get_PSF_num_loaded(){return get_PSF_num_loaded(kemo_sgl->kemo_psf->psf_a);};
+int kemoview_get_PSF_max_loaded(){return get_PSF_max_loaded(kemo_sgl->kemo_psf->psf_a);};
+int kemoview_get_PSF_loaded_flag(int id_psf){
+	return get_PSF_loaded_flag(id_psf, kemo_sgl->kemo_psf->psf_a);
+};
+int kemoview_get_curent_PSF_ID(){return get_curent_PSF_ID(kemo_sgl->kemo_psf->psf_a);};
+int kemoview_get_curent_PSF_filename(){
+	return get_curent_PSF_filename(kemo_sgl->kemo_psf->psf_a);
+};
 
 
 void kemoview_get_PSF_full_path_file_name(struct kv_string *ucd_m){
@@ -759,7 +731,7 @@ void kemoview_get_PSF_field_name(struct kv_string *colorname, int i){
     send_each_psf_data_name(kemo_sgl->psf_current_data, colorname, i);
 };
 
-int kemoview_get_PSF_draw_switch(){return kemo_sgl->psf_a->iflag_loaded[kemo_sgl->psf_a->id_current];};
+int kemoview_get_PSF_draw_switch(){get_PSF_draw_switch(kemo_sgl->kemo_psf->psf_a);};
 
 int kemoview_get_PSF_field_id()    {return send_field_draw_each_psf(kemo_sgl->psf_current_menu);};
 int kemoview_get_PSF_component_id(){return send_draw_comp_id_psf(kemo_sgl->psf_current_menu);};

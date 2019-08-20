@@ -6,6 +6,7 @@
 
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_psf_data_4_viewer_c.h"
+#include "m_kemoview_psf.h"
 #include "m_kemoviewer_menu.h"
 #include "m_gl_transfer_matrix.h"
 #include "vartex_array_object_gl.h"
