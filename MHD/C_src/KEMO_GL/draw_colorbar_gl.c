@@ -37,6 +37,8 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	solid_colorbar_box_to_buf(cmap_s, cbar_wk, cbar_buf);
 	fade_colorbar_box_to_buf(cbar_wk->num_quad, cmap_s, bg_color, cbar_wk, cbar_buf);
 	
+	glGenVertexArrays(1, &cbar_VAO->id_VAO);
+	glBindVertexArray(cbar_VAO->id_VAO);
 	Const_VAO_4_Simple(cbar_VAO, cbar_buf);
 	glBindVertexArray(0);
 	
@@ -55,6 +57,8 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	colorbar_frame_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
 	
+	glGenVertexArrays(1, &cbar_VAO->id_VAO);
+	glBindVertexArray(cbar_VAO->id_VAO);
 	Const_VAO_4_Simple(cbar_VAO, cbar_buf);
 	glBindVertexArray(0);
 	

@@ -15,6 +15,9 @@ void draw_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
 	set_psf_map_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
+	
+	glGenVertexArrays(1, &psf_VAO->id_VAO);
+	glBindVertexArray(psf_VAO->id_VAO);
 	Const_VAO_4_Simple(psf_VAO, psf_buf);
 	glBindVertexArray(0);
 	
@@ -40,6 +43,8 @@ void draw_map_PSF_isolines_VAO(struct psf_data *psf_s, struct psf_menu_val *psf_
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	inum_line = set_map_PSF_isoline_to_buf(psf_s, psf_m, psf_buf);
 	
+	glGenVertexArrays(1, &psf_VAO->id_VAO);
+	glBindVertexArray(psf_VAO->id_VAO);
 	Const_VAO_4_Simple(psf_VAO, psf_buf);
 	glBindVertexArray(0);
 	

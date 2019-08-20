@@ -18,6 +18,8 @@ void draw_sph_flame_VBO(double radius, struct view_element *view_s,
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
+	glGenVertexArrays(1, &line_VAO->id_VAO);
+	glBindVertexArray(line_VAO->id_VAO);
 	Const_VAO_4_Phong(line_VAO, line_buf);
 	glBindVertexArray(0);
 	
@@ -40,6 +42,8 @@ void draw_map_flame_VBO(const GLdouble *orthogonal,
 	resize_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
 	set_map_flame_to_buf(line_buf);
 	
+	glGenVertexArrays(1, &line_VAO->id_VAO);
+	glBindVertexArray(line_VAO->id_VAO);
 	Const_VAO_4_Simple(line_VAO, line_buf);
 	glBindVertexArray(0);
 	
@@ -66,6 +70,8 @@ void draw_coastline_VBO(double radius, struct view_element *view_s,
 	resize_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
 	icou = set_coastline_buf(radius, line_buf);
 	
+	glGenVertexArrays(1, &line_VAO->id_VAO);
+	glBindVertexArray(line_VAO->id_VAO);
 	Const_VAO_4_Phong(line_VAO, line_buf);
 	glBindVertexArray(0);
 	
@@ -89,6 +95,8 @@ void draw_map_coastline_VBO(const GLdouble *orthogonal,
 	resize_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
 	icou = set_map_coastline_buf(line_buf);
 	
+	glGenVertexArrays(1, &line_VAO->id_VAO);
+	glBindVertexArray(line_VAO->id_VAO);
 	Const_VAO_4_Simple(line_VAO, line_buf);
 	glBindVertexArray(0);
 	
@@ -119,6 +127,8 @@ void draw_axis_VAO(struct view_element *view_s, GLfloat dist,
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
+	glGenVertexArrays(1, &mesh_VAO->id_VAO);
+	glBindVertexArray(mesh_VAO->id_VAO);
 	Const_VAO_4_Phong(mesh_VAO, strided_buf);
 	glBindVertexArray(0);
 	
