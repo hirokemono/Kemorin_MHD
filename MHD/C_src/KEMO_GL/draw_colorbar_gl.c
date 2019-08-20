@@ -29,9 +29,9 @@ void set_colorbar_box_VAO(int iflag_retina, GLfloat text_color[4], GLfloat bg_co
 	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 	
 	inum_quad = 0;
-	inum_quad = colorbar_frame_to_buf(inum_quad, iflag_retina, text_color, cbar_wk, cbar_buf);
 	inum_quad = solid_colorbar_box_to_buf(inum_quad, cmap_s, cbar_wk, cbar_buf);
 	inum_quad = fade_colorbar_box_to_buf(inum_quad, cmap_s, bg_color, cbar_wk, cbar_buf);
+	inum_quad = colorbar_frame_to_buf(inum_quad, iflag_retina, text_color, cbar_wk, cbar_buf);
 	
 	glBindVertexArray(cbar_VAO->id_VAO);
 	Const_VAO_4_Simple(cbar_VAO, cbar_buf);
@@ -82,16 +82,16 @@ void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0) {
 			set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win, 
-						psf_m[i]->cmap_psf, psf_m[0]->cbar_wk);
-			clear_colorbar_text_image(psf_m[0]->cbar_wk);
-			set_colorbar_text_image(text_color, psf_m[0]->cbar_wk);
+						psf_m[i]->cmap_psf, psf_a->cbar_wk);
+			clear_colorbar_text_image(psf_a->cbar_wk);
+			set_colorbar_text_image(text_color, psf_a->cbar_wk);
 	
-			count_colorbar_box_VAO(psf_m[0]->cbar_wk, cbar_VAO[0]);
-			count_colorbar_text_VAO(psf_m[0]->cbar_wk, cbar_VAO[1]);
+			count_colorbar_box_VAO(psf_a->cbar_wk, cbar_VAO[0]);
+			count_colorbar_text_VAO(psf_a->cbar_wk, cbar_VAO[1]);
 			set_colorbar_box_VAO(iflag_retina, text_color, bg_color, 
-						psf_m[i]->cmap_psf, psf_m[0]->cbar_wk, cbar_VAO[0], cbar_buf);
+						psf_m[i]->cmap_psf, psf_a->cbar_wk, cbar_VAO[0], cbar_buf);
 			set_colorbar_text_VAO(iflag_retina, text_color, bg_color, 
-						psf_m[i]->cmap_psf, psf_m[0]->cbar_wk, cbar_VAO[1], cbar_buf);
+						psf_m[i]->cmap_psf, psf_a->cbar_wk, cbar_VAO[1], cbar_buf);
 		};
 	};
 	return;

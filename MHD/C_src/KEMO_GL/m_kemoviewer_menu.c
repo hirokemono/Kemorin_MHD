@@ -179,12 +179,6 @@ void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 		set_color_mode_by_id(psf_m->cmap_psf_fld[i], RAINBOW_MODE);
 	}
 	
-	psf_m->cbar_wk = (struct cbar_work *) malloc(sizeof(struct cbar_work));
-	if( psf_m->cmap_psf_fld == NULL ) {
-		printf( "cbar_work cannot alloc!\n" );
-		exit( 1 );
-	}
-	
 	psf_m->cmap_psf = psf_m->cmap_psf_comp[0];
 	return;
 }
@@ -262,8 +256,6 @@ void dealloc_draw_mesh_flags(struct mesh_menu_val *mesh_m){
 void dealloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	int i;
 	
-	free(psf_m->cbar_wk);
-	
 	for (i=0;i<psf_s->nfield;i++){
 		dealloc_opacity_index_list_s(psf_m->cmap_psf_fld[i]);
 		dealloc_color_index_list_s(psf_m->cmap_psf_fld[i]);
@@ -316,6 +308,13 @@ void alloc_kemoview_array(struct kemo_array_control *psf_a){
     psf_a->istack_trans_psf_txtur = 0;
     psf_a->istack_trans_psf_patch = 0;
     alloc_psfs_sorting_list(psf_a);
+	
+	psf_a->cbar_wk = (struct cbar_work *) malloc(sizeof(struct cbar_work));
+	if( psf_a->cbar_wk == NULL ) {
+		printf( "cbar_work cannot alloc!\n" );
+		exit( 1 );
+	}
+	
 	return;
 };
 void init_kemoview_array(int ntot_psf_data, struct kemo_array_control *psf_a){
@@ -330,6 +329,7 @@ void dealloc_kemoview_array(struct kemo_array_control *psf_a){
     dealloc_psfs_sorting_list(psf_a);
     
 	free(psf_a->iflag_loaded);
+	free(psf_a->cbar_wk);
 	return;
 };
 

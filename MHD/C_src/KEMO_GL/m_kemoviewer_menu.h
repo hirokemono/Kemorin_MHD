@@ -169,7 +169,9 @@ struct kemo_array_control{
     
     double *z_ele_viz;
     int *ipsf_viz_far;
-    int *iele_viz_far;
+	int *iele_viz_far;
+	
+	struct cbar_work *cbar_wk;
 };
 
 struct psf_menu_val{
@@ -204,7 +206,6 @@ struct psf_menu_val{
 	struct colormap_params *cmap_psf;
 	struct colormap_params **cmap_psf_comp;
 	struct colormap_params **cmap_psf_fld;
-	struct cbar_work *cbar_wk;
 	
 	int draw_psf_vect;
 	int draw_psf_refv;

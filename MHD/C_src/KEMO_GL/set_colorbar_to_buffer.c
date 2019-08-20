@@ -201,7 +201,7 @@ int colorbar_frame_to_buf(int ist_quad, int iflag_retina, GLfloat *text_color,
 	
 	x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
 	x4[1] = cbar_wk->ybar_max + iflag_retina + 1;
-	set_one_quad_to_buf(ist_quad+1, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+	set_one_quad_to_buf(ist_quad, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 	
 	
 	x1[0] = cbar_wk->xbar_max;
