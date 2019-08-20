@@ -4,10 +4,9 @@
 #include <OpenGL/gl3.h>
 #include "draw_map_4_PSF.h"
 
-void draw_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf, 
-			struct psf_data **psf_s, struct kemo_array_control *psf_a, const GLdouble *orthogonal, 
-			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
-			struct gl_strided_buffer *map_buf){
+void set_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf, 
+			struct psf_data **psf_s, struct kemo_array_control *psf_a,
+			struct VAO_ids *psf_VAO, struct gl_strided_buffer *map_buf){
 	int num_patch = count_psf_nodes_to_buf(ist_psf, ied_psf);
 	psf_VAO->npoint_draw = ITHREE * num_patch;
 	if(num_patch <= 0) return;
@@ -24,10 +23,9 @@ void draw_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	return;	
 }
 
-void draw_map_PSF_isolines_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
-			struct kemo_array_control *psf_a, int iflag_retina, const GLdouble *orthogonal, 
-			struct VAO_ids *psf_VAO, struct kemoview_shaders *kemo_shaders, 
-			struct gl_strided_buffer *map_buf){
+void set_map_PSF_isolines_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
+			struct kemo_array_control *psf_a, int iflag_retina,
+			struct VAO_ids *psf_VAO, struct gl_strided_buffer *map_buf){
 	int i, iflag;
 	int inum_line;
 	int num_patch = 0;
@@ -66,27 +64,12 @@ int check_draw_map(struct kemo_array_control *psf_a){
 	return iflag_map;
 };
 
-void draw_map_objects_VAO(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
-			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-			struct view_element *view_s, 
-			struct VAO_ids **psf_VAO, struct VAO_ids **grid_VAO,
-			struct kemoview_shaders *kemo_shaders){
-    int i;
-	GLdouble xwin, ywin;
-	GLdouble orthogonal[16];
-	    
+void set_map_objects_VAO(int iflag_retina, 
+						 struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
+						 struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+						 struct VAO_ids **psf_VAO, struct VAO_ids **grid_VAO){
 	/* set shading mode */
 	glDisable(GL_CULL_FACE);
-	
-	if(view_s->ny_window > view_s->nx_window) {
-		xwin = 2.05;
-		ywin = 2.05 * (GLdouble)view_s->ny_window / (GLdouble)view_s->nx_window;
-	} else{
-		xwin = 1.7 * (GLdouble)view_s->nx_window / (GLdouble)view_s->ny_window;
-		ywin = 1.7;
-	}
-	
-	orthogonal_glmat_c(-xwin, xwin, -ywin, ywin, -1.0, 1.0, orthogonal);
 	
 	struct gl_strided_buffer *map_buf
 				= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
@@ -98,24 +81,42 @@ void draw_map_objects_VAO(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 	
 	
 	glGenVertexArrays(1, &psf_VAO[0]->id_VAO);
-	draw_map_patch_VAO(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_patch,
-				psf_s, psf_a, orthogonal, psf_VAO[0], kemo_shaders, map_buf);
+	set_map_patch_VAO(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_patch, 
+					  psf_s, psf_a, psf_VAO[0], map_buf);
 	
 	glGenVertexArrays(1, &psf_VAO[1]->id_VAO);
-	draw_map_PSF_isolines_VAO(psf_s, psf_m, psf_a, view_s->iflag_retina,
-							orthogonal, psf_VAO[1], kemo_shaders, map_buf);
+	set_map_PSF_isolines_VAO(psf_s, psf_m, psf_a, iflag_retina,
+							psf_VAO[1], map_buf);
 	
 	if(mesh_m->iflag_draw_coast != 0){
 		glGenVertexArrays(1, &grid_VAO[0]->id_VAO);
-		draw_map_coastline_VBO(orthogonal, grid_VAO[0], kemo_shaders, map_buf);
+		set_map_coastline_VBO(grid_VAO[0], map_buf);
 	};
 	if(mesh_m->iflag_draw_sph_grid != 0){
 		glGenVertexArrays(1, &grid_VAO[1]->id_VAO);
-		set_map_flame_VBO(orthogonal, grid_VAO[1], kemo_shaders, map_buf);
+		set_map_flame_VBO(grid_VAO[1], map_buf);
 	};
 	free(map_buf->v_buf);
 	free(map_buf);
 	
+	return;
+};
+
+void draw_map_objects_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s, 
+			struct VAO_ids **psf_VAO, struct VAO_ids **grid_VAO,
+			struct kemoview_shaders *kemo_shaders){
+	GLdouble xwin, ywin;
+	GLdouble orthogonal[16];
+	
+	if(view_s->ny_window > view_s->nx_window) {
+		xwin = 2.05;
+		ywin = 2.05 * (GLdouble)view_s->ny_window / (GLdouble)view_s->nx_window;
+	} else{
+		xwin = 1.7 * (GLdouble)view_s->nx_window / (GLdouble)view_s->ny_window;
+		ywin = 1.7;
+	}
+	
+	orthogonal_glmat_c(-xwin, xwin, -ywin, ywin, -1.0, 1.0, orthogonal);
 	
 	
 	if(psf_VAO[0]->npoint_draw > 0){

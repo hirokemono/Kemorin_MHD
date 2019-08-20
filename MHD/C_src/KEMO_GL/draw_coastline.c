@@ -30,8 +30,7 @@ void draw_sph_flame_VBO(double radius, struct view_element *view_s,
 	return;
 };
 
-void set_map_flame_VBO(const GLdouble *orthogonal, 
-			struct VAO_ids *line_VAO, struct kemoview_shaders *kemo_shaders, 
+void set_map_flame_VBO(struct VAO_ids *line_VAO, 
 			struct gl_strided_buffer *line_buf){
 	line_VAO->npoint_draw = ITWO * count_sph_flame();
 	
@@ -72,8 +71,7 @@ void draw_coastline_VBO(double radius, struct view_element *view_s,
 	return;
 };
 
-void draw_map_coastline_VBO(const GLdouble *orthogonal, 
-			struct VAO_ids *line_VAO, struct kemoview_shaders *kemo_shaders, 
+void set_map_coastline_VBO(struct VAO_ids *line_VAO, 
 			struct gl_strided_buffer *line_buf){
 	int icou;
 	line_VAO->npoint_draw = ITWO * count_coastline_buf();

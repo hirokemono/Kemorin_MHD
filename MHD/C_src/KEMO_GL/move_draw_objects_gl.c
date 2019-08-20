@@ -53,8 +53,7 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 
 	 	set_color_code_for_psfs(psf_s, psf_m, psf_a);
 		iflag_psf = check_draw_map(psf_a);
-	 	draw_map_objects_VAO(psf_s, mesh_m, psf_m, psf_a, view_s, 
-					psf_solid_VAO, grid_VAO, kemo_shaders);
+	 	draw_map_objects_VAO(psf_m, view_s, psf_solid_VAO, grid_VAO, kemo_shaders);
 	*/
 	} else {
 	/*
@@ -194,8 +193,9 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 	
 		set_color_code_for_psfs(psf_s, psf_m, psf_a);
 		iflag_psf = check_draw_map(psf_a);
-		draw_map_objects_VAO(psf_s, mesh_m, psf_m, psf_a, view_s, 
-					psf_solid_VAO, grid_VAO, kemo_shaders);
+		set_map_objects_VAO(view_s->iflag_retina, psf_s, mesh_m, psf_m, psf_a, 
+							 psf_solid_VAO, grid_VAO);
+		draw_map_objects_VAO(mesh_m, view_s, psf_solid_VAO, grid_VAO, kemo_shaders);
 	} else {
 		if(mesh_m->iflag_draw_axis != 0){
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

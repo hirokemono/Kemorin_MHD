@@ -23,9 +23,11 @@
 /* prptotypes */
 
 int check_draw_map(struct kemo_array_control *psf_a);
-void draw_map_objects_VAO(struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
-			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-			struct view_element *view_s, 
+void set_map_objects_VAO(int iflag_retina, 
+						 struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
+						 struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+						 struct VAO_ids **psf_VAO, struct VAO_ids **grid_VAO);
+void draw_map_objects_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s, 
 			struct VAO_ids **psf_VAO, struct VAO_ids **grid_VAO,
 			struct kemoview_shaders *kemo_shaders);
 #endif
