@@ -213,14 +213,17 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
 		
-		if(psf_a->iflag_loaded[i] != 0){
-			if(psf_m[i]->draw_psf_cbar > 0) {
+		if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0) {
+				set_colorbar_VAO(view_s->iflag_retina,
+								  view_s->nx_window, view_s->ny_window,
+								  mesh_m->text_color, mesh_m->bg_color, 
+								  psf_m[i]->cmap_psf, psf_m[i]->cbar_wk,
+								  &grid_VAO[3], kemo_shaders, cbar_buf);
 				draw_colorbar_VAO(view_s->iflag_retina,
 							view_s->nx_window, view_s->ny_window,
 							mesh_m->text_color, mesh_m->bg_color, 
 							psf_m[i]->cmap_psf, psf_m[i]->cbar_wk,
 							&grid_VAO[3], kemo_shaders, cbar_buf);
-			};
 		};
 	};
 	free(cbar_buf->v_buf);

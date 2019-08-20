@@ -7,7 +7,7 @@
 
 static const GLfloat black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 
-void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
+void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 			GLfloat text_color[4], GLfloat bg_color[4], 
 			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
 			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders,
@@ -15,11 +15,8 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	int num_patch;
 	int inum_quad;
 	
-	GLdouble orthogonal[16];
 	
 	set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win, cmap_s, cbar_wk);
-	orthogonal_glmat_c(0.0, cbar_wk->xwin, 0.0, cbar_wk->ywin, -1.0, 1.0, orthogonal);
-	
 	
 	num_patch = 4 * cbar_wk->num_quad;
 	num_patch = num_patch + 2*(cbar_wk->iflag_zero + IFOUR);
@@ -27,13 +24,17 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	set_buffer_address_4_patch(cbar_VAO[0]->npoint_draw, cbar_buf);
 	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
-	inum_quad = colorbar_frame_to_buf(inum_quad, iflag_retina, text_color, cbar_wk, cbar_buf);
 	
 	inum_quad = 0;
+	inum_quad = colorbar_frame_to_buf(inum_quad, iflag_retina, text_color, cbar_wk, cbar_buf);
 	inum_quad = solid_colorbar_box_to_buf(inum_quad, cmap_s, cbar_wk, cbar_buf);
 	inum_quad = fade_colorbar_box_to_buf(inum_quad, cmap_s, bg_color, cbar_wk, cbar_buf);
 	
 	glGenVertexArrays(1, &cbar_VAO[0]->id_VAO);
+	glGenVertexArrays(1, &cbar_VAO[1]->id_VAO);
+	
+	
+	
 	glBindVertexArray(cbar_VAO[0]->id_VAO);
 	Const_VAO_4_Simple(cbar_VAO[0], cbar_buf);
 	glBindVertexArray(0);
@@ -46,7 +47,6 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	colorbar_mbox_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
 	
-	glGenVertexArrays(1, &cbar_VAO[1]->id_VAO);
 	glBindVertexArray(cbar_VAO[1]->id_VAO);
 	
 	glGenBuffers(1, &cbar_VAO[1]->id_vertex);
@@ -65,10 +65,22 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	cbar_wk->id_texture = set_texture_to_buffer(IWIDTH_TXT, 3*IHIGHT_TXT, cbar_wk->numBMP);
 	glBindVertexArray(0);
 	
+	return;
+};
+
+void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
+			GLfloat text_color[4], GLfloat bg_color[4], 
+			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
+			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders,
+			struct gl_strided_buffer *cbar_buf){
+	GLdouble orthogonal[16];
+	orthogonal_glmat_c(0.0, cbar_wk->xwin, 0.0, cbar_wk->ywin, -1.0, 1.0, orthogonal);
+	
 	glEnable(GL_BLEND);
 	glEnable(GL_TRUE);
 	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glEnable(GL_MULTISAMPLE);
+	
 	glUseProgram(kemo_shaders->test->programId);
 	map_matrix_to_shader(kemo_shaders->test, orthogonal);
 	
@@ -88,14 +100,14 @@ void draw_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	glDrawArrays(GL_TRIANGLES, 0, cbar_VAO[1]->npoint_draw);
 	
-	//	Destroy_Simple_VAO(cbar_VAO);
-//	DestroyVBO(cbar_VAO);
-	
-	
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
 	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glDisable(GL_MULTISAMPLE);
+	
+	//	Destroy_Simple_VAO(cbar_VAO);
+	//	DestroyVBO(cbar_VAO);
+	
 	
 	return;
 }
