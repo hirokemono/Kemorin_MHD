@@ -73,7 +73,7 @@ void kemoview_allocate_pointers(){
 	};
 
 	kemo_sgl->grid_VAO =     (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids));
-	for(i=0;i<2;i++){
+	for(i=0;i<3;i++){
 		kemo_sgl->grid_VAO[i] =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 

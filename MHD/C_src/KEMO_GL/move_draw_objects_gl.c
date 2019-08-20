@@ -50,19 +50,10 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	if(mesh_m->iflag_view_type == VIEW_MAP) {
 		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
 		iflag_psf = check_draw_map(psf_a);
-	 	draw_map_objects_VAO(psf_m, view_s, psf_solid_VAO, grid_VAO, kemo_shaders);
+	 	draw_map_objects_VAO(mesh_m, view_s, psf_solid_VAO, grid_VAO, kemo_shaders);
 	} else {
-	/*
-		if(mesh_m->iflag_draw_axis != 0){
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glDisable(GL_CULL_FACE);
-			struct gl_strided_buffer *axis_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-			draw_axis_VAO(view_s, (GLfloat) mesh_m->dist_domains, cube_VAO, kemo_shaders, axis_buf);
-		};
-		
-		
-	 */
-		draw_fieldlines_VAO(fline_m, view_s, cube_VAO, kemo_shaders);
+		draw_axis_VAO(view_s, grid_VAO[2], kemo_shaders);
+		draw_fieldlines_VAO(fline_m, view_s, grid_VAO[2], kemo_shaders);
 		
 		 iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
 		 iflag_psf = iflag_psf + check_draw_psf(psf_a);
@@ -73,11 +64,9 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			draw_solid_mesh_VAO(mesh_m, view_s, mesh_solid_VAO, 
 						mesh_grid_VAO, mesh_node_VAO, kemo_shaders);
 		};
-	/*
-		 draw_coastline_VBO(mesh_m, view_s, grid_VAO, kemo_shaders, line_buf);
-		
-		/* Draw Transparent Objects */
 
+		draw_coastline_grid_VBO(view_s, grid_VAO, kemo_shaders);
+		
 		draw_PSF_trans_objects_VAO(mesh_m->shading_mode, psf_s, psf_m, psf_a, 
 								   view_s, psf_trans_VAO, kemo_shaders);
 		if(mesh_m->iflag_draw_mesh != 0){
@@ -180,12 +169,9 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 							 psf_solid_VAO, grid_VAO);
 		draw_map_objects_VAO(mesh_m, view_s, psf_solid_VAO, grid_VAO, kemo_shaders);
 	} else {
-		if(mesh_m->iflag_draw_axis != 0){
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glDisable(GL_CULL_FACE);
-			struct gl_strided_buffer *axis_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-			draw_axis_VAO(view_s, (GLfloat) mesh_m->dist_domains, cube_VAO, kemo_shaders, axis_buf);
-		};
+		glGenVertexArrays(1, &grid_VAO[2]->id_VAO);
+		set_axis_VAO(mesh_m, view_s, grid_VAO[2]);
+		draw_axis_VAO(view_s, grid_VAO[2], kemo_shaders);
 		
 		sel_fieldlines_VAO(fline_s, fline_m, cube_VAO);
 		draw_fieldlines_VAO(fline_m, view_s, cube_VAO, kemo_shaders);
@@ -205,7 +191,8 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 						mesh_grid_VAO, mesh_node_VAO, kemo_shaders);
 		};
 		
-		draw_coastline_VBO(mesh_m, view_s, grid_VAO, kemo_shaders);
+		set_coastline_grid_VBO(mesh_m, grid_VAO);
+		draw_coastline_grid_VBO(view_s, grid_VAO, kemo_shaders);
 		
 		/* Draw Transparent Objects */
 		draw_PSF_trans_objects_VAO(mesh_m->shading_mode, 
@@ -219,7 +206,8 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 	
 	
     /* Draw Color bar */
-	struct gl_strided_buffer *cbar_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	struct gl_strided_buffer *cbar_buf 
+		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(3*128, cbar_buf);
 	alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 	for(i=0; i<psf_a->nmax_loaded; i++){

@@ -83,19 +83,7 @@ void set_map_objects_VAO(int iflag_retina,
 	set_map_PSF_isolines_VAO(psf_s, psf_m, psf_a, iflag_retina,
 							psf_VAO[1], map_buf);
 	
-	if(mesh_m->iflag_draw_coast != 0){
-		glGenVertexArrays(1, &grid_VAO[0]->id_VAO);
-		set_map_coastline_VBO(grid_VAO[0], map_buf);
-	} else {
-		grid_VAO[0]->npoint_draw = 0;
-			};
-	
-	if(mesh_m->iflag_draw_sph_grid != 0){
-		glGenVertexArrays(1, &grid_VAO[1]->id_VAO);
-		set_map_flame_VBO(grid_VAO[1], map_buf);
-	} else {
-		grid_VAO[1]->npoint_draw = 0;
-	};
+	map_coastline_grid_VBO(mesh_m, grid_VAO, map_buf);
 	free(map_buf->v_buf);
 	free(map_buf);
 	
