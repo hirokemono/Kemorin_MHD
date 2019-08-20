@@ -29,6 +29,8 @@ struct kemoviewer_type{
 
 	struct VAO_ids **psf_solid_VAO;
 	struct VAO_ids **psf_trans_VAO;
+
+	struct VAO_ids **grid_VAO;
 	
 	struct psf_menu_val       *psf_current_menu;
 	struct psf_data           *psf_current_data;
@@ -68,6 +70,11 @@ void kemoview_allocate_pointers(){
 	kemo_sgl->psf_trans_VAO =     (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids));
 	for(i=0;i<2;i++){
 		kemo_sgl->psf_trans_VAO[i] =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	};
+
+	kemo_sgl->grid_VAO =     (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids));
+	for(i=0;i<2;i++){
+		kemo_sgl->grid_VAO[i] =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 
 	kemo_sgl->mesh_d =  (struct viewer_mesh *)       malloc(sizeof(struct viewer_mesh));
@@ -187,7 +194,7 @@ void kemoview_draw_objects_c(){
 				kemo_sgl->strided_buf, kemo_sgl->cube_VAO, 
 				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_grid_VAO, kemo_sgl->mesh_node_VAO, 
 				kemo_sgl->mesh_trans_VAO, kemo_sgl->psf_solid_VAO, kemo_sgl->psf_trans_VAO, 
-				kemo_sgl->kemo_shaders);
+				kemo_sgl->grid_VAO, kemo_sgl->kemo_shaders);
 	return;
 };
 
@@ -201,7 +208,7 @@ void kemoview_draw_fast_gl3(){
 				kemo_sgl->strided_buf, kemo_sgl->cube_VAO, 
 				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_grid_VAO, kemo_sgl->mesh_node_VAO, 
 				kemo_sgl->mesh_trans_VAO, kemo_sgl->psf_solid_VAO, kemo_sgl->psf_trans_VAO, 
-				kemo_sgl->kemo_shaders);
+				kemo_sgl->grid_VAO, kemo_sgl->kemo_shaders);
 	
 	return;
 };
@@ -212,7 +219,7 @@ void kemoview_draw_objects_gl3(){
 				kemo_sgl->strided_buf, kemo_sgl->cube_VAO, 
 				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_grid_VAO, kemo_sgl->mesh_node_VAO, 
 				kemo_sgl->mesh_trans_VAO, kemo_sgl->psf_solid_VAO, kemo_sgl->psf_trans_VAO, 
-				kemo_sgl->kemo_shaders);
+				kemo_sgl->grid_VAO, kemo_sgl->kemo_shaders);
 	return;
 };
 

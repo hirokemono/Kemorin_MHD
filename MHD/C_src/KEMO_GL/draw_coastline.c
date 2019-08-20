@@ -30,28 +30,18 @@ void draw_sph_flame_VBO(double radius, struct view_element *view_s,
 	return;
 };
 
-void draw_map_flame_VBO(const GLdouble *orthogonal, 
+void set_map_flame_VBO(const GLdouble *orthogonal, 
 			struct VAO_ids *line_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *line_buf){
-	int nedge_flame = count_sph_flame();
+	line_VAO->npoint_draw = ITWO * count_sph_flame();
 	
-	glUseProgram(kemo_shaders->test->programId);
-	map_matrix_to_shader(kemo_shaders->test, orthogonal);
-	
-	set_buffer_address_4_patch(ITWO*nedge_flame, line_buf);
+	set_buffer_address_4_patch(line_VAO->npoint_draw, line_buf);
 	resize_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
 	set_map_flame_to_buf(line_buf);
 	
-	glGenVertexArrays(1, &line_VAO->id_VAO);
 	glBindVertexArray(line_VAO->id_VAO);
 	Const_VAO_4_Simple(line_VAO, line_buf);
 	glBindVertexArray(0);
-	
-	glBindVertexArray(line_VAO->id_VAO);
-	glDrawArrays(GL_LINES, IZERO, (ITWO*nedge_flame));
-	
-	Destroy_Simple_VAO(line_VAO);
-	
 	return;
 };
 
@@ -86,23 +76,15 @@ void draw_map_coastline_VBO(const GLdouble *orthogonal,
 			struct VAO_ids *line_VAO, struct kemoview_shaders *kemo_shaders, 
 			struct gl_strided_buffer *line_buf){
 	int icou;
-	int nedge_coast = count_coastline_buf();
+	line_VAO->npoint_draw = ITWO * count_coastline_buf();
 	
-	glUseProgram(kemo_shaders->test->programId);
-	map_matrix_to_shader(kemo_shaders->test, orthogonal);
-	
-	set_buffer_address_4_patch(ITWO*nedge_coast, line_buf);
+	set_buffer_address_4_patch(line_VAO->npoint_draw, line_buf);
 	resize_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
 	icou = set_map_coastline_buf(line_buf);
 	
-	glGenVertexArrays(1, &line_VAO->id_VAO);
 	glBindVertexArray(line_VAO->id_VAO);
 	Const_VAO_4_Simple(line_VAO, line_buf);
 	glBindVertexArray(0);
-	
-	glBindVertexArray(line_VAO->id_VAO);
-	glDrawArrays(GL_LINES, IZERO, (ITWO*nedge_coast));
-	Destroy_Simple_VAO(line_VAO);
 	
 	return;
 };

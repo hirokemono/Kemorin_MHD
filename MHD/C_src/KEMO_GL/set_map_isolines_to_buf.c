@@ -158,9 +158,9 @@ int count_map_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 }
 
 
-int set_map_PSF_isoline_to_buf(struct psf_data *psf_s, struct psf_menu_val *psf_m,
+int set_map_PSF_isoline_to_buf(int ist_line, struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			struct gl_strided_buffer *psf_buf){
-	int inum_line = 0;
+	int inum_line = ist_line;
 	if(psf_m->draw_psf_grid  != 0){
 		find_start_positive_lines(psf_m);
 		if(psf_m->ist_positive_line > 1){

@@ -24,7 +24,7 @@
 /* prototypes */
 
 int count_map_PSF_isoline(struct psf_data *psf_s, struct psf_menu_val *psf_m);
-int set_map_PSF_isoline_to_buf(struct psf_data *psf_s, struct psf_menu_val *psf_m,
+int set_map_PSF_isoline_to_buf(int ist_line, struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			struct gl_strided_buffer *psf_buf);
 
 #endif

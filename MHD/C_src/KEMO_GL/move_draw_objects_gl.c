@@ -19,7 +19,7 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			struct VAO_ids *mesh_solid_VAO, struct VAO_ids *mesh_grid_VAO, 
 			struct VAO_ids *mesh_node_VAO, struct VAO_ids *mesh_trans_VAO, 
 			struct VAO_ids **psf_solid_VAO, struct VAO_ids **psf_trans_VAO, 
-			struct kemoview_shaders *kemo_shaders){
+			struct VAO_ids **grid_VAO, struct kemoview_shaders *kemo_shaders){
 	glDeleteLists(view_s->gl_drawID, 1);
 	glNewList(view_s->gl_drawID, GL_COMPILE_AND_EXECUTE);
 	
@@ -37,7 +37,7 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			struct VAO_ids *mesh_solid_VAO, struct VAO_ids *mesh_grid_VAO, 
 			struct VAO_ids *mesh_node_VAO, struct VAO_ids *mesh_trans_VAO, 
 			struct VAO_ids **psf_solid_VAO, struct VAO_ids **psf_trans_VAO, 
-			struct kemoview_shaders *kemo_shaders){
+			struct VAO_ids **grid_VAO, struct kemoview_shaders *kemo_shaders){
 	int i, iflag;
 	int iflag_psf = 0;
 	
@@ -50,16 +50,11 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 	if(mesh_m->iflag_view_type == VIEW_MAP) {
 	/*
 		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
-		struct gl_strided_buffer *map_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-		set_buffer_address_4_patch(3*128, map_buf);
-		alloc_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
-	
-		set_color_code_for_psfs(psf_s, psf_m, psf_a);
-		iflag_psf = draw_map_objects_VAO(psf_s, mesh_m, psf_m, psf_a, view_s, 
-					cube_VAO, kemo_shaders, map_buf);
-		
-		free(map_buf->v_buf);
-		free(map_buf);
+
+	 	set_color_code_for_psfs(psf_s, psf_m, psf_a);
+		iflag_psf = check_draw_map(psf_a);
+	 	draw_map_objects_VAO(psf_s, mesh_m, psf_m, psf_a, view_s, 
+					psf_solid_VAO, grid_VAO, kemo_shaders);
 	*/
 	} else {
 	/*
@@ -184,7 +179,7 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 			struct VAO_ids *mesh_solid_VAO, struct VAO_ids *mesh_grid_VAO, 
 			struct VAO_ids *mesh_node_VAO, struct VAO_ids *mesh_trans_VAO, 
 			struct VAO_ids **psf_solid_VAO, struct VAO_ids **psf_trans_VAO, 
-			struct kemoview_shaders *kemo_shaders){
+			struct VAO_ids **grid_VAO, struct kemoview_shaders *kemo_shaders){
 	int i;
 	int iflag_psf = 0;
 	
@@ -196,16 +191,11 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 	
 	if(mesh_m->iflag_view_type == VIEW_MAP) {
 		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
-		struct gl_strided_buffer *map_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-		set_buffer_address_4_patch(3*128, map_buf);
-		alloc_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
 	
 		set_color_code_for_psfs(psf_s, psf_m, psf_a);
-		iflag_psf = draw_map_objects_VAO(psf_s, mesh_m, psf_m, psf_a, view_s, 
-					cube_VAO, kemo_shaders, map_buf);
-		
-		free(map_buf->v_buf);
-		free(map_buf);
+		iflag_psf = check_draw_map(psf_a);
+		draw_map_objects_VAO(psf_s, mesh_m, psf_m, psf_a, view_s, 
+					psf_solid_VAO, grid_VAO, kemo_shaders);
 	} else {
 		if(mesh_m->iflag_draw_axis != 0){
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
