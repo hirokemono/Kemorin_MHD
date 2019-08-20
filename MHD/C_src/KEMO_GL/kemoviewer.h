@@ -404,6 +404,9 @@
 
 #define EPSILON  1.e-9
 
+#define OFF 0
+#define ON  1
+
 /*
  Kemoviewer_t: Structure to run kemoviewer in one window.
  */

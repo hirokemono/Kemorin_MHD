@@ -5,7 +5,7 @@
 #define SET_MESH_NODE_2_GL_BUF_
 
 #include "kemoviewer_param_c.h"
-#include "m_kemoviewer_menu.h"
+#include "m_kemoview_mesh_menu.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "vartex_array_object_gl.h"
 #include "icosahedron_c.h"

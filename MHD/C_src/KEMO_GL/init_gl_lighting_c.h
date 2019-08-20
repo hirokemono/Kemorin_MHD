@@ -5,7 +5,7 @@
 #define init_GL_LIGHTING_C_
 
 #include "kemoviewer_param_c.h"
-#include "m_kemoviewer_menu.h"
+#include "m_kemoview_mesh_menu.h"
 #include "m_gl_transfer_matrix.h"
 #include "glsl.h"
 

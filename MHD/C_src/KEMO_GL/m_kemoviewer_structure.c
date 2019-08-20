@@ -18,18 +18,8 @@ struct kemoviewer_type{
     
     struct view_element       *view_s;
 	struct kemoview_shaders   *kemo_shaders;
-	struct VAO_ids *cube_VAO;
+	struct kemoview_VAOs      *kemo_VAOs;
 	struct VAO_ids *menu_VAO;
-	
-	struct VAO_ids **mesh_solid_VAO;
-	struct VAO_ids *mesh_trans_VAO;
-
-	struct VAO_ids *fline_VAO;
-	struct VAO_ids **psf_solid_VAO;
-	struct VAO_ids **psf_trans_VAO;
-
-	struct VAO_ids **grid_VAO;
-	struct VAO_ids **cbar_VAO;
 	
 	struct psf_menu_val       *psf_current_menu;
 	struct psf_data           *psf_current_data;
@@ -50,38 +40,11 @@ void kemoview_allocate_pointers(){
 	int i;
 	
 	kemo_sgl->view_s = (struct view_element *)      malloc(sizeof(struct view_element));
-	
 	kemo_sgl->view_s->iflag_shading_profile = 0;
+	
 	kemo_sgl->kemo_shaders = init_kemoview_shaders();
-	kemo_sgl->cube_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	kemo_sgl->kemo_VAOs = init_kemoview_VAOs();
 	kemo_sgl->menu_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-	
-	kemo_sgl->mesh_solid_VAO = (struct VAO_ids **) malloc(3*sizeof(struct VAO_ids));
-	for(i=0;i<3;i++){
-		kemo_sgl->mesh_solid_VAO[i] =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-	};
-	kemo_sgl->mesh_trans_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-	
-	kemo_sgl->fline_VAO =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-	
-	kemo_sgl->psf_solid_VAO =     (struct VAO_ids **) malloc(6*sizeof(struct VAO_ids));
-	for(i=0;i<6;i++){
-		kemo_sgl->psf_solid_VAO[i] =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-	};
-	kemo_sgl->psf_trans_VAO =     (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids));
-	for(i=0;i<2;i++){
-		kemo_sgl->psf_trans_VAO[i] =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-	};
-
-	kemo_sgl->grid_VAO =     (struct VAO_ids **) malloc(5*sizeof(struct VAO_ids));
-	for(i=0;i<5;i++){
-		kemo_sgl->grid_VAO[i] =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-	};
-
-	kemo_sgl->cbar_VAO =     (struct VAO_ids **) malloc(5*sizeof(struct VAO_ids));
-	for(i=0;i<2;i++){
-		kemo_sgl->cbar_VAO[i] =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-	};
 
 	kemo_sgl->mesh_d =  (struct viewer_mesh *)       malloc(sizeof(struct viewer_mesh));
 	kemo_sgl->fline_d = (struct psf_data *)          malloc(sizeof(struct psf_data));
@@ -197,10 +160,7 @@ void kemoview_draw_objects_c(){
     /*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
 	draw_objects(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
 				kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
-				kemo_sgl->cube_VAO, kemo_sgl->fline_VAO,
-				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_trans_VAO, 
-				kemo_sgl->psf_solid_VAO, kemo_sgl->psf_trans_VAO, 
-				kemo_sgl->grid_VAO, kemo_sgl->cbar_VAO, kemo_sgl->kemo_shaders);
+				kemo_sgl->kemo_VAOs, kemo_sgl->kemo_shaders);
 	return;
 };
 
@@ -211,10 +171,7 @@ void kemoview_draw_fast_gl3(){
 	
 	draw_objects_gl3(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
 				kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
-				kemo_sgl->cube_VAO, kemo_sgl->fline_VAO,
-				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_trans_VAO, 
-				kemo_sgl->psf_solid_VAO, kemo_sgl->psf_trans_VAO, 
-				kemo_sgl->grid_VAO, kemo_sgl->cbar_VAO, kemo_sgl->kemo_shaders);
+				kemo_sgl->kemo_VAOs, kemo_sgl->kemo_shaders);
 	
 	return;
 };
@@ -222,10 +179,7 @@ void kemoview_draw_objects_gl3(){
 	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
 	update_draw_objects_gl3(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
 				kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
-				kemo_sgl->cube_VAO, kemo_sgl->fline_VAO,
-				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_trans_VAO, 
-				kemo_sgl->psf_solid_VAO, kemo_sgl->psf_trans_VAO, 
-				kemo_sgl->grid_VAO, kemo_sgl->cbar_VAO, kemo_sgl->kemo_shaders);
+				kemo_sgl->kemo_VAOs, kemo_sgl->kemo_shaders);
 	return;
 };
 
@@ -1059,10 +1013,6 @@ void kemoview_draw_quad_setup(){
 }
 void kemoview_draw_menu_setup(){
 	LoadShaderFromStrings(kemo_sgl->kemo_shaders->menu, load_menu_vert(), load_menu_frag());
-}
-
-void kemoview_draw_quad_gl3(){
-	draw_quad_gl3(kemo_sgl->view_s, kemo_sgl->cube_VAO, kemo_sgl->kemo_shaders);
 }
 
 void kemo_Cleanup()
