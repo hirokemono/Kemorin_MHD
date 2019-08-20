@@ -72,7 +72,7 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		
 		
 	 */
-		draw_fieldlines_VAO(fline_s, fline_m, view_s, cube_VAO, kemo_shaders);
+		draw_fieldlines_VAO(fline_m, view_s, cube_VAO, kemo_shaders);
 		
 		 iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
 		 iflag_psf = iflag_psf + check_draw_psf(psf_a);
@@ -214,8 +214,8 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 			draw_axis_VAO(view_s, (GLfloat) mesh_m->dist_domains, cube_VAO, kemo_shaders, axis_buf);
 		};
 		
-		
-		draw_fieldlines_VAO(fline_s, fline_m, view_s, cube_VAO, kemo_shaders);
+		sel_fieldlines_VAO(fline_s, fline_m, cube_VAO);
+		draw_fieldlines_VAO(fline_m, view_s, cube_VAO, kemo_shaders);
 		
 		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
 		iflag_psf = iflag_psf + check_draw_psf(psf_a);

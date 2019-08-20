@@ -5,9 +5,7 @@
 #include "draw_fieldlines.h"
 
 void set_fieldtubes_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m,
-			struct view_element *view_s, 
-			struct VAO_ids *fline_VAO, struct kemoview_shaders *kemo_shaders, 
-			struct gl_strided_buffer *fline_buf){
+			struct VAO_ids *fline_VAO, struct gl_strided_buffer *fline_buf){
 	int ncorner = ISIX;
 	int icou;
 	
@@ -29,9 +27,7 @@ void set_fieldtubes_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m
 }
 
 void set_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m,
-			struct view_element *view_s, 
-			struct VAO_ids *fline_VAO, struct kemoview_shaders *kemo_shaders, 
-			struct gl_strided_buffer *fline_buf){
+			struct VAO_ids *fline_VAO, struct gl_strided_buffer *fline_buf){
 	int inod, iele, k;
 	int num, icou, inum;
 	
@@ -53,9 +49,8 @@ void set_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m
 }
 
 
-void draw_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m,
-			struct view_element *view_s, 
-			struct VAO_ids *fline_VAO, struct kemoview_shaders *kemo_shaders){
+void sel_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m,
+			struct VAO_ids *fline_VAO){
 	if(fline_m->iflag_draw_fline <= 0) return;
 	
 	struct gl_strided_buffer *fline_buf 
@@ -63,38 +58,43 @@ void draw_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_
 	set_buffer_address_4_patch(3*128, fline_buf);
 	alloc_strided_buffer(fline_buf->num_nod_buf, fline_buf->ncomp_buf, fline_buf);
 	
-	
 	glGenVertexArrays(1, &fline_VAO->id_VAO);
+	if(fline_m->fieldline_type == IFLAG_PIPE){
+		set_fieldtubes_VAO(fline_s, fline_m, fline_VAO, fline_buf);
+	} else {
+		set_fieldlines_VAO(fline_s, fline_m, fline_VAO, fline_buf);
+	};
+	free(fline_buf->v_buf);
+	free(fline_buf);
+	return;
+};
+
+void draw_fieldlines_VAO(struct fline_menu_val *fline_m, struct view_element *view_s, 
+			struct VAO_ids *fline_VAO, struct kemoview_shaders *kemo_shaders){
+	if(fline_m->iflag_draw_fline <= 0) return;
+	if(fline_VAO->npoint_draw <= 0) return;
+	
 	if(fline_m->fieldline_type == IFLAG_PIPE){
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_CULL_FACE);
 		
-		set_fieldtubes_VAO(fline_s, fline_m, view_s, fline_VAO, kemo_shaders, fline_buf);
+		glUseProgram(kemo_shaders->phong->programId);
+		transfer_matrix_to_shader(kemo_shaders->phong, view_s);
+		set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 		
-		if(fline_VAO->npoint_draw > 0){
-			glUseProgram(kemo_shaders->phong->programId);
-			transfer_matrix_to_shader(kemo_shaders->phong, view_s);
-			set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
-			
-			glBindVertexArray(fline_VAO->id_VAO);
-			glDrawArrays(GL_TRIANGLES, IZERO, fline_VAO->npoint_draw);
-//			Destroy_Phong_VAO(fline_VAO);
-		}
+		glBindVertexArray(fline_VAO->id_VAO);
+		glDrawArrays(GL_TRIANGLES, IZERO, fline_VAO->npoint_draw);
+//		Destroy_Phong_VAO(fline_VAO);
 	} else {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		set_fieldlines_VAO(fline_s, fline_m, view_s, fline_VAO, kemo_shaders, fline_buf);
 		
-		if(fline_VAO->npoint_draw > 0){
-			glUseProgram(kemo_shaders->test->programId);
-			transfer_matrix_to_shader(kemo_shaders->test, view_s);
+		glUseProgram(kemo_shaders->test->programId);
+		transfer_matrix_to_shader(kemo_shaders->test, view_s);
 	
-			glBindVertexArray(fline_VAO->id_VAO);
-			glDrawArrays(GL_LINES, IZERO, fline_VAO->npoint_draw);
-//			Destroy_Simple_VAO(fline_VAO);
-		};
+		glBindVertexArray(fline_VAO->id_VAO);
+		glDrawArrays(GL_LINES, IZERO, fline_VAO->npoint_draw);
+//		Destroy_Simple_VAO(fline_VAO);
 	};
-	free(fline_buf->v_buf);
-	free(fline_buf);
 	
 	return;
 };
