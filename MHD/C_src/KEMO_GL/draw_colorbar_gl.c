@@ -36,8 +36,6 @@ void set_colorbar_box_VAO(int iflag_retina, GLfloat text_color[4], GLfloat bg_co
 	glBindVertexArray(cbar_VAO->id_VAO);
 	Const_VAO_4_Simple(cbar_VAO, cbar_buf);
 	glBindVertexArray(0);
-	
-	
 	return;
 };
 
@@ -50,40 +48,32 @@ void set_colorbar_text_VAO(int iflag_retina, GLfloat text_color[4], GLfloat bg_c
 	colorbar_mbox_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
 	
 	glBindVertexArray(text_VAO->id_VAO);
-	glGenBuffers(1, &text_VAO->id_vertex);
-	glBindBuffer(GL_ARRAY_BUFFER, text_VAO->id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * cbar_buf->num_nod_buf*cbar_buf->ncomp_buf,
-				 cbar_buf->v_buf, GL_STATIC_DRAW);
-	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, cbar_buf->istride,
-						  (GLvoid*) (cbar_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, cbar_buf->istride, 
-						  (GLvoid*) (cbar_buf->ist_tex * sizeof(GL_FLOAT)));
-	
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	
+	Const_VAO_4_Texture(text_VAO, cbar_buf);
 	cbar_wk->id_texture = set_texture_to_buffer(IWIDTH_TXT, 3*IHIGHT_TXT, cbar_wk->numBMP);
 	glBindVertexArray(0);
-	
 	return;
 };
 
 void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 			GLfloat text_color[4], GLfloat bg_color[4],
 			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
-			struct VAO_ids **cbar_VAO, struct gl_strided_buffer *cbar_buf){
+			struct VAO_ids **cbar_VAO){
 	int i;
+	struct gl_strided_buffer *cbar_buf 
+		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	set_buffer_address_4_patch(16, cbar_buf);
+	alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 	
 	glGenVertexArrays(1, &cbar_VAO[0]->id_VAO);
 	glGenVertexArrays(1, &cbar_VAO[1]->id_VAO);
 	
+	
 	cbar_VAO[1]->npoint_draw = 0;
+	clear_colorbar_text_image(psf_a->cbar_wk);
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0) {
 			set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win, 
 						psf_m[i]->cmap_psf, psf_a->cbar_wk);
-			clear_colorbar_text_image(psf_a->cbar_wk);
 			set_colorbar_text_image(text_color, psf_a->cbar_wk);
 	
 			count_colorbar_box_VAO(psf_a->cbar_wk, cbar_VAO[0]);
@@ -94,6 +84,8 @@ void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 						psf_m[i]->cmap_psf, psf_a->cbar_wk, cbar_VAO[1], cbar_buf);
 		};
 	};
+	free(cbar_buf->v_buf);
+	free(cbar_buf);
 	return;
 };
 
@@ -133,8 +125,8 @@ void draw_colorbar_VAO(struct cbar_work *cbar_wk,
 	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glDisable(GL_MULTISAMPLE);
 	
-	//	Destroy_Simple_VAO(cbar_VAO);
-	//	DestroyVBO(cbar_VAO);
+	//	Destroy_Simple_VAO(cbar_VAO[0]);
+	//	Destroy_Texture_VAO(cbar_VAO[1]);
 	
 	
 	return;

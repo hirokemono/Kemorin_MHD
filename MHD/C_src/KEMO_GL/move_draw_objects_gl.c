@@ -75,19 +75,11 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		};
 	};
 	
-	
-    /* Draw Color bar
-	 struct gl_strided_buffer *cbar_buf 
-	 = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	 set_buffer_address_4_patch(3*128, cbar_buf);
-	 alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
-	 set_colorbar_VAO(view_s->iflag_retina,
-	 view_s->nx_window, view_s->ny_window,
-	 mesh_m->text_color, mesh_m->bg_color, 
-	 psf_m, psf_a, &grid_VAO[3], cbar_buf);
-	 free(cbar_buf->v_buf);
-	 free(cbar_buf);
-	 draw_colorbar_VAO(psf_a->cbar_wk, &grid_VAO[3], kemo_shaders);
+    /* Draw Color bar */
+	for(i=0; i<psf_a->nmax_loaded; i++){
+		iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
+	};
+	draw_colorbar_VAO(psf_a->cbar_wk, &grid_VAO[3], kemo_shaders);
 	
 	/* draw example cube for empty data
 	if( (mesh_m->iflag_draw_mesh+iflag_psf+fline_m->iflag_draw_fline) == 0){
@@ -203,16 +195,8 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 		iflag_psf = iflag_psf + psf_a->iflag_loaded[i];
 	};
 	
-	struct gl_strided_buffer *cbar_buf 
-		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	set_buffer_address_4_patch(3*128, cbar_buf);
-	alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
-			set_colorbar_VAO(view_s->iflag_retina,
-								  view_s->nx_window, view_s->ny_window,
-								  mesh_m->text_color, mesh_m->bg_color, 
-								  psf_m, psf_a, &grid_VAO[3], cbar_buf);
-	free(cbar_buf->v_buf);
-	free(cbar_buf);
+	set_colorbar_VAO(view_s->iflag_retina, view_s->nx_window, view_s->ny_window,
+				mesh_m->text_color, mesh_m->bg_color, psf_m, psf_a, &grid_VAO[3]);
 	draw_colorbar_VAO(psf_a->cbar_wk, &grid_VAO[3], kemo_shaders);
 	
 	/* draw example cube for empty data */

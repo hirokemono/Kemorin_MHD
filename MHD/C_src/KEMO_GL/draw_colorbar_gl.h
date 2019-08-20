@@ -25,7 +25,7 @@ void init_colorbar_fonts();
 void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 			GLfloat text_color[4], GLfloat bg_color[4], 
 			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
-			struct VAO_ids **cbar_VAO, struct gl_strided_buffer *cbar_buf);
+			struct VAO_ids **cbar_VAO);
 void draw_colorbar_VAO(struct cbar_work *cbar_wk,
 			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders);
 
