@@ -48,13 +48,9 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 //	modify_view_by_struct(view_s);
 	
 	if(mesh_m->iflag_view_type == VIEW_MAP) {
-	/*
 		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
-
-	 	set_color_code_for_psfs(psf_s, psf_m, psf_a);
 		iflag_psf = check_draw_map(psf_a);
 	 	draw_map_objects_VAO(psf_m, view_s, psf_solid_VAO, grid_VAO, kemo_shaders);
-	*/
 	} else {
 	/*
 		if(mesh_m->iflag_draw_axis != 0){
@@ -78,18 +74,7 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 						mesh_grid_VAO, mesh_node_VAO, kemo_shaders);
 		};
 	/*
-		struct gl_strided_buffer *line_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-		set_buffer_address_4_patch(3*128, line_buf);
-		alloc_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
-		
-		if(mesh_m->iflag_draw_coast != 0){
-			draw_coastline_VBO(mesh_m->radius_coast, view_s, cube_VAO, kemo_shaders, line_buf);
-		};
-		if(mesh_m->iflag_draw_sph_grid != 0){
-			draw_sph_flame_VBO(mesh_m->radius_coast, view_s, cube_VAO, kemo_shaders, line_buf);
-		};
-		free(line_buf->v_buf);
-		free(line_buf);
+		 draw_coastline_VBO(mesh_m, view_s, grid_VAO, kemo_shaders, line_buf);
 		
 		/* Draw Transparent Objects */
 
@@ -190,8 +175,6 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 	
 	if(mesh_m->iflag_view_type == VIEW_MAP) {
 		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
-	
-		set_color_code_for_psfs(psf_s, psf_m, psf_a);
 		iflag_psf = check_draw_map(psf_a);
 		set_map_objects_VAO(view_s->iflag_retina, psf_s, mesh_m, psf_m, psf_a, 
 							 psf_solid_VAO, grid_VAO);
@@ -222,18 +205,7 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 						mesh_grid_VAO, mesh_node_VAO, kemo_shaders);
 		};
 		
-		struct gl_strided_buffer *line_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-		set_buffer_address_4_patch(3*128, line_buf);
-		alloc_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
-		
-		if(mesh_m->iflag_draw_coast != 0){
-			draw_coastline_VBO(mesh_m->radius_coast, view_s, cube_VAO, kemo_shaders, line_buf);
-		};
-		if(mesh_m->iflag_draw_sph_grid != 0){
-			draw_sph_flame_VBO(mesh_m->radius_coast, view_s, cube_VAO, kemo_shaders, line_buf);
-		};
-		free(line_buf->v_buf);
-		free(line_buf);
+		draw_coastline_VBO(mesh_m, view_s, grid_VAO, kemo_shaders);
 		
 		/* Draw Transparent Objects */
 		draw_PSF_trans_objects_VAO(mesh_m->shading_mode, 

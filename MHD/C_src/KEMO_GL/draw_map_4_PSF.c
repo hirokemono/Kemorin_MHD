@@ -68,17 +68,12 @@ void set_map_objects_VAO(int iflag_retina,
 						 struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 						 struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
 						 struct VAO_ids **psf_VAO, struct VAO_ids **grid_VAO){
-	/* set shading mode */
-	glDisable(GL_CULL_FACE);
+	set_color_code_for_psfs(psf_s, psf_m, psf_a);
 	
 	struct gl_strided_buffer *map_buf
 				= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(3*128, map_buf);
 	alloc_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
-	
-	/* set shading mode */
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	
 	
 	glGenVertexArrays(1, &psf_VAO[0]->id_VAO);
 	set_map_patch_VAO(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_patch, 
@@ -91,10 +86,15 @@ void set_map_objects_VAO(int iflag_retina,
 	if(mesh_m->iflag_draw_coast != 0){
 		glGenVertexArrays(1, &grid_VAO[0]->id_VAO);
 		set_map_coastline_VBO(grid_VAO[0], map_buf);
-	};
+	} else {
+		grid_VAO[0]->npoint_draw = 0;
+			};
+	
 	if(mesh_m->iflag_draw_sph_grid != 0){
 		glGenVertexArrays(1, &grid_VAO[1]->id_VAO);
 		set_map_flame_VBO(grid_VAO[1], map_buf);
+	} else {
+		grid_VAO[1]->npoint_draw = 0;
 	};
 	free(map_buf->v_buf);
 	free(map_buf);
@@ -119,32 +119,26 @@ void draw_map_objects_VAO(struct mesh_menu_val *mesh_m, struct view_element *vie
 	orthogonal_glmat_c(-xwin, xwin, -ywin, ywin, -1.0, 1.0, orthogonal);
 	
 	
-	if(psf_VAO[0]->npoint_draw > 0){
+	/* set shading mode */
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glUseProgram(kemo_shaders->test->programId);
 		map_matrix_to_shader(kemo_shaders->test, orthogonal);
 		
+	if(psf_VAO[0]->npoint_draw > 0){
 		glBindVertexArray(psf_VAO[0]->id_VAO);
 		glDrawArrays(GL_TRIANGLES, IZERO, psf_VAO[0]->npoint_draw);
 	};
 	if(psf_VAO[1]->npoint_draw > 0){
-		glUseProgram(kemo_shaders->test->programId);
-		map_matrix_to_shader(kemo_shaders->test, orthogonal);
-		
 		glBindVertexArray(psf_VAO[1]->id_VAO);
 		glDrawArrays(GL_TRIANGLES, IZERO, psf_VAO[1]->npoint_draw);
 	};
 	
-	if(mesh_m->iflag_draw_coast != 0){
-		glUseProgram(kemo_shaders->test->programId);
-		map_matrix_to_shader(kemo_shaders->test, orthogonal);
-		
+	if(grid_VAO[0]->npoint_draw > 0){
 		glBindVertexArray(grid_VAO[0]->id_VAO);
 		glDrawArrays(GL_LINES, IZERO, grid_VAO[0]->npoint_draw);
 	};
-	if(mesh_m->iflag_draw_sph_grid != 0){
-		glUseProgram(kemo_shaders->test->programId);
-		map_matrix_to_shader(kemo_shaders->test, orthogonal);
-		
+	if(grid_VAO[1]->npoint_draw > 0){
 		glBindVertexArray(grid_VAO[1]->id_VAO);
 		glDrawArrays(GL_LINES, IZERO, grid_VAO[1]->npoint_draw);
 	};
