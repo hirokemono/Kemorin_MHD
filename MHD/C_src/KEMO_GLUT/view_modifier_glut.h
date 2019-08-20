@@ -34,6 +34,9 @@ void modifywindow(int width, int height);
 
 void set_left_button(GLint value);
 
+int create_kemoview_window();
+int create_kemoview_menu();
+
 #ifdef __cplusplus
 }
 #endif

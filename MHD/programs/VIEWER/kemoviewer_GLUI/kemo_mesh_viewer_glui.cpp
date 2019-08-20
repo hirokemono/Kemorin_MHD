@@ -1038,7 +1038,7 @@ void draw_mesh_kemo_glui(int iflag_streo_shutter, int iflag_dmesh) {
     struct kv_string *command;
 	int narg_glut = 0;
 	char **arg_glut;
-	int iflag_core_profile = 0;
+	int iflag_core_profile = 1;
 	
 	/* Initialize arrays for viewer */
 	kemoview_allocate_single_viwewer_struct(single_kemoview);
@@ -1056,9 +1056,10 @@ void draw_mesh_kemo_glui(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	if(iflag_streo_shutter == SHUTTER_ON){
 		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
-				|GLUT_MULTISAMPLE|GLUT_STEREO);
+					|GLUT_MULTISAMPLE|GLUT_STEREO|GLUT_3_2_CORE_PROFILE);
 		} else {
-		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH|GLUT_MULTISAMPLE);
+		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
+					|GLUT_MULTISAMPLE|GLUT_3_2_CORE_PROFILE);
 	};
 	
     command = kemoview_init_kvstring_by_string(pick_surf_command);
@@ -1090,9 +1091,7 @@ void draw_mesh_kemo_glui(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	
 	/*! Create menu window*/
-	menu_win = glutCreateSubWindow(winid,IZERO,IZERO,MENU_WIDTH,MENU_HEIGHT);
-	/*glutEntryFunc(enter_leave);*/
-	glutDisplayFunc(display_menu);
+	menu_win = create_kemoview_menu();
 	
 	draw_mesh_w_menu();
 	

@@ -12,14 +12,20 @@
 
 #include <math.h>
 #include "kemoviewer_param_c.h"
+#include "m_gl_transfer_matrix.h"
 #include "vartex_array_object_gl.h"
+#include "glsl.h"
+#include "set_cube_to_buf.h"
 
 /* prototypes */
 
-void cube_surf_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
-void cube_edge_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
-void cube_flat_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
+void set_initial_cube_VAO(struct view_element *view_s, struct VAO_ids *cube_VAO);
+void draw_initial_cube(struct view_element *view_s, struct VAO_ids *cube_VAO, 
+			struct kemoview_shaders *kemo_shaders);
 
-void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
+void draw_cube_edge_gl3(struct view_element *view_s, 
+			struct VAO_ids *cube_VAO, struct kemoview_shaders *kemo_shaders);
+void draw_quad_gl3(struct view_element *view_s,
+			struct VAO_ids *quad_VAO, struct kemoview_shaders *kemo_shaders);
 
 #endif

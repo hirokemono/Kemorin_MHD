@@ -747,7 +747,9 @@ void kemoview_set_anaglyph_flag(int iflag){kemo_sgl->mesh_m->iflag_streo_anaglyp
 int kemoview_get_stereo_shutter(){return kemo_sgl->mesh_m->iflag_streo_stutter;}
 int kemoview_get_anaglyph_flag(){return kemo_sgl->mesh_m->iflag_streo_anaglyph;}
 
-void kemoview_draw_glut_menubottun(){draw_menubottun_gl();}
+void kemoview_draw_glut_menubottun(){
+	draw_menu_by_VAO(kemo_sgl->menu_VAO, kemo_sgl->kemo_shaders);	
+};
 //void kemoview_draw_glut_menubottun3(){draw_menubottun_gl3();}
 
 /* Subroutines for surface rendering */
@@ -1057,9 +1059,6 @@ void kemoview_draw_quad_gl3(){
 	draw_quad_gl3(kemo_sgl->view_s, kemo_sgl->cube_VAO, kemo_sgl->kemo_shaders);
 }
 
-void kemoview_draw_menu_gl3(){
-	VBO_for_Menu(kemo_sgl->menu_VAO, kemo_sgl->kemo_shaders);
-}
 void kemo_Cleanup()
 {
   destory_shaders(kemo_sgl->kemo_shaders->test);

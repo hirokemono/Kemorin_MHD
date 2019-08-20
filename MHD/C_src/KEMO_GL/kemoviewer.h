@@ -795,7 +795,6 @@ extern "C" {
 	
 	void kemoview_draw_quad_setup();
 	void kemoview_draw_menu_setup();
-	void kemoview_draw_menu_gl3();
 	void kemo_Cleanup();
 	
 #ifdef __cplusplus

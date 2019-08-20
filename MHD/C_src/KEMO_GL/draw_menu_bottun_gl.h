@@ -16,8 +16,7 @@
 
 /* prototypes */
 
-void draw_menubottun_gl();
-void VBO_for_Menu(struct VAO_ids *menu_VAO, struct kemoview_shaders *kemo_shaders);
+void draw_menu_by_VAO(struct VAO_ids *menu_VAO, struct kemoview_shaders *kemo_shaders);
 
 #endif
 

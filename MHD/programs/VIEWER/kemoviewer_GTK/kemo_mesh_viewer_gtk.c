@@ -816,7 +816,7 @@ static void make_1st_level_menu(){
 void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	int narg_glut = 0;
 	char **arg_glut;
-	int iflag_core_profile = 0;
+	int iflag_core_profile = 1;
     GLboolean bStereo;
 	/* Initialize arrays for viewer */
 	
@@ -839,26 +839,23 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	/*! Initializations with GLUT*/
 	if(iflag_streo_shutter == SHUTTER_ON){
 		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
-				|GLUT_MULTISAMPLE|GLUT_STEREO);
+					|GLUT_MULTISAMPLE|GLUT_STEREO|GLUT_3_2_CORE_PROFILE);
 		} else {
-		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH|GLUT_MULTISAMPLE);
+		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
+					|GLUT_MULTISAMPLE|GLUT_3_2_CORE_PROFILE);
 	};
 	/*! Create viewer window*/
     kemoview_set_retinamode(IZERO);
 	kemoview_set_windowsize(NPIX_X, NPIX_Y);
 	glutInitWindowSize(NPIX_X, NPIX_Y);
-	winid = glutCreateWindow("Kemoviewer");
-	set_main_window_id_glut(winid);
-
-	/*glutEntryFunc(enter_leave);*/
+	winid = create_kemoview_window();
 	
-	/*! Set the display callback  */
+	  fprintf(
+	  stdout,
+	  "INFO: OpenGL Version: %s\n",
+	  glGetString(GL_VERSION)
+	  );
 	
-	glutDisplayFunc(display);
-	glutReshapeFunc(modifywindow);
-	
-	if (!glutExtensionSupported("GL_ARB_texture_non_power_of_two")) 
-		{printf("GL_ARB_texture_non_power_of_two is not Supported\n");};
 	
 	/*  initialize view_modifier, receiving the id for it's submenu  */
 	kemoviewer_reset_to_init_angle();
@@ -868,11 +865,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	kemoview_init_background_color();
 	kemoview_init_lighting(iflag_core_profile);
 	
-	
-	/*! Create menu window*/
-	menu_win = glutCreateSubWindow(winid,IZERO,IZERO,MENU_WIDTH,MENU_HEIGHT);
-	/*glutEntryFunc(enter_leave);*/
-	glutDisplayFunc(display_menu);
+	menu_win = create_kemoview_menu();
 	
 	draw_mesh_w_menu();
 	

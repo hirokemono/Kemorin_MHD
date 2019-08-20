@@ -12,8 +12,6 @@ m_kemoviewer_structure.o \
 write_modelview_matrix.o \
 vartex_array_object_gl.o \
 \
-drawcube_gl.o \
-\
 psf_data_array_manager.o \
 read_data_4_kemoviewer.o \
 set_kemoviewer_ucd_data.o \
@@ -28,6 +26,7 @@ rotate_animation.o \
 rainbow_color_code_c.o \
 set_color_code_on_nodes.o \
 \
+set_cube_to_buf.o \
 set_colorbar_to_buffer.o \
 set_mesh_patch_2_gl_buf.o \
 set_mesh_node_2_gl_buf.o \
@@ -40,6 +39,7 @@ set_axis_to_buf.o \
 set_coastline_to_buf.o \
 set_menu_bottun_to_buf.o \
 \
+drawcube_gl.o \
 draw_patch_4_mesh_c.o \
 draw_fieldlines.o \
 draw_patches_4_PSF.o \
@@ -286,6 +286,16 @@ module:
 	m_color_table_c.o \
 	m_colorbar_work.o \
     set_rgba_table_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	set_cube_to_buf.o: \
+	'$$(KEMO_C_GLDIR)'/set_cube_to_buf.c \
+	set_cube_to_buf.h \
+	kemoviewer_param_c.o \
+	vartex_array_object_gl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -663,7 +673,10 @@ module:
 	drawcube_gl.h \
 	kemoviewer.h \
 	kemoviewer_param_c.o \
+	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
+	glsl.o \
+	set_cube_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

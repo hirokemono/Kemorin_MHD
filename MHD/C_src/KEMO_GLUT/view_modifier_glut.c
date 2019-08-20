@@ -6,6 +6,9 @@
 
 /* initial settings */
 
+static int id_window;
+static int id_menu;
+
 static int left_button_func =   ROTATE;
 static int middle_button_func = PAN;
 static int right_button_func =  ZOOM;
@@ -16,7 +19,6 @@ static GLdouble  begin_left[2], begin_middle[2], begin_right[2];
 
 static GLdouble  begin[2];
 static GLdouble  gTrackBallRotation[4];
-
 
 static void mouse(GLint button, GLint state, GLint x, GLint y){
 	
@@ -325,3 +327,21 @@ void modifywindow(int width, int height){
     kemoview_update_projection_by_viewer_size(width, height);
 	return;
 }
+
+int create_kemoview_window(){
+	id_window = glutCreateWindow("Kemoviewer");
+	set_main_window_id_glut(id_window);
+	
+	/*! Set the display callback  */
+	glutDisplayFunc(display);
+	glutReshapeFunc(modifywindow);
+	return id_window;
+};
+
+int create_kemoview_menu(){
+	id_menu = glutCreateSubWindow(id_window,IZERO,IZERO,MENU_WIDTH,MENU_HEIGHT);
+	glutDisplayFunc(display_menu);
+	return id_menu;
+};
+
+

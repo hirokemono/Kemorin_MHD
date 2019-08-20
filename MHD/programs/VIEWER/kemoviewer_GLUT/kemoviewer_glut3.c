@@ -30,7 +30,7 @@ struct kemoviewer_type *single_kemoview;
 
 void display_menu3(){
 	glutSetWindow(menu_win);
-	kemoview_draw_menu_gl3();
+	kemoview_draw_glut_menubottun();
 	glutSwapBuffers();
 	glutSetWindow(winid);
 	return;
@@ -975,12 +975,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
     kemoview_set_retinamode(IZERO);
 	kemoview_set_windowsize(NPIX_X, NPIX_Y);
 	glutInitWindowSize(NPIX_X, NPIX_Y);
-	winid = glutCreateWindow("Kemoviewer");
-	set_main_window_id_glut(winid);
-	/*! Set the display callback  */
-	
-	glutDisplayFunc(display3);
-	glutReshapeFunc(modifywindow);
+	winid = create_kemoview_window();
 	
 	/*  Display OpoenGL version  */
 	  fprintf(
@@ -998,8 +993,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	kemoview_init_lighting(iflag_core_profile);
 	
 	/*! Create menu window*/
-	menu_win = glutCreateSubWindow(winid,IZERO,IZERO,MENU_WIDTH,MENU_HEIGHT);
-	glutDisplayFunc(display_menu3);
+	menu_win = create_kemoview_menu();
 	
 	glutSetWindow(winid);
 	kemoview_draw_quad_setup();
