@@ -71,23 +71,8 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 		};
 		
 		
-		if(fline_m->iflag_draw_fline != 0){
-			struct gl_strided_buffer *fline_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-			set_buffer_address_4_patch(3*128, fline_buf);
-			alloc_strided_buffer(fline_buf->num_nod_buf, fline_buf->ncomp_buf, fline_buf);
-			if(fline_m->fieldline_type == IFLAG_PIPE){
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-				glDisable(GL_CULL_FACE);
-				
-				draw_fieldtubes_VAO(fline_s, fline_m, view_s, cube_VAO, kemo_shaders, fline_buf);
-			} else {
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				draw_fieldlines_VAO(fline_s, fline_m, view_s, cube_VAO, kemo_shaders, fline_buf);
-			};
-			free(fline_buf->v_buf);
-			free(fline_buf);
-		};
 	 */
+		draw_fieldlines_VAO(fline_s, fline_m, view_s, cube_VAO, kemo_shaders);
 		
 		 iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
 		 iflag_psf = iflag_psf + check_draw_psf(psf_a);
@@ -230,22 +215,7 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 		};
 		
 		
-		if(fline_m->iflag_draw_fline != 0){
-			struct gl_strided_buffer *fline_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-			set_buffer_address_4_patch(3*128, fline_buf);
-			alloc_strided_buffer(fline_buf->num_nod_buf, fline_buf->ncomp_buf, fline_buf);
-			if(fline_m->fieldline_type == IFLAG_PIPE){
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-				glDisable(GL_CULL_FACE);
-				
-				draw_fieldtubes_VAO(fline_s, fline_m, view_s, cube_VAO, kemo_shaders, fline_buf);
-			} else {
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				draw_fieldlines_VAO(fline_s, fline_m, view_s, cube_VAO, kemo_shaders, fline_buf);
-			};
-			free(fline_buf->v_buf);
-			free(fline_buf);
-		};
+		draw_fieldlines_VAO(fline_s, fline_m, view_s, cube_VAO, kemo_shaders);
 		
 		iflag_psf = sort_by_patch_distance_psfs(psf_s, psf_m, psf_a, view_s);
 		iflag_psf = iflag_psf + check_draw_psf(psf_a);
