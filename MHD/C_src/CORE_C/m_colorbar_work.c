@@ -42,12 +42,8 @@ void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 }
 
 
-void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk){
+void clear_colorbar_text_image(struct cbar_work *cbar_wk){
 	int i;
-	
-	sprintf(cbar_wk->minlabel, "% 3.2E",cbar_wk->psf_min);
-	sprintf(cbar_wk->maxlabel, "% 3.2E",cbar_wk->psf_max);
-	sprintf(cbar_wk->zerolabel,"% 3.2E",ZERO);
 	
 	for(i=0;i<12*IWIDTH_TXT*IHIGHT_TXT;i++){
 		cbar_wk->numBMP[i] =  0;
@@ -55,6 +51,15 @@ void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk){
 	for(i=0;i<9*IWIDTH_TXT*IHIGHT_TXT;i++){
 		cbar_wk->testBMP[i] =  0;
 	};
+	return;
+};
+
+void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk){
+	int i;
+	
+	sprintf(cbar_wk->minlabel, "% 3.2E",cbar_wk->psf_min);
+	sprintf(cbar_wk->maxlabel, "% 3.2E",cbar_wk->psf_max);
+	sprintf(cbar_wk->zerolabel,"% 3.2E",ZERO);
 	
 	YsGlWriteStringToRGBA8Bitmap(cbar_wk->minlabel, 191, 191, 191, 191, cbar_wk->numBMP, IWIDTH_TXT, 3*IHIGHT_TXT,
 								 0, 0, YsFont12x16, 14, 16);

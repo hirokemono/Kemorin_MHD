@@ -70,31 +70,38 @@ void set_colorbar_text_VAO(int iflag_retina, GLfloat text_color[4], GLfloat bg_c
 };
 
 void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
-			GLfloat text_color[4], GLfloat bg_color[4], 
-			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
+			GLfloat text_color[4], GLfloat bg_color[4],
+			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 			struct VAO_ids **cbar_VAO, struct gl_strided_buffer *cbar_buf){
-	int num_patch;
-	int inum_quad;
-	
-	
-	set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win, cmap_s, cbar_wk);
-	set_colorbar_text_image(text_color, cbar_wk);
+	int i;
 	
 	glGenVertexArrays(1, &cbar_VAO[0]->id_VAO);
 	glGenVertexArrays(1, &cbar_VAO[1]->id_VAO);
-	count_colorbar_box_VAO(cbar_wk, cbar_VAO[0]);
-	count_colorbar_text_VAO(cbar_wk, cbar_VAO[1]);
-	set_colorbar_box_VAO(iflag_retina, text_color, bg_color, 
-				cmap_s, cbar_wk, cbar_VAO[0], cbar_buf);
-	set_colorbar_text_VAO(iflag_retina, text_color, bg_color, 
-				cmap_s, cbar_wk, cbar_VAO[1], cbar_buf);
 	
+	cbar_VAO[1]->npoint_draw = 0;
+	for(i=0; i<psf_a->nmax_loaded; i++){
+		if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0) {
+			set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win, 
+						psf_m[i]->cmap_psf, psf_m[0]->cbar_wk);
+			clear_colorbar_text_image(psf_m[0]->cbar_wk);
+			set_colorbar_text_image(text_color, psf_m[0]->cbar_wk);
+	
+			count_colorbar_box_VAO(psf_m[0]->cbar_wk, cbar_VAO[0]);
+			count_colorbar_text_VAO(psf_m[0]->cbar_wk, cbar_VAO[1]);
+			set_colorbar_box_VAO(iflag_retina, text_color, bg_color, 
+						psf_m[i]->cmap_psf, psf_m[0]->cbar_wk, cbar_VAO[0], cbar_buf);
+			set_colorbar_text_VAO(iflag_retina, text_color, bg_color, 
+						psf_m[i]->cmap_psf, psf_m[0]->cbar_wk, cbar_VAO[1], cbar_buf);
+		};
+	};
 	return;
 };
 
 void draw_colorbar_VAO(struct cbar_work *cbar_wk,
 			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders){
 	GLdouble orthogonal[16];
+	if(cbar_VAO[1]->npoint_draw <= 0) return;
+	
 	orthogonal_glmat_c(0.0, cbar_wk->xwin, 0.0, cbar_wk->ywin, -1.0, 1.0, orthogonal);
 	
 	glEnable(GL_BLEND);
