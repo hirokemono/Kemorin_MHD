@@ -16,8 +16,7 @@ void draw_objects(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 			struct fline_menu_val *fline_m, struct view_element *view_s,
 			struct VAO_ids *cube_VAO, struct VAO_ids *fline_VAO, 
-			struct VAO_ids *mesh_solid_VAO, struct VAO_ids *mesh_grid_VAO, 
-			struct VAO_ids *mesh_node_VAO, struct VAO_ids *mesh_trans_VAO, 
+			struct VAO_ids **mesh_solid_VAO, struct VAO_ids *mesh_trans_VAO, 
 			struct VAO_ids **psf_solid_VAO, struct VAO_ids **psf_trans_VAO, 
 			struct VAO_ids **grid_VAO, struct VAO_ids **cbar_VAO, 
 			struct kemoview_shaders *kemo_shaders){
@@ -35,8 +34,7 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 			struct fline_menu_val *fline_m, struct view_element *view_s,
 			struct VAO_ids *cube_VAO, struct VAO_ids *fline_VAO, 
-			struct VAO_ids *mesh_solid_VAO, struct VAO_ids *mesh_grid_VAO, 
-			struct VAO_ids *mesh_node_VAO, struct VAO_ids *mesh_trans_VAO, 
+			struct VAO_ids **mesh_solid_VAO, struct VAO_ids *mesh_trans_VAO, 
 			struct VAO_ids **psf_solid_VAO, struct VAO_ids **psf_trans_VAO, 
 			struct VAO_ids **grid_VAO, struct VAO_ids **cbar_VAO, 
 			struct kemoview_shaders *kemo_shaders){
@@ -63,10 +61,9 @@ void draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s,
 									psf_solid_VAO, kemo_shaders);
 		
 		if(mesh_m->iflag_draw_mesh != 0){
-			draw_solid_mesh_VAO(mesh_m, view_s, mesh_solid_VAO, 
-						mesh_grid_VAO, mesh_node_VAO, kemo_shaders);
+			draw_solid_mesh_VAO(mesh_m, view_s, mesh_solid_VAO, kemo_shaders);
 		};
-
+		
 		draw_coastline_grid_VBO(view_s, grid_VAO, kemo_shaders);
 		
 		draw_PSF_trans_objects_VAO(mesh_m->shading_mode, psf_s, psf_m, psf_a, 
@@ -95,8 +92,7 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 			struct fline_menu_val *fline_m, struct view_element *view_s,
 			struct VAO_ids *cube_VAO, struct VAO_ids *fline_VAO, 
-			struct VAO_ids *mesh_solid_VAO, struct VAO_ids *mesh_grid_VAO, 
-			struct VAO_ids *mesh_node_VAO, struct VAO_ids *mesh_trans_VAO, 
+			struct VAO_ids **mesh_solid_VAO, struct VAO_ids *mesh_trans_VAO, 
 			struct VAO_ids **psf_solid_VAO, struct VAO_ids **psf_trans_VAO, 
 			struct VAO_ids **grid_VAO, struct VAO_ids **cbar_VAO, 
 			struct kemoview_shaders *kemo_shaders){
@@ -132,10 +128,8 @@ void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct psf_data **psf_s
 		
 	
 		if(mesh_m->iflag_draw_mesh != 0){
-			set_solid_mesh_VAO(mesh_s, mesh_m, mesh_solid_VAO, 
-						mesh_grid_VAO, mesh_node_VAO);
-			draw_solid_mesh_VAO(mesh_m, view_s, mesh_solid_VAO, 
-						mesh_grid_VAO, mesh_node_VAO, kemo_shaders);
+			set_solid_mesh_VAO(mesh_s, mesh_m, mesh_solid_VAO);
+			draw_solid_mesh_VAO(mesh_m, view_s, mesh_solid_VAO, kemo_shaders);
 		};
 		
 		set_coastline_grid_VBO(mesh_m, grid_VAO);

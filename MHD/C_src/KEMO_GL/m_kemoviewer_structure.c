@@ -21,9 +21,7 @@ struct kemoviewer_type{
 	struct VAO_ids *cube_VAO;
 	struct VAO_ids *menu_VAO;
 	
-	struct VAO_ids *mesh_solid_VAO;
-	struct VAO_ids *mesh_grid_VAO;
-	struct VAO_ids *mesh_node_VAO;
+	struct VAO_ids **mesh_solid_VAO;
 	struct VAO_ids *mesh_trans_VAO;
 
 	struct VAO_ids *fline_VAO;
@@ -58,9 +56,10 @@ void kemoview_allocate_pointers(){
 	kemo_sgl->cube_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	kemo_sgl->menu_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
-	kemo_sgl->mesh_solid_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-	kemo_sgl->mesh_grid_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-	kemo_sgl->mesh_node_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	kemo_sgl->mesh_solid_VAO = (struct VAO_ids **) malloc(3*sizeof(struct VAO_ids));
+	for(i=0;i<3;i++){
+		kemo_sgl->mesh_solid_VAO[i] =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	};
 	kemo_sgl->mesh_trans_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
 	kemo_sgl->fline_VAO =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
@@ -199,8 +198,8 @@ void kemoview_draw_objects_c(){
 	draw_objects(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
 				kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
 				kemo_sgl->cube_VAO, kemo_sgl->fline_VAO,
-				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_grid_VAO, kemo_sgl->mesh_node_VAO, 
-				kemo_sgl->mesh_trans_VAO, kemo_sgl->psf_solid_VAO, kemo_sgl->psf_trans_VAO, 
+				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_trans_VAO, 
+				kemo_sgl->psf_solid_VAO, kemo_sgl->psf_trans_VAO, 
 				kemo_sgl->grid_VAO, kemo_sgl->cbar_VAO, kemo_sgl->kemo_shaders);
 	return;
 };
@@ -213,8 +212,8 @@ void kemoview_draw_fast_gl3(){
 	draw_objects_gl3(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
 				kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
 				kemo_sgl->cube_VAO, kemo_sgl->fline_VAO,
-				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_grid_VAO, kemo_sgl->mesh_node_VAO, 
-				kemo_sgl->mesh_trans_VAO, kemo_sgl->psf_solid_VAO, kemo_sgl->psf_trans_VAO, 
+				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_trans_VAO, 
+				kemo_sgl->psf_solid_VAO, kemo_sgl->psf_trans_VAO, 
 				kemo_sgl->grid_VAO, kemo_sgl->cbar_VAO, kemo_sgl->kemo_shaders);
 	
 	return;
@@ -224,8 +223,8 @@ void kemoview_draw_objects_gl3(){
 	update_draw_objects_gl3(kemo_sgl->mesh_d, kemo_sgl->psf_d, kemo_sgl->fline_d, kemo_sgl->mesh_m, 
 				kemo_sgl->psf_m, kemo_sgl->psf_a, kemo_sgl->fline_m, kemo_sgl->view_s, 
 				kemo_sgl->cube_VAO, kemo_sgl->fline_VAO,
-				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_grid_VAO, kemo_sgl->mesh_node_VAO, 
-				kemo_sgl->mesh_trans_VAO, kemo_sgl->psf_solid_VAO, kemo_sgl->psf_trans_VAO, 
+				kemo_sgl->mesh_solid_VAO, kemo_sgl->mesh_trans_VAO, 
+				kemo_sgl->psf_solid_VAO, kemo_sgl->psf_trans_VAO, 
 				kemo_sgl->grid_VAO, kemo_sgl->cbar_VAO, kemo_sgl->kemo_shaders);
 	return;
 };
