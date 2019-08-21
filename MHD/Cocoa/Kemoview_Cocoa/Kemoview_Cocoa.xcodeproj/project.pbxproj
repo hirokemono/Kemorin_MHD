@@ -88,6 +88,7 @@
 		188C941F230DA8C300A4DB14 /* set_each_fline_parameters.c in Sources */ = {isa = PBXBuildFile; fileRef = 188C941D230DA8C200A4DB14 /* set_each_fline_parameters.c */; };
 		188C9422230DBE9F00A4DB14 /* m_kemoview_fline.c in Sources */ = {isa = PBXBuildFile; fileRef = 188C9421230DBE9F00A4DB14 /* m_kemoview_fline.c */; };
 		188C9425230DC96E00A4DB14 /* m_kemoview_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 188C9424230DC96E00A4DB14 /* m_kemoview_mesh.c */; };
+		188C9428230DDC7B00A4DB14 /* m_kemoviewer_data.c in Sources */ = {isa = PBXBuildFile; fileRef = 188C9427230DDC7B00A4DB14 /* m_kemoviewer_data.c */; };
 		188FFD7923087CCB00F5A0DE /* menu.frag in Resources */ = {isa = PBXBuildFile; fileRef = 188FFD6623087CCA00F5A0DE /* menu.frag */; };
 		188FFD7A23087CCB00F5A0DE /* phong.frag in Resources */ = {isa = PBXBuildFile; fileRef = 188FFD6723087CCA00F5A0DE /* phong.frag */; };
 		188FFD7B23087CCB00F5A0DE /* phong_texture.vert in Resources */ = {isa = PBXBuildFile; fileRef = 188FFD6823087CCA00F5A0DE /* phong_texture.vert */; };
@@ -374,6 +375,8 @@
 		188C9421230DBE9F00A4DB14 /* m_kemoview_fline.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_fline.c; sourceTree = "<group>"; };
 		188C9423230DC96E00A4DB14 /* m_kemoview_mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_kemoview_mesh.h; sourceTree = "<group>"; };
 		188C9424230DC96E00A4DB14 /* m_kemoview_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_mesh.c; sourceTree = "<group>"; };
+		188C9426230DDC7B00A4DB14 /* m_kemoviewer_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_kemoviewer_data.h; sourceTree = "<group>"; };
+		188C9427230DDC7B00A4DB14 /* m_kemoviewer_data.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoviewer_data.c; sourceTree = "<group>"; };
 		188FFD6623087CCA00F5A0DE /* menu.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = menu.frag; path = GLSL/menu.frag; sourceTree = "<group>"; };
 		188FFD6723087CCA00F5A0DE /* phong.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = phong.frag; path = GLSL/phong.frag; sourceTree = "<group>"; };
 		188FFD6823087CCA00F5A0DE /* phong_texture.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = phong_texture.vert; path = GLSL/phong_texture.vert; sourceTree = "<group>"; };
@@ -974,6 +977,8 @@
 				188C941E230DA8C200A4DB14 /* set_each_fline_parameters.h */,
 				18D7E6CE1562D359009B05FF /* m_kemoviewer_structure.c */,
 				18D7E6CF1562D359009B05FF /* m_kemoviewer_structure.h */,
+				188C9427230DDC7B00A4DB14 /* m_kemoviewer_data.c */,
+				188C9426230DDC7B00A4DB14 /* m_kemoviewer_data.h */,
 				18D7E6D01562D359009B05FF /* Makefile */,
 				18D7E6D11562D359009B05FF /* modify_object_4_viewer_c.c */,
 				18D7E6D21562D359009B05FF /* modify_object_4_viewer_c.h */,
@@ -1330,6 +1335,7 @@
 				18753CD222FB63A500FEA6D9 /* t_ctl_data_crust_filter_c.c in Sources */,
 				185CB9DD212F593D00BB3C0B /* t_ctl_data_sph_filter_list.c in Sources */,
 				188BA75B2306BB0500348842 /* draw_map_4_PSF.c in Sources */,
+				188C9428230DDC7B00A4DB14 /* m_kemoviewer_data.c in Sources */,
 				18D7E76D1562D359009B05FF /* modify_stereo_view_gl.c in Sources */,
 				18D7E76E1562D359009B05FF /* move_draw_objects_gl.c in Sources */,
 				188FFD962308F9B200F5A0DE /* set_PSF_isolines_to_buf.c in Sources */,

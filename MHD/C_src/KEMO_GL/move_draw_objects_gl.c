@@ -85,19 +85,8 @@ void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
                  GL_RGB, GL_UNSIGNED_BYTE,(GLubyte *) glimage);
 }
 
-void draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
-			struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
-			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
-	glDeleteLists(view_s->gl_drawID, 1);
-	glNewList(view_s->gl_drawID, GL_COMPILE_AND_EXECUTE);
-	
-	glEndList();
-	
-	return;
-}
 
-
-void draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
+void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
 			struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
 			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
 	int i;
@@ -151,7 +140,7 @@ void draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo
 	return;
 }
 
-void update_draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
+void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
 			struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
 			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
 	int i;
@@ -292,5 +281,29 @@ void update_draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_flin
 		kemo_VAOs->cube_VAO->npoint_draw = 0;
 	}
 	
+	return;
+}
+
+
+void draw_objects(struct kemoviewer_type *kemoview){
+	glDeleteLists(kemoview->view_s->gl_drawID, 1);
+	glNewList(kemoview->view_s->gl_drawID, GL_COMPILE_AND_EXECUTE);
+	
+	glEndList();
+	
+	return;
+}
+
+void quick_draw_objects_gl3(struct kemoviewer_type *kemoview){
+	quick_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline, 
+				kemoview->kemo_mesh, kemoview->view_s, 
+				kemoview->kemo_VAOs, kemoview->kemo_shaders);
+	return;
+};
+
+void update_draw_objects_gl3(struct kemoviewer_type *kemoview){
+	update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
+				kemoview->kemo_mesh, kemoview->view_s, 
+				kemoview->kemo_VAOs, kemoview->kemo_shaders);
 	return;
 }

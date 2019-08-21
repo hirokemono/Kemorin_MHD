@@ -13,6 +13,7 @@ m_kemoviewer_menu.o \
 m_kemoview_psf.o \
 m_kemoview_fline.o \
 m_kemoview_mesh.o \
+m_kemoviewer_data.o \
 m_kemoviewer_structure.o \
 \
 write_modelview_matrix.o \
@@ -266,6 +267,24 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	m_kemoviewer_data.o: \
+	'$$(KEMO_C_GLDIR)'/m_kemoviewer_data.c \
+	m_kemoviewer_data.o \
+	kemoviewer.h \
+	kemoviewer_base.o \
+	m_kemoview_psf.o \
+	m_kemoview_fline.o \
+	m_kemoview_mesh.o \
+	m_kemoviewer_menu.o \
+	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
+	glsl.o \
+	shaders.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	m_kemoviewer_structure.o: \
 	'$$(KEMO_C_GLDIR)'/m_kemoviewer_structure.c \
 	m_kemoviewer_structure.h \
@@ -274,10 +293,13 @@ module:
 	m_kemoview_psf.o \
 	m_kemoview_fline.o \
 	m_kemoview_mesh.o \
+	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
+	glsl.o \
+	shaders.o \
 	set_rgba_table_c.o \
 	skip_comment_c.o \
 	read_data_4_kemoviewer.o \
@@ -291,8 +313,6 @@ module:
 	set_each_fline_parameters.o \
 	rainbow_color_code_c.o \
 	set_psf_texture_by_png.o \
-	glsl.o \
-	shaders.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -632,14 +652,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/move_draw_objects_gl.c \
 	move_draw_objects_gl.h \
 	kemoviewer.h \
-	m_kemoview_psf.o \
-	m_kemoview_fline.o \
-	m_kemoview_mesh.o \
-	m_kemoview_mesh_menu.o \
-	m_kemoviewer_menu.o \
-	m_psf_data_4_viewer_c.o \
-	m_surface_mesh_4_viewer_c.o \
-	m_gl_transfer_matrix.o \
+	m_kemoviewer_data.o \
 	vartex_array_object_gl.o \
 	glsl.o \
 	draw_colorbar_gl.o \
@@ -688,7 +701,7 @@ module:
 	set_kemoviewer_ucd_data.o: \
 	'$$(KEMO_C_GLDIR)'/set_kemoviewer_ucd_data.c \
 	set_kemoviewer_ucd_data.h \
-	kemoviewer.o \
+	kemoviewer.h \
 	m_kemoview_psf.o \
 	m_kemoview_fline.o \
 	m_kemoview_mesh.o \

@@ -6,6 +6,7 @@
 
 #include "kemoviewer.h"
 #include "kemoviewer_base.h"
+#include "m_kemoviewer_data.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "m_kemoview_psf.h"

@@ -3,31 +3,6 @@
 
 #include "m_kemoviewer_structure.h"
 
-struct kemoviewer_type{
-	int window_ID;
-	
-	struct kemoview_mesh      *kemo_mesh;
-	struct kemoview_psf       *kemo_psf;
-    struct kemoview_fline     *kemo_fline;
-    
-    struct view_element       *view_s;
-	struct kemoview_shaders   *kemo_shaders;
-	struct kemoview_VAOs      *kemo_VAOs;
-	struct VAO_ids            *menu_VAO;
-	
-	struct psf_menu_val       *psf_current_menu;
-	struct psf_data           *psf_current_data;
-	struct psf_data           *psf_ucd_tmp;
-	
-	struct kemoviewer_type    *next;
-};
-
-struct mul_kemoviewer_type{
-	int num_window;
-	int id_current;
-	struct kemoviewer_type   **kemo_mul;
-};
-
 struct kemoviewer_type *kemo_sgl;
 
 void kemoview_allocate_pointers(){
@@ -130,9 +105,7 @@ int kemoview_get_current_viewer_id(){return kemo_sgl->window_ID;};
 
 void kemoview_draw_objects_c(){
     /*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
-	draw_objects(kemo_sgl->kemo_psf, kemo_sgl->kemo_fline, 
-				kemo_sgl->kemo_mesh, kemo_sgl->view_s, 
-				kemo_sgl->kemo_VAOs, kemo_sgl->kemo_shaders);
+	draw_objects(kemo_sgl);
 	return;
 };
 
@@ -140,18 +113,13 @@ void kemoview_draw_fast_gl3(){
 	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glDrawBuffer(GL_BACK);
-	
-	draw_objects_gl3(kemo_sgl->kemo_psf, kemo_sgl->kemo_fline, 
-				kemo_sgl->kemo_mesh, kemo_sgl->view_s, 
-				kemo_sgl->kemo_VAOs, kemo_sgl->kemo_shaders);
+	quick_draw_objects_gl3(kemo_sgl);
 	
 	return;
 };
 void kemoview_draw_objects_gl3(){
 	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
-	update_draw_objects_gl3(kemo_sgl->kemo_psf, kemo_sgl->kemo_fline,
-				kemo_sgl->kemo_mesh, kemo_sgl->view_s, 
-				kemo_sgl->kemo_VAOs, kemo_sgl->kemo_shaders);
+	update_draw_objects_gl3(kemo_sgl);
 	return;
 };
 
