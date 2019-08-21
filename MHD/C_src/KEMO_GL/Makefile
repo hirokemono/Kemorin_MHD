@@ -186,7 +186,6 @@ module:
 	'$$(KEMO_C_GLDIR)'/modify_stereo_view_gl.c \
 	modify_stereo_view_gl.h \
 	kemoviewer_param_c.o \
-	m_kemoview_mesh_menu.o \
 	m_gl_transfer_matrix.o \
 	move_draw_objects_gl.o \
 	>> $(MAKENAME)

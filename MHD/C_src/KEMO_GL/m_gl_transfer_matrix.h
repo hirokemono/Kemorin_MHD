@@ -21,6 +21,8 @@
 struct view_element{
 	int iflag_retina;
 	int iflag_view_type;
+	int iflag_streo_stutter;
+	int iflag_streo_anaglyph;
 	
 	GLint gl_drawID;
 	GLint nx_window, ny_window;

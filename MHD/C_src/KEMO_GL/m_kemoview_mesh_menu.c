@@ -69,9 +69,6 @@ void dealloc_draw_mesh_flags(struct mesh_menu_val *mesh_m){
 
 
 void init_viewer_parameters(struct mesh_menu_val *mesh_m){
-	mesh_m->iflag_streo_stutter =  SHUTTER_OFF;
-	mesh_m->iflag_streo_anaglyph = ANAGLYPH_ON;
-	
 	mesh_m->draw_surface_solid = INIT_DRAW_SOLID;
 	mesh_m->draw_surface_grid =  INIT_DRAW_LINE;
 	mesh_m->draw_surface_nod =   INIT_DRAW_NOD;

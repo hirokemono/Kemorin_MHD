@@ -26,11 +26,8 @@
 struct mesh_menu_val{
 	struct kv_string *mesh_file_name;
 	struct kv_string *pick_surface_command;
-    int iformat_surface_mesh;
 
-	int iflag_streo_stutter;
-	int iflag_streo_anaglyph;
-	
+	int iformat_surface_mesh;
 	int iflag_draw_mesh;
 	
 	int shading_mode;

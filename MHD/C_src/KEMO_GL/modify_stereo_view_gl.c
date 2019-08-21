@@ -86,13 +86,13 @@ static void rotate_mono_kemoview(struct view_element *view_s){
 	return;
 };
 
-void modify_stereo_kemoview(struct mesh_menu_val *menu, struct view_element *view_s){
-	if(menu->iflag_streo_stutter == SHUTTER_ON){
+void modify_stereo_kemoview(struct view_element *view_s){
+	if(view_s->iflag_streo_stutter == SHUTTER_ON){
 		if(view_s->iflag_view_type == VIEW_STEREO
-		   && menu->iflag_streo_anaglyph == ANAGLYPH_OFF){
+		   && view_s->iflag_streo_anaglyph == ANAGLYPH_OFF){
 			modify_stereo_shutter(view_s);
 		} else if(view_s->iflag_view_type == VIEW_STEREO
-				  && menu->iflag_streo_anaglyph == ANAGLYPH_ON){
+				  && view_s->iflag_streo_anaglyph == ANAGLYPH_ON){
 			glDrawBuffer(GL_BACK);
 			modify_stereo_anaglyph(view_s);
 		} else {
@@ -109,14 +109,14 @@ void modify_stereo_kemoview(struct mesh_menu_val *menu, struct view_element *vie
 	return;
 };
 
-void rotate_stereo_kemoview(struct mesh_menu_val *menu, struct view_element *view_s){
+void rotate_stereo_kemoview(struct view_element *view_s){
 
-	if(menu->iflag_streo_stutter == SHUTTER_ON){
+	if(view_s->iflag_streo_stutter == SHUTTER_ON){
 		if(view_s->iflag_view_type == VIEW_STEREO
-		   && menu->iflag_streo_anaglyph == ANAGLYPH_OFF){
+		   && view_s->iflag_streo_anaglyph == ANAGLYPH_OFF){
 			rotate_stereo_shutter(view_s);
 		} else if(view_s->iflag_view_type == VIEW_STEREO
-			&& menu->iflag_streo_anaglyph == ANAGLYPH_ON){
+			&& view_s->iflag_streo_anaglyph == ANAGLYPH_ON){
 			glDrawBuffer(GL_BACK);
 			rotate_stereo_anaglyph(view_s);
 		} else {

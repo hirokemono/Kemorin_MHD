@@ -534,9 +534,9 @@ void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char
 };
 
 void kemoview_modify_view(){
-	modify_stereo_kemoview(kemo_sgl->kemo_mesh->mesh_m, kemo_sgl->view_s);
+	modify_stereo_kemoview(kemo_sgl->view_s);
 };
-void kemoview_rotate(){rotate_stereo_kemoview(kemo_sgl->kemo_mesh->mesh_m, kemo_sgl->view_s);};
+void kemoview_rotate(){rotate_stereo_kemoview(kemo_sgl->view_s);};
 
 void kemoviewer_reset_to_init_angle(){
     reset_all_view_parameter(kemo_sgl->view_s);
@@ -640,10 +640,10 @@ void kemoview_animation_add_rotation(GLdouble dt){add_animation_rotation(kemo_sg
 void kemoview_reset_animation(){reset_rot_animation(kemo_sgl->view_s);};
 
 
-void kemoview_set_stereo_shutter(int iflag){kemo_sgl->kemo_mesh->mesh_m->iflag_streo_stutter = iflag;}
-void kemoview_set_anaglyph_flag(int iflag){kemo_sgl->kemo_mesh->mesh_m->iflag_streo_anaglyph = iflag;}
-int kemoview_get_stereo_shutter(){return kemo_sgl->kemo_mesh->mesh_m->iflag_streo_stutter;}
-int kemoview_get_anaglyph_flag(){return kemo_sgl->kemo_mesh->mesh_m->iflag_streo_anaglyph;}
+void kemoview_set_stereo_shutter(int iflag){kemo_sgl->view_s->iflag_streo_stutter = iflag;}
+void kemoview_set_anaglyph_flag(int iflag){kemo_sgl->view_s->iflag_streo_anaglyph = iflag;}
+int kemoview_get_stereo_shutter(){return kemo_sgl->view_s->iflag_streo_stutter;}
+int kemoview_get_anaglyph_flag(){return kemo_sgl->view_s->iflag_streo_anaglyph;}
 
 void kemoview_draw_glut_menubottun(){
 	draw_menu_by_VAO(kemo_sgl->menu_VAO, kemo_sgl->kemo_shaders);	
