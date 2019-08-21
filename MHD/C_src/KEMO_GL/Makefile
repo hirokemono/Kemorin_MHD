@@ -210,6 +210,7 @@ module:
 	m_gl_transfer_matrix.o \
 	m_kemoview_mesh_menu.o \
 	glsl.o \
+	m_phong_light_table_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

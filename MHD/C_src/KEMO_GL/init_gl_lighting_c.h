@@ -8,6 +8,7 @@
 #include "m_kemoview_mesh_menu.h"
 #include "m_gl_transfer_matrix.h"
 #include "glsl.h"
+#include "m_phong_light_table_c.h"
 
 /* prototypes */
 void set_bg_color_kemoview(struct mesh_menu_val *mesh_m);

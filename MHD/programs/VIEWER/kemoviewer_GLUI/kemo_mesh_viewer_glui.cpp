@@ -238,6 +238,7 @@ static void set_open_file_menu_glui(){
 										0,openFileBrowerCB);
 	editText_pick_sf = new GLUI_EditText( glui, "Pickup surface command: ", 
 										 pick_surf_command, -1, SetPickSurfaceCB);
+	
 	bottunToGo =      new GLUI_Button(glui, "Open", -1, init_kemoview_data_glui);
 	bottunToCancel =  new GLUI_Button(glui, "Cancel", -1, cancel_open_file_glui);
 	
@@ -1070,29 +1071,22 @@ void draw_mesh_kemo_glui(int iflag_streo_shutter, int iflag_dmesh) {
     kemoview_set_retinamode(IZERO);
 	kemoview_set_windowsize(NPIX_X, NPIX_Y);
 	glutInitWindowSize(NPIX_X, NPIX_Y);
-	winid = glutCreateWindow("Kemoviewer");
-	set_main_window_id_glut(winid);
-	/*glutEntryFunc(enter_leave);*/
-	
-	/*! Set the display callback  */
-	
-	glutDisplayFunc(display);
-	
-	if (!glutExtensionSupported("GL_ARB_texture_non_power_of_two")) 
-		{printf("GL_ARB_texture_non_power_of_two is not Supported\n");};
+	winid = create_kemoview_window();
 	
 	/*  initialize view_modifier, receiving the id for it's submenu  */
 	kemoviewer_reset_to_init_angle();
 	view_modifier_init();
-	
 	/* ! set the perspective and lighting */
 	kemoview_init_background_color();
 	kemoview_init_lighting(iflag_core_profile);
 	
-	
 	/*! Create menu window*/
 	menu_win = create_kemoview_menu();
 	
+	glutSetWindow(menu_win);
+	kemoview_draw_menu_setup();
+	
+	glutSetWindow(winid);
 	draw_mesh_w_menu();
 	
 /*	GLUI_Master.set_glutIdleFunc(myGlutIdle);*/

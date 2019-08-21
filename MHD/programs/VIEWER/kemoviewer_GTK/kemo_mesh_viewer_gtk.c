@@ -870,6 +870,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	glutSetWindow(menu_win);
 	kemoview_draw_menu_setup();
 	
+	glutSetWindow(winid);
 	draw_mesh_w_menu();
 	
 	/*! set callback for GLUT*/
