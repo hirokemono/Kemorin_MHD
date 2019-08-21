@@ -94,11 +94,6 @@ void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *ke
 	int iflag_psf = 0;
 	
     /* Draw Solid Objects */
-	
-	update_projection_struct(view_s);
-	rotate_view_by_struct(view_s);
-//	modify_view_by_struct(view_s);
-	
 	if(view_s->iflag_view_type == VIEW_MAP) {
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, view_s);
 		draw_map_objects_VAO(kemo_mesh->mesh_m, view_s, 
@@ -149,9 +144,7 @@ void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *k
 	
     /* Draw Solid Objects */
 	
-	update_projection_struct(view_s);
-	modify_view_by_struct(view_s);
-		
+	
 	
 	if(view_s->iflag_view_type == VIEW_MAP) {
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
@@ -284,15 +277,6 @@ void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *k
 	return;
 }
 
-
-void draw_objects(struct kemoviewer_type *kemoview){
-	glDeleteLists(kemoview->view_s->gl_drawID, 1);
-	glNewList(kemoview->view_s->gl_drawID, GL_COMPILE_AND_EXECUTE);
-	
-	glEndList();
-	
-	return;
-}
 
 void quick_draw_objects_gl3(struct kemoviewer_type *kemoview){
 	quick_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline, 

@@ -103,12 +103,6 @@ int kemoview_get_current_viewer_id(){return kemo_sgl->window_ID;};
 
 /* Routines for draw by OpenGL */
 
-void kemoview_draw_objects_c(){
-    /*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
-	draw_objects(kemo_sgl);
-	return;
-};
-
 void kemoview_draw_fast_gl3(){
 	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -502,9 +496,9 @@ void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char
 };
 
 void kemoview_modify_view(){
-	modify_stereo_kemoview(kemo_sgl->view_s);
+	modify_stereo_kemoview(kemo_sgl);
 };
-void kemoview_rotate(){rotate_stereo_kemoview(kemo_sgl->view_s);};
+void kemoview_rotate(){rotate_stereo_kemoview(kemo_sgl);};
 
 void kemoviewer_reset_to_init_angle(){
     reset_all_view_parameter(kemo_sgl->view_s);

@@ -10,7 +10,7 @@
 
 /* prototypes */
 
-void modify_stereo_kemoview(struct view_element *view_s);
-void rotate_stereo_kemoview(struct view_element *view_s);
+void modify_stereo_kemoview(struct kemoviewer_type *kemoview);
+void rotate_stereo_kemoview(struct kemoviewer_type *kemoview);
 
 #endif

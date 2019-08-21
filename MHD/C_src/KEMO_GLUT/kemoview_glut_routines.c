@@ -12,7 +12,7 @@ void set_main_window_id_glut(int winid){
 
 void draw_mesh_keep_menu(){
 	glutSetWindow(id_window);
-	kemoview_draw_objects_c();
+	kemoview_draw_objects_gl3();
 	kemoview_update_distance();
 	kemoview_modify_view();
 	glutPostRedisplay();
@@ -33,7 +33,7 @@ void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix,
 		int_degree =  i*inc_deg;
 		
 		kemoview_set_animation_rot_angle(int_degree);
-		kemoview_draw_objects_c();
+		kemoview_draw_objects_gl3();
 		kemoview_rotate();
 		glutSwapBuffers();
 		

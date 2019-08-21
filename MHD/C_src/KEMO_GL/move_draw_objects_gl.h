@@ -37,7 +37,6 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 
 void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage);
 
-void draw_objects(struct kemoviewer_type *kemoview);
 void quick_draw_objects_gl3(struct kemoviewer_type *kemoview);
 void update_draw_objects_gl3(struct kemoviewer_type *kemoview);
 #endif

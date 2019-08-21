@@ -269,7 +269,7 @@ module:
 	@echo \
 	m_kemoviewer_data.o: \
 	'$$(KEMO_C_GLDIR)'/m_kemoviewer_data.c \
-	m_kemoviewer_data.o \
+	m_kemoviewer_data.h \
 	kemoviewer.h \
 	kemoviewer_base.o \
 	m_kemoview_psf.o \
