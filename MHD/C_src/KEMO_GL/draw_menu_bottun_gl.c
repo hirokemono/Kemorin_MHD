@@ -4,10 +4,6 @@
 #include "draw_menu_bottun_gl.h"
 
 void draw_menu_by_VAO(struct VAO_ids *menu_VAO, struct kemoview_shaders *kemo_shaders){
-	GLfloat Vertices[4*MENU_WIDTH*MENU_HEIGHT];
-	GLfloat Colors[4*MENU_WIDTH*MENU_HEIGHT];
-	int i, j, idx;
-	
 	struct gl_strided_buffer *strided_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(128, strided_buf);
 	alloc_strided_buffer(strided_buf->num_nod_buf, strided_buf->ncomp_buf, strided_buf);

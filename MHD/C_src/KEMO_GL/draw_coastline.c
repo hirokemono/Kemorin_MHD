@@ -120,14 +120,12 @@ void set_coastline_grid_VBO(struct mesh_menu_val *mesh_m, struct VAO_ids **grid_
 	alloc_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
 	
 	if(mesh_m->iflag_draw_coast != 0){
-		glGenVertexArrays(1, &grid_VAO[0]->id_VAO);
 		set_coastline_VBO(mesh_m->radius_coast, grid_VAO[0], line_buf);
 	} else {
 		grid_VAO[0]->npoint_draw = 0;
 	};
 	
 	if(mesh_m->iflag_draw_sph_grid != 0){
-		glGenVertexArrays(1, &grid_VAO[1]->id_VAO);
 		set_sph_flame_VBO(mesh_m->radius_coast, grid_VAO[1], line_buf);
 	} else {
 		grid_VAO[1]->npoint_draw = 0;
@@ -141,14 +139,12 @@ void map_coastline_grid_VBO(struct mesh_menu_val *mesh_m, struct VAO_ids **grid_
 			struct gl_strided_buffer *map_buf){
 	
 	if(mesh_m->iflag_draw_coast != 0){
-		glGenVertexArrays(1, &grid_VAO[0]->id_VAO);
 		set_map_coastline_VBO(grid_VAO[0], map_buf);
 	} else {
 		grid_VAO[0]->npoint_draw = 0;
 	};
 	
 	if(mesh_m->iflag_draw_sph_grid != 0){
-		glGenVertexArrays(1, &grid_VAO[1]->id_VAO);
 		set_map_flame_VBO(grid_VAO[1], map_buf);
 	} else {
 		grid_VAO[1]->npoint_draw = 0;
@@ -172,8 +168,6 @@ void draw_coastline_grid_VBO(struct view_element *view_s,
 		glDrawArrays(GL_LINES, IZERO, grid_VAO[1]->npoint_draw);
 	};
 	
-//	Destroy_Phong_VAO(grid_VAO[0]);
-//	Destroy_Phong_VAO(grid_VAO[1]);
 	return;
 };
 

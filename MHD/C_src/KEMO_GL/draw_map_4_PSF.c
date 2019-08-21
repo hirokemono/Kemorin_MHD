@@ -75,11 +75,9 @@ void set_map_objects_VAO(int iflag_retina,
 	set_buffer_address_4_patch(3*128, map_buf);
 	alloc_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
 	
-	glGenVertexArrays(1, &psf_VAO[0]->id_VAO);
 	set_map_patch_VAO(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_patch, 
 					  psf_s, psf_a, psf_VAO[0], map_buf);
 	
-	glGenVertexArrays(1, &psf_VAO[1]->id_VAO);
 	set_map_PSF_isolines_VAO(psf_s, psf_m, psf_a, iflag_retina,
 							psf_VAO[1], map_buf);
 	
@@ -130,12 +128,6 @@ void draw_map_objects_VAO(struct mesh_menu_val *mesh_m, struct view_element *vie
 		glBindVertexArray(grid_VAO[1]->id_VAO);
 		glDrawArrays(GL_LINES, IZERO, grid_VAO[1]->npoint_draw);
 	};
-	
-//	Destroy_Simple_VAO(psf_VAO[0]);
-//	Destroy_Simple_VAO(psf_VAO[1]);
-//	Destroy_Simple_VAO(grid_VAO[0]);
-//	Destroy_Simple_VAO(grid_VAO[1]);
-
 	return;
 }
 

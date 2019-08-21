@@ -63,11 +63,7 @@ void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(16, cbar_buf);
 	alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
-	
-	glGenVertexArrays(1, &cbar_VAO[0]->id_VAO);
-	glGenVertexArrays(1, &cbar_VAO[1]->id_VAO);
-	
-	
+		
 	cbar_VAO[1]->npoint_draw = 0;
 	clear_colorbar_text_image(psf_a->cbar_wk);
 	for(i=0; i<psf_a->nmax_loaded; i++){
@@ -123,11 +119,7 @@ void draw_colorbar_VAO(struct cbar_work *cbar_wk,
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
 	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glDisable(GL_MULTISAMPLE);
-	
-	//	Destroy_Simple_VAO(cbar_VAO[0]);
-	//	Destroy_Texture_VAO(cbar_VAO[1]);
-	
+	glDisable(GL_MULTISAMPLE);	
 	
 	return;
 }

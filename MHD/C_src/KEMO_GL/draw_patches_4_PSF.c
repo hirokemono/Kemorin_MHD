@@ -141,19 +141,15 @@ void set_PSF_solid_objects_VAO(int shading_mode,
 	
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glGenVertexArrays(1, &psf_solid_VAO[1]->id_VAO);
 	glBindVertexArray(psf_solid_VAO[1]->id_VAO);
 	set_PSF_texture_VAO(shading_mode, IZERO, psf_a->istack_solid_psf_txtur, 
 				psf_s, psf_m, psf_a, psf_solid_VAO[1], psf_buf);
 	
-	glGenVertexArrays(1, &psf_solid_VAO[0]->id_VAO);
 	set_PSF_patch_VAO(shading_mode, psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 
 				psf_s, psf_m, psf_a, psf_solid_VAO[0], psf_buf);
 	
-	glGenVertexArrays(1, &psf_solid_VAO[3]->id_VAO);
 	set_PSF_arrow_VAO(psf_s, psf_m, psf_a, psf_solid_VAO[3], psf_buf);
 	
-	glGenVertexArrays(1, &psf_solid_VAO[2]->id_VAO);
 	set_PSF_isoline_VAO(psf_s, psf_m, psf_a, psf_solid_VAO[2], psf_buf);
 	
 	free(psf_buf->v_buf);
@@ -199,12 +195,6 @@ void draw_PSF_solid_objects_VAO(int shading_mode,
 		glBindVertexArray(psf_solid_VAO[3]->id_VAO);
 		glDrawArrays(GL_TRIANGLES, IZERO, psf_solid_VAO[3]->npoint_draw);
 	};
-	
-	
-//	Destroy_Phong_Texture_VAO(psf_solid_VAO[1], psf_m[i]->texture_name);
-//	Destroy_Phong_VAO(psf_solid_VAO[0]);
-//	Destroy_Phong_VAO(psf_solid_VAO[2]);
-//	Destroy_Phong_VAO(psf_solid_VAO[3]);
 	return;
 }
 
@@ -218,11 +208,9 @@ void draw_PSF_trans_objects_VAO(int shading_mode,
 	alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
 	
-	glGenVertexArrays(1, &psf_trans_VAO[1]->id_VAO);
 	set_PSF_texture_VAO(shading_mode, 
 				psf_a->istack_solid_psf_patch, psf_a->istack_trans_psf_txtur, 
 				psf_s, psf_m, psf_a, psf_trans_VAO[1], psf_buf);
-	glGenVertexArrays(1, &psf_trans_VAO[0]->id_VAO);
 	set_PSF_patch_VAO(shading_mode, 
 				psf_a->istack_trans_psf_txtur, psf_a->ntot_psf_patch,
 				psf_s, psf_m, psf_a, psf_trans_VAO[0], psf_buf);
@@ -267,9 +255,5 @@ void draw_PSF_trans_objects_VAO(int shading_mode,
 	
 	free(psf_buf->v_buf);
 	free(psf_buf);
-	
-//		Destroy_Phong_VAO(psf_trans_VAO[0]);
-//	Destroy_Phong_Texture_VAO(psf_trans_VAO[1], psf_m[i]->texture_name);
-	
 	return;
 };

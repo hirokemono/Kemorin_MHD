@@ -112,7 +112,6 @@ void draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo
 	
 	if(view_s->iflag_view_type == VIEW_MAP) {
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, view_s);
-		iflag_psf = check_draw_map(kemo_psf->psf_a);
 		draw_map_objects_VAO(kemo_mesh->mesh_m, view_s, 
 					kemo_VAOs->psf_solid_VAO, kemo_VAOs->grid_VAO, kemo_shaders);
 	} else {
@@ -122,20 +121,19 @@ void draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo
 		
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s);
-		iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
 		draw_PSF_solid_objects_VAO(kemo_mesh->mesh_m->shading_mode, kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s, kemo_VAOs->psf_solid_VAO, kemo_shaders);
 		
-		if(kemo_mesh->mesh_m->iflag_draw_mesh != 0){
-			draw_solid_mesh_VAO(kemo_mesh->mesh_m, view_s, 
-						kemo_VAOs->mesh_solid_VAO, kemo_shaders);
-		};
-		
+		draw_solid_mesh_VAO(kemo_mesh->mesh_m, view_s, 
+					kemo_VAOs->mesh_solid_VAO, kemo_shaders);
 		draw_coastline_grid_VBO(view_s, kemo_VAOs->grid_VAO, kemo_shaders);
 		
+		glGenVertexArrays(1, &kemo_VAOs->psf_trans_VAO[1]->id_VAO);
+		glGenVertexArrays(1, &kemo_VAOs->psf_trans_VAO[0]->id_VAO);
 		draw_PSF_trans_objects_VAO(kemo_mesh->mesh_m->shading_mode, kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s, kemo_VAOs->psf_trans_VAO, kemo_shaders);
 		if(kemo_mesh->mesh_m->iflag_draw_mesh != 0){
+			glGenVertexArrays(1, &kemo_VAOs->mesh_trans_VAO->id_VAO);
 			set_trans_mesh_VAO(kemo_mesh->mesh_d, kemo_mesh->mesh_m, 
 						view_s, kemo_VAOs->mesh_trans_VAO);
 			draw_trans_mesh_VAO(kemo_mesh->mesh_m, view_s, 
@@ -144,14 +142,10 @@ void draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo
 	};
 	
     /* Draw Color bar */
-	for(i=0; i<kemo_psf->psf_a->nmax_loaded; i++){
-		iflag_psf = iflag_psf + kemo_psf->psf_a->iflag_loaded[i];
-	};
 	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO, kemo_shaders);
 	
 	/* draw example cube for empty data */
-	iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
-	if(iflag == 0){
+	if(kemo_VAOs->cube_VAO->npoint_draw > 0){
 		draw_initial_cube(view_s, kemo_VAOs->cube_VAO, kemo_shaders);
 	}
 	return;
@@ -174,19 +168,40 @@ void update_draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_flin
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s);
 		iflag_psf = check_draw_map(kemo_psf->psf_a);
+		glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[0]->id_VAO);
+		glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[1]->id_VAO);
+		glGenVertexArrays(1, &kemo_VAOs->grid_VAO[0]->id_VAO);
+		glGenVertexArrays(1, &kemo_VAOs->grid_VAO[1]->id_VAO);
 		set_map_objects_VAO(view_s->iflag_retina, kemo_psf->psf_d, 
 					kemo_mesh->mesh_m, kemo_psf->psf_m, kemo_psf->psf_a, 
 					kemo_VAOs->psf_solid_VAO, kemo_VAOs->grid_VAO);
 		draw_map_objects_VAO(kemo_mesh->mesh_m, view_s,
 					kemo_VAOs->psf_solid_VAO, kemo_VAOs->grid_VAO, kemo_shaders);
+		
+	//	Destroy_Simple_VAO(kemo_VAOs->psf_solid_VAO[0]);
+	//	Destroy_Simple_VAO(kemo_VAOs->psf_solid_VAO[1]);
+	//	Destroy_Simple_VAO(kemo_VAOs->grid_VAO[0]);
+	//	Destroy_Simple_VAO(kemo_VAOs->grid_VAO[1]);
 	} else {
 		glGenVertexArrays(1, &kemo_VAOs->grid_VAO[2]->id_VAO);
 		set_axis_VAO(kemo_mesh->mesh_m, view_s, kemo_VAOs->grid_VAO[2]);
 		draw_axis_VAO(view_s, kemo_VAOs->grid_VAO[2], kemo_shaders);
 		
+		glGenVertexArrays(1, &kemo_VAOs->fline_VAO->id_VAO);
 		sel_fieldlines_VAO(kemo_fline->fline_d, kemo_fline->fline_m, kemo_VAOs->fline_VAO);
 		draw_fieldlines_VAO(kemo_fline->fline_m, view_s,
 					kemo_VAOs->fline_VAO, kemo_shaders);
+	/*
+		if(kemo_fline->fieldline_type == IFLAG_PIPE){
+				Destroy_Phong_VAO(kemo_VAOs->fline_VAO);
+		} else {
+				Destroy_Simple_VAO(kemo_VAOs->fline_VAO);
+		};
+	*/	
+		glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[1]->id_VAO);
+		glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[0]->id_VAO);
+		glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[3]->id_VAO);
+		glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[2]->id_VAO);
 		
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s);
@@ -198,27 +213,53 @@ void update_draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_flin
 					kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s, kemo_VAOs->psf_solid_VAO, kemo_shaders);
 		
+		//	Destroy_Phong_Texture_VAO(kemo_VAOs->psf_solid_VAO[1], psf_m[i]->texture_name);
+		//	Destroy_Phong_VAO(kemo_VAOs->psf_solid_VAO[0]);
+		//	Destroy_Phong_VAO(kemo_VAOs->psf_solid_VAO[2]);
+		//	Destroy_Phong_VAO(kemo_VAOs->psf_solid_VAO[3]);
 	
 		if(kemo_mesh->mesh_m->iflag_draw_mesh != 0){
+			glGenVertexArrays(1, &kemo_VAOs->mesh_solid_VAO[1]->id_VAO);
+			glGenVertexArrays(1, &kemo_VAOs->mesh_solid_VAO[2]->id_VAO);
+			glGenVertexArrays(1, &kemo_VAOs->mesh_solid_VAO[0]->id_VAO);
 			set_solid_mesh_VAO(kemo_mesh->mesh_d, kemo_mesh->mesh_m,
 						kemo_VAOs->mesh_solid_VAO);
 			draw_solid_mesh_VAO(kemo_mesh->mesh_m, view_s, 
 						kemo_VAOs->mesh_solid_VAO, kemo_shaders);
+	/*
+	Destroy_Phong_VAO(mesh_VAO[2]);
+	Destroy_Phong_VAO(mesh_VAO[1]);
+	Destroy_Phong_VAO(mesh_VAO[0]);
+	*/
+		} else {
+			kemo_VAOs->mesh_solid_VAO[0]->npoint_draw = 0;
+			kemo_VAOs->mesh_solid_VAO[1]->npoint_draw = 0;
+			kemo_VAOs->mesh_solid_VAO[2]->npoint_draw = 0;
 		};
 		
+		glGenVertexArrays(1, &kemo_VAOs->grid_VAO[0]->id_VAO);
+		glGenVertexArrays(1, &kemo_VAOs->grid_VAO[1]->id_VAO);
 		set_coastline_grid_VBO(kemo_mesh->mesh_m, kemo_VAOs->grid_VAO);
 		draw_coastline_grid_VBO(view_s, kemo_VAOs->grid_VAO, kemo_shaders);
+//	Destroy_Phong_VAO(grid_VAO[0]);
+//	Destroy_Phong_VAO(grid_VAO[1]);
 		
 		/* Draw Transparent Objects */
+		glGenVertexArrays(1, &kemo_VAOs->psf_trans_VAO[1]->id_VAO);
+		glGenVertexArrays(1, &kemo_VAOs->psf_trans_VAO[0]->id_VAO);
 		draw_PSF_trans_objects_VAO(kemo_mesh->mesh_m->shading_mode, 
 					kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, 
 					view_s, kemo_VAOs->psf_trans_VAO, kemo_shaders);
+	//  Destroy_Phong_VAO(psf_trans_VAO[0]);
+	//	Destroy_Phong_Texture_VAO(psf_trans_VAO[1], psf_m[i]->texture_name);
 		
 		if(kemo_mesh->mesh_m->iflag_draw_mesh != 0){
+			glGenVertexArrays(1, &kemo_VAOs->mesh_trans_VAO->id_VAO);
 			set_trans_mesh_VAO(kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
 						kemo_VAOs->mesh_trans_VAO);
 			draw_trans_mesh_VAO(kemo_mesh->mesh_m, view_s, 
 						kemo_VAOs->mesh_trans_VAO, kemo_shaders);
+	//	Destroy_Phong_VAO(kemo_VAOs->mesh_trans_VAO);
 		};
 	};
 	
@@ -228,17 +269,27 @@ void update_draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_flin
 		iflag_psf = iflag_psf + kemo_psf->psf_a->iflag_loaded[i];
 	};
 	
+	glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[0]->id_VAO);
+	glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[1]->id_VAO);
+	
 	set_colorbar_VAO(view_s->iflag_retina, view_s->nx_window, view_s->ny_window,
 				kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color, 
 				kemo_psf->psf_m, kemo_psf->psf_a,
 				kemo_VAOs->cbar_VAO);
 	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO, kemo_shaders);
 	
+	//	Destroy_Simple_VAO(kemo_VAOs->cbar_VAO[0]);
+	//	Destroy_Texture_VAO(kemo_VAOs->cbar_VAO[1]);
+	
 	/* draw example cube for empty data */
 	iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
 	if(iflag == 0){
+		glGenVertexArrays(1, &kemo_VAOs->cube_VAO->id_VAO);
 		set_initial_cube_VAO(view_s, kemo_VAOs->cube_VAO);
 		draw_initial_cube(view_s, kemo_VAOs->cube_VAO, kemo_shaders);
+ //  Destroy_Phong_VAO(cube_VAO);
+	} else {
+		kemo_VAOs->cube_VAO->npoint_draw = 0;
 	}
 	
 	return;
