@@ -11,6 +11,8 @@ m_kemoview_mesh_menu.o \
 m_kemoview_psf_menu.o \
 m_kemoviewer_menu.o \
 m_kemoview_psf.o \
+m_kemoview_fline.o \
+m_kemoview_mesh.o \
 m_kemoviewer_structure.o \
 \
 write_modelview_matrix.o \
@@ -272,6 +274,7 @@ module:
 	kemoviewer_base.o \
 	m_kemoview_psf.o \
 	m_kemoview_fline.o \
+	m_kemoview_mesh.o \
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
 	m_gl_transfer_matrix.o \
@@ -342,6 +345,19 @@ module:
 	m_color_table_c.o \
 	m_colorbar_work.o \
     set_rgba_table_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	m_kemoview_mesh.o: \
+	'$$(KEMO_C_GLDIR)'/m_kemoview_mesh.c \
+	m_kemoview_mesh.h \
+	kemoviewer.h \
+	kemoviewer_base.o \
+	m_kemoview_mesh_menu.o \
+	m_surface_mesh_4_viewer_c.o \
+	read_data_4_kemoviewer.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -619,6 +635,7 @@ module:
 	kemoviewer.h \
 	m_kemoview_psf.o \
 	m_kemoview_fline.o \
+	m_kemoview_mesh.o \
 	m_kemoview_mesh_menu.o \
 	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
@@ -675,6 +692,7 @@ module:
 	kemoviewer.o \
 	m_kemoview_psf.o \
 	m_kemoview_fline.o \
+	m_kemoview_mesh.o \
 	m_psf_data_4_viewer_c.o \
 	m_kemoview_mesh_menu.o \
 	m_kemoviewer_menu.o \

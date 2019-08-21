@@ -19,8 +19,7 @@ static void set_viewer_mesh(struct viewer_mesh *mesh_s){
 	return;
 }
 
-static void set_kemoviewer_mesh(struct viewer_mesh *mesh_s,
-								struct mesh_menu_val *mesh_m, struct view_element *view){
+static void set_kemoviewer_mesh(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m){
 	int ierr;
     
     if (mesh_m->iformat_surface_mesh == IFLAG_SURF_MESH_GZ) {
@@ -57,7 +56,7 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 	init_viewer_parameters(mesh_m);
 	
 	if (mesh_m->iflag_draw_mesh > 0){
-		set_kemoviewer_mesh(mesh_s, mesh_m, view);
+		set_kemoviewer_mesh(mesh_s, mesh_m);
 		cal_range_4_mesh_c(mesh_s, view);
 		modify_object_multi_viewer_c(mesh_m->dist_domains, mesh_s);
 	};
@@ -127,7 +126,7 @@ void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
                             struct mesh_menu_val *mesh_m, struct view_element *view){
 	mesh_m->iflag_draw_mesh = IONE;
 	
-	set_kemoviewer_mesh(mesh_s, mesh_m, view);
+	set_kemoviewer_mesh(mesh_s, mesh_m);
     
 	reset_light_by_size_of_domain(view->r_max);
 	reset_to_init_angle(view);

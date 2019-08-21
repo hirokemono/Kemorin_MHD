@@ -9,6 +9,7 @@
 #include "m_kemoviewer_menu.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "m_gl_transfer_matrix.h"
+#include "m_kemoview_mesh.h"
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
 #include "vartex_array_object_gl.h"
@@ -42,17 +43,14 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 
 void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage);
 
-void draw_objects(struct viewer_mesh *mesh_s, struct kemoview_psf *kemo_psf, 
-			struct kemoview_fline *kemo_fline, struct mesh_menu_val *mesh_m,
-			struct view_element *view_s,
+void draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
+			struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
 			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders);
 
-void draw_objects_gl3(struct viewer_mesh *mesh_s, struct kemoview_psf *kemo_psf, 
-			struct kemoview_fline *kemo_fline, struct mesh_menu_val *mesh_m,
-			struct view_element *view_s,
+void draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
+			struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
 			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders);
-void update_draw_objects_gl3(struct viewer_mesh *mesh_s, struct kemoview_psf *kemo_psf, 
-			struct kemoview_fline *kemo_fline, struct mesh_menu_val *mesh_m,
-			struct view_element *view_s,
+void update_draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
+			struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
 			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders);
 #endif
