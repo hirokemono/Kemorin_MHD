@@ -15,6 +15,7 @@
 
 #include "m_gl_transfer_matrix.h"
 #include "m_kemoviewer_menu.h"
+#include "kemoviewer_base.h"
 #include "skip_comment_c.h"
 #include "control_elements_IO_c.h"
 #include "t_control_int_IO.h"

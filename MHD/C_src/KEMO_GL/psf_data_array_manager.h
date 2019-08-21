@@ -4,7 +4,7 @@
 #ifndef PSF_DATA_ARRAY_MANAGER_
 #define PSF_DATA_ARRAY_MANAGER_
 
-#include "m_kemoviewer_menu.h"
+#include "m_kemoview_psf_menu.h"
 
 
 /* prototypes */

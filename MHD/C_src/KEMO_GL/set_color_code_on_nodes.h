@@ -11,6 +11,7 @@
 #define SET_COLOR_CODE_ON_NODES_
 
 #include "m_psf_data_4_viewer_c.h"
+#include "m_kemoview_psf_menu.h"
 #include "m_kemoviewer_menu.h"
 #include "rainbow_color_code_c.h"
 

@@ -5,7 +5,7 @@
 #define SET_TEXTURE_4_PSF_
 
 #include "kemoviewer_param_c.h"
-#include "m_kemoviewer_menu.h"
+#include "m_kemoview_psf_menu.h"
 
 
 /* Prototypes */

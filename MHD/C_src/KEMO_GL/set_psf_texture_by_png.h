@@ -4,7 +4,7 @@
 #ifndef SET_TEXTURE_4_PSF_
 #define SET_TEXTURE_4_PSF_
 
-#include "m_kemoviewer_menu.h"
+#include "m_kemoview_psf_menu.h"
 #include "read_image_2_png.h"
 #include "read_image_2_bmp.h"
 #include "skip_comment_c.h"

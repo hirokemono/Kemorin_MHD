@@ -5,7 +5,7 @@
 #define SET_PSF_PATCHES_TO_BUF_
 
 #include "kemoviewer_param_c.h"
-#include "m_kemoviewer_menu.h"
+#include "m_kemoview_psf_menu.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "vartex_array_object_gl.h"
 #include "set_new_patch_4_map_c.h"

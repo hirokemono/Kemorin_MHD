@@ -6,7 +6,7 @@
 /* Size of window */ 
 
 #include "kemoviewer.h"
-#include "m_kemoviewer_menu.h"
+#include "m_kemoview_psf_menu.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "read_data_4_kemoviewer.h"
 #include "psf_data_array_manager.h"

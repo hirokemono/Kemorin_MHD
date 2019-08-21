@@ -7,6 +7,7 @@
 
 #include <math.h>
 #include "m_kemoviewer_menu.h"
+#include "m_kemoview_psf_menu.h"
 #include "m_color_table_c.h"
 #include "m_colorbar_work.h"
 #include "m_gl_transfer_matrix.h"

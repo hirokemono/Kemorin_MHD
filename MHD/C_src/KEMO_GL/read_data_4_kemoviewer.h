@@ -9,10 +9,12 @@
 #include <string.h>
 
 #include "kemoviewer_param_c.h"
+#include "kemoviewer_base.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "m_gl_transfer_matrix.h"
 #include "m_kemoview_mesh_menu.h"
+#include "m_kemoview_psf_menu.h"
 #include "m_kemoviewer_menu.h"
 #include "skip_comment_c.h"
 #include "icosahedron_c.h"
