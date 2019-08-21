@@ -135,14 +135,13 @@ void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
 }
 
 void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
-                           struct mesh_menu_val *mesh_m, struct psf_menu_val *psf_m){
+                           struct psf_menu_val *psf_m){
 	int i;
 	
 	set_psf_data_by_UCD(psf_s, ucd_tmp);
 	
 	alloc_draw_psf_flags(psf_s, psf_m);
 	
-	mesh_m->iflag_view_type = VIEW_3D;
 	psf_m->draw_psf_solid =   IONE;
 	psf_m->polygon_mode_psf = INIT_POLYGON_MODE;
 	psf_m->ivect_tangential = INIT_TANGENTIAL_VECT;
@@ -162,7 +161,7 @@ void set_kemoview_psf_data(struct psf_data *psf_s,struct psf_data *ucd_tmp,
 }
 
 void set_kemoview_fline_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, 
-                             struct mesh_menu_val *mesh_m, struct fline_menu_val *fline_m){
+                             struct fline_menu_val *fline_m){
 	int i;
 	
 	if (fline_m->iflag_draw_fline > 0){
@@ -173,7 +172,6 @@ void set_kemoview_fline_data(struct psf_data *fline_s, struct psf_data *ucd_tmp,
 	set_fline_data_by_UCD(fline_s, ucd_tmp);
 	alloc_draw_fline_flags(fline_s, fline_m);
 	
-	mesh_m->iflag_view_type =   VIEW_3D;
 	fline_m->iflag_draw_fline = IONE;
 	
 	for (i=0;i<fline_s->nfield;i++){

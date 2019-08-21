@@ -39,6 +39,25 @@ void dealloc_kemoview_psf(struct kemoview_psf *kemo_psf){
 	return;
 };
 
+void init_draw_psf(struct kemoview_psf *kemo_psf, struct psf_data *ucd_tmp,
+			int iflag_fileformat, int istep, const char *ucd_header){
+    int id_load;
+    id_load = add_new_kemoview_array(kemo_psf->psf_a);
+
+    kemo_psf->psf_m[id_load]->psf_header = alloc_kvstring();
+    alloc_copy_string(ucd_header, kemo_psf->psf_m[id_load]->psf_header);
+	kemo_psf->psf_m[id_load]->psf_step = istep;
+	kemo_psf->psf_m[id_load]->iflag_psf_file = iflag_fileformat;
+	
+	if(kemo_psf->psf_a->num_loaded == kemo_psf->psf_a->nlimit_loaded){
+		dealloc_draw_psf_flags(kemo_psf->psf_d[id_load], kemo_psf->psf_m[id_load]);
+		deallc_all_psf_data(kemo_psf->psf_d[id_load]);
+	};
+	
+	set_kemoview_psf_data(kemo_psf->psf_d[id_load], ucd_tmp, kemo_psf->psf_m[id_load]);
+    return;
+};
+
 void close_PSF_view(struct kemoview_psf *kemo_psf, 
 			struct psf_data *psf_current_data, struct psf_menu_val*psf_current_menu){
 	dealloc_draw_psf_flags(kemo_psf->psf_d[kemo_psf->psf_a->id_current],

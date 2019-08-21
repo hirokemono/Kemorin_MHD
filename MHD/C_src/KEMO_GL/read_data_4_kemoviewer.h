@@ -44,10 +44,10 @@ void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
                             struct mesh_menu_val *mesh_m, struct view_element *view);
 
 void set_kemoview_psf_data(struct psf_data *psf_s, struct psf_data *ucd_tmp,
-                           struct mesh_menu_val *mesh_m, struct psf_menu_val *psf_m);
+                           struct psf_menu_val *psf_m);
 
 void set_kemoview_fline_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, 
-                             struct mesh_menu_val *mesh_m, struct fline_menu_val *fline_m);
+                             struct fline_menu_val *fline_m);
 
 void alloc_set_ucd_file_name_by_psf(struct psf_menu_val *psf_m, struct kv_string *ucd_m);
 void alloc_set_ucd_file_name_by_fline(struct fline_menu_val *fline_m, struct kv_string *ucd_m);

@@ -351,6 +351,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/m_kemoview_psf.c \
 	m_kemoview_psf.h \
 	kemoviewer.h \
+	kemoviewer_base.o \
 	m_kemoview_psf_menu.o \
 	m_psf_data_4_viewer_c.o \
 	read_data_4_kemoviewer.o \
@@ -364,6 +365,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/m_kemoview_fline.c \
 	m_kemoview_fline.h \
 	kemoviewer.h \
+	kemoviewer_base.o \
 	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
 	read_data_4_kemoviewer.o \
