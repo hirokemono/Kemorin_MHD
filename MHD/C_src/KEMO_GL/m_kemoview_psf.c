@@ -35,6 +35,7 @@ void dealloc_kemoview_psf(struct kemoview_psf *kemo_psf){
 	free(kemo_psf->psf_a);
 	free(kemo_psf->psf_d);
 	free(kemo_psf->psf_m);
+	free(kemo_psf);
 	return;
 };
 

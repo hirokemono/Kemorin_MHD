@@ -38,8 +38,8 @@ int get_fline_color_num_field(struct psf_data *fline_d);
 int get_fline_color_ncomptot(struct psf_data *fline_d);
 int fline_color_num_comps(struct psf_data *fline_d, int i);
 int get_fline_color_istack(struct psf_data *fline_d, int i);
-void get_fline_color_data_name(struct psf_data *fline_d, struct kv_string *colorname,
-			int i);
+void get_fline_color_data_name(struct psf_data *fline_d, 
+			struct kv_string *colorname, int i);
 int get_fline_color_field(struct fline_menu_val *fline_m);
 int get_fline_color_component(struct fline_menu_val *fline_m);
 int get_fline_color_data_adress(struct fline_menu_val *fline_m);

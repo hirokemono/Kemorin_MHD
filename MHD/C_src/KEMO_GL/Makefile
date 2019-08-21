@@ -271,6 +271,7 @@ module:
 	kemoviewer.h \
 	kemoviewer_base.o \
 	m_kemoview_psf.o \
+	m_kemoview_fline.o \
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
 	m_gl_transfer_matrix.o \
@@ -348,12 +349,24 @@ module:
 	@echo \
 	m_kemoview_psf.o: \
 	'$$(KEMO_C_GLDIR)'/m_kemoview_psf.c \
-	kemoviewer.h \
 	m_kemoview_psf.h \
+	kemoviewer.h \
 	m_kemoview_psf_menu.o \
 	m_psf_data_4_viewer_c.o \
 	read_data_4_kemoviewer.o \
 	psf_data_array_manager.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	m_kemoview_fline.o: \
+	'$$(KEMO_C_GLDIR)'/m_kemoview_fline.c \
+	m_kemoview_fline.h \
+	kemoviewer.h \
+	m_kemoviewer_menu.o \
+	m_psf_data_4_viewer_c.o \
+	read_data_4_kemoviewer.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -603,6 +616,7 @@ module:
 	move_draw_objects_gl.h \
 	kemoviewer.h \
 	m_kemoview_psf.o \
+	m_kemoview_fline.o \
 	m_kemoview_mesh_menu.o \
 	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
@@ -656,7 +670,9 @@ module:
 	set_kemoviewer_ucd_data.o: \
 	'$$(KEMO_C_GLDIR)'/set_kemoviewer_ucd_data.c \
 	set_kemoviewer_ucd_data.h \
+	kemoviewer.o \
 	m_kemoview_psf.o \
+	m_kemoview_fline.o \
 	m_psf_data_4_viewer_c.o \
 	m_kemoview_mesh_menu.o \
 	m_kemoviewer_menu.o \

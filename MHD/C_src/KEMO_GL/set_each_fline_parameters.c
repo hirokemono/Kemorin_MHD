@@ -6,7 +6,6 @@
 //
 */
 
-#include <stdio.h>
 #include "set_each_fline_parameters.h"
 
 
@@ -41,8 +40,8 @@ int fline_color_num_comps(struct psf_data *fline_d, int i){
 int get_fline_color_istack(struct psf_data *fline_d, int i){
 	return fline_d->istack_comp[i];
 };
-void get_fline_color_data_name(struct psf_data *fline_d, struct kv_string *colorname,
-			int i){
+void get_fline_color_data_name(struct psf_data *fline_d, 
+			struct kv_string *colorname, int i){
     alloc_copy_string(fline_d->data_name[i], colorname);
 };
 int get_fline_color_field(struct fline_menu_val *fline_m){

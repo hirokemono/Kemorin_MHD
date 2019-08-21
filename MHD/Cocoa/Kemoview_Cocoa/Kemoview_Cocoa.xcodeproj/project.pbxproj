@@ -86,6 +86,7 @@
 		188C9419230CF87500A4DB14 /* kemoviewer_base.c in Sources */ = {isa = PBXBuildFile; fileRef = 188C9417230CF87400A4DB14 /* kemoviewer_base.c */; };
 		188C941C230CF90A00A4DB14 /* m_kemoview_psf_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 188C941B230CF90900A4DB14 /* m_kemoview_psf_menu.c */; };
 		188C941F230DA8C300A4DB14 /* set_each_fline_parameters.c in Sources */ = {isa = PBXBuildFile; fileRef = 188C941D230DA8C200A4DB14 /* set_each_fline_parameters.c */; };
+		188C9422230DBE9F00A4DB14 /* m_kemoview_fline.c in Sources */ = {isa = PBXBuildFile; fileRef = 188C9421230DBE9F00A4DB14 /* m_kemoview_fline.c */; };
 		188FFD7923087CCB00F5A0DE /* menu.frag in Resources */ = {isa = PBXBuildFile; fileRef = 188FFD6623087CCA00F5A0DE /* menu.frag */; };
 		188FFD7A23087CCB00F5A0DE /* phong.frag in Resources */ = {isa = PBXBuildFile; fileRef = 188FFD6723087CCA00F5A0DE /* phong.frag */; };
 		188FFD7B23087CCB00F5A0DE /* phong_texture.vert in Resources */ = {isa = PBXBuildFile; fileRef = 188FFD6823087CCA00F5A0DE /* phong_texture.vert */; };
@@ -368,6 +369,8 @@
 		188C941B230CF90900A4DB14 /* m_kemoview_psf_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_psf_menu.c; sourceTree = "<group>"; };
 		188C941D230DA8C200A4DB14 /* set_each_fline_parameters.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_each_fline_parameters.c; sourceTree = "<group>"; };
 		188C941E230DA8C200A4DB14 /* set_each_fline_parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_each_fline_parameters.h; sourceTree = "<group>"; };
+		188C9420230DBE9E00A4DB14 /* m_kemoview_fline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_kemoview_fline.h; sourceTree = "<group>"; };
+		188C9421230DBE9F00A4DB14 /* m_kemoview_fline.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_fline.c; sourceTree = "<group>"; };
 		188FFD6623087CCA00F5A0DE /* menu.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = menu.frag; path = GLSL/menu.frag; sourceTree = "<group>"; };
 		188FFD6723087CCA00F5A0DE /* phong.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = phong.frag; path = GLSL/phong.frag; sourceTree = "<group>"; };
 		188FFD6823087CCA00F5A0DE /* phong_texture.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = phong_texture.vert; path = GLSL/phong_texture.vert; sourceTree = "<group>"; };
@@ -952,6 +955,8 @@
 				18438A05230C91500074FC31 /* m_kemoviewer_menu.h */,
 				188C9415230CAB2500A4DB14 /* m_kemoview_psf.c */,
 				188C9414230CAB2500A4DB14 /* m_kemoview_psf.h */,
+				188C9421230DBE9F00A4DB14 /* m_kemoview_fline.c */,
+				188C9420230DBE9E00A4DB14 /* m_kemoview_fline.h */,
 				18438A02230C910C0074FC31 /* m_kemoview_mesh_menu.c */,
 				18438A03230C910C0074FC31 /* m_kemoview_mesh_menu.h */,
 				188C941B230CF90900A4DB14 /* m_kemoview_psf_menu.c */,
@@ -1268,6 +1273,7 @@
 				185CB9DB212F593D00BB3C0B /* t_ctl_data_SGS_MHD_model_c.c in Sources */,
 				185CB9AF212F593D00BB3C0B /* t_control_chara3_IO.c in Sources */,
 				18D7E7471562D359009B05FF /* set_psf_viewer.c in Sources */,
+				188C9422230DBE9F00A4DB14 /* m_kemoview_fline.c in Sources */,
 				185CB9BC212F593D00BB3C0B /* t_control_data_LIC_ctl_list.c in Sources */,
 				185CB9DE212F593D00BB3C0B /* t_ctl_data_temp_model_c.c in Sources */,
 				18D7E7481562D359009B05FF /* set_rgb_colors_c.c in Sources */,
