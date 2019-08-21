@@ -566,7 +566,6 @@ extern "C" {
     void kemoview_get_surf_grp_name(struct kv_string *groupname, int i);
     
     
-    int kemoview_get_draw_type_flag();
     int kemoview_get_view_type_flag();
     
     int kemoview_get_num_of_color_loop();

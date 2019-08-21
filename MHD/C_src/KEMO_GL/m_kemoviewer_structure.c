@@ -495,7 +495,6 @@ void kemoview_get_surf_grp_name(struct kv_string *groupname, int i){
     alloc_copy_string(kemo_sgl->kemo_mesh->mesh_d->surf_gp_name_sf[i], groupname); 
 };
 
-int kemoview_get_draw_type_flag(){return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_type;};
 int kemoview_get_view_type_flag(){return kemo_sgl->view_s->iflag_view_type;};
 
 int kemoview_get_num_of_color_loop(){return kemo_sgl->kemo_mesh->mesh_m->num_of_color_loop;};

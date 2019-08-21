@@ -223,7 +223,6 @@
 !    void kemoview_get_surf_grp_name(char *name, int i);
 !    
 !    
-!    int kemoview_get_draw_type_flag();
 !    int kemoview_get_view_type_flag();
 !    
 !    int kemoview_get_num_of_color_loop();

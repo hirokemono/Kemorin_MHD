@@ -32,7 +32,6 @@ struct mesh_menu_val{
 	int iflag_streo_anaglyph;
 	
 	int iflag_draw_mesh;
-	int iflag_draw_type;
 	
 	int shading_mode;
 	int polygon_mode;
