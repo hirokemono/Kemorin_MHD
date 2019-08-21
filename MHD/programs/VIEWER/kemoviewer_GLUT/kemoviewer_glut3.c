@@ -995,9 +995,6 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	/*! Create menu window*/
 	menu_win = create_kemoview_menu();
 	
-	glutSetWindow(winid);
-	kemoview_draw_quad_setup();
-	
 	glutSetWindow(menu_win);
 	kemoview_draw_menu_setup();
 	

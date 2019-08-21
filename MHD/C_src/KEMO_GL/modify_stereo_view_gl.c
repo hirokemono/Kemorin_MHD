@@ -67,6 +67,7 @@ static void modify_mono_kemoview(struct kemoviewer_type *kemoview){
 	update_projection_struct(kemoview->view_s);
 	modify_view_by_struct(kemoview->view_s);
 	
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	update_draw_objects_gl3(kemoview);
 	return;
 };
@@ -95,8 +96,10 @@ void modify_stereo_kemoview(struct kemoviewer_type *kemoview){
 		};
 	} else {
 		if(kemoview->view_s->iflag_view_type == VIEW_STEREO){
+			glDrawBuffer(GL_BACK);
 			modify_stereo_anaglyph(kemoview);
 		} else {
+			glDrawBuffer(GL_BACK);
 			modify_mono_kemoview(kemoview);
 		}
 	}
@@ -120,8 +123,10 @@ void rotate_stereo_kemoview(struct kemoviewer_type *kemoview){
 		};
 	} else {
 		if(kemoview->view_s->iflag_view_type == VIEW_STEREO){
+			glDrawBuffer(GL_BACK);
 			rotate_stereo_anaglyph(kemoview);
 		} else {
+			glDrawBuffer(GL_BACK);
 			rotate_view_by_struct(kemoview->view_s);
 			rotate_mono_kemoview(kemoview);
 		}

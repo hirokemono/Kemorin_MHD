@@ -930,9 +930,6 @@ void kemoview_read_fline_colormap_file(struct kv_string *filename){
 
 struct shader_ids sampleShader;
 
-void kemoview_draw_quad_setup(){
-	LoadShaderFromStrings(kemo_sgl->kemo_shaders->test, load_test_vert(), load_test_frag());
-}
 void kemoview_draw_menu_setup(){
 	LoadShaderFromStrings(kemo_sgl->kemo_shaders->menu, load_menu_vert(), load_menu_frag());
 }
