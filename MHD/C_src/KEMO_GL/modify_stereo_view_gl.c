@@ -88,10 +88,10 @@ static void rotate_mono_kemoview(struct view_element *view_s){
 
 void modify_stereo_kemoview(struct mesh_menu_val *menu, struct view_element *view_s){
 	if(menu->iflag_streo_stutter == SHUTTER_ON){
-		if(menu->iflag_view_type == VIEW_STEREO
+		if(view_s->iflag_view_type == VIEW_STEREO
 		   && menu->iflag_streo_anaglyph == ANAGLYPH_OFF){
 			modify_stereo_shutter(view_s);
-		} else if(menu->iflag_view_type == VIEW_STEREO
+		} else if(view_s->iflag_view_type == VIEW_STEREO
 				  && menu->iflag_streo_anaglyph == ANAGLYPH_ON){
 			glDrawBuffer(GL_BACK);
 			modify_stereo_anaglyph(view_s);
@@ -100,7 +100,7 @@ void modify_stereo_kemoview(struct mesh_menu_val *menu, struct view_element *vie
 			modify_mono_kemoview(view_s);
 		};
 	} else {
-		if(menu->iflag_view_type == VIEW_STEREO){
+		if(view_s->iflag_view_type == VIEW_STEREO){
 			modify_stereo_anaglyph(view_s);
 		} else {
 			modify_mono_kemoview(view_s);
@@ -112,10 +112,10 @@ void modify_stereo_kemoview(struct mesh_menu_val *menu, struct view_element *vie
 void rotate_stereo_kemoview(struct mesh_menu_val *menu, struct view_element *view_s){
 
 	if(menu->iflag_streo_stutter == SHUTTER_ON){
-		if(menu->iflag_view_type == VIEW_STEREO
+		if(view_s->iflag_view_type == VIEW_STEREO
 		   && menu->iflag_streo_anaglyph == ANAGLYPH_OFF){
 			rotate_stereo_shutter(view_s);
-		} else if(menu->iflag_view_type == VIEW_STEREO
+		} else if(view_s->iflag_view_type == VIEW_STEREO
 			&& menu->iflag_streo_anaglyph == ANAGLYPH_ON){
 			glDrawBuffer(GL_BACK);
 			rotate_stereo_anaglyph(view_s);
@@ -125,7 +125,7 @@ void rotate_stereo_kemoview(struct mesh_menu_val *menu, struct view_element *vie
 			rotate_mono_kemoview(view_s);
 		};
 	} else {
-		if(menu->iflag_view_type == VIEW_STEREO){
+		if(view_s->iflag_view_type == VIEW_STEREO){
 			rotate_stereo_anaglyph(view_s);
 		} else {
 			rotate_view_by_struct(view_s);

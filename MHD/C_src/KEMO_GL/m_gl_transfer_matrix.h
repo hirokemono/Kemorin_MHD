@@ -19,9 +19,10 @@
 #define INITIAL_EYE_SEP  0.1
 
 struct view_element{
-	GLint gl_drawID;
+	int iflag_retina;
+	int iflag_view_type;
 	
-    int   iflag_retina;
+	GLint gl_drawID;
 	GLint nx_window, ny_window;
 	
 	GLdouble x_lookfrom[3];

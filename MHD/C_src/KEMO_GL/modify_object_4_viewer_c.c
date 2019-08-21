@@ -121,33 +121,34 @@ void set_axis_positions(struct view_element *view, GLfloat dist,
 
 
 
-int set_viewtype(struct view_element *view, int selected, int current_view){
-	if(current_view == VIEW_MAP
-       || current_view == VIEW_XY
-       || current_view == VIEW_XZ
-       || current_view == VIEW_YZ){
+void set_viewtype(struct view_element *view, int selected){
+	if(view->iflag_view_type == VIEW_MAP
+       || view->iflag_view_type == VIEW_XY
+       || view->iflag_view_type == VIEW_XZ
+       || view->iflag_view_type == VIEW_YZ){
 		reset_to_init_angle(view);
 	};
+	view->iflag_view_type = selected;
 	
-	if(selected == VIEW_MAP) {
+	if(view->iflag_view_type == VIEW_MAP) {
 		cal_range_4_map_grid_c(view);
 	}
-	else if(selected == VIEW_XY) {
+	else if(view->iflag_view_type == VIEW_XY) {
 		view_for_xy_plane(view);
 	}
-	else if(selected == VIEW_XZ) {
+	else if(view->iflag_view_type == VIEW_XZ) {
 		view_for_xz_plane(view);
 	}
-	else if(selected == VIEW_YZ) {
+	else if(view->iflag_view_type == VIEW_YZ) {
 		view_for_yz_plane(view);
     };
     
-    if(selected == VIEW_MAP) {
+    if(view->iflag_view_type == VIEW_MAP) {
         set_gl_map_lighting_c();
     }
     else{
         set_gl_3D_lighting_c();
 	};
 	
-	return selected;
+	return;
 };

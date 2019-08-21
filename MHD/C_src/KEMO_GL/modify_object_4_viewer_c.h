@@ -30,5 +30,5 @@ void cal_psf_viewer_range(struct psf_data **psf_s, struct kemo_array_control *ps
 void cal_range_4_map_grid_c(struct view_element *view);
 
 
-int set_viewtype(struct view_element *view, int selected, int current_view);
+void set_viewtype(struct view_element *view, int selected);
 #endif

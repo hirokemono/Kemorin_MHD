@@ -145,13 +145,13 @@ void copy_GL_modelview_params_from_ctl(struct modeview_ctl_c *mat_c, struct view
 }
 
 
-void write_GL_modelview_file(struct kv_string *filename, int iflag_view, struct view_element *view){
+void write_GL_modelview_file(struct kv_string *filename, struct view_element *view){
 	
 	mat_c0 = (struct modeview_ctl_c *) malloc(sizeof(struct modeview_ctl_c));
 	alloc_modeview_ctl_c(mat_c0);
 	
 	copy_GL_modelview_params_to_ctl(view, mat_c0);
-	if(iflag_view == VIEW_STEREO){
+	if(view->iflag_view_type == VIEW_STEREO){
 		mat_c0->streo_view_c->iflag_use = 1;
 		copy_GL_stereo_params_to_ctl(view, mat_c0->streo_view_c);
 	};
@@ -167,7 +167,7 @@ void write_GL_modelview_file(struct kv_string *filename, int iflag_view, struct 
 }
 
 
-void read_GL_modelview_file(struct kv_string *filename, int iflag_view, struct view_element *view){
+void read_GL_modelview_file(struct kv_string *filename, struct view_element *view){
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	
 	mat_c0 = (struct modeview_ctl_c *) malloc(sizeof(struct modeview_ctl_c));
@@ -178,7 +178,7 @@ void read_GL_modelview_file(struct kv_string *filename, int iflag_view, struct v
 	copy_GL_modelview_params_from_ctl(mat_c0, view);
 	if(mat_c0->streo_view_c->iflag_use > 0){
 		copy_GL_stereo_params_from_ctl(mat_c0->streo_view_c, view);
-		iflag_view = VIEW_STEREO;
+		view->iflag_view_type = VIEW_STEREO;
 	};
 	
 	/*

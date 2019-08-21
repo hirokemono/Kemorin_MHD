@@ -228,10 +228,10 @@ void kemoview_get_pick_surface_command(struct kv_string *command){
 };
 
 void kemoview_write_modelview_file(struct kv_string *filename){
-	write_GL_modelview_file(filename, kemo_sgl->kemo_mesh->mesh_m->iflag_view_type, kemo_sgl->view_s);
+	write_GL_modelview_file(filename, kemo_sgl->view_s);
 }
 void kemoview_load_modelview_file(struct kv_string *filename){
-	read_GL_modelview_file(filename, kemo_sgl->kemo_mesh->mesh_m->iflag_view_type, kemo_sgl->view_s);
+	read_GL_modelview_file(filename, kemo_sgl->view_s);
 }
 
 
@@ -253,7 +253,7 @@ void kemoview_draw_with_modified_domain_distance(){
 }
 
 void kemoview_set_viewtype(int sel){
-    kemo_sgl->kemo_mesh->mesh_m->iflag_view_type = set_viewtype(kemo_sgl->view_s, sel, kemo_sgl->kemo_mesh->mesh_m->iflag_view_type);
+    set_viewtype(kemo_sgl->view_s, sel);
 }
 
 void kemoview_set_coastline_radius(double radius){kemo_sgl->kemo_mesh->mesh_m->radius_coast = radius;};
@@ -496,7 +496,7 @@ void kemoview_get_surf_grp_name(struct kv_string *groupname, int i){
 };
 
 int kemoview_get_draw_type_flag(){return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_type;};
-int kemoview_get_view_type_flag(){return kemo_sgl->kemo_mesh->mesh_m->iflag_view_type;};
+int kemoview_get_view_type_flag(){return kemo_sgl->view_s->iflag_view_type;};
 
 int kemoview_get_num_of_color_loop(){return kemo_sgl->kemo_mesh->mesh_m->num_of_color_loop;};
 

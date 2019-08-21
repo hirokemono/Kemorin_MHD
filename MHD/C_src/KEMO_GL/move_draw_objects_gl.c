@@ -110,7 +110,7 @@ void draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo
 	rotate_view_by_struct(view_s);
 //	modify_view_by_struct(view_s);
 	
-	if(kemo_mesh->mesh_m->iflag_view_type == VIEW_MAP) {
+	if(view_s->iflag_view_type == VIEW_MAP) {
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, view_s);
 		iflag_psf = check_draw_map(kemo_psf->psf_a);
 		draw_map_objects_VAO(kemo_mesh->mesh_m, view_s, 
@@ -170,7 +170,7 @@ void update_draw_objects_gl3(struct kemoview_psf *kemo_psf, struct kemoview_flin
 	modify_view_by_struct(view_s);
 		
 	
-	if(kemo_mesh->mesh_m->iflag_view_type == VIEW_MAP) {
+	if(view_s->iflag_view_type == VIEW_MAP) {
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s);
 		iflag_psf = check_draw_map(kemo_psf->psf_a);

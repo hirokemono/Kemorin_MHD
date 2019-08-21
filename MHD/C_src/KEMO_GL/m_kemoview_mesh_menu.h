@@ -33,7 +33,6 @@ struct mesh_menu_val{
 	
 	int iflag_draw_mesh;
 	int iflag_draw_type;
-	int iflag_view_type;
 	
 	int shading_mode;
 	int polygon_mode;
