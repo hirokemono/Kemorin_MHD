@@ -1,7 +1,6 @@
 
 /* draw_patches_4_PSF.c */
 
-#include <OpenGL/gl3.h>
 #include "draw_patches_4_PSF.h"
 
 #define ARCPI 0.318309886

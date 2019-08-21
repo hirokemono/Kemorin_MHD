@@ -2,7 +2,6 @@
 /* draw_patch_4_mesh_c.c */
 
 #include "draw_patch_4_mesh_c.h"
-#include <OpenGL/gl3.h>
 
 
 static int set_solid_mesh_patch_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,

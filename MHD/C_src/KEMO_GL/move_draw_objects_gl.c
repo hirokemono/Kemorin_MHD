@@ -1,7 +1,6 @@
 
 /* move_draw_objects_gl.c */
 
-#include <OpenGL/gl3.h>
 #include "move_draw_objects_gl.h"
 
 struct kemoview_VAOs * init_kemoview_VAOs(){

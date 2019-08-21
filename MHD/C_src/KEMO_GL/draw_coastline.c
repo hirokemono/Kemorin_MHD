@@ -2,7 +2,6 @@
 /* draw_coastline.c */
 
 
-#include <OpenGL/gl3.h>
 #include  "draw_coastline.h"
 
 void set_sph_flame_VBO(double radius, struct VAO_ids *line_VAO,

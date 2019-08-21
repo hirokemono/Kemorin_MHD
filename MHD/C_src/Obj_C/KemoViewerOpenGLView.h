@@ -7,9 +7,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <OpenGL/gl.h>
+#import <OpenGL/gl3.h>
 #import <OpenGL/glext.h>
-#import <OpenGL/glu.h>
 
 #import "ResetViewControll.h"
 #import "SetCocoaGLMessases.h"

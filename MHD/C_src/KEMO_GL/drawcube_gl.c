@@ -7,7 +7,6 @@
  *
  */
 
-#include <OpenGL/gl3.h>
 #include "drawcube_gl.h"
 
 static void light_for_initial_cube(struct kemoview_shaders *kemo_shaders){

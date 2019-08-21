@@ -1,7 +1,6 @@
 
 /* draw_fieldlines.c */
 
-#include <OpenGL/gl3.h>
 #include "draw_fieldlines.h"
 
 void set_fieldtubes_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m,

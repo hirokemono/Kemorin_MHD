@@ -1,7 +1,6 @@
 
 /* draw_map_4_PSF.c */
 
-#include <OpenGL/gl3.h>
 #include "draw_map_4_PSF.h"
 
 void set_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf, 

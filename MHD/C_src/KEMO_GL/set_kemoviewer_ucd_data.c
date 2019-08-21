@@ -190,7 +190,6 @@ int kemoviewer_open_data(struct kv_string *filename, struct kemoview_mesh *kemo_
     if (kemo_mesh->mesh_m->iflag_draw_mesh == IZERO ) {
 		cal_psf_viewer_range(kemo_psf->psf_d, kemo_psf->psf_a, 
 					kemo_fline->fline_d, kemo_fline->fline_m, view);
-        reset_light_by_size_of_domain(view->r_max);
         reset_to_init_angle(view);
     };
 	

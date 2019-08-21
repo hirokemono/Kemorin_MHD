@@ -8,18 +8,6 @@
 static GLdouble object_size = 7.0e0;
 
 
-static void  load_projection_mat(GLdouble projection[16]){
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixd(projection);
-	return;
-};
-
-static void  load_model_mat(GLdouble model[16]){
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(model);
-	return;
-};
-
 void identity_glmat_c(GLdouble mat[16]){
 	mat[ 0] = ONE;
 	mat[ 4] = ZERO;
@@ -253,7 +241,6 @@ void orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
 			GLdouble near, GLdouble far){
 	GLdouble orthogonal[16];
 	orthogonal_glmat_c(left, right, bottom, top, near, far, orthogonal);
-	load_projection_mat(orthogonal);
 	return;
 };
 
@@ -363,7 +350,6 @@ void set_view_by_identity(){
 	GLdouble modelview[16];
 	
 	identity_glmat_c(modelview);
-	load_model_mat(modelview);
 	return;
 };
 
@@ -377,8 +363,6 @@ void modify_view_by_struct(struct view_element *view){
 				view->mat_object_2_eye);
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
 				view->mat_object_2_eye);
-	
-	load_model_mat(view->mat_object_2_eye);
 	return;
 };
 void modify_left_view_by_struct(struct view_element *view){
@@ -391,8 +375,6 @@ void modify_left_view_by_struct(struct view_element *view){
 				view->mat_object_2_eye);
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
 				view->mat_object_2_eye);
-	
-	load_model_mat(view->mat_object_2_eye);
 	return;
 };
 void modify_right_view_by_struct(struct view_element *view){
@@ -407,8 +389,6 @@ void modify_right_view_by_struct(struct view_element *view){
 				view->mat_object_2_eye);
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
 				view->mat_object_2_eye);
-	
-	load_model_mat(view->mat_object_2_eye);
 	return;
 };
 
@@ -429,8 +409,6 @@ void rotate_view_by_struct(struct view_element *view){
 	printf("          |%f %f %f %f| \n", view->mat_object_2_eye[2], view->mat_object_2_eye[6], view->mat_object_2_eye[10], view->mat_object_2_eye[14]);
 	printf("          \\%f %f %f %f/ \n", view->mat_object_2_eye[3], view->mat_object_2_eye[7], view->mat_object_2_eye[11], view->mat_object_2_eye[15]);
 	*/
-	
-	load_model_mat(view->mat_object_2_eye);
 	return;
 };
 
@@ -446,8 +424,6 @@ void rotate_left_view_by_struct(struct view_element *view){
 				view->mat_object_2_eye);
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
 				view->mat_object_2_eye);
-	
-	load_model_mat(view->mat_object_2_eye);
 	return;
 };
 
@@ -463,8 +439,6 @@ void rotate_right_view_by_struct(struct view_element *view){
 				view->mat_object_2_eye);
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
 				view->mat_object_2_eye);
-	
-	load_model_mat(view->mat_object_2_eye);
 	return;
 };
 
@@ -478,8 +452,6 @@ void set_view_for_message(struct view_element *view){
 	
 	identity_glmat_c(modelview);
 	Kemo_Scale_view_c(scale[0], scale[1], scale[2], modelview);
-	
-	load_model_mat(modelview);
 	return;
 };
 
@@ -488,17 +460,12 @@ void set_projection_by_identity(){
 	GLdouble projection[16];
 	
 	identity_glmat_c(projection);
-	load_projection_mat(projection);
 	return;
 };
-void load_projection_matrix(struct view_element *view){
-	load_projection_mat(view->mat_eye_2_clip);
-	return;
-};
+
 void init_projection_struct(struct view_element *view){
 	perspectiveGL(view->aperture, view->aspect, view->near, view->far,
 				  view->mat_eye_2_clip);
-	load_projection_mat(view->mat_eye_2_clip);
 	return;
 };
 
@@ -506,7 +473,6 @@ void update_projection_struct(struct view_element *view){
 	update_projection(view->x_lookfrom, view->nx_window, view->ny_window,
                       view->aperture, view->aspect, view->near, view->far, 
 					  view->mat_eye_2_clip);
-	load_projection_mat(view->mat_eye_2_clip);
 	return;
 };
 void update_left_projection_struct(struct view_element *view){
@@ -514,7 +480,6 @@ void update_left_projection_struct(struct view_element *view){
 						   view->aperture, view->aspect, view->near, view->far,
 						   view->focal_length, view->eye_separation, 
 						   view->mat_eye_2_clip);
-	load_projection_mat(view->mat_eye_2_clip);
 	return;
 };
 void update_right_projection_struct(struct view_element *view){
@@ -522,7 +487,6 @@ void update_right_projection_struct(struct view_element *view){
 							view->aperture, view->aspect, view->near, view->far,
 							view->focal_length, view->eye_separation, 
 							view->mat_eye_2_clip);
-	load_projection_mat(view->mat_eye_2_clip);
 	return;
 };
 

@@ -85,7 +85,6 @@ void rotate_right_view_by_struct(struct view_element *view);
 void set_view_for_message(struct view_element *view);
 
 void set_projection_by_identity();
-void load_projection_matrix(struct view_element *view);
 void init_projection_struct(struct view_element *view);
 void update_projection_struct(struct view_element *view);
 void update_left_projection_struct(struct view_element *view);

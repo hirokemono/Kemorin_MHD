@@ -143,12 +143,5 @@ void set_viewtype(struct view_element *view, int selected){
 		view_for_yz_plane(view);
     };
     
-    if(view->iflag_view_type == VIEW_MAP) {
-        set_gl_map_lighting_c();
-    }
-    else{
-        set_gl_3D_lighting_c();
-	};
-	
 	return;
 };

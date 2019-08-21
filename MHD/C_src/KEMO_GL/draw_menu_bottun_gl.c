@@ -1,6 +1,5 @@
 
 /* draw_menu_bottun_gl.c */
-#include <OpenGL/gl3.h>
 #include "draw_menu_bottun_gl.h"
 
 void draw_menu_by_VAO(struct VAO_ids *menu_VAO, struct kemoview_shaders *kemo_shaders){

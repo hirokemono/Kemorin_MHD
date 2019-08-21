@@ -4,25 +4,7 @@
 #include "init_gl_lighting_c.h"
 
 
-static const GLfloat white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 static const GLfloat default_background[4] = { 0.9, 0.9, 0.9, 1.0 };
-
-static GLfloat  lightposition[4] = {1.5,0.5,2.0,0.0};
-static GLfloat  maplightposition[4] = {0.0,0.0,10.0,0.0};
-
-/* GLfloat light0_pos[4]   =   { -35.0, 35.0, 50.0, 0.0 }; */
-/* white light*/
-/*static GLfloat light0_pos[4]   =   { -1.0, 1.0, 20.0, 0.0 };*/
-static GLfloat Whitelight_color[4] =   { 0.8, 0.8, 0.8, 1.0 };
-
-/* cold blue light */
-static GLfloat light1_pos[4]   =   { 1.0, -1.0, -20.0, 0.0 };
-/*static GLfloat light1_color[4] =   { 0.4, 0.4, 1.0, 1.0 };*/
-/* white head light */
-static GLfloat light2_pos[4]   =   { 0.0, 0.0, 0.0, 0.0 };
-static GLfloat light2_color[4] =   { 1.0, 1.0, 1.0, 1.0 };	
-
-/*static GLfloat lighta_ambient[4] = { 0.5, 0.5, 0.5, 1.0 };*/
 
 void set_bg_color_kemoview(struct mesh_menu_val *mesh_m){
 	int i;
@@ -58,8 +40,6 @@ void kemo_gl_initial_lighting_c(struct view_element *view_s,
 		LoadShaderFromStrings(kemo_shaders->phong_1color, load_phong_vert(), load_phong_frag());
 		LoadShaderFromStrings(kemo_shaders->simple_texure,
 							  load_simple_texture_vert(), load_simple_texture_frag());
-		
-		init_phong_light_list(kemo_shaders->lights);
 	} else {
 		view_s->gl_drawID = glGenLists(IONE);
 	};
@@ -70,18 +50,7 @@ void kemo_gl_initial_lighting_c(struct view_element *view_s,
     /*   This glClear send error on Cocoa....  Why?*/
 	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);
     //    printf("kemo_gl_initial_lighting_c %d\n", glGetError());
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-	glLightfv(GL_LIGHT0, GL_POSITION, lightposition);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE,  white );
-	glLightfv(GL_LIGHT1, GL_POSITION, light1_pos );
-	
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHT1);
 
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
-	glEnable(GL_NORMALIZE);
-	
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_DEPTH_TEST);
 	
@@ -89,52 +58,3 @@ void kemo_gl_initial_lighting_c(struct view_element *view_s,
 	
 	return;
 }
-
-void set_gl_3D_lighting_c(){
-    
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHT1);
-    
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
-    
-    return;
-}
-
-void set_gl_map_lighting_c(){
-
-    glDisable(GL_LIGHT0);
-    glDisable(GL_LIGHT1);
-    
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
-    
-    return;
-}
-
-void reset_light_from_white_sf_c(int surface_color){
-	
-	glEnable(GL_LIGHT0);
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
-	
-	return;
-}
-
-void reset_light_by_size_of_domain(GLdouble r_max){
-	GLfloat  lightposi[4];
-	
-	lightposi[0] =  10.0 / (GLfloat) r_max;
-	lightposi[1] =  -2.0 / (GLfloat) r_max;
-	lightposi[2] =   5.0 / (GLfloat) r_max;
-	lightposi[3] =   ONE;
-
-     glDisable(GL_LIGHT0);
-     glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-     glLightfv(GL_LIGHT0, GL_POSITION, lightposi);
-     glEnable(GL_LIGHTING);
-     glEnable(GL_LIGHT0);
-     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, Whitelight_color);
-
-     glDepthFunc(GL_LEQUAL);
-     glEnable(GL_DEPTH_TEST);
-	return;
-}
-

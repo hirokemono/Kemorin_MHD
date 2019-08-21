@@ -2,10 +2,7 @@
 // draw_colorbar_gl.c
 */
 
-#include <OpenGL/gl3.h>
 #include "draw_colorbar_gl.h"
-
-static const GLfloat black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 
 void count_colorbar_box_VAO(struct cbar_work *cbar_wk, struct VAO_ids *cbar_VAO){
 	int num_patch;

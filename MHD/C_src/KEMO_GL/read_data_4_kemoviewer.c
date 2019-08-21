@@ -130,7 +130,6 @@ void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
 	
 	set_kemoviewer_mesh(mesh_s, mesh_m);
     
-	reset_light_by_size_of_domain(view->r_max);
 	reset_to_init_angle(view);
 	return;
 }

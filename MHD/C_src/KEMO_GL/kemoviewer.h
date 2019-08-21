@@ -6,11 +6,9 @@
 
 
 #ifdef __APPLE__
-#include<OpenGL/gl.h>
-#include<OpenGL/glu.h>
+#include<OpenGL/gl3.h>
 #else
-#include<GL/gl.h>
-#include<GL/glu.h>
+#include<GL/gl3.h>
 #endif
 
 #ifdef FC_NAME_LOWER_USCORE
