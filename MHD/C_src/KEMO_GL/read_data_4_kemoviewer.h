@@ -21,17 +21,16 @@
 #include "read_viewer_mesh_c.h"
 #include "read_viewer_mesh_gz_c.h"
 #include "select_read_psf_viewer_c.h"
-#include "move_draw_objects_gl.h"
 #include "take_normal_psf_c.h"
 #include "check_psf_data_viewer_c.h"
 #include "init_gl_lighting_c.h"
-#include "modify_object_4_viewer_c.h"
 #include "set_coastline_to_buf.h"
 #include "set_psf_viewer.h"
 #include "set_rgba_table_c.h"
 #include "take_normal_surf_mesh_c.h"
 #include "set_surface_mesh_data.h"
 #include "set_normal_on_node_4_mesh.h"
+#include "modify_object_4_viewer_c.h"
 
 /* prototypes */
 

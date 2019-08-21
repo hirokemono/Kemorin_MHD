@@ -1,0 +1,159 @@
+/*
+//  set_each_fline_parameters.c
+//  Kemoview_Cocoa
+//
+//  Created by Hiroaki Matsui on 12/08/13.
+//
+*/
+
+#include <stdio.h>
+#include "set_each_fline_parameters.h"
+
+
+/* Subroutines for field lines */
+
+void get_fline_full_path_file_name(struct fline_menu_val *fline_m, struct kv_string *ucd_m){
+	alloc_set_ucd_file_name_by_fline(fline_m, ucd_m);
+	return;
+}
+int get_fline_file_step_prefix(struct fline_menu_val *fline_m, struct kv_string *fline_filehead){
+	alloc_copy_string(fline_m->fline_header->string, fline_filehead);
+	return fline_m->fline_step;
+};
+void set_fline_file_step(struct fline_menu_val *fline_m, int istep){
+	fline_m->fline_step = istep;
+};
+
+void set_fline_switch(struct fline_menu_val *fline_m, int iflag) {
+	fline_m->iflag_draw_fline = iflag;
+};
+void set_fline_color_type(struct fline_menu_val *fline_m, int iflag) {
+	fline_m->fieldline_color = iflag;
+};
+
+
+int get_fline_switch(struct fline_menu_val *fline_m){return fline_m->iflag_draw_fline;};
+int get_fline_color_num_field(struct psf_data *fline_d){return fline_d->nfield;};
+int get_fline_color_ncomptot(struct psf_data *fline_d){return fline_d->ncomptot;};
+int fline_color_num_comps(struct psf_data *fline_d, int i){
+	return fline_d->ncomp[i];
+};
+int get_fline_color_istack(struct psf_data *fline_d, int i){
+	return fline_d->istack_comp[i];
+};
+void get_fline_color_data_name(struct psf_data *fline_d, struct kv_string *colorname,
+			int i){
+    alloc_copy_string(fline_d->data_name[i], colorname);
+};
+int get_fline_color_field(struct fline_menu_val *fline_m){
+	return fline_m->if_draw_fline;
+};
+int get_fline_color_component(struct fline_menu_val *fline_m){
+	return fline_m->ic_draw_fline;
+};
+int get_fline_color_data_adress(struct fline_menu_val *fline_m){
+	return fline_m->icomp_draw_fline;
+};
+int get_fline_colormode(struct fline_menu_val *fline_m) {
+	return fline_m->fieldline_color;
+};
+
+
+void set_fline_type(struct fline_menu_val *fline_m, int iflag) {
+	fline_m->fieldline_type = iflag;
+};
+int get_fline_type(struct fline_menu_val *fline_m) {return fline_m->fieldline_type;};
+int toggle_fline_type(struct fline_menu_val *fline_m){
+	return fline_m->fieldline_type = toggle_value_c(fline_m->fieldline_type);
+};
+
+
+void set_fline_thickness(struct fline_menu_val *fline_m, double thick){
+	fline_m->fieldline_thick = thick;
+};
+double get_fline_thickness(struct fline_menu_val *fline_m){
+	return fline_m->fieldline_thick;
+};
+
+double get_fline_data_min(struct psf_data *fline_d, int i){
+	return fline_d->d_min[i];
+};
+double get_fline_data_max(struct psf_data *fline_d, int i){
+	return fline_d->d_max[i];
+};
+
+
+void set_fline_linear_colormap(struct fline_menu_val *fline_m, 
+			double minvalue, double maxvalue){
+	set_linear_colormap(fline_m->cmap_fline, minvalue, maxvalue);
+}
+void set_fline_constant_opacity(struct psf_data *fline_d, struct fline_menu_val *fline_m,
+			double opacity){
+	set_constant_opacitymap(fline_m->cmap_fline,
+                            fline_d->d_min[fline_m->icomp_draw_fline],
+                            fline_d->d_max[fline_m->icomp_draw_fline], opacity);
+}
+
+void get_fline_rgb_at_value(struct fline_menu_val *fline_m, 
+			double value, double *red, double *green, double *blue){
+	set_rgb_from_value_s(fline_m->cmap_fline, value, red, green, blue);
+}
+
+double get_fline_opacity_at_value(struct fline_menu_val *fline_m, double value){
+	return set_opacity_from_value_s(fline_m->cmap_fline, value);
+}
+void set_fline_color_data(struct fline_menu_val *fline_m, 
+			int i_point, double value, double color){
+	set_each_color_point_s(fline_m->cmap_fline, i_point, value, color);
+}
+void set_fline_opacity_data(struct fline_menu_val *fline_m,
+			int i_point, double value, double opacity){
+	set_each_opacity_point_s(fline_m->cmap_fline, i_point, value, opacity);
+}
+
+void set_fline_color_mode_id(struct fline_menu_val *fline_m, int isel){
+	set_color_mode_by_id(fline_m->cmap_fline, isel);
+}
+
+double get_fline_min_color(struct fline_menu_val *fline_m){
+	double d, c;
+	send_color_table_items_s(fline_m->cmap_fline, 0, &d, &c);
+	return d;
+}
+double get_fline_max_color(struct fline_menu_val *fline_m){
+	double d, c;
+	int n = send_color_table_num_s(fline_m->cmap_fline);
+	send_color_table_items_s(fline_m->cmap_fline, n-1, &d, &c);
+	return d;
+}
+double get_fline_min_opacity(struct fline_menu_val *fline_m){
+	return send_minimum_opacity_s(fline_m->cmap_fline);
+};
+double get_fline_max_opacity(struct fline_menu_val *fline_m){
+	return send_maximum_opacity_s(fline_m->cmap_fline);
+};
+
+int get_fline_color_num(struct fline_menu_val *fline_m){
+	return send_color_table_num_s(fline_m->cmap_fline);
+};
+int get_fline_opacity_num(struct fline_menu_val *fline_m){
+	return send_opacity_table_num_s(fline_m->cmap_fline);
+};
+
+
+void get_fline_color_item(struct fline_menu_val *fline_m,
+			int i_point, double *value, double *color){
+	send_color_table_items_s(fline_m->cmap_fline, i_point, value, color);
+}
+void get_fline_opacity_item(struct fline_menu_val *fline_m,
+			int i_point, double *value, double *opacity){
+	send_opacity_table_items_s(fline_m->cmap_fline, i_point, value, opacity);
+}
+
+void write_fline_colormap_file(struct fline_menu_val *fline_m, struct kv_string *filename){
+	write_colormap_control_file_s(filename->string, fline_m->cmap_fline);
+}
+void read_fline_colormap_file(struct fline_menu_val *fline_m, struct kv_string *filename){
+	read_colormap_control_file_s(filename->string, fline_m->cmap_fline);
+}
+

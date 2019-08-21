@@ -36,8 +36,6 @@ static void set_kemoviewer_mesh(struct viewer_mesh *mesh_s,
 	set_viewer_mesh(mesh_s);
 	
 	alloc_draw_mesh_flags(mesh_s, mesh_m);
-	cal_range_4_mesh_c(mesh_s, view);
-	modify_object_multi_viewer_c(mesh_m->dist_domains, mesh_s);
 	return;
 }
 
@@ -58,7 +56,11 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 	init_icosahedron_c();
 	init_viewer_parameters(mesh_m);
 	
-	if (mesh_m->iflag_draw_mesh > 0) set_kemoviewer_mesh(mesh_s, mesh_m, view);
+	if (mesh_m->iflag_draw_mesh > 0){
+		set_kemoviewer_mesh(mesh_s, mesh_m, view);
+		cal_range_4_mesh_c(mesh_s, view);
+		modify_object_multi_viewer_c(mesh_m->dist_domains, mesh_s);
+	};
 	return;
 }
 

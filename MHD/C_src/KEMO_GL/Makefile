@@ -66,6 +66,7 @@ set_texture_4_psf.o \
 set_psf_texture_by_png.o \
 \
 set_each_psf_parameters.o \
+set_each_fline_parameters.o \
 \
 psf_patch_buffer.o \
 \
@@ -171,9 +172,9 @@ module:
 	m_surface_mesh_4_viewer_c.o \
 	m_psf_data_4_viewer_c.o \
 	m_kemoview_psf_menu.o \
+	m_kemoviewer_menu.o \
 	m_gl_transfer_matrix.o \
 	kemoviewer_param_c.o \
-	move_draw_objects_gl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -268,6 +269,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/m_kemoviewer_structure.c \
 	m_kemoviewer_structure.h \
 	kemoviewer.h \
+	kemoviewer_base.o \
 	m_kemoview_psf.o \
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
@@ -283,6 +285,7 @@ module:
 	draw_menu_bottun_gl.o \
 	rotate_animation.o \
 	set_each_psf_parameters.o \
+	set_each_fline_parameters.o \
 	rainbow_color_code_c.o \
 	set_psf_texture_by_png.o \
 	glsl.o \
@@ -489,7 +492,6 @@ module:
 	kemoviewer_param_c.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
-	modify_object_4_viewer_c.o \
 	icosahedron_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
@@ -636,10 +638,8 @@ module:
 	read_viewer_mesh_c.o \
 	read_viewer_mesh_gz_c.o \
 	skip_comment_c.o \
-	move_draw_objects_gl.o \
 	icosahedron_c.o \
 	init_gl_lighting_c.o \
-	modify_object_4_viewer_c.o \
 	set_coastline_to_buf.o \
 	set_psf_viewer.o \
 	set_rgba_table_c.o \
@@ -647,6 +647,7 @@ module:
 	set_normal_on_node_4_mesh.o \
 	take_normal_surf_mesh_c.o \
 	select_read_psf_viewer_c.o \
+	modify_object_4_viewer_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -789,7 +790,6 @@ module:
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
-	modify_object_4_viewer_c.o \
 	set_coastline_to_buf.o \
 	set_axis_to_buf.o \
 	>> $(MAKENAME)
@@ -820,6 +820,7 @@ module:
 	set_each_psf_parameters.o: \
 	'$$(KEMO_C_GLDIR)'/set_each_psf_parameters.c \
 	set_each_psf_parameters.h \
+	kemoviewer.h \
 	m_psf_data_4_viewer_c.o \
 	m_kemoview_psf_menu.o \
 	kemoviewer_base.o \
@@ -827,6 +828,23 @@ module:
 	set_rgba_table_c.o \
 	set_texture_4_psf.o \
 	draw_patches_4_PSF.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	set_each_fline_parameters.o: \
+	'$$(KEMO_C_GLDIR)'/set_each_fline_parameters.c \
+	set_each_fline_parameters.h \
+	kemoviewer.h \
+	m_psf_data_4_viewer_c.o \
+	m_kemoview_psf_menu.o \
+	kemoviewer_base.o \
+	skip_comment_c.o \
+	set_rgba_table_c.o \
+	set_texture_4_psf.o \
+	draw_patches_4_PSF.o \
+	read_data_4_kemoviewer.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

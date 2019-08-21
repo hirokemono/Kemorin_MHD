@@ -3,7 +3,7 @@
 
 #ifndef M_KEMOVIEWER_PSF_
 #define M_KEMOVIEWER_PSF_
-/* Size of window */ 
+
 
 #include "kemoviewer.h"
 #include "m_kemoview_psf_menu.h"

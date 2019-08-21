@@ -10,6 +10,7 @@
 #include "kemoviewer.h"
 #include "kemosrc_param_c.h"
 #include "kemoviewer_param_c.h"
+#include "kemoviewer_base.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_color_table_c.h"
 #include "m_colorbar_work.h"

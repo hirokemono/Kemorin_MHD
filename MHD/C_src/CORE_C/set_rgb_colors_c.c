@@ -23,7 +23,7 @@ double color_normalize_linear_c(double d_min, double d_max, double value){
 
 double color_normalize_linear_segment_c(int n_point, double *value_segment,
 			double *segment_color, double value){
-	double color_norm;
+	double color_norm = 0.0;
 	int i;
 	
 	if (value < value_segment[0]){

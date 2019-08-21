@@ -4,6 +4,8 @@
 #ifndef M_KEMOVIEWER_STRACTURE_
 #define M_KEMOVIEWER_STRACTURE_
 
+#include "kemoviewer.h"
+#include "kemoviewer_base.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "m_kemoview_psf.h"
@@ -21,6 +23,7 @@
 #include "draw_menu_bottun_gl.h"
 #include "rotate_animation.h"
 #include "set_each_psf_parameters.h"
+#include "set_each_fline_parameters.h"
 #include "set_texture_4_psf.h"
 #include "numbers_to_bin_c.h"
 #include "set_psf_texture_by_png.h"
