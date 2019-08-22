@@ -78,7 +78,6 @@ void init_viewer_parameters(struct mesh_menu_val *mesh_m){
 	mesh_m->mesh_color_mode =    INIT_COLOR_MODE;
 	mesh_m->num_of_color_loop =  INIT_NUM_COLOR_LOOP;
 	
-	mesh_m->shading_mode =  INIT_SHADING_MODE;
 	mesh_m->polygon_mode =  INIT_POLYGON_MODE;
 	mesh_m->node_diam =     INIT_NODE_SIZE;
 	mesh_m->dist_domains =  INIT_DISTANCE;
@@ -140,15 +139,11 @@ void select_node_grp_node_color(int selected, struct mesh_menu_val *mesh_m){
 	return;
 }
 
-void set_shading_mode(int iflag, struct mesh_menu_val *mesh_m){mesh_m->shading_mode = iflag;};
 void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m){mesh_m->polygon_mode = iflag;};
 void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_axis = iflag;};
 void set_coastline_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_coast = iflag;};
 void set_sphere_grid_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_sph_grid = iflag;};
 
-int toggle_shading_mode(struct mesh_menu_val *mesh_m){
-	return mesh_m->iflag_draw_sph_grid = toggle_value_c(mesh_m->iflag_draw_sph_grid);
-};
 int toggle_polygon_mode(struct mesh_menu_val *mesh_m){
 	return mesh_m->polygon_mode = toggle_value_c(mesh_m->polygon_mode);
 };

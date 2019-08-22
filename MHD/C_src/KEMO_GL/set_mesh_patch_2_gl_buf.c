@@ -169,12 +169,12 @@ int count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_
 	return num_patch;
 }
 
-int set_solid_mesh_patches_to_buf(struct viewer_mesh *mesh_s, 
+int set_solid_mesh_patches_to_buf(int shading_mode, struct viewer_mesh *mesh_s, 
 			struct mesh_menu_val *mesh_m, struct gl_strided_buffer *mesh_buf){
 	int i, ip_st;
 	int ist_tri = 0;
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity >= 1.0){
-		ist_tri = add_mesh_patch_to_buf(ist_tri, mesh_m->shading_mode, mesh_m->polygon_mode, 
+		ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
 				mesh_m->domain_surface_color, mesh_m->mesh_color_mode,
 				mesh_m->num_of_color_loop, mesh_m->domain_opacity,
 				mesh_m->domain_surface_color_code, 
@@ -190,7 +190,7 @@ int set_solid_mesh_patches_to_buf(struct viewer_mesh *mesh_s,
 		ip_st = i * mesh_s->num_pe_sf;
 		
 		if( mesh_m->draw_elegrp_solid[i] != 0 && mesh_m->ele_grp_opacity >= 1.0){
-			ist_tri = add_mesh_patch_to_buf(ist_tri, mesh_m->shading_mode, mesh_m->polygon_mode, 
+			ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
 					mesh_m->ele_surface_color, mesh_m->mesh_color_mode,
 					mesh_m->num_of_color_loop, mesh_m->ele_grp_opacity,
 					mesh_m->ele_surface_color_code, 
@@ -207,7 +207,7 @@ int set_solid_mesh_patches_to_buf(struct viewer_mesh *mesh_s,
 		ip_st = i * mesh_s->num_pe_sf;
 		
 		if( mesh_m->draw_surfgrp_solid[i] != 0 && mesh_m->surf_grp_opacity >= 1.0){
-			ist_tri = add_mesh_patch_to_buf(ist_tri, mesh_m->shading_mode, mesh_m->polygon_mode, 
+			ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
 					mesh_m->surf_surface_color, mesh_m->mesh_color_mode,
 					mesh_m->num_of_color_loop, mesh_m->surf_grp_opacity,
 					mesh_m->surf_surface_color_code,
@@ -221,12 +221,12 @@ int set_solid_mesh_patches_to_buf(struct viewer_mesh *mesh_s,
 }
 
 
-int set_transparent_mesh_patches_to_buf(struct viewer_mesh *mesh_s, 
+int set_transparent_mesh_patches_to_buf(int shading_mode, struct viewer_mesh *mesh_s, 
 			struct mesh_menu_val *mesh_m, struct gl_strided_buffer *mesh_buf){
 	int i, ip_st;
 	int ist_tri = 0;
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity < 1.0){
-		ist_tri = add_mesh_patch_to_buf(ist_tri, mesh_m->shading_mode, mesh_m->polygon_mode, 
+		ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
 				mesh_m->domain_surface_color, mesh_m->mesh_color_mode,
 				mesh_m->num_of_color_loop, mesh_m->domain_opacity,
 				mesh_m->domain_surface_color_code, 
@@ -243,7 +243,7 @@ int set_transparent_mesh_patches_to_buf(struct viewer_mesh *mesh_s,
 			ip_st = i * mesh_s->num_pe_sf;
 			
 			if( mesh_m->draw_elegrp_solid[i] != 0){
-			ist_tri = add_mesh_patch_to_buf(ist_tri, mesh_m->shading_mode, mesh_m->polygon_mode, 
+			ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
 					mesh_m->ele_surface_color, mesh_m->mesh_color_mode,
 					mesh_m->num_of_color_loop, mesh_m->ele_grp_opacity,
 					mesh_m->ele_surface_color_code, 
@@ -261,7 +261,7 @@ int set_transparent_mesh_patches_to_buf(struct viewer_mesh *mesh_s,
 			ip_st = i * mesh_s->num_pe_sf;
 		
 			if( mesh_m->draw_surfgrp_solid[i] != 0){
-			ist_tri = add_mesh_patch_to_buf(ist_tri, mesh_m->shading_mode, mesh_m->polygon_mode, 
+			ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
 					mesh_m->surf_surface_color, mesh_m->mesh_color_mode,
 					mesh_m->num_of_color_loop, mesh_m->surf_grp_opacity,
 					mesh_m->surf_surface_color_code,

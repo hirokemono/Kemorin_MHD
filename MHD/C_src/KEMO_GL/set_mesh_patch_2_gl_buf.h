@@ -25,9 +25,9 @@ int add_mesh_patch_to_buf(int ist_tri, int shading_mode, int polygon_mode, int s
 int count_solid_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
 int count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
 
-int set_solid_mesh_patches_to_buf(struct viewer_mesh *mesh_s, 
+int set_solid_mesh_patches_to_buf(int shading_mode, struct viewer_mesh *mesh_s, 
 			struct mesh_menu_val *mesh_m, struct gl_strided_buffer *mesh_buf);
-int set_transparent_mesh_patches_to_buf(struct viewer_mesh *mesh_s, 
+int set_transparent_mesh_patches_to_buf(int shading_mode, struct viewer_mesh *mesh_s, 
 			struct mesh_menu_val *mesh_m, struct gl_strided_buffer *mesh_buf);
 
 #endif

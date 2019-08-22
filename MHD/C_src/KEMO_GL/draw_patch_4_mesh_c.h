@@ -21,7 +21,7 @@
 void set_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 			struct view_element *view_s, struct VAO_ids *mesh_trans_VAO);
 void set_solid_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-			struct VAO_ids **mesh_VAO);
+			struct view_element *view_s, struct VAO_ids **mesh_VAO);
 
 void draw_solid_mesh_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s, 
 			struct VAO_ids **mesh_VAO, struct kemoview_shaders *kemo_shaders);

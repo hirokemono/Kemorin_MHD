@@ -4,7 +4,8 @@
 #include "draw_patch_4_mesh_c.h"
 
 
-static int set_solid_mesh_patch_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+static int set_solid_mesh_patch_VAO(int shading_mode, 
+			struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 			struct VAO_ids *mesh_VAO, struct gl_strided_buffer *mesh_buf){
 	int icou = 0;
 	
@@ -16,7 +17,7 @@ static int set_solid_mesh_patch_VAO(struct viewer_mesh *mesh_s, struct mesh_menu
 	set_buffer_address_4_patch(ITHREE*num_patch, mesh_buf);
 	resize_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
 	
-	icou = set_solid_mesh_patches_to_buf(mesh_s, mesh_m, mesh_buf);
+	icou = set_solid_mesh_patches_to_buf(shading_mode, mesh_s, mesh_m, mesh_buf);
 	
 	glBindVertexArray(mesh_VAO->id_VAO);
 	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
@@ -46,7 +47,7 @@ void set_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 	alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
 	
 	icou = 0;
-	icou = set_transparent_mesh_patches_to_buf(mesh_s, mesh_m, mesh_buf);
+	icou = set_transparent_mesh_patches_to_buf(view_s->shading_mode, mesh_s, mesh_m, mesh_buf);
 	
 	glBindVertexArray(mesh_trans_VAO->id_VAO);
 	Const_VAO_4_Phong(mesh_trans_VAO, mesh_buf);
@@ -60,7 +61,7 @@ void set_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 
 static int set_mesh_grids_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
 			struct VAO_ids *mesh_VAO, struct gl_strided_buffer *mesh_buf){
-	int i, ip_st;
+	int i;
 	int icou;
 	
 	for(i=0; i < mesh_s->num_pe_sf;i++){mesh_s->ip_domain_far[i] = i+1;};
@@ -103,10 +104,11 @@ return num_patch;
 
 
 void set_solid_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-			struct VAO_ids **mesh_VAO){
+			struct view_element *view_s, struct VAO_ids **mesh_VAO){
 	int nedge_mesh, npatch_nodes, npatch_mesh;
 	
-	struct gl_strided_buffer *mesh_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	struct gl_strided_buffer *mesh_buf
+		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(8, mesh_buf);
 	alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
 	
@@ -114,7 +116,8 @@ void set_solid_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 	
 	npatch_nodes = set_mesh_nodes_ico_VAO(mesh_s, mesh_m, mesh_VAO[2], mesh_buf);
 	
-	npatch_mesh = set_solid_mesh_patch_VAO(mesh_s, mesh_m, mesh_VAO[0], mesh_buf);
+	npatch_mesh = set_solid_mesh_patch_VAO(view_s->shading_mode, mesh_s, mesh_m, 
+										   mesh_VAO[0], mesh_buf);
 	
 	free(mesh_buf->v_buf);
 	free(mesh_buf);

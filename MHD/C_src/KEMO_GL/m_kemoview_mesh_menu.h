@@ -29,8 +29,6 @@ struct mesh_menu_val{
 
 	int iformat_surface_mesh;
 	int iflag_draw_mesh;
-	
-	int shading_mode;
 	int polygon_mode;
 	
 	int mesh_color_mode;
@@ -114,13 +112,11 @@ void select_surf_grp_node_color(int selected, struct mesh_menu_val *mesh_m);
 void select_surf_grp_grid_color(int selected, struct mesh_menu_val *mesh_m);
 void select_node_grp_node_color(int selected, struct mesh_menu_val *mesh_m);
 
-void set_shading_mode(int iflag, struct mesh_menu_val *mesh_m);
 void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m);
 void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m);
 void set_coastline_flag(int iflag, struct mesh_menu_val *mesh_m);
 void set_sphere_grid_flag(int iflag, struct mesh_menu_val *mesh_m);
 
-int toggle_shading_mode(struct mesh_menu_val *mesh_m);
 int toggle_polygon_mode(struct mesh_menu_val *mesh_m);
 int toggle_draw_axis(struct mesh_menu_val *mesh_m);
 int toggle_coastline_flag(struct mesh_menu_val *mesh_m);

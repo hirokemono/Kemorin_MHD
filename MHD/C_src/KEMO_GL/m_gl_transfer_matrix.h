@@ -23,6 +23,7 @@ struct view_element{
 	int iflag_view_type;
 	int iflag_streo_stutter;
 	int iflag_streo_anaglyph;
+	int shading_mode;
 	
 	GLint gl_drawID;
 	GLint nx_window, ny_window;

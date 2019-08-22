@@ -227,7 +227,7 @@ void kemoview_set_object_property_flags(int selected, int iflag){
 	if (selected == AXIS_TOGGLE) {set_axis_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);}
     else if(selected == COASTLINE_SWITCH) {set_coastline_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);}
     else if(selected == SPHEREGRID_SWITCH) {set_sphere_grid_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);}
-    else if(selected == SHADING_SWITCH) {set_shading_mode(iflag, kemo_sgl->kemo_mesh->mesh_m);}
+    else if(selected == SHADING_SWITCH) {kemo_sgl->view_s->shading_mode = iflag;}
     else if(selected == POLYGON_SWITCH) {set_polygon_mode(iflag, kemo_sgl->kemo_mesh->mesh_m);};
 	return;
 }
@@ -236,7 +236,7 @@ int kemoview_get_object_property_flags(int selected){
 	if (selected == AXIS_TOGGLE) {return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_axis;}
     else if(selected == COASTLINE_SWITCH) {return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast;}
     else if(selected == SPHEREGRID_SWITCH) {return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid;}
-    else if(selected == SHADING_SWITCH) {return kemo_sgl->kemo_mesh->mesh_m->shading_mode;}
+    else if(selected == SHADING_SWITCH) {return kemo_sgl->view_s->shading_mode;}
     else if(selected == POLYGON_SWITCH) {return kemo_sgl->kemo_mesh->mesh_m->polygon_mode;};
     
 	return 0;
@@ -246,7 +246,10 @@ int kemoview_toggle_object_properties(int selected){
 	if (selected == AXIS_TOGGLE) {return toggle_draw_axis(kemo_sgl->kemo_mesh->mesh_m);}
     else if(selected == COASTLINE_SWITCH) {return toggle_coastline_flag(kemo_sgl->kemo_mesh->mesh_m);}
     else if(selected == SPHEREGRID_SWITCH) {return toggle_sphere_grid_flag(kemo_sgl->kemo_mesh->mesh_m);}
-    else if(selected == SHADING_SWITCH) {return toggle_shading_mode(kemo_sgl->kemo_mesh->mesh_m);}
+    else if(selected == SHADING_SWITCH){
+		kemo_sgl->view_s->shading_mode = toggle_value_c(kemo_sgl->view_s->shading_mode);
+		return kemo_sgl->view_s->shading_mode;
+	}
     else if(selected == POLYGON_SWITCH) {return toggle_polygon_mode(kemo_sgl->kemo_mesh->mesh_m);};
     
 	return 0;

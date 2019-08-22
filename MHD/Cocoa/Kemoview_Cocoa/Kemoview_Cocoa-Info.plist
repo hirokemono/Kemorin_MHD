@@ -110,11 +110,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.03</string>
+	<string>3.00</string>
 	<key>CFBundleSignature</key>
 	<string>KMVW</string>
 	<key>CFBundleVersion</key>
-	<string>Build 2019, May, 2</string>
+	<string>Build 2019, Aug.23</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.productivity</string>
 	<key>LSMinimumSystemVersion</key>

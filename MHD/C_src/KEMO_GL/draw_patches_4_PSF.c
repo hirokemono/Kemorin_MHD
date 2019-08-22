@@ -131,7 +131,7 @@ int check_draw_psf(struct kemo_array_control *psf_a){
 	return iflag_psf;
 };
 
-void set_PSF_solid_objects_VAO(int shading_mode, struct view_element *view_s, 
+void set_PSF_solid_objects_VAO(struct view_element *view_s, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct VAO_ids **psf_solid_VAO){
 	struct gl_strided_buffer *psf_buf
@@ -144,10 +144,12 @@ void set_PSF_solid_objects_VAO(int shading_mode, struct view_element *view_s,
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBindVertexArray(psf_solid_VAO[1]->id_VAO);
-	set_PSF_texture_VAO(shading_mode, IZERO, psf_a->istack_solid_psf_txtur, 
+	set_PSF_texture_VAO(view_s->shading_mode,
+				IZERO, psf_a->istack_solid_psf_txtur, 
 				psf_s, psf_m, psf_a, psf_solid_VAO[1], psf_buf);
 	
-	set_PSF_patch_VAO(shading_mode, psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 
+	set_PSF_patch_VAO(view_s->shading_mode,
+				psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch, 
 				psf_s, psf_m, psf_a, psf_solid_VAO[0], psf_buf);
 	
 	set_PSF_arrow_VAO(psf_s, psf_m, psf_a, psf_solid_VAO[3], psf_buf);
@@ -159,7 +161,7 @@ void set_PSF_solid_objects_VAO(int shading_mode, struct view_element *view_s,
 	return;
 };
 
-void set_PSF_trans_objects_VAO(int shading_mode, 
+void set_PSF_trans_objects_VAO(struct view_element *view_s, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct VAO_ids **psf_trans_VAO){
 	struct gl_strided_buffer *psf_buf
@@ -168,10 +170,10 @@ void set_PSF_trans_objects_VAO(int shading_mode,
 	alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
 	
-	set_PSF_texture_VAO(shading_mode, 
+	set_PSF_texture_VAO(view_s->shading_mode, 
 				psf_a->istack_solid_psf_patch, psf_a->istack_trans_psf_txtur, 
 				psf_s, psf_m, psf_a, psf_trans_VAO[1], psf_buf);
-	set_PSF_patch_VAO(shading_mode, 
+	set_PSF_patch_VAO(view_s->shading_mode, 
 				psf_a->istack_trans_psf_txtur, psf_a->ntot_psf_patch,
 				psf_s, psf_m, psf_a, psf_trans_VAO[0], psf_buf);
 	

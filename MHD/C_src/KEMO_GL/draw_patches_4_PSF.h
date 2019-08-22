@@ -25,10 +25,10 @@
 void release_PSF_texture_from_gl(struct psf_menu_val *psf_m);
 
 int check_draw_psf(struct kemo_array_control *psf_a);
-void set_PSF_solid_objects_VAO(int shading_mode, struct view_element *view_s, 
+void set_PSF_solid_objects_VAO(struct view_element *view_s, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct VAO_ids **psf_solid_VAO);
-void set_PSF_trans_objects_VAO(int shading_mode, 
+void set_PSF_trans_objects_VAO(struct view_element *view_s, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct VAO_ids **psf_trans_VAO);
 
