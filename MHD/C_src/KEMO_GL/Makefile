@@ -111,6 +111,7 @@ module:
 	'$$(KEMO_C_GLDIR)'/kemoviewer_base.c \
 	kemoviewer_base.h \
 	kemoviewer.h \
+	skip_comment_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -545,6 +546,7 @@ module:
 	kemoviewer_param_c.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
+	modify_object_4_viewer_c.o \
 	icosahedron_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \

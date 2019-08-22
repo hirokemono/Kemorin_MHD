@@ -66,7 +66,6 @@ typedef struct {
 - (void) updateProjection;
 - (void) updateModelView;
 - (void) resizeGL;
-- (void) modify_view_Cocoa;
 - (void) UpdateImage;
 - (void) QuickUpdateImage;
 - (void) swapbuffer_cocoa;

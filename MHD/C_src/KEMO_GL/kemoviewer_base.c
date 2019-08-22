@@ -3,6 +3,7 @@
 */
 
 #include "kemoviewer_base.h"
+#include "skip_comment_c.h"
 
 void alloc_kvstringitem(int length, struct kv_string *ucd_m){
 /*	ucd_m->string = alloc_string(length);*/

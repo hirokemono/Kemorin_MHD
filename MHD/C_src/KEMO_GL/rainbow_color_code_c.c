@@ -202,14 +202,12 @@ static void get_d_rainbow_int_c(int inum, int iloop, int i_min, int i_max, doubl
 
 void set_rainbow_PSF_c(double val_pe, struct colormap_params *cmap_s){
 	set_rainbow_color_code(cmap_s, val_pe, c_code);
-	glColor4dv(c_code);
 	return;
 }
 
 void set_rainbow_anaglyph_PSF_c(double val_pe, struct colormap_params *cmap_s){
 	set_rainbow_color_code(cmap_s, val_pe, c_code);
 	convert_anaglyph_color(0.4, c_code);
-	glColor4dv(c_code);
 	return;
 }
 
@@ -288,18 +286,7 @@ void set_node_color_mode_c(int surface_color, int color_mode, int color_loop,
 			get_d_rainbow_int_c(igrp, color_loop, IZERO, num_grp, c_code);
 			c_code[3] = ONE;
 		}
-		glColor4dv(c_code);
 	}
-	else if (surface_color == SINGLE_COLOR){
-		glColor4fv(single_color);
-	}
-	else if (surface_color == GREEN_SURFACE) {
-		glColor4fv(d_green);
-	}
-	else if (surface_color == WHITE_SURFACE) {
-		glColor4fv(gray);
-	};
-	
 	 return;
 };
 

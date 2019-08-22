@@ -205,9 +205,6 @@ void copy_opacity_from_ctl(struct real2_clist *linear_opacity_list,
 
 void copy_color_opacity_from_ctl(struct colormap_ctl_c *cmap_c, 
 			struct colormap_params *cmap_s){
-	int num;
-	
-   	
 	if(compare_string(13, "colormap_list", cmap_c->data_mapping_ctl->c_tbl) == 0){
 		printf("Something Wrong in colormap file\n)");
 		return;

@@ -421,7 +421,6 @@ void rename_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
 }
 
 void read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
-    int iflag;
 	if(pvr_c->mat_c->iflag_use ==-1){
 		read_modeview_file_c(pvr_c->pvr_modelview_file_name, buf, pvr_c->mat_c);
 	};
