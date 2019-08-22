@@ -81,6 +81,17 @@ static void rotate_mono_kemoview(struct kemoviewer_type *kemoview){
 	return;
 };
 
+void quick_mono_kemoview(struct kemoviewer_type *kemoview){
+	glDrawBuffer(GL_BACK);
+	
+	update_projection_struct(kemoview->view_s);
+	modify_view_by_struct(kemoview->view_s);
+	
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	quick_draw_objects_gl3(kemoview);
+	return;
+};
+
 void modify_stereo_kemoview(struct kemoviewer_type *kemoview){
 	if(kemoview->view_s->iflag_streo_stutter == SHUTTER_ON){
 		if(kemoview->view_s->iflag_view_type == VIEW_STEREO

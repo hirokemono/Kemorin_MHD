@@ -113,7 +113,7 @@ void kemoview_draw_fast_gl3(){
 };
 void kemoview_draw_objects_gl3(){
 	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
-	update_draw_objects_gl3(kemo_sgl);
+//	update_draw_objects_gl3(kemo_sgl);
 	return;
 };
 
@@ -495,6 +495,9 @@ void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char
     set_texture_psf_from_bgra(kemo_sgl->psf_current_menu, width, height, bgra_in);
 };
 
+void kemoview_quick_view(){
+	quick_mono_kemoview(kemo_sgl);
+};
 void kemoview_modify_view(){
 	modify_stereo_kemoview(kemo_sgl);
 };

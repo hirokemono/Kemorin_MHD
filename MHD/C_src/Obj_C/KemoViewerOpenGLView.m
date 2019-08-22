@@ -88,7 +88,9 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     [_context makeCurrentContext];
 	
 	// move view
-	[self modify_view_Cocoa];
+	kemoview_rotate();
+	kemoview_reset_animation();
+	[_resetview UpdateParameters];
 }
 
 // ---------------------------------
@@ -108,15 +110,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 		[_cocoaGLMessages updateRsolutionString:XpixelGLWindow:YpixelGLWindow];
 	}
 }
-
--(void) modify_view_Cocoa
-{	
-	kemoview_rotate();
-	kemoview_reset_animation();
-	[_resetview UpdateParameters];
-	return;
-};
-
 
 - (void) swapbuffer_cocoa{
 	[_context makeCurrentContext];
@@ -165,9 +158,31 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 -(void) UpdateImage
 {
-    kemoview_set_single_viewer_id(id_window);
-//	kemoview_draw_objects_gl3();
+	[self resizeGL]; // forces projection matrix update (does test for size changes)
+	[_context makeCurrentContext];
+	
+	// move view
+	kemoview_set_single_viewer_id(id_window);
+	kemoview_modify_view();
+	[_resetview UpdateParameters];
+
 	[self swapbuffer_cocoa];
+	[self setNeedsDisplay: YES];
+	return;
+}
+
+-(void) QuickUpdateImage
+{
+	[self resizeGL]; // forces projection matrix update (does test for size changes)
+	[_context makeCurrentContext];
+	
+	// move view
+	kemoview_set_single_viewer_id(id_window);
+	kemoview_quick_view();
+	[_resetview UpdateParameters];
+	
+	[self swapbuffer_cocoa];
+	[self setNeedsDisplay: YES];
 	return;
 }
 
@@ -284,6 +299,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 		kemoview_startTrackball(location.x, -location.y);
 		gTrackingViewInfo = self;
 	}
+	[self QuickUpdateImage];
 }
 
 // ---------------------------------
@@ -339,9 +355,9 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 /*		kemoview_drugging_addToRotationTrackball();*/
 		[_resetview UpdateParameters];
 	} 
-//	kemoview_draw_objects_gl3();
 	gTrackingViewInfo = NULL;
-	[self setNeedsDisplay: YES];
+
+	[self UpdateImage];
 }
 
 // ---------------------------------
@@ -368,15 +384,13 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 		kemoview_rollToTrackball (location.x, -location.y);
 		kemoview_drugging_addToRotationTrackball();
 		kemoview_startTrackball(location.x, -location.y);
-		[self setNeedsDisplay: YES];
 	} else if (gDolly) {
 		[self mouseDolly: location];
-		[self updateProjection];  // update projection matrix (not normally done on draw)
-		[self setNeedsDisplay: YES];
 	} else if (gPan) {
 		[self mousePan: location];
-		[self setNeedsDisplay: YES];
 	}
+	
+	[self QuickUpdateImage];
 }
 
 // ---------------------------------
@@ -387,8 +401,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	if (wheelDelta)
 	{
 		kemoview_zooming((GLdouble) wheelDelta);
-		[self updateProjection];  // update projection matrix (not normally done on draw)
-		[self setNeedsDisplay: YES];
+		[self QuickUpdateImage];
 	}
 }
 
@@ -412,8 +425,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 {
     GLdouble newScale = 200.0*[theEvent magnification];
     kemoview_zooming(newScale);
-    [self updateProjection];
-    [self setNeedsDisplay: YES];
+	[self QuickUpdateImage];
 }
 
 // ---------------------------------
@@ -512,10 +524,13 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	fAnimate =  0;
 	
     [NSColor setIgnoresAlpha:NO];
+	
 	// start animation timer
+
 	time = CFAbsoluteTimeGetCurrent ();  // set animation time start time
-	timer = [NSTimer timerWithTimeInterval:(1.0f/60.0f) target:self selector:@selector(animationTimer:) userInfo:nil repeats:YES];
+	timer = [NSTimer timerWithTimeInterval:(1.0f/60.0f) target:self selector:@selector(animationTimer:) userInfo:nil repeats:NO];
 	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
 	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSEventTrackingRunLoopMode]; // ensure timer fires during resize
+
  }
 @end

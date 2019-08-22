@@ -183,8 +183,15 @@ void draw_PSF_solid_objects_VAO(int shading_mode,
 	if(psf_solid_VAO[0]->npoint_draw > 0){
 		glBindVertexArray(psf_solid_VAO[0]->id_VAO);
 		glDrawArrays(GL_TRIANGLES, IZERO, psf_solid_VAO[0]->npoint_draw);
-		Destroy_Phong_VAO(psf_solid_VAO[0]);
 	}
+	return;
+};
+
+void draw_PSF_isolines_VAO(int shading_mode, struct view_element *view_s, 
+			struct VAO_ids **psf_solid_VAO, struct kemoview_shaders *kemo_shaders){
+	glUseProgram(kemo_shaders->phong->programId);
+	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
+	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
 	
 	if(psf_solid_VAO[2]->npoint_draw > 0){
 		glBindVertexArray(psf_solid_VAO[2]->id_VAO);

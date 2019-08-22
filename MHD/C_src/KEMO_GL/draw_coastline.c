@@ -105,7 +105,6 @@ void draw_axis_VAO(struct view_element *view_s, struct VAO_ids *mesh_VAO,
 	
 	glBindVertexArray(mesh_VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, mesh_VAO->npoint_draw);
-//	Destroy_Phong_VAO(mesh_VAO);
 	
 	return;
 }
