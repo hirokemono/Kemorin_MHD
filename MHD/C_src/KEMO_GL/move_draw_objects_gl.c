@@ -20,7 +20,10 @@ struct kemoview_VAOs * init_kemoview_VAOs(){
 	};
 	kemo_VAOs->mesh_trans_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
-	kemo_VAOs->fline_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	kemo_VAOs->fline_VAO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids));
+	for(i=0;i<2;i++){
+		kemo_VAOs->fline_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	};
 	
 	kemo_VAOs->psf_solid_VAO = (struct VAO_ids **) malloc(6*sizeof(struct VAO_ids));
 	for(i=0;i<6;i++){
@@ -53,6 +56,9 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	free(kemo_VAOs->mesh_solid_VAO);
 	free(kemo_VAOs->mesh_trans_VAO);
 	
+	for(i=0;i<2;i++){
+		free(kemo_VAOs->fline_VAO[i]);
+	};
 	free(kemo_VAOs->fline_VAO);
 	
 	for(i=0;i<6;i++){
@@ -99,8 +105,7 @@ void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *ke
 					kemo_VAOs->psf_solid_VAO, kemo_VAOs->grid_VAO, kemo_shaders);
 	} else {
 		draw_axis_VAO(view_s, kemo_VAOs->grid_VAO[2], kemo_shaders);
-		draw_fieldlines_VAO(kemo_fline->fline_m, view_s, 
-					kemo_VAOs->fline_VAO, kemo_shaders);
+		draw_fieldlines_VAO(view_s, kemo_VAOs->fline_VAO[1], kemo_shaders);
 		
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s);
@@ -149,7 +154,8 @@ void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *k
 	glGenVertexArrays(1, &kemo_VAOs->grid_VAO[0]->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->grid_VAO[1]->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->grid_VAO[2]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->fline_VAO->id_VAO);
+	glGenVertexArrays(1, &kemo_VAOs->fline_VAO[0]->id_VAO);
+	glGenVertexArrays(1, &kemo_VAOs->fline_VAO[1]->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[1]->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[0]->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[3]->id_VAO);
@@ -184,14 +190,11 @@ void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *k
 		draw_axis_VAO(view_s, kemo_VAOs->grid_VAO[2], kemo_shaders);
 		
 		sel_fieldlines_VAO(kemo_fline->fline_d, kemo_fline->fline_m, kemo_VAOs->fline_VAO);
-		draw_fieldlines_VAO(kemo_fline->fline_m, view_s,
+		sel_draw_fieldlines_VAO(kemo_fline->fline_m, view_s,
 					kemo_VAOs->fline_VAO, kemo_shaders);
 	/*
-		if(kemo_fline->fieldline_type == IFLAG_PIPE){
-				Destroy_Phong_VAO(kemo_VAOs->fline_VAO);
-		} else {
-				Destroy_Simple_VAO(kemo_VAOs->fline_VAO);
-		};
+		Destroy_Phong_VAO(kemo_VAOs->fline_VAO[0]);
+		Destroy_Simple_VAO(kemo_VAOs->fline_VAO[1]);
 	*/	
 		
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,

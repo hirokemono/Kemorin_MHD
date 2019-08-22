@@ -15,7 +15,10 @@
 
 /* prototypes */
 void sel_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m,
-			struct VAO_ids *fline_VAO);
-void draw_fieldlines_VAO(struct fline_menu_val *fline_m, struct view_element *view_s, 
+			struct VAO_ids **fline_VAO);
+
+void draw_fieldlines_VAO(struct view_element *view_s, 
 			struct VAO_ids *fline_VAO, struct kemoview_shaders *kemo_shaders);
+void sel_draw_fieldlines_VAO(struct fline_menu_val *fline_m, struct view_element *view_s, 
+			struct VAO_ids **fline_VAO, struct kemoview_shaders *kemo_shaders);
 #endif
