@@ -108,7 +108,7 @@ static void modify_object_sngl_viewer_c(struct viewer_mesh *mesh_s){
 }
 
 void set_axis_positions(struct view_element *view, GLfloat dist,
-                        GLfloat *axis_delta, GLfloat *axis_org){
+                        double *axis_delta, double *axis_org){
 	axis_delta[0] = 1.2 * (view->max_point[0] + dist + 0.3);
 	axis_delta[1] = 1.2 * (view->max_point[1] + dist + 0.3);
 	axis_delta[2] = 1.2 * (view->max_point[2] + dist + 0.3);

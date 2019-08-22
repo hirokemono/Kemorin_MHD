@@ -16,8 +16,8 @@ int set_fieldtubes_to_buf(int ncorner,
 			struct gl_strided_buffer *strided_buf) {
 	int num_wall, inum_patch;
 	int inod, iele, k, nd;
-	float xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
-	float x_line[6], dir_line[6], color_line[8];
+	double xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
+	double x_line[6], dir_line[6], color_line[8];
 	
 	set_color_code_for_fieldlines(fline_s, fline_m);
 	

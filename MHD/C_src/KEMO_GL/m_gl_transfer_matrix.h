@@ -99,7 +99,7 @@ void set_position_in_model(struct view_element *view, int nnod,
                            double **xx, double **end_eye);
 void set_distance_in_model(struct view_element *view, int nnod,
                            double **xx, double *z_eye);
-void set_3d_position_to_window(int point_screen[2], GLfloat xx[3], 
+void set_3d_position_to_window(int point_screen[2], double xx[3], 
                                int nx_win, int ny_win, struct view_element *view);
 
 void init_kemoview_perspective(struct view_element *view);

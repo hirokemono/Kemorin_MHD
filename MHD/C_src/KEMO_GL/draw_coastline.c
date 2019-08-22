@@ -70,7 +70,7 @@ void set_map_coastline_VBO(struct VAO_ids *line_VAO,
 void set_axis_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s,
 			struct VAO_ids *mesh_VAO){
 	int ncorner = ISIX;
-	float radius = 3.0;
+	double radius = 30.0;
 	
 	mesh_VAO->npoint_draw = 0;
 	if(mesh_m->iflag_draw_axis == 0) return;

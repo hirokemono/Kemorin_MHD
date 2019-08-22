@@ -88,28 +88,28 @@ void set_PSF_arrow_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m, str
 
 void set_PSF_isoline_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 			struct VAO_ids *psf_VAO, struct gl_strided_buffer *psf_buf){
+	int ncorner = 6;
 	int i, iflag;
-	int inum_edge;
+	int inum_buf;
 	
 	int num_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero);
         if(iflag != 0){
-			num_patch = num_patch + count_PSF_all_isolines_to_buf(psf_s[i], psf_m[i]);
+			num_patch = num_patch + count_PSF_all_isolines_to_buf(ncorner, psf_s[i], psf_m[i]);
 		};
 	};
-	num_patch = 2 * num_patch;
 	psf_VAO->npoint_draw = ITHREE * num_patch;
 	if(num_patch <= 0) return;
 	
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
-	inum_edge = 0;
+	inum_buf = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero);
         if(iflag != 0){
-			inum_edge = set_PSF_all_isolines_to_buf(inum_edge, psf_s[i], psf_m[i], psf_buf);
+			inum_buf = set_PSF_all_isolines_to_buf(inum_buf, ncorner, psf_s[i], psf_m[i], psf_buf);
 		};
 	};
 	

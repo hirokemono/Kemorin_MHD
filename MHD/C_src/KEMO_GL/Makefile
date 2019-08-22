@@ -498,6 +498,7 @@ module:
 	find_isoline_on_patch_c.o \
 	set_color_code_on_nodes.o \
 	rainbow_color_code_c.o \
+	icosahedron_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -516,6 +517,7 @@ module:
 	rainbow_color_code_c.o \
 	coordinate_converter_c.o \
 	set_PSF_isolines_to_buf.o \
+	icosahedron_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

@@ -555,7 +555,7 @@ void set_distance_in_model(struct view_element *view, int nnod,
 	return;
 }
 
-void set_3d_position_to_window(int point_screen[2], GLfloat xx[3], 
+void set_3d_position_to_window(int point_screen[2], double xx[3], 
                                int nx_win, int ny_win, struct view_element *view){
 	int i;
 	double end_eye[4];

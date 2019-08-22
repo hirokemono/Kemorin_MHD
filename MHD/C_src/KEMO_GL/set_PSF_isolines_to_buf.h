@@ -13,14 +13,17 @@
 #include "find_isoline_on_patch_c.h"
 #include "set_color_code_on_nodes.h"
 #include "rainbow_color_code_c.h"
+#include "icosahedron_c.h"
 
 /* prptotypes */
 
 double cal_isoline_value(int j, struct psf_menu_val *psf_m);
 void find_start_positive_lines(struct psf_menu_val *psf_m);
 
-int count_PSF_all_isolines_to_buf(struct psf_data *psf_s, struct psf_menu_val *psf_m);
-int set_PSF_all_isolines_to_buf(int ist_edge, struct psf_data *psf_s, struct psf_menu_val *psf_m,
+int count_PSF_all_isolines_to_buf(int ncorner, 
+			struct psf_data *psf_s, struct psf_menu_val *psf_m);
+int set_PSF_all_isolines_to_buf(int ist_edge, int ncorner, 
+			struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			struct gl_strided_buffer *psf_buf);
 
 #endif
