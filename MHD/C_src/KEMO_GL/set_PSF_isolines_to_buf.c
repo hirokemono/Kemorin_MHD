@@ -121,17 +121,17 @@ static int count_PSF_isolines(int ist, int ied, int ncorner,
 }
 
 
-static int set_PSF_zeroline_to_buf(int ist_patch, int ncorner, 
+static int set_PSF_zeroline_to_buf(int ist_patch, double radius, int ncorner, 
 			struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			struct gl_strided_buffer *psf_buf){
 	int inum_patch = ist_patch;
-	inum_patch = set_isoline_to_buf(inum_patch, ncorner, 0.05, ZERO, psf_m->icomp_draw_psf, black,
+	inum_patch = set_isoline_to_buf(inum_patch, ncorner, radius, ZERO, psf_m->icomp_draw_psf, black,
 							 psf_s, psf_buf);
 	
 	return inum_patch;
 }
 
-static int set_PSF_isolines_to_buf(int ist_patch, int ist, int ied, int ncorner, 
+static int set_PSF_isolines_to_buf(int ist_patch, int ist, int ied, double radius, int ncorner, 
 			struct psf_data *psf_s, struct psf_menu_val *psf_m, 
 			struct gl_strided_buffer *psf_buf){
 	int inum_patch;
@@ -152,7 +152,7 @@ static int set_PSF_isolines_to_buf(int ist_patch, int ist, int ied, int ncorner,
 		if (psf_m->isoline_color == RAINBOW_LINE){
 			set_rainbow_color_code(psf_m->cmap_psf, v_line, f_color);
 		};
-		inum_patch = set_isoline_to_buf(inum_patch, ncorner, 0.02, 
+		inum_patch = set_isoline_to_buf(inum_patch, ncorner, radius, 
 					v_line, psf_m->icomp_draw_psf, f_color, psf_s, psf_buf);
 	};
 	
@@ -180,24 +180,26 @@ int count_PSF_all_isolines_to_buf(int ncorner,
 	return num_patch;
 }
 
-int set_PSF_all_isolines_to_buf(int ist_patch, int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
+int set_PSF_all_isolines_to_buf(int ist_patch, double radius, int ncorner, 
+								struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			struct gl_strided_buffer *psf_buf){
+	double dub_r = 2.0 * radius;
 	int inum_patch = ist_patch;
 	if(psf_m->draw_psf_grid  != 0){
 		find_start_positive_lines(psf_m);
 		if(psf_m->ist_positive_line > 1){
 			inum_patch = set_PSF_isolines_to_buf(inum_patch, 
 							IZERO, psf_m->ist_positive_line,
-							ncorner, psf_s, psf_m, psf_buf);
+							radius, ncorner, psf_s, psf_m, psf_buf);
 		};
 		if(psf_m->ist_positive_line < psf_m->n_isoline){
 			inum_patch = set_PSF_isolines_to_buf(inum_patch, 
 							psf_m->ist_positive_line, psf_m->n_isoline,
-							ncorner, psf_s, psf_m, psf_buf);
+							radius, ncorner, psf_s, psf_m, psf_buf);
         };
     };
 	if(psf_m->draw_psf_zero  != 0){
-		inum_patch = set_PSF_zeroline_to_buf(inum_patch, ncorner, psf_s, psf_m, psf_buf);
+		inum_patch = set_PSF_zeroline_to_buf(inum_patch, dub_r, ncorner, psf_s, psf_m, psf_buf);
 	};
 	
 	return inum_patch;

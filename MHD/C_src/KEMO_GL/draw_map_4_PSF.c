@@ -3,7 +3,7 @@
 
 #include "draw_map_4_PSF.h"
 
-void set_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf, 
+void set_map_patch_VAO(int ist_psf, int ied_psf, 
 			struct psf_data **psf_s, struct kemo_array_control *psf_a,
 			struct VAO_ids *psf_VAO, struct gl_strided_buffer *map_buf){
 	int num_patch = count_psf_nodes_to_buf(ist_psf, ied_psf);
@@ -23,8 +23,9 @@ void set_map_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 }
 
 void set_map_PSF_isolines_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
-			struct kemo_array_control *psf_a, int iflag_retina,
+			struct kemo_array_control *psf_a, struct view_element *view_s,
 			struct VAO_ids *psf_VAO, struct gl_strided_buffer *map_buf){
+	double radius = 1.5;
 	int ncorner = 6;
 	int i, iflag;
 	int inum_patch;
@@ -37,7 +38,7 @@ void set_map_PSF_isolines_VAO(struct psf_data **psf_s, struct psf_menu_val **psf
 	};
 	psf_VAO->npoint_draw = ITHREE * num_patch;
 	if(psf_VAO->npoint_draw <= 0) return;
-	
+	radius = set_tube_radius_by_view(view_s, radius);
 	set_buffer_address_4_patch(ITHREE*num_patch, map_buf);
 	resize_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
 	
@@ -45,7 +46,7 @@ void set_map_PSF_isolines_VAO(struct psf_data **psf_s, struct psf_menu_val **psf
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
 		if(iflag > 0){
-			inum_patch = set_map_PSF_isoline_to_buf(inum_patch, ncorner, 
+			inum_patch = set_map_PSF_isoline_to_buf(inum_patch, radius, ncorner, 
 						psf_s[i], psf_m[i], map_buf);
 		};
 	};
@@ -65,9 +66,9 @@ int check_draw_map(struct kemo_array_control *psf_a){
 	return iflag_map;
 };
 
-void set_map_objects_VAO(int iflag_retina, 
+void set_map_objects_VAO(struct view_element *view_s, 
 						 struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
-						 struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+						 struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 						 struct VAO_ids **psf_VAO, struct VAO_ids **grid_VAO){
 	set_color_code_for_psfs(psf_s, psf_m, psf_a);
 	
@@ -76,10 +77,10 @@ void set_map_objects_VAO(int iflag_retina,
 	set_buffer_address_4_patch(3*128, map_buf);
 	alloc_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
 	
-	set_map_patch_VAO(mesh_m->shading_mode, IZERO, psf_a->istack_solid_psf_patch, 
+	set_map_patch_VAO(IZERO, psf_a->istack_solid_psf_patch, 
 					  psf_s, psf_a, psf_VAO[0], map_buf);
 	
-	set_map_PSF_isolines_VAO(psf_s, psf_m, psf_a, iflag_retina,
+	set_map_PSF_isolines_VAO(psf_s, psf_m, psf_a, view_s,
 							psf_VAO[1], map_buf);
 	
 	map_coastline_grid_VBO(mesh_m, grid_VAO, map_buf);

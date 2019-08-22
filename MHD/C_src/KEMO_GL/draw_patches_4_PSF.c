@@ -86,8 +86,10 @@ void set_PSF_arrow_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m, str
 }
 
 
-void set_PSF_isoline_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
+void set_PSF_isoline_VAO(struct view_element *view_s, 
+			struct psf_data **psf_s, struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 			struct VAO_ids *psf_VAO, struct gl_strided_buffer *psf_buf){
+	double radius = 1.5;
 	int ncorner = 6;
 	int i, iflag;
 	int inum_patch;
@@ -101,7 +103,7 @@ void set_PSF_isoline_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m, s
 	};
 	psf_VAO->npoint_draw = ITHREE * num_patch;
 	if(num_patch <= 0) return;
-	
+	radius = set_tube_radius_by_view(view_s, radius);
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
 	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
 	
@@ -109,7 +111,8 @@ void set_PSF_isoline_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m, s
     for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero);
         if(iflag != 0){
-			inum_patch = set_PSF_all_isolines_to_buf(inum_patch, ncorner, psf_s[i], psf_m[i], psf_buf);
+			inum_patch = set_PSF_all_isolines_to_buf(inum_patch, radius, ncorner,
+													 psf_s[i], psf_m[i], psf_buf);
 		};
 	};
 	
@@ -128,7 +131,7 @@ int check_draw_psf(struct kemo_array_control *psf_a){
 	return iflag_psf;
 };
 
-void set_PSF_solid_objects_VAO(int shading_mode, 
+void set_PSF_solid_objects_VAO(int shading_mode, struct view_element *view_s, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct VAO_ids **psf_solid_VAO){
 	struct gl_strided_buffer *psf_buf
@@ -149,7 +152,7 @@ void set_PSF_solid_objects_VAO(int shading_mode,
 	
 	set_PSF_arrow_VAO(psf_s, psf_m, psf_a, psf_solid_VAO[3], psf_buf);
 	
-	set_PSF_isoline_VAO(psf_s, psf_m, psf_a, psf_solid_VAO[2], psf_buf);
+	set_PSF_isoline_VAO(view_s, psf_s, psf_m, psf_a, psf_solid_VAO[2], psf_buf);
 	
 	free(psf_buf->v_buf);
 	free(psf_buf);

@@ -107,7 +107,7 @@ static void modify_object_sngl_viewer_c(struct viewer_mesh *mesh_s){
 	return;
 }
 
-void set_axis_positions(struct view_element *view, GLfloat dist,
+void set_axis_positions(struct view_element *view, double dist,
                         double *axis_delta, double *axis_org){
 	axis_delta[0] = 1.2 * (view->max_point[0] + dist + 0.3);
 	axis_delta[1] = 1.2 * (view->max_point[1] + dist + 0.3);
@@ -119,6 +119,17 @@ void set_axis_positions(struct view_element *view, GLfloat dist,
 	return;
 };
 
+double set_tube_radius_by_view(struct view_element *view_s, double radius){
+	double size;
+	
+	size = sqrt(view_s->max_point[0]*view_s->max_point[0] 
+				+ view_s->max_point[1]*view_s->max_point[1]
+				+ view_s->max_point[2]*view_s->max_point[2]);
+	radius = radius * size * (1.0 + (float)view_s->iflag_retina)
+			/ (float) view_s->ny_window;
+	
+	return radius;
+}
 
 
 void set_viewtype(struct view_element *view, int selected){

@@ -39,7 +39,7 @@ static float set_ratio_4_axislabel(struct view_element *view_s,
 	return ratio;
 }
 
-static void set_vertexs_for_axis(struct view_element *view_s, GLfloat dist,
+static void set_vertexs_for_axis(struct view_element *view_s, double dist,
 								 double x_arrowx[6], double x_arrowy[6], double x_arrowz[6], double w_ratio[3],
 								 double x_charax[12], double x_charay[18], double x_charaz[18], double *radius){
 	double l_axis[3], axis_org[3];
@@ -55,7 +55,7 @@ static void set_vertexs_for_axis(struct view_element *view_s, GLfloat dist,
 	
 	int zero_screen[2], end_screen[2];
 	
-	set_axis_positions(view_s, (GLfloat) dist, l_axis, axis_org);
+	set_axis_positions(view_s, dist, l_axis, axis_org);
 	
 	xx_axis[0] = axis_org[0];
 	xx_axis[1] = axis_org[1];
@@ -94,7 +94,8 @@ static void set_vertexs_for_axis(struct view_element *view_s, GLfloat dist,
 	if(label_ratio[1] <= min_l_ratio) min_l_ratio = label_ratio[1];
 	if(label_ratio[2] <= min_l_ratio) min_l_ratio = label_ratio[2];
 	
-	*radius = *radius * min_l_ratio / (float) view_s->ny_window;
+	*radius = *radius * min_l_ratio * (1.0 + (float)view_s->iflag_retina)
+			/ (float) view_s->ny_window;
 
 	/*
 	 printf("x_label %e, %e \n",x_label[0],x_label[1]);
@@ -311,7 +312,7 @@ int count_axis_to_buf(int ncorner){
 	return npatch_wall;
 }
 
-int set_axis_to_buf(struct view_element *view_s, GLfloat dist, int ncorner, double radius, 
+int set_axis_to_buf(struct view_element *view_s, double dist, int ncorner, double radius, 
 			struct gl_strided_buffer *strided_buf){
 	double x_arrowx[6], x_arrowy[6], x_arrowz[6];
 	double w_ratio[3];

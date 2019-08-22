@@ -19,12 +19,13 @@
 #include "rainbow_color_code_c.h"
 #include "set_PSF_patches_to_buf.h"
 #include "set_map_isolines_to_buf.h"
+#include "modify_object_4_viewer_c.h"
 
 
 /* prptotypes */
 
 int check_draw_map(struct kemo_array_control *psf_a);
-void set_map_objects_VAO(int iflag_retina, 
+void set_map_objects_VAO(struct view_element *view_s, 
 						 struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 						 struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
 						 struct VAO_ids **psf_VAO, struct VAO_ids **grid_VAO);

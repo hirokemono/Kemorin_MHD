@@ -71,7 +71,7 @@ void set_axis_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s,
 			struct VAO_ids *mesh_VAO){
 	int ncorner = ISIX;
 	int icou_patch = 0;
-	double radius = 30.0;
+	double radius = 4.0;
 	
 	mesh_VAO->npoint_draw = 0;
 	if(mesh_m->iflag_draw_axis == 0) return;
@@ -83,7 +83,7 @@ void set_axis_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s,
 	set_buffer_address_4_patch(mesh_VAO->npoint_draw, axis_buf);
 	alloc_strided_buffer(axis_buf->num_nod_buf, axis_buf->ncomp_buf, axis_buf);
 	
-	icou_patch = set_axis_to_buf(view_s, (GLfloat) mesh_m->dist_domains, ncorner, radius, axis_buf);
+	icou_patch = set_axis_to_buf(view_s, mesh_m->dist_domains, ncorner, radius, axis_buf);
 	
 	glBindVertexArray(mesh_VAO->id_VAO);
 	Const_VAO_4_Phong(mesh_VAO, axis_buf);

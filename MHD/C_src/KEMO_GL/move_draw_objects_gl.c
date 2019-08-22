@@ -190,7 +190,7 @@ void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *k
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s);
 		iflag_psf = check_draw_map(kemo_psf->psf_a);
-		set_map_objects_VAO(view_s->iflag_retina, kemo_psf->psf_d, 
+		set_map_objects_VAO(view_s, kemo_psf->psf_d, 
 					kemo_mesh->mesh_m, kemo_psf->psf_m, kemo_psf->psf_a, 
 					kemo_VAOs->psf_solid_VAO, kemo_VAOs->grid_VAO);
 		draw_map_objects_VAO(kemo_mesh->mesh_m, view_s,
@@ -206,7 +206,7 @@ void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *k
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s);
 		iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
-		set_PSF_solid_objects_VAO(kemo_mesh->mesh_m->shading_mode, 
+		set_PSF_solid_objects_VAO(kemo_mesh->mesh_m->shading_mode, view_s, 
 					kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, kemo_VAOs->psf_solid_VAO);
 		draw_PSF_solid_objects_VAO(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, 

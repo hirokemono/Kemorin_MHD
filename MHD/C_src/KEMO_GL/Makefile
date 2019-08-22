@@ -624,6 +624,7 @@ module:
 	find_isoline_on_patch_c.o \
 	rainbow_color_code_c.o \
 	icosahedron_c.o \
+	modify_object_4_viewer_c.o \
 	set_PSF_patches_to_buf.o \
 	set_PSF_isolines_to_buf.o \
 	>> $(MAKENAME)
@@ -637,6 +638,7 @@ module:
 	m_kemoview_mesh_menu.o \
 	m_kemoview_psf_menu.o \
 	icosahedron_c.o \
+	modify_object_4_viewer_c.o \
 	m_psf_data_4_viewer_c.o \
 	set_new_patch_4_map_c.o \
 	coordinate_converter_c.o \
