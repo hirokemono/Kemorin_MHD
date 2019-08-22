@@ -22,7 +22,6 @@ void draw_menu_by_VAO(struct VAO_ids *menu_VAO, struct kemoview_shaders *kemo_sh
 	
 	glBindVertexArray(menu_VAO->id_VAO);
 	glDrawArrays(GL_POINTS, 0, MENU_HEIGHT*MENU_WIDTH);
-//	DestroyVBO(menu_VAO);
 	return;
 }
 

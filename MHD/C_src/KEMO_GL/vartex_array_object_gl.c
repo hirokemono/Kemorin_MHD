@@ -202,8 +202,7 @@ void DestroyVBO(struct VAO_ids *VAO)
 	*/
 }
 
-void Destroy_VAO(struct VAO_ids *VAO)
-{
+void Destroy_VAO(struct VAO_ids *VAO){
 	glBindVertexArray(0);
 	glDeleteVertexArrays(1, &VAO->id_VAO);
 };
@@ -221,7 +220,6 @@ void Destroy_Simple_VAO(struct VAO_ids *VAO)
 	glDeleteBuffers(1, &VAO->id_vertex);
 	
 	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &VAO->id_VAO);
 	/*
 	ErrorCheckValue = glGetError();
 	if (ErrorCheckValue != GL_NO_ERROR)
@@ -253,7 +251,6 @@ void Destroy_Texture_VAO(struct VAO_ids *VAO, GLuint *textures)
 	glDeleteBuffers(1, &VAO->id_color);
 	glDeleteBuffers(1, &VAO->id_vertex);
 	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &VAO->id_VAO);
 	
 	/*
 	ErrorCheckValue = glGetError();
@@ -285,7 +282,6 @@ void Destroy_Phong_VAO(struct VAO_ids *VAO)
 	glDeleteBuffers(1, &VAO->id_color);
 	glDeleteBuffers(1, &VAO->id_vertex);
 	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &VAO->id_VAO);
 	
 	/*
 	ErrorCheckValue = glGetError();
@@ -320,7 +316,6 @@ void Destroy_Phong_Texture_VAO(struct VAO_ids *VAO, GLuint *textures)
 	glDeleteBuffers(1, &VAO->id_color);
 	glDeleteBuffers(1, &VAO->id_vertex);
 	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &VAO->id_VAO);
 	
 	/*
 	ErrorCheckValue = glGetError();

@@ -32,8 +32,9 @@ struct kemoview_VAOs{
 
 /* prototypes */ 
 struct kemoview_VAOs * init_kemoview_VAOs();
+void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
+void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
-
 
 void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage);
 

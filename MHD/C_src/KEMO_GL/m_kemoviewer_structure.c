@@ -27,7 +27,7 @@ void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, i
     
     kemo_sgl = kemoviewer_data;
 	kemoview_allocate_pointers();
-    
+	
 	init_kemoview_array(kemo_sgl->kemo_psf->psf_a);
     
 	init_kemoviewer(iflag_dmesh, kemo_sgl->kemo_mesh->mesh_d, kemo_sgl->kemo_mesh->mesh_m, kemo_sgl->view_s);
@@ -60,6 +60,7 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	dealloc_kemoview_fline(kemoviewer_data->kemo_fline);
 	dealloc_kemoview_psf(kemoviewer_data->kemo_psf);
 	
+	clear_kemoview_VAOs(kemoviewer_data->kemo_VAOs);
 	dealloc_kemoview_VAOs(kemoviewer_data->kemo_VAOs);
 	return;
 }
@@ -131,6 +132,7 @@ void kemoview_init_lighting(int iflag_core_profile){
 	kemo_sgl->view_s->iflag_shading_profile = iflag_core_profile;
 	
 	kemo_gl_initial_lighting_c(kemo_sgl->view_s, kemo_sgl->kemo_shaders);
+	assign_kemoview_VAOs(kemo_sgl->kemo_VAOs);
 }
 
 void kemoview_init_background_color(){init_bg_color_kemoview(kemo_sgl->kemo_mesh->mesh_m);}

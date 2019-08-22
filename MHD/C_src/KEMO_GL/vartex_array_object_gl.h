@@ -70,6 +70,8 @@ void Const_VAO_4_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_
 void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf);
 void Const_VAO_4_Phong_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf);
 
+void Destroy_VAO(struct VAO_ids *VAO);
+
 void Destroy_Simple_VAO(struct VAO_ids *VAO);
 void Destroy_Texture_VAO(struct VAO_ids *VAO, GLuint *textures);
 void Destroy_Phong_VAO(struct VAO_ids *VAO);

@@ -82,7 +82,9 @@ void draw_cube_edge_gl3(struct view_element *view_s,
 	
 	glBindVertexArray(cube_VAO->id_VAO);
 	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
+	
 	Destroy_Simple_VAO(cube_VAO);
+	glDeleteVertexArrays(1, &cube_VAO->id_VAO);
 }
 
 void draw_quad_gl3(struct view_element *view_s,
@@ -107,8 +109,10 @@ void draw_quad_gl3(struct view_element *view_s,
 	glBindVertexArray(quad_VAO->id_VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quad_VAO->id_index);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	
 	Destroy_Simple_VAO(quad_VAO);
-
+	glDeleteVertexArrays(1, &quad_VAO->id_VAO);
+	
 	free(quad_buf->v_buf);
 	free(quad_buf);
 	
