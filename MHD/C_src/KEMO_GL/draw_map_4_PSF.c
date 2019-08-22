@@ -27,7 +27,7 @@ void set_map_PSF_isolines_VAO(struct psf_data **psf_s, struct psf_menu_val **psf
 			struct VAO_ids *psf_VAO, struct gl_strided_buffer *map_buf){
 	int ncorner = 6;
 	int i, iflag;
-	int inum_buf;
+	int inum_patch;
 	int num_patch = 0;
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
@@ -41,11 +41,11 @@ void set_map_PSF_isolines_VAO(struct psf_data **psf_s, struct psf_menu_val **psf
 	set_buffer_address_4_patch(ITHREE*num_patch, map_buf);
 	resize_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
 	
-	inum_buf = 0;
+	inum_patch = 0;
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
 		if(iflag > 0){
-			inum_buf = set_map_PSF_isoline_to_buf(inum_buf, ncorner, 
+			inum_patch = set_map_PSF_isoline_to_buf(inum_patch, ncorner, 
 						psf_s[i], psf_m[i], map_buf);
 		};
 	};

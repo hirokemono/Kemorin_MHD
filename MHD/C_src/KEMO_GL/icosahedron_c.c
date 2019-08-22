@@ -248,93 +248,22 @@ int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_lin
 }
 
 
-int set_tube_strided_buffer(int ist_buf, int ncorner, double radius, double x_line[6], double dir_line[6],
+int set_tube_strided_buffer(int ist_patch, int ncorner, double radius, double x_line[6], double dir_line[6],
 					double color_line[8], struct gl_strided_buffer *strided_buf) {
-	double norm_line[6];
-	double xx_w1[3*ncorner], norm_w1[3*ncorner];
-	double xx_w2[3*ncorner], norm_w2[3*ncorner];
+	double xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
 	int npatch_wall = 0;
 	int k, nd;
 	
-	for(k=0;k<2;k++){
-		norm_line[3*k  ] =  -dir_line[3*k+2];
-		norm_line[3*k+1] =  dir_line[3*k+2];
-		norm_line[3*k+2] =  dir_line[3*k  ] - dir_line[3*k+1];
+	npatch_wall = set_tube_vertex(ncorner, radius, x_line, dir_line, color_line,
+								   xyz, nor, col);
+	for (k=0; k<3*npatch_wall; k++) {
+		set_node_stride_VBO((ITHREE*ist_patch+k), strided_buf);
+		for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*k+nd];};
+		for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*k+nd];};
+		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = col[4*k+nd];};
 	};
 	
-//	printf("x_line1 %f %f %f \n", x_line[0], x_line[1], x_line[2]);
-//	printf("norm_line1 %f %f %f \n", norm_line[0], norm_line[1], norm_line[2]);
-//	printf("dir_line1 %f %f %f \n", dir_line[0], dir_line[1], dir_line[2]);
-	set_circle_of_tube(ncorner, radius, &x_line[0], &norm_line[0], &dir_line[0],
-					   xx_w1, norm_w1);
-	set_circle_of_tube(ncorner, radius, &x_line[3], &norm_line[3], &dir_line[3],
-					   xx_w2, norm_w2);
-	
-	for(k=0;k<ncorner-1;k++){
-		set_node_stride_VBO((ist_buf+6*k), strided_buf);
-		for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xx_w1[3*k+  nd];};
-		for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = norm_w1[3*k+  nd];};
-		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = color_line[  nd];}
-//		printf("%d %f %f %f \n", k, xx_w1[3*k+0], xx_w1[3*k+1], xx_w1[3*k+2]);
-		
-		set_node_stride_VBO((ist_buf+6*k+1), strided_buf);
-		for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xx_w1[3*k+3+nd];};
-		for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = norm_w1[3*k+3+nd];};
-		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = color_line[  nd];}
-		
-		set_node_stride_VBO((ist_buf+6*k+2), strided_buf);
-		for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xx_w2[3*k+3+nd];};
-		for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = norm_w2[3*k+3+nd];};
-		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = color_line[4+nd];}
-			
-		set_node_stride_VBO((ist_buf+6*k+3), strided_buf);
-		for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xx_w2[3*k+3+nd];};
-		for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = norm_w2[3*k+3+nd];};
-		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = color_line[4+nd];}
-		
-		set_node_stride_VBO((ist_buf+6*k+4), strided_buf);
-		for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xx_w2[3*k+nd];};
-		for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = norm_w2[3*k+nd];};
-		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = color_line[4+nd];}
-		
-		set_node_stride_VBO((ist_buf+6*k+5), strided_buf);
-		for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xx_w1[3*k+nd];};
-		for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = norm_w1[3*k+nd];};
-		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = color_line[  nd];}
-	};
-	
-	k = ncorner-1;
-	set_node_stride_VBO((ist_buf+6*k), strided_buf);
-	for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xx_w1[3*k+nd];};
-	for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = norm_w1[3*k+nd];};
-	for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = color_line[  nd];}
-	
-	set_node_stride_VBO((ist_buf+6*k+1), strided_buf);
-	for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xx_w1[nd];};
-	for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = norm_w1[nd];};
-	for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = color_line[  nd];}
-	
-	set_node_stride_VBO((ist_buf+6*k+2), strided_buf);
-	for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xx_w2[nd];};
-	for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = norm_w2[nd];};
-	for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = color_line[4+nd];}
-		
-	set_node_stride_VBO((ist_buf+6*k+3), strided_buf);
-	for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xx_w2[nd];};
-	for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = norm_w2[nd];};
-	for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = color_line[4+nd];}
-	
-	set_node_stride_VBO((ist_buf+6*k+4), strided_buf);
-	for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xx_w2[3*k+nd];};
-	for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = norm_w2[3*k+nd];};
-	for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = color_line[4+nd];}
-	
-	set_node_stride_VBO((ist_buf+6*k+5), strided_buf);
-	for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xx_w1[3*k+nd];};
-	for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = norm_w1[3*k+nd];};
-	for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = color_line[  nd];}
-	
-	npatch_wall = ist_buf + 2*3*ncorner;
+	npatch_wall = ist_patch + 2*ncorner;
 	return npatch_wall;
 }
 

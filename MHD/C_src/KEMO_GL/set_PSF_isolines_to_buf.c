@@ -63,7 +63,7 @@ static int count_isoline_to_buf(int ncorner, double v_line, int icomp,
 	return num_patch;
 };
 
-static int set_isoline_to_buf(int ist_buf, int ncorner, double width, 
+static int set_isoline_to_buf(int ist_patch, int ncorner, double width, 
 			double v_line, int icomp, double *f_color,
 			struct psf_data *psf_s, struct gl_strided_buffer *strided_buf){
 	
@@ -73,7 +73,7 @@ static int set_isoline_to_buf(int ist_buf, int ncorner, double width,
 	int idraw;
 	int inod, iele, k, nd;
 	
-	int icou_buf = ist_buf;
+	int inum_patch = ist_patch;
 	
 	for (iele = 0; iele < psf_s->nele_viz; iele++) {
 		for (k = 0; k < 3; k++) {
@@ -91,12 +91,12 @@ static int set_isoline_to_buf(int ist_buf, int ncorner, double width,
 		if(idraw == 1){
 			for(nd=0;nd<4;nd++){color_line[  nd] = f_color[nd];};
 			for(nd=0;nd<4;nd++){color_line[4+nd] = f_color[nd];};
-			icou_buf = set_tube_strided_buffer(icou_buf, ncorner, width, 
+			inum_patch = set_tube_strided_buffer(inum_patch, ncorner, width, 
 						x_line, dir_line, color_line, strided_buf);
 		};
 	};
 
-	return icou_buf;
+	return inum_patch;
 };
 
 
@@ -120,20 +120,20 @@ static int count_PSF_isolines(int ist, int ied, int ncorner,
 }
 
 
-static int set_PSF_zeroline_to_buf(int ist_buf, int ncorner, 
+static int set_PSF_zeroline_to_buf(int ist_patch, int ncorner, 
 			struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			struct gl_strided_buffer *psf_buf){
-	int inum_buf = ist_buf;
-	inum_buf = set_isoline_to_buf(inum_buf, ncorner, 0.05, ZERO, psf_m->icomp_draw_psf, black,
+	int inum_patch = ist_patch;
+	inum_patch = set_isoline_to_buf(inum_patch, ncorner, 0.05, ZERO, psf_m->icomp_draw_psf, black,
 							 psf_s, psf_buf);
 	
-	return inum_buf;
+	return inum_patch;
 }
 
-static int set_PSF_isolines_to_buf(int ist_buf, int ist, int ied, int ncorner, 
+static int set_PSF_isolines_to_buf(int ist_patch, int ist, int ied, int ncorner, 
 			struct psf_data *psf_s, struct psf_menu_val *psf_m, 
 			struct gl_strided_buffer *psf_buf){
-	int inum_buf;
+	int inum_patch;
 	int j, nd;
 	double v_line;
 	double f_color[4];
@@ -144,18 +144,18 @@ static int set_PSF_isolines_to_buf(int ist_buf, int ist, int ied, int ncorner,
 		for(nd=0;nd<4;nd++) {f_color[nd] = white[nd];}
 	};
 	
-	inum_buf = ist_buf;
+	inum_patch = ist_patch;
 	for (j = ist; j < ied; j++){
 		v_line = cal_isoline_value(j, psf_m);
 		
 		if (psf_m->isoline_color == RAINBOW_LINE){
 			set_rainbow_color_code(psf_m->cmap_psf, v_line, f_color);
 		};
-		inum_buf = set_isoline_to_buf(inum_buf, ncorner, 0.02, 
+		inum_patch = set_isoline_to_buf(inum_patch, ncorner, 0.02, 
 					v_line, psf_m->icomp_draw_psf, f_color, psf_s, psf_buf);
 	};
 	
-	return inum_buf;
+	return inum_patch;
 }
 
 
@@ -179,25 +179,25 @@ int count_PSF_all_isolines_to_buf(int ncorner,
 	return num_patch;
 }
 
-int set_PSF_all_isolines_to_buf(int ist_buf, int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
+int set_PSF_all_isolines_to_buf(int ist_patch, int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			struct gl_strided_buffer *psf_buf){
-	int inum_buf = ist_buf;
+	int inum_patch = ist_patch;
 	if(psf_m->draw_psf_grid  != 0){
 		find_start_positive_lines(psf_m);
 		if(psf_m->ist_positive_line > 1){
-			inum_buf = set_PSF_isolines_to_buf(inum_buf, 
+			inum_patch = set_PSF_isolines_to_buf(inum_patch, 
 							IZERO, psf_m->ist_positive_line,
 							ncorner, psf_s, psf_m, psf_buf);
 		};
 		if(psf_m->ist_positive_line < psf_m->n_isoline){
-			inum_buf = set_PSF_isolines_to_buf(inum_buf, 
+			inum_patch = set_PSF_isolines_to_buf(inum_patch, 
 							psf_m->ist_positive_line, psf_m->n_isoline,
 							ncorner, psf_s, psf_m, psf_buf);
         };
     };
 	if(psf_m->draw_psf_zero  != 0){
-		inum_buf = set_PSF_zeroline_to_buf(inum_buf, ncorner, psf_s, psf_m, psf_buf);
+		inum_patch = set_PSF_zeroline_to_buf(inum_patch, ncorner, psf_s, psf_m, psf_buf);
 	};
 	
-	return inum_buf;
+	return inum_patch;
 }
