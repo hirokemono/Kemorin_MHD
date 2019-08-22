@@ -56,11 +56,7 @@ int mark_isoline_on_patch_c(const double *d_tri, const double v_line){
 		sig[1] = ( d_tri[i3] - v_line ) * ( d_tri[i1] - v_line );
 		sig[2] = ( d_tri[i1] - v_line ) * ( d_tri[i2] - v_line );
 		
-		if ( (sig[0]==ZERO) && (sig[1]==ZERO) && (sig[2]==ZERO) ){
-			idraw = 1;
-			break;
-		}
-		else if ( (sig[0]==ZERO) && (sig[1]==ZERO) && (sig[2]<ZERO) ){
+		if ( (sig[0]==ZERO) && (sig[1]==ZERO) && (sig[2]<ZERO) ){
 			idraw = 1;
 			break;
 		}
@@ -72,12 +68,11 @@ int mark_isoline_on_patch_c(const double *d_tri, const double v_line){
 	return idraw;
 };
 
-int find_isoline_on_patch_c(double x_line[6], double dir_line[6],
+int find_isoline_on_patch_c(double x_line[6], double dir_line[6], double norm_line[6], 
 			const double *xx_tri, const double *d_tri, const double v_line){
-	double normal[3];
 	
 	int idraw;
-	double sig[3];
+	double sig[3], ref_dir[3];
 	double dot;
 	int nd, i1, i2, i3;
 	
@@ -92,50 +87,51 @@ int find_isoline_on_patch_c(double x_line[6], double dir_line[6],
 		sig[1] = ( d_tri[i3] - v_line ) * ( d_tri[i1] - v_line );
 		sig[2] = ( d_tri[i1] - v_line ) * ( d_tri[i2] - v_line );
 		
-		if ( (sig[0]==ZERO) && (sig[1]==ZERO) && (sig[2]==ZERO) ){
-			cal_normal_4_triangle_c(&xx_tri[0], &xx_tri[3], &xx_tri[6], normal);
-			for(nd=0; nd<3; nd++){x_line[  nd] = xx_tri[3*i2+nd];};
-			for(nd=0; nd<3; nd++){x_line[3+nd] = xx_tri[3*i3+nd];};
-			for(nd=0; nd<2; nd++){x_line[  nd] = 0.0;};
-			for(nd=0; nd<2; nd++){x_line[3+nd] = 0.0;};
-			x_line[  2] = 1.0;
-			x_line[  5] = 1.0;
-			idraw = 1;
-			break;
-		}
-		else if ( (sig[0]==ZERO) && (sig[1]==ZERO) && (sig[2]<ZERO) ){
-			cal_normal_4_triangle_c(&xx_tri[0], &xx_tri[3], &xx_tri[6], normal);
+		if ( (sig[0]==ZERO) && (sig[1]==ZERO) && (sig[2]<ZERO) ){
+			line_direction_at_corner(ref_dir, &x_line[3], &x_line[0]);
+			cal_normal_4_triangle_c(&xx_tri[0], &xx_tri[3], &xx_tri[6], &norm_line[0]);
+			for(nd=0; nd<3; nd++){norm_line[3+nd] = norm_line[nd];};
+			
 			for(nd=0; nd<3; nd++){x_line[nd] = xx_tri[3*i3+nd];};
+			line_direction_at_corner(&dir_line[0], &x_line[3], &x_line[0]);
+			
 			interpolate_line_c(&x_line[3], &dir_line[3], 
-						normal, &xx_tri[3*i1], &xx_tri[3*i2],
+						&norm_line[3], &xx_tri[3*i1], &xx_tri[3*i2],
 						v_line, d_tri[i1], d_tri[i2]);
 			
-			line_direction_at_corner(&dir_line[0], &x_line[3], &x_line[0]);
-//			line_direction_at_corner(&dir_line[3], &x_line[3], &x_line[0]);
+			dot = (ref_dir[0]*dir_line[3] + ref_dir[1]*dir_line[4] + ref_dir[2]*dir_line[5]);
+			if(dot < 0.0){
+				for(nd=0; nd<3; nd++){dir_line[3+nd] = -dir_line[3+nd];};
+			}
 			
 			idraw = 1;
 			break;
 		}
 		else if ( (sig[0]<ZERO) && (sig[2]<ZERO) ){
-			cal_normal_4_triangle_c(&xx_tri[0], &xx_tri[3], &xx_tri[6], normal);
+			line_direction_at_corner(ref_dir, &x_line[3], &x_line[0]);
+			cal_normal_4_triangle_c(&xx_tri[0], &xx_tri[3], &xx_tri[6], &norm_line[0]);
+			for(nd=0; nd<3; nd++){norm_line[3+nd] = norm_line[nd];};
+			
 			interpolate_line_c(&x_line[0], &dir_line[0], 
-						normal,  &xx_tri[3*i1], &xx_tri[3*i2], 
+						&norm_line[0],  &xx_tri[3*i1], &xx_tri[3*i2], 
 						v_line, d_tri[i1], d_tri[i2]);
 			interpolate_line_c(&x_line[3], &dir_line[3], 
-						normal,  &xx_tri[3*i2], &xx_tri[3*i3], 
+						&norm_line[3],  &xx_tri[3*i2], &xx_tri[3*i3], 
 						v_line, d_tri[i2], d_tri[i3]);
 			
-//			line_direction_at_corner(&dir_line[0], &x_line[3], &x_line[0]);
-//			line_direction_at_corner(&dir_line[3], &x_line[3], &x_line[0]);
+			dot = (ref_dir[0]*dir_line[0] + ref_dir[1]*dir_line[1] + ref_dir[2]*dir_line[2]);
+			if(dot < 0.0){
+				for(nd=0; nd<3; nd++){dir_line[nd] = -dir_line[nd];};
+			}
+			dot = (ref_dir[0]*dir_line[3] + ref_dir[1]*dir_line[4] + ref_dir[2]*dir_line[5]);
+			if(dot < 0.0){
+				for(nd=0; nd<3; nd++){dir_line[3+nd] = -dir_line[3+nd];};
+			}
 			idraw = 1;
 			break;
 		}
 	}
 	if(idraw == 0) return idraw;
-	dot = dir_line[0]*dir_line[3] + dir_line[1]*dir_line[4] + dir_line[2]*dir_line[5];
-	if(dot < 0.0){
-		for(nd=0; nd<3; nd++){dir_line[nd] = -dir_line[nd];};
-	};
 	
 	if(v_line < 0.0){
 		for(nd=0; nd<3; nd++){

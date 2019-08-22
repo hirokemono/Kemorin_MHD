@@ -36,7 +36,7 @@ static int set_map_isoline_to_buf(int ist_patch, int ncorner, double width,
 	int inum_patch;
 	double d_tri[3], xx_tri[9];
 	double xyz_map[9];
-	double x_line[6], dir_line[6], color_line[8];
+	double x_line[6], dir_line[6], norm_line[6], color_line[8];
 	
 	int idraw;
 	int inod, iele, k, nd;
@@ -53,13 +53,14 @@ static int set_map_isoline_to_buf(int ist_patch, int ncorner, double width,
 		};
 		
 		projection_patch_4_map(xx_tri, xyz_map);
-		idraw = find_isoline_on_patch_c(x_line, dir_line, xyz_map, d_tri, v_line);
+		idraw = find_isoline_on_patch_c(x_line, dir_line, norm_line,
+										xyz_map, d_tri, v_line);
 		/*  draw isoline */
 		if(idraw == 1){
 			for(nd=0;nd<4;nd++){color_line[  nd] = f_color[nd];};
 			for(nd=0;nd<4;nd++){color_line[4+nd] = f_color[nd];};
 			inum_patch = set_tube_strided_buffer(inum_patch, ncorner, width, 
-						x_line, dir_line, color_line, strided_buf);
+						x_line, dir_line, norm_line, color_line, strided_buf);
 		};
 	};
 	return inum_patch;

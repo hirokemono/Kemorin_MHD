@@ -188,6 +188,7 @@ static int set_axis_rod_to_buf(int ncorner, float radius,
 			double x_charax[12], double x_charay[18], double x_charaz[18],
 			struct gl_strided_buffer *strided_buf){
 	double dir_line[6];
+	double norm_line[6];
 	double color_2p[8];
     int icou_patch = 0;
 	int k, nd;
@@ -201,24 +202,27 @@ static int set_axis_rod_to_buf(int ncorner, float radius,
 	printf("x_arrowx2 %f %f %f \n", x_arrowx[3], x_arrowx[4], x_arrowx[5]);
 	printf("dir_line1 %f %f %f \n", dir_line[0], dir_line[1], dir_line[2]);
 	*/
+	find_normal_of_line(norm_line, x_arrowx, dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, x_arrowx, 
-				dir_line, color_2p, strided_buf);
+				dir_line, norm_line, color_2p, strided_buf);
 	
     /*draw y axis */
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_arrowy[3+nd] - x_arrowy[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
+	find_normal_of_line(norm_line, x_arrowy, dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, x_arrowy, 
-				dir_line, color_2p, strided_buf);
+				dir_line, norm_line, color_2p, strided_buf);
 	
     /*draw z axis */
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_arrowz[3+nd] - x_arrowz[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
+	find_normal_of_line(norm_line, x_arrowz, dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, x_arrowz,
-				dir_line, color_2p, strided_buf);
+				dir_line, norm_line, color_2p, strided_buf);
 	
 	
 	/*draw 'X' */
@@ -226,54 +230,62 @@ static int set_axis_rod_to_buf(int ncorner, float radius,
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charax[3+nd] - x_charax[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  red[nd];};
     }
+	find_normal_of_line(norm_line, &x_charax[0], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charax[0],
-					dir_line, color_2p, strided_buf);
+					dir_line, norm_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charax[9+nd] - x_charax[6+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  red[nd];};
     }
+	find_normal_of_line(norm_line,  &x_charax[6], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charax[6],
-					dir_line, color_2p, strided_buf);
+					dir_line, norm_line, color_2p, strided_buf);
 	
 	/*draw 'Y' */
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charay[3+nd] - x_charay[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
+	find_normal_of_line(norm_line,  &x_charay[0], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charay[0],
-					dir_line, color_2p, strided_buf);
+					dir_line, norm_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charay[9+nd] - x_charay[6+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
+	find_normal_of_line(norm_line,  &x_charay[6], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charay[6],
-					dir_line, color_2p, strided_buf);
+					dir_line, norm_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charay[15+nd] - x_charay[12+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
+	find_normal_of_line(norm_line,  &x_charay[12], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charay[12],
-					dir_line, color_2p, strided_buf);
+					dir_line, norm_line, color_2p, strided_buf);
 	
 	/*draw 'Z' */
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charaz[3+nd] - x_charaz[nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
+	find_normal_of_line(norm_line,  &x_charaz[0], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charaz[0],
-					dir_line, color_2p, strided_buf);
+					dir_line, norm_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charaz[9+nd] - x_charaz[6+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
+	find_normal_of_line(norm_line,  &x_charaz[6], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charaz[6],
-					dir_line, color_2p, strided_buf);
+					dir_line, norm_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charaz[15+nd] - x_charaz[12+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
+	find_normal_of_line(norm_line,  &x_charaz[12], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charaz[12],
-					dir_line, color_2p, strided_buf);
+					dir_line, norm_line, color_2p, strided_buf);
     
 	return icou_patch;
 }

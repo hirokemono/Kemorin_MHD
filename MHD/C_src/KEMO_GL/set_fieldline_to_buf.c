@@ -18,6 +18,7 @@ int set_fieldtubes_to_buf(int ncorner,
 	int inod, iele, k, nd;
 	double xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
 	double x_line[6], dir_line[6], color_line[8];
+	double norm_line[6];
 	
 	set_color_code_for_fieldlines(fline_s, fline_m);
 	
@@ -31,8 +32,9 @@ int set_fieldtubes_to_buf(int ncorner,
 			};
 			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_s->color_nod[inod][nd];};
 		};
-		
-		num_wall = set_tube_vertex(ncorner, fline_m->fieldline_thick, x_line, dir_line, color_line,
+		find_normal_of_line(norm_line, x_line, dir_line);
+		num_wall = set_tube_vertex(ncorner, fline_m->fieldline_thick, 
+								   x_line, dir_line, norm_line, color_line,
 								   xyz, nor, col);
 		
 		for (k=0; k<3*num_wall; k++) {

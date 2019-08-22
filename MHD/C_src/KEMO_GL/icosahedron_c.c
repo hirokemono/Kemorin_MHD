@@ -106,7 +106,7 @@ int set_icosahedron_patch(double size, double x_draw[3],
 static void set_circle_of_tube(int ncorner, double radius, double xx_line[3], double norm_nod[3], 
 					  double dir_nod[3], double *xx_wall, double *norm_wall) {
 	int k, nd;
-	double norm_2nd[3], angle, len, len2, pi;
+	double norm_2nd[3], angle, len, nrm1, nrm2, r_mod, pi;
 	
 	pi = FOUR * atan(ONE);
 	norm_2nd[0] = dir_nod[1] * norm_nod[2]
@@ -115,36 +115,43 @@ static void set_circle_of_tube(int ncorner, double radius, double xx_line[3], do
 				- dir_nod[0] * norm_nod[2];
 	norm_2nd[2] = dir_nod[0] * norm_nod[1]
 				- dir_nod[1] * norm_nod[0];
-	len = sqrt(norm_2nd[0]*norm_2nd[0] +norm_2nd[1]*norm_2nd[1]+norm_2nd[2]*norm_2nd[2]);
-	len2 = sqrt(norm_nod[0]*norm_nod[0] +norm_nod[1]*norm_nod[1]+norm_nod[2]*norm_nod[2]);
+	len =  sqrt(dir_nod[0]*dir_nod[0] +dir_nod[1]*dir_nod[1]+dir_nod[2]*dir_nod[2]);
+	nrm2 = sqrt(norm_2nd[0]*norm_2nd[0] +norm_2nd[1]*norm_2nd[1]+norm_2nd[2]*norm_2nd[2]);
+	nrm1 = sqrt(norm_nod[0]*norm_nod[0] +norm_nod[1]*norm_nod[1]+norm_nod[2]*norm_nod[2]);
+	r_mod =  (len*nrm1) / nrm2;
 	for (nd=0; nd<3; nd++){ 
-		norm_2nd[nd] = norm_2nd[nd]/len;
-		norm_nod[nd] = norm_nod[nd]/len2;
+		norm_2nd[nd] = norm_2nd[nd]/nrm2;
+		norm_nod[nd] = norm_nod[nd]/nrm1;
 	};		
 	for(k=0;k<ncorner;k++){
 		angle = TWO * pi * (double)k / (double)ncorner;
 		for (nd=0; nd<3; nd++) {
 			norm_wall[3*k+nd] = norm_nod[nd] * cos(angle)
-							  + norm_2nd[nd] * sin(angle);
+					  + r_mod * norm_2nd[nd] * sin(angle);
 			xx_wall[3*k+nd] =   xx_line[nd] + radius*norm_wall[3*k+nd];
 		};
 	};
 	return;
 }
 
-int set_tube_vertex(int ncorner, double radius, double x_line[6], double dir_line[6],
+void find_normal_of_line(double norm_line[6],
+			const double x_line[6], const double dir_line[6]){
+	int k;
+	
+	for(k=0;k<2;k++){
+		norm_line[3*k  ] = -dir_line[3*k+2];
+		norm_line[3*k+1] =  dir_line[3*k+2];
+		norm_line[3*k+2] =  dir_line[3*k  ] - dir_line[3*k+1];
+	};
+	return;
+};
+int set_tube_vertex(int ncorner, double radius, 
+					double x_line[6], double dir_line[6], double norm_line[6],
 					double color_line[8], double *xyz, double *nor, double *col) {
-	double norm_line[6];
 	double xx_w1[3*ncorner], norm_w1[3*ncorner];
 	double xx_w2[3*ncorner], norm_w2[3*ncorner];
 	int npatch_wall = 0;
 	int k, nd;
-	
-	for(k=0;k<2;k++){
-		norm_line[3*k  ] =  -dir_line[3*k+2];
-		norm_line[3*k+1] =  dir_line[3*k+2];
-		norm_line[3*k+2] =  dir_line[3*k  ] - dir_line[3*k+1];
-	};
 	
 	set_circle_of_tube(ncorner, radius, &x_line[0], &norm_line[0], &dir_line[0],
 					   xx_w1, norm_w1);
@@ -248,13 +255,14 @@ int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_lin
 }
 
 
-int set_tube_strided_buffer(int ist_patch, int ncorner, double radius, double x_line[6], double dir_line[6],
-					double color_line[8], struct gl_strided_buffer *strided_buf) {
+int set_tube_strided_buffer(int ist_patch, int ncorner, double radius, 
+			double x_line[6], double dir_line[6], double norm_line[6],
+			double color_line[8], struct gl_strided_buffer *strided_buf) {
 	double xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
 	int npatch_wall = 0;
 	int k, nd;
 	
-	npatch_wall = set_tube_vertex(ncorner, radius, x_line, dir_line, color_line,
+	npatch_wall = set_tube_vertex(ncorner, radius, x_line, dir_line, norm_line, color_line,
 								   xyz, nor, col);
 	for (k=0; k<3*npatch_wall; k++) {
 		set_node_stride_VBO((ITHREE*ist_patch+k), strided_buf);

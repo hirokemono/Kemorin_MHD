@@ -68,7 +68,7 @@ static int set_isoline_to_buf(int ist_patch, int ncorner, double width,
 			struct psf_data *psf_s, struct gl_strided_buffer *strided_buf){
 	
 	double d_tri[3], xx_tri[9];
-	double x_line[6], dir_line[6], color_line[8];
+	double x_line[6], dir_line[6], norm_line[6], color_line[8];
 	
 	int idraw;
 	int inod, iele, k, nd;
@@ -86,13 +86,14 @@ static int set_isoline_to_buf(int ist_patch, int ncorner, double width,
 		};
 		
 		/*  find isoline */
-		idraw = find_isoline_on_patch_c(x_line, dir_line, xx_tri, d_tri, v_line);
+		idraw = find_isoline_on_patch_c(x_line, dir_line, norm_line, 
+										xx_tri, d_tri, v_line);
 		/*  draw isoline */
 		if(idraw == 1){
 			for(nd=0;nd<4;nd++){color_line[  nd] = f_color[nd];};
 			for(nd=0;nd<4;nd++){color_line[4+nd] = f_color[nd];};
 			inum_patch = set_tube_strided_buffer(inum_patch, ncorner, width, 
-						x_line, dir_line, color_line, strided_buf);
+						x_line, dir_line, norm_line, color_line, strided_buf);
 		};
 	};
 
