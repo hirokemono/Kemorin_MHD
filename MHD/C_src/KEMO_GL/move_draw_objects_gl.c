@@ -109,7 +109,7 @@ void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *ke
 		
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s);
-		draw_PSF_solid_objects_VAO(kemo_mesh->mesh_m->shading_mode, kemo_psf->psf_d, kemo_psf->psf_m,
+		draw_PSF_solid_objects_VAO(kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s, kemo_VAOs->psf_solid_VAO, kemo_shaders);
 		
 		draw_solid_mesh_VAO(kemo_mesh->mesh_m, view_s, 
@@ -117,19 +117,12 @@ void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *ke
 		draw_coastline_grid_VBO(view_s, kemo_VAOs->grid_VAO, kemo_shaders);
 			
 /*  Stop drawing transparent objects  */
-		/*
-		glGenVertexArrays(1, &kemo_VAOs->psf_trans_VAO[1]->id_VAO);
-		glGenVertexArrays(1, &kemo_VAOs->psf_trans_VAO[0]->id_VAO);
-		draw_PSF_trans_objects_VAO(kemo_mesh->mesh_m->shading_mode, kemo_psf->psf_d, kemo_psf->psf_m,
-					kemo_psf->psf_a, view_s, kemo_VAOs->psf_trans_VAO, kemo_shaders);
+		draw_PSF_trans_objects_VAO(kemo_psf->psf_m, kemo_psf->psf_a, 
+					view_s, kemo_VAOs->psf_trans_VAO, kemo_shaders);
 		if(kemo_mesh->mesh_m->iflag_draw_mesh != 0){
-			glGenVertexArrays(1, &kemo_VAOs->mesh_trans_VAO->id_VAO);
-			set_trans_mesh_VAO(kemo_mesh->mesh_d, kemo_mesh->mesh_m, 
-						view_s, kemo_VAOs->mesh_trans_VAO);
 			draw_trans_mesh_VAO(kemo_mesh->mesh_m, view_s, 
 						kemo_VAOs->mesh_trans_VAO, kemo_shaders);
 		};
-		*/
 	};
 	
     /* Draw Color bar */
@@ -203,11 +196,9 @@ void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *k
 		set_PSF_solid_objects_VAO(kemo_mesh->mesh_m->shading_mode, 
 					kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, kemo_VAOs->psf_solid_VAO);
-		draw_PSF_solid_objects_VAO(kemo_mesh->mesh_m->shading_mode, 
-					kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, 
+		draw_PSF_solid_objects_VAO(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, 
 					view_s, kemo_VAOs->psf_solid_VAO, kemo_shaders);
-		draw_PSF_isolines_VAO(kemo_mesh->mesh_m->shading_mode, view_s,
-					kemo_VAOs->psf_solid_VAO, kemo_shaders);
+		draw_PSF_isolines_VAO(view_s, kemo_VAOs->psf_solid_VAO, kemo_shaders);
 		//	Destroy_Phong_Texture_VAO(kemo_VAOs->psf_solid_VAO[1], psf_m[i]->texture_name);
 		//	Destroy_Phong_VAO(kemo_VAOs->psf_solid_VAO[0]);
 		//	Destroy_Phong_VAO(kemo_VAOs->psf_solid_VAO[2]);
@@ -235,8 +226,10 @@ void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *k
 //	Destroy_Phong_VAO(grid_VAO[1]);
 		
 		/* Draw Transparent Objects */
-		draw_PSF_trans_objects_VAO(kemo_mesh->mesh_m->shading_mode, 
-					kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, 
+		set_PSF_trans_objects_VAO(kemo_mesh->mesh_m->shading_mode, 
+					kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+					kemo_VAOs->psf_trans_VAO);
+		draw_PSF_trans_objects_VAO(kemo_psf->psf_m, kemo_psf->psf_a, 
 					view_s, kemo_VAOs->psf_trans_VAO, kemo_shaders);
 	//  Destroy_Phong_VAO(psf_trans_VAO[0]);
 	//	Destroy_Phong_Texture_VAO(psf_trans_VAO[1], psf_m[i]->texture_name);

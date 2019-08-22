@@ -155,10 +155,30 @@ void set_PSF_solid_objects_VAO(int shading_mode,
 	free(psf_buf);
 	return;
 };
-	
-	
-void draw_PSF_solid_objects_VAO(int shading_mode, 
+
+void set_PSF_trans_objects_VAO(int shading_mode, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m,
+			struct kemo_array_control *psf_a, struct VAO_ids **psf_trans_VAO){
+	struct gl_strided_buffer *psf_buf
+			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	set_buffer_address_4_patch(3*128, psf_buf);
+	alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+	
+	
+	set_PSF_texture_VAO(shading_mode, 
+				psf_a->istack_solid_psf_patch, psf_a->istack_trans_psf_txtur, 
+				psf_s, psf_m, psf_a, psf_trans_VAO[1], psf_buf);
+	set_PSF_patch_VAO(shading_mode, 
+				psf_a->istack_trans_psf_txtur, psf_a->ntot_psf_patch,
+				psf_s, psf_m, psf_a, psf_trans_VAO[0], psf_buf);
+	
+	free(psf_buf->v_buf);
+	free(psf_buf);
+	return;
+};
+
+
+void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct view_element *view_s, 
 			struct VAO_ids **psf_solid_VAO, struct kemoview_shaders *kemo_shaders){
 	if(psf_solid_VAO[1]->npoint_draw >0){
@@ -187,7 +207,7 @@ void draw_PSF_solid_objects_VAO(int shading_mode,
 	return;
 };
 
-void draw_PSF_isolines_VAO(int shading_mode, struct view_element *view_s, 
+void draw_PSF_isolines_VAO(struct view_element *view_s, 
 			struct VAO_ids **psf_solid_VAO, struct kemoview_shaders *kemo_shaders){
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
@@ -204,24 +224,9 @@ void draw_PSF_isolines_VAO(int shading_mode, struct view_element *view_s,
 	return;
 }
 
-void draw_PSF_trans_objects_VAO(int shading_mode, 
-			struct psf_data **psf_s, struct psf_menu_val **psf_m,
+void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct view_element *view_s, 
 			struct VAO_ids **psf_trans_VAO, struct kemoview_shaders *kemo_shaders){
-	struct gl_strided_buffer *psf_buf
-			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	set_buffer_address_4_patch(3*128, psf_buf);
-	alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
-	
-	
-	set_PSF_texture_VAO(shading_mode, 
-				psf_a->istack_solid_psf_patch, psf_a->istack_trans_psf_txtur, 
-				psf_s, psf_m, psf_a, psf_trans_VAO[1], psf_buf);
-	set_PSF_patch_VAO(shading_mode, 
-				psf_a->istack_trans_psf_txtur, psf_a->ntot_psf_patch,
-				psf_s, psf_m, psf_a, psf_trans_VAO[0], psf_buf);
-	
-	
 	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
 	glEnable(GL_MULTISAMPLE);
@@ -258,8 +263,5 @@ void draw_PSF_trans_objects_VAO(int shading_mode,
 	glDepthMask(GL_TRUE);
 	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glDisable(GL_MULTISAMPLE);
-	
-	free(psf_buf->v_buf);
-	free(psf_buf);
 	return;
 };
