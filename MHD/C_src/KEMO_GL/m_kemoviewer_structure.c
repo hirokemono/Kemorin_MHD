@@ -255,6 +255,70 @@ int kemoview_toggle_object_properties(int selected){
 	return 0;
 }
 
+/* Shader controls */
+
+
+
+void kemoview_alloc_phong_light_list(int num){
+	alloc_phong_light_list(kemo_sgl->kemo_shaders->lights, num);
+};
+void kemoview_dealloc_phong_light_list(){
+	dealloc_phong_light_list(kemo_sgl->kemo_shaders->lights);
+};
+void kemoview_realloc_phong_light_list(int num){
+	realloc_phong_light_list(kemo_sgl->kemo_shaders->lights, num);
+};
+
+void kemoview_delete_phong_light_list(int i_delete){
+	delete_phong_light_list(kemo_sgl->kemo_shaders->lights, i_delete);
+};
+void kemoview_add_phong_light_list(float add_light_rtp[3]){
+	add_phong_light_list(kemo_sgl->kemo_shaders->lights, add_light_rtp);
+};
+
+void kemoview_init_phong_light_list(){
+	init_phong_light_list(kemo_sgl->kemo_shaders->lights);
+};
+
+
+void kemoview_set_each_light_position(int i_point, float light_position[3]){
+	set_each_light_position(kemo_sgl->kemo_shaders->lights, i_point, light_position);
+};
+int kemoview_send_num_light_position(){
+	return send_num_light_position(kemo_sgl->kemo_shaders->lights);
+};
+void kemoview_send_each_light_rtp(int i_point, float light_position[3]){
+	send_each_light_rtp(kemo_sgl->kemo_shaders->lights, i_point, light_position);
+};
+
+void kemovier_set_material_ambient(float ambient_in){
+	set_material_ambient(kemo_sgl->kemo_shaders->lights, ambient_in);
+};
+void kemoview_set_material_diffuse(float diffuse_in){
+	set_material_diffuse(kemo_sgl->kemo_shaders->lights, diffuse_in);
+};
+void kemoview_set_material_specular(float specular_in){
+	set_material_specular(kemo_sgl->kemo_shaders->lights, specular_in);
+};
+void kemoview_set_material_shiness(float shiness_in){
+	set_material_shiness(kemo_sgl->kemo_shaders->lights, shiness_in);
+};
+
+float kemoview_send_material_ambient(){
+	return send_material_ambient(kemo_sgl->kemo_shaders->lights);
+};
+float kemoview_send_material_diffuse(){
+	return send_material_diffuse(kemo_sgl->kemo_shaders->lights);
+};
+float kemoview_send_material_specular(){
+	return send_material_specular(kemo_sgl->kemo_shaders->lights);
+};
+float kemoview_send_material_shiness(){
+	return send_material_shiness(kemo_sgl->kemo_shaders->lights);
+};
+
+
+/* mesh ontrols  */
 void kemoview_set_mesh_color_mode(int icolor)  {kemo_sgl->kemo_mesh->mesh_m->mesh_color_mode = icolor;};
 void kemoview_set_num_of_color_loop(int icolor){kemo_sgl->kemo_mesh->mesh_m->num_of_color_loop = icolor;};
 

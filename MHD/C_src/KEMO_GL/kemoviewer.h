@@ -481,7 +481,33 @@ extern "C" {
     void kemoview_set_object_property_flags(int selected, int iflag);
     int kemoview_get_object_property_flags(int selected);
     int kemoview_toggle_object_properties(int selected);
-    
+	
+	
+	void kemoview_alloc_phong_light_list(int num);
+	void kemoview_dealloc_phong_light_list();
+	void kemoview_realloc_phong_light_list(int num);
+	
+	void kemoview_delete_phong_light_list(int i_delete);
+	void kemoview_add_phong_light_list(float add_light_rtp[3]);
+	
+	void kemoview_init_phong_light_list();
+	
+	
+	void kemoview_set_each_light_position(int i_point, float light_position[3]);
+	int kemoview_send_num_light_position();
+	void kemoview_send_each_light_rtp(int i_point, float light_position[3]);
+	
+	void kemovier_set_material_ambient(float ambient_in);
+	void kemoview_set_material_diffuse(float diffuse_in);
+	void kemoview_set_material_specular(float specular_in);
+	void kemoview_set_material_shiness(float shiness_in);
+	
+	float kemoview_send_material_ambient();
+	float kemoview_send_material_diffuse();
+	float kemoview_send_material_specular();
+	float kemoview_send_material_shiness();
+	
+	
     void kemoview_set_mesh_color_mode(int icolor);
     void kemoview_set_num_of_color_loop(int icolor);
     

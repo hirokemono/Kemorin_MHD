@@ -8,6 +8,14 @@
 
 #define PI 3.131592
 
+void light_positionfrom_angle(float light_rtp[3], float light_xyz[4]){
+	light_xyz[0] = light_rtp[0] * cos(PI * light_rtp[1]/180.0) * sin(PI * light_rtp[2]/180.0);
+	light_xyz[1] = light_rtp[0] * sin(PI * light_rtp[1]/180.0);
+	light_xyz[2] = light_rtp[0] * cos(PI * light_rtp[1]/180.0) * cos(PI * light_rtp[2]/180.0);
+	light_xyz[3] = 1.0;
+	return;
+};
+
 void alloc_phong_light_list(struct phong_lights *lights, int num){
 	lights->n_light_point =    num;
 	lights->nbuf_light_point = num;
@@ -22,7 +30,6 @@ void dealloc_phong_light_list(struct phong_lights *lights){
 	return;
 }
 
-
 void realloc_phong_light_list(struct phong_lights *lights, int num){
 	if(num > lights->nbuf_light_point){
 		dealloc_phong_light_list(lights);
@@ -36,101 +43,79 @@ void realloc_phong_light_list(struct phong_lights *lights, int num){
 void delete_phong_light_list(struct phong_lights *lights, int i_delete){
 	float *light_xyz_tmp;
 	float *light_rtp_tmp;
-	int num, nd, i;
+	int i;
 	
-	if(lights->nbuf_light_point <= 2) return;
+	if(lights->nbuf_light_point <= 1) return;
 	
-	light_xyz_tmp = (float *)calloc(3*lights->nbuf_light_point,sizeof(float));
-	light_rtp_tmp = (float *)calloc(3*lights->nbuf_light_point,sizeof(float));
-	for(i = 0; i < lights->nbuf_light_point; i++) {
-		for(nd=0;nd<3;nd++){
-			light_xyz_tmp[3*i+nd] =  lights->light_xyz[4*i+nd];
-			light_rtp_tmp[3*i+nd] = lights->light_rtp[3*i+nd];
-		};
+	light_xyz_tmp = (float *)calloc(lights->nbuf_light_point,sizeof(float));
+	light_rtp_tmp = (float *)calloc(lights->nbuf_light_point,sizeof(float));
+	for(i=0;i< 4*lights->nbuf_light_point;i++){
+		light_xyz_tmp[i] =  lights->light_xyz[i];
+	};
+	for(i=0;i< 3*lights->nbuf_light_point;i++){
+		light_rtp_tmp[i] = lights->light_rtp[i];
 	}
 	dealloc_phong_light_list(lights);
 	
-	num = lights->nbuf_light_point - 1;
-	alloc_phong_light_list(lights, num);
+	alloc_phong_light_list(lights, (lights->nbuf_light_point-1));
 	
-	for(i = 0; i < i_delete; i++) {
-		for(nd=0;nd<3;nd++){
-			lights->light_xyz[4*i+nd] = light_xyz_tmp[3*i+nd];
-			lights->light_rtp[3*i+nd] = light_rtp_tmp[3*i+nd];
-		};
+	for(i=0;i< 4*i_delete;i++) {
+		lights->light_xyz[i] = light_xyz_tmp[i];
+	};
+	for(i=0;i< 3*i_delete;i++) {
+		lights->light_rtp[i] = light_rtp_tmp[i];
 	}
 	
-	for(i = i_delete+1; i < num+1; i++) {
-		for(nd=0;nd<3;nd++){
-			lights->light_xyz[4*(i-1)+nd] = light_xyz_tmp[3*i+nd];
-			lights->light_rtp[3*(i-1)+nd] = light_rtp_tmp[3*i+nd];
-		};
+	for(i=i_delete+1;i< 4*(lights->nbuf_light_point+1);i++) {
+		lights->light_xyz[i-4] = light_xyz_tmp[i];
+	};
+	for(i=i_delete+1;i< 3*(lights->nbuf_light_point+1);i++) {
+		lights->light_rtp[i-3] = light_rtp_tmp[i];
 	}
 	
-	for(i = 0; i < num+1; i++) {lights->light_xyz[4*i+3] = 1.0;};
 	free(light_xyz_tmp);
 	free(light_rtp_tmp);
 	return;
 }
 
-void add_phong_light_list(struct phong_lights *lights, float *add_xyz, float *add_rtp){
+void add_phong_light_list(struct phong_lights *lights, float add_light_rtp[3]){
 	float *light_xyz_tmp;
 	float *light_rtp_tmp;
-	int num, nd, i, i_add;
+	int i, i_add;
 	
 	i_add = 0;
-	if(lights->nbuf_light_point == 10) return;
 	for(i = 0; i < lights->nbuf_light_point; i++) {
-		for(nd=0;nd<3;nd++){
-			if(add_rtp[0] > lights->light_rtp[3*i]) {i_add = i+1;};
-		};
+		if(add_light_rtp[0] > lights->light_rtp[3*i]) i_add = i+1;
 	}
 	
-	light_xyz_tmp = (float *)calloc(3*lights->nbuf_light_point,sizeof(float));
+	light_xyz_tmp = (float *)calloc(4*lights->nbuf_light_point,sizeof(float));
 	light_rtp_tmp = (float *)calloc(3*lights->nbuf_light_point,sizeof(float));
-	for(i = 0; i < lights->nbuf_light_point; i++) {
-		for(nd=0;nd<3;nd++){
-			light_xyz_tmp[3*i+nd] = lights->light_xyz[4*i+nd];
-			light_rtp_tmp[3*i+nd] = lights->light_rtp[3*i+nd];
-		};
+	for(i=0;i< 4*lights->nbuf_light_point;i++){
+		light_xyz_tmp[i] =  lights->light_xyz[i];
 	};
+	for(i=0;i< 3*lights->nbuf_light_point;i++){
+		light_rtp_tmp[i] = lights->light_rtp[i];
+	}
 	dealloc_phong_light_list(lights);
 	
-	num = lights->nbuf_light_point + 1;
-	alloc_phong_light_list(lights, num);
+	alloc_phong_light_list(lights, (lights->nbuf_light_point+1));
 	
-	for(i = 0; i < i_add; i++) {
-		for(nd=0;nd<3;nd++){
-			lights->light_xyz[4*i+nd] = light_xyz_tmp[3*i+nd];
-			lights->light_rtp[3*i+nd] = light_rtp_tmp[3*i+nd];
-		};
-	}
+	for(i=0;i< 4*i_add;i++) {lights->light_xyz[i] = light_xyz_tmp[i];};
+	for(i=0;i< 3*i_add;i++) {lights->light_rtp[i] = light_rtp_tmp[i];};
 	
-	for(nd=0;nd<3;nd++){
-		lights->light_xyz[4*i_add+nd] = add_xyz[nd];
-		lights->light_rtp[3*i_add+nd] = add_rtp[nd];
+	for(i = 0; i < 3*i_add; i++){lights->light_rtp[3*i_add+i] = add_light_rtp[i];};
+	light_positionfrom_angle(&lights->light_rtp[3*i_add], &lights->light_xyz[4*i_add]);
+	for(i=4*(i_add+1);i<4*lights->nbuf_light_point; i++){
+		lights->light_xyz[i] = light_xyz_tmp[i-4];
+	};
+	for(i=3*(i_add+1);i<3*lights->nbuf_light_point; i++){
+		lights->light_rtp[i] = light_rtp_tmp[i-3];
 	};
 	
-	for(i = i_add+1; i < num; i++) {
-		for(nd=0;nd<3;nd++){
-			lights->light_xyz[4*i+nd] = light_xyz_tmp[3*(i-1)+nd];
-			lights->light_rtp[3*i+nd] = light_rtp_tmp[3*(i-1)+nd];
-		};
-	}
-	
-	for(i = 0; i < num; i++) {lights->light_xyz[4*i+3] = 1.0;};
 	free(light_xyz_tmp);
 	free(light_rtp_tmp);
 	return;
 }
-
-void light_positionfrom_angle(float *light_rtp, float *light_xyz){
-	light_xyz[0] = light_rtp[0] * cos(PI * light_rtp[1]/180.0) * sin(PI * light_rtp[2]/180.0);
-	light_xyz[1] = light_rtp[0] * sin(PI * light_rtp[1]/180.0);
-	light_xyz[2] = light_rtp[0] * cos(PI * light_rtp[1]/180.0) * cos(PI * light_rtp[2]/180.0);
-	light_xyz[3] = 1.0;
-	return;
-};
 
 
 void init_phong_light_list(struct phong_lights *lights){
@@ -146,3 +131,44 @@ void init_phong_light_list(struct phong_lights *lights){
 	lights->light_rtp[2] =  90.0;
 	light_positionfrom_angle(&lights->light_rtp[0], &lights->light_xyz[0]);
 };
+
+
+void set_each_light_position(struct phong_lights *lights, 
+			int i_point, float light_position[3]){
+	int i;
+	
+	for(i=0;i<3;i++){lights->light_rtp[3*i_point+i] = light_position[i];};
+	light_positionfrom_angle(&lights->light_rtp[3*i_point], &lights->light_xyz[4*i_point]);
+	return;
+}
+
+int send_num_light_position(struct phong_lights *lights){return lights->n_light_point;};
+void send_each_light_rtp(struct phong_lights *lights, 
+			int i_point, float light_position[3]){
+	int i;
+	
+	for(i=0;i<3;i++){light_position[i] = lights->light_rtp[3*i_point+i];};
+	return;
+}
+
+void set_material_ambient(struct phong_lights *lights, float ambient_in){
+	lights->ambient = ambient_in;
+	return;
+};
+void set_material_diffuse(struct phong_lights *lights, float diffuse_in){
+	lights->diffuse = diffuse_in;
+	return;
+};
+void set_material_specular(struct phong_lights *lights, float specular_in){
+	lights->specular = specular_in;
+	return;
+};
+void set_material_shiness(struct phong_lights *lights, float shiness_in){
+	lights->shiness = shiness_in;
+	return;
+};
+
+float send_material_ambient(struct phong_lights *lights){return lights->ambient;};
+float send_material_diffuse(struct phong_lights *lights){return lights->diffuse;};
+float send_material_specular(struct phong_lights *lights){return lights->specular;};
+float send_material_shiness(struct phong_lights *lights){return lights->shiness;};

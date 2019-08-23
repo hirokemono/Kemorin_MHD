@@ -298,6 +298,7 @@ module:
 	m_kemoviewer_menu.o \
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
+	m_phong_light_table_c.o \
 	m_gl_transfer_matrix.o \
 	vartex_array_object_gl.o \
 	glsl.o \
