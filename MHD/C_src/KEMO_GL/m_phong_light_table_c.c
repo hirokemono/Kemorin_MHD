@@ -78,14 +78,14 @@ void delete_phong_light_list(struct phong_lights *lights, int i_delete){
 	return;
 }
 
-void add_phong_light_list(struct phong_lights *lights, float add_light_rtp[3]){
+void add_phong_light_list(struct phong_lights *lights, float r, float t, float p){
 	float *light_xyz_tmp;
 	float *light_rtp_tmp;
 	int i, i_add;
 	
 	i_add = 0;
 	for(i = 0; i < lights->nbuf_light_point; i++) {
-		if(add_light_rtp[0] > lights->light_rtp[3*i]) i_add = i+1;
+		if(r > lights->light_rtp[3*i]) i_add = i+1;
 	}
 	
 	light_xyz_tmp = (float *)calloc(4*lights->nbuf_light_point,sizeof(float));
@@ -103,7 +103,10 @@ void add_phong_light_list(struct phong_lights *lights, float add_light_rtp[3]){
 	for(i=0;i< 4*i_add;i++) {lights->light_xyz[i] = light_xyz_tmp[i];};
 	for(i=0;i< 3*i_add;i++) {lights->light_rtp[i] = light_rtp_tmp[i];};
 	
-	for(i = 0; i < 3*i_add; i++){lights->light_rtp[3*i_add+i] = add_light_rtp[i];};
+	lights->light_rtp[3*i_add  ] = r;
+	lights->light_rtp[3*i_add+1] = t;
+	lights->light_rtp[3*i_add+2] = p;
+	
 	light_positionfrom_angle(&lights->light_rtp[3*i_add], &lights->light_xyz[4*i_add]);
 	for(i=4*(i_add+1);i<4*lights->nbuf_light_point; i++){
 		lights->light_xyz[i] = light_xyz_tmp[i-4];
@@ -144,10 +147,10 @@ void set_each_light_position(struct phong_lights *lights,
 
 int send_num_light_position(struct phong_lights *lights){return lights->n_light_point;};
 void send_each_light_rtp(struct phong_lights *lights, 
-			int i_point, float light_position[3]){
-	int i;
-	
-	for(i=0;i<3;i++){light_position[i] = lights->light_rtp[3*i_point+i];};
+			int i_point, float *r, float *t, float *p){
+	*r = lights->light_rtp[3*i_point  ];
+	*t = lights->light_rtp[3*i_point+1];
+	*p = lights->light_rtp[3*i_point+2];
 	return;
 }
 
@@ -163,7 +166,7 @@ void set_material_specular(struct phong_lights *lights, float specular_in){
 	lights->specular = specular_in;
 	return;
 };
-void set_material_shiness(struct phong_lights *lights, float shiness_in){
+void set_material_shineness(struct phong_lights *lights, float shiness_in){
 	lights->shiness = shiness_in;
 	return;
 };

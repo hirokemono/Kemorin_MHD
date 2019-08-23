@@ -12,6 +12,7 @@
 		180FF7CE1DDFB54700D20198 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CD1DDFB54700D20198 /* AVFoundation.framework */; };
 		180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CF1DDFB55000D20198 /* CoreVideo.framework */; };
 		180FF7D21DDFB55500D20198 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7D11DDFB55500D20198 /* CoreMedia.framework */; };
+		1824FD34230FD47300990F41 /* KemoviewerLightingControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 1824FD33230FD47300990F41 /* KemoviewerLightingControl.m */; };
 		1825197616A11A24006D5158 /* delete_file_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1825197416A11A24006D5158 /* delete_file_c.c */; };
 		1825198116A28AF9006D5158 /* read_psf_vtk_data_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1825198016A28AF9006D5158 /* read_psf_vtk_data_c.c */; };
 		182D092116C040ED0073D215 /* glsl.c in Sources */ = {isa = PBXBuildFile; fileRef = 182D091F16C040EC0073D215 /* glsl.c */; };
@@ -222,6 +223,8 @@
 		180FF7CD1DDFB54700D20198 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		180FF7CF1DDFB55000D20198 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		180FF7D11DDFB55500D20198 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		1824FD33230FD47300990F41 /* KemoviewerLightingControl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KemoviewerLightingControl.m; sourceTree = "<group>"; };
+		1824FD35230FD49500990F41 /* KemoviewerLightingControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KemoviewerLightingControl.h; sourceTree = "<group>"; };
 		1825197416A11A24006D5158 /* delete_file_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = delete_file_c.c; sourceTree = "<group>"; };
 		1825197516A11A24006D5158 /* delete_file_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = delete_file_c.h; sourceTree = "<group>"; };
 		1825198016A28AF9006D5158 /* read_psf_vtk_data_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = read_psf_vtk_data_c.c; sourceTree = "<group>"; };
@@ -1055,6 +1058,8 @@
 		18D7E6FE1562D359009B05FF /* Obj_C */ = {
 			isa = PBXGroup;
 			children = (
+				1824FD35230FD49500990F41 /* KemoviewerLightingControl.h */,
+				1824FD33230FD47300990F41 /* KemoviewerLightingControl.m */,
 				18D7E6FF1562D359009B05FF /* ColorMapController.h */,
 				18D7E7001562D359009B05FF /* ColorMapController.m */,
 				18D7E7011562D359009B05FF /* DomainTableController.h */,
@@ -1252,6 +1257,7 @@
 				18D7E7321562D359009B05FF /* kemosrc_param_c.c in Sources */,
 				18D7E7331562D359009B05FF /* m_color_table_c.c in Sources */,
 				188BA75D23075E5200348842 /* ysglmaketextbitmap.c in Sources */,
+				1824FD34230FD47300990F41 /* KemoviewerLightingControl.m in Sources */,
 				18D7E7351562D359009B05FF /* m_grouping_mesh_4_viewer_c.c in Sources */,
 				18D7E7361562D359009B05FF /* m_map_data_4_viewer_c.c in Sources */,
 				18D7E7371562D359009B05FF /* m_psf_data_4_viewer_c.c in Sources */,

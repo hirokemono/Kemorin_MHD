@@ -272,8 +272,8 @@ void kemoview_realloc_phong_light_list(int num){
 void kemoview_delete_phong_light_list(int i_delete){
 	delete_phong_light_list(kemo_sgl->kemo_shaders->lights, i_delete);
 };
-void kemoview_add_phong_light_list(float add_light_rtp[3]){
-	add_phong_light_list(kemo_sgl->kemo_shaders->lights, add_light_rtp);
+void kemoview_add_phong_light_list(float r, float t, float p){
+	add_phong_light_list(kemo_sgl->kemo_shaders->lights, r, t, p);
 };
 
 void kemoview_init_phong_light_list(){
@@ -284,11 +284,11 @@ void kemoview_init_phong_light_list(){
 void kemoview_set_each_light_position(int i_point, float light_position[3]){
 	set_each_light_position(kemo_sgl->kemo_shaders->lights, i_point, light_position);
 };
-int kemoview_send_num_light_position(){
+int kemoview_get_num_light_position(){
 	return send_num_light_position(kemo_sgl->kemo_shaders->lights);
 };
-void kemoview_send_each_light_rtp(int i_point, float light_position[3]){
-	send_each_light_rtp(kemo_sgl->kemo_shaders->lights, i_point, light_position);
+void kemoview_get_each_light_rtp(int i_point, float *r, float *t, float *p){
+	send_each_light_rtp(kemo_sgl->kemo_shaders->lights, i_point, r, t, p);
 };
 
 void kemovier_set_material_ambient(float ambient_in){
@@ -300,8 +300,8 @@ void kemoview_set_material_diffuse(float diffuse_in){
 void kemoview_set_material_specular(float specular_in){
 	set_material_specular(kemo_sgl->kemo_shaders->lights, specular_in);
 };
-void kemoview_set_material_shiness(float shiness_in){
-	set_material_shiness(kemo_sgl->kemo_shaders->lights, shiness_in);
+void kemoview_set_material_shineness(float shiness_in){
+	set_material_shineness(kemo_sgl->kemo_shaders->lights, shiness_in);
 };
 
 float kemoview_send_material_ambient(){

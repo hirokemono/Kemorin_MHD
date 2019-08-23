@@ -17,7 +17,7 @@
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
 	IBOutlet id _colorTableView;
-      IBOutlet fillRectView* _fillRectView;
+	IBOutlet fillRectView* _fillRectView;
 
 	IBOutlet NSTableView * idColorTableView;
 	
