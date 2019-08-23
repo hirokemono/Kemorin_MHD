@@ -1090,6 +1090,7 @@
         </objectController>
         <customObject id="3Oj-aY-RpN" userLabel="Lighting Controller" customClass="LightTableController">
             <connections>
+                <outlet property="_kemoviewGL_defaults_controller" destination="716" id="I0h-Es-eKv"/>
                 <outlet property="_kemoviewer" destination="3373" id="ICo-Hl-idJ"/>
             </connections>
         </customObject>
