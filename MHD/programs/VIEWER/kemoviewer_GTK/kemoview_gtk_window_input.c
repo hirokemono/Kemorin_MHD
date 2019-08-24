@@ -19,7 +19,7 @@
 
 GtkWidget *rangew;
 GtkWidget *ftmpw;
-GtkWidget *spin1, *spin2;
+GtkWidget *spin1, *spin2, *spin3, *spin4;
 
 static int i_selected;
 static int iflag_set;
@@ -60,6 +60,30 @@ static void NlineChange(GtkWidget *entry, gpointer data)
 /*	printf("gtk_intvalue %d\n", gtk_min);*/
 }
 
+static void AmbientChange(GtkWidget *entry, gpointer data)
+{
+	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	kemovier_set_material_ambient(value);
+/*	printf("gtk_min %d\n", gtk_min);*/
+}
+static void DiffuseChange(GtkWidget *entry, gpointer data)
+{
+	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	kemoview_set_material_diffuse(value);
+/*	printf("gtk_min %d\n", gtk_min);*/
+}
+static void SpecularChange(GtkWidget *entry, gpointer data)
+{
+	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	kemoview_set_material_specular(value);
+/*	printf("gtk_min %d\n", gtk_min);*/
+}
+static void ShinenessChange(GtkWidget *entry, gpointer data)
+{
+	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	kemoview_set_material_shineness(value);
+/*	printf("gtk_min %d\n", gtk_min);*/
+}
 static void set_opacitymap_gtk(GtkWidget *treeview)
 {
 	GtkListStore *store;
@@ -238,7 +262,6 @@ static void gtk_opacity_menu(double current_value, const char *title){
 	char current_text[30];
 	
 	iflag_set = IZERO;
-	sprintf(current_text, "    %e    ", current_value);
 	
 	rangew = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(rangew), title);
@@ -264,10 +287,11 @@ static void gtk_opacity_menu(double current_value, const char *title){
 	lavel0 = gtk_label_new("Current value");
 	gtk_box_pack_start(GTK_BOX(box1), lavel0, TRUE, TRUE, 0);
 	
+	sprintf(current_text, "    %e    ", current_value);
 	lavel2 = gtk_label_new(current_text);
 	gtk_box_pack_start(GTK_BOX(box2), lavel2, TRUE, TRUE, 0);
 	
-	adj = gtk_adjustment_new (current_value, ZERO, ONE, 0.01, 0.01, 0.0);
+	adj = gtk_adjustment_new(current_value, ZERO, ONE, 0.01, 0.01, 0.0);
 	spin1 = gtk_spin_button_new( GTK_ADJUSTMENT(adj),0,2);
 	gtk_box_pack_start(GTK_BOX(box3), spin1, TRUE, TRUE, 0);
 	
@@ -403,9 +427,18 @@ static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
 }
 
 static void gtk_BGcolorselect(GLfloat color[4], const char *title){
-	GtkWidget *hbox;
+	GtkWidget *label01, *label02, *label03, *label04;
+	GtkWidget *label11, *label12, *label13, *label14;
+	GtkWidget *label21, *label22, *label23, *label24;
+	
+	GtkWidget *hbox, *vbox;
+	GtkWidget *hbox11, *hbox12, *hbox13, *hbox14;
 	GtkWidget *entry;
-	GtkWidget *button;
+	GtkWidget *BGselButton, *CloseButton;
+	GtkAdjustment *adj1, *adj2, *adj3, *adj4;
+	
+	char current_text[30];
+	float current_value;
 	
 	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	
@@ -415,15 +448,91 @@ static void gtk_BGcolorselect(GLfloat color[4], const char *title){
 	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	
 	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
 	
-	/* Set button   */
+	/* Set buttons   */
 	entry = gtk_entry_new();
-	button = gtk_button_new_with_label("_select");
-	g_signal_connect(G_OBJECT(button), "clicked", 
+	BGselButton = gtk_button_new_with_label("_select");
+	g_signal_connect(G_OBJECT(BGselButton), "clicked", 
 				G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)entry);
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	CloseButton = gtk_button_new_with_label("Close");
+	g_signal_connect(G_OBJECT(CloseButton), "clicked", 
+				G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)entry);
+	
+	label01 = gtk_label_new("Current ambient");
+	label02 = gtk_label_new("Current diffuse");
+	label03 = gtk_label_new("Current specular");
+	label04 = gtk_label_new("Current shineness");
+	
+	
+	current_value = kemoview_send_material_ambient();
+	sprintf(current_text, "    %e    ", current_value);
+	label21 = gtk_label_new("Ambient:   ");
+	adj1 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
+	label11 = gtk_label_new(current_text);
+	spin1 = gtk_spin_button_new(GTK_ADJUSTMENT(adj1),0,2);
+	
+	current_value = kemoview_send_material_diffuse();
+	sprintf(current_text, "    %e    ", current_value);
+	label22 = gtk_label_new("Diffuse:   ");
+	label12 = gtk_label_new(current_text);
+	adj2 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
+	spin2 = gtk_spin_button_new(GTK_ADJUSTMENT(adj2),0,2);
+	
+	current_value = kemoview_send_material_specular();
+	sprintf(current_text, "    %e    ", current_value);
+	label23 = gtk_label_new("Specular:  ");
+	label13 = gtk_label_new(current_text);
+	adj3 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
+	spin3 = gtk_spin_button_new(GTK_ADJUSTMENT(adj3),0,2);
+	
+	current_value = kemoview_send_material_shiness();
+	sprintf(current_text, "    %e    ", current_value);
+	label24 = gtk_label_new("Shineness: ");
+	label14 = gtk_label_new(current_text);
+	adj4 = gtk_adjustment_new(current_value, 0.0, 100.0, 0.1, 0.1, 0.0);
+	spin4 = gtk_spin_button_new( GTK_ADJUSTMENT(adj4),0,10.0);
+	
+	g_signal_connect(spin1, "value-changed", G_CALLBACK(AmbientChange), NULL);
+	g_signal_connect(spin2, "value-changed", G_CALLBACK(DiffuseChange), NULL);
+	g_signal_connect(spin3, "value-changed", G_CALLBACK(SpecularChange), NULL);
+	g_signal_connect(spin4, "value-changed", G_CALLBACK(ShinenessChange), NULL);
+	
+	hbox11 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_start(GTK_BOX(hbox11), label21, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox11), spin1, FALSE, FALSE, 0);
+	
+	hbox12 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_start(GTK_BOX(hbox12), label22, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox12), spin2, FALSE, FALSE, 0);
+	
+	hbox13 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_start(GTK_BOX(hbox13), label23, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox13), spin3, FALSE, FALSE, 0);
+	
+	hbox14 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_start(GTK_BOX(hbox14), label24, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox14), spin4, FALSE, FALSE, 0);
+	
+	
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), label01, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), label11, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox11, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), label02, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), label12, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox12, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), label03, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), label13, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox13, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), label04, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), label14, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox14, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), CloseButton, FALSE, FALSE, 0);
+	
+	gtk_box_pack_start(GTK_BOX(hbox), BGselButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
+	
 	gtk_widget_show_all(ftmpw);
 	gtk_main();
 	return;
