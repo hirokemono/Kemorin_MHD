@@ -20,7 +20,7 @@ struct momentum_coefs_view{
     GtkTreeView *coefs_tree_view;
     GtkTreeView *dimless_tree_view;
     
-    struct momentum_equation_ctl_c *cr_clist;
+    struct momentum_equation_ctl_c *mom_ctl_gtk;
 };
 
 struct coefs_view{

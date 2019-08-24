@@ -3,7 +3,7 @@
 
 #include "read_psf_data_viewer_c.h"
 
-FILE *fp;
+FILE *fp_psf;
 
 
 static void read_viz_node_data(struct psf_data *viz_s){
@@ -11,7 +11,7 @@ static void read_viz_node_data(struct psf_data *viz_s){
 	int itmp;
 	char buf[LENGTHBUF];    /* array for reading line */
 	
-	fgets(buf, LENGTHBUF, fp);
+	fgets(buf, LENGTHBUF, fp_psf);
 	sscanf(buf, "%d %d %d %d %d",
 			&viz_s->nnod_viz, &viz_s->nele_viz, 
 			&viz_s->ncomptot, &itmp, &itmp);
@@ -19,7 +19,7 @@ static void read_viz_node_data(struct psf_data *viz_s){
 	alloc_viz_node_s(viz_s);
 	
 	for (i = 0; i < viz_s->nnod_viz; i++) {
-		fgets(buf, LENGTHBUF, fp);
+		fgets(buf, LENGTHBUF, fp_psf);
 		sscanf(buf, "%d %lf %lf %lf",
 			&viz_s->inod_viz[i], &viz_s->xx_viz[i][0], 
 			&viz_s->xx_viz[i][1], &viz_s->xx_viz[i][2]);
@@ -33,7 +33,8 @@ static int read_kemoview_ucd_connect(struct psf_data *viz_s){
 	char celllabel[4];      /* array for cell label */
 	char buf[LENGTHBUF];    /* array for reading line */
 	
-	fgets(buf, LENGTHBUF, fp);
+	iflag_datatype = 0;
+	fgets(buf, LENGTHBUF, fp_psf);
 	sscanf(buf, "%d %d %4s", &itmp, &itmp, celllabel);
 	if(			   celllabel[0] == 't' 
 				&& celllabel[1] == 'r'
@@ -64,7 +65,7 @@ static int read_kemoview_ucd_connect(struct psf_data *viz_s){
 				&viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1], &viz_s->ie_viz[0][2]);
 		
 		for (i = 1; i < viz_s->nele_viz; i++) {
-			fgets(buf, LENGTHBUF, fp);
+			fgets(buf, LENGTHBUF, fp_psf);
 			sscanf(buf, "%d %d tri %d %d %d", &itmp, &itmp, 
 					&viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1], &viz_s->ie_viz[i][2]);
 		};
@@ -74,7 +75,7 @@ static int read_kemoview_ucd_connect(struct psf_data *viz_s){
 				&viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1]);
 		
 		for (i = 1; i < viz_s->nele_viz; i++) {
-			fgets(buf, LENGTHBUF, fp);
+			fgets(buf, LENGTHBUF, fp_psf);
 			sscanf(buf, "%d %d line %d %d", &itmp, &itmp, 
 					&viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1]);
 		}
@@ -85,7 +86,7 @@ static int read_kemoview_ucd_connect(struct psf_data *viz_s){
 			   &viz_s->ie_viz[0][2], &viz_s->ie_viz[0][3]);
 		
 		for (i = 1; i < viz_s->nele_viz; i++) {
-			fgets(buf, LENGTHBUF, fp);
+			fgets(buf, LENGTHBUF, fp_psf);
 			sscanf(buf, "%d %d line %d %d %d %d", &itmp, &itmp, 
 				   &viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1],
 				   &viz_s->ie_viz[0][2], &viz_s->ie_viz[0][3]);
@@ -101,7 +102,7 @@ static int read_psf_connect_data(struct psf_data *viz_s){
 	char celllabel[4];    /* array for cell label */
 	char buf[LENGTHBUF];    /* array for reading line */
 	
-	fgets(buf, LENGTHBUF, fp);
+	fgets(buf, LENGTHBUF, fp_psf);
 	sscanf(buf, "%d %d %3s", &itmp, &itmp, celllabel);
 	if(   celllabel[0] != 't' 
 	   || celllabel[1] != 'r'
@@ -114,7 +115,7 @@ static int read_psf_connect_data(struct psf_data *viz_s){
 		   &viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1], &viz_s->ie_viz[0][2]);
 
 	for (i = 1; i < viz_s->nele_viz; i++) {
-		fgets(buf, LENGTHBUF, fp);
+		fgets(buf, LENGTHBUF, fp_psf);
 		sscanf(buf, "%d %d tri %d %d %d", &itmp, &itmp, 
 			&viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1], &viz_s->ie_viz[i][2]);
 	};
@@ -126,15 +127,15 @@ static void read_viz_phys_data(struct psf_data *viz_s){
 	int i, j, itmp;
 	char buf[LENGTHBUF];    /* array for reading line */
 	
-	fscanf(fp, "%d", &viz_s->nfield);
+	fscanf(fp_psf, "%d", &viz_s->nfield);
 	
 	alloc_psf_field_name_c(viz_s);
 	
 	for (i = 0; i < viz_s->nfield; i++) {
-		fscanf(fp, "%d", &viz_s->ncomp[i]);
+		fscanf(fp_psf, "%d", &viz_s->ncomp[i]);
 		/*printf("ncomp: %d \n", viz_s->ncomp[i]);*/
 	};
-	fgets(buf, LENGTHBUF, fp);
+	fgets(buf, LENGTHBUF, fp_psf);
 	
 	viz_s->istack_comp[0] = 0;
 	for (i = 0; i < viz_s->nfield; i++) {
@@ -148,14 +149,14 @@ static void read_viz_phys_data(struct psf_data *viz_s){
 	
 	/* read field name */
 	
-	read_field_names(fp, viz_s->nfield, viz_s->data_name, viz_s->id_coord);
+	read_field_names(fp_psf, viz_s->nfield, viz_s->data_name, viz_s->id_coord);
 	
 	/*  read field */
 	
 	for (i = 0; i < viz_s->nnod_viz; i++) {
-		fscanf(fp, "%d", &itmp); 
+		fscanf(fp_psf, "%d", &itmp); 
 		for (j = 0; j < viz_s->ncomptot; j++){
-			fscanf(fp, "%lf", &viz_s->d_nod[i][j]); 
+			fscanf(fp_psf, "%lf", &viz_s->d_nod[i][j]); 
 		};
 	};
 	return;
@@ -167,7 +168,7 @@ int read_psf_grd(const char *file_name, struct psf_data *viz_s){
 	printf("grid file name: %s \n",file_name);
 	
 	/* Error for failed file*/ 	
-	if ((fp = fopen(file_name, "r")) == NULL) {
+	if ((fp_psf = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		return 1;                    /* terminate with error message */
 	};
@@ -178,7 +179,7 @@ int read_psf_grd(const char *file_name, struct psf_data *viz_s){
 		dealloc_psf_mesh_c(viz_s);
 	}
 
-	fclose(fp);
+	fclose(fp_psf);
 	return iflag_datatype;
 }
 
@@ -186,14 +187,14 @@ int read_psf_udt(const char *file_name, struct psf_data *viz_s){
 	printf("UDT file name: %s \n",file_name);
 	
 	/* Error for failed file*/ 	
-	if ((fp = fopen(file_name, "r")) == NULL) {
+	if ((fp_psf = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		return 1;                    /* terminate with error message */
 	};
 	
 	read_viz_phys_data(viz_s);
 
-	fclose(fp);
+	fclose(fp_psf);
 	return 0;
 }
 
@@ -202,7 +203,7 @@ int read_kemoview_ucd(const char *file_name, struct psf_data *viz_s){
 	printf("UCD file name: %s \n",file_name);
 	
 	/* Error for failed file*/ 	
-	if ((fp = fopen(file_name, "r")) == NULL) {
+	if ((fp_psf = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		return -1;                    /* terminate with error message */
 	};
@@ -211,6 +212,6 @@ int read_kemoview_ucd(const char *file_name, struct psf_data *viz_s){
 	iflag_datatype = read_kemoview_ucd_connect(viz_s);
 	
 	read_viz_phys_data(viz_s);
-	fclose(fp);
+	fclose(fp_psf);
 	return iflag_datatype;
 }

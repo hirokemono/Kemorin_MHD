@@ -9,7 +9,7 @@
 
 static void delete_dless_data(gpointer user_data)
 {
-    struct coefs_view *coefs_vw = (struct coefs_view *) user_data;
+    struct momentum_coefs_view *coefs_vw = (struct momentum_coefs_view *) user_data;
 
     GtkTreeModel *model_to_del;
     GtkTreeModel *child_model_to_del;
@@ -90,7 +90,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 
 static void cb_set_dimless_name(GtkComboBox *combobox_field, gpointer user_data)
 {
-    struct coefs_view *coefs_vw = (struct coefs_view *) user_data;
+    struct momentum_coefs_view *coefs_vw = (struct momentum_coefs_view *) user_data;
     GtkTreeModel *model_field = gtk_combo_box_get_model(combobox_field);
     GtkTreeIter iter;
     
@@ -113,7 +113,7 @@ static void cb_set_dimless_name(GtkComboBox *combobox_field, gpointer user_data)
 
 static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
 {
-    struct coefs_view *coefs_vw = (struct coefs_view *) user_data;
+    struct momentum_coefs_view *coefs_vw = (struct momentum_coefs_view *) user_data;
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(coefs_vw->coefs_tree_view);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
     
@@ -137,9 +137,6 @@ static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
     gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_MATH, &math_string, -1);
     gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_VALUE, &value, -1);
     
-    coefs_vw->index_coef = append_coefs_item(coefs_vw->index_coef,
-                                                 row_string, math_string, value, child_model_to_add);
-    
     append_chara_real_ctl_list(row_string, value, 
                                &coefs_vw->mom_ctl_gtk->coef_4_termal_buo_list);
     /*
@@ -149,7 +146,7 @@ static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
     return;
 }
 
-void add_coefs_selection_box(struct coefs_view *coefs_vw, GtkWidget *vbox)
+void add_coefs_selection_box(struct momentum_coefs_view *coefs_vw, GtkWidget *vbox)
 {
     GtkWidget *hbox;
     GtkWidget *button;
@@ -164,7 +161,7 @@ void add_coefs_selection_box(struct coefs_view *coefs_vw, GtkWidget *vbox)
     
     c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
-    model_comp =  gtk_tree_view_get_model(GTK_TREE_VIEW(coefs_vw->ref_dless_vws->dimless_tree_view));
+    model_comp =  gtk_tree_view_get_model(GTK_TREE_VIEW(coefs_vw->dimless_tree_view));
     
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -193,6 +190,6 @@ void add_coefs_selection_box(struct coefs_view *coefs_vw, GtkWidget *vbox)
     gtk_container_add(GTK_CONTAINER(scrolled_window), coefs_vw->coefs_tree_view);
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
 	
-	add_sorting_signal_w_label(coefs_vw->coefs_tree_view, hbox)
+	add_sorting_signal_w_label(coefs_vw->coefs_tree_view, hbox);
 };
 

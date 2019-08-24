@@ -18,7 +18,7 @@
 #define DELETE_POINT 4
 
 GtkWidget *rangew;
-GtkWidget *ftmpw;
+GtkWidget *ftmpw_w;
 GtkWidget *spin1, *spin2, *spin3, *spin4;
 
 static int i_selected;
@@ -160,20 +160,29 @@ static void gtk_colormap_menu(double range_min, double range_max, struct kv_stri
 	
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(rangew), box);
-	
+	printf("malloc 1\n");
 	color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
-    init_colormap_views_4_viewer(color_vws);
+	printf("init_colormap_views_4_viewer\n");
+	init_colormap_views_4_viewer(color_vws);
 	
+	
+	
+	printf("add_colormp_list_box\n");
 	add_colormp_list_box(color_vws, box);
+	printf("button\n");
 	GtkButton *button;
 	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
     gtk_box_pack_start(GTK_BOX(box), button, FALSE, FALSE, 0);
+	printf("g_signal_connect\n");
     g_signal_connect(G_OBJECT(button), "clicked", 
                      G_CALLBACK(cb_close_window), rangew);
-
+	printf("gtk_widget_show_all\n");
+	
 	gtk_widget_show_all(rangew);
 	gtk_main();
+	printf("dealloc_colormap_views_4_viewer\n");
 	dealloc_colormap_views_4_viewer(color_vws);
+	printf("free\n");
 	free(color_vws);
 	return;
 }
@@ -315,7 +324,7 @@ static void set_PSFcolor_GTK(GtkColorChooser *colordialog)
 	
 	gtk_color_chooser_get_rgba(colordialog, &gcolor);
 	gtk_widget_destroy(rangew);
-	gtk_widget_destroy(ftmpw);
+	gtk_widget_destroy(ftmpw_w);
 	gtk_main_quit();
 	
 	dcolor[0] = gcolor.red;
@@ -335,7 +344,7 @@ static void set_background_GTK(GtkColorChooser *colordialog)
 	
 	gtk_color_chooser_get_rgba(colordialog, &gcolor);
 	gtk_widget_destroy(rangew);
-	gtk_widget_destroy(ftmpw);
+	gtk_widget_destroy(ftmpw_w);
 	gtk_main_quit();
 	
     color[0] = (GLfloat) gcolor.red;
@@ -379,16 +388,16 @@ static void gtk_PSFcolorselect(const char *title){
 	GtkWidget *entry;
 	GtkWidget *button;
 	
-	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	ftmpw_w = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	
-	gtk_window_set_title(GTK_WINDOW(ftmpw), title);
-	gtk_widget_set_size_request(ftmpw, 150, -1);
-	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
-	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	gtk_window_set_title(GTK_WINDOW(ftmpw_w), title);
+	gtk_widget_set_size_request(ftmpw_w, 150, -1);
+	gtk_container_set_border_width(GTK_CONTAINER(ftmpw_w), 5);
+	g_signal_connect(G_OBJECT(ftmpw_w), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	
-	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
+	gtk_container_add(GTK_CONTAINER(ftmpw_w), hbox);
 	
 	/* Set button   */
 	entry = gtk_entry_new();
@@ -396,7 +405,7 @@ static void gtk_PSFcolorselect(const char *title){
 	g_signal_connect(G_OBJECT(button), "clicked", 
 				G_CALLBACK(kemoview_gtk_PSFcolorsel), (gpointer)entry);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-	gtk_widget_show_all(ftmpw);
+	gtk_widget_show_all(ftmpw_w);
 	gtk_main();
 	return;
 }
@@ -437,18 +446,19 @@ static void gtk_BGcolorselect(GLfloat color[4], const char *title){
 	GtkWidget *BGselButton, *CloseButton;
 	GtkAdjustment *adj1, *adj2, *adj3, *adj4;
 	
+    struct lightparams_view *lightparams_view;
 	char current_text[30];
 	float current_value;
 	
-	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	ftmpw_w = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	
-	gtk_window_set_title(GTK_WINDOW(ftmpw), title);
-	gtk_widget_set_size_request(ftmpw, 150, -1);
-	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
-	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	gtk_window_set_title(GTK_WINDOW(ftmpw_w), title);
+	gtk_widget_set_size_request(ftmpw_w, 150, -1);
+	gtk_container_set_border_width(GTK_CONTAINER(ftmpw_w), 5);
+	g_signal_connect(G_OBJECT(ftmpw_w), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
+	gtk_container_add(GTK_CONTAINER(ftmpw_w), hbox);
 	
 	/* Set buttons   */
 	entry = gtk_entry_new();
@@ -458,6 +468,13 @@ static void gtk_BGcolorselect(GLfloat color[4], const char *title){
 	CloseButton = gtk_button_new_with_label("Close");
 	g_signal_connect(G_OBJECT(CloseButton), "clicked", 
 				G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)entry);
+	
+	lightparams_view = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
+    init_light_views_4_viewer(lightparams_view);
+	
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	add_light_list_box(lightparams_view, vbox);
+	
 	
 	label01 = gtk_label_new("Current ambient");
 	label02 = gtk_label_new("Current diffuse");
@@ -515,7 +532,6 @@ static void gtk_BGcolorselect(GLfloat color[4], const char *title){
 	gtk_box_pack_start(GTK_BOX(hbox14), spin4, FALSE, FALSE, 0);
 	
 	
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), label01, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), label11, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox11, FALSE, FALSE, 0);
@@ -533,8 +549,10 @@ static void gtk_BGcolorselect(GLfloat color[4], const char *title){
 	gtk_box_pack_start(GTK_BOX(hbox), BGselButton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
 	
-	gtk_widget_show_all(ftmpw);
+	gtk_widget_show_all(ftmpw_w);
 	gtk_main();
+	dealloc_colormap_views_4_viewer(lightparams_view);
+	free(lightparams_view);
 	return;
 }
 

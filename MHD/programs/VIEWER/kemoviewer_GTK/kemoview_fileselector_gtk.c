@@ -11,7 +11,7 @@
 
 GtkWidget *filew;
 GtkWidget *fmtw;
-GtkWidget *ftmpw;
+GtkWidget *ftmpw_f;
 static const gchar *gtk_selected_filename;
 static const gchar *gtk_selected_filefmt;
 static int iflag_set;
@@ -47,7 +47,7 @@ static void cancel_clicked(GtkWidget *widget, gpointer data)
 static void fmt_clicked2(GtkWidget *widget, gpointer data)
 {
 	/*iflag_set = IZERO;*/
-	gtk_widget_destroy(ftmpw);
+	gtk_widget_destroy(ftmpw_f);
 	gtk_main_quit();
 }
 
@@ -179,11 +179,11 @@ static void gtk_read_file_window(const char *title){
     GtkWidget *entry;
 	
 	/*  Set empty window to make file dialog */
-	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	ftmpw_f = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	
 	/*  Generate entry  */
 	entry = gtk_entry_new();
-	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw);
+	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
 	
 	kemoview_gtk_read_file_select(NULL, entry);
 	return;
@@ -193,11 +193,11 @@ static void gtk_read_file_window(const char *title){
 static void gtk_save_file_window(const char *title){
 	GtkWidget *entry;
 	
-	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	ftmpw_f = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	
 	/*  Generate entry  */
 	entry = gtk_entry_new();
-	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw);
+	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
 	
 	kemoview_gtk_save_file_select(NULL, (gpointer)entry);
 	
@@ -255,7 +255,7 @@ static void gtk_image_fmt_menu(){
 	
 	entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(box0), entry, TRUE, TRUE, 0);
-	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw);
+	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
 	
 	/* File format box */
 	label_fmt = gtk_label_new("Image format: ");
@@ -329,7 +329,7 @@ static void gtk_evolution_image_menu(int istep){
 	
 	entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(box0), entry, TRUE, TRUE, 0);
-	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw);
+	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
 	
 	/* File format box */
 	label_fmt = gtk_label_new("Image format");
@@ -421,7 +421,7 @@ static void gtk_rotation_image_menu(){
 	
 	entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(box0), entry, TRUE, TRUE, 0);
-	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw);
+	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
 	
 	/* File format box */
 	label_fmt = gtk_label_new("Image format");

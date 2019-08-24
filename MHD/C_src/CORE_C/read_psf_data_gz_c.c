@@ -38,6 +38,7 @@ static int read_gz_kemoview_connect_data(struct psf_data *viz_s){
 	
 	get_one_line_from_gz(lbuf, num_word, nchara, buf);
 	sscanf(buf, "%d %d %4s", &itmp, &itmp, celllabel);
+	iflag_datatype = 0;
 	if(			   celllabel[0] == 't' 
 				&& celllabel[1] == 'r'
 				&& celllabel[2] == 'i'){

@@ -9,6 +9,7 @@
 #include "m_gl_transfer_matrix.h"
 #include "m_phong_light_table_c.h"
 #include "shaders.h"
+#include "invert_small_matrix_c.h"
 
 struct shader_ids{
 	GLuint programId;

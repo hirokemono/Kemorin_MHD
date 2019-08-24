@@ -52,6 +52,9 @@ void update_chara_real_ctl_item_c(char *c_in, double r_in,
 void set_from_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item,
                               char *c_out, double *r_out);
 
+void append_chara_real_ctl_list(char *c_in, double r_in,
+			struct chara_real_ctl_list *head);
+void del_chara_real_ctl_list_by_c_tbl(char *ref, struct chara_real_ctl_list *head);
 
 
 void init_chara_real_clist(struct chara_real_clist *cr_clst);

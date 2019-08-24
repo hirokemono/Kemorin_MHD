@@ -6,7 +6,7 @@
 #include <string.h>
 #include "kemo_zlib_io_c.h"
 
-FILE *fp;
+FILE *fp_z;
 gzFile file_gz;
 
 z_stream strm_gl;
@@ -30,7 +30,7 @@ exit (EXIT_FAILURE);                                        \
 
 void open_wt_rawfile(const char *file_name, int *ierr){
     *ierr = 0;
-    if ((fp = fopen(file_name, "w")) == NULL) {
+    if ((fp_z = fopen(file_name, "w")) == NULL) {
         fprintf(stderr, "Cannot open file!: %s\n", file_name);
         *ierr = 1;                    /* terminate with error message */
     }
@@ -39,7 +39,7 @@ void open_wt_rawfile(const char *file_name, int *ierr){
 
 void open_ad_rawfile(const char *file_name, int *ierr){
     *ierr = 0;
-    if ((fp = fopen(file_name, "a")) == NULL) {
+    if ((fp_z = fopen(file_name, "a")) == NULL) {
         fprintf(stderr, "Cannot open file!: %s\n", file_name);
         *ierr = 1;                    /* terminate with error message */
     }
@@ -48,7 +48,7 @@ void open_ad_rawfile(const char *file_name, int *ierr){
 
 void open_rd_rawfile(const char *file_name, int *ierr){
     *ierr = 0;
-    if ((fp = fopen(file_name, "r")) == NULL) {
+    if ((fp_z = fopen(file_name, "r")) == NULL) {
         fprintf(stderr, "Cannot open file!: %s\n", file_name);
         *ierr = 1;                    /* terminate with error message */
     }
@@ -56,17 +56,17 @@ void open_rd_rawfile(const char *file_name, int *ierr){
 }
 
 void close_rawfile(){
-    fclose(fp);
+    fclose(fp_z);
     return;
 }
 
 void rawseek_go_fwd_f(int *ioffset, int *ierr){
-    *ierr = fseek(fp, *ioffset, SEEK_CUR);
+    *ierr = fseek(fp_z, *ioffset, SEEK_CUR);
     return;
 }
 
 void rawread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara){
-    *lenchara =  fread(textbuf, sizeof(char), *ilength, fp);
+    *lenchara =  fread(textbuf, sizeof(char), *ilength, fp_z);
     /*
     int i;
     printf("iflag_swap %d\n", *iflag_swap);
@@ -84,7 +84,7 @@ void rawread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara
 }
 
 void rawread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara){
-    *lenchara =  fread(textbuf, sizeof(char), *ilength, fp);
+    *lenchara =  fread(textbuf, sizeof(char), *ilength, fp_z);
     /*
      int i;
     printf("iflag_swap %d\n", *iflag_swap);
@@ -102,7 +102,7 @@ void rawread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara
 }
 
 void rawwrite_f(int *ilength, char *textbuf, int *lenchara){
-    *lenchara =  fwrite(textbuf, sizeof(char), *ilength, fp);
+    *lenchara =  fwrite(textbuf, sizeof(char), *ilength, fp_z);
     return;
 }
 

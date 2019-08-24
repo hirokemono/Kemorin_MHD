@@ -9,8 +9,6 @@
 
 #include "read_psf_vtk_data_gz_c.h"
 
-FILE *fp;
-
 
 static void read_psf_vtk_node_data_gz(struct psf_data *viz_s){
 	int i;

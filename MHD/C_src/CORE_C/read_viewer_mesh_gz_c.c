@@ -4,8 +4,6 @@
 
 #include "read_viewer_mesh_gz_c.h"
 
-FILE *fp;
-
 static void read_listed_item_gz_viewer(int num, int *item_sf){
 	int i, j, iread, nread;
 	char buf[LENGTHBUF];            /* character buffer for reading line */

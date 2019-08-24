@@ -7,7 +7,7 @@
 
 #include "m_read_text_to_character.h"
 
-FILE *fp;
+FILE *fp_txt;
 
 struct file_text * init_file_text(const char *file_name){
 	struct file_text *contents;
@@ -38,12 +38,12 @@ void read_text_to_carray(struct file_text *contents){
 	char buf[LENGTHBUF]; /* Text buffer */
 	int len_buf;
 	
-	if ((fp = fopen(contents->file_name, "r")) == NULL) {
+	if ((fp_txt = fopen(contents->file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!: %s\n", contents->file_name);
 		exit (2);                    /* terminate with error message */
 	};
 	
-	while ((fgets(buf, LENGTHBUF-1, fp)) != NULL){
+	while ((fgets(buf, LENGTHBUF-1, fp_txt)) != NULL){
 		tmpchara = alloc_string((int) contents->len_chara);
 		strcpy(tmpchara, contents->text);
 		free(contents->text);
@@ -56,7 +56,7 @@ void read_text_to_carray(struct file_text *contents){
 		strcat(contents->text, buf);
 		free(tmpchara);
 	}
-    fclose(fp);                                /* Close file */
+    fclose(fp_txt);                                /* Close file */
 	
 	return;
 };

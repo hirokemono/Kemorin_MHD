@@ -75,6 +75,7 @@
 		185CB9DE212F593D00BB3C0B /* t_ctl_data_temp_model_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB9A3212F593D00BB3C0B /* t_ctl_data_temp_model_c.c */; };
 		185CB9DF212F593D00BB3C0B /* t_ctl_data_zonal_means_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB9A5212F593D00BB3C0B /* t_ctl_data_zonal_means_c.c */; };
 		185CB9E0212F593D00BB3C0B /* t_SGS_MHD_control_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB9A7212F593D00BB3C0B /* t_SGS_MHD_control_c.c */; };
+		1862C4102311BC6B000306E6 /* set_rgba_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C40F2311BC6A000306E6 /* set_rgba_table_c.c */; };
 		18753CD222FB63A500FEA6D9 /* t_ctl_data_crust_filter_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18753CD122FB63A400FEA6D9 /* t_ctl_data_crust_filter_c.c */; };
 		1888414A22E64C090039BA2B /* psf_patch_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 1888414822E64C090039BA2B /* psf_patch_buffer.c */; };
 		188BA7512305E13100348842 /* invert_small_matrix_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 188BA7502305E13100348842 /* invert_small_matrix_c.c */; };
@@ -147,7 +148,6 @@
 		18D7E7461562D359009B05FF /* set_normal_on_node_4_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6841562D359009B05FF /* set_normal_on_node_4_mesh.c */; };
 		18D7E7471562D359009B05FF /* set_psf_viewer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6861562D359009B05FF /* set_psf_viewer.c */; };
 		18D7E7481562D359009B05FF /* set_rgb_colors_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6881562D359009B05FF /* set_rgb_colors_c.c */; };
-		18D7E7491562D359009B05FF /* set_rgba_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E68A1562D359009B05FF /* set_rgba_table_c.c */; };
 		18D7E74A1562D359009B05FF /* set_surface_mesh_data.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E68C1562D359009B05FF /* set_surface_mesh_data.c */; };
 		18D7E74B1562D359009B05FF /* skip_comment_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E68E1562D359009B05FF /* skip_comment_c.c */; };
 		18D7E74C1562D359009B05FF /* take_normal_psf_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6901562D359009B05FF /* take_normal_psf_c.c */; };
@@ -351,6 +351,8 @@
 		18601A6115D9B0D20015F6B0 /* kemoviewer_GLUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GLUI; path = ../../programs/VIEWER/kemoviewer_GLUI; sourceTree = "<group>"; };
 		18601A6215D9B0D20015F6B0 /* kemoviewer_GLUT */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GLUT; path = ../../programs/VIEWER/kemoviewer_GLUT; sourceTree = "<group>"; };
 		18601A6315D9B0D20015F6B0 /* kemoviewer_GTK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GTK; path = ../../programs/VIEWER/kemoviewer_GTK; sourceTree = "<group>"; };
+		1862C40E2311BC69000306E6 /* set_rgba_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_rgba_table_c.h; sourceTree = "<group>"; };
+		1862C40F2311BC6A000306E6 /* set_rgba_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_rgba_table_c.c; sourceTree = "<group>"; };
 		18753CD122FB63A400FEA6D9 /* t_ctl_data_crust_filter_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_crust_filter_c.c; sourceTree = "<group>"; };
 		18753CD322FB63AB00FEA6D9 /* t_ctl_data_crust_filter_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_crust_filter_c.h; sourceTree = "<group>"; };
 		1888414822E64C090039BA2B /* psf_patch_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = psf_patch_buffer.c; sourceTree = "<group>"; };
@@ -477,8 +479,6 @@
 		18D7E6871562D359009B05FF /* set_psf_viewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_psf_viewer.h; sourceTree = "<group>"; };
 		18D7E6881562D359009B05FF /* set_rgb_colors_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_rgb_colors_c.c; sourceTree = "<group>"; };
 		18D7E6891562D359009B05FF /* set_rgb_colors_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_rgb_colors_c.h; sourceTree = "<group>"; };
-		18D7E68A1562D359009B05FF /* set_rgba_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_rgba_table_c.c; sourceTree = "<group>"; };
-		18D7E68B1562D359009B05FF /* set_rgba_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_rgba_table_c.h; sourceTree = "<group>"; };
 		18D7E68C1562D359009B05FF /* set_surface_mesh_data.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_surface_mesh_data.c; sourceTree = "<group>"; };
 		18D7E68D1562D359009B05FF /* set_surface_mesh_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_surface_mesh_data.h; sourceTree = "<group>"; };
 		18D7E68E1562D359009B05FF /* skip_comment_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = skip_comment_c.c; sourceTree = "<group>"; };
@@ -786,6 +786,8 @@
 				18753CD322FB63AB00FEA6D9 /* t_ctl_data_crust_filter_c.h */,
 				185CB9A7212F593D00BB3C0B /* t_SGS_MHD_control_c.c */,
 				185CB9A8212F593D00BB3C0B /* t_SGS_MHD_control_c.h */,
+				1862C40F2311BC6A000306E6 /* set_rgba_table_c.c */,
+				1862C40E2311BC69000306E6 /* set_rgba_table_c.h */,
 			);
 			path = CONTROLS;
 			sourceTree = "<group>";
@@ -901,8 +903,6 @@
 				18D7E6871562D359009B05FF /* set_psf_viewer.h */,
 				18D7E6881562D359009B05FF /* set_rgb_colors_c.c */,
 				18D7E6891562D359009B05FF /* set_rgb_colors_c.h */,
-				18D7E68A1562D359009B05FF /* set_rgba_table_c.c */,
-				18D7E68B1562D359009B05FF /* set_rgba_table_c.h */,
 				18D7E68C1562D359009B05FF /* set_surface_mesh_data.c */,
 				18D7E68D1562D359009B05FF /* set_surface_mesh_data.h */,
 				18D7E68E1562D359009B05FF /* skip_comment_c.c */,
@@ -1296,7 +1296,6 @@
 				185CB9D9212F593D00BB3C0B /* t_ctl_data_node_monitor_c.c in Sources */,
 				185CB9B1212F593D00BB3C0B /* t_control_chara_int_IO.c in Sources */,
 				185CB9C6212F593D00BB3C0B /* t_control_int2_IO.c in Sources */,
-				18D7E7491562D359009B05FF /* set_rgba_table_c.c in Sources */,
 				18D7E74A1562D359009B05FF /* set_surface_mesh_data.c in Sources */,
 				188C9425230DC96E00A4DB14 /* m_kemoview_mesh.c in Sources */,
 				18D7E74B1562D359009B05FF /* skip_comment_c.c in Sources */,
@@ -1306,6 +1305,7 @@
 				188FFDA82309DE2900F5A0DE /* m_phong_light_table_c.c in Sources */,
 				18D7E74D1562D359009B05FF /* take_normal_surf_mesh_c.c in Sources */,
 				18D7E74E1562D359009B05FF /* transfer_matvec.c in Sources */,
+				1862C4102311BC6B000306E6 /* set_rgba_table_c.c in Sources */,
 				188FFD902308C5F100F5A0DE /* set_mesh_grid_2_gl_buf.c in Sources */,
 				188FFD9C2309A41400F5A0DE /* set_axis_to_buf.c in Sources */,
 				185CB9CB212F593D00BB3C0B /* t_control_real_IO.c in Sources */,

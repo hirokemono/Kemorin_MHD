@@ -17,7 +17,7 @@
 
 /* prototypes */
 
-void add_coefs_selection_box(struct coefs_view *coefs_vw, GtkWidget *vbox);
+void add_coefs_selection_box(struct momentum_coefs_view *coefs_vw, GtkWidget *vbox);
 
 
 #endif /* control_panel_4_coefs_GTK_h_ */

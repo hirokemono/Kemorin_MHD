@@ -18,6 +18,7 @@
 #include "kemoviewer.h"
 #include "kemoview_glut_routines.h"
 #include "tree_view_4_pvr_colormap.h"
+#include "tree_view_4_light_position.h"
 
 /*  prototypes */
 

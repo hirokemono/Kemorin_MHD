@@ -24,14 +24,35 @@ void init_colormap_views_4_viewer(struct colormap_view *color_vws){
 	color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
 	color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
 	
-    sprintf(color_vws->cmap_vws->r2_clist_gtk->clist_name, "color map");
+	color_vws->cmap_vws->r2_clist_gtk 
+		= (struct real2_clist *) malloc(sizeof(struct real2_clist));
+	color_vws->opacity_vws->r2_clist_gtk 
+		= (struct real2_clist *) malloc(sizeof(struct real2_clist));
+	init_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
+	init_real2_clist(color_vws->opacity_vws->r2_clist_gtk );
+
+	sprintf(color_vws->cmap_vws->r2_clist_gtk->clist_name, "color map");
     sprintf(color_vws->cmap_vws->r2_clist_gtk->r1_name, "data");
     sprintf(color_vws->cmap_vws->r2_clist_gtk->r2_name, "color");
     sprintf(color_vws->opacity_vws->r2_clist_gtk->clist_name, "opacity map");
     sprintf(color_vws->opacity_vws->r2_clist_gtk->r1_name, "data");
     sprintf(color_vws->opacity_vws->r2_clist_gtk->r1_name, "opacity");
     
-    return;
+	int i, num;
+	double value, color;
+	num = kemoview_get_PSF_color_table_num();
+	for(i=0;i<num;i++){
+		kemoview_get_PSF_color_items(i, &value, &color);
+		append_real2_clist(value, color, color_vws->cmap_vws->r2_clist_gtk);
+	}
+
+	num = kemoview_get_PSF_opacity_table_num();
+	for(i=0;i<num;i++){
+		kemoview_get_PSF_opacity_items(i, &value, &color);
+		append_real2_clist(value, color, color_vws->opacity_vws->r2_clist_gtk);
+	}
+
+	return;
 }
 
 void dealloc_colormap_views_4_viewer(struct colormap_view *color_vws){

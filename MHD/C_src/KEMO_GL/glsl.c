@@ -217,6 +217,8 @@ void destory_shaders(struct shader_ids *shader)
 	glDeleteProgram(shader->programId);
 	
 	ierr_gl = glGetError();
+	
+	/*
 	if (ierr_gl != GL_NO_ERROR)
 	{
       fprintf(
@@ -227,6 +229,7 @@ void destory_shaders(struct shader_ids *shader)
 
       exit(-1);
     }
+	 */
 }
 
 

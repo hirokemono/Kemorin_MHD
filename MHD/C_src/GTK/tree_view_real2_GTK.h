@@ -30,7 +30,7 @@ int append_r2_list_from_ctl(int index, struct real2_ctl_list *head,
 			GtkTreeView *r2_tree_view);
 
 
-void r3_tree_value1_edited(gchar *path_str, gchar *new_text,
+void r2_tree_value1_edited(gchar *path_str, gchar *new_text,
 			 GtkTreeView *r2_tree_view, struct real2_clist *r2_clist);
 void r2_tree_value2_edited(gchar *path_str, gchar *new_text,
 			 GtkTreeView *r2_tree_view, struct real2_clist *r2_clist);

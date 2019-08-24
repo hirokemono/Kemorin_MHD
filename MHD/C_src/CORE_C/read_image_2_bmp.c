@@ -4,7 +4,7 @@
 #include "read_image_2_bmp.h"
 
 
-static FILE *fp;
+static FILE *fp_bmp;
 unsigned char *bgr;
 
 static int bit4_2_num(unsigned char *byt4){
@@ -26,10 +26,10 @@ int read_BMP_c(const char *fhead, int *ihpixf, int *jvpixf){
 	int irst;
 	
 	sprintf(fname, "%s.bmp",fhead);
-	fp = fopen(fname,"rb");
+	fp_bmp = fopen(fname,"rb");
 	
 	/* read header */
-	fread(header,1,54,fp);
+	fread(header,1,54,fp_bmp);
 	
 	byt4[0] = header[18];
 	byt4[1] = header[19];
@@ -45,7 +45,7 @@ int read_BMP_c(const char *fhead, int *ihpixf, int *jvpixf){
 	
 	npixel = (*ihpixf) * (*jvpixf);
 	if ((bgr = (unsigned char *) malloc( (3*npixel) * sizeof(unsigned char))) == NULL) {
-		fclose(fp);
+		fclose(fp_bmp);
 		exit(2);
 	}
 	
@@ -53,25 +53,25 @@ int read_BMP_c(const char *fhead, int *ihpixf, int *jvpixf){
 	if (irst == 0) {
 		for (k=0; k < npixel; k++) {
 			/* reading in BGR order, not rgb. */
-			fread (&bgr[3*k  ],1,1,fp);
-			fread (&bgr[3*k+1],1,1,fp);
-			fread (&bgr[3*k+2],1,1,fp);
+			fread (&bgr[3*k  ],1,1,fp_bmp);
+			fread (&bgr[3*k+1],1,1,fp_bmp);
+			fread (&bgr[3*k+2],1,1,fp_bmp);
 		};
 	} else {
 		for (j=0; j < *jvpixf; j++) {
 			for (i=0; i < *ihpixf; i++) {
 				k = i + j * *ihpixf;
-				fread (&bgr[3*k  ],1,1,fp);
-				fread (&bgr[3*k+1],1,1,fp);
-				fread (&bgr[3*k+2],1,1,fp);
+				fread (&bgr[3*k  ],1,1,fp_bmp);
+				fread (&bgr[3*k+1],1,1,fp_bmp);
+				fread (&bgr[3*k+2],1,1,fp_bmp);
 			};
 			for (i=0; i < (4-irst) ; i++){
-				fread (&char3[0],1,3,fp);
+				fread (&char3[0],1,3,fp_bmp);
 			};
 		};
 	};
 	
-	fclose(fp);
+	fclose(fp_bmp);
 	return 0;
 }
 

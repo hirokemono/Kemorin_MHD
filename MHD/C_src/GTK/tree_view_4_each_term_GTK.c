@@ -11,7 +11,7 @@
 void init_momentum_views_GTK(struct chara_real_clist *cr_clist,
                                     struct dimless_views *dless_vws, 
                                     struct momentum_coefs_view *mom_vws){
-    mom_vws->cr_clist = cr_clist;
+    mom_vws->mom_ctl_gtk = cr_clist;
     return;
 }
 
@@ -30,8 +30,8 @@ static void thermal_buo_name_edited_cb(GtkCellRendererText *cell, gchar *path_st
 {
     struct momentum_coefs_view *mom_vws = (struct momentum_coefs_view *) user_data;
 	
-	cr_tree_name_edited(path_str, new_text, mom_vws->coefs_tree_view, mom_vws->cr_clist);
-	write_chara_real_clist(stdout, 0, "buoyancy changed", mom_vws->cr_clist);
+	cr_tree_name_edited(path_str, new_text, mom_vws->coefs_tree_view, mom_vws->mom_ctl_gtk);
+	write_chara_real_clist(stdout, 0, "buoyancy changed", mom_vws->mom_ctl_gtk);
 }
 
 static void thermal_buo_value_edited_cb(GtkCellRendererText *cell, gchar *path_str,
@@ -39,8 +39,8 @@ static void thermal_buo_value_edited_cb(GtkCellRendererText *cell, gchar *path_s
 {
     struct momentum_coefs_view *mom_vws = (struct momentum_coefs_view *) user_data;
 	
-	cr_tree_value_edited(path_str, new_text, mom_vws->coefs_tree_view, mom_vws->cr_clist);
-    write_chara_real_clist(stdout, 0, "buoyancy changed", mom_vws->cr_clist);
+	cr_tree_value_edited(path_str, new_text, mom_vws->coefs_tree_view, mom_vws->mom_ctl_gtk);
+    write_chara_real_clist(stdout, 0, "buoyancy changed", mom_vws->mom_ctl_gtk);
  
 }
 
@@ -49,8 +49,8 @@ static void cb_delete_thermal_buo_coef_new(GtkButton *button, gpointer user_data
 {
     struct momentum_coefs_view *mom_vws = (struct momentum_coefs_view *) user_data;
     
-    delete_cr_list_items_GTK(mom_vws->coefs_tree_view, mom_vws->cr_clist);
-    write_chara_real_clist(stdout, 0, "buoyancy coeffient deleted", mom_vws->cr_clist);
+    delete_cr_list_items_GTK(mom_vws->coefs_tree_view, mom_vws->mom_ctl_gtk);
+    write_chara_real_clist(stdout, 0, "buoyancy coeffient deleted", mom_vws->mom_ctl_gtk);
     
 }
 
@@ -66,8 +66,8 @@ static void cb_add_thermal_buo_coef(GtkComboBox *combobox_add, gpointer user_dat
     GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
     mom_vws->index_coefs = add_cr_list_from_combobox_GTK_w_one(mom_vws->index_coefs, 
                                                            path, model_comp, mom_vws->coefs_tree_view,
-                                                           mom_vws->cr_clist);
-    write_chara_real_clist(stdout, 0, "buoyancy coeffient added", mom_vws->cr_clist);
+                                                           mom_vws->mom_ctl_gtk);
+    write_chara_real_clist(stdout, 0, "buoyancy coeffient added", mom_vws->mom_ctl_gtk);
     return;
 }
 
@@ -77,8 +77,8 @@ static void cb_add_thermal_buo_coef_new(GtkButton *button, gpointer user_data)
     
     mom_vws->index_coefs = add_cr_list_by_bottun_GTK(mom_vws->index_coefs, 
                                                    mom_vws->coefs_tree_view,
-                                                   mom_vws->cr_clist);
-    write_chara_real_clist(stdout, 0, "buoyancy coeffient added", mom_vws->cr_clist);
+                                                   mom_vws->mom_ctl_gtk);
+    write_chara_real_clist(stdout, 0, "buoyancy coeffient added", mom_vws->mom_ctl_gtk);
     return;
 }
 
@@ -86,7 +86,7 @@ void init_momentum_tree_view(struct momentum_coefs_view *mom_vws){
     GtkCellRenderer *renderer_text = gtk_cell_renderer_text_new();
     GtkCellRenderer *renderer_spin = gtk_cell_renderer_spin_new();
     
-    create_text_real_tree_view(mom_vws->cr_clist, 
+    create_text_real_tree_view(mom_vws->mom_ctl_gtk, 
                                GTK_TREE_VIEW(mom_vws->coefs_tree_view),
                                renderer_text, renderer_spin);
     
@@ -96,7 +96,7 @@ void init_momentum_tree_view(struct momentum_coefs_view *mom_vws){
                      G_CALLBACK(thermal_buo_value_edited_cb), mom_vws);
 
     mom_vws->index_coefs = append_cr_list_from_ctl(mom_vws->index_coefs, 
-                                                mom_vws->cr_clist, mom_vws->coefs_tree_view);
+                                                mom_vws->mom_ctl_gtk, mom_vws->coefs_tree_view);
 }
 
 void add_thermal_buo_selection_box(struct momentum_coefs_view *mom_vws, GtkWidget *vbox)

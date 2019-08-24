@@ -344,6 +344,7 @@ void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	ErrorCheckValue = glGetError();
+	/*
 	if (ErrorCheckValue != GL_NO_ERROR)
 	{
 		fprintf(
@@ -354,4 +355,5 @@ void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 		
 		exit(-1);
 	}
+	 */
 }
