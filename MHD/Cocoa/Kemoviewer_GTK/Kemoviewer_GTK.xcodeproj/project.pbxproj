@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1813D7032311E08200ADA9DA /* kemoview_gtk_colormap_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813D7012311E08100ADA9DA /* kemoview_gtk_colormap_menu.c */; };
 		1862C2672311B28B000306E6 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1862C2662311B28B000306E6 /* libpng.a */; };
 		1862C3702311B358000306E6 /* kemoview_gtk_window_input.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C3692311B358000306E6 /* kemoview_gtk_window_input.c */; };
 		1862C3712311B358000306E6 /* kemoview_fileselector_gtk.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C36A2311B358000306E6 /* kemoview_fileselector_gtk.c */; };
@@ -229,6 +230,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1813D7012311E08100ADA9DA /* kemoview_gtk_colormap_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_colormap_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_colormap_menu.c; sourceTree = "<group>"; };
+		1813D7022311E08100ADA9DA /* kemoview_gtk_colormap_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_colormap_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_colormap_menu.h; sourceTree = "<group>"; };
 		1862C08A2311AFE3000306E6 /* Kemoviewer_GTK */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Kemoviewer_GTK; sourceTree = BUILT_PRODUCTS_DIR; };
 		1862C2662311B28B000306E6 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../../../../../../../opt/local/lib/libpng.a; sourceTree = "<group>"; };
 		1862C3692311B358000306E6 /* kemoview_gtk_window_input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_window_input.c; path = ../../../programs/VIEWER/kemoviewer_GTK/kemoview_gtk_window_input.c; sourceTree = "<group>"; };
@@ -692,7 +695,7 @@
 				1862C4BA2311BD0B000306E6 /* CONTROLS */,
 				1862C4112311BC9E000306E6 /* KEMO_GL */,
 				1862C3912311BA6B000306E6 /* CORE_C */,
-				1862C3682311B343000306E6 /* Kemoviewer_GTK */,
+				1862C3682311B343000306E6 /* Programs */,
 			);
 			path = Kemoviewer_GTK;
 			sourceTree = "<group>";
@@ -718,7 +721,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		1862C3682311B343000306E6 /* Kemoviewer_GTK */ = {
+		1862C3682311B343000306E6 /* Programs */ = {
 			isa = PBXGroup;
 			children = (
 				1862C36D2311B358000306E6 /* kemo_mesh_viewer_gtk.c */,
@@ -729,7 +732,7 @@
 				1862C36C2311B358000306E6 /* kemoview_gtk_window_input.h */,
 				1862C36B2311B358000306E6 /* kemoviewer_gtk.c */,
 			);
-			name = Kemoviewer_GTK;
+			name = Programs;
 			sourceTree = "<group>";
 		};
 		1862C3912311BA6B000306E6 /* CORE_C */ = {
@@ -1110,6 +1113,8 @@
 				1862C58A2311BE3B000306E6 /* Makefile */,
 				1862C5872311BE3B000306E6 /* view_modifier_glut.c */,
 				1862C5882311BE3B000306E6 /* view_modifier_glut.h */,
+				1813D7012311E08100ADA9DA /* kemoview_gtk_colormap_menu.c */,
+				1813D7022311E08100ADA9DA /* kemoview_gtk_colormap_menu.h */,
 			);
 			name = KEMO_GLUT;
 			sourceTree = "<group>";
@@ -1396,6 +1401,7 @@
 				1862C5572311BD2C000306E6 /* t_ctl_data_MHD_boundary_c.c in Sources */,
 				1862C4A42311BCC9000306E6 /* set_kemoviewer_ucd_data.c in Sources */,
 				1862C5C82311BE6D000306E6 /* Makefile in Sources */,
+				1813D7032311E08200ADA9DA /* kemoview_gtk_colormap_menu.c in Sources */,
 				1862C5362311BD2C000306E6 /* t_control_data_4_fline_c.c in Sources */,
 				1862C4842311BCC9000306E6 /* find_isoline_on_patch_c.c in Sources */,
 				1862C5642311BD2C000306E6 /* t_ctl_data_4_time_steps_c.c in Sources */,

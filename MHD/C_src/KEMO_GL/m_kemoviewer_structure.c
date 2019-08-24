@@ -36,9 +36,10 @@ void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, i
 	return;
 }
 
-void kemoview_allocate_single_viwewer_struct(struct kemoviewer_type *kemoviewer_data){
+struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(){
 	/*! Initialize mesh data*/
-	kemoviewer_data = (struct kemoviewer_type *)malloc(sizeof(struct kemoviewer_type));
+	struct kemoviewer_type *kemoviewer_data 
+		= (struct kemoviewer_type *)malloc(sizeof(struct kemoviewer_type));
 	kemoviewer_data->window_ID = 0;
     
     kemo_sgl = kemoviewer_data;
@@ -49,7 +50,7 @@ void kemoview_allocate_single_viwewer_struct(struct kemoviewer_type *kemoviewer_
 	init_kemoviewer(IZERO, kemo_sgl->kemo_mesh->mesh_d, kemo_sgl->kemo_mesh->mesh_m, kemo_sgl->view_s);
 	init_fline_parameters(kemo_sgl->kemo_fline->fline_m);
 	
-	return;
+	return kemoviewer_data;
 }
 
 void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
@@ -836,12 +837,6 @@ void kemoview_set_PSF_constant_opacity(double opacity){
     set_PSF_constant_opacity(kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu, opacity);
 }
 
-struct colormap_params * kemoview_get_psf_colormap_params(){
-    return kemo_sgl->psf_current_menu->cmap_psf;
-};
-void kemoview_get_PSF_rgb_at_value(double value, double *red, double *green, double *blue){
-    set_PSF_rgb_from_value(kemo_sgl->psf_current_menu, value, red, green, blue);
-}
 double kemoview_get_PSF_opacity_at_value(double value){
     return get_PSF_opacity_at_value(kemo_sgl->psf_current_menu, value);
 }

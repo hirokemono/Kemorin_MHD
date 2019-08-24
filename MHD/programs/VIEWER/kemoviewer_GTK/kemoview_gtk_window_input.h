@@ -11,19 +11,20 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "gtk/gtk.h"
 
-#include <string.h>
 #include "kemoviewer.h"
 #include "kemoview_glut_routines.h"
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_4_light_position.h"
+#include "kemoview_gtk_colormap_menu.h"
 
 /*  prototypes */
 
 void set_psf_single_color_gtk();
-void edit_psf_colormap_gtk();
+void edit_psf_colormap_gtk(struct kemoviewer_type *single_kemoview);
 void set_psf_range_gtk();
 void set_fline_range_gtk();
 void set_fline_thick_gtk();

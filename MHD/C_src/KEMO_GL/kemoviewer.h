@@ -428,7 +428,7 @@ extern "C" {
 	void kemoview_free_kvstring(struct kv_string *kvstring);
 
     void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, int iflag_dmesh);
-    void kemoview_allocate_single_viwewer_struct(struct kemoviewer_type *kemoviewer_data);
+	struct kemoviewer_type * kemoview_allocate_single_viwewer_struct();
     void kemoview_allocate_pointers();
     void kemoview_deallocate_pointers();
     
@@ -732,8 +732,10 @@ extern "C" {
     void kemoview_set_PSF_single_color(double *rgba);
     void kemoview_set_PSF_constant_opacity(double opacity);
     
-    struct colormap_params * kemoview_get_psf_colormap_params();
-    void kemoview_get_PSF_rgb_at_value(double value, double *red, double *green, double *blue);
+	void kemoview_init_colormap_views_4_viewer(struct kemoviewer_type *kemoviewer_data, 
+											   struct colormap_view *color_vws);
+
+	void kemoview_get_PSF_rgb_at_value(double value, double *red, double *green, double *blue);
     double kemoview_get_PSF_opacity_at_value(double value);
     void kemoview_set_PSF_color_data(int i_point, double value, double color);
     void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity);

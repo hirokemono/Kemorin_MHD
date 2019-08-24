@@ -89,6 +89,7 @@ module:
 	'$$(KEMOVIEW_GTKDIR)'/kemoview_gtk_window_input.c  \
 	kemoviewer.h \
 	kemoview_gtk_window_input.h \
+	kemoview_gtk_colormap_menu.o \
 	kemoview_glut_routines.o \
 	tree_view_4_pvr_colormap.o \
 	>> $(MAKENAME)

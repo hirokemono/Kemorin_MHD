@@ -25,7 +25,6 @@ static int i_selected;
 static int iflag_set;
 static int gtk_intvalue;
 static double gtk_min, gtk_max;
-static double gtk_value, gtk_color, gtk_opacity;
 
 /*
 GTK callback routines
@@ -147,45 +146,6 @@ static void cb_close_window(GtkButton *button, gpointer user_data){
     GtkWidget *window = (GtkWidget *) user_data;
     gtk_widget_destroy(window);
 };
-
-static void gtk_colormap_menu(double range_min, double range_max, struct kv_string *title){
-    struct colormap_view *color_vws;
-	GtkWidget *box;
-	
-	rangew = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(rangew), title->string);
-	
-	g_signal_connect(rangew, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
-	
-	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_container_add(GTK_CONTAINER(rangew), box);
-	printf("malloc 1\n");
-	color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
-	printf("init_colormap_views_4_viewer\n");
-	init_colormap_views_4_viewer(color_vws);
-	
-	
-	
-	printf("add_colormp_list_box\n");
-	add_colormp_list_box(color_vws, box);
-	printf("button\n");
-	GtkButton *button;
-	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-    gtk_box_pack_start(GTK_BOX(box), button, FALSE, FALSE, 0);
-	printf("g_signal_connect\n");
-    g_signal_connect(G_OBJECT(button), "clicked", 
-                     G_CALLBACK(cb_close_window), rangew);
-	printf("gtk_widget_show_all\n");
-	
-	gtk_widget_show_all(rangew);
-	gtk_main();
-	printf("dealloc_colormap_views_4_viewer\n");
-	dealloc_colormap_views_4_viewer(color_vws);
-	printf("free\n");
-	free(color_vws);
-	return;
-}
 
 
 static void gtk_range_menu(double range_min, double range_max, 
@@ -620,8 +580,7 @@ void set_psf_single_color_gtk(){
 	return;
 }
 
-void edit_psf_colormap_gtk(){
-	double range_min, range_max;
+void edit_psf_colormap_gtk(struct kemoviewer_type *single_kemoview){
     struct kv_string *colorname;
 	
 	int ifield = kemoview_get_PSF_field_id();
@@ -629,19 +588,8 @@ void edit_psf_colormap_gtk(){
 	
     colorname = kemoview_alloc_kvstring();
 	kemoview_get_PSF_field_name(colorname, ifield);
-	range_min = kemoview_get_PSF_min_data(icomp);
-	range_max = kemoview_get_PSF_max_data(icomp);
-	
-	gtk_colormap_menu(range_min, range_max, colorname);
+	gtk_psf_colormap_menu(colorname, single_kemoview);
     kemoview_free_kvstring(colorname);
-	/*
-	if(iflag_set == MODIFY_POINT){
-		kemoview_set_PSF_color_data(i_selected, gtk_value, gtk_color);}
-	else if(iflag_set == ADD_POINT) {
-		kemoview_add_PSF_color_list(gtk_value, gtk_color);}
-	else if(iflag_set == DELETE_POINT) {
-		kemoview_delete_PSF_color_list(i_selected);}
-	*/
 	draw_mesh_keep_menu();
 	return;
 }

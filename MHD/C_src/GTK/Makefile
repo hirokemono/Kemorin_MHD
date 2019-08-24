@@ -135,6 +135,7 @@ module:
 	set_rgb_colors_c.o \
 	set_rgba_table_c.o \
 	m_color_table_c.o \
+	m_kemoview_psf_menu.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

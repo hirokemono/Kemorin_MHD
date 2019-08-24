@@ -5,7 +5,9 @@
 OBJ_KEMOVIEW_GLUT = \
 kemoview_glut_routines.o \
 const_viewer_menu_glut.o \
-view_modifier_glut.o
+view_modifier_glut.o \
+\
+kemoview_gtk_colormap_menu.o
 
 #
 #  ------------------------------------------------------------------
@@ -52,6 +54,18 @@ module:
 	kemoviewer.h \
 	view_modifier_glut.o \
 	view_modifier_glut.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	kemoview_gtk_colormap_menu.o: \
+	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_colormap_menu.c \
+	kemoview_gtk_colormap_menu.h \
+	kemoviewer.h \
+	m_kemoviewer_data.h.o \
+	tree_view_4_pvr_colormap.o \
+	tree_view_4_light_position.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

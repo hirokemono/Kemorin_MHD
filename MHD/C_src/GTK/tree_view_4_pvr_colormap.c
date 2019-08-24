@@ -18,8 +18,11 @@ void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c,
     return;
 }
 
-void init_colormap_views_4_viewer(struct colormap_view *color_vws){
-	color_vws->cmap_param = kemoview_get_psf_colormap_params();
+void init_colormap_views_4_viewer(struct psf_menu_val *psf_current_menu, struct colormap_view *color_vws){
+	color_vws->colormap_mode_gtk = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+	alloc_chara_ctl_item_c(color_vws->colormap_mode_gtk);
+
+	color_vws->cmap_param = psf_current_menu->cmap_psf;
 	
 	color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
 	color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));

@@ -297,7 +297,7 @@ static void psf_colormap_handler(int sel){
 		load_PSF_colormap_file_gtk();
 		draw_mesh_w_menu();
 	}
-	else if (sel == ADD_PSF_COLOR) {edit_psf_colormap_gtk(winid);}
+	else if (sel == ADD_PSF_COLOR) {edit_psf_colormap_gtk(single_kemoview);}
 	return;
 };
 
@@ -820,7 +820,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
     GLboolean bStereo;
 	/* Initialize arrays for viewer */
 	
-	kemoview_allocate_single_viwewer_struct(single_kemoview);
+	single_kemoview = kemoview_allocate_single_viwewer_struct();
 	kemoview_set_stereo_shutter(iflag_streo_shutter);
 	
 	if(iflag_streo_shutter == SHUTTER_ON){
