@@ -17,7 +17,9 @@ tree_view_chara2_real_GTK.o \
 \
 tree_view_4_pvr_colormap.o \
 tree_view_4_field_GTK.o \
-control_panel_4_field_GTK.o
+control_panel_4_field_GTK.o \
+\
+tree_view_4_light_position.o
 
 #
 #  ------------------------------------------------------------------
@@ -143,6 +145,20 @@ module:
 	tree_view_4_field_GTK.h \
 	t_ctl_data_4_fields_c.o \
 	tree_views_4_fixed_lists_GTK.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	@echo \
+	
+	@echo \
+	tree_view_4_light_position.o: \
+	'$$(KEMO_GTK_DIR)'/tree_view_4_light_position.c \
+	tree_view_4_light_position.h \
+	t_control_real_IO.o \
+	t_control_real3_IO.o \
+	tree_views_4_fixed_lists_GTK.o \
+	tree_view_real3_GTK.o \
+	quicksort_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

@@ -48,7 +48,6 @@ OBJ_KEMO_C = \
  \
  m_color_table_c.o \
  set_rgb_colors_c.o \
- set_rgba_table_c.o \
  invert_small_matrix_c.o \
  transfer_matvec.o \
  quicksort_c.o
@@ -474,18 +473,6 @@ module:
 	m_psf_data_4_viewer_c.o \
 	skip_comment_c.o \
 	kemo_zlib_io_c.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	set_rgba_table_c.o: \
-	'$$(KEMO_C_DIR)'/set_rgba_table_c.c \
-	set_rgba_table_c.h \
-	m_color_table_c.o \
-	skip_comment_c.o \
-	t_ctl_data_pvr_colormap_c.o \
-	t_control_real2_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

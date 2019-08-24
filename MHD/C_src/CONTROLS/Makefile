@@ -67,7 +67,9 @@ OBJ_KEMO_CTL_C = \
  \
  t_control_data_visualizer_c.o \
  t_control_data_gen_sph_grid_c.o \
- t_SGS_MHD_control_c.o
+ t_SGS_MHD_control_c.o \
+ \
+ set_rgba_table_c.o
 
 #
 #  ------------------------------------------------------------------
@@ -793,6 +795,18 @@ module:
 	control_elements_IO_c.o \
 	t_ctl_data_4_platforms_c.o \
 	t_control_data_sph_grid_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	set_rgba_table_c.o: \
+	'$$(KEMO_CTL_C_DIR)'/set_rgba_table_c.c \
+	set_rgba_table_c.h \
+	m_color_table_c.o \
+	skip_comment_c.o \
+	t_ctl_data_pvr_colormap_c.o \
+	t_control_real2_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
