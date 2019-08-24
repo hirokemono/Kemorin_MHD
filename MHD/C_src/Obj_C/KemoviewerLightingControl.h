@@ -20,6 +20,10 @@
 
 	IBOutlet NSTableView * idlightTableView;
 
+	IBOutlet NSSlider * radialPositionSlider;
+	IBOutlet NSSlider * elevarionPositionSlider;
+	IBOutlet NSSlider * azimuthPositionSlider;
+
 	NSInteger  numLightTable;
 	NSMutableArray *radialLightPosition;
 	NSMutableArray *elevationLightPosition;
@@ -29,6 +33,10 @@
 	CGFloat diffuseMaterial;
 	CGFloat specularMaterial;
 	CGFloat shinessMaterial;
+
+	CGFloat radialSliderValue;
+	CGFloat elevationSliderValue;
+	CGFloat azimuthSliderValue;
 }
 @property (assign) NSMutableArray * radialLightPosition;
 @property (assign) NSMutableArray * elevationLightPosition;
@@ -42,6 +50,10 @@
 @property CGFloat specularMaterial;
 @property CGFloat shinessMaterial;
 
+@property CGFloat radialSliderValue;
+@property CGFloat elevationSliderValue;
+@property CGFloat azimuthSliderValue;
+
 - (void)awakeFromNib;
 
 
@@ -51,6 +63,7 @@
 - (int)numberOfRowsInTableView:(NSTableView *)pTableViewObj;
 
 - (id) tableView:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex;
+- (void) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender;
 
 - (void)InitLightTable;
 - (void)SetLightTable;
@@ -61,6 +74,10 @@
 - (IBAction)SetDiffuseMaterialAction:(id)sender;
 - (IBAction)SetSpecularMaterialAction:(id)sender;
 - (IBAction)SetShinenessMaterialAction:(id)sender;
+
+- (IBAction)SetRadialLightPositionAction:(id)sender;
+- (IBAction)SetelevationLightPositionAction:(id)sender;
+- (IBAction)SetAzimuthLightPositionAction:(id)sender;
 
 @end
 

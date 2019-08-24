@@ -19,6 +19,10 @@
 @synthesize diffuseMaterial;
 @synthesize specularMaterial;
 @synthesize shinessMaterial;
+
+@synthesize radialSliderValue;
+@synthesize elevationSliderValue;
+@synthesize azimuthSliderValue;
 - (void)awakeFromNib{
 	self.radialLightPosition = [[NSMutableArray alloc]init];
 	self.elevationLightPosition = [[NSMutableArray alloc]init];
@@ -63,6 +67,9 @@
 	[_kemoviewer UpdateImage];
 	return;
 };
+
+
+
 - (IBAction)deleteSelectedRow:(id)pId{
 	int i, n;
 	
@@ -148,13 +155,17 @@
 	}
 	
 	kemoview_set_each_light_position(pRowIndex, r0, t0, p0);
+	self.radialSliderValue =    r0;
+	self.elevationSliderValue = t0;
+	self.azimuthSliderValue =   p0;
+
 	
 	[_kemoviewer UpdateImage];
 	[self SetLightTable];
 } // end tableView:setObjectValue:forTableColumn:row:
 
 
-- (IBAction) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender{
+- (void) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender{
 	NSLog(@"Selected Column and raws id:   %@ %d",[pTableColumn identifier],pRowIndex);
 }
 
@@ -241,6 +252,74 @@
 	kemoview_set_material_shineness(self.shinessMaterial);
 	[_kemoviewer UpdateImage];
 	return;
+};
+
+- (IBAction)SetRadialLightPositionAction:(id)sender{
+	float r0, t0, p0, r1, r2;
+	int isel = [idlightTableView selectedRow];
+	if(isel < 0 || isel >= self.numLightTable) return;
+	
+	t0 =  [[self.elevationLightPosition objectAtIndex:isel] floatValue];
+	p0 =  [[self.azimuthLightPosition objectAtIndex:isel] floatValue];
+	if(isel > 0){
+		r1 =   [[self.radialLightPosition objectAtIndex:(isel-1)] floatValue];
+	}
+	if(isel < self.numLightTable-1){
+		r2 =   [[self.radialLightPosition objectAtIndex:(isel+1)] floatValue];
+	}
+	
+	if(self.numLightTable == 1){
+		r0 = self.radialSliderValue;
+	} else if(isel > 0 && self.radialSliderValue < r1){
+		r0 = r1;
+	} else if(isel < (self.numLightTable-1) && self.radialSliderValue > r2){
+		r0 = r2;
+	} else {
+		r0 = self.radialSliderValue;
+	};
+	
+	kemoview_set_each_light_position(isel, r0, t0, p0);
+	[self.radialLightPosition replaceObjectAtIndex:isel
+										withObject:[[NSNumber alloc] initWithFloat:r0]];
+	self.elevationSliderValue = t0;
+	self.azimuthSliderValue =   p0;
+	[self SetLightTable];
+	[_kemoviewer UpdateImage];
+};
+- (IBAction)SetelevationLightPositionAction:(id)sender{
+	float r0, t0, p0;
+	int isel = [idlightTableView selectedRow];
+	if(isel < 0 || isel >= self.numLightTable) return;
+	
+	r0 =  [[self.radialLightPosition objectAtIndex:isel] floatValue];
+	t0 =  self.elevationSliderValue;
+	p0 =  [[self.azimuthLightPosition objectAtIndex:isel] floatValue];
+	
+	kemoview_set_each_light_position(isel, r0, t0, p0);
+	[self.elevationLightPosition replaceObjectAtIndex:isel
+										   withObject:[[NSNumber alloc] initWithFloat:t0]];
+	self.radialSliderValue =    r0;
+	self.azimuthSliderValue =   p0;
+	[self SetLightTable];
+	[_kemoviewer UpdateImage];
+};
+- (IBAction)SetAzimuthLightPositionAction:(id)sender{
+	float r0, t0, p0;
+	int isel = [idlightTableView selectedRow];
+	if(isel < 0 || isel >= self.numLightTable) return;
+	
+	r0 =  [[self.radialLightPosition objectAtIndex:isel] floatValue];
+	t0 =  [[self.elevationLightPosition objectAtIndex:isel] floatValue];
+	p0 =  self.azimuthSliderValue;
+	
+	kemoview_set_each_light_position(isel, r0, t0, p0);
+	[self.azimuthLightPosition replaceObjectAtIndex:isel
+										 withObject:[[NSNumber alloc] initWithFloat:p0]];
+	
+	self.radialSliderValue =    r0;
+	self.elevationSliderValue = t0;
+	[self SetLightTable];
+	[_kemoviewer UpdateImage];
 };
 
 @end
