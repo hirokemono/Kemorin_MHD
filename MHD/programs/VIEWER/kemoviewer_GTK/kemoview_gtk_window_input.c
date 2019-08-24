@@ -304,8 +304,6 @@ static void set_background_GTK(GtkColorChooser *colordialog)
 	
 	gtk_color_chooser_get_rgba(colordialog, &gcolor);
 	gtk_widget_destroy(rangew);
-	gtk_widget_destroy(ftmpw_w);
-	gtk_main_quit();
 	
     color[0] = (GLfloat) gcolor.red;
     color[1] = (GLfloat) gcolor.green;
@@ -370,6 +368,11 @@ static void gtk_PSFcolorselect(const char *title){
 	return;
 }
 
+static void kemoview_BG_close(GtkButton *button, gpointer data){
+	gtk_widget_destroy(ftmpw_w);
+	gtk_main_quit();
+	return;
+};
 
 static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
 	int response;
@@ -417,8 +420,8 @@ static void gtk_BGcolorselect(GLfloat color[4], const char *title){
 	gtk_container_set_border_width(GTK_CONTAINER(ftmpw_w), 5);
 	g_signal_connect(G_OBJECT(ftmpw_w), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_container_add(GTK_CONTAINER(ftmpw_w), hbox);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_container_add(GTK_CONTAINER(ftmpw_w), vbox);
 	
 	/* Set buttons   */
 	entry = gtk_entry_new();
@@ -427,13 +430,10 @@ static void gtk_BGcolorselect(GLfloat color[4], const char *title){
 				G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)entry);
 	CloseButton = gtk_button_new_with_label("Close");
 	g_signal_connect(G_OBJECT(CloseButton), "clicked", 
-				G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)entry);
+				G_CALLBACK(kemoview_BG_close), (gpointer)entry);
 	
 	lightparams_view = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
     init_light_views_4_viewer(lightparams_view);
-	
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	add_light_list_box(lightparams_view, vbox);
 	
 	
 	label01 = gtk_label_new("Current ambient");
@@ -492,6 +492,9 @@ static void gtk_BGcolorselect(GLfloat color[4], const char *title){
 	gtk_box_pack_start(GTK_BOX(hbox14), spin4, FALSE, FALSE, 0);
 	
 	
+	gtk_box_pack_start(GTK_BOX(vbox), BGselButton, FALSE, FALSE, 0);
+	add_light_list_box(lightparams_view, vbox);
+	
 	gtk_box_pack_start(GTK_BOX(vbox), label01, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), label11, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox11, FALSE, FALSE, 0);
@@ -506,13 +509,10 @@ static void gtk_BGcolorselect(GLfloat color[4], const char *title){
 	gtk_box_pack_start(GTK_BOX(vbox), hbox14, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), CloseButton, FALSE, FALSE, 0);
 	
-	gtk_box_pack_start(GTK_BOX(hbox), BGselButton, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
 	
 	gtk_widget_show_all(ftmpw_w);
 	gtk_main();
-	dealloc_colormap_views_4_viewer(lightparams_view);
-	free(lightparams_view);
+	dealloc_light_views_4_viewer(lightparams_view);
 	return;
 }
 
