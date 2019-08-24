@@ -25,11 +25,6 @@
 	NSMutableArray *elevationLightPosition;
 	NSMutableArray *azimuthLightPosition;
 
-	IBOutlet NSSlider * idAmbientSlider;
-	IBOutlet NSSlider * idDiffuseSlider;
-	IBOutlet NSSlider * idSpecularSlider;
-	IBOutlet NSSlider * idShinenesSlider;
-	
 	CGFloat ambientMaterial;
 	CGFloat diffuseMaterial;
 	CGFloat specularMaterial;
@@ -39,6 +34,8 @@
 @property (assign) NSMutableArray * elevationLightPosition;
 @property (assign) NSMutableArray * azimuthLightPosition;
 @property (assign) NSTableView * idlightTableView;
+
+@property NSInteger numLightTable;
 
 @property CGFloat ambientMaterial;
 @property CGFloat diffuseMaterial;

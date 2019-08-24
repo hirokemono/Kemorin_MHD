@@ -491,6 +491,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	kemoview_set_background_color(BgColor4f);
 
 }
+
 // ---------------------------------
 
 - (void) awakeFromNib

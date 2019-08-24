@@ -488,12 +488,12 @@ extern "C" {
 	void kemoview_realloc_phong_light_list(int num);
 	
 	void kemoview_delete_phong_light_list(int i_delete);
-	void kemoview_add_phong_light_list(float r, float t, float p);
+	void kemoview_add_phong_light_list(int i_add, float r, float t, float p);
 	
 	void kemoview_init_phong_light_list();
 	
 	
-	void kemoview_set_each_light_position(int i_point, float light_position[3]);
+	void kemoview_set_each_light_position(int i_point, float r, float t, float p);
 	int kemoview_get_num_light_position();
 	void kemoview_get_each_light_rtp(int i_point, float *r, float *t, float *p);
 	

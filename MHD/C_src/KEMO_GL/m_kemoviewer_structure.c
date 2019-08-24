@@ -17,7 +17,7 @@ void kemoview_allocate_pointers(){
 	kemo_sgl->kemo_fline = init_kemoview_fline();
 	kemo_sgl->kemo_psf =   init_kemoview_psf();
 	
-	kemo_sgl->psf_ucd_tmp =    (struct psf_data *)          malloc(sizeof(struct psf_data));
+	kemo_sgl->psf_ucd_tmp = (struct psf_data *) malloc(sizeof(struct psf_data));
 	return;
 }
 
@@ -272,8 +272,8 @@ void kemoview_realloc_phong_light_list(int num){
 void kemoview_delete_phong_light_list(int i_delete){
 	delete_phong_light_list(kemo_sgl->kemo_shaders->lights, i_delete);
 };
-void kemoview_add_phong_light_list(float r, float t, float p){
-	add_phong_light_list(kemo_sgl->kemo_shaders->lights, r, t, p);
+void kemoview_add_phong_light_list(int i_add, float r, float t, float p){
+	add_phong_light_list(kemo_sgl->kemo_shaders->lights, i_add, r, t, p);
 };
 
 void kemoview_init_phong_light_list(){
@@ -281,8 +281,8 @@ void kemoview_init_phong_light_list(){
 };
 
 
-void kemoview_set_each_light_position(int i_point, float light_position[3]){
-	set_each_light_position(kemo_sgl->kemo_shaders->lights, i_point, light_position);
+void kemoview_set_each_light_position(int i_point, float r, float t, float p){
+	set_each_light_position(kemo_sgl->kemo_shaders->lights, i_point, r, t, p);
 };
 int kemoview_get_num_light_position(){
 	return send_num_light_position(kemo_sgl->kemo_shaders->lights);

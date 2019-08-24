@@ -28,14 +28,15 @@ void dealloc_phong_light_list(struct phong_lights *lights);
 void realloc_phong_light_list(struct phong_lights *lights, int num);
 
 void delete_phong_light_list(struct phong_lights *lights, int i_delete);
-void add_phong_light_list(struct phong_lights *lights, float r, float t, float p);
+void add_phong_light_list(struct phong_lights *lights, int i_add,
+						  float r, float t, float p);
 
 void init_phong_light_list(struct phong_lights *lights);
 
 
 
 void set_each_light_position(struct phong_lights *lights, 
-			int i_point, float light_position[3]);
+			int i_point, float r, float t, float p);
 int send_num_light_position(struct phong_lights *lights);
 void send_each_light_rtp(struct phong_lights *lights, 
 			int i_point, float *r, float *t, float *p);

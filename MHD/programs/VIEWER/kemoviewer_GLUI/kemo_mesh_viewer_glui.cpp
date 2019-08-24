@@ -1079,6 +1079,7 @@ void draw_mesh_kemo_glui(int iflag_streo_shutter, int iflag_dmesh) {
 	/* ! set the perspective and lighting */
 	kemoview_init_background_color();
 	kemoview_init_lighting(iflag_core_profile);
+	kemoview_init_phong_light_list();
 	
 	/*! Create menu window*/
 	menu_win = create_kemoview_menu();

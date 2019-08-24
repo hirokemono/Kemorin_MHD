@@ -47,8 +47,8 @@ void delete_phong_light_list(struct phong_lights *lights, int i_delete){
 	
 	if(lights->nbuf_light_point <= 1) return;
 	
-	light_xyz_tmp = (float *)calloc(lights->nbuf_light_point,sizeof(float));
-	light_rtp_tmp = (float *)calloc(lights->nbuf_light_point,sizeof(float));
+	light_xyz_tmp = (float *)calloc(4*lights->nbuf_light_point,sizeof(float));
+	light_rtp_tmp = (float *)calloc(3*lights->nbuf_light_point,sizeof(float));
 	for(i=0;i< 4*lights->nbuf_light_point;i++){
 		light_xyz_tmp[i] =  lights->light_xyz[i];
 	};
@@ -66,11 +66,11 @@ void delete_phong_light_list(struct phong_lights *lights, int i_delete){
 		lights->light_rtp[i] = light_rtp_tmp[i];
 	}
 	
-	for(i=i_delete+1;i< 4*(lights->nbuf_light_point+1);i++) {
-		lights->light_xyz[i-4] = light_xyz_tmp[i];
+	for(i=4*i_delete;i< 4*lights->nbuf_light_point;i++) {
+		lights->light_xyz[i] = light_xyz_tmp[i+4];
 	};
-	for(i=i_delete+1;i< 3*(lights->nbuf_light_point+1);i++) {
-		lights->light_rtp[i-3] = light_rtp_tmp[i];
+	for(i=3*i_delete;i< 3*lights->nbuf_light_point;i++) {
+		lights->light_rtp[i] = light_rtp_tmp[i+3];
 	}
 	
 	free(light_xyz_tmp);
@@ -78,15 +78,11 @@ void delete_phong_light_list(struct phong_lights *lights, int i_delete){
 	return;
 }
 
-void add_phong_light_list(struct phong_lights *lights, float r, float t, float p){
+void add_phong_light_list(struct phong_lights *lights, int i_add,
+						  float r, float t, float p){
 	float *light_xyz_tmp;
 	float *light_rtp_tmp;
-	int i, i_add;
-	
-	i_add = 0;
-	for(i = 0; i < lights->nbuf_light_point; i++) {
-		if(r > lights->light_rtp[3*i]) i_add = i+1;
-	}
+	int i;
 	
 	light_xyz_tmp = (float *)calloc(4*lights->nbuf_light_point,sizeof(float));
 	light_rtp_tmp = (float *)calloc(3*lights->nbuf_light_point,sizeof(float));
@@ -129,18 +125,18 @@ void init_phong_light_list(struct phong_lights *lights){
 	lights->specular = 0.6;
 	lights->shiness = 6.0;
 	
-	lights->light_rtp[0] =   20.0;
-	lights->light_rtp[1] =   30.0;
-	lights->light_rtp[2] =  90.0;
+	lights->light_rtp[0] = 20.0;
+	lights->light_rtp[1] = 30.0;
+	lights->light_rtp[2] = 90.0;
 	light_positionfrom_angle(&lights->light_rtp[0], &lights->light_xyz[0]);
 };
 
 
 void set_each_light_position(struct phong_lights *lights, 
-			int i_point, float light_position[3]){
-	int i;
-	
-	for(i=0;i<3;i++){lights->light_rtp[3*i_point+i] = light_position[i];};
+			int i_point, float r, float t, float p){
+	lights->light_rtp[3*i_point  ] = r;
+	lights->light_rtp[3*i_point+1] = t;
+	lights->light_rtp[3*i_point+2] = p;
 	light_positionfrom_angle(&lights->light_rtp[3*i_point], &lights->light_xyz[4*i_point]);
 	return;
 }

@@ -568,7 +568,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Wsi-nh-URc">
                             <rect key="frame" x="1" y="1" width="194" height="565"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <view id="3787">
                                     <rect key="frame" x="0.0" y="0.0" width="196" height="565"/>
@@ -1092,6 +1092,8 @@
             <connections>
                 <outlet property="_kemoviewGL_defaults_controller" destination="716" id="I0h-Es-eKv"/>
                 <outlet property="_kemoviewer" destination="3373" id="ICo-Hl-idJ"/>
+                <outlet property="_lightTableView" destination="Gdj-Kb-Y6t" id="78x-GC-typ"/>
+                <outlet property="idlightTableView" destination="Gdj-Kb-Y6t" id="NKh-RV-Gau"/>
             </connections>
         </customObject>
         <objectController id="HzQ-Hh-jyy" userLabel="LightingObject Controller">
@@ -1190,7 +1192,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="Meu-5Y-hVs">
                                                 <rect key="frame" x="1" y="0.0" width="322" height="177"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="760" id="761">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="160"/>
@@ -1590,7 +1592,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="QVH-ow-4aF">
                                                 <rect key="frame" x="1" y="0.0" width="322" height="216"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" autosaveColumns="NO" headerView="823" id="822">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="199"/>
@@ -3496,7 +3498,7 @@
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                 <tableColumns>
-                                                    <tableColumn width="77" minWidth="40" maxWidth="1000" id="dmw-gx-1bX">
+                                                    <tableColumn identifier="Radius" width="77" minWidth="40" maxWidth="1000" id="dmw-gx-1bX">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Radius">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -3510,7 +3512,7 @@
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
-                                                    <tableColumn width="76" minWidth="40" maxWidth="1000" id="11H-kV-RQn">
+                                                    <tableColumn identifier="Elevation" width="76" minWidth="40" maxWidth="1000" id="11H-kV-RQn">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Elevation">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -3527,7 +3529,7 @@
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
-                                                    <tableColumn identifier="" width="76" minWidth="40" maxWidth="4000" id="hts-DW-vUG">
+                                                    <tableColumn identifier="Azimuth" width="76" minWidth="40" maxWidth="4000" id="hts-DW-vUG">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Azimuth">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -3545,6 +3547,11 @@
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
                                                 </tableColumns>
+                                                <connections>
+                                                    <action selector="UpdateLightTable:" target="3Oj-aY-RpN" id="GZO-1Z-DOB"/>
+                                                    <outlet property="dataSource" destination="3Oj-aY-RpN" id="76F-nV-xg6"/>
+                                                    <outlet property="delegate" destination="3Oj-aY-RpN" id="aop-HN-uJA"/>
+                                                </connections>
                                             </tableView>
                                         </subviews>
                                     </clipView>
@@ -3569,7 +3576,7 @@
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
                                     <connections>
-                                        <action selector="addAtSelectedRow:" target="2618" id="xvA-9h-659"/>
+                                        <action selector="addAtSelectedRow:" target="3Oj-aY-RpN" id="yf7-N1-1bj"/>
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" misplaced="YES" id="AAp-qZ-qdv">
@@ -3580,7 +3587,7 @@
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
                                     <connections>
-                                        <action selector="deleteSelectedRow:" target="2618" id="xGi-V6-5r8"/>
+                                        <action selector="deleteSelectedRow:" target="3Oj-aY-RpN" id="sVJ-wK-sVL"/>
                                     </connections>
                                 </button>
                                 <slider verticalHuggingPriority="750" misplaced="YES" id="HaE-Ye-h0l">

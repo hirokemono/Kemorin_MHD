@@ -382,7 +382,7 @@ void set_phong_light_list(struct shader_ids *phong, struct phong_lights *lights)
 	
 	glUniform1i(id_numLight, lights->n_light_point);
 	for(i=0;i<lights->n_light_point;i++){
-		glUniform4fv(id_lightPosition[i], 1, &lights->light_xyz[3*i]);
+		glUniform4fv(id_lightPosition[i], 1, &lights->light_xyz[4*i]);
 	};
 	
 	glUniform4f(id_MaterialAmbient, lights->ambient, lights->ambient, lights->ambient, 1.0);
