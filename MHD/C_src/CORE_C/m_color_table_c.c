@@ -50,7 +50,6 @@ void dealloc_opacity_index_list_s(struct colormap_params *cmap_s){
 
 void realloc_color_index_list_s(struct colormap_params *cmap_s, int num){
 	double *tmp = NULL;
-	int id_cmode;
 	if(num > cmap_s->nbuf_color_point){
 		tmp = (double *) realloc(cmap_s->color_data, num*sizeof(double));
 		if(tmp == NULL){

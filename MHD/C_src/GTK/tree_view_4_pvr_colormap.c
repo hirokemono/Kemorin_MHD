@@ -46,15 +46,15 @@ void init_colormap_views_4_viewer(struct psf_menu_val *psf_current_menu,
 	double value, color;
 	copy_colormap_name_to_ctl(color_vws->cmap_param, 
 				color_vws->colormap_mode_gtk);
-	num = kemoview_get_PSF_color_table_num();
+	num = send_color_table_num_s(color_vws->cmap_param);
 	for(i=0;i<num;i++){
-		kemoview_get_PSF_color_items(i, &value, &color);
+		send_color_table_items_s(color_vws->cmap_param, i, &value, &color);
 		append_real2_clist(value, color, color_vws->cmap_vws->r2_clist_gtk);
 	};
 	
-	num = kemoview_get_PSF_opacity_table_num();
+	num = send_opacity_table_num_s(color_vws->cmap_param);
 	for(i=0;i<num;i++){
-		kemoview_get_PSF_opacity_items(i, &value, &color);
+		send_opacity_table_items_s(color_vws->cmap_param, i, &value, &color);
 		append_real2_clist(value, color, color_vws->opacity_vws->r2_clist_gtk);
 	};
 	
@@ -475,6 +475,7 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	
 	combobox_cmap = gtk_combo_box_new_with_model(child_model);
 	child_model = gtk_cell_renderer_text_new();
+	gtk_combo_box_set_active(combobox_cmap, color_vws->cmap_param->id_color_mode);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_cmap), child_model, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_cmap), child_model,
 				"text", COLUMN_FIELD_NAME, NULL);
