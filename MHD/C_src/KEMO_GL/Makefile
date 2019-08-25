@@ -207,6 +207,7 @@ module:
 	@echo \
 	init_gl_lighting_c.o: \
 	'$$(KEMO_C_GLDIR)'/init_gl_lighting_c.c \
+	init_gl_lighting_c.h \
 	kemoviewer_param_c.h \
 	m_gl_transfer_matrix.o \
 	m_kemoview_mesh_menu.o \
@@ -244,6 +245,7 @@ module:
 	@echo \
 	find_isoline_on_patch_c.o: \
 	'$$(KEMO_C_GLDIR)'/find_isoline_on_patch_c.c \
+	find_isoline_on_patch_c.h \
 	kemoviewer_param_c.h \
 	cal_surface_center_normal_c.o \
 	>> $(MAKENAME)

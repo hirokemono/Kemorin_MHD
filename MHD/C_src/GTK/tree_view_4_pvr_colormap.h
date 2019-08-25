@@ -21,6 +21,7 @@
 #include "set_rgba_table_c.h"
 #include "m_color_table_c.h"
 #include "m_kemoview_psf_menu.h"
+#include "set_each_psf_parameters.h"
 
 struct colormap_view{
 	struct chara_ctl_item *colormap_mode_gtk;
@@ -35,7 +36,11 @@ struct colormap_view{
 
 void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c, 
 			struct colormap_view *color_vws);
+
 void init_colormap_views_4_viewer(struct psf_menu_val *psf_current_menu, struct colormap_view *color_vws);
+void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu, 
+			struct colormap_view *color_vws);
+
 void dealloc_colormap_views_4_viewer(struct colormap_view *color_vws);
 
 void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox);

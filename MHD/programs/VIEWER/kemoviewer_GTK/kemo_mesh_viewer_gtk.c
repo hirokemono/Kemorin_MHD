@@ -804,7 +804,7 @@ static void make_1st_level_menu(){
 		glutAddMenuEntry("Save rotate images", SAVE_ROTATION);
 		glutAddSubMenu("Rotate on Window",   glut_menu_id->draw_rot_image_menu);
 	};
-    glutAddMenuEntry("Background color",SET_BACKGROUND);
+    glutAddMenuEntry("Preferences...",SET_BACKGROUND);
 	
 	glutAddMenuEntry("Quit",QUIT_SELECTED);
 	glutAttachMenu(GLUT_LEFT_BUTTON);

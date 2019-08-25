@@ -49,11 +49,26 @@ void dealloc_opacity_index_list_s(struct colormap_params *cmap_s){
 
 
 void realloc_color_index_list_s(struct colormap_params *cmap_s, int num){
-    int id_cmode;
+	double *tmp = NULL;
+	int id_cmode;
 	if(num > cmap_s->nbuf_color_point){
-        id_cmode = cmap_s->id_color_mode;
-		dealloc_color_index_list_s(cmap_s);
-		alloc_color_index_list_s(cmap_s, id_cmode, num);
+		tmp = (double *) realloc(cmap_s->color_data, num*sizeof(double));
+		if(tmp == NULL){
+			printf("reallocation error for cmap_s->color_data\n");
+			exit(-1);
+		} else {
+			cmap_s->color_data = tmp;
+		};
+		
+		tmp = (double *) realloc(cmap_s->color_value, num*sizeof(double));
+		if(tmp == NULL){
+			printf("reallocation error for cmap_s->color_value\n");
+			exit(-1);
+		} else {
+			cmap_s->color_value = tmp;
+		};
+		cmap_s->n_color_point = num;
+		cmap_s->nbuf_color_point = num;
 	} else {
 		cmap_s->n_color_point = num;
 	}
@@ -61,9 +76,27 @@ void realloc_color_index_list_s(struct colormap_params *cmap_s, int num){
 }
 
 void realloc_opacity_index_list_s(struct colormap_params *cmap_s, int num){
+	double *tmp = NULL;
 	if(num > cmap_s->nbuf_opacity_point){
-		dealloc_opacity_index_list_s(cmap_s);
-		alloc_opacity_index_list_s(cmap_s, num);
+		tmp = (double *) realloc(cmap_s->opacity_data, num*sizeof(double));
+		if(tmp == NULL){
+			printf("reallocation error for cmap_s->opacity_data\n");
+			exit(-1);
+		} else {
+			cmap_s->opacity_data = tmp;
+		};
+		
+		tmp = (double *) realloc(cmap_s->opacity_value, num*sizeof(double));
+		if(tmp == NULL){
+			printf("reallocation error for cmap_s->opacity_value\n");
+			exit(-1);
+		} else {
+			cmap_s->opacity_value = tmp;
+		};
+		cmap_s->n_opacity_point =    num;
+		cmap_s->nbuf_opacity_point = num;
+		cmap_s->max_opacity = ONE;
+		cmap_s->min_opacity = ZERO;
 	} else {
 		cmap_s->n_opacity_point = num;
 	}

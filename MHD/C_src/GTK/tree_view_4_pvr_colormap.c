@@ -18,7 +18,8 @@ void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c,
     return;
 }
 
-void init_colormap_views_4_viewer(struct psf_menu_val *psf_current_menu, struct colormap_view *color_vws){
+void init_colormap_views_4_viewer(struct psf_menu_val *psf_current_menu, 
+			struct colormap_view *color_vws){
 	color_vws->colormap_mode_gtk = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_chara_ctl_item_c(color_vws->colormap_mode_gtk);
 
@@ -43,20 +44,45 @@ void init_colormap_views_4_viewer(struct psf_menu_val *psf_current_menu, struct 
     
 	int i, num;
 	double value, color;
+	copy_colormap_name_to_ctl(color_vws->cmap_param, 
+				color_vws->colormap_mode_gtk);
 	num = kemoview_get_PSF_color_table_num();
 	for(i=0;i<num;i++){
 		kemoview_get_PSF_color_items(i, &value, &color);
 		append_real2_clist(value, color, color_vws->cmap_vws->r2_clist_gtk);
-	}
-
+	};
+	
 	num = kemoview_get_PSF_opacity_table_num();
 	for(i=0;i<num;i++){
 		kemoview_get_PSF_opacity_items(i, &value, &color);
 		append_real2_clist(value, color, color_vws->opacity_vws->r2_clist_gtk);
-	}
+	};
+	
+	return;
+};
 
+void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu, 
+			struct colormap_view *color_vws){
+	int i, num;
+	double value, color, opacity;
+	num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
+	realloc_color_index_list_s(psf_current_menu->cmap_psf, num);
+	for(i=0;i<num;i++){
+		copy_from_real2_clist(color_vws->cmap_vws->r2_clist_gtk, 
+			i, &value, &opacity);
+		set_each_PSF_color_point(psf_current_menu->cmap_psf, i, value, color);
+	}
+	num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
+	realloc_opacity_index_list_s(psf_current_menu->cmap_psf, num);
+	for(i=0;i<num;i++){
+		copy_from_real2_clist(color_vws->opacity_vws->r2_clist_gtk, 
+			i, &value, &opacity);
+		set_each_PSF_opacity_point(psf_current_menu->cmap_psf, i, value, opacity);
+	}
+	
 	return;
 }
+
 
 void dealloc_colormap_views_4_viewer(struct colormap_view *color_vws){
 	free(color_vws->cmap_vws);

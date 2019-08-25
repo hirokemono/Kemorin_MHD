@@ -21,6 +21,22 @@ const char color_labels[4][KCHARA_C] = {
 
 struct pvr_colormap_bar_ctl_c *cmap_cbar_c0;
 
+void copy_colormap_name_to_ctl(struct colormap_params *cmap_s, 
+			struct chara_ctl_item *colormap_mode){
+	int i;
+	
+	if(cmap_s->id_color_mode == RED_BLUE_MODE){
+		copy_to_chara_ctl_item(label_bluered, colormap_mode);
+	} else if(cmap_s->id_color_mode == GRAYSCALE_MODE){
+		copy_to_chara_ctl_item(label_grayscale, colormap_mode);
+	} else if(cmap_s->id_color_mode == SYM_GRAY_MODE){
+		copy_to_chara_ctl_item(label_sym_gray, colormap_mode);
+	} else {
+		copy_to_chara_ctl_item(label_rainbow, colormap_mode);
+	};
+	return;
+};
+
 void set_rgb_from_value_s(struct colormap_params *cmap_s,
 			double value, double *red, double *green, double *blue){
 	double rnorm;
@@ -132,15 +148,7 @@ void copy_color_opacity_to_ctl(struct colormap_params *cmap_s,
 	int i;
 	double color;
 	
-	if(cmap_s->id_color_mode == RED_BLUE_MODE){
-		copy_to_chara_ctl_item(label_bluered, cmap_c->colormap_mode_ctl);
-	} else if(cmap_s->id_color_mode == GRAYSCALE_MODE){
-		copy_to_chara_ctl_item(label_grayscale, cmap_c->colormap_mode_ctl);
-	} else if(cmap_s->id_color_mode == SYM_GRAY_MODE){
-		copy_to_chara_ctl_item(label_sym_gray, cmap_c->colormap_mode_ctl);
-	} else {
-		copy_to_chara_ctl_item(label_rainbow, cmap_c->colormap_mode_ctl);
-	};
+	copy_colormap_name_to_ctl(cmap_s, cmap_c->colormap_mode_ctl);
 	copy_to_chara_ctl_item("colormap_list", cmap_c->data_mapping_ctl);
 	
 	copy_to_real2_clist(cmap_s->n_color_point, cmap_s->color_data, cmap_s->color_value,
@@ -176,7 +184,8 @@ void make_colorbar_for_ctl(struct colormap_params *cmap_s,
 
 void copy_colormap_from_ctl(struct chara_ctl_item *colormap_mode_ctl, 
 			struct real2_clist *colortbl_list, struct colormap_params *cmap_s){
-	int num;
+	int i, num;
+	double v, d;
 	
 	if(compare_string(11, label_bluered, colormap_mode_ctl->c_tbl) > 0){
 		cmap_s->id_color_mode = RED_BLUE_MODE;
@@ -189,17 +198,25 @@ void copy_colormap_from_ctl(struct chara_ctl_item *colormap_mode_ctl,
 	};
    	
 	num = count_real2_clist(colortbl_list);
-	realloc_color_index_list_s(cmap_s, num);
-	copy_from_real2_clist(colortbl_list, 
-				num, cmap_s->color_data, cmap_s->color_value);
+	if(num > cmap_s->nbuf_color_point) realloc_color_index_list_s(cmap_s, num);
+	for(i=0;i<num;i++){
+		set_from_real2_clist_at_index(i, colortbl_list, &v, &d);
+		cmap_s->color_data[i] = v;
+		cmap_s->color_value[i] = d;
+	};
 	return;
 }
 void copy_opacity_from_ctl(struct real2_clist *linear_opacity_list, 
 			struct colormap_params *cmap_s){
-	int num = count_real2_clist(linear_opacity_list);
-	realloc_opacity_index_list_s(cmap_s, num);
-	copy_from_real2_clist(linear_opacity_list, 
-				num, cmap_s->opacity_data, cmap_s->opacity_value);
+	int i, num;
+	double v, d;
+	num = count_real2_clist(linear_opacity_list);
+	if(num > cmap_s->nbuf_opacity_point) realloc_opacity_index_list_s(cmap_s, num);
+	for(i=0;i<num;i++){
+		set_from_real2_clist_at_index(i, linear_opacity_list, &v, &d);
+		cmap_s->opacity_data[i] = v;
+		cmap_s->opacity_value[i] = d;
+	};
 	return;
 }
 

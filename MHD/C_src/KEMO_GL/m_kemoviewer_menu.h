@@ -96,9 +96,6 @@ void dealloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *f
 
 void init_fline_parameters(struct fline_menu_val *fline_m);
 
-void set_linear_colormap(struct colormap_params *cmap_s,
-			double val_min, double val_max);
-
 void set_draw_flag_for_all(int iflag, int ngrp, int *iflag_draw);
 void select_draw_flag_toggle(int selected, int ngrp, int *iflag_draw);
 
