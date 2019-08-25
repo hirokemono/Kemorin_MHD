@@ -13,7 +13,7 @@ void init_r3_clist_views(struct real3_clist *r3_clist, struct r3_clist_view *cma
 };
 
 /* Append new data at the end of list */
-int append_r3_item_to_tree(int index, double r1_data, double r2_data, 
+int append_r3_item_to_tree(int index, double r1_data, double r2_data, double r3_data, 
                            GtkTreeModel *child_model){
     GtkTreeIter iter;
     
@@ -21,6 +21,7 @@ int append_r3_item_to_tree(int index, double r1_data, double r2_data,
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
                        COLUMN_FIELD_INDEX, r1_data,
                        COLUMN_FIELD_NAME,  r2_data,
+                       COLUMN_FIELD_MATH,  r3_data,
                        -1);
     return index + 1;
 }
@@ -31,8 +32,8 @@ int append_r3_list_from_ctl(int index, struct real3_ctl_list *head,
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
     while (head != NULL){
-        index = append_r3_item_to_tree(index, head->r3_item->r_data[0], 
-                                       head->r3_item->r_data[1], child_model);
+        index = append_r3_item_to_tree(index, head->r3_item->r_data[0], head->r3_item->r_data[1],
+									   head->r3_item->r_data[2], child_model);
         head = head->_next;
     };
     return index;
@@ -112,7 +113,7 @@ void r3_tree_value3_edited(gchar *path_str, gchar *new_text,
     printf("Change %lf to %lf\n", old_value3, new_value);
     
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_NAME, new_value, -1);
+                       COLUMN_FIELD_MATH, new_value, -1);
     gtk_tree_path_free(child_path);
     gtk_tree_path_free(path);
     
@@ -289,7 +290,7 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     GtkAdjustment *adjust;
     
     /* Construct empty list storage */
-    child_model = gtk_list_store_new(2, G_TYPE_DOUBLE, G_TYPE_DOUBLE);
+    child_model = gtk_list_store_new(3, G_TYPE_DOUBLE, G_TYPE_DOUBLE, G_TYPE_DOUBLE);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* ソート用のモデルを作成してツリービューにセットする */
@@ -332,7 +333,7 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
                  "climb-rate", 0.1,
                  "digits", 3, 
                  "editable", TRUE, 
-                 "width", (gint)150, NULL);
+                 "width", (gint)100, NULL);
     
     gtk_tree_view_column_pack_start(column, renderer_spin2, TRUE);
     gtk_tree_view_column_set_attributes(column, renderer_spin2, "text", COLUMN_FIELD_NAME, NULL);

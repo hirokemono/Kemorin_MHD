@@ -157,6 +157,7 @@ module:
 	tree_view_4_light_position.h \
 	t_control_real_IO.o \
 	t_control_real3_IO.o \
+	m_phong_light_table_c.o \
 	tree_views_4_fixed_lists_GTK.o \
 	tree_view_real3_GTK.o \
 	quicksort_c.o \

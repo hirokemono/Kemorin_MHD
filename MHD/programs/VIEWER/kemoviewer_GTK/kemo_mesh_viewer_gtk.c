@@ -155,7 +155,7 @@ static void main_menu_handler(int sel){
 	else if(sel == SAVE_SNAPSHOT)  { save_image_handler(); }
 	else if(sel == SAVE_EVOLUTION) { save_evolution_handler(); }
 	else if(sel == SAVE_ROTATION) { save_rot_image_handler_gtk(); }
-    else if(sel == SET_BACKGROUND) { set_background_color_gtk(); };
+    else if(sel == SET_BACKGROUND) { set_background_color_gtk(single_kemoview); };
     return;
 };
 

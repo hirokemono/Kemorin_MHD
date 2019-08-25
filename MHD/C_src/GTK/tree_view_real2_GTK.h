@@ -24,7 +24,7 @@ struct r2_clist_view{
 /* prototypes */
 
 void init_r2_clist_views(struct real2_clist *r2_clist, struct r2_clist_view *cmap_vws);
-int append_r3_item_to_tree(int index, double r1_data, double r2_data, 
+int append_r2_item_to_tree(int index, double r1_data, double r2_data, 
 			GtkTreeModel *child_model);
 int append_r2_list_from_ctl(int index, struct real2_ctl_list *head, 
 			GtkTreeView *r2_tree_view);

@@ -15,22 +15,48 @@ void init_light_views_4_ctl(struct real3_clist *light_list,
     return;
 }
 
-void init_light_views_4_viewer(struct lightparams_view *light_vws){
+void init_light_views_4_viewer(struct phong_lights *lights, struct lightparams_view *light_vws){
+	int i, num;
+	float r,t, p;
 	light_vws->light_rtp_vws = (struct r3_clist_view *) malloc(sizeof(struct r3_clist_view));
+	light_vws->light_rtp_vws->r3_clist_gtk = (struct real3_clist *) malloc(sizeof(struct real3_clist));
 	init_real3_clist(light_vws->light_rtp_vws->r3_clist_gtk);
 	
     sprintf(light_vws->light_rtp_vws->r3_clist_gtk->clist_name, "Ligut position");
     sprintf(light_vws->light_rtp_vws->r3_clist_gtk->r1_name, "radius");
     sprintf(light_vws->light_rtp_vws->r3_clist_gtk->r2_name, "elevation");
-    sprintf(light_vws->light_rtp_vws->r3_clist_gtk->r3_name, "azimuth");
-    return;
+	sprintf(light_vws->light_rtp_vws->r3_clist_gtk->r3_name, "azimuth");
+	
+	light_vws->lights_gtk = lights;
+	
+	num = send_num_light_position(light_vws->lights_gtk);
+	for(i=0;i<num;i++){
+		send_each_light_rtp(light_vws->lights_gtk, i, &r, &t, &p);
+		append_real3_clist((double) r, (double) t, (double) p, light_vws->light_rtp_vws);
+	}
+	return;
 }
 
 void dealloc_light_views_4_viewer(struct lightparams_view *light_vws){
+	free(light_vws->lights_gtk);
 	free(light_vws->light_rtp_vws);
 	free(light_vws);
     return;
 }
+
+static void sync_phong_light_position_from_list(struct lightparams_view *light_vws){
+	double r, t, p;
+	int i;
+	int num = count_real3_clist(light_vws->light_rtp_vws);
+	dealloc_phong_light_list(light_vws->lights_gtk);
+	alloc_phong_light_list(light_vws->lights_gtk, num);
+	for(i=0;i<num;i++){
+		copy_from_real3_clist(light_vws->light_rtp_vws, i, &r, &t, &p);
+		set_each_light_position(light_vws->lights_gtk,
+					i, (float) r, (float) t, (float) p);
+	};
+	return;
+};
 
 void light_radius_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
@@ -39,8 +65,8 @@ void light_radius_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 	
 	r3_tree_value1_edited(path_str, new_text, 
 				light_vws->light_rtp_vws->tree_view, light_vws->light_rtp_vws->r3_clist_gtk);
-    write_real3_clist(stdout, 0, "value1 changed", light_vws->light_rtp_vws->r3_clist_gtk);
-	
+	write_real3_clist(stdout, 0, "value1 changed", light_vws->light_rtp_vws->r3_clist_gtk);
+	sync_phong_light_position_from_list(light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
 
@@ -52,7 +78,7 @@ void light_theta_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 	r3_tree_value2_edited(path_str, new_text, 
 				light_vws->light_rtp_vws->tree_view, light_vws->light_rtp_vws->r3_clist_gtk);
 	write_real3_clist(stdout, 0, "value2 changed", light_vws->light_rtp_vws->r3_clist_gtk);
-	
+	sync_phong_light_position_from_list(light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
 
@@ -64,7 +90,7 @@ void light_phi_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 	r3_tree_value3_edited(path_str, new_text, 
 				light_vws->light_rtp_vws->tree_view, light_vws->light_rtp_vws->r3_clist_gtk);
 	write_real3_clist(stdout, 0, "value3 changed", light_vws->light_rtp_vws->r3_clist_gtk);
-	
+	sync_phong_light_position_from_list(light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
 
@@ -72,19 +98,19 @@ void add_lightposition_list_items_cb(GtkButton *button, gpointer user_data){
     struct lightparams_view *light_vws = (struct lightparams_view *) user_data;
 	cairo_t *cr;
 	
-	light_vws->light_rtp_vws->index_bc = add_r2_list_items(light_vws->light_rtp_vws->index_bc, 
+	light_vws->light_rtp_vws->index_bc = add_r3_list_items(light_vws->light_rtp_vws->index_bc, 
 				light_vws->light_rtp_vws->tree_view, light_vws->light_rtp_vws->r3_clist_gtk);
-    write_real2_clist(stdout, 0, "columns added", light_vws->light_rtp_vws->r3_clist_gtk);
-	
+    write_real3_clist(stdout, 0, "columns added", light_vws->light_rtp_vws->r3_clist_gtk);
+	sync_phong_light_position_from_list(light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
 void delete_lightposition_list_items_cb(GtkButton *button, gpointer user_data){
     struct lightparams_view *light_vws = (struct lightparams_view *) user_data;
 	cairo_t *cr;
 	
-	delete_r2_list_items(light_vws->light_rtp_vws->tree_view, light_vws->light_rtp_vws->r3_clist_gtk);
-    write_real2_clist(stdout, 0, "columns deleted", light_vws->light_rtp_vws->r3_clist_gtk);
-	
+	delete_r3_list_items(light_vws->light_rtp_vws->tree_view, light_vws->light_rtp_vws->r3_clist_gtk);
+    write_real3_clist(stdout, 0, "columns deleted", light_vws->light_rtp_vws->r3_clist_gtk);
+	sync_phong_light_position_from_list(light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
 
@@ -98,6 +124,7 @@ void add_lightposition_list_box(struct lightparams_view *light_vws, GtkWidget *v
 	light_vws->light_rtp_vws->tree_view = gtk_tree_view_new();
 	renderer_spin1 = gtk_cell_renderer_spin_new();
 	renderer_spin2 = gtk_cell_renderer_spin_new();
+	renderer_spin3 = gtk_cell_renderer_spin_new();
 	
 	create_real3_tree_view(light_vws->light_rtp_vws->tree_view, 
                            light_vws->light_rtp_vws->r3_clist_gtk, 

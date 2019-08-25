@@ -233,9 +233,9 @@ void set_from_real3_ctl_list_at_index(int index, struct real3_ctl_list *head,
 static void set_real3_ctl_list_by_midvalue(struct real3_ctl_list *current, double ave[3]){
 	int i;
 	if(current->_prev->r3_item == NULL){
-        for(i=0;i<2;i++) {ave[i] = current->_next->r3_item->r_data[i];};
+        for(i=0;i<3;i++) {ave[i] = current->_next->r3_item->r_data[i];};
 	}else if(current->_next->r3_item == NULL){
-        for(i=0;i<2;i++) {ave[i] = current->_prev->r3_item->r_data[i];};
+        for(i=0;i<3;i++) {ave[i] = current->_prev->r3_item->r_data[i];};
 	}else{
 		for(i=0;i<3;i++){
 			ave[i] = 0.5 * (current->_prev->r3_item->r_data[i] + current->_next->r3_item->r_data[i]);
@@ -380,6 +380,17 @@ void copy_to_real3_ctl_list(int num, double *v1, double *v2, double *v3,
 		head = add_real3_ctl_list_after(head);
 		update_real3_ctl_item_c(v1[i], v2[i], v3[i], head->r3_item);
 	};
+	return;
+};
+
+void copy_from_real3_clist(struct real3_clist *r3_clst, int num,
+			double *v1, double *v2, double *v3){
+	copy_from_real3_ctl_list(&r3_clst->r3_item_head, num, v1, v2, v3);
+	return;
+}
+void copy_to_real3_clist(int num, double *v1, double *v2, double *v3,
+			struct real3_clist *r3_clst){
+	copy_to_real3_ctl_list(num, v1, v2, v3, &r3_clst->r3_item_head);
 	return;
 };
 

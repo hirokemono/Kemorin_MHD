@@ -12,13 +12,15 @@
 
 #include "t_control_real_IO.h"
 #include "t_control_real3_IO.h"
+#include "m_phong_light_table_c.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_real3_GTK.h"
 #include "quicksort_c.h"
 
 struct lightparams_view{
     struct r3_clist_view *light_rtp_vws;
-
+	struct phong_lights *lights_gtk;
+	
     GtkWidget *scrolled_window;
 };
 
@@ -26,7 +28,7 @@ struct lightparams_view{
 
 void init_light_views_4_ctl(struct real3_clist *light_list, 
 			struct lightparams_view *light_vws);
-void init_light_views_4_viewer(struct lightparams_view *light_vws);
+void init_light_views_4_viewer(struct phong_lights *lights, struct lightparams_view *light_vws);
 void dealloc_light_views_4_viewer(struct lightparams_view *light_vws);
 
 void add_light_list_box(struct lightparams_view *light_vws, GtkWidget *vbox);

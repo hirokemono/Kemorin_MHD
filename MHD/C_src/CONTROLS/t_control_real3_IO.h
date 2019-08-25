@@ -94,8 +94,8 @@ void set_from_real3_clist_at_c_tbl(double ref_1, double ref_2, double ref_3,
 			struct real3_clist *r3_clst, double *r1_out, double *r2_out, double *r3_out);
 
 void copy_from_real3_clist(struct real3_clist *r3_clst, int num,
-			double *v1, double *v2);
-void copy_to_real3_clist(int num, double *v1, double *v2,
+			double *v1, double *v2, double *v3);
+void copy_to_real3_clist(int num, double *v1, double *v2, double *v3,
 			struct real3_clist *r3_clst);
 
 
