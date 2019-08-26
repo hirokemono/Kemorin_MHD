@@ -127,6 +127,37 @@ static void set_circle_of_tube(int ncorner, double radius, double xx_line[3], do
 		angle = TWO * pi * (double)k / (double)ncorner;
 		for (nd=0; nd<3; nd++) {
 			norm_wall[3*k+nd] = norm_nod[nd] * cos(angle)
+					          + norm_2nd[nd] * sin(angle);
+			xx_wall[3*k+nd] =   xx_line[nd] + radius*norm_wall[3*k+nd];
+		};
+	};
+	return;
+}
+
+static void set_circle_of_line(int ncorner, double radius, double xx_line[3], double norm_nod[3], 
+					  double dir_nod[3], double *xx_wall, double *norm_wall) {
+	int k, nd;
+	double norm_2nd[3], angle, len, nrm1, nrm2, r_mod, pi;
+	
+	pi = FOUR * atan(ONE);
+	norm_2nd[0] = dir_nod[1] * norm_nod[2]
+				- dir_nod[2] * norm_nod[1];
+	norm_2nd[1] = dir_nod[2] * norm_nod[0]
+				- dir_nod[0] * norm_nod[2];
+	norm_2nd[2] = dir_nod[0] * norm_nod[1]
+				- dir_nod[1] * norm_nod[0];
+	len =  sqrt(dir_nod[0]*dir_nod[0] +dir_nod[1]*dir_nod[1]+dir_nod[2]*dir_nod[2]);
+	nrm2 = sqrt(norm_2nd[0]*norm_2nd[0] +norm_2nd[1]*norm_2nd[1]+norm_2nd[2]*norm_2nd[2]);
+	nrm1 = sqrt(norm_nod[0]*norm_nod[0] +norm_nod[1]*norm_nod[1]+norm_nod[2]*norm_nod[2]);
+	r_mod =  (len*nrm1) / nrm2;
+	for (nd=0; nd<3; nd++){ 
+		norm_2nd[nd] = norm_2nd[nd]/nrm2;
+		norm_nod[nd] = norm_nod[nd]/nrm1;
+	};		
+	for(k=0;k<ncorner;k++){
+		angle = TWO * pi * (double)k / (double)ncorner;
+		for (nd=0; nd<3; nd++) {
+			norm_wall[3*k+nd] = norm_nod[nd] * cos(angle)
 					  + r_mod * norm_2nd[nd] * sin(angle);
 			xx_wall[3*k+nd] =   xx_line[nd] + radius*norm_wall[3*k+nd];
 		};
@@ -153,9 +184,9 @@ int set_tube_vertex(int ncorner, double radius,
 	int npatch_wall = 0;
 	int k, nd;
 	
-	set_circle_of_tube(ncorner, radius, &x_line[0], &norm_line[0], &dir_line[0],
+	set_circle_of_line(ncorner, radius, &x_line[0], &norm_line[0], &dir_line[0],
 					   xx_w1, norm_w1);
-	set_circle_of_tube(ncorner, radius, &x_line[3], &norm_line[3], &dir_line[3],
+	set_circle_of_line(ncorner, radius, &x_line[3], &norm_line[3], &dir_line[3],
 					   xx_w2, norm_w2);
 	
 	for(k=0;k<ncorner-1;k++){
@@ -210,7 +241,7 @@ int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_lin
                     double color_line[8], double *xyz, double *nor, double *col){
     double norm_line[6];
     double xx_w1[3*ncorner], norm_w1[3*ncorner];
-    int num = 0;
+    int npatch_wall = 0;
     int k, nd;
     
     for(k=0;k<2;k++){
@@ -250,8 +281,8 @@ int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_lin
         };
     };
     
-    num = ncorner;
-    return num;
+    npatch_wall = ncorner;
+    return npatch_wall;
 }
 
 
