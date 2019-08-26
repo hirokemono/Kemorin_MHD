@@ -118,10 +118,7 @@ static void read_draw_kemoview_data_gtk(){
 };
 
 static void kemoview_psf_draw_input_setting(int selected){
-	if      (selected == ISET_RANGE)       {
-		set_psf_range_gtk();
-	}
-	else if (selected == ISET_PSF_VEC_INC) {
+	if (selected == ISET_PSF_VEC_INC) {
 		set_psf_vector_increment_gtk();
 	}
 	else if (selected == ISET_PSF_REFVECT) {

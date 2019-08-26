@@ -25,7 +25,6 @@
 
 void set_psf_single_color_gtk();
 void edit_psf_colormap_gtk(struct kemoviewer_type *single_kemoview);
-void set_psf_range_gtk();
 void set_fline_range_gtk();
 void set_fline_thick_gtk();
 void set_psf_vector_increment_gtk();

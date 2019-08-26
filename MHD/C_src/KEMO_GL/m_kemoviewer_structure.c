@@ -837,6 +837,9 @@ void kemoview_set_PSF_constant_opacity(double opacity){
     set_PSF_constant_opacity(kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu, opacity);
 }
 
+void kemoview_get_PSF_rgb_at_value(double value, double *red, double *green, double *blue){
+    set_PSF_rgb_from_value(kemo_sgl->psf_current_menu, value, red, green, blue);
+}
 double kemoview_get_PSF_opacity_at_value(double value){
     return get_PSF_opacity_at_value(kemo_sgl->psf_current_menu, value);
 }

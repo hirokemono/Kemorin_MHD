@@ -401,27 +401,6 @@ void edit_psf_colormap_gtk(struct kemoviewer_type *single_kemoview){
 	return;
 }
 
-void set_psf_range_gtk(){
-	double range_min, range_max;
-    struct kv_string *colorname;
-	
-	int ifield = kemoview_get_PSF_field_id();
-	int icomp = kemoview_get_PSF_draw_data_address();
-	
-    colorname = kemoview_alloc_kvstring();
-	kemoview_get_PSF_field_name(colorname, ifield);
-	range_min = kemoview_get_PSF_min_data(icomp);
-	range_max = kemoview_get_PSF_max_data(icomp);
-	
-	gtk_range_menu(range_min, range_max, colorname);
-    kemoview_free_kvstring(colorname);
-
-    if(iflag_set == IZERO) return; 
-	
-	kemoview_set_PSF_linear_colormap(gtk_min, gtk_max);
-	return;
-}
-
 void set_fline_range_gtk(){
 	double range_min, range_max;
 	
