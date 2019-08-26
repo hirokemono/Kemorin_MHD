@@ -2629,12 +2629,12 @@
                                                     <popUpButton verticalHuggingPriority="750" id="3006">
                                                         <rect key="frame" x="83" y="97" width="99" height="26"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <popUpButtonCell key="cell" type="push" title="Rainbow" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="3012" id="3009">
+                                                        <popUpButtonCell key="cell" type="push" title="Colored" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="3012" id="3009">
                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="menu"/>
                                                             <menu key="menu" title="OtherViews" id="3010">
                                                                 <items>
-                                                                    <menuItem title="Rainbow" state="on" id="3012"/>
+                                                                    <menuItem title="Colored" state="on" id="3012" userLabel="Colored"/>
                                                                     <menuItem title="White" tag="1" id="3011"/>
                                                                 </items>
                                                             </menu>
