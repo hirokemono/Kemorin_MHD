@@ -38,29 +38,169 @@ static void load_colormap_file_panel(GtkButton *loadButton, gpointer user_data){
 	return;
 };
 
+static void set_nline_CB(GtkWidget *entry, gpointer user_data)
+{
+	struct colormap_view *color_vws = (struct colormap_view *) user_data;
+	float gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+	kemoview_set_PSF_num_isoline(gtk_intvalue);
+	return;
+}
+
 static void set_psf_opacity_CB(GtkWidget *entry, gpointer user_data)
 {
 	struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	float gtk_min = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_constant_opacity(gtk_min);
-	printf("gtk_min %d\n", gtk_min);
+	int gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	kemoview_set_PSF_constant_opacity(gtk_floatvalue);
+	return;
+}
+
+void add_gtk_isoline_menu(struct colormap_view *color_vws, GtkWidget *box){
+	GtkWidget *hbox_22, *hbox_23;
+	
+	GtkWidget *expander_iso,  *scroll_iso, *Frame_iso;
+	GtkWidget *hbox_iso,  *vbox_iso;
+	
+	GtkWidget *spin_nline;
+	GtkAdjustment *adj_nline;
+	char current_nline_txt[30];
+	
+	int current_nline = kemoview_get_PSF_num_isoline();
+	sprintf(current_nline_txt, "    %d    ", current_nline);
+	adj_nline = gtk_adjustment_new ((double) current_nline, 0, 200, 1, 1, 0.0);
+	spin_nline = gtk_spin_button_new(GTK_ADJUSTMENT(adj_nline), 0, 2);
+	g_signal_connect(spin_nline, "value-changed", G_CALLBACK(set_nline_CB), color_vws);
+	
+	hbox_23 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_23), gtk_label_new("Current num. of lines: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_23), gtk_label_new(current_nline_txt), TRUE, TRUE, 0);
+	hbox_22 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_22), gtk_label_new("Num. of lines: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_22), spin_nline, TRUE, TRUE, 0);
+	
+	vbox_iso = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_23, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_22, TRUE, TRUE, 0);
+	
+	Frame_iso = gtk_frame_new("");
+	gtk_frame_set_shadow_type(GTK_FRAME(Frame_iso), GTK_SHADOW_IN);
+	gtk_container_add(GTK_CONTAINER(Frame_iso), vbox_iso);
+	
+	hbox_iso = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_iso), gtk_label_new("  "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_iso), Frame_iso, TRUE, TRUE, 0);
+	
+	scroll_iso = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_iso),
+				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scroll_iso, 400, 300);
+	gtk_container_add(GTK_CONTAINER(scroll_iso), hbox_iso);
+	
+	expander_iso = gtk_expander_new_with_mnemonic("Isolines");
+	gtk_container_add(GTK_CONTAINER(expander_iso), scroll_iso);
+	
+	gtk_box_pack_start(GTK_BOX(box), expander_iso, TRUE, FALSE, 0);
+	return;
+}
+
+void add_gtk_psf_surface_menu(struct colormap_view *color_vws, GtkWidget *box){
+	GtkWidget *hbox_2, *hbox_3;
+	
+	GtkWidget *expander_psf,  *scroll_psf, *Frame_psf;
+	GtkWidget *hbox_psf,  *vbox_psf;
+	
+	GtkWidget *spin_opacity1;
+	GtkAdjustment *adj_opacity1;
+	char current_text[30];
+	double current_value;
+	
+	current_value = kemoview_get_PSF_max_opacity();
+	sprintf(current_text, "    %e    ", current_value);
+	adj_opacity1 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
+	spin_opacity1 = gtk_spin_button_new(GTK_ADJUSTMENT(adj_opacity1), 0, 2);
+	g_signal_connect(spin_opacity1, "value-changed", G_CALLBACK(set_psf_opacity_CB), color_vws);
+	
+	
+	hbox_3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_3), gtk_label_new("Current opacity: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_3), gtk_label_new(current_text), TRUE, TRUE, 0);
+	hbox_2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_2), gtk_label_new("Opacity: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_2), spin_opacity1, TRUE, TRUE, 0);
+	
+	vbox_psf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_3, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_2, TRUE, TRUE, 0);
+	
+	Frame_psf = gtk_frame_new("");
+	gtk_frame_set_shadow_type(GTK_FRAME(Frame_psf), GTK_SHADOW_IN);
+	gtk_container_add(GTK_CONTAINER(Frame_psf), vbox_psf);
+	
+	hbox_psf = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_psf), gtk_label_new("  "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_psf), Frame_psf, TRUE, TRUE, 0);
+	
+	scroll_psf = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_psf),
+				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scroll_psf, 400, 300);
+	gtk_container_add(GTK_CONTAINER(scroll_psf), hbox_psf);
+	
+	expander_psf = gtk_expander_new_with_mnemonic("Surface");
+	gtk_container_add(GTK_CONTAINER(expander_psf), scroll_psf);
+	
+	gtk_box_pack_start(GTK_BOX(box), expander_psf, TRUE, FALSE, 0);
+	return;
+}
+
+void add_gtk_psf_colormap_menu(struct colormap_view *color_vws, GtkWidget *box){
+	GtkButton *saveButton, *loadButton;
+	
+	GtkWidget *expander_cmap, *scroll_cmap, *Frame_cmap;
+	GtkWidget *hbox_cmap, *vbox_cmap;
+	
+	saveButton = gtk_button_new_with_label("Save colormap...");
+	g_signal_connect(G_OBJECT(saveButton), "clicked", 
+				G_CALLBACK(save_colormap_file_panel), G_OBJECT(color_vws));
+	
+	loadButton = gtk_button_new_with_label("Load colormap...");
+	g_signal_connect(G_OBJECT(loadButton), "clicked", 
+				G_CALLBACK(load_colormap_file_panel), G_OBJECT(color_vws));
+	
+	vbox_cmap = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	add_colormp_list_box(color_vws, vbox_cmap);
+	gtk_box_pack_start(GTK_BOX(vbox_cmap), saveButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_cmap), loadButton, FALSE, FALSE, 0);
+	
+	Frame_cmap = gtk_frame_new("");
+	gtk_frame_set_shadow_type(GTK_FRAME(Frame_cmap), GTK_SHADOW_IN);
+	gtk_container_add(GTK_CONTAINER(Frame_cmap), vbox_cmap);
+	
+	hbox_cmap = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_cmap), gtk_label_new("  "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_cmap), Frame_cmap, TRUE, TRUE, 0);
+	
+	scroll_cmap = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_cmap),
+				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scroll_cmap, 400, 500);
+	gtk_container_add(GTK_CONTAINER(scroll_cmap), hbox_cmap);
+	
+	expander_cmap = gtk_expander_new_with_mnemonic("Color map editor");
+	gtk_container_add(GTK_CONTAINER(expander_cmap), scroll_cmap);
+	
+	gtk_box_pack_start(GTK_BOX(box), expander_cmap, TRUE, FALSE, 0);
 	return;
 }
 
 void gtk_psf_colormap_menu(struct kv_string *title, 
 			struct kemoviewer_type *kemoviewer_data){
-	struct colormap_view *color_vws;
-	GtkWidget *box, *vbox_1, *hbox_1, *hbox_2, *hbox_3;
-	GtkButton *closeButton, *saveButton, *loadButton;
+	GtkWidget *hbox_22, *hbox_23;
+	GtkWidget *box;
+	GtkButton *closeButton;
 	
-	GtkWidget *Frame_1;
-	GtkWidget *expander;
-	GtkWidget *scrolled_window;
-	
-	GtkWidget *spin1;
-	GtkAdjustment *adj;
-	char current_text[30];
-	double current_value;
+	struct colormap_view *color_vws
+			= (struct colormap_view *) malloc(sizeof(struct colormap_view));
+	init_colormap_views_4_viewer(kemoviewer_data->psf_current_menu, color_vws);
 	
 	
 	window_cmap = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -73,58 +213,11 @@ void gtk_psf_colormap_menu(struct kv_string *title,
 	g_signal_connect(G_OBJECT(closeButton), "clicked", 
 				G_CALLBACK(cb_close_window), window_cmap);
 	
-	current_value = kemoview_get_PSF_max_opacity();
-	sprintf(current_text, "    %e    ", current_value);
-	adj = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
-	spin1 = gtk_spin_button_new(GTK_ADJUSTMENT(adj), 0, 2);
-	g_signal_connect(spin1, "value-changed", G_CALLBACK(set_psf_opacity_CB), color_vws);
-	
-	
-	color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
-	init_colormap_views_4_viewer(kemoviewer_data->psf_current_menu, color_vws);
-	
-	saveButton = gtk_button_new_with_label("Save colormap...");
-	g_signal_connect(G_OBJECT(saveButton), "clicked", 
-				G_CALLBACK(save_colormap_file_panel), G_OBJECT(color_vws));
-	
-	loadButton = gtk_button_new_with_label("Load colormap...");
-	g_signal_connect(G_OBJECT(loadButton), "clicked", 
-				G_CALLBACK(load_colormap_file_panel), G_OBJECT(color_vws));
-	
-	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	add_colormp_list_box(color_vws, vbox_1);
-	gtk_box_pack_start(GTK_BOX(vbox_1), saveButton, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_1), loadButton, FALSE, FALSE, 0);
-	
-	Frame_1 = gtk_frame_new("");
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
-	gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
-	
-	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
-	
-	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
-				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scrolled_window, 400, 500);
-	gtk_container_add(GTK_CONTAINER(scrolled_window), hbox_1);
-	
-	expander = gtk_expander_new_with_mnemonic("Color map editor");
-	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
-	
-	hbox_3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_3), gtk_label_new("Current opacity: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_3), gtk_label_new(current_text), TRUE, TRUE, 0);
-	hbox_2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_2), gtk_label_new("Opacity: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_2), spin1, TRUE, TRUE, 0);
-	
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(window_cmap), box);
-	gtk_box_pack_start(GTK_BOX(box), hbox_3, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(box), hbox_2, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(box), expander, TRUE, FALSE, 0);
+	add_gtk_isoline_menu(color_vws, box);
+	add_gtk_psf_surface_menu(color_vws, box);
+	add_gtk_psf_colormap_menu(color_vws, box);
 	gtk_box_pack_start(GTK_BOX(box), closeButton, FALSE, FALSE, 0);
 	
 	gtk_widget_show_all(window_cmap);

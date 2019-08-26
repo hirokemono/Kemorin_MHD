@@ -453,17 +453,6 @@ void set_fline_thick_gtk(){
 	return;
 }
 
-void set_num_isoline_gtk(){
-	int nline;
-	
-	nline = kemoview_get_PSF_num_isoline();
-	gtk_nline_menu(nline, "Set number of lines");
-	if(iflag_set == IZERO) return; 
-	
-	if(nline > 0) kemoview_set_PSF_num_isoline(gtk_intvalue);
-	return;
-}
-
 void set_psf_vector_increment_gtk(){
 	int num_inc;
 	

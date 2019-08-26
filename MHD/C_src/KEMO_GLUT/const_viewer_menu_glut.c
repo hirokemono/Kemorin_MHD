@@ -296,7 +296,7 @@ void glut_PSF_range_menu(){
 /*	int iflag_refv =  kemoview_get_PSF_draw_refv();*/
 
 	glutAddMenuEntry("Set range",              ISET_RANGE);
-	glutAddMenuEntry("Set number of isolines", ISET_NLINE);
+//	glutAddMenuEntry("Set number of isolines", ISET_NLINE);
 //	glutAddMenuEntry("Set Opacity",            ISET_PSF_OPACITY);
 	
 	
