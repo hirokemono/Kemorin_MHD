@@ -21,6 +21,13 @@
 /*  prototypes */
 /* Routines for inout from console */
 
+void kemoview_gtk_read_file_select(gpointer data);
+void kemoview_gtk_save_file_select(gpointer data);
+
+struct kv_string * kemoview_read_file_panel(GtkWidget *window_cmap);
+struct kv_string * kemoview_save_file_panel(GtkWidget *window_cmap);
+
+
 void read_kemoview_data_gtk();
 int input_texture_file_gtk(struct kv_string *file_prefix);
 int output_image_file_gtk(struct kv_string *file_prefix);
@@ -29,8 +36,6 @@ int output_evolution_file_gtk(struct kv_string *file_prefix,
 int output_rotation_file_gtk(struct kv_string *file_prefix,
 			int *axis_ID, int *inc_rot);
 
-void save_PSF_colormap_file_gtk();
-void load_PSF_colormap_file_gtk();
 void save_viewmatrix_file_gtk();
 void load_viewmatrix_file_gtk();
 

@@ -10,7 +10,6 @@ tree_view_real2_GTK.o \
 tree_view_4_pvr_colormap.o \
 \
 kemo_mesh_viewer_gtk.o \
-kemoview_fileselector_gtk.o \
 kemoview_gtk_window_input.o \
 kemoviewer_gtk.o \
 \
@@ -71,17 +70,6 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
 	'$$(KEMOVIEW_GTKDIR)'/kemo_mesh_viewer_gtk.c \
-	>> $(MAKENAME)
-	
-	@echo \
-	kemoview_fileselector_gtk.o:  \
-	'$$(KEMOVIEW_GTKDIR)'/kemoview_fileselector_gtk.c  \
-	kemoviewer.h \
-	kemoview_fileselector_gtk.h \
-	kemoview_glut_routines.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
-	'$$(KEMOVIEW_GTKDIR)'/kemoview_fileselector_gtk.c \
 	>> $(MAKENAME)
 	
 	@echo \

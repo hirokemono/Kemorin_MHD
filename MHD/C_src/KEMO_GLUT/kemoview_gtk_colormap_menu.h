@@ -11,14 +11,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "gtk/gtk.h"
 
-#include <string.h>
 #include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_4_light_position.h"
+#include "kemoview_fileselector_gtk.h"
 
 /*  prototypes */
 

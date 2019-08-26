@@ -17,10 +17,32 @@ static void cb_close_window(GtkButton *button, gpointer user_data){
     gtk_widget_destroy(window);
 };
 
+static void save_colormap_file_panel(GtkButton *saveButton, gpointer user_data){
+	struct colormap_view *color_vws = (struct colormap_view *) user_data;
+	struct kv_string *filename = kemoview_save_file_panel(window_cmap);
+	
+	if(filename->string[0] != '\0'){
+		write_colormap_control_file_s(filename->string, color_vws->cmap_param);
+	};
+	kemoview_free_kvstring(filename);
+	return;
+};
+static void load_colormap_file_panel(GtkButton *loadButton, gpointer user_data){
+	struct colormap_view *color_vws = (struct colormap_view *) user_data;
+	struct kv_string *filename = kemoview_read_file_panel(window_cmap);
+	
+	if(filename->string[0] != '\0'){
+		read_colormap_control_file_s(filename->string, color_vws->cmap_param);
+	};
+	kemoview_free_kvstring(filename);
+	return;
+};
+
 void gtk_psf_colormap_menu(struct kv_string *title, 
 			struct kemoviewer_type *kemoviewer_data){
-    struct colormap_view *color_vws;
+	struct colormap_view *color_vws;
 	GtkWidget *box;
+	GtkButton *closeButton, *saveButton, *loadButton;
 	
 	window_cmap = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window_cmap), title->string);
@@ -28,17 +50,27 @@ void gtk_psf_colormap_menu(struct kv_string *title,
 	g_signal_connect(window_cmap, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	gtk_container_set_border_width(GTK_CONTAINER(window_cmap), 5);
 	
-	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_container_add(GTK_CONTAINER(window_cmap), box);
 	color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
 	init_colormap_views_4_viewer(kemoviewer_data->psf_current_menu, color_vws);
 	
+	saveButton = gtk_button_new_with_label("Save colormap...");
+	g_signal_connect(G_OBJECT(saveButton), "clicked", 
+				G_CALLBACK(save_colormap_file_panel), G_OBJECT(color_vws));
+	
+	loadButton = gtk_button_new_with_label("Load colormap...");
+	g_signal_connect(G_OBJECT(loadButton), "clicked", 
+				G_CALLBACK(load_colormap_file_panel), G_OBJECT(color_vws));
+	
+	closeButton = gtk_button_new_with_label("Update");
+	g_signal_connect(G_OBJECT(closeButton), "clicked", 
+				G_CALLBACK(cb_close_window), window_cmap);
+	
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_container_add(GTK_CONTAINER(window_cmap), box);
 	add_colormp_list_box(color_vws, box);
-	GtkButton *button;
-	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-    gtk_box_pack_start(GTK_BOX(box), button, FALSE, FALSE, 0);
-    g_signal_connect(G_OBJECT(button), "clicked", 
-                     G_CALLBACK(cb_close_window), window_cmap);
+	gtk_box_pack_start(GTK_BOX(box), saveButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box), loadButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box), closeButton, FALSE, FALSE, 0);
 	
 	gtk_widget_show_all(window_cmap);
 	gtk_main();

@@ -98,7 +98,7 @@ static void IncChange(GtkWidget *entry, gpointer data)
    Constract input windows
 */
 
-static void kemoview_gtk_read_file_select(GtkButton *button, gpointer data){
+void kemoview_gtk_read_file_select(gpointer data){
 	int response;
 	GtkWidget *parent;
 	GtkEntry *entry;
@@ -128,6 +128,7 @@ static void kemoview_gtk_read_file_select(GtkButton *button, gpointer data){
 	}
 	else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
+		iflag_set = ZERO;
 	}
 	else{
     g_print( "Another response was received.\n" );
@@ -136,7 +137,7 @@ static void kemoview_gtk_read_file_select(GtkButton *button, gpointer data){
 	return;
 }
 
-static void kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
+void kemoview_gtk_save_file_select(gpointer data){
 	int response;
 	GtkWidget *parent;
 	GtkEntry *entry;
@@ -166,13 +167,35 @@ static void kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
 	}
 	else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
+		iflag_set = ZERO;
 	}
 	else{
-    g_print( "Another response was received.\n" );
+		g_print( "Another response was received.\n" );
 	}
  	gtk_widget_destroy(filew);
 	return;
 }
+
+struct kv_string * kemoview_read_file_panel(GtkWidget *window_cmap){
+	GtkWidget *entry = gtk_entry_new();
+	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window_cmap);
+	kemoview_gtk_read_file_select(G_OBJECT(entry));
+	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
+	if(iflag_set == IZERO){
+		filename->string[0] = '\0';
+	};
+	return filename;
+};
+struct kv_string * kemoview_save_file_panel(GtkWidget *window_cmap){
+	GtkWidget *entry = gtk_entry_new();
+	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window_cmap);
+	kemoview_gtk_save_file_select(G_OBJECT(entry));
+	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
+	if(iflag_set == IZERO){
+		filename->string[0] = '\0';
+	};
+	return filename;
+};
 
 static void gtk_read_file_window(const char *title){
 	GtkWidget *hbox;
@@ -185,7 +208,7 @@ static void gtk_read_file_window(const char *title){
 	entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
 	
-	kemoview_gtk_read_file_select(NULL, entry);
+	kemoview_gtk_read_file_select(entry);
 	return;
 	
 }
@@ -199,7 +222,7 @@ static void gtk_save_file_window(const char *title){
 	entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
 	
-	kemoview_gtk_save_file_select(NULL, (gpointer)entry);
+	kemoview_gtk_save_file_select((gpointer)entry);
 	
 	return;
 	
@@ -276,8 +299,6 @@ static void gtk_image_fmt_menu(){
 
 	g_signal_connect(combox1, "changed", G_CALLBACK(fmt_changed), NULL);
 	g_signal_connect(bot1, "clicked", G_CALLBACK(cancel_clicked), NULL);
-/*	g_signal_connect(bot2, "clicked", G_CALLBACK(kemoview_gtk_save_file_select),
-				(gpointer)entry); */
 	g_signal_connect(bot3, "clicked", G_CALLBACK(fmt_clicked), NULL);
 	
 	gtk_widget_show_all(fmtw);
@@ -616,30 +637,6 @@ int output_rotation_file_gtk(struct kv_string *file_prefix, int *axis_ID, int *i
     kemoview_free_kvstring(stripped_ext);
 	return id_img;
 }
-
-void save_PSF_colormap_file_gtk(){
-    struct kv_string *filename;
-	
-	gtk_save_file_window("Save colormap file");
-	if(iflag_set == IZERO) return;
-	
-    filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
-	kemoview_write_PSF_colormap_file(filename);
-    kemoview_free_kvstring(filename);
-	return;
-};
-
-void load_PSF_colormap_file_gtk(){
-    struct kv_string *filename;
-    
-	gtk_read_file_window("Load colormap file");
-	if(iflag_set == IZERO) return;
-	
-    filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
-	kemoview_read_PSF_colormap_file(filename);
-	kemoview_free_kvstring(filename);
-	return;
-};
 
 void save_viewmatrix_file_gtk(){
     struct kv_string *filename;

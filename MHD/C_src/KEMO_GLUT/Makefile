@@ -7,6 +7,7 @@ kemoview_glut_routines.o \
 const_viewer_menu_glut.o \
 view_modifier_glut.o \
 \
+kemoview_fileselector_gtk.o \
 kemoview_gtk_colormap_menu.o
 
 #
@@ -59,6 +60,16 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	kemoview_fileselector_gtk.o:  \
+	'$$(KEMO_C_GLUTDIR)'/kemoview_fileselector_gtk.c  \
+	kemoviewer.h \
+	kemoview_fileselector_gtk.h \
+	kemoview_glut_routines.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	kemoview_gtk_colormap_menu.o: \
 	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_colormap_menu.c \
 	kemoview_gtk_colormap_menu.h \
@@ -66,8 +77,9 @@ module:
 	m_kemoviewer_data.h.o \
 	tree_view_4_pvr_colormap.o \
 	tree_view_4_light_position.o \
+	kemoview_fileselector_gtk.o \
 	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
 
 includes:
