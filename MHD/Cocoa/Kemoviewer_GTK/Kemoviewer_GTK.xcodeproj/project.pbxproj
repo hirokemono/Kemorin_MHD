@@ -215,6 +215,7 @@
 		1862C5DA2311C8D7000306E6 /* read_image_2_png.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C5D92311C8D7000306E6 /* read_image_2_png.c */; };
 		1862C5DF2311C912000306E6 /* gl_buffer_2_png.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C5DB2311C911000306E6 /* gl_buffer_2_png.c */; };
 		1862C5E02311C912000306E6 /* gl_buffer_2_bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C5DD2311C912000306E6 /* gl_buffer_2_bmp.c */; };
+		187B5CCA2313D07D00D8DA1E /* kemoview_gtk_PSF_vector_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 187B5CC82313D07C00D8DA1E /* kemoview_gtk_PSF_vector_menu.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -642,6 +643,8 @@
 		1862C5DC2311C911000306E6 /* gl_buffer_2_bmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gl_buffer_2_bmp.h; path = ../../../C_src/KEMO_GL/gl_buffer_2_bmp.h; sourceTree = "<group>"; };
 		1862C5DD2311C912000306E6 /* gl_buffer_2_bmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_buffer_2_bmp.c; path = ../../../C_src/KEMO_GL/gl_buffer_2_bmp.c; sourceTree = "<group>"; };
 		1862C5DE2311C912000306E6 /* gl_buffer_2_png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gl_buffer_2_png.h; path = ../../../C_src/KEMO_GL/gl_buffer_2_png.h; sourceTree = "<group>"; };
+		187B5CC82313D07C00D8DA1E /* kemoview_gtk_PSF_vector_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_PSF_vector_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_PSF_vector_menu.c; sourceTree = "<group>"; };
+		187B5CC92313D07D00D8DA1E /* kemoview_gtk_PSF_vector_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_PSF_vector_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_PSF_vector_menu.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1113,6 +1116,8 @@
 				1862C5882311BE3B000306E6 /* view_modifier_glut.h */,
 				1813D7012311E08100ADA9DA /* kemoview_gtk_colormap_menu.c */,
 				1813D7022311E08100ADA9DA /* kemoview_gtk_colormap_menu.h */,
+				187B5CC82313D07C00D8DA1E /* kemoview_gtk_PSF_vector_menu.c */,
+				187B5CC92313D07D00D8DA1E /* kemoview_gtk_PSF_vector_menu.h */,
 				1813D7042313514600ADA9DA /* kemoview_fileselector_gtk.c */,
 				1813D7052313514700ADA9DA /* kemoview_fileselector_gtk.h */,
 			);
@@ -1262,6 +1267,7 @@
 				1862C5452311BD2C000306E6 /* t_ctl_data_4_FEM_mesh_c.c in Sources */,
 				1862C5442311BD2C000306E6 /* t_control_data_visualizer_c.c in Sources */,
 				1862C3F32311BA93000306E6 /* numbers_to_bin_c.c in Sources */,
+				187B5CCA2313D07D00D8DA1E /* kemoview_gtk_PSF_vector_menu.c in Sources */,
 				1862C5BC2311BE6D000306E6 /* tree_view_4_light_position.c in Sources */,
 				1862C53D2311BD2C000306E6 /* t_ctl_data_4_fields_c.c in Sources */,
 				1862C5D42311C875000306E6 /* write_gl_window_to_file.c in Sources */,

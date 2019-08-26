@@ -71,33 +71,6 @@ static void MaxChange(GtkWidget *entry, gpointer data)
 	kemoview_set_PSF_linear_colormap(data_min, data_max);
 }
 
-static void set_ref_vector_CB(GtkWidget *entry, gpointer user_data)
-{
-	struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_vector_scale(gtk_floatvalue);
-	return;
-}
-
-static void set_vect_increment_CB(GtkWidget *entry, gpointer user_data)
-{
-	struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_vector_increment(gtk_intvalue);
-	return;
-}
-
-static void set_vector_width_CB(GtkWidget *entry, gpointer user_data)
-{
-	struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_vector_thickness(gtk_floatvalue);
-	return;
-}
-
-
-
-
 void add_gtk_isoline_menu(struct colormap_view *color_vws, GtkWidget *box){
 	GtkWidget *hbox_22, *hbox_23;
 	
@@ -268,97 +241,6 @@ void add_gtk_psf_colormap_menu(struct colormap_view *color_vws, GtkWidget *box){
 	gtk_container_add(GTK_CONTAINER(expander_cmap), scroll_cmap);
 	
 	gtk_box_pack_start(GTK_BOX(box), expander_cmap, TRUE, FALSE, 0);
-	return;
-}
-
-void add_gtk_psf_vector_menu(struct colormap_view *color_vws, GtkWidget *box){
-	GtkWidget *hbox_12, *hbox_13;
-	GtkWidget *hbox_22, *hbox_23;
-	GtkWidget *hbox_32, *hbox_33;
-	
-	GtkWidget *expander_vec,  *scroll_vec, *Frame_vec;
-	GtkWidget *hbox_iso,  *vbox_iso;
-	
-	GtkWidget *spin_ref_vect;
-	GtkAdjustment *adj_ref_vect;
-	double current_ref_vector;
-	char current_ref_vect_txt[30];
-	
-	GtkWidget *spin_vect_inc;
-	GtkAdjustment *adj_vect_inc;
-	int current_vec_increment;
-	char current_vec_inc_txt[30];
-	
-	GtkWidget *spin_vect_width;
-	GtkAdjustment *adj_vect_width;
-	double current_vec_width;
-	char current_vec_width_txt[30];
-	
-	current_ref_vector = kemoview_get_PSF_vector_scale();
-	sprintf(current_ref_vect_txt, "    %e    ", current_ref_vector);
-	adj_ref_vect = gtk_adjustment_new(current_ref_vector, 0.0, current_ref_vector*10.0, 0.01, 0.01, 0.0);
-	spin_ref_vect = gtk_spin_button_new(GTK_ADJUSTMENT(adj_ref_vect), 0, 2);
-	g_signal_connect(spin_ref_vect, "value-changed", G_CALLBACK(set_ref_vector_CB), color_vws);
-	
-	current_vec_increment = kemoview_get_PSF_vector_increment();
-	sprintf(current_vec_inc_txt, "    %d    ", current_vec_increment);
-	adj_vect_inc = gtk_adjustment_new((double) current_vec_increment, 0, 500, 1, 1, 0.0);
-	spin_vect_inc = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_inc), 0, 2);
-	g_signal_connect(spin_vect_inc, "value-changed", G_CALLBACK(set_vect_increment_CB), color_vws);
-	
-	current_vec_width = kemoview_get_PSF_vector_thickness();
-	sprintf(current_vec_width_txt, "    %e    ", current_vec_width);
-	adj_vect_width = gtk_adjustment_new(current_vec_width, 0.0, 1.0, 0.01, 0.01, 0.0);
-	spin_vect_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_width), 0, 2);
-	g_signal_connect(spin_vect_width, "value-changed", G_CALLBACK(set_vector_width_CB), color_vws);
-	
-	hbox_13 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_13), gtk_label_new("Current Vector ref.: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_13), gtk_label_new(current_ref_vect_txt), TRUE, TRUE, 0);
-	hbox_12 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_12), gtk_label_new("Reference: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_12), spin_ref_vect, TRUE, TRUE, 0);
-	
-	hbox_23 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_23), gtk_label_new("Current Increment: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_23), gtk_label_new(current_vec_inc_txt), TRUE, TRUE, 0);
-	hbox_22 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_22), gtk_label_new("Increment: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_22), spin_vect_inc, TRUE, TRUE, 0);
-	
-	hbox_33 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_33), gtk_label_new("Current width.: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_33), gtk_label_new(current_vec_width_txt), TRUE, TRUE, 0);
-	hbox_32 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_32), gtk_label_new("Arrow width: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_32), spin_vect_width, TRUE, TRUE, 0);
-	
-	vbox_iso = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_13, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_12, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_23, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_22, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_33, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_32, TRUE, TRUE, 0);
-	
-	Frame_vec = gtk_frame_new("");
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame_vec), GTK_SHADOW_IN);
-	gtk_container_add(GTK_CONTAINER(Frame_vec), vbox_iso);
-	
-	hbox_iso = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_iso), gtk_label_new("  "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_iso), Frame_vec, TRUE, TRUE, 0);
-	
-	scroll_vec = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_vec),
-				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scroll_vec, 400, 300);
-	gtk_container_add(GTK_CONTAINER(scroll_vec), hbox_iso);
-	
-	expander_vec = gtk_expander_new_with_mnemonic("Vector");
-	gtk_container_add(GTK_CONTAINER(expander_vec), scroll_vec);
-	
-	gtk_box_pack_start(GTK_BOX(box), expander_vec, TRUE, FALSE, 0);
 	return;
 }
 
