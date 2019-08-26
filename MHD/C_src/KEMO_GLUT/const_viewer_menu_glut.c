@@ -315,9 +315,9 @@ void glut_PSF_range_menu(){
 			glutAddMenuEntry("Rainbow Vector",        RAINBOW_PSF_VECT);
 		};
 	
-		glutAddMenuEntry("Set Increment for Vector", ISET_PSF_VEC_INC);
-		glutAddMenuEntry("Set Reference Vector",     ISET_PSF_REFVECT);
-		glutAddMenuEntry("Set Vector Thickness",     ISET_PSF_V_THICK);
+//		glutAddMenuEntry("Set Increment for Vector", ISET_PSF_VEC_INC);
+//		glutAddMenuEntry("Set Reference Vector",     ISET_PSF_REFVECT);
+//		glutAddMenuEntry("Set Vector Thickness",     ISET_PSF_V_THICK);
 	};
 	
 	return;

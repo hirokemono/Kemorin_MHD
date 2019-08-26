@@ -432,45 +432,6 @@ void set_fline_thick_gtk(){
 	return;
 }
 
-void set_psf_vector_increment_gtk(){
-	int num_inc;
-	
-	num_inc = kemoview_get_PSF_vector_increment();
-	gtk_nline_menu(num_inc, "Set increment");
-	if(iflag_set == IZERO) return; 
-	
-	if(gtk_intvalue > 0) kemoview_set_PSF_vector_increment(gtk_intvalue);
-	return;
-}
-
-void set_psf_vector_scale_gtk(){
-	double scale_input;
-	
-	scale_input = kemoview_get_PSF_vector_scale();
-	gtk_opacity_menu(scale_input, "Set scale");
-	if(iflag_set == IZERO) return; 
-	
-	scale_input = gtk_min;
-	
-	if ( scale_input < ZERO) scale_input = ZERO;
-	kemoview_set_PSF_vector_scale(scale_input);
-	return;
-}
-
-void set_psf_vector_thickness_gtk(){
-	double thick_input;
-	
-	thick_input = kemoview_get_PSF_vector_thickness();
-	gtk_opacity_menu(thick_input, "Set thickness");
-	if(iflag_set == IZERO) return; 
-	
-	thick_input = gtk_min;
-	
-	if (thick_input < ZERO) thick_input = ZERO;
-	kemoview_set_PSF_vector_thickness(thick_input);
-	return;
-}
-
 void set_domain_opacity_gtk(){
 	double opacity;
 	

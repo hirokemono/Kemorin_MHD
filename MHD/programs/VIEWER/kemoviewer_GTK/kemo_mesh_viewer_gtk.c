@@ -117,19 +117,6 @@ static void read_draw_kemoview_data_gtk(){
 	return;
 };
 
-static void kemoview_psf_draw_input_setting(int selected){
-	if (selected == ISET_PSF_VEC_INC) {
-		set_psf_vector_increment_gtk();
-	}
-	else if (selected == ISET_PSF_REFVECT) {
-		set_psf_vector_scale_gtk();
-	}
-	else if (selected == ISET_PSF_V_THICK) {
-		set_psf_vector_thickness_gtk();
-	};
-	return;
-};
-
 static void kemoview_fline_draw_setting(int sel){
 	
 	printf("Fieldline menu selected %d \n",sel);
@@ -278,7 +265,6 @@ static void psf_handler(int sel){
 		edit_psf_colormap_gtk(single_kemoview);
 	} else {
 		toggle = kemoview_select_PSF_draw_switch(sel);
-		kemoview_psf_draw_input_setting(sel);
 		draw_mesh_w_menu();
 	};
 	return;
