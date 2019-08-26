@@ -41,8 +41,13 @@ static void load_colormap_file_panel(GtkButton *loadButton, gpointer user_data){
 void gtk_psf_colormap_menu(struct kv_string *title, 
 			struct kemoviewer_type *kemoviewer_data){
 	struct colormap_view *color_vws;
-	GtkWidget *box;
+	GtkWidget *box, *vbox_1, *hbox_1;
 	GtkButton *closeButton, *saveButton, *loadButton;
+	
+	GtkWidget *Frame_1;
+	GtkWidget *expander;
+	GtkWidget *scrolled_window;
+	
 	
 	window_cmap = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window_cmap), title->string);
@@ -65,18 +70,36 @@ void gtk_psf_colormap_menu(struct kv_string *title,
 	g_signal_connect(G_OBJECT(closeButton), "clicked", 
 				G_CALLBACK(cb_close_window), window_cmap);
 	
+	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	add_colormp_list_box(color_vws, vbox_1);
+	gtk_box_pack_start(GTK_BOX(vbox_1), saveButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_1), loadButton, FALSE, FALSE, 0);
+	
+	Frame_1 = gtk_frame_new("");
+	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
+	gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
+	
+	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
+	
+	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scrolled_window, 400, 500);
+	gtk_container_add(GTK_CONTAINER(scrolled_window), hbox_1);
+	
+	expander = gtk_expander_new_with_mnemonic("Color map editor");
+	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
+	
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(window_cmap), box);
-	add_colormp_list_box(color_vws, box);
-	gtk_box_pack_start(GTK_BOX(box), saveButton, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box), loadButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box), expander, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), closeButton, FALSE, FALSE, 0);
 	
 	gtk_widget_show_all(window_cmap);
 	gtk_main();
-	printf("dealloc_colormap_views_4_viewer\n");
 	dealloc_colormap_views_4_viewer(color_vws);
-	printf("free\n");
 	free(color_vws);
 	return;
 }
